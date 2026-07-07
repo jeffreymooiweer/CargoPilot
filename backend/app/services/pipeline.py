@@ -5,7 +5,7 @@ from typing import Any
 
 from sqlalchemy.orm import Session
 
-from app.models.user import Material, Profile, ReferenceItem
+from app.models.user import Equipment, Material, Profile, ReferenceItem
 from app.services.calculator.engine import (
     STEEL_DENSITY,
     CalculationResult,
@@ -32,7 +32,20 @@ PRODUCT_LABELS = {
     "concrete_slab": {"nl": "Betonplaat", "en": "Concrete slab"},
     "plywood": {"nl": "Plaatmateriaal", "en": "Sheet material"},
     "reference_item": {"nl": "Artikel", "en": "Item"},
+    "equipment": {"nl": "Materieel", "en": "Equipment"},
     "unknown": {"nl": "Onbekend", "en": "Unknown"},
+}
+
+STEEL_PRODUCT_TYPES = {
+    "angle_profile",
+    "square_tube",
+    "round_tube",
+    "round_bar",
+    "plate",
+    "beam",
+    "standard_profile",
+    "concrete_slab",
+    "plywood",
 }
 
 
@@ -108,6 +121,26 @@ def match_reference(text: str, db: Session) -> ReferenceItem | None:
     best_len = 0
     for item in db.query(ReferenceItem).filter(ReferenceItem.active.is_(True)).all():
         aliases = [item.canonical_name.lower(), *_load_aliases_json(item.aliases_json)]
+        labels = json.loads(item.language_labels_json or "{}")
+        aliases.extend(v.lower() for v in labels.values())
+        for alias in aliases:
+            if alias and alias in lower and len(alias) > best_len:
+                best = item
+                best_len = len(alias)
+    return best
+
+
+def match_equipment(text: str, db: Session) -> Equipment | None:
+    lower = text.lower()
+    best: Equipment | None = None
+    best_len = 0
+    for item in db.query(Equipment).filter(Equipment.active.is_(True)).all():
+        aliases = [item.specifications.lower()]
+        if item.sap_code:
+            aliases.append(item.sap_code.lower())
+        aliases.extend(a.lower() for a in _load_aliases_json(item.aliases_json))
+        labels = json.loads(item.language_labels_json or "{}")
+        aliases.extend(v.lower() for v in labels.values())
         for alias in aliases:
             if alias and alias in lower and len(alias) > best_len:
                 best = item
@@ -164,11 +197,29 @@ def process_line(
             weight_total = weight_each * qty
         method = "reference_weight"
 
+    equipment = match_equipment(row.description, db)
+    if equipment and product_type not in STEEL_PRODUCT_TYPES:
+        product_type = "equipment"
+        weight_each = equipment.weight_kg
+        if qty:
+            weight_total = weight_each * qty
+        length_cm = equipment.length_cm
+        width_cm = equipment.width_cm
+        height_cm = equipment.height_cm
+        if equipment.length_cm and equipment.width_cm and equipment.height_cm and qty:
+            transport_vol = (
+                equipment.length_cm * equipment.width_cm * equipment.height_cm / 1_000_000
+            ) * qty
+        method = "equipment_catalog"
+        ref = None
+
     profile = match_profile(row.description, dims, db)
-    if profile and not kg_per_m:
+    if profile and not kg_per_m and product_type != "equipment":
         kg_per_m = profile.kg_per_meter
 
-    if product_type == "standard_profile" or dims.profile_size:
+    if product_type not in {"equipment", "reference_item"} and (
+        product_type == "standard_profile" or dims.profile_size
+    ):
         product_type = "standard_profile"
         if not dims.length_m:
             messages.append("length_missing")
@@ -229,6 +280,10 @@ def process_line(
         height_cm = meters_to_cm(h)
         method = "solid_block"
 
+    elif product_type in {"equipment", "reference_item"}:
+        if not qty:
+            messages.append("quantity_missing")
+            status = "error"
     else:
         if not material_obj:
             messages.append("material_not_recognized")
@@ -244,8 +299,10 @@ def process_line(
         material_name = "steel"
         density = STEEL_DENSITY
 
-    output_desc = overrides.get("output_description") or build_output_description(
-        row.description, product_type, dims, output_language
+    output_desc = overrides.get("output_description") or (
+        equipment.specifications
+        if equipment and product_type == "equipment"
+        else build_output_description(row.description, product_type, dims, output_language)
     )
 
     appendix_flags = default_appendix_flags()

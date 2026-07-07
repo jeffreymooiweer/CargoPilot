@@ -9,7 +9,7 @@ from sqlalchemy.orm import Session
 from app.core.config import get_settings
 from app.core.database import Base, SessionLocal, engine
 from app.core.security import hash_password
-from app.models.user import Job, Material, Profile, ReferenceItem, User
+from app.models.user import Equipment, Job, Material, Profile, ReferenceItem, User
 from app.services.catalog_sync import sync_catalogs
 
 logger = logging.getLogger(__name__)
@@ -97,6 +97,27 @@ def seed_catalogs(db: Session) -> None:
                     notes=item.get("notes"),
                 )
             )
+    if db.query(Equipment).count() == 0:
+        equipment_path = settings.seed_dir / "equipment_overview.json"
+        if equipment_path.exists():
+            equipment_data = json.loads(equipment_path.read_text(encoding="utf-8"))
+            for item in equipment_data:
+                db.add(
+                    Equipment(
+                        sap_code=item.get("sap_code"),
+                        specifications=item["specifications"],
+                        length_cm=item.get("length_cm"),
+                        width_cm=item.get("width_cm"),
+                        height_cm=item.get("height_cm"),
+                        weight_kg=item["weight_kg"],
+                        aliases_json=json.dumps(item.get("aliases", [])),
+                        language_labels_json=json.dumps(item.get("language_labels", {})),
+                        source=item.get("source", "overzicht_materieel"),
+                        notes=item.get("notes"),
+                        active=item.get("active", True),
+                    )
+                )
+            logger.info("Seeded equipment overview (%s items)", len(equipment_data))
     db.commit()
 
 

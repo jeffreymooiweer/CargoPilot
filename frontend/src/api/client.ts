@@ -53,6 +53,12 @@ export const api = {
   listUsers: () => request<User[]>("/users"),
   createUser: (payload: Record<string, unknown>) =>
     request<User>("/users", { method: "POST", body: JSON.stringify(payload) }),
+  listEquipment: () => request<EquipmentItem[]>("/equipment"),
+  createEquipment: (payload: Partial<EquipmentItem>) =>
+    request<EquipmentItem>("/equipment", { method: "POST", body: JSON.stringify(payload) }),
+  updateEquipment: (id: number, payload: Partial<EquipmentItem>) =>
+    request<EquipmentItem>(`/equipment/${id}`, { method: "PATCH", body: JSON.stringify(payload) }),
+  deleteEquipment: (id: number) => request<{ ok: boolean }>(`/equipment/${id}`, { method: "DELETE" }),
 };
 
 export interface User {
@@ -148,4 +154,19 @@ export interface DgInstructions {
   a1_flags: Record<string, { nl: string; en: string }>;
   appendix_d_intro: { nl: string; en: string };
   appendix_d_fields: Record<string, { label: { nl: string; en: string }; help: { nl: string; en: string } }>;
+}
+
+export interface EquipmentItem {
+  id?: number;
+  sap_code?: string | null;
+  specifications: string;
+  length_cm?: number | null;
+  width_cm?: number | null;
+  height_cm?: number | null;
+  weight_kg: number;
+  aliases?: string[];
+  language_labels?: Record<string, string>;
+  source?: string | null;
+  notes?: string | null;
+  active?: boolean;
 }

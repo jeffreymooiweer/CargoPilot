@@ -11,6 +11,7 @@ from slowapi.util import get_remote_address
 
 from app.api.routes.auth import router as auth_router
 from app.api.routes.catalog import reference_router
+from app.api.routes.equipment import equipment_router
 from app.api.routes.dangerous_goods import router as dangerous_goods_router
 from app.api.routes.jobs import router as jobs_router
 from app.api.routes.users import router as users_router
@@ -61,6 +62,7 @@ def create_app() -> FastAPI:
     app.include_router(jobs_router, prefix="/api")
     app.include_router(dangerous_goods_router, prefix="/api")
     app.include_router(reference_router, prefix="/api")
+    app.include_router(equipment_router, prefix="/api")
 
     static_dir = settings.static_dir
     if static_dir.exists():

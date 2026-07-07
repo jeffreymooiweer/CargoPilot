@@ -6,6 +6,7 @@ import LoginPage from "./pages/LoginPage";
 import DashboardPage from "./pages/DashboardPage";
 import WizardPage from "./pages/WizardPage";
 import UsersPage from "./pages/UsersPage";
+import MaterieelPage from "./pages/MaterieelPage";
 
 export default function App() {
   const [user, setUser] = useState<User | null>(null);
@@ -37,6 +38,7 @@ export default function App() {
       <Route element={<Layout user={user} onLogout={() => setUser(null)} />}>
         <Route path="/" element={<DashboardPage />} />
         <Route path="/wizard" element={<WizardPage />} />
+        <Route path="/materieel" element={<MaterieelPage />} />
         <Route path="/users" element={<UsersPage />} />
       </Route>
       <Route path="*" element={<Navigate to="/" replace />} />

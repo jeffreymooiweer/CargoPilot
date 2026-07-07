@@ -6,6 +6,7 @@
   "nav": {
     "dashboard": "Dashboard",
     "new": "New appendix",
+    "materieel": "Equipment overview",
     "users": "Users",
     "logout": "Logout"
   },
@@ -120,5 +121,25 @@
     "warning": "Warning",
     "error": "Error",
     "needs_review": "Needs review"
+  },
+  "materieel": {
+    "intro": "Equipment database from the appendix template (Overzicht Materieel sheet). Items are recognized when pasted in the wizard, e.g. \"Skoda Yeti\".",
+    "add": "Add equipment",
+    "edit": "Edit",
+    "create": "Add",
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "confirmDelete": "Delete this equipment item?",
+    "search": "Search by name, SAP code or alias…",
+    "count": "{{count}} of {{total}} items",
+    "sapCode": "SAP code (MATNR)",
+    "specifications": "Specifications (appendix column D)",
+    "length": "Length (cm)",
+    "width": "Width (cm)",
+    "height": "Height (cm)",
+    "weight": "Weight (kg)",
+    "aliases": "Aliases (comma-separated, for recognition)",
+    "active": "Active"
   }
 }

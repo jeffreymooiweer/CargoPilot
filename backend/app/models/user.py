@@ -85,3 +85,22 @@ class ReferenceItem(Base):
     language_labels_json: Mapped[str] = mapped_column(Text, default="{}")
     notes: Mapped[str | None] = mapped_column(Text, nullable=True)
     active: Mapped[bool] = mapped_column(Boolean, default=True)
+
+
+class Equipment(Base):
+    """Overzicht Materieel uit appendix-template (SAP-matrijst)."""
+
+    __tablename__ = "equipment_items"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    sap_code: Mapped[str | None] = mapped_column(String(128), nullable=True, index=True)
+    specifications: Mapped[str] = mapped_column(String(255))
+    length_cm: Mapped[float | None] = mapped_column(nullable=True)
+    width_cm: Mapped[float | None] = mapped_column(nullable=True)
+    height_cm: Mapped[float | None] = mapped_column(nullable=True)
+    weight_kg: Mapped[float] = mapped_column()
+    aliases_json: Mapped[str] = mapped_column(Text, default="[]")
+    language_labels_json: Mapped[str] = mapped_column(Text, default="{}")
+    source: Mapped[str | None] = mapped_column(String(64), nullable=True)
+    notes: Mapped[str | None] = mapped_column(Text, nullable=True)
+    active: Mapped[bool] = mapped_column(Boolean, default=True)

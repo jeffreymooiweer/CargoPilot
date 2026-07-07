@@ -14,6 +14,7 @@ CargoPilot is een webapplicatie waarmee bouwmaterialen uit Excel geplakt, automa
 - Export naar bestaand `Appendix_A1D_template.xlsx` (opmaak en formules behouden)
 - Donkere modus
 - Geen historie of server-side opslag van appendix-data
+- **Overzicht Materieel** — 244 voertuigen/materieel uit appendix-template, herkenning bij input (bijv. Skoda Yeti)
 - Login, admin-gebruikersbeheer, automatische materialen-/profielendatabase (achter de schermen)
 - Docker, DockerHub CI/CD, Unraid-template
 
@@ -108,6 +109,12 @@ Invulinstructies uit het tabblad **Invulinstructie** van `Appendix_A1D_template.
 **ADR-lookup:** via `GET /api/dg/lookup?un=1203` (FreightUtils ADR-database, geen authenticatie). De frontend vult PSN, klasse en verpakkingsgroep automatisch in.
 
 **Export:** bij regels met DG wordt tabblad `D` ingevuld (metadata + productkolommen). Het tabblad *Invulinstructie* blijft ongewijzigd.
+
+## Overzicht Materieel
+
+De tabel onderaan het tabblad **Overzicht Materieel** in `Appendix_A1D_template.xlsx` (SAP MATNR, specifications, afmetingen, gewicht) wordt bij eerste opstarten geladen in de database (`equipment_items`). Beheer via menu **Overzicht materieel** (admin).
+
+Bij het plakken in de wizard herkent CargoPilot materieel op basis van SAP-code, specifications en aliassen — bijvoorbeeld `skoda yeti` → gewicht 1370 kg, afmetingen en appendix-omschrijving `VEHICLE SKODA YETI`.
 
 ## Privacy en gegevensopslag
 

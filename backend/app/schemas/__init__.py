@@ -58,6 +58,7 @@ class ExportRequest(BaseModel):
     output_language: str = "nl"
     metadata: dict = Field(default_factory=dict)
     template_name: str | None = None
+    dangerous_goods: list[dict] | None = None
 
 
 class MaterialBase(BaseModel):

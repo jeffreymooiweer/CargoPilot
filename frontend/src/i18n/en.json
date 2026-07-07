@@ -30,6 +30,8 @@
     "step1": "Input",
     "step2": "Review",
     "step3": "Export",
+    "step3dg": "Dangerous goods",
+    "step4": "Export",
     "paste": "Paste your Excel data here",
     "analyze": "Analyze",
     "strict": "Strict",
@@ -49,7 +51,33 @@
     "back": "Back",
     "recalculate": "Recalculate",
     "toExport": "Continue to export",
-    "strictBlocked": "Strict mode: fix errors before continuing."
+    "toDg": "Continue to dangerous goods",
+    "strictBlocked": "Strict mode: fix errors before continuing.",
+    "flagsTitle": "Appendix A1 — flags",
+    "flagsIntro": "Set Y/N flags per line. Help text is taken from the appendix template (Invulinstructie sheet).",
+    "dgIntro": "Complete appendix D for all lines with dangerous goods (UN number).",
+    "dgSource": "UN data can be fetched automatically from the ADR database (FreightUtils).",
+    "dgLine": "Line",
+    "dgVehicle": "Vehicle / load",
+    "dgVehicleHelp": "Description of the vehicle or load as in appendix D.",
+    "dgLookup": "Look up UN number",
+    "dgIncluded": "Appendix D will be included for {{count}} line(s)."
+  },
+  "flags": {
+    "loaded": "Loaded",
+    "stackable": "Stackable",
+    "rotatable": "Rotatable",
+    "weapons": "Weapons",
+    "conditioned": "Conditioned",
+    "temperature_c": "Temperature (°C)",
+    "dangerous_goods": "Dangerous goods",
+    "ammunition": "Ammunition",
+    "itar": "ITAR",
+    "tbb": "TBB",
+    "tbb_category": "TBB category"
+  },
+  "messages": {
+    "dg_un_detected": "UN number detected — appendix D is mandatory"
   },
   "status": {
     "ok": "OK",

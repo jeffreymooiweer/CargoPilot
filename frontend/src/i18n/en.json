@@ -6,9 +6,18 @@
   "nav": {
     "dashboard": "Dashboard",
     "new": "New appendix",
-    "history": "History",
     "users": "Users",
     "logout": "Logout"
+  },
+  "theme": {
+    "dark": "Dark",
+    "light": "Light",
+    "toggle": "Toggle theme"
+  },
+  "dashboard": {
+    "welcome": "Welcome to CargoPilot",
+    "intro": "Paste your material list, review calculations, and download a filled appendix. Everything stays in your browser session.",
+    "privacy": "CargoPilot does not store history, pasted data, or appendix files on the server. After download, everything is discarded from memory."
   },
   "login": {
     "title": "Sign in",
@@ -36,7 +45,11 @@
     "lines": "Lines",
     "totalWeight": "Total weight",
     "totalVolume": "Total transport volume",
-    "warnings": "Warnings"
+    "warnings": "Warnings",
+    "back": "Back",
+    "recalculate": "Recalculate",
+    "toExport": "Continue to export",
+    "strictBlocked": "Strict mode: fix errors before continuing."
   },
   "status": {
     "ok": "OK",

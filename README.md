@@ -11,6 +11,8 @@ CargoPilot is een webapplicatie waarmee bouwmaterialen uit Excel geplakt, automa
 - Berekening van gewicht, materiaalvolume en transportvolume
 - Review-stap met inline correcties
 - Export naar bestaand `intern-formulier.xlsx` (opmaak en formules behouden)
+- Donkere modus
+- Geen historie of server-side opslag van appendix-data
 - Login, admin-gebruikersbeheer, automatische materialen-/profielendatabase (achter de schermen)
 - Docker, DockerHub CI/CD, Unraid-template
 
@@ -92,6 +94,17 @@ CargoPilot beheert **materialen** (dichtheid) en **profielen** (kg/m) volledig a
 - Sync-status wordt opgeslagen in `/data/catalog_sync_status.json`.
 - Bij netwerkuitval: fallback naar gebundelde kopieën in `backend/seed/external/`.
 - Na deploy op Unraid: container herstarten is voldoende — geen handmatige catalogusstappen.
+
+## Privacy en gegevensopslag
+
+CargoPilot is ontworpen om **geen gevoelige operationele data** te bewaren:
+
+- **Geen historie** — er is geen overzicht van eerdere appendixen.
+- **Geen job-database** — geplakte materiaallijsten, berekende regels en metadata worden niet opgeslagen in SQLite.
+- **Geen appendix-bestanden op schijf** — exports worden in een tijdelijk bestand gemaakt, naar de browser gestuurd en daarna verwijderd.
+- **Opschoning bij opstart** — eventuele oude jobs of exportbestanden van eerdere versies worden bij containerstart gewist.
+
+Wat wél persistent blijft op `/data`: gebruikersaccounts, de materiaal-/profielencatalogus (openbare referentiedata), het Excel-template en catalogus-sync status.
 
 ## DockerHub image
 

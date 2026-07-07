@@ -1,6 +1,7 @@
 import json
 import logging
 import shutil
+import tempfile
 from pathlib import Path
 
 from sqlalchemy.orm import Session
@@ -8,8 +9,7 @@ from sqlalchemy.orm import Session
 from app.core.config import get_settings
 from app.core.database import Base, SessionLocal, engine
 from app.core.security import hash_password
-from app.core.config import get_settings as _get_settings
-from app.models.user import Material, Profile, ReferenceItem, User
+from app.models.user import Job, Material, Profile, ReferenceItem, User
 from app.services.catalog_sync import sync_catalogs
 
 logger = logging.getLogger(__name__)
@@ -17,7 +17,7 @@ logger = logging.getLogger(__name__)
 
 def ensure_directories() -> None:
     settings = get_settings()
-    for path in [settings.data_dir, settings.templates_dir, settings.exports_dir, settings.logs_dir]:
+    for path in [settings.data_dir, settings.templates_dir, settings.logs_dir]:
         path.mkdir(parents=True, exist_ok=True)
     template_name = "intern-formulier.xlsx"
     dest = settings.templates_dir / template_name
@@ -31,6 +31,24 @@ def ensure_directories() -> None:
                 shutil.copy2(src, dest)
                 logger.info("Copied template to %s", dest)
                 break
+
+
+def purge_sensitive_data(db: Session) -> None:
+    """Verwijder opgeslagen appendix-data: jobs in DB en eventuele exportbestanden."""
+    settings = get_settings()
+    deleted_jobs = db.query(Job).delete()
+    db.commit()
+    removed_files = 0
+    exports_dir = settings.exports_dir
+    if exports_dir.exists():
+        for path in exports_dir.glob("*.xlsx"):
+            try:
+                path.unlink()
+                removed_files += 1
+            except OSError as exc:
+                logger.warning("Could not delete export file %s: %s", path, exc)
+    if deleted_jobs or removed_files:
+        logger.info("Purged sensitive data: %s jobs, %s export files", deleted_jobs, removed_files)
 
 
 def seed_catalogs(db: Session) -> None:
@@ -82,6 +100,17 @@ def seed_catalogs(db: Session) -> None:
     db.commit()
 
 
+def sync_catalogs_on_startup(db: Session) -> None:
+    settings = get_settings()
+    if not settings.catalog_auto_sync:
+        logger.info("Catalog auto-sync disabled (CATALOG_AUTO_SYNC=false)")
+        return
+    try:
+        sync_catalogs(db)
+    except Exception:
+        logger.exception("Catalog sync failed during startup")
+
+
 def bootstrap_admin(db: Session) -> bool:
     settings = get_settings()
     admin = db.query(User).filter(User.role == "admin").first()
@@ -104,17 +133,6 @@ def bootstrap_admin(db: Session) -> bool:
     return False
 
 
-def sync_catalogs_on_startup(db: Session) -> None:
-    settings = _get_settings()
-    if not settings.catalog_auto_sync:
-        logger.info("Catalog auto-sync disabled (CATALOG_AUTO_SYNC=false)")
-        return
-    try:
-        sync_catalogs(db)
-    except Exception:
-        logger.exception("Catalog sync failed during startup")
-
-
 def init_app() -> bool:
     ensure_directories()
     Base.metadata.create_all(bind=engine)
@@ -122,6 +140,7 @@ def init_app() -> bool:
     try:
         seed_catalogs(db)
         sync_catalogs_on_startup(db)
+        purge_sensitive_data(db)
         return bootstrap_admin(db)
     finally:
         db.close()

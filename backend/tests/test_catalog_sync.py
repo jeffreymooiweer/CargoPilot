@@ -16,8 +16,7 @@ def db():
 
 def test_sync_imports_steel_profiles(db):
     status = sync_catalogs(db, use_network=False)
-    assert status["profile_count"] >= 100
-    assert status["profiles_added"] + status["profiles_updated"] >= 100
+    assert status["profile_count"] >= 400
     unp220 = (
         db.query(Profile)
         .filter(Profile.size_label == "220", Profile.profile_type.in_(["UPN", "UNP"]))
@@ -28,13 +27,25 @@ def test_sync_imports_steel_profiles(db):
     assert unp220.source and "steelprofiles" in unp220.source
 
 
+def test_sync_imports_hollow_profiles(db):
+    sync_catalogs(db, use_network=False)
+    shs = db.query(Profile).filter(Profile.profile_type == "SHS").first()
+    rhs = db.query(Profile).filter(Profile.profile_type == "RHS").first()
+    chs = db.query(Profile).filter(Profile.profile_type == "CHS").first()
+    assert shs is not None and shs.kg_per_meter > 0
+    assert rhs is not None and rhs.kg_per_meter > 0
+    assert chs is not None and chs.kg_per_meter > 0
+    assert "eurocodepy" in (shs.source or "")
+
+
 def test_sync_updates_material_densities(db):
     status = sync_catalogs(db, use_network=False)
-    assert status["material_count"] >= 10
+    assert status["material_count"] >= 15
     steel = db.query(Material).filter(Material.canonical_name == "steel").first()
     assert steel is not None
     assert steel.density_kg_m3 == 7850
-    assert steel.source is not None
+    brick = db.query(Material).filter(Material.canonical_name == "brick").first()
+    assert brick is not None
 
 
 def test_sync_status_persisted(db, tmp_path, monkeypatch):

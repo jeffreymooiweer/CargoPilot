@@ -7,8 +7,6 @@
     "dashboard": "Dashboard",
     "new": "Nieuwe appendix",
     "history": "Historie",
-    "materials": "Materialen",
-    "profiles": "Profielen",
     "users": "Gebruikers",
     "logout": "Uitloggen"
   },
@@ -45,22 +43,5 @@
     "warning": "Waarschuwing",
     "error": "Fout",
     "needs_review": "Controle nodig"
-  },
-  "catalog": {
-    "materialsTitle": "Materialen",
-    "profilesTitle": "Staalprofielen",
-    "materialsIntro": "Dichtheden worden automatisch gesynchroniseerd vanuit openbare bronnen (Eurocode, NIST). Handmatig toevoegen is alleen nodig voor uitzonderingen.",
-    "profilesIntro": "Profielgewichten (kg/m) komen uit openbare EN 10365-data (steelprofiles_api op GitHub). UNP/UPN, IPE, HEA, HEB, HEM en IPN worden automatisch ingeladen.",
-    "lastSync": "Laatste sync",
-    "items": "items",
-    "syncNow": "Catalogus synchroniseren",
-    "syncing": "Bezig met synchroniseren…",
-    "name": "Naam",
-    "category": "Categorie",
-    "density": "Dichtheid kg/m³",
-    "source": "Bron",
-    "profileType": "Type",
-    "size": "Maat",
-    "standard": "Norm"
   }
 }

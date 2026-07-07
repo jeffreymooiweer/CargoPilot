@@ -11,7 +11,7 @@ CargoPilot is een webapplicatie waarmee bouwmaterialen uit Excel geplakt, automa
 - Berekening van gewicht, materiaalvolume en transportvolume
 - Review-stap met inline correcties
 - Export naar bestaand `Appendix_A1D_template.xlsx` (opmaak en formules behouden)
-- Login, admin-gebruikersbeheer, materialen-/profielenbibliotheek
+- Login, admin-gebruikersbeheer, automatische materialen-/profielendatabase (achter de schermen)
 - Docker, DockerHub CI/CD, Unraid-template
 
 ## Screenshots
@@ -65,20 +65,33 @@ Zonder admin-credentials verschijnt een setupmelding in logs en UI.
 
 ## Catalogus uit openbare bronnen
 
-CargoPilot laadt **materialen** (dichtheid) en **staalprofielen** (kg/m) automatisch vanuit openbare bronnen. Je hoeft deze normaal niet handmatig in te voeren.
+CargoPilot beheert **materialen** (dichtheid) en **profielen** (kg/m) volledig automatisch. Er is geen menu of handmatige invoer — bij opstarten (en bij elke herstart) wordt alles gesynchroniseerd vanuit meerdere openbare bronnen.
 
-| Gegeven | Bron | Licentie / opmerking |
+| Gegeven | Bron | Opmerking |
 |---|---|---|
-| UPN/UNP, IPE, HEA, HEB, HEM, IPN (kg/m) | [timskovjacobsen/steelprofiles_api](https://github.com/timskovjacobsen/steelprofiles_api) | EN 10365 CSV-data op GitHub |
-| Staal-/houtdichtheid (Eurocode) | [kristapsfreibergs/eurocodepy](https://github.com/kristapsfreibergs/eurocodepy) | Eurocode materiaalparameters |
-| Overige materialen | Gebundelde referentiewaarden | NIST / engineering standaardwaarden |
+| UPN/UNP, IPE, HEA, HEB, HEM, IPN (kg/m) | [steelprofiles_api](https://github.com/timskovjacobsen/steelprofiles_api) | EN 10365, CSV op GitHub |
+| SHS, RHS, CHS koker/buisprofielen (kg/m) | [eurocodepy](https://github.com/kristapsfreibergs/eurocodepy) | EN 10210/10219 hollow sections JSON |
+| Staal-, hout-, betondichtheid | [eurocodepy](https://github.com/kristapsfreibergs/eurocodepy) `eurocodes.json` | Eurocode 2/3/5 materiaalparameters |
+| Metaaldichtheden (alu, koper, messing, …) | [Wikidata](https://www.wikidata.org/) SPARQL (P2054) | Open linked data, live ophalen |
+| Bouwmaterialen (baksteen, glas, mortel, …) | EN 1991-1-1 referentietabel | Gebundeld in `seed/external/eurocode_materials.json` |
+| Basis aliassen (staal, hout, PVC, …) | `seed/materials.json` | Alleen aliassen/detectie, geen handmatige UI |
 
-**Niet gebruikt (bewust):** MatWeb en Engineering Toolbox hebben geen open API en staan scraping in hun voorwaarden meestal niet toe. CargoPilot gebruikt daarom de open GitHub-bronnen hierboven.
+**Niet gebruikt (bewust):**
 
-- Bij eerste start (en bij elke herstart met `CATALOG_AUTO_SYNC=true`) wordt de catalogus gesynchroniseerd.
-- Admins kunnen handmatig syncen via **Materialen** / **Profielen** → knop *Catalogus synchroniseren*, of via `POST /api/catalog/sync`.
-- Status: `GET /api/catalog/sync-status`.
-- Als internet tijdelijk niet bereikbaar is, valt de sync terug op gebundelde kopieën in `backend/seed/external/`.
+| Bron | Reden |
+|---|---|
+| [MatWeb](https://www.matweb.com/) | Geen open API; scraping niet toegestaan in ToS |
+| [Engineering Toolbox](https://www.engineeringtoolbox.com/) | Geen API; scraping niet toegestaan |
+| [CalcSteel API](https://calcsteel.com/docs/api-reference) | Geen publiek JSON-endpoint zonder webapp |
+| [2050 Materials API](https://2050-materials.com/) | Vereist registratie/API-token (niet volledig open) |
+| [EPiC Database](https://www.epicdatabase.com.au/) | Feather-bestand via Python-package; geen stabiele open HTTP-API |
+
+**Gedrag:**
+
+- `CATALOG_AUTO_SYNC=true` (standaard): sync bij elke containerstart.
+- Sync-status wordt opgeslagen in `/data/catalog_sync_status.json`.
+- Bij netwerkuitval: fallback naar gebundelde kopieën in `backend/seed/external/`.
+- Na deploy op Unraid: container herstarten is voldoende — geen handmatige catalogusstappen.
 
 ## DockerHub image
 

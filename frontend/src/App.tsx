@@ -6,8 +6,6 @@ import LoginPage from "./pages/LoginPage";
 import DashboardPage from "./pages/DashboardPage";
 import WizardPage from "./pages/WizardPage";
 import HistoryPage from "./pages/HistoryPage";
-import MaterialsPage from "./pages/MaterialsPage";
-import ProfilesPage from "./pages/ProfilesPage";
 import UsersPage from "./pages/UsersPage";
 
 export default function App() {
@@ -41,8 +39,6 @@ export default function App() {
         <Route path="/" element={<DashboardPage />} />
         <Route path="/wizard" element={<WizardPage />} />
         <Route path="/history" element={<HistoryPage />} />
-        <Route path="/materials" element={<MaterialsPage />} />
-        <Route path="/profiles" element={<ProfilesPage />} />
         <Route path="/users" element={<UsersPage />} />
       </Route>
       <Route path="*" element={<Navigate to="/" replace />} />

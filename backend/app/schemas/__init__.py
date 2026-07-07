@@ -53,24 +53,8 @@ class CalculateRequest(BaseModel):
     line_overrides: list[dict] | None = None
 
 
-class JobCreate(BaseModel):
-    title: str = "New appendix"
-    text: str
-    column_map: dict[str, int | None] | None = None
-    has_header: bool = False
-    input_language: str | None = None
-    output_language: str = "nl"
-    mode: str = "continue"
-
-
-class JobUpdate(BaseModel):
-    title: str | None = None
-    calculated_json: dict | None = None
-    metadata_json: dict | None = None
-    status: str | None = None
-
-
 class ExportRequest(BaseModel):
+    lines: list[dict]
     output_language: str = "nl"
     metadata: dict = Field(default_factory=dict)
     template_name: str | None = None

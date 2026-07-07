@@ -32,14 +32,8 @@ export const api = {
     request<CalcResult>("/parse", { method: "POST", body: JSON.stringify(payload) }),
   calculate: (payload: Record<string, unknown>) =>
     request<CalcResult>("/calculate", { method: "POST", body: JSON.stringify(payload) }),
-  createJob: (payload: Record<string, unknown>) =>
-    request<{ job: Job; result: CalcResult }>("/jobs", { method: "POST", body: JSON.stringify(payload) }),
-  listJobs: () => request<Job[]>("/jobs"),
-  getJob: (id: number) => request<JobDetail>(`/jobs/${id}`),
-  updateJob: (id: number, payload: Record<string, unknown>) =>
-    request<JobDetail>(`/jobs/${id}`, { method: "PATCH", body: JSON.stringify(payload) }),
-  exportJob: async (id: number, payload: Record<string, unknown>) => {
-    const res = await fetch(`${API_BASE}/jobs/${id}/export`, {
+  exportAppendix: async (payload: Record<string, unknown>) => {
+    const res = await fetch(`${API_BASE}/export`, {
       method: "POST",
       credentials: "include",
       headers: { "Content-Type": "application/json" },
@@ -50,7 +44,7 @@ export const api = {
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = `appendix_job${id}.xlsx`;
+    a.download = `appendix_${Date.now()}.xlsx`;
     a.click();
     URL.revokeObjectURL(url);
   },
@@ -94,18 +88,4 @@ export interface CalcResult {
   lines: LineItem[];
   totals: Record<string, number>;
   errors: unknown[];
-}
-
-export interface Job {
-  id: number;
-  title: string;
-  status: string;
-  totals?: Record<string, number>;
-  created_at?: string;
-}
-
-export interface JobDetail extends Job {
-  input_raw?: string;
-  calculated?: CalcResult;
-  metadata?: Record<string, unknown>;
 }

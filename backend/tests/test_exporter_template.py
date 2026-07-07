@@ -42,10 +42,13 @@ def test_export_preserves_template_structure(db):
         pytest.skip("Template not available")
     result = parse_and_calculate(STEEL_INPUT, db, output_language="en", mode="continue")
     out = export_appendix(result["lines"], {"route": "Test"}, "en", "testjob")
-    assert out.exists()
-    wb = load_workbook(out)
-    assert " A1" in wb.sheetnames
-    ws = wb[" A1"]
-    assert ws["B12"].value == "Construction materials"
-    assert ws["E12"].value == 8
-    assert ws["N12"].value is not None
+    try:
+        assert out.exists()
+        wb = load_workbook(out)
+        assert " A1" in wb.sheetnames
+        ws = wb[" A1"]
+        assert ws["B12"].value == "Construction materials"
+        assert ws["E12"].value == 8
+        assert ws["N12"].value is not None
+    finally:
+        out.unlink(missing_ok=True)

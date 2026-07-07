@@ -133,3 +133,17 @@ class ReferenceItemOut(ReferenceItemBase):
 
     class Config:
         from_attributes = True
+
+
+class CatalogSyncStatus(BaseModel):
+    last_run_at: str | None = None
+    success: bool | None = None
+    profiles_added: int = 0
+    profiles_updated: int = 0
+    materials_added: int = 0
+    materials_updated: int = 0
+    profile_count: int = 0
+    material_count: int = 0
+    sources: list[str] = Field(default_factory=list)
+    errors: list[str] = Field(default_factory=list)
+    used_offline_fallback: bool = False

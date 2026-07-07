@@ -60,6 +60,25 @@ Zonder admin-credentials verschijnt een setupmelding in logs en UI.
 | `ADMIN_PASSWORD` | Bootstrap wachtwoord | - |
 | `LOG_LEVEL` | Logging | `INFO` |
 | `CORS_ALLOWED_ORIGINS` | CORS | `*` |
+| `CATALOG_AUTO_SYNC` | Bij opstarten catalogus syncen vanuit openbare bronnen | `true` |
+| `CATALOG_SYNC_TIMEOUT_SECONDS` | Timeout voor HTTP-downloads (seconden) | `20` |
+
+## Catalogus uit openbare bronnen
+
+CargoPilot laadt **materialen** (dichtheid) en **staalprofielen** (kg/m) automatisch vanuit openbare bronnen. Je hoeft deze normaal niet handmatig in te voeren.
+
+| Gegeven | Bron | Licentie / opmerking |
+|---|---|---|
+| UPN/UNP, IPE, HEA, HEB, HEM, IPN (kg/m) | [timskovjacobsen/steelprofiles_api](https://github.com/timskovjacobsen/steelprofiles_api) | EN 10365 CSV-data op GitHub |
+| Staal-/houtdichtheid (Eurocode) | [kristapsfreibergs/eurocodepy](https://github.com/kristapsfreibergs/eurocodepy) | Eurocode materiaalparameters |
+| Overige materialen | Gebundelde referentiewaarden | NIST / engineering standaardwaarden |
+
+**Niet gebruikt (bewust):** MatWeb en Engineering Toolbox hebben geen open API en staan scraping in hun voorwaarden meestal niet toe. CargoPilot gebruikt daarom de open GitHub-bronnen hierboven.
+
+- Bij eerste start (en bij elke herstart met `CATALOG_AUTO_SYNC=true`) wordt de catalogus gesynchroniseerd.
+- Admins kunnen handmatig syncen via **Materialen** / **Profielen** → knop *Catalogus synchroniseren*, of via `POST /api/catalog/sync`.
+- Status: `GET /api/catalog/sync-status`.
+- Als internet tijdelijk niet bereikbaar is, valt de sync terug op gebundelde kopieën in `backend/seed/external/`.
 
 ## DockerHub image
 
@@ -147,7 +166,7 @@ Regressietest verwacht ~7534 kg totaalgewicht (±2%) voor de standaard staalvoor
 
 - [ ] Duitse taalondersteuning
 - [ ] Appendix D (gevaarlijke stoffen) vullen
-- [ ] Uitgebreidere profielcatalogus (IPE, HEA, HEB)
+- [x] Uitgebreidere profielcatalogus (IPE, HEA, HEB) — via openbare sync
 - [ ] Import/export materialenbibliotheek via UI
 - [ ] Kolommapping UI bij ambigue headers
 

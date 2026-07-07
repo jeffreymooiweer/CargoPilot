@@ -8,7 +8,9 @@ from sqlalchemy.orm import Session
 from app.core.config import get_settings
 from app.core.database import Base, SessionLocal, engine
 from app.core.security import hash_password
+from app.core.config import get_settings as _get_settings
 from app.models.user import Material, Profile, ReferenceItem, User
+from app.services.catalog_sync import sync_catalogs
 
 logger = logging.getLogger(__name__)
 
@@ -60,6 +62,7 @@ def seed_catalogs(db: Session) -> None:
                     material=item.get("material", "steel"),
                     standard=item.get("standard"),
                     aliases_json=json.dumps(item.get("aliases", [])),
+                    source=item.get("source"),
                     notes=item.get("notes"),
                 )
             )
@@ -101,12 +104,24 @@ def bootstrap_admin(db: Session) -> bool:
     return False
 
 
+def sync_catalogs_on_startup(db: Session) -> None:
+    settings = _get_settings()
+    if not settings.catalog_auto_sync:
+        logger.info("Catalog auto-sync disabled (CATALOG_AUTO_SYNC=false)")
+        return
+    try:
+        sync_catalogs(db)
+    except Exception:
+        logger.exception("Catalog sync failed during startup")
+
+
 def init_app() -> bool:
     ensure_directories()
     Base.metadata.create_all(bind=engine)
     db = SessionLocal()
     try:
         seed_catalogs(db)
+        sync_catalogs_on_startup(db)
         return bootstrap_admin(db)
     finally:
         db.close()

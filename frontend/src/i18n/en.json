@@ -7,8 +7,6 @@
     "dashboard": "Dashboard",
     "new": "New appendix",
     "history": "History",
-    "materials": "Materials",
-    "profiles": "Profiles",
     "users": "Users",
     "logout": "Logout"
   },
@@ -45,22 +43,5 @@
     "warning": "Warning",
     "error": "Error",
     "needs_review": "Needs review"
-  },
-  "catalog": {
-    "materialsTitle": "Materials",
-    "profilesTitle": "Steel profiles",
-    "materialsIntro": "Densities are synced automatically from open sources (Eurocode, NIST). Manual entry is only needed for exceptions.",
-    "profilesIntro": "Profile weights (kg/m) come from open EN 10365 data (steelprofiles_api on GitHub). UNP/UPN, IPE, HEA, HEB, HEM and IPN are imported automatically.",
-    "lastSync": "Last sync",
-    "items": "items",
-    "syncNow": "Sync catalog",
-    "syncing": "Syncing…",
-    "name": "Name",
-    "category": "Category",
-    "density": "Density kg/m³",
-    "source": "Source",
-    "profileType": "Type",
-    "size": "Size",
-    "standard": "Standard"
   }
 }

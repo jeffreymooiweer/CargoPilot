@@ -97,6 +97,48 @@
     "density_kg_m3": 1700,
     "aliases": ["grind", "gravel", "split", "ballast"],
     "language_labels": {"nl": "Grind", "en": "Gravel"},
-    "source": "Engineering reference (losse vulstof)"
+    "source": "en1991:EN 1991-1-1 Table A.1 (losse vulstof)"
+  },
+  {
+    "canonical_name": "brick",
+    "category": "masonry",
+    "density_kg_m3": 1800,
+    "aliases": ["baksteen", "brick", "metselwerk", "masonry"],
+    "language_labels": {"nl": "Baksteen", "en": "Brick"},
+    "source": "en1991:EN 1991-1-1 Table A.1"
+  },
+  {
+    "canonical_name": "mortar",
+    "category": "masonry",
+    "density_kg_m3": 1900,
+    "aliases": ["mortel", "mortar", "cementmortel"],
+    "language_labels": {"nl": "Mortel", "en": "Mortar"},
+    "source": "en1991:EN 1991-1-1 Table A.1"
+  },
+  {
+    "canonical_name": "glass",
+    "category": "other",
+    "density_kg_m3": 2500,
+    "aliases": ["glas", "glass", "venster", "beglazing"],
+    "language_labels": {"nl": "Glas", "en": "Glass"},
+    "source": "en1991:EN 1991-1-1 Table A.1"
+  },
+  {
+    "canonical_name": "water",
+    "category": "liquid",
+    "density_kg_m3": 1000,
+    "aliases": ["water", "h2o"],
+    "language_labels": {"nl": "Water", "en": "Water"},
+    "source": "en1991:EN 1991-1-1 Table A.1"
+  },
+  {
+    "canonical_name": "mineral_wool",
+    "category": "insulation",
+    "density_kg_m3": 30,
+    "density_min_kg_m3": 20,
+    "density_max_kg_m3": 200,
+    "aliases": ["steenwol", "mineral wool", "rockwool", "isolatie"],
+    "language_labels": {"nl": "Steenwol", "en": "Mineral wool"},
+    "source": "en1991:EN 1991-1-1 Table A.1 (typisch bereik)"
   }
 ]

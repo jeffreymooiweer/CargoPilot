@@ -1,6 +1,7 @@
 import json
 import logging
 from dataclasses import dataclass
+from pathlib import Path
 
 from sqlalchemy.orm import Session
 
@@ -9,7 +10,15 @@ from app.services.catalog_sync.sources import EUROCODE_MATERIAL_SOURCE
 
 logger = logging.getLogger(__name__)
 
-EXTERNAL_SOURCE_PREFIXES = ("github:", "eurocodepy:", "nist:", "seed:external", "eurocode:")
+EXTERNAL_SOURCE_PREFIXES = (
+    "github:",
+    "eurocodepy:",
+    "nist:",
+    "seed:",
+    "eurocode:",
+    "wikidata:",
+    "en1991:",
+)
 
 
 @dataclass
@@ -26,7 +35,16 @@ class MaterialRecord:
     notes: str | None = None
 
 
-def parse_bundled_materials(raw: str) -> list[MaterialRecord]:
+def load_seed_material_records(seed_path: Path) -> list[MaterialRecord]:
+    if not seed_path.exists():
+        return []
+    return parse_bundled_materials(
+        seed_path.read_text(encoding="utf-8"),
+        default_source="seed:materials.json",
+    )
+
+
+def parse_bundled_materials(raw: str, *, default_source: str | None = None) -> list[MaterialRecord]:
     items = json.loads(raw)
     records: list[MaterialRecord] = []
     for item in items:
@@ -40,11 +58,39 @@ def parse_bundled_materials(raw: str) -> list[MaterialRecord]:
                 condition=item.get("condition"),
                 language_labels=item.get("language_labels", {}),
                 aliases=item.get("aliases", []),
-                source=item.get("source"),
+                source=item.get("source") or default_source,
                 notes=item.get("notes"),
             )
         )
     return records
+
+
+def merge_material_records(*groups: list[MaterialRecord]) -> list[MaterialRecord]:
+    """Later groups override density/source for the same canonical_name."""
+    merged: dict[str, MaterialRecord] = {}
+    for group in groups:
+        for record in group:
+            existing = merged.get(record.canonical_name)
+            if not existing:
+                merged[record.canonical_name] = record
+                continue
+            existing.category = record.category
+            existing.density_kg_m3 = record.density_kg_m3
+            if record.density_min_kg_m3 is not None:
+                existing.density_min_kg_m3 = record.density_min_kg_m3
+            if record.density_max_kg_m3 is not None:
+                existing.density_max_kg_m3 = record.density_max_kg_m3
+            if record.condition:
+                existing.condition = record.condition
+            if record.language_labels:
+                existing.language_labels = {**(existing.language_labels or {}), **record.language_labels}
+            if record.aliases:
+                existing.aliases = list(dict.fromkeys([*(existing.aliases or []), *record.aliases]))
+            if record.source:
+                existing.source = record.source
+            if record.notes:
+                existing.notes = record.notes
+    return list(merged.values())
 
 
 def enrich_from_eurocode(records: list[MaterialRecord], eurocode_json: dict) -> list[MaterialRecord]:

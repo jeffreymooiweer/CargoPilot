@@ -1,0 +1,49 @@
+{
+  "app": {
+    "name": "CargoPilot",
+    "tagline": "Bouwmaterialen naar appendix"
+  },
+  "nav": {
+    "dashboard": "Dashboard",
+    "new": "Nieuwe appendix",
+    "history": "Historie",
+    "materials": "Materialen",
+    "profiles": "Profielen",
+    "users": "Gebruikers",
+    "logout": "Uitloggen"
+  },
+  "login": {
+    "title": "Inloggen",
+    "username": "Gebruikersnaam",
+    "password": "Wachtwoord",
+    "submit": "Inloggen",
+    "setup": "Geen admin geconfigureerd. Stel ADMIN_USERNAME, ADMIN_EMAIL en ADMIN_PASSWORD in."
+  },
+  "wizard": {
+    "step1": "Input",
+    "step2": "Review",
+    "step3": "Export",
+    "paste": "Plak hier uw Excel-data",
+    "analyze": "Analyseer",
+    "strict": "Strict",
+    "continue": "Doorgaan",
+    "autoLang": "Detecteer invoertaal automatisch",
+    "outputLang": "Appendix-taal",
+    "download": "Download Excel",
+    "route": "Van - naar",
+    "baCode": "BA-code",
+    "annex": "Annex / serienr",
+    "date": "Datum",
+    "summary": "Samenvatting",
+    "lines": "Regels",
+    "totalWeight": "Totaalgewicht",
+    "totalVolume": "Totaal transportvolume",
+    "warnings": "Waarschuwingen"
+  },
+  "status": {
+    "ok": "OK",
+    "warning": "Waarschuwing",
+    "error": "Fout",
+    "needs_review": "Controle nodig"
+  }
+}

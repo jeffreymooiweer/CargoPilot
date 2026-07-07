@@ -1,0 +1,51 @@
+{
+  "template": "Appendix_A1D_template.xlsx",
+  "sheet": " A1",
+  "metadata": {
+    "date": "C5",
+    "route": "C6",
+    "ba_code": "B7",
+    "annex_serial": "B8"
+  },
+  "data": {
+    "start_row": 12,
+    "max_rows": 248,
+    "style_source_row": 12,
+    "columns": {
+      "line_number": "A",
+      "cargo": "B",
+      "type": "C",
+      "specifications": "D",
+      "quantity": "E",
+      "registration": "F",
+      "length_cm": "G",
+      "width_cm": "J",
+      "height_cm": "L",
+      "weight_each_kg": "N",
+      "loaded": "T",
+      "stackable": "U",
+      "rotatable": "V",
+      "weapons": "W",
+      "conditioned": "X",
+      "dangerous_goods": "AA",
+      "ammunition": "AB",
+      "itar": "AC",
+      "tbb": "AD"
+    }
+  },
+  "defaults": {
+    "cargo": {
+      "nl": "Bouwmaterialen",
+      "en": "Construction materials"
+    },
+    "loaded": "Y",
+    "stackable": "N",
+    "rotatable": "N",
+    "weapons": "N",
+    "conditioned": "N",
+    "dangerous_goods": "N",
+    "ammunition": "N",
+    "itar": "N",
+    "tbb": "N"
+  }
+}

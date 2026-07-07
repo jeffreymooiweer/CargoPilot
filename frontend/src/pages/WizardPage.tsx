@@ -1,7 +1,7 @@
 import { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { api, AppendixFlags, CalcResult, DgEntry, LineItem } from "../api/client";
-import AppendixFlagsPanel from "../components/AppendixFlagsPanel";
+import { api, CalcResult, DgEntry, LineItem } from "../api/client";
+import AppendixQuestionsWizard from "../components/AppendixQuestionsWizard";
 import DangerousGoodsStep, { buildDgEntries } from "../components/DangerousGoodsStep";
 
 const SAMPLE = `Stalen hoekprofiel 80x80x8x6000 | 8 | stuks
@@ -40,13 +40,18 @@ export default function WizardPage() {
     [result],
   );
 
-  const visibleSteps = needsDg ? [1, 2, 3, 4] : [1, 2, 4];
+  const exportStep = needsDg ? 5 : 4;
 
-  const stepLabel = (s: number) => {
-    if (s === 3) return t("wizard.step3dg");
-    if (s === 4) return t("wizard.step4");
-    return t(`wizard.step${s}` as "wizard.step1");
-  };
+  const stepPills = useMemo(() => {
+    const pills = [
+      { n: 1, label: t("wizard.step1") },
+      { n: 2, label: t("wizard.step2") },
+      { n: 3, label: t("wizard.stepQuestions") },
+    ];
+    if (needsDg) pills.push({ n: 4, label: t("wizard.step3dg") });
+    pills.push({ n: exportStep, label: t("wizard.step4") });
+    return pills;
+  }, [needsDg, exportStep, t]);
 
   const analyze = async () => {
     setLoading(true);
@@ -79,16 +84,6 @@ export default function WizardPage() {
     setResult({ ...result, lines });
   };
 
-  const updateLineFlags = (lineId: number, flagPatch: Partial<AppendixFlags>) => {
-    if (!result) return;
-    const lines = result.lines.map((line) =>
-      line.line_id === lineId
-        ? { ...line, appendix_flags: { ...line.appendix_flags, ...flagPatch } }
-        : line,
-    );
-    setResult({ ...result, lines });
-  };
-
   const recalculate = async () => {
     if (!result) return;
     setLoading(true);
@@ -100,12 +95,15 @@ export default function WizardPage() {
     }
   };
 
-  const goToDgOrExport = () => {
-    if (needsDg) {
-      setDgEntries(buildDgEntries(result!.lines));
-      setStep(3);
-    } else {
+  const finishQuestions = (updatedLines: LineItem[]) => {
+    setResult((prev) => (prev ? { ...prev, lines: updatedLines } : prev));
+    const hasDg = updatedLines.some((line) => line.include && line.appendix_flags?.dangerous_goods === "Y");
+    if (hasDg) {
+      setDgEntries(buildDgEntries(updatedLines));
       setStep(4);
+    } else {
+      setDgEntries([]);
+      setStep(exportStep);
     }
   };
 
@@ -136,14 +134,14 @@ export default function WizardPage() {
   return (
     <div className="space-y-6">
       <div className="flex gap-2 flex-wrap">
-        {visibleSteps.map((s) => (
+        {stepPills.map((pill, index) => (
           <div
-            key={s}
+            key={pill.n}
             className={`px-4 py-2 rounded-full text-sm font-medium ${
-              step === s ? "bg-brand-600 text-white" : "bg-slate-200 text-slate-600 dark:bg-slate-800 dark:text-slate-300"
+              step === pill.n ? "bg-brand-600 text-white" : "bg-slate-200 text-slate-600 dark:bg-slate-800 dark:text-slate-300"
             }`}
           >
-            {visibleSteps.indexOf(s) + 1}. {stepLabel(s)}
+            {index + 1}. {pill.label}
           </div>
         ))}
       </div>
@@ -227,30 +225,37 @@ export default function WizardPage() {
               </tbody>
             </table>
           </div>
-          <AppendixFlagsPanel lines={result.lines} onUpdateFlags={updateLineFlags} />
           <div className="flex gap-3">
             <button onClick={() => setStep(1)} className={buttonSecondary}>{t("wizard.back")}</button>
             <button onClick={recalculate} className={buttonSecondary}>{t("wizard.recalculate")}</button>
-            <button onClick={goToDgOrExport} className="ml-auto bg-brand-600 text-white px-5 py-2 rounded-lg">
-              {needsDg ? t("wizard.toDg") : t("wizard.toExport")}
+            <button onClick={() => setStep(3)} className="ml-auto bg-brand-600 text-white px-5 py-2 rounded-lg">
+              {t("wizard.toQuestions")}
             </button>
           </div>
         </div>
       )}
 
-      {step === 3 && result && needsDg && (
+      {step === 3 && result && (
+        <AppendixQuestionsWizard
+          lines={result.lines}
+          onComplete={finishQuestions}
+          onBack={() => setStep(2)}
+        />
+      )}
+
+      {step === 4 && result && needsDg && (
         <div className="space-y-4">
-          <DangerousGoodsStep lines={result.lines} entries={dgEntries} onChange={setDgEntries} />
+          <DangerousGoodsStep lines={result.lines} entries={dgEntries} onChange={setDgEntries} perPosition />
           <div className="flex gap-3">
-            <button onClick={() => setStep(2)} className={buttonSecondary}>{t("wizard.back")}</button>
-            <button onClick={() => setStep(4)} className="ml-auto bg-brand-600 text-white px-5 py-2 rounded-lg">
+            <button onClick={() => setStep(3)} className={buttonSecondary}>{t("wizard.back")}</button>
+            <button onClick={() => setStep(exportStep)} className="ml-auto bg-brand-600 text-white px-5 py-2 rounded-lg">
               {t("wizard.toExport")}
             </button>
           </div>
         </div>
       )}
 
-      {step === 4 && result && (
+      {step === exportStep && result && (
         <div className={`${panelClass} p-6 space-y-4 max-w-xl`}>
           <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-100">{t("wizard.summary")}</h3>
           {needsDg && (
@@ -275,7 +280,7 @@ export default function WizardPage() {
             <li>{t("wizard.totalVolume")}: {result.totals.total_transport_volume_m3} m³</li>
           </ul>
           <div className="flex gap-3">
-            <button onClick={() => setStep(needsDg ? 3 : 2)} className={buttonSecondary}>{t("wizard.back")}</button>
+            <button onClick={() => setStep(needsDg ? 4 : 3)} className={buttonSecondary}>{t("wizard.back")}</button>
             <button onClick={exportFile} disabled={loading} className="ml-auto bg-brand-600 text-white px-5 py-2 rounded-lg disabled:opacity-50">
               {t("wizard.download")}
             </button>

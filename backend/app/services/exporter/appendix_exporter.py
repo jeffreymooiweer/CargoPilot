@@ -27,7 +27,7 @@ def load_mapping() -> dict[str, Any]:
 
 
 def _set_cell(ws, coord: str, value: Any) -> None:
-    if value is None:
+    if value is None or value == "":
         return
     ws[coord] = sanitize_cell_value(value)
 
@@ -67,12 +67,60 @@ def _copy_formulas(ws, source_row: int, target_row: int, formula_cols: list[str]
             dst_cell.value = _shift_formula(str(src_cell.value), source_row, target_row)
 
 
+def _yn(value: Any, default: str = "N") -> str:
+    if value is None or value == "":
+        return default
+    text = str(value).strip().upper()
+    if text in {"Y", "YES", "JA", "J", "TRUE", "1"}:
+        return "Y"
+    if text in {"N", "NO", "NEE", "FALSE", "0"}:
+        return "N"
+    return text
+
+
+def _fill_sheet_d(
+    wb,
+    mapping: dict[str, Any],
+    metadata: dict[str, Any],
+    dangerous_goods: list[dict[str, Any]],
+) -> None:
+    sheet_d = mapping.get("sheet_d")
+    if not sheet_d or not dangerous_goods:
+        return
+    ws = wb[sheet_d["sheet"]]
+    meta = sheet_d["metadata"]
+    if metadata.get("date"):
+        _set_cell(ws, meta["date"], metadata["date"])
+    else:
+        _set_cell(ws, meta["date"], datetime.now().date())
+    if metadata.get("route"):
+        _set_cell(ws, meta["route"], metadata["route"])
+    if metadata.get("ba_code"):
+        _set_cell(ws, meta["ba_code"], metadata["ba_code"])
+
+    field_rows = sheet_d["field_rows"]
+    product_columns = sheet_d["product_columns"]
+
+    for entry in dangerous_goods:
+        vehicle = entry.get("vehicle") or entry.get("registration") or ""
+        _set_cell(ws, meta["vehicle"], vehicle)
+        products = entry.get("products") or []
+        for product_index, product in enumerate(products[: len(product_columns)]):
+            col = product_columns[product_index]
+            for field_name, row_num in field_rows.items():
+                value = product.get(field_name)
+                if value is not None and value != "":
+                    _set_cell(ws, f"{col}{row_num}", value)
+        break
+
+
 def export_appendix(
     lines: list[dict[str, Any]],
     metadata: dict[str, Any],
     output_language: str,
     job_ref: str,
     template_name: str | None = None,
+    dangerous_goods: list[dict[str, Any]] | None = None,
 ) -> Path:
     settings = get_settings()
     mapping = load_mapping()
@@ -113,12 +161,24 @@ def export_appendix(
             ws[f"{col_letter}{row}"].value = None
 
     cargo_default = defaults["cargo"].get(output_language, defaults["cargo"]["en"])
+    flag_fields = [
+        "loaded",
+        "stackable",
+        "rotatable",
+        "weapons",
+        "conditioned",
+        "dangerous_goods",
+        "ammunition",
+        "itar",
+        "tbb",
+    ]
     included = [ln for ln in lines if ln.get("include", True)]
     for i, line in enumerate(included[:max_rows]):
         row = start_row + i
         if row != style_row:
             _copy_row_style(ws, style_row, row)
             _copy_formulas(ws, style_row, row, formula_cols)
+        flags = line.get("appendix_flags") or {}
         _set_cell(ws, f"{cols['line_number']}{row}", i + 1)
         _set_cell(ws, f"{cols['cargo']}{row}", cargo_default)
         product = line.get("product_type") or "Item"
@@ -131,8 +191,15 @@ def export_appendix(
         _set_cell(ws, f"{cols['width_cm']}{row}", line.get("width_cm"))
         _set_cell(ws, f"{cols['height_cm']}{row}", line.get("height_cm"))
         _set_cell(ws, f"{cols['weight_each_kg']}{row}", line.get("weight_each_kg"))
-        for flag in ["loaded", "stackable", "rotatable", "weapons", "conditioned", "dangerous_goods", "ammunition", "itar", "tbb"]:
-            _set_cell(ws, f"{cols[flag]}{row}", defaults.get(flag, "N"))
+        for flag in flag_fields:
+            _set_cell(ws, f"{cols[flag]}{row}", _yn(flags.get(flag), defaults.get(flag, "N")))
+        if flags.get("temperature_c") and "temperature_c" in cols:
+            _set_cell(ws, f"{cols['temperature_c']}{row}", flags.get("temperature_c"))
+        if flags.get("tbb_category") and "tbb_category" in cols:
+            _set_cell(ws, f"{cols['tbb_category']}{row}", flags.get("tbb_category"))
+
+    if dangerous_goods:
+        _fill_sheet_d(wb, mapping, metadata, dangerous_goods)
 
     fd, temp_name = tempfile.mkstemp(suffix=".xlsx")
     os.close(fd)

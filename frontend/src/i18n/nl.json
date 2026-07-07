@@ -30,6 +30,8 @@
     "step1": "Input",
     "step2": "Review",
     "step3": "Export",
+    "step3dg": "Gevaarlijke stoffen",
+    "step4": "Export",
     "paste": "Plak hier uw Excel-data",
     "analyze": "Analyseer",
     "strict": "Strict",
@@ -49,7 +51,33 @@
     "back": "Terug",
     "recalculate": "Herbereken",
     "toExport": "Naar export",
-    "strictBlocked": "Strict mode: corrigeer fouten voor u verdergaat."
+    "toDg": "Naar gevaarlijke stoffen",
+    "strictBlocked": "Strict mode: corrigeer fouten voor u verdergaat.",
+    "flagsTitle": "Appendix A1 — vlaggen",
+    "flagsIntro": "Vul per regel de Y/N-vlaggen in. De helpteksten komen uit het appendix-template (tabblad Invulinstructie).",
+    "dgIntro": "Vul appendix D in voor alle regels met gevaarlijke stoffen (UN-nummer).",
+    "dgSource": "UN-gegevens kunnen automatisch worden opgehaald via de ADR-database (FreightUtils).",
+    "dgLine": "Regel",
+    "dgVehicle": "Voertuig / lading",
+    "dgVehicleHelp": "Omschrijving van het voertuig of de lading zoals in appendix D.",
+    "dgLookup": "UN-nummer opzoeken",
+    "dgIncluded": "Appendix D wordt meegeëxporteerd voor {{count}} regel(s)."
+  },
+  "flags": {
+    "loaded": "Beladen",
+    "stackable": "Stapelbaar",
+    "rotatable": "Kantelbaar",
+    "weapons": "Wapens",
+    "conditioned": "Geconditioneerd",
+    "temperature_c": "Temperatuur (°C)",
+    "dangerous_goods": "Gevaarlijke stoffen",
+    "ammunition": "Munitie",
+    "itar": "ITAR",
+    "tbb": "TBB",
+    "tbb_category": "TBB-categorie"
+  },
+  "messages": {
+    "dg_un_detected": "UN-nummer gedetecteerd — appendix D is verplicht"
   },
   "status": {
     "ok": "OK",

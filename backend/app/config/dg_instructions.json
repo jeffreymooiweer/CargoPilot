@@ -1,0 +1,145 @@
+{
+  "a1_flags": {
+    "loaded": {
+      "nl": "Is de cargo beladen. Zo ja geef de lading op bij specifications en tel het gewicht mee.",
+      "en": "Is the cargo loaded. If yes, describe the load in specifications and include the weight."
+    },
+    "stackable": {
+      "nl": "Kan de cargo gestapeld worden.",
+      "en": "Can the cargo be stacked."
+    },
+    "rotatable": {
+      "nl": "Is de cargo kantelbaar.",
+      "en": "Is the cargo rotatable."
+    },
+    "weapons": {
+      "nl": "Bevat de cargo wapens en/of wapensystemen; indien ja ook appendix C aanleveren.",
+      "en": "Contains weapons or weapon systems; if yes also provide appendix C."
+    },
+    "conditioned": {
+      "nl": "Moet de cargo geconditioneerd vervoerd worden; indien ja vul de temperatuurkolom in.",
+      "en": "Must the cargo be transported conditioned; if yes fill in the temperature column."
+    },
+    "temperature_c": {
+      "nl": "Geef hier de minimum en maximum temperatuur aan (°C).",
+      "en": "Enter minimum and maximum temperature (°C)."
+    },
+    "dangerous_goods": {
+      "nl": "Bevat de cargo gevaarlijke stoffen. Indien ja vul appendix D in. Alle cargo met een UN-code is DG en appendix D is verplicht, ook als MMDGF/DGD niet vereist zijn.",
+      "en": "Contains dangerous goods. If yes complete appendix D. All cargo with a UN number is DG and appendix D is mandatory, even when MMDGF/DGD forms are not required."
+    },
+    "ammunition": {
+      "nl": "Geef hier aan of de cargo munitie bevat.",
+      "en": "Indicate whether the cargo contains ammunition."
+    },
+    "itar": {
+      "nl": "Bevat de cargo items onder ITAR. Neem contact op met uw Export Control functionaris.",
+      "en": "Contains ITAR-controlled items. Contact your export control officer."
+    },
+    "tbb": {
+      "nl": "Geef hier aan of de cargo TBB bevat. Neem contact op met uw beveiligingsfunctionaris.",
+      "en": "Indicate whether the cargo contains TBB. Contact your security officer."
+    },
+    "tbb_category": {
+      "nl": "Geef hier de TBB-classificatie aan.",
+      "en": "Enter the TBB classification."
+    }
+  },
+  "appendix_d_intro": {
+    "nl": "Alle cargo met een UN-code is gevaarlijke stof (DG) en appendix D moet ingevuld worden. DVVO helpdesk VGS: https://doscoportal.mindef.nl/sites/0100/051/SitePages/Helpdesk-VGS.aspx",
+    "en": "All cargo with a UN number is dangerous goods and appendix D must be completed."
+  },
+  "appendix_d_fields": {
+    "un_number": {
+      "label": {"nl": "UN-nummer", "en": "UN Number"},
+      "help": {
+        "nl": "Het viercijferige stof-identificatienummer. In luchtvervoer hebben sommige stoffen een ID-nummer i.p.v. UN-nummer.",
+        "en": "Four-digit identification number. In air transport some substances use an ID number instead of a UN number."
+      }
+    },
+    "proper_shipping_name": {
+      "label": {"nl": "Proper Shipping Name (PSN)", "en": "Proper Shipping Name (PSN)"},
+      "help": {
+        "nl": "De officiële vervoersbenaming van de gevaarlijke stof volgens de stofopsommingslijst.",
+        "en": "Official proper shipping name from the dangerous goods list."
+      }
+    },
+    "class": {
+      "label": {"nl": "Klasse", "en": "Class"},
+      "help": {
+        "nl": "Gevarenklasse 1 t/m 9 waarin de stof is ingedeeld.",
+        "en": "Hazard class 1–9 assigned to the substance."
+      }
+    },
+    "subsidiary_risks": {
+      "label": {"nl": "Bijkomend gevaar", "en": "Subsidiary risk(s)"},
+      "help": {
+        "nl": "Alleen invullen indien van toepassing. Beïnvloedt samenlading.",
+        "en": "Fill only when applicable. Affects co-loading rules."
+      }
+    },
+    "packing_group": {
+      "label": {"nl": "Verpakkingsgroep", "en": "Packing group"},
+      "help": {
+        "nl": "Verplicht behalve bij klasse 1, 2 en 7.",
+        "en": "Mandatory except for classes 1, 2 and 7."
+      }
+    },
+    "packing_instruction": {
+      "label": {"nl": "Verpakkingsinstructie", "en": "Packing Instruction"},
+      "help": {"nl": "Vermelding van de verpakkingsinstructie.", "en": "Packing instruction reference."}
+    },
+    "flashpoint": {
+      "label": {"nl": "Vlampunt", "en": "Flashpoint"},
+      "help": {"nl": "Alleen bij zeevervoer van brandbare vloeistoffen.", "en": "Only for sea transport of flammable liquids."}
+    },
+    "type_of_package": {
+      "label": {"nl": "Type verpakking", "en": "Type of package"},
+      "help": {
+        "nl": "Bijv. kist, doos, vat, jerrycan. Bij UN-verpakking ook keuringskenmerk (4A, 1A2, …).",
+        "en": "E.g. box, drum, jerrycan. For UN packages include code (4A, 1A2, …)."
+      }
+    },
+    "quantity_packages": {
+      "label": {"nl": "Aantal verpakkingen", "en": "Quantity of packages"},
+      "help": {"nl": "Aantal verpakkingen.", "en": "Number of packages."}
+    },
+    "quantity_items_per_package": {
+      "label": {"nl": "Stuks per verpakking", "en": "Items per package"},
+      "help": {"nl": "Aantal stuks per verpakking.", "en": "Number of items per package."}
+    },
+    "net_mass_liters_per_package": {
+      "label": {"nl": "Netto massa / liters per verpakking", "en": "Net mass / liters per package"},
+      "help": {
+        "nl": "Gewicht van inhoud per verpakking zonder verpakkingsmateriaal.",
+        "en": "Content weight per package excluding packaging."
+      }
+    },
+    "gross_mass_per_package": {
+      "label": {"nl": "Bruto massa per verpakking", "en": "Gross mass per package"},
+      "help": {"nl": "Totaalgewicht verpakking met inhoud in kg.", "en": "Total weight of package including contents in kg."}
+    },
+    "eq_lq_points": {
+      "label": {"nl": "EQ / LQ / Punten", "en": "EQ / LQ / Points"},
+      "help": {
+        "nl": "Vrijstellingsregeling: Excepted Quantities / Limited Quantities / ADR 1.1.3.6.",
+        "en": "Exemption scheme: EQ / LQ / ADR 1.1.3.6 points rule."
+      }
+    },
+    "dimensions": {
+      "label": {"nl": "Afmetingen verpakking (cm)", "en": "Package dimensions (cm)"},
+      "help": {
+        "nl": "Lengte/breedte/hoogte van de verpakking uit regel type of package, niet de overpack.",
+        "en": "L/b/h of the package from type of package row, not the overpack."
+      }
+    },
+    "additional_information": {
+      "label": {"nl": "Aanvullende informatie", "en": "Additional information"},
+      "help": {"nl": "Overige relevante informatie voor het vervoer.", "en": "Other relevant transport information."}
+    },
+    "caliber": {
+      "label": {"nl": "Kaliber (mm/inch)", "en": "Caliber (mm/inch)"},
+      "help": {"nl": "Kaliber indien van toepassing op munitie.", "en": "Caliber when applicable for ammunition."}
+    }
+  }
+}

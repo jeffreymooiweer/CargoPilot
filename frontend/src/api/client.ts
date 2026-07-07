@@ -56,6 +56,8 @@ export const api = {
   },
   listMaterials: () => request<Material[]>("/materials"),
   listProfiles: () => request<Profile[]>("/profiles"),
+  catalogSyncStatus: () => request<CatalogSyncStatus>("/catalog/sync-status"),
+  catalogSync: () => request<CatalogSyncStatus>("/catalog/sync", { method: "POST" }),
   listUsers: () => request<User[]>("/users"),
   createUser: (payload: Record<string, unknown>) =>
     request<User>("/users", { method: "POST", body: JSON.stringify(payload) }),
@@ -117,6 +119,8 @@ export interface Material {
   canonical_name: string;
   category: string;
   density_kg_m3: number;
+  language_labels?: Record<string, string>;
+  source?: string | null;
 }
 
 export interface Profile {
@@ -124,4 +128,20 @@ export interface Profile {
   profile_type: string;
   size_label: string;
   kg_per_meter: number;
+  standard?: string | null;
+  source?: string | null;
+}
+
+export interface CatalogSyncStatus {
+  last_run_at: string | null;
+  success: boolean | null;
+  profiles_added: number;
+  profiles_updated: number;
+  materials_added: number;
+  materials_updated: number;
+  profile_count: number;
+  material_count: number;
+  sources: string[];
+  errors: string[];
+  used_offline_fallback: boolean;
 }

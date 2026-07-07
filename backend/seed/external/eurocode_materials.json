@@ -1,0 +1,102 @@
+[
+  {
+    "canonical_name": "steel",
+    "category": "metal",
+    "density_kg_m3": 7850,
+    "density_min_kg_m3": 7800,
+    "density_max_kg_m3": 7900,
+    "aliases": ["staal", "stalen", "steel", "bouwstaal", "constructiestaal", "s235", "s275", "s355", "gegalvaniseerd", "galvanized steel", "galvanised steel", "verzinkt", "zinc coated steel", "stahl"],
+    "language_labels": {"nl": "Staal", "en": "Steel"},
+    "source": "eurocodepy:Steel.Parameters.mass (EN 1993)",
+    "notes": "Massadichtheid constructiestaal volgens Eurocode 3"
+  },
+  {
+    "canonical_name": "concrete",
+    "category": "concrete",
+    "density_kg_m3": 2400,
+    "density_min_kg_m3": 2200,
+    "density_max_kg_m3": 2500,
+    "aliases": ["beton", "concrete", "gewapend beton", "reinforced concrete"],
+    "language_labels": {"nl": "Beton", "en": "Concrete"},
+    "source": "eurocodepy:Concrete (EN 1992, typisch 2200-2500 kg/m³)",
+    "notes": "Gemiddelde waarde voor normaal beton"
+  },
+  {
+    "canonical_name": "spruce",
+    "category": "wood",
+    "density_kg_m3": 420,
+    "density_min_kg_m3": 350,
+    "density_max_kg_m3": 450,
+    "condition": "service_class_1_2",
+    "aliases": ["hout", "wood", "timber", "vuren", "spruce", "grenen", "naaldhout", "c24", "constructiehout"],
+    "language_labels": {"nl": "Hout", "en": "Wood"},
+    "source": "eurocodepy:Timber.C24.rhom (EN 1995)",
+    "notes": "Gemiddelde volumieke massa naaldhout C24"
+  },
+  {
+    "canonical_name": "glulam_gl24h",
+    "category": "wood",
+    "density_kg_m3": 460,
+    "aliases": ["gelamineerd hout", "glulam", "gl24", "gl24h"],
+    "language_labels": {"nl": "Gelamineerd hout (GL24h)", "en": "Glulam (GL24h)"},
+    "source": "eurocodepy:Timber.GL24h.rhom (EN 1995)"
+  },
+  {
+    "canonical_name": "aluminium",
+    "category": "metal",
+    "density_kg_m3": 2700,
+    "aliases": ["aluminium", "aluminum", "alu"],
+    "language_labels": {"nl": "Aluminium", "en": "Aluminium"},
+    "source": "NIST/materials (standaard constructiewaarde)"
+  },
+  {
+    "canonical_name": "stainless_steel",
+    "category": "metal",
+    "density_kg_m3": 8000,
+    "density_min_kg_m3": 7900,
+    "density_max_kg_m3": 8050,
+    "aliases": ["rvs", "inox", "stainless steel", "stainless", "edelstahl"],
+    "language_labels": {"nl": "RVS", "en": "Stainless steel"},
+    "source": "NIST/materials (AISI 304 typisch)"
+  },
+  {
+    "canonical_name": "copper",
+    "category": "metal",
+    "density_kg_m3": 8960,
+    "aliases": ["koper", "copper", "kupfer"],
+    "language_labels": {"nl": "Koper", "en": "Copper"},
+    "source": "NIST/materials"
+  },
+  {
+    "canonical_name": "brass",
+    "category": "metal",
+    "density_kg_m3": 8500,
+    "aliases": ["messing", "brass"],
+    "language_labels": {"nl": "Messing", "en": "Brass"},
+    "source": "NIST/materials"
+  },
+  {
+    "canonical_name": "pvc",
+    "category": "plastic",
+    "density_kg_m3": 1400,
+    "aliases": ["pvc", "kunststof", "plastic"],
+    "language_labels": {"nl": "PVC", "en": "PVC"},
+    "source": "Engineering reference (typisch PVC-U)"
+  },
+  {
+    "canonical_name": "sand",
+    "category": "bulk_material",
+    "density_kg_m3": 1600,
+    "aliases": ["zand", "sand"],
+    "language_labels": {"nl": "Zand", "en": "Sand"},
+    "source": "Engineering reference (losse vulstof)"
+  },
+  {
+    "canonical_name": "gravel",
+    "category": "bulk_material",
+    "density_kg_m3": 1700,
+    "aliases": ["grind", "gravel", "split", "ballast"],
+    "language_labels": {"nl": "Grind", "en": "Gravel"},
+    "source": "Engineering reference (losse vulstof)"
+  }
+]

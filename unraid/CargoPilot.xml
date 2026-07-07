@@ -28,4 +28,6 @@
   <Config Name="ADMIN_USERNAME" Target="ADMIN_USERNAME" Default="admin" Mode="" Description="Bootstrap admin username" Type="Variable" Display="always" Required="false" Mask="false">admin</Config>
   <Config Name="ADMIN_EMAIL" Target="ADMIN_EMAIL" Default="admin@example.local" Mode="" Description="Bootstrap admin email" Type="Variable" Display="always" Required="false" Mask="false">admin@example.local</Config>
   <Config Name="ADMIN_PASSWORD" Target="ADMIN_PASSWORD" Default="" Mode="" Description="Bootstrap admin password" Type="Variable" Display="always" Required="true" Mask="true"/>
+  <Config Name="PUID" Target="PUID" Default="1000" Mode="" Description="User ID for /data volume permissions" Type="Variable" Display="advanced" Required="false" Mask="false">1000</Config>
+  <Config Name="PGID" Target="PGID" Default="1000" Mode="" Description="Group ID for /data volume permissions" Type="Variable" Display="advanced" Required="false" Mask="false">1000</Config>
 </Container>

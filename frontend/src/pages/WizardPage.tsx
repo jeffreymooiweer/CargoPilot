@@ -1,6 +1,8 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { api, CalcResult, LineItem } from "../api/client";
+import { api, AppendixFlags, CalcResult, DgEntry, LineItem } from "../api/client";
+import AppendixFlagsPanel from "../components/AppendixFlagsPanel";
+import DangerousGoodsStep, { buildDgEntries } from "../components/DangerousGoodsStep";
 
 const SAMPLE = `Stalen hoekprofiel 80x80x8x6000 | 8 | stuks
 staal hoekprofiel 50x50x5x6000mm | 38 | stuks
@@ -29,12 +31,27 @@ export default function WizardPage() {
   const [outputLang, setOutputLang] = useState("nl");
   const [result, setResult] = useState<CalcResult | null>(null);
   const [metadata, setMetadata] = useState({ route: "", ba_code: "", annex_serial: "", date: "" });
+  const [dgEntries, setDgEntries] = useState<DgEntry[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+
+  const needsDg = useMemo(
+    () => result?.lines.some((line) => line.include && line.appendix_flags?.dangerous_goods === "Y") ?? false,
+    [result],
+  );
+
+  const visibleSteps = needsDg ? [1, 2, 3, 4] : [1, 2, 4];
+
+  const stepLabel = (s: number) => {
+    if (s === 3) return t("wizard.step3dg");
+    if (s === 4) return t("wizard.step4");
+    return t(`wizard.step${s}` as "wizard.step1");
+  };
 
   const analyze = async () => {
     setLoading(true);
     setError("");
+    setDgEntries([]);
     try {
       const res = await api.calculate({
         text,
@@ -62,6 +79,16 @@ export default function WizardPage() {
     setResult({ ...result, lines });
   };
 
+  const updateLineFlags = (lineId: number, flagPatch: Partial<AppendixFlags>) => {
+    if (!result) return;
+    const lines = result.lines.map((line) =>
+      line.line_id === lineId
+        ? { ...line, appendix_flags: { ...line.appendix_flags, ...flagPatch } }
+        : line,
+    );
+    setResult({ ...result, lines });
+  };
+
   const recalculate = async () => {
     if (!result) return;
     setLoading(true);
@@ -70,6 +97,15 @@ export default function WizardPage() {
       setResult(res);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const goToDgOrExport = () => {
+    if (needsDg) {
+      setDgEntries(buildDgEntries(result!.lines));
+      setStep(3);
+    } else {
+      setStep(4);
     }
   };
 
@@ -82,6 +118,7 @@ export default function WizardPage() {
         lines: result.lines,
         output_language: outputLang,
         metadata: { ...metadata, output_language: outputLang },
+        dangerous_goods: needsDg ? dgEntries : undefined,
       });
     } catch (e) {
       setError(String(e));
@@ -90,17 +127,23 @@ export default function WizardPage() {
     }
   };
 
+  const translateMessage = (msg: string) => {
+    const key = `messages.${msg}`;
+    const translated = t(key as "messages.dg_un_detected");
+    return translated === key ? msg : translated;
+  };
+
   return (
     <div className="space-y-6">
       <div className="flex gap-2 flex-wrap">
-        {[1, 2, 3].map((s) => (
+        {visibleSteps.map((s) => (
           <div
             key={s}
             className={`px-4 py-2 rounded-full text-sm font-medium ${
               step === s ? "bg-brand-600 text-white" : "bg-slate-200 text-slate-600 dark:bg-slate-800 dark:text-slate-300"
             }`}
           >
-            {s}. {t(`wizard.step${s}` as "wizard.step1")}
+            {visibleSteps.indexOf(s) + 1}. {stepLabel(s)}
           </div>
         ))}
       </div>
@@ -165,7 +208,11 @@ export default function WizardPage() {
                     </td>
                     <td className="px-3 py-2">
                       <input className={`${inputClass} text-sm`} value={line.output_description} onChange={(e) => updateLine(line.line_id, { output_description: e.target.value })} />
-                      {line.messages.length > 0 && <p className="text-xs text-amber-700 dark:text-amber-300 mt-1">{line.messages.join(", ")}</p>}
+                      {line.messages.length > 0 && (
+                        <p className="text-xs text-amber-700 dark:text-amber-300 mt-1">
+                          {line.messages.map(translateMessage).join(", ")}
+                        </p>
+                      )}
                     </td>
                     <td className="px-3 py-2">
                       <input type="number" className={`${inputClass} w-20 text-sm`} value={line.quantity ?? ""} onChange={(e) => updateLine(line.line_id, { quantity: Number(e.target.value) })} />
@@ -180,17 +227,35 @@ export default function WizardPage() {
               </tbody>
             </table>
           </div>
+          <AppendixFlagsPanel lines={result.lines} onUpdateFlags={updateLineFlags} />
           <div className="flex gap-3">
             <button onClick={() => setStep(1)} className={buttonSecondary}>{t("wizard.back")}</button>
             <button onClick={recalculate} className={buttonSecondary}>{t("wizard.recalculate")}</button>
-            <button onClick={() => setStep(3)} className="ml-auto bg-brand-600 text-white px-5 py-2 rounded-lg">{t("wizard.toExport")}</button>
+            <button onClick={goToDgOrExport} className="ml-auto bg-brand-600 text-white px-5 py-2 rounded-lg">
+              {needsDg ? t("wizard.toDg") : t("wizard.toExport")}
+            </button>
           </div>
         </div>
       )}
 
-      {step === 3 && result && (
+      {step === 3 && result && needsDg && (
+        <div className="space-y-4">
+          <DangerousGoodsStep lines={result.lines} entries={dgEntries} onChange={setDgEntries} />
+          <div className="flex gap-3">
+            <button onClick={() => setStep(2)} className={buttonSecondary}>{t("wizard.back")}</button>
+            <button onClick={() => setStep(4)} className="ml-auto bg-brand-600 text-white px-5 py-2 rounded-lg">
+              {t("wizard.toExport")}
+            </button>
+          </div>
+        </div>
+      )}
+
+      {step === 4 && result && (
         <div className={`${panelClass} p-6 space-y-4 max-w-xl`}>
           <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-100">{t("wizard.summary")}</h3>
+          {needsDg && (
+            <p className="text-sm text-amber-700 dark:text-amber-300">{t("wizard.dgIncluded", { count: dgEntries.length })}</p>
+          )}
           <div className="grid gap-3">
             <Field label={t("wizard.date")} value={metadata.date} onChange={(v) => setMetadata({ ...metadata, date: v })} />
             <Field label={t("wizard.route")} value={metadata.route} onChange={(v) => setMetadata({ ...metadata, route: v })} />
@@ -210,7 +275,7 @@ export default function WizardPage() {
             <li>{t("wizard.totalVolume")}: {result.totals.total_transport_volume_m3} m³</li>
           </ul>
           <div className="flex gap-3">
-            <button onClick={() => setStep(2)} className={buttonSecondary}>{t("wizard.back")}</button>
+            <button onClick={() => setStep(needsDg ? 3 : 2)} className={buttonSecondary}>{t("wizard.back")}</button>
             <button onClick={exportFile} disabled={loading} className="ml-auto bg-brand-600 text-white px-5 py-2 rounded-lg disabled:opacity-50">
               {t("wizard.download")}
             </button>

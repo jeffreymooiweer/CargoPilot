@@ -9,7 +9,8 @@ CargoPilot is een webapplicatie waarmee bouwmaterialen uit Excel geplakt, automa
 - Plakken van Excel/TSV/pipe-gescheiden data
 - Herkenning van materiaal, producttype en afmetingen (NL/EN)
 - Berekening van gewicht, materiaalvolume en transportvolume
-- Review-stap met inline correcties
+- Review-stap met inline correcties en appendix A1-vlaggen (Y/N) met invulinstructies uit het template
+- Appendix D (gevaarlijke stoffen) met veldhelpteksten en ADR UN-lookup
 - Export naar bestaand `Appendix_A1D_template.xlsx` (opmaak en formules behouden)
 - Donkere modus
 - Geen historie of server-side opslag van appendix-data
@@ -94,6 +95,19 @@ CargoPilot beheert **materialen** (dichtheid) en **profielen** (kg/m) volledig a
 - Sync-status wordt opgeslagen in `/data/catalog_sync_status.json`.
 - Bij netwerkuitval: fallback naar gebundelde kopieën in `backend/seed/external/`.
 - Na deploy op Unraid: container herstarten is voldoende — geen handmatige catalogusstappen.
+
+## Gevaarlijke stoffen (Appendix D)
+
+Invulinstructies uit het tabblad **Invulinstructie** van `Appendix_A1D_template.xlsx` zijn overgenomen in `backend/app/config/dg_instructions.json`. De wizard toont deze als helptekst bij:
+
+- **Appendix A1-vlaggen** (beladen, stapelbaar, DG, ITAR, TBB, …) in de review-stap
+- **Appendix D-velden** (UN-nummer, PSN, klasse, verpakkingsgroep, …) in de DG-stap
+
+**Automatische detectie:** een UN- of ID-nummer in de omschrijving zet de vlag *Dangerous goods* op `Y` en opent de DG-stap.
+
+**ADR-lookup:** via `GET /api/dg/lookup?un=1203` (FreightUtils ADR-database, geen authenticatie). De frontend vult PSN, klasse en verpakkingsgroep automatisch in.
+
+**Export:** bij regels met DG wordt tabblad `D` ingevuld (metadata + productkolommen). Het tabblad *Invulinstructie* blijft ongewijzigd.
 
 ## Privacy en gegevensopslag
 
@@ -191,7 +205,7 @@ Regressietest verwacht ~7534 kg totaalgewicht (±2%) voor de standaard staalvoor
 ## Roadmap
 
 - [ ] Duitse taalondersteuning
-- [ ] Appendix D (gevaarlijke stoffen) vullen
+- [x] Appendix D (gevaarlijke stoffen) vullen
 - [x] Uitgebreidere profielcatalogus (IPE, HEA, HEB) — via openbare sync
 - [ ] Import/export materialenbibliotheek via UI
 - [ ] Kolommapping UI bij ambigue headers

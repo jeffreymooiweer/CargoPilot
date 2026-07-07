@@ -1,0 +1,49 @@
+{
+  "app": {
+    "name": "CargoPilot",
+    "tagline": "Construction materials to appendix"
+  },
+  "nav": {
+    "dashboard": "Dashboard",
+    "new": "New appendix",
+    "history": "History",
+    "materials": "Materials",
+    "profiles": "Profiles",
+    "users": "Users",
+    "logout": "Logout"
+  },
+  "login": {
+    "title": "Sign in",
+    "username": "Username",
+    "password": "Password",
+    "submit": "Sign in",
+    "setup": "No admin configured. Set ADMIN_USERNAME, ADMIN_EMAIL and ADMIN_PASSWORD."
+  },
+  "wizard": {
+    "step1": "Input",
+    "step2": "Review",
+    "step3": "Export",
+    "paste": "Paste your Excel data here",
+    "analyze": "Analyze",
+    "strict": "Strict",
+    "continue": "Continue",
+    "autoLang": "Auto-detect input language",
+    "outputLang": "Appendix language",
+    "download": "Download Excel",
+    "route": "From - to",
+    "baCode": "BA code",
+    "annex": "Annex / serial nr",
+    "date": "Date",
+    "summary": "Summary",
+    "lines": "Lines",
+    "totalWeight": "Total weight",
+    "totalVolume": "Total transport volume",
+    "warnings": "Warnings"
+  },
+  "status": {
+    "ok": "OK",
+    "warning": "Warning",
+    "error": "Error",
+    "needs_review": "Needs review"
+  }
+}

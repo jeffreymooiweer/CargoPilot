@@ -1,0 +1,11 @@
+[
+  {
+    "profile_type": "UNP",
+    "size_label": "220",
+    "kg_per_meter": 29.4,
+    "material": "steel",
+    "standard": "EN10365",
+    "aliases": ["UNP 220", "UPN 220", "U-channel 220"],
+    "notes": "Practical reference value"
+  }
+]

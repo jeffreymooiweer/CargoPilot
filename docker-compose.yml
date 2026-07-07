@@ -1,7 +1,7 @@
 services:
   cargopilot:
     build: .
-    image: jeffreymooiweer/cargopilot:latest
+    image: jeffersonmouze/cargopilot:latest
     container_name: cargopilot
     ports:
       - "8080:8080"

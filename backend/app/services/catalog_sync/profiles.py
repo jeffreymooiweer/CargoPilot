@@ -105,7 +105,9 @@ def upsert_profiles(db: Session, records: list[ProfileRecord]) -> tuple[int, int
     for record in records:
         existing = _find_existing_profile(db, record.profile_type, record.size_label)
         if existing:
-            if existing.source and not existing.source.startswith(("github:", "eurocodepy:", "seed:")):
+            if existing.source and not existing.source.startswith(
+                ("github:", "eurocodepy:", "seed:", "wikidata:")
+            ):
                 continue
             existing.profile_type = record.profile_type
             existing.kg_per_meter = record.kg_per_meter

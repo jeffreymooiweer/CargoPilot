@@ -69,7 +69,11 @@ In GitHub: **Settings → Secrets and variables → Actions → New repository s
 | Secret | Waarde |
 |---|---|
 | `DOCKER_USERNAME` | Je DockerHub gebruikersnaam |
-| `DOCKER_PASSWORD` | DockerHub access token of wachtwoord |
+| `DOCKER_PASSWORD` | DockerHub **Access Token** (niet je accountwachtwoord) |
+
+**Belangrijk:**
+1. Maak eerst een repository `cargopilot` aan op [Docker Hub](https://hub.docker.com/) (of pas de imagenaam in de workflow aan).
+2. Gebruik een [Access Token](https://hub.docker.com/settings/security) als `DOCKER_PASSWORD` — een gewoon wachtwoord geeft `insufficient_scope` / `authorization failed` in CI.
 
 Zonder deze secrets bouwt de GitHub Action de Docker-image nog steeds (om te verifiëren dat alles compileert), maar wordt er **niet** naar DockerHub gepusht. Zodra je `DOCKER_USERNAME` en `DOCKER_PASSWORD` instelt, pusht de volgende run automatisch naar `jeffreymooiweer/cargopilot:latest`.
 

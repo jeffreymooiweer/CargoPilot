@@ -64,10 +64,14 @@ Zonder admin-credentials verschijnt een setupmelding in logs en UI.
 
 ### GitHub Secrets voor CI/CD
 
-In GitHub repository settings → Secrets:
+In GitHub: **Settings → Secrets and variables → Actions → New repository secret**
 
-- `DOCKERHUB_USERNAME`
-- `DOCKERHUB_TOKEN`
+| Secret | Waarde |
+|---|---|
+| `DOCKERHUB_USERNAME` | Je DockerHub gebruikersnaam |
+| `DOCKERHUB_TOKEN` | DockerHub access token (niet je wachtwoord) |
+
+Zonder deze secrets bouwt de GitHub Action de Docker-image nog steeds (om te verifiëren dat alles compileert), maar wordt er **niet** naar DockerHub gepusht. Zodra je de secrets instelt, pusht de volgende run automatisch naar `jeffreymooiweer/cargopilot:latest`.
 
 Workflow: `.github/workflows/dockerhub.yml` (push naar `main` en tags `v*`).
 

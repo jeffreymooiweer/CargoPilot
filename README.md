@@ -32,8 +32,11 @@ Open: http://localhost:8080
 
 1. Installeer via Community Applications of gebruik `unraid/CargoPilot.xml`
 2. Stel volume in: `/mnt/user/appdata/cargopilot` → `/data`
-3. Configureer environment variables (`APP_SECRET_KEY`, `ADMIN_*`)
-4. Open WebUI op poort 8080
+3. Repository: `jeffersonmouze/cargopilot:latest`
+4. Configureer environment variables (`APP_SECRET_KEY`, `ADMIN_*`)
+5. Open WebUI op je gekozen poort (bijv. `http://<ip>:9935`)
+
+**Permissies:** bij start zet de container automatisch de eigenaar van `/data` op `PUID`/`PGID` (standaard `1000`). Krijg je nog permissiefouten, verwijder de map `/mnt/user/appdata/cargopilot` en start opnieuw, of zet in Unraid (advanced) `PUID=99` en `PGID=100` (nobody op Unraid).
 
 ## Eerste admin account
 

@@ -1,0 +1,34 @@
+[
+  {
+    "canonical_name": "switch",
+    "category": "electrical",
+    "reference_weight_kg": 0.15,
+    "reference_volume_m3": 0.0001,
+    "aliases": ["schakelaar", "switch"],
+    "language_labels": {"nl": "Schakelaar", "en": "Switch"}
+  },
+  {
+    "canonical_name": "socket",
+    "category": "electrical",
+    "reference_weight_kg": 0.12,
+    "reference_volume_m3": 0.00008,
+    "aliases": ["stopcontact", "socket", "wandcontactdoos"],
+    "language_labels": {"nl": "Stopcontact", "en": "Socket"}
+  },
+  {
+    "canonical_name": "junction_box",
+    "category": "electrical",
+    "reference_weight_kg": 0.25,
+    "reference_volume_m3": 0.0002,
+    "aliases": ["lasdoos", "junction box", "cable box", "wandcontactdoos"],
+    "language_labels": {"nl": "Lasdoos", "en": "Junction box"}
+  },
+  {
+    "canonical_name": "cable_gland",
+    "category": "electrical",
+    "reference_weight_kg": 0.05,
+    "reference_volume_m3": 0.00002,
+    "aliases": ["wartel", "gland", "connector"],
+    "language_labels": {"nl": "Wartel", "en": "Cable gland"}
+  }
+]

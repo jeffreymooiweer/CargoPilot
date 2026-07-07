@@ -1,0 +1,132 @@
+[
+  {
+    "canonical_name": "steel",
+    "category": "metal",
+    "density_kg_m3": 7850,
+    "density_min_kg_m3": 7800,
+    "density_max_kg_m3": 7900,
+    "aliases": ["staal", "stalen", "steel", "galvanized steel", "galvanised steel", "gegalvaniseerd", "verzinkt", "zinc coated steel", "stahl"],
+    "language_labels": {"nl": "Staal", "en": "Steel"}
+  },
+  {
+    "canonical_name": "stainless_steel",
+    "category": "metal",
+    "density_kg_m3": 8000,
+    "aliases": ["rvs", "inox", "stainless steel", "stainless", "edelstahl"],
+    "language_labels": {"nl": "RVS", "en": "Stainless steel"}
+  },
+  {
+    "canonical_name": "aluminium",
+    "category": "metal",
+    "density_kg_m3": 2700,
+    "aliases": ["aluminium", "aluminum", "alu"],
+    "language_labels": {"nl": "Aluminium", "en": "Aluminium"}
+  },
+  {
+    "canonical_name": "copper",
+    "category": "metal",
+    "density_kg_m3": 8960,
+    "aliases": ["koper", "copper", "kupfer"],
+    "language_labels": {"nl": "Koper", "en": "Copper"}
+  },
+  {
+    "canonical_name": "brass",
+    "category": "metal",
+    "density_kg_m3": 8500,
+    "aliases": ["messing", "brass"],
+    "language_labels": {"nl": "Messing", "en": "Brass"}
+  },
+  {
+    "canonical_name": "concrete",
+    "category": "concrete",
+    "density_kg_m3": 2400,
+    "aliases": ["beton", "concrete"],
+    "language_labels": {"nl": "Beton", "en": "Concrete"}
+  },
+  {
+    "canonical_name": "reinforced_concrete",
+    "category": "concrete",
+    "density_kg_m3": 2500,
+    "aliases": ["gewapend beton", "reinforced concrete", "stelconplaat", "stelconplaten", "betonplaat", "concrete slab"],
+    "language_labels": {"nl": "Gewapend beton", "en": "Reinforced concrete"}
+  },
+  {
+    "canonical_name": "spruce",
+    "category": "wood",
+    "density_kg_m3": 450,
+    "condition": "outdoor_nl_average",
+    "aliases": ["hout", "wood", "timber", "vuren", "spruce", "pine", "grenen"],
+    "language_labels": {"nl": "Hout", "en": "Wood"}
+  },
+  {
+    "canonical_name": "hardwood",
+    "category": "wood",
+    "density_kg_m3": 700,
+    "condition": "outdoor_nl_average",
+    "aliases": ["hardhout", "hardwood"],
+    "language_labels": {"nl": "Hardhout", "en": "Hardwood"}
+  },
+  {
+    "canonical_name": "plywood",
+    "category": "wood",
+    "density_kg_m3": 650,
+    "aliases": ["multiplex", "plywood", "betonplex", "osb", "mdf"],
+    "language_labels": {"nl": "Plaatmateriaal", "en": "Plywood"}
+  },
+  {
+    "canonical_name": "pvc",
+    "category": "plastic",
+    "density_kg_m3": 1400,
+    "aliases": ["pvc", "kunststof", "plastic"],
+    "language_labels": {"nl": "PVC", "en": "PVC"}
+  },
+  {
+    "canonical_name": "pe",
+    "category": "plastic",
+    "density_kg_m3": 950,
+    "aliases": ["pe", "hdpe", "ldpe"],
+    "language_labels": {"nl": "PE", "en": "PE"}
+  },
+  {
+    "canonical_name": "pp",
+    "category": "plastic",
+    "density_kg_m3": 900,
+    "aliases": ["pp"],
+    "language_labels": {"nl": "PP", "en": "PP"}
+  },
+  {
+    "canonical_name": "pom",
+    "category": "plastic",
+    "density_kg_m3": 1410,
+    "aliases": ["pom"],
+    "language_labels": {"nl": "POM", "en": "POM"}
+  },
+  {
+    "canonical_name": "nylon",
+    "category": "plastic",
+    "density_kg_m3": 1150,
+    "aliases": ["pa", "nylon"],
+    "language_labels": {"nl": "Nylon", "en": "Nylon"}
+  },
+  {
+    "canonical_name": "acrylic",
+    "category": "plastic",
+    "density_kg_m3": 1180,
+    "aliases": ["plexiglas", "acrylic", "pmma"],
+    "language_labels": {"nl": "Plexiglas", "en": "Acrylic"}
+  },
+  {
+    "canonical_name": "sand",
+    "category": "bulk_material",
+    "density_kg_m3": 1600,
+    "aliases": ["zand", "sand"],
+    "language_labels": {"nl": "Zand", "en": "Sand"}
+  },
+  {
+    "canonical_name": "gravel",
+    "category": "bulk_material",
+    "density_kg_m3": 1700,
+    "aliases": ["grind", "gravel", "split", "ballast"],
+    "language_labels": {"nl": "Grind", "en": "Gravel"}
+  }
+]

@@ -67,6 +67,7 @@ export default function Layout({ user, onLogout }: Props) {
         <nav className="flex md:flex-col gap-1">
           <NavLink to="/" className={linkClass} end>{t("nav.dashboard")}</NavLink>
           <NavLink to="/wizard" className={linkClass}>{t("nav.new")}</NavLink>
+          {user.role === "admin" && <NavLink to="/materieel" className={linkClass}>{t("nav.materieel")}</NavLink>}
           {user.role === "admin" && <NavLink to="/users" className={linkClass}>{t("nav.users")}</NavLink>}
         </nav>
         <main>

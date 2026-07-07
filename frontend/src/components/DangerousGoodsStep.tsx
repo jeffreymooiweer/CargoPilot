@@ -11,6 +11,8 @@ interface Props {
   lines: LineItem[];
   entries: DgEntry[];
   onChange: (entries: DgEntry[]) => void;
+  /** Toon één positie per scherm met navigatie */
+  perPosition?: boolean;
 }
 
 const CORE_FIELDS = [
@@ -65,11 +67,12 @@ export function buildDgEntries(lines: LineItem[]): DgEntry[] {
     }));
 }
 
-export default function DangerousGoodsStep({ lines, entries, onChange }: Props) {
+export default function DangerousGoodsStep({ lines, entries, onChange, perPosition = false }: Props) {
   const { t, i18n } = useTranslation();
   const lang = i18n.language.startsWith("en") ? "en" : "nl";
   const [instructions, setInstructions] = useState<DgInstructions | null>(null);
   const [lookupError, setLookupError] = useState("");
+  const [positionIndex, setPositionIndex] = useState(0);
 
   useEffect(() => {
     api.dgInstructions().then(setInstructions).catch(() => setInstructions(null));
@@ -113,6 +116,9 @@ export default function DangerousGoodsStep({ lines, entries, onChange }: Props) 
     }
   };
 
+  const visibleEntries = perPosition && entries.length > 0 ? [entries[positionIndex]] : entries;
+  const visibleEntryOffset = perPosition ? positionIndex : 0;
+
   return (
     <div className="space-y-4">
       <div className={`${panelClass} p-4 text-sm text-slate-600 dark:text-slate-300`}>
@@ -120,7 +126,35 @@ export default function DangerousGoodsStep({ lines, entries, onChange }: Props) 
         <p className="mt-2 text-xs text-slate-500 dark:text-slate-400">{t("wizard.dgSource")}</p>
       </div>
 
-      {entries.map((entry, entryIndex) => (
+      {perPosition && entries.length > 1 && (
+        <div className="flex items-center justify-between text-sm">
+          <span className="text-slate-600 dark:text-slate-400">
+            {t("wizard.dgPositionOf", { current: positionIndex + 1, total: entries.length })}
+          </span>
+          <div className="flex gap-2">
+            <button
+              type="button"
+              disabled={positionIndex === 0}
+              onClick={() => setPositionIndex((i) => i - 1)}
+              className={buttonSecondary}
+            >
+              {t("wizard.back")}
+            </button>
+            <button
+              type="button"
+              disabled={positionIndex >= entries.length - 1}
+              onClick={() => setPositionIndex((i) => i + 1)}
+              className={buttonSecondary}
+            >
+              {t("questions.next")}
+            </button>
+          </div>
+        </div>
+      )}
+
+      {visibleEntries.map((entry, localIndex) => {
+        const entryIndex = visibleEntryOffset + localIndex;
+        return (
         <div key={entry.a1_line_id} className={`${panelClass} p-5 space-y-4`}>
           <div>
             <h3 className="font-semibold text-slate-900 dark:text-slate-100">
@@ -164,12 +198,15 @@ export default function DangerousGoodsStep({ lines, entries, onChange }: Props) 
             </div>
           ))}
         </div>
-      ))}
+        );
+      })}
 
       {lookupError && <p className="text-amber-600 dark:text-amber-300 text-sm">{lookupError}</p>}
     </div>
   );
 }
+
+const buttonSecondary = "px-4 py-2 rounded-lg border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800 disabled:opacity-50";
 
 function Field({
   label,

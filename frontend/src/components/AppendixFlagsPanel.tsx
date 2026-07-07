@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { api, AppendixFlags, DgInstructions, LineItem } from "../api/client";
+import InfoTooltip from "./InfoTooltip";
 
 const FLAG_KEYS = [
   "loaded",
@@ -78,10 +79,10 @@ export default function AppendixFlagsPanel({ lines, onUpdateFlags }: Props) {
                 if (YN_FLAGS.has(key)) {
                   return (
                     <div key={key}>
-                      <label className="text-xs font-medium text-slate-700 dark:text-slate-300" title={help}>
-                        {labelFor(key)}
-                      </label>
-                      {help && <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5 line-clamp-2">{help}</p>}
+                      <div className="flex items-center gap-1.5">
+                        <label className="text-xs font-medium text-slate-700 dark:text-slate-300">{labelFor(key)}</label>
+                        <InfoTooltip text={help} />
+                      </div>
                       <select
                         className={`${inputClass} mt-1`}
                         value={flags[key] ?? "N"}
@@ -95,10 +96,10 @@ export default function AppendixFlagsPanel({ lines, onUpdateFlags }: Props) {
                 }
                 return (
                   <div key={key}>
-                    <label className="text-xs font-medium text-slate-700 dark:text-slate-300" title={help}>
-                      {labelFor(key)}
-                    </label>
-                    {help && <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5 line-clamp-2">{help}</p>}
+                    <div className="flex items-center gap-1.5">
+                      <label className="text-xs font-medium text-slate-700 dark:text-slate-300">{labelFor(key)}</label>
+                      <InfoTooltip text={help} />
+                    </div>
                     <input
                       className={`${inputClass} mt-1`}
                       value={flags[key] ?? ""}

@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { api, DgEntry, DgInstructions, DgProduct, LineItem } from "../api/client";
+import InfoTooltip from "./InfoTooltip";
 
 const inputClass =
   "w-full border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-950 text-slate-900 dark:text-slate-100 rounded-lg px-3 py-2 text-sm";
@@ -185,10 +186,10 @@ function Field({
 }) {
   return (
     <div>
-      <label className="text-sm font-medium text-slate-800 dark:text-slate-200" title={help}>
-        {label}
-      </label>
-      {help && <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">{help}</p>}
+      <div className="flex items-center gap-1.5">
+        <label className="text-sm font-medium text-slate-800 dark:text-slate-200">{label}</label>
+        {help && <InfoTooltip text={help} />}
+      </div>
       <input className={`${inputClass} mt-1`} value={value} onChange={(e) => onChange(e.target.value)} onBlur={onBlur} />
     </div>
   );

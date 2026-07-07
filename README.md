@@ -60,7 +60,7 @@ Zonder admin-credentials verschijnt een setupmelding in logs en UI.
 
 ## DockerHub image
 
-`jeffreymooiweer/cargopilot:latest`
+`jeffersonmouze/cargopilot:latest`
 
 ### GitHub Secrets voor CI/CD
 
@@ -68,15 +68,15 @@ In GitHub: **Settings → Secrets and variables → Actions → New repository s
 
 | Secret | Waarde |
 |---|---|
-| `DOCKER_USERNAME` | Moet `jeffreymooiweer` zijn (zelfde als DockerHub-account) |
+| `DOCKER_USERNAME` | `jeffersonmouze` |
 | `DOCKER_TOKEN` | DockerHub **Access Token** voor dat account |
 
 **Belangrijk:**
-1. Maak op [Docker Hub](https://hub.docker.com/) een **publieke** repository aan: `jeffreymooiweer/cargopilot`
-2. `DOCKER_USERNAME` in GitHub Secrets moet exact `jeffreymooiweer` zijn
+1. De image staat op [jeffersonmouze/cargopilot](https://hub.docker.com/repository/docker/jeffersonmouze/cargopilot/general)
+2. `DOCKER_USERNAME` in GitHub Secrets moet `jeffersonmouze` zijn
 3. Gebruik een [Access Token](https://hub.docker.com/settings/security) als `DOCKER_TOKEN`
 
-Zonder deze secrets bouwt CI nog steeds, maar pusht niet. Na correcte secrets verschijnt de image op `jeffreymooiweer/cargopilot:latest` (gebruikt door Unraid).
+Zonder deze secrets bouwt CI nog steeds, maar pusht niet. Na correcte secrets wordt `jeffersonmouze/cargopilot:latest` bijgewerkt (gebruikt door Unraid).
 
 Workflow: `.github/workflows/dockerhub.yml` (push naar `main` en tags `v*`).
 

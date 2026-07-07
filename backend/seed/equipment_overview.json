@@ -1,0 +1,4535 @@
+[
+  {
+    "sap_code": "AANHANGWAGEN 15 KN AD",
+    "specifications": "TRAILER 15 KN GENERAL PURPOSE",
+    "length_cm": 456.0,
+    "width_cm": 233.0,
+    "height_cm": 238.0,
+    "weight_kg": 1820.0,
+    "aliases": [
+      "15 kn general purpose",
+      "aanhangwagen 15 kn ad",
+      "general purpose",
+      "kn general purpose",
+      "trailer 15 kn general purpose"
+    ],
+    "language_labels": {
+      "nl": "AANHANGWAGEN 15 KN AD"
+    },
+    "source": "overzicht_materieel",
+    "active": true
+  },
+  {
+    "sap_code": "AANHANGWAGEN 15 KN WATER",
+    "specifications": "TRAILER 15 KN WATER",
+    "length_cm": 456.0,
+    "width_cm": 234.0,
+    "height_cm": 238.0,
+    "weight_kg": 2300.0,
+    "aliases": [
+      "15 kn water",
+      "aanhangwagen 15 kn water",
+      "kn water",
+      "trailer 15 kn water"
+    ],
+    "language_labels": {
+      "nl": "AANHANGWAGEN 15 KN WATER"
+    },
+    "source": "overzicht_materieel",
+    "active": true
+  },
+  {
+    "sap_code": "AANHANGWAGEN 2.5 KN STINGER",
+    "specifications": "TRAILER 2.5 KN STINGER",
+    "length_cm": 350.0,
+    "width_cm": 189.0,
+    "height_cm": 225.0,
+    "weight_kg": 650.0,
+    "aliases": [
+      "2.5 kn stinger",
+      "aanhangwagen 2.5 kn stinger",
+      "kn stinger",
+      "trailer 2.5 kn stinger"
+    ],
+    "language_labels": {
+      "nl": "AANHANGWAGEN 2.5 KN STINGER"
+    },
+    "source": "overzicht_materieel",
+    "active": true
+  },
+  {
+    "sap_code": "AANHANGWAGEN 25 KN INBOUW",
+    "specifications": "TRAILER 25 KN 2 AXES",
+    "length_cm": 500.0,
+    "width_cm": 239.0,
+    "height_cm": 293.0,
+    "weight_kg": 2100.0,
+    "aliases": [
+      "25 kn 2 axes",
+      "25 kn axes",
+      "aanhangwagen 25 kn inbouw",
+      "kn axes",
+      "trailer 25 kn 2 axes"
+    ],
+    "language_labels": {
+      "nl": "AANHANGWAGEN 25 KN INBOUW"
+    },
+    "source": "overzicht_materieel",
+    "active": true
+  },
+  {
+    "sap_code": "AANHANGWAGEN 4 KN STINGER",
+    "specifications": "TRAILER 4 KN STINGER",
+    "length_cm": 375.0,
+    "width_cm": 170.0,
+    "height_cm": 150.0,
+    "weight_kg": 500.0,
+    "aliases": [
+      "4 kn stinger",
+      "aanhangwagen 4 kn stinger",
+      "kn stinger",
+      "trailer 4 kn stinger"
+    ],
+    "language_labels": {
+      "nl": "AANHANGWAGEN 4 KN STINGER"
+    },
+    "source": "overzicht_materieel",
+    "active": true
+  },
+  {
+    "sap_code": "AANHANGWAGEN 5 KN",
+    "specifications": "TRAILER 5 KN",
+    "length_cm": 415.0,
+    "width_cm": 170.0,
+    "height_cm": 187.0,
+    "weight_kg": 500.0,
+    "aliases": [
+      "5 kn",
+      "aanhangwagen 5 kn",
+      "trailer 5 kn"
+    ],
+    "language_labels": {
+      "nl": "AANHANGWAGEN 5 KN"
+    },
+    "source": "overzicht_materieel",
+    "active": true
+  },
+  {
+    "sap_code": "AANHANGWAGEN 60 KN UNI BM",
+    "specifications": "TRAILER 60 KN UNI BM",
+    "length_cm": 788.0,
+    "width_cm": 260.0,
+    "height_cm": 318.0,
+    "weight_kg": 10000.0,
+    "aliases": [
+      "60 kn uni bm",
+      "aanhangwagen 60 kn uni bm",
+      "kn uni bm",
+      "trailer 60 kn uni bm",
+      "uni bm"
+    ],
+    "language_labels": {
+      "nl": "AANHANGWAGEN 60 KN UNI BM"
+    },
+    "source": "overzicht_materieel",
+    "active": true
+  },
+  {
+    "sap_code": "AANHANGWAGEN AGGREGAAT 20 KW",
+    "specifications": "TRAILER GENERATOR 20 KW",
+    "length_cm": 342.0,
+    "width_cm": 188.0,
+    "height_cm": 225.0,
+    "weight_kg": 2470.0,
+    "aliases": [
+      "20 kw",
+      "aanhangwagen aggregaat 20 kw",
+      "generator 20 kw",
+      "trailer generator 20 kw"
+    ],
+    "language_labels": {
+      "nl": "AANHANGWAGEN AGGREGAAT 20 KW"
+    },
+    "source": "overzicht_materieel",
+    "active": true
+  },
+  {
+    "sap_code": "AANHANGWAGEN AGGREGAAT 25 KW",
+    "specifications": "TRAILER GENERATOR 25 KW",
+    "length_cm": 350.0,
+    "width_cm": 189.0,
+    "height_cm": 225.0,
+    "weight_kg": 2500.0,
+    "aliases": [
+      "25 kw",
+      "aanhangwagen aggregaat 25 kw",
+      "generator 25 kw",
+      "trailer generator 25 kw"
+    ],
+    "language_labels": {
+      "nl": "AANHANGWAGEN AGGREGAAT 25 KW"
+    },
+    "source": "overzicht_materieel",
+    "active": true
+  },
+  {
+    "sap_code": "AANHANGWAGEN AGGREGAAT 75 KW",
+    "specifications": "TRAILER GENERATOR 75 KW",
+    "length_cm": 757.0,
+    "width_cm": 250.0,
+    "height_cm": 369.0,
+    "weight_kg": 8000.0,
+    "aliases": [
+      "75 kw",
+      "aanhangwagen aggregaat 75 kw",
+      "generator 75 kw",
+      "trailer generator 75 kw"
+    ],
+    "language_labels": {
+      "nl": "AANHANGWAGEN AGGREGAAT 75 KW"
+    },
+    "source": "overzicht_materieel",
+    "active": true
+  },
+  {
+    "sap_code": "AANHANGWAGEN ATLAS COMPRESSOR",
+    "specifications": "TRAILER ATLAS COMPRESSOR",
+    "length_cm": 429.0,
+    "width_cm": 185.0,
+    "height_cm": 208.0,
+    "weight_kg": 3000.0,
+    "aliases": [
+      "aanhangwagen atlas compressor",
+      "atlas compressor",
+      "trailer atlas compressor"
+    ],
+    "language_labels": {
+      "nl": "AANHANGWAGEN ATLAS COMPRESSOR"
+    },
+    "source": "overzicht_materieel",
+    "active": true
+  },
+  {
+    "sap_code": "AANHANGWAGEN BAS AMB 18KN",
+    "specifications": "TRAILER BAS AMB 18KN",
+    "length_cm": 494.0,
+    "width_cm": 186.0,
+    "height_cm": 212.0,
+    "weight_kg": 700.0,
+    "aliases": [
+      "aanhangwagen bas amb 18kn",
+      "amb 18kn",
+      "bas amb 18kn",
+      "trailer bas amb 18kn"
+    ],
+    "language_labels": {
+      "nl": "AANHANGWAGEN BAS AMB 18KN"
+    },
+    "source": "overzicht_materieel",
+    "active": true
+  },
+  {
+    "sap_code": "AANHANGWAGEN FASCINE",
+    "specifications": "TRAILER 60 KN FASCINE",
+    "length_cm": 788.0,
+    "width_cm": 260.0,
+    "height_cm": 348.0,
+    "weight_kg": 6500.0,
+    "aliases": [
+      "60 kn fascine",
+      "aanhangwagen fascine",
+      "kn fascine",
+      "trailer 60 kn fascine"
+    ],
+    "language_labels": {
+      "nl": "AANHANGWAGEN FASCINE"
+    },
+    "source": "overzicht_materieel",
+    "active": true
+  },
+  {
+    "sap_code": "AANHANGWAGEN MIJNENLEGGER",
+    "specifications": "TRAILER MINELAYER",
+    "length_cm": 527.0,
+    "width_cm": 248.0,
+    "height_cm": 216.0,
+    "weight_kg": 2900.0,
+    "aliases": [
+      "aanhangwagen mijnenlegger",
+      "minelayer",
+      "trailer minelayer"
+    ],
+    "language_labels": {
+      "nl": "AANHANGWAGEN MIJNENLEGGER"
+    },
+    "source": "overzicht_materieel",
+    "active": true
+  },
+  {
+    "sap_code": "AANHANGWAGEN MVK",
+    "specifications": "TRAILER FIELD KITCHEN",
+    "length_cm": 384.0,
+    "width_cm": 215.0,
+    "height_cm": 143.0,
+    "weight_kg": 2200.0,
+    "aliases": [
+      "aanhangwagen mvk",
+      "field kitchen",
+      "trailer field kitchen"
+    ],
+    "language_labels": {
+      "nl": "AANHANGWAGEN MVK"
+    },
+    "source": "overzicht_materieel",
+    "active": true
+  },
+  {
+    "sap_code": "AANHANGWAGEN VHT 45 KN",
+    "specifications": "TRAILER SPIJKSTAAL 45 KN FORKLIFT",
+    "length_cm": 510.0,
+    "width_cm": 240.0,
+    "height_cm": 278.0,
+    "weight_kg": 1500.0,
+    "aliases": [
+      "45 kn forklift",
+      "aanhangwagen vht 45 kn",
+      "kn forklift",
+      "spijkstaal 45 kn forklift",
+      "trailer spijkstaal 45 kn forklift"
+    ],
+    "language_labels": {
+      "nl": "AANHANGWAGEN VHT 45 KN"
+    },
+    "source": "overzicht_materieel",
+    "active": true
+  },
+  {
+    "sap_code": "AMAROK",
+    "specifications": "VEHICLE AMAROK",
+    "length_cm": 534.0,
+    "width_cm": 223.0,
+    "height_cm": 220.0,
+    "weight_kg": 2290.0,
+    "aliases": [
+      "amarok",
+      "vehicle amarok"
+    ],
+    "language_labels": {
+      "nl": "AMAROK"
+    },
+    "source": "overzicht_materieel",
+    "active": true
+  },
+  {
+    "sap_code": "AMMAN AC110",
+    "specifications": "ROLLER VIBRATING AMMAN AC110",
+    "length_cm": 550.0,
+    "width_cm": 228.0,
+    "height_cm": 300.0,
+    "weight_kg": 12000.0,
+    "aliases": [
+      "amman ac110",
+      "roller vibrating amman ac110",
+      "vibrating amman ac110"
+    ],
+    "language_labels": {
+      "nl": "AMMAN AC110"
+    },
+    "source": "overzicht_materieel",
+    "active": true
+  },
+  {
+    "sap_code": "ANACONDA",
+    "specifications": "ALL TERRAIN VEHICLE WHEELED IVECO ANACONDA",
+    "length_cm": 590.0,
+    "width_cm": 226.0,
+    "height_cm": 233.0,
+    "weight_kg": 4240.0,
+    "aliases": [
+      "all terrain vehicle wheeled iveco anaconda",
+      "anaconda",
+      "iveco anaconda",
+      "terrain iveco anaconda"
+    ],
+    "language_labels": {
+      "nl": "ANACONDA"
+    },
+    "source": "overzicht_materieel",
+    "active": true
+  },
+  {
+    "sap_code": "ASTRA 12T",
+    "specifications": "TRUCK ASTRA 12 T",
+    "length_cm": 905.0,
+    "width_cm": 254.0,
+    "height_cm": 300.0,
+    "weight_kg": 16000.0,
+    "aliases": [
+      "astra 12",
+      "astra 12 t",
+      "astra 12t",
+      "truck astra 12 t"
+    ],
+    "language_labels": {
+      "nl": "ASTRA 12T"
+    },
+    "source": "overzicht_materieel",
+    "active": true
+  },
+  {
+    "sap_code": "ASTRA 8T",
+    "specifications": "TRUCK ASTRA 8 T",
+    "length_cm": 888.0,
+    "width_cm": 250.0,
+    "height_cm": 358.0,
+    "weight_kg": 14000.0,
+    "aliases": [
+      "astra 8 t",
+      "astra 8t",
+      "truck astra 8 t"
+    ],
+    "language_labels": {
+      "nl": "ASTRA 8T"
+    },
+    "source": "overzicht_materieel",
+    "active": true
+  },
+  {
+    "sap_code": "BARV",
+    "specifications": "BEACH ARMOURED RECOVERY VEHICLE",
+    "length_cm": 750.0,
+    "width_cm": 341.0,
+    "height_cm": 360.0,
+    "weight_kg": 44000.0,
+    "aliases": [
+      "barv",
+      "beach armoured recovery vehicle",
+      "beach recovery"
+    ],
+    "language_labels": {
+      "nl": "BARV"
+    },
+    "source": "overzicht_materieel",
+    "active": true
+  },
+  {
+    "sap_code": "BOUWMACHINE WERKLUST",
+    "specifications": "ENGINEER EQUIPMENT WHEELED WERKLUST",
+    "length_cm": 772.0,
+    "width_cm": 267.0,
+    "height_cm": 329.0,
+    "weight_kg": 15800.0,
+    "aliases": [
+      "bouwmachine werklust",
+      "engineer equipment werklust",
+      "engineer equipment wheeled werklust",
+      "equipment werklust",
+      "werklust"
+    ],
+    "language_labels": {
+      "nl": "BOUWMACHINE WERKLUST"
+    },
+    "source": "overzicht_materieel",
+    "active": true
+  },
+  {
+    "sap_code": "BOXER AMBULANCE",
+    "specifications": "CARRIER ARMOURED WHEELED BOXER AMBULANCE",
+    "length_cm": 862.0,
+    "width_cm": 300.0,
+    "height_cm": 297.0,
+    "weight_kg": 33000.0,
+    "aliases": [
+      "boxer ambulance",
+      "carrier armoured wheeled boxer ambulance"
+    ],
+    "language_labels": {
+      "nl": "BOXER AMBULANCE"
+    },
+    "source": "overzicht_materieel",
+    "active": true
+  },
+  {
+    "sap_code": "BOXER ARMOURED",
+    "specifications": "CARRIER ARMOURED WHEELED BOXER",
+    "length_cm": 790.0,
+    "width_cm": 300.0,
+    "height_cm": 321.0,
+    "weight_kg": 35000.0,
+    "aliases": [
+      "boxer",
+      "boxer armoured",
+      "carrier armoured wheeled boxer"
+    ],
+    "language_labels": {
+      "nl": "BOXER ARMOURED"
+    },
+    "source": "overzicht_materieel",
+    "active": true
+  },
+  {
+    "sap_code": "BOXER CARGO GNGP",
+    "specifications": "CARRIER ARMOURED WHEELED BOXER CARGO GNGP",
+    "length_cm": 750.0,
+    "width_cm": 300.0,
+    "height_cm": 321.0,
+    "weight_kg": 33000.0,
+    "aliases": [
+      "boxer cargo gngp",
+      "cargo gngp",
+      "carrier armoured wheeled boxer cargo gngp"
+    ],
+    "language_labels": {
+      "nl": "BOXER CARGO GNGP"
+    },
+    "source": "overzicht_materieel",
+    "active": true
+  },
+  {
+    "sap_code": "BOXER CARGO GNGP (INCL RCWS)",
+    "specifications": "CARRIER ARMOURED WHEELED BOXER CARGO GNGP WITH RCWS",
+    "length_cm": 750.0,
+    "width_cm": 300.0,
+    "height_cm": 338.0,
+    "weight_kg": 33000.0,
+    "aliases": [
+      "boxer cargo gngp (incl rcws)",
+      "boxer cargo gngp with rcws",
+      "cargo gngp rcws",
+      "carrier armoured wheeled boxer cargo gngp with rcws",
+      "gngp rcws"
+    ],
+    "language_labels": {
+      "nl": "BOXER CARGO GNGP (INCL RCWS)"
+    },
+    "source": "overzicht_materieel",
+    "active": true
+  },
+  {
+    "sap_code": "BOXER CP",
+    "specifications": "CARRIER ARMOURED WHEELED BOXER CP",
+    "length_cm": 894.0,
+    "width_cm": 300.0,
+    "height_cm": 332.0,
+    "weight_kg": 34000.0,
+    "aliases": [
+      "boxer cp",
+      "carrier armoured wheeled boxer cp"
+    ],
+    "language_labels": {
+      "nl": "BOXER CP"
+    },
+    "source": "overzicht_materieel",
+    "active": true
+  },
+  {
+    "sap_code": "BOXER CP CARGO-C2",
+    "specifications": "CARRIER ARMOURED WHEELED BOXER CP CARGO-C2",
+    "length_cm": 837.0,
+    "width_cm": 300.0,
+    "height_cm": 321.0,
+    "weight_kg": 33000.0,
+    "aliases": [
+      "boxer cp cargo-c2",
+      "cargo c2",
+      "carrier armoured wheeled boxer cp cargo-c2",
+      "cp cargo c2"
+    ],
+    "language_labels": {
+      "nl": "BOXER CP CARGO-C2"
+    },
+    "source": "overzicht_materieel",
+    "active": true
+  },
+  {
+    "sap_code": "BOXER DTV",
+    "specifications": "CARRIER ARMOURED WHEELED BOXER DRIVER TRAINER VEHICLE",
+    "length_cm": 800.0,
+    "width_cm": 300.0,
+    "height_cm": 350.0,
+    "weight_kg": 33500.0,
+    "aliases": [
+      "boxer driver trainer",
+      "boxer driver trainer vehicle",
+      "boxer dtv",
+      "carrier armoured wheeled boxer driver trainer vehicle",
+      "driver trainer"
+    ],
+    "language_labels": {
+      "nl": "BOXER DTV"
+    },
+    "source": "overzicht_materieel",
+    "active": true
+  },
+  {
+    "sap_code": "BOZENA FRAME INCL VLEGELCOMPONENT",
+    "specifications": "MINE CLEARANCE SYSTEM BOZENA FRAME WITH FLAIL",
+    "length_cm": 300.0,
+    "width_cm": 300.0,
+    "height_cm": 220.0,
+    "weight_kg": 2500.0,
+    "aliases": [
+      "bozena frame flail",
+      "bozena frame incl vlegelcomponent",
+      "bozena frame with flail",
+      "frame flail",
+      "mine clearance system bozena frame with flail"
+    ],
+    "language_labels": {
+      "nl": "BOZENA FRAME INCL VLEGELCOMPONENT"
+    },
+    "source": "overzicht_materieel",
+    "active": true
+  },
+  {
+    "sap_code": "BOZENA FRAME ZONDER VLEGELCOMPONENT",
+    "specifications": "MINE CLEARANCE SYSTEM BOZENA FRAME WITHOUT FLAIL",
+    "length_cm": 300.0,
+    "width_cm": 300.0,
+    "height_cm": 220.0,
+    "weight_kg": 1270.0,
+    "aliases": [
+      "bozena frame flail",
+      "bozena frame without flail",
+      "bozena frame zonder vlegelcomponent",
+      "frame flail",
+      "mine clearance system bozena frame without flail"
+    ],
+    "language_labels": {
+      "nl": "BOZENA FRAME ZONDER VLEGELCOMPONENT"
+    },
+    "source": "overzicht_materieel",
+    "active": true
+  },
+  {
+    "sap_code": "BOZENA INCL VLEGELCOMPONENT",
+    "specifications": "MINE CLEARANCE SYSTEM BOZENA WITH FLAIL",
+    "length_cm": 596.0,
+    "width_cm": 280.0,
+    "height_cm": 215.0,
+    "weight_kg": 5960.0,
+    "aliases": [
+      "bozena flail",
+      "bozena incl vlegelcomponent",
+      "bozena with flail",
+      "mine clearance system bozena with flail",
+      "system bozena flail"
+    ],
+    "language_labels": {
+      "nl": "BOZENA INCL VLEGELCOMPONENT"
+    },
+    "source": "overzicht_materieel",
+    "active": true
+  },
+  {
+    "sap_code": "BOZENA ZONDER VLEGELCOMPONENT",
+    "specifications": "MINE CLEARANCE SYSTEM BOZENA WITHOUT FLAIL",
+    "length_cm": 386.0,
+    "width_cm": 196.0,
+    "height_cm": 215.0,
+    "weight_kg": 4680.0,
+    "aliases": [
+      "bozena flail",
+      "bozena without flail",
+      "bozena zonder vlegelcomponent",
+      "mine clearance system bozena without flail",
+      "system bozena flail"
+    ],
+    "language_labels": {
+      "nl": "BOZENA ZONDER VLEGELCOMPONENT"
+    },
+    "source": "overzicht_materieel",
+    "active": true
+  },
+  {
+    "sap_code": "BRIDGEBUILDBOAT",
+    "specifications": "BRIDGEBUILDBOAT",
+    "length_cm": 704.0,
+    "width_cm": 302.0,
+    "height_cm": 233.0,
+    "weight_kg": 6000.0,
+    "aliases": [
+      "bridgebuildboat"
+    ],
+    "language_labels": {
+      "nl": "BRIDGEBUILDBOAT"
+    },
+    "source": "overzicht_materieel",
+    "active": true
+  },
+  {
+    "sap_code": "BRIDGEBUILDBOAT+BAP",
+    "specifications": "BRIDGEBUILDBOAT WITH BRIDGE ADAPTER PALLET",
+    "length_cm": 796.0,
+    "width_cm": 349.0,
+    "height_cm": 237.0,
+    "weight_kg": 9000.0,
+    "aliases": [
+      "adapter pallet",
+      "bridge adapter pallet",
+      "bridgebuildboat with bridge adapter pallet",
+      "bridgebuildboat+bap",
+      "with bridge adapter pallet"
+    ],
+    "language_labels": {
+      "nl": "BRIDGEBUILDBOAT+BAP"
+    },
+    "source": "overzicht_materieel",
+    "active": true
+  },
+  {
+    "sap_code": "BRUG OP TOV",
+    "specifications": "BRIDGE ON TOV",
+    "length_cm": 1200.0,
+    "width_cm": 400.0,
+    "height_cm": 301.0,
+    "weight_kg": 15000.0,
+    "aliases": [
+      "bridge on tov",
+      "brug op tov",
+      "on tov"
+    ],
+    "language_labels": {
+      "nl": "BRUG OP TOV"
+    },
+    "source": "overzicht_materieel",
+    "active": true
+  },
+  {
+    "sap_code": "BRUGDEEL LEGUAAN",
+    "specifications": "BRIDGE-PART LEGUAAN",
+    "length_cm": 1100.0,
+    "width_cm": 200.0,
+    "height_cm": 98.0,
+    "weight_kg": 2500.0,
+    "aliases": [
+      "bridge part leguaan",
+      "bridge-part leguaan",
+      "brugdeel leguaan",
+      "leguaan",
+      "part leguaan"
+    ],
+    "language_labels": {
+      "nl": "BRUGDEEL LEGUAAN"
+    },
+    "source": "overzicht_materieel",
+    "active": true
+  },
+  {
+    "sap_code": "BRUGDEEL LEOPARD 1 BRUGLEGGER",
+    "specifications": "BRIDGE-PART LEO TANK BRIDGE LAYER",
+    "length_cm": 1100.0,
+    "width_cm": 200.0,
+    "height_cm": 98.0,
+    "weight_kg": 2500.0,
+    "aliases": [
+      "bridge layer",
+      "bridge-part leo tank bridge layer",
+      "brugdeel leopard 1 bruglegger",
+      "leo tank bridge layer",
+      "tank bridge layer"
+    ],
+    "language_labels": {
+      "nl": "BRUGDEEL LEOPARD 1 BRUGLEGGER"
+    },
+    "source": "overzicht_materieel",
+    "active": true
+  },
+  {
+    "sap_code": "BUSHMASTER",
+    "specifications": "CARRIER ARMOURED WHEELED BUSHMASTER",
+    "length_cm": 718.0,
+    "width_cm": 248.0,
+    "height_cm": 265.0,
+    "weight_kg": 15000.0,
+    "aliases": [
+      "bushmaster",
+      "carrier armoured wheeled bushmaster"
+    ],
+    "language_labels": {
+      "nl": "BUSHMASTER"
+    },
+    "source": "overzicht_materieel",
+    "active": true
+  },
+  {
+    "sap_code": "BUSHMASTER INTERROGATION ARM",
+    "specifications": "CARRIER ARMOURED WHEELED BUSHMASTER INTERROGATION ARM",
+    "length_cm": 718.0,
+    "width_cm": 248.0,
+    "height_cm": 322.0,
+    "weight_kg": 14000.0,
+    "aliases": [
+      "bushmaster interrogation arm",
+      "carrier armoured wheeled bushmaster interrogation arm",
+      "interrogation arm"
+    ],
+    "language_labels": {
+      "nl": "BUSHMASTER INTERROGATION ARM"
+    },
+    "source": "overzicht_materieel",
+    "active": true
+  },
+  {
+    "sap_code": "BUSHMASTER MET EOS SRWS",
+    "specifications": "CARRIER ARMOURED WHEELED BUSHMASTER WITH EOS SRWS",
+    "length_cm": 718.0,
+    "width_cm": 248.0,
+    "height_cm": 326.0,
+    "weight_kg": 15000.0,
+    "aliases": [
+      "bushmaster eos srws",
+      "bushmaster met eos srws",
+      "bushmaster with eos srws",
+      "carrier armoured wheeled bushmaster with eos srws",
+      "eos srws"
+    ],
+    "language_labels": {
+      "nl": "BUSHMASTER MET EOS SRWS"
+    },
+    "source": "overzicht_materieel",
+    "active": true
+  },
+  {
+    "sap_code": "BUSHMASTER MET RCWS",
+    "specifications": "CARRIER ARMOURED WHEELED BUSHMASTER WITH RCWS",
+    "length_cm": 720.0,
+    "width_cm": 248.0,
+    "height_cm": 368.0,
+    "weight_kg": 13000.0,
+    "aliases": [
+      "bushmaster met rcws",
+      "bushmaster rcws",
+      "bushmaster with rcws",
+      "carrier armoured wheeled bushmaster with rcws"
+    ],
+    "language_labels": {
+      "nl": "BUSHMASTER MET RCWS"
+    },
+    "source": "overzicht_materieel",
+    "active": true
+  },
+  {
+    "sap_code": "BUSHMASTER MET RING AFFUIT",
+    "specifications": "CARRIER ARMOURED WHEELED BUSHMASTER WITH GUN CARRIAGE",
+    "length_cm": 718.0,
+    "width_cm": 248.0,
+    "height_cm": 277.0,
+    "weight_kg": 15000.0,
+    "aliases": [
+      "bushmaster gun carriage",
+      "bushmaster met ring affuit",
+      "bushmaster with gun carriage",
+      "carrier armoured wheeled bushmaster with gun carriage",
+      "gun carriage"
+    ],
+    "language_labels": {
+      "nl": "BUSHMASTER MET RING AFFUIT"
+    },
+    "source": "overzicht_materieel",
+    "active": true
+  },
+  {
+    "sap_code": "BUSHMASTER ZONDER RCWS",
+    "specifications": "CARRIER ARMOURED WHEELED BUSHMASTER WITHOUT RCWS",
+    "length_cm": 720.0,
+    "width_cm": 248.0,
+    "height_cm": 286.0,
+    "weight_kg": 13000.0,
+    "aliases": [
+      "bushmaster rcws",
+      "bushmaster without rcws",
+      "bushmaster zonder rcws",
+      "carrier armoured wheeled bushmaster without rcws"
+    ],
+    "language_labels": {
+      "nl": "BUSHMASTER ZONDER RCWS"
+    },
+    "source": "overzicht_materieel",
+    "active": true
+  },
+  {
+    "sap_code": "BV 206",
+    "specifications": "CARRIER TRACKED BV 206",
+    "length_cm": 690.0,
+    "width_cm": 187.0,
+    "height_cm": 270.0,
+    "weight_kg": 7080.0,
+    "aliases": [
+      "bv 206",
+      "carrier tracked bv 206"
+    ],
+    "language_labels": {
+      "nl": "BV 206"
+    },
+    "source": "overzicht_materieel",
+    "active": true
+  },
+  {
+    "sap_code": "BV S10 VIKING",
+    "specifications": "CARRIER TRACKED BVS VIKING",
+    "length_cm": 770.0,
+    "width_cm": 210.0,
+    "height_cm": 275.0,
+    "weight_kg": 10500.0,
+    "aliases": [
+      "bv s10 viking",
+      "bvs viking",
+      "carrier tracked bvs viking"
+    ],
+    "language_labels": {
+      "nl": "BV S10 VIKING"
+    },
+    "source": "overzicht_materieel",
+    "active": true
+  },
+  {
+    "sap_code": "CAT DOZER LIER",
+    "specifications": "DOZER CATERPILLAR WITH WINCH",
+    "length_cm": 595.0,
+    "width_cm": 265.0,
+    "height_cm": 330.0,
+    "weight_kg": 23000.0,
+    "aliases": [
+      "cat dozer lier",
+      "caterpillar winch",
+      "dozer caterpillar winch",
+      "dozer caterpillar with winch",
+      "with winch"
+    ],
+    "language_labels": {
+      "nl": "CAT DOZER LIER"
+    },
+    "source": "overzicht_materieel",
+    "active": true
+  },
+  {
+    "sap_code": "CAT DOZER RIPPER",
+    "specifications": "DOZER CATERPILLAR RIPPER",
+    "length_cm": 676.0,
+    "width_cm": 265.0,
+    "height_cm": 330.0,
+    "weight_kg": 23000.0,
+    "aliases": [
+      "cat dozer ripper",
+      "caterpillar ripper",
+      "dozer caterpillar ripper",
+      "ripper"
+    ],
+    "language_labels": {
+      "nl": "CAT DOZER RIPPER"
+    },
+    "source": "overzicht_materieel",
+    "active": true
+  },
+  {
+    "sap_code": "CATERPILLAR D6H",
+    "specifications": "DOZER CATERPILLAR D6H",
+    "length_cm": 670.0,
+    "width_cm": 326.0,
+    "height_cm": 335.0,
+    "weight_kg": 22000.0,
+    "aliases": [
+      "caterpillar d6h",
+      "d6h",
+      "dozer caterpillar d6h"
+    ],
+    "language_labels": {
+      "nl": "CATERPILLAR D6H"
+    },
+    "source": "overzicht_materieel",
+    "active": true
+  },
+  {
+    "sap_code": "CLIMAX",
+    "specifications": "CLIMAX",
+    "length_cm": 500.0,
+    "width_cm": 223.0,
+    "height_cm": 274.0,
+    "weight_kg": 6000.0,
+    "aliases": [
+      "climax"
+    ],
+    "language_labels": {
+      "nl": "CLIMAX"
+    },
+    "source": "overzicht_materieel",
+    "active": true
+  },
+  {
+    "sap_code": "CV 9035 NLD MK III",
+    "specifications": "TANK TRACKED CV 9035 NLD MK III",
+    "length_cm": 680.0,
+    "width_cm": 320.0,
+    "height_cm": 280.0,
+    "weight_kg": 35000.0,
+    "aliases": [
+      "cv 9035 nld mk iii",
+      "mk iii",
+      "nld mk iii",
+      "tank tracked cv 9035 nld mk iii"
+    ],
+    "language_labels": {
+      "nl": "CV 9035 NLD MK III"
+    },
+    "source": "overzicht_materieel",
+    "active": true
+  },
+  {
+    "sap_code": "CV90 ARMOURED",
+    "specifications": "TANK TRACKED CV 90 ARMOURED",
+    "length_cm": 728.0,
+    "width_cm": 329.0,
+    "height_cm": 291.0,
+    "weight_kg": 33000.0,
+    "aliases": [
+      "cv 90",
+      "cv 90 armoured",
+      "cv90 armoured",
+      "tank cv 90",
+      "tank tracked cv 90 armoured"
+    ],
+    "language_labels": {
+      "nl": "CV90 ARMOURED"
+    },
+    "source": "overzicht_materieel",
+    "active": true
+  },
+  {
+    "sap_code": "CV90 LESVTG",
+    "specifications": "TANK TRACKED CV 90 INSTRUCTION",
+    "length_cm": 682.0,
+    "width_cm": 322.0,
+    "height_cm": 303.0,
+    "weight_kg": 28800.0,
+    "aliases": [
+      "90 instruction",
+      "cv 90 instruction",
+      "cv90 lesvtg",
+      "tank tracked cv 90 instruction"
+    ],
+    "language_labels": {
+      "nl": "CV90 LESVTG"
+    },
+    "source": "overzicht_materieel",
+    "active": true
+  },
+  {
+    "sap_code": "DINGO",
+    "specifications": "VEHICLE ARMOURED WHEELED PERSONELL CARRIER DINGO",
+    "length_cm": 623.0,
+    "width_cm": 239.0,
+    "height_cm": 330.0,
+    "weight_kg": 13000.0,
+    "aliases": [
+      "armoured wheeled personell carrier dingo",
+      "dingo",
+      "personell carrier dingo",
+      "personell dingo",
+      "vehicle armoured wheeled personell carrier dingo"
+    ],
+    "language_labels": {
+      "nl": "DINGO"
+    },
+    "source": "overzicht_materieel",
+    "active": true
+  },
+  {
+    "sap_code": "ENDPONTOON",
+    "specifications": "ENDPONTOON",
+    "length_cm": 571.0,
+    "width_cm": 320.0,
+    "height_cm": 239.0,
+    "weight_kg": 6000.0,
+    "aliases": [
+      "endpontoon"
+    ],
+    "language_labels": {
+      "nl": "ENDPONTOON"
+    },
+    "source": "overzicht_materieel",
+    "active": true
+  },
+  {
+    "sap_code": "ENDPONTOON + BAP",
+    "specifications": "ENDPONTOON WITH BRIDGE ADAPTER PALLET",
+    "length_cm": 666.0,
+    "width_cm": 349.0,
+    "height_cm": 233.0,
+    "weight_kg": 9000.0,
+    "aliases": [
+      "adapter pallet",
+      "bridge adapter pallet",
+      "endpontoon + bap",
+      "endpontoon with bridge adapter pallet",
+      "with bridge adapter pallet"
+    ],
+    "language_labels": {
+      "nl": "ENDPONTOON + BAP"
+    },
+    "source": "overzicht_materieel",
+    "active": true
+  },
+  {
+    "sap_code": "ESK MUNGO",
+    "specifications": "VEHICLE ARMOURED WHEELED TRANSPORT MUNGO ESK",
+    "length_cm": 422.0,
+    "width_cm": 185.0,
+    "height_cm": 225.0,
+    "weight_kg": 5000.0,
+    "aliases": [
+      "armoured wheeled transport mungo esk",
+      "esk mungo",
+      "mungo esk",
+      "transport mungo esk",
+      "vehicle armoured wheeled transport mungo esk"
+    ],
+    "language_labels": {
+      "nl": "ESK MUNGO"
+    },
+    "source": "overzicht_materieel",
+    "active": true
+  },
+  {
+    "sap_code": "FENNEK",
+    "specifications": "VEHICLE RECCY WHEELED FENNEK",
+    "length_cm": 559.0,
+    "width_cm": 255.0,
+    "height_cm": 230.0,
+    "weight_kg": 11000.0,
+    "aliases": [
+      "fennek",
+      "reccy fennek",
+      "reccy wheeled fennek",
+      "vehicle reccy wheeled fennek"
+    ],
+    "language_labels": {
+      "nl": "FENNEK"
+    },
+    "source": "overzicht_materieel",
+    "active": true
+  },
+  {
+    "sap_code": "FLATRACK BAP EMPTY",
+    "specifications": "FLATRACK BAP EMPTY",
+    "length_cm": 648.0,
+    "width_cm": 349.0,
+    "height_cm": 285.0,
+    "weight_kg": 3000.0,
+    "aliases": [
+      "bap empty",
+      "flatrack bap empty"
+    ],
+    "language_labels": {
+      "nl": "FLATRACK BAP EMPTY"
+    },
+    "source": "overzicht_materieel",
+    "active": true
+  },
+  {
+    "sap_code": "FLATRACK KIPPER",
+    "specifications": "FLATRACK KIPPER",
+    "length_cm": 606.0,
+    "width_cm": 243.0,
+    "height_cm": 205.0,
+    "weight_kg": 5000.0,
+    "aliases": [
+      "flatrack kipper",
+      "kipper"
+    ],
+    "language_labels": {
+      "nl": "FLATRACK KIPPER"
+    },
+    "source": "overzicht_materieel",
+    "active": true
+  },
+  {
+    "sap_code": "FLATRACK, EMPTY",
+    "specifications": "FLATRACK, EMPTY",
+    "length_cm": 606.0,
+    "width_cm": 255.0,
+    "height_cm": 180.0,
+    "weight_kg": 2000.0,
+    "aliases": [
+      "flatrack empty",
+      "flatrack, empty"
+    ],
+    "language_labels": {
+      "nl": "FLATRACK, EMPTY"
+    },
+    "source": "overzicht_materieel",
+    "active": true
+  },
+  {
+    "sap_code": "FLATRACK, NEST",
+    "specifications": "FLATRACK, NEST",
+    "length_cm": 695.0,
+    "width_cm": 255.0,
+    "height_cm": 264.0,
+    "weight_kg": 7000.0,
+    "aliases": [
+      "flatrack nest",
+      "flatrack, nest"
+    ],
+    "language_labels": {
+      "nl": "FLATRACK, NEST"
+    },
+    "source": "overzicht_materieel",
+    "active": true
+  },
+  {
+    "sap_code": "FUCHS ABC",
+    "specifications": "FUCHS WHEELED RECCY VEHICLE",
+    "length_cm": 734.0,
+    "width_cm": 298.0,
+    "height_cm": 345.0,
+    "weight_kg": 15000.0,
+    "aliases": [
+      "fuchs abc",
+      "fuchs reccy",
+      "fuchs wheeled reccy vehicle"
+    ],
+    "language_labels": {
+      "nl": "FUCHS ABC"
+    },
+    "source": "overzicht_materieel",
+    "active": true
+  },
+  {
+    "sap_code": "GLC 4CX-M",
+    "specifications": "BACKHOE LOADER 4CX-M",
+    "length_cm": 630.0,
+    "width_cm": 250.0,
+    "height_cm": 352.0,
+    "weight_kg": 9300.0,
+    "aliases": [
+      "4cx-m",
+      "backhoe loader 4cx",
+      "backhoe loader 4cx-m",
+      "glc 4cx-m",
+      "loader 4cx"
+    ],
+    "language_labels": {
+      "nl": "GLC 4CX-M"
+    },
+    "source": "overzicht_materieel",
+    "active": true
+  },
+  {
+    "sap_code": "GRAAFMACHINE JCB RUPS JS 130",
+    "specifications": "EXCAVATOR TRACKED JCB JS 130",
+    "length_cm": 770.0,
+    "width_cm": 259.0,
+    "height_cm": 270.0,
+    "weight_kg": 12480.0,
+    "aliases": [
+      "excavator tracked jcb js 130",
+      "graafmachine jcb rups js 130",
+      "jcb js 130",
+      "js 130"
+    ],
+    "language_labels": {
+      "nl": "GRAAFMACHINE JCB RUPS JS 130"
+    },
+    "source": "overzicht_materieel",
+    "active": true
+  },
+  {
+    "sap_code": "GRAAFMACHINE JCB RUPS JS 200",
+    "specifications": "EXCAVATOR TRACKED JCB JS 200",
+    "length_cm": 987.0,
+    "width_cm": 309.0,
+    "height_cm": 306.0,
+    "weight_kg": 20690.0,
+    "aliases": [
+      "excavator tracked jcb js 200",
+      "graafmachine jcb rups js 200",
+      "jcb js 200",
+      "js 200"
+    ],
+    "language_labels": {
+      "nl": "GRAAFMACHINE JCB RUPS JS 200"
+    },
+    "source": "overzicht_materieel",
+    "active": true
+  },
+  {
+    "sap_code": "GRAAFMACHINE JCB RUPS JS 240",
+    "specifications": "EXCAVATOR TRACKED JCB JS 240",
+    "length_cm": 996.0,
+    "width_cm": 319.0,
+    "height_cm": 323.0,
+    "weight_kg": 23900.0,
+    "aliases": [
+      "excavator tracked jcb js 240",
+      "graafmachine jcb rups js 240",
+      "jcb js 240",
+      "js 240"
+    ],
+    "language_labels": {
+      "nl": "GRAAFMACHINE JCB RUPS JS 240"
+    },
+    "source": "overzicht_materieel",
+    "active": true
+  },
+  {
+    "sap_code": "GRAAFMACHINE JCB WIEL JS 130",
+    "specifications": "EXCAVATOR WHEELED JCB JS 130",
+    "length_cm": 770.0,
+    "width_cm": 249.0,
+    "height_cm": 304.0,
+    "weight_kg": 12790.0,
+    "aliases": [
+      "excavator wheeled jcb js 130",
+      "graafmachine jcb wiel js 130",
+      "jcb js 130",
+      "js 130"
+    ],
+    "language_labels": {
+      "nl": "GRAAFMACHINE JCB WIEL JS 130"
+    },
+    "source": "overzicht_materieel",
+    "active": true
+  },
+  {
+    "sap_code": "GRAAFMACHINE JCB WIEL JS 150",
+    "specifications": "EXCAVATOR WHEELED JCB JS 150",
+    "length_cm": 860.0,
+    "width_cm": 249.0,
+    "height_cm": 306.0,
+    "weight_kg": 15570.0,
+    "aliases": [
+      "excavator wheeled jcb js 150",
+      "graafmachine jcb wiel js 150",
+      "jcb js 150",
+      "js 150"
+    ],
+    "language_labels": {
+      "nl": "GRAAFMACHINE JCB WIEL JS 150"
+    },
+    "source": "overzicht_materieel",
+    "active": true
+  },
+  {
+    "sap_code": "GRADER CHAMPION 726",
+    "specifications": "GRADER CHAMPION 727",
+    "length_cm": 1080.0,
+    "width_cm": 257.0,
+    "height_cm": 312.0,
+    "weight_kg": 17000.0,
+    "aliases": [
+      "champion 727",
+      "grader champion 726",
+      "grader champion 727"
+    ],
+    "language_labels": {
+      "nl": "GRADER CHAMPION 726"
+    },
+    "source": "overzicht_materieel",
+    "active": true
+  },
+  {
+    "sap_code": "HAMM 4011D Trilwals",
+    "specifications": "ROLLER VIBRATING ROAD HAMM 4011D",
+    "length_cm": 582.0,
+    "width_cm": 228.0,
+    "height_cm": 318.0,
+    "weight_kg": 12000.0,
+    "aliases": [
+      "hamm 4011d",
+      "hamm 4011d trilwals",
+      "road hamm 4011d",
+      "roller vibrating road hamm 4011d"
+    ],
+    "language_labels": {
+      "nl": "HAMM 4011D Trilwals"
+    },
+    "source": "overzicht_materieel",
+    "active": true
+  },
+  {
+    "sap_code": "HOOK-ARM CONTAINER",
+    "specifications": "CONTAINER HOOK-ARM",
+    "length_cm": 606.0,
+    "width_cm": 244.0,
+    "height_cm": 97.0,
+    "weight_kg": 2500.0,
+    "aliases": [
+      "container hook arm",
+      "container hook-arm",
+      "hook arm",
+      "hook-arm container"
+    ],
+    "language_labels": {
+      "nl": "HOOK-ARM CONTAINER"
+    },
+    "source": "overzicht_materieel",
+    "active": true
+  },
+  {
+    "sap_code": "JCB 4CXM",
+    "specifications": "BACKHOE LOADER JCB 4CXM",
+    "length_cm": 642.0,
+    "width_cm": 250.0,
+    "height_cm": 352.0,
+    "weight_kg": 9980.0,
+    "aliases": [
+      "backhoe loader jcb 4cxm",
+      "jcb 4cxm",
+      "loader jcb 4cxm"
+    ],
+    "language_labels": {
+      "nl": "JCB 4CXM"
+    },
+    "source": "overzicht_materieel",
+    "active": true
+  },
+  {
+    "sap_code": "JCB 803 PLUS TRACK",
+    "specifications": "EXCAVATOR TRACKED JCB 803",
+    "length_cm": 424.0,
+    "width_cm": 150.0,
+    "height_cm": 333.0,
+    "weight_kg": 3000.0,
+    "aliases": [
+      "excavator jcb 803",
+      "excavator tracked jcb 803",
+      "jcb 803",
+      "jcb 803 plus track"
+    ],
+    "language_labels": {
+      "nl": "JCB 803 PLUS TRACK"
+    },
+    "source": "overzicht_materieel",
+    "active": true
+  },
+  {
+    "sap_code": "KERAX 8 X 4",
+    "specifications": "KIPPER RANAULT KERAX 8X4",
+    "length_cm": 1090.0,
+    "width_cm": 255.0,
+    "height_cm": 390.0,
+    "weight_kg": 30000.0,
+    "aliases": [
+      "kerax 8 x 4",
+      "kerax 8x4",
+      "kipper ranault kerax 8x4",
+      "ranault kerax 8x4"
+    ],
+    "language_labels": {
+      "nl": "KERAX 8 X 4"
+    },
+    "source": "overzicht_materieel",
+    "active": true
+  },
+  {
+    "sap_code": "KIA RIO",
+    "specifications": "VEHICLE KIA RIO",
+    "length_cm": 407.0,
+    "width_cm": 173.0,
+    "height_cm": 145.0,
+    "weight_kg": 1130.0,
+    "aliases": [
+      "kia rio",
+      "vehicle kia rio"
+    ],
+    "language_labels": {
+      "nl": "KIA RIO"
+    },
+    "source": "overzicht_materieel",
+    "active": true
+  },
+  {
+    "sap_code": "KOOIAAP",
+    "specifications": "FORKLIFT MOBILE (KOOIAAP)",
+    "length_cm": 287.0,
+    "width_cm": 217.0,
+    "height_cm": 233.0,
+    "weight_kg": 2010.0,
+    "aliases": [
+      "forklift mobile (kooiaap)",
+      "forklift mobile kooiaap",
+      "kooiaap",
+      "mobile kooiaap"
+    ],
+    "language_labels": {
+      "nl": "KOOIAAP"
+    },
+    "source": "overzicht_materieel",
+    "active": true
+  },
+  {
+    "sap_code": "KTM",
+    "specifications": "MOTORCYCLE KTM",
+    "length_cm": 228.0,
+    "width_cm": 88.0,
+    "height_cm": 128.0,
+    "weight_kg": 148.0,
+    "aliases": [
+      "ktm",
+      "motorcycle ktm"
+    ],
+    "language_labels": {
+      "nl": "KTM"
+    },
+    "source": "overzicht_materieel",
+    "active": true
+  },
+  {
+    "sap_code": "KUBOTA 3T",
+    "specifications": "EXCAVATOR TRACKED KUBOTA 3T",
+    "length_cm": 670.0,
+    "width_cm": 140.0,
+    "height_cm": 244.0,
+    "weight_kg": 3000.0,
+    "aliases": [
+      "excavator kubota 3t",
+      "excavator tracked kubota 3t",
+      "kubota 3t"
+    ],
+    "language_labels": {
+      "nl": "KUBOTA 3T"
+    },
+    "source": "overzicht_materieel",
+    "active": true
+  },
+  {
+    "sap_code": "LARO AMBU LR 130 XD FIELD AMBU, ZAU KM",
+    "specifications": "JEEP LANDROVER LR 130 XD FIELD AMBULANCE",
+    "length_cm": 530.0,
+    "width_cm": 220.0,
+    "height_cm": 270.0,
+    "weight_kg": 4000.0,
+    "aliases": [
+      "field ambulance",
+      "jeep landrover lr 130 xd field ambulance",
+      "laro ambu lr 130 xd field ambu, zau km",
+      "xd field ambulance"
+    ],
+    "language_labels": {
+      "nl": "LARO AMBU LR 130 XD FIELD AMBU, ZAU KM"
+    },
+    "source": "overzicht_materieel",
+    "active": true
+  },
+  {
+    "sap_code": "LARO LR XD GENERAL",
+    "specifications": "JEEP LANDROVER LR XD GENERAL PURPOSE",
+    "length_cm": 455.0,
+    "width_cm": 179.0,
+    "height_cm": 211.0,
+    "weight_kg": 3220.0,
+    "aliases": [
+      "general purpose",
+      "jeep landrover lr xd general purpose",
+      "laro lr xd general",
+      "xd general purpose"
+    ],
+    "language_labels": {
+      "nl": "LARO LR XD GENERAL"
+    },
+    "source": "overzicht_materieel",
+    "active": true
+  },
+  {
+    "sap_code": "LARO LR XD HARDTOP FRT",
+    "specifications": "JEEP LANDROVER LR XD HARDTOP FRT",
+    "length_cm": 456.0,
+    "width_cm": 179.0,
+    "height_cm": 238.0,
+    "weight_kg": 3240.0,
+    "aliases": [
+      "hardtop frt",
+      "jeep landrover lr xd hardtop frt",
+      "laro lr xd hardtop frt",
+      "xd hardtop frt"
+    ],
+    "language_labels": {
+      "nl": "LARO LR XD HARDTOP FRT"
+    },
+    "source": "overzicht_materieel",
+    "active": true
+  },
+  {
+    "sap_code": "LEGUAAN EXCL. BRUG",
+    "specifications": "TANK TRACKED LEOPARD 2 LEGUAAN BRIDGE LAYER WITHOUT BRIDGE PART",
+    "length_cm": 1445.0,
+    "width_cm": 401.0,
+    "height_cm": 280.0,
+    "weight_kg": 26995.0,
+    "aliases": [
+      "bridge part",
+      "layer bridge part",
+      "leguaan excl. brug",
+      "leopard 2 leguaan bridge layer without bridge part",
+      "tank tracked leopard 2 leguaan bridge layer without bridge part"
+    ],
+    "language_labels": {
+      "nl": "LEGUAAN EXCL. BRUG"
+    },
+    "source": "overzicht_materieel",
+    "active": true
+  },
+  {
+    "sap_code": "LEGUAAN INCL. BRUG",
+    "specifications": "TANK TRACKED LEOPARD 2 LEGUAAN BRIDGE LAYER WITH BRIDGE PART",
+    "length_cm": 1445.0,
+    "width_cm": 401.0,
+    "height_cm": 408.0,
+    "weight_kg": 37744.0,
+    "aliases": [
+      "bridge part",
+      "layer bridge part",
+      "leguaan incl. brug",
+      "leopard 2 leguaan bridge layer with bridge part",
+      "tank tracked leopard 2 leguaan bridge layer with bridge part"
+    ],
+    "language_labels": {
+      "nl": "LEGUAAN INCL. BRUG"
+    },
+    "source": "overzicht_materieel",
+    "active": true
+  },
+  {
+    "sap_code": "LEOPARD 1 BRLG TK",
+    "specifications": "TANK TRACKED LEOPARD 1 BRIDGE LAYER",
+    "length_cm": 1047.0,
+    "width_cm": 325.0,
+    "height_cm": 256.0,
+    "weight_kg": 36000.0,
+    "aliases": [
+      "bridge layer",
+      "leopard 1 bridge layer",
+      "leopard 1 brlg tk",
+      "leopard bridge layer",
+      "tank tracked leopard 1 bridge layer"
+    ],
+    "language_labels": {
+      "nl": "LEOPARD 1 BRLG TK"
+    },
+    "source": "overzicht_materieel",
+    "active": true
+  },
+  {
+    "sap_code": "LEOPARD 1 GN",
+    "specifications": "TANK TRACKED LEOPARD 1 ENGINEER",
+    "length_cm": 798.0,
+    "width_cm": 325.0,
+    "height_cm": 270.0,
+    "weight_kg": 43000.0,
+    "aliases": [
+      "leopard 1 engineer",
+      "leopard 1 gn",
+      "leopard engineer",
+      "tank leopard engineer",
+      "tank tracked leopard 1 engineer"
+    ],
+    "language_labels": {
+      "nl": "LEOPARD 1 GN"
+    },
+    "source": "overzicht_materieel",
+    "active": true
+  },
+  {
+    "sap_code": "LEOPARD 1 LESVTG",
+    "specifications": "TANK TRACKED LEOPARD 1 INSTRUCTION",
+    "length_cm": 790.0,
+    "width_cm": 325.0,
+    "height_cm": 295.0,
+    "weight_kg": 42000.0,
+    "aliases": [
+      "leopard 1 instruction",
+      "leopard 1 lesvtg",
+      "leopard instruction",
+      "tank leopard instruction",
+      "tank tracked leopard 1 instruction"
+    ],
+    "language_labels": {
+      "nl": "LEOPARD 1 LESVTG"
+    },
+    "source": "overzicht_materieel",
+    "active": true
+  },
+  {
+    "sap_code": "LEOPARD 1 PRB",
+    "specifications": "TANK TRACKED LEOPARD 1 RECOVERY",
+    "length_cm": 768.0,
+    "width_cm": 325.0,
+    "height_cm": 270.0,
+    "weight_kg": 40200.0,
+    "aliases": [
+      "leopard 1 prb",
+      "leopard 1 recovery",
+      "leopard recovery",
+      "tank leopard recovery",
+      "tank tracked leopard 1 recovery"
+    ],
+    "language_labels": {
+      "nl": "LEOPARD 1 PRB"
+    },
+    "source": "overzicht_materieel",
+    "active": true
+  },
+  {
+    "sap_code": "LEOPARD 1 PRTL/CHEETAH",
+    "specifications": "TANK TRACKED LEOPARD CHEETAH",
+    "length_cm": 736.0,
+    "width_cm": 339.0,
+    "height_cm": 302.0,
+    "weight_kg": 46000.0,
+    "aliases": [
+      "leopard 1 prtl/cheetah",
+      "leopard cheetah",
+      "tank leopard cheetah",
+      "tank tracked leopard cheetah"
+    ],
+    "language_labels": {
+      "nl": "LEOPARD 1 PRTL/CHEETAH"
+    },
+    "source": "overzicht_materieel",
+    "active": true
+  },
+  {
+    "sap_code": "LEOPARD 2 A 6",
+    "specifications": "TANK TRACKED LEOPARD 2 A 6",
+    "length_cm": 979.0,
+    "width_cm": 376.0,
+    "height_cm": 303.0,
+    "weight_kg": 60900.0,
+    "aliases": [
+      "leopard 2 a 6",
+      "tank leopard",
+      "tank tracked leopard 2 a 6"
+    ],
+    "language_labels": {
+      "nl": "LEOPARD 2 A 6"
+    },
+    "source": "overzicht_materieel",
+    "active": true
+  },
+  {
+    "sap_code": "LEOPARD 2 A6 LESVTG",
+    "specifications": "TANK TRACKED LEOPARD 2 A 6 INSTRUCTION",
+    "length_cm": 772.0,
+    "width_cm": 354.0,
+    "height_cm": 330.0,
+    "weight_kg": 60900.0,
+    "aliases": [
+      "leopard 2 a 6 instruction",
+      "leopard 2 a6 lesvtg",
+      "leopard instruction",
+      "tank leopard instruction",
+      "tank tracked leopard 2 a 6 instruction"
+    ],
+    "language_labels": {
+      "nl": "LEOPARD 2 A6 LESVTG"
+    },
+    "source": "overzicht_materieel",
+    "active": true
+  },
+  {
+    "sap_code": "LEOPARD 2 A6 MA2",
+    "specifications": "TANK TRACKED LEOPARD 2 A 6 MA2",
+    "length_cm": 979.0,
+    "width_cm": 376.0,
+    "height_cm": 303.0,
+    "weight_kg": 62525.0,
+    "aliases": [
+      "leopard 2 a 6 ma2",
+      "leopard 2 a6 ma2",
+      "leopard ma2",
+      "tank leopard ma2",
+      "tank tracked leopard 2 a 6 ma2"
+    ],
+    "language_labels": {
+      "nl": "LEOPARD 2 A6 MA2"
+    },
+    "source": "overzicht_materieel",
+    "active": true
+  },
+  {
+    "sap_code": "LEOPARD 2 GENIETANK \"KODIAK\"",
+    "specifications": "TANK TRACKED LEOPARD 2 ENGINEER",
+    "length_cm": 1020.0,
+    "width_cm": 360.0,
+    "height_cm": 292.0,
+    "weight_kg": 62000.0,
+    "aliases": [
+      "leopard 2 engineer",
+      "leopard 2 genietank \"kodiak\"",
+      "leopard engineer",
+      "tank leopard engineer",
+      "tank tracked leopard 2 engineer"
+    ],
+    "language_labels": {
+      "nl": "LEOPARD 2 GENIETANK \"KODIAK\""
+    },
+    "source": "overzicht_materieel",
+    "active": true
+  },
+  {
+    "sap_code": "LEOPARD 2 PRB",
+    "specifications": "TANK TRACKED LEOPARD 2 RECOVERY",
+    "length_cm": 907.0,
+    "width_cm": 354.0,
+    "height_cm": 292.0,
+    "weight_kg": 56300.0,
+    "aliases": [
+      "leopard 2 prb",
+      "leopard 2 recovery",
+      "leopard recovery",
+      "tank leopard recovery",
+      "tank tracked leopard 2 recovery"
+    ],
+    "language_labels": {
+      "nl": "LEOPARD 2 PRB"
+    },
+    "source": "overzicht_materieel",
+    "active": true
+  },
+  {
+    "sap_code": "LEOPARD 2A6M",
+    "specifications": "TANK TRACKED LEOPARD 2A6M",
+    "length_cm": 1080.0,
+    "width_cm": 376.0,
+    "height_cm": 303.0,
+    "weight_kg": 62000.0,
+    "aliases": [
+      "leopard 2a6m",
+      "tank leopard 2a6m",
+      "tank tracked leopard 2a6m"
+    ],
+    "language_labels": {
+      "nl": "LEOPARD 2A6M"
+    },
+    "source": "overzicht_materieel",
+    "active": true
+  },
+  {
+    "sap_code": "LIEBHERR FKM",
+    "specifications": "MOBILE CRANE LIEBHERR FKM 200 KN",
+    "length_cm": 1098.0,
+    "width_cm": 275.0,
+    "height_cm": 328.0,
+    "weight_kg": 29900.0,
+    "aliases": [
+      "200 kn",
+      "fkm 200 kn",
+      "liebherr fkm",
+      "mobile crane liebherr fkm 200 kn"
+    ],
+    "language_labels": {
+      "nl": "LIEBHERR FKM"
+    },
+    "source": "overzicht_materieel",
+    "active": true
+  },
+  {
+    "sap_code": "LIEBHERR LTM",
+    "specifications": "MOBILE CRANE LIEBHERR LTM 700 KN",
+    "length_cm": 1235.0,
+    "width_cm": 268.0,
+    "height_cm": 385.0,
+    "weight_kg": 48000.0,
+    "aliases": [
+      "700 kn",
+      "liebherr ltm",
+      "ltm 700 kn",
+      "mobile crane liebherr ltm 700 kn"
+    ],
+    "language_labels": {
+      "nl": "LIEBHERR LTM"
+    },
+    "source": "overzicht_materieel",
+    "active": true
+  },
+  {
+    "sap_code": "LIFTING BEAM ROADMAT MLC 70",
+    "specifications": "LIFTING BEAM ROADMAT MLC 71",
+    "length_cm": 540.0,
+    "width_cm": 303.0,
+    "height_cm": 30.0,
+    "weight_kg": 2000.0,
+    "aliases": [
+      "lifting beam roadmat mlc 70",
+      "lifting beam roadmat mlc 71",
+      "mlc 71",
+      "roadmat mlc 71"
+    ],
+    "language_labels": {
+      "nl": "LIFTING BEAM ROADMAT MLC 70"
+    },
+    "source": "overzicht_materieel",
+    "active": true
+  },
+  {
+    "sap_code": "LSV GWT",
+    "specifications": "AIR MOBILE LIGHT SPECIAL VEHICLE AMBULANCE",
+    "length_cm": 410.0,
+    "width_cm": 181.0,
+    "height_cm": 220.0,
+    "weight_kg": 1716.0,
+    "aliases": [
+      "air mobile light special vehicle ambulance",
+      "light special ambulance",
+      "lsv gwt",
+      "special ambulance"
+    ],
+    "language_labels": {
+      "nl": "LSV GWT"
+    },
+    "source": "overzicht_materieel",
+    "active": true
+  },
+  {
+    "sap_code": "LSV LOHR AD",
+    "specifications": "AIR MOBILE LIGHT SPECIAL VEHICLE LOHR GENERAL PURPOSE",
+    "length_cm": 340.0,
+    "width_cm": 181.0,
+    "height_cm": 178.0,
+    "weight_kg": 1700.0,
+    "aliases": [
+      "air mobile light special vehicle lohr general purpose",
+      "general purpose",
+      "lohr general purpose",
+      "lsv lohr ad"
+    ],
+    "language_labels": {
+      "nl": "LSV LOHR AD"
+    },
+    "source": "overzicht_materieel",
+    "active": true
+  },
+  {
+    "sap_code": "LSV VLA",
+    "specifications": "AIR MOBILE LIGHT SPECIAL VEHICLE VLA",
+    "length_cm": 331.0,
+    "width_cm": 172.0,
+    "height_cm": 178.0,
+    "weight_kg": 1350.0,
+    "aliases": [
+      "air mobile light special vehicle vla",
+      "light special vla",
+      "lsv vla",
+      "special vla"
+    ],
+    "language_labels": {
+      "nl": "LSV VLA"
+    },
+    "source": "overzicht_materieel",
+    "active": true
+  },
+  {
+    "sap_code": "LSV VLB",
+    "specifications": "AIR MOBILE LIGHT SPECIAL VEHICLE VLB",
+    "length_cm": 400.0,
+    "width_cm": 172.0,
+    "height_cm": 178.0,
+    "weight_kg": 2000.0,
+    "aliases": [
+      "air mobile light special vehicle vlb",
+      "light special vlb",
+      "lsv vlb",
+      "special vlb"
+    ],
+    "language_labels": {
+      "nl": "LSV VLB"
+    },
+    "source": "overzicht_materieel",
+    "active": true
+  },
+  {
+    "sap_code": "LUNA",
+    "specifications": "FORKLIFT CONTAINER LUNA",
+    "length_cm": 943.0,
+    "width_cm": 306.0,
+    "height_cm": 298.0,
+    "weight_kg": 35000.0,
+    "aliases": [
+      "container luna",
+      "forklift container luna",
+      "luna"
+    ],
+    "language_labels": {
+      "nl": "LUNA"
+    },
+    "source": "overzicht_materieel",
+    "active": true
+  },
+  {
+    "sap_code": "LYNX",
+    "specifications": "TANK TRACKED LYNX",
+    "length_cm": 521.0,
+    "width_cm": 209.0,
+    "height_cm": 221.0,
+    "weight_kg": 7000.0,
+    "aliases": [
+      "lynx",
+      "tank lynx",
+      "tank tracked lynx"
+    ],
+    "language_labels": {
+      "nl": "LYNX"
+    },
+    "source": "overzicht_materieel",
+    "active": true
+  },
+  {
+    "sap_code": "M577",
+    "specifications": "CARRIER ARMOURED TRACKED M577",
+    "length_cm": 486.0,
+    "width_cm": 269.0,
+    "height_cm": 268.0,
+    "weight_kg": 12000.0,
+    "aliases": [
+      "carrier armoured tracked m577",
+      "m577"
+    ],
+    "language_labels": {
+      "nl": "M577"
+    },
+    "source": "overzicht_materieel",
+    "active": true
+  },
+  {
+    "sap_code": "MAN + ROADMAT MLC-70",
+    "specifications": "MATLAYER WHEELED MAN WITH ROADMAT MLC-70",
+    "length_cm": 1170.0,
+    "width_cm": 303.0,
+    "height_cm": 312.0,
+    "weight_kg": 20000.0,
+    "aliases": [
+      "man + roadmat mlc-70",
+      "matlayer wheeled man with roadmat mlc-70",
+      "mlc 70",
+      "roadmat mlc 70"
+    ],
+    "language_labels": {
+      "nl": "MAN + ROADMAT MLC-70"
+    },
+    "source": "overzicht_materieel",
+    "active": true
+  },
+  {
+    "sap_code": "MAN + ROADMAT MLC-70/14",
+    "specifications": "MATLAYER WHEELED MAN WITH ROADMAT MLC-70/14",
+    "length_cm": 1170.0,
+    "width_cm": 303.0,
+    "height_cm": 342.0,
+    "weight_kg": 27000.0,
+    "aliases": [
+      "70 14",
+      "man + roadmat mlc-70/14",
+      "matlayer wheeled man with roadmat mlc-70/14",
+      "mlc 70 14"
+    ],
+    "language_labels": {
+      "nl": "MAN + ROADMAT MLC-70/14"
+    },
+    "source": "overzicht_materieel",
+    "active": true
+  },
+  {
+    "sap_code": "MAN + ROADMAT MLC-70/18",
+    "specifications": "MATLAYER WHEELED MAN WITH ROADMAT MLC-70/18",
+    "length_cm": 1170.0,
+    "width_cm": 303.0,
+    "height_cm": 342.0,
+    "weight_kg": 29000.0,
+    "aliases": [
+      "70 18",
+      "man + roadmat mlc-70/18",
+      "matlayer wheeled man with roadmat mlc-70/18",
+      "mlc 70 18"
+    ],
+    "language_labels": {
+      "nl": "MAN + ROADMAT MLC-70/18"
+    },
+    "source": "overzicht_materieel",
+    "active": true
+  },
+  {
+    "sap_code": "MAN TRML",
+    "specifications": "MOBILE RADAR SYSTEM MAN TRML",
+    "length_cm": 1200.0,
+    "width_cm": 255.0,
+    "height_cm": 400.0,
+    "weight_kg": 14000.0,
+    "aliases": [
+      "man trml",
+      "mobile radar system man trml",
+      "system man trml"
+    ],
+    "language_labels": {
+      "nl": "MAN TRML"
+    },
+    "source": "overzicht_materieel",
+    "active": true
+  },
+  {
+    "sap_code": "Manticore",
+    "specifications": "VEHICLE ARMOURED WHEELED IVECO MANTICORE",
+    "length_cm": 590.0,
+    "width_cm": 243.0,
+    "height_cm": 330.0,
+    "weight_kg": 11000.0,
+    "aliases": [
+      "armoured wheeled iveco manticore",
+      "iveco manticore",
+      "manticore",
+      "vehicle armoured wheeled iveco manticore"
+    ],
+    "language_labels": {
+      "nl": "Manticore"
+    },
+    "source": "overzicht_materieel",
+    "active": true
+  },
+  {
+    "sap_code": "MB 10 KN AD",
+    "specifications": "ALL TERRAIN VEHICLE MB 290 GD 10 KN GENERAL PURPOSE",
+    "length_cm": 522.0,
+    "width_cm": 193.0,
+    "height_cm": 265.0,
+    "weight_kg": 3070.0,
+    "aliases": [
+      "all terrain vehicle mb 290 gd 10 kn general purpose",
+      "general purpose",
+      "kn general purpose",
+      "mb 10 kn ad"
+    ],
+    "language_labels": {
+      "nl": "MB 10 KN AD"
+    },
+    "source": "overzicht_materieel",
+    "active": true
+  },
+  {
+    "sap_code": "MB 10 KN GWT",
+    "specifications": "ALL TERRAIN VEHICLE MB 290 GD 10 KN AMBULANCE",
+    "length_cm": 522.0,
+    "width_cm": 193.0,
+    "height_cm": 265.0,
+    "weight_kg": 3230.0,
+    "aliases": [
+      "10 kn ambulance",
+      "all terrain vehicle mb 290 gd 10 kn ambulance",
+      "kn ambulance",
+      "mb 10 kn gwt"
+    ],
+    "language_labels": {
+      "nl": "MB 10 KN GWT"
+    },
+    "source": "overzicht_materieel",
+    "active": true
+  },
+  {
+    "sap_code": "MB 12 KN GWT",
+    "specifications": "ALL TERRAIN VEHICLE MB 290 GD 12 KN AMBULANCE",
+    "length_cm": 522.0,
+    "width_cm": 193.0,
+    "height_cm": 286.0,
+    "weight_kg": 3230.0,
+    "aliases": [
+      "12 kn ambulance",
+      "all terrain vehicle mb 290 gd 12 kn ambulance",
+      "kn ambulance",
+      "mb 12 kn gwt"
+    ],
+    "language_labels": {
+      "nl": "MB 12 KN GWT"
+    },
+    "source": "overzicht_materieel",
+    "active": true
+  },
+  {
+    "sap_code": "MB 280 CDI",
+    "specifications": "ALL TERRAIN VEHICLE MB 280 CDI",
+    "length_cm": 512.0,
+    "width_cm": 233.0,
+    "height_cm": 220.0,
+    "weight_kg": 2200.0,
+    "aliases": [
+      "280 cdi",
+      "all terrain vehicle mb 280 cdi",
+      "mb 280 cdi"
+    ],
+    "language_labels": {
+      "nl": "MB 280 CDI"
+    },
+    "source": "overzicht_materieel",
+    "active": true
+  },
+  {
+    "sap_code": "MB 290 CDI",
+    "specifications": "ALL TERRAIN VEHICLE MB 290 CDI",
+    "length_cm": 512.0,
+    "width_cm": 233.0,
+    "height_cm": 220.0,
+    "weight_kg": 3000.0,
+    "aliases": [
+      "290 cdi",
+      "all terrain vehicle mb 290 cdi",
+      "mb 290 cdi"
+    ],
+    "language_labels": {
+      "nl": "MB 290 CDI"
+    },
+    "source": "overzicht_materieel",
+    "active": true
+  },
+  {
+    "sap_code": "MB 5 KN AD",
+    "specifications": "ALL TERRAIN VEHICLE MB 290GD 5 KN GENERAL PURPOSE",
+    "length_cm": 411.0,
+    "width_cm": 170.0,
+    "height_cm": 193.0,
+    "weight_kg": 2350.0,
+    "aliases": [
+      "all terrain vehicle mb 290gd 5 kn general purpose",
+      "general purpose",
+      "kn general purpose",
+      "mb 5 kn ad"
+    ],
+    "language_labels": {
+      "nl": "MB 5 KN AD"
+    },
+    "source": "overzicht_materieel",
+    "active": true
+  },
+  {
+    "sap_code": "MB 5 KN AD INSTR",
+    "specifications": "ALL TERRAIN VEHICLE MB 290 GD 5 KN GP INSTRUCTION",
+    "length_cm": 411.0,
+    "width_cm": 179.0,
+    "height_cm": 193.0,
+    "weight_kg": 2350.0,
+    "aliases": [
+      "all terrain vehicle mb 290 gd 5 kn gp instruction",
+      "gp instruction",
+      "kn gp instruction",
+      "mb 5 kn ad instr"
+    ],
+    "language_labels": {
+      "nl": "MB 5 KN AD INSTR"
+    },
+    "source": "overzicht_materieel",
+    "active": true
+  },
+  {
+    "sap_code": "MB 5 KN AD SCOUT",
+    "specifications": "ALL TERRAIN VEHICLE MB 290 GD 5 KN GP SCOUT",
+    "length_cm": 422.0,
+    "width_cm": 179.0,
+    "height_cm": 187.0,
+    "weight_kg": 2350.0,
+    "aliases": [
+      "all terrain vehicle mb 290 gd 5 kn gp scout",
+      "gp scout",
+      "kn gp scout",
+      "mb 5 kn ad scout"
+    ],
+    "language_labels": {
+      "nl": "MB 5 KN AD SCOUT"
+    },
+    "source": "overzicht_materieel",
+    "active": true
+  },
+  {
+    "sap_code": "MB 5 KN LUMBL",
+    "specifications": "ALL TERRAIN VEHICLE MB 290 GD 5 KN AMB",
+    "length_cm": 422.0,
+    "width_cm": 170.0,
+    "height_cm": 187.0,
+    "weight_kg": 2350.0,
+    "aliases": [
+      "all terrain vehicle mb 290 gd 5 kn amb",
+      "gd kn amb",
+      "kn amb",
+      "mb 5 kn lumbl"
+    ],
+    "language_labels": {
+      "nl": "MB 5 KN LUMBL"
+    },
+    "source": "overzicht_materieel",
+    "active": true
+  },
+  {
+    "sap_code": "MB 609 VOU",
+    "specifications": "VEHICLE TRANSPORT MB 609 VOU",
+    "length_cm": 633.0,
+    "width_cm": 219.0,
+    "height_cm": 290.0,
+    "weight_kg": 4000.0,
+    "aliases": [
+      "609 vou",
+      "mb 609 vou",
+      "transport mb 609 vou",
+      "vehicle transport mb 609 vou"
+    ],
+    "language_labels": {
+      "nl": "MB 609 VOU"
+    },
+    "source": "overzicht_materieel",
+    "active": true
+  },
+  {
+    "sap_code": "MB 7.5 KN AD",
+    "specifications": "ALL TERRAIN VEHICLE MERCEDES 290 GD 7,5 KN GENERAL PURPOSE",
+    "length_cm": 456.0,
+    "width_cm": 170.0,
+    "height_cm": 193.0,
+    "weight_kg": 2900.0,
+    "aliases": [
+      "all terrain vehicle mercedes 290 gd 7,5 kn general purpose",
+      "general purpose",
+      "kn general purpose",
+      "mb 7.5 kn ad"
+    ],
+    "language_labels": {
+      "nl": "MB 7.5 KN AD"
+    },
+    "source": "overzicht_materieel",
+    "active": true
+  },
+  {
+    "sap_code": "MB 7.5 KN SOFTOP",
+    "specifications": "ALL TERRAIN VEHICLE MERCEDES 290 GD 7,5 KN GP SOFTTOP",
+    "length_cm": 467.0,
+    "width_cm": 170.0,
+    "height_cm": 191.0,
+    "weight_kg": 2535.0,
+    "aliases": [
+      "all terrain vehicle mercedes 290 gd 7,5 kn gp softtop",
+      "gp softtop",
+      "kn gp softtop",
+      "mb 7.5 kn softop"
+    ],
+    "language_labels": {
+      "nl": "MB 7.5 KN SOFTOP"
+    },
+    "source": "overzicht_materieel",
+    "active": true
+  },
+  {
+    "sap_code": "MB SPRINTER 315 CDI KMAR",
+    "specifications": "VEHICLE MILTARY POLICE MB SPRINTER 315 CDI",
+    "length_cm": 593.0,
+    "width_cm": 217.0,
+    "height_cm": 285.0,
+    "weight_kg": 3500.0,
+    "aliases": [
+      "315 cdi",
+      "mb sprinter 315 cdi kmar",
+      "miltary police mb sprinter 315 cdi",
+      "sprinter 315 cdi",
+      "vehicle miltary police mb sprinter 315 cdi"
+    ],
+    "language_labels": {
+      "nl": "MB SPRINTER 315 CDI KMAR"
+    },
+    "source": "overzicht_materieel",
+    "active": true
+  },
+  {
+    "sap_code": "MB VARIO 815D",
+    "specifications": "VEHICLE TRANSPORT MB VARIO 815D",
+    "length_cm": 715.0,
+    "width_cm": 221.0,
+    "height_cm": 287.0,
+    "weight_kg": 3000.0,
+    "aliases": [
+      "mb vario 815d",
+      "transport mb vario 815d",
+      "vario 815d",
+      "vehicle transport mb vario 815d"
+    ],
+    "language_labels": {
+      "nl": "MB VARIO 815D"
+    },
+    "source": "overzicht_materieel",
+    "active": true
+  },
+  {
+    "sap_code": "MIDDLEPONTOON",
+    "specifications": "MIDDLEPONTOON",
+    "length_cm": 694.0,
+    "width_cm": 323.0,
+    "height_cm": 233.0,
+    "weight_kg": 6000.0,
+    "aliases": [
+      "middlepontoon"
+    ],
+    "language_labels": {
+      "nl": "MIDDLEPONTOON"
+    },
+    "source": "overzicht_materieel",
+    "active": true
+  },
+  {
+    "sap_code": "MIDDLEPONTOON +BAP",
+    "specifications": "MIDDLEPONTOON WITH BRIDGE ADAPTER PALLET",
+    "length_cm": 776.0,
+    "width_cm": 349.0,
+    "height_cm": 233.0,
+    "weight_kg": 9000.0,
+    "aliases": [
+      "adapter pallet",
+      "bridge adapter pallet",
+      "middlepontoon +bap",
+      "middlepontoon with bridge adapter pallet"
+    ],
+    "language_labels": {
+      "nl": "MIDDLEPONTOON +BAP"
+    },
+    "source": "overzicht_materieel",
+    "active": true
+  },
+  {
+    "sap_code": "MISSIONMASTER",
+    "specifications": "VEHICLE WHEELED AUTONOMOUS MISSION MASTER",
+    "length_cm": 320.0,
+    "width_cm": 255.0,
+    "height_cm": 195.0,
+    "weight_kg": 750.0,
+    "aliases": [
+      "autonomous mission master",
+      "mission master",
+      "missionmaster",
+      "vehicle wheeled autonomous mission master",
+      "wheeled autonomous mission master"
+    ],
+    "language_labels": {
+      "nl": "MISSIONMASTER"
+    },
+    "source": "overzicht_materieel",
+    "active": true
+  },
+  {
+    "sap_code": "PANDUR 1",
+    "specifications": "CARRIER ARMOURED WHEELED PANDUR 1",
+    "length_cm": 579.0,
+    "width_cm": 250.0,
+    "height_cm": 182.0,
+    "weight_kg": 14000.0,
+    "aliases": [
+      "carrier armoured wheeled pandur 1",
+      "pandur 1"
+    ],
+    "language_labels": {
+      "nl": "PANDUR 1"
+    },
+    "source": "overzicht_materieel",
+    "active": true
+  },
+  {
+    "sap_code": "PATRIA XA 188",
+    "specifications": "CARRIER ARMOURED WHEELED PATRIA XA 188",
+    "length_cm": 753.0,
+    "width_cm": 293.0,
+    "height_cm": 308.0,
+    "weight_kg": 20500.0,
+    "aliases": [
+      "carrier armoured wheeled patria xa 188",
+      "patria xa 188",
+      "xa 188"
+    ],
+    "language_labels": {
+      "nl": "PATRIA XA 188"
+    },
+    "source": "overzicht_materieel",
+    "active": true
+  },
+  {
+    "sap_code": "PIR AMBU",
+    "specifications": "CARRIER ARMOURED WHEELED PIR MEDIVAC",
+    "length_cm": 782.0,
+    "width_cm": 272.0,
+    "height_cm": 282.0,
+    "weight_kg": 20000.0,
+    "aliases": [
+      "carrier armoured wheeled pir medivac",
+      "pir ambu",
+      "pir medivac"
+    ],
+    "language_labels": {
+      "nl": "PIR AMBU"
+    },
+    "source": "overzicht_materieel",
+    "active": true
+  },
+  {
+    "sap_code": "PIR DF30",
+    "specifications": "CARRIER ARMOURED WHEELED PIR DF30",
+    "length_cm": 777.0,
+    "width_cm": 272.0,
+    "height_cm": 293.0,
+    "weight_kg": 22000.0,
+    "aliases": [
+      "carrier armoured wheeled pir df30",
+      "pir df30"
+    ],
+    "language_labels": {
+      "nl": "PIR DF30"
+    },
+    "source": "overzicht_materieel",
+    "active": true
+  },
+  {
+    "sap_code": "PIR DF90",
+    "specifications": "CARRIER ARMOURED WHEELED PIR DF90",
+    "length_cm": 821.0,
+    "width_cm": 272.0,
+    "height_cm": 330.0,
+    "weight_kg": 22000.0,
+    "aliases": [
+      "carrier armoured wheeled pir df90",
+      "pir df90"
+    ],
+    "language_labels": {
+      "nl": "PIR DF90"
+    },
+    "source": "overzicht_materieel",
+    "active": true
+  },
+  {
+    "sap_code": "PIR ENG",
+    "specifications": "CARRIER ARMOURED WHEELED PIR ENGINEER",
+    "length_cm": 777.0,
+    "width_cm": 272.0,
+    "height_cm": 293.0,
+    "weight_kg": 20000.0,
+    "aliases": [
+      "carrier armoured wheeled pir engineer",
+      "pir eng",
+      "pir engineer"
+    ],
+    "language_labels": {
+      "nl": "PIR ENG"
+    },
+    "source": "overzicht_materieel",
+    "active": true
+  },
+  {
+    "sap_code": "PIR FUS",
+    "specifications": "CARRIER ARMOURED WHEELED PIR FUSILIER",
+    "length_cm": 777.0,
+    "width_cm": 272.0,
+    "height_cm": 293.0,
+    "weight_kg": 21000.0,
+    "aliases": [
+      "carrier armoured wheeled pir fusilier",
+      "pir fus",
+      "pir fusilier"
+    ],
+    "language_labels": {
+      "nl": "PIR FUS"
+    },
+    "source": "overzicht_materieel",
+    "active": true
+  },
+  {
+    "sap_code": "PIR PC",
+    "specifications": "CARRIER ARMOURED WHEELED PIR PIONEER & CONSTRUCTION",
+    "length_cm": 777.0,
+    "width_cm": 272.0,
+    "height_cm": 293.0,
+    "weight_kg": 20000.0,
+    "aliases": [
+      "carrier armoured wheeled pir pioneer & construction",
+      "pioneer construction",
+      "pir pc",
+      "pir pioneer & construction",
+      "pir pioneer construction"
+    ],
+    "language_labels": {
+      "nl": "PIR PC"
+    },
+    "source": "overzicht_materieel",
+    "active": true
+  },
+  {
+    "sap_code": "PIR REC",
+    "specifications": "CARRIER ARMOURED WHEELED PIR RECONNAISSANCE",
+    "length_cm": 782.0,
+    "width_cm": 272.0,
+    "height_cm": 293.0,
+    "weight_kg": 22000.0,
+    "aliases": [
+      "carrier armoured wheeled pir reconnaissance",
+      "pir rec",
+      "pir reconnaissance"
+    ],
+    "language_labels": {
+      "nl": "PIR REC"
+    },
+    "source": "overzicht_materieel",
+    "active": true
+  },
+  {
+    "sap_code": "POLARIS AHW",
+    "specifications": "TRAILER POLARIS COMBAT VEHICLE",
+    "length_cm": 258.0,
+    "width_cm": 150.0,
+    "height_cm": 125.0,
+    "weight_kg": 350.0,
+    "aliases": [
+      "polaris ahw",
+      "polaris combat",
+      "polaris combat vehicle",
+      "trailer polaris combat vehicle"
+    ],
+    "language_labels": {
+      "nl": "POLARIS AHW"
+    },
+    "source": "overzicht_materieel",
+    "active": true
+  },
+  {
+    "sap_code": "POLARIS MRZR D2",
+    "specifications": "VEHICLE COMBAT WHEELED POLARIS MRZR D2",
+    "length_cm": 287.0,
+    "width_cm": 152.0,
+    "height_cm": 188.0,
+    "weight_kg": 856.0,
+    "aliases": [
+      "combat wheeled polaris mrzr d2",
+      "mrzr d2",
+      "polaris mrzr d2",
+      "vehicle combat wheeled polaris mrzr d2"
+    ],
+    "language_labels": {
+      "nl": "POLARIS MRZR D2"
+    },
+    "source": "overzicht_materieel",
+    "active": true
+  },
+  {
+    "sap_code": "POLARIS MRZR D4",
+    "specifications": "VEHICLE COMBAT WHEELED POLARIS MRZR D4",
+    "length_cm": 356.0,
+    "width_cm": 152.0,
+    "height_cm": 188.0,
+    "weight_kg": 953.0,
+    "aliases": [
+      "combat wheeled polaris mrzr d4",
+      "mrzr d4",
+      "polaris mrzr d4",
+      "vehicle combat wheeled polaris mrzr d4"
+    ],
+    "language_labels": {
+      "nl": "POLARIS MRZR D4"
+    },
+    "source": "overzicht_materieel",
+    "active": true
+  },
+  {
+    "sap_code": "PZH 2000",
+    "specifications": "HOWITZER ARMOURED PzH 2000",
+    "length_cm": 1170.0,
+    "width_cm": 350.0,
+    "height_cm": 307.0,
+    "weight_kg": 55500.0,
+    "aliases": [
+      "howitzer armoured pzh 2000",
+      "howitzer pzh 2000",
+      "pzh 2000"
+    ],
+    "language_labels": {
+      "nl": "PZH 2000"
+    },
+    "source": "overzicht_materieel",
+    "active": true
+  },
+  {
+    "sap_code": "PZH 2000 LESUITVOERING",
+    "specifications": "HOWITZER ARMOURED PzH 2000 INSTRUCTION",
+    "length_cm": 1170.0,
+    "width_cm": 350.0,
+    "height_cm": 339.0,
+    "weight_kg": 55500.0,
+    "aliases": [
+      "2000 instruction",
+      "howitzer armoured pzh 2000 instruction",
+      "pzh 2000 instruction",
+      "pzh 2000 lesuitvoering"
+    ],
+    "language_labels": {
+      "nl": "PZH 2000 LESUITVOERING"
+    },
+    "source": "overzicht_materieel",
+    "active": true
+  },
+  {
+    "sap_code": "PZH 2000 MET DAKBESCHERMING",
+    "specifications": "HOWITZER ARMOURED PzH 2000 WITH ROOFCOVER",
+    "length_cm": 1170.0,
+    "width_cm": 350.0,
+    "height_cm": 346.0,
+    "weight_kg": 55500.0,
+    "aliases": [
+      "2000 roofcover",
+      "howitzer armoured pzh 2000 with roofcover",
+      "pzh 2000 met dakbescherming",
+      "pzh 2000 roofcover"
+    ],
+    "language_labels": {
+      "nl": "PZH 2000 MET DAKBESCHERMING"
+    },
+    "source": "overzicht_materieel",
+    "active": true
+  },
+  {
+    "sap_code": "QUAD",
+    "specifications": "VEHICLE QUAD SUZUKI KING",
+    "length_cm": 239.0,
+    "width_cm": 125.0,
+    "height_cm": 150.0,
+    "weight_kg": 400.0,
+    "aliases": [
+      "quad",
+      "quad suzuki king",
+      "suzuki king",
+      "vehicle quad suzuki king"
+    ],
+    "language_labels": {
+      "nl": "QUAD"
+    },
+    "source": "overzicht_materieel",
+    "active": true
+  },
+  {
+    "sap_code": "RENAULT TWINGO",
+    "specifications": "VEHICLE RENAULT TWINGO",
+    "length_cm": 360.0,
+    "width_cm": 165.0,
+    "height_cm": 155.0,
+    "weight_kg": 970.0,
+    "aliases": [
+      "renault twingo",
+      "vehicle renault twingo"
+    ],
+    "language_labels": {
+      "nl": "RENAULT TWINGO"
+    },
+    "source": "overzicht_materieel",
+    "active": true
+  },
+  {
+    "sap_code": "ROADMAT PALLET MLC 70/14",
+    "specifications": "ROADMAT PALLET MLC 70/15",
+    "length_cm": 444.0,
+    "width_cm": 277.0,
+    "height_cm": 170.0,
+    "weight_kg": 7000.0,
+    "aliases": [
+      "70 15",
+      "mlc 70 15",
+      "roadmat pallet mlc 70/14",
+      "roadmat pallet mlc 70/15"
+    ],
+    "language_labels": {
+      "nl": "ROADMAT PALLET MLC 70/14"
+    },
+    "source": "overzicht_materieel",
+    "active": true
+  },
+  {
+    "sap_code": "RUPSDOZER HANOMAG 680 E (BULL)",
+    "specifications": "DOZER TRACKED HANOMAG 680 E (BULL)",
+    "length_cm": 698.0,
+    "width_cm": 325.0,
+    "height_cm": 307.0,
+    "weight_kg": 19500.0,
+    "aliases": [
+      "680 bull",
+      "dozer tracked hanomag 680 e (bull)",
+      "hanomag 680 bull",
+      "rupsdozer hanomag 680 e (bull)"
+    ],
+    "language_labels": {
+      "nl": "RUPSDOZER HANOMAG 680 E (BULL)"
+    },
+    "source": "overzicht_materieel",
+    "active": true
+  },
+  {
+    "sap_code": "RUPSDOZER HANOMAG D680 E (ANGLE)",
+    "specifications": "DOZER TRACKED HANOMAG D680 E (ANGLE)",
+    "length_cm": 698.0,
+    "width_cm": 384.0,
+    "height_cm": 307.0,
+    "weight_kg": 19500.0,
+    "aliases": [
+      "d680 angle",
+      "dozer tracked hanomag d680 e (angle)",
+      "hanomag d680 angle",
+      "rupsdozer hanomag d680 e (angle)"
+    ],
+    "language_labels": {
+      "nl": "RUPSDOZER HANOMAG D680 E (ANGLE)"
+    },
+    "source": "overzicht_materieel",
+    "active": true
+  },
+  {
+    "sap_code": "SCANIA ALK",
+    "specifications": "TRUCK SCANIA CONT TRANSPORT TYPE A (ALC)",
+    "length_cm": 968.0,
+    "width_cm": 254.0,
+    "height_cm": 364.0,
+    "weight_kg": 20000.0,
+    "aliases": [
+      "scania alk",
+      "scania cont transport type a (alc)",
+      "transport type alc",
+      "truck scania cont transport type a (alc)",
+      "type alc"
+    ],
+    "language_labels": {
+      "nl": "SCANIA ALK"
+    },
+    "source": "overzicht_materieel",
+    "active": true
+  },
+  {
+    "sap_code": "SCANIA CHU",
+    "specifications": "TRUCK SCANIA CONT TRANSPORT TYPE B (CHU)",
+    "length_cm": 968.0,
+    "width_cm": 254.0,
+    "height_cm": 377.0,
+    "weight_kg": 20000.0,
+    "aliases": [
+      "scania chu",
+      "scania cont transport type b (chu)",
+      "transport type chu",
+      "truck scania cont transport type b (chu)",
+      "type chu"
+    ],
+    "language_labels": {
+      "nl": "SCANIA CHU"
+    },
+    "source": "overzicht_materieel",
+    "active": true
+  },
+  {
+    "sap_code": "SCANIA CHU FR",
+    "specifications": "TRUCK SCANIA CONT TRANSPORT TYPE B (CHU)",
+    "length_cm": 968.0,
+    "width_cm": 290.0,
+    "height_cm": 376.0,
+    "weight_kg": 22000.0,
+    "aliases": [
+      "scania chu fr",
+      "scania cont transport type b (chu)",
+      "transport type chu",
+      "truck scania cont transport type b (chu)",
+      "type chu"
+    ],
+    "language_labels": {
+      "nl": "SCANIA CHU FR"
+    },
+    "source": "overzicht_materieel",
+    "active": true
+  },
+  {
+    "sap_code": "SCANIA GRYPHUS",
+    "specifications": "TRUCK SCANIA GRYPHUS",
+    "length_cm": 1074.0,
+    "width_cm": 299.0,
+    "height_cm": 369.0,
+    "weight_kg": 22000.0,
+    "aliases": [
+      "scania gryphus",
+      "truck scania gryphus"
+    ],
+    "language_labels": {
+      "nl": "SCANIA GRYPHUS"
+    },
+    "source": "overzicht_materieel",
+    "active": true
+  },
+  {
+    "sap_code": "SCANIA KIPPER",
+    "specifications": "KIPPER SCANIA",
+    "length_cm": 968.0,
+    "width_cm": 254.0,
+    "height_cm": 377.0,
+    "weight_kg": 22000.0,
+    "aliases": [
+      "kipper scania",
+      "scania kipper"
+    ],
+    "language_labels": {
+      "nl": "SCANIA KIPPER"
+    },
+    "source": "overzicht_materieel",
+    "active": true
+  },
+  {
+    "sap_code": "SCANIA LAUNCHER",
+    "specifications": "SCANIA LAUNCHER",
+    "length_cm": 830.0,
+    "width_cm": 250.0,
+    "height_cm": 390.0,
+    "weight_kg": 18000.0,
+    "aliases": [
+      "scania launcher"
+    ],
+    "language_labels": {
+      "nl": "SCANIA LAUNCHER"
+    },
+    "source": "overzicht_materieel",
+    "active": true
+  },
+  {
+    "sap_code": "SCANIA ZLS",
+    "specifications": "SCANIA SIDELOADER",
+    "length_cm": 1047.0,
+    "width_cm": 290.0,
+    "height_cm": 372.0,
+    "weight_kg": 20000.0,
+    "aliases": [
+      "scania sideloader",
+      "scania zls"
+    ],
+    "language_labels": {
+      "nl": "SCANIA ZLS"
+    },
+    "source": "overzicht_materieel",
+    "active": true
+  },
+  {
+    "sap_code": "SKODA YETI",
+    "specifications": "VEHICLE SKODA YETI",
+    "length_cm": 402.0,
+    "width_cm": 179.0,
+    "height_cm": 169.0,
+    "weight_kg": 1370.0,
+    "aliases": [
+      "skoda yeti",
+      "vehicle skoda yeti"
+    ],
+    "language_labels": {
+      "nl": "SKODA YETI"
+    },
+    "source": "overzicht_materieel",
+    "active": true
+  },
+  {
+    "sap_code": "TELEHANDLER 15 KN",
+    "specifications": "TELEHANDLER 15 KN",
+    "length_cm": 640.0,
+    "width_cm": 250.0,
+    "height_cm": 275.0,
+    "weight_kg": 9000.0,
+    "aliases": [
+      "15 kn",
+      "telehandler 15 kn"
+    ],
+    "language_labels": {
+      "nl": "TELEHANDLER 15 KN"
+    },
+    "source": "overzicht_materieel",
+    "active": true
+  },
+  {
+    "sap_code": "TRAILER  15 KN AD",
+    "specifications": "TRAILER 15 KN GENERAL PURPOSE",
+    "length_cm": 455.0,
+    "width_cm": 234.0,
+    "height_cm": 289.0,
+    "weight_kg": 3000.0,
+    "aliases": [
+      "15 kn general purpose",
+      "general purpose",
+      "kn general purpose",
+      "trailer  15 kn ad",
+      "trailer 15 kn general purpose"
+    ],
+    "language_labels": {
+      "nl": "TRAILER  15 KN AD"
+    },
+    "source": "overzicht_materieel",
+    "active": true
+  },
+  {
+    "sap_code": "TRAILER 12,5 KVA",
+    "specifications": "TRAILER 12,5 KVA",
+    "length_cm": 530.0,
+    "width_cm": 175.0,
+    "height_cm": 170.0,
+    "weight_kg": 2000.0,
+    "aliases": [
+      "12 kva",
+      "12,5 kva",
+      "trailer 12,5 kva"
+    ],
+    "language_labels": {
+      "nl": "TRAILER 12,5 KVA"
+    },
+    "source": "overzicht_materieel",
+    "active": true
+  },
+  {
+    "sap_code": "TRAILER 15 KN WATER",
+    "specifications": "TRAILER 15 KN WATER",
+    "length_cm": 455.0,
+    "width_cm": 234.0,
+    "height_cm": 238.0,
+    "weight_kg": 3000.0,
+    "aliases": [
+      "15 kn water",
+      "kn water",
+      "trailer 15 kn water"
+    ],
+    "language_labels": {
+      "nl": "TRAILER 15 KN WATER"
+    },
+    "source": "overzicht_materieel",
+    "active": true
+  },
+  {
+    "sap_code": "TRAILER 20 KN MVHT",
+    "specifications": "TRAILER 20 KN MOBILE FORFLIFT ( KOOIAAP)",
+    "length_cm": 455.0,
+    "width_cm": 234.0,
+    "height_cm": 238.0,
+    "weight_kg": 3000.0,
+    "aliases": [
+      "20 kn mobile forflift ( kooiaap)",
+      "forflift kooiaap",
+      "mobile forflift kooiaap",
+      "trailer 20 kn mobile forflift ( kooiaap)",
+      "trailer 20 kn mvht"
+    ],
+    "language_labels": {
+      "nl": "TRAILER 20 KN MVHT"
+    },
+    "source": "overzicht_materieel",
+    "active": true
+  },
+  {
+    "sap_code": "TRAILER 25 KN SARIS",
+    "specifications": "TRAILER 25 KN GENERAL PURPOSE SARIS",
+    "length_cm": 500.0,
+    "width_cm": 239.0,
+    "height_cm": 294.0,
+    "weight_kg": 5000.0,
+    "aliases": [
+      "25 kn general purpose saris",
+      "general purpose saris",
+      "purpose saris",
+      "trailer 25 kn general purpose saris",
+      "trailer 25 kn saris"
+    ],
+    "language_labels": {
+      "nl": "TRAILER 25 KN SARIS"
+    },
+    "source": "overzicht_materieel",
+    "active": true
+  },
+  {
+    "sap_code": "TRAILER 34 KW",
+    "specifications": "TRAILER 34 KW",
+    "length_cm": 480.0,
+    "width_cm": 225.0,
+    "height_cm": 212.0,
+    "weight_kg": 3000.0,
+    "aliases": [
+      "34 kw",
+      "trailer 34 kw"
+    ],
+    "language_labels": {
+      "nl": "TRAILER 34 KW"
+    },
+    "source": "overzicht_materieel",
+    "active": true
+  },
+  {
+    "sap_code": "TRAILER 45 5 KVA",
+    "specifications": "TRAILER 45 5 KVA",
+    "length_cm": 635.0,
+    "width_cm": 218.0,
+    "height_cm": 286.0,
+    "weight_kg": 6000.0,
+    "aliases": [
+      "45 5 kva",
+      "45 kva",
+      "trailer 45 5 kva"
+    ],
+    "language_labels": {
+      "nl": "TRAILER 45 5 KVA"
+    },
+    "source": "overzicht_materieel",
+    "active": true
+  },
+  {
+    "sap_code": "TRAILER BROSHUIS 280 KN",
+    "specifications": "TRAILER BROSHUIS 280 KN",
+    "length_cm": 1280.0,
+    "width_cm": 260.0,
+    "height_cm": 164.0,
+    "weight_kg": 10000.0,
+    "aliases": [
+      "280 kn",
+      "broshuis 280 kn",
+      "trailer broshuis 280 kn"
+    ],
+    "language_labels": {
+      "nl": "TRAILER BROSHUIS 280 KN"
+    },
+    "source": "overzicht_materieel",
+    "active": true
+  },
+  {
+    "sap_code": "TRAILER BROSHUIS 400 KN",
+    "specifications": "TRAILER BROSHUIS 400 KN",
+    "length_cm": 1461.0,
+    "width_cm": 279.0,
+    "height_cm": 335.0,
+    "weight_kg": 14000.0,
+    "aliases": [
+      "400 kn",
+      "broshuis 400 kn",
+      "trailer broshuis 400 kn"
+    ],
+    "language_labels": {
+      "nl": "TRAILER BROSHUIS 400 KN"
+    },
+    "source": "overzicht_materieel",
+    "active": true
+  },
+  {
+    "sap_code": "TRAILER BROSHUIS 650 KN",
+    "specifications": "TRAILER BROSHUIS 650 KN",
+    "length_cm": 1461.0,
+    "width_cm": 299.0,
+    "height_cm": 335.0,
+    "weight_kg": 22000.0,
+    "aliases": [
+      "650 kn",
+      "broshuis 650 kn",
+      "trailer broshuis 650 kn"
+    ],
+    "language_labels": {
+      "nl": "TRAILER BROSHUIS 650 KN"
+    },
+    "source": "overzicht_materieel",
+    "active": true
+  },
+  {
+    "sap_code": "TRAILER BURG 165 KN",
+    "specifications": "TRAILER BURG 165 KN",
+    "length_cm": 923.0,
+    "width_cm": 255.0,
+    "height_cm": 118.0,
+    "weight_kg": 4000.0,
+    "aliases": [
+      "165 kn",
+      "burg 165 kn",
+      "trailer burg 165 kn"
+    ],
+    "language_labels": {
+      "nl": "TRAILER BURG 165 KN"
+    },
+    "source": "overzicht_materieel",
+    "active": true
+  },
+  {
+    "sap_code": "TRAILER BURG 165 KN W NEST",
+    "specifications": "TRAILER BURG 165 KN W NEST",
+    "length_cm": 923.0,
+    "width_cm": 255.0,
+    "height_cm": 118.0,
+    "weight_kg": 12000.0,
+    "aliases": [
+      "165 kn nest",
+      "burg 165 kn w nest",
+      "kn nest",
+      "trailer burg 165 kn w nest"
+    ],
+    "language_labels": {
+      "nl": "TRAILER BURG 165 KN W NEST"
+    },
+    "source": "overzicht_materieel",
+    "active": true
+  },
+  {
+    "sap_code": "TRAILER CLIMAX",
+    "specifications": "TRAILER CLIMAX",
+    "length_cm": 789.0,
+    "width_cm": 260.0,
+    "height_cm": 310.0,
+    "weight_kg": 3000.0,
+    "aliases": [
+      "climax",
+      "trailer climax"
+    ],
+    "language_labels": {
+      "nl": "TRAILER CLIMAX"
+    },
+    "source": "overzicht_materieel",
+    "active": true
+  },
+  {
+    "sap_code": "TRAILER DA-1000",
+    "specifications": "TRAILER DA-1000",
+    "length_cm": 550.0,
+    "width_cm": 200.0,
+    "height_cm": 270.0,
+    "weight_kg": 5000.0,
+    "aliases": [
+      "da 1000",
+      "da-1000",
+      "trailer da-1000"
+    ],
+    "language_labels": {
+      "nl": "TRAILER DA-1000"
+    },
+    "source": "overzicht_materieel",
+    "active": true
+  },
+  {
+    "sap_code": "TRAILER HOW 105MM",
+    "specifications": "TRAILER HOW 105MM",
+    "length_cm": 532.0,
+    "width_cm": 196.0,
+    "height_cm": 140.0,
+    "weight_kg": 2000.0,
+    "aliases": [
+      "how 105mm",
+      "trailer how 105mm"
+    ],
+    "language_labels": {
+      "nl": "TRAILER HOW 105MM"
+    },
+    "source": "overzicht_materieel",
+    "active": true
+  },
+  {
+    "sap_code": "TRAILER KITCHEN TFK 250",
+    "specifications": "TRAILER KITCHEN TFK 250",
+    "length_cm": 402.0,
+    "width_cm": 216.0,
+    "height_cm": 263.0,
+    "weight_kg": 2200.0,
+    "aliases": [
+      "kitchen tfk 250",
+      "tfk 250",
+      "trailer kitchen tfk 250"
+    ],
+    "language_labels": {
+      "nl": "TRAILER KITCHEN TFK 250"
+    },
+    "source": "overzicht_materieel",
+    "active": true
+  },
+  {
+    "sap_code": "TRAILER MORTAR",
+    "specifications": "TRAILER MORTAR",
+    "length_cm": 302.0,
+    "width_cm": 193.0,
+    "height_cm": 134.0,
+    "weight_kg": 1000.0,
+    "aliases": [
+      "mortar",
+      "trailer mortar"
+    ],
+    "language_labels": {
+      "nl": "TRAILER MORTAR"
+    },
+    "source": "overzicht_materieel",
+    "active": true
+  },
+  {
+    "sap_code": "TRAILER MPQ",
+    "specifications": "TRAILER MPQ",
+    "length_cm": 439.0,
+    "width_cm": 213.0,
+    "height_cm": 250.0,
+    "weight_kg": 4000.0,
+    "aliases": [
+      "mpq",
+      "trailer mpq"
+    ],
+    "language_labels": {
+      "nl": "TRAILER MPQ"
+    },
+    "source": "overzicht_materieel",
+    "active": true
+  },
+  {
+    "sap_code": "TRAILER OMW",
+    "specifications": "TRAILER WITH WORKSPACE",
+    "length_cm": 1200.0,
+    "width_cm": 250.0,
+    "height_cm": 395.0,
+    "weight_kg": 10880.0,
+    "aliases": [
+      "trailer omw",
+      "trailer with workspace",
+      "with workspace"
+    ],
+    "language_labels": {
+      "nl": "TRAILER OMW"
+    },
+    "source": "overzicht_materieel",
+    "active": true
+  },
+  {
+    "sap_code": "TRAILER POON",
+    "specifications": "TRAILER POON",
+    "length_cm": 494.0,
+    "width_cm": 186.0,
+    "height_cm": 212.0,
+    "weight_kg": 2000.0,
+    "aliases": [
+      "poon",
+      "trailer poon"
+    ],
+    "language_labels": {
+      "nl": "TRAILER POON"
+    },
+    "source": "overzicht_materieel",
+    "active": true
+  },
+  {
+    "sap_code": "TRAILER SATCOM",
+    "specifications": "TRAILER SATCOM",
+    "length_cm": 468.0,
+    "width_cm": 196.0,
+    "height_cm": 185.0,
+    "weight_kg": 2000.0,
+    "aliases": [
+      "satcom",
+      "trailer satcom"
+    ],
+    "language_labels": {
+      "nl": "TRAILER SATCOM"
+    },
+    "source": "overzicht_materieel",
+    "active": true
+  },
+  {
+    "sap_code": "TRAILER SMAG",
+    "specifications": "TRAILER SMAG",
+    "length_cm": 700.0,
+    "width_cm": 240.0,
+    "height_cm": 285.0,
+    "weight_kg": 4000.0,
+    "aliases": [
+      "smag",
+      "trailer smag"
+    ],
+    "language_labels": {
+      "nl": "TRAILER SMAG"
+    },
+    "source": "overzicht_materieel",
+    "active": true
+  },
+  {
+    "sap_code": "TRAILER WERLUST LOADED",
+    "specifications": "TRAILER WERLUST LOADED",
+    "length_cm": 788.0,
+    "width_cm": 265.0,
+    "height_cm": 328.0,
+    "weight_kg": 10000.0,
+    "aliases": [
+      "trailer werlust loaded",
+      "werlust loaded"
+    ],
+    "language_labels": {
+      "nl": "TRAILER WERLUST LOADED"
+    },
+    "source": "overzicht_materieel",
+    "active": true
+  },
+  {
+    "sap_code": "UNIMOG",
+    "specifications": "TRUCK UNIMOG",
+    "length_cm": 620.0,
+    "width_cm": 230.0,
+    "height_cm": 296.0,
+    "weight_kg": 8000.0,
+    "aliases": [
+      "truck unimog",
+      "unimog"
+    ],
+    "language_labels": {
+      "nl": "UNIMOG"
+    },
+    "source": "overzicht_materieel",
+    "active": true
+  },
+  {
+    "sap_code": "VECTOR",
+    "specifications": "ALL TERRAIN VEHICLE WHEELED VECTOR",
+    "length_cm": 510.0,
+    "width_cm": 180.0,
+    "height_cm": 220.0,
+    "weight_kg": 3500.0,
+    "aliases": [
+      "all terrain vector",
+      "all terrain vehicle wheeled vector",
+      "terrain vector",
+      "vector"
+    ],
+    "language_labels": {
+      "nl": "VECTOR"
+    },
+    "source": "overzicht_materieel",
+    "active": true
+  },
+  {
+    "sap_code": "VELDAMBULANCE VAU 12KN 4X4",
+    "specifications": "FIELD AMBULANCE 12 KN 4x4 (MARINES)",
+    "length_cm": 525.0,
+    "width_cm": 195.0,
+    "height_cm": 255.0,
+    "weight_kg": 3200.0,
+    "aliases": [
+      "4x4 marines",
+      "field ambulance 12 kn 4x4 (marines)",
+      "kn 4x4 marines",
+      "veldambulance vau 12kn 4x4"
+    ],
+    "language_labels": {
+      "nl": "VELDAMBULANCE VAU 12KN 4X4"
+    },
+    "source": "overzicht_materieel",
+    "active": true
+  },
+  {
+    "sap_code": "VOLVO EC220 BEL",
+    "specifications": "EXCAVATOR TRACKED VOLVO EC 220 BEL",
+    "length_cm": 870.0,
+    "width_cm": 299.0,
+    "height_cm": 322.0,
+    "weight_kg": 22000.0,
+    "aliases": [
+      "220 bel",
+      "ec 220 bel",
+      "excavator tracked volvo ec 220 bel",
+      "volvo ec 220 bel",
+      "volvo ec220 bel"
+    ],
+    "language_labels": {
+      "nl": "VOLVO EC220 BEL"
+    },
+    "source": "overzicht_materieel",
+    "active": true
+  },
+  {
+    "sap_code": "VOLVO GRAAFMACHINE EC220DL",
+    "specifications": "EXCAVATOR TRACKED VOLVO EC 220 DL",
+    "length_cm": 980.0,
+    "width_cm": 280.0,
+    "height_cm": 326.0,
+    "weight_kg": 23500.0,
+    "aliases": [
+      "220 dl",
+      "ec 220 dl",
+      "excavator tracked volvo ec 220 dl",
+      "volvo ec 220 dl",
+      "volvo graafmachine ec220dl"
+    ],
+    "language_labels": {
+      "nl": "VOLVO GRAAFMACHINE EC220DL"
+    },
+    "source": "overzicht_materieel",
+    "active": true
+  },
+  {
+    "sap_code": "VOLVO KIPPER",
+    "specifications": "KIPPER VOLVO",
+    "length_cm": 894.0,
+    "width_cm": 259.0,
+    "height_cm": 344.0,
+    "weight_kg": 15000.0,
+    "aliases": [
+      "kipper volvo",
+      "volvo kipper"
+    ],
+    "language_labels": {
+      "nl": "VOLVO KIPPER"
+    },
+    "source": "overzicht_materieel",
+    "active": true
+  },
+  {
+    "sap_code": "VW T5",
+    "specifications": "VEHICLE TRANSPORT VW T5",
+    "length_cm": 530.0,
+    "width_cm": 230.0,
+    "height_cm": 219.0,
+    "weight_kg": 2000.0,
+    "aliases": [
+      "transport vw t5",
+      "vehicle transport vw t5",
+      "vw t5"
+    ],
+    "language_labels": {
+      "nl": "VW T5"
+    },
+    "source": "overzicht_materieel",
+    "active": true
+  },
+  {
+    "sap_code": "YA 4442",
+    "specifications": "TRUCK YA 4442",
+    "length_cm": 730.0,
+    "width_cm": 243.0,
+    "height_cm": 285.0,
+    "weight_kg": 10000.0,
+    "aliases": [
+      "truck ya 4442",
+      "ya 4442"
+    ],
+    "language_labels": {
+      "nl": "YA 4442"
+    },
+    "source": "overzicht_materieel",
+    "active": true
+  },
+  {
+    "sap_code": "YA 5444",
+    "specifications": "TRUCK YA 5444",
+    "length_cm": 915.0,
+    "width_cm": 247.0,
+    "height_cm": 380.0,
+    "weight_kg": 10000.0,
+    "aliases": [
+      "truck ya 5444",
+      "ya 5444"
+    ],
+    "language_labels": {
+      "nl": "YA 5444"
+    },
+    "source": "overzicht_materieel",
+    "active": true
+  },
+  {
+    "sap_code": "YAC 2300 (EXCL CONTAINER)",
+    "specifications": "TRUCK YAC 2300 WITHOUT CONTAINER",
+    "length_cm": 847.0,
+    "width_cm": 254.0,
+    "height_cm": 301.0,
+    "weight_kg": 14000.0,
+    "aliases": [
+      "2300 container",
+      "truck yac 2300 without container",
+      "yac 2300 (excl container)",
+      "yac 2300 container",
+      "yac 2300 without container"
+    ],
+    "language_labels": {
+      "nl": "YAC 2300 (EXCL CONTAINER)"
+    },
+    "source": "overzicht_materieel",
+    "active": true
+  },
+  {
+    "sap_code": "YAC 2300 (INCL CONTAINER)",
+    "specifications": "TRUCK YAC 2300 WITH CONTAINER",
+    "length_cm": 847.0,
+    "width_cm": 254.0,
+    "height_cm": 397.0,
+    "weight_kg": 24000.0,
+    "aliases": [
+      "2300 container",
+      "truck yac 2300 with container",
+      "yac 2300 (incl container)",
+      "yac 2300 container",
+      "yac 2300 with container"
+    ],
+    "language_labels": {
+      "nl": "YAC 2300 (INCL CONTAINER)"
+    },
+    "source": "overzicht_materieel",
+    "active": true
+  },
+  {
+    "sap_code": "YAD/YDD-4442",
+    "specifications": "TRUCK YAD-4442 GENERAL PURPOSE",
+    "length_cm": 730.0,
+    "width_cm": 243.0,
+    "height_cm": 342.0,
+    "weight_kg": 10700.0,
+    "aliases": [
+      "4442 general purpose",
+      "general purpose",
+      "truck yad-4442 general purpose",
+      "yad-4442 general purpose",
+      "yad/ydd-4442"
+    ],
+    "language_labels": {
+      "nl": "YAD/YDD-4442"
+    },
+    "source": "overzicht_materieel",
+    "active": true
+  },
+  {
+    "sap_code": "YAI 4442",
+    "specifications": "TRUCK YAI 4442",
+    "length_cm": 730.0,
+    "width_cm": 243.0,
+    "height_cm": 342.0,
+    "weight_kg": 9600.0,
+    "aliases": [
+      "truck yai 4442",
+      "yai 4442"
+    ],
+    "language_labels": {
+      "nl": "YAI 4442"
+    },
+    "source": "overzicht_materieel",
+    "active": true
+  },
+  {
+    "sap_code": "YAJ 4442",
+    "specifications": "TRUCK YAJ 4442",
+    "length_cm": 730.0,
+    "width_cm": 243.0,
+    "height_cm": 285.0,
+    "weight_kg": 10600.0,
+    "aliases": [
+      "truck yaj 4442",
+      "yaj 4442"
+    ],
+    "language_labels": {
+      "nl": "YAJ 4442"
+    },
+    "source": "overzicht_materieel",
+    "active": true
+  },
+  {
+    "sap_code": "YAK 4442",
+    "specifications": "TRUCK YAK 4442",
+    "length_cm": 730.0,
+    "width_cm": 243.0,
+    "height_cm": 369.0,
+    "weight_kg": 11900.0,
+    "aliases": [
+      "truck yak 4442",
+      "yak 4442"
+    ],
+    "language_labels": {
+      "nl": "YAK 4442"
+    },
+    "source": "overzicht_materieel",
+    "active": true
+  },
+  {
+    "sap_code": "YAP 4442",
+    "specifications": "TRUCK YAP 4442",
+    "length_cm": 730.0,
+    "width_cm": 243.0,
+    "height_cm": 342.0,
+    "weight_kg": 8700.0,
+    "aliases": [
+      "truck yap 4442",
+      "yap 4442"
+    ],
+    "language_labels": {
+      "nl": "YAP 4442"
+    },
+    "source": "overzicht_materieel",
+    "active": true
+  },
+  {
+    "sap_code": "YAS 2300",
+    "specifications": "TRUCK YAS 2300",
+    "length_cm": 775.0,
+    "width_cm": 250.0,
+    "height_cm": 302.0,
+    "weight_kg": 14000.0,
+    "aliases": [
+      "truck yas 2300",
+      "yas 2300"
+    ],
+    "language_labels": {
+      "nl": "YAS 2300"
+    },
+    "source": "overzicht_materieel",
+    "active": true
+  },
+  {
+    "sap_code": "YAS 4442",
+    "specifications": "TRUCK YAS 4442",
+    "length_cm": 730.0,
+    "width_cm": 243.0,
+    "height_cm": 347.0,
+    "weight_kg": 9700.0,
+    "aliases": [
+      "truck yas 4442",
+      "yas 4442"
+    ],
+    "language_labels": {
+      "nl": "YAS 4442"
+    },
+    "source": "overzicht_materieel",
+    "active": true
+  },
+  {
+    "sap_code": "YAZ 2300",
+    "specifications": "TRUCK YAZ 2300",
+    "length_cm": 955.0,
+    "width_cm": 250.0,
+    "height_cm": 360.0,
+    "weight_kg": 18100.0,
+    "aliases": [
+      "truck yaz 2300",
+      "yaz 2300"
+    ],
+    "language_labels": {
+      "nl": "YAZ 2300"
+    },
+    "source": "overzicht_materieel",
+    "active": true
+  },
+  {
+    "sap_code": "YAZ 2300 MDI",
+    "specifications": "TRUCK YAZ 2300 MIDI",
+    "length_cm": 995.0,
+    "width_cm": 250.0,
+    "height_cm": 370.0,
+    "weight_kg": 16000.0,
+    "aliases": [
+      "2300 midi",
+      "truck yaz 2300 midi",
+      "yaz 2300 mdi",
+      "yaz 2300 midi"
+    ],
+    "language_labels": {
+      "nl": "YAZ 2300 MDI"
+    },
+    "source": "overzicht_materieel",
+    "active": true
+  },
+  {
+    "sap_code": "YBB 480",
+    "specifications": "TRUCK YBB 480",
+    "length_cm": 938.0,
+    "width_cm": 250.0,
+    "height_cm": 400.0,
+    "weight_kg": 27000.0,
+    "aliases": [
+      "truck ybb 480",
+      "ybb 480"
+    ],
+    "language_labels": {
+      "nl": "YBB 480"
+    },
+    "source": "overzicht_materieel",
+    "active": true
+  },
+  {
+    "sap_code": "YBZ 3300",
+    "specifications": "TRUCK YBZ 3300 RECOVERY",
+    "length_cm": 935.0,
+    "width_cm": 250.0,
+    "height_cm": 358.0,
+    "weight_kg": 21870.0,
+    "aliases": [
+      "3300 recovery",
+      "truck ybz 3300 recovery",
+      "ybz 3300",
+      "ybz 3300 recovery"
+    ],
+    "language_labels": {
+      "nl": "YBZ 3300"
+    },
+    "source": "overzicht_materieel",
+    "active": true
+  },
+  {
+    "sap_code": "YCD 2300",
+    "specifications": "TRUCK YCD 2300",
+    "length_cm": 880.0,
+    "width_cm": 255.0,
+    "height_cm": 347.0,
+    "weight_kg": 12000.0,
+    "aliases": [
+      "truck ycd 2300",
+      "ycd 2300"
+    ],
+    "language_labels": {
+      "nl": "YCD 2300"
+    },
+    "source": "overzicht_materieel",
+    "active": true
+  },
+  {
+    "sap_code": "YCS 4442",
+    "specifications": "TRUCK YCS 4442",
+    "length_cm": 730.0,
+    "width_cm": 243.0,
+    "height_cm": 285.0,
+    "weight_kg": 10000.0,
+    "aliases": [
+      "truck ycs 4442",
+      "ycs 4442"
+    ],
+    "language_labels": {
+      "nl": "YCS 4442"
+    },
+    "source": "overzicht_materieel",
+    "active": true
+  },
+  {
+    "sap_code": "YCZ 2300",
+    "specifications": "TRUCK YCZ 2300",
+    "length_cm": 924.0,
+    "width_cm": 252.0,
+    "height_cm": 350.0,
+    "weight_kg": 14000.0,
+    "aliases": [
+      "truck ycz 2300",
+      "ycz 2300"
+    ],
+    "language_labels": {
+      "nl": "YCZ 2300"
+    },
+    "source": "overzicht_materieel",
+    "active": true
+  },
+  {
+    "sap_code": "YCZ 3300",
+    "specifications": "TRUCK YCZ 3300",
+    "length_cm": 924.0,
+    "width_cm": 252.0,
+    "height_cm": 350.0,
+    "weight_kg": 14000.0,
+    "aliases": [
+      "truck ycz 3300",
+      "ycz 3300"
+    ],
+    "language_labels": {
+      "nl": "YCZ 3300"
+    },
+    "source": "overzicht_materieel",
+    "active": true
+  },
+  {
+    "sap_code": "YDZ 2300",
+    "specifications": "TRUCK YDZ 2300 WATER",
+    "length_cm": 802.0,
+    "width_cm": 250.0,
+    "height_cm": 355.0,
+    "weight_kg": 24000.0,
+    "aliases": [
+      "2300 water",
+      "truck ydz 2300 water",
+      "ydz 2300",
+      "ydz 2300 water"
+    ],
+    "language_labels": {
+      "nl": "YDZ 2300"
+    },
+    "source": "overzicht_materieel",
+    "active": true
+  },
+  {
+    "sap_code": "YF 4442 BDM",
+    "specifications": "TRUCK YF 4442 FUEL",
+    "length_cm": 730.0,
+    "width_cm": 243.0,
+    "height_cm": 285.0,
+    "weight_kg": 11500.0,
+    "aliases": [
+      "4442 fuel",
+      "truck yf 4442 fuel",
+      "yf 4442 bdm",
+      "yf 4442 fuel"
+    ],
+    "language_labels": {
+      "nl": "YF 4442 BDM"
+    },
+    "source": "overzicht_materieel",
+    "active": true
+  },
+  {
+    "sap_code": "YFZ 2300",
+    "specifications": "TRUCK YFZ 2300 FUEL",
+    "length_cm": 955.0,
+    "width_cm": 250.0,
+    "height_cm": 320.0,
+    "weight_kg": 24000.0,
+    "aliases": [
+      "2300 fuel",
+      "truck yfz 2300 fuel",
+      "yfz 2300",
+      "yfz 2300 fuel"
+    ],
+    "language_labels": {
+      "nl": "YFZ 2300"
+    },
+    "source": "overzicht_materieel",
+    "active": true
+  },
+  {
+    "sap_code": "YGZ 2300",
+    "specifications": "TRUCK YGZ 2300 ENGINEERS BRIDGE",
+    "length_cm": 1028.0,
+    "width_cm": 345.0,
+    "height_cm": 345.0,
+    "weight_kg": 19000.0,
+    "aliases": [
+      "2300 engineers bridge",
+      "engineers bridge",
+      "truck ygz 2300 engineers bridge",
+      "ygz 2300",
+      "ygz 2300 engineers bridge"
+    ],
+    "language_labels": {
+      "nl": "YGZ 2300"
+    },
+    "source": "overzicht_materieel",
+    "active": true
+  },
+  {
+    "sap_code": "YGZ 2300 MET MAT MLC 30",
+    "specifications": "TRUCK YGZ 2300 ENGINEERS BRIDGE WITH MAT MLC 30",
+    "length_cm": 915.0,
+    "width_cm": 341.0,
+    "height_cm": 363.0,
+    "weight_kg": 28800.0,
+    "aliases": [
+      "mat mlc 30",
+      "mlc 30",
+      "truck ygz 2300 engineers bridge with mat mlc 30",
+      "ygz 2300 engineers bridge with mat mlc 30",
+      "ygz 2300 met mat mlc 30"
+    ],
+    "language_labels": {
+      "nl": "YGZ 2300 MET MAT MLC 30"
+    },
+    "source": "overzicht_materieel",
+    "active": true
+  },
+  {
+    "sap_code": "YGZ 2300 MET PONTON",
+    "specifications": "TRUCK YGZ 2300 ENGINEERS BRIDGE WITH PONTOON",
+    "length_cm": 1028.0,
+    "width_cm": 345.0,
+    "height_cm": 398.0,
+    "weight_kg": 20250.0,
+    "aliases": [
+      "bridge pontoon",
+      "engineers bridge pontoon",
+      "truck ygz 2300 engineers bridge with pontoon",
+      "ygz 2300 engineers bridge with pontoon",
+      "ygz 2300 met ponton"
+    ],
+    "language_labels": {
+      "nl": "YGZ 2300 MET PONTON"
+    },
+    "source": "overzicht_materieel",
+    "active": true
+  },
+  {
+    "sap_code": "YHZ 2300",
+    "specifications": "TRUCK YHZ 2300",
+    "length_cm": 847.0,
+    "width_cm": 255.0,
+    "height_cm": 302.0,
+    "weight_kg": 13000.0,
+    "aliases": [
+      "truck yhz 2300",
+      "yhz 2300"
+    ],
+    "language_labels": {
+      "nl": "YHZ 2300"
+    },
+    "source": "overzicht_materieel",
+    "active": true
+  },
+  {
+    "sap_code": "YKZ 2300",
+    "specifications": "TRUCK YKZ 2300 TIPPER",
+    "length_cm": 802.0,
+    "width_cm": 250.0,
+    "height_cm": 330.0,
+    "weight_kg": 18500.0,
+    "aliases": [
+      "2300 tipper",
+      "truck ykz 2300 tipper",
+      "ykz 2300",
+      "ykz 2300 tipper"
+    ],
+    "language_labels": {
+      "nl": "YKZ 2300"
+    },
+    "source": "overzicht_materieel",
+    "active": true
+  },
+  {
+    "sap_code": "YPR 765 KMAR",
+    "specifications": "CARRIER ARMOURED TRACKED YPR 765 MILITARY POLICE",
+    "length_cm": 535.0,
+    "width_cm": 281.0,
+    "height_cm": 300.0,
+    "weight_kg": 12000.0,
+    "aliases": [
+      "765 military police",
+      "carrier armoured tracked ypr 765 military police",
+      "military police",
+      "ypr 765 kmar"
+    ],
+    "language_labels": {
+      "nl": "YPR 765 KMAR"
+    },
+    "source": "overzicht_materieel",
+    "active": true
+  },
+  {
+    "sap_code": "YPR 765 KMAR M DOZERBLAD",
+    "specifications": "CARRIER ARMOURED TRACKED YPR 765 MP WITH DOZER",
+    "length_cm": 626.0,
+    "width_cm": 282.0,
+    "height_cm": 300.0,
+    "weight_kg": 13500.0,
+    "aliases": [
+      "765 mp dozer",
+      "carrier armoured tracked ypr 765 mp with dozer",
+      "mp dozer",
+      "ypr 765 kmar m dozerblad"
+    ],
+    "language_labels": {
+      "nl": "YPR 765 KMAR M DOZERBLAD"
+    },
+    "source": "overzicht_materieel",
+    "active": true
+  },
+  {
+    "sap_code": "YPR 765 LESVTG",
+    "specifications": "CARRIER ARMOURED TRACKED YPR 765 INSTRUCTION",
+    "length_cm": 552.0,
+    "width_cm": 296.0,
+    "height_cm": 296.0,
+    "weight_kg": 13500.0,
+    "aliases": [
+      "765 instruction",
+      "carrier armoured tracked ypr 765 instruction",
+      "ypr 765 instruction",
+      "ypr 765 lesvtg"
+    ],
+    "language_labels": {
+      "nl": "YPR 765 LESVTG"
+    },
+    "source": "overzicht_materieel",
+    "active": true
+  },
+  {
+    "sap_code": "YPR 765 PRBDR",
+    "specifications": "CARRIER ARMOURED TRACKED YPR 765 BDR",
+    "length_cm": 552.0,
+    "width_cm": 282.0,
+    "height_cm": 256.0,
+    "weight_kg": 13500.0,
+    "aliases": [
+      "765 bdr",
+      "carrier armoured tracked ypr 765 bdr",
+      "ypr 765 bdr",
+      "ypr 765 prbdr"
+    ],
+    "language_labels": {
+      "nl": "YPR 765 PRBDR"
+    },
+    "source": "overzicht_materieel",
+    "active": true
+  },
+  {
+    "sap_code": "YPR 765 PRCO-B",
+    "specifications": "CARRIER ARMOURED TRACKED YPR 765 CO-B",
+    "length_cm": 526.0,
+    "width_cm": 282.0,
+    "height_cm": 279.0,
+    "weight_kg": 14500.0,
+    "aliases": [
+      "765 co",
+      "carrier armoured tracked ypr 765 co-b",
+      "ypr 765 co",
+      "ypr 765 prco-b"
+    ],
+    "language_labels": {
+      "nl": "YPR 765 PRCO-B"
+    },
+    "source": "overzicht_materieel",
+    "active": true
+  },
+  {
+    "sap_code": "YPR 765 PRCO-C1/4",
+    "specifications": "CARRIER ARMOURED TRACKED YPR 765 CO-C1/4",
+    "length_cm": 526.0,
+    "width_cm": 282.0,
+    "height_cm": 256.0,
+    "weight_kg": 13500.0,
+    "aliases": [
+      "765 co c1",
+      "carrier armoured tracked ypr 765 co-c1/4",
+      "co c1",
+      "ypr 765 prco-c1/4"
+    ],
+    "language_labels": {
+      "nl": "YPR 765 PRCO-C1/4"
+    },
+    "source": "overzicht_materieel",
+    "active": true
+  },
+  {
+    "sap_code": "YPR 765 PRCO-C2",
+    "specifications": "CARRIER ARMOURED TRACKED YPR 765 CO-C2",
+    "length_cm": 552.0,
+    "width_cm": 282.0,
+    "height_cm": 256.0,
+    "weight_kg": 13800.0,
+    "aliases": [
+      "765 co c2",
+      "carrier armoured tracked ypr 765 co-c2",
+      "co c2",
+      "ypr 765 prco-c2"
+    ],
+    "language_labels": {
+      "nl": "YPR 765 PRCO-C2"
+    },
+    "source": "overzicht_materieel",
+    "active": true
+  },
+  {
+    "sap_code": "YPR 765 PRCO-C3",
+    "specifications": "CARRIER ARMOURED TRACKED YPR 765 CO-C3",
+    "length_cm": 552.0,
+    "width_cm": 282.0,
+    "height_cm": 256.0,
+    "weight_kg": 13500.0,
+    "aliases": [
+      "765 co c3",
+      "carrier armoured tracked ypr 765 co-c3",
+      "co c3",
+      "ypr 765 prco-c3"
+    ],
+    "language_labels": {
+      "nl": "YPR 765 PRCO-C3"
+    },
+    "source": "overzicht_materieel",
+    "active": true
+  },
+  {
+    "sap_code": "YPR 765 PRCO-C5",
+    "specifications": "CARRIER ARMOURED TRACKED YPR 765 CO-C5",
+    "length_cm": 526.0,
+    "width_cm": 282.0,
+    "height_cm": 254.0,
+    "weight_kg": 15000.0,
+    "aliases": [
+      "765 co c5",
+      "carrier armoured tracked ypr 765 co-c5",
+      "co c5",
+      "ypr 765 prco-c5"
+    ],
+    "language_labels": {
+      "nl": "YPR 765 PRCO-C5"
+    },
+    "source": "overzicht_materieel",
+    "active": true
+  },
+  {
+    "sap_code": "YPR 765 PRGN",
+    "specifications": "CARRIER ARMOURED TRACKED YPR 765 ENGINEER",
+    "length_cm": 526.0,
+    "width_cm": 282.0,
+    "height_cm": 256.0,
+    "weight_kg": 14000.0,
+    "aliases": [
+      "765 engineer",
+      "carrier armoured tracked ypr 765 engineer",
+      "ypr 765 engineer",
+      "ypr 765 prgn"
+    ],
+    "language_labels": {
+      "nl": "YPR 765 PRGN"
+    },
+    "source": "overzicht_materieel",
+    "active": true
+  },
+  {
+    "sap_code": "YPR 765 PRGWT",
+    "specifications": "CARRIER ARMOURED TRACKED YPR 765 AMBULANCE",
+    "length_cm": 526.0,
+    "width_cm": 282.0,
+    "height_cm": 220.0,
+    "weight_kg": 13600.0,
+    "aliases": [
+      "765 ambulance",
+      "carrier armoured tracked ypr 765 ambulance",
+      "ypr 765 ambulance",
+      "ypr 765 prgwt"
+    ],
+    "language_labels": {
+      "nl": "YPR 765 PRGWT"
+    },
+    "source": "overzicht_materieel",
+    "active": true
+  },
+  {
+    "sap_code": "YPR 765 PRMR",
+    "specifications": "CARRIER ARMOURED TRACKED YPR 765 MORTAR",
+    "length_cm": 526.0,
+    "width_cm": 282.0,
+    "height_cm": 273.0,
+    "weight_kg": 14000.0,
+    "aliases": [
+      "765 mortar",
+      "carrier armoured tracked ypr 765 mortar",
+      "ypr 765 mortar",
+      "ypr 765 prmr"
+    ],
+    "language_labels": {
+      "nl": "YPR 765 PRMR"
+    },
+    "source": "overzicht_materieel",
+    "active": true
+  },
+  {
+    "sap_code": "YPR 765 PRV",
+    "specifications": "CARRIER ARMOURED TRACKED YPR 765 FREIGHT",
+    "length_cm": 526.0,
+    "width_cm": 282.0,
+    "height_cm": 273.0,
+    "weight_kg": 14400.0,
+    "aliases": [
+      "765 freight",
+      "carrier armoured tracked ypr 765 freight",
+      "ypr 765 freight",
+      "ypr 765 prv"
+    ],
+    "language_labels": {
+      "nl": "YPR 765 PRV"
+    },
+    "source": "overzicht_materieel",
+    "active": true
+  },
+  {
+    "sap_code": "YPR 765-PRAT",
+    "specifications": "CARRIER ARMOURED TRACKED YPR 765 ANTI TANK",
+    "length_cm": 526.0,
+    "width_cm": 282.0,
+    "height_cm": 304.0,
+    "weight_kg": 14400.0,
+    "aliases": [
+      "765 anti tank",
+      "anti tank",
+      "carrier armoured tracked ypr 765 anti tank",
+      "ypr 765-prat"
+    ],
+    "language_labels": {
+      "nl": "YPR 765-PRAT"
+    },
+    "source": "overzicht_materieel",
+    "active": true
+  },
+  {
+    "sap_code": "YPR 765-PRI",
+    "specifications": "CARRIER ARMOURED TRACKED YPR 765 INFANTRY",
+    "length_cm": 526.0,
+    "width_cm": 282.0,
+    "height_cm": 279.0,
+    "weight_kg": 14500.0,
+    "aliases": [
+      "765 infantry",
+      "carrier armoured tracked ypr 765 infantry",
+      "ypr 765 infantry",
+      "ypr 765-pri"
+    ],
+    "language_labels": {
+      "nl": "YPR 765-PRI"
+    },
+    "source": "overzicht_materieel",
+    "active": true
+  },
+  {
+    "sap_code": "YPR 806 PRB",
+    "specifications": "CARRIER ARMOURED TRACKED YPR 806 RECOVERY",
+    "length_cm": 530.0,
+    "width_cm": 284.0,
+    "height_cm": 311.0,
+    "weight_kg": 13200.0,
+    "aliases": [
+      "806 recovery",
+      "carrier armoured tracked ypr 806 recovery",
+      "ypr 806 prb",
+      "ypr 806 recovery"
+    ],
+    "language_labels": {
+      "nl": "YPR 806 PRB"
+    },
+    "source": "overzicht_materieel",
+    "active": true
+  },
+  {
+    "sap_code": "YTV 2300",
+    "specifications": "TRUCK YTV 2300",
+    "length_cm": 610.0,
+    "width_cm": 250.0,
+    "height_cm": 302.0,
+    "weight_kg": 7930.0,
+    "aliases": [
+      "truck ytv 2300",
+      "ytv 2300"
+    ],
+    "language_labels": {
+      "nl": "YTV 2300"
+    },
+    "source": "overzicht_materieel",
+    "active": true
+  },
+  {
+    "sap_code": "YTV 2300 M OPLEGGER BROSHUIS",
+    "specifications": "TRUCK YTV 2300/TRAILER BROSHUIS",
+    "length_cm": 1650.0,
+    "width_cm": 260.0,
+    "height_cm": 302.0,
+    "weight_kg": 17590.0,
+    "aliases": [
+      "2300 broshuis",
+      "truck ytv 2300/trailer broshuis",
+      "ytv 2300 broshuis",
+      "ytv 2300 m oplegger broshuis",
+      "ytv 2300/trailer broshuis"
+    ],
+    "language_labels": {
+      "nl": "YTV 2300 M OPLEGGER BROSHUIS"
+    },
+    "source": "overzicht_materieel",
+    "active": true
+  },
+  {
+    "sap_code": "YTV 2300/OPLEGGER BTM",
+    "specifications": "TRUCK YTV 2300/TRAILER FUEL BTM",
+    "length_cm": 1550.0,
+    "width_cm": 252.0,
+    "height_cm": 380.0,
+    "weight_kg": 24100.0,
+    "aliases": [
+      "2300 fuel btm",
+      "fuel btm",
+      "truck ytv 2300/trailer fuel btm",
+      "ytv 2300/oplegger btm",
+      "ytv 2300/trailer fuel btm"
+    ],
+    "language_labels": {
+      "nl": "YTV 2300/OPLEGGER BTM"
+    },
+    "source": "overzicht_materieel",
+    "active": true
+  },
+  {
+    "sap_code": "YTV 2300/OPLEGGER HOEKSTRA",
+    "specifications": "TRUCK YTV 2300/TRAILER HOEKSTRA",
+    "length_cm": 1660.0,
+    "width_cm": 250.0,
+    "height_cm": 380.0,
+    "weight_kg": 18800.0,
+    "aliases": [
+      "2300 hoekstra",
+      "truck ytv 2300/trailer hoekstra",
+      "ytv 2300 hoekstra",
+      "ytv 2300/oplegger hoekstra",
+      "ytv 2300/trailer hoekstra"
+    ],
+    "language_labels": {
+      "nl": "YTV 2300/OPLEGGER HOEKSTRA"
+    },
+    "source": "overzicht_materieel",
+    "active": true
+  },
+  {
+    "sap_code": "YTV 2300/OPLEGGER STAU",
+    "specifications": "TRUCK YTV 2300/TRAILER STAU",
+    "length_cm": 1550.0,
+    "width_cm": 252.0,
+    "height_cm": 380.0,
+    "weight_kg": 18800.0,
+    "aliases": [
+      "2300 stau",
+      "truck ytv 2300/trailer stau",
+      "ytv 2300 stau",
+      "ytv 2300/oplegger stau",
+      "ytv 2300/trailer stau"
+    ],
+    "language_labels": {
+      "nl": "YTV 2300/OPLEGGER STAU"
+    },
+    "source": "overzicht_materieel",
+    "active": true
+  },
+  {
+    "sap_code": "YTZ 2300",
+    "specifications": "TRUCK YTZ 2300",
+    "length_cm": 803.0,
+    "width_cm": 248.0,
+    "height_cm": 304.0,
+    "weight_kg": 17000.0,
+    "aliases": [
+      "truck ytz 2300",
+      "ytz 2300"
+    ],
+    "language_labels": {
+      "nl": "YTZ 2300"
+    },
+    "source": "overzicht_materieel",
+    "active": true
+  },
+  {
+    "sap_code": "YTZ 480",
+    "specifications": "TRUCK YTZ 480",
+    "length_cm": 784.0,
+    "width_cm": 250.0,
+    "height_cm": 388.0,
+    "weight_kg": 15000.0,
+    "aliases": [
+      "truck ytz 480",
+      "ytz 480"
+    ],
+    "language_labels": {
+      "nl": "YTZ 480"
+    },
+    "source": "overzicht_materieel",
+    "active": true
+  },
+  {
+    "sap_code": "YTZ 480 ARMOURED",
+    "specifications": "TRUCK YTZ 480 ARMOURED",
+    "length_cm": 784.0,
+    "width_cm": 250.0,
+    "height_cm": 388.0,
+    "weight_kg": 17000.0,
+    "aliases": [
+      "truck ytz 480 armoured",
+      "ytz 480",
+      "ytz 480 armoured"
+    ],
+    "language_labels": {
+      "nl": "YTZ 480 ARMOURED"
+    },
+    "source": "overzicht_materieel",
+    "active": true
+  },
+  {
+    "sap_code": "YTZ 530",
+    "specifications": "TRUCK YTZ 530",
+    "length_cm": 786.0,
+    "width_cm": 250.0,
+    "height_cm": 388.0,
+    "weight_kg": 16000.0,
+    "aliases": [
+      "truck ytz 530",
+      "ytz 530"
+    ],
+    "language_labels": {
+      "nl": "YTZ 530"
+    },
+    "source": "overzicht_materieel",
+    "active": true
+  },
+  {
+    "sap_code": "YTZ 530 ARMOURED",
+    "specifications": "TRUCK YTZ 530 ARMOURED",
+    "length_cm": 786.0,
+    "width_cm": 250.0,
+    "height_cm": 388.0,
+    "weight_kg": 18000.0,
+    "aliases": [
+      "truck ytz 530 armoured",
+      "ytz 530",
+      "ytz 530 armoured"
+    ],
+    "language_labels": {
+      "nl": "YTZ 530 ARMOURED"
+    },
+    "source": "overzicht_materieel",
+    "active": true
+  },
+  {
+    "sap_code": "YWZ 2300 (EXCL MOGOS CONT)",
+    "specifications": "TRUCK YWZ 2300 CONTAINER WITHOUT MEDICAL CONT",
+    "length_cm": 920.0,
+    "width_cm": 255.0,
+    "height_cm": 363.0,
+    "weight_kg": 13200.0,
+    "aliases": [
+      "container medical cont",
+      "medical cont",
+      "truck ywz 2300 container without medical cont",
+      "ywz 2300 (excl mogos cont)",
+      "ywz 2300 container without medical cont"
+    ],
+    "language_labels": {
+      "nl": "YWZ 2300 (EXCL MOGOS CONT)"
+    },
+    "source": "overzicht_materieel",
+    "active": true
+  },
+  {
+    "sap_code": "YWZ 2300 (INCL MOGOS CONT)",
+    "specifications": "TRUCK YWZ 2300 CONTAINER WITH MEDICAL CONT",
+    "length_cm": 1027.0,
+    "width_cm": 255.0,
+    "height_cm": 401.0,
+    "weight_kg": 18200.0,
+    "aliases": [
+      "container medical cont",
+      "medical cont",
+      "truck ywz 2300 container with medical cont",
+      "ywz 2300 (incl mogos cont)",
+      "ywz 2300 container with medical cont"
+    ],
+    "language_labels": {
+      "nl": "YWZ 2300 (INCL MOGOS CONT)"
+    },
+    "source": "overzicht_materieel",
+    "active": true
+  },
+  {
+    "sap_code": "YWZ 3300 (EXCL CONTAINER)",
+    "specifications": "TRUCK YWZ 3300 CONTAINER WITHOUT CONTAINER",
+    "length_cm": 810.0,
+    "width_cm": 250.0,
+    "height_cm": 363.0,
+    "weight_kg": 15260.0,
+    "aliases": [
+      "3300 container container",
+      "container container",
+      "truck ywz 3300 container without container",
+      "ywz 3300 (excl container)",
+      "ywz 3300 container without container"
+    ],
+    "language_labels": {
+      "nl": "YWZ 3300 (EXCL CONTAINER)"
+    },
+    "source": "overzicht_materieel",
+    "active": true
+  },
+  {
+    "sap_code": "YWZ 3300 (INCL CONTAINER A 10 TON)",
+    "specifications": "TRUCK YWZ 3300 CONTAINER WITH CONTAINER A 10 TON",
+    "length_cm": 920.0,
+    "width_cm": 252.0,
+    "height_cm": 418.0,
+    "weight_kg": 25260.0,
+    "aliases": [
+      "10 ton",
+      "container 10 ton",
+      "truck ywz 3300 container with container a 10 ton",
+      "ywz 3300 (incl container a 10 ton)",
+      "ywz 3300 container with container a 10 ton"
+    ],
+    "language_labels": {
+      "nl": "YWZ 3300 (INCL CONTAINER A 10 TON)"
+    },
+    "source": "overzicht_materieel",
+    "active": true
+  }
+]

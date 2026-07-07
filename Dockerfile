@@ -15,6 +15,7 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
     curl \
+    gosu \
     && rm -rf /var/lib/apt/lists/*
 
 RUN useradd -m -u 1000 -s /bin/bash cargopilot
@@ -31,7 +32,6 @@ COPY --from=frontend-build /build/dist ./backend/static/
 
 RUN chmod +x /app/backend/entrypoint.sh && chown -R cargopilot:cargopilot /app
 
-USER cargopilot
 WORKDIR /app/backend
 
 EXPOSE 8080

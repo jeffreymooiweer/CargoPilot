@@ -27,11 +27,42 @@
       "rotatable": "V",
       "weapons": "W",
       "conditioned": "X",
+      "temperature_c": "Y",
       "dangerous_goods": "AA",
       "ammunition": "AB",
       "itar": "AC",
-      "tbb": "AD"
+      "tbb": "AD",
+      "tbb_category": "AE"
     }
+  },
+  "sheet_d": {
+    "sheet": "D",
+    "metadata": {
+      "date": "C3",
+      "route": "C4",
+      "ba_code": "C5",
+      "vehicle": "D6"
+    },
+    "field_rows": {
+      "un_number": 8,
+      "proper_shipping_name": 9,
+      "class": 10,
+      "subsidiary_risks": 11,
+      "packing_group": 12,
+      "packing_instruction": 13,
+      "flashpoint": 14,
+      "type_of_package": 15,
+      "quantity_packages": 16,
+      "quantity_items_per_package": 17,
+      "net_explosive_mass_per_article": 18,
+      "net_mass_liters_per_package": 24,
+      "gross_mass_per_package": 25,
+      "eq_lq_points": 27,
+      "dimensions": 28,
+      "additional_information": 29,
+      "caliber": 30
+    },
+    "product_columns": ["D", "E", "F", "G", "H", "I", "J", "K"]
   },
   "defaults": {
     "cargo": {

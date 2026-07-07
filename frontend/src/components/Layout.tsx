@@ -54,7 +54,7 @@ export default function Layout({ user, onLogout }: Props) {
           {user.role === "admin" && <NavLink to="/users" className={linkClass}>{t("nav.users")}</NavLink>}
         </nav>
         <main>
-          <Outlet />
+          <Outlet context={{ user }} />
         </main>
       </div>
     </div>

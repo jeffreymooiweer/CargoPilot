@@ -6,6 +6,7 @@
     "material": "steel",
     "standard": "EN10365",
     "aliases": ["UNP 220", "UPN 220", "U-channel 220"],
-    "notes": "Practical reference value"
+    "source": "seed:profiles.json",
+    "notes": "Wordt bij sync vervangen door openbare bron (steelprofiles_api)"
   }
 ]

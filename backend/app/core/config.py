@@ -20,6 +20,8 @@ class Settings(BaseSettings):
     trusted_proxy_headers: bool = True
     access_token_expire_minutes: int = 480
     max_paste_bytes: int = 512_000
+    catalog_auto_sync: bool = True
+    catalog_sync_timeout_seconds: float = 20.0
 
     @property
     def templates_dir(self) -> Path:

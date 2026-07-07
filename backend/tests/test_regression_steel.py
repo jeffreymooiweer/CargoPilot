@@ -1,6 +1,7 @@
 import pytest
 from app.core.database import Base, SessionLocal, engine
 from app.core.startup import seed_catalogs
+from app.services.catalog_sync import sync_catalogs
 from app.services.pipeline import parse_and_calculate
 
 STEEL_INPUT = """Stalen hoekprofiel 80x80x8x6000 | 8 | stuks
@@ -18,6 +19,7 @@ def db():
     Base.metadata.create_all(bind=engine)
     session = SessionLocal()
     seed_catalogs(session)
+    sync_catalogs(session, use_network=False)
     yield session
     session.close()
 

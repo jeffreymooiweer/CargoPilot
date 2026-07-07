@@ -9,11 +9,16 @@ Staal kokerprofiel 40x40x3x6000 | 12 | stuks
 UNP 220 mml=5700mm gegalvaniseerd | 24 | stuks`;
 
 function statusColor(status: string) {
-  if (status === "ok") return "bg-green-100 text-green-800";
-  if (status === "error") return "bg-red-100 text-red-800";
-  if (status === "needs_review") return "bg-amber-100 text-amber-800";
-  return "bg-yellow-100 text-yellow-800";
+  if (status === "ok") return "bg-green-100 text-green-800 dark:bg-green-900/40 dark:text-green-300";
+  if (status === "error") return "bg-red-100 text-red-800 dark:bg-red-900/40 dark:text-red-300";
+  if (status === "needs_review") return "bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-300";
+  return "bg-yellow-100 text-yellow-800 dark:bg-yellow-900/40 dark:text-yellow-300";
 }
+
+const inputClass =
+  "w-full border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-950 text-slate-900 dark:text-slate-100 rounded-lg px-3 py-2";
+const panelClass = "bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800";
+const buttonSecondary = "px-4 py-2 rounded-lg border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800";
 
 export default function WizardPage() {
   const { t } = useTranslation();
@@ -23,7 +28,6 @@ export default function WizardPage() {
   const [autoLang, setAutoLang] = useState(true);
   const [outputLang, setOutputLang] = useState("nl");
   const [result, setResult] = useState<CalcResult | null>(null);
-  const [jobId, setJobId] = useState<number | null>(null);
   const [metadata, setMetadata] = useState({ route: "", ba_code: "", annex_serial: "", date: "" });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -40,18 +44,10 @@ export default function WizardPage() {
       });
       setResult(res);
       if (mode === "strict" && !res.success) {
-        setError("Strict mode: corrigeer fouten voor u verdergaat.");
+        setError(t("wizard.strictBlocked"));
         setStep(2);
         return;
       }
-      const job = await api.createJob({
-        title: "Appendix",
-        text,
-        mode,
-        output_language: outputLang,
-      });
-      setJobId(job.job.id);
-      setResult(job.result);
       setStep(2);
     } catch (e) {
       setError(String(e));
@@ -62,7 +58,7 @@ export default function WizardPage() {
 
   const updateLine = (lineId: number, patch: Partial<LineItem>) => {
     if (!result) return;
-    const lines = result.lines.map((l) => (l.line_id === lineId ? { ...l, ...patch } : l));
+    const lines = result.lines.map((line) => (line.line_id === lineId ? { ...line, ...patch } : line));
     setResult({ ...result, lines });
   };
 
@@ -72,20 +68,21 @@ export default function WizardPage() {
     try {
       const res = await api.calculate({ lines: result.lines, output_language: outputLang, mode });
       setResult(res);
-      if (jobId) {
-        await api.updateJob(jobId, { calculated_json: res, status: "review" });
-      }
     } finally {
       setLoading(false);
     }
   };
 
   const exportFile = async () => {
-    if (!jobId || !result) return;
+    if (!result) return;
     setLoading(true);
+    setError("");
     try {
-      await api.updateJob(jobId, { calculated_json: result, metadata_json: { ...metadata, output_language: outputLang } });
-      await api.exportJob(jobId, { output_language: outputLang, metadata });
+      await api.exportAppendix({
+        lines: result.lines,
+        output_language: outputLang,
+        metadata: { ...metadata, output_language: outputLang },
+      });
     } catch (e) {
       setError(String(e));
     } finally {
@@ -95,32 +92,37 @@ export default function WizardPage() {
 
   return (
     <div className="space-y-6">
-      <div className="flex gap-2">
+      <div className="flex gap-2 flex-wrap">
         {[1, 2, 3].map((s) => (
-          <div key={s} className={`px-4 py-2 rounded-full text-sm font-medium ${step === s ? "bg-brand-600 text-white" : "bg-slate-200 text-slate-600"}`}>
+          <div
+            key={s}
+            className={`px-4 py-2 rounded-full text-sm font-medium ${
+              step === s ? "bg-brand-600 text-white" : "bg-slate-200 text-slate-600 dark:bg-slate-800 dark:text-slate-300"
+            }`}
+          >
             {s}. {t(`wizard.step${s}` as "wizard.step1")}
           </div>
         ))}
       </div>
 
       {step === 1 && (
-        <div className="bg-white rounded-2xl border border-slate-200 p-6 space-y-4">
+        <div className={`${panelClass} p-6 space-y-4`}>
           <textarea
-            className="w-full h-64 font-mono text-sm border rounded-xl p-4"
+            className={`${inputClass} h-64 font-mono text-sm`}
             value={text}
             onChange={(e) => setText(e.target.value)}
             placeholder={t("wizard.paste")}
           />
           <div className="flex flex-wrap gap-4 items-center">
-            <label className="flex items-center gap-2 text-sm">
+            <label className="flex items-center gap-2 text-sm text-slate-700 dark:text-slate-300">
               <input type="checkbox" checked={autoLang} onChange={(e) => setAutoLang(e.target.checked)} />
               {t("wizard.autoLang")}
             </label>
-            <select className="border rounded-lg px-3 py-2 text-sm" value={mode} onChange={(e) => setMode(e.target.value as "continue" | "strict")}>
+            <select className={`${inputClass} w-auto text-sm`} value={mode} onChange={(e) => setMode(e.target.value as "continue" | "strict")}>
               <option value="continue">{t("wizard.continue")}</option>
               <option value="strict">{t("wizard.strict")}</option>
             </select>
-            <select className="border rounded-lg px-3 py-2 text-sm" value={outputLang} onChange={(e) => setOutputLang(e.target.value)}>
+            <select className={`${inputClass} w-auto text-sm`} value={outputLang} onChange={(e) => setOutputLang(e.target.value)}>
               <option value="nl">Nederlands</option>
               <option value="en">English</option>
             </select>
@@ -139,9 +141,9 @@ export default function WizardPage() {
             <Stat label={t("wizard.totalVolume")} value={`${result.totals.total_transport_volume_m3 ?? 0} m³`} />
             <Stat label={t("wizard.warnings")} value={String(result.totals.warning_count ?? 0)} />
           </div>
-          <div className="bg-white rounded-2xl border border-slate-200 overflow-x-auto">
-            <table className="w-full text-sm min-w-[900px]">
-              <thead className="bg-slate-50">
+          <div className={`${panelClass} overflow-x-auto`}>
+            <table className="w-full text-sm min-w-[900px] text-slate-800 dark:text-slate-200">
+              <thead className="bg-slate-50 dark:bg-slate-800/80">
                 <tr>
                   <th className="px-3 py-2 text-left">#</th>
                   <th className="px-3 py-2 text-left">Status</th>
@@ -154,7 +156,7 @@ export default function WizardPage() {
               </thead>
               <tbody>
                 {result.lines.map((line) => (
-                  <tr key={line.line_id} className="border-t border-slate-100">
+                  <tr key={line.line_id} className="border-t border-slate-100 dark:border-slate-800">
                     <td className="px-3 py-2">{line.line_id}</td>
                     <td className="px-3 py-2">
                       <span className={`px-2 py-0.5 rounded-full text-xs ${statusColor(line.status)}`}>
@@ -162,11 +164,11 @@ export default function WizardPage() {
                       </span>
                     </td>
                     <td className="px-3 py-2">
-                      <input className="w-full border rounded px-2 py-1" value={line.output_description} onChange={(e) => updateLine(line.line_id, { output_description: e.target.value })} />
-                      {line.messages.length > 0 && <p className="text-xs text-amber-700 mt-1">{line.messages.join(", ")}</p>}
+                      <input className={`${inputClass} text-sm`} value={line.output_description} onChange={(e) => updateLine(line.line_id, { output_description: e.target.value })} />
+                      {line.messages.length > 0 && <p className="text-xs text-amber-700 dark:text-amber-300 mt-1">{line.messages.join(", ")}</p>}
                     </td>
                     <td className="px-3 py-2">
-                      <input type="number" className="w-20 border rounded px-2 py-1" value={line.quantity ?? ""} onChange={(e) => updateLine(line.line_id, { quantity: Number(e.target.value) })} />
+                      <input type="number" className={`${inputClass} w-20 text-sm`} value={line.quantity ?? ""} onChange={(e) => updateLine(line.line_id, { quantity: Number(e.target.value) })} />
                     </td>
                     <td className="px-3 py-2">{line.weight_each_kg ?? "-"}</td>
                     <td className="px-3 py-2">{line.weight_total_kg ?? "-"}</td>
@@ -179,53 +181,53 @@ export default function WizardPage() {
             </table>
           </div>
           <div className="flex gap-3">
-            <button onClick={() => setStep(1)} className="px-4 py-2 rounded-lg border">Terug</button>
-            <button onClick={recalculate} className="px-4 py-2 rounded-lg border">Herbereken</button>
-            <button onClick={() => setStep(3)} className="ml-auto bg-brand-600 text-white px-5 py-2 rounded-lg">Naar export</button>
+            <button onClick={() => setStep(1)} className={buttonSecondary}>{t("wizard.back")}</button>
+            <button onClick={recalculate} className={buttonSecondary}>{t("wizard.recalculate")}</button>
+            <button onClick={() => setStep(3)} className="ml-auto bg-brand-600 text-white px-5 py-2 rounded-lg">{t("wizard.toExport")}</button>
           </div>
         </div>
       )}
 
       {step === 3 && result && (
-        <div className="bg-white rounded-2xl border border-slate-200 p-6 space-y-4 max-w-xl">
-          <h3 className="text-lg font-semibold">{t("wizard.summary")}</h3>
+        <div className={`${panelClass} p-6 space-y-4 max-w-xl`}>
+          <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-100">{t("wizard.summary")}</h3>
           <div className="grid gap-3">
             <Field label={t("wizard.date")} value={metadata.date} onChange={(v) => setMetadata({ ...metadata, date: v })} />
             <Field label={t("wizard.route")} value={metadata.route} onChange={(v) => setMetadata({ ...metadata, route: v })} />
             <Field label={t("wizard.baCode")} value={metadata.ba_code} onChange={(v) => setMetadata({ ...metadata, ba_code: v })} />
             <Field label={t("wizard.annex")} value={metadata.annex_serial} onChange={(v) => setMetadata({ ...metadata, annex_serial: v })} />
             <div>
-              <label className="text-sm font-medium">{t("wizard.outputLang")}</label>
-              <select className="w-full border rounded-lg px-3 py-2 mt-1" value={outputLang} onChange={(e) => setOutputLang(e.target.value)}>
+              <label className="text-sm font-medium text-slate-800 dark:text-slate-200">{t("wizard.outputLang")}</label>
+              <select className={`${inputClass} mt-1`} value={outputLang} onChange={(e) => setOutputLang(e.target.value)}>
                 <option value="nl">Nederlands</option>
                 <option value="en">English</option>
               </select>
             </div>
           </div>
-          <ul className="text-sm text-slate-600 space-y-1">
+          <ul className="text-sm text-slate-600 dark:text-slate-400 space-y-1">
             <li>{t("wizard.lines")}: {result.totals.included_count}</li>
             <li>{t("wizard.totalWeight")}: {result.totals.total_weight_kg} kg</li>
             <li>{t("wizard.totalVolume")}: {result.totals.total_transport_volume_m3} m³</li>
           </ul>
           <div className="flex gap-3">
-            <button onClick={() => setStep(2)} className="px-4 py-2 rounded-lg border">Terug</button>
-            <button onClick={exportFile} disabled={loading || !jobId} className="ml-auto bg-brand-600 text-white px-5 py-2 rounded-lg disabled:opacity-50">
+            <button onClick={() => setStep(2)} className={buttonSecondary}>{t("wizard.back")}</button>
+            <button onClick={exportFile} disabled={loading} className="ml-auto bg-brand-600 text-white px-5 py-2 rounded-lg disabled:opacity-50">
               {t("wizard.download")}
             </button>
           </div>
         </div>
       )}
 
-      {error && <p className="text-red-600 text-sm">{error}</p>}
+      {error && <p className="text-red-600 dark:text-red-400 text-sm">{error}</p>}
     </div>
   );
 }
 
 function Stat({ label, value }: { label: string; value: string }) {
   return (
-    <div className="bg-white border border-slate-200 rounded-xl p-4">
-      <p className="text-xs text-slate-500">{label}</p>
-      <p className="text-lg font-semibold mt-1">{value}</p>
+    <div className={`${panelClass} p-4`}>
+      <p className="text-xs text-slate-500 dark:text-slate-400">{label}</p>
+      <p className="text-lg font-semibold mt-1 text-slate-900 dark:text-slate-100">{value}</p>
     </div>
   );
 }
@@ -233,8 +235,8 @@ function Stat({ label, value }: { label: string; value: string }) {
 function Field({ label, value, onChange }: { label: string; value: string; onChange: (v: string) => void }) {
   return (
     <div>
-      <label className="text-sm font-medium">{label}</label>
-      <input className="w-full border rounded-lg px-3 py-2 mt-1" value={value} onChange={(e) => onChange(e.target.value)} />
+      <label className="text-sm font-medium text-slate-800 dark:text-slate-200">{label}</label>
+      <input className={`${inputClass} mt-1`} value={value} onChange={(e) => onChange(e.target.value)} />
     </div>
   );
 }

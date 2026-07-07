@@ -6,9 +6,18 @@
   "nav": {
     "dashboard": "Dashboard",
     "new": "Nieuwe appendix",
-    "history": "Historie",
     "users": "Gebruikers",
     "logout": "Uitloggen"
+  },
+  "theme": {
+    "dark": "Donker",
+    "light": "Licht",
+    "toggle": "Thema wisselen"
+  },
+  "dashboard": {
+    "welcome": "Welkom bij CargoPilot",
+    "intro": "Plak uw materiaallijst, controleer de berekeningen en download direct een ingevulde appendix. Alles gebeurt in uw browsersessie.",
+    "privacy": "CargoPilot bewaart geen historie, geplakte data of appendix-bestanden op de server. Na download verdwijnt alles uit het geheugen."
   },
   "login": {
     "title": "Inloggen",
@@ -36,7 +45,11 @@
     "lines": "Regels",
     "totalWeight": "Totaalgewicht",
     "totalVolume": "Totaal transportvolume",
-    "warnings": "Waarschuwingen"
+    "warnings": "Waarschuwingen",
+    "back": "Terug",
+    "recalculate": "Herbereken",
+    "toExport": "Naar export",
+    "strictBlocked": "Strict mode: corrigeer fouten voor u verdergaat."
   },
   "status": {
     "ok": "OK",

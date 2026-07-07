@@ -5,7 +5,6 @@ import Layout from "./components/Layout";
 import LoginPage from "./pages/LoginPage";
 import DashboardPage from "./pages/DashboardPage";
 import WizardPage from "./pages/WizardPage";
-import HistoryPage from "./pages/HistoryPage";
 import UsersPage from "./pages/UsersPage";
 
 export default function App() {
@@ -21,7 +20,7 @@ export default function App() {
   }, []);
 
   if (loading) {
-    return <div className="min-h-screen flex items-center justify-center text-slate-500">Loading...</div>;
+    return <div className="min-h-screen flex items-center justify-center text-slate-500 dark:text-slate-400">Loading...</div>;
   }
 
   if (!user) {
@@ -38,7 +37,6 @@ export default function App() {
       <Route element={<Layout user={user} onLogout={() => setUser(null)} />}>
         <Route path="/" element={<DashboardPage />} />
         <Route path="/wizard" element={<WizardPage />} />
-        <Route path="/history" element={<HistoryPage />} />
         <Route path="/users" element={<UsersPage />} />
       </Route>
       <Route path="*" element={<Navigate to="/" replace />} />

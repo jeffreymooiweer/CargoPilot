@@ -1,8 +1,10 @@
 import json
+import os
 import re
 import shutil
+import tempfile
 from copy import copy
-from datetime import date, datetime
+from datetime import datetime
 from pathlib import Path
 from typing import Any
 
@@ -132,8 +134,12 @@ def export_appendix(
         for flag in ["loaded", "stackable", "rotatable", "weapons", "conditioned", "dangerous_goods", "ammunition", "itar", "tbb"]:
             _set_cell(ws, f"{cols[flag]}{row}", defaults.get(flag, "N"))
 
-    settings.exports_dir.mkdir(parents=True, exist_ok=True)
-    ts = datetime.now().strftime("%Y%m%d_%H%M%S")
-    out_path = settings.exports_dir / f"{job_ref}_{ts}.xlsx"
+    fd, temp_name = tempfile.mkstemp(suffix=".xlsx")
+    os.close(fd)
+    out_path = Path(temp_name)
+    try:
+        out_path.chmod(0o600)
+    except OSError:
+        pass
     wb.save(out_path)
     return out_path

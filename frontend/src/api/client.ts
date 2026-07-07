@@ -32,6 +32,8 @@ export const api = {
     request<CalcResult>("/parse", { method: "POST", body: JSON.stringify(payload) }),
   calculate: (payload: Record<string, unknown>) =>
     request<CalcResult>("/calculate", { method: "POST", body: JSON.stringify(payload) }),
+  dgInstructions: () => request<DgInstructions>("/dg/instructions"),
+  dgLookup: (un: string) => request<DgLookupResult>(`/dg/lookup?un=${encodeURIComponent(un)}`),
   exportAppendix: async (payload: Record<string, unknown>) => {
     const res = await fetch(`${API_BASE}/export`, {
       method: "POST",
@@ -61,6 +63,20 @@ export interface User {
   active: boolean;
 }
 
+export interface AppendixFlags {
+  loaded?: string;
+  stackable?: string;
+  rotatable?: string;
+  weapons?: string;
+  conditioned?: string;
+  temperature_c?: string;
+  dangerous_goods?: string;
+  ammunition?: string;
+  itar?: string;
+  tbb?: string;
+  tbb_category?: string;
+}
+
 export interface LineItem {
   line_id: number;
   raw: string;
@@ -80,6 +96,8 @@ export interface LineItem {
   status: string;
   messages: string[];
   include: boolean;
+  appendix_flags?: AppendixFlags;
+  detected_un_numbers?: string[];
 }
 
 export interface CalcResult {
@@ -88,4 +106,46 @@ export interface CalcResult {
   lines: LineItem[];
   totals: Record<string, number>;
   errors: unknown[];
+}
+
+export interface DgProduct {
+  un_number?: string;
+  proper_shipping_name?: string;
+  class?: string;
+  subsidiary_risks?: string;
+  packing_group?: string;
+  packing_instruction?: string;
+  flashpoint?: string;
+  type_of_package?: string;
+  quantity_packages?: string;
+  quantity_items_per_package?: string;
+  net_mass_liters_per_package?: string;
+  gross_mass_per_package?: string;
+  eq_lq_points?: string;
+  dimensions?: string;
+  additional_information?: string;
+  caliber?: string;
+}
+
+export interface DgEntry {
+  a1_line_id: number;
+  vehicle: string;
+  registration?: string;
+  products: DgProduct[];
+}
+
+export interface DgLookupResult {
+  un_number: string;
+  proper_shipping_name: string;
+  class: string;
+  subsidiary_risks?: string;
+  packing_group?: string;
+  packing_instruction?: string;
+  source?: string;
+}
+
+export interface DgInstructions {
+  a1_flags: Record<string, { nl: string; en: string }>;
+  appendix_d_intro: { nl: string; en: string };
+  appendix_d_fields: Record<string, { label: { nl: string; en: string }; help: { nl: string; en: string } }>;
 }

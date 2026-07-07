@@ -77,6 +77,7 @@ def export_appendix_file(
         payload.output_language,
         job_ref=ref,
         template_name=payload.template_name,
+        dangerous_goods=payload.dangerous_goods,
     )
     background_tasks.add_task(_delete_file, out_path)
     return FileResponse(

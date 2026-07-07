@@ -15,6 +15,7 @@ from app.services.calculator.engine import (
     calc_hollow_rect,
     transport_volume_outer,
 )
+from app.services.dg.detector import apply_un_detection, default_appendix_flags, detect_un_numbers
 from app.services.parser.dimension_extractor import Dimensions, extract_dimensions, meters_to_cm
 from app.services.parser.language_detector import detect_language
 from app.services.parser.paste_parser import ParsedRow, parse_paste
@@ -61,6 +62,8 @@ class LineResult:
     include: bool = True
     input_language: str = "nl"
     calculation_method: str | None = None
+    appendix_flags: dict[str, Any] = field(default_factory=dict)
+    detected_un_numbers: list[str] = field(default_factory=list)
 
 
 def _load_aliases_json(raw: str) -> list[str]:
@@ -245,6 +248,15 @@ def process_line(
         row.description, product_type, dims, output_language
     )
 
+    appendix_flags = default_appendix_flags()
+    override_flags = overrides.get("appendix_flags") or {}
+    for key, value in override_flags.items():
+        if value is not None and value != "":
+            appendix_flags[key] = value
+    appendix_flags, dg_messages = apply_un_detection(row.description, appendix_flags)
+    messages.extend(dg_messages)
+    detected_un_numbers = detect_un_numbers(row.description)
+
     return LineResult(
         line_id=line_id,
         raw=row.raw,
@@ -274,6 +286,8 @@ def process_line(
         include=overrides.get("include", True),
         input_language=lang,
         calculation_method=method,
+        appendix_flags=appendix_flags,
+        detected_un_numbers=detected_un_numbers,
     )
 
 

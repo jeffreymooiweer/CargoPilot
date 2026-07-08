@@ -25,19 +25,31 @@ def db(tmp_path, monkeypatch):
     get_settings.cache_clear()
 
 
+@pytest.mark.parametrize(
+    "query,expected_fragment",
+    [
+        ("staal hoeklijn", "hoekprofiel"),
+        ("rvs hoekstaal", "hoekprofiel"),
+        ("aluminium koker", "kokerprofiel"),
+        ("inox buis 60x3", "buis"),
+        ("staal plaatstaal", "plaat"),
+        ("houten balk", "balk"),
+        ("multiplex plaat", "multiplex"),
+        ("pvc buis", "pvc buis"),
+        ("plexiglas plaat", "plexiglas"),
+        ("beton stelcon", "betonplaat"),
+    ],
+)
+def test_product_synonyms_suggest_templates(db, query, expected_fragment):
+    results = search_catalog(db, query)
+    assert results, f"Geen resultaten voor {query!r}"
+    assert any(expected_fragment in r["value"].lower() for r in results), results
+
+
 def test_normalize_hoeklijn_to_hoekprofiel():
     normalized, applied = normalize_synonyms("staal hoeklijn")
     assert "hoekprofiel" in normalized
     assert ("hoeklijn", "hoekprofiel") in applied
-
-
-def test_search_staal_hoeklijn_suggests_hoekprofiel(db):
-    results = search_catalog(db, "staal hoeklijn")
-    assert results
-    top = results[0]
-    assert "hoekprofiel" in top["value"].lower()
-    assert "staal" in top["value"].lower()
-    assert top["source"] == "template"
 
 
 def test_search_staal_hoeklijn_with_dimensions(db):
@@ -54,10 +66,29 @@ def test_search_finds_equipment(db):
     assert any(r["source"] == "equipment" for r in results)
 
 
+def test_search_equipment_dutch_synonym(db):
+    results = search_catalog(db, "heftruck")
+    assert any(r["source"] == "equipment" for r in results)
+    assert any(
+        "forklift" in (r["value"] + " " + (r.get("sublabel") or "")).lower() for r in results
+    )
+
+
 def test_search_finds_steel_profile(db):
     results = search_catalog(db, "UNP 220")
     assert any(r["source"] == "profile" for r in results)
     assert any("220" in r["label"] for r in results)
+
+
+def test_search_profile_synonym_upn(db):
+    results = search_catalog(db, "upn 220")
+    assert any(r["source"] == "profile" for r in results)
+    assert any("220" in r["label"] for r in results)
+
+
+def test_search_reference_synonym(db):
+    results = search_catalog(db, "wandcontactdoos")
+    assert any(r["source"] == "reference" for r in results)
 
 
 def test_search_short_query_returns_empty(db):

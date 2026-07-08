@@ -1,9 +1,12 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { api, EquipmentItem } from "../api/client";
+import { api, CatalogSearchHit, EquipmentItem } from "../api/client";
 
 const inputClass =
   "w-full border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-950 text-slate-900 dark:text-slate-100 rounded-lg px-3 py-2.5 text-sm min-h-[44px]";
+
+const MIN_SEARCH_LEN = 2;
+const DEBOUNCE_MS = 280;
 
 interface Props {
   value: string;
@@ -14,9 +17,12 @@ interface Props {
 export default function EquipmentCombobox({ value, onChange, placeholder }: Props) {
   const { t } = useTranslation();
   const [equipment, setEquipment] = useState<EquipmentItem[]>([]);
+  const [results, setResults] = useState<CatalogSearchHit[]>([]);
+  const [loading, setLoading] = useState(false);
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState(value);
   const wrapRef = useRef<HTMLDivElement>(null);
+  const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
     api.listEquipment().then(setEquipment).catch(() => setEquipment([]));
@@ -34,26 +40,44 @@ export default function EquipmentCombobox({ value, onChange, placeholder }: Prop
     return () => document.removeEventListener("mousedown", onDoc);
   }, []);
 
-  const filtered = useMemo(() => {
-    const q = query.trim().toLowerCase();
-    if (!q) return equipment.filter((e) => e.active !== false).slice(0, 40);
-    return equipment
-      .filter((e) => e.active !== false)
-      .filter((item) => {
-        const hay = [item.sap_code, item.specifications, ...(item.aliases || []), ...Object.values(item.language_labels || {})]
-          .filter(Boolean)
-          .join(" ")
-          .toLowerCase();
-        return hay.includes(q);
-      })
-      .slice(0, 40);
+  useEffect(() => {
+    if (debounceRef.current) clearTimeout(debounceRef.current);
+
+    const q = query.trim();
+    if (q.length < MIN_SEARCH_LEN) {
+      setResults([]);
+      setLoading(false);
+      return;
+    }
+
+    setLoading(true);
+    debounceRef.current = setTimeout(() => {
+      api
+        .catalogSearch(q)
+        .then((res) => setResults(res.results))
+        .catch(() => setResults([]))
+        .finally(() => setLoading(false));
+    }, DEBOUNCE_MS);
+
+    return () => {
+      if (debounceRef.current) clearTimeout(debounceRef.current);
+    };
+  }, [query]);
+
+  const browseEquipment = useMemo(() => {
+    if (query.trim().length >= MIN_SEARCH_LEN) return [];
+    return equipment.filter((e) => e.active !== false).slice(0, 40);
   }, [equipment, query]);
 
-  const pick = (item: EquipmentItem | null, label: string) => {
+  const sourceLabel = (source: CatalogSearchHit["source"]) => t(`review.catalogSource.${source}` as "review.catalogSource.equipment");
+
+  const pickValue = (label: string, item?: EquipmentItem | null) => {
     setQuery(label);
-    onChange(label, item);
+    onChange(label, item ?? null);
     setOpen(false);
   };
+
+  const showCatalog = query.trim().length >= MIN_SEARCH_LEN;
 
   return (
     <div ref={wrapRef} className="relative">
@@ -75,31 +99,63 @@ export default function EquipmentCombobox({ value, onChange, placeholder }: Prop
             <button
               type="button"
               className="w-full px-3 py-2.5 text-left text-sm text-slate-600 hover:bg-slate-50 dark:text-slate-300 dark:hover:bg-slate-800"
-              onClick={() => pick(null, query)}
+              onClick={() => pickValue(query)}
             >
               {t("review.customDescription")}
             </button>
           </li>
-          {filtered.map((item) => {
-            const label = item.sap_code || item.specifications;
-            const sub = item.sap_code ? item.specifications : null;
-            return (
-              <li key={item.id}>
+
+          {showCatalog && loading && (
+            <li className="px-3 py-2 text-sm text-slate-500 dark:text-slate-400">{t("review.catalogSearching")}</li>
+          )}
+
+          {showCatalog &&
+            !loading &&
+            results.map((hit) => (
+              <li key={hit.id}>
                 <button
                   type="button"
                   className="w-full px-3 py-2.5 text-left hover:bg-brand-50 dark:hover:bg-brand-950/40 border-t border-slate-100 dark:border-slate-800"
-                  onClick={() => pick(item, label)}
+                  onClick={() => pickValue(hit.value)}
                 >
-                  <span className="block text-sm font-medium text-slate-900 dark:text-slate-100">{label}</span>
-                  {sub && <span className="block text-xs text-slate-500 dark:text-slate-400 truncate">{sub}</span>}
-                  <span className="block text-xs text-slate-400 dark:text-slate-500">{item.weight_kg} kg</span>
+                  <span className="flex items-center gap-2">
+                    <span className="text-sm font-medium text-slate-900 dark:text-slate-100">{hit.label}</span>
+                    <span className="text-[10px] uppercase tracking-wide text-slate-400 dark:text-slate-500">{sourceLabel(hit.source)}</span>
+                  </span>
+                  {hit.sublabel && (
+                    <span className="block text-xs text-slate-500 dark:text-slate-400 truncate">{hit.sublabel}</span>
+                  )}
                 </button>
               </li>
-            );
-          })}
-          {filtered.length === 0 && (
-            <li className="px-3 py-2 text-sm text-slate-500 dark:text-slate-400">{t("review.noEquipmentMatch")}</li>
+            ))}
+
+          {showCatalog && !loading && results.length === 0 && (
+            <li className="px-3 py-2 text-sm text-slate-500 dark:text-slate-400">{t("review.noCatalogMatch")}</li>
           )}
+
+          {!showCatalog &&
+            browseEquipment.map((item) => {
+              const label = item.sap_code || item.specifications;
+              const sub = item.sap_code ? item.specifications : null;
+              return (
+                <li key={item.id}>
+                  <button
+                    type="button"
+                    className="w-full px-3 py-2.5 text-left hover:bg-brand-50 dark:hover:bg-brand-950/40 border-t border-slate-100 dark:border-slate-800"
+                    onClick={() => pickValue(label, item)}
+                  >
+                    <span className="flex items-center gap-2">
+                      <span className="text-sm font-medium text-slate-900 dark:text-slate-100">{label}</span>
+                      <span className="text-[10px] uppercase tracking-wide text-slate-400 dark:text-slate-500">
+                        {sourceLabel("equipment")}
+                      </span>
+                    </span>
+                    {sub && <span className="block text-xs text-slate-500 dark:text-slate-400 truncate">{sub}</span>}
+                    <span className="block text-xs text-slate-400 dark:text-slate-500">{item.weight_kg} kg</span>
+                  </button>
+                </li>
+              );
+            })}
         </ul>
       )}
     </div>

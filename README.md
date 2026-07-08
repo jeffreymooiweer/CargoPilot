@@ -6,7 +6,8 @@ CargoPilot is een webapplicatie waarmee bouwmaterialen uit Excel geplakt, automa
 
 ## Functionaliteiten
 
-- Plakken van Excel/TSV/pipe-gescheiden data
+- Plakken van Excel/TSV/pipe-gescheiden data via **importfunctie** (niet meer als hoofdingang)
+- Review als startpunt: regels invoeren met materieel-dropdown of vrije omschrijving (staal/profielen)
 - Herkenning van materiaal, producttype en afmetingen (NL/EN)
 - Berekening van gewicht, materiaalvolume en transportvolume
 - Review-stap met inline correcties en appendix A1-vlaggen (Y/N) met invulinstructies uit het template

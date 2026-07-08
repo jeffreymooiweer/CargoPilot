@@ -17,7 +17,7 @@
   },
   "dashboard": {
     "welcome": "Welkom bij CargoPilot",
-    "intro": "Plak uw materiaallijst, controleer de berekeningen en download direct een ingevulde appendix. Alles gebeurt in uw browsersessie.",
+    "intro": "Voeg posities toe via het review-scherm: kies materieel uit de catalogus of typ een eigen omschrijving (bijv. staalprofiel met afmeting). Excel-plakken kan via Importeren.",
     "privacy": "CargoPilot bewaart geen historie, geplakte data of appendix-bestanden op de server. Na download verdwijnt alles uit het geheugen."
   },
   "login": {
@@ -99,6 +99,27 @@
     "tbbTitle": "TBB-classificatie per positie",
     "tbbHint": "Geef de TBB-categorie per geselecteerde positie.",
     "tbbPlaceholder": "TBB-categorie"
+  },
+  "review": {
+    "intro": "Voeg regels toe met het dropdown-veld (Overzicht Materieel) of typ een vrije omschrijving voor automatische herkenning van staal en profielen.",
+    "description": "Omschrijving",
+    "descriptionPlaceholder": "Kies materieel of typ bijv. staal hoekprofiel 80x80x8x6000",
+    "customDescription": "Gebruik als vrije omschrijving (automatisch matchen)",
+    "noEquipmentMatch": "Geen materieel in catalogus — vrije omschrijving wordt gebruikt",
+    "quantity": "Aantal",
+    "unit": "Eenheid",
+    "status": "Status",
+    "weightEach": "Gewicht/st",
+    "addLine": "Regel toevoegen",
+    "removeLine": "Verwijderen",
+    "noLines": "Voeg minstens één regel met omschrijving toe.",
+    "importExcel": "Importeren uit Excel",
+    "importTitle": "Excel / tekst importeren",
+    "importHint": "Plak gekopieerde kolommen uit Excel (omschrijving | aantal | eenheid).",
+    "importReplace": "Vervang huidige regels",
+    "importAppend": "Toevoegen aan huidige regels",
+    "importConfirm": "Importeren",
+    "cancel": "Annuleren"
   },
   "flags": {
     "loaded": "Beladen",

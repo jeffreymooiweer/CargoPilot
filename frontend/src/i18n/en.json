@@ -17,7 +17,7 @@
   },
   "dashboard": {
     "welcome": "Welcome to CargoPilot",
-    "intro": "Paste your material list, review calculations, and download a filled appendix. Everything stays in your browser session.",
+    "intro": "Add positions on the review screen: pick equipment from the catalog or type a custom description (e.g. steel profile with dimensions). Excel paste is available via Import.",
     "privacy": "CargoPilot does not store history, pasted data, or appendix files on the server. After download, everything is discarded from memory."
   },
   "login": {
@@ -99,6 +99,27 @@
     "tbbTitle": "TBB classification per position",
     "tbbHint": "Enter the TBB category per selected position.",
     "tbbPlaceholder": "TBB category"
+  },
+  "review": {
+    "intro": "Add lines using the dropdown (Equipment overview) or type a free description for automatic steel/profile matching.",
+    "description": "Description",
+    "descriptionPlaceholder": "Pick equipment or type e.g. steel angle 80x80x8x6000",
+    "customDescription": "Use as free description (auto-match)",
+    "noEquipmentMatch": "No catalog match — free description will be used",
+    "quantity": "Quantity",
+    "unit": "Unit",
+    "status": "Status",
+    "weightEach": "Weight each",
+    "addLine": "Add line",
+    "removeLine": "Remove",
+    "noLines": "Add at least one line with a description.",
+    "importExcel": "Import from Excel",
+    "importTitle": "Import Excel / text",
+    "importHint": "Paste copied columns from Excel (description | quantity | unit).",
+    "importReplace": "Replace current lines",
+    "importAppend": "Append to current lines",
+    "importConfirm": "Import",
+    "cancel": "Cancel"
   },
   "flags": {
     "loaded": "Loaded",

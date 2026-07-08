@@ -69,7 +69,8 @@
     "dgVehicleHelp": "Description of the vehicle or load as in appendix D.",
     "dgLookup": "Look up UN number",
     "dgIncluded": "Appendix D will be included for {{count}} line(s).",
-    "dgPositionOf": "Position {{current}} of {{total}}"
+    "dgPositionOf": "Position {{current}} of {{total}}",
+    "progressStep": "Step {{current}} of {{total}}"
   },
   "questions": {
     "yes": "Yes",
@@ -105,6 +106,7 @@
     "tbbPlaceholder": "TBB category"
   },
   "review": {
+    "linesTitle": "Positions",
     "intro": "Type in the field to search equipment, profiles, materials and references. Synonyms are recognized; add dimensions to narrow results.",
     "description": "Description",
     "descriptionPlaceholder": "Pick equipment or type e.g. steel angle 80x80x8x6000",
@@ -129,6 +131,8 @@
     "importExcel": "Import from Excel",
     "importTitle": "Import Excel / text",
     "importHint": "Paste copied columns from Excel (description | quantity | unit).",
+    "importExampleTitle": "Example",
+    "importExample": "steel angle 80x80x8x6000 | 8 | pcs",
     "importReplace": "Replace current lines",
     "importAppend": "Append to current lines",
     "importConfirm": "Import",

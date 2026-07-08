@@ -105,11 +105,20 @@
     "tbbPlaceholder": "TBB-categorie"
   },
   "review": {
-    "intro": "Voeg regels toe met het dropdown-veld (Overzicht Materieel) of typ een vrije omschrijving voor automatische herkenning van staal en profielen.",
+    "intro": "Typ in het veld om te zoeken in materieel, profielen, materialen en referenties. Synoniemen zoals hoeklijn worden herkend; voeg afmetingen toe om te verfijnen.",
     "description": "Omschrijving",
     "descriptionPlaceholder": "Kies materieel of typ bijv. staal hoekprofiel 80x80x8x6000",
     "customDescription": "Gebruik als vrije omschrijving (automatisch matchen)",
     "noEquipmentMatch": "Geen materieel in catalogus — vrije omschrijving wordt gebruikt",
+    "noCatalogMatch": "Geen catalogusmatch — vrije omschrijving wordt gebruikt",
+    "catalogSearching": "Zoeken in catalogus…",
+    "catalogSource": {
+      "equipment": "Materieel",
+      "profile": "Profiel",
+      "reference": "Referentie",
+      "template": "Suggestie",
+      "material": "Materiaal"
+    },
     "quantity": "Aantal",
     "unit": "Eenheid",
     "status": "Status",

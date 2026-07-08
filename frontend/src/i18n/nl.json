@@ -7,8 +7,12 @@
     "dashboard": "Dashboard",
     "new": "Nieuwe appendix",
     "materieel": "Overzicht materieel",
+    "settings": "Instellingen",
     "users": "Gebruikers",
-    "logout": "Uitloggen"
+    "logout": "Uitloggen",
+    "menu": "Menu",
+    "openMenu": "Menu openen",
+    "closeMenu": "Menu sluiten"
   },
   "theme": {
     "dark": "Donker",
@@ -162,5 +166,15 @@
     "weight": "Gewicht (kg)",
     "aliases": "Aliassen (kommagescheiden, voor herkenning)",
     "active": "Actief"
+  },
+  "settings": {
+    "title": "Instellingen",
+    "intro": "Pas het uiterlijk en de taal van de applicatie aan.",
+    "theme": "Thema",
+    "themeHint": "Kies licht, donker of volg de systeeminstelling.",
+    "language": "Taal",
+    "languageHint": "Taal van de applicatie-interface.",
+    "auto": "Systeem",
+    "autoDetectNote": "In de wizard wordt de invoertaal van uw materiaallijst altijd automatisch herkend."
   }
 }

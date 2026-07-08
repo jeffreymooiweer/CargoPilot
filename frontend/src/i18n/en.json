@@ -7,8 +7,12 @@
     "dashboard": "Dashboard",
     "new": "New appendix",
     "materieel": "Equipment overview",
+    "settings": "Settings",
     "users": "Users",
-    "logout": "Logout"
+    "logout": "Logout",
+    "menu": "Menu",
+    "openMenu": "Open menu",
+    "closeMenu": "Close menu"
   },
   "theme": {
     "dark": "Dark",
@@ -162,5 +166,15 @@
     "weight": "Weight (kg)",
     "aliases": "Aliases (comma-separated, for recognition)",
     "active": "Active"
+  },
+  "settings": {
+    "title": "Settings",
+    "intro": "Customize the app appearance and language.",
+    "theme": "Theme",
+    "themeHint": "Choose light, dark, or follow system settings.",
+    "language": "Language",
+    "languageHint": "Language for the application interface.",
+    "auto": "System",
+    "autoDetectNote": "In the wizard, the input language of your material list is always detected automatically."
   }
 }

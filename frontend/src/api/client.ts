@@ -102,6 +102,7 @@ export interface LineItem {
   status: string;
   messages: string[];
   include: boolean;
+  input_language?: string;
   appendix_flags?: AppendixFlags;
   detected_un_numbers?: string[];
 }

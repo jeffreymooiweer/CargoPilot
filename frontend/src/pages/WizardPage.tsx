@@ -5,6 +5,7 @@ import AppendixQuestionsWizard from "../components/AppendixQuestionsWizard";
 import DangerousGoodsStep, { buildDgEntries } from "../components/DangerousGoodsStep";
 import ImportDialog from "../components/ImportDialog";
 import ReviewLinesPanel, { DraftLine, draftToText, textToDraftLines } from "../components/ReviewLinesPanel";
+import WizardProgress from "../components/WizardProgress";
 
 const inputClass =
   "w-full border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-950 text-slate-900 dark:text-slate-100 rounded-lg px-3 py-2 text-sm min-h-[44px]";
@@ -140,35 +141,12 @@ export default function WizardPage() {
 
   return (
     <div className="space-y-4 sm:space-y-6">
-      <div className="flex gap-2 overflow-x-auto pb-1 -mx-1 px-1">
-        {stepPills.map((pill, index) => (
-          <div
-            key={pill.n}
-            className={`shrink-0 px-3 sm:px-4 py-2 rounded-full text-xs sm:text-sm font-medium ${
-              step === pill.n ? "bg-brand-600 text-white" : "bg-slate-200 text-slate-600 dark:bg-slate-800 dark:text-slate-300"
-            }`}
-          >
-            {index + 1}. {pill.label}
-          </div>
-        ))}
-      </div>
+      <WizardProgress steps={stepPills} currentStep={step} />
 
       {step === 1 && (
         <div className="space-y-4">
-          <div className={`${panelClass} p-4 sm:p-5 space-y-3`}>
-            <p className="text-sm text-slate-600 dark:text-slate-400">{t("review.intro")}</p>
-            <div className="flex flex-col sm:flex-row flex-wrap gap-2 sm:gap-3">
-              <button type="button" onClick={() => setImportOpen(true)} className={buttonSecondary}>
-                {t("review.importExcel")}
-              </button>
-              <button type="button" onClick={calculateFromDraft} disabled={loading} className={`${buttonSecondary} sm:ml-auto`}>
-                {t("wizard.recalculate")}
-              </button>
-            </div>
-          </div>
-
           {result && (
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-3">
+            <div className="grid grid-cols-2 gap-2 sm:gap-3 lg:grid-cols-4">
               <Stat label={t("wizard.lines")} value={String(result.totals.line_count ?? 0)} />
               <Stat label={t("wizard.totalWeight")} value={`${result.totals.total_weight_kg ?? 0} kg`} />
               <Stat label={t("wizard.totalVolume")} value={`${result.totals.total_transport_volume_m3 ?? 0} m³`} />
@@ -185,10 +163,11 @@ export default function WizardPage() {
             }}
             onRemoveLine={removeLine}
             onAddLine={addLine}
+            onImportClick={() => setImportOpen(true)}
             translateMessage={translateMessage}
           />
 
-          <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
+          <div className="flex flex-col gap-2 sm:flex-row sm:gap-3">
             <button type="button" onClick={recalculate} disabled={loading} className={buttonSecondary}>
               {t("wizard.recalculate")}
             </button>
@@ -206,7 +185,7 @@ export default function WizardPage() {
       {step === 3 && result && needsDg && (
         <div className="space-y-4">
           <DangerousGoodsStep lines={result.lines} entries={dgEntries} onChange={setDgEntries} perPosition />
-          <div className="flex flex-col sm:flex-row gap-2">
+          <div className="flex flex-col gap-2 sm:flex-row">
             <button type="button" onClick={() => setStep(2)} className={buttonSecondary}>{t("wizard.back")}</button>
             <button type="button" onClick={() => setStep(exportStep)} className={`${buttonPrimary} sm:ml-auto`}>
               {t("wizard.toExport")}
@@ -216,7 +195,7 @@ export default function WizardPage() {
       )}
 
       {step === exportStep && result && (
-        <div className={`${panelClass} p-4 sm:p-6 space-y-4 max-w-xl`}>
+        <div className={`${panelClass} max-w-xl space-y-4 p-4 sm:p-6`}>
           <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-100">{t("wizard.summary")}</h3>
           {needsDg && (
             <p className="text-sm text-amber-700 dark:text-amber-300">{t("wizard.dgIncluded", { count: dgEntries.length })}</p>
@@ -227,12 +206,12 @@ export default function WizardPage() {
             <Field label={t("wizard.baCode")} value={metadata.ba_code} onChange={(v) => setMetadata({ ...metadata, ba_code: v })} />
             <Field label={t("wizard.annex")} value={metadata.annex_serial} onChange={(v) => setMetadata({ ...metadata, annex_serial: v })} />
           </div>
-          <ul className="text-sm text-slate-600 dark:text-slate-400 space-y-1">
+          <ul className="space-y-1 text-sm text-slate-600 dark:text-slate-400">
             <li>{t("wizard.lines")}: {result.totals.included_count}</li>
             <li>{t("wizard.totalWeight")}: {result.totals.total_weight_kg} kg</li>
             <li>{t("wizard.totalVolume")}: {result.totals.total_transport_volume_m3} m³</li>
           </ul>
-          <div className="flex flex-col sm:flex-row gap-2">
+          <div className="flex flex-col gap-2 sm:flex-row">
             <button type="button" onClick={() => setStep(needsDg ? 3 : 2)} className={buttonSecondary}>{t("wizard.back")}</button>
             <button type="button" onClick={exportFile} disabled={loading} className={`${buttonPrimary} sm:ml-auto`}>
               {t("wizard.download")}
@@ -243,7 +222,7 @@ export default function WizardPage() {
 
       <ImportDialog open={importOpen} onClose={() => setImportOpen(false)} onImport={handleImport} />
 
-      {error && <p className="text-red-600 dark:text-red-400 text-sm">{error}</p>}
+      {error && <p className="text-sm text-red-600 dark:text-red-400">{error}</p>}
     </div>
   );
 }
@@ -252,7 +231,7 @@ function Stat({ label, value }: { label: string; value: string }) {
   return (
     <div className={`${panelClass} p-3 sm:p-4`}>
       <p className="text-xs text-slate-500 dark:text-slate-400">{label}</p>
-      <p className="text-base sm:text-lg font-semibold mt-1 text-slate-900 dark:text-slate-100">{value}</p>
+      <p className="mt-1 text-base font-semibold text-slate-900 dark:text-slate-100 sm:text-lg">{value}</p>
     </div>
   );
 }

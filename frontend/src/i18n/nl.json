@@ -69,7 +69,8 @@
     "dgVehicleHelp": "Omschrijving van het voertuig of de lading zoals in appendix D.",
     "dgLookup": "UN-nummer opzoeken",
     "dgIncluded": "Appendix D wordt meegeëxporteerd voor {{count}} regel(s).",
-    "dgPositionOf": "Positie {{current}} van {{total}}"
+    "dgPositionOf": "Positie {{current}} van {{total}}",
+    "progressStep": "Stap {{current}} van {{total}}"
   },
   "questions": {
     "yes": "Ja",
@@ -105,6 +106,7 @@
     "tbbPlaceholder": "TBB-categorie"
   },
   "review": {
+    "linesTitle": "Posities",
     "intro": "Typ in het veld om te zoeken in materieel, profielen, materialen en referenties. Synoniemen zoals hoeklijn worden herkend; voeg afmetingen toe om te verfijnen.",
     "description": "Omschrijving",
     "descriptionPlaceholder": "Kies materieel of typ bijv. staal hoekprofiel 80x80x8x6000",
@@ -129,6 +131,8 @@
     "importExcel": "Importeren uit Excel",
     "importTitle": "Excel / tekst importeren",
     "importHint": "Plak gekopieerde kolommen uit Excel (omschrijving | aantal | eenheid).",
+    "importExampleTitle": "Voorbeeld",
+    "importExample": "staal hoekprofiel 80x80x8x6000 | 8 | stuks",
     "importReplace": "Vervang huidige regels",
     "importAppend": "Toevoegen aan huidige regels",
     "importConfirm": "Importeren",

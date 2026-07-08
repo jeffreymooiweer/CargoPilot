@@ -59,6 +59,8 @@ export const api = {
   updateEquipment: (id: number, payload: Partial<EquipmentItem>) =>
     request<EquipmentItem>(`/equipment/${id}`, { method: "PATCH", body: JSON.stringify(payload) }),
   deleteEquipment: (id: number) => request<{ ok: boolean }>(`/equipment/${id}`, { method: "DELETE" }),
+  catalogSearch: (q: string, limit = 25) =>
+    request<{ results: CatalogSearchHit[] }>(`/catalog/search?q=${encodeURIComponent(q)}&limit=${limit}`),
 };
 
 export interface User {
@@ -155,6 +157,15 @@ export interface DgInstructions {
   a1_flags: Record<string, { nl: string; en: string }>;
   appendix_d_intro: { nl: string; en: string };
   appendix_d_fields: Record<string, { label: { nl: string; en: string }; help: { nl: string; en: string } }>;
+}
+
+export interface CatalogSearchHit {
+  id: string;
+  source: "equipment" | "profile" | "reference" | "template" | "material";
+  label: string;
+  sublabel: string | null;
+  value: string;
+  score: number;
 }
 
 export interface EquipmentItem {

@@ -8,7 +8,7 @@ i18n.use(initReactI18next).init({
     nl: { translation: nl },
     en: { translation: en },
   },
-  lng: "nl",
+  lng: localStorage.getItem("cargopilot-lang") || "nl",
   fallbackLng: "en",
   interpolation: { escapeValue: false },
 });

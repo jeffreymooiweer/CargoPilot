@@ -17,8 +17,6 @@ export default function WizardPage() {
   const [step, setStep] = useState(1);
   const [draftLines, setDraftLines] = useState<DraftLine[]>([{ id: 1, description: "", quantity: 1, unit: "stuks" }]);
   const [nextId, setNextId] = useState(2);
-  const [mode, setMode] = useState<"continue" | "strict">("continue");
-  const [outputLang, setOutputLang] = useState("nl");
   const [result, setResult] = useState<CalcResult | null>(null);
   const [metadata, setMetadata] = useState({ route: "", ba_code: "", annex_serial: "", date: "" });
   const [dgEntries, setDgEntries] = useState<DgEntry[]>([]);
@@ -53,11 +51,8 @@ export default function WizardPage() {
     setError("");
     setDgEntries([]);
     try {
-      const res = await api.calculate({ text, mode, output_language: outputLang });
+      const res = await api.calculate({ text, mode: "continue", input_language: null });
       setResult(res);
-      if (mode === "strict" && !res.success) {
-        setError(t("wizard.strictBlocked"));
-      }
       return res;
     } catch (e) {
       setError(String(e));
@@ -97,8 +92,14 @@ export default function WizardPage() {
   const goToQuestions = async () => {
     const res = result ?? (await calculateFromDraft());
     if (!res) return;
-    if (mode === "strict" && !res.success) return;
     setStep(2);
+  };
+
+  const appendixLang = (lines: CalcResult["lines"]) => {
+    const langs = lines.map((l) => l.input_language).filter(Boolean);
+    if (langs.length === 0) return "nl";
+    const enCount = langs.filter((l) => l === "en").length;
+    return enCount > langs.length / 2 ? "en" : "nl";
   };
 
   const finishQuestions = (updatedLines: CalcResult["lines"]) => {
@@ -120,8 +121,8 @@ export default function WizardPage() {
     try {
       await api.exportAppendix({
         lines: result.lines,
-        output_language: outputLang,
-        metadata: { ...metadata, output_language: outputLang },
+        output_language: appendixLang(result.lines),
+        metadata: { ...metadata, output_language: appendixLang(result.lines) },
         dangerous_goods: needsDg ? dgEntries : undefined,
       });
     } catch (e) {
@@ -138,7 +139,7 @@ export default function WizardPage() {
   };
 
   return (
-    <div className="space-y-4 sm:space-y-6 pb-20 md:pb-0">
+    <div className="space-y-4 sm:space-y-6">
       <div className="flex gap-2 overflow-x-auto pb-1 -mx-1 px-1">
         {stepPills.map((pill, index) => (
           <div
@@ -160,14 +161,6 @@ export default function WizardPage() {
               <button type="button" onClick={() => setImportOpen(true)} className={buttonSecondary}>
                 {t("review.importExcel")}
               </button>
-              <select className={`${inputClass} sm:w-auto`} value={mode} onChange={(e) => setMode(e.target.value as "continue" | "strict")}>
-                <option value="continue">{t("wizard.continue")}</option>
-                <option value="strict">{t("wizard.strict")}</option>
-              </select>
-              <select className={`${inputClass} sm:w-auto`} value={outputLang} onChange={(e) => setOutputLang(e.target.value)}>
-                <option value="nl">Nederlands</option>
-                <option value="en">English</option>
-              </select>
               <button type="button" onClick={calculateFromDraft} disabled={loading} className={`${buttonSecondary} sm:ml-auto`}>
                 {t("wizard.recalculate")}
               </button>

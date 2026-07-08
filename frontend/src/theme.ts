@@ -27,3 +27,10 @@ export function toggleTheme(): Theme {
   applyTheme(next);
   return next;
 }
+
+export function applySystemTheme(): Theme {
+  localStorage.removeItem(STORAGE_KEY);
+  const theme: Theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+  document.documentElement.classList.toggle("dark", theme === "dark");
+  return theme;
+}

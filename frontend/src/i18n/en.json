@@ -105,11 +105,20 @@
     "tbbPlaceholder": "TBB category"
   },
   "review": {
-    "intro": "Add lines using the dropdown (Equipment overview) or type a free description for automatic steel/profile matching.",
+    "intro": "Type in the field to search equipment, profiles, materials and references. Synonyms are recognized; add dimensions to narrow results.",
     "description": "Description",
     "descriptionPlaceholder": "Pick equipment or type e.g. steel angle 80x80x8x6000",
     "customDescription": "Use as free description (auto-match)",
     "noEquipmentMatch": "No catalog match — free description will be used",
+    "noCatalogMatch": "No catalog match — free description will be used",
+    "catalogSearching": "Searching catalog…",
+    "catalogSource": {
+      "equipment": "Equipment",
+      "profile": "Profile",
+      "reference": "Reference",
+      "template": "Suggestion",
+      "material": "Material"
+    },
     "quantity": "Quantity",
     "unit": "Unit",
     "status": "Status",

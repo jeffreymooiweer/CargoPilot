@@ -1,5 +1,3 @@
-import { useTranslation } from "react-i18next";
-
 interface Step {
   n: number;
   label: string;
@@ -10,65 +8,59 @@ interface Props {
   currentStep: number;
 }
 
+function segmentState(index: number, currentIndex: number): "done" | "active" | "upcoming" {
+  if (index < currentIndex) return "done";
+  if (index === currentIndex) return "active";
+  return "upcoming";
+}
+
+function clipPath(index: number, total: number): string {
+  const tip = "0.85rem";
+  if (total === 1) return "none";
+  if (index === 0) {
+    return `polygon(0 0, calc(100% - ${tip}) 0, 100% 50%, calc(100% - ${tip}) 100%, 0 100%)`;
+  }
+  if (index === total - 1) {
+    return `polygon(0 0, 100% 0, 100% 100%, 0 100%, ${tip} 50%)`;
+  }
+  return `polygon(0 0, calc(100% - ${tip}) 0, 100% 50%, calc(100% - ${tip}) 100%, 0 100%, ${tip} 50%)`;
+}
+
+function segmentColors(state: "done" | "active" | "upcoming"): string {
+  if (state === "active") return "bg-brand-600 text-white";
+  if (state === "done") return "bg-brand-500 text-white";
+  return "bg-slate-200 text-slate-500 dark:bg-slate-800 dark:text-slate-400";
+}
+
 export default function WizardProgress({ steps, currentStep }: Props) {
-  const { t } = useTranslation();
   const currentIndex = Math.max(
     0,
     steps.findIndex((s) => s.n === currentStep),
   );
-  const progressPercent = ((currentIndex + 1) / steps.length) * 100;
 
   return (
-    <div className="rounded-2xl border border-slate-200 bg-white p-4 dark:border-slate-800 dark:bg-slate-900 sm:p-5">
-      <div className="mb-3 flex items-center justify-between gap-3">
-        <div>
-          <p className="text-xs font-medium uppercase tracking-wide text-slate-500 dark:text-slate-400">
-            {t("wizard.progressStep", { current: currentIndex + 1, total: steps.length })}
-          </p>
-          <p className="mt-0.5 text-sm font-semibold text-slate-900 dark:text-slate-100 sm:text-base">
-            {steps[currentIndex]?.label}
-          </p>
-        </div>
-        <span className="shrink-0 rounded-full bg-brand-50 px-3 py-1 text-xs font-semibold text-brand-700 dark:bg-brand-950/50 dark:text-brand-200">
-          {Math.round(progressPercent)}%
-        </span>
-      </div>
-
-      <div className="h-2.5 overflow-hidden rounded-full bg-slate-100 dark:bg-slate-800">
-        <div
-          className="h-full rounded-full bg-gradient-to-r from-brand-500 via-brand-600 to-brand-500 transition-all duration-500 ease-out"
-          style={{ width: `${progressPercent}%` }}
-        />
-      </div>
-
-      <div className="mt-3 hidden gap-2 sm:grid" style={{ gridTemplateColumns: `repeat(${steps.length}, minmax(0, 1fr))` }}>
+    <nav aria-label="Wizard voortgang" className="w-full">
+      <ol className="flex w-full list-none">
         {steps.map((step, index) => {
-          const done = index < currentIndex;
-          const active = index === currentIndex;
+          const state = segmentState(index, currentIndex);
+
           return (
-            <div key={step.n} className="flex flex-col items-center gap-1.5 text-center">
-              <div
-                className={`flex h-7 w-7 items-center justify-center rounded-full text-xs font-bold transition-colors ${
-                  active
-                    ? "bg-brand-600 text-white shadow-md shadow-brand-600/30"
-                    : done
-                      ? "bg-brand-100 text-brand-700 dark:bg-brand-900/60 dark:text-brand-200"
-                      : "bg-slate-100 text-slate-400 dark:bg-slate-800 dark:text-slate-500"
-                }`}
-              >
-                {done ? "✓" : index + 1}
-              </div>
-              <span
-                className={`max-w-[7rem] text-[10px] leading-tight ${
-                  active ? "font-semibold text-brand-700 dark:text-brand-200" : "text-slate-500 dark:text-slate-400"
-                }`}
-              >
-                {step.label}
-              </span>
-            </div>
+            <li
+              key={step.n}
+              aria-current={state === "active" ? "step" : undefined}
+              className={`relative flex min-h-[44px] flex-1 items-center justify-center px-2 py-2.5 text-center text-xs font-semibold sm:px-5 sm:text-sm ${segmentColors(state)} ${
+                index > 0 ? "-ml-3 sm:-ml-3.5" : ""
+              }`}
+              style={{
+                clipPath: clipPath(index, steps.length),
+                zIndex: steps.length - index,
+              }}
+            >
+              <span className="truncate px-1 sm:px-2">{step.label}</span>
+            </li>
           );
         })}
-      </div>
-    </div>
+      </ol>
+    </nav>
   );
 }

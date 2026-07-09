@@ -61,9 +61,17 @@ export default function Layout({ user, onLogout }: Props) {
               <path strokeLinecap="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
             </svg>
           </button>
-          <div className="min-w-0 flex-1 md:flex-none">
-            <h1 className="text-lg sm:text-xl font-semibold text-slate-900 dark:text-slate-100 truncate">{t("app.name")}</h1>
-            <p className="text-xs text-slate-500 dark:text-slate-400 truncate hidden sm:block">{t("app.tagline")}</p>
+          <div className="min-w-0 flex-1 md:flex-none flex items-center gap-2 sm:gap-3">
+            <img
+              src="/shipping.png"
+              alt=""
+              aria-hidden="true"
+              className="h-8 w-8 sm:h-9 sm:w-9 shrink-0 dark:brightness-0 dark:invert"
+            />
+            <div className="min-w-0">
+              <h1 className="text-lg sm:text-xl font-semibold text-slate-900 dark:text-slate-100 truncate">{t("app.name")}</h1>
+              <p className="text-xs text-slate-500 dark:text-slate-400 truncate hidden sm:block">{t("app.tagline")}</p>
+            </div>
           </div>
           <div className="hidden md:flex items-center gap-3 text-sm text-slate-500 dark:text-slate-400">
             <span>{user.username}</span>

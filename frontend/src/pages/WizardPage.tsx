@@ -195,7 +195,7 @@ export default function WizardPage() {
       )}
 
       {step === exportStep && result && (
-        <div className={`${panelClass} max-w-xl space-y-4 p-4 sm:p-6`}>
+        <div className={`${panelClass} space-y-4 p-4 sm:p-6`}>
           <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-100">{t("wizard.summary")}</h3>
           {needsDg && (
             <p className="text-sm text-amber-700 dark:text-amber-300">{t("wizard.dgIncluded", { count: dgEntries.length })}</p>

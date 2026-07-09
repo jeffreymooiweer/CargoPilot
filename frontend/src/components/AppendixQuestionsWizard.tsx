@@ -243,7 +243,7 @@ export default function AppendixQuestionsWizard({ lines, onComplete, onBack }: P
       </div>
 
       {screen.kind === "flag-answer" && currentFlag && (
-        <div className={`${panelClass} p-6 space-y-6 max-w-2xl`}>
+        <div className={`${panelClass} p-6 space-y-6`}>
           <div>
             <div className="flex items-start gap-2">
               <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-100">
@@ -269,7 +269,7 @@ export default function AppendixQuestionsWizard({ lines, onComplete, onBack }: P
       )}
 
       {screen.kind === "flag-pick" && currentFlag && (
-        <div className={`${panelClass} p-6 space-y-4 max-w-2xl`}>
+        <div className={`${panelClass} p-6 space-y-4`}>
           <div>
             <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-100">
               {t(`questions.${currentFlag.key}Pick` as "questions.loadedPick")}
@@ -309,7 +309,7 @@ export default function AppendixQuestionsWizard({ lines, onComplete, onBack }: P
       )}
 
       {screen.kind === "extra-temperature" && (
-        <div className={`${panelClass} p-6 space-y-4 max-w-2xl`}>
+        <div className={`${panelClass} p-6 space-y-4`}>
           <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-100">{t("questions.temperatureTitle")}</h3>
           <p className="text-sm text-slate-500 dark:text-slate-400">{t("questions.temperatureHint")}</p>
           {screen.lineIds.map((lineId) => {
@@ -341,7 +341,7 @@ export default function AppendixQuestionsWizard({ lines, onComplete, onBack }: P
       )}
 
       {screen.kind === "extra-tbb" && (
-        <div className={`${panelClass} p-6 space-y-4 max-w-2xl`}>
+        <div className={`${panelClass} p-6 space-y-4`}>
           <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-100">{t("questions.tbbTitle")}</h3>
           <p className="text-sm text-slate-500 dark:text-slate-400">{t("questions.tbbHint")}</p>
           {screen.lineIds.map((lineId) => {

@@ -70,10 +70,16 @@ def create_app() -> FastAPI:
     if static_dir.exists():
         app.mount("/assets", StaticFiles(directory=static_dir / "assets"), name="assets")
 
+        static_root = static_dir.resolve()
+
         @app.get("/{full_path:path}")
         async def spa(full_path: str):
             if full_path.startswith("api/"):
                 return JSONResponse({"detail": "Not found"}, status_code=404)
+            if full_path:
+                candidate = (static_dir / full_path).resolve()
+                if candidate.is_file() and candidate.is_relative_to(static_root):
+                    return FileResponse(candidate)
             index = static_dir / "index.html"
             if index.exists():
                 return FileResponse(index)

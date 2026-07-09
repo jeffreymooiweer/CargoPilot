@@ -26,7 +26,13 @@ export default function LoginPage({ onLogin }: { onLogin: () => void }) {
     <div className="min-h-screen flex items-center justify-center bg-slate-100 dark:bg-slate-950 px-4">
       <form onSubmit={submit} className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 p-8 w-full max-w-md space-y-4">
         <div className="text-center">
-          <h1 className="text-2xl font-semibold text-slate-900 dark:text-slate-100">{t("app.name")}</h1>
+          <img
+            src="/shipping.png"
+            alt=""
+            aria-hidden="true"
+            className="mx-auto h-16 w-16 dark:brightness-0 dark:invert"
+          />
+          <h1 className="text-2xl font-semibold text-slate-900 dark:text-slate-100 mt-3">{t("app.name")}</h1>
           <p className="text-slate-500 dark:text-slate-400 text-sm mt-1">{t("app.tagline")}</p>
         </div>
         {setupWarning && <p className="text-amber-700 dark:text-amber-300 bg-amber-50 dark:bg-amber-900/30 border border-amber-200 dark:border-amber-800 rounded-lg p-3 text-sm">{setupWarning}</p>}

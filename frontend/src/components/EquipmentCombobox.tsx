@@ -1,4 +1,5 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import { useTranslation } from "react-i18next";
 import { api, CatalogSearchHit, EquipmentItem } from "../api/client";
 
@@ -21,7 +22,10 @@ export default function EquipmentCombobox({ value, onChange, placeholder }: Prop
   const [loading, setLoading] = useState(false);
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState(value);
+  const [menuPos, setMenuPos] = useState<{ left: number; top: number; width: number; maxHeight: number } | null>(null);
   const wrapRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
+  const menuRef = useRef<HTMLUListElement>(null);
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
@@ -34,11 +38,46 @@ export default function EquipmentCombobox({ value, onChange, placeholder }: Prop
 
   useEffect(() => {
     const onDoc = (e: MouseEvent) => {
-      if (wrapRef.current && !wrapRef.current.contains(e.target as Node)) setOpen(false);
+      const target = e.target as Node;
+      if (wrapRef.current?.contains(target)) return;
+      if (menuRef.current?.contains(target)) return;
+      setOpen(false);
     };
     document.addEventListener("mousedown", onDoc);
     return () => document.removeEventListener("mousedown", onDoc);
   }, []);
+
+  const updatePosition = useCallback(() => {
+    const el = inputRef.current;
+    if (!el) return;
+    const rect = el.getBoundingClientRect();
+    const gap = 4;
+    const menuMax = 224;
+    const spaceBelow = window.innerHeight - rect.bottom - gap;
+    const spaceAbove = rect.top - gap;
+    let top: number;
+    let maxHeight: number;
+    if (spaceBelow >= 160 || spaceBelow >= spaceAbove) {
+      top = rect.bottom + gap;
+      maxHeight = Math.max(120, Math.min(menuMax, spaceBelow));
+    } else {
+      maxHeight = Math.max(120, Math.min(menuMax, spaceAbove));
+      top = rect.top - gap - maxHeight;
+    }
+    setMenuPos({ left: rect.left, top, width: rect.width, maxHeight });
+  }, []);
+
+  useEffect(() => {
+    if (!open) return;
+    updatePosition();
+    const handler = () => updatePosition();
+    window.addEventListener("resize", handler);
+    window.addEventListener("scroll", handler, true);
+    return () => {
+      window.removeEventListener("resize", handler);
+      window.removeEventListener("scroll", handler, true);
+    };
+  }, [open, updatePosition]);
 
   useEffect(() => {
     if (debounceRef.current) clearTimeout(debounceRef.current);
@@ -82,6 +121,7 @@ export default function EquipmentCombobox({ value, onChange, placeholder }: Prop
   return (
     <div ref={wrapRef} className="relative">
       <input
+        ref={inputRef}
         className={inputClass}
         value={query}
         placeholder={placeholder || t("review.descriptionPlaceholder")}
@@ -93,8 +133,12 @@ export default function EquipmentCombobox({ value, onChange, placeholder }: Prop
         onFocus={() => setOpen(true)}
         autoComplete="off"
       />
-      {open && (
-        <ul className="absolute z-40 mt-1 max-h-56 w-full overflow-auto rounded-lg border border-slate-200 bg-white shadow-lg dark:border-slate-700 dark:bg-slate-900">
+      {open && menuPos && createPortal(
+        <ul
+          ref={menuRef}
+          className="fixed z-50 overflow-auto rounded-lg border border-slate-200 bg-white shadow-lg dark:border-slate-700 dark:bg-slate-900"
+          style={{ left: menuPos.left, top: menuPos.top, width: menuPos.width, maxHeight: menuPos.maxHeight }}
+        >
           <li>
             <button
               type="button"
@@ -156,7 +200,8 @@ export default function EquipmentCombobox({ value, onChange, placeholder }: Prop
                 </li>
               );
             })}
-        </ul>
+        </ul>,
+        document.body,
       )}
     </div>
   );

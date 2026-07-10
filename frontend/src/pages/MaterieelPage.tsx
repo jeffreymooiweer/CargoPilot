@@ -330,12 +330,11 @@ export default function MaterieelPage() {
                 </td>
                 <td className="px-3 py-2 whitespace-nowrap">{item.weight_kg} kg</td>
                 <td className="px-3 py-2 whitespace-nowrap">
-                  <button type="button" className="text-brand-600 dark:text-brand-300 hover:underline mr-3" onClick={() => startEdit(item)}>
-                    {t("materieel.edit")}
-                  </button>
-                  <button type="button" className="text-red-600 dark:text-red-400 hover:underline" onClick={() => remove(item.id!)}>
-                    {t("materieel.delete")}
-                  </button>
+                  <div className="flex items-center gap-0.5">
+                    <CardAction label={t("materieel.edit")} onClick={() => startEdit(item)} icon={<PencilIcon />} />
+                    <CardAction label={t("materieel.duplicate")} onClick={() => duplicate(item)} icon={<CopyIcon />} />
+                    <CardAction label={t("materieel.delete")} onClick={() => remove(item.id!)} icon={<TrashIcon />} danger />
+                  </div>
                 </td>
               </tr>
             ))}

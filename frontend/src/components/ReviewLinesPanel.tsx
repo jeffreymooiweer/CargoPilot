@@ -145,16 +145,9 @@ export default function ReviewLinesPanel({
           <h3 className="text-sm font-semibold text-slate-900 dark:text-slate-100">{t("review.linesTitle")}</h3>
           <p className="mt-0.5 text-xs text-slate-500 dark:text-slate-400">{t("review.intro")}</p>
         </div>
-        <div className="flex items-center gap-2 self-end sm:self-auto">
+        <div className="flex items-center gap-1 self-end sm:self-auto">
           {onImportClick && (
-            <button
-              type="button"
-              onClick={onImportClick}
-              className="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-slate-50 px-3.5 py-2 text-sm font-medium text-slate-700 transition-colors hover:border-brand-300 hover:bg-brand-50 hover:text-brand-800 dark:border-slate-700 dark:bg-slate-800/60 dark:text-slate-200 dark:hover:border-brand-700 dark:hover:bg-brand-950/40 dark:hover:text-brand-200"
-            >
-              <ImportIcon />
-              {t("review.importExcel")}
-            </button>
+            <CardAction label={t("review.importExcel")} onClick={onImportClick} icon={<ImportIcon />} />
           )}
           <IconButton label={t("review.addLine")} onClick={onAddLine} variant="add" />
         </div>

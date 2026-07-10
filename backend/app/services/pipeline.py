@@ -314,6 +314,15 @@ def process_line(
     messages.extend(dg_messages)
     detected_un_numbers = detect_un_numbers(row.description)
 
+    if overrides.get("weight_each_kg") is not None:
+        weight_each = float(overrides["weight_each_kg"])
+        if qty:
+            weight_total = weight_each * qty
+    elif overrides.get("weight_total_kg") is not None:
+        weight_total = float(overrides["weight_total_kg"])
+        if qty:
+            weight_each = weight_total / qty
+
     return LineResult(
         line_id=line_id,
         raw=row.raw,

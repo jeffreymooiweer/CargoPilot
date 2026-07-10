@@ -11,6 +11,8 @@ export interface DraftLine {
 
 const inputClass =
   "w-full border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-950 text-slate-900 dark:text-slate-100 rounded-lg px-3 py-2.5 text-sm min-h-[44px]";
+const weightInputClass =
+  "w-full border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-950 text-slate-900 dark:text-slate-100 rounded-lg px-3 py-2 text-sm";
 const panelClass = "bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800";
 
 interface Props {
@@ -21,6 +23,7 @@ interface Props {
   onDuplicateLine: (id: number) => void;
   onAddLine: () => void;
   onImportClick?: () => void;
+  onLineWeightChange?: (lineId: number, field: "weight_each_kg" | "weight_total_kg", value: number | null) => void;
   translateMessage: (msg: string) => string;
 }
 
@@ -29,31 +32,6 @@ function statusColor(status: string) {
   if (status === "error") return "bg-red-100 text-red-800 dark:bg-red-900/40 dark:text-red-300";
   if (status === "needs_review") return "bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-300";
   return "bg-yellow-100 text-yellow-800 dark:bg-yellow-900/40 dark:text-yellow-300";
-}
-
-function IconButton({
-  label,
-  onClick,
-  variant,
-  disabled,
-}: {
-  label: string;
-  onClick: () => void;
-  variant: "add" | "remove";
-  disabled?: boolean;
-}) {
-  const base =
-    "inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full border text-lg font-medium transition-colors disabled:opacity-40 disabled:pointer-events-none";
-  const styles =
-    variant === "add"
-      ? "border-brand-200 bg-brand-50 text-brand-700 hover:bg-brand-100 dark:border-brand-800 dark:bg-brand-950/40 dark:text-brand-200 dark:hover:bg-brand-900/50"
-      : "border-slate-200 bg-white text-slate-500 hover:border-red-200 hover:bg-red-50 hover:text-red-600 dark:border-slate-700 dark:bg-slate-900 dark:hover:border-red-900 dark:hover:bg-red-950/40 dark:hover:text-red-400";
-
-  return (
-    <button type="button" onClick={onClick} disabled={disabled} className={`${base} ${styles}`} aria-label={label}>
-      {variant === "add" ? "+" : "−"}
-    </button>
-  );
 }
 
 function ImportIcon() {
@@ -128,6 +106,7 @@ export default function ReviewLinesPanel({
   onDuplicateLine,
   onAddLine,
   onImportClick,
+  onLineWeightChange,
   translateMessage,
 }: Props) {
   const { t } = useTranslation();
@@ -145,16 +124,14 @@ export default function ReviewLinesPanel({
           <h3 className="text-sm font-semibold text-slate-900 dark:text-slate-100">{t("review.linesTitle")}</h3>
           <p className="mt-0.5 text-xs text-slate-500 dark:text-slate-400">{t("review.intro")}</p>
         </div>
-        <div className="flex items-center gap-1 self-end sm:self-auto">
-          {onImportClick && (
+        {onImportClick && (
+          <div className="flex items-center gap-1 self-end sm:self-auto">
             <CardAction label={t("review.importExcel")} onClick={onImportClick} icon={<ImportIcon />} />
-          )}
-          <IconButton label={t("review.addLine")} onClick={onAddLine} variant="add" />
-        </div>
+          </div>
+        )}
       </div>
 
-      {/* Mobiel: kaarten */}
-      <div className="space-y-3 p-4 md:hidden">
+      <div className="space-y-3 p-4">
         {draftLines.map((draft, index) => {
           const result = computed ? resultLines![index] : null;
           return (
@@ -190,7 +167,7 @@ export default function ReviewLinesPanel({
                     />
                   </div>
                 </div>
-                <div className="grid grid-cols-2 gap-3">
+                <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
                   <div>
                     <label className="text-xs font-medium text-slate-600 dark:text-slate-400">{t("review.quantity")}</label>
                     <input
@@ -204,108 +181,52 @@ export default function ReviewLinesPanel({
                     <label className="text-xs font-medium text-slate-600 dark:text-slate-400">{t("review.unit")}</label>
                     <input className={`${inputClass} mt-1`} value={draft.unit} onChange={(e) => updateDraft(draft.id, { unit: e.target.value })} />
                   </div>
+                  {result && onLineWeightChange && (
+                    <>
+                      <div>
+                        <label className="text-xs font-medium text-slate-600 dark:text-slate-400">{t("review.weightEach")}</label>
+                        <input
+                          type="number"
+                          step="0.01"
+                          className={`${weightInputClass} mt-1`}
+                          value={result.weight_each_kg ?? ""}
+                          onChange={(e) =>
+                            onLineWeightChange(
+                              result.line_id,
+                              "weight_each_kg",
+                              e.target.value === "" ? null : Number(e.target.value),
+                            )
+                          }
+                        />
+                      </div>
+                      <div>
+                        <label className="text-xs font-medium text-slate-600 dark:text-slate-400">{t("review.weightTotal")}</label>
+                        <input
+                          type="number"
+                          step="0.01"
+                          className={`${weightInputClass} mt-1`}
+                          value={result.weight_total_kg ?? ""}
+                          onChange={(e) =>
+                            onLineWeightChange(
+                              result.line_id,
+                              "weight_total_kg",
+                              e.target.value === "" ? null : Number(e.target.value),
+                            )
+                          }
+                        />
+                      </div>
+                    </>
+                  )}
                 </div>
-                {result && (
-                  <div className="grid grid-cols-2 gap-2 border-t border-slate-200 pt-3 text-sm dark:border-slate-700">
-                    <div>
-                      <span className="text-slate-500 dark:text-slate-400">{t("wizard.totalWeight")}</span>
-                      <p className="font-medium">{result.weight_total_kg ?? "—"} kg</p>
-                    </div>
-                    <div>
-                      <span className="text-slate-500 dark:text-slate-400">{t("review.weightEach")}</span>
-                      <p className="font-medium">{result.weight_each_kg ?? "—"} kg</p>
-                    </div>
-                    {result.messages.length > 0 && (
-                      <p className="col-span-2 text-xs text-amber-700 dark:text-amber-300">
-                        {result.messages.map(translateMessage).join(", ")}
-                      </p>
-                    )}
-                  </div>
+                {result && result.messages.length > 0 && (
+                  <p className="text-xs text-amber-700 dark:text-amber-300">
+                    {result.messages.map(translateMessage).join(", ")}
+                  </p>
                 )}
               </div>
             </div>
           );
         })}
-      </div>
-
-      {/* Desktop: tabel */}
-      <div className="hidden overflow-x-auto md:block">
-        <table className="w-full min-w-[800px] text-sm text-slate-800 dark:text-slate-200">
-          <thead className="bg-slate-50/80 dark:bg-slate-800/50">
-            <tr>
-              <th className="w-12 px-3 py-2.5 text-left">#</th>
-              {computed && <th className="px-3 py-2.5 text-left">{t("review.status")}</th>}
-              <th className="min-w-[280px] px-3 py-2.5 text-left">{t("review.description")}</th>
-              <th className="w-24 px-3 py-2.5 text-left">{t("review.quantity")}</th>
-              <th className="w-24 px-3 py-2.5 text-left">{t("review.unit")}</th>
-              {computed && (
-                <>
-                  <th className="px-3 py-2.5 text-left">{t("review.weightEach")}</th>
-                  <th className="px-3 py-2.5 text-left">{t("wizard.totalWeight")}</th>
-                </>
-              )}
-              <th className="w-24 px-3 py-2.5" />
-            </tr>
-          </thead>
-          <tbody>
-            {draftLines.map((draft, index) => {
-              const result = computed ? resultLines![index] : null;
-              return (
-                <tr key={draft.id} className="border-t border-slate-100 align-top dark:border-slate-800">
-                  <td className="px-3 py-3">
-                    <span className="inline-flex h-7 w-7 items-center justify-center rounded-full bg-slate-100 text-xs font-semibold text-slate-600 dark:bg-slate-800 dark:text-slate-300">
-                      {index + 1}
-                    </span>
-                  </td>
-                  {computed && (
-                    <td className="px-3 py-3">
-                      {result && (
-                        <span className={`rounded-full px-2 py-0.5 text-xs ${statusColor(result.status)}`}>
-                          {t(`status.${result.status}` as "status.ok")}
-                        </span>
-                      )}
-                    </td>
-                  )}
-                  <td className="px-3 py-3">
-                    <EquipmentCombobox value={draft.description} onChange={(v) => updateDraft(draft.id, { description: v })} />
-                    {result && result.messages.length > 0 && (
-                      <p className="mt-1 text-xs text-amber-700 dark:text-amber-300">{result.messages.map(translateMessage).join(", ")}</p>
-                    )}
-                  </td>
-                  <td className="px-3 py-3">
-                    <input
-                      type="number"
-                      className={inputClass}
-                      value={draft.quantity}
-                      onChange={(e) => updateDraft(draft.id, { quantity: e.target.value === "" ? "" : Number(e.target.value) })}
-                    />
-                  </td>
-                  <td className="px-3 py-3">
-                    <input className={inputClass} value={draft.unit} onChange={(e) => updateDraft(draft.id, { unit: e.target.value })} />
-                  </td>
-                  {computed && (
-                    <>
-                      <td className="px-3 py-3">{result?.weight_each_kg ?? "—"}</td>
-                      <td className="px-3 py-3">{result?.weight_total_kg ?? "—"}</td>
-                    </>
-                  )}
-                  <td className="px-3 py-3">
-                    <div className="flex items-center gap-0.5">
-                      <CardAction label={t("review.duplicateLine")} onClick={() => onDuplicateLine(draft.id)} icon={<CopyIcon />} />
-                      <CardAction
-                        label={t("review.removeLine")}
-                        onClick={() => onRemoveLine(draft.id)}
-                        icon={<TrashIcon />}
-                        danger
-                        disabled={!canRemove}
-                      />
-                    </div>
-                  </td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
       </div>
     </div>
   );

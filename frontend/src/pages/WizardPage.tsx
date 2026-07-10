@@ -6,9 +6,17 @@ import DangerousGoodsStep, { buildDgEntries } from "../components/DangerousGoods
 import ImportDialog from "../components/ImportDialog";
 import ReviewLinesPanel, { DraftLine, draftToText, textToDraftLines } from "../components/ReviewLinesPanel";
 import WizardProgress from "../components/WizardProgress";
+import {
+  applyLineWeightChange,
+  recalcTotals,
+  scaleLinesToTotalWeight,
+  weightOverridesFromLines,
+} from "../utils/lineWeights";
 
 const inputClass =
   "w-full border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-950 text-slate-900 dark:text-slate-100 rounded-lg px-3 py-2 text-sm min-h-[44px]";
+const weightInputClass =
+  "w-full border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-950 text-slate-900 dark:text-slate-100 rounded-lg px-3 py-2 text-sm";
 const panelClass = "bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800";
 const buttonSecondary = "px-4 py-2.5 rounded-lg border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800 min-h-[44px] text-sm";
 const buttonPrimary = "bg-brand-600 text-white px-5 py-2.5 rounded-lg font-medium hover:bg-brand-700 disabled:opacity-50 min-h-[44px] text-sm";
@@ -42,6 +50,10 @@ export default function WizardPage() {
     return pills;
   }, [needsDg, exportStep, t]);
 
+  const updateResultLines = (lines: CalcResult["lines"]) => {
+    setResult((prev) => (prev ? { ...prev, lines, totals: recalcTotals(lines) } : prev));
+  };
+
   const calculateFromDraft = async (): Promise<CalcResult | null> => {
     const text = draftToText(draftLines);
     if (!text.trim()) {
@@ -52,7 +64,12 @@ export default function WizardPage() {
     setError("");
     setDgEntries([]);
     try {
-      const res = await api.calculate({ text, mode: "continue", input_language: null });
+      const res = await api.calculate({
+        text,
+        mode: "continue",
+        input_language: null,
+        line_overrides: result ? weightOverridesFromLines(result.lines) : undefined,
+      });
       setResult(res);
       return res;
     } catch (e) {
@@ -101,6 +118,20 @@ export default function WizardPage() {
     setResult(null);
   };
 
+  const handleLineWeightChange = (
+    lineId: number,
+    field: "weight_each_kg" | "weight_total_kg",
+    value: number | null,
+  ) => {
+    if (!result) return;
+    updateResultLines(applyLineWeightChange(result.lines, lineId, field, value));
+  };
+
+  const handleTotalWeightChange = (value: number | null) => {
+    if (!result || value == null || Number.isNaN(value)) return;
+    updateResultLines(scaleLinesToTotalWeight(result.lines, value));
+  };
+
   const goToQuestions = async () => {
     const res = result ?? (await calculateFromDraft());
     if (!res) return;
@@ -115,7 +146,7 @@ export default function WizardPage() {
   };
 
   const finishQuestions = (updatedLines: CalcResult["lines"]) => {
-    setResult((prev) => (prev ? { ...prev, lines: updatedLines } : prev));
+    setResult((prev) => (prev ? { ...prev, lines: updatedLines, totals: recalcTotals(updatedLines) } : prev));
     const hasDg = updatedLines.some((line) => line.include && line.appendix_flags?.dangerous_goods === "Y");
     if (hasDg) {
       setDgEntries(buildDgEntries(updatedLines));
@@ -150,6 +181,8 @@ export default function WizardPage() {
     return translated === key ? msg : translated;
   };
 
+  const includedLines = result?.lines.filter((line) => line.include) ?? [];
+
   return (
     <div className="space-y-4 sm:space-y-6">
       <WizardProgress steps={stepPills} currentStep={step} />
@@ -176,6 +209,7 @@ export default function WizardPage() {
             onDuplicateLine={duplicateLine}
             onAddLine={addLine}
             onImportClick={() => setImportOpen(true)}
+            onLineWeightChange={result ? handleLineWeightChange : undefined}
             translateMessage={translateMessage}
           />
 
@@ -218,6 +252,80 @@ export default function WizardPage() {
             <Field label={t("wizard.baCode")} value={metadata.ba_code} onChange={(v) => setMetadata({ ...metadata, ba_code: v })} />
             <Field label={t("wizard.annex")} value={metadata.annex_serial} onChange={(v) => setMetadata({ ...metadata, annex_serial: v })} />
           </div>
+
+          <div className="space-y-3">
+            <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
+              <h4 className="text-sm font-semibold text-slate-900 dark:text-slate-100">{t("wizard.products")}</h4>
+              <div className="sm:w-48">
+                <label className="text-xs font-medium text-slate-600 dark:text-slate-400">{t("wizard.adjustTotalWeight")}</label>
+                <input
+                  type="number"
+                  step="0.01"
+                  className={`${weightInputClass} mt-1`}
+                  value={result.totals.total_weight_kg ?? ""}
+                  onChange={(e) =>
+                    handleTotalWeightChange(e.target.value === "" ? null : Number(e.target.value))
+                  }
+                />
+                <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">{t("wizard.adjustTotalWeightHint")}</p>
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              {includedLines.map((line) => (
+                <div
+                  key={line.line_id}
+                  className="rounded-xl border border-slate-200 px-3 py-2.5 text-sm dark:border-slate-700"
+                >
+                  <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+                    <div className="min-w-0">
+                      <p className="truncate font-medium text-slate-900 dark:text-slate-100">
+                        {line.output_description || line.description}
+                      </p>
+                      <p className="text-xs text-slate-500 dark:text-slate-400">
+                        {line.quantity ?? "—"} {line.unit ?? ""}
+                      </p>
+                    </div>
+                    <div className="grid grid-cols-2 gap-2 sm:w-56">
+                      <div>
+                        <label className="text-[11px] text-slate-500 dark:text-slate-400">{t("review.weightEach")}</label>
+                        <input
+                          type="number"
+                          step="0.01"
+                          className={`${weightInputClass} mt-0.5`}
+                          value={line.weight_each_kg ?? ""}
+                          onChange={(e) =>
+                            handleLineWeightChange(
+                              line.line_id,
+                              "weight_each_kg",
+                              e.target.value === "" ? null : Number(e.target.value),
+                            )
+                          }
+                        />
+                      </div>
+                      <div>
+                        <label className="text-[11px] text-slate-500 dark:text-slate-400">{t("review.weightTotal")}</label>
+                        <input
+                          type="number"
+                          step="0.01"
+                          className={`${weightInputClass} mt-0.5`}
+                          value={line.weight_total_kg ?? ""}
+                          onChange={(e) =>
+                            handleLineWeightChange(
+                              line.line_id,
+                              "weight_total_kg",
+                              e.target.value === "" ? null : Number(e.target.value),
+                            )
+                          }
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
           <ul className="space-y-1 text-sm text-slate-600 dark:text-slate-400">
             <li>{t("wizard.lines")}: {result.totals.included_count}</li>
             <li>{t("wizard.totalWeight")}: {result.totals.total_weight_kg} kg</li>

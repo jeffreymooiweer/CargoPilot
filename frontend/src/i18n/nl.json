@@ -131,13 +131,19 @@
     "noLines": "Voeg minstens één regel met omschrijving toe.",
     "importExcel": "Importeren uit Excel",
     "importTitle": "Excel / tekst importeren",
-    "importHint": "Plak gekopieerde kolommen uit Excel (omschrijving | aantal | eenheid).",
+    "importHint": "Plak gekopieerde kolommen uit Excel (omschrijving | aantal | eenheid), of download de template en upload een bestand.",
     "importExampleTitle": "Voorbeeld",
     "importExample": "staal hoekprofiel 80x80x8x6000 | 8 | stuks",
     "importReplace": "Vervang huidige regels",
     "importAppend": "Toevoegen aan huidige regels",
     "importConfirm": "Importeren",
     "cancel": "Annuleren"
+  },
+  "import": {
+    "downloadTemplate": "Template downloaden",
+    "chooseFile": "Bestand kiezen",
+    "parsingFile": "Bestand verwerken…",
+    "importingFile": "Importeren…"
   },
   "flags": {
     "loaded": "Beladen",
@@ -181,7 +187,14 @@
     "height": "Hoogte (cm)",
     "weight": "Gewicht (kg)",
     "aliases": "Aliassen (kommagescheiden, voor herkenning)",
-    "active": "Actief"
+    "active": "Actief",
+    "import": "Importeren",
+    "importTitle": "Materieel importeren",
+    "importHint": "Download eerst de template, vul uw materieel in en upload het bestand (.xlsx, .csv of .txt). Bestaande items worden bijgewerkt op basis van SAP-code of specifications.",
+    "importDone": "Import voltooid",
+    "importCreated": "{{count}} toegevoegd",
+    "importUpdated": "{{count}} bijgewerkt",
+    "importSkipped": "{{count}} overgeslagen"
   },
   "settings": {
     "title": "Instellingen",

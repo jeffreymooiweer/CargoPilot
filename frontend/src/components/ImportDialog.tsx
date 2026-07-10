@@ -1,5 +1,6 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { api } from "../api/client";
 
 const inputClass =
   "w-full border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-950 text-slate-900 dark:text-slate-100 rounded-xl px-3 py-2 font-mono text-sm min-h-[12rem] focus:border-brand-400 focus:outline-none focus:ring-2 focus:ring-brand-500/20 dark:focus:border-brand-500";
@@ -15,8 +16,35 @@ export default function ImportDialog({ open, onClose, onImport }: Props) {
   const { t } = useTranslation();
   const [text, setText] = useState("");
   const [mode, setMode] = useState<"append" | "replace">("replace");
+  const [fileError, setFileError] = useState("");
+  const [loadingFile, setLoadingFile] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   if (!open) return null;
+
+  const handleFile = async (file: File | null) => {
+    if (!file) return;
+    setFileError("");
+    setLoadingFile(true);
+    try {
+      const result = await api.parseWizardImportFile(file);
+      setText(result.text);
+    } catch (e) {
+      setFileError(String(e));
+    } finally {
+      setLoadingFile(false);
+      if (fileInputRef.current) fileInputRef.current.value = "";
+    }
+  };
+
+  const handleDownloadTemplate = async () => {
+    setFileError("");
+    try {
+      await api.downloadWizardTemplate();
+    } catch (e) {
+      setFileError(String(e));
+    }
+  };
 
   return (
     <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/50 p-0 sm:items-center sm:p-4" role="dialog" aria-modal>
@@ -40,6 +68,26 @@ export default function ImportDialog({ open, onClose, onImport }: Props) {
             <p className="text-[11px] font-medium uppercase tracking-wide text-slate-500 dark:text-slate-400">{t("review.importExampleTitle")}</p>
             <p className="mt-1 font-mono text-xs text-slate-700 dark:text-slate-300">{t("review.importExample")}</p>
           </div>
+          <div className="mt-4 flex flex-col gap-2 sm:flex-row">
+            <button
+              type="button"
+              onClick={handleDownloadTemplate}
+              className="min-h-[44px] rounded-xl border border-slate-200 px-4 py-2.5 text-sm text-slate-700 hover:bg-slate-50 dark:border-slate-700 dark:text-slate-200 dark:hover:bg-slate-800/50"
+            >
+              {t("import.downloadTemplate")}
+            </button>
+            <label className="min-h-[44px] flex-1 cursor-pointer rounded-xl border border-dashed border-brand-300 bg-brand-50/50 px-4 py-2.5 text-center text-sm font-medium text-brand-800 hover:bg-brand-50 dark:border-brand-800 dark:bg-brand-950/30 dark:text-brand-100 dark:hover:bg-brand-950/50">
+              {loadingFile ? t("import.parsingFile") : t("import.chooseFile")}
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept=".xlsx,.csv,.txt"
+                className="sr-only"
+                onChange={(e) => handleFile(e.target.files?.[0] ?? null)}
+              />
+            </label>
+          </div>
+          {fileError && <p className="mt-2 text-sm text-red-600 dark:text-red-400">{fileError}</p>}
         </div>
 
         <div className="space-y-4 px-5 py-4 sm:px-6 sm:py-5">

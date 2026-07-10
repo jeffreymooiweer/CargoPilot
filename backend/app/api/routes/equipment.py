@@ -1,14 +1,25 @@
 import json
 
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, File, HTTPException, UploadFile
+from fastapi.responses import Response
+from pydantic import BaseModel
 from sqlalchemy.orm import Session
 
 from app.core.database import get_db
 from app.core.deps import get_current_user, require_admin
 from app.models.user import Equipment, User
 from app.schemas import EquipmentBase, EquipmentOut, EquipmentUpdate
+from app.services.equipment_import import EQUIPMENT_EXAMPLE, EQUIPMENT_HEADERS, import_equipment_rows
+from app.services.spreadsheet_io import build_xlsx_template, read_tabular_file
 
 equipment_router = APIRouter(prefix="/equipment", tags=["equipment"])
+
+
+class EquipmentImportResultOut(BaseModel):
+    created: int
+    updated: int
+    skipped: int
+    errors: list[str]
 
 
 def _equipment_out(item: Equipment) -> EquipmentOut:
@@ -57,6 +68,39 @@ def create_equipment(
     db.commit()
     db.refresh(item)
     return _equipment_out(item)
+
+
+@equipment_router.get("/import-template")
+def download_equipment_template(user: User = Depends(get_current_user)):
+    content = build_xlsx_template(EQUIPMENT_HEADERS, EQUIPMENT_EXAMPLE, sheet_name="Materieel import")
+    return Response(
+        content=content,
+        media_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        headers={"Content-Disposition": 'attachment; filename="materieel_import_template.xlsx"'},
+    )
+
+
+@equipment_router.post("/import", response_model=EquipmentImportResultOut)
+async def import_equipment_file(
+    file: UploadFile = File(...),
+    admin: User = Depends(require_admin),
+    db: Session = Depends(get_db),
+):
+    if not file.filename:
+        raise HTTPException(status_code=400, detail="Bestandsnaam ontbreekt")
+    content = await file.read()
+    if not content:
+        raise HTTPException(status_code=400, detail="Leeg bestand")
+    rows = read_tabular_file(content, file.filename)
+    result = import_equipment_rows(db, rows)
+    if result.created == 0 and result.updated == 0 and not result.errors:
+        raise HTTPException(status_code=400, detail="Geen importeerbare regels gevonden")
+    return EquipmentImportResultOut(
+        created=result.created,
+        updated=result.updated,
+        skipped=result.skipped,
+        errors=result.errors,
+    )
 
 
 @equipment_router.patch("/{item_id}", response_model=EquipmentOut)

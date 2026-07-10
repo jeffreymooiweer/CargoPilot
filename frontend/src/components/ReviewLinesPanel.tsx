@@ -18,6 +18,7 @@ interface Props {
   resultLines?: LineItem[];
   onDraftChange: (lines: DraftLine[]) => void;
   onRemoveLine: (id: number) => void;
+  onDuplicateLine: (id: number) => void;
   onAddLine: () => void;
   onImportClick?: () => void;
   translateMessage: (msg: string) => string;
@@ -64,11 +65,67 @@ function ImportIcon() {
   );
 }
 
+function PlusIcon() {
+  return (
+    <svg className="h-4 w-4" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth={1.8} aria-hidden>
+      <path d="M10 4v12M4 10h12" strokeLinecap="round" />
+    </svg>
+  );
+}
+
+function CopyIcon() {
+  return (
+    <svg className="h-4 w-4" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth={1.6} aria-hidden>
+      <rect x="7" y="7" width="9" height="9" rx="2" />
+      <path d="M13 7V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h2" />
+    </svg>
+  );
+}
+
+function TrashIcon() {
+  return (
+    <svg className="h-4 w-4" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth={1.6} aria-hidden>
+      <path d="M4 6h12M8 6V4.5A1.5 1.5 0 0 1 9.5 3h1A1.5 1.5 0 0 1 12 4.5V6m-6 0v9a2 2 0 0 0 2 2h4a2 2 0 0 0 2-2V6" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
+function CardAction({
+  label,
+  onClick,
+  icon,
+  danger,
+  disabled,
+}: {
+  label: string;
+  onClick: () => void;
+  icon: React.ReactNode;
+  danger?: boolean;
+  disabled?: boolean;
+}) {
+  const tone = danger
+    ? "text-slate-500 hover:bg-red-50 hover:text-red-600 dark:text-slate-400 dark:hover:bg-red-950/40 dark:hover:text-red-400"
+    : "text-slate-500 hover:bg-slate-100 hover:text-slate-800 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-slate-100";
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      disabled={disabled}
+      aria-label={label}
+      title={label}
+      className={`inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-lg transition-colors disabled:opacity-40 disabled:pointer-events-none ${tone}`}
+    >
+      {icon}
+    </button>
+  );
+}
+
 export default function ReviewLinesPanel({
   draftLines,
   resultLines,
   onDraftChange,
   onRemoveLine,
+  onDuplicateLine,
   onAddLine,
   onImportClick,
   translateMessage,
@@ -108,9 +165,9 @@ export default function ReviewLinesPanel({
         {draftLines.map((draft, index) => {
           const result = computed ? resultLines![index] : null;
           return (
-            <div key={draft.id} className="rounded-xl border border-slate-100 bg-slate-50/50 p-4 dark:border-slate-800 dark:bg-slate-800/30">
-              <div className="mb-3 flex items-center gap-2">
-                <span className="flex h-7 w-7 items-center justify-center rounded-full bg-white text-xs font-semibold text-slate-600 shadow-sm dark:bg-slate-900 dark:text-slate-300">
+            <div key={draft.id} className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+              <div className="-mx-4 -mt-4 mb-3 flex items-center gap-2 border-b border-slate-100 px-4 py-3 dark:border-slate-800">
+                <span className="flex h-7 w-7 items-center justify-center rounded-full bg-slate-100 text-xs font-semibold text-slate-600 dark:bg-slate-800 dark:text-slate-300">
                   {index + 1}
                 </span>
                 {result && (
@@ -118,11 +175,14 @@ export default function ReviewLinesPanel({
                     {t(`status.${result.status}` as "status.ok")}
                   </span>
                 )}
-                <div className="ml-auto">
-                  <IconButton
+                <div className="ml-auto flex items-center gap-0.5">
+                  <CardAction label={t("review.duplicateLine")} onClick={() => onDuplicateLine(draft.id)} icon={<CopyIcon />} />
+                  <CardAction label={t("review.addLine")} onClick={onAddLine} icon={<PlusIcon />} />
+                  <CardAction
                     label={t("review.removeLine")}
                     onClick={() => onRemoveLine(draft.id)}
-                    variant="remove"
+                    icon={<TrashIcon />}
+                    danger
                     disabled={!canRemove}
                   />
                 </div>
@@ -191,7 +251,7 @@ export default function ReviewLinesPanel({
                   <th className="px-3 py-2.5 text-left">{t("wizard.totalWeight")}</th>
                 </>
               )}
-              <th className="w-14 px-3 py-2.5" />
+              <th className="w-24 px-3 py-2.5" />
             </tr>
           </thead>
           <tbody>
@@ -237,12 +297,16 @@ export default function ReviewLinesPanel({
                     </>
                   )}
                   <td className="px-3 py-3">
-                    <IconButton
-                      label={t("review.removeLine")}
-                      onClick={() => onRemoveLine(draft.id)}
-                      variant="remove"
-                      disabled={!canRemove}
-                    />
+                    <div className="flex items-center gap-0.5">
+                      <CardAction label={t("review.duplicateLine")} onClick={() => onDuplicateLine(draft.id)} icon={<CopyIcon />} />
+                      <CardAction
+                        label={t("review.removeLine")}
+                        onClick={() => onRemoveLine(draft.id)}
+                        icon={<TrashIcon />}
+                        danger
+                        disabled={!canRemove}
+                      />
+                    </div>
                   </td>
                 </tr>
               );

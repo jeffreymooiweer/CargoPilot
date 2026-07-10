@@ -6,6 +6,67 @@ const inputClass =
   "border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-950 text-slate-900 dark:text-slate-100 rounded-lg px-3 py-2 text-sm";
 const panelClass = "bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800";
 
+function PencilIcon() {
+  return (
+    <svg className="h-4 w-4" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth={1.6} aria-hidden>
+      <path d="M13.5 3.5l3 3L7 16l-3.5.5L4 13l9.5-9.5Z" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
+function CopyIcon() {
+  return (
+    <svg className="h-4 w-4" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth={1.6} aria-hidden>
+      <rect x="7" y="7" width="9" height="9" rx="2" />
+      <path d="M13 7V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h2" />
+    </svg>
+  );
+}
+
+function TrashIcon() {
+  return (
+    <svg className="h-4 w-4" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth={1.6} aria-hidden>
+      <path d="M4 6h12M8 6V4.5A1.5 1.5 0 0 1 9.5 3h1A1.5 1.5 0 0 1 12 4.5V6m-6 0v9a2 2 0 0 0 2 2h4a2 2 0 0 0 2-2V6" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
+function CardAction({
+  label,
+  onClick,
+  icon,
+  danger,
+}: {
+  label: string;
+  onClick: () => void;
+  icon: React.ReactNode;
+  danger?: boolean;
+}) {
+  const tone = danger
+    ? "text-slate-500 hover:bg-red-50 hover:text-red-600 dark:text-slate-400 dark:hover:bg-red-950/40 dark:hover:text-red-400"
+    : "text-slate-500 hover:bg-slate-100 hover:text-slate-800 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-slate-100";
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      aria-label={label}
+      title={label}
+      className={`inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-lg transition-colors ${tone}`}
+    >
+      {icon}
+    </button>
+  );
+}
+
+function CardRow({ label, children }: { label: string; children: React.ReactNode }) {
+  return (
+    <div className="flex items-start justify-between gap-3 border-t border-slate-100 px-4 py-2.5 text-sm first:border-t-0 dark:border-slate-800">
+      <span className="shrink-0 text-slate-500 dark:text-slate-400">{label}</span>
+      <span className="text-right font-medium text-slate-900 dark:text-slate-100">{children}</span>
+    </div>
+  );
+}
+
 const emptyForm = (): EquipmentItem => ({
   sap_code: "",
   specifications: "",
@@ -80,6 +141,13 @@ export default function MaterieelPage() {
   const startEdit = (item: EquipmentItem) => {
     setEditingId(item.id!);
     setForm({ ...item, aliases: item.aliases || [] });
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  const duplicate = (item: EquipmentItem) => {
+    setEditingId(null);
+    setForm({ ...emptyForm(), ...item, id: undefined, aliases: item.aliases || [] });
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   const remove = async (id: number) => {
@@ -137,7 +205,42 @@ export default function MaterieelPage() {
         </p>
       </div>
 
-      <div className={`${panelClass} overflow-x-auto max-h-[32rem] overflow-y-auto`}>
+      {/* Mobiel: cards */}
+      <div className="space-y-3 md:hidden">
+        {filtered.map((item) => (
+          <div key={item.id} className={`${panelClass} shadow-sm`}>
+            <div className="flex items-center gap-2 border-b border-slate-100 px-4 py-3 dark:border-slate-800">
+              <span className="min-w-0 truncate font-semibold text-slate-900 dark:text-slate-100">
+                {item.sap_code || item.specifications}
+              </span>
+              {item.active === false && (
+                <span className="rounded-full bg-slate-100 px-2 py-0.5 text-xs text-slate-500 dark:bg-slate-800 dark:text-slate-400">
+                  {t("materieel.active")}: {t("questions.no")}
+                </span>
+              )}
+              <div className="ml-auto flex items-center gap-0.5">
+                <CardAction label={t("materieel.edit")} onClick={() => startEdit(item)} icon={<PencilIcon />} />
+                <CardAction label={t("materieel.duplicate")} onClick={() => duplicate(item)} icon={<CopyIcon />} />
+                <CardAction label={t("materieel.delete")} onClick={() => remove(item.id!)} icon={<TrashIcon />} danger />
+              </div>
+            </div>
+            <div>
+              <CardRow label={t("materieel.specifications")}>{item.specifications}</CardRow>
+              {item.sap_code && <CardRow label={t("materieel.sapCode")}>{item.sap_code}</CardRow>}
+              <CardRow label={t("materieel.dimensions")}>
+                {[item.length_cm, item.width_cm, item.height_cm].filter((v) => v != null).join(" × ") || "—"}
+              </CardRow>
+              <CardRow label={t("materieel.weight")}>{item.weight_kg} kg</CardRow>
+              {item.aliases && item.aliases.length > 0 && (
+                <CardRow label={t("materieel.aliases")}>{item.aliases.join(", ")}</CardRow>
+              )}
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* Desktop: tabel */}
+      <div className={`${panelClass} hidden overflow-x-auto max-h-[32rem] overflow-y-auto md:block`}>
         <table className="w-full text-sm text-slate-800 dark:text-slate-200">
           <thead className="bg-slate-50 dark:bg-slate-800/80 sticky top-0">
             <tr>

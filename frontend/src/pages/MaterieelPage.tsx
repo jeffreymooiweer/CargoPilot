@@ -1,6 +1,7 @@
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { api, EquipmentItem } from "../api/client";
+import EquipmentImportDialog from "../components/EquipmentImportDialog";
 
 const inputClass =
   "border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-950 text-slate-900 dark:text-slate-100 rounded-lg px-3 py-2 text-sm";
@@ -125,6 +126,7 @@ export default function MaterieelPage() {
   const [form, setForm] = useState<EquipmentItem>(emptyForm());
   const [editingId, setEditingId] = useState<number | null>(null);
   const [error, setError] = useState("");
+  const [importOpen, setImportOpen] = useState(false);
 
   const load = () => api.listEquipment().then(setItems).catch((e) => setError(String(e)));
   useEffect(() => { load(); }, []);
@@ -198,7 +200,25 @@ export default function MaterieelPage() {
 
   return (
     <div className="space-y-6">
-      <p className="text-sm text-slate-600 dark:text-slate-400">{t("materieel.intro")}</p>
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+        <p className="text-sm text-slate-600 dark:text-slate-400">{t("materieel.intro")}</p>
+        <div className="flex flex-col gap-2 sm:flex-row sm:shrink-0">
+          <button
+            type="button"
+            onClick={() => api.downloadEquipmentTemplate().catch((e) => setError(String(e)))}
+            className="min-h-[44px] rounded-lg border border-slate-200 px-4 py-2 text-sm text-slate-700 dark:border-slate-700 dark:text-slate-200"
+          >
+            {t("import.downloadTemplate")}
+          </button>
+          <button
+            type="button"
+            onClick={() => setImportOpen(true)}
+            className="min-h-[44px] rounded-lg bg-brand-600 px-4 py-2 text-sm font-medium text-white hover:bg-brand-700"
+          >
+            {t("materieel.import")}
+          </button>
+        </div>
+      </div>
 
       <form onSubmit={submit} className={`${panelClass} p-6 grid md:grid-cols-2 gap-3`}>
         <h3 className="md:col-span-2 font-semibold text-slate-900 dark:text-slate-100">
@@ -314,6 +334,8 @@ export default function MaterieelPage() {
       </div>
 
       {error && <p className="text-red-600 dark:text-red-400 text-sm">{error}</p>}
+
+      <EquipmentImportDialog open={importOpen} onClose={() => setImportOpen(false)} onComplete={load} />
     </div>
   );
 }

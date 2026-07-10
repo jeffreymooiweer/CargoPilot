@@ -1,5 +1,35 @@
 const API_BASE = "/api";
 
+async function downloadBlob(path: string, filename: string): Promise<void> {
+  const res = await fetch(`${API_BASE}${path}`, { credentials: "include" });
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({ detail: res.statusText }));
+    throw new Error(err.detail || "Download failed");
+  }
+  const blob = await res.blob();
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = filename;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+async function uploadFile<T>(path: string, file: File): Promise<T> {
+  const form = new FormData();
+  form.append("file", file);
+  const res = await fetch(`${API_BASE}${path}`, {
+    method: "POST",
+    credentials: "include",
+    body: form,
+  });
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({ detail: res.statusText }));
+    throw new Error(typeof err.detail === "string" ? err.detail : "Upload failed");
+  }
+  return res.json();
+}
+
 async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
   const res = await fetch(`${API_BASE}${path}`, {
     credentials: "include",
@@ -59,6 +89,10 @@ export const api = {
   updateEquipment: (id: number, payload: Partial<EquipmentItem>) =>
     request<EquipmentItem>(`/equipment/${id}`, { method: "PATCH", body: JSON.stringify(payload) }),
   deleteEquipment: (id: number) => request<{ ok: boolean }>(`/equipment/${id}`, { method: "DELETE" }),
+  downloadEquipmentTemplate: () => downloadBlob("/equipment/import-template", "materieel_import_template.xlsx"),
+  importEquipmentFile: (file: File) => uploadFile<EquipmentImportResult>("/equipment/import", file),
+  downloadWizardTemplate: () => downloadBlob("/import/wizard-template", "wizard_import_template.xlsx"),
+  parseWizardImportFile: (file: File) => uploadFile<WizardFileParseResult>("/import/wizard-file", file),
   catalogSearch: (q: string, limit = 25) =>
     request<{ results: CatalogSearchHit[] }>(`/catalog/search?q=${encodeURIComponent(q)}&limit=${limit}`),
 };
@@ -181,4 +215,16 @@ export interface EquipmentItem {
   source?: string | null;
   notes?: string | null;
   active?: boolean;
+}
+
+export interface EquipmentImportResult {
+  created: number;
+  updated: number;
+  skipped: number;
+  errors: string[];
+}
+
+export interface WizardFileParseResult {
+  text: string;
+  has_header: boolean;
 }

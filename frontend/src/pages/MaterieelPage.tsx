@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { api, EquipmentItem } from "../api/client";
 
@@ -59,10 +59,49 @@ function CardAction({
 }
 
 function CardRow({ label, children }: { label: string; children: React.ReactNode }) {
+  const rowRef = useRef<HTMLDivElement>(null);
+  const labelProbeRef = useRef<HTMLSpanElement>(null);
+  const valueProbeRef = useRef<HTMLSpanElement>(null);
+  const [stacked, setStacked] = useState(false);
+
+  useLayoutEffect(() => {
+    const row = rowRef.current;
+    const labelProbe = labelProbeRef.current;
+    const valueProbe = valueProbeRef.current;
+    if (!row || !labelProbe || !valueProbe) return;
+    const measure = () => {
+      const gap = 16;
+      const available = row.clientWidth - labelProbe.offsetWidth - gap;
+      setStacked(valueProbe.offsetWidth > available);
+    };
+    measure();
+    const observer = new ResizeObserver(measure);
+    observer.observe(row);
+    return () => observer.disconnect();
+  }, [label, children]);
+
   return (
-    <div className="flex items-start justify-between gap-3 border-t border-slate-100 px-4 py-2.5 text-sm first:border-t-0 dark:border-slate-800">
-      <span className="shrink-0 text-slate-500 dark:text-slate-400">{label}</span>
-      <span className="text-right font-medium text-slate-900 dark:text-slate-100">{children}</span>
+    <div className="border-t border-slate-100 px-4 py-2.5 text-sm first:border-t-0 dark:border-slate-800">
+      <div ref={rowRef} className="relative">
+        {/* Onzichtbare probes om de natuurlijke breedte op één regel te meten */}
+        <span ref={labelProbeRef} aria-hidden className="pointer-events-none invisible absolute left-0 top-0 whitespace-nowrap">
+          {label}
+        </span>
+        <span ref={valueProbeRef} aria-hidden className="pointer-events-none invisible absolute left-0 top-0 whitespace-nowrap font-medium">
+          {children}
+        </span>
+        {stacked ? (
+          <div className="flex flex-col gap-1">
+            <span className="text-slate-500 dark:text-slate-400">{label}</span>
+            <span className="break-words text-right font-medium text-slate-900 dark:text-slate-100">{children}</span>
+          </div>
+        ) : (
+          <div className="flex items-start justify-between gap-4">
+            <span className="shrink-0 text-slate-500 dark:text-slate-400">{label}</span>
+            <span className="text-right font-medium text-slate-900 dark:text-slate-100">{children}</span>
+          </div>
+        )}
+      </div>
     </div>
   );
 }

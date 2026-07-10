@@ -77,6 +77,17 @@ export default function WizardPage() {
     setResult(null);
   };
 
+  const duplicateLine = (id: number) => {
+    setDraftLines((lines) => {
+      const index = lines.findIndex((l) => l.id === id);
+      if (index === -1) return lines;
+      const copy: DraftLine = { ...lines[index], id: nextId };
+      return [...lines.slice(0, index + 1), copy, ...lines.slice(index + 1)];
+    });
+    setNextId((n) => n + 1);
+    setResult(null);
+  };
+
   const handleImport = (text: string, importMode: "append" | "replace") => {
     if (importMode === "replace") {
       const lines = textToDraftLines(text);
@@ -162,6 +173,7 @@ export default function WizardPage() {
               setResult(null);
             }}
             onRemoveLine={removeLine}
+            onDuplicateLine={duplicateLine}
             onAddLine={addLine}
             onImportClick={() => setImportOpen(true)}
             translateMessage={translateMessage}

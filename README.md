@@ -178,4 +178,6 @@ Volledig overzicht: [ROADMAP.md](ROADMAP.md).
 
 ## Licentie
 
-MIT — zie [LICENSE](LICENSE).
+Apache License 2.0 with Commons Clause — zie [LICENSE](LICENSE).
+
+Commercial use of this software within your own organization is permitted. Selling, reselling, hosting, or commercially redistributing the software itself requires prior written permission from the copyright holder.

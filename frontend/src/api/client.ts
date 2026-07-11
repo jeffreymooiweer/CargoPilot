@@ -57,6 +57,7 @@ export const api = {
     }),
   logout: () => request("/auth/logout", { method: "POST" }),
   me: () => request<{ user: User; admin_ready: boolean }>("/auth/me"),
+  health: () => request<{ status: string; app: string; version: string }>("/health"),
   setupStatus: () => request<{ has_admin: boolean }>("/setup-status"),
   parse: (payload: Record<string, unknown>) =>
     request<CalcResult>("/parse", { method: "POST", body: JSON.stringify(payload) }),

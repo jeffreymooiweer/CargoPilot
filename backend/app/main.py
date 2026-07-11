@@ -19,6 +19,7 @@ from app.api.routes.jobs import router as jobs_router
 from app.api.routes.users import router as users_router
 from app.core.config import get_settings
 from app.core.startup import init_app
+from app.version import get_version
 
 logger = logging.getLogger(__name__)
 limiter = Limiter(key_func=get_remote_address)
@@ -53,7 +54,7 @@ def create_app() -> FastAPI:
 
     @app.get("/api/health")
     def health():
-        return {"status": "ok", "app": settings.app_name}
+        return {"status": "ok", "app": settings.app_name, "version": get_version()}
 
     @app.get("/api/setup-status")
     def setup_status():

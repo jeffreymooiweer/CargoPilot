@@ -34,6 +34,8 @@ Non-obvious gotchas for running/testing:
   (pipe- or tab-separated), with dimensions embedded in the description, e.g.
   `Stalen hoekprofiel 80x80x8x6000 | 8 | stuks`. Free-text descriptions without
   dimensions yield `status=error` and 0 kg. The steel regression set totals ~7534 kg.
+- **Equipment library starts empty in v1.0.0.** Seed tests use generic `DEMO-*` items;
+  no operational equipment JSON ships with the repo.
 
 Example dev run (from repo root):
 

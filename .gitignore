@@ -28,3 +28,4 @@ data/
 # Build
 *.log
 .DS_Store
+backend/static/

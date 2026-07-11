@@ -23,12 +23,12 @@ EQUIPMENT_HEADERS = [
 
 EQUIPMENT_EXAMPLE = [
     "DEMO-001",
-    "VEHICLE DEMO-001",
-    "402",
-    "179",
-    "169",
-    "1370",
-    "demo vehicle, vehicle demo vehicle",
+    "DEMO LIGHT VEHICLE",
+    "400",
+    "180",
+    "170",
+    "1200",
+    "demo vehicle, demo light vehicle",
     "yes",
 ]
 

@@ -1,3 +1,5 @@
+import json
+
 import pytest
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
@@ -5,7 +7,23 @@ from sqlalchemy.orm import sessionmaker
 from app.core.config import get_settings
 from app.core.database import Base
 from app.core.startup import seed_catalogs
+from app.models.user import Equipment
 from app.services.catalog_search import normalize_synonyms, search_catalog
+
+
+def _seed_demo_equipment(db) -> None:
+    db.add(
+        Equipment(
+            sap_code="DEMO-FL",
+            specifications="DEMO FORKLIFT",
+            weight_kg=3500,
+            aliases_json=json.dumps(["forklift", "heftruck", "demo forklift"]),
+            language_labels_json="{}",
+            source="import",
+            active=True,
+        )
+    )
+    db.commit()
 
 
 @pytest.fixture
@@ -61,12 +79,14 @@ def test_search_staal_hoeklijn_with_dimensions(db):
 
 
 def test_search_finds_equipment(db):
+    _seed_demo_equipment(db)
     results = search_catalog(db, "demo vehicle")
-    assert any("skoda" in r["value"].lower() for r in results)
+    assert any("demo" in r["value"].lower() for r in results)
     assert any(r["source"] == "equipment" for r in results)
 
 
 def test_search_equipment_dutch_synonym(db):
+    _seed_demo_equipment(db)
     results = search_catalog(db, "heftruck")
     assert any(r["source"] == "equipment" for r in results)
     assert any(

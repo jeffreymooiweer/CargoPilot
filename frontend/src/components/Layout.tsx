@@ -12,6 +12,11 @@ export default function Layout({ user, onLogout }: Props) {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const [menuOpen, setMenuOpen] = useState(false);
+  const [version, setVersion] = useState<string | null>(null);
+
+  useEffect(() => {
+    api.health().then((h) => setVersion(h.version)).catch(() => {});
+  }, []);
 
   useEffect(() => {
     document.body.style.overflow = menuOpen ? "hidden" : "";
@@ -35,6 +40,14 @@ export default function Layout({ user, onLogout }: Props) {
         ? "bg-brand-100 text-brand-700 dark:bg-brand-900/50 dark:text-brand-200"
         : "text-slate-700 hover:bg-slate-100 dark:text-slate-200 dark:hover:bg-slate-800"
     }`;
+
+  const versionLabel = version ? (version.startsWith("v") ? version : `v${version}`) : null;
+
+  const versionBadge = versionLabel ? (
+    <p className="px-4 py-2 text-[10px] tracking-wide text-slate-400 dark:text-slate-500 select-none" aria-label={`${t("settings.version")} ${versionLabel}`}>
+      {versionLabel}
+    </p>
+  ) : null;
 
   const navLinks = (
     <>
@@ -83,7 +96,11 @@ export default function Layout({ user, onLogout }: Props) {
       </header>
 
       <div className="max-w-7xl mx-auto px-3 sm:px-4 py-4 sm:py-6 md:grid md:grid-cols-[200px_1fr] md:gap-6">
-        <nav className="hidden md:flex flex-col gap-1">{navLinks}</nav>
+        <nav className="hidden md:flex flex-col gap-1 min-h-[calc(100vh-7rem)]">
+          {navLinks}
+          <div className="flex-1" aria-hidden />
+          {versionBadge}
+        </nav>
         <main className="min-w-0"><Outlet /></main>
       </div>
 
@@ -99,6 +116,7 @@ export default function Layout({ user, onLogout }: Props) {
             </div>
             <nav className="flex-1 overflow-y-auto p-3 space-y-1">{navLinks}</nav>
             <div className="p-3 border-t border-slate-200 dark:border-slate-800">
+              {versionBadge}
               <p className="px-4 py-1 text-xs text-slate-500 dark:text-slate-400">{user.username}</p>
               <button
                 type="button"

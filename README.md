@@ -106,7 +106,11 @@ Bij upgrade naar v1.0.0 worden items met bron `overzicht_materieel` automatisch 
 - Geen operationele materieeldata in GitHub-repo of Docker-image (vanaf v1.0.0)
 - Persistent op `/data`: gebruikers, catalogus-referenties, template, sync-status, **door u geïmporteerde** materieel
 
-**Let op:** oudere Docker-images (`latest` vóór juli 2026) kunnen nog geseede materieeldata bevatten. Gebruik na upgrade `v1.0.0` en herstart de container; overweeg oude tags op Docker Hub te verwijderen.
+**Let op:** oudere Docker-images (vóór v1.0.0, juli 2026) kunnen nog geseede materieeldata bevatten. Na upgrade:
+
+1. Gebruik alleen images gebouwd **na** de privacy-release (`v1.0.0` op schone git-historie).
+2. Voer de GitHub Action **Cleanup Docker Hub tags** uit (of `scripts/cleanup-dockerhub-tags.sh`) om oude tags te verwijderen.
+3. `docker pull jeffersonmouze/cargopilot:v1.0.0` na de nieuwe CI-build.
 
 ## Docker Hub
 

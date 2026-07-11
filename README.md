@@ -109,8 +109,10 @@ Bij upgrade naar v1.0.0 worden items met bron `overzicht_materieel` automatisch 
 **Let op:** oudere Docker-images (vóór v1.0.0, juli 2026) kunnen nog geseede materieeldata bevatten. Na upgrade:
 
 1. Gebruik alleen images gebouwd **na** de privacy-release (`v1.0.0` op schone git-historie).
-2. Voer de GitHub Action **Cleanup Docker Hub tags** uit (of `scripts/cleanup-dockerhub-tags.sh`) om oude tags te verwijderen.
-3. `docker pull jeffersonmouze/cargopilot:v1.0.0` na de nieuwe CI-build.
+2. Verwijder oude Docker-tags via GitHub → **Actions** → **Cleanup Docker Hub tags** → **Run workflow**  
+   - `keep_tags`: `latest,v1.0.0,1.0.0,43c1732` (pas `43c1732` aan naar de huidige schone main-SHA)  
+   - Of lokaal: `DOCKER_USERNAME=... DOCKER_TOKEN=... KEEP_TAGS=latest,v1.0.0,1.0.0 ./scripts/cleanup-dockerhub-tags.sh`
+3. `docker pull jeffersonmouze/cargopilot:v1.0.0` en container herstarten
 
 ## Docker Hub
 

@@ -172,7 +172,7 @@
     "needs_review": "Needs review"
   },
   "materieel": {
-    "intro": "Equipment database from the appendix template (Overzicht Materieel sheet). Items are recognized when pasted in the wizard, e.g. \"Demo vehicle\".",
+    "intro": "Manage your own equipment database. Download the template, fill in items and import. Recognized names are matched in the wizard.",
     "add": "Add equipment",
     "edit": "Edit",
     "duplicate": "Duplicate",
@@ -208,6 +208,7 @@
     "language": "Language",
     "languageHint": "Language for the application interface.",
     "auto": "System",
-    "autoDetectNote": "In the wizard, the input language of your material list is always detected automatically."
+    "autoDetectNote": "In the wizard, the input language of your material list is always detected automatically.",
+    "version": "Version"
   }
 }

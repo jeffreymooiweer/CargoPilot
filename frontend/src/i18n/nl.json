@@ -172,7 +172,7 @@
     "needs_review": "Controle nodig"
   },
   "materieel": {
-    "intro": "Database met materieel uit het appendix-template (tabblad Overzicht Materieel). Items worden herkend bij het plakken in de wizard, bijvoorbeeld \"Demo vehicle\".",
+    "intro": "Beheer uw eigen materieeldatabase. Download de template, vul items in en importeer. Herkende namen worden gematcht in de wizard.",
     "add": "Materieel toevoegen",
     "edit": "Bewerken",
     "duplicate": "Kopiëren",
@@ -208,6 +208,7 @@
     "language": "Taal",
     "languageHint": "Taal van de applicatie-interface.",
     "auto": "Systeem",
-    "autoDetectNote": "In de wizard wordt de invoertaal van uw materiaallijst altijd automatisch herkend."
+    "autoDetectNote": "In de wizard wordt de invoertaal van uw materiaallijst altijd automatisch herkend.",
+    "version": "Versie"
   }
 }

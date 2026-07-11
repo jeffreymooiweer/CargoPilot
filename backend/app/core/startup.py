@@ -51,6 +51,14 @@ def purge_sensitive_data(db: Session) -> None:
         logger.info("Purged sensitive data: %s jobs, %s export files", deleted_jobs, removed_files)
 
 
+def purge_legacy_equipment(db: Session) -> None:
+    """Verwijder vooraf geseede operationele materieeldata (privacy)."""
+    deleted = db.query(Equipment).filter(Equipment.source == "overzicht_materieel").delete()
+    db.commit()
+    if deleted:
+        logger.info("Removed legacy seeded equipment (%s items)", deleted)
+
+
 def seed_catalogs(db: Session) -> None:
     settings = get_settings()
     if db.query(Material).count() == 0:
@@ -97,27 +105,6 @@ def seed_catalogs(db: Session) -> None:
                     notes=item.get("notes"),
                 )
             )
-    if db.query(Equipment).count() == 0:
-        equipment_path = settings.seed_dir / "equipment_overview.json"
-        if equipment_path.exists():
-            equipment_data = json.loads(equipment_path.read_text(encoding="utf-8"))
-            for item in equipment_data:
-                db.add(
-                    Equipment(
-                        sap_code=item.get("sap_code"),
-                        specifications=item["specifications"],
-                        length_cm=item.get("length_cm"),
-                        width_cm=item.get("width_cm"),
-                        height_cm=item.get("height_cm"),
-                        weight_kg=item["weight_kg"],
-                        aliases_json=json.dumps(item.get("aliases", [])),
-                        language_labels_json=json.dumps(item.get("language_labels", {})),
-                        source=item.get("source", "overzicht_materieel"),
-                        notes=item.get("notes"),
-                        active=item.get("active", True),
-                    )
-                )
-            logger.info("Seeded equipment overview (%s items)", len(equipment_data))
     db.commit()
 
 
@@ -160,6 +147,7 @@ def init_app() -> bool:
     db = SessionLocal()
     try:
         seed_catalogs(db)
+        purge_legacy_equipment(db)
         sync_catalogs_on_startup(db)
         purge_sensitive_data(db)
         return bootstrap_admin(db)

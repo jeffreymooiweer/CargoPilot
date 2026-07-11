@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { api } from "../api/client";
 import { applySystemTheme, applyTheme, getStoredTheme, type Theme } from "../theme";
 
 const panelClass = "bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800";
@@ -9,6 +10,11 @@ const inputClass =
 export default function SettingsPage() {
   const { t, i18n } = useTranslation();
   const [theme, setTheme] = useState<Theme | "system">(() => getStoredTheme() ?? "system");
+  const [version, setVersion] = useState("");
+
+  useEffect(() => {
+    api.health().then((h) => setVersion(h.version)).catch(() => {});
+  }, []);
 
   useEffect(() => {
     const sync = () => setTheme(getStoredTheme() ?? "system");
@@ -73,6 +79,11 @@ export default function SettingsPage() {
         <p className="text-xs text-slate-500 dark:text-slate-400 border-t border-slate-100 dark:border-slate-800 pt-3">
           {t("settings.autoDetectNote")}
         </p>
+        {version && (
+          <p className="text-xs text-slate-500 dark:text-slate-400">
+            {t("settings.version")}: {version}
+          </p>
+        )}
       </div>
     </div>
   );

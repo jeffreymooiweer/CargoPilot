@@ -30,14 +30,14 @@ def _seed_demo_vehicle(db: Session) -> None:
     db.add(
         Equipment(
             sap_code="DEMO-001",
-            specifications="VEHICLE DEMO-001",
-            length_cm=402,
-            width_cm=179,
-            height_cm=169,
-            weight_kg=1370,
-            aliases_json=json.dumps(["demo vehicle", "vehicle demo vehicle"]),
-            language_labels_json=json.dumps({"nl": "DEMO-001"}),
-            source="overzicht_materieel",
+            specifications="DEMO LIGHT VEHICLE",
+            length_cm=400,
+            width_cm=180,
+            height_cm=170,
+            weight_kg=1200,
+            aliases_json=json.dumps(["demo light vehicle", "demo vehicle"]),
+            language_labels_json=json.dumps({"nl": "DEMO LIGHT VEHICLE"}),
+            source="import",
             active=True,
         )
     )
@@ -49,7 +49,7 @@ def test_match_equipment_demo_vehicle(db: Session):
     item = match_equipment("Demo vehicle | 1 | stuks", db)
     assert item is not None
     assert item.sap_code == "DEMO-001"
-    assert item.weight_kg == 1370
+    assert item.weight_kg == 1200
 
 
 def test_parse_demo_vehicle_line(db: Session):
@@ -58,10 +58,10 @@ def test_parse_demo_vehicle_line(db: Session):
     assert result["success"]
     line = result["lines"][0]
     assert line["product_type"] == "equipment"
-    assert line["weight_each_kg"] == 1370
-    assert line["weight_total_kg"] == 1370
-    assert line["output_description"] == "VEHICLE DEMO-001"
-    assert line["length_cm"] == 402
+    assert line["weight_each_kg"] == 1200
+    assert line["weight_total_kg"] == 1200
+    assert line["output_description"] == "DEMO LIGHT VEHICLE"
+    assert line["length_cm"] == 400
 
 
 def test_weight_override_on_recalculate(db: Session):

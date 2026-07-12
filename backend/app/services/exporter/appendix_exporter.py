@@ -201,6 +201,12 @@ def export_appendix(
     if dangerous_goods:
         _fill_sheet_d(wb, mapping, metadata, dangerous_goods)
 
+    # Alleen de relevante tabbladen A1 en D behouden; overige zijn overbodig.
+    keep = {mapping["sheet"], (mapping.get("sheet_d") or {}).get("sheet")}
+    for sheet_name in list(wb.sheetnames):
+        if sheet_name not in keep:
+            del wb[sheet_name]
+
     fd, temp_name = tempfile.mkstemp(suffix=".xlsx")
     os.close(fd)
     out_path = Path(temp_name)

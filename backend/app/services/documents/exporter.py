@@ -95,6 +95,93 @@ TEXTS = {
         "nl": "VGM wijkt af van de som van de componenten (methode 2)",
         "en": "VGM differs from the sum of the components (method 2)",
     },
+    "fixed_texts": {
+        "nl": "Vaste teksten en verklaringen (officieel formulier)",
+        "en": "Fixed texts and declarations (official form)",
+    },
+    "legal_reference": {"nl": "Regelgeving", "en": "Regulations"},
+    "dg_description": {
+        "nl": "Omschrijving vervoersdocument",
+        "en": "Transport document description",
+    },
+    "disclaimer": {
+        "nl": (
+            "Dit document is automatisch gegenereerd met CargoPilot en is een concept: het moet vóór gebruik "
+            "volledig worden gecontroleerd, aangevuld en ondertekend door een daartoe bevoegde persoon. "
+            "CargoPilot en de maker(s) aanvaarden geen enkele aansprakelijkheid; de software wordt geleverd "
+            "\"AS IS\" onder de Apache License 2.0 met Commons Clause (zie DISCLAIMER.md en LICENSE)."
+        ),
+        "en": (
+            "This document was generated automatically with CargoPilot and is a draft: before use it must be "
+            "fully verified, completed and signed by a duly authorised person. CargoPilot and its author(s) "
+            "accept no liability whatsoever; the software is provided \"AS IS\" under the Apache License 2.0 "
+            "with Commons Clause (see DISCLAIMER.md and LICENSE)."
+        ),
+    },
+    "iata_dg_headers": {
+        "nl": [
+            "UN- of ID-nr.",
+            "Proper Shipping Name (technische naam)",
+            "Klasse of divisie (nevengevaar)",
+            "Verpakkingsgroep",
+            "Hoeveelheid en soort verpakking",
+            "Packing Inst.",
+            "Authorization",
+        ],
+        "en": [
+            "UN or ID No.",
+            "Proper Shipping Name (technical name)",
+            "Class or Division (Subsidiary Hazard)",
+            "Packing Group",
+            "Quantity and Type of Packing",
+            "Packing Inst.",
+            "Authorization",
+        ],
+    },
+    "adr_dg_headers": {
+        "nl": [
+            "Omschrijving conform 5.4.1.1.1",
+            "Aantal colli",
+            "Verpakkingstype",
+            "Hoeveelheid per verpakking",
+            "Bruto massa per verpakking",
+            "Aanvullende informatie",
+        ],
+        "en": [
+            "Description per 5.4.1.1.1",
+            "Packages",
+            "Package type",
+            "Quantity per package",
+            "Gross mass per package",
+            "Additional information",
+        ],
+    },
+    "imdg_dg_headers": {
+        "nl": [
+            "UN-nummer",
+            "Proper Shipping Name (technische naam)",
+            "Klasse (nevengevaar)",
+            "Verpakkingsgroep",
+            "Marine pollutant",
+            "Vlampunt",
+            "EmS",
+            "Aantal en soort colli",
+            "Hoeveelheid per verpakking",
+            "Bruto massa per verpakking",
+        ],
+        "en": [
+            "UN number",
+            "Proper Shipping Name (technical name)",
+            "Class (subsidiary risk)",
+            "Packing group",
+            "Marine pollutant",
+            "Flashpoint",
+            "EmS",
+            "Number and kind of packages",
+            "Quantity per package",
+            "Gross mass per package",
+        ],
+    },
 }
 
 DG_PRODUCT_FIELDS = [
@@ -199,6 +286,108 @@ def validate_document(
             pass
 
     return errors, warnings
+
+
+def _un_prefixed(value: Any) -> str:
+    text = str(value or "").strip()
+    if not text:
+        return ""
+    return text if text.upper().startswith(("UN", "ID")) else f"UN {text}"
+
+
+def _dg_description(product: dict[str, Any], profile: str, values: dict[str, Any]) -> str:
+    """Officiële omschrijvingsregel per ADR/RID/ADN 5.4.1.1.1, bijv. 'UN 1203, BENZINE, 3, II, (D/E)'."""
+    psn = str(product.get("proper_shipping_name") or "").strip().upper()
+    technical = str(product.get("technical_name") or "").strip()
+    if technical:
+        psn = f"{psn} ({technical})"
+    hazard = str(product.get("class") or "").strip()
+    subsidiary = str(product.get("subsidiary_risks") or "").strip()
+    if subsidiary:
+        hazard = f"{hazard} ({subsidiary})"
+    parts = [_un_prefixed(product.get("un_number")), psn, hazard, str(product.get("packing_group") or "").strip()]
+    if profile == "ADR":
+        tunnel = str(values.get("tunnel_restriction") or "").strip()
+        if tunnel:
+            parts.append(f"({tunnel.strip('()')})")
+    return ", ".join(p for p in parts if p)
+
+
+def _dg_rows(profile: str, entry: dict[str, Any], product: dict[str, Any], values: dict[str, Any], lang: str):
+    """Rijwaarden voor de DG-tabel, in de kolomvolgorde van het betreffende formulier."""
+    if profile == "IATA_DGR":
+        quantity_parts = [
+            str(product.get("quantity_packages") or "").strip(),
+            str(product.get("type_of_package") or "").strip(),
+        ]
+        quantity = " × ".join(p for p in quantity_parts if p)
+        per_package = str(product.get("net_mass_liters_per_package") or "").strip()
+        if per_package:
+            quantity = f"{quantity}, {per_package}" if quantity else per_package
+        psn = str(product.get("proper_shipping_name") or "")
+        technical = str(product.get("technical_name") or "").strip()
+        if technical:
+            psn = f"{psn} ({technical})"
+        hazard = str(product.get("class") or "")
+        subsidiary = str(product.get("subsidiary_risks") or "").strip()
+        if subsidiary:
+            hazard = f"{hazard} ({subsidiary})"
+        return [
+            _un_prefixed(product.get("un_number")),
+            psn,
+            hazard,
+            product.get("packing_group", ""),
+            quantity,
+            product.get("packing_instruction", ""),
+            product.get("authorization", "") or product.get("eq_lq_points", ""),
+        ]
+    if profile in {"ADR", "RID", "ADN"}:
+        return [
+            _dg_description(product, profile, values),
+            product.get("quantity_packages", ""),
+            product.get("type_of_package", ""),
+            product.get("net_mass_liters_per_package", ""),
+            product.get("gross_mass_per_package", ""),
+            product.get("additional_information", ""),
+        ]
+    if profile == "IMDG":
+        psn = str(product.get("proper_shipping_name") or "")
+        technical = str(product.get("technical_name") or "").strip()
+        if technical:
+            psn = f"{psn} ({technical})"
+        hazard = str(product.get("class") or "")
+        subsidiary = str(product.get("subsidiary_risks") or "").strip()
+        if subsidiary:
+            hazard = f"{hazard} ({subsidiary})"
+        packages_parts = [
+            str(product.get("quantity_packages") or "").strip(),
+            str(product.get("type_of_package") or "").strip(),
+        ]
+        return [
+            _un_prefixed(product.get("un_number")),
+            psn,
+            hazard,
+            product.get("packing_group", ""),
+            product.get("marine_pollutant", ""),
+            product.get("flashpoint", ""),
+            product.get("ems_code", ""),
+            " × ".join(p for p in packages_parts if p),
+            product.get("net_mass_liters_per_package", ""),
+            product.get("gross_mass_per_package", ""),
+        ]
+    return [entry.get("vehicle") or entry.get("a1_line_id")] + [
+        product.get(field, "") for field in DG_PRODUCT_FIELDS
+    ]
+
+
+def _dg_headers(profile: str, lang: str) -> list[str]:
+    if profile == "IATA_DGR":
+        return _text("iata_dg_headers", lang)
+    if profile in {"ADR", "RID", "ADN"}:
+        return _text("adr_dg_headers", lang)
+    if profile == "IMDG":
+        return _text("imdg_dg_headers", lang)
+    return _text("dg_headers", lang)
 
 
 def _dims(line: dict[str, Any]) -> str:
@@ -347,26 +536,50 @@ def export_document(
         row += 2
 
     if document.get("dg_profile") and dangerous_goods:
-        cell = ws.cell(row, 1, f"{_text('dg_table', lang)} ({document['dg_profile']})")
+        profile = document["dg_profile"]
+        cell = ws.cell(row, 1, f"{_text('dg_table', lang)} ({profile})")
         cell.font = section_font
         cell.fill = section_fill
         row += 1
-        headers = _text("dg_headers", lang)
+        headers = _dg_headers(profile, lang)
         for col, header in enumerate(headers, start=1):
             cell = ws.cell(row, col, header)
             cell.font = header_font
             cell.fill = header_fill
             cell.border = border
+            cell.alignment = wrap
         row += 1
         for entry in dangerous_goods:
             for product in entry.get("products", []):
-                cells = [entry.get("vehicle") or entry.get("a1_line_id")] + [
-                    product.get(field, "") for field in DG_PRODUCT_FIELDS
-                ]
-                for col, value in enumerate(cells, start=1):
+                for col, value in enumerate(_dg_rows(profile, entry, product, values, lang), start=1):
                     cell = ws.cell(row, col, value)
                     cell.border = border
+                    cell.alignment = wrap
                 row += 1
+        row += 1
+
+    fixed_texts = document.get("fixed_texts") or []
+    if fixed_texts:
+        cell = ws.cell(row, 1, _text("fixed_texts", lang))
+        cell.font = section_font
+        cell.fill = section_fill
+        row += 1
+        for item in fixed_texts:
+            text = item.get(lang) or item.get("nl", "")
+            cell = ws.cell(row, 1, text)
+            cell.alignment = wrap
+            cell.border = border
+            ws.merge_cells(start_row=row, start_column=1, end_row=row, end_column=7)
+            ws.row_dimensions[row].height = max(28, 13 * (len(text) // 110 + 1))
+            row += 1
+        row += 1
+
+    legal = document.get("legal_reference", {}).get(lang)
+    if legal:
+        cell = ws.cell(row, 1, f"{_text('legal_reference', lang)}: {legal}")
+        cell.font = note_font
+        cell.alignment = wrap
+        ws.merge_cells(start_row=row, start_column=1, end_row=row, end_column=7)
         row += 1
 
     note = document.get("signature_note", {}).get(lang)
@@ -375,6 +588,14 @@ def export_document(
         cell.font = note_font
         cell.alignment = wrap
         ws.merge_cells(start_row=row, start_column=1, end_row=row, end_column=7)
+        row += 1
+
+    row += 1
+    cell = ws.cell(row, 1, _text("disclaimer", lang))
+    cell.font = note_font
+    cell.alignment = wrap
+    ws.merge_cells(start_row=row, start_column=1, end_row=row, end_column=7)
+    ws.row_dimensions[row].height = 40
 
     fd, temp_name = tempfile.mkstemp(suffix=".xlsx")
     os.close(fd)

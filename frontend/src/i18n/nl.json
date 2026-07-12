@@ -12,7 +12,8 @@
     "logout": "Uitloggen",
     "menu": "Menu",
     "openMenu": "Menu openen",
-    "closeMenu": "Menu sluiten"
+    "closeMenu": "Menu sluiten",
+    "legal": "Disclaimer"
   },
   "theme": {
     "dark": "Donker",
@@ -240,7 +241,8 @@
     "categoryPrepared": "Voorbereid vervoersdocument",
     "categoryDeclaration": "Verklaring",
     "categoryInstructions": "Shipping instructions",
-    "categoryGenerated": "Gegenereerd bedrijfsdocument"
+    "categoryGenerated": "Gegenereerd bedrijfsdocument",
+    "officialPdf": "Officieel PDF"
   },
   "docfields": {
     "title": "Zending- en documentgegevens",
@@ -262,6 +264,42 @@
     "waitingCarrier": "Wacht op carriergegevens",
     "missingFields": "Ontbrekend: {{fields}}",
     "dgBlocked": "Gevaarlijke-stoffenclassificatie is onvolledig. Vul UN-nummer, Proper Shipping Name, klasse en verpakkingsgegevens in bij de gevaarlijke-stoffenstap.",
-    "exporting": "Bezig met exporteren…"
+    "exporting": "Bezig met exporteren…",
+    "exportNotice": "Let op: gegenereerde documenten zijn concepten. Controleer, vul aan en onderteken door een bevoegde persoon vóór gebruik. Zie de disclaimer."
+  },
+  "legal": {
+    "title": "Disclaimer en licentie",
+    "updated": "Laatst bijgewerkt: 12 juli 2026 · CargoPilot v1.1.0",
+    "intro": "CargoPilot is een hulpmiddel dat vervoers- en begeleidingsdocumenten voorbereidt op basis van uw invoer. De applicatie geeft geen juridisch, douanetechnisch of veiligheidskundig advies. Lees onderstaande voorwaarden zorgvuldig; door CargoPilot te gebruiken aanvaardt u ze.",
+    "sections": [
+      {
+        "heading": "1. Concept — geen definitief document",
+        "body": "Elk door CargoPilot voortgebracht document is een concept. Vóór gebruik, overdracht, indiening of ondertekening moet het volledig worden gecontroleerd, aangevuld en ondertekend door een daartoe bevoegde en gekwalificeerde persoon. Handtekeningvelden, carriergegevens en operationele velden worden bewust niet vooraf ingevuld."
+      },
+      {
+        "heading": "2. Gevaarlijke stoffen",
+        "body": "Classificatie, verpakking, markering, etikettering en documentatie van gevaarlijke stoffen (ADR, RID, ADN, IMDG, IATA DGR) vallen onder de exclusieve verantwoordelijkheid van de afzender en andere wettelijk aangewezen partijen. CargoPilot zet een vrije omschrijving nooit automatisch om in een definitieve classificatie en vervangt geen gecertificeerde masterdata, veiligheidsadviseur of de actuele, geautoriseerde regelgeving."
+      },
+      {
+        "heading": "3. Geen garanties (AS IS)",
+        "body": "De software en alle gegenereerde documenten worden geleverd \"AS IS\" en \"AS AVAILABLE\", zonder enige expliciete of impliciete garantie, waaronder garanties van verkoopbaarheid, geschiktheid voor een bepaald doel, juistheid, actualiteit, volledigheid of niet-inbreuk. Er wordt geen garantie gegeven dat referentiedata of formuliersjablonen juist, actueel of compleet zijn."
+      },
+      {
+        "heading": "4. Uitsluiting van aansprakelijkheid",
+        "body": "Voor zover maximaal toegestaan onder het toepasselijke recht sluiten de maker(s), rechthebbende(n) en bijdragers van CargoPilot elke aansprakelijkheid uit voor enige directe, indirecte, incidentele, bijzondere, punitieve of gevolgschade — waaronder winstderving, bedrijfsstilstand, boetes, sancties, vertragingen, in beslag genomen of geweigerde zendingen, verlies van of schade aan goederen, milieuschade, persoonlijk letsel of verlies van gegevens — voortvloeiend uit of verband houdend met het gebruik van, of het onvermogen tot gebruik van, de applicatie of de gegenereerde documenten, ongeacht de rechtsgrond en zelfs indien op de mogelijkheid van dergelijke schade is gewezen. U gebruikt CargoPilot volledig op eigen risico."
+      },
+      {
+        "heading": "5. Vrijwaring",
+        "body": "U vrijwaart de maker(s) en rechthebbende(n) van CargoPilot tegen alle aanspraken van derden die voortvloeien uit of verband houden met uw gebruik van de applicatie of de gegenereerde documenten."
+      },
+      {
+        "heading": "6. Licentie — Apache License 2.0 met Commons Clause",
+        "body": "CargoPilot wordt in licentie gegeven onder de Apache License, Version 2.0, aangevuld met de Commons Clause. Onder de Apache License 2.0 wordt de software zonder garanties en met beperking van aansprakelijkheid geleverd (secties 7 en 8 van die licentie). Gebruik binnen uw eigen organisatie is toegestaan; het verkopen, doorverkopen, hosten als betaalde dienst of anderszins commercieel herdistribueren van de software zelf vereist voorafgaande schriftelijke toestemming van de rechthebbende (Commons Clause). De volledige tekst staat in het LICENSE-bestand van de repository."
+      },
+      {
+        "heading": "7. Toepasselijk recht",
+        "body": "Op deze disclaimer is Nederlands recht van toepassing, voor zover dwingend recht zich daar niet tegen verzet. Indien een bepaling nietig of niet-afdwingbaar wordt geacht, blijven de overige bepalingen onverkort van kracht."
+      }
+    ]
   }
 }

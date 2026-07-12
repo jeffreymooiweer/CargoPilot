@@ -8,6 +8,7 @@ from app.core.database import get_db
 from app.core.deps import get_current_user
 from app.models.user import User
 from app.schemas import CalculateRequest, ExportRequest, ParseRequest
+from app.services.documents import render_appendix_pdf
 from app.services.exporter.appendix_exporter import export_appendix
 from app.services.pipeline import parse_and_calculate
 
@@ -71,6 +72,15 @@ def export_appendix_file(
     if not payload.lines:
         raise HTTPException(status_code=400, detail="lines required")
     ref = f"cp-{datetime.now().strftime('%Y%m%d%H%M%S')}"
+    if payload.format == "pdf":
+        out_path = render_appendix_pdf(
+            payload.lines,
+            payload.dangerous_goods,
+            payload.metadata,
+            payload.output_language,
+        )
+        background_tasks.add_task(_delete_file, out_path)
+        return FileResponse(path=out_path, filename=f"appendix_{ref}.pdf", media_type="application/pdf")
     out_path = export_appendix(
         payload.lines,
         payload.metadata,

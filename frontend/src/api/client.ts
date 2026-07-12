@@ -74,10 +74,11 @@ export const api = {
     });
     if (!res.ok) throw new Error("Export failed");
     const blob = await res.blob();
+    const ext = (res.headers.get("content-type") || "").includes("pdf") ? "pdf" : "xlsx";
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = `appendix_${Date.now()}.xlsx`;
+    a.download = `appendix_${Date.now()}.${ext}`;
     a.click();
     URL.revokeObjectURL(url);
   },
@@ -118,10 +119,15 @@ export const api = {
       throw new Error(typeof detail === "string" ? detail : "Export failed");
     }
     const blob = await res.blob();
+    const disposition = res.headers.get("content-disposition") || "";
+    const match = disposition.match(/filename="?([^";]+)"?/i);
+    const contentType = res.headers.get("content-type") || "";
+    const ext = contentType.includes("pdf") ? "pdf" : "xlsx";
+    const filename = match ? match[1] : `${payload.document_key}_${Date.now()}.${ext}`;
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = `${payload.document_key}_${Date.now()}.xlsx`;
+    a.download = filename;
     a.click();
     URL.revokeObjectURL(url);
   },
@@ -306,7 +312,8 @@ export interface DocumentDefinition {
   short_label: LocalizedText;
   category: string;
   issue_status: LocalizedText;
-  exporter: "appendix_template" | "generic";
+  exporter: "appendix_template" | "generic" | "pdf_template";
+  output_format?: "xlsx" | "pdf";
   dg_profile: string | null;
   dg_only?: boolean;
   default_selected?: boolean;

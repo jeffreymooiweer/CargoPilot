@@ -10,7 +10,8 @@ Zie ook [CHANGELOG.md](CHANGELOG.md) en [ROADMAP.md](ROADMAP.md).
 
 - **Modaliteitskeuze bij start**: wegtransport, spoor, zeevracht, binnenvaart, luchtvracht of multimodaal
 - **Formulierenselectie per modaliteit**: alleen relevante documenten; bij multimodaal alles beschikbaar
-- Documenten: Appendix A1/D, CMR, CIM, IMO Multimodal DG Form, IATA Shipper's Declaration, VGM-verklaring, AWB/B-L Shipping Instructions, ADR/ADN-document, paklijst, afleverbon
+- **Officiële PDF-formulieren**: CMR (IRU-model 2007) en IATA Shipper's Declaration worden als originele invulbare PDF-templates ingevuld en als PDF gedownload
+- Documenten: Appendix A1/D, CMR (PDF), CIM, IMO Multimodal DG Form, IATA Shipper's Declaration (PDF), VGM-verklaring, AWB/B-L Shipping Instructions, ADR/ADN-document, paklijst, afleverbon
 - **Veldstatussen per document**: gebruikersinvoer, carriergegevens, operationele velden en handtekeningen worden onderscheiden; handtekeningen worden nooit vooraf ingevuld
 - **DG-exportblokkades** per modaliteitsprofiel (ADR/RID/ADN/IMDG/IATA DGR) bij onvolledige classificatie
 - Review-first wizard: regels invoeren met cataloguszoeken of vrije omschrijving
@@ -180,8 +181,26 @@ Volledig overzicht: [ROADMAP.md](ROADMAP.md).
 - Kolommapping-UI
 - Duitse taal
 
+## Officiële formulier-templates
+
+Alle documenten worden als **PDF** geëxporteerd. Officiële invulbare formulieren staan in `templates/forms/` en worden door de backend ingevuld (niet nagebouwd); de overige worden als nette PDF gegenereerd met reportlab.
+
+| Document | Type | Bron / template |
+|---|---|---|
+| CMR-vrachtbrief | Ingevuld officieel PDF | IRU-model 2007 (`templates/forms/cmr.pdf`, 4 doorslagen) |
+| IATA Shipper's Declaration | Ingevuld officieel PDF | IATA open-formaat (`templates/forms/iata_dgd.pdf`) |
+| CIM-vrachtbrief | Ingevuld officieel PDF | CIT CIM/CUV (`templates/forms/cim.pdf`) |
+| IMO MDG Form, VGM, AWB/B-L SI, ADR/ADN, paklijst, afleverbon | Gegenereerde PDF (reportlab) | Eigen opmaak met vaste wettelijke teksten |
+| Appendix A1/D | xlsx (alleen tabs A1 + D) + PDF-weergave | Officieel Excel-template |
+
+Handtekening-, carrier- en operationele velden worden nooit vooraf ingevuld. Officiële formulieren: controleer vóór opname in een publieke repository de herdistributievoorwaarden van elk formulier.
+
+## Disclaimer en aansprakelijkheid
+
+Gegenereerde documenten zijn **concepten**; controleer, vul aan en onderteken door een bevoegde persoon vóór gebruik. De maker(s) aanvaarden **geen enkele aansprakelijkheid**. Volledige tekst: [DISCLAIMER.md](DISCLAIMER.md) en in de app onder **Disclaimer**.
+
 ## Licentie
 
-Apache License 2.0 with Commons Clause — zie [LICENSE](LICENSE).
+Apache License 2.0 with Commons Clause — zie [LICENSE](LICENSE) en [DISCLAIMER.md](DISCLAIMER.md).
 
 Commercial use of this software within your own organization is permitted. Selling, reselling, hosting, or commercially redistributing the software itself requires prior written permission from the copyright holder.

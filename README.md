@@ -183,14 +183,17 @@ Volledig overzicht: [ROADMAP.md](ROADMAP.md).
 
 ## Officiële formulier-templates
 
-Invulbare PDF-formulieren staan in `templates/forms/` en worden door de backend ingevuld (niet nagebouwd):
+Alle documenten worden als **PDF** geëxporteerd. Officiële invulbare formulieren staan in `templates/forms/` en worden door de backend ingevuld (niet nagebouwd); de overige worden als nette PDF gegenereerd met reportlab.
 
-| Document | Template | Bron |
+| Document | Type | Bron / template |
 |---|---|---|
-| CMR-vrachtbrief | `templates/forms/cmr.pdf` | IRU-model 2007 (invulbaar PDF, 4 doorslagen) |
-| IATA Shipper's Declaration | `templates/forms/iata_dgd.pdf` | IATA open-formaat (invulbaar PDF) |
+| CMR-vrachtbrief | Ingevuld officieel PDF | IRU-model 2007 (`templates/forms/cmr.pdf`, 4 doorslagen) |
+| IATA Shipper's Declaration | Ingevuld officieel PDF | IATA open-formaat (`templates/forms/iata_dgd.pdf`) |
+| CIM-vrachtbrief | Ingevuld officieel PDF | CIT CIM/CUV (`templates/forms/cim.pdf`) |
+| IMO MDG Form, VGM, AWB/B-L SI, ADR/ADN, paklijst, afleverbon | Gegenereerde PDF (reportlab) | Eigen opmaak met vaste wettelijke teksten |
+| Appendix A1/D | xlsx (alleen tabs A1 + D) + PDF-weergave | Officieel Excel-template |
 
-De overige documenten worden voorlopig als gestructureerd Excel-bestand gegenereerd, in afwachting van hun officiële templates. Handtekening-, carrier- en operationele velden worden nooit vooraf ingevuld.
+Handtekening-, carrier- en operationele velden worden nooit vooraf ingevuld. Officiële formulieren: controleer vóór opname in een publieke repository de herdistributievoorwaarden van elk formulier.
 
 ## Disclaimer en aansprakelijkheid
 

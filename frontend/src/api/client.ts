@@ -74,10 +74,11 @@ export const api = {
     });
     if (!res.ok) throw new Error("Export failed");
     const blob = await res.blob();
+    const ext = (res.headers.get("content-type") || "").includes("pdf") ? "pdf" : "xlsx";
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = `appendix_${Date.now()}.xlsx`;
+    a.download = `appendix_${Date.now()}.${ext}`;
     a.click();
     URL.revokeObjectURL(url);
   },

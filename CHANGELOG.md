@@ -23,6 +23,7 @@ Multimodale transportkeuze.
 - Wizard start met formulierenkeuze; appendix-vragen verschijnen alleen als Appendix A1/D is geselecteerd
 - Handtekening-, carrier- en operationele velden worden nooit vooraf ingevuld; ze worden in de export als zodanig gemarkeerd
 - Navigatie: "Nieuwe appendix" heet nu "Nieuwe zending" en start bij de modaliteitskeuze
+- Wizard-voortgangsbalk toont op mobiel iconen i.p.v. tekst (meer stappen passen op het scherm)
 
 ## [1.0.0] — 2026-07-11
 
@@ -50,6 +51,6 @@ Eerste stabiele release.
 - Bij opstarten worden legacy-items met bron `overzicht_materieel` uit bestaande databases verwijderd
 - Verouderde gebouwde frontend-static in `backend/static/` (build gebeurt in Docker)
 
-### Bekende beperkingen (roadmap)
+### Bekende beperkingen (opgelost in v1.1.0)
 
-- Eén transportmodus (weg/appendix); multimodaal (IATA, CMR, …) volgt in een latere minor release
+- Alleen appendix/weg-flow; multimodaal volgde in v1.1.0

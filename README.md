@@ -1,12 +1,12 @@
 # CargoPilot
 
-**Versie 1.1.0** — webapplicatie om bouwmaterialen en posities te analyseren en als transportdocumenten (Excel) te exporteren, per transportmodaliteit.
+**Versie 1.2.0** — webapplicatie om bouwmaterialen en posities te analyseren en als transportdocumenten (Excel) te exporteren, per transportmodaliteit.
 
 **English:** CargoPilot parses material lines (paste or file import), calculates weight/volume, and exports transport documents per modality — from the official Appendix A1 template to CMR, CIM, IMO/IATA dangerous goods declarations, VGM and shipping instructions.
 
 Zie ook [CHANGELOG.md](CHANGELOG.md) en [ROADMAP.md](ROADMAP.md).
 
-## Functionaliteiten (v1.1.0)
+## Functionaliteiten (v1.2.0)
 
 - **Modaliteitskeuze bij start**: wegtransport, spoor, zeevracht, binnenvaart, luchtvracht of multimodaal
 - **Formulierenselectie per modaliteit**: alleen relevante documenten; bij multimodaal alles beschikbaar
@@ -33,7 +33,7 @@ Vanaf **1.0.0** geldt [Semantic Versioning](https://semver.org/):
 |-----------|---------|
 | Versienummer | `VERSION`, `backend/VERSION` |
 | Git-release | tag `v1.0.0`, `v1.1.0`, … |
-| Docker Hub | `jeffersonmouze/cargopilot:latest` en `jeffersonmouze/cargopilot:v1.1.0` |
+| Docker Hub | `jeffersonmouze/cargopilot:latest` en `jeffersonmouze/cargopilot:v1.2.0` |
 | API | `GET /api/health` → `version` |
 
 ## Snelle start (Docker Compose)
@@ -50,7 +50,7 @@ Open: http://localhost:8080
 
 1. Community Applications of `unraid/CargoPilot.xml`
 2. Volume: `/mnt/user/appdata/cargopilot` → `/data`
-3. Image: `jeffersonmouze/cargopilot:v1.1.0` (of `latest` na bevestigde update)
+3. Image: `jeffersonmouze/cargopilot:v1.2.0` (of `latest` na bevestigde update)
 4. Environment: `APP_SECRET_KEY`, `ADMIN_*`
 5. WebUI op gekozen poort (bijv. `http://<ip>:9935`)
 
@@ -167,7 +167,7 @@ pytest
 
 Volledig overzicht: [ROADMAP.md](ROADMAP.md).
 
-### v1.1.0 ✓ — Multimodale transportkeuze
+### v1.2.0 ✓ — Multimodale transportkeuze, officiële PDF-formulieren
 
 - Modaliteitskeuze, formulierenselectie, documentregister en export per document
 - CMR, CIM, IMO/IATA DG-verklaringen, VGM, shipping instructions, paklijst, afleverbon

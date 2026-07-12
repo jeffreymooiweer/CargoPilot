@@ -356,6 +356,7 @@ export default function WizardPage() {
         output_language: appendixLang(result.lines),
         metadata: { ...metadata, output_language: appendixLang(result.lines) },
         dangerous_goods: needsDg ? dgEntries : undefined,
+        format: "pdf",
       });
     } catch (e) {
       setError(String(e));

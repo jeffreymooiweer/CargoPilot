@@ -387,7 +387,8 @@
       "exporter": "appendix_template",
       "dg_profile": null,
       "default_selected": true,
-      "sections": []
+      "sections": [],
+      "output_format": "pdf"
     },
     {
       "key": "cmr",
@@ -586,7 +587,7 @@
         "nl": "Voorbereid vervoersdocument — ondertekening bij overname",
         "en": "Prepared transport document — signed at handover"
       },
-      "exporter": "generic",
+      "exporter": "pdf_template",
       "dg_profile": "RID",
       "sections": [
         {
@@ -794,7 +795,9 @@
           "nl": "Vervoer onderworpen, ook bij een andersluidende overeenkomst, aan de Uniforme Regelen betreffende de overeenkomst van internationaal spoorwegvervoer van goederen (CIM).",
           "en": "Carriage subject, notwithstanding any clause to the contrary, to the Uniform Rules concerning the Contract of International Carriage of Goods by Rail (CIM)."
         }
-      ]
+      ],
+      "pdf_template": "cim.pdf",
+      "output_format": "pdf"
     },
     {
       "key": "imo_dgd",
@@ -954,7 +957,8 @@
           "nl": "Container/vehicle packing certificate (vak 20): \"It is declared that the packing of the container/vehicle has been carried out in accordance with the applicable provisions.\" — pas ondertekenen nadat alle verklaringen feitelijk zijn gecontroleerd.",
           "en": "Container/vehicle packing certificate (box 20): \"It is declared that the packing of the container/vehicle has been carried out in accordance with the applicable provisions.\" — sign only after all declarations have actually been verified."
         }
-      ]
+      ],
+      "output_format": "pdf"
     },
     {
       "key": "iata_dgd",
@@ -1390,7 +1394,8 @@
           "nl": "Deze Verified Gross Mass is vastgesteld conform SOLAS VI/2 en MSC.1/Circ.1475. Er bestaat geen verplicht universeel VGM-formulier; deze verklaring bevat de door de IMO vereiste kerngegevens en is ondertekend door een door de afzender gemachtigde persoon (naam in hoofdletters of elektronische handtekening toegestaan).",
           "en": "This Verified Gross Mass has been determined in accordance with SOLAS VI/2 and MSC.1/Circ.1475. No mandatory universal VGM form exists; this declaration contains the core data required by the IMO and is signed by a person duly authorised by the shipper (name in capitals or electronic signature permitted)."
         }
-      ]
+      ],
+      "output_format": "pdf"
     },
     {
       "key": "awb_si",
@@ -1573,7 +1578,8 @@
       "legal_reference": {
         "nl": "IATA Resolution 600a/600b (Air Waybill); AWB wordt uitgegeven door vervoerder/expediteur",
         "en": "IATA Resolution 600a/600b (Air Waybill); the AWB is issued by carrier/forwarder"
-      }
+      },
+      "output_format": "pdf"
     },
     {
       "key": "bl_si",
@@ -1837,7 +1843,8 @@
       "legal_reference": {
         "nl": "Hague-Visby Rules / Rotterdam Rules (afhankelijk van traject); B/L wordt uitgegeven door de rederij",
         "en": "Hague-Visby Rules / Rotterdam Rules (depending on trade); the B/L is issued by the carrier"
-      }
+      },
+      "output_format": "pdf"
     },
     {
       "key": "adr_transport_doc",
@@ -1941,7 +1948,8 @@
           "nl": "Omschrijving per positie volgens ADR 5.4.1.1.1, in deze volgorde: UN-nummer, juiste vervoersnaam (technische naam tussen haakjes indien vereist), gevarenklasse(n), verpakkingsgroep, tunnelbeperkingscode — bijvoorbeeld: \"UN 1203, BENZINE, 3, II, (D/E)\".",
           "en": "Description per entry according to ADR 5.4.1.1.1, in this order: UN number, proper shipping name (technical name in brackets where required), hazard class(es), packing group, tunnel restriction code — for example: \"UN 1203, PETROL, 3, II, (D/E)\"."
         }
-      ]
+      ],
+      "output_format": "pdf"
     },
     {
       "key": "adn_transport_doc",
@@ -2036,7 +2044,8 @@
           "nl": "Omschrijving per positie volgens ADN 5.4.1.1.1: UN-nummer, juiste vervoersnaam (technische naam tussen haakjes indien vereist), gevarenklasse(n), verpakkingsgroep.",
           "en": "Description per entry according to ADN 5.4.1.1.1: UN number, proper shipping name (technical name in brackets where required), hazard class(es), packing group."
         }
-      ]
+      ],
+      "output_format": "pdf"
     },
     {
       "key": "packing_list",
@@ -2089,7 +2098,8 @@
             }
           ]
         }
-      ]
+      ],
+      "output_format": "pdf"
     },
     {
       "key": "delivery_note",
@@ -2169,7 +2179,8 @@
             }
           ]
         }
-      ]
+      ],
+      "output_format": "pdf"
     }
   ]
 }

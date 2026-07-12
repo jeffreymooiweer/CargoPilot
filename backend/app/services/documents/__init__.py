@@ -5,6 +5,7 @@ from app.services.documents.registry import (
 )
 from app.services.documents.exporter import export_document, validate_document
 from app.services.documents.pdf_forms import fill_pdf_document, has_pdf_template
+from app.services.documents.pdf_render import render_appendix_pdf, render_document_pdf
 
 __all__ = [
     "get_registry",
@@ -14,4 +15,6 @@ __all__ = [
     "validate_document",
     "fill_pdf_document",
     "has_pdf_template",
+    "render_document_pdf",
+    "render_appendix_pdf",
 ]

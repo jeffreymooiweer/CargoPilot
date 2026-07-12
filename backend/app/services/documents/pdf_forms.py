@@ -214,10 +214,78 @@ def fill_iata(values: dict[str, Any], dangerous_goods: list[dict[str, Any]], lan
     return {k: v for k, v in fields.items() if v not in (None, "")}
 
 
-# Per document: welke template en welke veld-builder.
-PDF_FILLERS: dict[str, tuple[str, Callable[..., dict[str, str]]]] = {
-    "cmr": ("cmr.pdf", "cmr"),
-    "iata_dgd": ("iata_dgd.pdf", "iata"),
+def _cim_payment_label(value: str, lang: str) -> str:
+    labels = {
+        "franco": {"nl": "Franco de port", "en": "Carriage paid"},
+        "collect": {"nl": "Non franco", "en": "Carriage forward"},
+        "shared": {"nl": "Volgens afspraak", "en": "As agreed"},
+    }
+    return labels.get(value, {}).get(lang, value or "")
+
+
+def fill_cim(
+    values: dict[str, Any],
+    lines: list[dict[str, Any]],
+    dangerous_goods: list[dict[str, Any]] | None,
+    lang: str,
+) -> dict[str, str]:
+    fields: dict[str, str] = {}
+    # Vak 1: afzender, vak 4: geadresseerde (naam + adres + contact).
+    fields["Expéditeur1"] = _party(values.get("consignor_name", ""), values.get("consignor_address", ""))
+    fields["Destinataire4"] = _party(values.get("consignee_name", ""), values.get("consignee_address", ""))
+    fields["Déclaration expéditeur7"] = _first(values.get("consignor_declarations"))
+    fields["Référence Expéditeur8"] = _first(values.get("shipment_reference"))
+    fields["Annexes9"] = _first(values.get("attached_documents"))
+    fields["Lieu de livraison10"] = _first(values.get("place_of_delivery"), values.get("discharge_point"))
+    fields["Conditions commerciales13"] = _first(values.get("commercial_conditions"))
+    fields["Numéro accord client14"] = _first(values.get("contract_number"))
+    fields["Info destinataire15"] = _first(values.get("info_for_consignee"))
+    fields["Prise en charge1-16"] = _first(values.get("loading_point"), values.get("place_of_receipt"))
+    if values.get("loading_date"):
+        fields["Mois/jour/heure"] = str(values["loading_date"])
+    fields["Franco de port20"] = _cim_payment_label(str(values.get("payment_instruction", "")), lang)
+    if values.get("declared_value"):
+        fields["Déclaration de valeur-26"] = str(values["declared_value"])
+    if values.get("cod_amount"):
+        fields["Remboursement28"] = str(values["cod_amount"])
+
+    # Vak 21: goederenomschrijving (één groot veld).
+    desc_lines = []
+    for line in lines:
+        if not line.get("include", True):
+            continue
+        qty = line.get("quantity")
+        prefix = f"{qty} × " if qty not in (None, "") else ""
+        desc = line.get("output_description") or line.get("description") or ""
+        weight = line.get("weight_total_kg")
+        suffix = f"  ({weight} kg)" if weight not in (None, "") else ""
+        desc_lines.append(f"{prefix}{desc}{suffix}".strip())
+    fields["Description21"] = "\n".join(desc_lines)
+
+    # Vak 24/25: NHM-code en totale massa (eerste rij).
+    if values.get("nhm_code"):
+        fields["NHM Code0"] = str(values["nhm_code"])
+    total_weight = sum(
+        float(l.get("weight_total_kg") or 0) for l in lines if l.get("include", True)
+    )
+    if total_weight:
+        fields["Masse0"] = str(round(total_weight, 2))
+
+    # Vak 29: plaats en datum van opmaak.
+    place_date = " ".join(
+        x for x in [_first(values.get("established_place")), _first(values.get("established_date"))] if x
+    )
+    if place_date:
+        fields["Lieu et date d'établissement29"] = place_date
+
+    return {k: v for k, v in fields.items() if v not in (None, "")}
+
+
+# Per document: template-bestand.
+PDF_FILLERS: dict[str, str] = {
+    "cmr": "cmr.pdf",
+    "iata_dgd": "iata_dgd.pdf",
+    "cim": "cim.pdf",
 }
 
 
@@ -232,14 +300,15 @@ def build_fields(
         return fill_cmr(values, lines, lang)
     if document_key == "iata_dgd":
         return fill_iata(values, dangerous_goods or [], lang)
+    if document_key == "cim":
+        return fill_cim(values, lines, dangerous_goods, lang)
     raise ValueError(f"No PDF filler for {document_key}")
 
 
 def has_pdf_template(document_key: str) -> bool:
     if document_key not in PDF_FILLERS:
         return False
-    template = PDF_FILLERS[document_key][0]
-    return (templates_forms_dir() / template).exists()
+    return (templates_forms_dir() / PDF_FILLERS[document_key]).exists()
 
 
 def fill_pdf_document(
@@ -251,7 +320,7 @@ def fill_pdf_document(
 ) -> Path:
     if document_key not in PDF_FILLERS:
         raise ValueError(f"No PDF template for {document_key}")
-    template_name = PDF_FILLERS[document_key][0]
+    template_name = PDF_FILLERS[document_key]
     template_path = templates_forms_dir() / template_name
     if not template_path.exists():
         raise FileNotFoundError(f"PDF template not found: {template_path}")

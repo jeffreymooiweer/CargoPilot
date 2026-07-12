@@ -59,6 +59,7 @@ class ExportRequest(BaseModel):
     metadata: dict = Field(default_factory=dict)
     template_name: str | None = None
     dangerous_goods: list[dict] | None = None
+    format: str = "xlsx"
 
 
 class DocumentExportRequest(BaseModel):

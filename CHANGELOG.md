@@ -2,7 +2,7 @@
 
 Alle noemenswaardige wijzigingen worden gedocumenteerd volgens [Semantic Versioning](https://semver.org/).
 
-## [1.1.0] — 2026-07-12
+## [1.2.0] — 2026-07-12
 
 Multimodale transportkeuze.
 

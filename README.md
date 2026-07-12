@@ -1,13 +1,18 @@
 # CargoPilot
 
-**Versie 1.0.0** — webapplicatie om bouwmaterialen en posities te analyseren en als ingevulde Appendix A1 (Excel) te exporteren.
+**Versie 1.1.0** — webapplicatie om bouwmaterialen en posities te analyseren en als transportdocumenten (Excel) te exporteren, per transportmodaliteit.
 
-**English:** CargoPilot parses material lines (paste or file import), calculates weight/volume, and exports a filled Appendix A1 Excel file from your official template.
+**English:** CargoPilot parses material lines (paste or file import), calculates weight/volume, and exports transport documents per modality — from the official Appendix A1 template to CMR, CIM, IMO/IATA dangerous goods declarations, VGM and shipping instructions.
 
 Zie ook [CHANGELOG.md](CHANGELOG.md) en [ROADMAP.md](ROADMAP.md).
 
-## Functionaliteiten (v1.0.0)
+## Functionaliteiten (v1.1.0)
 
+- **Modaliteitskeuze bij start**: wegtransport, spoor, zeevracht, binnenvaart, luchtvracht of multimodaal
+- **Formulierenselectie per modaliteit**: alleen relevante documenten; bij multimodaal alles beschikbaar
+- Documenten: intern formulier, CMR, CIM, IMO Multimodal DG Form, IATA Shipper's Declaration, VGM-verklaring, AWB/B-L Shipping Instructions, ADR/ADN-document, paklijst, afleverbon
+- **Veldstatussen per document**: gebruikersinvoer, carriergegevens, operationele velden en handtekeningen worden onderscheiden; handtekeningen worden nooit vooraf ingevuld
+- **DG-exportblokkades** per modaliteitsprofiel (ADR/RID/ADN/IMDG/IATA DGR) bij onvolledige classificatie
 - Review-first wizard: regels invoeren met cataloguszoeken of vrije omschrijving
 - Import via plakken of bestand (.xlsx, .csv, .txt) met downloadbare templates
 - Herkenning van materiaal, producttype en afmetingen (NL/EN) met synoniemen
@@ -161,15 +166,14 @@ pytest
 
 Volledig overzicht: [ROADMAP.md](ROADMAP.md).
 
+### v1.1.0 ✓ — Multimodale transportkeuze
+
+- Modaliteitskeuze, formulierenselectie, documentregister en export per document
+- CMR, CIM, IMO/IATA DG-verklaringen, VGM, shipping instructions, paklijst, afleverbon
+
 ### v1.0.0 ✓
 
 - Appendix-wizard, import/templates, gewichtsaanpassing, lege materieelbibliotheek
-
-### v1.1 (gepland) — Multimodale transportkeuze
-
-- Keuze transportmodus (weg, lucht, zee)
-- Bijbehorende formulieren en export, o.a. **CMR** (weg) en **IATA** / luchtvrachtdocumenten
-- Template-download per modus
 
 ### v1.2 (gepland)
 

@@ -96,6 +96,35 @@ export const api = {
   parseWizardImportFile: (file: File) => uploadFile<WizardFileParseResult>("/import/wizard-file", file),
   catalogSearch: (q: string, limit = 25) =>
     request<{ results: CatalogSearchHit[] }>(`/catalog/search?q=${encodeURIComponent(q)}&limit=${limit}`),
+  documentsRegistry: () => request<DocumentRegistry>("/documents/registry"),
+  validateDocument: (payload: DocumentExportPayload) =>
+    request<DocumentValidationResult>("/documents/validate", {
+      method: "POST",
+      body: JSON.stringify(payload),
+    }),
+  exportDocument: async (payload: DocumentExportPayload) => {
+    const res = await fetch(`${API_BASE}/documents/export`, {
+      method: "POST",
+      credentials: "include",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    });
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({ detail: res.statusText }));
+      const detail = err.detail;
+      if (detail && typeof detail === "object" && Array.isArray(detail.errors)) {
+        throw new Error(detail.errors.join("\n"));
+      }
+      throw new Error(typeof detail === "string" ? detail : "Export failed");
+    }
+    const blob = await res.blob();
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `${payload.document_key}_${Date.now()}.xlsx`;
+    a.click();
+    URL.revokeObjectURL(url);
+  },
 };
 
 export interface User {
@@ -155,6 +184,7 @@ export interface CalcResult {
 export interface DgProduct {
   un_number?: string;
   proper_shipping_name?: string;
+  technical_name?: string;
   class?: string;
   subsidiary_risks?: string;
   packing_group?: string;
@@ -169,6 +199,11 @@ export interface DgProduct {
   dimensions?: string;
   additional_information?: string;
   caliber?: string;
+  marine_pollutant?: string;
+  cargo_aircraft_only?: string;
+  overpack?: string;
+  emergency_contact?: string;
+  ems_code?: string;
 }
 
 export interface DgEntry {
@@ -228,4 +263,82 @@ export interface EquipmentImportResult {
 export interface WizardFileParseResult {
   text: string;
   has_header: boolean;
+}
+
+export type LocalizedText = { nl: string; en: string };
+
+export type FieldStatus =
+  | "AUTO_DERIVED"
+  | "USER_REQUIRED"
+  | "USER_OPTIONAL"
+  | "CONDITIONAL"
+  | "CARRIER_PROVIDED"
+  | "OPERATIONAL"
+  | "SIGNATURE_REQUIRED"
+  | "FIXED_TEMPLATE_TEXT";
+
+export interface DocumentFieldOption {
+  value: string;
+  label: LocalizedText;
+}
+
+export interface DocumentField {
+  key: string;
+  label: LocalizedText;
+  status: FieldStatus;
+  type: "text" | "textarea" | "number" | "date" | "select" | "checkbox";
+  options?: DocumentFieldOption[];
+  condition?: string;
+  auto_from?: string;
+  help?: LocalizedText;
+}
+
+export interface DocumentSection {
+  key?: string;
+  ref?: string;
+  label?: LocalizedText;
+  fields?: DocumentField[];
+}
+
+export interface DocumentDefinition {
+  key: string;
+  label: LocalizedText;
+  short_label: LocalizedText;
+  category: string;
+  issue_status: LocalizedText;
+  exporter: "appendix_template" | "generic";
+  dg_profile: string | null;
+  dg_only?: boolean;
+  default_selected?: boolean;
+  sections: DocumentSection[];
+  signature_note?: LocalizedText;
+}
+
+export interface ModalityDefinition {
+  key: string;
+  label: LocalizedText;
+  description: LocalizedText;
+  documents: string[];
+}
+
+export interface DocumentRegistry {
+  registry_version: string;
+  field_statuses: Record<FieldStatus, LocalizedText>;
+  modalities: ModalityDefinition[];
+  shared_sections: DocumentSection[];
+  documents: DocumentDefinition[];
+}
+
+export interface DocumentExportPayload extends Record<string, unknown> {
+  document_key: string;
+  values: Record<string, string>;
+  lines: LineItem[];
+  dangerous_goods?: DgEntry[];
+  output_language: string;
+}
+
+export interface DocumentValidationResult {
+  document_key: string;
+  errors: string[];
+  warnings: string[];
 }

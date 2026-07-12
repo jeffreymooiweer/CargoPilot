@@ -3,7 +3,7 @@ import { Navigate, Route, Routes, useNavigate } from "react-router-dom";
 import { api, User } from "./api/client";
 import Layout from "./components/Layout";
 import LoginPage from "./pages/LoginPage";
-import DashboardPage from "./pages/DashboardPage";
+import ModalitySelectPage from "./pages/ModalitySelectPage";
 import WizardPage from "./pages/WizardPage";
 import UsersPage from "./pages/UsersPage";
 import MaterieelPage from "./pages/MaterieelPage";
@@ -37,8 +37,9 @@ export default function App() {
   return (
     <Routes>
       <Route element={<Layout user={user} onLogout={() => setUser(null)} />}>
-        <Route path="/" element={<DashboardPage />} />
-        <Route path="/wizard" element={<WizardPage />} />
+        <Route path="/" element={<ModalitySelectPage />} />
+        <Route path="/wizard" element={<Navigate to="/" replace />} />
+        <Route path="/wizard/:modality" element={<WizardPage />} />
         <Route path="/materieel" element={<MaterieelPage />} />
         <Route path="/settings" element={<SettingsPage />} />
         <Route path="/users" element={<UsersPage />} />

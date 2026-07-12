@@ -1,11 +1,11 @@
 {
   "app": {
     "name": "CargoPilot",
-    "tagline": "Construction materials to appendix"
+    "tagline": "From material list to transport documents"
   },
   "nav": {
     "dashboard": "Dashboard",
-    "new": "New appendix",
+    "new": "New shipment",
     "materieel": "Equipment overview",
     "settings": "Settings",
     "users": "Users",
@@ -20,8 +20,6 @@
     "toggle": "Toggle theme"
   },
   "dashboard": {
-    "welcome": "Welcome to CargoPilot",
-    "intro": "Add positions on the review screen: pick equipment from the catalog or type a custom description (e.g. steel profile with dimensions). Excel paste is available via Import.",
     "privacy": "CargoPilot does not store history, pasted data, or appendix files on the server. After download, everything is discarded from memory."
   },
   "login": {
@@ -73,7 +71,13 @@
     "dgLookup": "Look up UN number",
     "dgIncluded": "Appendix D will be included for {{count}} line(s).",
     "dgPositionOf": "Position {{current}} of {{total}}",
-    "progressStep": "Step {{current}} of {{total}}"
+    "progressStep": "Step {{current}} of {{total}}",
+    "stepForms": "Forms",
+    "stepDetails": "Shipment details",
+    "toLines": "To articles",
+    "toDetails": "To shipment details",
+    "changeModality": "Choose another modality",
+    "loading": "Loading…"
   },
   "questions": {
     "yes": "Yes",
@@ -210,5 +214,54 @@
     "auto": "System",
     "autoDetectNote": "In the wizard, the input language of your material list is always detected automatically.",
     "version": "Version"
+  },
+  "modality": {
+    "title": "Choose your transport modality",
+    "intro": "Start a new shipment by choosing a modality. Then select which forms to prepare and enter your articles, products or equipment.",
+    "road": "Road transport",
+    "roadDesc": "CMR, ADR document and internal forms",
+    "rail": "Rail transport",
+    "railDesc": "CIM consignment note with RID data",
+    "sea": "Sea freight",
+    "seaDesc": "B/L instructions, VGM and IMO DG form",
+    "inland": "Inland waterway",
+    "inlandDesc": "ADN document, VGM and internal forms",
+    "air": "Air freight",
+    "airDesc": "AWB instructions and IATA DG declaration",
+    "multimodal": "Multimodal",
+    "multimodalDesc": "Combination of modes — all forms"
+  },
+  "forms": {
+    "title": "Which forms do you want to prepare?",
+    "intro": "Select the documents for this shipment. Only forms relevant to the chosen modality are shown; multimodal offers all forms.",
+    "dgOnly": "Dangerous goods",
+    "selectAtLeastOne": "Select at least one form to continue.",
+    "categoryInternal": "Internal document",
+    "categoryPrepared": "Prepared transport document",
+    "categoryDeclaration": "Declaration",
+    "categoryInstructions": "Shipping instructions",
+    "categoryGenerated": "Generated business document"
+  },
+  "docfields": {
+    "title": "Shipment and document details",
+    "intro": "Shared data is reused across all selected documents. Fields marked * are required for export. Carrier data and operational fields stay empty until known.",
+    "choose": "— Choose —",
+    "yes": "Yes",
+    "confirmExplicit": "I deliberately confirm these declarations on behalf of the responsible person",
+    "carrierProvided": "Carrier",
+    "operational": "During execution",
+    "signatureRequired": "Signature"
+  },
+  "wizardDocs": {
+    "title": "Documents",
+    "intro": "Download the selected documents. The status shows whether a document is ready for export.",
+    "statusReady": "Ready for export",
+    "statusDraft": "Draft — fields missing",
+    "statusBlocked": "Blocked by safety validation",
+    "statusNotApplicable": "Not applicable (no dangerous goods)",
+    "waitingCarrier": "Waiting for carrier data",
+    "missingFields": "Missing: {{fields}}",
+    "dgBlocked": "Dangerous goods classification is incomplete. Fill in UN number, Proper Shipping Name, class and packaging details in the dangerous goods step.",
+    "exporting": "Exporting…"
   }
 }

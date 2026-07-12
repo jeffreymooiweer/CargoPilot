@@ -1,11 +1,11 @@
 {
   "app": {
     "name": "CargoPilot",
-    "tagline": "Bouwmaterialen naar appendix"
+    "tagline": "Van materiaallijst naar transportdocumenten"
   },
   "nav": {
     "dashboard": "Dashboard",
-    "new": "Nieuwe appendix",
+    "new": "Nieuwe zending",
     "materieel": "Overzicht materieel",
     "settings": "Instellingen",
     "users": "Gebruikers",
@@ -20,8 +20,6 @@
     "toggle": "Thema wisselen"
   },
   "dashboard": {
-    "welcome": "Welkom bij CargoPilot",
-    "intro": "Voeg posities toe via het review-scherm: kies materieel uit de catalogus of typ een eigen omschrijving (bijv. staalprofiel met afmeting). Excel-plakken kan via Importeren.",
     "privacy": "CargoPilot bewaart geen historie, geplakte data of appendix-bestanden op de server. Na download verdwijnt alles uit het geheugen."
   },
   "login": {
@@ -73,7 +71,13 @@
     "dgLookup": "UN-nummer opzoeken",
     "dgIncluded": "Appendix D wordt meegeëxporteerd voor {{count}} regel(s).",
     "dgPositionOf": "Positie {{current}} van {{total}}",
-    "progressStep": "Stap {{current}} van {{total}}"
+    "progressStep": "Stap {{current}} van {{total}}",
+    "stepForms": "Formulieren",
+    "stepDetails": "Zendinggegevens",
+    "toLines": "Naar artikelen",
+    "toDetails": "Naar zendinggegevens",
+    "changeModality": "Andere modaliteit kiezen",
+    "loading": "Laden…"
   },
   "questions": {
     "yes": "Ja",
@@ -210,5 +214,54 @@
     "auto": "Systeem",
     "autoDetectNote": "In de wizard wordt de invoertaal van uw materiaallijst altijd automatisch herkend.",
     "version": "Versie"
+  },
+  "modality": {
+    "title": "Kies uw transportmodaliteit",
+    "intro": "Start een nieuwe zending door een modaliteit te kiezen. Daarna selecteert u welke formulieren opgemaakt moeten worden en voert u de artikelen, producten of materieel in.",
+    "road": "Wegtransport",
+    "roadDesc": "CMR, ADR-document en interne formulieren",
+    "rail": "Spoortransport",
+    "railDesc": "CIM-vrachtbrief met RID-gegevens",
+    "sea": "Zeevracht",
+    "seaDesc": "B/L-instructies, VGM en IMO DG-formulier",
+    "inland": "Binnenvaart",
+    "inlandDesc": "ADN-document, VGM en interne formulieren",
+    "air": "Luchtvracht",
+    "airDesc": "AWB-instructies en IATA DG-verklaring",
+    "multimodal": "Multimodaal",
+    "multimodalDesc": "Combinatie van modaliteiten — alle formulieren"
+  },
+  "forms": {
+    "title": "Welke formulieren wilt u opmaken?",
+    "intro": "Selecteer de documenten voor deze zending. Per modaliteit worden alleen relevante formulieren getoond; bij multimodaal zijn alle formulieren beschikbaar.",
+    "dgOnly": "Gevaarlijke stoffen",
+    "selectAtLeastOne": "Selecteer minstens één formulier om verder te gaan.",
+    "categoryInternal": "Intern document",
+    "categoryPrepared": "Voorbereid vervoersdocument",
+    "categoryDeclaration": "Verklaring",
+    "categoryInstructions": "Shipping instructions",
+    "categoryGenerated": "Gegenereerd bedrijfsdocument"
+  },
+  "docfields": {
+    "title": "Zending- en documentgegevens",
+    "intro": "Gedeelde gegevens worden hergebruikt in alle geselecteerde documenten. Velden met * zijn verplicht voor export. Carriergegevens en operationele velden blijven leeg tot ze bekend zijn.",
+    "choose": "— Kies —",
+    "yes": "Ja",
+    "confirmExplicit": "Ik bevestig deze verklaringen bewust namens de verantwoordelijke persoon",
+    "carrierProvided": "Vervoerder",
+    "operational": "Bij uitvoering",
+    "signatureRequired": "Ondertekening"
+  },
+  "wizardDocs": {
+    "title": "Documenten",
+    "intro": "Download de geselecteerde documenten. De status geeft aan of een document gereed is voor export.",
+    "statusReady": "Gereed voor export",
+    "statusDraft": "Concept — velden ontbreken",
+    "statusBlocked": "Geblokkeerd door veiligheidsvalidatie",
+    "statusNotApplicable": "Niet van toepassing (geen gevaarlijke stoffen)",
+    "waitingCarrier": "Wacht op carriergegevens",
+    "missingFields": "Ontbrekend: {{fields}}",
+    "dgBlocked": "Gevaarlijke-stoffenclassificatie is onvolledig. Vul UN-nummer, Proper Shipping Name, klasse en verpakkingsgegevens in bij de gevaarlijke-stoffenstap.",
+    "exporting": "Bezig met exporteren…"
   }
 }

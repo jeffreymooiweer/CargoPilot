@@ -51,8 +51,7 @@ export default function Layout({ user, onLogout }: Props) {
 
   const navLinks = (
     <>
-      <NavLink to="/" className={linkClass} end onClick={closeMenu}>{t("nav.dashboard")}</NavLink>
-      <NavLink to="/wizard" className={linkClass} onClick={closeMenu}>{t("nav.new")}</NavLink>
+      <NavLink to="/" className={linkClass} end onClick={closeMenu}>{t("nav.new")}</NavLink>
       {user.role === "admin" && <NavLink to="/materieel" className={linkClass} onClick={closeMenu}>{t("nav.materieel")}</NavLink>}
       {user.role === "admin" && <NavLink to="/users" className={linkClass} onClick={closeMenu}>{t("nav.users")}</NavLink>}
       <NavLink to="/settings" className={linkClass} onClick={closeMenu}>{t("nav.settings")}</NavLink>

@@ -1,6 +1,6 @@
 # Disclaimer en aansprakelijkheidsuitsluiting — CargoPilot
 
-_Laatst bijgewerkt: 12 juli 2026 · Versie 1.1.0_
+_Laatst bijgewerkt: 12 juli 2026 · Versie 1.2.0_
 
 > **English summary:** CargoPilot is provided "AS IS", without warranty of any
 > kind. The documents it generates are **drafts** that must be checked,

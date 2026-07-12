@@ -152,7 +152,7 @@ export default function WizardPage() {
     export: t("wizard.step4"),
   };
 
-  const stepPills = steps.map((key, index) => ({ n: index + 1, label: stepLabels[key] }));
+  const stepPills = steps.map((key, index) => ({ n: index + 1, key, label: stepLabels[key] }));
   const currentIndex = Math.max(0, steps.indexOf(stepKey));
 
   const goNextFrom = (from: StepKey) => {

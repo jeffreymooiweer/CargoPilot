@@ -13,6 +13,11 @@ from typing import Any, Callable
 from pypdf import PdfReader, PdfWriter
 from pypdf.generic import BooleanObject, NameObject
 
+try:
+    import fitz
+except ImportError:  # pragma: no cover
+    fitz = None
+
 from app.core.config import get_settings
 
 # IATA open-formaat: elk van de twee keuzeparen bestaat uit twee /Ch-velden. Het
@@ -311,22 +316,44 @@ def has_pdf_template(document_key: str) -> bool:
     return (templates_forms_dir() / PDF_FILLERS[document_key]).exists()
 
 
-def fill_pdf_document(
-    document_key: str,
-    values: dict[str, Any],
-    lines: list[dict[str, Any]],
-    dangerous_goods: list[dict[str, Any]] | None,
-    lang: str = "nl",
-) -> Path:
-    if document_key not in PDF_FILLERS:
-        raise ValueError(f"No PDF template for {document_key}")
-    template_name = PDF_FILLERS[document_key]
-    template_path = templates_forms_dir() / template_name
-    if not template_path.exists():
-        raise FileNotFoundError(f"PDF template not found: {template_path}")
+def _fill_with_pymupdf(template_path: Path, fields: dict[str, str], disclaimer: str) -> Path:
+    """Vul AcroForm-velden in en genereer appearance streams zodat waarden zichtbaar zijn."""
+    if fitz is None:
+        raise RuntimeError("PyMuPDF (pymupdf) is required for PDF form filling")
 
-    fields = build_fields(document_key, values, lines, dangerous_goods, lang)
+    doc = fitz.open(template_path)
+    try:
+        for page in doc:
+            for widget in page.widgets() or []:
+                name = widget.field_name
+                if not name or name not in fields:
+                    continue
+                widget.field_value = fields[name]
+                widget.update()
 
+        doc.set_metadata(
+            {
+                "producer": "CargoPilot",
+                "creator": "CargoPilot",
+                "subject": disclaimer,
+            }
+        )
+
+        fd, temp_name = tempfile.mkstemp(suffix=".pdf")
+        os.close(fd)
+        out_path = Path(temp_name)
+        try:
+            out_path.chmod(0o600)
+        except OSError:
+            pass
+        doc.save(str(out_path))
+        return out_path
+    finally:
+        doc.close()
+
+
+def _fill_with_pypdf(template_path: Path, fields: dict[str, str], disclaimer: str) -> Path:
+    """Fallback zonder zichtbare appearances (alleen /V-waarden)."""
     reader = PdfReader(str(template_path))
     writer = PdfWriter()
     writer.append(reader)
@@ -334,12 +361,6 @@ def fill_pdf_document(
     for page in writer.pages:
         writer.update_page_form_field_values(page, fields, auto_regenerate=False)
 
-    disclaimer = (
-        "CONCEPT — gegenereerd met CargoPilot. Controleer, vul aan en onderteken door een "
-        "bevoegde persoon voor gebruik. Geen aansprakelijkheid; geleverd AS IS onder de "
-        "Apache License 2.0 met Commons Clause. Zie DISCLAIMER.md. / DRAFT — generated with "
-        "CargoPilot; verify, complete and sign before use. No liability; provided AS IS."
-    )
     try:
         writer.add_metadata(
             {
@@ -351,7 +372,6 @@ def fill_pdf_document(
     except Exception:
         pass
 
-    # Zorg dat viewers de ingevulde waarden renderen.
     try:
         writer.set_need_appearances_writer(True)
     except Exception:
@@ -369,3 +389,31 @@ def fill_pdf_document(
     with open(out_path, "wb") as fh:
         writer.write(fh)
     return out_path
+
+
+def fill_pdf_document(
+    document_key: str,
+    values: dict[str, Any],
+    lines: list[dict[str, Any]],
+    dangerous_goods: list[dict[str, Any]] | None,
+    lang: str = "nl",
+) -> Path:
+    if document_key not in PDF_FILLERS:
+        raise ValueError(f"No PDF template for {document_key}")
+    template_name = PDF_FILLERS[document_key]
+    template_path = templates_forms_dir() / template_name
+    if not template_path.exists():
+        raise FileNotFoundError(f"PDF template not found: {template_path}")
+
+    fields = build_fields(document_key, values, lines, dangerous_goods, lang)
+
+    disclaimer = (
+        "CONCEPT — gegenereerd met CargoPilot. Controleer, vul aan en onderteken door een "
+        "bevoegde persoon voor gebruik. Geen aansprakelijkheid; geleverd AS IS onder de "
+        "Apache License 2.0 met Commons Clause. Zie DISCLAIMER.md. / DRAFT — generated with "
+        "CargoPilot; verify, complete and sign before use. No liability; provided AS IS."
+    )
+
+    if fitz is not None:
+        return _fill_with_pymupdf(template_path, fields, disclaimer)
+    return _fill_with_pypdf(template_path, fields, disclaimer)

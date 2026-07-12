@@ -1,4 +1,5 @@
 import openpyxl
+import fitz
 from pypdf import PdfReader
 
 from app.services.documents import (
@@ -159,8 +160,19 @@ def test_fill_cim_pdf_populates_boxes():
         assert v["NHM Code0"] == "721650"  # vak 24
         assert "Stalen hoekprofiel" in v["Description21"]  # vak 21
         assert "Rotterdam" in v["Lieu et date d'établissement29"]  # vak 29
+        visible = _pdf_visible_text(path)
+        assert "Firma A" in visible
+        assert "Stalen hoekprofiel" in visible
     finally:
         path.unlink(missing_ok=True)
+
+
+def _pdf_visible_text(path) -> str:
+    doc = fitz.open(str(path))
+    try:
+        return "\n".join(page.get_text() for page in doc)
+    finally:
+        doc.close()
 
 
 def test_fill_cmr_pdf_populates_official_boxes():
@@ -185,6 +197,9 @@ def test_fill_cmr_pdf_populates_official_boxes():
         assert values_by_field["VakRood06Regel01Kolom11"] == "462.7"
         # Handtekeningvakken 22/23/24 blijven leeg.
         assert values_by_field.get("VakRood23", "") == ""
+        visible = _pdf_visible_text(path)
+        assert "Firma A" in visible
+        assert "Stalen hoekprofiel" in visible
     finally:
         path.unlink(missing_ok=True)
 
@@ -234,6 +249,9 @@ def test_fill_iata_pdf_strikes_non_applicable_and_lists_dg():
         assert "965" in dg_block
         # Handtekeningveld blijft leeg.
         assert v.get("Name-title", "") == "J. Jansen"
+        visible = _pdf_visible_text(path)
+        assert "Firma A" in visible
+        assert "UN 3480" in visible
     finally:
         path.unlink(missing_ok=True)
 

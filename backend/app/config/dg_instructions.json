@@ -51,95 +51,224 @@
   },
   "appendix_d_fields": {
     "un_number": {
-      "label": {"nl": "UN-nummer", "en": "UN Number"},
+      "label": {
+        "nl": "UN-nummer",
+        "en": "UN Number"
+      },
       "help": {
         "nl": "Het viercijferige stof-identificatienummer. In luchtvervoer hebben sommige stoffen een ID-nummer i.p.v. UN-nummer.",
         "en": "Four-digit identification number. In air transport some substances use an ID number instead of a UN number."
       }
     },
     "proper_shipping_name": {
-      "label": {"nl": "Proper Shipping Name (PSN)", "en": "Proper Shipping Name (PSN)"},
+      "label": {
+        "nl": "Proper Shipping Name (PSN)",
+        "en": "Proper Shipping Name (PSN)"
+      },
       "help": {
         "nl": "De officiële vervoersbenaming van de gevaarlijke stof volgens de stofopsommingslijst.",
         "en": "Official proper shipping name from the dangerous goods list."
       }
     },
     "class": {
-      "label": {"nl": "Klasse", "en": "Class"},
+      "label": {
+        "nl": "Klasse",
+        "en": "Class"
+      },
       "help": {
         "nl": "Gevarenklasse 1 t/m 9 waarin de stof is ingedeeld.",
         "en": "Hazard class 1–9 assigned to the substance."
       }
     },
     "subsidiary_risks": {
-      "label": {"nl": "Bijkomend gevaar", "en": "Subsidiary risk(s)"},
+      "label": {
+        "nl": "Bijkomend gevaar",
+        "en": "Subsidiary risk(s)"
+      },
       "help": {
         "nl": "Alleen invullen indien van toepassing. Beïnvloedt samenlading.",
         "en": "Fill only when applicable. Affects co-loading rules."
       }
     },
     "packing_group": {
-      "label": {"nl": "Verpakkingsgroep", "en": "Packing group"},
+      "label": {
+        "nl": "Verpakkingsgroep",
+        "en": "Packing group"
+      },
       "help": {
         "nl": "Verplicht behalve bij klasse 1, 2 en 7.",
         "en": "Mandatory except for classes 1, 2 and 7."
       }
     },
     "packing_instruction": {
-      "label": {"nl": "Verpakkingsinstructie", "en": "Packing Instruction"},
-      "help": {"nl": "Vermelding van de verpakkingsinstructie.", "en": "Packing instruction reference."}
+      "label": {
+        "nl": "Verpakkingsinstructie",
+        "en": "Packing Instruction"
+      },
+      "help": {
+        "nl": "Vermelding van de verpakkingsinstructie.",
+        "en": "Packing instruction reference."
+      }
     },
     "flashpoint": {
-      "label": {"nl": "Vlampunt", "en": "Flashpoint"},
-      "help": {"nl": "Alleen bij zeevervoer van brandbare vloeistoffen.", "en": "Only for sea transport of flammable liquids."}
+      "label": {
+        "nl": "Vlampunt",
+        "en": "Flashpoint"
+      },
+      "help": {
+        "nl": "Alleen bij zeevervoer van brandbare vloeistoffen.",
+        "en": "Only for sea transport of flammable liquids."
+      }
     },
     "type_of_package": {
-      "label": {"nl": "Type verpakking", "en": "Type of package"},
+      "label": {
+        "nl": "Type verpakking",
+        "en": "Type of package"
+      },
       "help": {
         "nl": "Bijv. kist, doos, vat, jerrycan. Bij UN-verpakking ook keuringskenmerk (4A, 1A2, …).",
         "en": "E.g. box, drum, jerrycan. For UN packages include code (4A, 1A2, …)."
       }
     },
     "quantity_packages": {
-      "label": {"nl": "Aantal verpakkingen", "en": "Quantity of packages"},
-      "help": {"nl": "Aantal verpakkingen.", "en": "Number of packages."}
+      "label": {
+        "nl": "Aantal verpakkingen",
+        "en": "Quantity of packages"
+      },
+      "help": {
+        "nl": "Aantal verpakkingen.",
+        "en": "Number of packages."
+      }
     },
     "quantity_items_per_package": {
-      "label": {"nl": "Stuks per verpakking", "en": "Items per package"},
-      "help": {"nl": "Aantal stuks per verpakking.", "en": "Number of items per package."}
+      "label": {
+        "nl": "Stuks per verpakking",
+        "en": "Items per package"
+      },
+      "help": {
+        "nl": "Aantal stuks per verpakking.",
+        "en": "Number of items per package."
+      }
     },
     "net_mass_liters_per_package": {
-      "label": {"nl": "Netto massa / liters per verpakking", "en": "Net mass / liters per package"},
+      "label": {
+        "nl": "Netto massa / liters per verpakking",
+        "en": "Net mass / liters per package"
+      },
       "help": {
         "nl": "Gewicht van inhoud per verpakking zonder verpakkingsmateriaal.",
         "en": "Content weight per package excluding packaging."
       }
     },
     "gross_mass_per_package": {
-      "label": {"nl": "Bruto massa per verpakking", "en": "Gross mass per package"},
-      "help": {"nl": "Totaalgewicht verpakking met inhoud in kg.", "en": "Total weight of package including contents in kg."}
+      "label": {
+        "nl": "Bruto massa per verpakking",
+        "en": "Gross mass per package"
+      },
+      "help": {
+        "nl": "Totaalgewicht verpakking met inhoud in kg.",
+        "en": "Total weight of package including contents in kg."
+      }
     },
     "eq_lq_points": {
-      "label": {"nl": "EQ / LQ / Punten", "en": "EQ / LQ / Points"},
+      "label": {
+        "nl": "EQ / LQ / Punten",
+        "en": "EQ / LQ / Points"
+      },
       "help": {
         "nl": "Vrijstellingsregeling: Excepted Quantities / Limited Quantities / ADR 1.1.3.6.",
         "en": "Exemption scheme: EQ / LQ / ADR 1.1.3.6 points rule."
       }
     },
     "dimensions": {
-      "label": {"nl": "Afmetingen verpakking (cm)", "en": "Package dimensions (cm)"},
+      "label": {
+        "nl": "Afmetingen verpakking (cm)",
+        "en": "Package dimensions (cm)"
+      },
       "help": {
         "nl": "Lengte/breedte/hoogte van de verpakking uit regel type of package, niet de overpack.",
         "en": "L/b/h of the package from type of package row, not the overpack."
       }
     },
     "additional_information": {
-      "label": {"nl": "Aanvullende informatie", "en": "Additional information"},
-      "help": {"nl": "Overige relevante informatie voor het vervoer.", "en": "Other relevant transport information."}
+      "label": {
+        "nl": "Aanvullende informatie",
+        "en": "Additional information"
+      },
+      "help": {
+        "nl": "Overige relevante informatie voor het vervoer.",
+        "en": "Other relevant transport information."
+      }
     },
     "caliber": {
-      "label": {"nl": "Kaliber (mm/inch)", "en": "Caliber (mm/inch)"},
-      "help": {"nl": "Kaliber indien van toepassing op munitie.", "en": "Caliber when applicable for ammunition."}
+      "label": {
+        "nl": "Kaliber (mm/inch)",
+        "en": "Caliber (mm/inch)"
+      },
+      "help": {
+        "nl": "Kaliber indien van toepassing op munitie.",
+        "en": "Caliber when applicable for ammunition."
+      }
+    },
+    "technical_name": {
+      "label": {
+        "nl": "Technische naam",
+        "en": "Technical name"
+      },
+      "help": {
+        "nl": "Technische naam tussen haakjes wanneer de Proper Shipping Name dit vereist (N.O.S.-posities).",
+        "en": "Technical name in brackets when required by the Proper Shipping Name (N.O.S. entries)."
+      }
+    },
+    "marine_pollutant": {
+      "label": {
+        "nl": "Marine pollutant",
+        "en": "Marine pollutant"
+      },
+      "help": {
+        "nl": "Ja/nee — verplicht onderdeel van de IMDG-omschrijving voor zeevervoer.",
+        "en": "Yes/no — mandatory part of the IMDG description for sea transport."
+      }
+    },
+    "cargo_aircraft_only": {
+      "label": {
+        "nl": "Cargo Aircraft Only",
+        "en": "Cargo Aircraft Only"
+      },
+      "help": {
+        "nl": "Ja/nee — beperking voor luchtvervoer (IATA). Bepaalt mede de packing instruction.",
+        "en": "Yes/no — air transport limitation (IATA). Also determines the packing instruction."
+      }
+    },
+    "overpack": {
+      "label": {
+        "nl": "Overpack",
+        "en": "Overpack"
+      },
+      "help": {
+        "nl": "Ja/nee — gebruikt bij samenvoegen van colli. Bij lucht (IATA) moet een overpack correct verklaard worden.",
+        "en": "Yes/no — used when consolidating packages. For air (IATA) an overpack must be declared correctly."
+      }
+    },
+    "emergency_contact": {
+      "label": {
+        "nl": "Noodcontact",
+        "en": "Emergency contact"
+      },
+      "help": {
+        "nl": "24-uurs noodnummer wanneer vereist door de vervoersregelgeving.",
+        "en": "24-hour emergency number where required by transport regulations."
+      }
+    },
+    "ems_code": {
+      "label": {
+        "nl": "EmS-code",
+        "en": "EmS code"
+      },
+      "help": {
+        "nl": "Emergency Schedule-code voor zeevervoer (IMDG), indien gebruikt in het operationele proces.",
+        "en": "Emergency Schedule code for sea transport (IMDG), if used operationally."
+      }
     }
   }
 }

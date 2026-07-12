@@ -1,0 +1,1271 @@
+{
+  "registry_version": "1.0",
+  "field_statuses": {
+    "AUTO_DERIVED": {
+      "nl": "Berekend uit goederenregels of transportplan",
+      "en": "Derived from cargo lines or transport plan"
+    },
+    "USER_REQUIRED": {
+      "nl": "Moet door gebruiker worden ingevuld",
+      "en": "Must be entered by the user"
+    },
+    "USER_OPTIONAL": {
+      "nl": "Optionele gebruikersinvoer",
+      "en": "Optional user input"
+    },
+    "CONDITIONAL": {
+      "nl": "Alleen verplicht onder bepaalde voorwaarden",
+      "en": "Required only under certain conditions"
+    },
+    "CARRIER_PROVIDED": {
+      "nl": "Komt van vervoerder, expediteur of boeking",
+      "en": "Provided by carrier, forwarder or booking"
+    },
+    "OPERATIONAL": {
+      "nl": "Pas tijdens laden, vervoer of aflevering bekend",
+      "en": "Known only during loading, transport or delivery"
+    },
+    "SIGNATURE_REQUIRED": {
+      "nl": "Verantwoordelijke persoon moet bevestigen",
+      "en": "Responsible person must confirm"
+    },
+    "FIXED_TEMPLATE_TEXT": {
+      "nl": "Vast onderdeel van het formulier",
+      "en": "Fixed part of the form"
+    }
+  },
+  "modalities": [
+    {
+      "key": "road",
+      "label": { "nl": "Wegtransport", "en": "Road transport" },
+      "description": {
+        "nl": "Vervoer over de weg met CMR-vrachtbrief en ADR-documenten.",
+        "en": "Transport by road with CMR consignment note and ADR documents."
+      },
+      "documents": ["intern_formulier", "cmr", "adr_transport_doc", "packing_list", "delivery_note"]
+    },
+    {
+      "key": "rail",
+      "label": { "nl": "Spoortransport", "en": "Rail transport" },
+      "description": {
+        "nl": "Vervoer per spoor met CIM-vrachtbrief en RID-gegevens.",
+        "en": "Transport by rail with CIM consignment note and RID data."
+      },
+      "documents": ["intern_formulier", "cim", "packing_list", "delivery_note"]
+    },
+    {
+      "key": "sea",
+      "label": { "nl": "Zeevracht", "en": "Sea freight" },
+      "description": {
+        "nl": "Zeevervoer met B/L-instructies, VGM en IMO-gevaarlijke-stoffenformulier.",
+        "en": "Ocean transport with B/L instructions, VGM and IMO dangerous goods form."
+      },
+      "documents": ["intern_formulier", "bl_si", "vgm", "imo_dgd", "packing_list", "delivery_note"]
+    },
+    {
+      "key": "inland",
+      "label": { "nl": "Binnenvaart", "en": "Inland waterway" },
+      "description": {
+        "nl": "Vervoer per binnenvaartschip met ADN-vervoersdocument en VGM.",
+        "en": "Transport by inland barge with ADN transport document and VGM."
+      },
+      "documents": ["intern_formulier", "adn_transport_doc", "vgm", "packing_list", "delivery_note"]
+    },
+    {
+      "key": "air",
+      "label": { "nl": "Luchtvracht", "en": "Air freight" },
+      "description": {
+        "nl": "Luchtvervoer met AWB-instructies en IATA-verklaring gevaarlijke stoffen.",
+        "en": "Air transport with AWB instructions and IATA dangerous goods declaration."
+      },
+      "documents": ["intern_formulier", "awb_si", "iata_dgd", "packing_list", "delivery_note"]
+    },
+    {
+      "key": "multimodal",
+      "label": { "nl": "Multimodaal", "en": "Multimodal" },
+      "description": {
+        "nl": "Combinatie van modaliteiten; alle formulieren beschikbaar.",
+        "en": "Combination of modes; all forms available."
+      },
+      "documents": [
+        "intern_formulier",
+        "cmr",
+        "cim",
+        "bl_si",
+        "awb_si",
+        "vgm",
+        "imo_dgd",
+        "iata_dgd",
+        "adr_transport_doc",
+        "adn_transport_doc",
+        "packing_list",
+        "delivery_note"
+      ]
+    }
+  ],
+  "shared_sections": [
+    {
+      "key": "parties",
+      "label": { "nl": "Partijen", "en": "Parties" },
+      "fields": [
+        {
+          "key": "consignor_name",
+          "label": { "nl": "Afzender — naam", "en": "Consignor — name" },
+          "status": "USER_REQUIRED",
+          "type": "text"
+        },
+        {
+          "key": "consignor_address",
+          "label": { "nl": "Afzender — adres en land", "en": "Consignor — address and country" },
+          "status": "USER_REQUIRED",
+          "type": "textarea"
+        },
+        {
+          "key": "consignor_contact",
+          "label": { "nl": "Afzender — contact (tel/e-mail)", "en": "Consignor — contact (phone/email)" },
+          "status": "USER_OPTIONAL",
+          "type": "text"
+        },
+        {
+          "key": "consignee_name",
+          "label": { "nl": "Geadresseerde — naam", "en": "Consignee — name" },
+          "status": "USER_REQUIRED",
+          "type": "text"
+        },
+        {
+          "key": "consignee_address",
+          "label": { "nl": "Geadresseerde — adres en land", "en": "Consignee — address and country" },
+          "status": "USER_REQUIRED",
+          "type": "textarea"
+        },
+        {
+          "key": "consignee_contact",
+          "label": { "nl": "Geadresseerde — contact (tel/e-mail)", "en": "Consignee — contact (phone/email)" },
+          "status": "USER_OPTIONAL",
+          "type": "text"
+        },
+        {
+          "key": "carrier_name",
+          "label": { "nl": "Vervoerder — naam en adres", "en": "Carrier — name and address" },
+          "status": "USER_OPTIONAL",
+          "type": "textarea",
+          "help": {
+            "nl": "Voor CMR en CIM invullen zodra de vervoerder bekend is.",
+            "en": "For CMR and CIM, fill in once the carrier is known."
+          }
+        },
+        {
+          "key": "notify_party",
+          "label": { "nl": "Notify party", "en": "Notify party" },
+          "status": "CONDITIONAL",
+          "type": "textarea"
+        },
+        {
+          "key": "freight_forwarder",
+          "label": { "nl": "Expediteur", "en": "Freight forwarder" },
+          "status": "USER_OPTIONAL",
+          "type": "text"
+        }
+      ]
+    },
+    {
+      "key": "locations",
+      "label": { "nl": "Route", "en": "Route" },
+      "fields": [
+        {
+          "key": "place_of_receipt",
+          "label": { "nl": "Plaats van ontvangst (pre-carriage)", "en": "Place of receipt (pre-carriage)" },
+          "status": "USER_OPTIONAL",
+          "type": "text"
+        },
+        {
+          "key": "loading_point",
+          "label": {
+            "nl": "Laadplaats / haven of luchthaven van vertrek",
+            "en": "Place of loading / port or airport of departure"
+          },
+          "status": "USER_REQUIRED",
+          "type": "text"
+        },
+        {
+          "key": "loading_date",
+          "label": { "nl": "Datum van inontvangstneming / laden", "en": "Date of taking over / loading" },
+          "status": "USER_OPTIONAL",
+          "type": "date"
+        },
+        {
+          "key": "discharge_point",
+          "label": {
+            "nl": "Losplaats / haven of luchthaven van bestemming",
+            "en": "Place of discharge / port or airport of destination"
+          },
+          "status": "USER_REQUIRED",
+          "type": "text"
+        },
+        {
+          "key": "place_of_delivery",
+          "label": { "nl": "Plaats van aflevering", "en": "Place of delivery" },
+          "status": "USER_OPTIONAL",
+          "type": "text"
+        },
+        {
+          "key": "final_destination",
+          "label": { "nl": "Eindbestemming", "en": "Final destination" },
+          "status": "USER_OPTIONAL",
+          "type": "text"
+        }
+      ]
+    },
+    {
+      "key": "references",
+      "label": { "nl": "Referenties", "en": "References" },
+      "fields": [
+        {
+          "key": "shipment_reference",
+          "label": { "nl": "Zendingreferentie", "en": "Shipment reference" },
+          "status": "USER_OPTIONAL",
+          "type": "text"
+        },
+        {
+          "key": "booking_number",
+          "label": { "nl": "Boekingsnummer", "en": "Booking number" },
+          "status": "USER_OPTIONAL",
+          "type": "text"
+        },
+        {
+          "key": "purchase_order",
+          "label": { "nl": "Ordernummer (PO)", "en": "Purchase order" },
+          "status": "USER_OPTIONAL",
+          "type": "text"
+        },
+        {
+          "key": "customs_mrn",
+          "label": { "nl": "Export-MRN / douanereferentie", "en": "Export MRN / customs reference" },
+          "status": "CONDITIONAL",
+          "type": "text"
+        },
+        {
+          "key": "attached_documents",
+          "label": { "nl": "Bijgevoegde documenten", "en": "Attached documents" },
+          "status": "USER_OPTIONAL",
+          "type": "textarea",
+          "help": {
+            "nl": "Bijvoorbeeld facturen, douanedocumenten en certificaten.",
+            "en": "For example invoices, customs documents and certificates."
+          }
+        }
+      ]
+    }
+  ],
+  "documents": [
+    {
+      "key": "intern_formulier",
+      "label": { "nl": "intern formulier", "en": "intern formulier" },
+      "short_label": { "nl": "intern formulier", "en": "intern formulier" },
+      "category": "internal",
+      "issue_status": {
+        "nl": "Intern document — export op basis van het officiële template",
+        "en": "Internal document — exported from the official template"
+      },
+      "exporter": "appendix_template",
+      "dg_profile": null,
+      "default_selected": true,
+      "sections": []
+    },
+    {
+      "key": "cmr",
+      "label": { "nl": "CMR-vrachtbrief", "en": "CMR consignment note" },
+      "short_label": { "nl": "CMR", "en": "CMR" },
+      "category": "prepared_transport_document",
+      "issue_status": {
+        "nl": "Voorbereid vervoersdocument — ondertekening bij overname",
+        "en": "Prepared transport document — signed at handover"
+      },
+      "exporter": "generic",
+      "dg_profile": "ADR",
+      "sections": [
+        { "ref": "parties" },
+        { "ref": "locations" },
+        { "ref": "references" },
+        {
+          "key": "cmr_details",
+          "label": { "nl": "CMR-gegevens", "en": "CMR details" },
+          "fields": [
+            {
+              "key": "sender_instructions",
+              "label": { "nl": "Instructies van de afzender (vak 5)", "en": "Sender's instructions (box 5)" },
+              "status": "CONDITIONAL",
+              "type": "textarea",
+              "help": {
+                "nl": "Bijvoorbeeld douane-instructies, verbod op overlading of verzekeringsinstructies.",
+                "en": "For example customs instructions, prohibition of transhipment or insurance instructions."
+              }
+            },
+            {
+              "key": "successive_carriers",
+              "label": { "nl": "Opvolgende vervoerders (vak 7)", "en": "Successive carriers (box 7)" },
+              "status": "CONDITIONAL",
+              "type": "textarea"
+            },
+            {
+              "key": "special_agreements",
+              "label": { "nl": "Bijzondere overeenkomsten (vak 16)", "en": "Special agreements (box 16)" },
+              "status": "CONDITIONAL",
+              "type": "textarea"
+            },
+            {
+              "key": "freight_payment",
+              "label": { "nl": "Vrachtkosten (vak 17)", "en": "Freight charges (box 17)" },
+              "status": "USER_REQUIRED",
+              "type": "select",
+              "options": [
+                { "value": "prepaid", "label": { "nl": "Franco (afzender betaalt)", "en": "Prepaid (sender pays)" } },
+                { "value": "collect", "label": { "nl": "Ongefrankeerd (ontvanger betaalt)", "en": "Collect (consignee pays)" } },
+                { "value": "agreement", "label": { "nl": "Volgens overeenkomst", "en": "As per agreement" } }
+              ]
+            },
+            {
+              "key": "cod_amount",
+              "label": { "nl": "Remboursbedrag (vak 19)", "en": "Cash on delivery amount (box 19)" },
+              "status": "CONDITIONAL",
+              "type": "text"
+            },
+            {
+              "key": "other_useful_info",
+              "label": { "nl": "Overige nuttige gegevens (vak 18)", "en": "Other useful particulars (box 18)" },
+              "status": "CONDITIONAL",
+              "type": "textarea",
+              "help": {
+                "nl": "Bijvoorbeeld voertuigregistratie, nettogewicht en douanereferenties.",
+                "en": "For example vehicle registration, net weight and customs references."
+              }
+            },
+            {
+              "key": "vehicle_registration",
+              "label": { "nl": "Kenteken voertuig/trailer", "en": "Vehicle/trailer registration" },
+              "status": "OPERATIONAL",
+              "type": "text"
+            },
+            {
+              "key": "established_place",
+              "label": { "nl": "Plaats van opmaak (vak 21)", "en": "Established in (box 21)" },
+              "status": "USER_REQUIRED",
+              "type": "text"
+            },
+            {
+              "key": "established_date",
+              "label": { "nl": "Datum van opmaak (vak 21)", "en": "Date established (box 21)" },
+              "status": "USER_REQUIRED",
+              "type": "date"
+            }
+          ]
+        }
+      ],
+      "signature_note": {
+        "nl": "Vak 8 (voorbehouden), 22 (afzender), 23 (vervoerder) en 24 (ontvangst) worden niet vooraf ingevuld.",
+        "en": "Boxes 8 (reservations), 22 (sender), 23 (carrier) and 24 (receipt) are not pre-filled."
+      }
+    },
+    {
+      "key": "cim",
+      "label": { "nl": "CIM-vrachtbrief (spoor)", "en": "CIM consignment note (rail)" },
+      "short_label": { "nl": "CIM", "en": "CIM" },
+      "category": "prepared_transport_document",
+      "issue_status": {
+        "nl": "Voorbereid vervoersdocument — ondertekening bij overname",
+        "en": "Prepared transport document — signed at handover"
+      },
+      "exporter": "generic",
+      "dg_profile": "RID",
+      "sections": [
+        { "ref": "parties" },
+        { "ref": "locations" },
+        { "ref": "references" },
+        {
+          "key": "cim_details",
+          "label": { "nl": "CIM-gegevens", "en": "CIM details" },
+          "fields": [
+            {
+              "key": "consignor_declarations",
+              "label": { "nl": "Verklaringen van de afzender (vak 7)", "en": "Consignor's declarations (box 7)" },
+              "status": "CONDITIONAL",
+              "type": "textarea"
+            },
+            {
+              "key": "serving_station_code",
+              "label": { "nl": "Code bedienend station (vak 12)", "en": "Serving station code (box 12)" },
+              "status": "CARRIER_PROVIDED",
+              "type": "text"
+            },
+            {
+              "key": "commercial_conditions",
+              "label": { "nl": "Handelsvoorwaarden (vak 13)", "en": "Commercial conditions (box 13)" },
+              "status": "CONDITIONAL",
+              "type": "text"
+            },
+            {
+              "key": "contract_number",
+              "label": { "nl": "Nummer overeenkomst of tarief (vak 14)", "en": "Contract or tariff number (box 14)" },
+              "status": "CONDITIONAL",
+              "type": "text"
+            },
+            {
+              "key": "info_for_consignee",
+              "label": { "nl": "Informatie voor de geadresseerde (vak 15)", "en": "Information for the consignee (box 15)" },
+              "status": "USER_OPTIONAL",
+              "type": "textarea"
+            },
+            {
+              "key": "wagon_number",
+              "label": { "nl": "Wagonnummer (vak 18)", "en": "Wagon number (box 18)" },
+              "status": "OPERATIONAL",
+              "type": "text"
+            },
+            {
+              "key": "payment_instruction",
+              "label": { "nl": "Betalingsinstructie (vak 20)", "en": "Payment instruction (box 20)" },
+              "status": "USER_REQUIRED",
+              "type": "select",
+              "options": [
+                { "value": "franco", "label": { "nl": "Franco (afzender betaalt)", "en": "Franco (consignor pays)" } },
+                { "value": "collect", "label": { "nl": "Ongefrankeerd (geadresseerde betaalt)", "en": "Collect (consignee pays)" } },
+                { "value": "shared", "label": { "nl": "Gedeeld volgens afspraak", "en": "Shared as agreed" } }
+              ],
+              "help": {
+                "nl": "Zonder betalingsinstructie worden kosten in beginsel bij de afzender gelegd.",
+                "en": "Without a payment instruction, charges are in principle borne by the consignor."
+              }
+            },
+            {
+              "key": "nhm_code",
+              "label": { "nl": "NHM-goederencode (vak 24, 6 cijfers)", "en": "NHM commodity code (box 24, 6 digits)" },
+              "status": "USER_REQUIRED",
+              "type": "text",
+              "help": {
+                "nl": "De NHM-code kan niet betrouwbaar uit een vrije omschrijving worden afgeleid; zoek deze op in de NHM-lijst.",
+                "en": "The NHM code cannot be reliably derived from a free-text description; look it up in the NHM list."
+              }
+            },
+            {
+              "key": "container_uti_number",
+              "label": { "nl": "Container-/UTI-nummer (vak 21)", "en": "Container/UTI number (box 21)" },
+              "status": "CONDITIONAL",
+              "type": "text"
+            },
+            {
+              "key": "container_tare",
+              "label": { "nl": "Tarra laadeenheid (kg)", "en": "Tare of loading unit (kg)" },
+              "status": "CONDITIONAL",
+              "type": "number"
+            },
+            {
+              "key": "declared_value",
+              "label": { "nl": "Aangegeven waarde (vak 26)", "en": "Declared value (box 26)" },
+              "status": "CONDITIONAL",
+              "type": "text"
+            },
+            {
+              "key": "cod_amount",
+              "label": { "nl": "Remboursbedrag (vak 28)", "en": "Cash on delivery (box 28)" },
+              "status": "CONDITIONAL",
+              "type": "text"
+            },
+            {
+              "key": "established_place",
+              "label": { "nl": "Plaats van opmaak (vak 29)", "en": "Established in (box 29)" },
+              "status": "USER_REQUIRED",
+              "type": "text"
+            },
+            {
+              "key": "established_date",
+              "label": { "nl": "Datum van opmaak (vak 29)", "en": "Date established (box 29)" },
+              "status": "USER_REQUIRED",
+              "type": "date"
+            }
+          ]
+        }
+      ],
+      "signature_note": {
+        "nl": "Stationscodes, consignment number, route en kosten komen van de vervoerder en worden niet door CargoPilot gegenereerd. RID-gegevens staan in vak 21/23 en volgen uit de gevaarlijke-stoffenstap.",
+        "en": "Station codes, consignment number, routing and charges come from the carrier and are not generated by CargoPilot. RID data goes in boxes 21/23 and follows from the dangerous goods step."
+      }
+    },
+    {
+      "key": "imo_dgd",
+      "label": { "nl": "IMO Multimodal Dangerous Goods Form", "en": "IMO Multimodal Dangerous Goods Form" },
+      "short_label": { "nl": "IMO DGF", "en": "IMO DGF" },
+      "category": "declaration",
+      "issue_status": {
+        "nl": "Verklaring — controle en ondertekening door bevoegde afzender vereist",
+        "en": "Declaration — review and signature by authorised shipper required"
+      },
+      "exporter": "generic",
+      "dg_profile": "IMDG",
+      "dg_only": true,
+      "sections": [
+        { "ref": "parties" },
+        { "ref": "locations" },
+        { "ref": "references" },
+        {
+          "key": "imo_details",
+          "label": { "nl": "IMO-formuliergegevens", "en": "IMO form details" },
+          "fields": [
+            {
+              "key": "transport_document_number",
+              "label": { "nl": "Transportdocumentnummer (vak 2)", "en": "Transport document number (box 2)" },
+              "status": "CARRIER_PROVIDED",
+              "type": "text"
+            },
+            {
+              "key": "vessel_flight",
+              "label": { "nl": "Schip/vluchtnummer en datum (vak 10)", "en": "Vessel/flight number and date (box 10)" },
+              "status": "OPERATIONAL",
+              "type": "text"
+            },
+            {
+              "key": "container_identification",
+              "label": { "nl": "Containeridentificatie / voertuigregistratie (vak 15)", "en": "Container identification / vehicle registration (box 15)" },
+              "status": "OPERATIONAL",
+              "type": "text"
+            },
+            {
+              "key": "seal_numbers",
+              "label": { "nl": "Zegelnummers (vak 16)", "en": "Seal numbers (box 16)" },
+              "status": "OPERATIONAL",
+              "type": "text"
+            },
+            {
+              "key": "container_size_type",
+              "label": { "nl": "Grootte en type container/voertuig (vak 17)", "en": "Container/vehicle size and type (box 17)" },
+              "status": "CONDITIONAL",
+              "type": "text"
+            },
+            {
+              "key": "container_tare",
+              "label": { "nl": "Tarra (kg, vak 18)", "en": "Tare mass (kg, box 18)" },
+              "status": "CONDITIONAL",
+              "type": "number"
+            },
+            {
+              "key": "packing_certificate_confirmed",
+              "label": {
+                "nl": "Container/vehicle packing certificate — verklaringen bevestigd (vak 20)",
+                "en": "Container/vehicle packing certificate — declarations confirmed (box 20)"
+              },
+              "status": "SIGNATURE_REQUIRED",
+              "type": "checkbox",
+              "help": {
+                "nl": "Ondertekenaar verklaart o.a.: container schoon/droog en geschikt; geen onverenigbare stoffen samen geladen; verpakkingen onbeschadigd; lading correct geladen en gezekerd; massa gelijkmatig verdeeld; markeringen, labels en placards aangebracht. Niet automatisch aanvinken.",
+                "en": "Signatory declares among other things: container clean/dry and suitable; no incompatible goods packed together; packages undamaged; cargo correctly loaded and secured; mass evenly distributed; marks, labels and placards affixed. Never tick automatically."
+              }
+            },
+            {
+              "key": "declarant_name",
+              "label": { "nl": "Naam/functie opsteller verklaring (vak 22)", "en": "Name/status of declarant (box 22)" },
+              "status": "USER_REQUIRED",
+              "type": "text"
+            },
+            {
+              "key": "declaration_place",
+              "label": { "nl": "Plaats van verklaring", "en": "Place of declaration" },
+              "status": "USER_REQUIRED",
+              "type": "text"
+            },
+            {
+              "key": "declaration_date",
+              "label": { "nl": "Datum van verklaring", "en": "Date of declaration" },
+              "status": "USER_REQUIRED",
+              "type": "date"
+            }
+          ]
+        }
+      ],
+      "signature_note": {
+        "nl": "Handtekeningen (vak 20-22) en ontvangstverklaring (vak 21) worden nooit vooraf ingevuld. IMDG Code 2024 (Amdt. 42-24) is leidend.",
+        "en": "Signatures (boxes 20-22) and receipt declaration (box 21) are never pre-filled. IMDG Code 2024 (Amdt. 42-24) applies."
+      }
+    },
+    {
+      "key": "iata_dgd",
+      "label": { "nl": "IATA Shipper's Declaration for Dangerous Goods", "en": "IATA Shipper's Declaration for Dangerous Goods" },
+      "short_label": { "nl": "IATA DGD", "en": "IATA DGD" },
+      "category": "declaration",
+      "issue_status": {
+        "nl": "Verklaring — controle en ondertekening door bevoegde afzender vereist",
+        "en": "Declaration — review and signature by authorised shipper required"
+      },
+      "exporter": "generic",
+      "dg_profile": "IATA_DGR",
+      "dg_only": true,
+      "sections": [
+        { "ref": "parties" },
+        { "ref": "locations" },
+        { "ref": "references" },
+        {
+          "key": "iata_details",
+          "label": { "nl": "IATA DGD-gegevens", "en": "IATA DGD details" },
+          "fields": [
+            {
+              "key": "awb_number",
+              "label": { "nl": "Air Waybill-nummer", "en": "Air Waybill number" },
+              "status": "CARRIER_PROVIDED",
+              "type": "text"
+            },
+            {
+              "key": "aircraft_limitation",
+              "label": { "nl": "Vliegtuigbeperking", "en": "Aircraft limitation" },
+              "status": "USER_REQUIRED",
+              "type": "select",
+              "options": [
+                {
+                  "value": "passenger_and_cargo",
+                  "label": { "nl": "Passenger and Cargo Aircraft", "en": "Passenger and Cargo Aircraft" }
+                },
+                { "value": "cargo_only", "label": { "nl": "Cargo Aircraft Only", "en": "Cargo Aircraft Only" } }
+              ]
+            },
+            {
+              "key": "shipment_type",
+              "label": { "nl": "Type zending", "en": "Shipment type" },
+              "status": "USER_REQUIRED",
+              "type": "select",
+              "options": [
+                { "value": "non_radioactive", "label": { "nl": "Non-radioactive", "en": "Non-radioactive" } },
+                { "value": "radioactive", "label": { "nl": "Radioactive", "en": "Radioactive" } }
+              ]
+            },
+            {
+              "key": "handling_information",
+              "label": { "nl": "Additional handling information", "en": "Additional handling information" },
+              "status": "USER_OPTIONAL",
+              "type": "textarea"
+            },
+            {
+              "key": "emergency_contact",
+              "label": { "nl": "24-uurs noodnummer", "en": "24-hour emergency contact" },
+              "status": "USER_REQUIRED",
+              "type": "text"
+            },
+            {
+              "key": "signatory_name",
+              "label": { "nl": "Naam en functie ondertekenaar", "en": "Name and title of signatory" },
+              "status": "USER_REQUIRED",
+              "type": "text"
+            },
+            {
+              "key": "declaration_place",
+              "label": { "nl": "Plaats", "en": "Place" },
+              "status": "USER_REQUIRED",
+              "type": "text"
+            },
+            {
+              "key": "declaration_date",
+              "label": { "nl": "Datum", "en": "Date" },
+              "status": "USER_REQUIRED",
+              "type": "date"
+            }
+          ]
+        }
+      ],
+      "signature_note": {
+        "nl": "De handtekening wordt nooit vooraf ingevuld. IATA DGR 67e editie (2026) is leidend; een vrije omschrijving wordt nooit automatisch een definitieve classificatie.",
+        "en": "The signature is never pre-filled. IATA DGR 67th edition (2026) applies; a free-text description is never automatically turned into a final classification."
+      }
+    },
+    {
+      "key": "vgm",
+      "label": { "nl": "VGM-verklaring (SOLAS)", "en": "VGM declaration (SOLAS)" },
+      "short_label": { "nl": "VGM", "en": "VGM" },
+      "category": "declaration",
+      "issue_status": {
+        "nl": "Shipper declaration — Verified Gross Mass",
+        "en": "Shipper declaration — Verified Gross Mass"
+      },
+      "exporter": "generic",
+      "dg_profile": null,
+      "sections": [
+        { "ref": "parties" },
+        { "ref": "references" },
+        {
+          "key": "vgm_details",
+          "label": { "nl": "VGM-gegevens", "en": "VGM details" },
+          "fields": [
+            {
+              "key": "container_number",
+              "label": { "nl": "Containernummer", "en": "Container number" },
+              "status": "USER_REQUIRED",
+              "type": "text"
+            },
+            {
+              "key": "container_size_type",
+              "label": { "nl": "Containermaat en -type", "en": "Container size and type" },
+              "status": "USER_OPTIONAL",
+              "type": "text"
+            },
+            {
+              "key": "vgm_kg",
+              "label": { "nl": "Verified Gross Mass (kg)", "en": "Verified Gross Mass (kg)" },
+              "status": "USER_REQUIRED",
+              "type": "number"
+            },
+            {
+              "key": "vgm_method",
+              "label": { "nl": "Gebruikte methode", "en": "Method used" },
+              "status": "USER_REQUIRED",
+              "type": "select",
+              "options": [
+                {
+                  "value": "method1",
+                  "label": { "nl": "Methode 1 — volledige container gewogen", "en": "Method 1 — full container weighed" }
+                },
+                {
+                  "value": "method2",
+                  "label": { "nl": "Methode 2 — som van componenten + tarra", "en": "Method 2 — sum of components + tare" }
+                }
+              ]
+            },
+            {
+              "key": "weighing_location",
+              "label": { "nl": "Weeglocatie (methode 1)", "en": "Weighing location (method 1)" },
+              "status": "CONDITIONAL",
+              "condition": "vgm_method=method1",
+              "type": "text"
+            },
+            {
+              "key": "weighing_ticket",
+              "label": { "nl": "Weegbonnummer (methode 1)", "en": "Weighing ticket number (method 1)" },
+              "status": "CONDITIONAL",
+              "condition": "vgm_method=method1",
+              "type": "text"
+            },
+            {
+              "key": "weighing_company",
+              "label": { "nl": "Weegbedrijf (methode 1)", "en": "Weighing company (method 1)" },
+              "status": "CONDITIONAL",
+              "condition": "vgm_method=method1",
+              "type": "text"
+            },
+            {
+              "key": "cargo_mass_kg",
+              "label": { "nl": "Massa goederen (kg, methode 2)", "en": "Cargo mass (kg, method 2)" },
+              "status": "CONDITIONAL",
+              "condition": "vgm_method=method2",
+              "type": "number",
+              "auto_from": "total_weight_kg"
+            },
+            {
+              "key": "packaging_mass_kg",
+              "label": { "nl": "Massa verpakkingen (kg, methode 2)", "en": "Packaging mass (kg, method 2)" },
+              "status": "CONDITIONAL",
+              "condition": "vgm_method=method2",
+              "type": "number"
+            },
+            {
+              "key": "pallets_mass_kg",
+              "label": { "nl": "Massa pallets (kg, methode 2)", "en": "Pallet mass (kg, method 2)" },
+              "status": "CONDITIONAL",
+              "condition": "vgm_method=method2",
+              "type": "number"
+            },
+            {
+              "key": "securing_mass_kg",
+              "label": { "nl": "Massa stuw-/zekermateriaal (kg, methode 2)", "en": "Dunnage/securing mass (kg, method 2)" },
+              "status": "CONDITIONAL",
+              "condition": "vgm_method=method2",
+              "type": "number"
+            },
+            {
+              "key": "container_tare_kg",
+              "label": { "nl": "Containertarra (kg, methode 2)", "en": "Container tare (kg, method 2)" },
+              "status": "CONDITIONAL",
+              "condition": "vgm_method=method2",
+              "type": "number"
+            },
+            {
+              "key": "certified_method_reference",
+              "label": { "nl": "Referentie gecertificeerde methode (methode 2)", "en": "Certified method reference (method 2)" },
+              "status": "CONDITIONAL",
+              "condition": "vgm_method=method2",
+              "type": "text"
+            },
+            {
+              "key": "responsible_name",
+              "label": { "nl": "Naam bevoegde persoon (in hoofdletters)", "en": "Name of authorised person (in capitals)" },
+              "status": "USER_REQUIRED",
+              "type": "text"
+            },
+            {
+              "key": "responsible_function",
+              "label": { "nl": "Functie bevoegde persoon", "en": "Function of authorised person" },
+              "status": "USER_OPTIONAL",
+              "type": "text"
+            },
+            {
+              "key": "determination_place",
+              "label": { "nl": "Plaats van vaststelling", "en": "Place of determination" },
+              "status": "USER_REQUIRED",
+              "type": "text"
+            },
+            {
+              "key": "determination_date",
+              "label": { "nl": "Datum van vaststelling", "en": "Date of determination" },
+              "status": "USER_REQUIRED",
+              "type": "date"
+            },
+            {
+              "key": "vgm_recipient",
+              "label": { "nl": "Ontvanger van de VGM-melding", "en": "Recipient of the VGM notification" },
+              "status": "USER_OPTIONAL",
+              "type": "text"
+            }
+          ]
+        }
+      ],
+      "signature_note": {
+        "nl": "Bij methode 2 controleert CargoPilot of VGM = goederen + verpakking + pallets + stuwmateriaal + tarra en waarschuwt bij afwijking.",
+        "en": "For method 2, CargoPilot checks VGM = cargo + packaging + pallets + securing material + tare and warns on mismatch."
+      }
+    },
+    {
+      "key": "awb_si",
+      "label": { "nl": "Air Waybill Shipping Instructions", "en": "Air Waybill shipping instructions" },
+      "short_label": { "nl": "AWB-instructies", "en": "AWB instructions" },
+      "category": "shipping_instructions",
+      "issue_status": {
+        "nl": "Shipping instructions — officiële AWB wordt door vervoerder/expediteur uitgegeven",
+        "en": "Shipping instructions — official AWB is issued by carrier/forwarder"
+      },
+      "exporter": "generic",
+      "dg_profile": null,
+      "sections": [
+        { "ref": "parties" },
+        { "ref": "locations" },
+        { "ref": "references" },
+        {
+          "key": "awb_details",
+          "label": { "nl": "AWB-instructiegegevens", "en": "AWB instruction details" },
+          "fields": [
+            {
+              "key": "requested_routing",
+              "label": { "nl": "Gewenste routing / vlucht", "en": "Requested routing / flight" },
+              "status": "USER_OPTIONAL",
+              "type": "text"
+            },
+            {
+              "key": "requested_departure_date",
+              "label": { "nl": "Gewenste vertrekdatum", "en": "Requested departure date" },
+              "status": "USER_OPTIONAL",
+              "type": "date"
+            },
+            {
+              "key": "service_level",
+              "label": { "nl": "Gewenste service", "en": "Requested service level" },
+              "status": "USER_OPTIONAL",
+              "type": "text"
+            },
+            {
+              "key": "currency",
+              "label": { "nl": "Valuta", "en": "Currency" },
+              "status": "USER_OPTIONAL",
+              "type": "text"
+            },
+            {
+              "key": "freight_payment",
+              "label": { "nl": "Vracht prepaid of collect", "en": "Freight prepaid or collect" },
+              "status": "USER_REQUIRED",
+              "type": "select",
+              "options": [
+                { "value": "prepaid", "label": { "nl": "Prepaid", "en": "Prepaid" } },
+                { "value": "collect", "label": { "nl": "Collect", "en": "Collect" } }
+              ]
+            },
+            {
+              "key": "declared_value_carriage",
+              "label": { "nl": "Declared value for carriage (of NVD)", "en": "Declared value for carriage (or NVD)" },
+              "status": "USER_OPTIONAL",
+              "type": "text"
+            },
+            {
+              "key": "declared_value_customs",
+              "label": { "nl": "Declared value for customs (of NCV)", "en": "Declared value for customs (or NCV)" },
+              "status": "USER_OPTIONAL",
+              "type": "text"
+            },
+            {
+              "key": "insurance_requested",
+              "label": { "nl": "Verzekering gewenst", "en": "Insurance requested" },
+              "status": "USER_OPTIONAL",
+              "type": "checkbox"
+            },
+            {
+              "key": "security_status",
+              "label": { "nl": "Security status / SCI-code", "en": "Security status / SCI code" },
+              "status": "CONDITIONAL",
+              "type": "text"
+            },
+            {
+              "key": "handling_information",
+              "label": { "nl": "Handling information", "en": "Handling information" },
+              "status": "USER_OPTIONAL",
+              "type": "textarea",
+              "help": {
+                "nl": "Bij gevaarlijke stoffen: verwijzing naar de Shipper's Declaration en eventueel 'Cargo Aircraft Only'.",
+                "en": "For dangerous goods: reference to the Shipper's Declaration and 'Cargo Aircraft Only' where applicable."
+              }
+            },
+            {
+              "key": "emergency_contact",
+              "label": { "nl": "Noodcontact (bij DG)", "en": "Emergency contact (for DG)" },
+              "status": "CONDITIONAL",
+              "type": "text"
+            },
+            {
+              "key": "awb_number",
+              "label": { "nl": "AWB-nummer (prefix + serienummer)", "en": "AWB number (prefix + serial)" },
+              "status": "CARRIER_PROVIDED",
+              "type": "text"
+            },
+            {
+              "key": "issuing_agent",
+              "label": { "nl": "Issuing agent / IATA-agentcode", "en": "Issuing agent / IATA agent code" },
+              "status": "CARRIER_PROVIDED",
+              "type": "text"
+            }
+          ]
+        }
+      ],
+      "signature_note": {
+        "nl": "AWB-nummer, tarieven, chargeable weight en carrier acceptance komen van de vervoerder en worden als carrier-provided gemarkeerd.",
+        "en": "AWB number, rates, chargeable weight and carrier acceptance come from the carrier and are marked carrier-provided."
+      }
+    },
+    {
+      "key": "bl_si",
+      "label": { "nl": "Bill of Lading / Sea Waybill Shipping Instructions", "en": "Bill of Lading / Sea Waybill shipping instructions" },
+      "short_label": { "nl": "B/L-instructies", "en": "B/L instructions" },
+      "category": "shipping_instructions",
+      "issue_status": {
+        "nl": "Shipping instructions — officiële B/L of Sea Waybill wordt door rederij uitgegeven",
+        "en": "Shipping instructions — official B/L or Sea Waybill is issued by the carrier"
+      },
+      "exporter": "generic",
+      "dg_profile": null,
+      "sections": [
+        { "ref": "parties" },
+        { "ref": "locations" },
+        { "ref": "references" },
+        {
+          "key": "bl_details",
+          "label": { "nl": "B/L-instructiegegevens", "en": "B/L instruction details" },
+          "fields": [
+            {
+              "key": "document_form",
+              "label": { "nl": "Gewenste documentvorm", "en": "Requested document form" },
+              "status": "USER_REQUIRED",
+              "type": "select",
+              "options": [
+                { "value": "original_bl", "label": { "nl": "Original Bill of Lading", "en": "Original Bill of Lading" } },
+                { "value": "sea_waybill", "label": { "nl": "Sea Waybill", "en": "Sea Waybill" } },
+                {
+                  "value": "carrier_decides",
+                  "label": { "nl": "Nog te bepalen door carrier", "en": "To be decided by carrier" }
+                }
+              ]
+            },
+            {
+              "key": "order_clause",
+              "label": { "nl": "Order-clausule (bij order-B/L)", "en": "Order clause (for order B/L)" },
+              "status": "CONDITIONAL",
+              "type": "select",
+              "options": [
+                { "value": "", "label": { "nl": "Niet van toepassing", "en": "Not applicable" } },
+                { "value": "to_order_of_shipper", "label": { "nl": "To order of shipper", "en": "To order of shipper" } },
+                { "value": "to_order_of_bank", "label": { "nl": "To order of named bank", "en": "To order of named bank" } },
+                { "value": "to_order_named_party", "label": { "nl": "Specifieke orderpartij", "en": "Named order party" } }
+              ]
+            },
+            {
+              "key": "originals_count",
+              "label": { "nl": "Aantal originele exemplaren", "en": "Number of originals" },
+              "status": "CONDITIONAL",
+              "type": "number"
+            },
+            {
+              "key": "freight_payment",
+              "label": { "nl": "Vracht prepaid of collect", "en": "Freight prepaid or collect" },
+              "status": "USER_REQUIRED",
+              "type": "select",
+              "options": [
+                { "value": "prepaid", "label": { "nl": "Prepaid", "en": "Prepaid" } },
+                { "value": "collect", "label": { "nl": "Collect", "en": "Collect" } }
+              ]
+            },
+            {
+              "key": "service_contract",
+              "label": { "nl": "Service contract number", "en": "Service contract number" },
+              "status": "CONDITIONAL",
+              "type": "text"
+            },
+            {
+              "key": "container_number",
+              "label": { "nl": "Containernummer", "en": "Container number" },
+              "status": "OPERATIONAL",
+              "type": "text"
+            },
+            {
+              "key": "container_size_type",
+              "label": { "nl": "Containermaat en -type", "en": "Container size and type" },
+              "status": "USER_OPTIONAL",
+              "type": "text"
+            },
+            {
+              "key": "container_ownership",
+              "label": { "nl": "Container eigendom", "en": "Container ownership" },
+              "status": "USER_OPTIONAL",
+              "type": "select",
+              "options": [
+                { "value": "", "label": { "nl": "Onbekend", "en": "Unknown" } },
+                { "value": "carrier_owned", "label": { "nl": "Carrier-owned", "en": "Carrier-owned" } },
+                { "value": "shipper_owned", "label": { "nl": "Shipper-owned", "en": "Shipper-owned" } }
+              ]
+            },
+            {
+              "key": "seal_numbers",
+              "label": { "nl": "Zegelnummer(s)", "en": "Seal number(s)" },
+              "status": "OPERATIONAL",
+              "type": "text"
+            },
+            {
+              "key": "hs_code",
+              "label": { "nl": "HS-code goederen", "en": "HS code of goods" },
+              "status": "CONDITIONAL",
+              "type": "text"
+            },
+            {
+              "key": "vgm_reference",
+              "label": { "nl": "VGM-referentie", "en": "VGM reference" },
+              "status": "CONDITIONAL",
+              "type": "text"
+            },
+            {
+              "key": "temperature_settings",
+              "label": { "nl": "Temperatuur/ventilatie (reefer)", "en": "Temperature/ventilation (reefer)" },
+              "status": "CONDITIONAL",
+              "type": "text"
+            },
+            {
+              "key": "oog_dimensions",
+              "label": { "nl": "Out-of-gauge maten (over-height/width/length)", "en": "Out-of-gauge dimensions (over-height/width/length)" },
+              "status": "CONDITIONAL",
+              "type": "text"
+            },
+            {
+              "key": "ens_ics2_reference",
+              "label": { "nl": "ENS/ICS2- of andere filing-referentie", "en": "ENS/ICS2 or other filing reference" },
+              "status": "CONDITIONAL",
+              "type": "text"
+            }
+          ]
+        }
+      ],
+      "signature_note": {
+        "nl": "Definitief B/L-nummer, vessel/voyage, on-board date, carrier clauses en release status komen van de rederij.",
+        "en": "Final B/L number, vessel/voyage, on-board date, carrier clauses and release status come from the carrier."
+      }
+    },
+    {
+      "key": "adr_transport_doc",
+      "label": { "nl": "ADR-vervoersdocument (weg)", "en": "ADR transport document (road)" },
+      "short_label": { "nl": "ADR", "en": "ADR" },
+      "category": "generated",
+      "issue_status": {
+        "nl": "Vervoersdocument gevaarlijke stoffen — eigen CargoPilot-opmaak",
+        "en": "Dangerous goods transport document — CargoPilot layout"
+      },
+      "exporter": "generic",
+      "dg_profile": "ADR",
+      "dg_only": true,
+      "sections": [
+        { "ref": "parties" },
+        { "ref": "locations" },
+        {
+          "key": "adr_details",
+          "label": { "nl": "ADR-gegevens", "en": "ADR details" },
+          "fields": [
+            {
+              "key": "tunnel_restriction",
+              "label": { "nl": "Tunnelbeperkingscode", "en": "Tunnel restriction code" },
+              "status": "CONDITIONAL",
+              "type": "text"
+            },
+            {
+              "key": "vehicle_registration",
+              "label": { "nl": "Kenteken voertuig/trailer", "en": "Vehicle/trailer registration" },
+              "status": "OPERATIONAL",
+              "type": "text"
+            },
+            {
+              "key": "emergency_contact",
+              "label": { "nl": "Noodcontact", "en": "Emergency contact" },
+              "status": "USER_REQUIRED",
+              "type": "text"
+            },
+            {
+              "key": "established_place",
+              "label": { "nl": "Plaats van opmaak", "en": "Established in" },
+              "status": "USER_REQUIRED",
+              "type": "text"
+            },
+            {
+              "key": "established_date",
+              "label": { "nl": "Datum van opmaak", "en": "Date established" },
+              "status": "USER_REQUIRED",
+              "type": "date"
+            }
+          ]
+        }
+      ],
+      "signature_note": {
+        "nl": "De gevaarlijke-stoffenomschrijving volgt uit de gevaarlijke-stoffenstap en actuele, gecontroleerde data (ADR).",
+        "en": "The dangerous goods description follows from the dangerous goods step and current, controlled data (ADR)."
+      }
+    },
+    {
+      "key": "adn_transport_doc",
+      "label": { "nl": "ADN-vervoersdocument (binnenvaart)", "en": "ADN transport document (inland waterway)" },
+      "short_label": { "nl": "ADN", "en": "ADN" },
+      "category": "generated",
+      "issue_status": {
+        "nl": "Vervoersdocument gevaarlijke stoffen — eigen CargoPilot-opmaak",
+        "en": "Dangerous goods transport document — CargoPilot layout"
+      },
+      "exporter": "generic",
+      "dg_profile": "ADN",
+      "dg_only": true,
+      "sections": [
+        { "ref": "parties" },
+        { "ref": "locations" },
+        {
+          "key": "adn_details",
+          "label": { "nl": "ADN-gegevens", "en": "ADN details" },
+          "fields": [
+            {
+              "key": "vessel_name",
+              "label": { "nl": "Scheepsnaam", "en": "Vessel name" },
+              "status": "OPERATIONAL",
+              "type": "text"
+            },
+            {
+              "key": "emergency_contact",
+              "label": { "nl": "Noodcontact", "en": "Emergency contact" },
+              "status": "USER_REQUIRED",
+              "type": "text"
+            },
+            {
+              "key": "established_place",
+              "label": { "nl": "Plaats van opmaak", "en": "Established in" },
+              "status": "USER_REQUIRED",
+              "type": "text"
+            },
+            {
+              "key": "established_date",
+              "label": { "nl": "Datum van opmaak", "en": "Date established" },
+              "status": "USER_REQUIRED",
+              "type": "date"
+            }
+          ]
+        }
+      ],
+      "signature_note": {
+        "nl": "De gevaarlijke-stoffenomschrijving volgt uit de gevaarlijke-stoffenstap en actuele, gecontroleerde data (ADN).",
+        "en": "The dangerous goods description follows from the dangerous goods step and current, controlled data (ADN)."
+      }
+    },
+    {
+      "key": "packing_list",
+      "label": { "nl": "Paklijst", "en": "Packing list" },
+      "short_label": { "nl": "Paklijst", "en": "Packing list" },
+      "category": "generated",
+      "issue_status": {
+        "nl": "Direct gegenereerd bedrijfsdocument",
+        "en": "Directly generated business document"
+      },
+      "exporter": "generic",
+      "dg_profile": null,
+      "sections": [
+        { "ref": "parties" },
+        { "ref": "references" },
+        {
+          "key": "packing_details",
+          "label": { "nl": "Paklijstgegevens", "en": "Packing list details" },
+          "fields": [
+            {
+              "key": "document_date",
+              "label": { "nl": "Datum", "en": "Date" },
+              "status": "USER_REQUIRED",
+              "type": "date"
+            },
+            {
+              "key": "remarks",
+              "label": { "nl": "Opmerkingen", "en": "Remarks" },
+              "status": "USER_OPTIONAL",
+              "type": "textarea"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "key": "delivery_note",
+      "label": { "nl": "Afleverbon", "en": "Delivery note" },
+      "short_label": { "nl": "Afleverbon", "en": "Delivery note" },
+      "category": "generated",
+      "issue_status": {
+        "nl": "Direct gegenereerd bedrijfsdocument — ontvangstvelden blijven leeg",
+        "en": "Directly generated business document — receipt fields remain blank"
+      },
+      "exporter": "generic",
+      "dg_profile": null,
+      "sections": [
+        { "ref": "parties" },
+        { "ref": "references" },
+        {
+          "key": "delivery_details",
+          "label": { "nl": "Aflevergegevens", "en": "Delivery details" },
+          "fields": [
+            {
+              "key": "delivery_address",
+              "label": { "nl": "Afleveradres", "en": "Delivery address" },
+              "status": "USER_REQUIRED",
+              "type": "textarea"
+            },
+            {
+              "key": "document_date",
+              "label": { "nl": "Datum", "en": "Date" },
+              "status": "USER_REQUIRED",
+              "type": "date"
+            },
+            {
+              "key": "remarks",
+              "label": { "nl": "Opmerkingen", "en": "Remarks" },
+              "status": "USER_OPTIONAL",
+              "type": "textarea"
+            },
+            {
+              "key": "receiver_name",
+              "label": { "nl": "Naam ontvanger", "en": "Receiver name" },
+              "status": "OPERATIONAL",
+              "type": "text"
+            },
+            {
+              "key": "receipt_confirmation",
+              "label": { "nl": "Ontvangstbevestiging (handtekening)", "en": "Receipt confirmation (signature)" },
+              "status": "SIGNATURE_REQUIRED",
+              "type": "checkbox"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

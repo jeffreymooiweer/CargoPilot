@@ -10,7 +10,8 @@ Zie ook [CHANGELOG.md](CHANGELOG.md) en [ROADMAP.md](ROADMAP.md).
 
 - **Modaliteitskeuze bij start**: wegtransport, spoor, zeevracht, binnenvaart, luchtvracht of multimodaal
 - **Formulierenselectie per modaliteit**: alleen relevante documenten; bij multimodaal alles beschikbaar
-- Documenten: intern formulier, CMR, CIM, IMO Multimodal DG Form, IATA Shipper's Declaration, VGM-verklaring, AWB/B-L Shipping Instructions, ADR/ADN-document, paklijst, afleverbon
+- **Officiële PDF-formulieren**: CMR (IRU-model 2007) en IATA Shipper's Declaration worden als originele invulbare PDF-templates ingevuld en als PDF gedownload
+- Documenten: intern formulier, CMR (PDF), CIM, IMO Multimodal DG Form, IATA Shipper's Declaration (PDF), VGM-verklaring, AWB/B-L Shipping Instructions, ADR/ADN-document, paklijst, afleverbon
 - **Veldstatussen per document**: gebruikersinvoer, carriergegevens, operationele velden en handtekeningen worden onderscheiden; handtekeningen worden nooit vooraf ingevuld
 - **DG-exportblokkades** per modaliteitsprofiel (ADR/RID/ADN/IMDG/IATA DGR) bij onvolledige classificatie
 - Review-first wizard: regels invoeren met cataloguszoeken of vrije omschrijving
@@ -180,8 +181,23 @@ Volledig overzicht: [ROADMAP.md](ROADMAP.md).
 - Kolommapping-UI
 - Duitse taal
 
+## Officiële formulier-templates
+
+Invulbare PDF-formulieren staan in `templates/forms/` en worden door de backend ingevuld (niet nagebouwd):
+
+| Document | Template | Bron |
+|---|---|---|
+| CMR-vrachtbrief | `templates/forms/cmr.pdf` | IRU-model 2007 (invulbaar PDF, 4 doorslagen) |
+| IATA Shipper's Declaration | `templates/forms/iata_dgd.pdf` | IATA open-formaat (invulbaar PDF) |
+
+De overige documenten worden voorlopig als gestructureerd Excel-bestand gegenereerd, in afwachting van hun officiële templates. Handtekening-, carrier- en operationele velden worden nooit vooraf ingevuld.
+
+## Disclaimer en aansprakelijkheid
+
+Gegenereerde documenten zijn **concepten**; controleer, vul aan en onderteken door een bevoegde persoon vóór gebruik. De maker(s) aanvaarden **geen enkele aansprakelijkheid**. Volledige tekst: [DISCLAIMER.md](DISCLAIMER.md) en in de app onder **Disclaimer**.
+
 ## Licentie
 
-Apache License 2.0 with Commons Clause — zie [LICENSE](LICENSE).
+Apache License 2.0 with Commons Clause — zie [LICENSE](LICENSE) en [DISCLAIMER.md](DISCLAIMER.md).
 
 Commercial use of this software within your own organization is permitted. Selling, reselling, hosting, or commercially redistributing the software itself requires prior written permission from the copyright holder.

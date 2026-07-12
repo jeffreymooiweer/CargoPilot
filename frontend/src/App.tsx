@@ -8,6 +8,7 @@ import WizardPage from "./pages/WizardPage";
 import UsersPage from "./pages/UsersPage";
 import MaterieelPage from "./pages/MaterieelPage";
 import SettingsPage from "./pages/SettingsPage";
+import LegalPage from "./pages/LegalPage";
 
 export default function App() {
   const [user, setUser] = useState<User | null>(null);
@@ -42,6 +43,7 @@ export default function App() {
         <Route path="/wizard/:modality" element={<WizardPage />} />
         <Route path="/materieel" element={<MaterieelPage />} />
         <Route path="/settings" element={<SettingsPage />} />
+        <Route path="/legal" element={<LegalPage />} />
         <Route path="/users" element={<UsersPage />} />
       </Route>
       <Route path="*" element={<Navigate to="/" replace />} />

@@ -12,7 +12,8 @@
     "logout": "Logout",
     "menu": "Menu",
     "openMenu": "Open menu",
-    "closeMenu": "Close menu"
+    "closeMenu": "Close menu",
+    "legal": "Disclaimer"
   },
   "theme": {
     "dark": "Dark",
@@ -240,7 +241,8 @@
     "categoryPrepared": "Prepared transport document",
     "categoryDeclaration": "Declaration",
     "categoryInstructions": "Shipping instructions",
-    "categoryGenerated": "Generated business document"
+    "categoryGenerated": "Generated business document",
+    "officialPdf": "Official PDF"
   },
   "docfields": {
     "title": "Shipment and document details",
@@ -262,6 +264,42 @@
     "waitingCarrier": "Waiting for carrier data",
     "missingFields": "Missing: {{fields}}",
     "dgBlocked": "Dangerous goods classification is incomplete. Fill in UN number, Proper Shipping Name, class and packaging details in the dangerous goods step.",
-    "exporting": "Exporting…"
+    "exporting": "Exporting…",
+    "exportNotice": "Note: generated documents are drafts. Verify, complete and sign by an authorised person before use. See the disclaimer."
+  },
+  "legal": {
+    "title": "Disclaimer and licence",
+    "updated": "Last updated: 12 July 2026 · CargoPilot v1.1.0",
+    "intro": "CargoPilot is a tool that prepares transport and accompanying documents based on your input. It does not provide legal, customs or safety advice. Please read the terms below carefully; by using CargoPilot you accept them.",
+    "sections": [
+      {
+        "heading": "1. Draft — not a final document",
+        "body": "Every document produced by CargoPilot is a draft. Before use, hand-over, submission or signature it must be fully verified, completed and signed by a duly authorised and qualified person. Signature fields, carrier data and operational fields are deliberately not pre-filled."
+      },
+      {
+        "heading": "2. Dangerous goods",
+        "body": "Classification, packaging, marking, labelling and documentation of dangerous goods (ADR, RID, ADN, IMDG, IATA DGR) are the exclusive responsibility of the shipper and other legally designated parties. CargoPilot never automatically turns a free-text description into a final classification and does not replace certified master data, a safety adviser or the current, authorised regulations."
+      },
+      {
+        "heading": "3. No warranties (AS IS)",
+        "body": "The software and all generated documents are provided \"AS IS\" and \"AS AVAILABLE\", without any express or implied warranty, including warranties of merchantability, fitness for a particular purpose, accuracy, timeliness, completeness or non-infringement. No warranty is given that reference data or form templates are correct, current or complete."
+      },
+      {
+        "heading": "4. Limitation of liability",
+        "body": "To the maximum extent permitted by applicable law, the author(s), rights holder(s) and contributors of CargoPilot exclude all liability for any direct, indirect, incidental, special, punitive or consequential damages — including loss of profit, business interruption, fines, penalties, delays, seized or refused shipments, loss of or damage to goods, environmental damage, personal injury or loss of data — arising out of or in connection with the use of, or inability to use, the application or the generated documents, on any legal basis and even if advised of the possibility of such damage. You use CargoPilot entirely at your own risk."
+      },
+      {
+        "heading": "5. Indemnification",
+        "body": "You indemnify the author(s) and rights holder(s) of CargoPilot against all third-party claims arising out of or in connection with your use of the application or the generated documents."
+      },
+      {
+        "heading": "6. Licence — Apache License 2.0 with Commons Clause",
+        "body": "CargoPilot is licensed under the Apache License, Version 2.0, supplemented by the Commons Clause. Under the Apache License 2.0 the software is provided without warranties and with a limitation of liability (sections 7 and 8 of that licence). Use within your own organisation is permitted; selling, reselling, hosting as a paid service or otherwise commercially redistributing the software itself requires prior written permission from the rights holder (Commons Clause). The full text is in the repository's LICENSE file."
+      },
+      {
+        "heading": "7. Governing law",
+        "body": "This disclaimer is governed by Dutch law, to the extent not precluded by mandatory law. If any provision is held void or unenforceable, the remaining provisions remain in full force."
+      }
+    ]
   }
 }

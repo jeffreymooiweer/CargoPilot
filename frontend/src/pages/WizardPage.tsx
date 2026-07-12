@@ -109,7 +109,7 @@ export default function WizardPage() {
   );
 
   const genericDocs = useMemo(
-    () => selectedDefinitions.filter((d) => d.exporter === "generic"),
+    () => selectedDefinitions.filter((d) => d.exporter !== "appendix_template"),
     [selectedDefinitions],
   );
   const appendixSelected = selected.includes("intern_formulier");
@@ -608,6 +608,12 @@ export default function WizardPage() {
           <div className={`${panelClass} space-y-3 p-4 sm:p-6`}>
             <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-100">{t("wizardDocs.title")}</h3>
             <p className="text-sm text-slate-600 dark:text-slate-400">{t("wizardDocs.intro")}</p>
+            <p className="rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-800 dark:border-amber-900/50 dark:bg-amber-900/20 dark:text-amber-300">
+              {t("wizardDocs.exportNotice")}{" "}
+              <Link to="/legal" className="font-medium underline">
+                {t("nav.legal")}
+              </Link>
+            </p>
             <div className="space-y-2">
               {selectedDefinitions.map((doc) => {
                 const isAppendix = doc.exporter === "appendix_template";

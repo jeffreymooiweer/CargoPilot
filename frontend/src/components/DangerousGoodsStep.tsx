@@ -13,6 +13,8 @@ interface Props {
   onChange: (entries: DgEntry[]) => void;
   /** Toon één positie per scherm met navigatie */
   perPosition?: boolean;
+  /** Extra DG-velden voor geselecteerde documenten (bijv. IATA/IMO) */
+  extraFields?: string[];
 }
 
 const CORE_FIELDS = [
@@ -67,7 +69,7 @@ export function buildDgEntries(lines: LineItem[]): DgEntry[] {
     }));
 }
 
-export default function DangerousGoodsStep({ lines, entries, onChange, perPosition = false }: Props) {
+export default function DangerousGoodsStep({ lines, entries, onChange, perPosition = false, extraFields = [] }: Props) {
   const { t, i18n } = useTranslation();
   const lang = i18n.language.startsWith("en") ? "en" : "nl";
   const [instructions, setInstructions] = useState<DgInstructions | null>(null);
@@ -186,12 +188,12 @@ export default function DangerousGoodsStep({ lines, entries, onChange, perPositi
                   {t("wizard.dgLookup")}
                 </button>
               </div>
-              {CORE_FIELDS.filter((f) => f !== "un_number").map((field) => (
+              {[...CORE_FIELDS.filter((f) => f !== "un_number"), ...extraFields.filter((f) => !(CORE_FIELDS as readonly string[]).includes(f))].map((field) => (
                 <Field
                   key={field}
                   label={labelFor(field)}
                   help={helpFor(field)}
-                  value={String(product[field] ?? "")}
+                  value={String(product[field as keyof DgProduct] ?? "")}
                   onChange={(v) => updateProduct(entryIndex, productIndex, { [field]: v })}
                 />
               ))}

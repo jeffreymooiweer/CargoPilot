@@ -61,6 +61,14 @@ class ExportRequest(BaseModel):
     dangerous_goods: list[dict] | None = None
 
 
+class DocumentExportRequest(BaseModel):
+    document_key: str
+    values: dict = Field(default_factory=dict)
+    lines: list[dict] = Field(default_factory=list)
+    dangerous_goods: list[dict] | None = None
+    output_language: str = "nl"
+
+
 class MaterialBase(BaseModel):
     canonical_name: str
     category: str

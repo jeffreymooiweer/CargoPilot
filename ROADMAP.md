@@ -2,7 +2,15 @@
 
 Versiebeleid: [Semantic Versioning](https://semver.org/) — `MAJOR.MINOR.PATCH` (zie `VERSION` en git-tags `v*`).
 
-## v1.0.0 (huidige release)
+## v1.1.0 (huidige release) — Multimodale transportkeuze
+
+- Modaliteitskeuze bij start (weg, spoor, zee, binnenvaart, lucht, multimodaal)
+- Formulierenselectie per modaliteit als eerste wizardstap
+- Documentregister met veldstatussen (gebruiker/vervoerder/operationeel/handtekening)
+- CMR, CIM, IMO DGF, IATA DGD, VGM, AWB- en B/L-shipping-instructions, ADR/ADN-document, paklijst, afleverbon
+- Gedeelde zendinggegevens hergebruikt over documenten; DG-exportblokkades per modaliteitsprofiel
+
+## v1.0.0
 
 - Appendix A1-wizard met catalogus, DG-stap en Excel-export
 - Lege materieelbibliotheek; import via template door de beheerder
@@ -10,19 +18,11 @@ Versiebeleid: [Semantic Versioning](https://semver.org/) — `MAJOR.MINOR.PATCH`
 
 ## Gepland
 
-### v1.1 — Multimodale transportkeuze
+### v1.1.x — Verdieping multimodaal
 
-- Keuze transportmodus per zending of per positie (weg, lucht, zee, spoor waar relevant)
-- Formulieren en export per modus, naast bestaande appendix-flow
-
-| Modus | Richting | Voorbeeldformulieren / standaarden |
-|-------|----------|-------------------------------------|
-| Weg | CMR, eventueel nationaal vrachtbrief | CMR-vrachtbriefvelden |
-| Lucht | IATA / luchtvracht | AWB, SHC, gevaarlijke-goederen-declaratie lucht |
-| Zee | Bill of lading / zeevracht | BL-achtige metadata (later uitwerken) |
-
-- Validatie en helpteksten per formulierset
-- Template-download per transportmodus (zoals materieel-import nu)
+- NHM-code zoeken/selecteren als masterdataveld (CIM vak 24)
+- Configureerbare landen-/carrierregels voor douanereferenties (ENS/ICS2, AES/ITN)
+- Import van carriergegevens (AWB-nummer, boeking) na bevestiging
 
 ### v1.2 — Wizard & bibliotheek
 

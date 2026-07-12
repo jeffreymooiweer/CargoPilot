@@ -6,7 +6,16 @@ from fastapi.responses import FileResponse
 from app.core.deps import get_current_user
 from app.models.user import User
 from app.schemas import DocumentExportRequest
-from app.services.documents import export_document, get_document, get_registry, validate_document
+from app.services.documents import (
+    export_document,
+    fill_pdf_document,
+    get_document,
+    get_registry,
+    has_pdf_template,
+    validate_document,
+)
+
+XLSX_MEDIA = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
 
 router = APIRouter(prefix="/documents", tags=["documents"])
 
@@ -36,13 +45,31 @@ def export(
     document = get_document(payload.document_key)
     if document is None:
         raise HTTPException(status_code=404, detail="Unknown document")
-    if document.get("exporter") != "generic":
+    exporter = document.get("exporter")
+    if exporter not in {"generic", "pdf_template"}:
         raise HTTPException(status_code=400, detail="Use /export for the appendix template")
     errors, _warnings = validate_document(
         document, payload.values, payload.lines, payload.dangerous_goods, payload.output_language
     )
     if errors:
         raise HTTPException(status_code=422, detail={"errors": errors})
+
+    ref = datetime.now().strftime("%Y%m%d%H%M%S")
+    if exporter == "pdf_template" and has_pdf_template(payload.document_key):
+        out_path = fill_pdf_document(
+            payload.document_key,
+            payload.values,
+            payload.lines,
+            payload.dangerous_goods,
+            payload.output_language,
+        )
+        background_tasks.add_task(_delete_file, out_path)
+        return FileResponse(
+            path=out_path,
+            filename=f"{payload.document_key}_{ref}.pdf",
+            media_type="application/pdf",
+        )
+
     out_path = export_document(
         payload.document_key,
         payload.values,
@@ -51,11 +78,10 @@ def export(
         payload.output_language,
     )
     background_tasks.add_task(_delete_file, out_path)
-    ref = datetime.now().strftime("%Y%m%d%H%M%S")
     return FileResponse(
         path=out_path,
         filename=f"{payload.document_key}_{ref}.xlsx",
-        media_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        media_type=XLSX_MEDIA,
     )
 
 

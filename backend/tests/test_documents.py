@@ -1,9 +1,12 @@
 import openpyxl
+from pypdf import PdfReader
 
 from app.services.documents import (
     export_document,
+    fill_pdf_document,
     get_document,
     get_registry,
+    has_pdf_template,
     resolve_sections,
     validate_document,
 )
@@ -124,33 +127,48 @@ def test_validate_vgm_method2_sum_warning():
     assert warnings and "VGM" in warnings[0]
 
 
-def test_export_cmr_generates_workbook_with_goods_and_signature_note():
+def test_cmr_and_iata_use_official_pdf_templates():
+    registry = get_registry()
+    docs = {doc["key"]: doc for doc in registry["documents"]}
+    assert docs["cmr"]["exporter"] == "pdf_template"
+    assert docs["cmr"]["pdf_template"] == "cmr.pdf"
+    assert docs["iata_dgd"]["exporter"] == "pdf_template"
+    assert has_pdf_template("cmr")
+    assert has_pdf_template("iata_dgd")
+
+
+def test_fill_cmr_pdf_populates_official_boxes():
     values = dict(
         BASE_VALUES,
+        place_of_delivery="Berlin Hafen",
         freight_payment="prepaid",
+        sender_instructions="Niet overladen.",
+        carrier_name="Trans-Euro Logistics",
         established_place="Utrecht",
         established_date="2026-07-12",
     )
-    path = export_document("cmr", values, LINES, None, "nl")
+    path = fill_pdf_document("cmr", values, LINES, None, "nl")
     try:
-        wb = openpyxl.load_workbook(path)
-        ws = wb.active
-        text = "\n".join(str(c.value) for row in ws.iter_rows() for c in row if c.value is not None)
-        assert "CMR-vrachtbrief" in text
-        assert "Stalen hoekprofiel" in text
-        assert "Firma A" in text
-        assert "vak 8" in text.lower() or "Vak 8" in text
-        assert "Franco" in text
+        fields = PdfReader(str(path)).get_fields()
+        values_by_field = {k: str(v.get("/V") or "") for k, v in fields.items()}
+        assert "Firma A" in values_by_field["VakRood01"]  # box 1 sender
+        assert "Firma B" in values_by_field["VakRood02"]  # box 2 consignee
+        assert values_by_field["VakRood16"] == "Trans-Euro Logistics"  # box 16 carrier
+        assert values_by_field["VakRood14"] == "Franco"  # box 14 payment
+        assert "Stalen hoekprofiel" in values_by_field["VakRood06Regel01Kolom06"]
+        assert values_by_field["VakRood06Regel01Kolom11"] == "462.7"
+        # Handtekeningvakken 22/23/24 blijven leeg.
+        assert values_by_field.get("VakRood23", "") == ""
     finally:
         path.unlink(missing_ok=True)
 
 
-def test_export_iata_includes_dg_table_and_operational_markers():
+def test_fill_iata_pdf_strikes_non_applicable_and_lists_dg():
     values = dict(
         BASE_VALUES,
+        awb_number="020-12345675",
         aircraft_limitation="cargo_only",
         shipment_type="non_radioactive",
-        emergency_contact="+31 6 12345678",
         signatory_name="J. Jansen",
         declaration_place="Utrecht",
         declaration_date="2026-07-12",
@@ -164,23 +182,54 @@ def test_export_iata_includes_dg_table_and_operational_markers():
                     "un_number": "3480",
                     "proper_shipping_name": "Lithium ion batteries",
                     "class": "9",
+                    "packing_group": "II",
                     "packing_instruction": "965",
                     "quantity_packages": "2",
                     "type_of_package": "4G box",
                     "net_mass_liters_per_package": "5 kg",
-                    "cargo_aircraft_only": "Y",
                 }
             ],
         }
     ]
-    path = export_document("iata_dgd", values, LINES, dg, "en")
+    path = fill_pdf_document("iata_dgd", values, LINES, dg, "en")
+    try:
+        fields = PdfReader(str(path)).get_fields()
+        v = {k: str(val.get("/V") or "") for k, val in fields.items()}
+        assert v["Air Waybill No"] == "020-12345675"
+        # cargo_only -> passenger+cargo doorgestreept, cargo-only leeg
+        assert v["Passenger and Cargo Aircraft"].strip() == "XXX"
+        assert v["Cargo Aircraft Only"].strip() == ""
+        # non_radioactive -> radioactive doorgestreept
+        assert v["radioactive ship type"].strip() == "XXXXXXXXXXX"
+        assert v["non-rad ship type"].strip() == ""
+        dg_block = v["Nature and Quantity of Dangerous Goods"]
+        assert "UN 3480" in dg_block
+        assert "Lithium ion batteries" in dg_block
+        assert "965" in dg_block
+        # Handtekeningveld blijft leeg.
+        assert v.get("Name-title", "") == "J. Jansen"
+    finally:
+        path.unlink(missing_ok=True)
+
+
+def test_export_vgm_generates_workbook_with_disclaimer():
+    values = dict(
+        BASE_VALUES,
+        container_number="MSKU1234567",
+        vgm_kg="1000",
+        vgm_method="method1",
+        responsible_name="J. JANSEN",
+        determination_place="Rotterdam",
+        determination_date="2026-07-12",
+    )
+    path = export_document("vgm", values, LINES, None, "nl")
     try:
         wb = openpyxl.load_workbook(path)
         ws = wb.active
         text = "\n".join(str(c.value) for row in ws.iter_rows() for c in row if c.value is not None)
-        assert "Lithium ion batteries" in text
-        assert "IATA_DGR" in text
-        assert "carrier/forwarder" in text
+        assert "MSKU1234567" in text
+        assert "SOLAS" in text
+        assert "Apache License 2.0" in text  # disclaimer
     finally:
         path.unlink(missing_ok=True)
 

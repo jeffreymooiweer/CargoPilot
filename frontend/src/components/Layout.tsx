@@ -55,6 +55,7 @@ export default function Layout({ user, onLogout }: Props) {
       {user.role === "admin" && <NavLink to="/materieel" className={linkClass} onClick={closeMenu}>{t("nav.materieel")}</NavLink>}
       {user.role === "admin" && <NavLink to="/users" className={linkClass} onClick={closeMenu}>{t("nav.users")}</NavLink>}
       <NavLink to="/settings" className={linkClass} onClick={closeMenu}>{t("nav.settings")}</NavLink>
+      <NavLink to="/legal" className={linkClass} onClick={closeMenu}>{t("nav.legal")}</NavLink>
     </>
   );
 

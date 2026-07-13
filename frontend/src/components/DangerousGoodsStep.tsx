@@ -55,9 +55,9 @@ function emptyProduct(): DgProduct {
 
 export function buildDgEntries(lines: LineItem[]): DgEntry[] {
   return lines
-    .filter((line) => line.include && line.appendix_flags?.dangerous_goods === "Y")
+    .filter((line) => line.include && line.dangerous_goods)
     .map((line) => ({
-      a1_line_id: line.line_id,
+      line_id: line.line_id,
       vehicle: line.output_description || line.description,
       registration: "",
       products: [
@@ -81,12 +81,12 @@ export default function DangerousGoodsStep({ lines, entries, onChange, perPositi
   }, []);
 
   const helpFor = (field: string) => {
-    const item = instructions?.appendix_d_fields?.[field];
+    const item = instructions?.dg_fields?.[field];
     return item?.help?.[lang] || "";
   };
 
   const labelFor = (field: string) => {
-    const item = instructions?.appendix_d_fields?.[field];
+    const item = instructions?.dg_fields?.[field];
     return item?.label?.[lang] || field;
   };
 
@@ -127,7 +127,7 @@ export default function DangerousGoodsStep({ lines, entries, onChange, perPositi
   return (
     <div className="space-y-4">
       <div className={`${panelClass} p-4 text-sm text-slate-600 dark:text-slate-300`}>
-        <p>{instructions?.appendix_d_intro?.[lang] || t("wizard.dgIntro")}</p>
+        <p>{instructions?.dg_intro?.[lang] || t("wizard.dgIntro")}</p>
         <p className="mt-2 text-xs text-slate-500 dark:text-slate-400">{t("wizard.dgSource")}</p>
       </div>
 
@@ -151,7 +151,7 @@ export default function DangerousGoodsStep({ lines, entries, onChange, perPositi
               onClick={() => setPositionIndex((i) => i + 1)}
               className={buttonSecondary}
             >
-              {t("questions.next")}
+              {t("wizard.next")}
             </button>
           </div>
         </div>
@@ -160,10 +160,10 @@ export default function DangerousGoodsStep({ lines, entries, onChange, perPositi
       {visibleEntries.map((entry, localIndex) => {
         const entryIndex = visibleEntryOffset + localIndex;
         return (
-        <div key={entry.a1_line_id} className={`${panelClass} p-5 space-y-4`}>
+        <div key={entry.line_id} className={`${panelClass} p-5 space-y-4`}>
           <div>
             <h3 className="font-semibold text-slate-900 dark:text-slate-100">
-              {t("wizard.dgLine")} {entry.a1_line_id}
+              {t("wizard.dgLine")} {entry.line_id}
             </h3>
             <p className="text-sm text-slate-500 dark:text-slate-400">{entry.vehicle}</p>
           </div>

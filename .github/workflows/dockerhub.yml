@@ -28,7 +28,6 @@ jobs:
       - name: Prepare test data
         run: |
           mkdir -p data/templates
-          cp templates/intern-formulier.xlsx data/templates/
 
       - name: Run pytest
         working-directory: backend

@@ -12,7 +12,6 @@ Versiebeleid: [Semantic Versioning](https://semver.org/) — `MAJOR.MINOR.PATCH`
 
 ## v1.0.0
 
-- Appendix A1-wizard met catalogus, DG-stap en Excel-export
 - Lege materieelbibliotheek; import via template door de beheerder
 - Geen operationele materieeldata in GitHub of Docker-images
 
@@ -33,10 +32,8 @@ Versiebeleid: [Semantic Versioning](https://semver.org/) — `MAJOR.MINOR.PATCH`
 ### Later (ideeën)
 
 - Watchtower/Unraid auto-update documentatie in README
-- Meerdere appendix-templates per klant/organisatie
 - Auditlog zonder inhoud van materiaallijsten (alleen metadata)
 
 ## Niet gepland
 
-- Server-side opslag van appendix-inhoud of export-historie (privacy-by-design blijft leidend)
 - Voorgevulde operationele materieelbibliotheek in de openbare repository of Docker Hub

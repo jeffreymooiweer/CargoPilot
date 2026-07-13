@@ -8,7 +8,7 @@ from app.services.dg.compliance import (
 
 
 def _entry(products, vehicle="Positie 1"):
-    return {"a1_line_id": 1, "vehicle": vehicle, "products": products}
+    return {"line_id": 1, "vehicle": vehicle, "products": products}
 
 
 def test_adr_points_exempt_below_threshold():

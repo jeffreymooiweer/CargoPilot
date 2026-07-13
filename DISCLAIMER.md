@@ -1,6 +1,6 @@
 # Disclaimer en aansprakelijkheidsuitsluiting — CargoPilot
 
-_Laatst bijgewerkt: 12 juli 2026 · Versie 1.2.0_
+_Laatst bijgewerkt: 12 juli 2026 · Versie 1.4.0_
 
 > **English summary:** CargoPilot is provided "AS IS", without warranty of any
 > kind. The documents it generates are **drafts** that must be checked,
@@ -15,7 +15,7 @@ _Laatst bijgewerkt: 12 juli 2026 · Versie 1.2.0_
 
 CargoPilot is een hulpmiddel dat vervoers- en begeleidingsdocumenten (zoals
 CMR, CIM, de IMO Multimodal Dangerous Goods Form, de IATA Shipper's Declaration,
-VGM-verklaringen, shipping instructions, paklijsten en de intern formulier)
+VGM-verklaringen, shipping instructions en paklijsten)
 **voorbereidt** op basis van door de gebruiker ingevoerde gegevens. De
 applicatie vult officiële of gegenereerde formulieren automatisch in, maar
 neemt geen enkele beslissing en geeft **geen juridisch, douanetechnisch of

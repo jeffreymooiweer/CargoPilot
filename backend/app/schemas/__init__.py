@@ -53,15 +53,6 @@ class CalculateRequest(BaseModel):
     line_overrides: list[dict] | None = None
 
 
-class ExportRequest(BaseModel):
-    lines: list[dict]
-    output_language: str = "nl"
-    metadata: dict = Field(default_factory=dict)
-    template_name: str | None = None
-    dangerous_goods: list[dict] | None = None
-    format: str = "xlsx"
-
-
 class DocumentExportRequest(BaseModel):
     document_key: str
     values: dict = Field(default_factory=dict)

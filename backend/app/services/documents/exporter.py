@@ -262,7 +262,7 @@ def validate_document(
             for product in entry.get("products", []):
                 missing = [f for f in required_fields if not str(product.get(f) or "").strip()]
                 if missing:
-                    position = entry.get("vehicle") or entry.get("a1_line_id") or "?"
+                    position = entry.get("vehicle") or entry.get("line_id") or "?"
                     errors.append(
                         f"{_text('dg_missing', lang)} '{position}': {', '.join(missing)}"
                     )
@@ -375,7 +375,7 @@ def _dg_rows(profile: str, entry: dict[str, Any], product: dict[str, Any], value
             product.get("net_mass_liters_per_package", ""),
             product.get("gross_mass_per_package", ""),
         ]
-    return [entry.get("vehicle") or entry.get("a1_line_id")] + [
+    return [entry.get("vehicle") or entry.get("line_id")] + [
         product.get(field, "") for field in DG_PRODUCT_FIELDS
     ]
 

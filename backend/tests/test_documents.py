@@ -8,7 +8,6 @@ from app.services.documents import (
     get_document,
     get_registry,
     has_pdf_template,
-    render_appendix_pdf,
     render_document_pdf,
     resolve_sections,
     validate_document,
@@ -102,7 +101,7 @@ def test_validate_iata_blocks_incomplete_dg_classification():
         declaration_place="Utrecht",
         declaration_date="2026-07-12",
     )
-    dg = [{"a1_line_id": 1, "vehicle": "Accu's", "products": [{"un_number": "3480"}]}]
+    dg = [{"line_id": 1, "vehicle": "Accu's", "products": [{"un_number": "3480"}]}]
     errors, _ = validate_document(iata, values, LINES, dg)
     assert errors
     assert any("packing_instruction" in e for e in errors)
@@ -216,7 +215,7 @@ def test_fill_iata_pdf_strikes_non_applicable_and_lists_dg():
     )
     dg = [
         {
-            "a1_line_id": 1,
+            "line_id": 1,
             "vehicle": "Lithium batteries",
             "products": [
                 {
@@ -276,7 +275,7 @@ def test_render_imo_pdf_contains_declaration_and_dg():
     )
     dg = [
         {
-            "a1_line_id": 1,
+            "line_id": 1,
             "vehicle": "Accu",
             "products": [
                 {
@@ -317,35 +316,6 @@ def test_export_vgm_workbook_still_available_with_disclaimer():
         text = "\n".join(str(c.value) for row in wb.active.iter_rows() for c in row if c.value is not None)
         assert "MSKU1234567" in text
         assert "Apache License 2.0" in text
-    finally:
-        path.unlink(missing_ok=True)
-
-
-def test_render_appendix_pdf_lists_lines_and_dg():
-    dg = [
-        {
-            "a1_line_id": 1,
-            "vehicle": "Accu",
-            "products": [{"un_number": "3480", "proper_shipping_name": "Lithium ion batteries", "class": "9"}],
-        }
-    ]
-    path = render_appendix_pdf(LINES, dg, {"date": "2026-07-14", "route": "Utrecht - Berlijn"}, "nl")
-    try:
-        assert _pdf_bytes_start(path) == b"%PDF-"
-        text = "\n".join(page.extract_text() or "" for page in PdfReader(str(path)).pages)
-        assert "Appendix A1" in text
-        assert "Stalen hoekprofiel" in text
-    finally:
-        path.unlink(missing_ok=True)
-
-
-def test_appendix_xlsx_keeps_only_a1_and_d_sheets(tmp_path):
-    from app.services.exporter.appendix_exporter import export_appendix
-
-    path = export_appendix(LINES, {"date": "2026-07-14"}, "nl", job_ref="cp-test")
-    try:
-        wb = openpyxl.load_workbook(path)
-        assert set(wb.sheetnames) == {" A1", "D"}
     finally:
         path.unlink(missing_ok=True)
 

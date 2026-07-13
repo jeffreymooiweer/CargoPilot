@@ -1,8 +1,7 @@
 """Genereer nette PDF's voor zelf-ontworpen CargoPilot-documenten met reportlab.
 
 Gebruikt voor documenten zonder officieel invulbaar formulier (paklijst,
-afleverbon, IMO MMDGF, VGM, shipping instructions, ADR/ADN) en voor de
-PDF-weergave van de intern formulier. Officiële invulbare formulieren (CMR, IATA,
+afleverbon, IMO MMDGF, VGM, shipping instructions, ADR/ADN). Officiële invulbare formulieren (CMR, IATA,
 CIM) worden elders met pypdf ingevuld en niet nagebouwd.
 """
 
@@ -245,81 +244,5 @@ def render_document_pdf(
     story.append(Spacer(1, 8))
     story.append(_p(_text("disclaimer", lang), styles["disclaimer"]))
 
-    doc.build(story)
-    return out_path
-
-
-def render_appendix_pdf(
-    lines: list[dict[str, Any]],
-    dangerous_goods: list[dict[str, Any]] | None,
-    metadata: dict[str, Any],
-    language: str = "nl",
-) -> Path:
-    """PDF-weergave van Appendix A1 (regeltabel + vlaggen) en Appendix D (DG)."""
-    lang = _lang(language)
-    styles = _styles()
-    out_path = _output_path()
-    doc = SimpleDocTemplate(
-        str(out_path), pagesize=(A4[1], A4[0]),  # liggend
-        leftMargin=12 * mm, rightMargin=12 * mm, topMargin=12 * mm, bottomMargin=12 * mm,
-        title="intern formulier",
-    )
-    width = doc.width
-    story: list = []
-    title = "Appendix A1 — Cargo" if lang == "nl" else "Appendix A1 — Cargo"
-    story.append(_p(title, styles["title"]))
-    meta_bits = []
-    for key in ("date", "route", "ba_code", "annex_serial"):
-        if metadata.get(key):
-            meta_bits.append(f"{key}: {metadata[key]}")
-    if meta_bits:
-        story.append(_p("   ·   ".join(meta_bits), styles["meta"]))
-    story.append(Spacer(1, 6))
-
-    flag_fields = ["loaded", "stackable", "rotatable", "weapons", "conditioned",
-                   "dangerous_goods", "ammunition", "itar", "tbb"]
-    header = (["#", "Specifications", "Type", "Qty", "L", "W", "H", "kg"]
-              + ["Ld", "St", "Rt", "Wp", "Cd", "DG", "Am", "IT", "TBB"])
-    rows = []
-    included = [ln for ln in lines if ln.get("include", True)]
-    for i, line in enumerate(included, start=1):
-        flags = line.get("appendix_flags") or {}
-        rows.append([
-            i,
-            line.get("output_description") or line.get("description"),
-            (line.get("product_type") or "").replace("_", " ").title(),
-            line.get("quantity"),
-            line.get("length_cm"), line.get("width_cm"), line.get("height_cm"),
-            line.get("weight_each_kg"),
-        ] + [(flags.get(f) or "") for f in flag_fields])
-    col_w = [8, 150, 60, 26, 22, 22, 22, 34] + [20] * 9
-    total = sum(col_w)
-    col_w = [w / total * width for w in col_w]
-    data = [[_p(h, styles["cellh"]) for h in header]] + [[_p(c, styles["cell"]) for c in r] for r in rows]
-    t = Table(data, colWidths=col_w, repeatRows=1)
-    t.setStyle(TableStyle([
-        ("BACKGROUND", (0, 0), (-1, 0), BRAND),
-        ("GRID", (0, 0), (-1, -1), 0.4, GRID),
-        ("VALIGN", (0, 0), (-1, -1), "TOP"),
-        ("LEFTPADDING", (0, 0), (-1, -1), 2),
-        ("RIGHTPADDING", (0, 0), (-1, -1), 2),
-        ("TOPPADDING", (0, 0), (-1, -1), 2),
-        ("BOTTOMPADDING", (0, 0), (-1, -1), 2),
-        ("ROWBACKGROUNDS", (0, 1), (-1, -1), [colors.white, colors.HexColor("#F8FAFC")]),
-    ]))
-    story.append(t)
-
-    if dangerous_goods:
-        story.append(Spacer(1, 8))
-        story.append(_p("Appendix D — Dangerous goods", styles["title"]))
-        dh = _text("imdg_dg_headers", lang)
-        drows = []
-        for entry in dangerous_goods:
-            for product in entry.get("products", []):
-                drows.append(_dg_rows("IMDG", entry, product, {}, lang))
-        story.append(_grid_table(dh, drows, styles, width))
-
-    story.append(Spacer(1, 8))
-    story.append(_p(_text("disclaimer", lang), styles["disclaimer"]))
     doc.build(story)
     return out_path

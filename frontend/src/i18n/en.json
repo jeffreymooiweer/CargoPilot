@@ -21,7 +21,7 @@
     "toggle": "Toggle theme"
   },
   "dashboard": {
-    "privacy": "CargoPilot does not store history, pasted data, or appendix files on the server. After download, everything is discarded from memory."
+    "privacy": "CargoPilot does not store history, pasted data or document files on the server. After download everything is cleared from memory."
   },
   "login": {
     "title": "Sign in",
@@ -31,22 +31,11 @@
     "setup": "No admin configured. Set ADMIN_USERNAME, ADMIN_EMAIL and ADMIN_PASSWORD."
   },
   "wizard": {
-    "step1": "Input",
-    "step2": "Review",
-    "step3": "Export",
+    "step2": "Packages",
     "step3dg": "Dangerous goods",
     "step4": "Export",
-    "paste": "Paste your Excel data here",
-    "analyze": "Analyze",
-    "strict": "Strict",
     "continue": "Continue",
-    "autoLang": "Auto-detect input language",
-    "outputLang": "Appendix language",
     "download": "Download Excel",
-    "route": "From - to",
-    "baCode": "BA code",
-    "annex": "Annex / serial nr",
-    "date": "Date",
     "summary": "Summary",
     "products": "Products",
     "adjustTotalWeight": "Adjust total weight",
@@ -58,19 +47,14 @@
     "back": "Back",
     "recalculate": "Recalculate",
     "toExport": "Continue to export",
-    "toQuestions": "Continue to appendix questions",
     "toDg": "Continue to dangerous goods",
-    "stepQuestions": "Appendix questions",
-    "strictBlocked": "Strict mode: fix errors before continuing.",
-    "flagsTitle": "Appendix A1 — flags",
-    "flagsIntro": "Set Y/N flags per line. Help text is taken from the appendix template (Invulinstructie sheet).",
-    "dgIntro": "Complete appendix D for all lines with dangerous goods (UN number).",
+    "dgIntro": "Complete the dangerous goods details for all packages marked as DG or in which a UN number was detected.",
     "dgSource": "UN data can be fetched automatically from the ADR database (FreightUtils).",
     "dgLine": "Line",
     "dgVehicle": "Vehicle / load",
-    "dgVehicleHelp": "Description of the vehicle or load as in appendix D.",
+    "dgVehicleHelp": "Description of the vehicle or load for this DG position.",
     "dgLookup": "Look up UN number",
-    "dgIncluded": "Appendix D will be included for {{count}} line(s).",
+    "dgIncluded": "Dangerous goods completed for {{count}} package(s); the data is included in the selected DG documents.",
     "dgPositionOf": "Position {{current}} of {{total}}",
     "progressStep": "Step {{current}} of {{total}}",
     "stepForms": "Forms",
@@ -78,44 +62,12 @@
     "toLines": "To articles",
     "toDetails": "To shipment details",
     "changeModality": "Choose another modality",
-    "loading": "Loading…"
-  },
-  "questions": {
-    "yes": "Yes",
-    "no": "No",
-    "next": "Next",
-    "finish": "Finish",
-    "progress": "Question {{current}} of {{total}}",
-    "selectHint": "Check the positions this applies to.",
-    "loaded": "Are all positions loaded?",
-    "loadedPick": "Which positions are loaded?",
-    "stackable": "Are one or more positions stackable?",
-    "stackablePick": "Which positions are stackable?",
-    "rotatable": "Are one or more positions tiltable?",
-    "rotatablePick": "Which positions are tiltable?",
-    "weapons": "Do one or more positions contain weapons or weapon systems?",
-    "weaponsPick": "Which positions contain weapons or weapon systems?",
-    "conditioned": "Must one or more positions be transported conditioned?",
-    "conditionedPick": "Which positions require conditioned transport?",
-    "dangerous_goods": "Do one or more positions contain dangerous goods?",
-    "dangerous_goodsPick": "Which positions contain dangerous goods?",
-    "ammunition": "Do one or more positions contain ammunition?",
-    "ammunitionPick": "Which positions contain ammunition?",
-    "itar": "Do one or more positions contain ITAR items?",
-    "itarPick": "Which positions contain ITAR items?",
-    "tbb": "Do one or more positions contain TBB?",
-    "tbbPick": "Which positions contain TBB?",
-    "dgDetected": "UN number detected on {{lines}}.",
-    "temperatureTitle": "Temperature per position",
-    "temperatureHint": "Enter minimum and maximum temperature (°C) per selected position.",
-    "temperaturePlaceholder": "e.g. -18 / +4",
-    "tbbTitle": "TBB classification per position",
-    "tbbHint": "Enter the TBB category per selected position.",
-    "tbbPlaceholder": "TBB category"
+    "loading": "Loading…",
+    "next": "Next"
   },
   "review": {
-    "linesTitle": "Positions",
-    "intro": "Type in the field to search equipment, profiles, materials and references. Synonyms are recognized; add dimensions to narrow results.",
+    "linesTitle": "Packages",
+    "intro": "Enter a description per package: pick equipment from the catalogue or type your own description with dimensions. Paste from Excel via Import.",
     "description": "Description",
     "descriptionPlaceholder": "Pick equipment or type e.g. steel angle 80x80x8x6000",
     "customDescription": "Use as free description (auto-match)",
@@ -137,7 +89,7 @@
     "addLine": "Add line",
     "duplicateLine": "Duplicate line",
     "removeLine": "Remove",
-    "noLines": "Add at least one line with a description.",
+    "noLines": "Add at least one package with a description.",
     "importExcel": "Import from Excel",
     "importTitle": "Import Excel / text",
     "importHint": "Paste copied columns from Excel (description | quantity | unit), or download the template and upload a file.",
@@ -146,7 +98,9 @@
     "importReplace": "Replace current lines",
     "importAppend": "Append to current lines",
     "importConfirm": "Import",
-    "cancel": "Cancel"
+    "cancel": "Cancel",
+    "dangerousGoods": "Dangerous goods package",
+    "dgDetected": "UN number detected"
   },
   "import": {
     "downloadTemplate": "Download template",
@@ -154,21 +108,8 @@
     "parsingFile": "Processing file…",
     "importingFile": "Importing…"
   },
-  "flags": {
-    "loaded": "Loaded",
-    "stackable": "Stackable",
-    "rotatable": "Rotatable",
-    "weapons": "Weapons",
-    "conditioned": "Conditioned",
-    "temperature_c": "Temperature (°C)",
-    "dangerous_goods": "Dangerous goods",
-    "ammunition": "Ammunition",
-    "itar": "ITAR",
-    "tbb": "TBB",
-    "tbb_category": "TBB category"
-  },
   "messages": {
-    "dg_un_detected": "UN number detected — appendix D is mandatory"
+    "dg_un_detected": "UN number detected — package marked as dangerous goods"
   },
   "status": {
     "ok": "OK",
@@ -190,7 +131,7 @@
     "search": "Search by name, SAP code or alias…",
     "count": "{{count}} of {{total}} items",
     "sapCode": "SAP code (MATNR)",
-    "specifications": "Specifications (appendix column D)",
+    "specifications": "Specifications (description)",
     "length": "Length (cm)",
     "width": "Width (cm)",
     "height": "Height (cm)",
@@ -269,7 +210,7 @@
   },
   "legal": {
     "title": "Disclaimer and licence",
-    "updated": "Last updated: 12 July 2026 · CargoPilot v1.2.0",
+    "updated": "Last updated: 12 July 2026 · CargoPilot v1.4.0",
     "intro": "CargoPilot is a tool that prepares transport and accompanying documents based on your input. It does not provide legal, customs or safety advice. Please read the terms below carefully; by using CargoPilot you accept them.",
     "sections": [
       {

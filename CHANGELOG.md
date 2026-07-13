@@ -2,6 +2,22 @@
 
 Alle noemenswaardige wijzigingen worden gedocumenteerd volgens [Semantic Versioning](https://semver.org/).
 
+## [1.4.0] — 2026-07-13
+
+CargoPilot is volledig civiel: militaire formulieren verwijderd.
+
+### Verwijderd
+
+- Het interne militaire formulier is volledig verwijderd: de wizardstap met vragen, het Excel-template, de export-endpoints, de PDF-weergave en alle verwijzingen in de interface. Voor militaire doeleinden komt een aparte private fork (CargoPilot MIL) met eigen formulieren.
+- Militaire vlaggen en helpteksten (o.a. wapens, munitie, ITAR, TBB) en externe verwijzingen naar defensieportalen
+- Oudere Docker-images bevatten het formulier nog; deze worden via de tag-opschoning van Docker Hub verwijderd
+
+### Gewijzigd
+
+- **Colli-invoer**: de stap "Review" heet nu **Colli**; per collo kan worden aangevinkt of het om gevaarlijke stoffen gaat. Bij een vinkje (of een herkend UN-nummer) volgt automatisch de gevaarlijke-stoffenstap.
+- De gevaarlijke-stoffenstap, UN-detectie, ADR/IATA-nalevingscontroles en alle transportdocumenten blijven volledig behouden
+- Per modaliteit is standaard het primaire vervoersdocument voorgeselecteerd (weg: CMR, spoor: CIM, lucht: AWB-instructies, zee: B/L-instructies)
+
 ## [1.3.0] — 2026-07-13
 
 Nalevingsbegeleiding gevaarlijke stoffen (ADR & IATA).
@@ -29,7 +45,6 @@ Multimodale transportkeuze.
 - **Alle documenten worden nu als PDF gedownload.**
 - **Officiële invulbare PDF-formulieren ingevuld**: de **CMR-vrachtbrief** (IRU-model 2007, 4 doorslagen), de **IATA Shipper's Declaration** (open formaat) en de **CIM-vrachtbrief** (CIT CIM/CUV, ed. 2019) worden als originele, invulbare PDF-templates ingevuld — inclusief correcte vaknummering, IATA-kolomvolgorde en "delete non-applicable"-doorstreping. Handtekeningvelden blijven leeg.
 - **Zelf-ontworpen documenten als nette PDF** (reportlab): paklijst, afleverbon, IMO Multimodal Dangerous Goods Form, VGM-verklaring, AWB/B-L Shipping Instructions en ADR/ADN-vervoersdocument — met partijen, goederentabel, DG-tabel per profiel, vaste juridische teksten en disclaimer.
-- **Appendix A1/D**: xlsx bevat nu alleen de relevante tabbladen **A1** en **D** (Invulinstructie en Overzicht Materieel verwijderd); daarnaast een **PDF-weergave** (liggend) van de A1-regeltabel met vlaggen en de D-tabel.
 - **Nieuwe documenten**: CMR (PDF), IATA (PDF), CIM (PDF), IMO Multimodal DG Form, VGM-verklaring (methode 1/2 met somcontrole), AWB Shipping Instructions, B/L / Sea Waybill Shipping Instructions, ADR/ADN-vervoersdocument, paklijst en afleverbon
 - **Juridische disclaimer**: aparte disclaimer-pagina in de app (NL/EN), `DISCLAIMER.md`, een concept-waarschuwing bij export en een disclaimer in de metadata/voettekst van gegenereerde documenten. Aansprakelijkheid volledig uitgesloten; Apache License 2.0 met Commons Clause expliciet benoemd.
 - Officiële regelgeving en vaste juridische teksten (CMR-paramountclausule, IATA-certificering/WARNING, IMO-verklaring, VGM SOLAS-referentie, ADR 5.4.1-omschrijvingsregel) plus links naar de officiële brontemplates per document
@@ -41,9 +56,9 @@ Multimodale transportkeuze.
 
 ### Gewijzigd
 
-- Wizard start met formulierenkeuze; appendix-vragen verschijnen alleen als Appendix A1/D is geselecteerd
+- Wizard start met formulierenkeuze
 - Handtekening-, carrier- en operationele velden worden nooit vooraf ingevuld; ze worden in de export als zodanig gemarkeerd
-- Navigatie: "Nieuwe appendix" heet nu "Nieuwe zending" en start bij de modaliteitskeuze
+- Navigatie: het startpunt heet "Nieuwe zending" en begint bij de modaliteitskeuze
 - Wizard-voortgangsbalk toont op mobiel iconen i.p.v. tekst (meer stappen passen op het scherm)
 
 ## [1.0.0] — 2026-07-11
@@ -52,9 +67,8 @@ Eerste stabiele release.
 
 ### Toegevoegd
 
-- Wizard: review-first flow met materiaalcatalogus, synoniemen en appendix-vragen
-- Appendix A1-export op basis van het officiële Excel-template
-- Appendix D (gevaarlijke stoffen) met ADR UN-lookup
+- Wizard: review-first flow met materiaalcatalogus en synoniemen
+- Gevaarlijke stoffen met ADR UN-lookup
 - Overzicht materieel: beheer, import via template (.xlsx/.csv/.txt)
 - Wizard-import: plakken en bestand uploaden met template
 - Gewicht per regel bewerkbaar; totaalgewicht proportioneel schaalbaar in samenvatting
@@ -74,4 +88,3 @@ Eerste stabiele release.
 
 ### Bekende beperkingen (opgelost in v1.1.0)
 
-- Alleen appendix/weg-flow; multimodaal volgde in v1.1.0

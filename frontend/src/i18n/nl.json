@@ -21,7 +21,7 @@
     "toggle": "Thema wisselen"
   },
   "dashboard": {
-    "privacy": "CargoPilot bewaart geen historie, geplakte data of appendix-bestanden op de server. Na download verdwijnt alles uit het geheugen."
+    "privacy": "CargoPilot bewaart geen historie, geplakte data of documentbestanden op de server. Na download verdwijnt alles uit het geheugen."
   },
   "login": {
     "title": "Inloggen",
@@ -31,22 +31,11 @@
     "setup": "Geen admin geconfigureerd. Stel ADMIN_USERNAME, ADMIN_EMAIL en ADMIN_PASSWORD in."
   },
   "wizard": {
-    "step1": "Input",
-    "step2": "Review",
-    "step3": "Export",
+    "step2": "Colli",
     "step3dg": "Gevaarlijke stoffen",
     "step4": "Export",
-    "paste": "Plak hier uw Excel-data",
-    "analyze": "Analyseer",
-    "strict": "Strict",
     "continue": "Doorgaan",
-    "autoLang": "Detecteer invoertaal automatisch",
-    "outputLang": "Appendix-taal",
     "download": "Download Excel",
-    "route": "Van - naar",
-    "baCode": "BA-code",
-    "annex": "Annex / serienr",
-    "date": "Datum",
     "summary": "Samenvatting",
     "products": "Producten",
     "adjustTotalWeight": "Totaalgewicht aanpassen",
@@ -58,19 +47,14 @@
     "back": "Terug",
     "recalculate": "Herbereken",
     "toExport": "Naar export",
-    "toQuestions": "Naar appendix-vragen",
     "toDg": "Naar gevaarlijke stoffen",
-    "stepQuestions": "Appendix-vragen",
-    "strictBlocked": "Strict mode: corrigeer fouten voor u verdergaat.",
-    "flagsTitle": "Appendix A1 — vlaggen",
-    "flagsIntro": "Vul per regel de Y/N-vlaggen in. De helpteksten komen uit het appendix-template (tabblad Invulinstructie).",
-    "dgIntro": "Vul appendix D in voor alle regels met gevaarlijke stoffen (UN-nummer).",
+    "dgIntro": "Vul de gevaarlijke-stoffengegevens in voor alle colli die als DG zijn gemarkeerd of waarin een UN-nummer is herkend.",
     "dgSource": "UN-gegevens kunnen automatisch worden opgehaald via de ADR-database (FreightUtils).",
     "dgLine": "Regel",
     "dgVehicle": "Voertuig / lading",
-    "dgVehicleHelp": "Omschrijving van het voertuig of de lading zoals in appendix D.",
+    "dgVehicleHelp": "Omschrijving van het voertuig of de lading van deze DG-positie.",
     "dgLookup": "UN-nummer opzoeken",
-    "dgIncluded": "Appendix D wordt meegeëxporteerd voor {{count}} regel(s).",
+    "dgIncluded": "Gevaarlijke stoffen ingevuld voor {{count}} collo('s); de gegevens worden opgenomen in de geselecteerde DG-documenten.",
     "dgPositionOf": "Positie {{current}} van {{total}}",
     "progressStep": "Stap {{current}} van {{total}}",
     "stepForms": "Formulieren",
@@ -78,44 +62,12 @@
     "toLines": "Naar artikelen",
     "toDetails": "Naar zendinggegevens",
     "changeModality": "Andere modaliteit kiezen",
-    "loading": "Laden…"
-  },
-  "questions": {
-    "yes": "Ja",
-    "no": "Nee",
-    "next": "Volgende",
-    "finish": "Afronden",
-    "progress": "Vraag {{current}} van {{total}}",
-    "selectHint": "Vink de posities aan waar dit van toepassing is.",
-    "loaded": "Zijn alle posities beladen?",
-    "loadedPick": "Welke posities zijn beladen?",
-    "stackable": "Zijn een of meer posities stapelbaar?",
-    "stackablePick": "Welke posities zijn stapelbaar?",
-    "rotatable": "Zijn een of meer posities kantelbaar?",
-    "rotatablePick": "Welke posities zijn kantelbaar?",
-    "weapons": "Bevat een of meer posities wapens of wapensystemen?",
-    "weaponsPick": "Welke posities bevatten wapens of wapensystemen?",
-    "conditioned": "Moet een of meer posities geconditioneerd vervoerd worden?",
-    "conditionedPick": "Welke posities moeten geconditioneerd vervoerd worden?",
-    "dangerous_goods": "Bevat een of meer posities gevaarlijke stoffen?",
-    "dangerous_goodsPick": "Welke posities bevatten gevaarlijke stoffen?",
-    "ammunition": "Bevat een of meer posities munitie?",
-    "ammunitionPick": "Welke posities bevatten munitie?",
-    "itar": "Bevat een of meer posities ITAR-items?",
-    "itarPick": "Welke posities bevatten ITAR-items?",
-    "tbb": "Bevat een of meer posities TBB?",
-    "tbbPick": "Welke posities bevatten TBB?",
-    "dgDetected": "UN-nummer gedetecteerd op {{lines}}.",
-    "temperatureTitle": "Temperatuur per positie",
-    "temperatureHint": "Geef de minimum- en maximumtemperatuur (°C) per geselecteerde positie.",
-    "temperaturePlaceholder": "bijv. -18 / +4",
-    "tbbTitle": "TBB-classificatie per positie",
-    "tbbHint": "Geef de TBB-categorie per geselecteerde positie.",
-    "tbbPlaceholder": "TBB-categorie"
+    "loading": "Laden…",
+    "next": "Volgende"
   },
   "review": {
-    "linesTitle": "Posities",
-    "intro": "Typ in het veld om te zoeken in materieel, profielen, materialen en referenties. Synoniemen zoals hoeklijn worden herkend; voeg afmetingen toe om te verfijnen.",
+    "linesTitle": "Colli",
+    "intro": "Voer per collo een omschrijving in: kies materieel uit de catalogus of typ een eigen omschrijving met afmetingen. Excel-plakken kan via Importeren.",
     "description": "Omschrijving",
     "descriptionPlaceholder": "Kies materieel of typ bijv. staal hoekprofiel 80x80x8x6000",
     "customDescription": "Gebruik als vrije omschrijving (automatisch matchen)",
@@ -137,7 +89,7 @@
     "addLine": "Regel toevoegen",
     "duplicateLine": "Regel kopiëren",
     "removeLine": "Verwijderen",
-    "noLines": "Voeg minstens één regel met omschrijving toe.",
+    "noLines": "Voeg minstens één collo met omschrijving toe.",
     "importExcel": "Importeren uit Excel",
     "importTitle": "Excel / tekst importeren",
     "importHint": "Plak gekopieerde kolommen uit Excel (omschrijving | aantal | eenheid), of download de template en upload een bestand.",
@@ -146,7 +98,9 @@
     "importReplace": "Vervang huidige regels",
     "importAppend": "Toevoegen aan huidige regels",
     "importConfirm": "Importeren",
-    "cancel": "Annuleren"
+    "cancel": "Annuleren",
+    "dangerousGoods": "Gevaarlijke stoffen-collo",
+    "dgDetected": "UN-nummer herkend"
   },
   "import": {
     "downloadTemplate": "Template downloaden",
@@ -154,21 +108,8 @@
     "parsingFile": "Bestand verwerken…",
     "importingFile": "Importeren…"
   },
-  "flags": {
-    "loaded": "Beladen",
-    "stackable": "Stapelbaar",
-    "rotatable": "Kantelbaar",
-    "weapons": "Wapens",
-    "conditioned": "Geconditioneerd",
-    "temperature_c": "Temperatuur (°C)",
-    "dangerous_goods": "Gevaarlijke stoffen",
-    "ammunition": "Munitie",
-    "itar": "ITAR",
-    "tbb": "TBB",
-    "tbb_category": "TBB-categorie"
-  },
   "messages": {
-    "dg_un_detected": "UN-nummer gedetecteerd — appendix D is verplicht"
+    "dg_un_detected": "UN-nummer gedetecteerd — collo gemarkeerd als gevaarlijke stoffen"
   },
   "status": {
     "ok": "OK",
@@ -190,7 +131,7 @@
     "search": "Zoeken op naam, SAP-code of alias…",
     "count": "{{count}} van {{total}} items",
     "sapCode": "SAP-code (MATNR)",
-    "specifications": "Specifications (appendix kolom D)",
+    "specifications": "Specifications (omschrijving)",
     "length": "Lengte (cm)",
     "width": "Breedte (cm)",
     "height": "Hoogte (cm)",
@@ -269,7 +210,7 @@
   },
   "legal": {
     "title": "Disclaimer en licentie",
-    "updated": "Laatst bijgewerkt: 12 juli 2026 · CargoPilot v1.2.0",
+    "updated": "Laatst bijgewerkt: 12 juli 2026 · CargoPilot v1.4.0",
     "intro": "CargoPilot is een hulpmiddel dat vervoers- en begeleidingsdocumenten voorbereidt op basis van uw invoer. De applicatie geeft geen juridisch, douanetechnisch of veiligheidskundig advies. Lees onderstaande voorwaarden zorgvuldig; door CargoPilot te gebruiken aanvaardt u ze.",
     "sections": [
       {

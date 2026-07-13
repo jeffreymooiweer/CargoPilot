@@ -20,18 +20,9 @@ if [ "$(id -u)" -eq 0 ]; then
   mkdir -p /data/templates /data/exports /data/logs
   chown -R "${PUID}:${PGID}" /data
 
-  if [ ! -f /data/templates/Appendix_A1D_template.xlsx ] && [ -f /app/templates/Appendix_A1D_template.xlsx ]; then
-    cp /app/templates/Appendix_A1D_template.xlsx /data/templates/
-    chown "${PUID}:${PGID}" /data/templates/Appendix_A1D_template.xlsx
-  fi
-
   exec gosu cargopilot uvicorn app.main:app --host 0.0.0.0 --port 8080
 fi
 
 mkdir -p /data/templates /data/exports /data/logs
-
-if [ ! -f /data/templates/Appendix_A1D_template.xlsx ] && [ -f /app/templates/Appendix_A1D_template.xlsx ]; then
-  cp /app/templates/Appendix_A1D_template.xlsx /data/templates/
-fi
 
 exec uvicorn app.main:app --host 0.0.0.0 --port 8080

@@ -1,8 +1,5 @@
 import json
 import logging
-import shutil
-import tempfile
-from pathlib import Path
 
 from sqlalchemy.orm import Session
 
@@ -19,22 +16,10 @@ def ensure_directories() -> None:
     settings = get_settings()
     for path in [settings.data_dir, settings.templates_dir, settings.logs_dir]:
         path.mkdir(parents=True, exist_ok=True)
-    template_name = "Appendix_A1D_template.xlsx"
-    dest = settings.templates_dir / template_name
-    if not dest.exists():
-        candidates = [
-            Path("/workspace/templates") / template_name,
-            settings.repo_templates_dir.resolve() / template_name,
-        ]
-        for src in candidates:
-            if src.exists():
-                shutil.copy2(src, dest)
-                logger.info("Copied template to %s", dest)
-                break
 
 
 def purge_sensitive_data(db: Session) -> None:
-    """Verwijder opgeslagen appendix-data: jobs in DB en eventuele exportbestanden."""
+    """Verwijder opgeslagen documentdata: jobs in DB en eventuele exportbestanden."""
     settings = get_settings()
     deleted_jobs = db.query(Job).delete()
     db.commit()

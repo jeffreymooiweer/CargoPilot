@@ -9,7 +9,6 @@ import {
   DocumentRegistry,
   LocalizedText,
 } from "../api/client";
-import AppendixQuestionsWizard from "../components/AppendixQuestionsWizard";
 import DangerousGoodsStep, { buildDgEntries } from "../components/DangerousGoodsStep";
 import DgCompliancePanel from "../components/DgCompliancePanel";
 import DocumentFieldsStep, { resolveSections } from "../components/DocumentFieldsStep";
@@ -35,7 +34,7 @@ const buttonSecondary =
 const buttonPrimary =
   "bg-brand-600 text-white px-5 py-2.5 rounded-lg font-medium hover:bg-brand-700 disabled:opacity-50 min-h-[44px] text-sm";
 
-type StepKey = "forms" | "lines" | "questions" | "dg" | "details" | "export";
+type StepKey = "forms" | "lines" | "dg" | "details" | "export";
 
 type DocStatus = "ready" | "draft" | "blocked" | "not_applicable";
 
@@ -92,7 +91,6 @@ export default function WizardPage() {
   const [draftLines, setDraftLines] = useState<DraftLine[]>([{ id: 1, description: "", quantity: 1, unit: "stuks" }]);
   const [nextId, setNextId] = useState(2);
   const [result, setResult] = useState<CalcResult | null>(null);
-  const [metadata, setMetadata] = useState({ route: "", ba_code: "", annex_serial: "", date: "" });
   const [dgEntries, setDgEntries] = useState<DgEntry[]>([]);
   const [loading, setLoading] = useState(false);
   const [exportingDoc, setExportingDoc] = useState<string | null>(null);
@@ -110,11 +108,8 @@ export default function WizardPage() {
 
   useEffect(() => {
     if (registry && modalityDef && selectedDocs === null) {
-      setSelectedDocs(
-        modalityDef.documents.filter(
-          (key) => registry.documents.find((d) => d.key === key)?.default_selected,
-        ),
-      );
+      const preferred = registry.modality_defaults?.[modalityDef.key];
+      setSelectedDocs(preferred && modalityDef.documents.includes(preferred) ? [preferred] : []);
     }
   }, [registry, modalityDef, selectedDocs]);
 
@@ -128,18 +123,14 @@ export default function WizardPage() {
     [selected, registry],
   );
 
-  const genericDocs = useMemo(
-    () => selectedDefinitions.filter((d) => d.exporter !== "appendix_template"),
-    [selectedDefinitions],
-  );
-  const appendixSelected = selected.includes("appendix_a1d");
+  const genericDocs = selectedDefinitions;
 
   const needsDg = useMemo(
     () =>
       result?.lines.some(
         (line) =>
           line.include &&
-          (line.appendix_flags?.dangerous_goods === "Y" || (line.detected_un_numbers?.length ?? 0) > 0),
+          (line.dangerous_goods || (line.detected_un_numbers?.length ?? 0) > 0),
       ) ?? false,
     [result],
   );
@@ -164,17 +155,15 @@ export default function WizardPage() {
 
   const steps: StepKey[] = useMemo(() => {
     const list: StepKey[] = ["forms", "lines"];
-    if (appendixSelected) list.push("questions");
     if (needsDg) list.push("dg");
     if (genericDocs.length > 0) list.push("details");
     list.push("export");
     return list;
-  }, [appendixSelected, needsDg, genericDocs.length]);
+  }, [needsDg, genericDocs.length]);
 
   const stepLabels: Record<StepKey, string> = {
     forms: t("wizard.stepForms"),
     lines: t("wizard.step2"),
-    questions: t("wizard.stepQuestions"),
     dg: t("wizard.step3dg"),
     details: t("wizard.stepDetails"),
     export: t("wizard.step4"),
@@ -219,8 +208,17 @@ export default function WizardPage() {
         input_language: null,
         line_overrides: result ? weightOverridesFromLines(result.lines) : undefined,
       });
-      setResult(res);
-      return res;
+      // DG-vinkjes van de colli toepassen (zelfde volgorde als niet-lege regels).
+      const flagged = draftLines.filter((l) => l.description.trim());
+      const withDg = {
+        ...res,
+        lines: res.lines.map((line, i) => ({
+          ...line,
+          dangerous_goods: Boolean(line.dangerous_goods || flagged[i]?.dangerous_goods),
+        })),
+      };
+      setResult(withDg);
+      return withDg;
     } catch (e) {
       setError(String(e));
       return null;
@@ -282,45 +280,17 @@ export default function WizardPage() {
   };
 
   const goFromLines = async () => {
-    const res = result ?? (await calculateFromDraft());
+    const res = await calculateFromDraft();
     if (!res) return;
-    if (appendixSelected) {
-      setStepKey("questions");
-      return;
-    }
     const hasDg = res.lines.some(
-      (line) =>
-        line.include &&
-        (line.appendix_flags?.dangerous_goods === "Y" || (line.detected_un_numbers?.length ?? 0) > 0),
+      (line) => line.include && (line.dangerous_goods || (line.detected_un_numbers?.length ?? 0) > 0),
     );
     if (hasDg) {
-      if (dgEntries.length === 0) setDgEntries(buildDgEntries(res.lines));
+      setDgEntries(buildDgEntries(res.lines));
       setStepKey("dg");
     } else if (genericDocs.length > 0) {
       setStepKey("details");
     } else {
-      setStepKey("export");
-    }
-  };
-
-  const appendixLang = (lines: CalcResult["lines"]) => {
-    const langs = lines.map((l) => l.input_language).filter(Boolean);
-    if (langs.length === 0) return "nl";
-    const enCount = langs.filter((l) => l === "en").length;
-    return enCount > langs.length / 2 ? "en" : "nl";
-  };
-
-  const finishQuestions = (updatedLines: CalcResult["lines"]) => {
-    setResult((prev) => (prev ? { ...prev, lines: updatedLines, totals: recalcTotals(updatedLines) } : prev));
-    const hasDg = updatedLines.some((line) => line.include && line.appendix_flags?.dangerous_goods === "Y");
-    if (hasDg) {
-      setDgEntries(buildDgEntries(updatedLines));
-      setStepKey("dg");
-    } else if (genericDocs.length > 0) {
-      setDgEntries([]);
-      setStepKey("details");
-    } else {
-      setDgEntries([]);
       setStepKey("export");
     }
   };
@@ -372,25 +342,6 @@ export default function WizardPage() {
     }
     if (missing.length > 0) return { status: "draft", missing, waitingCarrier };
     return { status: "ready", missing: [], waitingCarrier };
-  };
-
-  const exportAppendixFile = async () => {
-    if (!result) return;
-    setExportingDoc("appendix_a1d");
-    setError("");
-    try {
-      await api.exportAppendix({
-        lines: result.lines,
-        output_language: appendixLang(result.lines),
-        metadata: { ...metadata, output_language: appendixLang(result.lines) },
-        dangerous_goods: needsDg ? dgEntries : undefined,
-        format: "pdf",
-      });
-    } catch (e) {
-      setError(String(e));
-    } finally {
-      setExportingDoc(null);
-    }
   };
 
   const exportGenericDoc = async (doc: DocumentDefinition) => {
@@ -499,14 +450,10 @@ export default function WizardPage() {
               {t("wizard.recalculate")}
             </button>
             <button type="button" onClick={goFromLines} disabled={loading} className={`${buttonPrimary} sm:ml-auto`}>
-              {appendixSelected ? t("wizard.toQuestions") : t("wizard.continue")}
+              {t("wizard.continue")}
             </button>
           </div>
         </div>
-      )}
-
-      {stepKey === "questions" && result && (
-        <AppendixQuestionsWizard lines={result.lines} onComplete={finishQuestions} onBack={() => setStepKey("lines")} />
       )}
 
       {stepKey === "dg" && result && (
@@ -559,15 +506,6 @@ export default function WizardPage() {
                 {t("wizard.dgIncluded", { count: dgEntries.length })}
               </p>
             )}
-            {appendixSelected && (
-              <div className="grid gap-3">
-                <Field label={t("wizard.date")} value={metadata.date} onChange={(v) => setMetadata({ ...metadata, date: v })} />
-                <Field label={t("wizard.route")} value={metadata.route} onChange={(v) => setMetadata({ ...metadata, route: v })} />
-                <Field label={t("wizard.baCode")} value={metadata.ba_code} onChange={(v) => setMetadata({ ...metadata, ba_code: v })} />
-                <Field label={t("wizard.annex")} value={metadata.annex_serial} onChange={(v) => setMetadata({ ...metadata, annex_serial: v })} />
-              </div>
-            )}
-
             <div className="space-y-3">
               <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
                 <h4 className="text-sm font-semibold text-slate-900 dark:text-slate-100">{t("wizard.products")}</h4>
@@ -648,10 +586,7 @@ export default function WizardPage() {
             </p>
             <div className="space-y-2">
               {selectedDefinitions.map((doc) => {
-                const isAppendix = doc.exporter === "appendix_template";
-                const info = isAppendix
-                  ? { status: "ready" as DocStatus, missing: [], waitingCarrier: false }
-                  : docStatus(doc);
+                const info = docStatus(doc);
                 const busy = exportingDoc === doc.key;
                 return (
                   <div key={doc.key} className="rounded-xl border border-slate-200 p-3 dark:border-slate-700 sm:p-4">
@@ -679,7 +614,7 @@ export default function WizardPage() {
                       </div>
                       <button
                         type="button"
-                        onClick={() => (isAppendix ? exportAppendixFile() : exportGenericDoc(doc))}
+                        onClick={() => exportGenericDoc(doc)}
                         disabled={busy || info.status === "blocked" || info.status === "not_applicable" || info.status === "draft"}
                         className={buttonPrimary}
                       >

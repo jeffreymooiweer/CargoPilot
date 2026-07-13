@@ -1,15 +1,10 @@
-from datetime import datetime
-
-from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException
-from fastapi.responses import FileResponse
+from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
 from app.core.database import get_db
 from app.core.deps import get_current_user
 from app.models.user import User
-from app.schemas import CalculateRequest, ExportRequest, ParseRequest
-from app.services.documents import render_appendix_pdf
-from app.services.exporter.appendix_exporter import export_appendix
+from app.schemas import CalculateRequest, ParseRequest
 from app.services.pipeline import parse_and_calculate
 
 router = APIRouter(tags=["workflow"])
@@ -61,44 +56,3 @@ def calculate(payload: CalculateRequest, user: User = Depends(get_current_user),
         mode=payload.mode,
         line_overrides=payload.line_overrides,
     )
-
-
-@router.post("/export")
-def export_appendix_file(
-    payload: ExportRequest,
-    background_tasks: BackgroundTasks,
-    user: User = Depends(get_current_user),
-):
-    if not payload.lines:
-        raise HTTPException(status_code=400, detail="lines required")
-    ref = f"cp-{datetime.now().strftime('%Y%m%d%H%M%S')}"
-    if payload.format == "pdf":
-        out_path = render_appendix_pdf(
-            payload.lines,
-            payload.dangerous_goods,
-            payload.metadata,
-            payload.output_language,
-        )
-        background_tasks.add_task(_delete_file, out_path)
-        return FileResponse(path=out_path, filename=f"appendix_{ref}.pdf", media_type="application/pdf")
-    out_path = export_appendix(
-        payload.lines,
-        payload.metadata,
-        payload.output_language,
-        job_ref=ref,
-        template_name=payload.template_name,
-        dangerous_goods=payload.dangerous_goods,
-    )
-    background_tasks.add_task(_delete_file, out_path)
-    return FileResponse(
-        path=out_path,
-        filename=f"appendix_{ref}.xlsx",
-        media_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-    )
-
-
-def _delete_file(path) -> None:
-    try:
-        path.unlink(missing_ok=True)
-    except OSError:
-        pass

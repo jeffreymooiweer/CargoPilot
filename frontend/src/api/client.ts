@@ -65,23 +65,6 @@ export const api = {
     request<CalcResult>("/calculate", { method: "POST", body: JSON.stringify(payload) }),
   dgInstructions: () => request<DgInstructions>("/dg/instructions"),
   dgLookup: (un: string) => request<DgLookupResult>(`/dg/lookup?un=${encodeURIComponent(un)}`),
-  exportAppendix: async (payload: Record<string, unknown>) => {
-    const res = await fetch(`${API_BASE}/export`, {
-      method: "POST",
-      credentials: "include",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload),
-    });
-    if (!res.ok) throw new Error("Export failed");
-    const blob = await res.blob();
-    const ext = (res.headers.get("content-type") || "").includes("pdf") ? "pdf" : "xlsx";
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = `appendix_${Date.now()}.${ext}`;
-    a.click();
-    URL.revokeObjectURL(url);
-  },
   listUsers: () => request<User[]>("/users"),
   createUser: (payload: Record<string, unknown>) =>
     request<User>("/users", { method: "POST", body: JSON.stringify(payload) }),
@@ -146,20 +129,6 @@ export interface User {
   active: boolean;
 }
 
-export interface AppendixFlags {
-  loaded?: string;
-  stackable?: string;
-  rotatable?: string;
-  weapons?: string;
-  conditioned?: string;
-  temperature_c?: string;
-  dangerous_goods?: string;
-  ammunition?: string;
-  itar?: string;
-  tbb?: string;
-  tbb_category?: string;
-}
-
 export interface LineItem {
   line_id: number;
   raw: string;
@@ -180,7 +149,7 @@ export interface LineItem {
   messages: string[];
   include: boolean;
   input_language?: string;
-  appendix_flags?: AppendixFlags;
+  dangerous_goods?: boolean;
   detected_un_numbers?: string[];
 }
 
@@ -222,7 +191,7 @@ export interface DgProduct {
 }
 
 export interface DgEntry {
-  a1_line_id: number;
+  line_id: number;
   vehicle: string;
   registration?: string;
   products: DgProduct[];
@@ -242,9 +211,8 @@ export interface DgLookupResult {
 }
 
 export interface DgInstructions {
-  a1_flags: Record<string, { nl: string; en: string }>;
-  appendix_d_intro: { nl: string; en: string };
-  appendix_d_fields: Record<string, { label: { nl: string; en: string }; help: { nl: string; en: string } }>;
+  dg_intro: { nl: string; en: string };
+  dg_fields: Record<string, { label: { nl: string; en: string }; help: { nl: string; en: string } }>;
 }
 
 export interface CatalogSearchHit {
@@ -324,7 +292,7 @@ export interface DocumentDefinition {
   short_label: LocalizedText;
   category: string;
   issue_status: LocalizedText;
-  exporter: "appendix_template" | "generic" | "pdf_template";
+  exporter: "generic" | "pdf_template";
   output_format?: "xlsx" | "pdf";
   dg_profile: string | null;
   dg_only?: boolean;
@@ -346,6 +314,7 @@ export interface DocumentRegistry {
   modalities: ModalityDefinition[];
   shared_sections: DocumentSection[];
   documents: DocumentDefinition[];
+  modality_defaults?: Record<string, string>;
 }
 
 export interface DocumentExportPayload extends Record<string, unknown> {

@@ -269,6 +269,46 @@
         "nl": "Emergency Schedule-code voor zeevervoer (IMDG), indien gebruikt in het operationele proces.",
         "en": "Emergency Schedule code for sea transport (IMDG), if used operationally."
       }
+    },
+    "transport_category": {
+      "label": {
+        "nl": "ADR-transportcategorie (0-4)",
+        "en": "ADR transport category (0-4)"
+      },
+      "help": {
+        "nl": "Kolom 15 van ADR tabel A. Bepaalt de puntenfactor voor de 1.1.3.6-vrijstelling: cat 1 ×50, cat 2 ×3, cat 3 ×1, cat 4 ×0; cat 0 = geen vrijstelling mogelijk. Wordt waar mogelijk automatisch ingevuld via de UN-lookup.",
+        "en": "Column 15 of ADR Table A. Determines the points factor for the 1.1.3.6 exemption: cat 1 ×50, cat 2 ×3, cat 3 ×1, cat 4 ×0; cat 0 = no exemption possible. Auto-filled from the UN lookup where available."
+      }
+    },
+    "adr_total_quantity": {
+      "label": {
+        "nl": "Totale hoeveelheid (kg netto / liter)",
+        "en": "Total quantity (net kg / litres)"
+      },
+      "help": {
+        "nl": "Totale hoeveelheid van deze stof op de vervoerseenheid, in de eenheid van ADR 1.1.3.6.3 (vloeistoffen: liter; vaste stoffen: netto kg; gassen: waterinhoud in liter). Nodig voor de 1000-puntenberekening.",
+        "en": "Total quantity of this substance on the transport unit, in the unit of ADR 1.1.3.6.3 (liquids: litres; solids: net kg; gases: water capacity in litres). Required for the 1000-point calculation."
+      }
+    },
+    "q_net_quantity": {
+      "label": {
+        "nl": "Netto hoeveelheid per verpakking (Q)",
+        "en": "Net quantity per package (Q)"
+      },
+      "help": {
+        "nl": "Netto hoeveelheid van deze stof in de combinatieverpakking, voor de Q-waardeberekening bij 'all packed in one' (IATA 5.0.2.11).",
+        "en": "Net quantity of this substance in the combination packaging, for the Q value calculation for 'all packed in one' (IATA 5.0.2.11)."
+      }
+    },
+    "q_max_net_quantity": {
+      "label": {
+        "nl": "Max. netto per verpakking volgens PI (Q)",
+        "en": "Max net per package per PI (Q)"
+      },
+      "help": {
+        "nl": "Maximale netto hoeveelheid per verpakking volgens de packing instruction (IATA tabel 4.2) voor het gebruikte vliegtuigtype. Nodig voor Q = Σ n/M ≤ 1.",
+        "en": "Maximum net quantity per package per the packing instruction (IATA table 4.2) for the aircraft type used. Required for Q = Σ n/M ≤ 1."
+      }
     }
   }
 }

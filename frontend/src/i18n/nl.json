@@ -301,5 +301,37 @@
         "body": "Op deze disclaimer is Nederlands recht van toepassing, voor zover dwingend recht zich daar niet tegen verzet. Indien een bepaling nietig of niet-afdwingbaar wordt geacht, blijven de overige bepalingen onverkort van kracht."
       }
     ]
+  },
+  "compliance": {
+    "title": "Nalevingscontrole gevaarlijke stoffen",
+    "intro": "Automatische controles voor {{profiles}} op basis van uw invoer.",
+    "checking": "Controleren…",
+    "recheck": "Opnieuw controleren",
+    "adrPointsTitle": "ADR 1.1.3.6 — 1000-puntenregel",
+    "totalPoints": "Totaal: {{total}} van max. {{threshold}} punten",
+    "colProduct": "Product",
+    "colCategory": "Cat.",
+    "colQuantity": "Hoeveelheid",
+    "colFactor": "Factor",
+    "colPoints": "Punten",
+    "status": {
+      "exempt_possible": "Vrijstelling 1.1.3.6 mogelijk",
+      "above_threshold": "Boven 1000 punten — volledige ADR-plichten",
+      "not_exempt": "Categorie 0 — geen vrijstelling mogelijk",
+      "incomplete": "Onvolledig — vul categorie en hoeveelheid in"
+    },
+    "incompleteHint": "Vul de ADR-transportcategorie en totale hoeveelheid in voor: {{products}}. Gebruik de UN-lookup of ADR tabel A kolom 15.",
+    "category0Hint": "Transportcategorie 0 ({{products}}): vervoer onder de 1.1.3.6-vrijstelling is niet toegestaan; alle ADR-bepalingen gelden volledig.",
+    "aboveThresholdHint": "Boven de 1000 punten gelden o.a. oranje borden, ADR-vakbekwaamheidscertificaat van de chauffeur, schriftelijke instructies en tunnelbeperkingen.",
+    "exemptDetails": "Wat betekent de vrijstelling?",
+    "exemptFrom": "Vrijgesteld van (o.a.):",
+    "stillRequired": "Blijft wél verplicht:",
+    "segregationTitle": "Samenlading en segregatie",
+    "noSegregationIssues": "Geen samenladings- of segregatieconflicten gevonden binnen de ingevoerde posities.",
+    "qTitle": "IATA Q-waarde ('all packed in one')",
+    "qValueFor": "Positie {{position}}: Q = {{value}}",
+    "qExceeded": "OVERSCHRIJDT het maximum van 1,0",
+    "caoHint": "Cargo Aircraft Only van toepassing op: {{products}}. Vermeld dit op de Shipper's Declaration en de AWB-handling information.",
+    "disclaimer": "Deze controles zijn begeleiding op basis van ADR 2025 en IATA DGR 67e editie en vervangen geen veiligheidsadviseur of de officiële regelgeving. Zie de disclaimer."
   }
 }

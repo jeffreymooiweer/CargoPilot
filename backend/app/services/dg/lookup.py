@@ -19,6 +19,7 @@ def _normalize_entry(item: dict) -> dict:
         "limited_quantity": item.get("limited_quantity"),
         "excepted_quantity": item.get("excepted_quantity"),
         "tunnel_restriction_code": item.get("tunnel_restriction_code"),
+        "transport_category": item.get("transport_category"),
         "source": "freightutils.com/api/adr (ADR 2025 / UNECE)",
     }
 

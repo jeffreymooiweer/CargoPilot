@@ -301,5 +301,37 @@
         "body": "This disclaimer is governed by Dutch law, to the extent not precluded by mandatory law. If any provision is held void or unenforceable, the remaining provisions remain in full force."
       }
     ]
+  },
+  "compliance": {
+    "title": "Dangerous goods compliance check",
+    "intro": "Automatic checks for {{profiles}} based on your input.",
+    "checking": "Checking…",
+    "recheck": "Re-check",
+    "adrPointsTitle": "ADR 1.1.3.6 — 1000 points rule",
+    "totalPoints": "Total: {{total}} of max {{threshold}} points",
+    "colProduct": "Product",
+    "colCategory": "Cat.",
+    "colQuantity": "Quantity",
+    "colFactor": "Factor",
+    "colPoints": "Points",
+    "status": {
+      "exempt_possible": "1.1.3.6 exemption possible",
+      "above_threshold": "Above 1000 points — full ADR obligations",
+      "not_exempt": "Category 0 — no exemption possible",
+      "incomplete": "Incomplete — enter category and quantity"
+    },
+    "incompleteHint": "Enter the ADR transport category and total quantity for: {{products}}. Use the UN lookup or ADR Table A column 15.",
+    "category0Hint": "Transport category 0 ({{products}}): carriage under the 1.1.3.6 exemption is not permitted; all ADR provisions apply in full.",
+    "aboveThresholdHint": "Above 1000 points, orange plates, an ADR driver training certificate, instructions in writing and tunnel restrictions apply, among other things.",
+    "exemptDetails": "What does the exemption mean?",
+    "exemptFrom": "Exempt from (among others):",
+    "stillRequired": "Still required:",
+    "segregationTitle": "Mixed loading and segregation",
+    "noSegregationIssues": "No mixed-loading or segregation conflicts found within the entered positions.",
+    "qTitle": "IATA Q value ('all packed in one')",
+    "qValueFor": "Position {{position}}: Q = {{value}}",
+    "qExceeded": "EXCEEDS the maximum of 1.0",
+    "caoHint": "Cargo Aircraft Only applies to: {{products}}. State this on the Shipper's Declaration and the AWB handling information.",
+    "disclaimer": "These checks are guidance based on ADR 2025 and IATA DGR 67th edition and do not replace a safety adviser or the official regulations. See the disclaimer."
   }
 }

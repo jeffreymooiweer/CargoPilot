@@ -2,6 +2,21 @@
 
 Alle noemenswaardige wijzigingen worden gedocumenteerd volgens [Semantic Versioning](https://semver.org/).
 
+## [1.3.0] — 2026-07-13
+
+Nalevingsbegeleiding gevaarlijke stoffen (ADR & IATA).
+
+### Toegevoegd
+
+- **ADR 1.1.3.6 puntencalculator (1000-puntenregel)**: per DG-product transportcategorie (0-4) en totale hoeveelheid; automatische berekening met factoren ×50/×3/×1/×0, statussen "vrijstelling mogelijk", "boven 1000 punten", "categorie 0 — geen vrijstelling" en "onvolledig", inclusief uitleg wat onder de vrijstelling vervalt en wat verplicht blijft
+- **Samenladingscontrole ADR 7.5.2**: waarschuwing bij klasse 1 (behalve 1.4S) samen met andere klassen, verschillende compatibiliteitsgroepen binnen klasse 1 (7.5.2.2) en CV28/7.5.4-scheiding van levensmiddelen (etiketten 6.1/6.2 en klasse 9 UN 2212/2315/2590/3151/3152/3245)
+- **IATA-segregatie (Table 9.3.A)**: controle op onverenigbare colli (klasse 1 excl. 1.4S × 2.1/3/4.1/5.1; klasse 8 × 4.3) inclusief nevengevaren, plus de lithiumbatterij-regel (UN 3090/3480 gescheiden van 1/2.1/3/4.1/5.1)
+- **IATA Q-waarde (5.0.2.11)**: automatische berekening Q = Σ n/M met afronding naar boven op één decimaal en waarschuwing bij overschrijding van 1,0
+- **Nalevingspaneel** in de gevaarlijke-stoffenstap en de exportsamenvatting, met bronvermeldingen (ADR 2025, IATA DGR 67e editie) en herbereken-knop
+- Nieuwe DG-velden met helpteksten: ADR-transportcategorie, totale hoeveelheid (1.1.3.6.3-eenheden), netto per verpakking en max. netto per verpakking (Q); UN-lookup vult de transportcategorie voor waar de ADR-database die levert
+- Cargo Aircraft Only-signalering richting Shipper's Declaration en AWB-handling information
+- Nieuw endpoint: `POST /api/dg/compliance`; regelconfiguratie in `backend/app/config/dg_compliance.json`
+
 ## [1.2.0] — 2026-07-12
 
 Multimodale transportkeuze.

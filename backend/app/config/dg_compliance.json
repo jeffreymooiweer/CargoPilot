@@ -1,0 +1,99 @@
+{
+  "version": "2026-07",
+  "sources": {
+    "adr_points": "ADR 2025 (UNECE) 1.1.3.6 — vrijstelling in samenhang met vervoerde hoeveelheden per vervoerseenheid",
+    "adr_mixed_loading": "ADR 2025 (UNECE) 7.5.2 (samenladingsverbod) en 7.5.4 / CV28 (levensmiddelen)",
+    "iata_segregation": "IATA DGR 67e editie (2026) 9.3.2, Table 9.3.A — Segregation of Packages",
+    "q_value": "IATA DGR 67e editie (2026) 5.0.2.11 — Q-waarde voor 'all packed in one'"
+  },
+  "adr_points": {
+    "threshold": 1000,
+    "categories": {
+      "0": { "factor": null, "max_quantity": 0 },
+      "1": { "factor": 50, "max_quantity": 20 },
+      "2": { "factor": 3, "max_quantity": 333 },
+      "3": { "factor": 1, "max_quantity": 1000 },
+      "4": { "factor": 0, "max_quantity": null }
+    },
+    "quantity_units": {
+      "nl": "Hoeveelheid per ADR 1.1.3.6.3: voorwerpen = bruto kg (klasse 1: netto kg ontplofbare stof); vaste stoffen en vloeibaar gemaakte/opgeloste gassen = netto kg; vloeistoffen = liter; samengeperste/geadsorbeerde gassen en chemicaliën onder druk = waterinhoud van de houder in liter.",
+      "en": "Quantity per ADR 1.1.3.6.3: articles = gross kg (class 1: net explosive kg); solids and liquefied/dissolved gases = net kg; liquids = litres; compressed/adsorbed gases and chemicals under pressure = water capacity of the receptacle in litres."
+    },
+    "exempt_provisions": {
+      "nl": [
+        "Oranje borden en grote etiketten op de vervoerseenheid (hoofdstuk 5.3)",
+        "Schriftelijke instructies (5.4.3)",
+        "ADR-vakbekwaamheidscertificaat chauffeur (8.2.1) — bewustwordingsopleiding 8.2.3 blijft vereist",
+        "Beveiligingsplan hoofdstuk 1.10 (behalve hoge-risicogoederen)",
+        "Tunnelbeperkingen (8.6) gelden niet voor de vervoerseenheid"
+      ],
+      "en": [
+        "Orange plates and placards on the transport unit (chapter 5.3)",
+        "Instructions in writing (5.4.3)",
+        "ADR driver training certificate (8.2.1) — awareness training 8.2.3 remains required",
+        "Security plan chapter 1.10 (except high consequence dangerous goods)",
+        "Tunnel restrictions (8.6) do not apply to the transport unit"
+      ]
+    },
+    "still_required": {
+      "nl": [
+        "Vervoersdocument met de vermelding van de totale hoeveelheid per transportcategorie",
+        "UN-goedgekeurde verpakkingen met juiste kenmerking en etikettering",
+        "2 kg poederblusser aan boord (8.1.4)",
+        "Bewustwordingsopleiding personeel (8.2.3) met registratie",
+        "Samenladingsverboden (7.5.2) en CV-bepalingen blijven van toepassing"
+      ],
+      "en": [
+        "Transport document stating the total quantity per transport category",
+        "UN-approved packagings with correct marking and labelling",
+        "2 kg dry powder fire extinguisher on board (8.1.4)",
+        "Awareness training for staff (8.2.3) with a record kept",
+        "Mixed loading prohibitions (7.5.2) and CV provisions still apply"
+      ]
+    }
+  },
+  "adr_mixed_loading": {
+    "class1_exception_compat_group": "S",
+    "cv28_class9_un_numbers": ["2212", "2315", "2590", "3151", "3152", "3245"],
+    "rules": {
+      "class1_with_others": {
+        "nl": "Colli met etiket klasse 1 (behalve 1.4S) mogen volgens ADR 7.5.2.1 niet met colli van andere klassen in één voertuig of container worden geladen. Uitzonderingen bestaan o.a. voor 1.4S, springstoffen met ammoniumnitraat (UN 1942/2067) en reddingsmiddelen (UN 2990/3072/3268).",
+        "en": "Packages bearing class 1 labels (except 1.4S) must not be loaded with packages of other classes in the same vehicle or container per ADR 7.5.2.1. Exceptions exist e.g. for 1.4S, blasting explosives with ammonium nitrate (UN 1942/2067) and life-saving appliances (UN 2990/3072/3268)."
+      },
+      "class1_compat_groups": {
+        "nl": "Colli van klasse 1 met verschillende compatibiliteitsgroepen mogen alleen samen worden geladen als tabel 7.5.2.2 dat toestaat. Controleer de compatibiliteitsgroepen ({groups}).",
+        "en": "Class 1 packages of different compatibility groups may only be loaded together where table 7.5.2.2 permits. Check the compatibility groups ({groups})."
+      },
+      "cv28_foodstuffs": {
+        "nl": "CV28/7.5.4: colli met etiket 6.1 of 6.2, en klasse 9-colli met UN 2212, 2315, 2590, 3151, 3152 of 3245, mogen niet op of direct naast colli met levensmiddelen, genotmiddelen of diervoeders worden geladen.",
+        "en": "CV28/7.5.4: packages bearing labels 6.1 or 6.2, and class 9 packages of UN 2212, 2315, 2590, 3151, 3152 or 3245, must not be stacked on or loaded in immediate proximity to packages containing foodstuffs, other articles of consumption or animal feeds."
+      }
+    }
+  },
+  "iata_segregation": {
+    "note": {
+      "nl": "IATA Table 9.3.A: divisie 1.4S en de klassen 6 en 7 zijn uitgesloten van de tabel en vereisen geen segregatie. Nevengevaren tellen mee.",
+      "en": "IATA Table 9.3.A: division 1.4S and classes 6 and 7 are excluded from the table and require no segregation. Subsidiary hazards count."
+    },
+    "incompatible_pairs": [
+      ["1", "2.1"],
+      ["1", "3"],
+      ["1", "4.1"],
+      ["1", "5.1"],
+      ["4.3", "8"]
+    ],
+    "lithium_battery_un_numbers": ["3090", "3480"],
+    "lithium_incompatible_with": ["1", "2.1", "3", "4.1", "5.1"],
+    "lithium_note": {
+      "nl": "UN 3090/3480 (lithiumbatterijen, los verpakt) moeten worden gescheiden van klasse 1 (behalve 1.4S), divisie 2.1, klasse 3, divisie 4.1 en divisie 5.1 (IATA DGR 9.3.2).",
+      "en": "UN 3090/3480 (lithium batteries, packed alone) must be segregated from class 1 (except 1.4S), division 2.1, class 3, division 4.1 and division 5.1 (IATA DGR 9.3.2)."
+    }
+  },
+  "q_value": {
+    "limit": 1.0,
+    "note": {
+      "nl": "IATA DGR 5.0.2.11: bij verschillende gevaarlijke stoffen in één combinatieverpakking ('all packed in one') geldt Q = n1/M1 + n2/M2 + … ≤ 1, waarbij n de netto hoeveelheid per stof is en M de maximale netto hoeveelheid per verpakking volgens de packing instruction. Q wordt naar boven afgerond op één decimaal en op de Shipper's Declaration vermeld.",
+      "en": "IATA DGR 5.0.2.11: for different dangerous goods in one combination packaging ('all packed in one'), Q = n1/M1 + n2/M2 + … ≤ 1, where n is the net quantity per substance and M the maximum net quantity per package per the packing instruction. Q is rounded up to the first decimal and shown on the Shipper's Declaration."
+    }
+  }
+}

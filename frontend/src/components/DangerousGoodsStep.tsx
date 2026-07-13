@@ -112,6 +112,9 @@ export default function DangerousGoodsStep({ lines, entries, onChange, perPositi
         subsidiary_risks: data.subsidiary_risks || "",
         packing_group: data.packing_group || "",
         packing_instruction: data.packing_instruction || "",
+        ...(data.transport_category != null && data.transport_category !== ""
+          ? { transport_category: String(data.transport_category) }
+          : {}),
       });
     } catch (e) {
       setLookupError(String(e));

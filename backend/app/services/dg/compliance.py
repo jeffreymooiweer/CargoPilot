@@ -71,7 +71,7 @@ def _product_label(entry: dict[str, Any], product: dict[str, Any], index: int) -
     un = str(product.get("un_number") or "").strip()
     name = str(product.get("proper_shipping_name") or "").strip()
     base = " ".join(x for x in [f"UN {un}" if un else "", name] if x)
-    return base or f"{entry.get('vehicle') or entry.get('a1_line_id') or '?'} #{index + 1}"
+    return base or f"{entry.get('vehicle') or entry.get('line_id') or '?'} #{index + 1}"
 
 
 def _iter_products(entries: list[dict[str, Any]]):
@@ -278,7 +278,7 @@ def check_q_value(entries: list[dict[str, Any]], language: str = "nl") -> list[d
         q_raw = sum(c["ratio"] for c in components)
         q_rounded = math.ceil(q_raw * 10) / 10  # naar boven afronden op 1 decimaal
         results.append({
-            "position": entry.get("vehicle") or entry.get("a1_line_id"),
+            "position": entry.get("vehicle") or entry.get("line_id"),
             "components": components,
             "q_value": q_rounded,
             "exceeded": q_rounded > rules["limit"],

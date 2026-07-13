@@ -46,7 +46,6 @@
         "en": "Transport by road with CMR consignment note and ADR documents."
       },
       "documents": [
-        "appendix_a1d",
         "cmr",
         "adr_transport_doc",
         "packing_list",
@@ -64,7 +63,6 @@
         "en": "Transport by rail with CIM consignment note and RID data."
       },
       "documents": [
-        "appendix_a1d",
         "cim",
         "packing_list",
         "delivery_note"
@@ -81,7 +79,6 @@
         "en": "Ocean transport with B/L instructions, VGM and IMO dangerous goods form."
       },
       "documents": [
-        "appendix_a1d",
         "bl_si",
         "vgm",
         "imo_dgd",
@@ -100,7 +97,6 @@
         "en": "Transport by inland barge with ADN transport document and VGM."
       },
       "documents": [
-        "appendix_a1d",
         "adn_transport_doc",
         "vgm",
         "packing_list",
@@ -118,7 +114,6 @@
         "en": "Air transport with AWB instructions and IATA dangerous goods declaration."
       },
       "documents": [
-        "appendix_a1d",
         "awb_si",
         "iata_dgd",
         "packing_list",
@@ -136,7 +131,6 @@
         "en": "Combination of modes; all forms available."
       },
       "documents": [
-        "appendix_a1d",
         "cmr",
         "cim",
         "bl_si",
@@ -369,27 +363,6 @@
     }
   ],
   "documents": [
-    {
-      "key": "appendix_a1d",
-      "label": {
-        "nl": "Appendix A1/D",
-        "en": "Appendix A1/D"
-      },
-      "short_label": {
-        "nl": "Appendix A1/D",
-        "en": "Appendix A1/D"
-      },
-      "category": "internal",
-      "issue_status": {
-        "nl": "Intern document — export op basis van het officiële template",
-        "en": "Internal document — exported from the official template"
-      },
-      "exporter": "appendix_template",
-      "dg_profile": null,
-      "default_selected": true,
-      "sections": [],
-      "output_format": "pdf"
-    },
     {
       "key": "cmr",
       "label": {
@@ -2182,5 +2155,13 @@
       ],
       "output_format": "pdf"
     }
-  ]
+  ],
+  "modality_defaults": {
+    "road": "cmr",
+    "rail": "cim",
+    "sea": "bl_si",
+    "inland": "packing_list",
+    "air": "awb_si",
+    "multimodal": "cmr"
+  }
 }

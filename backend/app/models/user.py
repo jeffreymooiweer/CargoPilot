@@ -24,7 +24,7 @@ class Job(Base):
     __tablename__ = "jobs"
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
-    title: Mapped[str] = mapped_column(String(255), default="New appendix")
+    title: Mapped[str] = mapped_column(String(255), default="New shipment")
     status: Mapped[str] = mapped_column(String(32), default="draft")
     input_raw: Mapped[str | None] = mapped_column(Text, nullable=True)
     parsed_json: Mapped[str | None] = mapped_column(Text, nullable=True)
@@ -88,7 +88,7 @@ class ReferenceItem(Base):
 
 
 class Equipment(Base):
-    """Overzicht Materieel uit appendix-template (SAP-matrijst)."""
+    """Overzicht Materieel (SAP-materieellijst)."""
 
     __tablename__ = "equipment_items"
 

@@ -1,16 +1,17 @@
-import pytest
-
-from app.services.dg.detector import apply_un_detection, default_appendix_flags, detect_un_numbers
+from app.services.dg.detector import detect_dangerous_goods, detect_un_numbers
 
 
-def test_detect_un_number_variants():
-    assert detect_un_numbers("Brandstof UN 1203 in jerrycans") == ["1203"]
-    assert detect_un_numbers("ID 8000 compressed gas") == ["8000"]
-    assert detect_un_numbers("UN1203 zonder spatie") == ["1203"]
+def test_detects_un_numbers():
+    assert detect_un_numbers("Benzine UN 1203 in vaten") == ["1203"]
+    assert detect_un_numbers("UN1203 en ID 8000") == ["1203", "8000"]
+    assert detect_un_numbers("Gewone lading") == []
 
 
-def test_apply_un_detection_sets_dangerous_goods():
-    flags = default_appendix_flags()
-    flags, messages = apply_un_detection("UN 1993 brandbare vloeistof", flags)
-    assert flags["dangerous_goods"] == "Y"
-    assert "dg_un_detected" in messages
+def test_detect_dangerous_goods_flag_and_message():
+    dangerous, messages = detect_dangerous_goods("Accu's UN 3480")
+    assert dangerous is True
+    assert messages == ["dg_un_detected"]
+
+    dangerous, messages = detect_dangerous_goods("Stalen balk HEA200")
+    assert dangerous is False
+    assert messages == []

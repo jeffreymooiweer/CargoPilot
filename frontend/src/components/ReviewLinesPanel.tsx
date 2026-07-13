@@ -7,6 +7,7 @@ export interface DraftLine {
   description: string;
   quantity: number | "";
   unit: string;
+  dangerous_goods?: boolean;
 }
 
 const inputClass =
@@ -216,6 +217,22 @@ export default function ReviewLinesPanel({
                         />
                       </div>
                     </>
+                  )}
+                </div>
+                <div className="flex flex-wrap items-center gap-2">
+                  <label className="flex min-h-[32px] cursor-pointer items-center gap-2 text-sm text-slate-700 dark:text-slate-300">
+                    <input
+                      type="checkbox"
+                      checked={draft.dangerous_goods ?? false}
+                      onChange={(e) => updateDraft(draft.id, { dangerous_goods: e.target.checked })}
+                      className="h-4 w-4 rounded border-slate-300 text-amber-600 focus:ring-amber-500"
+                    />
+                    {t("review.dangerousGoods")}
+                  </label>
+                  {result?.dangerous_goods && !draft.dangerous_goods && (
+                    <span className="rounded-full bg-amber-100 px-2 py-0.5 text-[11px] font-medium text-amber-800 dark:bg-amber-900/40 dark:text-amber-300">
+                      {t("review.dgDetected")}
+                    </span>
                   )}
                 </div>
                 {result && result.messages.length > 0 && (

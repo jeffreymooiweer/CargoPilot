@@ -21,7 +21,7 @@ Non-obvious gotchas for running/testing:
 - **`DATA_DIR`/`DATABASE_URL` default to `/data` (not writable in this environment).**
   For local dev, point them at the repo, e.g. `DATA_DIR=/workspace/data` and
   `DATABASE_URL=sqlite:////workspace/data/cargopilot.db`. Create `data/` if missing;
-  the backend auto-copies the Excel template and seeds catalogs on startup.
+  the backend seeds catalogs on startup.
 - **Admin bootstrap:** there is no public registration. The first admin is created on
   startup only if `ADMIN_USERNAME`, `ADMIN_EMAIL`, `ADMIN_PASSWORD` are set. Log in
   with those credentials.

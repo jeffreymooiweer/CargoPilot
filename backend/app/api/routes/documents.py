@@ -44,8 +44,6 @@ def export(
     if document is None:
         raise HTTPException(status_code=404, detail="Unknown document")
     exporter = document.get("exporter")
-    if exporter not in {"generic", "pdf_template"}:
-        raise HTTPException(status_code=400, detail="Use /export for the appendix template")
     errors, _warnings = validate_document(
         document, payload.values, payload.lines, payload.dangerous_goods, payload.output_language
     )

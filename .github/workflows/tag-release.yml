@@ -1,0 +1,83 @@
+name: Tag release
+
+# Maakt de release-tag aan op main en publiceert de GitHub Release.
+# Nodig omdat tags die binnen een workflow met GITHUB_TOKEN worden gepusht
+# geen nieuwe tag-workflows triggeren; deze workflow doet daarom zelf de
+# release en start de CI (Docker-build) expliciet op de tag-ref.
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Versie zonder v-prefix (bijv. 1.2.0); moet overeenkomen met VERSION"
+        required: true
+
+permissions:
+  contents: write
+  actions: write
+
+jobs:
+  tag-and-release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout main
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Validate version matches VERSION file
+        run: |
+          FILE_VERSION="$(tr -d '[:space:]' < VERSION)"
+          if [ "${{ inputs.version }}" != "$FILE_VERSION" ]; then
+            echo "::error::Input versie '${{ inputs.version }}' komt niet overeen met VERSION ($FILE_VERSION)."
+            exit 1
+          fi
+
+      - name: Create and push tag
+        run: |
+          TAG="v${{ inputs.version }}"
+          if git rev-parse "$TAG" >/dev/null 2>&1; then
+            echo "Tag $TAG bestaat al lokaal/op remote — overslaan."
+          else
+            git config user.name "github-actions[bot]"
+            git config user.email "github-actions[bot]@users.noreply.github.com"
+            git tag -a "$TAG" -m "CargoPilot $TAG"
+            git push origin "$TAG"
+          fi
+
+      - name: Prepare release notes
+        run: |
+          TAG="v${{ inputs.version }}"
+          NOTES_FILE=".github/release-notes/${TAG}.md"
+          if [ -f "$NOTES_FILE" ]; then
+            cp "$NOTES_FILE" release-body.md
+          else
+            python3 - "${{ inputs.version }}" <<'PY' > release-body.md
+          import re
+          import sys
+          from pathlib import Path
+
+          version = sys.argv[1]
+          text = Path("CHANGELOG.md").read_text(encoding="utf-8")
+          pattern = rf"## \[{re.escape(version)}\][^\n]*\n(.*?)(?=\n## \[|\Z)"
+          match = re.search(pattern, text, re.DOTALL)
+          print(match.group(1).strip() if match else f"Release {version}. Zie CHANGELOG.md voor details.")
+          PY
+          fi
+
+      - name: Create GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          TAG="v${{ inputs.version }}"
+          if gh release view "$TAG" >/dev/null 2>&1; then
+            echo "Release $TAG bestaat al — overslaan."
+          else
+            gh release create "$TAG" --title "CargoPilot $TAG" --notes-file release-body.md
+          fi
+
+      - name: Trigger CI (Docker build) on tag
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh workflow run dockerhub.yml --ref "v${{ inputs.version }}"

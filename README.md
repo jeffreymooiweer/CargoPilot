@@ -1,12 +1,12 @@
 # CargoPilot
 
-**Versie 1.2.0** — webapplicatie om bouwmaterialen en posities te analyseren en als transportdocumenten (Excel) te exporteren, per transportmodaliteit.
+**Versie 1.3.0** — webapplicatie om bouwmaterialen en posities te analyseren en als transportdocumenten (Excel) te exporteren, per transportmodaliteit.
 
 **English:** CargoPilot parses material lines (paste or file import), calculates weight/volume, and exports transport documents per modality — from the official Appendix A1 template to CMR, CIM, IMO/IATA dangerous goods declarations, VGM and shipping instructions.
 
 Zie ook [CHANGELOG.md](CHANGELOG.md) en [ROADMAP.md](ROADMAP.md).
 
-## Functionaliteiten (v1.2.0)
+## Functionaliteiten (v1.3.0)
 
 - **Modaliteitskeuze bij start**: wegtransport, spoor, zeevracht, binnenvaart, luchtvracht of multimodaal
 - **Formulierenselectie per modaliteit**: alleen relevante documenten; bij multimodaal alles beschikbaar
@@ -14,6 +14,7 @@ Zie ook [CHANGELOG.md](CHANGELOG.md) en [ROADMAP.md](ROADMAP.md).
 - Documenten: intern formulier, CMR (PDF), CIM, IMO Multimodal DG Form, IATA Shipper's Declaration (PDF), VGM-verklaring, AWB/B-L Shipping Instructions, ADR/ADN-document, paklijst, afleverbon
 - **Veldstatussen per document**: gebruikersinvoer, carriergegevens, operationele velden en handtekeningen worden onderscheiden; handtekeningen worden nooit vooraf ingevuld
 - **DG-exportblokkades** per modaliteitsprofiel (ADR/RID/ADN/IMDG/IATA DGR) bij onvolledige classificatie
+- **Nalevingsbegeleiding gevaarlijke stoffen**: ADR 1.1.3.6-puntencalculator (1000-puntenregel), samenladingscontrole (ADR 7.5.2/CV28), IATA-segregatie (Table 9.3.A incl. lithiumregel) en Q-waardeberekening (IATA 5.0.2.11) met live waarschuwingen
 - Review-first wizard: regels invoeren met cataloguszoeken of vrije omschrijving
 - Import via plakken of bestand (.xlsx, .csv, .txt) met downloadbare templates
 - Herkenning van materiaal, producttype en afmetingen (NL/EN) met synoniemen

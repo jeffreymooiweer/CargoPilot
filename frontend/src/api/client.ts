@@ -98,6 +98,11 @@ export const api = {
   catalogSearch: (q: string, limit = 25) =>
     request<{ results: CatalogSearchHit[] }>(`/catalog/search?q=${encodeURIComponent(q)}&limit=${limit}`),
   documentsRegistry: () => request<DocumentRegistry>("/documents/registry"),
+  dgCompliance: (entries: DgEntry[], profiles: string[], language: string) =>
+    request<DgComplianceResult>("/dg/compliance", {
+      method: "POST",
+      body: JSON.stringify({ entries, profiles, language }),
+    }),
   validateDocument: (payload: DocumentExportPayload) =>
     request<DocumentValidationResult>("/documents/validate", {
       method: "POST",
@@ -210,6 +215,10 @@ export interface DgProduct {
   overpack?: string;
   emergency_contact?: string;
   ems_code?: string;
+  transport_category?: string;
+  adr_total_quantity?: string;
+  q_net_quantity?: string;
+  q_max_net_quantity?: string;
 }
 
 export interface DgEntry {
@@ -226,6 +235,9 @@ export interface DgLookupResult {
   subsidiary_risks?: string;
   packing_group?: string;
   packing_instruction?: string;
+  transport_category?: string | number | null;
+  tunnel_restriction_code?: string | null;
+  limited_quantity?: string | null;
   source?: string;
 }
 
@@ -348,4 +360,49 @@ export interface DocumentValidationResult {
   document_key: string;
   errors: string[];
   warnings: string[];
+}
+
+export interface AdrPointsRow {
+  product: string;
+  transport_category: string | null;
+  quantity: number | null;
+  factor?: number | null;
+  points: number | null;
+}
+
+export interface AdrPointsResult {
+  rows: AdrPointsRow[];
+  total_points: number;
+  threshold: number;
+  status: "exempt_possible" | "above_threshold" | "not_exempt" | "incomplete";
+  category0_products: string[];
+  incomplete_products: string[];
+  quantity_units_note: string;
+  exempt_provisions: string[];
+  still_required: string[];
+}
+
+export interface ComplianceWarning {
+  rule: string;
+  severity: "error" | "warning";
+  message: string;
+  products: string;
+}
+
+export interface QValueResult {
+  position: string | number;
+  components: { product: string; net_quantity: number; max_per_package: number; ratio: number }[];
+  q_value: number;
+  exceeded: boolean;
+  note: string;
+}
+
+export interface DgComplianceResult {
+  sources: Record<string, string>;
+  profiles: string[];
+  adr_points?: AdrPointsResult;
+  adr_mixed_loading?: ComplianceWarning[];
+  iata_segregation?: ComplianceWarning[];
+  q_values?: QValueResult[];
+  cargo_aircraft_only_products?: string[];
 }

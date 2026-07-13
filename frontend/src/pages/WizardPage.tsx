@@ -11,6 +11,7 @@ import {
 } from "../api/client";
 import AppendixQuestionsWizard from "../components/AppendixQuestionsWizard";
 import DangerousGoodsStep, { buildDgEntries } from "../components/DangerousGoodsStep";
+import DgCompliancePanel from "../components/DgCompliancePanel";
 import DocumentFieldsStep, { resolveSections } from "../components/DocumentFieldsStep";
 import FormSelectionStep from "../components/FormSelectionStep";
 import ImportDialog from "../components/ImportDialog";
@@ -54,8 +55,27 @@ const DG_PROFILE_REQUIRED: Record<string, string[]> = {
 };
 
 const DG_EXTRA_FIELDS: Record<string, string[]> = {
+  ADR: ["transport_category", "adr_total_quantity"],
+  RID: ["transport_category", "adr_total_quantity"],
+  ADN: ["transport_category", "adr_total_quantity"],
   IMDG: ["technical_name", "marine_pollutant", "ems_code", "emergency_contact"],
-  IATA_DGR: ["technical_name", "cargo_aircraft_only", "overpack", "emergency_contact"],
+  IATA_DGR: [
+    "technical_name",
+    "cargo_aircraft_only",
+    "overpack",
+    "emergency_contact",
+    "q_net_quantity",
+    "q_max_net_quantity",
+  ],
+};
+
+const MODALITY_DG_PROFILES: Record<string, string[]> = {
+  road: ["ADR"],
+  rail: ["RID"],
+  inland: ["ADN"],
+  sea: ["IMDG"],
+  air: ["IATA_DGR"],
+  multimodal: ["ADR", "IATA_DGR", "IMDG"],
 };
 
 export default function WizardPage() {
@@ -124,15 +144,23 @@ export default function WizardPage() {
     [result],
   );
 
+  const dgProfiles = useMemo(() => {
+    const profiles = new Set<string>(MODALITY_DG_PROFILES[modality ?? ""] ?? []);
+    for (const doc of selectedDefinitions) {
+      if (doc.dg_profile) profiles.add(doc.dg_profile);
+    }
+    return [...profiles];
+  }, [selectedDefinitions, modality]);
+
   const dgExtraFields = useMemo(() => {
     const fields: string[] = [];
-    for (const doc of selectedDefinitions) {
-      for (const field of DG_EXTRA_FIELDS[doc.dg_profile ?? ""] ?? []) {
+    for (const profile of dgProfiles) {
+      for (const field of DG_EXTRA_FIELDS[profile] ?? []) {
         if (!fields.includes(field)) fields.push(field);
       }
     }
     return fields;
-  }, [selectedDefinitions]);
+  }, [dgProfiles]);
 
   const steps: StepKey[] = useMemo(() => {
     const list: StepKey[] = ["forms", "lines"];
@@ -490,6 +518,7 @@ export default function WizardPage() {
             perPosition
             extraFields={dgExtraFields}
           />
+          <DgCompliancePanel entries={dgEntries} profiles={dgProfiles} />
           <div className="flex flex-col gap-2 sm:flex-row">
             <button type="button" onClick={() => goBackFrom("dg")} className={buttonSecondary}>
               {t("wizard.back")}
@@ -605,6 +634,8 @@ export default function WizardPage() {
               <li>{t("wizard.totalVolume")}: {result.totals.total_transport_volume_m3} m³</li>
             </ul>
           </div>
+
+          {needsDg && dgEntries.length > 0 && <DgCompliancePanel entries={dgEntries} profiles={dgProfiles} />}
 
           <div className={`${panelClass} space-y-3 p-4 sm:p-6`}>
             <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-100">{t("wizardDocs.title")}</h3>

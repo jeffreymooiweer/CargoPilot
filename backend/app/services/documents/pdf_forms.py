@@ -317,7 +317,12 @@ def has_pdf_template(document_key: str) -> bool:
 
 
 def _fill_with_pymupdf(template_path: Path, fields: dict[str, str], disclaimer: str) -> Path:
-    """Vul AcroForm-velden in en genereer appearance streams zodat waarden zichtbaar zijn."""
+    """Vul AcroForm-velden in en bak ze plat zodat waarden in alle PDF-viewers zichtbaar zijn.
+
+    Alleen ``widget.update()`` (appearance streams) is onvoldoende voor Chrome/Edge/sommige
+    Preview-viewers: die negeren AcroForm-weergaven. ``bake()`` zet de waarden permanent
+    in de paginacontent.
+    """
     if fitz is None:
         raise RuntimeError("PyMuPDF (pymupdf) is required for PDF form filling")
 
@@ -330,6 +335,9 @@ def _fill_with_pymupdf(template_path: Path, fields: dict[str, str], disclaimer: 
                     continue
                 widget.field_value = fields[name]
                 widget.update()
+
+        # Platbakken: zichtbaar in Chrome PDF-viewer e.d., niet alleen in Acrobat/MuPDF.
+        doc.bake(annots=True, widgets=True)
 
         doc.set_metadata(
             {
@@ -346,7 +354,7 @@ def _fill_with_pymupdf(template_path: Path, fields: dict[str, str], disclaimer: 
             out_path.chmod(0o600)
         except OSError:
             pass
-        doc.save(str(out_path))
+        doc.save(str(out_path), garbage=3, deflate=True)
         return out_path
     finally:
         doc.close()

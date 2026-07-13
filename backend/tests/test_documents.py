@@ -153,15 +153,23 @@ def test_fill_cim_pdf_populates_boxes():
     )
     path = fill_pdf_document("cim", values, LINES, None, "nl")
     try:
-        v = {k: str(val.get("/V") or "") for k, val in PdfReader(str(path)).get_fields().items()}
-        assert "Firma A" in v["Expéditeur1"]  # vak 1
-        assert "Firma B" in v["Destinataire4"]  # vak 4
-        assert v["NHM Code0"] == "721650"  # vak 24
-        assert "Stalen hoekprofiel" in v["Description21"]  # vak 21
-        assert "Rotterdam" in v["Lieu et date d'établissement29"]  # vak 29
+        # Export platgebakken: geen AcroForm meer, wel zichtbare tekst.
+        assert PdfReader(str(path)).get_fields() in (None, {})
         visible = _pdf_visible_text(path)
         assert "Firma A" in visible
+        assert "Firma B" in visible
         assert "Stalen hoekprofiel" in visible
+        assert "Rotterdam" in visible
+        assert "462.7" in visible
+        # NHM verschijnt in CIM als letterbox-tekst; rastercontrole hieronder.
+        doc = fitz.open(str(path))
+        try:
+            assert len(list(doc[0].widgets() or [])) == 0
+            pix = doc[0].get_pixmap(matrix=fitz.Matrix(2, 2), clip=fitz.Rect(360, 390, 490, 420))
+            # Gebakken NHM-cijfers moeten pixels hebben (niet volledig wit).
+            assert pix.samples.count(255) < len(pix.samples)
+        finally:
+            doc.close()
     finally:
         path.unlink(missing_ok=True)
 
@@ -186,19 +194,15 @@ def test_fill_cmr_pdf_populates_official_boxes():
     )
     path = fill_pdf_document("cmr", values, LINES, None, "nl")
     try:
-        fields = PdfReader(str(path)).get_fields()
-        values_by_field = {k: str(v.get("/V") or "") for k, v in fields.items()}
-        assert "Firma A" in values_by_field["VakRood01"]  # box 1 sender
-        assert "Firma B" in values_by_field["VakRood02"]  # box 2 consignee
-        assert values_by_field["VakRood16"] == "Trans-Euro Logistics"  # box 16 carrier
-        assert values_by_field["VakRood14"] == "Franco"  # box 14 payment
-        assert "Stalen hoekprofiel" in values_by_field["VakRood06Regel01Kolom06"]
-        assert values_by_field["VakRood06Regel01Kolom11"] == "462.7"
-        # Handtekeningvakken 22/23/24 blijven leeg.
-        assert values_by_field.get("VakRood23", "") == ""
+        assert PdfReader(str(path)).get_fields() in (None, {})
         visible = _pdf_visible_text(path)
         assert "Firma A" in visible
+        assert "Firma B" in visible
+        assert "Trans-Euro Logistics" in visible
+        assert "Franco" in visible
         assert "Stalen hoekprofiel" in visible
+        assert "462.7" in visible
+        assert "Berlin Hafen" in visible
     finally:
         path.unlink(missing_ok=True)
 
@@ -233,24 +237,16 @@ def test_fill_iata_pdf_strikes_non_applicable_and_lists_dg():
     ]
     path = fill_pdf_document("iata_dgd", values, LINES, dg, "en")
     try:
-        fields = PdfReader(str(path)).get_fields()
-        v = {k: str(val.get("/V") or "") for k, val in fields.items()}
-        assert v["Air Waybill No"] == "020-12345675"
-        # cargo_only -> passenger+cargo doorgestreept, cargo-only leeg
-        assert v["Passenger and Cargo Aircraft"].strip() == "XXX"
-        assert v["Cargo Aircraft Only"].strip() == ""
-        # non_radioactive -> radioactive doorgestreept
-        assert v["radioactive ship type"].strip() == "XXXXXXXXXXX"
-        assert v["non-rad ship type"].strip() == ""
-        dg_block = v["Nature and Quantity of Dangerous Goods"]
-        assert "UN 3480" in dg_block
-        assert "Lithium ion batteries" in dg_block
-        assert "965" in dg_block
-        # Handtekeningveld blijft leeg.
-        assert v.get("Name-title", "") == "J. Jansen"
+        assert PdfReader(str(path)).get_fields() in (None, {})
         visible = _pdf_visible_text(path)
+        assert "020-12345675" in visible
         assert "Firma A" in visible
         assert "UN 3480" in visible
+        assert "Lithium ion batteries" in visible
+        assert "965" in visible
+        assert "J. Jansen" in visible
+        # Niet-van-toepassing doorgestreept (XXX in gebakken content).
+        assert "XXX" in visible
     finally:
         path.unlink(missing_ok=True)
 

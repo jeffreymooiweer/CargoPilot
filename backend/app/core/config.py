@@ -22,6 +22,8 @@ class Settings(BaseSettings):
     max_paste_bytes: int = 512_000
     catalog_auto_sync: bool = True
     catalog_sync_timeout_seconds: float = 20.0
+    geo_address_api_url: str = "https://photon.komoot.io/api"
+    geo_address_timeout_seconds: float = 8.0
 
     @property
     def templates_dir(self) -> Path:

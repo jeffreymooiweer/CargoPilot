@@ -5,128 +5,2639 @@
     "density_kg_m3": 7850,
     "density_min_kg_m3": 7800,
     "density_max_kg_m3": 7900,
-    "aliases": ["staal", "stalen", "steel", "galvanized steel", "galvanised steel", "gegalvaniseerd", "verzinkt", "zinc coated steel", "stahl"],
-    "language_labels": {"nl": "Staal", "en": "Steel"}
+    "aliases": [
+      "staal",
+      "stalen",
+      "steel",
+      "galvanized steel",
+      "galvanised steel",
+      "gegalvaniseerd",
+      "verzinkt",
+      "zinc coated steel",
+      "stahl"
+    ],
+    "language_labels": {
+      "nl": "Staal",
+      "en": "Steel"
+    }
   },
   {
     "canonical_name": "stainless_steel",
     "category": "metal",
     "density_kg_m3": 8000,
-    "aliases": ["rvs", "inox", "stainless steel", "stainless", "edelstahl"],
-    "language_labels": {"nl": "RVS", "en": "Stainless steel"}
+    "aliases": [
+      "rvs",
+      "inox",
+      "stainless steel",
+      "stainless",
+      "edelstahl"
+    ],
+    "language_labels": {
+      "nl": "RVS",
+      "en": "Stainless steel"
+    }
   },
   {
     "canonical_name": "aluminium",
     "category": "metal",
     "density_kg_m3": 2700,
-    "aliases": ["aluminium", "aluminum", "alu"],
-    "language_labels": {"nl": "Aluminium", "en": "Aluminium"}
+    "aliases": [
+      "aluminium",
+      "aluminum",
+      "alu"
+    ],
+    "language_labels": {
+      "nl": "Aluminium",
+      "en": "Aluminium"
+    }
   },
   {
     "canonical_name": "copper",
     "category": "metal",
     "density_kg_m3": 8960,
-    "aliases": ["koper", "copper", "kupfer"],
-    "language_labels": {"nl": "Koper", "en": "Copper"}
+    "aliases": [
+      "koper",
+      "copper",
+      "kupfer"
+    ],
+    "language_labels": {
+      "nl": "Koper",
+      "en": "Copper"
+    }
   },
   {
     "canonical_name": "brass",
     "category": "metal",
     "density_kg_m3": 8500,
-    "aliases": ["messing", "brass"],
-    "language_labels": {"nl": "Messing", "en": "Brass"}
+    "aliases": [
+      "messing",
+      "brass"
+    ],
+    "language_labels": {
+      "nl": "Messing",
+      "en": "Brass"
+    }
   },
   {
     "canonical_name": "concrete",
     "category": "concrete",
     "density_kg_m3": 2400,
-    "aliases": ["beton", "concrete"],
-    "language_labels": {"nl": "Beton", "en": "Concrete"}
+    "aliases": [
+      "beton",
+      "concrete"
+    ],
+    "language_labels": {
+      "nl": "Beton",
+      "en": "Concrete"
+    }
   },
   {
     "canonical_name": "reinforced_concrete",
     "category": "concrete",
     "density_kg_m3": 2500,
-    "aliases": ["gewapend beton", "reinforced concrete", "stelconplaat", "stelconplaten", "betonplaat", "concrete slab"],
-    "language_labels": {"nl": "Gewapend beton", "en": "Reinforced concrete"}
+    "aliases": [
+      "gewapend beton",
+      "reinforced concrete",
+      "stelconplaat",
+      "stelconplaten",
+      "betonplaat",
+      "concrete slab"
+    ],
+    "language_labels": {
+      "nl": "Gewapend beton",
+      "en": "Reinforced concrete"
+    }
   },
   {
     "canonical_name": "spruce",
     "category": "wood",
     "density_kg_m3": 450,
     "condition": "outdoor_nl_average",
-    "aliases": ["hout", "wood", "timber", "vuren", "spruce", "pine", "grenen"],
-    "language_labels": {"nl": "Hout", "en": "Wood"}
+    "aliases": [
+      "hout",
+      "wood",
+      "timber",
+      "vuren",
+      "spruce",
+      "pine",
+      "grenen"
+    ],
+    "language_labels": {
+      "nl": "Hout",
+      "en": "Wood"
+    }
   },
   {
     "canonical_name": "hardwood",
     "category": "wood",
     "density_kg_m3": 700,
     "condition": "outdoor_nl_average",
-    "aliases": ["hardhout", "hardwood"],
-    "language_labels": {"nl": "Hardhout", "en": "Hardwood"}
+    "aliases": [
+      "hardhout",
+      "hardwood"
+    ],
+    "language_labels": {
+      "nl": "Hardhout",
+      "en": "Hardwood"
+    }
   },
   {
     "canonical_name": "plywood",
     "category": "wood",
     "density_kg_m3": 650,
-    "aliases": ["multiplex", "plywood", "betonplex", "osb", "mdf"],
-    "language_labels": {"nl": "Plaatmateriaal", "en": "Plywood"}
+    "aliases": [
+      "multiplex",
+      "plywood",
+      "betonplex",
+      "osb",
+      "mdf"
+    ],
+    "language_labels": {
+      "nl": "Plaatmateriaal",
+      "en": "Plywood"
+    }
   },
   {
     "canonical_name": "pvc",
     "category": "plastic",
     "density_kg_m3": 1400,
-    "aliases": ["pvc", "kunststof", "plastic"],
-    "language_labels": {"nl": "PVC", "en": "PVC"}
+    "aliases": [
+      "pvc",
+      "kunststof",
+      "plastic"
+    ],
+    "language_labels": {
+      "nl": "PVC",
+      "en": "PVC"
+    }
   },
   {
     "canonical_name": "pe",
     "category": "plastic",
     "density_kg_m3": 950,
-    "aliases": ["pe", "hdpe", "ldpe"],
-    "language_labels": {"nl": "PE", "en": "PE"}
+    "aliases": [
+      "pe",
+      "hdpe",
+      "ldpe"
+    ],
+    "language_labels": {
+      "nl": "PE",
+      "en": "PE"
+    }
   },
   {
     "canonical_name": "pp",
     "category": "plastic",
     "density_kg_m3": 900,
-    "aliases": ["pp"],
-    "language_labels": {"nl": "PP", "en": "PP"}
+    "aliases": [
+      "pp"
+    ],
+    "language_labels": {
+      "nl": "PP",
+      "en": "PP"
+    }
   },
   {
     "canonical_name": "pom",
     "category": "plastic",
     "density_kg_m3": 1410,
-    "aliases": ["pom"],
-    "language_labels": {"nl": "POM", "en": "POM"}
+    "aliases": [
+      "pom"
+    ],
+    "language_labels": {
+      "nl": "POM",
+      "en": "POM"
+    }
   },
   {
     "canonical_name": "nylon",
     "category": "plastic",
     "density_kg_m3": 1150,
-    "aliases": ["pa", "nylon"],
-    "language_labels": {"nl": "Nylon", "en": "Nylon"}
+    "aliases": [
+      "pa",
+      "nylon"
+    ],
+    "language_labels": {
+      "nl": "Nylon",
+      "en": "Nylon"
+    }
   },
   {
     "canonical_name": "acrylic",
     "category": "plastic",
     "density_kg_m3": 1180,
-    "aliases": ["plexiglas", "acrylic", "pmma"],
-    "language_labels": {"nl": "Plexiglas", "en": "Acrylic"}
+    "aliases": [
+      "plexiglas",
+      "acrylic",
+      "pmma"
+    ],
+    "language_labels": {
+      "nl": "Plexiglas",
+      "en": "Acrylic"
+    }
   },
   {
     "canonical_name": "sand",
     "category": "bulk_material",
     "density_kg_m3": 1600,
-    "aliases": ["zand", "sand"],
-    "language_labels": {"nl": "Zand", "en": "Sand"}
+    "aliases": [
+      "zand",
+      "sand"
+    ],
+    "language_labels": {
+      "nl": "Zand",
+      "en": "Sand"
+    }
   },
   {
     "canonical_name": "gravel",
     "category": "bulk_material",
     "density_kg_m3": 1700,
-    "aliases": ["grind", "gravel", "split", "ballast"],
-    "language_labels": {"nl": "Grind", "en": "Gravel"}
+    "aliases": [
+      "grind",
+      "gravel",
+      "split",
+      "ballast"
+    ],
+    "language_labels": {
+      "nl": "Grind",
+      "en": "Gravel"
+    }
+  },
+  {
+    "canonical_name": "zinc",
+    "category": "metal",
+    "density_kg_m3": 7140,
+    "aliases": [
+      "zink",
+      "zinc",
+      "zinken"
+    ],
+    "language_labels": {
+      "nl": "Zink",
+      "en": "Zinc"
+    }
+  },
+  {
+    "canonical_name": "lead",
+    "category": "metal",
+    "density_kg_m3": 11340,
+    "aliases": [
+      "lood",
+      "lead",
+      "loden"
+    ],
+    "language_labels": {
+      "nl": "Lood",
+      "en": "Lead"
+    }
+  },
+  {
+    "canonical_name": "tin",
+    "category": "metal",
+    "density_kg_m3": 7280,
+    "aliases": [
+      "tin",
+      "blik"
+    ],
+    "language_labels": {
+      "nl": "Tin",
+      "en": "Tin"
+    }
+  },
+  {
+    "canonical_name": "titanium",
+    "category": "metal",
+    "density_kg_m3": 4500,
+    "aliases": [
+      "titanium",
+      "titaan"
+    ],
+    "language_labels": {
+      "nl": "Titanium",
+      "en": "Titanium"
+    }
+  },
+  {
+    "canonical_name": "nickel",
+    "category": "metal",
+    "density_kg_m3": 8900,
+    "aliases": [
+      "nikkel",
+      "nickel"
+    ],
+    "language_labels": {
+      "nl": "Nikkel",
+      "en": "Nickel"
+    }
+  },
+  {
+    "canonical_name": "bronze",
+    "category": "metal",
+    "density_kg_m3": 8800,
+    "aliases": [
+      "brons",
+      "bronze",
+      "bronzen"
+    ],
+    "language_labels": {
+      "nl": "Brons",
+      "en": "Bronze"
+    }
+  },
+  {
+    "canonical_name": "cast_iron",
+    "category": "metal",
+    "density_kg_m3": 7200,
+    "aliases": [
+      "gietijzer",
+      "cast iron",
+      "gietijzeren",
+      "gusseisen"
+    ],
+    "language_labels": {
+      "nl": "Gietijzer",
+      "en": "Cast iron"
+    }
+  },
+  {
+    "canonical_name": "magnesium",
+    "category": "metal",
+    "density_kg_m3": 1740,
+    "aliases": [
+      "magnesium"
+    ],
+    "language_labels": {
+      "nl": "Magnesium",
+      "en": "Magnesium"
+    }
+  },
+  {
+    "canonical_name": "steel_scrap",
+    "category": "metal",
+    "density_kg_m3": 1200,
+    "density_min_kg_m3": 800,
+    "density_max_kg_m3": 2000,
+    "aliases": [
+      "schroot",
+      "staalschroot",
+      "scrap",
+      "steel scrap",
+      "oud ijzer",
+      "metaalschroot"
+    ],
+    "language_labels": {
+      "nl": "Staalschroot (los)",
+      "en": "Steel scrap (loose)"
+    },
+    "notes": "Stortdichtheid los geladen schroot"
+  },
+  {
+    "canonical_name": "aluminium_scrap",
+    "category": "metal",
+    "density_kg_m3": 450,
+    "density_min_kg_m3": 300,
+    "density_max_kg_m3": 700,
+    "aliases": [
+      "aluminiumschroot",
+      "aluminium scrap",
+      "aluminum scrap"
+    ],
+    "language_labels": {
+      "nl": "Aluminiumschroot (los)",
+      "en": "Aluminium scrap (loose)"
+    },
+    "notes": "Stortdichtheid"
+  },
+  {
+    "canonical_name": "cement",
+    "category": "construction",
+    "density_kg_m3": 1440,
+    "density_min_kg_m3": 1200,
+    "density_max_kg_m3": 1600,
+    "aliases": [
+      "cement",
+      "portlandcement",
+      "cement bulk"
+    ],
+    "language_labels": {
+      "nl": "Cement (bulk)",
+      "en": "Cement (bulk)"
+    },
+    "notes": "Stortdichtheid; zakken op pallet vergelijkbaar"
+  },
+  {
+    "canonical_name": "cement_clinker",
+    "category": "construction",
+    "density_kg_m3": 1400,
+    "density_min_kg_m3": 1200,
+    "density_max_kg_m3": 1500,
+    "aliases": [
+      "klinker cement",
+      "cement clinker",
+      "portlandklinker"
+    ],
+    "language_labels": {
+      "nl": "Cementklinker",
+      "en": "Cement clinker"
+    }
+  },
+  {
+    "canonical_name": "dry_mortar",
+    "category": "construction",
+    "density_kg_m3": 1700,
+    "density_min_kg_m3": 1500,
+    "density_max_kg_m3": 1900,
+    "aliases": [
+      "mortel",
+      "metselmortel",
+      "dry mortar",
+      "droge mortel",
+      "voegmortel",
+      "stucmortel"
+    ],
+    "language_labels": {
+      "nl": "Droge mortel",
+      "en": "Dry mortar"
+    }
+  },
+  {
+    "canonical_name": "lime",
+    "category": "construction",
+    "density_kg_m3": 900,
+    "density_min_kg_m3": 700,
+    "density_max_kg_m3": 1200,
+    "aliases": [
+      "kalk",
+      "lime",
+      "gebluste kalk",
+      "ongebluste kalk"
+    ],
+    "language_labels": {
+      "nl": "Kalk",
+      "en": "Lime"
+    },
+    "notes": "Stortdichtheid poeder"
+  },
+  {
+    "canonical_name": "gypsum",
+    "category": "construction",
+    "density_kg_m3": 900,
+    "density_min_kg_m3": 700,
+    "density_max_kg_m3": 1300,
+    "aliases": [
+      "gips",
+      "gypsum",
+      "pleister",
+      "plaster"
+    ],
+    "language_labels": {
+      "nl": "Gips",
+      "en": "Gypsum"
+    },
+    "notes": "Stortdichtheid poeder"
+  },
+  {
+    "canonical_name": "plasterboard",
+    "category": "construction",
+    "density_kg_m3": 700,
+    "density_min_kg_m3": 600,
+    "density_max_kg_m3": 900,
+    "aliases": [
+      "gipsplaat",
+      "gipsplaten",
+      "plasterboard",
+      "drywall",
+      "gyproc",
+      "gipskartonplaat"
+    ],
+    "language_labels": {
+      "nl": "Gipsplaat",
+      "en": "Plasterboard"
+    }
+  },
+  {
+    "canonical_name": "aerated_concrete",
+    "category": "construction",
+    "density_kg_m3": 600,
+    "density_min_kg_m3": 400,
+    "density_max_kg_m3": 800,
+    "aliases": [
+      "cellenbeton",
+      "gasbeton",
+      "aerated concrete",
+      "ytong",
+      "gasbetonblokken"
+    ],
+    "language_labels": {
+      "nl": "Cellenbeton",
+      "en": "Aerated concrete"
+    }
+  },
+  {
+    "canonical_name": "sand_lime_brick",
+    "category": "construction",
+    "density_kg_m3": 1850,
+    "density_min_kg_m3": 1700,
+    "density_max_kg_m3": 2000,
+    "aliases": [
+      "kalkzandsteen",
+      "sand lime brick",
+      "kzs",
+      "kalkzandsteenblokken",
+      "kalkzandsteenelementen"
+    ],
+    "language_labels": {
+      "nl": "Kalkzandsteen",
+      "en": "Sand-lime brick"
+    }
+  },
+  {
+    "canonical_name": "clay_brick",
+    "category": "construction",
+    "density_kg_m3": 1900,
+    "density_min_kg_m3": 1600,
+    "density_max_kg_m3": 2100,
+    "aliases": [
+      "baksteen",
+      "bakstenen",
+      "metselsteen",
+      "metselstenen",
+      "clay brick",
+      "bricks",
+      "gevelsteen"
+    ],
+    "language_labels": {
+      "nl": "Baksteen",
+      "en": "Clay brick"
+    }
+  },
+  {
+    "canonical_name": "roof_tiles",
+    "category": "construction",
+    "density_kg_m3": 1800,
+    "density_min_kg_m3": 1600,
+    "density_max_kg_m3": 2000,
+    "aliases": [
+      "dakpan",
+      "dakpannen",
+      "roof tiles",
+      "keramische dakpannen",
+      "betondakpannen"
+    ],
+    "language_labels": {
+      "nl": "Dakpannen",
+      "en": "Roof tiles"
+    }
+  },
+  {
+    "canonical_name": "ceramic_tiles",
+    "category": "construction",
+    "density_kg_m3": 2300,
+    "density_min_kg_m3": 2000,
+    "density_max_kg_m3": 2400,
+    "aliases": [
+      "tegel",
+      "tegels",
+      "keramische tegels",
+      "tiles",
+      "vloertegels",
+      "wandtegels"
+    ],
+    "language_labels": {
+      "nl": "Keramische tegels",
+      "en": "Ceramic tiles"
+    }
+  },
+  {
+    "canonical_name": "concrete_pavers",
+    "category": "construction",
+    "density_kg_m3": 2300,
+    "density_min_kg_m3": 2200,
+    "density_max_kg_m3": 2400,
+    "aliases": [
+      "klinkers",
+      "betonklinkers",
+      "betonstraatsteen",
+      "straatstenen",
+      "concrete pavers",
+      "trottoirband",
+      "trottoirbanden",
+      "stoeptegels",
+      "betontegels"
+    ],
+    "language_labels": {
+      "nl": "Betonklinkers / bestrating",
+      "en": "Concrete pavers"
+    }
+  },
+  {
+    "canonical_name": "natural_stone",
+    "category": "construction",
+    "density_kg_m3": 2700,
+    "density_min_kg_m3": 2500,
+    "density_max_kg_m3": 2800,
+    "aliases": [
+      "natuursteen",
+      "natural stone",
+      "hardsteen",
+      "arduin"
+    ],
+    "language_labels": {
+      "nl": "Natuursteen",
+      "en": "Natural stone"
+    }
+  },
+  {
+    "canonical_name": "granite",
+    "category": "construction",
+    "density_kg_m3": 2700,
+    "density_min_kg_m3": 2600,
+    "density_max_kg_m3": 2800,
+    "aliases": [
+      "graniet",
+      "granite"
+    ],
+    "language_labels": {
+      "nl": "Graniet",
+      "en": "Granite"
+    }
+  },
+  {
+    "canonical_name": "marble",
+    "category": "construction",
+    "density_kg_m3": 2700,
+    "density_min_kg_m3": 2600,
+    "density_max_kg_m3": 2800,
+    "aliases": [
+      "marmer",
+      "marble"
+    ],
+    "language_labels": {
+      "nl": "Marmer",
+      "en": "Marble"
+    }
+  },
+  {
+    "canonical_name": "limestone",
+    "category": "construction",
+    "density_kg_m3": 2600,
+    "density_min_kg_m3": 2400,
+    "density_max_kg_m3": 2700,
+    "aliases": [
+      "kalksteen",
+      "limestone",
+      "mergel"
+    ],
+    "language_labels": {
+      "nl": "Kalksteen (massief)",
+      "en": "Limestone (solid)"
+    }
+  },
+  {
+    "canonical_name": "limestone_crushed",
+    "category": "bulk_material",
+    "density_kg_m3": 1500,
+    "density_min_kg_m3": 1300,
+    "density_max_kg_m3": 1700,
+    "aliases": [
+      "kalksteenslag",
+      "crushed limestone",
+      "kalksteen gebroken"
+    ],
+    "language_labels": {
+      "nl": "Kalksteen (gebroken)",
+      "en": "Limestone (crushed)"
+    },
+    "notes": "Stortdichtheid"
+  },
+  {
+    "canonical_name": "slate",
+    "category": "construction",
+    "density_kg_m3": 2800,
+    "density_min_kg_m3": 2700,
+    "density_max_kg_m3": 2900,
+    "aliases": [
+      "leisteen",
+      "slate",
+      "leien"
+    ],
+    "language_labels": {
+      "nl": "Leisteen",
+      "en": "Slate"
+    }
+  },
+  {
+    "canonical_name": "sandstone",
+    "category": "construction",
+    "density_kg_m3": 2300,
+    "density_min_kg_m3": 2100,
+    "density_max_kg_m3": 2500,
+    "aliases": [
+      "zandsteen",
+      "sandstone"
+    ],
+    "language_labels": {
+      "nl": "Zandsteen",
+      "en": "Sandstone"
+    }
+  },
+  {
+    "canonical_name": "asphalt",
+    "category": "construction",
+    "density_kg_m3": 2350,
+    "density_min_kg_m3": 2200,
+    "density_max_kg_m3": 2500,
+    "aliases": [
+      "asfalt",
+      "asphalt",
+      "asfaltbeton"
+    ],
+    "language_labels": {
+      "nl": "Asfalt (verdicht)",
+      "en": "Asphalt (compacted)"
+    }
+  },
+  {
+    "canonical_name": "asphalt_millings",
+    "category": "bulk_material",
+    "density_kg_m3": 1600,
+    "density_min_kg_m3": 1400,
+    "density_max_kg_m3": 1800,
+    "aliases": [
+      "freesasfalt",
+      "asfaltgranulaat",
+      "asphalt millings"
+    ],
+    "language_labels": {
+      "nl": "Freesasfalt",
+      "en": "Asphalt millings"
+    },
+    "notes": "Stortdichtheid"
+  },
+  {
+    "canonical_name": "bitumen",
+    "category": "construction",
+    "density_kg_m3": 1050,
+    "density_min_kg_m3": 1000,
+    "density_max_kg_m3": 1100,
+    "aliases": [
+      "bitumen",
+      "bitumineus"
+    ],
+    "language_labels": {
+      "nl": "Bitumen",
+      "en": "Bitumen"
+    }
+  },
+  {
+    "canonical_name": "crushed_concrete",
+    "category": "bulk_material",
+    "density_kg_m3": 1500,
+    "density_min_kg_m3": 1300,
+    "density_max_kg_m3": 1700,
+    "aliases": [
+      "betongranulaat",
+      "menggranulaat",
+      "puingranulaat",
+      "crushed concrete",
+      "recycling granulaat",
+      "puin"
+    ],
+    "language_labels": {
+      "nl": "Beton-/menggranulaat",
+      "en": "Crushed concrete"
+    },
+    "notes": "Stortdichtheid"
+  },
+  {
+    "canonical_name": "stabilized_sand",
+    "category": "bulk_material",
+    "density_kg_m3": 1800,
+    "density_min_kg_m3": 1700,
+    "density_max_kg_m3": 2000,
+    "aliases": [
+      "stabilisatiezand",
+      "gestabiliseerd zand",
+      "stabilized sand",
+      "zandcement"
+    ],
+    "language_labels": {
+      "nl": "Gestabiliseerd zand",
+      "en": "Stabilized sand"
+    }
+  },
+  {
+    "canonical_name": "clay_soil",
+    "category": "bulk_material",
+    "density_kg_m3": 1800,
+    "density_min_kg_m3": 1600,
+    "density_max_kg_m3": 2000,
+    "aliases": [
+      "klei",
+      "clay",
+      "leem",
+      "loam"
+    ],
+    "language_labels": {
+      "nl": "Klei / leem",
+      "en": "Clay / loam"
+    },
+    "notes": "Vochtig, gestort"
+  },
+  {
+    "canonical_name": "topsoil",
+    "category": "bulk_material",
+    "density_kg_m3": 1500,
+    "density_min_kg_m3": 1200,
+    "density_max_kg_m3": 1700,
+    "aliases": [
+      "grond",
+      "teelaarde",
+      "tuinaarde",
+      "topsoil",
+      "zwarte grond",
+      "aarde"
+    ],
+    "language_labels": {
+      "nl": "Grond / teelaarde",
+      "en": "Topsoil"
+    },
+    "notes": "Stortdichtheid vochtig"
+  },
+  {
+    "canonical_name": "peat",
+    "category": "bulk_material",
+    "density_kg_m3": 400,
+    "density_min_kg_m3": 300,
+    "density_max_kg_m3": 600,
+    "aliases": [
+      "turf",
+      "peat",
+      "potgrond",
+      "veen"
+    ],
+    "language_labels": {
+      "nl": "Turf / potgrond",
+      "en": "Peat / potting soil"
+    }
+  },
+  {
+    "canonical_name": "expanded_clay",
+    "category": "bulk_material",
+    "density_kg_m3": 350,
+    "density_min_kg_m3": 300,
+    "density_max_kg_m3": 500,
+    "aliases": [
+      "argex",
+      "expanded clay",
+      "geëxpandeerde klei",
+      "kleikorrels"
+    ],
+    "language_labels": {
+      "nl": "Geëxpandeerde kleikorrels",
+      "en": "Expanded clay aggregate"
+    }
+  },
+  {
+    "canonical_name": "lava_rock",
+    "category": "bulk_material",
+    "density_kg_m3": 850,
+    "density_min_kg_m3": 700,
+    "density_max_kg_m3": 1000,
+    "aliases": [
+      "lava",
+      "lavasteen",
+      "lava rock",
+      "lavasplit"
+    ],
+    "language_labels": {
+      "nl": "Lavasteen",
+      "en": "Lava rock"
+    },
+    "notes": "Stortdichtheid"
+  },
+  {
+    "canonical_name": "glass_flat",
+    "category": "construction",
+    "density_kg_m3": 2500,
+    "aliases": [
+      "glas",
+      "glass",
+      "vlakglas",
+      "glasplaat",
+      "glasplaten",
+      "ruiten",
+      "dubbel glas",
+      "hr++"
+    ],
+    "language_labels": {
+      "nl": "Glas (vlak)",
+      "en": "Glass (flat)"
+    }
+  },
+  {
+    "canonical_name": "glass_wool",
+    "category": "insulation",
+    "density_kg_m3": 25,
+    "density_min_kg_m3": 15,
+    "density_max_kg_m3": 40,
+    "aliases": [
+      "glaswol",
+      "glass wool",
+      "isolatiewol"
+    ],
+    "language_labels": {
+      "nl": "Glaswol",
+      "en": "Glass wool"
+    }
+  },
+  {
+    "canonical_name": "rock_wool",
+    "category": "insulation",
+    "density_kg_m3": 45,
+    "density_min_kg_m3": 30,
+    "density_max_kg_m3": 150,
+    "aliases": [
+      "steenwol",
+      "rock wool",
+      "rockwool",
+      "mineral wool",
+      "minerale wol"
+    ],
+    "language_labels": {
+      "nl": "Steenwol",
+      "en": "Rock wool"
+    }
+  },
+  {
+    "canonical_name": "eps",
+    "category": "insulation",
+    "density_kg_m3": 20,
+    "density_min_kg_m3": 15,
+    "density_max_kg_m3": 35,
+    "aliases": [
+      "eps",
+      "piepschuim",
+      "tempex",
+      "polystyreen",
+      "styrofoam",
+      "expanded polystyrene"
+    ],
+    "language_labels": {
+      "nl": "EPS (piepschuim)",
+      "en": "EPS (expanded polystyrene)"
+    }
+  },
+  {
+    "canonical_name": "xps",
+    "category": "insulation",
+    "density_kg_m3": 35,
+    "density_min_kg_m3": 30,
+    "density_max_kg_m3": 45,
+    "aliases": [
+      "xps",
+      "extruded polystyrene",
+      "geëxtrudeerd polystyreen"
+    ],
+    "language_labels": {
+      "nl": "XPS",
+      "en": "XPS (extruded polystyrene)"
+    }
+  },
+  {
+    "canonical_name": "pir",
+    "category": "insulation",
+    "density_kg_m3": 32,
+    "density_min_kg_m3": 30,
+    "density_max_kg_m3": 45,
+    "aliases": [
+      "pir",
+      "pur",
+      "polyurethaan",
+      "polyurethane",
+      "pir plaat",
+      "pur plaat",
+      "isolatieplaat"
+    ],
+    "language_labels": {
+      "nl": "PIR/PUR-isolatie",
+      "en": "PIR/PUR insulation"
+    }
+  },
+  {
+    "canonical_name": "oak",
+    "category": "wood",
+    "density_kg_m3": 720,
+    "density_min_kg_m3": 650,
+    "density_max_kg_m3": 800,
+    "aliases": [
+      "eiken",
+      "eikenhout",
+      "oak"
+    ],
+    "language_labels": {
+      "nl": "Eiken",
+      "en": "Oak"
+    }
+  },
+  {
+    "canonical_name": "beech",
+    "category": "wood",
+    "density_kg_m3": 720,
+    "density_min_kg_m3": 650,
+    "density_max_kg_m3": 780,
+    "aliases": [
+      "beuken",
+      "beukenhout",
+      "beech"
+    ],
+    "language_labels": {
+      "nl": "Beuken",
+      "en": "Beech"
+    }
+  },
+  {
+    "canonical_name": "birch",
+    "category": "wood",
+    "density_kg_m3": 650,
+    "density_min_kg_m3": 600,
+    "density_max_kg_m3": 700,
+    "aliases": [
+      "berken",
+      "berkenhout",
+      "birch"
+    ],
+    "language_labels": {
+      "nl": "Berken",
+      "en": "Birch"
+    }
+  },
+  {
+    "canonical_name": "ash_wood",
+    "category": "wood",
+    "density_kg_m3": 700,
+    "density_min_kg_m3": 650,
+    "density_max_kg_m3": 750,
+    "aliases": [
+      "essen",
+      "essenhout",
+      "ash wood"
+    ],
+    "language_labels": {
+      "nl": "Essen",
+      "en": "Ash"
+    }
+  },
+  {
+    "canonical_name": "larch",
+    "category": "wood",
+    "density_kg_m3": 590,
+    "density_min_kg_m3": 550,
+    "density_max_kg_m3": 650,
+    "aliases": [
+      "lariks",
+      "larch",
+      "lärche",
+      "douglas lariks"
+    ],
+    "language_labels": {
+      "nl": "Lariks",
+      "en": "Larch"
+    }
+  },
+  {
+    "canonical_name": "douglas_fir",
+    "category": "wood",
+    "density_kg_m3": 530,
+    "density_min_kg_m3": 480,
+    "density_max_kg_m3": 580,
+    "aliases": [
+      "douglas",
+      "douglashout",
+      "douglas fir"
+    ],
+    "language_labels": {
+      "nl": "Douglas",
+      "en": "Douglas fir"
+    }
+  },
+  {
+    "canonical_name": "teak",
+    "category": "wood",
+    "density_kg_m3": 660,
+    "density_min_kg_m3": 600,
+    "density_max_kg_m3": 750,
+    "aliases": [
+      "teak",
+      "teakhout"
+    ],
+    "language_labels": {
+      "nl": "Teak",
+      "en": "Teak"
+    }
+  },
+  {
+    "canonical_name": "azobe",
+    "category": "wood",
+    "density_kg_m3": 1060,
+    "density_min_kg_m3": 950,
+    "density_max_kg_m3": 1150,
+    "aliases": [
+      "azobé",
+      "azobe",
+      "bongossi"
+    ],
+    "language_labels": {
+      "nl": "Azobé",
+      "en": "Azobé"
+    },
+    "notes": "Zinkt in water"
+  },
+  {
+    "canonical_name": "meranti",
+    "category": "wood",
+    "density_kg_m3": 550,
+    "density_min_kg_m3": 450,
+    "density_max_kg_m3": 700,
+    "aliases": [
+      "meranti"
+    ],
+    "language_labels": {
+      "nl": "Meranti",
+      "en": "Meranti"
+    }
+  },
+  {
+    "canonical_name": "bamboo",
+    "category": "wood",
+    "density_kg_m3": 700,
+    "density_min_kg_m3": 600,
+    "density_max_kg_m3": 800,
+    "aliases": [
+      "bamboe",
+      "bamboo"
+    ],
+    "language_labels": {
+      "nl": "Bamboe",
+      "en": "Bamboo"
+    }
+  },
+  {
+    "canonical_name": "chipboard",
+    "category": "wood",
+    "density_kg_m3": 650,
+    "density_min_kg_m3": 600,
+    "density_max_kg_m3": 700,
+    "aliases": [
+      "spaanplaat",
+      "chipboard",
+      "particle board"
+    ],
+    "language_labels": {
+      "nl": "Spaanplaat",
+      "en": "Chipboard"
+    }
+  },
+  {
+    "canonical_name": "wood_pellets",
+    "category": "bulk_material",
+    "density_kg_m3": 650,
+    "density_min_kg_m3": 600,
+    "density_max_kg_m3": 700,
+    "aliases": [
+      "houtpellets",
+      "wood pellets",
+      "pellets"
+    ],
+    "language_labels": {
+      "nl": "Houtpellets",
+      "en": "Wood pellets"
+    },
+    "notes": "Stortdichtheid"
+  },
+  {
+    "canonical_name": "wood_chips",
+    "category": "bulk_material",
+    "density_kg_m3": 300,
+    "density_min_kg_m3": 200,
+    "density_max_kg_m3": 400,
+    "aliases": [
+      "houtsnippers",
+      "wood chips",
+      "chips",
+      "houtchips"
+    ],
+    "language_labels": {
+      "nl": "Houtsnippers",
+      "en": "Wood chips"
+    },
+    "notes": "Stortdichtheid"
+  },
+  {
+    "canonical_name": "sawdust",
+    "category": "bulk_material",
+    "density_kg_m3": 200,
+    "density_min_kg_m3": 150,
+    "density_max_kg_m3": 300,
+    "aliases": [
+      "zaagsel",
+      "sawdust",
+      "houtmot",
+      "houtkrullen"
+    ],
+    "language_labels": {
+      "nl": "Zaagsel",
+      "en": "Sawdust"
+    }
+  },
+  {
+    "canonical_name": "firewood",
+    "category": "wood",
+    "density_kg_m3": 400,
+    "density_min_kg_m3": 300,
+    "density_max_kg_m3": 500,
+    "aliases": [
+      "brandhout",
+      "firewood",
+      "haardhout",
+      "openhaardhout"
+    ],
+    "language_labels": {
+      "nl": "Brandhout (gestapeld)",
+      "en": "Firewood (stacked)"
+    }
+  },
+  {
+    "canonical_name": "water",
+    "category": "liquid",
+    "density_kg_m3": 1000,
+    "aliases": [
+      "water",
+      "drinkwater",
+      "demiwater"
+    ],
+    "language_labels": {
+      "nl": "Water",
+      "en": "Water"
+    }
+  },
+  {
+    "canonical_name": "diesel",
+    "category": "liquid",
+    "density_kg_m3": 840,
+    "density_min_kg_m3": 820,
+    "density_max_kg_m3": 860,
+    "aliases": [
+      "diesel",
+      "gasolie",
+      "gas oil",
+      "b7"
+    ],
+    "language_labels": {
+      "nl": "Diesel",
+      "en": "Diesel"
+    }
+  },
+  {
+    "canonical_name": "petrol",
+    "category": "liquid",
+    "density_kg_m3": 745,
+    "density_min_kg_m3": 720,
+    "density_max_kg_m3": 780,
+    "aliases": [
+      "benzine",
+      "petrol",
+      "gasoline",
+      "euro95",
+      "e10"
+    ],
+    "language_labels": {
+      "nl": "Benzine",
+      "en": "Petrol"
+    }
+  },
+  {
+    "canonical_name": "kerosene",
+    "category": "liquid",
+    "density_kg_m3": 800,
+    "density_min_kg_m3": 780,
+    "density_max_kg_m3": 820,
+    "aliases": [
+      "kerosine",
+      "kerosene",
+      "jet fuel",
+      "jet a1"
+    ],
+    "language_labels": {
+      "nl": "Kerosine / Jet A-1",
+      "en": "Kerosene / Jet A-1"
+    }
+  },
+  {
+    "canonical_name": "heavy_fuel_oil",
+    "category": "liquid",
+    "density_kg_m3": 980,
+    "density_min_kg_m3": 950,
+    "density_max_kg_m3": 1010,
+    "aliases": [
+      "stookolie",
+      "heavy fuel oil",
+      "hfo",
+      "zware stookolie"
+    ],
+    "language_labels": {
+      "nl": "Zware stookolie",
+      "en": "Heavy fuel oil"
+    }
+  },
+  {
+    "canonical_name": "lpg_liquid",
+    "category": "liquid",
+    "density_kg_m3": 540,
+    "density_min_kg_m3": 510,
+    "density_max_kg_m3": 580,
+    "aliases": [
+      "lpg",
+      "autogas",
+      "propaan vloeibaar",
+      "butaan vloeibaar"
+    ],
+    "language_labels": {
+      "nl": "LPG (vloeibaar)",
+      "en": "LPG (liquid)"
+    }
+  },
+  {
+    "canonical_name": "lubricating_oil",
+    "category": "liquid",
+    "density_kg_m3": 880,
+    "density_min_kg_m3": 850,
+    "density_max_kg_m3": 920,
+    "aliases": [
+      "smeerolie",
+      "motorolie",
+      "lubricating oil",
+      "motor oil",
+      "olie"
+    ],
+    "language_labels": {
+      "nl": "Smeerolie / motorolie",
+      "en": "Lubricating oil"
+    }
+  },
+  {
+    "canonical_name": "hydraulic_oil",
+    "category": "liquid",
+    "density_kg_m3": 870,
+    "density_min_kg_m3": 850,
+    "density_max_kg_m3": 900,
+    "aliases": [
+      "hydrauliekolie",
+      "hydraulic oil",
+      "hydraulische olie"
+    ],
+    "language_labels": {
+      "nl": "Hydrauliekolie",
+      "en": "Hydraulic oil"
+    }
+  },
+  {
+    "canonical_name": "vegetable_oil",
+    "category": "liquid",
+    "density_kg_m3": 920,
+    "density_min_kg_m3": 900,
+    "density_max_kg_m3": 930,
+    "aliases": [
+      "plantaardige olie",
+      "vegetable oil",
+      "zonnebloemolie",
+      "raapolie",
+      "sunflower oil",
+      "koolzaadolie",
+      "palmolie",
+      "palm oil",
+      "olijfolie",
+      "olive oil"
+    ],
+    "language_labels": {
+      "nl": "Plantaardige olie",
+      "en": "Vegetable oil"
+    }
+  },
+  {
+    "canonical_name": "ethanol",
+    "category": "liquid",
+    "density_kg_m3": 790,
+    "aliases": [
+      "ethanol",
+      "alcohol",
+      "spiritus"
+    ],
+    "language_labels": {
+      "nl": "Ethanol",
+      "en": "Ethanol"
+    }
+  },
+  {
+    "canonical_name": "methanol",
+    "category": "liquid",
+    "density_kg_m3": 792,
+    "aliases": [
+      "methanol"
+    ],
+    "language_labels": {
+      "nl": "Methanol",
+      "en": "Methanol"
+    }
+  },
+  {
+    "canonical_name": "adblue",
+    "category": "liquid",
+    "density_kg_m3": 1090,
+    "aliases": [
+      "adblue",
+      "ureumoplossing",
+      "def",
+      "aus 32"
+    ],
+    "language_labels": {
+      "nl": "AdBlue",
+      "en": "AdBlue (DEF)"
+    }
+  },
+  {
+    "canonical_name": "glycol",
+    "category": "liquid",
+    "density_kg_m3": 1110,
+    "density_min_kg_m3": 1050,
+    "density_max_kg_m3": 1130,
+    "aliases": [
+      "glycol",
+      "antivries",
+      "antifreeze",
+      "koelvloeistof",
+      "coolant"
+    ],
+    "language_labels": {
+      "nl": "Glycol / antivries",
+      "en": "Glycol / antifreeze"
+    }
+  },
+  {
+    "canonical_name": "acetone",
+    "category": "liquid",
+    "density_kg_m3": 790,
+    "aliases": [
+      "aceton",
+      "acetone"
+    ],
+    "language_labels": {
+      "nl": "Aceton",
+      "en": "Acetone"
+    }
+  },
+  {
+    "canonical_name": "sulfuric_acid",
+    "category": "liquid",
+    "density_kg_m3": 1830,
+    "aliases": [
+      "zwavelzuur",
+      "sulfuric acid",
+      "accuzuur"
+    ],
+    "language_labels": {
+      "nl": "Zwavelzuur (96%)",
+      "en": "Sulfuric acid (96%)"
+    }
+  },
+  {
+    "canonical_name": "hydrochloric_acid",
+    "category": "liquid",
+    "density_kg_m3": 1150,
+    "aliases": [
+      "zoutzuur",
+      "hydrochloric acid"
+    ],
+    "language_labels": {
+      "nl": "Zoutzuur (30%)",
+      "en": "Hydrochloric acid (30%)"
+    }
+  },
+  {
+    "canonical_name": "caustic_soda_solution",
+    "category": "liquid",
+    "density_kg_m3": 1520,
+    "aliases": [
+      "natronloog",
+      "caustic soda",
+      "sodium hydroxide",
+      "loog"
+    ],
+    "language_labels": {
+      "nl": "Natronloog (50%)",
+      "en": "Caustic soda solution (50%)"
+    }
+  },
+  {
+    "canonical_name": "paint",
+    "category": "liquid",
+    "density_kg_m3": 1300,
+    "density_min_kg_m3": 1000,
+    "density_max_kg_m3": 1600,
+    "aliases": [
+      "verf",
+      "paint",
+      "lak",
+      "coating",
+      "primer"
+    ],
+    "language_labels": {
+      "nl": "Verf",
+      "en": "Paint"
+    }
+  },
+  {
+    "canonical_name": "molasses",
+    "category": "liquid",
+    "density_kg_m3": 1400,
+    "aliases": [
+      "melasse",
+      "molasses"
+    ],
+    "language_labels": {
+      "nl": "Melasse",
+      "en": "Molasses"
+    }
+  },
+  {
+    "canonical_name": "urea",
+    "category": "chemical",
+    "density_kg_m3": 750,
+    "density_min_kg_m3": 700,
+    "density_max_kg_m3": 800,
+    "aliases": [
+      "ureum",
+      "urea",
+      "ureum prills"
+    ],
+    "language_labels": {
+      "nl": "Ureum (korrels)",
+      "en": "Urea (prills)"
+    },
+    "notes": "Stortdichtheid"
+  },
+  {
+    "canonical_name": "can_fertilizer",
+    "category": "chemical",
+    "density_kg_m3": 1000,
+    "density_min_kg_m3": 950,
+    "density_max_kg_m3": 1100,
+    "aliases": [
+      "kas",
+      "kunstmest",
+      "kalkammonsalpeter",
+      "can fertilizer",
+      "fertilizer",
+      "meststof",
+      "ammonium nitraat kalk"
+    ],
+    "language_labels": {
+      "nl": "KAS-kunstmest",
+      "en": "CAN fertilizer"
+    },
+    "notes": "Stortdichtheid korrels"
+  },
+  {
+    "canonical_name": "npk_fertilizer",
+    "category": "chemical",
+    "density_kg_m3": 1100,
+    "density_min_kg_m3": 1000,
+    "density_max_kg_m3": 1200,
+    "aliases": [
+      "npk",
+      "npk kunstmest",
+      "npk fertilizer",
+      "mengmeststof"
+    ],
+    "language_labels": {
+      "nl": "NPK-kunstmest",
+      "en": "NPK fertilizer"
+    }
+  },
+  {
+    "canonical_name": "potash",
+    "category": "chemical",
+    "density_kg_m3": 1100,
+    "density_min_kg_m3": 1000,
+    "density_max_kg_m3": 1200,
+    "aliases": [
+      "kali",
+      "potash",
+      "kaliumchloride",
+      "mop"
+    ],
+    "language_labels": {
+      "nl": "Kali (MOP)",
+      "en": "Potash (MOP)"
+    }
+  },
+  {
+    "canonical_name": "road_salt",
+    "category": "chemical",
+    "density_kg_m3": 1150,
+    "density_min_kg_m3": 1000,
+    "density_max_kg_m3": 1300,
+    "aliases": [
+      "strooizout",
+      "wegenzout",
+      "road salt",
+      "zout",
+      "salt",
+      "natriumchloride"
+    ],
+    "language_labels": {
+      "nl": "Zout / strooizout",
+      "en": "Salt / road salt"
+    },
+    "notes": "Stortdichtheid"
+  },
+  {
+    "canonical_name": "soda_ash",
+    "category": "chemical",
+    "density_kg_m3": 1000,
+    "density_min_kg_m3": 500,
+    "density_max_kg_m3": 1200,
+    "aliases": [
+      "soda",
+      "soda ash",
+      "natriumcarbonaat"
+    ],
+    "language_labels": {
+      "nl": "Soda (natriumcarbonaat)",
+      "en": "Soda ash"
+    }
+  },
+  {
+    "canonical_name": "sulfur",
+    "category": "chemical",
+    "density_kg_m3": 1200,
+    "density_min_kg_m3": 1050,
+    "density_max_kg_m3": 1300,
+    "aliases": [
+      "zwavel",
+      "sulfur",
+      "sulphur"
+    ],
+    "language_labels": {
+      "nl": "Zwavel (korrels)",
+      "en": "Sulphur (granulated)"
+    }
+  },
+  {
+    "canonical_name": "plastic_granulate",
+    "category": "chemical",
+    "density_kg_m3": 560,
+    "density_min_kg_m3": 500,
+    "density_max_kg_m3": 650,
+    "aliases": [
+      "granulaat",
+      "kunststofgranulaat",
+      "plastic granulate",
+      "polymeer granulaat",
+      "pellets kunststof"
+    ],
+    "language_labels": {
+      "nl": "Kunststofgranulaat",
+      "en": "Plastic granulate"
+    },
+    "notes": "Stortdichtheid"
+  },
+  {
+    "canonical_name": "wheat",
+    "category": "agri",
+    "density_kg_m3": 780,
+    "density_min_kg_m3": 730,
+    "density_max_kg_m3": 820,
+    "aliases": [
+      "tarwe",
+      "wheat",
+      "weizen"
+    ],
+    "language_labels": {
+      "nl": "Tarwe",
+      "en": "Wheat"
+    },
+    "notes": "Stortdichtheid"
+  },
+  {
+    "canonical_name": "barley",
+    "category": "agri",
+    "density_kg_m3": 650,
+    "density_min_kg_m3": 600,
+    "density_max_kg_m3": 700,
+    "aliases": [
+      "gerst",
+      "barley"
+    ],
+    "language_labels": {
+      "nl": "Gerst",
+      "en": "Barley"
+    }
+  },
+  {
+    "canonical_name": "maize",
+    "category": "agri",
+    "density_kg_m3": 720,
+    "density_min_kg_m3": 680,
+    "density_max_kg_m3": 760,
+    "aliases": [
+      "mais",
+      "maïs",
+      "maize",
+      "corn",
+      "snijmais"
+    ],
+    "language_labels": {
+      "nl": "Maïs",
+      "en": "Maize (corn)"
+    }
+  },
+  {
+    "canonical_name": "oats",
+    "category": "agri",
+    "density_kg_m3": 450,
+    "density_min_kg_m3": 400,
+    "density_max_kg_m3": 550,
+    "aliases": [
+      "haver",
+      "oats"
+    ],
+    "language_labels": {
+      "nl": "Haver",
+      "en": "Oats"
+    }
+  },
+  {
+    "canonical_name": "rye",
+    "category": "agri",
+    "density_kg_m3": 700,
+    "density_min_kg_m3": 650,
+    "density_max_kg_m3": 750,
+    "aliases": [
+      "rogge",
+      "rye"
+    ],
+    "language_labels": {
+      "nl": "Rogge",
+      "en": "Rye"
+    }
+  },
+  {
+    "canonical_name": "rapeseed",
+    "category": "agri",
+    "density_kg_m3": 650,
+    "density_min_kg_m3": 600,
+    "density_max_kg_m3": 700,
+    "aliases": [
+      "koolzaad",
+      "rapeseed",
+      "canola"
+    ],
+    "language_labels": {
+      "nl": "Koolzaad",
+      "en": "Rapeseed"
+    }
+  },
+  {
+    "canonical_name": "soybeans",
+    "category": "agri",
+    "density_kg_m3": 750,
+    "density_min_kg_m3": 700,
+    "density_max_kg_m3": 800,
+    "aliases": [
+      "soja",
+      "sojabonen",
+      "soybeans",
+      "soya"
+    ],
+    "language_labels": {
+      "nl": "Sojabonen",
+      "en": "Soybeans"
+    }
+  },
+  {
+    "canonical_name": "sunflower_seed",
+    "category": "agri",
+    "density_kg_m3": 425,
+    "density_min_kg_m3": 380,
+    "density_max_kg_m3": 470,
+    "aliases": [
+      "zonnebloempitten",
+      "sunflower seed",
+      "zonnebloemzaad"
+    ],
+    "language_labels": {
+      "nl": "Zonnebloemzaad",
+      "en": "Sunflower seed"
+    }
+  },
+  {
+    "canonical_name": "rice",
+    "category": "agri",
+    "density_kg_m3": 750,
+    "density_min_kg_m3": 700,
+    "density_max_kg_m3": 800,
+    "aliases": [
+      "rijst",
+      "rice"
+    ],
+    "language_labels": {
+      "nl": "Rijst",
+      "en": "Rice"
+    }
+  },
+  {
+    "canonical_name": "sugar",
+    "category": "agri",
+    "density_kg_m3": 850,
+    "density_min_kg_m3": 800,
+    "density_max_kg_m3": 900,
+    "aliases": [
+      "suiker",
+      "sugar",
+      "kristalsuiker"
+    ],
+    "language_labels": {
+      "nl": "Suiker",
+      "en": "Sugar"
+    },
+    "notes": "Stortdichtheid"
+  },
+  {
+    "canonical_name": "flour",
+    "category": "agri",
+    "density_kg_m3": 550,
+    "density_min_kg_m3": 450,
+    "density_max_kg_m3": 650,
+    "aliases": [
+      "meel",
+      "bloem",
+      "flour",
+      "tarwemeel"
+    ],
+    "language_labels": {
+      "nl": "Meel / bloem",
+      "en": "Flour"
+    }
+  },
+  {
+    "canonical_name": "malt",
+    "category": "agri",
+    "density_kg_m3": 550,
+    "density_min_kg_m3": 500,
+    "density_max_kg_m3": 600,
+    "aliases": [
+      "mout",
+      "malt",
+      "brouwmout"
+    ],
+    "language_labels": {
+      "nl": "Mout",
+      "en": "Malt"
+    }
+  },
+  {
+    "canonical_name": "potatoes",
+    "category": "agri",
+    "density_kg_m3": 650,
+    "density_min_kg_m3": 600,
+    "density_max_kg_m3": 700,
+    "aliases": [
+      "aardappelen",
+      "aardappels",
+      "potatoes",
+      "pootgoed"
+    ],
+    "language_labels": {
+      "nl": "Aardappelen",
+      "en": "Potatoes"
+    },
+    "notes": "Gestort"
+  },
+  {
+    "canonical_name": "onions",
+    "category": "agri",
+    "density_kg_m3": 550,
+    "density_min_kg_m3": 500,
+    "density_max_kg_m3": 600,
+    "aliases": [
+      "uien",
+      "onions"
+    ],
+    "language_labels": {
+      "nl": "Uien",
+      "en": "Onions"
+    }
+  },
+  {
+    "canonical_name": "sugar_beet",
+    "category": "agri",
+    "density_kg_m3": 600,
+    "density_min_kg_m3": 550,
+    "density_max_kg_m3": 700,
+    "aliases": [
+      "suikerbieten",
+      "bieten",
+      "sugar beet"
+    ],
+    "language_labels": {
+      "nl": "Suikerbieten",
+      "en": "Sugar beet"
+    }
+  },
+  {
+    "canonical_name": "apples",
+    "category": "agri",
+    "density_kg_m3": 400,
+    "density_min_kg_m3": 350,
+    "density_max_kg_m3": 450,
+    "aliases": [
+      "appels",
+      "appelen",
+      "apples",
+      "fruit"
+    ],
+    "language_labels": {
+      "nl": "Appels (in kisten)",
+      "en": "Apples (in bins)"
+    }
+  },
+  {
+    "canonical_name": "animal_feed",
+    "category": "agri",
+    "density_kg_m3": 650,
+    "density_min_kg_m3": 550,
+    "density_max_kg_m3": 750,
+    "aliases": [
+      "veevoer",
+      "mengvoer",
+      "animal feed",
+      "brok",
+      "voer",
+      "diervoeder"
+    ],
+    "language_labels": {
+      "nl": "Mengvoer (brok)",
+      "en": "Animal feed (pellets)"
+    }
+  },
+  {
+    "canonical_name": "hay_bales",
+    "category": "agri",
+    "density_kg_m3": 150,
+    "density_min_kg_m3": 120,
+    "density_max_kg_m3": 200,
+    "aliases": [
+      "hooi",
+      "hooibalen",
+      "hay",
+      "hay bales"
+    ],
+    "language_labels": {
+      "nl": "Hooibalen",
+      "en": "Hay bales"
+    },
+    "notes": "Geperste balen"
+  },
+  {
+    "canonical_name": "straw_bales",
+    "category": "agri",
+    "density_kg_m3": 120,
+    "density_min_kg_m3": 100,
+    "density_max_kg_m3": 160,
+    "aliases": [
+      "stro",
+      "strobalen",
+      "straw",
+      "straw bales"
+    ],
+    "language_labels": {
+      "nl": "Strobalen",
+      "en": "Straw bales"
+    },
+    "notes": "Geperste balen"
+  },
+  {
+    "canonical_name": "coffee_beans",
+    "category": "agri",
+    "density_kg_m3": 650,
+    "density_min_kg_m3": 600,
+    "density_max_kg_m3": 700,
+    "aliases": [
+      "koffie",
+      "koffiebonen",
+      "coffee",
+      "coffee beans",
+      "groene koffie"
+    ],
+    "language_labels": {
+      "nl": "Koffiebonen",
+      "en": "Coffee beans"
+    },
+    "notes": "In zakken"
+  },
+  {
+    "canonical_name": "cocoa_beans",
+    "category": "agri",
+    "density_kg_m3": 600,
+    "density_min_kg_m3": 550,
+    "density_max_kg_m3": 650,
+    "aliases": [
+      "cacao",
+      "cacaobonen",
+      "cocoa",
+      "cocoa beans"
+    ],
+    "language_labels": {
+      "nl": "Cacaobonen",
+      "en": "Cocoa beans"
+    }
+  },
+  {
+    "canonical_name": "milk",
+    "category": "food",
+    "density_kg_m3": 1030,
+    "aliases": [
+      "melk",
+      "milk",
+      "rauwe melk",
+      "zuivel"
+    ],
+    "language_labels": {
+      "nl": "Melk",
+      "en": "Milk"
+    }
+  },
+  {
+    "canonical_name": "beer",
+    "category": "food",
+    "density_kg_m3": 1010,
+    "aliases": [
+      "bier",
+      "beer"
+    ],
+    "language_labels": {
+      "nl": "Bier",
+      "en": "Beer"
+    }
+  },
+  {
+    "canonical_name": "wine",
+    "category": "food",
+    "density_kg_m3": 990,
+    "aliases": [
+      "wijn",
+      "wine"
+    ],
+    "language_labels": {
+      "nl": "Wijn",
+      "en": "Wine"
+    }
+  },
+  {
+    "canonical_name": "fruit_juice",
+    "category": "food",
+    "density_kg_m3": 1050,
+    "density_min_kg_m3": 1030,
+    "density_max_kg_m3": 1100,
+    "aliases": [
+      "sap",
+      "vruchtensap",
+      "juice",
+      "fruit juice",
+      "appelsap",
+      "sinaasappelsap"
+    ],
+    "language_labels": {
+      "nl": "Vruchtensap",
+      "en": "Fruit juice"
+    }
+  },
+  {
+    "canonical_name": "frozen_food_pallet",
+    "category": "food",
+    "density_kg_m3": 450,
+    "density_min_kg_m3": 350,
+    "density_max_kg_m3": 600,
+    "aliases": [
+      "diepvries",
+      "frozen food",
+      "bevroren",
+      "vriesgoederen",
+      "diepvriesproducten"
+    ],
+    "language_labels": {
+      "nl": "Diepvriesgoederen (pallet)",
+      "en": "Frozen food (palletized)"
+    },
+    "notes": "Inclusief verpakking op pallet"
+  },
+  {
+    "canonical_name": "canned_food_pallet",
+    "category": "food",
+    "density_kg_m3": 700,
+    "density_min_kg_m3": 600,
+    "density_max_kg_m3": 800,
+    "aliases": [
+      "conserven",
+      "blikvoeding",
+      "canned food",
+      "blikken"
+    ],
+    "language_labels": {
+      "nl": "Conserven (pallet)",
+      "en": "Canned food (palletized)"
+    }
+  },
+  {
+    "canonical_name": "paper_rolls",
+    "category": "paper",
+    "density_kg_m3": 800,
+    "density_min_kg_m3": 700,
+    "density_max_kg_m3": 900,
+    "aliases": [
+      "papier",
+      "papierrollen",
+      "paper",
+      "paper rolls",
+      "krantenpapier"
+    ],
+    "language_labels": {
+      "nl": "Papier (rollen)",
+      "en": "Paper (rolls)"
+    }
+  },
+  {
+    "canonical_name": "cardboard_bales",
+    "category": "paper",
+    "density_kg_m3": 400,
+    "density_min_kg_m3": 350,
+    "density_max_kg_m3": 500,
+    "aliases": [
+      "karton",
+      "kartonbalen",
+      "cardboard",
+      "golfkarton"
+    ],
+    "language_labels": {
+      "nl": "Karton (balen)",
+      "en": "Cardboard (baled)"
+    }
+  },
+  {
+    "canonical_name": "waste_paper_bales",
+    "category": "paper",
+    "density_kg_m3": 500,
+    "density_min_kg_m3": 400,
+    "density_max_kg_m3": 600,
+    "aliases": [
+      "oud papier",
+      "waste paper",
+      "papierbalen",
+      "recycled paper"
+    ],
+    "language_labels": {
+      "nl": "Oud papier (balen)",
+      "en": "Waste paper (baled)"
+    }
+  },
+  {
+    "canonical_name": "pulp_bales",
+    "category": "paper",
+    "density_kg_m3": 600,
+    "density_min_kg_m3": 500,
+    "density_max_kg_m3": 700,
+    "aliases": [
+      "pulp",
+      "cellulose",
+      "papierpulp"
+    ],
+    "language_labels": {
+      "nl": "Cellulosepulp (balen)",
+      "en": "Pulp (baled)"
+    }
+  },
+  {
+    "canonical_name": "iron_ore",
+    "category": "ore_mineral",
+    "density_kg_m3": 2400,
+    "density_min_kg_m3": 2100,
+    "density_max_kg_m3": 2900,
+    "aliases": [
+      "ijzererts",
+      "iron ore",
+      "erts"
+    ],
+    "language_labels": {
+      "nl": "IJzererts",
+      "en": "Iron ore"
+    },
+    "notes": "Stortdichtheid"
+  },
+  {
+    "canonical_name": "bauxite",
+    "category": "ore_mineral",
+    "density_kg_m3": 1300,
+    "density_min_kg_m3": 1200,
+    "density_max_kg_m3": 1400,
+    "aliases": [
+      "bauxiet",
+      "bauxite"
+    ],
+    "language_labels": {
+      "nl": "Bauxiet",
+      "en": "Bauxite"
+    }
+  },
+  {
+    "canonical_name": "coal",
+    "category": "ore_mineral",
+    "density_kg_m3": 850,
+    "density_min_kg_m3": 800,
+    "density_max_kg_m3": 900,
+    "aliases": [
+      "steenkool",
+      "kolen",
+      "coal",
+      "kool"
+    ],
+    "language_labels": {
+      "nl": "Steenkool",
+      "en": "Coal"
+    },
+    "notes": "Stortdichtheid"
+  },
+  {
+    "canonical_name": "coke",
+    "category": "ore_mineral",
+    "density_kg_m3": 500,
+    "density_min_kg_m3": 450,
+    "density_max_kg_m3": 550,
+    "aliases": [
+      "cokes",
+      "coke",
+      "petcokes",
+      "petroleum coke"
+    ],
+    "language_labels": {
+      "nl": "Cokes",
+      "en": "Coke"
+    }
+  },
+  {
+    "canonical_name": "fly_ash",
+    "category": "ore_mineral",
+    "density_kg_m3": 900,
+    "density_min_kg_m3": 800,
+    "density_max_kg_m3": 1000,
+    "aliases": [
+      "vliegas",
+      "fly ash",
+      "poederkoolvliegas"
+    ],
+    "language_labels": {
+      "nl": "Vliegas",
+      "en": "Fly ash"
+    }
+  },
+  {
+    "canonical_name": "slag",
+    "category": "ore_mineral",
+    "density_kg_m3": 1300,
+    "density_min_kg_m3": 1100,
+    "density_max_kg_m3": 1500,
+    "aliases": [
+      "slakken",
+      "slag",
+      "hoogovenslak",
+      "staalslak"
+    ],
+    "language_labels": {
+      "nl": "Slakken",
+      "en": "Slag"
+    },
+    "notes": "Stortdichtheid"
+  },
+  {
+    "canonical_name": "construction_waste",
+    "category": "waste",
+    "density_kg_m3": 500,
+    "density_min_kg_m3": 300,
+    "density_max_kg_m3": 700,
+    "aliases": [
+      "bouwafval",
+      "sloopafval",
+      "construction waste",
+      "bouw- en sloopafval",
+      "bsa"
+    ],
+    "language_labels": {
+      "nl": "Bouw- en sloopafval",
+      "en": "Construction & demolition waste"
+    },
+    "notes": "Gemengd, los gestort"
+  },
+  {
+    "canonical_name": "household_waste",
+    "category": "waste",
+    "density_kg_m3": 300,
+    "density_min_kg_m3": 150,
+    "density_max_kg_m3": 500,
+    "aliases": [
+      "huisvuil",
+      "restafval",
+      "household waste",
+      "huishoudelijk afval"
+    ],
+    "language_labels": {
+      "nl": "Huishoudelijk restafval",
+      "en": "Household waste"
+    },
+    "notes": "Licht verdicht"
+  },
+  {
+    "canonical_name": "wood_waste",
+    "category": "waste",
+    "density_kg_m3": 250,
+    "density_min_kg_m3": 150,
+    "density_max_kg_m3": 400,
+    "aliases": [
+      "afvalhout",
+      "sloophout",
+      "wood waste",
+      "a-hout",
+      "b-hout"
+    ],
+    "language_labels": {
+      "nl": "Afvalhout",
+      "en": "Wood waste"
+    },
+    "notes": "Los gestort"
+  },
+  {
+    "canonical_name": "glass_cullet",
+    "category": "waste",
+    "density_kg_m3": 1300,
+    "density_min_kg_m3": 1100,
+    "density_max_kg_m3": 1500,
+    "aliases": [
+      "glasscherven",
+      "glass cullet",
+      "scherven",
+      "glasafval"
+    ],
+    "language_labels": {
+      "nl": "Glasscherven",
+      "en": "Glass cullet"
+    },
+    "notes": "Stortdichtheid"
+  },
+  {
+    "canonical_name": "glass_bottles_empty",
+    "category": "waste",
+    "density_kg_m3": 300,
+    "density_min_kg_m3": 250,
+    "density_max_kg_m3": 400,
+    "aliases": [
+      "lege flessen",
+      "glazen flessen",
+      "glass bottles",
+      "emballage glas"
+    ],
+    "language_labels": {
+      "nl": "Lege glazen flessen",
+      "en": "Empty glass bottles"
+    },
+    "notes": "Los gestort"
+  },
+  {
+    "canonical_name": "plastic_film_bales",
+    "category": "waste",
+    "density_kg_m3": 400,
+    "density_min_kg_m3": 300,
+    "density_max_kg_m3": 500,
+    "aliases": [
+      "foliebalen",
+      "plastic folie",
+      "plastic film",
+      "ldpe balen",
+      "folie"
+    ],
+    "language_labels": {
+      "nl": "Kunststoffolie (balen)",
+      "en": "Plastic film (baled)"
+    }
+  },
+  {
+    "canonical_name": "pet_bales",
+    "category": "waste",
+    "density_kg_m3": 250,
+    "density_min_kg_m3": 200,
+    "density_max_kg_m3": 300,
+    "aliases": [
+      "pet balen",
+      "pet bottles",
+      "petflessen",
+      "pet"
+    ],
+    "language_labels": {
+      "nl": "PET-flessen (balen)",
+      "en": "PET bottles (baled)"
+    }
+  },
+  {
+    "canonical_name": "tires",
+    "category": "waste",
+    "density_kg_m3": 200,
+    "density_min_kg_m3": 130,
+    "density_max_kg_m3": 300,
+    "aliases": [
+      "banden",
+      "autobanden",
+      "tires",
+      "tyres"
+    ],
+    "language_labels": {
+      "nl": "Autobanden (los)",
+      "en": "Tires (loose)"
+    },
+    "notes": "Los gestapeld"
+  },
+  {
+    "canonical_name": "textile_bales",
+    "category": "textile",
+    "density_kg_m3": 300,
+    "density_min_kg_m3": 250,
+    "density_max_kg_m3": 400,
+    "aliases": [
+      "textiel",
+      "textielbalen",
+      "textile",
+      "kleding",
+      "clothing",
+      "used clothing"
+    ],
+    "language_labels": {
+      "nl": "Textiel (balen)",
+      "en": "Textiles (baled)"
+    }
+  },
+  {
+    "canonical_name": "cotton_bales",
+    "category": "textile",
+    "density_kg_m3": 400,
+    "density_min_kg_m3": 350,
+    "density_max_kg_m3": 450,
+    "aliases": [
+      "katoen",
+      "katoenbalen",
+      "cotton",
+      "cotton bales"
+    ],
+    "language_labels": {
+      "nl": "Katoen (balen)",
+      "en": "Cotton (baled)"
+    }
+  },
+  {
+    "canonical_name": "rubber",
+    "category": "textile",
+    "density_kg_m3": 1150,
+    "density_min_kg_m3": 1100,
+    "density_max_kg_m3": 1250,
+    "aliases": [
+      "rubber",
+      "rubberen"
+    ],
+    "language_labels": {
+      "nl": "Rubber (massief)",
+      "en": "Rubber (solid)"
+    }
+  },
+  {
+    "canonical_name": "palletized_beverages",
+    "category": "general_cargo",
+    "density_kg_m3": 550,
+    "density_min_kg_m3": 450,
+    "density_max_kg_m3": 650,
+    "aliases": [
+      "dranken",
+      "frisdrank",
+      "beverages",
+      "drankenpallet",
+      "kratten bier",
+      "flessen water"
+    ],
+    "language_labels": {
+      "nl": "Dranken (pallet)",
+      "en": "Beverages (palletized)"
+    },
+    "notes": "Gemiddelde incl. verpakking en pallet"
+  },
+  {
+    "canonical_name": "palletized_food",
+    "category": "general_cargo",
+    "density_kg_m3": 400,
+    "density_min_kg_m3": 300,
+    "density_max_kg_m3": 550,
+    "aliases": [
+      "voeding",
+      "levensmiddelen",
+      "food pallet",
+      "droge kruidenierswaren",
+      "dkw"
+    ],
+    "language_labels": {
+      "nl": "Levensmiddelen (pallet)",
+      "en": "Foodstuffs (palletized)"
+    },
+    "notes": "Gemiddelde incl. verpakking en pallet"
+  },
+  {
+    "canonical_name": "palletized_general",
+    "category": "general_cargo",
+    "density_kg_m3": 250,
+    "density_min_kg_m3": 150,
+    "density_max_kg_m3": 400,
+    "aliases": [
+      "stukgoed",
+      "pallet goederen",
+      "general cargo",
+      "mixed pallet",
+      "handelsgoederen"
+    ],
+    "language_labels": {
+      "nl": "Algemeen stukgoed (pallet)",
+      "en": "General cargo (palletized)"
+    },
+    "notes": "Praktijkgemiddelde gemengde pallets"
+  },
+  {
+    "canonical_name": "parcels",
+    "category": "general_cargo",
+    "density_kg_m3": 150,
+    "density_min_kg_m3": 100,
+    "density_max_kg_m3": 200,
+    "aliases": [
+      "pakketten",
+      "parcels",
+      "dozen",
+      "colli klein",
+      "e-commerce"
+    ],
+    "language_labels": {
+      "nl": "Pakketten / dozen",
+      "en": "Parcels / boxes"
+    },
+    "notes": "Gemiddelde pakketdichtheid"
+  },
+  {
+    "canonical_name": "electronics_pallet",
+    "category": "general_cargo",
+    "density_kg_m3": 300,
+    "density_min_kg_m3": 200,
+    "density_max_kg_m3": 450,
+    "aliases": [
+      "elektronica",
+      "electronics",
+      "witgoed",
+      "apparatuur",
+      "machines klein"
+    ],
+    "language_labels": {
+      "nl": "Elektronica / apparatuur (pallet)",
+      "en": "Electronics / appliances (palletized)"
+    }
+  },
+  {
+    "canonical_name": "furniture",
+    "category": "general_cargo",
+    "density_kg_m3": 150,
+    "density_min_kg_m3": 100,
+    "density_max_kg_m3": 250,
+    "aliases": [
+      "meubels",
+      "meubilair",
+      "furniture",
+      "kasten",
+      "stoelen",
+      "tafels"
+    ],
+    "language_labels": {
+      "nl": "Meubels",
+      "en": "Furniture"
+    },
+    "notes": "Gemiddelde incl. verpakking"
   }
 ]

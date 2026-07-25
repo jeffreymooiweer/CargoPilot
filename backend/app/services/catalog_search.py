@@ -292,7 +292,7 @@ def _search_profiles(db: Session, query: str, normalized: str, query_tokens: set
     return hits
 
 
-def _search_materials(db: Session, query: str, query_tokens: set[str]) -> list[Material]:
+def _search_materials(db: Session, query: str, query_tokens: set[str]) -> list[tuple[Material, float]]:
     lower = query.lower()
     matched: list[tuple[Material, float]] = []
     for material in db.query(Material).filter(Material.active.is_(True)).all():
@@ -301,7 +301,26 @@ def _search_materials(db: Session, query: str, query_tokens: set[str]) -> list[M
         if score > 0:
             matched.append((material, score))
     matched.sort(key=lambda x: x[1], reverse=True)
-    return [m for m, _ in matched[:4]]
+    return matched[:4]
+
+
+def _material_hits(query: str, materials_scored: list[tuple[Material, float]]) -> list[SearchHit]:
+    hits: list[SearchHit] = []
+    for material, score in materials_scored:
+        labels = json.loads(material.language_labels_json or "{}")
+        display = labels.get("nl") or MATERIAL_NL.get(material.canonical_name, material.canonical_name)
+        density = material.density_kg_m3
+        hits.append(
+            SearchHit(
+                id=f"material:{material.canonical_name}",
+                source="material",
+                label=display,
+                sublabel=f"{density:g} kg/m³" if density else None,
+                value=_merge_label(display, query),
+                score=score + 0.5,
+            )
+        )
+    return hits
 
 
 def _search_reference(db: Session, query: str, normalized: str, query_tokens: set[str]) -> list[SearchHit]:
@@ -391,8 +410,10 @@ def search_catalog(db: Session, query: str, limit: int = 25) -> list[dict[str, A
     query_tokens = _tokens(normalized) | _tokens(query)
     dims = extract_dimensions(normalized)
 
+    materials_scored = _search_materials(db, normalized, query_tokens)
     hits: list[SearchHit] = []
-    hits.extend(_template_suggestions(query, normalized, _search_materials(db, normalized, query_tokens), db))
+    hits.extend(_template_suggestions(query, normalized, [m for m, _ in materials_scored], db))
+    hits.extend(_material_hits(query, materials_scored))
     hits.extend(_search_equipment(db, query, normalized, query_tokens))
     hits.extend(_search_profiles(db, query, normalized, query_tokens, dims))
     hits.extend(_search_reference(db, query, normalized, query_tokens))

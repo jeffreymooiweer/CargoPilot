@@ -80,6 +80,14 @@ export const api = {
   parseWizardImportFile: (file: File) => uploadFile<WizardFileParseResult>("/import/wizard-file", file),
   catalogSearch: (q: string, limit = 25) =>
     request<{ results: CatalogSearchHit[] }>(`/catalog/search?q=${encodeURIComponent(q)}&limit=${limit}`),
+  geoLocations: (q: string, types?: GeoLocationType[], limit = 8) =>
+    request<{ results: GeoLocation[] }>(
+      `/geo/locations?q=${encodeURIComponent(q)}&limit=${limit}${types?.length ? `&type=${types.join(",")}` : ""}`,
+    ),
+  geoAddress: (q: string, lang = "en", limit = 6) =>
+    request<{ results: GeoAddress[]; available: boolean }>(
+      `/geo/address?q=${encodeURIComponent(q)}&lang=${lang}&limit=${limit}`,
+    ),
   documentsRegistry: () => request<DocumentRegistry>("/documents/registry"),
   dgCompliance: (entries: DgEntry[], profiles: string[], language: string) =>
     request<DgComplianceResult>("/dg/compliance", {
@@ -222,6 +230,30 @@ export interface CatalogSearchHit {
   sublabel: string | null;
   value: string;
   score: number;
+}
+
+export type GeoLocationType = "airport" | "port" | "station";
+
+export interface GeoLocation {
+  type: GeoLocationType;
+  name: string;
+  code: string;
+  icao?: string;
+  country: string;
+  city?: string;
+  subdivision?: string;
+}
+
+export interface GeoAddress {
+  label: string;
+  name: string;
+  street: string;
+  housenumber: string;
+  postcode: string;
+  city: string;
+  state: string;
+  country: string;
+  countrycode: string;
 }
 
 export interface EquipmentItem {

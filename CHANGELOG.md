@@ -2,6 +2,24 @@
 
 Alle noemenswaardige wijzigingen worden gedocumenteerd volgens [Semantic Versioning](https://semver.org/).
 
+## [1.5.0] — 2026-07-25
+
+Eén wizard voor alle formulieren, locatie- en adres-autocomplete, en een transportbrede goederendatabase.
+
+### Toegevoegd
+
+- **Formulieren-subwizard**: na de colli-invoer volgt één doorlopende wizard — eerst de **zendinggegevens** (partijen, route, referenties) die één keer worden ingevuld en in álle geselecteerde formulieren worden hergebruikt, daarna per formulier een eigen stap ("Formulier x van y") met uitsluitend de velden die dat formulier nog nodig heeft. Stappen zijn direct aanklikbaar en tonen met een groene/oranje stip of alle verplichte velden zijn ingevuld; formulieren zonder eigen velden worden benoemd als "gedekt door de zendinggegevens".
+- **Adres-autocomplete**: bij adresvelden (afzender, geadresseerde) kan een adres worden gezocht en automatisch ingevuld via een Photon-geocoder op OpenStreetMap-data (instelbaar met `GEO_ADDRESS_API_URL`; valt stil zonder internettoegang, handmatig invullen blijft altijd mogelijk). Nieuw endpoint: `GET /api/geo/address`.
+- **Locatie-autocomplete voor luchthavens, havens en treinstations**: route-velden (laadplaats, losplaats, ontvangst/aflevering, eindbestemming) zoeken live in meegeleverde open datasets — 4.500+ luchthavens met IATA/ICAO-code (OurAirports), 17.500+ havens met UN/LOCODE (UNECE) en 750+ Europese hoofdstations (Trainline EU). Per modaliteit wordt de juiste soort voorgesteld (lucht → luchthavens, zee/binnenvaart → havens, spoor → stations, weg/multimodaal → alles plus adressen). Nieuw endpoint: `GET /api/geo/locations`. Vrije tekst blijft altijd toegestaan.
+- **Goederendatabase sterk uitgebreid**: van 18 naar **159 goederen** met (stort)dichtheden en NL/EN-aliassen — bouwmaterialen (cement, kalkzandsteen, baksteen, dakpannen, natuursteen, asfalt, granulaten, isolatie), metalen en schroot, houtsoorten en houtproducten, brandstoffen en vloeistoffen (diesel, kerosine, smeerolie, zuren, AdBlue), chemie en meststoffen, agrarische bulk (granen, zaden, aardappelen, veevoer, hooi/stro, koffie, cacao), levensmiddelen en dranken, papier en verpakking, ertsen en energie (ijzererts, steenkool, cokes), recycling en afvalstromen, textiel en stukgoed-praktijkgemiddelden (pallets, pakketten, meubels).
+- Catalogus-zoeken toont goederen nu ook rechtstreeks als **materiaal-suggestie met dichtheid** (bijv. "Tarwe — 780 kg/m³"), naast de bestaande profiel- en materieelresultaten.
+- **Gewichtsberekening voor blokvormige goederen**: een herkend materiaal met drie afmetingen wordt nu als massief blok op dichtheid doorgerekend (bijv. "baksteen 100x100x100cm" → 1.900 kg), ook zonder expliciet producttype als plaat of balk.
+
+### Gewijzigd
+
+- De stap "Zendinggegevens" heet in de voortgangsbalk nog steeds hetzelfde, maar bevat nu de sub-wizard met eigen navigatie; dubbele invoer van dezelfde gegevens over formulieren is volledig vervallen.
+- Nieuwe environment variables: `GEO_ADDRESS_API_URL` en `GEO_ADDRESS_TIMEOUT_SECONDS`.
+
 ## [1.4.0] — 2026-07-13
 
 CargoPilot is volledig civiel: militaire formulieren verwijderd.

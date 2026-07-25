@@ -2,6 +2,21 @@
 
 Alle noemenswaardige wijzigingen worden gedocumenteerd volgens [Semantic Versioning](https://semver.org/).
 
+## [1.6.0] — 2026-07-25
+
+Handtekeningen op documenten en een complete offline UN- en verpakkingendatabase.
+
+### Toegevoegd
+
+- **Handtekening tekenen, uploaden of overslaan**: in de zendinggegevens-stap kan de afzender een handtekening tekenen (muis, vinger of stylus, met vloeiende lijnen, ongedaan maken en wissen) of een afbeelding uploaden (PNG/JPEG/WebP; een witte achtergrond wordt automatisch transparant gemaakt en de handtekening wordt strak bijgesneden). De handtekening wordt geplaatst in het afzendervak van de documenten: CMR vak 22 (alle vier doorslagen), het handtekeningveld van de IATA Shipper's Declaration en een nette handtekeningsectie in alle gegenereerde PDF's. Overslaan blijft altijd mogelijk om fysiek met pen te ondertekenen. Handtekeningen van vervoerder en geadresseerde (CMR vak 23/24, CIM vak 61, afleverbon-ontvangst) blijven altijd leeg.
+- **UN-nummer-autocomplete**: bij het invullen van een UN-nummer of stofnaam verschijnen direct voorstellen uit een **offline database met 2.928 ADR-vermeldingen** (klasse, classificatiecode, verpakkingsgroep, etiketten, gelimiteerde/vrijgestelde hoeveelheden, verpakkingsinstructies, vervoerscategorie, tunnelcode en Kemler-nummer uit ADR Tabel A; Engelse stofnamen uit de officiële Amerikaanse 49 CFR 172.101-tabel). Eén klik vult PSN, klasse, verpakkingsgroep, verpakkingsinstructie, vervoerscategorie en tunnelcode automatisch in; waar internet beschikbaar is verrijkt de bestaande ADR 2025-lookup de gegevens live. Nieuw endpoint: `GET /api/dg/search`.
+- **Verpakkingendatabase**: alle 107 UN-verpakkingscodes volgens ADR 6.1.2/6.5.1.4/6.6.2 (vaten, jerrycans, kisten en dozen, zakken, composietverpakkingen met kunststof of glazen binnenhouder, metalen/flexibele/kunststof/composiet-IBC's zoals big bags en 1000-litertotes, grote verpakkingen en drukhouders) met NL/EN-omschrijvingen en indicatie vloeistof/vaste stof. Het verpakkingsveld in de gevaarlijke-stoffenstap is nu een zoekbare keuzelijst; vrije tekst blijft mogelijk. Nieuw endpoint: `GET /api/dg/packagings`.
+- De UN-lookup (`GET /api/dg/lookup`) valt automatisch terug op de offline database wanneer de externe ADR-bron niet bereikbaar is — de gevaarlijke-stoffenstap werkt nu volledig offline.
+
+### Gewijzigd
+
+- Formulierteksten verduidelijkt: carrier- en ontvangsthandtekeningen worden nooit vooraf ingevuld; de afzenderhandtekening wordt uitsluitend geplaatst wanneer de gebruiker die zelf tekent of uploadt.
+
 ## [1.5.0] — 2026-07-25
 
 Eén wizard voor alle formulieren, locatie- en adres-autocomplete, en een transportbrede goederendatabase.

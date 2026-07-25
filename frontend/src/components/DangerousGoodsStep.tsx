@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { api, DgEntry, DgInstructions, DgProduct, LineItem } from "../api/client";
+import { api, DgEntry, DgInstructions, DgPackaging, DgProduct, DgUnEntry, LineItem } from "../api/client";
 import InfoTooltip from "./InfoTooltip";
+import SuggestInput, { SuggestItem } from "./SuggestInput";
 
 const inputClass =
   "w-full border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-950 text-slate-900 dark:text-slate-100 rounded-lg px-3 py-2 text-sm";
@@ -100,24 +101,93 @@ export default function DangerousGoodsStep({ lines, entries, onChange, perPositi
     updateEntry(entryIndex, { products });
   };
 
-  const lookupUn = async (entryIndex: number, productIndex: number, un: string) => {
+  const classBadge = (cls: string, pg?: string) => (
+    <span className="ml-auto flex shrink-0 items-center gap-1">
+      {cls && (
+        <span className="rounded bg-orange-100 px-1.5 py-0.5 text-[11px] font-semibold text-orange-800 dark:bg-orange-900/50 dark:text-orange-200">
+          {t("dgsearch.classShort")} {cls}
+        </span>
+      )}
+      {pg && (
+        <span className="rounded bg-slate-100 px-1.5 py-0.5 text-[11px] font-medium text-slate-600 dark:bg-slate-800 dark:text-slate-300">
+          PG {pg}
+        </span>
+      )}
+    </span>
+  );
+
+  const unFetcher = async (q: string): Promise<SuggestItem<DgUnEntry>[]> => {
+    const { results } = await api.dgSearch(q);
+    return results.map((entry, i) => ({
+      key: `${entry.un}-${i}`,
+      data: entry,
+      render: (
+        <span className="flex items-center gap-2">
+          <span className="shrink-0 font-mono font-semibold">UN {entry.un}</span>
+          <span className="min-w-0 truncate">{entry.name_en || entry.name_de}</span>
+          {classBadge(entry.class, entry.packing_group)}
+        </span>
+      ),
+    }));
+  };
+
+  const applyUnEntry = (entryIndex: number, productIndex: number, un: DgUnEntry) => {
+    const patch: Partial<DgProduct> = {
+      un_number: un.un,
+      proper_shipping_name: (un.name_en || un.name_de).toUpperCase(),
+      class: un.class,
+      subsidiary_risks: un.classification_code,
+      packing_group: un.packing_group,
+      packing_instruction: un.packing_instructions.split(" ")[0] || "",
+    };
+    if (un.transport_category) {
+      (patch as Record<string, string>).transport_category = un.transport_category;
+    }
+    if (un.tunnel_code) {
+      patch.additional_information = `Tunnel: (${un.tunnel_code})`;
+    }
+    updateProduct(entryIndex, productIndex, patch);
+    // Live ADR 2025-verrijking (exacte PSN e.d.) wanneer de externe bron bereikbaar is.
+    void lookupUn(entryIndex, productIndex, un.un, true);
+  };
+
+  const packagingFetcher = async (q: string): Promise<SuggestItem<DgPackaging>[]> => {
+    const { results } = await api.dgPackagings(q, 40);
+    return results.map((p) => ({
+      key: p.code,
+      data: p,
+      render: (
+        <span className="flex items-center gap-2">
+          <span className="w-14 shrink-0 font-mono font-semibold">{p.code}</span>
+          <span className="min-w-0 truncate">{p.label[lang as "nl" | "en"]}</span>
+          {p.contents !== "beide" && (
+            <span className="ml-auto shrink-0 rounded bg-slate-100 px-1.5 py-0.5 text-[11px] text-slate-600 dark:bg-slate-800 dark:text-slate-300">
+              {p.contents === "vloeistof" ? t("dgsearch.liquid") : t("dgsearch.solid")}
+            </span>
+          )}
+        </span>
+      ),
+    }));
+  };
+
+  const lookupUn = async (entryIndex: number, productIndex: number, un: string, silent = false) => {
     setLookupError("");
     if (!un || un.replace(/\D/g, "").length < 4) return;
     try {
       const data = await api.dgLookup(un);
-      updateProduct(entryIndex, productIndex, {
-        un_number: data.un_number || un,
-        proper_shipping_name: data.proper_shipping_name || "",
-        class: data.class || "",
-        subsidiary_risks: data.subsidiary_risks || "",
-        packing_group: data.packing_group || "",
-        packing_instruction: data.packing_instruction || "",
-        ...(data.transport_category != null && data.transport_category !== ""
-          ? { transport_category: String(data.transport_category) }
-          : {}),
-      });
+      // Alleen overschrijven met velden die de bron daadwerkelijk levert.
+      const patch: Partial<DgProduct> = { un_number: data.un_number || un };
+      if (data.proper_shipping_name) patch.proper_shipping_name = data.proper_shipping_name;
+      if (data.class) patch.class = data.class;
+      if (data.subsidiary_risks) patch.subsidiary_risks = data.subsidiary_risks;
+      if (data.packing_group) patch.packing_group = data.packing_group;
+      if (data.packing_instruction) patch.packing_instruction = data.packing_instruction;
+      if (data.transport_category != null && data.transport_category !== "") {
+        (patch as Record<string, string>).transport_category = String(data.transport_category);
+      }
+      updateProduct(entryIndex, productIndex, patch);
     } catch (e) {
-      setLookupError(String(e));
+      if (!silent) setLookupError(String(e));
     }
   };
 
@@ -175,31 +245,59 @@ export default function DangerousGoodsStep({ lines, entries, onChange, perPositi
           />
           {entry.products.map((product, productIndex) => (
             <div key={productIndex} className="grid md:grid-cols-2 gap-3 border-t border-slate-100 dark:border-slate-800 pt-4">
-              <Field
-                label={labelFor("un_number")}
-                help={helpFor("un_number")}
-                value={product.un_number ?? ""}
-                onChange={(v) => updateProduct(entryIndex, productIndex, { un_number: v })}
-                onBlur={() => lookupUn(entryIndex, productIndex, product.un_number ?? "")}
-              />
-              <div className="md:col-span-2 flex justify-end">
-                <button
-                  type="button"
-                  className="text-sm text-brand-600 dark:text-brand-300 hover:underline"
-                  onClick={() => lookupUn(entryIndex, productIndex, product.un_number ?? "")}
-                >
-                  {t("wizard.dgLookup")}
-                </button>
+              <div>
+                <div className="flex items-center gap-1.5">
+                  <label className="text-sm font-medium text-slate-800 dark:text-slate-200">
+                    {labelFor("un_number")}
+                  </label>
+                  {helpFor("un_number") && <InfoTooltip text={helpFor("un_number")} />}
+                </div>
+                <div className="mt-1">
+                  <SuggestInput<DgUnEntry>
+                    value={product.un_number ?? ""}
+                    onChange={(v) => updateProduct(entryIndex, productIndex, { un_number: v })}
+                    onPick={(un) => applyUnEntry(entryIndex, productIndex, un)}
+                    fetcher={unFetcher}
+                    placeholder={t("dgsearch.unPlaceholder")}
+                    minLength={2}
+                    onBlur={() => lookupUn(entryIndex, productIndex, product.un_number ?? "")}
+                  />
+                </div>
+                <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">{t("dgsearch.unHint")}</p>
               </div>
-              {[...CORE_FIELDS.filter((f) => f !== "un_number"), ...extraFields.filter((f) => !(CORE_FIELDS as readonly string[]).includes(f))].map((field) => (
-                <Field
-                  key={field}
-                  label={labelFor(field)}
-                  help={helpFor(field)}
-                  value={String(product[field as keyof DgProduct] ?? "")}
-                  onChange={(v) => updateProduct(entryIndex, productIndex, { [field]: v })}
-                />
-              ))}
+              {[...CORE_FIELDS.filter((f) => f !== "un_number"), ...extraFields.filter((f) => !(CORE_FIELDS as readonly string[]).includes(f))].map((field) =>
+                field === "type_of_package" ? (
+                  <div key={field}>
+                    <div className="flex items-center gap-1.5">
+                      <label className="text-sm font-medium text-slate-800 dark:text-slate-200">{labelFor(field)}</label>
+                      {helpFor(field) && <InfoTooltip text={helpFor(field)} />}
+                    </div>
+                    <div className="mt-1">
+                      <SuggestInput<DgPackaging>
+                        value={String(product.type_of_package ?? "")}
+                        onChange={(v) => updateProduct(entryIndex, productIndex, { type_of_package: v })}
+                        onPick={(p) =>
+                          updateProduct(entryIndex, productIndex, {
+                            type_of_package: `${p.code} ${p.label[lang as "nl" | "en"]}`,
+                          })
+                        }
+                        fetcher={packagingFetcher}
+                        placeholder={t("dgsearch.packagingPlaceholder")}
+                        minLength={1}
+                      />
+                    </div>
+                    <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">{t("dgsearch.packagingHint")}</p>
+                  </div>
+                ) : (
+                  <Field
+                    key={field}
+                    label={labelFor(field)}
+                    help={helpFor(field)}
+                    value={String(product[field as keyof DgProduct] ?? "")}
+                    onChange={(v) => updateProduct(entryIndex, productIndex, { [field]: v })}
+                  />
+                ),
+              )}
             </div>
           ))}
         </div>

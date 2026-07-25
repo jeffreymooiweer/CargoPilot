@@ -205,6 +205,33 @@
     "locationPlaceholder": "Zoek luchthaven, haven of station — of typ vrij…",
     "addressPlaceholder": "Zoek adres en vul automatisch in…"
   },
+  "signature": {
+    "title": "Handtekening afzender (optioneel)",
+    "intro": "Teken uw handtekening of upload er een afbeelding van; deze wordt in het afzendervak van de geselecteerde documenten geplaatst (bijv. CMR vak 22). U kunt dit ook overslaan en de documenten na het printen met pen ondertekenen.",
+    "draw": "Tekenen",
+    "upload": "Uploaden",
+    "skip": "Overslaan",
+    "undo": "Ongedaan maken",
+    "clear": "Wissen",
+    "drawHint": "Teken met muis, vinger of stylus",
+    "chooseFile": "Afbeelding kiezen…",
+    "uploadHint": "PNG, JPEG of WebP, max 3 MB. Een witte achtergrond wordt automatisch transparant gemaakt.",
+    "uploadInvalid": "Kies een PNG-, JPEG- of WebP-afbeelding.",
+    "uploadTooLarge": "Afbeelding is te groot (max 3 MB).",
+    "previewAlt": "Voorbeeld van de handtekening",
+    "remove": "Verwijderen",
+    "skipHint": "Er wordt geen handtekening geplaatst; onderteken de documenten fysiek met pen.",
+    "applied": "Handtekening wordt in de documenten geplaatst"
+  },
+  "dgsearch": {
+    "unPlaceholder": "Typ UN-nummer of stofnaam, bijv. 1203 of gasoline…",
+    "unHint": "Kies een voorstel om klasse, verpakkingsgroep, verpakkingsinstructie, vervoerscategorie en tunnelcode automatisch in te vullen.",
+    "packagingPlaceholder": "Zoek verpakking, bijv. 4G, vat, big bag…",
+    "packagingHint": "Alle UN-verpakkingscodes (ADR 6.1/6.5/6.6). Vrije tekst blijft mogelijk.",
+    "classShort": "Kl.",
+    "liquid": "vloeistof",
+    "solid": "vaste stof"
+  },
   "wizardDocs": {
     "title": "Documenten",
     "intro": "Download de geselecteerde documenten. De status geeft aan of een document gereed is voor export.",

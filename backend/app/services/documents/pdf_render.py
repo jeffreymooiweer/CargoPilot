@@ -5,18 +5,21 @@ afleverbon, IMO MMDGF, VGM, shipping instructions, ADR/ADN). Officiële invulbar
 CIM) worden elders met pypdf ingevuld en niet nagebouwd.
 """
 
+import io
 import os
 import tempfile
 from datetime import datetime
 from pathlib import Path
 from typing import Any
 
+from PIL import Image as PILImage
 from reportlab.lib import colors
 from reportlab.lib.enums import TA_LEFT
 from reportlab.lib.pagesizes import A4
 from reportlab.lib.styles import ParagraphStyle, getSampleStyleSheet
 from reportlab.lib.units import mm
 from reportlab.platypus import (
+    Image,
     KeepTogether,
     Paragraph,
     SimpleDocTemplate,
@@ -163,12 +166,39 @@ def _output_path() -> Path:
     return out_path
 
 
+def _signature_block(signature_png: bytes, styles: dict, lang: str) -> list:
+    """Handtekening van de afzender als afbeelding boven een handtekeninglijn."""
+    with PILImage.open(io.BytesIO(signature_png)) as img:
+        ratio = img.height / max(img.width, 1)
+    sig_width = min(60 * mm, (22 * mm) / max(ratio, 0.01))
+    sig_height = sig_width * ratio
+    flowable = Image(io.BytesIO(signature_png), width=sig_width, height=sig_height)
+    flowable.hAlign = "LEFT"
+    caption = (
+        "Handtekening afzender / verantwoordelijke persoon — digitaal geplaatst via CargoPilot op "
+        if lang == "nl"
+        else "Signature of consignor / responsible person — digitally placed via CargoPilot on "
+    ) + datetime.now().strftime("%Y-%m-%d")
+    caption_table = Table(
+        [[_p(caption, styles["note"])]],
+        colWidths=[90 * mm],
+        style=TableStyle([
+            ("LINEABOVE", (0, 0), (-1, 0), 0.6, colors.black),
+            ("LEFTPADDING", (0, 0), (-1, -1), 0),
+            ("TOPPADDING", (0, 0), (-1, -1), 2),
+        ]),
+    )
+    caption_table.hAlign = "LEFT"
+    return [Spacer(1, 8), flowable, caption_table]
+
+
 def render_document_pdf(
     document: dict[str, Any],
     values: dict[str, Any],
     lines: list[dict[str, Any]],
     dangerous_goods: list[dict[str, Any]] | None,
     language: str = "nl",
+    signature_png: bytes | None = None,
 ) -> Path:
     lang = _lang(language)
     styles = _styles()
@@ -240,6 +270,9 @@ def render_document_pdf(
     note = document.get("signature_note", {}).get(lang)
     if note:
         story.append(_p(note, styles["note"]))
+
+    if signature_png:
+        story.append(KeepTogether(_signature_block(signature_png, styles, lang)))
 
     story.append(Spacer(1, 8))
     story.append(_p(_text("disclaimer", lang), styles["disclaimer"]))

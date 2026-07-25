@@ -316,7 +316,41 @@ def has_pdf_template(document_key: str) -> bool:
     return (templates_forms_dir() / PDF_FILLERS[document_key]).exists()
 
 
-def _fill_with_pymupdf(template_path: Path, fields: dict[str, str], disclaimer: str) -> Path:
+# Waar de handtekening van de afzender per formulier wordt geplaatst.
+# CMR: vak 22 (handtekening en stempel van de afzender) — linkerbox op alle
+# 4 doorslagen. IATA: het "Signature"-afbeeldingsveld van het open formaat.
+# CIM kent geen afzender-handtekeningvak (vak 61 is de ontvangstbevestiging
+# van de geadresseerde en blijft altijd leeg).
+_SIGNATURE_RECTS: dict[str, list[tuple[int, tuple[float, float, float, float]]]] = {
+    "cmr": [(page, (48.0, 742.0, 200.0, 786.0)) for page in range(4)],
+}
+_SIGNATURE_WIDGETS: dict[str, str] = {
+    "iata_dgd": "Signature image_af_image",
+}
+
+
+def _stamp_signature(doc, document_key: str, signature_png: bytes) -> None:
+    spots: list[tuple[int, Any]] = list(_SIGNATURE_RECTS.get(document_key, []))
+    widget_name = _SIGNATURE_WIDGETS.get(document_key)
+    if widget_name:
+        for page_no in range(doc.page_count):
+            for widget in doc[page_no].widgets() or []:
+                if widget.field_name == widget_name:
+                    spots.append((page_no, tuple(widget.rect)))
+    for page_no, rect in spots:
+        if page_no >= doc.page_count:
+            continue
+        target = fitz.Rect(rect) + (2, 2, -2, -2)
+        doc[page_no].insert_image(target, stream=signature_png, keep_proportion=True)
+
+
+def _fill_with_pymupdf(
+    template_path: Path,
+    fields: dict[str, str],
+    disclaimer: str,
+    document_key: str = "",
+    signature_png: bytes | None = None,
+) -> Path:
     """Vul AcroForm-velden in en bak ze plat zodat waarden in alle PDF-viewers zichtbaar zijn.
 
     Alleen ``widget.update()`` (appearance streams) is onvoldoende voor Chrome/Edge/sommige
@@ -335,6 +369,9 @@ def _fill_with_pymupdf(template_path: Path, fields: dict[str, str], disclaimer: 
                     continue
                 widget.field_value = fields[name]
                 widget.update()
+
+        if signature_png:
+            _stamp_signature(doc, document_key, signature_png)
 
         # Platbakken: zichtbaar in Chrome PDF-viewer e.d., niet alleen in Acrobat/MuPDF.
         doc.bake(annots=True, widgets=True)
@@ -405,6 +442,7 @@ def fill_pdf_document(
     lines: list[dict[str, Any]],
     dangerous_goods: list[dict[str, Any]] | None,
     lang: str = "nl",
+    signature_png: bytes | None = None,
 ) -> Path:
     if document_key not in PDF_FILLERS:
         raise ValueError(f"No PDF template for {document_key}")
@@ -423,5 +461,5 @@ def fill_pdf_document(
     )
 
     if fitz is not None:
-        return _fill_with_pymupdf(template_path, fields, disclaimer)
+        return _fill_with_pymupdf(template_path, fields, disclaimer, document_key, signature_png)
     return _fill_with_pypdf(template_path, fields, disclaimer)

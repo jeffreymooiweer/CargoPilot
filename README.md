@@ -1,21 +1,23 @@
 # CargoPilot
 
-**Versie 1.5.0** — webapplicatie om colli en materialen te analyseren en als transportdocumenten (PDF) te exporteren, per transportmodaliteit. Uitsluitend bedoeld voor civiele instanties.
+**Versie 1.6.0** — webapplicatie om colli en materialen te analyseren en als transportdocumenten (PDF) te exporteren, per transportmodaliteit. Uitsluitend bedoeld voor civiele instanties.
 
 **English:** CargoPilot parses package lines (paste or file import), calculates weight/volume, and exports transport documents per modality — CMR, CIM, IMO/IATA dangerous goods declarations, VGM and shipping instructions. For civilian use only.
 
 Zie ook [CHANGELOG.md](CHANGELOG.md) en [ROADMAP.md](ROADMAP.md).
 
-## Functionaliteiten (v1.5.0)
+## Functionaliteiten (v1.6.0)
 
 - **Modaliteitskeuze bij start**: wegtransport, spoor, zeevracht, binnenvaart, luchtvracht of multimodaal
 - **Formulierenselectie per modaliteit**: alleen relevante documenten; bij multimodaal alles beschikbaar
 - **Eén wizard voor alle formulieren**: zendinggegevens één keer invullen, daarna per formulier een eigen sub-stap met alleen de nog benodigde velden ("Formulier x van y") — geen dubbele invoer
 - **Adres-autocomplete** (Photon/OpenStreetMap, instelbaar via `GEO_ADDRESS_API_URL`) en **locatie-autocomplete** voor 4.500+ luchthavens (IATA/ICAO), 17.500+ UN/LOCODE-havens en 750+ Europese hoofdstations, afgestemd op de gekozen modaliteit
 - **Goederendatabase met 159 materialen/goederen** (bouw, metaal, hout, brandstoffen, chemie, agri, voeding, papier, ertsen, recycling, stukgoed) met dichtheden en NL/EN-aliassen; blokvormige goederen worden automatisch op dichtheid doorgerekend
+- **Handtekening tekenen of uploaden** (of overslaan voor ondertekening met pen): geplaatst in CMR vak 22, het IATA-handtekeningveld en de gegenereerde PDF's; carrier- en ontvangsthandtekeningen blijven altijd leeg
+- **UN-nummer-autocomplete** met offline ADR-database (2.928 vermeldingen: klasse, verpakkingsgroep, etiketten, verpakkingsinstructies, vervoerscategorie, tunnelcode) en **verpakkingskeuze** uit alle 107 UN-verpakkingscodes (ADR 6.1/6.5/6.6)
 - **Officiële PDF-formulieren**: CMR (IRU-model 2007) en IATA Shipper's Declaration worden als originele invulbare PDF-templates ingevuld en als PDF gedownload
 - Documenten: CMR (PDF), CIM (PDF), IMO Multimodal DG Form, IATA Shipper's Declaration (PDF), VGM-verklaring, AWB/B-L Shipping Instructions, ADR/ADN-document, paklijst, afleverbon
-- **Veldstatussen per document**: gebruikersinvoer, carriergegevens, operationele velden en handtekeningen worden onderscheiden; handtekeningen worden nooit vooraf ingevuld
+- **Veldstatussen per document**: gebruikersinvoer, carriergegevens, operationele velden en handtekeningen worden onderscheiden; handtekeningen worden alleen geplaatst als u er zelf één tekent of uploadt
 - **DG-exportblokkades** per modaliteitsprofiel (ADR/RID/ADN/IMDG/IATA DGR) bij onvolledige classificatie
 - **Nalevingsbegeleiding gevaarlijke stoffen**: ADR 1.1.3.6-puntencalculator (1000-puntenregel), samenladingscontrole (ADR 7.5.2/CV28), IATA-segregatie (Table 9.3.A incl. lithiumregel) en Q-waardeberekening (IATA 5.0.2.11) met live waarschuwingen
 - Colli-invoer met cataloguszoeken of vrije omschrijving; per collo een gevaarlijke-stoffenmarkering
@@ -34,7 +36,7 @@ Vanaf **1.0.0** geldt [Semantic Versioning](https://semver.org/):
 |-----------|---------|
 | Versienummer | `VERSION`, `backend/VERSION` |
 | Git-release | tag `v1.0.0`, `v1.1.0`, … |
-| Docker Hub | `jeffersonmouze/cargopilot:latest` en `jeffersonmouze/cargopilot:v1.5.0` |
+| Docker Hub | `jeffersonmouze/cargopilot:latest` en `jeffersonmouze/cargopilot:v1.6.0` |
 | API | `GET /api/health` → `version` |
 
 ## Snelle start (Docker Compose)
@@ -51,7 +53,7 @@ Open: http://localhost:8080
 
 1. Community Applications of `unraid/CargoPilot.xml`
 2. Volume: `/mnt/user/appdata/cargopilot` → `/data`
-3. Image: `jeffersonmouze/cargopilot:v1.5.0` (of `latest` na bevestigde update)
+3. Image: `jeffersonmouze/cargopilot:v1.6.0` (of `latest` na bevestigde update)
 4. Environment: `APP_SECRET_KEY`, `ADMIN_*`
 5. WebUI op gekozen poort (bijv. `http://<ip>:9935`)
 
@@ -112,7 +114,10 @@ Adres-autocomplete gebruikt een externe Photon-geocoder (OpenStreetMap-data, sta
 
 - Invulinstructies in `backend/app/config/dg_instructions.json`; nalevingsregels in `dg_compliance.json`
 - UN-detectie in omschrijving of DG-vinkje per collo → gevaarlijke-stoffenstap
-- Lookup: `GET /api/dg/lookup?un=1203` (FreightUtils ADR); nalevingscontrole: `POST /api/dg/compliance`
+- **Offline UN-database** (`backend/seed/dg/un_numbers.json`, 2.928 vermeldingen): autocomplete via `GET /api/dg/search?q=`; regelgevende kolommen (klasse, classificatiecode, verpakkingsgroep, etiketten, LQ/EQ, verpakkingsinstructies, vervoerscategorie, tunnelcode, Kemler-nummer) uit ADR Tabel A ([rkstgr/adr-substances](https://github.com/rkstgr/adr-substances), op basis van de officiële UNECE-publicatie); Engelse namen uit de 49 CFR 172.101-tabel (eCFR/GovInfo, public domain)
+- **UN-verpakkingscodes** (`backend/seed/dg/packagings.json`, 107 codes volgens ADR 6.1.2/6.5.1.4/6.6.2): `GET /api/dg/packagings?q=`
+- Lookup: `GET /api/dg/lookup?un=1203` (FreightUtils ADR 2025, met automatische offline terugval); nalevingscontrole: `POST /api/dg/compliance`
+- De offline database is een feitelijke invulhulp; de actuele ADR/RID/ADN/IMDG/IATA-uitgave blijft altijd leidend
 
 ## Overzicht materieel
 
@@ -130,12 +135,12 @@ Bij upgrade naar v1.0.0 worden items met bron `overzicht_materieel` automatisch 
 **Let op:** Docker-images ouder dan v1.4.0 bevatten nog een intern formulier dat niet voor civiel gebruik is bedoeld. Na upgrade:
 
 1. Gebruik alleen `v1.4.0` of nieuwer (of `latest` na de 1.4.0-build).
-2. Verwijder oude Docker-tags via GitHub → **Actions** → **Cleanup Docker Hub tags** → **Run workflow** met `keep_tags`: `latest,v1.5.0,1.5.0`.
-3. `docker pull jeffersonmouze/cargopilot:v1.5.0` en container herstarten.
+2. Verwijder oude Docker-tags via GitHub → **Actions** → **Cleanup Docker Hub tags** → **Run workflow** met `keep_tags`: `latest,v1.6.0,1.6.0`.
+3. `docker pull jeffersonmouze/cargopilot:v1.6.0` en container herstarten.
 
 ## Docker Hub
 
-`jeffersonmouze/cargopilot:latest` · `jeffersonmouze/cargopilot:v1.5.0`
+`jeffersonmouze/cargopilot:latest` · `jeffersonmouze/cargopilot:v1.6.0`
 
 GitHub Actions: `.github/workflows/dockerhub.yml` (push `main` + tags `v*`).
 
@@ -197,7 +202,7 @@ Alle documenten worden als **PDF** geëxporteerd. Officiële invulbare formulier
 | CIM-vrachtbrief | Ingevuld officieel PDF | CIT CIM/CUV (`templates/forms/cim.pdf`) |
 | IMO MDG Form, VGM, AWB/B-L SI, ADR/ADN, paklijst, afleverbon | Gegenereerde PDF (reportlab) | Eigen opmaak met vaste wettelijke teksten |
 
-Handtekening-, carrier- en operationele velden worden nooit vooraf ingevuld. Officiële formulieren: controleer vóór opname in een publieke repository de herdistributievoorwaarden van elk formulier.
+Carrier- en operationele velden worden nooit vooraf ingevuld; een handtekening wordt alleen geplaatst wanneer de gebruiker die zelf tekent of uploadt. Officiële formulieren: controleer vóór opname in een publieke repository de herdistributievoorwaarden van elk formulier.
 
 ## Disclaimer en aansprakelijkheid
 

@@ -65,6 +65,10 @@ export const api = {
     request<CalcResult>("/calculate", { method: "POST", body: JSON.stringify(payload) }),
   dgInstructions: () => request<DgInstructions>("/dg/instructions"),
   dgLookup: (un: string) => request<DgLookupResult>(`/dg/lookup?un=${encodeURIComponent(un)}`),
+  dgSearch: (q: string, limit = 12) =>
+    request<{ results: DgUnEntry[] }>(`/dg/search?q=${encodeURIComponent(q)}&limit=${limit}`),
+  dgPackagings: (q = "", limit = 150) =>
+    request<{ results: DgPackaging[] }>(`/dg/packagings?q=${encodeURIComponent(q)}&limit=${limit}`),
   listUsers: () => request<User[]>("/users"),
   createUser: (payload: Record<string, unknown>) =>
     request<User>("/users", { method: "POST", body: JSON.stringify(payload) }),
@@ -349,12 +353,37 @@ export interface DocumentRegistry {
   modality_defaults?: Record<string, string>;
 }
 
+export interface DgUnEntry {
+  un: string;
+  name_en: string;
+  name_de: string;
+  class: string;
+  classification_code: string;
+  packing_group: string;
+  labels: string;
+  special_provisions: string;
+  limited_quantity: string;
+  excepted_quantity: string;
+  packing_instructions: string;
+  transport_category: string;
+  tunnel_code: string;
+  hazard_number: string;
+}
+
+export interface DgPackaging {
+  code: string;
+  category: string;
+  label: { nl: string; en: string };
+  contents: string;
+}
+
 export interface DocumentExportPayload extends Record<string, unknown> {
   document_key: string;
   values: Record<string, string>;
   lines: LineItem[];
   dangerous_goods?: DgEntry[];
   output_language: string;
+  signature_image?: string;
 }
 
 export interface DocumentValidationResult {

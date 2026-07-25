@@ -92,6 +92,7 @@ export default function WizardPage() {
   const [nextId, setNextId] = useState(2);
   const [result, setResult] = useState<CalcResult | null>(null);
   const [dgEntries, setDgEntries] = useState<DgEntry[]>([]);
+  const [signature, setSignature] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [exportingDoc, setExportingDoc] = useState<string | null>(null);
   const [error, setError] = useState("");
@@ -355,6 +356,7 @@ export default function WizardPage() {
         lines: result.lines,
         dangerous_goods: dgEntries.length > 0 ? dgEntries : undefined,
         output_language: lang,
+        signature_image: signature ?? undefined,
       });
     } catch (e) {
       setError(String(e));
@@ -487,6 +489,8 @@ export default function WizardPage() {
           modality={modality}
           onBack={() => goBackFrom("details")}
           onDone={() => setStepKey("export")}
+          signature={signature}
+          onSignatureChange={setSignature}
         />
       )}
 

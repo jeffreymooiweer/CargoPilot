@@ -14,6 +14,7 @@ from app.services.documents import (
     render_document_pdf,
     validate_document,
 )
+from app.services.documents.signature import decode_signature_image
 
 router = APIRouter(prefix="/documents", tags=["documents"])
 
@@ -50,6 +51,13 @@ def export(
     if errors:
         raise HTTPException(status_code=422, detail={"errors": errors})
 
+    signature_png = None
+    if payload.signature_image:
+        try:
+            signature_png = decode_signature_image(payload.signature_image)
+        except ValueError as exc:
+            raise HTTPException(status_code=400, detail=str(exc)) from exc
+
     ref = datetime.now().strftime("%Y%m%d%H%M%S")
     if exporter == "pdf_template" and has_pdf_template(payload.document_key):
         # Officieel, invulbaar formulier: template invullen.
@@ -59,6 +67,7 @@ def export(
             payload.lines,
             payload.dangerous_goods,
             payload.output_language,
+            signature_png=signature_png,
         )
     else:
         # Zelf-ontworpen document: nette PDF genereren.
@@ -68,6 +77,7 @@ def export(
             payload.lines,
             payload.dangerous_goods,
             payload.output_language,
+            signature_png=signature_png,
         )
     background_tasks.add_task(_delete_file, out_path)
     return FileResponse(

@@ -16,6 +16,7 @@ from app.api.routes.equipment import equipment_router
 from app.api.routes.import_files import router as import_files_router
 from app.api.routes.dangerous_goods import router as dangerous_goods_router
 from app.api.routes.documents import router as documents_router
+from app.api.routes.geo import router as geo_router
 from app.api.routes.jobs import router as jobs_router
 from app.api.routes.users import router as users_router
 from app.core.config import get_settings
@@ -66,6 +67,7 @@ def create_app() -> FastAPI:
     app.include_router(jobs_router, prefix="/api")
     app.include_router(dangerous_goods_router, prefix="/api")
     app.include_router(documents_router, prefix="/api")
+    app.include_router(geo_router, prefix="/api")
     app.include_router(reference_router, prefix="/api")
     app.include_router(equipment_router, prefix="/api")
     app.include_router(import_files_router, prefix="/api")

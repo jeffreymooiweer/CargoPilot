@@ -193,7 +193,17 @@
     "confirmExplicit": "Ik bevestig deze verklaringen bewust namens de verantwoordelijke persoon",
     "carrierProvided": "Vervoerder",
     "operational": "Bij uitvoering",
-    "signatureRequired": "Ondertekening"
+    "signatureRequired": "Ondertekening",
+    "sharedTitle": "Zendinggegevens",
+    "sharedShort": "Zending",
+    "sharedIntro": "Vul deze gegevens één keer in; ze worden hergebruikt in alle geselecteerde formulieren. Velden met * zijn verplicht voor export.",
+    "formStep": "Formulier {{index}} van {{total}}: {{name}}",
+    "formIntro": "Alleen de velden die specifiek voor dit formulier nodig zijn. Carriergegevens en handtekeningen blijven leeg.",
+    "coveredByShared": "Voor {{forms}} zijn geen extra velden nodig; de zendinggegevens volstaan."
+  },
+  "geo": {
+    "locationPlaceholder": "Zoek luchthaven, haven of station — of typ vrij…",
+    "addressPlaceholder": "Zoek adres en vul automatisch in…"
   },
   "wizardDocs": {
     "title": "Documenten",

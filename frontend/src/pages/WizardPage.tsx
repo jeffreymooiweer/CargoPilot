@@ -478,23 +478,16 @@ export default function WizardPage() {
       )}
 
       {stepKey === "details" && (
-        <div className="space-y-4">
-          <DocumentFieldsStep
-            registry={registry}
-            documents={genericDocs}
-            values={docValues}
-            onChange={setDocValues}
-            autoValues={autoValues}
-          />
-          <div className="flex flex-col gap-2 sm:flex-row">
-            <button type="button" onClick={() => goBackFrom("details")} className={buttonSecondary}>
-              {t("wizard.back")}
-            </button>
-            <button type="button" onClick={() => setStepKey("export")} className={`${buttonPrimary} sm:ml-auto`}>
-              {t("wizard.toExport")}
-            </button>
-          </div>
-        </div>
+        <DocumentFieldsStep
+          registry={registry}
+          documents={genericDocs}
+          values={docValues}
+          onChange={setDocValues}
+          autoValues={autoValues}
+          modality={modality}
+          onBack={() => goBackFrom("details")}
+          onDone={() => setStepKey("export")}
+        />
       )}
 
       {stepKey === "export" && result && (

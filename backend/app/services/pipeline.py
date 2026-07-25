@@ -284,6 +284,20 @@ def process_line(
         if not qty:
             messages.append("quantity_missing")
             status = "error"
+
+    elif material_obj and len(dims.values_m) >= 3:
+        # Herkend materiaal met drie afmetingen: reken als massief blok op dichtheid.
+        w, h, length_m = dims.values_m[:3]
+        material_vol = w * h * length_m
+        weight_each = material_vol * density
+        if qty:
+            weight_total = weight_each * qty
+        transport_vol = transport_volume_outer(w, h, length_m, qty or 1)
+        length_cm = meters_to_cm(length_m)
+        width_cm = meters_to_cm(w)
+        height_cm = meters_to_cm(h)
+        method = "solid_block"
+
     else:
         if not material_obj:
             messages.append("material_not_recognized")

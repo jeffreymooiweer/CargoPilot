@@ -1,15 +1,18 @@
 # CargoPilot
 
-**Versie 1.4.0** — webapplicatie om colli en materialen te analyseren en als transportdocumenten (PDF) te exporteren, per transportmodaliteit. Uitsluitend bedoeld voor civiele instanties.
+**Versie 1.5.0** — webapplicatie om colli en materialen te analyseren en als transportdocumenten (PDF) te exporteren, per transportmodaliteit. Uitsluitend bedoeld voor civiele instanties.
 
 **English:** CargoPilot parses package lines (paste or file import), calculates weight/volume, and exports transport documents per modality — CMR, CIM, IMO/IATA dangerous goods declarations, VGM and shipping instructions. For civilian use only.
 
 Zie ook [CHANGELOG.md](CHANGELOG.md) en [ROADMAP.md](ROADMAP.md).
 
-## Functionaliteiten (v1.4.0)
+## Functionaliteiten (v1.5.0)
 
 - **Modaliteitskeuze bij start**: wegtransport, spoor, zeevracht, binnenvaart, luchtvracht of multimodaal
 - **Formulierenselectie per modaliteit**: alleen relevante documenten; bij multimodaal alles beschikbaar
+- **Eén wizard voor alle formulieren**: zendinggegevens één keer invullen, daarna per formulier een eigen sub-stap met alleen de nog benodigde velden ("Formulier x van y") — geen dubbele invoer
+- **Adres-autocomplete** (Photon/OpenStreetMap, instelbaar via `GEO_ADDRESS_API_URL`) en **locatie-autocomplete** voor 4.500+ luchthavens (IATA/ICAO), 17.500+ UN/LOCODE-havens en 750+ Europese hoofdstations, afgestemd op de gekozen modaliteit
+- **Goederendatabase met 159 materialen/goederen** (bouw, metaal, hout, brandstoffen, chemie, agri, voeding, papier, ertsen, recycling, stukgoed) met dichtheden en NL/EN-aliassen; blokvormige goederen worden automatisch op dichtheid doorgerekend
 - **Officiële PDF-formulieren**: CMR (IRU-model 2007) en IATA Shipper's Declaration worden als originele invulbare PDF-templates ingevuld en als PDF gedownload
 - Documenten: CMR (PDF), CIM (PDF), IMO Multimodal DG Form, IATA Shipper's Declaration (PDF), VGM-verklaring, AWB/B-L Shipping Instructions, ADR/ADN-document, paklijst, afleverbon
 - **Veldstatussen per document**: gebruikersinvoer, carriergegevens, operationele velden en handtekeningen worden onderscheiden; handtekeningen worden nooit vooraf ingevuld
@@ -31,7 +34,7 @@ Vanaf **1.0.0** geldt [Semantic Versioning](https://semver.org/):
 |-----------|---------|
 | Versienummer | `VERSION`, `backend/VERSION` |
 | Git-release | tag `v1.0.0`, `v1.1.0`, … |
-| Docker Hub | `jeffersonmouze/cargopilot:latest` en `jeffersonmouze/cargopilot:v1.4.0` |
+| Docker Hub | `jeffersonmouze/cargopilot:latest` en `jeffersonmouze/cargopilot:v1.5.0` |
 | API | `GET /api/health` → `version` |
 
 ## Snelle start (Docker Compose)
@@ -48,7 +51,7 @@ Open: http://localhost:8080
 
 1. Community Applications of `unraid/CargoPilot.xml`
 2. Volume: `/mnt/user/appdata/cargopilot` → `/data`
-3. Image: `jeffersonmouze/cargopilot:v1.4.0` (of `latest` na bevestigde update)
+3. Image: `jeffersonmouze/cargopilot:v1.5.0` (of `latest` na bevestigde update)
 4. Environment: `APP_SECRET_KEY`, `ADMIN_*`
 5. WebUI op gekozen poort (bijv. `http://<ip>:9935`)
 
@@ -76,6 +79,8 @@ Bij eerste start met environment variables:
 | `CORS_ALLOWED_ORIGINS` | CORS | `*` |
 | `CATALOG_AUTO_SYNC` | Catalogus sync bij opstart | `true` |
 | `CATALOG_SYNC_TIMEOUT_SECONDS` | HTTP-timeout sync | `20` |
+| `GEO_ADDRESS_API_URL` | Photon-compatibele adres-API voor autocomplete | `https://photon.komoot.io/api` |
+| `GEO_ADDRESS_TIMEOUT_SECONDS` | HTTP-timeout adres-API | `8` |
 
 ## Catalogus (openbare bronnen)
 
@@ -90,6 +95,18 @@ Materialen (dichtheid) en profielen (kg/m) worden automatisch gesynchroniseerd �
 | Aliassen detectie | `seed/materials.json` |
 
 `CATALOG_AUTO_SYNC=false` voor offline/snellere dev-start.
+
+## Geodata (openbare bronnen)
+
+Locatie-autocomplete werkt volledig offline op meegeleverde seeds in `backend/seed/locations/`:
+
+| Gegeven | Bron | Licentie |
+|---|---|---|
+| Luchthavens (IATA/ICAO) | [OurAirports](https://ourairports.com/data/) | Public domain |
+| Havens (UN/LOCODE) | [UNECE UN/LOCODE](https://unece.org/trade/uncefact/unlocode) | Vrij herbruikbaar |
+| Treinstations (EU) | [Trainline EU stations](https://github.com/trainline-eu/stations) | ODbL |
+
+Adres-autocomplete gebruikt een externe Photon-geocoder (OpenStreetMap-data, standaard `photon.komoot.io`). Zonder internettoegang valt deze functie stil; handmatig invullen blijft altijd mogelijk.
 
 ## Gevaarlijke stoffen
 
@@ -113,12 +130,12 @@ Bij upgrade naar v1.0.0 worden items met bron `overzicht_materieel` automatisch 
 **Let op:** Docker-images ouder dan v1.4.0 bevatten nog een intern formulier dat niet voor civiel gebruik is bedoeld. Na upgrade:
 
 1. Gebruik alleen `v1.4.0` of nieuwer (of `latest` na de 1.4.0-build).
-2. Verwijder oude Docker-tags via GitHub → **Actions** → **Cleanup Docker Hub tags** → **Run workflow** met `keep_tags`: `latest,v1.4.0,1.4.0`.
-3. `docker pull jeffersonmouze/cargopilot:v1.4.0` en container herstarten.
+2. Verwijder oude Docker-tags via GitHub → **Actions** → **Cleanup Docker Hub tags** → **Run workflow** met `keep_tags`: `latest,v1.5.0,1.5.0`.
+3. `docker pull jeffersonmouze/cargopilot:v1.5.0` en container herstarten.
 
 ## Docker Hub
 
-`jeffersonmouze/cargopilot:latest` · `jeffersonmouze/cargopilot:v1.4.0`
+`jeffersonmouze/cargopilot:latest` · `jeffersonmouze/cargopilot:v1.5.0`
 
 GitHub Actions: `.github/workflows/dockerhub.yml` (push `main` + tags `v*`).
 

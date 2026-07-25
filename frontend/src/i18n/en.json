@@ -193,7 +193,17 @@
     "confirmExplicit": "I deliberately confirm these declarations on behalf of the responsible person",
     "carrierProvided": "Carrier",
     "operational": "During execution",
-    "signatureRequired": "Signature"
+    "signatureRequired": "Signature",
+    "sharedTitle": "Shipment details",
+    "sharedShort": "Shipment",
+    "sharedIntro": "Enter these details once; they are reused in all selected forms. Fields marked * are required for export.",
+    "formStep": "Form {{index}} of {{total}}: {{name}}",
+    "formIntro": "Only the fields specific to this form. Carrier data and signatures stay empty.",
+    "coveredByShared": "No extra fields are needed for {{forms}}; the shipment details are sufficient."
+  },
+  "geo": {
+    "locationPlaceholder": "Search airport, port or station — or type freely…",
+    "addressPlaceholder": "Search an address to autofill…"
   },
   "wizardDocs": {
     "title": "Documents",

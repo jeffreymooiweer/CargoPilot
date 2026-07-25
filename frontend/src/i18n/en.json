@@ -205,6 +205,33 @@
     "locationPlaceholder": "Search airport, port or station — or type freely…",
     "addressPlaceholder": "Search an address to autofill…"
   },
+  "signature": {
+    "title": "Consignor signature (optional)",
+    "intro": "Draw your signature or upload an image of it; it is placed in the consignor box of the selected documents (e.g. CMR box 22). You can also skip this and sign the printed documents with a pen.",
+    "draw": "Draw",
+    "upload": "Upload",
+    "skip": "Skip",
+    "undo": "Undo",
+    "clear": "Clear",
+    "drawHint": "Draw with mouse, finger or stylus",
+    "chooseFile": "Choose image…",
+    "uploadHint": "PNG, JPEG or WebP, max 3 MB. A white background is made transparent automatically.",
+    "uploadInvalid": "Choose a PNG, JPEG or WebP image.",
+    "uploadTooLarge": "Image is too large (max 3 MB).",
+    "previewAlt": "Signature preview",
+    "remove": "Remove",
+    "skipHint": "No signature is placed; sign the printed documents with a pen.",
+    "applied": "Signature will be placed in the documents"
+  },
+  "dgsearch": {
+    "unPlaceholder": "Type UN number or substance name, e.g. 1203 or gasoline…",
+    "unHint": "Pick a suggestion to autofill class, packing group, packing instruction, transport category and tunnel code.",
+    "packagingPlaceholder": "Search packaging, e.g. 4G, drum, big bag…",
+    "packagingHint": "All UN packaging codes (ADR 6.1/6.5/6.6). Free text remains possible.",
+    "classShort": "Cl.",
+    "liquid": "liquid",
+    "solid": "solid"
+  },
   "wizardDocs": {
     "title": "Documents",
     "intro": "Download the selected documents. The status shows whether a document is ready for export.",

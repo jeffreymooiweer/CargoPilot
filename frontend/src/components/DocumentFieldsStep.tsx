@@ -11,6 +11,7 @@ import {
 } from "../api/client";
 import { AddressTextarea, LocationInput } from "./GeoInputs";
 import InfoTooltip from "./InfoTooltip";
+import SignaturePad from "./SignaturePad";
 
 const inputClass =
   "w-full border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-950 text-slate-900 dark:text-slate-100 rounded-lg px-3 py-2 text-sm min-h-[40px]";
@@ -76,6 +77,8 @@ interface Props {
   modality?: string;
   onBack?: () => void;
   onDone?: () => void;
+  signature?: string | null;
+  onSignatureChange?: (dataUrl: string | null) => void;
 }
 
 type SubStep = { kind: "shared" } | { kind: "doc"; doc: DocumentDefinition; sections: DocumentSection[] };
@@ -89,6 +92,8 @@ export default function DocumentFieldsStep({
   modality,
   onBack,
   onDone,
+  signature,
+  onSignatureChange,
 }: Props) {
   const { t, i18n } = useTranslation();
   const lang = (i18n.language.startsWith("en") ? "en" : "nl") as "nl" | "en";
@@ -282,6 +287,7 @@ export default function DocumentFieldsStep({
               <div className="mt-3 grid gap-3 md:grid-cols-2">{(section.fields ?? []).map(renderField)}</div>
             </section>
           ))}
+          {onSignatureChange && <SignaturePad value={signature ?? null} onChange={onSignatureChange} />}
           {docsWithoutOwnFields.length > 0 && (
             <p className="text-sm text-slate-500 dark:text-slate-400">
               {t("docfields.coveredByShared", {

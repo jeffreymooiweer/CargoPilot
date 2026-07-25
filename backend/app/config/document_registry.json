@@ -513,8 +513,8 @@
         }
       ],
       "signature_note": {
-        "nl": "Goederenkolommen zijn vak 6-12 (merken, colli, verpakking, aard, statistieknummer, brutogewicht, volume). Vak 18 (voorbehouden vervoerder), 22 (handtekening afzender), 23 (handtekening vervoerder) en 24 (ontvangst goederen) worden nooit vooraf ingevuld.",
-        "en": "Goods columns are boxes 6-12 (marks, packages, packing, nature, statistical number, gross weight, volume). Boxes 18 (carrier's reservations), 22 (sender signature), 23 (carrier signature) and 24 (goods received) are never pre-filled."
+        "nl": "Goederenkolommen zijn vak 6-12 (merken, colli, verpakking, aard, statistieknummer, brutogewicht, volume). Vak 18 (voorbehouden vervoerder), 23 (handtekening vervoerder) en 24 (ontvangst goederen) worden nooit vooraf ingevuld; in vak 22 wordt alleen een handtekening geplaatst als de afzender die zelf tekent of uploadt.",
+        "en": "Goods columns are boxes 6-12 (marks, packages, packing, nature, statistical number, gross weight, volume). Boxes 18 (carrier's reservations), 23 (carrier signature) and 24 (goods received) are never pre-filled; box 22 only receives a signature the consignor draws or uploads themselves."
       },
       "legal_reference": {
         "nl": "CMR-verdrag (Genève 1956) art. 6; IRU-model 2007",
@@ -905,8 +905,8 @@
         }
       ],
       "signature_note": {
-        "nl": "Handtekeningen (vak 20-22) en ontvangstverklaring (vak 21) worden nooit vooraf ingevuld. IMDG Code 2024 (Amdt. 42-24) is leidend.",
-        "en": "Signatures (boxes 20-22) and receipt declaration (box 21) are never pre-filled. IMDG Code 2024 (Amdt. 42-24) applies."
+        "nl": "De ontvangstverklaring (vak 21) en handtekeningen van derden worden nooit vooraf ingevuld; de afzenderhandtekening wordt alleen geplaatst als u die zelf tekent of uploadt. IMDG Code 2024 (Amdt. 42-24) is leidend.",
+        "en": "The receipt declaration (box 21) and third-party signatures are never pre-filled; the shipper signature is only placed if you draw or upload it yourself. IMDG Code 2024 (Amdt. 42-24) applies."
       },
       "legal_reference": {
         "nl": "IMDG Code 5.4.5 (Amdt. 42-24, verplicht sinds 1 jan 2026); SOLAS 74 hfst. VII reg. 4; MARPOL Annex III",
@@ -1076,8 +1076,8 @@
         }
       ],
       "signature_note": {
-        "nl": "De handtekening wordt nooit vooraf ingevuld. IATA DGR 67e editie (2026) is leidend; een vrije omschrijving wordt nooit automatisch een definitieve classificatie.",
-        "en": "The signature is never pre-filled. IATA DGR 67th edition (2026) applies; a free-text description is never automatically turned into a final classification."
+        "nl": "De handtekening wordt alleen geplaatst als u die zelf tekent of uploadt. IATA DGR 67e editie (2026) is leidend; een vrije omschrijving wordt nooit automatisch een definitieve classificatie.",
+        "en": "The signature is only placed if you draw or upload it yourself. IATA DGR 67th edition (2026) applies; a free-text description is never automatically turned into a final classification."
       },
       "legal_reference": {
         "nl": "IATA DGR 67e editie (2026), sectie 8.1.6; ICAO Technical Instructions",

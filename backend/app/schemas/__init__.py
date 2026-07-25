@@ -59,6 +59,7 @@ class DocumentExportRequest(BaseModel):
     lines: list[dict] = Field(default_factory=list)
     dangerous_goods: list[dict] | None = None
     output_language: str = "nl"
+    signature_image: str | None = None
 
 
 class MaterialBase(BaseModel):

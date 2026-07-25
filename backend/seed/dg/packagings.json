@@ -1,0 +1,965 @@
+[
+ {
+  "code": "1A1",
+  "category": "drum",
+  "label": {
+   "nl": "Stalen vat, niet-afneembaar deksel",
+   "en": "Steel drum, non-removable head"
+  },
+  "contents": "vloeistof"
+ },
+ {
+  "code": "1A2",
+  "category": "drum",
+  "label": {
+   "nl": "Stalen vat, afneembaar deksel",
+   "en": "Steel drum, removable head"
+  },
+  "contents": "vaste_stof"
+ },
+ {
+  "code": "1B1",
+  "category": "drum",
+  "label": {
+   "nl": "Aluminium vat, niet-afneembaar deksel",
+   "en": "Aluminium drum, non-removable head"
+  },
+  "contents": "vloeistof"
+ },
+ {
+  "code": "1B2",
+  "category": "drum",
+  "label": {
+   "nl": "Aluminium vat, afneembaar deksel",
+   "en": "Aluminium drum, removable head"
+  },
+  "contents": "vaste_stof"
+ },
+ {
+  "code": "1N1",
+  "category": "drum",
+  "label": {
+   "nl": "Vat van ander metaal, niet-afneembaar deksel",
+   "en": "Metal drum (other than steel/aluminium), non-removable head"
+  },
+  "contents": "vloeistof"
+ },
+ {
+  "code": "1N2",
+  "category": "drum",
+  "label": {
+   "nl": "Vat van ander metaal, afneembaar deksel",
+   "en": "Metal drum (other than steel/aluminium), removable head"
+  },
+  "contents": "vaste_stof"
+ },
+ {
+  "code": "1H1",
+  "category": "drum",
+  "label": {
+   "nl": "Kunststof vat, niet-afneembaar deksel",
+   "en": "Plastics drum, non-removable head"
+  },
+  "contents": "vloeistof"
+ },
+ {
+  "code": "1H2",
+  "category": "drum",
+  "label": {
+   "nl": "Kunststof vat, afneembaar deksel",
+   "en": "Plastics drum, removable head"
+  },
+  "contents": "vaste_stof"
+ },
+ {
+  "code": "1D",
+  "category": "drum",
+  "label": {
+   "nl": "Multiplex vat",
+   "en": "Plywood drum"
+  },
+  "contents": "vaste_stof"
+ },
+ {
+  "code": "1G",
+  "category": "drum",
+  "label": {
+   "nl": "Vezelvat (kartonvat)",
+   "en": "Fibre drum"
+  },
+  "contents": "vaste_stof"
+ },
+ {
+  "code": "3A1",
+  "category": "jerrican",
+  "label": {
+   "nl": "Stalen jerrycan, niet-afneembaar deksel",
+   "en": "Steel jerrican, non-removable head"
+  },
+  "contents": "vloeistof"
+ },
+ {
+  "code": "3A2",
+  "category": "jerrican",
+  "label": {
+   "nl": "Stalen jerrycan, afneembaar deksel",
+   "en": "Steel jerrican, removable head"
+  },
+  "contents": "beide"
+ },
+ {
+  "code": "3B1",
+  "category": "jerrican",
+  "label": {
+   "nl": "Aluminium jerrycan, niet-afneembaar deksel",
+   "en": "Aluminium jerrican, non-removable head"
+  },
+  "contents": "vloeistof"
+ },
+ {
+  "code": "3B2",
+  "category": "jerrican",
+  "label": {
+   "nl": "Aluminium jerrycan, afneembaar deksel",
+   "en": "Aluminium jerrican, removable head"
+  },
+  "contents": "beide"
+ },
+ {
+  "code": "3H1",
+  "category": "jerrican",
+  "label": {
+   "nl": "Kunststof jerrycan, niet-afneembaar deksel",
+   "en": "Plastics jerrican, non-removable head"
+  },
+  "contents": "vloeistof"
+ },
+ {
+  "code": "3H2",
+  "category": "jerrican",
+  "label": {
+   "nl": "Kunststof jerrycan, afneembaar deksel",
+   "en": "Plastics jerrican, removable head"
+  },
+  "contents": "beide"
+ },
+ {
+  "code": "4A",
+  "category": "box",
+  "label": {
+   "nl": "Stalen kist",
+   "en": "Steel box"
+  },
+  "contents": "vaste_stof"
+ },
+ {
+  "code": "4B",
+  "category": "box",
+  "label": {
+   "nl": "Aluminium kist",
+   "en": "Aluminium box"
+  },
+  "contents": "vaste_stof"
+ },
+ {
+  "code": "4N",
+  "category": "box",
+  "label": {
+   "nl": "Kist van ander metaal",
+   "en": "Metal box (other than steel/aluminium)"
+  },
+  "contents": "vaste_stof"
+ },
+ {
+  "code": "4C1",
+  "category": "box",
+  "label": {
+   "nl": "Houten kist, gewoon",
+   "en": "Natural wood box, ordinary"
+  },
+  "contents": "vaste_stof"
+ },
+ {
+  "code": "4C2",
+  "category": "box",
+  "label": {
+   "nl": "Houten kist, stofdichte wanden",
+   "en": "Natural wood box, sift-proof walls"
+  },
+  "contents": "vaste_stof"
+ },
+ {
+  "code": "4D",
+  "category": "box",
+  "label": {
+   "nl": "Multiplex kist",
+   "en": "Plywood box"
+  },
+  "contents": "vaste_stof"
+ },
+ {
+  "code": "4F",
+  "category": "box",
+  "label": {
+   "nl": "Kist van houtvezelmateriaal",
+   "en": "Reconstituted wood box"
+  },
+  "contents": "vaste_stof"
+ },
+ {
+  "code": "4G",
+  "category": "box",
+  "label": {
+   "nl": "Kartonnen doos (massief of golfkarton)",
+   "en": "Fibreboard box"
+  },
+  "contents": "vaste_stof"
+ },
+ {
+  "code": "4H1",
+  "category": "box",
+  "label": {
+   "nl": "Kist van geëxpandeerd kunststof (schuim)",
+   "en": "Expanded plastics box"
+  },
+  "contents": "vaste_stof"
+ },
+ {
+  "code": "4H2",
+  "category": "box",
+  "label": {
+   "nl": "Kist van massief kunststof",
+   "en": "Solid plastics box"
+  },
+  "contents": "vaste_stof"
+ },
+ {
+  "code": "5H1",
+  "category": "bag",
+  "label": {
+   "nl": "Zak van kunststofweefsel, zonder binnenvoering",
+   "en": "Woven plastics bag, without inner liner or coating"
+  },
+  "contents": "vaste_stof"
+ },
+ {
+  "code": "5H2",
+  "category": "bag",
+  "label": {
+   "nl": "Zak van kunststofweefsel, stofdicht",
+   "en": "Woven plastics bag, sift-proof"
+  },
+  "contents": "vaste_stof"
+ },
+ {
+  "code": "5H3",
+  "category": "bag",
+  "label": {
+   "nl": "Zak van kunststofweefsel, waterbestendig",
+   "en": "Woven plastics bag, water-resistant"
+  },
+  "contents": "vaste_stof"
+ },
+ {
+  "code": "5H4",
+  "category": "bag",
+  "label": {
+   "nl": "Zak van kunststoffolie",
+   "en": "Plastics film bag"
+  },
+  "contents": "vaste_stof"
+ },
+ {
+  "code": "5L1",
+  "category": "bag",
+  "label": {
+   "nl": "Textielen zak, zonder binnenvoering",
+   "en": "Textile bag, without inner liner or coating"
+  },
+  "contents": "vaste_stof"
+ },
+ {
+  "code": "5L2",
+  "category": "bag",
+  "label": {
+   "nl": "Textielen zak, stofdicht",
+   "en": "Textile bag, sift-proof"
+  },
+  "contents": "vaste_stof"
+ },
+ {
+  "code": "5L3",
+  "category": "bag",
+  "label": {
+   "nl": "Textielen zak, waterbestendig",
+   "en": "Textile bag, water-resistant"
+  },
+  "contents": "vaste_stof"
+ },
+ {
+  "code": "5M1",
+  "category": "bag",
+  "label": {
+   "nl": "Papieren zak, meerlagig",
+   "en": "Paper bag, multiwall"
+  },
+  "contents": "vaste_stof"
+ },
+ {
+  "code": "5M2",
+  "category": "bag",
+  "label": {
+   "nl": "Papieren zak, meerlagig, waterbestendig",
+   "en": "Paper bag, multiwall, water-resistant"
+  },
+  "contents": "vaste_stof"
+ },
+ {
+  "code": "6HA1",
+  "category": "composite",
+  "label": {
+   "nl": "Kunststof houder in stalen vat",
+   "en": "Plastics receptacle in steel drum"
+  },
+  "contents": "vloeistof"
+ },
+ {
+  "code": "6HA2",
+  "category": "composite",
+  "label": {
+   "nl": "Kunststof houder in stalen krat of kist",
+   "en": "Plastics receptacle in steel crate or box"
+  },
+  "contents": "beide"
+ },
+ {
+  "code": "6HB1",
+  "category": "composite",
+  "label": {
+   "nl": "Kunststof houder in aluminium vat",
+   "en": "Plastics receptacle in aluminium drum"
+  },
+  "contents": "vloeistof"
+ },
+ {
+  "code": "6HB2",
+  "category": "composite",
+  "label": {
+   "nl": "Kunststof houder in aluminium krat of kist",
+   "en": "Plastics receptacle in aluminium crate or box"
+  },
+  "contents": "beide"
+ },
+ {
+  "code": "6HC",
+  "category": "composite",
+  "label": {
+   "nl": "Kunststof houder in houten kist",
+   "en": "Plastics receptacle in wooden box"
+  },
+  "contents": "beide"
+ },
+ {
+  "code": "6HD1",
+  "category": "composite",
+  "label": {
+   "nl": "Kunststof houder in multiplex vat",
+   "en": "Plastics receptacle in plywood drum"
+  },
+  "contents": "vloeistof"
+ },
+ {
+  "code": "6HD2",
+  "category": "composite",
+  "label": {
+   "nl": "Kunststof houder in multiplex kist",
+   "en": "Plastics receptacle in plywood box"
+  },
+  "contents": "beide"
+ },
+ {
+  "code": "6HG1",
+  "category": "composite",
+  "label": {
+   "nl": "Kunststof houder in vezelvat",
+   "en": "Plastics receptacle in fibre drum"
+  },
+  "contents": "vloeistof"
+ },
+ {
+  "code": "6HG2",
+  "category": "composite",
+  "label": {
+   "nl": "Kunststof houder in kartonnen doos",
+   "en": "Plastics receptacle in fibreboard box"
+  },
+  "contents": "beide"
+ },
+ {
+  "code": "6HH1",
+  "category": "composite",
+  "label": {
+   "nl": "Kunststof houder in kunststof vat",
+   "en": "Plastics receptacle in plastics drum"
+  },
+  "contents": "vloeistof"
+ },
+ {
+  "code": "6HH2",
+  "category": "composite",
+  "label": {
+   "nl": "Kunststof houder in kist van massief kunststof",
+   "en": "Plastics receptacle in solid plastics box"
+  },
+  "contents": "beide"
+ },
+ {
+  "code": "6PA1",
+  "category": "composite",
+  "label": {
+   "nl": "Glazen/porseleinen/aardewerken houder in stalen vat",
+   "en": "Glass, porcelain or stoneware receptacle in steel drum"
+  },
+  "contents": "vloeistof"
+ },
+ {
+  "code": "6PA2",
+  "category": "composite",
+  "label": {
+   "nl": "Glazen houder in stalen krat of kist",
+   "en": "Glass receptacle in steel crate or box"
+  },
+  "contents": "beide"
+ },
+ {
+  "code": "6PB1",
+  "category": "composite",
+  "label": {
+   "nl": "Glazen houder in aluminium vat",
+   "en": "Glass receptacle in aluminium drum"
+  },
+  "contents": "vloeistof"
+ },
+ {
+  "code": "6PB2",
+  "category": "composite",
+  "label": {
+   "nl": "Glazen houder in aluminium krat of kist",
+   "en": "Glass receptacle in aluminium crate or box"
+  },
+  "contents": "beide"
+ },
+ {
+  "code": "6PC",
+  "category": "composite",
+  "label": {
+   "nl": "Glazen houder in houten kist",
+   "en": "Glass receptacle in wooden box"
+  },
+  "contents": "beide"
+ },
+ {
+  "code": "6PD1",
+  "category": "composite",
+  "label": {
+   "nl": "Glazen houder in multiplex vat",
+   "en": "Glass receptacle in plywood drum"
+  },
+  "contents": "vloeistof"
+ },
+ {
+  "code": "6PD2",
+  "category": "composite",
+  "label": {
+   "nl": "Glazen houder in rieten mand",
+   "en": "Glass receptacle in wickerwork hamper"
+  },
+  "contents": "beide"
+ },
+ {
+  "code": "6PG1",
+  "category": "composite",
+  "label": {
+   "nl": "Glazen houder in vezelvat",
+   "en": "Glass receptacle in fibre drum"
+  },
+  "contents": "vloeistof"
+ },
+ {
+  "code": "6PG2",
+  "category": "composite",
+  "label": {
+   "nl": "Glazen houder in kartonnen doos",
+   "en": "Glass receptacle in fibreboard box"
+  },
+  "contents": "beide"
+ },
+ {
+  "code": "6PH1",
+  "category": "composite",
+  "label": {
+   "nl": "Glazen houder in verpakking van geëxpandeerd kunststof",
+   "en": "Glass receptacle in expanded plastics packaging"
+  },
+  "contents": "beide"
+ },
+ {
+  "code": "6PH2",
+  "category": "composite",
+  "label": {
+   "nl": "Glazen houder in verpakking van massief kunststof",
+   "en": "Glass receptacle in solid plastics packaging"
+  },
+  "contents": "beide"
+ },
+ {
+  "code": "0A1",
+  "category": "light_metal",
+  "label": {
+   "nl": "Verpakking van licht metaal, niet-afneembaar deksel",
+   "en": "Light gauge metal packaging, non-removable head"
+  },
+  "contents": "vloeistof"
+ },
+ {
+  "code": "0A2",
+  "category": "light_metal",
+  "label": {
+   "nl": "Verpakking van licht metaal, afneembaar deksel",
+   "en": "Light gauge metal packaging, removable head"
+  },
+  "contents": "beide"
+ },
+ {
+  "code": "11A",
+  "category": "ibc",
+  "label": {
+   "nl": "Metalen IBC (staal) voor vaste stoffen, lossen door zwaartekracht",
+   "en": "Metal IBC (steel) for solids, gravity discharge"
+  },
+  "contents": "vaste_stof"
+ },
+ {
+  "code": "11B",
+  "category": "ibc",
+  "label": {
+   "nl": "Metalen IBC (aluminium) voor vaste stoffen, lossen door zwaartekracht",
+   "en": "Metal IBC (aluminium) for solids, gravity discharge"
+  },
+  "contents": "vaste_stof"
+ },
+ {
+  "code": "11N",
+  "category": "ibc",
+  "label": {
+   "nl": "Metalen IBC (ander metaal) voor vaste stoffen, lossen door zwaartekracht",
+   "en": "Metal IBC (other metal) for solids, gravity discharge"
+  },
+  "contents": "vaste_stof"
+ },
+ {
+  "code": "21A",
+  "category": "ibc",
+  "label": {
+   "nl": "Metalen IBC (staal) voor vaste stoffen, lossen onder druk",
+   "en": "Metal IBC (steel) for solids, pressure discharge"
+  },
+  "contents": "vaste_stof"
+ },
+ {
+  "code": "21B",
+  "category": "ibc",
+  "label": {
+   "nl": "Metalen IBC (aluminium) voor vaste stoffen, lossen onder druk",
+   "en": "Metal IBC (aluminium) for solids, pressure discharge"
+  },
+  "contents": "vaste_stof"
+ },
+ {
+  "code": "21N",
+  "category": "ibc",
+  "label": {
+   "nl": "Metalen IBC (ander metaal) voor vaste stoffen, lossen onder druk",
+   "en": "Metal IBC (other metal) for solids, pressure discharge"
+  },
+  "contents": "vaste_stof"
+ },
+ {
+  "code": "31A",
+  "category": "ibc",
+  "label": {
+   "nl": "Metalen IBC (staal) voor vloeistoffen",
+   "en": "Metal IBC (steel) for liquids"
+  },
+  "contents": "vloeistof"
+ },
+ {
+  "code": "31B",
+  "category": "ibc",
+  "label": {
+   "nl": "Metalen IBC (aluminium) voor vloeistoffen",
+   "en": "Metal IBC (aluminium) for liquids"
+  },
+  "contents": "vloeistof"
+ },
+ {
+  "code": "31N",
+  "category": "ibc",
+  "label": {
+   "nl": "Metalen IBC (ander metaal) voor vloeistoffen",
+   "en": "Metal IBC (other metal) for liquids"
+  },
+  "contents": "vloeistof"
+ },
+ {
+  "code": "13H1",
+  "category": "ibc",
+  "label": {
+   "nl": "Flexibele IBC (big bag), kunststofweefsel zonder coating/voering",
+   "en": "Flexible IBC (big bag), woven plastics without coating or liner"
+  },
+  "contents": "vaste_stof"
+ },
+ {
+  "code": "13H2",
+  "category": "ibc",
+  "label": {
+   "nl": "Flexibele IBC (big bag), kunststofweefsel met coating",
+   "en": "Flexible IBC (big bag), woven plastics, coated"
+  },
+  "contents": "vaste_stof"
+ },
+ {
+  "code": "13H3",
+  "category": "ibc",
+  "label": {
+   "nl": "Flexibele IBC (big bag), kunststofweefsel met voering",
+   "en": "Flexible IBC (big bag), woven plastics with liner"
+  },
+  "contents": "vaste_stof"
+ },
+ {
+  "code": "13H4",
+  "category": "ibc",
+  "label": {
+   "nl": "Flexibele IBC (big bag), kunststofweefsel met coating en voering",
+   "en": "Flexible IBC (big bag), woven plastics, coated and with liner"
+  },
+  "contents": "vaste_stof"
+ },
+ {
+  "code": "13H5",
+  "category": "ibc",
+  "label": {
+   "nl": "Flexibele IBC (big bag), kunststoffolie",
+   "en": "Flexible IBC (big bag), plastics film"
+  },
+  "contents": "vaste_stof"
+ },
+ {
+  "code": "13L1",
+  "category": "ibc",
+  "label": {
+   "nl": "Flexibele IBC, textiel zonder coating/voering",
+   "en": "Flexible IBC, textile without coating or liner"
+  },
+  "contents": "vaste_stof"
+ },
+ {
+  "code": "13L2",
+  "category": "ibc",
+  "label": {
+   "nl": "Flexibele IBC, textiel met coating",
+   "en": "Flexible IBC, textile, coated"
+  },
+  "contents": "vaste_stof"
+ },
+ {
+  "code": "13L3",
+  "category": "ibc",
+  "label": {
+   "nl": "Flexibele IBC, textiel met voering",
+   "en": "Flexible IBC, textile with liner"
+  },
+  "contents": "vaste_stof"
+ },
+ {
+  "code": "13L4",
+  "category": "ibc",
+  "label": {
+   "nl": "Flexibele IBC, textiel met coating en voering",
+   "en": "Flexible IBC, textile, coated and with liner"
+  },
+  "contents": "vaste_stof"
+ },
+ {
+  "code": "13M1",
+  "category": "ibc",
+  "label": {
+   "nl": "Flexibele IBC, papier, meerlagig",
+   "en": "Flexible IBC, paper, multiwall"
+  },
+  "contents": "vaste_stof"
+ },
+ {
+  "code": "13M2",
+  "category": "ibc",
+  "label": {
+   "nl": "Flexibele IBC, papier, meerlagig, waterbestendig",
+   "en": "Flexible IBC, paper, multiwall, water-resistant"
+  },
+  "contents": "vaste_stof"
+ },
+ {
+  "code": "11H1",
+  "category": "ibc",
+  "label": {
+   "nl": "Rigide kunststof IBC voor vaste stoffen, met constructieve uitrusting, zwaartekrachtlossing",
+   "en": "Rigid plastics IBC for solids, with structural equipment, gravity discharge"
+  },
+  "contents": "vaste_stof"
+ },
+ {
+  "code": "11H2",
+  "category": "ibc",
+  "label": {
+   "nl": "Rigide kunststof IBC voor vaste stoffen, vrijdragend, zwaartekrachtlossing",
+   "en": "Rigid plastics IBC for solids, freestanding, gravity discharge"
+  },
+  "contents": "vaste_stof"
+ },
+ {
+  "code": "21H1",
+  "category": "ibc",
+  "label": {
+   "nl": "Rigide kunststof IBC voor vaste stoffen, met constructieve uitrusting, druklossing",
+   "en": "Rigid plastics IBC for solids, with structural equipment, pressure discharge"
+  },
+  "contents": "vaste_stof"
+ },
+ {
+  "code": "21H2",
+  "category": "ibc",
+  "label": {
+   "nl": "Rigide kunststof IBC voor vaste stoffen, vrijdragend, druklossing",
+   "en": "Rigid plastics IBC for solids, freestanding, pressure discharge"
+  },
+  "contents": "vaste_stof"
+ },
+ {
+  "code": "31H1",
+  "category": "ibc",
+  "label": {
+   "nl": "Rigide kunststof IBC voor vloeistoffen, met constructieve uitrusting",
+   "en": "Rigid plastics IBC for liquids, with structural equipment"
+  },
+  "contents": "vloeistof"
+ },
+ {
+  "code": "31H2",
+  "category": "ibc",
+  "label": {
+   "nl": "Rigide kunststof IBC voor vloeistoffen, vrijdragend",
+   "en": "Rigid plastics IBC for liquids, freestanding"
+  },
+  "contents": "vloeistof"
+ },
+ {
+  "code": "11HZ1",
+  "category": "ibc",
+  "label": {
+   "nl": "Composiet-IBC voor vaste stoffen, rigide kunststof binnenhouder, zwaartekrachtlossing",
+   "en": "Composite IBC for solids, rigid plastics inner receptacle, gravity discharge"
+  },
+  "contents": "vaste_stof"
+ },
+ {
+  "code": "11HZ2",
+  "category": "ibc",
+  "label": {
+   "nl": "Composiet-IBC voor vaste stoffen, flexibele kunststof binnenhouder, zwaartekrachtlossing",
+   "en": "Composite IBC for solids, flexible plastics inner receptacle, gravity discharge"
+  },
+  "contents": "vaste_stof"
+ },
+ {
+  "code": "21HZ1",
+  "category": "ibc",
+  "label": {
+   "nl": "Composiet-IBC voor vaste stoffen, rigide kunststof binnenhouder, druklossing",
+   "en": "Composite IBC for solids, rigid plastics inner receptacle, pressure discharge"
+  },
+  "contents": "vaste_stof"
+ },
+ {
+  "code": "21HZ2",
+  "category": "ibc",
+  "label": {
+   "nl": "Composiet-IBC voor vaste stoffen, flexibele kunststof binnenhouder, druklossing",
+   "en": "Composite IBC for solids, flexible plastics inner receptacle, pressure discharge"
+  },
+  "contents": "vaste_stof"
+ },
+ {
+  "code": "31HZ1",
+  "category": "ibc",
+  "label": {
+   "nl": "Composiet-IBC voor vloeistoffen, rigide kunststof binnenhouder (bijv. 1000 l op pallet)",
+   "en": "Composite IBC for liquids, rigid plastics inner receptacle (e.g. 1000 L tote)"
+  },
+  "contents": "vloeistof"
+ },
+ {
+  "code": "31HZ2",
+  "category": "ibc",
+  "label": {
+   "nl": "Composiet-IBC voor vloeistoffen, flexibele kunststof binnenhouder",
+   "en": "Composite IBC for liquids, flexible plastics inner receptacle"
+  },
+  "contents": "vloeistof"
+ },
+ {
+  "code": "11C",
+  "category": "ibc",
+  "label": {
+   "nl": "Houten IBC met binnenvoering",
+   "en": "Wooden IBC with inner liner"
+  },
+  "contents": "vaste_stof"
+ },
+ {
+  "code": "11D",
+  "category": "ibc",
+  "label": {
+   "nl": "Multiplex IBC met binnenvoering",
+   "en": "Plywood IBC with inner liner"
+  },
+  "contents": "vaste_stof"
+ },
+ {
+  "code": "11F",
+  "category": "ibc",
+  "label": {
+   "nl": "IBC van houtvezelmateriaal met binnenvoering",
+   "en": "Reconstituted wood IBC with inner liner"
+  },
+  "contents": "vaste_stof"
+ },
+ {
+  "code": "11G",
+  "category": "ibc",
+  "label": {
+   "nl": "Kartonnen IBC",
+   "en": "Fibreboard IBC"
+  },
+  "contents": "vaste_stof"
+ },
+ {
+  "code": "50A",
+  "category": "large",
+  "label": {
+   "nl": "Grote verpakking, staal",
+   "en": "Large packaging, steel"
+  },
+  "contents": "vaste_stof"
+ },
+ {
+  "code": "50B",
+  "category": "large",
+  "label": {
+   "nl": "Grote verpakking, aluminium",
+   "en": "Large packaging, aluminium"
+  },
+  "contents": "vaste_stof"
+ },
+ {
+  "code": "50N",
+  "category": "large",
+  "label": {
+   "nl": "Grote verpakking, ander metaal",
+   "en": "Large packaging, metal other than steel/aluminium"
+  },
+  "contents": "vaste_stof"
+ },
+ {
+  "code": "50C",
+  "category": "large",
+  "label": {
+   "nl": "Grote verpakking, natuurhout",
+   "en": "Large packaging, natural wood"
+  },
+  "contents": "vaste_stof"
+ },
+ {
+  "code": "50D",
+  "category": "large",
+  "label": {
+   "nl": "Grote verpakking, multiplex",
+   "en": "Large packaging, plywood"
+  },
+  "contents": "vaste_stof"
+ },
+ {
+  "code": "50F",
+  "category": "large",
+  "label": {
+   "nl": "Grote verpakking, houtvezelmateriaal",
+   "en": "Large packaging, reconstituted wood"
+  },
+  "contents": "vaste_stof"
+ },
+ {
+  "code": "50G",
+  "category": "large",
+  "label": {
+   "nl": "Grote verpakking, karton",
+   "en": "Large packaging, fibreboard"
+  },
+  "contents": "vaste_stof"
+ },
+ {
+  "code": "50H",
+  "category": "large",
+  "label": {
+   "nl": "Grote verpakking, rigide kunststof",
+   "en": "Large packaging, rigid plastics"
+  },
+  "contents": "vaste_stof"
+ },
+ {
+  "code": "51H",
+  "category": "large",
+  "label": {
+   "nl": "Grote verpakking, flexibel",
+   "en": "Large packaging, flexible"
+  },
+  "contents": "vaste_stof"
+ },
+ {
+  "code": "CYL",
+  "category": "pressure",
+  "label": {
+   "nl": "Gasfles (drukhouder)",
+   "en": "Gas cylinder (pressure receptacle)"
+  },
+  "contents": "beide"
+ },
+ {
+  "code": "BUNDLE",
+  "category": "pressure",
+  "label": {
+   "nl": "Flessenbatterij / bundel",
+   "en": "Bundle of cylinders"
+  },
+  "contents": "beide"
+ },
+ {
+  "code": "CRYO",
+  "category": "pressure",
+  "label": {
+   "nl": "Gesloten cryohouder",
+   "en": "Closed cryogenic receptacle"
+  },
+  "contents": "vloeistof"
+ }
+]

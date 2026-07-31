@@ -2,6 +2,34 @@
 
 Alle noemenswaardige wijzigingen worden gedocumenteerd volgens [Semantic Versioning](https://semver.org/).
 
+## [1.7.0] — 2026-07-31
+
+Goederendatabase uitgebreid naar 400 transportgoederen.
+
+### Toegevoegd
+
+- **Goederendatabase uitgebreid van 159 naar 400 goederen** met (stort)dichtheden, bandbreedtes (min/max) en NL/EN-aliassen, transportbreed:
+  - **Bouw & natuursteen**: basalt, hardsteen (arduin), travertin, kwartsiet, porfier, spoorballast, dekvloermortel, tegellijm, betonblokken, trottoirbanden, straatbakstenen, gipspleister, zilverzand, dolomiet, krijt, leem, dakbedekkingsrollen, cement in zakken, betonmortel (nat), breuksteen
+  - **Isolatie**: perliet, vermiculiet, schuimglas, houtvezelplaat, cellulose-inblaaswol
+  - **Metalen**: zuiver ijzer, chroom, mangaan, wolfraam, molybdeen, kobalt, zilver, goud, platina, antimoon, cadmium, bismut, silicium, zamak, hardmetaal (wolfraamcarbide), kwik, ferrosilicium
+  - **Hout & plaatmateriaal**: grenen, populier, els, esdoorn, noten, kersen, haagbeuk, iep, kastanje, linde, iroko, sapeli, bangkirai, padoek, wengé, accoya, western red cedar, robinia, thermohout, OSB, MDF, HDF, hardboard, zachtboard, gelamineerd hout (glulam), kruislaaghout (CLT), kurk, rondhout
+  - **Brandstoffen, chemie & gassen**: ruwe olie, nafta, huisbrandolie, biodiesel (FAME), HVO, oplosmiddelen (tolueen, xyleen, benzeen, styreen, MEK, IPA, ethylacetaat, terpentine/terpentijn), zuren (azijnzuur, salpeterzuur, fosforzuur), waterstofperoxide, ammonia, glycerine, plantaardige oliën per soort (olijf-, palm-, zonnebloem-, koolzaad-, lijnolie), bitumenemulsie, sterke drank, en vloeibaar gemaakte gassen (LNG, propaan, butaan, CO₂, stikstof, zuurstof, argon, waterstof, watervrije ammoniak)
+  - **Meststoffen & chemie (vast)**: ammoniumnitraat, ammoniumsulfaat, DAP/MAP/TSP, kieseriet, urean (UAN), calciumchloride, citroenzuur, waspoeder, actieve kool, carbon black, titaandioxide, zinkoxide, zetmeel, vacuümzout, natriumbicarbonaat, paraffine, bleekloog, ijzerchloride, epoxyhars
+  - **Agrarisch**: spelt, boekweit, gierst, sorghum, quinoa, lijnzaad, peulvruchten (erwten, bonen, linzen, kikkererwten), veevoergrondstoffen (sojaschroot, raapzaadschroot, zonnebloemschroot, palmpitschilfers, bietenpulppellets, DDGS, luzernepellets, vismeel), kuilvoer, drijfmest en vaste mest, compost, boomschors, houtkrullen, potgrond, graszaad, mosterd-/sesamzaad, pinda's, hoppellets, tabak en thee
+  - **Groente & fruit** (effectieve dichtheid in kisten/dozen): bananen, sinaasappels, citroenen, peren, druiven, meloenen, aardbeien, tomaten, komkommers, paprika, prei, bloemkool, kool, wortelen, champignons
+  - **Levensmiddelen**: keukenzout, pasta, havermout, melk- en weipoeder, boter, kaas, honing, chocolade, cacaoboter, gebrande koffie, flessenwater, suikersiroop, azijn
+  - **Ertsen & energie**: koper- en zinkconcentraat, chroomerts, mangaanerts, nikkelerts, fosfaaterts, ilmeniet, bariet, bentoniet, kaolien, veldspaat, olivijn, steenzout, petroleumcokes, bruinkool, antraciet, aluinaarde, gebluste kalk
+  - **Kunststoffen, papier & textiel**: massief polystyreen, ABS, polycarbonaat, PET, PTFE, PUR-schuim, rubbergranulaat, kopieerpapier, krantenpapier, tissue, boeken, wol-, vlas- en tapijtgoederen, kleding
+  - **Afval & recycling**: RDF-balen, e-waste, AEC-bodemas, groenafval, zuiveringsslib, gebruikt frituurvet, gemengd kunststofafval
+  - **Stukgoed-praktijkgemiddelden**: lege pallets en kratten, machines op skids, witgoed, loodaccu's, kabelhaspels, sanitair, bevestigingsmateriaal, matrassen, fietsen
+- Elke vermelding geeft aan of het om stortdichtheid, massieve dichtheid, vloeistofdichtheid of een effectieve palletdichtheid gaat
+
+### Gewijzigd
+
+- Te brede aliassen zijn verplaatst naar specifiekere goederen (bijv. "olijfolie" van generieke plantaardige olie naar olijfolie, "grenen" van vuren naar grenen, "potgrond" van turf naar potgrond, "gebluste kalk" van ongebluste kalk naar kalkhydraat), zodat herkenning en dichtheid nauwkeuriger zijn
+- Alle aliassen zijn gegarandeerd uniek over de hele database, zodat een omschrijving altijd op één goed uitkomt
+- Bestaande installaties krijgen de nieuwe goederen automatisch bij de eerstvolgende catalogus-sync (standaard bij opstarten)
+
 ## [1.6.0] — 2026-07-25
 
 Handtekeningen op documenten en een complete offline UN- en verpakkingendatabase.

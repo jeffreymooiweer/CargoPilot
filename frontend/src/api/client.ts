@@ -473,6 +473,11 @@ export interface DgComplianceResult {
   adr_mixed_loading?: ComplianceWarning[];
   imdg_segregation?: ComplianceWarning[];
   imdg_note?: string;
+  imdg_segregation_groups?: {
+    note: string;
+    class8_exception: string;
+    groups: { code: string; label: string }[];
+  };
   iata_segregation?: ComplianceWarning[];
   q_values?: QValueResult[];
   cargo_aircraft_only_products?: string[];

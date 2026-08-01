@@ -1,12 +1,12 @@
 # CargoPilot
 
-**Versie 1.9.0** — webapplicatie om colli en materialen te analyseren en als transportdocumenten (PDF) te exporteren, per transportmodaliteit. Uitsluitend bedoeld voor civiele instanties.
+**Versie 1.10.0** — webapplicatie om colli en materialen te analyseren en als transportdocumenten (PDF) te exporteren, per transportmodaliteit. Uitsluitend bedoeld voor civiele instanties.
 
 **English:** CargoPilot parses package lines (paste or file import), calculates weight/volume, and exports transport documents per modality — CMR, CIM, IMO/IATA dangerous goods declarations, VGM and shipping instructions. For civilian use only.
 
 Zie ook [CHANGELOG.md](CHANGELOG.md) en [ROADMAP.md](ROADMAP.md).
 
-## Functionaliteiten (v1.9.0)
+## Functionaliteiten (v1.10.0)
 
 - **Modaliteitskeuze bij start**: wegtransport, spoor, zeevracht, binnenvaart, luchtvracht of multimodaal
 - **Formulierenselectie per modaliteit**: alleen relevante documenten; bij multimodaal alles beschikbaar
@@ -44,7 +44,7 @@ Bij twijfel geldt de kleinste ophoging. Verzamel losse correcties bij voorkeur i
 |-----------|---------|
 | Versienummer | `VERSION`, `backend/VERSION` |
 | Git-release | tag `v1.0.0`, `v1.1.0`, … |
-| Docker Hub | `jeffersonmouze/cargopilot:latest` en `jeffersonmouze/cargopilot:v1.9.0` |
+| Docker Hub | `jeffersonmouze/cargopilot:latest` en `jeffersonmouze/cargopilot:v1.10.0` |
 | API | `GET /api/health` → `version` |
 
 ## Snelle start (Docker Compose)
@@ -61,7 +61,7 @@ Open: http://localhost:8080
 
 1. Community Applications of `unraid/CargoPilot.xml`
 2. Volume: `/mnt/user/appdata/cargopilot` → `/data`
-3. Image: `jeffersonmouze/cargopilot:v1.9.0` (of `latest` na bevestigde update)
+3. Image: `jeffersonmouze/cargopilot:v1.10.0` (of `latest` na bevestigde update)
 4. Environment: `APP_SECRET_KEY`, `ADMIN_*`
 5. WebUI op gekozen poort (bijv. `http://<ip>:9935`)
 
@@ -131,7 +131,8 @@ Adres-autocomplete gebruikt een externe Photon-geocoder (OpenStreetMap-data, sta
 - **Officiële documentregels** worden per profiel samengesteld: ADR/RID/ADN 5.4.1.1.1 (`UN 1203, BENZINE, 3, II, (D/E), 10 jerrycan, 200 L`) inclusief de totale hoeveelheid per vervoerscategorie (5.4.1.1.1.1), IMDG met EmS en marine pollutant, IATA met verpakkingsinstructie en CAO-markering
 - **EmS-noodschema's**: 305 UN-nummers hebben een exacte EmS-code (`backend/seed/dg/ems.json`, brand- en lekkageschema met gevarenprofiel); overige stoffen krijgen een indicatieve klassestandaard die als suggestie wordt getoond en niet automatisch wordt ingevuld
 - **Vervoersverboden**: stoffen die ADR Tabel A niet ten vervoer toelaat worden herkend, in de wizard rood gemeld en geblokkeerd voor export
-- **Segregatie zeevervoer**: volledige IMDG 7.2.4-klassescheidingstabel (codes 1-4 "away from" t/m "separated longitudinally"), inclusief nevengevaren; scheidingsgroepen (7.2.5) en kolom 16b van de Dangerous Goods List blijven de verantwoordelijkheid van de afzender
+- **Segregatie zeevervoer**: de volledige IMDG 7.2.4-klassescheidingstabel (Amendement 40-20, codes 1-4 van "away from" tot "separated longitudinally"), inclusief nevengevaren — een nevengevaar van klasse 1 telt daarbij als divisie 1.3 (7.2.3.3). De negentien scheidingsgroepen SGG1-SGG18 (7.2.5) staan als naslag in het nalevingspaneel; kolom 16b van de Dangerous Goods List blijft leidend
+- **Samenlading van explosieven**: de compatibiliteitsgroepenmatrix van IMDG 7.2.7.1.4 (groepen A-S) controleert of colli van klasse 1 samen mogen, met de bijzondere bepalingen voor groep G, L en N en de ammoniumnitraat-uitzondering van 7.2.7.2.1
 - Klasse-specifieke documentvereisten worden benoemd (netto explosieve massa bij klasse 1, temperatuurbeheersing bij 4.1/5.2, verantwoordelijke persoon bij 6.2, transportindex en collo-categorie bij klasse 7)
 - De offline database is een feitelijke invulhulp; de actuele ADR/RID/ADN/IMDG/IATA-uitgave blijft altijd leidend
 
@@ -151,12 +152,12 @@ Bij upgrade naar v1.0.0 worden items met bron `overzicht_materieel` automatisch 
 **Let op:** Docker-images ouder dan v1.4.0 bevatten nog een intern formulier dat niet voor civiel gebruik is bedoeld. Na upgrade:
 
 1. Gebruik alleen `v1.4.0` of nieuwer (of `latest` na de 1.4.0-build).
-2. Verwijder oude Docker-tags via GitHub → **Actions** → **Cleanup Docker Hub tags** → **Run workflow** met `keep_tags`: `latest,v1.9.0,1.9.0`.
-3. `docker pull jeffersonmouze/cargopilot:v1.9.0` en container herstarten.
+2. Verwijder oude Docker-tags via GitHub → **Actions** → **Cleanup Docker Hub tags** → **Run workflow** met `keep_tags`: `latest,v1.10.0,1.10.0`.
+3. `docker pull jeffersonmouze/cargopilot:v1.10.0` en container herstarten.
 
 ## Docker Hub
 
-`jeffersonmouze/cargopilot:latest` · `jeffersonmouze/cargopilot:v1.9.0`
+`jeffersonmouze/cargopilot:latest` · `jeffersonmouze/cargopilot:v1.10.0`
 
 GitHub Actions: `.github/workflows/dockerhub.yml` (push `main` + tags `v*`).
 

@@ -294,9 +294,17 @@ def check_imdg_segregation(entries: list[dict[str, Any]], language: str = "nl") 
 
     products: list[tuple[str, list[str]]] = []
     for entry, index, product in _iter_products(entries):
-        keys = []
-        for token in _hazard_tokens(product):
-            key = _imdg_row_key(token, class_order)
+        keys: list[str] = []
+        primary = _imdg_row_key(_primary_class(product), class_order)
+        if primary:
+            keys.append(primary)
+        # IMDG 7.2.3.3: een nevengevaar van klasse 1 wordt voor de segregatie
+        # behandeld als divisie 1.3.
+        for token in re.split(r"[,;/\s()+]+", str(product.get("subsidiary_risks") or "")):
+            token = token.strip().upper()
+            if not token:
+                continue
+            key = "1.3-1.6" if token.startswith("1") else _imdg_row_key(token, class_order)
             if key and key not in keys:
                 keys.append(key)
         if keys:
@@ -330,6 +338,61 @@ def check_imdg_segregation(entries: list[dict[str, Any]], language: str = "nl") 
                 "message": codes[worst][lang],
                 "products": f"{label_a}  ×  {label_b}",
             })
+    return warnings
+
+
+def _compat_group(product: dict[str, Any]) -> str | None:
+    """Compatibiliteitsgroep van een klasse 1-product (bijv. 1.4G → 'G')."""
+    for raw in (product.get("classification_code"), product.get("class"), product.get("subsidiary_risks")):
+        match = re.search(r"\b1\.\d\s*([A-HJ-NPS])\b", str(raw or "").upper())
+        if match:
+            return match.group(1)
+    return None
+
+
+def check_imdg_class1_compatibility(
+    entries: list[dict[str, Any]], language: str = "nl"
+) -> list[dict[str, Any]]:
+    """IMDG 7.2.7.1.4: toegestane gemengde stuwage van compatibiliteitsgroepen."""
+    rules = get_compliance_rules().get("imdg_class1_compatibility")
+    if not rules:
+        return []
+    lang = _lang(language)
+    order: list[str] = rules["group_order"]
+    matrix: dict[str, list[str]] = rules["matrix"]
+    special: dict[str, dict[str, str]] = rules.get("special_notes", {})
+
+    products: list[tuple[str, str]] = []
+    for entry, index, product in _iter_products(entries):
+        group = _compat_group(product)
+        if group and group in order:
+            products.append((_product_label(entry, product, index), group))
+
+    warnings: list[dict[str, Any]] = []
+    seen: set[tuple[str, str]] = set()
+    for i, (label_a, group_a) in enumerate(products):
+        for label_b, group_b in products[i + 1:]:
+            pair_id = tuple(sorted((label_a, label_b)))
+            if pair_id in seen:
+                continue
+            permitted = matrix[group_a][order.index(group_b)] == "X"
+            note = special.get(group_a) or special.get(group_b)
+            if not permitted:
+                seen.add(pair_id)
+                warnings.append({
+                    "rule": f"IMDG 7.2.7.1.4 ({group_a} × {group_b})",
+                    "severity": "error",
+                    "message": rules["note"][lang],
+                    "products": f"{label_a}  ×  {label_b}",
+                })
+            elif note and group_a != group_b:
+                seen.add(pair_id)
+                warnings.append({
+                    "rule": f"IMDG 7.2.7.1.4 ({group_a} × {group_b})",
+                    "severity": "warning",
+                    "message": note[lang],
+                    "products": f"{label_a}  ×  {label_b}",
+                })
     return warnings
 
 
@@ -383,8 +446,19 @@ def check_compliance(
         result["adr_mixed_loading"] = check_adr_mixed_loading(entries, language)
 
     if "IMDG" in normalized:
-        result["imdg_segregation"] = check_imdg_segregation(entries, language)
+        result["imdg_segregation"] = check_imdg_segregation(entries, language) + \
+            check_imdg_class1_compatibility(entries, language)
         result["imdg_note"] = rules["imdg_segregation"]["note"][_lang(language)]
+        groups = rules.get("imdg_segregation_groups")
+        if groups:
+            lang = _lang(language)
+            result["imdg_segregation_groups"] = {
+                "note": groups["note"][lang],
+                "class8_exception": groups["class8_exception"][lang],
+                "groups": [
+                    {"code": item["code"], "label": item[lang]} for item in groups["groups"]
+                ],
+            }
 
     if "IATA_DGR" in normalized:
         result["iata_segregation"] = check_iata_segregation(entries, language)

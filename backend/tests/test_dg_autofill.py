@@ -5,7 +5,11 @@ import re
 from pathlib import Path
 
 from app.services.dg.autofill import adr_category_totals, description_line, prepare_entries
-from app.services.dg.compliance import check_imdg_segregation, get_compliance_rules
+from app.services.dg.compliance import (
+    check_imdg_class1_compatibility,
+    check_imdg_segregation,
+    get_compliance_rules,
+)
 from app.services.dg.database import is_transport_forbidden
 from app.services.dg.enrichment import (
     describe_excepted_quantity,
@@ -241,6 +245,92 @@ def test_imdg_segregation_table_is_symmetric_and_complete():
         assert len(table[row]) == len(order)
         for index, column in enumerate(order):
             assert table[row][index] == table[column][order.index(row)], f"{row}×{column}"
+
+
+def test_imdg_segregation_table_matches_amendment_40_20():
+    """Woordelijk overgenomen uit IMDG-code hoofdstuk 7.2, tabel 7.2.4 (Amdt 40-20)."""
+    official = {
+        "1.1-1.2-1.5": "* * * 4 2 2 4 4 4 4 4 4 2 4 2 4 X",
+        "1.3-1.6":     "* * * 4 2 2 4 3 3 4 4 4 2 4 2 2 X",
+        "1.4":         "* * * 2 1 1 2 2 2 2 2 2 X 4 2 2 X",
+        "2.1":         "4 4 2 X X X 2 1 2 2 2 2 X 4 2 1 X",
+        "2.2":         "2 2 1 X X X 1 X 1 X X 1 X 2 1 X X",
+        "2.3":         "2 2 1 X X X 2 X 2 X X 2 X 2 1 X X",
+        "3":           "4 4 2 2 1 2 X X 2 2 2 2 X 3 2 X X",
+        "4.1":         "4 3 2 1 X X X X 1 X 1 2 X 3 2 1 X",
+        "4.2":         "4 3 2 2 1 2 2 1 X 1 2 2 1 3 2 1 X",
+        "4.3":         "4 4 2 2 X X 2 X 1 X 2 2 X 2 2 1 X",
+        "5.1":         "4 4 2 2 X X 2 1 2 2 X 2 1 3 1 2 X",
+        "5.2":         "4 4 2 2 1 2 2 2 2 2 2 X 1 3 2 2 X",
+        "6.1":         "2 2 X X X X X X 1 X 1 1 X 1 X X X",
+        "6.2":         "4 4 4 4 2 2 3 3 3 2 3 3 1 X 3 3 X",
+        "7":           "2 2 2 2 1 1 2 2 2 2 1 2 X 3 X 2 X",
+        "8":           "4 2 2 1 X X X 1 1 1 2 2 X 3 2 X X",
+        "9":           "X X X X X X X X X X X X X X X X X",
+    }
+    rules = get_compliance_rules()["imdg_segregation"]
+    assert rules["class_order"] == list(official)
+    for row, expected in official.items():
+        assert rules["table"][row] == expected.split(), row
+
+
+def test_imdg_class1_compatibility_matches_7_2_7_1_4():
+    """Toegestane gemengde stuwage per compatibiliteitsgroep (IMDG 7.2.7.1.4)."""
+    rules = get_compliance_rules()["imdg_class1_compatibility"]
+    order, matrix = rules["group_order"], rules["matrix"]
+    assert order == ["A", "B", "C", "D", "E", "F", "G", "H", "J", "K", "L", "N", "S"]
+
+    def permitted(a: str, b: str) -> bool:
+        return matrix[a][order.index(b)] == "X"
+
+    # Groep S is verenigbaar met alles behalve L.
+    for group in order:
+        assert permitted("S", group) is (group != "L"), group
+    # L uitsluitend met L (noot 2).
+    assert [g for g in order if permitted("L", g)] == ["L"]
+    # C, D en E onderling en met G en N.
+    for group in ("C", "D", "E"):
+        for other in ("C", "D", "E", "G", "N", "S"):
+            assert permitted(group, other), f"{group}×{other}"
+    # Onverenigbaar: springstof groep D met ontstekers groep B.
+    assert not permitted("B", "D")
+    assert not permitted("A", "B")
+    # Symmetrie.
+    for a in order:
+        for b in order:
+            assert permitted(a, b) == permitted(b, a), f"{a}×{b}"
+
+
+def test_class1_compatibility_check_flags_incompatible_groups():
+    entries = [{
+        "line_id": 1,
+        "vehicle": "Mix",
+        "products": [
+            {"un_number": "0081", "proper_shipping_name": "SPRINGSTOF", "class": "1.1D",
+             "classification_code": "1.1D"},
+            {"un_number": "0029", "proper_shipping_name": "SLAGPIJPJES", "class": "1.1B",
+             "classification_code": "1.1B"},
+        ],
+    }]
+    warnings = check_imdg_class1_compatibility(entries, "nl")
+    assert any(w["severity"] == "error" and "B × D" in w["rule"] or "D × B" in w["rule"] for w in warnings)
+
+
+def test_subsidiary_class1_hazard_segregates_as_division_1_3():
+    """IMDG 7.2.3.3: een nevengevaar van klasse 1 telt als divisie 1.3."""
+    entries = [{
+        "line_id": 1,
+        "vehicle": "Mix",
+        "products": [
+            # Klasse 3 met nevengevaar klasse 1 → moet als 1.3 tegen 4.1 worden gewogen.
+            {"un_number": "9990", "proper_shipping_name": "TESTSTOF", "class": "3",
+             "subsidiary_risks": "1"},
+            {"un_number": "1350", "proper_shipping_name": "ZWAVEL", "class": "4.1"},
+        ],
+    }]
+    warnings = check_imdg_segregation(entries, "nl")
+    # 1.3 × 4.1 = 3 in de tabel, strenger dan 3 × 4.1 = X.
+    assert warnings and warnings[0]["code"] == "3"
 
 
 def test_imdg_segregation_warns_for_incompatible_classes():

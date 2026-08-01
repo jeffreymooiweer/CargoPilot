@@ -2,6 +2,25 @@
 
 Alle noemenswaardige wijzigingen worden gedocumenteerd volgens [Semantic Versioning](https://semver.org/).
 
+## [1.10.0] — 2026-08-01
+
+Segregatie geverifieerd tegen de officiële IMDG-code en uitgebreid met scheidingsgroepen en klasse 1.
+
+### Gewijzigd
+
+- **Segregatietabel geverifieerd en bijgewerkt naar Amendement 40-20.** De tabel is regel voor regel vergeleken met hoofdstuk 7.2 van de officiële IMDG-code. 287 van de 289 cellen bleken al correct; vier cellen zijn bijgewerkt omdat Amendement 40-20 strenger is dan de oudere uitgave waar de eerdere versie op leunde:
+  - klasse 2.1 × 4.3: van "geen algemene scheiding" naar **2 (gescheiden van)**
+  - klasse 3 × 4.3: van 1 (uit de buurt van) naar **2 (gescheiden van)**
+  - klasse 2.2 × 5.2: van 2 naar **1 (uit de buurt van)**
+  De tabel is nu woordelijk vastgelegd in een test, zodat een toekomstige wijziging niet ongemerkt kan sluipen.
+
+### Toegevoegd
+
+- **Scheidingsgroepen (IMDG 7.2.5)**: alle negentien groepen SGG1 t/m SGG18 (zuren, sterke zuren, ammoniumverbindingen, bromaten, chloraten, chlorieten, cyaniden, zware metalen, hypochlorieten, lood, gehalogeneerde koolwaterstoffen, kwik, nitrieten, perchloraten, permanganaten, metaalpoeders, peroxiden, aziden en alkaliën) zijn opgenomen als naslag in het nalevingspaneel, met de uitleg dat kolom 16b van de Dangerous Goods List bepaalt of een stof erin valt en dat de afzender dat bij n.e.g.-vermeldingen zelf beoordeelt (5.4.1.5.11).
+- **Uitzondering voor klasse 8 (IMDG 7.2.6.5)**: zuren en alkaliën van verpakkingsgroep II of III mogen tóch samen in één laadeenheid bij verpakkingen tot 30 L of 30 kg, mits de stoffen niet gevaarlijk reageren en het vervoersdocument de verklaring van 5.4.1.5.11.3 bevat.
+- **Samenladingscontrole voor explosieven (IMDG 7.2.7.1.4)**: de volledige matrix van compatibiliteitsgroepen A t/m S bepaalt nu of colli van klasse 1 in dezelfde ruimte of laadeenheid mogen. Groep S is verenigbaar met alles behalve L; groep L uitsluitend met hetzelfde type; de bijzondere bepalingen voor de groepen G (vuurwerk), L en N worden als waarschuwing getoond. Ook de uitzondering van 7.2.7.2.1 (ammoniumnitraat en nitraten samen met springstoffen, behalve UN 0083) is opgenomen.
+- **Nevengevaar klasse 1 telt als divisie 1.3** bij het bepalen van de scheiding (IMDG 7.2.3.3), wat strenger uitpakt dan het hoofdgevaar alleen.
+
 ## [1.9.0] — 2026-08-01
 
 EmS-database uitgebreid en vervoersverboden gesignaleerd.

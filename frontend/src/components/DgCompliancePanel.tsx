@@ -167,6 +167,25 @@ export default function DgCompliancePanel({ entries, profiles }: Props) {
         <p className="text-[11px] text-slate-500 dark:text-slate-400">{result.imdg_note}</p>
       )}
 
+      {result?.imdg_segregation_groups && (
+        <details className="rounded-lg border border-slate-200 px-3 py-2 text-xs dark:border-slate-700">
+          <summary className="cursor-pointer font-medium text-slate-700 dark:text-slate-200">
+            {t("compliance.segGroupsTitle")}
+          </summary>
+          <p className="mt-2 text-slate-600 dark:text-slate-300">{result.imdg_segregation_groups.note}</p>
+          <ul className="mt-2 grid gap-x-4 gap-y-0.5 sm:grid-cols-2">
+            {result.imdg_segregation_groups.groups.map((group) => (
+              <li key={group.code} className="text-slate-600 dark:text-slate-300">
+                <span className="font-mono font-semibold">{group.code}</span> — {group.label}
+              </li>
+            ))}
+          </ul>
+          <p className="mt-2 text-slate-500 dark:text-slate-400">
+            {result.imdg_segregation_groups.class8_exception}
+          </p>
+        </details>
+      )}
+
       {(result?.q_values?.length ?? 0) > 0 && (
         <section className="space-y-2">
           <h4 className="text-sm font-semibold text-slate-900 dark:text-slate-100">{t("compliance.qTitle")}</h4>

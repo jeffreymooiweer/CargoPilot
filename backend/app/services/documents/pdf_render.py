@@ -28,6 +28,7 @@ from reportlab.platypus import (
     TableStyle,
 )
 
+from app.services.dg.autofill import adr_category_totals
 from app.services.documents.exporter import (
     DG_PRODUCT_FIELDS,
     _dg_headers,
@@ -259,6 +260,14 @@ def render_document_pdf(
         story.append(_section_header(f"{_text('dg_table', lang)} ({profile})", styles, width))
         story.append(_grid_table(header, rows, styles, width))
         story.append(Spacer(1, 6))
+
+        # ADR 5.4.1.1.1.1: totale hoeveelheid per vervoerscategorie hoort in
+        # het vervoersdocument wanneer op de 1.1.3.6-vrijstelling wordt gesteund.
+        if profile in {"ADR", "RID", "ADN"}:
+            totals = adr_category_totals(dangerous_goods, lang)
+            if totals["statement"]:
+                story.append(_p(totals["statement"], styles["fixed"]))
+                story.append(Spacer(1, 6))
 
     for item in document.get("fixed_texts") or []:
         story.append(_p(item.get(lang) or item.get("nl", ""), styles["fixed"]))

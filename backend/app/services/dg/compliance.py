@@ -255,6 +255,84 @@ def check_iata_segregation(entries: list[dict[str, Any]], language: str = "nl") 
     return warnings
 
 
+def _imdg_row_key(token: str, class_order: list[str]) -> str | None:
+    """Map een gevarentoken op een rij van de IMDG-segregatietabel."""
+    token = token.strip().upper()
+    if not token:
+        return None
+    if token.startswith("1"):
+        # 1.4S valt buiten de tabel voor de meeste combinaties, maar de code
+        # kent 1.4 wel als eigen rij; compatibiliteitsgroep negeren we hier.
+        division = re.match(r"^1(\.\d)?", token)
+        if not division:
+            return None
+        value = division.group(0)
+        if value in {"1.1", "1.2", "1.5", "1"}:
+            return "1.1-1.2-1.5"
+        if value in {"1.3", "1.6"}:
+            return "1.3-1.6"
+        if value == "1.4":
+            return "1.4"
+        return None
+    for key in class_order:
+        if key == token:
+            return key
+    # '2' zonder divisie of '6' zonder divisie kan niet betrouwbaar worden
+    # ingedeeld; die slaan we over in plaats van te gokken.
+    return None
+
+
+def check_imdg_segregation(entries: list[dict[str, Any]], language: str = "nl") -> list[dict[str, Any]]:
+    """IMDG 7.2.4: scheiding tussen colli op basis van de klassescheidingstabel."""
+    rules = get_compliance_rules().get("imdg_segregation")
+    if not rules:
+        return []
+    lang = _lang(language)
+    class_order: list[str] = rules["class_order"]
+    table: dict[str, list[str]] = rules["table"]
+    codes: dict[str, dict[str, str]] = rules["codes"]
+
+    products: list[tuple[str, list[str]]] = []
+    for entry, index, product in _iter_products(entries):
+        keys = []
+        for token in _hazard_tokens(product):
+            key = _imdg_row_key(token, class_order)
+            if key and key not in keys:
+                keys.append(key)
+        if keys:
+            products.append((_product_label(entry, product, index), keys))
+
+    warnings: list[dict[str, Any]] = []
+    seen: set[tuple[str, str]] = set()
+    for i, (label_a, keys_a) in enumerate(products):
+        for label_b, keys_b in products[i + 1:]:
+            worst = ""
+            worst_pair = ("", "")
+            for key_a in keys_a:
+                for key_b in keys_b:
+                    value = table[key_a][class_order.index(key_b)]
+                    if value in {"1", "2", "3", "4"} and (not worst or int(value) > int(worst)):
+                        worst = value
+                        worst_pair = (key_a, key_b)
+                    elif value == "*" and not worst:
+                        worst = "*"
+                        worst_pair = (key_a, key_b)
+            if not worst:
+                continue
+            pair_id = tuple(sorted((label_a, label_b)))
+            if pair_id in seen:
+                continue
+            seen.add(pair_id)
+            warnings.append({
+                "rule": f"IMDG 7.2.4 ({worst_pair[0]} × {worst_pair[1]})",
+                "severity": "error" if worst in {"3", "4"} else "warning",
+                "code": worst,
+                "message": codes[worst][lang],
+                "products": f"{label_a}  ×  {label_b}",
+            })
+    return warnings
+
+
 def check_q_value(entries: list[dict[str, Any]], language: str = "nl") -> list[dict[str, Any]]:
     """IATA 5.0.2.11: Q-waarde per positie voor 'all packed in one'."""
     rules = get_compliance_rules()["q_value"]
@@ -303,6 +381,10 @@ def check_compliance(
     if {"ADR", "RID", "ADN"} & normalized:
         result["adr_points"] = check_adr_points(entries, language)
         result["adr_mixed_loading"] = check_adr_mixed_loading(entries, language)
+
+    if "IMDG" in normalized:
+        result["imdg_segregation"] = check_imdg_segregation(entries, language)
+        result["imdg_note"] = rules["imdg_segregation"]["note"][_lang(language)]
 
     if "IATA_DGR" in normalized:
         result["iata_segregation"] = check_iata_segregation(entries, language)

@@ -35,7 +35,7 @@
     "step3dg": "Gevaarlijke stoffen",
     "step4": "Export",
     "continue": "Doorgaan",
-    "download": "Download Excel",
+    "download": "Document downloaden",
     "summary": "Samenvatting",
     "products": "Producten",
     "adjustTotalWeight": "Totaalgewicht aanpassen",
@@ -49,7 +49,7 @@
     "toExport": "Naar export",
     "toDg": "Naar gevaarlijke stoffen",
     "dgIntro": "Vul de gevaarlijke-stoffengegevens in voor alle colli die als DG zijn gemarkeerd of waarin een UN-nummer is herkend.",
-    "dgSource": "UN-gegevens kunnen automatisch worden opgehaald via de ADR-database (FreightUtils).",
+    "dgSource": "Classificatie komt uit de meegeleverde offline ADR-database (Tabel A); waar internet beschikbaar is wordt die live aangevuld met de ADR 2025-bron.",
     "dgLine": "Regel",
     "dgVehicle": "Voertuig / lading",
     "dgVehicleHelp": "Omschrijving van het voertuig of de lading van deze DG-positie.",
@@ -63,7 +63,8 @@
     "toDetails": "Naar zendinggegevens",
     "changeModality": "Andere modaliteit kiezen",
     "loading": "Laden…",
-    "next": "Volgende"
+    "next": "Volgende",
+    "paste": "Plak hier uw regels: omschrijving | aantal | eenheid"
   },
   "review": {
     "linesTitle": "Colli",
@@ -90,8 +91,8 @@
     "duplicateLine": "Regel kopiëren",
     "removeLine": "Verwijderen",
     "noLines": "Voeg minstens één collo met omschrijving toe.",
-    "importExcel": "Importeren uit Excel",
-    "importTitle": "Excel / tekst importeren",
+    "importExcel": "Importeren",
+    "importTitle": "Importeren uit bestand of tekst",
     "importHint": "Plak gekopieerde kolommen uit Excel (omschrijving | aantal | eenheid), of download de template en upload een bestand.",
     "importExampleTitle": "Voorbeeld",
     "importExample": "staal hoekprofiel 80x80x8x6000 | 8 | stuks",
@@ -144,7 +145,8 @@
     "importDone": "Import voltooid",
     "importCreated": "{{count}} toegevoegd",
     "importUpdated": "{{count}} bijgewerkt",
-    "importSkipped": "{{count}} overgeslagen"
+    "importSkipped": "{{count}} overgeslagen",
+    "inactive": "Inactief"
   },
   "settings": {
     "title": "Instellingen",
@@ -311,5 +313,13 @@
     "qExceeded": "OVERSCHRIJDT het maximum van 1,0",
     "caoHint": "Cargo Aircraft Only van toepassing op: {{products}}. Vermeld dit op de Shipper's Declaration en de AWB-handling information.",
     "disclaimer": "Deze controles zijn begeleiding op basis van ADR 2025 en IATA DGR 67e editie en vervangen geen veiligheidsadviseur of de officiële regelgeving. Zie de disclaimer."
+  },
+  "dgauto": {
+    "title": "Automatisch afgeleid",
+    "intro": "Op basis van het UN-nummer en de ingevoerde colli vult CargoPilot de classificatie, verpakkingsgegevens en documentregels zelf in. Controleer de gegevens en pas ze waar nodig aan.",
+    "documentLine": "Omschrijving voor het vervoersdocument ({{profile}})",
+    "adrTotals": "Totaal per vervoerscategorie (ADR 5.4.1.1.1.1)",
+    "notes": "Aandachtspunten bij deze stoffen",
+    "requirements": "Zelf aanvullen op het document"
   }
 }

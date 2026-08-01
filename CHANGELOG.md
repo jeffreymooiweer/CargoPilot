@@ -2,6 +2,31 @@
 
 Alle noemenswaardige wijzigingen worden gedocumenteerd volgens [Semantic Versioning](https://semver.org/).
 
+## [1.8.0] — 2026-08-01
+
+Gevaarlijke stoffen: automatische invulling per modaliteit en zeevaartsegregatie.
+
+### Toegevoegd
+
+- **Automatische invulling van gevaarlijke-stoffengegevens** (`POST /api/dg/prepare`): u vult per collo alleen het UN-nummer in (of zoekt op stofnaam) en CargoPilot leidt daaruit de juiste vervoersnaam, klasse, nevengevaren, verpakkingsgroep, verpakkingsinstructie, vervoerscategorie, tunnelcode, Kemler-nummer en LQ/EQ-limieten af. Aantal colli, verpakkingssoort en massa's worden overgenomen uit de al ingevoerde colli. Alleen lege velden worden gevuld, zodat handmatige correcties altijd blijven staan.
+- **EmS-noodschema's voor zeevervoer**: per UN-nummer wordt de EmS-code (brand- en lekkageschema) ingevuld voor een gecureerde selectie van veelvervoerde stoffen uit de IMDG Dangerous Goods List; voor overige stoffen wordt een indicatieve klassestandaard getoond die als zodanig herkenbaar is.
+- **Luchtvrachtregels**: lithiumbatterijen UN 3090/3480 worden automatisch als **Cargo Aircraft Only** met de juiste IATA-verpakkingsinstructie (PI 965/968) gemarkeerd, UN 3091/3481 krijgen PI 966/967 respectievelijk 969/970, en klasse 2.3 (giftige gassen) wordt gemeld als verboden in de luchtvaart.
+- **Officiële omschrijvingsregels per formulier** worden automatisch samengesteld en getoond vóór de export: ADR/RID/ADN volgens 5.4.1.1.1 inclusief tunnelcode, aantal colli en totale hoeveelheid, IMDG met EmS-code en marine pollutant, IATA met verpakkingsinstructie en Cargo Aircraft Only-vermelding.
+- **Totale hoeveelheid per vervoerscategorie** (ADR 5.4.1.1.1.1) wordt berekend en op de gegenereerde ADR/RID/ADN-documenten geplaatst — verplicht bij gebruik van de 1.1.3.6-vrijstelling en tot nu toe handwerk.
+- **IMDG-segregatiecontrole (7.2.4)**: de volledige klassescheidingstabel is opgenomen, inclusief de codes 1 t/m 4 ("away from", "separated from", "separated by a complete compartment or hold", "separated longitudinally") met de bijbehorende afstanden. Nevengevaren tellen mee; bij zeevracht verschijnen de conflicten in het nalevingspaneel.
+- **Vrijgestelde en gelimiteerde hoeveelheden** worden uitgelegd in gewone taal (E1 t/m E5 met de maxima per binnen- en buitenverpakking volgens 3.5.1.2, en de LQ-limiet per binnenverpakking volgens 3.4).
+- **Klasse-specifieke documentvereisten** worden benoemd: netto explosieve massa en compatibiliteitsgroepen bij klasse 1, temperatuurbeheersing bij zelfontledende stoffen en organische peroxiden, verantwoordelijke persoon bij klasse 6.2, en radionucliden, collo-categorie, transportindex en veiligheidsindex kritikaliteit bij klasse 7. Voor zeevracht wordt het containerbeladingscertificaat genoemd, voor luchtvracht de ondertekening in tweevoud.
+- **Versiebeleid** expliciet vastgelegd in de README: patchreleases voor correcties, minor voor nieuwe functionaliteit, major uitsluitend voor ingrijpende herzieningen.
+
+### Opgelost
+
+- **De ADR-classificatiecode werd ten onrechte als nevengevaar ingevuld.** Bij het kiezen van een UN-nummer belandde de classificatiecode (bijvoorbeeld `F1` bij benzine, `M4` bij lithiumbatterijen of `C1` bij zwavelzuur) in het veld "bijkomend gevaar", waardoor de omschrijving op het vervoersdocument bijvoorbeeld `UN 1203, BENZINE, 3 (F1), II` werd in plaats van `UN 1203, BENZINE, 3, II`. Nevengevaren worden nu correct uit de etikettenkolom van ADR Tabel A gehaald: UN 2031 (salpeterzuur) levert nu terecht `8 (5.1)`, benzine levert geen nevengevaar meer. De classificatiecode wordt apart bewaard.
+- **Divisie van gassen en explosieven** wordt nu correct bepaald: ADR Tabel A vermeldt bij gassen alleen klasse "2" en bij explosieven alleen "1", terwijl de werkelijke divisie in de etikettenkolom (2.1/2.2/2.3) respectievelijk de classificatiecode (bijvoorbeeld 1.4S) staat. Dit is bepalend voor samenlading en segregatie, die daardoor eerder onvolledig konden zijn.
+- De IATA-omschrijving toonde de ADR-verpakkingsinstructie (P001, IBC02) die voor luchtvracht niet geldig is; er wordt nu uitsluitend een IATA-verpakkingsinstructie vermeld wanneer die bekend is.
+- De knop om een document te downloaden heette nog **"Download Excel"** terwijl alle documenten als PDF worden geëxporteerd; dit is nu "Document downloaden".
+- Twee ontbrekende vertaalsleutels toonden ruwe tekst in de interface: het plakveld in het importvenster had geen placeholder, en inactief materieel toonde `questions.no` (een restant van het verwijderde interne formulier) in plaats van "Inactief".
+- De uitleg bij de gevaarlijke-stoffenstap beschreef nog de oude werkwijze (alles handmatig invullen, UN-gegevens alleen online) en is aangepast aan de automatische invulling met offline database.
+
 ## [1.7.0] — 2026-07-31
 
 Goederendatabase uitgebreid naar 400 transportgoederen.

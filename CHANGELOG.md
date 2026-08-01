@@ -2,6 +2,25 @@
 
 Alle noemenswaardige wijzigingen worden gedocumenteerd volgens [Semantic Versioning](https://semver.org/).
 
+## [1.9.0] — 2026-08-01
+
+EmS-database uitgebreid en vervoersverboden gesignaleerd.
+
+### Toegevoegd
+
+- **EmS-noodschema's uitgebreid van circa 90 naar 305 UN-nummers** in een eigen gegevensbestand (`backend/seed/dg/ems.json`), gegroepeerd per gevarenprofiel: brandbare, giftige, oxiderende en inerte gassen, brandbare vloeistoffen (met onderscheid tussen stoffen die op water drijven en overige), brandbare en zelfontbrandende vaste stoffen, met water reagerende stoffen, oxiderende stoffen en ammoniumnitraat, organische peroxiden, giftige en infectueuze stoffen, radioactieve stoffen, bijtende stoffen (ook de bijtend-én-oxiderende combinaties), milieugevaarlijke stoffen en lithiumbatterijen. Bij elke vermelding wordt het profiel getoond ("Brandbare vloeistof die op water drijft"), zodat zichtbaar is waaróm dat schema geldt.
+- **Vervoersverbod-signalering**: veertien stoffen die ADR Tabel A niet ten vervoer toelaat (o.a. UN 1798 koningswater, UN 2249 symmetrisch dichloordimethylether, UN 2186 waterstofchloride sterk gekoeld en enkele n.e.g.-vermeldingen met onverenigbare gevaren) worden herkend. De gevaarlijke-stoffenstap toont een rode blokkade en de export van vervoersdocumenten wordt geweigerd; vervoer is alleen mogelijk onder ontheffing van de bevoegde autoriteit.
+- Toelichting bij voorwerpen die gevaarlijke goederen bevatten (UN 3537 t/m 3548) over de etikettering volgens 5.2.2.1.12.
+
+### Opgelost
+
+- **Duitse brondata lekte in formulieren.** Voor verboden stoffen vult ADR Tabel A élke kolom met de tekst "BEFÖRDERUNG VERBOTEN". Die belandde in de verpakkingsgroep, de gelimiteerde hoeveelheid en zelfs in de omschrijvingsregel van het vervoersdocument (`UN 1798, NITROHYDROCHLORIC ACID, 8, BEFÖRDERUNG VERBOTEN`). Alle kolommen worden nu gefilterd; het verbod wordt uitsluitend als waarschuwing getoond.
+- De EmS-terugval hield geen rekening met de divisie: gassen kregen op basis van klasse "2" geen indicatie. Nu wordt eerst de divisie uit de etikettenkolom gebruikt (2.1 → F-D/S-U, 2.2 → F-C/S-V, 2.3 → F-C/S-U), waardoor vrijwel elk UN-nummer een bruikbaar noodschema krijgt.
+
+### Bekende beperking
+
+De EmS-gegevens zijn een gecureerde compilatie: negen vermeldingen zijn tijdens het samenstellen tegen openbare bronnen gecontroleerd en als zodanig gemarkeerd, de overige volgen het gevarenprofiel van de stof. Voor UN-nummers zonder exacte vermelding toont de app een indicatieve klassestandaard die herkenbaar als suggestie wordt gepresenteerd en niet automatisch wordt ingevuld. De actuele IMDG-uitgave blijft leidend.
+
 ## [1.8.0] — 2026-08-01
 
 Gevaarlijke stoffen: automatische invulling per modaliteit en zeevaartsegregatie.

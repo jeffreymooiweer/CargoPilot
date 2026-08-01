@@ -13,80 +13,36 @@ en de IATA DGR blijft altijd leidend. Bronnen:
 """
 from __future__ import annotations
 
+import json
 import re
+import threading
+from pathlib import Path
 from typing import Any
 
-# EmS (brand, lekkage) per UN-nummer — gecureerde selectie uit de IMDG DGL.
-EMS_BY_UN: dict[str, tuple[str, str]] = {
-    # Klasse 3 — brandbare vloeistoffen
-    "1090": ("F-E", "S-D"),  # aceton
-    "1114": ("F-E", "S-D"),  # benzeen
-    "1133": ("F-E", "S-D"),  # lijmen/kleefstoffen
-    "1170": ("F-E", "S-D"),  # ethanol
-    "1173": ("F-E", "S-D"),  # ethylacetaat
-    "1193": ("F-E", "S-D"),  # MEK
-    "1202": ("F-E", "S-E"),  # dieselolie/gasolie
-    "1203": ("F-E", "S-E"),  # benzine
-    "1219": ("F-E", "S-D"),  # isopropanol
-    "1230": ("F-E", "S-D"),  # methanol
-    "1263": ("F-E", "S-E"),  # verf
-    "1268": ("F-E", "S-E"),  # aardoliedestillaten n.e.g.
-    "1294": ("F-E", "S-D"),  # tolueen
-    "1307": ("F-E", "S-D"),  # xylenen
-    "1863": ("F-E", "S-E"),  # vliegtuigturbinebrandstof
-    "1866": ("F-E", "S-E"),  # harsoplossing
-    "1993": ("F-E", "S-E"),  # brandbare vloeistof n.e.g.
-    "2055": ("F-E", "S-D"),  # styreen-monomeer
-    # Klasse 2 — gassen
-    "1002": ("F-C", "S-V"),  # perslucht
-    "1005": ("F-C", "S-U"),  # ammoniak, watervrij
-    "1006": ("F-C", "S-V"),  # argon
-    "1011": ("F-D", "S-U"),  # butaan
-    "1013": ("F-C", "S-V"),  # kooldioxide
-    "1017": ("F-C", "S-U"),  # chloor
-    "1046": ("F-C", "S-V"),  # helium
-    "1049": ("F-D", "S-U"),  # waterstof, samengeperst
-    "1066": ("F-C", "S-V"),  # stikstof, samengeperst
-    "1072": ("F-C", "S-W"),  # zuurstof, samengeperst
-    "1073": ("F-C", "S-W"),  # zuurstof, sterk gekoeld
-    "1950": ("F-D", "S-U"),  # spuitbussen
-    "1965": ("F-D", "S-U"),  # LPG / koolwaterstofgasmengsel
-    "1972": ("F-D", "S-U"),  # LNG / methaan, sterk gekoeld
-    "1978": ("F-D", "S-U"),  # propaan
-    # Klasse 4 en 5
-    "1350": ("F-A", "S-G"),  # zwavel
-    "1381": ("F-A", "S-J"),  # fosfor, wit/geel
-    "1428": ("F-G", "S-N"),  # natrium
-    "1479": ("F-A", "S-Q"),  # oxiderende vaste stof n.e.g.
-    "1942": ("F-H", "S-Q"),  # ammoniumnitraat
-    "2014": ("F-H", "S-Q"),  # waterstofperoxide 20-60%
-    "2067": ("F-H", "S-Q"),  # ammoniumnitraathoudende meststof
-    "3139": ("F-A", "S-Q"),  # oxiderende vloeistof n.e.g.
-    # Klasse 6.1
-    "1547": ("F-A", "S-A"),  # aniline
-    "1593": ("F-A", "S-A"),  # dichloormethaan
-    "1888": ("F-A", "S-A"),  # chloroform
-    "2810": ("F-A", "S-A"),  # giftige organische vloeistof n.e.g.
-    "3288": ("F-A", "S-A"),  # giftige anorganische vaste stof n.e.g.
-    # Klasse 8
-    "1789": ("F-A", "S-B"),  # zoutzuur
-    "1805": ("F-A", "S-B"),  # fosforzuuroplossing
-    "1824": ("F-A", "S-B"),  # natriumhydroxide-oplossing
-    "1830": ("F-A", "S-B"),  # zwavelzuur >51%
-    "2031": ("F-A", "S-Q"),  # salpeterzuur
-    "2209": ("F-A", "S-B"),  # formaldehyde-oplossing
-    "2794": ("F-A", "S-B"),  # accu's, nat, met zuur
-    "2795": ("F-A", "S-B"),  # accu's, nat, met alkali
-    "2796": ("F-A", "S-B"),  # zwavelzuur <=51%
-    "3264": ("F-A", "S-B"),  # bijtende zure anorganische vloeistof n.e.g.
-    # Klasse 9
-    "3077": ("F-A", "S-F"),  # milieugevaarlijke vaste stof n.e.g.
-    "3082": ("F-A", "S-F"),  # milieugevaarlijke vloeistof n.e.g.
-    "3090": ("F-A", "S-I"),  # lithium-metaalbatterijen
-    "3091": ("F-A", "S-I"),  # lithium-metaalbatterijen in/met apparatuur
-    "3480": ("F-A", "S-I"),  # lithium-ionbatterijen
-    "3481": ("F-A", "S-I"),  # lithium-ionbatterijen in/met apparatuur
-}
+# EmS (brand, lekkage) per UN-nummer — geladen uit backend/seed/dg/ems.json.
+_SEED_EMS = Path(__file__).resolve().parents[3] / "seed" / "dg" / "ems.json"
+_ems_lock = threading.Lock()
+_ems_cache: dict[str, Any] | None = None
+
+
+def _load_ems() -> dict[str, Any]:
+    global _ems_cache
+    with _ems_lock:
+        if _ems_cache is None:
+            _ems_cache = json.loads(_SEED_EMS.read_text(encoding="utf-8"))
+    return _ems_cache
+
+
+def lookup_ems(un_number: str) -> dict[str, Any] | None:
+    """EmS-vermelding voor een UN-nummer, of None wanneer die ontbreekt."""
+    digits = "".join(ch for ch in str(un_number or "") if ch.isdigit()).zfill(4)
+    return _load_ems()["entries"].get(digits)
+
+
+def ems_profile_label(profile: str, language: str = "nl") -> str:
+    labels = _load_ems()["profiles"].get(profile) or {}
+    return labels.get(language) or labels.get("nl") or ""
+
 
 # Indicatieve EmS-standaard per klasse (IMDG DGL volgt in de meeste gevallen
 # deze patronen; afwijkingen per stof komen voor — daarom "indicatief").
@@ -199,6 +155,17 @@ def _norm_un(un: str) -> str:
     return "".join(ch for ch in str(un or "") if ch.isdigit()).zfill(4)
 
 
+# ADR Tabel A vult bij verboden stoffen élke kolom met deze tekst; die mag
+# nooit als gegevenswaarde in een formulier of documentregel terechtkomen.
+FORBIDDEN_MARKER = "VERBOTEN"
+
+
+def clean_value(value: Any) -> str:
+    """Lege string voor kolommen die alleen het vervoersverbod herhalen."""
+    text = str(value or "").strip()
+    return "" if FORBIDDEN_MARKER in text.upper() else text
+
+
 def _norm_label(token: str) -> str:
     """'9A' → '9', '2.3' → '2.3'; etiketmodelletters horen niet bij de klasse."""
     token = token.strip().upper()
@@ -216,7 +183,7 @@ def parse_hazards(entry: dict[str, Any]) -> dict[str, Any]:
     """
     hazard_class = str(entry.get("class") or "").strip()
     classification = str(entry.get("classification_code") or "").strip().upper()
-    raw_labels = str(entry.get("labels") or "").strip()
+    raw_labels = clean_value(entry.get("labels"))
     tokens = [_norm_label(t) for t in raw_labels.split("+") if t.strip()]
 
     division = hazard_class
@@ -265,13 +232,40 @@ def enrich_un_entry(entry: dict[str, Any], language: str = "nl") -> dict[str, An
     classification = str(entry.get("classification_code") or "").strip().upper()
     extras: dict[str, Any] = {}
 
+    # Vervoersverbod: ADR Tabel A vermeldt "BEFÖRDERUNG VERBOTEN" in de
+    # etikettenkolom voor stoffen die niet ten vervoer mogen worden aangeboden.
+    labels_raw = str(entry.get("labels") or "")
+    if "VERBOTEN" in labels_raw.upper():
+        extras["transport_forbidden"] = True
+        extras["transport_forbidden_note"] = (
+            "Deze stof mag volgens ADR Tabel A niet ten vervoer worden aangeboden. "
+            "Vervoer is uitsluitend mogelijk onder een ontheffing van de bevoegde autoriteit."
+            if language == "nl"
+            else "Per ADR Table A this substance is not permitted for carriage. "
+            "Carriage is only possible under an exemption from the competent authority."
+        )
+    if "5.2.2.1.12" in labels_raw:
+        extras["label_reference_note"] = (
+            "Etikettering volgens 5.2.2.1.12: voorwerpen die gevaarlijke goederen bevatten "
+            "krijgen de etiketten van elk aanwezig gevaar."
+            if language == "nl"
+            else "Labelling per 5.2.2.1.12: articles containing dangerous goods bear the "
+            "labels for each hazard present."
+        )
+
     # Zeevaart (IMDG): EmS
-    ems = EMS_BY_UN.get(un)
+    ems = lookup_ems(un)
     if ems:
-        extras["ems_code"] = f"{ems[0]}, {ems[1]}"
+        extras["ems_code"] = f"{ems['fire']}, {ems['spillage']}"
         extras["ems_source"] = "imdg_dgl"
+        extras["ems_verified"] = bool(ems.get("verified"))
+        label = ems_profile_label(ems.get("profile", ""), language)
+        if label:
+            extras["ems_profile"] = label
     else:
-        default = EMS_DEFAULT_BY_CLASS.get(hazard_class)
+        # Terugval op de divisie (2.1/2.3) en anders op de hoofdklasse.
+        division = str(entry.get("labels") or "").split("+")[0].strip() or hazard_class
+        default = EMS_DEFAULT_BY_CLASS.get(division) or EMS_DEFAULT_BY_CLASS.get(hazard_class)
         if default:
             extras["ems_class_default"] = f"{default[0]}, {default[1]}"
             extras["ems_source"] = "class_default"
@@ -297,11 +291,11 @@ def enrich_un_entry(entry: dict[str, Any], language: str = "nl") -> dict[str, An
         )
 
     # Vrijgestelde hoeveelheden uitleggen
-    eq_text = describe_excepted_quantity(str(entry.get("excepted_quantity") or ""), language)
+    eq_text = describe_excepted_quantity(clean_value(entry.get("excepted_quantity")), language)
     if eq_text:
         extras["excepted_quantity_text"] = eq_text
 
-    lq = str(entry.get("limited_quantity") or "").strip()
+    lq = clean_value(entry.get("limited_quantity"))
     if lq and lq != "0":
         extras["limited_quantity_text"] = (
             f"LQ: max. {lq} per binnenverpakking (ADR/IMDG 3.4)"

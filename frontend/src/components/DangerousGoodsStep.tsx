@@ -367,13 +367,22 @@ function AutoDerivedPanel({ prepared }: { prepared: DgPrepareResult }) {
   const profiles = Object.keys(prepared.document_lines).filter(
     (profile) => prepared.document_lines[profile].length > 0,
   );
+  const blockers = prepared.hints
+    .filter((hint) => hint.transport_forbidden && hint.transport_forbidden_note)
+    .map((hint) => ({ un: hint.un_number, text: hint.transport_forbidden_note as string }));
   const notes = prepared.hints.flatMap((hint) =>
-    [hint.air_note, hint.limited_quantity_text, hint.excepted_quantity_text]
+    [hint.air_note, hint.label_reference_note, hint.limited_quantity_text, hint.excepted_quantity_text]
       .filter((text): text is string => Boolean(text))
       .map((text) => ({ un: hint.un_number, text, forbidden: Boolean(hint.air_forbidden) })),
   );
 
-  if (profiles.length === 0 && notes.length === 0 && prepared.requirements.length === 0) return null;
+  if (
+    profiles.length === 0 &&
+    notes.length === 0 &&
+    blockers.length === 0 &&
+    prepared.requirements.length === 0
+  )
+    return null;
 
   return (
     <div className={`${panelClass} p-5 space-y-4`}>
@@ -381,6 +390,19 @@ function AutoDerivedPanel({ prepared }: { prepared: DgPrepareResult }) {
         <h3 className="font-semibold text-slate-900 dark:text-slate-100">{t("dgauto.title")}</h3>
         <p className="text-sm text-slate-500 dark:text-slate-400">{t("dgauto.intro")}</p>
       </div>
+
+      {blockers.map((blocker, i) => (
+        <div
+          key={i}
+          className="rounded-lg border border-red-300 bg-red-50 px-3 py-2 text-sm text-red-800 dark:border-red-900/60 dark:bg-red-900/20 dark:text-red-200"
+        >
+          <p className="font-semibold">
+            {t("dgauto.forbidden")}
+            {blocker.un && <span className="ml-1 font-mono">UN {blocker.un}</span>}
+          </p>
+          <p className="mt-0.5">{blocker.text}</p>
+        </div>
+      ))}
 
       {profiles.map((profile) => (
         <div key={profile}>

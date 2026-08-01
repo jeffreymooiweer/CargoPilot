@@ -114,7 +114,11 @@ def derive_product(product: dict[str, Any], language: str = "nl") -> dict[str, A
         for key, value in derived.items()
         if value not in (None, "") and not str(product.get(key) or "").strip()
     }
-    hints = {key: value for key, value in extras.items() if key.endswith(("_text", "_note", "_default", "_source"))}
+    hints = {
+        key: value
+        for key, value in extras.items()
+        if key.endswith(("_text", "_note", "_default", "_source", "_description", "_variants", "_options"))
+    }
     if extras.get("air_forbidden"):
         hints["air_forbidden"] = True
     if extras.get("transport_forbidden"):

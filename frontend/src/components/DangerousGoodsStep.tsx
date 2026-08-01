@@ -371,7 +371,23 @@ function AutoDerivedPanel({ prepared }: { prepared: DgPrepareResult }) {
     .filter((hint) => hint.transport_forbidden && hint.transport_forbidden_note)
     .map((hint) => ({ un: hint.un_number, text: hint.transport_forbidden_note as string }));
   const notes = prepared.hints.flatMap((hint) =>
-    [hint.air_note, hint.label_reference_note, hint.limited_quantity_text, hint.excepted_quantity_text]
+    [
+      hint.ems_description && `EmS — ${hint.ems_description}`,
+      hint.ems_variants?.length &&
+        t("dgauto.emsByVariant", {
+          options: hint.ems_variants.map((v) => `${v.label} → ${v.code}`).join(", "),
+        }),
+      hint.ems_packing_group_options &&
+        t("dgauto.emsByPackingGroup", {
+          options: Object.entries(hint.ems_packing_group_options)
+            .map(([pg, code]) => `${pg} → ${code}`)
+            .join(", "),
+        }),
+      hint.air_note,
+      hint.label_reference_note,
+      hint.limited_quantity_text,
+      hint.excepted_quantity_text,
+    ]
       .filter((text): text is string => Boolean(text))
       .map((text) => ({ un: hint.un_number, text, forbidden: Boolean(hint.air_forbidden) })),
   );

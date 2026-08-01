@@ -227,6 +227,9 @@ export interface DgPrepareHint {
   un_number?: string;
   ems_source?: string;
   ems_class_default?: string;
+  ems_description?: string;
+  ems_variants?: { label: string; code: string; description: string }[];
+  ems_packing_group_options?: Record<string, string>;
   excepted_quantity_text?: string;
   limited_quantity_text?: string;
   air_note?: string;

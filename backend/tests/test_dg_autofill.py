@@ -12,6 +12,7 @@ from app.services.dg.compliance import (
 )
 from app.services.dg.database import is_transport_forbidden
 from app.services.dg.enrichment import (
+    describe_ems,
     describe_excepted_quantity,
     enrich_un_entry,
     lookup_ems,
@@ -49,7 +50,8 @@ def test_parse_hazards_resolves_division_for_gases_and_explosives():
 def test_enrichment_provides_ems_and_air_rules():
     petrol = enrich_un_entry({"un": "1203", "class": "3", "excepted_quantity": "E2", "limited_quantity": "1 L"})
     assert petrol["ems_code"] == "F-E, S-E"
-    assert petrol["ems_source"] == "imdg_dgl"
+    assert petrol["ems_source"] == "ems_guide"
+    assert "drijven" in petrol["ems_description"]
     assert "30 g/ml" in petrol["excepted_quantity_text"]
 
     lithium = enrich_un_entry({"un": "3480", "class": "9", "excepted_quantity": "E0"})
@@ -60,30 +62,29 @@ def test_enrichment_provides_ems_and_air_rules():
     assert toxic_gas["air_forbidden"] is True
 
 
-def test_ems_seed_covers_all_classes_and_is_internally_consistent():
-    """Elke vermelding heeft een geldig brand- en lekkageschema en een bekend profiel."""
+def test_ems_seed_matches_the_official_guide_structure():
+    """Index van MSC.1/Circ.1588/Rev.3: 10 brand- en 26 lekkageschema's."""
     seed = json.loads(
         (Path(__file__).resolve().parents[1] / "seed" / "dg" / "ems.json").read_text(encoding="utf-8")
     )
-    entries, profiles = seed["entries"], seed["profiles"]
-    assert len(entries) >= 300
+    fire, spill, entries = seed["fire_schedules"], seed["spillage_schedules"], seed["entries"]
+    assert sorted(fire) == [f"F-{c}" for c in "ABCDEFGHIJ"]
+    assert sorted(spill) == [f"S-{c}" for c in "ABCDEFGHIJKLMNOPQRSTUVWXYZ"]
+    assert len(entries) >= 2300
 
     for un, item in entries.items():
         assert re.fullmatch(r"\d{4}", un), un
-        assert re.fullmatch(r"F-[A-J]", item["fire"]), f"{un}: {item['fire']}"
-        assert re.fullmatch(r"S-[A-Z]", item["spillage"]), f"{un}: {item['spillage']}"
-        assert item["profile"] in profiles, f"{un}: onbekend profiel {item['profile']}"
-
-    # Binnen één profiel moet de toewijzing consistent zijn.
-    per_profile: dict[str, set[tuple[str, str]]] = {}
-    for item in entries.values():
-        per_profile.setdefault(item["profile"], set()).add((item["fire"], item["spillage"]))
-    for profile, combos in per_profile.items():
-        assert len(combos) == 1, f"{profile} heeft meerdere schema's: {combos}"
+        options = [item] if "fire" in item else (
+            item.get("variants") or list(item.get("by_packing_group", {}).values())
+        )
+        assert options, f"{un}: geen schema"
+        for option in options:
+            assert option["fire"] in fire, f"{un}: {option['fire']}"
+            assert option["spillage"] in spill, f"{un}: {option['spillage']}"
 
 
-def test_ems_lookup_matches_publicly_verified_values():
-    """Steekproef die tijdens het samenstellen tegen openbare bronnen is gecheckt."""
+def test_ems_lookup_matches_the_official_index():
+    """Steekproef, letterlijk uit de index van de EmS Guide."""
     expected = {
         "1203": ("F-E", "S-E"),  # benzine
         "1170": ("F-E", "S-D"),  # ethanol
@@ -99,7 +100,28 @@ def test_ems_lookup_matches_publicly_verified_values():
         item = lookup_ems(un)
         assert item is not None, f"UN {un} ontbreekt"
         assert (item["fire"], item["spillage"]) == (fire, spillage), un
-        assert item["verified"] is True, f"UN {un} niet als bevestigd gemarkeerd"
+
+
+def test_ems_handles_packing_group_and_variant_entries():
+    """Enkele vermeldingen hebben per verpakkingsgroep of variant een eigen schema."""
+    # UN 1826, nitreerzuurmengsel: PG I oxiderend (S-Q), PG II bijtend (S-B).
+    pg1 = lookup_ems("1826", "I")
+    pg2 = lookup_ems("1826", "II")
+    assert (pg1["fire"], pg1["spillage"]) == ("F-A", "S-Q")
+    assert (pg2["fire"], pg2["spillage"]) == ("F-A", "S-B")
+    # Zonder verpakkingsgroep worden de keuzes teruggegeven in plaats van een gok.
+    assert "packing_group_options" in lookup_ems("1826")
+
+    # UN 3166: gas- of vloeistofaangedreven voertuigen hebben elk een eigen schema.
+    variants = enrich_un_entry({"un": "3166", "class": "9"}, "nl")["ems_variants"]
+    codes = {v["label"]: v["code"] for v in variants}
+    assert codes == {"for gases": "F-D, S-U", "for liquids": "F-E, S-E"}
+
+
+def test_ems_schedule_descriptions_are_available_in_both_languages():
+    assert describe_ems("F-B", "nl").startswith("F-B (Explosieve stoffen")
+    assert describe_ems("S-E", "en") == "S-E (Flammable liquids, floating on water)"
+    assert describe_ems("F-E, S-D", "nl").count("·") == 1
 
 
 def test_ems_falls_back_to_division_for_gases():

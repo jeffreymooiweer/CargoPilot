@@ -320,6 +320,8 @@
     "documentLine": "Transport document description ({{profile}})",
     "adrTotals": "Total per transport category (ADR 5.4.1.1.1.1)",
     "notes": "Points of attention for these substances",
-    "requirements": "To be added by you on the document"
+    "requirements": "To be added by you on the document",
+    "forbidden": "Not permitted for carriage —",
+    "emsVerified": "EmS confirmed against a public source"
   }
 }

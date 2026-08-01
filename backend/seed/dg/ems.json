@@ -1,0 +1,1917 @@
+{
+  "_comment": "EmS-noodschema's (IMDG-code kolom 15) per UN-nummer. Feitelijke invulhulp; de actuele IMDG-uitgave blijft leidend. 'verified' markeert vermeldingen die tijdens het samenstellen tegen een openbare bron zijn gecontroleerd.",
+  "profiles": {
+    "flammable_gas": {
+      "nl": "Brandbaar gas",
+      "en": "Flammable gas"
+    },
+    "toxic_flammable_gas": {
+      "nl": "Giftig én brandbaar gas",
+      "en": "Toxic and flammable gas"
+    },
+    "non_flammable_gas": {
+      "nl": "Niet-brandbaar, niet-giftig gas",
+      "en": "Non-flammable, non-toxic gas"
+    },
+    "oxidizing_gas": {
+      "nl": "Oxiderend gas",
+      "en": "Oxidizing gas"
+    },
+    "toxic_gas": {
+      "nl": "Giftig gas",
+      "en": "Toxic gas"
+    },
+    "flammable_liquid_floating": {
+      "nl": "Brandbare vloeistof die op water drijft",
+      "en": "Flammable liquid floating on water"
+    },
+    "flammable_liquid": {
+      "nl": "Brandbare vloeistof",
+      "en": "Flammable liquid"
+    },
+    "flammable_solid": {
+      "nl": "Brandbare vaste stof",
+      "en": "Flammable solid"
+    },
+    "spontaneously_combustible": {
+      "nl": "Voor zelfontbranding vatbaar",
+      "en": "Spontaneously combustible"
+    },
+    "water_reactive": {
+      "nl": "Ontwikkelt brandbaar gas met water",
+      "en": "Emits flammable gas on contact with water"
+    },
+    "oxidizer": {
+      "nl": "Oxiderende stof",
+      "en": "Oxidizing substance"
+    },
+    "ammonium_nitrate": {
+      "nl": "Ammoniumnitraat(houdend)",
+      "en": "Ammonium nitrate (based)"
+    },
+    "organic_peroxide": {
+      "nl": "Organisch peroxide",
+      "en": "Organic peroxide"
+    },
+    "toxic": {
+      "nl": "Giftige stof",
+      "en": "Toxic substance"
+    },
+    "infectious": {
+      "nl": "Infectueuze stof",
+      "en": "Infectious substance"
+    },
+    "radioactive": {
+      "nl": "Radioactieve stof",
+      "en": "Radioactive material"
+    },
+    "corrosive": {
+      "nl": "Bijtende stof",
+      "en": "Corrosive substance"
+    },
+    "corrosive_oxidizing": {
+      "nl": "Bijtend én oxiderend",
+      "en": "Corrosive and oxidizing"
+    },
+    "misc_environmental": {
+      "nl": "Milieugevaarlijk / diverse",
+      "en": "Environmentally hazardous / miscellaneous"
+    },
+    "lithium_battery": {
+      "nl": "Lithiumbatterijen",
+      "en": "Lithium batteries"
+    }
+  },
+  "entries": {
+    "1001": {
+      "fire": "F-D",
+      "spillage": "S-U",
+      "profile": "flammable_gas",
+      "verified": false
+    },
+    "1010": {
+      "fire": "F-D",
+      "spillage": "S-U",
+      "profile": "flammable_gas",
+      "verified": false
+    },
+    "1011": {
+      "fire": "F-D",
+      "spillage": "S-U",
+      "profile": "flammable_gas",
+      "verified": false
+    },
+    "1012": {
+      "fire": "F-D",
+      "spillage": "S-U",
+      "profile": "flammable_gas",
+      "verified": false
+    },
+    "1027": {
+      "fire": "F-D",
+      "spillage": "S-U",
+      "profile": "flammable_gas",
+      "verified": false
+    },
+    "1030": {
+      "fire": "F-D",
+      "spillage": "S-U",
+      "profile": "flammable_gas",
+      "verified": false
+    },
+    "1033": {
+      "fire": "F-D",
+      "spillage": "S-U",
+      "profile": "flammable_gas",
+      "verified": false
+    },
+    "1035": {
+      "fire": "F-D",
+      "spillage": "S-U",
+      "profile": "flammable_gas",
+      "verified": false
+    },
+    "1036": {
+      "fire": "F-D",
+      "spillage": "S-U",
+      "profile": "flammable_gas",
+      "verified": false
+    },
+    "1037": {
+      "fire": "F-D",
+      "spillage": "S-U",
+      "profile": "flammable_gas",
+      "verified": false
+    },
+    "1038": {
+      "fire": "F-D",
+      "spillage": "S-U",
+      "profile": "flammable_gas",
+      "verified": false
+    },
+    "1040": {
+      "fire": "F-D",
+      "spillage": "S-U",
+      "profile": "flammable_gas",
+      "verified": false
+    },
+    "1041": {
+      "fire": "F-D",
+      "spillage": "S-U",
+      "profile": "flammable_gas",
+      "verified": false
+    },
+    "1049": {
+      "fire": "F-D",
+      "spillage": "S-U",
+      "profile": "flammable_gas",
+      "verified": false
+    },
+    "1053": {
+      "fire": "F-D",
+      "spillage": "S-U",
+      "profile": "flammable_gas",
+      "verified": false
+    },
+    "1055": {
+      "fire": "F-D",
+      "spillage": "S-U",
+      "profile": "flammable_gas",
+      "verified": false
+    },
+    "1060": {
+      "fire": "F-D",
+      "spillage": "S-U",
+      "profile": "flammable_gas",
+      "verified": false
+    },
+    "1061": {
+      "fire": "F-D",
+      "spillage": "S-U",
+      "profile": "flammable_gas",
+      "verified": false
+    },
+    "1063": {
+      "fire": "F-D",
+      "spillage": "S-U",
+      "profile": "flammable_gas",
+      "verified": false
+    },
+    "1075": {
+      "fire": "F-D",
+      "spillage": "S-U",
+      "profile": "flammable_gas",
+      "verified": false
+    },
+    "1077": {
+      "fire": "F-D",
+      "spillage": "S-U",
+      "profile": "flammable_gas",
+      "verified": false
+    },
+    "1086": {
+      "fire": "F-D",
+      "spillage": "S-U",
+      "profile": "flammable_gas",
+      "verified": false
+    },
+    "1912": {
+      "fire": "F-D",
+      "spillage": "S-U",
+      "profile": "flammable_gas",
+      "verified": false
+    },
+    "1950": {
+      "fire": "F-D",
+      "spillage": "S-U",
+      "profile": "flammable_gas",
+      "verified": true
+    },
+    "1962": {
+      "fire": "F-D",
+      "spillage": "S-U",
+      "profile": "flammable_gas",
+      "verified": false
+    },
+    "1965": {
+      "fire": "F-D",
+      "spillage": "S-U",
+      "profile": "flammable_gas",
+      "verified": false
+    },
+    "1966": {
+      "fire": "F-D",
+      "spillage": "S-U",
+      "profile": "flammable_gas",
+      "verified": false
+    },
+    "1969": {
+      "fire": "F-D",
+      "spillage": "S-U",
+      "profile": "flammable_gas",
+      "verified": false
+    },
+    "1971": {
+      "fire": "F-D",
+      "spillage": "S-U",
+      "profile": "flammable_gas",
+      "verified": false
+    },
+    "1972": {
+      "fire": "F-D",
+      "spillage": "S-U",
+      "profile": "flammable_gas",
+      "verified": false
+    },
+    "1978": {
+      "fire": "F-D",
+      "spillage": "S-U",
+      "profile": "flammable_gas",
+      "verified": false
+    },
+    "2035": {
+      "fire": "F-D",
+      "spillage": "S-U",
+      "profile": "flammable_gas",
+      "verified": false
+    },
+    "2037": {
+      "fire": "F-D",
+      "spillage": "S-U",
+      "profile": "flammable_gas",
+      "verified": false
+    },
+    "3161": {
+      "fire": "F-D",
+      "spillage": "S-U",
+      "profile": "flammable_gas",
+      "verified": false
+    },
+    "3354": {
+      "fire": "F-D",
+      "spillage": "S-U",
+      "profile": "flammable_gas",
+      "verified": false
+    },
+    "1016": {
+      "fire": "F-D",
+      "spillage": "S-U",
+      "profile": "toxic_flammable_gas",
+      "verified": false
+    },
+    "1023": {
+      "fire": "F-D",
+      "spillage": "S-U",
+      "profile": "toxic_flammable_gas",
+      "verified": false
+    },
+    "1026": {
+      "fire": "F-D",
+      "spillage": "S-U",
+      "profile": "toxic_flammable_gas",
+      "verified": false
+    },
+    "2188": {
+      "fire": "F-D",
+      "spillage": "S-U",
+      "profile": "toxic_flammable_gas",
+      "verified": false
+    },
+    "2199": {
+      "fire": "F-D",
+      "spillage": "S-U",
+      "profile": "toxic_flammable_gas",
+      "verified": false
+    },
+    "3160": {
+      "fire": "F-D",
+      "spillage": "S-U",
+      "profile": "toxic_flammable_gas",
+      "verified": false
+    },
+    "1002": {
+      "fire": "F-C",
+      "spillage": "S-V",
+      "profile": "non_flammable_gas",
+      "verified": false
+    },
+    "1006": {
+      "fire": "F-C",
+      "spillage": "S-V",
+      "profile": "non_flammable_gas",
+      "verified": false
+    },
+    "1013": {
+      "fire": "F-C",
+      "spillage": "S-V",
+      "profile": "non_flammable_gas",
+      "verified": false
+    },
+    "1018": {
+      "fire": "F-C",
+      "spillage": "S-V",
+      "profile": "non_flammable_gas",
+      "verified": false
+    },
+    "1044": {
+      "fire": "F-C",
+      "spillage": "S-V",
+      "profile": "non_flammable_gas",
+      "verified": false
+    },
+    "1046": {
+      "fire": "F-C",
+      "spillage": "S-V",
+      "profile": "non_flammable_gas",
+      "verified": false
+    },
+    "1056": {
+      "fire": "F-C",
+      "spillage": "S-V",
+      "profile": "non_flammable_gas",
+      "verified": false
+    },
+    "1058": {
+      "fire": "F-C",
+      "spillage": "S-V",
+      "profile": "non_flammable_gas",
+      "verified": false
+    },
+    "1065": {
+      "fire": "F-C",
+      "spillage": "S-V",
+      "profile": "non_flammable_gas",
+      "verified": false
+    },
+    "1066": {
+      "fire": "F-C",
+      "spillage": "S-V",
+      "profile": "non_flammable_gas",
+      "verified": false
+    },
+    "1078": {
+      "fire": "F-C",
+      "spillage": "S-V",
+      "profile": "non_flammable_gas",
+      "verified": false
+    },
+    "1080": {
+      "fire": "F-C",
+      "spillage": "S-V",
+      "profile": "non_flammable_gas",
+      "verified": false
+    },
+    "1913": {
+      "fire": "F-C",
+      "spillage": "S-V",
+      "profile": "non_flammable_gas",
+      "verified": false
+    },
+    "1951": {
+      "fire": "F-C",
+      "spillage": "S-V",
+      "profile": "non_flammable_gas",
+      "verified": false
+    },
+    "1956": {
+      "fire": "F-C",
+      "spillage": "S-V",
+      "profile": "non_flammable_gas",
+      "verified": false
+    },
+    "1963": {
+      "fire": "F-C",
+      "spillage": "S-V",
+      "profile": "non_flammable_gas",
+      "verified": false
+    },
+    "1970": {
+      "fire": "F-C",
+      "spillage": "S-V",
+      "profile": "non_flammable_gas",
+      "verified": false
+    },
+    "1977": {
+      "fire": "F-C",
+      "spillage": "S-V",
+      "profile": "non_flammable_gas",
+      "verified": false
+    },
+    "2187": {
+      "fire": "F-C",
+      "spillage": "S-V",
+      "profile": "non_flammable_gas",
+      "verified": false
+    },
+    "2857": {
+      "fire": "F-C",
+      "spillage": "S-V",
+      "profile": "non_flammable_gas",
+      "verified": false
+    },
+    "3158": {
+      "fire": "F-C",
+      "spillage": "S-V",
+      "profile": "non_flammable_gas",
+      "verified": false
+    },
+    "3159": {
+      "fire": "F-C",
+      "spillage": "S-V",
+      "profile": "non_flammable_gas",
+      "verified": false
+    },
+    "3163": {
+      "fire": "F-C",
+      "spillage": "S-V",
+      "profile": "non_flammable_gas",
+      "verified": false
+    },
+    "1003": {
+      "fire": "F-C",
+      "spillage": "S-W",
+      "profile": "oxidizing_gas",
+      "verified": false
+    },
+    "1014": {
+      "fire": "F-C",
+      "spillage": "S-W",
+      "profile": "oxidizing_gas",
+      "verified": false
+    },
+    "1015": {
+      "fire": "F-C",
+      "spillage": "S-W",
+      "profile": "oxidizing_gas",
+      "verified": false
+    },
+    "1045": {
+      "fire": "F-C",
+      "spillage": "S-W",
+      "profile": "oxidizing_gas",
+      "verified": false
+    },
+    "1067": {
+      "fire": "F-C",
+      "spillage": "S-W",
+      "profile": "oxidizing_gas",
+      "verified": false
+    },
+    "1070": {
+      "fire": "F-C",
+      "spillage": "S-W",
+      "profile": "oxidizing_gas",
+      "verified": false
+    },
+    "1072": {
+      "fire": "F-C",
+      "spillage": "S-W",
+      "profile": "oxidizing_gas",
+      "verified": false
+    },
+    "1073": {
+      "fire": "F-C",
+      "spillage": "S-W",
+      "profile": "oxidizing_gas",
+      "verified": false
+    },
+    "1749": {
+      "fire": "F-C",
+      "spillage": "S-W",
+      "profile": "oxidizing_gas",
+      "verified": false
+    },
+    "2201": {
+      "fire": "F-C",
+      "spillage": "S-W",
+      "profile": "oxidizing_gas",
+      "verified": false
+    },
+    "3156": {
+      "fire": "F-C",
+      "spillage": "S-W",
+      "profile": "oxidizing_gas",
+      "verified": false
+    },
+    "3157": {
+      "fire": "F-C",
+      "spillage": "S-W",
+      "profile": "oxidizing_gas",
+      "verified": false
+    },
+    "1005": {
+      "fire": "F-C",
+      "spillage": "S-U",
+      "profile": "toxic_gas",
+      "verified": false
+    },
+    "1008": {
+      "fire": "F-C",
+      "spillage": "S-U",
+      "profile": "toxic_gas",
+      "verified": false
+    },
+    "1017": {
+      "fire": "F-C",
+      "spillage": "S-U",
+      "profile": "toxic_gas",
+      "verified": false
+    },
+    "1062": {
+      "fire": "F-C",
+      "spillage": "S-U",
+      "profile": "toxic_gas",
+      "verified": false
+    },
+    "1076": {
+      "fire": "F-C",
+      "spillage": "S-U",
+      "profile": "toxic_gas",
+      "verified": false
+    },
+    "1079": {
+      "fire": "F-C",
+      "spillage": "S-U",
+      "profile": "toxic_gas",
+      "verified": false
+    },
+    "1589": {
+      "fire": "F-C",
+      "spillage": "S-U",
+      "profile": "toxic_gas",
+      "verified": false
+    },
+    "1741": {
+      "fire": "F-C",
+      "spillage": "S-U",
+      "profile": "toxic_gas",
+      "verified": false
+    },
+    "1955": {
+      "fire": "F-C",
+      "spillage": "S-U",
+      "profile": "toxic_gas",
+      "verified": false
+    },
+    "3162": {
+      "fire": "F-C",
+      "spillage": "S-U",
+      "profile": "toxic_gas",
+      "verified": false
+    },
+    "1091": {
+      "fire": "F-E",
+      "spillage": "S-E",
+      "profile": "flammable_liquid_floating",
+      "verified": false
+    },
+    "1136": {
+      "fire": "F-E",
+      "spillage": "S-E",
+      "profile": "flammable_liquid_floating",
+      "verified": false
+    },
+    "1202": {
+      "fire": "F-E",
+      "spillage": "S-E",
+      "profile": "flammable_liquid_floating",
+      "verified": false
+    },
+    "1203": {
+      "fire": "F-E",
+      "spillage": "S-E",
+      "profile": "flammable_liquid_floating",
+      "verified": true
+    },
+    "1223": {
+      "fire": "F-E",
+      "spillage": "S-E",
+      "profile": "flammable_liquid_floating",
+      "verified": false
+    },
+    "1267": {
+      "fire": "F-E",
+      "spillage": "S-E",
+      "profile": "flammable_liquid_floating",
+      "verified": false
+    },
+    "1268": {
+      "fire": "F-E",
+      "spillage": "S-E",
+      "profile": "flammable_liquid_floating",
+      "verified": false
+    },
+    "1288": {
+      "fire": "F-E",
+      "spillage": "S-E",
+      "profile": "flammable_liquid_floating",
+      "verified": false
+    },
+    "1300": {
+      "fire": "F-E",
+      "spillage": "S-E",
+      "profile": "flammable_liquid_floating",
+      "verified": false
+    },
+    "1863": {
+      "fire": "F-E",
+      "spillage": "S-E",
+      "profile": "flammable_liquid_floating",
+      "verified": false
+    },
+    "1866": {
+      "fire": "F-E",
+      "spillage": "S-E",
+      "profile": "flammable_liquid_floating",
+      "verified": false
+    },
+    "1993": {
+      "fire": "F-E",
+      "spillage": "S-E",
+      "profile": "flammable_liquid_floating",
+      "verified": true
+    },
+    "1999": {
+      "fire": "F-E",
+      "spillage": "S-E",
+      "profile": "flammable_liquid_floating",
+      "verified": false
+    },
+    "3295": {
+      "fire": "F-E",
+      "spillage": "S-E",
+      "profile": "flammable_liquid_floating",
+      "verified": false
+    },
+    "1090": {
+      "fire": "F-E",
+      "spillage": "S-D",
+      "profile": "flammable_liquid",
+      "verified": false
+    },
+    "1105": {
+      "fire": "F-E",
+      "spillage": "S-D",
+      "profile": "flammable_liquid",
+      "verified": false
+    },
+    "1114": {
+      "fire": "F-E",
+      "spillage": "S-D",
+      "profile": "flammable_liquid",
+      "verified": true
+    },
+    "1120": {
+      "fire": "F-E",
+      "spillage": "S-D",
+      "profile": "flammable_liquid",
+      "verified": false
+    },
+    "1123": {
+      "fire": "F-E",
+      "spillage": "S-D",
+      "profile": "flammable_liquid",
+      "verified": false
+    },
+    "1133": {
+      "fire": "F-E",
+      "spillage": "S-D",
+      "profile": "flammable_liquid",
+      "verified": false
+    },
+    "1148": {
+      "fire": "F-E",
+      "spillage": "S-D",
+      "profile": "flammable_liquid",
+      "verified": false
+    },
+    "1170": {
+      "fire": "F-E",
+      "spillage": "S-D",
+      "profile": "flammable_liquid",
+      "verified": true
+    },
+    "1173": {
+      "fire": "F-E",
+      "spillage": "S-D",
+      "profile": "flammable_liquid",
+      "verified": false
+    },
+    "1193": {
+      "fire": "F-E",
+      "spillage": "S-D",
+      "profile": "flammable_liquid",
+      "verified": false
+    },
+    "1208": {
+      "fire": "F-E",
+      "spillage": "S-D",
+      "profile": "flammable_liquid",
+      "verified": false
+    },
+    "1210": {
+      "fire": "F-E",
+      "spillage": "S-D",
+      "profile": "flammable_liquid",
+      "verified": false
+    },
+    "1212": {
+      "fire": "F-E",
+      "spillage": "S-D",
+      "profile": "flammable_liquid",
+      "verified": false
+    },
+    "1213": {
+      "fire": "F-E",
+      "spillage": "S-D",
+      "profile": "flammable_liquid",
+      "verified": false
+    },
+    "1219": {
+      "fire": "F-E",
+      "spillage": "S-D",
+      "profile": "flammable_liquid",
+      "verified": true
+    },
+    "1220": {
+      "fire": "F-E",
+      "spillage": "S-D",
+      "profile": "flammable_liquid",
+      "verified": false
+    },
+    "1230": {
+      "fire": "F-E",
+      "spillage": "S-D",
+      "profile": "flammable_liquid",
+      "verified": true
+    },
+    "1231": {
+      "fire": "F-E",
+      "spillage": "S-D",
+      "profile": "flammable_liquid",
+      "verified": false
+    },
+    "1245": {
+      "fire": "F-E",
+      "spillage": "S-D",
+      "profile": "flammable_liquid",
+      "verified": false
+    },
+    "1247": {
+      "fire": "F-E",
+      "spillage": "S-D",
+      "profile": "flammable_liquid",
+      "verified": false
+    },
+    "1274": {
+      "fire": "F-E",
+      "spillage": "S-D",
+      "profile": "flammable_liquid",
+      "verified": false
+    },
+    "1282": {
+      "fire": "F-E",
+      "spillage": "S-D",
+      "profile": "flammable_liquid",
+      "verified": false
+    },
+    "1294": {
+      "fire": "F-E",
+      "spillage": "S-D",
+      "profile": "flammable_liquid",
+      "verified": false
+    },
+    "1307": {
+      "fire": "F-E",
+      "spillage": "S-D",
+      "profile": "flammable_liquid",
+      "verified": false
+    },
+    "1918": {
+      "fire": "F-E",
+      "spillage": "S-D",
+      "profile": "flammable_liquid",
+      "verified": false
+    },
+    "1919": {
+      "fire": "F-E",
+      "spillage": "S-D",
+      "profile": "flammable_liquid",
+      "verified": false
+    },
+    "2053": {
+      "fire": "F-E",
+      "spillage": "S-D",
+      "profile": "flammable_liquid",
+      "verified": false
+    },
+    "2055": {
+      "fire": "F-E",
+      "spillage": "S-D",
+      "profile": "flammable_liquid",
+      "verified": false
+    },
+    "2265": {
+      "fire": "F-E",
+      "spillage": "S-D",
+      "profile": "flammable_liquid",
+      "verified": false
+    },
+    "2348": {
+      "fire": "F-E",
+      "spillage": "S-D",
+      "profile": "flammable_liquid",
+      "verified": false
+    },
+    "2398": {
+      "fire": "F-E",
+      "spillage": "S-D",
+      "profile": "flammable_liquid",
+      "verified": false
+    },
+    "2618": {
+      "fire": "F-E",
+      "spillage": "S-D",
+      "profile": "flammable_liquid",
+      "verified": false
+    },
+    "3065": {
+      "fire": "F-E",
+      "spillage": "S-D",
+      "profile": "flammable_liquid",
+      "verified": false
+    },
+    "3271": {
+      "fire": "F-E",
+      "spillage": "S-D",
+      "profile": "flammable_liquid",
+      "verified": false
+    },
+    "3272": {
+      "fire": "F-E",
+      "spillage": "S-D",
+      "profile": "flammable_liquid",
+      "verified": false
+    },
+    "1312": {
+      "fire": "F-A",
+      "spillage": "S-G",
+      "profile": "flammable_solid",
+      "verified": false
+    },
+    "1325": {
+      "fire": "F-A",
+      "spillage": "S-G",
+      "profile": "flammable_solid",
+      "verified": false
+    },
+    "1350": {
+      "fire": "F-A",
+      "spillage": "S-G",
+      "profile": "flammable_solid",
+      "verified": false
+    },
+    "1361": {
+      "fire": "F-A",
+      "spillage": "S-G",
+      "profile": "flammable_solid",
+      "verified": false
+    },
+    "1869": {
+      "fire": "F-A",
+      "spillage": "S-G",
+      "profile": "flammable_solid",
+      "verified": false
+    },
+    "2213": {
+      "fire": "F-A",
+      "spillage": "S-G",
+      "profile": "flammable_solid",
+      "verified": false
+    },
+    "2687": {
+      "fire": "F-A",
+      "spillage": "S-G",
+      "profile": "flammable_solid",
+      "verified": false
+    },
+    "2878": {
+      "fire": "F-A",
+      "spillage": "S-G",
+      "profile": "flammable_solid",
+      "verified": false
+    },
+    "3175": {
+      "fire": "F-A",
+      "spillage": "S-G",
+      "profile": "flammable_solid",
+      "verified": false
+    },
+    "3178": {
+      "fire": "F-A",
+      "spillage": "S-G",
+      "profile": "flammable_solid",
+      "verified": false
+    },
+    "1362": {
+      "fire": "F-A",
+      "spillage": "S-J",
+      "profile": "spontaneously_combustible",
+      "verified": false
+    },
+    "1373": {
+      "fire": "F-A",
+      "spillage": "S-J",
+      "profile": "spontaneously_combustible",
+      "verified": false
+    },
+    "1378": {
+      "fire": "F-A",
+      "spillage": "S-J",
+      "profile": "spontaneously_combustible",
+      "verified": false
+    },
+    "1381": {
+      "fire": "F-A",
+      "spillage": "S-J",
+      "profile": "spontaneously_combustible",
+      "verified": false
+    },
+    "1856": {
+      "fire": "F-A",
+      "spillage": "S-J",
+      "profile": "spontaneously_combustible",
+      "verified": false
+    },
+    "2004": {
+      "fire": "F-A",
+      "spillage": "S-J",
+      "profile": "spontaneously_combustible",
+      "verified": false
+    },
+    "2008": {
+      "fire": "F-A",
+      "spillage": "S-J",
+      "profile": "spontaneously_combustible",
+      "verified": false
+    },
+    "2793": {
+      "fire": "F-A",
+      "spillage": "S-J",
+      "profile": "spontaneously_combustible",
+      "verified": false
+    },
+    "3088": {
+      "fire": "F-A",
+      "spillage": "S-J",
+      "profile": "spontaneously_combustible",
+      "verified": false
+    },
+    "3190": {
+      "fire": "F-A",
+      "spillage": "S-J",
+      "profile": "spontaneously_combustible",
+      "verified": false
+    },
+    "1389": {
+      "fire": "F-G",
+      "spillage": "S-N",
+      "profile": "water_reactive",
+      "verified": false
+    },
+    "1391": {
+      "fire": "F-G",
+      "spillage": "S-N",
+      "profile": "water_reactive",
+      "verified": false
+    },
+    "1398": {
+      "fire": "F-G",
+      "spillage": "S-N",
+      "profile": "water_reactive",
+      "verified": false
+    },
+    "1401": {
+      "fire": "F-G",
+      "spillage": "S-N",
+      "profile": "water_reactive",
+      "verified": false
+    },
+    "1402": {
+      "fire": "F-G",
+      "spillage": "S-N",
+      "profile": "water_reactive",
+      "verified": false
+    },
+    "1403": {
+      "fire": "F-G",
+      "spillage": "S-N",
+      "profile": "water_reactive",
+      "verified": false
+    },
+    "1405": {
+      "fire": "F-G",
+      "spillage": "S-N",
+      "profile": "water_reactive",
+      "verified": false
+    },
+    "1418": {
+      "fire": "F-G",
+      "spillage": "S-N",
+      "profile": "water_reactive",
+      "verified": false
+    },
+    "1428": {
+      "fire": "F-G",
+      "spillage": "S-N",
+      "profile": "water_reactive",
+      "verified": false
+    },
+    "1436": {
+      "fire": "F-G",
+      "spillage": "S-N",
+      "profile": "water_reactive",
+      "verified": false
+    },
+    "2813": {
+      "fire": "F-G",
+      "spillage": "S-N",
+      "profile": "water_reactive",
+      "verified": false
+    },
+    "3170": {
+      "fire": "F-G",
+      "spillage": "S-N",
+      "profile": "water_reactive",
+      "verified": false
+    },
+    "1438": {
+      "fire": "F-A",
+      "spillage": "S-Q",
+      "profile": "oxidizer",
+      "verified": false
+    },
+    "1442": {
+      "fire": "F-A",
+      "spillage": "S-Q",
+      "profile": "oxidizer",
+      "verified": false
+    },
+    "1479": {
+      "fire": "F-A",
+      "spillage": "S-Q",
+      "profile": "oxidizer",
+      "verified": false
+    },
+    "1486": {
+      "fire": "F-A",
+      "spillage": "S-Q",
+      "profile": "oxidizer",
+      "verified": false
+    },
+    "1490": {
+      "fire": "F-A",
+      "spillage": "S-Q",
+      "profile": "oxidizer",
+      "verified": false
+    },
+    "1495": {
+      "fire": "F-A",
+      "spillage": "S-Q",
+      "profile": "oxidizer",
+      "verified": false
+    },
+    "1498": {
+      "fire": "F-A",
+      "spillage": "S-Q",
+      "profile": "oxidizer",
+      "verified": false
+    },
+    "1500": {
+      "fire": "F-A",
+      "spillage": "S-Q",
+      "profile": "oxidizer",
+      "verified": false
+    },
+    "1511": {
+      "fire": "F-A",
+      "spillage": "S-Q",
+      "profile": "oxidizer",
+      "verified": false
+    },
+    "1748": {
+      "fire": "F-A",
+      "spillage": "S-Q",
+      "profile": "oxidizer",
+      "verified": false
+    },
+    "2014": {
+      "fire": "F-A",
+      "spillage": "S-Q",
+      "profile": "oxidizer",
+      "verified": false
+    },
+    "2067": {
+      "fire": "F-A",
+      "spillage": "S-Q",
+      "profile": "oxidizer",
+      "verified": false
+    },
+    "2426": {
+      "fire": "F-A",
+      "spillage": "S-Q",
+      "profile": "oxidizer",
+      "verified": false
+    },
+    "2465": {
+      "fire": "F-A",
+      "spillage": "S-Q",
+      "profile": "oxidizer",
+      "verified": false
+    },
+    "2468": {
+      "fire": "F-A",
+      "spillage": "S-Q",
+      "profile": "oxidizer",
+      "verified": false
+    },
+    "2880": {
+      "fire": "F-A",
+      "spillage": "S-Q",
+      "profile": "oxidizer",
+      "verified": false
+    },
+    "3139": {
+      "fire": "F-A",
+      "spillage": "S-Q",
+      "profile": "oxidizer",
+      "verified": false
+    },
+    "3149": {
+      "fire": "F-A",
+      "spillage": "S-Q",
+      "profile": "oxidizer",
+      "verified": false
+    },
+    "1942": {
+      "fire": "F-H",
+      "spillage": "S-Q",
+      "profile": "ammonium_nitrate",
+      "verified": false
+    },
+    "2071": {
+      "fire": "F-H",
+      "spillage": "S-Q",
+      "profile": "ammonium_nitrate",
+      "verified": false
+    },
+    "3101": {
+      "fire": "F-J",
+      "spillage": "S-R",
+      "profile": "organic_peroxide",
+      "verified": false
+    },
+    "3102": {
+      "fire": "F-J",
+      "spillage": "S-R",
+      "profile": "organic_peroxide",
+      "verified": false
+    },
+    "3103": {
+      "fire": "F-J",
+      "spillage": "S-R",
+      "profile": "organic_peroxide",
+      "verified": false
+    },
+    "3104": {
+      "fire": "F-J",
+      "spillage": "S-R",
+      "profile": "organic_peroxide",
+      "verified": false
+    },
+    "3105": {
+      "fire": "F-J",
+      "spillage": "S-R",
+      "profile": "organic_peroxide",
+      "verified": false
+    },
+    "3106": {
+      "fire": "F-J",
+      "spillage": "S-R",
+      "profile": "organic_peroxide",
+      "verified": false
+    },
+    "3107": {
+      "fire": "F-J",
+      "spillage": "S-R",
+      "profile": "organic_peroxide",
+      "verified": false
+    },
+    "3108": {
+      "fire": "F-J",
+      "spillage": "S-R",
+      "profile": "organic_peroxide",
+      "verified": false
+    },
+    "3109": {
+      "fire": "F-J",
+      "spillage": "S-R",
+      "profile": "organic_peroxide",
+      "verified": false
+    },
+    "3110": {
+      "fire": "F-J",
+      "spillage": "S-R",
+      "profile": "organic_peroxide",
+      "verified": false
+    },
+    "3111": {
+      "fire": "F-J",
+      "spillage": "S-R",
+      "profile": "organic_peroxide",
+      "verified": false
+    },
+    "3112": {
+      "fire": "F-J",
+      "spillage": "S-R",
+      "profile": "organic_peroxide",
+      "verified": false
+    },
+    "3113": {
+      "fire": "F-J",
+      "spillage": "S-R",
+      "profile": "organic_peroxide",
+      "verified": false
+    },
+    "3114": {
+      "fire": "F-J",
+      "spillage": "S-R",
+      "profile": "organic_peroxide",
+      "verified": false
+    },
+    "3115": {
+      "fire": "F-J",
+      "spillage": "S-R",
+      "profile": "organic_peroxide",
+      "verified": false
+    },
+    "3116": {
+      "fire": "F-J",
+      "spillage": "S-R",
+      "profile": "organic_peroxide",
+      "verified": false
+    },
+    "3117": {
+      "fire": "F-J",
+      "spillage": "S-R",
+      "profile": "organic_peroxide",
+      "verified": false
+    },
+    "3118": {
+      "fire": "F-J",
+      "spillage": "S-R",
+      "profile": "organic_peroxide",
+      "verified": false
+    },
+    "3119": {
+      "fire": "F-J",
+      "spillage": "S-R",
+      "profile": "organic_peroxide",
+      "verified": false
+    },
+    "3120": {
+      "fire": "F-J",
+      "spillage": "S-R",
+      "profile": "organic_peroxide",
+      "verified": false
+    },
+    "1051": {
+      "fire": "F-A",
+      "spillage": "S-A",
+      "profile": "toxic",
+      "verified": false
+    },
+    "1541": {
+      "fire": "F-A",
+      "spillage": "S-A",
+      "profile": "toxic",
+      "verified": false
+    },
+    "1547": {
+      "fire": "F-A",
+      "spillage": "S-A",
+      "profile": "toxic",
+      "verified": false
+    },
+    "1553": {
+      "fire": "F-A",
+      "spillage": "S-A",
+      "profile": "toxic",
+      "verified": false
+    },
+    "1557": {
+      "fire": "F-A",
+      "spillage": "S-A",
+      "profile": "toxic",
+      "verified": false
+    },
+    "1561": {
+      "fire": "F-A",
+      "spillage": "S-A",
+      "profile": "toxic",
+      "verified": false
+    },
+    "1575": {
+      "fire": "F-A",
+      "spillage": "S-A",
+      "profile": "toxic",
+      "verified": false
+    },
+    "1578": {
+      "fire": "F-A",
+      "spillage": "S-A",
+      "profile": "toxic",
+      "verified": false
+    },
+    "1583": {
+      "fire": "F-A",
+      "spillage": "S-A",
+      "profile": "toxic",
+      "verified": false
+    },
+    "1591": {
+      "fire": "F-A",
+      "spillage": "S-A",
+      "profile": "toxic",
+      "verified": false
+    },
+    "1593": {
+      "fire": "F-A",
+      "spillage": "S-A",
+      "profile": "toxic",
+      "verified": false
+    },
+    "1596": {
+      "fire": "F-A",
+      "spillage": "S-A",
+      "profile": "toxic",
+      "verified": false
+    },
+    "1650": {
+      "fire": "F-A",
+      "spillage": "S-A",
+      "profile": "toxic",
+      "verified": false
+    },
+    "1654": {
+      "fire": "F-A",
+      "spillage": "S-A",
+      "profile": "toxic",
+      "verified": false
+    },
+    "1662": {
+      "fire": "F-A",
+      "spillage": "S-A",
+      "profile": "toxic",
+      "verified": false
+    },
+    "1671": {
+      "fire": "F-A",
+      "spillage": "S-A",
+      "profile": "toxic",
+      "verified": false
+    },
+    "1680": {
+      "fire": "F-A",
+      "spillage": "S-A",
+      "profile": "toxic",
+      "verified": false
+    },
+    "1689": {
+      "fire": "F-A",
+      "spillage": "S-A",
+      "profile": "toxic",
+      "verified": false
+    },
+    "1710": {
+      "fire": "F-A",
+      "spillage": "S-A",
+      "profile": "toxic",
+      "verified": false
+    },
+    "1888": {
+      "fire": "F-A",
+      "spillage": "S-A",
+      "profile": "toxic",
+      "verified": false
+    },
+    "1897": {
+      "fire": "F-A",
+      "spillage": "S-A",
+      "profile": "toxic",
+      "verified": false
+    },
+    "2076": {
+      "fire": "F-A",
+      "spillage": "S-A",
+      "profile": "toxic",
+      "verified": false
+    },
+    "2078": {
+      "fire": "F-A",
+      "spillage": "S-A",
+      "profile": "toxic",
+      "verified": false
+    },
+    "2312": {
+      "fire": "F-A",
+      "spillage": "S-A",
+      "profile": "toxic",
+      "verified": false
+    },
+    "2588": {
+      "fire": "F-A",
+      "spillage": "S-A",
+      "profile": "toxic",
+      "verified": false
+    },
+    "2810": {
+      "fire": "F-A",
+      "spillage": "S-A",
+      "profile": "toxic",
+      "verified": false
+    },
+    "2811": {
+      "fire": "F-A",
+      "spillage": "S-A",
+      "profile": "toxic",
+      "verified": false
+    },
+    "3140": {
+      "fire": "F-A",
+      "spillage": "S-A",
+      "profile": "toxic",
+      "verified": false
+    },
+    "3143": {
+      "fire": "F-A",
+      "spillage": "S-A",
+      "profile": "toxic",
+      "verified": false
+    },
+    "3287": {
+      "fire": "F-A",
+      "spillage": "S-A",
+      "profile": "toxic",
+      "verified": false
+    },
+    "3288": {
+      "fire": "F-A",
+      "spillage": "S-A",
+      "profile": "toxic",
+      "verified": false
+    },
+    "2814": {
+      "fire": "F-A",
+      "spillage": "S-T",
+      "profile": "infectious",
+      "verified": false
+    },
+    "2900": {
+      "fire": "F-A",
+      "spillage": "S-T",
+      "profile": "infectious",
+      "verified": false
+    },
+    "3291": {
+      "fire": "F-A",
+      "spillage": "S-T",
+      "profile": "infectious",
+      "verified": false
+    },
+    "3373": {
+      "fire": "F-A",
+      "spillage": "S-T",
+      "profile": "infectious",
+      "verified": false
+    },
+    "2908": {
+      "fire": "F-I",
+      "spillage": "S-S",
+      "profile": "radioactive",
+      "verified": false
+    },
+    "2909": {
+      "fire": "F-I",
+      "spillage": "S-S",
+      "profile": "radioactive",
+      "verified": false
+    },
+    "2910": {
+      "fire": "F-I",
+      "spillage": "S-S",
+      "profile": "radioactive",
+      "verified": false
+    },
+    "2911": {
+      "fire": "F-I",
+      "spillage": "S-S",
+      "profile": "radioactive",
+      "verified": false
+    },
+    "2912": {
+      "fire": "F-I",
+      "spillage": "S-S",
+      "profile": "radioactive",
+      "verified": false
+    },
+    "2913": {
+      "fire": "F-I",
+      "spillage": "S-S",
+      "profile": "radioactive",
+      "verified": false
+    },
+    "2915": {
+      "fire": "F-I",
+      "spillage": "S-S",
+      "profile": "radioactive",
+      "verified": false
+    },
+    "2916": {
+      "fire": "F-I",
+      "spillage": "S-S",
+      "profile": "radioactive",
+      "verified": false
+    },
+    "2917": {
+      "fire": "F-I",
+      "spillage": "S-S",
+      "profile": "radioactive",
+      "verified": false
+    },
+    "2919": {
+      "fire": "F-I",
+      "spillage": "S-S",
+      "profile": "radioactive",
+      "verified": false
+    },
+    "3321": {
+      "fire": "F-I",
+      "spillage": "S-S",
+      "profile": "radioactive",
+      "verified": false
+    },
+    "3322": {
+      "fire": "F-I",
+      "spillage": "S-S",
+      "profile": "radioactive",
+      "verified": false
+    },
+    "3332": {
+      "fire": "F-I",
+      "spillage": "S-S",
+      "profile": "radioactive",
+      "verified": false
+    },
+    "1719": {
+      "fire": "F-A",
+      "spillage": "S-B",
+      "profile": "corrosive",
+      "verified": false
+    },
+    "1725": {
+      "fire": "F-A",
+      "spillage": "S-B",
+      "profile": "corrosive",
+      "verified": false
+    },
+    "1740": {
+      "fire": "F-A",
+      "spillage": "S-B",
+      "profile": "corrosive",
+      "verified": false
+    },
+    "1755": {
+      "fire": "F-A",
+      "spillage": "S-B",
+      "profile": "corrosive",
+      "verified": false
+    },
+    "1760": {
+      "fire": "F-A",
+      "spillage": "S-B",
+      "profile": "corrosive",
+      "verified": false
+    },
+    "1764": {
+      "fire": "F-A",
+      "spillage": "S-B",
+      "profile": "corrosive",
+      "verified": false
+    },
+    "1775": {
+      "fire": "F-A",
+      "spillage": "S-B",
+      "profile": "corrosive",
+      "verified": false
+    },
+    "1778": {
+      "fire": "F-A",
+      "spillage": "S-B",
+      "profile": "corrosive",
+      "verified": false
+    },
+    "1789": {
+      "fire": "F-A",
+      "spillage": "S-B",
+      "profile": "corrosive",
+      "verified": true
+    },
+    "1791": {
+      "fire": "F-A",
+      "spillage": "S-B",
+      "profile": "corrosive",
+      "verified": false
+    },
+    "1805": {
+      "fire": "F-A",
+      "spillage": "S-B",
+      "profile": "corrosive",
+      "verified": false
+    },
+    "1814": {
+      "fire": "F-A",
+      "spillage": "S-B",
+      "profile": "corrosive",
+      "verified": false
+    },
+    "1819": {
+      "fire": "F-A",
+      "spillage": "S-B",
+      "profile": "corrosive",
+      "verified": false
+    },
+    "1823": {
+      "fire": "F-A",
+      "spillage": "S-B",
+      "profile": "corrosive",
+      "verified": false
+    },
+    "1824": {
+      "fire": "F-A",
+      "spillage": "S-B",
+      "profile": "corrosive",
+      "verified": false
+    },
+    "1830": {
+      "fire": "F-A",
+      "spillage": "S-B",
+      "profile": "corrosive",
+      "verified": false
+    },
+    "1832": {
+      "fire": "F-A",
+      "spillage": "S-B",
+      "profile": "corrosive",
+      "verified": false
+    },
+    "1840": {
+      "fire": "F-A",
+      "spillage": "S-B",
+      "profile": "corrosive",
+      "verified": false
+    },
+    "1908": {
+      "fire": "F-A",
+      "spillage": "S-B",
+      "profile": "corrosive",
+      "verified": false
+    },
+    "2209": {
+      "fire": "F-A",
+      "spillage": "S-B",
+      "profile": "corrosive",
+      "verified": false
+    },
+    "2582": {
+      "fire": "F-A",
+      "spillage": "S-B",
+      "profile": "corrosive",
+      "verified": false
+    },
+    "2672": {
+      "fire": "F-A",
+      "spillage": "S-B",
+      "profile": "corrosive",
+      "verified": false
+    },
+    "2789": {
+      "fire": "F-A",
+      "spillage": "S-B",
+      "profile": "corrosive",
+      "verified": false
+    },
+    "2790": {
+      "fire": "F-A",
+      "spillage": "S-B",
+      "profile": "corrosive",
+      "verified": false
+    },
+    "2794": {
+      "fire": "F-A",
+      "spillage": "S-B",
+      "profile": "corrosive",
+      "verified": false
+    },
+    "2795": {
+      "fire": "F-A",
+      "spillage": "S-B",
+      "profile": "corrosive",
+      "verified": false
+    },
+    "2796": {
+      "fire": "F-A",
+      "spillage": "S-B",
+      "profile": "corrosive",
+      "verified": false
+    },
+    "2797": {
+      "fire": "F-A",
+      "spillage": "S-B",
+      "profile": "corrosive",
+      "verified": false
+    },
+    "2809": {
+      "fire": "F-A",
+      "spillage": "S-B",
+      "profile": "corrosive",
+      "verified": false
+    },
+    "3066": {
+      "fire": "F-A",
+      "spillage": "S-B",
+      "profile": "corrosive",
+      "verified": false
+    },
+    "3264": {
+      "fire": "F-A",
+      "spillage": "S-B",
+      "profile": "corrosive",
+      "verified": false
+    },
+    "3265": {
+      "fire": "F-A",
+      "spillage": "S-B",
+      "profile": "corrosive",
+      "verified": false
+    },
+    "3266": {
+      "fire": "F-A",
+      "spillage": "S-B",
+      "profile": "corrosive",
+      "verified": false
+    },
+    "3267": {
+      "fire": "F-A",
+      "spillage": "S-B",
+      "profile": "corrosive",
+      "verified": false
+    },
+    "1052": {
+      "fire": "F-A",
+      "spillage": "S-B",
+      "profile": "corrosive",
+      "verified": false
+    },
+    "2031": {
+      "fire": "F-A",
+      "spillage": "S-Q",
+      "profile": "corrosive_oxidizing",
+      "verified": false
+    },
+    "1745": {
+      "fire": "F-A",
+      "spillage": "S-Q",
+      "profile": "corrosive_oxidizing",
+      "verified": false
+    },
+    "1746": {
+      "fire": "F-A",
+      "spillage": "S-Q",
+      "profile": "corrosive_oxidizing",
+      "verified": false
+    },
+    "2032": {
+      "fire": "F-A",
+      "spillage": "S-Q",
+      "profile": "corrosive_oxidizing",
+      "verified": false
+    },
+    "3077": {
+      "fire": "F-A",
+      "spillage": "S-F",
+      "profile": "misc_environmental",
+      "verified": false
+    },
+    "3082": {
+      "fire": "F-A",
+      "spillage": "S-F",
+      "profile": "misc_environmental",
+      "verified": false
+    },
+    "3257": {
+      "fire": "F-A",
+      "spillage": "S-F",
+      "profile": "misc_environmental",
+      "verified": false
+    },
+    "3258": {
+      "fire": "F-A",
+      "spillage": "S-F",
+      "profile": "misc_environmental",
+      "verified": false
+    },
+    "3090": {
+      "fire": "F-A",
+      "spillage": "S-I",
+      "profile": "lithium_battery",
+      "verified": false
+    },
+    "3091": {
+      "fire": "F-A",
+      "spillage": "S-I",
+      "profile": "lithium_battery",
+      "verified": false
+    },
+    "3480": {
+      "fire": "F-A",
+      "spillage": "S-I",
+      "profile": "lithium_battery",
+      "verified": true
+    },
+    "3481": {
+      "fire": "F-A",
+      "spillage": "S-I",
+      "profile": "lithium_battery",
+      "verified": false
+    },
+    "3536": {
+      "fire": "F-A",
+      "spillage": "S-I",
+      "profile": "lithium_battery",
+      "verified": false
+    },
+    "3556": {
+      "fire": "F-A",
+      "spillage": "S-I",
+      "profile": "lithium_battery",
+      "verified": false
+    },
+    "3557": {
+      "fire": "F-A",
+      "spillage": "S-I",
+      "profile": "lithium_battery",
+      "verified": false
+    }
+  }
+}

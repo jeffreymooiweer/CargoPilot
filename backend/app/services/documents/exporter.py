@@ -8,6 +8,7 @@ import openpyxl
 from openpyxl.styles import Alignment, Border, Font, PatternFill, Side
 from openpyxl.utils import get_column_letter
 
+from app.services.dg.database import is_transport_forbidden
 from app.services.documents.registry import condition_met, get_document, resolve_sections
 
 TEXTS = {
@@ -82,6 +83,10 @@ TEXTS = {
     "dg_missing": {
         "nl": "Gevaarlijke-stoffenclassificatie onvolledig voor",
         "en": "Dangerous goods classification incomplete for",
+    },
+    "dg_forbidden": {
+        "nl": "Niet ten vervoer toegelaten volgens ADR Tabel A (vervoer alleen onder ontheffing van de bevoegde autoriteit)",
+        "en": "Not permitted for carriage per ADR Table A (carriage only under an exemption from the competent authority)",
     },
     "field_required": {
         "nl": "Verplicht veld ontbreekt",
@@ -260,6 +265,11 @@ def validate_document(
         required_fields = DG_PROFILE_REQUIRED.get(profile, DG_BASE_REQUIRED)
         for entry in entries:
             for product in entry.get("products", []):
+                # Stoffen die ADR niet ten vervoer toelaat blokkeren de export.
+                if is_transport_forbidden(str(product.get("un_number") or "")):
+                    errors.append(
+                        f"{_text('dg_forbidden', lang)}: {_un_prefixed(product.get('un_number'))}"
+                    )
                 missing = [f for f in required_fields if not str(product.get(f) or "").strip()]
                 if missing:
                     position = entry.get("vehicle") or entry.get("line_id") or "?"

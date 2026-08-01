@@ -320,6 +320,8 @@
     "documentLine": "Omschrijving voor het vervoersdocument ({{profile}})",
     "adrTotals": "Totaal per vervoerscategorie (ADR 5.4.1.1.1.1)",
     "notes": "Aandachtspunten bij deze stoffen",
-    "requirements": "Zelf aanvullen op het document"
+    "requirements": "Zelf aanvullen op het document",
+    "forbidden": "Niet ten vervoer toegelaten —",
+    "emsVerified": "EmS bevestigd tegen openbare bron"
   }
 }

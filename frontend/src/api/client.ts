@@ -231,6 +231,9 @@ export interface DgPrepareHint {
   limited_quantity_text?: string;
   air_note?: string;
   air_forbidden?: boolean;
+  transport_forbidden?: boolean;
+  transport_forbidden_note?: string;
+  label_reference_note?: string;
 }
 
 export interface DgPrepareResult {

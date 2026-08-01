@@ -1,8 +1,20 @@
 """Tests voor automatische invulling en modaliteitsverrijking van DG-gegevens."""
 
+import json
+import re
+from pathlib import Path
+
 from app.services.dg.autofill import adr_category_totals, description_line, prepare_entries
 from app.services.dg.compliance import check_imdg_segregation, get_compliance_rules
-from app.services.dg.enrichment import describe_excepted_quantity, enrich_un_entry, parse_hazards
+from app.services.dg.database import is_transport_forbidden
+from app.services.dg.enrichment import (
+    describe_excepted_quantity,
+    enrich_un_entry,
+    lookup_ems,
+    parse_hazards,
+)
+from app.services.documents.exporter import validate_document
+from app.services.documents.registry import get_document
 
 
 def test_parse_hazards_separates_classification_code_from_subsidiary_risks():
@@ -42,6 +54,82 @@ def test_enrichment_provides_ems_and_air_rules():
 
     toxic_gas = enrich_un_entry({"un": "1017", "class": "2.3"})
     assert toxic_gas["air_forbidden"] is True
+
+
+def test_ems_seed_covers_all_classes_and_is_internally_consistent():
+    """Elke vermelding heeft een geldig brand- en lekkageschema en een bekend profiel."""
+    seed = json.loads(
+        (Path(__file__).resolve().parents[1] / "seed" / "dg" / "ems.json").read_text(encoding="utf-8")
+    )
+    entries, profiles = seed["entries"], seed["profiles"]
+    assert len(entries) >= 300
+
+    for un, item in entries.items():
+        assert re.fullmatch(r"\d{4}", un), un
+        assert re.fullmatch(r"F-[A-J]", item["fire"]), f"{un}: {item['fire']}"
+        assert re.fullmatch(r"S-[A-Z]", item["spillage"]), f"{un}: {item['spillage']}"
+        assert item["profile"] in profiles, f"{un}: onbekend profiel {item['profile']}"
+
+    # Binnen één profiel moet de toewijzing consistent zijn.
+    per_profile: dict[str, set[tuple[str, str]]] = {}
+    for item in entries.values():
+        per_profile.setdefault(item["profile"], set()).add((item["fire"], item["spillage"]))
+    for profile, combos in per_profile.items():
+        assert len(combos) == 1, f"{profile} heeft meerdere schema's: {combos}"
+
+
+def test_ems_lookup_matches_publicly_verified_values():
+    """Steekproef die tijdens het samenstellen tegen openbare bronnen is gecheckt."""
+    expected = {
+        "1203": ("F-E", "S-E"),  # benzine
+        "1170": ("F-E", "S-D"),  # ethanol
+        "1230": ("F-E", "S-D"),  # methanol
+        "1219": ("F-E", "S-D"),  # isopropanol
+        "1114": ("F-E", "S-D"),  # benzeen
+        "1993": ("F-E", "S-E"),  # brandbare vloeistof n.e.g.
+        "1789": ("F-A", "S-B"),  # zoutzuur
+        "1950": ("F-D", "S-U"),  # spuitbussen
+        "3480": ("F-A", "S-I"),  # lithium-ionbatterijen
+    }
+    for un, (fire, spillage) in expected.items():
+        item = lookup_ems(un)
+        assert item is not None, f"UN {un} ontbreekt"
+        assert (item["fire"], item["spillage"]) == (fire, spillage), un
+        assert item["verified"] is True, f"UN {un} niet als bevestigd gemarkeerd"
+
+
+def test_ems_falls_back_to_division_for_gases():
+    """Tabel A geeft bij gassen alleen '2'; de divisie komt uit de etiketten."""
+    flammable = enrich_un_entry({"un": "9998", "class": "2", "labels": "2.1"})
+    assert flammable["ems_class_default"] == "F-D, S-U"
+    inert = enrich_un_entry({"un": "9997", "class": "2", "labels": "2.2"})
+    assert inert["ems_class_default"] == "F-C, S-V"
+    assert flammable["ems_source"] == "class_default"
+
+
+def test_transport_forbidden_substances_are_flagged_and_block_export():
+    """ADR Tabel A markeert 14 stoffen als niet ten vervoer toegelaten."""
+    forbidden = enrich_un_entry({"un": "1798", "class": "8", "labels": "BEFÖRDERUNG VERBOTEN"}, "nl")
+    assert forbidden["transport_forbidden"] is True
+    assert "niet ten vervoer" in forbidden["transport_forbidden_note"]
+
+    assert is_transport_forbidden("1798") is True   # koningswater
+    assert is_transport_forbidden("2249") is True   # symmetrisch dichloordimethylether
+    assert is_transport_forbidden("1203") is False  # benzine
+
+    document = get_document("adr_transport_doc")
+    errors, _ = validate_document(
+        document,
+        {},
+        [],
+        [{"line_id": 1, "vehicle": "Vat", "products": [{
+            "un_number": "1798",
+            "proper_shipping_name": "NITROHYDROCHLORIC ACID",
+            "class": "8",
+        }]}],
+        "nl",
+    )
+    assert any("Niet ten vervoer toegelaten" in e for e in errors)
 
 
 def test_excepted_quantity_limits_match_adr_3_5_1_2():

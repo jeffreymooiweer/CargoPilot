@@ -26,6 +26,7 @@ from app.services.dg.database import get_un_entries
 from app.services.dg.enrichment import (
     CLASS_DOCUMENT_NOTES,
     PROFILE_DOCUMENT_NOTES,
+    clean_value,
     enrich_un_entry,
     parse_hazards,
 )
@@ -89,14 +90,14 @@ def derive_product(product: dict[str, Any], language: str = "nl") -> dict[str, A
         "class": hazards["division"],
         "subsidiary_risks": "+".join(hazards["subsidiary_risks"]),
         "classification_code": hazards["classification_code"],
-        "packing_group": entry.get("packing_group") or "",
-        "packing_instruction": (entry.get("packing_instructions") or "").split(" ")[0],
-        "transport_category": entry.get("transport_category") or "",
-        "tunnel_code": entry.get("tunnel_code") or "",
-        "labels": entry.get("labels") or "",
-        "hazard_number": entry.get("hazard_number") or "",
-        "limited_quantity": entry.get("limited_quantity") or "",
-        "excepted_quantity": entry.get("excepted_quantity") or "",
+        "packing_group": clean_value(entry.get("packing_group")),
+        "packing_instruction": clean_value(entry.get("packing_instructions")).split(" ")[0],
+        "transport_category": clean_value(entry.get("transport_category")),
+        "tunnel_code": clean_value(entry.get("tunnel_code")),
+        "labels": clean_value(entry.get("labels")),
+        "hazard_number": clean_value(entry.get("hazard_number")),
+        "limited_quantity": clean_value(entry.get("limited_quantity")),
+        "excepted_quantity": clean_value(entry.get("excepted_quantity")),
     }
     if extras.get("ems_code"):
         derived["ems_code"] = extras["ems_code"]
@@ -116,6 +117,8 @@ def derive_product(product: dict[str, Any], language: str = "nl") -> dict[str, A
     hints = {key: value for key, value in extras.items() if key.endswith(("_text", "_note", "_default", "_source"))}
     if extras.get("air_forbidden"):
         hints["air_forbidden"] = True
+    if extras.get("transport_forbidden"):
+        hints["transport_forbidden"] = True
     return {"patch": patch, "hints": hints}
 
 

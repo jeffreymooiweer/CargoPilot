@@ -17,7 +17,7 @@ import threading
 import unicodedata
 from pathlib import Path
 
-from app.services.dg.enrichment import enrich_un_entry, parse_hazards
+from app.services.dg.enrichment import clean_value, enrich_un_entry, parse_hazards
 
 _SEED_DIR = Path(__file__).resolve().parents[3] / "seed" / "dg"
 
@@ -107,16 +107,24 @@ def offline_lookup(un_number: str) -> dict | None:
         "class": hazards["division"],
         "subsidiary_risks": "+".join(hazards["subsidiary_risks"]),
         "classification_code": hazards["classification_code"],
-        "packing_group": entry.get("packing_group"),
-        "packing_instruction": (entry.get("packing_instructions") or "").split(" ")[0] or None,
-        "labels": entry.get("labels"),
-        "limited_quantity": entry.get("limited_quantity"),
-        "excepted_quantity": entry.get("excepted_quantity"),
+        "packing_group": clean_value(entry.get("packing_group")),
+        "packing_instruction": clean_value(entry.get("packing_instructions")).split(" ")[0] or None,
+        "labels": clean_value(entry.get("labels")),
+        "limited_quantity": clean_value(entry.get("limited_quantity")),
+        "excepted_quantity": clean_value(entry.get("excepted_quantity")),
         "tunnel_restriction_code": f"({entry['tunnel_code']})" if entry.get("tunnel_code") else None,
         "transport_category": entry.get("transport_category"),
         "source": "CargoPilot offline seed (ADR 2023 Tabel A / 49 CFR 172.101)",
         "variants": len(entries),
     }
+
+
+def is_transport_forbidden(un_number: str) -> bool:
+    """True wanneer ADR Tabel A de stof niet ten vervoer toelaat."""
+    entries = get_un_entries(un_number)
+    if not entries:
+        return False
+    return any("VERBOTEN" in str(entry.get("labels") or "").upper() for entry in entries)
 
 
 def search_packagings(query: str = "", limit: int = 150) -> list[dict]:

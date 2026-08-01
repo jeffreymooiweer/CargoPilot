@@ -312,7 +312,8 @@
     "qValueFor": "Position {{position}}: Q = {{value}}",
     "qExceeded": "EXCEEDS the maximum of 1.0",
     "caoHint": "Cargo Aircraft Only applies to: {{products}}. State this on the Shipper's Declaration and the AWB handling information.",
-    "disclaimer": "These checks are guidance based on ADR 2025 and IATA DGR 67th edition and do not replace a safety adviser or the official regulations. See the disclaimer."
+    "disclaimer": "These checks are guidance based on ADR 2025 and IATA DGR 67th edition and do not replace a safety adviser or the official regulations. See the disclaimer.",
+    "segGroupsTitle": "IMDG 7.2.5 segregation groups (acids, alkalis, cyanides, …)"
   },
   "dgauto": {
     "title": "Derived automatically",

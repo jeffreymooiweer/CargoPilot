@@ -312,7 +312,8 @@
     "qValueFor": "Positie {{position}}: Q = {{value}}",
     "qExceeded": "OVERSCHRIJDT het maximum van 1,0",
     "caoHint": "Cargo Aircraft Only van toepassing op: {{products}}. Vermeld dit op de Shipper's Declaration en de AWB-handling information.",
-    "disclaimer": "Deze controles zijn begeleiding op basis van ADR 2025 en IATA DGR 67e editie en vervangen geen veiligheidsadviseur of de officiële regelgeving. Zie de disclaimer."
+    "disclaimer": "Deze controles zijn begeleiding op basis van ADR 2025 en IATA DGR 67e editie en vervangen geen veiligheidsadviseur of de officiële regelgeving. Zie de disclaimer.",
+    "segGroupsTitle": "Scheidingsgroepen IMDG 7.2.5 (zuren, alkaliën, cyaniden, …)"
   },
   "dgauto": {
     "title": "Automatisch afgeleid",

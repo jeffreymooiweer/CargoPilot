@@ -5,7 +5,8 @@
     "adr_mixed_loading": "ADR 2025 (UNECE) 7.5.2 (samenladingsverbod) en 7.5.4 / CV28 (levensmiddelen)",
     "iata_segregation": "IATA DGR 67e editie (2026) 9.3.2, Table 9.3.A — Segregation of Packages",
     "q_value": "IATA DGR 67e editie (2026) 5.0.2.11 — Q-waarde voor 'all packed in one'",
-    "imdg_segregation": "IMDG-code (Amdt. 42-24) 7.2.4 — Segregatietabel klassen, met 7.2.5 scheidingsgroepen"
+    "imdg_segregation": "IMDG-code (Amendement 40-20) 7.2.4 segregatietabel, 7.2.5 scheidingsgroepen en 7.2.7 klasse 1",
+    "imdg_class1": "IMDG-code (Amendement 40-20) 7.2.7 — segregatie van goederen van klasse 1"
   },
   "adr_points": {
     "threshold": 1000,
@@ -231,7 +232,7 @@
         "2",
         "1",
         "2",
-        "X",
+        "2",
         "2",
         "2",
         "X",
@@ -252,7 +253,7 @@
         "1",
         "X",
         "X",
-        "2",
+        "1",
         "X",
         "2",
         "1",
@@ -288,7 +289,7 @@
         "X",
         "X",
         "2",
-        "1",
+        "2",
         "2",
         "2",
         "X",
@@ -339,10 +340,10 @@
         "4",
         "4",
         "2",
+        "2",
         "X",
         "X",
-        "X",
-        "1",
+        "2",
         "X",
         "1",
         "X",
@@ -378,7 +379,7 @@
         "4",
         "2",
         "2",
-        "2",
+        "1",
         "2",
         "2",
         "2",
@@ -517,6 +518,353 @@
     "note": {
       "nl": "IMDG-code 7.2.4 (klassescheidingstabel). Deze tabel geldt op klasseniveau; scheidingsgroepen (7.2.5, o.a. zuren, alkaliën, azides) en de vermeldingen in kolom 16b van de Dangerous Goods List kunnen strengere eisen stellen. Nevengevaren tellen mee.",
       "en": "IMDG Code 7.2.4 (class segregation table). This table applies at class level; segregation groups (7.2.5, e.g. acids, alkalis, azides) and column 16b of the Dangerous Goods List may impose stricter requirements. Subsidiary hazards count."
+    },
+    "source_note": {
+      "nl": "Overgenomen uit de IMDG-code, hoofdstuk 7.2, segregatietabel 7.2.4 (Amendement 40-20).",
+      "en": "Taken from the IMDG Code, chapter 7.2, segregation table 7.2.4 (Amendment 40-20)."
+    }
+  },
+  "imdg_segregation_groups": {
+    "note": {
+      "nl": "IMDG 7.2.5: stoffen met vergelijkbare chemische eigenschappen zijn ingedeeld in scheidingsgroepen. De groepscode staat in kolom 16b van de Dangerous Goods List; de vermeldingen per groep in 3.1.4.4. Bij een n.e.g.-vermelding beslist de afzender zelf of indeling in een scheidingsgroep van toepassing is en vermeldt dat in het vervoersdocument (5.4.1.5.11).",
+      "en": "IMDG 7.2.5: substances with similar chemical properties are grouped into segregation groups. The group code appears in column 16b of the Dangerous Goods List; entries per group in 3.1.4.4. For an N.O.S. entry the consignor decides whether inclusion in a segregation group applies and states this in the transport document (5.4.1.5.11)."
+    },
+    "groups": [
+      {
+        "code": "SGG1",
+        "nl": "zuren",
+        "en": "acids"
+      },
+      {
+        "code": "SGG1a",
+        "nl": "sterke zuren (in 3.1.4.4 gemarkeerd met **)",
+        "en": "strong acids (marked ** in 3.1.4.4)"
+      },
+      {
+        "code": "SGG2",
+        "nl": "ammoniumverbindingen",
+        "en": "ammonium compounds"
+      },
+      {
+        "code": "SGG3",
+        "nl": "bromaten",
+        "en": "bromates"
+      },
+      {
+        "code": "SGG4",
+        "nl": "chloraten",
+        "en": "chlorates"
+      },
+      {
+        "code": "SGG5",
+        "nl": "chlorieten",
+        "en": "chlorites"
+      },
+      {
+        "code": "SGG6",
+        "nl": "cyaniden",
+        "en": "cyanides"
+      },
+      {
+        "code": "SGG7",
+        "nl": "zware metalen en hun zouten (inclusief organometaalverbindingen)",
+        "en": "heavy metals and their salts (including their organometallic compounds)"
+      },
+      {
+        "code": "SGG8",
+        "nl": "hypochlorieten",
+        "en": "hypochlorites"
+      },
+      {
+        "code": "SGG9",
+        "nl": "lood en loodverbindingen",
+        "en": "lead and its compounds"
+      },
+      {
+        "code": "SGG10",
+        "nl": "vloeibare gehalogeneerde koolwaterstoffen",
+        "en": "liquid halogenated hydrocarbons"
+      },
+      {
+        "code": "SGG11",
+        "nl": "kwik en kwikverbindingen",
+        "en": "mercury and mercury compounds"
+      },
+      {
+        "code": "SGG12",
+        "nl": "nitrieten en mengsels daarvan",
+        "en": "nitrites and their mixtures"
+      },
+      {
+        "code": "SGG13",
+        "nl": "perchloraten",
+        "en": "perchlorates"
+      },
+      {
+        "code": "SGG14",
+        "nl": "permanganaten",
+        "en": "permanganates"
+      },
+      {
+        "code": "SGG15",
+        "nl": "metaalpoeders",
+        "en": "powdered metals"
+      },
+      {
+        "code": "SGG16",
+        "nl": "peroxiden",
+        "en": "peroxides"
+      },
+      {
+        "code": "SGG17",
+        "nl": "aziden",
+        "en": "azides"
+      },
+      {
+        "code": "SGG18",
+        "nl": "alkaliën",
+        "en": "alkalis"
+      }
+    ],
+    "class8_exception": {
+      "nl": "IMDG 7.2.6.5: stoffen van klasse 8, verpakkingsgroep II of III die volgens kolom 16b van elkaar gescheiden moeten blijven als zuur of alkali, mogen tóch in dezelfde laadeenheid wanneer per verpakking niet meer dan 30 L (vloeistof) of 30 kg (vaste stof) wordt vervoerd, de stoffen niet gevaarlijk met elkaar reageren, en het vervoersdocument de verklaring van 5.4.1.5.11.3 bevat.",
+      "en": "IMDG 7.2.6.5: class 8 substances of packing group II or III that would need segregation as acids or alkalis per column 16b may share a cargo transport unit where each package holds no more than 30 L (liquid) or 30 kg (solid), the substances do not react dangerously, and the transport document contains the statement of 5.4.1.5.11.3."
+    }
+  },
+  "imdg_class1_compatibility": {
+    "group_order": [
+      "A",
+      "B",
+      "C",
+      "D",
+      "E",
+      "F",
+      "G",
+      "H",
+      "J",
+      "K",
+      "L",
+      "N",
+      "S"
+    ],
+    "matrix": {
+      "A": [
+        "X",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "X"
+      ],
+      "B": [
+        "",
+        "X",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "X"
+      ],
+      "C": [
+        "",
+        "",
+        "X",
+        "X",
+        "X",
+        "",
+        "X",
+        "",
+        "",
+        "",
+        "",
+        "X",
+        "X"
+      ],
+      "D": [
+        "",
+        "",
+        "X",
+        "X",
+        "X",
+        "",
+        "X",
+        "",
+        "",
+        "",
+        "",
+        "X",
+        "X"
+      ],
+      "E": [
+        "",
+        "",
+        "X",
+        "X",
+        "X",
+        "",
+        "X",
+        "",
+        "",
+        "",
+        "",
+        "X",
+        "X"
+      ],
+      "F": [
+        "",
+        "",
+        "",
+        "",
+        "",
+        "X",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "X"
+      ],
+      "G": [
+        "",
+        "",
+        "X",
+        "X",
+        "X",
+        "",
+        "X",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "X"
+      ],
+      "H": [
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "X",
+        "",
+        "",
+        "",
+        "",
+        "X"
+      ],
+      "J": [
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "X",
+        "",
+        "",
+        "",
+        "X"
+      ],
+      "K": [
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "X",
+        "",
+        "",
+        "X"
+      ],
+      "L": [
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "X",
+        "",
+        ""
+      ],
+      "N": [
+        "",
+        "",
+        "X",
+        "X",
+        "X",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "X",
+        "X"
+      ],
+      "S": [
+        "X",
+        "X",
+        "X",
+        "X",
+        "X",
+        "X",
+        "X",
+        "X",
+        "X",
+        "X",
+        "",
+        "X",
+        "X"
+      ]
+    },
+    "note": {
+      "nl": "IMDG 7.2.7.1.4: 'X' betekent dat goederen van deze compatibiliteitsgroepen in dezelfde ruimte, hetzelfde ruim of dezelfde gesloten laadeenheid mogen worden gestuwd. Ontbreekt de X, dan zijn afzonderlijke ruimten of gesloten laadeenheden vereist. Bij een gemengde lading van verschillende divisies geldt de gehele lading als de gevaarlijkste divisie in de volgorde 1.1, 1.5, 1.2, 1.3, 1.6, 1.4 (7.2.7.1.3).",
+      "en": "IMDG 7.2.7.1.4: 'X' means goods of these compatibility groups may be stowed in the same compartment, hold or closed cargo transport unit. Without an X, separate compartments or closed cargo transport units are required. For a mixed load of different divisions the entire load counts as the most dangerous division in the order 1.1, 1.5, 1.2, 1.3, 1.6, 1.4 (7.2.7.1.3)."
+    },
+    "special_notes": {
+      "G": {
+        "nl": "Groep G (behalve vuurwerk en goederen met bijzondere stuwage) mag samen met C, D en E mits er geen explosieve stoffen in dezelfde ruimte of laadeenheid worden vervoerd (noot 1).",
+        "en": "Group G (other than fireworks and goods requiring special stowage) may be stowed with C, D and E provided no explosive substances travel in the same compartment or unit (note 1)."
+      },
+      "L": {
+        "nl": "Groep L: een zending van één type mag uitsluitend samen worden gestuwd met een zending van hetzelfde type binnen groep L (noot 2).",
+        "en": "Group L: a consignment of one type may only be stowed with a consignment of the same type within group L (note 2)."
+      },
+      "N": {
+        "nl": "Groep N: samen met C, D of E wordt N behandeld als groep D; samen met S geldt de hele lading als N. Verschillende voorwerpen van divisie 1.6 groep N mogen alleen samen wanneer sympathische detonatie is uitgesloten (noten 3-5).",
+        "en": "Group N: with C, D or E, N is treated as group D; with S the entire load counts as N. Different division 1.6 group N articles may only travel together where sympathetic detonation is excluded (notes 3-5)."
+      }
+    },
+    "ammonium_nitrate_exception": {
+      "nl": "IMDG 7.2.7.2.1: ammoniumnitraat (UN 1942), ammoniumnitraathoudende meststof (UN 2067), alkalimetaalnitraten (bijv. UN 1486) en aardalkalimetaalnitraten (bijv. UN 1454) mogen samen met springstoffen worden gestuwd — behalve met UN 0083 (EXPLOSIEF, VOOR SPRINGWERK, TYPE C) — mits het geheel als springstof van klasse 1 wordt behandeld.",
+      "en": "IMDG 7.2.7.2.1: ammonium nitrate (UN 1942), ammonium nitrate based fertilizer (UN 2067), alkali metal nitrates (e.g. UN 1486) and alkaline earth metal nitrates (e.g. UN 1454) may be stowed with blasting explosives — except UN 0083 (EXPLOSIVE, BLASTING, TYPE C) — provided the aggregate is treated as class 1 blasting explosives."
     }
   }
 }

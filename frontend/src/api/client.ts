@@ -93,6 +93,11 @@ export const api = {
       `/geo/address?q=${encodeURIComponent(q)}&lang=${lang}&limit=${limit}`,
     ),
   documentsRegistry: () => request<DocumentRegistry>("/documents/registry"),
+  dgPrepare: (entries: DgEntry[], lines: LineItem[], profiles: string[], language: string) =>
+    request<DgPrepareResult>("/dg/prepare", {
+      method: "POST",
+      body: JSON.stringify({ entries, lines, profiles, language }),
+    }),
   dgCompliance: (entries: DgEntry[], profiles: string[], language: string) =>
     request<DgComplianceResult>("/dg/compliance", {
       method: "POST",
@@ -200,6 +205,13 @@ export interface DgProduct {
   adr_total_quantity?: string;
   q_net_quantity?: string;
   q_max_net_quantity?: string;
+  classification_code?: string;
+  tunnel_code?: string;
+  labels?: string;
+  hazard_number?: string;
+  iata_packing_instruction?: string;
+  limited_quantity?: string;
+  excepted_quantity?: string;
 }
 
 export interface DgEntry {
@@ -209,11 +221,35 @@ export interface DgEntry {
   products: DgProduct[];
 }
 
+export interface DgPrepareHint {
+  line_id?: number;
+  product_index?: number;
+  un_number?: string;
+  ems_source?: string;
+  ems_class_default?: string;
+  excepted_quantity_text?: string;
+  limited_quantity_text?: string;
+  air_note?: string;
+  air_forbidden?: boolean;
+}
+
+export interface DgPrepareResult {
+  entries: DgEntry[];
+  document_lines: Record<string, string[]>;
+  hints: DgPrepareHint[];
+  requirements: string[];
+  adr_category_totals?: {
+    statement: string;
+    categories: { transport_category: string; total: string }[];
+  };
+}
+
 export interface DgLookupResult {
   un_number: string;
   proper_shipping_name: string;
   class: string;
   subsidiary_risks?: string;
+  classification_code?: string;
   packing_group?: string;
   packing_instruction?: string;
   transport_category?: string | number | null;
@@ -432,6 +468,8 @@ export interface DgComplianceResult {
   profiles: string[];
   adr_points?: AdrPointsResult;
   adr_mixed_loading?: ComplianceWarning[];
+  imdg_segregation?: ComplianceWarning[];
+  imdg_note?: string;
   iata_segregation?: ComplianceWarning[];
   q_values?: QValueResult[];
   cargo_aircraft_only_products?: string[];

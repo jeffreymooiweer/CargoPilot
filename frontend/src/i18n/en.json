@@ -35,7 +35,7 @@
     "step3dg": "Dangerous goods",
     "step4": "Export",
     "continue": "Continue",
-    "download": "Download Excel",
+    "download": "Download document",
     "summary": "Summary",
     "products": "Products",
     "adjustTotalWeight": "Adjust total weight",
@@ -49,7 +49,7 @@
     "toExport": "Continue to export",
     "toDg": "Continue to dangerous goods",
     "dgIntro": "Complete the dangerous goods details for all packages marked as DG or in which a UN number was detected.",
-    "dgSource": "UN data can be fetched automatically from the ADR database (FreightUtils).",
+    "dgSource": "Classification comes from the bundled offline ADR database (Table A); where internet access is available it is enriched live from the ADR 2025 source.",
     "dgLine": "Line",
     "dgVehicle": "Vehicle / load",
     "dgVehicleHelp": "Description of the vehicle or load for this DG position.",
@@ -63,7 +63,8 @@
     "toDetails": "To shipment details",
     "changeModality": "Choose another modality",
     "loading": "Loading…",
-    "next": "Next"
+    "next": "Next",
+    "paste": "Paste your lines here: description | quantity | unit"
   },
   "review": {
     "linesTitle": "Packages",
@@ -90,8 +91,8 @@
     "duplicateLine": "Duplicate line",
     "removeLine": "Remove",
     "noLines": "Add at least one package with a description.",
-    "importExcel": "Import from Excel",
-    "importTitle": "Import Excel / text",
+    "importExcel": "Import",
+    "importTitle": "Import from file or text",
     "importHint": "Paste copied columns from Excel (description | quantity | unit), or download the template and upload a file.",
     "importExampleTitle": "Example",
     "importExample": "steel angle 80x80x8x6000 | 8 | pcs",
@@ -144,7 +145,8 @@
     "importDone": "Import complete",
     "importCreated": "{{count}} added",
     "importUpdated": "{{count}} updated",
-    "importSkipped": "{{count}} skipped"
+    "importSkipped": "{{count}} skipped",
+    "inactive": "Inactive"
   },
   "settings": {
     "title": "Settings",
@@ -311,5 +313,13 @@
     "qExceeded": "EXCEEDS the maximum of 1.0",
     "caoHint": "Cargo Aircraft Only applies to: {{products}}. State this on the Shipper's Declaration and the AWB handling information.",
     "disclaimer": "These checks are guidance based on ADR 2025 and IATA DGR 67th edition and do not replace a safety adviser or the official regulations. See the disclaimer."
+  },
+  "dgauto": {
+    "title": "Derived automatically",
+    "intro": "Based on the UN number and the packages you entered, CargoPilot fills in the classification, packaging details and document lines itself. Review the data and adjust where needed.",
+    "documentLine": "Transport document description ({{profile}})",
+    "adrTotals": "Total per transport category (ADR 5.4.1.1.1.1)",
+    "notes": "Points of attention for these substances",
+    "requirements": "To be added by you on the document"
   }
 }

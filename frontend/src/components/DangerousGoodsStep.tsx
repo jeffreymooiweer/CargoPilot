@@ -1,6 +1,15 @@
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { api, DgEntry, DgInstructions, DgPackaging, DgProduct, DgUnEntry, LineItem } from "../api/client";
+import {
+  api,
+  DgEntry,
+  DgInstructions,
+  DgPackaging,
+  DgPrepareResult,
+  DgProduct,
+  DgUnEntry,
+  LineItem,
+} from "../api/client";
 import InfoTooltip from "./InfoTooltip";
 import SuggestInput, { SuggestItem } from "./SuggestInput";
 
@@ -16,6 +25,8 @@ interface Props {
   perPosition?: boolean;
   /** Extra DG-velden voor geselecteerde documenten (bijv. IATA/IMO) */
   extraFields?: string[];
+  /** Regelgevingsprofielen van de gekozen formulieren (ADR, IMDG, IATA_DGR, …) */
+  profiles?: string[];
 }
 
 const CORE_FIELDS = [
@@ -70,16 +81,60 @@ export function buildDgEntries(lines: LineItem[]): DgEntry[] {
     }));
 }
 
-export default function DangerousGoodsStep({ lines, entries, onChange, perPosition = false, extraFields = [] }: Props) {
+export default function DangerousGoodsStep({
+  lines,
+  entries,
+  onChange,
+  perPosition = false,
+  extraFields = [],
+  profiles = [],
+}: Props) {
   const { t, i18n } = useTranslation();
   const lang = i18n.language.startsWith("en") ? "en" : "nl";
   const [instructions, setInstructions] = useState<DgInstructions | null>(null);
   const [lookupError, setLookupError] = useState("");
   const [positionIndex, setPositionIndex] = useState(0);
+  const [prepared, setPrepared] = useState<DgPrepareResult | null>(null);
 
   useEffect(() => {
     api.dgInstructions().then(setInstructions).catch(() => setInstructions(null));
   }, []);
+
+  // Automatische afleiding: alles wat uit het UN-nummer en de colli volgt wordt
+  // door de backend ingevuld. Alleen lege velden worden aangevuld, zodat
+  // handmatige correcties blijven staan.
+  const unSignature = entries
+    .map((entry) => entry.products.map((p) => p.un_number ?? "").join("|"))
+    .join("#");
+  const profileKey = profiles.join(",");
+
+  useEffect(() => {
+    if (!entries.some((entry) => entry.products.some((p) => (p.un_number ?? "").trim()))) {
+      setPrepared(null);
+      return;
+    }
+    let cancelled = false;
+    const timer = window.setTimeout(() => {
+      api
+        .dgPrepare(entries, lines, profiles, lang)
+        .then((res) => {
+          if (cancelled) return;
+          setPrepared(res);
+          if (JSON.stringify(res.entries) !== JSON.stringify(entries)) {
+            onChange(res.entries);
+          }
+        })
+        .catch(() => {
+          if (!cancelled) setPrepared(null);
+        });
+    }, 250);
+    return () => {
+      cancelled = true;
+      window.clearTimeout(timer);
+    };
+    // Alleen opnieuw afleiden bij nieuwe UN-nummers of andere formulierkeuze.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [unSignature, profileKey, lang]);
 
   const helpFor = (field: string) => {
     const item = instructions?.dg_fields?.[field];
@@ -132,21 +187,14 @@ export default function DangerousGoodsStep({ lines, entries, onChange, perPositi
   };
 
   const applyUnEntry = (entryIndex: number, productIndex: number, un: DgUnEntry) => {
-    const patch: Partial<DgProduct> = {
+    // Alleen het UN-nummer zetten: de rest (juiste vervoersnaam, divisie,
+    // nevengevaren uit de etikettenkolom, verpakkingsgroep, vervoerscategorie,
+    // tunnelcode, EmS en luchtvrachtregels) wordt door /dg/prepare afgeleid.
+    // De classificatiecode (F1, M4, C1) is nadrukkelijk géén nevengevaar.
+    updateProduct(entryIndex, productIndex, {
       un_number: un.un,
       proper_shipping_name: (un.name_en || un.name_de).toUpperCase(),
-      class: un.class,
-      subsidiary_risks: un.classification_code,
-      packing_group: un.packing_group,
-      packing_instruction: un.packing_instructions.split(" ")[0] || "",
-    };
-    if (un.transport_category) {
-      (patch as Record<string, string>).transport_category = un.transport_category;
-    }
-    if (un.tunnel_code) {
-      patch.additional_information = `Tunnel: (${un.tunnel_code})`;
-    }
-    updateProduct(entryIndex, productIndex, patch);
+    });
     // Live ADR 2025-verrijking (exacte PSN e.d.) wanneer de externe bron bereikbaar is.
     void lookupUn(entryIndex, productIndex, un.un, true);
   };
@@ -180,6 +228,7 @@ export default function DangerousGoodsStep({ lines, entries, onChange, perPositi
       if (data.proper_shipping_name) patch.proper_shipping_name = data.proper_shipping_name;
       if (data.class) patch.class = data.class;
       if (data.subsidiary_risks) patch.subsidiary_risks = data.subsidiary_risks;
+      if (data.classification_code) patch.classification_code = data.classification_code;
       if (data.packing_group) patch.packing_group = data.packing_group;
       if (data.packing_instruction) patch.packing_instruction = data.packing_instruction;
       if (data.transport_category != null && data.transport_category !== "") {
@@ -304,7 +353,99 @@ export default function DangerousGoodsStep({ lines, entries, onChange, perPositi
         );
       })}
 
+      {prepared && <AutoDerivedPanel prepared={prepared} />}
+
       {lookupError && <p className="text-amber-600 dark:text-amber-300 text-sm">{lookupError}</p>}
+    </div>
+  );
+}
+
+/** Toont wat de app automatisch heeft afgeleid: documentregels, aandachtspunten
+ *  en de aanvullende gegevens die de gebruiker zelf moet aanleveren. */
+function AutoDerivedPanel({ prepared }: { prepared: DgPrepareResult }) {
+  const { t } = useTranslation();
+  const profiles = Object.keys(prepared.document_lines).filter(
+    (profile) => prepared.document_lines[profile].length > 0,
+  );
+  const notes = prepared.hints.flatMap((hint) =>
+    [hint.air_note, hint.limited_quantity_text, hint.excepted_quantity_text]
+      .filter((text): text is string => Boolean(text))
+      .map((text) => ({ un: hint.un_number, text, forbidden: Boolean(hint.air_forbidden) })),
+  );
+
+  if (profiles.length === 0 && notes.length === 0 && prepared.requirements.length === 0) return null;
+
+  return (
+    <div className={`${panelClass} p-5 space-y-4`}>
+      <div>
+        <h3 className="font-semibold text-slate-900 dark:text-slate-100">{t("dgauto.title")}</h3>
+        <p className="text-sm text-slate-500 dark:text-slate-400">{t("dgauto.intro")}</p>
+      </div>
+
+      {profiles.map((profile) => (
+        <div key={profile}>
+          <p className="text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">
+            {t("dgauto.documentLine", { profile })}
+          </p>
+          <ul className="mt-1 space-y-1">
+            {prepared.document_lines[profile].map((line, i) => (
+              <li
+                key={i}
+                className="rounded-lg bg-slate-50 dark:bg-slate-950 px-3 py-2 font-mono text-xs text-slate-800 dark:text-slate-200"
+              >
+                {line}
+              </li>
+            ))}
+          </ul>
+        </div>
+      ))}
+
+      {prepared.adr_category_totals?.statement && (
+        <div>
+          <p className="text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">
+            {t("dgauto.adrTotals")}
+          </p>
+          <p className="mt-1 rounded-lg bg-slate-50 dark:bg-slate-950 px-3 py-2 text-xs text-slate-800 dark:text-slate-200">
+            {prepared.adr_category_totals.statement}
+          </p>
+        </div>
+      )}
+
+      {notes.length > 0 && (
+        <div>
+          <p className="text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">
+            {t("dgauto.notes")}
+          </p>
+          <ul className="mt-1 space-y-1 text-sm">
+            {notes.map((note, i) => (
+              <li
+                key={i}
+                className={
+                  note.forbidden
+                    ? "text-red-700 dark:text-red-300"
+                    : "text-slate-700 dark:text-slate-300"
+                }
+              >
+                {note.un && <span className="font-mono font-semibold">UN {note.un}: </span>}
+                {note.text}
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+
+      {prepared.requirements.length > 0 && (
+        <div>
+          <p className="text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">
+            {t("dgauto.requirements")}
+          </p>
+          <ul className="mt-1 list-disc space-y-1 pl-5 text-sm text-slate-700 dark:text-slate-300">
+            {prepared.requirements.map((requirement, i) => (
+              <li key={i}>{requirement}</li>
+            ))}
+          </ul>
+        </div>
+      )}
     </div>
   );
 }

@@ -284,7 +284,7 @@ export default function MaterieelPage() {
               </span>
               {item.active === false && (
                 <span className="rounded-full bg-slate-100 px-2 py-0.5 text-xs text-slate-500 dark:bg-slate-800 dark:text-slate-400">
-                  {t("materieel.active")}: {t("questions.no")}
+                  {t("materieel.inactive")}
                 </span>
               )}
               <div className="ml-auto flex items-center gap-0.5">

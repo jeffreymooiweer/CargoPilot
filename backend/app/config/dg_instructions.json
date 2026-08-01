@@ -1,7 +1,7 @@
 {
   "dg_intro": {
-    "nl": "Alle cargo met een UN-nummer is gevaarlijke stof (DG). Vul de gegevens per collo in; de UN-lookup haalt classificatiegegevens automatisch op uit de ADR-database.",
-    "en": "All cargo with a UN number is dangerous goods (DG). Complete the details per package; the UN lookup retrieves classification data automatically from the ADR database."
+    "nl": "Vul per collo alleen het UN-nummer in — of zoek op stofnaam. CargoPilot leidt daaruit de juiste vervoersnaam, klasse en divisie, nevengevaren, verpakkingsgroep, vervoerscategorie, tunnelcode, EmS-code en de luchtvrachtregels af, en neemt aantallen en massa's over uit de colli-invoer. Controleer de afgeleide gegevens en vul aan wat alleen u kunt weten (netto hoeveelheid per verpakking, vlampunt, noodcontact).",
+    "en": "Per package, enter only the UN number — or search by substance name. CargoPilot derives the proper shipping name, class and division, subsidiary risks, packing group, transport category, tunnel code, EmS code and air transport rules from it, and reuses quantities and masses from the package entry. Review the derived data and add what only you can know (net quantity per packaging, flash point, emergency contact)."
   },
   "dg_fields": {
     "un_number": {

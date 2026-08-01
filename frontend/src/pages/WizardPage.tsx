@@ -466,6 +466,7 @@ export default function WizardPage() {
             onChange={setDgEntries}
             perPosition
             extraFields={dgExtraFields}
+            profiles={dgProfiles}
           />
           <DgCompliancePanel entries={dgEntries} profiles={dgProfiles} />
           <div className="flex flex-col gap-2 sm:flex-row">

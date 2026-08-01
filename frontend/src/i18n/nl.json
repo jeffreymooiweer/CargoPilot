@@ -323,6 +323,8 @@
     "notes": "Aandachtspunten bij deze stoffen",
     "requirements": "Zelf aanvullen op het document",
     "forbidden": "Niet ten vervoer toegelaten —",
-    "emsVerified": "EmS bevestigd tegen openbare bron"
+    "emsVerified": "EmS bevestigd tegen openbare bron",
+    "emsByVariant": "EmS hangt af van de variant: {{options}}",
+    "emsByPackingGroup": "EmS hangt af van de verpakkingsgroep: {{options}}"
   }
 }

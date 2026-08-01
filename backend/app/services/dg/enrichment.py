@@ -2,14 +2,16 @@
 
 Feitencompilatie als invulhulp; de actuele uitgave van ADR/RID/ADN, de IMDG-code
 en de IATA DGR blijft altijd leidend. Bronnen:
-- EmS per UN-nummer: IMDG-code Dangerous Goods List (kolom 15), gecureerde
-  selectie van veelvervoerde stoffen; overige klassen krijgen een indicatieve
-  klassestandaard die als zodanig wordt gemarkeerd.
+- EmS per UN-nummer: de index van IMO MSC.1/Circ.1588/Rev.3 (EmS Guide), met
+  alle brandschema's F-A t/m F-J en lekkageschema's S-A t/m S-Z. Zie
+  seed/dg/ems.json. Voor de enkele UN-nummers die daar niet in staan geldt een
+  indicatieve klassestandaard, die als zodanig wordt gemarkeerd.
 - Vrijgestelde hoeveelheden (E-codes): ADR/IMDG/IATA 3.5.1.2.
-- Luchtvrachtregels: IATA DGR (lithiumbatterijen PI 965/968 — Cargo Aircraft
-  Only), ICAO TI (klasse 2.3 verboden in luchtvracht).
+- Luchtvrachtregels: IATA Guidance Document for Lithium Batteries and Sodium ion
+  Batteries (2026) en de IATA DGR; ICAO TI voor het verbod op klasse 2.3.
 - Milieugevaarlijk/marine pollutant: UN 3077/3082 en ADR-classificatiecodes
   M6/M7 (IMDG 2.10).
+- Vervoersverbod: de etikettenkolom van ADR Tabel A.
 """
 from __future__ import annotations
 
@@ -33,15 +35,54 @@ def _load_ems() -> dict[str, Any]:
     return _ems_cache
 
 
-def lookup_ems(un_number: str) -> dict[str, Any] | None:
-    """EmS-vermelding voor een UN-nummer, of None wanneer die ontbreekt."""
+def lookup_ems(un_number: str, packing_group: str = "") -> dict[str, Any] | None:
+    """EmS-vermelding voor een UN-nummer uit de EmS Guide-index.
+
+    Enkele vermeldingen hebben per verpakkingsgroep een eigen schema (bijv.
+    UN 1826 en UN 2031) of kennen varianten met een eigen omschrijving
+    (UN 3166, gas- of vloeistofaangedreven voertuigen). Die worden hier
+    meegegeven zodat de interface de keuze kan tonen.
+    """
     digits = "".join(ch for ch in str(un_number or "") if ch.isdigit()).zfill(4)
-    return _load_ems()["entries"].get(digits)
+    entry = _load_ems()["entries"].get(digits)
+    if not entry:
+        return None
+
+    if "by_packing_group" in entry:
+        groups = entry["by_packing_group"]
+        pg = str(packing_group or "").strip().upper()
+        # Exacte treffer, anders de variant zonder */† -markering.
+        chosen = groups.get(pg) or next(
+            (v for k, v in sorted(groups.items()) if k.rstrip("*†") == pg), None
+        )
+        if chosen:
+            return {**chosen, "packing_group": pg, "packing_group_options": groups}
+        return {"packing_group_options": groups}
+
+    if "variants" in entry:
+        return {"variants": entry["variants"]}
+
+    return entry
 
 
-def ems_profile_label(profile: str, language: str = "nl") -> str:
-    labels = _load_ems()["profiles"].get(profile) or {}
-    return labels.get(language) or labels.get("nl") or ""
+def ems_schedule_label(code: str, language: str = "nl") -> str:
+    """Omschrijving van een brand- of lekkageschema, bijv. 'F-E' → '…'."""
+    data = _load_ems()
+    key = "fire_schedules" if str(code).upper().startswith("F") else "spillage_schedules"
+    item = data.get(key, {}).get(str(code).strip().upper())
+    if not item:
+        return ""
+    return item.get(language) or item.get("nl") or ""
+
+
+def describe_ems(ems_code: str, language: str = "nl") -> str:
+    """'F-E, S-E' → 'F-E (…) · S-E (…)' voor weergave in de interface."""
+    parts = []
+    for code in re.split(r"[,;/]\s*", str(ems_code or "")):
+        code = code.strip().upper()
+        label = ems_schedule_label(code, language)
+        parts.append(f"{code} ({label})" if label else code)
+    return " · ".join(p for p in parts if p)
 
 
 # Indicatieve EmS-standaard per klasse (IMDG DGL volgt in de meeste gevallen
@@ -74,29 +115,52 @@ EXCEPTED_QUANTITY_LIMITS: dict[str, tuple[int, int]] = {
     "E5": (1, 300),
 }
 
-# Luchtvrachtregels per UN-nummer (IATA DGR / ICAO TI).
+# Luchtvrachtregels per UN-nummer. Bron: IATA Guidance Document for Lithium
+# Batteries and Sodium ion Batteries (editie 2026) en de IATA DGR.
 AIR_RULES_BY_UN: dict[str, dict[str, Any]] = {
     "3480": {
         "cargo_aircraft_only": True,
         "iata_packing_instruction": "965",
-        "note_nl": "Lithium-ionbatterijen (los): uitsluitend Cargo Aircraft Only, IATA PI 965, laadtoestand max. 30% (SoC).",
-        "note_en": "Lithium-ion batteries (standalone): Cargo Aircraft Only, IATA PI 965, state of charge max. 30%.",
+        "note_nl": "Lithium-ionbatterijen (los verpakt): verboden als vracht op passagiersvliegtuigen, dus uitsluitend Cargo Aircraft Only met CAO-label. IATA PI 965, laadtoestand ten hoogste 30% van de nominale capaciteit; hoger uitsluitend met goedkeuring van het land van herkomst en van de exploitant (bijzondere bepaling A331).",
+        "note_en": "Lithium-ion batteries (packed by themselves): forbidden as cargo on passenger aircraft, so Cargo Aircraft Only with CAO label. IATA PI 965, state of charge no more than 30% of rated capacity; higher only with approval of the State of Origin and the State of the Operator (special provision A331).",
     },
     "3090": {
         "cargo_aircraft_only": True,
         "iata_packing_instruction": "968",
-        "note_nl": "Lithium-metaalbatterijen (los): uitsluitend Cargo Aircraft Only, IATA PI 968.",
-        "note_en": "Lithium metal batteries (standalone): Cargo Aircraft Only, IATA PI 968.",
+        "note_nl": "Lithium-metaalbatterijen (los verpakt): verboden als vracht op passagiersvliegtuigen, uitsluitend Cargo Aircraft Only met CAO-label. IATA PI 968; vervoer op een passagiersvliegtuig alleen onder goedkeuring volgens bijzondere bepaling A201.",
+        "note_en": "Lithium metal batteries (packed by themselves): forbidden as cargo on passenger aircraft, Cargo Aircraft Only with CAO label. IATA PI 968; carriage on a passenger aircraft only under an approval per special provision A201.",
     },
     "3481": {
         "iata_packing_instruction": "966/967",
-        "note_nl": "Lithium-ionbatterijen met/in apparatuur: IATA PI 966 (met) of 967 (in apparatuur).",
-        "note_en": "Lithium-ion batteries packed with/contained in equipment: IATA PI 966/967.",
+        "note_nl": "Lithium-ionbatterijen met of in apparatuur: IATA PI 966 (met apparatuur) of PI 967 (in apparatuur).",
+        "note_en": "Lithium-ion batteries packed with or contained in equipment: IATA PI 966 (packed with) or PI 967 (contained in).",
     },
     "3091": {
         "iata_packing_instruction": "969/970",
-        "note_nl": "Lithium-metaalbatterijen met/in apparatuur: IATA PI 969 (met) of 970 (in apparatuur).",
-        "note_en": "Lithium metal batteries packed with/contained in equipment: IATA PI 969/970.",
+        "note_nl": "Lithium-metaalbatterijen met of in apparatuur: IATA PI 969 (met apparatuur) of PI 970 (in apparatuur).",
+        "note_en": "Lithium metal batteries packed with or contained in equipment: IATA PI 969 (packed with) or PI 970 (contained in).",
+    },
+    "3551": {
+        "iata_packing_instruction": "976",
+        "note_nl": "Natrium-ionbatterijen met organisch elektrolyt (los verpakt): IATA PI 976. Natrium-ionbatterijen met waterig alkalisch elektrolyt vallen onder UN 2795 (accu's, nat, gevuld met alkali).",
+        "note_en": "Sodium ion batteries with organic electrolyte (packed by themselves): IATA PI 976. Sodium-ion batteries with aqueous alkali electrolyte fall under UN 2795 (batteries, wet, filled with alkali).",
+    },
+    "3552": {
+        "iata_packing_instruction": "977/978",
+        "note_nl": "Natrium-ionbatterijen met of in apparatuur: IATA PI 977 (met apparatuur) of PI 978 (in apparatuur).",
+        "note_en": "Sodium ion batteries packed with or contained in equipment: IATA PI 977 (packed with) or PI 978 (contained in).",
+    },
+    "3556": {
+        "note_nl": "Voertuig aangedreven door een lithium-ionbatterij: bij een batterij van meer dan 100 Wh gelden de volledige voorschriften voor voertuigen op batterijen.",
+        "note_en": "Vehicle powered by a lithium-ion battery: with a battery exceeding 100 Wh the full provisions for battery-powered vehicles apply.",
+    },
+    "3557": {
+        "note_nl": "Voertuig aangedreven door een lithium-metaalbatterij: bij een batterij van meer dan 100 Wh gelden de volledige voorschriften voor voertuigen op batterijen.",
+        "note_en": "Vehicle powered by a lithium metal battery: with a battery exceeding 100 Wh the full provisions for battery-powered vehicles apply.",
+    },
+    "3558": {
+        "note_nl": "Voertuig aangedreven door een natrium-ionbatterij: bij een batterij van meer dan 100 Wh gelden de volledige voorschriften voor voertuigen op batterijen.",
+        "note_en": "Vehicle powered by a sodium ion battery: with a battery exceeding 100 Wh the full provisions for battery-powered vehicles apply.",
     },
 }
 
@@ -253,15 +317,27 @@ def enrich_un_entry(entry: dict[str, Any], language: str = "nl") -> dict[str, An
             "labels for each hazard present."
         )
 
-    # Zeevaart (IMDG): EmS
-    ems = lookup_ems(un)
-    if ems:
+    # Zeevaart (IMDG): EmS uit de officiële EmS Guide-index.
+    ems = lookup_ems(un, clean_value(entry.get("packing_group")))
+    if ems and ems.get("fire"):
         extras["ems_code"] = f"{ems['fire']}, {ems['spillage']}"
-        extras["ems_source"] = "imdg_dgl"
-        extras["ems_verified"] = bool(ems.get("verified"))
-        label = ems_profile_label(ems.get("profile", ""), language)
-        if label:
-            extras["ems_profile"] = label
+        extras["ems_source"] = "ems_guide"
+        extras["ems_description"] = describe_ems(extras["ems_code"], language)
+    elif ems and ems.get("variants"):
+        extras["ems_variants"] = [
+            {
+                "label": item["label"],
+                "code": f"{item['fire']}, {item['spillage']}",
+                "description": describe_ems(f"{item['fire']}, {item['spillage']}", language),
+            }
+            for item in ems["variants"]
+        ]
+        extras["ems_source"] = "ems_guide_variants"
+    elif ems and ems.get("packing_group_options"):
+        extras["ems_packing_group_options"] = {
+            pg: f"{v['fire']}, {v['spillage']}" for pg, v in ems["packing_group_options"].items()
+        }
+        extras["ems_source"] = "ems_guide_packing_group"
     else:
         # Terugval op de divisie (2.1/2.3) en anders op de hoofdklasse.
         division = str(entry.get("labels") or "").split("+")[0].strip() or hazard_class

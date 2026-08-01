@@ -1,12 +1,12 @@
 # CargoPilot
 
-**Versie 1.10.0** — webapplicatie om colli en materialen te analyseren en als transportdocumenten (PDF) te exporteren, per transportmodaliteit. Uitsluitend bedoeld voor civiele instanties.
+**Versie 1.11.0** — webapplicatie om colli en materialen te analyseren en als transportdocumenten (PDF) te exporteren, per transportmodaliteit. Uitsluitend bedoeld voor civiele instanties.
 
 **English:** CargoPilot parses package lines (paste or file import), calculates weight/volume, and exports transport documents per modality — CMR, CIM, IMO/IATA dangerous goods declarations, VGM and shipping instructions. For civilian use only.
 
 Zie ook [CHANGELOG.md](CHANGELOG.md) en [ROADMAP.md](ROADMAP.md).
 
-## Functionaliteiten (v1.10.0)
+## Functionaliteiten (v1.11.0)
 
 - **Modaliteitskeuze bij start**: wegtransport, spoor, zeevracht, binnenvaart, luchtvracht of multimodaal
 - **Formulierenselectie per modaliteit**: alleen relevante documenten; bij multimodaal alles beschikbaar
@@ -44,7 +44,7 @@ Bij twijfel geldt de kleinste ophoging. Verzamel losse correcties bij voorkeur i
 |-----------|---------|
 | Versienummer | `VERSION`, `backend/VERSION` |
 | Git-release | tag `v1.0.0`, `v1.1.0`, … |
-| Docker Hub | `jeffersonmouze/cargopilot:latest` en `jeffersonmouze/cargopilot:v1.10.0` |
+| Docker Hub | `jeffersonmouze/cargopilot:latest` en `jeffersonmouze/cargopilot:v1.11.0` |
 | API | `GET /api/health` → `version` |
 
 ## Snelle start (Docker Compose)
@@ -61,7 +61,7 @@ Open: http://localhost:8080
 
 1. Community Applications of `unraid/CargoPilot.xml`
 2. Volume: `/mnt/user/appdata/cargopilot` → `/data`
-3. Image: `jeffersonmouze/cargopilot:v1.10.0` (of `latest` na bevestigde update)
+3. Image: `jeffersonmouze/cargopilot:v1.11.0` (of `latest` na bevestigde update)
 4. Environment: `APP_SECRET_KEY`, `ADMIN_*`
 5. WebUI op gekozen poort (bijv. `http://<ip>:9935`)
 
@@ -129,12 +129,25 @@ Adres-autocomplete gebruikt een externe Photon-geocoder (OpenStreetMap-data, sta
 - Lookup: `GET /api/dg/lookup?un=1203` (FreightUtils ADR 2025, met automatische offline terugval); nalevingscontrole: `POST /api/dg/compliance`
 - **Automatische invulling** (`POST /api/dg/prepare`): uit het UN-nummer volgen de juiste vervoersnaam, klasse **en divisie** (bij gassen uit de etikettenkolom, bij explosieven uit de classificatiecode zoals `1.4S`), de nevengevaren, verpakkingsgroep, vervoerscategorie, tunnelcode, Kemler-nummer, LQ/EQ-limieten, de **EmS-code** voor zeevervoer en de **luchtvrachtregels** (Cargo Aircraft Only en IATA PI voor lithiumbatterijen, verbod op klasse 2.3). Aantallen, verpakkingssoort en massa's komen uit de al ingevoerde colli. Alleen lege velden worden gevuld — handmatige correcties blijven staan.
 - **Officiële documentregels** worden per profiel samengesteld: ADR/RID/ADN 5.4.1.1.1 (`UN 1203, BENZINE, 3, II, (D/E), 10 jerrycan, 200 L`) inclusief de totale hoeveelheid per vervoerscategorie (5.4.1.1.1.1), IMDG met EmS en marine pollutant, IATA met verpakkingsinstructie en CAO-markering
-- **EmS-noodschema's**: 305 UN-nummers hebben een exacte EmS-code (`backend/seed/dg/ems.json`, brand- en lekkageschema met gevarenprofiel); overige stoffen krijgen een indicatieve klassestandaard die als suggestie wordt getoond en niet automatisch wordt ingevuld
+- **EmS-noodschema's**: 2.338 UN-nummers uit de officiële EmS Guide (IMO MSC.1/Circ.1588/Rev.3), inclusief alle tien brandschema's en 26 lekkageschema's met omschrijving in NL/EN — 99,5% exacte dekking. 43 vermeldingen kennen een eigen schema per verpakkingsgroep en UN 3166 heeft varianten; die keuzes worden getoond in plaats van gegokt
 - **Vervoersverboden**: stoffen die ADR Tabel A niet ten vervoer toelaat worden herkend, in de wizard rood gemeld en geblokkeerd voor export
 - **Segregatie zeevervoer**: de volledige IMDG 7.2.4-klassescheidingstabel (Amendement 40-20, codes 1-4 van "away from" tot "separated longitudinally"), inclusief nevengevaren — een nevengevaar van klasse 1 telt daarbij als divisie 1.3 (7.2.3.3). De negentien scheidingsgroepen SGG1-SGG18 (7.2.5) staan als naslag in het nalevingspaneel; kolom 16b van de Dangerous Goods List blijft leidend
 - **Samenlading van explosieven**: de compatibiliteitsgroepenmatrix van IMDG 7.2.7.1.4 (groepen A-S) controleert of colli van klasse 1 samen mogen, met de bijzondere bepalingen voor groep G, L en N en de ammoniumnitraat-uitzondering van 7.2.7.2.1
 - Klasse-specifieke documentvereisten worden benoemd (netto explosieve massa bij klasse 1, temperatuurbeheersing bij 4.1/5.2, verantwoordelijke persoon bij 6.2, transportindex en collo-categorie bij klasse 7)
 - De offline database is een feitelijke invulhulp; de actuele ADR/RID/ADN/IMDG/IATA-uitgave blijft altijd leidend
+
+### Herkomst van de regelgevingsdata
+
+| Gegeven | Bron |
+|---|---|
+| Classificatie per UN-nummer (klasse, verpakkingsgroep, etiketten, LQ/EQ, verpakkingsinstructie, vervoerscategorie, tunnelcode, Kemler) | ADR Tabel A via [rkstgr/adr-substances](https://github.com/rkstgr/adr-substances) |
+| Engelse proper shipping names | 49 CFR 172.101 (eCFR, public domain) |
+| EmS-noodschema's per UN-nummer en de schema-omschrijvingen | IMO **MSC.1/Circ.1588/Rev.3** — EmS Guide (IMO-circulaire, vrij verspreidbaar) |
+| Segregatietabel, scheidingsgroepen en samenlading klasse 1 | IMDG-code hoofdstuk 7.2 (Amendement 40-20) |
+| Lithium- en natrium-ionbatterijen in de luchtvaart | [IATA Guidance Document for Lithium Batteries and Sodium ion Batteries](https://www.iata.org/contentassets/05e6d8742b0047259bf3a700bc9d42b9/lithium-battery-guidance-document.pdf) (editie 2026) |
+| ADR 1.1.3.6-punten, samenlading 7.5.2, IATA Table 9.3.A en Q-waarde | ADR 2025 (UNECE) en IATA DGR |
+
+Overgenomen zijn uitsluitend feitelijke gegevens (UN-nummer → code); de regelgevingsteksten zelf zijn auteursrechtelijk beschermd en staan niet in deze repository.
 
 ## Overzicht materieel
 
@@ -152,12 +165,12 @@ Bij upgrade naar v1.0.0 worden items met bron `overzicht_materieel` automatisch 
 **Let op:** Docker-images ouder dan v1.4.0 bevatten nog een intern formulier dat niet voor civiel gebruik is bedoeld. Na upgrade:
 
 1. Gebruik alleen `v1.4.0` of nieuwer (of `latest` na de 1.4.0-build).
-2. Verwijder oude Docker-tags via GitHub → **Actions** → **Cleanup Docker Hub tags** → **Run workflow** met `keep_tags`: `latest,v1.10.0,1.10.0`.
-3. `docker pull jeffersonmouze/cargopilot:v1.10.0` en container herstarten.
+2. Verwijder oude Docker-tags via GitHub → **Actions** → **Cleanup Docker Hub tags** → **Run workflow** met `keep_tags`: `latest,v1.11.0,1.11.0`.
+3. `docker pull jeffersonmouze/cargopilot:v1.11.0` en container herstarten.
 
 ## Docker Hub
 
-`jeffersonmouze/cargopilot:latest` · `jeffersonmouze/cargopilot:v1.10.0`
+`jeffersonmouze/cargopilot:latest` · `jeffersonmouze/cargopilot:v1.11.0`
 
 GitHub Actions: `.github/workflows/dockerhub.yml` (push `main` + tags `v*`).
 

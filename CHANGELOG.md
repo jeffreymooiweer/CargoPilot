@@ -2,6 +2,22 @@
 
 Alle noemenswaardige wijzigingen worden gedocumenteerd volgens [Semantic Versioning](https://semver.org/).
 
+## [1.11.0] — 2026-08-01
+
+EmS-noodschema's compleet uit de officiële EmS Guide.
+
+### Toegevoegd
+
+- **Alle 2.338 UN-nummers uit de EmS Guide.** De index van IMO MSC.1/Circ.1588/Rev.3 (*Revised Emergency Response Procedures for Ships Carrying Dangerous Goods*) is volledig overgenomen. De dekking gaat van 12,9% naar **99,5% exacte codes**; alleen enkele vermeldingen die niet in de gids staan vallen nog terug op een indicatieve klassestandaard.
+- **Omschrijving bij elke code**: alle tien brandschema's (F-A Alfa "algemeen brandschema" t/m F-J Juliet) en alle 26 lekkageschema's (S-A Alfa "giftige stoffen" t/m S-Z Zulu "giftige explosieven") zijn opgenomen in Nederlands en Engels. De app toont nu bijvoorbeeld "F-E (Brandbare vloeistoffen die niet met water reageren) · S-E (Brandbare vloeistoffen die op water drijven)" in plaats van alleen de code.
+- **Schema per verpakkingsgroep**: 43 UN-nummers hebben per verpakkingsgroep een ander noodschema — bijvoorbeeld UN 1826 (nitreerzuurmengsel), waar verpakkingsgroep I als oxiderend (S-Q) en groep II als bijtend (S-B) wordt behandeld. Zonder bekende verpakkingsgroep toont de app beide keuzes in plaats van er één te gokken.
+- **Varianten met eigen schema**: UN 3166 (voertuigen) krijgt een ander schema voor gas- dan voor vloeistofaandrijving; beide worden getoond.
+- **Luchtvrachtregels bijgewerkt** naar de IATA Guidance Document for Lithium Batteries and Sodium ion Batteries, editie 2026: de laadtoestandsgrens van 30% bij PI 965 met de goedkeuringsroute van bijzondere bepaling A331, het CAO-label bij UN 3090/3480, de goedkeuringsroute A201, en nieuw de **natrium-ionbatterijen** UN 3551 (PI 976) en UN 3552 (PI 977/978) — met de kanttekening dat natrium-ionbatterijen met waterig alkalisch elektrolyt onder UN 2795 vallen. Ook de batterijaangedreven voertuigen UN 3556, 3557 en 3558 zijn opgenomen.
+
+### Gewijzigd
+
+- De EmS-gegevens komen niet langer uit een gecureerde selectie maar rechtstreeks uit de officiële gids. Bij het overzetten bleek 13,5% van de eerdere gecureerde vermeldingen af te wijken (39 van de 288), vooral bij oxidatoren die F-H in plaats van F-A hebben en bij temperatuurgeregelde peroxiden die onder F-F vallen. Die zijn nu allemaal correct.
+
 ## [1.10.0] — 2026-08-01
 
 Segregatie geverifieerd tegen de officiële IMDG-code en uitgebreid met scheidingsgroepen en klasse 1.

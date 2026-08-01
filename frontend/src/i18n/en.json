@@ -323,6 +323,8 @@
     "notes": "Points of attention for these substances",
     "requirements": "To be added by you on the document",
     "forbidden": "Not permitted for carriage —",
-    "emsVerified": "EmS confirmed against a public source"
+    "emsVerified": "EmS confirmed against a public source",
+    "emsByVariant": "EmS depends on the variant: {{options}}",
+    "emsByPackingGroup": "EmS depends on the packing group: {{options}}"
   }
 }

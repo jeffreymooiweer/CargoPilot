@@ -2,6 +2,56 @@
 
 All notable changes are documented here, following [Semantic Versioning](https://semver.org/).
 
+## [1.20.0] — 2026-08-02
+
+Fixes from an external review: calculation errors, stale state, the IATA PDF, and
+export enforcement. Every confirmed defect has a regression test that reproduces
+the reported failure.
+
+### Fixed
+
+- **Derived quantities no longer go stale.** The ADR total and the Q net quantity are
+  computed values, but they were only filled when empty — so after editing 2 packages of
+  10 L into 3 of 20 L, the description showed 60 L while the points calculation still used
+  20 L and the Q value 10 L. They are now recomputed from the current package data on
+  every derivation; `adr_total_quantity_override` and `q_net_quantity_override` pin a
+  manual value. The wizard also re-derives when quantities, contents or packaging change,
+  not only when a UN number changes.
+- **The Q value could round an exceedance away.** Component ratios were rounded to four
+  decimals before summing: 0.50001 + 0.50001 became 1.0 and passed. The sum is now taken
+  over unrounded Decimal ratios and only the result is rounded up — that case yields
+  Q = 1.1, exceeded.
+- **Invalid Q components no longer vanish.** A missing, zero or negative n or M used to
+  drop the component silently, and with fewer than two left the whole result disappeared.
+  The position now reports status `incomplete` with the reason.
+- **Negative quantities are invalid input, not a discount.** A numeric −5 lowered the ADR
+  points total; the text "-5 L" was read as +5 because the parser dropped the sign. The
+  parser keeps the sign and both calculations treat non-positive quantities as incomplete.
+- **The IATA declaration no longer carries an ADR packing instruction.** The automatic
+  derivation fills the generic field with the ADR instruction (P001, IBC02, …), and the
+  official PDF printed that field. The PDF now uses `iata_packing_instruction`, accepts a
+  numeric instruction typed into the generic field, and prints nothing rather than an
+  instruction that is invalid in the air.
+- **The 24-hour emergency contact reaches the PDF.** It was a required input that was
+  never written; it now lands in Additional Handling Information.
+- **The stale compliance panel.** The result is cleared the moment the substances change
+  and re-checked automatically after a short debounce, instead of keeping the previous —
+  possibly green — outcome on screen until someone pressed the button.
+- **Info findings looked like problems.** The 7.2.6.3 exemption has severity `info` but
+  was styled identically to a warning; it is now visually distinct.
+
+### Added
+
+- **Export re-runs the compliance engine server-side.** The panel in the wizard is an
+  aid; the frontend is no longer the only place where compliance is enforced. A DG
+  document export now blocks on segregation errors and on an exceeded Q value, and
+  carries the remaining findings as warnings.
+- **Every compliance result names its rule sets** — including, prominently, that the
+  IMDG data on board is Amendment 40-20 (class tables) and 41-22 (per-substance data)
+  while **Amendment 42-24 is mandatory since 1 January 2026**. Until the data is
+  refreshed, IMDG outcomes are indicative and the current Code prevails. See
+  [docs/dangerous-goods.md](docs/dangerous-goods.md#rule-set-editions).
+
 ## [1.19.0] — 2026-08-02
 
 SG72, and it turned out to be a relaxation.

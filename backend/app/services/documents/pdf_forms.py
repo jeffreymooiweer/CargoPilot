@@ -6,6 +6,7 @@ Handtekening-, carrier- en operationele velden blijven bewust leeg.
 """
 
 import os
+import re
 import tempfile
 from pathlib import Path
 from typing import Any, Callable
@@ -203,7 +204,15 @@ def _iata_dg_block(dangerous_goods: list[dict[str, Any]]) -> str:
             per = str(p.get("net_mass_liters_per_package") or "").strip()
             if per:
                 qty = f"{qty}, {per}" if qty else per
-            pi = str(p.get("packing_instruction") or "").strip()
+            # Op de luchtvrachtbrief hoort de IATA-verpakkingsinstructie.
+            # Het veld packing_instruction wordt door de auto-afleiding met de
+            # ADR-instructie gevuld (P001, IBC02, …) en die is in de lucht
+            # ongeldig — liever leeg dan fout, dan valt het bij controle op.
+            pi = str(p.get("iata_packing_instruction") or "").strip()
+            if not pi:
+                fallback = str(p.get("packing_instruction") or "").strip()
+                if fallback and not re.match(r"(?i)^(P|IBC|LP|R)\d", fallback):
+                    pi = fallback
             segments = [s for s in [un, psn, hazard, pg, qty, pi] if s]
             if segments:
                 out.append("   ".join(segments))
@@ -228,7 +237,13 @@ def fill_iata(values: dict[str, Any], dangerous_goods: list[dict[str, Any]], lan
         fields["Shipper Reference"] = str(values["shipment_reference"])
     fields["Departure Airport"] = _first(values.get("loading_point"))
     fields["Destination Airport"] = _first(values.get("discharge_point"))
-    fields["Additional Handling Information"] = _first(values.get("handling_information"))
+    handling = [str(values.get("handling_information") or "").strip()]
+    emergency = str(values.get("emergency_contact") or "").strip()
+    if emergency:
+        # Diverse state/operator variations eisen een 24-uurs noodnummer op de
+        # verklaring; het handling-informationvak is daarvoor de plek.
+        handling.append(f"24-hour emergency contact: {emergency}")
+    fields["Additional Handling Information"] = " / ".join(x for x in handling if x)
     fields["Nature and Quantity of Dangerous Goods"] = _iata_dg_block(dangerous_goods)
 
     # "Delete non-applicable": streep de NIET-toepasselijke optie door en zet het

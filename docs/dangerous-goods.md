@@ -187,6 +187,25 @@ which reads the UN number out of every document rather than trusting its origina
 filename. In a checkout where that has not been run, the download option simply does not
 appear. See [`un_cards/README.md`](../un_cards/README.md).
 
+## Rule set editions
+
+The data on board is not all from the same year, and that should be said plainly rather
+than discovered:
+
+| Component | Edition |
+|---|---|
+| ADR classification (Table A) | ADR 2025 |
+| IMDG class segregation table, class 1 matrix, 7.2.6.3 tables | Amendment 40-20 |
+| IMDG per-substance data (UN cards: SW/SG codes, marine pollutant) | Amendment 41-22 (2023) |
+| EmS emergency schedules | MSC.1/Circ.1588/Rev.3 |
+| IATA lithium/sodium-ion rules | 2026 guidance |
+
+**IMDG Amendment 42-24 is mandatory since 1 January 2026 and is not what this app has
+loaded.** Every compliance result carries this in its `rule_sets` metadata. Until the
+IMDG data is rebuilt from a 42-24 source, treat IMDG outcomes as indicative and let the
+current Code prevail — which the disclaimer requires anyway, but here it is with the
+specific reason.
+
 ## How complete is the data?
 
 | Data | Coverage |

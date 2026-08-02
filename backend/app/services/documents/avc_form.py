@@ -1,0 +1,370 @@
+"""Invullen van het officiële AVC-vrachtbriefformulier.
+
+Het formulier (templates/forms/avc.pdf) is — anders dan de CMR, CIM en de
+IATA-luchtvrachtbrief — een vlakke PDF zonder AcroForm-velden. De waarden
+worden daarom als tekstlaag over de template heen gelegd, op posities die uit
+het lijnenraster en de veldlabels van het formulier zelf zijn afgeleid.
+
+Rasterindeling van de template (595 × 640 punten, oorsprong linksboven):
+
+    linkerpaneel (vrachtbrief)      x  32,5 – 406,3   y  40,0 – 623,8
+      afzender                      x  32,5 – 299,2   y  40,0 – 110,0
+      afleveradres                  x  32,5 – 406,3   y 110,0 – 228,3
+      frankering | vervoerder       x  32,5 – 120,8 – 406,3   y 228,3 – 275,0
+      goederentabel                 x  32,5 – 406,3   y 275,0 – 571,7
+      plaats van afzending | datum  x  32,5 – 406,3   y 571,7 – 597,5
+
+    rechterpaneel (ontvangstbewijs) x 415,4 – 580,8   y  12,9 – 598,3
+      afzender                                        y  39,6 – 110,0
+      afleveradres                                    y 110,0 – 228,3
+      frankering | vervoerder       x 415,4 – 478,3 – 580,8   y 228,3 – 275,0
+      handtekening en kenteken                        y 275,0 – 393,7
+      inhoud + totalen                                y 507,5 – 571,7
+      datum                                           y 571,7 – 598,3
+
+De goederentabel heeft geen kolomlijnen; de kolomposities volgen uit de
+kopjes 'aantal', 'verpakking', 'inhoud' en 'gewicht in kg'.
+
+Voor gevaarlijke stoffen komt de omschrijving volgens ADR 5.4.1.1.1 in de
+kolom 'inhoud' en het totaal per vervoerscategorie (5.4.1.1.1.1) onder de
+laatste regel. Daarmee is de vrachtbrief tevens het vervoersdocument; ADR
+5.4.1 schrijft daarvoor geen aparte vorm voor.
+"""
+from __future__ import annotations
+
+import io
+import os
+import tempfile
+from pathlib import Path
+from typing import Any
+
+from pypdf import PdfReader, PdfWriter
+from reportlab.lib.colors import HexColor
+from reportlab.lib.utils import ImageReader
+from reportlab.pdfbase.pdfmetrics import stringWidth
+from reportlab.pdfgen import canvas
+
+from app.services.dg.autofill import adr_category_totals, description_line
+from app.services.documents.pdf_forms import templates_forms_dir
+
+TEMPLATE = "avc.pdf"
+PAGE_W, PAGE_H = 595.0, 640.0
+TEXT = HexColor("#1a1a1a")
+
+FONT = "Helvetica"
+SIZE = 7.5
+LEADING = 8.6
+
+# Vakken: (x, y_van_de_eerste_basislijn, breedte). De y wordt van bovenaf
+# gerekend, net als in het raster hierboven; _y() rekent dat om.
+BOXES: dict[str, tuple[float, float, float]] = {
+    # Linkerpaneel — vrachtbrief
+    "consignor": (37.0, 62.0, 258.0),
+    "delivery": (37.0, 132.0, 365.0),
+    "carrier": (125.0, 252.0, 277.0),
+    "dispatch_place": (37.0, 594.0, 240.0),
+    "dispatch_date": (283.0, 594.0, 120.0),
+    "total_count": (58.0, 567.0, 60.0),
+    "total_weight": (357.0, 567.0, 45.0),
+    # Rechterpaneel — ontvangstbewijs
+    "r_consignor": (419.0, 62.0, 158.0),
+    "r_delivery": (419.0, 132.0, 158.0),
+    "r_carrier": (482.0, 251.0, 96.0),
+    "r_registration": (419.0, 294.0, 158.0),
+    "r_contents": (419.0, 530.0, 158.0),
+    "r_total_count": (450.0, 567.0, 54.0),
+    "r_total_weight": (529.0, 567.0, 48.0),
+    "r_date": (419.0, 594.0, 158.0),
+}
+
+# Aankruisvakjes voor het frankeringsvoorschrift: (x, basislijn-y).
+# De vakjes zelf staan op 36,7-43,3 respectievelijk 418,3-425,0.
+CHECKBOXES: dict[str, tuple[float, float]] = {
+    "franco": (37.6, 255.0),
+    "not_franco": (37.6, 268.3),
+    "r_franco": (419.2, 255.0),
+    "r_not_franco": (419.2, 268.3),
+}
+CHECK_SIZE = 7.0
+
+# Goederentabel: kolomposities en het beschikbare bereik.
+GOODS_TOP = 293.0     # eerste basislijn, onder de kolomkoppen
+GOODS_BOTTOM = 551.0  # tot aan de labels 'totaal aantal' / 'gewicht'
+COL_COUNT = 66.0            # aantal, linksuitgelijnd
+COL_PACKAGING = 136.0       # verpakking, linksuitgelijnd
+COL_PACKAGING_WIDTH = 100.0
+COL_CONTENTS = 245.0        # inhoud, linksuitgelijnd
+COL_CONTENTS_WIDTH = 105.0
+COL_WEIGHT_RIGHT = 390.0    # gewicht, rechtsuitgelijnd
+NOTE_WIDTH = 254.0          # breedte voor de ADR-slotregel onder de tabel
+
+
+def has_avc_template() -> bool:
+    """Of het officiële AVC-formulier beschikbaar is om in te vullen."""
+    return (templates_forms_dir() / TEMPLATE).exists()
+
+
+def _y(top: float) -> float:
+    """Reken een y van bovenaf om naar de PDF-oorsprong linksonder."""
+    return PAGE_H - top
+
+
+def _wrap(text: str, width: float, size: float = SIZE, font: str = FONT) -> list[str]:
+    """Breek af op werkelijke tekstbreedte in punten."""
+    out: list[str] = []
+    for paragraph in str(text or "").split("\n"):
+        line = ""
+        for word in paragraph.split():
+            candidate = f"{line} {word}".strip()
+            if stringWidth(candidate, font, size) <= width or not line:
+                line = candidate
+            else:
+                out.append(line)
+                line = word
+        if line:
+            out.append(line)
+    return out
+
+
+def _clip(text: str, width: float, size: float = SIZE, font: str = FONT) -> str:
+    """Kort af zodat de tekst niet in de volgende kolom loopt."""
+    value = str(text or "")
+    if stringWidth(value, font, size) <= width:
+        return value
+    while value and stringWidth(value + "…", font, size) > width:
+        value = value[:-1]
+    return f"{value}…" if value else ""
+
+
+def _draw_box(c: canvas.Canvas, key: str, value: Any, max_lines: int = 6) -> None:
+    if value in (None, ""):
+        return
+    x, top, width = BOXES[key]
+    lines = _wrap(str(value), width)[:max_lines]
+    c.setFont(FONT, SIZE)
+    c.setFillColor(TEXT)
+    for index, line in enumerate(lines):
+        c.drawString(x, _y(top + index * LEADING), _clip(line, width))
+
+
+def _draw_check(c: canvas.Canvas, key: str) -> None:
+    x, baseline = CHECKBOXES[key]
+    c.setFont("Helvetica-Bold", CHECK_SIZE)
+    c.setFillColor(TEXT)
+    c.drawString(x, _y(baseline), "X")
+
+
+def _party(name: Any, address: Any, contact: Any = "") -> str:
+    return "\n".join(str(x).strip() for x in (name, address, contact) if str(x or "").strip())
+
+
+def _goods_rows(
+    lines: list[dict[str, Any]],
+    dangerous_goods: list[dict[str, Any]] | None,
+) -> tuple[list[tuple[str, str, str, str]], float, float]:
+    """Rijen (aantal, verpakking, inhoud, gewicht) plus de totalen."""
+    dg_by_line: dict[Any, list[str]] = {}
+    for entry in dangerous_goods or []:
+        for product in entry.get("products") or []:
+            if str(product.get("un_number") or "").strip():
+                dg_by_line.setdefault(entry.get("line_id"), []).append(
+                    description_line(product, "ADR")
+                )
+
+    rows: list[tuple[str, str, str, str]] = []
+    total_count = 0.0
+    total_weight = 0.0
+    for line in lines:
+        if not line.get("include", True):
+            continue
+        quantity = line.get("quantity")
+        weight = line.get("weight_total_kg")
+        try:
+            total_count += float(quantity) if quantity not in (None, "") else 0.0
+        except (TypeError, ValueError):
+            pass
+        try:
+            total_weight += float(weight) if weight not in (None, "") else 0.0
+        except (TypeError, ValueError):
+            pass
+        contents = dg_by_line.get(line.get("line_id"))
+        description = (
+            "\n".join(contents)
+            if contents
+            else (line.get("output_description") or line.get("description") or "")
+        )
+        rows.append((
+            "" if quantity in (None, "") else str(quantity),
+            str(line.get("unit") or ""),
+            description,
+            "" if weight in (None, "") else str(weight),
+        ))
+    return rows, total_count, total_weight
+
+
+def _fmt(value: float) -> str:
+    return str(int(value)) if float(value).is_integer() else f"{value:.2f}".rstrip("0").rstrip(".")
+
+
+def _draw_goods(
+    c: canvas.Canvas,
+    rows: list[tuple[str, str, str, str]],
+    note: str,
+    lang: str,
+) -> None:
+    """Vul de goederentabel en zet de ADR-slotregel onder de laatste regel."""
+    c.setFont(FONT, SIZE)
+    c.setFillColor(TEXT)
+    top = GOODS_TOP
+    overflow = 0
+    for index, (count, packaging, contents, weight) in enumerate(rows):
+        wrapped = _wrap(contents, COL_CONTENTS_WIDTH) or [""]
+        needed = len(wrapped) * LEADING
+        if top + needed > GOODS_BOTTOM:
+            overflow = len(rows) - index
+            break
+        c.drawString(COL_COUNT, _y(top), count)
+        c.drawString(COL_PACKAGING, _y(top), _clip(packaging, COL_PACKAGING_WIDTH))
+        for offset, piece in enumerate(wrapped):
+            c.drawString(COL_CONTENTS, _y(top + offset * LEADING), piece)
+        c.drawRightString(COL_WEIGHT_RIGHT, _y(top), weight)
+        top += needed
+
+    if overflow:
+        text = (
+            f"+{overflow} regels — zie bijgevoegde paklijst"
+            if lang == "nl"
+            else f"+{overflow} lines — see attached packing list"
+        )
+        if top <= GOODS_BOTTOM:
+            c.drawString(COL_CONTENTS, _y(top), _clip(text, NOTE_WIDTH))
+            top += LEADING
+
+    if note:
+        top += LEADING / 2
+        for line in _wrap(note, NOTE_WIDTH):
+            if top > GOODS_BOTTOM:
+                break
+            c.drawString(COL_PACKAGING, _y(top), line)
+            top += LEADING
+
+
+def _draw_footer_note(c: canvas.Canvas, text: str) -> None:
+    """Kleine regel onder het formulier — het kader loopt tot y 623,8."""
+    c.setFont(FONT, 5.4)
+    c.setFillColor(HexColor("#555555"))
+    for index, line in enumerate(_wrap(text, 540.0, size=5.4)[:2]):
+        c.drawString(33.0, _y(629.0 + index * 6.0), line)
+
+
+def fill_avc_waybill(
+    values: dict[str, Any],
+    lines: list[dict[str, Any]],
+    dangerous_goods: list[dict[str, Any]] | None,
+    lang: str = "nl",
+    signature_png: bytes | None = None,
+) -> Path:
+    """Vul het officiële AVC-formulier en lever een PDF op."""
+    template_path = templates_forms_dir() / TEMPLATE
+    if not template_path.exists():
+        raise FileNotFoundError(f"PDF template not found: {template_path}")
+
+    fd, overlay_name = tempfile.mkstemp(suffix=".pdf")
+    os.close(fd)
+    overlay_path = Path(overlay_name)
+    c = canvas.Canvas(str(overlay_path), pagesize=(PAGE_W, PAGE_H))
+
+    consignor = _party(values.get("consignor_name"), values.get("consignor_address"),
+                       values.get("consignor_contact"))
+    delivery = _party(values.get("consignee_name"), values.get("consignee_address"),
+                      values.get("place_of_delivery"))
+    carrier = _party(values.get("carrier_name"), values.get("carrier_address"))
+
+    _draw_box(c, "consignor", consignor, max_lines=5)
+    _draw_box(c, "r_consignor", consignor, max_lines=5)
+    _draw_box(c, "delivery", delivery, max_lines=11)
+    _draw_box(c, "r_delivery", delivery, max_lines=11)
+    _draw_box(c, "carrier", carrier, max_lines=3)
+    _draw_box(c, "r_carrier", carrier, max_lines=3)
+    _draw_box(c, "r_registration", values.get("vehicle_registration"), max_lines=2)
+
+    choice = str(values.get("freight_payment") or "").strip().lower()
+    if choice in {"franco", "prepaid", "vooruitbetaald"}:
+        _draw_check(c, "franco")
+        _draw_check(c, "r_franco")
+    elif choice in {"niet franco", "not franco", "collect", "ongefrankeerd"}:
+        _draw_check(c, "not_franco")
+        _draw_check(c, "r_not_franco")
+
+    rows, total_count, total_weight = _goods_rows(lines, dangerous_goods)
+
+    # ADR 5.4.1.1.1.1: totale hoeveelheid per vervoerscategorie, onder de tabel.
+    statement = ""
+    if dangerous_goods:
+        statement = adr_category_totals(dangerous_goods, lang)["statement"] or ""
+    _draw_goods(c, rows, statement, lang)
+
+    _draw_box(c, "total_count", _fmt(total_count))
+    _draw_box(c, "total_weight", _fmt(total_weight))
+    _draw_box(c, "r_total_count", _fmt(total_count))
+    _draw_box(c, "r_total_weight", _fmt(total_weight))
+    # Ontvangstbewijs: korte samenvatting van de inhoud.
+    _draw_box(c, "r_contents", "; ".join(r[2].split("\n")[0] for r in rows[:3]), max_lines=3)
+
+    _draw_box(c, "dispatch_place", values.get("loading_point") or values.get("place_of_receipt"),
+              max_lines=1)
+    dispatch_date = values.get("loading_date") or values.get("established_date")
+    _draw_box(c, "dispatch_date", dispatch_date, max_lines=1)
+    _draw_box(c, "r_date", dispatch_date, max_lines=1)
+
+    # Handtekening van de afzender, tussen 'plaats van afzending' en 'datum'.
+    if signature_png:
+        try:
+            image = ImageReader(io.BytesIO(signature_png))
+            width, height = image.getSize()
+            draw_w = 70.0
+            draw_h = min(draw_w * height / max(width, 1), 20.0)
+            c.drawImage(image, 150.0, _y(595.0), width=draw_w, height=draw_h,
+                        mask="auto", preserveAspectRatio=True, anchor="sw")
+        except Exception:  # pragma: no cover — beschadigde afbeelding
+            pass
+
+    disclaimer = (
+        "CONCEPT — gegenereerd met CargoPilot; controleer, vul aan en onderteken door een "
+        "bevoegde persoon vóór gebruik. Geen aansprakelijkheid, geleverd AS IS "
+        "(Apache License 2.0 met Commons Clause, zie DISCLAIMER.md)."
+        if lang == "nl" else
+        "DRAFT — generated with CargoPilot; verify, complete and sign by an authorised person "
+        "before use. No liability, provided AS IS (Apache License 2.0 with Commons Clause)."
+    )
+    _draw_footer_note(c, disclaimer)
+
+    c.save()
+
+    # Overlay over de template leggen.
+    reader = PdfReader(str(template_path))
+    overlay = PdfReader(str(overlay_path))
+    writer = PdfWriter()
+    page = reader.pages[0]
+    page.merge_page(overlay.pages[0])
+    writer.add_page(page)
+    try:
+        writer.add_metadata({
+            "/Producer": "CargoPilot",
+            "/Creator": "CargoPilot",
+            "/Subject": disclaimer,
+        })
+    except Exception:  # pragma: no cover
+        pass
+
+    fd, out_name = tempfile.mkstemp(suffix=".pdf")
+    os.close(fd)
+    out_path = Path(out_name)
+    try:
+        out_path.chmod(0o600)
+    except OSError:
+        pass
+    with open(out_path, "wb") as fh:
+        writer.write(fh)
+    overlay_path.unlink(missing_ok=True)
+    return out_path

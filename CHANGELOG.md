@@ -2,6 +2,17 @@
 
 Alle noemenswaardige wijzigingen worden gedocumenteerd volgens [Semantic Versioning](https://semver.org/).
 
+## [1.13.1] — 2026-08-02
+
+De AVC-vrachtbrief vult het officiële formulier in.
+
+### Gewijzigd
+
+- **De AVC-vrachtbrief wordt niet langer nagebouwd, maar ingevuld.** Het officiële vrachtbriefformulier van sVa / Stichting Vervoeradres staat nu als `templates/forms/avc.pdf` in de repository en wordt door de backend ingevuld, net als de CMR, de CIM en de IATA-declaratie. De vorige versie tekende het formulier na met reportlab; het resultaat leek op het origineel maar was het niet.
+- Omdat het AVC-formulier — anders dan de CMR — geen invulvelden (AcroForm) bevat, worden de waarden als tekstlaag over de template heen gelegd. De posities zijn afgeleid uit het lijnenraster en de veldlabels van het formulier zelf: afzender, afleveradres, frankeringsvoorschrift met de aankruisvakjes Franco/Niet franco, vervoerder, de goederentabel met de kolommen aantal, verpakking, inhoud en gewicht in kg, de totalen, en plaats en datum van afzending — telkens in zowel de vrachtbrief als het ontvangstbewijs.
+- De ADR-omschrijving (5.4.1.1.1) blijft in de kolom "inhoud" staan en het totaal per vervoerscategorie (5.4.1.1.1.1) verschijnt nu onder de laatste goederenregel in plaats van in de voetnoot. Tekst die te lang is voor een kolom wordt afgebroken op werkelijke tekstbreedte, zodat de kolom "inhoud" niet in de kolom "gewicht in kg" loopt.
+- In het formulierenoverzicht krijgt de AVC-vrachtbrief daarmee ook het label **Officieel formulier**.
+
 ## [1.13.0] — 2026-08-02
 
 AVC-vrachtbrief in plaats van een apart ADR-wegdocument.

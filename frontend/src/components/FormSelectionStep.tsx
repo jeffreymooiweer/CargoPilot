@@ -60,7 +60,7 @@ export default function FormSelectionStep({ registry, modality, selected, onChan
               <span className="min-w-0">
                 <span className="flex flex-wrap items-center gap-2">
                   <span className="font-medium text-slate-900 dark:text-slate-100">{L(doc.label)}</span>
-                  {doc.exporter === "pdf_template" ? (
+                  {doc.exporter === "pdf_template" || doc.exporter === "avc" ? (
                     <span className="rounded-full bg-emerald-100 px-2 py-0.5 text-[11px] font-medium text-emerald-800 dark:bg-emerald-900/40 dark:text-emerald-300">
                       {t("forms.officialPdf")}
                     </span>

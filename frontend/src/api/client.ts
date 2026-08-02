@@ -281,6 +281,10 @@ export interface DgPrepareHint {
   imdg_stowage_text?: string;
   imdg_segregation_codes?: string[];
   imdg_segregation_text?: string;
+  imdg_stowage_category?: string;
+  /** Wat IMDG-amendement 42-24 aan deze stof verandert. */
+  imdg_amendment_changes?: string[];
+  imdg_document_requirement?: { section: string; text: string; fields: string[] };
   transport_forbidden?: boolean;
   transport_forbidden_note?: string;
   label_reference_note?: string;

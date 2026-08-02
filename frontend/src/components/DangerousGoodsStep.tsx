@@ -407,6 +407,15 @@ function AutoDerivedPanel({ prepared }: { prepared: DgPrepareResult }) {
         `IMDG 16b — ${hint.imdg_segregation_codes.join(", ")}${
           hint.imdg_segregation_text ? `: ${hint.imdg_segregation_text}` : ""
         }`,
+      hint.imdg_stowage_category && `IMDG 7.1.4 — ${t("dgauto.stowageCategory", {
+        category: hint.imdg_stowage_category,
+      })}`,
+      // Wat amendement 42-24 aan deze stof verandert. De basisgegevens komen uit
+      // ADR 2025 en de UN-kaarten van 41-22; waar de verplichte editie daarvan
+      // afwijkt, hoort dat bij de stof te staan en niet alleen in de docs.
+      ...(hint.imdg_amendment_changes ?? []).map((change) => `IMDG 42-24 — ${change}`),
+      hint.imdg_document_requirement &&
+        `IMDG ${hint.imdg_document_requirement.section} — ${hint.imdg_document_requirement.text}`,
       hint.air_note,
       hint.label_reference_note,
       hint.limited_quantity_text,

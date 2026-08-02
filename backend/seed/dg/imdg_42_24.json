@@ -1,0 +1,230 @@
+{
+  "_comment": "Verschillenlaag IMDG-code Amendment 42-24 ten opzichte van 41-22. De app draagt ADR 2025 als basistabel en 41-22 als stof-specifieke IMDG-laag (de Cantell UN-kaarten). Dit bestand legt daar de 42-24-wijzigingen overheen die uit de bron af te leiden zijn, zodat een zeezending op de sinds 1 januari 2026 verplichte editie uitkomt in plaats van op een oudere. Alleen wat de bron letterlijk zegt staat hier; wat de bron niet noemt is niet ingevuld.",
+  "amendment": "42-24",
+  "mandatory_from": "2026-01-01",
+  "optional_from": "2025-01-01",
+  "source": "NCB Hazcheck, 'IMDG Code Amendment 42-24 changes detailed summary', oktober 2024 v1.0, aangevuld met IMO E&T 38/3/9 (8 februari 2023) voor de UN 1361-tekst. Beide zijn samenvattingen respectievelijk werkdocumenten; de gepubliceerde tekst van 42-24 blijft leidend.",
+
+  "verified_unchanged": {
+    "_comment": "Wat de bron over hoofdstuk 7.2 zegt, is één wijziging: de herformulering van 7.2.6.1. De tabellen waar deze app op rekent worden niet genoemd en zijn dus ongewijzigd overgenomen uit 40-20. Dat is de reden dat die tabellen niet langer als 'achterlopend' worden gemarkeerd.",
+    "sections": [
+      {"section": "7.2.4", "what_nl": "klassescheidingstabel", "what_en": "class segregation table"},
+      {"section": "7.2.6.3", "what_nl": "vrijstellingstabellen 7.2.6.3.1 t/m 7.2.6.3.4", "what_en": "exemption tables 7.2.6.3.1 to 7.2.6.3.4"},
+      {"section": "7.2.7.1.4", "what_nl": "compatibiliteitsmatrix klasse 1", "what_en": "class 1 compatibility matrix"},
+      {"section": "3.1.4.4", "what_nl": "scheidingsgroepen SGG1 t/m SGG18", "what_en": "segregation groups SGG1 to SGG18"}
+    ],
+    "amended_sections": [
+      {
+        "section": "7.2.6.1",
+        "nl": "Verduidelijkt: niettegenstaande 7.2.3.3 en 7.2.3.4 mogen stoffen van dezelfde klasse samen worden gestuwd zonder rekening te houden met de scheiding die door een nevengevaar wordt gevraagd, mits zij niet gevaarlijk met elkaar reageren.",
+        "en": "Clarified: notwithstanding 7.2.3.3 and 7.2.3.4, substances of the same class may be stowed together without regard to segregation required by subsidiary hazards, provided they do not react dangerously with each other."
+      },
+      {
+        "section": "7.6.2.7.2",
+        "nl": "De bijzondere stuwagebepalingen voor klasse 4 op stukgoedschepen gelden nu ook voor UN 1361, CARBON.",
+        "en": "The special stowage provisions for class 4 on general cargo ships now also cover UN 1361, CARBON."
+      },
+      {
+        "section": "7.6.2.8.4",
+        "nl": "Ammoniumnitraat UN 1942 en UN 2067: het openen van de luiken geldt voor de weerdek- en tussendeksluiken (indien aanwezig).",
+        "en": "Ammonium nitrate UN 1942 and UN 2067: the requirement to open cargo space hatches applies to the weather deck and tween deck hatches (if any)."
+      }
+    ]
+  },
+
+  "new_stowage_codes": {
+    "SW31": {
+      "text": "Stow away from potential sources of ignition, as determined in 7.4.2.3.2 or 7.5.2.8 or 7.6.2.2.2, as applicable.",
+      "nl": "Stuw verwijderd van mogelijke ontstekingsbronnen, zoals bepaald in 7.4.2.3.2, 7.5.2.8 of 7.6.2.2.2, al naargelang van toepassing.",
+      "section": "7.1.5",
+      "assigned_to_note_nl": "De bron zegt dat SW31 geldt voor 'bepaalde met water reagerende vloeistoffen', maar noemt de UN-nummers niet. De code is daarom wel gedefinieerd en niet toegewezen.",
+      "assigned_to_note_en": "The source says SW31 applies to 'certain water-reactive liquids' but does not list the UN numbers. The code is therefore defined but not assigned."
+    }
+  },
+
+  "new_un_numbers": [
+    {"un": "0514", "name_en": "FIRE SUPPRESSANT DISPERSING DEVICES", "class": "1.4S", "ems": "F-B, S-X"},
+    {"un": "3551", "name_en": "SODIUM ION BATTERIES with organic electrolyte", "class": "9", "ems": "F-A, S-I", "special_provisions": "188 230 310 348 376 377 400 401"},
+    {"un": "3552", "name_en": "SODIUM ION BATTERIES CONTAINED IN EQUIPMENT or SODIUM ION BATTERIES PACKED WITH EQUIPMENT, with organic electrolyte", "class": "9", "ems": "F-A, S-I", "special_provisions": "188 230 310 328 348 360 376 377 400 401"},
+    {"un": "3553", "name_en": "DISILANE", "class": "2.1", "ems": "F-D, S-U"},
+    {"un": "3554", "name_en": "GALLIUM CONTAINED IN MANUFACTURED ARTICLES", "class": "8", "ems": "F-A, S-B", "special_provisions": "365 366"},
+    {"un": "3555", "name_en": "TRIFLUOROMETHYLTETRAZOLE-SODIUM SALT IN ACETONE, with not less than 68% acetone, by mass", "class": "3", "ems": "F-E, S-Y", "packing_instructions": "P303"},
+    {"un": "3556", "name_en": "VEHICLE, LITHIUM ION BATTERY POWERED", "class": "9", "ems": "F-A, S-I", "special_provisions": "388 405 961 962", "packing_instructions": "P912"},
+    {"un": "3557", "name_en": "VEHICLE, LITHIUM METAL BATTERY POWERED", "class": "9", "ems": "F-A, S-I", "special_provisions": "388 405 961 962", "packing_instructions": "P912"},
+    {"un": "3558", "name_en": "VEHICLE, SODIUM ION BATTERY POWERED", "class": "9", "ems": "F-A, S-I", "special_provisions": "388 404 405 961 962 977", "packing_instructions": "P912"},
+    {"un": "3559", "name_en": "FIRE SUPPRESSANT DISPERSING DEVICES", "class": "9", "ems": "F-B, S-X", "special_provisions": "407", "packing_instructions": "P902"},
+    {"un": "3560", "name_en": "TETRAMETHYLAMMONIUM HYDROXIDE AQUEOUS SOLUTION with not less than 25% tetramethylammonium hydroxide", "class": "6.1", "ems": "F-A, S-B", "special_provisions": "279 408 409"}
+  ],
+
+  "amended_un_numbers": {
+    "1010": {
+      "name_en": "Butadienes, stabilized or Butadienes and Hydrocarbon mixture, stabilized containing more than 20% butadienes",
+      "changes_nl": ["De omschrijving geldt vanaf meer dan 20% butadienen in plaats van 40%.", "Nieuwe bijzondere bepaling SP402 verduidelijkt wanneer deze vermelding van toepassing is."],
+      "changes_en": ["The description now applies from more than 20% butadienes instead of 40%.", "New special provision SP402 clarifies when this entry applies."]
+    },
+    "1361": {
+      "stowage_codes_add": ["SW27"],
+      "special_provisions_remove": ["223", "925"],
+      "special_provisions_add": ["978"],
+      "changes_nl": ["SP223 en SP925 vervallen en PP12 vervalt: geen vrijstelling van de code meer en niet meer in zakken te verpakken.", "Nieuwe SP978 stelt eisen aan herkomst, verwering, verpakkingstemperatuur en stuwage in een CTU.", "SW27 toegevoegd: bijzondere stuwagebepalingen volgens 7.6.2.7.2.1.", "Kolom 17 spreekt nu van 'carbon blacks of animal or vegetable origin'."],
+      "changes_en": ["SP223 and SP925 are deleted and PP12 is withdrawn: no exemption from the Code and no longer permitted in bags.", "New SP978 sets requirements on origin, weathering, packing temperature and stowage in a CTU.", "SW27 added: special stowage provisions per 7.6.2.7.2.1.", "Column 17 now reads 'carbon blacks of animal or vegetable origin'."]
+    },
+    "1362": {
+      "special_provisions_remove": ["223", "925"],
+      "special_provisions_add": ["979"],
+      "changes_nl": ["SP223 en SP925 vervallen; nieuwe SP979 regelt de vrijstellingen voor CARBON, ACTIVATED."],
+      "changes_en": ["SP223 and SP925 are deleted; new SP979 sets out the exemptions for CARBON, ACTIVATED."]
+    },
+    "1835": {
+      "by_packing_group": {
+        "II": {
+          "name_en": "TETRAMETHYLAMMONIUM HYDROXIDE AQUEOUS SOLUTION with more than 2.5% but less than 25% tetramethylammonium hydroxide",
+          "subsidiary_risks_add": ["6.1"],
+          "special_provisions_add": ["279", "408", "409"],
+          "changes_nl": ["Nevengevaar 6.1 toegevoegd; de omschrijving noemt nu het gehalte.", "SP409 geeft een overgangstermijn waarin de 41-22-vermelding nog gebruikt mag worden."],
+          "changes_en": ["Subsidiary hazard 6.1 added; the description now states the concentration.", "SP409 provides a transition period during which the 41-22 entry may still be used."]
+        },
+        "III": {
+          "name_en": "TETRAMETHYLAMMONIUM HYDROXIDE AQUEOUS SOLUTION with not more than 2.5% tetramethylammonium hydroxide",
+          "special_provisions_add": ["408", "409"],
+          "changes_nl": ["De omschrijving noemt nu het gehalte."],
+          "changes_en": ["The description now states the concentration."]
+        }
+      }
+    },
+    "2303": {
+      "marine_pollutant": "yes",
+      "stowage_codes_add": ["SW1"],
+      "changes_nl": ["Erkend marine pollutant: kolom 4 krijgt 'P'. Ook in de index voor 2-fenylpropeen en alfa-methylstyreen.", "SW1 toegevoegd: beschermen tegen warmtebronnen."],
+      "changes_en": ["Recognised marine pollutant: column 4 now carries 'P'. Also in the index for 2-phenylpropene and alpha-methylstyrene.", "SW1 added: protect from sources of heat."]
+    },
+    "2803": {
+      "special_provisions_add": ["365"],
+      "changes_nl": ["SP365 toegevoegd; P800 (PP41) en P803 zijn aangepast en P803 vraagt nu verpakkingen op niveau verpakkingsgroep II."],
+      "changes_en": ["SP365 added; P800 (PP41) and P803 are amended and P803 now requires packagings of packing group II performance level."]
+    },
+    "2795": {
+      "special_provisions_add": ["401"],
+      "changes_nl": ["Nieuwe SP401 over de toewijzing van UN-nummers aan natrium-ioncellen en -batterijen."],
+      "changes_en": ["New SP401 on the UN number assignment for sodium ion cells and batteries."]
+    },
+    "2956": {
+      "stowage_codes_add": ["SW11"],
+      "changes_nl": ["SW11 toegevoegd: colli in een CTU zo stuwen dat er voldoende luchtcirculatie door de lading mogelijk blijft."],
+      "changes_en": ["SW11 added: packages in a CTU must be stowed so as to allow adequate air circulation throughout the cargo."]
+    },
+    "3292": {
+      "name_en": "Batteries, containing metallic sodium or sodium alloy",
+      "special_provisions_add": ["401"],
+      "changes_nl": ["De omschrijving spreekt nu van 'metallic sodium or sodium alloy' in plaats van 'sodium'.", "Nieuwe SP401 toegevoegd."],
+      "changes_en": ["The description now reads 'metallic sodium or sodium alloy' instead of 'sodium'.", "New SP401 added."]
+    },
+    "3423": {
+      "class": "6.1",
+      "subsidiary_risks_add": ["8"],
+      "packing_group": "I",
+      "special_provisions_add": ["279", "409"],
+      "limited_quantity": "0",
+      "excepted_quantity": "E2",
+      "changes_nl": ["Geherclassificeerd van klasse 8 naar klasse 6.1 met nevengevaar 8, verpakkingsgroep I.", "Niet langer toegestaan als gelimiteerde hoeveelheid; E5 vervangen door E2.", "IBC's alleen nog met goedkeuring van de bevoegde autoriteit (IBC99); tankinstructie T3 wordt T6.", "SP409 geeft een overgangstermijn."],
+      "changes_en": ["Reclassified from class 8 to class 6.1 with subsidiary hazard 8, packing group I.", "No longer permitted as a limited quantity; E5 replaced by E2.", "IBCs only with competent authority approval (IBC99); tank instruction T3 becomes T6.", "SP409 provides a transition period."]
+    },
+    "3506": {
+      "changes_nl": ["Eigenschappen en waarnemingen vermelden nu dat kwik sterk corrosief is voor aluminium.", "EmS S-B: UN 3506 en UN 3554 staan samen bij de bijzondere gevallen."],
+      "changes_en": ["Properties and observations now state that mercury is highly corrosive to aluminium.", "EmS S-B: UN 3506 and UN 3554 now appear together under special cases."]
+    },
+    "3536": {
+      "stowage_codes_add": ["SW1", "SW2"],
+      "stowage_category": "D",
+      "changes_nl": ["Stuwagecategorie wordt D: alleen aan dek en verboden op passagiersschepen.", "SW1 en SW2 toegevoegd: beschermen tegen warmtebronnen en uit de buurt van woonruimten."],
+      "changes_en": ["Stowage category becomes D: on deck only and prohibited on passenger ships.", "SW1 and SW2 added: protect from sources of heat and keep clear of living quarters."]
+    },
+    "3077": {"special_provisions_add": ["375"], "changes_nl": ["Nieuwe SP375: vrijstelling voor enkelvoudige of samengestelde verpakkingen met ten hoogste 5 L of 5 kg netto per binnenverpakking."], "changes_en": ["New SP375: exemption for single or combination packagings with not more than 5 L or 5 kg net per inner packaging."]},
+    "3082": {"special_provisions_add": ["375"], "changes_nl": ["Nieuwe SP375: vrijstelling voor enkelvoudige of samengestelde verpakkingen met ten hoogste 5 L of 5 kg netto per binnenverpakking."], "changes_en": ["New SP375: exemption for single or combination packagings with not more than 5 L or 5 kg net per inner packaging."]},
+    "1006": {"special_provisions_add": ["406"], "changes_nl": ["SP406: ruimere LQ-waarde bij vervoer in drukhouders met ten hoogste 1.000 mL."], "changes_en": ["SP406: increased LQ value when carried in pressure receptacles of not more than 1,000 mL."]},
+    "1013": {"special_provisions_add": ["406"], "changes_nl": ["SP406: ruimere LQ-waarde bij vervoer in drukhouders met ten hoogste 1.000 mL."], "changes_en": ["SP406: increased LQ value when carried in pressure receptacles of not more than 1,000 mL."]},
+    "1046": {"special_provisions_add": ["406"], "changes_nl": ["SP406: ruimere LQ-waarde bij vervoer in drukhouders met ten hoogste 1.000 mL."], "changes_en": ["SP406: increased LQ value when carried in pressure receptacles of not more than 1,000 mL."]},
+    "1066": {"special_provisions_add": ["406"], "changes_nl": ["SP406: ruimere LQ-waarde bij vervoer in drukhouders met ten hoogste 1.000 mL."], "changes_en": ["SP406: increased LQ value when carried in pressure receptacles of not more than 1,000 mL."]},
+    "1391": {"changes_nl": ["Nu toegestaan in tanks: T13 met bijzondere tankbepalingen TP2, TP7 en de nieuwe TP42 (geen dispersies van cesium of rubidium)."], "changes_en": ["Now permitted in tanks: T13 with special tank provisions TP2, TP7 and the new TP42 (no caesium or rubidium dispersions)."]},
+    "3482": {"changes_nl": ["Nu toegestaan in tanks: T13 met bijzondere tankbepalingen TP2, TP7 en de nieuwe TP42."], "changes_en": ["Now permitted in tanks: T13 with special tank provisions TP2, TP7 and the new TP42."]},
+    "2028": {"packing_group": "", "changes_nl": ["De verpakkingsgroep vervalt (voorwerpen krijgen geen verpakkingsgroep, 2.0.1.3)."], "changes_en": ["The packing group is removed (packing groups are not assigned to articles, 2.0.1.3)."]},
+    "3165": {"packing_group": "", "changes_nl": ["De verpakkingsgroep vervalt (voorwerpen krijgen geen verpakkingsgroep, 2.0.1.3)."], "changes_en": ["The packing group is removed (packing groups are not assigned to articles, 2.0.1.3)."]},
+    "0331": {"changes_nl": ["Tankbepaling TP1 vervalt."], "changes_en": ["Tank provision TP1 is deleted."]},
+    "1204": {"special_provisions_add": ["28"], "changes_nl": ["SP28 toegevoegd: mogelijkheid tot vervoer als klasse 4.1, met een nieuwe slotzin voor het geval het gehalte van het flegmatiseermiddel niet is opgegeven."], "changes_en": ["SP28 added: possible carriage as class 4.1, with a new final sentence for when the diluent content is not stated."]},
+    "2059": {"special_provisions_add": ["28"], "changes_nl": ["SP28 toegevoegd."], "changes_en": ["SP28 added."]},
+    "2555": {"special_provisions_add": ["28"], "changes_nl": ["SP28 toegevoegd."], "changes_en": ["SP28 added."]},
+    "2556": {"special_provisions_add": ["28"], "changes_nl": ["SP28 toegevoegd."], "changes_en": ["SP28 added."]},
+    "2907": {"special_provisions_add": ["28"], "changes_nl": ["SP28 toegevoegd."], "changes_en": ["SP28 added."]},
+    "3064": {"special_provisions_add": ["28"], "changes_nl": ["SP28 toegevoegd."], "changes_en": ["SP28 added."]},
+    "3319": {"special_provisions_add": ["28"], "changes_nl": ["SP28 toegevoegd."], "changes_en": ["SP28 added."]},
+    "3343": {"special_provisions_add": ["28"], "changes_nl": ["SP28 toegevoegd."], "changes_en": ["SP28 added."]},
+    "3344": {"special_provisions_add": ["28"], "changes_nl": ["SP28 toegevoegd."], "changes_en": ["SP28 added."]},
+    "3357": {"special_provisions_add": ["28"], "changes_nl": ["SP28 toegevoegd."], "changes_en": ["SP28 added."]},
+    "3537": {"special_provisions_add": ["310"], "changes_nl": ["SP310 toegevoegd: het voorwerp kan cellen of batterijen bevatten."], "changes_en": ["SP310 added: the article may contain cells or batteries."]},
+    "3538": {"special_provisions_add": ["310"], "changes_nl": ["SP310 toegevoegd: het voorwerp kan cellen of batterijen bevatten."], "changes_en": ["SP310 added: the article may contain cells or batteries."]},
+    "3540": {"special_provisions_add": ["310"], "changes_nl": ["SP310 toegevoegd: het voorwerp kan cellen of batterijen bevatten."], "changes_en": ["SP310 added: the article may contain cells or batteries."]},
+    "3541": {"special_provisions_add": ["310"], "changes_nl": ["SP310 toegevoegd: het voorwerp kan cellen of batterijen bevatten."], "changes_en": ["SP310 added: the article may contain cells or batteries."]},
+    "3546": {"special_provisions_add": ["310"], "changes_nl": ["SP310 toegevoegd: het voorwerp kan cellen of batterijen bevatten."], "changes_en": ["SP310 added: the article may contain cells or batteries."]},
+    "3547": {"special_provisions_add": ["310"], "changes_nl": ["SP310 toegevoegd: het voorwerp kan cellen of batterijen bevatten."], "changes_en": ["SP310 added: the article may contain cells or batteries."]},
+    "3548": {"special_provisions_add": ["310"], "changes_nl": ["SP310 toegevoegd: het voorwerp kan cellen of batterijen bevatten."], "changes_en": ["SP310 added: the article may contain cells or batteries."]},
+    "3104": {"changes_nl": ["Di-(2,4-dichloorbenzoyl)peroxide, ten hoogste 52% als pasta met siliconenolie, valt nu onder UN 3104 in plaats van UN 3106, verpakkingsmethode OP5."], "changes_en": ["Di-(2,4-dichlorobenzoyl) peroxide, not more than 52% as a paste with silicone oil, is now classified as UN 3104 instead of UN 3106, packing method OP5."]},
+    "3106": {"changes_nl": ["Di-(2,4-dichloorbenzoyl)peroxide, ten hoogste 52% als pasta met siliconenolie, is verplaatst naar UN 3104."], "changes_en": ["Di-(2,4-dichlorobenzoyl) peroxide, not more than 52% as a paste with silicone oil, has moved to UN 3104."]}
+  },
+
+  "document_requirements": {
+    "1361": {
+      "section": "5.4.1.5.18",
+      "nl": "UN 1361: het vervoersdocument moet aanvullend de productiedatum, de verpakkingsdatum, de gemiddelde temperatuur van het materiaal op de dag van verpakken (°C) en de omgevingstemperatuur op die dag (°C) vermelden.",
+      "en": "UN 1361: the transport document must additionally state the date of production, the date of packing, the mean temperature of the material on the day of packing (°C) and the ambient temperature on that day (°C).",
+      "fields": ["production_date", "packing_date", "material_temperature_c", "ambient_temperature_c"]
+    }
+  },
+
+  "general_document_requirements": [
+    {
+      "section": "5.4.4.2",
+      "nl": "Een certificaat waarmee een stof volgens een bijzondere bepaling van de code is vrijgesteld, moet samen met de ladinginformatie van SOLAS VI/2 worden aangeleverd.",
+      "en": "A certificate exempting a substance under a special provision of the Code must be submitted together with the cargo information required by SOLAS regulation VI/2.",
+      "special_provisions": ["922", "928", "931", "935", "939", "954", "964", "979"]
+    },
+    {
+      "section": "5.4.3.1",
+      "nl": "Wordt in plaats van een lijst of manifest een gedetailleerd stuwageplan gebruikt, dan moeten daarop ook de nevengevaren staan.",
+      "en": "Where a detailed stowage plan is used instead of a special list or manifest, the subsidiary hazards must be shown on it as well."
+    }
+  ],
+
+  "ems_additions": {
+    "_comment": "Nieuwe EmS-vermeldingen bij 42-24 en de uitbreiding van de bijzondere gevallen van S-B.",
+    "entries": {
+      "0514": {"fire": "F-B", "spillage": "S-X"},
+      "3551": {"fire": "F-A", "spillage": "S-I"},
+      "3552": {"fire": "F-A", "spillage": "S-I"},
+      "3553": {"fire": "F-D", "spillage": "S-U"},
+      "3554": {"fire": "F-A", "spillage": "S-B"},
+      "3555": {"fire": "F-E", "spillage": "S-Y"},
+      "3556": {"fire": "F-A", "spillage": "S-I"},
+      "3557": {"fire": "F-A", "spillage": "S-I"},
+      "3558": {"fire": "F-A", "spillage": "S-I"},
+      "3559": {"fire": "F-B", "spillage": "S-X"},
+      "3560": {"fire": "F-A", "spillage": "S-B"}
+    },
+    "s_b_special_cases_add": ["3554"]
+  },
+
+  "not_covered": {
+    "_comment": "Wat de bron wel noemt maar deze app niet modelleert, zodat de omvang van de laag eerlijk is af te lezen.",
+    "items_nl": [
+      "Verpakkings- en tankinstructies (P-, IBC-, LP- en T-codes) worden niet per stof gecontroleerd; de wijzigingen daarin staan alleen als toelichting bij de betrokken UN-nummers.",
+      "De volledige tekst van de nieuwe bijzondere bepalingen SP375 en SP400 t/m SP409, SP977 t/m SP979 staat niet in de bron; alleen hun strekking.",
+      "Voor UN 3090, 3091, 3480 en 3481 meldt de bron gewijzigde eigenschappen en waarnemingen zonder die te geven.",
+      "De constructie- en beproevingsbepalingen van deel 6 raken de invulhulp niet."
+    ],
+    "items_en": [
+      "Packing and tank instructions (P, IBC, LP and T codes) are not checked per substance; their changes appear only as a note on the UN numbers concerned.",
+      "The full text of the new special provisions SP375 and SP400 to SP409, SP977 to SP979 is not in the source; only their purport.",
+      "For UN 3090, 3091, 3480 and 3481 the source reports amended properties and observations without giving them.",
+      "The construction and testing provisions of part 6 do not affect this typing aid."
+    ]
+  }
+}

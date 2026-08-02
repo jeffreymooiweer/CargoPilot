@@ -332,6 +332,7 @@
     "forbidden": "Not permitted for carriage —",
     "emsVerified": "EmS confirmed against a public source",
     "emsByVariant": "EmS depends on the variant: {{options}}",
-    "emsByPackingGroup": "EmS depends on the packing group: {{options}}"
+    "emsByPackingGroup": "EmS depends on the packing group: {{options}}",
+    "stowageCategory": "stowage category {{category}}"
   }
 }

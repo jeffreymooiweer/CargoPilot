@@ -367,8 +367,10 @@ def test_segregation_groups_are_loaded_from_imdg_3_1_4_4():
     assert codes == [f"SGG{n}" for n in range(1, 19)]
     assert len(seed["by_un"]) >= 500
 
-    # Zoutzuur is een sterk zuur: zowel SGG1 als de SGG1a-markering.
-    assert segregation_groups_for("1789") == ["SGG1", "SGG1a"]
+    # Zoutzuur hoort bij de zuren. De aparte SGG1a-markering voor sterke zuren
+    # verviel met Amendment 41-22 en mag nergens meer opduiken.
+    assert segregation_groups_for("1789") == ["SGG1"]
+    assert not any("SGG1a" in codes for codes in seed["by_un"].values())
     assert segregation_groups_for("1824") == ["SGG18"]   # natronloog, alkali
     assert segregation_groups_for("1689") == ["SGG6"]    # natriumcyanide
     assert segregation_groups_for("1203") == []          # benzine valt buiten de groepen

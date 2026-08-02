@@ -13,6 +13,7 @@ from functools import lru_cache
 from typing import Any
 
 from app.core.config import get_settings
+from app.services.dg import amendment_42_24
 from app.services.dg.enrichment import (
     card_data_for,
     segregation_group_label,
@@ -350,6 +351,8 @@ def check_imdg_segregation(entries: list[dict[str, Any]], language: str = "nl") 
                 "code": worst,
                 "message": codes[worst][lang],
                 "products": f"{label_a}  ×  {label_b}",
+                "source": "table",
+                "pair": "|".join(pair_id),
             })
     return warnings
 
@@ -486,6 +489,15 @@ _ACTION_TEXT = {
         "in de lengterichting gescheiden door een tussenliggend compartiment of ruim van",
         "separated longitudinally by an intervening complete compartment or hold from",
     ),
+}
+
+# Dezelfde vier scheidingscodes als in de tabel van 7.2.4, zodat een SG-code en
+# een tabelwaarde met elkaar te vergelijken zijn (7.2.3.1).
+_ACTION_CODE = {
+    "away_from": "1",
+    "separated_from": "2",
+    "separated_by_compartment": "3",
+    "separated_longitudinally": "4",
 }
 
 
@@ -659,8 +671,71 @@ def check_imdg_segregation_provisions(
                         else f"Stow {action_en} {what_en}. {rule['text']}"
                     ),
                     "products": f"{source['label']}  \u00d7  {other['label']}",
+                    "source": "column_16b",
+                    "code": _ACTION_CODE.get(str(rule.get("action")), ""),
+                    "pair": "|".join(sorted((source["label"], other["label"]))),
                 })
     return warnings
+
+
+def apply_column_16b_precedence(
+    findings: list[dict[str, Any]], language: str = "nl"
+) -> list[dict[str, Any]]:
+    """IMDG 7.2.3.1: bij strijdige bepalingen gaat kolom 16b altijd voor.
+
+    De klassescheidingstabel van 7.2.4 en de stof-specifieke SG-codes van kolom
+    16b kunnen voor hetzelfde paar iets anders zeggen. De code laat daarover
+    geen twijfel bestaan: "In case of conflicting provisions, the provisions of
+    column 16b of the Dangerous Goods List, always take precedence."
+
+    Er wordt niets verwijderd. Beide bevindingen blijven staan met de bepaling
+    erbij die volgens de code voorgaat, zodat zichtbaar is waarom de ene de
+    andere opzij zet. Een terechte melding wegnemen is erger dan er \u00e9\u00e9n te veel
+    tonen; dat is dezelfde afweging als bij de vrijstellingen van 7.2.6.3.
+    """
+    lang = _lang(language)
+    by_pair: dict[str, dict[str, list[dict[str, Any]]]] = {}
+    for finding in findings:
+        pair = finding.get("pair")
+        origin = finding.get("source")
+        if pair and origin in {"table", "column_16b"}:
+            by_pair.setdefault(pair, {}).setdefault(origin, []).append(finding)
+
+    for buckets in by_pair.values():
+        table = buckets.get("table") or []
+        column = [f for f in buckets.get("column_16b") or [] if f.get("code")]
+        if not table or not column:
+            continue
+        # Meerdere SG-codes kunnen op hetzelfde paar slaan, in beide richtingen.
+        # De strengste bepaalt wat er moet gebeuren; alle codes op dat niveau
+        # krijgen de vermelding, want ze gaan er allemaal even hard voor.
+        strictest_code = max(int(f["code"]) for f in column)
+        governing = [f for f in column if int(f["code"]) == strictest_code]
+        rules = [f["rule"] for f in governing]
+        for finding in table:
+            if str(finding.get("code")) == str(strictest_code):
+                continue  # Geen strijd: beide bepalingen komen op hetzelfde uit.
+            finding["superseded_by"] = rules
+            finding["severity"] = "info"
+            finding["message"] += (
+                f" Let op 7.2.3.1: {', '.join(rules)} in kolom 16b gaat hierop voor "
+                f"(scheidingscode {strictest_code} in plaats van {finding['code']})."
+                if lang == "nl"
+                else f" Note 7.2.3.1: {', '.join(rules)} in column 16b takes precedence "
+                f"over this (segregation code {strictest_code} instead of {finding['code']})."
+            )
+        for finding in governing:
+            finding["takes_precedence_over"] = [f["rule"] for f in table]
+            finding["message"] += (
+                " Deze bepaling uit kolom 16b gaat volgens 7.2.3.1 voor op de "
+                "klassescheidingstabel."
+                if lang == "nl"
+                else " Per 7.2.3.1 this column 16b provision takes precedence over the "
+                "class segregation table."
+            )
+            if strictest_code >= 3:
+                finding["severity"] = "error"
+    return findings
 
 
 def check_imdg_segregation_exemptions(
@@ -718,6 +793,77 @@ def check_imdg_segregation_exemptions(
                     ),
                     "products": f"{label_a}  \u00d7  {label_b}",
                 })
+    return findings
+
+
+def check_imdg_amendment_42_24(
+    entries: list[dict[str, Any]], language: str = "nl"
+) -> list[dict[str, Any]]:
+    """Wat Amendment 42-24 aan de gedeclareerde stoffen verandert.
+
+    De stof-specifieke IMDG-laag komt van de UN-kaarten van 41-22, terwijl de
+    basisclassificatie uit ADR 2025 komt. Waar 42-24 daarvan afwijkt, moet dat
+    bij de zending staan en niet alleen in de documentatie.
+
+    De classificatie wordt niet stilzwijgend overschreven. Wijzigt 42-24 de
+    klasse, het nevengevaar of de verpakkingsgroep, dan is de scheiding die de
+    app berekent op de oude classificatie gebaseerd, en dat wordt met zoveel
+    woorden gezegd. Een aangepaste klasse binnensmonds toepassen zou de uitkomst
+    veranderen zonder dat iemand kan zien waarom.
+    """
+    lang = _lang(language)
+    findings: list[dict[str, Any]] = []
+    seen: set[tuple[str, str]] = set()
+
+    for entry, index, product in _iter_products(entries):
+        un = str(product.get("un_number") or "").strip()
+        if not un:
+            continue
+        label = _product_label(entry, product, index)
+        pg = str(product.get("packing_group") or "").strip().upper()
+        overlay = amendment_42_24.overlay_for(un, pg)
+
+        for line in amendment_42_24.changes_for(un, pg, lang):
+            key = (label, line)
+            if key in seen:
+                continue
+            seen.add(key)
+            findings.append({
+                "rule": f"IMDG {amendment_42_24.amendment()}",
+                "severity": "info",
+                "message": line,
+                "products": label,
+            })
+
+        reclassified = {"class", "subsidiary_risks_add", "packing_group"} & set(overlay)
+        if reclassified:
+            findings.append({
+                "rule": f"IMDG {amendment_42_24.amendment()} — classificatie"
+                        if lang == "nl"
+                        else f"IMDG {amendment_42_24.amendment()} — classification",
+                "severity": "warning",
+                "message": (
+                    "De classificatie van deze stof is in 42-24 gewijzigd. De app rekent de "
+                    "scheiding door op de classificatie van ADR Tabel A en past die niet "
+                    "vanzelf aan; controleer de uitkomst tegen de vermelding in de "
+                    "Dangerous Goods List van 42-24."
+                    if lang == "nl"
+                    else "The classification of this substance changed in 42-24. The app "
+                    "computes segregation on the ADR Table A classification and does not "
+                    "adjust it automatically; check the outcome against the 42-24 Dangerous "
+                    "Goods List entry."
+                ),
+                "products": label,
+            })
+
+        requirement = amendment_42_24.document_requirement(un, lang)
+        if requirement:
+            findings.append({
+                "rule": f"IMDG {requirement['section']}",
+                "severity": "warning",
+                "message": requirement["text"],
+                "products": label,
+            })
     return findings
 
 
@@ -813,16 +959,26 @@ def check_compliance(
     result: dict[str, Any] = {
         "sources": rules["sources"],
         "profiles": profiles,
-        # Welke regelgevingsedities dit resultaat heeft gebruikt. De IMDG-data
-        # loopt achter op de sinds 1-1-2026 verplichte Amendment 42-24; zolang
-        # dat zo is, hoort dat zichtbaar bij elke uitkomst, niet alleen in de
-        # documentatie.
+        # Welke regelgevingsedities dit resultaat heeft gebruikt. De tabellen van
+        # hoofdstuk 7.2 zijn onder 42-24 ongewijzigd gebleven; de stof-specifieke
+        # laag komt van 41-22 met de 42-24-verschillen eroverheen. Wat die laag
+        # niet dekt, staat in IMDG_42_24_not_covered.
         "rule_sets": {
             "ADR": "ADR 2025 (Tabel A via rkstgr/adr-substances)",
-            "IMDG_class_tables": "Amendment 40-20 (hoofdstuk 7.2)",
-            "IMDG_per_substance": "Amendment 41-22 (Cantell UN-kaarten, 2023)",
-            "IMDG_current_mandatory": "Amendment 42-24 — NIET geladen; uitkomsten zijn indicatief",
-            "EmS": "MSC.1/Circ.1588/Rev.3",
+            "IMDG_class_tables": (
+                "Amendment 40-20 (hoofdstuk 7.2) — in 42-24 ongewijzigd voor "
+                + ", ".join(amendment_42_24.verified_unchanged_sections())
+            ),
+            "IMDG_per_substance": (
+                "Amendment 41-22 (Cantell UN-kaarten, 2023) met de verschillenlaag 42-24"
+            ),
+            "IMDG_current_mandatory": (
+                "Amendment 42-24, verplicht sinds 1-1-2026 — verschillenlaag toegepast; "
+                "de gepubliceerde tekst blijft leidend"
+            ),
+            "IMDG_42_24_source": amendment_42_24.source(),
+            "IMDG_42_24_not_covered": amendment_42_24.not_covered(_lang(language)),
+            "EmS": "MSC.1/Circ.1588/Rev.3, aangevuld met de EmS-vermeldingen van 42-24",
             "IATA": "IATA DGR (lithium/natrium-ion: Guidance 2026)",
         },
     }
@@ -833,13 +989,14 @@ def check_compliance(
         result["adr_mixed_loading"] = check_adr_mixed_loading(entries, language)
 
     if "IMDG" in normalized:
-        result["imdg_segregation"] = (
+        result["imdg_segregation"] = apply_column_16b_precedence(
             check_imdg_segregation(entries, language)
             + check_imdg_class1_compatibility(entries, language)
             + check_imdg_segregation_groups(entries, language)
             + check_imdg_segregation_provisions(entries, language)
-            + check_imdg_segregation_exemptions(entries, language)
-        )
+            + check_imdg_segregation_exemptions(entries, language),
+            language,
+        ) + check_imdg_amendment_42_24(entries, language)
         result["imdg_note"] = rules["imdg_segregation"]["note"][_lang(language)]
         groups = rules.get("imdg_segregation_groups")
         if groups:

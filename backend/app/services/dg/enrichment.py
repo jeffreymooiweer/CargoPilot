@@ -21,6 +21,8 @@ import threading
 from pathlib import Path
 from typing import Any
 
+from app.services.dg import amendment_42_24
+
 # EmS (brand, lekkage) per UN-nummer — geladen uit backend/seed/dg/ems.json.
 _SEED_EMS = Path(__file__).resolve().parents[3] / "seed" / "dg" / "ems.json"
 _ems_lock = threading.Lock()
@@ -45,6 +47,10 @@ def lookup_ems(un_number: str, packing_group: str = "") -> dict[str, Any] | None
     """
     digits = "".join(ch for ch in str(un_number or "") if ch.isdigit()).zfill(4)
     entry = _load_ems()["entries"].get(digits)
+    if not entry:
+        # UN-nummers die Amendment 42-24 toevoegt staan nog niet in de EmS Guide-
+        # index van 2022; hun schema's komen uit de 42-24-bron.
+        entry = amendment_42_24.ems_additions().get(digits)
     if not entry:
         return None
 
@@ -95,7 +101,7 @@ def _load_sgg() -> dict[str, Any]:
 
 
 def segregation_groups_for(un_number: str) -> list[str]:
-    """Scheidingsgroepcodes van een UN-nummer, bijv. ['SGG1', 'SGG1a']."""
+    """Scheidingsgroepcodes van een UN-nummer, bijv. ['SGG1', 'SGG18']."""
     digits = "".join(ch for ch in str(un_number or "") if ch.isdigit()).zfill(4)
     return list(_load_sgg()["by_un"].get(digits, []))
 
@@ -144,8 +150,6 @@ def segregation_group_label(code: str, language: str = "nl") -> str:
     for group in _load_sgg()["groups"]:
         if group["code"] == code:
             return group.get(language) or group.get("nl") or group["en"]
-    if code == "SGG1a":
-        return "sterke zuren" if language == "nl" else "strong acids"
     return code
 
 
@@ -438,8 +442,10 @@ def enrich_un_entry(entry: dict[str, Any], language: str = "nl") -> dict[str, An
             extras["ems_class_default"] = f"{default[0]}, {default[1]}"
             extras["ems_source"] = "class_default"
 
-    # Stof-specifieke IMDG-gegevens van de UN-kaart.
-    card = card_data_for(un)
+    # Stof-specifieke IMDG-gegevens van de UN-kaart (41-22), bijgewerkt met de
+    # wijzigingen van Amendment 42-24 — sinds 1 januari 2026 de verplichte editie.
+    packing_group = clean_value(entry.get("packing_group"))
+    card = amendment_42_24.apply_card_overlay(un, card_data_for(un), packing_group)
     if card:
         extras["card_source"] = "imdg_un_card"
 
@@ -469,6 +475,19 @@ def enrich_un_entry(entry: dict[str, Any], language: str = "nl") -> dict[str, An
             extras["imdg_bulk"] = bulk.upper().replace("BK", "BK")
         elif bulk:
             extras["imdg_bulk_forbidden"] = True
+
+        if card.get("stowage_category"):
+            extras["imdg_stowage_category"] = card["stowage_category"]
+
+    # Wat Amendment 42-24 aan deze stof verandert. Dit staat los van de kaart:
+    # ook stoffen zonder kaart (of nieuw in 42-24) kunnen wijzigingen hebben.
+    changes = amendment_42_24.changes_for(un, packing_group, language)
+    if changes:
+        extras["imdg_amendment_changes"] = changes
+        extras["imdg_amendment"] = amendment_42_24.amendment()
+    doc_requirement = amendment_42_24.document_requirement(un, language)
+    if doc_requirement:
+        extras["imdg_document_requirement"] = doc_requirement
 
     # Milieugevaarlijk / marine pollutant — ADR-kant, blijft ook zonder kaart gelden.
     if un in ENVIRONMENTALLY_HAZARDOUS_UN or classification in ENVIRONMENTALLY_HAZARDOUS_CODES:

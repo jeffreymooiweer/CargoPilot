@@ -14,6 +14,7 @@ derive from that number, it derives for you — and then it checks the result.
 - [What blocks an export](#what-blocks-an-export)
 - [Per transport mode](#per-transport-mode)
 - [UN cards](#un-cards)
+- [Rule set editions](#rule-set-editions)
 - [How complete is the data?](#how-complete-is-the-data)
 
 ## What one UN number gives you
@@ -32,7 +33,7 @@ Type `1203`, or search for "gasoline". CargoPilot fills in:
 | **Kemler number** | Hazard identification number |
 | **LQ and EQ limits** | Limited and excepted quantities, explained in plain language |
 | **EmS emergency schedules** | Fire and spillage schedule for sea transport, with descriptions |
-| **Segregation groups** | SGG1–SGG18, for example "SGG1 (Acids), SGG1a (strong acids)" |
+| **Segregation groups** | SGG1–SGG18, for example "SGG1 (Acids), SGG18 (Alkalis)" |
 | **Stowage codes** | SW codes from column 16a, with the wording that explains them |
 | **Segregation codes** | SG codes from column 16b, per substance |
 | **Marine pollutant** | Column 4 — yes, no, or depends on the substance |
@@ -75,13 +76,22 @@ what the exemption does and does not release you from.
 on mixed compatibility groups within class 1, and on the CV28 separation of foodstuffs
 from labels 6.1/6.2 and certain class 9 substances.
 
-**IMDG 7.2.4 — sea segregation.** The full class segregation table, Amendment 40-20,
-with codes 1 to 4 from "away from" to "separated longitudinally". Subsidiary risks count
-too, and a subsidiary class 1 risk is treated as division 1.3 (7.2.3.3), which is
-stricter than the primary hazard alone. The table is pinned verbatim in a test so a
-future edit cannot slip through unnoticed.
+**IMDG 7.2.4 — sea segregation.** The full class segregation table, with codes 1 to 4
+from "away from" to "separated longitudinally". Subsidiary risks count too, and a
+subsidiary class 1 risk is treated as division 1.3 (7.2.3.3), which is stricter than the
+primary hazard alone. The table is pinned verbatim in a test so a future edit cannot slip
+through unnoticed.
 
-**IMDG 7.2.5 — segregation groups.** All eighteen groups, with 632 substance entries
+**IMDG 7.2.3.1 — which provision wins.** The class table and the substance's own SG codes
+can say different things about the same pair. The Code settles it: *"In case of
+conflicting provisions, the provisions of column 16b of the Dangerous Goods List, always
+take precedence."* Nitric acid next to sulphur is the plain case — the table says "away
+from", but the acid carries SG16, "separated from". CargoPilot applies the precedence and
+says so in both findings: the 16b provision is marked as governing, the table entry stays
+visible with a note explaining that it has been superseded. Nothing is removed, so you can
+always see what the table said and why it did not decide.
+
+**IMDG 7.2.5 — segregation groups.** All eighteen groups, with 629 substance entries
 across 539 UN numbers. Warns about acids with alkalis, acids with cyanides (hydrogen
 cyanide), acids with chlorites or hypochlorites (chlorine dioxide, chlorine gas), acids
 with nitrites, acids with azides (explosive hydrazoic acid), acids with metal powders
@@ -195,16 +205,39 @@ than discovered:
 | Component | Edition |
 |---|---|
 | ADR classification (Table A) | ADR 2025 |
-| IMDG class segregation table, class 1 matrix, 7.2.6.3 tables | Amendment 40-20 |
-| IMDG per-substance data (UN cards: SW/SG codes, marine pollutant) | Amendment 41-22 (2023) |
-| EmS emergency schedules | MSC.1/Circ.1588/Rev.3 |
+| IMDG class segregation table, class 1 matrix, 7.2.6.3 tables, segregation groups | Amendment 40-20 — **confirmed unchanged in 42-24** |
+| IMDG per-substance data (UN cards: SW/SG codes, marine pollutant) | Amendment 41-22 (2023), with the 42-24 differences applied on top |
+| EmS emergency schedules | MSC.1/Circ.1588/Rev.3, plus the schedules 42-24 adds |
 | IATA lithium/sodium-ion rules | 2026 guidance |
 
-**IMDG Amendment 42-24 is mandatory since 1 January 2026 and is not what this app has
-loaded.** Every compliance result carries this in its `rule_sets` metadata. Until the
-IMDG data is rebuilt from a 42-24 source, treat IMDG outcomes as indicative and let the
-current Code prevail — which the disclaimer requires anyway, but here it is with the
-specific reason.
+**IMDG Amendment 42-24 has been mandatory since 1 January 2026.** Rather than wait for a
+full rebuild of the IMDG data, CargoPilot carries a *difference layer*: the changes 42-24
+makes, laid over the 41-22 data, in `backend/seed/dg/imdg_42_24.json`.
+
+Two things make that workable:
+
+1. **Chapter 7.2 barely moved.** The only change 42-24 makes there is a rewording of
+   7.2.6.1. The class segregation table (7.2.4), the exemption tables (7.2.6.3), the
+   class 1 compatibility matrix (7.2.7.1.4) and the segregation groups (3.1.4.4) are
+   unchanged — so the tables this app computes with are still the current ones. A test
+   pins that list.
+2. **The rest is per substance,** and that is what the layer holds: the eleven new UN
+   numbers (sodium-ion batteries UN 3551/3552, the battery-powered vehicle entries
+   UN 3556–3558, disilane, gallium in articles, the fire suppressant dispersing devices,
+   the new tetramethylammonium hydroxide entry) with their EmS schedules, the substances
+   whose stowage codes or marine pollutant status changed, and the new document
+   requirement 5.4.1.5.18 for UN 1361.
+
+What the layer deliberately does **not** do is silently rewrite a classification. UN 3423
+becomes class 6.1 with a subsidiary 8 in 42-24 while ADR 2025 still lists it as class 8.
+CargoPilot keeps computing segregation on the ADR classification and says so in a warning,
+because quietly swapping the class would change the outcome with nothing on screen to
+explain why.
+
+Every compliance result names the editions it used in its `rule_sets` metadata, including
+a list of what the difference layer does not cover — packing and tank instructions, the
+full text of the new special provisions, and the amended properties of UN 3090/3091/3480/3481
+which the source reports without giving.
 
 ## How complete is the data?
 
@@ -212,11 +245,11 @@ specific reason.
 |---|---|
 | UN numbers with full ADR classification | 2,928 entries |
 | EmS emergency schedules | 2,338 UN numbers — **99.5%** exact, from the official EmS Guide |
-| Segregation groups | 632 entries across 539 UN numbers |
+| Segregation groups | 629 entries across 539 UN numbers |
 | UN packaging codes | All 107 codes of ADR 6.1.2 / 6.5.1.4 / 6.6.2 |
 | Stowage and segregation codes per substance | 2,336 UN numbers — 1,242 with SW codes, 840 with SG codes |
 | Marine pollutant status | 2,336 UN numbers — 202 confirmed, 38 explicitly not, the rest substance-dependent |
-| IMDG class segregation table | Complete, Amendment 40-20 |
+| IMDG class segregation table | Complete, Amendment 40-20 (unchanged in 42-24) |
 | Class 1 compatibility matrix | Complete, groups A to S |
 
 Where a value genuinely differs by packing group, CargoPilot **shows both options rather

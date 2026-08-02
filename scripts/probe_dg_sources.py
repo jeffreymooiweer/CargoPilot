@@ -346,8 +346,10 @@ DGL_HEADINGS = ["UN No.", "Proper shipping name", "Class or division", "Subsidia
                 "Packagings and IBCs", "Portable tanks", "EmS", "Stowage and handling",
                 "Segregation", "Properties and observations"]
 
-# Een regel uit de lijst begint met een UN-nummer, gevolgd door de naam.
-DGL_ROW = re.compile(r"^\s*(\d{4})\s+[A-Z(]")
+# Een lijstregel begint met een UN-nummer. In deze PDF komt elke tabelcel als
+# eigen tekstregel naar buiten, dus het nummer staat vaak alléén op zijn regel;
+# eisen dat de naam erachter staat levert een systematische misser op.
+DGL_ROW = re.compile(r"^\s*(\d{4})(?:\s|$)")
 
 
 def probe_dangerous_goods_list() -> int:
@@ -377,22 +379,37 @@ def probe_dangerous_goods_list() -> int:
                 print(f"  'Appendix {match.group(1)}' op PDF p{index + 1}: "
                       f"{match.group(0).strip()[:70]}")
 
+        # Eerst meten, dan oordelen: een te streng patroon meldt "niets
+        # gevonden" waar de lijst gewoon anders is opgemaakt.
+        heading_hits: dict[str, list[int]] = {}
         table_pages: list[int] = []
         un_numbers: set[str] = set()
         rows_per_page: dict[int, int] = {}
         for index in range(document.page_count):
-            text = document[index].get_text()
-            headings = sum(1 for h in DGL_HEADINGS if h in text)
-            rows = [m.group(1) for m in DGL_ROW.finditer(text)]
-            # Drie of meer rijen én minstens één kolomkop, of heel veel rijen:
-            # zo blijven kruisverwijzingslijsten en de index buiten beeld.
-            if (len(rows) >= 3 and headings >= 1) or len(rows) >= 12:
+            text = document[index].get_text(sort=True)
+            for heading in DGL_HEADINGS:
+                if heading in text:
+                    heading_hits.setdefault(heading, []).append(index + 1)
+            rows = [m.group(1) for m in DGL_ROW.finditer(text, re.M)
+                    if 1 <= int(m.group(1)) <= 3999]
+            if len(rows) >= 8:
                 table_pages.append(index + 1)
                 rows_per_page[index + 1] = len(rows)
                 un_numbers.update(rows)
 
+        print("\n  kolomkoppen van de lijst:")
+        for heading in DGL_HEADINGS:
+            pages = heading_hits.get(heading, [])
+            print(f"    {heading:<30} {len(pages)}x"
+                  + (f", eerst p{pages[0]}" if pages else ""))
+
         if not table_pages:
-            print("\n  GEEN Dangerous Goods List gevonden in dit document.")
+            print("\n  Geen enkele pagina met acht of meer UN-nummers.")
+            print("  De volledige Dangerous Goods List staat NIET in dit document.")
+            print("\n  -- wat staat er dan rond 'Appendix 2'? --")
+            for index in range(562, min(570, document.page_count)):
+                print(f"--- PDF p{index + 1} ---")
+                print(document[index].get_text()[:1200])
             return 1
 
         # Aaneengesloten reeksen samenvatten; dat leest als een vindplaats.

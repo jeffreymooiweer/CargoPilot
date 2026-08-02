@@ -79,7 +79,10 @@ HEADINGS = ["UN No.", "Proper shipping name", "Class or division", "Subsidiary",
 # die elke kolom regelen ("3.1.2", "2.0.1.3", "7.2–7.7") op y 140.5.
 BODY_TOP, BODY_BOTTOM = 150.0, 795.0
 
-# Regels op dezelfde tekstregel liggen binnen deze afstand in y.
+# Terugval wanneer een pagina geen horizontale randen levert: woorden binnen
+# deze afstand in y horen dan tot dezelfde tekstregel. Als maat voor een
+# tabelrij is dat te grof — het plakte UN 0291 en UN 0292 tot één vermelding —
+# dus de rijbanden komen bij voorkeur van de getekende randen.
 LINE_TOLERANCE = 3.0
 
 UN_CELL = re.compile(r"^\d{4}$")
@@ -154,6 +157,26 @@ def boundaries(rules: list[float] | None = None) -> list[tuple[str, float, float
     return out
 
 
+def find_row_rules(page, tolerance: float = 2.5) -> list[float]:
+    """De y-posities van de horizontale randen tussen de rijen.
+
+    Dezelfde redenering als bij de kolommen: de tabel tekent haar rijen af, en
+    die randen zijn nauwkeuriger dan elke afstandsmaat op de tekst. Een rand
+    die maar een halve kolom breed is hoort bij een deelvakje en scheidt geen
+    rijen.
+    """
+    found: list[float] = []
+    for drawing in page.get_drawings():
+        rect = drawing["rect"]
+        if rect.height <= 2.0 and rect.width >= 300.0:
+            found.append(round((rect.y0 + rect.y1) / 2, 1))
+    merged: list[float] = []
+    for y in sorted(found):
+        if not merged or y - merged[-1] > tolerance:
+            merged.append(y)
+    return merged
+
+
 def _from_edges(edges: list[float]) -> list[tuple[str, float, float]]:
     """Kolomgrenzen uit een reeks celranden, de eerste rand als linkerrand."""
     if len(edges) < len(COLUMNS):
@@ -182,26 +205,48 @@ def column_of(x: float, bounds: list[tuple[str, float, float]]) -> str:
     return bounds[-1][0]
 
 
-def page_lines(page, bounds: list[tuple[str, float, float]]) -> list[dict[str, str]]:
-    """De tekstregels van een lijstpagina, per kolom uitgesplitst.
+def band_of(y: float, rules: list[float]) -> int:
+    """In welke rijband een woord valt, geteld tussen de horizontale randen."""
+    band = 0
+    for rule in rules:
+        if y < rule:
+            return band
+        band += 1
+    return band
 
-    Een rij van de lijst kan meerdere tekstregels beslaan: een lange
-    vervoersnaam loopt door terwijl de andere kolommen leeg blijven. Hier wordt
-    alleen per tekstregel gegroepeerd; het samenvoegen tot rijen gebeurt daarna.
+
+def page_lines(page, bounds: list[tuple[str, float, float]],
+               row_rules: list[float] | None = None) -> list[dict[str, str]]:
+    """De rijen van een lijstpagina, per kolom uitgesplitst.
+
+    Met de horizontale randen erbij is een rij precies wat tussen twee randen
+    staat, hoeveel tekstregels dat ook zijn: een lange vervoersnaam die
+    doorloopt hoort bij dezelfde vermelding, en de volgende vermelding begint
+    pas na de rand. Zonder die randen valt de indeling terug op afstand in y,
+    wat genoeg is om door te lezen maar twee korte vermeldingen aan elkaar kan
+    plakken.
+
+    Binnen een rij worden de woorden op leesvolgorde gezet: eerst van boven
+    naar beneden, dan van links naar rechts, zodat een naam over twee regels in
+    de goede volgorde aan elkaar komt.
     """
-    rows: dict[float, dict[str, list[tuple[float, str]]]] = defaultdict(
+    rows: dict[Any, dict[str, list[tuple[float, float, str]]]] = defaultdict(
         lambda: defaultdict(list))
     for x0, y0, _x1, _y1, word, *_ in page.get_text("words"):
         if not BODY_TOP <= y0 <= BODY_BOTTOM:
             continue
-        key = next((k for k in rows if abs(k - y0) <= LINE_TOLERANCE), round(y0, 1))
-        rows[key][column_of(x0, bounds)].append((x0, word))
+        if row_rules:
+            key: Any = band_of(y0, row_rules)
+        else:
+            key = next((k for k in rows if abs(k - y0) <= LINE_TOLERANCE), round(y0, 1))
+        rows[key][column_of(x0, bounds)].append((y0, x0, word))
 
     lines = []
     for key in sorted(rows):
         cells = {}
         for name, words in rows[key].items():
-            cells[name] = " ".join(w for _, w in sorted(words))
+            ordered = sorted(words, key=lambda w: (round(w[0], 1), w[1]))
+            cells[name] = " ".join(word for _y, _x, word in ordered)
         lines.append(cells)
     return lines
 
@@ -258,12 +303,13 @@ def extract(path: Path, only_pages: list[int] | None = None) -> tuple[list[dict]
             pages_read.append(number)
             rules = find_rules(page)
             bounds = boundaries(rules)
+            row_rules = find_row_rules(page)
             # Vastleggen of deze pagina op gemeten randen is gelezen of op de
             # schatting; dat laatste mag geen ongemerkte meerderheid worden.
             measured = bounds != boundaries()
             rule_shapes[(tuple(rules), measured)] = \
                 rule_shapes.get((tuple(rules), measured), 0) + 1
-            for entry in merge_rows(page_lines(page, bounds)):
+            for entry in merge_rows(page_lines(page, bounds, row_rules)):
                 clean = normalise(entry)
                 cell = clean.get("un_number", "")
                 if UN_CELL.match(cell) or UN_OVERFLOW.match(cell):
@@ -382,8 +428,10 @@ def diagnose(path: Path, pages: list[int]) -> None:
                                key=lambda w: (w[1], w[0]))[:25]:
                 print(f"    x{word[0]:8.1f} y{word[1]:8.1f}  {word[4]!r}")
 
-            lines = page_lines(page, boundaries(find_rules(page)))
-            print(f"  tekstregels na kolomindeling: {len(lines)}")
+            row_rules = find_row_rules(page)
+            print(f"  horizontale randen: {len(row_rules)}")
+            lines = page_lines(page, boundaries(find_rules(page)), row_rules)
+            print(f"  rijen na kolom- en rijindeling: {len(lines)}")
             for cells in lines[:5]:
                 print(f"    {cells}")
 

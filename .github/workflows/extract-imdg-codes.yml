@@ -1,0 +1,52 @@
+name: Extract IMDG codes
+
+# Leest de stuwage-, behandelings- en scheidingscodes met hun omschrijving uit
+# hoofdstuk 7.1.5, 7.1.6 en 7.2.8 van de IMDG-code en zet het resultaat als
+# feitelijke codetabel in backend/seed/dg/imdg_codes.json.
+#
+# Draait hier en niet lokaal omdat de ontwikkelomgeving geen uitgaand netwerk
+# heeft. Alleen de afgeleide tabel wordt vastgelegd, nooit de brontekst.
+
+on:
+  workflow_dispatch:
+    inputs:
+      commit:
+        description: "Het resultaat vastleggen op deze branch"
+        type: boolean
+        default: true
+
+permissions:
+  contents: write
+
+jobs:
+  extract:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - run: pip install --quiet pymupdf
+
+      - name: Extract
+        run: python scripts/extract_imdg_codes.py --out backend/seed/dg/imdg_codes.json
+
+      - name: Commit
+        if: ${{ inputs.commit }}
+        run: |
+          set -eu
+          if git diff --quiet -- backend/seed/dg/imdg_codes.json; then
+            echo "Ongewijzigd; niets vast te leggen."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add backend/seed/dg/imdg_codes.json
+          git commit \
+            -m "Read the IMDG 16a and 16b code descriptions from chapter 7" \
+            -m "The app knew which stowage, handling and segregation codes a substance carries but could only show fragments of wording scraped from the UN cards. These come from 7.1.5, 7.1.6 and 7.2.8 themselves." \
+            -m "Extracted by scripts/extract_imdg_codes.py; a factual code table, not the regulatory text."
+          git push

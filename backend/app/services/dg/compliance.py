@@ -16,6 +16,7 @@ from app.core.config import get_settings
 from app.services.dg import amendment_42_24
 from app.services.dg.enrichment import (
     card_data_for,
+    imdg_code_text,
     segregation_group_label,
     segregation_groups_for,
     segregation_provisions,
@@ -521,6 +522,15 @@ def _matches_class(target: str, classes: set[str]) -> bool:
     return False
 
 
+def _wording(code: str, rules: dict[str, Any]) -> str:
+    """De omschrijving van een SG-code, bij voorkeur die van de code zelf.
+
+    Hoofdstuk 7.2.8 geeft de officiële formulering; de zin die van de UN-kaart
+    kwam is een parafrase en blijft alleen over als terugval.
+    """
+    return imdg_code_text(code) or str(rules.get(code, {}).get("text", ""))
+
+
 def check_imdg_segregation_provisions(
     entries: list[dict[str, Any]], language: str = "nl"
 ) -> list[dict[str, Any]]:
@@ -580,7 +590,7 @@ def check_imdg_segregation_provisions(
             warnings.append({
                 "rule": f"IMDG 16b ({code})",
                 "severity": "warning",
-                "message": f"{requirement[lang]} {rules.get(code, {}).get('text', '')}".strip(),
+                "message": f"{requirement[lang]} {_wording(code, rules)}".strip(),
                 "products": source["label"],
             })
 
@@ -623,7 +633,7 @@ def check_imdg_segregation_provisions(
                     warnings.append({
                         "rule": f"IMDG 16b ({code})",
                         "severity": "warning",
-                        "message": f"{rule['text']}{caveat}",
+                        "message": f"{_wording(code, rules)}{caveat}",
                         "products": f"{source['label']}  \u00d7  {other['label']}",
                     })
                 continue
@@ -666,9 +676,9 @@ def check_imdg_segregation_provisions(
                     "rule": f"IMDG 16b ({code})",
                     "severity": "warning",
                     "message": (
-                        f"Stuw {action_nl} {what}. {rule['text']}"
+                        f"Stuw {action_nl} {what}. {_wording(code, rules)}"
                         if lang == "nl"
-                        else f"Stow {action_en} {what_en}. {rule['text']}"
+                        else f"Stow {action_en} {what_en}. {_wording(code, rules)}"
                     ),
                     "products": f"{source['label']}  \u00d7  {other['label']}",
                     "source": "column_16b",

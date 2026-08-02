@@ -139,6 +139,50 @@ def segregation_provisions() -> dict[str, Any]:
     return _provisions_cache
 
 
+# De betekenis van de codes uit kolom 16a en 16b, gelezen uit hoofdstuk 7.1.5,
+# 7.1.6 en 7.2.8 van de IMDG-code zelf. De kaarten zeggen wélke codes een stof
+# draagt; deze tabel zegt wat ze betekenen — voorheen alleen als brokstuk
+# beschikbaar uit de kaarttekst.
+_SEED_CODES = Path(__file__).resolve().parents[3] / "seed" / "dg" / "imdg_codes.json"
+_codes_cache: dict[str, Any] | None = None
+
+
+def _load_imdg_codes() -> dict[str, Any]:
+    global _codes_cache
+    with _ems_lock:
+        if _codes_cache is None:
+            try:
+                _codes_cache = json.loads(_SEED_CODES.read_text(encoding="utf-8"))
+            except (OSError, ValueError):  # pragma: no cover - seed ontbreekt
+                _codes_cache = {}
+    return _codes_cache
+
+
+def imdg_code_text(code: str) -> str:
+    """Omschrijving van een SW-, H- of SG-code, of leeg als die onbekend is.
+
+    Een gereserveerde code levert bewust niets op: "[Reserved]" is geen
+    voorschrift en hoort niet als begeleiding op het scherm.
+    """
+    key = str(code or "").strip().upper()
+    for section in ("stowage_codes", "handling_codes", "segregation_codes"):
+        entry = _load_imdg_codes().get(section) or {}
+        text = (entry.get("codes") or {}).get(key)
+        if text:
+            return text
+    return ""
+
+
+def describe_imdg_codes(codes: list[str]) -> list[dict[str, str]]:
+    """Codes met hun omschrijving, in de volgorde waarin ze gegeven zijn."""
+    described = []
+    for code in codes:
+        text = imdg_code_text(code)
+        if text:
+            described.append({"code": str(code).strip().upper(), "text": text})
+    return described
+
+
 def card_data_for(un_number: str) -> dict[str, Any]:
     """IMDG-gegevens van de UN-kaart, of een leeg dict als die er niet is."""
     digits = "".join(ch for ch in str(un_number or "") if ch.isdigit()).zfill(4)
@@ -462,8 +506,14 @@ def enrich_un_entry(entry: dict[str, Any], language: str = "nl") -> dict[str, An
         # kaart, want "SG35" zegt op zichzelf niets tegen een gebruiker.
         if card.get("stowage_codes"):
             extras["imdg_stowage_codes"] = card["stowage_codes"]
+            described = describe_imdg_codes(card["stowage_codes"])
+            if described:
+                extras["imdg_stowage_definitions"] = described
         if card.get("segregation_codes"):
             extras["imdg_segregation_codes"] = card["segregation_codes"]
+            described = describe_imdg_codes(card["segregation_codes"])
+            if described:
+                extras["imdg_segregation_definitions"] = described
         for field, key in (("stowage_text", "imdg_stowage_text"),
                            ("segregation_text", "imdg_segregation_text")):
             value = card.get(field)

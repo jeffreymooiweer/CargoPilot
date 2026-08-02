@@ -99,9 +99,18 @@ with nitrites, acids with azides (explosive hydrazoic acid), acids with metal po
 
 **Columns 16a and 16b, per substance.** The stowage (SW) and segregation (SG) codes for
 2,336 UN numbers, read from the UN cards. Nitric acid, for instance, yields
-`SG6, SG16, SG17, SG19, SG36, SG49` — and each is shown with the wording that explains
-it, because a bare code tells a user nothing. This used to be the one place the app had
-to send you to the Dangerous Goods List itself.
+`SG6, SG16, SG17, SG19, SG36, SG49`.
+
+Each is shown with the wording that explains it, because a bare code tells a user
+nothing — and that wording now comes from the Code itself rather than from a paraphrase.
+Chapters 7.1.5, 7.1.6 and 7.2.8 define **SW1–SW31**, the handling codes **H1–H5** and
+**SG1–SG78**, and all of them are on board. SG16 reads *"Stow 'separated from' class
+4.1"*, in those words.
+
+Reading the official list also settled two things the card text had blurred. SW22 is not
+one rule but three, by aerosol capacity. And SG75 is simply absent from the list, where
+SG64, SG66 and SG73 are marked `[Reserved]` — independent confirmation that the SGG1a
+marking for strong acids left the Code entirely.
 
 **And they are checked, not just shown.** Load anhydrous ammonia with hydrochloric acid
 and you get both sides of it: the ammonia carries SG35 (separated from acids) and the acid

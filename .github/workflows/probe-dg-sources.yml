@@ -36,7 +36,7 @@ jobs:
       - run: pip install --quiet pymupdf
 
       - name: Probe
-        if: ${{ inputs.source != 'dgl-survey' }}
+        if: ${{ contains(fromJSON('["all","cantell","model-regs","cepa","dgl"]'), inputs.source) }}
         run: python scripts/probe_dg_sources.py "${{ inputs.source }}" --sample-pages "${{ inputs.sample_pages }}"
 
       - name: Survey the Dangerous Goods List

@@ -48,4 +48,4 @@ jobs:
       # te lopen. Legt niets vast.
       - name: Trial run on a few pages
         if: ${{ inputs.source == 'dgl-trial' }}
-        run: python scripts/extract_imdg_dgl.py --dry-run --pages "${{ inputs.sample_pages }}"
+        run: python scripts/extract_imdg_dgl.py --dry-run --debug --pages "${{ inputs.sample_pages }}"

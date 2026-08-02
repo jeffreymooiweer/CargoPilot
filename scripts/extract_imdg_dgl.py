@@ -282,6 +282,53 @@ def cross_check(entries: list[dict[str, Any]]) -> dict[str, Any]:
     return checks
 
 
+def diagnose(path: Path, pages: list[int]) -> None:
+    """Tonen wat de parser op een pagina werkelijk aantreft.
+
+    Twee keer achter elkaar de verkeerde aanname doen kost meer tijd dan één
+    keer meten. Dit drukt de paginamaat af, wat er aan tekeningen op staat, de
+    eerste woorden met hun positie en de cellen die daaruit volgen.
+    """
+    import fitz
+
+    with fitz.open(path) as document:
+        for number in pages:
+            if not 0 < number <= document.page_count:
+                continue
+            page = document[number - 1]
+            print(f"\n===== p{number} =====")
+            print(f"  rect {page.rect}, rotatie {page.rotation}")
+
+            drawings = page.get_drawings()
+            vertical = [d["rect"] for d in drawings if d["rect"].width <= 2.0]
+            print(f"  tekeningen: {len(drawings)}, waarvan smal-en-verticaal: {len(vertical)}")
+            if vertical:
+                tallest = sorted(vertical, key=lambda r: -r.height)[:8]
+                print("    hoogste: " + ", ".join(
+                    f"x{r.x0:.1f} h{r.height:.1f}" for r in tallest))
+            elif drawings:
+                sample = [d["rect"] for d in drawings[:8]]
+                print("    voorbeeld: " + ", ".join(
+                    f"({r.x0:.0f},{r.y0:.0f})-({r.x1:.0f},{r.y1:.0f})" for r in sample))
+
+            words = page.get_text("words")
+            ys = [w[1] for w in words]
+            print(f"  woorden: {len(words)}, y van {min(ys, default=0):.1f} "
+                  f"tot {max(ys, default=0):.1f}")
+            print(f"  binnen BODY_TOP..BODY_BOTTOM ({BODY_TOP}..{BODY_BOTTOM}): "
+                  f"{sum(1 for y in ys if BODY_TOP <= y <= BODY_BOTTOM)}")
+
+            print("  eerste 25 woorden onder de koptekst:")
+            for word in sorted((w for w in words if w[1] > BODY_TOP),
+                               key=lambda w: (w[1], w[0]))[:25]:
+                print(f"    x{word[0]:8.1f} y{word[1]:8.1f}  {word[4]!r}")
+
+            lines = page_lines(page, boundaries(find_rules(page)))
+            print(f"  tekstregels na kolomindeling: {len(lines)}")
+            for cells in lines[:5]:
+                print(f"    {cells}")
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--out", type=Path, default=SEED / "imdg_dgl.json")
@@ -289,12 +336,17 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--pages", help="Alleen deze pagina's, voor een proef")
     parser.add_argument("--dry-run", action="store_true",
                         help="Wel lezen en controleren, niet wegschrijven")
+    parser.add_argument("--debug", action="store_true",
+                        help="Per proefpagina tonen wat de parser werkelijk ziet")
     parser.add_argument("--min-agreement", type=float, default=0.95,
                         help="Onder deze overeenstemming wordt niets vastgelegd")
     args = parser.parse_args(argv)
 
     path = args.pdf or download(SOURCE_URL, Path("/tmp/imdg_42_24.pdf"))
     only = [int(p) for p in (args.pages or "").split(",") if p.strip().isdigit()] or None
+
+    if args.debug and only:
+        diagnose(path, only)
 
     entries, summary = extract(path, only)
     print(f"gelezen: {summary}")

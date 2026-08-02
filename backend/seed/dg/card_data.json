@@ -34611,8 +34611,9 @@
    "variants": 1
   },
   "SG74": {
+   "action": "segregate_as_class",
+   "as_class": "1.4G",
    "code": "SG74",
-   "informational": true,
    "seen": 1,
    "text": "Segregation as for 1.4G (SG74).",
    "variants": 1
@@ -34683,7 +34684,7 @@
   "failed": 0,
   "marine_pollutant_yes": 202,
   "segregation_provisions": 70,
-  "segregation_provisions_actionable": 48,
+  "segregation_provisions_actionable": 49,
   "un_numbers": 2336,
   "with_segregation_codes": 840,
   "with_segregation_groups": 792,

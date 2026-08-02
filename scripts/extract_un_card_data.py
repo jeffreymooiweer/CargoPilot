@@ -135,7 +135,7 @@ ACTIONS = [
     ("separated from", "separated_from"),
     ("away from", "away_from"),
 ]
-AS_FOR_CLASS = re.compile(r"[Ss]egregation as for class ([\d.]+[A-Z]?)")
+AS_FOR_CLASS = re.compile(r"[Ss]egregation as for (?:class\s+)?([\d.]+[A-Z]?)\b")
 CLASS_TOKEN = re.compile(r"\b(?:class|classes|division|divisions)\s+([\d.]+[A-Z]?(?:\s*,?\s*(?:and\s+)?[\d.]+[A-Z]?)*)")
 GROUP_TOKEN = re.compile(r"\bSGG(\d{1,2}a?)\b")
 

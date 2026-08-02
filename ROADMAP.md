@@ -31,10 +31,9 @@ registry are settled.
 ### Dangerous goods data
 
 - German as a third interface language, including the dangerous goods help texts.
-- The 22 segregation provisions that point at foodstuff tables, named substances or a
-  table in the Code are shown but not checked. Some could be made checkable — "separated
-  from ammonia" needs only a substance list — but each needs its own reasoning and a
-  wrong segregation rule is worse than none.
+- **SG72 — the tables of IMDG 7.2.6.3.** Thirty-six substances point at them and we hold
+  no source for them, so the provision is shown as text. The tables themselves would make
+  it checkable.
 
 ### Wizard and library
 

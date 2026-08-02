@@ -239,3 +239,64 @@ def test_only_definitions_and_table_references_remain_as_text(rules):
         if rule.get("targets") or rule.get("as_class")
     } | named | cargo
     assert set(rules) - checkable == {"SG1", "SG48", "SG69", "SG71", "SG72", "SG77"}
+
+
+# --- IMDG 7.2.6.3: the exemption SG72 points at ------------------------------
+# Read from chapter 7.2 of Amendment 40-20, the same edition as the class table.
+# It relaxes segregation rather than tightening it, which is the opposite of
+# what the bare code "See tables in 7.2.6.3" suggests.
+
+def test_two_substances_from_the_same_table_are_reported_as_exempt():
+    from app.services.dg.compliance import check_imdg_segregation_exemptions
+
+    findings = check_imdg_segregation_exemptions(
+        shipment({"un_number": "3101", "class": "5.2"}, {"un_number": "3103", "class": "5.2"}), "nl"
+    )
+    assert [f["rule"] for f in findings] == ["IMDG 7.2.6.3.4"]
+    assert findings[0]["severity"] == "info"
+    assert "geen scheiding" in findings[0]["message"]
+
+
+def test_table_four_carries_the_caveat_of_7_2_6_4():
+    from app.services.dg.compliance import check_imdg_segregation_exemptions
+
+    findings = check_imdg_segregation_exemptions(
+        shipment({"un_number": "3101", "class": "5.2"}, {"un_number": "3103", "class": "5.2"}), "nl"
+    )
+    assert "7.2.6.4" in findings[0]["message"]
+
+
+def test_substances_from_different_tables_are_not_exempt():
+    """The exemption is within a table, not across them."""
+    from app.services.dg.compliance import check_imdg_segregation_exemptions
+
+    assert check_imdg_segregation_exemptions(
+        shipment({"un_number": "2014", "class": "5.1"}, {"un_number": "1818", "class": "8"}), "nl"
+    ) == []
+
+
+def test_the_exemption_never_removes_a_warning():
+    """A finding and its exemption are both shown; suppressing would hide risk."""
+    from app.services.dg.compliance import (
+        check_imdg_segregation_exemptions,
+        check_imdg_segregation_provisions,
+    )
+
+    load = shipment({"un_number": "2014", "class": "5.1"}, {"un_number": "3149", "class": "5.1"})
+    exemptions = check_imdg_segregation_exemptions(load, "nl")
+    # Both are in table 7.2.6.3.1, so the exemption applies …
+    assert [f["rule"] for f in exemptions] == ["IMDG 7.2.6.3.1"]
+    # … and whatever column 16b says is still reported, unchanged.
+    provisions = check_imdg_segregation_provisions(load, "nl")
+    assert all(w["severity"] == "warning" for w in provisions)
+
+
+def test_the_tables_match_the_code():
+    """Pinned verbatim from Amendment 40-20, chapter 7.2."""
+    from app.services.dg.compliance import get_compliance_rules
+
+    tables = get_compliance_rules()["imdg_segregation_exemptions"]["tables"]
+    assert tables["7.2.6.3.1"] == ["2014", "2984", "3105", "3107", "3109", "3149"]
+    assert tables["7.2.6.3.2"] == ["1295", "1818", "2189"]
+    assert len(tables["7.2.6.3.3"]) == 10 and tables["7.2.6.3.3"][0] == "3391"
+    assert len(tables["7.2.6.3.4"]) == 21 and tables["7.2.6.3.4"][0] == "1325"

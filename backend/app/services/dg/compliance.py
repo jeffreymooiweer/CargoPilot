@@ -656,6 +656,64 @@ def check_imdg_segregation_provisions(
     return warnings
 
 
+def check_imdg_segregation_exemptions(
+    entries: list[dict[str, Any]], language: str = "nl"
+) -> list[dict[str, Any]]:
+    """IMDG 7.2.6.3: stoffen in dezelfde tabel hoeven niet gescheiden te worden.
+
+    Dit is de vrijstelling waar SG72 in kolom 16b naar verwijst. De app haalt er
+    géén waarschuwing mee weg — een terechte melding onderdrukken is erger dan
+    een overbodige tonen — maar meldt de vrijstelling ernaast, met tabel en al.
+    Zo staan de bevinding en haar rechtsgrond samen in beeld en blijft de keuze
+    bij de afzender.
+    """
+    config = get_compliance_rules().get("imdg_segregation_exemptions")
+    if not config:
+        return []
+    lang = _lang(language)
+    tables = config["tables"]
+
+    parties: list[tuple[str, str]] = []
+    for entry, index, product in _iter_products(entries):
+        un = "".join(ch for ch in str(product.get("un_number") or "") if ch.isdigit())
+        if un:
+            parties.append((_product_label(entry, product, index), un.zfill(4)))
+
+    findings: list[dict[str, Any]] = []
+    seen: set[tuple[str, str, str]] = set()
+    for i, (label_a, un_a) in enumerate(parties):
+        for label_b, un_b in parties[i + 1:]:
+            for name, members in tables.items():
+                if un_a not in members or un_b not in members:
+                    continue
+                key = (*sorted((label_a, label_b)), name)
+                if key in seen:
+                    continue
+                seen.add(key)
+                extra = ""
+                if name == "7.2.6.3.4":
+                    extra = (
+                        " Let op 7.2.6.4: de gevaarlijke reacties van 7.2.6.1.1 t/m "
+                        "7.2.6.1.4 blijven gelden."
+                        if lang == "nl"
+                        else " Note 7.2.6.4: the dangerous reactions of 7.2.6.1.1 to "
+                        "7.2.6.1.4 continue to apply."
+                    )
+                findings.append({
+                    "rule": f"IMDG {name}",
+                    "severity": "info",
+                    "message": (
+                        f"Beide stoffen staan in tabel {name}: hiertussen hoeft geen "
+                        f"scheiding te worden toegepast.{extra}"
+                        if lang == "nl"
+                        else f"Both substances appear in table {name}: no segregation needs "
+                        f"to be applied between them.{extra}"
+                    ),
+                    "products": f"{label_a}  \u00d7  {label_b}",
+                })
+    return findings
+
+
 def check_q_value(entries: list[dict[str, Any]], language: str = "nl") -> list[dict[str, Any]]:
     """IATA 5.0.2.11: Q-waarde per positie voor 'all packed in one'."""
     rules = get_compliance_rules()["q_value"]
@@ -711,6 +769,7 @@ def check_compliance(
             + check_imdg_class1_compatibility(entries, language)
             + check_imdg_segregation_groups(entries, language)
             + check_imdg_segregation_provisions(entries, language)
+            + check_imdg_segregation_exemptions(entries, language)
         )
         result["imdg_note"] = rules["imdg_segregation"]["note"][_lang(language)]
         groups = rules.get("imdg_segregation_groups")

@@ -64,6 +64,7 @@ goes quiet; typing an address by hand always works.
 | UN packaging codes (107) | ADR 6.1.2 / 6.5.1.4 / 6.6.2 |
 | EmS emergency schedules per UN number, and the schedule descriptions | IMO **MSC.1/Circ.1588/Rev.3** — EmS Guide (IMO circular, freely distributable) |
 | Class segregation table and class 1 compatibility matrix | IMDG Code chapter 7.2, Amendment 40-20 |
+| Segregation exemption tables 7.2.6.3.1 – 7.2.6.3.4 | IMDG Code chapter 7.2, Amendment 40-20 |
 | Segregation groups per substance (SGG1–SGG18, 632 entries) | IMDG Code chapter 3.1, section 3.1.4.4 |
 | Lithium and sodium-ion batteries in aviation | [IATA Guidance Document for Lithium Batteries and Sodium ion Batteries](https://www.iata.org/contentassets/05e6d8742b0047259bf3a700bc9d42b9/lithium-battery-guidance-document.pdf), 2026 edition |
 | ADR 1.1.3.6 points, loading together 7.5.2, IATA Table 9.3.A, Q value | ADR 2025 (UNECE) and the IATA DGR |

@@ -972,5 +972,63 @@
       "nl": "Bij dekstuwage op een containerschip geldt bovendien een minimale afstand van twee containerplaatsen dwarsscheeps tot klasse 2.1 en 3.",
       "en": "When stowed on deck of a containership, a minimum distance of two container spaces athwartship from classes 2.1 and 3 also applies."
     }
+  },
+  "imdg_segregation_exemptions": {
+    "_comment": "IMDG 7.2.6.3 (Amendment 40-20): no segregation needs to be applied between substances listed in the same table. This is a relaxation, not a restriction — SG72 in column 16b points at it. CargoPilot never removes a segregation warning on the strength of it; it reports the exemption alongside, so the finding and its legal basis are both in view and the decision stays with the shipper. Table 7.2.6.3.4 carries the extra caveat of 7.2.6.4.",
+    "source": "IMDG Code, Amendment 40-20, chapter 7.2, section 7.2.6.3",
+    "tables": {
+      "7.2.6.3.1": [
+        "2014",
+        "2984",
+        "3105",
+        "3107",
+        "3109",
+        "3149"
+      ],
+      "7.2.6.3.2": [
+        "1295",
+        "1818",
+        "2189"
+      ],
+      "7.2.6.3.3": [
+        "3391",
+        "3392",
+        "3393",
+        "3394",
+        "3395",
+        "3396",
+        "3397",
+        "3398",
+        "3399",
+        "3400"
+      ],
+      "7.2.6.3.4": [
+        "1325",
+        "3101",
+        "3102",
+        "3103",
+        "3104",
+        "3105",
+        "3106",
+        "3107",
+        "3108",
+        "3109",
+        "3110",
+        "3111",
+        "3112",
+        "3113",
+        "3114",
+        "3115",
+        "3116",
+        "3117",
+        "3118",
+        "3119",
+        "3120"
+      ]
+    },
+    "note": {
+      "nl": "IMDG 7.2.6.3: tussen stoffen in dezelfde tabel hoeft geen scheiding te worden toegepast. Let bij tabel 7.2.6.3.4 op 7.2.6.4: de gevaarlijke reacties van 7.2.6.1.1 t/m 7.2.6.1.4 blijven gelden.",
+      "en": "IMDG 7.2.6.3: no segregation needs to be applied between substances in the same table. For table 7.2.6.3.4, note 7.2.6.4: the dangerous reactions of 7.2.6.1.1 to 7.2.6.1.4 continue to apply."
+    }
   }
 }

@@ -349,7 +349,7 @@ DGL_HEADINGS = ["UN No.", "Proper shipping name", "Class or division", "Subsidia
 # Een lijstregel begint met een UN-nummer. In deze PDF komt elke tabelcel als
 # eigen tekstregel naar buiten, dus het nummer staat vaak alléén op zijn regel;
 # eisen dat de naam erachter staat levert een systematische misser op.
-DGL_ROW = re.compile(r"^\s*(\d{4})(?:\s|$)")
+DGL_ROW = re.compile(r"^[ \t]*(\d{4})(?:[ \t]|$)", re.M)
 
 
 def probe_dangerous_goods_list() -> int:
@@ -390,7 +390,7 @@ def probe_dangerous_goods_list() -> int:
             for heading in DGL_HEADINGS:
                 if heading in text:
                     heading_hits.setdefault(heading, []).append(index + 1)
-            rows = [m.group(1) for m in DGL_ROW.finditer(text, re.M)
+            rows = [m.group(1) for m in DGL_ROW.finditer(text)
                     if 1 <= int(m.group(1)) <= 3999]
             if len(rows) >= 8:
                 table_pages.append(index + 1)

@@ -30,6 +30,7 @@ Gebruik::
     python scripts/probe_dg_sources.py cantell
     python scripts/probe_dg_sources.py model-regs --sample-pages 60,61,120
     python scripts/probe_dg_sources.py cepa
+    python scripts/probe_dg_sources.py dgl
 """
 from __future__ import annotations
 
@@ -338,9 +339,91 @@ def probe_cepa() -> int:
     return 0
 
 
+# Kolomkoppen van de Dangerous Goods List. Een pagina die er meerdere draagt is
+# een DGL-pagina; op de losse woorden zoeken levert te veel valse treffers.
+DGL_HEADINGS = ["UN No.", "Proper shipping name", "Class or division", "Subsidiary",
+                "Packing group", "Special provisions", "Limited and excepted",
+                "Packagings and IBCs", "Portable tanks", "EmS", "Stowage and handling",
+                "Segregation", "Properties and observations"]
+
+# Een regel uit de lijst begint met een UN-nummer, gevolgd door de naam.
+DGL_ROW = re.compile(r"^\s*(\d{4})\s+[A-Z(]")
+
+
+def probe_dangerous_goods_list() -> int:
+    """Staat de volledige Dangerous Goods List in het document, en waar?
+
+    De inhoudsopgave verwijst voor deel 3 door naar appendix 2. Waar die
+    appendix in de PDF begint is niet uit het codepaginanummer af te leiden —
+    een eerdere poging landde op hoofdstuk 3.1 — dus wordt hier op structuur
+    gezocht in plaats van op een nummer: kolomkoppen en regels die met een
+    UN-nummer beginnen.
+    """
+    import fitz
+
+    print("== Dangerous Goods List in het 42-24-document ==")
+    try:
+        path = download(CEPA, Path("/tmp/cepa.pdf"), timeout=600)
+    except (urllib.error.URLError, urllib.error.HTTPError, TimeoutError, OSError) as error:
+        print(f"  niet bereikbaar: {error}")
+        return 1
+
+    with fitz.open(path) as document:
+        print(f"  {document.page_count} pagina's")
+
+        # Waar noemt het document een appendix bij naam?
+        for index in range(document.page_count):
+            for match in re.finditer(r"^\s*Appendix\s+(\d)\b.{0,60}", document[index].get_text(), re.M):
+                print(f"  'Appendix {match.group(1)}' op PDF p{index + 1}: "
+                      f"{match.group(0).strip()[:70]}")
+
+        table_pages: list[int] = []
+        un_numbers: set[str] = set()
+        rows_per_page: dict[int, int] = {}
+        for index in range(document.page_count):
+            text = document[index].get_text()
+            headings = sum(1 for h in DGL_HEADINGS if h in text)
+            rows = [m.group(1) for m in DGL_ROW.finditer(text)]
+            # Drie of meer rijen én minstens één kolomkop, of heel veel rijen:
+            # zo blijven kruisverwijzingslijsten en de index buiten beeld.
+            if (len(rows) >= 3 and headings >= 1) or len(rows) >= 12:
+                table_pages.append(index + 1)
+                rows_per_page[index + 1] = len(rows)
+                un_numbers.update(rows)
+
+        if not table_pages:
+            print("\n  GEEN Dangerous Goods List gevonden in dit document.")
+            return 1
+
+        # Aaneengesloten reeksen samenvatten; dat leest als een vindplaats.
+        ranges: list[tuple[int, int]] = []
+        for page in table_pages:
+            if ranges and page == ranges[-1][1] + 1:
+                ranges[-1] = (ranges[-1][0], page)
+            else:
+                ranges.append((page, page))
+        print(f"\n  {len(table_pages)} pagina's met lijststructuur, "
+              f"{len(un_numbers)} verschillende UN-nummers")
+        print("  bereiken: " + ", ".join(f"p{a}-p{b}" if a != b else f"p{a}"
+                                         for a, b in ranges[:25]))
+
+        # Dekt dit de hele lijst? Onze eigen database telt er 2.336 met kaart.
+        for un in ("0004", "1203", "1361", "3480", "3551", "3560"):
+            print(f"  UN {un}: {'aanwezig' if un in un_numbers else 'NIET gevonden'}")
+
+        biggest = max(rows_per_page, key=rows_per_page.get)
+        print(f"\n===== dichtstbezette pagina p{biggest} "
+              f"({rows_per_page[biggest]} rijen), platte tekst =====")
+        print(document[biggest - 1].get_text()[:4000])
+        print(f"\n===== p{biggest}, woorden met positie (eerste 300) =====")
+        for word in document[biggest - 1].get_text("words")[:300]:
+            print(f"{word[0]:8.1f} {word[1]:8.1f}  {word[4]}")
+    return 0
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("source", choices=["cantell", "model-regs", "cepa", "all"])
+    parser.add_argument("source", choices=["cantell", "model-regs", "cepa", "dgl", "all"])
     parser.add_argument("--sample-pages", default="60,61,120",
                         help="Pagina's van de DGL die als voorbeeld op de uitvoer komen")
     args = parser.parse_args(argv)
@@ -353,6 +436,8 @@ def main(argv: list[str] | None = None) -> int:
         status |= probe_model_regulations(pages)
     if args.source in {"cepa", "all"}:
         status |= probe_cepa()
+    if args.source in {"dgl", "all"}:
+        status |= probe_dangerous_goods_list()
     return status
 
 

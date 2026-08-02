@@ -73,13 +73,20 @@ HEADINGS = ["UN No.", "Proper shipping name", "Class or division", "Subsidiary",
             "Portable tanks", "EmS", "Stowage and handling", "Segregation",
             "Properties and observations"]
 
-# Alles boven deze y is koptekst, alles eronder voettekst.
-BODY_TOP, BODY_BOTTOM = 128.0, 795.0
+# Alles boven deze y is koptekst, alles eronder voettekst. De grens ligt onder
+# twee banden die er op het oog bij horen maar geen gegevens zijn: de
+# kolomnummers "(1) (2) (3) …" op y 131.7 en de verwijzingen naar de secties
+# die elke kolom regelen ("3.1.2", "2.0.1.3", "7.2–7.7") op y 140.5.
+BODY_TOP, BODY_BOTTOM = 150.0, 795.0
 
 # Regels op dezelfde tekstregel liggen binnen deze afstand in y.
 LINE_TOLERANCE = 3.0
 
 UN_CELL = re.compile(r"^\d{4}$")
+
+# Een cel die met een UN-nummer begint maar doorloopt, betekent dat de tekst
+# over de kolomgrens heen is gelezen. Dat mag niet stilzwijgend passeren.
+UN_OVERFLOW = re.compile(r"^(\d{4})\s+\S")
 
 
 def download(url: str, target: Path, timeout: int = 600) -> Path:
@@ -89,23 +96,37 @@ def download(url: str, target: Path, timeout: int = 600) -> Path:
     return target
 
 
-def find_rules(page, tolerance: float = 1.5) -> list[float]:
-    """De x-posities van de verticale scheidingslijnen van de tabel.
+def find_rules(page, tolerance: float = 2.5) -> list[float]:
+    """De x-posities van de verticale celranden van de tabel.
 
-    Een getekende lijn is een rechthoek die veel hoger is dan breed. Lijnen die
-    minder dan een halve pagina beslaan horen bij een samengevoegde cel en
-    zeggen niets over de kolomindeling.
+    De lijst trekt geen doorlopende kolomlijn over de pagina maar omrandt elk
+    rijblok apart; de hoogste verticaal is een punt of tachtig hoog. Eisen dat
+    een lijn de halve pagina beslaat levert er dus nul op — dat was de eerste
+    poging. Wat de kolomgrenzen verraadt is dat dezelfde x steeds terugkomt:
+    een echte grens draagt tientallen randjes onder elkaar, een toevallige
+    streep één.
     """
-    found: list[float] = []
+    counts: dict[float, int] = {}
     for drawing in page.get_drawings():
         rect = drawing["rect"]
-        if rect.width <= 2.0 and rect.height >= 200.0:
-            found.append(round((rect.x0 + rect.x1) / 2, 1))
-    merged: list[float] = []
-    for x in sorted(found):
-        if not merged or x - merged[-1] > tolerance:
-            merged.append(x)
-    return merged
+        if rect.width <= 2.0 and rect.height >= 10.0:
+            key = round((rect.x0 + rect.x1) / 2, 1)
+            counts[key] = counts.get(key, 0) + 1
+    if not counts:
+        return []
+
+    # Randjes die binnen een paar punten van elkaar liggen zijn dezelfde grens.
+    merged: list[tuple[float, int]] = []
+    for x in sorted(counts):
+        if merged and x - merged[-1][0] <= tolerance:
+            previous, count = merged[-1]
+            merged[-1] = (previous, count + counts[x])
+        else:
+            merged.append((x, counts[x]))
+
+    # Een grens komt door de hele tabel terug; een enkele streep niet.
+    threshold = max(2, max(count for _, count in merged) // 4)
+    return [x for x, count in merged if count >= threshold]
 
 
 def boundaries(rules: list[float] | None = None) -> list[tuple[str, float, float]]:
@@ -116,13 +137,14 @@ def boundaries(rules: list[float] | None = None) -> list[tuple[str, float, float
     om de meetkunde te kunnen testen maar niet om gegevens op te baseren.
     """
     if rules and len(rules) >= len(COLUMNS):
-        edges = rules[:len(COLUMNS) + 1]
-        out = []
-        for index, (name, _start) in enumerate(COLUMNS):
-            left = 0.0 if index == 0 else edges[index]
-            right = edges[index + 1] if index + 1 < len(edges) else 10_000.0
-            out.append((name, left, right))
-        return out
+        # Draagt de eerste gevonden lijn de buitenrand van de tabel of al de
+        # eerste kolomscheiding? Dat scheelt één plek voor élke kolom. In
+        # plaats van het te gokken worden beide uitlijningen geprobeerd en
+        # wint die waarbij elke kolomkop in haar eigen kolom valt.
+        for offset in (0, 1):
+            candidate = _from_edges(rules[offset:])
+            if candidate and _headings_land_correctly(candidate):
+                return candidate
 
     out = []
     for index, (name, start) in enumerate(COLUMNS):
@@ -130,6 +152,27 @@ def boundaries(rules: list[float] | None = None) -> list[tuple[str, float, float
         right = (start + COLUMNS[index + 1][1]) / 2 if index + 1 < len(COLUMNS) else 10_000.0
         out.append((name, left, right))
     return out
+
+
+def _from_edges(edges: list[float]) -> list[tuple[str, float, float]]:
+    """Kolomgrenzen uit een reeks celranden, de eerste rand als linkerrand."""
+    if len(edges) < len(COLUMNS):
+        return []
+    out = []
+    for index, (name, _start) in enumerate(COLUMNS):
+        left = 0.0 if index == 0 else edges[index - 1]
+        right = edges[index] if index < len(edges) else 10_000.0
+        out.append((name, left, right))
+    return out
+
+
+def _headings_land_correctly(bounds: list[tuple[str, float, float]]) -> bool:
+    """Valt elke kolomkop in de kolom die haar naam draagt?
+
+    De koppositie is gemeten en de celranden zijn gemeten; komen ze niet
+    overeen, dan klopt de uitlijning niet en is de indeling onbruikbaar.
+    """
+    return all(column_of(x, bounds) == name for name, x in COLUMNS)
 
 
 def column_of(x: float, bounds: list[tuple[str, float, float]]) -> str:
@@ -173,6 +216,12 @@ def merge_rows(lines: list[dict[str, str]]) -> list[dict[str, str]]:
     entries: list[dict[str, str]] = []
     for cells in lines:
         first = cells.get("un_number", "").strip()
+        if UN_OVERFLOW.match(first):
+            # Meelezen als vermelding zou een half afgekapte naam opleveren;
+            # overslaan zou hem verbergen. De cel blijft staan zoals hij is,
+            # zodat de telling in extract() hem als overloop kan melden.
+            entries.append({k: v for k, v in cells.items() if not k.startswith("_")})
+            continue
         if UN_CELL.match(first):
             entries.append({k: v for k, v in cells.items() if not k.startswith("_")})
             continue
@@ -208,24 +257,34 @@ def extract(path: Path, only_pages: list[int] | None = None) -> tuple[list[dict]
                     continue
             pages_read.append(number)
             rules = find_rules(page)
-            rule_shapes[tuple(rules)] = rule_shapes.get(tuple(rules), 0) + 1
             bounds = boundaries(rules)
+            # Vastleggen of deze pagina op gemeten randen is gelezen of op de
+            # schatting; dat laatste mag geen ongemerkte meerderheid worden.
+            measured = bounds != boundaries()
+            rule_shapes[(tuple(rules), measured)] = \
+                rule_shapes.get((tuple(rules), measured), 0) + 1
             for entry in merge_rows(page_lines(page, bounds)):
                 clean = normalise(entry)
-                if UN_CELL.match(clean.get("un_number", "")):
+                cell = clean.get("un_number", "")
+                if UN_CELL.match(cell) or UN_OVERFLOW.match(cell):
                     clean["_page"] = number
                     entries.append(clean)
 
     # Eén rasterindeling voor de hele lijst is het teken dat de detectie klopt;
     # veel verschillende betekent dat er pagina's anders zijn opgemaakt.
     shapes = sorted(rule_shapes.items(), key=lambda kv: -kv[1])
+    estimated = sum(count for (_, measured), count in rule_shapes.items() if not measured)
+    overflow = [e["un_number"] for e in entries if UN_OVERFLOW.match(e["un_number"])]
     return entries, {
         "pages": len(pages_read), "entries": len(entries),
+        "overflowing_cells": len(overflow),
+        "overflow_examples": overflow[:10],
         "first_page": pages_read[0] if pages_read else None,
         "last_page": pages_read[-1] if pages_read else None,
         "distinct_rule_layouts": len(shapes),
-        "most_common_rules": list(shapes[0][0]) if shapes else [],
+        "most_common_rules": list(shapes[0][0][0]) if shapes else [],
         "most_common_rules_pages": shapes[0][1] if shapes else 0,
+        "pages_on_estimated_columns": estimated,
     }
 
 

@@ -13,6 +13,7 @@ wordt afgedwongen.
 """
 
 import importlib.util
+import re
 import sys
 from pathlib import Path
 
@@ -194,3 +195,52 @@ def test_a_suspiciously_short_description_is_reported(text):
     data = complete()
     data["stowage_codes"]["codes"]["SW7"] = text
     assert any("SW7" in problem for problem in extractor.sanity_check(data))
+
+
+# --- Het patroon dat de Dangerous Goods List moet vinden ---------------------
+#
+# Dit patroon is twee keer stukgegaan op dezelfde manier: een `^` zonder
+# re.MULTILINE, waardoor alleen het begin van de héle paginatekst matchte. De
+# tweede keer kwam er nog bij dat `re.M` als tweede argument aan finditer van
+# een gecompileerd patroon geen vlag is maar `pos` — het zoeken sloeg dan ook
+# nog de eerste acht tekens over. Beide keren was de uitkomst "niets gevonden"
+# terwijl de gegevens er wel stonden. Dat is de gevaarlijkste soort fout hier,
+# dus hij staat vast.
+
+_PROBE_PATH = Path(__file__).resolve().parents[2] / "scripts" / "probe_dg_sources.py"
+_probe_spec = importlib.util.spec_from_file_location("probe_dg_sources", _PROBE_PATH)
+probe = importlib.util.module_from_spec(_probe_spec)
+sys.modules[_probe_spec.name] = probe
+_probe_spec.loader.exec_module(probe)
+
+# Zoals de PDF een lijstpagina uitlevert: elke cel op een eigen regel.
+DGL_PAGE = """Chapter 3.1 – General
+13
+IMDG Code (Amendment 42-24)  2024 EDITION
+0135\t
+Mercury fulminate, wetted with not less than 20% water
+1347\t
+Silver picrate, wetted with not less than 30% water, by mass
+1389\t
+Alkali metal amalgam, liquid
+MSC 108/20/Add.2
+Annex 8, page 579
+"""
+
+
+def test_the_row_pattern_matches_lines_below_the_first():
+    """De bug: zonder re.MULTILINE matcht ^ alleen het begin van de tekst."""
+    found = [m.group(1) for m in probe.DGL_ROW.finditer(DGL_PAGE)]
+    assert found == ["0135", "1347", "1389"]
+
+
+def test_the_row_pattern_carries_the_multiline_flag():
+    assert probe.DGL_ROW.flags & re.MULTILINE
+
+
+def test_the_row_pattern_ignores_a_number_inside_a_line():
+    """'not less than 20% water' mag geen rij worden, en '13' evenmin: het
+    paginanummer is drie cijfers te kort en staat los."""
+    found = [m.group(1) for m in probe.DGL_ROW.finditer(DGL_PAGE)]
+    assert "2024" not in found  # staat midden in de voettekst
+    assert all(len(un) == 4 for un in found)

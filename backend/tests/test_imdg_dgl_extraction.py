@@ -232,3 +232,78 @@ def test_rules_that_fit_no_alignment_fall_back_to_the_estimate():
     Dan liever de schatting dan een raster dat er alleen precies uitziet."""
     nonsense = [float(100 + 40 * n) for n in range(25)]
     assert dgl.boundaries(nonsense) == dgl.boundaries()
+
+
+# --- Rijbanden ----------------------------------------------------------------
+
+class FakeHRect:
+    """Een dunne horizontale rand rond een gegeven midden."""
+
+    def __init__(self, centre, width, height=0.7):
+        self.y0, self.y1 = centre - height / 2, centre + height / 2
+        self.x0, self.x1 = 40.0, 40.0 + width
+        self.width, self.height = width, height
+
+
+class FakeWordPage:
+    def __init__(self, words, rects=()):
+        self._words, self._rects = words, list(rects)
+
+    def get_text(self, kind):
+        assert kind == "words"
+        return self._words
+
+    def get_drawings(self):
+        return [{"rect": r} for r in self._rects]
+
+
+def test_row_rules_come_from_wide_thin_rectangles():
+    page = FakeWordPage([], [FakeHRect(200.0, 1100.0), FakeHRect(260.0, 1100.0),
+                             FakeHRect(230.0, 40.0)])  # deelvakje, geen rijrand
+    assert dgl.find_row_rules(page) == [200.0, 260.0]
+
+
+def test_a_word_lands_in_the_band_its_y_falls_in():
+    assert dgl.band_of(180.0, [200.0, 260.0]) == 0
+    assert dgl.band_of(210.0, [200.0, 260.0]) == 1
+    assert dgl.band_of(300.0, [200.0, 260.0]) == 2
+
+
+def test_two_entries_in_adjacent_bands_do_not_merge():
+    """De y-tolerantie plakte UN 0291 en UN 0292 tot één vermelding met
+    'ems': '- F-B, S-X - F-B, S-X'. Met de rijranden erbij blijft het twee."""
+    words = [
+        (49.0, 205.0, 60.0, 215.0, "0291", 0, 0, 0),
+        (95.0, 205.0, 140.0, 215.0, "BOMBS", 0, 0, 1),
+        (49.0, 265.0, 60.0, 275.0, "0292", 0, 1, 0),
+        (95.0, 265.0, 150.0, 275.0, "GRENADES", 0, 1, 1),
+    ]
+    page = FakeWordPage(words)
+    lines = dgl.page_lines(page, BOUNDS, row_rules=[200.0, 260.0, 320.0])
+    entries = dgl.merge_rows(lines)
+    assert [e["un_number"] for e in entries] == ["0291", "0292"]
+
+
+def test_a_name_running_over_two_lines_stays_in_one_band():
+    """Binnen één band mag de naam over meerdere tekstregels lopen; de woorden
+    komen dan in leesvolgorde achter elkaar."""
+    words = [
+        (49.0, 205.0, 60.0, 215.0, "1203", 0, 0, 0),
+        (95.0, 205.0, 140.0, 215.0, "GASOLINE", 0, 0, 1),
+        (95.0, 218.0, 130.0, 228.0, "or", 0, 1, 0),
+        (110.0, 218.0, 150.0, 228.0, "PETROL", 0, 1, 1),
+    ]
+    lines = dgl.page_lines(FakeWordPage(words), BOUNDS, row_rules=[200.0, 260.0])
+    entries = dgl.merge_rows(lines)
+    assert len(entries) == 1
+    assert entries[0]["proper_shipping_name"] == "GASOLINE or PETROL"
+
+
+def test_words_outside_the_body_window_are_ignored():
+    words = [
+        (49.0, 131.7, 60.0, 140.0, "(1)", 0, 0, 0),      # kolomnummerband
+        (49.0, 205.0, 60.0, 215.0, "1203", 0, 1, 0),
+        (49.0, 801.6, 60.0, 810.0, "579", 0, 2, 0),      # voettekst
+    ]
+    lines = dgl.page_lines(FakeWordPage(words), BOUNDS, row_rules=[200.0, 260.0])
+    assert [c.get("un_number") for c in lines] == ["1203"]

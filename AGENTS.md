@@ -6,7 +6,7 @@ CargoPilot is a single product with two dev processes: a Python 3.12 FastAPI bac
 (`backend/`, port 8080) and a React/Vite/TypeScript frontend (`frontend/`, Vite dev
 server on port 5173 that proxies `/api` → `http://localhost:8080`). Data is stored in
 file-based SQLite; there is no separate database service. Standard commands live in
-`README.md` (see "Development"), `backend/requirements.txt`, and `frontend/package.json`.
+`docs/development.md`, `backend/requirements.txt`, and `frontend/package.json`.
 
 Python dependencies are installed into a virtualenv at `/workspace/.venv` (the startup
 update script creates it and installs `backend/requirements.txt`; frontend deps via

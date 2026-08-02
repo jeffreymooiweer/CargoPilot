@@ -1,268 +1,582 @@
 # Changelog
 
-Alle noemenswaardige wijzigingen worden gedocumenteerd volgens [Semantic Versioning](https://semver.org/).
+All notable changes are documented here, following [Semantic Versioning](https://semver.org/).
+
+## [1.13.2] — 2026-08-02
+
+Documentation rewritten, in English, and split up.
+
+### Changed
+
+- **The README is now about the app, not about everything.** It says what CargoPilot is,
+  what it does for you and how to start it, and links onward. Installation instructions,
+  environment variables, data provenance and developer setup have moved into `docs/`.
+- **All documentation is in English**, including the changelog and the roadmap.
+- **New guides in `docs/`**: [getting started](docs/getting-started.md),
+  [user guide](docs/user-guide.md), [documents](docs/documents.md),
+  [dangerous goods](docs/dangerous-goods.md), [configuration](docs/configuration.md),
+  [data sources](docs/data-sources.md), [privacy](docs/privacy.md) and
+  [development](docs/development.md).
+- Badges on the README for Docker pulls, the latest release, build status, development
+  status, licence, image size and stack.
+- The disclaimer is now available in English as `DISCLAIMER.md`. The Dutch text remains
+  the legally binding version and has moved to `DISCLAIMER.nl.md`; the two link to each
+  other.
+
+### Fixed
+
+- **`GET /api/health` reported the wrong version.** `backend/VERSION` takes priority over
+  the repository root `VERSION`, and it had been left at 1.13.0. Both are now bumped
+  together, and a test fails if the root `VERSION`, `backend/VERSION` and
+  `frontend/package.json` ever drift apart again.
+- The transport mode tiles still advertised "internal forms" — a leftover from the
+  military form removed in v1.4.0 — and a separate ADR document that no longer exists
+  since v1.13.0. Road now reads "CMR and AVC waybill, packing list and delivery note",
+  inland waterway "ADN document, VGM and packing list".
 
 ## [1.13.1] — 2026-08-02
 
-De AVC-vrachtbrief vult het officiële formulier in.
+The AVC waybill now fills in the official form.
 
-### Gewijzigd
+### Changed
 
-- **De AVC-vrachtbrief wordt niet langer nagebouwd, maar ingevuld.** Het officiële vrachtbriefformulier van sVa / Stichting Vervoeradres staat nu als `templates/forms/avc.pdf` in de repository en wordt door de backend ingevuld, net als de CMR, de CIM en de IATA-declaratie. De vorige versie tekende het formulier na met reportlab; het resultaat leek op het origineel maar was het niet.
-- Omdat het AVC-formulier — anders dan de CMR — geen invulvelden (AcroForm) bevat, worden de waarden als tekstlaag over de template heen gelegd. De posities zijn afgeleid uit het lijnenraster en de veldlabels van het formulier zelf: afzender, afleveradres, frankeringsvoorschrift met de aankruisvakjes Franco/Niet franco, vervoerder, de goederentabel met de kolommen aantal, verpakking, inhoud en gewicht in kg, de totalen, en plaats en datum van afzending — telkens in zowel de vrachtbrief als het ontvangstbewijs.
-- De ADR-omschrijving (5.4.1.1.1) blijft in de kolom "inhoud" staan en het totaal per vervoerscategorie (5.4.1.1.1.1) verschijnt nu onder de laatste goederenregel in plaats van in de voetnoot. Tekst die te lang is voor een kolom wordt afgebroken op werkelijke tekstbreedte, zodat de kolom "inhoud" niet in de kolom "gewicht in kg" loopt.
-- In het formulierenoverzicht krijgt de AVC-vrachtbrief daarmee ook het label **Officieel formulier**.
+- **The AVC waybill is no longer redrawn — it is filled in.** The official waybill form
+  from sVa / Stichting Vervoeradres now ships as `templates/forms/avc.pdf` and is filled
+  in by the backend, just like the CMR, the CIM and the IATA declaration. The previous
+  version redrew the form with reportlab; the result looked like the original but was
+  not one.
+- Unlike the CMR, the AVC form has no PDF form fields (AcroForm), so the values are
+  placed as a text layer over the template. The positions are derived from the form's
+  own ruling and field labels: sender, delivery address, franking instruction with the
+  Franco / Not franco checkboxes, carrier, the goods table with its number, packaging,
+  contents and weight columns, the totals, and the place and date of dispatch — in both
+  the waybill and the receipt panel.
+- The ADR description (5.4.1.1.1) stays in the "contents" column, and the total per
+  transport category (5.4.1.1.1.1) now appears under the last goods line instead of in
+  the footer. Text too long for a column is wrapped on actual text width, so the
+  "contents" column no longer runs into "weight in kg".
+- The AVC waybill therefore also gets the **Official form** label in the form overview.
 
 ## [1.13.0] — 2026-08-02
 
-AVC-vrachtbrief in plaats van een apart ADR-wegdocument.
+An AVC waybill in place of a separate ADR road document.
 
-### Toegevoegd
+### Added
 
-- **AVC-vrachtbrief** voor binnenlands wegvervoer, als PDF gegenereerd naar het standaardmodel van sVa / Stichting Vervoeradres: links de vrachtbrief, rechts het ontvangstbewijs, met dezelfde vakindeling (afzender, afleveradres, frankeringsvoorschrift met Franco/Niet franco, vervoerder, goederentabel met aantal, verpakking, inhoud en gewicht, totalen, plaats en datum van afzending). De verwijzingsclausule maakt de **Algemene Vervoercondities 2002** van toepassing. Handtekening van de vervoerder en het ontvangstbewijs van de geadresseerde blijven leeg; de afzender kan wel zijn eigen handtekening laten plaatsen.
+- **AVC waybill** for domestic road carriage, generated as a PDF following the standard
+  sVa / Stichting Vervoeradres model: the waybill on the left, the receipt on the right,
+  with the same box layout (sender, delivery address, franking instruction with Franco /
+  Not franco, carrier, goods table with number, packaging, contents and weight, totals,
+  place and date of dispatch). The reference clause makes the **Algemene
+  Vervoercondities 2002** applicable. The carrier's signature and the consignee's receipt
+  stay blank; the sender can have their own signature placed.
 
-### Gewijzigd
+### Changed
 
-- **De CMR draagt nu zelf de gevaarlijke-stoffengegevens.** Voor een collo met gevaarlijke stoffen komt de officiële omschrijving volgens ADR 5.4.1.1.1 in vak 6-12 te staan (`UN 1203, GASOLINE, 3, II, (D/E), 10 jerrycan, 200 L`) in plaats van de vrije omschrijving, en vak 13 krijgt de totale hoeveelheid per vervoerscategorie (5.4.1.1.1.1). Colli zonder gevaarlijke stoffen houden hun gewone omschrijving en de massa wordt niet dubbel geteld.
-- Hetzelfde geldt voor de AVC-vrachtbrief: de ADR-omschrijving verschijnt in de kolom "inhoud".
+- **The CMR now carries the dangerous goods data itself.** For a package containing
+  dangerous goods, the official description under ADR 5.4.1.1.1 goes into boxes 6–12
+  (`UN 1203, GASOLINE, 3, II, (D/E), 10 jerrycan, 200 L`) instead of the free
+  description, and box 13 gets the total quantity per transport category (5.4.1.1.1.1).
+  Packages without dangerous goods keep their normal description, and the mass is not
+  counted twice.
+- The same applies to the AVC waybill: the ADR description appears in the "contents"
+  column.
 
-### Verwijderd
+### Removed
 
-- **Het losse ADR-vervoersdocument voor de weg is vervallen.** ADR 5.4.1 schrijft geen vorm voor het vervoersdocument voor: een vrachtbrief die de gegevens van 5.4.1.1.1 draagt volstaat. Nu de CMR en de AVC-vrachtbrief die omschrijving zelf bevatten, is een apart document overbodig geworden. Het ADN-vervoersdocument voor de binnenvaart blijft wél bestaan, omdat daar geen vrachtbrief in de app zit.
+- **The separate ADR transport document for road has been dropped.** ADR 5.4.1
+  prescribes no form for the transport document: a waybill carrying the data of
+  5.4.1.1.1 is sufficient. Now that the CMR and the AVC waybill contain that description
+  themselves, a separate document is redundant. The ADN transport document for inland
+  waterways remains, because there is no waybill for that mode in the app.
 
 ## [1.12.0] — 2026-08-01
 
-Scheidingsgroepen per stof uit de officiële IMDG-code.
+Segregation groups per substance, from the official IMDG Code.
 
-### Toegevoegd
+### Added
 
-- **Alle achttien scheidingsgroepen met hun stoffen** (IMDG 3.1.4.4): 632 vermeldingen verdeeld over 539 UN-nummers, van zuren en alkaliën tot cyaniden, aziden, permanganaten, metaalpoeders en kwikverbindingen. De 21 **sterke zuren** krijgen daarbij de aparte markering SGG1a. Een stof kan in meerdere groepen vallen — loodazide (UN 0129) hoort bijvoorbeeld tegelijk bij zware metalen, lood én aziden.
-- **Scheidingsgroep automatisch bij het UN-nummer**: zodra een UN-nummer is ingevuld toont de app de bijbehorende groepen, bijvoorbeeld "SGG1 (Zuren), SGG1a (sterke zuren)" bij zoutzuur.
-- **Controle op onverenigbare scheidingsgroepen** in het nalevingspaneel bij zeevracht. Gemeld worden onder meer zuren met alkaliën, zuren met cyaniden (ontwikkeling van blauwzuur), zuren met chlorieten of hypochlorieten (chloordioxide respectievelijk chloorgas), zuren met nitrieten, zuren met aziden (vorming van explosief waterstofazide), zuren met metaalpoeders (waterstofontwikkeling) en peroxiden met zuren. Handmatig ingevulde groepscodes tellen mee.
+- **All eighteen segregation groups with their substances** (IMDG 3.1.4.4): 632 entries
+  across 539 UN numbers, from acids and alkalis to cyanides, azides, permanganates,
+  metal powders and mercury compounds. The 21 **strong acids** get the separate SGG1a
+  marking. A substance can fall into several groups — lead azide (UN 0129) belongs to
+  heavy metals, lead *and* azides at once.
+- **Segregation group straight from the UN number**: as soon as a UN number is entered,
+  the app shows the applicable groups, for example "SGG1 (Acids), SGG1a (strong acids)"
+  for hydrochloric acid.
+- **Incompatible segregation group checks** in the compliance panel for sea freight.
+  Reported combinations include acids with alkalis, acids with cyanides (hydrogen
+  cyanide), acids with chlorites or hypochlorites (chlorine dioxide and chlorine gas
+  respectively), acids with nitrites, acids with azides (explosive hydrazoic acid), acids
+  with metal powders (hydrogen evolution) and peroxides with acids. Manually entered
+  group codes are taken into account.
 
 ## [1.11.0] — 2026-08-01
 
-EmS-noodschema's compleet uit de officiële EmS Guide.
+EmS emergency schedules, complete, from the official EmS Guide.
 
-### Toegevoegd
+### Added
 
-- **Alle 2.338 UN-nummers uit de EmS Guide.** De index van IMO MSC.1/Circ.1588/Rev.3 (*Revised Emergency Response Procedures for Ships Carrying Dangerous Goods*) is volledig overgenomen. De dekking gaat van 12,9% naar **99,5% exacte codes**; alleen enkele vermeldingen die niet in de gids staan vallen nog terug op een indicatieve klassestandaard.
-- **Omschrijving bij elke code**: alle tien brandschema's (F-A Alfa "algemeen brandschema" t/m F-J Juliet) en alle 26 lekkageschema's (S-A Alfa "giftige stoffen" t/m S-Z Zulu "giftige explosieven") zijn opgenomen in Nederlands en Engels. De app toont nu bijvoorbeeld "F-E (Brandbare vloeistoffen die niet met water reageren) · S-E (Brandbare vloeistoffen die op water drijven)" in plaats van alleen de code.
-- **Schema per verpakkingsgroep**: 43 UN-nummers hebben per verpakkingsgroep een ander noodschema — bijvoorbeeld UN 1826 (nitreerzuurmengsel), waar verpakkingsgroep I als oxiderend (S-Q) en groep II als bijtend (S-B) wordt behandeld. Zonder bekende verpakkingsgroep toont de app beide keuzes in plaats van er één te gokken.
-- **Varianten met eigen schema**: UN 3166 (voertuigen) krijgt een ander schema voor gas- dan voor vloeistofaandrijving; beide worden getoond.
-- **Luchtvrachtregels bijgewerkt** naar de IATA Guidance Document for Lithium Batteries and Sodium ion Batteries, editie 2026: de laadtoestandsgrens van 30% bij PI 965 met de goedkeuringsroute van bijzondere bepaling A331, het CAO-label bij UN 3090/3480, de goedkeuringsroute A201, en nieuw de **natrium-ionbatterijen** UN 3551 (PI 976) en UN 3552 (PI 977/978) — met de kanttekening dat natrium-ionbatterijen met waterig alkalisch elektrolyt onder UN 2795 vallen. Ook de batterijaangedreven voertuigen UN 3556, 3557 en 3558 zijn opgenomen.
+- **All 2,338 UN numbers from the EmS Guide.** The index of IMO MSC.1/Circ.1588/Rev.3
+  (*Revised Emergency Response Procedures for Ships Carrying Dangerous Goods*) has been
+  taken over in full. Coverage goes from 12.9% to **99.5% exact codes**; only a handful
+  of entries not present in the guide still fall back on an indicative class default.
+- **A description with every code**: all ten fire schedules (F-A Alfa "general fire
+  schedule" through F-J Juliet) and all 26 spillage schedules (S-A Alfa "toxic
+  substances" through S-Z Zulu "toxic explosives") are included in Dutch and English.
+  The app now shows "F-E (Flammable liquids that do not react with water) · S-E
+  (Flammable liquids that float on water)" instead of just the code.
+- **A schedule per packing group**: 43 UN numbers have a different emergency schedule per
+  packing group — UN 1826 (nitrating acid mixture), for instance, is treated as oxidising
+  (S-Q) in packing group I and corrosive (S-B) in group II. Without a known packing
+  group, the app shows both options rather than guessing one.
+- **Variants with their own schedule**: UN 3166 (vehicles) gets a different schedule for
+  gas than for liquid propulsion; both are shown.
+- **Air freight rules updated** to the IATA Guidance Document for Lithium Batteries and
+  Sodium ion Batteries, 2026 edition: the 30% state-of-charge limit under PI 965 with the
+  approval route of special provision A331, the CAO label for UN 3090/3480, approval
+  route A201, and newly the **sodium-ion batteries** UN 3551 (PI 976) and UN 3552 (PI
+  977/978) — with the caveat that sodium-ion batteries with an aqueous alkaline
+  electrolyte fall under UN 2795. The battery-powered vehicles UN 3556, 3557 and 3558 are
+  included as well.
 
-### Gewijzigd
+### Changed
 
-- De EmS-gegevens komen niet langer uit een gecureerde selectie maar rechtstreeks uit de officiële gids. Bij het overzetten bleek 13,5% van de eerdere gecureerde vermeldingen af te wijken (39 van de 288), vooral bij oxidatoren die F-H in plaats van F-A hebben en bij temperatuurgeregelde peroxiden die onder F-F vallen. Die zijn nu allemaal correct.
+- The EmS data no longer comes from a curated selection but straight from the official
+  guide. During the transfer, 13.5% of the earlier curated entries turned out to deviate
+  (39 out of 288), mostly oxidisers that are F-H rather than F-A and temperature-controlled
+  peroxides that fall under F-F. All of those are now correct.
 
 ## [1.10.0] — 2026-08-01
 
-Segregatie geverifieerd tegen de officiële IMDG-code en uitgebreid met scheidingsgroepen en klasse 1.
+Segregation verified against the official IMDG Code and extended with segregation groups
+and class 1.
 
-### Gewijzigd
+### Changed
 
-- **Segregatietabel geverifieerd en bijgewerkt naar Amendement 40-20.** De tabel is regel voor regel vergeleken met hoofdstuk 7.2 van de officiële IMDG-code. 287 van de 289 cellen bleken al correct; vier cellen zijn bijgewerkt omdat Amendement 40-20 strenger is dan de oudere uitgave waar de eerdere versie op leunde:
-  - klasse 2.1 × 4.3: van "geen algemene scheiding" naar **2 (gescheiden van)**
-  - klasse 3 × 4.3: van 1 (uit de buurt van) naar **2 (gescheiden van)**
-  - klasse 2.2 × 5.2: van 2 naar **1 (uit de buurt van)**
-  De tabel is nu woordelijk vastgelegd in een test, zodat een toekomstige wijziging niet ongemerkt kan sluipen.
+- **Segregation table verified and updated to Amendment 40-20.** The table was compared
+  line by line with chapter 7.2 of the official IMDG Code. 287 of 289 cells were already
+  correct; four cells were updated because Amendment 40-20 is stricter than the older
+  edition the previous version relied on:
+  - class 2.1 × 4.3: from "no general segregation" to **2 (separated from)**
+  - class 3 × 4.3: from 1 (away from) to **2 (separated from)**
+  - class 2.2 × 5.2: from 2 to **1 (away from)**
 
-### Toegevoegd
+  The table is now pinned verbatim in a test, so a future change cannot slip through
+  unnoticed.
 
-- **Scheidingsgroepen (IMDG 7.2.5)**: alle negentien groepen SGG1 t/m SGG18 (zuren, sterke zuren, ammoniumverbindingen, bromaten, chloraten, chlorieten, cyaniden, zware metalen, hypochlorieten, lood, gehalogeneerde koolwaterstoffen, kwik, nitrieten, perchloraten, permanganaten, metaalpoeders, peroxiden, aziden en alkaliën) zijn opgenomen als naslag in het nalevingspaneel, met de uitleg dat kolom 16b van de Dangerous Goods List bepaalt of een stof erin valt en dat de afzender dat bij n.e.g.-vermeldingen zelf beoordeelt (5.4.1.5.11).
-- **Uitzondering voor klasse 8 (IMDG 7.2.6.5)**: zuren en alkaliën van verpakkingsgroep II of III mogen tóch samen in één laadeenheid bij verpakkingen tot 30 L of 30 kg, mits de stoffen niet gevaarlijk reageren en het vervoersdocument de verklaring van 5.4.1.5.11.3 bevat.
-- **Samenladingscontrole voor explosieven (IMDG 7.2.7.1.4)**: de volledige matrix van compatibiliteitsgroepen A t/m S bepaalt nu of colli van klasse 1 in dezelfde ruimte of laadeenheid mogen. Groep S is verenigbaar met alles behalve L; groep L uitsluitend met hetzelfde type; de bijzondere bepalingen voor de groepen G (vuurwerk), L en N worden als waarschuwing getoond. Ook de uitzondering van 7.2.7.2.1 (ammoniumnitraat en nitraten samen met springstoffen, behalve UN 0083) is opgenomen.
-- **Nevengevaar klasse 1 telt als divisie 1.3** bij het bepalen van de scheiding (IMDG 7.2.3.3), wat strenger uitpakt dan het hoofdgevaar alleen.
+### Added
+
+- **Segregation groups (IMDG 7.2.5)**: all nineteen groups SGG1 through SGG18 (acids,
+  strong acids, ammonium compounds, bromates, chlorates, chlorites, cyanides, heavy
+  metals, hypochlorites, lead, halogenated hydrocarbons, mercury, nitrites, perchlorates,
+  permanganates, metal powders, peroxides, azides and alkalis) are included as reference
+  in the compliance panel, with the explanation that column 16b of the Dangerous Goods
+  List determines whether a substance belongs to one, and that for n.o.s. entries the
+  shipper assesses this themselves (5.4.1.5.11).
+- **Exception for class 8 (IMDG 7.2.6.5)**: acids and alkalis of packing group II or III
+  may nonetheless travel together in one cargo transport unit in packages up to 30 L or
+  30 kg, provided the substances do not react dangerously and the transport document
+  carries the statement of 5.4.1.5.11.3.
+- **Loading compatibility check for explosives (IMDG 7.2.7.1.4)**: the full compatibility
+  group matrix A through S now determines whether class 1 packages may share a space or
+  cargo transport unit. Group S is compatible with everything except L; group L only with
+  its own type; the special provisions for groups G (fireworks), L and N are shown as
+  warnings. The exception of 7.2.7.2.1 (ammonium nitrate and nitrates together with
+  explosives, except UN 0083) is included.
+- **A subsidiary class 1 risk counts as division 1.3** when determining segregation (IMDG
+  7.2.3.3), which is stricter than the primary hazard alone.
 
 ## [1.9.0] — 2026-08-01
 
-EmS-database uitgebreid en vervoersverboden gesignaleerd.
+EmS database extended and carriage prohibitions flagged.
 
-### Toegevoegd
+### Added
 
-- **EmS-noodschema's uitgebreid van circa 90 naar 305 UN-nummers** in een eigen gegevensbestand (`backend/seed/dg/ems.json`), gegroepeerd per gevarenprofiel: brandbare, giftige, oxiderende en inerte gassen, brandbare vloeistoffen (met onderscheid tussen stoffen die op water drijven en overige), brandbare en zelfontbrandende vaste stoffen, met water reagerende stoffen, oxiderende stoffen en ammoniumnitraat, organische peroxiden, giftige en infectueuze stoffen, radioactieve stoffen, bijtende stoffen (ook de bijtend-én-oxiderende combinaties), milieugevaarlijke stoffen en lithiumbatterijen. Bij elke vermelding wordt het profiel getoond ("Brandbare vloeistof die op water drijft"), zodat zichtbaar is waaróm dat schema geldt.
-- **Vervoersverbod-signalering**: veertien stoffen die ADR Tabel A niet ten vervoer toelaat (o.a. UN 1798 koningswater, UN 2249 symmetrisch dichloordimethylether, UN 2186 waterstofchloride sterk gekoeld en enkele n.e.g.-vermeldingen met onverenigbare gevaren) worden herkend. De gevaarlijke-stoffenstap toont een rode blokkade en de export van vervoersdocumenten wordt geweigerd; vervoer is alleen mogelijk onder ontheffing van de bevoegde autoriteit.
-- Toelichting bij voorwerpen die gevaarlijke goederen bevatten (UN 3537 t/m 3548) over de etikettering volgens 5.2.2.1.12.
+- **EmS emergency schedules extended from roughly 90 to 305 UN numbers** in a dedicated
+  data file (`backend/seed/dg/ems.json`), grouped by hazard profile: flammable, toxic,
+  oxidising and inert gases, flammable liquids (distinguishing those that float on water
+  from the rest), flammable and pyrophoric solids, water-reactive substances, oxidising
+  substances and ammonium nitrate, organic peroxides, toxic and infectious substances,
+  radioactive material, corrosives (including the corrosive-and-oxidising combinations),
+  environmentally hazardous substances and lithium batteries. Each entry shows the
+  profile ("Flammable liquid that floats on water"), so it is visible *why* that schedule
+  applies.
+- **Carriage prohibition flagging**: fourteen substances that ADR Table A does not permit
+  for carriage (including UN 1798 aqua regia, UN 2249 symmetrical dichlorodimethyl ether,
+  UN 2186 refrigerated hydrogen chloride and several n.o.s. entries with incompatible
+  hazards) are recognised. The dangerous goods step shows a red block and export of
+  transport documents is refused; carriage is only possible with an exemption from the
+  competent authority.
+- Explanation for articles containing dangerous goods (UN 3537 through 3548) about
+  labelling under 5.2.2.1.12.
 
-### Opgelost
+### Fixed
 
-- **Duitse brondata lekte in formulieren.** Voor verboden stoffen vult ADR Tabel A élke kolom met de tekst "BEFÖRDERUNG VERBOTEN". Die belandde in de verpakkingsgroep, de gelimiteerde hoeveelheid en zelfs in de omschrijvingsregel van het vervoersdocument (`UN 1798, NITROHYDROCHLORIC ACID, 8, BEFÖRDERUNG VERBOTEN`). Alle kolommen worden nu gefilterd; het verbod wordt uitsluitend als waarschuwing getoond.
-- De EmS-terugval hield geen rekening met de divisie: gassen kregen op basis van klasse "2" geen indicatie. Nu wordt eerst de divisie uit de etikettenkolom gebruikt (2.1 → F-D/S-U, 2.2 → F-C/S-V, 2.3 → F-C/S-U), waardoor vrijwel elk UN-nummer een bruikbaar noodschema krijgt.
+- **German source data leaked into forms.** For prohibited substances, ADR Table A fills
+  *every* column with the text "BEFÖRDERUNG VERBOTEN". That ended up in the packing group,
+  the limited quantity, and even the description line of the transport document
+  (`UN 1798, NITROHYDROCHLORIC ACID, 8, BEFÖRDERUNG VERBOTEN`). All columns are now
+  filtered; the prohibition is shown only as a warning.
+- The EmS fallback did not account for the division: gases got no indication on the basis
+  of class "2". The division from the labels column is now used first (2.1 → F-D/S-U,
+  2.2 → F-C/S-V, 2.3 → F-C/S-U), so nearly every UN number gets a usable emergency
+  schedule.
 
-### Bekende beperking
+### Known limitation
 
-De EmS-gegevens zijn een gecureerde compilatie: negen vermeldingen zijn tijdens het samenstellen tegen openbare bronnen gecontroleerd en als zodanig gemarkeerd, de overige volgen het gevarenprofiel van de stof. Voor UN-nummers zonder exacte vermelding toont de app een indicatieve klassestandaard die herkenbaar als suggestie wordt gepresenteerd en niet automatisch wordt ingevuld. De actuele IMDG-uitgave blijft leidend.
+The EmS data is a curated compilation: nine entries were checked against public sources
+while compiling and marked as such; the rest follow the substance's hazard profile. For
+UN numbers without an exact entry, the app shows an indicative class default, presented
+recognisably as a suggestion and not filled in automatically. The current IMDG edition
+remains the authority.
 
 ## [1.8.0] — 2026-08-01
 
-Gevaarlijke stoffen: automatische invulling per modaliteit en zeevaartsegregatie.
+Dangerous goods: automatic completion per transport mode, and sea segregation.
 
-### Toegevoegd
+### Added
 
-- **Automatische invulling van gevaarlijke-stoffengegevens** (`POST /api/dg/prepare`): u vult per collo alleen het UN-nummer in (of zoekt op stofnaam) en CargoPilot leidt daaruit de juiste vervoersnaam, klasse, nevengevaren, verpakkingsgroep, verpakkingsinstructie, vervoerscategorie, tunnelcode, Kemler-nummer en LQ/EQ-limieten af. Aantal colli, verpakkingssoort en massa's worden overgenomen uit de al ingevoerde colli. Alleen lege velden worden gevuld, zodat handmatige correcties altijd blijven staan.
-- **EmS-noodschema's voor zeevervoer**: per UN-nummer wordt de EmS-code (brand- en lekkageschema) ingevuld voor een gecureerde selectie van veelvervoerde stoffen uit de IMDG Dangerous Goods List; voor overige stoffen wordt een indicatieve klassestandaard getoond die als zodanig herkenbaar is.
-- **Luchtvrachtregels**: lithiumbatterijen UN 3090/3480 worden automatisch als **Cargo Aircraft Only** met de juiste IATA-verpakkingsinstructie (PI 965/968) gemarkeerd, UN 3091/3481 krijgen PI 966/967 respectievelijk 969/970, en klasse 2.3 (giftige gassen) wordt gemeld als verboden in de luchtvaart.
-- **Officiële omschrijvingsregels per formulier** worden automatisch samengesteld en getoond vóór de export: ADR/RID/ADN volgens 5.4.1.1.1 inclusief tunnelcode, aantal colli en totale hoeveelheid, IMDG met EmS-code en marine pollutant, IATA met verpakkingsinstructie en Cargo Aircraft Only-vermelding.
-- **Totale hoeveelheid per vervoerscategorie** (ADR 5.4.1.1.1.1) wordt berekend en op de gegenereerde ADR/RID/ADN-documenten geplaatst — verplicht bij gebruik van de 1.1.3.6-vrijstelling en tot nu toe handwerk.
-- **IMDG-segregatiecontrole (7.2.4)**: de volledige klassescheidingstabel is opgenomen, inclusief de codes 1 t/m 4 ("away from", "separated from", "separated by a complete compartment or hold", "separated longitudinally") met de bijbehorende afstanden. Nevengevaren tellen mee; bij zeevracht verschijnen de conflicten in het nalevingspaneel.
-- **Vrijgestelde en gelimiteerde hoeveelheden** worden uitgelegd in gewone taal (E1 t/m E5 met de maxima per binnen- en buitenverpakking volgens 3.5.1.2, en de LQ-limiet per binnenverpakking volgens 3.4).
-- **Klasse-specifieke documentvereisten** worden benoemd: netto explosieve massa en compatibiliteitsgroepen bij klasse 1, temperatuurbeheersing bij zelfontledende stoffen en organische peroxiden, verantwoordelijke persoon bij klasse 6.2, en radionucliden, collo-categorie, transportindex en veiligheidsindex kritikaliteit bij klasse 7. Voor zeevracht wordt het containerbeladingscertificaat genoemd, voor luchtvracht de ondertekening in tweevoud.
-- **Versiebeleid** expliciet vastgelegd in de README: patchreleases voor correcties, minor voor nieuwe functionaliteit, major uitsluitend voor ingrijpende herzieningen.
+- **Automatic completion of dangerous goods data** (`POST /api/dg/prepare`): you enter
+  only the UN number per package (or search by substance name) and CargoPilot derives the
+  proper shipping name, class, subsidiary risks, packing group, packing instruction,
+  transport category, tunnel code, Kemler number and LQ/EQ limits. Number of packages,
+  packaging type and masses are taken from the packages already entered. Only empty fields
+  are filled, so manual corrections always survive.
+- **EmS emergency schedules for sea transport**: the EmS code (fire and spillage schedule)
+  is filled in per UN number for a curated selection of commonly carried substances from
+  the IMDG Dangerous Goods List; for other substances an indicative class default is shown
+  and marked as such.
+- **Air freight rules**: lithium batteries UN 3090/3480 are automatically marked **Cargo
+  Aircraft Only** with the correct IATA packing instruction (PI 965/968), UN 3091/3481 get
+  PI 966/967 and 969/970 respectively, and class 2.3 (toxic gases) is reported as
+  forbidden in aviation.
+- **Official description lines per form** are assembled automatically and shown before
+  export: ADR/RID/ADN under 5.4.1.1.1 including tunnel code, number of packages and total
+  quantity; IMDG with EmS code and marine pollutant; IATA with packing instruction and
+  Cargo Aircraft Only.
+- **Total quantity per transport category** (ADR 5.4.1.1.1.1) is calculated and placed on
+  the generated ADR/RID/ADN documents — mandatory when using the 1.1.3.6 exemption, and
+  until now manual work.
+- **IMDG segregation check (7.2.4)**: the full class segregation table is included, with
+  codes 1 through 4 ("away from", "separated from", "separated by a complete compartment
+  or hold", "separated longitudinally") and their distances. Subsidiary risks count; for
+  sea freight, conflicts appear in the compliance panel.
+- **Excepted and limited quantities** are explained in plain language (E1 through E5 with
+  the maxima per inner and outer packaging under 3.5.1.2, and the LQ limit per inner
+  packaging under 3.4).
+- **Class-specific document requirements** are named: net explosive mass and compatibility
+  groups for class 1, temperature control for self-reactive substances and organic
+  peroxides, the responsible person for class 6.2, and radionuclides, package category,
+  transport index and criticality safety index for class 7. Sea freight gets the container
+  packing certificate, air freight the signature in duplicate.
+- **Versioning policy** written down explicitly: patch releases for corrections, minor for
+  new functionality, major only for major overhauls.
 
-### Opgelost
+### Fixed
 
-- **De ADR-classificatiecode werd ten onrechte als nevengevaar ingevuld.** Bij het kiezen van een UN-nummer belandde de classificatiecode (bijvoorbeeld `F1` bij benzine, `M4` bij lithiumbatterijen of `C1` bij zwavelzuur) in het veld "bijkomend gevaar", waardoor de omschrijving op het vervoersdocument bijvoorbeeld `UN 1203, BENZINE, 3 (F1), II` werd in plaats van `UN 1203, BENZINE, 3, II`. Nevengevaren worden nu correct uit de etikettenkolom van ADR Tabel A gehaald: UN 2031 (salpeterzuur) levert nu terecht `8 (5.1)`, benzine levert geen nevengevaar meer. De classificatiecode wordt apart bewaard.
-- **Divisie van gassen en explosieven** wordt nu correct bepaald: ADR Tabel A vermeldt bij gassen alleen klasse "2" en bij explosieven alleen "1", terwijl de werkelijke divisie in de etikettenkolom (2.1/2.2/2.3) respectievelijk de classificatiecode (bijvoorbeeld 1.4S) staat. Dit is bepalend voor samenlading en segregatie, die daardoor eerder onvolledig konden zijn.
-- De IATA-omschrijving toonde de ADR-verpakkingsinstructie (P001, IBC02) die voor luchtvracht niet geldig is; er wordt nu uitsluitend een IATA-verpakkingsinstructie vermeld wanneer die bekend is.
-- De knop om een document te downloaden heette nog **"Download Excel"** terwijl alle documenten als PDF worden geëxporteerd; dit is nu "Document downloaden".
-- Twee ontbrekende vertaalsleutels toonden ruwe tekst in de interface: het plakveld in het importvenster had geen placeholder, en inactief materieel toonde `questions.no` (een restant van het verwijderde interne formulier) in plaats van "Inactief".
-- De uitleg bij de gevaarlijke-stoffenstap beschreef nog de oude werkwijze (alles handmatig invullen, UN-gegevens alleen online) en is aangepast aan de automatische invulling met offline database.
+- **The ADR classification code was wrongly entered as a subsidiary risk.** When choosing
+  a UN number, the classification code (for example `F1` for gasoline, `M4` for lithium
+  batteries or `C1` for sulphuric acid) ended up in the "subsidiary risk" field, so the
+  description on the transport document read `UN 1203, GASOLINE, 3 (F1), II` instead of
+  `UN 1203, GASOLINE, 3, II`. Subsidiary risks are now read correctly from the labels
+  column of ADR Table A: UN 2031 (nitric acid) now correctly yields `8 (5.1)`, and
+  gasoline no longer yields a subsidiary risk. The classification code is stored
+  separately.
+- **The division of gases and explosives** is now determined correctly: ADR Table A lists
+  only class "2" for gases and "1" for explosives, while the actual division sits in the
+  labels column (2.1/2.2/2.3) or the classification code (1.4S). This drives loading
+  compatibility and segregation, which could previously be incomplete.
+- The IATA description showed the ADR packing instruction (P001, IBC02), which is not
+  valid for air freight; an IATA packing instruction is now shown only where one is known.
+- The button to download a document was still labelled **"Download Excel"** while all
+  documents are exported as PDF; it now reads "Download document".
+- Two missing translation keys showed raw text in the interface: the paste field in the
+  import dialog had no placeholder, and inactive equipment showed `questions.no` (a
+  leftover from the removed internal form) instead of "Inactive".
+- The explanation on the dangerous goods step still described the old approach (fill in
+  everything by hand, UN data online only) and has been brought in line with automatic
+  completion from the offline database.
 
 ## [1.7.0] — 2026-07-31
 
-Goederendatabase uitgebreid naar 400 transportgoederen.
+Goods database extended to 400 transport goods.
 
-### Toegevoegd
+### Added
 
-- **Goederendatabase uitgebreid van 159 naar 400 goederen** met (stort)dichtheden, bandbreedtes (min/max) en NL/EN-aliassen, transportbreed:
-  - **Bouw & natuursteen**: basalt, hardsteen (arduin), travertin, kwartsiet, porfier, spoorballast, dekvloermortel, tegellijm, betonblokken, trottoirbanden, straatbakstenen, gipspleister, zilverzand, dolomiet, krijt, leem, dakbedekkingsrollen, cement in zakken, betonmortel (nat), breuksteen
-  - **Isolatie**: perliet, vermiculiet, schuimglas, houtvezelplaat, cellulose-inblaaswol
-  - **Metalen**: zuiver ijzer, chroom, mangaan, wolfraam, molybdeen, kobalt, zilver, goud, platina, antimoon, cadmium, bismut, silicium, zamak, hardmetaal (wolfraamcarbide), kwik, ferrosilicium
-  - **Hout & plaatmateriaal**: grenen, populier, els, esdoorn, noten, kersen, haagbeuk, iep, kastanje, linde, iroko, sapeli, bangkirai, padoek, wengé, accoya, western red cedar, robinia, thermohout, OSB, MDF, HDF, hardboard, zachtboard, gelamineerd hout (glulam), kruislaaghout (CLT), kurk, rondhout
-  - **Brandstoffen, chemie & gassen**: ruwe olie, nafta, huisbrandolie, biodiesel (FAME), HVO, oplosmiddelen (tolueen, xyleen, benzeen, styreen, MEK, IPA, ethylacetaat, terpentine/terpentijn), zuren (azijnzuur, salpeterzuur, fosforzuur), waterstofperoxide, ammonia, glycerine, plantaardige oliën per soort (olijf-, palm-, zonnebloem-, koolzaad-, lijnolie), bitumenemulsie, sterke drank, en vloeibaar gemaakte gassen (LNG, propaan, butaan, CO₂, stikstof, zuurstof, argon, waterstof, watervrije ammoniak)
-  - **Meststoffen & chemie (vast)**: ammoniumnitraat, ammoniumsulfaat, DAP/MAP/TSP, kieseriet, urean (UAN), calciumchloride, citroenzuur, waspoeder, actieve kool, carbon black, titaandioxide, zinkoxide, zetmeel, vacuümzout, natriumbicarbonaat, paraffine, bleekloog, ijzerchloride, epoxyhars
-  - **Agrarisch**: spelt, boekweit, gierst, sorghum, quinoa, lijnzaad, peulvruchten (erwten, bonen, linzen, kikkererwten), veevoergrondstoffen (sojaschroot, raapzaadschroot, zonnebloemschroot, palmpitschilfers, bietenpulppellets, DDGS, luzernepellets, vismeel), kuilvoer, drijfmest en vaste mest, compost, boomschors, houtkrullen, potgrond, graszaad, mosterd-/sesamzaad, pinda's, hoppellets, tabak en thee
-  - **Groente & fruit** (effectieve dichtheid in kisten/dozen): bananen, sinaasappels, citroenen, peren, druiven, meloenen, aardbeien, tomaten, komkommers, paprika, prei, bloemkool, kool, wortelen, champignons
-  - **Levensmiddelen**: keukenzout, pasta, havermout, melk- en weipoeder, boter, kaas, honing, chocolade, cacaoboter, gebrande koffie, flessenwater, suikersiroop, azijn
-  - **Ertsen & energie**: koper- en zinkconcentraat, chroomerts, mangaanerts, nikkelerts, fosfaaterts, ilmeniet, bariet, bentoniet, kaolien, veldspaat, olivijn, steenzout, petroleumcokes, bruinkool, antraciet, aluinaarde, gebluste kalk
-  - **Kunststoffen, papier & textiel**: massief polystyreen, ABS, polycarbonaat, PET, PTFE, PUR-schuim, rubbergranulaat, kopieerpapier, krantenpapier, tissue, boeken, wol-, vlas- en tapijtgoederen, kleding
-  - **Afval & recycling**: RDF-balen, e-waste, AEC-bodemas, groenafval, zuiveringsslib, gebruikt frituurvet, gemengd kunststofafval
-  - **Stukgoed-praktijkgemiddelden**: lege pallets en kratten, machines op skids, witgoed, loodaccu's, kabelhaspels, sanitair, bevestigingsmateriaal, matrassen, fietsen
-- Elke vermelding geeft aan of het om stortdichtheid, massieve dichtheid, vloeistofdichtheid of een effectieve palletdichtheid gaat
+- **Goods database extended from 159 to 400 goods** with bulk and solid densities,
+  min/max ranges and Dutch/English aliases, across the whole transport spectrum:
+  - **Construction and natural stone**: basalt, bluestone, travertine, quartzite,
+    porphyry, track ballast, screed mortar, tile adhesive, concrete blocks, kerbstones,
+    paving bricks, gypsum plaster, silver sand, dolomite, chalk, loam, roofing rolls,
+    bagged cement, wet ready-mix concrete, rubble stone
+  - **Insulation**: perlite, vermiculite, foam glass, wood fibre board, cellulose blow-in
+  - **Metals**: pure iron, chromium, manganese, tungsten, molybdenum, cobalt, silver,
+    gold, platinum, antimony, cadmium, bismuth, silicon, zamak, cemented carbide
+    (tungsten carbide), mercury, ferrosilicon
+  - **Timber and sheet material**: pine, poplar, alder, maple, walnut, cherry, hornbeam,
+    elm, chestnut, lime, iroko, sapele, bangkirai, padauk, wengé, accoya, western red
+    cedar, robinia, thermally modified wood, OSB, MDF, HDF, hardboard, softboard, glulam,
+    cross-laminated timber (CLT), cork, round timber
+  - **Fuels, chemicals and gases**: crude oil, naphtha, heating oil, biodiesel (FAME),
+    HVO, solvents (toluene, xylene, benzene, styrene, MEK, IPA, ethyl acetate, white
+    spirit/turpentine), acids (acetic, nitric, phosphoric), hydrogen peroxide, ammonia
+    solution, glycerine, vegetable oils by type (olive, palm, sunflower, rapeseed,
+    linseed), bitumen emulsion, spirits, and liquefied gases (LNG, propane, butane, CO₂,
+    nitrogen, oxygen, argon, hydrogen, anhydrous ammonia)
+  - **Fertilisers and solid chemicals**: ammonium nitrate, ammonium sulphate, DAP/MAP/TSP,
+    kieserite, UAN, calcium chloride, citric acid, washing powder, activated carbon,
+    carbon black, titanium dioxide, zinc oxide, starch, vacuum salt, sodium bicarbonate,
+    paraffin, bleach lye, iron chloride, epoxy resin
+  - **Agricultural**: spelt, buckwheat, millet, sorghum, quinoa, linseed, pulses (peas,
+    beans, lentils, chickpeas), feed materials (soybean meal, rapeseed meal, sunflower
+    meal, palm kernel expeller, beet pulp pellets, DDGS, alfalfa pellets, fish meal),
+    silage, slurry and solid manure, compost, tree bark, wood shavings, potting soil,
+    grass seed, mustard and sesame seed, peanuts, hop pellets, tobacco and tea
+  - **Fruit and vegetables** (effective density in crates and boxes): bananas, oranges,
+    lemons, pears, grapes, melons, strawberries, tomatoes, cucumbers, peppers, leeks,
+    cauliflower, cabbage, carrots, mushrooms
+  - **Foodstuffs**: table salt, pasta, oats, milk and whey powder, butter, cheese, honey,
+    chocolate, cocoa butter, roasted coffee, bottled water, sugar syrup, vinegar
+  - **Ores and energy**: copper and zinc concentrate, chrome ore, manganese ore, nickel
+    ore, phosphate rock, ilmenite, barite, bentonite, kaolin, feldspar, olivine, rock
+    salt, petroleum coke, lignite, anthracite, alumina, slaked lime
+  - **Plastics, paper and textiles**: solid polystyrene, ABS, polycarbonate, PET, PTFE,
+    PUR foam, rubber granulate, copy paper, newsprint, tissue, books, wool, flax and
+    carpet goods, clothing
+  - **Waste and recycling**: RDF bales, e-waste, incinerator bottom ash, green waste,
+    sewage sludge, used cooking oil, mixed plastic waste
+  - **General cargo practical averages**: empty pallets and crates, machinery on skids,
+    white goods, lead-acid batteries, cable drums, sanitary ware, fasteners, mattresses,
+    bicycles
+- Every entry states whether the figure is a bulk density, solid density, liquid density
+  or an effective pallet density
 
-### Gewijzigd
+### Changed
 
-- Te brede aliassen zijn verplaatst naar specifiekere goederen (bijv. "olijfolie" van generieke plantaardige olie naar olijfolie, "grenen" van vuren naar grenen, "potgrond" van turf naar potgrond, "gebluste kalk" van ongebluste kalk naar kalkhydraat), zodat herkenning en dichtheid nauwkeuriger zijn
-- Alle aliassen zijn gegarandeerd uniek over de hele database, zodat een omschrijving altijd op één goed uitkomt
-- Bestaande installaties krijgen de nieuwe goederen automatisch bij de eerstvolgende catalogus-sync (standaard bij opstarten)
+- Overly broad aliases have been moved to more specific goods (for example "olive oil"
+  from generic vegetable oil to olive oil, "potting soil" from peat to potting soil,
+  "slaked lime" from quicklime to lime hydrate), so recognition and density are more
+  accurate
+- All aliases are guaranteed unique across the whole database, so a description always
+  resolves to exactly one entry
+- Existing installations pick up the new goods automatically at the next catalogue sync,
+  which by default runs at startup
 
 ## [1.6.0] — 2026-07-25
 
-Handtekeningen op documenten en een complete offline UN- en verpakkingendatabase.
+Signatures on documents, and a complete offline UN and packaging database.
 
-### Toegevoegd
+### Added
 
-- **Handtekening tekenen, uploaden of overslaan**: in de zendinggegevens-stap kan de afzender een handtekening tekenen (muis, vinger of stylus, met vloeiende lijnen, ongedaan maken en wissen) of een afbeelding uploaden (PNG/JPEG/WebP; een witte achtergrond wordt automatisch transparant gemaakt en de handtekening wordt strak bijgesneden). De handtekening wordt geplaatst in het afzendervak van de documenten: CMR vak 22 (alle vier doorslagen), het handtekeningveld van de IATA Shipper's Declaration en een nette handtekeningsectie in alle gegenereerde PDF's. Overslaan blijft altijd mogelijk om fysiek met pen te ondertekenen. Handtekeningen van vervoerder en geadresseerde (CMR vak 23/24, CIM vak 61, afleverbon-ontvangst) blijven altijd leeg.
-- **UN-nummer-autocomplete**: bij het invullen van een UN-nummer of stofnaam verschijnen direct voorstellen uit een **offline database met 2.928 ADR-vermeldingen** (klasse, classificatiecode, verpakkingsgroep, etiketten, gelimiteerde/vrijgestelde hoeveelheden, verpakkingsinstructies, vervoerscategorie, tunnelcode en Kemler-nummer uit ADR Tabel A; Engelse stofnamen uit de officiële Amerikaanse 49 CFR 172.101-tabel). Eén klik vult PSN, klasse, verpakkingsgroep, verpakkingsinstructie, vervoerscategorie en tunnelcode automatisch in; waar internet beschikbaar is verrijkt de bestaande ADR 2025-lookup de gegevens live. Nieuw endpoint: `GET /api/dg/search`.
-- **Verpakkingendatabase**: alle 107 UN-verpakkingscodes volgens ADR 6.1.2/6.5.1.4/6.6.2 (vaten, jerrycans, kisten en dozen, zakken, composietverpakkingen met kunststof of glazen binnenhouder, metalen/flexibele/kunststof/composiet-IBC's zoals big bags en 1000-litertotes, grote verpakkingen en drukhouders) met NL/EN-omschrijvingen en indicatie vloeistof/vaste stof. Het verpakkingsveld in de gevaarlijke-stoffenstap is nu een zoekbare keuzelijst; vrije tekst blijft mogelijk. Nieuw endpoint: `GET /api/dg/packagings`.
-- De UN-lookup (`GET /api/dg/lookup`) valt automatisch terug op de offline database wanneer de externe ADR-bron niet bereikbaar is — de gevaarlijke-stoffenstap werkt nu volledig offline.
+- **Draw, upload or skip a signature**: on the shipment details step the sender can draw
+  a signature (mouse, finger or stylus, with smooth lines, undo and clear) or upload an
+  image (PNG/JPEG/WebP; a white background is made transparent automatically and the
+  signature is trimmed tightly). The signature is placed in the sender's box of the
+  documents: CMR box 22 (all four copies), the signature field of the IATA Shipper's
+  Declaration, and a proper signature section on all generated PDFs. Skipping remains
+  possible at all times, to sign physically with a pen. Carrier and consignee signatures
+  (CMR boxes 23/24, CIM box 61, delivery note receipt) always stay blank.
+- **UN number autocomplete**: when entering a UN number or substance name, suggestions
+  appear straight away from an **offline database of 2,928 ADR entries** (class,
+  classification code, packing group, labels, limited and excepted quantities, packing
+  instructions, transport category, tunnel code and Kemler number from ADR Table A;
+  English substance names from the official US 49 CFR 172.101 table). One click fills the
+  proper shipping name, class, packing group, packing instruction, transport category and
+  tunnel code; where internet is available, the existing ADR 2025 lookup enriches the data
+  live. New endpoint: `GET /api/dg/search`.
+- **Packaging database**: all 107 UN packaging codes under ADR 6.1.2/6.5.1.4/6.6.2 (drums,
+  jerricans, boxes, bags, composite packagings with plastic or glass inner receptacles,
+  metal, flexible, plastic and composite IBCs such as big bags and 1000-litre totes, large
+  packagings and pressure receptacles) with Dutch/English descriptions and a liquid/solid
+  indication. The packaging field on the dangerous goods step is now a searchable list;
+  free text remains possible. New endpoint: `GET /api/dg/packagings`.
+- The UN lookup (`GET /api/dg/lookup`) falls back to the offline database automatically
+  when the external ADR source is unreachable — the dangerous goods step now works fully
+  offline.
 
-### Gewijzigd
+### Changed
 
-- Formulierteksten verduidelijkt: carrier- en ontvangsthandtekeningen worden nooit vooraf ingevuld; de afzenderhandtekening wordt uitsluitend geplaatst wanneer de gebruiker die zelf tekent of uploadt.
+- Form texts clarified: carrier and consignee signatures are never pre-filled; the
+  sender's signature is only placed when the user draws or uploads one.
 
 ## [1.5.0] — 2026-07-25
 
-Eén wizard voor alle formulieren, locatie- en adres-autocomplete, en een transportbrede goederendatabase.
+One wizard for all forms, location and address autocomplete, and a transport-wide goods
+database.
 
-### Toegevoegd
+### Added
 
-- **Formulieren-subwizard**: na de colli-invoer volgt één doorlopende wizard — eerst de **zendinggegevens** (partijen, route, referenties) die één keer worden ingevuld en in álle geselecteerde formulieren worden hergebruikt, daarna per formulier een eigen stap ("Formulier x van y") met uitsluitend de velden die dat formulier nog nodig heeft. Stappen zijn direct aanklikbaar en tonen met een groene/oranje stip of alle verplichte velden zijn ingevuld; formulieren zonder eigen velden worden benoemd als "gedekt door de zendinggegevens".
-- **Adres-autocomplete**: bij adresvelden (afzender, geadresseerde) kan een adres worden gezocht en automatisch ingevuld via een Photon-geocoder op OpenStreetMap-data (instelbaar met `GEO_ADDRESS_API_URL`; valt stil zonder internettoegang, handmatig invullen blijft altijd mogelijk). Nieuw endpoint: `GET /api/geo/address`.
-- **Locatie-autocomplete voor luchthavens, havens en treinstations**: route-velden (laadplaats, losplaats, ontvangst/aflevering, eindbestemming) zoeken live in meegeleverde open datasets — 4.500+ luchthavens met IATA/ICAO-code (OurAirports), 17.500+ havens met UN/LOCODE (UNECE) en 750+ Europese hoofdstations (Trainline EU). Per modaliteit wordt de juiste soort voorgesteld (lucht → luchthavens, zee/binnenvaart → havens, spoor → stations, weg/multimodaal → alles plus adressen). Nieuw endpoint: `GET /api/geo/locations`. Vrije tekst blijft altijd toegestaan.
-- **Goederendatabase sterk uitgebreid**: van 18 naar **159 goederen** met (stort)dichtheden en NL/EN-aliassen — bouwmaterialen (cement, kalkzandsteen, baksteen, dakpannen, natuursteen, asfalt, granulaten, isolatie), metalen en schroot, houtsoorten en houtproducten, brandstoffen en vloeistoffen (diesel, kerosine, smeerolie, zuren, AdBlue), chemie en meststoffen, agrarische bulk (granen, zaden, aardappelen, veevoer, hooi/stro, koffie, cacao), levensmiddelen en dranken, papier en verpakking, ertsen en energie (ijzererts, steenkool, cokes), recycling en afvalstromen, textiel en stukgoed-praktijkgemiddelden (pallets, pakketten, meubels).
-- Catalogus-zoeken toont goederen nu ook rechtstreeks als **materiaal-suggestie met dichtheid** (bijv. "Tarwe — 780 kg/m³"), naast de bestaande profiel- en materieelresultaten.
-- **Gewichtsberekening voor blokvormige goederen**: een herkend materiaal met drie afmetingen wordt nu als massief blok op dichtheid doorgerekend (bijv. "baksteen 100x100x100cm" → 1.900 kg), ook zonder expliciet producttype als plaat of balk.
+- **Forms sub-wizard**: after entering packages there is one continuous wizard — first the
+  **shipment details** (parties, route, references) which are entered once and reused in
+  *all* selected forms, then a step per form ("Form x of y") with only the fields that
+  form still needs. Steps are directly clickable and show a green or orange dot for
+  whether all required fields are filled; forms without their own fields are listed as
+  "covered by the shipment details".
+- **Address autocomplete**: address fields (sender, consignee) can search and fill an
+  address automatically via a Photon geocoder on OpenStreetMap data (configurable with
+  `GEO_ADDRESS_API_URL`; goes quiet without internet access, manual entry always remains
+  possible). New endpoint: `GET /api/geo/address`.
+- **Location autocomplete for airports, ports and railway stations**: route fields (place
+  of loading, place of discharge, receipt/delivery, final destination) search live in
+  bundled open datasets — 4,500+ airports with IATA/ICAO code (OurAirports), 17,500+ ports
+  with UN/LOCODE (UNECE) and 750+ European main stations (Trainline EU). The right kind is
+  suggested per mode (air → airports, sea and inland waterway → ports, rail → stations,
+  road and multimodal → everything plus addresses). New endpoint: `GET /api/geo/locations`.
+  Free text remains allowed at all times.
+- **Goods database greatly extended**: from 18 to **159 goods** with bulk and solid
+  densities and Dutch/English aliases — construction materials (cement, sand-lime brick,
+  brick, roof tiles, natural stone, asphalt, aggregates, insulation), metals and scrap,
+  timber species and timber products, fuels and liquids (diesel, kerosene, lubricating
+  oil, acids, AdBlue), chemicals and fertilisers, agricultural bulk (grain, seed,
+  potatoes, animal feed, hay and straw, coffee, cocoa), foodstuffs and drinks, paper and
+  packaging, ores and energy (iron ore, coal, coke), recycling and waste streams, textiles
+  and general cargo practical averages (pallets, parcels, furniture).
+- Catalogue search now also shows goods directly as a **material suggestion with density**
+  (for example "Wheat — 780 kg/m³"), alongside the existing profile and equipment results.
+- **Weight calculation for block-shaped goods**: a recognised material with three
+  dimensions is now calculated as a solid block on density (for example "brick
+  100x100x100cm" → 1,900 kg), even without an explicit product type such as sheet or beam.
 
-### Gewijzigd
+### Changed
 
-- De stap "Zendinggegevens" heet in de voortgangsbalk nog steeds hetzelfde, maar bevat nu de sub-wizard met eigen navigatie; dubbele invoer van dezelfde gegevens over formulieren is volledig vervallen.
-- Nieuwe environment variables: `GEO_ADDRESS_API_URL` en `GEO_ADDRESS_TIMEOUT_SECONDS`.
+- The "Shipment details" step keeps its name in the progress bar but now contains the
+  sub-wizard with its own navigation; duplicate entry of the same data across forms is
+  gone entirely.
+- New environment variables: `GEO_ADDRESS_API_URL` and `GEO_ADDRESS_TIMEOUT_SECONDS`.
 
 ## [1.4.0] — 2026-07-13
 
-CargoPilot is volledig civiel: militaire formulieren verwijderd.
+CargoPilot is fully civilian: military forms removed.
 
-### Verwijderd
+### Removed
 
-- Het interne militaire formulier is volledig verwijderd: de wizardstap met vragen, het Excel-template, de export-endpoints, de PDF-weergave en alle verwijzingen in de interface. Voor militaire doeleinden komt een aparte private fork (CargoPilot MIL) met eigen formulieren.
-- Militaire vlaggen en helpteksten (o.a. wapens, munitie, ITAR, TBB) en externe verwijzingen naar defensieportalen
-- Oudere Docker-images bevatten het formulier nog; deze worden via de tag-opschoning van Docker Hub verwijderd
+- The internal military form has been removed completely: the wizard step with its
+  questions, the Excel template, the export endpoints, the PDF rendering and all
+  references in the interface. Military use gets a separate private fork (CargoPilot MIL)
+  with its own forms.
+- Military flags and help texts (weapons, ammunition, ITAR, TBB) and external references
+  to defence portals
+- Older Docker images still contain the form; these are removed through the Docker Hub tag
+  cleanup
 
-### Gewijzigd
+### Changed
 
-- **Colli-invoer**: de stap "Review" heet nu **Colli**; per collo kan worden aangevinkt of het om gevaarlijke stoffen gaat. Bij een vinkje (of een herkend UN-nummer) volgt automatisch de gevaarlijke-stoffenstap.
-- De gevaarlijke-stoffenstap, UN-detectie, ADR/IATA-nalevingscontroles en alle transportdocumenten blijven volledig behouden
-- Per modaliteit is standaard het primaire vervoersdocument voorgeselecteerd (weg: CMR, spoor: CIM, lucht: AWB-instructies, zee: B/L-instructies)
+- **Package entry**: the "Review" step is now called **Packages**; each package can be
+  ticked as containing dangerous goods. A tick (or a recognised UN number) automatically
+  brings up the dangerous goods step.
+- The dangerous goods step, UN detection, ADR/IATA compliance checks and all transport
+  documents are fully retained
+- Per mode, the primary transport document is pre-selected (road: CMR, rail: CIM, air: AWB
+  instructions, sea: B/L instructions)
 
 ## [1.3.0] — 2026-07-13
 
-Nalevingsbegeleiding gevaarlijke stoffen (ADR & IATA).
+Dangerous goods compliance guidance (ADR and IATA).
 
-### Toegevoegd
+### Added
 
-- **ADR 1.1.3.6 puntencalculator (1000-puntenregel)**: per DG-product transportcategorie (0-4) en totale hoeveelheid; automatische berekening met factoren ×50/×3/×1/×0, statussen "vrijstelling mogelijk", "boven 1000 punten", "categorie 0 — geen vrijstelling" en "onvolledig", inclusief uitleg wat onder de vrijstelling vervalt en wat verplicht blijft
-- **Samenladingscontrole ADR 7.5.2**: waarschuwing bij klasse 1 (behalve 1.4S) samen met andere klassen, verschillende compatibiliteitsgroepen binnen klasse 1 (7.5.2.2) en CV28/7.5.4-scheiding van levensmiddelen (etiketten 6.1/6.2 en klasse 9 UN 2212/2315/2590/3151/3152/3245)
-- **IATA-segregatie (Table 9.3.A)**: controle op onverenigbare colli (klasse 1 excl. 1.4S × 2.1/3/4.1/5.1; klasse 8 × 4.3) inclusief nevengevaren, plus de lithiumbatterij-regel (UN 3090/3480 gescheiden van 1/2.1/3/4.1/5.1)
-- **IATA Q-waarde (5.0.2.11)**: automatische berekening Q = Σ n/M met afronding naar boven op één decimaal en waarschuwing bij overschrijding van 1,0
-- **Nalevingspaneel** in de gevaarlijke-stoffenstap en de exportsamenvatting, met bronvermeldingen (ADR 2025, IATA DGR 67e editie) en herbereken-knop
-- Nieuwe DG-velden met helpteksten: ADR-transportcategorie, totale hoeveelheid (1.1.3.6.3-eenheden), netto per verpakking en max. netto per verpakking (Q); UN-lookup vult de transportcategorie voor waar de ADR-database die levert
-- Cargo Aircraft Only-signalering richting Shipper's Declaration en AWB-handling information
-- Nieuw endpoint: `POST /api/dg/compliance`; regelconfiguratie in `backend/app/config/dg_compliance.json`
+- **ADR 1.1.3.6 points calculator (the 1,000-point rule)**: transport category (0–4) and
+  total quantity per DG product; automatic calculation with factors ×50/×3/×1/×0, verdicts
+  "exemption possible", "over 1,000 points", "category 0 — no exemption" and "incomplete",
+  including an explanation of what the exemption releases you from and what remains
+  mandatory
+- **Loading compatibility check ADR 7.5.2**: warning for class 1 (other than 1.4S)
+  together with other classes, different compatibility groups within class 1 (7.5.2.2) and
+  the CV28/7.5.4 separation of foodstuffs (labels 6.1/6.2 and class 9 UN
+  2212/2315/2590/3151/3152/3245)
+- **IATA segregation (Table 9.3.A)**: check on incompatible packages (class 1 excluding
+  1.4S × 2.1/3/4.1/5.1; class 8 × 4.3) including subsidiary risks, plus the lithium
+  battery rule (UN 3090/3480 separated from 1/2.1/3/4.1/5.1)
+- **IATA Q value (5.0.2.11)**: automatic calculation of Q = Σ n/M, rounded up to one
+  decimal, with a warning above 1.0
+- **Compliance panel** on the dangerous goods step and in the export summary, with source
+  references (ADR 2025, IATA DGR 67th edition) and a recalculate button
+- New DG fields with help text: ADR transport category, total quantity (1.1.3.6.3 units),
+  net per packaging and max. net per packaging (Q); the UN lookup fills the transport
+  category where the ADR database provides it
+- Cargo Aircraft Only flagging towards the Shipper's Declaration and AWB handling
+  information
+- New endpoint: `POST /api/dg/compliance`; rule configuration in
+  `backend/app/config/dg_compliance.json`
 
 ## [1.2.0] — 2026-07-12
 
-Multimodale transportkeuze.
+Multimodal transport selection.
 
-### Toegevoegd
+### Added
 
-- **Modaliteitskeuze bij start**: tegelscherm met wegtransport, spoor, zeevracht, binnenvaart, luchtvracht en multimodaal (aparte illustraties voor licht en donker thema)
-- **Formulierenselectie als eerste wizardstap**: per modaliteit alleen relevante formulieren; bij multimodaal alle formulieren selecteerbaar
-- **Documentregister** (`backend/app/config/document_registry.json`) met velddefinities en veldstatussen (`USER_REQUIRED`, `CONDITIONAL`, `CARRIER_PROVIDED`, `OPERATIONAL`, `SIGNATURE_REQUIRED`, …)
-- **Alle documenten worden nu als PDF gedownload.**
-- **Officiële invulbare PDF-formulieren ingevuld**: de **CMR-vrachtbrief** (IRU-model 2007, 4 doorslagen), de **IATA Shipper's Declaration** (open formaat) en de **CIM-vrachtbrief** (CIT CIM/CUV, ed. 2019) worden als originele, invulbare PDF-templates ingevuld — inclusief correcte vaknummering, IATA-kolomvolgorde en "delete non-applicable"-doorstreping. Handtekeningvelden blijven leeg.
-- **Zelf-ontworpen documenten als nette PDF** (reportlab): paklijst, afleverbon, IMO Multimodal Dangerous Goods Form, VGM-verklaring, AWB/B-L Shipping Instructions en ADR/ADN-vervoersdocument — met partijen, goederentabel, DG-tabel per profiel, vaste juridische teksten en disclaimer.
-- **Nieuwe documenten**: CMR (PDF), IATA (PDF), CIM (PDF), IMO Multimodal DG Form, VGM-verklaring (methode 1/2 met somcontrole), AWB Shipping Instructions, B/L / Sea Waybill Shipping Instructions, ADR/ADN-vervoersdocument, paklijst en afleverbon
-- **Juridische disclaimer**: aparte disclaimer-pagina in de app (NL/EN), `DISCLAIMER.md`, een concept-waarschuwing bij export en een disclaimer in de metadata/voettekst van gegenereerde documenten. Aansprakelijkheid volledig uitgesloten; Apache License 2.0 met Commons Clause expliciet benoemd.
-- Officiële regelgeving en vaste juridische teksten (CMR-paramountclausule, IATA-certificering/WARNING, IMO-verklaring, VGM SOLAS-referentie, ADR 5.4.1-omschrijvingsregel) plus links naar de officiële brontemplates per document
-- **Zendinggegevens-stap**: gedeelde blokken (partijen, route, referenties) worden één keer ingevuld en hergebruikt in alle geselecteerde documenten
-- **Documentstatussen in de samenvatting**: gereed voor export, concept, wacht op carriergegevens, geblokkeerd door veiligheidsvalidatie, niet van toepassing
-- **Gevaarlijke-stoffenvalidatie per modaliteit** (ADR/RID/ADN/IMDG/IATA DGR): export van DG-verklaringen wordt geblokkeerd bij onvolledige classificatie (UN-nummer, Proper Shipping Name, klasse; voor IATA ook packing instruction, colli en hoeveelheid)
-- Extra DG-velden bij IMO/IATA-formulieren: technische naam, marine pollutant, Cargo Aircraft Only, overpack, noodcontact, EmS-code
-- Nieuwe API-endpoints: `GET /api/documents/registry`, `POST /api/documents/validate`, `POST /api/documents/export`
+- **Transport mode selection at the start**: a tile screen with road, rail, sea, inland
+  waterway, air and multimodal (separate illustrations for light and dark theme)
+- **Form selection as the first wizard step**: only relevant forms per mode; with
+  multimodal, all forms selectable
+- **Document registry** (`backend/app/config/document_registry.json`) with field
+  definitions and field statuses (`USER_REQUIRED`, `CONDITIONAL`, `CARRIER_PROVIDED`,
+  `OPERATIONAL`, `SIGNATURE_REQUIRED`, …)
+- **All documents are now downloaded as PDF.**
+- **Official fillable PDF forms filled in**: the **CMR consignment note** (IRU model 2007,
+  4 copies), the **IATA Shipper's Declaration** (open format) and the **CIM consignment
+  note** (CIT CIM/CUV, 2019 edition) are filled in as the original, fillable PDF templates
+  — including correct box numbering, IATA column order and "delete non-applicable"
+  strikethrough. Signature fields stay blank.
+- **Self-designed documents as clean PDFs** (reportlab): packing list, delivery note, IMO
+  Multimodal Dangerous Goods Form, VGM declaration, AWB/B-L Shipping Instructions and the
+  ADR/ADN transport document — with parties, goods table, DG table per profile, fixed legal
+  texts and a disclaimer.
+- **New documents**: CMR (PDF), IATA (PDF), CIM (PDF), IMO Multimodal DG Form, VGM
+  declaration (method 1/2 with a total cross-check), AWB Shipping Instructions, B/L or Sea
+  Waybill Shipping Instructions, ADR/ADN transport document, packing list and delivery note
+- **Legal disclaimer**: a separate disclaimer page in the app (NL/EN), `DISCLAIMER.md`, a
+  draft warning on export and a disclaimer in the metadata and footer of generated
+  documents. Liability fully excluded; Apache License 2.0 with Commons Clause named
+  explicitly.
+- Official regulations and fixed legal texts (CMR paramount clause, IATA
+  certification/WARNING, IMO declaration, VGM SOLAS reference, ADR 5.4.1 description line)
+  plus links to the official source templates per document
+- **Shipment details step**: shared blocks (parties, route, references) are entered once
+  and reused in all selected documents
+- **Document statuses in the summary**: ready for export, draft, waiting for carrier data,
+  blocked by safety validation, not applicable
+- **Dangerous goods validation per mode** (ADR/RID/ADN/IMDG/IATA DGR): export of DG
+  declarations is blocked on incomplete classification (UN number, proper shipping name,
+  class; for IATA also packing instruction, packages and quantity)
+- Extra DG fields on IMO/IATA forms: technical name, marine pollutant, Cargo Aircraft Only,
+  overpack, emergency contact, EmS code
+- New API endpoints: `GET /api/documents/registry`, `POST /api/documents/validate`,
+  `POST /api/documents/export`
 
-### Gewijzigd
+### Changed
 
-- Wizard start met formulierenkeuze
-- Handtekening-, carrier- en operationele velden worden nooit vooraf ingevuld; ze worden in de export als zodanig gemarkeerd
-- Navigatie: het startpunt heet "Nieuwe zending" en begint bij de modaliteitskeuze
-- Wizard-voortgangsbalk toont op mobiel iconen i.p.v. tekst (meer stappen passen op het scherm)
+- The wizard starts with the form selection
+- Signature, carrier and operational fields are never pre-filled; they are marked as such
+  in the export
+- Navigation: the starting point is called "New shipment" and begins at the mode selection
+- The wizard progress bar shows icons instead of text on mobile (more steps fit on screen)
 
 ## [1.0.0] — 2026-07-11
 
-Eerste stabiele release.
+First stable release.
 
-### Toegevoegd
+### Added
 
-- Wizard: review-first flow met materiaalcatalogus en synoniemen
-- Gevaarlijke stoffen met ADR UN-lookup
-- Overzicht materieel: beheer, import via template (.xlsx/.csv/.txt)
-- Wizard-import: plakken en bestand uploaden met template
-- Gewicht per regel bewerkbaar; totaalgewicht proportioneel schaalbaar in samenvatting
-- Automatische catalogus-sync (materialen, profielen) uit openbare bronnen
-- Donkere modus, NL/EN UI, Docker/Unraid-deploy
+- Wizard: review-first flow with a material catalogue and synonyms
+- Dangerous goods with ADR UN lookup
+- Equipment overview: management, import via template (.xlsx/.csv/.txt)
+- Wizard import: paste and file upload with a template
+- Weight per line editable; total weight proportionally scalable in the summary
+- Automatic catalogue sync (materials, profiles) from public sources
+- Dark mode, NL/EN interface, Docker and Unraid deployment
 
-### Gewijzigd
+### Changed
 
-- Semantische versies vanaf v1.0.0 (`VERSION`, Docker-tags `v*`, health-endpoint)
-- Materieelbibliotheek start **leeg**; geen voorgevulde operationele data meer in de repository of image
+- Semantic versions from v1.0.0 onwards (`VERSION`, Docker tags `v*`, health endpoint)
+- The equipment library starts **empty**; no pre-filled operational data in the repository
+  or the image
 
-### Verwijderd / privacy
+### Removed / privacy
 
-- Vooraf gevulde materieellijst (`equipment_overview.json`) uit codebase en Docker-build
-- Bij opstarten worden legacy-items met bron `overzicht_materieel` uit bestaande databases verwijderd
-- Verouderde gebouwde frontend-static in `backend/static/` (build gebeurt in Docker)
-
-### Bekende beperkingen (opgelost in v1.1.0)
-
+- Pre-filled equipment list (`equipment_overview.json`) removed from the codebase and the
+  Docker build
+- On startup, legacy items with the source `overzicht_materieel` are removed from existing
+  databases
+- Stale built frontend assets in `backend/static/` (the build happens in Docker)

@@ -1,39 +1,54 @@
 # Roadmap
 
-Versiebeleid: [Semantic Versioning](https://semver.org/) — `MAJOR.MINOR.PATCH` (zie `VERSION` en git-tags `v*`).
+Where CargoPilot is going. For what has already shipped, see the [changelog](CHANGELOG.md).
 
-## v1.1.0 (huidige release) — Multimodale transportkeuze
+Versioning follows [Semantic Versioning](https://semver.org/) — see
+[Development](docs/development.md#versioning) for how bumps are decided.
 
-- Modaliteitskeuze bij start (weg, spoor, zee, binnenvaart, lucht, multimodaal)
-- Formulierenselectie per modaliteit als eerste wizardstap
-- Documentregister met veldstatussen (gebruiker/vervoerder/operationeel/handtekening)
-- CMR, CIM, IMO DGF, IATA DGD, VGM, AWB- en B/L-shipping-instructions, ADR/ADN-document, paklijst, afleverbon
-- Gedeelde zendinggegevens hergebruikt over documenten; DG-exportblokkades per modaliteitsprofiel
+## Status
 
-## v1.0.0
+CargoPilot is **under active development**. It is usable today, and the current
+release covers the full flow from package entry to finished documents for all six
+transport modes. Expect additions rather than upheaval — the wizard and the document
+registry are settled.
 
-- Lege materieelbibliotheek; import via template door de beheerder
-- Geen operationele materieeldata in GitHub of Docker-images
+## Where it stands now
 
-## Gepland
+| Area | State |
+|---|---|
+| Transport modes | Road, rail, sea, inland waterway, air, multimodal |
+| Official forms filled in | CMR, CIM, IATA Shipper's Declaration, AVC waybill |
+| Generated documents | IMO DG Form, VGM, AWB and B/L instructions, ADN document, packing list, delivery note |
+| Goods database | 400 goods with densities and NL/EN aliases |
+| Dangerous goods | 2,928 UN entries, 2,338 EmS schedules, full IMDG segregation, ADR and IATA compliance checks |
+| Locations | 4,500+ airports, 17,500+ ports, 750+ stations, offline |
+| Interface | Dutch and English, light and dark |
 
-### v1.1.x — Verdieping multimodaal
+## Planned
 
-- NHM-code zoeken/selecteren als masterdataveld (CIM vak 24)
-- Configureerbare landen-/carrierregels voor douanereferenties (ENS/ICS2, AES/ITN)
-- Import van carriergegevens (AWB-nummer, boeking) na bevestiging
+### Dangerous goods data
 
-### v1.2 — Wizard & bibliotheek
+- **Per-substance data from the IMDG Dangerous Goods List**: marine pollutant status,
+  stowage codes (SW, column 16a), segregation codes (SG, column 16b) and bulk/tank
+  admissibility. Today the app knows the segregation *groups* per substance but points
+  at column 16b for the substance-specific codes.
+- German as a third interface language, including the dangerous goods help texts.
 
-- Kolommapping-UI bij ambigue Excel-headers
-- Optionele bulk-export materieel (alleen op verzoek; geen standaard-export van gevoelige data)
-- Duitse UI-taal
+### Wizard and library
 
-### Later (ideeën)
+- Column mapping UI when an imported spreadsheet has ambiguous headers.
+- NHM code search and selection as a master data field (CIM box 24).
+- Configurable country and carrier rules for customs references (ENS/ICS2, AES/ITN).
+- Import of carrier data (AWB number, booking reference) after confirmation.
+- Optional bulk export of the equipment library — on request only, never a default
+  export of sensitive data.
 
-- Watchtower/Unraid auto-update documentatie in README
-- Auditlog zonder inhoud van materiaallijsten (alleen metadata)
+### Ideas, not committed
 
-## Niet gepland
+- Watchtower and Unraid auto-update documentation.
+- An audit log that records metadata only, never the contents of material lists.
 
-- Voorgevulde operationele materieelbibliotheek in de openbare repository of Docker Hub
+## Not planned
+
+- A pre-filled operational equipment library in the public repository or on Docker Hub.
+  The library starts empty by design; see [Privacy](docs/privacy.md).

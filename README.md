@@ -1,12 +1,12 @@
 # CargoPilot
 
-**Versie 1.13.0** — webapplicatie om colli en materialen te analyseren en als transportdocumenten (PDF) te exporteren, per transportmodaliteit. Uitsluitend bedoeld voor civiele instanties.
+**Versie 1.13.1** — webapplicatie om colli en materialen te analyseren en als transportdocumenten (PDF) te exporteren, per transportmodaliteit. Uitsluitend bedoeld voor civiele instanties.
 
 **English:** CargoPilot parses package lines (paste or file import), calculates weight/volume, and exports transport documents per modality — CMR, CIM, IMO/IATA dangerous goods declarations, VGM and shipping instructions. For civilian use only.
 
 Zie ook [CHANGELOG.md](CHANGELOG.md) en [ROADMAP.md](ROADMAP.md).
 
-## Functionaliteiten (v1.13.0)
+## Functionaliteiten (v1.13.1)
 
 - **Modaliteitskeuze bij start**: wegtransport, spoor, zeevracht, binnenvaart, luchtvracht of multimodaal
 - **Formulierenselectie per modaliteit**: alleen relevante documenten; bij multimodaal alles beschikbaar
@@ -15,8 +15,8 @@ Zie ook [CHANGELOG.md](CHANGELOG.md) en [ROADMAP.md](ROADMAP.md).
 - **Goederendatabase met 400 materialen/goederen** (bouw, metaal, hout, brandstoffen, chemie, agri, voeding, papier, ertsen, recycling, stukgoed) met dichtheden en NL/EN-aliassen; blokvormige goederen worden automatisch op dichtheid doorgerekend
 - **Handtekening tekenen of uploaden** (of overslaan voor ondertekening met pen): geplaatst in CMR vak 22, het IATA-handtekeningveld en de gegenereerde PDF's; carrier- en ontvangsthandtekeningen blijven altijd leeg
 - **UN-nummer-autocomplete** met offline ADR-database (2.928 vermeldingen: klasse, verpakkingsgroep, etiketten, verpakkingsinstructies, vervoerscategorie, tunnelcode) en **verpakkingskeuze** uit alle 107 UN-verpakkingscodes (ADR 6.1/6.5/6.6)
-- **Officiële PDF-formulieren**: CMR (IRU-model 2007) en IATA Shipper's Declaration worden als originele invulbare PDF-templates ingevuld en als PDF gedownload
-- Documenten: CMR (PDF), CIM (PDF), **AVC-vrachtbrief** (binnenlands wegvervoer, met ontvangstbewijs), IMO Multimodal DG Form, IATA Shipper's Declaration (PDF), VGM-verklaring, AWB/B-L Shipping Instructions, ADN-document, paklijst, afleverbon
+- **Officiële PDF-formulieren**: CMR (IRU-model 2007), CIM, IATA Shipper's Declaration en de AVC-vrachtbrief worden als originele formulieren ingevuld en als PDF gedownload — niet nagebouwd
+- Documenten: CMR (PDF), CIM (PDF), **AVC-vrachtbrief** (binnenlands wegvervoer, officieel sVa-formulier met ontvangstbewijs), IMO Multimodal DG Form, IATA Shipper's Declaration (PDF), VGM-verklaring, AWB/B-L Shipping Instructions, ADN-document, paklijst, afleverbon
 - **Vrachtbrief is tevens ADR-vervoersdocument**: bij gevaarlijke stoffen krijgt de CMR en de AVC-vrachtbrief de omschrijving van ADR 5.4.1.1.1 en de totale hoeveelheid per vervoerscategorie; ADR schrijft geen aparte vorm voor, dus een los ADR-document is niet nodig
 - **Veldstatussen per document**: gebruikersinvoer, carriergegevens, operationele velden en handtekeningen worden onderscheiden; handtekeningen worden alleen geplaatst als u er zelf één tekent of uploadt
 - **DG-exportblokkades** per modaliteitsprofiel (ADR/RID/ADN/IMDG/IATA DGR) bij onvolledige classificatie
@@ -45,7 +45,7 @@ Bij twijfel geldt de kleinste ophoging. Verzamel losse correcties bij voorkeur i
 |-----------|---------|
 | Versienummer | `VERSION`, `backend/VERSION` |
 | Git-release | tag `v1.0.0`, `v1.1.0`, … |
-| Docker Hub | `jeffersonmouze/cargopilot:latest` en `jeffersonmouze/cargopilot:v1.13.0` |
+| Docker Hub | `jeffersonmouze/cargopilot:latest` en `jeffersonmouze/cargopilot:v1.13.1` |
 | API | `GET /api/health` → `version` |
 
 ## Snelle start (Docker Compose)
@@ -62,7 +62,7 @@ Open: http://localhost:8080
 
 1. Community Applications of `unraid/CargoPilot.xml`
 2. Volume: `/mnt/user/appdata/cargopilot` → `/data`
-3. Image: `jeffersonmouze/cargopilot:v1.13.0` (of `latest` na bevestigde update)
+3. Image: `jeffersonmouze/cargopilot:v1.13.1` (of `latest` na bevestigde update)
 4. Environment: `APP_SECRET_KEY`, `ADMIN_*`
 5. WebUI op gekozen poort (bijv. `http://<ip>:9935`)
 
@@ -167,12 +167,12 @@ Bij upgrade naar v1.0.0 worden items met bron `overzicht_materieel` automatisch 
 **Let op:** Docker-images ouder dan v1.4.0 bevatten nog een intern formulier dat niet voor civiel gebruik is bedoeld. Na upgrade:
 
 1. Gebruik alleen `v1.4.0` of nieuwer (of `latest` na de 1.4.0-build).
-2. Verwijder oude Docker-tags via GitHub → **Actions** → **Cleanup Docker Hub tags** → **Run workflow** met `keep_tags`: `latest,v1.13.0,1.13.0`.
-3. `docker pull jeffersonmouze/cargopilot:v1.13.0` en container herstarten.
+2. Verwijder oude Docker-tags via GitHub → **Actions** → **Cleanup Docker Hub tags** → **Run workflow** met `keep_tags`: `latest,v1.13.1,1.13.1`.
+3. `docker pull jeffersonmouze/cargopilot:v1.13.1` en container herstarten.
 
 ## Docker Hub
 
-`jeffersonmouze/cargopilot:latest` · `jeffersonmouze/cargopilot:v1.13.0`
+`jeffersonmouze/cargopilot:latest` · `jeffersonmouze/cargopilot:v1.13.1`
 
 GitHub Actions: `.github/workflows/dockerhub.yml` (push `main` + tags `v*`).
 
@@ -225,14 +225,17 @@ Volledig overzicht: [ROADMAP.md](ROADMAP.md).
 
 ## Officiële formulier-templates
 
-Alle documenten worden als **PDF** geëxporteerd. Officiële invulbare formulieren staan in `templates/forms/` en worden door de backend ingevuld (niet nagebouwd); de overige worden als nette PDF gegenereerd met reportlab.
+Alle documenten worden als **PDF** geëxporteerd. Officiële formulieren staan in `templates/forms/` en worden door de backend ingevuld (niet nagebouwd); de overige worden als nette PDF gegenereerd met reportlab.
+
+CMR, CIM en de IATA-declaratie hebben AcroForm-velden: die worden rechtstreeks ingevuld. Het AVC-formulier is een vlakke PDF zonder velden; daar legt de backend de waarden als tekstlaag over de template heen, op posities die uit het lijnenraster van het formulier zelf zijn afgeleid (`backend/app/services/documents/avc_form.py`).
 
 | Document | Type | Bron / template |
 |---|---|---|
 | CMR-vrachtbrief | Ingevuld officieel PDF | IRU-model 2007 (`templates/forms/cmr.pdf`, 4 doorslagen) |
 | IATA Shipper's Declaration | Ingevuld officieel PDF | IATA open-formaat (`templates/forms/iata_dgd.pdf`) |
 | CIM-vrachtbrief | Ingevuld officieel PDF | CIT CIM/CUV (`templates/forms/cim.pdf`) |
-| IMO MDG Form, VGM, AWB/B-L SI, ADR/ADN, paklijst, afleverbon | Gegenereerde PDF (reportlab) | Eigen opmaak met vaste wettelijke teksten |
+| AVC-vrachtbrief | Ingevuld officieel PDF | sVa / Stichting Vervoeradres (`templates/forms/avc.pdf`) |
+| IMO MDG Form, VGM, AWB/B-L SI, ADN, paklijst, afleverbon | Gegenereerde PDF (reportlab) | Eigen opmaak met vaste wettelijke teksten |
 
 Carrier- en operationele velden worden nooit vooraf ingevuld; een handtekening wordt alleen geplaatst wanneer de gebruiker die zelf tekent of uploadt. Officiële formulieren: controleer vóór opname in een publieke repository de herdistributievoorwaarden van elk formulier.
 

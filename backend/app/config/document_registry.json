@@ -1831,8 +1831,8 @@
       },
       "category": "prepared",
       "issue_status": {
-        "nl": "Vrachtbrief volgens het model van sVa / Stichting Vervoeradres — vervoerdersgegevens en handtekeningen worden bij afgifte ingevuld",
-        "en": "Waybill following the sVa / Stichting Vervoeradres model — carrier details and signatures are completed on handover"
+        "nl": "Het officiële sVa-vrachtbriefformulier (Stichting Vervoeradres) wordt ingevuld — vervoerdersgegevens en handtekeningen worden bij afgifte aangevuld",
+        "en": "The official sVa waybill form (Stichting Vervoeradres) is filled in — carrier details and signatures are completed on handover"
       },
       "exporter": "avc",
       "dg_profile": "ADR",

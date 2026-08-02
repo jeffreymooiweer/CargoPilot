@@ -14,7 +14,7 @@ from app.services.documents import (
     render_document_pdf,
     validate_document,
 )
-from app.services.documents.avc_render import render_avc_waybill
+from app.services.documents.avc_form import fill_avc_waybill, has_avc_template
 from app.services.documents.signature import decode_signature_image
 
 router = APIRouter(prefix="/documents", tags=["documents"])
@@ -70,10 +70,11 @@ def export(
             payload.output_language,
             signature_png=signature_png,
         )
-    elif exporter == "avc":
-        # AVC-vrachtbrief: eigen opmaak naar het sVa-model.
-        out_path = render_avc_waybill(
-            document,
+    elif exporter == "avc" and has_avc_template():
+        # AVC-vrachtbrief: het officiële sVa-formulier invullen. Dat formulier
+        # heeft geen AcroForm-velden, dus de waarden komen als tekstlaag over
+        # de template heen.
+        out_path = fill_avc_waybill(
             payload.values,
             payload.lines,
             payload.dangerous_goods,

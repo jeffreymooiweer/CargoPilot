@@ -372,7 +372,8 @@ export interface DocumentDefinition {
   short_label: LocalizedText;
   category: string;
   issue_status: LocalizedText;
-  exporter: "generic" | "pdf_template";
+  /** "avc" vult, net als "pdf_template", een officieel formulier in. */
+  exporter: "generic" | "pdf_template" | "avc";
   output_format?: "xlsx" | "pdf";
   dg_profile: string | null;
   dg_only?: boolean;

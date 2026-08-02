@@ -106,6 +106,7 @@ def segregation_groups_for(un_number: str) -> list[str]:
 # zeggen tot welke groep een stof hoort; deze codes zeggen wat dat betekent.
 _SEED_CARDS = Path(__file__).resolve().parents[3] / "seed" / "dg" / "card_data.json"
 _cards_cache: dict[str, Any] | None = None
+_provisions_cache: dict[str, Any] | None = None
 
 
 def _load_card_data() -> dict[str, Any]:
@@ -117,6 +118,19 @@ def _load_card_data() -> dict[str, Any]:
             except (OSError, ValueError, KeyError):  # pragma: no cover - seed ontbreekt
                 _cards_cache = {}
     return _cards_cache
+
+
+def segregation_provisions() -> dict[str, Any]:
+    """De SG-voorschriften met hun betekenis, zoals op de kaarten geformuleerd."""
+    global _provisions_cache
+    with _ems_lock:
+        if _provisions_cache is None:
+            try:
+                raw = json.loads(_SEED_CARDS.read_text(encoding="utf-8"))
+                _provisions_cache = raw.get("segregation_provisions", {})
+            except (OSError, ValueError):  # pragma: no cover - seed ontbreekt
+                _provisions_cache = {}
+    return _provisions_cache
 
 
 def card_data_for(un_number: str) -> dict[str, Any]:

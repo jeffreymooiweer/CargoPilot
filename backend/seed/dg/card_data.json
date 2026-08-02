@@ -33936,6 +33936,741 @@
    "stowage_text": "Stay clear of living quarters (SW2)."
   }
  },
+ "segregation_provisions": {
+  "SG1": {
+   "code": "SG1",
+   "informational": true,
+   "seen": 9,
+   "text": "However, in relation to goods of class 1, segregation as for the primary hazard (SG1).",
+   "variants": 1
+  },
+  "SG10": {
+   "action": "away_from",
+   "code": "SG10",
+   "seen": 10,
+   "targets": {
+    "classes": [
+     "5.1"
+    ]
+   },
+   "text": "Stow \u201caway from\u201d class 5.1 (SG10).",
+   "variants": 1
+  },
+  "SG11": {
+   "action": "away_from",
+   "code": "SG11",
+   "seen": 1,
+   "targets": {
+    "classes": [
+     "6.2"
+    ]
+   },
+   "text": "Stow \u201caway from\u201d class 6.2 (SG11).",
+   "variants": 1
+  },
+  "SG12": {
+   "action": "away_from",
+   "code": "SG12",
+   "seen": 9,
+   "targets": {
+    "classes": [
+     "7"
+    ]
+   },
+   "text": "Stow \u201caway from\u201d class 7 (SG12).",
+   "variants": 1
+  },
+  "SG13": {
+   "action": "away_from",
+   "code": "SG13",
+   "seen": 9,
+   "targets": {
+    "classes": [
+     "8"
+    ]
+   },
+   "text": "Stow \u201caway from\u201d class 8 (SG13).",
+   "variants": 1
+  },
+  "SG14": {
+   "action": "separated_from",
+   "code": "SG14",
+   "excepted_classes": [
+    "1.4S"
+   ],
+   "seen": 2,
+   "targets": {
+    "classes": [
+     "1"
+    ]
+   },
+   "text": "Stow \u201cseparated from\u201d class 1 except for division 1.4S (SG14).",
+   "variants": 1
+  },
+  "SG15": {
+   "action": "separated_from",
+   "code": "SG15",
+   "seen": 9,
+   "targets": {
+    "classes": [
+     "3"
+    ]
+   },
+   "text": "Stow \u201cseparated from\u201d class 3 (SG15).",
+   "variants": 1
+  },
+  "SG16": {
+   "action": "separated_from",
+   "code": "SG16",
+   "seen": 39,
+   "targets": {
+    "classes": [
+     "4.1"
+    ]
+   },
+   "text": "Stow \u201cseparated from\u201d class 4.1 (SG16).",
+   "variants": 1
+  },
+  "SG17": {
+   "action": "separated_from",
+   "code": "SG17",
+   "seen": 35,
+   "targets": {
+    "classes": [
+     "5.1"
+    ]
+   },
+   "text": "Stow \u201cseparated from\u201d class 5.1 (SG17).",
+   "variants": 1
+  },
+  "SG18": {
+   "action": "separated_from",
+   "code": "SG18",
+   "seen": 4,
+   "targets": {
+    "classes": [
+     "6.2"
+    ]
+   },
+   "text": "Stow \u201cseparated from\u201d class 6.2 (SG18).",
+   "variants": 1
+  },
+  "SG19": {
+   "action": "separated_from",
+   "code": "SG19",
+   "seen": 28,
+   "targets": {
+    "classes": [
+     "7"
+    ]
+   },
+   "text": "Stow \u201cseparated from\u201d class 7 (SG19).",
+   "variants": 1
+  },
+  "SG2": {
+   "action": "segregate_as_class",
+   "as_class": "1.2G",
+   "code": "SG2",
+   "seen": 1,
+   "text": "Segregation as for class 1.2G (SG2).",
+   "variants": 1
+  },
+  "SG20": {
+   "action": "away_from",
+   "code": "SG20",
+   "seen": 6,
+   "targets": {
+    "groups": [
+     "SGG1"
+    ]
+   },
+   "text": "Stow \u201caway from\u201d SGG1 \u2013 acids (SG20).",
+   "variants": 1
+  },
+  "SG21": {
+   "action": "away_from",
+   "code": "SG21",
+   "seen": 4,
+   "targets": {
+    "groups": [
+     "SGG18"
+    ]
+   },
+   "text": "Stow \u201caway from\u201d SGG18 \u2013 alkalis (SG21).",
+   "variants": 1
+  },
+  "SG22": {
+   "action": "away_from",
+   "code": "SG22",
+   "informational": true,
+   "seen": 8,
+   "text": "Stow \u201caway from\u201d ammonium salts (SG22).",
+   "variants": 1
+  },
+  "SG23": {
+   "action": "away_from",
+   "code": "SG23",
+   "informational": true,
+   "seen": 1,
+   "text": "Stow \u201caway from\u201d animal or vegetable oils (SG23).",
+   "variants": 1
+  },
+  "SG24": {
+   "action": "away_from",
+   "code": "SG24",
+   "seen": 2,
+   "targets": {
+    "groups": [
+     "SGG17"
+    ]
+   },
+   "text": "Stow \u201caway from\u201d SGG17 \u2013 azides (SG24).",
+   "variants": 1
+  },
+  "SG25": {
+   "action": "separated_from",
+   "code": "SG25",
+   "seen": 20,
+   "targets": {
+    "classes": [
+     "2.1",
+     "3"
+    ]
+   },
+   "text": "Stow \u201cseparated from\u201d goods of classes 2.1 and 3 (SG25).",
+   "variants": 1
+  },
+  "SG26": {
+   "code": "SG26",
+   "informational": true,
+   "seen": 139,
+   "text": "In addition: from goods of classes 2.1 and 3 when stowed on deck of a containership a minimum distance of two container spaces athwartship shall be maintained, when stowed on ro-ro ships a distance of 6 m athwartship shall be maintained (SG26).",
+   "variants": 2
+  },
+  "SG27": {
+   "action": "away_from",
+   "code": "SG27",
+   "informational": true,
+   "seen": 3,
+   "text": "Stow \u201caway from\u201d explosives containing chlorates or perchlorates (SG27).",
+   "variants": 1
+  },
+  "SG28": {
+   "action": "away_from",
+   "code": "SG28",
+   "seen": 1,
+   "targets": {
+    "groups": [
+     "SGG2"
+    ]
+   },
+   "text": "Stow \u201caway from\u201d SGG2 \u2013 ammonium compounds and explosives containing ammonium compounds or salts (SG28).",
+   "variants": 1
+  },
+  "SG29": {
+   "code": "SG29",
+   "informational": true,
+   "seen": 8,
+   "text": "Segregation from foodstuffs as in 7.3.4.2.2, 7.6.3.1.2 or 7.7.3.7 (SG29).",
+   "variants": 1
+  },
+  "SG3": {
+   "action": "segregate_as_class",
+   "as_class": "1.3G",
+   "code": "SG3",
+   "seen": 1,
+   "text": "Segregation as for class 1.3G (SG3).",
+   "variants": 1
+  },
+  "SG30": {
+   "action": "away_from",
+   "code": "SG30",
+   "seen": 37,
+   "targets": {
+    "groups": [
+     "SGG7"
+    ]
+   },
+   "text": "Stow \u201caway from\u201d SGG7 \u2013 heavy metals and their salts (SG30).",
+   "variants": 1
+  },
+  "SG31": {
+   "action": "away_from",
+   "code": "SG31",
+   "seen": 13,
+   "targets": {
+    "groups": [
+     "SGG9"
+    ]
+   },
+   "text": "Stow \u201caway from\u201d SGG9 \u2013 lead and its compounds (SG31).",
+   "variants": 1
+  },
+  "SG32": {
+   "action": "away_from",
+   "code": "SG32",
+   "seen": 6,
+   "targets": {
+    "groups": [
+     "SGG10"
+    ]
+   },
+   "text": "Stow \u201caway from\u201d SGG10 \u2013 liquid halogenated hydrocarbons (SG32).",
+   "variants": 1
+  },
+  "SG33": {
+   "action": "away_from",
+   "code": "SG33",
+   "seen": 2,
+   "targets": {
+    "groups": [
+     "SGG15"
+    ]
+   },
+   "text": "Stow \u201caway from\u201d SGG15 \u2013 powdered metals (SG33).",
+   "variants": 1
+  },
+  "SG34": {
+   "action": "away_from",
+   "code": "SG34",
+   "seen": 5,
+   "targets": {
+    "groups": [
+     "SGG4",
+     "SGG13"
+    ]
+   },
+   "text": "When containing ammonium compounds, \u201caway from\u201d SGG4 \u2013 chlorates or SGG13 \u2013 perchlorates and explosives containing chlorates or perchlorates (SG34).",
+   "variants": 1
+  },
+  "SG35": {
+   "action": "separated_from",
+   "code": "SG35",
+   "seen": 305,
+   "targets": {
+    "groups": [
+     "SGG1"
+    ]
+   },
+   "text": "Stow \u201cseparated from\u201d SGG1 \u2013 acids (SG35).",
+   "variants": 1
+  },
+  "SG36": {
+   "action": "separated_from",
+   "code": "SG36",
+   "seen": 262,
+   "targets": {
+    "groups": [
+     "SGG18"
+    ]
+   },
+   "text": "Stow \u201cseparated from\u201d SGG18 \u2013 alkalis (SG36).",
+   "variants": 1
+  },
+  "SG37": {
+   "action": "separated_from",
+   "code": "SG37",
+   "informational": true,
+   "seen": 2,
+   "text": "Stow \u201cseparated from\u201d ammonia (SG37).",
+   "variants": 1
+  },
+  "SG38": {
+   "action": "separated_from",
+   "code": "SG38",
+   "seen": 72,
+   "targets": {
+    "groups": [
+     "SGG2"
+    ]
+   },
+   "text": "Stow \u201cseparated from\u201d SGG2 \u2013 ammonium compounds (SG38).",
+   "variants": 1
+  },
+  "SG39": {
+   "action": "separated_from",
+   "code": "SG39",
+   "seen": 2,
+   "targets": {
+    "groups": [
+     "SGG2"
+    ]
+   },
+   "text": "Stow \u201cseparated from\u201d SGG2 \u2013 ammonium compounds other than AMMONIUM PERSULPHATE (UN 1444) (SG39).",
+   "variants": 1
+  },
+  "SG4": {
+   "action": "segregate_as_class",
+   "as_class": "2.1",
+   "code": "SG4",
+   "seen": 5,
+   "text": "Segregation as for class 2.1 (SG4).",
+   "variants": 1
+  },
+  "SG40": {
+   "action": "separated_from",
+   "code": "SG40",
+   "seen": 1,
+   "targets": {
+    "groups": [
+     "SGG2"
+    ]
+   },
+   "text": "Stow \u201cseparated from\u201d SGG2 \u2013 ammonium compounds other than mixtures of ammonium persulphates and/or potassium persulphates and/or sodium persulphates (SG40).",
+   "variants": 1
+  },
+  "SG41": {
+   "action": "separated_from",
+   "code": "SG41",
+   "informational": true,
+   "seen": 1,
+   "text": "Stow \u201cseparated from\u201d animal or vegetable oil (SG41).",
+   "variants": 1
+  },
+  "SG42": {
+   "action": "separated_from",
+   "code": "SG42",
+   "seen": 4,
+   "targets": {
+    "groups": [
+     "SGG3"
+    ]
+   },
+   "text": "Stow \u201cseparated from\u201d SGG3 \u2013 bromates (SG42).",
+   "variants": 1
+  },
+  "SG43": {
+   "action": "separated_from",
+   "code": "SG43",
+   "informational": true,
+   "seen": 1,
+   "text": "Stow \u201cseparated from\u201d bromine (SG43).",
+   "variants": 1
+  },
+  "SG44": {
+   "action": "separated_from",
+   "code": "SG44",
+   "informational": true,
+   "seen": 1,
+   "text": "Stow \u201cseparated from\u201d CARBON TETRACHLORIDE (UN 1846) (SG44).",
+   "variants": 1
+  },
+  "SG45": {
+   "action": "separated_from",
+   "code": "SG45",
+   "seen": 5,
+   "targets": {
+    "groups": [
+     "SGG4"
+    ]
+   },
+   "text": "Stow \u201cseparated from\u201d SGG4 \u2013 chlorates (SG45).",
+   "variants": 1
+  },
+  "SG46": {
+   "action": "separated_from",
+   "code": "SG46",
+   "informational": true,
+   "seen": 11,
+   "text": "Stow \u201cseparated from\u201d chlorine (SG46).",
+   "variants": 1
+  },
+  "SG47": {
+   "action": "separated_from",
+   "code": "SG47",
+   "seen": 4,
+   "targets": {
+    "groups": [
+     "SGG5"
+    ]
+   },
+   "text": "Stow \u201cseparated from\u201d SGG5 \u2013 chlorites (SG47).",
+   "variants": 1
+  },
+  "SG48": {
+   "code": "SG48",
+   "informational": true,
+   "seen": 1,
+   "text": "Combustible material does not include packing materials or dunnage (SG48).",
+   "variants": 1
+  },
+  "SG49": {
+   "action": "separated_from",
+   "code": "SG49",
+   "seen": 282,
+   "targets": {
+    "groups": [
+     "SGG6"
+    ]
+   },
+   "text": "Stow \u201cseparated from\u201d SGG6 \u2013 cyanides (SG49).",
+   "variants": 1
+  },
+  "SG5": {
+   "action": "segregate_as_class",
+   "as_class": "3",
+   "code": "SG5",
+   "seen": 31,
+   "text": "Segregation as for class 3 (SG5).",
+   "variants": 1
+  },
+  "SG50": {
+   "code": "SG50",
+   "informational": true,
+   "seen": 16,
+   "text": "Segregation from foodstuffs as in 7.3.4.2.1, 7.6.3.1.2 or 7.7.3.6 (SG50).",
+   "variants": 1
+  },
+  "SG53": {
+   "action": "separated_from",
+   "code": "SG53",
+   "informational": true,
+   "seen": 10,
+   "text": "Stow \u201cseparated from\u201d liquid organic substances (SG53).",
+   "variants": 1
+  },
+  "SG54": {
+   "action": "separated_from",
+   "code": "SG54",
+   "seen": 2,
+   "targets": {
+    "groups": [
+     "SGG11"
+    ]
+   },
+   "text": "Stow \u201cseparated from\u201d SGG11 \u2013 mercury and mercury compounds (SG54).",
+   "variants": 1
+  },
+  "SG55": {
+   "action": "separated_from",
+   "code": "SG55",
+   "informational": true,
+   "seen": 1,
+   "text": "Stow \u201cseparated from\u201d mercury salts (SG55).",
+   "variants": 1
+  },
+  "SG57": {
+   "action": "separated_from",
+   "code": "SG57",
+   "informational": true,
+   "seen": 10,
+   "text": "Stow \u201cseparated from\u201d odour-absorbing cargoes (SG57).",
+   "variants": 1
+  },
+  "SG59": {
+   "action": "separated_from",
+   "code": "SG59",
+   "seen": 16,
+   "targets": {
+    "groups": [
+     "SGG14"
+    ]
+   },
+   "text": "Stow \u201cseparated from\u201d SGG14 \u2013 permanganates (SG59).",
+   "variants": 1
+  },
+  "SG6": {
+   "action": "segregate_as_class",
+   "as_class": "5.1",
+   "code": "SG6",
+   "seen": 37,
+   "text": "Segregation as for class 5.1 (SG6).",
+   "variants": 1
+  },
+  "SG60": {
+   "action": "separated_from",
+   "code": "SG60",
+   "seen": 15,
+   "targets": {
+    "groups": [
+     "SGG16"
+    ]
+   },
+   "text": "Stow \u201cseparated from\u201d SGG16 \u2013 peroxides (SG60).",
+   "variants": 1
+  },
+  "SG61": {
+   "action": "separated_from",
+   "code": "SG61",
+   "seen": 1,
+   "targets": {
+    "groups": [
+     "SGG15"
+    ]
+   },
+   "text": "Stow \u201cseparated from\u201d SGG15 \u2013 powdered metals (SG61).",
+   "variants": 1
+  },
+  "SG62": {
+   "action": "separated_from",
+   "code": "SG62",
+   "informational": true,
+   "seen": 14,
+   "text": "Stow \u201cseparated from\u201d sulphur (SG62).",
+   "variants": 1
+  },
+  "SG63": {
+   "action": "separated_longitudinally",
+   "code": "SG63",
+   "seen": 8,
+   "targets": {
+    "classes": [
+     "1"
+    ]
+   },
+   "text": "Stow \u201cseparated longitudinally by an intervening complete compartment or hold from\u201d class 1 (SG63).",
+   "variants": 1
+  },
+  "SG65": {
+   "action": "separated_by_compartment",
+   "code": "SG65",
+   "excepted_classes": [
+    "1.4"
+   ],
+   "seen": 3,
+   "targets": {
+    "classes": [
+     "1"
+    ]
+   },
+   "text": "Stow \u201cseparated by a complete compartment or hold from\u201d class 1 except for division 1.4 (SG65).",
+   "variants": 1
+  },
+  "SG67": {
+   "action": "separated_from",
+   "code": "SG67",
+   "seen": 8,
+   "targets": {
+    "classes": [
+     "1.4",
+     "1.1",
+     "1.2",
+     "1.3",
+     "1.5",
+     "1.6"
+    ]
+   },
+   "text": "Stow \u201cseparated from\u201d division 1.4 and \u201cseparated longitudinally by an intervening complete compartment of hold from\u201d divisions 1.1, 1.2, 1.3, 1.5 and 1.6 except from explosives of compatibility group J (SG67).",
+   "variants": 1
+  },
+  "SG68": {
+   "action": "away_from",
+   "code": "SG68",
+   "seen": 1,
+   "targets": {
+    "classes": [
+     "4.1"
+    ]
+   },
+   "text": "or below, segregation as for class 3 but \u201caway from\u201d class 4.1 (SG68).",
+   "variants": 1
+  },
+  "SG69": {
+   "code": "SG69",
+   "informational": true,
+   "seen": 1,
+   "text": "For WASTE AEROSOLS: segregation as for the appropriate subdivision of class 2 (SG69).",
+   "variants": 1
+  },
+  "SG7": {
+   "action": "away_from",
+   "code": "SG7",
+   "seen": 33,
+   "targets": {
+    "classes": [
+     "3"
+    ]
+   },
+   "text": "Stow \u201caway from\u201d class 3 (SG7).",
+   "variants": 1
+  },
+  "SG70": {
+   "action": "separated_from",
+   "code": "SG70",
+   "seen": 2,
+   "targets": {
+    "groups": [
+     "SGG1"
+    ]
+   },
+   "text": "For arsenic sulphides, \u201cseparated from\u201d SGG1 \u2013 acids (SG70).",
+   "variants": 1
+  },
+  "SG71": {
+   "code": "SG71",
+   "informational": true,
+   "seen": 2,
+   "text": "Within the appliance, to the extent that the dangerous goods are integral parts of the complete life-saving appliance, there is no need to apply the provisions on segregation of substances in chapter 7.2 (SG71).",
+   "variants": 1
+  },
+  "SG72": {
+   "code": "SG72",
+   "informational": true,
+   "seen": 36,
+   "text": "See tables in 7.2.6.3 (SG72).",
+   "variants": 1
+  },
+  "SG74": {
+   "code": "SG74",
+   "informational": true,
+   "seen": 1,
+   "text": "Segregation as for 1.4G (SG74).",
+   "variants": 1
+  },
+  "SG76": {
+   "action": "segregate_as_class",
+   "as_class": "7",
+   "code": "SG76",
+   "seen": 2,
+   "text": "Segregation as for class 7 (SG76).",
+   "variants": 1
+  },
+  "SG77": {
+   "code": "SG77",
+   "informational": true,
+   "seen": 1,
+   "text": "However, in relation to class 7, no segregation needs to be applied (SG77).",
+   "variants": 1
+  },
+  "SG78": {
+   "action": "separated_longitudinally",
+   "code": "SG78",
+   "seen": 2,
+   "targets": {
+    "classes": [
+     "1.1",
+     "1.2",
+     "1.5"
+    ]
+   },
+   "text": "Stow \u201cseparated longitudinally by an intervening complete compartment or hold from\u201d division 1.1, 1.2, and 1.5 (SG78).",
+   "variants": 1
+  },
+  "SG8": {
+   "action": "away_from",
+   "code": "SG8",
+   "seen": 36,
+   "targets": {
+    "classes": [
+     "4.1"
+    ]
+   },
+   "text": "Stow \u201caway from\u201d class 4.1 (SG8).",
+   "variants": 1
+  },
+  "SG9": {
+   "action": "away_from",
+   "code": "SG9",
+   "seen": 5,
+   "targets": {
+    "classes": [
+     "4.3"
+    ]
+   },
+   "text": "Stow \u201caway from\u201d class 4.3 (SG9).",
+   "variants": 1
+  }
+ },
  "source": "Cantell IMDG UN cards, 2023 edition (IMDG 41-22)",
  "summary": {
   "bulk_allowed": 28,
@@ -33947,6 +34682,8 @@
   },
   "failed": 0,
   "marine_pollutant_yes": 202,
+  "segregation_provisions": 70,
+  "segregation_provisions_actionable": 48,
   "un_numbers": 2336,
   "with_segregation_codes": 840,
   "with_segregation_groups": 792,

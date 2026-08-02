@@ -93,6 +93,16 @@ with nitrites, acids with azides (explosive hydrazoic acid), acids with metal po
 it, because a bare code tells a user nothing. This used to be the one place the app had
 to send you to the Dangerous Goods List itself.
 
+**And they are checked, not just shown.** Load anhydrous ammonia with hydrochloric acid
+and you get both sides of it: the ammonia carries SG35 (separated from acids) and the acid
+carries SG36 (separated from alkalis). Of the 70 codes in use, 48 name a class or a
+segregation group and are checked against the rest of the shipment. The other 22 point at
+foodstuff tables, named substances or a table in the Code; those are shown but not acted
+on, because a segregation rule guessed wrong is worse than one left to the user.
+
+Exceptions count. SG14 reads "separated from class 1 **except** for division 1.4S", so a
+1.4S package alongside does not raise it.
+
 **IMDG 7.2.6.5 — the class 8 exception.** Acids and alkalis of packing group II or III
 may travel together in packages up to 30 L or 30 kg, provided they do not react
 dangerously and the transport document carries the 5.4.1.5.11.3 statement.

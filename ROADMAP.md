@@ -31,9 +31,10 @@ registry are settled.
 ### Dangerous goods data
 
 - German as a third interface language, including the dangerous goods help texts.
-- Use the segregation codes in the compliance checks, not just as information. The codes
-  are now known per substance; turning `SG35` into a warning when an incompatible load is
-  present is the next step.
+- The 22 segregation provisions that point at foodstuff tables, named substances or a
+  table in the Code are shown but not checked. Some could be made checkable — "separated
+  from ammonia" needs only a substance list — but each needs its own reasoning and a
+  wrong segregation rule is worse than none.
 
 ### Wizard and library
 

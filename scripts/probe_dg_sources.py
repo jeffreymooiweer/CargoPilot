@@ -46,12 +46,29 @@ VOL1 = f"{UNECE}/ST-SG-AC10-1r23e_Vol1_WEB.pdf"
 VOL2 = f"{UNECE}/ST-SG-AC10-1r23e_Vol2_WEB.pdf"
 CEPA = "https://www.cepa.be/wp-content/uploads/IMDG_Code-amdt_42_24.pdf"
 
+# Wat er op cepa.be staat is MSC 108/20/Add.2, annex 8: de volledige
+# geconsolideerde tekst van Amendment 42-24, 954 pagina's. Uit de inhoudsopgave
+# volgen de codepagina's hieronder. De PDF telt door over het voorwerk heen, dus
+# het echte paginanummer ligt een stuk of twaalf hoger; find_page_offset() meet
+# dat in plaats van het te gokken.
+CODE_PAGES = {
+    "7.1.3 Stowage categories": 476,
+    "7.1.5 Stowage codes": 482,
+    "7.1.6 Handling codes": 483,
+    "7.2.4 Segregation table": 485,
+    "7.2.5 Segregation groups": 486,
+    "7.2.6 Special segregation provisions and exemptions": 486,
+    "7.2.7 Segregation of goods of class 1": 489,
+    "7.2.8 Segregation codes": 490,
+    "Appendix 2 (Dangerous Goods List)": 564,
+}
+
 # De secties die we willen kunnen controleren. 7.2.4, 7.2.6.3 en 7.2.7.1.4
 # dragen de scheidingstabellen; 3.1.4.4 de scheidingsgroepen; 7.1.5 de
 # stuwagecodes en 7.1.6 de behandelingscodes, die we per stof wel hebben maar
 # zonder hun omschrijving.
-SECTIONS_OF_INTEREST = ["3.1.4.4", "3.2.1", "3.3.1", "7.1.5", "7.1.6",
-                        "7.2.3.1", "7.2.4", "7.2.5", "7.2.6.3", "7.2.7.1.4"]
+SECTIONS_OF_INTEREST = ["3.1.4.4", "3.2.1", "3.3.1", "7.1.3", "7.1.5", "7.1.6",
+                        "7.2.3.1", "7.2.4", "7.2.5", "7.2.6.3", "7.2.7.1.4", "7.2.8"]
 
 # De vermeldingen die Amendment 42-24 toevoegt. Staan ze in Rev.23, dan is de
 # gratis uitgave genoeg voor alles behalve de IMDG-eigen kolommen.
@@ -211,18 +228,39 @@ def probe_model_regulations(sample_pages: list[int]) -> int:
     return 0
 
 
-def probe_cepa() -> int:
-    """Vaststellen wát het amendementsdocument op cepa.be is.
+def find_page_offset(document) -> int:
+    """Verschil tussen het paginanummer in de voettekst en de index in de PDF.
 
-    Niet: de tekst overnemen. Wel: uitgever, omvang, welke hoofdstukken erin
-    zitten en of de secties die wij nodig hebben erin voorkomen. Daarmee is te
-    bepalen of hier iets uit te halen valt dat we nog niet hebben, en hoe.
+    De inhoudsopgave verwijst naar codepagina's; PyMuPDF telt vanaf nul over het
+    voorwerk heen. Meten is beter dan gokken: dit leest het nummer uit de
+    voettekst van een stuk of wat pagina's in het midden en neemt het verschil
+    dat het vaakst voorkomt.
+    """
+    from collections import Counter
+
+    votes: Counter[int] = Counter()
+    for index in range(200, min(document.page_count, 800), 17):
+        lines = [line.strip() for line in document[index].get_text().splitlines() if line.strip()]
+        # Het paginanummer staat op de eerste of laatste regel, los.
+        for line in (lines[:2] + lines[-2:]) if lines else []:
+            if line.isdigit() and 1 <= int(line) <= document.page_count:
+                votes[index + 1 - int(line)] += 1
+    return votes.most_common(1)[0][0] if votes else 0
+
+
+def probe_cepa() -> int:
+    """Vaststellen wát het amendementsdocument op cepa.be is, en waar wat staat.
+
+    Niet: de tekst overnemen. Wel: uitgever, omvang, de paginaverschuiving en
+    een voorbeeld van elke sectie die wij nodig hebben, zodat de parsers ertegen
+    geschreven kunnen worden. Alleen feitelijke gegevens komen uiteindelijk in
+    de repo; de regelgevingstekst zelf niet.
     """
     import fitz
 
     print("== cepa.be — IMDG_Code-amdt_42_24.pdf ==")
     try:
-        path = download(CEPA, Path("/tmp/cepa.pdf"))
+        path = download(CEPA, Path("/tmp/cepa.pdf"), timeout=600)
     except (urllib.error.URLError, urllib.error.HTTPError, TimeoutError, OSError) as error:
         print(f"  niet bereikbaar: {error}")
         return 1
@@ -232,17 +270,24 @@ def probe_cepa() -> int:
         print(f"  {document.page_count} pagina's")
         print(f"  metadata: {document.metadata}")
 
-        print("\n--- eerste twee pagina's ---")
-        for index in range(min(2, document.page_count)):
-            print(document[index].get_text()[:3000])
+        print("\n--- eerste pagina ---")
+        print(document[0].get_text()[:2000])
 
         toc = document.get_toc()
-        if toc:
-            print(f"\n--- inhoudsopgave ({len(toc)} regels) ---")
-            for level, title, page in toc[:200]:
-                print(f"{'  ' * (level - 1)}{title}  -> p{page}")
+        print(f"\n--- ingebedde inhoudsopgave: {len(toc)} regels ---")
+        for level, title, page in toc[:120]:
+            print(f"{'  ' * (level - 1)}{title}  -> p{page}")
 
-        print("\n--- waar staan de secties die wij nodig hebben? ---")
+        offset = find_page_offset(document)
+        print(f"\n--- paginaverschuiving: PDF-pagina = codepagina + {offset} ---")
+
+        print("\n--- de secties die wij nodig hebben ---")
+        for label, code_page in CODE_PAGES.items():
+            index = code_page + offset - 1
+            marker = "?" if not 0 <= index < document.page_count else ""
+            print(f"  {label:<52} codepagina {code_page} -> PDF {index + 1}{marker}")
+
+        print("\n--- waar komen de secties voor in de tekst? ---")
         located: dict[str, list[int]] = {}
         for index in range(document.page_count):
             text = document[index].get_text()
@@ -251,17 +296,45 @@ def probe_cepa() -> int:
                     located.setdefault(section, []).append(index + 1)
         for section in SECTIONS_OF_INTEREST:
             pages = located.get(section, [])
-            summary = f"{len(pages)}x, eerst p{pages[0]}" if pages else "niet gevonden"
+            summary = f"{len(pages)}x, eerst PDF p{pages[0]}" if pages else "niet gevonden"
             print(f"  {section:<12} {summary}")
 
-        # Is dit de volledige codetekst of een wijzigingsoverzicht? Een
-        # amendement schrijft in opdrachten ("replace", "insert", "delete").
+        # Doorlopende codetekst of een wijzigingsoverzicht? Een amendement
+        # schrijft in opdrachten; een geconsolideerde tekst niet.
         joined = " ".join(document[i].get_text() for i in range(min(40, document.page_count)))
         directives = sum(len(re.findall(rf"\b{verb}\b", joined, re.I))
-                         for verb in ("replace", "insert", "delete", "amend", "add the following"))
+                         for verb in ("replace", "insert", "delete", "amend"))
         print(f"\n  wijzigingsopdrachten in de eerste 40 pagina's: {directives}")
-        print("  -> waarschijnlijk een amendementstekst" if directives > 40
-              else "  -> waarschijnlijk doorlopende codetekst")
+        print("  -> waarschijnlijk een amendementstekst" if directives > 60
+              else "  -> waarschijnlijk doorlopende, geconsolideerde codetekst")
+
+        # De stuwage- en scheidingscodes zijn de grootste winst en het makkelijkst
+        # te parsen: genummerde lijsten. Volledig afdrukken zodat de parser
+        # tegen de echte opmaak geschreven kan worden.
+        for label in ("7.1.3 Stowage categories", "7.1.5 Stowage codes",
+                      "7.1.6 Handling codes", "7.2.8 Segregation codes"):
+            start = CODE_PAGES[label] + offset - 1
+            print(f"\n===== {label} — PDF p{start + 1} t/m p{start + 4} =====")
+            for index in range(start, min(start + 4, document.page_count)):
+                print(f"--- PDF p{index + 1} ---")
+                print(document[index].get_text())
+
+        # De scheidingstabel is een raster: woorden met positie, anders is de
+        # kolomindeling niet terug te vinden.
+        start = CODE_PAGES["7.2.4 Segregation table"] + offset - 1
+        print(f"\n===== 7.2.4 Segregation table — PDF p{start + 1}, woorden met positie =====")
+        if 0 <= start < document.page_count:
+            for word in document[start].get_text("words"):
+                print(f"{word[0]:8.1f} {word[1]:8.1f}  {word[4]}")
+
+        # Appendix 2 is de Dangerous Goods List: de hoofdprijs, en het lastigst.
+        start = CODE_PAGES["Appendix 2 (Dangerous Goods List)"] + offset - 1
+        print(f"\n===== Appendix 2 — PDF p{start + 1} en p{start + 3}, woorden met positie =====")
+        for index in (start, start + 2):
+            if 0 <= index < document.page_count:
+                print(f"--- PDF p{index + 1} ---")
+                for word in document[index].get_text("words")[:250]:
+                    print(f"{word[0]:8.1f} {word[1]:8.1f}  {word[4]}")
     return 0
 
 

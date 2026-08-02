@@ -86,12 +86,20 @@ and falls back to the offline database automatically.
 
 `un_cards/` holds one reference card per UN number, named after the number it describes.
 The folder is empty in a fresh checkout and is filled once by the **Fetch UN cards**
-workflow, which reads the UN number out of every document rather than trusting its
-original filename — the source numbers its files sequentially with no relation to their
-contents.
+workflow.
 
-These are third-party documents, included unchanged. `un_cards/manifest.json` records
-where each file came from.
+| Data | Source |
+|---|---|
+| IMDG UN cards, one per UN number | Cantell, 2023 edition (IMDG 41-22) — `imdg_2023_-_en_part<n>.pdf` |
+
+The part number is not the UN number (`part1` is UN 0004), so the workflow reads the
+number out of each card rather than trusting the filename. `un_cards/manifest.json`
+records where each file came from and how it was identified.
+
+Each card carries more than the emergency information: marine pollutant status, EmS
+codes, stowage (SW) and segregation (SG) codes, bulk and tank admissibility, and the
+limited and excepted quantity limits. Extracting those into the dangerous goods database
+is on the [roadmap](../ROADMAP.md); today the cards are only handed to the user as PDFs.
 
 ## Official form templates
 

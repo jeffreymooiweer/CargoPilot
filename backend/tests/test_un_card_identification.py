@@ -128,3 +128,65 @@ def test_the_database_covers_the_un_numbers_we_ship(database):
 def test_prefix_spelling_variants(heading, database):
     un, _confidence, _details = cards.identify(make_card(heading, "Dimethyl ether."), database)
     assert un == "1033"
+
+
+# The real cards are label/value pairs. This is the text layer of Cantell's
+# part1.pdf, trimmed to the fields identification uses — heading, shipping name
+# and the repeated footer.
+REAL_CARD = """
+UN number
+0004
+Shipping name
+ AMMONIUM PICRATE
+ AMMONIUMPICRAT
+Class
+1.1D
+Packing group
+–
+Marine pollutant
+Maybe
+EmS
+F-B, S-Y
+UN 0004
+IMDG - UN card
+© Cantell 2023
+UN 0004 AMMONIUM PICRATE
+"""
+
+
+def test_reads_the_number_from_the_un_number_field():
+    labelled, footer, footers = cards.identify_from_labels(REAL_CARD)
+    assert labelled == "0004"
+    assert footer == "0004"
+    assert footers == ["0004", "0004"]
+
+
+def test_the_label_beats_any_other_number_on_the_card():
+    """Class 1.1D, EmS codes and page furniture must not be mistaken for it."""
+    text = REAL_CARD.replace("EmS\nF-B, S-Y", "EmS\nF-B, S-Y\nSee also UN 0027 and UN 1234")
+    labelled, _footer, _footers = cards.identify_from_labels(text)
+    assert labelled == "0004"
+
+
+def test_a_card_whose_heading_and_footer_disagree_is_not_filed(database):
+    """One of the two is wrong and we cannot tell which — so neither is used."""
+    doc = fitz.open()
+    page = doc.new_page(width=595, height=842)
+    page.insert_text((60, 80), "UN number", fontsize=9, fontname="helv")
+    page.insert_text((60, 95), "0004", fontsize=9, fontname="helv")
+    page.insert_text((60, 700), "UN 0005 CARTRIDGES FOR WEAPONS", fontsize=8, fontname="helv")
+    data = doc.tobytes()
+    doc.close()
+
+    un, confidence, details = cards.identify(data, database)
+    assert details["labelled_un"] == "0004"
+    assert details["footer_un"] == "0005"
+    assert "footer" in str(details["note"])
+    # Neither number is used: the card goes to _unidentified/ for a human.
+    assert un is None
+    assert confidence == cards.UNCERTAIN
+
+
+def test_the_default_url_points_at_the_real_source():
+    assert "{n}" in cards.DEFAULT_BASE_URL
+    assert cards.DEFAULT_BASE_URL.startswith("https://")

@@ -28,10 +28,12 @@ registry are settled.
 
 ### Dangerous goods data
 
-- **Per-substance data from the IMDG Dangerous Goods List**: marine pollutant status,
-  stowage codes (SW, column 16a), segregation codes (SG, column 16b) and bulk/tank
-  admissibility. Today the app knows the segregation *groups* per substance but points
-  at column 16b for the substance-specific codes.
+- **Per-substance data from the UN cards.** Each card in `un_cards/` states the marine
+  pollutant status, EmS codes, stowage codes (SW), segregation codes (SG, column 16b),
+  bulk and tank admissibility, and the limited and excepted quantity limits — in a
+  fixed label/value layout that parses cleanly. Today the app knows the segregation
+  *groups* per substance but points at column 16b for the substance-specific codes;
+  this closes that gap. Blocked only on the card library being fetched.
 - German as a third interface language, including the dangerous goods help texts.
 
 ### Wizard and library

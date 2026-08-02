@@ -46,6 +46,12 @@ UN_DATABASE = REPO / "backend" / "seed" / "dg" / "un_numbers.json"
 
 USER_AGENT = "CargoPilot-card-fetcher/1.0 (+https://github.com/jeffreymooiweer/CargoPilot)"
 
+# Cantell's IMDG UN cards, 2023 edition (IMDG 41-22). One card per UN number,
+# numbered sequentially in ascending UN order.
+DEFAULT_BASE_URL = (
+    "https://www.cantell.dk/image/catalog/Stofliste/IMDG_EN/imdg_2023_-_en_part{n}.pdf"
+)
+
 # "UN 1033", "UN1033", "UN-1033". The prefix is what makes a four-digit number a
 # UN number rather than a page number, a year or a phone extension.
 UN_PREFIXED = re.compile(r"\bUN[\s \-./]{0,3}(\d{4})\b", re.IGNORECASE)
@@ -159,6 +165,37 @@ def extract_spans(data: bytes) -> tuple[list[tuple[str, float, float]], str]:
     return spans, full_text
 
 
+# The cards are laid out as label/value pairs: a line reading "UN number"
+# followed by the number itself, and a footer repeating "UN 0004". Reading those
+# beats guessing from font size, so it is tried first.
+UN_LABEL = "un number"
+CARD_FOOTER = re.compile(r"\bUN\s?(\d{3,4})\b")
+
+
+def identify_from_labels(full_text: str) -> tuple[str | None, str | None, list[str]]:
+    """Read the UN number from the card's own "UN number" field.
+
+    Returns (value under the label, value in the footer, all footer values).
+    The two are cross-checked by the caller: a card whose heading and footer
+    disagree is not something to file on a coin flip.
+    """
+    lines = [line.strip() for line in full_text.split("\n")]
+    lines = [line for line in lines if line]
+
+    labelled: str | None = None
+    for index, line in enumerate(lines):
+        if line.lower() == UN_LABEL:
+            for following in lines[index + 1: index + 4]:
+                if re.fullmatch(r"\d{3,4}", following):
+                    labelled = following.zfill(4)
+                    break
+            break
+
+    footers = [m.group(1).zfill(4) for m in CARD_FOOTER.finditer(full_text)]
+    footer = footers[-1] if footers else None
+    return labelled, footer, footers
+
+
 def candidate_un_numbers(
     spans: list[tuple[str, float, float]],
     full_text: str,
@@ -214,13 +251,40 @@ def identify(
         details["note"] = "no text layer — the document is probably a scan (needs OCR)"
         return None, MISSING, details
 
+    haystack_early = name_tokens(full_text)
+
+    # Preferred route: the card states its own UN number under a label, and
+    # repeats it in the footer. Both agreeing, on a number that exists in the
+    # ADR table, is as certain as this gets.
+    labelled, footer, _footers = identify_from_labels(full_text)
+    if labelled:
+        details["labelled_un"] = labelled
+        details["footer_un"] = footer
+        entry = database.get(labelled)
+        if entry is None:
+            details["note"] = f"the card names UN {labelled}, which is not in the ADR table"
+        elif footer and footer != labelled:
+            # The card contradicts itself. Which half is wrong is anyone's guess,
+            # and guessing is exactly what must not happen here — park it.
+            details["note"] = (
+                f"the card's heading says UN {labelled} but its footer says UN {footer}"
+            )
+            return None, UNCERTAIN, details
+        else:
+            overlap = entry.best_name_overlap(haystack_early)
+            details["name_match"] = round(overlap, 2)
+            details["name_in_database"] = entry.names[0] if entry.names else ""
+            details["source"] = "label"
+            return labelled, CONFIRMED if overlap >= 0.4 else PROBABLE, details
+
     candidates = candidate_un_numbers(spans, full_text)
     details["candidates"] = [un for un, _score in candidates[:5]]
     if not candidates:
         details["note"] = "no UN number found in the document"
         return None, MISSING, details
 
-    haystack = name_tokens(full_text)
+    details["source"] = "heuristic"
+    haystack = haystack_early
     for un, score in candidates:
         entry = database.get(un)
         if entry is None:
@@ -241,8 +305,8 @@ def identify(
 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--base-url", required=True,
-                        help="URL with {n} where the part number goes, e.g. .../part{n}.pdf")
+    parser.add_argument("--base-url", default=DEFAULT_BASE_URL,
+                        help="URL with {n} where the part number goes")
     parser.add_argument("--first", type=int, default=1)
     parser.add_argument("--last", type=int, default=2900)
     parser.add_argument("--out", default="un_cards", help="output directory")
@@ -268,7 +332,9 @@ def main() -> int:
 
     manifest: dict[str, dict[str, object]] = {}
     used: dict[str, int] = {}
-    counts = {CONFIRMED: 0, PROBABLE: 0, UNCERTAIN: 0, MISSING: 0, "absent": 0}
+    previous_un: str | None = None
+    counts = {CONFIRMED: 0, PROBABLE: 0, UNCERTAIN: 0, MISSING: 0, "absent": 0,
+              "out_of_sequence": 0}
 
     numbers = range(args.first, args.last + 1)
     if args.limit:
@@ -293,7 +359,15 @@ def main() -> int:
         counts[confidence] = counts.get(confidence, 0) + 1
         record: dict[str, object] = {"status": confidence, "url": url, **details}
 
+        if un and previous_un and un < previous_un:
+            # The parts ascend by UN number. A step backwards means either a gap
+            # in the source or a misread card; either way, look at it by hand.
+            record_note = f"out of sequence: follows UN {previous_un}"
+            details["note"] = f"{details.get('note', '')} {record_note}".strip()
+            counts["out_of_sequence"] = counts.get("out_of_sequence", 0) + 1
+
         if un:
+            previous_un = un
             seen = used.get(un, 0) + 1
             used[un] = seen
             filename = f"un_{un}.pdf" if seen == 1 else f"un_{un}-{seen}.pdf"

@@ -12,7 +12,12 @@ from functools import lru_cache
 from typing import Any
 
 from app.core.config import get_settings
-from app.services.dg.enrichment import segregation_groups_for
+from app.services.dg.enrichment import (
+    card_data_for,
+    segregation_group_label,
+    segregation_groups_for,
+    segregation_provisions,
+)
 
 
 @lru_cache
@@ -462,6 +467,121 @@ def check_imdg_segregation_groups(
     return warnings
 
 
+# Hoe streng een scheidingsvoorschrift is, in gewone taal.
+_ACTION_TEXT = {
+    "away_from": ("uit de buurt van", "away from"),
+    "separated_from": ("gescheiden van", "separated from"),
+    "separated_by_compartment": (
+        "gescheiden door een volledig compartiment of ruim van",
+        "separated by a complete compartment or hold from",
+    ),
+    "separated_longitudinally": (
+        "in de lengterichting gescheiden door een tussenliggend compartiment of ruim van",
+        "separated longitudinally by an intervening complete compartment or hold from",
+    ),
+}
+
+
+def _classes_of(product: dict[str, Any]) -> set[str]:
+    """Hoofdklasse, divisie en nevengevaren van een collo."""
+    found: set[str] = set()
+    for field in ("class", "subsidiary_risks", "labels"):
+        for token in re.split(r"[+,;/\s]+", str(product.get(field) or "")):
+            token = token.strip().strip("()")
+            if token and re.fullmatch(r"\d(?:\.\d[A-Z]?)?", token):
+                found.add(token)
+    return found
+
+
+def _matches_class(target: str, classes: set[str]) -> bool:
+    """"class 5.1" raakt 5.1; "class 1" raakt elke divisie van klasse 1."""
+    if target in classes:
+        return True
+    if "." not in target:
+        return any(c.split(".")[0] == target for c in classes)
+    return False
+
+
+def check_imdg_segregation_provisions(
+    entries: list[dict[str, Any]], language: str = "nl"
+) -> list[dict[str, Any]]:
+    """IMDG kolom 16b: de scheidingsvoorschriften (SG) van de stof zelf.
+
+    De scheidingstabel van 7.2.4 werkt op klasse; kolom 16b legt daarbovenop
+    voorschriften per stof. Die codes staan sinds de UN-kaarten per UN-nummer
+    vast, met de tekst die erbij hoort. Hier wordt gekeken of een andere partij
+    in dezelfde zending het doel van zo'n voorschrift is.
+    """
+    lang = _lang(language)
+    rules = segregation_provisions()
+
+    parties: list[dict[str, Any]] = []
+    for entry, index, product in _iter_products(entries):
+        un = str(product.get("un_number") or "").strip()
+        card = card_data_for(un)
+        groups = set(segregation_groups_for(un))
+        for token in re.split(r"[,;/\s]+", str(product.get("segregation_group") or "")):
+            if token.strip().upper().startswith("SGG"):
+                groups.add(token.strip().upper())
+        parties.append({
+            "label": _product_label(entry, product, index),
+            "codes": list(card.get("segregation_codes") or []),
+            "classes": _classes_of(product),
+            "groups": groups,
+        })
+
+    warnings: list[dict[str, Any]] = []
+    seen: set[tuple[str, str, str]] = set()
+    for source in parties:
+        for code in source["codes"]:
+            rule = rules.get(code)
+            if not rule or rule.get("informational") or not rule.get("targets"):
+                continue
+            targets = rule["targets"]
+            for other in parties:
+                if other is source:
+                    continue
+                # Een uitzondering in het voorschrift ("behalve 1.4S") sluit
+                # die partij uit; anders zou de app waarschuwen voor iets dat
+                # de Code juist toestaat.
+                if any(c in other["classes"] for c in rule.get("excepted_classes") or []):
+                    continue
+                hit_class = next(
+                    (t for t in targets.get("classes", []) if _matches_class(t, other["classes"])),
+                    None,
+                )
+                hit_group = next(
+                    (g for g in targets.get("groups", []) if g in other["groups"]), None
+                )
+                if not hit_class and not hit_group:
+                    continue
+                key = (source["label"], other["label"], code)
+                if key in seen:
+                    continue
+                seen.add(key)
+                action_nl, action_en = _ACTION_TEXT.get(
+                    str(rule.get("action")), ("gescheiden van", "separated from")
+                )
+                # "SGG1" zegt niets; "SGG1 (zuren)" wel.
+                if hit_class:
+                    what = f"klasse {hit_class}"
+                    what_en = f"class {hit_class}"
+                else:
+                    what = f"{hit_group} ({segregation_group_label(hit_group, 'nl')})"
+                    what_en = f"{hit_group} ({segregation_group_label(hit_group, 'en')})"
+                warnings.append({
+                    "rule": f"IMDG 16b ({code})",
+                    "severity": "warning",
+                    "message": (
+                        f"Stuw {action_nl} {what}. {rule['text']}"
+                        if lang == "nl"
+                        else f"Stow {action_en} {what_en}. {rule['text']}"
+                    ),
+                    "products": f"{source['label']}  \u00d7  {other['label']}",
+                })
+    return warnings
+
+
 def check_q_value(entries: list[dict[str, Any]], language: str = "nl") -> list[dict[str, Any]]:
     """IATA 5.0.2.11: Q-waarde per positie voor 'all packed in one'."""
     rules = get_compliance_rules()["q_value"]
@@ -516,6 +636,7 @@ def check_compliance(
             check_imdg_segregation(entries, language)
             + check_imdg_class1_compatibility(entries, language)
             + check_imdg_segregation_groups(entries, language)
+            + check_imdg_segregation_provisions(entries, language)
         )
         result["imdg_note"] = rules["imdg_segregation"]["note"][_lang(language)]
         groups = rules.get("imdg_segregation_groups")

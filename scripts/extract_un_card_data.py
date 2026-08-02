@@ -125,6 +125,110 @@ def parse_card(path: Path) -> dict[str, object] | None:
     return record
 
 
+# What a segregation provision tells you to do. The cards spell every code out
+# in a fixed sentence, so the meaning is read from the source rather than typed
+# from memory — getting a segregation rule wrong is not a harmless bug.
+ACTIONS = [
+    ("separated longitudinally by an intervening complete compartment or hold from",
+     "separated_longitudinally"),
+    ("separated by a complete compartment or hold from", "separated_by_compartment"),
+    ("separated from", "separated_from"),
+    ("away from", "away_from"),
+]
+AS_FOR_CLASS = re.compile(r"[Ss]egregation as for class ([\d.]+[A-Z]?)")
+CLASS_TOKEN = re.compile(r"\b(?:class|classes|division|divisions)\s+([\d.]+[A-Z]?(?:\s*,?\s*(?:and\s+)?[\d.]+[A-Z]?)*)")
+GROUP_TOKEN = re.compile(r"\bSGG(\d{1,2}a?)\b")
+
+
+def parse_provision(code: str, sentence: str) -> dict[str, object]:
+    """Turn one card sentence into a rule the compliance check can apply.
+
+    Sentences that name a class or a segregation group become actionable.
+    Anything else — foodstuffs, a named substance, a cross-reference to a table
+    in the Code — is kept as text and shown to the user without being acted on.
+    """
+    rule: dict[str, object] = {"code": code, "text": sentence}
+
+    for phrase, action in ACTIONS:
+        if f"\u201c{phrase}\u201d" in sentence or f'"{phrase}"' in sentence:
+            rule["action"] = action
+            break
+
+    as_for = AS_FOR_CLASS.search(sentence)
+    if as_for and "action" not in rule:
+        rule["action"] = "segregate_as_class"
+        rule["as_class"] = as_for.group(1)
+        return rule
+
+    # Only look for a target after the action phrase, so "class 1" in
+    # "in relation to goods of class 1" is not mistaken for the target.
+    tail = sentence
+    for phrase, _action in ACTIONS:
+        marker = f"\u201c{phrase}\u201d"
+        if marker in sentence:
+            tail = sentence.split(marker, 1)[1]
+            break
+
+    # "class 1 except for division 1.4S" names one target and one exception.
+    # Reading the exception as a second target would warn about a load the Code
+    # explicitly allows.
+    excepted: list[str] = []
+    if re.search(r"\bexcept\b", tail, re.IGNORECASE):
+        tail, _, exception_tail = re.split(r"\bexcept\b", tail, maxsplit=1, flags=re.IGNORECASE)[0], "except", \
+            re.split(r"\bexcept\b", tail, maxsplit=1, flags=re.IGNORECASE)[1]
+        for match in CLASS_TOKEN.finditer(exception_tail):
+            for token in re.split(r"[,\s]+(?:and\s+)?", match.group(1)):
+                token = token.strip(" .,")
+                if token and token not in excepted:
+                    excepted.append(token)
+
+    classes: list[str] = []
+    for match in CLASS_TOKEN.finditer(tail):
+        for token in re.split(r"[,\s]+(?:and\s+)?", match.group(1)):
+            token = token.strip(" .,")
+            if token and token not in classes:
+                classes.append(token)
+    groups = [f"SGG{n}" for n in GROUP_TOKEN.findall(tail)]
+
+    targets: dict[str, list[str]] = {}
+    if classes:
+        targets["classes"] = classes
+    if groups:
+        targets["groups"] = list(dict.fromkeys(groups))
+    if targets and rule.get("action"):
+        rule["targets"] = targets
+        if excepted:
+            rule["excepted_classes"] = excepted
+    else:
+        rule["informational"] = True
+    return rule
+
+
+def collect_provisions(entries: dict[str, object]) -> dict[str, object]:
+    """The canonical sentence per SG code, mined from every card that uses it."""
+    from collections import defaultdict
+
+    sentences: defaultdict[str, Counter] = defaultdict(Counter)
+    for entry in entries.values():
+        text = entry.get("segregation_text")  # type: ignore[union-attr]
+        if isinstance(text, list):
+            text = " ".join(text)
+        if not text:
+            continue
+        for sentence in re.split(r"(?<=\.)\s+", str(text)):
+            for number in set(SEGREGATION_CODE.findall(sentence)):
+                sentences[f"SG{number}"][sentence.strip()] += 1
+
+    provisions: dict[str, object] = {}
+    for code, counter in sentences.items():
+        sentence, count = counter.most_common(1)[0]
+        rule = parse_provision(code, sentence)
+        rule["seen"] = sum(counter.values())
+        rule["variants"] = len(counter)
+        provisions[code] = rule
+    return dict(sorted(provisions.items(), key=lambda kv: int(kv[0][2:])))
+
+
 def merge(records: list[dict[str, object]]) -> dict[str, object]:
     """Fold the cards of one UN number into a single entry.
 
@@ -236,6 +340,11 @@ def main() -> int:
     if disagreements:
         print("\nEmS disagreements (guide wins):", *disagreements, sep="\n  ")
 
+    provisions = collect_provisions(entries)
+    actionable = [c for c, r in provisions.items() if not r.get("informational")]
+    summary["segregation_provisions"] = len(provisions)
+    summary["segregation_provisions_actionable"] = len(actionable)
+
     payload = {
         "_comment": (
             "Per-substance data read from the UN cards in un_cards/ by "
@@ -245,6 +354,7 @@ def main() -> int:
         ),
         "source": "Cantell IMDG UN cards, 2023 edition (IMDG 41-22)",
         "summary": summary,
+        "segregation_provisions": provisions,
         "entries": entries,
     }
     out = Path(args.out)

@@ -2,6 +2,31 @@
 
 All notable changes are documented here, following [Semantic Versioning](https://semver.org/).
 
+## [1.17.0] — 2026-08-02
+
+Column 16b is now a check, not just a note.
+
+### Added
+
+- **The segregation provisions of column 16b are applied to the shipment.** The class
+  table of IMDG 7.2.4 works on class; column 16b adds provisions per substance. Load
+  anhydrous ammonia (UN 1005) together with hydrochloric acid (UN 1789) and the compliance
+  panel now reports both sides of it: *"Stow separated from SGG1 (Acids). Stow 'separated
+  from' SGG1 – acids (SG35)"* against the ammonia, and the mirror-image SG36 against the
+  acid. Until now the codes were only displayed.
+- **The meaning of each code was read from the cards, not written from memory.** Every SG
+  code appears in a fixed sentence — *Stow "separated from" class 5.1 (SG17)* — so the
+  action and its target are parsed out of the source itself. Of the 70 codes in use, 48
+  name a class or a segregation group and became machine-checkable; the other 22 point at
+  foodstuff tables, named substances or a table in the Code, and are shown to the user
+  without being acted on. A wrong segregation rule is a safety-relevant error, so guessing
+  at the ones that do not parse cleanly is not on the table.
+- **Exceptions are honoured.** SG14 reads "separated from class 1 except for division
+  1.4S". Treating 1.4S as a second target would warn about a load the Code explicitly
+  allows, so the exception is parsed separately and suppresses the finding.
+- A bare class target covers its divisions — "separated from class 1" applies to 1.1D as
+  much as to 1.3G — and subsidiary risks count towards a match, not just the primary class.
+
 ## [1.16.0] — 2026-08-02
 
 Columns 16a and 16b, per substance.

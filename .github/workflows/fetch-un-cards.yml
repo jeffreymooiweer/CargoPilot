@@ -99,8 +99,14 @@ jobs:
                   print(f"- … and {len(unknown) - 50} more, see `un_cards/manifest.json`")
           PY
 
+      # Creating the pull request needs "Allow GitHub Actions to create and
+      # approve pull requests" under Settings -> Actions. Without it the push
+      # still succeeds, so do not fail the run over it — the branch is the
+      # deliverable and the pull request can be opened by hand.
       - name: Open a pull request
+        id: pr
         if: ${{ !inputs.dry_run }}
+        continue-on-error: true
         uses: peter-evans/create-pull-request@v6
         with:
           branch: data/un-cards
@@ -119,3 +125,20 @@ jobs:
             workflow run summary for the totals.
           add-paths: |
             un_cards/**
+
+      - name: Where to find the result
+        if: ${{ !inputs.dry_run }}
+        run: |
+          {
+            echo "### Branch pushed"
+            echo ""
+            echo "\`data/un-cards\`"
+            if [ "${{ steps.pr.outcome }}" != "success" ]; then
+              echo ""
+              echo "The pull request could not be created automatically."
+              echo "Open it here: https://github.com/${{ github.repository }}/compare/main...data/un-cards"
+              echo ""
+              echo "To let the workflow do this itself, enable **Settings → Actions →"
+              echo "General → Allow GitHub Actions to create and approve pull requests**."
+            fi
+          } >> "$GITHUB_STEP_SUMMARY"

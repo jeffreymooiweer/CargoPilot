@@ -1,0 +1,215 @@
+"""Verkenning van openbare bronnen voor gevaarlijke-stoffengegevens.
+
+Dit script haalt niets binnen dat in de repo terechtkomt. Het kijkt of een bron
+bestaat, hoe groot zij is en of zij machinaal te lezen valt, en zet die uitkomst
+op de uitvoer. Bedoeld om via GitHub Actions te draaien, omdat de
+ontwikkelomgeving geen uitgaand netwerk heeft.
+
+Twee vragen:
+
+1. Publiceert Cantell een kaartenset van een nieuwere IMDG-editie dan
+   ``imdg_2023``? Die set is de bron van ``backend/seed/dg/card_data.json``
+   (Amendment 41-22). Een 42-24-set zou de hele stof-specifieke laag in één keer
+   bijwerken, langs dezelfde weg die we al gebruiken.
+2. Is de Dangerous Goods List van de UN-modelvoorschriften Rev.23 te parsen?
+   UNECE publiceert die uitgave gratis en IMDG 42-24 is ermee geharmoniseerd,
+   dus zij dekt elke kolom die niet IMDG-eigen is: klasse, verpakkingsgroep,
+   etiketten, bijzondere bepalingen, LQ/EQ en verpakkingsinstructies. Wat zij
+   niet dekt is even belangrijk om te weten: EmS, stuwagecategorie, de SW- en
+   SG-codes en de scheidingsgroepen staan alleen in de IMDG-code zelf.
+
+Gebruik::
+
+    python scripts/probe_dg_sources.py cantell
+    python scripts/probe_dg_sources.py model-regs --sample-pages 60,61,120
+"""
+from __future__ import annotations
+
+import argparse
+import re
+import sys
+import urllib.error
+import urllib.request
+from pathlib import Path
+
+CANTELL = "https://www.cantell.dk/image/catalog/Stofliste"
+UNECE = "https://unece.org/sites/default/files/2023-08"
+VOL1 = f"{UNECE}/ST-SG-AC10-1r23e_Vol1_WEB.pdf"
+VOL2 = f"{UNECE}/ST-SG-AC10-1r23e_Vol2_WEB.pdf"
+
+# De vermeldingen die Amendment 42-24 toevoegt. Staan ze in Rev.23, dan is de
+# gratis uitgave genoeg voor alles behalve de IMDG-eigen kolommen.
+NEW_UN_NUMBERS = ["0514", "3551", "3552", "3553", "3554",
+                  "3555", "3556", "3557", "3558", "3559", "3560"]
+
+# Bijzondere bepalingen onder 900 komen uit de modelvoorschriften; die tekst
+# ontbreekt nu aan onze kant. De 9xx-reeks is IMDG-eigen en staat er niet in.
+NEW_SPECIAL_PROVISIONS = ["375", "400", "401", "402", "403",
+                          "404", "405", "406", "407", "408", "409"]
+
+UA = {"User-Agent": "CargoPilot source probe (github.com/jeffreymooiweer/CargoPilot)"}
+
+
+def head(url: str, timeout: int = 25) -> tuple[int, int]:
+    """(statuscode, aantal bytes). Een fout is een uitkomst, geen uitzondering."""
+    request = urllib.request.Request(url, headers=UA)
+    try:
+        with urllib.request.urlopen(request, timeout=timeout) as response:
+            return response.status, len(response.read())
+    except urllib.error.HTTPError as error:
+        return error.code, 0
+    except (urllib.error.URLError, TimeoutError, OSError):
+        return 0, 0
+
+
+def exists(url: str) -> bool:
+    status, size = head(url)
+    return status == 200 and size > 2000
+
+
+def download(url: str, target: Path, timeout: int = 180) -> Path:
+    request = urllib.request.Request(url, headers=UA)
+    with urllib.request.urlopen(request, timeout=timeout) as response:
+        target.write_bytes(response.read())
+    return target
+
+
+def card_url(collection: str, year: int, part: int) -> str:
+    prefix = "IMDG_EN/imdg" if collection == "imdg" else "ADR_EN/adr"
+    return f"{CANTELL}/{prefix}_{year}_-_en_part{part}.pdf"
+
+
+def count_parts(collection: str, year: int, ceiling: int = 8192) -> int:
+    """Hoeveel parts de set telt, via verdubbelen en dan binair zoeken.
+
+    Sneller en beleefder dan duizenden losse verzoeken; de set van 2023 telde
+    er 2.849, dus lineair aflopen is geen optie.
+    """
+    low = 1
+    while low * 2 <= ceiling and exists(card_url(collection, year, low * 2)):
+        low *= 2
+    high = min(low * 2, ceiling + 1)
+    while high - low > 1:
+        middle = (low + high) // 2
+        if exists(card_url(collection, year, middle)):
+            low = middle
+        else:
+            high = middle
+    return low
+
+
+def probe_cantell() -> int:
+    """Welke kaartensets Cantell publiceert, en hoe groot de nieuwste is."""
+    print("== Cantell ==")
+    available: list[tuple[str, int]] = []
+    for collection, year in [("imdg", y) for y in (2027, 2026, 2025, 2024, 2023)] + \
+                            [("adr", y) for y in (2027, 2025, 2023)]:
+        url = card_url(collection, year, 1)
+        status, size = head(url)
+        verdict = f"BESTAAT ({size} bytes)" if status == 200 and size > 2000 \
+            else f"afwezig (HTTP {status})"
+        print(f"  {collection}_{year:<6} {verdict}")
+        if status == 200 and size > 2000:
+            available.append((collection, year))
+
+    newest_imdg = next((y for c, y in available if c == "imdg"), None)
+    if newest_imdg is None:
+        print("\nGeen enkele IMDG-set bereikbaar.")
+        return 1
+
+    print(f"\nNieuwste IMDG-set: imdg_{newest_imdg}")
+    if newest_imdg <= 2023:
+        print("Dat is de editie die we al verwerkt hebben (Amendment 41-22).")
+        print("Er is langs deze weg niets nieuws te halen.")
+    else:
+        parts = count_parts("imdg", newest_imdg)
+        print(f"Omvang: ongeveer {parts} parts.")
+        print("Dit is een nieuwere editie — de bestaande pijplijn van")
+        print("scripts/fetch_un_cards.py kan haar rechtstreeks verwerken.")
+
+    print(f"\n-- eerste kaart van imdg_{newest_imdg} --")
+    print(read_pdf_text(card_url("imdg", newest_imdg, 1), Path("/tmp/card.pdf"))[:2000])
+    return 0
+
+
+def read_pdf_text(url: str, target: Path, page: int = 0) -> str:
+    import fitz
+
+    download(url, target)
+    with fitz.open(target) as document:
+        return document[page].get_text()
+
+
+def probe_model_regulations(sample_pages: list[int]) -> int:
+    """Of de Dangerous Goods List van Rev.23 machinaal te lezen is."""
+    import fitz
+
+    print("== UN-modelvoorschriften Rev.23, deel II (Dangerous Goods List) ==")
+    path = download(VOL2, Path("/tmp/vol2.pdf"))
+    print(f"  {path.stat().st_size} bytes")
+
+    with fitz.open(path) as document:
+        print(f"  {document.page_count} pagina's")
+
+        for index in range(min(80, document.page_count)):
+            if re.search(r"DANGEROUS GOODS LIST", document[index].get_text(), re.I):
+                print(f"  'DANGEROUS GOODS LIST' voor het eerst op pagina {index + 1}")
+                break
+
+        found: dict[str, int] = {}
+        for index in range(document.page_count):
+            text = document[index].get_text()
+            for un in NEW_UN_NUMBERS:
+                if un not in found and re.search(rf"\b{un}\b", text):
+                    found[un] = index + 1
+        print(f"  nieuwe UN-nummers gevonden: {found}")
+        missing = [un for un in NEW_UN_NUMBERS if un not in found]
+        print(f"  ontbreekt: {missing or 'niets'}")
+
+        for number in sample_pages:
+            index = number - 1
+            if not 0 <= index < document.page_count:
+                continue
+            page = document[index]
+            print(f"\n===== PAGINA {number}: platte tekst =====")
+            print(page.get_text())
+            print(f"===== PAGINA {number}: woorden met x-positie (eerste 150) =====")
+            for word in page.get_text("words")[:150]:
+                print(f"{word[0]:8.1f} {word[1]:8.1f}  {word[4]}")
+
+    print("\n== Deel I (bijzondere bepalingen) ==")
+    path = download(VOL1, Path("/tmp/vol1.pdf"))
+    print(f"  {path.stat().st_size} bytes")
+    with fitz.open(path) as document:
+        print(f"  {document.page_count} pagina's")
+        pending = list(NEW_SPECIAL_PROVISIONS)
+        for index in range(document.page_count):
+            text = document[index].get_text()
+            for provision in list(pending):
+                match = re.search(rf"^\s*{provision}\s+[A-Z(\"].{{0,700}}", text, re.M | re.S)
+                if match:
+                    print(f"\n--- SP{provision}, pagina {index + 1} ---")
+                    print(match.group(0).strip())
+                    pending.remove(provision)
+        print(f"\n  niet teruggevonden: {pending or 'niets'}")
+    return 0
+
+
+def main(argv: list[str] | None = None) -> int:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("source", choices=["cantell", "model-regs", "all"])
+    parser.add_argument("--sample-pages", default="60,61,120",
+                        help="Pagina's van de DGL die als voorbeeld op de uitvoer komen")
+    args = parser.parse_args(argv)
+
+    pages = [int(p) for p in args.sample_pages.split(",") if p.strip().isdigit()]
+    status = 0
+    if args.source in {"cantell", "all"}:
+        status |= probe_cantell()
+    if args.source in {"model-regs", "all"}:
+        status |= probe_model_regulations(pages)
+    return status
+
+
+if __name__ == "__main__":
+    sys.exit(main())

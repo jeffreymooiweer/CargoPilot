@@ -8,6 +8,7 @@ import {
   DocumentDefinition,
   DocumentRegistry,
   LocalizedText,
+  UnCardsAvailability,
 } from "../api/client";
 import DangerousGoodsStep, { buildDgEntries } from "../components/DangerousGoodsStep";
 import DgCompliancePanel from "../components/DgCompliancePanel";
@@ -95,6 +96,8 @@ export default function WizardPage() {
   const [signature, setSignature] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [exportingDoc, setExportingDoc] = useState<string | null>(null);
+  const [unCards, setUnCards] = useState<UnCardsAvailability | null>(null);
+  const [unCardsBusy, setUnCardsBusy] = useState(false);
   const [error, setError] = useState("");
   const [importOpen, setImportOpen] = useState(false);
 
@@ -365,6 +368,39 @@ export default function WizardPage() {
     }
   };
 
+  // Which UN cards this shipment can be given. Asked only on the export step,
+  // and only when dangerous goods were actually declared.
+  useEffect(() => {
+    if (stepKey !== "export" || dgEntries.length === 0) {
+      setUnCards(null);
+      return;
+    }
+    let cancelled = false;
+    api
+      .unCardsAvailability({ dangerous_goods: dgEntries, output_language: lang })
+      .then((status) => {
+        if (!cancelled) setUnCards(status);
+      })
+      .catch(() => {
+        if (!cancelled) setUnCards(null);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [stepKey, dgEntries, lang]);
+
+  const downloadUnCards = async () => {
+    setUnCardsBusy(true);
+    setError("");
+    try {
+      await api.downloadUnCards({ dangerous_goods: dgEntries, output_language: lang });
+    } catch (e) {
+      setError(String(e));
+    } finally {
+      setUnCardsBusy(false);
+    }
+  };
+
   const translateMessage = (msg: string) => {
     const key = `messages.${msg}`;
     const translated = t(key as "messages.dg_un_detected");
@@ -624,6 +660,41 @@ export default function WizardPage() {
               })}
             </div>
           </div>
+
+          {unCards && unCards.enabled && unCards.count > 0 && (
+            <div className={`${panelClass} space-y-3 p-4 sm:p-6`}>
+              <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-100">
+                {t("unCards.title")}
+              </h3>
+              <p className="text-sm text-slate-600 dark:text-slate-400">{t("unCards.intro")}</p>
+              <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                <div className="min-w-0">
+                  <p className="text-sm text-slate-700 dark:text-slate-200">
+                    {t("unCards.forSubstances", {
+                      list: unCards.available.map((un) => `UN ${un}`).join(", "),
+                    })}
+                  </p>
+                  {unCards.missing.length > 0 && (
+                    <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
+                      {t("unCards.missing", {
+                        list: unCards.missing.map((un) => `UN ${un}`).join(", "),
+                      })}
+                    </p>
+                  )}
+                </div>
+                <button
+                  type="button"
+                  onClick={downloadUnCards}
+                  disabled={unCardsBusy}
+                  className={buttonSecondary}
+                >
+                  {unCardsBusy
+                    ? t("wizardDocs.exporting")
+                    : t("unCards.download", { count: unCards.count })}
+                </button>
+              </div>
+            </div>
+          )}
 
           <div className="flex flex-col gap-2 sm:flex-row">
             <button type="button" onClick={() => goBackFrom("export")} className={buttonSecondary}>

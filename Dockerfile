@@ -27,6 +27,8 @@ RUN pip install -r requirements.txt
 
 COPY backend/ ./backend/
 COPY templates/ ./templates/
+# The UN card library. Empty until the Fetch UN cards workflow populates it.
+COPY un_cards/ ./un_cards/
 
 COPY --from=frontend-build /build/dist ./backend/static/
 

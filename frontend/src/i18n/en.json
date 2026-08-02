@@ -247,6 +247,13 @@
     "exporting": "Exporting…",
     "exportNotice": "Note: generated documents are drafts. Verify, complete and sign by an authorised person before use. See the disclaimer."
   },
+  "unCards": {
+    "title": "UN cards for your records",
+    "intro": "Reference cards for the substances you declared. They are not part of the transport documentation; they are for your own file.",
+    "forSubstances": "Available for: {{list}}",
+    "missing": "No card held for: {{list}}",
+    "download": "Download UN cards ({{count}})"
+  },
   "legal": {
     "title": "Disclaimer and licence",
     "updated": "Last updated: 12 July 2026 · CargoPilot v1.4.0",

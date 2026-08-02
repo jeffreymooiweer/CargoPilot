@@ -5,13 +5,16 @@ from fastapi.responses import FileResponse
 
 from app.core.deps import get_current_user
 from app.models.user import User
-from app.schemas import DocumentExportRequest
+from app.schemas import DocumentExportRequest, UnCardsRequest
 from app.services.documents import (
+    build_un_cards_zip,
     fill_pdf_document,
     get_document,
     get_registry,
     has_pdf_template,
     render_document_pdf,
+    un_card_count,
+    un_cards_availability,
     validate_document,
 )
 from app.services.documents.avc_form import fill_avc_waybill, has_avc_template
@@ -96,6 +99,35 @@ def export(
         path=out_path,
         filename=f"{payload.document_key}_{ref}.pdf",
         media_type="application/pdf",
+    )
+
+
+@router.post("/un-cards/availability")
+def un_cards_status(payload: UnCardsRequest, user: User = Depends(get_current_user)):
+    """Which UN cards this shipment can be given, before offering the download."""
+    status = un_cards_availability(payload.dangerous_goods)
+    return {**status, "library_size": un_card_count()}
+
+
+@router.post("/un-cards")
+def export_un_cards(
+    payload: UnCardsRequest,
+    background_tasks: BackgroundTasks,
+    user: User = Depends(get_current_user),
+):
+    """A zip with the UN cards for the substances in this shipment."""
+    try:
+        out_path, status = build_un_cards_zip(payload.dangerous_goods)
+    except FileNotFoundError as exc:
+        raise HTTPException(status_code=404, detail=str(exc)) from exc
+
+    background_tasks.add_task(_delete_file, out_path)
+    ref = datetime.now().strftime("%Y%m%d%H%M%S")
+    return FileResponse(
+        path=out_path,
+        filename=f"un_cards_{ref}.zip",
+        media_type="application/zip",
+        headers={"X-UN-Cards-Count": str(status["count"])},
     )
 
 

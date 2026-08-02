@@ -82,6 +82,17 @@ Where the data lives:
 Where internet is available, the UN lookup enriches entries live from an ADR 2025 source
 and falls back to the offline database automatically.
 
+## UN cards
+
+`un_cards/` holds one reference card per UN number, named after the number it describes.
+The folder is empty in a fresh checkout and is filled once by the **Fetch UN cards**
+workflow, which reads the UN number out of every document rather than trusting its
+original filename — the source numbers its files sequentially with no relation to their
+contents.
+
+These are third-party documents, included unchanged. `un_cards/manifest.json` records
+where each file came from.
+
 ## Official form templates
 
 The filled-in official forms live in `templates/forms/`:

@@ -129,6 +129,13 @@ a draft notice.
 > Documents are generated on the spot and deleted from the server the moment your
 > download finishes. Nothing is archived.
 
+### UN cards
+
+If your shipment contains dangerous goods, you can also download the **UN cards** for the
+substances you declared — a zip with one reference card per UN number, for your own
+records. Only your substances are included, not the whole library. They are not part of
+the transport documentation.
+
 ## The equipment library
 
 Under **Equipment overview** you can keep a library of your own items so they can be

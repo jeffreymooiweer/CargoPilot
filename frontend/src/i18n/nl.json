@@ -247,6 +247,13 @@
     "exporting": "Bezig met exporteren…",
     "exportNotice": "Let op: gegenereerde documenten zijn concepten. Controleer, vul aan en onderteken door een bevoegde persoon vóór gebruik. Zie de disclaimer."
   },
+  "unCards": {
+    "title": "UN-kaarten voor uw administratie",
+    "intro": "Naslagkaarten van de stoffen die u hebt opgegeven. Ze horen niet bij de vervoersdocumenten; ze zijn bedoeld voor uw eigen dossier.",
+    "forSubstances": "Beschikbaar voor: {{list}}",
+    "missing": "Geen kaart aanwezig voor: {{list}}",
+    "download": "UN-kaarten downloaden ({{count}})"
+  },
   "legal": {
     "title": "Disclaimer en licentie",
     "updated": "Laatst bijgewerkt: 12 juli 2026 · CargoPilot v1.4.0",

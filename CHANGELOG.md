@@ -2,6 +2,34 @@
 
 All notable changes are documented here, following [Semantic Versioning](https://semver.org/).
 
+## [1.14.0] — 2026-08-02
+
+UN cards for your own records.
+
+### Added
+
+- **Download the UN cards for your substances** at the end of the wizard. A shipment
+  with dangerous goods gets a zip with one reference card per UN number it declared —
+  only those, not the whole library — plus a README stating what is in it and which
+  declared substances no card is held for. The cards are reference material for the
+  user's own file; they are not transport documents and are attached to nothing.
+  New endpoints: `POST /api/documents/un-cards` and
+  `POST /api/documents/un-cards/availability`.
+- **A workflow to fetch the card library** (`.github/workflows/fetch-un-cards.yml`).
+  The source numbers its files sequentially — `part1`, `part2`, … — with no relation to
+  the UN number on the card, so the workflow opens every document, reads the UN number
+  out of the contents and saves it as `un_1033.pdf`.
+- The identification is deliberately cautious. A four-digit number only counts if it is
+  a real entry in the UN database, prominence on the page is weighed so a page number or
+  a cross-reference cannot outrank the card's own heading, and a card is marked
+  `confirmed` only when the shipping name printed on it matches the name we hold for
+  that number. Anything weaker goes to `un_cards/_unidentified/` for a human to look at,
+  and `un_cards/manifest.json` records what happened to every part. A card filed under
+  the wrong UN number would hand someone the emergency information for a different
+  substance, so the script skips rather than guesses.
+- If the card library is absent — any fork that has not run the workflow — the download
+  option simply does not appear.
+
 ## [1.13.2] — 2026-08-02
 
 Documentation rewritten, in English, and split up.

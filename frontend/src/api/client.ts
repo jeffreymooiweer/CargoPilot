@@ -136,7 +136,47 @@ export const api = {
     a.click();
     URL.revokeObjectURL(url);
   },
+  unCardsAvailability: (payload: UnCardsPayload) =>
+    request<UnCardsAvailability>("/documents/un-cards/availability", {
+      method: "POST",
+      body: JSON.stringify(payload),
+    }),
+  downloadUnCards: async (payload: UnCardsPayload) => {
+    const res = await fetch(`${API_BASE}/documents/un-cards`, {
+      method: "POST",
+      credentials: "include",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    });
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({ detail: res.statusText }));
+      throw new Error(typeof err.detail === "string" ? err.detail : "Download failed");
+    }
+    const blob = await res.blob();
+    const disposition = res.headers.get("content-disposition") || "";
+    const match = disposition.match(/filename="?([^";]+)"?/i);
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = match ? match[1] : `un_cards_${Date.now()}.zip`;
+    a.click();
+    URL.revokeObjectURL(url);
+  },
 };
+
+export interface UnCardsPayload {
+  dangerous_goods?: unknown[] | null;
+  output_language?: string;
+}
+
+export interface UnCardsAvailability {
+  enabled: boolean;
+  requested: string[];
+  available: string[];
+  missing: string[];
+  count: number;
+  library_size: number;
+}
 
 export interface User {
   id: number;

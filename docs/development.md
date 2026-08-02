@@ -95,6 +95,8 @@ frontend/
   src/pages/            routed pages
   src/i18n/             nl.json, en.json
 templates/forms/        official PDF forms that get filled in
+un_cards/               UN reference cards, one per UN number
+scripts/                one-off maintenance scripts
 docs/                   this documentation
 unraid/                 Unraid Community Applications template
 ```
@@ -148,4 +150,26 @@ in the git tag `v*`, in the Docker tag, and is returned by `GET /api/health`.
 Required secrets: `DOCKER_USERNAME`, `DOCKER_TOKEN`.
 
 Workflows live in `.github/workflows/`: `dockerhub.yml`, `tag-release.yml`,
-`release.yml` and `cleanup-dockerhub.yml`.
+`release.yml`, `cleanup-dockerhub.yml` and `fetch-un-cards.yml`.
+
+## Fetching the UN cards
+
+`fetch-un-cards.yml` fills `un_cards/`. It is a one-off job, run by hand:
+
+1. Actions → **Fetch UN cards** → **Run workflow**.
+2. Give it the URL pattern with `{n}` where the part number goes, the range, and leave
+   **dry run** ticked with a small **limit** first — that fetches a handful of documents
+   and reports what it made of them without writing anything.
+3. When the identification looks right, run it again with dry run off. It opens a pull
+   request on `data/un-cards` with the renamed files and a manifest.
+
+The identification is deliberately cautious: a four-digit number only counts if it is a
+real UN entry in `backend/seed/dg/un_numbers.json`, and it is marked `confirmed` only
+when the shipping name on the card matches the name we hold for that number. Anything
+weaker lands in `un_cards/_unidentified/` for a human to look at. Filing a card under the
+wrong UN number would hand someone the emergency information for a different substance,
+so the script would rather skip than guess.
+
+`backend/tests/test_un_card_identification.py` covers the ways that can go wrong: page
+numbers that look like UN numbers, cards that cross-reference other substances, numbers
+that are not UN numbers, and scans with no text layer.

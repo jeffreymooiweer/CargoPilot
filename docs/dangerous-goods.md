@@ -13,6 +13,7 @@ derive from that number, it derives for you — and then it checks the result.
 - [The checks it runs](#the-checks-it-runs)
 - [What blocks an export](#what-blocks-an-export)
 - [Per transport mode](#per-transport-mode)
+- [UN cards](#un-cards)
 - [How complete is the data?](#how-complete-is-the-data)
 
 ## What one UN number gives you
@@ -126,6 +127,25 @@ required fields and the checks all follow from it.
 
 For road transport there is no separate ADR document — the CMR and the AVC waybill carry
 the 5.4.1.1.1 description themselves. See [Documents](documents.md#the-waybill-doubles-as-the-adr-transport-document).
+
+## UN cards
+
+At the end of the wizard, a shipment with dangerous goods can download the **UN cards**
+for the substances it declared — a zip with one reference card per UN number, plus a
+README listing what is in it and what is not.
+
+Only the cards for **your** substances are bundled. A load of gasoline and chlorine gets
+two cards, not the whole library. If a UN number has more than one card, all of them are
+included; deciding which variant applies is not something this app should guess at.
+
+The cards are for your own records. They are not transport documents, they are not
+attached to anything CargoPilot generates, and they do not replace the current edition of
+the regulations.
+
+The library lives in `un_cards/` and is filled once by the **Fetch UN cards** workflow,
+which reads the UN number out of every document rather than trusting its original
+filename. In a checkout where that has not been run, the download option simply does not
+appear. See [`un_cards/README.md`](../un_cards/README.md).
 
 ## How complete is the data?
 

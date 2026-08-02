@@ -53,6 +53,13 @@ class CalculateRequest(BaseModel):
     line_overrides: list[dict] | None = None
 
 
+class UnCardsRequest(BaseModel):
+    """Only the declared dangerous goods; the cards follow from the UN numbers."""
+
+    dangerous_goods: list[dict] | None = None
+    output_language: str = "nl"
+
+
 class DocumentExportRequest(BaseModel):
     document_key: str
     values: dict = Field(default_factory=dict)

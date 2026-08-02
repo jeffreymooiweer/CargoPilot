@@ -65,6 +65,10 @@ category, tunnel code, EmS emergency schedules and the air freight rules. It war
 about incompatible loads, calculates the ADR 1,000-point exemption and the IATA Q value,
 and refuses to export a declaration that is not complete.
 
+**Hands you the paperwork for your own file.** Alongside the transport documents, a
+shipment with dangerous goods can download the UN reference cards for exactly the
+substances it declared.
+
 **Finds addresses and terminals for you.** Address autocomplete plus 4,500+ airports,
 17,500+ ports and 750+ European railway stations, filtered to the transport mode you
 chose.

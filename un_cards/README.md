@@ -4,7 +4,7 @@ One reference card per UN number, named after the number it describes:
 `un_1203.pdf`, `un_3480.pdf`, and so on. When a UN number has more than one card,
 the extras are suffixed: `un_1203-2.pdf`.
 
-This folder is **empty in a fresh checkout**. It is filled once by the
+It holds **2,849 cards covering 2,336 UN numbers**, fetched by the
 **Fetch UN cards** workflow (`.github/workflows/fetch-un-cards.yml`).
 
 The source is Cantell's IMDG UN cards, 2023 edition (IMDG 41-22), published as
@@ -21,7 +21,33 @@ heading and footer disagree — are parked in `_unidentified/` rather than filed
 under a guess.
 
 The parts ascend by UN number, so a card that steps backwards is flagged as out
-of sequence even when it read cleanly.
+of sequence even when it read cleanly. Nothing was flagged in the run that filled
+this folder.
+
+## What the run found
+
+| | |
+|---|---|
+| Parts fetched | 2,900 of 2,900 — none missing from the source |
+| Real cards | 2,849 |
+| Confirmed (number **and** shipping name agree) | 2,703 |
+| Probable (number verified, name too abbreviated to match) | 146 |
+| Contradictory or misread | 0 |
+| Out of sequence | 0 |
+| Blank templates, discarded | 51 (parts 2850-2900) |
+| Unique UN numbers | 2,336 |
+
+The 513 extra cards beyond 2,336 are second and third cards for the same UN
+number, which the regulations give a separate entry per packing group; they are
+named `un_2031-2.pdf`, `un_2031-3.pdf` and so on, and all of them are handed to
+the user.
+
+The tail of the source, parts 2850 to 2900, are the card layout with every field
+empty. They carry no substance and were discarded; `manifest.json` still records
+that they were seen.
+
+That the 2,336 unique UN numbers match the 2,336 unique numbers in
+`backend/seed/dg/un_numbers.json` exactly is a good sign that nothing was missed.
 
 ## What they are used for
 

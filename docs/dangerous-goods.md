@@ -95,10 +95,20 @@ to send you to the Dangerous Goods List itself.
 
 **And they are checked, not just shown.** Load anhydrous ammonia with hydrochloric acid
 and you get both sides of it: the ammonia carries SG35 (separated from acids) and the acid
-carries SG36 (separated from alkalis). Of the 70 codes in use, 48 name a class or a
-segregation group and are checked against the rest of the shipment. The other 22 point at
-foodstuff tables, named substances or a table in the Code; those are shown but not acted
-on, because a segregation rule guessed wrong is worse than one left to the user.
+carries SG36 (separated from alkalis).
+
+Of the 70 codes in use:
+
+| | |
+|---|---|
+| Checked against the rest of the shipment | 49 name a class or a segregation group |
+| Checked against a named substance | 8 — sulphur, chlorine, ammonia, bromine, carbon tetrachloride, ammonium and mercury salts, chlorate explosives |
+| Raised as a requirement to verify | 7 whose target is ordinary cargo: foodstuffs, oils, odour-absorbing cargo |
+| Shown as text only | 6 |
+
+The six that are only shown are not rules: two modify other provisions, two are
+definitions, one applies only to waste aerosols, and SG72 points at a table in IMDG 7.2.6.3
+that is not in any source we hold. Turning those into checks would mean inventing them.
 
 Exceptions count. SG14 reads "separated from class 1 **except** for division 1.4S", so a
 1.4S package alongside does not raise it.

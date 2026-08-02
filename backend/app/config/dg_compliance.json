@@ -866,5 +866,111 @@
       "nl": "IMDG 7.2.7.2.1: ammoniumnitraat (UN 1942), ammoniumnitraathoudende meststof (UN 2067), alkalimetaalnitraten (bijv. UN 1486) en aardalkalimetaalnitraten (bijv. UN 1454) mogen samen met springstoffen worden gestuwd — behalve met UN 0083 (EXPLOSIEF, VOOR SPRINGWERK, TYPE C) — mits het geheel als springstof van klasse 1 wordt behandeld.",
       "en": "IMDG 7.2.7.2.1: ammonium nitrate (UN 1942), ammonium nitrate based fertilizer (UN 2067), alkali metal nitrates (e.g. UN 1486) and alkaline earth metal nitrates (e.g. UN 1454) may be stowed with blasting explosives — except UN 0083 (EXPLOSIVE, BLASTING, TYPE C) — provided the aggregate is treated as class 1 blasting explosives."
     }
+  },
+  "imdg_segregation_named_targets": {
+    "_comment": "Segregation provisions of IMDG column 16b that name a substance rather than a class or a segregation group. The cards state the target in words; these are the UN numbers it resolves to. Curated by hand, deliberately narrow: a provision that says 'sulphur' means elemental sulphur, not every sulphur compound. Where a defined segregation group is used as a stand-in it is broader than the wording, and 'broader' says so, so the warning can admit it.",
+    "SG44": {
+      "un": [
+        "1846"
+      ],
+      "nl": "tetrachloormethaan (UN 1846)",
+      "en": "carbon tetrachloride (UN 1846)"
+    },
+    "SG46": {
+      "un": [
+        "1017",
+        "3520"
+      ],
+      "nl": "chloor",
+      "en": "chlorine"
+    },
+    "SG43": {
+      "un": [
+        "1744"
+      ],
+      "nl": "broom",
+      "en": "bromine"
+    },
+    "SG62": {
+      "un": [
+        "1350",
+        "2448"
+      ],
+      "nl": "zwavel",
+      "en": "sulphur"
+    },
+    "SG37": {
+      "un": [
+        "1005",
+        "2073",
+        "2672",
+        "3318"
+      ],
+      "nl": "ammoniak",
+      "en": "ammonia"
+    },
+    "SG22": {
+      "groups": [
+        "SGG2"
+      ],
+      "broader": true,
+      "nl": "ammoniumzouten",
+      "en": "ammonium salts"
+    },
+    "SG55": {
+      "groups": [
+        "SGG11"
+      ],
+      "broader": true,
+      "nl": "kwikzouten",
+      "en": "mercury salts"
+    },
+    "SG27": {
+      "classes": [
+        "1"
+      ],
+      "groups": [
+        "SGG4",
+        "SGG13"
+      ],
+      "require_both": true,
+      "nl": "explosieven met chloraten of perchloraten",
+      "en": "explosives containing chlorates or perchlorates"
+    }
+  },
+  "imdg_segregation_cargo_requirements": {
+    "_comment": "Provisions whose target is ordinary cargo, not dangerous goods: foodstuffs, oils, odour-absorbing cargo. CargoPilot does not know what non-dangerous cargo travels alongside, so these are raised as a requirement to verify whenever the substance is in the shipment — the same shape as the ADR CV28 foodstuff warning.",
+    "SG23": {
+      "nl": "Houd uit de buurt van dierlijke of plantaardige oliën.",
+      "en": "Keep away from animal or vegetable oils."
+    },
+    "SG29": {
+      "nl": "Scheiding van levensmiddelen volgens IMDG 7.3.4.2.2, 7.6.3.1.2 of 7.7.3.7.",
+      "en": "Segregation from foodstuffs per IMDG 7.3.4.2.2, 7.6.3.1.2 or 7.7.3.7."
+    },
+    "SG41": {
+      "nl": "Gescheiden houden van dierlijke of plantaardige olie.",
+      "en": "Keep separated from animal or vegetable oil."
+    },
+    "SG50": {
+      "nl": "Scheiding van levensmiddelen volgens IMDG 7.3.4.2.1, 7.6.3.1.2 of 7.7.3.6.",
+      "en": "Segregation from foodstuffs per IMDG 7.3.4.2.1, 7.6.3.1.2 or 7.7.3.6."
+    },
+    "SG53": {
+      "nl": "Gescheiden houden van vloeibare organische stoffen.",
+      "en": "Keep separated from liquid organic substances."
+    },
+    "SG57": {
+      "nl": "Gescheiden houden van geurabsorberende lading.",
+      "en": "Keep separated from odour-absorbing cargo."
+    },
+    "SG26": {
+      "classes": [
+        "2.1",
+        "3"
+      ],
+      "nl": "Bij dekstuwage op een containerschip geldt bovendien een minimale afstand van twee containerplaatsen dwarsscheeps tot klasse 2.1 en 3.",
+      "en": "When stowed on deck of a containership, a minimum distance of two container spaces athwartship from classes 2.1 and 3 also applies."
+    }
   }
 }

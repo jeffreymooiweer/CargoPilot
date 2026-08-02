@@ -31,7 +31,7 @@ def rules():
 def test_the_provisions_were_parsed_from_the_cards(rules):
     assert len(rules) == 70
     actionable = [c for c, r in rules.items() if not r.get("informational")]
-    assert len(actionable) == 48
+    assert len(actionable) == 49
 
 
 def test_a_provision_naming_a_class_is_actionable(rules):
@@ -44,8 +44,9 @@ def test_a_provision_naming_a_segregation_group_is_actionable(rules):
     assert rules["SG35"]["targets"] == {"groups": ["SGG1"]}
 
 
-def test_a_provision_about_foodstuffs_stays_informational(rules):
-    """"as in 7.3.4.2.2" is a cross-reference, not something to check against."""
+def test_a_foodstuff_provision_does_not_parse_into_a_pairwise_rule(rules):
+    """"as in 7.3.4.2.2" is a cross-reference; it is handled as a cargo
+    requirement instead — see test_a_foodstuff_provision_is_raised_on_its_own."""
     assert rules["SG29"]["informational"] is True
 
 
@@ -138,3 +139,103 @@ def test_english_reports_the_same_finding():
     )
     message = next(w for w in warnings if w["rule"] == "IMDG 16b (SG35)")["message"]
     assert message.startswith("Stow separated from SGG1 (Acids)")
+
+
+# --- Provisions that name a substance instead of a class or group -------------
+# The wording ("separated from sulphur") is resolved to UN numbers in
+# dg_compliance.json, deliberately narrowly: sulphur means elemental sulphur,
+# not sulphur dioxide.
+
+def test_a_provision_naming_a_substance_is_matched_on_its_un_number():
+    """UN 2427 carries SG62: separated from sulphur. UN 1350 is sulphur."""
+    warnings = check_imdg_segregation_provisions(
+        shipment({"un_number": "2427", "class": "5.1"}, {"un_number": "1350", "class": "4.1"}), "nl"
+    )
+    assert "IMDG 16b (SG62)" in codes(warnings)
+
+
+def test_a_named_substance_provision_stays_silent_for_a_related_compound():
+    """Sulphur dioxide (UN 1079) is not the sulphur SG62 means."""
+    warnings = check_imdg_segregation_provisions(
+        shipment({"un_number": "2427", "class": "5.1"}, {"un_number": "1079", "class": "2.3"}), "nl"
+    )
+    assert "IMDG 16b (SG62)" not in codes(warnings)
+
+
+def test_a_provision_naming_an_explicit_un_number():
+    """SG44 spells it out: separated from CARBON TETRACHLORIDE (UN 1846)."""
+    from app.services.dg.compliance import get_compliance_rules
+
+    target = get_compliance_rules()["imdg_segregation_named_targets"]["SG44"]
+    assert target["un"] == ["1846"]
+    assert "1846" in segregation_provisions()["SG44"]["text"]
+
+
+def test_a_group_stand_in_admits_that_it_is_broader():
+    """SG22 says "ammonium salts"; SGG2 is ammonium compounds — wider."""
+    import json as _json
+    from pathlib import Path as _Path
+
+    entries = _json.loads(
+        (_Path(__file__).resolve().parents[1] / "seed" / "dg" / "card_data.json").read_text()
+    )["entries"]
+    source = next(un for un, e in entries.items() if "SG22" in (e.get("segregation_codes") or []))
+    warnings = check_imdg_segregation_provisions(
+        shipment(
+            {"un_number": source, "class": "5.1"},
+            {"un_number": "1442", "class": "5.1", "segregation_group": "SGG2"},
+        ),
+        "nl",
+    )
+    hit = next((w for w in warnings if w["rule"] == "IMDG 16b (SG22)"), None)
+    assert hit is not None
+    assert "ruimer is dan de tekst" in hit["message"]
+
+
+# --- Provisions whose target is ordinary cargo --------------------------------
+# CargoPilot does not know what non-dangerous cargo travels alongside, so these
+# are raised whenever the substance is present, like the ADR CV28 warning.
+
+def test_a_foodstuff_provision_is_raised_on_its_own():
+    warnings = check_imdg_segregation_provisions(shipment({"un_number": "1111", "class": "6.1"}), "nl")
+    assert "IMDG 16b (SG50)" in codes(warnings)
+    message = next(w for w in warnings if w["rule"] == "IMDG 16b (SG50)")["message"]
+    assert "levensmiddelen" in message
+
+
+def test_a_conditional_cargo_provision_needs_its_class_present():
+    """SG26 only bites next to class 2.1 or 3."""
+    import json as _json
+    from pathlib import Path as _Path
+
+    entries = _json.loads(
+        (_Path(__file__).resolve().parents[1] / "seed" / "dg" / "card_data.json").read_text()
+    )["entries"]
+    source = next(un for un, e in entries.items() if "SG26" in (e.get("segregation_codes") or []))
+
+    alone = check_imdg_segregation_provisions(shipment({"un_number": source, "class": "5.1"}), "nl")
+    beside_flammable = check_imdg_segregation_provisions(
+        shipment({"un_number": source, "class": "5.1"}, {"un_number": "1203", "class": "3"}), "nl"
+    )
+    assert "IMDG 16b (SG26)" not in codes(alone)
+    assert "IMDG 16b (SG26)" in codes(beside_flammable)
+
+
+def test_segregation_as_for_a_division_without_the_word_class(rules):
+    """SG74 reads "Segregation as for 1.4G" — no "class", but still a rule."""
+    assert rules["SG74"]["action"] == "segregate_as_class"
+    assert rules["SG74"]["as_class"] == "1.4G"
+
+
+def test_only_definitions_and_table_references_remain_as_text(rules):
+    """Six provisions are not rules at all and are shown, not checked."""
+    from app.services.dg.compliance import get_compliance_rules
+
+    config = get_compliance_rules()
+    named = set(config["imdg_segregation_named_targets"]) - {"_comment"}
+    cargo = set(config["imdg_segregation_cargo_requirements"]) - {"_comment"}
+    checkable = {
+        code for code, rule in rules.items()
+        if rule.get("targets") or rule.get("as_class")
+    } | named | cargo
+    assert set(rules) - checkable == {"SG1", "SG48", "SG69", "SG71", "SG72", "SG77"}

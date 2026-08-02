@@ -525,17 +525,91 @@ def check_imdg_segregation_provisions(
                 groups.add(token.strip().upper())
         parties.append({
             "label": _product_label(entry, product, index),
+            "un": "".join(ch for ch in un if ch.isdigit()).zfill(4) if un else "",
             "codes": list(card.get("segregation_codes") or []),
             "classes": _classes_of(product),
             "groups": groups,
         })
 
+    config = get_compliance_rules()
+    named = config.get("imdg_segregation_named_targets", {})
+    cargo = config.get("imdg_segregation_cargo_requirements", {})
+
     warnings: list[dict[str, Any]] = []
     seen: set[tuple[str, str, str]] = set()
+
+    # Voorschriften die gewone lading noemen — levensmiddelen, oliën, geur-
+    # absorberende lading. De app weet niet wat er verder aan boord gaat, dus
+    # deze worden gemeld zodra de stof meegaat, net als de ADR CV28-melding.
+    raised_cargo: set[tuple[str, str]] = set()
+    for source in parties:
+        for code in source["codes"]:
+            requirement = cargo.get(code)
+            if not isinstance(requirement, dict):
+                continue
+            # SG26 geldt alleen náást bepaalde klassen; de rest altijd.
+            needed = requirement.get("classes")
+            if needed and not any(
+                any(_matches_class(t, other["classes"]) for t in needed)
+                for other in parties if other is not source
+            ):
+                continue
+            key = (source["label"], code)
+            if key in raised_cargo:
+                continue
+            raised_cargo.add(key)
+            warnings.append({
+                "rule": f"IMDG 16b ({code})",
+                "severity": "warning",
+                "message": f"{requirement[lang]} {rules.get(code, {}).get('text', '')}".strip(),
+                "products": source["label"],
+            })
+
     for source in parties:
         for code in source["codes"]:
             rule = rules.get(code)
-            if not rule or rule.get("informational") or not rule.get("targets"):
+            if not rule:
+                continue
+
+            # Voorschriften die een stof bij naam noemen: welke UN-nummers dat
+            # zijn, staat in dg_compliance.json — te controleren en aan te passen.
+            target = named.get(code)
+            if isinstance(target, dict):
+                for other in parties:
+                    if other is source:
+                        continue
+                    by_un = other["un"] in (target.get("un") or [])
+                    by_group = any(g in other["groups"] for g in target.get("groups") or [])
+                    by_class = any(
+                        _matches_class(t, other["classes"]) for t in target.get("classes") or []
+                    )
+                    if target.get("require_both"):
+                        hit = by_class and by_group
+                    else:
+                        hit = by_un or by_group or by_class
+                    if not hit:
+                        continue
+                    key = (source["label"], other["label"], code)
+                    if key in seen:
+                        continue
+                    seen.add(key)
+                    caveat = ""
+                    if target.get("broader"):
+                        caveat = (
+                            " Gematcht op de scheidingsgroep, die ruimer is dan de tekst; controleer."
+                            if lang == "nl"
+                            else " Matched on the segregation group, which is broader than the "
+                            "wording; verify."
+                        )
+                    warnings.append({
+                        "rule": f"IMDG 16b ({code})",
+                        "severity": "warning",
+                        "message": f"{rule['text']}{caveat}",
+                        "products": f"{source['label']}  \u00d7  {other['label']}",
+                    })
+                continue
+
+            if rule.get("informational") or not rule.get("targets"):
                 continue
             targets = rule["targets"]
             for other in parties:

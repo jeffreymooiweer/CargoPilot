@@ -2,6 +2,38 @@
 
 All notable changes are documented here, following [Semantic Versioning](https://semver.org/).
 
+## [1.18.0] — 2026-08-02
+
+The remaining segregation provisions, as far as they go.
+
+### Added
+
+- **Provisions that name a substance are now checked.** Eight of them — sulphur, chlorine,
+  ammonia, bromine, carbon tetrachloride, ammonium salts, mercury salts, and explosives
+  containing chlorates or perchlorates. The wording is resolved to UN numbers in
+  `dg_compliance.json`, deliberately narrowly: SG62 says "sulphur", which means elemental
+  sulphur (UN 1350, UN 2448), not sulphur dioxide.
+- Where a defined segregation group stands in for a narrower wording — SGG2 "ammonium
+  compounds" for the "ammonium salts" of SG22 — the warning says so, because the match is
+  wider than the provision.
+- **Provisions whose target is ordinary cargo are raised as requirements.** Foodstuffs,
+  animal and vegetable oils, odour-absorbing cargo, liquid organic substances. CargoPilot
+  does not know what non-dangerous cargo travels alongside, so these appear whenever the
+  substance is in the shipment — the same shape as the existing ADR CV28 foodstuff
+  warning. SG26 is conditional and only appears next to class 2.1 or 3.
+
+### Fixed
+
+- **SG74 was missed by the parser.** It reads "Segregation as for 1.4G" without the word
+  "class", so it fell through to the informational bucket instead of becoming a rule.
+
+### Still shown but not checked
+
+Six provisions, and they are not rules: SG1 and SG77 modify other provisions, SG48 and
+SG71 are definitions, SG69 is conditional on the substance being waste aerosols, and SG72
+points at a table in IMDG 7.2.6.3 that is not in any source we hold. Turning any of these
+into a check would mean inventing the rule.
+
 ## [1.17.0] — 2026-08-02
 
 Column 16b is now a check, not just a note.

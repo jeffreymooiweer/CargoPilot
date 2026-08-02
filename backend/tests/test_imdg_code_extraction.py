@@ -207,11 +207,9 @@ def test_a_suspiciously_short_description_is_reported(text):
 # terwijl de gegevens er wel stonden. Dat is de gevaarlijkste soort fout hier,
 # dus hij staat vast.
 
-import importlib.util as _importlib_util
-
 _PROBE_PATH = Path(__file__).resolve().parents[2] / "scripts" / "probe_dg_sources.py"
-_probe_spec = _importlib_util.spec_from_file_location("probe_dg_sources", _PROBE_PATH)
-probe = _importlib_util.module_from_spec(_probe_spec)
+_probe_spec = importlib.util.spec_from_file_location("probe_dg_sources", _PROBE_PATH)
+probe = importlib.util.module_from_spec(_probe_spec)
 sys.modules[_probe_spec.name] = probe
 _probe_spec.loader.exec_module(probe)
 

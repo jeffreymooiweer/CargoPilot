@@ -12,7 +12,7 @@ on:
       source:
         description: "Welke bron verkennen"
         type: choice
-        options: [all, cantell, model-regs, cepa, dgl]
+        options: [all, cantell, model-regs, cepa, dgl, dgl-survey]
         default: all
       sample_pages:
         description: "Pagina's van de Dangerous Goods List als voorbeeld in het log"
@@ -36,4 +36,9 @@ jobs:
       - run: pip install --quiet pymupdf
 
       - name: Probe
+        if: ${{ inputs.source != 'dgl-survey' }}
         run: python scripts/probe_dg_sources.py "${{ inputs.source }}" --sample-pages "${{ inputs.sample_pages }}"
+
+      - name: Survey the Dangerous Goods List
+        if: ${{ inputs.source == 'dgl-survey' }}
+        run: python scripts/survey_imdg_dgl.py --sample-pages "${{ inputs.sample_pages }}"

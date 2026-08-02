@@ -38,7 +38,10 @@ jobs:
         if: ${{ inputs.commit }}
         run: |
           set -eu
-          if git diff --quiet -- backend/seed/dg/imdg_codes.json; then
+          # git diff ziet een nieuw bestand niet: dat staat untracked. Op de
+          # eerste run was er daardoor niets vast te leggen terwijl de tabel
+          # gewoon geschreven was.
+          if [ -z "$(git status --porcelain -- backend/seed/dg/imdg_codes.json)" ]; then
             echo "Ongewijzigd; niets vast te leggen."
             exit 0
           fi

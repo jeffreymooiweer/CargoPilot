@@ -281,6 +281,9 @@ export interface DgPrepareHint {
   imdg_stowage_text?: string;
   imdg_segregation_codes?: string[];
   imdg_segregation_text?: string;
+  /** De omschrijving van elke code uit IMDG 7.1.5, 7.1.6 en 7.2.8. */
+  imdg_stowage_definitions?: { code: string; text: string }[];
+  imdg_segregation_definitions?: { code: string; text: string }[];
   imdg_stowage_category?: string;
   /** Wat IMDG-amendement 42-24 aan deze stof verandert. */
   imdg_amendment_changes?: string[];

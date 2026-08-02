@@ -399,13 +399,23 @@ function AutoDerivedPanel({ prepared }: { prepared: DgPrepareResult }) {
       hint.marine_pollutant_text,
       // Stuwage en scheiding per stof (IMDG kolom 16a/16b). De codes alleen
       // zeggen een gebruiker niets, dus de toelichting van de kaart erbij.
+      // De omschrijving uit hoofdstuk 7.1.5 en 7.2.8 gaat voor op de zin die
+      // van de UN-kaart kwam; die laatste is een parafrase.
       hint.imdg_stowage_codes?.length &&
-        `IMDG 16a — ${hint.imdg_stowage_codes.join(", ")}${
-          hint.imdg_stowage_text ? `: ${hint.imdg_stowage_text}` : ""
+        `IMDG 16a — ${
+          hint.imdg_stowage_definitions?.length
+            ? hint.imdg_stowage_definitions.map((d) => `${d.code}: ${d.text}`).join(" ")
+            : `${hint.imdg_stowage_codes.join(", ")}${
+                hint.imdg_stowage_text ? `: ${hint.imdg_stowage_text}` : ""
+              }`
         }`,
       hint.imdg_segregation_codes?.length &&
-        `IMDG 16b — ${hint.imdg_segregation_codes.join(", ")}${
-          hint.imdg_segregation_text ? `: ${hint.imdg_segregation_text}` : ""
+        `IMDG 16b — ${
+          hint.imdg_segregation_definitions?.length
+            ? hint.imdg_segregation_definitions.map((d) => `${d.code}: ${d.text}`).join(" ")
+            : `${hint.imdg_segregation_codes.join(", ")}${
+                hint.imdg_segregation_text ? `: ${hint.imdg_segregation_text}` : ""
+              }`
         }`,
       hint.imdg_stowage_category && `IMDG 7.1.4 — ${t("dgauto.stowageCategory", {
         category: hint.imdg_stowage_category,

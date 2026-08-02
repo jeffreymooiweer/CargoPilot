@@ -2,6 +2,39 @@
 
 All notable changes are documented here, following [Semantic Versioning](https://semver.org/).
 
+## [1.22.0] — 2026-08-02
+
+The IMDG Code's own chapter 7 now supplies the wording behind every column 16a and 16b
+code, replacing the fragments that were scrapeable from the UN cards.
+
+### Added
+
+- **The stowage, handling and segregation code descriptions**, in
+  `backend/seed/dg/imdg_codes.json`: **SW1–SW31** from 7.1.5, **H1–H5** from 7.1.6 — a
+  series the app did not carry at all — and **SG1–SG78** from 7.2.8. Read by
+  `scripts/extract_imdg_codes.py` from IMO resolution **MSC.556(108)**, the instrument
+  that adopted Amendment 42-24. The compliance findings and the wizard both prefer this
+  wording; the card paraphrase remains only as a fallback.
+- **Reserved codes are kept apart.** SG64, SG66 and SG73 read `[Reserved]`, which is not
+  a provision, so they are never offered to a user as guidance.
+
+### Fixed
+
+- The extractor's first run found nothing: `find_section` anchored `^` against the whole
+  page without `re.MULTILINE`. It now matches on the introducing sentence, which is
+  unique — the section number appears in the contents list and in five cross-references.
+- The workflow reported "nothing to commit" after a successful extraction, because
+  `git diff` does not see a file that is still untracked.
+
+### Notes
+
+Two readings confirmed earlier work against the source rather than against a summary.
+7.2.3.1 reads, verbatim, *"In case of conflicting provisions, the provisions of column 16b
+of the Dangerous Goods List, always take precedence"* — the rule implemented in v1.21.0.
+And SG75 is absent from the segregation code list altogether, where SG64, SG66 and SG73
+are explicitly reserved: independent confirmation that the SGG1a marking removed in
+v1.21.0 had indeed left the Code.
+
 ## [1.21.0] — 2026-08-02
 
 IMDG Amendment 42-24 has been mandatory since 1 January 2026. This release closes the gap

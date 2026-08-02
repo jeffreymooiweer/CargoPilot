@@ -247,3 +247,51 @@ def test_every_result_names_the_editions_it_used():
 def test_the_edition_metadata_survives_both_languages(language):
     rule_sets = imdg("1203", language=language)["rule_sets"]
     assert rule_sets["IMDG_42_24_not_covered"]
+
+
+# --- De codetabel uit hoofdstuk 7.1.5, 7.1.6 en 7.2.8 ------------------------
+
+def test_the_code_table_is_complete():
+    """SW1-SW31, H1-H5 en SG1-SG78. De enige echte gaten zijn SG64, SG66 en
+    SG73 (gereserveerd) en SG75, dat met 41-22 verviel — net als SGG1a."""
+    table = json.loads((SEED / "imdg_codes.json").read_text("utf-8"))
+    assert table["amendment"] == "42-24"
+
+    stowage = table["stowage_codes"]["codes"]
+    assert len(stowage) == 31 and "SW31" in stowage
+
+    assert len(table["handling_codes"]["codes"]) == 5
+
+    segregation = table["segregation_codes"]
+    assert table["segregation_codes"]["reserved"] == ["SG64", "SG66", "SG73"]
+    numbers = {int(c[2:]) for c in segregation["codes"]}
+    assert 75 not in numbers
+    assert set(range(1, 79)) - numbers - {64, 66, 73} == {75}
+
+
+def test_a_reserved_code_carries_no_guidance():
+    from app.services.dg.enrichment import imdg_code_text
+    assert imdg_code_text("SG64") == ""
+    assert imdg_code_text("SG65").startswith("Stow")
+
+
+def test_the_official_wording_reaches_the_substance():
+    """Salpeterzuur draagt SG16; de gebruiker moet lezen wat dat betekent."""
+    definitions = offline_lookup("2031")["imdg_segregation_definitions"]
+    by_code = {d["code"]: d["text"] for d in definitions}
+    assert by_code["SG16"] == "Stow “separated from” class 4.1."
+
+
+def test_the_official_wording_beats_the_card_paraphrase():
+    """7.2.8 is de bron; de zin van de UN-kaart is een parafrase en wijkt."""
+    from app.services.dg.compliance import _wording
+    from app.services.dg.enrichment import segregation_provisions
+    rules = segregation_provisions()
+    assert _wording("SG16", rules) == "Stow “separated from” class 4.1."
+    assert _wording("SG16", rules) != rules.get("SG16", {}).get("text")
+
+
+def test_an_unknown_code_falls_back_instead_of_going_blank():
+    from app.services.dg.compliance import _wording
+    assert _wording("SG999", {"SG999": {"text": "from the card"}}) == "from the card"
+    assert _wording("SG999", {}) == ""

@@ -14,6 +14,7 @@ from app.services.documents import (
     render_document_pdf,
     validate_document,
 )
+from app.services.documents.avc_render import render_avc_waybill
 from app.services.documents.signature import decode_signature_image
 
 router = APIRouter(prefix="/documents", tags=["documents"])
@@ -63,6 +64,16 @@ def export(
         # Officieel, invulbaar formulier: template invullen.
         out_path = fill_pdf_document(
             payload.document_key,
+            payload.values,
+            payload.lines,
+            payload.dangerous_goods,
+            payload.output_language,
+            signature_png=signature_png,
+        )
+    elif exporter == "avc":
+        # AVC-vrachtbrief: eigen opmaak naar het sVa-model.
+        out_path = render_avc_waybill(
+            document,
             payload.values,
             payload.lines,
             payload.dangerous_goods,

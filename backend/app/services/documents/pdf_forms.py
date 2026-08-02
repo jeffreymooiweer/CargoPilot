@@ -19,6 +19,7 @@ except ImportError:  # pragma: no cover
     fitz = None
 
 from app.core.config import get_settings
+from app.services.dg.autofill import adr_category_totals, description_line
 
 # IATA open-formaat: elk van de twee keuzeparen bestaat uit twee /Ch-velden. Het
 # doorgehaalde (niet-toepasselijke) veld krijgt de "XXX"-optie, het toepasselijke
@@ -67,12 +68,42 @@ def _freight_payment_label(value: str, lang: str) -> str:
     return labels.get(value, {}).get(lang, value or "")
 
 
-def _cmr_goods_rows(lines: list[dict[str, Any]]) -> list[tuple[str, str, str]]:
+def _cmr_goods_rows(
+    lines: list[dict[str, Any]],
+    dangerous_goods: list[dict[str, Any]] | None = None,
+) -> list[tuple[str, str, str]]:
+    """Goederenregels voor vak 6-12.
+
+    Voor colli met gevaarlijke stoffen komt de officiële omschrijving volgens
+    ADR 5.4.1.1.1 in de plaats van de vrije omschrijving. Daarmee voldoet de
+    CMR zelf aan het vervoersdocument en is een apart ADR-document overbodig
+    (ADR 5.4.1.4.1 schrijft geen vorm voor).
+    """
+    dg_by_line: dict[Any, list[str]] = {}
+    for entry in dangerous_goods or []:
+        for product in entry.get("products") or []:
+            if str(product.get("un_number") or "").strip():
+                dg_by_line.setdefault(entry.get("line_id"), []).append(
+                    description_line(product, "ADR")
+                )
+
     rows: list[tuple[str, str, str]] = []
     for line in lines:
         if not line.get("include", True):
             continue
         qty = line.get("quantity")
+        dg_descriptions = dg_by_line.get(line.get("line_id"))
+        if dg_descriptions:
+            weight = line.get("weight_total_kg")
+            volume = line.get("transport_volume_m3")
+            for description in dg_descriptions:
+                rows.append((
+                    description,
+                    "" if weight in (None, "") else str(weight),
+                    "" if volume in (None, "") else str(volume),
+                ))
+                weight = volume = ""  # massa maar één keer meetellen
+            continue
         desc = line.get("output_description") or line.get("description") or ""
         prefix = f"{qty} × " if qty not in (None, "") else ""
         weight = line.get("weight_total_kg")
@@ -87,7 +118,12 @@ def _cmr_goods_rows(lines: list[dict[str, Any]]) -> list[tuple[str, str, str]]:
     return rows
 
 
-def fill_cmr(values: dict[str, Any], lines: list[dict[str, Any]], lang: str) -> dict[str, str]:
+def fill_cmr(
+    values: dict[str, Any],
+    lines: list[dict[str, Any]],
+    dangerous_goods: list[dict[str, Any]] | None,
+    lang: str,
+) -> dict[str, str]:
     fields: dict[str, str] = {}
     fields["VakRood01"] = _party(
         values.get("consignor_name", ""),
@@ -104,7 +140,12 @@ def fill_cmr(values: dict[str, Any], lines: list[dict[str, Any]], lang: str) -> 
     if values.get("loading_date"):
         fields["VeldRood04-2"] = str(values["loading_date"])
     fields["VakRood05"] = _first(values.get("attached_documents"))
-    fields["VakRood13"] = _first(values.get("sender_instructions"))
+    instructions = [_first(values.get("sender_instructions"))]
+    if dangerous_goods:
+        totals = adr_category_totals(dangerous_goods, lang)
+        if totals["statement"]:
+            instructions.append(totals["statement"])
+    fields["VakRood13"] = "\n".join(x for x in instructions if x)
     fields["VakRood14"] = _freight_payment_label(str(values.get("freight_payment", "")), lang)
     fields["VakRood15"] = _first(values.get("cod_amount"))
     fields["VakRood16"] = _first(values.get("carrier_name"))
@@ -113,7 +154,7 @@ def fill_cmr(values: dict[str, Any], lines: list[dict[str, Any]], lang: str) -> 
     fields["VakRood21-1"] = _first(values.get("established_place"))
     fields["VakRood21-2"] = _first(values.get("established_date"))
 
-    rows = _cmr_goods_rows(lines)
+    rows = _cmr_goods_rows(lines, dangerous_goods)
     if len(rows) <= CMR_MAX_ROWS:
         for i, (desc, weight, volume) in enumerate(rows, start=1):
             n = f"{i:02d}"
@@ -302,7 +343,7 @@ def build_fields(
     lang: str,
 ) -> dict[str, str]:
     if document_key == "cmr":
-        return fill_cmr(values, lines, lang)
+        return fill_cmr(values, lines, dangerous_goods, lang)
     if document_key == "iata_dgd":
         return fill_iata(values, dangerous_goods or [], lang)
     if document_key == "cim":

@@ -18,10 +18,18 @@ Twee vragen:
    niet dekt is even belangrijk om te weten: EmS, stuwagecategorie, de SW- en
    SG-codes en de scheidingsgroepen staan alleen in de IMDG-code zelf.
 
+3. Wat staat er in het amendementsdocument dat CEPA — de werkgeversorganisatie
+   van de haven van Antwerpen — openbaar op haar eigen site publiceert? Dit
+   script stelt alleen vast wát het is: uitgever, omvang, welke hoofdstukken.
+   Of het om de volledige codetekst gaat of om een wijzigingsoverzicht maakt
+   voor ons uit, want alleen feitelijke gegevens komen in de repo terecht en
+   nooit de regelgevingstekst zelf.
+
 Gebruik::
 
     python scripts/probe_dg_sources.py cantell
     python scripts/probe_dg_sources.py model-regs --sample-pages 60,61,120
+    python scripts/probe_dg_sources.py cepa
 """
 from __future__ import annotations
 
@@ -36,6 +44,14 @@ CANTELL = "https://www.cantell.dk/image/catalog/Stofliste"
 UNECE = "https://unece.org/sites/default/files/2023-08"
 VOL1 = f"{UNECE}/ST-SG-AC10-1r23e_Vol1_WEB.pdf"
 VOL2 = f"{UNECE}/ST-SG-AC10-1r23e_Vol2_WEB.pdf"
+CEPA = "https://www.cepa.be/wp-content/uploads/IMDG_Code-amdt_42_24.pdf"
+
+# De secties die we willen kunnen controleren. 7.2.4, 7.2.6.3 en 7.2.7.1.4
+# dragen de scheidingstabellen; 3.1.4.4 de scheidingsgroepen; 7.1.5 de
+# stuwagecodes en 7.1.6 de behandelingscodes, die we per stof wel hebben maar
+# zonder hun omschrijving.
+SECTIONS_OF_INTEREST = ["3.1.4.4", "3.2.1", "3.3.1", "7.1.5", "7.1.6",
+                        "7.2.3.1", "7.2.4", "7.2.5", "7.2.6.3", "7.2.7.1.4"]
 
 # De vermeldingen die Amendment 42-24 toevoegt. Staan ze in Rev.23, dan is de
 # gratis uitgave genoeg voor alles behalve de IMDG-eigen kolommen.
@@ -195,9 +211,63 @@ def probe_model_regulations(sample_pages: list[int]) -> int:
     return 0
 
 
+def probe_cepa() -> int:
+    """Vaststellen wát het amendementsdocument op cepa.be is.
+
+    Niet: de tekst overnemen. Wel: uitgever, omvang, welke hoofdstukken erin
+    zitten en of de secties die wij nodig hebben erin voorkomen. Daarmee is te
+    bepalen of hier iets uit te halen valt dat we nog niet hebben, en hoe.
+    """
+    import fitz
+
+    print("== cepa.be — IMDG_Code-amdt_42_24.pdf ==")
+    try:
+        path = download(CEPA, Path("/tmp/cepa.pdf"))
+    except (urllib.error.URLError, urllib.error.HTTPError, TimeoutError, OSError) as error:
+        print(f"  niet bereikbaar: {error}")
+        return 1
+    print(f"  {path.stat().st_size} bytes")
+
+    with fitz.open(path) as document:
+        print(f"  {document.page_count} pagina's")
+        print(f"  metadata: {document.metadata}")
+
+        print("\n--- eerste twee pagina's ---")
+        for index in range(min(2, document.page_count)):
+            print(document[index].get_text()[:3000])
+
+        toc = document.get_toc()
+        if toc:
+            print(f"\n--- inhoudsopgave ({len(toc)} regels) ---")
+            for level, title, page in toc[:200]:
+                print(f"{'  ' * (level - 1)}{title}  -> p{page}")
+
+        print("\n--- waar staan de secties die wij nodig hebben? ---")
+        located: dict[str, list[int]] = {}
+        for index in range(document.page_count):
+            text = document[index].get_text()
+            for section in SECTIONS_OF_INTEREST:
+                if re.search(rf"(?<![\d.]){re.escape(section)}(?![\d])", text):
+                    located.setdefault(section, []).append(index + 1)
+        for section in SECTIONS_OF_INTEREST:
+            pages = located.get(section, [])
+            summary = f"{len(pages)}x, eerst p{pages[0]}" if pages else "niet gevonden"
+            print(f"  {section:<12} {summary}")
+
+        # Is dit de volledige codetekst of een wijzigingsoverzicht? Een
+        # amendement schrijft in opdrachten ("replace", "insert", "delete").
+        joined = " ".join(document[i].get_text() for i in range(min(40, document.page_count)))
+        directives = sum(len(re.findall(rf"\b{verb}\b", joined, re.I))
+                         for verb in ("replace", "insert", "delete", "amend", "add the following"))
+        print(f"\n  wijzigingsopdrachten in de eerste 40 pagina's: {directives}")
+        print("  -> waarschijnlijk een amendementstekst" if directives > 40
+              else "  -> waarschijnlijk doorlopende codetekst")
+    return 0
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("source", choices=["cantell", "model-regs", "all"])
+    parser.add_argument("source", choices=["cantell", "model-regs", "cepa", "all"])
     parser.add_argument("--sample-pages", default="60,61,120",
                         help="Pagina's van de DGL die als voorbeeld op de uitvoer komen")
     args = parser.parse_args(argv)
@@ -208,6 +278,8 @@ def main(argv: list[str] | None = None) -> int:
         status |= probe_cantell()
     if args.source in {"model-regs", "all"}:
         status |= probe_model_regulations(pages)
+    if args.source in {"cepa", "all"}:
+        status |= probe_cepa()
     return status
 
 

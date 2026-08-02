@@ -1,250 +1,118 @@
+<div align="center">
+
 # CargoPilot
 
-**Versie 1.13.1** — webapplicatie om colli en materialen te analyseren en als transportdocumenten (PDF) te exporteren, per transportmodaliteit. Uitsluitend bedoeld voor civiele instanties.
+**Turn a list of packages into finished transport documents.**
 
-**English:** CargoPilot parses package lines (paste or file import), calculates weight/volume, and exports transport documents per modality — CMR, CIM, IMO/IATA dangerous goods declarations, VGM and shipping instructions. For civilian use only.
+Paste your load, and CargoPilot works out the weights and volumes, fills in the official
+CMR, CIM, AVC and IATA forms, and checks your dangerous goods before you print.
 
-Zie ook [CHANGELOG.md](CHANGELOG.md) en [ROADMAP.md](ROADMAP.md).
+[![Docker Pulls](https://img.shields.io/docker/pulls/jeffersonmouze/cargopilot?logo=docker&logoColor=white&label=docker%20pulls&color=2496ED)](https://hub.docker.com/r/jeffersonmouze/cargopilot)
+[![Latest release](https://img.shields.io/github/v/release/jeffreymooiweer/CargoPilot?logo=github&label=release&color=2ea44f)](https://github.com/jeffreymooiweer/CargoPilot/releases/latest)
+[![Build](https://img.shields.io/github/actions/workflow/status/jeffreymooiweer/CargoPilot/dockerhub.yml?branch=main&logo=githubactions&logoColor=white&label=build)](https://github.com/jeffreymooiweer/CargoPilot/actions/workflows/dockerhub.yml)
+[![Status](https://img.shields.io/badge/status-under%20development-orange)](ROADMAP.md)
+[![Licence](https://img.shields.io/badge/licence-Apache--2.0%20%2B%20Commons%20Clause-blue)](LICENSE)
 
-## Functionaliteiten (v1.13.1)
+[![Docker image size](https://img.shields.io/docker/image-size/jeffersonmouze/cargopilot/latest?logo=docker&logoColor=white&label=image%20size&color=2496ED)](https://hub.docker.com/r/jeffersonmouze/cargopilot)
+[![Backend](https://img.shields.io/badge/backend-FastAPI%20%C2%B7%20Python%203.12-009688?logo=fastapi&logoColor=white)](docs/development.md)
+[![Frontend](https://img.shields.io/badge/frontend-React%2018%20%C2%B7%20TypeScript-61DAFB?logo=react&logoColor=black)](docs/development.md)
+[![Unraid](https://img.shields.io/badge/Unraid-ready-F15A2C?logo=unraid&logoColor=white)](docs/getting-started.md#unraid)
+[![Interface](https://img.shields.io/badge/interface-NL%20%C2%B7%20EN-lightgrey)](#)
+[![Self-hosted](https://img.shields.io/badge/self--hosted-your%20data%20stays%20yours-6f42c1)](docs/privacy.md)
 
-- **Modaliteitskeuze bij start**: wegtransport, spoor, zeevracht, binnenvaart, luchtvracht of multimodaal
-- **Formulierenselectie per modaliteit**: alleen relevante documenten; bij multimodaal alles beschikbaar
-- **Eén wizard voor alle formulieren**: zendinggegevens één keer invullen, daarna per formulier een eigen sub-stap met alleen de nog benodigde velden ("Formulier x van y") — geen dubbele invoer
-- **Adres-autocomplete** (Photon/OpenStreetMap, instelbaar via `GEO_ADDRESS_API_URL`) en **locatie-autocomplete** voor 4.500+ luchthavens (IATA/ICAO), 17.500+ UN/LOCODE-havens en 750+ Europese hoofdstations, afgestemd op de gekozen modaliteit
-- **Goederendatabase met 400 materialen/goederen** (bouw, metaal, hout, brandstoffen, chemie, agri, voeding, papier, ertsen, recycling, stukgoed) met dichtheden en NL/EN-aliassen; blokvormige goederen worden automatisch op dichtheid doorgerekend
-- **Handtekening tekenen of uploaden** (of overslaan voor ondertekening met pen): geplaatst in CMR vak 22, het IATA-handtekeningveld en de gegenereerde PDF's; carrier- en ontvangsthandtekeningen blijven altijd leeg
-- **UN-nummer-autocomplete** met offline ADR-database (2.928 vermeldingen: klasse, verpakkingsgroep, etiketten, verpakkingsinstructies, vervoerscategorie, tunnelcode) en **verpakkingskeuze** uit alle 107 UN-verpakkingscodes (ADR 6.1/6.5/6.6)
-- **Officiële PDF-formulieren**: CMR (IRU-model 2007), CIM, IATA Shipper's Declaration en de AVC-vrachtbrief worden als originele formulieren ingevuld en als PDF gedownload — niet nagebouwd
-- Documenten: CMR (PDF), CIM (PDF), **AVC-vrachtbrief** (binnenlands wegvervoer, officieel sVa-formulier met ontvangstbewijs), IMO Multimodal DG Form, IATA Shipper's Declaration (PDF), VGM-verklaring, AWB/B-L Shipping Instructions, ADN-document, paklijst, afleverbon
-- **Vrachtbrief is tevens ADR-vervoersdocument**: bij gevaarlijke stoffen krijgt de CMR en de AVC-vrachtbrief de omschrijving van ADR 5.4.1.1.1 en de totale hoeveelheid per vervoerscategorie; ADR schrijft geen aparte vorm voor, dus een los ADR-document is niet nodig
-- **Veldstatussen per document**: gebruikersinvoer, carriergegevens, operationele velden en handtekeningen worden onderscheiden; handtekeningen worden alleen geplaatst als u er zelf één tekent of uploadt
-- **DG-exportblokkades** per modaliteitsprofiel (ADR/RID/ADN/IMDG/IATA DGR) bij onvolledige classificatie
-- **Nalevingsbegeleiding gevaarlijke stoffen**: ADR 1.1.3.6-puntencalculator (1000-puntenregel), samenladingscontrole (ADR 7.5.2/CV28), IATA-segregatie (Table 9.3.A incl. lithiumregel) en Q-waardeberekening (IATA 5.0.2.11) met live waarschuwingen
-- Colli-invoer met cataloguszoeken of vrije omschrijving; per collo een gevaarlijke-stoffenmarkering
-- Import via plakken of bestand (.xlsx, .csv, .txt) met downloadbare templates
-- Herkenning van materiaal, producttype en afmetingen (NL/EN) met synoniemen
-- Berekening gewicht, materiaalvolume en transportvolume; handmatige gewichtscorrectie
-- Gevaarlijke-stoffenstap met ADR UN-lookup en automatische UN-detectie in omschrijvingen
-- **Overzicht materieel** — lege bibliotheek; beheerder vult via template-import
-- Automatische materialen-/profielcatalogus (openbare referentiedata)
+</div>
 
-## Versiebeleid
+---
 
-Vanaf **1.0.0** geldt [Semantic Versioning](https://semver.org/). Het versienummer wordt bewust terughoudend opgehoogd:
+> [!WARNING]
+> **CargoPilot is under active development.** Every document it produces is a **draft**.
+> Check it, complete it and have it signed by a qualified person before you use it.
+> See the [disclaimer](DISCLAIMER.md).
 
-| Ophoging | Wanneer | Voorbeeld |
-|---|---|---|
-| **PATCH** (`1.8.0` → `1.8.1`) | Foutherstel, tekst- en labelcorrecties, kleine datacorrecties, documentatie — geen nieuwe functionaliteit | Verkeerd knoplabel, ontbrekende vertaling, dichtheid gecorrigeerd |
-| **MINOR** (`1.8.1` → `1.9.0`) | Nieuwe functionaliteit die bestaande zendingen ongemoeid laat | Nieuwe wizardstap, nieuw document, nieuw endpoint |
-| **MAJOR** (`1.x` → `2.0.0`) | Ingrijpende wijzigingen: incompatibele API's of dataformaten, een andere wizardopzet, verplichte migratie | Gereserveerd voor grote herzieningen |
+## What is CargoPilot?
 
-Bij twijfel geldt de kleinste ophoging. Verzamel losse correcties bij voorkeur in één patchrelease.
+Preparing freight paperwork is repetitive. The same addresses, the same reference
+numbers, the same weights — typed again into every form, each with its own layout and
+its own rules. Get a box number wrong on a dangerous goods declaration and the shipment
+stops at the gate.
 
-| Onderdeel | Locatie |
-|-----------|---------|
-| Versienummer | `VERSION`, `backend/VERSION` |
-| Git-release | tag `v1.0.0`, `v1.1.0`, … |
-| Docker Hub | `jeffersonmouze/cargopilot:latest` en `jeffersonmouze/cargopilot:v1.13.1` |
-| API | `GET /api/health` → `version` |
+CargoPilot does that part for you. You enter your shipment once. It recognises what you
+are shipping, calculates the weights and volumes, and fills in the paperwork for the
+transport mode you picked — road, rail, sea, inland waterway, air, or a combination.
 
-## Snelle start (Docker Compose)
+It runs on your own machine or server. Nothing is sent to a cloud service, and no
+shipment history is kept.
+
+## What it does
+
+**Understands your load.** Paste a list, or import an Excel or CSV file. CargoPilot
+recognises materials and dimensions in Dutch and English — `Steel angle 80x80x8x6000` —
+and works out the weight from a built-in database of **400 goods**, from cement and
+timber to grain, chemicals and white goods. Anything it cannot work out, you can correct
+by hand.
+
+**Fills in the real forms.** The CMR, CIM, AVC and IATA declarations are the genuine
+official documents, filled in — not lookalikes drawn from scratch. Everything else is
+produced as a clean PDF.
+
+**Asks each question once.** Sender, consignee, route and references are entered a
+single time and reused across every form you selected. After that you only see the
+fields a given form still needs.
+
+**Knows its way around dangerous goods.** Type a UN number and CargoPilot works out the
+proper shipping name, class and division, subsidiary risks, packing group, transport
+category, tunnel code, EmS emergency schedules and the air freight rules. It warns you
+about incompatible loads, calculates the ADR 1,000-point exemption and the IATA Q value,
+and refuses to export a declaration that is not complete.
+
+**Finds addresses and terminals for you.** Address autocomplete plus 4,500+ airports,
+17,500+ ports and 750+ European railway stations, filtered to the transport mode you
+chose.
+
+**Speaks Dutch and English**, in light or dark mode.
+
+## Try it in two minutes
 
 ```bash
-cp .env.example .env
-# Pas APP_SECRET_KEY en ADMIN_PASSWORD aan
+git clone https://github.com/jeffreymooiweer/CargoPilot.git
+cd CargoPilot
+cp .env.example .env          # set APP_SECRET_KEY and ADMIN_PASSWORD
 docker compose up -d --build
 ```
 
-Open: http://localhost:8080
+Open <http://localhost:8080> and log in with the admin account from your `.env`.
 
-## Installatie op Unraid
+Running Unraid, or want the full set of options? See **[Getting started](docs/getting-started.md)**.
 
-1. Community Applications of `unraid/CargoPilot.xml`
-2. Volume: `/mnt/user/appdata/cargopilot` → `/data`
-3. Image: `jeffersonmouze/cargopilot:v1.13.1` (of `latest` na bevestigde update)
-4. Environment: `APP_SECRET_KEY`, `ADMIN_*`
-5. WebUI op gekozen poort (bijv. `http://<ip>:9935`)
+## Documentation
 
-**Permissies:** container zet eigenaar van `/data` op `PUID`/`PGID` (standaard `1000`).
-
-## Eerste admin
-
-Bij eerste start met environment variables:
-
-- `ADMIN_USERNAME`
-- `ADMIN_EMAIL`
-- `ADMIN_PASSWORD`
-
-## Environment variables
-
-| Variabele | Beschrijving | Default |
-|---|---|---|
-| `TZ` | Tijdzone | `Europe/Amsterdam` |
-| `APP_SECRET_KEY` | JWT/sessie secret | verplicht in productie |
-| `DATABASE_URL` | SQLite pad | `sqlite:////data/cargopilot.db` |
-| `ADMIN_USERNAME` | Bootstrap admin | - |
-| `ADMIN_EMAIL` | Bootstrap e-mail | - |
-| `ADMIN_PASSWORD` | Bootstrap wachtwoord | - |
-| `LOG_LEVEL` | Logging | `INFO` |
-| `CORS_ALLOWED_ORIGINS` | CORS | `*` |
-| `CATALOG_AUTO_SYNC` | Catalogus sync bij opstart | `true` |
-| `CATALOG_SYNC_TIMEOUT_SECONDS` | HTTP-timeout sync | `20` |
-| `GEO_ADDRESS_API_URL` | Photon-compatibele adres-API voor autocomplete | `https://photon.komoot.io/api` |
-| `GEO_ADDRESS_TIMEOUT_SECONDS` | HTTP-timeout adres-API | `8` |
-
-## Catalogus (openbare bronnen)
-
-Materialen (dichtheid) en profielen (kg/m) worden automatisch gesynchroniseerd — geen handmatig beheer.
-
-| Gegeven | Bron |
+| Guide | What's in it |
 |---|---|
-| UPN, IPE, HEA, HEB, … | [steelprofiles_api](https://github.com/timskovjacobsen/steelprofiles_api) |
-| SHS, RHS, CHS | [eurocodepy](https://github.com/kristapsfreibergs/eurocodepy) |
-| Staal/hout/beton-dichtheid | eurocodepy + EN 1991 referentie |
-| Metaaldichtheden | Wikidata SPARQL |
-| **400 transportgoederen** met (stort)dichtheid en NL/EN-aliassen | `seed/materials.json` |
+| **[Getting started](docs/getting-started.md)** | Install with Docker Compose or on Unraid, create the first admin account |
+| **[User guide](docs/user-guide.md)** | A walk through the app, from picking a transport mode to downloading your documents |
+| **[Documents](docs/documents.md)** | Every document CargoPilot produces, and which ones are official forms |
+| **[Dangerous goods](docs/dangerous-goods.md)** | What CargoPilot fills in automatically, and which checks it runs |
+| **[Configuration](docs/configuration.md)** | Environment variables and settings |
+| **[Data sources](docs/data-sources.md)** | Where the goods, location and regulatory data comes from |
+| **[Privacy](docs/privacy.md)** | What is stored, and what is deliberately not |
+| **[Development](docs/development.md)** | Running from source, tests, versioning, releases |
 
-De goederendatabase dekt o.a. bouwmaterialen en natuursteen, metalen (incl. edel- en speciaalmetalen), houtsoorten en plaatmateriaal, brandstoffen, chemicaliën en gassen (vloeibaar gemaakt), meststoffen, granen/zaden/veevoer, groente en fruit, levensmiddelen, ertsen en mineralen, kunststoffen, papier, textiel, afval- en recyclingstromen en stukgoed-praktijkgemiddelden (pallets, witgoed, machines).
+Also: **[Changelog](CHANGELOG.md)** · **[Roadmap](ROADMAP.md)** · **[Disclaimer](DISCLAIMER.md)**
 
-`CATALOG_AUTO_SYNC=false` voor offline/snellere dev-start.
+## Good to know
 
-## Geodata (openbare bronnen)
+CargoPilot is a **civilian** tool. It prepares paperwork; it does not give legal,
+customs or safety advice, and it does not replace a dangerous goods safety adviser
+(DGSA). The current edition of ADR, RID, ADN, the IMDG Code and the IATA DGR is always
+the authority — not this app.
 
-Locatie-autocomplete werkt volledig offline op meegeleverde seeds in `backend/seed/locations/`:
+Carrier fields, operational fields and signatures are never filled in for you. Your
+signature is only added if you draw or upload one yourself.
 
-| Gegeven | Bron | Licentie |
-|---|---|---|
-| Luchthavens (IATA/ICAO) | [OurAirports](https://ourairports.com/data/) | Public domain |
-| Havens (UN/LOCODE) | [UNECE UN/LOCODE](https://unece.org/trade/uncefact/unlocode) | Vrij herbruikbaar |
-| Treinstations (EU) | [Trainline EU stations](https://github.com/trainline-eu/stations) | ODbL |
+## Licence
 
-Adres-autocomplete gebruikt een externe Photon-geocoder (OpenStreetMap-data, standaard `photon.komoot.io`). Zonder internettoegang valt deze functie stil; handmatig invullen blijft altijd mogelijk.
+Apache License 2.0 with the Commons Clause — see [LICENSE](LICENSE).
 
-## Gevaarlijke stoffen
-
-- Invulinstructies in `backend/app/config/dg_instructions.json`; nalevingsregels in `dg_compliance.json`
-- UN-detectie in omschrijving of DG-vinkje per collo → gevaarlijke-stoffenstap
-- **Offline UN-database** (`backend/seed/dg/un_numbers.json`, 2.928 vermeldingen): autocomplete via `GET /api/dg/search?q=`; regelgevende kolommen (klasse, classificatiecode, verpakkingsgroep, etiketten, LQ/EQ, verpakkingsinstructies, vervoerscategorie, tunnelcode, Kemler-nummer) uit ADR Tabel A ([rkstgr/adr-substances](https://github.com/rkstgr/adr-substances), op basis van de officiële UNECE-publicatie); Engelse namen uit de 49 CFR 172.101-tabel (eCFR/GovInfo, public domain)
-- **UN-verpakkingscodes** (`backend/seed/dg/packagings.json`, 107 codes volgens ADR 6.1.2/6.5.1.4/6.6.2): `GET /api/dg/packagings?q=`
-- Lookup: `GET /api/dg/lookup?un=1203` (FreightUtils ADR 2025, met automatische offline terugval); nalevingscontrole: `POST /api/dg/compliance`
-- **Automatische invulling** (`POST /api/dg/prepare`): uit het UN-nummer volgen de juiste vervoersnaam, klasse **en divisie** (bij gassen uit de etikettenkolom, bij explosieven uit de classificatiecode zoals `1.4S`), de nevengevaren, verpakkingsgroep, vervoerscategorie, tunnelcode, Kemler-nummer, LQ/EQ-limieten, de **EmS-code** voor zeevervoer en de **luchtvrachtregels** (Cargo Aircraft Only en IATA PI voor lithiumbatterijen, verbod op klasse 2.3). Aantallen, verpakkingssoort en massa's komen uit de al ingevoerde colli. Alleen lege velden worden gevuld — handmatige correcties blijven staan.
-- **Officiële documentregels** worden per profiel samengesteld: ADR/RID/ADN 5.4.1.1.1 (`UN 1203, BENZINE, 3, II, (D/E), 10 jerrycan, 200 L`) inclusief de totale hoeveelheid per vervoerscategorie (5.4.1.1.1.1), IMDG met EmS en marine pollutant, IATA met verpakkingsinstructie en CAO-markering
-- **EmS-noodschema's**: 2.338 UN-nummers uit de officiële EmS Guide (IMO MSC.1/Circ.1588/Rev.3), inclusief alle tien brandschema's en 26 lekkageschema's met omschrijving in NL/EN — 99,5% exacte dekking. 43 vermeldingen kennen een eigen schema per verpakkingsgroep en UN 3166 heeft varianten; die keuzes worden getoond in plaats van gegokt
-- **Vervoersverboden**: stoffen die ADR Tabel A niet ten vervoer toelaat worden herkend, in de wizard rood gemeld en geblokkeerd voor export
-- **Segregatie zeevervoer**: de volledige IMDG 7.2.4-klassescheidingstabel (Amendement 40-20, codes 1-4 van "away from" tot "separated longitudinally"), inclusief nevengevaren — een nevengevaar van klasse 1 telt daarbij als divisie 1.3 (7.2.3.3). De achttien scheidingsgroepen SGG1-SGG18 (7.2.5) zijn per stof bekend (632 vermeldingen uit 3.1.4.4): de app toont de groep bij het UN-nummer en waarschuwt bij onverenigbare combinaties zoals zuren met alkaliën, cyaniden of aziden. Kolom 16b van de Dangerous Goods List blijft leidend
-- **Samenlading van explosieven**: de compatibiliteitsgroepenmatrix van IMDG 7.2.7.1.4 (groepen A-S) controleert of colli van klasse 1 samen mogen, met de bijzondere bepalingen voor groep G, L en N en de ammoniumnitraat-uitzondering van 7.2.7.2.1
-- Klasse-specifieke documentvereisten worden benoemd (netto explosieve massa bij klasse 1, temperatuurbeheersing bij 4.1/5.2, verantwoordelijke persoon bij 6.2, transportindex en collo-categorie bij klasse 7)
-- De offline database is een feitelijke invulhulp; de actuele ADR/RID/ADN/IMDG/IATA-uitgave blijft altijd leidend
-
-### Herkomst van de regelgevingsdata
-
-| Gegeven | Bron |
-|---|---|
-| Classificatie per UN-nummer (klasse, verpakkingsgroep, etiketten, LQ/EQ, verpakkingsinstructie, vervoerscategorie, tunnelcode, Kemler) | ADR Tabel A via [rkstgr/adr-substances](https://github.com/rkstgr/adr-substances) |
-| Engelse proper shipping names | 49 CFR 172.101 (eCFR, public domain) |
-| EmS-noodschema's per UN-nummer en de schema-omschrijvingen | IMO **MSC.1/Circ.1588/Rev.3** — EmS Guide (IMO-circulaire, vrij verspreidbaar) |
-| Segregatietabel, samenlading klasse 1 | IMDG-code hoofdstuk 7.2 (Amendement 40-20) |
-| Scheidingsgroepen per stof (SGG1-SGG18, 632 vermeldingen) | IMDG-code hoofdstuk 3.1, sectie 3.1.4.4 |
-| Lithium- en natrium-ionbatterijen in de luchtvaart | [IATA Guidance Document for Lithium Batteries and Sodium ion Batteries](https://www.iata.org/contentassets/05e6d8742b0047259bf3a700bc9d42b9/lithium-battery-guidance-document.pdf) (editie 2026) |
-| ADR 1.1.3.6-punten, samenlading 7.5.2, IATA Table 9.3.A en Q-waarde | ADR 2025 (UNECE) en IATA DGR |
-
-Overgenomen zijn uitsluitend feitelijke gegevens (UN-nummer → code); de regelgevingsteksten zelf zijn auteursrechtelijk beschermd en staan niet in deze repository.
-
-## Overzicht materieel
-
-De materieelbibliotheek is **bewust leeg** bij installatie. Beheerders vullen deze via **Template downloaden** en **Importeren** (geen export van gevoelige lijsten).
-
-Bij upgrade naar v1.0.0 worden items met bron `overzicht_materieel` automatisch verwijderd uit de database.
-
-## Privacy en gegevensopslag
-
-- Geen documenthistorie of job-database met materiaallijsten
-- Exports: tijdelijk bestand → browser → verwijderd
-- Geen operationele materieeldata in GitHub-repo of Docker-image (vanaf v1.0.0)
-- Persistent op `/data`: gebruikers, catalogus-referenties, sync-status, **door u geïmporteerde** materieel
-
-**Let op:** Docker-images ouder dan v1.4.0 bevatten nog een intern formulier dat niet voor civiel gebruik is bedoeld. Na upgrade:
-
-1. Gebruik alleen `v1.4.0` of nieuwer (of `latest` na de 1.4.0-build).
-2. Verwijder oude Docker-tags via GitHub → **Actions** → **Cleanup Docker Hub tags** → **Run workflow** met `keep_tags`: `latest,v1.13.1,1.13.1`.
-3. `docker pull jeffersonmouze/cargopilot:v1.13.1` en container herstarten.
-
-## Docker Hub
-
-`jeffersonmouze/cargopilot:latest` · `jeffersonmouze/cargopilot:v1.13.1`
-
-GitHub Actions: `.github/workflows/dockerhub.yml` (push `main` + tags `v*`).
-
-Secrets: `DOCKER_USERNAME`, `DOCKER_TOKEN`.
-
-## Development
-
-### Backend
-
-```bash
-cd backend
-python -m pip install -r requirements.txt
-cp ../.env.example ../.env
-mkdir -p ../data
-export DATABASE_URL=sqlite:///$(pwd)/../data/cargopilot.db
-uvicorn app.main:app --reload --port 8080
-```
-
-### Frontend
-
-```bash
-cd frontend
-npm install
-npm run dev
-```
-
-### Tests
-
-```bash
-cd backend
-pytest
-```
-
-## Roadmap (samenvatting)
-
-Volledig overzicht: [ROADMAP.md](ROADMAP.md).
-
-### v1.2.0 ✓ — Multimodale transportkeuze, officiële PDF-formulieren
-
-- Modaliteitskeuze, formulierenselectie, documentregister en export per document
-- CMR, CIM, IMO/IATA DG-verklaringen, VGM, shipping instructions, paklijst, afleverbon
-
-### v1.0.0 ✓
-
-
-### v1.2 (gepland)
-
-- Kolommapping-UI
-- Duitse taal
-
-## Officiële formulier-templates
-
-Alle documenten worden als **PDF** geëxporteerd. Officiële formulieren staan in `templates/forms/` en worden door de backend ingevuld (niet nagebouwd); de overige worden als nette PDF gegenereerd met reportlab.
-
-CMR, CIM en de IATA-declaratie hebben AcroForm-velden: die worden rechtstreeks ingevuld. Het AVC-formulier is een vlakke PDF zonder velden; daar legt de backend de waarden als tekstlaag over de template heen, op posities die uit het lijnenraster van het formulier zelf zijn afgeleid (`backend/app/services/documents/avc_form.py`).
-
-| Document | Type | Bron / template |
-|---|---|---|
-| CMR-vrachtbrief | Ingevuld officieel PDF | IRU-model 2007 (`templates/forms/cmr.pdf`, 4 doorslagen) |
-| IATA Shipper's Declaration | Ingevuld officieel PDF | IATA open-formaat (`templates/forms/iata_dgd.pdf`) |
-| CIM-vrachtbrief | Ingevuld officieel PDF | CIT CIM/CUV (`templates/forms/cim.pdf`) |
-| AVC-vrachtbrief | Ingevuld officieel PDF | sVa / Stichting Vervoeradres (`templates/forms/avc.pdf`) |
-| IMO MDG Form, VGM, AWB/B-L SI, ADN, paklijst, afleverbon | Gegenereerde PDF (reportlab) | Eigen opmaak met vaste wettelijke teksten |
-
-Carrier- en operationele velden worden nooit vooraf ingevuld; een handtekening wordt alleen geplaatst wanneer de gebruiker die zelf tekent of uploadt. Officiële formulieren: controleer vóór opname in een publieke repository de herdistributievoorwaarden van elk formulier.
-
-## Disclaimer en aansprakelijkheid
-
-Gegenereerde documenten zijn **concepten**; controleer, vul aan en onderteken door een bevoegde persoon vóór gebruik. De maker(s) aanvaarden **geen enkele aansprakelijkheid**. Volledige tekst: [DISCLAIMER.md](DISCLAIMER.md) en in de app onder **Disclaimer**.
-
-## Licentie
-
-Apache License 2.0 with Commons Clause — zie [LICENSE](LICENSE) en [DISCLAIMER.md](DISCLAIMER.md).
-
-Commercial use of this software within your own organization is permitted. Selling, reselling, hosting, or commercially redistributing the software itself requires prior written permission from the copyright holder.
+You may use CargoPilot inside your own organisation. Selling it, reselling it, hosting
+it as a paid service or otherwise commercially redistributing the software itself
+requires written permission from the copyright holder.

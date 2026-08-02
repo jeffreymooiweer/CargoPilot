@@ -1,111 +1,100 @@
-# Disclaimer en aansprakelijkheidsuitsluiting — CargoPilot
+# Disclaimer and exclusion of liability — CargoPilot
 
-_Laatst bijgewerkt: 12 juli 2026 · Versie 1.4.0_
+_Last updated: 2 August 2026_
 
-> **English summary:** CargoPilot is provided "AS IS", without warranty of any
-> kind. The documents it generates are **drafts** that must be checked,
-> completed and signed by a duly authorised person before use. The author(s)
-> accept **no liability whatsoever**. The software is licensed under the
-> Apache License 2.0 with Commons Clause. The full, legally binding text is the
-> Dutch version below.
+> **Language.** This English text is provided for convenience. The Dutch version in
+> [DISCLAIMER.nl.md](DISCLAIMER.nl.md) is the legally binding text; in case of any
+> discrepancy, the Dutch version prevails.
 
----
+## In short
 
-## 1. Aard van de applicatie
+CargoPilot is provided **"AS IS"**, without warranty of any kind. Every document it
+produces is a **draft** that must be checked, completed and signed by a duly authorised
+person before use. The author(s) accept **no liability whatsoever**.
 
-CargoPilot is een hulpmiddel dat vervoers- en begeleidingsdocumenten (zoals
-CMR, CIM, de IMO Multimodal Dangerous Goods Form, de IATA Shipper's Declaration,
-VGM-verklaringen, shipping instructions en paklijsten)
-**voorbereidt** op basis van door de gebruiker ingevoerde gegevens. De
-applicatie vult officiële of gegenereerde formulieren automatisch in, maar
-neemt geen enkele beslissing en geeft **geen juridisch, douanetechnisch of
-veiligheidskundig advies**.
+## 1. What the application is
 
-## 2. Concept — geen definitief of ondertekend document
+CargoPilot is a tool that **prepares** transport and accompanying documents (such as the
+CMR, the CIM, the IMO Multimodal Dangerous Goods Form, the IATA Shipper's Declaration,
+VGM declarations, shipping instructions and packing lists) on the basis of data entered
+by the user. It fills in official or generated forms automatically, but it makes no
+decisions and gives **no legal, customs or safety advice**.
 
-Elk door CargoPilot voortgebracht document is een **concept**. Vóór gebruik,
-overdracht, indiening of ondertekening moet het document in zijn geheel worden:
+## 2. Drafts — not final or signed documents
 
-1. **gecontroleerd** op juistheid en volledigheid door een daartoe **bevoegde
-   en gekwalificeerde persoon**;
-2. **aangevuld** met gegevens die de applicatie niet kent of niet mag genereren
-   (onder meer carriergegevens, operationele gegevens en handtekeningen);
-3. **ondertekend** door de verantwoordelijke persoon, waar het formulier of de
-   toepasselijke regelgeving dit vereist.
+Every document CargoPilot produces is a **draft**. Before it is used, handed over,
+submitted or signed, the document must be:
 
-CargoPilot vult handtekeningvelden, carriergegevens en operationele velden
-bewust **niet** vooraf in. Het feit dat de applicatie een veld invult, betekent
-niet dat de inhoud juist, volledig of rechtsgeldig is.
+1. **checked** for accuracy and completeness by a **competent and qualified person**;
+2. **completed** with data the application does not know or must not generate (including
+   carrier data, operational data and signatures);
+3. **signed** by the responsible person, wherever the form or the applicable regulations
+   require it.
 
-## 3. Gevaarlijke stoffen
+CargoPilot deliberately does **not** pre-fill signature fields, carrier data or
+operational fields. The fact that the application fills a field does not mean that its
+contents are correct, complete or legally valid.
 
-Voor gevaarlijke stoffen (ADR, RID, ADN, IMDG, IATA DGR) geldt dat classificatie,
-verpakking, markering, etikettering en documentatie onder de **exclusieve
-verantwoordelijkheid** van de afzender en andere wettelijk aangewezen partijen
-vallen. CargoPilot zet een vrije omschrijving **nooit** automatisch om in een
-definitieve classificatie en vervangt geen gecertificeerde gevaarlijke-stoffen-
-masterdata, een DGSA/veiligheidsadviseur of de actuele, geautoriseerde
-regelgeving. De gebruiker is te allen tijde zelf verantwoordelijk voor naleving
-van de vigerende voorschriften (waaronder de actuele edities van ADR, RID, ADN,
-de IMDG Code en de IATA DGR).
+## 3. Dangerous goods
 
-## 4. Geen garanties ("AS IS")
+For dangerous goods (ADR, RID, ADN, IMDG, IATA DGR), classification, packaging, marking,
+labelling and documentation are the **exclusive responsibility** of the shipper and other
+parties designated by law. CargoPilot **never** converts a free-text description into a
+definitive classification automatically, and it does not replace certified dangerous
+goods master data, a DGSA or safety adviser, or the current authorised regulations. The
+user remains responsible at all times for compliance with the applicable rules, including
+the current editions of ADR, RID, ADN, the IMDG Code and the IATA DGR.
 
-De software en alle gegenereerde documenten worden geleverd **"AS IS" en "AS
-AVAILABLE"**, zonder enige expliciete of impliciete garantie, daaronder begrepen
-maar niet beperkt tot garanties van verkoopbaarheid, geschiktheid voor een
-bepaald doel, juistheid, actualiteit, volledigheid of niet-inbreuk. Er wordt
-geen garantie gegeven dat referentiedata (materialen, profielen, UN-gegevens,
-formuliersjablonen of regelgeving) juist, actueel of compleet is.
+## 4. No warranties ("AS IS")
 
-## 5. Uitsluiting van aansprakelijkheid
+The software and all generated documents are provided **"AS IS" and "AS AVAILABLE"**,
+without any express or implied warranty, including but not limited to warranties of
+merchantability, fitness for a particular purpose, accuracy, currency, completeness or
+non-infringement. No warranty is given that reference data (materials, profiles, UN data,
+form templates or regulations) is correct, current or complete.
 
-Voor zover maximaal toegestaan onder het toepasselijke recht sluiten de maker(s),
-rechthebbende(n) en bijdragers van CargoPilot **elke aansprakelijkheid** uit voor
-enige directe, indirecte, incidentele, bijzondere, punitieve of gevolgschade,
-daaronder mede begrepen — zonder uitputtend te zijn — winstderving, bedrijfs-
-of productiestilstand, boetes, sancties, vertragingen, in beslag genomen of
-geweigerde zendingen, verlies van of schade aan goederen, milieuschade,
-persoonlijk letsel, of verlies van gegevens, voortvloeiend uit of verband
-houdend met het gebruik van, of het onvermogen tot gebruik van, de applicatie
-of de daarmee gegenereerde documenten, ongeacht de rechtsgrond (contract,
-onrechtmatige daad, wettelijke aansprakelijkheid of anderszins) en zelfs indien
-op de mogelijkheid van dergelijke schade is gewezen.
+## 5. Exclusion of liability
 
-De gebruiker gebruikt CargoPilot **volledig op eigen risico** en is als enige
-verantwoordelijk voor de controle, de juistheid, de rechtsgeldigheid en het
-gebruik van de ingevoerde gegevens en de gegenereerde documenten, alsmede voor
-de naleving van alle toepasselijke nationale en internationale wet- en
-regelgeving.
+To the maximum extent permitted by applicable law, the author(s), rights holder(s) and
+contributors of CargoPilot exclude **all liability** for any direct, indirect,
+incidental, special, punitive or consequential damage, including without limitation loss
+of profit, business or production interruption, fines, sanctions, delays, seized or
+refused shipments, loss of or damage to goods, environmental damage, personal injury, or
+loss of data, arising out of or in connection with the use of, or the inability to use,
+the application or the documents generated with it, on any legal basis whatsoever
+(contract, tort, statutory liability or otherwise) and even if the possibility of such
+damage has been pointed out.
 
-## 6. Vrijwaring
+The user uses CargoPilot **entirely at their own risk** and is solely responsible for
+checking the accuracy, legal validity and use of the data entered and the documents
+generated, as well as for compliance with all applicable national and international laws
+and regulations.
 
-De gebruiker vrijwaart de maker(s) en rechthebbende(n) van CargoPilot tegen alle
-aanspraken van derden die voortvloeien uit of verband houden met het gebruik van
-de applicatie of de gegenereerde documenten door de gebruiker.
+## 6. Indemnity
 
-## 7. Licentie
+The user indemnifies the author(s) and rights holder(s) of CargoPilot against all
+third-party claims arising out of or in connection with the user's use of the application
+or the documents generated with it.
 
-CargoPilot wordt in licentie gegeven onder de **Apache License, Version 2.0**,
-aangevuld met de **Commons Clause**. De volledige licentietekst staat in het
-bestand [`LICENSE`](LICENSE).
+## 7. Licence
 
-- Onder de Apache License 2.0 wordt de software geleverd zonder garanties en met
-  een beperking van aansprakelijkheid (zie de secties 7 "Disclaimer of Warranty"
-  en 8 "Limitation of Liability" van die licentie).
-- Gebruik van de software binnen uw eigen organisatie is toegestaan. Het
-  verkopen, doorverkopen, hosten als betaalde dienst of anderszins commercieel
-  herdistribueren van de software zelf vereist voorafgaande schriftelijke
-  toestemming van de rechthebbende (Commons Clause).
+CargoPilot is licensed under the **Apache License, Version 2.0**, supplemented by the
+**Commons Clause**. The full licence text is in [`LICENSE`](LICENSE).
 
-## 8. Toepasselijk recht
+- Under the Apache License 2.0 the software is provided without warranties and with a
+  limitation of liability (see sections 7 "Disclaimer of Warranty" and 8 "Limitation of
+  Liability" of that licence).
+- Use of the software within your own organisation is permitted. Selling, reselling,
+  hosting as a paid service or otherwise commercially redistributing the software itself
+  requires prior written permission from the rights holder (Commons Clause).
 
-Op deze disclaimer is Nederlands recht van toepassing, voor zover dwingend recht
-zich daar niet tegen verzet. Indien een bepaling van deze disclaimer nietig of
-niet-afdwingbaar wordt geacht, blijven de overige bepalingen onverkort van
-kracht.
+## 8. Governing law
+
+This disclaimer is governed by Dutch law, to the extent that mandatory law does not
+provide otherwise. If any provision of this disclaimer is held void or unenforceable, the
+remaining provisions remain in full force.
 
 ---
 
-Door CargoPilot te gebruiken erkent u deze disclaimer te hebben gelezen,
-begrepen en aanvaard.
+By using CargoPilot you acknowledge that you have read, understood and accepted this
+disclaimer.

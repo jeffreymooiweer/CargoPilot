@@ -277,6 +277,40 @@ def validate_document(
                         f"{_text('dg_missing', lang)} '{position}': {', '.join(missing)}"
                     )
 
+        # De volledige nalevingscontrole draait óók bij de export zelf. Het
+        # paneel in de wizard is een hulpmiddel; de frontend mag nooit de enige
+        # plek zijn waar dit wordt afgedwongen — een verouderd of nooit ververst
+        # schermresultaat mag geen document opleveren.
+        if entries:
+            from app.services.dg.compliance import check_compliance
+
+            outcome = check_compliance(entries, [profile], language)
+            for finding in outcome.get("imdg_segregation", []) + outcome.get(
+                "adr_mixed_loading", []
+            ) + outcome.get("iata_segregation", []):
+                text = f"{finding.get('rule')}: {finding.get('message')}"
+                if finding.get("severity") == "error":
+                    errors.append(text)
+                elif finding.get("severity") == "warning":
+                    warnings.append(text)
+            for q in outcome.get("q_values", []) or []:
+                if q.get("status") == "exceeded":
+                    # Q boven 1 betekent dat de combinatie zo niet mag vliegen.
+                    errors.append(
+                        f"IATA 5.0.2.11: Q = {q.get('q_value')} (> 1)"
+                        + (f" — {q.get('position')}" if q.get("position") else "")
+                    )
+                elif q.get("status") == "incomplete":
+                    warnings.append(str(q.get("note") or "Q incomplete"))
+            points = outcome.get("adr_points")
+            if points and points.get("status") == "incomplete" and profile in {"ADR", "RID", "ADN"}:
+                warnings.append(
+                    "ADR 1.1.3.6: "
+                    + ("puntentelling onvolledig — controleer vervoerscategorie en hoeveelheid"
+                       if lang == "nl"
+                       else "points calculation incomplete — check transport category and quantity")
+                )
+
     if document["key"] == "vgm" and str(values.get("vgm_method")) == "method2":
         components = [
             values.get("cargo_mass_kg"),

@@ -103,8 +103,20 @@ export default function DangerousGoodsStep({
   // Automatische afleiding: alles wat uit het UN-nummer en de colli volgt wordt
   // door de backend ingevuld. Alleen lege velden worden aangevuld, zodat
   // handmatige correcties blijven staan.
+  // De handtekening bevat ook aantallen, inhoud en verpakking: de afgeleide
+  // totalen (ADR-hoeveelheid, Q-waarde) rekenen daarmee, dus een wijziging
+  // daarin moet net zo goed een nieuwe afleiding geven als een nieuw UN-nummer.
   const unSignature = entries
-    .map((entry) => entry.products.map((p) => p.un_number ?? "").join("|"))
+    .map((entry) =>
+      entry.products
+        .map((p) =>
+          [p.un_number, p.quantity_packages, p.net_mass_liters_per_package, p.type_of_package,
+           p.q_net_quantity, p.q_max_net_quantity]
+            .map((v) => v ?? "")
+            .join("~"),
+        )
+        .join("|"),
+    )
     .join("#");
   const profileKey = profiles.join(",");
 
@@ -132,7 +144,7 @@ export default function DangerousGoodsStep({
       cancelled = true;
       window.clearTimeout(timer);
     };
-    // Alleen opnieuw afleiden bij nieuwe UN-nummers of andere formulierkeuze.
+    // Opnieuw afleiden bij elke relevante invoerwijziging (debounced).
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [unSignature, profileKey, lang]);
 

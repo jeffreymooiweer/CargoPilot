@@ -36,11 +36,17 @@ export default function DgCompliancePanel({ entries, profiles }: Props) {
     }
   }, [entries, profiles, lang]);
 
+  // Verandert de invoer, dan is het vorige resultaat per direct ongeldig: eerst
+  // wissen (geen oud groen laten staan) en na een korte debounce automatisch
+  // opnieuw controleren. Een verouderde uitkomst die blijft hangen terwijl de
+  // gebruiker de stoffen wijzigt, is gevaarlijker dan even geen uitkomst.
+  const entriesSignature = JSON.stringify(entries);
   useEffect(() => {
-    run();
-    // Alleen bij mount en profielwissel automatisch; daarna via de knop.
+    setResult(null);
+    const timer = window.setTimeout(run, 400);
+    return () => window.clearTimeout(timer);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [profiles.join(",")]);
+  }, [entriesSignature, profiles.join(",")]);
 
   if (entries.length === 0 || profiles.length === 0) return null;
 
@@ -149,7 +155,9 @@ export default function DgCompliancePanel({ entries, profiles }: Props) {
               className={`rounded-lg border px-3 py-2 text-xs ${
                 w.severity === "error"
                   ? "border-red-200 bg-red-50 text-red-800 dark:border-red-900/50 dark:bg-red-900/20 dark:text-red-300"
-                  : "border-amber-200 bg-amber-50 text-amber-800 dark:border-amber-900/50 dark:bg-amber-900/20 dark:text-amber-300"
+                  : w.severity === "info"
+                    ? "border-sky-200 bg-sky-50 text-sky-800 dark:border-sky-900/50 dark:bg-sky-900/20 dark:text-sky-300"
+                    : "border-amber-200 bg-amber-50 text-amber-800 dark:border-amber-900/50 dark:bg-amber-900/20 dark:text-amber-300"
               }`}
             >
               <p className="font-semibold">{w.rule}</p>

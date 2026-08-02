@@ -8,6 +8,7 @@ De bevoegde persoon blijft verantwoordelijk (zie DISCLAIMER.md).
 import json
 import math
 import re
+from decimal import ROUND_CEILING, Decimal
 from functools import lru_cache
 from typing import Any
 
@@ -31,12 +32,16 @@ def _lang(language: str) -> str:
 
 
 def _num(value: Any) -> float | None:
-    """Parse het eerste getal uit een waarde ('333', '5 kg', '12,5 L')."""
+    """Parse het eerste getal uit een waarde ('333', '5 kg', '12,5 L').
+
+    Het teken telt mee: '-5 L' is -5, niet 5. Een negatieve hoeveelheid moet
+    als fout bovenkomen, niet stilzwijgend positief worden gemaakt.
+    """
     if value is None:
         return None
     if isinstance(value, (int, float)):
-        return float(value)
-    match = re.search(r"\d+(?:[.,]\d+)?", str(value))
+        return float(value) if math.isfinite(float(value)) else None
+    match = re.search(r"-?\d+(?:[.,]\d+)?", str(value))
     if not match:
         return None
     return float(match.group(0).replace(",", "."))
@@ -102,7 +107,9 @@ def check_adr_points(entries: list[dict[str, Any]], language: str = "nl") -> dic
         label = _product_label(entry, product, index)
         category = str(product.get("transport_category") or "").strip()
         quantity = _num(product.get("adr_total_quantity"))
-        if category not in categories or quantity is None:
+        if category not in categories or quantity is None or quantity <= 0:
+            # Ook 0 of negatief is onbruikbaar: -5 L zou het puntentotaal
+            # verlagen en een vrijstelling voorspiegelen die er niet is.
             incomplete.append(label)
             rows.append({
                 "product": label,
@@ -715,30 +722,80 @@ def check_imdg_segregation_exemptions(
 
 
 def check_q_value(entries: list[dict[str, Any]], language: str = "nl") -> list[dict[str, Any]]:
-    """IATA 5.0.2.11: Q-waarde per positie voor 'all packed in one'."""
+    """IATA 5.0.2.11: Q-waarde per positie voor 'all packed in one'.
+
+    Gerekend met Decimal en zonder tussentijdse afronding: twee componenten van
+    elk 0,50001 zijn samen 1,00002 en dus Q = 1,1 — overschreden. Eerst per
+    component afronden maakte daar 1,0 van, een vals-negatieve uitkomst.
+
+    Een component met ontbrekende, nul of negatieve waarden verdwijnt niet
+    stilzwijgend: de positie krijgt status "incomplete" en de reden erbij.
+    """
     rules = get_compliance_rules()["q_value"]
     lang = _lang(language)
     results: list[dict[str, Any]] = []
 
     for entry in entries:
         components: list[dict[str, Any]] = []
+        invalid: list[str] = []
         for index, product in enumerate(entry.get("products") or []):
-            n = _num(product.get("q_net_quantity"))
-            m = _num(product.get("q_max_net_quantity"))
-            if n is not None and m:
-                components.append({
-                    "product": _product_label(entry, product, index),
-                    "net_quantity": n,
-                    "max_per_package": m,
-                    "ratio": round(n / m, 4),
-                })
-        if len(components) < 2:
+            raw_n = product.get("q_net_quantity")
+            raw_m = product.get("q_max_net_quantity")
+            participates = any(str(v or "").strip() for v in (raw_n, raw_m))
+            if not participates:
+                continue
+            label = _product_label(entry, product, index)
+            n = _num(raw_n)
+            m = _num(raw_m)
+            if n is None or m is None or n <= 0 or m <= 0:
+                reason_nl = "ontbrekende, nul of negatieve n of M"
+                reason_en = "missing, zero or negative n or M"
+                invalid.append(f"{label} ({reason_nl if lang == 'nl' else reason_en})")
+                continue
+            ratio = Decimal(str(n)) / Decimal(str(m))
+            components.append({
+                "product": label,
+                "net_quantity": n,
+                "max_per_package": m,
+                # Alleen voor weergave afgerond; de som gebruikt de ruwe ratio.
+                "ratio": float(ratio.quantize(Decimal("0.0001"), rounding=ROUND_CEILING)),
+                "_ratio_exact": ratio,
+            })
+
+        if not components and not invalid:
             continue
-        q_raw = sum(c["ratio"] for c in components)
-        q_rounded = math.ceil(q_raw * 10) / 10  # naar boven afronden op 1 decimaal
+
+        if invalid:
+            results.append({
+                "position": entry.get("vehicle") or entry.get("line_id"),
+                "components": [
+                    {k: v for k, v in c.items() if k != "_ratio_exact"} for c in components
+                ],
+                "status": "incomplete",
+                "q_value": None,
+                "exceeded": None,
+                "invalid_components": invalid,
+                "note": (
+                    "Q kan niet worden bepaald: " + "; ".join(invalid)
+                    if lang == "nl"
+                    else "Q cannot be determined: " + "; ".join(invalid)
+                ),
+            })
+            continue
+
+        if len(components) < 2:
+            # Eén deelnemend product: geen 'all packed in one', geen Q nodig.
+            continue
+
+        q_raw = sum((c["_ratio_exact"] for c in components), Decimal(0))
+        # Naar boven afronden op één decimaal, over de ongeronde som.
+        q_rounded = float(q_raw.quantize(Decimal("0.1"), rounding=ROUND_CEILING))
         results.append({
             "position": entry.get("vehicle") or entry.get("line_id"),
-            "components": components,
+            "components": [
+                {k: v for k, v in c.items() if k != "_ratio_exact"} for c in components
+            ],
+            "status": "exceeded" if q_rounded > rules["limit"] else "ok",
             "q_value": q_rounded,
             "exceeded": q_rounded > rules["limit"],
             "note": rules["note"][lang],
@@ -756,6 +813,18 @@ def check_compliance(
     result: dict[str, Any] = {
         "sources": rules["sources"],
         "profiles": profiles,
+        # Welke regelgevingsedities dit resultaat heeft gebruikt. De IMDG-data
+        # loopt achter op de sinds 1-1-2026 verplichte Amendment 42-24; zolang
+        # dat zo is, hoort dat zichtbaar bij elke uitkomst, niet alleen in de
+        # documentatie.
+        "rule_sets": {
+            "ADR": "ADR 2025 (Tabel A via rkstgr/adr-substances)",
+            "IMDG_class_tables": "Amendment 40-20 (hoofdstuk 7.2)",
+            "IMDG_per_substance": "Amendment 41-22 (Cantell UN-kaarten, 2023)",
+            "IMDG_current_mandatory": "Amendment 42-24 — NIET geladen; uitkomsten zijn indicatief",
+            "EmS": "MSC.1/Circ.1588/Rev.3",
+            "IATA": "IATA DGR (lithium/natrium-ion: Guidance 2026)",
+        },
     }
     normalized = {p.upper() for p in profiles}
 

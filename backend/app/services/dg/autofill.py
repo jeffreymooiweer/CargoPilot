@@ -267,12 +267,24 @@ def prepare_entries(
                     })
             merged.update(derive_from_line(merged, lines_by_id.get(entry.get("line_id"))))
             # Totale hoeveelheid voor de 1.1.3.6-puntenberekening en de
-            # Q-waarde afleiden, zodat de gebruiker die niet hoeft te typen.
+            # Q-waarde. Deze twee zijn BEREKENDE waarden en worden bij elke
+            # aanroep opnieuw afgeleid uit de actuele colli-invoer. Vroeger
+            # werden ze alleen ingevuld als ze leeg waren, waardoor na een
+            # wijziging van aantal of inhoud de oude totalen bleven staan en
+            # de puntentelling en Q-waarde met verouderde getallen rekenden.
+            # Wie het totaal wil vastzetten, zet adr_total_quantity_override
+            # respectievelijk q_net_quantity_override.
             total, unit = total_quantity(merged)
-            if total is not None and not str(merged.get("adr_total_quantity") or "").strip():
+            override = str(merged.get("adr_total_quantity_override") or "").strip()
+            if override:
+                merged["adr_total_quantity"] = override
+            elif total is not None:
                 merged["adr_total_quantity"] = f"{_fmt(total)} {unit}"
             per_package = merged.get("net_mass_liters_per_package")
-            if per_package and not str(merged.get("q_net_quantity") or "").strip():
+            q_override = str(merged.get("q_net_quantity_override") or "").strip()
+            if q_override:
+                merged["q_net_quantity"] = q_override
+            elif per_package:
                 merged["q_net_quantity"] = str(per_package)
             products.append(merged)
         prepared.append({**entry, "products": products})

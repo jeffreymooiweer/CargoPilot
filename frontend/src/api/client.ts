@@ -504,7 +504,7 @@ export interface AdrPointsResult {
 
 export interface ComplianceWarning {
   rule: string;
-  severity: "error" | "warning";
+  severity: "error" | "warning" | "info";
   message: string;
   products: string;
 }

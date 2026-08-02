@@ -44,25 +44,25 @@ SECTIONS = [
     {
         "key": "stowage_codes",
         "section": "7.1.5",
-        "heading": re.compile(r"^7\.1\.5\b"),
+        "heading": re.compile(r"^7\.1\.5(?![\d.])"),
         "intro": "stowage codes given in column 16a",
-        "code": re.compile(r"^(SW\d{1,2})\s*$"),
-        "stop": re.compile(r"^7\.1\.6\b"),
+        "code": re.compile(r"^(SW\d{1,2})(?!\d)\s*(.*)$"),
+        "stop": re.compile(r"^7\.1\.6(?![\d.])"),
     },
     {
         "key": "handling_codes",
         "section": "7.1.6",
-        "heading": re.compile(r"^7\.1\.6\b"),
+        "heading": re.compile(r"^7\.1\.6(?![\d.])"),
         "intro": "handling codes given in column 16a",
-        "code": re.compile(r"^(H\d{1,2})\s*$"),
-        "stop": re.compile(r"^Chapter 7\.2\b"),
+        "code": re.compile(r"^(H\d{1,2})(?!\d)\s*(.*)$"),
+        "stop": re.compile(r"^Chapter 7\.2(?![\d.])"),
     },
     {
         "key": "segregation_codes",
         "section": "7.2.8",
-        "heading": re.compile(r"^7\.2\.8\b"),
+        "heading": re.compile(r"^7\.2\.8(?![\d.])"),
         "intro": "segregation codes given in column 16b",
-        "code": re.compile(r"^(SG\d{1,2})\s*$"),
+        "code": re.compile(r"^(SG\d{1,2})(?!\d)\s*(.*)$"),
         "stop": re.compile(r"^Annex\s*$"),
     },
 ]
@@ -84,6 +84,9 @@ NOISE = re.compile(
     r")$"
 )
 
+# "[Reserved]" is geen voorschrift maar een gat dat de code openhoudt.
+RESERVED = re.compile(r"^\[\s*reserved\s*\]\.?$", re.I)
+
 
 def download(url: str, target: Path, timeout: int = 600) -> Path:
     request = urllib.request.Request(url, headers=UA)
@@ -104,17 +107,17 @@ def clean_lines(document, first: int, last: int) -> list[str]:
 
 
 def find_section(document, spec: dict[str, Any]) -> int:
-    """Paginanummer waarop een sectie begint, gezocht op kop én inleidingszin.
+    """Paginanummer waarop een sectie begint, gezocht op haar inleidingszin.
 
-    Alleen op de kop zoeken levert de inhoudsopgave en elke kruisverwijzing op;
-    de inleidingszin ("The stowage codes given in column 16a …") staat maar op
-    één plaats.
+    Op het sectienummer zoeken levert de inhoudsopgave en elke kruisverwijzing
+    op — 7.1.5 komt op vijf plaatsen voor. De inleidingszin ("The stowage codes
+    given in column 16a …") staat maar op één plaats.
     """
     for index in range(document.page_count):
-        text = document[index].get_text()
-        if spec["intro"] in text and spec["heading"].search(text.replace("\t", " ")):
+        if spec["intro"] in document[index].get_text():
             return index
-    raise LookupError(f"sectie {spec['section']} niet gevonden")
+    raise LookupError(f"sectie {spec['section']} niet gevonden: "
+                      f"de zin {spec['intro']!r} komt nergens voor")
 
 
 def parse_codes(lines: list[str], spec: dict[str, Any]) -> dict[str, str]:
@@ -139,6 +142,10 @@ def parse_codes(lines: list[str], spec: dict[str, Any]) -> dict[str, str]:
         if match:
             current = match.group(1)
             codes.setdefault(current, [])
+            # Meestal staat de code alleen op haar regel, maar de PDF trekt
+            # kolommen soms samen; dan begint de omschrijving hier al.
+            if match.group(2).strip():
+                codes[current].append(match.group(2).strip())
             continue
         if current is not None:
             codes[current].append(line)
@@ -173,13 +180,18 @@ def extract(path: Path) -> dict[str, Any]:
             codes = parse_codes(lines, spec)
             if not codes:
                 raise LookupError(f"geen codes gelezen in {spec['section']}")
+            # Gereserveerde codes hebben geen betekenis. Ze apart zetten
+            # voorkomt dat de interface "[Reserved]" als voorschrift toont.
+            reserved = sorted((c for c, t in codes.items() if RESERVED.match(t)), key=sort_key)
+            active = {c: t for c, t in codes.items() if not RESERVED.match(t)}
             result[spec["key"]] = {
                 "section": spec["section"],
-                "codes": {code: codes[code] for code in sorted(codes, key=sort_key)},
+                "codes": {code: active[code] for code in sorted(active, key=sort_key)},
+                "reserved": reserved,
             }
-            print(f"{spec['section']}: {len(codes)} codes "
+            print(f"{spec['section']}: {len(active)} codes "
                   f"({min(codes, key=sort_key)}..{max(codes, key=sort_key)}), "
-                  f"vanaf PDF-pagina {start + 1}")
+                  f"{len(reserved)} gereserveerd {reserved}, vanaf PDF-pagina {start + 1}")
     return result
 
 
@@ -193,8 +205,9 @@ def sanity_check(data: dict[str, Any]) -> list[str]:
     expected = {"stowage_codes": ("SW", 31), "handling_codes": ("H", 5),
                 "segregation_codes": ("SG", 78)}
     for key, (prefix, highest) in expected.items():
-        codes = data[key]["codes"]
-        numbers = {int(c[len(prefix):]) for c in codes}
+        entry = data[key]
+        codes = entry["codes"]
+        numbers = {int(c[len(prefix):]) for c in list(codes) + entry.get("reserved", [])}
         if highest not in numbers:
             problems.append(f"{key}: hoogste code {prefix}{highest} ontbreekt")
         # Gaten mogen bestaan — SG64, SG66 en SG73 zijn gereserveerd, SG75 is

@@ -332,6 +332,7 @@
     "forbidden": "Niet ten vervoer toegelaten —",
     "emsVerified": "EmS bevestigd tegen openbare bron",
     "emsByVariant": "EmS hangt af van de variant: {{options}}",
-    "emsByPackingGroup": "EmS hangt af van de verpakkingsgroep: {{options}}"
+    "emsByPackingGroup": "EmS hangt af van de verpakkingsgroep: {{options}}",
+    "stowageCategory": "stuwagecategorie {{category}}"
   }
 }

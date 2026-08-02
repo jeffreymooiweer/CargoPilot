@@ -63,11 +63,12 @@ goes quiet; typing an address by hand always works.
 | English proper shipping names | 49 CFR 172.101 (eCFR / GovInfo, public domain) |
 | UN packaging codes (107) | ADR 6.1.2 / 6.5.1.4 / 6.6.2 |
 | EmS emergency schedules per UN number, and the schedule descriptions | IMO **MSC.1/Circ.1588/Rev.3** — EmS Guide (IMO circular, freely distributable) |
-| Class segregation table and class 1 compatibility matrix | IMDG Code chapter 7.2, Amendment 40-20 |
-| Segregation exemption tables 7.2.6.3.1 – 7.2.6.3.4 | IMDG Code chapter 7.2, Amendment 40-20 |
-| Segregation groups per substance (SGG1–SGG18, 632 entries) | IMDG Code chapter 3.1, section 3.1.4.4 |
+| Class segregation table and class 1 compatibility matrix | IMDG Code chapter 7.2, Amendment 40-20 — unchanged in 42-24 |
+| Segregation exemption tables 7.2.6.3.1 – 7.2.6.3.4 | IMDG Code chapter 7.2, Amendment 40-20 — unchanged in 42-24 |
+| Segregation groups per substance (SGG1–SGG18, 629 entries) | IMDG Code chapter 3.1, section 3.1.4.4 — unchanged in 42-24; the separate SGG1a marking for strong acids was dropped in 41-22 |
 | Lithium and sodium-ion batteries in aviation | [IATA Guidance Document for Lithium Batteries and Sodium ion Batteries](https://www.iata.org/contentassets/05e6d8742b0047259bf3a700bc9d42b9/lithium-battery-guidance-document.pdf), 2026 edition |
 | ADR 1.1.3.6 points, loading together 7.5.2, IATA Table 9.3.A, Q value | ADR 2025 (UNECE) and the IATA DGR |
+| IMDG Amendment 42-24 changes over 41-22 | NCB Hazcheck, *IMDG Code Amendment 42-24 changes detailed summary*, October 2024 v1.0, and IMO **E&T 38/3/9** for the UN 1361 provisions |
 
 Where the data lives:
 
@@ -75,8 +76,9 @@ Where the data lives:
 |---|---|
 | `backend/seed/dg/un_numbers.json` | 2,928 UN entries |
 | `backend/seed/dg/ems.json` | 2,338 UN numbers with fire and spillage schedules |
-| `backend/seed/dg/segregation_groups.json` | 18 groups, 632 substance entries |
+| `backend/seed/dg/segregation_groups.json` | 18 groups, 629 substance entries |
 | `backend/seed/dg/packagings.json` | 107 UN packaging codes |
+| `backend/seed/dg/imdg_42_24.json` | The IMDG Amendment 42-24 difference layer over the 41-22 data |
 | `backend/app/config/dg_compliance.json` | Segregation tables and compliance rules |
 | `backend/app/config/dg_instructions.json` | Field help text |
 

@@ -17,6 +17,7 @@ import threading
 import unicodedata
 from pathlib import Path
 
+from app.services.dg import amendment_42_24
 from app.services.dg.enrichment import clean_value, enrich_un_entry, parse_hazards
 
 _SEED_DIR = Path(__file__).resolve().parents[3] / "seed" / "dg"
@@ -31,11 +32,47 @@ def _normalize(text: str) -> str:
     return "".join(c for c in text if not unicodedata.combining(c)).casefold()
 
 
+def _imdg_only_entries(known: set[str]) -> list[dict]:
+    """UN-nummers die IMDG 42-24 toevoegt en die ADR 2025 nog niet kent.
+
+    Natrium-ionbatterijen en de nieuwe voertuigvermeldingen komen uit de 23e
+    editie van de UN-modelvoorschriften. Die zit al in IMDG 42-24, maar pas in
+    een volgende ADR-uitgave. Wie ze over zee verscheept moet ze kunnen vinden;
+    daarom staan ze hier, uitdrukkelijk gemerkt als alleen-IMDG.
+    """
+    entries: list[dict] = []
+    for item in amendment_42_24.new_un_numbers():
+        if item["un"] in known:
+            continue
+        hazard = str(item.get("class") or "")
+        entries.append({
+            "un": item["un"],
+            "name_en": item.get("name_en", ""),
+            "name_de": "",
+            # De DGL noemt de divisie zelf; Tabel A doet dat via de etiketten.
+            "class": hazard.split(".")[0] if hazard.startswith("1.") else hazard,
+            "classification_code": hazard if hazard.startswith("1.") else "",
+            "packing_group": item.get("packing_group", ""),
+            "labels": hazard,
+            "special_provisions": item.get("special_provisions", ""),
+            "limited_quantity": item.get("limited_quantity", "0"),
+            "excepted_quantity": item.get("excepted_quantity", "E0"),
+            "packing_instructions": item.get("packing_instructions", ""),
+            "transport_category": "",
+            "tunnel_code": "",
+            "hazard_number": "",
+            "imdg_only": True,
+            "source_note": "IMDG 42-24 — nog niet in ADR Tabel A",
+        })
+    return entries
+
+
 def _load_un() -> list[dict]:
     global _un_cache
     with _lock:
         if _un_cache is None:
             entries = json.loads((_SEED_DIR / "un_numbers.json").read_text(encoding="utf-8"))
+            entries += _imdg_only_entries({e["un"] for e in entries})
             for entry in entries:
                 entry["_search"] = _normalize(f"{entry.get('name_en', '')} {entry.get('name_de', '')}")
             _un_cache = entries
@@ -114,7 +151,11 @@ def offline_lookup(un_number: str) -> dict | None:
         "excepted_quantity": clean_value(entry.get("excepted_quantity")),
         "tunnel_restriction_code": f"({entry['tunnel_code']})" if entry.get("tunnel_code") else None,
         "transport_category": entry.get("transport_category"),
-        "source": "CargoPilot offline seed (ADR 2023 Tabel A / 49 CFR 172.101)",
+        "source": (
+            f"CargoPilot offline seed ({entry['source_note']})"
+            if entry.get("source_note")
+            else "CargoPilot offline seed (ADR 2023 Tabel A / 49 CFR 172.101)"
+        ),
         "variants": len(entries),
     }
 

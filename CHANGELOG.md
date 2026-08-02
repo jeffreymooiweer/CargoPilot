@@ -2,6 +2,58 @@
 
 All notable changes are documented here, following [Semantic Versioning](https://semver.org/).
 
+## [1.21.0] — 2026-08-02
+
+IMDG Amendment 42-24 has been mandatory since 1 January 2026. This release closes the gap
+without pretending to a full rebuild: the tables that turned out to be unchanged are
+confirmed as current, the per-substance changes are applied as a difference layer, and
+column 16b now takes the precedence the Code gives it.
+
+### Added
+
+- **An IMDG 42-24 difference layer** (`backend/seed/dg/imdg_42_24.json`), laid over the
+  41-22 UN card data. It holds the eleven new UN numbers with their EmS schedules — sodium
+  ion batteries UN 3551/3552, the battery-powered vehicle entries UN 3556–3558, disilane
+  UN 3553, gallium in manufactured articles UN 3554, the trifluoromethyltetrazole entry
+  UN 3555, both fire suppressant dispersing device entries UN 0514/3559 and the new
+  tetramethylammonium hydroxide entry UN 3560 — plus 42 amended entries and the new
+  stowage code SW31.
+- **The new UN numbers are searchable.** Sodium ion batteries exist in IMDG 42-24 and not
+  yet in ADR 2025; they are merged into the lookup marked as IMDG-only, so a sea shipment
+  can find them instead of coming up empty.
+- **Per-substance change notes.** UN 2303 became a recognised marine pollutant and gained
+  SW1; UN 1361 gained SW27; UN 2956 gained SW11; UN 3536 moved to stowage category D. Each
+  change is shown against the substance in the wizard, in Dutch and English.
+- **The UN 1361 document requirement of 5.4.1.5.18** — date of production, date of
+  packing, mean material temperature and ambient temperature on that day — is raised as a
+  requirement when the substance is declared.
+- **IMDG 7.2.3.1 precedence.** The class segregation table and a substance's own SG codes
+  can disagree about the same pair; the Code says column 16b always wins. Nitric acid
+  beside sulphur is the plain case: the table says "away from", SG16 says "separated from",
+  and the 16b provision now governs. Both findings stay visible — the governing one says
+  it governs, the superseded one says what superseded it — because hiding a segregation
+  finding is a worse failure than showing one too many.
+
+### Changed
+
+- **Chapter 7.2 is no longer flagged as out of date.** The only change 42-24 makes there
+  is a rewording of 7.2.6.1. The class segregation table (7.2.4), the exemption tables
+  (7.2.6.3), the class 1 compatibility matrix (7.2.7.1.4) and the segregation groups
+  (3.1.4.4) are unchanged, so the tables the app computes with are the current ones. The
+  `rule_sets` metadata on every result says this, names the source of the difference layer,
+  and lists what the layer does not cover.
+- **A changed classification is reported, never silently applied.** UN 3423 becomes class
+  6.1 with a subsidiary 8 in 42-24 while ADR 2025 still lists it as class 8. Segregation is
+  still computed on the ADR classification and a warning says so, because swapping the
+  class behind the scenes would change the outcome with nothing on screen to explain why.
+
+### Removed
+
+- **The SGG1a tagging.** The separate segregation-group marking for strong acids was
+  dropped from the Code with Amendment 41-22 — the UN cards never mention it and 42-24
+  leaves 3.1.4.4 alone — but 21 substances still carried it. Removed from the seed, from
+  the label lookup and from the documentation.
+
 ## [1.20.0] — 2026-08-02
 
 Fixes from an external review: calculation errors, stale state, the IATA PDF, and

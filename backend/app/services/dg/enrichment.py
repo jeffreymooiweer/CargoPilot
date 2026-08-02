@@ -65,6 +65,34 @@ def lookup_ems(un_number: str, packing_group: str = "") -> dict[str, Any] | None
     return entry
 
 
+# Scheidingsgroepen (IMDG 3.1.4.4) — geladen uit seed/dg/segregation_groups.json.
+_SEED_SGG = Path(__file__).resolve().parents[3] / "seed" / "dg" / "segregation_groups.json"
+_sgg_cache: dict[str, Any] | None = None
+
+
+def _load_sgg() -> dict[str, Any]:
+    global _sgg_cache
+    with _ems_lock:
+        if _sgg_cache is None:
+            _sgg_cache = json.loads(_SEED_SGG.read_text(encoding="utf-8"))
+    return _sgg_cache
+
+
+def segregation_groups_for(un_number: str) -> list[str]:
+    """Scheidingsgroepcodes van een UN-nummer, bijv. ['SGG1', 'SGG1a']."""
+    digits = "".join(ch for ch in str(un_number or "") if ch.isdigit()).zfill(4)
+    return list(_load_sgg()["by_un"].get(digits, []))
+
+
+def segregation_group_label(code: str, language: str = "nl") -> str:
+    for group in _load_sgg()["groups"]:
+        if group["code"] == code:
+            return group.get(language) or group.get("nl") or group["en"]
+    if code == "SGG1a":
+        return "sterke zuren" if language == "nl" else "strong acids"
+    return code
+
+
 def ems_schedule_label(code: str, language: str = "nl") -> str:
     """Omschrijving van een brand- of lekkageschema, bijv. 'F-E' → '…'."""
     data = _load_ems()
@@ -315,6 +343,14 @@ def enrich_un_entry(entry: dict[str, Any], language: str = "nl") -> dict[str, An
             if language == "nl"
             else "Labelling per 5.2.2.1.12: articles containing dangerous goods bear the "
             "labels for each hazard present."
+        )
+
+    # Scheidingsgroepen (IMDG 3.1.4.4): bepalend voor de scheiding aan boord.
+    sgg = segregation_groups_for(un)
+    if sgg:
+        extras["segregation_groups"] = sgg
+        extras["segregation_groups_text"] = ", ".join(
+            f"{code} ({segregation_group_label(code, language)})" for code in sgg
         )
 
     # Zeevaart (IMDG): EmS uit de officiële EmS Guide-index.

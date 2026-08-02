@@ -12,6 +12,7 @@ from functools import lru_cache
 from typing import Any
 
 from app.core.config import get_settings
+from app.services.dg.enrichment import segregation_groups_for
 
 
 @lru_cache
@@ -396,6 +397,71 @@ def check_imdg_class1_compatibility(
     return warnings
 
 
+# Scheidingsgroepen die onderling niet samen mogen (IMDG 7.2.5 in samenhang met
+# kolom 16b): de klassieke gevaarlijke combinaties.
+_SGG_CONFLICTS: list[tuple[str, str, str, str]] = [
+    ("SGG1", "SGG18", "zuren en alkaliën", "acids and alkalis"),
+    ("SGG1", "SGG6", "zuren en cyaniden (ontwikkeling van blauwzuur)",
+     "acids and cyanides (release of hydrogen cyanide)"),
+    ("SGG1", "SGG5", "zuren en chlorieten (ontwikkeling van chloordioxide)",
+     "acids and chlorites (release of chlorine dioxide)"),
+    ("SGG1", "SGG8", "zuren en hypochlorieten (ontwikkeling van chloorgas)",
+     "acids and hypochlorites (release of chlorine gas)"),
+    ("SGG1", "SGG12", "zuren en nitrieten (ontwikkeling van nitreuze dampen)",
+     "acids and nitrites (release of nitrous fumes)"),
+    ("SGG1", "SGG17", "zuren en aziden (vorming van explosief waterstofazide)",
+     "acids and azides (formation of explosive hydrazoic acid)"),
+    ("SGG1", "SGG14", "zuren en permanganaten", "acids and permanganates"),
+    ("SGG1", "SGG15", "zuren en metaalpoeders (ontwikkeling van waterstof)",
+     "acids and powdered metals (release of hydrogen)"),
+    ("SGG16", "SGG1", "peroxiden en zuren", "peroxides and acids"),
+]
+
+
+def check_imdg_segregation_groups(
+    entries: list[dict[str, Any]], language: str = "nl"
+) -> list[dict[str, Any]]:
+    """IMDG 7.2.5/3.1.4.4: onverenigbare scheidingsgroepen binnen de zending."""
+    lang = _lang(language)
+    products: list[tuple[str, set[str]]] = []
+    for entry, index, product in _iter_products(entries):
+        groups = set(segregation_groups_for(product.get("un_number", "")))
+        # Handmatig ingevulde groepen tellen ook mee.
+        for token in re.split(r"[,;/\s]+", str(product.get("segregation_group") or "")):
+            if token.strip().upper().startswith("SGG"):
+                groups.add(token.strip().upper())
+        if groups:
+            products.append((_product_label(entry, product, index), groups))
+
+    warnings: list[dict[str, Any]] = []
+    seen: set[tuple[str, str, str]] = set()
+    for i, (label_a, groups_a) in enumerate(products):
+        for label_b, groups_b in products[i + 1:]:
+            for code_a, code_b, nl, en in _SGG_CONFLICTS:
+                hit = (code_a in groups_a and code_b in groups_b) or (
+                    code_b in groups_a and code_a in groups_b
+                )
+                if not hit:
+                    continue
+                key = (*sorted((label_a, label_b)), f"{code_a}-{code_b}")
+                if key in seen:
+                    continue
+                seen.add(key)
+                warnings.append({
+                    "rule": f"IMDG 7.2.5 ({code_a} × {code_b})",
+                    "severity": "warning",
+                    "message": (
+                        f"Scheidingsgroepen {nl}: kolom 16b van de Dangerous Goods List "
+                        "schrijft hier scheiding voor. Controleer de vermelding per stof."
+                        if lang == "nl"
+                        else f"Segregation groups {en}: column 16b of the Dangerous Goods "
+                        "List prescribes segregation here. Check the entry per substance."
+                    ),
+                    "products": f"{label_a}  ×  {label_b}",
+                })
+    return warnings
+
+
 def check_q_value(entries: list[dict[str, Any]], language: str = "nl") -> list[dict[str, Any]]:
     """IATA 5.0.2.11: Q-waarde per positie voor 'all packed in one'."""
     rules = get_compliance_rules()["q_value"]
@@ -446,8 +512,11 @@ def check_compliance(
         result["adr_mixed_loading"] = check_adr_mixed_loading(entries, language)
 
     if "IMDG" in normalized:
-        result["imdg_segregation"] = check_imdg_segregation(entries, language) + \
-            check_imdg_class1_compatibility(entries, language)
+        result["imdg_segregation"] = (
+            check_imdg_segregation(entries, language)
+            + check_imdg_class1_compatibility(entries, language)
+            + check_imdg_segregation_groups(entries, language)
+        )
         result["imdg_note"] = rules["imdg_segregation"]["note"][_lang(language)]
         groups = rules.get("imdg_segregation_groups")
         if groups:

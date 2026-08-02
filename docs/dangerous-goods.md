@@ -104,11 +104,22 @@ Of the 70 codes in use:
 | Checked against the rest of the shipment | 49 name a class or a segregation group |
 | Checked against a named substance | 8 — sulphur, chlorine, ammonia, bromine, carbon tetrachloride, ammonium and mercury salts, chlorate explosives |
 | Raised as a requirement to verify | 7 whose target is ordinary cargo: foodstuffs, oils, odour-absorbing cargo |
-| Shown as text only | 6 |
+| Reported as an exemption | SG72 — the tables of IMDG 7.2.6.3 |
+| Shown as text only | 5 |
 
-The six that are only shown are not rules: two modify other provisions, two are
-definitions, one applies only to waste aerosols, and SG72 points at a table in IMDG 7.2.6.3
-that is not in any source we hold. Turning those into checks would mean inventing them.
+**IMDG 7.2.6.3 relaxes rather than restricts.** SG72 reads "See tables in 7.2.6.3", which
+sounds like an extra requirement; the section actually says no segregation needs to be
+applied between substances listed in the same table. Two organic peroxides from table
+7.2.6.3.4 may travel together.
+
+CargoPilot reports that exemption but **never uses it to remove a warning**. Hiding a
+segregation finding is a worse failure than showing one too many, so the finding and the
+exemption appear side by side, each naming its section, and the judgement stays with the
+shipper.
+
+The five that are only shown are not rules: two modify other provisions, two are
+definitions, and one applies only to waste aerosols. Turning those into checks would mean
+inventing them.
 
 Exceptions count. SG14 reads "separated from class 1 **except** for division 1.4S", so a
 1.4S package alongside does not raise it.

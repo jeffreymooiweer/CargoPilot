@@ -2,6 +2,31 @@
 
 All notable changes are documented here, following [Semantic Versioning](https://semver.org/).
 
+## [1.19.0] — 2026-08-02
+
+SG72, and it turned out to be a relaxation.
+
+### Added
+
+- **The four tables of IMDG 7.2.6.3**, from chapter 7.2 of Amendment 40-20 — the same
+  edition as the class segregation table. SG72 in column 16b points at them, and 36
+  substances carry it.
+- SG72 reads "See tables in 7.2.6.3", which sounds like an extra restriction. It is the
+  opposite: *"No segregation needs to be applied … Substances within the same table
+  7.2.6.3.1, 7.2.6.3.2 or 7.2.6.3.3 are compatible with one another."* Two organic
+  peroxides from table 7.2.6.3.4, for instance, need no segregation between them.
+- **The exemption never removes a warning.** Suppressing a segregation finding on the
+  strength of a rule is a worse failure than showing one too many, so the exemption is
+  reported alongside the finding with its table named. The finding and its legal basis end
+  up in view together and the judgement stays with the shipper — which is how a safety
+  adviser would read it anyway.
+- Table 7.2.6.3.4 carries the caveat of 7.2.6.4: the dangerous reactions of 7.2.6.1.1 to
+  7.2.6.1.4 continue to apply. That is stated in the finding.
+
+With this, five provisions remain shown-but-not-checked, and none of them is a rule: SG1
+and SG77 modify other provisions, SG48 and SG71 are definitions, and SG69 applies only to
+waste aerosols.
+
 ## [1.18.0] — 2026-08-02
 
 The remaining segregation provisions, as far as they go.

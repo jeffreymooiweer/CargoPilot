@@ -31,9 +31,6 @@ registry are settled.
 ### Dangerous goods data
 
 - German as a third interface language, including the dangerous goods help texts.
-- **SG72 — the tables of IMDG 7.2.6.3.** Thirty-six substances point at them and we hold
-  no source for them, so the provision is shown as text. The tables themselves would make
-  it checkable.
 
 ### Wizard and library
 

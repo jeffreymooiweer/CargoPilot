@@ -65,6 +65,22 @@ def lookup_ems(un_number: str, packing_group: str = "") -> dict[str, Any] | None
     return entry
 
 
+# Wat "yes/no/maybe" in kolom 4 van de Dangerous Goods List betekent, in gewone taal.
+_MARINE_POLLUTANT_TEXT = {
+    True: {
+        "yes": "Marine pollutant: ja — merken en vermelden op het vervoersdocument.",
+        "no": "Marine pollutant: nee.",
+        "maybe": "Marine pollutant: hangt van de stof af. Beoordeel aan de criteria van "
+                 "IMDG 2.10 en merk zo nodig alsnog.",
+    },
+    False: {
+        "yes": "Marine pollutant: yes — mark and declare on the transport document.",
+        "no": "Marine pollutant: no.",
+        "maybe": "Marine pollutant: depends on the substance. Assess against the criteria "
+                 "of IMDG 2.10 and mark if it meets them.",
+    },
+}
+
 # Scheidingsgroepen (IMDG 3.1.4.4) — geladen uit seed/dg/segregation_groups.json.
 _SEED_SGG = Path(__file__).resolve().parents[3] / "seed" / "dg" / "segregation_groups.json"
 _sgg_cache: dict[str, Any] | None = None
@@ -82,6 +98,32 @@ def segregation_groups_for(un_number: str) -> list[str]:
     """Scheidingsgroepcodes van een UN-nummer, bijv. ['SGG1', 'SGG1a']."""
     digits = "".join(ch for ch in str(un_number or "") if ch.isdigit()).zfill(4)
     return list(_load_sgg()["by_un"].get(digits, []))
+
+
+# Stof-specifieke IMDG-gegevens uit de UN-kaarten (un_cards/), samengevat door
+# scripts/extract_un_card_data.py: marine pollutant (kolom 4), stuwagecodes SW
+# (16a), scheidingscodes SG (16b) en bulkvervoer. De scheidingsgroepen hierboven
+# zeggen tot welke groep een stof hoort; deze codes zeggen wat dat betekent.
+_SEED_CARDS = Path(__file__).resolve().parents[3] / "seed" / "dg" / "card_data.json"
+_cards_cache: dict[str, Any] | None = None
+
+
+def _load_card_data() -> dict[str, Any]:
+    global _cards_cache
+    with _ems_lock:
+        if _cards_cache is None:
+            try:
+                _cards_cache = json.loads(_SEED_CARDS.read_text(encoding="utf-8"))["entries"]
+            except (OSError, ValueError, KeyError):  # pragma: no cover - seed ontbreekt
+                _cards_cache = {}
+    return _cards_cache
+
+
+def card_data_for(un_number: str) -> dict[str, Any]:
+    """IMDG-gegevens van de UN-kaart, of een leeg dict als die er niet is."""
+    digits = "".join(ch for ch in str(un_number or "") if ch.isdigit()).zfill(4)
+    entry = _load_card_data().get(digits)
+    return dict(entry) if isinstance(entry, dict) else {}
 
 
 def segregation_group_label(code: str, language: str = "nl") -> str:
@@ -382,7 +424,39 @@ def enrich_un_entry(entry: dict[str, Any], language: str = "nl") -> dict[str, An
             extras["ems_class_default"] = f"{default[0]}, {default[1]}"
             extras["ems_source"] = "class_default"
 
-    # Milieugevaarlijk / marine pollutant
+    # Stof-specifieke IMDG-gegevens van de UN-kaart.
+    card = card_data_for(un)
+    if card:
+        extras["card_source"] = "imdg_un_card"
+
+        # Marine pollutant, kolom 4. De bron zegt bij n.e.g.-vermeldingen
+        # "maybe": dat hangt van de werkelijke stof af en is aan de afzender.
+        pollutant = card.get("marine_pollutant")
+        if pollutant in {"yes", "no", "maybe"}:
+            extras["marine_pollutant_status"] = pollutant
+            extras["marine_pollutant_text"] = _MARINE_POLLUTANT_TEXT[language == "nl"][pollutant]
+            if pollutant == "yes":
+                extras["environmentally_hazardous"] = True
+
+        # Stuwage (16a) en scheiding (16b): de codes plus de toelichting van de
+        # kaart, want "SG35" zegt op zichzelf niets tegen een gebruiker.
+        if card.get("stowage_codes"):
+            extras["imdg_stowage_codes"] = card["stowage_codes"]
+        if card.get("segregation_codes"):
+            extras["imdg_segregation_codes"] = card["segregation_codes"]
+        for field, key in (("stowage_text", "imdg_stowage_text"),
+                           ("segregation_text", "imdg_segregation_text")):
+            value = card.get(field)
+            if isinstance(value, str) and value.strip():
+                extras[key] = value.strip()
+
+        bulk = str(card.get("bulk") or "")
+        if "bk" in bulk:
+            extras["imdg_bulk"] = bulk.upper().replace("BK", "BK")
+        elif bulk:
+            extras["imdg_bulk_forbidden"] = True
+
+    # Milieugevaarlijk / marine pollutant — ADR-kant, blijft ook zonder kaart gelden.
     if un in ENVIRONMENTALLY_HAZARDOUS_UN or classification in ENVIRONMENTALLY_HAZARDOUS_CODES:
         extras["environmentally_hazardous"] = True
 

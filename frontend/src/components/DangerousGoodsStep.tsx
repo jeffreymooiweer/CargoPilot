@@ -384,6 +384,17 @@ function AutoDerivedPanel({ prepared }: { prepared: DgPrepareResult }) {
             .join(", "),
         }),
       hint.segregation_groups_text && `IMDG 7.2.5 — ${hint.segregation_groups_text}`,
+      hint.marine_pollutant_text,
+      // Stuwage en scheiding per stof (IMDG kolom 16a/16b). De codes alleen
+      // zeggen een gebruiker niets, dus de toelichting van de kaart erbij.
+      hint.imdg_stowage_codes?.length &&
+        `IMDG 16a — ${hint.imdg_stowage_codes.join(", ")}${
+          hint.imdg_stowage_text ? `: ${hint.imdg_stowage_text}` : ""
+        }`,
+      hint.imdg_segregation_codes?.length &&
+        `IMDG 16b — ${hint.imdg_segregation_codes.join(", ")}${
+          hint.imdg_segregation_text ? `: ${hint.imdg_segregation_text}` : ""
+        }`,
       hint.air_note,
       hint.label_reference_note,
       hint.limited_quantity_text,

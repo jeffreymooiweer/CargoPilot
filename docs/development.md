@@ -157,26 +157,36 @@ minutes. Reads still come from `main`'s cache, so the second build stays fast. T
 job has a 45-minute timeout so a wedged build fails visibly rather than running all day.
 
 Workflows live in `.github/workflows/`: `dockerhub.yml`, `tag-release.yml`,
-`release.yml`, `cleanup-dockerhub.yml` and `fetch-un-cards.yml`.
+`release.yml` and `cleanup-dockerhub.yml`.
 
-## Fetching the UN cards
+## The UN cards
 
-`fetch-un-cards.yml` fills `un_cards/`. It is a one-off job, run by hand:
+`un_cards/` was filled once and is not expected to change until a new edition of the
+IMDG Code appears. The workflow that did it has been retired; the two scripts behind it
+stay, so a future edition is a matter of running them again:
 
-1. Actions → **Fetch UN cards** → **Run workflow**.
-2. Give it the URL pattern with `{n}` where the part number goes, the range, and leave
-   **dry run** ticked with a small **limit** first — that fetches a handful of documents
-   and reports what it made of them without writing anything.
-3. When the identification looks right, run it again with dry run off. It opens a pull
-   request on `data/un-cards` with the renamed files and a manifest.
+```bash
+# Fetch and rename. ~2,900 downloads, roughly 80 minutes.
+python scripts/fetch_un_cards.py --base-url ".../part{n}.pdf" --first 1 --last 2900 \
+    --limit 20 --dry-run          # check the identification first
+python scripts/fetch_un_cards.py --base-url ".../part{n}.pdf" --first 1 --last 2900
 
-The identification is deliberately cautious: a four-digit number only counts if it is a
-real UN entry in `backend/seed/dg/un_numbers.json`, and it is marked `confirmed` only
-when the shipping name on the card matches the name we hold for that number. Anything
-weaker lands in `un_cards/_unidentified/` for a human to look at. Filing a card under the
-wrong UN number would hand someone the emergency information for a different substance,
-so the script would rather skip than guess.
+# Re-read the per-substance data out of the cards.
+python scripts/extract_un_card_data.py --out backend/seed/dg/card_data.json
+```
 
-`backend/tests/test_un_card_identification.py` covers the ways that can go wrong: page
-numbers that look like UN numbers, cards that cross-reference other substances, numbers
-that are not UN numbers, and scans with no text layer.
+The identification is deliberately cautious. Each card states its UN number under a
+`UN number` label and repeats it in the footer; both are read and must agree, and the
+number must be a real entry in `backend/seed/dg/un_numbers.json`. A card is marked
+`confirmed` only when the shipping name on it matches the name we hold. Anything weaker
+goes to `un_cards/_unidentified/`. Filing a card under the wrong UN number would hand
+someone the emergency information for a different substance, so the script would rather
+skip than guess.
+
+`extract_un_card_data.py` cross-checks its own EmS readings against `ems.json`, which
+comes from the official EmS Guide and remains the authority. On the run that produced the
+current data, 2,282 agreed and none disagreed — a useful signal that both datasets are
+sound.
+
+`backend/tests/test_un_card_identification.py` covers the ways identification can go
+wrong; `backend/tests/test_dg_card_data.py` guards the extracted values.

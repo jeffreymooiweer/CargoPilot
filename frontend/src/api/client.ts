@@ -276,6 +276,11 @@ export interface DgPrepareHint {
   air_forbidden?: boolean;
   segregation_groups?: string[];
   segregation_groups_text?: string;
+  marine_pollutant_text?: string;
+  imdg_stowage_codes?: string[];
+  imdg_stowage_text?: string;
+  imdg_segregation_codes?: string[];
+  imdg_segregation_text?: string;
   transport_forbidden?: boolean;
   transport_forbidden_note?: string;
   label_reference_note?: string;

@@ -8,6 +8,11 @@ on:
     branches: [main]
   workflow_dispatch:
 
+# Superseded pull request runs are pointless; main and tag runs always finish.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
 jobs:
   test:
     name: Backend tests
@@ -60,6 +65,9 @@ jobs:
     name: Docker build
     runs-on: ubuntu-latest
     needs: [test, frontend]
+    # An arm64 build under QEMU takes a few minutes with a warm cache. Anything
+    # near an hour is wedged, not slow — fail instead of burning the whole day.
+    timeout-minutes: 45
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -110,5 +118,11 @@ jobs:
           push: ${{ steps.dockerhub.outputs.configured == 'true' }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
+          # Each ref writes its own cache scope. Releasing pushes the commit to
+          # main and then tags it, so two runs build the same commit seconds
+          # apart; sharing one mode=max scope let them race on the cache export
+          # and hang. Reads still come from main's warm cache.
+          cache-from: |
+            type=gha,scope=${{ github.ref_name }}
+            type=gha,scope=main
+          cache-to: type=gha,mode=max,scope=${{ github.ref_name }}

@@ -149,6 +149,13 @@ in the git tag `v*`, in the Docker tag, and is returned by `GET /api/health`.
 
 Required secrets: `DOCKER_USERNAME`, `DOCKER_TOKEN`.
 
+A release builds the same commit **twice**: once for the push to `main`, which publishes
+`latest`, and once for the tag, which publishes the version number. They start seconds
+apart, so each ref writes its own buildx cache scope — sharing one `mode=max` scope let
+the two exports race, and a build hung for an hour and a half instead of taking three
+minutes. Reads still come from `main`'s cache, so the second build stays fast. The docker
+job has a 45-minute timeout so a wedged build fails visibly rather than running all day.
+
 Workflows live in `.github/workflows/`: `dockerhub.yml`, `tag-release.yml`,
 `release.yml`, `cleanup-dockerhub.yml` and `fetch-un-cards.yml`.
 

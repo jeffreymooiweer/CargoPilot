@@ -2,6 +2,40 @@
 
 All notable changes are documented here, following [Semantic Versioning](https://semver.org/).
 
+## [1.15.0] — 2026-08-02
+
+The UN card library is in.
+
+### Added
+
+- **2,849 UN cards covering 2,336 UN numbers** in `un_cards/`, fetched from Cantell's
+  IMDG UN cards (2023 edition, IMDG 41-22). Every one of the 2,900 source files was
+  opened and the UN number read out of the card itself, because the source numbers its
+  files sequentially with no relation to their contents. 2,703 were confirmed by both the
+  number and the shipping name, 146 by the number alone, and **none** contradicted itself
+  or fell out of sequence. A sample of twelve was checked by hand against the filename:
+  twelve correct.
+- The 2,336 unique UN numbers match `backend/seed/dg/un_numbers.json` exactly. The extra
+  513 cards are second and third entries for the same UN number, which the regulations
+  give a separate card per packing group; all of them are handed to the user.
+- **The download option in the export now works.** A shipment with dangerous goods gets a
+  zip with the cards for the substances it declared. It was built in 1.14.0 but stayed
+  hidden while the library was empty.
+
+### Changed
+
+- Parts 2850 to 2900 of the source are the card layout with every field empty. They carry
+  no substance and are not included; `manifest.json` records that they were seen.
+- The fetch workflow no longer fails when it cannot open a pull request — that needs a
+  repository setting, and the pushed branch is the deliverable either way. It prints the
+  compare link instead.
+
+### Note on size
+
+`un_cards/` is 581 MB on disk but **49 MB packed**: every card embeds the same seven
+fonts, so git's delta compression collapses them, and the Docker layer compresses the
+same way. A clone and an image pull stay small; the unpacked container grows by ~580 MB.
+
 ## [1.14.1] — 2026-08-02
 
 ### Changed

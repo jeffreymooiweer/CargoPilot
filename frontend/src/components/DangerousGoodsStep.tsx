@@ -383,6 +383,7 @@ function AutoDerivedPanel({ prepared }: { prepared: DgPrepareResult }) {
             .map(([pg, code]) => `${pg} → ${code}`)
             .join(", "),
         }),
+      hint.segregation_groups_text && `IMDG 7.2.5 — ${hint.segregation_groups_text}`,
       hint.air_note,
       hint.label_reference_note,
       hint.limited_quantity_text,

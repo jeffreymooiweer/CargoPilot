@@ -2,6 +2,16 @@
 
 Alle noemenswaardige wijzigingen worden gedocumenteerd volgens [Semantic Versioning](https://semver.org/).
 
+## [1.12.0] — 2026-08-01
+
+Scheidingsgroepen per stof uit de officiële IMDG-code.
+
+### Toegevoegd
+
+- **Alle achttien scheidingsgroepen met hun stoffen** (IMDG 3.1.4.4): 632 vermeldingen verdeeld over 539 UN-nummers, van zuren en alkaliën tot cyaniden, aziden, permanganaten, metaalpoeders en kwikverbindingen. De 21 **sterke zuren** krijgen daarbij de aparte markering SGG1a. Een stof kan in meerdere groepen vallen — loodazide (UN 0129) hoort bijvoorbeeld tegelijk bij zware metalen, lood én aziden.
+- **Scheidingsgroep automatisch bij het UN-nummer**: zodra een UN-nummer is ingevuld toont de app de bijbehorende groepen, bijvoorbeeld "SGG1 (Zuren), SGG1a (sterke zuren)" bij zoutzuur.
+- **Controle op onverenigbare scheidingsgroepen** in het nalevingspaneel bij zeevracht. Gemeld worden onder meer zuren met alkaliën, zuren met cyaniden (ontwikkeling van blauwzuur), zuren met chlorieten of hypochlorieten (chloordioxide respectievelijk chloorgas), zuren met nitrieten, zuren met aziden (vorming van explosief waterstofazide), zuren met metaalpoeders (waterstofontwikkeling) en peroxiden met zuren. Handmatig ingevulde groepscodes tellen mee.
+
 ## [1.11.0] — 2026-08-01
 
 EmS-noodschema's compleet uit de officiële EmS Guide.

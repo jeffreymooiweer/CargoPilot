@@ -8,6 +8,7 @@ from app.services.dg.autofill import adr_category_totals, description_line, prep
 from app.services.dg.compliance import (
     check_imdg_class1_compatibility,
     check_imdg_segregation,
+    check_imdg_segregation_groups,
     get_compliance_rules,
 )
 from app.services.dg.database import is_transport_forbidden
@@ -17,6 +18,7 @@ from app.services.dg.enrichment import (
     enrich_un_entry,
     lookup_ems,
     parse_hazards,
+    segregation_groups_for,
 )
 from app.services.documents.exporter import validate_document
 from app.services.documents.registry import get_document
@@ -353,6 +355,47 @@ def test_subsidiary_class1_hazard_segregates_as_division_1_3():
     warnings = check_imdg_segregation(entries, "nl")
     # 1.3 × 4.1 = 3 in de tabel, strenger dan 3 × 4.1 = X.
     assert warnings and warnings[0]["code"] == "3"
+
+
+def test_segregation_groups_are_loaded_from_imdg_3_1_4_4():
+    """Alle achttien groepen met hun UN-nummers uit hoofdstuk 3.1."""
+    seed = json.loads(
+        (Path(__file__).resolve().parents[1] / "seed" / "dg" / "segregation_groups.json")
+        .read_text(encoding="utf-8")
+    )
+    codes = [g["code"] for g in seed["groups"]]
+    assert codes == [f"SGG{n}" for n in range(1, 19)]
+    assert len(seed["by_un"]) >= 500
+
+    # Zoutzuur is een sterk zuur: zowel SGG1 als de SGG1a-markering.
+    assert segregation_groups_for("1789") == ["SGG1", "SGG1a"]
+    assert segregation_groups_for("1824") == ["SGG18"]   # natronloog, alkali
+    assert segregation_groups_for("1689") == ["SGG6"]    # natriumcyanide
+    assert segregation_groups_for("1203") == []          # benzine valt buiten de groepen
+
+    # Loodazide hoort in drie groepen tegelijk.
+    assert set(segregation_groups_for("0129")) == {"SGG7", "SGG9", "SGG17"}
+
+
+def test_segregation_group_conflicts_are_reported():
+    """Zuren met alkaliën en zuren met cyaniden vragen om scheiding."""
+    entries = [{
+        "line_id": 1,
+        "vehicle": "Mix",
+        "products": [
+            {"un_number": "1789", "proper_shipping_name": "ZOUTZUUR", "class": "8"},
+            {"un_number": "1824", "proper_shipping_name": "NATRONLOOG", "class": "8"},
+            {"un_number": "1689", "proper_shipping_name": "NATRIUMCYANIDE", "class": "6.1"},
+        ],
+    }]
+    rules = {w["rule"] for w in check_imdg_segregation_groups(entries, "nl")}
+    assert "IMDG 7.2.5 (SGG1 × SGG18)" in rules
+    assert "IMDG 7.2.5 (SGG1 × SGG6)" in rules
+
+    # Zonder conflicterende groepen blijft het stil.
+    assert check_imdg_segregation_groups(
+        [{"line_id": 1, "vehicle": "x", "products": [{"un_number": "1789"}]}], "nl"
+    ) == []
 
 
 def test_imdg_segregation_warns_for_incompatible_classes():

@@ -5,15 +5,23 @@ One reference card per UN number, named after the number it describes:
 the extras are suffixed: `un_1203-2.pdf`.
 
 This folder is **empty in a fresh checkout**. It is filled once by the
-**Fetch UN cards** workflow (`.github/workflows/fetch-un-cards.yml`), which
-downloads the source documents, reads the UN number out of each one and renames
-it accordingly — the source files are numbered sequentially (`part1`, `part2`, …)
-with no relation to their contents, so the filename cannot be trusted.
+**Fetch UN cards** workflow (`.github/workflows/fetch-un-cards.yml`).
+
+The source is Cantell's IMDG UN cards, 2023 edition (IMDG 41-22), published as
+`imdg_2023_-_en_part1.pdf`, `part2.pdf` and so on. The part number is **not** the
+UN number — `part1` is UN 0004 and `part2` is UN 0005 — so the workflow opens
+every document and reads the number out of the card itself. Each card states it
+under a `UN number` label and repeats it in the footer; both are read and must
+agree.
 
 `manifest.json` records what happened to every part: which UN number it was
 identified as, how confident that was, and which of our known shipping names it
-matched. Documents that could not be identified are parked in `_unidentified/`
-rather than filed under a guess.
+matched. Documents that could not be identified — including any card whose
+heading and footer disagree — are parked in `_unidentified/` rather than filed
+under a guess.
+
+The parts ascend by UN number, so a card that steps backwards is flagged as out
+of sequence even when it read cleanly.
 
 ## What they are used for
 

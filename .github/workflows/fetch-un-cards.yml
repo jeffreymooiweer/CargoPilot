@@ -1,7 +1,13 @@
 name: Fetch UN cards
 
-# Downloads the UN cards once, reads the UN number out of every document, renames
-# each file to un_<number>.pdf and opens a pull request with the result.
+# Downloads Cantell's IMDG UN cards once (2023 edition, IMDG 41-22), reads the UN
+# number out of every document, renames each file to un_<number>.pdf and opens a
+# pull request with the result.
+#
+# The source numbers its files part1, part2, … in ascending UN order, but the
+# part number is not the UN number: part1 is UN 0004 and part2 is UN 0005. Each
+# card states its own UN number under a "UN number" label and repeats it in the
+# footer, and the script reads both.
 #
 # This runs here rather than locally because the runner has the internet access
 # and the patience for ~2900 sequential downloads. Start with dry_run to check the
@@ -11,8 +17,9 @@ on:
   workflow_dispatch:
     inputs:
       base_url:
-        description: "URL with {n} for the part number, e.g. https://example.org/dgl/part{n}.pdf"
+        description: "URL with {n} for the part number"
         required: true
+        default: "https://www.cantell.dk/image/catalog/Stofliste/IMDG_EN/imdg_2023_-_en_part{n}.pdf"
       first:
         description: "First part number"
         required: true

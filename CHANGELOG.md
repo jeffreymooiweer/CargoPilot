@@ -2,6 +2,19 @@
 
 All notable changes are documented here, following [Semantic Versioning](https://semver.org/).
 
+## [1.14.1] — 2026-08-02
+
+### Changed
+
+- **The UN card fetcher now reads the card's own `UN number` field.** The real cards
+  (Cantell's IMDG UN cards, 2023 edition) are laid out as label/value pairs and repeat
+  the number in the footer, which is far more reliable than judging by font size. Both
+  are read and must agree; a card that contradicts itself is parked for a human instead
+  of being filed on a coin flip. The previous heuristic — prominence plus shipping-name
+  match — remains as the fallback.
+- The source URL is filled in as the workflow's default, and the parts are checked for
+  ascending UN order so a card that steps backwards is flagged even when it read cleanly.
+
 ## [1.14.0] — 2026-08-02
 
 UN cards for your own records.

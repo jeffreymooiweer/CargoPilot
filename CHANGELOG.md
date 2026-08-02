@@ -2,6 +2,23 @@
 
 Alle noemenswaardige wijzigingen worden gedocumenteerd volgens [Semantic Versioning](https://semver.org/).
 
+## [1.13.0] — 2026-08-02
+
+AVC-vrachtbrief in plaats van een apart ADR-wegdocument.
+
+### Toegevoegd
+
+- **AVC-vrachtbrief** voor binnenlands wegvervoer, als PDF gegenereerd naar het standaardmodel van sVa / Stichting Vervoeradres: links de vrachtbrief, rechts het ontvangstbewijs, met dezelfde vakindeling (afzender, afleveradres, frankeringsvoorschrift met Franco/Niet franco, vervoerder, goederentabel met aantal, verpakking, inhoud en gewicht, totalen, plaats en datum van afzending). De verwijzingsclausule maakt de **Algemene Vervoercondities 2002** van toepassing. Handtekening van de vervoerder en het ontvangstbewijs van de geadresseerde blijven leeg; de afzender kan wel zijn eigen handtekening laten plaatsen.
+
+### Gewijzigd
+
+- **De CMR draagt nu zelf de gevaarlijke-stoffengegevens.** Voor een collo met gevaarlijke stoffen komt de officiële omschrijving volgens ADR 5.4.1.1.1 in vak 6-12 te staan (`UN 1203, GASOLINE, 3, II, (D/E), 10 jerrycan, 200 L`) in plaats van de vrije omschrijving, en vak 13 krijgt de totale hoeveelheid per vervoerscategorie (5.4.1.1.1.1). Colli zonder gevaarlijke stoffen houden hun gewone omschrijving en de massa wordt niet dubbel geteld.
+- Hetzelfde geldt voor de AVC-vrachtbrief: de ADR-omschrijving verschijnt in de kolom "inhoud".
+
+### Verwijderd
+
+- **Het losse ADR-vervoersdocument voor de weg is vervallen.** ADR 5.4.1 schrijft geen vorm voor het vervoersdocument voor: een vrachtbrief die de gegevens van 5.4.1.1.1 draagt volstaat. Nu de CMR en de AVC-vrachtbrief die omschrijving zelf bevatten, is een apart document overbodig geworden. Het ADN-vervoersdocument voor de binnenvaart blijft wél bestaan, omdat daar geen vrachtbrief in de app zit.
+
 ## [1.12.0] — 2026-08-01
 
 Scheidingsgroepen per stof uit de officiële IMDG-code.

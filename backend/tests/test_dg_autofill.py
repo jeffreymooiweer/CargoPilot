@@ -145,7 +145,7 @@ def test_transport_forbidden_substances_are_flagged_and_block_export():
     assert is_transport_forbidden("2249") is True   # symmetrisch dichloordimethylether
     assert is_transport_forbidden("1203") is False  # benzine
 
-    document = get_document("adr_transport_doc")
+    document = get_document("avc_waybill")
     errors, _ = validate_document(
         document,
         {},

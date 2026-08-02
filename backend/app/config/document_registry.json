@@ -47,7 +47,7 @@
       },
       "documents": [
         "cmr",
-        "adr_transport_doc",
+        "avc_waybill",
         "packing_list",
         "delivery_note"
       ]
@@ -138,7 +138,7 @@
         "vgm",
         "imo_dgd",
         "iata_dgd",
-        "adr_transport_doc",
+        "avc_waybill",
         "adn_transport_doc",
         "packing_list",
         "delivery_note"
@@ -1820,23 +1820,22 @@
       "output_format": "pdf"
     },
     {
-      "key": "adr_transport_doc",
+      "key": "avc_waybill",
       "label": {
-        "nl": "ADR-vervoersdocument (weg)",
-        "en": "ADR transport document (road)"
+        "nl": "AVC-vrachtbrief (binnenlands wegvervoer)",
+        "en": "AVC waybill (domestic road carriage)"
       },
       "short_label": {
-        "nl": "ADR",
-        "en": "ADR"
+        "nl": "AVC",
+        "en": "AVC"
       },
-      "category": "generated",
+      "category": "prepared",
       "issue_status": {
-        "nl": "Vervoersdocument gevaarlijke stoffen — eigen CargoPilot-opmaak",
-        "en": "Dangerous goods transport document — CargoPilot layout"
+        "nl": "Vrachtbrief volgens het model van sVa / Stichting Vervoeradres — vervoerdersgegevens en handtekeningen worden bij afgifte ingevuld",
+        "en": "Waybill following the sVa / Stichting Vervoeradres model — carrier details and signatures are completed on handover"
       },
-      "exporter": "generic",
+      "exporter": "avc",
       "dg_profile": "ADR",
-      "dg_only": true,
       "sections": [
         {
           "ref": "parties"
@@ -1845,84 +1844,108 @@
           "ref": "locations"
         },
         {
-          "key": "adr_details",
+          "key": "avc_details",
           "label": {
-            "nl": "ADR-gegevens",
-            "en": "ADR details"
+            "nl": "Vrachtbriefgegevens",
+            "en": "Waybill details"
           },
           "fields": [
             {
-              "key": "tunnel_restriction",
+              "key": "carrier_name",
               "label": {
-                "nl": "Tunnelbeperkingscode",
-                "en": "Tunnel restriction code"
+                "nl": "Vervoerder",
+                "en": "Carrier"
               },
-              "status": "CONDITIONAL",
+              "status": "CARRIER_PROVIDED",
               "type": "text"
+            },
+            {
+              "key": "carrier_address",
+              "label": {
+                "nl": "Adres vervoerder",
+                "en": "Carrier address"
+              },
+              "status": "CARRIER_PROVIDED",
+              "type": "textarea"
+            },
+            {
+              "key": "freight_payment",
+              "label": {
+                "nl": "Frankeringsvoorschrift",
+                "en": "Franking instruction"
+              },
+              "status": "USER_REQUIRED",
+              "type": "select",
+              "options": [
+                {
+                  "value": "franco",
+                  "label": {
+                    "nl": "Franco",
+                    "en": "Franco (prepaid)"
+                  }
+                },
+                {
+                  "value": "niet franco",
+                  "label": {
+                    "nl": "Niet franco",
+                    "en": "Not franco (collect)"
+                  }
+                }
+              ]
             },
             {
               "key": "vehicle_registration",
               "label": {
-                "nl": "Kenteken voertuig/trailer",
-                "en": "Vehicle/trailer registration"
+                "nl": "Kenteken voertuig",
+                "en": "Vehicle registration"
               },
               "status": "OPERATIONAL",
               "type": "text"
             },
             {
-              "key": "emergency_contact",
+              "key": "loading_date",
               "label": {
-                "nl": "Noodcontact",
-                "en": "Emergency contact"
-              },
-              "status": "USER_REQUIRED",
-              "type": "text"
-            },
-            {
-              "key": "established_place",
-              "label": {
-                "nl": "Plaats van opmaak",
-                "en": "Established in"
-              },
-              "status": "USER_REQUIRED",
-              "type": "text"
-            },
-            {
-              "key": "established_date",
-              "label": {
-                "nl": "Datum van opmaak",
-                "en": "Date established"
+                "nl": "Datum van afzending",
+                "en": "Date of dispatch"
               },
               "status": "USER_REQUIRED",
               "type": "date"
+            },
+            {
+              "key": "emergency_contact",
+              "label": {
+                "nl": "Noodcontact (bij gevaarlijke stoffen)",
+                "en": "Emergency contact (dangerous goods)"
+              },
+              "status": "CONDITIONAL",
+              "type": "text"
             }
           ]
         }
       ],
+      "fixed_texts": [
+        {
+          "nl": "Het vervoer geschiedt op de door sVa / Stichting Vervoeradres ter griffie van de arrondissementsrechtbank te Amsterdam en Rotterdam gedeponeerde Algemene Vervoercondities 2002, laatste versie.",
+          "en": "Carriage is subject to the General Transport Conditions 2002 (AVC 2002), latest version, filed by sVa / Stichting Vervoeradres with the district courts of Amsterdam and Rotterdam."
+        }
+      ],
       "signature_note": {
-        "nl": "De gevaarlijke-stoffenomschrijving volgt uit de gevaarlijke-stoffenstap en actuele, gecontroleerde data (ADR).",
-        "en": "The dangerous goods description follows from the dangerous goods step and current, controlled data (ADR)."
+        "nl": "De handtekening van de vervoerder en het ontvangstbewijs van de geadresseerde blijven leeg; die worden bij afgifte respectievelijk aflevering gezet.",
+        "en": "The carrier's signature and the consignee's receipt remain blank; these are signed on handover and delivery respectively."
       },
       "legal_reference": {
-        "nl": "ADR 2025 sectie 5.4.1 (vervoersdocument); omschrijving conform 5.4.1.1.1",
-        "en": "ADR 2025 section 5.4.1 (transport document); description per 5.4.1.1.1"
+        "nl": "Algemene Vervoercondities 2002 (AVC 2002) en boek 8 BW; bij gevaarlijke stoffen tevens ADR 5.4.1 — de vrachtbrief geldt als vervoersdocument zolang de omschrijving van 5.4.1.1.1 erop staat",
+        "en": "General Transport Conditions 2002 (AVC 2002) and Book 8 of the Dutch Civil Code; for dangerous goods also ADR 5.4.1 — the waybill serves as the transport document as long as it carries the 5.4.1.1.1 description"
       },
       "official_templates": [
         {
           "label": {
-            "nl": "UNECE ADR 5.4.1 (officiële tekst)",
-            "en": "UNECE ADR 5.4.1 (official text)"
+            "nl": "sVa / Stichting Vervoeradres — de vrachtbrief, goed geregeld",
+            "en": "sVa / Stichting Vervoeradres — the waybill explained"
           },
-          "url": "https://unece.org/transport/dangerous-goods"
+          "url": "https://www.sva.nl/"
         }
-      ],
-      "fixed_texts": [
-        {
-          "nl": "Omschrijving per positie volgens ADR 5.4.1.1.1, in deze volgorde: UN-nummer, juiste vervoersnaam (technische naam tussen haakjes indien vereist), gevarenklasse(n), verpakkingsgroep, tunnelbeperkingscode — bijvoorbeeld: \"UN 1203, BENZINE, 3, II, (D/E)\".",
-          "en": "Description per entry according to ADR 5.4.1.1.1, in this order: UN number, proper shipping name (technical name in brackets where required), hazard class(es), packing group, tunnel restriction code — for example: \"UN 1203, PETROL, 3, II, (D/E)\"."
-        }
-      ],
-      "output_format": "pdf"
+      ]
     },
     {
       "key": "adn_transport_doc",

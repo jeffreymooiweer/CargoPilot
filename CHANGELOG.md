@@ -2,6 +2,40 @@
 
 All notable changes are documented here, following [Semantic Versioning](https://semver.org/).
 
+## [1.16.0] — 2026-08-02
+
+Columns 16a and 16b, per substance.
+
+### Added
+
+- **Stowage and segregation codes for 2,336 UN numbers**, read out of the UN cards by
+  `scripts/extract_un_card_data.py` into `backend/seed/dg/card_data.json`. 1,242
+  substances carry stowage codes (SW, column 16a) and 840 carry segregation codes
+  (SG, column 16b). Nitric acid, for instance, now yields
+  `SG6, SG16, SG17, SG19, SG36, SG49`.
+- **Each code comes with the wording that explains it.** `SG6` on its own tells a user
+  nothing; the dangerous goods step shows "Segregation as for class 5.1 (SG6). Stow
+  'separated from' class 7 (SG19)." This was the last place the app had to send someone
+  to the Dangerous Goods List itself.
+- **Marine pollutant per substance** (column 4): 202 confirmed, 38 explicitly not, and
+  the rest marked as depending on the actual substance — which is what the source says
+  for n.o.s. entries, and is reported as such rather than guessed either way. A confirmed
+  marine pollutant now fills the field on the IMO and IMDG documents by itself.
+- **Bulk carriage**: the 28 substances that may travel in bulk, with their BK instruction.
+
+### Verification
+
+The extraction read its own EmS code from every card and compared it with `ems.json`,
+which comes from the official EmS Guide: **2,282 agreed and none disagreed**. Two
+independent sources for the same field arriving at the same answer is a good sign for
+both of them. The EmS Guide remains the authority; the card reading is only a check.
+
+### Removed
+
+- The **Fetch UN cards** workflow. It was a one-off and its work is done. Both scripts
+  stay, so a future edition of the IMDG Code is a matter of running them again — see
+  [docs/development.md](docs/development.md#the-un-cards).
+
 ## [1.15.0] — 2026-08-02
 
 The UN card library is in.

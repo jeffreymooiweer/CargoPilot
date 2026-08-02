@@ -33,6 +33,10 @@ Type `1203`, or search for "gasoline". CargoPilot fills in:
 | **LQ and EQ limits** | Limited and excepted quantities, explained in plain language |
 | **EmS emergency schedules** | Fire and spillage schedule for sea transport, with descriptions |
 | **Segregation groups** | SGG1–SGG18, for example "SGG1 (Acids), SGG1a (strong acids)" |
+| **Stowage codes** | SW codes from column 16a, with the wording that explains them |
+| **Segregation codes** | SG codes from column 16b, per substance |
+| **Marine pollutant** | Column 4 — yes, no, or depends on the substance |
+| **Bulk carriage** | Whether the substance may travel in bulk, and under which BK instruction |
 | **Air freight rules** | Cargo Aircraft Only, IATA packing instruction, air prohibitions |
 | **Carriage prohibition** | Substances ADR does not permit for carriage at all |
 
@@ -81,8 +85,13 @@ future edit cannot slip through unnoticed.
 across 539 UN numbers. Warns about acids with alkalis, acids with cyanides (hydrogen
 cyanide), acids with chlorites or hypochlorites (chlorine dioxide, chlorine gas), acids
 with nitrites, acids with azides (explosive hydrazoic acid), acids with metal powders
-(hydrogen), and peroxides with acids. Column 16b of the Dangerous Goods List remains the
-authority.
+(hydrogen), and peroxides with acids.
+
+**Columns 16a and 16b, per substance.** The stowage (SW) and segregation (SG) codes for
+2,336 UN numbers, read from the UN cards. Nitric acid, for instance, yields
+`SG6, SG16, SG17, SG19, SG36, SG49` — and each is shown with the wording that explains
+it, because a bare code tells a user nothing. This used to be the one place the app had
+to send you to the Dangerous Goods List itself.
 
 **IMDG 7.2.6.5 — the class 8 exception.** Acids and alkalis of packing group II or III
 may travel together in packages up to 30 L or 30 kg, provided they do not react
@@ -155,6 +164,8 @@ appear. See [`un_cards/README.md`](../un_cards/README.md).
 | EmS emergency schedules | 2,338 UN numbers — **99.5%** exact, from the official EmS Guide |
 | Segregation groups | 632 entries across 539 UN numbers |
 | UN packaging codes | All 107 codes of ADR 6.1.2 / 6.5.1.4 / 6.6.2 |
+| Stowage and segregation codes per substance | 2,336 UN numbers — 1,242 with SW codes, 840 with SG codes |
+| Marine pollutant status | 2,336 UN numbers — 202 confirmed, 38 explicitly not, the rest substance-dependent |
 | IMDG class segregation table | Complete, Amendment 40-20 |
 | Class 1 compatibility matrix | Complete, groups A to S |
 

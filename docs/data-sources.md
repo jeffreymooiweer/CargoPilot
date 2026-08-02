@@ -96,10 +96,13 @@ The part number is not the UN number (`part1` is UN 0004), so the workflow reads
 number out of each card rather than trusting the filename. `un_cards/manifest.json`
 records where each file came from and how it was identified.
 
-Each card carries more than the emergency information: marine pollutant status, EmS
-codes, stowage (SW) and segregation (SG) codes, bulk and tank admissibility, and the
-limited and excepted quantity limits. Extracting those into the dangerous goods database
-is on the [roadmap](../ROADMAP.md); today the cards are only handed to the user as PDFs.
+The cards carry more than emergency information, and that has been extracted into
+`backend/seed/dg/card_data.json` by `scripts/extract_un_card_data.py`: marine pollutant
+status (column 4), stowage codes (SW, column 16a), segregation codes (SG, column 16b) and
+bulk carriage, for all 2,336 UN numbers.
+
+The extraction cross-checks its own EmS readings against `ems.json`, which comes from the
+official EmS Guide and remains the authority: **2,282 agreed, none disagreed**.
 
 ## Official form templates
 

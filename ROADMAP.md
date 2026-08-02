@@ -21,6 +21,8 @@ registry are settled.
 | Generated documents | IMO DG Form, VGM, AWB and B/L instructions, ADN document, packing list, delivery note |
 | Goods database | 400 goods with densities and NL/EN aliases |
 | Dangerous goods | 2,928 UN entries, 2,338 EmS schedules, full IMDG segregation, ADR and IATA compliance checks |
+| Per-substance IMDG data | Marine pollutant, stowage (SW) and segregation (SG) codes for 2,336 UN numbers |
+| UN cards | 2,849 reference cards, downloadable per shipment |
 | Locations | 4,500+ airports, 17,500+ ports, 750+ stations, offline |
 | Interface | Dutch and English, light and dark |
 
@@ -28,13 +30,10 @@ registry are settled.
 
 ### Dangerous goods data
 
-- **Per-substance data from the UN cards.** Each card in `un_cards/` states the marine
-  pollutant status, EmS codes, stowage codes (SW), segregation codes (SG, column 16b),
-  bulk and tank admissibility, and the limited and excepted quantity limits — in a
-  fixed label/value layout that parses cleanly. Today the app knows the segregation
-  *groups* per substance but points at column 16b for the substance-specific codes;
-  this closes that gap. Blocked only on the card library being fetched.
 - German as a third interface language, including the dangerous goods help texts.
+- Use the segregation codes in the compliance checks, not just as information. The codes
+  are now known per substance; turning `SG35` into a warning when an incompatible load is
+  present is the next step.
 
 ### Wizard and library
 

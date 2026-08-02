@@ -117,7 +117,8 @@ def derive_product(product: dict[str, Any], language: str = "nl") -> dict[str, A
     hints = {
         key: value
         for key, value in extras.items()
-        if key.endswith(("_text", "_note", "_default", "_source", "_description", "_variants", "_options"))
+        if key.endswith(("_text", "_note", "_default", "_source", "_description", "_variants",
+                         "_options", "_codes"))
     }
     if extras.get("air_forbidden"):
         hints["air_forbidden"] = True

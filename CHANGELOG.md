@@ -2,6 +2,30 @@
 
 All notable changes are documented here, following [Semantic Versioning](https://semver.org/).
 
+## [1.27.0] — 2026-08-03
+
+The manifest from v1.26.0 knew the IATA DGR expires on 31 December 2026, but only told
+whoever asked `/api/regulatory`. Someone making an air declaration in 2027 saw nothing.
+
+### Added
+
+- **A compliance result now says when it was computed with an edition that no longer
+  applies.** The warning reaches the wizard *and* the export, because a document outlives
+  the session it was made in while a screen does not. Expiry is not a prohibition, so it
+  warns rather than blocks — stopping the export would only push people to work around
+  the check.
+- **`stale_rule_sets()`, which is deliberately not the same as `expired_rule_sets()`.**
+  The 41-22 UN cards are expired *and knowingly replaced*: columns 16a and 16b have come
+  from the 42-24 list since v1.23.0, and what the cards still supply — marine pollutant
+  and bulk — did not change with the edition. Warning about that on every single check
+  would make warning itself worthless: someone who dismisses a message every time will
+  dismiss the one that matters too. A rule set carrying `superseded_by` is left out.
+
+  Today this reports nothing at all. On 1 January 2027 it reports the IATA DGR, and only
+  to the IATA profile — a road shipment has no use for an air-freight notice.
+- **The manifest id travels with the result**, in the compliance response and under the
+  panel, so a bug report can say which data the installation computed with.
+
 ## [1.26.0] — 2026-08-03
 
 ### Added

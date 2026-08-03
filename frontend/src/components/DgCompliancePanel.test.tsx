@@ -175,6 +175,48 @@ describe("een validatiefout van de server", () => {
   });
 });
 
+describe("een verlopen regelset", () => {
+  it("staat bovenaan, vóór de inhoudelijke bevindingen", async () => {
+    // De bevindingen zijn ermee gerekend, dus de gebruiker moet dit eerst zien.
+    vi.spyOn(api, "dgCompliance").mockResolvedValue({
+      rule_set_warnings: [{
+        rule: "IATA DGR — luchtvracht",
+        severity: "warning",
+        message: "67e editie (2026) is verlopen op 2026-12-31.",
+        products: "IATA",
+      }],
+      iata_segregation: [{
+        rule: "IATA 9.3.2", severity: "warning", message: "iets over scheiding", products: "UN 1203",
+      }],
+    } as unknown as DgComplianceResult);
+
+    render(<DgCompliancePanel entries={entries("20 L")} profiles={["IATA"]} />);
+    await tick();
+
+    const stale = await screen.findByText("IATA DGR — luchtvracht");
+    const segregation = await screen.findByText("IATA 9.3.2");
+    // DOCUMENT_POSITION_FOLLOWING: de scheidingsbevinding komt ná de melding
+    // over de verlopen editie.
+    expect(stale.compareDocumentPosition(segregation) & Node.DOCUMENT_POSITION_FOLLOWING)
+      .toBeTruthy();
+  });
+
+  it("toont waar de uitkomst mee is gerekend", async () => {
+    vi.spyOn(api, "dgCompliance").mockResolvedValue({
+      regulatory_manifest: {
+        manifest_id: "37dcc090baea0915",
+        editions: { iata: "67e editie (2026)" },
+        expired: [],
+      },
+    } as unknown as DgComplianceResult);
+
+    render(<DgCompliancePanel entries={entries("20 L")} profiles={["IATA"]} />);
+    await tick();
+
+    expect(await screen.findByText(/compliance.manifest/)).toHaveTextContent("37dcc090baea0915");
+  });
+});
+
 describe("wanneer het paneel niets te zeggen heeft", () => {
   it("toont het zichzelf niet zonder stoffen of zonder profiel", () => {
     const { container } = render(<DgCompliancePanel entries={[]} profiles={["ADR"]} />);

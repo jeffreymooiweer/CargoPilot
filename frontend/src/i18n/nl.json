@@ -314,6 +314,7 @@
     "exemptFrom": "Vrijgesteld van (o.a.):",
     "stillRequired": "Blijft wél verplicht:",
     "segregationTitle": "Samenlading en segregatie",
+    "manifest": "Gerekend met: {{editions}} — gegevensversie {{id}}",
     "noSegregationIssues": "Geen samenladings- of segregatieconflicten gevonden binnen de ingevoerde posities.",
     "qTitle": "IATA Q-waarde ('all packed in one')",
     "qValueFor": "Positie {{position}}: Q = {{value}}",

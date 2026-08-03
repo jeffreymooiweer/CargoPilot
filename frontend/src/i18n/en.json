@@ -314,6 +314,7 @@
     "exemptFrom": "Exempt from (among others):",
     "stillRequired": "Still required:",
     "segregationTitle": "Mixed loading and segregation",
+    "manifest": "Computed with: {{editions}} — data version {{id}}",
     "noSegregationIssues": "No mixed-loading or segregation conflicts found within the entered positions.",
     "qTitle": "IATA Q value ('all packed in one')",
     "qValueFor": "Position {{position}}: Q = {{value}}",

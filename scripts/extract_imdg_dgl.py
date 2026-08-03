@@ -112,6 +112,9 @@ LINE_TOLERANCE = 3.0
 # wijst precies de vermeldingen aan die het amendement heeft aangeraakt.
 UN_CELL = re.compile(r"^([^\w\s]?)\s*(\d{4})$")
 
+# Hetzelfde, maar op één woord: waar in de eerste kolom een rij begint.
+UN_WORD = re.compile(r"^[^\w\s]?\d{4}$")
+
 # Een cel die met een UN-nummer begint maar doorloopt, betekent dat de tekst
 # over de kolomgrens heen is gelezen. Dat mag niet stilzwijgend passeren.
 UN_OVERFLOW = re.compile(r"^[^\w\s]?\s*(\d{4})\s+\S")
@@ -232,6 +235,37 @@ def find_row_rules(page, tolerance: float = 2.5, coverage: float = 0.4) -> list[
             merged.append((y, spans[y]))
     needed = max(widest, 1.0) * coverage
     return [y for y, width in merged if width >= needed]
+
+
+def un_number_rows(page, bounds: list[tuple[str, float, float]]) -> list[float]:
+    """De hoogtes waarop in de eerste kolom een UN-nummer staat."""
+    found = []
+    for x0, y0, _x1, _y1, word, *_ in page.get_text("words"):
+        if not BODY_TOP <= y0 <= BODY_BOTTOM:
+            continue
+        if column_of(x0, bounds) == "un_number" and UN_WORD.match(word.strip()):
+            found.append(y0)
+    return sorted(found)
+
+
+def row_rules_for(page, bounds: list[tuple[str, float, float]],
+                  clearance: float = 3.0, tolerance: float = 4.0) -> list[float]:
+    """De rijgrenzen, aangevuld op de plaatsen waar de tabel er geen tekent.
+
+    De getekende randen omranden een blók rijen zodra de vermeldingen kort
+    zijn. Op p627 belandden UN 1360, UN 1361 (twee verpakkingsgroepen) en
+    UN 1362 daardoor in één band en dus in één vermelding, met '4.3 4.2 4.2
+    4.2' als klasse. Elke rij begint met een UN-nummer in de eerste kolom, dus
+    net boven zo'n nummer hoort een grens — of de tabel daar nu een lijn trekt
+    of niet.
+    """
+    candidates = list(find_row_rules(page))
+    candidates += [y - clearance for y in un_number_rows(page, bounds)]
+    merged: list[float] = []
+    for y in sorted(candidates):
+        if not merged or y - merged[-1] > tolerance:
+            merged.append(y)
+    return merged
 
 
 def _recurring(counts: dict[float, int], tolerance: float) -> list[float]:
@@ -383,7 +417,8 @@ def extract(path: Path, only_pages: list[int] | None = None) -> tuple[list[dict]
 
             pages_read.append(number)
             rule_shapes[shape] = rule_shapes.get(shape, 0) + 1
-            for entry in merge_rows(page_lines(page, bounds, find_row_rules(page))):
+            row_rules = row_rules_for(page, bounds)
+            for entry in merge_rows(page_lines(page, bounds, row_rules)):
                 clean = normalise(entry)
                 cell = clean.get("un_number", "")
                 if UN_CELL.match(cell) or UN_OVERFLOW.match(cell):
@@ -514,8 +549,7 @@ def diagnose(path: Path, pages: list[int]) -> None:
                        if d["rect"].width <= 2.0 and d["rect"].height >= 10.0]
             print(f"  verticale segmenten: {len(heights)}, hoogte "
                   f"{min(heights, default=0):.1f}..{max(heights, default=0):.1f}")
-            row_rules = find_row_rules(page)
-            print(f"  horizontale randen: {len(row_rules)}")
+            print(f"  getekende horizontale randen: {len(find_row_rules(page))}")
 
             rules = find_rules(page)
             markers = column_markers(page)
@@ -529,8 +563,16 @@ def diagnose(path: Path, pages: list[int]) -> None:
             for name, left, right in bounds:
                 print(f"    {left:7.1f} - {right:7.1f}  {name}")
 
+            starts = un_number_rows(page, bounds)
+            row_rules = row_rules_for(page, bounds)
+            print(f"  UN-nummers in de eerste kolom: {len(starts)}; "
+                  f"rijgrenzen na aanvulling: {len(row_rules)}")
+
             lines = page_lines(page, bounds, row_rules)
             print(f"  rijen na kolom- en rijindeling: {len(lines)}")
+            odd = [ascii(cells.get("un_number", "")) for cells in lines
+                   if not UN_CELL.match(cells.get("un_number", "").strip())]
+            print(f"  eerste cellen die geen UN-nummer zijn: {odd}")
             for cells in lines[:5]:
                 print(f"    {cells}")
 

@@ -107,7 +107,16 @@
     "downloadTemplate": "Download template",
     "chooseFile": "Choose file",
     "parsingFile": "Processing file…",
-    "importingFile": "Importing…"
+    "importingFile": "Importing…",
+    "guessedColumns": "This file's header was not recognised, so the columns were guessed by position. Check below whether that is right.",
+    "recognisedColumns": "The header was recognised. If the mapping is wrong, change it here.",
+    "columnNone": "— do not use —",
+    "firstRowIsHeader": "First row is a header and not part of the cargo",
+    "field": {
+      "description": "Description",
+      "quantity": "Quantity",
+      "unit": "Unit"
+    }
   },
   "messages": {
     "dg_un_detected": "UN number detected — package marked as dangerous goods"

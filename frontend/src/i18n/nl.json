@@ -107,7 +107,16 @@
     "downloadTemplate": "Template downloaden",
     "chooseFile": "Bestand kiezen",
     "parsingFile": "Bestand verwerken…",
-    "importingFile": "Importeren…"
+    "importingFile": "Importeren…",
+    "guessedColumns": "De koptekst van dit bestand is niet herkend, dus de kolommen zijn op volgorde geraden. Controleer hieronder of dat klopt.",
+    "recognisedColumns": "De koptekst is herkend. Klopt de indeling niet, pas hem hier aan.",
+    "columnNone": "— niet gebruiken —",
+    "firstRowIsHeader": "Eerste regel is een koptekst en hoort niet bij de goederen",
+    "field": {
+      "description": "Omschrijving",
+      "quantity": "Aantal",
+      "unit": "Eenheid"
+    }
   },
   "messages": {
     "dg_un_detected": "UN-nummer gedetecteerd — collo gemarkeerd als gevaarlijke stoffen"

@@ -240,10 +240,10 @@ def find_row_rules(page, tolerance: float = 2.5, coverage: float = 0.4) -> list[
 def un_number_rows(page, bounds: list[tuple[str, float, float]]) -> list[float]:
     """De hoogtes waarop in de eerste kolom een UN-nummer staat."""
     found = []
-    for x0, y0, _x1, _y1, word, *_ in page.get_text("words"):
+    for x0, y0, x1, _y1, word, *_ in page.get_text("words"):
         if not BODY_TOP <= y0 <= BODY_BOTTOM:
             continue
-        if column_of(x0, bounds) == "un_number" and UN_WORD.match(word.strip()):
+        if column_of((x0 + x1) / 2, bounds) == "un_number" and UN_WORD.match(word.strip()):
             found.append(y0)
     return sorted(found)
 
@@ -317,16 +317,23 @@ def page_lines(page, bounds: list[tuple[str, float, float]],
     wat genoeg is om door te lezen maar twee korte vermeldingen aan elkaar kan
     plakken.
 
+    Een woord hoort bij de kolom waarin zijn mídden valt, niet zijn linkerrand.
+    Een gewijzigde vermelding draagt een driehoekje vóór het UN-nummer, en dat
+    zet het woord "△1361" met zijn linkerrand buiten de tabel; op de linkerrand
+    afgaan liet die rijen zonder UN-nummer achter, waarna zij als vervolgregel
+    bij UN 1360 introkken — klasse '4.3 4.2 4.2 4.2'. Celtekst steekt verder
+    nooit over een kolomgrens heen, dus het midden wijst dezelfde kolom aan.
+
     Binnen een rij worden de woorden op leesvolgorde gezet: eerst van boven
     naar beneden, dan van links naar rechts, zodat een naam over twee regels in
     de goede volgorde aan elkaar komt.
     """
     rows: dict[Any, dict[str, list[tuple[float, float, str]]]] = defaultdict(
         lambda: defaultdict(list))
-    for x0, y0, _x1, _y1, word, *_ in page.get_text("words"):
+    for x0, y0, x1, _y1, word, *_ in page.get_text("words"):
         if not BODY_TOP <= y0 <= BODY_BOTTOM:
             continue
-        column = column_of(x0, bounds)
+        column = column_of((x0 + x1) / 2, bounds)
         if not column:
             continue
         if row_rules:

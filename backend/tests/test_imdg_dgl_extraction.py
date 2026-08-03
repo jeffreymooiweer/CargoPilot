@@ -435,6 +435,19 @@ def test_the_column_edges_still_come_out_of_the_same_rectangles():
     assert dgl.find_rules(page)[:3] == [65.0, 125.0, 185.0]
 
 
+def test_the_change_marker_does_not_push_the_un_number_out_of_the_table():
+    """Het driehoekje staat vóór het nummer, dus "△1361" begint links van de
+    buitenrand op x 42.5. Op de linkerrand afgaan liet die rijen zonder
+    UN-nummer achter en dus als vervolgregel bij UN 1360 introkken. Het midden
+    van het woord ligt wel in de kolom."""
+    words = [
+        (49.0, 205.0, 62.0, 215.0, "1360", 0, 0, 0),
+        (36.0, 225.0, 62.0, 235.0, "△1361", 0, 1, 0),
+    ]
+    lines = dgl.page_lines(FakeWordPage(words), BOUNDS, row_rules=[200.0, 220.0, 260.0])
+    assert [c.get("un_number") for c in lines] == ["1360", "△1361"]
+
+
 def test_a_band_holding_several_short_entries_is_split_at_each_un_number():
     """De getekende randen omranden een blók rijen zodra de vermeldingen kort
     zijn. Op p627 zaten UN 1360, UN 1361 (twee verpakkingsgroepen) en UN 1362

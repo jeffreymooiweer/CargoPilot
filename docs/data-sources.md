@@ -124,6 +124,11 @@ The cards carry more than emergency information, and that has been extracted int
 status (column 4), stowage codes (SW, column 16a), segregation codes (SG, column 16b) and
 bulk carriage, for all 2,336 UN numbers.
 
+Since v1.23.0 columns 16a and 16b come from the Dangerous Goods List of Amendment 42-24
+instead, so what the cards still supply is marine pollutant status and bulk carriage.
+They no longer carry a class: nothing in the application read it, and the card parser had
+it wrong for eleven substances (see the v1.27.1 entry in the changelog).
+
 The extraction cross-checks its own EmS readings against `ems.json`, which comes from the
 official EmS Guide and remains the authority: **2,282 agreed, none disagreed**.
 

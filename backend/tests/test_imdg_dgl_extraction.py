@@ -483,3 +483,103 @@ def test_horizontal_rules_remain_the_fallback():
     randen worden verdeeld."""
     page = FakeWordPage([], [FakeHRect(200.0, 1100.0), FakeHRect(260.0, 1100.0)])
     assert dgl.find_row_rules(page) == [200.0, 260.0]
+
+
+# --- De zelfcontrole leunt op een onafhankelijke bron -------------------------
+#
+# De klasse kwam eerst uit card_data.json, maar dat zijn de UN-kaarten: óók een
+# IMDG-bron. Dan legt de ene IMDG-lezing naast de andere en meet je niets. Erger:
+# die kaarten dragen voor UN 2984 t/m 2992, 3548 en 3550 volgnummers in het
+# klasseveld, wat elf valse afwijkingen opleverde die stuk voor stuk zijn
+# nagelopen. ADR Tabel A is wél onafhankelijk van deze PDF.
+
+def test_the_class_check_reads_adr_and_not_the_un_cards():
+    divisions = dgl.adr_divisions()
+    assert len(divisions) > 2000
+    # ADR geeft bij explosieven alleen '1' en bij gassen alleen '2'; de lijst
+    # draagt de divisie voluit, dus die moeten gelijkgetrokken worden.
+    assert divisions["0004"] == {"1.1D"}
+    assert divisions["1017"] == {"2.3"}
+    assert divisions["1203"] == {"3"}
+
+
+def test_the_substances_whose_cards_were_broken_now_read_correctly():
+    """Precies de nummers waarop de oude zelfcontrole vals alarm sloeg."""
+    divisions = dgl.adr_divisions()
+    assert divisions["2984"] == {"5.1"}
+    assert divisions["2988"] == {"4.3"}
+    assert divisions["3548"] == {"9"}
+
+
+def test_the_copied_division_rule_matches_the_one_in_the_application():
+    """Het extractiescript draait in GitHub Actions met alleen pymupdf en kan
+    de applicatie niet importeren, dus deze regel staat er twee keer. Deze test
+    is wat voorkomt dat de kopieën uit elkaar lopen.
+
+    Eén verschil is bedoeld: waar de applicatie op een kale "1" of "2" uitkomt
+    heeft ADR geen divisie gegeven, en dan laat het script de stof helemaal weg
+    in plaats van hem te vergelijken. Overal waar de applicatie wél een divisie
+    afleidt, moeten ze het eens zijn."""
+    import json
+    from pathlib import Path as _Path
+
+    from app.services.dg.enrichment import parse_hazards
+
+    seed = _Path(__file__).resolve().parents[1] / "seed" / "dg" / "un_numbers.json"
+    entries = json.loads(seed.read_text(encoding="utf-8"))
+    divisions = dgl.adr_divisions()
+
+    for entry in entries:
+        un = str(entry.get("un", "")).strip()
+        expected = parse_hazards(entry)["division"]
+        if expected and expected not in {"1", "2"}:
+            assert expected in divisions.get(un, set()), un
+
+
+def test_a_un_number_with_several_adr_entries_keeps_all_its_divisions():
+    """UN 1950 (aerosolen) staat in Tabel A als 2.1 én als 2.2. Eén ervan
+    onthouden zou de andere helft als afwijking laten tellen."""
+    assert dgl.adr_divisions()["1950"] == {"2.1", "2.2"}
+
+
+def test_a_class_that_heads_an_adr_division_counts_as_agreement():
+    """De IMDG-code noemt aerosolen klasse 2 waar ADR de divisie geeft. Dat is
+    geen tegenspraak maar een verschil in hoe fijn de twee indelen."""
+    assert dgl.division_matches("2", {"2.1", "2.2"})
+    assert dgl.division_matches("2.1", {"2.1", "2.2"})
+    assert not dgl.division_matches("3", {"2.1", "2.2"})
+    assert not dgl.division_matches("", {"2.1"})
+
+
+def test_a_substance_adr_forbids_on_the_road_is_left_out_of_the_comparison():
+    """UN 2186 mag over de weg niet en heeft in Tabel A dus geen etiket; over
+    zee mag het wel en noemt de IMDG-code de divisie 2.3. Die twee tegen elkaar
+    leggen meet niets — de ene bron heeft er geen antwoord op."""
+    divisions = dgl.adr_divisions()
+    assert "2186" not in divisions
+    assert "2421" not in divisions
+
+
+def test_an_article_referring_to_5_2_2_1_12_is_left_out_too():
+    """'siehe 5.2.2.1.12': voorwerpen dragen de etiketten van elk aanwezig
+    gevaar, dus ADR noemt hier geen divisie."""
+    assert "3537" not in dgl.adr_divisions()
+
+
+def test_a_class_that_is_never_divided_is_still_compared():
+    """Klasse 1 en 2 worden altijd verdeeld; 3, 8 en 9 niet. Die laatste
+    weglaten zou het vangnet onnodig verkleinen."""
+    divisions = dgl.adr_divisions()
+    assert divisions["1203"] == {"3"}
+    assert divisions["3423"] == {"8"}
+
+
+def test_the_un_cards_no_longer_carry_a_class():
+    """Het veld werd door niets in de applicatie gelezen en was aantoonbaar
+    fout. Repareren wat niemand leest is verspilde moeite; weg is beter."""
+    import json
+    from pathlib import Path as _Path
+
+    seed = _Path(__file__).resolve().parents[1] / "seed" / "dg" / "card_data.json"
+    cards = json.loads(seed.read_text(encoding="utf-8"))["entries"]
+    assert not any("class" in entry for entry in cards.values())

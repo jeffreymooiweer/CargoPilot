@@ -2,6 +2,49 @@
 
 All notable changes are documented here, following [Semantic Versioning](https://semver.org/).
 
+## [1.27.1] — 2026-08-03
+
+The Dangerous Goods List extractor checked itself against the UN cards, which are also
+an IMDG source. That is one IMDG reading held up against another, and it measures
+nothing.
+
+### Changed
+
+- **The class cross-check now reads ADR Table A** (`un_numbers.json`) instead of
+  `card_data.json`. Agreement goes from 2322/2336 to **2328/2329**, and the fourteen
+  differences drop to one:
+
+  - Eleven were the cards, not the list: UN 2984–2992, 3548 and 3550 carried sequence
+    numbers in their class field.
+  - Six more appear and then resolve — UN 2186, 2421, 2455, 3537, 3538 and 3539. ADR has
+    no division to give for these: the label column reads `BEFÖRDERUNG VERBOTEN` for the
+    ones forbidden on the road, or `siehe 5.2.2.1.12` for articles carrying the labels of
+    each hazard present. They travel by sea and the IMDG Code names their division
+    normally. Comparing where one source has no answer is not a check, so those entries
+    are left out rather than counted as disagreeing.
+  - What remains is **UN 3423**, the genuine 42-24 reclassification from 8 to 6.1 (8) —
+    which the list confirms itself with its change marker.
+
+- A UN number can appear in Table A more than once (UN 1950, aerosols, is both 2.1 and
+  2.2), so divisions are collected as a set. And where the IMDG Code says class 2 while
+  ADR gives 2.1, that is not a contradiction but a difference in how finely the two
+  regimes divide; a class that heads an ADR division counts as agreement.
+
+### Removed
+
+- **The `class` field from `card_data.json`** and from `extract_un_card_data.py`. Nothing
+  in the application ever read it — only that cross-check. It was also wrong: the card
+  parser picked up the wrong line for those eleven substances, and where two card
+  variants disagreed `merge()` kept both, producing `["10", "9"]`. Repairing a field
+  nobody reads is wasted effort.
+
+### Notes
+
+- The division rule now exists twice: in `parse_hazards()` and in the extractor, which
+  runs in GitHub Actions with only pymupdf and cannot import the application. A test ties
+  them together over all 2928 Table A entries, and it earned its keep immediately — it
+  caught that the copy skipped the label normalisation that turns `9A` into `9`.
+
 ## [1.27.0] — 2026-08-03
 
 The manifest from v1.26.0 knew the IATA DGR expires on 31 December 2026, but only told

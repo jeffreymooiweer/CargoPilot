@@ -106,7 +106,6 @@ def parse_card(path: Path) -> dict[str, object] | None:
     record: dict[str, object] = {
         "un": value_after(lines, "UN number").zfill(4),
         "name": value_after(lines, "Shipping name"),
-        "class": value_after(lines, "Class"),
         "marine_pollutant": prefixed(value_after(lines, "Marine pollutant")),
         "ems": value_after(lines, "EmS"),
         "bulk": value_after(lines, "Transport in bulk").strip().lower(),
@@ -237,7 +236,15 @@ def merge(records: list[dict[str, object]]) -> dict[str, object]:
     one, the same rule the rest of the app follows.
     """
     merged: dict[str, object] = {}
-    for field in ("marine_pollutant", "ems", "bulk", "class"):
+    # De klasse stond hier ook, maar is verwijderd. Zij werd door niets in de
+    # applicatie gelezen — alleen door de zelfcontrole van
+    # scripts/extract_imdg_dgl.py, en die legde daarmee de ene IMDG-lezing naast
+    # de andere in plaats van tegen een onafhankelijke bron. Bovendien las
+    # value_after(lines, "Class") op sommige kaarten iets anders: UN 2984 t/m
+    # 2992, 3548 en 3550 kregen volgnummers als klasse, en waar twee varianten
+    # het oneens waren bewaarde merge() ze allebei ("['10', '9']"). De
+    # zelfcontrole gebruikt nu ADR Tabel A uit un_numbers.json.
+    for field in ("marine_pollutant", "ems", "bulk"):
         values = [r[field] for r in records if r.get(field)]
         unique = list(dict.fromkeys(values))
         if len(unique) == 1:

@@ -14,6 +14,7 @@ from typing import Any
 
 from app.core.config import get_settings
 from app.services.dg import amendment_42_24, dangerous_goods_list
+from app.services.regulatory_manifest import stale_rule_sets, summary
 from app.services.dg.enrichment import (
     card_data_for,
     imdg_code_text,
@@ -1002,6 +1003,29 @@ def check_compliance(
         },
     }
     normalized = {p.upper() for p in profiles}
+
+    # Waar deze uitkomst mee is gerekend, in één id — bruikbaar in een melding
+    # en in de controlebijlage bij een export.
+    result["regulatory_manifest"] = summary()
+
+    # Een regelset die is afgelopen en niet is vervangen, is geen detail: dan
+    # rekent deze controle met tekst die niet meer geldt. De uitkomst blijft
+    # staan, maar zegt er zelf bij dat hij op verlopen regels berust.
+    for stale in stale_rule_sets(sorted(normalized)):
+        result.setdefault("rule_set_warnings", []).append({
+            "rule": stale["name"],
+            "severity": "warning",
+            "message": (
+                f"{stale['edition']} is verlopen op {stale['expired_on']}. Deze "
+                f"controle rekent met een editie die niet meer geldt; werk "
+                f"CargoPilot bij of raadpleeg de actuele uitgave."
+                if _lang(language) == "nl" else
+                f"{stale['edition']} expired on {stale['expired_on']}. This check "
+                f"is computing with an edition that no longer applies; update "
+                f"CargoPilot or consult the current edition."
+            ),
+            "products": ", ".join(stale["profiles"]),
+        })
 
     if {"ADR", "RID", "ADN"} & normalized:
         result["adr_points"] = check_adr_points(entries, language)

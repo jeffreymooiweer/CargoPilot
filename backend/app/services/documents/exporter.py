@@ -285,6 +285,11 @@ def validate_document(
             from app.services.dg.compliance import check_compliance
 
             outcome = check_compliance(entries, [profile], language)
+            # Rekent deze export met een regelset die is afgelopen en niet is
+            # vervangen, dan hoort dat op het document en niet alleen op het
+            # scherm — een document overleeft de sessie waarin het is gemaakt.
+            for finding in outcome.get("rule_set_warnings", []) or []:
+                warnings.append(f"{finding['rule']}: {finding['message']}")
             for finding in outcome.get("imdg_segregation", []) + outcome.get(
                 "adr_mixed_loading", []
             ) + outcome.get("iata_segregation", []):

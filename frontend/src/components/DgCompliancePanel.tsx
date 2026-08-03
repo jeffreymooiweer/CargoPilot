@@ -62,7 +62,10 @@ export default function DgCompliancePanel({ entries, profiles }: Props) {
   if (entries.length === 0 || profiles.length === 0) return null;
 
   const adr = result?.adr_points;
+  // Een verlopen regelset gaat vóór alle inhoudelijke bevindingen: die
+  // bevindingen zijn ermee gerekend.
   const warnings: ComplianceWarning[] = [
+    ...(result?.rule_set_warnings ?? []),
     ...(result?.adr_mixed_loading ?? []),
     ...(result?.imdg_segregation ?? []),
     ...(result?.iata_segregation ?? []),
@@ -186,6 +189,14 @@ export default function DgCompliancePanel({ entries, profiles }: Props) {
         (result.adr_mixed_loading || result.imdg_segregation || result.iata_segregation) && (
           <p className="text-xs text-emerald-700 dark:text-emerald-300">{t("compliance.noSegregationIssues")}</p>
         )}
+      {result?.regulatory_manifest && (
+        <p className="text-[11px] text-slate-400 dark:text-slate-500">
+          {t("compliance.manifest", {
+            id: result.regulatory_manifest.manifest_id,
+            editions: Object.values(result.regulatory_manifest.editions).join(" · "),
+          })}
+        </p>
+      )}
       {result?.imdg_note && (
         <p className="text-[11px] text-slate-500 dark:text-slate-400">{result.imdg_note}</p>
       )}

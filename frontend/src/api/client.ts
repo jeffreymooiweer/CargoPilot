@@ -570,6 +570,14 @@ export interface DgComplianceResult {
   profiles: string[];
   adr_points?: AdrPointsResult;
   adr_mixed_loading?: ComplianceWarning[];
+  /** Regelsets die zijn afgelopen zonder dat er iets voor in de plaats is. */
+  rule_set_warnings?: ComplianceWarning[];
+  /** Waar deze uitkomst mee is gerekend. */
+  regulatory_manifest?: {
+    manifest_id: string;
+    editions: Record<string, string>;
+    expired: string[];
+  };
   imdg_segregation?: ComplianceWarning[];
   imdg_note?: string;
   imdg_segregation_groups?: {

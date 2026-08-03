@@ -35,6 +35,7 @@ CONFIG = Path(__file__).resolve().parents[1] / "config"
 RULE_SETS: list[dict[str, Any]] = [
     {
         "key": "adr",
+        "profiles": ["ADR", "RID", "ADN"],
         "name": "ADR — vervoer over de weg",
         "edition": "2025",
         "source": "UNECE ADR 2025, Tabel A via rkstgr/adr-substances",
@@ -53,6 +54,7 @@ RULE_SETS: list[dict[str, Any]] = [
     },
     {
         "key": "imdg",
+        "profiles": ["IMDG"],
         "name": "IMDG-code — vervoer over zee",
         "edition": "Amendment 42-24 (2024 Edition)",
         "source": "IMO-resolutie MSC.556(108), aangenomen 23 mei 2024",
@@ -70,6 +72,7 @@ RULE_SETS: list[dict[str, Any]] = [
     },
     {
         "key": "imdg_class_tables",
+        "profiles": ["IMDG"],
         "name": "IMDG-code — scheidingstabellen hoofdstuk 7.2 en 3.1.4.4",
         "edition": "Amendment 40-20, geverifieerd ongewijzigd in 42-24",
         "source": (
@@ -90,6 +93,7 @@ RULE_SETS: list[dict[str, Any]] = [
     },
     {
         "key": "ems",
+        "profiles": ["IMDG"],
         "name": "EmS Guide — noodprocedures aan boord",
         "edition": "MSC.1/Circ.1588/Rev.3",
         "source": "IMO MSC.1/Circ.1588/Rev.3, EmS Guide — index per UN-nummer",
@@ -105,6 +109,7 @@ RULE_SETS: list[dict[str, Any]] = [
     },
     {
         "key": "iata",
+        "profiles": ["IATA"],
         "name": "IATA DGR — luchtvracht",
         "edition": "67e editie (2026)",
         "source": "IATA Dangerous Goods Regulations, 67e editie",
@@ -124,6 +129,12 @@ RULE_SETS: list[dict[str, Any]] = [
     },
     {
         "key": "imdg_un_cards",
+        "profiles": ["IMDG"],
+        # Verlopen én dat weten we: kolom 16a en 16b komen sinds v1.23.0 uit de
+        # Dangerous Goods List van 42-24. Wat de kaarten nog leveren — marine
+        # pollutant en bulk — is niet met de editie meeveranderd. Hier elke
+        # controle over waarschuwen zou het waarschuwen zelf waardeloos maken.
+        "superseded_by": "imdg",
         "name": "IMDG UN-kaarten — aanvullende stofgegevens",
         "edition": "41-22 (2023)",
         "source": "Cantell IMDG UN cards, 2023 edition",
@@ -203,6 +214,40 @@ def build_manifest(today: date | None = None) -> dict[str, Any]:
             "RID, ADN, de IMDG-code en de IATA DGR blijft leidend; zie DISCLAIMER.md."
         ),
     }
+
+
+def stale_rule_sets(profiles: list[str] | None = None,
+                    today: date | None = None) -> list[dict[str, Any]]:
+    """Regelsets die verlopen zijn zonder dat er iets voor in de plaats is.
+
+    Dit is niet hetzelfde als `expired_rule_sets()`. De UN-kaarten van 41-22
+    zijn verlopen én bewust vervangen: kolom 16a en 16b komen uit de lijst van
+    42-24 en wat de kaarten nog leveren is niet met de editie meeveranderd.
+    Daarover bij elke controle waarschuwen zou het waarschuwen zelf waardeloos
+    maken — wie elke keer een melding wegklikt, klikt straks ook de melding weg
+    die er wél toe doet.
+
+    Wat overblijft is het geval waarvoor dit bedoeld is: een editie die is
+    afgelopen en waar niemand iets aan heeft gedaan. Vandaag levert dat niets
+    op; op 1 januari 2027 levert het de IATA DGR op.
+    """
+    today = today or date.today()
+    wanted = {str(p).strip().upper() for p in (profiles or [])}
+    out = []
+    for entry in RULE_SETS:
+        if rule_set_status(entry, today) != "expired" or entry.get("superseded_by"):
+            continue
+        covered = {p.upper() for p in entry.get("profiles", [])}
+        if wanted and not (covered & wanted):
+            continue
+        out.append({
+            "key": entry["key"],
+            "name": entry["name"],
+            "edition": entry["edition"],
+            "expired_on": entry["valid_until"],
+            "profiles": entry.get("profiles", []),
+        })
+    return out
 
 
 def expired_rule_sets(today: date | None = None) -> list[str]:

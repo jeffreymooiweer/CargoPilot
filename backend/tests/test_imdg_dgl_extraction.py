@@ -20,15 +20,25 @@ dgl = importlib.util.module_from_spec(_spec)
 sys.modules[_spec.name] = dgl
 _spec.loader.exec_module(dgl)
 
-BOUNDS = dgl.boundaries()
+# Het raster zoals p627 het werkelijk tekent: tweeëntwintig randen, dus
+# eenentwintig cellen. De nummerband zet boven elke cel het kolomnummer uit de
+# code, behalve boven de goot tussen de twee helften van de spread.
+RULES = [42.5, 65.2, 189.9, 218.3, 255.1, 289.1, 326.0, 362.8, 399.7, 439.4,
+         476.2, 515.9, 552.8, 637.8, 654.8, 694.5, 731.3, 771.0, 827.7, 884.4,
+         1125.3, 1148.0]
+LABELS = ["1", "2", "3", "4", "5", "6", "7a", "7b", "8", "9", "10", "11",
+          None, "12", "13", "14", "15", "16a", "16b", "17", "18"]
+MARKERS = [((left + right) / 2, label)
+           for (left, right), label in zip(zip(RULES, RULES[1:]), LABELS) if label]
+
+BOUNDS = dgl.boundaries(RULES, MARKERS)
 
 
 # --- De meetkunde -------------------------------------------------------------
 
-def test_every_column_heading_lands_in_its_own_column():
-    """De grens ligt halverwege twee koppen; elke kop hoort links daarvan."""
-    for name, x in dgl.COLUMNS:
-        assert dgl.column_of(x, BOUNDS) == name, name
+def test_every_column_number_names_the_cell_it_stands_over():
+    for x, label in MARKERS:
+        assert dgl.column_of(x, BOUNDS) == dgl.COLUMN_NAMES[label], label
 
 
 def test_the_columns_do_not_overlap_and_leave_no_gap():
@@ -36,28 +46,60 @@ def test_the_columns_do_not_overlap_and_leave_no_gap():
         assert right == left
 
 
-def test_the_drawn_rules_win_over_the_heading_midpoints():
-    """De reden dat deze parser de getekende lijnen leest en niet het midden
-    tussen twee koppen: x 806.6 draagt 409 woorden en viel bij die schatting
-    net aan de verkeerde kant. Met echte grenzen valt het waar het hoort."""
-    fallback = dgl.boundaries()
-    assert dgl.column_of(806.6, fallback) == "segregation"  # de misser
-
-    # Zoals de tabel werkelijk is verdeeld: een lijn tussen stuwage en scheiding
-    # ligt rechts van 806.6, niet links ervan.
-    rules = [40.0, 90.0, 188.0, 216.0, 255.0, 292.0, 328.0, 363.0, 397.0, 438.0,
-             473.0, 514.0, 639.0, 668.0, 731.0, 768.0, 833.0, 958.0, 1123.0, 1160.0]
-    measured = dgl.boundaries(rules)
-    assert dgl.column_of(806.6, measured) == "stowage_and_handling"
-    assert dgl.column_of(854.0, measured) == "segregation"
-    assert dgl.column_of(963.1, measured) == "properties_and_observations"
-    assert dgl.column_of(644.2, measured) == "tank_instructions"
+def test_the_gutter_between_the_two_halves_stays_nameless():
+    """De lijst staat als spread op één liggend vel. Tussen kolom (11) en
+    kolom (12) zit vijfentachtig punt wit met een rand aan weerskanten. Dat is
+    een cel voor de tekening en geen kolom voor de code; hem meetellen schoof
+    elke kolom erna een plaats op."""
+    assert dgl.column_of(595.0, BOUNDS).startswith("_unnamed")
 
 
-def test_without_enough_rules_the_parser_falls_back_rather_than_inventing():
-    """Te weinig lijnen betekent een pagina die anders is opgemaakt. Dan de
-    schatting gebruiken en niet een verschoven raster doorvoeren."""
-    assert dgl.boundaries([100.0, 200.0]) == dgl.boundaries()
+def test_the_shipping_name_no_longer_bleeds_into_the_un_column():
+    """Waar het op stukliep. De vervoersnaam begint op x 68; de schatting
+    'midden tussen twee koppen' legde de grens op 72, en dus belandde het
+    eerste woord van elke regel van de naam in de UN-kolom:
+    "1354 TRINITROBENZENE, with by G". De getekende rand ligt op 65.2."""
+    assert dgl.column_of(49.0, BOUNDS) == "un_number"
+    assert dgl.column_of(68.0, BOUNDS) == "proper_shipping_name"
+
+
+def test_the_right_hand_half_lands_where_it_belongs():
+    """De tweede misser: stuwage, scheiding en eigenschappen liepen door elkaar
+    heen — 'E SG7 Desensitized SG30 crystals. compartments air.'"""
+    assert dgl.column_of(806.6, BOUNDS) == "stowage_and_handling"
+    assert dgl.column_of(854.2, BOUNDS) == "segregation"
+    assert dgl.column_of(886.4, BOUNDS) == "properties_and_observations"
+    assert dgl.column_of(1128.0, BOUNDS) == "_un_number_repeat"
+    assert dgl.column_of(644.4, BOUNDS) == "imo_tank_instructions"
+    assert dgl.column_of(672.8, BOUNDS) == "tank_instructions"
+    assert dgl.column_of(711.0, BOUNDS) == "tank_provisions"
+
+
+def test_what_lies_outside_the_table_is_dropped_not_rounded_inwards():
+    """In de marge staan paginanummers en het driehoekje dat een gewijzigde
+    vermelding aanwijst. Dat bij de dichtstbijzijnde kolom optellen zou het als
+    gegeven laten doorgaan."""
+    assert dgl.column_of(20.0, BOUNDS) == ""
+    assert dgl.column_of(1160.0, BOUNDS) == ""
+
+
+def test_without_rules_or_numbers_no_grid_is_invented():
+    """Te weinig randen of geen nummerband betekent een pagina die anders is
+    opgemaakt. Die wordt overgeslagen en geteld, niet geraden."""
+    assert dgl.boundaries([100.0, 200.0], MARKERS) == []
+    assert dgl.boundaries(RULES, []) == []
+
+
+def test_a_grid_missing_a_column_we_depend_on_is_refused():
+    without_segregation = [(x, label) for x, label in MARKERS if label != "16b"]
+    assert dgl.boundaries(RULES, without_segregation) == []
+
+
+def test_numbers_that_do_not_line_up_with_the_rules_are_refused():
+    """Twee nummers in één cel betekent dat randen en nummerband niet bij
+    elkaar horen. Dan is de hele indeling verdacht."""
+    crowded = [(100.0 + 3.0 * n, label) for n, (_x, label) in enumerate(MARKERS)]
+    assert dgl.boundaries(RULES, crowded) == []
 
 
 # --- De rijlogica -------------------------------------------------------------
@@ -217,21 +259,23 @@ def test_a_cell_that_runs_past_its_column_is_flagged_not_swallowed():
     assert entries[0]["un_number"] == "0289 CORD,"
 
 
-def test_the_alignment_is_verified_not_assumed():
+def test_the_alignment_no_longer_has_to_be_guessed():
     """Draagt de eerste gevonden lijn de buitenrand van de tabel of al de
-    eerste kolomscheiding? Dat scheelt één plek voor elke kolom. Beide worden
-    geprobeerd; de uitlijning waarbij elke kop in haar eigen kolom valt wint."""
-    inner = [65.2, 189.9, 218.3, 255.1, 289.1, 326.0, 362.8, 397.0, 438.0, 473.0,
-             514.0, 639.0, 668.0, 731.0, 768.0, 833.0, 958.0, 1123.0, 1160.0]
-    assert dgl._headings_land_correctly(dgl.boundaries(inner))
-    assert dgl._headings_land_correctly(dgl.boundaries([42.0] + inner))
+    eerste kolomscheiding? Zolang de kolommen op volgorde geteld werden,
+    scheelde dat één plaats voor elke kolom en moest het geraden worden. Met
+    de nummerband is er niets meer te raden: elke cel krijgt de naam van het
+    nummer dat erboven staat, waar de reeks ook begint."""
+    extra_rule = sorted(RULES + [595.0])  # een streep in de goot
+    shifted = dgl.boundaries(extra_rule, MARKERS)
+    assert dgl.column_of(854.2, shifted) == "segregation"
+    assert dgl.column_of(68.0, shifted) == "proper_shipping_name"
 
 
-def test_rules_that_fit_no_alignment_fall_back_to_the_estimate():
-    """Randen die nergens op de koppen aansluiten zijn geen kolomindeling.
-    Dan liever de schatting dan een raster dat er alleen precies uitziet."""
+def test_rules_that_fit_no_numbers_yield_nothing():
+    """Randen die nergens op de nummerband aansluiten zijn geen kolomindeling.
+    Dan liever niets dan een raster dat er alleen precies uitziet."""
     nonsense = [float(100 + 40 * n) for n in range(25)]
-    assert dgl.boundaries(nonsense) == dgl.boundaries()
+    assert dgl.boundaries(nonsense, MARKERS) == []
 
 
 # --- Rijbanden ----------------------------------------------------------------
@@ -255,6 +299,29 @@ class FakeWordPage:
 
     def get_drawings(self):
         return [{"rect": r} for r in self._rects]
+
+
+def test_the_column_numbers_are_read_from_the_band_above_the_table():
+    """Op y 131.7 staat '(1) (2) (3) …', op y 140.5 staan de verwijzingen naar
+    de secties die elke kolom regelen. Alleen de eerste band draagt namen."""
+    words = [
+        (44.0, 131.7, 52.0, 140.0, "(1)", 0, 0, 0),
+        (120.0, 131.7, 130.0, 140.0, "(2)", 0, 0, 1),
+        (330.0, 131.7, 344.0, 140.0, "(7a)", 0, 0, 2),
+        (840.0, 131.7, 858.0, 140.0, "(16b)", 0, 0, 3),
+        (60.0, 140.5, 80.0, 148.0, "3.1.2", 0, 1, 0),
+        (49.0, 205.0, 60.0, 215.0, "1203", 0, 2, 0),
+    ]
+    assert dgl.column_markers(FakeWordPage(words)) == [
+        (48.0, "1"), (125.0, "2"), (337.0, "7a"), (849.0, "16b")]
+
+
+def test_every_column_number_has_a_name():
+    """Een nummer dat de tabel wel draagt maar deze parser niet kent zou als
+    '_column_19' wegvallen zonder dat iemand het merkt."""
+    for label in LABELS:
+        if label is not None:
+            assert label in dgl.COLUMN_NAMES
 
 
 def test_row_rules_come_from_a_line_that_spans_the_table():

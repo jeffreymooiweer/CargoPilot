@@ -6,6 +6,7 @@ from pydantic import BaseModel, Field
 
 from app.core.deps import get_current_user
 from app.models.user import User
+from app.schemas.dg_compliance import ComplianceRequest
 from app.services.dg.autofill import prepare_entries
 from app.services.dg.compliance import check_compliance
 from app.services.dg.database import get_un_entries, offline_lookup, search_packagings, search_un_numbers
@@ -13,12 +14,6 @@ from app.services.dg.enrichment import enrich_un_entry
 from app.services.dg.lookup import lookup_un_number
 
 router = APIRouter(prefix="/dg", tags=["dangerous-goods"])
-
-
-class ComplianceRequest(BaseModel):
-    entries: list[dict] = Field(default_factory=list)
-    profiles: list[str] = Field(default_factory=list)
-    language: str = "nl"
 
 
 class PrepareRequest(BaseModel):
@@ -77,4 +72,4 @@ def dg_prepare(payload: PrepareRequest, user: User = Depends(get_current_user)):
 def dg_compliance(payload: ComplianceRequest, user: User = Depends(get_current_user)):
     if not payload.entries:
         raise HTTPException(status_code=400, detail="entries required")
-    return check_compliance(payload.entries, payload.profiles, payload.language)
+    return check_compliance(payload.as_dicts(), payload.profile_names(), payload.language)

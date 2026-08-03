@@ -2,6 +2,36 @@
 
 All notable changes are documented here, following [Semantic Versioning](https://semver.org/).
 
+## [1.24.0] — 2026-08-03
+
+The compliance endpoint validates its input instead of coercing it.
+
+### Added
+
+- **`backend/app/schemas/dg_compliance.py`** — `ComplianceRequest`,
+  `ShipmentPosition`, `DangerousGoodsProduct` and a `RegulatoryProfile` enum.
+  `POST /api/dg/compliance` took `entries: list[dict]` and `profiles: list[str]`, so
+  Pydantic never looked at them and the calculation layer had to make the best of
+  whatever arrived.
+
+  Two cases are dangerous there, because they do not surface as an error but as a
+  *more favourable* answer than reality:
+
+  - A negative quantity lowers the ADR 1.1.3.6 points total and can suggest an
+    exemption that does not apply. `-5 L`, `0` and `0 kg` are now refused.
+  - A misspelled profile (`IDMG`) silently produced no sea-transport check at all,
+    and the screen then showed a clean result with nothing behind it. Profiles are
+    an enum: ADR, RID, ADN, IMDG, IATA.
+
+  Also refused: a packing group other than I/II/III, a transport category outside
+  ADR's 0–4, and a Q component with `n` or `M` at zero — which used to drop out of
+  the sum unnoticed. All of these return **HTTP 422 before anything is calculated**.
+
+  Empty stays allowed. The wizard sends half-filled input while you work, and the
+  check is supposed to report `incomplete` rather than refuse the request. Fields
+  the schema does not name are passed through untouched, and `class` keeps its own
+  name on the way to the calculation layer.
+
 ## [1.23.1] — 2026-08-03
 
 Community health files, so it is clear how to report something and what happens next.

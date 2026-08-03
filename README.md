@@ -103,6 +103,18 @@ Running Unraid, or want the full set of options? See **[Getting started](docs/ge
 
 Also: **[Changelog](CHANGELOG.md)** · **[Roadmap](ROADMAP.md)** · **[Disclaimer](DISCLAIMER.md)**
 
+## Found something wrong?
+
+CargoPilot is only worth as much as its data, and a wrong density or a misplaced box on a
+form is best spotted by someone actually shipping. Those reports are the most valuable
+ones this project gets — please
+[open an issue](https://github.com/jeffreymooiweer/CargoPilot/issues/new/choose).
+
+It is a personal project, so code contributions work a little differently: ask first, in
+an issue. [CONTRIBUTING.md](CONTRIBUTING.md) explains why and what a useful report looks
+like. Security problems go through
+[private reporting](SECURITY.md) rather than a public issue.
+
 ## Good to know
 
 CargoPilot is a **civilian** tool. It prepares paperwork; it does not give legal,

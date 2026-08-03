@@ -2,6 +2,33 @@
 
 All notable changes are documented here, following [Semantic Versioning](https://semver.org/).
 
+## [1.23.1] — 2026-08-03
+
+Community health files, so it is clear how to report something and what happens next.
+No change to the application.
+
+### Added
+
+- **`CONTRIBUTING.md`** — says plainly that this is a personal project: reports and
+  corrections are very welcome, code should be agreed in an issue first. Covers what a
+  useful report contains for weights, documents and dangerous goods, and repeats the two
+  standing rules: no regulatory text in the repository, and redact real shipment data
+  before attaching anything to a public issue.
+- **`SECURITY.md`** — private vulnerability reporting through GitHub, with the scope
+  spelled out for a self-hosted app: authentication and the admin bootstrap, file upload
+  and PDF handling, path traversal in export and UN card downloads, and
+  `CATALOG_AUTO_SYNC` fetching external URLs at startup. Wrong regulatory data is
+  explicitly *not* a security issue — it is a normal bug.
+- **`CODE_OF_CONDUCT.md`** — Contributor Covenant 2.1, with the private advisory thread
+  as the confidential channel since the repository publishes no email address.
+- **Issue forms** in `.github/ISSUE_TEMPLATE/`: a bug report, a data-or-document
+  correction that asks for the source and its edition, and an idea form that asks for the
+  situation rather than the feature. Blank issues are off; the security advisory, the
+  documentation and the rule-set-editions table are linked instead.
+- **`.github/pull_request_template.md`**, with the project's own checks: changelog, the
+  three version files agreeing, both language files, no regulatory text, no real shipment
+  data.
+
 ## [1.23.0] — 2026-08-03
 
 The Dangerous Goods List itself, all 2860 entries of it, now backs columns 16a and 16b —

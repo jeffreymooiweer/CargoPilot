@@ -2,6 +2,52 @@
 
 All notable changes are documented here, following [Semantic Versioning](https://semver.org/).
 
+## [1.25.0] — 2026-08-03
+
+> [!IMPORTANT]
+> **Upgrading may stop your container on purpose.** If you never set `APP_SECRET_KEY`,
+> CargoPilot now refuses to start and tells you what to put there — including a
+> ready-made key. See [Configuration](docs/configuration.md#cargopilot-refuses-to-start-on-an-unsafe-configuration).
+> Changing the key logs everyone out; nothing else is lost.
+
+### Fixed
+
+- **An installation that never set `APP_SECRET_KEY` had no working authentication.**
+  That key signs the JWT that says you are logged in, and its default — `change-me` —
+  is published in this repository. Anyone holding it can write themselves a valid admin
+  token, so there was no login to bypass; it was already bypassed. `APP_ENV` defaults to
+  `production`, so this was the state of every deployment that followed the quickstart
+  without setting the variable.
+
+  The application now stops at startup. Logging a warning was the alternative and it is
+  not one: logs go unread and the app keeps serving.
+
+### Added
+
+- **`app/core/security_checks.py`**, run before the application is even assembled.
+  Three things are refused in production, all reported at once so a single restart is
+  enough:
+
+  - `APP_SECRET_KEY` that is empty, published (`change-me`, `dev-secret`, the
+    placeholder from `.env.example` — which is 34 characters and would otherwise have
+    passed a length check) or shorter than 32 characters.
+  - `CORS_ALLOWED_ORIGINS=*` while the API works with cookies, which lets any website
+    make requests on behalf of a logged-in user.
+  - `ADMIN_PASSWORD` set to one that appears in this project's own documentation.
+
+  The error carries a freshly generated key that is usable as-is, and a test asserts
+  that the suggested key passes the check — an error message that stops the app has to
+  contain its own solution.
+
+- Anything that is not clearly a development environment counts as production, so a
+  typo in `APP_ENV` cannot quietly switch the check off.
+
+### Changed
+
+- `.env.example` no longer ships a configuration that would be refused: the secret and
+  the admin password are empty with instructions above them, and `CORS_ALLOWED_ORIGINS`
+  names an address instead of `*`.
+
 ## [1.24.2] — 2026-08-03
 
 Checks that run on their own, and one gap they found.

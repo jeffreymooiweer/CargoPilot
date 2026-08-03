@@ -36,6 +36,7 @@ jobs:
         env:
           DATA_DIR: ${{ github.workspace }}/data
           DATABASE_URL: sqlite:///${{ github.workspace }}/data/test.db
+          APP_ENV: test
           APP_SECRET_KEY: ci-secret
           CATALOG_AUTO_SYNC: "false"
         run: |

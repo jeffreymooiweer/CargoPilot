@@ -1037,6 +1037,15 @@
               "type": "textarea"
             },
             {
+              "key": "authorization",
+              "label": {
+                "nl": "Autorisatie (goedkeuring, vrijstelling of DGR-verwijzing)",
+                "en": "Authorization (approval, exemption or DGR reference)"
+              },
+              "status": "USER_OPTIONAL",
+              "type": "text"
+            },
+            {
               "key": "emergency_contact",
               "label": {
                 "nl": "24-uurs noodnummer",

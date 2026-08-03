@@ -180,8 +180,18 @@ def fill_cmr(
     return {k: v for k, v in fields.items() if v not in (None, "")}
 
 
-def _iata_dg_block(dangerous_goods: list[dict[str, Any]]) -> str:
-    """Regels voor het 'Nature and Quantity of Dangerous Goods'-veld, IATA-kolomvolgorde."""
+def _iata_dg_block(dangerous_goods: list[dict[str, Any]],
+                   authorization: str = "") -> str:
+    """Regels voor het 'Nature and Quantity of Dangerous Goods'-veld, IATA-kolomvolgorde.
+
+    Het Authorization-vak van de DGD hoort bij deze tabel: daar komt de
+    verwijzing te staan waaronder de zending mag vliegen — een goedkeuring
+    van de bevoegde autoriteit, een vrijstelling, een DGR-paragraaf. In de
+    template die CargoPilot invult bestaat daar geen apart invulveld voor,
+    dus het wordt als eigen regel onder de tabel gezet. Zichtbaar en
+    benoemd is beter dan weglaten: zonder die verwijzing is een zending
+    die er een nodig heeft niet aan te bieden.
+    """
     out: list[str] = []
     for entry in dangerous_goods or []:
         for p in entry.get("products", []):
@@ -216,6 +226,8 @@ def _iata_dg_block(dangerous_goods: list[dict[str, Any]]) -> str:
             segments = [s for s in [un, psn, hazard, pg, qty, pi] if s]
             if segments:
                 out.append("   ".join(segments))
+    if authorization:
+        out.append(f"Authorization: {authorization}")
     return "\n".join(out)
 
 
@@ -244,7 +256,9 @@ def fill_iata(values: dict[str, Any], dangerous_goods: list[dict[str, Any]], lan
         # verklaring; het handling-informationvak is daarvoor de plek.
         handling.append(f"24-hour emergency contact: {emergency}")
     fields["Additional Handling Information"] = " / ".join(x for x in handling if x)
-    fields["Nature and Quantity of Dangerous Goods"] = _iata_dg_block(dangerous_goods)
+    fields["Nature and Quantity of Dangerous Goods"] = _iata_dg_block(
+        dangerous_goods, str(values.get("authorization") or "").strip()
+    )
 
     # "Delete non-applicable": streep de NIET-toepasselijke optie door en zet het
     # toepasselijke veld expliciet leeg (anders lekt de template-standaard door).

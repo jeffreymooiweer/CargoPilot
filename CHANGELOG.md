@@ -2,6 +2,36 @@
 
 All notable changes are documented here, following [Semantic Versioning](https://semver.org/).
 
+## [1.26.0] — 2026-08-03
+
+### Added
+
+- **A regulatory manifest**, at `GET /api/regulatory` with a compact form on
+  `GET /api/health`. Per rule set: edition, source, validity period, errata, what it
+  covers, and a SHA-256 over every data file behind it.
+
+  It answers two questions documentation cannot. **Has an edition expired?** The IATA
+  DGR is replaced yearly and the 67th edition runs to 31 December 2026; from 1 January
+  2027 the manifest reports it as expired rather than quietly carrying on. The UN cards
+  (41-22) already come out as expired — still used, but only for marine pollutant and
+  bulk carriage, and the entry says so. **Do two installations hold the same data?** The
+  `manifest_id` is a hash over all seed files together.
+
+  Where something is not tracked, it says so: IATA addenda and operator variations are
+  named as out of scope rather than left to look complete.
+
+- **An `Authorization` field on the IATA declaration** — the approval, exemption or DGR
+  reference a shipment flies under. The template CargoPilot fills has no form field for
+  it (that box sits inside the goods table), so it is written as its own labelled line
+  under that table. Left empty it is omitted entirely: an empty box with the word
+  "Authorization" in it suggests something was approved.
+
+### Notes
+
+- The reviewer's concern about the IATA edition turned out to be unfounded: the
+  compliance rules already cite the 67th edition (2026). A test now ties the manifest and
+  those rules together so they cannot drift apart.
+
 ## [1.25.0] — 2026-08-03
 
 > [!IMPORTANT]

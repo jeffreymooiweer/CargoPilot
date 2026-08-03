@@ -1,0 +1,68 @@
+name: Extract IMDG Dangerous Goods List
+
+# Leest de Dangerous Goods List van hoofdstuk 3.2 uit en zet haar als
+# feitelijke tabel in backend/seed/dg/imdg_dgl.json: per UN-nummer de klasse,
+# de verpakkingsgroep, de bijzondere bepalingen, de verpakkingsinstructies, de
+# EmS-codes en — het belangrijkste voor deze app — de stuwage- en
+# scheidingscodes van kolom 16a en 16b.
+#
+# Draait hier en niet lokaal omdat de ontwikkelomgeving geen uitgaand netwerk
+# heeft. Het script controleert zichzelf tegen klasse uit ADR Tabel A en EmS
+# uit de EmS Guide en weigert weg te schrijven zodra de overeenstemming onder
+# de drempel zakt; een verschoven kolom komt er zo niet ongemerkt door.
+
+on:
+  workflow_dispatch:
+    inputs:
+      commit:
+        description: "Het resultaat vastleggen op deze branch"
+        type: boolean
+        default: false
+      min_agreement:
+        description: "Onder deze overeenstemming wordt niets vastgelegd"
+        default: "0.99"
+
+permissions:
+  contents: write
+
+jobs:
+  extract:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - run: pip install --quiet pymupdf
+
+      # Zonder --commit is dit een volledige leesbeurt over de hele lijst die
+      # wél alles controleert en niets vastlegt: de aangewezen manier om de
+      # aantallen en de overeenstemming te zien voordat er iets in de repo komt.
+      - name: Extract
+        run: |
+          python scripts/extract_imdg_dgl.py \
+            --out backend/seed/dg/imdg_dgl.json \
+            --min-agreement "${{ inputs.min_agreement }}" \
+            ${{ inputs.commit && ' ' || '--dry-run' }}
+
+      - name: Commit
+        if: ${{ inputs.commit }}
+        run: |
+          set -eu
+          # git diff ziet een nieuw bestand niet: dat staat untracked.
+          if [ -z "$(git status --porcelain -- backend/seed/dg/imdg_dgl.json)" ]; then
+            echo "Ongewijzigd; niets vast te leggen."
+            exit 0
+          fi
+          ls -l backend/seed/dg/imdg_dgl.json
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add backend/seed/dg/imdg_dgl.json
+          git commit \
+            -m "Read the Dangerous Goods List of IMDG Amendment 42-24" \
+            -m "Column 16b takes precedence over the segregation table under 7.2.3.1, and until now the app only knew that column for the substances whose UN card happened to mention it. This is the column itself, for every entry in the list, alongside class, packing group, special provisions, packing instructions and EmS." \
+            -m "Extracted by scripts/extract_imdg_dgl.py, which checks itself against class from ADR Table A and EmS from the EmS Guide and refuses to write below the agreement threshold. A factual table, not the regulatory text."
+          git push

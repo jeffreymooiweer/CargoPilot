@@ -303,13 +303,34 @@ def validate_document(
                 elif q.get("status") == "incomplete":
                     warnings.append(str(q.get("note") or "Q incomplete"))
             points = outcome.get("adr_points")
-            if points and points.get("status") == "incomplete" and profile in {"ADR", "RID", "ADN"}:
-                warnings.append(
-                    "ADR 1.1.3.6: "
-                    + ("puntentelling onvolledig — controleer vervoerscategorie en hoeveelheid"
-                       if lang == "nl"
-                       else "points calculation incomplete — check transport category and quantity")
-                )
+            if points and profile in {"ADR", "RID", "ADN"}:
+                status = points.get("status")
+                if status == "incomplete":
+                    warnings.append(
+                        "ADR 1.1.3.6: "
+                        + ("puntentelling onvolledig — controleer vervoerscategorie en hoeveelheid"
+                           if lang == "nl"
+                           else "points calculation incomplete — check transport category "
+                                "and quantity")
+                    )
+                elif status in {"above_threshold", "not_exempt"}:
+                    # Niet verboden, maar de vrijstelling van 1.1.3.6 vervalt en
+                    # daarmee gelden de volle eisen: opleiding, ADR-voertuig,
+                    # oranje borden, brandblussers. Wie op het scherm nog
+                    # "vrijstelling mogelijk" zag staan moet dat hier lezen.
+                    total = points.get("total_points")
+                    threshold = points.get("threshold")
+                    detail = (
+                        f"{total} > {threshold}" if status == "above_threshold"
+                        else ", ".join(points.get("category0_products") or [])
+                    )
+                    warnings.append(
+                        "ADR 1.1.3.6: "
+                        + (f"vrijstelling vervalt ({detail}) — de volledige ADR-eisen gelden"
+                           if lang == "nl"
+                           else f"exemption does not apply ({detail}) — the full ADR "
+                                "requirements apply")
+                    )
 
     if document["key"] == "vgm" and str(values.get("vgm_method")) == "method2":
         components = [

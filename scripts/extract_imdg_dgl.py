@@ -35,36 +35,55 @@ UA = {"User-Agent": "CargoPilot data extraction (github.com/jeffreymooiweer/Carg
 
 SEED = Path(__file__).resolve().parents[1] / "backend" / "seed" / "dg"
 
-# De kolommen zoals de koptekst ze neerzet, met hun begin-x, gemeten op p600 en
-# p601. Deze posities dienen om de gedetecteerde kolomgrenzen een naam te geven
-# — als grens zijn ze te grof. Celtekst begint zelden op de kopositie, en het
-# midden tussen twee koppen ligt soms mídden in een cel: x 806.6 draagt 409
-# woorden en viel bij die aanpak net aan de verkeerde kant van de streep.
+# De kolommen dragen in de koptekst hun nummer uit de code: "(1)" boven het
+# UN-nummer, "(16b)" boven de scheiding. Die nummerband staat op elke
+# lijstpagina, precies boven de kolom die zij benoemt, en is daarmee de enige
+# bron die de gemeten celranden een náám kan geven zonder te tellen.
 #
-# De tabel heeft getekende scheidingslijnen. Die zijn exact, en find_rules()
-# leest ze uit de tekeningen van de pagina; de posities hieronder zijn dan nog
-# slechts het etiket.
-COLUMNS: list[tuple[str, float]] = [
-    ("un_number", 49.0),
-    ("proper_shipping_name", 95.0),
-    ("class", 192.0),
-    ("subsidiary_hazards", 221.0),
-    ("packing_group", 260.0),
-    ("special_provisions", 297.0),
-    ("limited_quantity", 333.0),
-    ("excepted_quantity", 368.0),
-    ("packing_instructions", 402.0),
-    ("packing_provisions", 443.0),
-    ("ibc_instructions", 478.0),
-    ("ibc_provisions", 519.0),
-    ("tank_instructions", 644.0),
-    ("tank_provisions", 673.0),
-    ("ems", 736.0),
-    ("stowage_and_handling", 773.0),
-    ("segregation", 838.0),
-    ("properties_and_observations", 963.0),
-    ("_un_number_repeat", 1128.0),
-]
+# Tellen ging namelijk mis. Een tabel met gemeten x-posities veronderstelde
+# negentien kolommen; de getekende randen leveren er eenentwintig, want de
+# lijst staat als spread op één liggend vel en de goot tussen beide helften
+# telt als cel mee, en kolom (12) was over het hoofd gezien. De uitlijning
+# klopte daardoor nergens, de parser viel terug op het midden tussen twee
+# koppen, en de vervoersnaam — die op x 68 begint, net links van die schatting
+# — belandde met haar eerste woord van elke regel in de UN-kolom:
+# "1354 TRINITROBENZENE, with by G".
+COLUMN_NAMES: dict[str, str] = {
+    "1": "un_number",
+    "2": "proper_shipping_name",
+    "3": "class",
+    "4": "subsidiary_hazards",
+    "5": "packing_group",
+    "6": "special_provisions",
+    "7a": "limited_quantity",
+    "7b": "excepted_quantity",
+    "8": "packing_instructions",
+    "9": "packing_provisions",
+    "10": "ibc_instructions",
+    "11": "ibc_provisions",
+    "12": "imo_tank_instructions",
+    "13": "tank_instructions",
+    "14": "tank_provisions",
+    "15": "ems",
+    "16a": "stowage_and_handling",
+    "16b": "segregation",
+    "17": "properties_and_observations",
+    "18": "_un_number_repeat",
+}
+
+# Zonder deze kolommen is een pagina niet als lijstpagina gelezen en wordt zij
+# liever overgeslagen dan half vastgelegd.
+REQUIRED_COLUMNS = frozenset({
+    "un_number", "proper_shipping_name", "class", "packing_group",
+    "special_provisions", "ems", "stowage_and_handling", "segregation",
+    "properties_and_observations",
+})
+
+# De nummerband ligt tussen de koppen en de gegevens. Eronder, op y 140.5,
+# staan de verwijzingen naar de secties die elke kolom regelen; die dragen geen
+# haakjes en komen dus niet als nummer binnen.
+MARKER_BAND = (120.0, 150.0)
+MARKER = re.compile(r"^\((\d{1,2}[ab]?)\)$")
 
 # Twee of meer koppen maken een pagina tot lijstpagina. De scheidingsgroep-
 # lijsten van 3.1.4.4 beginnen ook met UN-nummers en horen er niet bij.
@@ -119,29 +138,47 @@ def find_rules(page, tolerance: float = 2.5) -> list[float]:
     return _recurring(counts, tolerance)
 
 
-def boundaries(rules: list[float] | None = None) -> list[tuple[str, float, float]]:
-    """(naam, linkergrens, rechtergrens) per kolom.
+def column_markers(page) -> list[tuple[float, str]]:
+    """De kolomnummers uit de koptekst, met het midden waarboven ze staan."""
+    found: list[tuple[float, str]] = []
+    for x0, y0, x1, _y1, word, *_ in page.get_text("words"):
+        if not MARKER_BAND[0] <= y0 < MARKER_BAND[1]:
+            continue
+        match = MARKER.match(word.strip())
+        if match:
+            found.append(((x0 + x1) / 2, match.group(1)))
+    return sorted(found)
 
-    Met de getekende lijnen erbij worden dat de echte celgrenzen; zonder die
-    lijnen valt de parser terug op het midden tussen twee koppen, wat genoeg is
-    om de meetkunde te kunnen testen maar niet om gegevens op te baseren.
+
+def boundaries(rules: list[float], markers: list[tuple[float, str]]
+               ) -> list[tuple[str, float, float]]:
+    """(naam, linkergrens, rechtergrens) per cel van het getekende raster.
+
+    De randen komen uit de tekening en zijn dus exact; de namen komen uit de
+    nummerband erboven. Valt er geen nummer in een cel, dan is dat de goot
+    tussen beide helften van de spread en blijft de cel naamloos. Vallen er
+    twéé in, dan sluiten randen en nummerband niet op elkaar aan en is de hele
+    indeling onbruikbaar — dan liever niets dan een raster dat er alleen
+    precies uitziet.
     """
-    if rules and len(rules) >= len(COLUMNS):
-        # Draagt de eerste gevonden lijn de buitenrand van de tabel of al de
-        # eerste kolomscheiding? Dat scheelt één plek voor élke kolom. In
-        # plaats van het te gokken worden beide uitlijningen geprobeerd en
-        # wint die waarbij elke kolomkop in haar eigen kolom valt.
-        for offset in (0, 1):
-            candidate = _from_edges(rules[offset:])
-            if candidate and _headings_land_correctly(candidate):
-                return candidate
+    if len(rules) < 2 or not markers:
+        return []
 
-    out = []
-    for index, (name, start) in enumerate(COLUMNS):
-        left = 0.0 if index == 0 else (COLUMNS[index - 1][1] + start) / 2
-        right = (start + COLUMNS[index + 1][1]) / 2 if index + 1 < len(COLUMNS) else 10_000.0
-        out.append((name, left, right))
-    return out
+    cells: list[tuple[str, float, float]] = []
+    for left, right in zip(rules, rules[1:]):
+        inside = [label for x, label in markers if left <= x < right]
+        if len(inside) == 1:
+            name = COLUMN_NAMES.get(inside[0], f"_column_{inside[0]}")
+        else:
+            name = f"_unnamed_{left:.0f}"
+        cells.append((name, left, right))
+
+    names = [name for name, _, _ in cells]
+    if len(set(names)) != len(names):
+        return []
+    if not REQUIRED_COLUMNS.issubset(names):
+        return []
+    return cells
 
 
 def find_row_rules(page, tolerance: float = 2.5, coverage: float = 0.4) -> list[float]:
@@ -206,32 +243,17 @@ def _recurring(counts: dict[float, int], tolerance: float) -> list[float]:
     return [value for value, count in merged if count >= threshold]
 
 
-def _from_edges(edges: list[float]) -> list[tuple[str, float, float]]:
-    """Kolomgrenzen uit een reeks celranden, de eerste rand als linkerrand."""
-    if len(edges) < len(COLUMNS):
-        return []
-    out = []
-    for index, (name, _start) in enumerate(COLUMNS):
-        left = 0.0 if index == 0 else edges[index - 1]
-        right = edges[index] if index < len(edges) else 10_000.0
-        out.append((name, left, right))
-    return out
-
-
-def _headings_land_correctly(bounds: list[tuple[str, float, float]]) -> bool:
-    """Valt elke kolomkop in de kolom die haar naam draagt?
-
-    De koppositie is gemeten en de celranden zijn gemeten; komen ze niet
-    overeen, dan klopt de uitlijning niet en is de indeling onbruikbaar.
-    """
-    return all(column_of(x, bounds) == name for name, x in COLUMNS)
-
-
 def column_of(x: float, bounds: list[tuple[str, float, float]]) -> str:
+    """De kolom waarin x valt, of "" voor wat buiten de tabel staat.
+
+    Buiten de randen ligt de marge: paginanummers, het driehoekje dat een
+    gewijzigde vermelding aanwijst. Dat bij de dichtstbijzijnde kolom
+    optellen zou het als gegeven laten doorgaan.
+    """
     for name, left, right in bounds:
         if left <= x < right:
             return name
-    return bounds[-1][0]
+    return ""
 
 
 def band_of(y: float, rules: list[float]) -> int:
@@ -264,11 +286,14 @@ def page_lines(page, bounds: list[tuple[str, float, float]],
     for x0, y0, _x1, _y1, word, *_ in page.get_text("words"):
         if not BODY_TOP <= y0 <= BODY_BOTTOM:
             continue
+        column = column_of(x0, bounds)
+        if not column:
+            continue
         if row_rules:
             key: Any = band_of(y0, row_rules)
         else:
             key = next((k for k in rows if abs(k - y0) <= LINE_TOLERANCE), round(y0, 1))
-        rows[key][column_of(x0, bounds)].append((y0, x0, word))
+        rows[key][column].append((y0, x0, word))
 
     lines = []
     for key in sorted(rows):
@@ -317,7 +342,11 @@ def extract(path: Path, only_pages: list[int] | None = None) -> tuple[list[dict]
 
     entries: list[dict[str, Any]] = []
     pages_read: list[int] = []
+    skipped: list[int] = []
     rule_shapes: dict[tuple[float, ...], int] = {}
+    # Een pagina zonder leesbare nummerband mag meeliften op een pagina met
+    # exact hetzelfde randenpatroon; verder gaat zij ongelezen de telling in.
+    layouts: dict[tuple[float, ...], list[tuple[str, float, float]]] = {}
 
     with fitz.open(path) as document:
         for index in range(document.page_count):
@@ -329,16 +358,21 @@ def extract(path: Path, only_pages: list[int] | None = None) -> tuple[list[dict]
                 text = page.get_text()
                 if sum(1 for h in HEADINGS if h in text) < 2:
                     continue
-            pages_read.append(number)
+
             rules = find_rules(page)
-            bounds = boundaries(rules)
-            row_rules = find_row_rules(page)
-            # Vastleggen of deze pagina op gemeten randen is gelezen of op de
-            # schatting; dat laatste mag geen ongemerkte meerderheid worden.
-            measured = bounds != boundaries()
-            rule_shapes[(tuple(rules), measured)] = \
-                rule_shapes.get((tuple(rules), measured), 0) + 1
-            for entry in merge_rows(page_lines(page, bounds, row_rules)):
+            shape = tuple(rules)
+            bounds = boundaries(rules, column_markers(page))
+            if bounds:
+                layouts[shape] = bounds
+            else:
+                bounds = layouts.get(shape, [])
+            if not bounds:
+                skipped.append(number)
+                continue
+
+            pages_read.append(number)
+            rule_shapes[shape] = rule_shapes.get(shape, 0) + 1
+            for entry in merge_rows(page_lines(page, bounds, find_row_rules(page))):
                 clean = normalise(entry)
                 cell = clean.get("un_number", "")
                 if UN_CELL.match(cell) or UN_OVERFLOW.match(cell):
@@ -348,7 +382,6 @@ def extract(path: Path, only_pages: list[int] | None = None) -> tuple[list[dict]
     # Eén rasterindeling voor de hele lijst is het teken dat de detectie klopt;
     # veel verschillende betekent dat er pagina's anders zijn opgemaakt.
     shapes = sorted(rule_shapes.items(), key=lambda kv: -kv[1])
-    estimated = sum(count for (_, measured), count in rule_shapes.items() if not measured)
     overflow = [e["un_number"] for e in entries if UN_OVERFLOW.match(e["un_number"])]
     return entries, {
         "pages": len(pages_read), "entries": len(entries),
@@ -357,9 +390,10 @@ def extract(path: Path, only_pages: list[int] | None = None) -> tuple[list[dict]
         "first_page": pages_read[0] if pages_read else None,
         "last_page": pages_read[-1] if pages_read else None,
         "distinct_rule_layouts": len(shapes),
-        "most_common_rules": list(shapes[0][0][0]) if shapes else [],
+        "most_common_rules": list(shapes[0][0]) if shapes else [],
         "most_common_rules_pages": shapes[0][1] if shapes else 0,
-        "pages_on_estimated_columns": estimated,
+        "pages_without_grid": len(skipped),
+        "pages_without_grid_examples": skipped[:10],
     }
 
 
@@ -471,7 +505,20 @@ def diagnose(path: Path, pages: list[int]) -> None:
                   f"{min(heights, default=0):.1f}..{max(heights, default=0):.1f}")
             row_rules = find_row_rules(page)
             print(f"  horizontale randen: {len(row_rules)}")
-            lines = page_lines(page, boundaries(find_rules(page)), row_rules)
+
+            rules = find_rules(page)
+            markers = column_markers(page)
+            print(f"  kolomnummers in de koptekst: {len(markers)}")
+            print("    " + ", ".join(f"({label})@{x:.0f}" for x, label in markers))
+            bounds = boundaries(rules, markers)
+            if not bounds:
+                print("  GEEN bruikbare kolomindeling; deze pagina wordt overgeslagen.")
+                continue
+            print("  kolommen:")
+            for name, left, right in bounds:
+                print(f"    {left:7.1f} - {right:7.1f}  {name}")
+
+            lines = page_lines(page, bounds, row_rules)
             print(f"  rijen na kolom- en rijindeling: {len(lines)}")
             for cells in lines[:5]:
                 print(f"    {cells}")

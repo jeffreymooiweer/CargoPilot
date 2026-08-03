@@ -72,6 +72,22 @@ goes quiet; typing an address by hand always works.
 | Dangerous Goods List per UN number — class, subsidiary hazards, packing group, special provisions, LQ/EQ, packing/IBC/tank instructions, EmS, stowage and handling (16a), segregation (16b), properties | IMDG Code chapter 3.2, Amendment 42-24, via IMO resolution **MSC.556(108)**, read by `scripts/extract_imdg_dgl.py` |
 | IMDG Amendment 42-24 changes over 41-22 | NCB Hazcheck, *IMDG Code Amendment 42-24 changes detailed summary*, October 2024 v1.0, and IMO **E&T 38/3/9** for the UN 1361 provisions |
 
+## Which edition is running
+
+`GET /api/regulatory` reports, per rule set, the edition, the source, the validity
+period, known errata and a SHA-256 over every data file it uses. `GET /api/health`
+carries a compact form of the same thing, so a bug report can say what the installation
+actually computes with.
+
+Two things it answers that documentation cannot:
+
+- **Whether an edition has expired.** The IATA DGR is replaced every year and the 67th
+  edition runs to 31 December 2026. From 1 January 2027 the manifest reports `iata` under
+  `expired` instead of quietly carrying on. The UN cards (41-22) are already listed as
+  expired — they are still used, but only for marine pollutant and bulk carriage.
+- **Whether two installations hold the same data.** The `manifest_id` is a hash over all
+  seed files together. Same id, same data.
+
 Where the data lives:
 
 | File | Contents |

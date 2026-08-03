@@ -151,6 +151,34 @@ def test_the_air_declaration_carries_the_iata_packing_instruction():
         path.unlink(missing_ok=True)
 
 
+def test_the_authorization_reaches_the_document():
+    """Onder welke goedkeuring of vrijstelling de zending mag vliegen.
+
+    De template die CargoPilot invult heeft daar geen apart invulveld voor —
+    het Authorization-vak van de DGD zit in de tabel met de goederen — dus het
+    komt als eigen benoemde regel onder die tabel. Weglaten kan niet: zonder
+    die verwijzing is een zending die er een nodig heeft niet aan te bieden.
+    """
+    values = air_values(authorization="Competent authority approval NL-2026-0042")
+    path = fill_pdf_document("iata_dgd", values, LINES, air_entry(), "en")
+    try:
+        visible = _pdf_visible_text(path)
+        assert "Authorization" in visible
+        assert "NL-2026-0042" in visible
+    finally:
+        path.unlink(missing_ok=True)
+
+
+def test_without_an_authorization_the_line_is_left_off():
+    """Een leeg vak met alleen het woord 'Authorization' erin suggereert dat
+    er iets is goedgekeurd."""
+    path = fill_pdf_document("iata_dgd", air_values(), LINES, air_entry(), "en")
+    try:
+        assert "Authorization" not in _pdf_visible_text(path)
+    finally:
+        path.unlink(missing_ok=True)
+
+
 def test_the_emergency_contact_reaches_the_document():
     path = fill_pdf_document("iata_dgd", air_values(), LINES, air_entry(), "en")
     try:

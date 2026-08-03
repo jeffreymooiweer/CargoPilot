@@ -22,6 +22,7 @@ from app.api.routes.users import router as users_router
 from app.core.config import get_settings
 from app.core.security_checks import verify_configuration
 from app.core.startup import init_app
+from app.services.regulatory_manifest import build_manifest, summary
 from app.version import get_version
 
 logger = logging.getLogger(__name__)
@@ -61,7 +62,19 @@ def create_app() -> FastAPI:
 
     @app.get("/api/health")
     def health():
-        return {"status": "ok", "app": settings.app_name, "version": get_version()}
+        return {
+            "status": "ok",
+            "app": settings.app_name,
+            "version": get_version(),
+            # Welke edities deze installatie gebruikt, compact. Wie een fout
+            # meldt geeft hiermee meteen door waar zijn app mee rekent.
+            "regulatory": summary(),
+        }
+
+    @app.get("/api/regulatory")
+    def regulatory():
+        """Per regelset: editie, bron, geldigheid, errata en controlesom."""
+        return build_manifest()
 
     @app.get("/api/setup-status")
     def setup_status():

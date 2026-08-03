@@ -2,6 +2,36 @@
 
 All notable changes are documented here, following [Semantic Versioning](https://semver.org/).
 
+## [1.24.2] — 2026-08-03
+
+Checks that run on their own, and one gap they found.
+
+### Added
+
+- **CI** (`.github/workflows/ci.yml`): backend pytest and the frontend tests plus
+  typecheck on every push and pull request to main. The workflows here were all about
+  publishing; the tests only ran locally, so a broken test could travel all the way to
+  a release.
+- **A version-consistency test.** The number lives in four places and they must agree.
+  This is not theoretical: an external review of CargoPilot produced a list of problems
+  that were largely already fixed, because the reviewer was reading
+  `frontend/package.json` at 1.14.1 while the rest of the project was far past it. The
+  test also insists the changelog leads with the current version.
+- **Export integration tests** that read the generated PDF back: the export runs the
+  compliance check itself, a Q above 1 blocks it while a Q within the limit does not,
+  the air declaration carries the IATA packing instruction and not the ADR one, the
+  emergency contact reaches the document, and the declaration comes out flat so the
+  values cannot be edited away.
+
+### Fixed
+
+- **An export above the ADR 1.1.3.6 threshold said nothing.** Only an incomplete points
+  calculation produced a warning; going over the threshold, or carrying a category 0
+  substance, produced none at all. Neither is forbidden — but the exemption lapses, and
+  with it come driver training, an ADR vehicle, orange plates and extinguishers. Someone
+  who last saw "exemption possible" on screen now reads on the export that it no longer
+  applies, with the totals behind it.
+
 ## [1.24.1] — 2026-08-03
 
 Two defects in the compliance panel that only a test would catch, and the tests to

@@ -630,10 +630,6 @@ def main(argv: list[str] | None = None) -> int:
               "de kolomindeling klopt niet. Er wordt niets vastgelegd.")
         return 1
 
-    if args.dry_run or only:
-        print("\nProefrun; er wordt niets vastgelegd.")
-        return 0
-
     payload = {
         "_comment": ("Dangerous Goods List van IMDG-code Amendment 42-24, machinaal "
                      "gelezen door scripts/extract_imdg_dgl.py. Feitelijke invulhulp; "
@@ -645,10 +641,16 @@ def main(argv: list[str] | None = None) -> int:
         "cross_check": checks,
         "entries": [{k: v for k, v in e.items() if k != "_page"} for e in entries],
     }
+    document = json.dumps(payload, ensure_ascii=False, indent=1) + "\n"
+    print(f"\n{len(entries)} vermeldingen, {len(document.encode('utf-8'))} bytes")
+
+    if args.dry_run or only:
+        print("Proefrun; er wordt niets vastgelegd.")
+        return 0
+
     args.out.parent.mkdir(parents=True, exist_ok=True)
-    args.out.write_text(json.dumps(payload, ensure_ascii=False, indent=1) + "\n",
-                        encoding="utf-8")
-    print(f"\ngeschreven: {args.out} ({args.out.stat().st_size} bytes)")
+    args.out.write_text(document, encoding="utf-8")
+    print(f"geschreven: {args.out}")
     return 0
 
 

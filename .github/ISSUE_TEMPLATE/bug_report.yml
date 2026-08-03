@@ -1,0 +1,94 @@
+name: Bug report
+description: Something in the application does not work as it should
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reporting. Two things before you start:
+
+        - **Redact real shipment data.** Issues are public. Replace company names,
+          addresses, reference numbers and consignee details with placeholders, and check
+          any PDF you attach — it carries everything you typed.
+        - **A wrong number or a wrong form field** belongs in the *Data or document is
+          wrong* template instead. It asks for the things needed to verify a correction.
+
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened
+      description: And what you expected instead.
+      placeholder: |
+        I clicked Export on the CMR and got a 500. I expected the PDF to download.
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: How to reproduce it
+      description: >-
+        Step by step, from a fresh start. If it involves pasting a load, include the exact
+        lines — the wizard reads `description | quantity | unit`.
+      placeholder: |
+        1. New shipment, mode Road
+        2. Paste: Stalen hoekprofiel 80x80x8x6000 | 8 | stuks
+        3. Pick the CMR, fill in sender and consignee
+        4. Click Export
+    validations:
+      required: true
+
+  - type: input
+    id: version
+    attributes:
+      label: Version
+      description: "`GET /api/health` returns it, and it is shown in the interface."
+      placeholder: "1.23.0"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: how-run
+    attributes:
+      label: How are you running it
+      options:
+        - Docker image
+        - Docker Compose
+        - Unraid
+        - From source
+        - Something else (say so below)
+    validations:
+      required: true
+
+  - type: dropdown
+    id: language
+    attributes:
+      label: Interface language
+      options:
+        - Dutch
+        - English
+    validations:
+      required: false
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs
+      description: >-
+        Backend output around the moment it went wrong, and the browser console if the
+        problem is in the interface. Check for anything that identifies a real shipment
+        before pasting.
+      render: text
+    validations:
+      required: false
+
+  - type: textarea
+    id: extra
+    attributes:
+      label: Anything else
+      description: >-
+        Screenshots, a redacted export, relevant environment variables — anything that
+        might matter. Note that `CATALOG_AUTO_SYNC=true` fetches catalogues at startup, so
+        say whether you have it on.
+    validations:
+      required: false

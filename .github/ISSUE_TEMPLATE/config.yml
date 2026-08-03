@@ -1,0 +1,23 @@
+# Blank issues are off so that every report arrives with the few details that
+# actually make it actionable. The links below cover the cases that should not
+# become a public issue at all.
+blank_issues_enabled: false
+
+contact_links:
+  - name: Security vulnerability
+    url: https://github.com/jeffreymooiweer/CargoPilot/security/advisories/new
+    about: >-
+      Never report a security problem in a public issue. Use private reporting;
+      see SECURITY.md for what is in scope.
+
+  - name: Documentation
+    url: https://github.com/jeffreymooiweer/CargoPilot/tree/main/docs
+    about: >-
+      Getting started, configuration, dangerous goods, data sources and
+      development — most "how do I" questions are answered here.
+
+  - name: Which edition of the rules CargoPilot uses
+    url: https://github.com/jeffreymooiweer/CargoPilot/blob/main/docs/dangerous-goods.md#rule-set-editions
+    about: >-
+      Not all the regulatory data is from the same year, and that is on purpose.
+      Check here before reporting a mismatch as a bug.

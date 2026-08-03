@@ -1,0 +1,92 @@
+name: Data or document is wrong
+description: A weight, a classification, a code or a form field that does not match the source
+labels: ["bug", "data"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        This is the most valuable kind of report CargoPilot gets. The application is only
+        worth as much as its data, and a user in the field is far better placed to spot a
+        wrong density or a misplaced box than anyone reading the code.
+
+        **The one thing that makes a correction actionable is the source.** "UN 1263
+        should be packing group II" is hard to act on. "ADR 2025 Table A lists UN 1263
+        with packing groups I, II and III" can be checked and fixed the same day.
+
+        Please **quote** the clause you need — do not paste chapters. The regulations are
+        copyrighted and are deliberately not in this repository.
+
+  - type: dropdown
+    id: area
+    attributes:
+      label: What is wrong
+      options:
+        - Weight, density or a material in the goods database
+        - Dangerous goods data (class, packing group, EmS, 16a/16b, segregation)
+        - A field on a document lands in the wrong place or is empty
+        - A location (port, airport, station)
+        - A translation
+        - Something else
+    validations:
+      required: true
+
+  - type: textarea
+    id: what
+    attributes:
+      label: What CargoPilot shows
+      description: >-
+        Be exact. For a weight, give the input line and the kilos it produced. For
+        dangerous goods, give the UN number and the column.
+      placeholder: |
+        UN 2984, column 16b: CargoPilot shows SG16, SG59, SG72.
+    validations:
+      required: true
+
+  - type: textarea
+    id: should
+    attributes:
+      label: What it should be
+    validations:
+      required: true
+
+  - type: textarea
+    id: source
+    attributes:
+      label: Source
+      description: >-
+        Name the publication **and the edition**, plus the clause, table or page. Examples:
+        ADR 2025 Table A, 3.2.1 · IMDG Amendment 42-24, 7.2.8 · EmS Guide
+        MSC.1/Circ.1588/Rev.3 · IATA DGR 2026, Table 4.2 · a manufacturer's data sheet
+        (link it).
+      placeholder: |
+        IMDG Code Amendment 42-24, chapter 3.2 Dangerous Goods List, column 16b.
+    validations:
+      required: true
+
+  - type: input
+    id: version
+    attributes:
+      label: Version
+      placeholder: "1.23.0"
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: checked
+    attributes:
+      label: Before you send
+      options:
+        - label: >-
+            I checked
+            [Rule set editions](https://github.com/jeffreymooiweer/CargoPilot/blob/main/docs/dangerous-goods.md#rule-set-editions)
+            — not all of the data is from the same year, and where CargoPilot runs behind
+            it says so.
+          required: false
+        - label: >-
+            I have not pasted regulatory text, only quoted what is needed to make the
+            point.
+          required: true
+        - label: >-
+            Anything I attached has real company names, addresses and reference numbers
+            removed.
+          required: true

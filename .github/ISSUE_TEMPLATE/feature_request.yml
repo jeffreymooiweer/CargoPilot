@@ -1,0 +1,60 @@
+name: Idea or feature request
+description: Something CargoPilot could do that it does not do yet
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        CargoPilot is a personal project maintained by one person, so ideas are collected
+        rather than promised. The [roadmap](https://github.com/jeffreymooiweer/CargoPilot/blob/main/ROADMAP.md)
+        shows what is already planned — worth a look first.
+
+        The most useful thing you can describe is **the situation you are in**, not the
+        feature. A well-described problem often turns out to have a simpler answer than
+        the one it arrived with.
+
+  - type: textarea
+    id: situation
+    attributes:
+      label: What are you trying to do
+      description: >-
+        The actual job: which mode of transport, which documents, what happens today and
+        where it costs you time or goes wrong.
+      placeholder: |
+        We ship groupage to Spain twice a week. Every load has the same six consignees, and
+        I retype their details into the CMR each time.
+    validations:
+      required: true
+
+  - type: textarea
+    id: idea
+    attributes:
+      label: What you had in mind
+      description: If you already have a solution in mind, describe it. If not, leave it empty.
+    validations:
+      required: false
+
+  - type: textarea
+    id: workaround
+    attributes:
+      label: What you do instead today
+      description: Including any workaround, however ugly. It says a lot about the real need.
+    validations:
+      required: false
+
+  - type: dropdown
+    id: area
+    attributes:
+      label: Which part of the application
+      multiple: true
+      options:
+        - Load entry, materials and weights
+        - Documents and export
+        - Dangerous goods
+        - Locations and addresses
+        - Equipment library
+        - Users and administration
+        - Deployment (Docker, Unraid, configuration)
+        - Something else
+    validations:
+      required: false

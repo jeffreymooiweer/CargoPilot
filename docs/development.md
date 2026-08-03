@@ -58,12 +58,15 @@ DATA_DIR=/absolute/path/to/repo/data \
   python -m pytest
 ```
 
-Typecheck and build the frontend (no ESLint is configured):
+Frontend:
 
 ```bash
 cd frontend
-npm run build      # tsc -b && vite build
+npm test           # Vitest + Testing Library
+npm run build      # tsc -b && vite build (typecheck)
 ```
+
+No ESLint is configured.
 
 A few notes on the test suite:
 

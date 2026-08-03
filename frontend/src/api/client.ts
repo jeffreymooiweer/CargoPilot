@@ -30,6 +30,35 @@ async function uploadFile<T>(path: string, file: File): Promise<T> {
   return res.json();
 }
 
+/** Een validatiefout van FastAPI leesbaar maken.
+ *
+ * Bij een 422 is `detail` geen zin maar een lijst met `{loc, msg}` per veld.
+ * Die rechtstreeks aan `new Error()` geven leverde "[object Object]" op het
+ * scherm op: de gebruiker zag dat er iets mis was, maar niet wat. Nu komt er
+ * "producten → 1 → adr_total_quantity: hoeveelheid '-5 L' moet groter dan nul
+ * zijn" te staan, met de padkop ("body") eraf omdat die niets toevoegt.
+ */
+export function describeDetail(detail: unknown): string {
+  if (typeof detail === "string" && detail) return detail;
+  if (Array.isArray(detail)) {
+    const lines = detail
+      .map((item) => {
+        if (typeof item === "string") return item;
+        if (!item || typeof item !== "object") return "";
+        const entry = item as { loc?: unknown[]; msg?: string };
+        const where = (entry.loc ?? [])
+          .filter((part) => part !== "body")
+          .map((part) => String(part))
+          .join(" → ");
+        const message = entry.msg?.replace(/^Value error,\s*/, "") ?? "";
+        return where ? `${where}: ${message}` : message;
+      })
+      .filter(Boolean);
+    if (lines.length) return lines.join("\n");
+  }
+  return "Request failed";
+}
+
 async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
   const res = await fetch(`${API_BASE}${path}`, {
     credentials: "include",
@@ -41,7 +70,7 @@ async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
   });
   if (!res.ok) {
     const err = await res.json().catch(() => ({ detail: res.statusText }));
-    throw new Error(err.detail || "Request failed");
+    throw new Error(describeDetail(err.detail));
   }
   if (res.headers.get("content-type")?.includes("application/json")) {
     return res.json();

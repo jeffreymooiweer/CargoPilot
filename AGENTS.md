@@ -52,4 +52,5 @@ cd frontend && npm run dev
 ```
 
 - **Tests:** `cd backend && DATABASE_URL=sqlite:////workspace/data/cargopilot_test.db DATA_DIR=/workspace/data /workspace/.venv/bin/python -m pytest`
+- **Frontend tests:** `cd frontend && npm test` (Vitest + Testing Library).
 - **Typecheck/build (no ESLint configured):** `cd frontend && npm run build` (`tsc -b && vite build`).

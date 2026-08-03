@@ -1,0 +1,186 @@
+/**
+ * Het nalevingspaneel: wat er op het scherm staat moet bij de invoer horen die
+ * er nú staat.
+ *
+ * Dat klinkt vanzelfsprekend, maar het is precies waar dit soort schermen
+ * stukgaat. Een uitkomst is groen, de gebruiker verhoogt een hoeveelheid, en
+ * het groen blijft staan omdat niemand het heeft weggehaald. Of twee controles
+ * lopen tegelijk en de tráágste — die bij oudere invoer hoort — komt als
+ * laatste binnen en wint. In beide gevallen ziet de gebruiker een geldige
+ * uitslag voor een zending die niet meer bestaat.
+ *
+ * Deze tests draaien op een nagebootste API zodat het gedrag van het paneel
+ * wordt vastgelegd en niet dat van de rekenlaag; die heeft haar eigen tests.
+ */
+import { act, render, screen, waitFor } from "@testing-library/react";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+
+import DgCompliancePanel from "./DgCompliancePanel";
+import { api, DgComplianceResult, DgEntry } from "../api/client";
+
+vi.mock("react-i18next", () => ({
+  useTranslation: () => ({
+    t: (key: string, options?: Record<string, unknown>) =>
+      options ? `${key} ${JSON.stringify(options)}` : key,
+    i18n: { language: "nl" },
+  }),
+}));
+
+function entries(quantity: string): DgEntry[] {
+  return [
+    {
+      vehicle: "WAGEN-1",
+      products: [
+        {
+          un_number: "1203",
+          proper_shipping_name: "BENZINE",
+          class: "3",
+          packing_group: "II",
+          transport_category: "2",
+          adr_total_quantity: quantity,
+        },
+      ],
+    } as unknown as DgEntry,
+  ];
+}
+
+function result(totalPoints: number): DgComplianceResult {
+  return {
+    adr_points: {
+      rows: [],
+      total_points: totalPoints,
+      threshold: 1000,
+      status: totalPoints > 1000 ? "above_threshold" : "exempt_possible",
+      category0_products: [],
+      incomplete_products: [],
+      quantity_units_note: "",
+      exempt_provisions: [],
+      still_required: [],
+    },
+  } as unknown as DgComplianceResult;
+}
+
+beforeEach(() => {
+  vi.useFakeTimers({ shouldAdvanceTime: true });
+});
+
+/** De debounce laten aflopen binnen act(), zodat React de statuswijziging
+ * verwerkt zoals in de browser. */
+async function tick(ms = 500) {
+  await act(async () => {
+    await vi.advanceTimersByTimeAsync(ms);
+  });
+}
+
+afterEach(() => {
+  vi.useRealTimers();
+  vi.restoreAllMocks();
+});
+
+describe("het resultaat hoort bij de invoer die er nu staat", () => {
+  it("controleert vanzelf na de debounce, zonder dat er geklikt wordt", async () => {
+    const check = vi.spyOn(api, "dgCompliance").mockResolvedValue(result(300));
+    render(<DgCompliancePanel entries={entries("20 L")} profiles={["ADR"]} />);
+
+    expect(check).not.toHaveBeenCalled(); // nog binnen de debounce
+    await tick();
+    await waitFor(() => expect(check).toHaveBeenCalledTimes(1));
+    expect(await screen.findByText(/compliance.totalPoints/)).toHaveTextContent("300");
+  });
+
+  it("wist de vorige uitkomst zodra de invoer verandert", async () => {
+    vi.spyOn(api, "dgCompliance").mockResolvedValue(result(300));
+    const view = render(<DgCompliancePanel entries={entries("20 L")} profiles={["ADR"]} />);
+    await tick();
+    expect(await screen.findByText(/compliance.totalPoints/)).toBeInTheDocument();
+
+    // Meer benzine: de oude uitslag hoort per direct weg te zijn, nog vóór de
+    // nieuwe controle is teruggekomen. Blijven staan zou een geldige uitslag
+    // tonen voor een zending die niet meer bestaat.
+    view.rerender(<DgCompliancePanel entries={entries("600 L")} profiles={["ADR"]} />);
+    expect(screen.queryByText(/compliance.totalPoints/)).not.toBeInTheDocument();
+  });
+
+  it("controleert opnieuw na een wijziging", async () => {
+    const check = vi.spyOn(api, "dgCompliance").mockResolvedValue(result(300));
+    const view = render(<DgCompliancePanel entries={entries("20 L")} profiles={["ADR"]} />);
+    await tick();
+    await waitFor(() => expect(check).toHaveBeenCalledTimes(1));
+
+    view.rerender(<DgCompliancePanel entries={entries("600 L")} profiles={["ADR"]} />);
+    await tick();
+    await waitFor(() => expect(check).toHaveBeenCalledTimes(2));
+
+    const lastCall = check.mock.calls[1][0] as DgEntry[];
+    expect((lastCall[0] as never as { products: { adr_total_quantity: string }[] })
+      .products[0].adr_total_quantity).toBe("600 L");
+  });
+
+  it("laat een trage oudere reactie de nieuwere niet overschrijven", async () => {
+    // De eerste controle blijft hangen; de tweede is er meteen. Wint de eerste
+    // alsnog omdat hij later binnenkomt, dan staat er een uitkomst op het
+    // scherm die bij invoer van twee wijzigingen geleden hoort.
+    let releaseFirst: (value: DgComplianceResult) => void = () => {};
+    const slowFirst = new Promise<DgComplianceResult>((resolve) => {
+      releaseFirst = resolve;
+    });
+    const check = vi
+      .spyOn(api, "dgCompliance")
+      .mockReturnValueOnce(slowFirst)
+      .mockResolvedValueOnce(result(1200));
+
+    const view = render(<DgCompliancePanel entries={entries("20 L")} profiles={["ADR"]} />);
+    await tick();
+    await waitFor(() => expect(check).toHaveBeenCalledTimes(1));
+
+    view.rerender(<DgCompliancePanel entries={entries("600 L")} profiles={["ADR"]} />);
+    await tick();
+    await waitFor(() => expect(check).toHaveBeenCalledTimes(2));
+    expect(await screen.findByText(/compliance.totalPoints/)).toHaveTextContent("1200");
+
+    releaseFirst(result(300));
+    await tick(50);
+
+    expect(screen.getByText(/compliance.totalPoints/)).toHaveTextContent("1200");
+    expect(screen.getByText(/compliance.totalPoints/)).not.toHaveTextContent("300");
+  });
+});
+
+describe("een validatiefout van de server", () => {
+  it("komt leesbaar op het scherm en niet als [object Object]", async () => {
+    vi.spyOn(api, "dgCompliance").mockRejectedValue(
+      new Error("producten → 0 → adr_total_quantity: hoeveelheid '-5 L' moet groter dan nul zijn"),
+    );
+    render(<DgCompliancePanel entries={entries("-5 L")} profiles={["ADR"]} />);
+    await tick();
+
+    const alert = await screen.findByRole("alert");
+    expect(alert).toHaveTextContent("adr_total_quantity");
+    expect(alert).toHaveTextContent("groter dan nul");
+    expect(alert.textContent).not.toContain("[object Object]");
+  });
+
+  it("laat geen oude uitkomst naast de foutmelding staan", async () => {
+    const check = vi.spyOn(api, "dgCompliance").mockResolvedValue(result(300));
+    const view = render(<DgCompliancePanel entries={entries("20 L")} profiles={["ADR"]} />);
+    await tick();
+    expect(await screen.findByText(/compliance.totalPoints/)).toBeInTheDocument();
+
+    check.mockRejectedValueOnce(new Error("adr_total_quantity: moet groter dan nul zijn"));
+    view.rerender(<DgCompliancePanel entries={entries("-5 L")} profiles={["ADR"]} />);
+    await tick();
+
+    await screen.findByRole("alert");
+    expect(screen.queryByText(/compliance.totalPoints/)).not.toBeInTheDocument();
+  });
+});
+
+describe("wanneer het paneel niets te zeggen heeft", () => {
+  it("toont het zichzelf niet zonder stoffen of zonder profiel", () => {
+    const { container } = render(<DgCompliancePanel entries={[]} profiles={["ADR"]} />);
+    expect(container).toBeEmptyDOMElement();
+
+    const zonderProfiel = render(<DgCompliancePanel entries={entries("20 L")} profiles={[]} />);
+    expect(zonderProfiel.container).toBeEmptyDOMElement();
+  });
+});

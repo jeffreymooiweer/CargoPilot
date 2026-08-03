@@ -319,3 +319,40 @@ def test_words_outside_the_body_window_are_ignored():
     ]
     lines = dgl.page_lines(FakeWordPage(words), BOUNDS, row_rules=[200.0, 260.0])
     assert [c.get("un_number") for c in lines] == ["1203"]
+
+
+class FakeVRect:
+    """Een verticaal celrandje dat precies één rijband beslaat."""
+
+    def __init__(self, x, y0, y1, width=0.7):
+        self.x0, self.x1 = x - width / 2, x + width / 2
+        self.y0, self.y1 = y0, y1
+        self.width, self.height = width, y1 - y0
+
+
+def banded_page(bands, columns=18):
+    rects = []
+    for y0, y1 in bands:
+        rects += [FakeVRect(65.0 + 60 * n, y0, y1) for n in range(columns)]
+    return FakeWordPage([], rects)
+
+
+def test_row_bands_come_from_the_vertical_segments_own_extents():
+    """Elk verticaal celrandje loopt over precies één rij, en er staan er
+    achttien naast elkaar. Hun boven- en onderkant zijn dus de rijgrenzen —
+    informatie die de eerste versie weggooide om horizontale lijnen te zoeken
+    die er nauwelijks zijn, waarna de hele pagina één band werd."""
+    page = banded_page([(150.0, 228.0), (228.0, 306.0), (306.0, 384.0)])
+    assert dgl.find_row_rules(page) == [150.0, 228.0, 306.0, 384.0]
+
+
+def test_the_column_edges_still_come_out_of_the_same_rectangles():
+    page = banded_page([(150.0, 228.0), (228.0, 306.0)])
+    assert dgl.find_rules(page)[:3] == [65.0, 125.0, 185.0]
+
+
+def test_horizontal_rules_remain_the_fallback():
+    """Een pagina zonder verticale segmenten mag alsnog op haar horizontale
+    randen worden verdeeld."""
+    page = FakeWordPage([], [FakeHRect(200.0, 1100.0), FakeHRect(260.0, 1100.0)])
+    assert dgl.find_row_rules(page) == [200.0, 260.0]

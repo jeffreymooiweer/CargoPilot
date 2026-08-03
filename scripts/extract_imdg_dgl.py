@@ -459,15 +459,85 @@ def load(name: str) -> Any:
         return None
 
 
+def division_matches(found: str, divisions: set[str]) -> bool:
+    """Of de klasse uit de lijst overeenkomt met wat ADR van deze stof zegt.
+
+    Twee dingen maken dit meer dan een vergelijking. Een UN-nummer kan in
+    Tabel A meerdere keren staan — UN 1950 (aerosolen) heeft een 2.1- en een
+    2.2-vermelding — dus er is niet één ADR-divisie maar een verzameling. En
+    de IMDG-code noemt aerosolen gewoon klasse 2 waar ADR de divisie geeft;
+    dat is geen tegenspraak maar een verschil in hoe fijn de twee regelingen
+    indelen. Een klasse die de kop is van een ADR-divisie telt daarom mee.
+    """
+    found = found.strip()
+    if not found or not divisions:
+        return False
+    return found in divisions or any(d.startswith(f"{found}.") for d in divisions)
+
+
+def adr_divisions() -> dict[str, set[str]]:
+    """De divisie per UN-nummer volgens ADR Tabel A.
+
+    De kolom 'klasse' geeft bij gassen alleen '2' en bij explosieven alleen
+    '1'; de werkelijke divisie staat in de etikettenkolom respectievelijk de
+    classificatiecode. De Dangerous Goods List draagt die divisie wél voluit
+    ("1.1D", "2.3"), dus die moeten hier gelijk worden getrokken.
+
+    Dit is een kopie van `parse_hazards()` uit
+    backend/app/services/dg/enrichment.py. Dit script draait in GitHub Actions
+    met alleen pymupdf geïnstalleerd en kan de applicatie niet importeren.
+    backend/tests/test_imdg_dgl_extraction.py bindt de twee aan elkaar, zodat
+    ze niet uit elkaar kunnen lopen.
+    """
+    divisions: dict[str, set[str]] = {}
+    for entry in load("un_numbers.json") or []:
+        hazard_class = str(entry.get("class") or "").strip()
+        classification = str(entry.get("classification_code") or "").strip().upper()
+        # Etiketten normaliseren zoals de applicatie dat doet: "9A" is klasse 9,
+        # de modelletter hoort er niet bij. Zonder deze stap gaf UN 1950 hier
+        # "2.2" waar de app "2.1" zegt — precies het soort verschil dat een
+        # zelfcontrole waardeloos maakt.
+        tokens = []
+        for raw in str(entry.get("labels") or "").split("+"):
+            token = raw.strip().upper()
+            if not token:
+                continue
+            match = re.match(r"^(\d(?:\.\d)?)", token)
+            tokens.append(match.group(1) if match else token)
+
+        division = hazard_class
+        if hazard_class == "1" and re.match(r"^1\.\d[A-S]$", classification):
+            division = classification
+        elif tokens and tokens[0].startswith(f"{hazard_class}."):
+            division = tokens[0]
+        elif not hazard_class and tokens:
+            division = tokens[0]
+        # Klasse 1 en 2 worden altijd in divisies verdeeld; blijft er hier
+        # alleen "1" of "2" over, dan hééft ADR geen divisie gegeven. Dat
+        # gebeurt bij stoffen die over de weg verboden zijn (de etikettenkolom
+        # zegt dan BEFÖRDERUNG VERBOTEN) en bij voorwerpen die naar 5.2.2.1.12
+        # verwijzen. Over zee mogen die wél, en de IMDG-code noemt hun divisie
+        # gewoon. Zulke gevallen tegen elkaar leggen meet niets: de ene bron
+        # heeft er simpelweg geen antwoord op, en meetellen zou zeven valse
+        # afwijkingen opleveren.
+        if division and division not in {"1", "2"}:
+            divisions.setdefault(str(entry.get("un", "")).strip(), set()).add(division)
+    return divisions
+
+
 def cross_check(entries: list[dict[str, Any]]) -> dict[str, Any]:
     """De uitkomst leggen naast wat we langs andere wegen al weten.
 
     Klasse komt uit ADR Tabel A, EmS uit de EmS Guide. Beide zijn onafhankelijk
-    van deze PDF. Klopt de kolomindeling, dan moeten ze grotendeels
+    van deze PDF — dat is de hele bedoeling. Eerder kwam de klasse uit
+    card_data.json, maar dat zijn de UN-kaarten: óók een IMDG-bron, dus dan legt
+    de ene IMDG-lezing naast de andere. En die kaarten bleken voor UN 2984-2992,
+    3548 en 3550 volgnummers in het klasseveld te dragen in plaats van klassen,
+    wat elf valse afwijkingen opleverde die stuk voor stuk zijn nagelopen. Klopt de kolomindeling, dan moeten ze grotendeels
     samenvallen; een verschoven kolom laat hier meteen honderden verschillen
     zien in plaats van stilletjes de app in te lekken.
     """
-    cards = (load("card_data.json") or {}).get("entries", {})
+    adr = adr_divisions()
     ems_seed = (load("ems.json") or {}).get("entries", {})
 
     checks = {"class": {"same": 0, "differs": 0, "examples": []},
@@ -478,14 +548,14 @@ def cross_check(entries: list[dict[str, Any]]) -> dict[str, Any]:
         by_un.setdefault(entry["un_number"], entry)
 
     for un, entry in by_un.items():
-        card = cards.get(un)
-        if card and card.get("class"):
+        divisions = adr.get(un)
+        if divisions:
             found = entry.get("class", "").strip()
-            key = "same" if found == str(card["class"]).strip() else "differs"
+            key = "same" if division_matches(found, divisions) else "differs"
             checks["class"][key] += 1
             if key == "differs" and len(checks["class"]["examples"]) < 15:
                 checks["class"]["examples"].append(
-                    f"UN {un}: lijst {found!r} vs kaart {card['class']!r}")
+                    f"UN {un}: lijst {found!r} vs ADR {sorted(divisions)!r}")
 
         seeded = ems_seed.get(un)
         if isinstance(seeded, dict) and seeded.get("fire"):

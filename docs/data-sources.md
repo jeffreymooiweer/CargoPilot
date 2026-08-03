@@ -69,6 +69,7 @@ goes quiet; typing an address by hand always works.
 | Lithium and sodium-ion batteries in aviation | [IATA Guidance Document for Lithium Batteries and Sodium ion Batteries](https://www.iata.org/contentassets/05e6d8742b0047259bf3a700bc9d42b9/lithium-battery-guidance-document.pdf), 2026 edition |
 | ADR 1.1.3.6 points, loading together 7.5.2, IATA Table 9.3.A, Q value | ADR 2025 (UNECE) and the IATA DGR |
 | Stowage codes SW1–SW31, handling codes H1–H5, segregation codes SG1–SG78 with their descriptions | IMDG Code chapters 7.1.5, 7.1.6 and 7.2.8, via IMO resolution **MSC.556(108)** (adopted 23 May 2024), read by `scripts/extract_imdg_codes.py` |
+| Dangerous Goods List per UN number — class, subsidiary hazards, packing group, special provisions, LQ/EQ, packing/IBC/tank instructions, EmS, stowage and handling (16a), segregation (16b), properties | IMDG Code chapter 3.2, Amendment 42-24, via IMO resolution **MSC.556(108)**, read by `scripts/extract_imdg_dgl.py` |
 | IMDG Amendment 42-24 changes over 41-22 | NCB Hazcheck, *IMDG Code Amendment 42-24 changes detailed summary*, October 2024 v1.0, and IMO **E&T 38/3/9** for the UN 1361 provisions |
 
 Where the data lives:
@@ -81,6 +82,7 @@ Where the data lives:
 | `backend/seed/dg/packagings.json` | 107 UN packaging codes |
 | `backend/seed/dg/imdg_42_24.json` | The IMDG Amendment 42-24 difference layer over the 41-22 data |
 | `backend/seed/dg/imdg_codes.json` | 110 stowage, handling and segregation code descriptions |
+| `backend/seed/dg/imdg_dgl.json` | The Dangerous Goods List: 2,860 rows over 2,347 UN numbers |
 | `backend/app/config/dg_compliance.json` | Segregation tables and compliance rules |
 | `backend/app/config/dg_instructions.json` | Field help text |
 

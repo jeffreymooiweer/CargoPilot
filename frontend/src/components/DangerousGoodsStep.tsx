@@ -420,6 +420,14 @@ function AutoDerivedPanel({ prepared }: { prepared: DgPrepareResult }) {
       hint.imdg_stowage_category && `IMDG 7.1.4 — ${t("dgauto.stowageCategory", {
         category: hint.imdg_stowage_category,
       })}`,
+      // Kolom 6 van de lijst. Een bijzondere bepaling kan de indeling, de
+      // verpakking of de vrijstelling van een stof veranderen, dus het nummer
+      // hoort in beeld ook al staat de tekst ervan niet in deze app.
+      hint.imdg_special_provisions?.length &&
+        `IMDG 3.2 — ${t("dgauto.specialProvisions", {
+          list: hint.imdg_special_provisions.join(", "),
+        })}`,
+      hint.imdg_amended_in_42_24 && `IMDG 42-24 — ${t("dgauto.amendedIn4224")}`,
       // Wat amendement 42-24 aan deze stof verandert. De basisgegevens komen uit
       // ADR 2025 en de UN-kaarten van 41-22; waar de verplichte editie daarvan
       // afwijkt, hoort dat bij de stof te staan en niet alleen in de docs.

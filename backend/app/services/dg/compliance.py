@@ -13,10 +13,11 @@ from functools import lru_cache
 from typing import Any
 
 from app.core.config import get_settings
-from app.services.dg import amendment_42_24
+from app.services.dg import amendment_42_24, dangerous_goods_list
 from app.services.dg.enrichment import (
     card_data_for,
     imdg_code_text,
+    imdg_segregation_codes_for,
     segregation_group_label,
     segregation_groups_for,
     segregation_provisions,
@@ -441,7 +442,8 @@ def check_imdg_segregation_groups(
     lang = _lang(language)
     products: list[tuple[str, set[str]]] = []
     for entry, index, product in _iter_products(entries):
-        groups = set(segregation_groups_for(product.get("un_number", "")))
+        groups = set(segregation_groups_for(product.get("un_number", ""),
+                                            str(product.get("packing_group") or "")))
         # Handmatig ingevulde groepen tellen ook mee.
         for token in re.split(r"[,;/\s]+", str(product.get("segregation_group") or "")):
             if token.strip().upper().startswith("SGG"):
@@ -537,9 +539,10 @@ def check_imdg_segregation_provisions(
     """IMDG kolom 16b: de scheidingsvoorschriften (SG) van de stof zelf.
 
     De scheidingstabel van 7.2.4 werkt op klasse; kolom 16b legt daarbovenop
-    voorschriften per stof. Die codes staan sinds de UN-kaarten per UN-nummer
-    vast, met de tekst die erbij hoort. Hier wordt gekeken of een andere partij
-    in dezelfde zending het doel van zo'n voorschrift is.
+    voorschriften per stof. Die codes komen nu uit de Dangerous Goods List
+    zelf, in de stand van 42-24, en niet langer alleen uit de UN-kaarten van
+    41-22 — die dekten lang niet elke stof. Hier wordt gekeken of een andere
+    partij in dezelfde zending het doel van zo'n voorschrift is.
     """
     lang = _lang(language)
     rules = segregation_provisions()
@@ -547,15 +550,15 @@ def check_imdg_segregation_provisions(
     parties: list[dict[str, Any]] = []
     for entry, index, product in _iter_products(entries):
         un = str(product.get("un_number") or "").strip()
-        card = card_data_for(un)
-        groups = set(segregation_groups_for(un))
+        packing_group = str(product.get("packing_group") or "").strip()
+        groups = set(segregation_groups_for(un, packing_group))
         for token in re.split(r"[,;/\s]+", str(product.get("segregation_group") or "")):
             if token.strip().upper().startswith("SGG"):
                 groups.add(token.strip().upper())
         parties.append({
             "label": _product_label(entry, product, index),
             "un": "".join(ch for ch in un if ch.isdigit()).zfill(4) if un else "",
-            "codes": list(card.get("segregation_codes") or []),
+            "codes": imdg_segregation_codes_for(un, packing_group),
             "classes": _classes_of(product),
             "groups": groups,
         })
@@ -979,8 +982,14 @@ def check_compliance(
                 "Amendment 40-20 (hoofdstuk 7.2) — in 42-24 ongewijzigd voor "
                 + ", ".join(amendment_42_24.verified_unchanged_sections())
             ),
+            "IMDG_dangerous_goods_list": (
+                f"Amendment 42-24, hoofdstuk 3.2 — "
+                f"{dangerous_goods_list.source().get('entries', 0)} vermeldingen; "
+                "kolom 16a en 16b komen hiervandaan"
+            ),
             "IMDG_per_substance": (
-                "Amendment 41-22 (Cantell UN-kaarten, 2023) met de verschillenlaag 42-24"
+                "Amendment 41-22 (Cantell UN-kaarten, 2023) met de verschillenlaag 42-24 "
+                "— nog alleen voor marine pollutant en bulkvervoer"
             ),
             "IMDG_current_mandatory": (
                 "Amendment 42-24, verplicht sinds 1-1-2026 — verschillenlaag toegepast; "

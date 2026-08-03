@@ -333,6 +333,8 @@
     "emsVerified": "EmS confirmed against a public source",
     "emsByVariant": "EmS depends on the variant: {{options}}",
     "emsByPackingGroup": "EmS depends on the packing group: {{options}}",
-    "stowageCategory": "stowage category {{category}}"
+    "stowageCategory": "stowage category {{category}}",
+    "specialProvisions": "special provisions {{list}}",
+    "amendedIn4224": "42-24 changed this entry — compare against the previous edition"
   }
 }

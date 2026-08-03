@@ -288,6 +288,18 @@ export interface DgPrepareHint {
   /** Wat IMDG-amendement 42-24 aan deze stof verandert. */
   imdg_amendment_changes?: string[];
   imdg_document_requirement?: { section: string; text: string; fields: string[] };
+  /** Uit de Dangerous Goods List zelf, hoofdstuk 3.2 van de IMDG-code. */
+  imdg_special_provisions?: string[];
+  imdg_packing_instructions?: string;
+  imdg_packing_provisions?: string;
+  imdg_tank_instructions?: string;
+  imdg_tank_provisions?: string;
+  imdg_subsidiary_hazards?: string;
+  imdg_properties?: string;
+  /** De lijst wijst deze vermelding aan als gewijzigd door 42-24. */
+  imdg_amended_in_42_24?: boolean;
+  imdg_dgl_source?: string;
+  imdg_amendment?: string;
   transport_forbidden?: boolean;
   transport_forbidden_note?: string;
   label_reference_note?: string;

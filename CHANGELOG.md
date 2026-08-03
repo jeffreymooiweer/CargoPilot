@@ -2,6 +2,52 @@
 
 All notable changes are documented here, following [Semantic Versioning](https://semver.org/).
 
+## [1.23.0] — 2026-08-03
+
+The Dangerous Goods List itself, all 2860 entries of it, now backs columns 16a and 16b —
+the columns 7.2.3.1 lets take precedence over the segregation table.
+
+### Added
+
+- **`backend/seed/dg/imdg_dgl.json`**: chapter 3.2 of IMDG Amendment 42-24, read by
+  `scripts/extract_imdg_dgl.py` from IMO resolution **MSC.556(108)**. 2860 rows over 2347
+  UN numbers — entries with several packing groups appear once per group — carrying class,
+  subsidiary hazards, packing group, special provisions, limited and excepted quantities,
+  packing and IBC and tank instructions, EmS, stowage and handling, segregation, and the
+  properties column.
+- **`app/services/dg/dangerous_goods_list.py`** reads that file per UN number and splits
+  the columns the way the code writes them: `Category B SW2 SW5` into a stowage category
+  and its codes, `SGG2 SG27 SG31` into segregation groups and SG codes. A dash is layout,
+  not a value, and is dropped rather than passed on.
+- **Stowage category for 2324 UN numbers**, where the UN cards carried it for none.
+- **The change marker.** The list prints a triangle in front of every entry Amendment
+  42-24 touched; those 66 entries are flagged, and the wizard says so.
+- Special provisions, packing instructions, tank instructions and the properties column
+  are surfaced per substance.
+
+### Changed
+
+- Column 16b now comes from the list rather than the UN cards. Coverage goes from 840 to
+  847 UN numbers, and 81 codes that the card extraction had dropped mid-list come back —
+  UN 1295 for instance carried `SG5 SG8 SG13 SG25` and actually has
+  `SG5 SG8 SG13 SG25 SG26 SG36 SG49 SG72`. No substance loses a code except UN 2988,
+  whose card row is misaligned (see below). Column 16a gains 118 UN numbers and the H
+  codes of 7.1.6, which the cards did not name.
+- Segregation groups are taken from 3.1.4.4 and column 16b together instead of 3.1.4.4
+  alone, and both lookups now honour the packing group.
+
+### Notes
+
+- The extraction checks itself against two independent sources and refuses to write below
+  the agreement threshold. It came out at **EmS 2293/2293** and **class 2322/2336**.
+  All fourteen class differences were examined and none is a misread: twelve are defects
+  in `card_data.json`, where UN 2984–2992, 3548 and 3550 carry sequence numbers
+  (`"4"`, `"5"`, `["13","14","12"]`, `"6.3"`) instead of classes; UN 1950 is the ADR split
+  `2.1 / 2.2` against the code's plain class 2; and UN 3423 is a genuine 42-24
+  reclassification from 8 to 6.1 (8), which the list's own change marker confirms.
+  `card_data.json` is left as it is for now — it is a separate source and correcting it is
+  its own job.
+
 ## [1.22.0] — 2026-08-02
 
 The IMDG Code's own chapter 7 now supplies the wording behind every column 16a and 16b

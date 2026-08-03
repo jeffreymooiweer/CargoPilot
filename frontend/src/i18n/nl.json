@@ -333,6 +333,8 @@
     "emsVerified": "EmS bevestigd tegen openbare bron",
     "emsByVariant": "EmS hangt af van de variant: {{options}}",
     "emsByPackingGroup": "EmS hangt af van de verpakkingsgroep: {{options}}",
-    "stowageCategory": "stuwagecategorie {{category}}"
+    "stowageCategory": "stuwagecategorie {{category}}",
+    "specialProvisions": "bijzondere bepalingen {{list}}",
+    "amendedIn4224": "42-24 heeft deze vermelding gewijzigd — vergelijk met de vorige editie"
   }
 }

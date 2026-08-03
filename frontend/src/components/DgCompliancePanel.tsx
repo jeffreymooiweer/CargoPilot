@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { api, ComplianceWarning, DgComplianceResult, DgEntry } from "../api/client";
 
@@ -23,16 +23,27 @@ export default function DgCompliancePanel({ entries, profiles }: Props) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
+  // Elke controle krijgt een volgnummer. Twee controles kunnen tegelijk lopen —
+  // de gebruiker typt door terwijl de vorige nog onderweg is — en dan kan een
+  // trage oudere reactie ná een snellere nieuwe binnenkomen. Zonder deze
+  // vergelijking overschrijft die oude uitkomst de nieuwe, en staat er een
+  // resultaat op het scherm dat bij invoer van twee wijzigingen geleden hoort.
+  const latestRequest = useRef(0);
+
   const run = useCallback(async () => {
     if (entries.length === 0 || profiles.length === 0) return;
+    const sequence = ++latestRequest.current;
     setLoading(true);
     setError("");
     try {
-      setResult(await api.dgCompliance(entries, profiles, lang));
+      const outcome = await api.dgCompliance(entries, profiles, lang);
+      if (sequence !== latestRequest.current) return;
+      setResult(outcome);
     } catch (e) {
-      setError(String(e));
+      if (sequence !== latestRequest.current) return;
+      setError(e instanceof Error ? e.message : String(e));
     } finally {
-      setLoading(false);
+      if (sequence === latestRequest.current) setLoading(false);
     }
   }, [entries, profiles, lang]);
 
@@ -76,7 +87,11 @@ export default function DgCompliancePanel({ entries, profiles }: Props) {
         </button>
       </div>
 
-      {error && <p className="text-sm text-red-600 dark:text-red-400">{error}</p>}
+      {error && (
+        <p className="whitespace-pre-line text-sm text-red-600 dark:text-red-400" role="alert">
+          {error}
+        </p>
+      )}
 
       {adr && (
         <section className="space-y-2">

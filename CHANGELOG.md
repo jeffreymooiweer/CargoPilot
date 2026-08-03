@@ -2,6 +2,34 @@
 
 All notable changes are documented here, following [Semantic Versioning](https://semver.org/).
 
+## [1.24.1] — 2026-08-03
+
+Two defects in the compliance panel that only a test would catch, and the tests to
+catch them.
+
+### Fixed
+
+- **A slow older check could overwrite a newer one.** Two checks can be in flight at
+  once — you keep typing while the previous request is still out — and if the first
+  resolves last, its result won. The screen then showed an outcome belonging to input
+  from two edits ago. Each check now carries a sequence number and a stale response is
+  discarded.
+- **A 422 came out as `[object Object]`.** FastAPI answers a validation error with a
+  list of `{loc, msg}` per field, and that went straight into `new Error()`. You could
+  see something was wrong but not what, or which field. `describeDetail()` in the API
+  layer now turns it into `entries → 0 → products → 1 → adr_total_quantity: hoeveelheid
+  '-5 L' moet groter dan nul zijn`, and the panel renders it as an alert over several
+  lines. Since v1.24.0 refuses unusable input, this is the normal path rather than an
+  edge case.
+
+### Added
+
+- **Vitest and Testing Library**, with `npm test` in `frontend/`. Thirteen tests cover
+  the panel's core promise — what is on screen belongs to the input that is there now:
+  automatic re-check after the debounce, the previous outcome cleared the moment input
+  changes, a stale response losing to a newer one, and a validation error appearing
+  readably with no old result left beside it.
+
 ## [1.24.0] — 2026-08-03
 
 The compliance endpoint validates its input instead of coercing it.

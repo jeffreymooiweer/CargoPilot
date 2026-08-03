@@ -115,21 +115,8 @@ def find_rules(page, tolerance: float = 2.5) -> list[float]:
         if rect.width <= 2.0 and rect.height >= 10.0:
             key = round((rect.x0 + rect.x1) / 2, 1)
             counts[key] = counts.get(key, 0) + 1
-    if not counts:
-        return []
-
-    # Randjes die binnen een paar punten van elkaar liggen zijn dezelfde grens.
-    merged: list[tuple[float, int]] = []
-    for x in sorted(counts):
-        if merged and x - merged[-1][0] <= tolerance:
-            previous, count = merged[-1]
-            merged[-1] = (previous, count + counts[x])
-        else:
-            merged.append((x, counts[x]))
-
     # Een grens komt door de hele tabel terug; een enkele streep niet.
-    threshold = max(2, max(count for _, count in merged) // 4)
-    return [x for x, count in merged if count >= threshold]
+    return _recurring(counts, tolerance)
 
 
 def boundaries(rules: list[float] | None = None) -> list[tuple[str, float, float]]:
@@ -158,17 +145,29 @@ def boundaries(rules: list[float] | None = None) -> list[tuple[str, float, float
 
 
 def find_row_rules(page, tolerance: float = 2.5, coverage: float = 0.4) -> list[float]:
-    """De y-posities van de horizontale randen tussen de rijen.
+    """De y-posities waar de ene rij eindigt en de volgende begint.
 
-    Wat een rijrand is, hangt niet af van hoe zij getekend is. Eisen dat één
-    rechthoek de halve pagina beslaat vond er geen enkele — deze tabel zet haar
-    randen net als de kolomranden in stukjes per cel neer, en dan werd de hele
-    pagina één band met twaalf stoffen erin.
+    De verticale celranden dragen dit al: elk segment is een punt of tachtig
+    hoog en loopt precies over één rijband, en er staan er achttien naast
+    elkaar — één per kolom. Hun boven- en onderkant zijn dus de rijgrenzen, en
+    een grens die achttien keer terugkomt is er een. Die y-waarden gooide de
+    eerste versie weg en ging op zoek naar horizontale lijnen, waarvan er te
+    weinig blijken te zijn; toen werd de hele pagina één band met twaalf
+    stoffen erin.
 
-    De maat die voor beide tekenwijzen klopt is hoeveel breedte alle stukjes op
-    dezelfde hoogte samen bestrijken: een echte rijrand loopt over de tabel,
-    of dat nu één lijn is of achttien. Een streepje binnen één cel niet.
+    Levert dat niets op, dan alsnog de horizontale randen, gemeten op de
+    breedte die alle stukjes op dezelfde hoogte samen bestrijken.
     """
+    ends: dict[float, int] = {}
+    for drawing in page.get_drawings():
+        rect = drawing["rect"]
+        if rect.width <= 2.0 and rect.height >= 10.0:
+            for y in (round(rect.y0, 1), round(rect.y1, 1)):
+                ends[y] = ends.get(y, 0) + 1
+    edges = _recurring(ends, tolerance)
+    if len(edges) >= 2:
+        return edges
+
     spans: dict[float, float] = {}
     widest = 0.0
     for drawing in page.get_drawings():
@@ -188,9 +187,23 @@ def find_row_rules(page, tolerance: float = 2.5, coverage: float = 0.4) -> list[
             merged[-1] = (previous, width + spans[y])
         else:
             merged.append((y, spans[y]))
-
     needed = max(widest, 1.0) * coverage
     return [y for y, width in merged if width >= needed]
+
+
+def _recurring(counts: dict[float, int], tolerance: float) -> list[float]:
+    """Posities die vaak genoeg terugkomen om een echte rand te zijn."""
+    if not counts:
+        return []
+    merged: list[tuple[float, int]] = []
+    for value in sorted(counts):
+        if merged and value - merged[-1][0] <= tolerance:
+            previous, count = merged[-1]
+            merged[-1] = (previous, count + counts[value])
+        else:
+            merged.append((value, counts[value]))
+    threshold = max(2, max(count for _, count in merged) // 4)
+    return [value for value, count in merged if count >= threshold]
 
 
 def _from_edges(edges: list[float]) -> list[tuple[str, float, float]]:
@@ -452,8 +465,10 @@ def diagnose(path: Path, pages: list[int]) -> None:
                     horizontals[key] = horizontals.get(key, 0.0) + rect.width
             print(f"  horizontale stukjes op {len(horizontals)} hoogtes; "
                   f"breedste dekking {max(horizontals.values(), default=0):.0f}")
-            widest = sorted(horizontals.items(), key=lambda kv: -kv[1])[:6]
-            print("    meest bedekt: " + ", ".join(f"y{y:.1f} w{w:.0f}" for y, w in widest))
+            heights = [d["rect"].height for d in page.get_drawings()
+                       if d["rect"].width <= 2.0 and d["rect"].height >= 10.0]
+            print(f"  verticale segmenten: {len(heights)}, hoogte "
+                  f"{min(heights, default=0):.1f}..{max(heights, default=0):.1f}")
             row_rules = find_row_rules(page)
             print(f"  horizontale randen: {len(row_rules)}")
             lines = page_lines(page, boundaries(find_rules(page)), row_rules)

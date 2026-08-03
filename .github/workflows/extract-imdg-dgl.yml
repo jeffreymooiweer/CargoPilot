@@ -21,6 +21,10 @@ on:
       min_agreement:
         description: "Onder deze overeenstemming wordt niets vastgelegd"
         default: "0.99"
+      show_un:
+        description: "Deze UN-nummers voluit in het log, om een afwijking na te lopen"
+        default: ""
+        required: false
 
 permissions:
   contents: write
@@ -46,6 +50,7 @@ jobs:
           python scripts/extract_imdg_dgl.py \
             --out backend/seed/dg/imdg_dgl.json \
             --min-agreement "${{ inputs.min_agreement }}" \
+            --show-un "${{ inputs.show_un }}" \
             ${{ inputs.commit && ' ' || '--dry-run' }}
 
       - name: Commit

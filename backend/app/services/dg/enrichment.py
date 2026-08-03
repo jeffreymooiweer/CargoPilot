@@ -21,7 +21,7 @@ import threading
 from pathlib import Path
 from typing import Any
 
-from app.services.dg import amendment_42_24
+from app.services.dg import amendment_42_24, dangerous_goods_list
 
 # EmS (brand, lekkage) per UN-nummer — geladen uit backend/seed/dg/ems.json.
 _SEED_EMS = Path(__file__).resolve().parents[3] / "seed" / "dg" / "ems.json"
@@ -100,10 +100,35 @@ def _load_sgg() -> dict[str, Any]:
     return _sgg_cache
 
 
-def segregation_groups_for(un_number: str) -> list[str]:
-    """Scheidingsgroepcodes van een UN-nummer, bijv. ['SGG1', 'SGG18']."""
+def segregation_groups_for(un_number: str, packing_group: str = "") -> list[str]:
+    """Scheidingsgroepcodes van een UN-nummer, bijv. ['SGG1', 'SGG18'].
+
+    Twee bronnen zeggen hier hetzelfde: de lijst van 3.1.4.4 en kolom 16b van
+    de Dangerous Goods List, die de groepen van een stof vóór haar SG-codes
+    zet. Ze worden samengenomen — waar de een een groep kent die de ander
+    mist, telt die mee.
+    """
     digits = "".join(ch for ch in str(un_number or "") if ch.isdigit()).zfill(4)
-    return list(_load_sgg()["by_un"].get(digits, []))
+    groups = list(_load_sgg()["by_un"].get(digits, []))
+    row = dangerous_goods_list.entry_for(digits, packing_group)
+    for code in dangerous_goods_list.segregation_groups(row):
+        if code not in groups:
+            groups.append(code)
+    return groups
+
+
+def imdg_segregation_codes_for(un_number: str, packing_group: str = "") -> list[str]:
+    """De SG-codes van kolom 16b.
+
+    De lijst zelf gaat vóór: zij is volledig en heeft de stand van 42-24. De
+    UN-kaarten (41-22) vullen aan waar de lijst een stof niet kent — bij een
+    n.e.g.-vermelding die de afzender zelf indeelt bijvoorbeeld.
+    """
+    digits = "".join(ch for ch in str(un_number or "") if ch.isdigit()).zfill(4)
+    row = dangerous_goods_list.entry_for(digits, packing_group)
+    if row:
+        return dangerous_goods_list.segregation_codes(row)
+    return list(card_data_for(digits).get("segregation_codes") or [])
 
 
 # Stof-specifieke IMDG-gegevens uit de UN-kaarten (un_cards/), samengevat door
@@ -449,8 +474,10 @@ def enrich_un_entry(entry: dict[str, Any], language: str = "nl") -> dict[str, An
             "labels for each hazard present."
         )
 
+    packing_group = clean_value(entry.get("packing_group"))
+
     # Scheidingsgroepen (IMDG 3.1.4.4): bepalend voor de scheiding aan boord.
-    sgg = segregation_groups_for(un)
+    sgg = segregation_groups_for(un, packing_group)
     if sgg:
         extras["segregation_groups"] = sgg
         extras["segregation_groups_text"] = ", ".join(
@@ -488,7 +515,6 @@ def enrich_un_entry(entry: dict[str, Any], language: str = "nl") -> dict[str, An
 
     # Stof-specifieke IMDG-gegevens van de UN-kaart (41-22), bijgewerkt met de
     # wijzigingen van Amendment 42-24 — sinds 1 januari 2026 de verplichte editie.
-    packing_group = clean_value(entry.get("packing_group"))
     card = amendment_42_24.apply_card_overlay(un, card_data_for(un), packing_group)
     if card:
         extras["card_source"] = "imdg_un_card"
@@ -528,6 +554,52 @@ def enrich_un_entry(entry: dict[str, Any], language: str = "nl") -> dict[str, An
 
         if card.get("stowage_category"):
             extras["imdg_stowage_category"] = card["stowage_category"]
+
+    # De Dangerous Goods List zelf, in de stand van 42-24. Waar zij de stof
+    # kent gaat zij vóór op de kaart: de kaarten zijn 41-22, dekken lang niet
+    # elke stof en geven kolom 16a en 16b naverteld in plaats van als code.
+    # Dat laatste is niet vrijblijvend — 7.2.3.1 laat kolom 16b vóórgaan op de
+    # scheidingstabel van 7.2.4, dus juist die kolom moet compleet zijn.
+    row = dangerous_goods_list.entry_for(un, packing_group)
+    if row:
+        extras["imdg_dgl_source"] = dangerous_goods_list.source().get("source", "")
+        extras["imdg_amendment"] = dangerous_goods_list.source().get("amendment", "")
+
+        stowage = dangerous_goods_list.stowage_codes(row)
+        if stowage:
+            extras["imdg_stowage_codes"] = stowage
+            described = describe_imdg_codes(stowage)
+            if described:
+                extras["imdg_stowage_definitions"] = described
+        segregation = dangerous_goods_list.segregation_codes(row)
+        if segregation:
+            extras["imdg_segregation_codes"] = segregation
+            described = describe_imdg_codes(segregation)
+            if described:
+                extras["imdg_segregation_definitions"] = described
+
+        category = dangerous_goods_list.stowage_category(row)
+        if category:
+            extras["imdg_stowage_category"] = category
+
+        for column, key in (
+            ("subsidiary_hazards", "imdg_subsidiary_hazards"),
+            ("packing_instructions", "imdg_packing_instructions"),
+            ("packing_provisions", "imdg_packing_provisions"),
+            ("tank_instructions", "imdg_tank_instructions"),
+            ("tank_provisions", "imdg_tank_provisions"),
+            ("properties_and_observations", "imdg_properties"),
+        ):
+            text = dangerous_goods_list.value(row, column)
+            if text:
+                extras[key] = text
+
+        provisions = dangerous_goods_list.special_provisions(row)
+        if provisions:
+            extras["imdg_special_provisions"] = provisions
+
+        if dangerous_goods_list.amended_in_42_24(row):
+            extras["imdg_amended_in_42_24"] = True
 
     # Wat Amendment 42-24 aan deze stof verandert. Dit staat los van de kaart:
     # ook stoffen zonder kaart (of nieuw in 42-24) kunnen wijzigingen hebben.

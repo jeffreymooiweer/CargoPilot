@@ -215,13 +215,22 @@ than discovered:
 |---|---|
 | ADR classification (Table A) | ADR 2025 |
 | IMDG class segregation table, class 1 matrix, 7.2.6.3 tables, segregation groups | Amendment 40-20 — **confirmed unchanged in 42-24** |
-| IMDG per-substance data (UN cards: SW/SG codes, marine pollutant) | Amendment 41-22 (2023), with the 42-24 differences applied on top |
+| IMDG Dangerous Goods List (chapter 3.2: columns 16a and 16b, stowage category, special provisions) | **Amendment 42-24** |
+| IMDG per-substance data from the UN cards (marine pollutant, bulk) | Amendment 41-22 (2023), with the 42-24 differences applied on top |
 | EmS emergency schedules | MSC.1/Circ.1588/Rev.3, plus the schedules 42-24 adds |
 | IATA lithium/sodium-ion rules | 2026 guidance |
 
-**IMDG Amendment 42-24 has been mandatory since 1 January 2026.** Rather than wait for a
-full rebuild of the IMDG data, CargoPilot carries a *difference layer*: the changes 42-24
-makes, laid over the 41-22 data, in `backend/seed/dg/imdg_42_24.json`.
+**IMDG Amendment 42-24 has been mandatory since 1 January 2026.**
+
+Chapter 3.2 — the Dangerous Goods List — is now read from the amendment itself:
+`backend/seed/dg/imdg_dgl.json` holds all 2,860 rows, and columns 16a and 16b come from
+there rather than from the UN cards. That matters because 7.2.3.1 lets column 16b take
+precedence over the segregation table, so it is the one column that must not be partial.
+
+What is left of the older data is the per-substance material the list does not carry —
+marine pollutant status and bulk carriage, which come from the 41-22 UN cards. For those
+CargoPilot carries a *difference layer*: the changes 42-24 makes, laid over the 41-22
+data, in `backend/seed/dg/imdg_42_24.json`.
 
 Two things make that workable:
 

@@ -101,9 +101,14 @@ def test_isopropenylbenzene_became_a_marine_pollutant():
 
 
 def test_carbon_keeps_its_old_stowage_code_and_gains_the_new_one():
-    """Toevoegen, niet vervangen: SW1 stond er al, SW27 komt erbij."""
+    """Toevoegen, niet vervangen: SW1 stond er al, SW27 komt erbij.
+
+    Sinds kolom 16a uit de Dangerous Goods List zelf komt staat H2 er ook bij.
+    Dat is een behandelingscode uit dezelfde kolom (7.1.6) die de UN-kaart niet
+    noemde — geen verschuiving maar wat er werkelijk staat.
+    """
     codes = offline_lookup("1361")["imdg_stowage_codes"]
-    assert codes == ["SW1", "SW27"]
+    assert codes == ["SW1", "SW27", "H2"]
 
 
 def test_carbon_carries_the_new_document_requirement():

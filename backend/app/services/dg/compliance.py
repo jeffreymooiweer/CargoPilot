@@ -13,6 +13,7 @@ from functools import lru_cache
 from typing import Any
 
 from app.core.config import get_settings
+from app.core.languages import normalise, pick
 from app.services.dg import amendment_42_24, dangerous_goods_list
 from app.services.regulatory_manifest import stale_rule_sets, summary
 from app.services.dg.enrichment import (
@@ -32,7 +33,7 @@ def get_compliance_rules() -> dict[str, Any]:
 
 
 def _lang(language: str) -> str:
-    return "en" if str(language).lower().startswith("en") else "nl"
+    return normalise(language)
 
 
 def _num(value: Any) -> float | None:
@@ -153,9 +154,9 @@ def check_adr_points(entries: list[dict[str, Any]], language: str = "nl") -> dic
         "status": status,
         "category0_products": category0,
         "incomplete_products": incomplete,
-        "quantity_units_note": rules["quantity_units"][lang],
-        "exempt_provisions": rules["exempt_provisions"][lang],
-        "still_required": rules["still_required"][lang],
+        "quantity_units_note": pick(rules["quantity_units"], lang),
+        "exempt_provisions": pick(rules["exempt_provisions"], lang),
+        "still_required": pick(rules["still_required"], lang),
     }
 
 
@@ -193,14 +194,14 @@ def check_adr_mixed_loading(entries: list[dict[str, Any]], language: str = "nl")
         warnings.append({
             "rule": "ADR 7.5.2.1",
             "severity": "error",
-            "message": rules["rules"]["class1_with_others"][lang],
+            "message": pick(rules["rules"]["class1_with_others"], lang),
             "products": ", ".join(class1_products + other_class_products),
         })
     if len(compat_groups) > 1:
         warnings.append({
             "rule": "ADR 7.5.2.2",
             "severity": "warning",
-            "message": rules["rules"]["class1_compat_groups"][lang].replace(
+            "message": pick(rules["rules"]["class1_compat_groups"], lang).replace(
                 "{groups}", ", ".join(sorted(compat_groups))
             ),
             "products": ", ".join(class1_products),
@@ -209,7 +210,7 @@ def check_adr_mixed_loading(entries: list[dict[str, Any]], language: str = "nl")
         warnings.append({
             "rule": "ADR CV28 / 7.5.4",
             "severity": "warning",
-            "message": rules["rules"]["cv28_foodstuffs"][lang],
+            "message": pick(rules["rules"]["cv28_foodstuffs"], lang),
             "products": ", ".join(food_separation),
         })
     return warnings
@@ -247,7 +248,7 @@ def check_iata_segregation(entries: list[dict[str, Any]], language: str = "nl") 
                     warnings.append({
                         "rule": f"IATA Table 9.3.A ({key_a} × {key_b})",
                         "severity": "error",
-                        "message": rules["note"][lang],
+                        "message": pick(rules["note"], lang),
                         "products": f"{label_a}  ×  {label_b}",
                     })
 
@@ -266,7 +267,7 @@ def check_iata_segregation(entries: list[dict[str, Any]], language: str = "nl") 
                         warnings.append({
                             "rule": "IATA 9.3.2 (lithiumbatterijen)",
                             "severity": "error",
-                            "message": rules["lithium_note"][lang],
+                            "message": pick(rules["lithium_note"], lang),
                             "products": f"{label_a}  ×  {label_b}",
                         })
     return warnings
@@ -352,7 +353,7 @@ def check_imdg_segregation(entries: list[dict[str, Any]], language: str = "nl") 
                 "rule": f"IMDG 7.2.4 ({worst_pair[0]} × {worst_pair[1]})",
                 "severity": "error" if worst in {"3", "4"} else "warning",
                 "code": worst,
-                "message": codes[worst][lang],
+                "message": pick(codes[worst], lang),
                 "products": f"{label_a}  ×  {label_b}",
                 "source": "table",
                 "pair": "|".join(pair_id),
@@ -401,7 +402,7 @@ def check_imdg_class1_compatibility(
                 warnings.append({
                     "rule": f"IMDG 7.2.7.1.4 ({group_a} × {group_b})",
                     "severity": "error",
-                    "message": rules["note"][lang],
+                    "message": pick(rules["note"], lang),
                     "products": f"{label_a}  ×  {label_b}",
                 })
             elif note and group_a != group_b:
@@ -409,7 +410,7 @@ def check_imdg_class1_compatibility(
                 warnings.append({
                     "rule": f"IMDG 7.2.7.1.4 ({group_a} × {group_b})",
                     "severity": "warning",
-                    "message": note[lang],
+                    "message": pick(note, lang),
                     "products": f"{label_a}  ×  {label_b}",
                 })
     return warnings
@@ -417,22 +418,43 @@ def check_imdg_class1_compatibility(
 
 # Scheidingsgroepen die onderling niet samen mogen (IMDG 7.2.5 in samenhang met
 # kolom 16b): de klassieke gevaarlijke combinaties.
-_SGG_CONFLICTS: list[tuple[str, str, str, str]] = [
-    ("SGG1", "SGG18", "zuren en alkaliën", "acids and alkalis"),
-    ("SGG1", "SGG6", "zuren en cyaniden (ontwikkeling van blauwzuur)",
-     "acids and cyanides (release of hydrogen cyanide)"),
-    ("SGG1", "SGG5", "zuren en chlorieten (ontwikkeling van chloordioxide)",
-     "acids and chlorites (release of chlorine dioxide)"),
-    ("SGG1", "SGG8", "zuren en hypochlorieten (ontwikkeling van chloorgas)",
-     "acids and hypochlorites (release of chlorine gas)"),
-    ("SGG1", "SGG12", "zuren en nitrieten (ontwikkeling van nitreuze dampen)",
-     "acids and nitrites (release of nitrous fumes)"),
-    ("SGG1", "SGG17", "zuren en aziden (vorming van explosief waterstofazide)",
-     "acids and azides (formation of explosive hydrazoic acid)"),
-    ("SGG1", "SGG14", "zuren en permanganaten", "acids and permanganates"),
-    ("SGG1", "SGG15", "zuren en metaalpoeders (ontwikkeling van waterstof)",
-     "acids and powdered metals (release of hydrogen)"),
-    ("SGG16", "SGG1", "peroxiden en zuren", "peroxides and acids"),
+_SGG_CONFLICTS: list[tuple[str, str, dict[str, str]]] = [
+    ("SGG1", "SGG18", {
+        "nl": "zuren en alkaliën",
+        "en": "acids and alkalis",
+        "de": "Säuren und Laugen"}),
+    ("SGG1", "SGG6", {
+        "nl": "zuren en cyaniden (ontwikkeling van blauwzuur)",
+        "en": "acids and cyanides (release of hydrogen cyanide)",
+        "de": "Säuren und Cyanide (Freisetzung von Blausäure)"}),
+    ("SGG1", "SGG5", {
+        "nl": "zuren en chlorieten (ontwikkeling van chloordioxide)",
+        "en": "acids and chlorites (release of chlorine dioxide)",
+        "de": "Säuren und Chlorite (Freisetzung von Chlordioxid)"}),
+    ("SGG1", "SGG8", {
+        "nl": "zuren en hypochlorieten (ontwikkeling van chloorgas)",
+        "en": "acids and hypochlorites (release of chlorine gas)",
+        "de": "Säuren und Hypochlorite (Freisetzung von Chlorgas)"}),
+    ("SGG1", "SGG12", {
+        "nl": "zuren en nitrieten (ontwikkeling van nitreuze dampen)",
+        "en": "acids and nitrites (release of nitrous fumes)",
+        "de": "Säuren und Nitrite (Freisetzung nitroser Gase)"}),
+    ("SGG1", "SGG17", {
+        "nl": "zuren en aziden (vorming van explosief waterstofazide)",
+        "en": "acids and azides (formation of explosive hydrazoic acid)",
+        "de": "Säuren und Azide (Bildung von explosiver Stickstoffwasserstoffsäure)"}),
+    ("SGG1", "SGG14", {
+        "nl": "zuren en permanganaten",
+        "en": "acids and permanganates",
+        "de": "Säuren und Permanganate"}),
+    ("SGG1", "SGG15", {
+        "nl": "zuren en metaalpoeders (ontwikkeling van waterstof)",
+        "en": "acids and powdered metals (release of hydrogen)",
+        "de": "Säuren und Metallpulver (Freisetzung von Wasserstoff)"}),
+    ("SGG16", "SGG1", {
+        "nl": "peroxiden en zuren",
+        "en": "peroxides and acids",
+        "de": "Peroxide und Säuren"}),
 ]
 
 
@@ -456,7 +478,7 @@ def check_imdg_segregation_groups(
     seen: set[tuple[str, str, str]] = set()
     for i, (label_a, groups_a) in enumerate(products):
         for label_b, groups_b in products[i + 1:]:
-            for code_a, code_b, nl, en in _SGG_CONFLICTS:
+            for code_a, code_b, names in _SGG_CONFLICTS:
                 hit = (code_a in groups_a and code_b in groups_b) or (
                     code_b in groups_a and code_a in groups_b
                 )
@@ -469,13 +491,20 @@ def check_imdg_segregation_groups(
                 warnings.append({
                     "rule": f"IMDG 7.2.5 ({code_a} × {code_b})",
                     "severity": "warning",
-                    "message": (
-                        f"Scheidingsgroepen {nl}: kolom 16b van de Dangerous Goods List "
-                        "schrijft hier scheiding voor. Controleer de vermelding per stof."
-                        if lang == "nl"
-                        else f"Segregation groups {en}: column 16b of the Dangerous Goods "
-                        "List prescribes segregation here. Check the entry per substance."
-                    ),
+                    "message": pick(
+                        {
+                            "nl": "Scheidingsgroepen {groups}: kolom 16b van de Dangerous "
+                                  "Goods List schrijft hier scheiding voor. Controleer de "
+                                  "vermelding per stof.",
+                            "en": "Segregation groups {groups}: column 16b of the Dangerous "
+                                  "Goods List prescribes segregation here. Check the entry "
+                                  "per substance.",
+                            "de": "Trenngruppen {groups}: Spalte 16b der Dangerous Goods List "
+                                  "schreibt hier eine Trennung vor. Prüfen Sie den Eintrag je "
+                                  "Stoff.",
+                        },
+                        lang,
+                    ).format(groups=pick(names, lang)),
                     "products": f"{label_a}  ×  {label_b}",
                 })
     return warnings
@@ -483,16 +512,29 @@ def check_imdg_segregation_groups(
 
 # Hoe streng een scheidingsvoorschrift is, in gewone taal.
 _ACTION_TEXT = {
-    "away_from": ("uit de buurt van", "away from"),
-    "separated_from": ("gescheiden van", "separated from"),
-    "separated_by_compartment": (
-        "gescheiden door een volledig compartiment of ruim van",
-        "separated by a complete compartment or hold from",
-    ),
-    "separated_longitudinally": (
-        "in de lengterichting gescheiden door een tussenliggend compartiment of ruim van",
-        "separated longitudinally by an intervening complete compartment or hold from",
-    ),
+    # De Duitse IMDG-uitgave onderscheidt "entfernt von" (away from) en
+    # "getrennt von" (separated from); dat verschil is hier het hele punt.
+    "away_from": {
+        "nl": "uit de buurt van",
+        "en": "away from",
+        "de": "entfernt von",
+    },
+    "separated_from": {
+        "nl": "gescheiden van",
+        "en": "separated from",
+        "de": "getrennt von",
+    },
+    "separated_by_compartment": {
+        "nl": "gescheiden door een volledig compartiment of ruim van",
+        "en": "separated by a complete compartment or hold from",
+        "de": "durch eine vollständige Abteilung oder einen vollständigen Laderaum getrennt von",
+    },
+    "separated_longitudinally": {
+        "nl": "in de lengterichting gescheiden door een tussenliggend compartiment of ruim van",
+        "en": "separated longitudinally by an intervening complete compartment or hold from",
+        "de": "in Längsrichtung durch eine dazwischenliegende vollständige Abteilung oder "
+              "einen vollständigen Laderaum getrennt von",
+    },
 }
 
 # Dezelfde vier scheidingscodes als in de tabel van 7.2.4, zodat een SG-code en
@@ -594,7 +636,7 @@ def check_imdg_segregation_provisions(
             warnings.append({
                 "rule": f"IMDG 16b ({code})",
                 "severity": "warning",
-                "message": f"{requirement[lang]} {_wording(code, rules)}".strip(),
+                "message": f"{pick(requirement, lang)} {_wording(code, rules)}".strip(),
                 "products": source["label"],
             })
 
@@ -628,11 +670,16 @@ def check_imdg_segregation_provisions(
                     seen.add(key)
                     caveat = ""
                     if target.get("broader"):
-                        caveat = (
-                            " Gematcht op de scheidingsgroep, die ruimer is dan de tekst; controleer."
-                            if lang == "nl"
-                            else " Matched on the segregation group, which is broader than the "
-                            "wording; verify."
+                        caveat = pick(
+                            {
+                                "nl": " Gematcht op de scheidingsgroep, die ruimer is dan de "
+                                      "tekst; controleer.",
+                                "en": " Matched on the segregation group, which is broader "
+                                      "than the wording; verify.",
+                                "de": " Über die Trenngruppe zugeordnet, die weiter reicht als "
+                                      "der Wortlaut; bitte prüfen.",
+                            },
+                            lang,
                         )
                     warnings.append({
                         "rule": f"IMDG 16b ({code})",
@@ -666,24 +713,29 @@ def check_imdg_segregation_provisions(
                 if key in seen:
                     continue
                 seen.add(key)
-                action_nl, action_en = _ACTION_TEXT.get(
-                    str(rule.get("action")), ("gescheiden van", "separated from")
+                action = pick(
+                    _ACTION_TEXT.get(str(rule.get("action")), {}),
+                    lang,
+                    pick(_ACTION_TEXT["separated_from"], lang),
                 )
                 # "SGG1" zegt niets; "SGG1 (zuren)" wel.
                 if hit_class:
-                    what = f"klasse {hit_class}"
-                    what_en = f"class {hit_class}"
+                    what = pick(
+                        {"nl": "klasse {c}", "en": "class {c}", "de": "Klasse {c}"}, lang
+                    ).format(c=hit_class)
                 else:
-                    what = f"{hit_group} ({segregation_group_label(hit_group, 'nl')})"
-                    what_en = f"{hit_group} ({segregation_group_label(hit_group, 'en')})"
+                    what = f"{hit_group} ({segregation_group_label(hit_group, lang)})"
                 warnings.append({
                     "rule": f"IMDG 16b ({code})",
                     "severity": "warning",
-                    "message": (
-                        f"Stuw {action_nl} {what}. {_wording(code, rules)}"
-                        if lang == "nl"
-                        else f"Stow {action_en} {what_en}. {_wording(code, rules)}"
-                    ),
+                    "message": pick(
+                        {
+                            "nl": "Stuw {action} {what}. {wording}",
+                            "en": "Stow {action} {what}. {wording}",
+                            "de": "Stauen Sie {action} {what}. {wording}",
+                        },
+                        lang,
+                    ).format(action=action, what=what, wording=_wording(code, rules)),
                     "products": f"{source['label']}  \u00d7  {other['label']}",
                     "source": "column_16b",
                     "code": _ACTION_CODE.get(str(rule.get("action")), ""),
@@ -731,21 +783,29 @@ def apply_column_16b_precedence(
                 continue  # Geen strijd: beide bepalingen komen op hetzelfde uit.
             finding["superseded_by"] = rules
             finding["severity"] = "info"
-            finding["message"] += (
-                f" Let op 7.2.3.1: {', '.join(rules)} in kolom 16b gaat hierop voor "
-                f"(scheidingscode {strictest_code} in plaats van {finding['code']})."
-                if lang == "nl"
-                else f" Note 7.2.3.1: {', '.join(rules)} in column 16b takes precedence "
-                f"over this (segregation code {strictest_code} instead of {finding['code']})."
-            )
+            finding["message"] += pick(
+                {
+                    "nl": " Let op 7.2.3.1: {rules} in kolom 16b gaat hierop voor "
+                          "(scheidingscode {code} in plaats van {was}).",
+                    "en": " Note 7.2.3.1: {rules} in column 16b takes precedence over this "
+                          "(segregation code {code} instead of {was}).",
+                    "de": " Beachten Sie 7.2.3.1: {rules} in Spalte 16b geht dem vor "
+                          "(Trennkennzahl {code} statt {was}).",
+                },
+                lang,
+            ).format(rules=", ".join(rules), code=strictest_code, was=finding["code"])
         for finding in governing:
             finding["takes_precedence_over"] = [f["rule"] for f in table]
-            finding["message"] += (
-                " Deze bepaling uit kolom 16b gaat volgens 7.2.3.1 voor op de "
-                "klassescheidingstabel."
-                if lang == "nl"
-                else " Per 7.2.3.1 this column 16b provision takes precedence over the "
-                "class segregation table."
+            finding["message"] += pick(
+                {
+                    "nl": " Deze bepaling uit kolom 16b gaat volgens 7.2.3.1 voor op de "
+                          "klassescheidingstabel.",
+                    "en": " Per 7.2.3.1 this column 16b provision takes precedence over the "
+                          "class segregation table.",
+                    "de": " Diese Bestimmung aus Spalte 16b geht nach 7.2.3.1 der "
+                          "Klassentrenntabelle vor.",
+                },
+                lang,
             )
             if strictest_code >= 3:
                 finding["severity"] = "error"
@@ -788,23 +848,31 @@ def check_imdg_segregation_exemptions(
                 seen.add(key)
                 extra = ""
                 if name == "7.2.6.3.4":
-                    extra = (
-                        " Let op 7.2.6.4: de gevaarlijke reacties van 7.2.6.1.1 t/m "
-                        "7.2.6.1.4 blijven gelden."
-                        if lang == "nl"
-                        else " Note 7.2.6.4: the dangerous reactions of 7.2.6.1.1 to "
-                        "7.2.6.1.4 continue to apply."
+                    extra = pick(
+                        {
+                            "nl": " Let op 7.2.6.4: de gevaarlijke reacties van 7.2.6.1.1 "
+                                  "t/m 7.2.6.1.4 blijven gelden.",
+                            "en": " Note 7.2.6.4: the dangerous reactions of 7.2.6.1.1 to "
+                                  "7.2.6.1.4 continue to apply.",
+                            "de": " Beachten Sie 7.2.6.4: die gefährlichen Reaktionen nach "
+                                  "7.2.6.1.1 bis 7.2.6.1.4 gelten weiterhin.",
+                        },
+                        lang,
                     )
                 findings.append({
                     "rule": f"IMDG {name}",
                     "severity": "info",
-                    "message": (
-                        f"Beide stoffen staan in tabel {name}: hiertussen hoeft geen "
-                        f"scheiding te worden toegepast.{extra}"
-                        if lang == "nl"
-                        else f"Both substances appear in table {name}: no segregation needs "
-                        f"to be applied between them.{extra}"
-                    ),
+                    "message": pick(
+                        {
+                            "nl": "Beide stoffen staan in tabel {name}: hiertussen hoeft geen "
+                                  "scheiding te worden toegepast.{extra}",
+                            "en": "Both substances appear in table {name}: no segregation "
+                                  "needs to be applied between them.{extra}",
+                            "de": "Beide Stoffe stehen in Tabelle {name}: zwischen ihnen ist "
+                                  "keine Trennung anzuwenden.{extra}",
+                        },
+                        lang,
+                    ).format(name=name, extra=extra),
                     "products": f"{label_a}  \u00d7  {label_b}",
                 })
     return findings
@@ -852,20 +920,32 @@ def check_imdg_amendment_42_24(
         reclassified = {"class", "subsidiary_risks_add", "packing_group"} & set(overlay)
         if reclassified:
             findings.append({
-                "rule": f"IMDG {amendment_42_24.amendment()} — classificatie"
-                        if lang == "nl"
-                        else f"IMDG {amendment_42_24.amendment()} — classification",
+                "rule": f"IMDG {amendment_42_24.amendment()} — " + pick(
+                    {
+                        "nl": "classificatie",
+                        "en": "classification",
+                        "de": "Klassifizierung",
+                    },
+                    lang,
+                ),
                 "severity": "warning",
-                "message": (
-                    "De classificatie van deze stof is in 42-24 gewijzigd. De app rekent de "
-                    "scheiding door op de classificatie van ADR Tabel A en past die niet "
-                    "vanzelf aan; controleer de uitkomst tegen de vermelding in de "
-                    "Dangerous Goods List van 42-24."
-                    if lang == "nl"
-                    else "The classification of this substance changed in 42-24. The app "
-                    "computes segregation on the ADR Table A classification and does not "
-                    "adjust it automatically; check the outcome against the 42-24 Dangerous "
-                    "Goods List entry."
+                "message": pick(
+                    {
+                        "nl": "De classificatie van deze stof is in 42-24 gewijzigd. De app "
+                              "rekent de scheiding door op de classificatie van ADR Tabel A "
+                              "en past die niet vanzelf aan; controleer de uitkomst tegen de "
+                              "vermelding in de Dangerous Goods List van 42-24.",
+                        "en": "The classification of this substance changed in 42-24. The app "
+                              "computes segregation on the ADR Table A classification and does "
+                              "not adjust it automatically; check the outcome against the "
+                              "42-24 Dangerous Goods List entry.",
+                        "de": "Die Klassifizierung dieses Stoffes hat sich in 42-24 geändert. "
+                              "Die App berechnet die Trennung anhand der Klassifizierung nach "
+                              "ADR Tabelle A und passt sie nicht selbsttätig an; prüfen Sie "
+                              "das Ergebnis gegen den Eintrag in der Dangerous Goods List von "
+                              "42-24.",
+                    },
+                    lang,
                 ),
                 "products": label,
             })
@@ -935,11 +1015,14 @@ def check_q_value(entries: list[dict[str, Any]], language: str = "nl") -> list[d
                 "q_value": None,
                 "exceeded": None,
                 "invalid_components": invalid,
-                "note": (
-                    "Q kan niet worden bepaald: " + "; ".join(invalid)
-                    if lang == "nl"
-                    else "Q cannot be determined: " + "; ".join(invalid)
-                ),
+                "note": pick(
+                    {
+                        "nl": "Q kan niet worden bepaald: ",
+                        "en": "Q cannot be determined: ",
+                        "de": "Q kann nicht bestimmt werden: ",
+                    },
+                    lang,
+                ) + "; ".join(invalid),
             })
             continue
 
@@ -958,7 +1041,7 @@ def check_q_value(entries: list[dict[str, Any]], language: str = "nl") -> list[d
             "status": "exceeded" if q_rounded > rules["limit"] else "ok",
             "q_value": q_rounded,
             "exceeded": q_rounded > rules["limit"],
-            "note": rules["note"][lang],
+            "note": pick(rules["note"], lang),
         })
     return results
 
@@ -1015,15 +1098,20 @@ def check_compliance(
         result.setdefault("rule_set_warnings", []).append({
             "rule": stale["name"],
             "severity": "warning",
-            "message": (
-                f"{stale['edition']} is verlopen op {stale['expired_on']}. Deze "
-                f"controle rekent met een editie die niet meer geldt; werk "
-                f"CargoPilot bij of raadpleeg de actuele uitgave."
-                if _lang(language) == "nl" else
-                f"{stale['edition']} expired on {stale['expired_on']}. This check "
-                f"is computing with an edition that no longer applies; update "
-                f"CargoPilot or consult the current edition."
-            ),
+            "message": pick(
+                {
+                    "nl": "{edition} is verlopen op {on}. Deze controle rekent met een "
+                          "editie die niet meer geldt; werk CargoPilot bij of raadpleeg de "
+                          "actuele uitgave.",
+                    "en": "{edition} expired on {on}. This check is computing with an "
+                          "edition that no longer applies; update CargoPilot or consult the "
+                          "current edition.",
+                    "de": "{edition} ist am {on} abgelaufen. Diese Prüfung rechnet mit einer "
+                          "Ausgabe, die nicht mehr gilt; aktualisieren Sie CargoPilot oder "
+                          "ziehen Sie die geltende Ausgabe heran.",
+                },
+                language,
+            ).format(edition=stale["edition"], on=stale["expired_on"]),
             "products": ", ".join(stale["profiles"]),
         })
 
@@ -1040,15 +1128,15 @@ def check_compliance(
             + check_imdg_segregation_exemptions(entries, language),
             language,
         ) + check_imdg_amendment_42_24(entries, language)
-        result["imdg_note"] = rules["imdg_segregation"]["note"][_lang(language)]
+        result["imdg_note"] = pick(rules["imdg_segregation"]["note"], language)
         groups = rules.get("imdg_segregation_groups")
         if groups:
             lang = _lang(language)
             result["imdg_segregation_groups"] = {
-                "note": groups["note"][lang],
-                "class8_exception": groups["class8_exception"][lang],
+                "note": pick(groups["note"], lang),
+                "class8_exception": pick(groups["class8_exception"], lang),
                 "groups": [
-                    {"code": item["code"], "label": item[lang]} for item in groups["groups"]
+                    {"code": item["code"], "label": pick(item, lang)} for item in groups["groups"]
                 ],
             }
 

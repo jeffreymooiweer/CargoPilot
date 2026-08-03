@@ -2,6 +2,74 @@
 
 All notable changes are documented here, following [Semantic Versioning](https://semver.org/).
 
+## [1.29.0] — 2026-08-03
+
+German as a third interface language, and one place that decides which language anything is in.
+
+### Added
+
+- **Deutsch.** The interface, the field labels, the dangerous goods help texts, the
+  compliance warnings and the generated documents are now available in German alongside
+  Dutch and English — 592 texts across the document registry, the compliance rules, the
+  DG instructions and the seed data, plus the 350 interface strings.
+
+  German transport terminology follows the official wording where the regulations have
+  one: *Beförderungskategorie* for the ADR 1.1.3.6 transport category, *Verpackungs-
+  anweisung* for the packing instruction, *schriftliche Weisungen* for the instructions
+  in writing, and the IMDG distinction between *entfernt von* (away from) and *getrennt
+  von* (separated from) — a difference that is the whole point of a segregation warning.
+
+  The disclaimer says in its German text that it is a translation and that the Dutch
+  version prevails; the governing law was and stays Dutch.
+
+- **German input is understood too.** A language on the screen does not help if the paste
+  box does not recognise what you type into it: an unrecognised product yields no weight
+  and therefore no usable document. `Stahl Winkelprofil`, `Quadratrohr`, `Rundstab`,
+  `Stahlblech`, `Träger`, `Betonplatte`, `Sperrholz`, `Kunststoffplatte` and their
+  neighbours are now detected, the language detector answers in the language you wrote in
+  rather than falling back to English, and `Stück`/`Stk` count as units.
+
+  `PVC-Rohr` deliberately does not go through a bare `Rohr` pattern — a plastic pipe
+  weighs an order of magnitude less than a steel one, and that is a wrong weight on a
+  waybill rather than a cosmetic slip.
+
+### Changed
+
+- **One place decides the language, instead of eleven.** Every module that produced text
+  carried its own copy of `"en" if language.startswith("en") else "nl"`. With two
+  languages that was correct. With a third it would have silently answered "Dutch" for
+  German — a German screen with Dutch warnings and a Dutch export — and `TEXTS[key][lang]`
+  would have raised a `KeyError` outright.
+
+  `app/core/languages.py` now holds the supported languages and the fallback order, and
+  `normalise()`/`pick()` replaced every two-way branch. `pick()` falls back to the next
+  language that does have the text rather than returning nothing: a field label in the
+  wrong language can still be read, a field without a label cannot. The frontend has the
+  same single point in `src/i18n/language.ts`, so the screen and the backend can no
+  longer disagree about which language a document is in.
+
+### Tests
+
+- The completeness of a language is enforced, not eyeballed. `test_languages.py` walks
+  the data files and asserts every block with a Dutch and an English text also carries a
+  German one, that a list stays a list of the same length, and that a "translation" is
+  not simply the Dutch text repeated. An AST pass over `app/` catches the same omission
+  in code, and a source check fails on any two-way language branch coming back.
+  On the frontend, `translations.test.ts` holds the three bundles to identical keys and
+  identical interpolation variables.
+
+### Known gaps
+
+- The catalogue search (`search_catalog`) returns material names in Dutch regardless of
+  the interface language. It takes no language parameter at all, so this affects English
+  users today as much as German ones; the German labels are in the data, waiting. Making
+  the search language-aware is its own change, touching the route and the frontend call.
+
+- The proper shipping names come from the ADR source table, which carries Dutch and
+  English but no German. A German user sees the German interface around an English or
+  Dutch shipping name — which is what belongs on the document anyway, since the proper
+  shipping name is prescribed and not translated freely.
+
 ## [1.28.1] — 2026-08-03
 
 ### Fixed

@@ -22,6 +22,7 @@ from __future__ import annotations
 import re
 from typing import Any
 
+from app.core.languages import pick
 from app.services.dg.database import get_un_entries
 from app.services.dg.enrichment import (
     CLASS_DOCUMENT_NOTES,
@@ -234,7 +235,14 @@ def adr_category_totals(entries: list[dict[str, Any]], language: str = "nl") -> 
     for category in sorted(totals):
         amounts = ", ".join(f"{_fmt(value)} {unit}" for unit, value in sorted(totals[category].items()))
         rows.append({"transport_category": category, "total": amounts})
-    prefix = "Totale hoeveelheid per vervoerscategorie" if language == "nl" else "Total quantity per transport category"
+    prefix = pick(
+        {
+            "nl": "Totale hoeveelheid per vervoerscategorie",
+            "en": "Total quantity per transport category",
+            "de": "Gesamtmenge je Beförderungskategorie",
+        },
+        language,
+    )
     statement = f"{prefix}: " + "; ".join(f"{r['transport_category']}: {r['total']}" for r in rows)
     return {"statement": statement, "categories": rows}
 

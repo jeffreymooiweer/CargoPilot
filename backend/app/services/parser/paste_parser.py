@@ -9,7 +9,7 @@ DESCRIPTION_ALIASES = {
     "material description", "specifications", "item", "product",
 }
 QUANTITY_ALIASES = {"quantity", "aantal", "qty", "count", "amount"}
-UNIT_ALIASES = {"unit", "eenheid", "units", "stuks", "pcs"}
+UNIT_ALIASES = {"unit", "eenheid", "units", "stuks", "pcs", "einheit", "stück", "stk"}
 
 
 @dataclass

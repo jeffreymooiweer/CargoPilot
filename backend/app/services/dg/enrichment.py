@@ -21,6 +21,7 @@ import threading
 from pathlib import Path
 from typing import Any
 
+from app.core.languages import SUPPORTED, pick
 from app.services.dg import amendment_42_24, dangerous_goods_list
 
 # EmS (brand, lekkage) per UN-nummer — geladen uit backend/seed/dg/ems.json.
@@ -73,17 +74,23 @@ def lookup_ems(un_number: str, packing_group: str = "") -> dict[str, Any] | None
 
 # Wat "yes/no/maybe" in kolom 4 van de Dangerous Goods List betekent, in gewone taal.
 _MARINE_POLLUTANT_TEXT = {
-    True: {
-        "yes": "Marine pollutant: ja — merken en vermelden op het vervoersdocument.",
-        "no": "Marine pollutant: nee.",
-        "maybe": "Marine pollutant: hangt van de stof af. Beoordeel aan de criteria van "
-                 "IMDG 2.10 en merk zo nodig alsnog.",
+    "yes": {
+        "nl": "Marine pollutant: ja — merken en vermelden op het vervoersdocument.",
+        "en": "Marine pollutant: yes — mark and declare on the transport document.",
+        "de": "Meeresschadstoff: ja — kennzeichnen und im Beförderungspapier angeben.",
     },
-    False: {
-        "yes": "Marine pollutant: yes — mark and declare on the transport document.",
-        "no": "Marine pollutant: no.",
-        "maybe": "Marine pollutant: depends on the substance. Assess against the criteria "
-                 "of IMDG 2.10 and mark if it meets them.",
+    "no": {
+        "nl": "Marine pollutant: nee.",
+        "en": "Marine pollutant: no.",
+        "de": "Meeresschadstoff: nein.",
+    },
+    "maybe": {
+        "nl": "Marine pollutant: hangt van de stof af. Beoordeel aan de criteria van "
+              "IMDG 2.10 en merk zo nodig alsnog.",
+        "en": "Marine pollutant: depends on the substance. Assess against the criteria "
+              "of IMDG 2.10 and mark if it meets them.",
+        "de": "Meeresschadstoff: hängt vom Stoff ab. Beurteilen Sie ihn anhand der Kriterien "
+              "des IMDG 2.10 und kennzeichnen Sie gegebenenfalls.",
     },
 }
 
@@ -218,7 +225,7 @@ def card_data_for(un_number: str) -> dict[str, Any]:
 def segregation_group_label(code: str, language: str = "nl") -> str:
     for group in _load_sgg()["groups"]:
         if group["code"] == code:
-            return group.get(language) or group.get("nl") or group["en"]
+            return pick(group, language, code)
     return code
 
 
@@ -229,7 +236,7 @@ def ems_schedule_label(code: str, language: str = "nl") -> str:
     item = data.get(key, {}).get(str(code).strip().upper())
     if not item:
         return ""
-    return item.get(language) or item.get("nl") or ""
+    return pick(item, language)
 
 
 def describe_ems(ems_code: str, language: str = "nl") -> str:
@@ -336,26 +343,32 @@ CLASS_DOCUMENT_NOTES: dict[str, dict[str, str]] = {
     "1": {
         "nl": "Klasse 1: vermeld in het vervoersdocument de totale netto explosieve massa (NEM) per stof en, bij samenlading, de compatibiliteitsgroepen (ADR 5.4.1.2.1).",
         "en": "Class 1: state the total net explosive mass (NEM) per substance in the transport document and, when mixed, the compatibility groups (ADR 5.4.1.2.1).",
+        "de": "Klasse 1: Geben Sie im Beförderungspapier die gesamte Nettoexplosivstoffmasse (NEM) je Stoff an und bei Zusammenladung die Verträglichkeitsgruppen (ADR 5.4.1.2.1).",
     },
     "2": {
         "nl": "Klasse 2: bij tankvervoer en drukhouders horen de vuldatum, beproevingsdatum en het toegestane vulgewicht bij de zending (ADR 5.4.1.2.2).",
         "en": "Class 2: for tanks and pressure receptacles the filling date, test date and permitted filling mass accompany the consignment (ADR 5.4.1.2.2).",
+        "de": "Klasse 2: Bei Tankbeförderung und Druckgefäßen gehören Fülldatum, Prüfdatum und die zulässige Füllmasse zur Sendung (ADR 5.4.1.2.2).",
     },
     "4.1": {
         "nl": "Zelfontledende stoffen en gedesensibiliseerde explosieven: vermeld de temperatuurbeheersing (controle- en noodtemperatuur) wanneer die geldt (ADR 5.4.1.2.3.1).",
         "en": "Self-reactive substances and desensitized explosives: state the control and emergency temperature where applicable (ADR 5.4.1.2.3.1).",
+        "de": "Selbstzersetzliche Stoffe und desensibilisierte explosive Stoffe: Geben Sie die Kontroll- und Notfalltemperatur an, wo sie vorgeschrieben ist (ADR 5.4.1.2.3.1).",
     },
     "5.2": {
         "nl": "Organische peroxiden: vermeld de controle- en noodtemperatuur wanneer temperatuurbeheersing is voorgeschreven (ADR 5.4.1.2.3.1).",
         "en": "Organic peroxides: state the control and emergency temperature where temperature control is required (ADR 5.4.1.2.3.1).",
+        "de": "Organische Peroxide: Geben Sie die Kontroll- und Notfalltemperatur an, wenn eine Temperaturkontrolle vorgeschrieben ist (ADR 5.4.1.2.3.1).",
     },
     "6.2": {
         "nl": "Klasse 6.2: vermeld naam en telefoonnummer van een verantwoordelijke persoon in het vervoersdocument (ADR 5.4.1.2.4).",
         "en": "Class 6.2: state the name and telephone number of a responsible person in the transport document (ADR 5.4.1.2.4).",
+        "de": "Klasse 6.2: Geben Sie Namen und Telefonnummer einer verantwortlichen Person im Beförderungspapier an (ADR 5.4.1.2.4).",
     },
     "7": {
         "nl": "Klasse 7: het vervoersdocument vereist aanvullend de radionucliden, fysische en chemische vorm, maximale activiteit, collo-categorie (I-WIT/II-GEEL/III-GEEL), transportindex en waar van toepassing de veiligheidsindex kritikaliteit (ADR 5.4.1.2.5.1).",
         "en": "Class 7: the transport document additionally requires the radionuclides, physical and chemical form, maximum activity, package category (I-WHITE/II-YELLOW/III-YELLOW), transport index and, where applicable, the criticality safety index (ADR 5.4.1.2.5.1).",
+        "de": "Klasse 7: Das Beförderungspapier verlangt zusätzlich die Radionuklide, die physikalische und chemische Form, die höchste Aktivität, die Versandstückkategorie (I-WEISS/II-GELB/III-GELB), die Transportkennzahl und, wo zutreffend, die Kritikalitätssicherheitskennzahl (ADR 5.4.1.2.5.1).",
     },
 }
 
@@ -364,10 +377,12 @@ PROFILE_DOCUMENT_NOTES: dict[str, dict[str, str]] = {
     "IMDG": {
         "nl": "Zeevervoer: het containerbeladingscertificaat (CTU-packing certificate) hoort bij de zending, en bij containers over zee geldt de geverifieerde bruto massa (VGM, SOLAS VI/2).",
         "en": "Sea transport: the container/vehicle packing certificate accompanies the consignment, and containers require a verified gross mass (VGM, SOLAS VI/2).",
+        "de": "Seebeförderung: Die Container-/Fahrzeugpackbescheinigung gehört zur Sendung, und für Container gilt die verifizierte Bruttomasse (VGM, SOLAS VI/2).",
     },
     "IATA_DGR": {
         "nl": "Luchtvervoer: de Shipper's Declaration wordt in tweevoud ondertekend aangeleverd en de hoeveelheden per collo mogen de limieten van de gekozen verpakkingsinstructie niet overschrijden.",
         "en": "Air transport: the Shipper's Declaration is provided signed in duplicate and quantities per package must not exceed the limits of the applicable packing instruction.",
+        "de": "Luftbeförderung: Die Shipper's Declaration wird in zweifacher Ausfertigung unterschrieben beigefügt, und die Mengen je Versandstück dürfen die Grenzwerte der gewählten Verpackungsanweisung nicht überschreiten.",
     },
 }
 
@@ -427,18 +442,26 @@ def parse_hazards(entry: dict[str, Any]) -> dict[str, Any]:
 def describe_excepted_quantity(code: str, language: str = "nl") -> str | None:
     code = (code or "").strip().upper()
     if code == "E0":
-        return (
-            "E0: niet toegestaan als vrijgestelde hoeveelheid"
-            if language == "nl"
-            else "E0: not permitted as excepted quantity"
+        return pick(
+            {
+                "nl": "E0: niet toegestaan als vrijgestelde hoeveelheid",
+                "en": "E0: not permitted as excepted quantity",
+                "de": "E0: als freigestellte Menge nicht zugelassen",
+            },
+            language,
         )
     limits = EXCEPTED_QUANTITY_LIMITS.get(code)
     if not limits:
         return None
     inner, outer = limits
-    if language == "nl":
-        return f"{code}: max. {inner} g/ml per binnenverpakking, {outer} g/ml per buitenverpakking"
-    return f"{code}: max. {inner} g/ml per inner packaging, {outer} g/ml per outer packaging"
+    return pick(
+        {
+            "nl": "{code}: max. {inner} g/ml per binnenverpakking, {outer} g/ml per buitenverpakking",
+            "en": "{code}: max. {inner} g/ml per inner packaging, {outer} g/ml per outer packaging",
+            "de": "{code}: max. {inner} g/ml je Innenverpackung, {outer} g/ml je Außenverpackung",
+        },
+        language,
+    ).format(code=code, inner=inner, outer=outer)
 
 
 def enrich_un_entry(entry: dict[str, Any], language: str = "nl") -> dict[str, Any]:
@@ -458,20 +481,31 @@ def enrich_un_entry(entry: dict[str, Any], language: str = "nl") -> dict[str, An
     labels_raw = str(entry.get("labels") or "")
     if "VERBOTEN" in labels_raw.upper():
         extras["transport_forbidden"] = True
-        extras["transport_forbidden_note"] = (
-            "Deze stof mag volgens ADR Tabel A niet ten vervoer worden aangeboden. "
-            "Vervoer is uitsluitend mogelijk onder een ontheffing van de bevoegde autoriteit."
-            if language == "nl"
-            else "Per ADR Table A this substance is not permitted for carriage. "
-            "Carriage is only possible under an exemption from the competent authority."
+        extras["transport_forbidden_note"] = pick(
+            {
+                "nl": "Deze stof mag volgens ADR Tabel A niet ten vervoer worden aangeboden. "
+                      "Vervoer is uitsluitend mogelijk onder een ontheffing van de bevoegde "
+                      "autoriteit.",
+                "en": "Per ADR Table A this substance is not permitted for carriage. "
+                      "Carriage is only possible under an exemption from the competent "
+                      "authority.",
+                "de": "Dieser Stoff darf nach ADR Tabelle A nicht zur Beförderung aufgegeben "
+                      "werden. Eine Beförderung ist nur mit einer Ausnahmegenehmigung der "
+                      "zuständigen Behörde möglich.",
+            },
+            language,
         )
     if "5.2.2.1.12" in labels_raw:
-        extras["label_reference_note"] = (
-            "Etikettering volgens 5.2.2.1.12: voorwerpen die gevaarlijke goederen bevatten "
-            "krijgen de etiketten van elk aanwezig gevaar."
-            if language == "nl"
-            else "Labelling per 5.2.2.1.12: articles containing dangerous goods bear the "
-            "labels for each hazard present."
+        extras["label_reference_note"] = pick(
+            {
+                "nl": "Etikettering volgens 5.2.2.1.12: voorwerpen die gevaarlijke goederen "
+                      "bevatten krijgen de etiketten van elk aanwezig gevaar.",
+                "en": "Labelling per 5.2.2.1.12: articles containing dangerous goods bear "
+                      "the labels for each hazard present.",
+                "de": "Bezettelung nach 5.2.2.1.12: Gegenstände, die gefährliche Güter "
+                      "enthalten, tragen die Gefahrzettel jeder vorhandenen Gefahr.",
+            },
+            language,
         )
 
     packing_group = clean_value(entry.get("packing_group"))
@@ -524,7 +558,7 @@ def enrich_un_entry(entry: dict[str, Any], language: str = "nl") -> dict[str, An
         pollutant = card.get("marine_pollutant")
         if pollutant in {"yes", "no", "maybe"}:
             extras["marine_pollutant_status"] = pollutant
-            extras["marine_pollutant_text"] = _MARINE_POLLUTANT_TEXT[language == "nl"][pollutant]
+            extras["marine_pollutant_text"] = pick(_MARINE_POLLUTANT_TEXT[pollutant], language)
             if pollutant == "yes":
                 extras["environmentally_hazardous"] = True
 
@@ -622,13 +656,22 @@ def enrich_un_entry(entry: dict[str, Any], language: str = "nl") -> dict[str, An
             extras["cargo_aircraft_only"] = True
         if air.get("iata_packing_instruction"):
             extras["iata_packing_instruction"] = air["iata_packing_instruction"]
-        extras["air_note"] = air.get(f"note_{language}") or air.get("note_nl")
+        extras["air_note"] = pick(
+            {lang: air[f"note_{lang}"] for lang in SUPPORTED if air.get(f"note_{lang}")},
+            language,
+        )
     if hazard_class in AIR_FORBIDDEN_CLASSES:
         extras["air_forbidden"] = True
-        extras["air_note"] = (
-            "Klasse 2.3 (giftige gassen) is in de luchtvaart verboden, op enkele uitzonderingen na."
-            if language == "nl"
-            else "Division 2.3 (toxic gases) is forbidden in air transport, with few exceptions."
+        extras["air_note"] = pick(
+            {
+                "nl": "Klasse 2.3 (giftige gassen) is in de luchtvaart verboden, op enkele "
+                      "uitzonderingen na.",
+                "en": "Division 2.3 (toxic gases) is forbidden in air transport, with few "
+                      "exceptions.",
+                "de": "Unterklasse 2.3 (giftige Gase) ist in der Luftbeförderung bis auf "
+                      "wenige Ausnahmen verboten.",
+            },
+            language,
         )
 
     # Vrijgestelde hoeveelheden uitleggen
@@ -638,10 +681,13 @@ def enrich_un_entry(entry: dict[str, Any], language: str = "nl") -> dict[str, An
 
     lq = clean_value(entry.get("limited_quantity"))
     if lq and lq != "0":
-        extras["limited_quantity_text"] = (
-            f"LQ: max. {lq} per binnenverpakking (ADR/IMDG 3.4)"
-            if language == "nl"
-            else f"LQ: max. {lq} per inner packaging (ADR/IMDG 3.4)"
-        )
+        extras["limited_quantity_text"] = pick(
+            {
+                "nl": "LQ: max. {lq} per binnenverpakking (ADR/IMDG 3.4)",
+                "en": "LQ: max. {lq} per inner packaging (ADR/IMDG 3.4)",
+                "de": "LQ: max. {lq} je Innenverpackung (ADR/IMDG 3.4)",
+            },
+            language,
+        ).format(lq=lq)
 
     return extras

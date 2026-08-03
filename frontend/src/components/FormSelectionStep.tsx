@@ -1,5 +1,6 @@
 import { useTranslation } from "react-i18next";
 import { DocumentDefinition, DocumentRegistry, LocalizedText } from "../api/client";
+import { documentLanguage, localised } from "../i18n/language";
 
 const panelClass = "bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800";
 
@@ -20,8 +21,8 @@ const CATEGORY_KEYS: Record<string, string> = {
 
 export default function FormSelectionStep({ registry, modality, selected, onChange }: Props) {
   const { t, i18n } = useTranslation();
-  const lang = i18n.language.startsWith("en") ? "en" : "nl";
-  const L = (text?: LocalizedText) => text?.[lang as "nl" | "en"] ?? "";
+  const lang = documentLanguage(i18n.language);
+  const L = (text?: LocalizedText) => localised(text, lang);
 
   const modalityDef = registry.modalities.find((m) => m.key === modality);
   const documents = (modalityDef?.documents ?? [])

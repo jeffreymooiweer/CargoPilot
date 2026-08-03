@@ -1,267 +1,320 @@
 {
   "dg_intro": {
     "nl": "Vul per collo alleen het UN-nummer in — of zoek op stofnaam. CargoPilot leidt daaruit de juiste vervoersnaam, klasse en divisie, nevengevaren, verpakkingsgroep, vervoerscategorie, tunnelcode, EmS-code en de luchtvrachtregels af, en neemt aantallen en massa's over uit de colli-invoer. Controleer de afgeleide gegevens en vul aan wat alleen u kunt weten (netto hoeveelheid per verpakking, vlampunt, noodcontact).",
-    "en": "Per package, enter only the UN number — or search by substance name. CargoPilot derives the proper shipping name, class and division, subsidiary risks, packing group, transport category, tunnel code, EmS code and air transport rules from it, and reuses quantities and masses from the package entry. Review the derived data and add what only you can know (net quantity per packaging, flash point, emergency contact)."
+    "en": "Per package, enter only the UN number — or search by substance name. CargoPilot derives the proper shipping name, class and division, subsidiary risks, packing group, transport category, tunnel code, EmS code and air transport rules from it, and reuses quantities and masses from the package entry. Review the derived data and add what only you can know (net quantity per packaging, flash point, emergency contact).",
+    "de": "Erfassen Sie je Versandstück nur die UN-Nummer — oder suchen Sie nach dem Stoffnamen. CargoPilot leitet daraus die richtige offizielle Benennung, Klasse und Unterklasse, Nebengefahren, Verpackungsgruppe, Beförderungskategorie, Tunnelbeschränkungscode, EmS-Code und die Regeln der Luftbeförderung ab und übernimmt Stückzahlen und Massen aus der Erfassung der Versandstücke. Prüfen Sie die abgeleiteten Angaben und ergänzen Sie, was nur Sie wissen können (Nettomenge je Verpackung, Flammpunkt, Notfallkontakt)."
   },
   "dg_fields": {
     "un_number": {
       "label": {
         "nl": "UN-nummer",
-        "en": "UN Number"
+        "en": "UN Number",
+        "de": "UN-Nummer"
       },
       "help": {
         "nl": "Het viercijferige stof-identificatienummer. In luchtvervoer hebben sommige stoffen een ID-nummer i.p.v. UN-nummer.",
-        "en": "Four-digit identification number. In air transport some substances use an ID number instead of a UN number."
+        "en": "Four-digit identification number. In air transport some substances use an ID number instead of a UN number.",
+        "de": "Die vierstellige Stoffidentifikationsnummer. In der Luftbeförderung tragen manche Stoffe eine ID-Nummer statt einer UN-Nummer."
       }
     },
     "proper_shipping_name": {
       "label": {
         "nl": "Proper Shipping Name (PSN)",
-        "en": "Proper Shipping Name (PSN)"
+        "en": "Proper Shipping Name (PSN)",
+        "de": "Proper Shipping Name (PSN)"
       },
       "help": {
         "nl": "De officiële vervoersbenaming van de gevaarlijke stof volgens de stofopsommingslijst.",
-        "en": "Official proper shipping name from the dangerous goods list."
+        "en": "Official proper shipping name from the dangerous goods list.",
+        "de": "Die offizielle Benennung für die Beförderung des gefährlichen Gutes nach dem Gefahrgutverzeichnis."
       }
     },
     "class": {
       "label": {
         "nl": "Klasse",
-        "en": "Class"
+        "en": "Class",
+        "de": "Klasse"
       },
       "help": {
         "nl": "Gevarenklasse 1 t/m 9 waarin de stof is ingedeeld.",
-        "en": "Hazard class 1–9 assigned to the substance."
+        "en": "Hazard class 1–9 assigned to the substance.",
+        "de": "Gefahrklasse 1 bis 9, in die der Stoff eingestuft ist."
       }
     },
     "subsidiary_risks": {
       "label": {
         "nl": "Bijkomend gevaar",
-        "en": "Subsidiary risk(s)"
+        "en": "Subsidiary risk(s)",
+        "de": "Nebengefahr"
       },
       "help": {
         "nl": "Alleen invullen indien van toepassing. Beïnvloedt samenlading.",
-        "en": "Fill only when applicable. Affects co-loading rules."
+        "en": "Fill only when applicable. Affects co-loading rules.",
+        "de": "Nur ausfüllen, wenn zutreffend. Wirkt sich auf die Zusammenladung aus."
       }
     },
     "packing_group": {
       "label": {
         "nl": "Verpakkingsgroep",
-        "en": "Packing group"
+        "en": "Packing group",
+        "de": "Verpackungsgruppe"
       },
       "help": {
         "nl": "Verplicht behalve bij klasse 1, 2 en 7.",
-        "en": "Mandatory except for classes 1, 2 and 7."
+        "en": "Mandatory except for classes 1, 2 and 7.",
+        "de": "Pflichtangabe außer bei den Klassen 1, 2 und 7."
       }
     },
     "packing_instruction": {
       "label": {
         "nl": "Verpakkingsinstructie",
-        "en": "Packing Instruction"
+        "en": "Packing Instruction",
+        "de": "Verpackungsanweisung"
       },
       "help": {
         "nl": "Vermelding van de verpakkingsinstructie.",
-        "en": "Packing instruction reference."
+        "en": "Packing instruction reference.",
+        "de": "Angabe der Verpackungsanweisung."
       }
     },
     "flashpoint": {
       "label": {
         "nl": "Vlampunt",
-        "en": "Flashpoint"
+        "en": "Flashpoint",
+        "de": "Flammpunkt"
       },
       "help": {
         "nl": "Alleen bij zeevervoer van brandbare vloeistoffen.",
-        "en": "Only for sea transport of flammable liquids."
+        "en": "Only for sea transport of flammable liquids.",
+        "de": "Nur bei der Seebeförderung entzündbarer flüssiger Stoffe."
       }
     },
     "type_of_package": {
       "label": {
         "nl": "Type verpakking",
-        "en": "Type of package"
+        "en": "Type of package",
+        "de": "Verpackungsart"
       },
       "help": {
         "nl": "Bijv. kist, doos, vat, jerrycan. Bij UN-verpakking ook keuringskenmerk (4A, 1A2, …).",
-        "en": "E.g. box, drum, jerrycan. For UN packages include code (4A, 1A2, …)."
+        "en": "E.g. box, drum, jerrycan. For UN packages include code (4A, 1A2, …).",
+        "de": "Z. B. Kiste, Schachtel, Fass, Kanister. Bei UN-Verpackungen auch den Baumustercode (4A, 1A2, …)."
       }
     },
     "quantity_packages": {
       "label": {
         "nl": "Aantal verpakkingen",
-        "en": "Quantity of packages"
+        "en": "Quantity of packages",
+        "de": "Anzahl Verpackungen"
       },
       "help": {
         "nl": "Aantal verpakkingen.",
-        "en": "Number of packages."
+        "en": "Number of packages.",
+        "de": "Anzahl der Verpackungen."
       }
     },
     "quantity_items_per_package": {
       "label": {
         "nl": "Stuks per verpakking",
-        "en": "Items per package"
+        "en": "Items per package",
+        "de": "Stück je Verpackung"
       },
       "help": {
         "nl": "Aantal stuks per verpakking.",
-        "en": "Number of items per package."
+        "en": "Number of items per package.",
+        "de": "Anzahl Stück je Verpackung."
       }
     },
     "net_mass_liters_per_package": {
       "label": {
         "nl": "Netto massa / liters per verpakking",
-        "en": "Net mass / liters per package"
+        "en": "Net mass / liters per package",
+        "de": "Nettomasse / Liter je Verpackung"
       },
       "help": {
         "nl": "Gewicht van inhoud per verpakking zonder verpakkingsmateriaal.",
-        "en": "Content weight per package excluding packaging."
+        "en": "Content weight per package excluding packaging.",
+        "de": "Gewicht des Inhalts je Verpackung ohne Verpackungsmaterial."
       }
     },
     "gross_mass_per_package": {
       "label": {
         "nl": "Bruto massa per verpakking",
-        "en": "Gross mass per package"
+        "en": "Gross mass per package",
+        "de": "Bruttomasse je Verpackung"
       },
       "help": {
         "nl": "Totaalgewicht verpakking met inhoud in kg.",
-        "en": "Total weight of package including contents in kg."
+        "en": "Total weight of package including contents in kg.",
+        "de": "Gesamtgewicht der Verpackung mit Inhalt in kg."
       }
     },
     "eq_lq_points": {
       "label": {
         "nl": "EQ / LQ / Punten",
-        "en": "EQ / LQ / Points"
+        "en": "EQ / LQ / Points",
+        "de": "EQ / LQ / Punkte"
       },
       "help": {
         "nl": "Vrijstellingsregeling: Excepted Quantities / Limited Quantities / ADR 1.1.3.6.",
-        "en": "Exemption scheme: EQ / LQ / ADR 1.1.3.6 points rule."
+        "en": "Exemption scheme: EQ / LQ / ADR 1.1.3.6 points rule.",
+        "de": "Freistellungsregelung: Excepted Quantities / Limited Quantities / ADR 1.1.3.6."
       }
     },
     "dimensions": {
       "label": {
         "nl": "Afmetingen verpakking (cm)",
-        "en": "Package dimensions (cm)"
+        "en": "Package dimensions (cm)",
+        "de": "Abmessungen der Verpackung (cm)"
       },
       "help": {
         "nl": "Lengte/breedte/hoogte van de verpakking uit regel type of package, niet de overpack.",
-        "en": "L/b/h of the package from type of package row, not the overpack."
+        "en": "L/b/h of the package from type of package row, not the overpack.",
+        "de": "Länge/Breite/Höhe der Verpackung aus der Zeile Verpackungsart, nicht der Umverpackung."
       }
     },
     "additional_information": {
       "label": {
         "nl": "Aanvullende informatie",
-        "en": "Additional information"
+        "en": "Additional information",
+        "de": "Zusätzliche Angaben"
       },
       "help": {
         "nl": "Overige relevante informatie voor het vervoer.",
-        "en": "Other relevant transport information."
+        "en": "Other relevant transport information.",
+        "de": "Sonstige für die Beförderung erhebliche Angaben."
       }
     },
     "caliber": {
       "label": {
         "nl": "Kaliber (mm/inch)",
-        "en": "Caliber (mm/inch)"
+        "en": "Caliber (mm/inch)",
+        "de": "Kaliber (mm/Zoll)"
       },
       "help": {
         "nl": "Kaliber indien van toepassing op munitie.",
-        "en": "Caliber when applicable for ammunition."
+        "en": "Caliber when applicable for ammunition.",
+        "de": "Kaliber, soweit bei Munition zutreffend."
       }
     },
     "technical_name": {
       "label": {
         "nl": "Technische naam",
-        "en": "Technical name"
+        "en": "Technical name",
+        "de": "Technische Benennung"
       },
       "help": {
         "nl": "Technische naam tussen haakjes wanneer de Proper Shipping Name dit vereist (N.O.S.-posities).",
-        "en": "Technical name in brackets when required by the Proper Shipping Name (N.O.S. entries)."
+        "en": "Technical name in brackets when required by the Proper Shipping Name (N.O.S. entries).",
+        "de": "Technische Benennung in Klammern, wenn die offizielle Benennung sie verlangt (N.A.G.-Eintragungen)."
       }
     },
     "marine_pollutant": {
       "label": {
         "nl": "Marine pollutant",
-        "en": "Marine pollutant"
+        "en": "Marine pollutant",
+        "de": "Meeresschadstoff"
       },
       "help": {
         "nl": "Ja/nee — verplicht onderdeel van de IMDG-omschrijving voor zeevervoer.",
-        "en": "Yes/no — mandatory part of the IMDG description for sea transport."
+        "en": "Yes/no — mandatory part of the IMDG description for sea transport.",
+        "de": "Ja/nein — vorgeschriebener Bestandteil der IMDG-Angabe für die Seebeförderung."
       }
     },
     "cargo_aircraft_only": {
       "label": {
         "nl": "Cargo Aircraft Only",
-        "en": "Cargo Aircraft Only"
+        "en": "Cargo Aircraft Only",
+        "de": "Cargo Aircraft Only"
       },
       "help": {
         "nl": "Ja/nee — beperking voor luchtvervoer (IATA). Bepaalt mede de packing instruction.",
-        "en": "Yes/no — air transport limitation (IATA). Also determines the packing instruction."
+        "en": "Yes/no — air transport limitation (IATA). Also determines the packing instruction.",
+        "de": "Ja/nein — Beschränkung für die Luftbeförderung (IATA). Bestimmt die Verpackungsanweisung mit."
       }
     },
     "overpack": {
       "label": {
         "nl": "Overpack",
-        "en": "Overpack"
+        "en": "Overpack",
+        "de": "Umverpackung"
       },
       "help": {
         "nl": "Ja/nee — gebruikt bij samenvoegen van colli. Bij lucht (IATA) moet een overpack correct verklaard worden.",
-        "en": "Yes/no — used when consolidating packages. For air (IATA) an overpack must be declared correctly."
+        "en": "Yes/no — used when consolidating packages. For air (IATA) an overpack must be declared correctly.",
+        "de": "Ja/nein — bei der Zusammenfassung von Versandstücken. In der Luftbeförderung (IATA) muss eine Umverpackung richtig erklärt werden."
       }
     },
     "emergency_contact": {
       "label": {
         "nl": "Noodcontact",
-        "en": "Emergency contact"
+        "en": "Emergency contact",
+        "de": "Notfallkontakt"
       },
       "help": {
         "nl": "24-uurs noodnummer wanneer vereist door de vervoersregelgeving.",
-        "en": "24-hour emergency number where required by transport regulations."
+        "en": "24-hour emergency number where required by transport regulations.",
+        "de": "24-Stunden-Notrufnummer, soweit von den Beförderungsvorschriften verlangt."
       }
     },
     "ems_code": {
       "label": {
         "nl": "EmS-code",
-        "en": "EmS code"
+        "en": "EmS code",
+        "de": "EmS-Code"
       },
       "help": {
         "nl": "Emergency Schedule-code voor zeevervoer (IMDG), indien gebruikt in het operationele proces.",
-        "en": "Emergency Schedule code for sea transport (IMDG), if used operationally."
+        "en": "Emergency Schedule code for sea transport (IMDG), if used operationally.",
+        "de": "Emergency-Schedule-Code für die Seebeförderung (IMDG), soweit im Betrieb verwendet."
       }
     },
     "transport_category": {
       "label": {
         "nl": "ADR-transportcategorie (0-4)",
-        "en": "ADR transport category (0-4)"
+        "en": "ADR transport category (0-4)",
+        "de": "ADR-Beförderungskategorie (0-4)"
       },
       "help": {
         "nl": "Kolom 15 van ADR tabel A. Bepaalt de puntenfactor voor de 1.1.3.6-vrijstelling: cat 1 ×50, cat 2 ×3, cat 3 ×1, cat 4 ×0; cat 0 = geen vrijstelling mogelijk. Wordt waar mogelijk automatisch ingevuld via de UN-lookup.",
-        "en": "Column 15 of ADR Table A. Determines the points factor for the 1.1.3.6 exemption: cat 1 ×50, cat 2 ×3, cat 3 ×1, cat 4 ×0; cat 0 = no exemption possible. Auto-filled from the UN lookup where available."
+        "en": "Column 15 of ADR Table A. Determines the points factor for the 1.1.3.6 exemption: cat 1 ×50, cat 2 ×3, cat 3 ×1, cat 4 ×0; cat 0 = no exemption possible. Auto-filled from the UN lookup where available.",
+        "de": "Spalte 15 der ADR-Tabelle A. Bestimmt den Punktefaktor für die Freistellung nach 1.1.3.6: Kat. 1 ×50, Kat. 2 ×3, Kat. 3 ×1, Kat. 4 ×0; Kat. 0 = keine Freistellung möglich. Wird, wo möglich, über die UN-Suche automatisch gefüllt."
       }
     },
     "adr_total_quantity": {
       "label": {
         "nl": "Totale hoeveelheid (kg netto / liter)",
-        "en": "Total quantity (net kg / litres)"
+        "en": "Total quantity (net kg / litres)",
+        "de": "Gesamtmenge (kg netto / Liter)"
       },
       "help": {
         "nl": "Totale hoeveelheid van deze stof op de vervoerseenheid, in de eenheid van ADR 1.1.3.6.3 (vloeistoffen: liter; vaste stoffen: netto kg; gassen: waterinhoud in liter). Nodig voor de 1000-puntenberekening.",
-        "en": "Total quantity of this substance on the transport unit, in the unit of ADR 1.1.3.6.3 (liquids: litres; solids: net kg; gases: water capacity in litres). Required for the 1000-point calculation."
+        "en": "Total quantity of this substance on the transport unit, in the unit of ADR 1.1.3.6.3 (liquids: litres; solids: net kg; gases: water capacity in litres). Required for the 1000-point calculation.",
+        "de": "Gesamtmenge dieses Stoffes auf der Beförderungseinheit, in der Einheit des ADR 1.1.3.6.3 (flüssige Stoffe: Liter; feste Stoffe: netto kg; Gase: Fassungsraum in Liter). Für die 1000-Punkte-Berechnung erforderlich."
       }
     },
     "q_net_quantity": {
       "label": {
         "nl": "Netto hoeveelheid per verpakking (Q)",
-        "en": "Net quantity per package (Q)"
+        "en": "Net quantity per package (Q)",
+        "de": "Nettomenge je Verpackung (Q)"
       },
       "help": {
         "nl": "Netto hoeveelheid van deze stof in de combinatieverpakking, voor de Q-waardeberekening bij 'all packed in one' (IATA 5.0.2.11).",
-        "en": "Net quantity of this substance in the combination packaging, for the Q value calculation for 'all packed in one' (IATA 5.0.2.11)."
+        "en": "Net quantity of this substance in the combination packaging, for the Q value calculation for 'all packed in one' (IATA 5.0.2.11).",
+        "de": "Nettomenge dieses Stoffes in der zusammengesetzten Verpackung, für die Berechnung des Q-Wertes bei 'all packed in one' (IATA 5.0.2.11)."
       }
     },
     "q_max_net_quantity": {
       "label": {
         "nl": "Max. netto per verpakking volgens PI (Q)",
-        "en": "Max net per package per PI (Q)"
+        "en": "Max net per package per PI (Q)",
+        "de": "Max. netto je Verpackung nach VA (Q)"
       },
       "help": {
         "nl": "Maximale netto hoeveelheid per verpakking volgens de packing instruction (IATA tabel 4.2) voor het gebruikte vliegtuigtype. Nodig voor Q = Σ n/M ≤ 1.",
-        "en": "Maximum net quantity per package per the packing instruction (IATA table 4.2) for the aircraft type used. Required for Q = Σ n/M ≤ 1."
+        "en": "Maximum net quantity per package per the packing instruction (IATA table 4.2) for the aircraft type used. Required for Q = Σ n/M ≤ 1.",
+        "de": "Höchste Nettomenge je Verpackung nach der Verpackungsanweisung (IATA Tabelle 4.2) für den verwendeten Flugzeugtyp. Für Q = Σ n/M ≤ 1 erforderlich."
       }
     }
   }

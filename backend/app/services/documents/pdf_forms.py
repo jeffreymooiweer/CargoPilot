@@ -20,6 +20,7 @@ except ImportError:  # pragma: no cover
     fitz = None
 
 from app.core.config import get_settings
+from app.core.languages import pick
 from app.services.dg.autofill import adr_category_totals, description_line
 
 # IATA open-formaat: elk van de twee keuzeparen bestaat uit twee /Ch-velden. Het
@@ -62,11 +63,12 @@ def _first(*values: Any) -> str:
 
 def _freight_payment_label(value: str, lang: str) -> str:
     labels = {
-        "prepaid": {"nl": "Franco", "en": "Carriage paid"},
-        "collect": {"nl": "Ongefrankeerd", "en": "Carriage forward"},
-        "agreement": {"nl": "Volgens overeenkomst", "en": "As per agreement"},
+        "prepaid": {"nl": "Franco", "en": "Carriage paid", "de": "Frei"},
+        "collect": {"nl": "Ongefrankeerd", "en": "Carriage forward", "de": "Unfrei"},
+        "agreement": {"nl": "Volgens overeenkomst", "en": "As per agreement",
+                      "de": "Laut Vereinbarung"},
     }
-    return labels.get(value, {}).get(lang, value or "")
+    return pick(labels.get(value), lang, value or "")
 
 
 def _cmr_goods_rows(
@@ -173,8 +175,17 @@ def fill_cmr(
         total_weight = sum(float(w) for _, w, _ in rows if w)
         total_volume = sum(float(v) for _, _, v in rows if v)
         n = f"{CMR_MAX_ROWS:02d}"
-        note = "zie bijgevoegde paklijst" if lang == "nl" else "see attached packing list"
-        fields[f"VakRood06Regel{n}Kolom06"] = f"+{len(rows) - (CMR_MAX_ROWS - 1)} regels — {note}"
+        overflow = pick(
+            {
+                "nl": "+{count} regels — zie bijgevoegde paklijst",
+                "en": "+{count} lines — see attached packing list",
+                "de": "+{count} Zeilen — siehe beigefügte Packliste",
+            },
+            lang,
+        )
+        fields[f"VakRood06Regel{n}Kolom06"] = overflow.format(
+            count=len(rows) - (CMR_MAX_ROWS - 1)
+        )
         fields[f"VakRood06Regel{n}Kolom11"] = str(round(total_weight, 2))
         fields[f"VakRood06Regel{n}Kolom12"] = str(round(total_volume, 3))
     return {k: v for k, v in fields.items() if v not in (None, "")}
@@ -291,11 +302,11 @@ def fill_iata(values: dict[str, Any], dangerous_goods: list[dict[str, Any]], lan
 
 def _cim_payment_label(value: str, lang: str) -> str:
     labels = {
-        "franco": {"nl": "Franco de port", "en": "Carriage paid"},
-        "collect": {"nl": "Non franco", "en": "Carriage forward"},
-        "shared": {"nl": "Volgens afspraak", "en": "As agreed"},
+        "franco": {"nl": "Franco de port", "en": "Carriage paid", "de": "Franco de port"},
+        "collect": {"nl": "Non franco", "en": "Carriage forward", "de": "Non franco"},
+        "shared": {"nl": "Volgens afspraak", "en": "As agreed", "de": "Laut Vereinbarung"},
     }
-    return labels.get(value, {}).get(lang, value or "")
+    return pick(labels.get(value), lang, value or "")
 
 
 def fill_cim(

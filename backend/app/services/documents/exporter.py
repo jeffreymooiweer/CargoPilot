@@ -9,6 +9,7 @@ import openpyxl
 from openpyxl.styles import Alignment, Border, Font, PatternFill, Side
 from openpyxl.utils import get_column_letter
 
+from app.core.languages import normalise, pick
 from app.services.dg.database import is_transport_forbidden
 from app.services.documents.registry import condition_met, get_document, resolve_sections
 
@@ -16,34 +17,41 @@ TEXTS = {
     "generated_with": {
         "nl": "Gegenereerd met CargoPilot op",
         "en": "Generated with CargoPilot on",
+        "de": "Erstellt mit CargoPilot am",
     },
-    "status": {"nl": "Documentstatus", "en": "Document status"},
-    "goods": {"nl": "Goederenregels", "en": "Cargo lines"},
-    "dg_table": {"nl": "Gevaarlijke stoffen", "en": "Dangerous goods"},
+    "status": {"nl": "Documentstatus", "en": "Document status", "de": "Dokumentstatus"},
+    "goods": {"nl": "Goederenregels", "en": "Cargo lines", "de": "Güterzeilen"},
+    "dg_table": {"nl": "Gevaarlijke stoffen", "en": "Dangerous goods", "de": "Gefahrgut"},
     "not_prefilled": {
         "nl": "niet vooraf ingevuld — handtekening/bevestiging vereist",
         "en": "not pre-filled — signature/confirmation required",
+        "de": "nicht vorausgefüllt — Unterschrift/Bestätigung erforderlich",
     },
     "carrier_provided": {
         "nl": "in te vullen door vervoerder/expediteur",
         "en": "to be provided by carrier/forwarder",
+        "de": "vom Frachtführer/Spediteur auszufüllen",
     },
     "operational": {
         "nl": "in te vullen tijdens uitvoering",
         "en": "to be filled in during execution",
+        "de": "während der Durchführung auszufüllen",
     },
     "confirmed": {
         "nl": "Bevestigd in CargoPilot; ondertekening op het document blijft vereist",
         "en": "Confirmed in CargoPilot; signature on the document is still required",
+        "de": "In CargoPilot bestätigt; die Unterschrift auf dem Dokument bleibt erforderlich",
     },
     "not_confirmed": {
         "nl": "NIET bevestigd",
         "en": "NOT confirmed",
+        "de": "NICHT bestätigt",
     },
-    "totals": {"nl": "Totalen", "en": "Totals"},
+    "totals": {"nl": "Totalen", "en": "Totals", "de": "Summen"},
     "line_headers": {
         "nl": ["Nr", "Omschrijving", "Aantal", "Eenheid", "Gewicht (kg)", "Volume (m³)", "L×B×H (cm)"],
         "en": ["No", "Description", "Qty", "Unit", "Weight (kg)", "Volume (m³)", "L×W×H (cm)"],
+        "de": ["Nr.", "Bezeichnung", "Menge", "Einheit", "Gewicht (kg)", "Volumen (m³)", "L×B×H (cm)"],
     },
     "dg_headers": {
         "nl": [
@@ -80,39 +88,74 @@ TEXTS = {
             "Cargo Aircraft Only",
             "Additional information",
         ],
+        "de": [
+            "Position",
+            "UN-Nummer",
+            "Proper Shipping Name",
+            "Technische Benennung",
+            "Klasse",
+            "Nebengefahr",
+            "Verpackungsgruppe",
+            "Verpackungsanweisung",
+            "Anzahl Versandstücke",
+            "Verpackungsart",
+            "Menge je Verpackung",
+            "Bruttomasse je Verpackung",
+            "Meeresschadstoff",
+            "Cargo Aircraft Only",
+            "Zusätzliche Angaben",
+        ],
     },
     "dg_missing": {
         "nl": "Gevaarlijke-stoffenclassificatie onvolledig voor",
         "en": "Dangerous goods classification incomplete for",
+        "de": "Gefahrgutklassifizierung unvollständig für",
     },
     "dg_forbidden": {
         "nl": "Niet ten vervoer toegelaten volgens ADR Tabel A (vervoer alleen onder ontheffing van de bevoegde autoriteit)",
         "en": "Not permitted for carriage per ADR Table A (carriage only under an exemption from the competent authority)",
+        "de": "Nach ADR Tabelle A zur Beförderung nicht zugelassen (Beförderung nur mit Ausnahmegenehmigung der zuständigen Behörde)",
     },
     "field_required": {
         "nl": "Verplicht veld ontbreekt",
         "en": "Required field missing",
+        "de": "Pflichtfeld fehlt",
     },
     "field_format": {
         "nl": "Veld heeft niet de vereiste vorm",
         "en": "Field does not have the required format",
+        "de": "Feld hat nicht die vorgeschriebene Form",
     },
     "no_dg_lines": {
         "nl": "Dit document vereist gevaarlijke-stoffenregels, maar er zijn geen DG-posities.",
         "en": "This document requires dangerous goods lines, but no DG positions exist.",
+        "de": "Dieses Dokument verlangt Gefahrgutzeilen, es sind aber keine Gefahrgutpositionen vorhanden.",
     },
     "vgm_mismatch": {
         "nl": "VGM wijkt af van de som van de componenten (methode 2)",
         "en": "VGM differs from the sum of the components (method 2)",
+        "de": "VGM weicht von der Summe der Bestandteile ab (Methode 2)",
     },
     "fixed_texts": {
         "nl": "Vaste teksten en verklaringen (officieel formulier)",
         "en": "Fixed texts and declarations (official form)",
+        "de": "Feste Texte und Erklärungen (amtliches Formular)",
     },
-    "legal_reference": {"nl": "Regelgeving", "en": "Regulations"},
+    "legal_reference": {"nl": "Regelgeving", "en": "Regulations", "de": "Vorschriften"},
+    "adr_points_incomplete": {
+        "nl": "puntentelling onvolledig — controleer vervoerscategorie en hoeveelheid",
+        "en": "points calculation incomplete — check transport category and quantity",
+        "de": "Punkteberechnung unvollständig — Beförderungskategorie und Menge prüfen",
+    },
+    "adr_exemption_lost": {
+        "nl": "vrijstelling vervalt ({detail}) — de volledige ADR-eisen gelden",
+        "en": "exemption does not apply ({detail}) — the full ADR requirements apply",
+        "de": "Freistellung entfällt ({detail}) — es gelten die vollen ADR-Anforderungen",
+    },
     "dg_description": {
         "nl": "Omschrijving vervoersdocument",
         "en": "Transport document description",
+        "de": "Angabe im Beförderungspapier",
     },
     "disclaimer": {
         "nl": (
@@ -126,6 +169,13 @@ TEXTS = {
             "fully verified, completed and signed by a duly authorised person. CargoPilot and its author(s) "
             "accept no liability whatsoever; the software is provided \"AS IS\" under the Apache License 2.0 "
             "with Commons Clause (see DISCLAIMER.md and LICENSE)."
+        ),
+        "de": (
+            "Dieses Dokument wurde automatisch mit CargoPilot erstellt und ist ein Entwurf: Vor der "
+            "Verwendung muss es von einer dazu befugten Person vollständig geprüft, ergänzt und "
+            "unterschrieben werden. CargoPilot und seine Urheber übernehmen keinerlei Haftung; die "
+            "Software wird \"AS IS\" unter der Apache License 2.0 mit Commons Clause bereitgestellt "
+            "(siehe DISCLAIMER.md und LICENSE)."
         ),
     },
     "iata_dg_headers": {
@@ -147,6 +197,15 @@ TEXTS = {
             "Packing Inst.",
             "Authorization",
         ],
+        "de": [
+            "UN- oder ID-Nr.",
+            "Proper Shipping Name (technische Benennung)",
+            "Klasse oder Unterklasse (Nebengefahr)",
+            "Verpackungsgruppe",
+            "Menge und Verpackungsart",
+            "Packing Inst.",
+            "Authorization",
+        ],
     },
     "adr_dg_headers": {
         "nl": [
@@ -164,6 +223,14 @@ TEXTS = {
             "Quantity per package",
             "Gross mass per package",
             "Additional information",
+        ],
+        "de": [
+            "Angabe nach 5.4.1.1.1",
+            "Anzahl Versandstücke",
+            "Verpackungsart",
+            "Menge je Verpackung",
+            "Bruttomasse je Verpackung",
+            "Zusätzliche Angaben",
         ],
     },
     "imdg_dg_headers": {
@@ -190,6 +257,18 @@ TEXTS = {
             "Number and kind of packages",
             "Quantity per package",
             "Gross mass per package",
+        ],
+        "de": [
+            "UN-Nummer",
+            "Proper Shipping Name (technische Benennung)",
+            "Klasse (Nebengefahr)",
+            "Verpackungsgruppe",
+            "Meeresschadstoff",
+            "Flammpunkt",
+            "EmS",
+            "Anzahl und Art der Versandstücke",
+            "Menge je Verpackung",
+            "Bruttomasse je Verpackung",
         ],
     },
 }
@@ -223,23 +302,24 @@ DG_PROFILE_REQUIRED = {
 
 
 def _lang(language: str) -> str:
-    return "en" if str(language).lower().startswith("en") else "nl"
+    return normalise(language)
 
 
 def _label(item: dict[str, Any], lang: str) -> str:
-    label = item.get("label") or {}
-    return label.get(lang) or label.get("nl") or item.get("key", "")
+    return pick(item.get("label"), lang, item.get("key", "")) or item.get("key", "")
 
 
 def _localised(value: Any, lang: str) -> str:
-    """Een {nl, en}-blokje uit het register in de gevraagde taal."""
+    """Een {nl, en, de}-blokje uit het register in de gevraagde taal."""
     if isinstance(value, dict):
-        return str(value.get(lang) or value.get("nl") or "")
+        return str(pick(value, lang))
     return str(value or "")
 
 
 def _text(key: str, lang: str) -> Any:
-    return TEXTS[key][lang]
+    # Terugval in plaats van een KeyError: een taal waarvoor één regel nog
+    # ontbreekt mag geen export laten omvallen.
+    return pick(TEXTS[key], lang)
 
 
 def _option_label(field: dict[str, Any], value: Any, lang: str) -> Any:
@@ -333,13 +413,7 @@ def validate_document(
             if points and profile in {"ADR", "RID", "ADN"}:
                 status = points.get("status")
                 if status == "incomplete":
-                    warnings.append(
-                        "ADR 1.1.3.6: "
-                        + ("puntentelling onvolledig — controleer vervoerscategorie en hoeveelheid"
-                           if lang == "nl"
-                           else "points calculation incomplete — check transport category "
-                                "and quantity")
-                    )
+                    warnings.append("ADR 1.1.3.6: " + _text("adr_points_incomplete", lang))
                 elif status in {"above_threshold", "not_exempt"}:
                     # Niet verboden, maar de vrijstelling van 1.1.3.6 vervalt en
                     # daarmee gelden de volle eisen: opleiding, ADR-voertuig,
@@ -353,10 +427,7 @@ def validate_document(
                     )
                     warnings.append(
                         "ADR 1.1.3.6: "
-                        + (f"vrijstelling vervalt ({detail}) — de volledige ADR-eisen gelden"
-                           if lang == "nl"
-                           else f"exemption does not apply ({detail}) — the full ADR "
-                                "requirements apply")
+                        + _text("adr_exemption_lost", lang).format(detail=detail)
                     )
 
     if document["key"] == "vgm" and str(values.get("vgm_method")) == "method2":
@@ -524,7 +595,7 @@ def export_document(
     row = 1
     ws.cell(row, 1, _label(document, lang)).font = title_font
     row += 1
-    issue = document.get("issue_status", {}).get(lang)
+    issue = pick(document.get("issue_status"), lang)
     if issue:
         cell = ws.cell(row, 1, f"{_text('status', lang)}: {issue}")
         cell.font = status_font
@@ -658,7 +729,7 @@ def export_document(
         cell.fill = section_fill
         row += 1
         for item in fixed_texts:
-            text = item.get(lang) or item.get("nl", "")
+            text = pick(item, lang)
             cell = ws.cell(row, 1, text)
             cell.alignment = wrap
             cell.border = border
@@ -667,7 +738,7 @@ def export_document(
             row += 1
         row += 1
 
-    legal = document.get("legal_reference", {}).get(lang)
+    legal = pick(document.get("legal_reference"), lang)
     if legal:
         cell = ws.cell(row, 1, f"{_text('legal_reference', lang)}: {legal}")
         cell.font = note_font
@@ -675,7 +746,7 @@ def export_document(
         ws.merge_cells(start_row=row, start_column=1, end_row=row, end_column=7)
         row += 1
 
-    note = document.get("signature_note", {}).get(lang)
+    note = pick(document.get("signature_note"), lang)
     if note:
         cell = ws.cell(row, 1, note)
         cell.font = note_font

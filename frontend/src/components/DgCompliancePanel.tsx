@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { api, ComplianceWarning, DgComplianceResult, DgEntry } from "../api/client";
+import { documentLanguage } from "../i18n/language";
 
 const panelClass = "bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800";
 
@@ -18,7 +19,7 @@ const STATUS_STYLES: Record<string, string> = {
 
 export default function DgCompliancePanel({ entries, profiles }: Props) {
   const { t, i18n } = useTranslation();
-  const lang = i18n.language.startsWith("en") ? "en" : "nl";
+  const lang = documentLanguage(i18n.language);
   const [result, setResult] = useState<DgComplianceResult | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");

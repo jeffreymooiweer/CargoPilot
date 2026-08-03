@@ -3,35 +3,43 @@
   "field_statuses": {
     "AUTO_DERIVED": {
       "nl": "Berekend uit goederenregels of transportplan",
-      "en": "Derived from cargo lines or transport plan"
+      "en": "Derived from cargo lines or transport plan",
+      "de": "Aus den Güterzeilen oder dem Transportplan berechnet"
     },
     "USER_REQUIRED": {
       "nl": "Moet door gebruiker worden ingevuld",
-      "en": "Must be entered by the user"
+      "en": "Must be entered by the user",
+      "de": "Muss vom Benutzer eingetragen werden"
     },
     "USER_OPTIONAL": {
       "nl": "Optionele gebruikersinvoer",
-      "en": "Optional user input"
+      "en": "Optional user input",
+      "de": "Freiwillige Eingabe"
     },
     "CONDITIONAL": {
       "nl": "Alleen verplicht onder bepaalde voorwaarden",
-      "en": "Required only under certain conditions"
+      "en": "Required only under certain conditions",
+      "de": "Nur unter bestimmten Voraussetzungen erforderlich"
     },
     "CARRIER_PROVIDED": {
       "nl": "Komt van vervoerder, expediteur of boeking",
-      "en": "Provided by carrier, forwarder or booking"
+      "en": "Provided by carrier, forwarder or booking",
+      "de": "Kommt vom Frachtführer, Spediteur oder aus der Buchung"
     },
     "OPERATIONAL": {
       "nl": "Pas tijdens laden, vervoer of aflevering bekend",
-      "en": "Known only during loading, transport or delivery"
+      "en": "Known only during loading, transport or delivery",
+      "de": "Erst beim Beladen, während der Beförderung oder bei der Ablieferung bekannt"
     },
     "SIGNATURE_REQUIRED": {
       "nl": "Verantwoordelijke persoon moet bevestigen",
-      "en": "Responsible person must confirm"
+      "en": "Responsible person must confirm",
+      "de": "Die verantwortliche Person muss bestätigen"
     },
     "FIXED_TEMPLATE_TEXT": {
       "nl": "Vast onderdeel van het formulier",
-      "en": "Fixed part of the form"
+      "en": "Fixed part of the form",
+      "de": "Fester Bestandteil des Formulars"
     }
   },
   "modalities": [
@@ -39,11 +47,13 @@
       "key": "road",
       "label": {
         "nl": "Wegtransport",
-        "en": "Road transport"
+        "en": "Road transport",
+        "de": "Straßentransport"
       },
       "description": {
         "nl": "Vervoer over de weg met CMR-vrachtbrief en ADR-documenten.",
-        "en": "Transport by road with CMR consignment note and ADR documents."
+        "en": "Transport by road with CMR consignment note and ADR documents.",
+        "de": "Beförderung auf der Straße mit CMR-Frachtbrief und ADR-Papieren."
       },
       "documents": [
         "cmr",
@@ -56,11 +66,13 @@
       "key": "rail",
       "label": {
         "nl": "Spoortransport",
-        "en": "Rail transport"
+        "en": "Rail transport",
+        "de": "Schienentransport"
       },
       "description": {
         "nl": "Vervoer per spoor met CIM-vrachtbrief en RID-gegevens.",
-        "en": "Transport by rail with CIM consignment note and RID data."
+        "en": "Transport by rail with CIM consignment note and RID data.",
+        "de": "Beförderung per Bahn mit CIM-Frachtbrief und RID-Angaben."
       },
       "documents": [
         "cim",
@@ -72,11 +84,13 @@
       "key": "sea",
       "label": {
         "nl": "Zeevracht",
-        "en": "Sea freight"
+        "en": "Sea freight",
+        "de": "Seefracht"
       },
       "description": {
         "nl": "Zeevervoer met B/L-instructies, VGM en IMO-gevaarlijke-stoffenformulier.",
-        "en": "Ocean transport with B/L instructions, VGM and IMO dangerous goods form."
+        "en": "Ocean transport with B/L instructions, VGM and IMO dangerous goods form.",
+        "de": "Seebeförderung mit B/L-Anweisungen, VGM und IMO-Gefahrgutformular."
       },
       "documents": [
         "bl_si",
@@ -90,11 +104,13 @@
       "key": "inland",
       "label": {
         "nl": "Binnenvaart",
-        "en": "Inland waterway"
+        "en": "Inland waterway",
+        "de": "Binnenschifffahrt"
       },
       "description": {
         "nl": "Vervoer per binnenvaartschip met ADN-vervoersdocument en VGM.",
-        "en": "Transport by inland barge with ADN transport document and VGM."
+        "en": "Transport by inland barge with ADN transport document and VGM.",
+        "de": "Beförderung mit dem Binnenschiff mit ADN-Beförderungspapier und VGM."
       },
       "documents": [
         "adn_transport_doc",
@@ -107,11 +123,13 @@
       "key": "air",
       "label": {
         "nl": "Luchtvracht",
-        "en": "Air freight"
+        "en": "Air freight",
+        "de": "Luftfracht"
       },
       "description": {
         "nl": "Luchtvervoer met AWB-instructies en IATA-verklaring gevaarlijke stoffen.",
-        "en": "Air transport with AWB instructions and IATA dangerous goods declaration."
+        "en": "Air transport with AWB instructions and IATA dangerous goods declaration.",
+        "de": "Luftbeförderung mit AWB-Anweisungen und IATA-Gefahrguterklärung."
       },
       "documents": [
         "awb_si",
@@ -124,11 +142,13 @@
       "key": "multimodal",
       "label": {
         "nl": "Multimodaal",
-        "en": "Multimodal"
+        "en": "Multimodal",
+        "de": "Multimodal"
       },
       "description": {
         "nl": "Combinatie van modaliteiten; alle formulieren beschikbaar.",
-        "en": "Combination of modes; all forms available."
+        "en": "Combination of modes; all forms available.",
+        "de": "Kombination von Verkehrsträgern; alle Formulare verfügbar."
       },
       "documents": [
         "cmr",
@@ -150,14 +170,16 @@
       "key": "parties",
       "label": {
         "nl": "Partijen",
-        "en": "Parties"
+        "en": "Parties",
+        "de": "Beteiligte"
       },
       "fields": [
         {
           "key": "consignor_name",
           "label": {
             "nl": "Afzender — naam",
-            "en": "Consignor — name"
+            "en": "Consignor — name",
+            "de": "Absender — Name"
           },
           "status": "USER_REQUIRED",
           "type": "text"
@@ -166,7 +188,8 @@
           "key": "consignor_address",
           "label": {
             "nl": "Afzender — adres en land",
-            "en": "Consignor — address and country"
+            "en": "Consignor — address and country",
+            "de": "Absender — Anschrift und Land"
           },
           "status": "USER_REQUIRED",
           "type": "textarea"
@@ -175,7 +198,8 @@
           "key": "consignor_contact",
           "label": {
             "nl": "Afzender — contact (tel/e-mail)",
-            "en": "Consignor — contact (phone/email)"
+            "en": "Consignor — contact (phone/email)",
+            "de": "Absender — Kontakt (Tel./E-Mail)"
           },
           "status": "USER_OPTIONAL",
           "type": "text"
@@ -184,7 +208,8 @@
           "key": "consignee_name",
           "label": {
             "nl": "Geadresseerde — naam",
-            "en": "Consignee — name"
+            "en": "Consignee — name",
+            "de": "Empfänger — Name"
           },
           "status": "USER_REQUIRED",
           "type": "text"
@@ -193,7 +218,8 @@
           "key": "consignee_address",
           "label": {
             "nl": "Geadresseerde — adres en land",
-            "en": "Consignee — address and country"
+            "en": "Consignee — address and country",
+            "de": "Empfänger — Anschrift und Land"
           },
           "status": "USER_REQUIRED",
           "type": "textarea"
@@ -202,7 +228,8 @@
           "key": "consignee_contact",
           "label": {
             "nl": "Geadresseerde — contact (tel/e-mail)",
-            "en": "Consignee — contact (phone/email)"
+            "en": "Consignee — contact (phone/email)",
+            "de": "Empfänger — Kontakt (Tel./E-Mail)"
           },
           "status": "USER_OPTIONAL",
           "type": "text"
@@ -211,20 +238,23 @@
           "key": "carrier_name",
           "label": {
             "nl": "Vervoerder — naam en adres",
-            "en": "Carrier — name and address"
+            "en": "Carrier — name and address",
+            "de": "Frachtführer — Name und Anschrift"
           },
           "status": "USER_OPTIONAL",
           "type": "textarea",
           "help": {
             "nl": "Voor CMR en CIM invullen zodra de vervoerder bekend is.",
-            "en": "For CMR and CIM, fill in once the carrier is known."
+            "en": "For CMR and CIM, fill in once the carrier is known.",
+            "de": "Für CMR und CIM ausfüllen, sobald der Frachtführer bekannt ist."
           }
         },
         {
           "key": "notify_party",
           "label": {
             "nl": "Notify party",
-            "en": "Notify party"
+            "en": "Notify party",
+            "de": "Notify Party"
           },
           "status": "CONDITIONAL",
           "type": "textarea"
@@ -233,7 +263,8 @@
           "key": "freight_forwarder",
           "label": {
             "nl": "Expediteur",
-            "en": "Freight forwarder"
+            "en": "Freight forwarder",
+            "de": "Spediteur"
           },
           "status": "USER_OPTIONAL",
           "type": "text"
@@ -244,14 +275,16 @@
       "key": "locations",
       "label": {
         "nl": "Route",
-        "en": "Route"
+        "en": "Route",
+        "de": "Strecke"
       },
       "fields": [
         {
           "key": "place_of_receipt",
           "label": {
             "nl": "Plaats van ontvangst (pre-carriage)",
-            "en": "Place of receipt (pre-carriage)"
+            "en": "Place of receipt (pre-carriage)",
+            "de": "Übernahmeort (Vorlauf)"
           },
           "status": "USER_OPTIONAL",
           "type": "text"
@@ -260,7 +293,8 @@
           "key": "loading_point",
           "label": {
             "nl": "Laadplaats / haven of luchthaven van vertrek",
-            "en": "Place of loading / port or airport of departure"
+            "en": "Place of loading / port or airport of departure",
+            "de": "Ladeort / Abgangshafen oder -flughafen"
           },
           "status": "USER_REQUIRED",
           "type": "text"
@@ -269,7 +303,8 @@
           "key": "loading_date",
           "label": {
             "nl": "Datum van inontvangstneming / laden",
-            "en": "Date of taking over / loading"
+            "en": "Date of taking over / loading",
+            "de": "Datum der Übernahme / Beladung"
           },
           "status": "USER_OPTIONAL",
           "type": "date"
@@ -278,7 +313,8 @@
           "key": "discharge_point",
           "label": {
             "nl": "Losplaats / haven of luchthaven van bestemming",
-            "en": "Place of discharge / port or airport of destination"
+            "en": "Place of discharge / port or airport of destination",
+            "de": "Löschort / Bestimmungshafen oder -flughafen"
           },
           "status": "USER_REQUIRED",
           "type": "text"
@@ -287,7 +323,8 @@
           "key": "place_of_delivery",
           "label": {
             "nl": "Plaats van aflevering",
-            "en": "Place of delivery"
+            "en": "Place of delivery",
+            "de": "Ablieferungsort"
           },
           "status": "USER_OPTIONAL",
           "type": "text"
@@ -296,7 +333,8 @@
           "key": "final_destination",
           "label": {
             "nl": "Eindbestemming",
-            "en": "Final destination"
+            "en": "Final destination",
+            "de": "Endbestimmung"
           },
           "status": "USER_OPTIONAL",
           "type": "text"
@@ -307,14 +345,16 @@
       "key": "references",
       "label": {
         "nl": "Referenties",
-        "en": "References"
+        "en": "References",
+        "de": "Referenzen"
       },
       "fields": [
         {
           "key": "shipment_reference",
           "label": {
             "nl": "Zendingreferentie",
-            "en": "Shipment reference"
+            "en": "Shipment reference",
+            "de": "Sendungsreferenz"
           },
           "status": "USER_OPTIONAL",
           "type": "text"
@@ -323,7 +363,8 @@
           "key": "booking_number",
           "label": {
             "nl": "Boekingsnummer",
-            "en": "Booking number"
+            "en": "Booking number",
+            "de": "Buchungsnummer"
           },
           "status": "USER_OPTIONAL",
           "type": "text"
@@ -332,7 +373,8 @@
           "key": "purchase_order",
           "label": {
             "nl": "Ordernummer (PO)",
-            "en": "Purchase order"
+            "en": "Purchase order",
+            "de": "Bestellnummer (PO)"
           },
           "status": "USER_OPTIONAL",
           "type": "text"
@@ -341,7 +383,8 @@
           "key": "customs_mrn",
           "label": {
             "nl": "Export-MRN / douanereferentie",
-            "en": "Export MRN / customs reference"
+            "en": "Export MRN / customs reference",
+            "de": "Ausfuhr-MRN / Zollreferenz"
           },
           "status": "CONDITIONAL",
           "type": "text"
@@ -350,13 +393,15 @@
           "key": "attached_documents",
           "label": {
             "nl": "Bijgevoegde documenten",
-            "en": "Attached documents"
+            "en": "Attached documents",
+            "de": "Beigefügte Dokumente"
           },
           "status": "USER_OPTIONAL",
           "type": "textarea",
           "help": {
             "nl": "Bijvoorbeeld facturen, douanedocumenten en certificaten.",
-            "en": "For example invoices, customs documents and certificates."
+            "en": "For example invoices, customs documents and certificates.",
+            "de": "Zum Beispiel Rechnungen, Zollpapiere und Bescheinigungen."
           }
         }
       ]
@@ -367,16 +412,19 @@
       "key": "cmr",
       "label": {
         "nl": "CMR-vrachtbrief",
-        "en": "CMR consignment note"
+        "en": "CMR consignment note",
+        "de": "CMR-Frachtbrief"
       },
       "short_label": {
         "nl": "CMR",
-        "en": "CMR"
+        "en": "CMR",
+        "de": "CMR"
       },
       "category": "prepared_transport_document",
       "issue_status": {
         "nl": "Voorbereid vervoersdocument — ondertekening bij overname",
-        "en": "Prepared transport document — signed at handover"
+        "en": "Prepared transport document — signed at handover",
+        "de": "Vorbereitetes Beförderungspapier — Unterzeichnung bei der Übernahme"
       },
       "exporter": "pdf_template",
       "dg_profile": "ADR",
@@ -394,27 +442,31 @@
           "key": "cmr_details",
           "label": {
             "nl": "CMR-gegevens",
-            "en": "CMR details"
+            "en": "CMR details",
+            "de": "CMR-Angaben"
           },
           "fields": [
             {
               "key": "sender_instructions",
               "label": {
                 "nl": "Instructies van de afzender (vak 13)",
-                "en": "Sender's instructions (box 13)"
+                "en": "Sender's instructions (box 13)",
+                "de": "Anweisungen des Absenders (Feld 13)"
               },
               "status": "CONDITIONAL",
               "type": "textarea",
               "help": {
                 "nl": "Bijvoorbeeld douane-instructies, verbod op overlading of verzekeringsinstructies.",
-                "en": "For example customs instructions, prohibition of transhipment or insurance instructions."
+                "en": "For example customs instructions, prohibition of transhipment or insurance instructions.",
+                "de": "Zum Beispiel Zollanweisungen, Umladeverbot oder Versicherungsanweisungen."
               }
             },
             {
               "key": "successive_carriers",
               "label": {
                 "nl": "Opvolgende vervoerders (vak 17)",
-                "en": "Successive carriers (box 17)"
+                "en": "Successive carriers (box 17)",
+                "de": "Nachfolgende Frachtführer (Feld 17)"
               },
               "status": "CONDITIONAL",
               "type": "textarea"
@@ -423,7 +475,8 @@
               "key": "special_agreements",
               "label": {
                 "nl": "Bijzondere overeenkomsten (vak 19)",
-                "en": "Special agreements (box 19)"
+                "en": "Special agreements (box 19)",
+                "de": "Besondere Vereinbarungen (Feld 19)"
               },
               "status": "CONDITIONAL",
               "type": "textarea"
@@ -432,7 +485,8 @@
               "key": "freight_payment",
               "label": {
                 "nl": "Frankeringsvoorschrift (vak 14)",
-                "en": "Instruction as to payment for carriage (box 14)"
+                "en": "Instruction as to payment for carriage (box 14)",
+                "de": "Frachtzahlungsanweisung (Feld 14)"
               },
               "status": "USER_REQUIRED",
               "type": "select",
@@ -441,21 +495,24 @@
                   "value": "prepaid",
                   "label": {
                     "nl": "Franco (afzender betaalt)",
-                    "en": "Prepaid (sender pays)"
+                    "en": "Prepaid (sender pays)",
+                    "de": "Frei (Absender zahlt)"
                   }
                 },
                 {
                   "value": "collect",
                   "label": {
                     "nl": "Ongefrankeerd (ontvanger betaalt)",
-                    "en": "Collect (consignee pays)"
+                    "en": "Collect (consignee pays)",
+                    "de": "Unfrei (Empfänger zahlt)"
                   }
                 },
                 {
                   "value": "agreement",
                   "label": {
                     "nl": "Volgens overeenkomst",
-                    "en": "As per agreement"
+                    "en": "As per agreement",
+                    "de": "Laut Vereinbarung"
                   }
                 }
               ]
@@ -464,7 +521,8 @@
               "key": "cod_amount",
               "label": {
                 "nl": "Remboursbedrag (vak 15)",
-                "en": "Cash on delivery (box 15)"
+                "en": "Cash on delivery (box 15)",
+                "de": "Nachnahmebetrag (Feld 15)"
               },
               "status": "CONDITIONAL",
               "type": "text"
@@ -473,20 +531,23 @@
               "key": "other_useful_info",
               "label": {
                 "nl": "Overige nuttige vermeldingen",
-                "en": "Other useful particulars"
+                "en": "Other useful particulars",
+                "de": "Sonstige nützliche Angaben"
               },
               "status": "CONDITIONAL",
               "type": "textarea",
               "help": {
                 "nl": "Bijvoorbeeld voertuigregistratie, nettogewicht en douanereferenties; op te nemen in vak 13/18 volgens afspraak.",
-                "en": "For example vehicle registration, net weight and customs references; entered in box 13/18 as agreed."
+                "en": "For example vehicle registration, net weight and customs references; entered in box 13/18 as agreed.",
+                "de": "Zum Beispiel amtliches Kennzeichen, Nettogewicht und Zollreferenzen; nach Vereinbarung in Feld 13/18 einzutragen."
               }
             },
             {
               "key": "vehicle_registration",
               "label": {
                 "nl": "Kenteken voertuig/trailer",
-                "en": "Vehicle/trailer registration"
+                "en": "Vehicle/trailer registration",
+                "de": "Kennzeichen Fahrzeug/Anhänger"
               },
               "status": "OPERATIONAL",
               "type": "text"
@@ -495,7 +556,8 @@
               "key": "established_place",
               "label": {
                 "nl": "Plaats van opmaak (vak 21)",
-                "en": "Established in (box 21)"
+                "en": "Established in (box 21)",
+                "de": "Ausgefertigt in (Feld 21)"
               },
               "status": "USER_REQUIRED",
               "type": "text"
@@ -504,7 +566,8 @@
               "key": "established_date",
               "label": {
                 "nl": "Datum van opmaak (vak 21)",
-                "en": "Date established (box 21)"
+                "en": "Date established (box 21)",
+                "de": "Ausfertigungsdatum (Feld 21)"
               },
               "status": "USER_REQUIRED",
               "type": "date"
@@ -514,24 +577,28 @@
       ],
       "signature_note": {
         "nl": "Goederenkolommen zijn vak 6-12 (merken, colli, verpakking, aard, statistieknummer, brutogewicht, volume). Vak 18 (voorbehouden vervoerder), 23 (handtekening vervoerder) en 24 (ontvangst goederen) worden nooit vooraf ingevuld; in vak 22 wordt alleen een handtekening geplaatst als de afzender die zelf tekent of uploadt.",
-        "en": "Goods columns are boxes 6-12 (marks, packages, packing, nature, statistical number, gross weight, volume). Boxes 18 (carrier's reservations), 23 (carrier signature) and 24 (goods received) are never pre-filled; box 22 only receives a signature the consignor draws or uploads themselves."
+        "en": "Goods columns are boxes 6-12 (marks, packages, packing, nature, statistical number, gross weight, volume). Boxes 18 (carrier's reservations), 23 (carrier signature) and 24 (goods received) are never pre-filled; box 22 only receives a signature the consignor draws or uploads themselves.",
+        "de": "Die Güterspalten sind die Felder 6-12 (Zeichen, Anzahl der Versandstücke, Verpackung, Art des Gutes, Statistiknummer, Bruttogewicht, Umfang). Die Felder 18 (Vorbehalte des Frachtführers), 23 (Unterschrift des Frachtführers) und 24 (Empfang der Güter) werden nie vorausgefüllt; in Feld 22 kommt nur dann eine Unterschrift, wenn der Absender sie selbst zeichnet oder hochlädt."
       },
       "legal_reference": {
         "nl": "CMR-verdrag (Genève 1956) art. 6; IRU-model 2007",
-        "en": "CMR Convention (Geneva 1956) art. 6; IRU model 2007"
+        "en": "CMR Convention (Geneva 1956) art. 6; IRU model 2007",
+        "de": "CMR-Übereinkommen (Genf 1956) Art. 6; IRU-Muster 2007"
       },
       "official_templates": [
         {
           "label": {
             "nl": "IRU CMR-model 2007 (officieel)",
-            "en": "IRU CMR model 2007 (official)"
+            "en": "IRU CMR model 2007 (official)",
+            "de": "IRU-CMR-Muster 2007 (amtlich)"
           },
           "url": "https://www.iru.org/resources/iru-library/iru-cmr-model-2007"
         },
         {
           "label": {
             "nl": "IRU-invulinstructie CMR",
-            "en": "IRU guide: how to fill in the CMR"
+            "en": "IRU guide: how to fill in the CMR",
+            "de": "IRU-Ausfüllanleitung CMR"
           },
           "url": "https://www.iru.org/sites/default/files/2017-01/how-to-fill-cmr-model-iru-2007-en.pdf"
         }
@@ -539,7 +606,8 @@
       "fixed_texts": [
         {
           "nl": "Dit vervoer is, niettegenstaande enig andersluidend beding, onderworpen aan het Verdrag betreffende de overeenkomst tot internationaal vervoer van goederen over de weg (CMR).",
-          "en": "This carriage is subject, notwithstanding any clause to the contrary, to the Convention on the Contract for the International Carriage of Goods by Road (CMR)."
+          "en": "This carriage is subject, notwithstanding any clause to the contrary, to the Convention on the Contract for the International Carriage of Goods by Road (CMR).",
+          "de": "Diese Beförderung unterliegt trotz einer gegenteiligen Abmachung dem Übereinkommen über den Beförderungsvertrag im internationalen Straßengüterverkehr (CMR)."
         }
       ],
       "pdf_template": "cmr.pdf",
@@ -549,16 +617,19 @@
       "key": "cim",
       "label": {
         "nl": "CIM-vrachtbrief (spoor)",
-        "en": "CIM consignment note (rail)"
+        "en": "CIM consignment note (rail)",
+        "de": "CIM-Frachtbrief (Schiene)"
       },
       "short_label": {
         "nl": "CIM",
-        "en": "CIM"
+        "en": "CIM",
+        "de": "CIM"
       },
       "category": "prepared_transport_document",
       "issue_status": {
         "nl": "Voorbereid vervoersdocument — ondertekening bij overname",
-        "en": "Prepared transport document — signed at handover"
+        "en": "Prepared transport document — signed at handover",
+        "de": "Vorbereitetes Beförderungspapier — Unterzeichnung bei der Übernahme"
       },
       "exporter": "pdf_template",
       "dg_profile": "RID",
@@ -576,14 +647,16 @@
           "key": "cim_details",
           "label": {
             "nl": "CIM-gegevens",
-            "en": "CIM details"
+            "en": "CIM details",
+            "de": "CIM-Angaben"
           },
           "fields": [
             {
               "key": "consignor_declarations",
               "label": {
                 "nl": "Verklaringen van de afzender (vak 7)",
-                "en": "Consignor's declarations (box 7)"
+                "en": "Consignor's declarations (box 7)",
+                "de": "Erklärungen des Absenders (Feld 7)"
               },
               "status": "CONDITIONAL",
               "type": "textarea"
@@ -592,7 +665,8 @@
               "key": "serving_station_code",
               "label": {
                 "nl": "Code bedienend station (vak 12)",
-                "en": "Serving station code (box 12)"
+                "en": "Serving station code (box 12)",
+                "de": "Code der bedienenden Stelle (Feld 12)"
               },
               "status": "CARRIER_PROVIDED",
               "type": "text"
@@ -601,7 +675,8 @@
               "key": "commercial_conditions",
               "label": {
                 "nl": "Handelsvoorwaarden (vak 13)",
-                "en": "Commercial conditions (box 13)"
+                "en": "Commercial conditions (box 13)",
+                "de": "Handelsbedingungen (Feld 13)"
               },
               "status": "CONDITIONAL",
               "type": "text"
@@ -610,7 +685,8 @@
               "key": "contract_number",
               "label": {
                 "nl": "Nummer overeenkomst of tarief (vak 14)",
-                "en": "Contract or tariff number (box 14)"
+                "en": "Contract or tariff number (box 14)",
+                "de": "Nummer des Vertrags oder Tarifs (Feld 14)"
               },
               "status": "CONDITIONAL",
               "type": "text"
@@ -619,7 +695,8 @@
               "key": "info_for_consignee",
               "label": {
                 "nl": "Informatie voor de geadresseerde (vak 15)",
-                "en": "Information for the consignee (box 15)"
+                "en": "Information for the consignee (box 15)",
+                "de": "Informationen für den Empfänger (Feld 15)"
               },
               "status": "USER_OPTIONAL",
               "type": "textarea"
@@ -628,7 +705,8 @@
               "key": "wagon_number",
               "label": {
                 "nl": "Wagonnummer (vak 18)",
-                "en": "Wagon number (box 18)"
+                "en": "Wagon number (box 18)",
+                "de": "Wagennummer (Feld 18)"
               },
               "status": "OPERATIONAL",
               "type": "text"
@@ -637,7 +715,8 @@
               "key": "payment_instruction",
               "label": {
                 "nl": "Betalingsinstructie (vak 20)",
-                "en": "Payment instruction (box 20)"
+                "en": "Payment instruction (box 20)",
+                "de": "Zahlungsanweisung (Feld 20)"
               },
               "status": "USER_REQUIRED",
               "type": "select",
@@ -646,52 +725,60 @@
                   "value": "franco",
                   "label": {
                     "nl": "Franco (afzender betaalt)",
-                    "en": "Franco (consignor pays)"
+                    "en": "Franco (consignor pays)",
+                    "de": "Franco (Absender zahlt)"
                   }
                 },
                 {
                   "value": "collect",
                   "label": {
                     "nl": "Ongefrankeerd (geadresseerde betaalt)",
-                    "en": "Collect (consignee pays)"
+                    "en": "Collect (consignee pays)",
+                    "de": "Unfrei (Empfänger zahlt)"
                   }
                 },
                 {
                   "value": "shared",
                   "label": {
                     "nl": "Gedeeld volgens afspraak",
-                    "en": "Shared as agreed"
+                    "en": "Shared as agreed",
+                    "de": "Geteilt laut Vereinbarung"
                   }
                 }
               ],
               "help": {
                 "nl": "Zonder betalingsinstructie worden kosten in beginsel bij de afzender gelegd.",
-                "en": "Without a payment instruction, charges are in principle borne by the consignor."
+                "en": "Without a payment instruction, charges are in principle borne by the consignor.",
+                "de": "Ohne Zahlungsanweisung trägt die Kosten grundsätzlich der Absender."
               }
             },
             {
               "key": "nhm_code",
               "label": {
                 "nl": "NHM-goederencode (vak 24, 6 cijfers)",
-                "en": "NHM commodity code (box 24, 6 digits)"
+                "en": "NHM commodity code (box 24, 6 digits)",
+                "de": "NHM-Güternummer (Feld 24, 6 Ziffern)"
               },
               "status": "USER_REQUIRED",
               "type": "text",
               "help": {
                 "nl": "De NHM-code kan niet betrouwbaar uit een vrije omschrijving worden afgeleid; zoek deze op in de NHM-lijst.",
-                "en": "The NHM code cannot be reliably derived from a free-text description; look it up in the NHM list."
+                "en": "The NHM code cannot be reliably derived from a free-text description; look it up in the NHM list.",
+                "de": "Die NHM-Nummer lässt sich aus einer freien Bezeichnung nicht zuverlässig ableiten; schlagen Sie sie im NHM-Verzeichnis nach."
               },
               "pattern": "\\d{6}",
               "format_hint": {
                 "nl": "precies zes cijfers, bijvoorbeeld 720851",
-                "en": "exactly six digits, for example 720851"
+                "en": "exactly six digits, for example 720851",
+                "de": "genau sechs Ziffern, zum Beispiel 720851"
               }
             },
             {
               "key": "container_uti_number",
               "label": {
                 "nl": "Container-/UTI-nummer (vak 21)",
-                "en": "Container/UTI number (box 21)"
+                "en": "Container/UTI number (box 21)",
+                "de": "Container-/UTI-Nummer (Feld 21)"
               },
               "status": "CONDITIONAL",
               "type": "text"
@@ -700,7 +787,8 @@
               "key": "container_tare",
               "label": {
                 "nl": "Tarra laadeenheid (kg)",
-                "en": "Tare of loading unit (kg)"
+                "en": "Tare of loading unit (kg)",
+                "de": "Tara der Ladeeinheit (kg)"
               },
               "status": "CONDITIONAL",
               "type": "number"
@@ -709,7 +797,8 @@
               "key": "declared_value",
               "label": {
                 "nl": "Aangegeven waarde (vak 26)",
-                "en": "Declared value (box 26)"
+                "en": "Declared value (box 26)",
+                "de": "Angegebener Wert (Feld 26)"
               },
               "status": "CONDITIONAL",
               "type": "text"
@@ -718,7 +807,8 @@
               "key": "cod_amount",
               "label": {
                 "nl": "Remboursbedrag (vak 28)",
-                "en": "Cash on delivery (box 28)"
+                "en": "Cash on delivery (box 28)",
+                "de": "Nachnahmebetrag (Feld 28)"
               },
               "status": "CONDITIONAL",
               "type": "text"
@@ -727,7 +817,8 @@
               "key": "established_place",
               "label": {
                 "nl": "Plaats van opmaak (vak 29)",
-                "en": "Established in (box 29)"
+                "en": "Established in (box 29)",
+                "de": "Ausgefertigt in (Feld 29)"
               },
               "status": "USER_REQUIRED",
               "type": "text"
@@ -736,7 +827,8 @@
               "key": "established_date",
               "label": {
                 "nl": "Datum van opmaak (vak 29)",
-                "en": "Date established (box 29)"
+                "en": "Date established (box 29)",
+                "de": "Ausfertigungsdatum (Feld 29)"
               },
               "status": "USER_REQUIRED",
               "type": "date"
@@ -746,24 +838,28 @@
       ],
       "signature_note": {
         "nl": "Stationscodes, consignment number, route en kosten komen van de vervoerder en worden niet door CargoPilot gegenereerd. RID-gegevens staan in vak 21/23 en volgen uit de gevaarlijke-stoffenstap.",
-        "en": "Station codes, consignment number, routing and charges come from the carrier and are not generated by CargoPilot. RID data goes in boxes 21/23 and follows from the dangerous goods step."
+        "en": "Station codes, consignment number, routing and charges come from the carrier and are not generated by CargoPilot. RID data goes in boxes 21/23 and follows from the dangerous goods step.",
+        "de": "Stellencodes, Sendungsnummer, Leitungsweg und Kosten kommen vom Beförderer und werden von CargoPilot nicht erzeugt. Die RID-Angaben stehen in den Feldern 21/23 und ergeben sich aus dem Gefahrgutschritt."
       },
       "legal_reference": {
         "nl": "COTIF/CIM Uniforme Regelen art. 6; CIM-handleiding GLV-CIM (ed. 1 juli 2025)",
-        "en": "COTIF/CIM Uniform Rules art. 6; CIM manual GLV-CIM (ed. 1 July 2025)"
+        "en": "COTIF/CIM Uniform Rules art. 6; CIM manual GLV-CIM (ed. 1 July 2025)",
+        "de": "COTIF/CIM Einheitliche Rechtsvorschriften Art. 6; CIM-Handbuch GLV-CIM (Ausg. 1. Juli 2025)"
       },
       "official_templates": [
         {
           "label": {
             "nl": "CIT-formulieren (invulbare CIM-vrachtbrief)",
-            "en": "CIT forms (fillable CIM consignment note)"
+            "en": "CIT forms (fillable CIM consignment note)",
+            "de": "CIT-Formulare (ausfüllbarer CIM-Frachtbrief)"
           },
           "url": "https://www.cit-rail.org/en/freight-traffic/products/forms/"
         },
         {
           "label": {
             "nl": "GLV-CIM handleiding (ed. 2025)",
-            "en": "GLV-CIM manual (ed. 2025)"
+            "en": "GLV-CIM manual (ed. 2025)",
+            "de": "GLV-CIM-Handbuch (Ausg. 2025)"
           },
           "url": "https://www.cit-rail.org/secure-media/files/documentation/freight/glv-cim/glv-2024-07-01/glv-cim_en_2025-07-01_signed.pdf?cid=416057"
         }
@@ -771,7 +867,8 @@
       "fixed_texts": [
         {
           "nl": "Vervoer onderworpen, ook bij een andersluidende overeenkomst, aan de Uniforme Regelen betreffende de overeenkomst van internationaal spoorwegvervoer van goederen (CIM).",
-          "en": "Carriage subject, notwithstanding any clause to the contrary, to the Uniform Rules concerning the Contract of International Carriage of Goods by Rail (CIM)."
+          "en": "Carriage subject, notwithstanding any clause to the contrary, to the Uniform Rules concerning the Contract of International Carriage of Goods by Rail (CIM).",
+          "de": "Beförderung trotz einer gegenteiligen Abmachung den Einheitlichen Rechtsvorschriften für den Vertrag über die internationale Eisenbahnbeförderung von Gütern (CIM) unterworfen."
         }
       ],
       "pdf_template": "cim.pdf",
@@ -781,16 +878,19 @@
       "key": "imo_dgd",
       "label": {
         "nl": "IMO Multimodal Dangerous Goods Form",
-        "en": "IMO Multimodal Dangerous Goods Form"
+        "en": "IMO Multimodal Dangerous Goods Form",
+        "de": "IMO Multimodal Dangerous Goods Form"
       },
       "short_label": {
         "nl": "IMO DGF",
-        "en": "IMO DGF"
+        "en": "IMO DGF",
+        "de": "IMO DGF"
       },
       "category": "declaration",
       "issue_status": {
         "nl": "Verklaring — controle en ondertekening door bevoegde afzender vereist",
-        "en": "Declaration — review and signature by authorised shipper required"
+        "en": "Declaration — review and signature by authorised shipper required",
+        "de": "Erklärung — Prüfung und Unterzeichnung durch den befugten Absender erforderlich"
       },
       "exporter": "generic",
       "dg_profile": "IMDG",
@@ -809,14 +909,16 @@
           "key": "imo_details",
           "label": {
             "nl": "IMO-formuliergegevens",
-            "en": "IMO form details"
+            "en": "IMO form details",
+            "de": "Angaben zum IMO-Formular"
           },
           "fields": [
             {
               "key": "transport_document_number",
               "label": {
                 "nl": "Transportdocumentnummer (vak 2)",
-                "en": "Transport document number (box 2)"
+                "en": "Transport document number (box 2)",
+                "de": "Nummer des Beförderungspapiers (Feld 2)"
               },
               "status": "CARRIER_PROVIDED",
               "type": "text"
@@ -825,7 +927,8 @@
               "key": "vessel_flight",
               "label": {
                 "nl": "Schip/vluchtnummer en datum (vak 10)",
-                "en": "Vessel/flight number and date (box 10)"
+                "en": "Vessel/flight number and date (box 10)",
+                "de": "Schiffs-/Flugnummer und Datum (Feld 10)"
               },
               "status": "OPERATIONAL",
               "type": "text"
@@ -834,7 +937,8 @@
               "key": "container_identification",
               "label": {
                 "nl": "Containeridentificatie / voertuigregistratie (vak 15)",
-                "en": "Container identification / vehicle registration (box 15)"
+                "en": "Container identification / vehicle registration (box 15)",
+                "de": "Containerkennzeichnung / amtliches Kennzeichen (Feld 15)"
               },
               "status": "OPERATIONAL",
               "type": "text"
@@ -843,7 +947,8 @@
               "key": "seal_numbers",
               "label": {
                 "nl": "Zegelnummers (vak 16)",
-                "en": "Seal numbers (box 16)"
+                "en": "Seal numbers (box 16)",
+                "de": "Plombennummern (Feld 16)"
               },
               "status": "OPERATIONAL",
               "type": "text"
@@ -852,7 +957,8 @@
               "key": "container_size_type",
               "label": {
                 "nl": "Grootte en type container/voertuig (vak 17)",
-                "en": "Container/vehicle size and type (box 17)"
+                "en": "Container/vehicle size and type (box 17)",
+                "de": "Größe und Typ des Containers/Fahrzeugs (Feld 17)"
               },
               "status": "CONDITIONAL",
               "type": "text"
@@ -861,7 +967,8 @@
               "key": "container_tare",
               "label": {
                 "nl": "Tarra (kg, vak 18)",
-                "en": "Tare mass (kg, box 18)"
+                "en": "Tare mass (kg, box 18)",
+                "de": "Tara (kg, Feld 18)"
               },
               "status": "CONDITIONAL",
               "type": "number"
@@ -870,20 +977,23 @@
               "key": "packing_certificate_confirmed",
               "label": {
                 "nl": "Container/vehicle packing certificate — verklaringen bevestigd (vak 20)",
-                "en": "Container/vehicle packing certificate — declarations confirmed (box 20)"
+                "en": "Container/vehicle packing certificate — declarations confirmed (box 20)",
+                "de": "Container/Vehicle Packing Certificate — Erklärungen bestätigt (Feld 20)"
               },
               "status": "SIGNATURE_REQUIRED",
               "type": "checkbox",
               "help": {
                 "nl": "Ondertekenaar verklaart o.a.: container schoon/droog en geschikt; geen onverenigbare stoffen samen geladen; verpakkingen onbeschadigd; lading correct geladen en gezekerd; massa gelijkmatig verdeeld; markeringen, labels en placards aangebracht. Niet automatisch aanvinken.",
-                "en": "Signatory declares among other things: container clean/dry and suitable; no incompatible goods packed together; packages undamaged; cargo correctly loaded and secured; mass evenly distributed; marks, labels and placards affixed. Never tick automatically."
+                "en": "Signatory declares among other things: container clean/dry and suitable; no incompatible goods packed together; packages undamaged; cargo correctly loaded and secured; mass evenly distributed; marks, labels and placards affixed. Never tick automatically.",
+                "de": "Der Unterzeichner erklärt unter anderem: Container sauber/trocken und geeignet; keine unverträglichen Güter zusammengepackt; Versandstücke unbeschädigt; Ladung richtig verladen und gesichert; Masse gleichmäßig verteilt; Kennzeichen, Gefahrzettel und Großzettel angebracht. Niemals automatisch ankreuzen."
               }
             },
             {
               "key": "declarant_name",
               "label": {
                 "nl": "Naam/functie opsteller verklaring (vak 22)",
-                "en": "Name/status of declarant (box 22)"
+                "en": "Name/status of declarant (box 22)",
+                "de": "Name/Funktion des Erklärenden (Feld 22)"
               },
               "status": "USER_REQUIRED",
               "type": "text"
@@ -892,7 +1002,8 @@
               "key": "declaration_place",
               "label": {
                 "nl": "Plaats van verklaring",
-                "en": "Place of declaration"
+                "en": "Place of declaration",
+                "de": "Ort der Erklärung"
               },
               "status": "USER_REQUIRED",
               "type": "text"
@@ -901,7 +1012,8 @@
               "key": "declaration_date",
               "label": {
                 "nl": "Datum van verklaring",
-                "en": "Date of declaration"
+                "en": "Date of declaration",
+                "de": "Datum der Erklärung"
               },
               "status": "USER_REQUIRED",
               "type": "date"
@@ -911,17 +1023,20 @@
       ],
       "signature_note": {
         "nl": "De ontvangstverklaring (vak 21) en handtekeningen van derden worden nooit vooraf ingevuld; de afzenderhandtekening wordt alleen geplaatst als u die zelf tekent of uploadt. IMDG Code 2024 (Amdt. 42-24) is leidend.",
-        "en": "The receipt declaration (box 21) and third-party signatures are never pre-filled; the shipper signature is only placed if you draw or upload it yourself. IMDG Code 2024 (Amdt. 42-24) applies."
+        "en": "The receipt declaration (box 21) and third-party signatures are never pre-filled; the shipper signature is only placed if you draw or upload it yourself. IMDG Code 2024 (Amdt. 42-24) applies.",
+        "de": "Die Empfangserklärung (Feld 21) und Unterschriften Dritter werden nie vorausgefüllt; die Unterschrift des Absenders wird nur eingefügt, wenn Sie sie selbst zeichnen oder hochladen. Maßgebend ist der IMDG-Code 2024 (Amdt. 42-24)."
       },
       "legal_reference": {
         "nl": "IMDG Code 5.4.5 (Amdt. 42-24, verplicht sinds 1 jan 2026); SOLAS 74 hfst. VII reg. 4; MARPOL Annex III",
-        "en": "IMDG Code 5.4.5 (Amdt. 42-24, mandatory since 1 Jan 2026); SOLAS 74 ch. VII reg. 4; MARPOL Annex III"
+        "en": "IMDG Code 5.4.5 (Amdt. 42-24, mandatory since 1 Jan 2026); SOLAS 74 ch. VII reg. 4; MARPOL Annex III",
+        "de": "IMDG-Code 5.4.5 (Amdt. 42-24, verbindlich seit 1. Januar 2026); SOLAS 74 Kap. VII Reg. 4; MARPOL Anlage III"
       },
       "official_templates": [
         {
           "label": {
             "nl": "Officieel IMO MDGF-formulier (.doc, IMO)",
-            "en": "Official IMO MDG form (.doc, IMO)"
+            "en": "Official IMO MDG form (.doc, IMO)",
+            "de": "Amtliches IMO-MDG-Formular (.doc, IMO)"
           },
           "url": "https://wwwcdn.imo.org/localresources/en/OurWork/Facilitation/Documents/multimodaldanggoodsMMDGform.doc"
         }
@@ -929,11 +1044,13 @@
       "fixed_texts": [
         {
           "nl": "Verklaring afzender (vak 22): \"I hereby declare that the contents of this consignment are fully and accurately described below by the Proper Shipping Name, and are classified, packaged, marked and labelled/placarded, and are in all respects in proper condition for transport according to applicable international and national governmental regulations.\"",
-          "en": "Shipper's declaration (box 22): \"I hereby declare that the contents of this consignment are fully and accurately described below by the Proper Shipping Name, and are classified, packaged, marked and labelled/placarded, and are in all respects in proper condition for transport according to applicable international and national governmental regulations.\""
+          "en": "Shipper's declaration (box 22): \"I hereby declare that the contents of this consignment are fully and accurately described below by the Proper Shipping Name, and are classified, packaged, marked and labelled/placarded, and are in all respects in proper condition for transport according to applicable international and national governmental regulations.\"",
+          "de": "Erklärung des Absenders (Feld 22): \"I hereby declare that the contents of this consignment are fully and accurately described below by the Proper Shipping Name, and are classified, packaged, marked and labelled/placarded, and are in all respects in proper condition for transport according to applicable international and national governmental regulations.\""
         },
         {
           "nl": "Container/vehicle packing certificate (vak 20): \"It is declared that the packing of the container/vehicle has been carried out in accordance with the applicable provisions.\" — pas ondertekenen nadat alle verklaringen feitelijk zijn gecontroleerd.",
-          "en": "Container/vehicle packing certificate (box 20): \"It is declared that the packing of the container/vehicle has been carried out in accordance with the applicable provisions.\" — sign only after all declarations have actually been verified."
+          "en": "Container/vehicle packing certificate (box 20): \"It is declared that the packing of the container/vehicle has been carried out in accordance with the applicable provisions.\" — sign only after all declarations have actually been verified.",
+          "de": "Container/Vehicle Packing Certificate (Feld 20): \"It is declared that the packing of the container/vehicle has been carried out in accordance with the applicable provisions.\" — erst unterschreiben, nachdem alle Erklärungen tatsächlich geprüft worden sind."
         }
       ],
       "output_format": "pdf"
@@ -942,16 +1059,19 @@
       "key": "iata_dgd",
       "label": {
         "nl": "IATA Shipper's Declaration for Dangerous Goods",
-        "en": "IATA Shipper's Declaration for Dangerous Goods"
+        "en": "IATA Shipper's Declaration for Dangerous Goods",
+        "de": "IATA Shipper's Declaration for Dangerous Goods"
       },
       "short_label": {
         "nl": "IATA DGD",
-        "en": "IATA DGD"
+        "en": "IATA DGD",
+        "de": "IATA DGD"
       },
       "category": "declaration",
       "issue_status": {
         "nl": "Verklaring — controle en ondertekening door bevoegde afzender vereist",
-        "en": "Declaration — review and signature by authorised shipper required"
+        "en": "Declaration — review and signature by authorised shipper required",
+        "de": "Erklärung — Prüfung und Unterzeichnung durch den befugten Absender erforderlich"
       },
       "exporter": "pdf_template",
       "dg_profile": "IATA_DGR",
@@ -970,14 +1090,16 @@
           "key": "iata_details",
           "label": {
             "nl": "IATA DGD-gegevens",
-            "en": "IATA DGD details"
+            "en": "IATA DGD details",
+            "de": "IATA-DGD-Angaben"
           },
           "fields": [
             {
               "key": "awb_number",
               "label": {
                 "nl": "Air Waybill-nummer",
-                "en": "Air Waybill number"
+                "en": "Air Waybill number",
+                "de": "Air-Waybill-Nummer"
               },
               "status": "CARRIER_PROVIDED",
               "type": "text"
@@ -986,7 +1108,8 @@
               "key": "aircraft_limitation",
               "label": {
                 "nl": "Vliegtuigbeperking",
-                "en": "Aircraft limitation"
+                "en": "Aircraft limitation",
+                "de": "Flugzeugbeschränkung"
               },
               "status": "USER_REQUIRED",
               "type": "select",
@@ -995,14 +1118,16 @@
                   "value": "passenger_and_cargo",
                   "label": {
                     "nl": "Passenger and Cargo Aircraft",
-                    "en": "Passenger and Cargo Aircraft"
+                    "en": "Passenger and Cargo Aircraft",
+                    "de": "Passenger and Cargo Aircraft"
                   }
                 },
                 {
                   "value": "cargo_only",
                   "label": {
                     "nl": "Cargo Aircraft Only",
-                    "en": "Cargo Aircraft Only"
+                    "en": "Cargo Aircraft Only",
+                    "de": "Cargo Aircraft Only"
                   }
                 }
               ]
@@ -1011,7 +1136,8 @@
               "key": "shipment_type",
               "label": {
                 "nl": "Type zending",
-                "en": "Shipment type"
+                "en": "Shipment type",
+                "de": "Sendungsart"
               },
               "status": "USER_REQUIRED",
               "type": "select",
@@ -1020,14 +1146,16 @@
                   "value": "non_radioactive",
                   "label": {
                     "nl": "Non-radioactive",
-                    "en": "Non-radioactive"
+                    "en": "Non-radioactive",
+                    "de": "Non-radioactive"
                   }
                 },
                 {
                   "value": "radioactive",
                   "label": {
                     "nl": "Radioactive",
-                    "en": "Radioactive"
+                    "en": "Radioactive",
+                    "de": "Radioactive"
                   }
                 }
               ]
@@ -1036,7 +1164,8 @@
               "key": "handling_information",
               "label": {
                 "nl": "Additional handling information",
-                "en": "Additional handling information"
+                "en": "Additional handling information",
+                "de": "Additional handling information"
               },
               "status": "USER_OPTIONAL",
               "type": "textarea"
@@ -1045,7 +1174,8 @@
               "key": "authorization",
               "label": {
                 "nl": "Autorisatie (goedkeuring, vrijstelling of DGR-verwijzing)",
-                "en": "Authorization (approval, exemption or DGR reference)"
+                "en": "Authorization (approval, exemption or DGR reference)",
+                "de": "Autorisierung (Genehmigung, Ausnahme oder DGR-Verweis)"
               },
               "status": "USER_OPTIONAL",
               "type": "text"
@@ -1054,7 +1184,8 @@
               "key": "emergency_contact",
               "label": {
                 "nl": "24-uurs noodnummer",
-                "en": "24-hour emergency contact"
+                "en": "24-hour emergency contact",
+                "de": "24-Stunden-Notrufnummer"
               },
               "status": "USER_REQUIRED",
               "type": "text"
@@ -1063,7 +1194,8 @@
               "key": "signatory_name",
               "label": {
                 "nl": "Naam en functie ondertekenaar",
-                "en": "Name and title of signatory"
+                "en": "Name and title of signatory",
+                "de": "Name und Funktion des Unterzeichners"
               },
               "status": "USER_REQUIRED",
               "type": "text"
@@ -1072,7 +1204,8 @@
               "key": "declaration_place",
               "label": {
                 "nl": "Plaats",
-                "en": "Place"
+                "en": "Place",
+                "de": "Ort"
               },
               "status": "USER_REQUIRED",
               "type": "text"
@@ -1081,7 +1214,8 @@
               "key": "declaration_date",
               "label": {
                 "nl": "Datum",
-                "en": "Date"
+                "en": "Date",
+                "de": "Datum"
               },
               "status": "USER_REQUIRED",
               "type": "date"
@@ -1091,31 +1225,36 @@
       ],
       "signature_note": {
         "nl": "De handtekening wordt alleen geplaatst als u die zelf tekent of uploadt. IATA DGR 67e editie (2026) is leidend; een vrije omschrijving wordt nooit automatisch een definitieve classificatie.",
-        "en": "The signature is only placed if you draw or upload it yourself. IATA DGR 67th edition (2026) applies; a free-text description is never automatically turned into a final classification."
+        "en": "The signature is only placed if you draw or upload it yourself. IATA DGR 67th edition (2026) applies; a free-text description is never automatically turned into a final classification.",
+        "de": "Die Unterschrift wird nur eingefügt, wenn Sie sie selbst zeichnen oder hochladen. Maßgebend ist die IATA DGR 67. Ausgabe (2026); aus einer freien Bezeichnung wird nie selbsttätig eine endgültige Klassifizierung."
       },
       "legal_reference": {
         "nl": "IATA DGR 67e editie (2026), sectie 8.1.6; ICAO Technical Instructions",
-        "en": "IATA DGR 67th edition (2026), section 8.1.6; ICAO Technical Instructions"
+        "en": "IATA DGR 67th edition (2026), section 8.1.6; ICAO Technical Instructions",
+        "de": "IATA DGR 67. Ausgabe (2026), Abschnitt 8.1.6; ICAO Technical Instructions"
       },
       "official_templates": [
         {
           "label": {
             "nl": "IATA Shipper's Declaration — kolomformaat (invulbaar, officieel)",
-            "en": "IATA Shipper's Declaration — column format (fillable, official)"
+            "en": "IATA Shipper's Declaration — column format (fillable, official)",
+            "de": "IATA Shipper's Declaration — Spaltenformat (ausfüllbar, amtlich)"
           },
           "url": "https://www.iata.org/contentassets/a9f496cd8c87466b98142fa6d4cdb209/shippers-declaration-column-format-fillable.pdf"
         },
         {
           "label": {
             "nl": "IATA Shipper's Declaration — open formaat (invulbaar, officieel)",
-            "en": "IATA Shipper's Declaration — open format (fillable, official)"
+            "en": "IATA Shipper's Declaration — open format (fillable, official)",
+            "de": "IATA Shipper's Declaration — offenes Format (ausfüllbar, amtlich)"
           },
           "url": "https://www.iata.org/contentassets/a9f496cd8c87466b98142fa6d4cdb209/shippers-declaration-open-format-fillable.pdf"
         },
         {
           "label": {
             "nl": "IATA DGD-informatiepagina",
-            "en": "IATA DGD information page"
+            "en": "IATA DGD information page",
+            "de": "IATA-DGD-Informationsseite"
           },
           "url": "https://www.iata.org/en/programs/cargo/dgr/shippers-declaration/"
         }
@@ -1123,15 +1262,18 @@
       "fixed_texts": [
         {
           "nl": "WARNING: \"Failure to comply in all respects with the applicable Dangerous Goods Regulations may be in breach of the applicable law, subject to legal penalties.\"",
-          "en": "WARNING: \"Failure to comply in all respects with the applicable Dangerous Goods Regulations may be in breach of the applicable law, subject to legal penalties.\""
+          "en": "WARNING: \"Failure to comply in all respects with the applicable Dangerous Goods Regulations may be in breach of the applicable law, subject to legal penalties.\"",
+          "de": "WARNING: \"Failure to comply in all respects with the applicable Dangerous Goods Regulations may be in breach of the applicable law, subject to legal penalties.\""
         },
         {
           "nl": "Certificering: \"I hereby declare that the contents of this consignment are fully and accurately described above by the proper shipping name, and are classified, packaged, marked and labelled/placarded, and are in all respects in proper condition for transport according to applicable international and national governmental regulations. I declare that all of the applicable air transport requirements have been met.\"",
-          "en": "Certification: \"I hereby declare that the contents of this consignment are fully and accurately described above by the proper shipping name, and are classified, packaged, marked and labelled/placarded, and are in all respects in proper condition for transport according to applicable international and national governmental regulations. I declare that all of the applicable air transport requirements have been met.\""
+          "en": "Certification: \"I hereby declare that the contents of this consignment are fully and accurately described above by the proper shipping name, and are classified, packaged, marked and labelled/placarded, and are in all respects in proper condition for transport according to applicable international and national governmental regulations. I declare that all of the applicable air transport requirements have been met.\"",
+          "de": "Certification: \"I hereby declare that the contents of this consignment are fully and accurately described above by the proper shipping name, and are classified, packaged, marked and labelled/placarded, and are in all respects in proper condition for transport according to applicable international and national governmental regulations. I declare that all of the applicable air transport requirements have been met.\""
         },
         {
           "nl": "Op het officiële formulier moet de niet-toepasselijke vliegtuigoptie en de niet-toepasselijke stralingsoptie worden doorgehaald (\"delete non-applicable\").",
-          "en": "On the official form the non-applicable aircraft option and the non-applicable radioactivity option must be deleted (\"delete non-applicable\")."
+          "en": "On the official form the non-applicable aircraft option and the non-applicable radioactivity option must be deleted (\"delete non-applicable\").",
+          "de": "Auf dem amtlichen Formular sind die nicht zutreffende Flugzeugoption und die nicht zutreffende Radioaktivitätsoption zu streichen (\"delete non-applicable\")."
         }
       ],
       "pdf_template": "iata_dgd.pdf",
@@ -1141,16 +1283,19 @@
       "key": "vgm",
       "label": {
         "nl": "VGM-verklaring (SOLAS)",
-        "en": "VGM declaration (SOLAS)"
+        "en": "VGM declaration (SOLAS)",
+        "de": "VGM-Erklärung (SOLAS)"
       },
       "short_label": {
         "nl": "VGM",
-        "en": "VGM"
+        "en": "VGM",
+        "de": "VGM"
       },
       "category": "declaration",
       "issue_status": {
         "nl": "Shipper declaration — Verified Gross Mass",
-        "en": "Shipper declaration — Verified Gross Mass"
+        "en": "Shipper declaration — Verified Gross Mass",
+        "de": "Erklärung des Absenders — Verified Gross Mass"
       },
       "exporter": "generic",
       "dg_profile": null,
@@ -1165,14 +1310,16 @@
           "key": "vgm_details",
           "label": {
             "nl": "VGM-gegevens",
-            "en": "VGM details"
+            "en": "VGM details",
+            "de": "VGM-Angaben"
           },
           "fields": [
             {
               "key": "container_number",
               "label": {
                 "nl": "Containernummer",
-                "en": "Container number"
+                "en": "Container number",
+                "de": "Containernummer"
               },
               "status": "USER_REQUIRED",
               "type": "text"
@@ -1181,7 +1328,8 @@
               "key": "container_size_type",
               "label": {
                 "nl": "Containermaat en -type",
-                "en": "Container size and type"
+                "en": "Container size and type",
+                "de": "Containergröße und -typ"
               },
               "status": "USER_OPTIONAL",
               "type": "text"
@@ -1190,7 +1338,8 @@
               "key": "vgm_kg",
               "label": {
                 "nl": "Verified Gross Mass (kg)",
-                "en": "Verified Gross Mass (kg)"
+                "en": "Verified Gross Mass (kg)",
+                "de": "Verified Gross Mass (kg)"
               },
               "status": "USER_REQUIRED",
               "type": "number"
@@ -1199,7 +1348,8 @@
               "key": "vgm_method",
               "label": {
                 "nl": "Gebruikte methode",
-                "en": "Method used"
+                "en": "Method used",
+                "de": "Verwendete Methode"
               },
               "status": "USER_REQUIRED",
               "type": "select",
@@ -1208,14 +1358,16 @@
                   "value": "method1",
                   "label": {
                     "nl": "Methode 1 — volledige container gewogen",
-                    "en": "Method 1 — full container weighed"
+                    "en": "Method 1 — full container weighed",
+                    "de": "Methode 1 — vollständiger Container gewogen"
                   }
                 },
                 {
                   "value": "method2",
                   "label": {
                     "nl": "Methode 2 — som van componenten + tarra",
-                    "en": "Method 2 — sum of components + tare"
+                    "en": "Method 2 — sum of components + tare",
+                    "de": "Methode 2 — Summe der Bestandteile + Tara"
                   }
                 }
               ]
@@ -1224,7 +1376,8 @@
               "key": "weighing_location",
               "label": {
                 "nl": "Weeglocatie (methode 1)",
-                "en": "Weighing location (method 1)"
+                "en": "Weighing location (method 1)",
+                "de": "Wiegeort (Methode 1)"
               },
               "status": "CONDITIONAL",
               "condition": "vgm_method=method1",
@@ -1234,7 +1387,8 @@
               "key": "weighing_ticket",
               "label": {
                 "nl": "Weegbonnummer (methode 1)",
-                "en": "Weighing ticket number (method 1)"
+                "en": "Weighing ticket number (method 1)",
+                "de": "Wiegescheinnummer (Methode 1)"
               },
               "status": "CONDITIONAL",
               "condition": "vgm_method=method1",
@@ -1244,7 +1398,8 @@
               "key": "weighing_company",
               "label": {
                 "nl": "Weegbedrijf (methode 1)",
-                "en": "Weighing company (method 1)"
+                "en": "Weighing company (method 1)",
+                "de": "Wiegebetrieb (Methode 1)"
               },
               "status": "CONDITIONAL",
               "condition": "vgm_method=method1",
@@ -1254,7 +1409,8 @@
               "key": "cargo_mass_kg",
               "label": {
                 "nl": "Massa goederen (kg, methode 2)",
-                "en": "Cargo mass (kg, method 2)"
+                "en": "Cargo mass (kg, method 2)",
+                "de": "Masse der Güter (kg, Methode 2)"
               },
               "status": "CONDITIONAL",
               "condition": "vgm_method=method2",
@@ -1265,7 +1421,8 @@
               "key": "packaging_mass_kg",
               "label": {
                 "nl": "Massa verpakkingen (kg, methode 2)",
-                "en": "Packaging mass (kg, method 2)"
+                "en": "Packaging mass (kg, method 2)",
+                "de": "Masse der Verpackungen (kg, Methode 2)"
               },
               "status": "CONDITIONAL",
               "condition": "vgm_method=method2",
@@ -1275,7 +1432,8 @@
               "key": "pallets_mass_kg",
               "label": {
                 "nl": "Massa pallets (kg, methode 2)",
-                "en": "Pallet mass (kg, method 2)"
+                "en": "Pallet mass (kg, method 2)",
+                "de": "Masse der Paletten (kg, Methode 2)"
               },
               "status": "CONDITIONAL",
               "condition": "vgm_method=method2",
@@ -1285,7 +1443,8 @@
               "key": "securing_mass_kg",
               "label": {
                 "nl": "Massa stuw-/zekermateriaal (kg, methode 2)",
-                "en": "Dunnage/securing mass (kg, method 2)"
+                "en": "Dunnage/securing mass (kg, method 2)",
+                "de": "Masse des Stau-/Sicherungsmaterials (kg, Methode 2)"
               },
               "status": "CONDITIONAL",
               "condition": "vgm_method=method2",
@@ -1295,7 +1454,8 @@
               "key": "container_tare_kg",
               "label": {
                 "nl": "Containertarra (kg, methode 2)",
-                "en": "Container tare (kg, method 2)"
+                "en": "Container tare (kg, method 2)",
+                "de": "Containertara (kg, Methode 2)"
               },
               "status": "CONDITIONAL",
               "condition": "vgm_method=method2",
@@ -1305,7 +1465,8 @@
               "key": "certified_method_reference",
               "label": {
                 "nl": "Referentie gecertificeerde methode (methode 2)",
-                "en": "Certified method reference (method 2)"
+                "en": "Certified method reference (method 2)",
+                "de": "Referenz des zertifizierten Verfahrens (Methode 2)"
               },
               "status": "CONDITIONAL",
               "condition": "vgm_method=method2",
@@ -1315,7 +1476,8 @@
               "key": "responsible_name",
               "label": {
                 "nl": "Naam bevoegde persoon (in hoofdletters)",
-                "en": "Name of authorised person (in capitals)"
+                "en": "Name of authorised person (in capitals)",
+                "de": "Name der befugten Person (in Großbuchstaben)"
               },
               "status": "USER_REQUIRED",
               "type": "text"
@@ -1324,7 +1486,8 @@
               "key": "responsible_function",
               "label": {
                 "nl": "Functie bevoegde persoon",
-                "en": "Function of authorised person"
+                "en": "Function of authorised person",
+                "de": "Funktion der befugten Person"
               },
               "status": "USER_OPTIONAL",
               "type": "text"
@@ -1333,7 +1496,8 @@
               "key": "determination_place",
               "label": {
                 "nl": "Plaats van vaststelling",
-                "en": "Place of determination"
+                "en": "Place of determination",
+                "de": "Ort der Feststellung"
               },
               "status": "USER_REQUIRED",
               "type": "text"
@@ -1342,7 +1506,8 @@
               "key": "determination_date",
               "label": {
                 "nl": "Datum van vaststelling",
-                "en": "Date of determination"
+                "en": "Date of determination",
+                "de": "Datum der Feststellung"
               },
               "status": "USER_REQUIRED",
               "type": "date"
@@ -1351,7 +1516,8 @@
               "key": "vgm_recipient",
               "label": {
                 "nl": "Ontvanger van de VGM-melding",
-                "en": "Recipient of the VGM notification"
+                "en": "Recipient of the VGM notification",
+                "de": "Empfänger der VGM-Meldung"
               },
               "status": "USER_OPTIONAL",
               "type": "text"
@@ -1361,17 +1527,20 @@
       ],
       "signature_note": {
         "nl": "Bij methode 2 controleert CargoPilot of VGM = goederen + verpakking + pallets + stuwmateriaal + tarra en waarschuwt bij afwijking.",
-        "en": "For method 2, CargoPilot checks VGM = cargo + packaging + pallets + securing material + tare and warns on mismatch."
+        "en": "For method 2, CargoPilot checks VGM = cargo + packaging + pallets + securing material + tare and warns on mismatch.",
+        "de": "Bei Methode 2 prüft CargoPilot, ob VGM = Güter + Verpackung + Paletten + Sicherungsmaterial + Tara ist, und warnt bei Abweichung."
       },
       "legal_reference": {
         "nl": "SOLAS hoofdstuk VI, voorschrift 2; IMO-richtlijn MSC.1/Circ.1475",
-        "en": "SOLAS chapter VI, regulation 2; IMO guideline MSC.1/Circ.1475"
+        "en": "SOLAS chapter VI, regulation 2; IMO guideline MSC.1/Circ.1475",
+        "de": "SOLAS Kapitel VI, Regel 2; IMO-Richtlinie MSC.1/Circ.1475"
       },
       "official_templates": [
         {
           "label": {
             "nl": "MSC.1/Circ.1475 — VGM-richtlijnen (IMO)",
-            "en": "MSC.1/Circ.1475 — VGM guidelines (IMO)"
+            "en": "MSC.1/Circ.1475 — VGM guidelines (IMO)",
+            "de": "MSC.1/Circ.1475 — VGM-Richtlinien (IMO)"
           },
           "url": "https://wwwcdn.imo.org/localresources/en/OurWork/Safety/Documents/MSC.1%20Circ.1475.pdf"
         }
@@ -1379,7 +1548,8 @@
       "fixed_texts": [
         {
           "nl": "Deze Verified Gross Mass is vastgesteld conform SOLAS VI/2 en MSC.1/Circ.1475. Er bestaat geen verplicht universeel VGM-formulier; deze verklaring bevat de door de IMO vereiste kerngegevens en is ondertekend door een door de afzender gemachtigde persoon (naam in hoofdletters of elektronische handtekening toegestaan).",
-          "en": "This Verified Gross Mass has been determined in accordance with SOLAS VI/2 and MSC.1/Circ.1475. No mandatory universal VGM form exists; this declaration contains the core data required by the IMO and is signed by a person duly authorised by the shipper (name in capitals or electronic signature permitted)."
+          "en": "This Verified Gross Mass has been determined in accordance with SOLAS VI/2 and MSC.1/Circ.1475. No mandatory universal VGM form exists; this declaration contains the core data required by the IMO and is signed by a person duly authorised by the shipper (name in capitals or electronic signature permitted).",
+          "de": "Diese Verified Gross Mass wurde nach SOLAS VI/2 und MSC.1/Circ.1475 festgestellt. Ein verbindliches allgemeines VGM-Formular gibt es nicht; diese Erklärung enthält die von der IMO verlangten Kernangaben und ist von einer vom Absender bevollmächtigten Person unterschrieben (Name in Großbuchstaben oder elektronische Unterschrift zulässig)."
         }
       ],
       "output_format": "pdf"
@@ -1388,16 +1558,19 @@
       "key": "awb_si",
       "label": {
         "nl": "Air Waybill Shipping Instructions",
-        "en": "Air Waybill shipping instructions"
+        "en": "Air Waybill shipping instructions",
+        "de": "Air Waybill Shipping Instructions"
       },
       "short_label": {
         "nl": "AWB-instructies",
-        "en": "AWB instructions"
+        "en": "AWB instructions",
+        "de": "AWB-Anweisungen"
       },
       "category": "shipping_instructions",
       "issue_status": {
         "nl": "Shipping instructions — officiële AWB wordt door vervoerder/expediteur uitgegeven",
-        "en": "Shipping instructions — official AWB is issued by carrier/forwarder"
+        "en": "Shipping instructions — official AWB is issued by carrier/forwarder",
+        "de": "Shipping Instructions — der amtliche AWB wird vom Beförderer/Spediteur ausgestellt"
       },
       "exporter": "generic",
       "dg_profile": null,
@@ -1415,14 +1588,16 @@
           "key": "awb_details",
           "label": {
             "nl": "AWB-instructiegegevens",
-            "en": "AWB instruction details"
+            "en": "AWB instruction details",
+            "de": "Angaben zu den AWB-Anweisungen"
           },
           "fields": [
             {
               "key": "requested_routing",
               "label": {
                 "nl": "Gewenste routing / vlucht",
-                "en": "Requested routing / flight"
+                "en": "Requested routing / flight",
+                "de": "Gewünschter Leitungsweg / Flug"
               },
               "status": "USER_OPTIONAL",
               "type": "text"
@@ -1431,7 +1606,8 @@
               "key": "requested_departure_date",
               "label": {
                 "nl": "Gewenste vertrekdatum",
-                "en": "Requested departure date"
+                "en": "Requested departure date",
+                "de": "Gewünschtes Abflugdatum"
               },
               "status": "USER_OPTIONAL",
               "type": "date"
@@ -1440,7 +1616,8 @@
               "key": "service_level",
               "label": {
                 "nl": "Gewenste service",
-                "en": "Requested service level"
+                "en": "Requested service level",
+                "de": "Gewünschte Serviceklasse"
               },
               "status": "USER_OPTIONAL",
               "type": "text"
@@ -1449,7 +1626,8 @@
               "key": "currency",
               "label": {
                 "nl": "Valuta",
-                "en": "Currency"
+                "en": "Currency",
+                "de": "Währung"
               },
               "status": "USER_OPTIONAL",
               "type": "text"
@@ -1458,7 +1636,8 @@
               "key": "freight_payment",
               "label": {
                 "nl": "Vracht prepaid of collect",
-                "en": "Freight prepaid or collect"
+                "en": "Freight prepaid or collect",
+                "de": "Fracht prepaid oder collect"
               },
               "status": "USER_REQUIRED",
               "type": "select",
@@ -1467,14 +1646,16 @@
                   "value": "prepaid",
                   "label": {
                     "nl": "Prepaid",
-                    "en": "Prepaid"
+                    "en": "Prepaid",
+                    "de": "Prepaid"
                   }
                 },
                 {
                   "value": "collect",
                   "label": {
                     "nl": "Collect",
-                    "en": "Collect"
+                    "en": "Collect",
+                    "de": "Collect"
                   }
                 }
               ]
@@ -1483,7 +1664,8 @@
               "key": "declared_value_carriage",
               "label": {
                 "nl": "Declared value for carriage (of NVD)",
-                "en": "Declared value for carriage (or NVD)"
+                "en": "Declared value for carriage (or NVD)",
+                "de": "Declared value for carriage (oder NVD)"
               },
               "status": "USER_OPTIONAL",
               "type": "text"
@@ -1492,7 +1674,8 @@
               "key": "declared_value_customs",
               "label": {
                 "nl": "Declared value for customs (of NCV)",
-                "en": "Declared value for customs (or NCV)"
+                "en": "Declared value for customs (or NCV)",
+                "de": "Declared value for customs (oder NCV)"
               },
               "status": "USER_OPTIONAL",
               "type": "text"
@@ -1501,7 +1684,8 @@
               "key": "insurance_requested",
               "label": {
                 "nl": "Verzekering gewenst",
-                "en": "Insurance requested"
+                "en": "Insurance requested",
+                "de": "Versicherung gewünscht"
               },
               "status": "USER_OPTIONAL",
               "type": "checkbox"
@@ -1510,7 +1694,8 @@
               "key": "security_status",
               "label": {
                 "nl": "Security status / SCI-code",
-                "en": "Security status / SCI code"
+                "en": "Security status / SCI code",
+                "de": "Security Status / SCI-Code"
               },
               "status": "CONDITIONAL",
               "type": "text"
@@ -1519,20 +1704,23 @@
               "key": "handling_information",
               "label": {
                 "nl": "Handling information",
-                "en": "Handling information"
+                "en": "Handling information",
+                "de": "Handling Information"
               },
               "status": "USER_OPTIONAL",
               "type": "textarea",
               "help": {
                 "nl": "Bij gevaarlijke stoffen: verwijzing naar de Shipper's Declaration en eventueel 'Cargo Aircraft Only'.",
-                "en": "For dangerous goods: reference to the Shipper's Declaration and 'Cargo Aircraft Only' where applicable."
+                "en": "For dangerous goods: reference to the Shipper's Declaration and 'Cargo Aircraft Only' where applicable.",
+                "de": "Bei Gefahrgut: Verweis auf die Shipper's Declaration und gegebenenfalls 'Cargo Aircraft Only'."
               }
             },
             {
               "key": "emergency_contact",
               "label": {
                 "nl": "Noodcontact (bij DG)",
-                "en": "Emergency contact (for DG)"
+                "en": "Emergency contact (for DG)",
+                "de": "Notfallkontakt (bei Gefahrgut)"
               },
               "status": "CONDITIONAL",
               "type": "text"
@@ -1541,7 +1729,8 @@
               "key": "awb_number",
               "label": {
                 "nl": "AWB-nummer (prefix + serienummer)",
-                "en": "AWB number (prefix + serial)"
+                "en": "AWB number (prefix + serial)",
+                "de": "AWB-Nummer (Prefix + Seriennummer)"
               },
               "status": "CARRIER_PROVIDED",
               "type": "text"
@@ -1550,7 +1739,8 @@
               "key": "issuing_agent",
               "label": {
                 "nl": "Issuing agent / IATA-agentcode",
-                "en": "Issuing agent / IATA agent code"
+                "en": "Issuing agent / IATA agent code",
+                "de": "Issuing Agent / IATA-Agentencode"
               },
               "status": "CARRIER_PROVIDED",
               "type": "text"
@@ -1560,11 +1750,13 @@
       ],
       "signature_note": {
         "nl": "AWB-nummer, tarieven, chargeable weight en carrier acceptance komen van de vervoerder en worden als carrier-provided gemarkeerd.",
-        "en": "AWB number, rates, chargeable weight and carrier acceptance come from the carrier and are marked carrier-provided."
+        "en": "AWB number, rates, chargeable weight and carrier acceptance come from the carrier and are marked carrier-provided.",
+        "de": "AWB-Nummer, Tarife, Chargeable Weight und Carrier Acceptance kommen vom Beförderer und sind als Angaben des Beförderers gekennzeichnet."
       },
       "legal_reference": {
         "nl": "IATA Resolution 600a/600b (Air Waybill); AWB wordt uitgegeven door vervoerder/expediteur",
-        "en": "IATA Resolution 600a/600b (Air Waybill); the AWB is issued by carrier/forwarder"
+        "en": "IATA Resolution 600a/600b (Air Waybill); the AWB is issued by carrier/forwarder",
+        "de": "IATA Resolution 600a/600b (Air Waybill); der AWB wird vom Beförderer/Spediteur ausgestellt"
       },
       "output_format": "pdf"
     },
@@ -1572,16 +1764,19 @@
       "key": "bl_si",
       "label": {
         "nl": "Bill of Lading / Sea Waybill Shipping Instructions",
-        "en": "Bill of Lading / Sea Waybill shipping instructions"
+        "en": "Bill of Lading / Sea Waybill shipping instructions",
+        "de": "Bill of Lading / Sea Waybill Shipping Instructions"
       },
       "short_label": {
         "nl": "B/L-instructies",
-        "en": "B/L instructions"
+        "en": "B/L instructions",
+        "de": "B/L-Anweisungen"
       },
       "category": "shipping_instructions",
       "issue_status": {
         "nl": "Shipping instructions — officiële B/L of Sea Waybill wordt door rederij uitgegeven",
-        "en": "Shipping instructions — official B/L or Sea Waybill is issued by the carrier"
+        "en": "Shipping instructions — official B/L or Sea Waybill is issued by the carrier",
+        "de": "Shipping Instructions — das amtliche B/L oder Sea Waybill wird von der Reederei ausgestellt"
       },
       "exporter": "generic",
       "dg_profile": null,
@@ -1599,14 +1794,16 @@
           "key": "bl_details",
           "label": {
             "nl": "B/L-instructiegegevens",
-            "en": "B/L instruction details"
+            "en": "B/L instruction details",
+            "de": "Angaben zu den B/L-Anweisungen"
           },
           "fields": [
             {
               "key": "document_form",
               "label": {
                 "nl": "Gewenste documentvorm",
-                "en": "Requested document form"
+                "en": "Requested document form",
+                "de": "Gewünschte Dokumentform"
               },
               "status": "USER_REQUIRED",
               "type": "select",
@@ -1615,21 +1812,24 @@
                   "value": "original_bl",
                   "label": {
                     "nl": "Original Bill of Lading",
-                    "en": "Original Bill of Lading"
+                    "en": "Original Bill of Lading",
+                    "de": "Original Bill of Lading"
                   }
                 },
                 {
                   "value": "sea_waybill",
                   "label": {
                     "nl": "Sea Waybill",
-                    "en": "Sea Waybill"
+                    "en": "Sea Waybill",
+                    "de": "Sea Waybill"
                   }
                 },
                 {
                   "value": "carrier_decides",
                   "label": {
                     "nl": "Nog te bepalen door carrier",
-                    "en": "To be decided by carrier"
+                    "en": "To be decided by carrier",
+                    "de": "Von der Reederei noch festzulegen"
                   }
                 }
               ]
@@ -1638,7 +1838,8 @@
               "key": "order_clause",
               "label": {
                 "nl": "Order-clausule (bij order-B/L)",
-                "en": "Order clause (for order B/L)"
+                "en": "Order clause (for order B/L)",
+                "de": "Orderklausel (bei Order-B/L)"
               },
               "status": "CONDITIONAL",
               "type": "select",
@@ -1647,28 +1848,32 @@
                   "value": "",
                   "label": {
                     "nl": "Niet van toepassing",
-                    "en": "Not applicable"
+                    "en": "Not applicable",
+                    "de": "Nicht zutreffend"
                   }
                 },
                 {
                   "value": "to_order_of_shipper",
                   "label": {
                     "nl": "To order of shipper",
-                    "en": "To order of shipper"
+                    "en": "To order of shipper",
+                    "de": "To order of shipper"
                   }
                 },
                 {
                   "value": "to_order_of_bank",
                   "label": {
                     "nl": "To order of named bank",
-                    "en": "To order of named bank"
+                    "en": "To order of named bank",
+                    "de": "To order of named bank"
                   }
                 },
                 {
                   "value": "to_order_named_party",
                   "label": {
                     "nl": "Specifieke orderpartij",
-                    "en": "Named order party"
+                    "en": "Named order party",
+                    "de": "Bestimmte Orderpartei"
                   }
                 }
               ]
@@ -1677,7 +1882,8 @@
               "key": "originals_count",
               "label": {
                 "nl": "Aantal originele exemplaren",
-                "en": "Number of originals"
+                "en": "Number of originals",
+                "de": "Anzahl der Originale"
               },
               "status": "CONDITIONAL",
               "type": "number"
@@ -1686,7 +1892,8 @@
               "key": "freight_payment",
               "label": {
                 "nl": "Vracht prepaid of collect",
-                "en": "Freight prepaid or collect"
+                "en": "Freight prepaid or collect",
+                "de": "Fracht prepaid oder collect"
               },
               "status": "USER_REQUIRED",
               "type": "select",
@@ -1695,14 +1902,16 @@
                   "value": "prepaid",
                   "label": {
                     "nl": "Prepaid",
-                    "en": "Prepaid"
+                    "en": "Prepaid",
+                    "de": "Prepaid"
                   }
                 },
                 {
                   "value": "collect",
                   "label": {
                     "nl": "Collect",
-                    "en": "Collect"
+                    "en": "Collect",
+                    "de": "Collect"
                   }
                 }
               ]
@@ -1711,7 +1920,8 @@
               "key": "service_contract",
               "label": {
                 "nl": "Service contract number",
-                "en": "Service contract number"
+                "en": "Service contract number",
+                "de": "Service Contract Number"
               },
               "status": "CONDITIONAL",
               "type": "text"
@@ -1720,7 +1930,8 @@
               "key": "container_number",
               "label": {
                 "nl": "Containernummer",
-                "en": "Container number"
+                "en": "Container number",
+                "de": "Containernummer"
               },
               "status": "OPERATIONAL",
               "type": "text"
@@ -1729,7 +1940,8 @@
               "key": "container_size_type",
               "label": {
                 "nl": "Containermaat en -type",
-                "en": "Container size and type"
+                "en": "Container size and type",
+                "de": "Containergröße und -typ"
               },
               "status": "USER_OPTIONAL",
               "type": "text"
@@ -1738,7 +1950,8 @@
               "key": "container_ownership",
               "label": {
                 "nl": "Container eigendom",
-                "en": "Container ownership"
+                "en": "Container ownership",
+                "de": "Containereigentum"
               },
               "status": "USER_OPTIONAL",
               "type": "select",
@@ -1747,21 +1960,24 @@
                   "value": "",
                   "label": {
                     "nl": "Onbekend",
-                    "en": "Unknown"
+                    "en": "Unknown",
+                    "de": "Unbekannt"
                   }
                 },
                 {
                   "value": "carrier_owned",
                   "label": {
                     "nl": "Carrier-owned",
-                    "en": "Carrier-owned"
+                    "en": "Carrier-owned",
+                    "de": "Carrier-owned"
                   }
                 },
                 {
                   "value": "shipper_owned",
                   "label": {
                     "nl": "Shipper-owned",
-                    "en": "Shipper-owned"
+                    "en": "Shipper-owned",
+                    "de": "Shipper-owned"
                   }
                 }
               ]
@@ -1770,7 +1986,8 @@
               "key": "seal_numbers",
               "label": {
                 "nl": "Zegelnummer(s)",
-                "en": "Seal number(s)"
+                "en": "Seal number(s)",
+                "de": "Plombennummer(n)"
               },
               "status": "OPERATIONAL",
               "type": "text"
@@ -1779,7 +1996,8 @@
               "key": "hs_code",
               "label": {
                 "nl": "HS-code goederen",
-                "en": "HS code of goods"
+                "en": "HS code of goods",
+                "de": "HS-Code der Güter"
               },
               "status": "CONDITIONAL",
               "type": "text"
@@ -1788,7 +2006,8 @@
               "key": "vgm_reference",
               "label": {
                 "nl": "VGM-referentie",
-                "en": "VGM reference"
+                "en": "VGM reference",
+                "de": "VGM-Referenz"
               },
               "status": "CONDITIONAL",
               "type": "text"
@@ -1797,7 +2016,8 @@
               "key": "temperature_settings",
               "label": {
                 "nl": "Temperatuur/ventilatie (reefer)",
-                "en": "Temperature/ventilation (reefer)"
+                "en": "Temperature/ventilation (reefer)",
+                "de": "Temperatur/Belüftung (Reefer)"
               },
               "status": "CONDITIONAL",
               "type": "text"
@@ -1806,7 +2026,8 @@
               "key": "oog_dimensions",
               "label": {
                 "nl": "Out-of-gauge maten (over-height/width/length)",
-                "en": "Out-of-gauge dimensions (over-height/width/length)"
+                "en": "Out-of-gauge dimensions (over-height/width/length)",
+                "de": "Out-of-gauge-Maße (Über-Höhe/-Breite/-Länge)"
               },
               "status": "CONDITIONAL",
               "type": "text"
@@ -1815,7 +2036,8 @@
               "key": "ens_ics2_reference",
               "label": {
                 "nl": "ENS/ICS2- of andere filing-referentie",
-                "en": "ENS/ICS2 or other filing reference"
+                "en": "ENS/ICS2 or other filing reference",
+                "de": "ENS/ICS2- oder andere Filing-Referenz"
               },
               "status": "CONDITIONAL",
               "type": "text"
@@ -1825,11 +2047,13 @@
       ],
       "signature_note": {
         "nl": "Definitief B/L-nummer, vessel/voyage, on-board date, carrier clauses en release status komen van de rederij.",
-        "en": "Final B/L number, vessel/voyage, on-board date, carrier clauses and release status come from the carrier."
+        "en": "Final B/L number, vessel/voyage, on-board date, carrier clauses and release status come from the carrier.",
+        "de": "Endgültige B/L-Nummer, Vessel/Voyage, On-board-Datum, Carrier Clauses und Release Status kommen von der Reederei."
       },
       "legal_reference": {
         "nl": "Hague-Visby Rules / Rotterdam Rules (afhankelijk van traject); B/L wordt uitgegeven door de rederij",
-        "en": "Hague-Visby Rules / Rotterdam Rules (depending on trade); the B/L is issued by the carrier"
+        "en": "Hague-Visby Rules / Rotterdam Rules (depending on trade); the B/L is issued by the carrier",
+        "de": "Haager-Visby-Regeln / Rotterdam-Regeln (je nach Fahrtgebiet); das B/L wird von der Reederei ausgestellt"
       },
       "output_format": "pdf"
     },
@@ -1837,16 +2061,19 @@
       "key": "avc_waybill",
       "label": {
         "nl": "AVC-vrachtbrief (binnenlands wegvervoer)",
-        "en": "AVC waybill (domestic road carriage)"
+        "en": "AVC waybill (domestic road carriage)",
+        "de": "AVC-Frachtbrief (innerstaatlicher Straßengüterverkehr, Niederlande)"
       },
       "short_label": {
         "nl": "AVC",
-        "en": "AVC"
+        "en": "AVC",
+        "de": "AVC"
       },
       "category": "prepared",
       "issue_status": {
         "nl": "Het officiële sVa-vrachtbriefformulier (Stichting Vervoeradres) wordt ingevuld — vervoerdersgegevens en handtekeningen worden bij afgifte aangevuld",
-        "en": "The official sVa waybill form (Stichting Vervoeradres) is filled in — carrier details and signatures are completed on handover"
+        "en": "The official sVa waybill form (Stichting Vervoeradres) is filled in — carrier details and signatures are completed on handover",
+        "de": "Das amtliche sVa-Frachtbriefformular (Stichting Vervoeradres) wird ausgefüllt — Angaben des Frachtführers und Unterschriften werden bei der Übergabe ergänzt"
       },
       "exporter": "avc",
       "dg_profile": "ADR",
@@ -1861,14 +2088,16 @@
           "key": "avc_details",
           "label": {
             "nl": "Vrachtbriefgegevens",
-            "en": "Waybill details"
+            "en": "Waybill details",
+            "de": "Frachtbriefangaben"
           },
           "fields": [
             {
               "key": "carrier_name",
               "label": {
                 "nl": "Vervoerder",
-                "en": "Carrier"
+                "en": "Carrier",
+                "de": "Frachtführer"
               },
               "status": "CARRIER_PROVIDED",
               "type": "text"
@@ -1877,7 +2106,8 @@
               "key": "carrier_address",
               "label": {
                 "nl": "Adres vervoerder",
-                "en": "Carrier address"
+                "en": "Carrier address",
+                "de": "Anschrift des Frachtführers"
               },
               "status": "CARRIER_PROVIDED",
               "type": "textarea"
@@ -1886,7 +2116,8 @@
               "key": "freight_payment",
               "label": {
                 "nl": "Frankeringsvoorschrift",
-                "en": "Franking instruction"
+                "en": "Franking instruction",
+                "de": "Frachtzahlungsanweisung"
               },
               "status": "USER_REQUIRED",
               "type": "select",
@@ -1895,14 +2126,16 @@
                   "value": "franco",
                   "label": {
                     "nl": "Franco",
-                    "en": "Franco (prepaid)"
+                    "en": "Franco (prepaid)",
+                    "de": "Franco (frei)"
                   }
                 },
                 {
                   "value": "niet franco",
                   "label": {
                     "nl": "Niet franco",
-                    "en": "Not franco (collect)"
+                    "en": "Not franco (collect)",
+                    "de": "Nicht franco (unfrei)"
                   }
                 }
               ]
@@ -1911,7 +2144,8 @@
               "key": "vehicle_registration",
               "label": {
                 "nl": "Kenteken voertuig",
-                "en": "Vehicle registration"
+                "en": "Vehicle registration",
+                "de": "Amtliches Kennzeichen"
               },
               "status": "OPERATIONAL",
               "type": "text"
@@ -1920,7 +2154,8 @@
               "key": "loading_date",
               "label": {
                 "nl": "Datum van afzending",
-                "en": "Date of dispatch"
+                "en": "Date of dispatch",
+                "de": "Versanddatum"
               },
               "status": "USER_REQUIRED",
               "type": "date"
@@ -1929,7 +2164,8 @@
               "key": "emergency_contact",
               "label": {
                 "nl": "Noodcontact (bij gevaarlijke stoffen)",
-                "en": "Emergency contact (dangerous goods)"
+                "en": "Emergency contact (dangerous goods)",
+                "de": "Notfallkontakt (bei Gefahrgut)"
               },
               "status": "CONDITIONAL",
               "type": "text"
@@ -1940,22 +2176,26 @@
       "fixed_texts": [
         {
           "nl": "Het vervoer geschiedt op de door sVa / Stichting Vervoeradres ter griffie van de arrondissementsrechtbank te Amsterdam en Rotterdam gedeponeerde Algemene Vervoercondities 2002, laatste versie.",
-          "en": "Carriage is subject to the General Transport Conditions 2002 (AVC 2002), latest version, filed by sVa / Stichting Vervoeradres with the district courts of Amsterdam and Rotterdam."
+          "en": "Carriage is subject to the General Transport Conditions 2002 (AVC 2002), latest version, filed by sVa / Stichting Vervoeradres with the district courts of Amsterdam and Rotterdam.",
+          "de": "Die Beförderung erfolgt zu den von sVa / Stichting Vervoeradres bei den Bezirksgerichten Amsterdam und Rotterdam hinterlegten Allgemeinen Beförderungsbedingungen 2002 (AVC 2002) in der jeweils letzten Fassung."
         }
       ],
       "signature_note": {
         "nl": "De handtekening van de vervoerder en het ontvangstbewijs van de geadresseerde blijven leeg; die worden bij afgifte respectievelijk aflevering gezet.",
-        "en": "The carrier's signature and the consignee's receipt remain blank; these are signed on handover and delivery respectively."
+        "en": "The carrier's signature and the consignee's receipt remain blank; these are signed on handover and delivery respectively.",
+        "de": "Die Unterschrift des Frachtführers und die Empfangsbestätigung des Empfängers bleiben leer; sie werden bei der Übergabe beziehungsweise bei der Ablieferung geleistet."
       },
       "legal_reference": {
         "nl": "Algemene Vervoercondities 2002 (AVC 2002) en boek 8 BW; bij gevaarlijke stoffen tevens ADR 5.4.1 — de vrachtbrief geldt als vervoersdocument zolang de omschrijving van 5.4.1.1.1 erop staat",
-        "en": "General Transport Conditions 2002 (AVC 2002) and Book 8 of the Dutch Civil Code; for dangerous goods also ADR 5.4.1 — the waybill serves as the transport document as long as it carries the 5.4.1.1.1 description"
+        "en": "General Transport Conditions 2002 (AVC 2002) and Book 8 of the Dutch Civil Code; for dangerous goods also ADR 5.4.1 — the waybill serves as the transport document as long as it carries the 5.4.1.1.1 description",
+        "de": "Allgemeine Beförderungsbedingungen 2002 (AVC 2002) und Buch 8 des niederländischen Bürgerlichen Gesetzbuchs; bei Gefahrgut zusätzlich ADR 5.4.1 — der Frachtbrief gilt als Beförderungspapier, solange die Angabe nach 5.4.1.1.1 darauf steht"
       },
       "official_templates": [
         {
           "label": {
             "nl": "sVa / Stichting Vervoeradres — de vrachtbrief, goed geregeld",
-            "en": "sVa / Stichting Vervoeradres — the waybill explained"
+            "en": "sVa / Stichting Vervoeradres — the waybill explained",
+            "de": "sVa / Stichting Vervoeradres — der Frachtbrief erklärt"
           },
           "url": "https://www.sva.nl/"
         }
@@ -1965,16 +2205,19 @@
       "key": "adn_transport_doc",
       "label": {
         "nl": "ADN-vervoersdocument (binnenvaart)",
-        "en": "ADN transport document (inland waterway)"
+        "en": "ADN transport document (inland waterway)",
+        "de": "ADN-Beförderungspapier (Binnenschifffahrt)"
       },
       "short_label": {
         "nl": "ADN",
-        "en": "ADN"
+        "en": "ADN",
+        "de": "ADN"
       },
       "category": "generated",
       "issue_status": {
         "nl": "Vervoersdocument gevaarlijke stoffen — eigen CargoPilot-opmaak",
-        "en": "Dangerous goods transport document — CargoPilot layout"
+        "en": "Dangerous goods transport document — CargoPilot layout",
+        "de": "Beförderungspapier für gefährliche Güter — eigenes CargoPilot-Layout"
       },
       "exporter": "generic",
       "dg_profile": "ADN",
@@ -1990,14 +2233,16 @@
           "key": "adn_details",
           "label": {
             "nl": "ADN-gegevens",
-            "en": "ADN details"
+            "en": "ADN details",
+            "de": "ADN-Angaben"
           },
           "fields": [
             {
               "key": "vessel_name",
               "label": {
                 "nl": "Scheepsnaam",
-                "en": "Vessel name"
+                "en": "Vessel name",
+                "de": "Schiffsname"
               },
               "status": "OPERATIONAL",
               "type": "text"
@@ -2006,7 +2251,8 @@
               "key": "emergency_contact",
               "label": {
                 "nl": "Noodcontact",
-                "en": "Emergency contact"
+                "en": "Emergency contact",
+                "de": "Notfallkontakt"
               },
               "status": "USER_REQUIRED",
               "type": "text"
@@ -2015,7 +2261,8 @@
               "key": "established_place",
               "label": {
                 "nl": "Plaats van opmaak",
-                "en": "Established in"
+                "en": "Established in",
+                "de": "Ausgefertigt in"
               },
               "status": "USER_REQUIRED",
               "type": "text"
@@ -2024,7 +2271,8 @@
               "key": "established_date",
               "label": {
                 "nl": "Datum van opmaak",
-                "en": "Date established"
+                "en": "Date established",
+                "de": "Ausfertigungsdatum"
               },
               "status": "USER_REQUIRED",
               "type": "date"
@@ -2034,17 +2282,20 @@
       ],
       "signature_note": {
         "nl": "De gevaarlijke-stoffenomschrijving volgt uit de gevaarlijke-stoffenstap en actuele, gecontroleerde data (ADN).",
-        "en": "The dangerous goods description follows from the dangerous goods step and current, controlled data (ADN)."
+        "en": "The dangerous goods description follows from the dangerous goods step and current, controlled data (ADN).",
+        "de": "Die Gefahrgutangabe ergibt sich aus dem Gefahrgutschritt und aus aktuellen, geprüften Daten (ADN)."
       },
       "legal_reference": {
         "nl": "ADN 2025 sectie 5.4.1 (vervoersdocument)",
-        "en": "ADN 2025 section 5.4.1 (transport document)"
+        "en": "ADN 2025 section 5.4.1 (transport document)",
+        "de": "ADN 2025 Abschnitt 5.4.1 (Beförderungspapier)"
       },
       "official_templates": [
         {
           "label": {
             "nl": "UNECE ADN (officiële tekst)",
-            "en": "UNECE ADN (official text)"
+            "en": "UNECE ADN (official text)",
+            "de": "UNECE ADN (amtlicher Text)"
           },
           "url": "https://unece.org/transport/dangerous-goods"
         }
@@ -2052,7 +2303,8 @@
       "fixed_texts": [
         {
           "nl": "Omschrijving per positie volgens ADN 5.4.1.1.1: UN-nummer, juiste vervoersnaam (technische naam tussen haakjes indien vereist), gevarenklasse(n), verpakkingsgroep.",
-          "en": "Description per entry according to ADN 5.4.1.1.1: UN number, proper shipping name (technical name in brackets where required), hazard class(es), packing group."
+          "en": "Description per entry according to ADN 5.4.1.1.1: UN number, proper shipping name (technical name in brackets where required), hazard class(es), packing group.",
+          "de": "Angabe je Eintragung nach ADN 5.4.1.1.1: UN-Nummer, offizielle Benennung für die Beförderung (technische Benennung in Klammern, soweit verlangt), Gefahrklasse(n), Verpackungsgruppe."
         }
       ],
       "output_format": "pdf"
@@ -2061,16 +2313,19 @@
       "key": "packing_list",
       "label": {
         "nl": "Paklijst",
-        "en": "Packing list"
+        "en": "Packing list",
+        "de": "Packliste"
       },
       "short_label": {
         "nl": "Paklijst",
-        "en": "Packing list"
+        "en": "Packing list",
+        "de": "Packliste"
       },
       "category": "generated",
       "issue_status": {
         "nl": "Direct gegenereerd bedrijfsdocument",
-        "en": "Directly generated business document"
+        "en": "Directly generated business document",
+        "de": "Unmittelbar erzeugtes Geschäftsdokument"
       },
       "exporter": "generic",
       "dg_profile": null,
@@ -2085,14 +2340,16 @@
           "key": "packing_details",
           "label": {
             "nl": "Paklijstgegevens",
-            "en": "Packing list details"
+            "en": "Packing list details",
+            "de": "Angaben zur Packliste"
           },
           "fields": [
             {
               "key": "document_date",
               "label": {
                 "nl": "Datum",
-                "en": "Date"
+                "en": "Date",
+                "de": "Datum"
               },
               "status": "USER_REQUIRED",
               "type": "date"
@@ -2101,7 +2358,8 @@
               "key": "remarks",
               "label": {
                 "nl": "Opmerkingen",
-                "en": "Remarks"
+                "en": "Remarks",
+                "de": "Bemerkungen"
               },
               "status": "USER_OPTIONAL",
               "type": "textarea"
@@ -2115,16 +2373,19 @@
       "key": "delivery_note",
       "label": {
         "nl": "Afleverbon",
-        "en": "Delivery note"
+        "en": "Delivery note",
+        "de": "Lieferschein"
       },
       "short_label": {
         "nl": "Afleverbon",
-        "en": "Delivery note"
+        "en": "Delivery note",
+        "de": "Lieferschein"
       },
       "category": "generated",
       "issue_status": {
         "nl": "Direct gegenereerd bedrijfsdocument — ontvangstvelden blijven leeg",
-        "en": "Directly generated business document — receipt fields remain blank"
+        "en": "Directly generated business document — receipt fields remain blank",
+        "de": "Unmittelbar erzeugtes Geschäftsdokument — die Empfangsfelder bleiben leer"
       },
       "exporter": "generic",
       "dg_profile": null,
@@ -2139,14 +2400,16 @@
           "key": "delivery_details",
           "label": {
             "nl": "Aflevergegevens",
-            "en": "Delivery details"
+            "en": "Delivery details",
+            "de": "Lieferangaben"
           },
           "fields": [
             {
               "key": "delivery_address",
               "label": {
                 "nl": "Afleveradres",
-                "en": "Delivery address"
+                "en": "Delivery address",
+                "de": "Lieferanschrift"
               },
               "status": "USER_REQUIRED",
               "type": "textarea"
@@ -2155,7 +2418,8 @@
               "key": "document_date",
               "label": {
                 "nl": "Datum",
-                "en": "Date"
+                "en": "Date",
+                "de": "Datum"
               },
               "status": "USER_REQUIRED",
               "type": "date"
@@ -2164,7 +2428,8 @@
               "key": "remarks",
               "label": {
                 "nl": "Opmerkingen",
-                "en": "Remarks"
+                "en": "Remarks",
+                "de": "Bemerkungen"
               },
               "status": "USER_OPTIONAL",
               "type": "textarea"
@@ -2173,7 +2438,8 @@
               "key": "receiver_name",
               "label": {
                 "nl": "Naam ontvanger",
-                "en": "Receiver name"
+                "en": "Receiver name",
+                "de": "Name des Empfängers"
               },
               "status": "OPERATIONAL",
               "type": "text"
@@ -2182,7 +2448,8 @@
               "key": "receipt_confirmation",
               "label": {
                 "nl": "Ontvangstbevestiging (handtekening)",
-                "en": "Receipt confirmation (signature)"
+                "en": "Receipt confirmation (signature)",
+                "de": "Empfangsbestätigung (Unterschrift)"
               },
               "status": "SIGNATURE_REQUIRED",
               "type": "checkbox"

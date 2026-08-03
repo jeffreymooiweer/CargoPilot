@@ -451,7 +451,10 @@ export interface WizardFileParseResult {
   rows: string[][];
 }
 
-export type LocalizedText = { nl: string; en: string };
+/** Nederlands en Engels zijn er altijd; een derde taal kan in een register dat
+ *  van elders komt ontbreken. Gebruik `localised()` om er tekst uit te halen —
+ *  dat valt terug in plaats van niets te tonen. */
+export type LocalizedText = { nl: string; en: string; de?: string };
 
 export type FieldStatus =
   | "AUTO_DERIVED"

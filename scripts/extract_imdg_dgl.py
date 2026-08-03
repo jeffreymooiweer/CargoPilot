@@ -595,6 +595,9 @@ def main(argv: list[str] | None = None) -> int:
                         help="Per proefpagina tonen wat de parser werkelijk ziet")
     parser.add_argument("--min-agreement", type=float, default=0.95,
                         help="Onder deze overeenstemming wordt niets vastgelegd")
+    parser.add_argument("--show-un", default="",
+                        help="Deze UN-nummers voluit tonen, met de pagina waar "
+                             "ze vandaan komen — om een afwijking na te lopen")
     args = parser.parse_args(argv)
 
     path = args.pdf or download(SOURCE_URL, Path("/tmp/imdg_42_24.pdf"))
@@ -612,6 +615,13 @@ def main(argv: list[str] | None = None) -> int:
     print("\n--- eerste drie vermeldingen ---")
     for entry in entries[:3]:
         print(json.dumps(entry, ensure_ascii=False, indent=1))
+
+    wanted = {u.strip() for u in args.show_un.split(",") if u.strip()}
+    if wanted:
+        print("\n--- opgevraagde vermeldingen ---")
+        for entry in entries:
+            if entry.get("un_number") in wanted:
+                print(json.dumps(entry, ensure_ascii=False, indent=1))
 
     checks = cross_check(entries)
     print("\n--- zelfcontrole tegen onafhankelijke bronnen ---")

@@ -129,6 +129,23 @@ def test_a_continuation_line_can_extend_any_column():
     assert entries[0]["segregation"] == "SG6 SG16 SG17 SG36"
 
 
+def test_the_change_marker_starts_a_new_entry_and_is_kept_as_a_fact():
+    """42-24 zet een driehoekje voor elk gewijzigd UN-nummer, en de PDF levert
+    dat als één woord: "△1361". Zolang dat niet als UN-nummer gold, telde de
+    rij als vervolgregel en schoof zij bij de stof erboven naar binnen: UN 1360
+    kreeg "4.3 4.2 4.2 4.2" als klasse en vier EmS-codes achter elkaar."""
+    entries = dgl.merge_rows([
+        line(un_number="1360", proper_shipping_name="CALCIUM PHOSPHIDE",
+             **{"class": "4.3"}, ems="F-G, S-N"),
+        line(un_number="△1361", proper_shipping_name="CARBON",
+             **{"class": "4.2"}, ems="F-A, S-J"),
+    ])
+    assert [e["un_number"] for e in entries] == ["1360", "1361"]
+    assert entries[0]["class"] == "4.3"
+    assert entries[1]["amended"] == "42-24"
+    assert "amended" not in entries[0]
+
+
 def test_two_packing_groups_stay_two_entries():
     """UN 1361 staat twee keer in de lijst, één keer per verpakkingsgroep. Die
     mogen niet tot één regel samensmelten."""

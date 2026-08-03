@@ -104,11 +104,17 @@ BODY_TOP, BODY_BOTTOM = 150.0, 795.0
 # dus de rijbanden komen bij voorkeur van de getekende randen.
 LINE_TOLERANCE = 3.0
 
-UN_CELL = re.compile(r"^\d{4}$")
+# Een vermelding die 42-24 heeft gewijzigd draagt een driehoekje vóór het
+# UN-nummer, en PyMuPDF levert dat als één woord: "△1361". Werd dat niet
+# herkend, dan gold de rij als vervolgregel en schoof zij bij de stof erboven
+# naar binnen — UN 1360 kreeg zo "4.3 4.2 4.2 4.2" als klasse en de EmS-codes
+# van vier stoffen achter elkaar. Het teken is bovendien zelf een gegeven: het
+# wijst precies de vermeldingen aan die het amendement heeft aangeraakt.
+UN_CELL = re.compile(r"^([^\w\s]?)\s*(\d{4})$")
 
 # Een cel die met een UN-nummer begint maar doorloopt, betekent dat de tekst
 # over de kolomgrens heen is gelezen. Dat mag niet stilzwijgend passeren.
-UN_OVERFLOW = re.compile(r"^(\d{4})\s+\S")
+UN_OVERFLOW = re.compile(r"^[^\w\s]?\s*(\d{4})\s+\S")
 
 
 def download(url: str, target: Path, timeout: int = 600) -> Path:
@@ -321,8 +327,13 @@ def merge_rows(lines: list[dict[str, str]]) -> list[dict[str, str]]:
             # zodat de telling in extract() hem als overloop kan melden.
             entries.append({k: v for k, v in cells.items() if not k.startswith("_")})
             continue
-        if UN_CELL.match(first):
-            entries.append({k: v for k, v in cells.items() if not k.startswith("_")})
+        clean = UN_CELL.match(first)
+        if clean:
+            entry = {k: v for k, v in cells.items() if not k.startswith("_")}
+            entry["un_number"] = clean.group(2)
+            if clean.group(1):
+                entry["amended"] = "42-24"
+            entries.append(entry)
             continue
         if not entries:
             continue

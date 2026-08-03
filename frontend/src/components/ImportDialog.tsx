@@ -1,6 +1,7 @@
 import { useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { api } from "../api/client";
+import { api, ImportAnalysis, ImportMapping } from "../api/client";
+import ImportColumnMapping from "./ImportColumnMapping";
 
 const inputClass =
   "w-full border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-950 text-slate-900 dark:text-slate-100 rounded-xl px-3 py-2 font-mono text-sm min-h-[10rem] focus:border-brand-400 focus:outline-none focus:ring-2 focus:ring-brand-500/20 dark:focus:border-brand-500 sm:min-h-[12rem]";
@@ -38,6 +39,10 @@ export default function ImportDialog({ open, onClose, onImport }: Props) {
   const [mode, setMode] = useState<"append" | "replace">("replace");
   const [fileError, setFileError] = useState("");
   const [loadingFile, setLoadingFile] = useState(false);
+  // Wat de import van het bestand maakte, en de rijen om het opnieuw te kunnen
+  // indelen zonder het bestand nog eens te sturen.
+  const [analysis, setAnalysis] = useState<ImportAnalysis | null>(null);
+  const [rows, setRows] = useState<string[][]>([]);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   if (!open) return null;
@@ -49,11 +54,31 @@ export default function ImportDialog({ open, onClose, onImport }: Props) {
     try {
       const result = await api.parseWizardImportFile(file);
       setText(result.text);
+      setAnalysis(result.analysis);
+      setRows(result.rows);
     } catch (e) {
       setFileError(String(e));
     } finally {
       setLoadingFile(false);
       if (fileInputRef.current) fileInputRef.current.value = "";
+    }
+  };
+
+  // Dezelfde rijen, een andere indeling. De server bewaart niets, dus de
+  // rijen reizen mee — dat kost wat bandbreedte en levert op dat er nooit een
+  // halve zending op de server blijft liggen.
+  const handleRemap = async (mapping: ImportMapping, hasHeader: boolean) => {
+    if (rows.length === 0) return;
+    setFileError("");
+    setLoadingFile(true);
+    try {
+      const result = await api.remapWizardImport(rows, mapping, hasHeader);
+      setText(result.text);
+      setAnalysis(result.analysis);
+    } catch (e) {
+      setFileError(e instanceof Error ? e.message : String(e));
+    } finally {
+      setLoadingFile(false);
     }
   };
 
@@ -117,6 +142,9 @@ export default function ImportDialog({ open, onClose, onImport }: Props) {
         </div>
 
         <div className="space-y-3 px-4 py-4 sm:space-y-4 sm:px-6 sm:py-5">
+          {analysis && (
+            <ImportColumnMapping analysis={analysis} onChange={handleRemap} busy={loadingFile} />
+          )}
           <textarea className={inputClass} value={text} onChange={(e) => setText(e.target.value)} placeholder={t("wizard.paste")} />
 
           <div className="grid gap-2 sm:grid-cols-2">

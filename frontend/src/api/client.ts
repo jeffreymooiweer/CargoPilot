@@ -111,6 +111,11 @@ export const api = {
   importEquipmentFile: (file: File) => uploadFile<EquipmentImportResult>("/equipment/import", file),
   downloadWizardTemplate: () => downloadBlob("/import/wizard-template", "wizard_import_template.xlsx"),
   parseWizardImportFile: (file: File) => uploadFile<WizardFileParseResult>("/import/wizard-file", file),
+  remapWizardImport: (rows: string[][], mapping: ImportMapping, hasHeader: boolean) =>
+    request<WizardFileParseResult>("/import/wizard-remap", {
+      method: "POST",
+      body: JSON.stringify({ rows, mapping, has_header: hasHeader }),
+    }),
   catalogSearch: (q: string, limit = 25) =>
     request<{ results: CatalogSearchHit[] }>(`/catalog/search?q=${encodeURIComponent(q)}&limit=${limit}`),
   geoLocations: (q: string, types?: GeoLocationType[], limit = 8) =>
@@ -419,9 +424,31 @@ export interface EquipmentImportResult {
   errors: string[];
 }
 
+export interface ImportColumn {
+  index: number;
+  header: string;
+  samples: string[];
+}
+
+export interface ImportMapping {
+  description: number | null;
+  quantity: number | null;
+  unit: number | null;
+}
+
+export interface ImportAnalysis {
+  columns: ImportColumn[];
+  mapping: ImportMapping;
+  /** "header": de koptekst is herkend. "position": er is op volgorde geraden. */
+  source: "header" | "position" | "user" | "none";
+  has_header: boolean;
+}
+
 export interface WizardFileParseResult {
   text: string;
   has_header: boolean;
+  analysis: ImportAnalysis;
+  rows: string[][];
 }
 
 export type LocalizedText = { nl: string; en: string };

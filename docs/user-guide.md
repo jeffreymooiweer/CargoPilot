@@ -51,6 +51,17 @@ Columns are separated by a pipe (`|`) or a tab, in the order
 **Upload a file.** `.xlsx`, `.csv` or `.txt`. Download the template from the same dialog
 if you want the exact layout.
 
+Your file rarely has the template's layout, and it does not have to. CargoPilot reads the
+header row and works out which column is which. When it recognises the names it says so;
+when it does not, it guesses by position and **tells you it guessed**, in an amber panel
+above the text. Each dropdown shows what is actually in that column — `2. Benaming ·
+Stalen hoekprofiel 80x80x8x6000` rather than "column 2" — so you can see at a glance
+whether it picked the right one.
+
+Two things worth knowing there. A column you do not need can be left unmapped. And if
+your file starts with a header row that CargoPilot did not recognise, tick **first row is
+a header**, or that row is imported as a piece of cargo.
+
 ### What happens next
 
 CargoPilot reads each line and tries to recognise the material and any dimensions in it,

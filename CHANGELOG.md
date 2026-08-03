@@ -2,6 +2,35 @@
 
 All notable changes are documented here, following [Semantic Versioning](https://semver.org/).
 
+## [1.28.0] — 2026-08-03
+
+The spreadsheet import used to guess in silence.
+
+### Fixed
+
+- **An unrecognised header meant columns 0, 1 and 2, with no way to tell.** A file laid
+  out as `Ref | Benaming | Aant. | Eenh.` — none of those names are in the alias list —
+  came out with the reference numbers as descriptions, the descriptions as quantities,
+  and the header row imported as a cargo line. What a user saw of that was `status=error`
+  and 0 kg, with nothing pointing at the column layout.
+
+  The import still guesses, because the alternative is making every import manual. What
+  changed is that it says so, and hands over enough to put it right.
+
+### Added
+
+- **A column mapping panel.** Every column comes back with its header and its first few
+  values, so the dropdown reads `2. Benaming · Stalen hoekprofiel 80x80x8x6000` instead
+  of "column 2" — with an unrecognised header there is no name to show, so the values
+  have to do the work. A field can be left unmapped, and the first row can be marked as
+  a header, which is what stops it being imported as cargo.
+- The panel is amber when the layout was guessed and plain when the header was
+  recognised, so it is obvious which of the two you are looking at.
+- `POST /api/import/wizard-remap` applies a different mapping to the same rows. It is
+  separate from the upload because **nothing about the file is kept on the server**: the
+  rows travel with the request and come back as text. That costs some bandwidth and
+  buys never leaving half a shipment sitting on the server.
+
 ## [1.27.1] — 2026-08-03
 
 The Dangerous Goods List extractor checked itself against the UN cards, which are also

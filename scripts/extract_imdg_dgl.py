@@ -157,24 +157,40 @@ def boundaries(rules: list[float] | None = None) -> list[tuple[str, float, float
     return out
 
 
-def find_row_rules(page, tolerance: float = 2.5) -> list[float]:
+def find_row_rules(page, tolerance: float = 2.5, coverage: float = 0.4) -> list[float]:
     """De y-posities van de horizontale randen tussen de rijen.
 
-    Dezelfde redenering als bij de kolommen: de tabel tekent haar rijen af, en
-    die randen zijn nauwkeuriger dan elke afstandsmaat op de tekst. Een rand
-    die maar een halve kolom breed is hoort bij een deelvakje en scheidt geen
-    rijen.
+    Wat een rijrand is, hangt niet af van hoe zij getekend is. Eisen dat één
+    rechthoek de halve pagina beslaat vond er geen enkele — deze tabel zet haar
+    randen net als de kolomranden in stukjes per cel neer, en dan werd de hele
+    pagina één band met twaalf stoffen erin.
+
+    De maat die voor beide tekenwijzen klopt is hoeveel breedte alle stukjes op
+    dezelfde hoogte samen bestrijken: een echte rijrand loopt over de tabel,
+    of dat nu één lijn is of achttien. Een streepje binnen één cel niet.
     """
-    found: list[float] = []
+    spans: dict[float, float] = {}
+    widest = 0.0
     for drawing in page.get_drawings():
         rect = drawing["rect"]
-        if rect.height <= 2.0 and rect.width >= 300.0:
-            found.append(round((rect.y0 + rect.y1) / 2, 1))
-    merged: list[float] = []
-    for y in sorted(found):
-        if not merged or y - merged[-1] > tolerance:
-            merged.append(y)
-    return merged
+        if rect.height > 2.0 or rect.width <= 0:
+            continue
+        key = round((rect.y0 + rect.y1) / 2, 1)
+        spans[key] = spans.get(key, 0.0) + rect.width
+        widest = max(widest, rect.x1)
+    if not spans:
+        return []
+
+    merged: list[tuple[float, float]] = []
+    for y in sorted(spans):
+        if merged and y - merged[-1][0] <= tolerance:
+            previous, width = merged[-1]
+            merged[-1] = (previous, width + spans[y])
+        else:
+            merged.append((y, spans[y]))
+
+    needed = max(widest, 1.0) * coverage
+    return [y for y, width in merged if width >= needed]
 
 
 def _from_edges(edges: list[float]) -> list[tuple[str, float, float]]:
@@ -428,6 +444,16 @@ def diagnose(path: Path, pages: list[int]) -> None:
                                key=lambda w: (w[1], w[0]))[:25]:
                 print(f"    x{word[0]:8.1f} y{word[1]:8.1f}  {word[4]!r}")
 
+            horizontals: dict[float, float] = {}
+            for drawing in page.get_drawings():
+                rect = drawing["rect"]
+                if rect.height <= 2.0 and rect.width > 0:
+                    key = round((rect.y0 + rect.y1) / 2, 1)
+                    horizontals[key] = horizontals.get(key, 0.0) + rect.width
+            print(f"  horizontale stukjes op {len(horizontals)} hoogtes; "
+                  f"breedste dekking {max(horizontals.values(), default=0):.0f}")
+            widest = sorted(horizontals.items(), key=lambda kv: -kv[1])[:6]
+            print("    meest bedekt: " + ", ".join(f"y{y:.1f} w{w:.0f}" for y, w in widest))
             row_rules = find_row_rules(page)
             print(f"  horizontale randen: {len(row_rules)}")
             lines = page_lines(page, boundaries(find_rules(page)), row_rules)

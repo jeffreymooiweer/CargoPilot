@@ -239,9 +239,9 @@ def test_rules_that_fit_no_alignment_fall_back_to_the_estimate():
 class FakeHRect:
     """Een dunne horizontale rand rond een gegeven midden."""
 
-    def __init__(self, centre, width, height=0.7):
+    def __init__(self, centre, width, height=0.7, x0=40.0):
         self.y0, self.y1 = centre - height / 2, centre + height / 2
-        self.x0, self.x1 = 40.0, 40.0 + width
+        self.x0, self.x1 = x0, x0 + width
         self.width, self.height = width, height
 
 
@@ -257,10 +257,22 @@ class FakeWordPage:
         return [{"rect": r} for r in self._rects]
 
 
-def test_row_rules_come_from_wide_thin_rectangles():
+def test_row_rules_come_from_a_line_that_spans_the_table():
     page = FakeWordPage([], [FakeHRect(200.0, 1100.0), FakeHRect(260.0, 1100.0),
                              FakeHRect(230.0, 40.0)])  # deelvakje, geen rijrand
     assert dgl.find_row_rules(page) == [200.0, 260.0]
+
+
+def test_a_row_rule_drawn_in_pieces_counts_just_the_same():
+    """Deze tabel zet haar rijranden per cel neer, net als de kolomranden.
+    Eisen dat één rechthoek de halve pagina beslaat vond er nul, en toen werd
+    de hele pagina één band met twaalf stoffen erin. Wat telt is hoeveel
+    breedte de stukjes op dezelfde hoogte samen bestrijken."""
+    pieces = []
+    for y in (200.0, 260.0):
+        pieces += [FakeHRect(y, 60.0, x0=40.0 + 60 * n) for n in range(18)]
+    pieces.append(FakeHRect(230.0, 40.0, x0=300.0))  # streepje binnen één cel
+    assert dgl.find_row_rules(FakeWordPage([], pieces)) == [200.0, 260.0]
 
 
 def test_a_word_lands_in_the_band_its_y_falls_in():

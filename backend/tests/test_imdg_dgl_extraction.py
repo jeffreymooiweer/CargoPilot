@@ -435,6 +435,36 @@ def test_the_column_edges_still_come_out_of_the_same_rectangles():
     assert dgl.find_rules(page)[:3] == [65.0, 125.0, 185.0]
 
 
+def test_a_band_holding_several_short_entries_is_split_at_each_un_number():
+    """De getekende randen omranden een blók rijen zodra de vermeldingen kort
+    zijn. Op p627 zaten UN 1360, UN 1361 (twee verpakkingsgroepen) en UN 1362
+    zo in één band, en kwamen ze als één vermelding met klasse '4.3 4.2 4.2
+    4.2' naar buiten. Elke rij begint met een UN-nummer, dus daarboven hoort
+    een grens — ook waar de tabel er geen tekent."""
+    words = [
+        (49.0, 205.0, 62.0, 215.0, "1360", 0, 0, 0),
+        (200.0, 205.0, 212.0, 215.0, "4.3", 0, 0, 1),
+        (49.0, 225.0, 66.0, 235.0, "△1361", 0, 1, 0),
+        (200.0, 225.0, 212.0, 235.0, "4.2", 0, 1, 1),
+        (49.0, 245.0, 62.0, 255.0, "1362", 0, 2, 0),
+        (200.0, 245.0, 212.0, 255.0, "4.2", 0, 2, 1),
+    ]
+    page = FakeWordPage(words, [FakeVRect(65.2, 200.0, 280.0) for _ in range(18)])
+    entries = dgl.merge_rows(dgl.page_lines(page, BOUNDS,
+                                            dgl.row_rules_for(page, BOUNDS)))
+    assert [e["un_number"] for e in entries] == ["1360", "1361", "1362"]
+    assert [e["class"] for e in entries] == ["4.3", "4.2", "4.2"]
+
+
+def test_a_drawn_row_rule_and_a_un_number_do_not_make_two_boundaries():
+    """De getekende rand valt samen met het begin van de rij eronder. Twee
+    grenzen vlak na elkaar zouden een lege band tussen elke twee rijen
+    zetten."""
+    words = [(49.0, 202.0, 62.0, 212.0, "1360", 0, 0, 0)]
+    page = FakeWordPage(words, [FakeVRect(65.2, 200.0, 280.0) for _ in range(18)])
+    assert dgl.row_rules_for(page, BOUNDS) == [199.0, 280.0]
+
+
 def test_horizontal_rules_remain_the_fallback():
     """Een pagina zonder verticale segmenten mag alsnog op haar horizontale
     randen worden verdeeld."""

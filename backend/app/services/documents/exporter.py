@@ -1,4 +1,5 @@
 import os
+import re
 import tempfile
 from datetime import datetime
 from pathlib import Path
@@ -91,6 +92,10 @@ TEXTS = {
     "field_required": {
         "nl": "Verplicht veld ontbreekt",
         "en": "Required field missing",
+    },
+    "field_format": {
+        "nl": "Veld heeft niet de vereiste vorm",
+        "en": "Field does not have the required format",
     },
     "no_dg_lines": {
         "nl": "Dit document vereist gevaarlijke-stoffenregels, maar er zijn geen DG-posities.",
@@ -226,6 +231,13 @@ def _label(item: dict[str, Any], lang: str) -> str:
     return label.get(lang) or label.get("nl") or item.get("key", "")
 
 
+def _localised(value: Any, lang: str) -> str:
+    """Een {nl, en}-blokje uit het register in de gevraagde taal."""
+    if isinstance(value, dict):
+        return str(value.get(lang) or value.get("nl") or "")
+    return str(value or "")
+
+
 def _text(key: str, lang: str) -> Any:
     return TEXTS[key][lang]
 
@@ -251,11 +263,21 @@ def validate_document(
 
     for section in resolve_sections(document):
         for field in section.get("fields", []):
-            if field.get("status") != "USER_REQUIRED":
-                continue
             value = values.get(field["key"])
-            if value is None or str(value).strip() == "":
+            empty = value is None or str(value).strip() == ""
+            if field.get("status") == "USER_REQUIRED" and empty:
                 errors.append(f"{_text('field_required', lang)}: {_label(field, lang)}")
+                continue
+            # Een veld dat een vorm belooft moet die vorm ook hebben. Tot nu toe
+            # werd alleen op leeg gecontroleerd, dus "72" of "7208 51" kwam
+            # gewoon als NHM-code op een officiële vrachtbrief terecht.
+            pattern = field.get("pattern")
+            if pattern and not empty and not re.fullmatch(pattern, str(value).strip()):
+                errors.append(
+                    f"{_text('field_format', lang)}: {_label(field, lang)}"
+                    + (f" — {_localised(field.get('format_hint'), lang)}"
+                       if field.get("format_hint") else "")
+                )
 
     profile = document.get("dg_profile")
     if profile:

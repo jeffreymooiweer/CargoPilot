@@ -2,6 +2,33 @@
 
 All notable changes are documented here, following [Semantic Versioning](https://semver.org/).
 
+## [1.28.1] — 2026-08-03
+
+### Fixed
+
+- **A field that promises a format now has to keep it.** The export only ever checked
+  whether a required field was empty. The NHM commodity code on the CIM is labelled
+  "box 24, 6 digits", but `72` or `7208 51` passed straight through onto an official rail
+  consignment note. That is not cosmetic there: the carrier prices the shipment on that
+  code and customs reads it.
+
+  The check is generic — a `pattern` in the document registry — so the next field with a
+  fixed shape gets it without new code. An empty required field is still reported as
+  missing rather than as misformatted; sending someone twice to the same line for two
+  different reasons helps nobody.
+
+### Added
+
+- **`scripts/probe_nhm_sources.py`** and a workflow to run it. Box 24 wants a six-digit
+  NHM code and CargoPilot cannot supply a list, so the field says look it up elsewhere.
+  Inventing six-digit codes is not an option here, so this measures first: is a candidate
+  source reachable, does it carry six-digit codes *with* descriptions — a list of bare
+  numbers is useless to someone choosing one — and does it cover the goods CargoPilot
+  knows. The same order that worked for the Dangerous Goods List.
+
+  It records nothing. Until a source turns up that holds up, box 24 stays a free-text
+  field with a format check.
+
 ## [1.28.0] — 2026-08-03
 
 The spreadsheet import used to guess in silence.

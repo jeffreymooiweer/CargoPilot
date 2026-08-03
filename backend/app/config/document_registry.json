@@ -680,6 +680,11 @@
               "help": {
                 "nl": "De NHM-code kan niet betrouwbaar uit een vrije omschrijving worden afgeleid; zoek deze op in de NHM-lijst.",
                 "en": "The NHM code cannot be reliably derived from a free-text description; look it up in the NHM list."
+              },
+              "pattern": "\\d{6}",
+              "format_hint": {
+                "nl": "precies zes cijfers, bijvoorbeeld 720851",
+                "en": "exactly six digits, for example 720851"
               }
             },
             {

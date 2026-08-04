@@ -1,8 +1,8 @@
 # Stage 1: Frontend build
-FROM node:20-alpine AS frontend-build
+FROM node:22-alpine AS frontend-build
 WORKDIR /build
-COPY frontend/package.json frontend/package-lock.json* ./
-RUN npm install
+COPY frontend/package.json frontend/package-lock.json ./
+RUN npm ci --no-audit
 COPY frontend/ ./
 RUN npm run build
 
@@ -22,8 +22,8 @@ RUN useradd -m -u 1000 -s /bin/bash cargopilot
 
 WORKDIR /app
 
-COPY backend/requirements.txt ./requirements.txt
-RUN pip install -r requirements.txt
+COPY backend/requirements-runtime.txt ./requirements-runtime.txt
+RUN pip install -r requirements-runtime.txt && pip check
 
 COPY backend/ ./backend/
 COPY templates/ ./templates/

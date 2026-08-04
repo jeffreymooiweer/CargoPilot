@@ -23,6 +23,7 @@ class PrepareRequest(BaseModel):
     profiles: list[str] = Field(default_factory=list)
     language: str = "nl"
 
+
 _INSTRUCTIONS_PATH = Path(__file__).resolve().parents[2] / "config" / "dg_instructions.json"
 
 
@@ -81,8 +82,61 @@ def dg_prepare(payload: PrepareRequest, user: User = Depends(get_current_user)):
     return prepare_entries(payload.entries, payload.lines, payload.profiles, payload.language)
 
 
+def _q_check_status(outcome: dict, profiles: list[str], language: str) -> dict | None:
+    """Maak zichtbaar of de IATA Q-controle daadwerkelijk is uitgevoerd.
+
+    Geen ``q_values`` betekende tot nu toe zowel "Q is niet van toepassing" als
+    "de gebruiker heeft n en M niet ingevuld". Voor een documenthulpmiddel is
+    dat te stil: afwezigheid van een fout mag niet ogen als een geslaagde
+    hoeveelheidstoets. De status zegt daarom alleen wat de software weet; de
+    gebruiker bepaalt of 'all packed in one' van toepassing is.
+    """
+    if "IATA_DGR" not in {profile.upper() for profile in profiles}:
+        return None
+
+    q_values = outcome.get("q_values") or []
+    if q_values:
+        if any(item.get("status") == "exceeded" for item in q_values):
+            status = "exceeded"
+        elif any(item.get("status") == "incomplete" for item in q_values):
+            status = "incomplete"
+        else:
+            status = "checked"
+    else:
+        status = "not_checked"
+
+    messages = {
+        "nl": {
+            "checked": "De Q-controle is uitgevoerd voor de ingevoerde 'all packed in one'-gegevens.",
+            "incomplete": "De Q-controle is niet volledig: vul voor iedere deelnemende stof n en M groter dan nul in.",
+            "exceeded": "De berekende Q-waarde is groter dan 1.",
+            "not_checked": "Geen Q-controle uitgevoerd. Is 'all packed in one' van toepassing, vul dan per stof de nettohoeveelheid n en de maximaal toegestane hoeveelheid M in.",
+        },
+        "en": {
+            "checked": "The Q check was performed for the entered all-packed-in-one data.",
+            "incomplete": "The Q check is incomplete: enter n and M greater than zero for every participating substance.",
+            "exceeded": "The calculated Q value exceeds 1.",
+            "not_checked": "No Q check was performed. If all packed in one applies, enter net quantity n and maximum permitted quantity M for each substance.",
+        },
+        "de": {
+            "checked": "Die Q-Prüfung wurde für die eingegebenen All-packed-in-one-Daten durchgeführt.",
+            "incomplete": "Die Q-Prüfung ist unvollständig: Geben Sie für jeden beteiligten Stoff n und M größer als null ein.",
+            "exceeded": "Der berechnete Q-Wert ist größer als 1.",
+            "not_checked": "Keine Q-Prüfung durchgeführt. Falls All packed in one zutrifft, geben Sie je Stoff die Nettomenge n und die höchstzulässige Menge M ein.",
+        },
+    }
+    lang = language if language in messages else "en"
+    return {"status": status, "message": messages[lang][status]}
+
+
 @router.post("/compliance")
 def dg_compliance(payload: ComplianceRequest, user: User = Depends(get_current_user)):
     if not payload.entries:
         raise HTTPException(status_code=400, detail="entries required")
-    return check_compliance(payload.as_dicts(), payload.profile_names(), payload.language)
+
+    profiles = payload.profile_names()
+    outcome = check_compliance(payload.as_dicts(), profiles, payload.language)
+    q_status = _q_check_status(outcome, profiles, payload.language)
+    if q_status:
+        outcome["q_check_status"] = q_status
+    return outcome

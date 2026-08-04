@@ -4,6 +4,7 @@ These tests deliberately go through FastAPI's request validation. Unit tests of
 ``check_compliance`` cannot catch a profile name that the frontend sends but
 Pydantic rejects, or a profile accepted by Pydantic that the engine ignores.
 """
+from copy import deepcopy
 from types import SimpleNamespace
 
 from fastapi.testclient import TestClient
@@ -64,6 +65,7 @@ def test_the_exact_air_wizard_profile_reaches_the_iata_engine():
     assert body["profiles"] == ["IATA_DGR"]
     assert "iata_segregation" in body
     assert body["q_values"][0]["status"] == "ok"
+    assert body["q_check_status"]["status"] == "checked"
     assert "67e editie (2026)" in body["regulatory_manifest"]["editions"]["iata"]
 
 
@@ -87,6 +89,22 @@ def test_the_old_iata_alias_is_normalised_for_existing_clients():
     assert body["profiles"] == ["IATA_DGR"]
     assert "iata_segregation" in body
     assert "q_values" in body
+
+
+def test_missing_q_input_is_reported_instead_of_looking_passed():
+    payload = deepcopy(_payload(["IATA_DGR"]))
+    for product in payload["entries"][0]["products"]:
+        product.pop("q_net_quantity")
+        product.pop("q_max_net_quantity")
+
+    response = _post(payload)
+
+    assert response.status_code == 200, response.text
+    body = response.json()
+    assert body["q_check_status"]["status"] == "not_checked"
+    findings = body["iata_segregation"]
+    assert any(finding["rule"] == "IATA DGR 5.0.2.11 — Q" for finding in findings)
+    assert any(finding["severity"] == "warning" for finding in findings)
 
 
 def test_an_unknown_profile_is_rejected_instead_of_skipping_checks():

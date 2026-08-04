@@ -17,14 +17,15 @@ cd CargoPilot
 cp .env.example .env
 ```
 
-Open `.env` and set at least these two:
+Open `.env` and set one thing:
 
 | Setting | What to put there |
 |---|---|
-| `APP_SECRET_KEY` | Optional. Signs login sessions. Leave it empty and CargoPilot makes one on first start and keeps it in `DATA_DIR/secret_key`; set it only if you want to manage the key yourself. |
 | `ADMIN_PASSWORD` | The password for your first admin account. |
 
-A quick way to generate a secret key:
+Everything else has a working default, including `APP_SECRET_KEY`: leave it empty and
+CargoPilot generates a key on first start and keeps it in `DATA_DIR/secret_key`. Set it
+yourself only if you want to manage the key — to share it across instances, say:
 
 ```bash
 python3 -c "import secrets; print(secrets.token_urlsafe(48))"
@@ -47,8 +48,9 @@ Every other setting has a sensible default. If you want to change one, see
    manually.
 2. Map the volume `/mnt/user/appdata/cargopilot` → `/data`.
 3. Use the image `jeffersonmouze/cargopilot:latest`, or pin a specific version such as
-   `jeffersonmouze/cargopilot:v1.13.2`.
-4. Fill in `APP_SECRET_KEY` and the `ADMIN_*` variables.
+   `jeffersonmouze/cargopilot:v1.29.3`.
+4. Fill in the `ADMIN_*` variables. `APP_SECRET_KEY` may stay empty — it is generated on
+   first start and kept in `/data/secret_key`.
 5. Pick a WebUI port, for example `http://<server-ip>:9935`.
 
 **File permissions.** On startup the container sets the owner of `/data` to `PUID`/`PGID`
@@ -87,9 +89,21 @@ which happens at startup.
 > Docker images older than **v1.4.0** still contain an internal form that is not meant
 > for civilian use. Use `v1.4.0` or newer. To clean up old tags on Docker Hub, go to
 > GitHub → **Actions** → **Cleanup Docker Hub tags** → **Run workflow** and pass
-> `keep_tags`: `latest,v1.13.2,1.13.2`.
+> `keep_tags`: `latest,v1.29.3,1.29.3`.
 
 ## Troubleshooting
+
+**The container starts and immediately stops, and the log window closes before I can
+read it.**
+That is a known defect in **v1.25.0 up to and including v1.29.2**. Those versions refused
+to start when `APP_SECRET_KEY` was empty or still on its default and when
+`CORS_ALLOWED_ORIGINS` was `*` — which is exactly what they shipped with, and what the
+Unraid template passes through. The container exited before anything could be read.
+
+Update to **v1.29.3 or newer**; it generates a key for itself and starts. If you cannot
+update yet, set `APP_SECRET_KEY` to a long random value of your own and add
+`CORS_ALLOWED_ORIGINS` with the address you reach CargoPilot on, and the older version
+starts too.
 
 **The page loads but I cannot log in.**
 The admin account is only created when `ADMIN_USERNAME`, `ADMIN_EMAIL` *and*

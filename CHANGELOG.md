@@ -2,6 +2,44 @@
 
 All notable changes are documented here, following [Semantic Versioning](https://semver.org/).
 
+## [1.29.4] — 2026-08-04
+
+Documentation only. Nothing in the application changed.
+
+### Changed
+
+- **The docs caught up with the last few releases.** The interface badge and the goods
+  database still said Dutch and English; the paste box was described as reading Dutch or
+  English; the Unraid instructions still told you to fill in `APP_SECRET_KEY`, which is
+  now generated; the pinned example image and the Docker Hub cleanup tags still pointed at
+  v1.13.2; and the `/api/health` sample predated the `regulatory` block.
+
+- **Getting started now answers the question that actually came in.** "The container
+  starts and immediately stops, and the log window closes before I can read it" is a
+  troubleshooting entry, naming the affected versions (v1.25.0 – v1.29.2), the fix, and
+  what to set if you cannot update yet.
+
+- **The v1.25.0 changelog entry is marked as reverted** rather than left standing as
+  advice, and its dead link into `configuration.md` is repaired. The original wording is
+  kept, quoted, because a changelog is a record and not a place to quietly rewrite what
+  was said at the time.
+
+- **The user guide describes the language choice**, including the one thing that does not
+  follow it: the proper shipping name is prescribed per mode, so a sea or air document
+  stays English whatever the screen says.
+
+### Fixed
+
+- **A claim in the development notes was wrong, and testing it is what showed that.**
+  Both `docs/development.md` and `AGENTS.md` were about to say that `APP_ENV=development`
+  preserves `APP_SECRET_KEY=dev-secret`. It does not: a published key is replaced in every
+  environment, and `APP_ENV` only silences the CORS and admin-password warnings. The
+  generated key is stored and reused, so a developer is logged out once rather than at
+  every start. Both files now say that.
+
+- `ROADMAP.md` still listed German as a third interface language and the import column
+  mapping as planned; both shipped in v1.29.0 and v1.28.0.
+
 ## [1.29.3] — 2026-08-04
 
 **If you are on v1.25.0 or later and the container will not start, this is the release
@@ -378,11 +416,19 @@ whoever asked `/api/regulatory`. Someone making an air declaration in 2027 saw n
 
 ## [1.25.0] — 2026-08-03
 
-> [!IMPORTANT]
-> **Upgrading may stop your container on purpose.** If you never set `APP_SECRET_KEY`,
-> CargoPilot now refuses to start and tells you what to put there — including a
-> ready-made key. See [Configuration](docs/configuration.md#cargopilot-refuses-to-start-on-an-unsafe-configuration).
-> Changing the key logs everyone out; nothing else is lost.
+> [!CAUTION]
+> **Reverted in [1.29.3](#1293--2026-08-04). Do not run this version or anything up to
+> 1.29.2 unless you set `APP_SECRET_KEY` and `CORS_ALLOWED_ORIGINS` yourself.** What this
+> release introduced — refusing to start on a published or empty signing key — matched the
+> values CargoPilot itself shipped with, so installations that had not configured both by
+> hand simply died at startup. The signing key is generated automatically from 1.29.3
+> onwards; see [Configuration](docs/configuration.md#the-signing-key-looks-after-itself).
+>
+> The note as it read at the time:
+>
+> > **Upgrading may stop your container on purpose.** If you never set `APP_SECRET_KEY`,
+> > CargoPilot now refuses to start and tells you what to put there — including a
+> > ready-made key. Changing the key logs everyone out; nothing else is lost.
 
 ### Fixed
 

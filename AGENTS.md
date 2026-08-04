@@ -34,8 +34,16 @@ Non-obvious gotchas for running/testing:
   (pipe- or tab-separated), with dimensions embedded in the description, e.g.
   `Stalen hoekprofiel 80x80x8x6000 | 8 | stuks`. Free-text descriptions without
   dimensions yield `status=error` and 0 kg. The steel regression set totals ~7534 kg.
-- **Equipment library starts empty in v1.0.0.** Seed tests use generic `DEMO-*` items;
-  no operational equipment JSON ships with the repo.
+- **Equipment library starts empty.** Seed tests use generic `DEMO-*` items; no
+  operational equipment JSON ships with the repo.
+- **`APP_SECRET_KEY=dev-secret` is not actually used.** It is on the published-secrets
+  list, so the app replaces it with a generated key, stored in `DATA_DIR/secret_key` and
+  reused from then on. That happens in every environment — `APP_ENV=development` only
+  silences the CORS and admin-password warnings, it does not license signing tokens with
+  a published string. Delete `DATA_DIR/secret_key` and you are logged out once.
+- **Three interface languages.** Any new string goes into `frontend/src/i18n/nl.json`,
+  `en.json` *and* `de.json`, and any new `{nl, en}` block in the config or seed data
+  needs a `de`. `backend/tests/test_languages.py` fails otherwise.
 
 Example dev run (from repo root):
 
@@ -43,7 +51,8 @@ Example dev run (from repo root):
 # Backend
 cd backend
 DATABASE_URL=sqlite:////workspace/data/cargopilot.db DATA_DIR=/workspace/data \
-  APP_SECRET_KEY=dev-secret ADMIN_USERNAME=admin ADMIN_EMAIL=admin@example.local \
+  APP_ENV=development APP_SECRET_KEY=dev-secret \
+  ADMIN_USERNAME=admin ADMIN_EMAIL=admin@example.local \
   ADMIN_PASSWORD=cargopilot123 CATALOG_AUTO_SYNC=false \
   /workspace/.venv/bin/uvicorn app.main:app --reload --port 8080
 

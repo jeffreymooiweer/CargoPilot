@@ -37,7 +37,7 @@ function locationItem(loc: GeoLocation): PickItem {
 
 function usePickItems(fetcher: (q: string) => Promise<PickItem[]>, query: string, enabled: boolean) {
   const [items, setItems] = useState<PickItem[]>([]);
-  const timer = useRef<number>();
+  const timer = useRef<number | undefined>(undefined);
   const latest = useRef(0);
 
   useEffect(() => {

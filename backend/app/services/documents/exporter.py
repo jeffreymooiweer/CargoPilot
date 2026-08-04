@@ -495,7 +495,9 @@ def _dg_description(product: dict[str, Any], profile: str, values: dict[str, Any
     if subsidiary:
         hazard = f"{hazard} ({subsidiary})"
     parts = [_un_prefixed(product.get("un_number")), psn, hazard, str(product.get("packing_group") or "").strip()]
-    if profile in {"ADR", "RID", "ADN"}:
+    # Alleen ADR: de tunnelbeperkingscode is een wegconstructie (Tabel A kolom
+    # 15, 8.6, 5.4.1.1.1 (k)). Op een CIM of een ADN-document hoort hij niet.
+    if profile == "ADR":
         # Tunnelcode uit de UN-vermelding; een handmatige waarde gaat voor.
         tunnel = str(values.get("tunnel_restriction") or product.get("tunnel_code") or "").strip()
         if tunnel:

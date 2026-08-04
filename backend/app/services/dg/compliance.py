@@ -96,7 +96,37 @@ def _iter_products(entries: list[dict[str, Any]]):
             yield entry, index, product
 
 
-def check_adr_points(entries: list[dict[str, Any]], language: str = "nl") -> dict[str, Any]:
+#: Het weg-, spoor- en binnenvaartregime kennen alle drie een 1.1.3.6 en een
+#: samenladingshoofdstuk, maar het zijn niet dezelfde teksten. CargoPilot draagt
+#: de ADR-tabellen; die van RID en ADN staan er niet in. Dat stilzwijgend als
+#: "RID-uitkomst" presenteren is de gebruiker een zekerheid geven die er niet is,
+#: dus wordt de grondslag benoemd zodra hij afwijkt van het gekozen profiel.
+LAND_PROFILES = ("ADR", "RID", "ADN")
+
+BASIS_NOTE = {
+    "nl": "Berekend met de tabellen van het ADR. {other} kent een eigen "
+          "{section}; die staat niet in CargoPilot. Gebruik deze uitkomst als "
+          "indicatie en toets hem aan de tekst die voor jouw traject geldt.",
+    "en": "Computed with the ADR tables. {other} has its own {section}, which "
+          "CargoPilot does not hold. Treat this as indicative and check it "
+          "against the text that applies to your leg.",
+    "de": "Mit den Tabellen des ADR berechnet. {other} hat einen eigenen "
+          "{section}, den CargoPilot nicht enthält. Nehmen Sie das Ergebnis als "
+          "Anhaltspunkt und prüfen Sie es an dem für Ihre Strecke geltenden Text.",
+}
+
+
+def basis_note(profiles: list[str] | None, section: str, language: str) -> str | None:
+    """Melding wanneer een ADR-tabel voor RID of ADN wordt gebruikt."""
+    other = sorted({p.upper() for p in (profiles or [])} & {"RID", "ADN"})
+    if not other:
+        return None
+    return pick(BASIS_NOTE, language).format(other=" en ".join(other), section=section)
+
+
+def check_adr_points(
+    entries: list[dict[str, Any]], language: str = "nl", profiles: list[str] | None = None
+) -> dict[str, Any]:
     """ADR 1.1.3.6: punten per product, totaal en vrijstellingsstatus."""
     rules = get_compliance_rules()["adr_points"]
     lang = _lang(language)
@@ -157,10 +187,14 @@ def check_adr_points(entries: list[dict[str, Any]], language: str = "nl") -> dic
         "quantity_units_note": pick(rules["quantity_units"], lang),
         "exempt_provisions": pick(rules["exempt_provisions"], lang),
         "still_required": pick(rules["still_required"], lang),
+        "basis": "ADR 1.1.3.6",
+        "basis_note": basis_note(profiles, "1.1.3.6", language),
     }
 
 
-def check_adr_mixed_loading(entries: list[dict[str, Any]], language: str = "nl") -> list[dict[str, str]]:
+def check_adr_mixed_loading(
+    entries: list[dict[str, Any]], language: str = "nl", profiles: list[str] | None = None
+) -> list[dict[str, str]]:
     """ADR 7.5.2 / 7.5.4 (CV28): samenladingswaarschuwingen op klasseniveau."""
     rules = get_compliance_rules()["adr_mixed_loading"]
     lang = _lang(language)
@@ -1116,8 +1150,12 @@ def check_compliance(
         })
 
     if {"ADR", "RID", "ADN"} & normalized:
-        result["adr_points"] = check_adr_points(entries, language)
-        result["adr_mixed_loading"] = check_adr_mixed_loading(entries, language)
+        land = sorted({"ADR", "RID", "ADN"} & normalized)
+        result["adr_points"] = check_adr_points(entries, language, land)
+        result["adr_mixed_loading"] = check_adr_mixed_loading(entries, language, land)
+        note = basis_note(land, "7.5.2", language)
+        if note:
+            result["adr_mixed_loading_basis_note"] = note
 
     if "IMDG" in normalized:
         result["imdg_segregation"] = apply_column_16b_precedence(

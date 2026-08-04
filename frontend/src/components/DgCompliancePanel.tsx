@@ -148,6 +148,14 @@ export default function DgCompliancePanel({ entries, profiles }: Props) {
           )}
           <p className="text-[11px] text-slate-500 dark:text-slate-400">{adr.quantity_units_note}</p>
 
+          {/* Bij spoor en binnenvaart is met de ADR-tabellen gerekend. Dat mag
+              de gebruiker niet hoeven raden uit de kop "ADR 1.1.3.6". */}
+          {adr.basis_note && (
+            <p className="rounded-lg border border-amber-200 bg-amber-50 px-2 py-1.5 text-[11px] text-amber-800 dark:border-amber-900/50 dark:bg-amber-900/20 dark:text-amber-200">
+              {adr.basis_note}
+            </p>
+          )}
+
           {adr.status === "exempt_possible" && (
             <details className="text-xs text-slate-600 dark:text-slate-300">
               <summary className="cursor-pointer font-medium">{t("compliance.exemptDetails")}</summary>

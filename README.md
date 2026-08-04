@@ -96,6 +96,7 @@ Running Unraid, or want the full set of options? See **[Getting started](docs/ge
 | **[User guide](docs/user-guide.md)** | A walk through the app, from picking a transport mode to downloading your documents |
 | **[Documents](docs/documents.md)** | Every document CargoPilot produces, and which ones are official forms |
 | **[Dangerous goods](docs/dangerous-goods.md)** | What CargoPilot fills in automatically, and which checks it runs |
+| **[DG coverage](docs/dg-coverage.md)** | Per mode: what is checked, what is not, and which gaps matter most |
 | **[Configuration](docs/configuration.md)** | Environment variables and settings |
 | **[Data sources](docs/data-sources.md)** | Where the goods, location and regulatory data comes from |
 | **[Privacy](docs/privacy.md)** | What is stored, and what is deliberately not |

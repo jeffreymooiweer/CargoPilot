@@ -2,6 +2,39 @@
 
 All notable changes are documented here, following [Semantic Versioning](https://semver.org/).
 
+## [1.29.5] — 2026-08-04
+
+Road, rail and inland waterway were being treated as one regime. They are three.
+
+### Fixed
+
+- **The tunnel restriction code no longer appears on rail and inland waterway
+  documents.** It comes from column 15 of ADR Table A and belongs on the road document
+  under 5.4.1.1.1 (k). RID Table A has no such column and the ADN transport document does
+  not carry one — yet CargoPilot printed `(D/E)` on a CIM consignment note and on an ADN
+  document. That is not a missing check but wrong information the application added by
+  itself. The code is now written only when the ADR profile is selected. The CMR is
+  unaffected.
+
+### Changed
+
+- **A calculation now says which tables it was made with.** The 1.1.3.6 points and the
+  mixed loading of 7.5.2 are computed from the ADR tables. RID and ADN have their own
+  versions of those chapters and they are not in CargoPilot. Selecting RID or ADN gave an
+  outcome that silently read as *the RID outcome*. The compliance panel now carries a
+  note naming the basis, in all three interface languages. The numbers themselves are
+  unchanged — a road shipment sees no note, and 1200 points stay 1200 points.
+
+### Added
+
+- **`docs/dg-coverage.md`** — an assessment, per mode, of what CargoPilot actually checks
+  against what the regime requires, with the gaps ranked by how much damage the gap can
+  do. It separates what was read out of the code from what comes from knowledge of the
+  regimes, and marks the latter as unverified: the regulatory texts are not in this
+  repository and could not be consulted while writing it. Nothing in it is a citation, and
+  nothing in it should become a check before it has been verified against the published
+  text.
+
 ## [1.29.4] — 2026-08-04
 
 Documentation only. Nothing in the application changed.

@@ -18,7 +18,8 @@
     ],
     "language_labels": {
       "nl": "Staal",
-      "en": "Steel"
+      "en": "Steel",
+      "de": "Stahl"
     }
   },
   {
@@ -34,7 +35,8 @@
     ],
     "language_labels": {
       "nl": "RVS",
-      "en": "Stainless steel"
+      "en": "Stainless steel",
+      "de": "Edelstahl"
     }
   },
   {
@@ -48,7 +50,8 @@
     ],
     "language_labels": {
       "nl": "Aluminium",
-      "en": "Aluminium"
+      "en": "Aluminium",
+      "de": "Aluminium"
     }
   },
   {
@@ -62,7 +65,8 @@
     ],
     "language_labels": {
       "nl": "Koper",
-      "en": "Copper"
+      "en": "Copper",
+      "de": "Kupfer"
     }
   },
   {
@@ -75,7 +79,8 @@
     ],
     "language_labels": {
       "nl": "Messing",
-      "en": "Brass"
+      "en": "Brass",
+      "de": "Messing"
     }
   },
   {
@@ -88,7 +93,8 @@
     ],
     "language_labels": {
       "nl": "Beton",
-      "en": "Concrete"
+      "en": "Concrete",
+      "de": "Beton"
     }
   },
   {
@@ -105,7 +111,8 @@
     ],
     "language_labels": {
       "nl": "Gewapend beton",
-      "en": "Reinforced concrete"
+      "en": "Reinforced concrete",
+      "de": "Stahlbeton"
     }
   },
   {
@@ -122,7 +129,8 @@
     ],
     "language_labels": {
       "nl": "Hout",
-      "en": "Wood"
+      "en": "Wood",
+      "de": "Holz"
     }
   },
   {
@@ -136,7 +144,8 @@
     ],
     "language_labels": {
       "nl": "Hardhout",
-      "en": "Hardwood"
+      "en": "Hardwood",
+      "de": "Laubholz"
     }
   },
   {
@@ -150,7 +159,8 @@
     ],
     "language_labels": {
       "nl": "Plaatmateriaal",
-      "en": "Plywood"
+      "en": "Plywood",
+      "de": "Sperrholz"
     }
   },
   {
@@ -164,7 +174,8 @@
     ],
     "language_labels": {
       "nl": "PVC",
-      "en": "PVC"
+      "en": "PVC",
+      "de": "PVC"
     }
   },
   {
@@ -178,7 +189,8 @@
     ],
     "language_labels": {
       "nl": "PE",
-      "en": "PE"
+      "en": "PE",
+      "de": "PE"
     }
   },
   {
@@ -190,7 +202,8 @@
     ],
     "language_labels": {
       "nl": "PP",
-      "en": "PP"
+      "en": "PP",
+      "de": "PP"
     }
   },
   {
@@ -202,7 +215,8 @@
     ],
     "language_labels": {
       "nl": "POM",
-      "en": "POM"
+      "en": "POM",
+      "de": "POM"
     }
   },
   {
@@ -215,7 +229,8 @@
     ],
     "language_labels": {
       "nl": "Nylon",
-      "en": "Nylon"
+      "en": "Nylon",
+      "de": "Nylon (Polyamid)"
     }
   },
   {
@@ -229,7 +244,8 @@
     ],
     "language_labels": {
       "nl": "Plexiglas",
-      "en": "Acrylic"
+      "en": "Acrylic",
+      "de": "Acrylglas"
     }
   },
   {
@@ -242,7 +258,8 @@
     ],
     "language_labels": {
       "nl": "Zand",
-      "en": "Sand"
+      "en": "Sand",
+      "de": "Sand"
     }
   },
   {
@@ -257,7 +274,8 @@
     ],
     "language_labels": {
       "nl": "Grind",
-      "en": "Gravel"
+      "en": "Gravel",
+      "de": "Kies"
     }
   },
   {
@@ -271,7 +289,8 @@
     ],
     "language_labels": {
       "nl": "Zink",
-      "en": "Zinc"
+      "en": "Zinc",
+      "de": "Zink"
     }
   },
   {
@@ -285,7 +304,8 @@
     ],
     "language_labels": {
       "nl": "Lood",
-      "en": "Lead"
+      "en": "Lead",
+      "de": "Blei"
     }
   },
   {
@@ -298,7 +318,8 @@
     ],
     "language_labels": {
       "nl": "Tin",
-      "en": "Tin"
+      "en": "Tin",
+      "de": "Zinn"
     }
   },
   {
@@ -311,7 +332,8 @@
     ],
     "language_labels": {
       "nl": "Titanium",
-      "en": "Titanium"
+      "en": "Titanium",
+      "de": "Titan"
     }
   },
   {
@@ -324,7 +346,8 @@
     ],
     "language_labels": {
       "nl": "Nikkel",
-      "en": "Nickel"
+      "en": "Nickel",
+      "de": "Nickel"
     }
   },
   {
@@ -338,7 +361,8 @@
     ],
     "language_labels": {
       "nl": "Brons",
-      "en": "Bronze"
+      "en": "Bronze",
+      "de": "Bronze"
     }
   },
   {
@@ -353,7 +377,8 @@
     ],
     "language_labels": {
       "nl": "Gietijzer",
-      "en": "Cast iron"
+      "en": "Cast iron",
+      "de": "Gusseisen"
     }
   },
   {
@@ -365,7 +390,8 @@
     ],
     "language_labels": {
       "nl": "Magnesium",
-      "en": "Magnesium"
+      "en": "Magnesium",
+      "de": "Magnesium"
     }
   },
   {
@@ -384,7 +410,8 @@
     ],
     "language_labels": {
       "nl": "Staalschroot (los)",
-      "en": "Steel scrap (loose)"
+      "en": "Steel scrap (loose)",
+      "de": "Stahlschrott (lose)"
     },
     "notes": "Stortdichtheid los geladen schroot"
   },
@@ -401,7 +428,8 @@
     ],
     "language_labels": {
       "nl": "Aluminiumschroot (los)",
-      "en": "Aluminium scrap (loose)"
+      "en": "Aluminium scrap (loose)",
+      "de": "Aluminiumschrott (lose)"
     },
     "notes": "Stortdichtheid"
   },
@@ -418,7 +446,8 @@
     ],
     "language_labels": {
       "nl": "Cement (bulk)",
-      "en": "Cement (bulk)"
+      "en": "Cement (bulk)",
+      "de": "Zement (lose)"
     },
     "notes": "Stortdichtheid; zakken op pallet vergelijkbaar"
   },
@@ -435,7 +464,8 @@
     ],
     "language_labels": {
       "nl": "Cementklinker",
-      "en": "Cement clinker"
+      "en": "Cement clinker",
+      "de": "Zementklinker"
     }
   },
   {
@@ -454,7 +484,8 @@
     ],
     "language_labels": {
       "nl": "Droge mortel",
-      "en": "Dry mortar"
+      "en": "Dry mortar",
+      "de": "Trockenmörtel"
     }
   },
   {
@@ -470,7 +501,8 @@
     ],
     "language_labels": {
       "nl": "Kalk",
-      "en": "Lime"
+      "en": "Lime",
+      "de": "Kalk"
     },
     "notes": "Stortdichtheid poeder"
   },
@@ -487,7 +519,8 @@
     ],
     "language_labels": {
       "nl": "Gips",
-      "en": "Gypsum"
+      "en": "Gypsum",
+      "de": "Gips"
     },
     "notes": "Stortdichtheid poeder"
   },
@@ -507,7 +540,8 @@
     ],
     "language_labels": {
       "nl": "Gipsplaat",
-      "en": "Plasterboard"
+      "en": "Plasterboard",
+      "de": "Gipskartonplatte"
     }
   },
   {
@@ -525,7 +559,8 @@
     ],
     "language_labels": {
       "nl": "Cellenbeton",
-      "en": "Aerated concrete"
+      "en": "Aerated concrete",
+      "de": "Porenbeton"
     }
   },
   {
@@ -543,7 +578,8 @@
     ],
     "language_labels": {
       "nl": "Kalkzandsteen",
-      "en": "Sand-lime brick"
+      "en": "Sand-lime brick",
+      "de": "Kalksandstein"
     }
   },
   {
@@ -563,7 +599,8 @@
     ],
     "language_labels": {
       "nl": "Baksteen",
-      "en": "Clay brick"
+      "en": "Clay brick",
+      "de": "Ziegelstein"
     }
   },
   {
@@ -581,7 +618,8 @@
     ],
     "language_labels": {
       "nl": "Dakpannen",
-      "en": "Roof tiles"
+      "en": "Roof tiles",
+      "de": "Dachziegel"
     }
   },
   {
@@ -600,7 +638,8 @@
     ],
     "language_labels": {
       "nl": "Keramische tegels",
-      "en": "Ceramic tiles"
+      "en": "Ceramic tiles",
+      "de": "Keramikfliesen"
     }
   },
   {
@@ -620,7 +659,8 @@
     ],
     "language_labels": {
       "nl": "Betonklinkers / bestrating",
-      "en": "Concrete pavers"
+      "en": "Concrete pavers",
+      "de": "Betonpflastersteine"
     }
   },
   {
@@ -636,7 +676,8 @@
     ],
     "language_labels": {
       "nl": "Natuursteen",
-      "en": "Natural stone"
+      "en": "Natural stone",
+      "de": "Naturstein"
     }
   },
   {
@@ -651,7 +692,8 @@
     ],
     "language_labels": {
       "nl": "Graniet",
-      "en": "Granite"
+      "en": "Granite",
+      "de": "Granit"
     }
   },
   {
@@ -666,7 +708,8 @@
     ],
     "language_labels": {
       "nl": "Marmer",
-      "en": "Marble"
+      "en": "Marble",
+      "de": "Marmor"
     }
   },
   {
@@ -682,7 +725,8 @@
     ],
     "language_labels": {
       "nl": "Kalksteen (massief)",
-      "en": "Limestone (solid)"
+      "en": "Limestone (solid)",
+      "de": "Kalkstein (massiv)"
     }
   },
   {
@@ -698,7 +742,8 @@
     ],
     "language_labels": {
       "nl": "Kalksteen (gebroken)",
-      "en": "Limestone (crushed)"
+      "en": "Limestone (crushed)",
+      "de": "Kalkstein (gebrochen)"
     },
     "notes": "Stortdichtheid"
   },
@@ -715,7 +760,8 @@
     ],
     "language_labels": {
       "nl": "Leisteen",
-      "en": "Slate"
+      "en": "Slate",
+      "de": "Schiefer"
     }
   },
   {
@@ -730,7 +776,8 @@
     ],
     "language_labels": {
       "nl": "Zandsteen",
-      "en": "Sandstone"
+      "en": "Sandstone",
+      "de": "Sandstein"
     }
   },
   {
@@ -746,7 +793,8 @@
     ],
     "language_labels": {
       "nl": "Asfalt (verdicht)",
-      "en": "Asphalt (compacted)"
+      "en": "Asphalt (compacted)",
+      "de": "Asphalt (verdichtet)"
     }
   },
   {
@@ -762,7 +810,8 @@
     ],
     "language_labels": {
       "nl": "Freesasfalt",
-      "en": "Asphalt millings"
+      "en": "Asphalt millings",
+      "de": "Asphaltgranulat"
     },
     "notes": "Stortdichtheid"
   },
@@ -778,7 +827,8 @@
     ],
     "language_labels": {
       "nl": "Bitumen",
-      "en": "Bitumen"
+      "en": "Bitumen",
+      "de": "Bitumen"
     }
   },
   {
@@ -797,7 +847,8 @@
     ],
     "language_labels": {
       "nl": "Beton-/menggranulaat",
-      "en": "Crushed concrete"
+      "en": "Crushed concrete",
+      "de": "Betonbruch"
     },
     "notes": "Stortdichtheid"
   },
@@ -815,7 +866,8 @@
     ],
     "language_labels": {
       "nl": "Gestabiliseerd zand",
-      "en": "Stabilized sand"
+      "en": "Stabilized sand",
+      "de": "Stabilisierter Sand"
     }
   },
   {
@@ -831,7 +883,8 @@
     ],
     "language_labels": {
       "nl": "Klei / leem",
-      "en": "Clay / loam"
+      "en": "Clay / loam",
+      "de": "Ton / Lehm"
     },
     "notes": "Vochtig, gestort"
   },
@@ -851,7 +904,8 @@
     ],
     "language_labels": {
       "nl": "Grond / teelaarde",
-      "en": "Topsoil"
+      "en": "Topsoil",
+      "de": "Mutterboden"
     },
     "notes": "Stortdichtheid vochtig"
   },
@@ -868,7 +922,8 @@
     ],
     "language_labels": {
       "nl": "Turf / potgrond",
-      "en": "Peat / potting soil"
+      "en": "Peat / potting soil",
+      "de": "Torf / Blumenerde"
     }
   },
   {
@@ -885,7 +940,8 @@
     ],
     "language_labels": {
       "nl": "Geëxpandeerde kleikorrels",
-      "en": "Expanded clay aggregate"
+      "en": "Expanded clay aggregate",
+      "de": "Blähton"
     }
   },
   {
@@ -902,7 +958,8 @@
     ],
     "language_labels": {
       "nl": "Lavasteen",
-      "en": "Lava rock"
+      "en": "Lava rock",
+      "de": "Lavagestein"
     },
     "notes": "Stortdichtheid"
   },
@@ -922,7 +979,8 @@
     ],
     "language_labels": {
       "nl": "Glas (vlak)",
-      "en": "Glass (flat)"
+      "en": "Glass (flat)",
+      "de": "Flachglas"
     }
   },
   {
@@ -938,7 +996,8 @@
     ],
     "language_labels": {
       "nl": "Glaswol",
-      "en": "Glass wool"
+      "en": "Glass wool",
+      "de": "Glaswolle"
     }
   },
   {
@@ -956,7 +1015,8 @@
     ],
     "language_labels": {
       "nl": "Steenwol",
-      "en": "Rock wool"
+      "en": "Rock wool",
+      "de": "Steinwolle"
     }
   },
   {
@@ -975,7 +1035,8 @@
     ],
     "language_labels": {
       "nl": "EPS (piepschuim)",
-      "en": "EPS (expanded polystyrene)"
+      "en": "EPS (expanded polystyrene)",
+      "de": "EPS (expandiertes Polystyrol)"
     }
   },
   {
@@ -991,7 +1052,8 @@
     ],
     "language_labels": {
       "nl": "XPS",
-      "en": "XPS (extruded polystyrene)"
+      "en": "XPS (extruded polystyrene)",
+      "de": "XPS (extrudiertes Polystyrol)"
     }
   },
   {
@@ -1011,7 +1073,8 @@
     ],
     "language_labels": {
       "nl": "PIR/PUR-isolatie",
-      "en": "PIR/PUR insulation"
+      "en": "PIR/PUR insulation",
+      "de": "PIR/PUR-Dämmung"
     }
   },
   {
@@ -1027,7 +1090,8 @@
     ],
     "language_labels": {
       "nl": "Eiken",
-      "en": "Oak"
+      "en": "Oak",
+      "de": "Eiche"
     }
   },
   {
@@ -1043,7 +1107,8 @@
     ],
     "language_labels": {
       "nl": "Beuken",
-      "en": "Beech"
+      "en": "Beech",
+      "de": "Buche"
     }
   },
   {
@@ -1059,7 +1124,8 @@
     ],
     "language_labels": {
       "nl": "Berken",
-      "en": "Birch"
+      "en": "Birch",
+      "de": "Birke"
     }
   },
   {
@@ -1075,7 +1141,8 @@
     ],
     "language_labels": {
       "nl": "Essen",
-      "en": "Ash"
+      "en": "Ash",
+      "de": "Esche"
     }
   },
   {
@@ -1092,7 +1159,8 @@
     ],
     "language_labels": {
       "nl": "Lariks",
-      "en": "Larch"
+      "en": "Larch",
+      "de": "Lärche"
     }
   },
   {
@@ -1108,7 +1176,8 @@
     ],
     "language_labels": {
       "nl": "Douglas",
-      "en": "Douglas fir"
+      "en": "Douglas fir",
+      "de": "Douglasie"
     }
   },
   {
@@ -1123,7 +1192,8 @@
     ],
     "language_labels": {
       "nl": "Teak",
-      "en": "Teak"
+      "en": "Teak",
+      "de": "Teak"
     }
   },
   {
@@ -1139,7 +1209,8 @@
     ],
     "language_labels": {
       "nl": "Azobé",
-      "en": "Azobé"
+      "en": "Azobé",
+      "de": "Azobé (Bongossi)"
     },
     "notes": "Zinkt in water"
   },
@@ -1154,7 +1225,8 @@
     ],
     "language_labels": {
       "nl": "Meranti",
-      "en": "Meranti"
+      "en": "Meranti",
+      "de": "Meranti"
     }
   },
   {
@@ -1169,7 +1241,8 @@
     ],
     "language_labels": {
       "nl": "Bamboe",
-      "en": "Bamboo"
+      "en": "Bamboo",
+      "de": "Bambus"
     }
   },
   {
@@ -1185,7 +1258,8 @@
     ],
     "language_labels": {
       "nl": "Spaanplaat",
-      "en": "Chipboard"
+      "en": "Chipboard",
+      "de": "Spanplatte"
     }
   },
   {
@@ -1201,7 +1275,8 @@
     ],
     "language_labels": {
       "nl": "Houtpellets",
-      "en": "Wood pellets"
+      "en": "Wood pellets",
+      "de": "Holzpellets"
     },
     "notes": "Stortdichtheid"
   },
@@ -1219,7 +1294,8 @@
     ],
     "language_labels": {
       "nl": "Houtsnippers",
-      "en": "Wood chips"
+      "en": "Wood chips",
+      "de": "Hackschnitzel"
     },
     "notes": "Stortdichtheid"
   },
@@ -1236,7 +1312,8 @@
     ],
     "language_labels": {
       "nl": "Zaagsel",
-      "en": "Sawdust"
+      "en": "Sawdust",
+      "de": "Sägemehl"
     }
   },
   {
@@ -1253,7 +1330,8 @@
     ],
     "language_labels": {
       "nl": "Brandhout (gestapeld)",
-      "en": "Firewood (stacked)"
+      "en": "Firewood (stacked)",
+      "de": "Brennholz (gestapelt)"
     }
   },
   {
@@ -1267,7 +1345,8 @@
     ],
     "language_labels": {
       "nl": "Water",
-      "en": "Water"
+      "en": "Water",
+      "de": "Wasser"
     }
   },
   {
@@ -1284,7 +1363,8 @@
     ],
     "language_labels": {
       "nl": "Diesel",
-      "en": "Diesel"
+      "en": "Diesel",
+      "de": "Dieselkraftstoff"
     }
   },
   {
@@ -1302,7 +1382,8 @@
     ],
     "language_labels": {
       "nl": "Benzine",
-      "en": "Petrol"
+      "en": "Petrol",
+      "de": "Ottokraftstoff (Benzin)"
     }
   },
   {
@@ -1319,7 +1400,8 @@
     ],
     "language_labels": {
       "nl": "Kerosine / Jet A-1",
-      "en": "Kerosene / Jet A-1"
+      "en": "Kerosene / Jet A-1",
+      "de": "Kerosin / Jet A-1"
     }
   },
   {
@@ -1336,7 +1418,8 @@
     ],
     "language_labels": {
       "nl": "Zware stookolie",
-      "en": "Heavy fuel oil"
+      "en": "Heavy fuel oil",
+      "de": "Schweröl"
     }
   },
   {
@@ -1353,7 +1436,8 @@
     ],
     "language_labels": {
       "nl": "LPG (vloeibaar)",
-      "en": "LPG (liquid)"
+      "en": "LPG (liquid)",
+      "de": "Flüssiggas (LPG)"
     }
   },
   {
@@ -1371,7 +1455,8 @@
     ],
     "language_labels": {
       "nl": "Smeerolie / motorolie",
-      "en": "Lubricating oil"
+      "en": "Lubricating oil",
+      "de": "Schmieröl"
     }
   },
   {
@@ -1387,7 +1472,8 @@
     ],
     "language_labels": {
       "nl": "Hydrauliekolie",
-      "en": "Hydraulic oil"
+      "en": "Hydraulic oil",
+      "de": "Hydrauliköl"
     }
   },
   {
@@ -1402,7 +1488,8 @@
     ],
     "language_labels": {
       "nl": "Plantaardige olie",
-      "en": "Vegetable oil"
+      "en": "Vegetable oil",
+      "de": "Pflanzenöl"
     }
   },
   {
@@ -1416,7 +1503,8 @@
     ],
     "language_labels": {
       "nl": "Ethanol",
-      "en": "Ethanol"
+      "en": "Ethanol",
+      "de": "Ethanol"
     }
   },
   {
@@ -1428,7 +1516,8 @@
     ],
     "language_labels": {
       "nl": "Methanol",
-      "en": "Methanol"
+      "en": "Methanol",
+      "de": "Methanol"
     }
   },
   {
@@ -1443,7 +1532,8 @@
     ],
     "language_labels": {
       "nl": "AdBlue",
-      "en": "AdBlue (DEF)"
+      "en": "AdBlue (DEF)",
+      "de": "AdBlue (AUS 32)"
     }
   },
   {
@@ -1461,7 +1551,8 @@
     ],
     "language_labels": {
       "nl": "Glycol / antivries",
-      "en": "Glycol / antifreeze"
+      "en": "Glycol / antifreeze",
+      "de": "Glykol / Frostschutzmittel"
     }
   },
   {
@@ -1474,7 +1565,8 @@
     ],
     "language_labels": {
       "nl": "Aceton",
-      "en": "Acetone"
+      "en": "Acetone",
+      "de": "Aceton"
     }
   },
   {
@@ -1488,7 +1580,8 @@
     ],
     "language_labels": {
       "nl": "Zwavelzuur (96%)",
-      "en": "Sulfuric acid (96%)"
+      "en": "Sulfuric acid (96%)",
+      "de": "Schwefelsäure (96 %)"
     }
   },
   {
@@ -1501,7 +1594,8 @@
     ],
     "language_labels": {
       "nl": "Zoutzuur (30%)",
-      "en": "Hydrochloric acid (30%)"
+      "en": "Hydrochloric acid (30%)",
+      "de": "Salzsäure (30 %)"
     }
   },
   {
@@ -1516,7 +1610,8 @@
     ],
     "language_labels": {
       "nl": "Natronloog (50%)",
-      "en": "Caustic soda solution (50%)"
+      "en": "Caustic soda solution (50%)",
+      "de": "Natronlauge (50 %)"
     }
   },
   {
@@ -1534,7 +1629,8 @@
     ],
     "language_labels": {
       "nl": "Verf",
-      "en": "Paint"
+      "en": "Paint",
+      "de": "Farbe / Lack"
     }
   },
   {
@@ -1547,7 +1643,8 @@
     ],
     "language_labels": {
       "nl": "Melasse",
-      "en": "Molasses"
+      "en": "Molasses",
+      "de": "Melasse"
     }
   },
   {
@@ -1563,7 +1660,8 @@
     ],
     "language_labels": {
       "nl": "Ureum (korrels)",
-      "en": "Urea (prills)"
+      "en": "Urea (prills)",
+      "de": "Harnstoff (Prills)"
     },
     "notes": "Stortdichtheid"
   },
@@ -1584,7 +1682,8 @@
     ],
     "language_labels": {
       "nl": "KAS-kunstmest",
-      "en": "CAN fertilizer"
+      "en": "CAN fertilizer",
+      "de": "Kalkammonsalpeter (KAS)"
     },
     "notes": "Stortdichtheid korrels"
   },
@@ -1602,7 +1701,8 @@
     ],
     "language_labels": {
       "nl": "NPK-kunstmest",
-      "en": "NPK fertilizer"
+      "en": "NPK fertilizer",
+      "de": "NPK-Dünger"
     }
   },
   {
@@ -1619,7 +1719,8 @@
     ],
     "language_labels": {
       "nl": "Kali (MOP)",
-      "en": "Potash (MOP)"
+      "en": "Potash (MOP)",
+      "de": "Kali (MOP)"
     }
   },
   {
@@ -1638,7 +1739,8 @@
     ],
     "language_labels": {
       "nl": "Zout / strooizout",
-      "en": "Salt / road salt"
+      "en": "Salt / road salt",
+      "de": "Salz / Streusalz"
     },
     "notes": "Stortdichtheid"
   },
@@ -1655,7 +1757,8 @@
     ],
     "language_labels": {
       "nl": "Soda (natriumcarbonaat)",
-      "en": "Soda ash"
+      "en": "Soda ash",
+      "de": "Soda (Natriumcarbonat)"
     }
   },
   {
@@ -1671,7 +1774,8 @@
     ],
     "language_labels": {
       "nl": "Zwavel (korrels)",
-      "en": "Sulphur (granulated)"
+      "en": "Sulphur (granulated)",
+      "de": "Schwefel (granuliert)"
     }
   },
   {
@@ -1689,7 +1793,8 @@
     ],
     "language_labels": {
       "nl": "Kunststofgranulaat",
-      "en": "Plastic granulate"
+      "en": "Plastic granulate",
+      "de": "Kunststoffgranulat"
     },
     "notes": "Stortdichtheid"
   },
@@ -1706,7 +1811,8 @@
     ],
     "language_labels": {
       "nl": "Tarwe",
-      "en": "Wheat"
+      "en": "Wheat",
+      "de": "Weizen"
     },
     "notes": "Stortdichtheid"
   },
@@ -1722,7 +1828,8 @@
     ],
     "language_labels": {
       "nl": "Gerst",
-      "en": "Barley"
+      "en": "Barley",
+      "de": "Gerste"
     }
   },
   {
@@ -1740,7 +1847,8 @@
     ],
     "language_labels": {
       "nl": "Maïs",
-      "en": "Maize (corn)"
+      "en": "Maize (corn)",
+      "de": "Mais"
     }
   },
   {
@@ -1755,7 +1863,8 @@
     ],
     "language_labels": {
       "nl": "Haver",
-      "en": "Oats"
+      "en": "Oats",
+      "de": "Hafer"
     }
   },
   {
@@ -1770,7 +1879,8 @@
     ],
     "language_labels": {
       "nl": "Rogge",
-      "en": "Rye"
+      "en": "Rye",
+      "de": "Roggen"
     }
   },
   {
@@ -1786,7 +1896,8 @@
     ],
     "language_labels": {
       "nl": "Koolzaad",
-      "en": "Rapeseed"
+      "en": "Rapeseed",
+      "de": "Raps"
     }
   },
   {
@@ -1803,7 +1914,8 @@
     ],
     "language_labels": {
       "nl": "Sojabonen",
-      "en": "Soybeans"
+      "en": "Soybeans",
+      "de": "Sojabohnen"
     }
   },
   {
@@ -1819,7 +1931,8 @@
     ],
     "language_labels": {
       "nl": "Zonnebloemzaad",
-      "en": "Sunflower seed"
+      "en": "Sunflower seed",
+      "de": "Sonnenblumenkerne"
     }
   },
   {
@@ -1834,7 +1947,8 @@
     ],
     "language_labels": {
       "nl": "Rijst",
-      "en": "Rice"
+      "en": "Rice",
+      "de": "Reis"
     }
   },
   {
@@ -1850,7 +1964,8 @@
     ],
     "language_labels": {
       "nl": "Suiker",
-      "en": "Sugar"
+      "en": "Sugar",
+      "de": "Zucker"
     },
     "notes": "Stortdichtheid"
   },
@@ -1868,7 +1983,8 @@
     ],
     "language_labels": {
       "nl": "Meel / bloem",
-      "en": "Flour"
+      "en": "Flour",
+      "de": "Mehl"
     }
   },
   {
@@ -1884,7 +2000,8 @@
     ],
     "language_labels": {
       "nl": "Mout",
-      "en": "Malt"
+      "en": "Malt",
+      "de": "Malz"
     }
   },
   {
@@ -1901,7 +2018,8 @@
     ],
     "language_labels": {
       "nl": "Aardappelen",
-      "en": "Potatoes"
+      "en": "Potatoes",
+      "de": "Kartoffeln"
     },
     "notes": "Gestort"
   },
@@ -1917,7 +2035,8 @@
     ],
     "language_labels": {
       "nl": "Uien",
-      "en": "Onions"
+      "en": "Onions",
+      "de": "Zwiebeln"
     }
   },
   {
@@ -1933,7 +2052,8 @@
     ],
     "language_labels": {
       "nl": "Suikerbieten",
-      "en": "Sugar beet"
+      "en": "Sugar beet",
+      "de": "Zuckerrüben"
     }
   },
   {
@@ -1950,7 +2070,8 @@
     ],
     "language_labels": {
       "nl": "Appels (in kisten)",
-      "en": "Apples (in bins)"
+      "en": "Apples (in bins)",
+      "de": "Äpfel (in Kisten)"
     }
   },
   {
@@ -1969,7 +2090,8 @@
     ],
     "language_labels": {
       "nl": "Mengvoer (brok)",
-      "en": "Animal feed (pellets)"
+      "en": "Animal feed (pellets)",
+      "de": "Futtermittel (Pellets)"
     }
   },
   {
@@ -1986,7 +2108,8 @@
     ],
     "language_labels": {
       "nl": "Hooibalen",
-      "en": "Hay bales"
+      "en": "Hay bales",
+      "de": "Heuballen"
     },
     "notes": "Geperste balen"
   },
@@ -2004,7 +2127,8 @@
     ],
     "language_labels": {
       "nl": "Strobalen",
-      "en": "Straw bales"
+      "en": "Straw bales",
+      "de": "Strohballen"
     },
     "notes": "Geperste balen"
   },
@@ -2023,7 +2147,8 @@
     ],
     "language_labels": {
       "nl": "Koffiebonen",
-      "en": "Coffee beans"
+      "en": "Coffee beans",
+      "de": "Kaffeebohnen"
     },
     "notes": "In zakken"
   },
@@ -2041,7 +2166,8 @@
     ],
     "language_labels": {
       "nl": "Cacaobonen",
-      "en": "Cocoa beans"
+      "en": "Cocoa beans",
+      "de": "Kakaobohnen"
     }
   },
   {
@@ -2056,7 +2182,8 @@
     ],
     "language_labels": {
       "nl": "Melk",
-      "en": "Milk"
+      "en": "Milk",
+      "de": "Milch"
     }
   },
   {
@@ -2069,7 +2196,8 @@
     ],
     "language_labels": {
       "nl": "Bier",
-      "en": "Beer"
+      "en": "Beer",
+      "de": "Bier"
     }
   },
   {
@@ -2082,7 +2210,8 @@
     ],
     "language_labels": {
       "nl": "Wijn",
-      "en": "Wine"
+      "en": "Wine",
+      "de": "Wein"
     }
   },
   {
@@ -2101,7 +2230,8 @@
     ],
     "language_labels": {
       "nl": "Vruchtensap",
-      "en": "Fruit juice"
+      "en": "Fruit juice",
+      "de": "Fruchtsaft"
     }
   },
   {
@@ -2119,7 +2249,8 @@
     ],
     "language_labels": {
       "nl": "Diepvriesgoederen (pallet)",
-      "en": "Frozen food (palletized)"
+      "en": "Frozen food (palletized)",
+      "de": "Tiefkühlkost (palettiert)"
     },
     "notes": "Inclusief verpakking op pallet"
   },
@@ -2137,7 +2268,8 @@
     ],
     "language_labels": {
       "nl": "Conserven (pallet)",
-      "en": "Canned food (palletized)"
+      "en": "Canned food (palletized)",
+      "de": "Konserven (palettiert)"
     }
   },
   {
@@ -2154,7 +2286,8 @@
     ],
     "language_labels": {
       "nl": "Papier (rollen)",
-      "en": "Paper (rolls)"
+      "en": "Paper (rolls)",
+      "de": "Papier (Rollen)"
     }
   },
   {
@@ -2171,7 +2304,8 @@
     ],
     "language_labels": {
       "nl": "Karton (balen)",
-      "en": "Cardboard (baled)"
+      "en": "Cardboard (baled)",
+      "de": "Kartonage (in Ballen)"
     }
   },
   {
@@ -2188,7 +2322,8 @@
     ],
     "language_labels": {
       "nl": "Oud papier (balen)",
-      "en": "Waste paper (baled)"
+      "en": "Waste paper (baled)",
+      "de": "Altpapier (in Ballen)"
     }
   },
   {
@@ -2204,7 +2339,8 @@
     ],
     "language_labels": {
       "nl": "Cellulosepulp (balen)",
-      "en": "Pulp (baled)"
+      "en": "Pulp (baled)",
+      "de": "Zellstoff (in Ballen)"
     }
   },
   {
@@ -2220,7 +2356,8 @@
     ],
     "language_labels": {
       "nl": "IJzererts",
-      "en": "Iron ore"
+      "en": "Iron ore",
+      "de": "Eisenerz"
     },
     "notes": "Stortdichtheid"
   },
@@ -2236,7 +2373,8 @@
     ],
     "language_labels": {
       "nl": "Bauxiet",
-      "en": "Bauxite"
+      "en": "Bauxite",
+      "de": "Bauxit"
     }
   },
   {
@@ -2253,7 +2391,8 @@
     ],
     "language_labels": {
       "nl": "Steenkool",
-      "en": "Coal"
+      "en": "Coal",
+      "de": "Steinkohle"
     },
     "notes": "Stortdichtheid"
   },
@@ -2269,7 +2408,8 @@
     ],
     "language_labels": {
       "nl": "Cokes",
-      "en": "Coke"
+      "en": "Coke",
+      "de": "Koks"
     }
   },
   {
@@ -2285,7 +2425,8 @@
     ],
     "language_labels": {
       "nl": "Vliegas",
-      "en": "Fly ash"
+      "en": "Fly ash",
+      "de": "Flugasche"
     }
   },
   {
@@ -2302,7 +2443,8 @@
     ],
     "language_labels": {
       "nl": "Slakken",
-      "en": "Slag"
+      "en": "Slag",
+      "de": "Schlacke"
     },
     "notes": "Stortdichtheid"
   },
@@ -2321,7 +2463,8 @@
     ],
     "language_labels": {
       "nl": "Bouw- en sloopafval",
-      "en": "Construction & demolition waste"
+      "en": "Construction & demolition waste",
+      "de": "Bau- und Abbruchabfall"
     },
     "notes": "Gemengd, los gestort"
   },
@@ -2339,7 +2482,8 @@
     ],
     "language_labels": {
       "nl": "Huishoudelijk restafval",
-      "en": "Household waste"
+      "en": "Household waste",
+      "de": "Hausmüll"
     },
     "notes": "Licht verdicht"
   },
@@ -2358,7 +2502,8 @@
     ],
     "language_labels": {
       "nl": "Afvalhout",
-      "en": "Wood waste"
+      "en": "Wood waste",
+      "de": "Altholz"
     },
     "notes": "Los gestort"
   },
@@ -2376,7 +2521,8 @@
     ],
     "language_labels": {
       "nl": "Glasscherven",
-      "en": "Glass cullet"
+      "en": "Glass cullet",
+      "de": "Glasscherben"
     },
     "notes": "Stortdichtheid"
   },
@@ -2394,7 +2540,8 @@
     ],
     "language_labels": {
       "nl": "Lege glazen flessen",
-      "en": "Empty glass bottles"
+      "en": "Empty glass bottles",
+      "de": "Leere Glasflaschen"
     },
     "notes": "Los gestort"
   },
@@ -2413,7 +2560,8 @@
     ],
     "language_labels": {
       "nl": "Kunststoffolie (balen)",
-      "en": "Plastic film (baled)"
+      "en": "Plastic film (baled)",
+      "de": "Kunststofffolie (in Ballen)"
     }
   },
   {
@@ -2430,7 +2578,8 @@
     ],
     "language_labels": {
       "nl": "PET-flessen (balen)",
-      "en": "PET bottles (baled)"
+      "en": "PET bottles (baled)",
+      "de": "PET-Flaschen (in Ballen)"
     }
   },
   {
@@ -2447,7 +2596,8 @@
     ],
     "language_labels": {
       "nl": "Autobanden (los)",
-      "en": "Tires (loose)"
+      "en": "Tires (loose)",
+      "de": "Reifen (lose)"
     },
     "notes": "Los gestapeld"
   },
@@ -2467,7 +2617,8 @@
     ],
     "language_labels": {
       "nl": "Textiel (balen)",
-      "en": "Textiles (baled)"
+      "en": "Textiles (baled)",
+      "de": "Textilien (in Ballen)"
     }
   },
   {
@@ -2484,7 +2635,8 @@
     ],
     "language_labels": {
       "nl": "Katoen (balen)",
-      "en": "Cotton (baled)"
+      "en": "Cotton (baled)",
+      "de": "Baumwolle (in Ballen)"
     }
   },
   {
@@ -2499,7 +2651,8 @@
     ],
     "language_labels": {
       "nl": "Rubber (massief)",
-      "en": "Rubber (solid)"
+      "en": "Rubber (solid)",
+      "de": "Gummi (massiv)"
     }
   },
   {
@@ -2518,7 +2671,8 @@
     ],
     "language_labels": {
       "nl": "Dranken (pallet)",
-      "en": "Beverages (palletized)"
+      "en": "Beverages (palletized)",
+      "de": "Getränke (palettiert)"
     },
     "notes": "Gemiddelde incl. verpakking en pallet"
   },
@@ -2537,7 +2691,8 @@
     ],
     "language_labels": {
       "nl": "Levensmiddelen (pallet)",
-      "en": "Foodstuffs (palletized)"
+      "en": "Foodstuffs (palletized)",
+      "de": "Lebensmittel (palettiert)"
     },
     "notes": "Gemiddelde incl. verpakking en pallet"
   },
@@ -2556,7 +2711,8 @@
     ],
     "language_labels": {
       "nl": "Algemeen stukgoed (pallet)",
-      "en": "General cargo (palletized)"
+      "en": "General cargo (palletized)",
+      "de": "Stückgut (palettiert)"
     },
     "notes": "Praktijkgemiddelde gemengde pallets"
   },
@@ -2575,7 +2731,8 @@
     ],
     "language_labels": {
       "nl": "Pakketten / dozen",
-      "en": "Parcels / boxes"
+      "en": "Parcels / boxes",
+      "de": "Pakete / Kartons"
     },
     "notes": "Gemiddelde pakketdichtheid"
   },
@@ -2593,7 +2750,8 @@
     ],
     "language_labels": {
       "nl": "Elektronica / apparatuur (pallet)",
-      "en": "Electronics / appliances (palletized)"
+      "en": "Electronics / appliances (palletized)",
+      "de": "Elektronik / Geräte (palettiert)"
     }
   },
   {
@@ -2612,7 +2770,8 @@
     ],
     "language_labels": {
       "nl": "Meubels",
-      "en": "Furniture"
+      "en": "Furniture",
+      "de": "Möbel"
     },
     "notes": "Gemiddelde incl. verpakking"
   },
@@ -2628,7 +2787,8 @@
     ],
     "language_labels": {
       "nl": "Basalt",
-      "en": "Basalt"
+      "en": "Basalt",
+      "de": "Basalt"
     },
     "notes": "Massieve dichtheid"
   },
@@ -2644,7 +2804,8 @@
     ],
     "language_labels": {
       "nl": "Basaltsplit",
-      "en": "Basalt chippings"
+      "en": "Basalt chippings",
+      "de": "Basaltsplitt"
     },
     "notes": "Stortdichtheid"
   },
@@ -2662,7 +2823,8 @@
     ],
     "language_labels": {
       "nl": "Hardsteen (arduin)",
-      "en": "Belgian bluestone"
+      "en": "Belgian bluestone",
+      "de": "Belgischer Blaustein"
     },
     "notes": "Massieve dichtheid"
   },
@@ -2677,7 +2839,8 @@
     ],
     "language_labels": {
       "nl": "Travertin",
-      "en": "Travertine"
+      "en": "Travertine",
+      "de": "Travertin"
     },
     "notes": "Massieve dichtheid"
   },
@@ -2692,7 +2855,8 @@
     ],
     "language_labels": {
       "nl": "Kwartsiet",
-      "en": "Quartzite"
+      "en": "Quartzite",
+      "de": "Quarzit"
     },
     "notes": "Massieve dichtheid"
   },
@@ -2708,7 +2872,8 @@
     ],
     "language_labels": {
       "nl": "Porfier",
-      "en": "Porphyry"
+      "en": "Porphyry",
+      "de": "Porphyr"
     },
     "notes": "Massieve dichtheid"
   },
@@ -2725,7 +2890,8 @@
     ],
     "language_labels": {
       "nl": "Spoorballast",
-      "en": "Rail ballast"
+      "en": "Rail ballast",
+      "de": "Gleisschotter"
     },
     "notes": "Stortdichtheid"
   },
@@ -2742,7 +2908,8 @@
     ],
     "language_labels": {
       "nl": "Dekvloermortel (zandcement)",
-      "en": "Sand-cement screed"
+      "en": "Sand-cement screed",
+      "de": "Zementestrich"
     }
   },
   {
@@ -2758,7 +2925,8 @@
     ],
     "language_labels": {
       "nl": "Tegellijm (poeder)",
-      "en": "Tile adhesive (powder)"
+      "en": "Tile adhesive (powder)",
+      "de": "Fliesenkleber (Pulver)"
     },
     "notes": "Stortdichtheid"
   },
@@ -2775,7 +2943,8 @@
     ],
     "language_labels": {
       "nl": "Betonblokken",
-      "en": "Concrete blocks"
+      "en": "Concrete blocks",
+      "de": "Betonsteine"
     },
     "notes": "Massieve dichtheid"
   },
@@ -2794,7 +2963,8 @@
     ],
     "language_labels": {
       "nl": "Trottoirbanden",
-      "en": "Curbstones"
+      "en": "Curbstones",
+      "de": "Bordsteine"
     },
     "notes": "Massieve dichtheid"
   },
@@ -2811,7 +2981,8 @@
     ],
     "language_labels": {
       "nl": "Straatbaksteen (klinkers)",
-      "en": "Clay pavers"
+      "en": "Clay pavers",
+      "de": "Klinkerpflaster"
     },
     "notes": "Massieve dichtheid"
   },
@@ -2828,7 +2999,8 @@
     ],
     "language_labels": {
       "nl": "Gipspleister",
-      "en": "Gypsum plaster"
+      "en": "Gypsum plaster",
+      "de": "Gipsputz"
     },
     "notes": "Stortdichtheid"
   },
@@ -2846,7 +3018,8 @@
     ],
     "language_labels": {
       "nl": "Zilverzand (kwartszand)",
-      "en": "Silica sand"
+      "en": "Silica sand",
+      "de": "Quarzsand"
     },
     "notes": "Stortdichtheid"
   },
@@ -2862,7 +3035,8 @@
     ],
     "language_labels": {
       "nl": "Dolomiet",
-      "en": "Dolomite"
+      "en": "Dolomite",
+      "de": "Dolomit"
     },
     "notes": "Stortdichtheid"
   },
@@ -2878,7 +3052,8 @@
     ],
     "language_labels": {
       "nl": "Krijt",
-      "en": "Chalk"
+      "en": "Chalk",
+      "de": "Kreide"
     },
     "notes": "Stortdichtheid"
   },
@@ -2894,7 +3069,8 @@
     ],
     "language_labels": {
       "nl": "Leem",
-      "en": "Loam"
+      "en": "Loam",
+      "de": "Lehm"
     },
     "notes": "Stortdichtheid"
   },
@@ -2912,7 +3088,8 @@
     ],
     "language_labels": {
       "nl": "Dakbedekking (bitumen rollen)",
-      "en": "Bituminous roofing rolls"
+      "en": "Bituminous roofing rolls",
+      "de": "Bitumenbahnen (Rollen)"
     }
   },
   {
@@ -2928,7 +3105,8 @@
     ],
     "language_labels": {
       "nl": "Perliet",
-      "en": "Perlite"
+      "en": "Perlite",
+      "de": "Perlit"
     },
     "notes": "Stortdichtheid"
   },
@@ -2943,7 +3121,8 @@
     ],
     "language_labels": {
       "nl": "Vermiculiet",
-      "en": "Vermiculite"
+      "en": "Vermiculite",
+      "de": "Vermiculit"
     },
     "notes": "Stortdichtheid"
   },
@@ -2961,7 +3140,8 @@
     ],
     "language_labels": {
       "nl": "Schuimglas",
-      "en": "Foam glass"
+      "en": "Foam glass",
+      "de": "Schaumglas"
     }
   },
   {
@@ -2977,7 +3157,8 @@
     ],
     "language_labels": {
       "nl": "Houtvezelplaat (isolatie)",
-      "en": "Wood fibre insulation board"
+      "en": "Wood fibre insulation board",
+      "de": "Holzfaserdämmplatte"
     }
   },
   {
@@ -2993,7 +3174,8 @@
     ],
     "language_labels": {
       "nl": "Cellulose-isolatie",
-      "en": "Cellulose insulation"
+      "en": "Cellulose insulation",
+      "de": "Zellulosedämmung"
     },
     "notes": "Stortdichtheid"
   },
@@ -3011,7 +3193,8 @@
     ],
     "language_labels": {
       "nl": "IJzer (zuiver)",
-      "en": "Iron (pure)"
+      "en": "Iron (pure)",
+      "de": "Eisen (rein)"
     },
     "notes": "Massieve dichtheid"
   },
@@ -3027,7 +3210,8 @@
     ],
     "language_labels": {
       "nl": "Chroom",
-      "en": "Chromium"
+      "en": "Chromium",
+      "de": "Chrom"
     },
     "notes": "Massieve dichtheid"
   },
@@ -3042,7 +3226,8 @@
     ],
     "language_labels": {
       "nl": "Mangaan",
-      "en": "Manganese"
+      "en": "Manganese",
+      "de": "Mangan"
     },
     "notes": "Massieve dichtheid"
   },
@@ -3058,7 +3243,8 @@
     ],
     "language_labels": {
       "nl": "Wolfraam",
-      "en": "Tungsten"
+      "en": "Tungsten",
+      "de": "Wolfram"
     },
     "notes": "Massieve dichtheid"
   },
@@ -3073,7 +3259,8 @@
     ],
     "language_labels": {
       "nl": "Molybdeen",
-      "en": "Molybdenum"
+      "en": "Molybdenum",
+      "de": "Molybdän"
     },
     "notes": "Massieve dichtheid"
   },
@@ -3088,7 +3275,8 @@
     ],
     "language_labels": {
       "nl": "Kobalt",
-      "en": "Cobalt"
+      "en": "Cobalt",
+      "de": "Cobalt"
     },
     "notes": "Massieve dichtheid"
   },
@@ -3104,7 +3292,8 @@
     ],
     "language_labels": {
       "nl": "Zilver",
-      "en": "Silver"
+      "en": "Silver",
+      "de": "Silber"
     },
     "notes": "Massieve dichtheid"
   },
@@ -3120,7 +3309,8 @@
     ],
     "language_labels": {
       "nl": "Goud",
-      "en": "Gold"
+      "en": "Gold",
+      "de": "Gold"
     },
     "notes": "Massieve dichtheid"
   },
@@ -3135,7 +3325,8 @@
     ],
     "language_labels": {
       "nl": "Platina",
-      "en": "Platinum"
+      "en": "Platinum",
+      "de": "Platin"
     },
     "notes": "Massieve dichtheid"
   },
@@ -3150,7 +3341,8 @@
     ],
     "language_labels": {
       "nl": "Antimoon",
-      "en": "Antimony"
+      "en": "Antimony",
+      "de": "Antimon"
     },
     "notes": "Massieve dichtheid"
   },
@@ -3165,7 +3357,8 @@
     ],
     "language_labels": {
       "nl": "Cadmium",
-      "en": "Cadmium"
+      "en": "Cadmium",
+      "de": "Cadmium"
     },
     "notes": "Massieve dichtheid"
   },
@@ -3180,7 +3373,8 @@
     ],
     "language_labels": {
       "nl": "Bismut",
-      "en": "Bismuth"
+      "en": "Bismuth",
+      "de": "Wismut"
     },
     "notes": "Massieve dichtheid"
   },
@@ -3196,7 +3390,8 @@
     ],
     "language_labels": {
       "nl": "Silicium (metaal)",
-      "en": "Silicon metal"
+      "en": "Silicon metal",
+      "de": "Siliciummetall"
     },
     "notes": "Massieve dichtheid"
   },
@@ -3213,7 +3408,8 @@
     ],
     "language_labels": {
       "nl": "Zamak",
-      "en": "Zamak"
+      "en": "Zamak",
+      "de": "Zamak"
     },
     "notes": "Massieve dichtheid"
   },
@@ -3230,7 +3426,8 @@
     ],
     "language_labels": {
       "nl": "Wolfraamcarbide",
-      "en": "Tungsten carbide"
+      "en": "Tungsten carbide",
+      "de": "Wolframcarbid"
     },
     "notes": "Massieve dichtheid"
   },
@@ -3246,7 +3443,8 @@
     ],
     "language_labels": {
       "nl": "Kwik",
-      "en": "Mercury"
+      "en": "Mercury",
+      "de": "Quecksilber"
     },
     "notes": "Vloeibaar metaal (UN 2809)"
   },
@@ -3262,7 +3460,8 @@
     ],
     "language_labels": {
       "nl": "Ferrosilicium (brokken)",
-      "en": "Ferrosilicon (lumps)"
+      "en": "Ferrosilicon (lumps)",
+      "de": "Ferrosilicium (stückig)"
     },
     "notes": "Stortdichtheid"
   },
@@ -3281,7 +3480,8 @@
     ],
     "language_labels": {
       "nl": "Grenen (pijnboom)",
-      "en": "Pine"
+      "en": "Pine",
+      "de": "Kiefer"
     }
   },
   {
@@ -3296,7 +3496,8 @@
     ],
     "language_labels": {
       "nl": "Populier",
-      "en": "Poplar"
+      "en": "Poplar",
+      "de": "Pappel"
     }
   },
   {
@@ -3311,7 +3512,8 @@
     ],
     "language_labels": {
       "nl": "Els",
-      "en": "Alder"
+      "en": "Alder",
+      "de": "Erle"
     }
   },
   {
@@ -3328,7 +3530,8 @@
     ],
     "language_labels": {
       "nl": "Esdoorn",
-      "en": "Maple"
+      "en": "Maple",
+      "de": "Ahorn"
     }
   },
   {
@@ -3344,7 +3547,8 @@
     ],
     "language_labels": {
       "nl": "Notenhout",
-      "en": "Walnut"
+      "en": "Walnut",
+      "de": "Nussbaum"
     }
   },
   {
@@ -3359,7 +3563,8 @@
     ],
     "language_labels": {
       "nl": "Kersenhout",
-      "en": "Cherry wood"
+      "en": "Cherry wood",
+      "de": "Kirschholz"
     }
   },
   {
@@ -3374,7 +3579,8 @@
     ],
     "language_labels": {
       "nl": "Haagbeuk",
-      "en": "Hornbeam"
+      "en": "Hornbeam",
+      "de": "Hainbuche"
     }
   },
   {
@@ -3389,7 +3595,8 @@
     ],
     "language_labels": {
       "nl": "Iep",
-      "en": "Elm"
+      "en": "Elm",
+      "de": "Ulme"
     }
   },
   {
@@ -3404,7 +3611,8 @@
     ],
     "language_labels": {
       "nl": "Kastanje",
-      "en": "Chestnut"
+      "en": "Chestnut",
+      "de": "Kastanie"
     }
   },
   {
@@ -3419,7 +3627,8 @@
     ],
     "language_labels": {
       "nl": "Linde",
-      "en": "Lime (basswood)"
+      "en": "Lime (basswood)",
+      "de": "Linde (Holz)"
     }
   },
   {
@@ -3434,7 +3643,8 @@
     ],
     "language_labels": {
       "nl": "Iroko",
-      "en": "Iroko"
+      "en": "Iroko",
+      "de": "Iroko"
     }
   },
   {
@@ -3450,7 +3660,8 @@
     ],
     "language_labels": {
       "nl": "Sapeli",
-      "en": "Sapele"
+      "en": "Sapele",
+      "de": "Sapeli"
     }
   },
   {
@@ -3465,7 +3676,8 @@
     ],
     "language_labels": {
       "nl": "Bangkirai",
-      "en": "Bangkirai"
+      "en": "Bangkirai",
+      "de": "Bangkirai"
     }
   },
   {
@@ -3480,7 +3692,8 @@
     ],
     "language_labels": {
       "nl": "Padoek",
-      "en": "Padauk"
+      "en": "Padauk",
+      "de": "Padouk"
     }
   },
   {
@@ -3494,7 +3707,8 @@
     ],
     "language_labels": {
       "nl": "Wengé",
-      "en": "Wenge"
+      "en": "Wenge",
+      "de": "Wenge"
     }
   },
   {
@@ -3510,7 +3724,8 @@
     ],
     "language_labels": {
       "nl": "Accoya",
-      "en": "Accoya"
+      "en": "Accoya",
+      "de": "Accoya"
     }
   },
   {
@@ -3526,7 +3741,8 @@
     ],
     "language_labels": {
       "nl": "Western red cedar",
-      "en": "Western red cedar"
+      "en": "Western red cedar",
+      "de": "Rotzeder"
     }
   },
   {
@@ -3543,7 +3759,8 @@
     ],
     "language_labels": {
       "nl": "OSB-plaat",
-      "en": "OSB board"
+      "en": "OSB board",
+      "de": "OSB-Platte"
     }
   },
   {
@@ -3558,7 +3775,8 @@
     ],
     "language_labels": {
       "nl": "MDF-plaat",
-      "en": "MDF board"
+      "en": "MDF board",
+      "de": "MDF-Platte"
     }
   },
   {
@@ -3573,7 +3791,8 @@
     ],
     "language_labels": {
       "nl": "HDF-plaat",
-      "en": "HDF board"
+      "en": "HDF board",
+      "de": "HDF-Platte"
     }
   },
   {
@@ -3588,7 +3807,8 @@
     ],
     "language_labels": {
       "nl": "Hardboard",
-      "en": "Hardboard"
+      "en": "Hardboard",
+      "de": "Hartfaserplatte"
     }
   },
   {
@@ -3603,7 +3823,8 @@
     ],
     "language_labels": {
       "nl": "Zachtboard",
-      "en": "Softboard"
+      "en": "Softboard",
+      "de": "Weichfaserplatte"
     }
   },
   {
@@ -3620,7 +3841,8 @@
     ],
     "language_labels": {
       "nl": "Gelamineerd hout (glulam)",
-      "en": "Glued laminated timber"
+      "en": "Glued laminated timber",
+      "de": "Brettschichtholz"
     }
   },
   {
@@ -3636,7 +3858,8 @@
     ],
     "language_labels": {
       "nl": "Kruislaaghout (CLT)",
-      "en": "Cross-laminated timber"
+      "en": "Cross-laminated timber",
+      "de": "Brettsperrholz (CLT)"
     }
   },
   {
@@ -3652,7 +3875,8 @@
     ],
     "language_labels": {
       "nl": "Kurk",
-      "en": "Cork"
+      "en": "Cork",
+      "de": "Kork"
     }
   },
   {
@@ -3669,7 +3893,8 @@
     ],
     "language_labels": {
       "nl": "Rondhout (vers stamhout)",
-      "en": "Logs (green roundwood)"
+      "en": "Logs (green roundwood)",
+      "de": "Rundholz (frisch)"
     },
     "notes": "Vers gekapt, incl. vocht"
   },
@@ -3686,7 +3911,8 @@
     ],
     "language_labels": {
       "nl": "Ruwe aardolie",
-      "en": "Crude oil"
+      "en": "Crude oil",
+      "de": "Rohöl"
     },
     "notes": "Vloeistof bij 15 °C"
   },
@@ -3701,7 +3927,8 @@
     ],
     "language_labels": {
       "nl": "Nafta",
-      "en": "Naphtha"
+      "en": "Naphtha",
+      "de": "Naphtha"
     },
     "notes": "Vloeistof bij 15 °C"
   },
@@ -3719,7 +3946,8 @@
     ],
     "language_labels": {
       "nl": "Huisbrandolie (gasolie)",
-      "en": "Heating oil (gas oil)"
+      "en": "Heating oil (gas oil)",
+      "de": "Heizöl (Gasöl)"
     },
     "notes": "Vloeistof bij 15 °C"
   },
@@ -3735,7 +3963,8 @@
     ],
     "language_labels": {
       "nl": "Biodiesel (FAME)",
-      "en": "Biodiesel (FAME)"
+      "en": "Biodiesel (FAME)",
+      "de": "Biodiesel (FAME)"
     },
     "notes": "Vloeistof bij 15 °C"
   },
@@ -3753,7 +3982,8 @@
     ],
     "language_labels": {
       "nl": "HVO (hernieuwbare diesel)",
-      "en": "HVO renewable diesel"
+      "en": "HVO renewable diesel",
+      "de": "HVO (hydrierter Pflanzenöldiesel)"
     },
     "notes": "Vloeistof bij 15 °C"
   },
@@ -3770,7 +4000,8 @@
     ],
     "language_labels": {
       "nl": "Terpentine (white spirit)",
-      "en": "White spirit"
+      "en": "White spirit",
+      "de": "Testbenzin"
     },
     "notes": "Vloeistof bij 15 °C"
   },
@@ -3786,7 +4017,8 @@
     ],
     "language_labels": {
       "nl": "Terpentijn (echte)",
-      "en": "Turpentine"
+      "en": "Turpentine",
+      "de": "Terpentin"
     },
     "notes": "Vloeistof bij 15 °C"
   },
@@ -3802,7 +4034,8 @@
     ],
     "language_labels": {
       "nl": "Tolueen",
-      "en": "Toluene"
+      "en": "Toluene",
+      "de": "Toluol"
     },
     "notes": "Vloeistof bij 15 °C"
   },
@@ -3818,7 +4051,8 @@
     ],
     "language_labels": {
       "nl": "Xyleen",
-      "en": "Xylene"
+      "en": "Xylene",
+      "de": "Xylol"
     },
     "notes": "Vloeistof bij 15 °C"
   },
@@ -3834,7 +4068,8 @@
     ],
     "language_labels": {
       "nl": "Benzeen",
-      "en": "Benzene"
+      "en": "Benzene",
+      "de": "Benzol"
     },
     "notes": "Vloeistof bij 15 °C"
   },
@@ -3851,7 +4086,8 @@
     ],
     "language_labels": {
       "nl": "Styreen",
-      "en": "Styrene"
+      "en": "Styrene",
+      "de": "Styrol"
     },
     "notes": "Vloeistof bij 15 °C"
   },
@@ -3868,7 +4104,8 @@
     ],
     "language_labels": {
       "nl": "Azijnzuur (ijsazijn)",
-      "en": "Acetic acid (glacial)"
+      "en": "Acetic acid (glacial)",
+      "de": "Essigsäure (Eisessig)"
     },
     "notes": "Vloeistof bij 15 °C"
   },
@@ -3884,7 +4121,8 @@
     ],
     "language_labels": {
       "nl": "Salpeterzuur (68%)",
-      "en": "Nitric acid (68%)"
+      "en": "Nitric acid (68%)",
+      "de": "Salpetersäure (68 %)"
     },
     "notes": "Vloeistof bij 15 °C"
   },
@@ -3899,7 +4137,8 @@
     ],
     "language_labels": {
       "nl": "Fosforzuur (85%)",
-      "en": "Phosphoric acid (85%)"
+      "en": "Phosphoric acid (85%)",
+      "de": "Phosphorsäure (85 %)"
     },
     "notes": "Vloeistof bij 15 °C"
   },
@@ -3915,7 +4154,8 @@
     ],
     "language_labels": {
       "nl": "Waterstofperoxide (35%)",
-      "en": "Hydrogen peroxide (35%)"
+      "en": "Hydrogen peroxide (35%)",
+      "de": "Wasserstoffperoxid (35 %)"
     },
     "notes": "Vloeistof bij 15 °C"
   },
@@ -3932,7 +4172,8 @@
     ],
     "language_labels": {
       "nl": "Ammonia-oplossing (25%)",
-      "en": "Ammonia solution (25%)"
+      "en": "Ammonia solution (25%)",
+      "de": "Ammoniaklösung (25 %)"
     },
     "notes": "Vloeistof bij 15 °C"
   },
@@ -3947,7 +4188,8 @@
     ],
     "language_labels": {
       "nl": "Glycerine",
-      "en": "Glycerine"
+      "en": "Glycerine",
+      "de": "Glycerin"
     },
     "notes": "Vloeistof bij 15 °C"
   },
@@ -3964,7 +4206,8 @@
     ],
     "language_labels": {
       "nl": "Isopropanol (IPA)",
-      "en": "Isopropyl alcohol"
+      "en": "Isopropyl alcohol",
+      "de": "Isopropylalkohol"
     },
     "notes": "Vloeistof bij 15 °C"
   },
@@ -3981,7 +4224,8 @@
     ],
     "language_labels": {
       "nl": "Methylethylketon (MEK)",
-      "en": "Methyl ethyl ketone"
+      "en": "Methyl ethyl ketone",
+      "de": "Methylethylketon"
     },
     "notes": "Vloeistof bij 15 °C"
   },
@@ -3996,7 +4240,8 @@
     ],
     "language_labels": {
       "nl": "Ethylacetaat",
-      "en": "Ethyl acetate"
+      "en": "Ethyl acetate",
+      "de": "Ethylacetat"
     },
     "notes": "Vloeistof bij 15 °C"
   },
@@ -4012,7 +4257,8 @@
     ],
     "language_labels": {
       "nl": "Lijnolie",
-      "en": "Linseed oil"
+      "en": "Linseed oil",
+      "de": "Leinöl"
     },
     "notes": "Vloeistof bij 15 °C"
   },
@@ -4028,7 +4274,8 @@
     ],
     "language_labels": {
       "nl": "Olijfolie",
-      "en": "Olive oil"
+      "en": "Olive oil",
+      "de": "Olivenöl"
     },
     "notes": "Vloeistof bij 15 °C"
   },
@@ -4045,7 +4292,8 @@
     ],
     "language_labels": {
       "nl": "Palmolie",
-      "en": "Palm oil"
+      "en": "Palm oil",
+      "de": "Palmöl"
     },
     "notes": "Vloeibaar bij ~40 °C"
   },
@@ -4061,7 +4309,8 @@
     ],
     "language_labels": {
       "nl": "Zonnebloemolie",
-      "en": "Sunflower oil"
+      "en": "Sunflower oil",
+      "de": "Sonnenblumenöl"
     },
     "notes": "Vloeistof bij 15 °C"
   },
@@ -4079,7 +4328,8 @@
     ],
     "language_labels": {
       "nl": "Koolzaadolie",
-      "en": "Rapeseed oil"
+      "en": "Rapeseed oil",
+      "de": "Rapsöl"
     },
     "notes": "Vloeistof bij 15 °C"
   },
@@ -4094,7 +4344,8 @@
     ],
     "language_labels": {
       "nl": "Visolie",
-      "en": "Fish oil"
+      "en": "Fish oil",
+      "de": "Fischöl"
     },
     "notes": "Vloeistof bij 15 °C"
   },
@@ -4110,7 +4361,8 @@
     ],
     "language_labels": {
       "nl": "Glucosestroop",
-      "en": "Glucose syrup"
+      "en": "Glucose syrup",
+      "de": "Glucosesirup"
     },
     "notes": "Vloeistof bij 15 °C"
   },
@@ -4126,7 +4378,8 @@
     ],
     "language_labels": {
       "nl": "Bitumenemulsie",
-      "en": "Bitumen emulsion"
+      "en": "Bitumen emulsion",
+      "de": "Bitumenemulsion"
     },
     "notes": "Vloeistof bij 15 °C"
   },
@@ -4145,7 +4398,8 @@
     ],
     "language_labels": {
       "nl": "Sterke drank (40%)",
-      "en": "Spirits (40% ABV)"
+      "en": "Spirits (40% ABV)",
+      "de": "Spirituosen (40 % vol)"
     },
     "notes": "Vloeistof bij 15 °C"
   },
@@ -4161,7 +4415,8 @@
     ],
     "language_labels": {
       "nl": "LNG (vloeibaar aardgas)",
-      "en": "LNG (liquefied natural gas)"
+      "en": "LNG (liquefied natural gas)",
+      "de": "LNG (verflüssigtes Erdgas)"
     },
     "notes": "Vloeibaar gemaakt (gekoeld/onder druk)"
   },
@@ -4176,7 +4431,8 @@
     ],
     "language_labels": {
       "nl": "Propaan (vloeibaar)",
-      "en": "Propane (liquefied)"
+      "en": "Propane (liquefied)",
+      "de": "Propan (verflüssigt)"
     },
     "notes": "Vloeibaar gemaakt (gekoeld/onder druk)"
   },
@@ -4191,7 +4447,8 @@
     ],
     "language_labels": {
       "nl": "Butaan (vloeibaar)",
-      "en": "Butane (liquefied)"
+      "en": "Butane (liquefied)",
+      "de": "Butan (verflüssigt)"
     },
     "notes": "Vloeibaar gemaakt (gekoeld/onder druk)"
   },
@@ -4208,7 +4465,8 @@
     ],
     "language_labels": {
       "nl": "Koolzuur (vloeibaar CO2)",
-      "en": "Liquid carbon dioxide"
+      "en": "Liquid carbon dioxide",
+      "de": "Flüssiges Kohlendioxid"
     },
     "notes": "Vloeibaar gemaakt (gekoeld/onder druk)"
   },
@@ -4224,7 +4482,8 @@
     ],
     "language_labels": {
       "nl": "Vloeibare stikstof",
-      "en": "Liquid nitrogen"
+      "en": "Liquid nitrogen",
+      "de": "Flüssiger Stickstoff"
     },
     "notes": "Vloeibaar gemaakt (gekoeld/onder druk)"
   },
@@ -4240,7 +4499,8 @@
     ],
     "language_labels": {
       "nl": "Vloeibare zuurstof",
-      "en": "Liquid oxygen"
+      "en": "Liquid oxygen",
+      "de": "Flüssiger Sauerstoff"
     },
     "notes": "Vloeibaar gemaakt (gekoeld/onder druk)"
   },
@@ -4256,7 +4516,8 @@
     ],
     "language_labels": {
       "nl": "Vloeibaar argon",
-      "en": "Liquid argon"
+      "en": "Liquid argon",
+      "de": "Flüssiges Argon"
     },
     "notes": "Vloeibaar gemaakt (gekoeld/onder druk)"
   },
@@ -4272,7 +4533,8 @@
     ],
     "language_labels": {
       "nl": "Ammoniak (watervrij, vloeibaar)",
-      "en": "Anhydrous ammonia (liquefied)"
+      "en": "Anhydrous ammonia (liquefied)",
+      "de": "Ammoniak, wasserfrei (verflüssigt)"
     },
     "notes": "Vloeibaar gemaakt (gekoeld/onder druk)"
   },
@@ -4289,7 +4551,8 @@
     ],
     "language_labels": {
       "nl": "Gebruikt frituurvet",
-      "en": "Used cooking oil"
+      "en": "Used cooking oil",
+      "de": "Altspeiseöl"
     },
     "notes": "Vloeistof bij 15 °C"
   },
@@ -4305,7 +4568,8 @@
     ],
     "language_labels": {
       "nl": "Ammoniumnitraat (prils)",
-      "en": "Ammonium nitrate (prills)"
+      "en": "Ammonium nitrate (prills)",
+      "de": "Ammoniumnitrat (Prills)"
     },
     "notes": "Stortdichtheid"
   },
@@ -4321,7 +4585,8 @@
     ],
     "language_labels": {
       "nl": "Ammoniumsulfaat",
-      "en": "Ammonium sulphate"
+      "en": "Ammonium sulphate",
+      "de": "Ammoniumsulfat"
     },
     "notes": "Stortdichtheid"
   },
@@ -4337,7 +4602,8 @@
     ],
     "language_labels": {
       "nl": "DAP-meststof",
-      "en": "DAP fertilizer"
+      "en": "DAP fertilizer",
+      "de": "DAP-Dünger"
     },
     "notes": "Stortdichtheid"
   },
@@ -4353,7 +4619,8 @@
     ],
     "language_labels": {
       "nl": "MAP-meststof",
-      "en": "MAP fertilizer"
+      "en": "MAP fertilizer",
+      "de": "MAP-Dünger"
     },
     "notes": "Stortdichtheid"
   },
@@ -4369,7 +4636,8 @@
     ],
     "language_labels": {
       "nl": "Tripelsuperfosfaat",
-      "en": "Triple superphosphate"
+      "en": "Triple superphosphate",
+      "de": "Tripelsuperphosphat"
     },
     "notes": "Stortdichtheid"
   },
@@ -4385,7 +4653,8 @@
     ],
     "language_labels": {
       "nl": "Kieseriet",
-      "en": "Kieserite"
+      "en": "Kieserite",
+      "de": "Kieserit"
     },
     "notes": "Stortdichtheid"
   },
@@ -4401,7 +4670,8 @@
     ],
     "language_labels": {
       "nl": "Calciumchloride",
-      "en": "Calcium chloride"
+      "en": "Calcium chloride",
+      "de": "Calciumchlorid"
     },
     "notes": "Stortdichtheid"
   },
@@ -4416,7 +4686,8 @@
     ],
     "language_labels": {
       "nl": "Citroenzuur",
-      "en": "Citric acid"
+      "en": "Citric acid",
+      "de": "Zitronensäure"
     },
     "notes": "Stortdichtheid"
   },
@@ -4433,7 +4704,8 @@
     ],
     "language_labels": {
       "nl": "Waspoeder",
-      "en": "Detergent powder"
+      "en": "Detergent powder",
+      "de": "Waschpulver"
     },
     "notes": "Stortdichtheid"
   },
@@ -4450,7 +4722,8 @@
     ],
     "language_labels": {
       "nl": "Actieve kool",
-      "en": "Activated carbon"
+      "en": "Activated carbon",
+      "de": "Aktivkohle"
     },
     "notes": "Stortdichtheid"
   },
@@ -4465,7 +4738,8 @@
     ],
     "language_labels": {
       "nl": "Roet (carbon black)",
-      "en": "Carbon black"
+      "en": "Carbon black",
+      "de": "Industrieruß"
     },
     "notes": "Stortdichtheid"
   },
@@ -4482,7 +4756,8 @@
     ],
     "language_labels": {
       "nl": "Titaandioxide",
-      "en": "Titanium dioxide"
+      "en": "Titanium dioxide",
+      "de": "Titandioxid"
     },
     "notes": "Stortdichtheid"
   },
@@ -4498,7 +4773,8 @@
     ],
     "language_labels": {
       "nl": "Zinkoxide",
-      "en": "Zinc oxide"
+      "en": "Zinc oxide",
+      "de": "Zinkoxid"
     },
     "notes": "Stortdichtheid"
   },
@@ -4518,7 +4794,8 @@
     ],
     "language_labels": {
       "nl": "Zetmeel",
-      "en": "Starch"
+      "en": "Starch",
+      "de": "Stärke"
     },
     "notes": "Stortdichtheid"
   },
@@ -4534,7 +4811,8 @@
     ],
     "language_labels": {
       "nl": "Vacuümzout",
-      "en": "Vacuum salt"
+      "en": "Vacuum salt",
+      "de": "Siedesalz"
     },
     "notes": "Stortdichtheid"
   },
@@ -4550,7 +4828,8 @@
     ],
     "language_labels": {
       "nl": "Paraffine",
-      "en": "Paraffin wax"
+      "en": "Paraffin wax",
+      "de": "Paraffinwachs"
     },
     "notes": "Massieve dichtheid"
   },
@@ -4566,7 +4845,8 @@
     ],
     "language_labels": {
       "nl": "Spelt",
-      "en": "Spelt"
+      "en": "Spelt",
+      "de": "Dinkel"
     },
     "notes": "Stortdichtheid"
   },
@@ -4581,7 +4861,8 @@
     ],
     "language_labels": {
       "nl": "Boekweit",
-      "en": "Buckwheat"
+      "en": "Buckwheat",
+      "de": "Buchweizen"
     },
     "notes": "Stortdichtheid"
   },
@@ -4596,7 +4877,8 @@
     ],
     "language_labels": {
       "nl": "Gierst",
-      "en": "Millet"
+      "en": "Millet",
+      "de": "Hirse"
     },
     "notes": "Stortdichtheid"
   },
@@ -4612,7 +4894,8 @@
     ],
     "language_labels": {
       "nl": "Sorghum",
-      "en": "Sorghum"
+      "en": "Sorghum",
+      "de": "Sorghum"
     },
     "notes": "Stortdichtheid"
   },
@@ -4627,7 +4910,8 @@
     ],
     "language_labels": {
       "nl": "Quinoa",
-      "en": "Quinoa"
+      "en": "Quinoa",
+      "de": "Quinoa"
     },
     "notes": "Stortdichtheid"
   },
@@ -4644,7 +4928,8 @@
     ],
     "language_labels": {
       "nl": "Lijnzaad",
-      "en": "Linseed"
+      "en": "Linseed",
+      "de": "Leinsamen"
     },
     "notes": "Stortdichtheid"
   },
@@ -4661,7 +4946,8 @@
     ],
     "language_labels": {
       "nl": "Erwten (droog)",
-      "en": "Peas (dry)"
+      "en": "Peas (dry)",
+      "de": "Erbsen (trocken)"
     },
     "notes": "Stortdichtheid"
   },
@@ -4678,7 +4964,8 @@
     ],
     "language_labels": {
       "nl": "Bonen (droog)",
-      "en": "Beans (dry)"
+      "en": "Beans (dry)",
+      "de": "Bohnen (trocken)"
     },
     "notes": "Stortdichtheid"
   },
@@ -4693,7 +4980,8 @@
     ],
     "language_labels": {
       "nl": "Linzen",
-      "en": "Lentils"
+      "en": "Lentils",
+      "de": "Linsen"
     },
     "notes": "Stortdichtheid"
   },
@@ -4708,7 +4996,8 @@
     ],
     "language_labels": {
       "nl": "Kikkererwten",
-      "en": "Chickpeas"
+      "en": "Chickpeas",
+      "de": "Kichererbsen"
     },
     "notes": "Stortdichtheid"
   },
@@ -4724,7 +5013,8 @@
     ],
     "language_labels": {
       "nl": "Sojaschroot",
-      "en": "Soybean meal"
+      "en": "Soybean meal",
+      "de": "Sojaschrot"
     },
     "notes": "Stortdichtheid"
   },
@@ -4740,7 +5030,8 @@
     ],
     "language_labels": {
       "nl": "Raapzaadschroot",
-      "en": "Rapeseed meal"
+      "en": "Rapeseed meal",
+      "de": "Rapsschrot"
     },
     "notes": "Stortdichtheid"
   },
@@ -4755,7 +5046,8 @@
     ],
     "language_labels": {
       "nl": "Zonnebloemschroot",
-      "en": "Sunflower meal"
+      "en": "Sunflower meal",
+      "de": "Sonnenblumenschrot"
     },
     "notes": "Stortdichtheid"
   },
@@ -4771,7 +5063,8 @@
     ],
     "language_labels": {
       "nl": "Palmpitschilfers",
-      "en": "Palm kernel expeller"
+      "en": "Palm kernel expeller",
+      "de": "Palmkernexpeller"
     },
     "notes": "Stortdichtheid"
   },
@@ -4787,7 +5080,8 @@
     ],
     "language_labels": {
       "nl": "Bietenpulppellets",
-      "en": "Beet pulp pellets"
+      "en": "Beet pulp pellets",
+      "de": "Rübenschnitzelpellets"
     },
     "notes": "Stortdichtheid"
   },
@@ -4803,7 +5097,8 @@
     ],
     "language_labels": {
       "nl": "DDGS (graanspoeling)",
-      "en": "DDGS (distillers grains)"
+      "en": "DDGS (distillers grains)",
+      "de": "DDGS (Schlempe, getrocknet)"
     },
     "notes": "Stortdichtheid"
   },
@@ -4819,7 +5114,8 @@
     ],
     "language_labels": {
       "nl": "Luzernepellets",
-      "en": "Alfalfa pellets"
+      "en": "Alfalfa pellets",
+      "de": "Luzernepellets"
     },
     "notes": "Stortdichtheid"
   },
@@ -4836,7 +5132,8 @@
     ],
     "language_labels": {
       "nl": "Kuilvoer (silage)",
-      "en": "Silage"
+      "en": "Silage",
+      "de": "Silage"
     },
     "notes": "Ingekuild, verdicht"
   },
@@ -4854,7 +5151,8 @@
     ],
     "language_labels": {
       "nl": "Drijfmest",
-      "en": "Liquid manure (slurry)"
+      "en": "Liquid manure (slurry)",
+      "de": "Gülle"
     },
     "notes": "Vloeistof bij 15 °C"
   },
@@ -4871,7 +5169,8 @@
     ],
     "language_labels": {
       "nl": "Vaste mest",
-      "en": "Solid manure"
+      "en": "Solid manure",
+      "de": "Festmist"
     },
     "notes": "Stortdichtheid"
   },
@@ -4887,7 +5186,8 @@
     ],
     "language_labels": {
       "nl": "Compost",
-      "en": "Compost"
+      "en": "Compost",
+      "de": "Kompost"
     },
     "notes": "Stortdichtheid"
   },
@@ -4905,7 +5205,8 @@
     ],
     "language_labels": {
       "nl": "Boomschors",
-      "en": "Bark mulch"
+      "en": "Bark mulch",
+      "de": "Rindenmulch"
     },
     "notes": "Stortdichtheid"
   },
@@ -4921,7 +5222,8 @@
     ],
     "language_labels": {
       "nl": "Houtkrullen",
-      "en": "Wood shavings"
+      "en": "Wood shavings",
+      "de": "Holzspäne"
     },
     "notes": "Stortdichtheid"
   },
@@ -4936,7 +5238,8 @@
     ],
     "language_labels": {
       "nl": "Potgrond",
-      "en": "Potting soil"
+      "en": "Potting soil",
+      "de": "Blumenerde"
     },
     "notes": "Stortdichtheid"
   },
@@ -4953,7 +5256,8 @@
     ],
     "language_labels": {
       "nl": "Wortelen",
-      "en": "Carrots"
+      "en": "Carrots",
+      "de": "Karotten"
     },
     "notes": "Stortdichtheid"
   },
@@ -4971,7 +5275,8 @@
     ],
     "language_labels": {
       "nl": "Kool (groente)",
-      "en": "Cabbage"
+      "en": "Cabbage",
+      "de": "Kohl"
     },
     "notes": "Stortdichtheid"
   },
@@ -4987,7 +5292,8 @@
     ],
     "language_labels": {
       "nl": "Bananen (dozen)",
-      "en": "Bananas (boxed)"
+      "en": "Bananas (boxed)",
+      "de": "Bananen (in Kartons)"
     },
     "notes": "Gemiddelde incl. verpakking en pallet"
   },
@@ -5003,7 +5309,8 @@
     ],
     "language_labels": {
       "nl": "Sinaasappels (kisten)",
-      "en": "Oranges (crates)"
+      "en": "Oranges (crates)",
+      "de": "Orangen (in Steigen)"
     },
     "notes": "Gemiddelde incl. verpakking en pallet"
   },
@@ -5019,7 +5326,8 @@
     ],
     "language_labels": {
       "nl": "Tomaten (dozen)",
-      "en": "Tomatoes (boxed)"
+      "en": "Tomatoes (boxed)",
+      "de": "Tomaten (in Kartons)"
     },
     "notes": "Gemiddelde incl. verpakking en pallet"
   },
@@ -5035,7 +5343,8 @@
     ],
     "language_labels": {
       "nl": "Tabak (balen)",
-      "en": "Tobacco (bales)"
+      "en": "Tobacco (bales)",
+      "de": "Tabak (in Ballen)"
     },
     "notes": "Geperste balen"
   },
@@ -5051,7 +5360,8 @@
     ],
     "language_labels": {
       "nl": "Thee (kisten)",
-      "en": "Tea (chests)"
+      "en": "Tea (chests)",
+      "de": "Tee (in Kisten)"
     },
     "notes": "Gemiddelde incl. verpakking en pallet"
   },
@@ -5066,7 +5376,8 @@
     ],
     "language_labels": {
       "nl": "Vismeel",
-      "en": "Fish meal"
+      "en": "Fish meal",
+      "de": "Fischmehl"
     },
     "notes": "Stortdichtheid"
   },
@@ -5085,7 +5396,8 @@
     ],
     "language_labels": {
       "nl": "Keukenzout",
-      "en": "Table salt"
+      "en": "Table salt",
+      "de": "Speisesalz"
     },
     "notes": "Stortdichtheid"
   },
@@ -5102,7 +5414,8 @@
     ],
     "language_labels": {
       "nl": "Pasta (droog)",
-      "en": "Pasta (dry)"
+      "en": "Pasta (dry)",
+      "de": "Teigwaren (trocken)"
     },
     "notes": "Stortdichtheid"
   },
@@ -5119,7 +5432,8 @@
     ],
     "language_labels": {
       "nl": "Melkpoeder",
-      "en": "Milk powder"
+      "en": "Milk powder",
+      "de": "Milchpulver"
     },
     "notes": "Stortdichtheid"
   },
@@ -5135,7 +5449,8 @@
     ],
     "language_labels": {
       "nl": "Weipoeder",
-      "en": "Whey powder"
+      "en": "Whey powder",
+      "de": "Molkenpulver"
     },
     "notes": "Stortdichtheid"
   },
@@ -5151,7 +5466,8 @@
     ],
     "language_labels": {
       "nl": "Boter",
-      "en": "Butter"
+      "en": "Butter",
+      "de": "Butter"
     },
     "notes": "Massieve dichtheid"
   },
@@ -5168,7 +5484,8 @@
     ],
     "language_labels": {
       "nl": "Kaas",
-      "en": "Cheese"
+      "en": "Cheese",
+      "de": "Käse"
     },
     "notes": "Massieve dichtheid"
   },
@@ -5183,7 +5500,8 @@
     ],
     "language_labels": {
       "nl": "Honing",
-      "en": "Honey"
+      "en": "Honey",
+      "de": "Honig"
     },
     "notes": "Vloeistof bij 15 °C"
   },
@@ -5200,7 +5518,8 @@
     ],
     "language_labels": {
       "nl": "Chocolade",
-      "en": "Chocolate"
+      "en": "Chocolate",
+      "de": "Schokolade"
     },
     "notes": "Massieve dichtheid"
   },
@@ -5215,7 +5534,8 @@
     ],
     "language_labels": {
       "nl": "Cacaoboter",
-      "en": "Cocoa butter"
+      "en": "Cocoa butter",
+      "de": "Kakaobutter"
     },
     "notes": "Massieve dichtheid"
   },
@@ -5231,7 +5551,8 @@
     ],
     "language_labels": {
       "nl": "Koperconcentraat",
-      "en": "Copper concentrate"
+      "en": "Copper concentrate",
+      "de": "Kupferkonzentrat"
     },
     "notes": "Stortdichtheid"
   },
@@ -5247,7 +5568,8 @@
     ],
     "language_labels": {
       "nl": "Zinkconcentraat",
-      "en": "Zinc concentrate"
+      "en": "Zinc concentrate",
+      "de": "Zinkkonzentrat"
     },
     "notes": "Stortdichtheid"
   },
@@ -5263,7 +5585,8 @@
     ],
     "language_labels": {
       "nl": "Chroomerts (chromiet)",
-      "en": "Chromite ore"
+      "en": "Chromite ore",
+      "de": "Chromiterz"
     },
     "notes": "Stortdichtheid"
   },
@@ -5278,7 +5601,8 @@
     ],
     "language_labels": {
       "nl": "Mangaanerts",
-      "en": "Manganese ore"
+      "en": "Manganese ore",
+      "de": "Manganerz"
     },
     "notes": "Stortdichtheid"
   },
@@ -5294,7 +5618,8 @@
     ],
     "language_labels": {
       "nl": "Nikkelerts",
-      "en": "Nickel ore"
+      "en": "Nickel ore",
+      "de": "Nickelerz"
     },
     "notes": "Stortdichtheid"
   },
@@ -5310,7 +5635,8 @@
     ],
     "language_labels": {
       "nl": "Fosfaaterts",
-      "en": "Phosphate rock"
+      "en": "Phosphate rock",
+      "de": "Rohphosphat"
     },
     "notes": "Stortdichtheid"
   },
@@ -5326,7 +5652,8 @@
     ],
     "language_labels": {
       "nl": "Ilmeniet",
-      "en": "Ilmenite"
+      "en": "Ilmenite",
+      "de": "Ilmenit"
     },
     "notes": "Stortdichtheid"
   },
@@ -5343,7 +5670,8 @@
     ],
     "language_labels": {
       "nl": "Bariet",
-      "en": "Barite"
+      "en": "Barite",
+      "de": "Baryt (Schwerspat)"
     },
     "notes": "Stortdichtheid"
   },
@@ -5359,7 +5687,8 @@
     ],
     "language_labels": {
       "nl": "Bentoniet",
-      "en": "Bentonite"
+      "en": "Bentonite",
+      "de": "Bentonit"
     },
     "notes": "Stortdichtheid"
   },
@@ -5376,7 +5705,8 @@
     ],
     "language_labels": {
       "nl": "Kaolien",
-      "en": "Kaolin"
+      "en": "Kaolin",
+      "de": "Kaolin"
     },
     "notes": "Stortdichtheid"
   },
@@ -5391,7 +5721,8 @@
     ],
     "language_labels": {
       "nl": "Veldspaat",
-      "en": "Feldspar"
+      "en": "Feldspar",
+      "de": "Feldspat"
     },
     "notes": "Stortdichtheid"
   },
@@ -5407,7 +5738,8 @@
     ],
     "language_labels": {
       "nl": "Olivijn",
-      "en": "Olivine"
+      "en": "Olivine",
+      "de": "Olivin"
     },
     "notes": "Stortdichtheid"
   },
@@ -5423,7 +5755,8 @@
     ],
     "language_labels": {
       "nl": "Steenzout",
-      "en": "Rock salt"
+      "en": "Rock salt",
+      "de": "Steinsalz"
     },
     "notes": "Stortdichtheid"
   },
@@ -5441,7 +5774,8 @@
     ],
     "language_labels": {
       "nl": "Petroleumcokes",
-      "en": "Petroleum coke"
+      "en": "Petroleum coke",
+      "de": "Petrolkoks"
     },
     "notes": "Stortdichtheid"
   },
@@ -5457,7 +5791,8 @@
     ],
     "language_labels": {
       "nl": "Bruinkool",
-      "en": "Lignite"
+      "en": "Lignite",
+      "de": "Braunkohle"
     },
     "notes": "Stortdichtheid"
   },
@@ -5473,7 +5808,8 @@
     ],
     "language_labels": {
       "nl": "Antraciet",
-      "en": "Anthracite"
+      "en": "Anthracite",
+      "de": "Anthrazit"
     },
     "notes": "Stortdichtheid"
   },
@@ -5490,7 +5826,8 @@
     ],
     "language_labels": {
       "nl": "Aluinaarde (aluminiumoxide)",
-      "en": "Alumina"
+      "en": "Alumina",
+      "de": "Tonerde"
     },
     "notes": "Stortdichtheid"
   },
@@ -5508,7 +5845,8 @@
     ],
     "language_labels": {
       "nl": "Gebluste kalk",
-      "en": "Hydrated lime"
+      "en": "Hydrated lime",
+      "de": "Kalkhydrat"
     },
     "notes": "Stortdichtheid"
   },
@@ -5523,7 +5861,8 @@
     ],
     "language_labels": {
       "nl": "Polystyreen (massief)",
-      "en": "Polystyrene (solid)"
+      "en": "Polystyrene (solid)",
+      "de": "Polystyrol (massiv)"
     },
     "notes": "Massieve dichtheid"
   },
@@ -5539,7 +5878,8 @@
     ],
     "language_labels": {
       "nl": "ABS-kunststof",
-      "en": "ABS plastic"
+      "en": "ABS plastic",
+      "de": "ABS-Kunststoff"
     },
     "notes": "Massieve dichtheid"
   },
@@ -5556,7 +5896,8 @@
     ],
     "language_labels": {
       "nl": "Polycarbonaat",
-      "en": "Polycarbonate"
+      "en": "Polycarbonate",
+      "de": "Polycarbonat"
     },
     "notes": "Massieve dichtheid"
   },
@@ -5572,7 +5913,8 @@
     ],
     "language_labels": {
       "nl": "PET (massief)",
-      "en": "PET (solid)"
+      "en": "PET (solid)",
+      "de": "PET (massiv)"
     },
     "notes": "Massieve dichtheid"
   },
@@ -5588,7 +5930,8 @@
     ],
     "language_labels": {
       "nl": "PTFE (teflon)",
-      "en": "PTFE (Teflon)"
+      "en": "PTFE (Teflon)",
+      "de": "PTFE (Teflon)"
     },
     "notes": "Massieve dichtheid"
   },
@@ -5605,7 +5948,8 @@
     ],
     "language_labels": {
       "nl": "PUR-schuim",
-      "en": "PU foam"
+      "en": "PU foam",
+      "de": "PU-Schaum"
     }
   },
   {
@@ -5621,7 +5965,8 @@
     ],
     "language_labels": {
       "nl": "Rubbergranulaat",
-      "en": "Rubber granulate"
+      "en": "Rubber granulate",
+      "de": "Gummigranulat"
     },
     "notes": "Stortdichtheid"
   },
@@ -5638,7 +5983,8 @@
     ],
     "language_labels": {
       "nl": "Kopieerpapier (pallets)",
-      "en": "Office paper (pallets)"
+      "en": "Office paper (pallets)",
+      "de": "Kopierpapier (Paletten)"
     },
     "notes": "Gemiddelde incl. verpakking en pallet"
   },
@@ -5655,7 +6001,8 @@
     ],
     "language_labels": {
       "nl": "Tissuepapier (rollen)",
-      "en": "Tissue rolls"
+      "en": "Tissue rolls",
+      "de": "Tissuerollen"
     },
     "notes": "Gemiddelde incl. verpakking en pallet"
   },
@@ -5672,7 +6019,8 @@
     ],
     "language_labels": {
       "nl": "Boeken (pallets)",
-      "en": "Books (pallets)"
+      "en": "Books (pallets)",
+      "de": "Bücher (Paletten)"
     },
     "notes": "Gemiddelde incl. verpakking en pallet"
   },
@@ -5689,7 +6037,8 @@
     ],
     "language_labels": {
       "nl": "Wol (balen)",
-      "en": "Wool (bales)"
+      "en": "Wool (bales)",
+      "de": "Wolle (in Ballen)"
     },
     "notes": "Geperste balen"
   },
@@ -5705,7 +6054,8 @@
     ],
     "language_labels": {
       "nl": "Tapijt (rollen)",
-      "en": "Carpet rolls"
+      "en": "Carpet rolls",
+      "de": "Teppichrollen"
     }
   },
   {
@@ -5721,7 +6071,8 @@
     ],
     "language_labels": {
       "nl": "Kleding (pallets/dozen)",
-      "en": "Clothing (palletized)"
+      "en": "Clothing (palletized)",
+      "de": "Bekleidung (palettiert)"
     },
     "notes": "Gemiddelde incl. verpakking en pallet"
   },
@@ -5737,7 +6088,8 @@
     ],
     "language_labels": {
       "nl": "Vlas (balen)",
-      "en": "Flax (bales)"
+      "en": "Flax (bales)",
+      "de": "Flachs (in Ballen)"
     },
     "notes": "Geperste balen"
   },
@@ -5754,7 +6106,8 @@
     ],
     "language_labels": {
       "nl": "RDF-balen (brandstof uit afval)",
-      "en": "RDF bales (refuse-derived fuel)"
+      "en": "RDF bales (refuse-derived fuel)",
+      "de": "EBS-Ballen (Ersatzbrennstoff)"
     },
     "notes": "Geperste balen"
   },
@@ -5772,7 +6125,8 @@
     ],
     "language_labels": {
       "nl": "Elektronisch afval",
-      "en": "E-waste (WEEE)"
+      "en": "E-waste (WEEE)",
+      "de": "Elektroaltgeräte (WEEE)"
     },
     "notes": "Gemengd, los gestort"
   },
@@ -5789,7 +6143,8 @@
     ],
     "language_labels": {
       "nl": "AEC-bodemas",
-      "en": "Incinerator bottom ash"
+      "en": "Incinerator bottom ash",
+      "de": "Rostasche (Müllverbrennung)"
     },
     "notes": "Stortdichtheid"
   },
@@ -5806,7 +6161,8 @@
     ],
     "language_labels": {
       "nl": "Groenafval",
-      "en": "Green waste"
+      "en": "Green waste",
+      "de": "Grünabfall"
     },
     "notes": "Gemengd, los gestort"
   },
@@ -5823,7 +6179,8 @@
     ],
     "language_labels": {
       "nl": "Zuiveringsslib (ontwaterd)",
-      "en": "Sewage sludge (dewatered)"
+      "en": "Sewage sludge (dewatered)",
+      "de": "Klärschlamm (entwässert)"
     }
   },
   {
@@ -5839,7 +6196,8 @@
     ],
     "language_labels": {
       "nl": "Lege pallets (gestapeld)",
-      "en": "Empty pallets (stacked)"
+      "en": "Empty pallets (stacked)",
+      "de": "Leerpaletten (gestapelt)"
     },
     "notes": "Los gestapeld"
   },
@@ -5856,7 +6214,8 @@
     ],
     "language_labels": {
       "nl": "Machines (op skids/kisten)",
-      "en": "Machinery (skidded/crated)"
+      "en": "Machinery (skidded/crated)",
+      "de": "Maschinen (auf Kufen/verkistet)"
     },
     "notes": "Effectieve stuwdichtheid"
   },
@@ -5875,7 +6234,8 @@
     ],
     "language_labels": {
       "nl": "Witgoed",
-      "en": "White goods (appliances)"
+      "en": "White goods (appliances)",
+      "de": "Weiße Ware (Haushaltsgeräte)"
     },
     "notes": "Gemiddelde incl. verpakking en pallet"
   },
@@ -5893,7 +6253,8 @@
     ],
     "language_labels": {
       "nl": "Loodaccu's (pallets)",
-      "en": "Lead-acid batteries (palletized)"
+      "en": "Lead-acid batteries (palletized)",
+      "de": "Bleiakkumulatoren (palettiert)"
     },
     "notes": "Gemiddelde incl. verpakking en pallet"
   },
@@ -5910,7 +6271,8 @@
     ],
     "language_labels": {
       "nl": "Kabelhaspels",
-      "en": "Cable drums"
+      "en": "Cable drums",
+      "de": "Kabeltrommeln"
     },
     "notes": "Effectieve stuwdichtheid"
   },
@@ -5927,7 +6289,8 @@
     ],
     "language_labels": {
       "nl": "Sanitair (keramiek)",
-      "en": "Sanitary ware"
+      "en": "Sanitary ware",
+      "de": "Sanitärkeramik"
     },
     "notes": "Gemiddelde incl. verpakking en pallet"
   },
@@ -5945,7 +6308,8 @@
     ],
     "language_labels": {
       "nl": "Lege kratten (emballage)",
-      "en": "Empty crates (returnables)"
+      "en": "Empty crates (returnables)",
+      "de": "Leergut (Mehrwegkisten)"
     },
     "notes": "Los gestapeld"
   },
@@ -5962,7 +6326,8 @@
     ],
     "language_labels": {
       "nl": "Bevestigingsmateriaal (dozen)",
-      "en": "Fasteners (boxed)"
+      "en": "Fasteners (boxed)",
+      "de": "Verbindungselemente (in Kartons)"
     },
     "notes": "In dozen, effectief"
   },
@@ -5978,7 +6343,8 @@
     ],
     "language_labels": {
       "nl": "Peren (kisten)",
-      "en": "Pears (crates)"
+      "en": "Pears (crates)",
+      "de": "Birnen (in Steigen)"
     },
     "notes": "Gemiddelde incl. verpakking en pallet"
   },
@@ -5994,7 +6360,8 @@
     ],
     "language_labels": {
       "nl": "Druiven (dozen)",
-      "en": "Grapes (boxed)"
+      "en": "Grapes (boxed)",
+      "de": "Weintrauben (in Kartons)"
     },
     "notes": "Gemiddelde incl. verpakking en pallet"
   },
@@ -6010,7 +6377,8 @@
     ],
     "language_labels": {
       "nl": "Meloenen (kisten)",
-      "en": "Melons (crates)"
+      "en": "Melons (crates)",
+      "de": "Melonen (in Steigen)"
     },
     "notes": "Gemiddelde incl. verpakking en pallet"
   },
@@ -6025,7 +6393,8 @@
     ],
     "language_labels": {
       "nl": "Komkommers (dozen)",
-      "en": "Cucumbers (boxed)"
+      "en": "Cucumbers (boxed)",
+      "de": "Gurken (in Kartons)"
     },
     "notes": "Gemiddelde incl. verpakking en pallet"
   },
@@ -6041,7 +6410,8 @@
     ],
     "language_labels": {
       "nl": "Paprika's (dozen)",
-      "en": "Bell peppers (boxed)"
+      "en": "Bell peppers (boxed)",
+      "de": "Paprika (in Kartons)"
     },
     "notes": "Gemiddelde incl. verpakking en pallet"
   },
@@ -6057,7 +6427,8 @@
     ],
     "language_labels": {
       "nl": "Citroenen (kisten)",
-      "en": "Lemons (crates)"
+      "en": "Lemons (crates)",
+      "de": "Zitronen (in Steigen)"
     },
     "notes": "Gemiddelde incl. verpakking en pallet"
   },
@@ -6072,7 +6443,8 @@
     ],
     "language_labels": {
       "nl": "Aardbeien (trays)",
-      "en": "Strawberries (trays)"
+      "en": "Strawberries (trays)",
+      "de": "Erdbeeren (in Schalen)"
     },
     "notes": "Gemiddelde incl. verpakking en pallet"
   },
@@ -6087,7 +6459,8 @@
     ],
     "language_labels": {
       "nl": "Prei (kisten)",
-      "en": "Leeks (crates)"
+      "en": "Leeks (crates)",
+      "de": "Lauch (in Steigen)"
     },
     "notes": "Gemiddelde incl. verpakking en pallet"
   },
@@ -6103,7 +6476,8 @@
     ],
     "language_labels": {
       "nl": "Bloemkool (kisten)",
-      "en": "Cauliflower (crates)"
+      "en": "Cauliflower (crates)",
+      "de": "Blumenkohl (in Steigen)"
     },
     "notes": "Gemiddelde incl. verpakking en pallet"
   },
@@ -6119,7 +6493,8 @@
     ],
     "language_labels": {
       "nl": "Champignons (trays)",
-      "en": "Mushrooms (trays)"
+      "en": "Mushrooms (trays)",
+      "de": "Champignons (in Schalen)"
     },
     "notes": "Gemiddelde incl. verpakking en pallet"
   },
@@ -6134,7 +6509,8 @@
     ],
     "language_labels": {
       "nl": "Graszaad",
-      "en": "Grass seed"
+      "en": "Grass seed",
+      "de": "Grassamen"
     },
     "notes": "Stortdichtheid"
   },
@@ -6149,7 +6525,8 @@
     ],
     "language_labels": {
       "nl": "Mosterdzaad",
-      "en": "Mustard seed"
+      "en": "Mustard seed",
+      "de": "Senfsaat"
     },
     "notes": "Stortdichtheid"
   },
@@ -6164,7 +6541,8 @@
     ],
     "language_labels": {
       "nl": "Sesamzaad",
-      "en": "Sesame seed"
+      "en": "Sesame seed",
+      "de": "Sesamsaat"
     },
     "notes": "Stortdichtheid"
   },
@@ -6181,7 +6559,8 @@
     ],
     "language_labels": {
       "nl": "Pinda's (gepeld)",
-      "en": "Peanuts (shelled)"
+      "en": "Peanuts (shelled)",
+      "de": "Erdnüsse (geschält)"
     },
     "notes": "Stortdichtheid"
   },
@@ -6197,7 +6576,8 @@
     ],
     "language_labels": {
       "nl": "Hoppellets",
-      "en": "Hop pellets"
+      "en": "Hop pellets",
+      "de": "Hopfenpellets"
     },
     "notes": "Stortdichtheid"
   },
@@ -6214,7 +6594,8 @@
     ],
     "language_labels": {
       "nl": "Havermout",
-      "en": "Oatmeal (rolled oats)"
+      "en": "Oatmeal (rolled oats)",
+      "de": "Haferflocken"
     },
     "notes": "Stortdichtheid"
   },
@@ -6230,7 +6611,8 @@
     ],
     "language_labels": {
       "nl": "Gebrande koffie (bonen)",
-      "en": "Roasted coffee beans"
+      "en": "Roasted coffee beans",
+      "de": "Röstkaffeebohnen"
     },
     "notes": "Stortdichtheid"
   },
@@ -6247,7 +6629,8 @@
     ],
     "language_labels": {
       "nl": "Flessenwater (pallets)",
-      "en": "Bottled water (pallets)"
+      "en": "Bottled water (pallets)",
+      "de": "Flaschenwasser (Paletten)"
     },
     "notes": "Gemiddelde incl. verpakking en pallet"
   },
@@ -6264,7 +6647,8 @@
     ],
     "language_labels": {
       "nl": "Suikersiroop",
-      "en": "Sugar syrup"
+      "en": "Sugar syrup",
+      "de": "Zuckersirup"
     },
     "notes": "Vloeistof bij 15 °C"
   },
@@ -6280,7 +6664,8 @@
     ],
     "language_labels": {
       "nl": "Azijn",
-      "en": "Vinegar"
+      "en": "Vinegar",
+      "de": "Essig"
     },
     "notes": "Vloeistof bij 15 °C"
   },
@@ -6297,7 +6682,8 @@
     ],
     "language_labels": {
       "nl": "Urean (UAN-oplossing)",
-      "en": "UAN solution (liquid fertilizer)"
+      "en": "UAN solution (liquid fertilizer)",
+      "de": "AHL-Lösung (Flüssigdünger)"
     },
     "notes": "Vloeistof bij 15 °C"
   },
@@ -6313,7 +6699,8 @@
     ],
     "language_labels": {
       "nl": "IJzerchloride-oplossing (40%)",
-      "en": "Ferric chloride solution (40%)"
+      "en": "Ferric chloride solution (40%)",
+      "de": "Eisen(III)-chloridlösung (40 %)"
     },
     "notes": "Vloeistof bij 15 °C"
   },
@@ -6330,7 +6717,8 @@
     ],
     "language_labels": {
       "nl": "Natriumhypochloriet (bleekloog)",
-      "en": "Sodium hypochlorite (bleach)"
+      "en": "Sodium hypochlorite (bleach)",
+      "de": "Natriumhypochlorit (Bleichlauge)"
     },
     "notes": "Vloeistof bij 15 °C"
   },
@@ -6347,7 +6735,8 @@
     ],
     "language_labels": {
       "nl": "Epoxyhars",
-      "en": "Epoxy resin"
+      "en": "Epoxy resin",
+      "de": "Epoxidharz"
     },
     "notes": "Vloeistof bij 15 °C"
   },
@@ -6363,7 +6752,8 @@
     ],
     "language_labels": {
       "nl": "Vloeibare waterstof",
-      "en": "Liquid hydrogen"
+      "en": "Liquid hydrogen",
+      "de": "Flüssiger Wasserstoff"
     },
     "notes": "Vloeibaar gemaakt (gekoeld/onder druk)"
   },
@@ -6381,7 +6771,8 @@
     ],
     "language_labels": {
       "nl": "Natriumbicarbonaat (zuiveringszout)",
-      "en": "Sodium bicarbonate"
+      "en": "Sodium bicarbonate",
+      "de": "Natriumhydrogencarbonat"
     },
     "notes": "Stortdichtheid"
   },
@@ -6398,7 +6789,8 @@
     ],
     "language_labels": {
       "nl": "Cement in zakken (pallets)",
-      "en": "Bagged cement (pallets)"
+      "en": "Bagged cement (pallets)",
+      "de": "Sackzement (Paletten)"
     },
     "notes": "Gemiddelde incl. verpakking en pallet"
   },
@@ -6415,7 +6807,8 @@
     ],
     "language_labels": {
       "nl": "Betonmortel (nat)",
-      "en": "Ready-mix concrete (wet)"
+      "en": "Ready-mix concrete (wet)",
+      "de": "Transportbeton (frisch)"
     },
     "notes": "Nat, ongehard"
   },
@@ -6433,7 +6826,8 @@
     ],
     "language_labels": {
       "nl": "Breuksteen",
-      "en": "Armour stone (riprap)"
+      "en": "Armour stone (riprap)",
+      "de": "Wasserbausteine"
     },
     "notes": "Stortdichtheid"
   },
@@ -6450,7 +6844,8 @@
     ],
     "language_labels": {
       "nl": "Robinia",
-      "en": "Robinia (black locust)"
+      "en": "Robinia (black locust)",
+      "de": "Robinie"
     }
   },
   {
@@ -6467,7 +6862,8 @@
     ],
     "language_labels": {
       "nl": "Thermisch gemodificeerd hout",
-      "en": "Thermally modified wood"
+      "en": "Thermally modified wood",
+      "de": "Thermoholz"
     }
   },
   {
@@ -6482,7 +6878,8 @@
     ],
     "language_labels": {
       "nl": "Krantenpapier (rollen)",
-      "en": "Newsprint (rolls)"
+      "en": "Newsprint (rolls)",
+      "de": "Zeitungsdruckpapier (Rollen)"
     }
   },
   {
@@ -6497,7 +6894,8 @@
     ],
     "language_labels": {
       "nl": "Matrassen",
-      "en": "Mattresses"
+      "en": "Mattresses",
+      "de": "Matratzen"
     },
     "notes": "Gemiddelde incl. verpakking en pallet"
   },
@@ -6514,7 +6912,8 @@
     ],
     "language_labels": {
       "nl": "Fietsen (dozen)",
-      "en": "Bicycles (boxed)"
+      "en": "Bicycles (boxed)",
+      "de": "Fahrräder (in Kartons)"
     },
     "notes": "Gemiddelde incl. verpakking en pallet"
   },
@@ -6531,7 +6930,8 @@
     ],
     "language_labels": {
       "nl": "Gemengd kunststofafval",
-      "en": "Mixed plastic waste"
+      "en": "Mixed plastic waste",
+      "de": "Gemischte Kunststoffabfälle"
     },
     "notes": "Gemengd, los gestort"
   }

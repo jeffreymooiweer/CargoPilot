@@ -2,6 +2,59 @@
 
 All notable changes are documented here, following [Semantic Versioning](https://semver.org/).
 
+## [1.29.1] — 2026-08-04
+
+The two gaps left open by 1.29.0, closed. One of them was not the gap it was described as.
+
+### Fixed
+
+- **The proper shipping name was always English, even where German was prescribed.**
+  1.29.0 claimed the ADR source table "carries Dutch and English but no German". That was
+  wrong twice over: the table carries `name_en` **and** `name_de` for all 2,928 entries,
+  and it carries no Dutch at all. The German name was sitting in the data the whole time
+  and every code path reached past it with `entry.get("name_en") or entry.get("name_de")`.
+  A German consignor got `GASOLINE` on a CMR while `BENZIN ODER OTTOKRAFTSTOFF` stood
+  right next to it in Table A.
+
+  Fixing it is not "translate along with the screen", because the modes differ. ADR
+  5.4.1.4.1 — and along the same line RID and ADN — wants the transport document in an
+  official language of the forwarding country, so a German name belongs on a German CMR
+  or CIM. IMDG 5.4.1.4.1 wants English, French or Spanish. IATA DGR 8.1.2.1 wants English.
+  `BENZIN` on a Shipper's Declaration is not a matter of taste; it is a refused shipment.
+
+  So `app/services/dg/naming.py` gives the German name only when the reader is German and
+  no sea or air profile is in play — for a multimodal shipment English satisfies all three
+  regimes and German only one. The UN lookup and the type-ahead now carry the same
+  language and profiles, so the suggestion the user clicks is the text the document will
+  actually carry.
+
+  And for the sequence that would otherwise slip through — draft a German road document
+  first, add a sea leg afterwards, keep the German name that is already in the field — the
+  export refuses it and names the English wording that belongs there instead.
+
+- **The catalogue search always answered in Dutch.** `search_catalog` took no language
+  parameter at all, so an English user got Dutch material names too; German only made an
+  existing problem visible. It now takes one, and the route and the frontend pass it.
+  Searching still spans every language — type `Stahl` while reading Dutch and you still
+  find staal — only the answer follows the interface.
+
+  All 400 goods and the reference items gained German labels, as did the product-type and
+  fallback-material tables and the dimension hint under a suggestion. This is not
+  decoration: the suggestion a user clicks becomes the description in the goods column of
+  a waybill.
+
+### Tests
+
+- `test_shipping_name_language.py` pins the ADR/IMDG/IATA split, the fallback for entries
+  with no German name, and the road-then-sea sequence. It also holds the lookup and the
+  export to the same answer — a suggestion that differs from what gets exported is worse
+  than no suggestion.
+- `test_catalog_search_language.py` covers the three languages, cross-language searching,
+  a German name that exists only as a label, and the guarantee that a label is never
+  empty — an empty label means an empty goods column.
+- `seed/materials.json` and `seed/reference_items.json` joined the completeness check, so
+  a new material has to arrive in all three languages.
+
 ## [1.29.0] — 2026-08-03
 
 German as a third interface language, and one place that decides which language anything is in.
@@ -59,6 +112,8 @@ German as a third interface language, and one place that decides which language 
   identical interpolation variables.
 
 ### Known gaps
+
+Both were closed in 1.29.1; the second one turned out not to be a gap in the data at all.
 
 - The catalogue search (`search_catalog`) returns material names in Dutch regardless of
   the interface language. It takes no language parameter at all, so this affects English

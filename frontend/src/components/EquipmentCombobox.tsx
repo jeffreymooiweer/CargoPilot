@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { useTranslation } from "react-i18next";
 import { api, CatalogSearchHit, EquipmentItem } from "../api/client";
+import { documentLanguage } from "../i18n/language";
 
 const inputClass =
   "w-full border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-950 text-slate-900 dark:text-slate-100 rounded-lg px-3 py-2.5 text-sm min-h-[44px]";
@@ -16,7 +17,7 @@ interface Props {
 }
 
 export default function EquipmentCombobox({ value, onChange, placeholder }: Props) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const [equipment, setEquipment] = useState<EquipmentItem[]>([]);
   const [results, setResults] = useState<CatalogSearchHit[]>([]);
   const [loading, setLoading] = useState(false);
@@ -92,7 +93,7 @@ export default function EquipmentCombobox({ value, onChange, placeholder }: Prop
     setLoading(true);
     debounceRef.current = setTimeout(() => {
       api
-        .catalogSearch(q)
+        .catalogSearch(q, 25, documentLanguage(i18n.language))
         .then((res) => setResults(res.results))
         .catch(() => setResults([]))
         .finally(() => setLoading(false));
@@ -101,7 +102,9 @@ export default function EquipmentCombobox({ value, onChange, placeholder }: Prop
     return () => {
       if (debounceRef.current) clearTimeout(debounceRef.current);
     };
-  }, [query]);
+    // Ook op de taal: wie tijdens het typen van taal wisselt, hoort de
+    // suggesties in de nieuwe taal terug te krijgen.
+  }, [query, i18n.language]);
 
   const browseEquipment = useMemo(() => {
     if (query.trim().length >= MIN_SEARCH_LEN) return [];

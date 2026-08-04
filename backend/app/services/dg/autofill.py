@@ -23,6 +23,7 @@ import re
 from typing import Any
 
 from app.core.languages import pick
+from app.services.dg.naming import proper_shipping_name
 from app.services.dg.database import get_un_entries
 from app.services.dg.enrichment import (
     CLASS_DOCUMENT_NOTES,
@@ -74,7 +75,9 @@ def _un_prefixed(value: Any) -> str:
     return text if text.upper().startswith(("UN", "ID")) else f"UN {text}"
 
 
-def derive_product(product: dict[str, Any], language: str = "nl") -> dict[str, Any]:
+def derive_product(
+    product: dict[str, Any], language: str = "nl", profiles: list[str] | None = None
+) -> dict[str, Any]:
     """Vul alles in wat uit het UN-nummer volgt; bestaande invoer blijft staan."""
     un = str(product.get("un_number") or "").strip()
     if not un:
@@ -87,7 +90,7 @@ def derive_product(product: dict[str, Any], language: str = "nl") -> dict[str, A
     hazards = parse_hazards(entry)
 
     derived: dict[str, Any] = {
-        "proper_shipping_name": (entry.get("name_en") or entry.get("name_de") or "").upper(),
+        "proper_shipping_name": proper_shipping_name(entry, language, profiles),
         "class": hazards["division"],
         "subsidiary_risks": "+".join(hazards["subsidiary_risks"]),
         "classification_code": hazards["classification_code"],
@@ -263,7 +266,7 @@ def prepare_entries(
         products = []
         for index, product in enumerate(entry.get("products") or []):
             merged = dict(product)
-            derived = derive_product(merged, language)
+            derived = derive_product(merged, language, profiles)
             if derived:
                 merged.update(derived["patch"])
                 if derived["hints"]:

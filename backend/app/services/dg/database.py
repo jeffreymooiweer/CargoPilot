@@ -19,6 +19,7 @@ from pathlib import Path
 
 from app.services.dg import amendment_42_24
 from app.services.dg.enrichment import clean_value, enrich_un_entry, parse_hazards
+from app.services.dg.naming import proper_shipping_name
 
 _SEED_DIR = Path(__file__).resolve().parents[3] / "seed" / "dg"
 
@@ -95,7 +96,12 @@ def _public(entry: dict) -> dict:
     return {k: v for k, v in entry.items() if not k.startswith("_")}
 
 
-def search_un_numbers(query: str, limit: int = 12) -> list[dict]:
+def search_un_numbers(
+    query: str,
+    limit: int = 12,
+    language: str = "nl",
+    profiles: list[str] | None = None,
+) -> list[dict]:
     query = query.strip()
     if not query:
         return []
@@ -122,7 +128,16 @@ def search_un_numbers(query: str, limit: int = 12) -> list[dict]:
                 scored.append((20, entry))
 
     scored.sort(key=lambda item: (-item[0], item[1]["un"], item[1].get("packing_group") or ""))
-    return [{**_public(entry), **enrich_un_entry(entry)} for _, entry in scored[:limit]]
+    # De suggestie draagt de naam die op het document terechtkomt; die moet dus
+    # dezelfde taalkeuze volgen als de export.
+    return [
+        {
+            **_public(entry),
+            **enrich_un_entry(entry, language),
+            "proper_shipping_name": proper_shipping_name(entry, language, profiles),
+        }
+        for _, entry in scored[:limit]
+    ]
 
 
 def get_un_entries(un_number: str) -> list[dict]:
@@ -130,7 +145,9 @@ def get_un_entries(un_number: str) -> list[dict]:
     return [_public(entry) for entry in _load_un() if entry["un"] == digits]
 
 
-def offline_lookup(un_number: str) -> dict | None:
+def offline_lookup(
+    un_number: str, language: str = "nl", profiles: list[str] | None = None
+) -> dict | None:
     """Zelfde vorm als de FreightUtils-lookup, als offline terugval."""
     entries = get_un_entries(un_number)
     if not entries:
@@ -138,9 +155,9 @@ def offline_lookup(un_number: str) -> dict | None:
     entry = entries[0]
     hazards = parse_hazards(entry)
     return {
-        **enrich_un_entry(entry),
+        **enrich_un_entry(entry, language),
         "un_number": entry["un"],
-        "proper_shipping_name": (entry.get("name_en") or entry.get("name_de") or "").upper(),
+        "proper_shipping_name": proper_shipping_name(entry, language, profiles),
         "class": hazards["division"],
         "subsidiary_risks": "+".join(hazards["subsidiary_risks"]),
         "classification_code": hazards["classification_code"],

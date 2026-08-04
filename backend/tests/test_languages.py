@@ -33,6 +33,10 @@ TRANSLATED_FILES = [
     "seed/dg/packagings.json",
     "seed/dg/segregation_groups.json",
     "seed/dg/imdg_42_24.json",
+    # De goederendatabase: de naam die de gebruiker aanklikt wordt de
+    # omschrijving op zijn vrachtbrief.
+    "seed/materials.json",
+    "seed/reference_items.json",
 ]
 
 # Sommige blokken dragen hun talen als achtervoegsel: note_nl/note_en.

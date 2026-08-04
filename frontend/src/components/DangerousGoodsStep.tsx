@@ -185,14 +185,16 @@ export default function DangerousGoodsStep({
   );
 
   const unFetcher = async (q: string): Promise<SuggestItem<DgUnEntry>[]> => {
-    const { results } = await api.dgSearch(q);
+    const { results } = await api.dgSearch(q, 12, lang, profiles);
     return results.map((entry, i) => ({
       key: `${entry.un}-${i}`,
       data: entry,
       render: (
         <span className="flex items-center gap-2">
           <span className="shrink-0 font-mono font-semibold">UN {entry.un}</span>
-          <span className="min-w-0 truncate">{entry.name_en || entry.name_de}</span>
+          <span className="min-w-0 truncate">
+            {entry.proper_shipping_name || entry.name_en || entry.name_de}
+          </span>
           {classBadge(entry.class, entry.packing_group)}
         </span>
       ),
@@ -235,7 +237,7 @@ export default function DangerousGoodsStep({
     setLookupError("");
     if (!un || un.replace(/\D/g, "").length < 4) return;
     try {
-      const data = await api.dgLookup(un);
+      const data = await api.dgLookup(un, lang, profiles);
       // Alleen overschrijven met velden die de bron daadwerkelijk levert.
       const patch: Partial<DgProduct> = { un_number: data.un_number || un };
       if (data.proper_shipping_name) patch.proper_shipping_name = data.proper_shipping_name;

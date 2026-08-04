@@ -8,6 +8,12 @@ import io
 import openpyxl
 from openpyxl import Workbook
 
+from app.services.import_limits import (
+    MAX_IMPORT_COLUMNS,
+    MAX_IMPORT_ROWS,
+    append_validated_row,
+)
+
 
 def build_xlsx_template(headers: list[str], example_row: list[str], sheet_name: str = "Template") -> bytes:
     wb = Workbook()
@@ -59,13 +65,21 @@ def read_tabular_file(content: bytes, filename: str) -> list[list[str]]:
 def _read_xlsx(content: bytes) -> list[list[str]]:
     wb = openpyxl.load_workbook(io.BytesIO(content), read_only=True, data_only=True)
     ws = wb.active
-    rows: list[list[str]] = []
-    for row in ws.iter_rows(values_only=True):
-        cells = [_cell_str(c) for c in row]
-        if any(cells):
-            rows.append(cells)
-    wb.close()
-    return rows
+    try:
+        if ws.max_row > MAX_IMPORT_ROWS:
+            raise ValueError(f"Import bevat meer dan {MAX_IMPORT_ROWS} rijen")
+        if ws.max_column > MAX_IMPORT_COLUMNS:
+            raise ValueError(
+                f"Werkblad bevat meer dan {MAX_IMPORT_COLUMNS} kolommen"
+            )
+        rows: list[list[str]] = []
+        for row in ws.iter_rows(values_only=True):
+            cells = [_cell_str(c) for c in row]
+            if any(cells):
+                append_validated_row(rows, cells)
+        return rows
+    finally:
+        wb.close()
 
 
 def _cell_str(value) -> str:
@@ -87,7 +101,12 @@ def _read_csv(content: bytes) -> list[list[str]]:
         dialect = csv.excel
         dialect.delimiter = ";"
     reader = csv.reader(io.StringIO(text), dialect)
-    return [[c.strip() for c in row] for row in reader if any(cell.strip() for cell in row)]
+    rows: list[list[str]] = []
+    for row in reader:
+        cells = [c.strip() for c in row]
+        if any(cells):
+            append_validated_row(rows, cells)
+    return rows
 
 
 def _read_text(content: bytes) -> list[list[str]]:
@@ -96,7 +115,7 @@ def _read_text(content: bytes) -> list[list[str]]:
     for line in text.splitlines():
         cells = _split_line(line)
         if cells:
-            rows.append(cells)
+            append_validated_row(rows, cells)
     return rows
 
 

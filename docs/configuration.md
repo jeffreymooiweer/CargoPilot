@@ -1,14 +1,14 @@
 # Configuration
 
 CargoPilot is configured entirely through environment variables. Copy `.env.example` to
-`.env` and adjust what you need — every setting has a working default except the two
-marked below.
+`.env` and adjust what you need — every setting has a working default, including the
+signing key, which the application makes for itself.
 
 ## Essentials
 
 | Variable | What it does | Default |
 |---|---|---|
-| `APP_SECRET_KEY` | Signs login sessions. **Required.** CargoPilot refuses to start without your own value. | — |
+| `APP_SECRET_KEY` | Signs login sessions. Leave it empty and CargoPilot generates one on first start and keeps it in `DATA_DIR/secret_key`. | generated |
 | `ADMIN_USERNAME` | Username of the first admin, created on first startup | — |
 | `ADMIN_EMAIL` | Email of the first admin | — |
 | `ADMIN_PASSWORD` | Password of the first admin. **Set this.** | — |
@@ -17,47 +17,53 @@ marked below.
 All three `ADMIN_*` variables must be present together, or no account is created. There
 is no public sign-up page.
 
-## CargoPilot refuses to start on an unsafe configuration
+## The signing key looks after itself
 
-`APP_SECRET_KEY` signs the token that says you are logged in. Its old default,
-`change-me`, is published in this repository — so an installation that never set it ran
-on a key anyone could look up, and anyone holding that key can write themselves a valid
-admin token. There is no login to bypass at that point; it is already bypassed.
+`APP_SECRET_KEY` signs the token that says you are logged in. Its default, `change-me`,
+is published in this repository — so an installation that never set it would run on a key
+anyone can look up, and anyone holding that key can write themselves a valid admin token.
+There is no login to bypass at that point; it is already bypassed.
 
-Since v1.25.0 the application stops at startup instead, and says what to do:
+You do not have to do anything about that. On the first start CargoPilot generates a key,
+stores it as `secret_key` in `DATA_DIR` (readable only by the owner) and uses it from then
+on. It survives restarts and container recreation because it lives on the mounted volume.
 
-```
-CargoPilot start niet met deze instellingen:
-
-  • APP_SECRET_KEY staat nog op de gepubliceerde standaardwaarde ('change-me').
-    Die sleutel tekent de inlogtokens: wie hem kent kan zelf een token voor de
-    beheerder maken. Zet er een eigen waarde voor in de plaats, bijvoorbeeld:
-    APP_SECRET_KEY=nT8v...
-```
-
-The key it offers is freshly generated and usable as-is. You can also make one yourself:
+Set `APP_SECRET_KEY` yourself only if you want to manage the key — to share it across
+several instances, for example, or to keep it in your own secret store. A value you set
+always wins, as long as it is not a published one and is at least 32 characters:
 
 ```bash
 python -c "import secrets; print(secrets.token_urlsafe(48))"
 ```
 
-Three things are checked, and all failures are reported at once so one restart is enough:
+**Changing the key logs everyone out.** Existing tokens were signed with the old key and
+stop validating. Nothing else is lost — no shipment data hangs on it.
 
-| Refused | Why |
-|---|---|
-| `APP_SECRET_KEY` empty, published (`change-me`, `dev-secret`, the placeholder from `.env.example`) or under 32 characters | The key signs login tokens |
-| `CORS_ALLOWED_ORIGINS=*` | The API works with cookies, so any website could then make requests on behalf of a logged-in user. Name your own address instead |
-| `ADMIN_PASSWORD` set to one that appears in this project's documentation | It is not a password if it is printed in a README |
+> **This used to be a refusal, and that was a mistake.** From v1.25.0 to v1.29.2
+> CargoPilot stopped at startup on a published or empty key. The reasoning was sound —
+> nobody reads a warning in a log — but the defaults it shipped with (`change-me` and
+> `CORS_ALLOWED_ORIGINS=*`) and the Unraid template, which leaves the key blank, meant
+> that every installation which had not filled both in by itself simply died on startup,
+> in a container that exited too fast to read the message. Nothing was made safer; the app
+> was just gone. Since v1.29.3 it makes a key instead. See the changelog for v1.29.3.
 
-**Changing `APP_SECRET_KEY` logs everyone out.** Existing tokens were signed with the old
-key and stop validating. Nothing else is lost — no shipment data hangs on it.
+## What is reported but does not stop anything
+
+Two settings are worth a line in the log without being worth a dead application:
+
+| Reported | Why | What to do |
+|---|---|---|
+| `CORS_ALLOWED_ORIGINS=*` | The API works with cookies, and browsers refuse to combine those with a wildcard origin — so a cross-site call fails anyway | Name the address you reach CargoPilot on |
+| `ADMIN_PASSWORD` set to one that appears in this project's documentation | It is not a password if it is printed in a README | Pick your own, and change it after first login |
 
 ### While developing
 
-A fixed, known key is convenient there, so the check only runs in production. Set
-`APP_ENV` to `development`, `dev`, `local`, `test` or `testing` and it is skipped
-entirely. Anything else — including an empty value or a typo — counts as production, so
-a misspelled `APP_ENV` cannot quietly switch the check off.
+A fixed, known key is convenient there, so these reports only appear in production. Set
+`APP_ENV` to `development`, `dev`, `local`, `test` or `testing` and they are skipped.
+Anything else — including an empty value or a typo — counts as production, so a misspelled
+`APP_ENV` cannot quietly switch them off. The key itself is still made safe in every
+environment: development is a reason not to nag, not a reason to sign tokens with a
+published string.
 
 ## Storage
 

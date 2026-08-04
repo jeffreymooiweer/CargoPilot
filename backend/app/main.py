@@ -20,7 +20,7 @@ from app.api.routes.geo import router as geo_router
 from app.api.routes.jobs import router as jobs_router
 from app.api.routes.users import router as users_router
 from app.core.config import get_settings
-from app.core.security_checks import verify_configuration
+from app.core.security_checks import apply_security_configuration
 from app.core.startup import init_app
 from app.services.regulatory_manifest import build_manifest, summary
 from app.version import get_version
@@ -32,10 +32,10 @@ limiter = Limiter(key_func=get_remote_address)
 def create_app() -> FastAPI:
     settings = get_settings()
     logging.basicConfig(level=settings.log_level)
-    # Vóór alles: draaien met een gepubliceerde sleutel of met CORS open voor
-    # iedereen is geen kwestie van netter kunnen, maar van een app die zonder
-    # inloggen te gebruiken is. Dan komt er geen applicatie.
-    verify_configuration(settings)
+    # Vóór alles: een gepubliceerde ondertekeningssleutel is een app die zonder
+    # inloggen te gebruiken is. Daar wordt er zelf een voor gemaakt en bewaard —
+    # weigeren te starten liet de gebruiker alleen met een dode container achter.
+    apply_security_configuration(settings)
     app = FastAPI(title=settings.app_name)
     app.state.limiter = limiter
     app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)

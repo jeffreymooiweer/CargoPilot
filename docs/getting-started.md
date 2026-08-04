@@ -21,7 +21,7 @@ Open `.env` and set at least these two:
 
 | Setting | What to put there |
 |---|---|
-| `APP_SECRET_KEY` | A long random string. It signs login sessions — treat it like a password. **CargoPilot refuses to start without one**, and says so with a ready-made key in the message. |
+| `APP_SECRET_KEY` | Optional. Signs login sessions. Leave it empty and CargoPilot makes one on first start and keeps it in `DATA_DIR/secret_key`; set it only if you want to manage the key yourself. |
 | `ADMIN_PASSWORD` | The password for your first admin account. |
 
 A quick way to generate a secret key:

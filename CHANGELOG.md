@@ -2,6 +2,57 @@
 
 All notable changes are documented here, following [Semantic Versioning](https://semver.org/).
 
+## [1.29.3] — 2026-08-04
+
+**If you are on v1.25.0 or later and the container will not start, this is the release
+that fixes it.** No configuration change is needed on your side.
+
+### Fixed
+
+- **CargoPilot refused to start on its own default settings.** Since v1.25.0 the
+  application stopped at startup when `APP_SECRET_KEY` was published, empty or shorter
+  than 32 characters, or when `CORS_ALLOWED_ORIGINS` was `*`. Those are the values it
+  ships with — `app_secret_key: str = "change-me"` and `cors_allowed_origins: str = "*"`
+  in `config.py` — and the Unraid template passes `APP_SECRET_KEY` through with an empty
+  value. So every installation that had not set both by hand died on startup, in a
+  container that exited too quickly to read the message explaining why.
+
+  The reasoning behind the refusal was right: the default signing key is published in
+  this repository, and anyone who has it can write themselves a valid admin token, so a
+  line in a log nobody reads is not an answer. The conclusion was wrong. A self-hosted
+  application with its own data directory does not need to ask the user for a signing
+  key — it can make one.
+
+  It does now. On first start CargoPilot generates a key, stores it as `secret_key` in
+  `DATA_DIR` with owner-only permissions, and uses it from then on. It survives restarts
+  and container recreation because it lives on the mounted volume. A key you set yourself
+  still wins, as long as it is not a published value and is long enough. The result is
+  strictly safer than what shipped before — random instead of published — and costs the
+  user nothing.
+
+  `CORS_ALLOWED_ORIGINS=*` and a documented `ADMIN_PASSWORD` are now reported in the log
+  rather than fatal. Neither is worth a dead application, and the CORS case is largely
+  theoretical anyway: browsers refuse to combine a wildcard origin with cookies, so the
+  cross-site call it warns about does not work regardless.
+
+### Tests
+
+- `test_starts_out_of_the_box.py` builds the application in a real subprocess with a
+  clean environment, no `.env`, and nothing configured that a user would not also have —
+  including the exact shape the Unraid template produces. It fails on eight of its nine
+  cases against v1.29.2 and passes on all nine here.
+
+  This is the test that was missing. The 500 tests that existed all ran with
+  `APP_ENV=test`, which is precisely the setting that skips the check, and not one of them
+  built the app the way a user starts it. A suite can be large and still miss the only
+  thing that matters.
+
+### Changed
+
+- The Unraid template no longer marks `APP_SECRET_KEY` as required, and says the key is
+  generated if left blank. `.env.example` and `docs/configuration.md` say the same, and
+  the documentation records what the old behaviour was and why it was wrong.
+
 ## [1.29.2] — 2026-08-04
 
 Following the rules and being pleasant to use are the same job, not a trade-off.

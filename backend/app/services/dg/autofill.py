@@ -181,7 +181,11 @@ def description_line(product: dict[str, Any], profile: str) -> str:
         hazard,
         str(product.get("packing_group") or "").strip(),
     ]
-    if profile in {"ADR", "RID", "ADN"}:
+    # Alleen ADR. De tunnelbeperkingscode komt uit kolom 15 van ADR Tabel A en
+    # hoort volgens 5.4.1.1.1 (k) op het wegdocument. RID Tabel A kent die kolom
+    # niet en het ADN-vervoersdocument draagt hem evenmin — "(D/E)" op een CIM
+    # of een ADN-document is een verzonnen vermelding op een officieel papier.
+    if profile == "ADR":
         tunnel = str(product.get("tunnel_code") or "").strip().strip("()")
         if tunnel:
             parts.append(f"({tunnel})")

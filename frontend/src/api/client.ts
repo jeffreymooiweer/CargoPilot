@@ -597,6 +597,11 @@ export interface AdrPointsResult {
   quantity_units_note: string;
   exempt_provisions: string[];
   still_required: string[];
+  /** Met welke tabellen is gerekend, bijvoorbeeld "ADR 1.1.3.6". */
+  basis?: string;
+  /** Gevuld wanneer die tabellen niet die van het gekozen profiel zijn — RID en
+   *  ADN hebben hun eigen 1.1.3.6 en die staat niet in CargoPilot. */
+  basis_note?: string | null;
 }
 
 export interface ComplianceWarning {
@@ -619,6 +624,8 @@ export interface DgComplianceResult {
   profiles: string[];
   adr_points?: AdrPointsResult;
   adr_mixed_loading?: ComplianceWarning[];
+  /** Zelfde voorbehoud als `basis_note`, voor de samenlading van 7.5.2. */
+  adr_mixed_loading_basis_note?: string;
   /** Regelsets die zijn afgelopen zonder dat er iets voor in de plaats is. */
   rule_set_warnings?: ComplianceWarning[];
   /** Waar deze uitkomst mee is gerekend. */

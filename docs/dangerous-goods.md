@@ -200,8 +200,22 @@ Most findings are warnings. Two things actually stop you:
 ## Per transport mode
 
 The mode you chose selects the rulebook: **ADR** for road, **RID** for rail, **ADN** for
-inland waterway, **IMDG** for sea, **IATA DGR** for air. The description line, the
-required fields and the checks all follow from it.
+inland waterway, **IMDG** for sea, **IATA DGR** for air. The description line and the
+required fields follow from it.
+
+**The checks do not, entirely, and that is worth knowing.** Sea and air have their own
+checks. Road, rail and inland waterway share one set: the 1.1.3.6 points and the 7.5.2
+mixed-loading table are computed with the **ADR** tables, because those are the ones
+CargoPilot holds. RID and ADN have their own versions of both chapters. When you pick rail
+or inland waterway the compliance panel says so, in as many words, next to the points
+table — an indication is worth having, a false certainty is not.
+
+The tunnel restriction code is ADR-only and is printed only on road documents. It comes
+from column 15 of ADR Table A; RID Table A has no such column and the ADN transport
+document does not carry one. Up to v1.29.4 it appeared on the CIM and the ADN document
+too, which was not a missing check but wrong information the application had added itself.
+
+`docs/dg-coverage.md` sets out, per mode, what is checked and what is not.
 
 For road transport there is no separate ADR document — the CMR and the AVC waybill carry
 the 5.4.1.1.1 description themselves. See [Documents](documents.md#the-waybill-doubles-as-the-adr-transport-document).

@@ -2,7 +2,7 @@ from fastapi import Cookie, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 
 from app.core.database import get_db
-from app.core.security import decode_access_token
+from app.core.security import decode_access_token_claims, token_matches_password
 from app.models.user import User
 
 
@@ -12,12 +12,14 @@ def get_current_user(
 ) -> User:
     if not access_token:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Not authenticated")
-    username = decode_access_token(access_token)
-    if not username:
+    claims = decode_access_token_claims(access_token)
+    if not claims:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid token")
-    user = db.query(User).filter(User.username == username).first()
+    user = db.query(User).filter(User.username == claims["sub"]).first()
     if not user or not user.active:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="User inactive")
+    if not token_matches_password(claims, user.password_hash):
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Session expired")
     return user
 
 

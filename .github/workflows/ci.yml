@@ -15,51 +15,6 @@ permissions:
   contents: read
 
 jobs:
-  migrate-react-router:
-    if: github.event_name == 'pull_request' && github.head_ref == 'agent/reproducible-build-and-audits'
-    runs-on: ubuntu-latest
-    timeout-minutes: 15
-    permissions:
-      contents: write
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          ref: agent/reproducible-build-and-audits
-          fetch-depth: 0
-
-      - uses: actions/setup-node@v4
-        with:
-          node-version: "22"
-          cache: npm
-          cache-dependency-path: frontend/package-lock.json
-
-      - name: Upgrade React and React Router
-        working-directory: frontend
-        run: |
-          npm install --save-exact react@19.2.8 react-dom@19.2.8 react-router@8.3.0
-          npm uninstall react-router-dom
-          npm install --save-dev --save-exact @types/react@19.2.17 @types/react-dom@19.2.3
-          grep -RIl 'react-router-dom' src | xargs -r sed -i 's/react-router-dom/react-router/g'
-
-      - name: Validate migration
-        working-directory: frontend
-        run: |
-          npm test
-          npm run build
-          npm audit --omit=dev --audit-level=high
-
-      - name: Commit generated package lock and imports
-        run: |
-          if git diff --quiet; then
-            echo "Nothing to commit"
-            exit 0
-          fi
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add frontend/package.json frontend/package-lock.json frontend/src
-          git commit -m "upgrade React Router to patched version"
-          git push origin HEAD:agent/reproducible-build-and-audits
-
   backend:
     runs-on: ubuntu-latest
     timeout-minutes: 15

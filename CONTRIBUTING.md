@@ -85,9 +85,14 @@ A redacted report is worth just as much.
 
 ## Translations
 
-The interface is Dutch and English, in `frontend/src/i18n/nl.json` and `en.json`. If a
-string reads badly in either language, an issue quoting the key and a better wording is
-genuinely useful and takes two minutes to apply.
+The interface is Dutch, English and German, in `frontend/src/i18n/nl.json`, `en.json`
+and `de.json`. If a string reads badly in any of the three, an issue quoting the key and
+a better wording is genuinely useful and takes two minutes to apply.
+
+That goes double for the German transport terminology. Where the regulations prescribe a
+German wording — *Beförderungskategorie*, *Verpackungsanweisung*, *schriftliche
+Weisungen*, *entfernt von* versus *getrennt von* — the app should use it, and a native
+speaker spotting one that is off is doing real work.
 
 ## If we do agree you should write code
 

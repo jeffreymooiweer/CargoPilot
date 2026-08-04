@@ -23,7 +23,7 @@ Type `1203`, or search for "gasoline". CargoPilot fills in:
 
 | | |
 |---|---|
-| **Proper shipping name** | In Dutch and English |
+| **Proper shipping name** | English, or German where the regulations allow it — see below |
 | **Class and division** | Real divisions, not just the class — see the note below |
 | **Subsidiary risks** | From the labels column, e.g. `8 (5.1)` for nitric acid |
 | **Classification code** | `F1`, `M4`, `C1` — kept separate, never mixed into the description |
@@ -43,6 +43,19 @@ Type `1203`, or search for "gasoline". CargoPilot fills in:
 
 Quantities, packaging type and masses come from the packages you already entered. Only
 empty fields are filled — your own corrections always survive.
+
+**About the language of the shipping name.** ADR Table A carries an English and a German
+name per UN number. Which one CargoPilot uses depends on the mode, not on the screen:
+ADR 5.4.1.4.1 — and along the same line RID and ADN — wants the transport document in an
+official language of the forwarding country, so a German reader preparing a CMR or CIM
+gets `BENZIN ODER OTTOKRAFTSTOFF`. IMDG 5.4.1.4.1 wants English, French or Spanish and
+IATA DGR 8.1.2.1 wants English, so a sea or air document keeps `GASOLINE` — as does a
+multimodal shipment, where English is the only choice that satisfies all three. If a
+German name is left in the field after a sea leg is added, the export refuses it and
+names the English wording that belongs there.
+
+There is no Dutch column in Table A, so Dutch readers get the English name, exactly as
+before.
 
 **About divisions.** ADR Table A lists gases as class "2" and explosives as class "1",
 with the real division hiding in the labels column (2.1 / 2.2 / 2.3) or the

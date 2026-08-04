@@ -1,5 +1,7 @@
 # Stage 1: Frontend build
-FROM node:22-alpine AS frontend-build
+# The static bundle is architecture-independent. Build it once on the native
+# runner instead of running Node and Vite again through ARM64 QEMU.
+FROM --platform=$BUILDPLATFORM node:22-alpine AS frontend-build
 WORKDIR /build
 COPY frontend/package.json frontend/package-lock.json ./
 RUN npm ci --no-audit

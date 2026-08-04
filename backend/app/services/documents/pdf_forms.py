@@ -21,6 +21,7 @@ except ImportError:  # pragma: no cover
 
 from app.core.config import get_settings
 from app.core.languages import pick
+from app.services.dg.naming import resolve_for_profile
 from app.services.dg.autofill import adr_category_totals, description_line
 
 # IATA open-formaat: elk van de twee keuzeparen bestaat uit twee /Ch-velden. Het
@@ -208,7 +209,7 @@ def _iata_dg_block(dangerous_goods: list[dict[str, Any]],
         for p in entry.get("products", []):
             un = str(p.get("un_number") or "").strip()
             un = un if un.upper().startswith(("UN", "ID")) else (f"UN {un}" if un else "")
-            psn = str(p.get("proper_shipping_name") or "").strip()
+            psn = resolve_for_profile(p, "IATA_DGR")[0]
             technical = str(p.get("technical_name") or "").strip()
             if technical:
                 psn = f"{psn} ({technical})"

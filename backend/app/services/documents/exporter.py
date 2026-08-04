@@ -10,12 +10,8 @@ from openpyxl.styles import Alignment, Border, Font, PatternFill, Side
 from openpyxl.utils import get_column_letter
 
 from app.core.languages import normalise, pick
-from app.services.dg.database import get_un_entries, is_transport_forbidden
-from app.services.dg.naming import (
-    is_german_name,
-    proper_shipping_name,
-    requires_english_name,
-)
+from app.services.dg.database import is_transport_forbidden
+from app.services.dg.naming import resolve_for_profile
 from app.services.documents.registry import condition_met, get_document, resolve_sections
 
 TEXTS = {
@@ -127,12 +123,12 @@ TEXTS = {
         "de": "Pflichtfeld fehlt",
     },
     "dg_name_language": {
-        "nl": "Juiste vervoersnaam moet voor dit document Engels zijn "
-              "(IMDG 5.4.1.4.1 / IATA DGR 8.1.2.1)",
-        "en": "The proper shipping name must be in English for this document "
-              "(IMDG 5.4.1.4.1 / IATA DGR 8.1.2.1)",
-        "de": "Die offizielle Benennung muss für dieses Dokument englisch sein "
-              "(IMDG 5.4.1.4.1 / IATA DGR 8.1.2.1)",
+        "nl": "Vervoersnaam op dit document in het Engels gezet, zoals "
+              "IMDG 5.4.1.4.1 / IATA DGR 8.1.2.1 voorschrijven",
+        "en": "Proper shipping name set to English on this document, as "
+              "IMDG 5.4.1.4.1 / IATA DGR 8.1.2.1 require",
+        "de": "Offizielle Benennung auf diesem Dokument auf Englisch gesetzt, "
+              "wie IMDG 5.4.1.4.1 / IATA DGR 8.1.2.1 es verlangen",
     },
     "field_format": {
         "nl": "Veld heeft niet de vereiste vorm",
@@ -388,20 +384,20 @@ def validate_document(
                 # Zee en lucht schrijven de taal van de benaming voor: IMDG
                 # 5.4.1.4.1 laat Engels, Frans of Spaans toe en IATA DGR
                 # 8.1.2.1 alleen Engels. Wie eerst een Duits wegdocument
-                # opmaakte houdt de al ingevulde Duitse benaming staan — en
-                # die hoort hier niet.
-                if requires_english_name([profile]):
-                    for candidate in get_un_entries(str(product.get("un_number") or "")):
-                        if is_german_name(candidate, product.get("proper_shipping_name")):
-                            # De naam die er wél hoort te staan, in dezelfde
-                            # vorm als het veld hem draagt: overtypen moet
-                            # kunnen.
-                            errors.append(
-                                f"{_text('dg_name_language', lang)}: "
-                                f"{_un_prefixed(product.get('un_number'))} — "
-                                f"{proper_shipping_name(candidate, 'en')}"
-                            )
-                            break
+                # opmaakte, houdt de Duitse benaming in het veld staan.
+                #
+                # Dat is geen reden de export te weigeren: de taal hoort bij
+                # het document en niet bij de zending, en CargoPilot weet welke
+                # benaming hier moet staan. Hij zet die er zelf neer en meldt
+                # het — blokkeren zou de gebruiker alleen laten overtypen wat de
+                # app al wist.
+                english, replaced = resolve_for_profile(product, profile)
+                if replaced:
+                    warnings.append(
+                        f"{_text('dg_name_language', lang)}: "
+                        f"{_un_prefixed(product.get('un_number'))} — "
+                        f"{replaced} → {english}"
+                    )
                 missing = [f for f in required_fields if not str(product.get(f) or "").strip()]
                 if missing:
                     position = entry.get("vehicle") or entry.get("line_id") or "?"
@@ -490,7 +486,7 @@ def _un_prefixed(value: Any) -> str:
 
 def _dg_description(product: dict[str, Any], profile: str, values: dict[str, Any]) -> str:
     """Officiële omschrijvingsregel per ADR/RID/ADN 5.4.1.1.1, bijv. 'UN 1203, BENZINE, 3, II, (D/E)'."""
-    psn = str(product.get("proper_shipping_name") or "").strip().upper()
+    psn = resolve_for_profile(product, profile)[0].upper()
     technical = str(product.get("technical_name") or "").strip()
     if technical:
         psn = f"{psn} ({technical})"
@@ -518,7 +514,7 @@ def _dg_rows(profile: str, entry: dict[str, Any], product: dict[str, Any], value
         per_package = str(product.get("net_mass_liters_per_package") or "").strip()
         if per_package:
             quantity = f"{quantity}, {per_package}" if quantity else per_package
-        psn = str(product.get("proper_shipping_name") or "")
+        psn = resolve_for_profile(product, profile)[0]
         technical = str(product.get("technical_name") or "").strip()
         if technical:
             psn = f"{psn} ({technical})"
@@ -545,7 +541,7 @@ def _dg_rows(profile: str, entry: dict[str, Any], product: dict[str, Any], value
             product.get("additional_information", ""),
         ]
     if profile == "IMDG":
-        psn = str(product.get("proper_shipping_name") or "")
+        psn = resolve_for_profile(product, profile)[0]
         technical = str(product.get("technical_name") or "").strip()
         if technical:
             psn = f"{psn} ({technical})"

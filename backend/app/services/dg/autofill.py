@@ -23,7 +23,7 @@ import re
 from typing import Any
 
 from app.core.languages import pick
-from app.services.dg.naming import proper_shipping_name
+from app.services.dg.naming import proper_shipping_name, resolve_for_profile
 from app.services.dg.database import get_un_entries
 from app.services.dg.enrichment import (
     CLASS_DOCUMENT_NOTES,
@@ -164,7 +164,10 @@ def total_quantity(product: dict[str, Any]) -> tuple[float | None, str]:
 
 def description_line(product: dict[str, Any], profile: str) -> str:
     """Officiële omschrijvingsregel voor het vervoersdocument."""
-    psn = str(product.get("proper_shipping_name") or "").strip().upper()
+    # De benaming volgt het document: op een IMDG- of IATA-regel hoort het
+    # Engels, ook als de zending in het Duits is opgemaakt (IMDG 5.4.1.4.1,
+    # IATA DGR 8.1.2.1).
+    psn = resolve_for_profile(product, profile)[0].upper()
     technical = str(product.get("technical_name") or "").strip()
     if technical:
         psn = f"{psn} ({technical})"

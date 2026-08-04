@@ -2,6 +2,44 @@
 
 All notable changes are documented here, following [Semantic Versioning](https://semver.org/).
 
+## [1.29.2] — 2026-08-04
+
+Following the rules and being pleasant to use are the same job, not a trade-off.
+
+### Changed
+
+- **A sea or air document now gets the English shipping name instead of refusing to
+  export.** 1.29.1 got the regulation right and the experience wrong. If you drafted a
+  German road document and then added a sea leg, the German name stayed in the field and
+  the export **blocked**, telling you to retype `GASOLINE` — a word CargoPilot had just
+  printed in the error message. That is making the user do what the application already
+  knows.
+
+  The language of the proper shipping name belongs to the **document**, not to the
+  shipment. One shipment produces a CMR reading `BENZIN ODER OTTOKRAFTSTOFF` and an IMO
+  Multimodal Dangerous Goods Form reading `GASOLINE`, from the same data. So the name is
+  now resolved per document at the moment it goes on paper — in the goods column, in the
+  5.4.1.1.1 description line, in the DG table and in the filled IATA PDF — and the export
+  says what it did rather than what you still have to do.
+
+  Only what CargoPilot derived itself is adjusted. Wording you typed — a technical name
+  on an N.O.S. entry, your own addition — is left exactly as it stands: we cannot judge
+  it and must not silently overwrite it.
+
+- **Why a multimodal shipment stays English throughout, including on the CMR**, where
+  German would have been allowed: one shipment then carries the same goods description on
+  every piece of paper. A forwarder and a customs officer want those to match, and two
+  languages for one substance across two documents of the same consignment is a question
+  you do not want to be asked. The reasoning is written down in
+  `app/services/dg/naming.py` so it reads as a decision rather than an accident.
+
+### Tests
+
+- The export is checked by reading the generated workbook back: the IMO form contains
+  `GASOLINE` and does **not** contain `BENZIN ODER OTTOKRAFTSTOFF`, and the CMR from the
+  same shipment contains the German name. A warning that says the right thing while the
+  document says the wrong thing would otherwise pass unnoticed.
+
 ## [1.29.1] — 2026-08-04
 
 The two gaps left open by 1.29.0, closed. One of them was not the gap it was described as.

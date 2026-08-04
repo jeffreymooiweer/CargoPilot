@@ -18,8 +18,19 @@ regelgeving zegt er per modaliteit iets anders over:
 
 "SALZSÄURE" op een Shipper's Declaration is daarmee geen vertaalkeuze maar een
 geweigerde zending. Vandaar: Duits alleen wanneer er geen zee- of luchtprofiel
-in het spel is. Bij een multimodale zending voldoet Engels aan alle drie, dus
-dat blijft dan staan.
+in het spel is.
+
+Bij een multimodale zending voldoet Engels aan alle drie de regimes en Duits
+aan één, dus dan wordt de benaming in het veld Engels — óók op de CMR, waar
+Duits gemogen had. Dat is bewust. Een zending met een weg- en een zeetraject
+draagt dan op elk papier dezelfde goederenomschrijving, en dat is precies wat
+een expediteur en de douane willen zien kloppen; twee talen voor dezelfde stof
+op twee documenten van dezelfde zending is een vraag die je niet wilt krijgen.
+
+Blijft over het geval dat je niet kunt uitsluiten: eerst een Duits wegdocument
+opmaken, daarna een zeetraject toevoegen. De benaming staat dan al in het veld
+en wordt niet opnieuw afgeleid. Daarvoor is :func:`resolve_for_profile`, die de
+naam per document oplost op het moment dat hij op papier komt.
 """
 
 from __future__ import annotations
@@ -73,3 +84,36 @@ def is_german_name(entry: dict[str, Any], name: Any) -> bool:
         # niets te melden.
         return False
     return given.casefold() == german.casefold()
+
+
+def resolve_for_profile(product: dict[str, Any], profile: str) -> tuple[str, str]:
+    """De vervoersnaam die op dít document hoort, en de naam die vervangen is.
+
+    De taal van de benaming hoort bij het document, niet bij de zending. Eén
+    zending levert een CMR met "BENZIN ODER OTTOKRAFTSTOFF" en een IMO DGF met
+    "GASOLINE", uit dezelfde gegevens. Het heeft dus geen zin de gebruiker de
+    export te weigeren en hem het Engels te laten overtypen: CargoPilot weet
+    wat er moet staan en zet het er zelf neer.
+
+    Alleen wat CargoPilot zelf heeft afgeleid wordt bijgesteld. Staat er een
+    eigen formulering — een technische naam bij een n.e.g.-vermelding, een
+    aanvulling van de afzender — dan blijft die staan; die kunnen we niet
+    beoordelen en al helemaal niet stilzwijgend overschrijven.
+
+    Retourneert ``(naam_voor_dit_document, vervangen_naam)``. Is er niets
+    bijgesteld, dan is het tweede veld leeg.
+    """
+    current = str(product.get("proper_shipping_name") or "").strip()
+    if not current or not requires_english_name([profile]):
+        return current, ""
+
+    # Ingesloten import: database leest naming, dus andersom alleen hier.
+    from app.services.dg.database import get_un_entries
+
+    for entry in get_un_entries(str(product.get("un_number") or "")):
+        if is_german_name(entry, current):
+            english = proper_shipping_name(entry, "en")
+            if english:
+                return english, current
+        break
+    return current, ""

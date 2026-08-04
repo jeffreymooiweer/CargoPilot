@@ -23,6 +23,7 @@ from app.services.dg.naming import (
     is_german_name,
     proper_shipping_name,
     requires_english_name,
+    resolve_for_profile,
 )
 
 # UN 1203 heet in Tabel A anders in het Duits dan in het Engels; dat maakt hem
@@ -74,14 +75,15 @@ def test_requires_english_name_is_case_and_whitespace_proof():
 
 
 # --- Het gevaarlijke geval: eerst weg, daarna zee -------------------------
+#
+# De taal van de benaming hoort bij het document, niet bij de zending. Eén
+# zending levert een CMR met de Duitse naam en een IMO DGF met de Engelse, uit
+# dezelfde gegevens. De export weigeren en de gebruiker "GASOLINE" laten
+# overtypen zou hem laten doen wat de app zelf al weet.
 
 
-def test_a_german_name_on_a_sea_document_is_refused_at_export():
-    from app.services.documents.exporter import validate_document
-    from app.services.documents.registry import get_document
-    from tests.test_documents import BASE_VALUES, LINES
-
-    goods = [{
+def german_goods():
+    return [{
         "line_id": "L1",
         "products": [{
             "un_number": "1203",
@@ -90,35 +92,116 @@ def test_a_german_name_on_a_sea_document_is_refused_at_export():
             "packing_group": "II",
             "quantity_packages": "4",
             "type_of_package": "1A1",
+            "net_mass_liters_per_package": "20",
         }],
     }]
-    errors, _ = validate_document(
-        get_document("imo_dgd"), dict(BASE_VALUES), LINES, goods, "de"
+
+
+@pytest.mark.parametrize("profile,expected", [
+    ("ADR", "BENZIN ODER OTTOKRAFTSTOFF"),
+    ("RID", "BENZIN ODER OTTOKRAFTSTOFF"),
+    ("ADN", "BENZIN ODER OTTOKRAFTSTOFF"),
+    ("IMDG", "GASOLINE"),
+    ("IATA_DGR", "GASOLINE"),
+])
+def test_the_document_gets_the_name_its_own_rulebook_wants(profile, expected):
+    name, _ = resolve_for_profile(german_goods()[0]["products"][0], profile)
+    assert name == expected
+
+
+def test_a_sea_document_is_not_refused_but_corrected():
+    from app.services.documents.exporter import validate_document
+    from app.services.documents.registry import get_document
+    from tests.test_documents import BASE_VALUES, LINES
+
+    errors, warnings = validate_document(
+        get_document("imo_dgd"), dict(BASE_VALUES), LINES, german_goods(), "de"
     )
-    about_name = [e for e in errors if "5.4.1.4.1" in e]
-    assert about_name, errors
-    # De melding moet zeggen wat er dan wél moet staan.
-    assert "GASOLINE" in about_name[0]
+    assert [e for e in errors if "5.4.1.4.1" in e] == [], "export mag hier niet blokkeren"
+    said = [w for w in warnings if "5.4.1.4.1" in w]
+    assert said, warnings
+    # De melding zegt wat er is gebeurd, niet wat de gebruiker nog moet doen.
+    assert "BENZIN ODER OTTOKRAFTSTOFF" in said[0] and "GASOLINE" in said[0]
 
 
-def test_the_same_name_on_a_road_document_passes():
+def test_the_road_document_keeps_the_german_name_and_says_nothing():
     from app.services.documents.exporter import validate_document
     from app.services.documents.registry import get_document
     from tests.test_documents import BASE_VALUES, LINES
 
-    goods = [{
-        "line_id": "L1",
-        "products": [{
-            "un_number": "1203",
-            "proper_shipping_name": "BENZIN ODER OTTOKRAFTSTOFF",
-            "class": "3",
-            "packing_group": "II",
-            "quantity_packages": "4",
-            "type_of_package": "1A1",
-        }],
-    }]
-    errors, _ = validate_document(get_document("cmr"), dict(BASE_VALUES), LINES, goods, "de")
+    errors, warnings = validate_document(
+        get_document("cmr"), dict(BASE_VALUES), LINES, german_goods(), "de"
+    )
     assert [e for e in errors if "5.4.1.4.1" in e] == []
+    assert [w for w in warnings if "5.4.1.4.1" in w] == []
+
+
+def test_the_exported_sea_document_actually_carries_the_english_name():
+    """De waarschuwing is niet genoeg — het moet ook echt op het blad staan."""
+    import openpyxl
+
+    from app.services.documents.exporter import export_document
+    from tests.test_documents import BASE_VALUES, LINES
+
+    path = export_document(
+        "imo_dgd", dict(BASE_VALUES), LINES, german_goods(), language="de"
+    )
+    text = "\n".join(
+        str(cell)
+        for row in openpyxl.load_workbook(path).active.iter_rows(values_only=True)
+        for cell in row
+        if cell
+    )
+    assert "GASOLINE" in text
+    assert "BENZIN ODER OTTOKRAFTSTOFF" not in text
+
+
+def test_the_exported_road_document_carries_the_german_name():
+    import openpyxl
+
+    from app.services.documents.exporter import export_document
+    from tests.test_documents import BASE_VALUES, LINES
+
+    path = export_document("cmr", dict(BASE_VALUES), LINES, german_goods(), language="de")
+    text = "\n".join(
+        str(cell)
+        for row in openpyxl.load_workbook(path).active.iter_rows(values_only=True)
+        for cell in row
+        if cell
+    )
+    assert "BENZIN ODER OTTOKRAFTSTOFF" in text
+
+
+def test_the_description_line_follows_the_document_too():
+    """De 5.4.1.1.1-regel is de tekst die letterlijk in de goederenkolom komt."""
+    from app.services.dg.autofill import description_line
+
+    product = german_goods()[0]["products"][0]
+    assert "BENZIN ODER OTTOKRAFTSTOFF" in description_line(product, "ADR")
+    assert "GASOLINE" in description_line(product, "IMDG")
+    assert "BENZIN" not in description_line(product, "IMDG")
+
+
+def test_wording_the_user_wrote_themselves_is_left_alone():
+    """Een technische naam bij een n.e.g.-vermelding of een eigen aanvulling
+    kunnen we niet beoordelen, en al helemaal niet stilzwijgend vervangen."""
+    own = {"un_number": "1203", "proper_shipping_name": "BENZIN, ENTHÄLT ETHANOL"}
+    name, replaced = resolve_for_profile(own, "IMDG")
+    assert name == "BENZIN, ENTHÄLT ETHANOL"
+    assert replaced == ""
+
+
+def test_an_english_name_is_not_touched_and_not_reported():
+    name, replaced = resolve_for_profile(
+        {"un_number": "1203", "proper_shipping_name": "GASOLINE"}, "IMDG"
+    )
+    assert (name, replaced) == ("GASOLINE", "")
+
+
+def test_an_empty_name_stays_empty_rather_than_being_invented():
+    """Een ontbrekende benaming is een aparte fout; die wordt al als ontbrekend
+    veld gemeld en mag hier niet stilletjes worden ingevuld."""
+    assert resolve_for_profile({"un_number": "1203"}, "IMDG") == ("", "")
 
 
 def test_an_english_name_never_trips_the_check():

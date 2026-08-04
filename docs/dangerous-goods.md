@@ -50,9 +50,15 @@ ADR 5.4.1.4.1 — and along the same line RID and ADN — wants the transport do
 official language of the forwarding country, so a German reader preparing a CMR or CIM
 gets `BENZIN ODER OTTOKRAFTSTOFF`. IMDG 5.4.1.4.1 wants English, French or Spanish and
 IATA DGR 8.1.2.1 wants English, so a sea or air document keeps `GASOLINE` — as does a
-multimodal shipment, where English is the only choice that satisfies all three. If a
-German name is left in the field after a sea leg is added, the export refuses it and
-names the English wording that belongs there.
+multimodal shipment, where English is the only choice that satisfies all three — one
+shipment then carries the same goods description on every document, which is what a
+forwarder and a customs officer want to see match.
+
+The language belongs to the document rather than to the shipment, so it is resolved when
+the name goes on paper. Draft a German road document and add a sea leg afterwards, and
+the IMO form gets `GASOLINE` while the CMR keeps `BENZIN ODER OTTOKRAFTSTOFF`; the export
+tells you it did so. Only what CargoPilot derived itself is adjusted — wording you typed,
+such as a technical name on an N.O.S. entry, is left exactly as it stands.
 
 There is no Dutch column in Table A, so Dutch readers get the English name, exactly as
 before.

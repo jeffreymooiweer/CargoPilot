@@ -18,6 +18,10 @@ class Settings(BaseSettings):
     log_level: str = "INFO"
     cors_allowed_origins: str = "*"
     trusted_proxy_headers: bool = True
+    # None betekent automatisch: Secure bij HTTPS of een vertrouwde
+    # X-Forwarded-Proto=https. Zet COOKIE_SECURE expliciet op true/false om dit
+    # gedrag te overschrijven.
+    cookie_secure: bool | None = None
     access_token_expire_minutes: int = 480
     max_paste_bytes: int = 512_000
     catalog_auto_sync: bool = True

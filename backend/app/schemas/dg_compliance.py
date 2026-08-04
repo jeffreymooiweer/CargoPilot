@@ -22,13 +22,13 @@ from pydantic import BaseModel, ConfigDict, Field, field_validator
 
 
 class RegulatoryProfile(str, Enum):
-    """De regelgevingsprofielen waarvoor controles bestaan."""
+    """De canonieke profielnamen die frontend, API en rekenlaag delen."""
 
     ADR = "ADR"
     RID = "RID"
     ADN = "ADN"
     IMDG = "IMDG"
-    IATA = "IATA"
+    IATA_DGR = "IATA_DGR"
 
 
 # ADR 1.1.3.6 kent categorie 0 t/m 4; 0 betekent "geen vrijstelling mogelijk".
@@ -119,6 +119,31 @@ class ComplianceRequest(BaseModel):
     entries: list[ShipmentPosition] = Field(default_factory=list)
     profiles: list[RegulatoryProfile] = Field(default_factory=list)
     language: str = "nl"
+
+    @field_validator("profiles", mode="before")
+    @classmethod
+    def _normalise_profile_aliases(cls, value: Any) -> Any:
+        """Accepteer tijdelijk de oude naam IATA, maar werk intern canoniek.
+
+        De wizard en rekenlaag gebruiken al `IATA_DGR`. De API gebruikte nog
+        `IATA`, waardoor de echte frontendpayload een 422 kreeg en een client die
+        wél `IATA` stuurde juist geen luchtvrachtcontrole activeerde. De alias is
+        alleen voor achterwaartse compatibiliteit; de response en rekenlaag zien
+        altijd `IATA_DGR`.
+        """
+        if value is None:
+            return []
+        if not isinstance(value, list):
+            return value
+
+        normalised: list[Any] = []
+        for profile in value:
+            if isinstance(profile, RegulatoryProfile):
+                normalised.append(profile.value)
+                continue
+            name = str(profile).strip().upper()
+            normalised.append("IATA_DGR" if name == "IATA" else name)
+        return normalised
 
     def as_dicts(self) -> list[dict[str, Any]]:
         """De posities zoals de rekenlaag ze leest.

@@ -51,7 +51,11 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: "20"
+          # jsdom 30 verlangt "^22.22.2 || ^24.15.0 || >=26" en undici 8 ">=22.19.0".
+          # Op Node 20 valt `npm test` om nog voordat er één test draait, met
+          # "webidl.util.markAsUncloneable is not a function" uit undici. Deze
+          # job stond daardoor sinds zijn invoering rood, ook op main.
+          node-version: "22"
           cache: npm
           cache-dependency-path: frontend/package-lock.json
 

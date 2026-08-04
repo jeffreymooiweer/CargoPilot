@@ -43,6 +43,15 @@ The two gaps left open by 1.29.0, closed. One of them was not the gap it was des
   decoration: the suggestion a user clicks becomes the description in the goods column of
   a waybill.
 
+### Fixed (CI)
+
+- **The frontend CI job had never once run.** `ci.yml` pinned Node 20 while `jsdom` 30
+  declares `^22.22.2 || ^24.15.0 || >=26` and `undici` 8 declares `>=22.19.0`, so
+  `npm test` died with `webidl.util.markAsUncloneable is not a function` before a single
+  test was collected. The job has been red on `main` since it was introduced in 1.24.2 —
+  the backend half was green, which is presumably why it went unnoticed. Both workflows
+  now use Node 22, matching what the toolchain asks for.
+
 ### Tests
 
 - `test_shipping_name_language.py` pins the ADR/IMDG/IATA split, the fallback for entries

@@ -1,5 +1,6 @@
 import json
 import logging
+from pathlib import Path
 
 from sqlalchemy.orm import Session
 
@@ -11,6 +12,11 @@ from app.services.catalog_sync import sync_catalogs
 
 logger = logging.getLogger(__name__)
 
+# Document exports and UN-card bundles are temporary downloads. A normal response
+# removes them through a FastAPI background task; these suffixes cover what can
+# remain when the process stops between creating and deleting the file.
+TEMPORARY_EXPORT_SUFFIXES = {".pdf", ".zip", ".xlsx", ".tmp"}
+
 
 def ensure_directories() -> None:
     settings = get_settings()
@@ -18,20 +24,33 @@ def ensure_directories() -> None:
         path.mkdir(parents=True, exist_ok=True)
 
 
+def purge_export_files(exports_dir: Path) -> int:
+    """Remove only known temporary files from CargoPilot's export directory.
+
+    Unknown files and nested directories are deliberately left untouched. This
+    keeps startup cleanup constrained to artifacts CargoPilot itself creates.
+    """
+    if not exports_dir.exists():
+        return 0
+
+    removed = 0
+    for path in exports_dir.iterdir():
+        if not path.is_file() or path.suffix.lower() not in TEMPORARY_EXPORT_SUFFIXES:
+            continue
+        try:
+            path.unlink()
+            removed += 1
+        except OSError as exc:
+            logger.warning("Could not delete export file %s: %s", path, exc)
+    return removed
+
+
 def purge_sensitive_data(db: Session) -> None:
-    """Verwijder opgeslagen documentdata: jobs in DB en eventuele exportbestanden."""
+    """Verwijder opgeslagen documentdata: jobs in DB en tijdelijke exports."""
     settings = get_settings()
     deleted_jobs = db.query(Job).delete()
     db.commit()
-    removed_files = 0
-    exports_dir = settings.exports_dir
-    if exports_dir.exists():
-        for path in exports_dir.glob("*.xlsx"):
-            try:
-                path.unlink()
-                removed_files += 1
-            except OSError as exc:
-                logger.warning("Could not delete export file %s: %s", path, exc)
+    removed_files = purge_export_files(settings.exports_dir)
     if deleted_jobs or removed_files:
         logger.info("Purged sensitive data: %s jobs, %s export files", deleted_jobs, removed_files)
 

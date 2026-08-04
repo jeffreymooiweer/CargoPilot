@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import csv
 import io
+import zipfile
 
 import openpyxl
 from openpyxl import Workbook
@@ -12,6 +13,7 @@ from app.services.import_limits import (
     ImportLimitError,
     MAX_IMPORT_COLUMNS,
     MAX_IMPORT_ROWS,
+    MAX_XLSX_UNCOMPRESSED_BYTES,
     append_validated_row,
 )
 
@@ -63,7 +65,22 @@ def read_tabular_file(content: bytes, filename: str) -> list[list[str]]:
     return _read_text(content)
 
 
+def _validate_xlsx_archive(
+    content: bytes,
+    max_uncompressed_bytes: int = MAX_XLSX_UNCOMPRESSED_BYTES,
+) -> None:
+    """Reject ZIP bombs before openpyxl expands the workbook."""
+    with zipfile.ZipFile(io.BytesIO(content)) as archive:
+        uncompressed = sum(info.file_size for info in archive.infolist())
+    if uncompressed > max_uncompressed_bytes:
+        limit_mb = max_uncompressed_bytes / (1024 * 1024)
+        raise ImportLimitError(
+            f"Uitgepakte spreadsheet is groter dan {limit_mb:g} MB"
+        )
+
+
 def _read_xlsx(content: bytes) -> list[list[str]]:
+    _validate_xlsx_archive(content)
     wb = openpyxl.load_workbook(io.BytesIO(content), read_only=True, data_only=True)
     ws = wb.active
     try:

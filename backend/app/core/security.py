@@ -1,4 +1,7 @@
 from datetime import datetime, timedelta, timezone
+import hashlib
+import hmac
+from typing import Any, Mapping
 
 from jose import JWTError, jwt
 from passlib.context import CryptContext
@@ -7,6 +10,7 @@ from app.core.config import get_settings
 
 pwd_context = CryptContext(schemes=["argon2"], deprecated="auto")
 ALGORITHM = "HS256"
+SESSION_PASSWORD_CLAIM = "pwd"
 
 
 def hash_password(password: str) -> str:
@@ -17,18 +21,48 @@ def verify_password(plain: str, hashed: str) -> bool:
     return pwd_context.verify(plain, hashed)
 
 
-def create_access_token(subject: str, expires_minutes: int | None = None) -> str:
+def password_fingerprint(password_hash: str) -> str:
+    """Niet-omkeerbare sessieversie die wijzigt zodra het wachtwoord wijzigt."""
+    return hashlib.sha256(password_hash.encode("utf-8")).hexdigest()
+
+
+def create_access_token(
+    subject: str,
+    password_hash: str | None = None,
+    expires_minutes: int | None = None,
+) -> str:
     settings = get_settings()
     expire = datetime.now(timezone.utc) + timedelta(
         minutes=expires_minutes or settings.access_token_expire_minutes
     )
-    return jwt.encode({"sub": subject, "exp": expire}, settings.app_secret_key, algorithm=ALGORITHM)
+    payload: dict[str, Any] = {"sub": subject, "exp": expire}
+    if password_hash:
+        payload[SESSION_PASSWORD_CLAIM] = password_fingerprint(password_hash)
+    return jwt.encode(payload, settings.app_secret_key, algorithm=ALGORITHM)
 
 
-def decode_access_token(token: str) -> str | None:
+def decode_access_token_claims(token: str) -> dict[str, Any] | None:
     settings = get_settings()
     try:
         payload = jwt.decode(token, settings.app_secret_key, algorithms=[ALGORITHM])
-        return payload.get("sub")
     except JWTError:
         return None
+    subject = payload.get("sub")
+    if not isinstance(subject, str) or not subject:
+        return None
+    return payload
+
+
+def decode_access_token(token: str) -> str | None:
+    """Compatibele helper voor code die alleen het subject nodig heeft."""
+    payload = decode_access_token_claims(token)
+    return str(payload["sub"]) if payload else None
+
+
+def token_matches_password(claims: Mapping[str, Any], password_hash: str) -> bool:
+    """Oude of vóór een wachtwoordwijziging uitgegeven tokens zijn ongeldig."""
+    supplied = claims.get(SESSION_PASSWORD_CLAIM)
+    if not isinstance(supplied, str) or not supplied:
+        return False
+    expected = password_fingerprint(password_hash)
+    return hmac.compare_digest(supplied, expected)

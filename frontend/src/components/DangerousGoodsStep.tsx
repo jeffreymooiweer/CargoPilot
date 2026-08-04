@@ -10,6 +10,7 @@ import {
   DgUnEntry,
   LineItem,
 } from "../api/client";
+import { documentLanguage, localised } from "../i18n/language";
 import InfoTooltip from "./InfoTooltip";
 import SuggestInput, { SuggestItem } from "./SuggestInput";
 
@@ -90,7 +91,7 @@ export default function DangerousGoodsStep({
   profiles = [],
 }: Props) {
   const { t, i18n } = useTranslation();
-  const lang = i18n.language.startsWith("en") ? "en" : "nl";
+  const lang = documentLanguage(i18n.language);
   const [instructions, setInstructions] = useState<DgInstructions | null>(null);
   const [lookupError, setLookupError] = useState("");
   const [positionIndex, setPositionIndex] = useState(0);
@@ -150,12 +151,12 @@ export default function DangerousGoodsStep({
 
   const helpFor = (field: string) => {
     const item = instructions?.dg_fields?.[field];
-    return item?.help?.[lang] || "";
+    return localised(item?.help, lang);
   };
 
   const labelFor = (field: string) => {
     const item = instructions?.dg_fields?.[field];
-    return item?.label?.[lang] || field;
+    return localised(item?.label, lang) || field;
   };
 
   const updateEntry = (index: number, patch: Partial<DgEntry>) => {
@@ -184,14 +185,16 @@ export default function DangerousGoodsStep({
   );
 
   const unFetcher = async (q: string): Promise<SuggestItem<DgUnEntry>[]> => {
-    const { results } = await api.dgSearch(q);
+    const { results } = await api.dgSearch(q, 12, lang, profiles);
     return results.map((entry, i) => ({
       key: `${entry.un}-${i}`,
       data: entry,
       render: (
         <span className="flex items-center gap-2">
           <span className="shrink-0 font-mono font-semibold">UN {entry.un}</span>
-          <span className="min-w-0 truncate">{entry.name_en || entry.name_de}</span>
+          <span className="min-w-0 truncate">
+            {entry.proper_shipping_name || entry.name_en || entry.name_de}
+          </span>
           {classBadge(entry.class, entry.packing_group)}
         </span>
       ),
@@ -234,7 +237,7 @@ export default function DangerousGoodsStep({
     setLookupError("");
     if (!un || un.replace(/\D/g, "").length < 4) return;
     try {
-      const data = await api.dgLookup(un);
+      const data = await api.dgLookup(un, lang, profiles);
       // Alleen overschrijven met velden die de bron daadwerkelijk levert.
       const patch: Partial<DgProduct> = { un_number: data.un_number || un };
       if (data.proper_shipping_name) patch.proper_shipping_name = data.proper_shipping_name;
@@ -258,7 +261,7 @@ export default function DangerousGoodsStep({
   return (
     <div className="space-y-4">
       <div className={`${panelClass} p-4 text-sm text-slate-600 dark:text-slate-300`}>
-        <p>{instructions?.dg_intro?.[lang] || t("wizard.dgIntro")}</p>
+        <p>{localised(instructions?.dg_intro, lang) || t("wizard.dgIntro")}</p>
         <p className="mt-2 text-xs text-slate-500 dark:text-slate-400">{t("wizard.dgSource")}</p>
       </div>
 

@@ -22,6 +22,8 @@ from __future__ import annotations
 import re
 from typing import Any
 
+from app.core.languages import pick
+from app.services.dg.naming import proper_shipping_name, resolve_for_profile
 from app.services.dg.database import get_un_entries
 from app.services.dg.enrichment import (
     CLASS_DOCUMENT_NOTES,
@@ -73,7 +75,9 @@ def _un_prefixed(value: Any) -> str:
     return text if text.upper().startswith(("UN", "ID")) else f"UN {text}"
 
 
-def derive_product(product: dict[str, Any], language: str = "nl") -> dict[str, Any]:
+def derive_product(
+    product: dict[str, Any], language: str = "nl", profiles: list[str] | None = None
+) -> dict[str, Any]:
     """Vul alles in wat uit het UN-nummer volgt; bestaande invoer blijft staan."""
     un = str(product.get("un_number") or "").strip()
     if not un:
@@ -86,7 +90,7 @@ def derive_product(product: dict[str, Any], language: str = "nl") -> dict[str, A
     hazards = parse_hazards(entry)
 
     derived: dict[str, Any] = {
-        "proper_shipping_name": (entry.get("name_en") or entry.get("name_de") or "").upper(),
+        "proper_shipping_name": proper_shipping_name(entry, language, profiles),
         "class": hazards["division"],
         "subsidiary_risks": "+".join(hazards["subsidiary_risks"]),
         "classification_code": hazards["classification_code"],
@@ -160,7 +164,10 @@ def total_quantity(product: dict[str, Any]) -> tuple[float | None, str]:
 
 def description_line(product: dict[str, Any], profile: str) -> str:
     """Officiële omschrijvingsregel voor het vervoersdocument."""
-    psn = str(product.get("proper_shipping_name") or "").strip().upper()
+    # De benaming volgt het document: op een IMDG- of IATA-regel hoort het
+    # Engels, ook als de zending in het Duits is opgemaakt (IMDG 5.4.1.4.1,
+    # IATA DGR 8.1.2.1).
+    psn = resolve_for_profile(product, profile)[0].upper()
     technical = str(product.get("technical_name") or "").strip()
     if technical:
         psn = f"{psn} ({technical})"
@@ -234,7 +241,14 @@ def adr_category_totals(entries: list[dict[str, Any]], language: str = "nl") -> 
     for category in sorted(totals):
         amounts = ", ".join(f"{_fmt(value)} {unit}" for unit, value in sorted(totals[category].items()))
         rows.append({"transport_category": category, "total": amounts})
-    prefix = "Totale hoeveelheid per vervoerscategorie" if language == "nl" else "Total quantity per transport category"
+    prefix = pick(
+        {
+            "nl": "Totale hoeveelheid per vervoerscategorie",
+            "en": "Total quantity per transport category",
+            "de": "Gesamtmenge je Beförderungskategorie",
+        },
+        language,
+    )
     statement = f"{prefix}: " + "; ".join(f"{r['transport_category']}: {r['total']}" for r in rows)
     return {"statement": statement, "categories": rows}
 
@@ -255,7 +269,7 @@ def prepare_entries(
         products = []
         for index, product in enumerate(entry.get("products") or []):
             merged = dict(product)
-            derived = derive_product(merged, language)
+            derived = derive_product(merged, language, profiles)
             if derived:
                 merged.update(derived["patch"])
                 if derived["hints"]:

@@ -73,6 +73,7 @@ export default function SettingsPage() {
           <select className={`${inputClass} mt-2`} value={i18n.language} onChange={(e) => setLanguage(e.target.value)}>
             <option value="nl">Nederlands</option>
             <option value="en">English</option>
+            <option value="de">Deutsch</option>
           </select>
         </div>
 

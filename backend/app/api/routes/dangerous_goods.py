@@ -12,6 +12,7 @@ from app.services.dg.compliance import check_compliance
 from app.services.dg.database import get_un_entries, offline_lookup, search_packagings, search_un_numbers
 from app.services.dg.enrichment import enrich_un_entry
 from app.services.dg.lookup import lookup_un_number
+from app.services.dg.naming import proper_shipping_name
 
 router = APIRouter(prefix="/dg", tags=["dangerous-goods"])
 
@@ -31,16 +32,26 @@ def dg_instructions(user: User = Depends(get_current_user)):
 
 
 @router.get("/lookup")
-def dg_lookup(un: str = Query(..., min_length=4, max_length=12), user: User = Depends(get_current_user)):
-    result = lookup_un_number(un) or offline_lookup(un)
+def dg_lookup(
+    un: str = Query(..., min_length=4, max_length=12),
+    language: str = Query(default="nl", max_length=10),
+    profiles: list[str] = Query(default_factory=list),
+    user: User = Depends(get_current_user),
+):
+    result = lookup_un_number(un) or offline_lookup(un, language, profiles)
     if not result:
         raise HTTPException(status_code=404, detail="UN-nummer niet gevonden in ADR-database")
     # Verrijk ook online resultaten met afleidbare modaliteitsgegevens (EmS,
     # luchtvrachtregels, LQ/EQ-uitleg) uit de offline database.
     offline_entries = get_un_entries(un)
     if offline_entries:
-        for key, value in enrich_un_entry(offline_entries[0]).items():
+        for key, value in enrich_un_entry(offline_entries[0], language).items():
             result.setdefault(key, value)
+        # De online bron kent alleen de Engelse benaming; wie een Duits
+        # wegdocument opmaakt hoort de Duitse te krijgen die in Tabel A staat.
+        result["proper_shipping_name"] = proper_shipping_name(
+            offline_entries[0], language, profiles
+        )
     return result
 
 
@@ -48,9 +59,11 @@ def dg_lookup(un: str = Query(..., min_length=4, max_length=12), user: User = De
 def dg_search(
     q: str = Query(..., min_length=1, max_length=80),
     limit: int = Query(default=12, ge=1, le=30),
+    language: str = Query(default="nl", max_length=10),
+    profiles: list[str] = Query(default_factory=list),
     user: User = Depends(get_current_user),
 ):
-    return {"results": search_un_numbers(q, limit=limit)}
+    return {"results": search_un_numbers(q, limit=limit, language=language, profiles=profiles)}
 
 
 @router.get("/packagings")

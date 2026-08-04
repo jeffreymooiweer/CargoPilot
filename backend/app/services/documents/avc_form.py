@@ -44,6 +44,7 @@ from reportlab.lib.utils import ImageReader
 from reportlab.pdfbase.pdfmetrics import stringWidth
 from reportlab.pdfgen import canvas
 
+from app.core.languages import pick
 from app.services.dg.autofill import adr_category_totals, description_line
 from app.services.documents.pdf_forms import templates_forms_dir
 
@@ -231,11 +232,14 @@ def _draw_goods(
         top += needed
 
     if overflow:
-        text = (
-            f"+{overflow} regels — zie bijgevoegde paklijst"
-            if lang == "nl"
-            else f"+{overflow} lines — see attached packing list"
-        )
+        text = pick(
+            {
+                "nl": "+{n} regels — zie bijgevoegde paklijst",
+                "en": "+{n} lines — see attached packing list",
+                "de": "+{n} Zeilen — siehe beigefügte Packliste",
+            },
+            lang,
+        ).format(n=overflow)
         if top <= GOODS_BOTTOM:
             c.drawString(COL_CONTENTS, _y(top), _clip(text, NOTE_WIDTH))
             top += LEADING
@@ -329,13 +333,19 @@ def fill_avc_waybill(
         except Exception:  # pragma: no cover — beschadigde afbeelding
             pass
 
-    disclaimer = (
-        "CONCEPT — gegenereerd met CargoPilot; controleer, vul aan en onderteken door een "
-        "bevoegde persoon vóór gebruik. Geen aansprakelijkheid, geleverd AS IS "
-        "(Apache License 2.0 met Commons Clause, zie DISCLAIMER.md)."
-        if lang == "nl" else
-        "DRAFT — generated with CargoPilot; verify, complete and sign by an authorised person "
-        "before use. No liability, provided AS IS (Apache License 2.0 with Commons Clause)."
+    disclaimer = pick(
+        {
+            "nl": "CONCEPT — gegenereerd met CargoPilot; controleer, vul aan en onderteken "
+                  "door een bevoegde persoon vóór gebruik. Geen aansprakelijkheid, geleverd "
+                  "AS IS (Apache License 2.0 met Commons Clause, zie DISCLAIMER.md).",
+            "en": "DRAFT — generated with CargoPilot; verify, complete and sign by an "
+                  "authorised person before use. No liability, provided AS IS (Apache "
+                  "License 2.0 with Commons Clause).",
+            "de": "ENTWURF — mit CargoPilot erstellt; vor der Verwendung von einer befugten "
+                  "Person prüfen, ergänzen und unterschreiben lassen. Keine Haftung, "
+                  "bereitgestellt AS IS (Apache License 2.0 mit Commons Clause).",
+        },
+        lang,
     )
     _draw_footer_note(c, disclaimer)
 

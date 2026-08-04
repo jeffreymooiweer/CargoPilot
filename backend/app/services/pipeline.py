@@ -17,23 +17,24 @@ from app.services.calculator.engine import (
 )
 from app.services.dg.detector import detect_dangerous_goods, detect_un_numbers
 from app.services.parser.dimension_extractor import Dimensions, extract_dimensions, meters_to_cm
+from app.core.languages import pick
 from app.services.parser.language_detector import detect_language
 from app.services.parser.paste_parser import ParsedRow, parse_paste
 from app.services.parser.product_detector import detect_product_type
 
 PRODUCT_LABELS = {
-    "angle_profile": {"nl": "Hoekprofiel", "en": "Angle profile"},
-    "square_tube": {"nl": "Kokerprofiel", "en": "Square tube"},
-    "round_tube": {"nl": "Buis", "en": "Pipe"},
-    "round_bar": {"nl": "Ronde staf", "en": "Round bar"},
-    "plate": {"nl": "Plaat", "en": "Plate"},
-    "beam": {"nl": "Balk", "en": "Beam"},
-    "standard_profile": {"nl": "Staalprofiel", "en": "Steel profile"},
-    "concrete_slab": {"nl": "Betonplaat", "en": "Concrete slab"},
-    "plywood": {"nl": "Plaatmateriaal", "en": "Sheet material"},
-    "reference_item": {"nl": "Artikel", "en": "Item"},
-    "equipment": {"nl": "Materieel", "en": "Equipment"},
-    "unknown": {"nl": "Onbekend", "en": "Unknown"},
+    "angle_profile": {"nl": "Hoekprofiel", "en": "Angle profile", "de": "Winkelprofil"},
+    "square_tube": {"nl": "Kokerprofiel", "en": "Square tube", "de": "Quadratrohr"},
+    "round_tube": {"nl": "Buis", "en": "Pipe", "de": "Rohr"},
+    "round_bar": {"nl": "Ronde staf", "en": "Round bar", "de": "Rundstab"},
+    "plate": {"nl": "Plaat", "en": "Plate", "de": "Blech"},
+    "beam": {"nl": "Balk", "en": "Beam", "de": "Träger"},
+    "standard_profile": {"nl": "Staalprofiel", "en": "Steel profile", "de": "Stahlprofil"},
+    "concrete_slab": {"nl": "Betonplaat", "en": "Concrete slab", "de": "Betonplatte"},
+    "plywood": {"nl": "Plaatmateriaal", "en": "Sheet material", "de": "Plattenwerkstoff"},
+    "reference_item": {"nl": "Artikel", "en": "Item", "de": "Artikel"},
+    "equipment": {"nl": "Materieel", "en": "Equipment", "de": "Material"},
+    "unknown": {"nl": "Onbekend", "en": "Unknown", "de": "Unbekannt"},
 }
 
 STEEL_PRODUCT_TYPES = {
@@ -149,7 +150,7 @@ def match_equipment(text: str, db: Session) -> Equipment | None:
 
 
 def build_output_description(description: str, product_type: str | None, dims: Dimensions, lang: str) -> str:
-    label = PRODUCT_LABELS.get(product_type or "unknown", PRODUCT_LABELS["unknown"])[lang]
+    label = pick(PRODUCT_LABELS.get(product_type or "unknown", PRODUCT_LABELS["unknown"]), lang)
     if dims.profile_size:
         size = dims.profile_size
         length_mm = int(round((dims.length_m or 0) * 1000))

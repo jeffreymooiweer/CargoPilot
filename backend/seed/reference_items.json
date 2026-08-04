@@ -4,31 +4,67 @@
     "category": "electrical",
     "reference_weight_kg": 0.15,
     "reference_volume_m3": 0.0001,
-    "aliases": ["schakelaar", "switch"],
-    "language_labels": {"nl": "Schakelaar", "en": "Switch"}
+    "aliases": [
+      "schakelaar",
+      "switch",
+      "schalter"
+    ],
+    "language_labels": {
+      "nl": "Schakelaar",
+      "en": "Switch",
+      "de": "Schalter"
+    }
   },
   {
     "canonical_name": "socket",
     "category": "electrical",
     "reference_weight_kg": 0.12,
-    "reference_volume_m3": 0.00008,
-    "aliases": ["stopcontact", "socket", "wandcontactdoos"],
-    "language_labels": {"nl": "Stopcontact", "en": "Socket"}
+    "reference_volume_m3": 8e-05,
+    "aliases": [
+      "stopcontact",
+      "socket",
+      "wandcontactdoos",
+      "steckdose"
+    ],
+    "language_labels": {
+      "nl": "Stopcontact",
+      "en": "Socket",
+      "de": "Steckdose"
+    }
   },
   {
     "canonical_name": "junction_box",
     "category": "electrical",
     "reference_weight_kg": 0.25,
     "reference_volume_m3": 0.0002,
-    "aliases": ["lasdoos", "junction box", "cable box", "wandcontactdoos"],
-    "language_labels": {"nl": "Lasdoos", "en": "Junction box"}
+    "aliases": [
+      "lasdoos",
+      "junction box",
+      "cable box",
+      "wandcontactdoos",
+      "abzweigdose"
+    ],
+    "language_labels": {
+      "nl": "Lasdoos",
+      "en": "Junction box",
+      "de": "Abzweigdose"
+    }
   },
   {
     "canonical_name": "cable_gland",
     "category": "electrical",
     "reference_weight_kg": 0.05,
-    "reference_volume_m3": 0.00002,
-    "aliases": ["wartel", "gland", "connector"],
-    "language_labels": {"nl": "Wartel", "en": "Cable gland"}
+    "reference_volume_m3": 2e-05,
+    "aliases": [
+      "wartel",
+      "gland",
+      "connector",
+      "kabelverschraubung"
+    ],
+    "language_labels": {
+      "nl": "Wartel",
+      "en": "Cable gland",
+      "de": "Kabelverschraubung"
+    }
   }
 ]

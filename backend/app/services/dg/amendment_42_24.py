@@ -25,6 +25,8 @@ import threading
 from pathlib import Path
 from typing import Any
 
+from app.core.languages import SUPPORTED, pick
+
 _SEED = Path(__file__).resolve().parents[3] / "seed" / "dg" / "imdg_42_24.json"
 
 _lock = threading.Lock()
@@ -74,9 +76,8 @@ def stowage_code_text(code: str, language: str = "nl") -> str:
     item = (_load().get("new_stowage_codes") or {}).get(str(code).strip().upper())
     if not isinstance(item, dict):
         return ""
-    if language == "nl":
-        return str(item.get("nl") or item.get("text") or "")
-    return str(item.get("text") or "")
+    # "text" is de Engelse brontekst; de vertalingen staan per taalcode.
+    return str(pick({**item, "en": item.get("en") or item.get("text")}, language, ""))
 
 
 def _entry_for(un: str, packing_group: str = "") -> dict[str, Any]:
@@ -102,8 +103,9 @@ def _entry_for(un: str, packing_group: str = "") -> dict[str, Any]:
 def changes_for(un: str, packing_group: str = "", language: str = "nl") -> list[str]:
     """Wat er voor deze stof onder 42-24 verandert, in gewone taal."""
     entry = _entry_for(un, packing_group)
-    key = "changes_nl" if language == "nl" else "changes_en"
-    value = entry.get(key) or entry.get("changes_nl") or []
+    value = pick(
+        {lang: entry.get(f"changes_{lang}") for lang in SUPPORTED}, language, []
+    )
     return [str(line) for line in value if str(line).strip()]
 
 
@@ -147,7 +149,7 @@ def document_requirement(un: str, language: str = "nl") -> dict[str, Any] | None
         return None
     return {
         "section": item.get("section"),
-        "text": item.get("nl" if language == "nl" else "en") or item.get("nl"),
+        "text": pick(item, language),
         "fields": list(item.get("fields") or []),
     }
 
@@ -157,7 +159,7 @@ def general_document_requirements(language: str = "nl") -> list[dict[str, Any]]:
     for item in _load().get("general_document_requirements") or []:
         out.append({
             "section": item.get("section"),
-            "text": item.get("nl" if language == "nl" else "en") or item.get("nl"),
+            "text": pick(item, language),
             "special_provisions": list(item.get("special_provisions") or []),
         })
     return out
@@ -166,12 +168,12 @@ def general_document_requirements(language: str = "nl") -> list[dict[str, Any]]:
 def amended_sections(language: str = "nl") -> list[dict[str, Any]]:
     data = (_load().get("verified_unchanged") or {}).get("amended_sections") or []
     return [
-        {"section": i.get("section"), "text": i.get("nl" if language == "nl" else "en")}
+        {"section": i.get("section"), "text": pick(i, language)}
         for i in data
     ]
 
 
 def not_covered(language: str = "nl") -> list[str]:
     data = _load().get("not_covered") or {}
-    key = "items_nl" if language == "nl" else "items_en"
-    return [str(x) for x in (data.get(key) or data.get("items_nl") or [])]
+    items = pick({lang: data.get(f"items_{lang}") for lang in SUPPORTED}, language, [])
+    return [str(x) for x in items]

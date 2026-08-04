@@ -2,6 +2,176 @@
 
 All notable changes are documented here, following [Semantic Versioning](https://semver.org/).
 
+## [1.29.2] — 2026-08-04
+
+Following the rules and being pleasant to use are the same job, not a trade-off.
+
+### Changed
+
+- **A sea or air document now gets the English shipping name instead of refusing to
+  export.** 1.29.1 got the regulation right and the experience wrong. If you drafted a
+  German road document and then added a sea leg, the German name stayed in the field and
+  the export **blocked**, telling you to retype `GASOLINE` — a word CargoPilot had just
+  printed in the error message. That is making the user do what the application already
+  knows.
+
+  The language of the proper shipping name belongs to the **document**, not to the
+  shipment. One shipment produces a CMR reading `BENZIN ODER OTTOKRAFTSTOFF` and an IMO
+  Multimodal Dangerous Goods Form reading `GASOLINE`, from the same data. So the name is
+  now resolved per document at the moment it goes on paper — in the goods column, in the
+  5.4.1.1.1 description line, in the DG table and in the filled IATA PDF — and the export
+  says what it did rather than what you still have to do.
+
+  Only what CargoPilot derived itself is adjusted. Wording you typed — a technical name
+  on an N.O.S. entry, your own addition — is left exactly as it stands: we cannot judge
+  it and must not silently overwrite it.
+
+- **Why a multimodal shipment stays English throughout, including on the CMR**, where
+  German would have been allowed: one shipment then carries the same goods description on
+  every piece of paper. A forwarder and a customs officer want those to match, and two
+  languages for one substance across two documents of the same consignment is a question
+  you do not want to be asked. The reasoning is written down in
+  `app/services/dg/naming.py` so it reads as a decision rather than an accident.
+
+### Tests
+
+- The export is checked by reading the generated workbook back: the IMO form contains
+  `GASOLINE` and does **not** contain `BENZIN ODER OTTOKRAFTSTOFF`, and the CMR from the
+  same shipment contains the German name. A warning that says the right thing while the
+  document says the wrong thing would otherwise pass unnoticed.
+
+## [1.29.1] — 2026-08-04
+
+The two gaps left open by 1.29.0, closed. One of them was not the gap it was described as.
+
+### Fixed
+
+- **The proper shipping name was always English, even where German was prescribed.**
+  1.29.0 claimed the ADR source table "carries Dutch and English but no German". That was
+  wrong twice over: the table carries `name_en` **and** `name_de` for all 2,928 entries,
+  and it carries no Dutch at all. The German name was sitting in the data the whole time
+  and every code path reached past it with `entry.get("name_en") or entry.get("name_de")`.
+  A German consignor got `GASOLINE` on a CMR while `BENZIN ODER OTTOKRAFTSTOFF` stood
+  right next to it in Table A.
+
+  Fixing it is not "translate along with the screen", because the modes differ. ADR
+  5.4.1.4.1 — and along the same line RID and ADN — wants the transport document in an
+  official language of the forwarding country, so a German name belongs on a German CMR
+  or CIM. IMDG 5.4.1.4.1 wants English, French or Spanish. IATA DGR 8.1.2.1 wants English.
+  `BENZIN` on a Shipper's Declaration is not a matter of taste; it is a refused shipment.
+
+  So `app/services/dg/naming.py` gives the German name only when the reader is German and
+  no sea or air profile is in play — for a multimodal shipment English satisfies all three
+  regimes and German only one. The UN lookup and the type-ahead now carry the same
+  language and profiles, so the suggestion the user clicks is the text the document will
+  actually carry.
+
+  And for the sequence that would otherwise slip through — draft a German road document
+  first, add a sea leg afterwards, keep the German name that is already in the field — the
+  export refuses it and names the English wording that belongs there instead.
+
+- **The catalogue search always answered in Dutch.** `search_catalog` took no language
+  parameter at all, so an English user got Dutch material names too; German only made an
+  existing problem visible. It now takes one, and the route and the frontend pass it.
+  Searching still spans every language — type `Stahl` while reading Dutch and you still
+  find staal — only the answer follows the interface.
+
+  All 400 goods and the reference items gained German labels, as did the product-type and
+  fallback-material tables and the dimension hint under a suggestion. This is not
+  decoration: the suggestion a user clicks becomes the description in the goods column of
+  a waybill.
+
+### Fixed (CI)
+
+- **The frontend CI job had never once run.** `ci.yml` pinned Node 20 while `jsdom` 30
+  declares `^22.22.2 || ^24.15.0 || >=26` and `undici` 8 declares `>=22.19.0`, so
+  `npm test` died with `webidl.util.markAsUncloneable is not a function` before a single
+  test was collected. The job has been red on `main` since it was introduced in 1.24.2 —
+  the backend half was green, which is presumably why it went unnoticed. Both workflows
+  now use Node 22, matching what the toolchain asks for.
+
+### Tests
+
+- `test_shipping_name_language.py` pins the ADR/IMDG/IATA split, the fallback for entries
+  with no German name, and the road-then-sea sequence. It also holds the lookup and the
+  export to the same answer — a suggestion that differs from what gets exported is worse
+  than no suggestion.
+- `test_catalog_search_language.py` covers the three languages, cross-language searching,
+  a German name that exists only as a label, and the guarantee that a label is never
+  empty — an empty label means an empty goods column.
+- `seed/materials.json` and `seed/reference_items.json` joined the completeness check, so
+  a new material has to arrive in all three languages.
+
+## [1.29.0] — 2026-08-03
+
+German as a third interface language, and one place that decides which language anything is in.
+
+### Added
+
+- **Deutsch.** The interface, the field labels, the dangerous goods help texts, the
+  compliance warnings and the generated documents are now available in German alongside
+  Dutch and English — 592 texts across the document registry, the compliance rules, the
+  DG instructions and the seed data, plus the 350 interface strings.
+
+  German transport terminology follows the official wording where the regulations have
+  one: *Beförderungskategorie* for the ADR 1.1.3.6 transport category, *Verpackungs-
+  anweisung* for the packing instruction, *schriftliche Weisungen* for the instructions
+  in writing, and the IMDG distinction between *entfernt von* (away from) and *getrennt
+  von* (separated from) — a difference that is the whole point of a segregation warning.
+
+  The disclaimer says in its German text that it is a translation and that the Dutch
+  version prevails; the governing law was and stays Dutch.
+
+- **German input is understood too.** A language on the screen does not help if the paste
+  box does not recognise what you type into it: an unrecognised product yields no weight
+  and therefore no usable document. `Stahl Winkelprofil`, `Quadratrohr`, `Rundstab`,
+  `Stahlblech`, `Träger`, `Betonplatte`, `Sperrholz`, `Kunststoffplatte` and their
+  neighbours are now detected, the language detector answers in the language you wrote in
+  rather than falling back to English, and `Stück`/`Stk` count as units.
+
+  `PVC-Rohr` deliberately does not go through a bare `Rohr` pattern — a plastic pipe
+  weighs an order of magnitude less than a steel one, and that is a wrong weight on a
+  waybill rather than a cosmetic slip.
+
+### Changed
+
+- **One place decides the language, instead of eleven.** Every module that produced text
+  carried its own copy of `"en" if language.startswith("en") else "nl"`. With two
+  languages that was correct. With a third it would have silently answered "Dutch" for
+  German — a German screen with Dutch warnings and a Dutch export — and `TEXTS[key][lang]`
+  would have raised a `KeyError` outright.
+
+  `app/core/languages.py` now holds the supported languages and the fallback order, and
+  `normalise()`/`pick()` replaced every two-way branch. `pick()` falls back to the next
+  language that does have the text rather than returning nothing: a field label in the
+  wrong language can still be read, a field without a label cannot. The frontend has the
+  same single point in `src/i18n/language.ts`, so the screen and the backend can no
+  longer disagree about which language a document is in.
+
+### Tests
+
+- The completeness of a language is enforced, not eyeballed. `test_languages.py` walks
+  the data files and asserts every block with a Dutch and an English text also carries a
+  German one, that a list stays a list of the same length, and that a "translation" is
+  not simply the Dutch text repeated. An AST pass over `app/` catches the same omission
+  in code, and a source check fails on any two-way language branch coming back.
+  On the frontend, `translations.test.ts` holds the three bundles to identical keys and
+  identical interpolation variables.
+
+### Known gaps
+
+Both were closed in 1.29.1; the second one turned out not to be a gap in the data at all.
+
+- The catalogue search (`search_catalog`) returns material names in Dutch regardless of
+  the interface language. It takes no language parameter at all, so this affects English
+  users today as much as German ones; the German labels are in the data, waiting. Making
+  the search language-aware is its own change, touching the route and the frontend call.
+
+- The proper shipping names come from the ADR source table, which carries Dutch and
+  English but no German. A German user sees the German interface around an English or
+  Dutch shipping name — which is what belongs on the document anyway, since the proper
+  shipping name is prescribed and not translated freely.
+
 ## [1.28.1] — 2026-08-03
 
 ### Fixed

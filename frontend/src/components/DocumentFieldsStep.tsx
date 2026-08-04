@@ -9,6 +9,7 @@ import {
   GeoLocationType,
   LocalizedText,
 } from "../api/client";
+import { documentLanguage, localised } from "../i18n/language";
 import { AddressTextarea, LocationInput } from "./GeoInputs";
 import InfoTooltip from "./InfoTooltip";
 import SignaturePad from "./SignaturePad";
@@ -96,8 +97,8 @@ export default function DocumentFieldsStep({
   onSignatureChange,
 }: Props) {
   const { t, i18n } = useTranslation();
-  const lang = (i18n.language.startsWith("en") ? "en" : "nl") as "nl" | "en";
-  const L = (text?: LocalizedText) => text?.[lang] ?? "";
+  const lang = documentLanguage(i18n.language);
+  const L = (text?: LocalizedText) => localised(text, lang);
   const [subIndex, setSubIndex] = useState(0);
 
   const setValue = (key: string, value: string) => onChange({ ...values, [key]: value });

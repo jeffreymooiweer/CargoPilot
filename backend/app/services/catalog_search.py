@@ -6,46 +6,65 @@ from typing import Any
 
 from sqlalchemy.orm import Session
 
+from app.core.languages import pick
 from app.models.user import Equipment, Material, Profile, ReferenceItem
 from app.services.parser.dimension_extractor import extract_dimensions
 from app.services.parser.product_detector import detect_product_type
 
 _SYNONYMS_PATH = Path(__file__).resolve().parents[1] / "config" / "search_synonyms.json"
 
-PRODUCT_LABELS_NL = {
-    "angle_profile": "hoekprofiel",
-    "square_tube": "kokerprofiel",
-    "round_tube": "buis",
-    "round_bar": "ronde staf",
-    "plate": "plaat",
-    "beam": "balk",
-    "standard_profile": "staalprofiel",
-    "concrete_slab": "betonplaat",
-    "plywood": "multiplex",
-    "pvc_pipe": "pvc buis",
-    "plastic_sheet": "kunststof plaat",
+# De suggestie die de gebruiker aanklikt wordt de omschrijving op zijn
+# document; die hoort dus in de taal te staan waarin hij werkt.
+PRODUCT_LABELS = {
+    "angle_profile": {"nl": "hoekprofiel", "en": "angle profile", "de": "Winkelprofil"},
+    "square_tube": {"nl": "kokerprofiel", "en": "square tube", "de": "Quadratrohr"},
+    "round_tube": {"nl": "buis", "en": "pipe", "de": "Rohr"},
+    "round_bar": {"nl": "ronde staf", "en": "round bar", "de": "Rundstab"},
+    "plate": {"nl": "plaat", "en": "plate", "de": "Blech"},
+    "beam": {"nl": "balk", "en": "beam", "de": "Träger"},
+    "standard_profile": {"nl": "staalprofiel", "en": "steel profile", "de": "Stahlprofil"},
+    "concrete_slab": {"nl": "betonplaat", "en": "concrete slab", "de": "Betonplatte"},
+    "plywood": {"nl": "multiplex", "en": "plywood", "de": "Sperrholz"},
+    "pvc_pipe": {"nl": "pvc buis", "en": "pvc pipe", "de": "PVC-Rohr"},
+    "plastic_sheet": {"nl": "kunststof plaat", "en": "plastic sheet", "de": "Kunststoffplatte"},
 }
 
-MATERIAL_NL = {
-    "steel": "staal",
-    "stainless_steel": "rvs",
-    "aluminium": "aluminium",
-    "copper": "koper",
-    "brass": "messing",
-    "concrete": "beton",
-    "reinforced_concrete": "gewapend beton",
-    "spruce": "hout",
-    "hardwood": "hardhout",
-    "plywood": "multiplex",
-    "pvc": "pvc",
-    "pe": "pe",
-    "pp": "pp",
-    "pom": "pom",
-    "nylon": "nylon",
-    "acrylic": "plexiglas",
-    "sand": "zand",
-    "gravel": "grind",
+# Terugval voor materialen die de database niet als label kent.
+MATERIAL_LABELS = {
+    "steel": {"nl": "staal", "en": "steel", "de": "Stahl"},
+    "stainless_steel": {"nl": "rvs", "en": "stainless steel", "de": "Edelstahl"},
+    "aluminium": {"nl": "aluminium", "en": "aluminium", "de": "Aluminium"},
+    "copper": {"nl": "koper", "en": "copper", "de": "Kupfer"},
+    "brass": {"nl": "messing", "en": "brass", "de": "Messing"},
+    "concrete": {"nl": "beton", "en": "concrete", "de": "Beton"},
+    "reinforced_concrete": {"nl": "gewapend beton", "en": "reinforced concrete",
+                            "de": "Stahlbeton"},
+    "spruce": {"nl": "hout", "en": "wood", "de": "Holz"},
+    "hardwood": {"nl": "hardhout", "en": "hardwood", "de": "Laubholz"},
+    "plywood": {"nl": "multiplex", "en": "plywood", "de": "Sperrholz"},
+    "pvc": {"nl": "pvc", "en": "pvc", "de": "PVC"},
+    "pe": {"nl": "pe", "en": "pe", "de": "PE"},
+    "pp": {"nl": "pp", "en": "pp", "de": "PP"},
+    "pom": {"nl": "pom", "en": "pom", "de": "POM"},
+    "nylon": {"nl": "nylon", "en": "nylon", "de": "Nylon"},
+    "acrylic": {"nl": "plexiglas", "en": "acrylic", "de": "Acrylglas"},
+    "sand": {"nl": "zand", "en": "sand", "de": "Sand"},
+    "gravel": {"nl": "grind", "en": "gravel", "de": "Kies"},
 }
+
+
+def material_label(material: Material, language: str) -> str:
+    """De naam van een materiaal in de gevraagde taal."""
+    labels = json.loads(material.language_labels_json or "{}")
+    return (
+        pick(labels, language)
+        or pick(MATERIAL_LABELS.get(material.canonical_name), language)
+        or material.canonical_name
+    )
+
+
+def product_label(product_type: str, language: str) -> str:
+    return pick(PRODUCT_LABELS.get(product_type), language) or product_type.replace("_", " ")
 
 
 @dataclass
@@ -102,7 +121,7 @@ def _db_synonyms(db: Session) -> dict[str, str]:
 
     for material in db.query(Material).filter(Material.active.is_(True)).all():
         labels = json.loads(material.language_labels_json or "{}")
-        target = (labels.get("nl") or MATERIAL_NL.get(material.canonical_name, material.canonical_name)).lower()
+        target = material_label(material, "nl").lower()
         for alias in [material.canonical_name, *_load_aliases(material.aliases_json), *labels.values()]:
             key = str(alias).strip().lower()
             if len(key) > 2 and key != target:
@@ -304,11 +323,12 @@ def _search_materials(db: Session, query: str, query_tokens: set[str]) -> list[t
     return matched[:4]
 
 
-def _material_hits(query: str, materials_scored: list[tuple[Material, float]]) -> list[SearchHit]:
+def _material_hits(
+    query: str, materials_scored: list[tuple[Material, float]], language: str
+) -> list[SearchHit]:
     hits: list[SearchHit] = []
     for material, score in materials_scored:
-        labels = json.loads(material.language_labels_json or "{}")
-        display = labels.get("nl") or MATERIAL_NL.get(material.canonical_name, material.canonical_name)
+        display = material_label(material, language)
         density = material.density_kg_m3
         hits.append(
             SearchHit(
@@ -323,7 +343,9 @@ def _material_hits(query: str, materials_scored: list[tuple[Material, float]]) -
     return hits
 
 
-def _search_reference(db: Session, query: str, normalized: str, query_tokens: set[str]) -> list[SearchHit]:
+def _search_reference(
+    db: Session, query: str, normalized: str, query_tokens: set[str], language: str
+) -> list[SearchHit]:
     hits: list[SearchHit] = []
     for item in db.query(ReferenceItem).filter(ReferenceItem.active.is_(True)).all():
         labels = json.loads(item.language_labels_json or "{}")
@@ -336,7 +358,7 @@ def _search_reference(db: Session, query: str, normalized: str, query_tokens: se
         )
         if score <= 0:
             continue
-        display = labels.get("nl") or item.canonical_name
+        display = pick(labels, language) or item.canonical_name
         hits.append(
             SearchHit(
                 id=f"reference:{item.id}",
@@ -350,46 +372,57 @@ def _search_reference(db: Session, query: str, normalized: str, query_tokens: se
     return hits
 
 
-def _template_suggestions(query: str, normalized: str, materials: list[Material], db: Session) -> list[SearchHit]:
+def _template_suggestions(
+    query: str, normalized: str, materials: list[Material], db: Session, language: str
+) -> list[SearchHit]:
     hits: list[SearchHit] = []
     product_type = detect_product_type(normalized)
     if not product_type:
         return hits
 
-    product_nl = PRODUCT_LABELS_NL.get(product_type, product_type.replace("_", " "))
+    product_name = product_label(product_type, language)
     suffix = _dimension_suffix(query)
-    dim_hint = suffix or "bijv. 80x80x8x6000"
+    dim_hint = suffix or pick(
+        {"nl": "bijv. 80x80x8x6000", "en": "e.g. 80x80x8x6000", "de": "z. B. 80x80x8x6000"},
+        language,
+    )
+    add_dims = pick(
+        {"nl": "Voeg afmetingen toe", "en": "Add dimensions", "de": "Abmessungen ergänzen"},
+        language,
+    )
+    dims_label = pick({"nl": "Afmetingen", "en": "Dimensions", "de": "Abmessungen"}, language)
 
     if materials:
         for material in materials:
-            labels = json.loads(material.language_labels_json or "{}")
-            mat_nl = labels.get("nl") or MATERIAL_NL.get(material.canonical_name, material.canonical_name)
-            mat_lower = mat_nl.lower()
-            prod_lower = product_nl.lower()
+            mat_name = material_label(material, language)
+            mat_lower = mat_name.lower()
+            prod_lower = product_name.lower()
             if mat_lower == prod_lower or prod_lower in mat_lower:
-                base = mat_nl
+                base = mat_name
             else:
-                base = f"{mat_nl} {product_nl}".strip()
+                base = f"{mat_name} {product_name}".strip()
             value = f"{base} {suffix}".strip() if suffix else base
             hits.append(
                 SearchHit(
                     id=f"template:{material.canonical_name}:{product_type}",
                     source="template",
-                    label=base.title() if mat_nl.islower() else base,
-                    sublabel=f"Voeg afmetingen toe: {dim_hint}" if not suffix else f"Afmetingen: {suffix}",
+                    label=base.title() if mat_name.islower() else base,
+                    sublabel=(f"{add_dims}: {dim_hint}" if not suffix
+                              else f"{dims_label}: {suffix}"),
                     value=value,
                     score=8.0,
                 )
             )
     else:
-        base = product_nl
+        base = product_name
         value = f"{base} {suffix}".strip() if suffix else base
         hits.append(
             SearchHit(
                 id=f"template::{product_type}",
                 source="template",
                 label=base.title(),
-                sublabel=f"Voeg afmetingen toe: {dim_hint}" if not suffix else f"Afmetingen: {suffix}",
+                sublabel=(f"{add_dims}: {dim_hint}" if not suffix
+                          else f"{dims_label}: {suffix}"),
                 value=value,
                 score=6.0,
             )
@@ -401,7 +434,9 @@ def _template_suggestions(query: str, normalized: str, materials: list[Material]
     return hits
 
 
-def search_catalog(db: Session, query: str, limit: int = 25) -> list[dict[str, Any]]:
+def search_catalog(
+    db: Session, query: str, limit: int = 25, language: str = "nl"
+) -> list[dict[str, Any]]:
     query = (query or "").strip()
     if len(query) < 2:
         return []
@@ -412,11 +447,13 @@ def search_catalog(db: Session, query: str, limit: int = 25) -> list[dict[str, A
 
     materials_scored = _search_materials(db, normalized, query_tokens)
     hits: list[SearchHit] = []
-    hits.extend(_template_suggestions(query, normalized, [m for m, _ in materials_scored], db))
-    hits.extend(_material_hits(query, materials_scored))
+    hits.extend(
+        _template_suggestions(query, normalized, [m for m, _ in materials_scored], db, language)
+    )
+    hits.extend(_material_hits(query, materials_scored, language))
     hits.extend(_search_equipment(db, query, normalized, query_tokens))
     hits.extend(_search_profiles(db, query, normalized, query_tokens, dims))
-    hits.extend(_search_reference(db, query, normalized, query_tokens))
+    hits.extend(_search_reference(db, query, normalized, query_tokens, language))
 
     seen: set[str] = set()
     unique: list[SearchHit] = []

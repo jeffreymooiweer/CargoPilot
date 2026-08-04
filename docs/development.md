@@ -96,7 +96,7 @@ backend/
 frontend/
   src/components/       wizard steps and panels
   src/pages/            routed pages
-  src/i18n/             nl.json, en.json
+  src/i18n/             nl.json, en.json, de.json
 templates/forms/        official PDF forms that get filled in
 un_cards/               UN reference cards, one per UN number
 scripts/                one-off maintenance scripts

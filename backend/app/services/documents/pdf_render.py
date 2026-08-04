@@ -28,6 +28,7 @@ from reportlab.platypus import (
     TableStyle,
 )
 
+from app.core.languages import pick
 from app.services.dg.autofill import adr_category_totals
 from app.services.documents.exporter import (
     DG_PRODUCT_FIELDS,
@@ -175,10 +176,16 @@ def _signature_block(signature_png: bytes, styles: dict, lang: str) -> list:
     sig_height = sig_width * ratio
     flowable = Image(io.BytesIO(signature_png), width=sig_width, height=sig_height)
     flowable.hAlign = "LEFT"
-    caption = (
-        "Handtekening afzender / verantwoordelijke persoon — digitaal geplaatst via CargoPilot op "
-        if lang == "nl"
-        else "Signature of consignor / responsible person — digitally placed via CargoPilot on "
+    caption = pick(
+        {
+            "nl": "Handtekening afzender / verantwoordelijke persoon — digitaal geplaatst "
+                  "via CargoPilot op ",
+            "en": "Signature of consignor / responsible person — digitally placed via "
+                  "CargoPilot on ",
+            "de": "Unterschrift des Absenders / der verantwortlichen Person — digital "
+                  "eingefügt über CargoPilot am ",
+        },
+        lang,
     ) + datetime.now().strftime("%Y-%m-%d")
     caption_table = Table(
         [[_p(caption, styles["note"])]],
@@ -213,7 +220,7 @@ def render_document_pdf(
     story: list = []
 
     story.append(_p(_label(document, lang), styles["title"]))
-    issue = document.get("issue_status", {}).get(lang)
+    issue = pick(document.get("issue_status"), lang)
     if issue:
         story.append(_p(f"{_text('status', lang)}: {issue}", styles["status"]))
     story.append(_p(f"{_text('generated_with', lang)} {datetime.now().strftime('%Y-%m-%d %H:%M')}", styles["meta"]))
@@ -270,13 +277,13 @@ def render_document_pdf(
                 story.append(Spacer(1, 6))
 
     for item in document.get("fixed_texts") or []:
-        story.append(_p(item.get(lang) or item.get("nl", ""), styles["fixed"]))
+        story.append(_p(pick(item, lang), styles["fixed"]))
         story.append(Spacer(1, 3))
 
-    legal = document.get("legal_reference", {}).get(lang)
+    legal = pick(document.get("legal_reference"), lang)
     if legal:
         story.append(_p(f"{_text('legal_reference', lang)}: {legal}", styles["note"]))
-    note = document.get("signature_note", {}).get(lang)
+    note = pick(document.get("signature_note"), lang)
     if note:
         story.append(_p(note, styles["note"]))
 

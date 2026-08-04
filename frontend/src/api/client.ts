@@ -30,6 +30,11 @@ async function uploadFile<T>(path: string, file: File): Promise<T> {
   return res.json();
 }
 
+/** FastAPI leest een herhaalde parameter als lijst: ?profiles=ADR&profiles=IMDG. */
+function profileQuery(profiles: string[]): string {
+  return profiles.map((p) => `&profiles=${encodeURIComponent(p)}`).join("");
+}
+
 /** Een validatiefout van FastAPI leesbaar maken.
  *
  * Bij een 422 is `detail` geen zin maar een lijst met `{loc, msg}` per veld.
@@ -93,9 +98,19 @@ export const api = {
   calculate: (payload: Record<string, unknown>) =>
     request<CalcResult>("/calculate", { method: "POST", body: JSON.stringify(payload) }),
   dgInstructions: () => request<DgInstructions>("/dg/instructions"),
-  dgLookup: (un: string) => request<DgLookupResult>(`/dg/lookup?un=${encodeURIComponent(un)}`),
-  dgSearch: (q: string, limit = 12) =>
-    request<{ results: DgUnEntry[] }>(`/dg/search?q=${encodeURIComponent(q)}&limit=${limit}`),
+  // Taal en profielen gaan mee omdat de juiste vervoersnaam ervan afhangt:
+  // ADR 5.4.1.4.1 laat een Duitse benaming toe, IMDG 5.4.1.4.1 en IATA DGR
+  // 8.1.2.1 niet. De suggestie die de gebruiker aanklikt, is de tekst die op
+  // het document belandt.
+  dgLookup: (un: string, language = "nl", profiles: string[] = []) =>
+    request<DgLookupResult>(
+      `/dg/lookup?un=${encodeURIComponent(un)}&language=${language}${profileQuery(profiles)}`,
+    ),
+  dgSearch: (q: string, limit = 12, language = "nl", profiles: string[] = []) =>
+    request<{ results: DgUnEntry[] }>(
+      `/dg/search?q=${encodeURIComponent(q)}&limit=${limit}&language=${language}` +
+        profileQuery(profiles),
+    ),
   dgPackagings: (q = "", limit = 150) =>
     request<{ results: DgPackaging[] }>(`/dg/packagings?q=${encodeURIComponent(q)}&limit=${limit}`),
   listUsers: () => request<User[]>("/users"),
@@ -116,8 +131,10 @@ export const api = {
       method: "POST",
       body: JSON.stringify({ rows, mapping, has_header: hasHeader }),
     }),
-  catalogSearch: (q: string, limit = 25) =>
-    request<{ results: CatalogSearchHit[] }>(`/catalog/search?q=${encodeURIComponent(q)}&limit=${limit}`),
+  catalogSearch: (q: string, limit = 25, language = "nl") =>
+    request<{ results: CatalogSearchHit[] }>(
+      `/catalog/search?q=${encodeURIComponent(q)}&limit=${limit}&language=${language}`,
+    ),
   geoLocations: (q: string, types?: GeoLocationType[], limit = 8) =>
     request<{ results: GeoLocation[] }>(
       `/geo/locations?q=${encodeURIComponent(q)}&limit=${limit}${types?.length ? `&type=${types.join(",")}` : ""}`,
@@ -451,7 +468,10 @@ export interface WizardFileParseResult {
   rows: string[][];
 }
 
-export type LocalizedText = { nl: string; en: string };
+/** Nederlands en Engels zijn er altijd; een derde taal kan in een register dat
+ *  van elders komt ontbreken. Gebruik `localised()` om er tekst uit te halen —
+ *  dat valt terug in plaats van niets te tonen. */
+export type LocalizedText = { nl: string; en: string; de?: string };
 
 export type FieldStatus =
   | "AUTO_DERIVED"
@@ -522,6 +542,8 @@ export interface DgUnEntry {
   un: string;
   name_en: string;
   name_de: string;
+  /** De benaming in de taal die voor de gekozen profielen is toegestaan. */
+  proper_shipping_name: string;
   class: string;
   classification_code: string;
   packing_group: string;

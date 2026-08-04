@@ -36,7 +36,9 @@ IMDG Amendment 42-24 chapter 7.2.8, EmS Guide MSC.1/Circ.1588/Rev.3, IATA DGR 20
       (patch for fixes and docs, minor for new functionality, major only for breaking
       changes — when in doubt take the smaller bump)
 - [ ] Documentation in `docs/` updated where behaviour changed
-- [ ] Both `frontend/src/i18n/nl.json` and `en.json` updated for any new interface string
+- [ ] `frontend/src/i18n/nl.json`, `en.json` **and** `de.json` updated for any new
+      interface string, and any new `{nl, en}` block in the config or seed data carries a
+      `de` as well — `backend/tests/test_languages.py` fails otherwise
 - [ ] **No regulatory text added.** The repository holds factual data only — a UN number
       mapped to a code, a material mapped to a density. ADR, the IMDG Code and the IATA
       DGR are copyrighted and must not be committed, and neither must the PDFs they came

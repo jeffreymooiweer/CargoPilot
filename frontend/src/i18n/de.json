@@ -1,0 +1,350 @@
+{
+  "app": {
+    "name": "CargoPilot",
+    "tagline": "Von der Materialliste zu den Transportdokumenten"
+  },
+  "nav": {
+    "dashboard": "Dashboard",
+    "new": "Neue Sendung",
+    "materieel": "Materialübersicht",
+    "settings": "Einstellungen",
+    "users": "Benutzer",
+    "logout": "Abmelden",
+    "menu": "Menü",
+    "openMenu": "Menü öffnen",
+    "closeMenu": "Menü schließen",
+    "legal": "Haftungsausschluss"
+  },
+  "theme": {
+    "dark": "Dunkel",
+    "light": "Hell",
+    "toggle": "Design wechseln"
+  },
+  "dashboard": {
+    "privacy": "CargoPilot speichert weder Verlauf noch eingefügte Daten oder Dokumentdateien auf dem Server. Nach dem Download wird alles aus dem Speicher entfernt."
+  },
+  "login": {
+    "title": "Anmelden",
+    "username": "Benutzername",
+    "password": "Passwort",
+    "submit": "Anmelden",
+    "setup": "Kein Administrator eingerichtet. Setzen Sie ADMIN_USERNAME, ADMIN_EMAIL und ADMIN_PASSWORD."
+  },
+  "wizard": {
+    "step2": "Versandstücke",
+    "step3dg": "Gefahrgut",
+    "step4": "Export",
+    "continue": "Weiter",
+    "download": "Dokument herunterladen",
+    "summary": "Zusammenfassung",
+    "products": "Produkte",
+    "adjustTotalWeight": "Gesamtgewicht anpassen",
+    "adjustTotalWeightHint": "Alle Zeilengewichte werden proportional mit angepasst.",
+    "lines": "Zeilen",
+    "totalWeight": "Gesamtgewicht",
+    "totalVolume": "Gesamtes Transportvolumen",
+    "warnings": "Warnungen",
+    "back": "Zurück",
+    "recalculate": "Neu berechnen",
+    "toExport": "Zum Export",
+    "toDg": "Zum Gefahrgut",
+    "dgIntro": "Erfassen Sie die Gefahrgutangaben für alle Versandstücke, die als Gefahrgut markiert sind oder in denen eine UN-Nummer erkannt wurde.",
+    "dgSource": "Die Klassifizierung stammt aus der mitgelieferten Offline-ADR-Datenbank (Tabelle A); wo Internet verfügbar ist, wird sie live aus der ADR-2025-Quelle ergänzt.",
+    "dgLine": "Zeile",
+    "dgVehicle": "Fahrzeug / Ladung",
+    "dgVehicleHelp": "Beschreibung des Fahrzeugs oder der Ladung dieser Gefahrgutposition.",
+    "dgLookup": "UN-Nummer nachschlagen",
+    "dgIncluded": "Gefahrgut für {{count}} Versandstück(e) erfasst; die Angaben werden in die ausgewählten Gefahrgutdokumente übernommen.",
+    "dgPositionOf": "Position {{current}} von {{total}}",
+    "progressStep": "Schritt {{current}} von {{total}}",
+    "stepForms": "Formulare",
+    "stepDetails": "Sendungsdaten",
+    "toLines": "Zu den Artikeln",
+    "toDetails": "Zu den Sendungsdaten",
+    "changeModality": "Anderen Verkehrsträger wählen",
+    "loading": "Wird geladen…",
+    "next": "Weiter",
+    "paste": "Fügen Sie hier Ihre Zeilen ein: Bezeichnung | Menge | Einheit"
+  },
+  "review": {
+    "linesTitle": "Versandstücke",
+    "intro": "Geben Sie je Versandstück eine Bezeichnung ein: wählen Sie Material aus dem Katalog oder tippen Sie eine eigene Bezeichnung mit Abmessungen. Aus Excel einfügen geht über Importieren.",
+    "description": "Bezeichnung",
+    "descriptionPlaceholder": "Material wählen oder z. B. Stahl Winkelprofil 80x80x8x6000 eingeben",
+    "customDescription": "Als freie Bezeichnung verwenden (automatisch zuordnen)",
+    "noEquipmentMatch": "Kein Material im Katalog — die freie Bezeichnung wird verwendet",
+    "noCatalogMatch": "Keine Übereinstimmung im Katalog — die freie Bezeichnung wird verwendet",
+    "catalogSearching": "Katalog wird durchsucht…",
+    "catalogSource": {
+      "equipment": "Material",
+      "profile": "Profil",
+      "reference": "Referenz",
+      "template": "Vorschlag",
+      "material": "Werkstoff"
+    },
+    "quantity": "Menge",
+    "unit": "Einheit",
+    "status": "Status",
+    "weightEach": "Gewicht/St.",
+    "weightTotal": "Zeilensumme",
+    "addLine": "Zeile hinzufügen",
+    "duplicateLine": "Zeile kopieren",
+    "removeLine": "Entfernen",
+    "noLines": "Fügen Sie mindestens ein Versandstück mit Bezeichnung hinzu.",
+    "importExcel": "Importieren",
+    "importTitle": "Aus Datei oder Text importieren",
+    "importHint": "Fügen Sie kopierte Spalten aus Excel ein (Bezeichnung | Menge | Einheit) oder laden Sie die Vorlage herunter und eine Datei hoch.",
+    "importExampleTitle": "Beispiel",
+    "importExample": "Stahl Winkelprofil 80x80x8x6000 | 8 | Stk.",
+    "importReplace": "Aktuelle Zeilen ersetzen",
+    "importAppend": "An aktuelle Zeilen anhängen",
+    "importConfirm": "Importieren",
+    "cancel": "Abbrechen",
+    "dangerousGoods": "Gefahrgut-Versandstück",
+    "dgDetected": "UN-Nummer erkannt"
+  },
+  "import": {
+    "downloadTemplate": "Vorlage herunterladen",
+    "chooseFile": "Datei wählen",
+    "parsingFile": "Datei wird verarbeitet…",
+    "importingFile": "Wird importiert…",
+    "guessedColumns": "Die Kopfzeile dieser Datei wurde nicht erkannt, daher wurden die Spalten der Reihe nach geraten. Prüfen Sie unten, ob das stimmt.",
+    "recognisedColumns": "Die Kopfzeile wurde erkannt. Stimmt die Zuordnung nicht, ändern Sie sie hier.",
+    "columnNone": "— nicht verwenden —",
+    "firstRowIsHeader": "Erste Zeile ist eine Kopfzeile und gehört nicht zur Ladung",
+    "field": {
+      "description": "Bezeichnung",
+      "quantity": "Menge",
+      "unit": "Einheit"
+    }
+  },
+  "messages": {
+    "dg_un_detected": "UN-Nummer erkannt — Versandstück als Gefahrgut markiert"
+  },
+  "status": {
+    "ok": "OK",
+    "warning": "Warnung",
+    "error": "Fehler",
+    "needs_review": "Prüfung nötig"
+  },
+  "materieel": {
+    "intro": "Verwalten Sie Ihre eigene Materialdatenbank. Laden Sie die Vorlage herunter, tragen Sie Positionen ein und importieren Sie. Erkannte Bezeichnungen werden im Assistenten zugeordnet.",
+    "add": "Material hinzufügen",
+    "edit": "Bearbeiten",
+    "duplicate": "Kopieren",
+    "create": "Hinzufügen",
+    "save": "Speichern",
+    "cancel": "Abbrechen",
+    "delete": "Löschen",
+    "confirmDelete": "Dieses Material löschen?",
+    "dimensions": "Abmessungen (L×B×H)",
+    "search": "Suche nach Bezeichnung, SAP-Code oder Alias…",
+    "count": "{{count}} von {{total}} Positionen",
+    "sapCode": "SAP-Code (MATNR)",
+    "specifications": "Specifications (Bezeichnung)",
+    "length": "Länge (cm)",
+    "width": "Breite (cm)",
+    "height": "Höhe (cm)",
+    "weight": "Gewicht (kg)",
+    "aliases": "Aliasse (durch Komma getrennt, für die Erkennung)",
+    "active": "Aktiv",
+    "import": "Importieren",
+    "importTitle": "Material importieren",
+    "importHint": "Laden Sie zuerst die Vorlage herunter, tragen Sie Ihr Material ein und laden Sie die Datei hoch (.xlsx, .csv oder .txt). Vorhandene Positionen werden anhand des SAP-Codes oder der Specifications aktualisiert.",
+    "importDone": "Import abgeschlossen",
+    "importCreated": "{{count}} hinzugefügt",
+    "importUpdated": "{{count}} aktualisiert",
+    "importSkipped": "{{count}} übersprungen",
+    "inactive": "Inaktiv"
+  },
+  "settings": {
+    "title": "Einstellungen",
+    "intro": "Passen Sie Erscheinungsbild und Sprache der Anwendung an.",
+    "theme": "Design",
+    "themeHint": "Wählen Sie hell, dunkel oder folgen Sie der Systemeinstellung.",
+    "language": "Sprache",
+    "languageHint": "Sprache der Benutzeroberfläche.",
+    "auto": "System",
+    "autoDetectNote": "Im Assistenten wird die Eingabesprache Ihrer Materialliste immer automatisch erkannt.",
+    "version": "Version"
+  },
+  "modality": {
+    "title": "Wählen Sie Ihren Verkehrsträger",
+    "intro": "Starten Sie eine neue Sendung mit der Wahl des Verkehrsträgers. Anschließend wählen Sie die zu erstellenden Formulare und erfassen Ihre Artikel, Produkte oder Materialien.",
+    "road": "Straßentransport",
+    "roadDesc": "CMR- und AVC-Frachtbrief, Packliste und Lieferschein",
+    "rail": "Schienentransport",
+    "railDesc": "CIM-Frachtbrief mit RID-Angaben",
+    "sea": "Seefracht",
+    "seaDesc": "B/L-Anweisungen, VGM und IMO-Gefahrgutformular",
+    "inland": "Binnenschifffahrt",
+    "inlandDesc": "ADN-Dokument, VGM und Packliste",
+    "air": "Luftfracht",
+    "airDesc": "AWB-Anweisungen und IATA-Gefahrguterklärung",
+    "multimodal": "Multimodal",
+    "multimodalDesc": "Kombination von Verkehrsträgern — alle Formulare"
+  },
+  "forms": {
+    "title": "Welche Formulare möchten Sie erstellen?",
+    "intro": "Wählen Sie die Dokumente für diese Sendung. Je Verkehrsträger werden nur die relevanten Formulare angezeigt; bei multimodal stehen alle Formulare zur Verfügung.",
+    "dgOnly": "Gefahrgut",
+    "selectAtLeastOne": "Wählen Sie mindestens ein Formular, um fortzufahren.",
+    "categoryInternal": "Internes Dokument",
+    "categoryPrepared": "Vorbereitetes Beförderungspapier",
+    "categoryDeclaration": "Erklärung",
+    "categoryInstructions": "Shipping Instructions",
+    "categoryGenerated": "Erzeugtes Geschäftsdokument",
+    "officialPdf": "Offizielles PDF"
+  },
+  "docfields": {
+    "title": "Sendungs- und Dokumentdaten",
+    "intro": "Gemeinsame Daten werden in allen ausgewählten Dokumenten wiederverwendet. Mit * gekennzeichnete Felder sind für den Export erforderlich. Angaben des Frachtführers und operative Felder bleiben leer, bis sie bekannt sind.",
+    "choose": "— Wählen —",
+    "yes": "Ja",
+    "confirmExplicit": "Ich bestätige diese Erklärungen bewusst im Namen der verantwortlichen Person",
+    "carrierProvided": "Frachtführer",
+    "operational": "Bei der Durchführung",
+    "signatureRequired": "Unterschrift",
+    "sharedTitle": "Sendungsdaten",
+    "sharedShort": "Sendung",
+    "sharedIntro": "Erfassen Sie diese Daten einmal; sie werden in allen ausgewählten Formularen wiederverwendet. Mit * gekennzeichnete Felder sind für den Export erforderlich.",
+    "formStep": "Formular {{index}} von {{total}}: {{name}}",
+    "formIntro": "Nur die Felder, die speziell für dieses Formular nötig sind. Angaben des Frachtführers und Unterschriften bleiben leer.",
+    "coveredByShared": "Für {{forms}} sind keine zusätzlichen Felder nötig; die Sendungsdaten genügen."
+  },
+  "geo": {
+    "locationPlaceholder": "Flughafen, Hafen oder Bahnhof suchen — oder frei eingeben…",
+    "addressPlaceholder": "Adresse suchen und automatisch ausfüllen…"
+  },
+  "signature": {
+    "title": "Unterschrift des Absenders (optional)",
+    "intro": "Zeichnen Sie Ihre Unterschrift oder laden Sie ein Bild davon hoch; sie wird im Absenderfeld der ausgewählten Dokumente platziert (z. B. CMR Feld 22). Sie können diesen Schritt auch überspringen und die ausgedruckten Dokumente mit dem Stift unterschreiben.",
+    "draw": "Zeichnen",
+    "upload": "Hochladen",
+    "skip": "Überspringen",
+    "undo": "Rückgängig",
+    "clear": "Löschen",
+    "drawHint": "Mit Maus, Finger oder Stift zeichnen",
+    "chooseFile": "Bild wählen…",
+    "uploadHint": "PNG, JPEG oder WebP, max. 3 MB. Ein weißer Hintergrund wird automatisch transparent gemacht.",
+    "uploadInvalid": "Wählen Sie ein PNG-, JPEG- oder WebP-Bild.",
+    "uploadTooLarge": "Das Bild ist zu groß (max. 3 MB).",
+    "previewAlt": "Vorschau der Unterschrift",
+    "remove": "Entfernen",
+    "skipHint": "Es wird keine Unterschrift platziert; unterschreiben Sie die Dokumente nach dem Ausdruck mit dem Stift.",
+    "applied": "Die Unterschrift wird in die Dokumente eingefügt"
+  },
+  "dgsearch": {
+    "unPlaceholder": "UN-Nummer oder Stoffnamen eingeben, z. B. 1203 oder Benzin…",
+    "unHint": "Wählen Sie einen Vorschlag, um Klasse, Verpackungsgruppe, Verpackungsanweisung, Beförderungskategorie und Tunnelbeschränkungscode automatisch zu füllen.",
+    "packagingPlaceholder": "Verpackung suchen, z. B. 4G, Fass, Big Bag…",
+    "packagingHint": "Alle UN-Verpackungscodes (ADR 6.1/6.5/6.6). Freitext bleibt möglich.",
+    "classShort": "Kl.",
+    "liquid": "flüssig",
+    "solid": "fest"
+  },
+  "wizardDocs": {
+    "title": "Dokumente",
+    "intro": "Laden Sie die ausgewählten Dokumente herunter. Der Status zeigt an, ob ein Dokument exportbereit ist.",
+    "statusReady": "Exportbereit",
+    "statusDraft": "Entwurf — es fehlen Felder",
+    "statusBlocked": "Durch die Sicherheitsprüfung blockiert",
+    "statusNotApplicable": "Nicht zutreffend (kein Gefahrgut)",
+    "waitingCarrier": "Wartet auf Angaben des Frachtführers",
+    "missingFields": "Fehlt: {{fields}}",
+    "dgBlocked": "Die Gefahrgutklassifizierung ist unvollständig. Erfassen Sie UN-Nummer, Proper Shipping Name, Klasse und Verpackungsangaben im Gefahrgutschritt.",
+    "exporting": "Export läuft…",
+    "exportNotice": "Achtung: erzeugte Dokumente sind Entwürfe. Vor der Verwendung von einer befugten Person prüfen, ergänzen und unterschreiben lassen. Siehe Haftungsausschluss."
+  },
+  "unCards": {
+    "title": "UN-Karten für Ihre Unterlagen",
+    "intro": "Nachschlagekarten zu den von Ihnen angegebenen Stoffen. Sie gehören nicht zu den Beförderungspapieren, sondern sind für Ihre eigene Akte gedacht.",
+    "forSubstances": "Verfügbar für: {{list}}",
+    "missing": "Keine Karte vorhanden für: {{list}}",
+    "download": "UN-Karten herunterladen ({{count}})"
+  },
+  "legal": {
+    "title": "Haftungsausschluss und Lizenz",
+    "updated": "Zuletzt aktualisiert: 12. Juli 2026 · CargoPilot v1.4.0",
+    "intro": "CargoPilot ist ein Hilfsmittel, das Beförderungs- und Begleitpapiere auf Grundlage Ihrer Eingaben vorbereitet. Die Anwendung erteilt keine rechtliche, zollrechtliche oder sicherheitstechnische Beratung. Lesen Sie die nachstehenden Bedingungen sorgfältig; mit der Nutzung von CargoPilot erkennen Sie sie an. Diese deutsche Fassung ist eine Übersetzung; bei Abweichungen ist die niederländische Fassung maßgebend.",
+    "sections": [
+      {
+        "heading": "1. Entwurf — kein endgültiges Dokument",
+        "body": "Jedes von CargoPilot erzeugte Dokument ist ein Entwurf. Vor Verwendung, Übergabe, Einreichung oder Unterzeichnung muss es von einer dazu befugten und qualifizierten Person vollständig geprüft, ergänzt und unterschrieben werden. Unterschriftsfelder, Angaben des Frachtführers und operative Felder werden bewusst nicht vorausgefüllt."
+      },
+      {
+        "heading": "2. Gefahrgut",
+        "body": "Klassifizierung, Verpackung, Kennzeichnung, Bezettelung und Dokumentation gefährlicher Güter (ADR, RID, ADN, IMDG, IATA DGR) liegen in der ausschließlichen Verantwortung des Absenders und der übrigen gesetzlich benannten Beteiligten. CargoPilot macht aus einer freien Bezeichnung niemals selbsttätig eine endgültige Klassifizierung und ersetzt weder zertifizierte Stammdaten noch einen Gefahrgutbeauftragten oder die geltenden, autorisierten Vorschriften."
+      },
+      {
+        "heading": "3. Keine Gewährleistung (AS IS)",
+        "body": "Die Software und alle erzeugten Dokumente werden \"AS IS\" und \"AS AVAILABLE\" bereitgestellt, ohne jede ausdrückliche oder stillschweigende Gewährleistung, einschließlich der Gewährleistung der Marktgängigkeit, der Eignung für einen bestimmten Zweck, der Richtigkeit, Aktualität, Vollständigkeit oder Nichtverletzung von Rechten Dritter. Es wird nicht dafür eingestanden, dass Referenzdaten oder Formularvorlagen richtig, aktuell oder vollständig sind."
+      },
+      {
+        "heading": "4. Haftungsausschluss",
+        "body": "Soweit nach anwendbarem Recht zulässig, schließen die Urheber, Rechteinhaber und Beitragenden von CargoPilot jede Haftung für unmittelbare, mittelbare, beiläufig entstandene, besondere, Straf- oder Folgeschäden aus — einschließlich entgangenen Gewinns, Betriebsunterbrechung, Bußgeldern, Sanktionen, Verzögerungen, beschlagnahmter oder zurückgewiesener Sendungen, Verlust oder Beschädigung von Gütern, Umweltschäden, Personenschäden oder Datenverlust — die aus der Nutzung oder der Unmöglichkeit der Nutzung der Anwendung oder der erzeugten Dokumente entstehen oder damit zusammenhängen, unabhängig vom Rechtsgrund und selbst dann, wenn auf die Möglichkeit solcher Schäden hingewiesen wurde. Sie nutzen CargoPilot vollständig auf eigenes Risiko."
+      },
+      {
+        "heading": "5. Freistellung",
+        "body": "Sie stellen die Urheber und Rechteinhaber von CargoPilot von allen Ansprüchen Dritter frei, die aus Ihrer Nutzung der Anwendung oder der erzeugten Dokumente entstehen oder damit zusammenhängen."
+      },
+      {
+        "heading": "6. Lizenz — Apache License 2.0 mit Commons Clause",
+        "body": "CargoPilot wird unter der Apache License, Version 2.0, ergänzt um die Commons Clause, lizenziert. Nach der Apache License 2.0 wird die Software ohne Gewährleistung und mit Haftungsbeschränkung bereitgestellt (Abschnitte 7 und 8 dieser Lizenz). Die Nutzung innerhalb Ihrer eigenen Organisation ist gestattet; der Verkauf, Weiterverkauf, das Hosting als kostenpflichtiger Dienst oder eine sonstige kommerzielle Weiterverbreitung der Software selbst bedarf der vorherigen schriftlichen Zustimmung des Rechteinhabers (Commons Clause). Der vollständige Text steht in der Datei LICENSE des Repositorys."
+      },
+      {
+        "heading": "7. Anwendbares Recht",
+        "body": "Auf diesen Haftungsausschluss ist niederländisches Recht anwendbar, soweit zwingendes Recht dem nicht entgegensteht. Sollte eine Bestimmung nichtig oder nicht durchsetzbar sein, bleiben die übrigen Bestimmungen in vollem Umfang wirksam."
+      }
+    ]
+  },
+  "compliance": {
+    "title": "Gefahrgut-Konformitätsprüfung",
+    "intro": "Automatische Prüfungen für {{profiles}} auf Grundlage Ihrer Eingaben.",
+    "checking": "Wird geprüft…",
+    "recheck": "Erneut prüfen",
+    "adrPointsTitle": "ADR 1.1.3.6 — 1000-Punkte-Regel",
+    "totalPoints": "Summe: {{total}} von max. {{threshold}} Punkten",
+    "colProduct": "Produkt",
+    "colCategory": "Kat.",
+    "colQuantity": "Menge",
+    "colFactor": "Faktor",
+    "colPoints": "Punkte",
+    "status": {
+      "exempt_possible": "Freistellung nach 1.1.3.6 möglich",
+      "above_threshold": "Über 1000 Punkte — volle ADR-Pflichten",
+      "not_exempt": "Kategorie 0 — keine Freistellung möglich",
+      "incomplete": "Unvollständig — Kategorie und Menge erfassen"
+    },
+    "incompleteHint": "Erfassen Sie Beförderungskategorie und Gesamtmenge nach ADR für: {{products}}. Verwenden Sie die UN-Suche oder ADR Tabelle A Spalte 15.",
+    "category0Hint": "Beförderungskategorie 0 ({{products}}): eine Beförderung unter der Freistellung nach 1.1.3.6 ist nicht zulässig; sämtliche ADR-Vorschriften gelten uneingeschränkt.",
+    "aboveThresholdHint": "Über 1000 Punkte gelten unter anderem orangefarbene Warntafeln, die ADR-Schulungsbescheinigung des Fahrzeugführers, schriftliche Weisungen und Tunnelbeschränkungen.",
+    "exemptDetails": "Was bedeutet die Freistellung?",
+    "exemptFrom": "Freigestellt von (unter anderem):",
+    "stillRequired": "Weiterhin vorgeschrieben:",
+    "segregationTitle": "Zusammenladung und Trennung",
+    "manifest": "Berechnet mit: {{editions}} — Datenstand {{id}}",
+    "noSegregationIssues": "Innerhalb der erfassten Positionen wurden keine Zusammenlade- oder Trennkonflikte gefunden.",
+    "qTitle": "IATA-Q-Wert ('all packed in one')",
+    "qValueFor": "Position {{position}}: Q = {{value}}",
+    "qExceeded": "ÜBERSCHREITET das Maximum von 1,0",
+    "caoHint": "Cargo Aircraft Only gilt für: {{products}}. Vermerken Sie dies auf der Shipper's Declaration und in den AWB-Handling-Information.",
+    "disclaimer": "Diese Prüfungen sind eine Hilfestellung auf Grundlage des ADR 2025 und der IATA DGR 67. Ausgabe und ersetzen weder einen Gefahrgutbeauftragten noch die amtlichen Vorschriften. Siehe Haftungsausschluss.",
+    "segGroupsTitle": "Trenngruppen IMDG 7.2.5 (Säuren, Laugen, Cyanide, …)"
+  },
+  "dgauto": {
+    "title": "Automatisch abgeleitet",
+    "intro": "Anhand der UN-Nummer und der erfassten Versandstücke füllt CargoPilot Klassifizierung, Verpackungsangaben und Dokumentzeilen selbst aus. Prüfen Sie die Angaben und passen Sie sie an, wo es nötig ist.",
+    "documentLine": "Angabe für das Beförderungspapier ({{profile}})",
+    "adrTotals": "Summe je Beförderungskategorie (ADR 5.4.1.1.1.1)",
+    "notes": "Zu beachten bei diesen Stoffen",
+    "requirements": "Von Ihnen auf dem Dokument zu ergänzen",
+    "forbidden": "Zur Beförderung nicht zugelassen —",
+    "emsVerified": "EmS gegen eine öffentliche Quelle bestätigt",
+    "emsByVariant": "Der EmS hängt von der Variante ab: {{options}}",
+    "emsByPackingGroup": "Der EmS hängt von der Verpackungsgruppe ab: {{options}}",
+    "stowageCategory": "Staukategorie {{category}}",
+    "specialProvisions": "Sondervorschriften {{list}}",
+    "amendedIn4224": "42-24 hat diesen Eintrag geändert — mit der vorherigen Ausgabe vergleichen"
+  }
+}

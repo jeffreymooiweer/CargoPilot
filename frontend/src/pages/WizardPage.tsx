@@ -10,6 +10,7 @@ import {
   LocalizedText,
   UnCardsAvailability,
 } from "../api/client";
+import { documentLanguage, localised } from "../i18n/language";
 import DangerousGoodsStep, { buildDgEntries } from "../components/DangerousGoodsStep";
 import DgCompliancePanel from "../components/DgCompliancePanel";
 import DocumentFieldsStep, { resolveSections } from "../components/DocumentFieldsStep";
@@ -81,8 +82,8 @@ const MODALITY_DG_PROFILES: Record<string, string[]> = {
 export default function WizardPage() {
   const { t, i18n } = useTranslation();
   const { modality } = useParams();
-  const lang = (i18n.language.startsWith("en") ? "en" : "nl") as "nl" | "en";
-  const L = (text?: LocalizedText) => text?.[lang] ?? "";
+  const lang = documentLanguage(i18n.language);
+  const L = (text?: LocalizedText) => localised(text, lang);
 
   const [registry, setRegistry] = useState<DocumentRegistry | null>(null);
   const [registryError, setRegistryError] = useState("");

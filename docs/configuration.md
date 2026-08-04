@@ -119,5 +119,23 @@ curl http://localhost:8080/api/health
 ```
 
 ```json
-{ "status": "ok", "app": "CargoPilot", "version": "1.13.2" }
+{
+  "status": "ok",
+  "app": "CargoPilot",
+  "version": "1.29.3",
+  "regulatory": {
+    "manifest_id": "1dbeb6c1ca91cfd5",
+    "editions": {
+      "adr": "2025",
+      "imdg": "Amendment 42-24 (2024 Edition)",
+      "ems": "MSC.1/Circ.1588/Rev.3",
+      "iata": "67e editie (2026)"
+    },
+    "expired": ["imdg_un_cards"]
+  }
+}
 ```
+
+`regulatory` names the editions this installation actually computes with, so a bug report
+can say so without guessing. `GET /api/regulatory` gives the full version, including the
+source and validity period per rule set — see [Data sources](data-sources.md#which-edition-is-running).

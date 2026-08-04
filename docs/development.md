@@ -22,19 +22,25 @@ mkdir -p ../data
 
 DATABASE_URL=sqlite:////absolute/path/to/repo/data/cargopilot.db \
 DATA_DIR=/absolute/path/to/repo/data \
+APP_ENV=development \
 APP_SECRET_KEY=dev-secret \
 ADMIN_USERNAME=admin ADMIN_EMAIL=admin@example.local ADMIN_PASSWORD=cargopilot123 \
 CATALOG_AUTO_SYNC=false \
   uvicorn app.main:app --reload --port 8080
 ```
 
-Two things catch people out:
+Three things catch people out:
 
 - **The repo `.env` is not picked up when you run uvicorn from `backend/`.** Pydantic
   resolves `env_file=".env"` relative to the working directory, and there is no
   `backend/.env`. Pass the variables explicitly, as above.
 - **`DATA_DIR` and `DATABASE_URL` default to `/data`,** which is usually not writable
   outside Docker. Point them at a folder in the repo.
+- **`APP_SECRET_KEY=dev-secret` above is not the key you get.** It is on the published
+  list, so the application replaces it with one it generates and stores in
+  `DATA_DIR/secret_key`, and reuses that afterwards. This happens in every environment;
+  `APP_ENV=development` only silences the CORS and admin-password warnings. You are
+  logged out once, the first time, and not again unless you delete the file.
 
 `CATALOG_AUTO_SYNC=false` skips the startup fetch of external catalogues. It makes
 startup much faster and does not affect weight calculations.
@@ -80,6 +86,15 @@ A few notes on the test suite:
   accidental edit fails a test instead of silently shipping.
 - **The AVC overlay is tested by coordinate.** `test_avc_waybill.py` checks where text
   lands on the page, not just that it is present.
+- **A language is complete or it is not.** `test_languages.py` walks the config and seed
+  files and requires a German text wherever there is a Dutch and an English one, holds
+  lists to the same length, and rejects a "translation" that only repeats the Dutch. An
+  AST pass over `app/` catches the same omission in code. Adding an interface string
+  therefore means adding it three times.
+- **The app is started the way a user starts it.** `test_starts_out_of_the_box.py` builds
+  the application in a real subprocess with a clean environment and nothing configured.
+  It exists because everything else runs with `APP_ENV=test`, and a startup check that
+  only fires in production went unnoticed for five releases.
 
 ## Project layout
 
@@ -132,8 +147,8 @@ a minor.
 
 | Bump | When | Example |
 |---|---|---|
-| **PATCH** `1.13.1` → `1.13.2` | Bug fixes, text and label corrections, small data fixes, documentation. No new functionality. | Wrong button label, missing translation, corrected density |
-| **MINOR** `1.13.2` → `1.14.0` | New functionality that leaves existing shipments alone | New wizard step, new document, new endpoint |
+| **PATCH** `1.29.2` → `1.29.3` | Bug fixes, text and label corrections, small data fixes, documentation. No new functionality. | Wrong button label, missing translation, corrected density, a container that will not start |
+| **MINOR** `1.28.1` → `1.29.0` | New functionality that leaves existing shipments alone | New wizard step, new document, new endpoint, a third interface language |
 | **MAJOR** `1.x` → `2.0.0` | Breaking changes: incompatible APIs or data formats, a different wizard structure, a required migration | Reserved for major overhauls |
 
 When in doubt, take the smaller bump.

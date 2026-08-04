@@ -65,8 +65,8 @@ a header**, or that row is imported as a piece of cargo.
 ### What happens next
 
 CargoPilot reads each line and tries to recognise the material and any dimensions in it,
-in Dutch or English. `Steel angle 80x80x8x6000` becomes steel, 80 × 80 × 8 mm, 6000 mm
-long. From there it calculates the weight, the material volume and the transport volume.
+in Dutch, English or German. `Steel angle 80x80x8x6000` becomes steel, 80 × 80 × 8 mm,
+6000 mm long, and so does `Stahl Winkelprofil 80x80x8x6000`. From there it calculates the weight, the material volume and the transport volume.
 
 A green line means it worked. An orange or red line means it could not work out the
 weight — usually because the description has no dimensions. Type the weight in yourself
@@ -154,6 +154,18 @@ picked from the catalogue while entering packages.
 
 It starts **empty on purpose** — no operational data ships with the app. An
 administrator fills it by downloading the template, filling it in and importing it.
+
+## Language
+
+Under **Settings** you pick Dutch, English or German. That choice runs all the way
+through: the screens, the field labels, the dangerous goods help, the compliance warnings
+and the documents you download.
+
+One thing follows the regulations rather than your choice. The proper shipping name of a
+dangerous substance is prescribed per mode: a German CMR or CIM may carry the German name
+from ADR Table A, but a sea or air document must be in English (IMDG 5.4.1.4.1, IATA DGR
+8.1.2.1). CargoPilot puts the right one on each document and tells you when it did.
+See [Dangerous goods](dangerous-goods.md#what-one-un-number-gives-you).
 
 ## Tips
 

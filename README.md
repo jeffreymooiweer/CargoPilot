@@ -17,7 +17,7 @@ CMR, CIM, AVC and IATA forms, and checks your dangerous goods before you print.
 [![Backend](https://img.shields.io/badge/backend-FastAPI%20%C2%B7%20Python%203.12-009688?logo=fastapi&logoColor=white)](docs/development.md)
 [![Frontend](https://img.shields.io/badge/frontend-React%2018%20%C2%B7%20TypeScript-61DAFB?logo=react&logoColor=black)](docs/development.md)
 [![Unraid](https://img.shields.io/badge/Unraid-ready-F15A2C?logo=unraid&logoColor=white)](docs/getting-started.md#unraid)
-[![Interface](https://img.shields.io/badge/interface-NL%20%C2%B7%20EN-lightgrey)](#)
+[![Interface](https://img.shields.io/badge/interface-NL%20%C2%B7%20EN%20%C2%B7%20DE-lightgrey)](#)
 [![Self-hosted](https://img.shields.io/badge/self--hosted-your%20data%20stays%20yours-6f42c1)](docs/privacy.md)
 
 </div>
@@ -80,7 +80,7 @@ chose.
 ```bash
 git clone https://github.com/jeffreymooiweer/CargoPilot.git
 cd CargoPilot
-cp .env.example .env          # set APP_SECRET_KEY and ADMIN_PASSWORD
+cp .env.example .env          # set ADMIN_PASSWORD; the rest has defaults
 docker compose up -d --build
 ```
 

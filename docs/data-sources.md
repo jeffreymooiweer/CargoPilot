@@ -14,8 +14,8 @@ density. Regulatory texts themselves are copyrighted and are not in this reposit
 
 ## Goods and densities
 
-**400 goods** with bulk or solid densities, min/max ranges and Dutch/English aliases,
-in `backend/seed/materials.json`. Each entry states whether the figure is a bulk
+**400 goods** with bulk or solid densities, min/max ranges, search aliases and names in
+Dutch, English and German, in `backend/seed/materials.json`. Each entry states whether the figure is a bulk
 density, a solid density, a liquid density or an effective pallet density.
 
 Coverage spans construction materials and natural stone, metals (including precious and
@@ -60,7 +60,8 @@ goes quiet; typing an address by hand always works.
 | Data | Source |
 |---|---|
 | Classification per UN number — class, packing group, labels, LQ/EQ, packing instruction, transport category, tunnel code, Kemler number | ADR Table A via [rkstgr/adr-substances](https://github.com/rkstgr/adr-substances), based on the official UNECE publication |
-| English proper shipping names | 49 CFR 172.101 (eCFR / GovInfo, public domain) |
+| Proper shipping names, English and German | The same ADR Table A export — it carries `name_en` and `name_de` per UN number. There is no Dutch column, so Dutch readers get the English name |
+| English proper shipping names, cross-check | 49 CFR 172.101 (eCFR / GovInfo, public domain) |
 | UN packaging codes (107) | ADR 6.1.2 / 6.5.1.4 / 6.6.2 |
 | EmS emergency schedules per UN number, and the schedule descriptions | IMO **MSC.1/Circ.1588/Rev.3** — EmS Guide (IMO circular, freely distributable) |
 | Class segregation table and class 1 compatibility matrix | IMDG Code chapter 7.2, Amendment 40-20 — unchanged in 42-24 |

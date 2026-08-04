@@ -10,6 +10,7 @@ from app.core.deps import get_current_user, require_admin
 from app.models.user import Equipment, User
 from app.schemas import EquipmentBase, EquipmentOut, EquipmentUpdate
 from app.services.equipment_import import EQUIPMENT_EXAMPLE, EQUIPMENT_HEADERS, import_equipment_rows
+from app.services.import_limits import ImportLimitError, UploadTooLarge, read_upload_limited
 from app.services.spreadsheet_io import build_xlsx_template, read_tabular_file
 
 equipment_router = APIRouter(prefix="/equipment", tags=["equipment"])
@@ -88,10 +89,16 @@ async def import_equipment_file(
 ):
     if not file.filename:
         raise HTTPException(status_code=400, detail="Bestandsnaam ontbreekt")
-    content = await file.read()
+    try:
+        content = await read_upload_limited(file)
+    except UploadTooLarge as exc:
+        raise HTTPException(status_code=413, detail=str(exc)) from exc
     if not content:
         raise HTTPException(status_code=400, detail="Leeg bestand")
-    rows = read_tabular_file(content, file.filename)
+    try:
+        rows = read_tabular_file(content, file.filename)
+    except ImportLimitError as exc:
+        raise HTTPException(status_code=422, detail=str(exc)) from exc
     result = import_equipment_rows(db, rows)
     if result.created == 0 and result.updated == 0 and not result.errors:
         raise HTTPException(status_code=400, detail="Geen importeerbare regels gevonden")

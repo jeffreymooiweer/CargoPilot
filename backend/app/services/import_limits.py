@@ -12,6 +12,7 @@ from typing import Iterable, Sequence
 from fastapi import UploadFile
 
 MAX_UPLOAD_BYTES = 10 * 1024 * 1024
+MAX_XLSX_UNCOMPRESSED_BYTES = 50 * 1024 * 1024
 MAX_IMPORT_ROWS = 20_000
 MAX_IMPORT_COLUMNS = 100
 MAX_CELL_CHARS = 10_000
@@ -40,9 +41,8 @@ async def read_upload_limited(
             break
         total += len(chunk)
         if total > max_bytes:
-            raise UploadTooLarge(
-                f"Bestand is groter dan {max_bytes // (1024 * 1024)} MB"
-            )
+            limit_mb = max_bytes / (1024 * 1024)
+            raise UploadTooLarge(f"Bestand is groter dan {limit_mb:g} MB")
         chunks.append(chunk)
     return b"".join(chunks)
 

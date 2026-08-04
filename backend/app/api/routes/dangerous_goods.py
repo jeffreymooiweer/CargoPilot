@@ -42,14 +42,10 @@ def dg_lookup(
     result = lookup_un_number(un) or offline_lookup(un, language, profiles)
     if not result:
         raise HTTPException(status_code=404, detail="UN-nummer niet gevonden in ADR-database")
-    # Verrijk ook online resultaten met afleidbare modaliteitsgegevens (EmS,
-    # luchtvrachtregels, LQ/EQ-uitleg) uit de offline database.
     offline_entries = get_un_entries(un)
     if offline_entries:
         for key, value in enrich_un_entry(offline_entries[0], language).items():
             result.setdefault(key, value)
-        # De online bron kent alleen de Engelse benaming; wie een Duits
-        # wegdocument opmaakt hoort de Duitse te krijgen die in Tabel A staat.
         result["proper_shipping_name"] = proper_shipping_name(
             offline_entries[0], language, profiles
         )
@@ -83,14 +79,7 @@ def dg_prepare(payload: PrepareRequest, user: User = Depends(get_current_user)):
 
 
 def _q_check_status(outcome: dict, profiles: list[str], language: str) -> dict | None:
-    """Maak zichtbaar of de IATA Q-controle daadwerkelijk is uitgevoerd.
-
-    Geen ``q_values`` betekende tot nu toe zowel "Q is niet van toepassing" als
-    "de gebruiker heeft n en M niet ingevuld". Voor een documenthulpmiddel is
-    dat te stil: afwezigheid van een fout mag niet ogen als een geslaagde
-    hoeveelheidstoets. De status zegt daarom alleen wat de software weet; de
-    gebruiker bepaalt of 'all packed in one' van toepassing is.
-    """
+    """Maak zichtbaar of de IATA Q-controle daadwerkelijk is uitgevoerd."""
     if "IATA_DGR" not in {profile.upper() for profile in profiles}:
         return None
 
@@ -129,6 +118,21 @@ def _q_check_status(outcome: dict, profiles: list[str], language: str) -> dict |
     return {"status": status, "message": messages[lang][status]}
 
 
+def _surface_q_status(outcome: dict, q_status: dict) -> None:
+    """Gebruik het bestaande bevindingenpaneel voor een gemiste Q-controle."""
+    if q_status["status"] not in {"not_checked", "incomplete"}:
+        return
+    outcome.setdefault("iata_segregation", []).insert(
+        0,
+        {
+            "rule": "IATA DGR 5.0.2.11 — Q",
+            "severity": "warning",
+            "message": q_status["message"],
+            "products": "All packed in one",
+        },
+    )
+
+
 @router.post("/compliance")
 def dg_compliance(payload: ComplianceRequest, user: User = Depends(get_current_user)):
     if not payload.entries:
@@ -139,4 +143,5 @@ def dg_compliance(payload: ComplianceRequest, user: User = Depends(get_current_u
     q_status = _q_check_status(outcome, profiles, payload.language)
     if q_status:
         outcome["q_check_status"] = q_status
+        _surface_q_status(outcome, q_status)
     return outcome

@@ -1,9 +1,15 @@
 from fastapi import APIRouter, Depends, File, HTTPException, UploadFile
 from fastapi.responses import Response
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, field_validator
 
 from app.core.deps import get_current_user
 from app.models.user import User
+from app.services.import_limits import (
+    ImportLimitError,
+    UploadTooLarge,
+    read_upload_limited,
+    validate_tabular_rows,
+)
 from app.services.spreadsheet_io import build_xlsx_template, read_tabular_file
 from app.services.wizard_import import (
     WIZARD_EXAMPLE,
@@ -46,6 +52,12 @@ class WizardRemapRequest(BaseModel):
     mapping: dict[str, int | None] = Field(default_factory=dict)
     has_header: bool = False
 
+    @field_validator("rows")
+    @classmethod
+    def _bounded_rows(cls, rows: list[list[str]]) -> list[list[str]]:
+        validate_tabular_rows(rows)
+        return rows
+
 
 @router.get("/import/wizard-template")
 def download_wizard_template(user: User = Depends(get_current_user)):
@@ -64,10 +76,16 @@ async def parse_wizard_file(
 ):
     if not file.filename:
         raise HTTPException(status_code=400, detail="Bestandsnaam ontbreekt")
-    content = await file.read()
+    try:
+        content = await read_upload_limited(file)
+    except UploadTooLarge as exc:
+        raise HTTPException(status_code=413, detail=str(exc)) from exc
     if not content:
         raise HTTPException(status_code=400, detail="Leeg bestand")
-    rows = read_tabular_file(content, file.filename)
+    try:
+        rows = read_tabular_file(content, file.filename)
+    except ImportLimitError as exc:
+        raise HTTPException(status_code=422, detail=str(exc)) from exc
     text, has_header = spreadsheet_to_wizard_text(rows)
     if not text.strip():
         raise HTTPException(status_code=400, detail="Geen importeerbare regels gevonden")

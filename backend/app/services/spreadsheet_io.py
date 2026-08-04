@@ -9,6 +9,7 @@ import openpyxl
 from openpyxl import Workbook
 
 from app.services.import_limits import (
+    ImportLimitError,
     MAX_IMPORT_COLUMNS,
     MAX_IMPORT_ROWS,
     append_validated_row,
@@ -67,9 +68,9 @@ def _read_xlsx(content: bytes) -> list[list[str]]:
     ws = wb.active
     try:
         if ws.max_row > MAX_IMPORT_ROWS:
-            raise ValueError(f"Import bevat meer dan {MAX_IMPORT_ROWS} rijen")
+            raise ImportLimitError(f"Import bevat meer dan {MAX_IMPORT_ROWS} rijen")
         if ws.max_column > MAX_IMPORT_COLUMNS:
-            raise ValueError(
+            raise ImportLimitError(
                 f"Werkblad bevat meer dan {MAX_IMPORT_COLUMNS} kolommen"
             )
         rows: list[list[str]] = []

@@ -2,6 +2,41 @@
 
 All notable changes are documented here, following [Semantic Versioning](https://semver.org/).
 
+## [1.31.0] — 2026-08-05
+
+The limited and excepted quantity limits are applied instead of only explained, and the
+dangerous goods step becomes readable again.
+
+### Added
+
+- **The LQ and EQ limits of chapters 3.4 and 3.5 are checked against the entered
+  quantities.** A new "net per inner packaging" field feeds a per-line assessment for the
+  ADR, RID, ADN and IMDG profiles: the column 7a limit and the E-code limits of table
+  3.5.1.2, the 30 kg gross limit of 3.4.2 (naming the 20 kg tray limit of 3.4.3) and the
+  1,000-package cap of 3.5.5. The limit values were verified against the published
+  3.4/3.5 text before the check was written. Qualifying is reported, never granted: the
+  LQ/EQ mark and the packaging and testing requirements remain conditions, and a
+  qualifying line is never removed from the 1.1.3.6 points calculation. Mass is never
+  compared against a volume limit, and a number without a unit is asked about rather
+  than guessed at. On IMDG the values come from the 42-24 Dangerous Goods List, with
+  differences from the ADR value flagged; on RID and ADN the same basis note appears as
+  for the points table; for air no claim is made.
+
+### Fixed
+
+- **Live compliance checks from the wizard work again.** The wizard sends its line
+  identifier as a number; the schemas introduced in v1.30.0 rejected that with HTTP 422,
+  so every live check from the wizard failed before anything was computed and the panel
+  showed a validation error instead of an outcome.
+
+### Changed
+
+- **The dangerous goods step folds its findings into collapsible summary cards.** The
+  headers carry the outcome — status chips, severity counts, totals — and the
+  substantiation unfolds on demand. Nothing is silenced by the fold: a carriage
+  prohibition stays outside the cards, a section holding an error opens by itself, and
+  every collapsed header shows the counts of what is inside.
+
 ## [1.30.1] — 2026-08-05
 
 A release-metadata and documentation cleanup following v1.30.0.

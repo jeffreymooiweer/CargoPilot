@@ -243,7 +243,7 @@ on it. A displayed value must therefore never be mistaken for a completed verifi
 - **Say when the IATA Q check did not run.** The compliance response and panel now expose
   `not_checked` and `incomplete` instead of silently omitting the result.
 
-**Shipped since:**
+**Shipped in v1.31.0:**
 
 - **Apply LQ and EQ.** The entered net per inner packaging is compared against column 7a
   and the E code of column 7b, with the 30 kg gross limit of 3.4.2, the 20 kg tray note
@@ -278,6 +278,6 @@ valuable than any new table.
 
 ---
 
-*This assessment covers CargoPilot v1.30.1. It is guidance for development, not a
+*This assessment covers CargoPilot v1.31.0. It is guidance for development, not a
 compliance statement. Every document the application produces is a draft; see
 [DISCLAIMER.md](../DISCLAIMER.md).*

@@ -2,6 +2,21 @@
 
 All notable changes are documented here, following [Semantic Versioning](https://semver.org/).
 
+## [1.30.1] — 2026-08-05
+
+A release-metadata and documentation cleanup following v1.30.0.
+
+### Fixed
+
+- Synchronise the frontend lockfile version with the canonical application version before a release tag is created.
+- Restore the changelog to one continuous file; the temporary archive through v1.29.5 is merged back before tagging.
+- Update the dangerous-goods coverage assessment: a missing IATA Q calculation is no longer silent since v1.30.0, although n and M still require manual input because CargoPilot does not contain IATA quantity tables.
+
+### Changed
+
+- Release preparation now normalises derived metadata before tagging, preventing the application version and npm lockfile from drifting apart again.
+- LQ/EQ application is documented as the next data-supported dangerous-goods priority.
+
 ## [1.30.0] — 2026-08-05
 
 The compliance boundary, authentication boundary and build boundary are now explicit instead of relying on the browser or deployment convention to do the right thing.

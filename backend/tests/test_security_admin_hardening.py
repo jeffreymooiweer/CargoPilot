@@ -67,22 +67,26 @@ def test_user_roles_are_closed_to_admin_and_user():
 def test_an_administrator_cannot_demote_or_deactivate_itself():
     admin = _user(1)
 
-    with pytest.raises(HTTPException, match="deactivate or demote yourself"):
+    with pytest.raises(HTTPException) as demote:
         _ensure_update_is_safe(admin, admin, "user", True, active_admin_count=2)
+    assert demote.value.detail == "Cannot deactivate or demote yourself"
 
-    with pytest.raises(HTTPException, match="deactivate or demote yourself"):
+    with pytest.raises(HTTPException) as deactivate:
         _ensure_update_is_safe(admin, admin, "admin", False, active_admin_count=2)
+    assert deactivate.value.detail == "Cannot deactivate or demote yourself"
 
 
 def test_the_last_active_administrator_cannot_be_removed():
     acting_admin = _user(1)
     target = _user(2)
 
-    with pytest.raises(HTTPException, match="last active administrator"):
+    with pytest.raises(HTTPException) as update:
         _ensure_update_is_safe(target, acting_admin, "user", True, active_admin_count=1)
+    assert update.value.detail == "Cannot remove the last active administrator"
 
-    with pytest.raises(HTTPException, match="last active administrator"):
+    with pytest.raises(HTTPException) as delete:
         _ensure_delete_is_safe(target, acting_admin, active_admin_count=1)
+    assert delete.value.detail == "Cannot remove the last active administrator"
 
 
 def test_another_administrator_can_be_changed_when_one_remains():
@@ -96,5 +100,6 @@ def test_another_administrator_can_be_changed_when_one_remains():
 def test_an_administrator_cannot_delete_itself():
     admin = _user(1)
 
-    with pytest.raises(HTTPException, match="Cannot delete yourself"):
+    with pytest.raises(HTTPException) as error:
         _ensure_delete_is_safe(admin, admin, active_admin_count=2)
+    assert error.value.detail == "Cannot delete yourself"

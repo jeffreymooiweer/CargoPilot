@@ -4,9 +4,29 @@ from __future__ import annotations
 
 import csv
 import io
+from typing import Any
 
 import openpyxl
 from openpyxl import Workbook
+
+MAX_IMPORT_BYTES = 10 * 1024 * 1024
+MAX_IMPORT_ROWS = 20_000
+MAX_IMPORT_COLUMNS = 100
+MAX_IMPORT_CELL_CHARS = 10_000
+
+
+class ImportLimitError(ValueError):
+    """De import overschrijdt een expliciete veiligheidsgrens."""
+
+
+async def read_limited_upload(file: Any, max_bytes: int = MAX_IMPORT_BYTES) -> bytes:
+    """Lees nooit meer dan de ingestelde limiet plus één detectiebyte."""
+    content = await file.read(max_bytes + 1)
+    if len(content) > max_bytes:
+        raise ImportLimitError(
+            f"Bestand is groter dan {max_bytes // (1024 * 1024)} MB"
+        )
+    return content
 
 
 def build_xlsx_template(headers: list[str], example_row: list[str], sheet_name: str = "Template") -> bytes:
@@ -47,25 +67,94 @@ def _split_line(line: str) -> list[str]:
     return [line]
 
 
-def read_tabular_file(content: bytes, filename: str) -> list[list[str]]:
+def _check_row(
+    cells: list[str],
+    row_number: int,
+    max_columns: int | None,
+    max_cell_chars: int | None,
+) -> None:
+    if max_columns is not None and len(cells) > max_columns:
+        raise ImportLimitError(
+            f"Rij {row_number} bevat {len(cells)} kolommen; maximaal {max_columns} toegestaan"
+        )
+    if max_cell_chars is not None:
+        for column_number, cell in enumerate(cells, start=1):
+            if len(cell) > max_cell_chars:
+                raise ImportLimitError(
+                    f"Cel {row_number}:{column_number} bevat meer dan {max_cell_chars} tekens"
+                )
+
+
+def validate_tabular_rows(
+    rows: list[list[str]],
+    *,
+    max_rows: int = MAX_IMPORT_ROWS,
+    max_columns: int = MAX_IMPORT_COLUMNS,
+    max_cell_chars: int = MAX_IMPORT_CELL_CHARS,
+) -> None:
+    if len(rows) > max_rows:
+        raise ImportLimitError(
+            f"Import bevat {len(rows)} rijen; maximaal {max_rows} toegestaan"
+        )
+    for row_number, row in enumerate(rows, start=1):
+        _check_row(row, row_number, max_columns, max_cell_chars)
+
+
+def _append_checked_row(
+    rows: list[list[str]],
+    cells: list[str],
+    *,
+    max_rows: int | None,
+    max_columns: int | None,
+    max_cell_chars: int | None,
+) -> None:
+    if not any(cells):
+        return
+    next_row = len(rows) + 1
+    if max_rows is not None and next_row > max_rows:
+        raise ImportLimitError(f"Import bevat meer dan {max_rows} rijen")
+    _check_row(cells, next_row, max_columns, max_cell_chars)
+    rows.append(cells)
+
+
+def read_tabular_file(
+    content: bytes,
+    filename: str,
+    *,
+    max_rows: int | None = None,
+    max_columns: int | None = None,
+    max_cell_chars: int | None = None,
+) -> list[list[str]]:
     name = (filename or "").lower()
     if name.endswith((".xlsx", ".xlsm")):
-        return _read_xlsx(content)
+        return _read_xlsx(content, max_rows, max_columns, max_cell_chars)
     if name.endswith(".csv"):
-        return _read_csv(content)
-    return _read_text(content)
+        return _read_csv(content, max_rows, max_columns, max_cell_chars)
+    return _read_text(content, max_rows, max_columns, max_cell_chars)
 
 
-def _read_xlsx(content: bytes) -> list[list[str]]:
+def _read_xlsx(
+    content: bytes,
+    max_rows: int | None,
+    max_columns: int | None,
+    max_cell_chars: int | None,
+) -> list[list[str]]:
     wb = openpyxl.load_workbook(io.BytesIO(content), read_only=True, data_only=True)
-    ws = wb.active
-    rows: list[list[str]] = []
-    for row in ws.iter_rows(values_only=True):
-        cells = [_cell_str(c) for c in row]
-        if any(cells):
-            rows.append(cells)
-    wb.close()
-    return rows
+    try:
+        ws = wb.active
+        rows: list[list[str]] = []
+        for row in ws.iter_rows(values_only=True):
+            cells = [_cell_str(c) for c in row]
+            _append_checked_row(
+                rows,
+                cells,
+                max_rows=max_rows,
+                max_columns=max_columns,
+                max_cell_chars=max_cell_chars,
+            )
+        return rows
+    finally:
+        wb.close()
 
 
 def _cell_str(value) -> str:
@@ -78,7 +167,12 @@ def _cell_str(value) -> str:
     return str(value).strip()
 
 
-def _read_csv(content: bytes) -> list[list[str]]:
+def _read_csv(
+    content: bytes,
+    max_rows: int | None,
+    max_columns: int | None,
+    max_cell_chars: int | None,
+) -> list[list[str]]:
     text = _decode_text(content)
     sample = text[:4096]
     try:
@@ -87,16 +181,37 @@ def _read_csv(content: bytes) -> list[list[str]]:
         dialect = csv.excel
         dialect.delimiter = ";"
     reader = csv.reader(io.StringIO(text), dialect)
-    return [[c.strip() for c in row] for row in reader if any(cell.strip() for cell in row)]
+    rows: list[list[str]] = []
+    for row in reader:
+        cells = [c.strip() for c in row]
+        _append_checked_row(
+            rows,
+            cells,
+            max_rows=max_rows,
+            max_columns=max_columns,
+            max_cell_chars=max_cell_chars,
+        )
+    return rows
 
 
-def _read_text(content: bytes) -> list[list[str]]:
+def _read_text(
+    content: bytes,
+    max_rows: int | None,
+    max_columns: int | None,
+    max_cell_chars: int | None,
+) -> list[list[str]]:
     text = _decode_text(content)
     rows: list[list[str]] = []
     for line in text.splitlines():
         cells = _split_line(line)
         if cells:
-            rows.append(cells)
+            _append_checked_row(
+                rows,
+                cells,
+                max_rows=max_rows,
+                max_columns=max_columns,
+                max_cell_chars=max_cell_chars,
+            )
     return rows
 
 

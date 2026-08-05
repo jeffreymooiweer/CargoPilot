@@ -11,6 +11,9 @@ on:
       version:
         description: "Versie zonder v-prefix (bijv. 1.2.0); moet overeenkomen met VERSION"
         required: true
+  pull_request:
+    branches: [main]
+    types: [closed]
 
 permissions:
   contents: write
@@ -18,6 +21,10 @@ permissions:
 
 jobs:
   tag-and-release:
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      (github.event.pull_request.merged == true &&
+       startsWith(github.event.pull_request.head.ref, 'agent/release-v'))
     runs-on: ubuntu-latest
     steps:
       - name: Checkout main
@@ -26,17 +33,36 @@ jobs:
           ref: main
           fetch-depth: 0
 
-      - name: Validate version matches VERSION file
+      - name: Resolve and validate release version
+        id: release
+        shell: bash
         run: |
           FILE_VERSION="$(tr -d '[:space:]' < VERSION)"
-          if [ "${{ inputs.version }}" != "$FILE_VERSION" ]; then
-            echo "::error::Input versie '${{ inputs.version }}' komt niet overeen met VERSION ($FILE_VERSION)."
-            exit 1
+
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            RELEASE_VERSION="${{ inputs.version }}"
+            if [ "$RELEASE_VERSION" != "$FILE_VERSION" ]; then
+              echo "::error::Input versie '$RELEASE_VERSION' komt niet overeen met VERSION ($FILE_VERSION)."
+              exit 1
+            fi
+          else
+            RELEASE_VERSION="$FILE_VERSION"
+            HEAD_REF="${{ github.event.pull_request.head.ref }}"
+            case "$HEAD_REF" in
+              agent/release-v"$RELEASE_VERSION"*) ;;
+              *)
+                echo "::error::Releasebranch '$HEAD_REF' komt niet overeen met VERSION ($RELEASE_VERSION)."
+                exit 1
+                ;;
+            esac
           fi
+
+          echo "version=$RELEASE_VERSION" >> "$GITHUB_OUTPUT"
+          echo "tag=v$RELEASE_VERSION" >> "$GITHUB_OUTPUT"
 
       - name: Create and push tag
         run: |
-          TAG="v${{ inputs.version }}"
+          TAG="${{ steps.release.outputs.tag }}"
           if git rev-parse "$TAG" >/dev/null 2>&1; then
             echo "Tag $TAG bestaat al lokaal/op remote — overslaan."
           else
@@ -48,19 +74,20 @@ jobs:
 
       - name: Prepare release notes
         run: |
-          TAG="v${{ inputs.version }}"
+          TAG="${{ steps.release.outputs.tag }}"
+          VERSION="${{ steps.release.outputs.version }}"
           NOTES_FILE=".github/release-notes/${TAG}.md"
           if [ -f "$NOTES_FILE" ]; then
             cp "$NOTES_FILE" release-body.md
           else
-            python3 - "${{ inputs.version }}" <<'PY' > release-body.md
+            python3 - "$VERSION" <<'PY' > release-body.md
           import re
           import sys
           from pathlib import Path
 
           version = sys.argv[1]
           text = Path("CHANGELOG.md").read_text(encoding="utf-8")
-          pattern = rf"## \[{re.escape(version)}\][^\n]*\n(.*?)(?=\n## \[|\Z)"
+          pattern = rf"## \[{re.escape(version)}\][^\n]*\n(.*?)(?=\n## \[|\n## Previous releases|\Z)"
           match = re.search(pattern, text, re.DOTALL)
           print(match.group(1).strip() if match else f"Release {version}. Zie CHANGELOG.md voor details.")
           PY
@@ -70,7 +97,7 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          TAG="v${{ inputs.version }}"
+          TAG="${{ steps.release.outputs.tag }}"
           if gh release view "$TAG" >/dev/null 2>&1; then
             echo "Release $TAG bestaat al — overslaan."
           else
@@ -80,4 +107,4 @@ jobs:
       - name: Trigger CI (Docker build) on tag
         env:
           GH_TOKEN: ${{ github.token }}
-        run: gh workflow run dockerhub.yml --ref "v${{ inputs.version }}"
+        run: gh workflow run dockerhub.yml --ref "${{ steps.release.outputs.tag }}"

@@ -186,19 +186,22 @@ scope.
 instruction rather than the ADR one reaches the declaration. The required-field set for
 the Shipper's Declaration is the strictest of the five.
 
-**The significant limitation, and it is not obvious from the interface:**
+**The significant limitation:**
 
-- **The Q value only computes if the user supplies M.** CargoPilot does not hold IATA's
-  quantity tables, so the maximum net quantity per package for the applicable packing
-  instruction has to be typed in by hand. Supply neither figure and no Q is calculated and
-  nothing is said about it. The check is effectively opt-in, and someone who does not know
-  the field exists will not be told that a limit went unchecked. **[verify: IATA DGR
-  5.0.2.11 and table 4.2]**
+- **The Q value still depends on user-supplied n and M.** CargoPilot does not hold IATA's
+  quantity tables, so the net quantity and maximum permitted net quantity for the
+  applicable packing instruction must be entered manually. Since v1.30.0 the result makes
+  this explicit: the API and compliance panel report `checked`, `incomplete`, `exceeded`
+  or `not_checked`, and warn when an all-packed-in-one check may apply but the required
+  values are absent. This prevents a skipped calculation from looking like approval, but
+  it does not replace the missing IATA quantity tables. **[verify: IATA DGR 5.0.2.11 and
+  table 4.2]**
 
 **Also absent:**
 
-- **Every quantity limit.** Net per package, per aircraft type, passenger versus cargo
-  aircraft. Without the tables there is nothing to compare against.
+- **Every automatic quantity limit.** Net per package, per aircraft type, passenger versus
+  cargo aircraft. Without the tables CargoPilot cannot derive M or compare the shipment
+  automatically.
 - **State and operator variations.** Not held at all. In practice these decide a great deal
   of what actually flies, and an airline's variation can be stricter than the DGR.
 - **Section I versus Section II** for lithium batteries, and the whole of the excepted
@@ -206,9 +209,9 @@ the Shipper's Declaration is the strictest of the five.
 - **Overpack declarations, dry ice, radioactive material** beyond what the classification
   supplies.
 
-**Assessment:** the segregation and the declaration are sound. The quantity side —
-arguably the part of air freight where most shipments actually fail — is not covered, and
-the Q value's dependence on user input is the least visible limitation in the application.
+**Assessment:** the segregation and the declaration are sound. Missing Q input is now
+visible, but the quantity side remains incomplete because CargoPilot cannot derive the
+per-package limits from IATA Table 4.2.
 
 ## Gaps ranked by what they cost
 
@@ -216,36 +219,37 @@ Ordered by how much harm someone could take before noticing, not by effort.
 
 | # | Gap | Why it ranks here |
 |---|---|---|
-| 1 | **IATA quantity limits absent, Q silently opt-in** | A shipment can be assembled, declared and exported with no quantity check at all, and nothing says so. The user is not told the check did not run. |
+| 1 | **IATA quantity limits absent; Q depends on user-entered M** | CargoPilot warns when the Q check did not run, but it cannot derive the applicable passenger/cargo-aircraft limit or verify the entered M against Table 4.2. |
 | 2 | **RID and ADN answered with ADR tables** | Now labelled, which turns a wrong answer into an indication. Still the largest correctness gap of the five, and rail and inland waterway are offered as first-class modes. |
 | 3 | **LQ and EQ explained but never applied** | Cuts both ways: a shipment that qualified for an exemption is over-restricted, and one that does not qualify is never told. |
 | 4 | **Tunnel code printed, never evaluated** | Printing a code that has been considered by nobody invites the assumption that it has. |
 | 5 | **IMDG stowage category shown, not enforced** | Lower because on-deck/under-deck is usually the carrier's call, not the consignor's. |
 | 6 | **No marking, placarding or equipment checks in any mode** | Consistently absent, so unlikely to be mistaken for present — but it is the most common real-world failure. |
 
-The first four are all the same shape: **the application knows something and shows it, but
-does not act on it.** Showing a value next to a field reads as verification whether or not
-any verification happened.
+The common pattern is that the application knows or shows a value but cannot always act
+on it. A displayed value must therefore never be mistaken for a completed verification.
 
 ## What should and should not be built
 
-**Worth building, in this order:**
+**Shipped in v1.30.0:**
 
-1. **Say when a check did not run.** The Q value silently skipping is the clearest case.
-   This needs no regulatory data, only honesty about what was and was not computed, and it
-   addresses the top-ranked gap directly.
-2. **Apply LQ and EQ.** The data is already on board — column 7a and the EQ code are in
+- **Say when the IATA Q check did not run.** The compliance response and panel now expose
+  `not_checked` and `incomplete` instead of silently omitting the result.
+
+**Worth building next, in this order:**
+
+1. **Apply LQ and EQ.** The data is already on board — column 7a and the EQ code are in
    both `un_numbers.json` and `imdg_dgl.json`. This is arithmetic against values already
    held, not new regulatory content. **[verify: the exemption conditions of 3.4 and 3.5,
    which is where the actual difficulty is]**
-3. **RID and ADN their own quantity and mixed-loading rules** — but only after the texts
+2. **RID and ADN their own quantity and mixed-loading rules** — but only after the texts
    have been read. The labelling shipped in v1.29.5 is the honest interim.
 
 **Not worth building, or not buildable here:**
 
 - **IATA quantity tables.** Table 4.2 is copyrighted and is not available as open data.
-  The same wall the IMDG Code presented. What is buildable is the field, the arithmetic and
-  a clear statement when the input is missing — which is item 1.
+  CargoPilot can accept n and M, perform the arithmetic and state clearly when input is
+  missing; it cannot safely manufacture the source limits.
 - **State and operator variations.** These change per airline and per country and would be
   stale within months of shipping.
 - **Anything about the vehicle, vessel or aircraft.** Outside what a document preparation
@@ -261,6 +265,6 @@ valuable than any new table.
 
 ---
 
-*This assessment covers CargoPilot v1.29.5. It is guidance for development, not a
+*This assessment covers CargoPilot v1.30.1. It is guidance for development, not a
 compliance statement. Every document the application produces is a draft; see
 [DISCLAIMER.md](../DISCLAIMER.md).*

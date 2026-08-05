@@ -12,7 +12,7 @@ from app.services.catalog_sync import sync_catalogs
 
 logger = logging.getLogger(__name__)
 
-EXPORT_FILE_PATTERNS = ("*.pdf", "*.zip", "*.xlsx", "*.tmp")
+TEMPORARY_EXPORT_SUFFIXES = {".pdf", ".zip", ".xlsx", ".tmp"}
 
 
 def ensure_directories() -> None:
@@ -22,33 +22,24 @@ def ensure_directories() -> None:
 
 
 def purge_export_files(exports_dir: Path) -> int:
-    """Remove generated artifacts left behind by an interrupted download.
-
-    Normal downloads schedule their own deletion. A process crash can occur
-    between generating the file and running that background task, so startup
-    cleans every format the application creates. Unrelated files and nested
-    directories are deliberately left alone.
-    """
+    """Remove known generated artifacts left behind by interrupted downloads."""
     if not exports_dir.exists():
         return 0
 
     removed_files = 0
-    seen: set[Path] = set()
-    for pattern in EXPORT_FILE_PATTERNS:
-        for path in exports_dir.glob(pattern):
-            if path in seen or not path.is_file():
-                continue
-            seen.add(path)
-            try:
-                path.unlink()
-                removed_files += 1
-            except OSError as exc:
-                logger.warning("Could not delete export file %s: %s", path, exc)
+    for path in exports_dir.iterdir():
+        if not path.is_file() or path.suffix.lower() not in TEMPORARY_EXPORT_SUFFIXES:
+            continue
+        try:
+            path.unlink()
+            removed_files += 1
+        except OSError as exc:
+            logger.warning("Could not delete export file %s: %s", path, exc)
     return removed_files
 
 
 def purge_sensitive_data(db: Session) -> None:
-    """Verwijder opgeslagen documentdata: jobs in DB en eventuele exportbestanden."""
+    """Verwijder opgeslagen documentdata: jobs in DB en tijdelijke exports."""
     settings = get_settings()
     deleted_jobs = db.query(Job).delete()
     db.commit()

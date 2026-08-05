@@ -34,7 +34,7 @@ export default function SuggestInput<T>({
   const [items, setItems] = useState<SuggestItem<T>[]>([]);
   const [open, setOpen] = useState(false);
   const [picked, setPicked] = useState(false);
-  const timer = useRef<number>();
+  const timer = useRef<number | undefined>(undefined);
   const latest = useRef(0);
 
   useEffect(() => {

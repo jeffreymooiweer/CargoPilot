@@ -14,24 +14,48 @@ router = APIRouter(prefix="/auth", tags=["auth"])
 limiter = Limiter(key_func=get_remote_address)
 
 
-def _set_access_cookie(response: Response, token: str, settings: Settings) -> None:
+def cookie_is_secure(request: Request, settings: Settings | None = None) -> bool:
+    """Determine the Secure flag from explicit config or the actual request."""
+    settings = settings or get_settings()
+    if settings.cookie_secure is not None:
+        return settings.cookie_secure
+    if request.url.scheme.lower() == "https":
+        return True
+    if settings.trusted_proxy_headers:
+        forwarded = request.headers.get("x-forwarded-proto", "")
+        return forwarded.split(",", 1)[0].strip().lower() == "https"
+    return False
+
+
+def _set_access_cookie(
+    response: Response,
+    token: str,
+    settings: Settings,
+    request: Request | None = None,
+) -> None:
+    secure = cookie_is_secure(request, settings) if request is not None else settings.secure_cookies
     response.set_cookie(
         key="access_token",
         value=token,
         httponly=True,
         samesite="lax",
-        secure=settings.secure_cookies,
+        secure=secure,
         max_age=settings.access_token_expire_minutes * 60,
         path="/",
     )
 
 
-def _clear_access_cookie(response: Response, settings: Settings) -> None:
+def _clear_access_cookie(
+    response: Response,
+    settings: Settings,
+    request: Request | None = None,
+) -> None:
+    secure = cookie_is_secure(request, settings) if request is not None else settings.secure_cookies
     response.delete_cookie(
         key="access_token",
         httponly=True,
         samesite="lax",
-        secure=settings.secure_cookies,
+        secure=secure,
         path="/",
     )
 
@@ -44,14 +68,14 @@ def login(request: Request, payload: LoginRequest, response: Response, db: Sessi
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid credentials")
     if not user.active:
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="User inactive")
-    token = create_access_token(user.username)
-    _set_access_cookie(response, token, get_settings())
+    token = create_access_token(user.username, password_hash=user.password_hash)
+    _set_access_cookie(response, token, get_settings(), request=request)
     return {"user": UserOut.model_validate(user)}
 
 
 @router.post("/logout")
-def logout(response: Response):
-    _clear_access_cookie(response, get_settings())
+def logout(request: Request, response: Response):
+    _clear_access_cookie(response, get_settings(), request=request)
     return {"ok": True}
 
 
@@ -68,7 +92,9 @@ def setup_status(db: Session = Depends(get_db)):
 
 @router.post("/change-password")
 def change_password(
+    request: Request,
     payload: PasswordChange,
+    response: Response,
     user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
 ):
@@ -76,4 +102,5 @@ def change_password(
         raise HTTPException(status_code=400, detail="Current password incorrect")
     user.password_hash = hash_password(payload.new_password)
     db.commit()
-    return {"ok": True}
+    _clear_access_cookie(response, get_settings(), request=request)
+    return {"ok": True, "reauthenticate": True}

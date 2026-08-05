@@ -16,7 +16,7 @@ permissions:
 
 jobs:
   prepare-release:
-    if: ${{ github.event_name == 'push' && github.event.head_commit.message == 'temporarily prepare v1.30.0 release' }}
+    if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4

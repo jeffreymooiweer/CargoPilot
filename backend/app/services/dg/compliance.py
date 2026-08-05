@@ -22,6 +22,7 @@ from app.services.dg.enrichment import (
     card_data_for,
     imdg_code_text,
     imdg_segregation_codes_for,
+    parse_hazards,
     segregation_group_label,
     segregation_groups_for,
     segregation_provisions,
@@ -139,9 +140,16 @@ def check_adr_points(
     total = 0.0
     incomplete: list[str] = []
     category0: list[str] = []
+    forbidden: list[str] = []
 
     for entry, index, product in _iter_products(entries):
         label = _product_label(entry, product, index)
+        # Een stof met vervoersverbod hoort niet in de puntentelling: er valt
+        # niets vrij te stellen en "vul de categorie in" naast het rode verbod
+        # is verwarring. De regel wordt apart benoemd.
+        if product.get("transport_forbidden"):
+            forbidden.append(label)
+            continue
         category = str(product.get("transport_category") or "").strip()
         quantity = _num(product.get("adr_total_quantity"))
         if category not in categories or quantity is None or quantity <= 0:
@@ -186,6 +194,7 @@ def check_adr_points(
         "status": status,
         "category0_products": category0,
         "incomplete_products": incomplete,
+        "forbidden_products": forbidden,
         "quantity_units_note": pick(rules["quantity_units"], lang),
         "exempt_provisions": pick(rules["exempt_provisions"], lang),
         "still_required": pick(rules["still_required"], lang),
@@ -914,6 +923,72 @@ def check_imdg_segregation_exemptions(
     return findings
 
 
+def append_class8_pair_exception(
+    entries: list[dict[str, Any]], findings: list[dict[str, Any]], language: str = "nl"
+) -> list[dict[str, Any]]:
+    """IMDG 7.2.6.5 naast het betrokken paar, niet alleen als algemene tekst.
+
+    Twee stoffen van klasse 8, verpakkingsgroep II of III, die volgens kolom
+    16b gescheiden moeten blijven, mogen onder 7.2.6.5 tóch samen in colli tot
+    30 L/30 kg — mits ze niet gevaarlijk met elkaar reageren en het document de
+    verklaring van 5.4.1.5.11.3 draagt. Dat is dezelfde afweging als bij
+    7.2.6.3: de vrijstelling wordt gemeld, de waarschuwing blijft staan en de
+    keuze blijft bij de afzender.
+    """
+    lang = _lang(language)
+    eligible: set[str] = set()
+    for entry, index, product in _iter_products(entries):
+        primary = _primary_class(product)
+        pg = str(product.get("packing_group") or "").strip().upper()
+        if primary.startswith("8") and pg in {"II", "III"}:
+            eligible.add(_product_label(entry, product, index))
+
+    if len(eligible) < 2:
+        return findings
+
+    seen: set[tuple[str, str]] = set()
+    extra: list[dict[str, Any]] = []
+    for finding in findings:
+        if finding.get("severity") not in {"warning", "error"}:
+            continue
+        parts = [p.strip() for p in str(finding.get("products") or "").split("\u00d7")]
+        if len(parts) != 2 or not all(p in eligible for p in parts):
+            continue
+        pair = tuple(sorted(parts))
+        if pair in seen:
+            continue
+        seen.add(pair)
+        extra.append({
+            "rule": "IMDG 7.2.6.5",
+            "severity": "info",
+            "message": pick(
+                {
+                    "nl": "Mogelijke uitzondering: stoffen van klasse 8, verpakkingsgroep "
+                          "II of III, in colli tot 30 L of 30 kg hoeven onderling niet "
+                          "gescheiden te worden, mits ze niet gevaarlijk met elkaar "
+                          "reageren en het vervoersdocument de verklaring van "
+                          "5.4.1.5.11.3 draagt. De scheidingsmelding hierboven blijft "
+                          "staan; de beoordeling is aan de afzender.",
+                    "en": "Possible exception: class 8 substances of packing group II or "
+                          "III in packages up to 30 L or 30 kg need not be segregated "
+                          "from one another, provided they do not react dangerously with "
+                          "each other and the transport document carries the "
+                          "5.4.1.5.11.3 statement. The segregation finding above stands; "
+                          "the judgement rests with the shipper.",
+                    "de": "Mögliche Ausnahme: Stoffe der Klasse 8, Verpackungsgruppe II "
+                          "oder III, in Versandstücken bis 30 L oder 30 kg müssen "
+                          "untereinander nicht getrennt werden, sofern sie nicht "
+                          "gefährlich miteinander reagieren und das Beförderungspapier "
+                          "die Erklärung nach 5.4.1.5.11.3 trägt. Der Trennhinweis oben "
+                          "bleibt bestehen; die Beurteilung liegt beim Versender.",
+                },
+                lang,
+            ),
+            "products": "  \u00d7  ".join(pair),
+        })
+    return findings + extra
+
+
 def check_imdg_amendment_42_24(
     entries: list[dict[str, Any]], language: str = "nl"
 ) -> list[dict[str, Any]]:
@@ -997,6 +1072,56 @@ def check_imdg_amendment_42_24(
     return findings
 
 
+# Divisies die in de luchtvaart (vrijwel altijd) verboden zijn; de ICAO TI
+# vermeldt chloor en verwante 2.3-gassen als verboden op passagiers- én
+# vrachttoestellen, met alleen een A1/A2-ontheffing als uitweg.
+_AIR_FORBIDDEN_DIVISIONS = {"2.3"}
+
+
+def check_air_forbidden(entries: list[dict[str, Any]], language: str = "nl") -> list[dict[str, Any]]:
+    """ICAO TI / IATA DGR: divisies die niet door de lucht mogen.
+
+    De klassekolom van Tabel A zegt bij gassen alleen "2"; de divisie komt uit
+    de etiketten. Daarom wordt hier zowel op de gevarentokens van het product
+    als op de via parse_hazards opgeloste divisie getoetst — anders blijft
+    chloor (UN 1017, klasse "2", etiket 2.3) onzichtbaar totdat /dg/prepare
+    de divisie in het klasseveld heeft gezet.
+    """
+    lang = _lang(language)
+    warnings: list[dict[str, Any]] = []
+    for entry, index, product in _iter_products(entries):
+        tokens = {t.lower() for t in _hazard_tokens(product)}
+        division = str(parse_hazards(product).get("division") or "").strip().lower()
+        if division:
+            tokens.add(division)
+        if not tokens & {d.lower() for d in _AIR_FORBIDDEN_DIVISIONS}:
+            continue
+        warnings.append({
+            "rule": "ICAO TI / IATA DGR — divisie 2.3",
+            "severity": "error",
+            "message": pick(
+                {
+                    "nl": "Divisie 2.3 (giftige gassen) is in de luchtvaart verboden op "
+                          "passagiers- én vrachttoestellen, op enkele uitzonderingen na. "
+                          "Vervoer is alleen mogelijk met een ontheffing of voorafgaande "
+                          "goedkeuring van de betrokken autoriteiten (A1/A2).",
+                    "en": "Division 2.3 (toxic gases) is forbidden in air transport on "
+                          "passenger and cargo aircraft alike, with few exceptions. "
+                          "Carriage is only possible under an exemption or prior approval "
+                          "of the authorities concerned (A1/A2).",
+                    "de": "Unterklasse 2.3 (giftige Gase) ist in der Luftbeförderung auf "
+                          "Passagier- wie Frachtflugzeugen bis auf wenige Ausnahmen "
+                          "verboten. Eine Beförderung ist nur mit einer Ausnahme oder "
+                          "vorheriger Genehmigung der betroffenen Behörden möglich "
+                          "(A1/A2).",
+                },
+                lang,
+            ),
+            "products": _product_label(entry, product, index),
+        })
+    return warnings
+
+
 def check_q_value(entries: list[dict[str, Any]], language: str = "nl") -> list[dict[str, Any]]:
     """IATA 5.0.2.11: Q-waarde per positie voor 'all packed in one'.
 
@@ -1012,6 +1137,16 @@ def check_q_value(entries: list[dict[str, Any]], language: str = "nl") -> list[d
     results: list[dict[str, Any]] = []
 
     for entry in entries:
+        # Een positie doet pas mee wanneer iemand een M (maximum per verpakking
+        # volgens de packing instruction) heeft ingevuld. De n wordt door
+        # /dg/prepare automatisch gevuld uit de netto per collo; alleen dáárop
+        # afgaan zette elke luchtzending op "incomplete", ook waar 'all packed
+        # in one' helemaal niet speelt.
+        if not any(
+            str(product.get("q_max_net_quantity") or "").strip()
+            for product in entry.get("products") or []
+        ):
+            continue
         components: list[dict[str, Any]] = []
         invalid: list[str] = []
         for index, product in enumerate(entry.get("products") or []):
@@ -1460,6 +1595,11 @@ def check_lq_eq(
     rows: list[dict[str, Any]] = []
     warnings: list[dict[str, Any]] = []
     statuses: set[str] = set()
+    # ADR 3.4.13/3.4.14: boven 8 ton bruto aan LQ-colli per transporteenheid is
+    # de LQ-kenmerking van 3.4.15 op de eenheid vereist. De zending wordt hier
+    # als één transporteenheid gelezen — meer weet de app niet van het voertuig.
+    lq_gross_total_kg = 0.0
+    lq_gross_products: list[str] = []
 
     for entry in entries:
         eq_packages = 0.0
@@ -1469,6 +1609,10 @@ def check_lq_eq(
             lq_raw = str(product.get("limited_quantity") or "").strip()
             eq_raw = str(product.get("excepted_quantity") or "").strip()
             if not un and not lq_raw and not eq_raw:
+                continue
+            if product.get("transport_forbidden"):
+                # Geen vrijstellingsroute voor een stof die niet ten vervoer
+                # mag worden aangeboden; het verbod staat al in beeld.
                 continue
             label = _product_label(entry, product, index)
 
@@ -1536,6 +1680,12 @@ def check_lq_eq(
                     eq_packages += count
                     eq_products.append(label)
 
+            if lq["status"] == "within_limits" and gross_kg:
+                count = _num(product.get("quantity_packages"))
+                if count:
+                    lq_gross_total_kg += gross_kg * count
+                    lq_gross_products.append(label)
+
         if eq_packages > _EQ_PACKAGE_CAP:
             warnings.append({
                 "rule": "ADR/IMDG 3.5.5",
@@ -1558,6 +1708,32 @@ def check_lq_eq(
                 ).format(count=_fmt_kg(eq_packages)),
                 "products": ", ".join(eq_products),
             })
+
+    if lq_gross_total_kg > 8000 and {"ADR", "RID", "ADN"} & set(normalized):
+        warnings.append({
+            "rule": "ADR 3.4.13/3.4.14",
+            "severity": "warning",
+            "message": pick(
+                {
+                    "nl": "De colli die binnen de LQ-grenzen vallen tellen samen "
+                          "{tonnes} kg bruto. Boven 8 ton per transporteenheid is de "
+                          "LQ-kenmerking van 3.4.15 (250 × 250 mm) op de voor- en "
+                          "achterzijde vereist (3.4.13); de vrijstelling van 3.4.14 "
+                          "geldt dan niet meer.",
+                    "en": "The packages within the LQ limits total {tonnes} kg gross. "
+                          "Above 8 tonnes per transport unit the LQ mark of 3.4.15 "
+                          "(250 × 250 mm) is required at the front and rear (3.4.13); "
+                          "the waiver of 3.4.14 no longer applies.",
+                    "de": "Die Versandstücke innerhalb der LQ-Grenzen wiegen zusammen "
+                          "{tonnes} kg brutto. Über 8 Tonnen je Beförderungseinheit ist "
+                          "die LQ-Kennzeichnung nach 3.4.15 (250 × 250 mm) vorn und "
+                          "hinten vorgeschrieben (3.4.13); die Erleichterung nach "
+                          "3.4.14 gilt dann nicht mehr.",
+                },
+                lang,
+            ).format(tonnes=_fmt_kg(lq_gross_total_kg)),
+            "products": ", ".join(lq_gross_products),
+        })
 
     if not rows:
         status = "not_checked"
@@ -1679,12 +1855,16 @@ def check_compliance(
         result["lq_eq"] = check_lq_eq(entries, language, sorted(normalized))
 
     if "IMDG" in normalized:
-        result["imdg_segregation"] = apply_column_16b_precedence(
-            check_imdg_segregation(entries, language)
-            + check_imdg_class1_compatibility(entries, language)
-            + check_imdg_segregation_groups(entries, language)
-            + check_imdg_segregation_provisions(entries, language)
-            + check_imdg_segregation_exemptions(entries, language),
+        result["imdg_segregation"] = append_class8_pair_exception(
+            entries,
+            apply_column_16b_precedence(
+                check_imdg_segregation(entries, language)
+                + check_imdg_class1_compatibility(entries, language)
+                + check_imdg_segregation_groups(entries, language)
+                + check_imdg_segregation_provisions(entries, language)
+                + check_imdg_segregation_exemptions(entries, language),
+                language,
+            ),
             language,
         ) + check_imdg_amendment_42_24(entries, language)
         result["imdg_note"] = pick(rules["imdg_segregation"]["note"], language)
@@ -1700,7 +1880,10 @@ def check_compliance(
             }
 
     if "IATA_DGR" in normalized:
-        result["iata_segregation"] = check_iata_segregation(entries, language)
+        result["iata_segregation"] = (
+            check_air_forbidden(entries, language)
+            + check_iata_segregation(entries, language)
+        )
         result["q_values"] = check_q_value(entries, language)
         cao = [
             _product_label(entry, product, index)

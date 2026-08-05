@@ -294,6 +294,9 @@ export default function DangerousGoodsStep({
         </div>
       )}
 
+      {/* Velden die alleen bestaan waar ze iets betekenen: NEM alleen voor
+          klasse 1 (ADR 1.1.3.6.3), en de binnenverpakking alleen wanneer er
+          een LQ- of EQ-route bestaat (kolom 7a ≠ 0 of code ≠ E0). */}
       {visibleEntries.map((entry, localIndex) => {
         const entryIndex = visibleEntryOffset + localIndex;
         return (
@@ -310,7 +313,21 @@ export default function DangerousGoodsStep({
             value={entry.vehicle}
             onChange={(v) => updateEntry(entryIndex, { vehicle: v })}
           />
-          {entry.products.map((product, productIndex) => (
+          {entry.products.map((product, productIndex) => {
+            const isClass1 = String(product.class ?? "").trim().startsWith("1");
+            const noExemptionRoute =
+              (product.limited_quantity ?? "").trim() === "0" &&
+              (product.excepted_quantity ?? "").trim().toUpperCase() === "E0";
+            const productFields = CORE_FIELDS.filter(
+              (field) =>
+                field !== "un_number" &&
+                (field !== "net_per_inner_packaging" || !noExemptionRoute),
+            ).flatMap((field) =>
+              field === "gross_mass_per_package" && isClass1
+                ? [field, "net_explosive_mass"]
+                : [field],
+            );
+            return (
             <div key={productIndex} className="grid md:grid-cols-2 gap-3 border-t border-slate-100 dark:border-slate-800 pt-4">
               <div>
                 <div className="flex items-center gap-1.5">
@@ -332,7 +349,7 @@ export default function DangerousGoodsStep({
                 </div>
                 <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">{t("dgsearch.unHint")}</p>
               </div>
-              {[...CORE_FIELDS.filter((f) => f !== "un_number"), ...extraFields.filter((f) => !(CORE_FIELDS as readonly string[]).includes(f))].map((field) =>
+              {[...productFields, ...extraFields.filter((f) => !(CORE_FIELDS as readonly string[]).includes(f))].map((field) =>
                 field === "type_of_package" ? (
                   <div key={field}>
                     <div className="flex items-center gap-1.5">
@@ -366,7 +383,8 @@ export default function DangerousGoodsStep({
                 ),
               )}
             </div>
-          ))}
+            );
+          })}
         </div>
         );
       })}
@@ -440,6 +458,7 @@ function AutoDerivedPanel({ prepared }: { prepared: DgPrepareResult }) {
       ...(hint.imdg_amendment_changes ?? []).map((change) => `IMDG 42-24 — ${change}`),
       hint.imdg_document_requirement &&
         `IMDG ${hint.imdg_document_requirement.section} — ${hint.imdg_document_requirement.text}`,
+      hint.packing_group_note,
       hint.air_note,
       hint.label_reference_note,
       hint.limited_quantity_text,

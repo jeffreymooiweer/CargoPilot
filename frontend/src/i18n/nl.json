@@ -318,6 +318,7 @@
     },
     "incompleteHint": "Vul de ADR-transportcategorie en totale hoeveelheid in voor: {{products}}. Gebruik de UN-lookup of ADR tabel A kolom 15.",
     "category0Hint": "Transportcategorie 0 ({{products}}): vervoer onder de 1.1.3.6-vrijstelling is niet toegestaan; alle ADR-bepalingen gelden volledig.",
+    "forbiddenSkipped": "Niet in de telling wegens vervoersverbod: {{products}}. Zie de rode melding bij de stof.",
     "aboveThresholdHint": "Boven de 1000 punten gelden o.a. oranje borden, ADR-vakbekwaamheidscertificaat van de chauffeur, schriftelijke instructies en tunnelbeperkingen.",
     "exemptDetails": "Wat betekent de vrijstelling?",
     "exemptFrom": "Vrijgesteld van (o.a.):",

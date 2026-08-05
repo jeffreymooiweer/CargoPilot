@@ -177,6 +177,11 @@ export default function DgCompliancePanel({ entries, profiles }: Props) {
               {t("compliance.category0Hint", { products: adr.category0_products.join(", ") })}
             </p>
           )}
+          {(adr.forbidden_products?.length ?? 0) > 0 && (
+            <p className="text-xs text-red-600 dark:text-red-400">
+              {t("compliance.forbiddenSkipped", { products: adr.forbidden_products!.join(", ") })}
+            </p>
+          )}
           <p className="text-[11px] text-slate-500 dark:text-slate-400">{adr.quantity_units_note}</p>
 
           {/* Bij spoor en binnenvaart is met de ADR-tabellen gerekend. Dat mag

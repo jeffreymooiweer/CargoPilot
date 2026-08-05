@@ -318,6 +318,7 @@
     },
     "incompleteHint": "Erfassen Sie Beförderungskategorie und Gesamtmenge nach ADR für: {{products}}. Verwenden Sie die UN-Suche oder ADR Tabelle A Spalte 15.",
     "category0Hint": "Beförderungskategorie 0 ({{products}}): eine Beförderung unter der Freistellung nach 1.1.3.6 ist nicht zulässig; sämtliche ADR-Vorschriften gelten uneingeschränkt.",
+    "forbiddenSkipped": "Wegen Beförderungsverbot nicht in der Punkteberechnung: {{products}}. Siehe den roten Hinweis beim Stoff.",
     "aboveThresholdHint": "Über 1000 Punkte gelten unter anderem orangefarbene Warntafeln, die ADR-Schulungsbescheinigung des Fahrzeugführers, schriftliche Weisungen und Tunnelbeschränkungen.",
     "exemptDetails": "Was bedeutet die Freistellung?",
     "exemptFrom": "Freigestellt von (unter anderem):",

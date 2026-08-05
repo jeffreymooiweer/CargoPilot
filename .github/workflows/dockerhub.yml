@@ -25,10 +25,16 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: "3.12"
+          cache: pip
+          cache-dependency-path: |
+            backend/requirements.txt
+            backend/requirements-runtime.txt
 
       - name: Install dependencies
         working-directory: backend
-        run: pip install -r requirements.txt
+        run: |
+          pip install -r requirements.txt
+          pip check
 
       - name: Prepare test data
         run: |
@@ -39,6 +45,9 @@ jobs:
         env:
           DATA_DIR: ${{ github.workspace }}/data
           DATABASE_URL: sqlite:///${{ github.workspace }}/data/cargopilot.db
+          APP_ENV: test
+          APP_SECRET_KEY: ci-secret
+          CATALOG_AUTO_SYNC: "false"
         run: pytest -q
 
   frontend:
@@ -51,10 +60,6 @@ jobs:
       - name: Set up Node
         uses: actions/setup-node@v4
         with:
-          # Gelijk aan ci.yml: de frontend-toolchain verlangt Node 22 of hoger
-          # (jsdom 30, undici 8). Deze job bouwt alleen, maar twee versies naast
-          # elkaar draaien betekent dat een bouwfout hier pas bij het testen
-          # daar bovenkomt.
           node-version: "22"
           cache: npm
           cache-dependency-path: frontend/package-lock.json
@@ -69,8 +74,6 @@ jobs:
     name: Docker build
     runs-on: ubuntu-latest
     needs: [test, frontend]
-    # An arm64 build under QEMU takes a few minutes with a warm cache. Anything
-    # near an hour is wedged, not slow — fail instead of burning the whole day.
     timeout-minutes: 45
     steps:
       - name: Checkout
@@ -98,7 +101,7 @@ jobs:
         uses: docker/setup-buildx-action@v3
 
       - name: Login to DockerHub
-        if: steps.dockerhub.outputs.configured == 'true'
+        if: github.event_name != 'pull_request' && steps.dockerhub.outputs.configured == 'true'
         uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
@@ -114,7 +117,19 @@ jobs:
             type=semver,pattern={{version}}
             type=sha,prefix=
 
-      - name: Build image
+      - name: Build image for pull request
+        if: github.event_name == 'pull_request'
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          platforms: linux/amd64,linux/arm64
+          push: false
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha,scope=main
+
+      - name: Build and optionally publish image
+        if: github.event_name != 'pull_request'
         uses: docker/build-push-action@v6
         with:
           context: .
@@ -122,10 +137,6 @@ jobs:
           push: ${{ steps.dockerhub.outputs.configured == 'true' }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-          # Each ref writes its own cache scope. Releasing pushes the commit to
-          # main and then tags it, so two runs build the same commit seconds
-          # apart; sharing one mode=max scope let them race on the cache export
-          # and hang. Reads still come from main's warm cache.
           cache-from: |
             type=gha,scope=${{ github.ref_name }}
             type=gha,scope=main

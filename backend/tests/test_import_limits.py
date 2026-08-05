@@ -1,4 +1,6 @@
 import asyncio
+import io
+import zipfile
 
 import pytest
 from pydantic import ValidationError
@@ -7,6 +9,7 @@ from app.api.routes.import_files import WizardRemapRequest
 from app.services.spreadsheet_io import (
     ImportLimitError,
     MAX_IMPORT_COLUMNS,
+    _validate_xlsx_archive,
     build_xlsx_template,
     read_limited_upload,
     read_tabular_file,
@@ -59,6 +62,15 @@ def test_xlsx_row_limit_is_enforced_in_read_only_iteration():
 
     with pytest.raises(ImportLimitError, match="meer dan 1 rijen"):
         read_tabular_file(content, "items.xlsx", max_rows=1)
+
+
+def test_xlsx_archive_expansion_is_bounded_before_openpyxl_reads_it():
+    buffer = io.BytesIO()
+    with zipfile.ZipFile(buffer, "w", compression=zipfile.ZIP_DEFLATED) as archive:
+        archive.writestr("xl/worksheets/sheet1.xml", "x" * 100)
+
+    with pytest.raises(ImportLimitError, match="Uitgepakte spreadsheet"):
+        _validate_xlsx_archive(buffer.getvalue(), max_uncompressed_bytes=50)
 
 
 def test_remap_payload_rejects_excessive_columns_before_processing():

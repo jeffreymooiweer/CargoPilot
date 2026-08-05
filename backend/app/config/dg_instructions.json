@@ -125,6 +125,18 @@
         "de": "Anzahl Stück je Verpackung."
       }
     },
+    "net_per_inner_packaging": {
+      "label": {
+        "nl": "Netto per binnenverpakking",
+        "en": "Net per inner packaging",
+        "de": "Netto je Innenverpackung"
+      },
+      "help": {
+        "nl": "Netto hoeveelheid per binnenverpakking, met eenheid (bijv. '500 g' of '0,5 L'). Nodig om de LQ-grens van kolom 7a (ADR/IMDG 3.4) en de E-code van kolom 7b (3.5) te toetsen.",
+        "en": "Net quantity per inner packaging, with a unit (e.g. '500 g' or '0.5 L'). Required to assess the LQ limit of column 7a (ADR/IMDG 3.4) and the E code of column 7b (3.5).",
+        "de": "Nettomenge je Innenverpackung, mit Einheit (z. B. '500 g' oder '0,5 L'). Erforderlich, um die LQ-Grenze der Spalte 7a (ADR/IMDG 3.4) und den E-Code der Spalte 7b (3.5) zu prüfen."
+      }
+    },
     "net_mass_liters_per_package": {
       "label": {
         "nl": "Netto massa / liters per verpakking",

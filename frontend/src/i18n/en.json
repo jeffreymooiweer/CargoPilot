@@ -323,6 +323,14 @@
     "exemptFrom": "Exempt from (among others):",
     "stillRequired": "Still required:",
     "segregationTitle": "Mixed loading and segregation",
+    "lqEqTitle": "Limited and excepted quantities (3.4 / 3.5)",
+    "lqeqStatus": {
+      "within_limits": "within the limits",
+      "not_within": "outside the limits",
+      "not_permitted": "not permitted",
+      "incomplete": "incomplete",
+      "no_data": "no data"
+    },
     "manifest": "Computed with: {{editions}} — data version {{id}}",
     "noSegregationIssues": "No mixed-loading or segregation conflicts found within the entered positions.",
     "qTitle": "IATA Q value ('all packed in one')",

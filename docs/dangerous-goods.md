@@ -31,7 +31,7 @@ Type `1203`, or search for "gasoline". CargoPilot fills in:
 | **Packing instruction** | Per rulebook — the ADR instruction is never used for air |
 | **Transport category and tunnel code** | For the 1,000-point rule and route restrictions |
 | **Kemler number** | Hazard identification number |
-| **LQ and EQ limits** | Limited and excepted quantities, explained in plain language |
+| **LQ and EQ limits** | Limited and excepted quantities, explained in plain language — and checked against your quantities, see below |
 | **EmS emergency schedules** | Fire and spillage schedule for sea transport, with descriptions |
 | **Segregation groups** | SGG1–SGG18, for example "SGG1 (Acids), SGG18 (Alkalis)" |
 | **Stowage codes** | SW codes from column 16a, with the wording that explains them |
@@ -94,6 +94,18 @@ what the exemption does and does not release you from.
 **ADR 7.5.2 — loading together.** Warns on class 1 (other than 1.4S) with other classes,
 on mixed compatibility groups within class 1, and on the CV28 separation of foodstuffs
 from labels 6.1/6.2 and certain class 9 substances.
+
+**ADR/IMDG 3.4 and 3.5 — limited and excepted quantities.** Enter the net quantity per
+inner packaging and CargoPilot compares it against the LQ value of column 7a and the
+E code of column 7b, per line. For LQ it also holds the package to the 30 kg gross limit
+of 3.4.2 (naming the 20 kg tray limit of 3.4.3); for EQ it checks both the inner and the
+outer limit of table 3.5.1.2 and warns when a position exceeds the 1,000-package cap of
+3.5.5. Mass is never compared against a volume limit, and a number without a unit is
+asked about rather than guessed at. Falling within the limits is reported as exactly
+that — the LQ/EQ mark and the packaging requirements remain conditions, and a qualifying
+line is never silently removed from the 1,000-point calculation. On rail and inland
+waterway the same basis note appears as for the points table; for air, which has its own
+LQ apparatus in the Y packing instructions, no claim is made.
 
 **IMDG 7.2.4 — sea segregation.** The full class segregation table, with codes 1 to 4
 from "away from" to "separated longitudinally". Subsidiary risks count too, and a

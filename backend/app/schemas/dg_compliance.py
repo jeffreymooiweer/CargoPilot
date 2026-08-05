@@ -61,6 +61,8 @@ class DangerousGoodsProduct(BaseModel):
     adr_total_quantity: str | float | int | None = None
     q_net_quantity: str | float | int | None = None
     q_max_net_quantity: str | float | int | None = None
+    # Netto per binnenverpakking, voor de LQ/EQ-toets van 3.4 en 3.5.
+    net_per_inner_packaging: str | float | int | None = None
 
     @field_validator("packing_group")
     @classmethod
@@ -84,7 +86,10 @@ class DangerousGoodsProduct(BaseModel):
             )
         return cleaned
 
-    @field_validator("adr_total_quantity", "q_net_quantity", "q_max_net_quantity")
+    @field_validator(
+        "adr_total_quantity", "q_net_quantity", "q_max_net_quantity",
+        "net_per_inner_packaging",
+    )
     @classmethod
     def _usable_quantity(cls, value: Any) -> Any:
         """Een ingevulde hoeveelheid moet positief zijn.

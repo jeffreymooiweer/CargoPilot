@@ -281,6 +281,8 @@ export interface DgProduct {
   type_of_package?: string;
   quantity_packages?: string;
   quantity_items_per_package?: string;
+  /** Netto per binnenverpakking, met eenheid — voor de LQ/EQ-toets (3.4/3.5). */
+  net_per_inner_packaging?: string;
   net_mass_liters_per_package?: string;
   gross_mass_per_package?: string;
   eq_lq_points?: string;
@@ -611,6 +613,30 @@ export interface ComplianceWarning {
   products: string;
 }
 
+export type LqEqStatus =
+  | "within_limits"
+  | "not_within"
+  | "not_permitted"
+  | "incomplete"
+  | "no_data";
+
+export interface LqEqRow {
+  product: string;
+  position: string | number | null;
+  lq: { value: string | null; status: LqEqStatus; message: string };
+  eq: { code: string | null; status: LqEqStatus; message: string };
+}
+
+/** ADR/IMDG 3.4 en 3.5: de ingevoerde hoeveelheden getoetst aan kolom 7a/7b. */
+export interface LqEqResult {
+  rows: LqEqRow[];
+  status: "checked" | "incomplete" | "not_checked";
+  warnings: ComplianceWarning[];
+  basis: string;
+  basis_note?: string | null;
+  note: string;
+}
+
 export interface QValueResult {
   position: string | number;
   components: { product: string; net_quantity: number; max_per_package: number; ratio: number }[];
@@ -642,6 +668,8 @@ export interface DgComplianceResult {
     groups: { code: string; label: string }[];
   };
   iata_segregation?: ComplianceWarning[];
+  /** LQ/EQ-toets van 3.4/3.5 — aanwezig bij ADR-, RID-, ADN- en IMDG-profielen. */
+  lq_eq?: LqEqResult;
   q_values?: QValueResult[];
   cargo_aircraft_only_products?: string[];
 }

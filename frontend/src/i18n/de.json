@@ -323,6 +323,14 @@
     "exemptFrom": "Freigestellt von (unter anderem):",
     "stillRequired": "Weiterhin vorgeschrieben:",
     "segregationTitle": "Zusammenladung und Trennung",
+    "lqEqTitle": "Begrenzte und freigestellte Mengen (3.4 / 3.5)",
+    "lqeqStatus": {
+      "within_limits": "innerhalb der Grenzen",
+      "not_within": "außerhalb der Grenzen",
+      "not_permitted": "nicht zugelassen",
+      "incomplete": "unvollständig",
+      "no_data": "keine Daten"
+    },
     "manifest": "Berechnet mit: {{editions}} — Datenstand {{id}}",
     "noSegregationIssues": "Innerhalb der erfassten Positionen wurden keine Zusammenlade- oder Trennkonflikte gefunden.",
     "qTitle": "IATA-Q-Wert ('all packed in one')",

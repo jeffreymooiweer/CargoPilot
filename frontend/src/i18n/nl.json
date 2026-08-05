@@ -323,6 +323,14 @@
     "exemptFrom": "Vrijgesteld van (o.a.):",
     "stillRequired": "Blijft wél verplicht:",
     "segregationTitle": "Samenlading en segregatie",
+    "lqEqTitle": "Gelimiteerde en vrijgestelde hoeveelheden (3.4 / 3.5)",
+    "lqeqStatus": {
+      "within_limits": "binnen de grenzen",
+      "not_within": "buiten de grenzen",
+      "not_permitted": "niet toegestaan",
+      "incomplete": "onvolledig",
+      "no_data": "geen gegevens"
+    },
     "manifest": "Gerekend met: {{editions}} — gegevensversie {{id}}",
     "noSegregationIssues": "Geen samenladings- of segregatieconflicten gevonden binnen de ingevoerde posities.",
     "qTitle": "IATA Q-waarde ('all packed in one')",

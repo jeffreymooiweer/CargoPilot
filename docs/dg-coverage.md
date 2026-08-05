@@ -75,9 +75,12 @@ ADN Table C, vehicle or tank codes, and any state or operator variation.
 ## Road — ADR
 
 **Checked:** the 1.1.3.6 points calculation (categories, factors, the 1,000-point
-threshold, category 0 as a hard stop) and the 7.5.2 mixed-loading prohibitions including
-CV28 for foodstuffs. Classification comes from Table A. The description line follows
-5.4.1.1.1 and the tunnel code is printed, correctly, only here.
+threshold, category 0 as a hard stop); the 7.5.2 mixed-loading prohibitions including
+CV28 for foodstuffs; and the quantity limits of chapters 3.4 and 3.5 — the entered net
+per inner packaging against column 7a and the E code of column 7b, the 30 kg gross
+limit of 3.4.2 (naming the 20 kg tray limit of 3.4.3), and the 1,000-package cap of
+3.5.5. Classification comes from Table A. The description line follows 5.4.1.1.1 and
+the tunnel code is printed, correctly, only here.
 
 This is the mode CargoPilot serves best, and the reason is simple: ADR Table A is the
 dataset it was built on.
@@ -88,10 +91,13 @@ dataset it was built on.
   there is no route in the application, so nothing compares it against the tunnels on the
   way. A consignor reading `(D/E)` on a CMR may reasonably assume something has been
   considered. Nothing has. **[verify: ADR 8.6 and the column 15 code semantics]**
-- **Limited and excepted quantities are explained, not applied.** The LQ value and the EQ
-  code are shown with their meaning, but the quantity entered is never compared against
-  them, and the exemptions of 3.4 and 3.5 are never applied. A shipment that could have
-  travelled as LQ is still put through the full points calculation. **[verify: 3.4, 3.5]**
+- **LQ and EQ are compared, not granted.** The quantity check of 3.4 and 3.5 says
+  whether a line falls within or outside the limits, or that the input is incomplete.
+  What it deliberately does not do is treat qualifying as being exempt: the LQ/EQ mark,
+  the packaging requirements of 3.4.1/3.5.2 and the tests of 3.5.3 are conditions the
+  application cannot see, so a qualifying line is reported next to the points table and
+  never removed from it. The limits themselves were verified against 3.4.2/3.4.3,
+  table 3.5.1.2 and 3.5.5 when the check was built.
 - **Nothing about the vehicle.** Equipment (8.1.4/8.1.5), placarding and marking (5.3),
   driver training (8.2), the ADR certificate of approval, tank codes. All outside the
   application. The 1.1.3.6 output does list what the exemption releases you from and what
@@ -153,8 +159,10 @@ segregation question is genuinely answered.
 segregation provisions of column 16b with the 7.2.3.1 precedence rule applied and both
 findings kept visible; the 7.2.6.3 exemption tables, reported but never used to remove a
 warning; the 7.2.6.5 class 8 exception; the 7.2.7.1.4 class 1 compatibility matrix with
-the ammonium nitrate exception; and the Amendment 42-24 difference layer with its
-reclassifications flagged rather than silently applied.
+the ammonium nitrate exception; the LQ and EQ quantity limits of chapters 3.4 and 3.5,
+read from the 42-24 Dangerous Goods List and flagged where the ADR value on the line
+differs; and the Amendment 42-24 difference layer with its reclassifications flagged
+rather than silently applied.
 
 Subsidiary risks count throughout, and a subsidiary class 1 risk is treated as division
 1.3, which is stricter than the primary hazard alone.
@@ -167,7 +175,6 @@ Subsidiary risks count throughout, and a subsidiary class 1 risk is treated as d
 - **CTU packing.** The container/vehicle packing certificate is a set of declarations the
   user ticks. Nothing checks the load against them. The VGM has a real arithmetic
   cross-check, which is more than the certificate gets.
-- **Limited and excepted quantities**, as on the road side: explained, not applied.
 - **Segregation from foodstuffs** is raised as a requirement to verify for the seven codes
   whose target is ordinary cargo, because the application does not know what else is in the
   container. That is the right call and it is worth stating: it is a deliberate
@@ -221,7 +228,7 @@ Ordered by how much harm someone could take before noticing, not by effort.
 |---|---|---|
 | 1 | **IATA quantity limits absent; Q depends on user-entered M** | CargoPilot warns when the Q check did not run, but it cannot derive the applicable passenger/cargo-aircraft limit or verify the entered M against Table 4.2. |
 | 2 | **RID and ADN answered with ADR tables** | Now labelled, which turns a wrong answer into an indication. Still the largest correctness gap of the five, and rail and inland waterway are offered as first-class modes. |
-| 3 | **LQ and EQ explained but never applied** | Cuts both ways: a shipment that qualified for an exemption is over-restricted, and one that does not qualify is never told. |
+| 3 | **LQ/EQ quantities checked, conditions not** | The arithmetic of 3.4 and 3.5 now runs, but the mark, the packaging requirements and the 3.5.3 tests are declarations the application cannot see. A line "within the limits" is a candidate, not an exemption — and the panel says so. |
 | 4 | **Tunnel code printed, never evaluated** | Printing a code that has been considered by nobody invites the assumption that it has. |
 | 5 | **IMDG stowage category shown, not enforced** | Lower because on-deck/under-deck is usually the carrier's call, not the consignor's. |
 | 6 | **No marking, placarding or equipment checks in any mode** | Consistently absent, so unlikely to be mistaken for present — but it is the most common real-world failure. |
@@ -236,13 +243,19 @@ on it. A displayed value must therefore never be mistaken for a completed verifi
 - **Say when the IATA Q check did not run.** The compliance response and panel now expose
   `not_checked` and `incomplete` instead of silently omitting the result.
 
-**Worth building next, in this order:**
+**Shipped since:**
 
-1. **Apply LQ and EQ.** The data is already on board — column 7a and the EQ code are in
-   both `un_numbers.json` and `imdg_dgl.json`. This is arithmetic against values already
-   held, not new regulatory content. **[verify: the exemption conditions of 3.4 and 3.5,
-   which is where the actual difficulty is]**
-2. **RID and ADN their own quantity and mixed-loading rules** — but only after the texts
+- **Apply LQ and EQ.** The entered net per inner packaging is compared against column 7a
+  and the E code of column 7b, with the 30 kg gross limit of 3.4.2, the 20 kg tray note
+  of 3.4.3, the inner and outer limits of table 3.5.1.2 and the 1,000-package cap of
+  3.5.5. The limit values were verified against the published 3.4/3.5 text before the
+  check was written. The exemption *conditions* — the mark, the packagings, the 3.5.3
+  tests — are stated as remaining conditions, not checked; and a qualifying line is
+  reported next to the 1.1.3.6 points, never removed from them.
+
+**Worth building next:**
+
+1. **RID and ADN their own quantity and mixed-loading rules** — but only after the texts
    have been read. The labelling shipped in v1.29.5 is the honest interim.
 
 **Not worth building, or not buildable here:**

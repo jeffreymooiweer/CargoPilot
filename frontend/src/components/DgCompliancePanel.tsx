@@ -17,6 +17,16 @@ const STATUS_STYLES: Record<string, string> = {
   incomplete: "bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-300",
 };
 
+// Binnen de grenzen is groen, erbuiten amber: een gemiste vrijstelling is geen
+// overtreding, dus rood zou hier te zwaar zijn.
+const LQEQ_STATUS_STYLES: Record<string, string> = {
+  within_limits: "bg-emerald-100 text-emerald-800 dark:bg-emerald-900/40 dark:text-emerald-300",
+  not_within: "bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-300",
+  not_permitted: "bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-300",
+  incomplete: "bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-300",
+  no_data: "bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-300",
+};
+
 export default function DgCompliancePanel({ entries, profiles }: Props) {
   const { t, i18n } = useTranslation();
   const lang = documentLanguage(i18n.language);
@@ -168,6 +178,56 @@ export default function DgCompliancePanel({ entries, profiles }: Props) {
           {adr.status === "above_threshold" && (
             <p className="text-xs text-amber-700 dark:text-amber-300">{t("compliance.aboveThresholdHint")}</p>
           )}
+        </section>
+      )}
+
+      {result?.lq_eq && result.lq_eq.rows.length > 0 && (
+        <section className="space-y-2">
+          <h4 className="text-sm font-semibold text-slate-900 dark:text-slate-100">
+            {t("compliance.lqEqTitle")}
+          </h4>
+          {result.lq_eq.rows.map((row, i) => (
+            <div
+              key={i}
+              className="rounded-lg border border-slate-200 px-3 py-2 text-xs dark:border-slate-700"
+            >
+              <p className="font-semibold text-slate-800 dark:text-slate-200">{row.product}</p>
+              <div className="mt-1 flex items-start gap-2">
+                <span
+                  className={`shrink-0 rounded-full px-2 py-0.5 text-[11px] font-medium ${LQEQ_STATUS_STYLES[row.lq.status]}`}
+                >
+                  LQ{row.lq.value ? ` ${row.lq.value}` : ""} · {t(`compliance.lqeqStatus.${row.lq.status}`)}
+                </span>
+                <span className="text-slate-600 dark:text-slate-300">{row.lq.message}</span>
+              </div>
+              <div className="mt-1 flex items-start gap-2">
+                <span
+                  className={`shrink-0 rounded-full px-2 py-0.5 text-[11px] font-medium ${LQEQ_STATUS_STYLES[row.eq.status]}`}
+                >
+                  EQ{row.eq.code ? ` ${row.eq.code}` : ""} · {t(`compliance.lqeqStatus.${row.eq.status}`)}
+                </span>
+                <span className="text-slate-600 dark:text-slate-300">{row.eq.message}</span>
+              </div>
+            </div>
+          ))}
+          {result.lq_eq.warnings.map((w, i) => (
+            <div
+              key={`w-${i}`}
+              className="rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-800 dark:border-amber-900/50 dark:bg-amber-900/20 dark:text-amber-300"
+            >
+              <p className="font-semibold">{w.rule}</p>
+              <p className="mt-0.5">{w.message}</p>
+              <p className="mt-0.5 opacity-80">{w.products}</p>
+            </div>
+          ))}
+          {result.lq_eq.basis_note && (
+            <p className="rounded-lg border border-amber-200 bg-amber-50 px-2 py-1.5 text-[11px] text-amber-800 dark:border-amber-900/50 dark:bg-amber-900/20 dark:text-amber-200">
+              {result.lq_eq.basis_note}
+            </p>
+          )}
+          <p className="text-[11px] text-slate-500 dark:text-slate-400">
+            {result.lq_eq.note} ({result.lq_eq.basis})
+          </p>
         </section>
       )}
 

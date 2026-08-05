@@ -1,5 +1,6 @@
 """Nalevingscontroles voor gevaarlijke stoffen: ADR 1.1.3.6-punten, ADR 7.5.2
-samenlading en IATA Table 9.3.A-segregatie plus Q-waarde (5.0.2.11).
+samenlading, de LQ/EQ-grenzen van hoofdstuk 3.4 en 3.5, en IATA Table
+9.3.A-segregatie plus Q-waarde (5.0.2.11).
 
 De uitkomsten zijn begeleiding en waarschuwingen — geen juridische vaststelling.
 De bevoegde persoon blijft verantwoordelijk (zie DISCLAIMER.md).
@@ -17,6 +18,7 @@ from app.core.languages import normalise, pick
 from app.services.dg import amendment_42_24, dangerous_goods_list
 from app.services.regulatory_manifest import stale_rule_sets, summary
 from app.services.dg.enrichment import (
+    EXCEPTED_QUANTITY_LIMITS,
     card_data_for,
     imdg_code_text,
     imdg_segregation_codes_for,
@@ -1080,6 +1082,520 @@ def check_q_value(entries: list[dict[str, Any]], language: str = "nl") -> list[d
     return results
 
 
+# Massa in gram, volume in milliliter: de gemeenschappelijke noemer waarin de
+# grenzen van 3.4 (kolom 7a) en 3.5.1.2 (E-codes) zijn uitgedrukt.
+_MEASURE_UNITS: dict[str, tuple[float, str]] = {
+    "kg": (1000.0, "mass"),
+    "g": (1.0, "mass"),
+    "gr": (1.0, "mass"),
+    "gram": (1.0, "mass"),
+    "mg": (0.001, "mass"),
+    "l": (1000.0, "volume"),
+    "ltr": (1000.0, "volume"),
+    "liter": (1000.0, "volume"),
+    "litre": (1000.0, "volume"),
+    "ml": (1.0, "volume"),
+}
+
+_MEASURE_RE = re.compile(
+    r"(-?\d+(?:[.,]\d+)?)\s*(kg|mg|gram|gr|g|ml|ltr|litre|liter|l)\b", re.IGNORECASE
+)
+
+
+def _parse_measures(value: Any) -> list[tuple[float, str]]:
+    """Alle hoeveelheden met eenheid uit een tekst, in g of ml.
+
+    '0,5 L' → [(500.0, 'volume')]; '500 ml oder 500 g' → beide. Een getal
+    zonder eenheid levert niets op: '0,5' kan 0,5 g of 0,5 kg betekenen, en
+    juist bij een vrijstellingsgrens mag daar niet naar geraden worden.
+    """
+    found: list[tuple[float, str]] = []
+    for match in _MEASURE_RE.finditer(str(value or "")):
+        amount = float(match.group(1).replace(",", "."))
+        factor, kind = _MEASURE_UNITS[match.group(2).lower()]
+        found.append((amount * factor, kind))
+    return found
+
+
+def _format_base(amount: float, kind: str) -> str:
+    """500.0 → '500 ml' of '500 g'; 5000.0 → '5 L' of '5 kg'."""
+    unit = "ml" if kind == "volume" else "g"
+    if amount >= 1000 and amount % 1000 == 0:
+        amount, unit = amount / 1000, "L" if kind == "volume" else "kg"
+    text = str(int(amount)) if float(amount).is_integer() else f"{amount:g}"
+    return f"{text} {unit}"
+
+
+# Verwijzing naar een bijzondere bepaling in kolom 7a/7b ("siehe SV 340",
+# "See SP277"): geen grens die de app kan toetsen.
+_SPECIAL_PROVISION_REF = re.compile(r"\b(?:siehe|see)\b|\bS[VP]\s*\d+", re.IGNORECASE)
+
+_LQ_MESSAGES = {
+    "no_data": {
+        "nl": "Geen LQ-waarde (kolom 7a) beschikbaar voor deze stof; niet getoetst.",
+        "en": "No LQ value (column 7a) available for this substance; not assessed.",
+        "de": "Kein LQ-Wert (Spalte 7a) für diesen Stoff verfügbar; nicht geprüft.",
+    },
+    "special_provision": {
+        "nl": "Kolom 7a verwijst naar een bijzondere bepaling ({raw}); die tekst staat "
+              "niet in CargoPilot. Raadpleeg hoofdstuk 3.3.",
+        "en": "Column 7a refers to a special provision ({raw}); that text is not held "
+              "by CargoPilot. Consult chapter 3.3.",
+        "de": "Spalte 7a verweist auf eine Sondervorschrift ({raw}); dieser Text ist "
+              "nicht in CargoPilot enthalten. Ziehen Sie Kapitel 3.3 heran.",
+    },
+    "not_permitted": {
+        "nl": "Kolom 7a is '0': vervoer als gelimiteerde hoeveelheid (3.4) is voor "
+              "deze stof niet toegestaan.",
+        "en": "Column 7a is '0': carriage as limited quantity (3.4) is not permitted "
+              "for this substance.",
+        "de": "Spalte 7a ist '0': Die Beförderung als begrenzte Menge (3.4) ist für "
+              "diesen Stoff nicht zugelassen.",
+    },
+    "missing_inner": {
+        "nl": "LQ-grens {limit}: niet getoetst. Vul de netto hoeveelheid per "
+              "binnenverpakking in, met eenheid (bijv. '500 g' of '0,5 L').",
+        "en": "LQ limit {limit}: not assessed. Enter the net quantity per inner "
+              "packaging, with a unit (e.g. '500 g' or '0.5 L').",
+        "de": "LQ-Grenze {limit}: nicht geprüft. Geben Sie die Nettomenge je "
+              "Innenverpackung mit Einheit an (z. B. '500 g' oder '0,5 L').",
+    },
+    "unit_mismatch": {
+        "nl": "De eenheid van de binnenverpakking ({inner}) past niet bij de "
+              "LQ-grens ({limit}): massa en volume zijn niet uitwisselbaar. "
+              "Controleer de invoer.",
+        "en": "The unit of the inner packaging ({inner}) does not match the LQ limit "
+              "({limit}): mass and volume are not interchangeable. Check the input.",
+        "de": "Die Einheit der Innenverpackung ({inner}) passt nicht zur LQ-Grenze "
+              "({limit}): Masse und Volumen sind nicht austauschbar. Prüfen Sie die "
+              "Eingabe.",
+    },
+    "inner_exceeded": {
+        "nl": "De netto hoeveelheid per binnenverpakking ({inner}) is groter dan de "
+              "LQ-grens van {limit}. Deze regel kan niet als gelimiteerde hoeveelheid "
+              "(3.4) reizen en blijft volledig onder de voorschriften vallen.",
+        "en": "The net quantity per inner packaging ({inner}) exceeds the LQ limit of "
+              "{limit}. This line cannot travel as a limited quantity (3.4) and "
+              "remains fully regulated.",
+        "de": "Die Nettomenge je Innenverpackung ({inner}) überschreitet die LQ-Grenze "
+              "von {limit}. Diese Zeile kann nicht als begrenzte Menge (3.4) befördert "
+              "werden und unterliegt weiterhin allen Vorschriften.",
+    },
+    "missing_gross": {
+        "nl": "Binnenverpakking ({inner}) ≤ LQ-grens {limit}. Vul de bruto massa per "
+              "collo in om ook de grens van 30 kg (3.4.2) te toetsen.",
+        "en": "Inner packaging ({inner}) ≤ LQ limit {limit}. Enter the gross mass per "
+              "package to also assess the 30 kg limit (3.4.2).",
+        "de": "Innenverpackung ({inner}) ≤ LQ-Grenze {limit}. Geben Sie die Bruttomasse "
+              "je Versandstück an, um auch die 30-kg-Grenze (3.4.2) zu prüfen.",
+    },
+    "gross_exceeded": {
+        "nl": "Binnenverpakking ({inner}) ≤ LQ-grens {limit}, maar de bruto massa per "
+              "collo ({gross} kg) is groter dan de 30 kg van 3.4.2. Deze regel kan zo "
+              "niet als gelimiteerde hoeveelheid reizen.",
+        "en": "Inner packaging ({inner}) ≤ LQ limit {limit}, but the gross mass per "
+              "package ({gross} kg) exceeds the 30 kg of 3.4.2. As packed, this line "
+              "cannot travel as a limited quantity.",
+        "de": "Innenverpackung ({inner}) ≤ LQ-Grenze {limit}, aber die Bruttomasse je "
+              "Versandstück ({gross} kg) überschreitet die 30 kg nach 3.4.2. So "
+              "verpackt kann diese Zeile nicht als begrenzte Menge befördert werden.",
+    },
+    "within_limits": {
+        "nl": "Binnen de grenzen van 3.4: {inner} per binnenverpakking ≤ {limit} en "
+              "{gross} kg bruto per collo ≤ 30 kg (voor trays met krimp- of rekfolie "
+              "geldt 20 kg, 3.4.3). Het LQ-kenmerk en de verpakkingseisen van 3.4 "
+              "blijven gelden.",
+        "en": "Within the limits of 3.4: {inner} per inner packaging ≤ {limit} and "
+              "{gross} kg gross per package ≤ 30 kg (20 kg for shrink- or "
+              "stretch-wrapped trays, 3.4.3). The LQ mark and the packaging "
+              "requirements of 3.4 still apply.",
+        "de": "Innerhalb der Grenzen von 3.4: {inner} je Innenverpackung ≤ {limit} und "
+              "{gross} kg brutto je Versandstück ≤ 30 kg (für Trays mit Schrumpf- "
+              "oder Dehnfolie gelten 20 kg, 3.4.3). Die LQ-Kennzeichnung und die "
+              "Verpackungsvorschriften von 3.4 gelten weiterhin.",
+    },
+}
+
+# Alleen zinvol naast een puntentabel, dus alleen bij een landprofiel: een
+# regel die daadwerkelijk als LQ reist, telt volgens 1.1.3.6.5 niet mee in de
+# 1.1.3.6-punten. De tabel blijft hem meetellen — een vrijstelling neemt hier
+# nooit stilzwijgend een uitkomst weg.
+_LQ_POINTS_NOTE = {
+    "nl": " Reist deze regel als LQ, dan telt hij volgens 1.1.3.6.5 niet mee in de "
+          "1.1.3.6-punten; de puntentabel telt hem volledigheidshalve wél mee.",
+    "en": " If this line travels as LQ it does not count towards the 1.1.3.6 points "
+          "per 1.1.3.6.5; the points table still includes it for completeness.",
+    "de": " Wird diese Zeile als LQ befördert, zählt sie nach 1.1.3.6.5 nicht zu den "
+          "Punkten nach 1.1.3.6; die Punktetabelle führt sie der Vollständigkeit "
+          "halber dennoch auf.",
+}
+
+_EQ_MESSAGES = {
+    "no_data": {
+        "nl": "Geen E-code (kolom 7b) beschikbaar voor deze stof; niet getoetst.",
+        "en": "No E code (column 7b) available for this substance; not assessed.",
+        "de": "Kein E-Code (Spalte 7b) für diesen Stoff verfügbar; nicht geprüft.",
+    },
+    "special_provision": {
+        "nl": "Kolom 7b verwijst naar een bijzondere bepaling ({raw}); die tekst staat "
+              "niet in CargoPilot. Raadpleeg hoofdstuk 3.3.",
+        "en": "Column 7b refers to a special provision ({raw}); that text is not held "
+              "by CargoPilot. Consult chapter 3.3.",
+        "de": "Spalte 7b verweist auf eine Sondervorschrift ({raw}); dieser Text ist "
+              "nicht in CargoPilot enthalten. Ziehen Sie Kapitel 3.3 heran.",
+    },
+    "not_permitted": {
+        "nl": "E0: vervoer als vrijgestelde hoeveelheid (3.5) is voor deze stof niet "
+              "toegestaan.",
+        "en": "E0: carriage as excepted quantity (3.5) is not permitted for this "
+              "substance.",
+        "de": "E0: Die Beförderung als freigestellte Menge (3.5) ist für diesen Stoff "
+              "nicht zugelassen.",
+    },
+    "missing_inner": {
+        "nl": "{code} (max. {inner_cap} g/ml per binnenverpakking, {outer_cap} g/ml "
+              "per collo): niet getoetst. Vul de netto hoeveelheid per "
+              "binnenverpakking in, met eenheid.",
+        "en": "{code} (max. {inner_cap} g/ml per inner packaging, {outer_cap} g/ml per "
+              "package): not assessed. Enter the net quantity per inner packaging, "
+              "with a unit.",
+        "de": "{code} (max. {inner_cap} g/ml je Innenverpackung, {outer_cap} g/ml je "
+              "Versandstück): nicht geprüft. Geben Sie die Nettomenge je "
+              "Innenverpackung mit Einheit an.",
+    },
+    "missing_outer": {
+        "nl": "{code}: binnenverpakking ({inner}) ≤ {inner_cap} g/ml. Vul de netto "
+              "hoeveelheid per collo in (met eenheid) om ook de grens van {outer_cap} "
+              "g/ml per buitenverpakking te toetsen.",
+        "en": "{code}: inner packaging ({inner}) ≤ {inner_cap} g/ml. Enter the net "
+              "quantity per package (with a unit) to also assess the {outer_cap} g/ml "
+              "limit per outer packaging.",
+        "de": "{code}: Innenverpackung ({inner}) ≤ {inner_cap} g/ml. Geben Sie die "
+              "Nettomenge je Versandstück (mit Einheit) an, um auch die Grenze von "
+              "{outer_cap} g/ml je Außenverpackung zu prüfen.",
+    },
+    "inner_exceeded": {
+        "nl": "De netto hoeveelheid per binnenverpakking ({inner}) is groter dan de "
+              "{inner_cap} g/ml van {code} (3.5.1.2). Deze regel kan niet als "
+              "vrijgestelde hoeveelheid reizen.",
+        "en": "The net quantity per inner packaging ({inner}) exceeds the {inner_cap} "
+              "g/ml of {code} (3.5.1.2). This line cannot travel as an excepted "
+              "quantity.",
+        "de": "Die Nettomenge je Innenverpackung ({inner}) überschreitet die "
+              "{inner_cap} g/ml von {code} (3.5.1.2). Diese Zeile kann nicht als "
+              "freigestellte Menge befördert werden.",
+    },
+    "outer_exceeded": {
+        "nl": "De netto hoeveelheid per collo ({outer}) is groter dan de {outer_cap} "
+              "g/ml van {code} (3.5.1.2). Deze regel kan zo niet als vrijgestelde "
+              "hoeveelheid reizen.",
+        "en": "The net quantity per package ({outer}) exceeds the {outer_cap} g/ml of "
+              "{code} (3.5.1.2). As packed, this line cannot travel as an excepted "
+              "quantity.",
+        "de": "Die Nettomenge je Versandstück ({outer}) überschreitet die {outer_cap} "
+              "g/ml von {code} (3.5.1.2). So verpackt kann diese Zeile nicht als "
+              "freigestellte Menge befördert werden.",
+    },
+    "within_limits": {
+        "nl": "Binnen de grenzen van {code}: {inner} per binnenverpakking ≤ "
+              "{inner_cap} g/ml en {outer} per collo ≤ {outer_cap} g/ml (3.5.1.2). De "
+              "verpakkings- en beproevingseisen van 3.5.2 en 3.5.3 en het EQ-kenmerk "
+              "blijven gelden; per voertuig of container zijn ten hoogste 1000 colli "
+              "toegestaan (3.5.5).",
+        "en": "Within the limits of {code}: {inner} per inner packaging ≤ {inner_cap} "
+              "g/ml and {outer} per package ≤ {outer_cap} g/ml (3.5.1.2). The "
+              "packaging and testing requirements of 3.5.2 and 3.5.3 and the EQ mark "
+              "still apply; at most 1,000 packages are permitted per vehicle or "
+              "container (3.5.5).",
+        "de": "Innerhalb der Grenzen von {code}: {inner} je Innenverpackung ≤ "
+              "{inner_cap} g/ml und {outer} je Versandstück ≤ {outer_cap} g/ml "
+              "(3.5.1.2). Die Verpackungs- und Prüfvorschriften nach 3.5.2 und 3.5.3 "
+              "sowie die EQ-Kennzeichnung gelten weiterhin; je Fahrzeug oder "
+              "Container sind höchstens 1000 Versandstücke zulässig (3.5.5).",
+    },
+}
+
+# ADR 3.4.2 / IMDG 3.4.2.1: totale bruto massa van een LQ-collo.
+_LQ_GROSS_LIMIT_KG = 30.0
+# ADR/IMDG 3.5.5: ten hoogste 1000 EQ-colli per voertuig of container.
+_EQ_PACKAGE_CAP = 1000
+
+
+def _fmt_kg(value: float) -> str:
+    return str(int(value)) if float(value).is_integer() else f"{value:g}"
+
+
+def _assess_lq(
+    raw: str, inner: list[tuple[float, str]], gross_kg: float | None, lang: str
+) -> dict[str, Any]:
+    """Toets één regel aan kolom 7a en de 30 kg-grens van 3.4.2."""
+    raw = raw.strip()
+    result: dict[str, Any] = {"value": raw or None}
+
+    def outcome(status: str, message_key: str, **kwargs: Any) -> dict[str, Any]:
+        result["status"] = status
+        result["message"] = pick(_LQ_MESSAGES[message_key], lang).format(**kwargs)
+        return result
+
+    if not raw or raw in {"-", "–", "—"} or "VERBOTEN" in raw.upper():
+        return outcome("no_data", "no_data")
+    if _num(raw) == 0:
+        return outcome("not_permitted", "not_permitted")
+    limits = _parse_measures(raw)
+    if not limits:
+        if _SPECIAL_PROVISION_REF.search(raw):
+            return outcome("no_data", "special_provision", raw=raw)
+        return outcome("no_data", "no_data")
+
+    if not inner:
+        return outcome("incomplete", "missing_inner", limit=raw)
+    inner_amount, inner_kind = inner[0]
+    # "500 ml oder 500 g": de variant die bij de ingevoerde eenheid hoort telt.
+    limit = next(((a, k) for a, k in limits if k == inner_kind), None)
+    if limit is None:
+        return outcome(
+            "incomplete", "unit_mismatch",
+            inner=_format_base(inner_amount, inner_kind), limit=raw,
+        )
+    if inner_amount > limit[0]:
+        return outcome(
+            "not_within", "inner_exceeded",
+            inner=_format_base(inner_amount, inner_kind), limit=raw,
+        )
+    if gross_kg is None:
+        return outcome(
+            "incomplete", "missing_gross",
+            inner=_format_base(inner_amount, inner_kind), limit=raw,
+        )
+    if gross_kg > _LQ_GROSS_LIMIT_KG:
+        return outcome(
+            "not_within", "gross_exceeded",
+            inner=_format_base(inner_amount, inner_kind), limit=raw,
+            gross=_fmt_kg(gross_kg),
+        )
+    return outcome(
+        "within_limits", "within_limits",
+        inner=_format_base(inner_amount, inner_kind), limit=raw,
+        gross=_fmt_kg(gross_kg),
+    )
+
+
+def _assess_eq(
+    raw: str,
+    inner: list[tuple[float, str]],
+    outer: list[tuple[float, str]],
+    lang: str,
+) -> dict[str, Any]:
+    """Toets één regel aan de E-code van kolom 7b (tabel 3.5.1.2)."""
+    code = raw.strip().upper()
+    result: dict[str, Any] = {"code": code or None}
+
+    def outcome(status: str, message_key: str, **kwargs: Any) -> dict[str, Any]:
+        result["status"] = status
+        result["message"] = pick(_EQ_MESSAGES[message_key], lang).format(**kwargs)
+        return result
+
+    if not code or code in {"-", "–", "—"} or "VERBOTEN" in code:
+        return outcome("no_data", "no_data")
+    if code == "E0":
+        return outcome("not_permitted", "not_permitted")
+    caps = EXCEPTED_QUANTITY_LIMITS.get(code)
+    if not caps:
+        if _SPECIAL_PROVISION_REF.search(raw):
+            return outcome("no_data", "special_provision", raw=raw.strip())
+        return outcome("no_data", "no_data")
+    inner_cap, outer_cap = caps
+
+    # Tabel 3.5.1.2 telt in gram voor vaste stoffen en ml voor vloeistoffen en
+    # gassen met hetzelfde getal; massa en volume delen hier dus één grens.
+    if not inner:
+        return outcome(
+            "incomplete", "missing_inner",
+            code=code, inner_cap=inner_cap, outer_cap=outer_cap,
+        )
+    inner_amount, inner_kind = inner[0]
+    if inner_amount > inner_cap:
+        return outcome(
+            "not_within", "inner_exceeded",
+            inner=_format_base(inner_amount, inner_kind), inner_cap=inner_cap, code=code,
+        )
+    if not outer:
+        return outcome(
+            "incomplete", "missing_outer",
+            code=code, inner=_format_base(inner_amount, inner_kind),
+            inner_cap=inner_cap, outer_cap=outer_cap,
+        )
+    outer_amount, outer_kind = outer[0]
+    if outer_amount > outer_cap:
+        return outcome(
+            "not_within", "outer_exceeded",
+            outer=_format_base(outer_amount, outer_kind), outer_cap=outer_cap, code=code,
+        )
+    return outcome(
+        "within_limits", "within_limits",
+        code=code,
+        inner=_format_base(inner_amount, inner_kind), inner_cap=inner_cap,
+        outer=_format_base(outer_amount, outer_kind), outer_cap=outer_cap,
+    )
+
+
+def check_lq_eq(
+    entries: list[dict[str, Any]], language: str = "nl", profiles: list[str] | None = None
+) -> dict[str, Any]:
+    """ADR/IMDG 3.4 en 3.5: toets de ingevoerde hoeveelheden aan kolom 7a en 7b.
+
+    Tot nu toe werden de LQ-waarde en de E-code getoond met hun betekenis, maar
+    nooit vergeleken met wat er daadwerkelijk is ingevuld. Deze controle doet
+    die vergelijking — en niet meer dan dat. Kwalificeren op hoeveelheid is
+    niet hetzelfde als vrijgesteld zijn: het kenmerk, de verpakkingseisen en de
+    beproevingen van 3.4 en 3.5 blijven bij de afzender. Daarom wordt een regel
+    die binnen de grenzen valt gemeld en nooit stilzwijgend uit de
+    puntenberekening van 1.1.3.6 gehaald, precies zoals de vrijstelling van
+    IMDG 7.2.6.3 wordt gemeld zonder een waarschuwing weg te nemen.
+    """
+    lang = _lang(language)
+    normalized = sorted({p.upper() for p in (profiles or [])})
+    use_imdg = "IMDG" in normalized
+
+    rows: list[dict[str, Any]] = []
+    warnings: list[dict[str, Any]] = []
+    statuses: set[str] = set()
+
+    for entry in entries:
+        eq_packages = 0.0
+        eq_products: list[str] = []
+        for index, product in enumerate(entry.get("products") or []):
+            un = str(product.get("un_number") or "").strip()
+            lq_raw = str(product.get("limited_quantity") or "").strip()
+            eq_raw = str(product.get("excepted_quantity") or "").strip()
+            if not un and not lq_raw and not eq_raw:
+                continue
+            label = _product_label(entry, product, index)
+
+            # De IMDG-lijst (42-24) draagt dezelfde kolommen. Waar het product
+            # geen waarde heeft, vult de lijst hem aan; waar de waarden
+            # verschillen, wordt dat gemeld — de toets rekent met de ingevoerde
+            # waarde en beslist niet zelf welke editie voorgaat.
+            dgl_notes = {"limited_quantity": "", "excepted_quantity": ""}
+            if use_imdg and un:
+                dgl_row = dangerous_goods_list.entry_for(
+                    un, str(product.get("packing_group") or "")
+                )
+                for column, current in (("limited_quantity", lq_raw),
+                                        ("excepted_quantity", eq_raw)):
+                    dgl_value = dangerous_goods_list.value(dgl_row, column)
+                    if not dgl_value:
+                        continue
+                    if not current:
+                        if column == "limited_quantity":
+                            lq_raw = dgl_value
+                        else:
+                            eq_raw = dgl_value
+                    elif dgl_value.replace(" ", "").upper() != current.replace(" ", "").upper():
+                        dgl_notes[column] = " " + pick(
+                            {
+                                "nl": "Let op: de IMDG-lijst (42-24) vermeldt hier "
+                                      "{value}; controleer welke waarde voor het "
+                                      "zeetraject geldt.",
+                                "en": "Note: the IMDG list (42-24) states {value} "
+                                      "here; check which value applies to the sea "
+                                      "leg.",
+                                "de": "Hinweis: die IMDG-Liste (42-24) nennt hier "
+                                      "{value}; prüfen Sie, welcher Wert für die "
+                                      "Seestrecke gilt.",
+                            },
+                            lang,
+                        ).format(value=dgl_value)
+
+            inner = _parse_measures(product.get("net_per_inner_packaging"))
+            outer = _parse_measures(product.get("net_mass_liters_per_package"))
+            gross_measures = _parse_measures(product.get("gross_mass_per_package"))
+            if gross_measures and gross_measures[0][1] == "mass":
+                gross_kg: float | None = gross_measures[0][0] / 1000.0
+            else:
+                gross_kg = _num(product.get("gross_mass_per_package"))
+
+            lq = _assess_lq(lq_raw, inner, gross_kg, lang)
+            eq = _assess_eq(eq_raw, inner, outer, lang)
+            if lq["status"] == "within_limits" and {"ADR", "RID", "ADN"} & set(normalized):
+                lq["message"] += pick(_LQ_POINTS_NOTE, lang)
+            lq["message"] += dgl_notes["limited_quantity"]
+            eq["message"] += dgl_notes["excepted_quantity"]
+            statuses.add(lq["status"])
+            statuses.add(eq["status"])
+            rows.append({
+                "product": label,
+                "position": entry.get("vehicle") or entry.get("line_id"),
+                "lq": lq,
+                "eq": eq,
+            })
+
+            if eq["status"] == "within_limits":
+                count = _num(product.get("quantity_packages"))
+                if count:
+                    eq_packages += count
+                    eq_products.append(label)
+
+        if eq_packages > _EQ_PACKAGE_CAP:
+            warnings.append({
+                "rule": "ADR/IMDG 3.5.5",
+                "severity": "warning",
+                "message": pick(
+                    {
+                        "nl": "Deze positie telt {count} colli die binnen de "
+                              "EQ-grenzen vallen; per voertuig of container zijn ten "
+                              "hoogste 1000 colli met vrijgestelde hoeveelheden "
+                              "toegestaan (3.5.5).",
+                        "en": "This position counts {count} packages within the EQ "
+                              "limits; at most 1,000 packages of excepted quantities "
+                              "are permitted per vehicle or container (3.5.5).",
+                        "de": "Diese Position zählt {count} Versandstücke innerhalb "
+                              "der EQ-Grenzen; je Fahrzeug oder Container sind "
+                              "höchstens 1000 Versandstücke mit freigestellten Mengen "
+                              "zulässig (3.5.5).",
+                    },
+                    lang,
+                ).format(count=_fmt_kg(eq_packages)),
+                "products": ", ".join(eq_products),
+            })
+
+    if not rows:
+        status = "not_checked"
+    elif "incomplete" in statuses:
+        status = "incomplete"
+    else:
+        status = "checked"
+
+    basis = "ADR 3.4 / 3.5 (Tabel A kolom 7a/7b)"
+    if use_imdg:
+        basis += " + IMDG DGL 42-24"
+    return {
+        "rows": rows,
+        "status": status,
+        "warnings": warnings,
+        "basis": basis,
+        "basis_note": basis_note(normalized, "3.4/3.5", language),
+        "note": pick(
+            {
+                "nl": "Binnen de grenzen vallen is niet hetzelfde als vrijgesteld "
+                      "zijn: het LQ- of EQ-kenmerk en de verpakkingseisen van 3.4 en "
+                      "3.5 blijven voorwaarden. De puntentelling van 1.1.3.6 wordt "
+                      "hier niet door aangepast.",
+                "en": "Falling within the limits is not the same as being exempt: "
+                      "the LQ or EQ mark and the packaging requirements of 3.4 and "
+                      "3.5 remain conditions. The 1.1.3.6 points calculation is not "
+                      "adjusted by this result.",
+                "de": "Innerhalb der Grenzen zu liegen ist nicht dasselbe wie "
+                      "freigestellt zu sein: die LQ- bzw. EQ-Kennzeichnung und die "
+                      "Verpackungsvorschriften von 3.4 und 3.5 bleiben Bedingungen. "
+                      "Die Punkteberechnung nach 1.1.3.6 wird durch dieses Ergebnis "
+                      "nicht verändert.",
+            },
+            lang,
+        ),
+    }
+
+
 def check_compliance(
     entries: list[dict[str, Any]],
     profiles: list[str],
@@ -1156,6 +1672,11 @@ def check_compliance(
         note = basis_note(land, "7.5.2", language)
         if note:
             result["adr_mixed_loading_basis_note"] = note
+
+    # LQ/EQ geldt voor de landmodi én de zeevaart; de lucht kent met de
+    # Y-verpakkingsinstructies een eigen stelsel dat hier niet wordt geclaimd.
+    if {"ADR", "RID", "ADN", "IMDG"} & normalized:
+        result["lq_eq"] = check_lq_eq(entries, language, sorted(normalized))
 
     if "IMDG" in normalized:
         result["imdg_segregation"] = apply_column_16b_precedence(

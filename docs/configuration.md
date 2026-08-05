@@ -39,6 +39,11 @@ python -c "import secrets; print(secrets.token_urlsafe(48))"
 **Changing the key logs everyone out.** Existing tokens were signed with the old key and
 stop validating. Nothing else is lost — no shipment data hangs on it.
 
+Changing a user's password also invalidates every session belonging to that user. Login
+tokens contain a one-way fingerprint of the password hash that was current when the token
+was issued. After a password change that fingerprint no longer matches and the user must
+log in again on every device.
+
 > **This used to be a refusal, and that was a mistake.** From v1.25.0 to v1.29.2
 > CargoPilot stopped at startup on a published or empty key. The reasoning was sound —
 > nobody reads a warning in a log — but the defaults it shipped with (`change-me` and
@@ -104,13 +109,20 @@ hand always works, and airport, port and station search runs entirely offline.
 | `APP_NAME` | Name shown in the interface | `CargoPilot` |
 | `APP_ENV` | `production` or `development` | `production` |
 | `ACCESS_TOKEN_EXPIRE_MINUTES` | How long a login stays valid | `480` (8 hours) |
+| `COOKIE_SECURE` | Override the login-cookie `Secure` flag. Empty means automatic: enabled for HTTPS or trusted `X-Forwarded-Proto=https`. | automatic |
 | `CORS_ALLOWED_ORIGINS` | Comma-separated list, or `*` | `*` |
 | `TRUSTED_PROXY_HEADERS` | Honour `X-Forwarded-*` headers behind a reverse proxy | `true` |
 | `LOG_LEVEL` | `DEBUG`, `INFO`, `WARNING`, `ERROR` | `INFO` |
 | `MAX_PASTE_BYTES` | Maximum size of a pasted import | `512000` |
 
 If you put CargoPilot behind a reverse proxy, keep `TRUSTED_PROXY_HEADERS=true` and set
-`CORS_ALLOWED_ORIGINS` to your actual hostname instead of `*`.
+`CORS_ALLOWED_ORIGINS` to your actual hostname instead of `*`. The login cookie is then
+marked `Secure` when the proxy sends `X-Forwarded-Proto=https`. Set `COOKIE_SECURE=true`
+when you want to force that behaviour, or `false` only for a deliberate HTTP-only setup.
+
+User roles are restricted to `admin` and `user`. CargoPilot prevents an administrator from
+disabling or demoting their own account and refuses to remove the last active administrator.
+This prevents an installation from locking itself out through the user-management screen.
 
 ## Checking your setup
 

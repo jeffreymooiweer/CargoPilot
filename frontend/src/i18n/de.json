@@ -331,6 +331,9 @@
       "incomplete": "unvollständig",
       "no_data": "keine Daten"
     },
+    "sevError": "Fehler",
+    "sevWarning": "Warnung",
+    "sevInfo": "Info",
     "manifest": "Berechnet mit: {{editions}} — Datenstand {{id}}",
     "noSegregationIssues": "Innerhalb der erfassten Positionen wurden keine Zusammenlade- oder Trennkonflikte gefunden.",
     "qTitle": "IATA-Q-Wert ('all packed in one')",
@@ -344,6 +347,7 @@
     "title": "Automatisch abgeleitet",
     "intro": "Anhand der UN-Nummer und der erfassten Versandstücke füllt CargoPilot Klassifizierung, Verpackungsangaben und Dokumentzeilen selbst aus. Prüfen Sie die Angaben und passen Sie sie an, wo es nötig ist.",
     "documentLine": "Angabe für das Beförderungspapier ({{profile}})",
+    "documentLinesTitle": "Dokumentzeilen und Summen",
     "adrTotals": "Summe je Beförderungskategorie (ADR 5.4.1.1.1.1)",
     "notes": "Zu beachten bei diesen Stoffen",
     "requirements": "Von Ihnen auf dem Dokument zu ergänzen",

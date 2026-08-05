@@ -11,6 +11,7 @@ import {
   LineItem,
 } from "../api/client";
 import { documentLanguage, localised } from "../i18n/language";
+import CollapsibleSection, { SummaryChip } from "./CollapsibleSection";
 import InfoTooltip from "./InfoTooltip";
 import SuggestInput, { SuggestItem } from "./SuggestInput";
 
@@ -456,13 +457,20 @@ function AutoDerivedPanel({ prepared }: { prepared: DgPrepareResult }) {
   )
     return null;
 
+  const documentLineCount = profiles.reduce(
+    (sum, profile) => sum + prepared.document_lines[profile].length,
+    0,
+  );
+
   return (
-    <div className={`${panelClass} p-5 space-y-4`}>
+    <div className={`${panelClass} p-5 space-y-3`}>
       <div>
         <h3 className="font-semibold text-slate-900 dark:text-slate-100">{t("dgauto.title")}</h3>
         <p className="text-sm text-slate-500 dark:text-slate-400">{t("dgauto.intro")}</p>
       </div>
 
+      {/* Een vervoersverbod blijft altijd in beeld: dat mag nooit achter een
+          dichtgeklapte kop verdwijnen. */}
       {blockers.map((blocker, i) => (
         <div
           key={i}
@@ -476,41 +484,50 @@ function AutoDerivedPanel({ prepared }: { prepared: DgPrepareResult }) {
         </div>
       ))}
 
-      {profiles.map((profile) => (
-        <div key={profile}>
-          <p className="text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">
-            {t("dgauto.documentLine", { profile })}
-          </p>
-          <ul className="mt-1 space-y-1">
-            {prepared.document_lines[profile].map((line, i) => (
-              <li
-                key={i}
-                className="rounded-lg bg-slate-50 dark:bg-slate-950 px-3 py-2 font-mono text-xs text-slate-800 dark:text-slate-200"
-              >
-                {line}
-              </li>
-            ))}
-          </ul>
-        </div>
-      ))}
+      {(documentLineCount > 0 || prepared.adr_category_totals?.statement) && (
+        <CollapsibleSection
+          title={t("dgauto.documentLinesTitle")}
+          chips={<SummaryChip>{documentLineCount}</SummaryChip>}
+        >
+          {profiles.map((profile) => (
+            <div key={profile}>
+              <p className="text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">
+                {t("dgauto.documentLine", { profile })}
+              </p>
+              <ul className="mt-1 space-y-1">
+                {prepared.document_lines[profile].map((line, i) => (
+                  <li
+                    key={i}
+                    className="rounded-lg bg-slate-50 dark:bg-slate-950 px-3 py-2 font-mono text-xs text-slate-800 dark:text-slate-200"
+                  >
+                    {line}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
 
-      {prepared.adr_category_totals?.statement && (
-        <div>
-          <p className="text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">
-            {t("dgauto.adrTotals")}
-          </p>
-          <p className="mt-1 rounded-lg bg-slate-50 dark:bg-slate-950 px-3 py-2 text-xs text-slate-800 dark:text-slate-200">
-            {prepared.adr_category_totals.statement}
-          </p>
-        </div>
+          {prepared.adr_category_totals?.statement && (
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">
+                {t("dgauto.adrTotals")}
+              </p>
+              <p className="mt-1 rounded-lg bg-slate-50 dark:bg-slate-950 px-3 py-2 text-xs text-slate-800 dark:text-slate-200">
+                {prepared.adr_category_totals.statement}
+              </p>
+            </div>
+          )}
+        </CollapsibleSection>
       )}
 
       {notes.length > 0 && (
-        <div>
-          <p className="text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">
-            {t("dgauto.notes")}
-          </p>
-          <ul className="mt-1 space-y-1 text-sm">
+        <CollapsibleSection
+          title={t("dgauto.notes")}
+          // Een rode luchtvrachtwaarschuwing hoort open in beeld te staan.
+          defaultOpen={notes.some((note) => note.forbidden)}
+          chips={<SummaryChip>{notes.length}</SummaryChip>}
+        >
+          <ul className="space-y-1 text-sm">
             {notes.map((note, i) => (
               <li
                 key={i}
@@ -525,20 +542,20 @@ function AutoDerivedPanel({ prepared }: { prepared: DgPrepareResult }) {
               </li>
             ))}
           </ul>
-        </div>
+        </CollapsibleSection>
       )}
 
       {prepared.requirements.length > 0 && (
-        <div>
-          <p className="text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">
-            {t("dgauto.requirements")}
-          </p>
-          <ul className="mt-1 list-disc space-y-1 pl-5 text-sm text-slate-700 dark:text-slate-300">
+        <CollapsibleSection
+          title={t("dgauto.requirements")}
+          chips={<SummaryChip>{prepared.requirements.length}</SummaryChip>}
+        >
+          <ul className="list-disc space-y-1 pl-5 text-sm text-slate-700 dark:text-slate-300">
             {prepared.requirements.map((requirement, i) => (
               <li key={i}>{requirement}</li>
             ))}
           </ul>
-        </div>
+        </CollapsibleSection>
       )}
     </div>
   );

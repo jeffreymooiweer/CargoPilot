@@ -279,6 +279,42 @@ describe("de LQ/EQ-toets van 3.4 en 3.5", () => {
   });
 });
 
+describe("de inklapbare secties", () => {
+  it("draagt de aantallen in de kop en klapt een sectie met fouten open", async () => {
+    vi.spyOn(api, "dgCompliance").mockResolvedValue({
+      imdg_segregation: [
+        { rule: "IMDG 7.2.4", severity: "error", message: "scheiding vereist", products: "A × B" },
+        { rule: "IMDG 16b", severity: "warning", message: "let op", products: "A" },
+      ],
+    } as unknown as DgComplianceResult);
+
+    render(<DgCompliancePanel entries={entries("20 L")} profiles={["IMDG"]} />);
+    await tick();
+
+    expect(await screen.findByText(/1 × compliance.sevError/)).toBeInTheDocument();
+    expect(screen.getByText(/1 × compliance.sevWarning/)).toBeInTheDocument();
+    // Een fout mag niet achter een dichtgeklapte kop schuilgaan.
+    const section = screen.getByText("IMDG 7.2.4").closest("details");
+    expect(section?.open).toBe(true);
+  });
+
+  it("begint zonder fouten dichtgeklapt, maar de bevindingen blijven in de DOM", async () => {
+    vi.spyOn(api, "dgCompliance").mockResolvedValue({
+      imdg_segregation: [
+        { rule: "IMDG 16b", severity: "warning", message: "let op", products: "A" },
+      ],
+    } as unknown as DgComplianceResult);
+
+    render(<DgCompliancePanel entries={entries("20 L")} profiles={["IMDG"]} />);
+    await tick();
+
+    const section = screen.getByText("IMDG 16b").closest("details");
+    expect(section?.open).toBe(false);
+    // De kop verzwijgt niets: het aantal staat erin.
+    expect(screen.getByText(/1 × compliance.sevWarning/)).toBeInTheDocument();
+  });
+});
+
 describe("wanneer het paneel niets te zeggen heeft", () => {
   it("toont het zichzelf niet zonder stoffen of zonder profiel", () => {
     const { container } = render(<DgCompliancePanel entries={[]} profiles={["ADR"]} />);

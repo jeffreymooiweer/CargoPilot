@@ -331,6 +331,9 @@
       "incomplete": "onvolledig",
       "no_data": "geen gegevens"
     },
+    "sevError": "fout",
+    "sevWarning": "waarschuwing",
+    "sevInfo": "info",
     "manifest": "Gerekend met: {{editions}} — gegevensversie {{id}}",
     "noSegregationIssues": "Geen samenladings- of segregatieconflicten gevonden binnen de ingevoerde posities.",
     "qTitle": "IATA Q-waarde ('all packed in one')",
@@ -344,6 +347,7 @@
     "title": "Automatisch afgeleid",
     "intro": "Op basis van het UN-nummer en de ingevoerde colli vult CargoPilot de classificatie, verpakkingsgegevens en documentregels zelf in. Controleer de gegevens en pas ze waar nodig aan.",
     "documentLine": "Omschrijving voor het vervoersdocument ({{profile}})",
+    "documentLinesTitle": "Documentregels en totalen",
     "adrTotals": "Totaal per vervoerscategorie (ADR 5.4.1.1.1.1)",
     "notes": "Aandachtspunten bij deze stoffen",
     "requirements": "Zelf aanvullen op het document",

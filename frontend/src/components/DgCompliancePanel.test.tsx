@@ -217,6 +217,104 @@ describe("een verlopen regelset", () => {
   });
 });
 
+describe("de LQ/EQ-toets van 3.4 en 3.5", () => {
+  it("toont per regel de LQ- en EQ-status met de bijbehorende melding", async () => {
+    vi.spyOn(api, "dgCompliance").mockResolvedValue({
+      lq_eq: {
+        rows: [{
+          product: "UN 1263 PAINT",
+          position: "WAGEN-1",
+          lq: {
+            value: "5 L",
+            status: "within_limits",
+            message: "Binnen de grenzen van 3.4.",
+          },
+          eq: {
+            code: "E2",
+            status: "not_within",
+            message: "De netto hoeveelheid per binnenverpakking is groter dan 30 g/ml.",
+          },
+        }],
+        status: "checked",
+        warnings: [{
+          rule: "ADR/IMDG 3.5.5",
+          severity: "warning",
+          message: "Ten hoogste 1000 colli per voertuig of container.",
+          products: "UN 1263 PAINT",
+        }],
+        basis: "ADR 3.4 / 3.5 (Tabel A kolom 7a/7b)",
+        basis_note: null,
+        note: "Binnen de grenzen vallen is niet hetzelfde als vrijgesteld zijn.",
+      },
+    } as unknown as DgComplianceResult);
+
+    render(<DgCompliancePanel entries={entries("20 L")} profiles={["ADR"]} />);
+    await tick();
+
+    expect(await screen.findByText("compliance.lqEqTitle")).toBeInTheDocument();
+    expect(screen.getByText(/LQ 5 L/)).toHaveTextContent("lqeqStatus.within_limits");
+    expect(screen.getByText(/EQ E2/)).toHaveTextContent("lqeqStatus.not_within");
+    expect(screen.getByText("Binnen de grenzen van 3.4.")).toBeInTheDocument();
+    // De 3.5.5-waarschuwing (1000 colli) hoort in dezelfde sectie te staan.
+    expect(screen.getByText("ADR/IMDG 3.5.5")).toBeInTheDocument();
+    expect(screen.getByText(/vrijgesteld zijn/)).toBeInTheDocument();
+  });
+
+  it("verzwijgt de sectie wanneer er geen regels zijn beoordeeld", async () => {
+    vi.spyOn(api, "dgCompliance").mockResolvedValue({
+      lq_eq: {
+        rows: [],
+        status: "not_checked",
+        warnings: [],
+        basis: "ADR 3.4 / 3.5 (Tabel A kolom 7a/7b)",
+        basis_note: null,
+        note: "",
+      },
+    } as unknown as DgComplianceResult);
+
+    render(<DgCompliancePanel entries={entries("20 L")} profiles={["ADR"]} />);
+    await tick();
+
+    expect(screen.queryByText("compliance.lqEqTitle")).not.toBeInTheDocument();
+  });
+});
+
+describe("de inklapbare secties", () => {
+  it("draagt de aantallen in de kop en klapt een sectie met fouten open", async () => {
+    vi.spyOn(api, "dgCompliance").mockResolvedValue({
+      imdg_segregation: [
+        { rule: "IMDG 7.2.4", severity: "error", message: "scheiding vereist", products: "A × B" },
+        { rule: "IMDG 16b", severity: "warning", message: "let op", products: "A" },
+      ],
+    } as unknown as DgComplianceResult);
+
+    render(<DgCompliancePanel entries={entries("20 L")} profiles={["IMDG"]} />);
+    await tick();
+
+    expect(await screen.findByText(/1 × compliance.sevError/)).toBeInTheDocument();
+    expect(screen.getByText(/1 × compliance.sevWarning/)).toBeInTheDocument();
+    // Een fout mag niet achter een dichtgeklapte kop schuilgaan.
+    const section = screen.getByText("IMDG 7.2.4").closest("details");
+    expect(section?.open).toBe(true);
+  });
+
+  it("begint zonder fouten dichtgeklapt, maar de bevindingen blijven in de DOM", async () => {
+    vi.spyOn(api, "dgCompliance").mockResolvedValue({
+      imdg_segregation: [
+        { rule: "IMDG 16b", severity: "warning", message: "let op", products: "A" },
+      ],
+    } as unknown as DgComplianceResult);
+
+    render(<DgCompliancePanel entries={entries("20 L")} profiles={["IMDG"]} />);
+    await tick();
+
+    const section = screen.getByText("IMDG 16b").closest("details");
+    expect(section?.open).toBe(false);
+    // De kop verzwijgt niets: het aantal staat erin.
+    expect(screen.getByText(/1 × compliance.sevWarning/)).toBeInTheDocument();
+  });
+});
+
 describe("wanneer het paneel niets te zeggen heeft", () => {
   it("toont het zichzelf niet zonder stoffen of zonder profiel", () => {
     const { container } = render(<DgCompliancePanel entries={[]} profiles={["ADR"]} />);

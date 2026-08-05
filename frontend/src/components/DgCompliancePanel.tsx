@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { api, ComplianceWarning, DgComplianceResult, DgEntry } from "../api/client";
 import { documentLanguage } from "../i18n/language";
+import CollapsibleSection, { SummaryChip } from "./CollapsibleSection";
 
 const panelClass = "bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800";
 
@@ -15,6 +16,16 @@ const STATUS_STYLES: Record<string, string> = {
   above_threshold: "bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-300",
   not_exempt: "bg-red-100 text-red-800 dark:bg-red-900/40 dark:text-red-300",
   incomplete: "bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-300",
+};
+
+// Binnen de grenzen is groen, erbuiten amber: een gemiste vrijstelling is geen
+// overtreding, dus rood zou hier te zwaar zijn.
+const LQEQ_STATUS_STYLES: Record<string, string> = {
+  within_limits: "bg-emerald-100 text-emerald-800 dark:bg-emerald-900/40 dark:text-emerald-300",
+  not_within: "bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-300",
+  not_permitted: "bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-300",
+  incomplete: "bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-300",
+  no_data: "bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-300",
 };
 
 export default function DgCompliancePanel({ entries, profiles }: Props) {
@@ -72,6 +83,25 @@ export default function DgCompliancePanel({ entries, profiles }: Props) {
     ...(result?.iata_segregation ?? []),
   ];
 
+  // De koppen dragen de uitkomst in cijfers, zodat een dichtgeklapte sectie
+  // nooit een bevinding verzwijgt: aantallen per ernst en per LQ/EQ-status.
+  const severityCounts: Record<ComplianceWarning["severity"], number> = {
+    error: 0,
+    warning: 0,
+    info: 0,
+  };
+  for (const warning of warnings) severityCounts[warning.severity] += 1;
+
+  const lqEqCounts: Record<string, number> = {};
+  for (const row of result?.lq_eq?.rows ?? []) {
+    for (const status of [row.lq.status, row.eq.status]) {
+      lqEqCounts[status] = (lqEqCounts[status] ?? 0) + 1;
+    }
+  }
+  const lqEqWarningCount = result?.lq_eq?.warnings.length ?? 0;
+  const qExceeded = (result?.q_values ?? []).some((q) => q.exceeded);
+  const qIncomplete = !qExceeded && (result?.q_values ?? []).some((q) => q.exceeded == null);
+
   return (
     <div className={`${panelClass} space-y-4 p-4 sm:p-6`}>
       <div className="flex flex-wrap items-center justify-between gap-2">
@@ -98,19 +128,20 @@ export default function DgCompliancePanel({ entries, profiles }: Props) {
       )}
 
       {adr && (
-        <section className="space-y-2">
-          <div className="flex flex-wrap items-center gap-2">
-            <h4 className="text-sm font-semibold text-slate-900 dark:text-slate-100">
-              {t("compliance.adrPointsTitle")}
-            </h4>
-            <span className={`rounded-full px-2 py-0.5 text-[11px] font-medium ${STATUS_STYLES[adr.status]}`}>
-              {t(`compliance.status.${adr.status}`)}
-            </span>
-            <span className="text-sm text-slate-600 dark:text-slate-300">
-              {t("compliance.totalPoints", { total: adr.total_points, threshold: adr.threshold })}
-            </span>
-          </div>
-
+        <CollapsibleSection
+          title={t("compliance.adrPointsTitle")}
+          defaultOpen={adr.status === "not_exempt"}
+          chips={
+            <>
+              <SummaryChip className={STATUS_STYLES[adr.status]}>
+                {t(`compliance.status.${adr.status}`)}
+              </SummaryChip>
+              <span className="text-xs text-slate-600 dark:text-slate-300">
+                {t("compliance.totalPoints", { total: adr.total_points, threshold: adr.threshold })}
+              </span>
+            </>
+          }
+        >
           <div className="overflow-x-auto">
             <table className="w-full min-w-[480px] text-left text-xs">
               <thead>
@@ -168,14 +199,98 @@ export default function DgCompliancePanel({ entries, profiles }: Props) {
           {adr.status === "above_threshold" && (
             <p className="text-xs text-amber-700 dark:text-amber-300">{t("compliance.aboveThresholdHint")}</p>
           )}
-        </section>
+        </CollapsibleSection>
+      )}
+
+      {result?.lq_eq && result.lq_eq.rows.length > 0 && (
+        <CollapsibleSection
+          title={t("compliance.lqEqTitle")}
+          chips={
+            <>
+              {(["within_limits", "not_within", "not_permitted", "incomplete", "no_data"] as const)
+                .filter((status) => lqEqCounts[status])
+                .map((status) => (
+                  <SummaryChip key={status} className={LQEQ_STATUS_STYLES[status]}>
+                    {lqEqCounts[status]} × {t(`compliance.lqeqStatus.${status}`)}
+                  </SummaryChip>
+                ))}
+              {lqEqWarningCount > 0 && (
+                <SummaryChip className="bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-300">
+                  {lqEqWarningCount} × {t("compliance.sevWarning")}
+                </SummaryChip>
+              )}
+            </>
+          }
+        >
+          {result.lq_eq.rows.map((row, i) => (
+            <div
+              key={i}
+              className="rounded-lg border border-slate-200 px-3 py-2 text-xs dark:border-slate-700"
+            >
+              <p className="font-semibold text-slate-800 dark:text-slate-200">{row.product}</p>
+              <div className="mt-1 flex items-start gap-2">
+                <span
+                  className={`shrink-0 rounded-full px-2 py-0.5 text-[11px] font-medium ${LQEQ_STATUS_STYLES[row.lq.status]}`}
+                >
+                  LQ{row.lq.value ? ` ${row.lq.value}` : ""} · {t(`compliance.lqeqStatus.${row.lq.status}`)}
+                </span>
+                <span className="text-slate-600 dark:text-slate-300">{row.lq.message}</span>
+              </div>
+              <div className="mt-1 flex items-start gap-2">
+                <span
+                  className={`shrink-0 rounded-full px-2 py-0.5 text-[11px] font-medium ${LQEQ_STATUS_STYLES[row.eq.status]}`}
+                >
+                  EQ{row.eq.code ? ` ${row.eq.code}` : ""} · {t(`compliance.lqeqStatus.${row.eq.status}`)}
+                </span>
+                <span className="text-slate-600 dark:text-slate-300">{row.eq.message}</span>
+              </div>
+            </div>
+          ))}
+          {result.lq_eq.warnings.map((w, i) => (
+            <div
+              key={`w-${i}`}
+              className="rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-800 dark:border-amber-900/50 dark:bg-amber-900/20 dark:text-amber-300"
+            >
+              <p className="font-semibold">{w.rule}</p>
+              <p className="mt-0.5">{w.message}</p>
+              <p className="mt-0.5 opacity-80">{w.products}</p>
+            </div>
+          ))}
+          {result.lq_eq.basis_note && (
+            <p className="rounded-lg border border-amber-200 bg-amber-50 px-2 py-1.5 text-[11px] text-amber-800 dark:border-amber-900/50 dark:bg-amber-900/20 dark:text-amber-200">
+              {result.lq_eq.basis_note}
+            </p>
+          )}
+          <p className="text-[11px] text-slate-500 dark:text-slate-400">
+            {result.lq_eq.note} ({result.lq_eq.basis})
+          </p>
+        </CollapsibleSection>
       )}
 
       {warnings.length > 0 && (
-        <section className="space-y-2">
-          <h4 className="text-sm font-semibold text-slate-900 dark:text-slate-100">
-            {t("compliance.segregationTitle")}
-          </h4>
+        <CollapsibleSection
+          title={t("compliance.segregationTitle")}
+          defaultOpen={severityCounts.error > 0}
+          chips={
+            <>
+              {severityCounts.error > 0 && (
+                <SummaryChip className="bg-red-100 text-red-800 dark:bg-red-900/40 dark:text-red-300">
+                  {severityCounts.error} × {t("compliance.sevError")}
+                </SummaryChip>
+              )}
+              {severityCounts.warning > 0 && (
+                <SummaryChip className="bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-300">
+                  {severityCounts.warning} × {t("compliance.sevWarning")}
+                </SummaryChip>
+              )}
+              {severityCounts.info > 0 && (
+                <SummaryChip className="bg-sky-100 text-sky-800 dark:bg-sky-900/40 dark:text-sky-300">
+                  {severityCounts.info} × {t("compliance.sevInfo")}
+                </SummaryChip>
+              )}
+            </>
+          }
+        >
           {warnings.map((w, i) => (
             <div
               key={i}
@@ -192,7 +307,7 @@ export default function DgCompliancePanel({ entries, profiles }: Props) {
               <p className="mt-0.5 opacity-80">{w.products}</p>
             </div>
           ))}
-        </section>
+        </CollapsibleSection>
       )}
       {result && warnings.length === 0 &&
         (result.adr_mixed_loading || result.imdg_segregation || result.iata_segregation) && (
@@ -211,27 +326,39 @@ export default function DgCompliancePanel({ entries, profiles }: Props) {
       )}
 
       {result?.imdg_segregation_groups && (
-        <details className="rounded-lg border border-slate-200 px-3 py-2 text-xs dark:border-slate-700">
-          <summary className="cursor-pointer font-medium text-slate-700 dark:text-slate-200">
-            {t("compliance.segGroupsTitle")}
-          </summary>
-          <p className="mt-2 text-slate-600 dark:text-slate-300">{result.imdg_segregation_groups.note}</p>
-          <ul className="mt-2 grid gap-x-4 gap-y-0.5 sm:grid-cols-2">
+        <CollapsibleSection title={t("compliance.segGroupsTitle")}>
+          <p className="text-xs text-slate-600 dark:text-slate-300">{result.imdg_segregation_groups.note}</p>
+          <ul className="grid gap-x-4 gap-y-0.5 text-xs sm:grid-cols-2">
             {result.imdg_segregation_groups.groups.map((group) => (
               <li key={group.code} className="text-slate-600 dark:text-slate-300">
                 <span className="font-mono font-semibold">{group.code}</span> — {group.label}
               </li>
             ))}
           </ul>
-          <p className="mt-2 text-slate-500 dark:text-slate-400">
+          <p className="text-xs text-slate-500 dark:text-slate-400">
             {result.imdg_segregation_groups.class8_exception}
           </p>
-        </details>
+        </CollapsibleSection>
       )}
 
       {(result?.q_values?.length ?? 0) > 0 && (
-        <section className="space-y-2">
-          <h4 className="text-sm font-semibold text-slate-900 dark:text-slate-100">{t("compliance.qTitle")}</h4>
+        <CollapsibleSection
+          title={t("compliance.qTitle")}
+          defaultOpen={qExceeded}
+          chips={
+            <SummaryChip
+              className={
+                qExceeded
+                  ? "bg-red-100 text-red-800 dark:bg-red-900/40 dark:text-red-300"
+                  : qIncomplete
+                    ? "bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-300"
+                    : "bg-emerald-100 text-emerald-800 dark:bg-emerald-900/40 dark:text-emerald-300"
+              }
+            >
+              {qExceeded ? "Q > 1" : qIncomplete ? t("compliance.lqeqStatus.incomplete") : "Q ≤ 1"}
+            </SummaryChip>
+          }
+        >
           {result!.q_values!.map((q, i) => (
             <div
               key={i}
@@ -251,7 +378,7 @@ export default function DgCompliancePanel({ entries, profiles }: Props) {
             </div>
           ))}
           <p className="text-[11px] text-slate-500 dark:text-slate-400">{result!.q_values![0].note}</p>
-        </section>
+        </CollapsibleSection>
       )}
 
       {(result?.cargo_aircraft_only_products?.length ?? 0) > 0 && (

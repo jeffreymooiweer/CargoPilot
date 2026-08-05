@@ -97,9 +97,12 @@ it.
 
 Below the form, the **compliance panel** shows live warnings: the ADR 1,000-point
 calculation, loading incompatibilities, sea segregation conflicts, the IATA Q value.
-Some findings are warnings you can proceed past; a few — an incomplete classification,
-or a substance that is not permitted for carriage at all — will block the export until
-resolved.
+Fill in the **net quantity per inner packaging** (with a unit, such as `500 g` or
+`0.5 L`) and it also compares your quantities against the limited and excepted quantity
+limits of chapters 3.4 and 3.5 — telling you per line whether it falls within or
+outside those limits, or that it needs more input. Some findings are warnings you can
+proceed past; a few — an incomplete classification, or a substance that is not
+permitted for carriage at all — will block the export until resolved.
 
 [Dangerous goods](dangerous-goods.md) explains all of it in detail.
 

@@ -61,6 +61,8 @@ class DangerousGoodsProduct(BaseModel):
     adr_total_quantity: str | float | int | None = None
     q_net_quantity: str | float | int | None = None
     q_max_net_quantity: str | float | int | None = None
+    # Netto per binnenverpakking, voor de LQ/EQ-toets van 3.4 en 3.5.
+    net_per_inner_packaging: str | float | int | None = None
 
     @field_validator("packing_group")
     @classmethod
@@ -84,7 +86,10 @@ class DangerousGoodsProduct(BaseModel):
             )
         return cleaned
 
-    @field_validator("adr_total_quantity", "q_net_quantity", "q_max_net_quantity")
+    @field_validator(
+        "adr_total_quantity", "q_net_quantity", "q_max_net_quantity",
+        "net_per_inner_packaging",
+    )
     @classmethod
     def _usable_quantity(cls, value: Any) -> Any:
         """Een ingevulde hoeveelheid moet positief zijn.
@@ -113,6 +118,19 @@ class ShipmentPosition(BaseModel):
     vehicle: str | None = None
     line_id: str | None = None
     products: list[DangerousGoodsProduct] = Field(default_factory=list)
+
+    @field_validator("line_id", mode="before")
+    @classmethod
+    def _line_id_as_text(cls, value: Any) -> Any:
+        """De wizard nummert zijn regels en stuurt line_id als getal.
+
+        Pydantic v2 maakt van een int geen str, dus 'line_id: 1' gaf een 422
+        en daarmee viel élke live controle vanuit de wizard uit — het paneel
+        toonde een validatiefout in plaats van een uitkomst.
+        """
+        if isinstance(value, (int, float)) and not isinstance(value, bool):
+            return str(int(value)) if float(value).is_integer() else str(value)
+        return value
 
 
 class ComplianceRequest(BaseModel):

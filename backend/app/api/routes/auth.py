@@ -3,14 +3,37 @@ from slowapi import Limiter
 from slowapi.util import get_remote_address
 from sqlalchemy.orm import Session
 
+from app.core.config import Settings, get_settings
 from app.core.database import get_db
 from app.core.deps import get_current_user
 from app.core.security import create_access_token, hash_password, verify_password
 from app.models.user import User
-from app.schemas import LoginRequest, PasswordChange, UserOut
+from app.schemas.users import LoginRequest, PasswordChange, UserOut
 
 router = APIRouter(prefix="/auth", tags=["auth"])
 limiter = Limiter(key_func=get_remote_address)
+
+
+def _set_access_cookie(response: Response, token: str, settings: Settings) -> None:
+    response.set_cookie(
+        key="access_token",
+        value=token,
+        httponly=True,
+        samesite="lax",
+        secure=settings.secure_cookies,
+        max_age=settings.access_token_expire_minutes * 60,
+        path="/",
+    )
+
+
+def _clear_access_cookie(response: Response, settings: Settings) -> None:
+    response.delete_cookie(
+        key="access_token",
+        httponly=True,
+        samesite="lax",
+        secure=settings.secure_cookies,
+        path="/",
+    )
 
 
 @router.post("/login")
@@ -22,20 +45,13 @@ def login(request: Request, payload: LoginRequest, response: Response, db: Sessi
     if not user.active:
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="User inactive")
     token = create_access_token(user.username)
-    response.set_cookie(
-        key="access_token",
-        value=token,
-        httponly=True,
-        samesite="lax",
-        secure=False,
-        max_age=60 * 60 * 8,
-    )
+    _set_access_cookie(response, token, get_settings())
     return {"user": UserOut.model_validate(user)}
 
 
 @router.post("/logout")
 def logout(response: Response):
-    response.delete_cookie("access_token")
+    _clear_access_cookie(response, get_settings())
     return {"ok": True}
 
 

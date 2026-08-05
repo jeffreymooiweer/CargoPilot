@@ -119,6 +119,19 @@ class ShipmentPosition(BaseModel):
     line_id: str | None = None
     products: list[DangerousGoodsProduct] = Field(default_factory=list)
 
+    @field_validator("line_id", mode="before")
+    @classmethod
+    def _line_id_as_text(cls, value: Any) -> Any:
+        """De wizard nummert zijn regels en stuurt line_id als getal.
+
+        Pydantic v2 maakt van een int geen str, dus 'line_id: 1' gaf een 422
+        en daarmee viel élke live controle vanuit de wizard uit — het paneel
+        toonde een validatiefout in plaats van een uitkomst.
+        """
+        if isinstance(value, (int, float)) and not isinstance(value, bool):
+            return str(int(value)) if float(value).is_integer() else str(value)
+        return value
+
 
 class ComplianceRequest(BaseModel):
     entries: list[ShipmentPosition] = Field(default_factory=list)

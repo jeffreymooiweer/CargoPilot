@@ -111,3 +111,18 @@ def test_an_unknown_profile_is_rejected_instead_of_skipping_checks():
     response = _post(_payload(["IDMG"]))
 
     assert response.status_code == 422
+
+
+def test_the_numeric_line_id_of_the_wizard_is_accepted():
+    """buildDgEntries stuurt line_id als getal; dat mag geen 422 opleveren.
+
+    Sinds de schema's van v1.30.0 werd 'line_id: 1' geweigerd en viel elke
+    live controle vanuit de wizard uit voordat er gerekend was.
+    """
+    payload = deepcopy(_payload(["ADR"]))
+    payload["entries"][0]["line_id"] = 1
+
+    response = _post(payload)
+
+    assert response.status_code == 200, response.text
+    assert "adr_points" in response.json()

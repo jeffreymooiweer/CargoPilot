@@ -1,5 +1,6 @@
 import json
 import logging
+from pathlib import Path
 
 from sqlalchemy.orm import Session
 
@@ -11,11 +12,39 @@ from app.services.catalog_sync import sync_catalogs
 
 logger = logging.getLogger(__name__)
 
+EXPORT_FILE_PATTERNS = ("*.pdf", "*.zip", "*.xlsx", "*.tmp")
+
 
 def ensure_directories() -> None:
     settings = get_settings()
-    for path in [settings.data_dir, settings.templates_dir, settings.logs_dir]:
+    for path in [settings.data_dir, settings.templates_dir, settings.exports_dir, settings.logs_dir]:
         path.mkdir(parents=True, exist_ok=True)
+
+
+def purge_export_files(exports_dir: Path) -> int:
+    """Remove generated artifacts left behind by an interrupted download.
+
+    Normal downloads schedule their own deletion. A process crash can occur
+    between generating the file and running that background task, so startup
+    cleans every format the application creates. Unrelated files and nested
+    directories are deliberately left alone.
+    """
+    if not exports_dir.exists():
+        return 0
+
+    removed_files = 0
+    seen: set[Path] = set()
+    for pattern in EXPORT_FILE_PATTERNS:
+        for path in exports_dir.glob(pattern):
+            if path in seen or not path.is_file():
+                continue
+            seen.add(path)
+            try:
+                path.unlink()
+                removed_files += 1
+            except OSError as exc:
+                logger.warning("Could not delete export file %s: %s", path, exc)
+    return removed_files
 
 
 def purge_sensitive_data(db: Session) -> None:
@@ -23,15 +52,7 @@ def purge_sensitive_data(db: Session) -> None:
     settings = get_settings()
     deleted_jobs = db.query(Job).delete()
     db.commit()
-    removed_files = 0
-    exports_dir = settings.exports_dir
-    if exports_dir.exists():
-        for path in exports_dir.glob("*.xlsx"):
-            try:
-                path.unlink()
-                removed_files += 1
-            except OSError as exc:
-                logger.warning("Could not delete export file %s: %s", path, exc)
+    removed_files = purge_export_files(settings.exports_dir)
     if deleted_jobs or removed_files:
         logger.info("Purged sensitive data: %s jobs, %s export files", deleted_jobs, removed_files)
 

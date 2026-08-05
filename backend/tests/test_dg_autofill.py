@@ -60,7 +60,7 @@ def test_enrichment_provides_ems_and_air_rules():
     assert lithium["cargo_aircraft_only"] is True
     assert lithium["iata_packing_instruction"] == "965"
 
-    toxic_gas = enrich_un_entry({"un": "1017", "class": "2.3"})
+    toxic_gas = enrich_un_entry({"un": "1017", "class": "2", "labels": "2.3+5.1+8"})
     assert toxic_gas["air_forbidden"] is True
 
 

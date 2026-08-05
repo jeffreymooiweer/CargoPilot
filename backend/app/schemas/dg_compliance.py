@@ -63,6 +63,8 @@ class DangerousGoodsProduct(BaseModel):
     q_max_net_quantity: str | float | int | None = None
     # Netto per binnenverpakking, voor de LQ/EQ-toets van 3.4 en 3.5.
     net_per_inner_packaging: str | float | int | None = None
+    # Netto explosieve massa (klasse 1), voor de 1.1.3.6-punten en 5.4.1.2.1.
+    net_explosive_mass: str | float | int | None = None
 
     @field_validator("packing_group")
     @classmethod
@@ -88,7 +90,7 @@ class DangerousGoodsProduct(BaseModel):
 
     @field_validator(
         "adr_total_quantity", "q_net_quantity", "q_max_net_quantity",
-        "net_per_inner_packaging",
+        "net_per_inner_packaging", "net_explosive_mass",
     )
     @classmethod
     def _usable_quantity(cls, value: Any) -> Any:

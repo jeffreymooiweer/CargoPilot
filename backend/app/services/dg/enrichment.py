@@ -660,7 +660,13 @@ def enrich_un_entry(entry: dict[str, Any], language: str = "nl") -> dict[str, An
             {lang: air[f"note_{lang}"] for lang in SUPPORTED if air.get(f"note_{lang}")},
             language,
         )
-    if hazard_class in AIR_FORBIDDEN_CLASSES:
+    # Het luchtvaartverbod hangt aan de divisie, niet aan de klassekolom: gassen
+    # staan in Tabel A als klasse "2" en de divisie (2.1/2.2/2.3) zit in de
+    # etikettenkolom. Op de kolom toetsen betekende dat chloor (UN 1017) —
+    # volgens de ICAO TI verboden op passagiers- én vrachttoestellen — nooit
+    # een melding kreeg.
+    division = parse_hazards(entry)["division"]
+    if division in AIR_FORBIDDEN_CLASSES:
         extras["air_forbidden"] = True
         extras["air_note"] = pick(
             {

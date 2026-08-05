@@ -285,6 +285,10 @@ export interface DgProduct {
   net_per_inner_packaging?: string;
   net_mass_liters_per_package?: string;
   gross_mass_per_package?: string;
+  /** Alleen klasse 1: totale netto explosieve massa in kg (ADR 1.1.3.6.3). */
+  net_explosive_mass?: string;
+  /** Gezet door /dg/prepare voor stoffen die niet ten vervoer mogen. */
+  transport_forbidden?: boolean;
   eq_lq_points?: string;
   dimensions?: string;
   additional_information?: string;
@@ -325,6 +329,8 @@ export interface DgPrepareHint {
   ems_packing_group_options?: Record<string, string>;
   excepted_quantity_text?: string;
   limited_quantity_text?: string;
+  /** Waarschuwing wanneer een UN-nummer meerdere verpakkingsgroepen kent. */
+  packing_group_note?: string;
   air_note?: string;
   air_forbidden?: boolean;
   segregation_groups?: string[];
@@ -594,6 +600,8 @@ export interface AdrPointsResult {
   total_points: number;
   threshold: number;
   status: "exempt_possible" | "above_threshold" | "not_exempt" | "incomplete";
+  /** Regels met een vervoersverbod staan niet in de telling. */
+  forbidden_products?: string[];
   category0_products: string[];
   incomplete_products: string[];
   quantity_units_note: string;

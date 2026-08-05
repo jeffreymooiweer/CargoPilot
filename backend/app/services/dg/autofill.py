@@ -85,7 +85,25 @@ def derive_product(
     entries = get_un_entries(un)
     if not entries:
         return {}
+
+    # Eén UN-nummer kan meerdere Tabel A-rijen hebben (per verpakkingsgroep),
+    # met elk een eigen vervoerscategorie, LQ en E-code. Heeft de gebruiker de
+    # verpakkingsgroep al ingevuld, dan hoort díé rij de bron te zijn — niet
+    # stilzwijgend de eerste.
+    user_pg = str(product.get("packing_group") or "").strip().upper()
     entry = entries[0]
+    if user_pg:
+        entry = next(
+            (e for e in entries
+             if clean_value(e.get("packing_group")).strip().upper() == user_pg),
+            entries[0],
+        )
+    distinct_pgs: list[str] = []
+    for candidate in entries:
+        pg = clean_value(candidate.get("packing_group")).strip().upper()
+        if pg and pg not in distinct_pgs:
+            distinct_pgs.append(pg)
+
     extras = enrich_un_entry(entry, language)
     hazards = parse_hazards(entry)
 
@@ -124,10 +142,62 @@ def derive_product(
         if key.endswith(("_text", "_note", "_default", "_source", "_description", "_variants",
                          "_options", "_codes", "_changes", "_requirement", "_category"))
     }
+
+    # Meerdere verpakkingsgroepen zonder keuze van de gebruiker: de eerste rij
+    # is ingevuld, maar categorie (puntenfactor!), LQ en E-code verschillen per
+    # rij. Dat mag geen stille keuze zijn.
+    if len(distinct_pgs) > 1 and not user_pg:
+        chosen = clean_value(entry.get("packing_group")).strip().upper()
+        variants = "; ".join(
+            "PG {pg}: cat {cat}, LQ {lq}, {eq}".format(
+                pg=clean_value(e.get("packing_group")).strip().upper() or "—",
+                cat=clean_value(e.get("transport_category")) or "—",
+                lq=clean_value(e.get("limited_quantity")) or "—",
+                eq=clean_value(e.get("excepted_quantity")) or "—",
+            )
+            for e in entries
+            if clean_value(e.get("packing_group")).strip().upper()
+        )
+        hints["packing_group_note"] = pick(
+            {
+                "nl": "Deze stof kent meerdere verpakkingsgroepen ({pgs}); verpakkingsgroep "
+                      "{chosen} is voorlopig ingevuld. Vervoerscategorie, LQ en E-code "
+                      "verschillen per groep ({variants}) — controleer de verpakkingsgroep "
+                      "van uw product.",
+                "en": "This substance has several packing groups ({pgs}); packing group "
+                      "{chosen} was filled in provisionally. Transport category, LQ and E "
+                      "code differ per group ({variants}) — verify the packing group of "
+                      "your product.",
+                "de": "Dieser Stoff hat mehrere Verpackungsgruppen ({pgs}); Verpackungs"
+                      "gruppe {chosen} wurde vorläufig eingetragen. Beförderungskategorie, "
+                      "LQ und E-Code unterscheiden sich je Gruppe ({variants}) — prüfen "
+                      "Sie die Verpackungsgruppe Ihres Produkts.",
+            },
+            language,
+        ).format(pgs=", ".join(distinct_pgs), chosen=chosen, variants=variants)
+
     if extras.get("air_forbidden"):
         hints["air_forbidden"] = True
     if extras.get("transport_forbidden"):
         hints["transport_forbidden"] = True
+
+    # B8: aandachtspunten horen bij de actieve modaliteit. Zee-informatie
+    # (EmS, stuwage, scheiding, marine pollutant) is op een zuiver wegtraject
+    # ruis, en het luchtvaartverbod zegt niets op een binnenvaartdocument.
+    # Zonder profielen wordt niets gefilterd.
+    active = {p.upper() for p in (profiles or [])}
+    if active:
+        def _relevant(key: str) -> bool:
+            if key.startswith(("ems_", "imdg_", "marine_pollutant_", "segregation_groups_")):
+                return "IMDG" in active
+            if key.startswith("air_"):
+                return "IATA_DGR" in active
+            if key in ("limited_quantity_text", "excepted_quantity_text"):
+                return bool({"ADR", "RID", "ADN", "IMDG"} & active)
+            return True
+
+        hints = {key: value for key, value in hints.items() if _relevant(key)}
+
     return {"patch": patch, "hints": hints}
 
 
@@ -160,6 +230,24 @@ def total_quantity(product: dict[str, Any]) -> tuple[float | None, str]:
     if count is None:
         return per_package, unit
     return per_package * count, unit
+
+
+def _is_class1(product: dict[str, Any]) -> bool:
+    return str(product.get("class") or "").strip().startswith("1")
+
+
+def adr_quantity(product: dict[str, Any]) -> tuple[float | None, str]:
+    """De hoeveelheid waarmee 1.1.3.6 rekent.
+
+    Voor klasse 1 is dat de netto explosieve massa (1.1.3.6.3), niet de
+    productmassa: 50 kg vuurwerk is geen 50 kg ontplofbare stof. Zonder
+    ingevulde NEM levert dit bewust niets op, zodat de puntentelling
+    "incomplete" meldt in plaats van met de verkeerde massa te rekenen.
+    """
+    if _is_class1(product):
+        nem = _num(product.get("net_explosive_mass"))
+        return (nem, "kg") if nem is not None else (None, "kg")
+    return total_quantity(product)
 
 
 def description_line(product: dict[str, Any], profile: str) -> str:
@@ -219,6 +307,12 @@ def description_line(product: dict[str, Any], profile: str) -> str:
         tail.append(packages)
     if total is not None:
         tail.append(f"{_fmt(total)} {unit}")
+    # Klasse 1 op een landdocument: de totale netto explosieve massa hoort in
+    # het vervoersdocument (ADR 5.4.1.2.1 (a)).
+    if profile in ("ADR", "RID", "ADN") and _is_class1(product):
+        nem = _num(product.get("net_explosive_mass"))
+        if nem is not None:
+            tail.append(f"NEM {_fmt(nem)} kg")
     if tail:
         line = f"{line}, {', '.join(tail)}"
     return line
@@ -229,10 +323,12 @@ def adr_category_totals(entries: list[dict[str, Any]], language: str = "nl") -> 
     totals: dict[str, dict[str, float]] = {}
     for entry in entries:
         for product in entry.get("products") or []:
+            if product.get("transport_forbidden"):
+                continue
             category = str(product.get("transport_category") or "").strip()
             if not category:
                 continue
-            total, unit = total_quantity(product)
+            total, unit = adr_quantity(product)
             if total is None:
                 continue
             totals.setdefault(category, {}).setdefault(unit, 0.0)
@@ -284,6 +380,11 @@ def prepare_entries(
                         **derived["hints"],
                     })
             merged.update(derive_from_line(merged, lines_by_id.get(entry.get("line_id"))))
+            # Een vervoersverbod hoort op het product zelf te staan: de
+            # puntentelling, documentregels en totalen slaan zo'n regel over
+            # in plaats van erop te rekenen.
+            if derived and derived["hints"].get("transport_forbidden"):
+                merged["transport_forbidden"] = True
             # Totale hoeveelheid voor de 1.1.3.6-puntenberekening en de
             # Q-waarde. Deze twee zijn BEREKENDE waarden en worden bij elke
             # aanroep opnieuw afgeleid uit de actuele colli-invoer. Vroeger
@@ -291,13 +392,17 @@ def prepare_entries(
             # wijziging van aantal of inhoud de oude totalen bleven staan en
             # de puntentelling en Q-waarde met verouderde getallen rekenden.
             # Wie het totaal wil vastzetten, zet adr_total_quantity_override
-            # respectievelijk q_net_quantity_override.
-            total, unit = total_quantity(merged)
+            # respectievelijk q_net_quantity_override. Voor klasse 1 rekent
+            # 1.1.3.6.3 met de netto explosieve massa; zonder NEM blijft het
+            # totaal bewust leeg zodat de telling "incomplete" meldt.
+            total, unit = adr_quantity(merged)
             override = str(merged.get("adr_total_quantity_override") or "").strip()
             if override:
                 merged["adr_total_quantity"] = override
             elif total is not None:
                 merged["adr_total_quantity"] = f"{_fmt(total)} {unit}"
+            elif _is_class1(merged):
+                merged.pop("adr_total_quantity", None)
             per_package = merged.get("net_mass_liters_per_package")
             q_override = str(merged.get("q_net_quantity_override") or "").strip()
             if q_override:
@@ -313,7 +418,10 @@ def prepare_entries(
             description_line(product, profile)
             for entry in prepared
             for product in entry["products"]
+            # Voor een stof die niet ten vervoer mag worden aangeboden valt
+            # geen documentregel op te stellen; het verbod staat er al.
             if str(product.get("un_number") or "").strip()
+            and not product.get("transport_forbidden")
         ]
         document_lines[profile] = [row for row in rows if row]
 

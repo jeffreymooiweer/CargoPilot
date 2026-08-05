@@ -2,6 +2,46 @@
 
 All notable changes are documented here, following [Semantic Versioning](https://semver.org/).
 
+## [1.32.0] — 2026-08-05
+
+Nine dangerous-goods specialist findings from the v1.31.0 review are closed: air
+prohibition, Q noise, multi-PG silence, class 1 mass, the 8-tonne LQ mark, the class 8
+pair exception, forbidden substances in the points table, modality-filtered hints, and
+the inner-packaging field when LQ/EQ have no route.
+
+### Added
+
+- **Division 2.3 (toxic gases) is refused for air transport.** Enrichment reads the
+  division from the labels column when Table A only states class "2", so chlorine
+  (UN 1017) and similar gases raise an ICAO TI / IATA DGR error on the air stack instead
+  of staying silent.
+- **Net explosive mass for class 1.** A dedicated field feeds ADR 1.1.3.6.3 points and the
+  NEM figure on land transport documents (5.4.1.2.1). Without it the points table reports
+  incomplete rather than counting product mass as explosive mass.
+- **ADR 3.4.13/3.4.14 when LQ packages exceed 8 tonnes gross** on a transport unit: the
+  large LQ mark of 3.4.15 is required and the 3.4.14 waiver no longer applies.
+- **IMDG 7.2.6.5 next to the acid×alkali pair** that triggered a segregation finding, as
+  an info note that leaves the warning in place.
+
+### Fixed
+
+- **The IATA Q check no longer starts on auto-filled n alone.** Participation requires an
+  entered M (maximum per packing instruction), so every air shipment is not marked
+  incomplete when all-packed-in-one does not apply.
+- **Multi-row UN numbers respect the user's packing group** and warn when several groups
+  exist without a choice, instead of silently taking the first Table A row.
+- **Carriage-prohibited substances are excluded** from the 1.1.3.6 points table and from
+  document lines; the panel names them separately.
+- **Modality hints follow the active profiles:** EmS/IMDG noise stays off a pure road
+  prepare, and the air prohibition hint appears only when IATA is selected.
+- **The net-per-inner field is hidden when LQ is 0 and EQ is E0**, so the step is not
+  permanently "incomplete" for substances with no limited/excepted route.
+
+### Changed
+
+- The dangerous-goods coverage assessment records the specialist fixes as shipped in
+  v1.32.0.
+
 ## [1.31.0] — 2026-08-05
 
 The limited and excepted quantity limits are applied instead of only explained, and the

@@ -79,7 +79,12 @@ threshold, category 0 as a hard stop); the 7.5.2 mixed-loading prohibitions incl
 CV28 for foodstuffs; and the quantity limits of chapters 3.4 and 3.5 — the entered net
 per inner packaging against column 7a and the E code of column 7b, the 30 kg gross
 limit of 3.4.2 (naming the 20 kg tray limit of 3.4.3), and the 1,000-package cap of
-3.5.5. Classification comes from Table A. The description line follows 5.4.1.1.1 and
+3.5.5. When packages that fall within the LQ limits total more than 8 tonnes gross on the
+transport unit, ADR 3.4.13/3.4.14 is raised so the large LQ mark of 3.4.15 is not missed.
+For class 1 the 1.1.3.6 points use the entered net explosive mass, not the product mass.
+Classification comes from Table A; when a UN number has several packing-group rows the
+chosen group is used and an unchosen multi-row substance is flagged. Carriage-prohibited
+substances are kept out of the points table. The description line follows 5.4.1.1.1 and
 the tunnel code is printed, correctly, only here.
 
 This is the mode CargoPilot serves best, and the reason is simple: ADR Table A is the
@@ -189,9 +194,10 @@ scope.
 ## Air — IATA DGR
 
 **Checked:** Table 9.3.A segregation including the lithium battery rule, the Q value of
-5.0.2.11, the Cargo Aircraft Only flag, and the requirement that the IATA packing
-instruction rather than the ADR one reaches the declaration. The required-field set for
-the Shipper's Declaration is the strictest of the five.
+5.0.2.11 (only when M is entered — auto-filled n alone does not start the check), the
+Cargo Aircraft Only flag, division 2.3 as forbidden for air carriage, and the requirement
+that the IATA packing instruction rather than the ADR one reaches the declaration. The
+required-field set for the Shipper's Declaration is the strictest of the five.
 
 **The significant limitation:**
 
@@ -253,6 +259,15 @@ on it. A displayed value must therefore never be mistaken for a completed verifi
   tests — are stated as remaining conditions, not checked; and a qualifying line is
   reported next to the 1.1.3.6 points, never removed from them.
 
+**Shipped in v1.32.0:**
+
+- **Close the specialist findings from the v1.31.0 review.** Division 2.3 air prohibition
+  from Table A labels; Q participation only when M is entered; packing-group row selection
+  with a multi-PG note; class 1 net explosive mass for points and documents; the 8-tonne
+  LQ mark of 3.4.13/14; IMDG 7.2.6.5 beside the acid×alkali pair; forbidden substances out
+  of points and document lines; hints filtered to active modalities; and the inner-
+  packaging field hidden when LQ is 0 and EQ is E0.
+
 **Worth building next:**
 
 1. **RID and ADN their own quantity and mixed-loading rules** — but only after the texts
@@ -278,6 +293,6 @@ valuable than any new table.
 
 ---
 
-*This assessment covers CargoPilot v1.31.0. It is guidance for development, not a
+*This assessment covers CargoPilot v1.32.0. It is guidance for development, not a
 compliance statement. Every document the application produces is a draft; see
 [DISCLAIMER.md](../DISCLAIMER.md).*

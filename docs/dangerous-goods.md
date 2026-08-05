@@ -103,9 +103,12 @@ outer limit of table 3.5.1.2 and warns when a position exceeds the 1,000-package
 3.5.5. Mass is never compared against a volume limit, and a number without a unit is
 asked about rather than guessed at. Falling within the limits is reported as exactly
 that — the LQ/EQ mark and the packaging requirements remain conditions, and a qualifying
-line is never silently removed from the 1,000-point calculation. On rail and inland
-waterway the same basis note appears as for the points table; for air, which has its own
-LQ apparatus in the Y packing instructions, no claim is made.
+line is never silently removed from the 1,000-point calculation. When LQ packages that
+qualify on quantity total more than 8 tonnes gross per transport unit, 3.4.13/3.4.14 is
+raised for the large mark of 3.4.15. On rail and inland waterway the same basis note
+appears as for the points table; for air, which has its own LQ apparatus in the Y packing
+instructions, no claim is made. The net-per-inner field is shown only when column 7a or
+the E code offers a limited or excepted route.
 
 **IMDG 7.2.4 — sea segregation.** The full class segregation table, with codes 1 to 4
 from "away from" to "separated longitudinally". Subsidiary risks count too, and a
@@ -176,7 +179,9 @@ Exceptions count. SG14 reads "separated from class 1 **except** for division 1.4
 
 **IMDG 7.2.6.5 — the class 8 exception.** Acids and alkalis of packing group II or III
 may travel together in packages up to 30 L or 30 kg, provided they do not react
-dangerously and the transport document carries the 5.4.1.5.11.3 statement.
+dangerously and the transport document carries the 5.4.1.5.11.3 statement. When a
+segregation finding involves such a pair, the exception is reported next to that pair as
+an info note; the warning itself is left standing for the shipper to judge.
 
 **IMDG 7.2.7.1.4 — explosives compatibility.** The full A-to-S compatibility group
 matrix. Group S is compatible with everything except L; group L only with its own type;
@@ -185,16 +190,20 @@ ammonium nitrate exception of 7.2.7.2.1.
 
 **IATA Table 9.3.A — air segregation.** Incompatible packages (class 1 excluding 1.4S
 against 2.1/3/4.1/5.1; class 8 against 4.3), subsidiary risks included, plus the lithium
-battery rule keeping UN 3090/3480 apart from classes 1, 2.1, 3, 4.1 and 5.1.
+battery rule keeping UN 3090/3480 apart from classes 1, 2.1, 3, 4.1 and 5.1. Division 2.3
+(toxic gases), including Table A entries that only state class "2" with a 2.3 label, is
+refused for air carriage.
 
 **IATA 5.0.2.11 — the Q value.** Q = Σ n/M, rounded up to one decimal, with a warning
-above 1.0.
+above 1.0. The check runs only when at least one M is entered, so auto-filled n alone
+does not mark every air shipment incomplete.
 
 **Class-specific document requirements** are called out: net explosive mass and
-compatibility group for class 1, temperature control for self-reactive substances and
-organic peroxides (4.1 and 5.2), the responsible person for class 6.2, and radionuclides,
-package category, transport index and criticality safety index for class 7. Sea freight
-gets the container packing certificate; air freight the signature in duplicate.
+compatibility group for class 1 (the NEM also drives the 1.1.3.6 points for class 1),
+temperature control for self-reactive substances and organic peroxides (4.1 and 5.2), the
+responsible person for class 6.2, and radionuclides, package category, transport index and
+criticality safety index for class 7. Sea freight gets the container packing certificate;
+air freight the signature in duplicate.
 
 ## What blocks an export
 

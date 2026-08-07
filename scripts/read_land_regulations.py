@@ -34,40 +34,66 @@ from __future__ import annotations
 import argparse
 import json
 import re
+import subprocess
 import sys
 import urllib.request
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from pathlib import Path
+from typing import Any
 
 CACHE = Path("/tmp/cargopilot-regulations")
 
 # Official, free-of-charge sources. Any change here changes what the app claims
 # to be based on, so each entry records the edition and the publisher.
-SOURCES: dict[str, dict[str, str]] = {
+SOURCES: dict[str, dict[str, Any]] = {
     "adr1": {
-        "url": "https://unece.org/sites/default/files/2025-01/2412006_E_ECE_TRANS_352_Vol.I_WEB_0.pdf",
+        "urls": [
+            "https://unece.org/sites/default/files/2025-01/2412006_E_ECE_TRANS_352_Vol.I_WEB_0.pdf",
+            "https://unece.org/sites/default/files/2025-01/2412006_E_ECE_TRANS_352_Vol.I_WEB.pdf",
+        ],
         "title": "ADR 2025 Volume I (ECE/TRANS/352 Vol. I)",
         "publisher": "UNECE",
         "edition": "ADR 2025, in force 1 January 2025",
     },
     "adr2": {
-        "url": "https://unece.org/sites/default/files/2025-01/2412010_E_ECE_TRANS_352_Vol.II_WEB.pdf",
+        "urls": [
+            "https://unece.org/sites/default/files/2025-01/2412010_E_ECE_TRANS_352_Vol.II_WEB.pdf",
+            "https://unece.org/sites/default/files/2025-01/2412010_E_ECE_TRANS_352_Vol.II_WEB_0.pdf",
+        ],
         "title": "ADR 2025 Volume II (ECE/TRANS/352 Vol. II)",
         "publisher": "UNECE",
         "edition": "ADR 2025, in force 1 January 2025",
     },
     "rid": {
-        "url": "https://otif.org/fileadmin/docs/LegalTexts/COTIF/DangerousGoodsRID/RID/RID_2025_e_1_January_2025.pdf",
+        "urls": [
+            "https://otif.org/fileadmin/docs/LegalTexts/COTIF/DangerousGoodsRID/RID/RID_2025_e_1_January_2025.pdf",
+            "https://www.cit-rail.org/media/files/cim-unterlagen/rid_2025_e_1_january_2025.pdf?cid=395946",
+        ],
         "title": "RID 2025 (Appendix C to COTIF, Annex)",
         "publisher": "OTIF",
         "edition": "RID 2025, in force 1 January 2025",
     },
     "adn": {
-        "url": "https://unece.org/sites/default/files/2025-01/ADN%202025%20English.pdf",
+        "urls": [
+            "https://unece.org/sites/default/files/2025-01/ADN%202025%20English.pdf",
+            "https://unece.org/sites/default/files/2025-01/ADN_2025_English.pdf",
+        ],
         "title": "ADN 2025",
         "publisher": "UNECE",
         "edition": "ADN 2025, in force 1 January 2025",
     },
+}
+
+# These servers refuse a request that does not look like a browser. The
+# documents are published free of charge and require no login; the headers only
+# get past a user-agent filter, they do not get past any access control.
+BROWSER_HEADERS = {
+    "User-Agent": (
+        "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) "
+        "Chrome/128.0.0.0 Safari/537.36"
+    ),
+    "Accept": "text/html,application/xhtml+xml,application/pdf,*/*;q=0.8",
+    "Accept-Language": "en-US,en;q=0.9",
 }
 
 
@@ -142,19 +168,67 @@ GROUPS: dict[str, list[Provision]] = {
 }
 
 
+def _looks_like_pdf(path: Path) -> bool:
+    """A 403 page saved to disk is still a file. Check it is really a PDF."""
+    if not path.exists() or path.stat().st_size < 500_000:
+        return False
+    with path.open("rb") as handle:
+        return handle.read(5) == b"%PDF-"
+
+
+def _try_urllib(url: str, target: Path) -> bool:
+    try:
+        request = urllib.request.Request(url, headers=BROWSER_HEADERS)
+        with urllib.request.urlopen(request, timeout=240) as response:
+            target.write_bytes(response.read())
+    except Exception as error:  # noqa: BLE001 — any failure means try the next way
+        print(f"      urllib: {error}", file=sys.stderr)
+        return False
+    return _looks_like_pdf(target)
+
+
+def _try_curl(url: str, target: Path) -> bool:
+    """curl negotiates compression and redirects more forgivingly than urllib."""
+    command = [
+        "curl", "--silent", "--show-error", "--location", "--compressed",
+        "--max-time", "240", "--retry", "2", "--retry-delay", "3",
+        "-A", BROWSER_HEADERS["User-Agent"],
+        "-H", f"Accept: {BROWSER_HEADERS['Accept']}",
+        "-o", str(target), url,
+    ]
+    try:
+        result = subprocess.run(command, capture_output=True, text=True, timeout=300)
+    except (OSError, subprocess.TimeoutExpired) as error:
+        print(f"      curl: {error}", file=sys.stderr)
+        return False
+    if result.returncode != 0:
+        print(f"      curl exit {result.returncode}: {result.stderr.strip()[:200]}", file=sys.stderr)
+        return False
+    return _looks_like_pdf(target)
+
+
 def fetch(doc: str) -> Path:
+    """Download a text, trying every published address and both fetchers."""
     CACHE.mkdir(parents=True, exist_ok=True)
     target = CACHE / f"{doc}.pdf"
-    if target.exists() and target.stat().st_size > 1_000_000:
+    if _looks_like_pdf(target):
         return target
-    url = SOURCES[doc]["url"]
-    print(f"    downloading {SOURCES[doc]['title']}", file=sys.stderr)
-    request = urllib.request.Request(url, headers={"User-Agent": "CargoPilot/regulations"})
-    with urllib.request.urlopen(request, timeout=180) as response:
-        target.write_bytes(response.read())
-    size = target.stat().st_size
-    print(f"    {size:,} bytes", file=sys.stderr)
-    return target
+
+    print(f"    fetching {SOURCES[doc]['title']}", file=sys.stderr)
+    for url in SOURCES[doc]["urls"]:
+        print(f"    {url}", file=sys.stderr)
+        for name, attempt in (("curl", _try_curl), ("urllib", _try_urllib)):
+            if attempt(url, target):
+                size = target.stat().st_size
+                print(f"      got {size:,} bytes via {name}", file=sys.stderr)
+                SOURCES[doc]["resolved_url"] = url
+                return target
+        target.unlink(missing_ok=True)
+
+    raise SystemExit(
+        f"could not download {doc}. Tried: {', '.join(SOURCES[doc]['urls'])}. "
+        "The published address may have moved — check the publisher's download page."
+    )
 
 
 _PAGES: dict[str, list[str]] = {}
@@ -283,7 +357,7 @@ def main() -> None:
     for doc in sorted(_PAGES):
         info = SOURCES[doc]
         print(f"  {doc}: {info['title']} — {info['publisher']}, {info['edition']}")
-        print(f"       {info['url']}")
+        print(f"       {info.get('resolved_url') or info['urls'][0]}")
 
 
 if __name__ == "__main__":

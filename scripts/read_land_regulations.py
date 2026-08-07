@@ -150,11 +150,16 @@ GROUPS: dict[str, list[Provision]] = {
                   note="transport categories, multipliers and the threshold"),
     ],
     # Mixed loading. Same question as above.
+    # Mixed loading. RID has its own 7.5.2.1 and it counts per wagon; ADN has no
+    # 7.5.2.1 at all, so for ADN this group is expected to come back empty and
+    # the subject has to be found by phrase instead.
     "mixed_loading": [
-        Provision("7.5.2.1", ("adr2", "rid", "adn"), chars=3000,
-                  note="the prohibition table for packages"),
-        Provision("7.5.2.2", ("adr2", "rid", "adn"), chars=1600,
-                  note="what the table's entries mean"),
+        Provision("7.5.2.1", ("adr2", "rid"), chars=7000,
+                  anchors=("shall not be loaded together in the same",),
+                  note="the prohibition table for packages, label against label"),
+        Provision("7.5.2.2", ("adr2", "rid"), chars=3000,
+                  anchors=("compatibility groups",),
+                  note="class 1 compatibility groups loaded together"),
     ],
     # The transport document. Settles whether the tunnel code belongs on a rail
     # or inland waterway document — CargoPilot removed it in v1.29.5.
@@ -367,6 +372,42 @@ def quote(doc: str, provision: Provision) -> None:
     print(body.strip())
 
 
+_HEADING = re.compile(r"^[ \t]*(\d+(?:\.\d+){1,4})[ \t]*$", re.MULTILINE)
+
+
+def find(doc: str, phrase: str, limit: int = 12) -> None:
+    """Locate a provision by what it says, when its number is unknown.
+
+    Not every regime files the same subject under the same number. ADN has no
+    7.5.2.1; looking it up by number returns "not found", which is a true answer
+    but not a useful one — the provision exists somewhere else. This searches the
+    text and reports the nearest preceding clause number, which is the address
+    to quote next.
+    """
+    print()
+    print("=" * 78)
+    print(f"{SOURCES[doc]['title']} — searching for {phrase!r}")
+    print("=" * 78)
+    needle = phrase.lower()
+    shown = 0
+    for index, raw in enumerate(pages(doc)):
+        body = _normalise(raw)
+        if needle not in body.lower() or _is_contents_page(body):
+            continue
+        for match in re.finditer(re.escape(needle), body.lower()):
+            headings = _HEADING.findall(body[: match.start()])
+            where = headings[-1] if headings else "?"
+            snippet = " ".join(body[match.start(): match.start() + 220].split())
+            print(f"  [page {index + 1}, under {where}] {snippet}")
+            shown += 1
+            if shown >= limit:
+                print(f"  ... stopping at {limit} hits")
+                return
+            break
+    if not shown:
+        print("  no occurrence outside the contents pages")
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--quote", choices=sorted(GROUPS), action="append", default=[],
@@ -376,10 +417,12 @@ def main() -> None:
     parser.add_argument("--section", action="append", default=[],
                         help="quote an arbitrary section number, e.g. 1.1.3.6.3")
     parser.add_argument("--chars", type=int, default=2600, help="length of an ad-hoc quote")
+    parser.add_argument("--find", action="append", default=[],
+                        help="locate a provision by a phrase when its number is unknown")
     args = parser.parse_args()
 
-    if not args.quote and not args.section:
-        parser.error("give --quote GROUP or --section NUMBER")
+    if not args.quote and not args.section and not args.find:
+        parser.error("give --quote GROUP, --section NUMBER or --find PHRASE")
 
     wanted_docs = tuple(args.doc) if args.doc else None
 
@@ -412,6 +455,13 @@ def main() -> None:
         print("Not read:")
         for doc, why in unreachable.items():
             print(f"  {doc}: {why}")
+
+    for phrase in args.find:
+        for doc in (wanted_docs or ("adr1", "adr2", "rid", "adn")):
+            try:
+                find(doc, phrase)
+            except SystemExit as error:
+                print(f"\n!! {doc} unreachable: {error}")
 
     print()
     print("-" * 78)

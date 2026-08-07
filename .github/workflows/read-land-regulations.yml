@@ -40,6 +40,14 @@ on:
         description: "Extra section numbers, comma separated (e.g. 1.1.3.6.3,3.5.1.1)"
         default: ""
         required: false
+      chars:
+        description: "Length of an ad-hoc section quote"
+        default: "2600"
+        required: false
+      find:
+        description: "Locate a provision by a phrase when its number is unknown"
+        default: ""
+        required: false
 
 permissions:
   contents: read
@@ -73,6 +81,12 @@ jobs:
           if [ -n "${{ inputs.doc }}" ]; then
             ARGS="$ARGS --doc ${{ inputs.doc }}"
           fi
+          if [ -n "${{ inputs.find }}" ]; then
+            ARGS="$ARGS --find \"${{ inputs.find }}\""
+          fi
+          if [ -n "${{ inputs.chars }}" ]; then
+            ARGS="$ARGS --chars ${{ inputs.chars }}"
+          fi
           if [ -n "${{ inputs.sections }}" ]; then
             IFS=',' read -ra SECTIONS <<< "${{ inputs.sections }}"
             for s in "${SECTIONS[@]}"; do
@@ -80,4 +94,4 @@ jobs:
             done
           fi
           echo "read_land_regulations.py $ARGS"
-          python scripts/read_land_regulations.py $ARGS
+          eval "python scripts/read_land_regulations.py $ARGS"

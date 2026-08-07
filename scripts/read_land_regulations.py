@@ -176,58 +176,84 @@ def _looks_like_pdf(path: Path) -> bool:
         return handle.read(5) == b"%PDF-"
 
 
-def _try_urllib(url: str, target: Path) -> bool:
-    try:
-        request = urllib.request.Request(url, headers=BROWSER_HEADERS)
-        with urllib.request.urlopen(request, timeout=240) as response:
-            target.write_bytes(response.read())
-    except Exception as error:  # noqa: BLE001 — any failure means try the next way
-        print(f"      urllib: {error}", file=sys.stderr)
-        return False
-    return _looks_like_pdf(target)
+def _wayback(url: str) -> str:
+    """The Internet Archive's copy of the same public document.
+
+    UNECE and OTIF sit behind a web application firewall that refuses requests
+    from datacentre address ranges — which is every CI runner. The Archive holds
+    the same published files and does not, so it is the practical route to a
+    document that is free to read either way. ``id_`` asks for the original
+    bytes rather than a rewritten page.
+    """
+    return f"https://web.archive.org/web/2025id_/{url}"
 
 
-def _try_curl(url: str, target: Path) -> bool:
-    """curl negotiates compression and redirects more forgivingly than urllib."""
+def _curl(url: str, target: Path, extra: list[str] | None = None) -> tuple[int, str]:
+    """Fetch and report what actually came back, not just whether curl exited 0.
+
+    Without --fail curl treats a 403 page as a successful download and writes
+    the error page to the file. Both earlier attempts failed this way and said
+    nothing, which cost two runs.
+    """
     command = [
         "curl", "--silent", "--show-error", "--location", "--compressed",
-        "--max-time", "240", "--retry", "2", "--retry-delay", "3",
+        "--max-time", "300", "--retry", "2", "--retry-delay", "3",
         "-A", BROWSER_HEADERS["User-Agent"],
         "-H", f"Accept: {BROWSER_HEADERS['Accept']}",
-        "-o", str(target), url,
+        "-H", f"Accept-Language: {BROWSER_HEADERS['Accept-Language']}",
+        "-w", "%{http_code} %{content_type}",
+        "-o", str(target),
+        *(extra or []),
+        url,
     ]
     try:
-        result = subprocess.run(command, capture_output=True, text=True, timeout=300)
+        result = subprocess.run(command, capture_output=True, text=True, timeout=360)
     except (OSError, subprocess.TimeoutExpired) as error:
-        print(f"      curl: {error}", file=sys.stderr)
-        return False
-    if result.returncode != 0:
-        print(f"      curl exit {result.returncode}: {result.stderr.strip()[:200]}", file=sys.stderr)
-        return False
-    return _looks_like_pdf(target)
+        return 0, f"curl failed: {error}"
+    status, _, kind = result.stdout.strip().partition(" ")
+    try:
+        code = int(status)
+    except ValueError:
+        code = 0
+    return code, kind or result.stderr.strip()[:120]
+
+
+# Ways to ask, in the order worth trying. Each is a label and the extra curl
+# arguments it adds; the URL transform lets the Archive stand in for the origin.
+STRATEGIES: list[tuple[str, list[str], bool]] = [
+    ("direct", [], False),
+    ("with referer", ["-H", "Referer: https://unece.org/"], False),
+    ("web archive", [], True),
+]
 
 
 def fetch(doc: str) -> Path:
-    """Download a text, trying every published address and both fetchers."""
+    """Download a text, reporting the status of every attempt."""
     CACHE.mkdir(parents=True, exist_ok=True)
     target = CACHE / f"{doc}.pdf"
     if _looks_like_pdf(target):
         return target
 
     print(f"    fetching {SOURCES[doc]['title']}", file=sys.stderr)
+    attempts: list[str] = []
     for url in SOURCES[doc]["urls"]:
-        print(f"    {url}", file=sys.stderr)
-        for name, attempt in (("curl", _try_curl), ("urllib", _try_urllib)):
-            if attempt(url, target):
-                size = target.stat().st_size
-                print(f"      got {size:,} bytes via {name}", file=sys.stderr)
-                SOURCES[doc]["resolved_url"] = url
+        for label, extra, via_archive in STRATEGIES:
+            address = _wayback(url) if via_archive else url
+            code, kind = _curl(address, target, extra)
+            ok = _looks_like_pdf(target)
+            size = target.stat().st_size if target.exists() else 0
+            print(f"      [{label}] {code} {kind} {size:,}B "
+                  f"{'-> PDF' if ok else ''}", file=sys.stderr)
+            attempts.append(f"{label} {url} -> {code}")
+            if ok:
+                SOURCES[doc]["resolved_url"] = address
+                SOURCES[doc]["resolved_via"] = label
                 return target
-        target.unlink(missing_ok=True)
+            target.unlink(missing_ok=True)
 
     raise SystemExit(
-        f"could not download {doc}. Tried: {', '.join(SOURCES[doc]['urls'])}. "
-        "The published address may have moved — check the publisher's download page."
+        f"could not download {doc}.\n  " + "\n  ".join(attempts)
+        + "\nThe address may have moved; check the publisher's download page."
     )
 
 
@@ -334,6 +360,7 @@ def main() -> None:
 
     wanted_docs = tuple(args.doc) if args.doc else None
 
+    unreachable: dict[str, str] = {}
     for group in args.quote:
         print()
         print("#" * 78)
@@ -342,14 +369,26 @@ def main() -> None:
         for provision in GROUPS[group]:
             docs = wanted_docs or provision.docs
             for doc in docs:
-                if doc not in SOURCES:
+                if doc not in SOURCES or doc in unreachable:
                     continue
-                quote(doc, provision)
+                try:
+                    quote(doc, provision)
+                except SystemExit as error:
+                    # One text being unreachable must not hide the others.
+                    unreachable[doc] = str(error)
+                    print(f"\n!! {doc} unreachable, skipping it: {error}")
 
     for section in args.section:
         provision = Provision(section, wanted_docs or ("adr1",), chars=args.chars)
         for doc in provision.docs:
             quote(doc, provision)
+
+    if unreachable:
+        print()
+        print("!" * 78)
+        print("Not read:")
+        for doc, why in unreachable.items():
+            print(f"  {doc}: {why}")
 
     print()
     print("-" * 78)
@@ -358,6 +397,8 @@ def main() -> None:
         info = SOURCES[doc]
         print(f"  {doc}: {info['title']} — {info['publisher']}, {info['edition']}")
         print(f"       {info.get('resolved_url') or info['urls'][0]}")
+        if info.get("resolved_via"):
+            print(f"       (via {info['resolved_via']})")
 
 
 if __name__ == "__main__":

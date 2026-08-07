@@ -101,9 +101,25 @@ def test_a_road_shipment_gets_no_caveat():
 
 @pytest.mark.parametrize("profile", ["RID", "ADN"])
 def test_rail_and_inland_waterway_say_which_tables_were_used(profile):
+    """De grondslag wordt benoemd — en sinds v1.33.0 met de tekst erbij.
+
+    Deze test eiste eerst dat de melding "ADR" bevatte, voor beide modaliteiten.
+    Dat klopte zolang beide met de ADR-tabellen werden gerekend. Na het nalezen
+    van de officiele teksten is dat voor het ADN niet meer waar: ADN 1.1.3.6.1
+    kent geen puntentelling en wordt met zijn eigen tabel beoordeeld, dus zijn
+    melding hoort juist niet naar het ADR te verwijzen. Het RID rekent wel
+    hetzelfde en noemt nu zijn eigen artikelnummers.
+    """
     out = check_compliance(entries(), [profile], "nl")
     note = out["adr_points"]["basis_note"]
-    assert note and profile in note and "ADR" in note
+    assert note and profile in note
+    if profile == "RID":
+        assert "1.1.3.6.3" in note and "ADR" in note
+    else:
+        assert "geen puntentelling" in note
+        assert out["adn_exemption"]["basis"] == "ADN 1.1.3.6.1"
+    # De samenlading van 7.5.2 is nog niet nagelezen en houdt de oude,
+    # voorzichtige melding.
     assert profile in out["adr_mixed_loading_basis_note"]
 
 

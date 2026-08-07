@@ -118,12 +118,68 @@ BASIS_NOTE = {
           "Anhaltspunkt und prüfen Sie es an dem für Ihre Strecke geltenden Text.",
 }
 
+# For 1.1.3.6 the hedge above is no longer the truth, and saying less than we
+# know is its own kind of wrong. RID 1.1.3.6.3 sets out the same five transport
+# categories with the same figures (0, 20, 333, 1000, unlimited) and RID
+# 1.1.3.6.4 the same multipliers — 50, 3 and 1 — against the same calculated
+# value of 1000. What differs is the unit of account: RID counts per wagon or
+# large container, ADR per transport unit. Read from RID 2025 p. 29.
+RID_POINTS_NOTE = {
+    "nl": "RID 1.1.3.6.3 en 1.1.3.6.4 schrijven dezelfde vervoerscategorieën, "
+          "dezelfde factoren (50, 3 en 1) en dezelfde waarde van 1000 voor als "
+          "het ADR. Het verschil zit in de eenheid: het RID rekent per wagen of "
+          "grote container, het ADR per vervoerseenheid.",
+    "en": "RID 1.1.3.6.3 and 1.1.3.6.4 prescribe the same transport categories, "
+          "the same factors (50, 3 and 1) and the same calculated value of 1000 "
+          "as ADR. The difference is the unit: RID counts per wagon or large "
+          "container, ADR per transport unit.",
+    "de": "RID 1.1.3.6.3 und 1.1.3.6.4 schreiben dieselben "
+          "Beförderungskategorien, dieselben Faktoren (50, 3 und 1) und "
+          "denselben berechneten Wert von 1000 vor wie das ADR. Der Unterschied "
+          "liegt in der Einheit: das RID rechnet je Wagen oder Großcontainer, "
+          "das ADR je Beförderungseinheit.",
+}
+
+# ADN does not have a points system at all. Its 1.1.3.6.1 exempts a consignment
+# in packages when the gross mass of everything stays under 3000 kg and no class
+# exceeds its own figure. An ADR points total is therefore not an approximation
+# of the ADN answer — it answers a different question — so the two are reported
+# separately rather than one standing in for the other.
+ADN_POINTS_NOTE = {
+    "nl": "Let op: het ADN kent geen puntentelling. ADN 1.1.3.6.1 stelt vrij op "
+          "grond van de totale brutomassa (ten hoogste 3000 kg) en een eigen "
+          "grens per klasse. Deze punten gelden voor het wegtraject; de "
+          "ADN-uitkomst staat er los van in het paneel.",
+    "en": "Note: ADN has no points calculation. ADN 1.1.3.6.1 exempts on total "
+          "gross mass (at most 3,000 kg) and its own limit per class. These "
+          "points apply to the road leg; the ADN outcome is reported separately "
+          "in the panel.",
+    "de": "Hinweis: das ADN kennt keine Punkteberechnung. ADN 1.1.3.6.1 stellt "
+          "anhand der Gesamtbruttomasse (höchstens 3000 kg) und einer eigenen "
+          "Grenze je Klasse frei. Diese Punkte gelten für die Straßenstrecke; "
+          "das ADN-Ergebnis wird im Panel gesondert ausgewiesen.",
+}
+
 
 def basis_note(profiles: list[str] | None, section: str, language: str) -> str | None:
-    """Melding wanneer een ADR-tabel voor RID of ADN wordt gebruikt."""
-    other = sorted({p.upper() for p in (profiles or [])} & {"RID", "ADN"})
+    """Melding wanneer een ADR-tabel voor RID of ADN wordt gebruikt.
+
+    Voor 1.1.3.6 is de grondslag inmiddels nagelezen in de officiële teksten en
+    hoeft er niet meer te worden gehedged: het RID rekent hetzelfde, het ADN
+    rekent iets heel anders. Voor de overige hoofdstukken staat de oude,
+    voorzichtige melding nog — die zijn nog niet nagelezen.
+    """
+    selected = {p.upper() for p in (profiles or [])}
+    other = sorted(selected & {"RID", "ADN"})
     if not other:
         return None
+    if section == "1.1.3.6":
+        parts = []
+        if "RID" in other:
+            parts.append(pick(RID_POINTS_NOTE, language))
+        if "ADN" in other:
+            parts.append(pick(ADN_POINTS_NOTE, language))
+        return " ".join(parts)
     return pick(BASIS_NOTE, language).format(other=" en ".join(other), section=section)
 
 
@@ -164,18 +220,37 @@ def check_adr_points(
             })
             continue
         spec = categories[category]
+        factor = spec["factor"]
+        note_a = False
+        # ADR/RID 1.1.3.6.3 note (a): nine UN numbers of transport category 1
+        # may be carried up to 50 kg instead of 20 kg, and RID 1.1.3.6.4 spells
+        # out the multiplier that goes with it — times 20, not times 50. Read
+        # from ADR 2025 Vol. I and RID 2025; see scripts/read_land_regulations.py.
+        #
+        # Counting them at 50 is not a harmless over-estimate. 50 kg of chlorine
+        # scored 2500 and lost an exemption the text grants at exactly 1000, so
+        # the application demanded orange plates, a driver certificate and an
+        # ADR vehicle for a load that does not need them.
+        if category == "1" and _num(rules.get("category_1_note_a", {}).get("factor")):
+            exception = rules["category_1_note_a"]
+            if str(product.get("un_number") or "").strip().lstrip("UN ").strip() in set(
+                exception["un_numbers"]
+            ):
+                factor = exception["factor"]
+                note_a = True
         if category == "0":
             category0.append(label)
             points = None
         else:
-            points = round(quantity * (spec["factor"] or 0), 2)
+            points = round(quantity * (factor or 0), 2)
             total += points
         rows.append({
             "product": label,
             "transport_category": category,
             "quantity": quantity,
-            "factor": spec["factor"],
+            "factor": factor,
             "points": points,
+            **({"note_a": True} if note_a else {}),
         })
 
     if category0:
@@ -200,6 +275,149 @@ def check_adr_points(
         "still_required": pick(rules["still_required"], lang),
         "basis": "ADR 1.1.3.6",
         "basis_note": basis_note(profiles, "1.1.3.6", language),
+    }
+
+
+def _adn_row_matches(rule: dict[str, Any], product: dict[str, Any]) -> bool:
+    """Does this ADN table row describe this product?"""
+    selector = rule["selector"]
+    if selector in {"all", "other"}:
+        return True
+    packing_group = str(product.get("packing_group") or "").strip().upper()
+    if selector == "pg_i":
+        return packing_group == "I"
+    if selector == "toxic_groups" or selector == "group_f":
+        # ADN reads the class 2 group out of the classification code: the letters
+        # after the digit in 2.2.2.1.3, e.g. 2TF, 4F, 1O.
+        code = str(product.get("classification_code") or "").strip().upper()
+        letters = "".join(character for character in code if character.isalpha())
+        if not letters:
+            return False
+        return letters in {group.upper() for group in rule.get("groups", [])}
+    if selector == "label_1":
+        # "for which a danger label of model No. 1 is required in column (5)".
+        labels = {token.strip() for token in _hazard_tokens(product)}
+        return "1" in labels
+    if selector == "category_a":
+        # Class 6.2 category A is carried in the UN number, not in a column.
+        return str(product.get("un_number") or "").strip() in {"2814", "2900", "3549"}
+    if selector == "excepted_packages":
+        return str(product.get("un_number") or "").strip() in set(rule.get("un_numbers", []))
+    return False
+
+
+def _adn_limit_for(product: dict[str, Any], rules: list[dict[str, Any]]) -> dict[str, Any] | None:
+    """The first row of the ADN table that fits, which is the applicable one.
+
+    Order matters and the table is written to be read in order: the specific
+    rows of a class come before its "any other substances" row, so a class 3
+    packing group I substance is caught by the 300 kg row and never reaches the
+    3000 kg one.
+    """
+    primary = _primary_class(product)
+    for rule in rules:
+        if rule["class"] != primary:
+            continue
+        if _adn_row_matches(rule, product):
+            return rule
+    return None
+
+
+def check_adn_exemption(
+    entries: list[dict[str, Any]], language: str = "nl"
+) -> dict[str, Any]:
+    """ADN 1.1.3.6.1: vrijstelling voor vervoer in colli aan boord van een schip.
+
+    Het ADN kent geen puntentelling. Het stelt vrij wanneer de brutomassa van
+    alle gevaarlijke goederen samen onder de 3000 kg blijft én geen enkele
+    klasse boven haar eigen grens uit komt — 0, 300 of 3000 kg, afhankelijk van
+    verpakkingsgroep, groep of etiket. Voor vervoer in tanks geldt de
+    vrijstelling in het geheel niet.
+
+    Tot v1.32.0 kreeg een ADN-zending de ADR-puntentelling te zien. Dat is geen
+    benadering van dit antwoord maar een antwoord op een andere vraag: 1200 kg
+    van een vloeistof in verpakkingsgroep III kost 1200 ADR-punten en verliest
+    daar de vrijstelling, terwijl het ADN dezelfde zending vrijstelt zolang het
+    totaal onder 3000 kg blijft.
+    """
+    config = get_compliance_rules()["adn_exemption"]
+    lang = _lang(language)
+    rules = config["rules"]
+    cap = float(config["total_gross_mass_kg"])
+
+    rows: list[dict[str, Any]] = []
+    total = 0.0
+    incomplete: list[str] = []
+    over_class: list[dict[str, Any]] = []
+    per_limit: dict[tuple[str, str], float] = {}
+
+    for entry, index, product in _iter_products(entries):
+        label = _product_label(entry, product, index)
+        if product.get("transport_forbidden"):
+            continue
+        rule = _adn_limit_for(product, rules)
+        mass = _num(product.get("adr_total_quantity"))
+        if rule is None or mass is None or mass <= 0:
+            incomplete.append(label)
+            rows.append({"product": label, "limit": rule["limit"] if rule else None,
+                         "quantity": mass, "class": _primary_class(product)})
+            continue
+        total += mass
+        key = (rule["class"], rule["selector"])
+        per_limit[key] = per_limit.get(key, 0.0) + mass
+        rows.append({
+            "product": label,
+            "class": rule["class"],
+            "selector": rule["selector"],
+            "limit": rule["limit"],
+            "quantity": mass,
+        })
+
+    for (class_name, selector), carried in sorted(per_limit.items()):
+        limit = next(
+            rule["limit"] for rule in rules
+            if rule["class"] == class_name and rule["selector"] == selector
+        )
+        if carried > limit:
+            over_class.append({"class": class_name, "selector": selector,
+                               "limit": limit, "carried": round(carried, 2)})
+
+    if incomplete:
+        status = "incomplete"
+    elif over_class:
+        status = "not_exempt"
+    elif total > cap:
+        status = "above_threshold"
+    else:
+        status = "exempt_possible"
+
+    return {
+        "rows": rows,
+        "total_gross_mass_kg": round(total, 2),
+        "threshold": cap,
+        "status": status,
+        "over_class_limit": over_class,
+        "incomplete_products": incomplete,
+        "basis": "ADN 1.1.3.6.1",
+        "conditions": pick(config["conditions"], lang),
+        "note": pick(
+            {
+                "nl": "Het ADN stelt vrij op brutomassa, niet met punten: het "
+                      "totaal blijft onder 3000 kg en geen klasse komt boven haar "
+                      "eigen grens. Vervoer in tanks is nooit vrijgesteld. De "
+                      "voorwaarden van 1.1.3.6.2 blijven gelden.",
+                "en": "ADN exempts on gross mass, not on points: the total stays "
+                      "under 3,000 kg and no class exceeds its own limit. Carriage "
+                      "in tanks is never exempt. The conditions of 1.1.3.6.2 "
+                      "continue to apply.",
+                "de": "Das ADN stellt anhand der Bruttomasse frei, nicht mit "
+                      "Punkten: die Summe bleibt unter 3000 kg und keine Klasse "
+                      "überschreitet ihre eigene Grenze. Beförderung in Tanks ist "
+                      "nie freigestellt. Die Bedingungen nach 1.1.3.6.2 gelten "
+                      "weiter.",
+            },
+            lang,
+        ),
     }
 
 
@@ -1137,6 +1355,7 @@ def check_q_value(entries: list[dict[str, Any]], language: str = "nl") -> list[d
     results: list[dict[str, Any]] = []
 
     for entry in entries:
+        products = entry.get("products") or []
         # Een positie doet pas mee wanneer iemand een M (maximum per verpakking
         # volgens de packing instruction) heeft ingevuld. De n wordt door
         # /dg/prepare automatisch gevuld uit de netto per collo; alleen dáárop
@@ -1144,8 +1363,35 @@ def check_q_value(entries: list[dict[str, Any]], language: str = "nl") -> list[d
         # in one' helemaal niet speelt.
         if not any(
             str(product.get("q_max_net_quantity") or "").strip()
-            for product in entry.get("products") or []
+            for product in products
         ):
+            # Twee of meer stoffen op één positie zonder enige Q-invoer: dan
+            # kán 'all packed in one' spelen en is er niets gerekend. Die
+            # positie stilzwijgend overslaan liet de zending als "gecontroleerd"
+            # gelden zodra één andere positie wél was ingevuld — een controle
+            # die niet liep zag er dan uit als een controle die slaagde.
+            if len([p for p in products if str(p.get("un_number") or "").strip()]) >= 2:
+                results.append({
+                    "position": entry.get("vehicle") or entry.get("line_id"),
+                    "components": [],
+                    "status": "not_checked",
+                    "q_value": None,
+                    "exceeded": None,
+                    "note": pick(
+                        {
+                            "nl": "Geen Q berekend voor deze positie: er staan meer "
+                                  "stoffen op één positie, maar n en M zijn niet "
+                                  "ingevuld. Speelt 'all packed in one', vul ze dan in.",
+                            "en": "No Q computed for this position: it holds more than "
+                                  "one substance but n and M were not entered. If all "
+                                  "packed in one applies, enter them.",
+                            "de": "Kein Q für diese Position berechnet: sie enthält "
+                                  "mehrere Stoffe, aber n und M wurden nicht angegeben. "
+                                  "Falls All packed in one zutrifft, geben Sie sie an.",
+                        },
+                        lang,
+                    ),
+                })
             continue
         components: list[dict[str, Any]] = []
         invalid: list[str] = []
@@ -1219,6 +1465,51 @@ def check_q_value(entries: list[dict[str, Any]], language: str = "nl") -> list[d
 
 # Massa in gram, volume in milliliter: de gemeenschappelijke noemer waarin de
 # grenzen van 3.4 (kolom 7a) en 3.5.1.2 (E-codes) zijn uitgedrukt.
+_Q_STATUS_MESSAGE = {
+    "nl": {
+        "checked": "De Q-controle is uitgevoerd voor de ingevoerde 'all packed in one'-gegevens.",
+        "incomplete": "De Q-controle is niet volledig: vul voor iedere deelnemende stof n en M groter dan nul in.",
+        "exceeded": "De berekende Q-waarde is groter dan 1.",
+        "not_checked": "Geen Q-controle uitgevoerd. Is 'all packed in one' van toepassing, vul dan per stof de nettohoeveelheid n en de maximaal toegestane hoeveelheid M in.",
+    },
+    "en": {
+        "checked": "The Q check was performed for the entered all-packed-in-one data.",
+        "incomplete": "The Q check is incomplete: enter n and M greater than zero for every participating substance.",
+        "exceeded": "The calculated Q value exceeds 1.",
+        "not_checked": "No Q check was performed. If all packed in one applies, enter net quantity n and maximum permitted quantity M for each substance.",
+    },
+    "de": {
+        "checked": "Die Q-Prüfung wurde für die eingegebenen All-packed-in-one-Daten durchgeführt.",
+        "incomplete": "Die Q-Prüfung ist unvollständig: Geben Sie für jeden beteiligten Stoff n und M größer als null ein.",
+        "exceeded": "Der berechnete Q-Wert ist größer als 1.",
+        "not_checked": "Keine Q-Prüfung durchgeführt. Falls All packed in one zutrifft, geben Sie je Stoff die Nettomenge n und die höchstzulässige Menge M ein.",
+    },
+}
+
+
+def q_check_status(q_values: list[dict[str, Any]], language: str = "nl") -> dict[str, str]:
+    """Of de Q-controle liep, en zo niet, dat dat gezegd wordt.
+
+    Een positie die stilzwijgend werd overgeslagen was op het scherm niet te
+    onderscheiden van een positie die de toets haalde. Eén niet-gecontroleerde
+    positie maakt de hele zending niet-gecontroleerd: "gecontroleerd" mag niet
+    betekenen "één van de twee posities is gecontroleerd".
+    """
+    lang = _lang(language)
+    statuses = {item.get("status") for item in q_values}
+    if not q_values:
+        status = "not_checked"
+    elif "exceeded" in statuses:
+        status = "exceeded"
+    elif "incomplete" in statuses:
+        status = "incomplete"
+    elif "not_checked" in statuses:
+        status = "not_checked"
+    else:
+        status = "checked"
+    return {"status": status, "message": _Q_STATUS_MESSAGE[lang][status]}
+
+
 _MEASURE_UNITS: dict[str, tuple[float, str]] = {
     "kg": (1000.0, "mass"),
     "g": (1.0, "mass"),
@@ -1845,6 +2136,10 @@ def check_compliance(
         land = sorted({"ADR", "RID", "ADN"} & normalized)
         result["adr_points"] = check_adr_points(entries, language, land)
         result["adr_mixed_loading"] = check_adr_mixed_loading(entries, language, land)
+        # ADN answers the exemption question with its own rule, so it gets its
+        # own result rather than borrowing the points total.
+        if "ADN" in normalized:
+            result["adn_exemption"] = check_adn_exemption(entries, language)
         note = basis_note(land, "7.5.2", language)
         if note:
             result["adr_mixed_loading_basis_note"] = note
@@ -1885,6 +2180,13 @@ def check_compliance(
             + check_iata_segregation(entries, language)
         )
         result["q_values"] = check_q_value(entries, language)
+        # Of de Q-controle daadwerkelijk liep, hoort bij de uitkomst en niet bij
+        # één endpoint. Tot v1.32.0 werd dit in de route berekend, waardoor het
+        # paneel "geen Q-controle uitgevoerd" meldde en de export er niets over
+        # zei — precies de plek waar het document de deur uit gaat. De
+        # exportcontrole in exporter.py schrijft zelf dat het scherm nooit de
+        # enige plek mag zijn waar dit wordt afgedwongen.
+        result["q_check_status"] = q_check_status(result["q_values"], language)
         cao = [
             _product_label(entry, product, index)
             for entry, index, product in _iter_products(entries)

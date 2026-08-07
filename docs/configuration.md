@@ -134,7 +134,7 @@ curl http://localhost:8080/api/health
 {
   "status": "ok",
   "app": "CargoPilot",
-  "version": "1.29.3",
+  "version": "1.33.0",
   "regulatory": {
     "manifest_id": "1dbeb6c1ca91cfd5",
     "editions": {

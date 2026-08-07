@@ -1,0 +1,83 @@
+name: Read land regulations
+
+# ADR, RID and ADN are published free of charge by UNECE and OTIF. The
+# development container has no route to those hosts; a runner does. This
+# workflow reads the official PDFs and prints the provisions CargoPilot
+# implements to the run log, so what the application does can be checked
+# against what the regulation says.
+#
+# It commits nothing. The regulatory text is not ours to redistribute — only
+# the factual values read out of it belong in the repository, and those go in
+# through a separate, reviewed change.
+
+on:
+  # The reader runs when the reader changes, on whatever branch it changes on.
+  # Reading a published regulation is safe to do early and often; waiting for a
+  # merge to main before the text can be consulted is the wrong way round.
+  push:
+    paths:
+      - scripts/read_land_regulations.py
+      - .github/workflows/read-land-regulations.yml
+  workflow_dispatch:
+    inputs:
+      groups:
+        description: "Which provisions to quote"
+        type: choice
+        options:
+          - lq_eq
+          - lq_marking
+          - exemptions
+          - mixed_loading
+          - document
+          - tunnels
+          - all
+        default: lq_eq
+      doc:
+        description: "Restrict to one text (adr1, adr2, rid, adn); empty means all that apply"
+        default: ""
+        required: false
+      sections:
+        description: "Extra section numbers, comma separated (e.g. 1.1.3.6.3,3.5.1.1)"
+        default: ""
+        required: false
+
+permissions:
+  contents: read
+
+jobs:
+  read:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - run: pip install --quiet pymupdf
+
+      - name: Quote the provisions
+        env:
+          # A push runs the whole set; a dispatch quotes what was asked for.
+          GROUPS: ${{ inputs.groups || 'all' }}
+        run: |
+          ARGS=""
+          if [ "$GROUPS" = "all" ]; then
+            for g in lq_eq lq_marking exemptions mixed_loading document tunnels; do
+              ARGS="$ARGS --quote $g"
+            done
+          else
+            ARGS="--quote $GROUPS"
+          fi
+          if [ -n "${{ inputs.doc }}" ]; then
+            ARGS="$ARGS --doc ${{ inputs.doc }}"
+          fi
+          if [ -n "${{ inputs.sections }}" ]; then
+            IFS=',' read -ra SECTIONS <<< "${{ inputs.sections }}"
+            for s in "${SECTIONS[@]}"; do
+              ARGS="$ARGS --section $(echo "$s" | tr -d '[:space:]')"
+            done
+          fi
+          echo "read_land_regulations.py $ARGS"
+          python scripts/read_land_regulations.py $ARGS

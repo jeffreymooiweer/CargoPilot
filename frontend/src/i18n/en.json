@@ -342,7 +342,13 @@
     "qExceeded": "EXCEEDS the maximum of 1.0",
     "caoHint": "Cargo Aircraft Only applies to: {{products}}. State this on the Shipper's Declaration and the AWB handling information.",
     "disclaimer": "These checks are guidance based on ADR 2025 and IATA DGR 67th edition and do not replace a safety adviser or the official regulations. See the disclaimer.",
-    "segGroupsTitle": "IMDG 7.2.5 segregation groups (acids, alkalis, cyanides, …)"
+    "segGroupsTitle": "IMDG 7.2.5 segregation groups (acids, alkalis, cyanides, …)",
+    "adnExemptionTitle": "ADN 1.1.3.6.1 — exemption on gross mass",
+    "adnTotalMass": "{{total}} kg of at most {{threshold}} kg",
+    "adnOverClass": "Class {{cls}}: {{carried}} kg over the {{limit}} kg limit",
+    "adnConditions": "Conditions that continue to apply (1.1.3.6.2)",
+    "colClass": "Class",
+    "colAdnLimit": "Limit"
   },
   "dgauto": {
     "title": "Derived automatically",

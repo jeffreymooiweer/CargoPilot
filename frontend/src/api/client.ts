@@ -609,9 +609,33 @@ export interface AdrPointsResult {
   still_required: string[];
   /** Met welke tabellen is gerekend, bijvoorbeeld "ADR 1.1.3.6". */
   basis?: string;
-  /** Gevuld wanneer die tabellen niet die van het gekozen profiel zijn — RID en
-   *  ADN hebben hun eigen 1.1.3.6 en die staat niet in CargoPilot. */
+  /** Wat de gekozen modaliteit zelf over deze grondslag zegt. Voor het RID dat
+   *  1.1.3.6.3/1.1.3.6.4 dezelfde categorieen, factoren en waarde 1000
+   *  voorschrijven; voor het ADN dat het in het geheel geen punten kent en
+   *  afzonderlijk wordt beoordeeld. */
   basis_note?: string | null;
+}
+
+export interface AdnExemptionRow {
+  product: string;
+  class?: string;
+  selector?: string;
+  limit: number | null;
+  quantity: number | null;
+}
+
+/** ADN 1.1.3.6.1: vrijstelling op brutomassa, met een eigen grens per klasse.
+ *  Geen puntentelling — het ADN kent die niet. */
+export interface AdnExemptionResult {
+  rows: AdnExemptionRow[];
+  total_gross_mass_kg: number;
+  threshold: number;
+  status: "exempt_possible" | "above_threshold" | "not_exempt" | "incomplete";
+  over_class_limit: { class: string; selector: string; limit: number; carried: number }[];
+  incomplete_products: string[];
+  basis: string;
+  conditions: string[];
+  note: string;
 }
 
 export interface ComplianceWarning {
@@ -648,15 +672,26 @@ export interface LqEqResult {
 export interface QValueResult {
   position: string | number;
   components: { product: string; net_quantity: number; max_per_package: number; ratio: number }[];
-  q_value: number;
-  exceeded: boolean;
+  /** Null wanneer er niets te rekenen viel of de invoer onvolledig was. */
+  q_value: number | null;
+  exceeded: boolean | null;
+  status?: "ok" | "exceeded" | "incomplete" | "not_checked";
   note: string;
+}
+
+/** Of de Q-controle van 5.0.2.11 daadwerkelijk is uitgevoerd. Hoort bij de
+ *  uitkomst, zodat ook de export het ziet en niet alleen dit paneel. */
+export interface QCheckStatus {
+  status: "checked" | "incomplete" | "exceeded" | "not_checked";
+  message: string;
 }
 
 export interface DgComplianceResult {
   sources: Record<string, string>;
   profiles: string[];
   adr_points?: AdrPointsResult;
+  /** Alleen bij het ADN-profiel: de eigen vrijstelling van 1.1.3.6.1. */
+  adn_exemption?: AdnExemptionResult;
   adr_mixed_loading?: ComplianceWarning[];
   /** Zelfde voorbehoud als `basis_note`, voor de samenlading van 7.5.2. */
   adr_mixed_loading_basis_note?: string;
@@ -679,5 +714,6 @@ export interface DgComplianceResult {
   /** LQ/EQ-toets van 3.4/3.5 — aanwezig bij ADR-, RID-, ADN- en IMDG-profielen. */
   lq_eq?: LqEqResult;
   q_values?: QValueResult[];
+  q_check_status?: QCheckStatus;
   cargo_aircraft_only_products?: string[];
 }

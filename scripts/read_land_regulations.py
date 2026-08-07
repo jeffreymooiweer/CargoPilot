@@ -275,43 +275,51 @@ def _normalise(text: str) -> str:
     return re.sub(r"[ \t]+", " ", text.replace("\xa0", " "))
 
 
-def locate(doc: str, provision: Provision) -> list[tuple[int, int]]:
-    """Find where a provision actually starts, as (page index, offset) pairs.
+_LEADER = re.compile(r"\.{3,}\s*\d+\s*$", re.MULTILINE)
 
-    A section number appears in the table of contents, in the running head and
-    in every cross-reference to it. What distinguishes the provision itself is
-    that the number sits at the start of a line and is followed by its text —
-    not by a page number, and not by a comma or a bracket as a reference would
-    be.
+
+def _is_contents_page(text: str) -> bool:
+    """A contents page is mostly dot leaders ending in a page number."""
+    return len(_LEADER.findall(text)) >= 4
+
+
+def locate(doc: str, provision: Provision) -> list[tuple[int, int, int]]:
+    """Find where a provision actually starts, best candidate first.
+
+    These are two-column documents: the clause number sits in the left margin
+    and extraction puts it on a line of its own, with the text beginning on the
+    next line. An earlier version required the text to follow on the same line
+    and therefore found almost nothing.
+
+    The same number also appears in the contents, in the running head and in
+    every cross-reference. Rather than guess which occurrence is the provision,
+    every candidate is scored by how much prose follows it, and the richest
+    wins. Returned as (score, page index, offset).
     """
-    hits: list[tuple[int, int]] = []
     number = re.escape(provision.section)
-    # Start of line, the number, then whitespace and something that is not a
-    # dotted continuation (3.4.1 must not match 3.4.13) and not a page number.
-    pattern = re.compile(rf"^[ \t]*{number}(?![.\d])[ \t]+(?![.\s]*\d+\s*$)(\S)", re.MULTILINE)
-    for index, text in enumerate(pages(doc)):
-        body = _normalise(text)
+    # The number at the start of a line, not the prefix of a longer number
+    # (3.4.1 must not match 3.4.13), then either the end of the line or a gap
+    # and the text itself.
+    pattern = re.compile(rf"^[ \t]*{number}(?![.\d])[ \t]*(?:$|[ \t]+(?=\S))", re.MULTILINE)
+
+    scored: list[tuple[int, int, int]] = []
+    page_texts = [_normalise(text) for text in pages(doc)]
+    for index, body in enumerate(page_texts):
+        if _is_contents_page(body):
+            continue
         for match in pattern.finditer(body):
-            hits.append((index, match.start()))
-    if provision.anchor:
-        anchored = [
-            (index, offset)
-            for index, offset in hits
-            if provision.anchor.lower() in _normalise(pages(doc)[index]).lower()
-        ]
-        # Some anchors sit on the following page (a table split across a break).
-        if not anchored:
-            anchored = [
-                (index, offset)
-                for index, offset in hits
-                if any(
-                    provision.anchor.lower() in _normalise(pages(doc)[near]).lower()
-                    for near in (index, min(index + 1, len(pages(doc)) - 1))
-                )
-            ]
-        if anchored:
-            return anchored
-    return hits
+            window = body[match.end(): match.end() + 700]
+            # A cross-reference is followed by more reference; a provision is
+            # followed by sentences. Letters are the cheapest proxy for prose.
+            score = sum(character.isalpha() for character in window)
+            if provision.anchor:
+                near = " ".join(page_texts[index: index + 2]).lower()
+                if provision.anchor.lower() in near:
+                    score += 5000
+            scored.append((score, index, match.start()))
+
+    scored.sort(reverse=True)
+    return scored
 
 
 def quote(doc: str, provision: Provision) -> None:
@@ -327,12 +335,10 @@ def quote(doc: str, provision: Provision) -> None:
         print("!! not found — the section number may differ in this regime,")
         print("!! or the provision is absent from it. That is itself an answer.")
         return
-    # The table of contents lists the number too. The real provision is the
-    # later, longer occurrence; take the last hit but show how many there were.
     if len(hits) > 1:
-        print(f"[{len(hits)} occurrences; showing the last, "
-              f"pages {', '.join(str(p + 1) for p, _ in hits)}]")
-    page_index, offset = hits[-1]
+        runners_up = ", ".join(f"p{page + 1}({score})" for score, page, _ in hits[1:4])
+        print(f"[{len(hits)} candidates; next best: {runners_up}]")
+    _, page_index, offset = hits[0]
     text = _normalise(pages(doc)[page_index])[offset:]
     # A provision can run over a page break; pull in what follows.
     following = ""

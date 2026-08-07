@@ -95,6 +95,21 @@ what the exemption does and does not release you from.
 on mixed compatibility groups within class 1, and on the CV28 separation of foodstuffs
 from labels 6.1/6.2 and certain class 9 substances.
 
+**ADN 1.1.3.6.1 — the inland waterway exemption, which is not the road one.** ADN has no
+points calculation. It exempts a consignment in packages when the gross mass of everything
+together stays under 3,000 kg *and* no class exceeds its own figure — 0 kg, 300 kg or
+3,000 kg depending on packing group, class 2 group, or whether a model No. 1 label is
+required. Carriage in tanks is never exempt. Pick the ADN profile and you get that
+calculation with its own card in the panel, alongside the conditions of 1.1.3.6.2 that
+survive the exemption. The two answers can differ: 1,200 litres of a packing group III
+liquid loses the ADR exemption at 1,200 points and keeps the ADN one, because 1,200 kg is
+well under 3,000.
+
+**ADR/RID 1.1.3.6.3 note (a) — nine substances that count differently.** UN 0081, 0082,
+0084, 0241, 0331, 0332, 0482, 1005 and 1017 may be carried up to 50 kg rather than the
+20 kg of transport category 1, and they count times 20 instead of times 50. So 50 kg of
+chlorine reaches exactly 1,000 and keeps the exemption.
+
 **ADR/IMDG 3.4 and 3.5 — limited and excepted quantities.** Enter the net quantity per
 inner packaging and CargoPilot compares it against the LQ value of column 7a and the
 E code of column 7b, per line. For LQ it also holds the package to the 30 kg gross limit

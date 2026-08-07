@@ -342,7 +342,13 @@
     "qExceeded": "ÜBERSCHREITET das Maximum von 1,0",
     "caoHint": "Cargo Aircraft Only gilt für: {{products}}. Vermerken Sie dies auf der Shipper's Declaration und in den AWB-Handling-Information.",
     "disclaimer": "Diese Prüfungen sind eine Hilfestellung auf Grundlage des ADR 2025 und der IATA DGR 67. Ausgabe und ersetzen weder einen Gefahrgutbeauftragten noch die amtlichen Vorschriften. Siehe Haftungsausschluss.",
-    "segGroupsTitle": "Trenngruppen IMDG 7.2.5 (Säuren, Laugen, Cyanide, …)"
+    "segGroupsTitle": "Trenngruppen IMDG 7.2.5 (Säuren, Laugen, Cyanide, …)",
+    "adnExemptionTitle": "ADN 1.1.3.6.1 — Freistellung nach Bruttomasse",
+    "adnTotalMass": "{{total}} kg von höchstens {{threshold}} kg",
+    "adnOverClass": "Klasse {{cls}}: {{carried}} kg über der Grenze von {{limit}} kg",
+    "adnConditions": "Bedingungen, die weiter gelten (1.1.3.6.2)",
+    "colClass": "Klasse",
+    "colAdnLimit": "Grenze"
   },
   "dgauto": {
     "title": "Automatisch abgeleitet",

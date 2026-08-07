@@ -433,8 +433,31 @@ def validate_document(
                         f"IATA 5.0.2.11: Q = {q.get('q_value')} (> 1)"
                         + (f" — {q.get('position')}" if q.get("position") else "")
                     )
-                elif q.get("status") == "incomplete":
+                elif q.get("status") in {"incomplete", "not_checked"}:
                     warnings.append(str(q.get("note") or "Q incomplete"))
+            # En als er in het geheel geen Q is gerekend, hoort dat er ook op:
+            # een controle die niet liep zag er op het document uit als een
+            # controle die slaagde.
+            q_status = outcome.get("q_check_status")
+            if q_status and q_status.get("status") in {"not_checked", "incomplete"}:
+                warnings.append(f"IATA DGR 5.0.2.11: {q_status['message']}")
+            adn = outcome.get("adn_exemption")
+            if adn and profile == "ADN":
+                if adn.get("status") == "incomplete":
+                    warnings.append(
+                        "ADN 1.1.3.6.1: " + _text("adr_points_incomplete", lang)
+                    )
+                elif adn.get("status") in {"not_exempt", "above_threshold"}:
+                    over = ", ".join(
+                        f"class {item['class']} {item['carried']} kg > {item['limit']} kg"
+                        for item in adn.get("over_class_limit") or []
+                    )
+                    detail = over or (
+                        f"{adn.get('total_gross_mass_kg')} kg > {adn.get('threshold')} kg"
+                    )
+                    warnings.append(
+                        "ADN 1.1.3.6.1: " + _text("adr_exemption_lost", lang).format(detail=detail)
+                    )
             points = outcome.get("adr_points")
             if points and profile in {"ADR", "RID", "ADN"}:
                 status = points.get("status")

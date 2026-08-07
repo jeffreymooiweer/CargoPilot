@@ -2,6 +2,84 @@
 
 All notable changes are documented here, following [Semantic Versioning](https://semver.org/).
 
+## [1.33.0] — 2026-08-07
+
+The land regulations are read instead of recalled, and reading them found two things the
+application had wrong.
+
+Every rule about road, rail and inland waterway in CargoPilot came from an ADR Table A data
+export plus general knowledge of how the three regimes are structured. The documentation
+said the regulatory texts were out of reach and marked every such rule as unverified. That
+premise was false: **ADR and ADN are published free of charge by UNECE and RID by OTIF.**
+Only the IMDG Code and the IATA DGR are sold. What was missing was a network route from the
+development container, not the documents.
+
+### Added
+
+- **`scripts/read_land_regulations.py` and a workflow to run it.** It fetches ADR 2025
+  (both volumes), RID 2025 and ADN 2025 from their publishers on a CI runner and prints the
+  provisions the application implements, addressed by the number they carry in the text. It
+  commits nothing — the quoted text stays in the run log, and only the values read out of it
+  are stored, each with its provision.
+
+- **ADN gets its own exemption rule, because it has one.** ADN 1.1.3.6.1 has no points
+  calculation at all: it exempts a consignment in packages when the gross mass of everything
+  together stays under 3,000 kg *and* no class exceeds its own figure — 0, 300 or 3,000 kg
+  depending on packing group, class 2 group, or whether a model No. 1 label is required.
+  Carriage in tanks is never exempt. Until now an inland waterway shipment was shown the ADR
+  points table, which is not an approximation of that answer but an answer to a different
+  question, and the two can point opposite ways: 1,200 litres of a packing group III liquid
+  loses the ADR exemption at 1,200 points and keeps the ADN one. The panel now carries an
+  ADN card with its own status, the per-class figures and the conditions of 1.1.3.6.2 that
+  survive the exemption.
+
+### Fixed
+
+- **Nine substances were counted at more than twice their proper weight.** Note (a) to the
+  table in ADR/RID 1.1.3.6.3 allows UN 0081, 0082, 0084, 0241, 0331, 0332, 0482, 1005 and
+  1017 up to 50 kg rather than the 20 kg of transport category 1, and RID 1.1.3.6.4 gives
+  the matching multiplier: times 20, not times 50. CargoPilot applied times 50 to all of
+  category 1, so 50 kg of chlorine or anhydrous ammonia scored 2,500 points and lost an
+  exemption the text grants at exactly 1,000 — the application demanded orange plates, a
+  driver certificate, written instructions and an ADR vehicle for loads entitled to go
+  without them.
+
+- **The IATA Q status reaches the document, not just the screen.** Whether the Q check of
+  5.0.2.11 actually ran was derived in the API route, so the compliance panel said "no Q
+  check was performed" and the export said nothing — at the one moment the document leaves.
+  `exporter.py` states in its own comment that the screen must never be the only place this
+  is enforced. The status is now part of the compliance outcome, so every caller sees it.
+
+- **A position that was never checked no longer counts as checked.** A position holding two
+  or more substances with no `n` and no `M` was skipped silently, so as soon as one other
+  position was filled in the whole shipment reported "checked". It is now reported as not
+  checked, and one unchecked position makes the shipment unchecked.
+
+### Changed
+
+- **Rail stops hedging about its own chapter.** RID 1.1.3.6.3 prescribes the same five
+  transport categories with the same maxima (0, 20, 333, 1000, unlimited) and 1.1.3.6.4 the
+  same multipliers (50, 3, 1) against the same calculated value of 1,000. The arithmetic was
+  right all along. The old note said RID "has its own 1.1.3.6 which CargoPilot does not
+  hold" — true, but it invited the user to distrust a number that is the number RID
+  prescribes. The panel now cites 1.1.3.6.3/1.1.3.6.4 and names the one real difference:
+  RID counts per wagon or large container, ADR per transport unit.
+
+- **The 3.4/3.5 limits are confirmed against the published text.** ADR 3.4.2's 30 kg,
+  3.4.3's 20 kg for shrink- and stretch-wrapped trays, 3.5.5's 1,000 packages and the whole
+  of table 3.5.1.2 (E1 30/1000, E2 30/500, E3 30/300, E4 1/500, E5 1/300) are as shipped in
+  v1.31.0. That release claimed they had been verified without leaving a record of it; there
+  is now a record, and the values were correct.
+
+- **`docs/dg-coverage.md`** separates what has been read from what has not. Road, rail and
+  inland waterway carry provision numbers; sea and air keep their `[verify]` markers,
+  because the IMDG Code and the DGR genuinely cannot be read here. The gap ranking loses
+  two entries and gains an ordered list of what to build next, starting with RID and ADN
+  mixed loading — which no longer needs anything CargoPilot cannot get.
+
+- The pinned example image and Docker Hub cleanup tags in the installation and privacy
+  guides, and the sample health response, moved off v1.29.3.
+
 ## [1.32.0] — 2026-08-05
 
 Nine dangerous-goods specialist findings from the v1.31.0 review are closed: air

@@ -48,7 +48,7 @@ Every other setting has a sensible default. If you want to change one, see
    manually.
 2. Map the volume `/mnt/user/appdata/cargopilot` → `/data`.
 3. Use the image `jeffersonmouze/cargopilot:latest`, or pin a specific version such as
-   `jeffersonmouze/cargopilot:v1.29.3`.
+   `jeffersonmouze/cargopilot:v1.33.0`.
 4. Fill in the `ADMIN_*` variables. `APP_SECRET_KEY` may stay empty — it is generated on
    first start and kept in `/data/secret_key`.
 5. Pick a WebUI port, for example `http://<server-ip>:9935`.
@@ -89,7 +89,7 @@ which happens at startup.
 > Docker images older than **v1.4.0** still contain an internal form that is not meant
 > for civilian use. Use `v1.4.0` or newer. To clean up old tags on Docker Hub, go to
 > GitHub → **Actions** → **Cleanup Docker Hub tags** → **Run workflow** and pass
-> `keep_tags`: `latest,v1.29.3,1.29.3`.
+> `keep_tags`: `latest,v1.33.0,1.33.0`.
 
 ## Troubleshooting
 

@@ -4,7 +4,16 @@ CargoPilot ships with reference data so that most of it works without internet a
 This page lists where each dataset comes from.
 
 Only **factual data** is included — a UN number mapped to a code, a material mapped to a
-density. Regulatory texts themselves are copyrighted and are not in this repository.
+density. Regulatory texts themselves are not in this repository.
+
+That policy is unchanged, but one assumption behind it was wrong and worth correcting.
+**ADR and ADN are published free of charge by UNECE, and RID by OTIF** — those three are
+not paywalled, only the IMDG Code and the IATA DGR are. What kept them out of reach was a
+network policy in the development container, not their price.
+`scripts/read_land_regulations.py` therefore reads them on a CI runner and prints the
+provisions the application implements to the run log, so a rule can be checked against the
+text. It commits nothing: the quoted text stays in the log, and only the values read out of
+it — thresholds, limits, multipliers — are stored, each with the provision it came from.
 
 - [Goods and densities](#goods-and-densities)
 - [Steel and timber profiles](#steel-and-timber-profiles)
@@ -69,6 +78,9 @@ goes quiet; typing an address by hand always works.
 | Segregation groups per substance (SGG1–SGG18, 629 entries) | IMDG Code chapter 3.1, section 3.1.4.4 — unchanged in 42-24; the separate SGG1a marking for strong acids was dropped in 41-22 |
 | Lithium and sodium-ion batteries in aviation | [IATA Guidance Document for Lithium Batteries and Sodium ion Batteries](https://www.iata.org/contentassets/05e6d8742b0047259bf3a700bc9d42b9/lithium-battery-guidance-document.pdf), 2026 edition |
 | ADR 1.1.3.6 points, loading together 7.5.2, IATA Table 9.3.A, Q value | ADR 2025 (UNECE) and the IATA DGR |
+| ADR 3.4.2/3.4.3 gross mass, table 3.5.1.2 E-code limits, 3.5.5 package cap, note (a) to 1.1.3.6.3 | Read from **ADR 2025 Volume I** (UNECE, ECE/TRANS/352) by `scripts/read_land_regulations.py` |
+| RID 1.1.3.6.3 categories and 1.1.3.6.4 multipliers, RID 5.4.1.1.1 particulars | Read from **RID 2025** (OTIF, Appendix C to COTIF) by the same script |
+| ADN 1.1.3.6.1 per-class exempted quantities and the 3,000 kg ceiling, 1.1.3.6.2 conditions | Read from **ADN 2025** (UNECE) by the same script |
 | Stowage codes SW1–SW31, handling codes H1–H5, segregation codes SG1–SG78 with their descriptions | IMDG Code chapters 7.1.5, 7.1.6 and 7.2.8, via IMO resolution **MSC.556(108)** (adopted 23 May 2024), read by `scripts/extract_imdg_codes.py` |
 | Dangerous Goods List per UN number — class, subsidiary hazards, packing group, special provisions, LQ/EQ, packing/IBC/tank instructions, EmS, stowage and handling (16a), segregation (16b), properties | IMDG Code chapter 3.2, Amendment 42-24, via IMO resolution **MSC.556(108)**, read by `scripts/extract_imdg_dgl.py` |
 | IMDG Amendment 42-24 changes over 41-22 | NCB Hazcheck, *IMDG Code Amendment 42-24 changes detailed summary*, October 2024 v1.0, and IMO **E&T 38/3/9** for the UN 1361 provisions |

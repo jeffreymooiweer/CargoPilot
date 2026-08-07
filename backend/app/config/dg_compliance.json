@@ -82,6 +82,22 @@
         "Unterweisung des Personals (8.2.3) mit Nachweis",
         "Zusammenladeverbote (7.5.2) und CV-Vorschriften gelten weiterhin"
       ]
+    },
+    "category_1_note_a": {
+      "source": "ADR 1.1.3.6.3 note (a) and RID 1.1.3.6.4",
+      "un_numbers": [
+        "0081",
+        "0082",
+        "0084",
+        "0241",
+        "0331",
+        "0332",
+        "0482",
+        "1005",
+        "1017"
+      ],
+      "factor": 20,
+      "max_quantity": 50
     }
   },
   "adr_mixed_loading": {
@@ -1100,6 +1116,185 @@
       "nl": "IMDG 7.2.6.3: tussen stoffen in dezelfde tabel hoeft geen scheiding te worden toegepast. Let bij tabel 7.2.6.3.4 op 7.2.6.4: de gevaarlijke reacties van 7.2.6.1.1 t/m 7.2.6.1.4 blijven gelden.",
       "en": "IMDG 7.2.6.3: no segregation needs to be applied between substances in the same table. For table 7.2.6.3.4, note 7.2.6.4: the dangerous reactions of 7.2.6.1.1 to 7.2.6.1.4 continue to apply.",
       "de": "IMDG 7.2.6.3: Zwischen Stoffen derselben Tabelle ist keine Trennung anzuwenden. Beachten Sie bei Tabelle 7.2.6.3.4 die 7.2.6.4: die gefährlichen Reaktionen nach 7.2.6.1.1 bis 7.2.6.1.4 gelten weiterhin."
+    }
+  },
+  "adn_exemption": {
+    "source": "ADN 1.1.3.6.1 and 1.1.3.6.2",
+    "total_gross_mass_kg": 3000,
+    "rules": [
+      {
+        "class": "1",
+        "selector": "all",
+        "limit": 0
+      },
+      {
+        "class": "2",
+        "selector": "toxic_groups",
+        "limit": 0,
+        "groups": [
+          "T",
+          "TF",
+          "TC",
+          "TO",
+          "TFC",
+          "TOC"
+        ]
+      },
+      {
+        "class": "2",
+        "selector": "group_f",
+        "limit": 300,
+        "groups": [
+          "F"
+        ]
+      },
+      {
+        "class": "2",
+        "selector": "other",
+        "limit": 3000
+      },
+      {
+        "class": "3",
+        "selector": "pg_i",
+        "limit": 300
+      },
+      {
+        "class": "3",
+        "selector": "other",
+        "limit": 3000
+      },
+      {
+        "class": "4.1",
+        "selector": "label_1",
+        "limit": 0
+      },
+      {
+        "class": "4.1",
+        "selector": "pg_i",
+        "limit": 300
+      },
+      {
+        "class": "4.1",
+        "selector": "other",
+        "limit": 3000
+      },
+      {
+        "class": "4.2",
+        "selector": "pg_i",
+        "limit": 300
+      },
+      {
+        "class": "4.2",
+        "selector": "other",
+        "limit": 3000
+      },
+      {
+        "class": "4.3",
+        "selector": "pg_i",
+        "limit": 300
+      },
+      {
+        "class": "4.3",
+        "selector": "other",
+        "limit": 3000
+      },
+      {
+        "class": "5.1",
+        "selector": "pg_i",
+        "limit": 300
+      },
+      {
+        "class": "5.1",
+        "selector": "other",
+        "limit": 3000
+      },
+      {
+        "class": "5.2",
+        "selector": "label_1",
+        "limit": 0
+      },
+      {
+        "class": "5.2",
+        "selector": "other",
+        "limit": 3000
+      },
+      {
+        "class": "6.1",
+        "selector": "pg_i",
+        "limit": 0
+      },
+      {
+        "class": "6.1",
+        "selector": "other",
+        "limit": 3000
+      },
+      {
+        "class": "6.2",
+        "selector": "category_a",
+        "limit": 0
+      },
+      {
+        "class": "6.2",
+        "selector": "other",
+        "limit": 3000
+      },
+      {
+        "class": "7",
+        "selector": "excepted_packages",
+        "limit": 3000,
+        "un_numbers": [
+          "2908",
+          "2909",
+          "2910",
+          "2911"
+        ]
+      },
+      {
+        "class": "7",
+        "selector": "other",
+        "limit": 0
+      },
+      {
+        "class": "8",
+        "selector": "pg_i",
+        "limit": 300
+      },
+      {
+        "class": "8",
+        "selector": "other",
+        "limit": 3000
+      },
+      {
+        "class": "9",
+        "selector": "all",
+        "limit": 3000
+      }
+    ],
+    "conditions": {
+      "nl": [
+        "De meldplicht van 1.8.5 blijft gelden",
+        "Verpakkingen moeten voldoen aan deel 4 en 6 van het ADR of RID; de kenmerking en etikettering van hoofdstuk 5.2 blijven van toepassing",
+        "Aan boord: het vervoersdocument (5.4.1.1) voor alle gevaarlijke goederen én het stuwplan (7.1.4.11.1)",
+        "De goederen worden in de ruimen gestuwd — niet van toepassing op gesloten containers en huifvoertuigen of huifwagens",
+        "Goederen van verschillende klassen ten minste 3 m horizontaal gescheiden en niet op elkaar gestuwd — niet van toepassing op gesloten containers en huifvoertuigen of huifwagens",
+        "Voor UN 2910 en 2911 boven de A2-waarde blijven 1.10.1 tot 1.10.3 gelden"
+      ],
+      "en": [
+        "The obligation to report under 1.8.5 remains applicable",
+        "Packagings shall comply with Parts 4 and 6 of ADR or RID; the marking and labelling of Chapter 5.2 remain applicable",
+        "On board: the transport document (5.4.1.1) covering all dangerous goods carried, and the stowage plan (7.1.4.11.1)",
+        "The goods are stowed in the holds — not applicable to closed containers or sheeted vehicles or wagons",
+        "Goods of different classes separated by at least 3 m horizontally and not stowed on top of each other — not applicable to closed containers or sheeted vehicles or wagons",
+        "For UN 2910 and 2911 above the A2 value, 1.10.1 to 1.10.3 remain applicable"
+      ],
+      "de": [
+        "Die Meldepflicht nach 1.8.5 bleibt anwendbar",
+        "Verpackungen müssen Teil 4 und 6 des ADR oder RID entsprechen; die Kennzeichnung und Bezettelung nach Kapitel 5.2 bleiben anwendbar",
+        "An Bord: das Beförderungspapier (5.4.1.1) für alle gefährlichen Güter und der Stauplan (7.1.4.11.1)",
+        "Die Güter werden in den Laderäumen gestaut — gilt nicht für geschlossene Container und bedeckte Fahrzeuge oder Wagen",
+        "Güter verschiedener Klassen mindestens 3 m horizontal getrennt und nicht übereinander gestaut — gilt nicht für geschlossene Container und bedeckte Fahrzeuge oder Wagen",
+        "Für UN 2910 und 2911 über dem A2-Wert bleiben 1.10.1 bis 1.10.3 anwendbar"
+      ]
     }
   }
 }

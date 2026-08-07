@@ -74,6 +74,7 @@ export default function DgCompliancePanel({ entries, profiles }: Props) {
   if (entries.length === 0 || profiles.length === 0) return null;
 
   const adr = result?.adr_points;
+  const adn = result?.adn_exemption;
   // Een verlopen regelset gaat vóór alle inhoudelijke bevindingen: die
   // bevindingen zijn ermee gerekend.
   const warnings: ComplianceWarning[] = [
@@ -204,6 +205,83 @@ export default function DgCompliancePanel({ entries, profiles }: Props) {
           {adr.status === "above_threshold" && (
             <p className="text-xs text-amber-700 dark:text-amber-300">{t("compliance.aboveThresholdHint")}</p>
           )}
+        </CollapsibleSection>
+      )}
+
+      {/* Het ADN kent geen puntentelling. Zijn vrijstelling van 1.1.3.6.1 gaat
+          over brutomassa met een eigen grens per klasse, en die uitkomst kan
+          tegengesteld zijn aan de ADR-punten hierboven. Daarom een eigen kaart
+          in plaats van een voetnoot bij een telling die hier niet geldt. */}
+      {adn && (
+        <CollapsibleSection
+          title={t("compliance.adnExemptionTitle")}
+          defaultOpen={adn.status === "not_exempt" || adn.status === "above_threshold"}
+          chips={
+            <>
+              <SummaryChip className={STATUS_STYLES[adn.status]}>
+                {t(`compliance.status.${adn.status}`)}
+              </SummaryChip>
+              <span className="text-xs text-slate-600 dark:text-slate-300">
+                {t("compliance.adnTotalMass", {
+                  total: adn.total_gross_mass_kg,
+                  threshold: adn.threshold,
+                })}
+              </span>
+            </>
+          }
+        >
+          <div className="overflow-x-auto">
+            <table className="w-full min-w-[420px] text-left text-xs">
+              <thead>
+                <tr className="border-b border-slate-200 text-slate-500 dark:border-slate-700 dark:text-slate-400">
+                  <th className="py-1.5 pr-2 font-medium">{t("compliance.colProduct")}</th>
+                  <th className="py-1.5 pr-2 font-medium">{t("compliance.colClass")}</th>
+                  <th className="py-1.5 pr-2 font-medium">{t("compliance.colQuantity")}</th>
+                  <th className="py-1.5 font-medium">{t("compliance.colAdnLimit")}</th>
+                </tr>
+              </thead>
+              <tbody className="text-slate-700 dark:text-slate-300">
+                {adn.rows.map((row, i) => (
+                  <tr key={i} className="border-b border-slate-100 dark:border-slate-800">
+                    <td className="py-1.5 pr-2">{row.product}</td>
+                    <td className="py-1.5 pr-2">{row.class ?? "—"}</td>
+                    <td className="py-1.5 pr-2">{row.quantity ?? "—"}</td>
+                    <td className="py-1.5 font-medium">
+                      {row.limit != null ? `${row.limit} kg` : "—"}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
+          {adn.over_class_limit.length > 0 && (
+            <ul className="ml-4 list-disc text-xs text-red-600 dark:text-red-400">
+              {adn.over_class_limit.map((over, i) => (
+                <li key={i}>
+                  {t("compliance.adnOverClass", {
+                    cls: over.class,
+                    carried: over.carried,
+                    limit: over.limit,
+                  })}
+                </li>
+              ))}
+            </ul>
+          )}
+          {adn.status === "incomplete" && (
+            <p className="text-xs text-amber-600 dark:text-amber-300">
+              {t("compliance.incompleteHint", { products: adn.incomplete_products.join(", ") })}
+            </p>
+          )}
+          <p className="text-[11px] text-slate-500 dark:text-slate-400">{adn.note}</p>
+          <details className="text-xs text-slate-600 dark:text-slate-300">
+            <summary className="cursor-pointer font-medium">
+              {t("compliance.adnConditions")}
+            </summary>
+            <ul className="ml-4 mt-1 list-disc">
+              {adn.conditions.map((x, i) => <li key={i}>{x}</li>)}
+            </ul>
+          </details>
         </CollapsibleSection>
       )}
 

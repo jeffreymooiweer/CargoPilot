@@ -342,7 +342,13 @@
     "qExceeded": "OVERSCHRIJDT het maximum van 1,0",
     "caoHint": "Cargo Aircraft Only van toepassing op: {{products}}. Vermeld dit op de Shipper's Declaration en de AWB-handling information.",
     "disclaimer": "Deze controles zijn begeleiding op basis van ADR 2025 en IATA DGR 67e editie en vervangen geen veiligheidsadviseur of de officiële regelgeving. Zie de disclaimer.",
-    "segGroupsTitle": "Scheidingsgroepen IMDG 7.2.5 (zuren, alkaliën, cyaniden, …)"
+    "segGroupsTitle": "Scheidingsgroepen IMDG 7.2.5 (zuren, alkaliën, cyaniden, …)",
+    "adnExemptionTitle": "ADN 1.1.3.6.1 — vrijstelling op brutomassa",
+    "adnTotalMass": "{{total}} kg van maximaal {{threshold}} kg",
+    "adnOverClass": "Klasse {{cls}}: {{carried}} kg boven de grens van {{limit}} kg",
+    "adnConditions": "Voorwaarden die blijven gelden (1.1.3.6.2)",
+    "colClass": "Klasse",
+    "colAdnLimit": "Grens"
   },
   "dgauto": {
     "title": "Automatisch afgeleid",

@@ -49,7 +49,7 @@ your shipment ever goes anywhere.
 
 1. Use `v1.4.0` or newer.
 2. Remove old tags on Docker Hub: GitHub → **Actions** → **Cleanup Docker Hub tags** →
-   **Run workflow**, with `keep_tags`: `latest,v1.29.3,1.29.3`.
+   **Run workflow**, with `keep_tags`: `latest,v1.33.0,1.33.0`.
 3. `docker pull jeffersonmouze/cargopilot:latest` and restart the container.
 
 On upgrade to v1.0.0 or later, any legacy items with the source `overzicht_materieel` are

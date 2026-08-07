@@ -106,7 +106,7 @@ class Provision:
     # Some provisions are easier to find by a phrase than by their number: the
     # number appears in the table of contents, in cross-references and in the
     # running head long before it appears at the provision itself.
-    anchor: str | None = None
+    anchors: tuple[str, ...] = ()
     chars: int = 2600
     note: str = ""
 
@@ -123,7 +123,7 @@ GROUPS: dict[str, list[Provision]] = {
         Provision("3.4.3", ("adr1", "rid", "adn"), chars=1200,
                   note="shrink- or stretch-wrapped trays — expected 20 kg"),
         Provision("3.5.1.2", ("adr1", "rid", "adn"), chars=2600,
-                  anchor="Maximum net quantity per inner packaging",
+                  anchors=("Maximum net quantity per inner packaging",),
                   note="table of E-code limits, E1 to E5"),
         Provision("3.5.1.4", ("adr1", "rid", "adn"), chars=1400,
                   note="how mixed inner packagings are counted"),
@@ -144,7 +144,9 @@ GROUPS: dict[str, list[Provision]] = {
     # CargoPilot answers all three with ADR's table.
     "exemptions": [
         Provision("1.1.3.6", ("adr1", "rid", "adn"), chars=6000,
-                  anchor="Exemptions related to quantities carried",
+                  anchors=("Exemptions related to quantities carried",
+                           "Total maximum permissible quantity per wagon",
+                           "maximum total quantity per transport unit"),
                   note="transport categories, multipliers and the threshold"),
     ],
     # Mixed loading. Same question as above.
@@ -276,11 +278,26 @@ def _normalise(text: str) -> str:
 
 
 _LEADER = re.compile(r"\.{3,}\s*\d+\s*$", re.MULTILINE)
+# RID numbers its pages "1-3" (chapter-page) and its contents is a column of
+# those, with no dot leaders at all. An earlier version only knew about leaders
+# and so handed RID's contents page back as if it were chapter 1.1.3.6.
+_CHAPTER_PAGE = re.compile(r"^[ \t]*\d+-\d+[ \t]*$", re.MULTILINE)
+_BARE_NUMBER = re.compile(r"^[ \t]*\d+(?:\.\d+){1,4}[ \t]*$", re.MULTILINE)
 
 
 def _is_contents_page(text: str) -> bool:
-    """A contents page is mostly dot leaders ending in a page number."""
-    return len(_LEADER.findall(text)) >= 4
+    """Is this a table of contents rather than the regulation itself?
+
+    Three signals, because the three documents format their contents
+    differently: dot leaders, a column of chapter-page references, and a page
+    that is almost nothing but clause numbers. A body page carries a handful of
+    clause numbers; a contents page carries dozens.
+    """
+    return (
+        len(_LEADER.findall(text)) >= 4
+        or len(_CHAPTER_PAGE.findall(text)) >= 5
+        or len(_BARE_NUMBER.findall(text)) >= 18
+    )
 
 
 def locate(doc: str, provision: Provision) -> list[tuple[int, int, int]]:
@@ -312,9 +329,9 @@ def locate(doc: str, provision: Provision) -> list[tuple[int, int, int]]:
             # A cross-reference is followed by more reference; a provision is
             # followed by sentences. Letters are the cheapest proxy for prose.
             score = sum(character.isalpha() for character in window)
-            if provision.anchor:
+            if provision.anchors:
                 near = " ".join(page_texts[index: index + 2]).lower()
-                if provision.anchor.lower() in near:
+                if any(phrase.lower() in near for phrase in provision.anchors):
                     score += 5000
             scored.append((score, index, match.start()))
 

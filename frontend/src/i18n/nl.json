@@ -108,7 +108,8 @@
     "width_cm": "Breedte (cm)",
     "height_cm": "Hoogte (cm)",
     "cargoForm": "Vorm",
-    "wallThickness": "Wanddikte (mm)"
+    "wallThickness": "Wanddikte (mm)",
+    "diameter": "Diameter (cm)"
   },
   "import": {
     "downloadTemplate": "Template downloaden",

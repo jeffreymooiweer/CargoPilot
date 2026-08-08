@@ -108,7 +108,8 @@
     "width_cm": "Width (cm)",
     "height_cm": "Height (cm)",
     "cargoForm": "Form",
-    "wallThickness": "Wall thickness (mm)"
+    "wallThickness": "Wall thickness (mm)",
+    "diameter": "Diameter (cm)"
   },
   "import": {
     "downloadTemplate": "Download template",

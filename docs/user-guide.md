@@ -119,6 +119,10 @@ mm**. Leave it empty and the line reports that the thickness is missing rather t
 producing a weight; a plate, a beam or a plank does not show the field at all, because
 three measurements already describe them.
 
+**A round section needs no height.** For a pipe or a round bar the width column *is* the
+diameter and the height field shows a dash: a diameter, a length and — for a pipe — a wall
+thickness fix the weight completely.
+
 **The weight recalculates by itself.** There is no recalculate button any more. Change a
 quantity, a unit, a form or a dimension and the figures follow shortly after you stop
 typing.

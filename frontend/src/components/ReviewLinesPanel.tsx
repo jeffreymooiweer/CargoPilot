@@ -13,6 +13,10 @@ export interface DraftLine {
   /** De vorm waarin dit goed reist: massief, gestapeld, los gestort. Bepaalt
    *  hoeveel van een kuub daadwerkelijk materiaal is. */
   cargo_form?: string;
+  /** Wanddikte in millimeters. Alleen zinvol bij een doorsnede die een wand
+   *  heeft — een hoekprofiel of koker. Bij een plaat of balk beschrijven de drie
+   *  buitenmaten het materiaal al volledig. */
+  wall_thickness_mm?: number | "";
   /** Afmetingen die de gebruiker zelf invult, in centimeters. Ze hoeven dus
    *  niet meer in de omschrijving te worden verstopt om mee te tellen. */
   length_cm?: number | "";
@@ -26,6 +30,15 @@ const inputClass =
 const weightInputClass =
   "w-full border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-950 text-slate-900 dark:text-slate-100 rounded-lg px-3 py-2 text-sm";
 const panelClass = "bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800";
+
+/**
+ * Doorsneden met een wand, waar lengte-breedte-hoogte het gewicht niet bepaalt.
+ *
+ * Een hoekprofiel van 80x80 is twee benen van een paar millimeter dik, geen
+ * massieve staaf van 80x80 — het scheelt een factor vijf. Bij een plaat, balk of
+ * plank speelt dat niet en hoort het veld er dus ook niet te staan.
+ */
+const WALL_PROFILE_TYPES = new Set(["angle_profile", "square_tube", "round_tube"]);
 
 interface Props {
   draftLines: DraftLine[];
@@ -246,6 +259,38 @@ export default function ReviewLinesPanel({
         );
       },
     })),
+    {
+      key: "wall_thickness_mm",
+      header: t("review.wallThickness"),
+      numeric: true,
+      width: "w-28",
+      render: (draft, index) => {
+        // Alleen tonen waar het iets betekent. Een plaat of een balk heeft geen
+        // wand, en een leeg veld dat nooit van toepassing is leidt alleen maar af.
+        const type = resultFor(index)?.product_type;
+        if (!type || !WALL_PROFILE_TYPES.has(type)) {
+          return <span className="text-slate-400">—</span>;
+        }
+        const missing = resultFor(index)?.messages.includes("wall_thickness_missing");
+        return (
+          <input
+            type="number"
+            step="0.1"
+            inputMode="decimal"
+            aria-label={t("review.wallThickness")}
+            className={`${numberInput} w-20 ${
+              missing ? "border-amber-400 dark:border-amber-600" : ""
+            }`}
+            value={draft.wall_thickness_mm ?? ""}
+            onChange={(e) =>
+              updateDraft(draft.id, {
+                wall_thickness_mm: e.target.value === "" ? "" : Number(e.target.value),
+              })
+            }
+          />
+        );
+      },
+    },
     {
       key: "weightEach",
       header: t("review.weightEach"),

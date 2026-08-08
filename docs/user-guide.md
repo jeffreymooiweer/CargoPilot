@@ -112,6 +112,17 @@ is 14,400 kg as beams and 6,480 kg tipped loose. For gravel, grain and liquids t
 shows a dash — their density already describes them as they travel, and applying a second
 factor would count the air twice.
 
+**A profile needs its wall thickness.** An angle profile of 80 × 80 is two legs a few
+millimetres thick, not a solid 80 × 80 bar — the difference is a factor of five. So for an
+angle profile, a square tube or a round tube a fourth field appears: **wall thickness in
+mm**. Leave it empty and the line reports that the thickness is missing rather than
+producing a weight; a plate, a beam or a plank does not show the field at all, because
+three measurements already describe them.
+
+**The weight recalculates by itself.** There is no recalculate button any more. Change a
+quantity, a unit, a form or a dimension and the figures follow shortly after you stop
+typing.
+
 **Dimensions belong in their own columns.** Length, width and height are fields on the
 line, so a description no longer has to read `balk 200x200x3000` for the measurements to
 count. Anything recognised in the description still fills in as a placeholder; what you

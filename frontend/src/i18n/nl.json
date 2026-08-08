@@ -45,7 +45,6 @@
     "totalVolume": "Totaal transportvolume",
     "warnings": "Waarschuwingen",
     "back": "Terug",
-    "recalculate": "Herbereken",
     "toExport": "Naar export",
     "toDg": "Naar gevaarlijke stoffen",
     "dgIntro": "Vul de gevaarlijke-stoffengegevens in voor alle colli die als DG zijn gemarkeerd of waarin een UN-nummer is herkend.",
@@ -108,7 +107,8 @@
     "length_cm": "Lengte (cm)",
     "width_cm": "Breedte (cm)",
     "height_cm": "Hoogte (cm)",
-    "cargoForm": "Vorm"
+    "cargoForm": "Vorm",
+    "wallThickness": "Wanddikte (mm)"
   },
   "import": {
     "downloadTemplate": "Template downloaden",
@@ -126,7 +126,8 @@
     }
   },
   "messages": {
-    "dg_un_detected": "UN-nummer gedetecteerd — collo gemarkeerd als gevaarlijke stoffen"
+    "dg_un_detected": "UN-nummer gedetecteerd — collo gemarkeerd als gevaarlijke stoffen",
+    "wall_thickness_missing": "Wanddikte ontbreekt — zonder die maat is het gewicht van een profiel niet te bepalen"
   },
   "status": {
     "ok": "OK",

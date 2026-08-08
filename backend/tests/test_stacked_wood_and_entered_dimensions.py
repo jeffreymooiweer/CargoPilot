@@ -6,7 +6,13 @@ verschil tussen wat er is ingevoerd en wat de applicatie daarvan maakte.
 **Hout.** De dichtheid van eiken is 720 kg/m³ en dat is de dichtheid van het
 hout zelf. Tussen de planken van een stapel zit lucht. Wie 20 m³ eiken invoerde
 kreeg 14 400 kg terug — het gewicht van 20 m³ massief eiken, wat vrijwel niemand
-vervoert. Plaatmateriaal is de uitzondering, want platen stapelen vlak.
+vervoert.
+
+v1.35.0 loste dat op met één verborgen factor van 0,65 voor al het hout. Dat was
+een gemiddelde dat niemands lading beschrijft: los gestort haardhout is lichter,
+een strak pakket zwaarder. Sinds v1.36.0 kiest de gebruiker de **vorm** en draagt
+die de factor — en dat geldt net zo goed voor staal (plaat tegenover schroot) en
+kunststof (granulaat tegenover maalgoed).
 
 **Afmetingen.** Lengte, breedte en hoogte moesten in de omschrijving worden
 verstopt ("balk 200x200x3000") omdat de rekenpaden alleen keken naar wat er uit
@@ -18,7 +24,14 @@ import pytest
 
 from app.core.database import SessionLocal
 from app.services.pipeline import parse_and_calculate
-from app.services.units import convert, stacked_density, stacking_factor
+from app.services.units import (
+    available_forms,
+    convert,
+    default_form,
+    effective_density,
+    fill_factor,
+    form_applies,
+)
 
 
 @pytest.fixture
@@ -50,20 +63,53 @@ def test_sheet_material_stacks_flat_and_keeps_its_own_density(db):
 
 
 @pytest.mark.parametrize("name", ["plywood", "osb", "mdf", "hdf", "chipboard", "clt", "glulam"])
-def test_every_sheet_like_product_is_treated_as_solid(name):
-    assert stacking_factor("wood", name) == 1.0
+def test_sheet_material_defaults_to_lying_flat(name):
+    assert default_form("wood", name).value == "sheets"
+    assert fill_factor("wood", name) == 1.0
 
 
 @pytest.mark.parametrize("name", ["oak", "spruce", "pine", "logs", "firewood", "teak"])
-def test_sawn_and_round_timber_gets_the_stacking_factor(name):
-    assert stacking_factor("wood", name) == pytest.approx(0.65)
+def test_sawn_and_round_timber_defaults_to_stacked(name):
+    assert default_form("wood", name).value == "stacked"
+    assert fill_factor("wood", name) == pytest.approx(0.65)
 
 
-def test_nothing_but_wood_is_stacked():
-    """Grind is stortgoed en heeft al een stortdichtheid; daar mag niets af."""
-    assert stacking_factor("bulk_material", "gravel") == 1.0
-    assert stacking_factor("metal", "steel") == 1.0
-    assert stacked_density(1600, "bulk_material") == 1600
+@pytest.mark.parametrize(
+    "form,expected",
+    [("solid", 14400.0), ("bundled", 10800.0), ("stacked", 9360.0), ("loose", 6480.0)],
+)
+def test_the_chosen_form_decides_the_weight(form, expected):
+    """Eén gemiddelde beschrijft niemands lading; los gestort haardhout is
+    lichter dan een strak pakket en dat mag de gebruiker zelf zeggen."""
+    assert convert(20, "m3", 720, "wood", canonical_name="oak", form=form).mass_kg == (
+        pytest.approx(expected)
+    )
+
+
+def test_the_form_never_double_counts_a_bulk_density():
+    """Bij grind is het opgeslagen getal al een stortdichtheid. Daar nog eens
+    "los gestort" overheen leggen zou de lucht twee keer aftrekken."""
+    assert not form_applies("bulk_material")
+    assert available_forms("bulk_material") == []
+    assert convert(20, "m3", 1600, "bulk_material", form="loose").mass_kg == 32000.0
+    assert effective_density(1600, "bulk_material", form="loose") == 1600
+
+
+def test_a_liquid_has_no_form_either():
+    assert available_forms("liquid") == []
+    assert convert(1000, "l", 745, "liquid", form="loose").mass_kg == pytest.approx(745.0)
+
+
+def test_steel_offers_the_same_choice_as_timber():
+    """Plaat tegenover schroot is hetzelfde onderscheid als balk tegenover
+    gestapeld hout, en het scheelt net zoveel."""
+    forms = [form.value for form in available_forms("metal")]
+    assert "solid" in forms and "loose" in forms
+    assert default_form("metal").value == "solid"
+    plate = convert(2, "m3", 7850, "metal", form="solid").mass_kg
+    scrap = convert(2, "m3", 7850, "metal", form="loose").mass_kg
+    assert plate == pytest.approx(15700.0)
+    assert scrap == pytest.approx(7065.0)
 
 
 def test_the_density_actually_used_is_reported():
@@ -71,8 +117,8 @@ def test_the_density_actually_used_is_reported():
     kunnen zien: er is met 468 kg/m³ gerekend en niet met 720."""
     out = convert(20, "m3", 720, "wood", canonical_name="oak")
     assert out.density_used_kg_m3 == pytest.approx(468.0)
-    assert out.stacking_factor == pytest.approx(0.65)
-    assert out.basis.value == "stacked"
+    assert out.fill_factor == pytest.approx(0.65)
+    assert out.form == "stacked"
 
 
 # --- Ingevulde afmetingen -------------------------------------------------

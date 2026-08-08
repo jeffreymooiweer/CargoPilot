@@ -65,6 +65,10 @@ class LineResult:
     # eenheden voor die bij dit soort lading horen: liter bij vloeistoffen,
     # ton bij stortgoed, stuks bij stukgoed.
     material_category: str | None = None
+    # De vorm waarin dit goed reist. Een gebruiker die zich afvraagt waar 9360 kg
+    # vandaan komt hoort te kunnen zien dat er met een gestapelde kuub is
+    # gerekend en niet met massief hout.
+    cargo_form: str | None = None
     product_type: str | None = None
     dimensions: dict[str, Any] = field(default_factory=dict)
     length_cm: float | None = None
@@ -185,6 +189,7 @@ def process_line(
     qty = overrides.get("quantity", row.quantity)
     messages: list[str] = []
     status = "ok"
+    cargo_form: str | None = None
     weight_each = None
     weight_total = None
     material_vol = None
@@ -346,6 +351,7 @@ def process_line(
             converted = convert_units(
                 qty, row.unit, density, material_obj.category,
                 canonical_name=material_obj.canonical_name,
+                form=overrides.get("cargo_form"),
             )
             if converted.mass_kg is not None or converted.volume_m3 is not None:
                 weight_total = converted.mass_kg
@@ -355,6 +361,8 @@ def process_line(
                 # app kent.
                 transport_vol = converted.volume_m3
                 method = f"unit_{converted.basis.value}"
+                density = converted.density_used_kg_m3 or density
+                cargo_form = converted.form
 
         if not dims.length_m and not weight_each and weight_total is None:
             messages.append("dimensions_missing")
@@ -394,6 +402,7 @@ def process_line(
         unit=row.unit,
         material=material_name,
         material_category=material_obj.category if material_obj else None,
+        cargo_form=cargo_form,
         material_density=density,
         product_type=product_type,
         dimensions={

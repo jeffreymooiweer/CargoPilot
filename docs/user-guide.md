@@ -106,6 +106,12 @@ permitted for carriage at all — will block the export until resolved.
 
 [Dangerous goods](dangerous-goods.md) explains all of it in detail.
 
+**Say how it travels.** Next to the unit sits a **form**: solid, sheets, bundled, stacked
+or loose bulk. It decides how much of a cubic metre is actually material, so 20 m³ of oak
+is 14,400 kg as beams and 6,480 kg tipped loose. For gravel, grain and liquids the field
+shows a dash — their density already describes them as they travel, and applying a second
+factor would count the air twice.
+
 **Dimensions belong in their own columns.** Length, width and height are fields on the
 line, so a description no longer has to read `balk 200x200x3000` for the measurements to
 count. Anything recognised in the description still fills in as a placeholder; what you

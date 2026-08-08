@@ -36,25 +36,35 @@ others — which drives which units the goods step offers first.
 > derived (`backend/app/services/units.py`), rather than treating it as something the data
 > states.
 
-**Timber is measured stacked, not solid.** Oak's 720 kg/m³ is the density of the wood; a
-cubic metre of stacked boards has air between them. Entering a volume for timber therefore
-uses a **stacking factor of 0.65** — a nominal packing figure, not a measurement — so 20 m³
-of oak is 9,360 kg rather than 14,400. Sheet material (plywood, OSB, MDF, HDF, chipboard,
-hardboard, softboard, cork, CLT, glulam) stacks flat and keeps its own density. Give a line
-explicit length, width and height and the solid density is used, because those dimensions
-describe actual material. The factor lives in `units.py` rather than in the goods database
-because `seed_catalogs` only fills that database when it is empty — new seed values never
-reach an existing installation, and a calculation that is only right for new users is worse
-than none.
+**The form a good travels in is a choice, not an assumption.** Oak is 720 kg/m³ and steel
+7850 — those are the densities of the *material*. A cubic metre of stacked boards, of
+loose-tipped firewood and of a solid beam are three different weights of the same wood, and
+the difference is air. Rather than hiding one average in the code, the line carries a
+**form** and the form carries the factor:
 
-Coverage spans construction materials and natural stone, metals (including precious and
-speciality metals), timber species and sheet material, fuels, chemicals and liquefied
-gases, fertilisers, grain, seed and animal feed, fruit and vegetables, foodstuffs, ores
-and minerals, plastics, paper, textiles, waste and recycling streams, and practical
-averages for general cargo such as pallets, white goods and machinery.
+| Form | Share of a cubic metre that is material |
+|---|---|
+| Solid / single piece | 1.00 |
+| Sheets, lying flat | 1.00 |
+| Bundled / packaged | 0.75 |
+| Stacked | 0.65 |
+| Loose bulk | 0.45 |
 
-Every alias is unique across the whole database, so a description always resolves to
-exactly one entry.
+So 20 m³ of oak is 14,400 kg solid, 10,800 bundled, 9,360 stacked or 6,480 loose — the
+shipper says which. The same choice applies to steel (plate against scrap), plastic
+(granulate against regrind), paper and textile.
+
+**Where the form deliberately does not apply.** For gravel, grain and ore the stored figure
+is *already* a bulk density: those goods travel no other way and the database describes them
+in that state. Laying a loose factor over that would subtract the air twice. The same holds
+for liquids and for the effective per-pallet averages. The form is therefore only offered
+where the stored number describes the substance itself.
+
+These factors are practical figures, not standards. They live in `units.py` rather than in
+the goods database because `seed_catalogs` only fills that database when it is empty — new
+seed values never reach an existing installation, and a calculation that is only right for
+new users is worse than none. A line with explicit length, width and height is weighed
+solid regardless, because those dimensions describe actual material.
 
 ## Steel and timber profiles
 

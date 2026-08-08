@@ -135,50 +135,128 @@ BASIS_BY_CATEGORY: dict[str, DensityBasis] = {
 }
 
 
-# --- Hout: gestapeld is niet massief ---------------------------------------
+# --- De vorm waarin het reist ---------------------------------------------
 #
-# De dichtheid van eiken is 720 kg/m³, en dat is de dichtheid van het hout zelf.
-# Een kuub gestapeld gezaagd hout is geen kuub hout: er zit lucht tussen de
-# planken, tussen de lagen en rond de stapel. Wie 20 m³ eiken invoert en 14 400
-# kg terugkrijgt, krijgt het gewicht van 20 m³ massief eiken en dat vervoert
-# vrijwel niemand.
+# De dichtheid van eiken is 720 kg/m³ en die van staal 7850. Dat zijn de
+# dichtheden van het materiaal zelf. Een kuub gestapelde planken, een kuub los
+# gestort haardhout en een kuub massieve balk zijn drie verschillende gewichten
+# van hetzelfde hout, en het verschil is lucht.
 #
-# Plaatmateriaal is de uitzondering. Platen stapelen vlak op elkaar zonder
-# noemenswaardige tussenruimte, dus daar ís een kuub stapel ongeveer een kuub
-# materiaal.
+# v1.35.0 loste dat op met één verborgen factor van 0,65 voor al het hout. Dat
+# was een gemiddelde dat niemands lading beschrijft. In plaats daarvan kiest de
+# gebruiker nu de vorm, en die vorm draagt de factor. Datzelfde geldt voor
+# staal (plaat tegenover schroot), kunststof (granulaat tegenover maalgoed) en
+# papier (balen tegenover los).
 #
-# Deze factoren zijn **praktijkwaarden en geen metingen**. Zij staan hier in
-# plaats van in de goederendatabase omdat die alleen bij een lege installatie
-# wordt gevuld: nieuwe seed-gegevens bereiken een bestaande installatie nooit,
-# en een berekening die alleen bij nieuwe gebruikers klopt is erger dan geen.
-# Wie het beter weet vult het gewicht met de hand in; dat overschrijft dit.
+# **Waar deze keuze niet geldt.** Bij grind, graan en erts is het opgeslagen
+# getal al een stortdichtheid: die stof wordt nooit anders dan gestort vervoerd
+# en de database beschrijft hem in die toestand. Daar nog eens een stortfactor
+# overheen leggen telt de lucht twee keer. Hetzelfde bij vloeistoffen en bij de
+# praktijkgemiddelden per pallet. De vorm wordt daarom alleen aangeboden waar
+# het opgeslagen getal de stof zelf beschrijft — zie ``form_applies``.
+#
+# De factoren zijn praktijkwaarden en geen normen. Ze staan hier omdat
+# ``seed_catalogs`` de goederentabel alleen vult wanneer die leeg is: nieuwe
+# seed-gegevens bereiken een bestaande installatie nooit.
+
+
+class CargoForm(str, Enum):
+    """Hoe het goed op het vervoermiddel ligt."""
+
+    SOLID = "solid"        # één stuk, of maatwerk met opgegeven afmetingen
+    SHEETS = "sheets"      # platen vlak op elkaar
+    BUNDLED = "bundled"    # strak gebundeld of in pakket
+    STACKED = "stacked"    # netjes gestapeld, met lucht ertussen
+    LOOSE = "loose"        # los gestort
+
+
+# Welk deel van een kuub daadwerkelijk materiaal is.
+FILL_FACTOR: dict[CargoForm, float] = {
+    CargoForm.SOLID: 1.0,
+    CargoForm.SHEETS: 1.0,
+    CargoForm.BUNDLED: 0.75,
+    CargoForm.STACKED: 0.65,
+    CargoForm.LOOSE: 0.45,
+}
+
+# Welke vormen bij een categorie horen, met de standaard vooraan. Alles blijft
+# kiesbaar; dit is een voorstel, net als bij de eenheden.
+FORMS_BY_CATEGORY: dict[str, tuple[CargoForm, ...]] = {
+    "wood": (CargoForm.STACKED, CargoForm.SOLID, CargoForm.SHEETS,
+             CargoForm.BUNDLED, CargoForm.LOOSE),
+    "metal": (CargoForm.SOLID, CargoForm.BUNDLED, CargoForm.STACKED, CargoForm.LOOSE),
+    "plastic": (CargoForm.SOLID, CargoForm.LOOSE, CargoForm.BUNDLED, CargoForm.STACKED),
+    "paper": (CargoForm.BUNDLED, CargoForm.SHEETS, CargoForm.STACKED, CargoForm.LOOSE),
+    "construction": (CargoForm.SOLID, CargoForm.STACKED, CargoForm.LOOSE, CargoForm.BUNDLED),
+    "concrete": (CargoForm.SOLID, CargoForm.LOOSE),
+    "insulation": (CargoForm.SHEETS, CargoForm.STACKED, CargoForm.BUNDLED, CargoForm.SOLID),
+    "textile": (CargoForm.BUNDLED, CargoForm.LOOSE, CargoForm.STACKED),
+}
+
+# Plaatmateriaal ligt vlak; daar is een kuub stapel bijna een kuub materiaal.
+# Dit bepaalt alleen de standaardvorm — de gebruiker mag altijd iets anders.
 SHEET_LIKE_WOOD = frozenset({
     "plywood", "chipboard", "osb", "mdf", "hdf", "hardboard", "softboard",
     "cork", "clt", "glulam",
 })
 
-# Gestapeld gezaagd hout en rondhout. Een gangbare vuistregel voor een nette
-# stapel is dat ongeveer tweederde van het stapelvolume hout is.
-STACKING_FACTOR_TIMBER = 0.65
-STACKING_FACTOR_SHEET = 1.0
+
+def form_applies(category: str | None) -> bool:
+    """Beschrijft het opgeslagen getal de stof zelf, of de gestorte toestand?
+
+    Alleen in het eerste geval valt er nog een vorm overheen te leggen. Grind
+    en graan dragen al een stortdichtheid; daar zou een tweede factor de lucht
+    dubbel tellen.
+    """
+    return density_basis(category) in {DensityBasis.SOLID, DensityBasis.STACKED}
 
 
-def stacking_factor(category: str | None, canonical_name: str | None = None) -> float:
-    """Welk deel van een kuub stapel daadwerkelijk materiaal is."""
-    if str(category or "").strip().lower() != "wood":
+def available_forms(category: str | None) -> list[CargoForm]:
+    """De vormen die bij deze categorie horen, standaard vooraan."""
+    if not form_applies(category):
+        return []
+    key = str(category or "").strip().lower()
+    return list(FORMS_BY_CATEGORY.get(key, (CargoForm.SOLID, CargoForm.STACKED,
+                                            CargoForm.BUNDLED, CargoForm.LOOSE)))
+
+
+def default_form(category: str | None, canonical_name: str | None = None) -> CargoForm | None:
+    """De vorm die zonder keuze wordt aangenomen."""
+    forms = available_forms(category)
+    if not forms:
+        return None
+    if str(category or "").lower() == "wood" and str(canonical_name or "").lower() in SHEET_LIKE_WOOD:
+        return CargoForm.SHEETS
+    return forms[0]
+
+
+def get_form(value: str | None) -> CargoForm | None:
+    try:
+        return CargoForm(str(value or "").strip().lower())
+    except ValueError:
+        return None
+
+
+def fill_factor(
+    category: str | None, canonical_name: str | None = None, form: str | None = None
+) -> float:
+    """Welk deel van een kuub materiaal is, gegeven de gekozen vorm."""
+    if not form_applies(category):
         return 1.0
-    if str(canonical_name or "").strip().lower() in SHEET_LIKE_WOOD:
-        return STACKING_FACTOR_SHEET
-    return STACKING_FACTOR_TIMBER
+    chosen = get_form(form) or default_form(category, canonical_name)
+    return FILL_FACTOR.get(chosen, 1.0) if chosen else 1.0
 
 
-def stacked_density(
-    density_kg_m3: float | None, category: str | None, canonical_name: str | None = None
+def effective_density(
+    density_kg_m3: float | None,
+    category: str | None,
+    canonical_name: str | None = None,
+    form: str | None = None,
 ) -> float | None:
-    """De dichtheid van een kuub zoals hij op de vrachtwagen staat."""
+    """De dichtheid van een kuub zoals hij op het vervoermiddel staat."""
     if density_kg_m3 is None:
         return None
-    return density_kg_m3 * stacking_factor(category, canonical_name)
+    return density_kg_m3 * fill_factor(category, canonical_name, form)
 
 
 def get_unit(code: str | None) -> Unit | None:
@@ -249,10 +327,11 @@ class Converted:
     # Waarom een van beide leeg bleef, als machineleesbare reden.
     missing: str | None = None
     # De dichtheid waarmee daadwerkelijk is gerekend, en het deel van een kuub
-    # stapel dat materiaal is. Bij hout wijkt dat af van de dichtheid van het
-    # goed zelf, en dat hoort de gebruiker te kunnen zien.
+    # dat materiaal is. Bij een gestapelde of gestorte vorm wijkt dat af van de
+    # dichtheid van het goed zelf, en dat hoort de gebruiker te kunnen zien.
     density_used_kg_m3: float | None = None
-    stacking_factor: float = 1.0
+    fill_factor: float = 1.0
+    form: str | None = None
 
 
 def convert(
@@ -263,17 +342,20 @@ def convert(
     mass_per_item_kg: float | None = None,
     volume_per_item_m3: float | None = None,
     canonical_name: str | None = None,
+    form: str | None = None,
 ) -> Converted:
     """Reken een ingevoerde hoeveelheid om naar massa en volume.
 
     De dichtheid slaat de brug tussen massa en volume. Ontbreekt zij, dan wordt
     alleen de kant ingevuld die rechtstreeks uit de eenheid volgt.
 
-    Bij hout gaat het om de gestapelde dichtheid: een kuub gestapelde planken is
-    geen kuub hout. Zie ``stacking_factor``.
+    De vorm bepaalt hoeveel van een kuub daadwerkelijk materiaal is: een kuub
+    gestapelde planken is geen kuub hout. Zie ``fill_factor``.
     """
     basis = density_basis(category)
-    factor = stacking_factor(category, canonical_name)
+    chosen = get_form(form) or default_form(category, canonical_name)
+    chosen_name = chosen.value if chosen else None
+    factor = fill_factor(category, canonical_name, form)
     if density_kg_m3 is not None and factor != 1.0:
         density_kg_m3 = density_kg_m3 * factor
     unit = get_unit(unit_code)
@@ -288,13 +370,13 @@ def convert(
         mass = amount * unit.factor
         volume = mass / density_kg_m3 if density_kg_m3 else None
         return Converted(mass, volume, basis, None if volume is not None else "density",
-                         density_kg_m3, factor)
+                         density_kg_m3, factor, chosen_name)
 
     if unit.dimension is Dimension.VOLUME:
         volume = amount * unit.factor
         mass = volume * density_kg_m3 if density_kg_m3 else None
         return Converted(mass, volume, basis, None if mass is not None else "density",
-                         density_kg_m3, factor)
+                         density_kg_m3, factor, chosen_name)
 
     if unit.dimension is Dimension.COUNT:
         # Een aantal draagt geen natuurkunde in zich. Zonder gewicht of volume
@@ -306,7 +388,7 @@ def convert(
         if volume is None and mass is not None and density_kg_m3:
             volume = mass / density_kg_m3
         missing = None if (mass is not None or volume is not None) else "per_item"
-        return Converted(mass, volume, basis, missing, density_kg_m3, factor)
+        return Converted(mass, volume, basis, missing, density_kg_m3, factor, chosen_name)
 
     # Lengte: alleen bruikbaar met een gewicht per meter, dat de profielentabel
     # levert. Dat pad loopt via pipeline.py en niet hierlangs.

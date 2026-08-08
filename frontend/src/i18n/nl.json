@@ -107,7 +107,8 @@
     "untitledLine": "Nieuwe regel",
     "length_cm": "Lengte (cm)",
     "width_cm": "Breedte (cm)",
-    "height_cm": "Hoogte (cm)"
+    "height_cm": "Hoogte (cm)",
+    "cargoForm": "Vorm"
   },
   "import": {
     "downloadTemplate": "Template downloaden",
@@ -200,7 +201,12 @@
     "categoryDeclaration": "Verklaring",
     "categoryInstructions": "Shipping instructions",
     "categoryGenerated": "Gegenereerd bedrijfsdocument",
-    "officialPdf": "Officieel PDF"
+    "officialPdf": "Officieel PDF",
+    "solid": "Massief / één stuk",
+    "sheets": "Plaatmateriaal (vlak)",
+    "bundled": "Gebundeld / pakket",
+    "stacked": "Gestapeld",
+    "loose": "Los gestort"
   },
   "docfields": {
     "title": "Zending- en documentgegevens",

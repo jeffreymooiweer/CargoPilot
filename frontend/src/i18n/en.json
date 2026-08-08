@@ -107,7 +107,8 @@
     "untitledLine": "New line",
     "length_cm": "Length (cm)",
     "width_cm": "Width (cm)",
-    "height_cm": "Height (cm)"
+    "height_cm": "Height (cm)",
+    "cargoForm": "Form"
   },
   "import": {
     "downloadTemplate": "Download template",
@@ -200,7 +201,12 @@
     "categoryDeclaration": "Declaration",
     "categoryInstructions": "Shipping instructions",
     "categoryGenerated": "Generated business document",
-    "officialPdf": "Official PDF"
+    "officialPdf": "Official PDF",
+    "solid": "Solid / single piece",
+    "sheets": "Sheets (flat)",
+    "bundled": "Bundled / packaged",
+    "stacked": "Stacked",
+    "loose": "Loose bulk"
   },
   "docfields": {
     "title": "Shipment and document details",

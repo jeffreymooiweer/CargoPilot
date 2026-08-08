@@ -74,9 +74,20 @@ def _is_class1(token: str) -> bool:
     return bool(re.match(r"^1(\.\d)?[A-S]?$", token)) and not token.startswith(("1.4S",))
 
 
-def _class1_compat_group(token: str) -> str | None:
-    match = re.match(r"^1\.\d([A-S])$", token)
-    return match.group(1) if match else None
+def _compat_group(product: dict[str, Any]) -> str | None:
+    """Compatibiliteitsgroep van een klasse 1-product (bijv. 1.4G → 'G').
+
+    De groep staat in Tabel A in de classificatiecode, niet in de klassekolom:
+    die zegt bij explosieven alleen "1". Vandaar dat de classificatiecode als
+    eerste wordt gelezen. Tot v1.40.1 keek de ADR-kant alleen naar het
+    klasseveld met een strak anker, waardoor 7.5.2.2 niet afging zodra de
+    divisie daar niet toevallig in stond.
+    """
+    for raw in (product.get("classification_code"), product.get("class"), product.get("subsidiary_risks")):
+        match = re.search(r"\b1\.\d\s*([A-HJ-NPS])\b", str(raw or "").upper())
+        if match:
+            return match.group(1)
+    return None
 
 
 def _matches_iata_key(token: str, key: str) -> bool:
@@ -462,7 +473,9 @@ def check_adr_mixed_loading(
 
     class1_products: list[tuple[str, str]] = []
     other_class_products: list[tuple[str, str, str]] = []
-    compat_groups: set[str] = set()
+    # Per compatibiliteitsgroep de colli die erin vallen, zodat de melding kan
+    # zeggen wélke colli het betreft en niet alleen hoeveel groepen er zijn.
+    compat_groups: dict[str, list[str]] = {}
     food_separation: list[str] = []
 
     for entry, index, product in _iter_products(entries):
@@ -473,9 +486,9 @@ def check_adr_mixed_loading(
 
         if primary.startswith("1") and not primary.endswith("S"):
             class1_products.append((label, un))
-            group = _class1_compat_group(primary)
-            if group:
-                compat_groups.add(group)
+            group = _compat_group(product)
+            if group and label not in compat_groups.setdefault(group, []):
+                compat_groups[group].append(label)
         elif primary and not primary.endswith("S"):
             other_class_products.append((label, un, primary))
 
@@ -520,7 +533,9 @@ def check_adr_mixed_loading(
             "message": pick(rules["rules"]["class1_compat_groups"], lang).replace(
                 "{groups}", ", ".join(sorted(compat_groups))
             ),
-            "products": ", ".join(class1_products),
+            "products": ", ".join(
+                label for group in sorted(compat_groups) for label in compat_groups[group]
+            ),
         })
     if food_separation:
         warnings.append({
@@ -653,7 +668,14 @@ def check_imdg_segregation(entries: list[dict[str, Any]], language: str = "nl") 
             for key_a in keys_a:
                 for key_b in keys_b:
                     value = table[key_a][class_order.index(key_b)]
-                    if value in {"1", "2", "3", "4"} and (not worst or int(value) > int(worst)):
+                    # Een cijfer wint altijd van een "*": die verwijst door naar
+                    # 7.2.7 en zegt zelf geen afstand. `not worst` als test liet
+                    # int("*") toe zodra de eerste cel een "*" was en een
+                    # volgende een cijfer — een klasse 1-collo met een
+                    # nevengevaar naast een ander klasse 1-collo deed dat.
+                    if value in {"1", "2", "3", "4"} and (
+                        not worst.isdigit() or int(value) > int(worst)
+                    ):
                         worst = value
                         worst_pair = (key_a, key_b)
                     elif value == "*" and not worst:
@@ -675,15 +697,6 @@ def check_imdg_segregation(entries: list[dict[str, Any]], language: str = "nl") 
                 "pair": "|".join(pair_id),
             })
     return warnings
-
-
-def _compat_group(product: dict[str, Any]) -> str | None:
-    """Compatibiliteitsgroep van een klasse 1-product (bijv. 1.4G → 'G')."""
-    for raw in (product.get("classification_code"), product.get("class"), product.get("subsidiary_risks")):
-        match = re.search(r"\b1\.\d\s*([A-HJ-NPS])\b", str(raw or "").upper())
-        if match:
-            return match.group(1)
-    return None
 
 
 def check_imdg_class1_compatibility(

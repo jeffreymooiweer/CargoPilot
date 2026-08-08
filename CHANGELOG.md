@@ -2,6 +2,34 @@
 
 All notable changes are documented here, following [Semantic Versioning](https://semver.org/).
 
+## [1.36.0] — 2026-08-08
+
+### Changed
+
+- **The form a good travels in is now a choice on the line, not an average in the code.**
+  v1.35.0 weighed all timber at a stacking factor of 0.65. That is a reasonable figure for
+  neatly stacked sawn timber and a poor one for everything else: loose-tipped firewood is
+  nearer 0.45 and a tight package nearer 0.75. One average describes nobody's load.
+
+  Each line now carries a **form** — solid, sheets, bundled, stacked or loose bulk — and the
+  form carries the factor. So 20 m³ of oak is 14,400 kg solid, 10,800 bundled, 9,360 stacked
+  or 6,480 loose, and the shipper says which. The same choice applies wherever it matters:
+  steel plate against steel scrap, plastic granulate against regrind, baled paper against
+  loose.
+
+  The default still fits the goods — sawn timber starts stacked, sheet material flat, metal
+  solid — so nothing needs choosing to get a sensible answer.
+
+- **The form does not apply where the density already describes the shipped state.** For
+  gravel, grain and ore the stored figure *is* a bulk density; laying a loose factor over it
+  would subtract the air twice. Same for liquids and for the per-pallet averages. Those
+  lines show a dash instead of a dropdown, and the API returns an empty list of forms for
+  them.
+
+- **The result says what it used.** The compliance of a number matters as much as the
+  number: a line reports the form it was weighed in and the density that produced it, so
+  9,360 kg can be traced to 468 kg/m³ rather than 720.
+
 ## [1.35.0] — 2026-08-08
 
 ### Added

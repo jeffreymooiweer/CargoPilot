@@ -255,8 +255,10 @@ export interface LineItem {
   unit: string | null;
   material: string | null;
   /** Categorie van het herkende goed, bijvoorbeeld "liquid" of "bulk_material".
-   *  Bepaalt welke eenheden de keuzelijst als eerste voorstelt. */
+   *  Bepaalt welke eenheden en vormen de keuzelijsten als eerste voorstellen. */
   material_category?: string | null;
+  /** De vorm waarmee is gerekend: massief, gestapeld, los gestort. */
+  cargo_form?: string | null;
   product_type: string | null;
   weight_each_kg: number | null;
   weight_total_kg: number | null;
@@ -736,6 +738,12 @@ export interface DgComplianceResult {
  *  de lijst niet nog eens overschrijft. */
 export interface UnitCatalogue {
   units: { code: string; symbol: string; dimension: "mass" | "volume" | "length" | "count" }[];
+  /** De vorm waarin een goed reist, met het deel van een kuub dat materiaal is. */
+  forms: { code: string; fill_factor: number }[];
+  /** Per categorie de toepasselijke vormen, standaard vooraan. Leeg betekent dat
+   *  de vorm niet speelt: bij grind is de opgeslagen dichtheid al een
+   *  stortdichtheid en zou een tweede factor de lucht dubbel tellen. */
+  forms_by_category: Record<string, string[]>;
   suggested_by_category: Record<string, string[]>;
   default_suggested: string[];
   density_basis_by_category: Record<string, string>;

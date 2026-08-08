@@ -107,7 +107,8 @@
     "untitledLine": "Neue Zeile",
     "length_cm": "Länge (cm)",
     "width_cm": "Breite (cm)",
-    "height_cm": "Höhe (cm)"
+    "height_cm": "Höhe (cm)",
+    "cargoForm": "Form"
   },
   "import": {
     "downloadTemplate": "Vorlage herunterladen",
@@ -200,7 +201,12 @@
     "categoryDeclaration": "Erklärung",
     "categoryInstructions": "Shipping Instructions",
     "categoryGenerated": "Erzeugtes Geschäftsdokument",
-    "officialPdf": "Offizielles PDF"
+    "officialPdf": "Offizielles PDF",
+    "solid": "Massiv / Einzelstück",
+    "sheets": "Plattenware (flach)",
+    "bundled": "Gebündelt / Paket",
+    "stacked": "Gestapelt",
+    "loose": "Lose geschüttet"
   },
   "docfields": {
     "title": "Sendungs- und Dokumentdaten",

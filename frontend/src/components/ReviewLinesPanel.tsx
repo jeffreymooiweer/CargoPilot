@@ -10,6 +10,9 @@ export interface DraftLine {
   description: string;
   quantity: number | "";
   unit: string;
+  /** De vorm waarin dit goed reist: massief, gestapeld, los gestort. Bepaalt
+   *  hoeveel van een kuub daadwerkelijk materiaal is. */
+  cargo_form?: string;
   /** Afmetingen die de gebruiker zelf invult, in centimeters. Ze hoeven dus
    *  niet meer in de omschrijving te worden verstopt om mee te tellen. */
   length_cm?: number | "";
@@ -191,6 +194,32 @@ export default function ReviewLinesPanel({
           />
         </div>
       ),
+    },
+    {
+      key: "cargoForm",
+      header: t("review.cargoForm"),
+      width: "w-40",
+      render: (draft, index) => {
+        const category = resultFor(index)?.material_category;
+        const forms = (category && catalogue?.forms_by_category[category]) || [];
+        // Geen vorm bij grind, graan of vloeistoffen: daar beschrijft de
+        // opgeslagen dichtheid de stof al zoals hij vervoerd wordt.
+        if (forms.length === 0) return <span className="text-slate-400">—</span>;
+        return (
+          <select
+            aria-label={t("review.cargoForm")}
+            className={`${weightInputClass} w-36`}
+            value={draft.cargo_form ?? resultFor(index)?.cargo_form ?? ""}
+            onChange={(e) => updateDraft(draft.id, { cargo_form: e.target.value })}
+          >
+            {forms.map((form) => (
+              <option key={form} value={form}>
+                {t(`forms.${form}`, form)}
+              </option>
+            ))}
+          </select>
+        );
+      },
     },
     ...(["length_cm", "width_cm", "height_cm"] as const).map((field) => ({
       key: field,

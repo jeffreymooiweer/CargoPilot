@@ -45,7 +45,6 @@
     "totalVolume": "Total transport volume",
     "warnings": "Warnings",
     "back": "Back",
-    "recalculate": "Recalculate",
     "toExport": "Continue to export",
     "toDg": "Continue to dangerous goods",
     "dgIntro": "Complete the dangerous goods details for all packages marked as DG or in which a UN number was detected.",
@@ -108,7 +107,8 @@
     "length_cm": "Length (cm)",
     "width_cm": "Width (cm)",
     "height_cm": "Height (cm)",
-    "cargoForm": "Form"
+    "cargoForm": "Form",
+    "wallThickness": "Wall thickness (mm)"
   },
   "import": {
     "downloadTemplate": "Download template",
@@ -126,7 +126,8 @@
     }
   },
   "messages": {
-    "dg_un_detected": "UN number detected — package marked as dangerous goods"
+    "dg_un_detected": "UN number detected — package marked as dangerous goods",
+    "wall_thickness_missing": "Wall thickness missing — without it a profile's weight cannot be determined"
   },
   "status": {
     "ok": "OK",

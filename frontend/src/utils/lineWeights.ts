@@ -98,6 +98,7 @@ export function dimensionOverridesFromDrafts(
   drafts: {
     description: string;
     cargo_form?: string;
+    wall_thickness_mm?: number | "";
     length_cm?: number | "";
     width_cm?: number | "";
     height_cm?: number | "";
@@ -111,6 +112,12 @@ export function dimensionOverridesFromDrafts(
       let any = false;
       if (draft.cargo_form) {
         entry.cargo_form = draft.cargo_form;
+        any = true;
+      }
+      // Millimeters op het scherm voor de wanddikte — een wand van 0,8 cm
+      // schrijft niemand op — en meters naar de backend.
+      if (typeof draft.wall_thickness_mm === "number" && draft.wall_thickness_mm > 0) {
+        entry.wall_thickness_m = draft.wall_thickness_mm / 1000;
         any = true;
       }
       ([["length_cm", "length_m"], ["width_cm", "width_m"], ["height_cm", "height_m"]] as const).forEach(

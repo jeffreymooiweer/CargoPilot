@@ -170,6 +170,26 @@ def build_output_description(description: str, product_type: str | None, dims: D
     return description
 
 
+# Doorsneden met een wand. Bij deze vormen zegt lengte-breedte-hoogte niets over
+# het gewicht: een hoekprofiel van 80x80 is twee benen van 8 mm dik en geen
+# massieve staaf van 80x80. Het verschil is een factor vijf, en dat is precies
+# het soort getal dat er op een vrachtbrief betrouwbaar uitziet.
+#
+# Voor een plaat, een balk, een plank of een blok speelt dit niet: daar
+# beschrijven drie maten het materiaal volledig. Het veld hoort dus alleen te
+# verschijnen waar het iets betekent.
+WALL_PROFILE_TYPES = {"angle_profile", "square_tube", "round_tube"}
+
+
+def _positive(value: Any) -> float | None:
+    """Een maat is pas een maat als zij groter is dan nul."""
+    try:
+        number = float(value)
+    except (TypeError, ValueError):
+        return None
+    return number if number > 0 else None
+
+
 def process_line(
     line_id: int,
     row: ParsedRow,
@@ -205,6 +225,10 @@ def process_line(
     # overgenomen voor het scherm, maar bleven de rekenpaden hieronder kijken
     # naar wat er uit de *omschrijving* was gelezen. Wie "eiken balk" typte en
     # daarna de maten in de kolommen zette, zag zijn invoer genegeerd worden.
+    # Een vierde maat: de wanddikte. Zonder deze is het gewicht van een
+    # hoekprofiel of koker niet te bepalen, en met de drie buitenmaten alleen is
+    # het antwoord vijf keer te zwaar.
+    wall_m = _positive(overrides.get("wall_thickness_m"))
     entered = [overrides.get("width_m"), overrides.get("height_m"), overrides.get("length_m")]
     if all(value for value in entered):
         # Dezelfde volgorde als de rekenpaden verwachten: breedte, hoogte, lengte.
@@ -268,8 +292,11 @@ def process_line(
             width_cm = meters_to_cm(outer_w)
             height_cm = meters_to_cm(outer_h)
 
-    elif product_type == "angle_profile" and len(dims.values_m) >= 4:
-        leg_a, leg_b, thick, length_m = dims.values_m[:4]
+    elif product_type == "angle_profile" and (len(dims.values_m) >= 4 or wall_m):
+        if wall_m and dims.width_m and dims.height_m and dims.length_m:
+            leg_a, leg_b, thick, length_m = dims.width_m, dims.height_m, wall_m, dims.length_m
+        else:
+            leg_a, leg_b, thick, length_m = dims.values_m[:4]
         try:
             material_vol, weight_each = calc_angle_profile(leg_a, leg_b, thick, length_m, density)
             if qty:
@@ -283,8 +310,11 @@ def process_line(
             messages.append(str(exc))
             status = "error"
 
-    elif product_type == "square_tube" and len(dims.values_m) >= 4:
-        outer_w, outer_h, wall, length_m = dims.values_m[:4]
+    elif product_type == "square_tube" and (len(dims.values_m) >= 4 or wall_m):
+        if wall_m and dims.width_m and dims.height_m and dims.length_m:
+            outer_w, outer_h, wall, length_m = dims.width_m, dims.height_m, wall_m, dims.length_m
+        else:
+            outer_w, outer_h, wall, length_m = dims.values_m[:4]
         try:
             material_vol, weight_each = calc_hollow_rect(outer_w, outer_h, wall, length_m, density)
             if qty:
@@ -314,6 +344,21 @@ def process_line(
         if not qty:
             messages.append("quantity_missing")
             status = "error"
+
+    elif product_type in WALL_PROFILE_TYPES:
+        # De vorm heeft een wand, maar de dikte ontbreekt. Doorvallen naar het
+        # massieve blok hieronder is precies wat tot v1.36.1 gebeurde: een
+        # hoekprofiel L80x80x8 van 6 m woog 301 kg in plaats van 57 — ruim vijf
+        # keer te zwaar, en niets op het scherm dat verried dat er een maat
+        # ontbrak. Liever geen getal dan dat getal.
+        messages.append("wall_thickness_missing")
+        status = "needs_review" if status == "ok" else status
+        if dims.width_m and dims.height_m and dims.length_m:
+            # Het transportvolume kan wel: dat gaat over de buitenmaten en niet
+            # over hoeveel staal erin zit.
+            transport_vol = transport_volume_outer(
+                dims.width_m, dims.height_m, dims.length_m, qty or 1
+            )
 
     elif material_obj and len(dims.values_m) >= 3:
         # Herkend materiaal met drie afmetingen: reken als massief blok op dichtheid.

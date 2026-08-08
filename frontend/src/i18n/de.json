@@ -45,7 +45,6 @@
     "totalVolume": "Gesamtes Transportvolumen",
     "warnings": "Warnungen",
     "back": "Zurück",
-    "recalculate": "Neu berechnen",
     "toExport": "Zum Export",
     "toDg": "Zum Gefahrgut",
     "dgIntro": "Erfassen Sie die Gefahrgutangaben für alle Versandstücke, die als Gefahrgut markiert sind oder in denen eine UN-Nummer erkannt wurde.",
@@ -108,7 +107,8 @@
     "length_cm": "Länge (cm)",
     "width_cm": "Breite (cm)",
     "height_cm": "Höhe (cm)",
-    "cargoForm": "Form"
+    "cargoForm": "Form",
+    "wallThickness": "Wandstärke (mm)"
   },
   "import": {
     "downloadTemplate": "Vorlage herunterladen",
@@ -126,7 +126,8 @@
     }
   },
   "messages": {
-    "dg_un_detected": "UN-Nummer erkannt — Versandstück als Gefahrgut markiert"
+    "dg_un_detected": "UN-Nummer erkannt — Versandstück als Gefahrgut markiert",
+    "wall_thickness_missing": "Wandstärke fehlt — ohne dieses Maß lässt sich das Gewicht eines Profils nicht bestimmen"
   },
   "status": {
     "ok": "OK",

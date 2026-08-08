@@ -2,6 +2,45 @@
 
 All notable changes are documented here, following [Semantic Versioning](https://semver.org/).
 
+## [1.37.0] — 2026-08-08
+
+### Fixed
+
+- **A steel angle profile was weighed as a solid bar, five times too heavy.** Ten angle
+  profiles of 6 m, 80 × 80, came back at 301.44 kg each. An L 80×80×8 is 9.63 kg per metre,
+  so about 57 kg for six metres. The cross-section *was* recognised — the detector returns
+  `angle_profile` — but the calculation path for it demanded four measurements out of the
+  *description*. Enter three in the columns and the line fell through to the generic branch
+  and became a solid block of 600 × 8 × 8 cm.
+
+  Reported from use, and the worst kind of defect this application can have: a confident
+  wrong number on a transport document, with nothing on screen suggesting a measurement was
+  missing.
+
+### Added
+
+- **Wall thickness, the fourth measurement.** For an angle profile, a square tube or a round
+  tube the line carries a wall thickness in millimetres, and the engine's existing
+  cross-section formulas finally receive it. L 80×80×8 over 6 m is now 57.27 kg against the
+  9.63 kg/m in the steel tables.
+
+  **The field only appears where it means something.** A plate, a beam, a plank or a block is
+  fully described by three measurements, so no fourth field is shown — as you pointed out
+  about wooden planks.
+
+  **And it is required where it applies.** A shape with a wall and no thickness produces no
+  weight at all: the line reports `wall_thickness_missing` and asks. Falling through to a
+  solid block is exactly what caused this, and no number is better than that number. The
+  transport volume is still given, because that depends only on the outer measurements.
+
+### Changed
+
+- **The recalculate button is gone; the calculation follows the input.** A button you have to
+  press to see a correct figure is a button that gets forgotten, leaving a stale weight on
+  screen. Changing a quantity, unit, form or dimension now recalculates shortly after typing
+  stops. Manual weight corrections deliberately do not trigger it — those are an answer to a
+  calculation, and would otherwise restart it.
+
 ## [1.36.1] — 2026-08-08
 
 ### Fixed

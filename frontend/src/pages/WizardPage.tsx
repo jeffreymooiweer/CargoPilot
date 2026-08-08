@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Link, Navigate, useParams } from "react-router";
 import { useTranslation } from "react-i18next";
 import {
@@ -240,9 +240,43 @@ export default function WizardPage() {
     }
   };
 
-  const recalculate = async () => {
-    await calculateFromDraft();
-  };
+  /**
+   * Wat er is ingevoerd, als één tekenreeks.
+   *
+   * Verandert dit, dan klopt het getoonde gewicht niet meer. Handmatige
+   * gewichtscorrecties zitten er bewust niet in: die zijn een *antwoord* op een
+   * berekening en zouden anders zichzelf opnieuw aftrappen.
+   */
+  const draftSignature = JSON.stringify(
+    draftLines.map((line) => [
+      line.description.trim(),
+      line.quantity,
+      line.unit,
+      line.cargo_form ?? "",
+      line.length_cm ?? "",
+      line.width_cm ?? "",
+      line.height_cm ?? "",
+      line.wall_thickness_mm ?? "",
+    ]),
+  );
+
+  // Herberekenen was een knop, en een knop die je moet indrukken om een juist
+  // getal te zien is een knop die vergeten wordt — met een verouderd gewicht op
+  // het scherm als gevolg. Nu gebeurt het vanzelf, kort nadat het typen stopt.
+  // De vertraging is er om niet bij elke toetsaanslag een verzoek te sturen.
+  const calculatedSignature = useRef<string | null>(null);
+  useEffect(() => {
+    if (stepKey !== "lines") return;
+    if (!draftLines.some((line) => line.description.trim())) return;
+    if (calculatedSignature.current === draftSignature) return;
+
+    const timer = setTimeout(() => {
+      calculatedSignature.current = draftSignature;
+      void calculateFromDraft();
+    }, 600);
+    return () => clearTimeout(timer);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [draftSignature, stepKey]);
 
   const addLine = () => {
     setDraftLines((lines) => [...lines, { id: nextId, description: "", quantity: 1, unit: "stuks" }]);
@@ -492,9 +526,6 @@ export default function WizardPage() {
           <div className="flex flex-col gap-2 sm:flex-row sm:gap-3">
             <button type="button" onClick={() => setStepKey("forms")} className={buttonSecondary}>
               {t("wizard.back")}
-            </button>
-            <button type="button" onClick={recalculate} disabled={loading} className={buttonSecondary}>
-              {t("wizard.recalculate")}
             </button>
             <button type="button" onClick={goFromLines} disabled={loading} className={`${buttonPrimary} sm:ml-auto`}>
               {t("wizard.continue")}

@@ -2,6 +2,44 @@
 
 All notable changes are documented here, following [Semantic Versioning](https://semver.org/).
 
+## [1.39.0] — 2026-08-08
+
+### Changed
+
+- **The same work was being done twice on every push.** `ci.yml` and `dockerhub.yml` were
+  both named `CI` and both triggered by pushes to `main` and by every pull request, so
+  `pytest` ran twice and `npm ci` ran twice per commit — five checks, two of them a copy of
+  two others. A release with three commits on the branch spent fifteen jobs before anything
+  was merged. They are now one workflow with three jobs: Backend tests, Frontend build,
+  Docker build. The more thorough of the two frontend jobs was kept, so the audit and the
+  Vitest run survive.
+
+- **arm64 is built only when an image is actually published.** It is emulated through QEMU
+  on an amd64 runner, and that emulation was most of the wall clock. A pull request pushes
+  nothing, so its Docker build is a smoke test of the Dockerfile and `linux/amd64` answers
+  that. Pushes to `main` and tags still build both architectures. A pull request also no
+  longer writes buildx cache — an amd64-only layer overwriting `main`'s scope made the next
+  publishing build slower, not faster.
+
+- **Superseded pull request runs are cancelled.** Pushing three times in a row no longer
+  leaves two runs burning for a result nobody will read. Runs on `main` and on tags are
+  never cancelled; a publication hangs off those.
+
+- **Reading a regulation is something you ask for.** `read-land-regulations.yml` ran on
+  every push that touched it, fetching four PDFs of some 40 MB and quoting all six groups,
+  on a branch where nobody was reading the log. It is `workflow_dispatch` only now.
+
+### Removed
+
+- **`dockerhub.yml`**, whose remaining job moved into `ci.yml`, and **`release.yml`**, a
+  second and unused path to creating the same GitHub Release — `tag-release.yml` has done
+  the tag, the release and the image since it was written. Two mechanisms for one outcome
+  is how they drift apart.
+
+  The five remaining workflows (`cleanup-dockerhub`, the two `probe-*`, the two
+  `extract-imdg-*`) all wait to be asked and cost nothing until then. The number of files in
+  `.github/workflows/` was never the cost; the number of jobs per push was.
+
 ## [1.38.0] — 2026-08-08
 
 ### Fixed

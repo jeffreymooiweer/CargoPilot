@@ -9,7 +9,7 @@ CMR, CIM, AVC and IATA forms, and checks your dangerous goods before you print.
 
 [![Docker Pulls](https://img.shields.io/docker/pulls/jeffersonmouze/cargopilot?logo=docker&logoColor=white&label=docker%20pulls&color=2496ED)](https://hub.docker.com/r/jeffersonmouze/cargopilot)
 [![Latest release](https://img.shields.io/github/v/release/jeffreymooiweer/CargoPilot?logo=github&label=release&color=2ea44f)](https://github.com/jeffreymooiweer/CargoPilot/releases/latest)
-[![Build](https://img.shields.io/github/actions/workflow/status/jeffreymooiweer/CargoPilot/dockerhub.yml?branch=main&logo=githubactions&logoColor=white&label=build)](https://github.com/jeffreymooiweer/CargoPilot/actions/workflows/dockerhub.yml)
+[![Build](https://img.shields.io/github/actions/workflow/status/jeffreymooiweer/CargoPilot/ci.yml?branch=main&logo=githubactions&logoColor=white&label=build)](https://github.com/jeffreymooiweer/CargoPilot/actions/workflows/ci.yml)
 [![Status](https://img.shields.io/badge/status-under%20development-orange)](ROADMAP.md)
 [![Licence](https://img.shields.io/badge/licence-Apache--2.0%20%2B%20Commons%20Clause-blue)](LICENSE)
 

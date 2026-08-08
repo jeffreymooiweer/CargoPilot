@@ -109,6 +109,13 @@ Footnote (d) comes with a condition that carries real consequences, so the panel
 document both state it: the aggregate must be treated as blasting explosives of class 1
 for placarding, segregation, stowage and the maximum permissible load of 7.5.5.2.1.
 
+**Rail was checked before these permissions were extended to it.** CargoPilot answers RID
+and ADN mixed loading with ADR's table under a stated basis note, and borrowing another
+regime's *prohibitions* is conservative in a way that borrowing its *permissions* is not.
+RID 2025, table 7.5.2.1 on page 1101, carries footnotes (a) to (d) in the same words and
+with the same UN numbers, so for rail this is RID's own rule and not a road rule on loan.
+ADN is a different regime for stowage; there the table remains borrowed and labelled.
+
 **ADN 1.1.3.6.1 — the inland waterway exemption, which is not the road one.** ADN has no
 points calculation. It exempts a consignment in packages when the gross mass of everything
 together stays under 3,000 kg *and* no class exceeds its own figure — 0 kg, 300 kg or

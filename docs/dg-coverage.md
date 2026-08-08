@@ -202,8 +202,12 @@ where 5.3.2.1 marking is prescribed — contains no tunnel restriction code.
   substance but never places it in the description line for rail.
 - **Shunting and marshalling.** Provisions with no road equivalent, including the shunting
   label of model 13 which RID 5.4.1.1.1 (c) explicitly excludes from the description.
-- **Mixed loading.** RID's own 7.5.2 has not yet been read; the panel still carries the
-  cautious note there.
+- **Mixed loading.** RID's 7.5.2.1 has now been read (page 1101) and its table and all four
+  footnotes match ADR's word for word, so the label-against-label rule is genuinely the same
+  for rail. What is still borrowed is the rest of 7.5.2 and the basis note says so. RID's
+  own 7.5.3 *protective distance* — 18 m or two 2-axle wagons between a class 1 wagon and
+  one placarded 2.1, 3, 4.1, 4.2, 4.3, 5.1 or 5.2 — has no road equivalent and is absent
+  from CargoPilot.
 - **The CIM's own dangerous goods fields.** Box 24 (NHM) is a free-text field with a format
   check; the entries in boxes 21/23 come from the shared DG data without rail-specific
   validation.
@@ -340,7 +344,7 @@ Ordered by how much harm someone could take before noticing, not by effort.
 | 1 | **IATA quantity limits absent; Q depends on user-entered M** | CargoPilot warns when the Q check did not run — since v1.33.0 on the document as well as the screen — but it cannot derive the applicable passenger/cargo-aircraft limit or verify the entered M against Table 4.2. **[verify]** |
 | 2 | **The ADN tank vessel regime is entirely absent** | Table C, vessel types, degassing. A tank vessel shipment gets nothing, and nothing says the mode is only half covered. |
 | 3 | **Tunnel code printed, never evaluated, and not derived for the load** | 8.6.3.2 wants the most restrictive code for the whole load; 8.6.3.3 excludes 1.1.3-exempt goods from that determination. Printing a per-substance code that nobody has evaluated invites the assumption that somebody has. |
-| 4 | **Mixed loading for RID and ADN still answered with ADR's 7.5.2** | Labelled as such. The texts are now reachable, so this is a next step rather than a wall. |
+| 4 | **Mixed loading for RID and ADN still answered with ADR's 7.5.2** | Narrowed in v1.38.0: RID's 7.5.2.1 has been read and is identical to ADR's, footnotes included, so the label table is no longer a loan for rail. ADN and the rest of 7.5.2 still are, and remain labelled. |
 | 5 | **LQ/EQ conditions not checked, and 3.5.1.3/3.5.1.4 not applied** | The arithmetic of 3.4/3.5 is verified correct, but the mark, the packagings and the 3.5.3 tests are declarations the application cannot see. A line "within the limits" is a candidate, not an exemption — and the panel says so. |
 | 6 | **IMDG stowage category shown, not enforced** | Lower because on-deck/under-deck is usually the carrier's call, not the consignor's. **[verify]** |
 | 7 | **No marking, placarding or equipment checks in any mode** | Consistently absent, so unlikely to be mistaken for present — but it is the most common real-world failure. |
@@ -392,8 +396,9 @@ verification.
 
 **Worth building next, in this order:**
 
-1. **RID and ADN mixed loading (7.5.2).** The texts are reachable now. This is the largest
-   remaining land-side gap and it no longer needs anything CargoPilot cannot get.
+1. **RID and ADN mixed loading (7.5.2), the part that is left.** RID's 7.5.2.1 is done — read
+   and identical to ADR's. What remains is ADN's own stowage regime, and RID's 7.5.3
+   protective distance, which has no road equivalent at all.
 2. **The hazard identification number in the rail description line**, per RID 5.4.1.1.1 (j),
    and the `ST01` stabilisation confirmation for ADN per its 5.4.1.1.1 (j). Both read from
    the text; both small.

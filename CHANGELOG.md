@@ -33,6 +33,31 @@ All notable changes are documented here, following [Semantic Versioning](https:/
   to every cross-reference in the volume. When the number will not resolve, the page still
   will.
 
+- **The reader searches through a hyphen.** RID breaks words at the line end —
+  `com-\npatibility`, `alka-\nline` — so a phrase search against it found nothing at all.
+  "No occurrence" then reads as an answer about the regulation when it is only an answer
+  about the typesetting, which for a tool whose job is checking what a text says is the
+  worst way to be wrong.
+
+### Fixed (the reader)
+
+- **A table is no longer mistaken for a contents page.** One of the three contents signals
+  counted bare clause numbers, and a table like 7.5.2.1 *is* a column of bare numbers —
+  "1.4", "5.1", "6.2". So the finder skipped exactly the pages the locator could not reach
+  either: both escape hatches failed on the same kind of page, which is how RID's 7.5.2.1
+  came back as "no occurrence" for a footnote plainly printed on page 1101. A page carrying
+  real sentences is now never a contents page, however many numbers stand in its margin.
+
+### Verified
+
+- **Rail was checked before these permissions were extended to it.** CargoPilot answers RID
+  and ADN mixed loading with ADR's table under a stated basis note. Borrowing another
+  regime's prohibitions is conservative; borrowing its permissions is not, and this release
+  turns three cells from refusals into permissions. RID 2025, table 7.5.2.1 on page 1101,
+  carries footnotes (a) to (d) in the same words and with the same UN numbers — so for rail
+  this is RID's own rule, not a road rule on loan. ADN is a different regime for stowage and
+  its borrowing stays labelled as such.
+
 ### Documentation
 
 - The footnote text and its source — ADR 2025 Volume II (ECE/TRANS/352 Vol. II), table

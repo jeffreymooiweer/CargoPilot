@@ -113,6 +113,52 @@ def test_a_hyphen_between_words_does_not_glue_a_sentence_together():
     assert "5.1 zie hierna" in haystack
 
 
+# --- Een tabel is geen inhoudsopgave --------------------------------------
+#
+# Het derde inhoudsopgave-signaal telde kale nummers, en sloeg daarmee precies
+# de verkeerde bladzijden over. Tabel 7.5.2.1 is een kolom van "1.4", "5.1",
+# "6.2" — tientallen kale nummers en geen inhoudsopgave te bekennen. RID's
+# 7.5.2.1 werd daardoor overgeslagen en de zoeker meldde "no occurrence" over
+# een voetnoot die er gewoon staat, op bladzijde 1101.
+
+TABLE_PAGE = (
+    "\n".join(["1", "1.4", "1.5", "1.6", "2.1", "2.2", "2.3", "3", "4.1", "4.2",
+               "4.3", "5.1", "5.2", "6.1", "6.2", "7.1", "8.1", "9.1", "9.2"])
+    + "\n"
+    + "\n".join([
+        "Packages bearing different danger labels shall not be loaded together in one wagon.",
+        "NOTE 1: separate transport documents shall be drawn up for such consignments.",
+        "(a) Mixed loading permitted with 1.4S substances and articles, without further condition.",
+        "(b) Mixed loading permitted between goods of Class 1 and life-saving appliances of Class 9.",
+        "(d) Mixed loading permitted between blasting explosives and ammonium nitrate, provided that.",
+    ])
+)
+
+CONTENTS_PAGE = "\n".join(["7.5.1", "7.5.2", "7.5.2.1", "7.5.2.2", "7.5.2.3", "7.5.2.4",
+                           "7.5.3", "7.5.4", "7.5.5", "7.5.5.1", "7.5.5.2", "7.5.5.3",
+                           "7.5.6", "7.5.7", "7.5.8", "7.5.9", "7.5.10", "7.5.11",
+                           "7.6", "7.7"])
+
+
+def test_a_table_full_of_numbers_is_not_a_contents_page():
+    assert reader._is_contents_page(TABLE_PAGE) is False
+
+
+def test_a_real_contents_page_is_still_recognised():
+    assert reader._is_contents_page(CONTENTS_PAGE) is True
+
+
+def test_dot_leaders_still_count_on_their_own():
+    """Dat signaal is specifiek genoeg; alleen het tellen van nummers was dat
+    niet."""
+    page = "\n".join([f"1.{n} Something ......... {n}" for n in range(1, 6)])
+    assert reader._is_contents_page(page) is True
+
+
+def test_the_chapter_page_column_still_counts_on_its_own():
+    assert reader._is_contents_page("\n".join(["1-3", "2-4", "3-5", "4-6", "5-7"])) is True
+
+
 def test_the_finder_actually_uses_it():
     source = (ROOT / "scripts" / "read_land_regulations.py").read_text(encoding="utf-8")
     finder = source[source.index("def find("):]

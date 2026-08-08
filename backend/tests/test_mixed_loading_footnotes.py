@@ -203,3 +203,23 @@ def test_the_source_of_the_numbers_is_recorded():
 
     source = get_compliance_rules()["adr_mixed_loading"]["_footnotes_source"]
     assert "7.5.2.1" in source and "ECE/TRANS/352" in source
+
+
+def test_the_rail_check_is_recorded_too():
+    """Een verbod lenen van een ander regime is voorzichtig; een toestemming
+    lenen is dat niet. Deze voetnoten gelden ook voor het spoor omdat RID ze
+    woordelijk zo heeft — nagekeken, niet aangenomen."""
+    from app.services.dg.compliance import get_compliance_rules
+
+    rail = get_compliance_rules()["adr_mixed_loading"]["_footnotes_rail"]
+    assert "RID 2025" in rail and "7.5.2.1" in rail
+
+
+def test_rail_gets_the_same_answer_as_road():
+    from app.services.dg.compliance import check_compliance
+
+    entries = [{"line_id": "L1", "products": [BLASTING, AMMONIUM_NITRATE]}]
+    for profile in ("ADR", "RID"):
+        out = check_compliance(entries, [profile], "en")["adr_mixed_loading"]
+        assert [w["rule"] for w in out if w["rule"].startswith("ADR 7.5.2.1")] \
+            == ["ADR 7.5.2.1 (d)"], profile

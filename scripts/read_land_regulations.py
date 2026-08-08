@@ -330,6 +330,8 @@ _LEADER = re.compile(r"\.{3,}\s*\d+\s*$", re.MULTILINE)
 # and so handed RID's contents page back as if it were chapter 1.1.3.6.
 _CHAPTER_PAGE = re.compile(r"^[ \t]*\d+-\d+[ \t]*$", re.MULTILINE)
 _BARE_NUMBER = re.compile(r"^[ \t]*\d+(?:\.\d+){1,4}[ \t]*$", re.MULTILINE)
+# A sentence, roughly: a line long enough to be prose rather than a table cell.
+_PROSE_LINE = re.compile(r"^.{60,}$", re.MULTILINE)
 
 
 def _is_contents_page(text: str) -> bool:
@@ -339,12 +341,21 @@ def _is_contents_page(text: str) -> bool:
     differently: dot leaders, a column of chapter-page references, and a page
     that is almost nothing but clause numbers. A body page carries a handful of
     clause numbers; a contents page carries dozens.
+
+    That third signal used to fire on its own, and it took out exactly the wrong
+    pages. A table like 7.5.2.1 is a column of "1.4", "5.1", "6.2" — dozens of
+    bare numbers and not a contents page in sight. So RID's 7.5.2.1 was skipped
+    by the finder, which then reported "no occurrence outside the contents
+    pages" for a footnote that is plainly there, on page 1101. Both escape
+    hatches failed on the same kind of page, and for the same reason.
+
+    Hence the guard: a page carrying real sentences is not a contents page,
+    however many numbers stand in its margin. The other two signals are specific
+    enough to stand alone; this one never was.
     """
-    return (
-        len(_LEADER.findall(text)) >= 4
-        or len(_CHAPTER_PAGE.findall(text)) >= 5
-        or len(_BARE_NUMBER.findall(text)) >= 18
-    )
+    if len(_LEADER.findall(text)) >= 4 or len(_CHAPTER_PAGE.findall(text)) >= 5:
+        return True
+    return len(_BARE_NUMBER.findall(text)) >= 18 and len(_PROSE_LINE.findall(text)) < 5
 
 
 def locate(doc: str, provision: Provision) -> list[tuple[int, int, int]]:

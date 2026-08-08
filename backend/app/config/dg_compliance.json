@@ -103,6 +103,7 @@
   "adr_mixed_loading": {
     "class1_exception_compat_group": "S",
     "_footnotes_source": "ADR 2025 Volume II (ECE/TRANS/352 Vol. II), table 7.5.2.1, printed page 592, footnotes b, c and d, quoted verbatim by scripts/read_land_regulations.py --page 602 --doc adr2",
+    "_footnotes_rail": "RID 2025 (Appendix C to COTIF, Annex), table 7.5.2.1, page 1101, carries footnotes (a) to (d) in the same words and with the same UN numbers, so these permissions are the rail rule as well and not a road rule borrowed for rail. Checked against OTIF's own text; ADN is a different regime for stowage and still borrows this table under a stated basis note.",
     "footnotes": {
       "b": {
         "life_saving_un_numbers": ["2990", "3072", "3268"]

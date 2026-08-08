@@ -11,13 +11,12 @@ name: Read land regulations
 # through a separate, reviewed change.
 
 on:
-  # The reader runs when the reader changes, on whatever branch it changes on.
-  # Reading a published regulation is safe to do early and often; waiting for a
-  # merge to main before the text can be consulted is the wrong way round.
-  push:
-    paths:
-      - scripts/read_land_regulations.py
-      - .github/workflows/read-land-regulations.yml
+  # On request only. This used to run on every push that touched the reader,
+  # which sounded harmless — reading a published regulation is safe to do early
+  # and often — but it downloaded four PDFs of some 40 MB and quoted all six
+  # groups every time, and it did so on a branch where nobody was reading the
+  # log. Consulting a regulation is something you decide to do; it is not a
+  # side effect of editing a file.
   workflow_dispatch:
     inputs:
       groups:

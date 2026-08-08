@@ -192,8 +192,35 @@ the two exports race, and a build hung for an hour and a half instead of taking 
 minutes. Reads still come from `main`'s cache, so the second build stays fast. The docker
 job has a 45-minute timeout so a wedged build fails visibly rather than running all day.
 
-Workflows live in `.github/workflows/`: `dockerhub.yml`, `tag-release.yml`,
-`release.yml` and `cleanup-dockerhub.yml`.
+### What runs, and when
+
+Only **two** workflows start by themselves. Everything else in
+`.github/workflows/` waits to be asked, and costs nothing until it is — the number of
+files in that directory is not the number of things that run.
+
+| Workflow | Runs on | Jobs |
+|---|---|---|
+| `ci.yml` | push to `main`, every pull request, tags `v*`, on request | Backend tests, Frontend build, Docker build |
+| `tag-release.yml` | on request (and on a merged `agent/release-v*` branch) | tag, GitHub Release, then it starts `ci.yml` on the tag |
+| `read-land-regulations.yml` | on request | quotes ADR/RID/ADN; commits nothing |
+| `cleanup-dockerhub.yml`, `probe-*.yml`, `extract-imdg-*.yml` | on request | maintenance and research |
+
+Until v1.39.0 there were two workflows *both named* `CI` — `ci.yml` and `dockerhub.yml` —
+each triggered by the same pushes, so `pytest` ran twice and `npm ci` ran twice on every
+commit. Five checks per push, two of them a copy of two others. A release with three
+commits on the branch spent fifteen jobs before anything was merged. They are now one
+workflow, and `release.yml` — a second, unused path to creating the same GitHub Release —
+is gone with them.
+
+The Docker build asks for `linux/arm64` **only when it is going to publish**. arm64 is
+emulated through QEMU on an amd64 runner and that emulation was most of the wall clock. On
+a pull request nothing is pushed, so the build is a smoke test of the Dockerfile and
+`linux/amd64` answers that question. A pull request also writes no buildx cache: an
+amd64-only layer overwriting `main`'s scope would make the next publishing build slower,
+not faster.
+
+Pull request runs cancel their own predecessors. Runs on `main` and on a tag never do —
+a publication hangs off those.
 
 ## The UN cards
 

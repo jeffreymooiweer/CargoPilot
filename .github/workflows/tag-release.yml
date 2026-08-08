@@ -114,7 +114,9 @@ jobs:
             gh release create "$TAG" --title "CargoPilot $TAG" --notes-file release-body.md
           fi
 
+      # Een tag die hier met GITHUB_TOKEN wordt gepusht start zelf geen
+      # workflow, dus de build op de tag-ref wordt expliciet aangezwengeld.
       - name: Trigger CI (Docker build) on tag
         env:
           GH_TOKEN: ${{ github.token }}
-        run: gh workflow run dockerhub.yml --ref "${{ steps.release.outputs.tag }}"
+        run: gh workflow run ci.yml --ref "${{ steps.release.outputs.tag }}"

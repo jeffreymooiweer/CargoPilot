@@ -153,15 +153,33 @@ a minor.
 
 When in doubt, take the smaller bump.
 
-The version number lives in `VERSION` (and `backend/VERSION`), in `frontend/package.json`,
-in the git tag `v*`, in the Docker tag, and is returned by `GET /api/health`.
+The version number lives in **five** places — `VERSION`, `backend/VERSION`,
+`frontend/package.json` and twice in `frontend/package-lock.json` — as well as in the git
+tag `v*`, in the Docker tag, and in `GET /api/health`.
+
+Do not set them by hand:
+
+```bash
+python scripts/bump_version.py 1.37.0
+```
+
+`scripts/check_versions.py` runs in CI and fails a pull request whose five values disagree.
+
+> **Why this is stricter than it looks.** The lock file used to be left out of the check, so
+> it drifted at every release, and the **Tag release** workflow repaired it by committing to
+> `main` *after* the merge. The repair worked — and moved `main` out from under whatever
+> branch came next, which then conflicted on `VERSION` and `CHANGELOG.md` and could not be
+> merged until it was rebased. Four lines of JSON cost two rebases in a single day.
+> Releasing no longer writes to `main` at all; the check moved to the pull request, where
+> the mistake is made.
 
 ## Releasing
 
-1. Update `VERSION`, `frontend/package.json` and `CHANGELOG.md`.
+1. Run `python scripts/bump_version.py <version>` and write the `CHANGELOG.md` entry.
 2. Merge to `main`.
 3. Run the **Tag release** workflow from GitHub Actions with the version number. It
-   creates the tag and the GitHub Release from the changelog entry.
+   verifies the version files, then creates the tag and the GitHub Release from the
+   changelog entry. It does not commit anything.
 4. The **dockerhub** workflow builds and pushes `jeffersonmouze/cargopilot:latest` and
    `:v<version>` on pushes to `main` and on `v*` tags.
 

@@ -2,6 +2,26 @@
 
 All notable changes are documented here, following [Semantic Versioning](https://semver.org/).
 
+## [1.34.1] — 2026-08-08
+
+### Fixed
+
+- **"1500 liter benzine" is genoeg om mee te rekenen, en werd toch afgewezen.** De regel
+  meldde `dimensions_missing` en liet gewicht en volume leeg, terwijl alles om het uit te
+  rekenen op het scherm stond: de eenheid geeft het volume, het soortelijk gewicht van
+  benzine (745 kg/m³) geeft de massa. 1500 L is nu 1 117,5 kg en 1,5 m³.
+
+  De oorzaak is het soort dat vermelding verdient. v1.34.0 leverde een eenhedenmodule,
+  een keuzelijst die hem gebruikte en een API om ermee te rekenen — maar de pijplijn die
+  het gewicht bepaalt vroeg er nooit naar en bleef afmetingen eisen. Half aangesloten is
+  niet aangesloten.
+
+  De omrekening springt alleen bij wanneer er geen afmetingen en geen profiel zijn, en
+  uitsluitend voor een **herkend** goed: `match_material` valt terug op de dichtheid van
+  staal, en 1500 liter maal 7850 zou er even stellig uitzien als het antwoord dat klopt.
+  Een onbekende stof blijft dus gemeld als onbekend, en vijftien pallets zonder gewicht
+  per pallet blijven onbekend — een aantal draagt geen natuurkunde in zich.
+
 ## [1.34.0] — 2026-08-08
 
 The goods step becomes a table on desktop and cards on a phone, and a quantity finally

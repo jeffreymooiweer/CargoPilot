@@ -20,6 +20,7 @@ from app.services.parser.dimension_extractor import Dimensions, extract_dimensio
 from app.core.languages import pick
 from app.services.parser.language_detector import detect_language
 from app.services.parser.paste_parser import ParsedRow, parse_paste
+from app.services.units import convert as convert_units
 from app.services.parser.product_detector import detect_product_type
 
 PRODUCT_LABELS = {
@@ -310,7 +311,30 @@ def process_line(
         if not qty:
             messages.append("quantity_missing")
             status = "error"
-        if not dims.length_m and not weight_each:
+
+        # Niet elke zending heeft afmetingen nodig. "1500 liter benzine" is
+        # volledig bepaald: de eenheid geeft het volume, het soortelijk gewicht
+        # van het herkende goed geeft de massa. Tot v1.34.1 werd hier
+        # "dimensions_missing" gemeld en bleven gewicht en volume leeg, terwijl
+        # alles om het uit te rekenen op het scherm stond. De eenhedenmodule
+        # was er wel, maar werd alleen door de keuzelijst gebruikt en niet door
+        # de berekening.
+        #
+        # Alleen bij een herkend goed: match_material valt terug op de
+        # dichtheid van staal, en 1500 liter maal 7850 zou er even stellig
+        # uitzien als het antwoord dat klopt.
+        if material_obj and qty:
+            converted = convert_units(qty, row.unit, density, material_obj.category)
+            if converted.mass_kg is not None or converted.volume_m3 is not None:
+                weight_total = converted.mass_kg
+                material_vol = converted.volume_m3
+                # Bij een vloeistof of stortgoed is het ingevoerde volume ook
+                # het vervoerde volume; er zit geen verpakking omheen die de
+                # app kent.
+                transport_vol = converted.volume_m3
+                method = f"unit_{converted.basis.value}"
+
+        if not dims.length_m and not weight_each and weight_total is None:
             messages.append("dimensions_missing")
             status = "needs_review" if status == "ok" else status
 

@@ -104,7 +104,10 @@
     "dgDetected": "UN-nummer herkend",
     "quantityAndUnit": "Aantal",
     "volume": "Volume",
-    "untitledLine": "Nieuwe regel"
+    "untitledLine": "Nieuwe regel",
+    "length_cm": "Lengte (cm)",
+    "width_cm": "Breedte (cm)",
+    "height_cm": "Hoogte (cm)"
   },
   "import": {
     "downloadTemplate": "Template downloaden",

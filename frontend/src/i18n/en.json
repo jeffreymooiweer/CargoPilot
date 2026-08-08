@@ -104,7 +104,10 @@
     "dgDetected": "UN number detected",
     "quantityAndUnit": "Quantity",
     "volume": "Volume",
-    "untitledLine": "New line"
+    "untitledLine": "New line",
+    "length_cm": "Length (cm)",
+    "width_cm": "Width (cm)",
+    "height_cm": "Height (cm)"
   },
   "import": {
     "downloadTemplate": "Download template",

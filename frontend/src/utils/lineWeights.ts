@@ -81,3 +81,50 @@ export function weightOverridesFromLines(lines: LineItem[]) {
       ...(line.weight_total_kg != null ? { weight_total_kg: line.weight_total_kg } : {}),
     }));
 }
+
+
+/**
+ * Afmetingen die de gebruiker in de tabel invulde, als overrides.
+ *
+ * `line_id` is in de backend simpelweg de volgorde van de niet-lege regels, en
+ * `draftToText` stuurt precies die regels. Daarom is de index hier voldoende en
+ * is er geen uitgerekend resultaat nodig — dimensies moeten ook bij de éérste
+ * berekening al meetellen.
+ *
+ * Centimeters op het scherm, meters naar de backend: die rekent in meters en
+ * dat is niet aan de gebruiker om te weten.
+ */
+export function dimensionOverridesFromDrafts(
+  drafts: { description: string; length_cm?: number | ""; width_cm?: number | ""; height_cm?: number | "" }[],
+) {
+  const overrides: Record<string, number>[] = [];
+  drafts
+    .filter((draft) => draft.description.trim())
+    .forEach((draft, index) => {
+      const entry: Record<string, number> = { line_id: index + 1 };
+      let any = false;
+      ([["length_cm", "length_m"], ["width_cm", "width_m"], ["height_cm", "height_m"]] as const).forEach(
+        ([from, to]) => {
+          const value = draft[from];
+          if (typeof value === "number" && value > 0) {
+            entry[to] = value / 100;
+            any = true;
+          }
+        },
+      );
+      if (any) overrides.push(entry);
+    });
+  return overrides;
+}
+
+/** Gewichts- en afmetingoverrides samen, per regel samengevoegd. */
+export function mergeOverrides(
+  ...groups: Record<string, number>[][]
+): Record<string, number>[] {
+  const byLine = new Map<number, Record<string, number>>();
+  groups.flat().forEach((entry) => {
+    const existing = byLine.get(entry.line_id) ?? { line_id: entry.line_id };
+    byLine.set(entry.line_id, { ...existing, ...entry });
+  });
+  return [...byLine.values()];
+}

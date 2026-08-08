@@ -36,6 +36,17 @@ others — which drives which units the goods step offers first.
 > derived (`backend/app/services/units.py`), rather than treating it as something the data
 > states.
 
+**Timber is measured stacked, not solid.** Oak's 720 kg/m³ is the density of the wood; a
+cubic metre of stacked boards has air between them. Entering a volume for timber therefore
+uses a **stacking factor of 0.65** — a nominal packing figure, not a measurement — so 20 m³
+of oak is 9,360 kg rather than 14,400. Sheet material (plywood, OSB, MDF, HDF, chipboard,
+hardboard, softboard, cork, CLT, glulam) stacks flat and keeps its own density. Give a line
+explicit length, width and height and the solid density is used, because those dimensions
+describe actual material. The factor lives in `units.py` rather than in the goods database
+because `seed_catalogs` only fills that database when it is empty — new seed values never
+reach an existing installation, and a calculation that is only right for new users is worse
+than none.
+
 Coverage spans construction materials and natural stone, metals (including precious and
 speciality metals), timber species and sheet material, fuels, chemicals and liquefied
 gases, fertilisers, grain, seed and animal feed, fruit and vegetables, foodstuffs, ores

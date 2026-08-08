@@ -24,6 +24,8 @@ import {
   recalcTotals,
   scaleLinesToTotalWeight,
   weightOverridesFromLines,
+  dimensionOverridesFromDrafts,
+  mergeOverrides,
 } from "../utils/lineWeights";
 
 const inputClass =
@@ -211,7 +213,13 @@ export default function WizardPage() {
         text,
         mode: "continue",
         input_language: null,
-        line_overrides: result ? weightOverridesFromLines(result.lines) : undefined,
+        // Afmetingen komen uit de invoer en moeten dus ook bij de eerste
+        // berekening al meetellen; gewichtscorrecties bestaan pas als er een
+        // resultaat is om te corrigeren.
+        line_overrides: mergeOverrides(
+          dimensionOverridesFromDrafts(draftLines),
+          result ? weightOverridesFromLines(result.lines) : [],
+        ),
       });
       // DG-vinkjes van de colli toepassen (zelfde volgorde als niet-lege regels).
       const flagged = draftLines.filter((l) => l.description.trim());

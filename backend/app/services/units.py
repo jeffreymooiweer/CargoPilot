@@ -127,12 +127,58 @@ BASIS_BY_CATEGORY: dict[str, DensityBasis] = {
     "plastic": DensityBasis.SOLID,
     "construction": DensityBasis.SOLID,
     "insulation": DensityBasis.SOLID,
-    "wood": DensityBasis.SOLID,
+    "wood": DensityBasis.STACKED,
     "paper": DensityBasis.SOLID,
     "textile": DensityBasis.EFFECTIVE,
     "food": DensityBasis.EFFECTIVE,
     "general_cargo": DensityBasis.EFFECTIVE,
 }
+
+
+# --- Hout: gestapeld is niet massief ---------------------------------------
+#
+# De dichtheid van eiken is 720 kg/m³, en dat is de dichtheid van het hout zelf.
+# Een kuub gestapeld gezaagd hout is geen kuub hout: er zit lucht tussen de
+# planken, tussen de lagen en rond de stapel. Wie 20 m³ eiken invoert en 14 400
+# kg terugkrijgt, krijgt het gewicht van 20 m³ massief eiken en dat vervoert
+# vrijwel niemand.
+#
+# Plaatmateriaal is de uitzondering. Platen stapelen vlak op elkaar zonder
+# noemenswaardige tussenruimte, dus daar ís een kuub stapel ongeveer een kuub
+# materiaal.
+#
+# Deze factoren zijn **praktijkwaarden en geen metingen**. Zij staan hier in
+# plaats van in de goederendatabase omdat die alleen bij een lege installatie
+# wordt gevuld: nieuwe seed-gegevens bereiken een bestaande installatie nooit,
+# en een berekening die alleen bij nieuwe gebruikers klopt is erger dan geen.
+# Wie het beter weet vult het gewicht met de hand in; dat overschrijft dit.
+SHEET_LIKE_WOOD = frozenset({
+    "plywood", "chipboard", "osb", "mdf", "hdf", "hardboard", "softboard",
+    "cork", "clt", "glulam",
+})
+
+# Gestapeld gezaagd hout en rondhout. Een gangbare vuistregel voor een nette
+# stapel is dat ongeveer tweederde van het stapelvolume hout is.
+STACKING_FACTOR_TIMBER = 0.65
+STACKING_FACTOR_SHEET = 1.0
+
+
+def stacking_factor(category: str | None, canonical_name: str | None = None) -> float:
+    """Welk deel van een kuub stapel daadwerkelijk materiaal is."""
+    if str(category or "").strip().lower() != "wood":
+        return 1.0
+    if str(canonical_name or "").strip().lower() in SHEET_LIKE_WOOD:
+        return STACKING_FACTOR_SHEET
+    return STACKING_FACTOR_TIMBER
+
+
+def stacked_density(
+    density_kg_m3: float | None, category: str | None, canonical_name: str | None = None
+) -> float | None:
+    """De dichtheid van een kuub zoals hij op de vrachtwagen staat."""
+    if density_kg_m3 is None:
+        return None
+    return density_kg_m3 * stacking_factor(category, canonical_name)
 
 
 def get_unit(code: str | None) -> Unit | None:
@@ -202,6 +248,11 @@ class Converted:
     basis: DensityBasis = DensityBasis.UNKNOWN
     # Waarom een van beide leeg bleef, als machineleesbare reden.
     missing: str | None = None
+    # De dichtheid waarmee daadwerkelijk is gerekend, en het deel van een kuub
+    # stapel dat materiaal is. Bij hout wijkt dat af van de dichtheid van het
+    # goed zelf, en dat hoort de gebruiker te kunnen zien.
+    density_used_kg_m3: float | None = None
+    stacking_factor: float = 1.0
 
 
 def convert(
@@ -211,13 +262,20 @@ def convert(
     category: str | None = None,
     mass_per_item_kg: float | None = None,
     volume_per_item_m3: float | None = None,
+    canonical_name: str | None = None,
 ) -> Converted:
     """Reken een ingevoerde hoeveelheid om naar massa en volume.
 
     De dichtheid slaat de brug tussen massa en volume. Ontbreekt zij, dan wordt
     alleen de kant ingevuld die rechtstreeks uit de eenheid volgt.
+
+    Bij hout gaat het om de gestapelde dichtheid: een kuub gestapelde planken is
+    geen kuub hout. Zie ``stacking_factor``.
     """
     basis = density_basis(category)
+    factor = stacking_factor(category, canonical_name)
+    if density_kg_m3 is not None and factor != 1.0:
+        density_kg_m3 = density_kg_m3 * factor
     unit = get_unit(unit_code)
     if quantity is None or unit is None:
         return Converted(basis=basis, missing="unit" if quantity is not None else "quantity")
@@ -229,12 +287,14 @@ def convert(
     if unit.dimension is Dimension.MASS:
         mass = amount * unit.factor
         volume = mass / density_kg_m3 if density_kg_m3 else None
-        return Converted(mass, volume, basis, None if volume is not None else "density")
+        return Converted(mass, volume, basis, None if volume is not None else "density",
+                         density_kg_m3, factor)
 
     if unit.dimension is Dimension.VOLUME:
         volume = amount * unit.factor
         mass = volume * density_kg_m3 if density_kg_m3 else None
-        return Converted(mass, volume, basis, None if mass is not None else "density")
+        return Converted(mass, volume, basis, None if mass is not None else "density",
+                         density_kg_m3, factor)
 
     if unit.dimension is Dimension.COUNT:
         # Een aantal draagt geen natuurkunde in zich. Zonder gewicht of volume
@@ -246,7 +306,7 @@ def convert(
         if volume is None and mass is not None and density_kg_m3:
             volume = mass / density_kg_m3
         missing = None if (mass is not None or volume is not None) else "per_item"
-        return Converted(mass, volume, basis, missing)
+        return Converted(mass, volume, basis, missing, density_kg_m3, factor)
 
     # Lengte: alleen bruikbaar met een gewicht per meter, dat de profielentabel
     # levert. Dat pad loopt via pipeline.py en niet hierlangs.

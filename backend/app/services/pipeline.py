@@ -1,6 +1,6 @@
 import json
 import re
-from dataclasses import asdict, dataclass, field
+from dataclasses import asdict, dataclass, field, replace
 from typing import Any
 
 from sqlalchemy.orm import Session
@@ -195,6 +195,25 @@ def process_line(
     width_cm = meters_to_cm(overrides.get("width_m") or dims.width_m)
     height_cm = meters_to_cm(overrides.get("height_m") or dims.height_m)
 
+    # Afmetingen die de gebruiker zelf in de tabel invult tellen mee in de
+    # berekening en niet alleen in de weergave. Tot v1.35.0 werden ze hier wel
+    # overgenomen voor het scherm, maar bleven de rekenpaden hieronder kijken
+    # naar wat er uit de *omschrijving* was gelezen. Wie "eiken balk" typte en
+    # daarna de maten in de kolommen zette, zag zijn invoer genegeerd worden.
+    entered = [overrides.get("width_m"), overrides.get("height_m"), overrides.get("length_m")]
+    if all(value for value in entered):
+        # Dezelfde volgorde als de rekenpaden verwachten: breedte, hoogte, lengte.
+        dims = replace(
+            dims,
+            values_m=[float(value) for value in entered],
+            width_m=float(overrides["width_m"]),
+            height_m=float(overrides["height_m"]),
+            length_m=float(overrides["length_m"]),
+        )
+    elif overrides.get("length_m"):
+        # Alleen een lengte is genoeg voor een profiel uit de catalogus.
+        dims = replace(dims, length_m=float(overrides["length_m"]))
+
     ref = match_reference(row.description, db)
     if ref and not product_type:
         product_type = "reference_item"
@@ -324,7 +343,10 @@ def process_line(
         # dichtheid van staal, en 1500 liter maal 7850 zou er even stellig
         # uitzien als het antwoord dat klopt.
         if material_obj and qty:
-            converted = convert_units(qty, row.unit, density, material_obj.category)
+            converted = convert_units(
+                qty, row.unit, density, material_obj.category,
+                canonical_name=material_obj.canonical_name,
+            )
             if converted.mass_kg is not None or converted.volume_m3 is not None:
                 weight_total = converted.mass_kg
                 material_vol = converted.volume_m3

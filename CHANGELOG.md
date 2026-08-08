@@ -2,6 +2,43 @@
 
 All notable changes are documented here, following [Semantic Versioning](https://semver.org/).
 
+## [1.35.0] — 2026-08-08
+
+### Added
+
+- **Timber is weighed as it travels: stacked, not solid.** Oak's 720 kg/m³ is the density
+  of the wood, and between the boards of a stack there is air. Entering 20 m³ of oak
+  returned 14,400 kg — the weight of 20 m³ of solid oak, which almost nobody carries. A
+  volume entered for timber now uses a **stacking factor of 0.65**, so the same 20 m³ is
+  9,360 kg at 468 kg/m³. Sheet material — plywood, OSB, MDF, HDF, chipboard, hardboard,
+  softboard, cork, CLT and glulam — stacks flat and keeps its own density.
+
+  Two things this deliberately does not do. It does not touch a line with explicit
+  dimensions: a beam of 0.2 × 0.2 × 3 m is 0.12 m³ of actual wood and is weighed solid.
+  And it does not present the factor as a measurement — it is a nominal packing figure,
+  stated as such, and entering the weight by hand overrides it.
+
+- **Length, width and height are fields on the line.** A description no longer has to read
+  `balk 200x200x3000` for its measurements to count. Anything recognised in the text still
+  appears as a placeholder; what you type wins. On a phone the three sit behind "view more",
+  with quantity and unit on the collapsed card.
+
+### Fixed
+
+- **Dimensions typed into the table were ignored by the calculation.** They were carried
+  into the displayed length, width and height, but every calculation path went on reading
+  what had been parsed out of the *description*. So the columns looked editable and changed
+  nothing. They now feed the calculation, and a length on its own is enough for a catalogue
+  profile. Two of the three measurements is still not a block: nothing is computed rather
+  than a third being invented.
+
+### Changed
+
+- `docs/data-sources.md` records the stacking factor and why it lives in `units.py` rather
+  than in the goods database: `seed_catalogs` only fills that database when it is empty, so
+  new seed values never reach an existing installation, and a calculation that is only right
+  for new users is worse than none.
+
 ## [1.34.1] — 2026-08-08
 
 ### Fixed

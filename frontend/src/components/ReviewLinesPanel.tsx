@@ -10,6 +10,11 @@ export interface DraftLine {
   description: string;
   quantity: number | "";
   unit: string;
+  /** Afmetingen die de gebruiker zelf invult, in centimeters. Ze hoeven dus
+   *  niet meer in de omschrijving te worden verstopt om mee te tellen. */
+  length_cm?: number | "";
+  width_cm?: number | "";
+  height_cm?: number | "";
   dangerous_goods?: boolean;
 }
 
@@ -187,6 +192,31 @@ export default function ReviewLinesPanel({
         </div>
       ),
     },
+    ...(["length_cm", "width_cm", "height_cm"] as const).map((field) => ({
+      key: field,
+      header: t(`review.${field}`),
+      numeric: true,
+      width: "w-24",
+      render: (draft: DraftLine, index: number) => {
+        // Wat de gebruiker invult wint van wat er uit de omschrijving is
+        // gelezen; staat er niets, dan is de gelezen maat de standaardwaarde.
+        const parsed = resultFor(index)?.[field];
+        return (
+          <input
+            type="number"
+            step="0.1"
+            inputMode="decimal"
+            aria-label={t(`review.${field}`)}
+            placeholder={parsed != null ? String(parsed) : ""}
+            className={`${numberInput} w-20`}
+            value={draft[field] ?? ""}
+            onChange={(e) =>
+              updateDraft(draft.id, { [field]: e.target.value === "" ? "" : Number(e.target.value) })
+            }
+          />
+        );
+      },
+    })),
     {
       key: "weightEach",
       header: t("review.weightEach"),

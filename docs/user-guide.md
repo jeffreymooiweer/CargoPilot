@@ -106,6 +106,12 @@ permitted for carriage at all — will block the export until resolved.
 
 [Dangerous goods](dangerous-goods.md) explains all of it in detail.
 
+**Dimensions belong in their own columns.** Length, width and height are fields on the
+line, so a description no longer has to read `balk 200x200x3000` for the measurements to
+count. Anything recognised in the description still fills in as a placeholder; what you
+type wins. On a phone the three fields sit behind **view more**, with quantity and unit on
+the collapsed card.
+
 ## 5. Shipment details
 
 This is where you enter the shipment **once**:

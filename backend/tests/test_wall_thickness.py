@@ -131,3 +131,63 @@ def test_a_zero_thickness_counts_as_absent(db):
     opleveren, en 0 mm invullen is bijna altijd een half ingevuld veld."""
     result = line(db, "Staal hoekprofiel | 1 | stuks", **L80, wall_thickness_m=0)
     assert "wall_thickness_missing" in result["messages"]
+
+
+# --- Ronde doorsneden -----------------------------------------------------
+#
+# Een ronde buis heeft geen hoogte nodig: de breedte is de diameter en de
+# wanddikte geeft de binnendiameter. En een massieve ronde staaf werd tot
+# v1.37.1 als een balk van d bij d gewogen, want er was voor geen van beide
+# vormen een rekenpad — calc_round_bar en calc_round_tube stonden al die tijd
+# ongebruikt in de engine.
+
+
+def test_a_round_tube_needs_only_a_diameter_a_length_and_a_wall(db):
+    """108 mm buitendiameter met 4 mm wand is 10,26 kg/m volgens de tabellen."""
+    result = line(
+        db, "Stalen buis | 1 | stuks",
+        width_m=0.108, length_m=6.0, wall_thickness_m=0.004,
+    )
+    assert result["weight_each_kg"] == pytest.approx(61.56, abs=0.05)
+    assert result["messages"] == []
+
+
+def test_a_round_tube_asks_for_a_height_it_does_not_need(db):
+    """Geen hoogte ingevuld, en toch een gewicht: dat is het hele punt."""
+    result = line(db, "Stalen buis | 1 | stuks", width_m=0.108, length_m=6.0,
+                  wall_thickness_m=0.004)
+    assert result["weight_each_kg"] is not None
+
+
+def test_a_round_bar_is_a_cylinder_and_not_a_block(db):
+    """Een staaf van 50 mm over 6 m is 92,48 kg. Als blok van d bij d zou het
+    117,75 kg zijn — 4/pi, oftewel 27% te zwaar."""
+    result = line(db, "Rond staal | 1 | stuks", width_m=0.05, length_m=6.0)
+    assert result["weight_each_kg"] == pytest.approx(92.48, abs=0.05)
+    assert result["weight_each_kg"] != pytest.approx(0.05 * 0.05 * 6 * STEEL)
+
+
+def test_a_round_bar_needs_no_wall_thickness(db):
+    result = line(db, "Rond staal | 1 | stuks", width_m=0.05, length_m=6.0)
+    assert "wall_thickness_missing" not in result["messages"]
+
+
+def test_a_wall_thicker_than_the_radius_is_refused(db):
+    """Anders levert de binnenstraal een negatief oppervlak op, en een negatief
+    gewicht ziet er net zo stellig uit als een positief."""
+    result = line(db, "Stalen buis | 1 | stuks", width_m=0.02, length_m=6.0,
+                  wall_thickness_m=0.02)
+    assert result["weight_each_kg"] is None
+    assert "wall_thickness_invalid" in result["messages"]
+
+
+def test_a_round_tube_without_a_wall_still_asks(db):
+    result = line(db, "Stalen buis | 1 | stuks", width_m=0.108, length_m=6.0)
+    assert result["weight_each_kg"] is None
+    assert "wall_thickness_missing" in result["messages"]
+
+
+def test_the_outer_box_is_what_gets_stowed(db):
+    """Voor de stuwage telt de omhullende doos, niet de cirkel."""
+    result = line(db, "Rond staal | 2 | stuks", width_m=0.05, length_m=6.0)
+    assert result["transport_volume_m3"] == pytest.approx(0.05 * 0.05 * 6.0 * 2)

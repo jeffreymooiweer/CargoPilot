@@ -40,6 +40,14 @@ const panelClass = "bg-white dark:bg-slate-900 rounded-2xl border border-slate-2
  */
 const WALL_PROFILE_TYPES = new Set(["angle_profile", "square_tube", "round_tube"]);
 
+/**
+ * Ronde doorsneden. Daar ís de breedte de diameter en bestaat er geen hoogte:
+ * met een diameter, een lengte en — bij een buis — een wanddikte ligt het
+ * gewicht vast. Om een hoogte vragen die niets toevoegt is alleen gelegenheid
+ * om iets verkeerds in te vullen.
+ */
+const ROUND_TYPES = new Set(["round_tube", "round_bar"]);
+
 interface Props {
   draftLines: DraftLine[];
   resultLines?: LineItem[];
@@ -240,6 +248,12 @@ export default function ReviewLinesPanel({
       numeric: true,
       width: "w-24",
       render: (draft: DraftLine, index: number) => {
+        const round = ROUND_TYPES.has(resultFor(index)?.product_type ?? "");
+        // Geen hoogte bij een ronde doorsnede; de diameter staat in de breedte.
+        if (round && field === "height_cm") return <span className="text-slate-400">—</span>;
+        // De kolomkop is voor alle regels gelijk, dus de aanduiding "diameter"
+        // hoort bij het veld zelf.
+        const label = round && field === "width_cm" ? t("review.diameter") : t(`review.${field}`);
         // Wat de gebruiker invult wint van wat er uit de omschrijving is
         // gelezen; staat er niets, dan is de gelezen maat de standaardwaarde.
         const parsed = resultFor(index)?.[field];
@@ -248,7 +262,8 @@ export default function ReviewLinesPanel({
             type="number"
             step="0.1"
             inputMode="decimal"
-            aria-label={t(`review.${field}`)}
+            aria-label={label}
+            title={label}
             placeholder={parsed != null ? String(parsed) : ""}
             className={`${numberInput} w-20`}
             value={draft[field] ?? ""}

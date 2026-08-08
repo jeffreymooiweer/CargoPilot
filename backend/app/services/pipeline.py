@@ -13,6 +13,8 @@ from app.services.calculator.engine import (
     calc_angle_profile,
     calc_catalog_profile,
     calc_hollow_rect,
+    calc_round_bar,
+    calc_round_tube,
     transport_volume_outer,
 )
 from app.services.dg.detector import detect_dangerous_goods, detect_un_numbers
@@ -229,6 +231,12 @@ def process_line(
     # hoekprofiel of koker niet te bepalen, en met de drie buitenmaten alleen is
     # het antwoord vijf keer te zwaar.
     wall_m = _positive(overrides.get("wall_thickness_m"))
+    # Bij een ronde doorsnede is de breedte de diameter en is er geen hoogte;
+    # die vullen we gelijk zodat de rest van de code niet op een ontbrekende
+    # derde maat struikelt.
+    if product_type in {"round_tube", "round_bar"} and overrides.get("width_m"):
+        overrides = {**overrides, "height_m": overrides["width_m"]}
+
     entered = [overrides.get("width_m"), overrides.get("height_m"), overrides.get("length_m")]
     if all(value for value in entered):
         # Dezelfde volgorde als de rekenpaden verwachten: breedte, hoogte, lengte.
@@ -327,6 +335,40 @@ def process_line(
         except ValueError as exc:
             messages.append("wall_thickness_invalid")
             status = "error"
+
+    elif product_type == "round_tube" and (diameter_m := dims.width_m or None) and wall_m and dims.length_m:
+        # Een ronde buis vraagt geen hoogte: de breedte ís de diameter, en de
+        # binnendiameter volgt uit de wanddikte. Twee maten en een dikte zijn
+        # genoeg, en om een derde vragen die niets toevoegt is alleen maar
+        # gelegenheid om iets verkeerds in te vullen.
+        outer_r = diameter_m / 2
+        inner_r = outer_r - wall_m
+        if inner_r <= 0:
+            messages.append("wall_thickness_invalid")
+            status = "error"
+        else:
+            material_vol, weight_each = calc_round_tube(outer_r, inner_r, dims.length_m, density)
+            if qty:
+                weight_total = weight_each * qty
+            # Voor de stuwage telt de omhullende doos, niet de cirkel.
+            transport_vol = transport_volume_outer(
+                diameter_m, diameter_m, dims.length_m, qty or 1
+            )
+            length_cm = meters_to_cm(dims.length_m)
+            width_cm = height_cm = meters_to_cm(diameter_m)
+            method = "round_tube"
+
+    elif product_type == "round_bar" and (diameter_m := dims.width_m or None) and dims.length_m:
+        # Massief rond. Tot v1.37.1 viel dit door naar het blok hieronder en werd
+        # een staaf als een balk van d bij d gewogen — 4/pi, oftewel 27% te zwaar.
+        radius = diameter_m / 2
+        material_vol, weight_each = calc_round_bar(radius, dims.length_m, density)
+        if qty:
+            weight_total = weight_each * qty
+        transport_vol = transport_volume_outer(diameter_m, diameter_m, dims.length_m, qty or 1)
+        length_cm = meters_to_cm(dims.length_m)
+        width_cm = height_cm = meters_to_cm(diameter_m)
+        method = "round_bar"
 
     elif product_type in {"plate", "beam"} and len(dims.values_m) >= 3:
         w, h, length_m = dims.values_m[:3]

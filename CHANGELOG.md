@@ -2,6 +2,31 @@
 
 All notable changes are documented here, following [Semantic Versioning](https://semver.org/).
 
+## [1.37.1] — 2026-08-08
+
+### Fixed
+
+- **A round bar was weighed as a square block, 27% too heavy.** There was no calculation
+  path for `round_bar` at all, so a bar fell through to the generic branch and became a
+  block of d × d. A 50 mm bar over 6 m came out at 117.75 kg instead of 92.48 — the ratio is
+  exactly 4/π. `calc_round_bar` had been sitting unused in the engine the whole time, next to
+  `calc_round_tube`; neither had a caller.
+
+- **A round tube produced no weight at all.** v1.37.0 gave it the wall thickness field but no
+  branch to use it, so it reported `wall_thickness_missing` however much you filled in. A
+  pipe of 108 mm outside diameter with a 4 mm wall over 6 m is now 61.56 kg, against the
+  10.26 kg/m in the steel tables.
+
+### Changed
+
+- **A round section is described by a diameter, a length and a wall — no height.** The width
+  column *is* the diameter and the inner diameter follows from the wall thickness, so the
+  height field shows a dash and is labelled accordingly. Asking for a measurement that adds
+  nothing is only an opportunity to enter something wrong.
+
+- **A wall thicker than the radius is refused** rather than producing a negative
+  cross-section, because a negative weight looks exactly as confident as a positive one.
+
 ## [1.37.0] — 2026-08-08
 
 ### Fixed

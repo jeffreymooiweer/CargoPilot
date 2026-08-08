@@ -462,6 +462,102 @@ def _mixed_loading_footnote(
     return None
 
 
+def _compatibility_table(profiles: list[str] | None) -> tuple[dict[str, Any], str]:
+    """Welke 7.5.2.2-tabel geldt, en onder welke naam hij wordt aangehaald.
+
+    Het RID heeft een eigen 7.5.2.2 en die is niet hetzelfde als die van het
+    ADR: hij mist compatibiliteitsgroep A. Dat is een verschil in wat de tabel
+    beantwoordt, niet in het antwoord — vandaar dat een spoortraject de
+    spoortabel krijgt en niet die van de weg. Het ADN heeft geen eigen tabel;
+    dat blijft lenen, met de grondslagmelding die er al staat.
+    """
+    compatibility = get_compliance_rules()["adr_mixed_loading"]["compatibility"]
+    active = {p.upper() for p in (profiles or [])}
+    if active == {"RID"}:
+        return compatibility["rail"], "RID"
+    return compatibility["road"], "ADR"
+
+
+def _class1_compatibility(
+    compat_groups: dict[str, list[str]],
+    unknown: list[str],
+    language: str,
+    profiles: list[str] | None,
+) -> list[dict[str, str]]:
+    """ADR/RID 7.5.2.2: mag deze compatibiliteitsgroep naast die andere?
+
+    De tabel zet groep tegen groep. Een leeg vakje is een verbod, een X is
+    "samenladen toegestaan", en in vier vakjes staat een lettertje: dan mag het,
+    maar niet zonder meer. Tot v1.41.0 telde CargoPilot alleen de groepen en gaf
+    het de vraag terug aan de gebruiker; nu wordt de tabel gelezen.
+    """
+    rules = get_compliance_rules()["adr_mixed_loading"]["rules"]
+    table, regime = _compatibility_table(profiles)
+    order: list[str] = table["group_order"]
+    matrix: dict[str, list[str]] = table["matrix"]
+    lang = _lang(language)
+    findings: list[dict[str, str]] = []
+
+    known = sorted(g for g in compat_groups if g in order)
+    outside = sorted(g for g in compat_groups if g not in order)
+
+    for i, group_a in enumerate(known):
+        for group_b in known[i:]:
+            # Op de diagonaal gaat het over twee colli van dezelfde groep; met
+            # één collo valt er niets samen te laden.
+            if group_a == group_b and len(compat_groups[group_a]) < 2:
+                continue
+            cell = matrix[group_a][order.index(group_b)]
+            if cell == "X":
+                continue
+            products = ", ".join(
+                dict.fromkeys(compat_groups[group_a] + compat_groups[group_b])
+            )
+            pair = f"{group_a} × {group_b}"
+            if not cell:
+                key = "class1_compat_forbidden_rail" if regime == "RID" else "class1_compat_forbidden"
+                findings.append({
+                    "rule": f"{regime} 7.5.2.2 ({pair})",
+                    "severity": "error",
+                    "message": pick(rules[key], lang).replace("{groups}", pair),
+                    "products": products,
+                })
+                continue
+            # Een vakje kan naar twee voetnoten verwijzen ("b c"); dan gelden ze
+            # allebei en hoort de gebruiker ze allebei te zien.
+            for letter in cell:
+                findings.append({
+                    "rule": f"{regime} 7.5.2.2 ({pair}) ({letter})",
+                    "severity": "warning",
+                    "message": pick(rules[f"class1_compat_note_{letter}"], lang),
+                    "products": products,
+                })
+
+    for group in outside:
+        # Wat de tabel niet kent, beantwoordt de tabel niet. Dat zeggen is het
+        # enige eerlijke: groep A staat wél in het ADR en niet in het RID.
+        findings.append({
+            "rule": f"{regime} 7.5.2.2",
+            "severity": "warning",
+            "message": pick(rules["class1_compat_not_in_table"], lang)
+            .replace("{group}", group)
+            .replace("{regime}", regime)
+            .replace("{products}", ", ".join(compat_groups[group])),
+            "products": ", ".join(compat_groups[group]),
+        })
+
+    if unknown and len(unknown) + sum(len(v) for v in compat_groups.values()) > 1:
+        findings.append({
+            "rule": f"{regime} 7.5.2.2",
+            "severity": "warning",
+            "message": pick(rules["class1_compat_unknown_group"], lang).replace(
+                "{products}", ", ".join(unknown)
+            ),
+            "products": ", ".join(unknown),
+        })
+    return findings
+
+
 def check_adr_mixed_loading(
     entries: list[dict[str, Any]], language: str = "nl", profiles: list[str] | None = None
 ) -> list[dict[str, str]]:
@@ -476,6 +572,7 @@ def check_adr_mixed_loading(
     # Per compatibiliteitsgroep de colli die erin vallen, zodat de melding kan
     # zeggen wélke colli het betreft en niet alleen hoeveel groepen er zijn.
     compat_groups: dict[str, list[str]] = {}
+    compat_unknown: list[str] = []
     food_separation: list[str] = []
 
     for entry, index, product in _iter_products(entries):
@@ -484,11 +581,20 @@ def check_adr_mixed_loading(
         primary = _primary_class(product)
         un = str(product.get("un_number") or "").strip()
 
+        if primary.startswith("1"):
+            # 7.5.2.2 gaat over explosieven onderling, en daar hoort 1.4S wél
+            # bij: de tabel heeft een rij S en die staat niet overal op X — S
+            # naast groep L is leeg, dus verboden. Voetnoot (a) bij 7.5.2.1
+            # haalt 1.4S alleen weg uit de vergelijking met ándere klassen.
+            group = _compat_group(product)
+            if group:
+                if label not in compat_groups.setdefault(group, []):
+                    compat_groups[group].append(label)
+            elif label not in compat_unknown:
+                compat_unknown.append(label)
+
         if primary.startswith("1") and not primary.endswith("S"):
             class1_products.append((label, un))
-            group = _compat_group(product)
-            if group and label not in compat_groups.setdefault(group, []):
-                compat_groups[group].append(label)
         elif primary and not primary.endswith("S"):
             other_class_products.append((label, un, primary))
 
@@ -526,25 +632,100 @@ def check_adr_mixed_loading(
                 "message": pick(rules["rules"][f"class1_footnote_{note}"], lang),
                 "products": ", ".join(permitted[note]),
             })
-    if len(compat_groups) > 1:
-        warnings.append({
-            "rule": "ADR 7.5.2.2",
-            "severity": "warning",
-            "message": pick(rules["rules"]["class1_compat_groups"], lang).replace(
-                "{groups}", ", ".join(sorted(compat_groups))
-            ),
-            "products": ", ".join(
-                label for group in sorted(compat_groups) for label in compat_groups[group]
-            ),
-        })
+    warnings.extend(_class1_compatibility(compat_groups, compat_unknown, language, profiles))
     if food_separation:
+        # Dezelfde bepaling, een andere naam: het RID zet hem in kolom (18) als
+        # CW 28, het ADR als CV28. De inhoud van 7.5.4 is woordelijk gelijk, dus
+        # alleen de aanhaling verschilt — maar een verzonnen codenaam op een
+        # spoordocument is precies het soort onjuistheid dat de app zelf toevoegt.
+        _, regime = _compatibility_table(profiles)
+        code = "CW28" if regime == "RID" else "CV28"
         warnings.append({
-            "rule": "ADR CV28 / 7.5.4",
+            "rule": f"{regime} {code} / 7.5.4",
             "severity": "warning",
             "message": pick(rules["rules"]["cv28_foodstuffs"], lang),
             "products": ", ".join(food_separation),
         })
     return warnings
+
+
+def _position_label(entry: dict[str, Any], index: int) -> str:
+    return str(entry.get("vehicle") or entry.get("line_id") or f"#{index + 1}")
+
+
+def check_rid_protective_distance(
+    entries: list[dict[str, Any]], language: str = "nl"
+) -> list[dict[str, str]]:
+    """RID 7.5.3: beschermende afstand in de trein.
+
+    Dit is de bepaling waar het spoor geen wegequivalent voor heeft, en dat is
+    geen toeval: 7.5.3 gaat over hoe een trein wordt samengesteld, en een
+    wegvoertuig rijdt alleen. Juist daarom kon het ADR-hoofdstuk hier nooit
+    invallen — het zou niet het verkeerde antwoord geven maar geen enkel.
+
+    De aanleiding is het plakkaat, niet de divisie. Het RID noemt de modellen 1,
+    1.5 en 1.6 en noemt model 1.4 niet, dus een wagen met uitsluitend goederen
+    van 1.4 valt er buiten.
+    """
+    rules = get_compliance_rules().get("rid_protective_distance")
+    if not rules:
+        return []
+    lang = _lang(language)
+    class1_placards = set(rules["class1_placards"])
+    counterpart = set(rules["counterpart_placards"])
+
+    class1_positions: list[str] = []
+    counterpart_positions: list[str] = []
+    for index, entry in enumerate(entries):
+        label = _position_label(entry, index)
+        bears_class1 = False
+        bears_counterpart = False
+        for product in entry.get("products") or []:
+            for token in _hazard_tokens(product) + [_primary_class(product)]:
+                token = token.strip().upper()
+                if token in class1_placards:
+                    bears_class1 = True
+                elif token in counterpart:
+                    bears_counterpart = True
+            # Klasse 1 zonder divisie in het klasseveld: de divisie staat dan in
+            # de classificatiecode, en zonder divisie is niet te zeggen of het
+            # plakkaat 1.4 is — dan telt de positie mee, want niet weten of een
+            # afstand nodig is mag er niet uitzien als weten dat het niet hoeft.
+            code = str(product.get("classification_code") or "").strip().upper()
+            division = code[:3] if re.match(r"^1\.\d", code) else ""
+            if division in class1_placards:
+                bears_class1 = True
+            elif _primary_class(product) == "1" and not division:
+                bears_class1 = True
+        if bears_class1 and label not in class1_positions:
+            class1_positions.append(label)
+        if bears_counterpart and label not in counterpart_positions:
+            counterpart_positions.append(label)
+
+    if not class1_positions:
+        return []
+
+    pairs = [
+        (one, other)
+        for one in class1_positions
+        for other in counterpart_positions
+        if one != other
+    ]
+    if pairs:
+        return [{
+            "rule": "RID 7.5.3",
+            "severity": "warning",
+            "message": pick(rules["rules"]["between_positions"], lang),
+            "products": "; ".join(f"{one} ↔ {other}" for one, other in pairs),
+        }]
+    # Geen tegenhanger in deze zending betekent niet dat er geen afstand nodig
+    # is: de rest van de trein staat niet in CargoPilot.
+    return [{
+        "rule": "RID 7.5.3",
+        "severity": "warning",
+        "message": pick(rules["rules"]["train_formation"], lang),
+        "products": ", ".join(class1_positions),
+    }]
 
 
 def check_iata_segregation(entries: list[dict[str, Any]], language: str = "nl") -> list[dict[str, str]]:
@@ -2202,6 +2383,12 @@ def check_compliance(
         land = sorted({"ADR", "RID", "ADN"} & normalized)
         result["adr_points"] = check_adr_points(entries, language, land)
         result["adr_mixed_loading"] = check_adr_mixed_loading(entries, language, land)
+        if "RID" in normalized:
+            # 7.5.3 heeft geen wegequivalent en hoort daarom niet bij de
+            # geleende tabellen, maar wél in dezelfde lijst: die bereikt zowel
+            # het paneel als de export, en een spoorbepaling die alleen op het
+            # scherm staat is er op het document niet.
+            result["adr_mixed_loading"] += check_rid_protective_distance(entries, language)
         # ADN answers the exemption question with its own rule, so it gets its
         # own result rather than borrowing the points total.
         if "ADN" in normalized:

@@ -2,6 +2,77 @@
 
 All notable changes are documented here, following [Semantic Versioning](https://semver.org/).
 
+## [1.41.0] — 2026-08-08
+
+### Added
+
+- **Table 7.5.2.2 is read instead of pointed at.** When a consignment held class 1 packages
+  of more than one compatibility group, CargoPilot counted the groups and handed the
+  question back: *check the compatibility groups.* That is honest, and it is also the one
+  question the user cannot answer — they do not have the book. The table is now in the
+  configuration and gets read: an empty cell is a refusal, an X passes without a word, and
+  the four footnotes come back as the condition they actually state.
+
+  So detonators (group B) beside a blasting explosive (group D) no longer produce "check the
+  table" but footnote (a): permitted, provided the two are effectively segregated by separate
+  compartments or a special containment system, in a manner the competent authority has
+  approved. Group N beside C, D or E returns both footnotes printed in that cell, because
+  both apply. Two packages of group L return footnote (d): only with the same type of
+  substance.
+
+- **Rail gets its own table, and it is not the same table.** RID 7.5.2.2 was read on page
+  1102 and compared cell by cell with ADR's on printed page 593. The tables are identical
+  except for one thing: **RID has no compatibility group A.** Road runs A to S, rail B to S,
+  and neither text lists group K. That is a difference in what the table answers rather than
+  in an answer, so a rail leg is evaluated against the rail table, and a group A package on
+  rail is told the table does not cover it — instead of quietly being handed ADR's row. The
+  four footnotes are word for word the same in both texts.
+
+  How the reading of the grid was checked: both tables are symmetric, and
+  `test_compatibility_table_7522.py` asserts it. A table of crosses arrives from a PDF as a
+  column of loose characters, and miscounting one column produces something that still looks
+  plausible — but loading together is reciprocal, so a shifted column almost certainly breaks
+  the symmetry somewhere.
+
+- **RID 7.5.3, the protective distance.** The provision listed as the most concrete open item
+  for three releases, read from page 1103 and implemented. A unit placarded 1, 1.5 or 1.6
+  must be separated on the same train from one placarded 2.1, 3, 4.1, 4.2, 4.3, 5.1 or 5.2
+  by 18 m, or by two 2-axle wagons or one wagon with four or more axles.
+
+  Two things the text says precisely and that are easy to read past. **Model 1.4 is not among
+  the triggers** — it has its own placard model — so a wagon carrying only division 1.4 goods
+  falls outside. And **the counterpart list is short**: classes 6.1, 8 and 9 are not on it,
+  however dangerous they are otherwise.
+
+  This is the one provision where borrowing the ADR chapter would not have produced a rougher
+  answer but no answer at all: 7.5.3 is about how a train is made up, and a road transport
+  unit travels alone. Since CargoPilot cannot see the rest of the train, a consignment with a
+  class 1 wagon and no counterpart of its own still gets the provision, addressed to the
+  carrier, rather than silence.
+
+### Fixed
+
+- **1.4S counted for the compatibility table after all.** Footnote (a) to 7.5.2.1 takes 1.4S
+  out of the comparison with *other classes*, and the code carried that exception into
+  7.5.2.2 as well. But 7.5.2.2 is about explosives among themselves and has a row S, and that
+  row is not all crosses: S against group L is empty, so prohibited. Carrying an exception
+  from one provision into another had been silently approving that combination.
+
+- **Rail cited a code the RID does not have.** RID column (18) names the foodstuffs provision
+  **CW 28**; CargoPilot quoted ADR's CV28 on rail too. The text of 7.5.4 is identical in both
+  regimes so nothing changes about the requirement, but a CIM quoting a code that does not
+  exist in its own regime is the same category of defect as the tunnel code that used to be
+  printed on it: information the application added itself.
+
+### Documentation
+
+- `docs/dg-coverage.md`: rail is no longer described as mostly road on loan. Its quantity
+  calculation, mixed-loading table, compatibility groups and protective distance are now all
+  cited to RID. Recorded in passing and deliberately not implemented: **RID 7.5.2.4**, which
+  prohibits loading limited quantities together with any explosive except division 1.4 and
+  UN 0161 and 0499. It needs nothing the application does not already compute, and it is
+  named as the next rail item.
+
 ## [1.40.1] — 2026-08-08
 
 ### Fixed

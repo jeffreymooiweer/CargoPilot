@@ -2,6 +2,33 @@
 
 All notable changes are documented here, following [Semantic Versioning](https://semver.org/).
 
+## [1.36.1] — 2026-08-08
+
+### Fixed
+
+- **Releasing no longer moves `main` out from under the next branch.** The version lives in
+  five places, and `frontend/package-lock.json` — which holds it twice — was not being
+  checked. So it drifted at every release, and the **Tag release** workflow repaired it by
+  committing to `main` after the merge. The repair worked. It also meant every branch created
+  before that commit conflicted on `VERSION` and `CHANGELOG.md` and could not be merged until
+  it was rebased; that happened twice in one day, over four lines of JSON.
+
+  The check now covers all five values and runs on every pull request, so the mistake fails
+  where it is made. The release workflow verifies and stops rather than repairing, and writes
+  nothing to `main`.
+
+### Added
+
+- **`scripts/bump_version.py`** sets all five at once, because nobody edits a lock file by
+  hand and forgetting it was the whole problem. It leaves the rest of the lock file
+  byte-identical, so a version bump stays readable in a diff.
+
+### Removed
+
+- `scripts/finalize_release_metadata.py`. Half of it was dead — the changelog archive it
+  merged was consumed long ago and cannot recur — and the other half is now a check instead
+  of a write.
+
 ## [1.36.0] — 2026-08-08
 
 ### Changed

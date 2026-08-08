@@ -33,17 +33,15 @@ jobs:
           ref: main
           fetch-depth: 0
 
-      - name: Finalize derived release metadata
-        shell: bash
-        run: |
-          python scripts/finalize_release_metadata.py
-          if ! git diff --quiet; then
-            git config user.name "github-actions[bot]"
-            git config user.email "github-actions[bot]@users.noreply.github.com"
-            git add -A
-            git commit -m "finalize release metadata"
-            git push origin HEAD:main
-          fi
+      # Releasen verandert main niet. Deze stap repareerde vroeger de versie in
+      # package-lock.json met een commit naar main, en dat verschoof main onder
+      # de volgende branch vandaan: die conflicteerde vervolgens op VERSION en
+      # CHANGELOG.md en kon pas na een rebase worden gemerged. De controle zelf
+      # is nu een poort in de CI van elke pull request, dus als hij hier faalt
+      # is er iets gemerged dat rood had moeten staan — en dan is stoppen beter
+      # dan repareren.
+      - name: Verify the version files agree
+        run: python scripts/check_versions.py
 
       - name: Resolve and validate release version
         id: release

@@ -6,7 +6,8 @@
     "iata_segregation": "IATA DGR 67e editie (2026) 9.3.2, Table 9.3.A — Segregation of Packages",
     "q_value": "IATA DGR 67e editie (2026) 5.0.2.11 — Q-waarde voor 'all packed in one'",
     "imdg_segregation": "IMDG-code (Amendement 40-20) 7.2.4 segregatietabel, 7.2.5 scheidingsgroepen en 7.2.7 klasse 1",
-    "imdg_class1": "IMDG-code (Amendement 40-20) 7.2.7 — segregatie van goederen van klasse 1"
+    "imdg_class1": "IMDG-code (Amendement 40-20) 7.2.7 — segregatie van goederen van klasse 1",
+    "rid_protective_distance": "RID 2025 (OTIF) 7.5.3 — beschermende afstand in de trein tussen een wagen met klasse 1 en een geplakkateerde wagen 2.1/3/4.1/4.2/4.3/5.1/5.2"
   },
   "adr_points": {
     "threshold": 1000,
@@ -131,6 +132,48 @@
       "3152",
       "3245"
     ],
+    "compatibility": {
+      "_source": "ADR 2025 Volume II (ECE/TRANS/352 Vol. II), 7.5.2.2, printed page 593, and RID 2025 (Appendix C to COTIF, Annex), 7.5.2.2, page 1102. Both quoted verbatim by scripts/read_land_regulations.py --doc adr2 --page 602-603 and --doc rid --page 1101-1103.",
+      "_reading": "An empty cell is a prohibition, X is 'mixed loading permitted', and a letter is a permission subject to that footnote. Both tables are symmetric, which is how the reading of the grid was checked: a misread column would break the symmetry somewhere. test_adr_compatibility_table.py asserts it.",
+      "_rail_difference": "RID's table is ADR's table without compatibility group A — RID's runs B to S, ADR's A to S. That is a difference in what the table answers, not a difference in an answer, so for rail a group A package gets 'this table does not cover it' rather than ADR's row on loan. Neither text lists group K.",
+      "profiles": {
+        "ADR": "road",
+        "RID": "rail"
+      },
+      "road": {
+        "group_order": ["A", "B", "C", "D", "E", "F", "G", "H", "J", "L", "N", "S"],
+        "matrix": {
+          "A": ["X", "",  "",   "",   "",   "",  "",  "",  "",  "",  "",   ""],
+          "B": ["",  "X", "",   "a",  "",   "",  "",  "",  "",  "",  "",   "X"],
+          "C": ["",  "",  "X",  "X",  "X",  "",  "X", "",  "",  "",  "bc", "X"],
+          "D": ["",  "a", "X",  "X",  "X",  "",  "X", "",  "",  "",  "bc", "X"],
+          "E": ["",  "",  "X",  "X",  "X",  "",  "X", "",  "",  "",  "bc", "X"],
+          "F": ["",  "",  "",   "",   "",   "X", "",  "",  "",  "",  "",   "X"],
+          "G": ["",  "",  "X",  "X",  "X",  "",  "X", "",  "",  "",  "",   "X"],
+          "H": ["",  "",  "",   "",   "",   "",  "",  "X", "",  "",  "",   "X"],
+          "J": ["",  "",  "",   "",   "",   "",  "",  "",  "X", "",  "",   "X"],
+          "L": ["",  "",  "",   "",   "",   "",  "",  "",  "",  "d", "",   ""],
+          "N": ["",  "",  "bc", "bc", "bc", "",  "",  "",  "",  "",  "b",  "X"],
+          "S": ["",  "X", "X",  "X",  "X",  "X", "X", "X", "X", "",  "X",  "X"]
+        }
+      },
+      "rail": {
+        "group_order": ["B", "C", "D", "E", "F", "G", "H", "J", "L", "N", "S"],
+        "matrix": {
+          "B": ["X", "",   "a",  "",   "",  "",  "",  "",  "",  "",   "X"],
+          "C": ["",  "X",  "X",  "X",  "",  "X", "",  "",  "",  "bc", "X"],
+          "D": ["a", "X",  "X",  "X",  "",  "X", "",  "",  "",  "bc", "X"],
+          "E": ["",  "X",  "X",  "X",  "",  "X", "",  "",  "",  "bc", "X"],
+          "F": ["",  "",   "",   "",   "X", "",  "",  "",  "",  "",   "X"],
+          "G": ["",  "X",  "X",  "X",  "",  "X", "",  "",  "",  "",   "X"],
+          "H": ["",  "",   "",   "",   "",  "",  "X", "",  "",  "",   "X"],
+          "J": ["",  "",   "",   "",   "",  "",  "",  "X", "",  "",   "X"],
+          "L": ["",  "",   "",   "",   "",  "",  "",  "",  "d", "",   ""],
+          "N": ["",  "bc", "bc", "bc", "",  "",  "",  "",  "",  "b",  "X"],
+          "S": ["X", "X",  "X",  "X",  "X", "X", "X", "X", "",  "X",  "X"]
+        }
+      }
+    },
     "rules": {
       "class1_with_others": {
         "nl": "Colli met etiket klasse 1 (behalve 1.4S) mogen volgens ADR 7.5.2.1 niet met colli van andere klassen in één voertuig of container worden geladen. Uitzonderingen bestaan o.a. voor 1.4S, springstoffen met ammoniumnitraat (UN 1942/2067) en reddingsmiddelen (UN 2990/3072/3268).",
@@ -152,10 +195,45 @@
         "en": "Permitted under footnote (c) to table 7.5.2.1: safety devices, pyrotechnic of division 1.4, compatibility group G (UN 0503) may be loaded together with safety devices, electrically initiated of class 9 (UN 3268).",
         "de": "Zulässig nach Fußnote (c) zu Tabelle 7.5.2.1: pyrotechnische Sicherheitseinrichtungen der Unterklasse 1.4, Verträglichkeitsgruppe G (UN 0503) dürfen zusammen mit elektrisch aktivierten Sicherheitseinrichtungen der Klasse 9 (UN 3268) geladen werden."
       },
-      "class1_compat_groups": {
-        "nl": "Colli van klasse 1 met verschillende compatibiliteitsgroepen mogen alleen samen worden geladen als tabel 7.5.2.2 dat toestaat. Controleer de compatibiliteitsgroepen ({groups}).",
-        "en": "Class 1 packages of different compatibility groups may only be loaded together where table 7.5.2.2 permits. Check the compatibility groups ({groups}).",
-        "de": "Versandstücke der Klasse 1 mit unterschiedlichen Verträglichkeitsgruppen dürfen nur zusammengeladen werden, soweit Tabelle 7.5.2.2 dies zulässt. Prüfen Sie die Verträglichkeitsgruppen ({groups})."
+      "class1_compat_forbidden": {
+        "nl": "Tabel 7.5.2.2 laat het vakje voor de groepen {groups} leeg: deze colli mogen niet samen in één voertuig of container worden geladen.",
+        "en": "Table 7.5.2.2 leaves the cell for groups {groups} empty: these packages must not be loaded together in one vehicle or container.",
+        "de": "Tabelle 7.5.2.2 lässt das Feld für die Gruppen {groups} leer: diese Versandstücke dürfen nicht zusammen in ein Fahrzeug oder einen Container geladen werden."
+      },
+      "class1_compat_forbidden_rail": {
+        "nl": "Tabel 7.5.2.2 van het RID laat het vakje voor de groepen {groups} leeg: deze colli mogen niet samen in één wagen of container worden geladen.",
+        "en": "Table 7.5.2.2 of RID leaves the cell for groups {groups} empty: these packages must not be loaded together in one wagon or container.",
+        "de": "Tabelle 7.5.2.2 des RID lässt das Feld für die Gruppen {groups} leer: diese Versandstücke dürfen nicht zusammen in einen Wagen oder Container geladen werden."
+      },
+      "class1_compat_note_a": {
+        "nl": "Groep B met groep D is toegestaan op voorwaarde van doeltreffende scheiding, zó dat detonatie niet van de voorwerpen van groep B kan overslaan op groep D. Dat gebeurt met gescheiden compartimenten of door één van beide in een bijzonder omhullingssysteem te plaatsen, en de bevoegde autoriteit moet de gekozen methode goedkeuren. Zonder die goedkeuring mogen ze niet samen.",
+        "en": "Group B with group D is permitted provided they are effectively segregated such that there is no danger of transmission of detonation from the articles of group B to those of group D. Segregation is by separate compartments or by placing one of the two in a special containment system, and the competent authority must approve the method chosen. Without that approval they may not travel together.",
+        "de": "Gruppe B mit Gruppe D ist zulässig, sofern sie wirksam getrennt sind, so dass keine Gefahr der Detonationsübertragung von den Gegenständen der Gruppe B auf die der Gruppe D besteht. Die Trennung erfolgt durch getrennte Abteile oder dadurch, dass einer der beiden Stoffe in ein besonderes Umschließungssystem gebracht wird; die zuständige Behörde muss das gewählte Verfahren genehmigen. Ohne diese Genehmigung dürfen sie nicht zusammen befördert werden."
+      },
+      "class1_compat_note_b": {
+        "nl": "Verschillende soorten voorwerpen van 1.6N mogen alleen samen worden vervoerd als door beproeving of analogie is aangetoond dat er geen extra gevaar van sympathische detonatie tussen de voorwerpen bestaat. Is dat niet aangetoond, dan moeten ze als 1.1 worden behandeld.",
+        "en": "Different types of articles of division 1.6, compatibility group N, may be carried together only where it is proven by testing or analogy that there is no additional hazard of sympathetic detonation between the articles. Where that is not proven they are to be treated as division 1.1.",
+        "de": "Verschiedene Arten von Gegenständen der Unterklasse 1.6, Verträglichkeitsgruppe N, dürfen nur zusammen befördert werden, wenn durch Prüfung oder Analogie nachgewiesen ist, dass keine zusätzliche Gefahr der Detonationsübertragung zwischen den Gegenständen besteht. Ist das nicht nachgewiesen, sind sie als Unterklasse 1.1 zu behandeln."
+      },
+      "class1_compat_note_c": {
+        "nl": "Worden voorwerpen van groep N samen met stoffen of voorwerpen van de groepen C, D of E vervoerd, dan moeten de voorwerpen van groep N worden beschouwd als hadden zij de eigenschappen van groep D.",
+        "en": "Where articles of compatibility group N are carried with substances or articles of compatibility groups C, D or E, the articles of group N are to be considered as having the characteristics of compatibility group D.",
+        "de": "Werden Gegenstände der Verträglichkeitsgruppe N zusammen mit Stoffen oder Gegenständen der Verträglichkeitsgruppen C, D oder E befördert, sind die Gegenstände der Gruppe N so zu betrachten, als hätten sie die Eigenschaften der Verträglichkeitsgruppe D."
+      },
+      "class1_compat_note_d": {
+        "nl": "Colli met stoffen en voorwerpen van groep L mogen alleen samen worden geladen met colli die hetzelfde soort stof of voorwerp van die groep bevatten. Verschillende soorten binnen groep L mogen dus niet samen. Zie ook CV4: groep L wordt uitsluitend als volle lading vervoerd.",
+        "en": "Packages containing substances and articles of compatibility group L may only be loaded together with packages containing the same type of substance or article of that group. Different types within group L may therefore not travel together. See also CV4: group L is carried as a full load only.",
+        "de": "Versandstücke mit Stoffen und Gegenständen der Verträglichkeitsgruppe L dürfen nur mit Versandstücken zusammengeladen werden, die dieselbe Art von Stoff oder Gegenstand dieser Gruppe enthalten. Verschiedene Arten innerhalb der Gruppe L dürfen daher nicht zusammen befördert werden. Siehe auch CV4: Gruppe L wird nur als vollständige Ladung befördert."
+      },
+      "class1_compat_unknown_group": {
+        "nl": "Van {products} is de compatibiliteitsgroep niet bekend, dus is het samenladen met de andere klasse 1-colli niet aan tabel 7.5.2.2 getoetst. Vul de classificatiecode (bijvoorbeeld 1.1D) in of toets deze combinatie zelf aan de tabel.",
+        "en": "The compatibility group of {products} is not known, so loading it with the other class 1 packages has not been checked against table 7.5.2.2. Enter the classification code (for example 1.1D) or check this combination against the table yourself.",
+        "de": "Die Verträglichkeitsgruppe von {products} ist nicht bekannt, daher wurde das Zusammenladen mit den übrigen Versandstücken der Klasse 1 nicht anhand der Tabelle 7.5.2.2 geprüft. Tragen Sie den Klassifizierungscode (zum Beispiel 1.1D) ein oder prüfen Sie diese Kombination selbst an der Tabelle."
+      },
+      "class1_compat_not_in_table": {
+        "nl": "Compatibiliteitsgroep {group} komt in tabel 7.5.2.2 van {regime} niet voor, dus die tabel geeft geen antwoord over {products}. Toets deze combinatie aan de tekst die voor uw traject geldt.",
+        "en": "Compatibility group {group} does not appear in table 7.5.2.2 of {regime}, so that table gives no answer about {products}. Check this combination against the text that applies to your leg.",
+        "de": "Die Verträglichkeitsgruppe {group} kommt in Tabelle 7.5.2.2 des {regime} nicht vor, daher gibt diese Tabelle keine Antwort zu {products}. Prüfen Sie diese Kombination anhand des für Ihre Strecke geltenden Textes."
       },
       "cv28_foodstuffs": {
         "nl": "CV28/7.5.4: colli met etiket 6.1 of 6.2, en klasse 9-colli met UN 2212, 2315, 2590, 3151, 3152 of 3245, mogen niet op of direct naast colli met levensmiddelen, genotmiddelen of diervoeders worden geladen.",
@@ -1152,6 +1230,26 @@
       "nl": "IMDG 7.2.6.3: tussen stoffen in dezelfde tabel hoeft geen scheiding te worden toegepast. Let bij tabel 7.2.6.3.4 op 7.2.6.4: de gevaarlijke reacties van 7.2.6.1.1 t/m 7.2.6.1.4 blijven gelden.",
       "en": "IMDG 7.2.6.3: no segregation needs to be applied between substances in the same table. For table 7.2.6.3.4, note 7.2.6.4: the dangerous reactions of 7.2.6.1.1 to 7.2.6.1.4 continue to apply.",
       "de": "IMDG 7.2.6.3: Zwischen Stoffen derselben Tabelle ist keine Trennung anzuwenden. Beachten Sie bei Tabelle 7.2.6.3.4 die 7.2.6.4: die gefährlichen Reaktionen nach 7.2.6.1.1 bis 7.2.6.1.4 gelten weiterhin."
+    }
+  },
+  "rid_protective_distance": {
+    "_source": "RID 2025 (Appendix C to COTIF, Annex), 7.5.3 Protective distance, page 1103, quoted verbatim by scripts/read_land_regulations.py --doc rid --page 1101-1103.",
+    "_no_road_equivalent": "ADR has no counterpart: 7.5.3 is about how a train is made up, and a road transport unit travels alone. This is therefore the one place where borrowing the ADR chapter would not have produced a wrong answer but no answer at all.",
+    "_placards": "The trigger is the placard, not the division. Models Nos. 1, 1.5 and 1.6 are named; model No. 1.4 is not, so a wagon carrying only division 1.4 goods does not trigger the requirement.",
+    "class1_placards": ["1.1", "1.2", "1.3", "1.5", "1.6"],
+    "counterpart_placards": ["2.1", "3", "4.1", "4.2", "4.3", "5.1", "5.2"],
+    "distance_m": 18,
+    "rules": {
+      "between_positions": {
+        "nl": "RID 7.5.3: een wagen, grote container, transporttank of wegvoertuig met stoffen of voorwerpen van klasse 1 en een plakkaat volgens model 1, 1.5 of 1.6 moet in dezelfde trein van een geplakkateerde eenheid 2.1, 3, 4.1, 4.2, 4.3, 5.1 of 5.2 worden gescheiden door een beschermende afstand. Daaraan is voldaan als de ruimte tussen de bufferkop of de kopwand van de een en die van de ander ten minste 18 m bedraagt, of wordt ingenomen door twee tweeassige wagens of één wagen met vier of meer assen. CargoPilot ziet alleen deze zending; de treinsamenstelling ligt bij de vervoerder.",
+        "en": "RID 7.5.3: a wagon, large container, portable tank or road vehicle holding substances or articles of class 1 and bearing a placard conforming to model No. 1, 1.5 or 1.6 must be separated on the same train from a unit placarded 2.1, 3, 4.1, 4.2, 4.3, 5.1 or 5.2 by a protective distance. That requirement is met where the space between the buffer head or end wall of the one and that of the other is at least 18 m, or is occupied by two 2-axle wagons or one wagon with four or more axles. CargoPilot sees only this consignment; how the train is made up rests with the carrier.",
+        "de": "RID 7.5.3: ein Wagen, Großcontainer, Aufsetztank oder Straßenfahrzeug mit Stoffen oder Gegenständen der Klasse 1 und einer Großzettel nach Muster 1, 1.5 oder 1.6 ist im selben Zug von einer mit 2.1, 3, 4.1, 4.2, 4.3, 5.1 oder 5.2 bezettelten Einheit durch einen Schutzabstand zu trennen. Dieser ist eingehalten, wenn der Raum zwischen dem Pufferkopf oder der Stirnwand des einen und dem des anderen mindestens 18 m beträgt oder von zwei zweiachsigen Wagen oder einem Wagen mit vier oder mehr Achsen eingenommen wird. CargoPilot sieht nur diese Sendung; die Zugbildung liegt beim Beförderer."
+      },
+      "train_formation": {
+        "nl": "RID 7.5.3: deze zending draagt een plakkaat volgens model 1, 1.5 of 1.6. In de trein moet er een beschermende afstand blijven tot elke eenheid met een plakkaat 2.1, 3, 4.1, 4.2, 4.3, 5.1 of 5.2: ten minste 18 m, of twee tweeassige wagens dan wel één wagen met vier of meer assen ertussen. Welke wagens er verder in de trein lopen weet CargoPilot niet; geef dit door aan de vervoerder.",
+        "en": "RID 7.5.3: this consignment bears a placard conforming to model No. 1, 1.5 or 1.6. In the train a protective distance must be kept to every unit placarded 2.1, 3, 4.1, 4.2, 4.3, 5.1 or 5.2: at least 18 m, or two 2-axle wagons or one wagon with four or more axles in between. CargoPilot does not know what else runs in the train; pass this on to the carrier.",
+        "de": "RID 7.5.3: diese Sendung trägt einen Großzettel nach Muster 1, 1.5 oder 1.6. Im Zug ist zu jeder mit 2.1, 3, 4.1, 4.2, 4.3, 5.1 oder 5.2 bezettelten Einheit ein Schutzabstand einzuhalten: mindestens 18 m oder zwei zweiachsige Wagen bzw. ein Wagen mit vier oder mehr Achsen dazwischen. Welche Wagen sonst im Zug laufen, weiß CargoPilot nicht; geben Sie dies an den Beförderer weiter."
+      }
     }
   },
   "adn_exemption": {

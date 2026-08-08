@@ -63,17 +63,20 @@ def load(*products, language="nl"):
 
 
 def compat_warnings(warnings):
-    return [w for w in warnings if w["rule"] == "ADR 7.5.2.2"]
+    return [w for w in warnings if w["rule"].startswith("ADR 7.5.2.2")]
 
 
-def test_twee_compatibiliteitsgroepen_geven_een_melding_en_geen_fout():
-    """De crash zelf: dit riep tot v1.40.1 `TypeError` op in plaats van te melden."""
-    warnings = load(BLACK_POWDER, DETONATORS)
+def test_twee_compatibiliteitsgroepen_geven_een_antwoord_en_geen_fout():
+    """De crash zelf: dit riep tot v1.40.1 `TypeError` op in plaats van te melden.
 
-    found = compat_warnings(warnings)
+    Sinds v1.41.0 wordt de tabel ook echt gelezen, dus wat er uit komt is het
+    vakje B × D — voetnoot (a) — en niet meer de vraag teruggegeven.
+    """
+    found = compat_warnings(load(BLACK_POWDER, DETONATORS))
+
     assert len(found) == 1
+    assert found[0]["rule"] == "ADR 7.5.2.2 (B × D) (a)"
     assert found[0]["severity"] == "warning"
-    assert "B, D" in found[0]["message"]
 
 
 def test_de_melding_noemt_de_betrokken_colli():
@@ -93,7 +96,7 @@ def test_de_groep_komt_uit_de_classificatiecode_niet_uit_de_klassekolom():
     found = compat_warnings(load(BLACK_POWDER, DETONATORS_TABLE_A))
 
     assert len(found) == 1
-    assert "B, D" in found[0]["message"]
+    assert found[0]["rule"] == "ADR 7.5.2.2 (B × D) (a)"
 
 
 def test_een_enkele_groep_geeft_geen_melding():

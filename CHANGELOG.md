@@ -2,6 +2,72 @@
 
 All notable changes are documented here, following [Semantic Versioning](https://semver.org/).
 
+## [1.38.0] — 2026-08-08
+
+### Fixed
+
+- **Blasting explosives with ammonium nitrate were refused, though footnote (d) permits
+  them.** The message CargoPilot showed even named the exception — and then blocked the
+  load anyway. The check asked whether the consignment contained any class 1 package and
+  any package of another class, and raised one error over the whole consignment. Table
+  7.5.2.1 does not work that way: it sets label against label, and three of its cells hold
+  a footnote letter instead of a prohibition.
+
+  Footnotes (b), (c) and (d) are now applied, per pair of packages. One forbidden
+  combination no longer condemns a permitted one, and one permitted combination no longer
+  excuses the rest — load a blasting explosive with both ammonium nitrate and paint and you
+  get the permission for the first and the prohibition for the second, each naming only the
+  packages it concerns.
+
+  Footnote (d) carries a condition that changes the rest of the load, so the panel and the
+  document both state it: the aggregate must be treated as blasting explosives of class 1
+  for placarding, segregation, stowage and the maximum permissible load of 7.5.5.2.1. UN
+  0083 is excluded by the footnote itself and stays refused.
+
+### Added
+
+- **The regulation reader can print a page verbatim** (`--page 602`, or a range of at most
+  twelve). ADR 7.5.2.1 came back "not found" for weeks: the finder scores each occurrence of
+  a clause number by how much prose follows it, which is right for a rule made of sentences
+  and wrong for one that is almost entirely a grid of crosses. It scored near zero and lost
+  to every cross-reference in the volume. When the number will not resolve, the page still
+  will.
+
+- **The reader searches through a hyphen.** RID breaks words at the line end —
+  `com-\npatibility`, `alka-\nline` — so a phrase search against it found nothing at all.
+  "No occurrence" then reads as an answer about the regulation when it is only an answer
+  about the typesetting, which for a tool whose job is checking what a text says is the
+  worst way to be wrong.
+
+### Fixed (the reader)
+
+- **A table is no longer mistaken for a contents page.** One of the three contents signals
+  counted bare clause numbers, and a table like 7.5.2.1 *is* a column of bare numbers —
+  "1.4", "5.1", "6.2". So the finder skipped exactly the pages the locator could not reach
+  either: both escape hatches failed on the same kind of page, which is how RID's 7.5.2.1
+  came back as "no occurrence" for a footnote plainly printed on page 1101. A page carrying
+  real sentences is now never a contents page, however many numbers stand in its margin.
+
+### Verified
+
+- **Rail was checked before these permissions were extended to it.** CargoPilot answers RID
+  and ADN mixed loading with ADR's table under a stated basis note. Borrowing another
+  regime's prohibitions is conservative; borrowing its permissions is not, and this release
+  turns three cells from refusals into permissions. RID 2025, table 7.5.2.1 on page 1101,
+  carries footnotes (a) to (d) in the same words and with the same UN numbers — so for rail
+  this is RID's own rule, not a road rule on loan. ADN is a different regime for stowage and
+  its borrowing stays labelled as such.
+
+### Documentation
+
+- The footnote text and its source — ADR 2025 Volume II (ECE/TRANS/352 Vol. II), table
+  7.5.2.1, printed page 592 — are recorded in the configuration and in `docs/dangerous-goods.md`,
+  because these UN numbers come from a text that is not in the repository.
+
+- Corrected in passing: the footnote (d) that extracts most readily from ADR belongs to
+  **7.5.2.2** and concerns compatibility group L. The ammonium nitrate footnote is (d) to
+  **7.5.2.1**. Two different tables, two different (d)s.
+
 ## [1.37.1] — 2026-08-08
 
 ### Fixed

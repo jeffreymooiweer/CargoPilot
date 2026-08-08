@@ -48,6 +48,10 @@ on:
         description: "Locate a provision by a phrase when its number is unknown"
         default: ""
         required: false
+      page:
+        description: "Print a page verbatim, e.g. 594 or 600-606, when the number will not resolve"
+        default: ""
+        required: false
 
 permissions:
   contents: read
@@ -83,6 +87,9 @@ jobs:
           fi
           if [ -n "${{ inputs.find }}" ]; then
             ARGS="$ARGS --find \"${{ inputs.find }}\""
+          fi
+          if [ -n "${{ inputs.page }}" ]; then
+            ARGS="$ARGS --page ${{ inputs.page }}"
           fi
           if [ -n "${{ inputs.chars }}" ]; then
             ARGS="$ARGS --chars ${{ inputs.chars }}"

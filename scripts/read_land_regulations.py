@@ -282,12 +282,56 @@ def _normalise(text: str) -> str:
     return re.sub(r"[ \t]+", " ", text.replace("\xa0", " "))
 
 
+def _searchable(text: str) -> tuple[str, list[int]]:
+    """A view of a page for searching, plus where each character came from.
+
+    RID's typesetting breaks words at the line end — "com-\\npatibility",
+    "divi-\\nsion", "alka-\\nline" — so searching it for a phrase quietly found
+    nothing at all. "No occurrence" then looks like an answer about the
+    regulation when it is only an answer about the line breaks, and that is the
+    worst possible failure for a tool whose whole job is to check what the text
+    says.
+
+    So: lower case, every hyphen dropped, every run of whitespace one space. It
+    over-matches slightly — "self-reactive" also matches "selfreactive" — which
+    for a locator is the right way round. It points at a page to read; it does
+    not decide anything.
+
+    The second return value maps each position back to the original text, so the
+    snippet that gets printed is the real one, hyphens and line breaks included.
+    """
+    characters: list[str] = []
+    origin: list[int] = []
+    after_space = True
+    after_hyphen = False
+    for index, character in enumerate(text):
+        if character in "-­‐‑":
+            # The line break that follows a hyphen has to go with it, or
+            # "com-\npatibility" becomes "com patibility" and is still missed.
+            after_hyphen = True
+            continue
+        if character.isspace():
+            if after_space or after_hyphen:
+                continue
+            characters.append(" ")
+            origin.append(index)
+            after_space = True
+            continue
+        characters.append(character.lower())
+        origin.append(index)
+        after_space = False
+        after_hyphen = False
+    return "".join(characters), origin
+
+
 _LEADER = re.compile(r"\.{3,}\s*\d+\s*$", re.MULTILINE)
 # RID numbers its pages "1-3" (chapter-page) and its contents is a column of
 # those, with no dot leaders at all. An earlier version only knew about leaders
 # and so handed RID's contents page back as if it were chapter 1.1.3.6.
 _CHAPTER_PAGE = re.compile(r"^[ \t]*\d+-\d+[ \t]*$", re.MULTILINE)
 _BARE_NUMBER = re.compile(r"^[ \t]*\d+(?:\.\d+){1,4}[ \t]*$", re.MULTILINE)
+# A sentence, roughly: a line long enough to be prose rather than a table cell.
+_PROSE_LINE = re.compile(r"^.{60,}$", re.MULTILINE)
 
 
 def _is_contents_page(text: str) -> bool:
@@ -297,12 +341,21 @@ def _is_contents_page(text: str) -> bool:
     differently: dot leaders, a column of chapter-page references, and a page
     that is almost nothing but clause numbers. A body page carries a handful of
     clause numbers; a contents page carries dozens.
+
+    That third signal used to fire on its own, and it took out exactly the wrong
+    pages. A table like 7.5.2.1 is a column of "1.4", "5.1", "6.2" — dozens of
+    bare numbers and not a contents page in sight. So RID's 7.5.2.1 was skipped
+    by the finder, which then reported "no occurrence outside the contents
+    pages" for a footnote that is plainly there, on page 1101. Both escape
+    hatches failed on the same kind of page, and for the same reason.
+
+    Hence the guard: a page carrying real sentences is not a contents page,
+    however many numbers stand in its margin. The other two signals are specific
+    enough to stand alone; this one never was.
     """
-    return (
-        len(_LEADER.findall(text)) >= 4
-        or len(_CHAPTER_PAGE.findall(text)) >= 5
-        or len(_BARE_NUMBER.findall(text)) >= 18
-    )
+    if len(_LEADER.findall(text)) >= 4 or len(_CHAPTER_PAGE.findall(text)) >= 5:
+        return True
+    return len(_BARE_NUMBER.findall(text)) >= 18 and len(_PROSE_LINE.findall(text)) < 5
 
 
 def locate(doc: str, provision: Provision) -> list[tuple[int, int, int]]:
@@ -388,16 +441,18 @@ def find(doc: str, phrase: str, limit: int = 12) -> None:
     print("=" * 78)
     print(f"{SOURCES[doc]['title']} — searching for {phrase!r}")
     print("=" * 78)
-    needle = phrase.lower()
+    needle, _ = _searchable(phrase)
     shown = 0
     for index, raw in enumerate(pages(doc)):
         body = _normalise(raw)
-        if needle not in body.lower() or _is_contents_page(body):
+        haystack, origin = _searchable(body)
+        if needle not in haystack or _is_contents_page(body):
             continue
-        for match in re.finditer(re.escape(needle), body.lower()):
-            headings = _HEADING.findall(body[: match.start()])
+        for match in re.finditer(re.escape(needle), haystack):
+            start = origin[match.start()]
+            headings = _HEADING.findall(body[:start])
             where = headings[-1] if headings else "?"
-            snippet = " ".join(body[match.start(): match.start() + 220].split())
+            snippet = " ".join(body[start: start + 220].split())
             print(f"  [page {index + 1}, under {where}] {snippet}")
             shown += 1
             if shown >= limit:
@@ -406,6 +461,47 @@ def find(doc: str, phrase: str, limit: int = 12) -> None:
             break
     if not shown:
         print("  no occurrence outside the contents pages")
+
+
+def parse_pages(spec: str) -> list[int]:
+    """Turn "594" or "600-606" into a list of one-based page numbers.
+
+    Small on purpose, and refuses the mistakes that would otherwise print a
+    thousand pages into a run log: a reversed range, a zero, a range wider than
+    a chapter.
+    """
+    text = spec.strip()
+    if "-" in text:
+        first_text, _, last_text = text.partition("-")
+        first, last = int(first_text), int(last_text)
+    else:
+        first = last = int(text)
+    if first < 1 or last < first:
+        raise ValueError(f"{spec!r} is not a page or a page range")
+    if last - first >= 12:
+        raise ValueError(f"{spec!r} spans {last - first + 1} pages; ask for at most 12")
+    return list(range(first, last + 1))
+
+
+def dump(doc: str, page_number: int) -> None:
+    """Print one page exactly as it extracts, clause numbers or not.
+
+    ``locate`` finds a provision by the prose that follows its number, which is
+    the right rule for a provision made of sentences and the wrong one for a
+    provision that is almost entirely a table. ADR 7.5.2.1 is a grid of crosses
+    with a number in the margin, so it scores near zero and loses to every
+    cross-reference elsewhere in the volume. When the finder cannot reach the
+    text, the page still can — this is that escape hatch.
+    """
+    body = pages(doc)
+    print()
+    print("=" * 78)
+    print(f"{SOURCES[doc]['title']} — page {page_number} verbatim")
+    print("=" * 78)
+    if page_number > len(body):
+        print(f"!! this document has {len(body)} pages")
+        return
+    print(_normalise(body[page_number - 1]).strip())
 
 
 def main() -> None:
@@ -419,10 +515,12 @@ def main() -> None:
     parser.add_argument("--chars", type=int, default=2600, help="length of an ad-hoc quote")
     parser.add_argument("--find", action="append", default=[],
                         help="locate a provision by a phrase when its number is unknown")
+    parser.add_argument("--page", action="append", default=[],
+                        help="print a page verbatim, e.g. 594 or 600-606")
     args = parser.parse_args()
 
-    if not args.quote and not args.section and not args.find:
-        parser.error("give --quote GROUP, --section NUMBER or --find PHRASE")
+    if not args.quote and not args.section and not args.find and not args.page:
+        parser.error("give --quote GROUP, --section NUMBER, --find PHRASE or --page N")
 
     wanted_docs = tuple(args.doc) if args.doc else None
 
@@ -462,6 +560,14 @@ def main() -> None:
                 find(doc, phrase)
             except SystemExit as error:
                 print(f"\n!! {doc} unreachable: {error}")
+
+    for spec in args.page:
+        for number in parse_pages(spec):
+            for doc in (wanted_docs or ("adr1",)):
+                try:
+                    dump(doc, number)
+                except SystemExit as error:
+                    print(f"\n!! {doc} unreachable: {error}")
 
     print()
     print("-" * 78)

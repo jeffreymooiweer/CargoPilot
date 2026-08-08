@@ -421,16 +421,47 @@ def check_adn_exemption(
     }
 
 
+def _mixed_loading_footnote(
+    class1_un: str, other_un: str, other_class: str, footnotes: dict[str, Any]
+) -> str | None:
+    """Welke voetnoot bij tabel 7.5.2.1 dit paar toestaat, of geen.
+
+    Het vakje klasse 1 tegen een andere klasse is in de tabel leeg — verboden —
+    behalve waar een letter staat. Drie daarvan zijn hier van belang, en ze
+    hangen alle drie aan het UN-nummer en niet aan de klasse:
+
+    (b) klasse 1 met reddingsmiddelen van klasse 9;
+    (c) UN 0503 met UN 3268;
+    (d) springstof met ammoniumnitraat en verwante nitraten.
+
+    Voetnoot (a) staat er ook, maar die gaat over 1.4S en dat wordt hierboven al
+    afgevangen: 1.4S telt niet als klasse 1 voor deze tabel.
+    """
+    note_d = footnotes["d"]
+    if (
+        class1_un in note_d["blasting_explosive_un_numbers"]
+        and class1_un not in note_d["excluded_un_numbers"]
+        and other_un in note_d["nitrate_un_numbers"]
+    ):
+        return "d"
+    if class1_un == footnotes["c"]["class1_un"] and other_un == footnotes["c"]["class9_un"]:
+        return "c"
+    if other_class.startswith("9") and other_un in footnotes["b"]["life_saving_un_numbers"]:
+        return "b"
+    return None
+
+
 def check_adr_mixed_loading(
     entries: list[dict[str, Any]], language: str = "nl", profiles: list[str] | None = None
 ) -> list[dict[str, str]]:
     """ADR 7.5.2 / 7.5.4 (CV28): samenladingswaarschuwingen op klasseniveau."""
     rules = get_compliance_rules()["adr_mixed_loading"]
+    footnotes = rules["footnotes"]
     lang = _lang(language)
     warnings: list[dict[str, str]] = []
 
-    class1_products: list[str] = []
-    other_class_products: list[str] = []
+    class1_products: list[tuple[str, str]] = []
+    other_class_products: list[tuple[str, str, str]] = []
     compat_groups: set[str] = set()
     food_separation: list[str] = []
 
@@ -441,12 +472,12 @@ def check_adr_mixed_loading(
         un = str(product.get("un_number") or "").strip()
 
         if primary.startswith("1") and not primary.endswith("S"):
-            class1_products.append(label)
+            class1_products.append((label, un))
             group = _class1_compat_group(primary)
             if group:
                 compat_groups.add(group)
         elif primary and not primary.endswith("S"):
-            other_class_products.append(label)
+            other_class_products.append((label, un, primary))
 
         if any(t.startswith("6.1") or t.startswith("6.2") for t in tokens):
             food_separation.append(label)
@@ -454,12 +485,34 @@ def check_adr_mixed_loading(
             food_separation.append(label)
 
     if class1_products and other_class_products:
-        warnings.append({
-            "rule": "ADR 7.5.2.1",
-            "severity": "error",
-            "message": pick(rules["rules"]["class1_with_others"], lang),
-            "products": ", ".join(class1_products + other_class_products),
-        })
+        # Per paar, niet per zending: één verboden combinatie maakt de andere
+        # niet verboden, en één toegestane combinatie maakt de rest niet goed.
+        forbidden: list[str] = []
+        permitted: dict[str, list[str]] = {}
+        for class1_label, class1_un in class1_products:
+            for other_label, other_un, other_class in other_class_products:
+                note = _mixed_loading_footnote(class1_un, other_un, other_class, footnotes)
+                bucket = permitted.setdefault(note, []) if note else forbidden
+                for label in (class1_label, other_label):
+                    if label not in bucket:
+                        bucket.append(label)
+
+        if forbidden:
+            warnings.append({
+                "rule": "ADR 7.5.2.1",
+                "severity": "error",
+                "message": pick(rules["rules"]["class1_with_others"], lang),
+                "products": ", ".join(forbidden),
+            })
+        for note in sorted(permitted):
+            # Toegestaan, maar niet zonder meer: voetnoot (d) verlegt de
+            # placardering en de maximaal toegestane hoeveelheid naar klasse 1.
+            warnings.append({
+                "rule": f"ADR 7.5.2.1 ({note})",
+                "severity": "warning",
+                "message": pick(rules["rules"][f"class1_footnote_{note}"], lang),
+                "products": ", ".join(permitted[note]),
+            })
     if len(compat_groups) > 1:
         warnings.append({
             "rule": "ADR 7.5.2.2",

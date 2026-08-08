@@ -95,6 +95,27 @@ what the exemption does and does not release you from.
 on mixed compatibility groups within class 1, and on the CV28 separation of foodstuffs
 from labels 6.1/6.2 and certain class 9 substances.
 
+Three cells of table 7.5.2.1 are not prohibitions but footnotes, and CargoPilot honours
+them per pair rather than per consignment — one forbidden combination does not condemn a
+permitted one, and one permitted combination does not excuse the rest:
+
+- **(b)** class 1 with life-saving appliances of class 9 (UN 2990, 3072, 3268);
+- **(c)** UN 0503 with UN 3268;
+- **(d)** blasting explosives *except UN 0083* with ammonium nitrate (UN 1942, 2067),
+  ammonium nitrate emulsion, suspension or gel (UN 3375) and the alkali and alkaline
+  earth metal nitrates the footnote lists by number.
+
+Footnote (d) comes with a condition that carries real consequences, so the panel and the
+document both state it: the aggregate must be treated as blasting explosives of class 1
+for placarding, segregation, stowage and the maximum permissible load of 7.5.5.2.1.
+
+**Rail was checked before these permissions were extended to it.** CargoPilot answers RID
+and ADN mixed loading with ADR's table under a stated basis note, and borrowing another
+regime's *prohibitions* is conservative in a way that borrowing its *permissions* is not.
+RID 2025, table 7.5.2.1 on page 1101, carries footnotes (a) to (d) in the same words and
+with the same UN numbers, so for rail this is RID's own rule and not a road rule on loan.
+ADN is a different regime for stowage; there the table remains borrowed and labelled.
+
 **ADN 1.1.3.6.1 — the inland waterway exemption, which is not the road one.** ADN has no
 points calculation. It exempts a consignment in packages when the gross mass of everything
 together stays under 3,000 kg *and* no class exceeds its own figure — 0 kg, 300 kg or

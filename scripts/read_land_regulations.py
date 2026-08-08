@@ -282,6 +282,48 @@ def _normalise(text: str) -> str:
     return re.sub(r"[ \t]+", " ", text.replace("\xa0", " "))
 
 
+def _searchable(text: str) -> tuple[str, list[int]]:
+    """A view of a page for searching, plus where each character came from.
+
+    RID's typesetting breaks words at the line end — "com-\\npatibility",
+    "divi-\\nsion", "alka-\\nline" — so searching it for a phrase quietly found
+    nothing at all. "No occurrence" then looks like an answer about the
+    regulation when it is only an answer about the line breaks, and that is the
+    worst possible failure for a tool whose whole job is to check what the text
+    says.
+
+    So: lower case, every hyphen dropped, every run of whitespace one space. It
+    over-matches slightly — "self-reactive" also matches "selfreactive" — which
+    for a locator is the right way round. It points at a page to read; it does
+    not decide anything.
+
+    The second return value maps each position back to the original text, so the
+    snippet that gets printed is the real one, hyphens and line breaks included.
+    """
+    characters: list[str] = []
+    origin: list[int] = []
+    after_space = True
+    after_hyphen = False
+    for index, character in enumerate(text):
+        if character in "-­‐‑":
+            # The line break that follows a hyphen has to go with it, or
+            # "com-\npatibility" becomes "com patibility" and is still missed.
+            after_hyphen = True
+            continue
+        if character.isspace():
+            if after_space or after_hyphen:
+                continue
+            characters.append(" ")
+            origin.append(index)
+            after_space = True
+            continue
+        characters.append(character.lower())
+        origin.append(index)
+        after_space = False
+        after_hyphen = False
+    return "".join(characters), origin
+
+
 _LEADER = re.compile(r"\.{3,}\s*\d+\s*$", re.MULTILINE)
 # RID numbers its pages "1-3" (chapter-page) and its contents is a column of
 # those, with no dot leaders at all. An earlier version only knew about leaders
@@ -388,16 +430,18 @@ def find(doc: str, phrase: str, limit: int = 12) -> None:
     print("=" * 78)
     print(f"{SOURCES[doc]['title']} — searching for {phrase!r}")
     print("=" * 78)
-    needle = phrase.lower()
+    needle, _ = _searchable(phrase)
     shown = 0
     for index, raw in enumerate(pages(doc)):
         body = _normalise(raw)
-        if needle not in body.lower() or _is_contents_page(body):
+        haystack, origin = _searchable(body)
+        if needle not in haystack or _is_contents_page(body):
             continue
-        for match in re.finditer(re.escape(needle), body.lower()):
-            headings = _HEADING.findall(body[: match.start()])
+        for match in re.finditer(re.escape(needle), haystack):
+            start = origin[match.start()]
+            headings = _HEADING.findall(body[:start])
             where = headings[-1] if headings else "?"
-            snippet = " ".join(body[match.start(): match.start() + 220].split())
+            snippet = " ".join(body[start: start + 220].split())
             print(f"  [page {index + 1}, under {where}] {snippet}")
             shown += 1
             if shown >= limit:

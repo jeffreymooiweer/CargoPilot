@@ -67,6 +67,58 @@ def test_something_that_is_not_a_page_is_refused(spec):
         reader.parse_pages(spec)
 
 
+# --- Zoeken door een afbreekstreepje heen --------------------------------
+#
+# RID breekt woorden af aan het regeleinde. Een zoekopdracht op "alkaline earth
+# metal nitrates" leverde daardoor "no occurrence" op, en dat las als een
+# uitspraak over de regelgeving terwijl het een uitspraak over de opmaak was.
+# Voor een leesgereedschap is dat de ergste denkbare fout.
+
+
+def test_a_word_broken_at_the_line_end_is_still_found():
+    text = "articles of com-\npatibility group D may be loaded"
+    haystack, _ = reader._searchable(text)
+    needle, _ = reader._searchable("compatibility group D")
+    assert needle in haystack
+
+
+def test_the_position_points_back_into_the_real_text():
+    """Het fragment dat wordt afgedrukt moet het echte fragment zijn, met
+    afbreekstreepje en al — anders citeer je iets wat er niet staat."""
+    text = "zie divi-\nsion 1.1 hierna"
+    haystack, origin = reader._searchable(text)
+    needle, _ = reader._searchable("division")
+    start = origin[haystack.index(needle)]
+    assert text[start:].startswith("divi-")
+
+
+def test_case_and_stray_spacing_do_not_matter():
+    haystack, _ = reader._searchable("ALKALI   metal\n  NITRATES")
+    needle, _ = reader._searchable("alkali metal nitrates")
+    assert needle in haystack
+
+
+def test_a_genuine_hyphen_is_dropped_on_both_sides():
+    """"self-reactive" wordt "selfreactive", en de zoekterm ook. Zolang beide
+    kanten dezelfde behandeling krijgen, blijft de zoekterm werken."""
+    haystack, _ = reader._searchable("self-reactive substances")
+    needle, _ = reader._searchable("self-reactive")
+    assert needle in haystack
+
+
+def test_a_hyphen_between_words_does_not_glue_a_sentence_together():
+    """Het streepje verdwijnt, maar een gedachtestreepje mag geen twee woorden
+    aan elkaar plakken die in de tekst los staan."""
+    haystack, _ = reader._searchable("klasse 5.1 - zie hierna")
+    assert "5.1 zie hierna" in haystack
+
+
+def test_the_finder_actually_uses_it():
+    source = (ROOT / "scripts" / "read_land_regulations.py").read_text(encoding="utf-8")
+    finder = source[source.index("def find("):]
+    assert "_searchable" in finder[: finder.index("\ndef ")]
+
+
 def test_the_dump_is_reachable_from_the_command_line():
     """De optie bestaat pas echt als main hem doorgeeft; een functie zonder vlag
     is precies het soort naad waar het eerder op misging."""

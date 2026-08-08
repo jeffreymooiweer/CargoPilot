@@ -91,8 +91,25 @@ def emit(index: int, url: str) -> None:
 
 def main() -> None:
     url = sys.argv[1]
-    html = get(url).decode("utf-8", "replace")
-    print(f"fetched {len(html)} bytes of HTML", file=sys.stderr)
+    # Medium's bot protection refuses datacentre addresses outright, which is
+    # every runner. The Archive holds the page and does not.
+    candidates = [
+        f"https://web.archive.org/web/2025id_/{url}",
+        f"https://web.archive.org/web/2024id_/{url}",
+        f"https://web.archive.org/web/2id_/{url}",
+        url,
+    ]
+    html = ""
+    for candidate in candidates:
+        body = get(candidate).decode("utf-8", "replace")
+        blocked = "you have been blocked" in body.lower() or len(body) < 20000
+        print(f"  {candidate[:70]} -> {len(body)} bytes"
+              f"{' (blocked/short)' if blocked else ''}", file=sys.stderr)
+        if not blocked:
+            html = body
+            break
+    if not html:
+        raise SystemExit("every route returned a block page or nothing usable")
 
     print("=" * 78)
     print("ARTICLE TEXT")

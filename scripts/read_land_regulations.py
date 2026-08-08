@@ -408,6 +408,47 @@ def find(doc: str, phrase: str, limit: int = 12) -> None:
         print("  no occurrence outside the contents pages")
 
 
+def parse_pages(spec: str) -> list[int]:
+    """Turn "594" or "600-606" into a list of one-based page numbers.
+
+    Small on purpose, and refuses the mistakes that would otherwise print a
+    thousand pages into a run log: a reversed range, a zero, a range wider than
+    a chapter.
+    """
+    text = spec.strip()
+    if "-" in text:
+        first_text, _, last_text = text.partition("-")
+        first, last = int(first_text), int(last_text)
+    else:
+        first = last = int(text)
+    if first < 1 or last < first:
+        raise ValueError(f"{spec!r} is not a page or a page range")
+    if last - first >= 12:
+        raise ValueError(f"{spec!r} spans {last - first + 1} pages; ask for at most 12")
+    return list(range(first, last + 1))
+
+
+def dump(doc: str, page_number: int) -> None:
+    """Print one page exactly as it extracts, clause numbers or not.
+
+    ``locate`` finds a provision by the prose that follows its number, which is
+    the right rule for a provision made of sentences and the wrong one for a
+    provision that is almost entirely a table. ADR 7.5.2.1 is a grid of crosses
+    with a number in the margin, so it scores near zero and loses to every
+    cross-reference elsewhere in the volume. When the finder cannot reach the
+    text, the page still can — this is that escape hatch.
+    """
+    body = pages(doc)
+    print()
+    print("=" * 78)
+    print(f"{SOURCES[doc]['title']} — page {page_number} verbatim")
+    print("=" * 78)
+    if page_number > len(body):
+        print(f"!! this document has {len(body)} pages")
+        return
+    print(_normalise(body[page_number - 1]).strip())
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--quote", choices=sorted(GROUPS), action="append", default=[],
@@ -419,10 +460,12 @@ def main() -> None:
     parser.add_argument("--chars", type=int, default=2600, help="length of an ad-hoc quote")
     parser.add_argument("--find", action="append", default=[],
                         help="locate a provision by a phrase when its number is unknown")
+    parser.add_argument("--page", action="append", default=[],
+                        help="print a page verbatim, e.g. 594 or 600-606")
     args = parser.parse_args()
 
-    if not args.quote and not args.section and not args.find:
-        parser.error("give --quote GROUP, --section NUMBER or --find PHRASE")
+    if not args.quote and not args.section and not args.find and not args.page:
+        parser.error("give --quote GROUP, --section NUMBER, --find PHRASE or --page N")
 
     wanted_docs = tuple(args.doc) if args.doc else None
 
@@ -462,6 +505,14 @@ def main() -> None:
                 find(doc, phrase)
             except SystemExit as error:
                 print(f"\n!! {doc} unreachable: {error}")
+
+    for spec in args.page:
+        for number in parse_pages(spec):
+            for doc in (wanted_docs or ("adr1",)):
+                try:
+                    dump(doc, number)
+                except SystemExit as error:
+                    print(f"\n!! {doc} unreachable: {error}")
 
     print()
     print("-" * 78)

@@ -2,6 +2,31 @@
 
 All notable changes are documented here, following [Semantic Versioning](https://semver.org/).
 
+## [1.40.0] — 2026-08-08
+
+### Changed
+
+- **A release no longer builds anything.** The tag used to recompile the identical commit
+  from scratch — four to six minutes for bits that already existed — and run both test
+  suites over them a second time. The image `main` built, tested and pushed under its short
+  SHA was sitting there the whole time.
+
+  A tag is a name, not a build. `tag-release.yml` now puts the version on that existing
+  manifest with `docker buildx imagetools create`: server-side, both architectures, in
+  seconds. It is also stricter than a rebuild — what gets released is bit for bit what went
+  green through CI, instead of a second compilation that could differ from the first.
+
+  Nothing changes about what is published or when. `latest` still follows `main`, every
+  merge still produces a testable image, and `:<version>` still appears on Docker Hub with
+  both architectures. Only the second compilation is gone.
+
+  If `main`'s build has not finished, the release waits for the SHA tag to appear and gives
+  up after twenty minutes rather than putting a version number on an older image.
+
+- **`ci.yml` no longer triggers on `v*` tags.** With the retagging above there is exactly
+  one way a version image comes into existence. Two routes to one outcome is how they drift
+  apart.
+
 ## [1.39.0] — 2026-08-08
 
 ### Changed

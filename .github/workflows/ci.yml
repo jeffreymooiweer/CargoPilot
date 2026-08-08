@@ -16,11 +16,16 @@ name: CI
 # Dus: één workflow, elke stap één keer, en arm64 alleen wanneer er ook
 # werkelijk een image wordt gepubliceerd. Op een pull request is de Docker-build
 # een rooktest — bouwt het Dockerfile nog? — en daarvoor volstaat amd64.
+#
+# Op een tag draait dit niet. De image van een release wordt niet opnieuw
+# gebouwd maar hernoemd: `tag-release.yml` zet de versietag met
+# `imagetools create` op het manifest dat hier op main is gebouwd en gepusht.
+# Dat scheelt een tweede vertaling van dezelfde commit, en het is strenger —
+# wat wordt uitgebracht is bit voor bit wat hier groen werd.
 
 on:
   push:
     branches: [main]
-    tags: ["v*"]
   pull_request:
     branches: [main]
   workflow_dispatch:

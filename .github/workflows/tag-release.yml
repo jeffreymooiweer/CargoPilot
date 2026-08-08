@@ -114,9 +114,44 @@ jobs:
             gh release create "$TAG" --title "CargoPilot $TAG" --notes-file release-body.md
           fi
 
-      # Een tag die hier met GITHUB_TOKEN wordt gepusht start zelf geen
-      # workflow, dus de build op de tag-ref wordt expliciet aangezwengeld.
-      - name: Trigger CI (Docker build) on tag
+      # Hier stond: bouw de image nog een keer, nu op de tag-ref. Dat kostte vier
+      # tot zes minuten om precies dezelfde commit nog eens te vertalen, plus de
+      # testsuites er nog eens overheen. Main had die bits al gebouwd, getest en
+      # gepusht onder zijn korte SHA.
+      #
+      # Een tag is geen build maar een naam. `imagetools create` zet die naam
+      # server-side op het bestaande manifest — beide architecturen, in seconden,
+      # zonder één laag over te halen. En het is strenger dan een herbouw: de
+      # uitgebrachte image is bit voor bit de image die groen door de CI kwam,
+      # in plaats van een tweede vertaling die er net naast kan zitten.
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_TOKEN }}
+
+      - name: Name the image main already built
         env:
-          GH_TOKEN: ${{ github.token }}
-        run: gh workflow run ci.yml --ref "${{ steps.release.outputs.tag }}"
+          VERSION: ${{ steps.release.outputs.version }}
+          IMAGE: jeffersonmouze/cargopilot
+        run: |
+          SHORT="$(git rev-parse --short=7 HEAD)"
+          echo "Looking for $IMAGE:$SHORT — the image built from this very commit."
+
+          # De release wordt meestal binnen een minuut na de merge gestart en de
+          # build op main duurt een paar minuten, dus even wachten hoort erbij.
+          # Twintig minuten is ruim; daarna is er iets mis en is stoppen beter
+          # dan een versietag op een image van gisteren.
+          for attempt in $(seq 1 60); do
+            if docker buildx imagetools inspect "$IMAGE:$SHORT" >/dev/null 2>&1; then
+              docker buildx imagetools create -t "$IMAGE:$VERSION" "$IMAGE:$SHORT"
+              echo "$IMAGE:$VERSION now points at the same manifest as $IMAGE:$SHORT."
+              docker buildx imagetools inspect "$IMAGE:$VERSION"
+              exit 0
+            fi
+            echo "  not there yet (attempt $attempt), waiting 20s"
+            sleep 20
+          done
+
+          echo "::error::$IMAGE:$SHORT never appeared. The build on main either failed or never ran, so there is no tested image to release."
+          exit 1

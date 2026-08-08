@@ -180,17 +180,30 @@ python scripts/bump_version.py 1.37.0
 3. Run the **Tag release** workflow from GitHub Actions with the version number. It
    verifies the version files, then creates the tag and the GitHub Release from the
    changelog entry. It does not commit anything.
-4. The **dockerhub** workflow builds and pushes `jeffersonmouze/cargopilot:latest` and
-   `:v<version>` on pushes to `main` and on `v*` tags.
+4. **CI** already built and pushed `jeffersonmouze/cargopilot:latest` and `:<short-sha>` on
+   the merge in step 2. Step 3 adds `:<version>` to that same image; nothing is rebuilt.
 
 Required secrets: `DOCKER_USERNAME`, `DOCKER_TOKEN`.
 
-A release builds the same commit **twice**: once for the push to `main`, which publishes
-`latest`, and once for the tag, which publishes the version number. They start seconds
-apart, so each ref writes its own buildx cache scope — sharing one `mode=max` scope let
-the two exports race, and a build hung for an hour and a half instead of taking three
-minutes. Reads still come from `main`'s cache, so the second build stays fast. The docker
-job has a 45-minute timeout so a wedged build fails visibly rather than running all day.
+**A release builds nothing.** The image is built once, by the push to `main`, and pushed as
+`latest` and as the short commit SHA. `tag-release.yml` then puts the version number on
+that same manifest with `docker buildx imagetools create` — server-side, both
+architectures, in seconds.
+
+Until v1.40.0 the tag rebuilt the identical commit from scratch, four to six minutes of
+recompiling bits that already existed, with the test suites run over them a second time.
+Retagging is not merely quicker: what gets released is bit for bit what went green through
+CI, rather than a second compilation that could differ.
+
+If the build on `main` has not finished yet, `tag-release.yml` waits for the SHA tag to
+appear — up to twenty minutes, then it fails. Failing is the right outcome there: no tested
+image means nothing to release, and a version tag pointing at yesterday's build would be
+worse than no release at all.
+
+The docker job has a 45-minute timeout so a wedged build fails visibly rather than running
+all day, and each ref writes its own buildx cache scope — sharing one `mode=max` scope let
+two exports race, and a build once hung for an hour and a half instead of taking three
+minutes.
 
 ### What runs, and when
 
@@ -200,8 +213,8 @@ files in that directory is not the number of things that run.
 
 | Workflow | Runs on | Jobs |
 |---|---|---|
-| `ci.yml` | push to `main`, every pull request, tags `v*`, on request | Backend tests, Frontend build, Docker build |
-| `tag-release.yml` | on request (and on a merged `agent/release-v*` branch) | tag, GitHub Release, then it starts `ci.yml` on the tag |
+| `ci.yml` | push to `main`, every pull request, on request | Backend tests, Frontend build, Docker build |
+| `tag-release.yml` | on request (and on a merged `agent/release-v*` branch) | tag, GitHub Release, and it renames main's image to the version |
 | `read-land-regulations.yml` | on request | quotes ADR/RID/ADN; commits nothing |
 | `cleanup-dockerhub.yml`, `probe-*.yml`, `extract-imdg-*.yml` | on request | maintenance and research |
 

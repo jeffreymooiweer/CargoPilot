@@ -147,6 +147,13 @@ dataset it was built on.
   application cannot see, so a qualifying line is reported next to the points table and
   never removed from it. The limits have since been checked against the published 3.4.2,
   3.4.3, 3.5.1.2 and 3.5.5 and are correct.
+- **The compatibility groups of 7.5.2.2 are raised, not evaluated.** Where a consignment
+  holds class 1 packages of more than one compatibility group, CargoPilot says so and
+  refers the user to table 7.5.2.2; it does not read that table to decide whether the
+  particular pair is among the permitted ones. Until v1.40.1 it did not even get that far —
+  the group was read from the class column, which for explosives says only "1", so the
+  check silently never fired. It fires now, and what it produces is a question, not a
+  verdict. The corresponding sea rule, IMDG 7.2.7.1.4, *is* evaluated against its matrix.
 - **Two EQ provisions are not applied.** 3.5.1.3: where goods with different E codes are
   packed together, the total per outer packaging is limited to the most restrictive code —
   CargoPilot assesses each line alone. And 3.5.1.4 relieves the smallest quantities
@@ -422,6 +429,6 @@ verification.
 
 ---
 
-*This assessment covers CargoPilot v1.33.0. It is guidance for development, not a
+*This assessment covers CargoPilot v1.40.1. It is guidance for development, not a
 compliance statement. Every document the application produces is a draft; see
 [DISCLAIMER.md](../DISCLAIMER.md).*

@@ -2,6 +2,50 @@
 
 All notable changes are documented here, following [Semantic Versioning](https://semver.org/).
 
+## [1.40.1] — 2026-08-08
+
+### Fixed
+
+- **Two explosives in one consignment produced a server error instead of an answer.**
+  Detonators of compatibility group B next to a blasting explosive of group D — an
+  everyday combination — made the compliance check raise `TypeError` rather than return a
+  result. Both the panel in the wizard and the export run through `check_compliance`, so
+  no document came out either.
+
+  The fault was on the seam. v1.38.0 turned `class1_products` from a list of labels into a
+  list of `(label, UN number)` pairs, because the footnotes of table 7.5.2.1 need the UN
+  number. The 7.5.2.2 message a few lines below still called `", ".join(class1_products)`
+  and has been handed tuples ever since.
+
+- **And the reason nobody noticed is the second defect.** The compatibility group was read
+  from the *class* field with a tight anchor, and ADR Table A puts only "1" in the class
+  column for explosives — the division and its compatibility group live in the
+  classification code. So on every row that comes straight out of the seed data, the check
+  found no group, 7.5.2.2 never fired, and the broken line was never reached. A check that
+  never ran looked exactly like a check with nothing to report. The group is now read the
+  way the IMDG side has always read it: classification code first, then class.
+
+  Two defects that covered for each other — the silent one masked the loud one. Measured
+  on the real data before the fix: 344 of 4,000 random consignments of two to five UN
+  numbers ended in an exception, 8.6%.
+
+- **A class 1 package with a subsidiary risk beside another class 1 package took the sea
+  check down.** In the IMDG 7.2.4 class table, class 1 against class 1 is `*`, which refers
+  on to 7.2.7 rather than stating a distance itself. The search for the strictest cell
+  compared `int(value) > int(worst)` as soon as anything had been found, so a `*` followed
+  by a number was `int("*")`. A number now always beats a `*`, which is what the code
+  intended all along.
+
+### Added
+
+- **A sweep that no single provision owns.** Both defects above were found by running the
+  compliance check over consignments assembled from the seed data along the same path the
+  wizard takes, not by reading code — and they were only findable that way, because a bare
+  seed row carries "1" in the class column and it is `derive_product` that fills in the
+  division. `test_class1_compatibility_groups.py` keeps a seeded version of that sweep:
+  300 consignments per rule set, asserting nothing about any particular rule, only that no
+  consignment can make the check fall over.
+
 ## [1.40.0] — 2026-08-08
 
 ### Changed

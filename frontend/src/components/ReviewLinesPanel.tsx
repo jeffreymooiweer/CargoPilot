@@ -1,6 +1,9 @@
+import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { LineItem } from "../api/client";
+import { LineItem, UnitCatalogue, api } from "../api/client";
 import EquipmentCombobox from "./EquipmentCombobox";
+import ResponsiveRecords, { QuantityWithUnit, RecordColumn } from "./ResponsiveRecords";
+import UnitSelect from "./UnitSelect";
 
 export interface DraftLine {
   id: number;
@@ -118,6 +121,177 @@ export default function ReviewLinesPanel({
     onDraftChange(draftLines.map((line) => (line.id === id ? { ...line, ...patch } : line)));
   };
 
+  // De eenhedencatalogus komt van de backend, zodat de lijst op één plek wordt
+  // onderhouden. Lukt dat niet, dan valt UnitSelect terug op een tekstveld en
+  // blijft de stap bruikbaar.
+  const [catalogue, setCatalogue] = useState<UnitCatalogue | null>(null);
+  useEffect(() => {
+    let alive = true;
+    api.unitCatalogue()
+      .then((result) => alive && setCatalogue(result))
+      .catch(() => undefined);
+    return () => {
+      alive = false;
+    };
+  }, []);
+
+  const numberInput = `${weightInputClass} text-right`;
+
+  function resultFor(index: number): LineItem | null {
+    return computed ? resultLines![index] : null;
+  }
+
+  // Kolommen zijn hier ook invoervelden: dit is een tabel waarin je typt, niet
+  // een tabel die je leest. Wat op een dichtgeklapte kaart hoort staat in het
+  // antwoord van de gebruiker: de omschrijving als kop, aantal en eenheid als
+  // enige regel. De rest zit achter "toon meer".
+  const columns: RecordColumn<DraftLine>[] = [
+    {
+      key: "description",
+      header: t("review.description"),
+      width: "w-[28%]",
+      render: (draft) => (
+        <EquipmentCombobox
+          value={draft.description}
+          onChange={(v) => updateDraft(draft.id, { description: v })}
+        />
+      ),
+    },
+    {
+      key: "quantity",
+      header: t("review.quantity"),
+      cardLabel: t("review.quantityAndUnit"),
+      primary: true,
+      numeric: true,
+      width: "w-40",
+      render: (draft, index) => (
+        <div className="flex items-center justify-end gap-1.5">
+          <input
+            type="number"
+            inputMode="decimal"
+            aria-label={t("review.quantity")}
+            className={`${numberInput} w-20`}
+            value={draft.quantity}
+            onChange={(e) =>
+              updateDraft(draft.id, { quantity: e.target.value === "" ? "" : Number(e.target.value) })
+            }
+          />
+          <UnitSelect
+            value={draft.unit}
+            onChange={(unit) => updateDraft(draft.id, { unit })}
+            category={resultFor(index)?.material_category}
+            catalogue={catalogue}
+            aria-label={t("review.unit")}
+            className={`${weightInputClass} w-24`}
+          />
+        </div>
+      ),
+    },
+    {
+      key: "weightEach",
+      header: t("review.weightEach"),
+      numeric: true,
+      width: "w-28",
+      render: (_draft, index) => {
+        const result = resultFor(index);
+        if (!result || !onLineWeightChange) return <span className="text-slate-400">—</span>;
+        return (
+          <input
+            type="number"
+            step="0.01"
+            aria-label={t("review.weightEach")}
+            className={`${numberInput} w-24`}
+            value={result.weight_each_kg ?? ""}
+            onChange={(e) =>
+              onLineWeightChange(result.line_id, "weight_each_kg", e.target.value === "" ? null : Number(e.target.value))
+            }
+          />
+        );
+      },
+    },
+    {
+      key: "weightTotal",
+      header: t("review.weightTotal"),
+      numeric: true,
+      width: "w-28",
+      render: (_draft, index) => {
+        const result = resultFor(index);
+        if (!result || !onLineWeightChange) return <span className="text-slate-400">—</span>;
+        return (
+          <input
+            type="number"
+            step="0.01"
+            aria-label={t("review.weightTotal")}
+            className={`${numberInput} w-24`}
+            value={result.weight_total_kg ?? ""}
+            onChange={(e) =>
+              onLineWeightChange(result.line_id, "weight_total_kg", e.target.value === "" ? null : Number(e.target.value))
+            }
+          />
+        );
+      },
+    },
+    {
+      key: "volume",
+      header: t("review.volume"),
+      numeric: true,
+      width: "w-24",
+      render: (_draft, index) => {
+        const volume = resultFor(index)?.transport_volume_m3;
+        return volume != null ? (
+          <QuantityWithUnit value={volume.toFixed(3)} unit="m³" />
+        ) : (
+          <span className="text-slate-400">—</span>
+        );
+      },
+    },
+    {
+      key: "dg",
+      header: t("review.dangerousGoods"),
+      width: "w-32",
+      render: (draft, index) => {
+        const result = resultFor(index);
+        return (
+          <div className="flex items-center justify-end gap-2 md:justify-start">
+            <input
+              type="checkbox"
+              aria-label={t("review.dangerousGoods")}
+              checked={draft.dangerous_goods ?? false}
+              onChange={(e) => updateDraft(draft.id, { dangerous_goods: e.target.checked })}
+              className="h-4 w-4 rounded border-slate-300 text-amber-600 focus:ring-amber-500"
+            />
+            {result?.dangerous_goods && !draft.dangerous_goods && (
+              <span className="rounded-full bg-amber-100 px-2 py-0.5 text-[11px] font-medium text-amber-800 dark:bg-amber-900/40 dark:text-amber-300">
+                {t("review.dgDetected")}
+              </span>
+            )}
+          </div>
+        );
+      },
+    },
+    {
+      key: "status",
+      header: t("review.status"),
+      width: "w-36",
+      render: (_draft, index) => {
+        const result = resultFor(index);
+        if (!result) return <span className="text-slate-400">—</span>;
+        return (
+          <div className="space-y-1">
+            <span className={`inline-block rounded-full px-2 py-0.5 text-xs ${statusColor(result.status)}`}>
+              {t(`status.${result.status}` as "status.ok")}
+            </span>
+            {result.messages.length > 0 && (
+              <p className="text-xs text-amber-700 dark:text-amber-300">
+                {result.messages.map(translateMessage).join(", ")}
+              </p>
+            )}
+          </div>
+        );
+      },
+    },
+  ];
+
   return (
     <div className={`${panelClass} overflow-hidden`}>
       <div className="flex flex-col gap-3 border-b border-slate-100 px-4 py-4 dark:border-slate-800 sm:flex-row sm:items-center sm:justify-between sm:px-5">
@@ -132,118 +306,44 @@ export default function ReviewLinesPanel({
         )}
       </div>
 
-      <div className="space-y-3 p-4">
-        {draftLines.map((draft, index) => {
-          const result = computed ? resultLines![index] : null;
-          return (
-            <div key={draft.id} className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-800 dark:bg-slate-900">
-              <div className="-mx-4 -mt-4 mb-3 flex items-center gap-2 border-b border-slate-100 px-4 py-3 dark:border-slate-800">
-                <span className="flex h-7 w-7 items-center justify-center rounded-full bg-slate-100 text-xs font-semibold text-slate-600 dark:bg-slate-800 dark:text-slate-300">
-                  {index + 1}
-                </span>
-                {result && (
-                  <span className={`px-2 py-0.5 rounded-full text-xs ${statusColor(result.status)}`}>
-                    {t(`status.${result.status}` as "status.ok")}
-                  </span>
-                )}
-                <div className="ml-auto flex items-center gap-0.5">
-                  <CardAction label={t("review.duplicateLine")} onClick={() => onDuplicateLine(draft.id)} icon={<CopyIcon />} />
-                  <CardAction label={t("review.addLine")} onClick={onAddLine} icon={<PlusIcon />} />
-                  <CardAction
-                    label={t("review.removeLine")}
-                    onClick={() => onRemoveLine(draft.id)}
-                    icon={<TrashIcon />}
-                    danger
-                    disabled={!canRemove}
-                  />
-                </div>
-              </div>
-              <div className="space-y-3">
-                <div>
-                  <label className="text-xs font-medium text-slate-600 dark:text-slate-400">{t("review.description")}</label>
-                  <div className="mt-1">
-                    <EquipmentCombobox
-                      value={draft.description}
-                      onChange={(v) => updateDraft(draft.id, { description: v })}
-                    />
-                  </div>
-                </div>
-                <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-                  <div>
-                    <label className="text-xs font-medium text-slate-600 dark:text-slate-400">{t("review.quantity")}</label>
-                    <input
-                      type="number"
-                      className={`${inputClass} mt-1`}
-                      value={draft.quantity}
-                      onChange={(e) => updateDraft(draft.id, { quantity: e.target.value === "" ? "" : Number(e.target.value) })}
-                    />
-                  </div>
-                  <div>
-                    <label className="text-xs font-medium text-slate-600 dark:text-slate-400">{t("review.unit")}</label>
-                    <input className={`${inputClass} mt-1`} value={draft.unit} onChange={(e) => updateDraft(draft.id, { unit: e.target.value })} />
-                  </div>
-                  {result && onLineWeightChange && (
-                    <>
-                      <div>
-                        <label className="text-xs font-medium text-slate-600 dark:text-slate-400">{t("review.weightEach")}</label>
-                        <input
-                          type="number"
-                          step="0.01"
-                          className={`${weightInputClass} mt-1`}
-                          value={result.weight_each_kg ?? ""}
-                          onChange={(e) =>
-                            onLineWeightChange(
-                              result.line_id,
-                              "weight_each_kg",
-                              e.target.value === "" ? null : Number(e.target.value),
-                            )
-                          }
-                        />
-                      </div>
-                      <div>
-                        <label className="text-xs font-medium text-slate-600 dark:text-slate-400">{t("review.weightTotal")}</label>
-                        <input
-                          type="number"
-                          step="0.01"
-                          className={`${weightInputClass} mt-1`}
-                          value={result.weight_total_kg ?? ""}
-                          onChange={(e) =>
-                            onLineWeightChange(
-                              result.line_id,
-                              "weight_total_kg",
-                              e.target.value === "" ? null : Number(e.target.value),
-                            )
-                          }
-                        />
-                      </div>
-                    </>
-                  )}
-                </div>
-                <div className="flex flex-wrap items-center gap-2">
-                  <label className="flex min-h-[32px] cursor-pointer items-center gap-2 text-sm text-slate-700 dark:text-slate-300">
-                    <input
-                      type="checkbox"
-                      checked={draft.dangerous_goods ?? false}
-                      onChange={(e) => updateDraft(draft.id, { dangerous_goods: e.target.checked })}
-                      className="h-4 w-4 rounded border-slate-300 text-amber-600 focus:ring-amber-500"
-                    />
-                    {t("review.dangerousGoods")}
-                  </label>
-                  {result?.dangerous_goods && !draft.dangerous_goods && (
-                    <span className="rounded-full bg-amber-100 px-2 py-0.5 text-[11px] font-medium text-amber-800 dark:bg-amber-900/40 dark:text-amber-300">
-                      {t("review.dgDetected")}
-                    </span>
-                  )}
-                </div>
-                {result && result.messages.length > 0 && (
-                  <p className="text-xs text-amber-700 dark:text-amber-300">
-                    {result.messages.map(translateMessage).join(", ")}
-                  </p>
-                )}
-              </div>
+      <div className="p-4">
+        <ResponsiveRecords
+          rows={draftLines}
+          columns={columns}
+          rowKey={(draft) => draft.id}
+          cardTitle={(draft, index) => (
+            <div className="flex items-center gap-2">
+              <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-white text-xs font-semibold text-slate-600 dark:bg-slate-900 dark:text-slate-300">
+                {index + 1}
+              </span>
+              <span className="min-w-0 flex-1 truncate">
+                {draft.description.trim() || t("review.untitledLine")}
+              </span>
             </div>
-          );
-        })}
+          )}
+          actions={(draft) => (
+            <>
+              <CardAction label={t("review.duplicateLine")} onClick={() => onDuplicateLine(draft.id)} icon={<CopyIcon />} />
+              <CardAction
+                label={t("review.removeLine")}
+                onClick={() => onRemoveLine(draft.id)}
+                icon={<TrashIcon />}
+                danger
+                disabled={!canRemove}
+              />
+            </>
+          )}
+          footer={
+            <button
+              type="button"
+              onClick={onAddLine}
+              className="mt-3 flex min-h-[44px] w-full items-center justify-center gap-2 rounded-xl border border-dashed border-slate-300 text-sm font-medium text-slate-600 dark:border-slate-700 dark:text-slate-300"
+            >
+              <PlusIcon />
+              {t("review.addLine")}
+            </button>
+          }
+        />
       </div>
     </div>
   );

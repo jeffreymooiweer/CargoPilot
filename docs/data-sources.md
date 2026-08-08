@@ -23,9 +23,18 @@ it — thresholds, limits, multipliers — are stored, each with the provision i
 
 ## Goods and densities
 
-**400 goods** with bulk or solid densities, min/max ranges, search aliases and names in
-Dutch, English and German, in `backend/seed/materials.json`. Each entry states whether the figure is a bulk
-density, a solid density, a liquid density or an effective pallet density.
+**400 goods** with densities, min/max ranges, search aliases and names in Dutch, English
+and German, in `backend/seed/materials.json`. Each entry carries a **category** —
+`liquid`, `agri`, `bulk_material`, `ore_mineral`, `metal`, `wood`, `general_cargo` and ten
+others — which drives which units the goods step offers first.
+
+> **A correction.** This page used to claim that each entry states whether its figure is a
+> bulk, solid, liquid or effective pallet density. It does not: there is no such field, only
+> the category. That distinction matters — 20 m³ of gravel times a bulk density is right,
+> 20 m³ of steel times a solid density is right, and 20 m³ of *stacked* timber is neither.
+> Since v1.34.0 the application derives a density basis from the category and reports it as
+> derived (`backend/app/services/units.py`), rather than treating it as something the data
+> states.
 
 Coverage spans construction materials and natural stone, metals (including precious and
 speciality metals), timber species and sheet material, fuels, chemicals and liquefied

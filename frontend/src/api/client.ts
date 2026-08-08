@@ -98,6 +98,15 @@ export const api = {
   calculate: (payload: Record<string, unknown>) =>
     request<CalcResult>("/calculate", { method: "POST", body: JSON.stringify(payload) }),
   dgInstructions: () => request<DgInstructions>("/dg/instructions"),
+  unitCatalogue: () => request<UnitCatalogue>("/units"),
+  convertUnit: (payload: {
+    quantity?: number | null;
+    unit?: string | null;
+    density_kg_m3?: number | null;
+    category?: string | null;
+    mass_per_item_kg?: number | null;
+    volume_per_item_m3?: number | null;
+  }) => request<UnitConversion>("/units/convert", { method: "POST", body: JSON.stringify(payload) }),
   // Taal en profielen gaan mee omdat de juiste vervoersnaam ervan afhangt:
   // ADR 5.4.1.4.1 laat een Duitse benaming toe, IMDG 5.4.1.4.1 en IATA DGR
   // 8.1.2.1 niet. De suggestie die de gebruiker aanklikt, is de tekst die op
@@ -245,6 +254,9 @@ export interface LineItem {
   quantity: number | null;
   unit: string | null;
   material: string | null;
+  /** Categorie van het herkende goed, bijvoorbeeld "liquid" of "bulk_material".
+   *  Bepaalt welke eenheden de keuzelijst als eerste voorstelt. */
+  material_category?: string | null;
   product_type: string | null;
   weight_each_kg: number | null;
   weight_total_kg: number | null;
@@ -717,3 +729,24 @@ export interface DgComplianceResult {
   q_check_status?: QCheckStatus;
   cargo_aircraft_only_products?: string[];
 }
+
+
+/** De eenhedencatalogus. Eenheden en welke bij welke categorie voor de hand
+ *  liggen worden op één plek onderhouden — in de backend — zodat de interface
+ *  de lijst niet nog eens overschrijft. */
+export interface UnitCatalogue {
+  units: { code: string; symbol: string; dimension: "mass" | "volume" | "length" | "count" }[];
+  suggested_by_category: Record<string, string[]>;
+  default_suggested: string[];
+  density_basis_by_category: Record<string, string>;
+}
+
+export interface UnitConversion {
+  mass_kg: number | null;
+  volume_m3: number | null;
+  density_basis: string;
+  /** Gevuld wanneer een van beide niet te bepalen was, bijvoorbeeld "per_item"
+   *  bij een aantal zonder gewicht per stuk. Geen fout maar een uitkomst. */
+  missing: string | null;
+}
+

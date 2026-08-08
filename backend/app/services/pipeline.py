@@ -60,6 +60,10 @@ class LineResult:
     unit: str | None
     material: str | None = None
     material_density: float | None = None
+    # De categorie van het herkende goed. De interface stelt hiermee de
+    # eenheden voor die bij dit soort lading horen: liter bij vloeistoffen,
+    # ton bij stortgoed, stuks bij stukgoed.
+    material_category: str | None = None
     product_type: str | None = None
     dimensions: dict[str, Any] = field(default_factory=dict)
     length_cm: float | None = None
@@ -343,6 +347,7 @@ def process_line(
         quantity=qty,
         unit=row.unit,
         material=material_name,
+        material_category=material_obj.category if material_obj else None,
         material_density=density,
         product_type=product_type,
         dimensions={

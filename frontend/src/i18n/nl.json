@@ -101,7 +101,10 @@
     "importConfirm": "Importeren",
     "cancel": "Annuleren",
     "dangerousGoods": "Gevaarlijke stoffen-collo",
-    "dgDetected": "UN-nummer herkend"
+    "dgDetected": "UN-nummer herkend",
+    "quantityAndUnit": "Aantal",
+    "volume": "Volume",
+    "untitledLine": "Nieuwe regel"
   },
   "import": {
     "downloadTemplate": "Template downloaden",
@@ -365,5 +368,35 @@
     "stowageCategory": "stuwagecategorie {{category}}",
     "specialProvisions": "bijzondere bepalingen {{list}}",
     "amendedIn4224": "42-24 heeft deze vermelding gewijzigd — vergelijk met de vorige editie"
+  },
+  "records": {
+    "actions": "Acties",
+    "viewMore": "Toon meer",
+    "viewLess": "Toon minder"
+  },
+  "units": {
+    "suggested": "Gebruikelijk voor dit goed",
+    "all": "Alle eenheden",
+    "name": {
+      "kg": "kilogram (kg)",
+      "ton": "ton (t)",
+      "g": "gram (g)",
+      "lb": "pound (lb)",
+      "m3": "kubieke meter (m³)",
+      "l": "liter (L)",
+      "hl": "hectoliter (hL)",
+      "ml": "milliliter (mL)",
+      "m": "meter (m)",
+      "cm": "centimeter (cm)",
+      "mm": "millimeter (mm)",
+      "pcs": "stuks",
+      "pallet": "pallet",
+      "box": "doos",
+      "drum": "vat",
+      "ibc": "IBC",
+      "bag": "zak",
+      "roll": "rol",
+      "bundle": "bundel"
+    }
   }
 }

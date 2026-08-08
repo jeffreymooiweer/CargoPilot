@@ -2,6 +2,54 @@
 
 All notable changes are documented here, following [Semantic Versioning](https://semver.org/).
 
+## [1.34.0] — 2026-08-08
+
+The goods step becomes a table on desktop and cards on a phone, and a quantity finally
+carries a unit.
+
+### Added
+
+- **A unit instead of a word.** The unit of a goods line was a free text field with
+  "stuks" as its default, so entering 1,200 litres of diesel gave you 1,200 *pieces* of
+  diesel and left the weight to you. It is now a dropdown, and every unit knows what it
+  measures — mass, volume, length or a count. Density bridges mass and volume, so 1,200 L
+  of diesel is 1,002 kg, and 20 tonnes of gravel is 12.5 m³.
+
+- **The list suggests, it does not fence you in.** The category of the recognised goods
+  decides what appears first: litres and m³ for liquids, tonnes and m³ for bulk, pieces and
+  pallets for general cargo, m³ for timber. Every other unit stays one click away, because
+  400 goods in 16 categories always hold exceptions and being stuck on one is worse than an
+  unusual unit. What people actually type — `liter`, `cbm`, `kubieke meter`, `MT`, `Stück`,
+  `big bag` — still resolves, so shipments saved under the old free-text field keep working.
+
+- **Where it cannot calculate, it says so.** Forty pallets without a weight per pallet weigh
+  an unknown number of kilos. The conversion reports that rather than returning zero: a
+  total that looks right and means nothing is the same failure as a check that never ran
+  looking like a check that passed.
+
+- **`ResponsiveRecords`** — one set of data in two shapes. A real table on desktop, where
+  rows can be compared; the card pattern on a phone, where they cannot. Built from
+  *Designing User-Friendly Data Tables for Mobile Devices* (Zahra Mohammadi, Bootcamp,
+  July 2025): each row becomes a card with the identifying field in a tinted header and the
+  actions as icons beside it, the body a list of label–value pairs, and only the priority
+  fields shown until "view more" opens the rest. The unit sits small behind its value —
+  `1 200 L` — instead of claiming a column of its own.
+
+### Changed
+
+- **The goods step uses it.** On a phone each line is a card headed by its description, with
+  quantity and unit as the one visible field and weight, volume, the dangerous goods flag
+  and the status behind "view more". On desktop the same lines are a table with a column per
+  field. Nothing is dropped on the small screen; it is only folded away.
+
+### Fixed
+
+- **`docs/data-sources.md` claimed something the data does not say.** It stated that each
+  goods entry records whether its density is bulk, solid, liquid or an effective pallet
+  figure. There is no such field — only the category. The distinction is real (20 m³ of
+  gravel, of steel and of stacked timber are three different masses), so the basis is now
+  derived from the category and reported as derived, and the page says so.
+
 ## [1.33.0] — 2026-08-07
 
 The land regulations are read instead of recalled, and reading them found two things the

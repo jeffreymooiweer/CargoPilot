@@ -101,7 +101,10 @@
     "importConfirm": "Import",
     "cancel": "Cancel",
     "dangerousGoods": "Dangerous goods package",
-    "dgDetected": "UN number detected"
+    "dgDetected": "UN number detected",
+    "quantityAndUnit": "Quantity",
+    "volume": "Volume",
+    "untitledLine": "New line"
   },
   "import": {
     "downloadTemplate": "Download template",
@@ -365,5 +368,35 @@
     "stowageCategory": "stowage category {{category}}",
     "specialProvisions": "special provisions {{list}}",
     "amendedIn4224": "42-24 changed this entry — compare against the previous edition"
+  },
+  "records": {
+    "actions": "Actions",
+    "viewMore": "View more",
+    "viewLess": "View less"
+  },
+  "units": {
+    "suggested": "Usual for these goods",
+    "all": "All units",
+    "name": {
+      "kg": "kilogram (kg)",
+      "ton": "tonne (t)",
+      "g": "gram (g)",
+      "lb": "pound (lb)",
+      "m3": "cubic metre (m³)",
+      "l": "litre (L)",
+      "hl": "hectolitre (hL)",
+      "ml": "millilitre (mL)",
+      "m": "metre (m)",
+      "cm": "centimetre (cm)",
+      "mm": "millimetre (mm)",
+      "pcs": "pieces",
+      "pallet": "pallet",
+      "box": "box",
+      "drum": "drum",
+      "ibc": "IBC",
+      "bag": "bag",
+      "roll": "roll",
+      "bundle": "bundle"
+    }
   }
 }

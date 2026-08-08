@@ -101,7 +101,10 @@
     "importConfirm": "Importieren",
     "cancel": "Abbrechen",
     "dangerousGoods": "Gefahrgut-Versandstück",
-    "dgDetected": "UN-Nummer erkannt"
+    "dgDetected": "UN-Nummer erkannt",
+    "quantityAndUnit": "Menge",
+    "volume": "Volumen",
+    "untitledLine": "Neue Zeile"
   },
   "import": {
     "downloadTemplate": "Vorlage herunterladen",
@@ -365,5 +368,35 @@
     "stowageCategory": "Staukategorie {{category}}",
     "specialProvisions": "Sondervorschriften {{list}}",
     "amendedIn4224": "42-24 hat diesen Eintrag geändert — mit der vorherigen Ausgabe vergleichen"
+  },
+  "records": {
+    "actions": "Aktionen",
+    "viewMore": "Mehr anzeigen",
+    "viewLess": "Weniger anzeigen"
+  },
+  "units": {
+    "suggested": "Üblich für dieses Gut",
+    "all": "Alle Einheiten",
+    "name": {
+      "kg": "Kilogramm (kg)",
+      "ton": "Tonne (t)",
+      "g": "Gramm (g)",
+      "lb": "Pfund (lb)",
+      "m3": "Kubikmeter (m³)",
+      "l": "Liter (L)",
+      "hl": "Hektoliter (hL)",
+      "ml": "Milliliter (mL)",
+      "m": "Meter (m)",
+      "cm": "Zentimeter (cm)",
+      "mm": "Millimeter (mm)",
+      "pcs": "Stück",
+      "pallet": "Palette",
+      "box": "Karton",
+      "drum": "Fass",
+      "ibc": "IBC",
+      "bag": "Sack",
+      "roll": "Rolle",
+      "bundle": "Bund"
+    }
   }
 }

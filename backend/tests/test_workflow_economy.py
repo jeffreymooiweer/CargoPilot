@@ -148,6 +148,42 @@ def test_but_a_publishing_run_is_never_cancelled():
     assert ci["concurrency"]["cancel-in-progress"] != True  # noqa: E712
 
 
+# --- Een tag is een naam, geen bouwopdracht -------------------------------
+#
+# De release bouwde dezelfde commit een tweede keer, nu op de tag-ref: vier tot
+# zes minuten om precies dezelfde bits te vertalen, met de testsuites er nog
+# eens overheen. Main had die image al gebouwd, getest en gepusht onder zijn
+# korte SHA. `imagetools create` zet de versienaam server-side op dat manifest.
+
+
+def test_the_release_does_not_rebuild_what_main_already_built():
+    tag_release = steps_only("tag-release.yml")
+    assert "imagetools create" in tag_release
+    assert "gh workflow run" not in tag_release
+
+
+def test_the_released_image_is_the_one_that_was_tested():
+    """Het manifest wordt hernoemd, niet nagemaakt. Een tweede vertaling van
+    dezelfde broncode kan er net naast zitten; hetzelfde manifest niet."""
+    tag_release = steps_only("tag-release.yml")
+    assert "rev-parse --short=7 HEAD" in tag_release
+    assert 'imagetools create -t "$IMAGE:$VERSION" "$IMAGE:$SHORT"' in tag_release
+
+
+def test_it_gives_up_rather_than_release_an_older_image():
+    """Als de build op main faalde is er geen geteste image. Dan is stoppen
+    beter dan een versietag op iets van gisteren."""
+    tag_release = steps_only("tag-release.yml")
+    assert "never appeared" in tag_release
+    assert "exit 1" in tag_release
+
+
+def test_ci_no_longer_runs_on_a_tag():
+    """Anders bestaan er weer twee manieren waarop een versie-image ontstaat,
+    en die lopen op den duur uiteen."""
+    assert "tags" not in triggers(load("ci.yml"))["push"]
+
+
 # --- Het leesgereedschap draait niet meer mee ------------------------------
 
 

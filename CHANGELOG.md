@@ -2,6 +2,47 @@
 
 All notable changes are documented here, following [Semantic Versioning](https://semver.org/).
 
+## [1.38.0] — 2026-08-08
+
+### Fixed
+
+- **Blasting explosives with ammonium nitrate were refused, though footnote (d) permits
+  them.** The message CargoPilot showed even named the exception — and then blocked the
+  load anyway. The check asked whether the consignment contained any class 1 package and
+  any package of another class, and raised one error over the whole consignment. Table
+  7.5.2.1 does not work that way: it sets label against label, and three of its cells hold
+  a footnote letter instead of a prohibition.
+
+  Footnotes (b), (c) and (d) are now applied, per pair of packages. One forbidden
+  combination no longer condemns a permitted one, and one permitted combination no longer
+  excuses the rest — load a blasting explosive with both ammonium nitrate and paint and you
+  get the permission for the first and the prohibition for the second, each naming only the
+  packages it concerns.
+
+  Footnote (d) carries a condition that changes the rest of the load, so the panel and the
+  document both state it: the aggregate must be treated as blasting explosives of class 1
+  for placarding, segregation, stowage and the maximum permissible load of 7.5.5.2.1. UN
+  0083 is excluded by the footnote itself and stays refused.
+
+### Added
+
+- **The regulation reader can print a page verbatim** (`--page 602`, or a range of at most
+  twelve). ADR 7.5.2.1 came back "not found" for weeks: the finder scores each occurrence of
+  a clause number by how much prose follows it, which is right for a rule made of sentences
+  and wrong for one that is almost entirely a grid of crosses. It scored near zero and lost
+  to every cross-reference in the volume. When the number will not resolve, the page still
+  will.
+
+### Documentation
+
+- The footnote text and its source — ADR 2025 Volume II (ECE/TRANS/352 Vol. II), table
+  7.5.2.1, printed page 592 — are recorded in the configuration and in `docs/dangerous-goods.md`,
+  because these UN numbers come from a text that is not in the repository.
+
+- Corrected in passing: the footnote (d) that extracts most readily from ADR belongs to
+  **7.5.2.2** and concerns compatibility group L. The ammonium nitrate footnote is (d) to
+  **7.5.2.1**. Two different tables, two different (d)s.
+
 ## [1.37.1] — 2026-08-08
 
 ### Fixed

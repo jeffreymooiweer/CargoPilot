@@ -95,7 +95,9 @@ ADN Table C, vehicle or tank codes, and any state or operator variation.
 
 **Checked:** the 1.1.3.6 points calculation (categories, factors, the 1,000-point
 threshold, category 0 as a hard stop); the 7.5.2 mixed-loading prohibitions including
-CV28 for foodstuffs; and the quantity limits of chapters 3.4 and 3.5 — the entered net
+CV28 for foodstuffs and, since v1.38.0, footnotes (b), (c) and (d) of table 7.5.2.1 read
+from the official text and applied per pair of packages rather than per consignment; and
+the quantity limits of chapters 3.4 and 3.5 — the entered net
 per inner packaging against column 7a and the E code of column 7b, the 30 kg gross
 limit of 3.4.2 (naming the 20 kg tray limit of 3.4.3), and the 1,000-package cap of
 3.5.5. When packages that fall within the LQ limits total more than 8 tonnes gross on the

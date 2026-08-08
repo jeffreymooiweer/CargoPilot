@@ -102,6 +102,26 @@
   },
   "adr_mixed_loading": {
     "class1_exception_compat_group": "S",
+    "_footnotes_source": "ADR 2025 Volume II (ECE/TRANS/352 Vol. II), table 7.5.2.1, printed page 592, footnotes b, c and d, quoted verbatim by scripts/read_land_regulations.py --page 602 --doc adr2",
+    "footnotes": {
+      "b": {
+        "life_saving_un_numbers": ["2990", "3072", "3268"]
+      },
+      "c": {
+        "class1_un": "0503",
+        "class9_un": "3268"
+      },
+      "d": {
+        "_note": "The class 1 side must be a blasting explosive; UN 0083 (type C) is excluded by the footnote itself.",
+        "blasting_explosive_un_numbers": ["0081", "0082", "0084", "0241", "0331", "0332"],
+        "excluded_un_numbers": ["0083"],
+        "nitrate_un_numbers": [
+          "1942", "2067", "3375",
+          "1451", "2722", "1486", "1477", "1498",
+          "1446", "2464", "1454", "1474", "1507"
+        ]
+      }
+    },
     "cv28_class9_un_numbers": [
       "2212",
       "2315",
@@ -115,6 +135,21 @@
         "nl": "Colli met etiket klasse 1 (behalve 1.4S) mogen volgens ADR 7.5.2.1 niet met colli van andere klassen in één voertuig of container worden geladen. Uitzonderingen bestaan o.a. voor 1.4S, springstoffen met ammoniumnitraat (UN 1942/2067) en reddingsmiddelen (UN 2990/3072/3268).",
         "en": "Packages bearing class 1 labels (except 1.4S) must not be loaded with packages of other classes in the same vehicle or container per ADR 7.5.2.1. Exceptions exist e.g. for 1.4S, blasting explosives with ammonium nitrate (UN 1942/2067) and life-saving appliances (UN 2990/3072/3268).",
         "de": "Versandstücke mit Gefahrzettel der Klasse 1 (außer 1.4S) dürfen nach ADR 7.5.2.1 nicht mit Versandstücken anderer Klassen in dasselbe Fahrzeug oder denselben Container geladen werden. Ausnahmen bestehen unter anderem für 1.4S, Sprengstoffe mit Ammoniumnitrat (UN 1942/2067) und Rettungsmittel (UN 2990/3072/3268)."
+      },
+      "class1_footnote_d": {
+        "nl": "Toegestaan op grond van voetnoot (d) bij tabel 7.5.2.1: springstoffen (behalve UN 0083) mogen samen met ammoniumnitraat, ammoniumnitraat-emulsie/suspensie/gel en alkali- en aardalkalinitraten worden geladen. Voorwaarde: het geheel wordt als springstof van klasse 1 behandeld voor de placardering, de scheiding, de stuwage en de maximaal toegestane hoeveelheid (7.5.5.2.1).",
+        "en": "Permitted under footnote (d) to table 7.5.2.1: blasting explosives (except UN 0083) may be loaded together with ammonium nitrate, ammonium nitrate emulsion/suspension/gel and alkali and alkaline earth metal nitrates. On condition that the aggregate is treated as blasting explosives of class 1 for placarding, segregation, stowage and the maximum permissible load (7.5.5.2.1).",
+        "de": "Zulässig nach Fußnote (d) zu Tabelle 7.5.2.1: Sprengstoffe (außer UN 0083) dürfen zusammen mit Ammoniumnitrat, Ammoniumnitrat-Emulsion/-Suspension/-Gel sowie Alkali- und Erdalkalinitraten geladen werden. Bedingung: die Gesamtheit wird für die Placardierung, die Trennung, die Stauung und die höchstzulässige Menge (7.5.5.2.1) als Sprengstoff der Klasse 1 behandelt."
+      },
+      "class1_footnote_b": {
+        "nl": "Toegestaan op grond van voetnoot (b) bij tabel 7.5.2.1: goederen van klasse 1 mogen samen met reddingsmiddelen van klasse 9 (UN 2990, 3072 en 3268) worden geladen.",
+        "en": "Permitted under footnote (b) to table 7.5.2.1: goods of class 1 may be loaded together with life-saving appliances of class 9 (UN 2990, 3072 and 3268).",
+        "de": "Zulässig nach Fußnote (b) zu Tabelle 7.5.2.1: Güter der Klasse 1 dürfen zusammen mit Rettungsmitteln der Klasse 9 (UN 2990, 3072 und 3268) geladen werden."
+      },
+      "class1_footnote_c": {
+        "nl": "Toegestaan op grond van voetnoot (c) bij tabel 7.5.2.1: pyrotechnische veiligheidsinrichtingen van 1.4G (UN 0503) mogen samen met elektrisch geactiveerde veiligheidsinrichtingen van klasse 9 (UN 3268) worden geladen.",
+        "en": "Permitted under footnote (c) to table 7.5.2.1: safety devices, pyrotechnic of division 1.4, compatibility group G (UN 0503) may be loaded together with safety devices, electrically initiated of class 9 (UN 3268).",
+        "de": "Zulässig nach Fußnote (c) zu Tabelle 7.5.2.1: pyrotechnische Sicherheitseinrichtungen der Unterklasse 1.4, Verträglichkeitsgruppe G (UN 0503) dürfen zusammen mit elektrisch aktivierten Sicherheitseinrichtungen der Klasse 9 (UN 3268) geladen werden."
       },
       "class1_compat_groups": {
         "nl": "Colli van klasse 1 met verschillende compatibiliteitsgroepen mogen alleen samen worden geladen als tabel 7.5.2.2 dat toestaat. Controleer de compatibiliteitsgroepen ({groups}).",

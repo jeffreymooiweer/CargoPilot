@@ -1,0 +1,27 @@
+name: Scratch read article
+
+# Temporary. The development container cannot reach medium.com; a runner can.
+# Delete this together with scripts/_scratch_read_article.py once the article
+# has been read — neither belongs in a release.
+
+on:
+  workflow_dispatch:
+    inputs:
+      url:
+        description: "Article URL"
+        required: true
+
+permissions:
+  contents: read
+
+jobs:
+  read:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install --quiet pillow
+      - run: python scripts/_scratch_read_article.py "${{ inputs.url }}"

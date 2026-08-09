@@ -1,9 +1,9 @@
-"""Het manifest moet kloppen met wat de app werkelijk gebruikt.
+"""The manifest has to match what the app really uses.
 
-Een manifest dat losstaat van de gegevens is erger dan geen manifest: het wekt
-vertrouwen dat nergens op steunt. Deze tests binden het aan de seeds die er
-echt zijn, en leggen vast dat een verlopen editie zichtbaar wordt in plaats van
-stilletjes door te rekenen.
+A manifest that stands apart from the data is worse than no manifest: it inspires
+confidence that rests on nothing. These tests bind it to the seeds that really
+exist, and record that an expired edition becomes visible instead of quietly
+being computed with.
 """
 
 from datetime import date
@@ -32,20 +32,20 @@ def test_every_rule_set_names_its_edition_and_where_it_came_from():
 
 
 def test_every_file_a_rule_set_claims_actually_exists():
-    """Een controlesom over een bestand dat er niet is, is geen controle."""
+    """A checksum over a file that is not there is not a check."""
     manifest = build_manifest()
     for entry, reported in zip(RULE_SETS, manifest["rule_sets"]):
         assert len(reported["datasets"]) == len(entry["files"]), entry["key"]
 
 
 def test_the_checksum_covers_the_content_and_not_the_timestamp():
-    """Twee installaties met dezelfde gegevens moeten hetzelfde id melden;
-    een build-tijdstempel zou ze verschillend laten lijken."""
+    """Two installations with the same data have to report the same id; a build
+    timestamp would make them look different."""
     assert build_manifest()["manifest_id"] == build_manifest()["manifest_id"]
 
 
 def test_the_dangerous_goods_list_is_the_edition_the_manifest_claims():
-    """Het manifest en het gegevensbestand mogen niet uit elkaar lopen."""
+    """The manifest and the data file must not drift apart."""
     from app.services.dg import dangerous_goods_list as dgl
 
     assert dgl.source()["amendment"] == "42-24"
@@ -53,7 +53,7 @@ def test_the_dangerous_goods_list_is_the_edition_the_manifest_claims():
 
 
 def test_the_iata_edition_matches_the_compliance_rules():
-    """De regels citeren hun editie in de tekst; die moet dezelfde zijn."""
+    """The rules cite their edition in the text; that has to be the same one."""
     from app.services.dg.compliance import get_compliance_rules
 
     sources = get_compliance_rules()["sources"]
@@ -74,23 +74,23 @@ def test_a_rule_set_that_has_not_started_says_so():
 
 
 def test_an_expired_rule_set_is_reported_rather_than_used_quietly():
-    """De IATA DGR wordt jaarlijks vervangen. Op 1 januari 2027 rekent deze
-    app met een verlopen editie; dat hoort zichtbaar te zijn."""
+    """The IATA DGR is replaced annually. On 1 January 2027 this app computes
+    with an expired edition; that should be visible."""
     assert rule_set_status(rule_set("iata"), date(2026, 12, 31)) == "current"
     assert rule_set_status(rule_set("iata"), date(2027, 1, 1)) == "expired"
     assert "iata" in expired_rule_sets(date(2027, 1, 1))
 
 
 def test_a_circular_without_an_end_date_never_expires():
-    """De EmS Guide is een circulaire: zij geldt tot er een Rev.4 komt, niet
-    tot een datum."""
+    """The EmS Guide is a circular: it applies until a Rev.4 appears, not until
+    a date."""
     assert rule_set("ems")["valid_until"] is None
     assert rule_set_status(rule_set("ems"), date(2099, 1, 1)) == "current"
 
 
 def test_the_un_cards_are_openly_marked_as_superseded():
-    """41-22 liep eind 2025 af en de kaarten worden nog maar voor twee dingen
-    gebruikt. Dat verzwijgen zou de indruk wekken dat alles 42-24 is."""
+    """41-22 ran out at the end of 2025 and the cards are used for only two
+    things now. Keeping quiet about that would suggest everything is 42-24."""
     cards = rule_set("imdg_un_cards")
     assert rule_set_status(cards, date(2026, 8, 3)) == "expired"
     assert any("16a" in note for note in cards["errata"])

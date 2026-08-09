@@ -1,11 +1,11 @@
 name: Extract IMDG codes
 
-# Leest de stuwage-, behandelings- en scheidingscodes met hun omschrijving uit
-# hoofdstuk 7.1.5, 7.1.6 en 7.2.8 van de IMDG-code en zet het resultaat als
-# feitelijke codetabel in backend/seed/dg/imdg_codes.json.
+# Reads the stowage, handling and segregation codes with their description out of
+# chapters 7.1.5, 7.1.6 and 7.2.8 of the IMDG Code and puts the result as a
+# factual code table in backend/seed/dg/imdg_codes.json.
 #
-# Draait hier en niet lokaal omdat de ontwikkelomgeving geen uitgaand netwerk
-# heeft. Alleen de afgeleide tabel wordt vastgelegd, nooit de brontekst.
+# Runs here and not locally because the development environment has no outbound
+# network. Only the derived table is recorded, never the source text.
 
 on:
   workflow_dispatch:
@@ -38,9 +38,9 @@ jobs:
         if: ${{ inputs.commit }}
         run: |
           set -eu
-          # git diff ziet een nieuw bestand niet: dat staat untracked. Op de
-          # eerste run was er daardoor niets vast te leggen terwijl de tabel
-          # gewoon geschreven was.
+          # git diff does not see a new file: that is untracked. On the first run
+          # there was therefore nothing to record while the table had simply been
+          # written.
           if [ -z "$(git status --porcelain -- backend/seed/dg/imdg_codes.json)" ]; then
             echo "Ongewijzigd; niets vast te leggen."
             exit 0

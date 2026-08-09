@@ -1,19 +1,18 @@
-"""De app moet starten met de instellingen waarmee zij wordt uitgeleverd.
+"""The app has to start with the settings it is shipped with.
 
-Dit is de test die ontbrak. Van v1.25.0 tot v1.29.2 weigerde CargoPilot te
-starten zodra `APP_SECRET_KEY` op de standaardwaarde stond of leeg was, en
-zodra `CORS_ALLOWED_ORIGINS` op `*` stond — en dat zíjn de standaardwaarden van
-deze applicatie, plus wat de Unraid-sjabloon meegeeft. Elke installatie die die
-twee niet uit zichzelf had ingevuld, viel om bij het opstarten.
+This is the test that was missing. From v1.25.0 to v1.29.2 CargoPilot refused to
+start as soon as `APP_SECRET_KEY` was at its default value or empty, and as soon
+as `CORS_ALLOWED_ORIGINS` was `*` — and those *are* this application's defaults,
+plus what the Unraid template passes. Every installation that had not filled in
+those two by itself fell over on startup.
 
-De 500 tests die er toen al waren, vonden het niet. Allemaal draaiden ze met
-`APP_ENV=test`, waarmee de controle juist wordt overgeslagen, en geen enkele
-bouwde de applicatie zoals een gebruiker haar start.
+The 500 tests that already existed did not find it. They all ran with
+`APP_ENV=test`, which skips the check precisely, and not one of them built the
+application the way a user starts it.
 
-Vandaar deze: een echt los proces, met een schone omgeving, zonder `.env`, en
-zonder één instelling die een gebruiker niet ook zou hebben. Zij draait
-opzettelijk niet in het testproces, want juist de omgeving is hier het
-onderwerp.
+Hence this one: a genuinely separate process, with a clean environment, without
+`.env`, and without a single setting a user would not also have. It deliberately
+does not run inside the test process, because the environment is the subject here.
 """
 
 import os
@@ -35,25 +34,25 @@ print("STARTED", get_settings().app_secret_key[:8])
 
 
 def start_with(env_dir: Path, **overrides) -> subprocess.CompletedProcess:
-    """Bouw de applicatie in een los proces, met een omgeving die we kennen."""
+    """Build the application in a separate process, in an environment we know."""
     env_dir.mkdir(parents=True, exist_ok=True)
     env = {
-        # Een schone omgeving: alleen wat een container ook heeft. PATH en HOME
-        # blijven van het systeem — HOME wijst hier naar de user-site waar een
-        # deel van de pakketten staat, en die weghalen zou Python zelf slopen in
-        # plaats van de configuratie te beproeven.
+        # A clean environment: only what a container has too. PATH and HOME stay
+        # from the system — HOME points here at the user site where some of the
+        # packages live, and taking that away would wreck Python itself instead
+        # of putting the configuration to the test.
         "PATH": os.environ.get("PATH", ""),
         "HOME": os.environ.get("HOME", ""),
         "PYTHONPATH": str(BACKEND),
         "DATA_DIR": str(env_dir),
         "DATABASE_URL": f"sqlite:///{env_dir}/cargopilot.db",
-        # Zonder dit probeert het opstarten catalogi van internet te halen.
+        # Without this, startup tries to fetch catalogues from the internet.
         "CATALOG_AUTO_SYNC": "false",
     }
     env.update({k: v for k, v in overrides.items() if v is not None})
     return subprocess.run(
         [sys.executable, "-c", BUILD_THE_APP],
-        cwd=env_dir,  # niet in de repo, dus geen .env die meekomt
+        cwd=env_dir,  # not in the repo, so no .env comes along
         env=env,
         capture_output=True,
         text=True,
@@ -62,14 +61,14 @@ def start_with(env_dir: Path, **overrides) -> subprocess.CompletedProcess:
 
 
 def test_the_app_starts_with_nothing_configured(tmp_path):
-    """Geen APP_ENV, geen APP_SECRET_KEY, geen CORS — zoals iemand die de
-    container aanzet en verder niets invult."""
+    """No APP_ENV, no APP_SECRET_KEY, no CORS — like somebody who switches the
+    container on and fills in nothing further."""
     result = start_with(tmp_path)
     assert "STARTED" in result.stdout, result.stderr[-3000:]
 
 
 def test_the_app_starts_the_way_the_unraid_template_configures_it(tmp_path):
-    """De sjabloon in unraid/CargoPilot.xml geeft APP_SECRET_KEY leeg mee."""
+    """The template in unraid/CargoPilot.xml passes APP_SECRET_KEY empty."""
     result = start_with(tmp_path, APP_SECRET_KEY="")
     assert "STARTED" in result.stdout, result.stderr[-3000:]
 
@@ -80,7 +79,7 @@ def test_the_app_starts_on_the_published_default_secret(tmp_path):
 
 
 def test_it_does_not_sign_with_the_published_key_it_was_given(tmp_path):
-    """Starten is niet genoeg — het moest ook veilig."""
+    """Starting is not enough — it had to be safe as well."""
     result = start_with(tmp_path, APP_SECRET_KEY="change-me")
     assert "STARTED" in result.stdout, result.stderr[-3000:]
     assert "STARTED change-me" not in result.stdout
@@ -88,7 +87,7 @@ def test_it_does_not_sign_with_the_published_key_it_was_given(tmp_path):
 
 
 def test_a_restart_keeps_everyone_logged_in(tmp_path):
-    """Een nieuwe sleutel bij elke herstart zou iedereen eruit gooien."""
+    """A new key on every restart would throw everybody out."""
     first = start_with(tmp_path)
     second = start_with(tmp_path)
     assert "STARTED" in first.stdout and "STARTED" in second.stdout

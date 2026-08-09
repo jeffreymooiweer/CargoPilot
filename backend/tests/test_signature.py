@@ -26,7 +26,7 @@ def test_decode_normalizes_to_cropped_transparent_png():
     png = decode_signature_image(_data_url(_signature_img()))
     out = Image.open(io.BytesIO(png))
     assert out.mode == "RGBA"
-    # strak bijgesneden om de inkt (kleiner dan het originele 300x100-canvas)
+    # cropped tightly around the ink (smaller than the original 300x100 canvas)
     assert out.width < 260 and out.height < 60
     # witte achtergrond transparant
     assert out.getpixel((0, 0))[3] in (0, 255)
@@ -71,7 +71,7 @@ def test_cmr_signature_stamped(tmp_path):
     import fitz
 
     doc = fitz.open(str(out))
-    # vak 22 (afzender) bevat nu donkere pixels op alle 4 doorslagen
+    # box 22 (consignor) now has dark pixels on all four copies
     for page_no in range(4):
         pix = doc[page_no].get_pixmap(matrix=fitz.Matrix(2, 2), clip=fitz.Rect(48, 742, 200, 786))
         assert any(sum(pix.pixel(x, y)) < 500 for x in range(pix.width) for y in range(pix.height))

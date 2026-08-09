@@ -66,21 +66,21 @@ def test_b1_iata_compliance_stack_includes_air_forbidden():
     )
 
 
-# --- B2: Q alleen als M (maximum) is ingevuld ------------------------------
+# --- B2: Q only when M (maximum) has been filled in -------------------------
 
 
 def test_b2_q_is_skipped_when_only_n_is_auto_filled():
-    """De prepare-stap vult n uit de netto per collo; dat mag Q niet starten."""
+    """The prepare step fills n from the net per package; that must not start Q."""
     entries = [_entry([{
         "un_number": "1263",
         "class": "3",
-        "q_net_quantity": "5",  # auto uit netto, geen M
+        "q_net_quantity": "5",  # automatic from the net, no M
     }])]
     assert check_q_value(entries) == []
 
 
 def test_b2_q_runs_when_m_is_present():
-    # Q geldt voor 'all packed in one': minstens twee componenten met M.
+    # Q applies to 'all packed in one': at least two components with an M.
     entries = [_entry([
         {"un_number": "1263", "class": "3",
          "q_net_quantity": "3", "q_max_net_quantity": "5"},
@@ -106,14 +106,14 @@ def test_b3_user_packing_group_selects_that_table_a_row():
     derived = derive_product(
         {"un_number": "1263", "packing_group": "III"}, "nl", ["ADR"]
     )
-    # packing_group stond al op het product, dus niet in de patch — de rij-
-    # afhankelijke velden wel, en die horen bij PG III (cat 3, E1).
+    # packing_group was already on the product, so it is not in the patch — the
+    # row-dependent fields are, and those belong to PG III (cat 3, E1).
     assert derived["patch"]["transport_category"] == "3"
     assert derived["patch"]["excepted_quantity"] == "E1"
     assert "packing_group_note" not in derived["hints"]
 
 
-# --- B4: klasse 1 rekent met NEM, niet productmassa ------------------------
+# --- B4: class 1 computes with NEM, not product mass ------------------------
 
 
 def test_b4_class1_points_use_net_explosive_mass():
@@ -164,7 +164,7 @@ def test_b4_class1_document_line_carries_nem():
 
 
 def test_b5_eight_tonne_lq_mark_is_warned():
-    # 25 kg bruto × 400 colli = 10 000 kg > 8 t, binnen LQ-grenzen.
+    # 25 kg gross × 400 packages = 10,000 kg > 8 t, within LQ limits.
     result = check_lq_eq(
         [_entry([{
             "un_number": "1263",
@@ -199,7 +199,7 @@ def test_b5_under_eight_tonnes_is_silent():
     assert not any(w["rule"] == "ADR 3.4.13/3.4.14" for w in result["warnings"])
 
 
-# --- B6: IMDG 7.2.6.5 naast het betrokken klasse-8-paar --------------------
+# --- B6: IMDG 7.2.6.5 next to the class 8 pair concerned --------------------
 
 
 def test_b6_class8_pair_exception_is_appended_to_the_finding():
@@ -217,10 +217,10 @@ def test_b6_class8_pair_exception_is_appended_to_the_finding():
     }]
     extended = append_class8_pair_exception(entries, findings, "nl")
     assert any(f["rule"] == "IMDG 7.2.6.5" and f["severity"] == "info" for f in extended)
-    assert findings[0] in extended  # de waarschuwing blijft staan
+    assert findings[0] in extended  # the warning stays
 
 
-# --- B7: verboden stof uit punten en documentregels ------------------------
+# --- B7: forbidden substance out of the points and document lines -----------
 
 
 def test_b7_forbidden_substance_is_skipped_in_points_and_documents():
@@ -251,7 +251,7 @@ def test_b7_forbidden_substance_is_skipped_in_points_and_documents():
     assert prepared["document_lines"]["ADR"] == []
 
 
-# --- B8: hints gefilterd op actieve profielen ------------------------------
+# --- B8: hints filtered on the active profiles ------------------------------
 
 
 def test_b8_imdg_hints_are_absent_on_a_pure_adr_prepare():
@@ -279,13 +279,14 @@ def test_b8_air_forbidden_hint_appears_when_iata_is_active():
     assert any(h.get("air_forbidden") for h in result["hints"])
 
 
-# --- B9: binnenverpakking alleen waar LQ of EQ een route is ----------------
-# (UI-gedrag; de rekenlaag blijft incomplete melden als het veld wél gevuld is
-#  bij LQ=0/E0. De frontend verbergt het veld — vastgelegd in de component.)
+# --- B9: inner packaging only where LQ or EQ is a route ---------------------
+# (UI behaviour; the calculation layer keeps reporting incomplete when the field
+#  *is* filled in at LQ=0/E0. The frontend hides the field — recorded in the
+#  component.)
 
 
 def test_b9_lq_zero_and_e0_still_assess_when_inner_is_sent():
-    """De rekenlaag blijft eerlijk: 0/E0 + ingevulde binnenverpakking = not_permitted."""
+    """The calculation layer stays honest: 0/E0 + inner packaging filled in = not_permitted."""
     result = check_lq_eq(
         [_entry([{
             "un_number": "1051",

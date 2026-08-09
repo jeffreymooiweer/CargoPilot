@@ -48,7 +48,7 @@ def purge_export_files(exports_dir: Path) -> int:
 
 
 def purge_sensitive_data(db: Session) -> None:
-    """Verwijder opgeslagen documentdata: jobs in DB en tijdelijke exports."""
+    """Remove stored document data: jobs in the database and temporary exports."""
     settings = get_settings()
     deleted_jobs = db.query(Job).delete()
     db.commit()
@@ -58,7 +58,7 @@ def purge_sensitive_data(db: Session) -> None:
 
 
 def purge_legacy_equipment(db: Session) -> None:
-    """Verwijder vooraf geseede operationele materieeldata (privacy)."""
+    """Remove pre-seeded operational equipment data (privacy)."""
     deleted = db.query(Equipment).filter(Equipment.source == "overzicht_materieel").delete()
     db.commit()
     if deleted:

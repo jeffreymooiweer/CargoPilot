@@ -15,7 +15,7 @@ def detect_un_numbers(text: str) -> list[str]:
 
 
 def detect_dangerous_goods(description: str) -> tuple[bool, list[str]]:
-    """True + melding wanneer een UN/ID-nummer in de omschrijving staat."""
+    """True + a message when a UN/ID number appears in the description."""
     if detect_un_numbers(description):
         return True, ["dg_un_detected"]
     return False, []

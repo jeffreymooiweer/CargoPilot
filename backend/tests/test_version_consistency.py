@@ -1,13 +1,13 @@
-"""Het versienummer staat op vier plaatsen en die moeten het eens zijn.
+"""The version number is in four places and they have to agree.
 
-Dit is geen theoretisch risico. Een externe review van CargoPilot kwam met een
-lijst problemen die grotendeels al opgelost waren, omdat de reviewer
-`frontend/package.json` op 1.14.1 zag terwijl de rest van het project al ver
-daarvoorbij was. Uren werk aan bevindingen die niet meer bestonden.
+This is not a theoretical risk. An external review of CargoPilot came back with
+a list of problems that had largely been solved already, because the reviewer saw
+`frontend/package.json` at 1.14.1 while the rest of the project was well past it.
+Hours of work on findings that no longer existed.
 
-Eén plek die achterblijft is ook operationeel vervelend: `GET /api/health`
-meldt dan een andere versie dan de Docker-tag, en een gebruiker die een bug
-meldt geeft een nummer op dat niet klopt met de code waar de bug in zit.
+One place lagging behind is operationally annoying too: `GET /api/health` then
+reports a different version from the Docker tag, and a user reporting a bug
+gives a number that does not match the code the bug is in.
 """
 
 import json
@@ -38,14 +38,14 @@ def test_the_four_places_the_version_lives_agree():
         f"frontend/package.json ({package['version']}) loopt achter op "
         f"VERSION ({root_version})"
     )
-    # Wat de applicatie zelf uitdraagt — dit is het nummer dat in een bugmelding
-    # terechtkomt.
+    # What the application puts out itself — this is the number that ends up in
+    # a bug report.
     assert get_version() == root_version
 
 
 def test_the_changelog_documents_the_current_version():
-    """Een versiebump zonder changelog-regel is een release waarvan niemand
-    kan zien wat erin zit."""
+    """A version bump without a changelog entry is a release nobody can see the
+    contents of."""
     version = read(ROOT / "VERSION")
     changelog = (ROOT / "CHANGELOG.md").read_text(encoding="utf-8")
     assert f"## [{version}]" in changelog, (
@@ -54,8 +54,8 @@ def test_the_changelog_documents_the_current_version():
 
 
 def test_the_changelog_leads_with_the_current_version():
-    """De nieuwste versie hoort bovenaan; anders is een oudere kop blijven
-    staan of is er onder de verkeerde kop geschreven."""
+    """The newest version belongs at the top; otherwise an older heading has been
+    left standing or something was written under the wrong heading."""
     version = read(ROOT / "VERSION")
     changelog = (ROOT / "CHANGELOG.md").read_text(encoding="utf-8")
     headings = re.findall(r"^## \[([^\]]+)\]", changelog, re.M)

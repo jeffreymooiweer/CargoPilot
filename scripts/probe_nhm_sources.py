@@ -1,29 +1,28 @@
-"""Zoeken naar een bruikbare bron voor de NHM-goederencodes.
+"""Looking for a usable source for the NHM goods codes.
 
-Vak 24 van de CIM vraagt een zescijferige NHM-code (Nomenclature Harmonisée
-Marchandises, de goederennomenclatuur van de UIC voor het spoor). CargoPilot
-heeft daar nu een vrij tekstveld voor met de mededeling dat de code niet uit een
-omschrijving af te leiden is en dat de gebruiker hem moet opzoeken. Dat klopt,
-maar het is geen antwoord.
+Box 24 of the CIM asks for a six-digit NHM code (Nomenclature Harmonisée
+Marchandises, the UIC's goods nomenclature for rail). CargoPilot currently has a
+free text field for it with a note that the code cannot be derived from a
+description and that the user has to look it up. That is true, but it is not an
+answer.
 
-Zescijferige codes verzinnen is hier geen optie. Een verkeerde NHM-code op een
-spoorvrachtbrief is geen schoonheidsfoutje: de vervoerder rekent er zijn tarief
-mee en de douane leest hem. Daarom eerst meten of er een bron ís die we mogen
-en kunnen gebruiken, voordat er ook maar iets wordt vastgelegd — dezelfde
-volgorde die bij de Dangerous Goods List heeft gewerkt.
+Inventing six-digit codes is not an option here. A wrong NHM code on a rail
+waybill is no blemish: the carrier calculates its tariff with it and customs read
+it. So first measure whether there *is* a source we may and can use, before
+anything is recorded — the same order that worked for the Dangerous Goods List.
 
-Wat deze verkenning van een bron wil weten:
+What this survey wants to know about a source:
 
-1. Is hij bereikbaar en machinaal te lezen?
-2. Draagt hij zescijferige codes met een omschrijving, of alleen hoofdstukken?
-3. Hoeveel codes zijn het, en dekken ze de goederen die CargoPilot kent?
-4. Onder welke voorwaarden staat hij er — de code-met-omschrijving is een
-   feitelijke tabel, maar dat moet wel per bron worden vastgesteld.
+1. Is it reachable and readable by machine?
+2. Does it carry six-digit codes with a description, or only chapters?
+3. How many codes are there, and do they cover the goods CargoPilot knows?
+4. On what terms is it published — the code-with-description is a factual table,
+   but that has to be established per source.
 
-Draait via GitHub Actions, omdat de ontwikkelomgeving geen uitgaand netwerk
-heeft. Deze verkenning legt niets vast; zij rapporteert alleen.
+Runs via GitHub Actions, because the development environment has no outbound
+network. This survey records nothing; it only reports.
 
-Gebruik::
+Usage::
 
     python scripts/probe_nhm_sources.py
     python scripts/probe_nhm_sources.py --url https://example.org/nhm.csv
@@ -40,10 +39,9 @@ from pathlib import Path
 
 UA = {"User-Agent": "CargoPilot data survey (github.com/jeffreymooiweer/CargoPilot)"}
 
-# Kandidaten, van meest naar minst waarschijnlijk bruikbaar. De NHM volgt de
-# hoofdstukindeling van het geharmoniseerd systeem (HS/GN), dus een GN-bron
-# levert in elk geval de vier eerste cijfers en de omschrijvingen; de laatste
-# twee cijfers zijn NHM-eigen.
+# Candidates, from most to least likely to be usable. The NHM follows the chapter
+# structure of the Harmonised System (HS/CN), so a CN source supplies at least the
+# first four digits and the descriptions; the last two digits are NHM-specific.
 CANDIDATES = [
     {
         "name": "EU RAMON — Combined Nomenclature (CN), de basis onder de NHM",
@@ -65,8 +63,8 @@ CANDIDATES = [
     },
 ]
 
-# Een NHM-code is zes cijfers. Zonder die vorm heeft een bron ons niets te
-# bieden voor vak 24.
+# An NHM code is six digits. Without that shape a source has nothing to offer us
+# for box 24.
 NHM_CODE = re.compile(r"\b\d{6}\b")
 
 
@@ -97,18 +95,18 @@ def describe(name: str, url: str, note: str) -> None:
     print(f"  zescijferige codes gevonden: {len(codes)}")
     if codes:
         print(f"    voorbeeld: {codes[:8]}")
-    # Een lijst zonder omschrijvingen is voor een gebruiker onbruikbaar; die
-    # moet aan de tekst kunnen zien wát hij kiest.
+    # A list without descriptions is unusable for a user; they have to be able to
+    # see from the text *what* they are choosing.
     print(f"  bevat woorden naast codes: {'ja' if re.search(r'[A-Za-z]{6,}', text) else 'nee'}")
     print(f"  eerste 300 tekens: {text[:300]!r}")
 
 
 def coverage_hint() -> None:
-    """Waar het uiteindelijk om gaat: dekt een bron ónze goederen?
+    """What it ultimately comes down to: does a source cover *our* goods?
 
-    CargoPilot kent zo'n 400 materialen. Een NHM-lijst die staal, hout, cement
-    en chemie dekt is bruikbaar, ook als hij niet volledig is; een lijst die dat
-    niet doet, lost het probleem niet op.
+    CargoPilot knows some 400 materials. An NHM list covering steel, timber,
+    cement and chemicals is usable, even if it is not complete; a list that does
+    not do that does not solve the problem.
     """
     seed = Path(__file__).resolve().parents[1] / "backend" / "seed" / "materials.json"
     try:

@@ -348,15 +348,15 @@ def _label(item: dict[str, Any], lang: str) -> str:
 
 
 def _localised(value: Any, lang: str) -> str:
-    """Een {nl, en, de}-blokje uit het register in de gevraagde taal."""
+    """A {nl, en, de} block from the registry in the requested language."""
     if isinstance(value, dict):
         return str(pick(value, lang))
     return str(value or "")
 
 
 def _text(key: str, lang: str) -> Any:
-    # Terugval in plaats van een KeyError: een taal waarvoor één regel nog
-    # ontbreekt mag geen export laten omvallen.
+    # A fallback rather than a KeyError: a language still missing a single line
+    # must not bring an export down.
     return pick(TEXTS[key], lang)
 
 
@@ -374,7 +374,7 @@ def validate_document(
     dangerous_goods: list[dict[str, Any]] | None,
     language: str = "nl",
 ) -> tuple[list[str], list[str]]:
-    """Retourneer (blokkerende fouten, waarschuwingen) voor een documentexport."""
+    """Return (blocking errors, warnings) for a document export."""
     lang = _lang(language)
     errors: list[str] = []
     warnings: list[str] = []
@@ -386,9 +386,9 @@ def validate_document(
             if field.get("status") == "USER_REQUIRED" and empty:
                 errors.append(f"{_text('field_required', lang)}: {_label(field, lang)}")
                 continue
-            # Een veld dat een vorm belooft moet die vorm ook hebben. Tot nu toe
-            # werd alleen op leeg gecontroleerd, dus "72" of "7208 51" kwam
-            # gewoon als NHM-code op een officiële vrachtbrief terecht.
+            # A field that promises a shape has to have that shape. Until now
+            # only emptiness was checked, so "72" or "7208 51" simply ended up on
+            # an official waybill as the NHM code.
             pattern = field.get("pattern")
             if pattern and not empty and not re.fullmatch(pattern, str(value).strip()):
                 errors.append(
@@ -405,21 +405,21 @@ def validate_document(
         required_fields = DG_PROFILE_REQUIRED.get(profile, DG_BASE_REQUIRED)
         for entry in entries:
             for product in entry.get("products", []):
-                # Stoffen die ADR niet ten vervoer toelaat blokkeren de export.
+                # Substances ADR does not admit for carriage block the export.
                 if is_transport_forbidden(str(product.get("un_number") or "")):
                     errors.append(
                         f"{_text('dg_forbidden', lang)}: {_un_prefixed(product.get('un_number'))}"
                     )
-                # Zee en lucht schrijven de taal van de benaming voor: IMDG
-                # 5.4.1.4.1 laat Engels, Frans of Spaans toe en IATA DGR
-                # 8.1.2.1 alleen Engels. Wie eerst een Duits wegdocument
-                # opmaakte, houdt de Duitse benaming in het veld staan.
+                # Sea and air prescribe the language of the name: IMDG 5.4.1.4.1
+                # permits English, French or Spanish and IATA DGR 8.1.2.1 only
+                # English. Whoever first drew up a German road document keeps the
+                # German name standing in the field.
                 #
-                # Dat is geen reden de export te weigeren: de taal hoort bij
-                # het document en niet bij de zending, en CargoPilot weet welke
-                # benaming hier moet staan. Hij zet die er zelf neer en meldt
-                # het — blokkeren zou de gebruiker alleen laten overtypen wat de
-                # app al wist.
+                # That is no reason to refuse the export: the language belongs to
+                # the document and not to the consignment, and CargoPilot knows
+                # which name has to be here. It puts it there itself and reports
+                # it — blocking would only make the user retype what the app
+                # already knew.
                 english, replaced = resolve_for_profile(product, profile)
                 if replaced:
                     warnings.append(
@@ -434,17 +434,17 @@ def validate_document(
                         f"{_text('dg_missing', lang)} '{position}': {', '.join(missing)}"
                     )
 
-        # De volledige nalevingscontrole draait óók bij de export zelf. Het
-        # paneel in de wizard is een hulpmiddel; de frontend mag nooit de enige
-        # plek zijn waar dit wordt afgedwongen — een verouderd of nooit ververst
-        # schermresultaat mag geen document opleveren.
+        # The full compliance check runs at the export itself as well. The panel
+        # in the wizard is an aid; the frontend must never be the only place
+        # where this is enforced — a stale or never-refreshed screen result must
+        # not produce a document.
         if entries:
             from app.services.dg.compliance import check_compliance
 
             outcome = check_compliance(entries, [profile], language)
-            # Rekent deze export met een regelset die is afgelopen en niet is
-            # vervangen, dan hoort dat op het document en niet alleen op het
-            # scherm — een document overleeft de sessie waarin het is gemaakt.
+            # If this export computes with a rule set that has run out and has
+            # not been replaced, that belongs on the document and not only on the
+            # screen — a document outlives the session it was made in.
             for finding in outcome.get("rule_set_warnings", []) or []:
                 warnings.append(f"{finding['rule']}: {finding['message']}")
             for finding in outcome.get("imdg_segregation", []) + outcome.get(
@@ -457,16 +457,15 @@ def validate_document(
                     warnings.append(text)
             for q in outcome.get("q_values", []) or []:
                 if q.get("status") == "exceeded":
-                    # Q boven 1 betekent dat de combinatie zo niet mag vliegen.
+                    # Q above 1 means the combination may not fly like that.
                     errors.append(
                         f"IATA 5.0.2.11: Q = {q.get('q_value')} (> 1)"
                         + (f" — {q.get('position')}" if q.get("position") else "")
                     )
                 elif q.get("status") in {"incomplete", "not_checked"}:
                     warnings.append(str(q.get("note") or "Q incomplete"))
-            # En als er in het geheel geen Q is gerekend, hoort dat er ook op:
-            # een controle die niet liep zag er op het document uit als een
-            # controle die slaagde.
+            # And if no Q was computed at all, that belongs on it too: a check
+            # that did not run looked on the document like a check that passed.
             q_status = outcome.get("q_check_status")
             if q_status and q_status.get("status") in {"not_checked", "incomplete"}:
                 warnings.append(f"IATA DGR 5.0.2.11: {q_status['message']}")
@@ -493,10 +492,10 @@ def validate_document(
                 if status == "incomplete":
                     warnings.append("ADR 1.1.3.6: " + _text("adr_points_incomplete", lang))
                 elif status in {"above_threshold", "not_exempt"}:
-                    # Niet verboden, maar de vrijstelling van 1.1.3.6 vervalt en
-                    # daarmee gelden de volle eisen: opleiding, ADR-voertuig,
-                    # oranje borden, brandblussers. Wie op het scherm nog
-                    # "vrijstelling mogelijk" zag staan moet dat hier lezen.
+                    # Not forbidden, but the 1.1.3.6 exemption lapses and with
+                    # it the full requirements apply: training, ADR vehicle,
+                    # orange plates, fire extinguishers. Whoever still saw
+                    # "exemption possible" on screen has to read this here.
                     total = points.get("total_points")
                     threshold = points.get("threshold")
                     detail = (
@@ -547,10 +546,10 @@ def _dg_description(product: dict[str, Any], profile: str, values: dict[str, Any
     if subsidiary:
         hazard = f"{hazard} ({subsidiary})"
     parts = [_un_prefixed(product.get("un_number")), psn, hazard, str(product.get("packing_group") or "").strip()]
-    # Alleen ADR: de tunnelbeperkingscode is een wegconstructie (Tabel A kolom
-    # 15, 8.6, 5.4.1.1.1 (k)). Op een CIM of een ADN-document hoort hij niet.
+    # ADR only: the tunnel restriction code is a road construct (Table A column
+    # 15, 8.6, 5.4.1.1.1 (k)). It does not belong on a CIM or an ADN document.
     if profile == "ADR":
-        # Tunnelcode uit de UN-vermelding; een handmatige waarde gaat voor.
+        # Tunnel code from the UN entry; a manual value takes precedence.
         tunnel = str(values.get("tunnel_restriction") or product.get("tunnel_code") or "").strip()
         if tunnel:
             parts.append(f"({tunnel.strip('()')})")
@@ -558,7 +557,7 @@ def _dg_description(product: dict[str, Any], profile: str, values: dict[str, Any
 
 
 def _dg_rows(profile: str, entry: dict[str, Any], product: dict[str, Any], values: dict[str, Any], lang: str):
-    """Rijwaarden voor de DG-tabel, in de kolomvolgorde van het betreffende formulier."""
+    """Row values for the DG table, in the column order of the form concerned."""
     if profile == "IATA_DGR":
         quantity_parts = [
             str(product.get("quantity_packages") or "").strip(),

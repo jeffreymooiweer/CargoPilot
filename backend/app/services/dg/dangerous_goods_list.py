@@ -1,18 +1,18 @@
-"""De Dangerous Goods List van IMDG-code Amendment 42-24, per UN-nummer.
+"""The Dangerous Goods List of IMDG Code Amendment 42-24, per UN number.
 
-Tot nu toe kende de app kolom 16a en 16b alleen voor de stoffen waarvan
-toevallig een UN-kaart bestond, en dan nog zoals die kaart het formuleerde.
-Dat is een probleem, want 7.2.3.1 zegt met zoveel woorden dat kolom 16b
-vóórgaat op de scheidingstabel van 7.2.4: juist die kolom moet volledig zijn.
+Until now the app knew columns 16a and 16b only for the substances that happened
+to have a UN card, and then only as that card worded it. That is a problem,
+because 7.2.3.1 says in so many words that column 16b prevails over the
+segregation table of 7.2.4: that column of all columns has to be complete.
 
-Deze module leest de lijst zelf — 2860 vermeldingen, uitgelezen door
-scripts/extract_imdg_dgl.py uit de tekst van resolutie MSC.556(108) — en geeft
-per UN-nummer terug wat er in de kolommen staat. Vermeldingen met meerdere
-verpakkingsgroepen (UN 1361, UN 3424 en zo'n vijfhonderd andere) staan meerdere
-keren in de lijst; die worden hier op verpakkingsgroep uit elkaar gehouden.
+This module reads the list itself — 2860 entries, extracted by
+scripts/extract_imdg_dgl.py from the text of resolution MSC.556(108) — and
+returns per UN number what is in the columns. Entries with several packing
+groups (UN 1361, UN 3424 and some five hundred others) appear in the list more
+than once; those are kept apart here by packing group.
 
-De bron zet een streepje waar niets geldt. Dat is opmaak en geen gegeven, dus
-het wordt hier weggelaten in plaats van als waarde doorgegeven.
+The source puts a dash where nothing applies. That is formatting and not data,
+so it is dropped here instead of being passed on as a value.
 """
 from __future__ import annotations
 
@@ -27,7 +27,7 @@ _lock = threading.Lock()
 _index: dict[str, list[dict[str, Any]]] | None = None
 _meta: dict[str, Any] = {}
 
-# Het en-streepje van de uitgave, en de gewone koppelteken-variant.
+# The publication's en dash, and the ordinary hyphen variant.
 _EMPTY = {"-", "–", "—", ""}
 
 # "Category 03 SW1", "Category B SW2 SW5", "– SW1 SW22", "Category A"
@@ -56,7 +56,7 @@ def _load() -> dict[str, list[dict[str, Any]]]:
 
 
 def available() -> bool:
-    """Of de lijst geladen kon worden. Zonder lijst blijft de app werken."""
+    """Whether the list could be loaded. Without it the app keeps working."""
     return bool(_load())
 
 
@@ -70,17 +70,17 @@ def _digits(un_number: str) -> str:
 
 
 def entries_for(un_number: str) -> list[dict[str, Any]]:
-    """Alle rijen van de lijst voor dit UN-nummer, op volgorde van de lijst."""
+    """Every row of the list for this UN number, in the order of the list."""
     return list(_load().get(_digits(un_number), []))
 
 
 def entry_for(un_number: str, packing_group: str = "") -> dict[str, Any]:
-    """De rij die bij deze stof en verpakkingsgroep hoort.
+    """The row belonging to this substance and packing group.
 
-    Zonder opgegeven verpakkingsgroep, of als die niet voorkomt, wordt de
-    eerste rij teruggegeven: de kolommen die de app gebruikt — scheiding,
-    stuwage, EmS — verschillen tussen de verpakkingsgroepen van één stof
-    zelden, en een rij van de goede stof is beter dan geen rij.
+    Without a packing group given, or when it does not occur, the first row is
+    returned: the columns the app uses — segregation, stowage, EmS — rarely
+    differ between the packing groups of one substance, and a row of the right
+    substance is better than no row.
     """
     rows = entries_for(un_number)
     if not rows:
@@ -94,17 +94,17 @@ def entry_for(un_number: str, packing_group: str = "") -> dict[str, Any]:
 
 
 def value(entry: dict[str, Any], column: str) -> str:
-    """De waarde van een kolom, of leeg waar de lijst een streepje zet."""
+    """The value of a column, or empty where the list puts a dash."""
     text = str(entry.get(column) or "").strip()
     return "" if text in _EMPTY else text
 
 
 def codes(entry: dict[str, Any], column: str) -> list[str]:
-    """De codes uit een kolom, ontdubbeld en op volgorde van de lijst.
+    """The codes from a column, deduplicated and in the order of the list.
 
-    Kolom 16a draagt naast de codes ook de stuwagecategorie ("Category B
-    SW2 SW5"); die wordt hier niet als code meegeteld. Kolom 16b draagt naast
-    de SG-codes de scheidingsgroepen van de stof ("SGG2 SG27 SG31").
+    Besides the codes, column 16a also carries the stowage category ("Category B
+    SW2 SW5"); that is not counted as a code here. Besides the SG codes, column
+    16b carries the substance's segregation groups ("SGG2 SG27 SG31").
     """
     found: list[str] = []
     for match in _CODE.finditer(value(entry, column)):
@@ -115,31 +115,31 @@ def codes(entry: dict[str, Any], column: str) -> list[str]:
 
 
 def stowage_category(entry: dict[str, Any]) -> str:
-    """De stuwagecategorie uit kolom 16a: A t/m E, of 01 t/m 05 voor klasse 1."""
+    """The stowage category from column 16a: A to E, or 01 to 05 for class 1."""
     match = _CATEGORY.search(value(entry, "stowage_and_handling"))
     return match.group(1) if match else ""
 
 
 def stowage_codes(entry: dict[str, Any]) -> list[str]:
-    """De SW- en H-codes uit kolom 16a."""
+    """The SW and H codes from column 16a."""
     return [c for c in codes(entry, "stowage_and_handling") if not c.startswith("SG")]
 
 
 def segregation_codes(entry: dict[str, Any]) -> list[str]:
-    """De SG-codes uit kolom 16b, zonder de scheidingsgroepen."""
+    """The SG codes from column 16b, without the segregation groups."""
     return [c for c in codes(entry, "segregation") if not c.startswith("SGG")]
 
 
 def segregation_groups(entry: dict[str, Any]) -> list[str]:
-    """De SGG-codes uit kolom 16b."""
+    """The SGG codes from column 16b."""
     return [c for c in codes(entry, "segregation") if c.startswith("SGG")]
 
 
 def special_provisions(entry: dict[str, Any]) -> list[str]:
-    """De nummers uit kolom 6, bijvoorbeeld ['223', '274']."""
+    """The numbers from column 6, for example ['223', '274']."""
     return re.findall(r"\d+", value(entry, "special_provisions"))
 
 
 def amended_in_42_24(entry: dict[str, Any]) -> bool:
-    """Of de lijst deze vermelding met het wijzigingsdriehoekje aanwijst."""
+    """Whether the list marks this entry with the amendment triangle."""
     return bool(entry.get("amended"))

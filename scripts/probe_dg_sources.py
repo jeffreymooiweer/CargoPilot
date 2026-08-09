@@ -1,31 +1,30 @@
-"""Verkenning van openbare bronnen voor gevaarlijke-stoffengegevens.
+"""A survey of public sources for dangerous goods data.
 
-Dit script haalt niets binnen dat in de repo terechtkomt. Het kijkt of een bron
-bestaat, hoe groot zij is en of zij machinaal te lezen valt, en zet die uitkomst
-op de uitvoer. Bedoeld om via GitHub Actions te draaien, omdat de
-ontwikkelomgeving geen uitgaand netwerk heeft.
+This script fetches nothing that ends up in the repo. It looks at whether a
+source exists, how big it is and whether it can be read by machine, and puts that
+outcome on the output. Meant to run via GitHub Actions, because the development
+environment has no outbound network.
 
-Twee vragen:
+Two questions:
 
-1. Publiceert Cantell een kaartenset van een nieuwere IMDG-editie dan
-   ``imdg_2023``? Die set is de bron van ``backend/seed/dg/card_data.json``
-   (Amendment 41-22). Een 42-24-set zou de hele stof-specifieke laag in één keer
-   bijwerken, langs dezelfde weg die we al gebruiken.
-2. Is de Dangerous Goods List van de UN-modelvoorschriften Rev.23 te parsen?
-   UNECE publiceert die uitgave gratis en IMDG 42-24 is ermee geharmoniseerd,
-   dus zij dekt elke kolom die niet IMDG-eigen is: klasse, verpakkingsgroep,
-   etiketten, bijzondere bepalingen, LQ/EQ en verpakkingsinstructies. Wat zij
-   niet dekt is even belangrijk om te weten: EmS, stuwagecategorie, de SW- en
-   SG-codes en de scheidingsgroepen staan alleen in de IMDG-code zelf.
+1. Does Cantell publish a card set of an IMDG edition newer than ``imdg_2023``?
+   That set is the source of ``backend/seed/dg/card_data.json`` (Amendment
+   41-22). A 42-24 set would update the whole substance-specific layer at once,
+   along the same route we already use.
+2. Can the Dangerous Goods List of the UN Model Regulations Rev.23 be parsed?
+   UNECE publishes that edition free of charge and IMDG 42-24 is harmonised with
+   it, so it covers every column that is not IMDG-specific: class, packing group,
+   labels, special provisions, LQ/EQ and packing instructions. What it does not
+   cover is just as important to know: EmS, stowage category, the SW and SG codes
+   and the segregation groups are only in the IMDG Code itself.
 
-3. Wat staat er in het amendementsdocument dat CEPA — de werkgeversorganisatie
-   van de haven van Antwerpen — openbaar op haar eigen site publiceert? Dit
-   script stelt alleen vast wát het is: uitgever, omvang, welke hoofdstukken.
-   Of het om de volledige codetekst gaat of om een wijzigingsoverzicht maakt
-   voor ons uit, want alleen feitelijke gegevens komen in de repo terecht en
-   nooit de regelgevingstekst zelf.
+3. What is in the amendment document that CEPA — the employers' organisation of
+   the port of Antwerp — publishes openly on its own site? This script only
+   establishes *what* it is: publisher, size, which chapters. Whether it is the
+   full text of the Code or an overview of changes matters to us, because only
+   factual data ends up in the repo and never the regulatory text itself.
 
-Gebruik::
+Usage::
 
     python scripts/probe_dg_sources.py cantell
     python scripts/probe_dg_sources.py model-regs --sample-pages 60,61,120
@@ -47,11 +46,10 @@ VOL1 = f"{UNECE}/ST-SG-AC10-1r23e_Vol1_WEB.pdf"
 VOL2 = f"{UNECE}/ST-SG-AC10-1r23e_Vol2_WEB.pdf"
 CEPA = "https://www.cepa.be/wp-content/uploads/IMDG_Code-amdt_42_24.pdf"
 
-# Wat er op cepa.be staat is MSC 108/20/Add.2, annex 8: de volledige
-# geconsolideerde tekst van Amendment 42-24, 954 pagina's. Uit de inhoudsopgave
-# volgen de codepagina's hieronder. De PDF telt door over het voorwerk heen, dus
-# het echte paginanummer ligt een stuk of twaalf hoger; find_page_offset() meet
-# dat in plaats van het te gokken.
+# What is on cepa.be is MSC 108/20/Add.2, annex 8: the full consolidated text of
+# Amendment 42-24, 954 pages. The code pages below follow from the table of
+# contents. The PDF counts on through the front matter, so the real page number
+# is some twelve higher; find_page_offset() measures that instead of guessing it.
 CODE_PAGES = {
     "7.1.3 Stowage categories": 476,
     "7.1.5 Stowage codes": 482,
@@ -64,20 +62,20 @@ CODE_PAGES = {
     "Appendix 2 (Dangerous Goods List)": 564,
 }
 
-# De secties die we willen kunnen controleren. 7.2.4, 7.2.6.3 en 7.2.7.1.4
-# dragen de scheidingstabellen; 3.1.4.4 de scheidingsgroepen; 7.1.5 de
-# stuwagecodes en 7.1.6 de behandelingscodes, die we per stof wel hebben maar
-# zonder hun omschrijving.
+# The sections we want to be able to check. 7.2.4, 7.2.6.3 and 7.2.7.1.4 carry
+# the segregation tables; 3.1.4.4 the segregation groups; 7.1.5 the stowage codes
+# and 7.1.6 the handling codes, which we do have per substance but without their
+# description.
 SECTIONS_OF_INTEREST = ["3.1.4.4", "3.2.1", "3.3.1", "7.1.3", "7.1.5", "7.1.6",
                         "7.2.3.1", "7.2.4", "7.2.5", "7.2.6.3", "7.2.7.1.4", "7.2.8"]
 
-# De vermeldingen die Amendment 42-24 toevoegt. Staan ze in Rev.23, dan is de
-# gratis uitgave genoeg voor alles behalve de IMDG-eigen kolommen.
+# The entries Amendment 42-24 adds. If they are in Rev.23, the free edition is
+# enough for everything except the IMDG-specific columns.
 NEW_UN_NUMBERS = ["0514", "3551", "3552", "3553", "3554",
                   "3555", "3556", "3557", "3558", "3559", "3560"]
 
-# Bijzondere bepalingen onder 900 komen uit de modelvoorschriften; die tekst
-# ontbreekt nu aan onze kant. De 9xx-reeks is IMDG-eigen en staat er niet in.
+# Special provisions below 900 come from the Model Regulations; that text is
+# currently missing on our side. The 9xx series is IMDG-specific and is not in it.
 NEW_SPECIAL_PROVISIONS = ["375", "400", "401", "402", "403",
                           "404", "405", "406", "407", "408", "409"]
 
@@ -85,7 +83,7 @@ UA = {"User-Agent": "CargoPilot source probe (github.com/jeffreymooiweer/CargoPi
 
 
 def head(url: str, timeout: int = 25) -> tuple[int, int]:
-    """(statuscode, aantal bytes). Een fout is een uitkomst, geen uitzondering."""
+    """(status code, number of bytes). An error is an outcome, not an exception."""
     request = urllib.request.Request(url, headers=UA)
     try:
         with urllib.request.urlopen(request, timeout=timeout) as response:
@@ -114,10 +112,10 @@ def card_url(collection: str, year: int, part: int) -> str:
 
 
 def count_parts(collection: str, year: int, ceiling: int = 8192) -> int:
-    """Hoeveel parts de set telt, via verdubbelen en dan binair zoeken.
+    """How many parts the set has, by doubling and then binary search.
 
-    Sneller en beleefder dan duizenden losse verzoeken; de set van 2023 telde
-    er 2.849, dus lineair aflopen is geen optie.
+    Faster and more polite than thousands of separate requests; the 2023 set had
+    2,849, so walking it linearly is not an option.
     """
     low = 1
     while low * 2 <= ceiling and exists(card_url(collection, year, low * 2)):
@@ -133,7 +131,7 @@ def count_parts(collection: str, year: int, ceiling: int = 8192) -> int:
 
 
 def probe_cantell() -> int:
-    """Welke kaartensets Cantell publiceert, en hoe groot de nieuwste is."""
+    """Which card sets Cantell publishes, and how big the newest one is."""
     print("== Cantell ==")
     available: list[tuple[str, int]] = []
     for collection, year in [("imdg", y) for y in (2027, 2026, 2025, 2024, 2023)] + \
@@ -175,7 +173,7 @@ def read_pdf_text(url: str, target: Path, page: int = 0) -> str:
 
 
 def probe_model_regulations(sample_pages: list[int]) -> int:
-    """Of de Dangerous Goods List van Rev.23 machinaal te lezen is."""
+    """Whether the Dangerous Goods List of Rev.23 can be read by machine."""
     import fitz
 
     print("== UN-modelvoorschriften Rev.23, deel II (Dangerous Goods List) ==")
@@ -230,19 +228,19 @@ def probe_model_regulations(sample_pages: list[int]) -> int:
 
 
 def find_page_offset(document) -> int:
-    """Verschil tussen het paginanummer in de voettekst en de index in de PDF.
+    """Difference between the page number in the footer and the index in the PDF.
 
-    De inhoudsopgave verwijst naar codepagina's; PyMuPDF telt vanaf nul over het
-    voorwerk heen. Meten is beter dan gokken: dit leest het nummer uit de
-    voettekst van een stuk of wat pagina's in het midden en neemt het verschil
-    dat het vaakst voorkomt.
+    The table of contents refers to code pages; PyMuPDF counts from zero through
+    the front matter. Measuring beats guessing: this reads the number from the
+    footer of a handful of pages in the middle and takes the most common
+    difference.
     """
     from collections import Counter
 
     votes: Counter[int] = Counter()
     for index in range(200, min(document.page_count, 800), 17):
         lines = [line.strip() for line in document[index].get_text().splitlines() if line.strip()]
-        # Het paginanummer staat op de eerste of laatste regel, los.
+        # The page number sits on the first or last line, on its own.
         for line in (lines[:2] + lines[-2:]) if lines else []:
             if line.isdigit() and 1 <= int(line) <= document.page_count:
                 votes[index + 1 - int(line)] += 1
@@ -250,12 +248,11 @@ def find_page_offset(document) -> int:
 
 
 def probe_cepa() -> int:
-    """Vaststellen wát het amendementsdocument op cepa.be is, en waar wat staat.
+    """Establish *what* the amendment document on cepa.be is, and where what is.
 
-    Niet: de tekst overnemen. Wel: uitgever, omvang, de paginaverschuiving en
-    een voorbeeld van elke sectie die wij nodig hebben, zodat de parsers ertegen
-    geschreven kunnen worden. Alleen feitelijke gegevens komen uiteindelijk in
-    de repo; de regelgevingstekst zelf niet.
+    Not: copying the text. But: publisher, size, the page offset and a sample of
+    every section we need, so the parsers can be written against it. Only factual
+    data ends up in the repo in the end; the regulatory text itself does not.
     """
     import fitz
 
@@ -300,8 +297,8 @@ def probe_cepa() -> int:
             summary = f"{len(pages)}x, eerst PDF p{pages[0]}" if pages else "niet gevonden"
             print(f"  {section:<12} {summary}")
 
-        # Doorlopende codetekst of een wijzigingsoverzicht? Een amendement
-        # schrijft in opdrachten; een geconsolideerde tekst niet.
+        # Continuous code text or an overview of changes? An amendment writes in
+        # instructions; a consolidated text does not.
         joined = " ".join(document[i].get_text() for i in range(min(40, document.page_count)))
         directives = sum(len(re.findall(rf"\b{verb}\b", joined, re.I))
                          for verb in ("replace", "insert", "delete", "amend"))
@@ -309,9 +306,9 @@ def probe_cepa() -> int:
         print("  -> waarschijnlijk een amendementstekst" if directives > 60
               else "  -> waarschijnlijk doorlopende, geconsolideerde codetekst")
 
-        # De stuwage- en scheidingscodes zijn de grootste winst en het makkelijkst
-        # te parsen: genummerde lijsten. Volledig afdrukken zodat de parser
-        # tegen de echte opmaak geschreven kan worden.
+        # The stowage and segregation codes are the biggest gain and the easiest
+        # to parse: numbered lists. Print them in full so the parser can be
+        # written against the real layout.
         for label in ("7.1.3 Stowage categories", "7.1.5 Stowage codes",
                       "7.1.6 Handling codes", "7.2.8 Segregation codes"):
             start = CODE_PAGES[label] + offset - 1
@@ -320,15 +317,15 @@ def probe_cepa() -> int:
                 print(f"--- PDF p{index + 1} ---")
                 print(document[index].get_text())
 
-        # De scheidingstabel is een raster: woorden met positie, anders is de
-        # kolomindeling niet terug te vinden.
+        # The segregation table is a grid: words with position, otherwise the
+        # column layout cannot be recovered.
         start = CODE_PAGES["7.2.4 Segregation table"] + offset - 1
         print(f"\n===== 7.2.4 Segregation table — PDF p{start + 1}, woorden met positie =====")
         if 0 <= start < document.page_count:
             for word in document[start].get_text("words"):
                 print(f"{word[0]:8.1f} {word[1]:8.1f}  {word[4]}")
 
-        # Appendix 2 is de Dangerous Goods List: de hoofdprijs, en het lastigst.
+        # Appendix 2 is the Dangerous Goods List: the top prize, and the hardest.
         start = CODE_PAGES["Appendix 2 (Dangerous Goods List)"] + offset - 1
         print(f"\n===== Appendix 2 — PDF p{start + 1} en p{start + 3}, woorden met positie =====")
         for index in (start, start + 2):
@@ -339,27 +336,26 @@ def probe_cepa() -> int:
     return 0
 
 
-# Kolomkoppen van de Dangerous Goods List. Een pagina die er meerdere draagt is
-# een DGL-pagina; op de losse woorden zoeken levert te veel valse treffers.
+# Column headings of the Dangerous Goods List. A page carrying several of them
+# is a DGL page; searching on the separate words gives too many false hits.
 DGL_HEADINGS = ["UN No.", "Proper shipping name", "Class or division", "Subsidiary",
                 "Packing group", "Special provisions", "Limited and excepted",
                 "Packagings and IBCs", "Portable tanks", "EmS", "Stowage and handling",
                 "Segregation", "Properties and observations"]
 
-# Een lijstregel begint met een UN-nummer. In deze PDF komt elke tabelcel als
-# eigen tekstregel naar buiten, dus het nummer staat vaak alléén op zijn regel;
-# eisen dat de naam erachter staat levert een systematische misser op.
+# A list line starts with a UN number. In this PDF every table cell comes out as
+# a text line of its own, so the number often stands alone on its line; requiring
+# the name behind it produces a systematic miss.
 DGL_ROW = re.compile(r"^[ \t]*(\d{4})(?:[ \t]|$)", re.M)
 
 
 def probe_dangerous_goods_list() -> int:
-    """Staat de volledige Dangerous Goods List in het document, en waar?
+    """Is the full Dangerous Goods List in the document, and where?
 
-    De inhoudsopgave verwijst voor deel 3 door naar appendix 2. Waar die
-    appendix in de PDF begint is niet uit het codepaginanummer af te leiden —
-    een eerdere poging landde op hoofdstuk 3.1 — dus wordt hier op structuur
-    gezocht in plaats van op een nummer: kolomkoppen en regels die met een
-    UN-nummer beginnen.
+    For part 3 the table of contents refers on to appendix 2. Where that appendix
+    begins in the PDF cannot be derived from the code page number — an earlier
+    attempt landed on chapter 3.1 — so this searches on structure rather than on
+    a number: column headings and lines beginning with a UN number.
     """
     import fitz
 
@@ -373,14 +369,14 @@ def probe_dangerous_goods_list() -> int:
     with fitz.open(path) as document:
         print(f"  {document.page_count} pagina's")
 
-        # Waar noemt het document een appendix bij naam?
+        # Where does the document name an appendix?
         for index in range(document.page_count):
             for match in re.finditer(r"^\s*Appendix\s+(\d)\b.{0,60}", document[index].get_text(), re.M):
                 print(f"  'Appendix {match.group(1)}' op PDF p{index + 1}: "
                       f"{match.group(0).strip()[:70]}")
 
-        # Eerst meten, dan oordelen: een te streng patroon meldt "niets
-        # gevonden" waar de lijst gewoon anders is opgemaakt.
+        # Measure first, judge second: too strict a pattern reports "nothing
+        # found" where the list is simply laid out differently.
         heading_hits: dict[str, list[int]] = {}
         table_pages: list[int] = []
         un_numbers: set[str] = set()
@@ -412,7 +408,7 @@ def probe_dangerous_goods_list() -> int:
                 print(document[index].get_text()[:1200])
             return 1
 
-        # Aaneengesloten reeksen samenvatten; dat leest als een vindplaats.
+        # Summarise contiguous ranges; that reads as a location.
         ranges: list[tuple[int, int]] = []
         for page in table_pages:
             if ranges and page == ranges[-1][1] + 1:
@@ -424,7 +420,7 @@ def probe_dangerous_goods_list() -> int:
         print("  bereiken: " + ", ".join(f"p{a}-p{b}" if a != b else f"p{a}"
                                          for a, b in ranges[:25]))
 
-        # Dekt dit de hele lijst? Onze eigen database telt er 2.336 met kaart.
+        # Does this cover the whole list? Our own database counts 2,336 with a card.
         for un in ("0004", "1203", "1361", "3480", "3551", "3560"):
             print(f"  UN {un}: {'aanwezig' if un in un_numbers else 'NIET gevonden'}")
 

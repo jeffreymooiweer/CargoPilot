@@ -1,28 +1,28 @@
-"""Wat er in ADR, RID en ADN staat — nagelezen, niet onthouden.
+"""What ADR, RID and ADN say — looked up, not remembered.
 
-Deze regels zijn overgenomen uit de officiële teksten: ADR 2025 (UNECE,
-ECE/TRANS/352), RID 2025 (OTIF, aanhangsel C bij het COTIF) en ADN 2025
-(UNECE). Alle drie zijn gratis gepubliceerd. ``scripts/read_land_regulations.py``
-haalt ze op en citeert de bepalingen; de vindplaats staat per test genoemd zodat
-iemand met de tekst erbij kan nakijken of hij goed gelezen is.
+These rules are taken from the official texts: ADR 2025 (UNECE,
+ECE/TRANS/352), RID 2025 (OTIF, Appendix C to COTIF) and ADN 2025 (UNECE). All
+three are published free of charge. ``scripts/read_land_regulations.py`` fetches
+them and quotes the provisions; the source is named per test so that somebody
+with the text in front of them can check whether it was read correctly.
 
-De aanleiding is dat CargoPilot deze regels tot nu toe uit een ADR-data-export
-en uit algemene kennis van de regimes had. Dat is niet hetzelfde als de
-regelgeving gelezen hebben, en het verschil bleek te zitten op precies de twee
-plekken waar het geld en veiligheid kost.
+The reason is that CargoPilot had these rules from an ADR data export and from
+general knowledge of the regimes. That is not the same as having read the
+regulations, and the difference turned out to sit in exactly the two places where
+it costs money and safety.
 """
 
 import pytest
 
 from app.services.dg.compliance import check_adn_exemption, check_compliance
 
-# --- ADR/RID 1.1.3.6.3 noot (a) -------------------------------------------
+# --- ADR/RID 1.1.3.6.3 note (a) -------------------------------------------
 #
 # "For UN Nos. 0081, 0082, 0084, 0241, 0331, 0332, 0482, 1005 and 1017, the
 #  total maximum quantity per transport unit shall be 50 kg."   ADR 1.1.3.6.3
 #
-# En RID 1.1.3.6.4 noemt de bijbehorende factor met zoveel woorden: de
-# hoeveelheid van vervoerscategorie 1 "referred to in Note a" maal "20".
+# And RID 1.1.3.6.4 names the corresponding factor in so many words: the quantity
+# of transport category 1 "referred to in Note a" times "20".
 
 NOTE_A = ["0081", "0082", "0084", "0241", "0331", "0332", "0482", "1005", "1017"]
 
@@ -42,12 +42,11 @@ def test_the_nine_note_a_substances_count_times_twenty(un):
 
 
 def test_fifty_kilos_of_chlorine_stays_within_the_exemption():
-    """50 kg is precies het maximum van noot (a), en 50 x 20 is precies 1000.
+    """50 kg is exactly the maximum of note (a), and 50 x 20 is exactly 1000.
 
-    Met de factor 50 van gewone categorie 1 werd dit 2500 en verloor de
-    gebruiker een vrijstelling die de tekst hem geeft: oranje borden, een
-    ADR-chauffeurscertificaat en een ADR-voertuig voor een zending die het niet
-    nodig heeft.
+    With the factor 50 of ordinary category 1 this became 2500 and the user lost
+    an exemption the text gives them: orange plates, an ADR driver's certificate
+    and an ADR vehicle for a consignment that does not need it.
     """
     out = points([{"un_number": "1017", "proper_shipping_name": "CHLORINE",
                    "class": "2", "transport_category": "1",
@@ -65,21 +64,21 @@ def test_an_ordinary_category_one_substance_still_counts_times_fifty():
 
 
 def test_the_exception_applies_on_rail_as_well():
-    """RID 1.1.3.6.3 draagt dezelfde noot (a) en 1.1.3.6.4 dezelfde factor."""
+    """RID 1.1.3.6.3 carries the same note (a) and 1.1.3.6.4 the same factor."""
     out = points([{"un_number": "1005", "class": "2", "transport_category": "1",
                    "adr_total_quantity": "50"}], profiles=("RID",))
     assert out["total_points"] == 1000.0
 
 
-# --- RID 1.1.3.6.3 en 1.1.3.6.4 -------------------------------------------
+# --- RID 1.1.3.6.3 and 1.1.3.6.4 ------------------------------------------
 
 
 def test_rail_no_longer_hedges_about_its_own_chapter():
-    """De grondslag is nagelezen: het RID rekent hetzelfde als het ADR.
+    """The basis has been checked: RID computes the same as ADR.
 
-    De oude melding zei dat het RID "een eigen 1.1.3.6 kent die niet in
-    CargoPilot staat". Dat was waar en te voorzichtig: de categorieen, de
-    factoren en de waarde 1000 zijn identiek. Wat verschilt is de eenheid.
+    The old note said RID "has a 1.1.3.6 of its own that is not in CargoPilot".
+    That was true and too cautious: the categories, the factors and the value
+    1000 are identical. What differs is the unit.
     """
     note = points([{"un_number": "1263", "class": "3", "packing_group": "III",
                     "transport_category": "3", "adr_total_quantity": "10"}],
@@ -96,7 +95,7 @@ def test_rail_no_longer_hedges_about_its_own_chapter():
 #  and for the individual classes does not exceed the quantity that is indicated
 #  in the Table below"                                          ADN 1.1.3.6.1
 #
-# Geen vervoerscategorieen, geen factoren, geen puntentelling.
+# No transport categories, no factors, no points count.
 
 
 def adn(products, language="en"):
@@ -108,12 +107,12 @@ PAINT = {"un_number": "1263", "proper_shipping_name": "PAINT", "class": "3",
 
 
 def test_the_inland_waterway_answer_is_not_the_road_answer():
-    """Dezelfde zending, twee tegengestelde uitkomsten — en dat is juist.
+    """The same consignment, two opposite outcomes — and that is right.
 
-    1200 liter van een vloeistof in verpakkingsgroep III kost 1200 ADR-punten
-    en verliest daar de vrijstelling. Het ADN stelt dezelfde zending vrij: de
-    klasse 3-grens voor "any other substances" is 3000 kg en het totaal blijft
-    daaronder. Tot v1.32.0 zag een ADN-gebruiker alleen het wegantwoord.
+    1200 litres of a liquid in packing group III costs 1200 ADR points and loses
+    the exemption there. ADN exempts the same consignment: the class 3 limit for
+    "any other substances" is 3000 kg and the total stays below it. Until v1.32.0
+    an ADN user saw only the road answer.
     """
     entries = [{"line_id": "L1", "products": [dict(PAINT, adr_total_quantity="1200")]}]
     out = check_compliance(entries, ["ADN"], "en")
@@ -136,7 +135,7 @@ def test_the_same_liquid_under_three_hundred_kilos_qualifies():
 
 
 def test_class_one_is_never_exempt_under_adn():
-    """De tabel zet klasse 1 op 0 kg: er is geen vrijgestelde hoeveelheid."""
+    """The table puts class 1 at 0 kg: there is no exempted quantity."""
     out = adn([{"un_number": "0081", "class": "1", "adr_total_quantity": "1"}])
     assert out["status"] == "not_exempt"
     assert out["over_class_limit"][0]["limit"] == 0
@@ -159,8 +158,8 @@ def test_a_flammable_gas_gets_the_three_hundred_kilo_row():
 
 
 def test_the_three_thousand_kilo_ceiling_applies_across_the_classes():
-    """Elke klasse binnen haar grens, samen toch te veel: 1.1.3.6.1 stelt beide
-    eisen en de tweede is een totaal over alles."""
+    """Every class within its limit, and together too much all the same:
+    1.1.3.6.1 sets both requirements and the second is a total over everything."""
     out = adn([
         dict(PAINT, adr_total_quantity="2000"),
         {"un_number": "1789", "class": "8", "packing_group": "II",
@@ -178,8 +177,8 @@ def test_missing_quantity_is_reported_rather_than_assumed():
 
 
 def test_the_conditions_of_1_1_3_6_2_are_carried_with_the_outcome():
-    """Vrijgesteld is niet vrij: 1.1.3.6.2 houdt de meldplicht, het
-    vervoersdocument, het stuwplan en 3 m scheiding overeind."""
+    """Exempted is not free: 1.1.3.6.2 keeps the notification duty, the transport
+    document, the stowage plan and 3 m of separation in place."""
     out = adn([dict(PAINT, adr_total_quantity="100")])
     joined = " ".join(out["conditions"])
     assert "1.8.5" in joined and "stowage plan" in joined and "3 m" in joined

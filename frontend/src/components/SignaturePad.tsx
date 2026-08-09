@@ -56,7 +56,7 @@ export default function SignaturePad({ value, onChange }: Props) {
     }
   }, []);
 
-  // Canvas op ware resolutie (devicePixelRatio) houden, ook bij resize.
+  // Keep the canvas at its true resolution (devicePixelRatio), on resize too.
   useEffect(() => {
     if (mode !== "draw") return;
     const canvas = canvasRef.current;

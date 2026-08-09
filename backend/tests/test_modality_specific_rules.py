@@ -1,22 +1,21 @@
-"""Wat voor de weg geldt, geldt niet vanzelf voor het spoor of het water.
+"""What applies to the road does not automatically apply to rail or water.
 
-CargoPilot behandelde ADR, RID en ADN als één ding. Dat is begrijpelijk — de
-drie regimes lijken sterk op elkaar en delen hun structuur — maar het levert
-twee soorten fout op, en de tweede is de ergste.
+CargoPilot treated ADR, RID and ADN as one thing. That is understandable — the
+three regimes resemble each other closely and share their structure — but it
+produces two kinds of fault, and the second is the worse one.
 
-**Een verzonnen vermelding op een officieel document.** De
-tunnelbeperkingscode komt uit kolom 15 van ADR Tabel A en hoort volgens
-5.4.1.1.1 (k) op het wegdocument. RID Tabel A kent die kolom niet en het
-ADN-vervoersdocument draagt hem evenmin. Toch zette de app "(D/E)" op een
-CIM-vrachtbrief en op een ADN-document. Dat is geen ontbrekende controle maar
-onjuiste informatie die de app zelf heeft toegevoegd.
+**An invented entry on an official document.** The tunnel restriction code comes
+from column 15 of ADR Table A and belongs on the road document under 5.4.1.1.1
+(k). RID Table A does not have that column and the ADN transport document does
+not carry it either. Yet the app put "(D/E)" on a CIM waybill and on an ADN
+document. That is not a missing check but incorrect information the app added
+itself.
 
-**Een uitkomst die strenger of losser lijkt dan zij is.** De 1.1.3.6-punten en
-de samenlading van 7.5.2 worden met de ADR-tabellen berekend. RID en ADN kennen
-hun eigen versies van die hoofdstukken, en die staan niet in CargoPilot. De
-uitkomst stilzwijgend presenteren als "de RID-uitkomst" geeft de gebruiker een
-zekerheid die er niet is. Hij mag hem hebben als indicatie — maar dan wel met
-dat etiket erop.
+**An outcome that looks stricter or looser than it is.** The 1.1.3.6 points and
+the mixed loading of 7.5.2 are computed with the ADR tables. RID and ADN have
+their own versions of those chapters, and those are not in CargoPilot. Presenting
+the outcome silently as "the RID result" gives the user a certainty that does not
+exist. They may have it as an indication — but then with that label on it.
 """
 
 import pytest
@@ -41,7 +40,7 @@ def entries():
     return [{"line_id": "L1", "products": [dict(GASOLINE)]}]
 
 
-# --- De tunnelcode hoort alleen op het wegdocument ------------------------
+# --- The tunnel code belongs on the road document only --------------------
 
 
 def test_the_road_document_carries_the_tunnel_code():
@@ -50,13 +49,13 @@ def test_the_road_document_carries_the_tunnel_code():
 
 @pytest.mark.parametrize("profile", ["RID", "ADN", "IMDG", "IATA_DGR"])
 def test_no_other_document_carries_it(profile):
-    """RID Tabel A heeft geen kolom 15 met een tunnelcode, en zee en lucht al
-    helemaal niet. Er hoort dus niets tussen haakjes te staan dat daarop lijkt."""
+    """RID Table A has no column 15 with a tunnel code, and sea and air certainly
+    do not. So nothing resembling it should appear in brackets."""
     assert "D/E" not in description_line(dict(GASOLINE), profile)
 
 
 def test_the_cim_export_does_not_show_a_tunnel_code():
-    """De CIM draagt het RID-profiel; de goederenkolom is wat er gedrukt wordt."""
+    """The CIM carries the RID profile; the goods column is what gets printed."""
     import openpyxl
 
     from app.services.documents.exporter import export_document
@@ -89,11 +88,11 @@ def test_the_cmr_export_does_show_one():
     assert "(D/E)" in text
 
 
-# --- En de grondslag van een berekening wordt benoemd ---------------------
+# --- And the basis of a calculation is named ------------------------------
 
 
 def test_a_road_shipment_gets_no_caveat():
-    """Voor ADR ís de ADR-tabel de juiste tabel; daar valt niets bij te melden."""
+    """For ADR the ADR table *is* the right table; there is nothing to add."""
     out = check_compliance(entries(), ["ADR"], "nl")
     assert out["adr_points"]["basis_note"] is None
     assert "adr_mixed_loading_basis_note" not in out
@@ -101,14 +100,14 @@ def test_a_road_shipment_gets_no_caveat():
 
 @pytest.mark.parametrize("profile", ["RID", "ADN"])
 def test_rail_and_inland_waterway_say_which_tables_were_used(profile):
-    """De grondslag wordt benoemd — en sinds v1.33.0 met de tekst erbij.
+    """The basis is named — and since v1.33.0 with the text alongside.
 
-    Deze test eiste eerst dat de melding "ADR" bevatte, voor beide modaliteiten.
-    Dat klopte zolang beide met de ADR-tabellen werden gerekend. Na het nalezen
-    van de officiele teksten is dat voor het ADN niet meer waar: ADN 1.1.3.6.1
-    kent geen puntentelling en wordt met zijn eigen tabel beoordeeld, dus zijn
-    melding hoort juist niet naar het ADR te verwijzen. Het RID rekent wel
-    hetzelfde en noemt nu zijn eigen artikelnummers.
+    This test first required the note to contain "ADR", for both modes. That was
+    right as long as both were computed with the ADR tables. After reading the
+    official texts that is no longer true for ADN: ADN 1.1.3.6.1 has no points
+    count and is assessed with its own table, so its note should precisely *not*
+    refer to ADR. RID does compute the same way and now names its own article
+    numbers.
     """
     out = check_compliance(entries(), [profile], "nl")
     note = out["adr_points"]["basis_note"]
@@ -118,8 +117,8 @@ def test_rail_and_inland_waterway_say_which_tables_were_used(profile):
     else:
         assert "geen puntentelling" in note
         assert out["adn_exemption"]["basis"] == "ADN 1.1.3.6.1"
-    # De samenlading van 7.5.2 is nog niet nagelezen en houdt de oude,
-    # voorzichtige melding.
+    # The mixed loading of 7.5.2 has not been checked yet and keeps the old,
+    # cautious note.
     assert profile in out["adr_mixed_loading_basis_note"]
 
 
@@ -130,8 +129,8 @@ def test_the_caveat_names_both_when_both_are_selected():
 
 
 def test_the_calculation_itself_is_unchanged():
-    """De uitkomst blijft dezelfde — alleen het etiket is nieuw. Anders zou dit
-    stilletjes ook de puntentelling van wegvervoer veranderen."""
+    """The outcome stays the same — only the label is new. Otherwise this would
+    quietly change the points count for road transport as well."""
     road = check_compliance(entries(), ["ADR"], "nl")["adr_points"]
     rail = check_compliance(entries(), ["RID"], "nl")["adr_points"]
     assert road["total_points"] == rail["total_points"] == 1200.0

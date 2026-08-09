@@ -1,17 +1,16 @@
-"""Wizard-import: spreadsheet naar plaktekst.
+"""Wizard import: spreadsheet to pasted text.
 
-De wizard leest `omschrijving | aantal | eenheid`. Een spreadsheet die van
-iemand anders komt heeft die kolommen zelden in die volgorde en met die namen,
-en tot nu toe raadde de import stilzwijgend: herkent hij de koptekst niet, dan
-neemt hij kolom 0, 1 en 2. Bij `Artikelnr | Omschrijving | Aantal | Eenheid`
-levert dat het artikelnummer als omschrijving en de omschrijving als aantal.
-Wat de gebruiker daarvan ziet is `status=error` en 0 kg, zonder aanwijzing dat
-het aan de kolomindeling ligt.
+The wizard reads `description | quantity | unit`. A spreadsheet that comes from
+somebody else rarely has those columns in that order and under those names, and
+until now the import guessed silently: if it did not recognise the heading row,
+it took columns 0, 1 and 2. With `Item no | Description | Quantity | Unit` that
+yields the item number as the description and the description as the quantity.
+What the user sees of that is `status=error` and 0 kg, with no hint that the
+column mapping is to blame.
 
-Deze module raadt nog steeds — dat moet ook, anders wordt elke import handwerk
-— maar zij zegt er nu bij wat zij heeft gedaan en waarop. Met die gegevens kan
-de interface de indeling laten bijstellen in plaats van de gebruiker met een
-onverklaarbare nul achter te laten.
+This module still guesses — it has to, or every import becomes handwork — but it
+now says what it did and on what basis. With that information the interface can
+let the mapping be adjusted instead of leaving the user with an unexplained zero.
 """
 
 from __future__ import annotations
@@ -25,15 +24,15 @@ from app.services.spreadsheet_io import rows_to_pipe_text
 WIZARD_HEADERS = ["description", "quantity", "unit"]
 WIZARD_EXAMPLE = ["staal hoekprofiel 80x80x8x6000", "8", "stuks"]
 
-# Hoeveel voorbeeldwaarden per kolom meegaan naar de interface: genoeg om te
-# zien wát er in een kolom staat, weinig genoeg om geen halve zending door te
-# sturen naar een scherm dat er verder niets mee doet.
+# How many sample values per column travel to the interface: enough to see
+# *what* is in a column, few enough not to send half a consignment to a screen
+# that does nothing further with it.
 SAMPLE_ROWS = 3
 
 
 @dataclass
 class Column:
-    """Eén kolom uit het bestand, zoals de gebruiker hem herkent."""
+    """One column from the file, as the user recognises it."""
 
     index: int
     header: str
@@ -42,11 +41,11 @@ class Column:
 
 @dataclass
 class Analysis:
-    """Wat de import van dit bestand heeft gemaakt, en hoe zeker dat is.
+    """What the import made of this file, and how certain that is.
 
-    `source` draagt het verschil dat ertoe doet: "header" betekent dat de
-    koptekst is herkend, "position" dat er op volgorde is geraden. Alleen in
-    het tweede geval is er reden om de gebruiker iets te vragen.
+    `source` carries the difference that matters: "header" means the heading row
+    was recognised, "position" that it was guessed from the order. Only in the
+    second case is there reason to ask the user anything.
     """
 
     columns: list[Column]
@@ -79,7 +78,7 @@ def _columns(rows: list[list[str]], has_header: bool) -> list[Column]:
 
 
 def analyse(rows: list[list[str]]) -> Analysis:
-    """Welke kolom waarvoor doorgaat, en of dat is herkend of geraden."""
+    """Which column passes for what, and whether that was recognised or guessed."""
     if not rows:
         return Analysis(columns=[], mapping={key: None for key in WIZARD_HEADERS},
                         source="none", has_header=False)
@@ -90,8 +89,8 @@ def analyse(rows: list[list[str]]) -> Analysis:
         return Analysis(columns=_columns(rows, True), mapping=header_map,
                         source="header", has_header=True)
 
-    # Niets herkend: op volgorde raden, precies zoals hiervoor — maar nu met de
-    # mededeling erbij dat het een gok is.
+    # Nothing recognised: guess from the order, exactly as before — but now with
+    # the notice that it is a guess.
     width = max((len(row) for row in rows), default=0)
     mapping: dict[str, int | None] = {
         "description": 0 if width >= 1 else None,
@@ -104,11 +103,11 @@ def analyse(rows: list[list[str]]) -> Analysis:
 
 def apply_mapping(rows: list[list[str]], mapping: dict[str, int | None],
                   has_header: bool) -> str:
-    """De rijen omzetten met de indeling die de gebruiker heeft gekozen.
+    """Convert the rows with the mapping the user has chosen.
 
-    Er blijft niets van het bestand achter: de rijen komen met het verzoek mee
-    en gaan als tekst terug. Een zending die halverwege op de server blijft
-    liggen zou in strijd zijn met wat deze applicatie over opslag belooft.
+    Nothing of the file is left behind: the rows come with the request and go
+    back as text. A consignment left lying half-finished on the server would
+    conflict with what this application promises about storage.
     """
     body = rows[1:] if has_header else rows
     lines = []
@@ -121,8 +120,8 @@ def apply_mapping(rows: list[list[str]], mapping: dict[str, int | None],
 
         description = cell("description")
         if not description:
-            # Een regel zonder omschrijving valt niet te herkennen en levert
-            # alleen een foutregel op in de wizard.
+            # A line without a description cannot be recognised and only
+            # produces an error line in the wizard.
             continue
         lines.append(" | ".join([description, cell("quantity"), cell("unit")]).rstrip(" |"))
     return "\n".join(lines)

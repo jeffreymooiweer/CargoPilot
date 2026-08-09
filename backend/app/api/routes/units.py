@@ -1,9 +1,9 @@
-"""De eenhedencatalogus, en het omrekenen van één regel.
+"""The unit catalogue, and converting a single line.
 
-De interface moet twee dingen weten die alleen de backend heeft: welke eenheden
-er bestaan, en welke daarvan bij een bepaald goed voor de hand liggen. Beide
-staan hier, zodat de lijst op één plek wordt onderhouden en de frontend hem niet
-nog eens overschrijft.
+The interface needs to know two things only the backend has: which units exist,
+and which of them are the obvious ones for a given commodity. Both live here,
+so the list is maintained in one place and the frontend does not overwrite it
+with another.
 """
 from fastapi import APIRouter, Depends
 from pydantic import BaseModel
@@ -23,22 +23,22 @@ class UnitOut(BaseModel):
 
 class FormOut(BaseModel):
     code: str
-    # Welk deel van een kuub materiaal is. Zichtbaar zodat een gebruiker kan
-    # zien waarom "los gestort" lichter uitpakt dan "gestapeld".
+    # Which part of a cubic metre is material. Visible so a user can see why
+    # "loose bulk" comes out lighter than "stacked".
     fill_factor: float
 
 
 class UnitCatalogue(BaseModel):
     units: list[UnitOut]
     forms: list[FormOut]
-    # Per categorie de vormen die van toepassing zijn, standaard vooraan. Leeg
-    # betekent dat de vorm niet speelt: bij grind en graan is het opgeslagen
-    # getal al een stortdichtheid en zou een tweede factor de lucht dubbel tellen.
+    # Per category the forms that apply, the default first. Empty means the
+    # form does not come into play: for gravel and grain the stored figure is
+    # already a bulk density, and a second factor would count the air twice.
     forms_by_category: dict[str, list[str]]
-    # Per categorie de eenheden die voor de hand liggen, standaard vooraan. Een
-    # voorstel: de volledige lijst blijft kiesbaar, want een database van 400
-    # goederen in 16 categorieen heeft altijd uitzonderingen en vastlopen op een
-    # uitzondering is erger dan een ongebruikelijke eenheid.
+    # Per category the units that are the obvious ones, the default first. A
+    # suggestion: the full list stays selectable, because a database of 400
+    # commodities in 16 categories always has exceptions, and getting stuck on
+    # an exception is worse than an unusual unit.
     suggested_by_category: dict[str, list[str]]
     default_suggested: list[str]
     density_basis_by_category: dict[str, str]
@@ -86,13 +86,14 @@ class ConvertResponse(BaseModel):
     mass_kg: float | None
     volume_m3: float | None
     density_basis: str
-    # Waarmee er daadwerkelijk is gerekend, en in welke vorm.
+    # What was actually computed with, and in which form.
     density_used_kg_m3: float | None
     fill_factor: float
     form: str | None
-    # Gevuld wanneer een van beide niet kon worden bepaald. Geen fout maar een
-    # uitkomst: 40 pallets zonder gewicht per pallet wegen een onbekend aantal
-    # kilo, en daar een 0 van maken levert een totaal op dat klopt noch opvalt.
+    # Filled when one of the two could not be determined. Not an error but an
+    # outcome: 40 pallets without a weight per pallet weigh an unknown number of
+    # kilos, and turning that into a 0 produces a total that is neither correct
+    # nor conspicuous.
     missing: str | None
 
 

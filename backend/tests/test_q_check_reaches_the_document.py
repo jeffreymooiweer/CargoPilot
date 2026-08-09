@@ -1,17 +1,16 @@
-"""Een controle die niet liep, mag er niet uitzien als een controle die slaagde.
+"""A check that did not run must not look like a check that passed.
 
-Twee gaten, dezelfde vorm. De Q-controle van IATA 5.0.2.11 rekent alleen als de
-gebruiker M invult, en dat is onvermijdelijk: CargoPilot heeft de
-hoeveelheidstabellen van de DGR niet. Wat wel te vermijden was, is dat het
-stilzwijgend gebeurt.
+Two gaps, the same shape. The Q check of IATA 5.0.2.11 only computes when the
+user fills in M, and that is unavoidable: CargoPilot does not have the quantity
+tables of the DGR. What *was* avoidable is that it happened silently.
 
-v1.30.0 zei het al op het scherm, maar op twee plekken niet ver genoeg:
+v1.30.0 already said so on the screen, but in two places not far enough:
 
-- de melding werd in de route berekend, dus de export — waar het document
-  daadwerkelijk de deur uit gaat — zei er niets over, terwijl exporter.py er
-  zelf bij staat dat het scherm nooit de enige plek mag zijn;
-- een positie zonder invoer werd overgeslagen, dus zodra één andere positie wel
-  was ingevuld gold de hele zending als "gecontroleerd".
+- the message was computed in the route, so the export — where the document
+  actually leaves the building — said nothing about it, while exporter.py itself
+  states that the screen must never be the only place;
+- a position without input was skipped, so as soon as one other position had been
+  filled in the whole consignment counted as "checked".
 """
 
 from app.services.dg.compliance import check_compliance
@@ -41,7 +40,7 @@ def test_one_unchecked_position_makes_the_whole_shipment_unchecked():
 
 
 def test_a_single_substance_on_a_position_needs_no_q():
-    """'All packed in one' vergt meer dan één stof; hier valt niets te melden."""
+    """'All packed in one' needs more than one substance; there is nothing to report."""
     out = check_compliance(
         [{"line_id": "A", "products": [EMPTY[0]]}], ["IATA_DGR"], "en"
     )
@@ -55,7 +54,7 @@ def test_a_fully_entered_shipment_reports_checked():
 
 
 def test_the_status_belongs_to_the_outcome_not_to_one_endpoint():
-    """Iedere aanroeper krijgt hem, ook de export. Dat is het hele punt."""
+    """Every caller gets it, the export included. That is the whole point."""
     out = check_compliance([{"line_id": "A", "products": EMPTY}], ["IATA_DGR"], "en")
     assert "q_check_status" in out
 

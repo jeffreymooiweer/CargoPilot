@@ -1,14 +1,14 @@
-"""De LQ/EQ-toets van hoofdstuk 3.4 en 3.5.
+"""The LQ/EQ check of chapters 3.4 and 3.5.
 
-De LQ-waarde (kolom 7a) en de E-code (kolom 7b) stonden al jaren in de data en
-werden getoond met hun betekenis, maar nooit vergeleken met wat er is
-ingevuld. Deze tests leggen die vergelijking vast: de grenswaarden zelf zijn
-geverifieerd tegen ADR 3.4.2/3.4.3 (30 kg bruto, 20 kg voor folietrays),
-tabel 3.5.1.2 (E-codes) en 3.5.5 (ten hoogste 1000 colli).
+The LQ value (column 7a) and the E code (column 7b) had been in the data for
+years and were shown with their meaning, but never compared with what had been
+filled in. These tests record that comparison: the limits themselves were
+verified against ADR 3.4.2/3.4.3 (30 kg gross, 20 kg for foil trays), table
+3.5.1.2 (E codes) and 3.5.5 (at most 1000 packages).
 
-Even belangrijk is wat de toets níét doet: een regel binnen de grenzen wordt
-gemeld, maar verdwijnt nooit uit de 1.1.3.6-puntentelling — kwalificeren op
-hoeveelheid is niet hetzelfde als vrijgesteld zijn.
+Just as important is what the check does *not* do: a line within the limits is
+reported, but never disappears from the 1.1.3.6 points count — qualifying on
+quantity is not the same as being exempt.
 """
 from types import SimpleNamespace
 
@@ -54,7 +54,7 @@ def test_lq_within_limits_names_both_boundaries():
     assert row["lq"]["status"] == "within_limits"
     assert "5 L" in row["lq"]["message"]
     assert "30 kg" in row["lq"]["message"]
-    # De vrijstelling haalt de regel niet uit de puntentelling.
+    # The exemption does not take the line out of the points count.
     assert "1.1.3.6.5" in row["lq"]["message"]
     assert result["status"] == "checked"
 
@@ -106,7 +106,7 @@ def test_lq_without_inner_quantity_is_incomplete_not_silent():
 
 
 def test_a_number_without_a_unit_is_not_guessed_at():
-    # "0,5" kan 0,5 g of 0,5 kg betekenen; raden is hier gevaarlijker dan vragen.
+    # "0,5" can mean 0.5 g or 0.5 kg; guessing is more dangerous here than asking.
     result = check_lq_eq(
         _entry([_product(net_per_inner_packaging="0,5",
                          gross_mass_per_package="20 kg")]),
@@ -127,7 +127,7 @@ def test_mass_input_against_a_volume_limit_is_flagged_not_compared():
 
 
 def test_lq_alternative_limits_match_the_kind_of_the_input():
-    # UN 3175-stijl: "500 ml oder 500 g" — de variant van de ingevoerde eenheid telt.
+    # UN 3175 style: "500 ml oder 500 g" — the variant of the entered unit counts.
     result = check_lq_eq(
         _entry([_product(limited_quantity="500 ml oder 500 g",
                          net_per_inner_packaging="300 g",
@@ -213,7 +213,7 @@ def test_no_warning_when_the_position_stays_under_1000_packages():
     assert result["warnings"] == []
 
 
-# --- Grondslag en profielen ----------------------------------------------
+# --- Basis and profiles ---------------------------------------------------
 
 
 def test_rid_gets_the_same_basis_note_as_the_points_table():
@@ -233,8 +233,8 @@ def test_no_dangerous_goods_means_not_checked():
 
 
 def test_imdg_profile_fills_a_missing_value_from_the_dgl():
-    # UN 1203 staat in de IMDG-lijst met "1 L"/E2; zonder ADR-waarde op het
-    # product levert de lijst de grens.
+    # UN 1203 is in the IMDG list with "1 L"/E2; without an ADR value on the
+    # product, the list supplies the limit.
     result = check_lq_eq(
         _entry([{
             "un_number": "1203",
@@ -265,7 +265,7 @@ def test_a_differing_imdg_value_is_flagged_next_to_the_adr_outcome():
     assert "1 L" in row["lq"]["message"]
 
 
-# --- Integratie met check_compliance en de API ----------------------------
+# --- Integration with check_compliance and the API ------------------------
 
 
 def test_check_compliance_includes_lq_eq_for_land_and_sea_profiles():
@@ -277,8 +277,8 @@ def test_check_compliance_includes_lq_eq_for_land_and_sea_profiles():
 
 
 def test_check_compliance_omits_lq_eq_for_air_only():
-    # De lucht kent met de Y-verpakkingsinstructies een eigen LQ-stelsel dat
-    # CargoPilot niet draagt; een ADR-uitkomst tonen zou een claim zijn.
+    # Air has its own LQ system in the Y packing instructions, which CargoPilot
+    # does not carry; showing an ADR result would be a claim.
     outcome = check_compliance(_entry([_product()]), ["IATA_DGR"], "nl")
     assert "lq_eq" not in outcome
 
@@ -293,7 +293,7 @@ def test_the_points_table_is_not_reduced_by_a_qualifying_lq_line():
     outcome = check_compliance(_entry(products), ["ADR"], "nl")
     lq_row = outcome["lq_eq"]["rows"][0]
     assert lq_row["lq"]["status"] == "within_limits"
-    # 100 L × factor 3 blijft gewoon in de telling staan.
+    # 100 L × factor 3 simply stays in the count.
     assert outcome["adr_points"]["total_points"] == 300.0
 
 

@@ -77,9 +77,9 @@ def export(
             signature_png=signature_png,
         )
     elif exporter == "avc" and has_avc_template():
-        # AVC-vrachtbrief: het officiële sVa-formulier invullen. Dat formulier
-        # heeft geen AcroForm-velden, dus de waarden komen als tekstlaag over
-        # de template heen.
+        # AVC waybill: filling in the official sVa form. That form has no
+        # AcroForm fields, so the values go on as a text layer over the
+        # template.
         out_path = fill_avc_waybill(
             payload.values,
             payload.lines,
@@ -88,7 +88,7 @@ def export(
             signature_png=signature_png,
         )
     else:
-        # Zelf-ontworpen document: nette PDF genereren.
+        # Self-designed document: generate a clean PDF.
         out_path = render_document_pdf(
             document,
             payload.values,

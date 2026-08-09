@@ -18,8 +18,8 @@ const STATUS_STYLES: Record<string, string> = {
   incomplete: "bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-300",
 };
 
-// Binnen de grenzen is groen, erbuiten amber: een gemiste vrijstelling is geen
-// overtreding, dus rood zou hier te zwaar zijn.
+// Within the limits is green, outside it amber: a missed exemption is not an
+// offence, so red would be too heavy here.
 const LQEQ_STATUS_STYLES: Record<string, string> = {
   within_limits: "bg-emerald-100 text-emerald-800 dark:bg-emerald-900/40 dark:text-emerald-300",
   not_within: "bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-300",
@@ -35,11 +35,11 @@ export default function DgCompliancePanel({ entries, profiles }: Props) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  // Elke controle krijgt een volgnummer. Twee controles kunnen tegelijk lopen —
-  // de gebruiker typt door terwijl de vorige nog onderweg is — en dan kan een
-  // trage oudere reactie ná een snellere nieuwe binnenkomen. Zonder deze
-  // vergelijking overschrijft die oude uitkomst de nieuwe, en staat er een
-  // resultaat op het scherm dat bij invoer van twee wijzigingen geleden hoort.
+  // Every check gets a sequence number. Two checks can run at once — the user
+  // keeps typing while the previous one is still on its way — and then a slow
+  // older response can arrive *after* a faster new one. Without this comparison
+  // that old outcome overwrites the new one, and the screen shows a result
+  // belonging to input from two changes ago.
   const latestRequest = useRef(0);
 
   const run = useCallback(async () => {
@@ -59,10 +59,10 @@ export default function DgCompliancePanel({ entries, profiles }: Props) {
     }
   }, [entries, profiles, lang]);
 
-  // Verandert de invoer, dan is het vorige resultaat per direct ongeldig: eerst
-  // wissen (geen oud groen laten staan) en na een korte debounce automatisch
-  // opnieuw controleren. Een verouderde uitkomst die blijft hangen terwijl de
-  // gebruiker de stoffen wijzigt, is gevaarlijker dan even geen uitkomst.
+  // If the input changes, the previous result is invalid immediately: clear it
+  // first (do not leave old green standing) and check again automatically after
+  // a short debounce. A stale outcome that lingers while the user changes the
+  // substances is more dangerous than briefly having no outcome.
   const entriesSignature = JSON.stringify(entries);
   useEffect(() => {
     setResult(null);
@@ -75,8 +75,8 @@ export default function DgCompliancePanel({ entries, profiles }: Props) {
 
   const adr = result?.adr_points;
   const adn = result?.adn_exemption;
-  // Een verlopen regelset gaat vóór alle inhoudelijke bevindingen: die
-  // bevindingen zijn ermee gerekend.
+  // An expired rule set comes before all substantive findings: those findings
+  // were computed with it.
   const warnings: ComplianceWarning[] = [
     ...(result?.rule_set_warnings ?? []),
     ...(result?.adr_mixed_loading ?? []),
@@ -84,8 +84,8 @@ export default function DgCompliancePanel({ entries, profiles }: Props) {
     ...(result?.iata_segregation ?? []),
   ];
 
-  // De koppen dragen de uitkomst in cijfers, zodat een dichtgeklapte sectie
-  // nooit een bevinding verzwijgt: aantallen per ernst en per LQ/EQ-status.
+  // The headings carry the outcome in figures, so that a collapsed section
+  // never conceals a finding: counts per severity and per LQ/EQ status.
   const severityCounts: Record<ComplianceWarning["severity"], number> = {
     error: 0,
     warning: 0,

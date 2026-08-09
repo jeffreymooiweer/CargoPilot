@@ -236,14 +236,13 @@ def merge(records: list[dict[str, object]]) -> dict[str, object]:
     one, the same rule the rest of the app follows.
     """
     merged: dict[str, object] = {}
-    # De klasse stond hier ook, maar is verwijderd. Zij werd door niets in de
-    # applicatie gelezen — alleen door de zelfcontrole van
-    # scripts/extract_imdg_dgl.py, en die legde daarmee de ene IMDG-lezing naast
-    # de andere in plaats van tegen een onafhankelijke bron. Bovendien las
-    # value_after(lines, "Class") op sommige kaarten iets anders: UN 2984 t/m
-    # 2992, 3548 en 3550 kregen volgnummers als klasse, en waar twee varianten
-    # het oneens waren bewaarde merge() ze allebei ("['10', '9']"). De
-    # zelfcontrole gebruikt nu ADR Tabel A uit un_numbers.json.
+    # The class was here too, but has been removed. It was read by nothing in the
+    # application — only by the self-check of scripts/extract_imdg_dgl.py, and
+    # that thereby laid one IMDG reading next to another instead of against an
+    # independent source. Moreover value_after(lines, "Class") read something
+    # else on some cards: UN 2984 to 2992, 3548 and 3550 got sequence numbers as
+    # their class, and where two variants disagreed merge() kept both ("['10',
+    # '9']"). The self-check now uses ADR Table A from un_numbers.json.
     for field in ("marine_pollutant", "ems", "bulk"):
         values = [r[field] for r in records if r.get(field)]
         unique = list(dict.fromkeys(values))

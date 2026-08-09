@@ -74,12 +74,12 @@ def dg_packagings(
 
 @router.post("/prepare")
 def dg_prepare(payload: PrepareRequest, user: User = Depends(get_current_user)):
-    """Vul DG-posities automatisch aan en stel de officiële documentregels samen."""
+    """Complete DG positions automatically and compose the official document lines."""
     return prepare_entries(payload.entries, payload.lines, payload.profiles, payload.language)
 
 
 def _surface_q_status(outcome: dict, q_status: dict) -> None:
-    """Gebruik het bestaande bevindingenpaneel voor een gemiste Q-controle."""
+    """Use the existing findings panel for a Q check that did not run."""
     if q_status["status"] not in {"not_checked", "incomplete"}:
         return
     outcome.setdefault("iata_segregation", []).insert(
@@ -100,8 +100,9 @@ def dg_compliance(payload: ComplianceRequest, user: User = Depends(get_current_u
 
     profiles = payload.profile_names()
     outcome = check_compliance(payload.as_dicts(), profiles, payload.language)
-    # check_compliance bepaalt sinds v1.33.0 zelf of de Q-controle liep, zodat de
-    # export dat óók ziet. Hier blijft alleen het tonen in het paneel over.
+    # Since v1.33.0 check_compliance decides for itself whether the Q check ran,
+    # so that the export sees it too. All that is left here is showing it in the
+    # panel.
     if outcome.get("q_check_status"):
         _surface_q_status(outcome, outcome["q_check_status"])
     return outcome

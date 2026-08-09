@@ -1,9 +1,9 @@
-"""Nalevingscontroles voor gevaarlijke stoffen: ADR 1.1.3.6-punten, ADR 7.5.2
-samenlading, de LQ/EQ-grenzen van hoofdstuk 3.4 en 3.5, en IATA Table
-9.3.A-segregatie plus Q-waarde (5.0.2.11).
+"""Compliance checks for dangerous goods: ADR 1.1.3.6 points, ADR 7.5.2 mixed
+loading, the LQ/EQ limits of chapters 3.4 and 3.5, and IATA Table 9.3.A
+segregation plus the Q value (5.0.2.11).
 
-De uitkomsten zijn begeleiding en waarschuwingen — geen juridische vaststelling.
-De bevoegde persoon blijft verantwoordelijk (zie DISCLAIMER.md).
+The results are guidance and warnings — not a legal determination. The
+qualified person remains responsible (see DISCLAIMER.md).
 """
 
 import json
@@ -39,10 +39,10 @@ def _lang(language: str) -> str:
 
 
 def _num(value: Any) -> float | None:
-    """Parse het eerste getal uit een waarde ('333', '5 kg', '12,5 L').
+    """Parse the first number out of a value ('333', '5 kg', '12,5 L').
 
-    Het teken telt mee: '-5 L' is -5, niet 5. Een negatieve hoeveelheid moet
-    als fout bovenkomen, niet stilzwijgend positief worden gemaakt.
+    The sign counts: '-5 L' is -5, not 5. A negative quantity has to surface as
+    an error rather than being silently made positive.
     """
     if value is None:
         return None
@@ -59,7 +59,7 @@ def _primary_class(product: dict[str, Any]) -> str:
 
 
 def _hazard_tokens(product: dict[str, Any]) -> list[str]:
-    """Alle gevaarklassen van een product: hoofdgevaar + nevengevaren."""
+    """Every hazard class of a product: primary hazard plus subsidiary risks."""
     tokens: list[str] = []
     for raw in [product.get("class"), product.get("subsidiary_risks")]:
         for token in re.split(r"[,;/\s()+]+", str(raw or "")):
@@ -74,13 +74,13 @@ def _is_class1(token: str) -> bool:
 
 
 def _compat_group(product: dict[str, Any]) -> str | None:
-    """Compatibiliteitsgroep van een klasse 1-product (bijv. 1.4G → 'G').
+    """Compatibility group of a class 1 product (1.4G → 'G', for instance).
 
-    De groep staat in Tabel A in de classificatiecode, niet in de klassekolom:
-    die zegt bij explosieven alleen "1". Vandaar dat de classificatiecode als
-    eerste wordt gelezen. Tot v1.40.1 keek de ADR-kant alleen naar het
-    klasseveld met een strak anker, waardoor 7.5.2.2 niet afging zodra de
-    divisie daar niet toevallig in stond.
+    The group lives in Table A in the classification code, not in the class
+    column: for explosives that column only says "1". Hence the classification
+    code is read first. Until v1.40.1 the ADR side looked only at the class
+    field with a tight anchor, so 7.5.2.2 did not fire the moment the division
+    did not happen to be in there.
     """
     for raw in (product.get("classification_code"), product.get("class"), product.get("subsidiary_risks")):
         match = re.search(r"\b1\.\d\s*([A-HJ-NPS])\b", str(raw or "").upper())
@@ -90,7 +90,7 @@ def _compat_group(product: dict[str, Any]) -> str | None:
 
 
 def _matches_iata_key(token: str, key: str) -> bool:
-    """Match een gevarentoken tegen een 9.3.A-sleutel ('1', '2.1', '4.3', …)."""
+    """Match a hazard token against a 9.3.A key ('1', '2.1', '4.3', …)."""
     if key == "1":
         return _is_class1(token)
     return token == key or token.startswith(f"{key}")
@@ -109,11 +109,11 @@ def _iter_products(entries: list[dict[str, Any]]):
             yield entry, index, product
 
 
-#: Het weg-, spoor- en binnenvaartregime kennen alle drie een 1.1.3.6 en een
-#: samenladingshoofdstuk, maar het zijn niet dezelfde teksten. CargoPilot draagt
-#: de ADR-tabellen; die van RID en ADN staan er niet in. Dat stilzwijgend als
-#: "RID-uitkomst" presenteren is de gebruiker een zekerheid geven die er niet is,
-#: dus wordt de grondslag benoemd zodra hij afwijkt van het gekozen profiel.
+#: The road, rail and inland waterway regimes each have a 1.1.3.6 and a mixed
+#: loading chapter, but they are not the same texts. CargoPilot carries the ADR
+#: tables; those of RID and ADN are not in it. Presenting that silently as a
+#: "RID result" gives the user a certainty that does not exist, so the basis is
+#: named the moment it differs from the chosen profile.
 LAND_PROFILES = ("ADR", "RID", "ADN")
 
 BASIS_NOTE = {
@@ -169,12 +169,12 @@ ADN_POINTS_NOTE = {
 
 
 def basis_note(profiles: list[str] | None, section: str, language: str) -> str | None:
-    """Melding wanneer een ADR-tabel voor RID of ADN wordt gebruikt.
+    """A note for when an ADR table is used for RID or ADN.
 
-    Voor 1.1.3.6 is de grondslag inmiddels nagelezen in de officiële teksten en
-    hoeft er niet meer te worden gehedged: het RID rekent hetzelfde, het ADN
-    rekent iets heel anders. Voor de overige hoofdstukken staat de oude,
-    voorzichtige melding nog — die zijn nog niet nagelezen.
+    For 1.1.3.6 the basis has since been read in the official texts and no
+    longer needs hedging: RID computes the same way, ADN computes something
+    entirely different. For the remaining chapters the old, cautious note still
+    stands — those have not been read yet.
     """
     selected = {p.upper() for p in (profiles or [])}
     other = sorted(selected & {"RID", "ADN"})
@@ -193,7 +193,7 @@ def basis_note(profiles: list[str] | None, section: str, language: str) -> str |
 def check_adr_points(
     entries: list[dict[str, Any]], language: str = "nl", profiles: list[str] | None = None
 ) -> dict[str, Any]:
-    """ADR 1.1.3.6: punten per product, totaal en vrijstellingsstatus."""
+    """ADR 1.1.3.6: points per product, total and exemption status."""
     rules = get_compliance_rules()["adr_points"]
     lang = _lang(language)
     categories = rules["categories"]
@@ -207,17 +207,17 @@ def check_adr_points(
 
     for entry, index, product in _iter_products(entries):
         label = _product_label(entry, product, index)
-        # Een stof met vervoersverbod hoort niet in de puntentelling: er valt
-        # niets vrij te stellen en "vul de categorie in" naast het rode verbod
-        # is verwarring. De regel wordt apart benoemd.
+        # A substance that is forbidden for transport does not belong in the
+        # points total: there is nothing to exempt, and "fill in the category"
+        # next to the red prohibition is confusing. The line is named separately.
         if product.get("transport_forbidden"):
             forbidden.append(label)
             continue
         category = str(product.get("transport_category") or "").strip()
         quantity = _num(product.get("adr_total_quantity"))
         if category not in categories or quantity is None or quantity <= 0:
-            # Ook 0 of negatief is onbruikbaar: -5 L zou het puntentotaal
-            # verlagen en een vrijstelling voorspiegelen die er niet is.
+            # Zero or negative is unusable too: -5 L would lower the points
+            # total and suggest an exemption that does not exist.
             incomplete.append(label)
             rows.append({
                 "product": label,
@@ -333,19 +333,18 @@ def _adn_limit_for(product: dict[str, Any], rules: list[dict[str, Any]]) -> dict
 def check_adn_exemption(
     entries: list[dict[str, Any]], language: str = "nl"
 ) -> dict[str, Any]:
-    """ADN 1.1.3.6.1: vrijstelling voor vervoer in colli aan boord van een schip.
+    """ADN 1.1.3.6.1: exemption for carriage in packages on board a vessel.
 
-    Het ADN kent geen puntentelling. Het stelt vrij wanneer de brutomassa van
-    alle gevaarlijke goederen samen onder de 3000 kg blijft én geen enkele
-    klasse boven haar eigen grens uit komt — 0, 300 of 3000 kg, afhankelijk van
-    verpakkingsgroep, groep of etiket. Voor vervoer in tanks geldt de
-    vrijstelling in het geheel niet.
+    ADN has no points count. It exempts when the gross mass of all dangerous
+    goods together stays below 3000 kg *and* no single class exceeds its own
+    limit — 0, 300 or 3000 kg, depending on packing group, group or label. For
+    carriage in tanks the exemption does not apply at all.
 
-    Tot v1.32.0 kreeg een ADN-zending de ADR-puntentelling te zien. Dat is geen
-    benadering van dit antwoord maar een antwoord op een andere vraag: 1200 kg
-    van een vloeistof in verpakkingsgroep III kost 1200 ADR-punten en verliest
-    daar de vrijstelling, terwijl het ADN dezelfde zending vrijstelt zolang het
-    totaal onder 3000 kg blijft.
+    Until v1.32.0 an ADN consignment was shown the ADR points count. That is not
+    an approximation of this answer but an answer to a different question: 1200
+    kg of a liquid in packing group III costs 1200 ADR points and loses the
+    exemption there, while ADN exempts the same consignment as long as the total
+    stays under 3000 kg.
     """
     config = get_compliance_rules()["adn_exemption"]
     lang = _lang(language)
@@ -430,18 +429,18 @@ def check_adn_exemption(
 def _mixed_loading_footnote(
     class1_un: str, other_un: str, other_class: str, footnotes: dict[str, Any]
 ) -> str | None:
-    """Welke voetnoot bij tabel 7.5.2.1 dit paar toestaat, of geen.
+    """Which footnote to table 7.5.2.1 permits this pair, if any.
 
-    Het vakje klasse 1 tegen een andere klasse is in de tabel leeg — verboden —
-    behalve waar een letter staat. Drie daarvan zijn hier van belang, en ze
-    hangen alle drie aan het UN-nummer en niet aan de klasse:
+    The cell for class 1 against another class is empty in the table —
+    forbidden — except where a letter appears. Three of those matter here, and
+    all three hang on the UN number rather than the class:
 
-    (b) klasse 1 met reddingsmiddelen van klasse 9;
-    (c) UN 0503 met UN 3268;
-    (d) springstof met ammoniumnitraat en verwante nitraten.
+    (b) class 1 with life-saving appliances of class 9;
+    (c) UN 0503 with UN 3268;
+    (d) explosive with ammonium nitrate and related nitrates.
 
-    Voetnoot (a) staat er ook, maar die gaat over 1.4S en dat wordt hierboven al
-    afgevangen: 1.4S telt niet als klasse 1 voor deze tabel.
+    Footnote (a) is there too, but it concerns 1.4S and that is already caught
+    above: 1.4S does not count as class 1 for this table.
     """
     note_d = footnotes["d"]
     if (
@@ -458,13 +457,13 @@ def _mixed_loading_footnote(
 
 
 def _compatibility_table(profiles: list[str] | None) -> tuple[dict[str, Any], str]:
-    """Welke 7.5.2.2-tabel geldt, en onder welke naam hij wordt aangehaald.
+    """Which 7.5.2.2 table applies, and under which name it is cited.
 
-    Het RID heeft een eigen 7.5.2.2 en die is niet hetzelfde als die van het
-    ADR: hij mist compatibiliteitsgroep A. Dat is een verschil in wat de tabel
-    beantwoordt, niet in het antwoord — vandaar dat een spoortraject de
-    spoortabel krijgt en niet die van de weg. Het ADN heeft geen eigen tabel;
-    dat blijft lenen, met de grondslagmelding die er al staat.
+    RID has its own 7.5.2.2 and it is not the same as the ADR one: it is missing
+    compatibility group A. That is a difference in what the table answers, not
+    in the answer — hence a rail leg gets the rail table and not the road one.
+    ADN has no table of its own; that keeps borrowing, with the basis note that
+    is already there.
     """
     compatibility = get_compliance_rules()["adr_mixed_loading"]["compatibility"]
     active = {p.upper() for p in (profiles or [])}
@@ -479,12 +478,12 @@ def _class1_compatibility(
     language: str,
     profiles: list[str] | None,
 ) -> list[dict[str, str]]:
-    """ADR/RID 7.5.2.2: mag deze compatibiliteitsgroep naast die andere?
+    """ADR/RID 7.5.2.2: may this compatibility group travel next to that one?
 
-    De tabel zet groep tegen groep. Een leeg vakje is een verbod, een X is
-    "samenladen toegestaan", en in vier vakjes staat een lettertje: dan mag het,
-    maar niet zonder meer. Tot v1.41.0 telde CargoPilot alleen de groepen en gaf
-    het de vraag terug aan de gebruiker; nu wordt de tabel gelezen.
+    The table sets group against group. An empty cell is a prohibition, an X is
+    "mixed loading permitted", and four cells carry a letter: then it is allowed,
+    but not without conditions. Until v1.41.0 CargoPilot only counted the groups
+    and handed the question back to the user; now the table is read.
     """
     rules = get_compliance_rules()["adr_mixed_loading"]["rules"]
     table, regime = _compatibility_table(profiles)
@@ -498,8 +497,8 @@ def _class1_compatibility(
 
     for i, group_a in enumerate(known):
         for group_b in known[i:]:
-            # Op de diagonaal gaat het over twee colli van dezelfde groep; met
-            # één collo valt er niets samen te laden.
+            # On the diagonal this is about two packages of the same group; with
+            # a single package there is nothing to load together.
             if group_a == group_b and len(compat_groups[group_a]) < 2:
                 continue
             cell = matrix[group_a][order.index(group_b)]
@@ -518,8 +517,8 @@ def _class1_compatibility(
                     "products": products,
                 })
                 continue
-            # Een vakje kan naar twee voetnoten verwijzen ("b c"); dan gelden ze
-            # allebei en hoort de gebruiker ze allebei te zien.
+            # A cell can refer to two footnotes ("b c"); then both apply and the
+            # user should see both.
             for letter in cell:
                 findings.append({
                     "rule": f"{regime} 7.5.2.2 ({pair}) ({letter})",
@@ -529,8 +528,8 @@ def _class1_compatibility(
                 })
 
     for group in outside:
-        # Wat de tabel niet kent, beantwoordt de tabel niet. Dat zeggen is het
-        # enige eerlijke: groep A staat wél in het ADR en niet in het RID.
+        # What the table does not know, the table does not answer. Saying so is
+        # the only honest option: group A *is* in ADR and is not in RID.
         findings.append({
             "rule": f"{regime} 7.5.2.2",
             "severity": "warning",
@@ -556,7 +555,7 @@ def _class1_compatibility(
 def check_adr_mixed_loading(
     entries: list[dict[str, Any]], language: str = "nl", profiles: list[str] | None = None
 ) -> list[dict[str, str]]:
-    """ADR 7.5.2 / 7.5.4 (CV28): samenladingswaarschuwingen op klasseniveau."""
+    """ADR 7.5.2 / 7.5.4 (CV28): mixed loading warnings at class level."""
     rules = get_compliance_rules()["adr_mixed_loading"]
     footnotes = rules["footnotes"]
     lang = _lang(language)
@@ -564,8 +563,8 @@ def check_adr_mixed_loading(
 
     class1_products: list[tuple[str, str]] = []
     other_class_products: list[tuple[str, str, str]] = []
-    # Per compatibiliteitsgroep de colli die erin vallen, zodat de melding kan
-    # zeggen wélke colli het betreft en niet alleen hoeveel groepen er zijn.
+    # Per compatibility group the packages that fall in it, so the message can
+    # say *which* packages it concerns and not merely how many groups there are.
     compat_groups: dict[str, list[str]] = {}
     compat_unknown: list[str] = []
     food_separation: list[str] = []
@@ -577,10 +576,10 @@ def check_adr_mixed_loading(
         un = str(product.get("un_number") or "").strip()
 
         if primary.startswith("1"):
-            # 7.5.2.2 gaat over explosieven onderling, en daar hoort 1.4S wél
-            # bij: de tabel heeft een rij S en die staat niet overal op X — S
-            # naast groep L is leeg, dus verboden. Voetnoot (a) bij 7.5.2.1
-            # haalt 1.4S alleen weg uit de vergelijking met ándere klassen.
+            # 7.5.2.2 is about explosives among themselves, and 1.4S does belong
+            # there: the table has an S row and it is not X everywhere — S next
+            # to group L is empty, hence forbidden. Footnote (a) to 7.5.2.1 only
+            # removes 1.4S from the comparison with *other* classes.
             group = _compat_group(product)
             if group:
                 if label not in compat_groups.setdefault(group, []):
@@ -599,8 +598,9 @@ def check_adr_mixed_loading(
             food_separation.append(label)
 
     if class1_products and other_class_products:
-        # Per paar, niet per zending: één verboden combinatie maakt de andere
-        # niet verboden, en één toegestane combinatie maakt de rest niet goed.
+        # Per pair, not per consignment: one forbidden combination does not make
+        # the others forbidden, and one permitted combination does not make the
+        # rest all right.
         forbidden: list[str] = []
         permitted: dict[str, list[str]] = {}
         for class1_label, class1_un in class1_products:
@@ -619,8 +619,8 @@ def check_adr_mixed_loading(
                 "products": ", ".join(forbidden),
             })
         for note in sorted(permitted):
-            # Toegestaan, maar niet zonder meer: voetnoot (d) verlegt de
-            # placardering en de maximaal toegestane hoeveelheid naar klasse 1.
+            # Permitted, but not without conditions: footnote (d) moves the
+            # placarding and the maximum permitted quantity to class 1.
             warnings.append({
                 "rule": f"ADR 7.5.2.1 ({note})",
                 "severity": "warning",
@@ -629,10 +629,10 @@ def check_adr_mixed_loading(
             })
     warnings.extend(_class1_compatibility(compat_groups, compat_unknown, language, profiles))
     if food_separation:
-        # Dezelfde bepaling, een andere naam: het RID zet hem in kolom (18) als
-        # CW 28, het ADR als CV28. De inhoud van 7.5.4 is woordelijk gelijk, dus
-        # alleen de aanhaling verschilt — maar een verzonnen codenaam op een
-        # spoordocument is precies het soort onjuistheid dat de app zelf toevoegt.
+        # The same provision under a different name: RID puts it in column (18)
+        # as CW 28, ADR as CV28. The content of 7.5.4 is word for word the same,
+        # so only the citation differs — but an invented code name on a rail
+        # document is exactly the kind of inaccuracy the app adds itself.
         _, regime = _compatibility_table(profiles)
         code = "CW28" if regime == "RID" else "CV28"
         warnings.append({
@@ -651,16 +651,16 @@ def _position_label(entry: dict[str, Any], index: int) -> str:
 def check_rid_protective_distance(
     entries: list[dict[str, Any]], language: str = "nl"
 ) -> list[dict[str, str]]:
-    """RID 7.5.3: beschermende afstand in de trein.
+    """RID 7.5.3: protective distance in the train.
 
-    Dit is de bepaling waar het spoor geen wegequivalent voor heeft, en dat is
-    geen toeval: 7.5.3 gaat over hoe een trein wordt samengesteld, en een
-    wegvoertuig rijdt alleen. Juist daarom kon het ADR-hoofdstuk hier nooit
-    invallen — het zou niet het verkeerde antwoord geven maar geen enkel.
+    This is the provision the railway has no road equivalent for, and that is no
+    accident: 7.5.3 is about how a train is assembled, and a road vehicle
+    travels alone. Precisely for that reason the ADR chapter could never stand
+    in here — it would not give the wrong answer but no answer at all.
 
-    De aanleiding is het plakkaat, niet de divisie. Het RID noemt de modellen 1,
-    1.5 en 1.6 en noemt model 1.4 niet, dus een wagen met uitsluitend goederen
-    van 1.4 valt er buiten.
+    The trigger is the placard, not the division. RID names models 1, 1.5 and
+    1.6 and does not name model 1.4, so a wagon carrying only 1.4 goods falls
+    outside it.
     """
     rules = get_compliance_rules().get("rid_protective_distance")
     if not rules:
@@ -682,10 +682,11 @@ def check_rid_protective_distance(
                     bears_class1 = True
                 elif token in counterpart:
                     bears_counterpart = True
-            # Klasse 1 zonder divisie in het klasseveld: de divisie staat dan in
-            # de classificatiecode, en zonder divisie is niet te zeggen of het
-            # plakkaat 1.4 is — dan telt de positie mee, want niet weten of een
-            # afstand nodig is mag er niet uitzien als weten dat het niet hoeft.
+            # Class 1 without a division in the class field: the division is
+            # then in the classification code, and without a division there is no
+            # telling whether the placard is 1.4 — so the position counts, because
+            # not knowing whether a distance is needed must not look like knowing
+            # that it is not.
             code = str(product.get("classification_code") or "").strip().upper()
             division = code[:3] if re.match(r"^1\.\d", code) else ""
             if division in class1_placards:
@@ -713,8 +714,8 @@ def check_rid_protective_distance(
             "message": pick(rules["rules"]["between_positions"], lang),
             "products": "; ".join(f"{one} ↔ {other}" for one, other in pairs),
         }]
-    # Geen tegenhanger in deze zending betekent niet dat er geen afstand nodig
-    # is: de rest van de trein staat niet in CargoPilot.
+    # No counterpart in this consignment does not mean no distance is needed:
+    # the rest of the train is not in CargoPilot.
     return [{
         "rule": "RID 7.5.3",
         "severity": "warning",
@@ -724,7 +725,7 @@ def check_rid_protective_distance(
 
 
 def check_iata_segregation(entries: list[dict[str, Any]], language: str = "nl") -> list[dict[str, str]]:
-    """IATA Table 9.3.A: segregatie tussen colli, inclusief lithium-regel."""
+    """IATA Table 9.3.A: segregation between packages, lithium rule included."""
     rules = get_compliance_rules()["iata_segregation"]
     lang = _lang(language)
     warnings: list[dict[str, str]] = []
@@ -781,13 +782,13 @@ def check_iata_segregation(entries: list[dict[str, Any]], language: str = "nl") 
 
 
 def _imdg_row_key(token: str, class_order: list[str]) -> str | None:
-    """Map een gevarentoken op een rij van de IMDG-segregatietabel."""
+    """Map a hazard token onto a row of the IMDG segregation table."""
     token = token.strip().upper()
     if not token:
         return None
     if token.startswith("1"):
-        # 1.4S valt buiten de tabel voor de meeste combinaties, maar de code
-        # kent 1.4 wel als eigen rij; compatibiliteitsgroep negeren we hier.
+        # 1.4S falls outside the table for most combinations, but the Code does
+        # know 1.4 as a row of its own; the compatibility group is ignored here.
         division = re.match(r"^1(\.\d)?", token)
         if not division:
             return None
@@ -802,13 +803,13 @@ def _imdg_row_key(token: str, class_order: list[str]) -> str | None:
     for key in class_order:
         if key == token:
             return key
-    # '2' zonder divisie of '6' zonder divisie kan niet betrouwbaar worden
-    # ingedeeld; die slaan we over in plaats van te gokken.
+    # '2' without a division or '6' without a division cannot be classified
+    # reliably; those are skipped rather than guessed at.
     return None
 
 
 def check_imdg_segregation(entries: list[dict[str, Any]], language: str = "nl") -> list[dict[str, Any]]:
-    """IMDG 7.2.4: scheiding tussen colli op basis van de klassescheidingstabel."""
+    """IMDG 7.2.4: separation between packages based on the class table."""
     rules = get_compliance_rules().get("imdg_segregation")
     if not rules:
         return []
@@ -823,8 +824,8 @@ def check_imdg_segregation(entries: list[dict[str, Any]], language: str = "nl") 
         primary = _imdg_row_key(_primary_class(product), class_order)
         if primary:
             keys.append(primary)
-        # IMDG 7.2.3.3: een nevengevaar van klasse 1 wordt voor de segregatie
-        # behandeld als divisie 1.3.
+        # IMDG 7.2.3.3: a subsidiary risk of class 1 is treated as division 1.3
+        # for segregation purposes.
         for token in re.split(r"[,;/\s()+]+", str(product.get("subsidiary_risks") or "")):
             token = token.strip().upper()
             if not token:
@@ -844,11 +845,11 @@ def check_imdg_segregation(entries: list[dict[str, Any]], language: str = "nl") 
             for key_a in keys_a:
                 for key_b in keys_b:
                     value = table[key_a][class_order.index(key_b)]
-                    # Een cijfer wint altijd van een "*": die verwijst door naar
-                    # 7.2.7 en zegt zelf geen afstand. `not worst` als test liet
-                    # int("*") toe zodra de eerste cel een "*" was en een
-                    # volgende een cijfer — een klasse 1-collo met een
-                    # nevengevaar naast een ander klasse 1-collo deed dat.
+                    # A digit always beats a "*": that one refers on to 7.2.7
+                    # and states no distance itself. `not worst` as the test
+                    # allowed int("*") as soon as the first cell was a "*" and a
+                    # later one a digit — a class 1 package with a subsidiary
+                    # risk next to another class 1 package did exactly that.
                     if value in {"1", "2", "3", "4"} and (
                         not worst.isdigit() or int(value) > int(worst)
                     ):
@@ -878,7 +879,7 @@ def check_imdg_segregation(entries: list[dict[str, Any]], language: str = "nl") 
 def check_imdg_class1_compatibility(
     entries: list[dict[str, Any]], language: str = "nl"
 ) -> list[dict[str, Any]]:
-    """IMDG 7.2.7.1.4: toegestane gemengde stuwage van compatibiliteitsgroepen."""
+    """IMDG 7.2.7.1.4: permitted mixed stowage of compatibility groups."""
     rules = get_compliance_rules().get("imdg_class1_compatibility")
     if not rules:
         return []
@@ -921,8 +922,8 @@ def check_imdg_class1_compatibility(
     return warnings
 
 
-# Scheidingsgroepen die onderling niet samen mogen (IMDG 7.2.5 in samenhang met
-# kolom 16b): de klassieke gevaarlijke combinaties.
+# Segregation groups that may not travel together (IMDG 7.2.5 read with column
+# 16b): the classic dangerous combinations.
 _SGG_CONFLICTS: list[tuple[str, str, dict[str, str]]] = [
     ("SGG1", "SGG18", {
         "nl": "zuren en alkaliën",
@@ -966,13 +967,13 @@ _SGG_CONFLICTS: list[tuple[str, str, dict[str, str]]] = [
 def check_imdg_segregation_groups(
     entries: list[dict[str, Any]], language: str = "nl"
 ) -> list[dict[str, Any]]:
-    """IMDG 7.2.5/3.1.4.4: onverenigbare scheidingsgroepen binnen de zending."""
+    """IMDG 7.2.5/3.1.4.4: incompatible segregation groups within the consignment."""
     lang = _lang(language)
     products: list[tuple[str, set[str]]] = []
     for entry, index, product in _iter_products(entries):
         groups = set(segregation_groups_for(product.get("un_number", ""),
                                             str(product.get("packing_group") or "")))
-        # Handmatig ingevulde groepen tellen ook mee.
+        # Manually entered groups count too.
         for token in re.split(r"[,;/\s]+", str(product.get("segregation_group") or "")):
             if token.strip().upper().startswith("SGG"):
                 groups.add(token.strip().upper())
@@ -1014,10 +1015,10 @@ def check_imdg_segregation_groups(
     return warnings
 
 
-# Hoe streng een scheidingsvoorschrift is, in gewone taal.
+# How strict a segregation provision is, in plain words.
 _ACTION_TEXT = {
-    # De Duitse IMDG-uitgave onderscheidt "entfernt von" (away from) en
-    # "getrennt von" (separated from); dat verschil is hier het hele punt.
+    # The German IMDG edition distinguishes "entfernt von" (away from) from
+    # "getrennt von" (separated from); that difference is the whole point here.
     "away_from": {
         "nl": "uit de buurt van",
         "en": "away from",
@@ -1037,8 +1038,8 @@ _ACTION_TEXT = {
               "einen vollständigen Laderaum getrennt von", "fr": 'séparé longitudinalement par un compartiment ou une cale complète intercalaire de'},
 }
 
-# Dezelfde vier scheidingscodes als in de tabel van 7.2.4, zodat een SG-code en
-# een tabelwaarde met elkaar te vergelijken zijn (7.2.3.1).
+# The same four segregation codes as in the table of 7.2.4, so that an SG code
+# and a table value can be compared with each other (7.2.3.1).
 _ACTION_CODE = {
     "away_from": "1",
     "separated_from": "2",
@@ -1048,7 +1049,7 @@ _ACTION_CODE = {
 
 
 def _classes_of(product: dict[str, Any]) -> set[str]:
-    """Hoofdklasse, divisie en nevengevaren van een collo."""
+    """Primary class, division and subsidiary risks of a package."""
     found: set[str] = set()
     for field in ("class", "subsidiary_risks", "labels"):
         for token in re.split(r"[+,;/\s]+", str(product.get(field) or "")):
@@ -1059,7 +1060,7 @@ def _classes_of(product: dict[str, Any]) -> set[str]:
 
 
 def _matches_class(target: str, classes: set[str]) -> bool:
-    """"class 5.1" raakt 5.1; "class 1" raakt elke divisie van klasse 1."""
+    """"class 5.1" touches 5.1; "class 1" touches every division of class 1."""
     if target in classes:
         return True
     if "." not in target:
@@ -1068,10 +1069,10 @@ def _matches_class(target: str, classes: set[str]) -> bool:
 
 
 def _wording(code: str, rules: dict[str, Any]) -> str:
-    """De omschrijving van een SG-code, bij voorkeur die van de code zelf.
+    """The description of an SG code, preferably the one belonging to the code.
 
-    Hoofdstuk 7.2.8 geeft de officiële formulering; de zin die van de UN-kaart
-    kwam is een parafrase en blijft alleen over als terugval.
+    Chapter 7.2.8 gives the official wording; the sentence that came from the UN
+    card is a paraphrase and remains only as a fallback.
     """
     return imdg_code_text(code) or str(rules.get(code, {}).get("text", ""))
 
@@ -1079,13 +1080,13 @@ def _wording(code: str, rules: dict[str, Any]) -> str:
 def check_imdg_segregation_provisions(
     entries: list[dict[str, Any]], language: str = "nl"
 ) -> list[dict[str, Any]]:
-    """IMDG kolom 16b: de scheidingsvoorschriften (SG) van de stof zelf.
+    """IMDG column 16b: the segregation provisions (SG) of the substance itself.
 
-    De scheidingstabel van 7.2.4 werkt op klasse; kolom 16b legt daarbovenop
-    voorschriften per stof. Die codes komen nu uit de Dangerous Goods List
-    zelf, in de stand van 42-24, en niet langer alleen uit de UN-kaarten van
-    41-22 — die dekten lang niet elke stof. Hier wordt gekeken of een andere
-    partij in dezelfde zending het doel van zo'n voorschrift is.
+    The segregation table of 7.2.4 works on class; column 16b lays provisions per
+    substance on top of that. Those codes now come from the Dangerous Goods List
+    itself, as it stands in 42-24, and no longer only from the 41-22 UN cards —
+    which covered nowhere near every substance. What is checked here is whether
+    another consignment in the same shipment is the target of such a provision.
     """
     lang = _lang(language)
     rules = segregation_provisions()
@@ -1113,16 +1114,16 @@ def check_imdg_segregation_provisions(
     warnings: list[dict[str, Any]] = []
     seen: set[tuple[str, str, str]] = set()
 
-    # Voorschriften die gewone lading noemen — levensmiddelen, oliën, geur-
-    # absorberende lading. De app weet niet wat er verder aan boord gaat, dus
-    # deze worden gemeld zodra de stof meegaat, net als de ADR CV28-melding.
+    # Provisions that name ordinary cargo — foodstuffs, oils, odour-absorbing
+    # cargo. The app does not know what else goes on board, so these are
+    # reported as soon as the substance travels, just like the ADR CV28 note.
     raised_cargo: set[tuple[str, str]] = set()
     for source in parties:
         for code in source["codes"]:
             requirement = cargo.get(code)
             if not isinstance(requirement, dict):
                 continue
-            # SG26 geldt alleen náást bepaalde klassen; de rest altijd.
+            # SG26 applies only next to certain classes; the rest always.
             needed = requirement.get("classes")
             if needed and not any(
                 any(_matches_class(t, other["classes"]) for t in needed)
@@ -1146,8 +1147,8 @@ def check_imdg_segregation_provisions(
             if not rule:
                 continue
 
-            # Voorschriften die een stof bij naam noemen: welke UN-nummers dat
-            # zijn, staat in dg_compliance.json — te controleren en aan te passen.
+            # Provisions that name a substance explicitly: which UN numbers
+            # those are is in dg_compliance.json — checkable and adjustable.
             target = named.get(code)
             if isinstance(target, dict):
                 for other in parties:
@@ -1194,9 +1195,9 @@ def check_imdg_segregation_provisions(
             for other in parties:
                 if other is source:
                     continue
-                # Een uitzondering in het voorschrift ("behalve 1.4S") sluit
-                # die partij uit; anders zou de app waarschuwen voor iets dat
-                # de Code juist toestaat.
+                # An exception in the provision ("except 1.4S") excludes that
+                # consignment; otherwise the app would warn about something the
+                # Code specifically permits.
                 if any(c in other["classes"] for c in rule.get("excepted_classes") or []):
                     continue
                 hit_class = next(
@@ -1217,7 +1218,7 @@ def check_imdg_segregation_provisions(
                     lang,
                     pick(_ACTION_TEXT["separated_from"], lang),
                 )
-                # "SGG1" zegt niets; "SGG1 (zuren)" wel.
+                # "SGG1" says nothing; "SGG1 (acids)" does.
                 if hit_class:
                     what = pick(
                         {"nl": "klasse {c}", "en": "class {c}", "de": "Klasse {c}", "fr": 'classe {c}'}, lang
@@ -1245,17 +1246,17 @@ def check_imdg_segregation_provisions(
 def apply_column_16b_precedence(
     findings: list[dict[str, Any]], language: str = "nl"
 ) -> list[dict[str, Any]]:
-    """IMDG 7.2.3.1: bij strijdige bepalingen gaat kolom 16b altijd voor.
+    """IMDG 7.2.3.1: where provisions conflict, column 16b always prevails.
 
-    De klassescheidingstabel van 7.2.4 en de stof-specifieke SG-codes van kolom
-    16b kunnen voor hetzelfde paar iets anders zeggen. De code laat daarover
-    geen twijfel bestaan: "In case of conflicting provisions, the provisions of
+    The class segregation table of 7.2.4 and the substance-specific SG codes of
+    column 16b can say different things about the same pair. The Code leaves no
+    doubt about that: "In case of conflicting provisions, the provisions of
     column 16b of the Dangerous Goods List, always take precedence."
 
-    Er wordt niets verwijderd. Beide bevindingen blijven staan met de bepaling
-    erbij die volgens de code voorgaat, zodat zichtbaar is waarom de ene de
-    andere opzij zet. Een terechte melding wegnemen is erger dan er \u00e9\u00e9n te veel
-    tonen; dat is dezelfde afweging als bij de vrijstellingen van 7.2.6.3.
+    Nothing is removed. Both findings stay, with the provision that prevails
+    according to the Code alongside them, so it is visible why one sets the other
+    aside. Taking away a justified warning is worse than showing one too many;
+    that is the same trade-off as with the exemptions of 7.2.6.3.
     """
     lang = _lang(language)
     by_pair: dict[str, dict[str, list[dict[str, Any]]]] = {}
@@ -1270,15 +1271,15 @@ def apply_column_16b_precedence(
         column = [f for f in buckets.get("column_16b") or [] if f.get("code")]
         if not table or not column:
             continue
-        # Meerdere SG-codes kunnen op hetzelfde paar slaan, in beide richtingen.
-        # De strengste bepaalt wat er moet gebeuren; alle codes op dat niveau
-        # krijgen de vermelding, want ze gaan er allemaal even hard voor.
+        # Several SG codes can apply to the same pair, in both directions. The
+        # strictest determines what has to happen; every code at that level gets
+        # named, because they all carry equal weight.
         strictest_code = max(int(f["code"]) for f in column)
         governing = [f for f in column if int(f["code"]) == strictest_code]
         rules = [f["rule"] for f in governing]
         for finding in table:
             if str(finding.get("code")) == str(strictest_code):
-                continue  # Geen strijd: beide bepalingen komen op hetzelfde uit.
+                continue  # No conflict: both provisions come out the same.
             finding["superseded_by"] = rules
             finding["severity"] = "info"
             finding["message"] += pick(
@@ -1311,13 +1312,13 @@ def apply_column_16b_precedence(
 def check_imdg_segregation_exemptions(
     entries: list[dict[str, Any]], language: str = "nl"
 ) -> list[dict[str, Any]]:
-    """IMDG 7.2.6.3: stoffen in dezelfde tabel hoeven niet gescheiden te worden.
+    """IMDG 7.2.6.3: substances in the same table need not be segregated.
 
-    Dit is de vrijstelling waar SG72 in kolom 16b naar verwijst. De app haalt er
-    géén waarschuwing mee weg — een terechte melding onderdrukken is erger dan
-    een overbodige tonen — maar meldt de vrijstelling ernaast, met tabel en al.
-    Zo staan de bevinding en haar rechtsgrond samen in beeld en blijft de keuze
-    bij de afzender.
+    This is the exemption that SG72 in column 16b refers to. The app removes no
+    warning with it — suppressing a justified message is worse than showing a
+    redundant one — but reports the exemption alongside, table and all. That way
+    the finding and its legal basis are in view together and the choice stays
+    with the consignor.
     """
     config = get_compliance_rules().get("imdg_segregation_exemptions")
     if not config:
@@ -1375,14 +1376,14 @@ def check_imdg_segregation_exemptions(
 def append_class8_pair_exception(
     entries: list[dict[str, Any]], findings: list[dict[str, Any]], language: str = "nl"
 ) -> list[dict[str, Any]]:
-    """IMDG 7.2.6.5 naast het betrokken paar, niet alleen als algemene tekst.
+    """IMDG 7.2.6.5 next to the pair concerned, not only as general text.
 
-    Twee stoffen van klasse 8, verpakkingsgroep II of III, die volgens kolom
-    16b gescheiden moeten blijven, mogen onder 7.2.6.5 tóch samen in colli tot
-    30 L/30 kg — mits ze niet gevaarlijk met elkaar reageren en het document de
-    verklaring van 5.4.1.5.11.3 draagt. Dat is dezelfde afweging als bij
-    7.2.6.3: de vrijstelling wordt gemeld, de waarschuwing blijft staan en de
-    keuze blijft bij de afzender.
+    Two substances of class 8, packing group II or III, which have to stay
+    segregated according to column 16b, may nevertheless travel together in
+    packages of up to 30 L/30 kg under 7.2.6.5 — provided they do not react
+    dangerously with each other and the document carries the declaration of
+    5.4.1.5.11.3. That is the same trade-off as with 7.2.6.3: the exemption is
+    reported, the warning stays, and the choice stays with the consignor.
     """
     lang = _lang(language)
     eligible: set[str] = set()
@@ -1440,17 +1441,17 @@ def append_class8_pair_exception(
 def check_imdg_amendment_42_24(
     entries: list[dict[str, Any]], language: str = "nl"
 ) -> list[dict[str, Any]]:
-    """Wat Amendment 42-24 aan de gedeclareerde stoffen verandert.
+    """What Amendment 42-24 changes about the declared substances.
 
-    De stof-specifieke IMDG-laag komt van de UN-kaarten van 41-22, terwijl de
-    basisclassificatie uit ADR 2025 komt. Waar 42-24 daarvan afwijkt, moet dat
-    bij de zending staan en niet alleen in de documentatie.
+    The substance-specific IMDG layer comes from the 41-22 UN cards, while the
+    basic classification comes from ADR 2025. Where 42-24 differs from that, it
+    has to appear with the consignment and not only in the documentation.
 
-    De classificatie wordt niet stilzwijgend overschreven. Wijzigt 42-24 de
-    klasse, het nevengevaar of de verpakkingsgroep, dan is de scheiding die de
-    app berekent op de oude classificatie gebaseerd, en dat wordt met zoveel
-    woorden gezegd. Een aangepaste klasse binnensmonds toepassen zou de uitkomst
-    veranderen zonder dat iemand kan zien waarom.
+    The classification is not silently overwritten. If 42-24 changes the class,
+    the subsidiary risk or the packing group, then the segregation the app
+    computes is based on the old classification, and that is said in so many
+    words. Applying an amended class under one's breath would change the outcome
+    without anybody being able to see why.
     """
     lang = _lang(language)
     findings: list[dict[str, Any]] = []
@@ -1518,20 +1519,20 @@ def check_imdg_amendment_42_24(
     return findings
 
 
-# Divisies die in de luchtvaart (vrijwel altijd) verboden zijn; de ICAO TI
-# vermeldt chloor en verwante 2.3-gassen als verboden op passagiers- én
-# vrachttoestellen, met alleen een A1/A2-ontheffing als uitweg.
+# Divisions that are (almost always) forbidden in aviation; the ICAO TI lists
+# chlorine and related 2.3 gases as forbidden on passenger *and* cargo aircraft,
+# with only an A1/A2 approval as a way out.
 _AIR_FORBIDDEN_DIVISIONS = {"2.3"}
 
 
 def check_air_forbidden(entries: list[dict[str, Any]], language: str = "nl") -> list[dict[str, Any]]:
-    """ICAO TI / IATA DGR: divisies die niet door de lucht mogen.
+    """ICAO TI / IATA DGR: divisions that may not travel by air.
 
-    De klassekolom van Tabel A zegt bij gassen alleen "2"; de divisie komt uit
-    de etiketten. Daarom wordt hier zowel op de gevarentokens van het product
-    als op de via parse_hazards opgeloste divisie getoetst — anders blijft
-    chloor (UN 1017, klasse "2", etiket 2.3) onzichtbaar totdat /dg/prepare
-    de divisie in het klasseveld heeft gezet.
+    The class column of Table A only says "2" for gases; the division comes from
+    the labels. So both the hazard tokens of the product and the division
+    resolved via parse_hazards are tested here — otherwise chlorine (UN 1017,
+    class "2", label 2.3) stays invisible until /dg/prepare has put the division
+    in the class field.
     """
     lang = _lang(language)
     warnings: list[dict[str, Any]] = []
@@ -1568,14 +1569,14 @@ def check_air_forbidden(entries: list[dict[str, Any]], language: str = "nl") -> 
 
 
 def check_q_value(entries: list[dict[str, Any]], language: str = "nl") -> list[dict[str, Any]]:
-    """IATA 5.0.2.11: Q-waarde per positie voor 'all packed in one'.
+    """IATA 5.0.2.11: Q value per position for 'all packed in one'.
 
-    Gerekend met Decimal en zonder tussentijdse afronding: twee componenten van
-    elk 0,50001 zijn samen 1,00002 en dus Q = 1,1 — overschreden. Eerst per
-    component afronden maakte daar 1,0 van, een vals-negatieve uitkomst.
+    Computed with Decimal and without intermediate rounding: two components of
+    0.50001 each are 1.00002 together and therefore Q = 1.1 — exceeded. Rounding
+    per component first turned that into 1.0, a false negative.
 
-    Een component met ontbrekende, nul of negatieve waarden verdwijnt niet
-    stilzwijgend: de positie krijgt status "incomplete" en de reden erbij.
+    A component with missing, zero or negative values does not disappear
+    silently: the position gets status "incomplete" with the reason alongside.
     """
     rules = get_compliance_rules()["q_value"]
     lang = _lang(language)
@@ -1583,20 +1584,20 @@ def check_q_value(entries: list[dict[str, Any]], language: str = "nl") -> list[d
 
     for entry in entries:
         products = entry.get("products") or []
-        # Een positie doet pas mee wanneer iemand een M (maximum per verpakking
-        # volgens de packing instruction) heeft ingevuld. De n wordt door
-        # /dg/prepare automatisch gevuld uit de netto per collo; alleen dáárop
-        # afgaan zette elke luchtzending op "incomplete", ook waar 'all packed
-        # in one' helemaal niet speelt.
+        # A position only takes part once somebody has filled in an M (maximum
+        # per package according to the packing instruction). The n is filled
+        # automatically by /dg/prepare from the net per package; going on that
+        # alone put every air consignment on "incomplete", including those where
+        # 'all packed in one' does not come into play at all.
         if not any(
             str(product.get("q_max_net_quantity") or "").strip()
             for product in products
         ):
-            # Twee of meer stoffen op één positie zonder enige Q-invoer: dan
-            # kán 'all packed in one' spelen en is er niets gerekend. Die
-            # positie stilzwijgend overslaan liet de zending als "gecontroleerd"
-            # gelden zodra één andere positie wél was ingevuld — een controle
-            # die niet liep zag er dan uit als een controle die slaagde.
+            # Two or more substances in one position without any Q input: then
+            # 'all packed in one' *may* apply and nothing has been computed.
+            # Skipping that position silently let the consignment count as
+            # "checked" as soon as one other position had been filled in — a
+            # check that did not run then looked like a check that passed.
             if len([p for p in products if str(p.get("un_number") or "").strip()]) >= 2:
                 results.append({
                     "position": entry.get("vehicle") or entry.get("line_id"),
@@ -1640,7 +1641,7 @@ def check_q_value(entries: list[dict[str, Any]], language: str = "nl") -> list[d
                 "product": label,
                 "net_quantity": n,
                 "max_per_package": m,
-                # Alleen voor weergave afgerond; de som gebruikt de ruwe ratio.
+                # Rounded for display only; the sum uses the raw ratio.
                 "ratio": float(ratio.quantize(Decimal("0.0001"), rounding=ROUND_CEILING)),
                 "_ratio_exact": ratio,
             })
@@ -1669,11 +1670,11 @@ def check_q_value(entries: list[dict[str, Any]], language: str = "nl") -> list[d
             continue
 
         if len(components) < 2:
-            # Eén deelnemend product: geen 'all packed in one', geen Q nodig.
+            # One participating product: no 'all packed in one', no Q needed.
             continue
 
         q_raw = sum((c["_ratio_exact"] for c in components), Decimal(0))
-        # Naar boven afronden op één decimaal, over de ongeronde som.
+        # Rounded up to one decimal, over the unrounded sum.
         q_rounded = float(q_raw.quantize(Decimal("0.1"), rounding=ROUND_CEILING))
         results.append({
             "position": entry.get("vehicle") or entry.get("line_id"),
@@ -1688,8 +1689,8 @@ def check_q_value(entries: list[dict[str, Any]], language: str = "nl") -> list[d
     return results
 
 
-# Massa in gram, volume in milliliter: de gemeenschappelijke noemer waarin de
-# grenzen van 3.4 (kolom 7a) en 3.5.1.2 (E-codes) zijn uitgedrukt.
+# Mass in grams, volume in millilitres: the common denominator in which the
+# limits of 3.4 (column 7a) and 3.5.1.2 (E codes) are expressed.
 _Q_STATUS_MESSAGE = {
     "nl": {
         "checked": "De Q-controle is uitgevoerd voor de ingevoerde 'all packed in one'-gegevens.",
@@ -1719,12 +1720,12 @@ _Q_STATUS_MESSAGE = {
 
 
 def q_check_status(q_values: list[dict[str, Any]], language: str = "nl") -> dict[str, str]:
-    """Of de Q-controle liep, en zo niet, dat dat gezegd wordt.
+    """Whether the Q check ran, and if not, that this is said.
 
-    Een positie die stilzwijgend werd overgeslagen was op het scherm niet te
-    onderscheiden van een positie die de toets haalde. Eén niet-gecontroleerde
-    positie maakt de hele zending niet-gecontroleerd: "gecontroleerd" mag niet
-    betekenen "één van de twee posities is gecontroleerd".
+    A position that was silently skipped was indistinguishable on screen from a
+    position that passed. One unchecked position makes the whole consignment
+    unchecked: "checked" must not come to mean "one of the two positions was
+    checked".
     """
     lang = _lang(language)
     statuses = {item.get("status") for item in q_values}
@@ -1760,11 +1761,11 @@ _MEASURE_RE = re.compile(
 
 
 def _parse_measures(value: Any) -> list[tuple[float, str]]:
-    """Alle hoeveelheden met eenheid uit een tekst, in g of ml.
+    """Every quantity with a unit out of a text, in g or ml.
 
-    '0,5 L' → [(500.0, 'volume')]; '500 ml oder 500 g' → beide. Een getal
-    zonder eenheid levert niets op: '0,5' kan 0,5 g of 0,5 kg betekenen, en
-    juist bij een vrijstellingsgrens mag daar niet naar geraden worden.
+    '0,5 L' → [(500.0, 'volume')]; '500 ml oder 500 g' → both. A number without
+    a unit yields nothing: '0,5' can mean 0.5 g or 0.5 kg, and at an exemption
+    limit of all places that must not be guessed at.
     """
     found: list[tuple[float, str]] = []
     for match in _MEASURE_RE.finditer(str(value or "")):
@@ -1783,8 +1784,8 @@ def _format_base(amount: float, kind: str) -> str:
     return f"{text} {unit}"
 
 
-# Verwijzing naar een bijzondere bepaling in kolom 7a/7b ("siehe SV 340",
-# "See SP277"): geen grens die de app kan toetsen.
+# A reference to a special provision in column 7a/7b ("siehe SV 340",
+# "See SP277"): not a limit the app can test against.
 _SPECIAL_PROVISION_REF = re.compile(r"\b(?:siehe|see)\b|\bS[VP]\s*\d+", re.IGNORECASE)
 
 _LQ_MESSAGES = {
@@ -1864,10 +1865,10 @@ _LQ_MESSAGES = {
               "Verpackungsvorschriften von 3.4 gelten weiterhin.", "fr": "Dans les limites du 3.4 : {inner} par emballage intérieur ≤ {limit} et {gross} kg bruts par colis ≤ 30 kg (20 kg pour les plateaux houssés ou filmés, 3.4.3). La marque QL et les prescriptions d'emballage du 3.4 restent applicables."},
 }
 
-# Alleen zinvol naast een puntentabel, dus alleen bij een landprofiel: een
-# regel die daadwerkelijk als LQ reist, telt volgens 1.1.3.6.5 niet mee in de
-# 1.1.3.6-punten. De tabel blijft hem meetellen — een vrijstelling neemt hier
-# nooit stilzwijgend een uitkomst weg.
+# Only meaningful next to a points table, so only with a land profile: a line
+# that actually travels as LQ does not count towards the 1.1.3.6 points under
+# 1.1.3.6.5. The table keeps counting it — an exemption never silently removes
+# a result here.
 _LQ_POINTS_NOTE = {
     "nl": " Reist deze regel als LQ, dan telt hij volgens 1.1.3.6.5 niet mee in de "
           "1.1.3.6-punten; de puntentabel telt hem volledigheidshalve wél mee.",
@@ -1954,7 +1955,7 @@ _EQ_MESSAGES = {
               "Container sind höchstens 1000 Versandstücke zulässig (3.5.5).", "fr": "Dans les limites du {code} : {inner} par emballage intérieur ≤ {inner_cap} g/ml et {outer} par colis ≤ {outer_cap} g/ml (3.5.1.2). Les prescriptions d'emballage et d'épreuve des 3.5.2 et 3.5.3 ainsi que la marque QE restent applicables ; 1 000 colis au plus sont admis par véhicule ou conteneur (3.5.5)."},
 }
 
-# ADR 3.4.2 / IMDG 3.4.2.1: totale bruto massa van een LQ-collo.
+# ADR 3.4.2 / IMDG 3.4.2.1: total gross mass of an LQ package.
 _LQ_GROSS_LIMIT_KG = 30.0
 # ADR/IMDG 3.5.5: ten hoogste 1000 EQ-colli per voertuig of container.
 _EQ_PACKAGE_CAP = 1000
@@ -1967,7 +1968,7 @@ def _fmt_kg(value: float) -> str:
 def _assess_lq(
     raw: str, inner: list[tuple[float, str]], gross_kg: float | None, lang: str
 ) -> dict[str, Any]:
-    """Toets één regel aan kolom 7a en de 30 kg-grens van 3.4.2."""
+    """Test one line against column 7a and the 30 kg limit of 3.4.2."""
     raw = raw.strip()
     result: dict[str, Any] = {"value": raw or None}
 
@@ -1989,7 +1990,8 @@ def _assess_lq(
     if not inner:
         return outcome("incomplete", "missing_inner", limit=raw)
     inner_amount, inner_kind = inner[0]
-    # "500 ml oder 500 g": de variant die bij de ingevoerde eenheid hoort telt.
+    # "500 ml oder 500 g": the variant matching the entered unit is the one that
+    # counts.
     limit = next(((a, k) for a, k in limits if k == inner_kind), None)
     if limit is None:
         return outcome(
@@ -2025,7 +2027,7 @@ def _assess_eq(
     outer: list[tuple[float, str]],
     lang: str,
 ) -> dict[str, Any]:
-    """Toets één regel aan de E-code van kolom 7b (tabel 3.5.1.2)."""
+    """Test one line against the E code of column 7b (table 3.5.1.2)."""
     code = raw.strip().upper()
     result: dict[str, Any] = {"code": code or None}
 
@@ -2045,8 +2047,8 @@ def _assess_eq(
         return outcome("no_data", "no_data")
     inner_cap, outer_cap = caps
 
-    # Tabel 3.5.1.2 telt in gram voor vaste stoffen en ml voor vloeistoffen en
-    # gassen met hetzelfde getal; massa en volume delen hier dus één grens.
+    # Table 3.5.1.2 counts in grams for solids and in ml for liquids and gases
+    # with the same figure; mass and volume therefore share one limit here.
     if not inner:
         return outcome(
             "incomplete", "missing_inner",
@@ -2081,16 +2083,16 @@ def _assess_eq(
 def check_lq_eq(
     entries: list[dict[str, Any]], language: str = "nl", profiles: list[str] | None = None
 ) -> dict[str, Any]:
-    """ADR/IMDG 3.4 en 3.5: toets de ingevoerde hoeveelheden aan kolom 7a en 7b.
+    """ADR/IMDG 3.4 and 3.5: test the entered quantities against columns 7a and 7b.
 
-    Tot nu toe werden de LQ-waarde en de E-code getoond met hun betekenis, maar
-    nooit vergeleken met wat er daadwerkelijk is ingevuld. Deze controle doet
-    die vergelijking — en niet meer dan dat. Kwalificeren op hoeveelheid is
-    niet hetzelfde als vrijgesteld zijn: het kenmerk, de verpakkingseisen en de
-    beproevingen van 3.4 en 3.5 blijven bij de afzender. Daarom wordt een regel
-    die binnen de grenzen valt gemeld en nooit stilzwijgend uit de
-    puntenberekening van 1.1.3.6 gehaald, precies zoals de vrijstelling van
-    IMDG 7.2.6.3 wordt gemeld zonder een waarschuwing weg te nemen.
+    Until now the LQ value and the E code were shown with their meaning, but
+    never compared with what had actually been filled in. This check makes that
+    comparison — and nothing more. Qualifying on quantity is not the same as
+    being exempt: the mark, the packaging requirements and the tests of 3.4 and
+    3.5 stay with the consignor. So a line that falls within the limits is
+    reported and never silently taken out of the 1.1.3.6 points calculation,
+    exactly as the exemption of IMDG 7.2.6.3 is reported without removing a
+    warning.
     """
     lang = _lang(language)
     normalized = sorted({p.upper() for p in (profiles or [])})
@@ -2099,9 +2101,10 @@ def check_lq_eq(
     rows: list[dict[str, Any]] = []
     warnings: list[dict[str, Any]] = []
     statuses: set[str] = set()
-    # ADR 3.4.13/3.4.14: boven 8 ton bruto aan LQ-colli per transporteenheid is
-    # de LQ-kenmerking van 3.4.15 op de eenheid vereist. De zending wordt hier
-    # als één transporteenheid gelezen — meer weet de app niet van het voertuig.
+    # ADR 3.4.13/3.4.14: above 8 tonnes gross of LQ packages per transport unit,
+    # the LQ marking of 3.4.15 on the unit is required. The consignment is read
+    # here as one transport unit — the app knows no more than that about the
+    # vehicle.
     lq_gross_total_kg = 0.0
     lq_gross_products: list[str] = []
 
@@ -2115,15 +2118,15 @@ def check_lq_eq(
             if not un and not lq_raw and not eq_raw:
                 continue
             if product.get("transport_forbidden"):
-                # Geen vrijstellingsroute voor een stof die niet ten vervoer
-                # mag worden aangeboden; het verbod staat al in beeld.
+                # No exemption route for a substance that may not be offered for
+                # carriage; the prohibition is already in view.
                 continue
             label = _product_label(entry, product, index)
 
-            # De IMDG-lijst (42-24) draagt dezelfde kolommen. Waar het product
-            # geen waarde heeft, vult de lijst hem aan; waar de waarden
-            # verschillen, wordt dat gemeld — de toets rekent met de ingevoerde
-            # waarde en beslist niet zelf welke editie voorgaat.
+            # The IMDG list (42-24) carries the same columns. Where the product
+            # has no value, the list fills it in; where the values differ, that
+            # is reported — the check computes with the entered value and does
+            # not decide for itself which edition prevails.
             dgl_notes = {"limited_quantity": "", "excepted_quantity": ""}
             if use_imdg and un:
                 dgl_row = dangerous_goods_list.entry_for(
@@ -2277,15 +2280,15 @@ def check_compliance(
     profiles: list[str],
     language: str = "nl",
 ) -> dict[str, Any]:
-    """Voer alle relevante controles uit voor de gekozen regelgevingsprofielen."""
+    """Run every relevant check for the chosen regulatory profiles."""
     rules = get_compliance_rules()
     result: dict[str, Any] = {
         "sources": rules["sources"],
         "profiles": profiles,
-        # Welke regelgevingsedities dit resultaat heeft gebruikt. De tabellen van
-        # hoofdstuk 7.2 zijn onder 42-24 ongewijzigd gebleven; de stof-specifieke
-        # laag komt van 41-22 met de 42-24-verschillen eroverheen. Wat die laag
-        # niet dekt, staat in IMDG_42_24_not_covered.
+        # Which regulatory editions this result used. The tables of chapter 7.2
+        # are unchanged under 42-24; the substance-specific layer comes from
+        # 41-22 with the 42-24 differences laid over it. What that layer does not
+        # cover is in IMDG_42_24_not_covered.
         "rule_sets": {
             "ADR": "ADR 2025 (Tabel A via rkstgr/adr-substances)",
             "IMDG_class_tables": (
@@ -2313,13 +2316,13 @@ def check_compliance(
     }
     normalized = {p.upper() for p in profiles}
 
-    # Waar deze uitkomst mee is gerekend, in één id — bruikbaar in een melding
-    # en in de controlebijlage bij een export.
+    # What this result was computed with, in one id — usable in a report and in
+    # the compliance annex to an export.
     result["regulatory_manifest"] = summary()
 
-    # Een regelset die is afgelopen en niet is vervangen, is geen detail: dan
-    # rekent deze controle met tekst die niet meer geldt. De uitkomst blijft
-    # staan, maar zegt er zelf bij dat hij op verlopen regels berust.
+    # A rule set that has expired and has not been replaced is not a detail:
+    # this check is then computing with text that no longer applies. The result
+    # stands, but says for itself that it rests on expired rules.
     for stale in stale_rule_sets(sorted(normalized)):
         result.setdefault("rule_set_warnings", []).append({
             "rule": stale["name"],
@@ -2345,10 +2348,10 @@ def check_compliance(
         result["adr_points"] = check_adr_points(entries, language, land)
         result["adr_mixed_loading"] = check_adr_mixed_loading(entries, language, land)
         if "RID" in normalized:
-            # 7.5.3 heeft geen wegequivalent en hoort daarom niet bij de
-            # geleende tabellen, maar wél in dezelfde lijst: die bereikt zowel
-            # het paneel als de export, en een spoorbepaling die alleen op het
-            # scherm staat is er op het document niet.
+            # 7.5.3 has no road equivalent and therefore does not belong with
+            # the borrowed tables, but it does belong in the same list: that one
+            # reaches both the panel and the export, and a rail provision that
+            # only appears on screen is not on the document.
             result["adr_mixed_loading"] += check_rid_protective_distance(entries, language)
         # ADN answers the exemption question with its own rule, so it gets its
         # own result rather than borrowing the points total.
@@ -2358,8 +2361,8 @@ def check_compliance(
         if note:
             result["adr_mixed_loading_basis_note"] = note
 
-    # LQ/EQ geldt voor de landmodi én de zeevaart; de lucht kent met de
-    # Y-verpakkingsinstructies een eigen stelsel dat hier niet wordt geclaimd.
+    # LQ/EQ applies to the land modes *and* to sea transport; air has its own
+    # system in the Y packing instructions, which is not claimed here.
     if {"ADR", "RID", "ADN", "IMDG"} & normalized:
         result["lq_eq"] = check_lq_eq(entries, language, sorted(normalized))
 
@@ -2394,12 +2397,12 @@ def check_compliance(
             + check_iata_segregation(entries, language)
         )
         result["q_values"] = check_q_value(entries, language)
-        # Of de Q-controle daadwerkelijk liep, hoort bij de uitkomst en niet bij
-        # één endpoint. Tot v1.32.0 werd dit in de route berekend, waardoor het
-        # paneel "geen Q-controle uitgevoerd" meldde en de export er niets over
-        # zei — precies de plek waar het document de deur uit gaat. De
-        # exportcontrole in exporter.py schrijft zelf dat het scherm nooit de
-        # enige plek mag zijn waar dit wordt afgedwongen.
+        # Whether the Q check actually ran belongs with the result and not with
+        # one endpoint. Until v1.32.0 this was computed in the route, so the
+        # panel reported "no Q check performed" while the export said nothing
+        # about it — precisely the place where the document leaves the building.
+        # The export check in exporter.py writes for itself that the screen must
+        # never be the only place where this is enforced.
         result["q_check_status"] = q_check_status(result["q_values"], language)
         cao = [
             _product_label(entry, product, index)

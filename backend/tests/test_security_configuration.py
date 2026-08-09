@@ -1,21 +1,20 @@
-"""De app hoort veilig te starten, niet te weigeren te starten.
+"""The app should start safely, not refuse to start.
 
-`APP_SECRET_KEY` tekent de JWT waarmee iemand is ingelogd, en de
-standaardwaarde `change-me` staat in deze repository. Een installatie die hem
-nooit heeft gezet draait dus op een sleutel die iedereen kan opzoeken, en wie
-de sleutel heeft schrijft zelf een geldig beheerderstoken.
+`APP_SECRET_KEY` signs the JWT that says somebody is logged in, and the default
+value `change-me` is in this repository. An installation that never set it
+therefore runs on a key anybody can look up, and whoever holds the key writes
+themselves a valid admin token.
 
-Van v1.25.0 tot v1.29.2 loste CargoPilot dat op door te weigeren te starten.
-Dat was fout, en het bewijs staat in de standaardwaarden van de applicatie
-zelf: `APP_SECRET_KEY=change-me` en `CORS_ALLOWED_ORIGINS=*`, plus een
-Unraid-sjabloon dat de sleutel leeg laat. Elke installatie die die twee niet
-uit zichzelf had ingevuld crashte bij het opstarten, in een container die zo
-snel afsloot dat de melding onleesbaar was. Veiliger werd er niets van — de
-app was weg.
+From v1.25.0 to v1.29.2 CargoPilot solved that by refusing to start. That was
+wrong, and the proof is in the application's own defaults: `APP_SECRET_KEY=
+change-me` and `CORS_ALLOWED_ORIGINS=*`, plus an Unraid template that leaves the
+key blank. Every installation that had not filled in those two by itself crashed
+on startup, in a container that exited too fast for the message to be readable.
+Nothing became safer — the app was gone.
 
-Deze tests leggen het gedrag vast dat er wél hoort te zijn: een app met een
-eigen gegevensmap maakt zelf een sleutel, bewaart die, en start. En hij blijft
-van een sleutel af die de beheerder zelf heeft gezet.
+These tests record the behaviour that *should* be there: an app with its own data
+folder makes a key itself, stores it, and starts. And it keeps its hands off a
+key the administrator set themselves.
 """
 
 import logging
@@ -39,7 +38,7 @@ from app.core.security_checks import (
 
 @dataclass
 class FakeSettings:
-    """Genoeg van Settings om de controle te voeden, zonder .env of omgeving."""
+    """Enough of Settings to feed the check, without .env or the environment."""
 
     data_dir: Path = Path("/nonexistent")
     app_env: str = "production"
@@ -53,21 +52,21 @@ def settings(tmp_path):
     return FakeSettings(data_dir=tmp_path)
 
 
-# --- Waar het misging: de app moet starten --------------------------------
+# --- Where it went wrong: the app has to start ----------------------------
 
 
 def test_the_shipped_defaults_start_instead_of_crashing(tmp_path):
-    """Precies de configuratie waarmee CargoPilot uit de doos komt, en waarmee
-    elke Unraid-installatie sinds v1.25.0 omviel."""
+    """Exactly the configuration CargoPilot comes out of the box with, and the
+    one every Unraid installation fell over on since v1.25.0."""
     out_of_the_box = FakeSettings(
         data_dir=tmp_path, app_secret_key="change-me", cors_allowed_origins="*"
     )
-    apply_security_configuration(out_of_the_box)  # geen uitzondering
+    apply_security_configuration(out_of_the_box)  # no exception
     assert is_usable_secret(out_of_the_box.app_secret_key)
 
 
 def test_an_empty_secret_starts_too(tmp_path):
-    """De Unraid-sjabloon geeft APP_SECRET_KEY mee met een lege waarde."""
+    """The Unraid template passes APP_SECRET_KEY with an empty value."""
     blank = FakeSettings(data_dir=tmp_path, app_secret_key="")
     apply_security_configuration(blank)
     assert is_usable_secret(blank.app_secret_key)
@@ -81,7 +80,7 @@ def test_the_generated_key_is_stored_next_to_the_database(tmp_path):
 
 
 def test_the_same_key_comes_back_after_a_restart(tmp_path):
-    """Anders was iedereen na elke herstart van de container uitgelogd."""
+    """Otherwise everybody was logged out after every restart of the container."""
     first = ensure_secret_key(FakeSettings(data_dir=tmp_path, app_secret_key="change-me"))
     second = ensure_secret_key(FakeSettings(data_dir=tmp_path, app_secret_key="change-me"))
     assert first == second
@@ -94,12 +93,12 @@ def test_the_stored_key_is_not_readable_for_others(tmp_path):
 
 
 def test_a_data_directory_that_cannot_be_written_still_starts(tmp_path, caplog):
-    """Op Unraid is /data wel eens niet schrijfbaar. Dat mag het opstarten niet
-    tegenhouden; het kost alleen dat de sleutel een herstart niet overleeft.
+    """On Unraid /data is occasionally not writable. That must not hold up
+    startup; it only costs the key its survival across a restart.
 
-    De map wordt hier onbruikbaar gemaakt door er een bestand op de plek van de
-    bovenliggende map te zetten. Rechten afnemen werkt niet: de tests draaien
-    vaak als root, en dan is een map zonder schrijfrecht nog steeds schrijfbaar.
+    The folder is made unusable here by putting a file where the parent folder
+    should be. Taking permissions away does not work: the tests often run as
+    root, and then a folder without write permission is still writable.
     """
     blocked = tmp_path / "afile" / "data"
     (tmp_path / "afile").write_text("geen map", encoding="utf-8")
@@ -111,7 +110,7 @@ def test_a_data_directory_that_cannot_be_written_still_starts(tmp_path, caplog):
     assert "opnieuw inloggen" in caplog.text
 
 
-# --- En hij blijft van een eigen sleutel af -------------------------------
+# --- And it keeps its hands off a key of your own -------------------------
 
 
 def test_a_key_the_administrator_set_is_left_alone(tmp_path):
@@ -123,8 +122,8 @@ def test_a_key_the_administrator_set_is_left_alone(tmp_path):
 
 
 def test_a_configured_key_wins_over_a_stored_one(tmp_path):
-    """Wie zijn sleutel bewust in de omgeving zet, wil dat die geldt — ook als
-    er eerder een is gemaakt."""
+    """Whoever deliberately puts their key in the environment wants it to apply —
+    including when one was made earlier."""
     ensure_secret_key(FakeSettings(data_dir=tmp_path, app_secret_key=""))
     own = suggested_secret()
     assert ensure_secret_key(FakeSettings(data_dir=tmp_path, app_secret_key=own)) == own
@@ -132,7 +131,7 @@ def test_a_configured_key_wins_over_a_stored_one(tmp_path):
 
 @pytest.mark.parametrize("published", sorted(PUBLISHED_SECRETS))
 def test_no_published_value_survives_as_a_key(published, tmp_path):
-    """Ook de lange uit .env.example, die langs een pure lengtecontrole glipt."""
+    """The long one from .env.example too, which slips past a pure length check."""
     settings = FakeSettings(data_dir=tmp_path, app_secret_key=published)
     apply_security_configuration(settings)
     assert settings.app_secret_key != published
@@ -165,7 +164,7 @@ def test_what_counts_as_a_usable_key(value, usable):
     assert is_usable_secret(value) is usable
 
 
-# --- Wat er nog wel gemeld wordt ------------------------------------------
+# --- What is still reported -----------------------------------------------
 
 
 def test_wide_open_cors_is_reported_but_does_not_stop_anything(settings):
@@ -196,7 +195,7 @@ def test_a_warning_says_what_to_do_about_it(settings):
     assert "CORS_ALLOWED_ORIGINS=https://" in configuration_warnings(settings)[0]
 
 
-# --- Alleen in productie --------------------------------------------------
+# --- In production only ---------------------------------------------------
 
 
 @pytest.mark.parametrize("env", ["development", "dev", "local", "test", "testing", "DEV"])
@@ -214,8 +213,8 @@ def test_anything_that_is_not_clearly_development_counts_as_production(env):
 
 
 def test_development_still_gets_a_usable_key(tmp_path):
-    """Ook bij ontwikkelen mag de app niet op een gepubliceerde sleutel tekenen;
-    daar is het alleen geen reden om iets te melden."""
+    """In development the app must not sign on a published key either; there it
+    is simply no reason to report anything."""
     settings = FakeSettings(data_dir=tmp_path, app_env="development", app_secret_key="change-me")
     apply_security_configuration(settings)
     assert is_usable_secret(settings.app_secret_key)

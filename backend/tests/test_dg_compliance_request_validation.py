@@ -1,16 +1,16 @@
-"""De compliance-endpoint moet onbruikbare invoer weigeren, niet omrekenen.
+"""The compliance endpoint has to refuse unusable input, not convert it.
 
-De controle stond op `list[dict]`, dus Pydantic keek er niet naar. Alles wat
-binnenkwam ging de rekenlaag in, die er defensief het beste van maakte. Twee
-gevallen zijn daarbij gevaarlijk, omdat ze niet uitkomen op een foutmelding maar
-op een *gunstiger* uitkomst dan de werkelijkheid:
+The check was `list[dict]`, so Pydantic did not look at it. Everything that came
+in went into the calculation layer, which defensively made the best of it. Two
+cases are dangerous there, because they do not come out as an error message but
+as a *more favourable* outcome than reality:
 
-- Een negatieve hoeveelheid verlaagt het ADR-puntentotaal en kan een vrijstelling
-  voorspiegelen die er niet is.
-- Een verkeerd gespeld profiel ("IDMG") levert stilzwijgend geen zeevaartcontrole
-  op, en het scherm toont dan een schone uitslag zonder dat er iets is nagekeken.
+- A negative quantity lowers the ADR points total and can suggest an exemption
+  that does not exist.
+- A misspelled profile ("IDMG") silently produces no sea-transport check, and the
+  screen then shows a clean result without anything having been examined.
 
-Beide horen HTTP 422 te geven vóórdat er gerekend wordt.
+Both should give HTTP 422 before anything is computed.
 """
 
 import pytest
@@ -27,8 +27,8 @@ def request(**product):
 
 
 def test_a_normal_request_passes_and_keeps_the_class_field_name():
-    """"class" kan in Python geen veldnaam zijn, maar de rekenlaag en de
-    frontend kennen het veld zo. Het mag onderweg niet hernoemd raken."""
+    """"class" cannot be a field name in Python, but the calculation layer and
+    the frontend know the field that way. It must not get renamed in transit."""
     payload = ComplianceRequest(
         entries=[{
             "vehicle": "WAGEN-1",
@@ -66,8 +66,8 @@ def test_a_quantity_without_a_number_is_refused():
 
 
 def test_an_empty_quantity_is_allowed_because_the_check_reports_it_itself():
-    """Halve invoer is normaal: de wizard stuurt onderweg door en de controle
-    hoort 'incomplete' te melden. Weigeren zou het scherm blokkeren."""
+    """Half-finished input is normal: the wizard sends along the way and the
+    check should report 'incomplete'. Refusing would block the screen."""
     payload = request(un_number="1203", adr_total_quantity="")
     assert payload.entries[0].products[0].un_number == "1203"
 
@@ -83,21 +83,21 @@ def test_a_packing_group_is_normalised_to_upper_case():
 
 
 def test_an_unknown_transport_category_is_refused():
-    """ADR 1.1.3.6 kent 0 t/m 4. Een 5 zou geen factor hebben en de positie
-    stilzwijgend buiten het puntentotaal laten vallen."""
+    """ADR 1.1.3.6 has 0 to 4. A 5 would have no factor and would let the
+    position drop out of the points total silently."""
     with pytest.raises(ValidationError):
         request(un_number="1203", transport_category="5")
 
 
 def test_a_q_component_of_zero_is_refused_before_it_can_disappear():
-    """n of M op nul liet de component uit de Q-som vallen. Nu komt hij er niet
-    eens in."""
+    """n or M at zero made the component drop out of the Q sum. Now it does not
+    even get in."""
     with pytest.raises(ValidationError):
         request(un_number="1203", q_net_quantity="5", q_max_net_quantity="0")
 
 
 def test_fields_the_schema_does_not_name_are_kept():
-    """De wizard stuurt meer mee dan de controle leest. Dat mag niet sneuvelen
-    op de rand — de rekenlaag en de documenten gebruiken die velden."""
+    """The wizard sends more than the check reads. That must not be lost at the
+    edge — the calculation layer and the documents use those fields."""
     payload = request(un_number="1203", ems_code="F-E, S-E")
     assert payload.as_dicts()[0]["products"][0]["ems_code"] == "F-E, S-E"

@@ -1,27 +1,27 @@
 name: CI
 
-# Eén workflow op elke push en elke pull request. Dat was het niet.
+# One workflow on every push and every pull request. It was not that.
 #
-# ci.yml en dockerhub.yml heetten allebei "CI" en draaiden allebei op push naar
-# main en op elke pull request. Ze deden grotendeels hetzelfde werk: pytest liep
-# twee keer, `npm ci` en de frontend-build liepen twee keer. Vijf checks per
-# duw, waarvan twee een kopie van twee andere. Bij een release met drie commits
-# op de branch waren dat vijftien jobs voordat er ook maar iets gemerged was.
+# ci.yml and dockerhub.yml were both called "CI" and both ran on a push to main
+# and on every pull request. They largely did the same work: pytest ran twice,
+# `npm ci` and the frontend build ran twice. Five checks per push, of which two
+# were a copy of two others. On a release with three commits on the branch that
+# was fifteen jobs before anything had been merged.
 #
-# De tweede kostenpost was de Docker-build. Die bouwde linux/amd64 én
-# linux/arm64, en arm64 draait op een amd64-runner onder QEMU-emulatie: dat is
-# waar de vijf tot negen minuten heen gingen. Op een pull request werd het
-# resultaat daarna weggegooid, want pushen gebeurt daar niet.
+# The second cost was the Docker build. It built linux/amd64 *and* linux/arm64,
+# and arm64 runs on an amd64 runner under QEMU emulation: that is where the five
+# to nine minutes went. On a pull request the result was then thrown away,
+# because nothing is pushed there.
 #
-# Dus: één workflow, elke stap één keer, en arm64 alleen wanneer er ook
-# werkelijk een image wordt gepubliceerd. Op een pull request is de Docker-build
-# een rooktest — bouwt het Dockerfile nog? — en daarvoor volstaat amd64.
+# So: one workflow, every step once, and arm64 only when an image is actually
+# published. On a pull request the Docker build is a smoke test — does the
+# Dockerfile still build? — and amd64 is enough for that.
 #
-# Op een tag draait dit niet. De image van een release wordt niet opnieuw
-# gebouwd maar hernoemd: `tag-release.yml` zet de versietag met
-# `imagetools create` op het manifest dat hier op main is gebouwd en gepusht.
-# Dat scheelt een tweede vertaling van dezelfde commit, en het is strenger —
-# wat wordt uitgebracht is bit voor bit wat hier groen werd.
+# This does not run on a tag. The image of a release is not rebuilt but renamed:
+# `tag-release.yml` puts the version tag with `imagetools create` on the manifest
+# built and pushed here on main. That saves a second compilation of the same
+# commit, and it is stricter — what is released is bit for bit what went green
+# here.
 
 on:
   push:
@@ -30,9 +30,8 @@ on:
     branches: [main]
   workflow_dispatch:
 
-# Wie drie keer achter elkaar duwt, hoeft niet drie keer de uitslag van de
-# eerste twee. Op main en op een tag draait alles af: daar hangt een publicatie
-# aan.
+# Whoever pushes three times in a row does not need the result of the first two.
+# On main and on a tag everything runs to the end: a publication hangs off those.
 concurrency:
   group: ci-${{ github.ref }}
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
@@ -56,8 +55,8 @@ jobs:
             backend/requirements.txt
             backend/requirements-runtime.txt
 
-      # Deze poort staat bewust vóór de installatie: hij kost een seconde en
-      # vangt de fout die de release-workflow vroeger op main repareerde.
+      # This gate deliberately comes *before* the installation: it costs a second
+      # and catches the mistake the release workflow used to repair on main.
       - name: Check version consistency
         run: python scripts/check_versions.py
 
@@ -66,8 +65,8 @@ jobs:
       - name: Validate installed Python dependencies
         run: pip check
 
-      # DATA_DIR en DATABASE_URL wijzen standaard naar /data en dat bestaat hier
-      # niet; de backend zaait zijn catalogi bij het opstarten in die map.
+      # DATA_DIR and DATABASE_URL point at /data by default and that does not
+      # exist here; the backend seeds its catalogues into that folder at startup.
       - name: Tests
         working-directory: backend
         env:
@@ -89,9 +88,9 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          # jsdom 30 verlangt "^22.22.2 || ^24.15.0 || >=26" en undici 8 ">=22.19.0".
-          # Op Node 20 valt `npm test` om nog voordat er één test draait, met
-          # "webidl.util.markAsUncloneable is not a function" uit undici.
+          # jsdom 30 requires "^22.22.2 || ^24.15.0 || >=26" and undici 8 ">=22.19.0".
+          # On Node 20 `npm test` falls over before a single test runs, with
+          # "webidl.util.markAsUncloneable is not a function" from undici.
           node-version: "22"
           cache: npm
           cache-dependency-path: frontend/package-lock.json
@@ -119,9 +118,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      # Op een pull request wordt er niets gepusht, dus hoeft er ook geen arm64
-      # te worden gebouwd. Dat scheelt het leeuwendeel van de looptijd: arm64
-      # gaat hier door QEMU heen.
+      # On a pull request nothing is pushed, so no arm64 has to be built either.
+      # That saves the lion's share of the runtime: arm64 goes through QEMU here.
       - name: Decide what to build
         id: plan
         env:
@@ -130,9 +128,9 @@ jobs:
           if [ "${{ github.event_name }}" = "pull_request" ]; then
             echo "platforms=linux/amd64" >> "$GITHUB_OUTPUT"
             echo "publishing=false" >> "$GITHUB_OUTPUT"
-            # Een pull request schrijft geen cache. Zou hij dat wel doen, dan
-            # overschreef een amd64-only laag die van main en werd de volgende
-            # publicerende build juist langzamer.
+            # A pull request writes no cache. If it did, an amd64-only layer
+            # would overwrite the one from main and the next publishing build
+            # would actually get slower.
             echo "cache_to=" >> "$GITHUB_OUTPUT"
           else
             echo "platforms=linux/amd64,linux/arm64" >> "$GITHUB_OUTPUT"
@@ -155,8 +153,8 @@ jobs:
             echo "::warning::DOCKER_USERNAME en DOCKER_TOKEN zijn niet ingesteld. De image wordt wel gebouwd maar niet naar DockerHub gepusht."
           fi
 
-      # QEMU is er alleen voor het emuleren van arm64. Zonder arm64 is het
-      # opzetten ervan verspilde tijd.
+      # QEMU is there only to emulate arm64. Without arm64, setting it up is
+      # wasted time.
       - name: Set up QEMU
         if: steps.plan.outputs.publishing == 'true'
         uses: docker/setup-qemu-action@v3

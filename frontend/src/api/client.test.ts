@@ -1,11 +1,11 @@
 /**
- * Wat de gebruiker te zien krijgt als de server de invoer weigert.
+ * What the user gets to see when the server refuses their input.
  *
- * Bij een 422 stuurt FastAPI geen zin maar een lijst met `{loc, msg}` per veld.
- * Die ging rechtstreeks naar `new Error()`, wat "[object Object]" opleverde:
- * de gebruiker zag dát er iets mis was, maar niet wat, en al helemaal niet
- * welk veld. Sinds v1.24.0 weigert de compliance-endpoint onbruikbare invoer,
- * dus dit is geen randgeval meer maar de normale weg.
+ * On a 422 FastAPI sends not a sentence but a list of `{loc, msg}` per field.
+ * That went straight into `new Error()`, which produced "[object Object]": the
+ * user saw *that* something was wrong, but not what, and certainly not which
+ * field. Since v1.24.0 the compliance endpoint refuses unusable input, so this
+ * is no longer an edge case but the normal path.
  */
 import { describe, expect, it } from "vitest";
 

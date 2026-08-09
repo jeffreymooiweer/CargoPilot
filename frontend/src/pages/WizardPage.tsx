@@ -263,15 +263,15 @@ export default function WizardPage() {
         text,
         mode: "continue",
         input_language: null,
-        // Afmetingen komen uit de invoer en moeten dus ook bij de eerste
-        // berekening al meetellen; gewichtscorrecties bestaan pas als er een
-        // resultaat is om te corrigeren.
+        // Dimensions come from the input and therefore have to count towards the
+        // very first calculation; weight corrections only exist once there is a
+        // result to correct.
         line_overrides: mergeOverrides(
           dimensionOverridesFromDrafts(draftLines),
           result ? weightOverridesFromLines(result.lines) : [],
         ),
       });
-      // DG-vinkjes van de colli toepassen (zelfde volgorde als niet-lege regels).
+      // Apply the DG ticks of the packages (same order as the non-empty lines).
       const flagged = draftLines.filter((l) => l.description.trim());
       const withDg = {
         ...res,
@@ -291,11 +291,11 @@ export default function WizardPage() {
   };
 
   /**
-   * Wat er is ingevoerd, als één tekenreeks.
+   * What was entered, as one string.
    *
-   * Verandert dit, dan klopt het getoonde gewicht niet meer. Handmatige
-   * gewichtscorrecties zitten er bewust niet in: die zijn een *antwoord* op een
-   * berekening en zouden anders zichzelf opnieuw aftrappen.
+   * If this changes, the weight shown is no longer right. Manual weight
+   * corrections are deliberately not in it: those are an *answer* to a
+   * calculation and would otherwise set themselves off again.
    */
   const draftSignature = JSON.stringify(
     draftLines.map((line) => [
@@ -310,10 +310,10 @@ export default function WizardPage() {
     ]),
   );
 
-  // Herberekenen was een knop, en een knop die je moet indrukken om een juist
-  // getal te zien is een knop die vergeten wordt — met een verouderd gewicht op
-  // het scherm als gevolg. Nu gebeurt het vanzelf, kort nadat het typen stopt.
-  // De vertraging is er om niet bij elke toetsaanslag een verzoek te sturen.
+  // Recalculating used to be a button, and a button you have to press to see a
+  // correct figure is a button that gets forgotten — with a stale weight on the
+  // screen as the result. Now it happens by itself, shortly after the typing
+  // stops. The delay is there so as not to send a request on every keystroke.
   const calculatedSignature = useRef<string | null>(null);
   useEffect(() => {
     if (stepKey !== "lines") return;

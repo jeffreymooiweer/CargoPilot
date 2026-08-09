@@ -10,15 +10,15 @@ export interface DraftLine {
   description: string;
   quantity: number | "";
   unit: string;
-  /** De vorm waarin dit goed reist: massief, gestapeld, los gestort. Bepaalt
-   *  hoeveel van een kuub daadwerkelijk materiaal is. */
+  /** The form this commodity travels in: solid, stacked, loose bulk. Determines
+   *  how much of a cubic metre is actually material. */
   cargo_form?: string;
-  /** Wanddikte in millimeters. Alleen zinvol bij een doorsnede die een wand
-   *  heeft — een hoekprofiel of koker. Bij een plaat of balk beschrijven de drie
-   *  buitenmaten het materiaal al volledig. */
+  /** Wall thickness in millimetres. Only meaningful with a cross-section that
+   *  has a wall — an angle or a hollow section. For a plate or a beam the three
+   *  outside measurements already describe the material completely. */
   wall_thickness_mm?: number | "";
-  /** Afmetingen die de gebruiker zelf invult, in centimeters. Ze hoeven dus
-   *  niet meer in de omschrijving te worden verstopt om mee te tellen. */
+  /** Dimensions the user fills in themselves, in centimetres. They no longer
+   *  have to be hidden in the description to count. */
   length_cm?: number | "";
   width_cm?: number | "";
   height_cm?: number | "";
@@ -32,19 +32,19 @@ const weightInputClass =
 const panelClass = "bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800";
 
 /**
- * Doorsneden met een wand, waar lengte-breedte-hoogte het gewicht niet bepaalt.
+ * Cross-sections with a wall, where length-width-height does not determine the weight.
  *
- * Een hoekprofiel van 80x80 is twee benen van een paar millimeter dik, geen
- * massieve staaf van 80x80 — het scheelt een factor vijf. Bij een plaat, balk of
- * plank speelt dat niet en hoort het veld er dus ook niet te staan.
+ * An 80x80 angle is two legs a few millimetres thick, not a solid bar of 80x80 —
+ * a factor of five. For a plate, beam or plank that does not come into play and
+ * the field therefore should not be there either.
  */
 const WALL_PROFILE_TYPES = new Set(["angle_profile", "square_tube", "round_tube"]);
 
 /**
- * Ronde doorsneden. Daar ís de breedte de diameter en bestaat er geen hoogte:
- * met een diameter, een lengte en — bij een buis — een wanddikte ligt het
- * gewicht vast. Om een hoogte vragen die niets toevoegt is alleen gelegenheid
- * om iets verkeerds in te vullen.
+ * Round cross-sections. There the width *is* the diameter and there is no
+ * height: with a diameter, a length and — for a tube — a wall thickness, the
+ * weight is fixed. Asking for a height that adds nothing is only an opportunity
+ * to fill in something wrong.
  */
 const ROUND_TYPES = new Set(["round_tube", "round_bar"]);
 
@@ -150,9 +150,9 @@ export default function ReviewLinesPanel({
     onDraftChange(draftLines.map((line) => (line.id === id ? { ...line, ...patch } : line)));
   };
 
-  // De eenhedencatalogus komt van de backend, zodat de lijst op één plek wordt
-  // onderhouden. Lukt dat niet, dan valt UnitSelect terug op een tekstveld en
-  // blijft de stap bruikbaar.
+  // The unit catalogue comes from the backend, so the list is maintained in one
+  // place. If that fails, UnitSelect falls back to a text field and the step
+  // stays usable.
   const [catalogue, setCatalogue] = useState<UnitCatalogue | null>(null);
   useEffect(() => {
     let alive = true;
@@ -170,10 +170,10 @@ export default function ReviewLinesPanel({
     return computed ? resultLines![index] : null;
   }
 
-  // Kolommen zijn hier ook invoervelden: dit is een tabel waarin je typt, niet
-  // een tabel die je leest. Wat op een dichtgeklapte kaart hoort staat in het
-  // antwoord van de gebruiker: de omschrijving als kop, aantal en eenheid als
-  // enige regel. De rest zit achter "toon meer".
+  // Columns are input fields here as well: this is a table you type in, not a
+  // table you read. What belongs on a collapsed card is in the user's answer:
+  // the description as the heading, quantity and unit as the only line. The rest
+  // sits behind "show more".
   const columns: RecordColumn<DraftLine>[] = [
     {
       key: "description",
@@ -223,8 +223,8 @@ export default function ReviewLinesPanel({
       render: (draft, index) => {
         const category = resultFor(index)?.material_category;
         const forms = (category && catalogue?.forms_by_category[category]) || [];
-        // Geen vorm bij grind, graan of vloeistoffen: daar beschrijft de
-        // opgeslagen dichtheid de stof al zoals hij vervoerd wordt.
+        // No form for gravel, grain or liquids: there the stored density already
+        // describes the substance as it is carried.
         if (forms.length === 0) return <span className="text-slate-400">—</span>;
         return (
           <select
@@ -249,13 +249,13 @@ export default function ReviewLinesPanel({
       width: "w-24",
       render: (draft: DraftLine, index: number) => {
         const round = ROUND_TYPES.has(resultFor(index)?.product_type ?? "");
-        // Geen hoogte bij een ronde doorsnede; de diameter staat in de breedte.
+        // No height with a round cross-section; the diameter is in the width.
         if (round && field === "height_cm") return <span className="text-slate-400">—</span>;
-        // De kolomkop is voor alle regels gelijk, dus de aanduiding "diameter"
-        // hoort bij het veld zelf.
+        // The column heading is the same for every line, so the label "diameter"
+        // belongs with the field itself.
         const label = round && field === "width_cm" ? t("review.diameter") : t(`review.${field}`);
-        // Wat de gebruiker invult wint van wat er uit de omschrijving is
-        // gelezen; staat er niets, dan is de gelezen maat de standaardwaarde.
+        // What the user fills in beats what was read out of the description; if
+        // there is nothing, the measurement read is the default value.
         const parsed = resultFor(index)?.[field];
         return (
           <input
@@ -280,8 +280,8 @@ export default function ReviewLinesPanel({
       numeric: true,
       width: "w-28",
       render: (draft, index) => {
-        // Alleen tonen waar het iets betekent. Een plaat of een balk heeft geen
-        // wand, en een leeg veld dat nooit van toepassing is leidt alleen maar af.
+        // Only show it where it means something. A plate or a beam has no wall,
+        // and an empty field that never applies is only a distraction.
         const type = resultFor(index)?.product_type;
         if (!type || !WALL_PROFILE_TYPES.has(type)) {
           return <span className="text-slate-400">—</span>;

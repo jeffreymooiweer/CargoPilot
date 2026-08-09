@@ -1,13 +1,13 @@
-"""Een veld dat een vorm belooft, moet die vorm ook hebben.
+"""A field that promises a shape has to have that shape.
 
-De export controleerde tot nu toe alleen of een verplicht veld gevuld was. De
-NHM-code op de CIM heet in het register "vak 24, 6 cijfers", maar "72" of
-"7208 51" kwam er net zo goed doorheen en belandde zo op een officiële
-spoorvrachtbrief. Een goederencode die niet bestaat is daar geen schoonheids-
-foutje: de vervoerder rekent er zijn tarief mee en de douane leest hem.
+Until now the export only checked whether a mandatory field was filled. The NHM
+code on the CIM is called "box 24, 6 digits" in the registry, but "72" or
+"7208 51" got through just as easily and ended up on an official rail waybill
+that way. A goods code that does not exist is no blemish there: the carrier
+calculates its tariff with it and customs read it.
 
-De controle is generiek opgezet — een `pattern` in het documentregister — zodat
-elk volgend veld met een vaste vorm hem meekrijgt zonder nieuwe code.
+The check is set up generically — a `pattern` in the document registry — so that
+every next field with a fixed shape gets it without new code.
 """
 
 import pytest
@@ -18,7 +18,7 @@ from tests.test_documents import BASE_VALUES, LINES
 
 
 def cim_values(**overrides):
-    """De CIM heeft meer verplichte velden; die zijn hier niet het onderwerp."""
+    """The CIM has more mandatory fields; those are not the subject here."""
     return dict(BASE_VALUES, **overrides)
 
 
@@ -38,8 +38,8 @@ def test_anything_that_is_not_six_digits_is_refused(code):
 
 
 def test_the_message_says_what_the_field_should_look_like():
-    """Een foutmelding die alleen zegt dát het fout is, laat de gebruiker
-    raden."""
+    """An error message that only says *that* it is wrong leaves the user
+    guessing."""
     errors = format_errors(cim_values(nhm_code="72"))
     assert "720851" in errors[0]
 
@@ -50,8 +50,8 @@ def test_the_message_is_translated():
 
 
 def test_an_empty_field_is_reported_as_missing_and_not_as_misformatted():
-    """Twee verschillende problemen; ze allebei melden voor hetzelfde veld
-    zou de gebruiker twee keer naar dezelfde regel sturen."""
+    """Two different problems; reporting both for the same field would send the
+    user to the same line twice."""
     errors, _ = validate_document(get_document("cim"), cim_values(nhm_code=""),
                                   LINES, None, "nl")
     about_nhm = [e for e in errors if "NHM" in e]
@@ -60,5 +60,5 @@ def test_an_empty_field_is_reported_as_missing_and_not_as_misformatted():
 
 
 def test_a_field_without_a_pattern_is_left_alone():
-    """De controle mag alleen aanslaan waar het register een vorm belooft."""
+    """The check may only fire where the registry promises a shape."""
     assert format_errors(cim_values(nhm_code="720851", consignor_name="Firma A")) == []

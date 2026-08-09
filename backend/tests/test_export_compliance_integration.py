@@ -1,17 +1,17 @@
-"""Wat er werkelijk in het geëxporteerde document staat, teruggelezen uit de PDF.
+"""What is really in the exported document, read back out of the PDF.
 
-De wizard controleert, maar het scherm mag nooit de enige plek zijn waar dat
-gebeurt: een verouderd of nooit ververst schermresultaat mag geen document
-opleveren. Deze tests gaan daarom langs de exportkant en lezen de uitkomst terug
-uit het bestand dat een gebruiker in handen krijgt — niet uit een tussenlaag.
+The wizard checks, but the screen must never be the only place where that
+happens: a stale or never-refreshed screen result must not produce a document.
+These tests therefore go via the export side and read the outcome back out of
+the file a user gets in their hands — not out of an intermediate layer.
 
-Twee dingen worden hier vastgelegd die met een unittest niet te vangen zijn:
+Two things are recorded here that a unit test cannot catch:
 
-- de export voert de nalevingscontrole zelf opnieuw uit, met de invoer die op
-  dat moment wordt meegestuurd;
-- de luchtvaartverklaring draagt de IATA-verpakkingsinstructie en niet de
-  ADR-instructie van dezelfde stof. Die twee lijken op elkaar (P001 tegenover
-  965) en verwisselen betekent een verklaring die niet klopt met de verpakking.
+- the export runs the compliance check itself again, with the input sent along
+  at that moment;
+- the air declaration carries the IATA packing instruction and not the ADR
+  instruction for the same substance. Those two look alike (P001 against 965) and
+  swapping them means a declaration that does not match the packaging.
 """
 
 import pytest
@@ -51,11 +51,11 @@ def air_entry(**product):
     return [{"line_id": 1, "vehicle": "Batterijen", "products": [{**base, **product}]}]
 
 
-# --- De export controleert zelf ------------------------------------------------
+# --- The export checks for itself ----------------------------------------------
 
 def test_the_export_runs_the_compliance_check_itself():
-    """Klasse 1 samen met een andere klasse is verboden onder ADR 7.5.2.1. Dat
-    hoort de export tegen te houden, ook als het scherm nooit is ververst."""
+    """Class 1 together with another class is forbidden under ADR 7.5.2.1. The
+    export should stop that, even if the screen was never refreshed."""
     entries = [{
         "line_id": 1,
         "vehicle": "WAGEN-1",
@@ -72,7 +72,7 @@ def test_the_export_runs_the_compliance_check_itself():
 
 
 def test_a_q_value_above_one_blocks_the_export():
-    """IATA 5.0.2.11: boven Q = 1 mag de combinatie zo niet vliegen."""
+    """IATA 5.0.2.11: above Q = 1 the combination may not fly like that."""
     entries = [{
         "line_id": 1,
         "vehicle": "COLLO-1",
@@ -109,8 +109,8 @@ def test_a_q_value_within_the_limit_does_not_block_the_export():
 
 
 def test_the_check_uses_the_quantities_that_are_sent_now():
-    """Twee keer dezelfde stof, alleen de hoeveelheid verschilt: de uitkomst
-    moet meebewegen. Een gecachete uitslag zou hier hetzelfde antwoord geven."""
+    """Twice the same substance, only the quantity differs: the outcome has to
+    move with it. A cached result would give the same answer here."""
     def points_for(quantity: str):
         entries = [{
             "line_id": 1, "vehicle": "WAGEN-1",
@@ -124,23 +124,23 @@ def test_the_check_uses_the_quantities_that_are_sent_now():
 
     small_errors, small_warnings = points_for("20 L")
     large_errors, large_warnings = points_for("2000 L")
-    # 2000 L in categorie 2 telt voor 6000 punten en gaat ruim over de 1000 heen;
-    # 20 L blijft er ver onder. De uitkomsten mogen dus niet gelijk zijn.
+    # 2000 L in category 2 counts for 6000 points and goes well past 1000; 20 L
+    # stays far below it. The outcomes must therefore not be the same.
     assert (small_errors, small_warnings) != (large_errors, large_warnings)
 
 
-# --- Wat er in de luchtvaartverklaring terechtkomt ------------------------------
+# --- What ends up in the air declaration ----------------------------------------
 
 def test_the_air_declaration_carries_the_iata_packing_instruction():
-    """P001 is de ADR-instructie voor dezelfde stof; op een DGD hoort 353.
+    """P001 is the ADR instruction for the same substance; on a DGD it should be 353.
 
-    Ze staan allebei op de stof en verwisselen levert een verklaring op die
-    niet klopt met de verpakking die eronder zit.
+    Both are on the substance and swapping them produces a declaration that does
+    not match the packaging underneath it.
     """
     entries = air_entry(
         un_number="1263", proper_shipping_name="PAINT", **{"class": "3"},
         packing_instruction="353",          # IATA
-        adr_packing_instruction="P001",     # ADR, hoort er niet op
+        adr_packing_instruction="P001",     # ADR, does not belong on it
     )
     path = fill_pdf_document("iata_dgd", air_values(), LINES, entries, "en")
     try:
@@ -152,12 +152,12 @@ def test_the_air_declaration_carries_the_iata_packing_instruction():
 
 
 def test_the_authorization_reaches_the_document():
-    """Onder welke goedkeuring of vrijstelling de zending mag vliegen.
+    """Under which approval or exemption the consignment may fly.
 
-    De template die CargoPilot invult heeft daar geen apart invulveld voor —
-    het Authorization-vak van de DGD zit in de tabel met de goederen — dus het
-    komt als eigen benoemde regel onder die tabel. Weglaten kan niet: zonder
-    die verwijzing is een zending die er een nodig heeft niet aan te bieden.
+    The template CargoPilot fills in has no separate field for that — the
+    Authorization box of the DGD sits inside the goods table — so it goes as a
+    named line of its own below that table. Omitting is not an option: without
+    that reference, a consignment that needs one cannot be offered.
     """
     values = air_values(authorization="Competent authority approval NL-2026-0042")
     path = fill_pdf_document("iata_dgd", values, LINES, air_entry(), "en")
@@ -170,8 +170,8 @@ def test_the_authorization_reaches_the_document():
 
 
 def test_without_an_authorization_the_line_is_left_off():
-    """Een leeg vak met alleen het woord 'Authorization' erin suggereert dat
-    er iets is goedgekeurd."""
+    """An empty box with only the word 'Authorization' in it suggests that
+    something was approved."""
     path = fill_pdf_document("iata_dgd", air_values(), LINES, air_entry(), "en")
     try:
         assert "Authorization" not in _pdf_visible_text(path)
@@ -188,7 +188,7 @@ def test_the_emergency_contact_reaches_the_document():
 
 
 def test_the_declaration_is_flat_so_the_values_cannot_be_edited_away():
-    """Een ingevuld formulier dat nog bewerkbaar is, is geen verklaring."""
+    """A completed form that is still editable is not a declaration."""
     path = fill_pdf_document("iata_dgd", air_values(), LINES, air_entry(), "en")
     try:
         assert PdfReader(str(path)).get_fields() in (None, {})
@@ -199,11 +199,11 @@ def test_the_declaration_is_flat_so_the_values_cannot_be_edited_away():
 # --- IMDG: één eindconclusie ---------------------------------------------------
 
 def test_a_16b_provision_and_the_class_table_resolve_to_one_outcome():
-    """7.2.3.1 laat kolom 16b vóórgaan op de scheidingstabel van 7.2.4.
+    """7.2.3.1 lets column 16b prevail over the segregation table of 7.2.4.
 
-    Waar beide iets zeggen mag er niet één uitkomst blijven staan die de
-    andere tegenspreekt: de zwaarste regel regeert en de rest wordt als
-    achtergrond gemarkeerd, niet als los tegengesteld advies.
+    Where both say something, no outcome may stand that contradicts the other:
+    the strictest rule governs and the rest is marked as background, not as
+    separate contradictory advice.
     """
     from app.services.dg.compliance import check_imdg_segregation
 
@@ -219,8 +219,8 @@ def test_a_16b_provision_and_the_class_table_resolve_to_one_outcome():
     findings = check_imdg_segregation(entries, "nl")
     governing = [f for f in findings if f.get("takes_precedence_over")]
     superseded = [f for f in findings if f.get("superseded_by")]
-    # Als er iets voorrang krijgt, moet het overruled deel dat ook zeggen —
-    # anders staan er twee gelijkwaardige, tegengestelde uitspraken.
+    # If something takes precedence, the overruled part has to say so too —
+    # otherwise there are two equal, contradictory statements.
     if governing:
         assert superseded, findings
         for finding in superseded:
@@ -229,7 +229,7 @@ def test_a_16b_provision_and_the_class_table_resolve_to_one_outcome():
 
 @pytest.mark.parametrize("profile", ["ADR", "IMDG", "IATA"])
 def test_an_export_without_dangerous_goods_is_not_blocked_by_the_dg_check(profile):
-    """De controle mag niets tegenhouden wat geen gevaarlijke stof bevat."""
+    """The check must not hold up anything that contains no dangerous goods."""
     document = get_document("cmr" if profile != "IATA" else "iata_dgd")
     errors, _ = validate_document(document, BASE_VALUES, LINES, [], profile)
     assert not any("7.5.2" in e or "5.0.2.11" in e for e in errors), errors

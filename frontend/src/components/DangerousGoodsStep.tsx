@@ -23,11 +23,11 @@ interface Props {
   lines: LineItem[];
   entries: DgEntry[];
   onChange: (entries: DgEntry[]) => void;
-  /** Toon één positie per scherm met navigatie */
+  /** Show one position per screen with navigation */
   perPosition?: boolean;
-  /** Extra DG-velden voor geselecteerde documenten (bijv. IATA/IMO) */
+  /** Extra DG fields for the selected documents (IATA/IMO for instance) */
   extraFields?: string[];
-  /** Regelgevingsprofielen van de gekozen formulieren (ADR, IMDG, IATA_DGR, …) */
+  /** Regulatory profiles of the chosen forms (ADR, IMDG, IATA_DGR, …) */
   profiles?: string[];
 }
 
@@ -104,12 +104,12 @@ export default function DangerousGoodsStep({
     api.dgInstructions().then(setInstructions).catch(() => setInstructions(null));
   }, []);
 
-  // Automatische afleiding: alles wat uit het UN-nummer en de colli volgt wordt
-  // door de backend ingevuld. Alleen lege velden worden aangevuld, zodat
-  // handmatige correcties blijven staan.
-  // De handtekening bevat ook aantallen, inhoud en verpakking: de afgeleide
-  // totalen (ADR-hoeveelheid, Q-waarde) rekenen daarmee, dus een wijziging
-  // daarin moet net zo goed een nieuwe afleiding geven als een nieuw UN-nummer.
+  // Automatic derivation: everything that follows from the UN number and the
+  // packages is filled in by the backend. Only empty fields are completed, so
+  // manual corrections stay.
+  // The signature also covers counts, contents and packaging: the derived totals
+  // (ADR quantity, Q value) compute with those, so a change there has to trigger
+  // a new derivation just as a new UN number does.
   const unSignature = entries
     .map((entry) =>
       entry.products
@@ -148,7 +148,7 @@ export default function DangerousGoodsStep({
       cancelled = true;
       window.clearTimeout(timer);
     };
-    // Opnieuw afleiden bij elke relevante invoerwijziging (debounced).
+    // Derive again on every relevant input change (debounced).
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [unSignature, profileKey, lang]);
 
@@ -205,15 +205,16 @@ export default function DangerousGoodsStep({
   };
 
   const applyUnEntry = (entryIndex: number, productIndex: number, un: DgUnEntry) => {
-    // Alleen het UN-nummer zetten: de rest (juiste vervoersnaam, divisie,
-    // nevengevaren uit de etikettenkolom, verpakkingsgroep, vervoerscategorie,
-    // tunnelcode, EmS en luchtvrachtregels) wordt door /dg/prepare afgeleid.
-    // De classificatiecode (F1, M4, C1) is nadrukkelijk géén nevengevaar.
+    // Set the UN number only: the rest (proper shipping name, division,
+    // subsidiary risks from the labels column, packing group, transport
+    // category, tunnel code, EmS and air freight rules) is derived by
+    // /dg/prepare. The classification code (F1, M4, C1) is emphatically *not* a
+    // subsidiary risk.
     updateProduct(entryIndex, productIndex, {
       un_number: un.un,
       proper_shipping_name: (un.name_en || un.name_de).toUpperCase(),
     });
-    // Live ADR 2025-verrijking (exacte PSN e.d.) wanneer de externe bron bereikbaar is.
+    // Live ADR 2025 enrichment (exact PSN and so on) when the external source is reachable.
     void lookupUn(entryIndex, productIndex, un.un, true);
   };
 
@@ -241,7 +242,7 @@ export default function DangerousGoodsStep({
     if (!un || un.replace(/\D/g, "").length < 4) return;
     try {
       const data = await api.dgLookup(un, lang, profiles);
-      // Alleen overschrijven met velden die de bron daadwerkelijk levert.
+      // Only overwrite with fields the source actually supplies.
       const patch: Partial<DgProduct> = { un_number: data.un_number || un };
       if (data.proper_shipping_name) patch.proper_shipping_name = data.proper_shipping_name;
       if (data.class) patch.class = data.class;
@@ -396,8 +397,8 @@ export default function DangerousGoodsStep({
   );
 }
 
-/** Toont wat de app automatisch heeft afgeleid: documentregels, aandachtspunten
- *  en de aanvullende gegevens die de gebruiker zelf moet aanleveren. */
+/** Shows what the app derived automatically: document lines, points of
+ *  attention and the additional data the user has to supply themselves. */
 function AutoDerivedPanel({ prepared }: { prepared: DgPrepareResult }) {
   const { t } = useTranslation();
   const profiles = Object.keys(prepared.document_lines).filter(
@@ -421,10 +422,10 @@ function AutoDerivedPanel({ prepared }: { prepared: DgPrepareResult }) {
         }),
       hint.segregation_groups_text && `IMDG 7.2.5 — ${hint.segregation_groups_text}`,
       hint.marine_pollutant_text,
-      // Stuwage en scheiding per stof (IMDG kolom 16a/16b). De codes alleen
-      // zeggen een gebruiker niets, dus de toelichting van de kaart erbij.
-      // De omschrijving uit hoofdstuk 7.1.5 en 7.2.8 gaat voor op de zin die
-      // van de UN-kaart kwam; die laatste is een parafrase.
+      // Stowage and segregation per substance (IMDG columns 16a/16b). The codes
+      // alone say nothing to a user, so the card's explanation comes with them.
+      // The description from chapters 7.1.5 and 7.2.8 takes precedence over the
+      // sentence that came from the UN card; the latter is a paraphrase.
       hint.imdg_stowage_codes?.length &&
         `IMDG 16a — ${
           hint.imdg_stowage_definitions?.length
@@ -444,17 +445,17 @@ function AutoDerivedPanel({ prepared }: { prepared: DgPrepareResult }) {
       hint.imdg_stowage_category && `IMDG 7.1.4 — ${t("dgauto.stowageCategory", {
         category: hint.imdg_stowage_category,
       })}`,
-      // Kolom 6 van de lijst. Een bijzondere bepaling kan de indeling, de
-      // verpakking of de vrijstelling van een stof veranderen, dus het nummer
-      // hoort in beeld ook al staat de tekst ervan niet in deze app.
+      // Column 6 of the list. A special provision can change the
+      // classification, the packaging or the exemption of a substance, so the
+      // number belongs in view even though its text is not in this app.
       hint.imdg_special_provisions?.length &&
         `IMDG 3.2 — ${t("dgauto.specialProvisions", {
           list: hint.imdg_special_provisions.join(", "),
         })}`,
       hint.imdg_amended_in_42_24 && `IMDG 42-24 — ${t("dgauto.amendedIn4224")}`,
-      // Wat amendement 42-24 aan deze stof verandert. De basisgegevens komen uit
-      // ADR 2025 en de UN-kaarten van 41-22; waar de verplichte editie daarvan
-      // afwijkt, hoort dat bij de stof te staan en niet alleen in de docs.
+      // What Amendment 42-24 changes about this substance. The base data comes
+      // from ADR 2025 and the 41-22 UN cards; where the mandatory edition
+      // differs, that belongs with the substance and not only in the docs.
       ...(hint.imdg_amendment_changes ?? []).map((change) => `IMDG 42-24 — ${change}`),
       hint.imdg_document_requirement &&
         `IMDG ${hint.imdg_document_requirement.section} — ${hint.imdg_document_requirement.text}`,
@@ -542,7 +543,7 @@ function AutoDerivedPanel({ prepared }: { prepared: DgPrepareResult }) {
       {notes.length > 0 && (
         <CollapsibleSection
           title={t("dgauto.notes")}
-          // Een rode luchtvrachtwaarschuwing hoort open in beeld te staan.
+          // A red air freight warning belongs open and in view.
           defaultOpen={notes.some((note) => note.forbidden)}
           chips={<SummaryChip>{notes.length}</SummaryChip>}
         >

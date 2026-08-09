@@ -1,8 +1,8 @@
-"""Genereer nette PDF's voor zelf-ontworpen CargoPilot-documenten met reportlab.
+"""Generate clean PDFs for self-designed CargoPilot documents with reportlab.
 
-Gebruikt voor documenten zonder officieel invulbaar formulier (paklijst,
-afleverbon, IMO MMDGF, VGM, shipping instructions, ADR/ADN). Officiële invulbare formulieren (CMR, IATA,
-CIM) worden elders met pypdf ingevuld en niet nagebouwd.
+Used for documents without an official fillable form (packing list, delivery
+note, IMO MMDGF, VGM, shipping instructions, ADR/ADN). Official fillable forms
+(CMR, IATA, CIM) are filled in elsewhere with pypdf and not rebuilt.
 """
 
 import io
@@ -168,7 +168,7 @@ def _output_path() -> Path:
 
 
 def _signature_block(signature_png: bytes, styles: dict, lang: str) -> list:
-    """Handtekening van de afzender als afbeelding boven een handtekeninglijn."""
+    """The consignor's signature as an image above a signature line."""
     with PILImage.open(io.BytesIO(signature_png)) as img:
         ratio = img.height / max(img.width, 1)
     sig_width = min(60 * mm, (22 * mm) / max(ratio, 0.01))
@@ -266,8 +266,8 @@ def render_document_pdf(
         story.append(_grid_table(header, rows, styles, width))
         story.append(Spacer(1, 6))
 
-        # ADR 5.4.1.1.1.1: totale hoeveelheid per vervoerscategorie hoort in
-        # het vervoersdocument wanneer op de 1.1.3.6-vrijstelling wordt gesteund.
+        # ADR 5.4.1.1.1.1: the total quantity per transport category belongs in
+        # the transport document when the 1.1.3.6 exemption is relied upon.
         if profile in {"ADR", "RID", "ADN"}:
             totals = adr_category_totals(dangerous_goods, lang)
             if totals["statement"]:

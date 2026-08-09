@@ -1,25 +1,24 @@
-"""Wat er niet meer is, moet niet stilletjes terugkomen.
+"""What is gone must not quietly come back.
 
-De opruiming van v1.43.0 haalde vier ongebruikte functies, vier ongebruikte
-schema's, twaalf ongebruikte imports en twee scripts weg. Zulke dingen groeien
-vanzelf terug: een functie wordt geschreven voor een aanroeper die er nooit
-komt, een import blijft staan als de code eronder verdwijnt, en niets valt om.
+The clear-out of v1.43.0 removed four unused functions, four unused schemas,
+twelve unused imports and two scripts. Things like that grow back by themselves:
+a function is written for a caller that never arrives, an import stays behind
+when the code under it disappears, and nothing falls over.
 
-Twee van die vondsten waren meer dan opruimen:
+Two of those findings were more than tidying:
 
-**`calc_solid_block` had geen enkele aanroeper.** De rekenkern draagt een
-functie voor het massieve blok, en de pijplijn rekende het op twee plaatsen zelf
-uit — `w * h * length_m`, en dan maal de dichtheid. Dezelfde formule op drie
-plaatsen, waarvan twee buiten bereik van de tests die de rekenkern controleren.
-Precies het patroon dat dit project al vier keer heeft gekost: de fout zit op de
-naad, en een functie die niemand aanroept is een naad die niemand ziet.
+**`calc_solid_block` had no caller at all.** The calculation engine carries a
+function for the solid block, and the pipeline worked it out itself in two
+places — `w * h * length_m`, and then times the density. The same formula in
+three places, two of them out of reach of the tests that check the engine.
+Exactly the pattern that has already cost this project four times over: the bug
+sits on the seam, and a function nobody calls is a seam nobody sees.
 
-**`amendment_42_24.py` werd tijdens het opruimen per ongeluk afgekapt.** Een
-verwijdering zonder eindgrens nam alles mee wat erachter stond, inclusief
-`not_covered()`. 117 tests vielen om en de fout was binnen een minuut gevonden.
-Dat is precies waar die suite voor is, en het is het vermelden waard: het
-gevaarlijke aan opruimen is niet wat je weghaalt maar wat je per ongeluk
-meeneemt.
+**`amendment_42_24.py` was accidentally truncated during the clear-out.** A
+removal without an end boundary took everything after it along, including
+`not_covered()`. 117 tests fell over and the mistake was found within a minute.
+That is exactly what that suite is for, and it is worth recording: the danger in
+a clear-out is not what you remove but what you take along by accident.
 """
 
 import ast
@@ -54,7 +53,7 @@ def top_level_names(path: Path) -> set[str]:
 
 @pytest.mark.parametrize("relative,symbol", REMOVED_SYMBOLS)
 def test_een_opgeruimd_symbool_blijft_weg(relative, symbol):
-    """Terug mag — maar dan met een aanroeper, niet als vergeten restant."""
+    """Coming back is fine — but with a caller, not as a forgotten remnant."""
     assert symbol not in top_level_names(BACKEND / relative)
 
 
@@ -64,11 +63,11 @@ def test_een_opgeruimd_script_blijft_weg(name):
 
 
 def test_de_pijplijn_rekent_het_massieve_blok_via_de_rekenkern():
-    """Eén formule op één plek, en die plek heeft tests.
+    """One formula in one place, and that place has tests.
 
-    De pijplijn mag `w * h * length` niet opnieuw uitschrijven; daar hoort
-    `calc_solid_block` voor te worden aangeroepen, net als bij de ronde staaf,
-    de buis en het hoekprofiel.
+    The pipeline must not write out `w * h * length` again; `calc_solid_block`
+    should be called for that, just as with the round bar, the tube and the
+    angle.
     """
     source = (BACKEND / "app/services/pipeline.py").read_text(encoding="utf-8")
 
@@ -77,11 +76,11 @@ def test_de_pijplijn_rekent_het_massieve_blok_via_de_rekenkern():
 
 
 def test_de_rekenkern_wordt_ook_werkelijk_gebruikt():
-    """Elke calc_-functie in de engine heeft een aanroeper buiten de engine.
+    """Every calc_ function in the engine has a caller outside the engine.
 
-    Dit is de generieke versie van de vorige test, en de reden dat hij bestaat:
-    `calc_round_bar` en `calc_round_tube` stonden er in v1.37.0 ook al zonder
-    aanroeper, en dat kostte een ronde staaf 27% te veel gewicht.
+    This is the generic version of the previous test, and the reason it exists:
+    `calc_round_bar` and `calc_round_tube` were sitting there without a caller in
+    v1.37.0 too, and that cost a round bar 27% too much weight.
     """
     engine = BACKEND / "app/services/calculator/engine.py"
     formulas = {n for n in top_level_names(engine) if n.startswith("calc_")}
@@ -97,7 +96,7 @@ def test_de_rekenkern_wordt_ook_werkelijk_gebruikt():
 
 
 def test_er_staan_geen_ongebruikte_imports_meer_in_de_applicatie():
-    """Pyflakes over backend/app; ontbreekt het gereedschap, dan slaan we over."""
+    """Pyflakes over backend/app; when the tool is missing, we skip."""
     try:
         result = subprocess.run(
             [sys.executable, "-m", "pyflakes", str(BACKEND / "app")],

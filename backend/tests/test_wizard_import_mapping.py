@@ -1,15 +1,15 @@
-"""De import moet zeggen wat hij geraden heeft.
+"""The import has to say what it guessed.
 
-De wizard leest `omschrijving | aantal | eenheid`. Een spreadsheet van iemand
-anders heeft die kolommen zelden zo, en de import raadde stilzwijgend: geen
-koptekst herkend betekende kolom 0, 1 en 2. Bij een bestand dat begint met een
-artikelnummer levert dat referenties als omschrijving en omschrijvingen als
-aantal, plus de kopregel als goederenregel. De gebruiker zag daar niets van
-terug behalve `status=error` en 0 kg.
+The wizard reads `description | quantity | unit`. A spreadsheet from somebody
+else rarely has those columns like that, and the import guessed silently: no
+heading row recognised meant columns 0, 1 and 2. With a file starting with an
+item number that yields references as descriptions and descriptions as
+quantities, plus the heading row as a goods line. The user saw nothing of that
+except `status=error` and 0 kg.
 
-Raden blijft nodig — anders wordt elke import handwerk. Wat deze tests
-afdwingen is dat de import erbij zegt dat het een gok was, en genoeg meelevert
-om die gok te laten corrigeren.
+Guessing stays necessary — otherwise every import becomes handwork. What these
+tests enforce is that the import says it was a guess, and passes along enough to
+let that guess be corrected.
 """
 
 import pytest
@@ -21,8 +21,8 @@ RECOGNISED = [
     ["Stalen hoekprofiel 80x80x8x6000", "8", "stuks"],
 ]
 
-# Vier kolommen, geen enkele kopnaam die de aliaslijst kent, en een
-# artikelnummer vooraan — het geval waarop dit stukliep.
+# Four columns, not a single heading name the alias list knows, and an item
+# number in front — the case this came apart on.
 UNRECOGNISED = [
     ["Ref", "Benaming", "Aant.", "Eenh."],
     ["A-1", "Stalen hoekprofiel 80x80x8x6000", "8", "stuks"],
@@ -38,8 +38,8 @@ def test_a_recognised_header_is_reported_as_recognised():
 
 
 def test_an_unrecognised_header_is_reported_as_a_guess():
-    """Dit is het hele punt: de uitkomst is dezelfde als vroeger, maar zij
-    draagt nu het etiket 'geraden' zodat de interface kan doorvragen."""
+    """This is the whole point: the outcome is the same as before, but it now
+    carries the label 'guessed' so the interface can ask further."""
     result = analyse(UNRECOGNISED)
     assert result.source == "position"
     assert not result.has_header
@@ -47,8 +47,8 @@ def test_an_unrecognised_header_is_reported_as_a_guess():
 
 
 def test_the_guess_is_wrong_here_and_that_is_the_point():
-    """Wat er zonder correctie uit komt: referenties als omschrijving en de
-    kopregel als goederenregel."""
+    """What comes out without correction: references as descriptions and the
+    heading row as a goods line."""
     result = analyse(UNRECOGNISED)
     text = apply_mapping(UNRECOGNISED, result.mapping, result.has_header)
     assert text.splitlines()[0] == "Ref | Benaming | Aant."
@@ -65,16 +65,16 @@ def test_the_user_can_put_it_right():
     ]
 
 
-# --- Wat de interface nodig heeft om die vraag te kunnen stellen ---------------
+# --- What the interface needs to be able to ask that question ------------------
 
 def test_every_column_comes_back_with_what_it_contains():
-    """Een keuzelijst met 'kolom 1, kolom 2, kolom 3' helpt niemand; wat er in
-    de kolom staat wel.
+    """A dropdown saying 'column 1, column 2, column 3' helps nobody; what is in
+    the column does.
 
-    Bij een niet-herkende koptekst is er geen kopnaam om te tonen — regel 1
-    telt dan als gegeven — dus de voorbeelden moeten het werk doen. Wie
-    "Benaming, Stalen hoekprofiel 80x80x8x6000, Balk HEA200 6000" ziet staan,
-    weet welke kolom hij moet kiezen.
+    With an unrecognised heading row there is no heading name to show — row 1
+    then counts as data — so the samples have to do the work. Whoever sees
+    "Benaming, Stalen hoekprofiel 80x80x8x6000, Balk HEA200 6000" knows which
+    column to pick.
     """
     columns = analyse(UNRECOGNISED).columns
     assert [c.index for c in columns] == [0, 1, 2, 3]
@@ -85,15 +85,15 @@ def test_every_column_comes_back_with_what_it_contains():
 
 
 def test_the_header_row_is_not_offered_as_a_sample_value():
-    """Bij een herkende koptekst is regel 1 geen gegeven."""
+    """With a recognised heading row, row 1 is not data."""
     columns = analyse(RECOGNISED).columns
     assert columns[0].header == "Omschrijving"
     assert columns[0].samples == ["Stalen hoekprofiel 80x80x8x6000"]
 
 
 def test_an_unrecognised_header_row_is_shown_as_data_because_that_is_what_it_is():
-    """Zolang de koptekst niet is herkend telt regel 1 als gegeven — en dat
-    zien is juist wat de gebruiker doet begrijpen dat er iets misgaat."""
+    """As long as the heading row is not recognised, row 1 counts as data — and
+    seeing that is exactly what makes the user understand something is wrong."""
     columns = analyse(UNRECOGNISED).columns
     assert columns[0].header == ""
     assert columns[0].samples[0] == "Ref"
@@ -105,7 +105,8 @@ def test_only_a_handful_of_sample_values_travels():
 
 
 def test_ragged_rows_do_not_lose_a_column():
-    """Niet elke rij is even lang; de breedste bepaalt hoeveel kolommen er zijn."""
+    """Not every row is the same length; the widest determines how many columns
+    there are."""
     rows = [["a", "1"], ["b", "2", "stuks"]]
     assert [c.index for c in analyse(rows).columns] == [0, 1, 2]
 
@@ -120,15 +121,14 @@ def test_an_empty_file_yields_nothing_rather_than_a_guess():
 
 
 def test_a_row_without_a_description_is_left_out():
-    """Zo'n regel levert in de wizard alleen een foutregel op."""
+    """Such a line only produces an error line in the wizard."""
     rows = [["", "8", "stuks"], ["Balk HEA200 6000", "4", "stuks"]]
     text = apply_mapping(rows, {"description": 0, "quantity": 1, "unit": 2}, False)
     assert text == "Balk HEA200 6000 | 4 | stuks"
 
 
 def test_a_mapping_that_points_past_the_row_yields_an_empty_cell():
-    """Een kolom die de gebruiker kiest maar die op deze regel ontbreekt mag
-    niet omvallen."""
+    """A column the user picks but that is missing on this row must not fall over."""
     rows = [["Balk HEA200 6000", "4"]]
     text = apply_mapping(rows, {"description": 0, "quantity": 1, "unit": 9}, False)
     assert text == "Balk HEA200 6000 | 4"

@@ -1,17 +1,17 @@
-"""Verrijking van UN-vermeldingen voor automatische invulling per modaliteit.
+"""Enrichment of UN entries for automatic completion per transport mode.
 
-Feitencompilatie als invulhulp; de actuele uitgave van ADR/RID/ADN, de IMDG-code
-en de IATA DGR blijft altijd leidend. Bronnen:
-- EmS per UN-nummer: de index van IMO MSC.1/Circ.1588/Rev.3 (EmS Guide), met
-  alle brandschema's F-A t/m F-J en lekkageschema's S-A t/m S-Z. Zie
-  seed/dg/ems.json. Voor de enkele UN-nummers die daar niet in staan geldt een
-  indicatieve klassestandaard, die als zodanig wordt gemarkeerd.
-- Vrijgestelde hoeveelheden (E-codes): ADR/IMDG/IATA 3.5.1.2.
-- Luchtvrachtregels: IATA Guidance Document for Lithium Batteries and Sodium ion
-  Batteries (2026) en de IATA DGR; ICAO TI voor het verbod op klasse 2.3.
-- Milieugevaarlijk/marine pollutant: UN 3077/3082 en ADR-classificatiecodes
-  M6/M7 (IMDG 2.10).
-- Vervoersverbod: de etikettenkolom van ADR Tabel A.
+A compilation of facts as an aid to filling in; the current edition of ADR/RID/
+ADN, the IMDG Code and the IATA DGR always prevails. Sources:
+- EmS per UN number: the index of IMO MSC.1/Circ.1588/Rev.3 (EmS Guide), with
+  all fire schedules F-A to F-J and spillage schedules S-A to S-Z. See
+  seed/dg/ems.json. For the few UN numbers not in it, an indicative class
+  default applies, which is marked as such.
+- Excepted quantities (E codes): ADR/IMDG/IATA 3.5.1.2.
+- Air freight rules: IATA Guidance Document for Lithium Batteries and Sodium ion
+  Batteries (2026) and the IATA DGR; ICAO TI for the class 2.3 prohibition.
+- Environmentally hazardous/marine pollutant: UN 3077/3082 and ADR
+  classification codes M6/M7 (IMDG 2.10).
+- Transport prohibition: the labels column of ADR Table A.
 """
 from __future__ import annotations
 
@@ -24,7 +24,7 @@ from typing import Any
 from app.core.languages import SUPPORTED, pick
 from app.services.dg import amendment_42_24, dangerous_goods_list
 
-# EmS (brand, lekkage) per UN-nummer — geladen uit backend/seed/dg/ems.json.
+# EmS (fire, spillage) per UN number — loaded from backend/seed/dg/ems.json.
 _SEED_EMS = Path(__file__).resolve().parents[3] / "seed" / "dg" / "ems.json"
 _ems_lock = threading.Lock()
 _ems_cache: dict[str, Any] | None = None
@@ -39,18 +39,18 @@ def _load_ems() -> dict[str, Any]:
 
 
 def lookup_ems(un_number: str, packing_group: str = "") -> dict[str, Any] | None:
-    """EmS-vermelding voor een UN-nummer uit de EmS Guide-index.
+    """EmS entry for a UN number from the EmS Guide index.
 
-    Enkele vermeldingen hebben per verpakkingsgroep een eigen schema (bijv.
-    UN 1826 en UN 2031) of kennen varianten met een eigen omschrijving
-    (UN 3166, gas- of vloeistofaangedreven voertuigen). Die worden hier
-    meegegeven zodat de interface de keuze kan tonen.
+    A few entries have their own schedule per packing group (UN 1826 and UN 2031
+    for instance) or have variants with a description of their own (UN 3166,
+    gas- or liquid-powered vehicles). Those are passed along here so the
+    interface can show the choice.
     """
     digits = "".join(ch for ch in str(un_number or "") if ch.isdigit()).zfill(4)
     entry = _load_ems()["entries"].get(digits)
     if not entry:
-        # UN-nummers die Amendment 42-24 toevoegt staan nog niet in de EmS Guide-
-        # index van 2022; hun schema's komen uit de 42-24-bron.
+        # UN numbers added by Amendment 42-24 are not yet in the 2022 EmS Guide
+        # index; their schedules come from the 42-24 source.
         entry = amendment_42_24.ems_additions().get(digits)
     if not entry:
         return None
@@ -58,7 +58,7 @@ def lookup_ems(un_number: str, packing_group: str = "") -> dict[str, Any] | None
     if "by_packing_group" in entry:
         groups = entry["by_packing_group"]
         pg = str(packing_group or "").strip().upper()
-        # Exacte treffer, anders de variant zonder */† -markering.
+        # Exact hit, otherwise the variant without the */† marking.
         chosen = groups.get(pg) or next(
             (v for k, v in sorted(groups.items()) if k.rstrip("*†") == pg), None
         )
@@ -72,7 +72,7 @@ def lookup_ems(un_number: str, packing_group: str = "") -> dict[str, Any] | None
     return entry
 
 
-# Wat "yes/no/maybe" in kolom 4 van de Dangerous Goods List betekent, in gewone taal.
+# What "yes/no/maybe" in column 4 of the Dangerous Goods List means, in plain words.
 _MARINE_POLLUTANT_TEXT = {
     "yes": {
         "nl": "Marine pollutant: ja — merken en vermelden op het vervoersdocument.",
@@ -91,7 +91,7 @@ _MARINE_POLLUTANT_TEXT = {
               "des IMDG 2.10 und kennzeichnen Sie gegebenenfalls.", "fr": "Polluant marin : dépend de la matière. Appréciez-la au regard des critères du 2.10 de l'IMDG et marquez-la si elle y répond."},
 }
 
-# Scheidingsgroepen (IMDG 3.1.4.4) — geladen uit seed/dg/segregation_groups.json.
+# Segregation groups (IMDG 3.1.4.4) — loaded from seed/dg/segregation_groups.json.
 _SEED_SGG = Path(__file__).resolve().parents[3] / "seed" / "dg" / "segregation_groups.json"
 _sgg_cache: dict[str, Any] | None = None
 
@@ -105,12 +105,12 @@ def _load_sgg() -> dict[str, Any]:
 
 
 def segregation_groups_for(un_number: str, packing_group: str = "") -> list[str]:
-    """Scheidingsgroepcodes van een UN-nummer, bijv. ['SGG1', 'SGG18'].
+    """Segregation group codes of a UN number, e.g. ['SGG1', 'SGG18'].
 
-    Twee bronnen zeggen hier hetzelfde: de lijst van 3.1.4.4 en kolom 16b van
-    de Dangerous Goods List, die de groepen van een stof vóór haar SG-codes
-    zet. Ze worden samengenomen — waar de een een groep kent die de ander
-    mist, telt die mee.
+    Two sources say the same thing here: the list of 3.1.4.4 and column 16b of
+    the Dangerous Goods List, which puts a substance's groups before its SG
+    codes. They are taken together — where one knows a group the other misses,
+    that one counts.
     """
     digits = "".join(ch for ch in str(un_number or "") if ch.isdigit()).zfill(4)
     groups = list(_load_sgg()["by_un"].get(digits, []))
@@ -122,11 +122,12 @@ def segregation_groups_for(un_number: str, packing_group: str = "") -> list[str]
 
 
 def imdg_segregation_codes_for(un_number: str, packing_group: str = "") -> list[str]:
-    """De SG-codes van kolom 16b.
+    """The SG codes of column 16b.
 
-    De lijst zelf gaat vóór: zij is volledig en heeft de stand van 42-24. De
-    UN-kaarten (41-22) vullen aan waar de lijst een stof niet kent — bij een
-    n.e.g.-vermelding die de afzender zelf indeelt bijvoorbeeld.
+    The list itself takes precedence: it is complete and carries the 42-24
+    position. The UN cards (41-22) fill in where the list does not know a
+    substance — with an n.o.s. entry the consignor classifies themselves, for
+    instance.
     """
     digits = "".join(ch for ch in str(un_number or "") if ch.isdigit()).zfill(4)
     row = dangerous_goods_list.entry_for(digits, packing_group)
@@ -135,10 +136,10 @@ def imdg_segregation_codes_for(un_number: str, packing_group: str = "") -> list[
     return list(card_data_for(digits).get("segregation_codes") or [])
 
 
-# Stof-specifieke IMDG-gegevens uit de UN-kaarten (un_cards/), samengevat door
-# scripts/extract_un_card_data.py: marine pollutant (kolom 4), stuwagecodes SW
-# (16a), scheidingscodes SG (16b) en bulkvervoer. De scheidingsgroepen hierboven
-# zeggen tot welke groep een stof hoort; deze codes zeggen wat dat betekent.
+# Substance-specific IMDG data from the UN cards (un_cards/), summarised by
+# scripts/extract_un_card_data.py: marine pollutant (column 4), stowage codes SW
+# (16a), segregation codes SG (16b) and bulk carriage. The segregation groups
+# above say which group a substance belongs to; these codes say what that means.
 _SEED_CARDS = Path(__file__).resolve().parents[3] / "seed" / "dg" / "card_data.json"
 _cards_cache: dict[str, Any] | None = None
 _provisions_cache: dict[str, Any] | None = None
@@ -156,7 +157,7 @@ def _load_card_data() -> dict[str, Any]:
 
 
 def segregation_provisions() -> dict[str, Any]:
-    """De SG-voorschriften met hun betekenis, zoals op de kaarten geformuleerd."""
+    """The SG provisions with their meaning, as worded on the cards."""
     global _provisions_cache
     with _ems_lock:
         if _provisions_cache is None:
@@ -168,10 +169,10 @@ def segregation_provisions() -> dict[str, Any]:
     return _provisions_cache
 
 
-# De betekenis van de codes uit kolom 16a en 16b, gelezen uit hoofdstuk 7.1.5,
-# 7.1.6 en 7.2.8 van de IMDG-code zelf. De kaarten zeggen wélke codes een stof
-# draagt; deze tabel zegt wat ze betekenen — voorheen alleen als brokstuk
-# beschikbaar uit de kaarttekst.
+# The meaning of the codes from columns 16a and 16b, read from chapters 7.1.5,
+# 7.1.6 and 7.2.8 of the IMDG Code itself. The cards say *which* codes a
+# substance carries; this table says what they mean — previously only available
+# as a fragment from the card text.
 _SEED_CODES = Path(__file__).resolve().parents[3] / "seed" / "dg" / "imdg_codes.json"
 _codes_cache: dict[str, Any] | None = None
 
@@ -188,10 +189,10 @@ def _load_imdg_codes() -> dict[str, Any]:
 
 
 def imdg_code_text(code: str) -> str:
-    """Omschrijving van een SW-, H- of SG-code, of leeg als die onbekend is.
+    """Description of an SW, H or SG code, or empty when it is unknown.
 
-    Een gereserveerde code levert bewust niets op: "[Reserved]" is geen
-    voorschrift en hoort niet als begeleiding op het scherm.
+    A reserved code deliberately yields nothing: "[Reserved]" is not a provision
+    and does not belong on screen as guidance.
     """
     key = str(code or "").strip().upper()
     for section in ("stowage_codes", "handling_codes", "segregation_codes"):
@@ -203,7 +204,7 @@ def imdg_code_text(code: str) -> str:
 
 
 def describe_imdg_codes(codes: list[str]) -> list[dict[str, str]]:
-    """Codes met hun omschrijving, in de volgorde waarin ze gegeven zijn."""
+    """Codes with their description, in the order they were given."""
     described = []
     for code in codes:
         text = imdg_code_text(code)
@@ -213,7 +214,7 @@ def describe_imdg_codes(codes: list[str]) -> list[dict[str, str]]:
 
 
 def card_data_for(un_number: str) -> dict[str, Any]:
-    """IMDG-gegevens van de UN-kaart, of een leeg dict als die er niet is."""
+    """IMDG data from the UN card, or an empty dict when there is none."""
     digits = "".join(ch for ch in str(un_number or "") if ch.isdigit()).zfill(4)
     entry = _load_card_data().get(digits)
     return dict(entry) if isinstance(entry, dict) else {}
@@ -227,7 +228,7 @@ def segregation_group_label(code: str, language: str = "nl") -> str:
 
 
 def ems_schedule_label(code: str, language: str = "nl") -> str:
-    """Omschrijving van een brand- of lekkageschema, bijv. 'F-E' → '…'."""
+    """Description of a fire or spillage schedule, e.g. 'F-E' → '…'."""
     data = _load_ems()
     key = "fire_schedules" if str(code).upper().startswith("F") else "spillage_schedules"
     item = data.get(key, {}).get(str(code).strip().upper())
@@ -237,7 +238,7 @@ def ems_schedule_label(code: str, language: str = "nl") -> str:
 
 
 def describe_ems(ems_code: str, language: str = "nl") -> str:
-    """'F-E, S-E' → 'F-E (…) · S-E (…)' voor weergave in de interface."""
+    """'F-E, S-E' → 'F-E (…) · S-E (…)' for display in the interface."""
     parts = []
     for code in re.split(r"[,;/]\s*", str(ems_code or "")):
         code = code.strip().upper()
@@ -246,8 +247,8 @@ def describe_ems(ems_code: str, language: str = "nl") -> str:
     return " · ".join(p for p in parts if p)
 
 
-# Indicatieve EmS-standaard per klasse (IMDG DGL volgt in de meeste gevallen
-# deze patronen; afwijkingen per stof komen voor — daarom "indicatief").
+# Indicative EmS default per class (the IMDG DGL follows these patterns in most
+# cases; deviations per substance occur — hence "indicative").
 EMS_DEFAULT_BY_CLASS: dict[str, tuple[str, str]] = {
     "1": ("F-B", "S-X"),
     "2.1": ("F-D", "S-U"),
@@ -325,17 +326,18 @@ AIR_RULES_BY_UN: dict[str, dict[str, Any]] = {
     },
 }
 
-# Klassen die in de luchtvaart (vrijwel altijd) verboden zijn.
+# Classes that are (almost always) forbidden in aviation.
 AIR_FORBIDDEN_CLASSES = {"2.3"}
 
-# UN-nummers die per definitie milieugevaarlijk zijn; classificatiecodes M6/M7
-# (ADR) markeren milieugevaarlijke stoffen van klasse 9 (IMDG: marine pollutant).
+# UN numbers that are environmentally hazardous by definition; classification
+# codes M6/M7 (ADR) mark environmentally hazardous substances of class 9 (IMDG:
+# marine pollutant).
 ENVIRONMENTALLY_HAZARDOUS_UN = {"3077", "3082"}
 ENVIRONMENTALLY_HAZARDOUS_CODES = {"M6", "M7"}
 
 
-# Aanvullende documentvereisten die niet uit Tabel A af te leiden zijn en die
-# de gebruiker zelf moet aanleveren (ADR/RID/ADN 5.4.1.1, IMDG 5.4.1, IATA 8.1.6).
+# Additional document requirements that cannot be derived from Table A and that
+# the user has to supply themselves (ADR/RID/ADN 5.4.1.1, IMDG 5.4.1, IATA 8.1.6).
 CLASS_DOCUMENT_NOTES: dict[str, dict[str, str]] = {
     "1": {
         "nl": "Klasse 1: vermeld in het vervoersdocument de totale netto explosieve massa (NEM) per stof en, bij samenlading, de compatibiliteitsgroepen (ADR 5.4.1.2.1).",
@@ -380,31 +382,31 @@ def _norm_un(un: str) -> str:
     return "".join(ch for ch in str(un or "") if ch.isdigit()).zfill(4)
 
 
-# ADR Tabel A vult bij verboden stoffen élke kolom met deze tekst; die mag
-# nooit als gegevenswaarde in een formulier of documentregel terechtkomen.
+# For forbidden substances ADR Table A fills *every* column with this text; it
+# must never end up as a data value in a form or a document line.
 FORBIDDEN_MARKER = "VERBOTEN"
 
 
 def clean_value(value: Any) -> str:
-    """Lege string voor kolommen die alleen het vervoersverbod herhalen."""
+    """Empty string for columns that only repeat the transport prohibition."""
     text = str(value or "").strip()
     return "" if FORBIDDEN_MARKER in text.upper() else text
 
 
 def _norm_label(token: str) -> str:
-    """'9A' → '9', '2.3' → '2.3'; etiketmodelletters horen niet bij de klasse."""
+    """'9A' → '9', '2.3' → '2.3'; label model letters are not part of the class."""
     token = token.strip().upper()
     match = re.match(r"^(\d(?:\.\d)?)", token)
     return match.group(1) if match else token
 
 
 def parse_hazards(entry: dict[str, Any]) -> dict[str, Any]:
-    """Leid hoofdgevaar (incl. divisie) en nevengevaren af uit ADR Tabel A.
+    """Derive primary hazard (division included) and subsidiary risks from ADR Table A.
 
-    De kolom 'klasse' geeft bij gassen alleen '2' en bij explosieven alleen '1';
-    de werkelijke divisie staat in de etikettenkolom respectievelijk de
-    classificatiecode (bijv. '1.4S'). Nevengevaren zijn de etiketten ná het
-    eerste — de classificatiecode (F1, M4, C1) is géén nevengevaar.
+    The 'class' column gives only '2' for gases and only '1' for explosives; the
+    actual division is in the labels column and the classification code
+    respectively ('1.4S' for instance). Subsidiary risks are the labels *after*
+    the first — the classification code (F1, M4, C1) is not a subsidiary risk.
     """
     hazard_class = str(entry.get("class") or "").strip()
     classification = str(entry.get("classification_code") or "").strip().upper()
@@ -413,7 +415,7 @@ def parse_hazards(entry: dict[str, Any]) -> dict[str, Any]:
 
     division = hazard_class
     if hazard_class == "1" and re.match(r"^1\.\d[A-S]$", classification):
-        division = classification  # bijv. 1.4S — bepalend voor samenlading
+        division = classification  # 1.4S for instance — decisive for mixed loading
     elif tokens and tokens[0].startswith(f"{hazard_class}."):
         division = tokens[0]  # bijv. gassen: klasse 2 → divisie 2.1/2.2/2.3
     elif not hazard_class and tokens:
@@ -452,19 +454,19 @@ def describe_excepted_quantity(code: str, language: str = "nl") -> str | None:
 
 
 def enrich_un_entry(entry: dict[str, Any], language: str = "nl") -> dict[str, Any]:
-    """Afleidbare gegevens per modaliteit voor een offline UN-vermelding.
+    """Derivable data per transport mode for an offline UN entry.
 
-    Retourneert alleen velden die met voldoende zekerheid afgeleid kunnen
-    worden; indicatieve waarden worden expliciet gemarkeerd zodat de
-    interface ze als suggestie kan tonen in plaats van ze in te vullen.
+    Returns only fields that can be derived with sufficient certainty;
+    indicative values are marked explicitly so the interface can show them as a
+    suggestion instead of filling them in.
     """
     un = _norm_un(entry.get("un", entry.get("un_number", "")))
     hazard_class = str(entry.get("class") or "").strip()
     classification = str(entry.get("classification_code") or "").strip().upper()
     extras: dict[str, Any] = {}
 
-    # Vervoersverbod: ADR Tabel A vermeldt "BEFÖRDERUNG VERBOTEN" in de
-    # etikettenkolom voor stoffen die niet ten vervoer mogen worden aangeboden.
+    # Transport prohibition: ADR Table A states "BEFÖRDERUNG VERBOTEN" in the
+    # labels column for substances that may not be offered for carriage.
     labels_raw = str(entry.get("labels") or "")
     if "VERBOTEN" in labels_raw.upper():
         extras["transport_forbidden"] = True
@@ -495,7 +497,7 @@ def enrich_un_entry(entry: dict[str, Any], language: str = "nl") -> dict[str, An
 
     packing_group = clean_value(entry.get("packing_group"))
 
-    # Scheidingsgroepen (IMDG 3.1.4.4): bepalend voor de scheiding aan boord.
+    # Segregation groups (IMDG 3.1.4.4): decisive for segregation on board.
     sgg = segregation_groups_for(un, packing_group)
     if sgg:
         extras["segregation_groups"] = sgg
@@ -503,7 +505,7 @@ def enrich_un_entry(entry: dict[str, Any], language: str = "nl") -> dict[str, An
             f"{code} ({segregation_group_label(code, language)})" for code in sgg
         )
 
-    # Zeevaart (IMDG): EmS uit de officiële EmS Guide-index.
+    # Sea transport (IMDG): EmS from the official EmS Guide index.
     ems = lookup_ems(un, clean_value(entry.get("packing_group")))
     if ems and ems.get("fire"):
         extras["ems_code"] = f"{ems['fire']}, {ems['spillage']}"
@@ -532,14 +534,14 @@ def enrich_un_entry(entry: dict[str, Any], language: str = "nl") -> dict[str, An
             extras["ems_class_default"] = f"{default[0]}, {default[1]}"
             extras["ems_source"] = "class_default"
 
-    # Stof-specifieke IMDG-gegevens van de UN-kaart (41-22), bijgewerkt met de
-    # wijzigingen van Amendment 42-24 — sinds 1 januari 2026 de verplichte editie.
+    # Substance-specific IMDG data from the UN card (41-22), updated with the
+    # changes of Amendment 42-24 — the mandatory edition since 1 January 2026.
     card = amendment_42_24.apply_card_overlay(un, card_data_for(un), packing_group)
     if card:
         extras["card_source"] = "imdg_un_card"
 
-        # Marine pollutant, kolom 4. De bron zegt bij n.e.g.-vermeldingen
-        # "maybe": dat hangt van de werkelijke stof af en is aan de afzender.
+        # Marine pollutant, column 4. For n.o.s. entries the source says
+        # "maybe": that depends on the actual substance and is up to the consignor.
         pollutant = card.get("marine_pollutant")
         if pollutant in {"yes", "no", "maybe"}:
             extras["marine_pollutant_status"] = pollutant
@@ -547,8 +549,8 @@ def enrich_un_entry(entry: dict[str, Any], language: str = "nl") -> dict[str, An
             if pollutant == "yes":
                 extras["environmentally_hazardous"] = True
 
-        # Stuwage (16a) en scheiding (16b): de codes plus de toelichting van de
-        # kaart, want "SG35" zegt op zichzelf niets tegen een gebruiker.
+        # Stowage (16a) and segregation (16b): the codes plus the card's
+        # explanation, because "SG35" says nothing to a user by itself.
         if card.get("stowage_codes"):
             extras["imdg_stowage_codes"] = card["stowage_codes"]
             described = describe_imdg_codes(card["stowage_codes"])
@@ -574,11 +576,12 @@ def enrich_un_entry(entry: dict[str, Any], language: str = "nl") -> dict[str, An
         if card.get("stowage_category"):
             extras["imdg_stowage_category"] = card["stowage_category"]
 
-    # De Dangerous Goods List zelf, in de stand van 42-24. Waar zij de stof
-    # kent gaat zij vóór op de kaart: de kaarten zijn 41-22, dekken lang niet
-    # elke stof en geven kolom 16a en 16b naverteld in plaats van als code.
-    # Dat laatste is niet vrijblijvend — 7.2.3.1 laat kolom 16b vóórgaan op de
-    # scheidingstabel van 7.2.4, dus juist die kolom moet compleet zijn.
+    # The Dangerous Goods List itself, as it stands in 42-24. Where it knows the
+    # substance it takes precedence over the card: the cards are 41-22, cover
+    # nowhere near every substance and give columns 16a and 16b retold rather
+    # than as a code. That last point is not optional — 7.2.3.1 lets column 16b
+    # prevail over the segregation table of 7.2.4, so that column of all columns
+    # has to be complete.
     row = dangerous_goods_list.entry_for(un, packing_group)
     if row:
         extras["imdg_dgl_source"] = dangerous_goods_list.source().get("source", "")
@@ -620,8 +623,8 @@ def enrich_un_entry(entry: dict[str, Any], language: str = "nl") -> dict[str, An
         if dangerous_goods_list.amended_in_42_24(row):
             extras["imdg_amended_in_42_24"] = True
 
-    # Wat Amendment 42-24 aan deze stof verandert. Dit staat los van de kaart:
-    # ook stoffen zonder kaart (of nieuw in 42-24) kunnen wijzigingen hebben.
+    # What Amendment 42-24 changes about this substance. This is independent of
+    # the card: substances without a card (or new in 42-24) can have changes too.
     changes = amendment_42_24.changes_for(un, packing_group, language)
     if changes:
         extras["imdg_amendment_changes"] = changes
@@ -630,7 +633,8 @@ def enrich_un_entry(entry: dict[str, Any], language: str = "nl") -> dict[str, An
     if doc_requirement:
         extras["imdg_document_requirement"] = doc_requirement
 
-    # Milieugevaarlijk / marine pollutant — ADR-kant, blijft ook zonder kaart gelden.
+    # Environmentally hazardous / marine pollutant — the ADR side, which applies
+    # with or without a card.
     if un in ENVIRONMENTALLY_HAZARDOUS_UN or classification in ENVIRONMENTALLY_HAZARDOUS_CODES:
         extras["environmentally_hazardous"] = True
 
@@ -645,11 +649,11 @@ def enrich_un_entry(entry: dict[str, Any], language: str = "nl") -> dict[str, An
             {lang: air[f"note_{lang}"] for lang in SUPPORTED if air.get(f"note_{lang}")},
             language,
         )
-    # Het luchtvaartverbod hangt aan de divisie, niet aan de klassekolom: gassen
-    # staan in Tabel A als klasse "2" en de divisie (2.1/2.2/2.3) zit in de
-    # etikettenkolom. Op de kolom toetsen betekende dat chloor (UN 1017) —
-    # volgens de ICAO TI verboden op passagiers- én vrachttoestellen — nooit
-    # een melding kreeg.
+    # The aviation prohibition hangs on the division, not on the class column:
+    # gases appear in Table A as class "2" and the division (2.1/2.2/2.3) sits in
+    # the labels column. Testing against the column meant that chlorine (UN 1017)
+    # — forbidden on passenger *and* cargo aircraft under the ICAO TI — never got
+    # a warning.
     division = parse_hazards(entry)["division"]
     if division in AIR_FORBIDDEN_CLASSES:
         extras["air_forbidden"] = True

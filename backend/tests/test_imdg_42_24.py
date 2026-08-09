@@ -1,9 +1,9 @@
-"""IMDG-code Amendment 42-24: de verschillenlaag en de voorrangsregel 7.2.3.1.
+"""IMDG Code Amendment 42-24: the differences layer and the precedence rule 7.2.3.1.
 
-De app draagt ADR 2025 als basistabel en de UN-kaarten van 41-22 als
-stof-specifieke IMDG-laag. Sinds 1 januari 2026 is 42-24 verplicht. Deze tests
-leggen vast wat de laag doet — en, minstens zo belangrijk, wat zij niet doet:
-zij past nooit stilzwijgend een classificatie aan en haalt nooit een melding weg.
+The app carries ADR 2025 as its base table and the 41-22 UN cards as its
+substance-specific IMDG layer. Since 1 January 2026, 42-24 is mandatory. These
+tests record what the layer does — and, just as importantly, what it does not do:
+it never silently adjusts a classification and never removes a message.
 """
 
 import json
@@ -37,7 +37,7 @@ def imdg(*uns, language="nl"):
     return check_compliance(entries, ["IMDG"], language)
 
 
-# --- De laag zelf ------------------------------------------------------------
+# --- The layer itself --------------------------------------------------------
 
 def test_the_amendment_layer_names_its_edition_and_source():
     assert amendment_42_24.amendment() == "42-24"
@@ -45,8 +45,8 @@ def test_the_amendment_layer_names_its_edition_and_source():
 
 
 def test_the_class_tables_are_confirmed_unchanged_in_42_24():
-    """De bron noemt voor hoofdstuk 7.2 één wijziging: 7.2.6.1. De tabellen
-    waar deze app op rekent staan er niet bij en gelden dus onverkort."""
+    """For chapter 7.2 the source names one change: 7.2.6.1. The tables this app
+    computes with are not among them and therefore apply in full."""
     sections = amendment_42_24.verified_unchanged_sections()
     assert {"7.2.4", "7.2.6.3", "7.2.7.1.4", "3.1.4.4"} <= set(sections)
     amended = {item["section"] for item in amendment_42_24.amended_sections()}
@@ -62,8 +62,8 @@ def test_the_layer_says_what_it_does_not_cover():
 # --- Nieuwe UN-nummers -------------------------------------------------------
 
 def test_the_new_42_24_un_numbers_are_findable():
-    """Natrium-ionbatterijen staan al in IMDG 42-24 en nog niet in ADR 2025.
-    Wie ze over zee verscheept moet ze kunnen opzoeken."""
+    """Sodium-ion batteries are already in IMDG 42-24 and not yet in ADR 2025.
+    Whoever ships them by sea has to be able to look them up."""
     hits = {r["un"] for r in search_un_numbers("sodium ion", 10)}
     assert {"3551", "3552", "3558"} <= hits
 
@@ -93,7 +93,7 @@ def test_the_new_entries_never_shadow_an_existing_adr_entry():
 # --- Gewijzigde stoffen ------------------------------------------------------
 
 def test_isopropenylbenzene_became_a_marine_pollutant():
-    """UN 2303 krijgt in 42-24 een 'P' in kolom 4 en SW1 erbij."""
+    """UN 2303 gets a 'P' in column 4 and SW1 added in 42-24."""
     entry = offline_lookup("2303")
     assert entry["marine_pollutant_status"] == "yes"
     assert "SW1" in entry["imdg_stowage_codes"]
@@ -101,11 +101,11 @@ def test_isopropenylbenzene_became_a_marine_pollutant():
 
 
 def test_carbon_keeps_its_old_stowage_code_and_gains_the_new_one():
-    """Toevoegen, niet vervangen: SW1 stond er al, SW27 komt erbij.
+    """Adding, not replacing: SW1 was already there, SW27 is added.
 
-    Sinds kolom 16a uit de Dangerous Goods List zelf komt staat H2 er ook bij.
-    Dat is een behandelingscode uit dezelfde kolom (7.1.6) die de UN-kaart niet
-    noemde — geen verschuiving maar wat er werkelijk staat.
+    Since column 16a comes from the Dangerous Goods List itself, H2 is there too.
+    That is a handling code from the same column (7.1.6) that the UN card did not
+    name — not a shift but what is actually there.
     """
     codes = offline_lookup("1361")["imdg_stowage_codes"]
     assert codes == ["SW1", "SW27", "H2"]
@@ -119,9 +119,9 @@ def test_carbon_carries_the_new_document_requirement():
 
 
 def test_a_reclassified_substance_is_reported_and_not_silently_rewritten():
-    """UN 3423 wordt in 42-24 klasse 6.1 met nevengevaar 8. De app rekent de
-    scheiding nog op de ADR-classificatie door en zegt dat er hardop bij; zij
-    verandert de klasse niet achter de schermen."""
+    """UN 3423 becomes class 6.1 with subsidiary risk 8 in 42-24. The app still
+    computes the segregation on the ADR classification and says so out loud; it
+    does not change the class behind the scenes."""
     entry = offline_lookup("3423")
     assert entry["class"] == "8"  # ADR 2025 ongewijzigd
     assert any("6.1" in line for line in entry["imdg_amendment_changes"])
@@ -133,12 +133,12 @@ def test_a_reclassified_substance_is_reported_and_not_silently_rewritten():
 
 
 def test_changes_are_reported_per_packing_group_where_they_differ():
-    """UN 1835 verandert per verpakkingsgroep: alleen groep II krijgt 6.1."""
+    """UN 1835 changes per packing group: only group II gets 6.1."""
     two = amendment_42_24.changes_for("1835", "II", "nl")
     three = amendment_42_24.changes_for("1835", "III", "nl")
     assert any("6.1" in line for line in two)
     assert not any("6.1" in line for line in three)
-    # Zonder verpakkingsgroep nooit de striktere variant.
+    # Without a packing group, never the stricter variant.
     assert not any("6.1" in line for line in amendment_42_24.changes_for("1835", "", "nl"))
 
 
@@ -152,12 +152,12 @@ def test_an_unaffected_substance_gets_no_amendment_noise():
     assert "imdg_amendment_changes" not in offline_lookup("1203")
 
 
-# --- 7.2.3.1: kolom 16b gaat voor --------------------------------------------
+# --- 7.2.3.1: column 16b takes precedence ------------------------------------
 
 def test_column_16b_takes_precedence_over_the_class_table():
-    """Salpeterzuur × zwavel: de tabel zegt 'away from' (1), maar SG16 van
-    salpeterzuur zegt 'separated from' (2). 7.2.3.1 laat er geen twijfel over
-    bestaan welke van de twee geldt."""
+    """Nitric acid × sulphur: the table says 'away from' (1), but SG16 of nitric
+    acid says 'separated from' (2). 7.2.3.1 leaves no doubt which of the two
+    applies."""
     findings = imdg("2031", "1350")["imdg_segregation"]
     table = next(f for f in findings if f["rule"].startswith("IMDG 7.2.4"))
     sg16 = next(f for f in findings if "SG16" in f["rule"])
@@ -175,7 +175,7 @@ def test_the_superseded_finding_is_annotated_and_never_removed():
 
 
 def test_without_a_conflicting_16b_provision_the_table_stands():
-    """Zoutzuur draagt geen SG16; dan blijft de tabelwaarde gewoon gelden."""
+    """Hydrochloric acid carries no SG16; then the table value simply stands."""
     findings = imdg("1789", "1350")["imdg_segregation"]
     table = next(f for f in findings if f["rule"].startswith("IMDG 7.2.4"))
     assert "superseded_by" not in table
@@ -194,8 +194,8 @@ def test_agreement_between_the_two_is_not_reported_as_a_conflict():
 
 
 def test_all_provisions_at_the_strictest_level_carry_the_precedence():
-    """Twee SG-codes van gelijke zwaarte op hetzelfde paar: allebei gaan ze
-    voor, dus allebei krijgen ze de vermelding."""
+    """Two SG codes of equal weight on the same pair: both take precedence, so
+    both get named."""
     findings = apply_column_16b_precedence([
         {"rule": "IMDG 7.2.4 (8 × 4.1)", "severity": "warning", "code": "1",
          "message": "x", "products": "A  ×  B", "source": "table", "pair": "A|B"},
@@ -219,11 +219,11 @@ def test_a_stricter_16b_provision_raises_the_severity_to_error():
     assert findings[0]["severity"] == "info"
 
 
-# --- SGG1a bestaat niet meer -------------------------------------------------
+# --- SGG1a no longer exists --------------------------------------------------
 
 def test_sgg1a_is_gone_from_the_segregation_groups():
-    """De aparte markering voor sterke zuren verviel met 41-22 en 42-24 laat
-    3.1.4.4 ongewijzigd. Zij mag nergens meer opduiken."""
+    """The separate marking for strong acids lapsed with 41-22 and 42-24 leaves
+    3.1.4.4 unchanged. It must not turn up anywhere any more."""
     seed = json.loads((SEED / "segregation_groups.json").read_text("utf-8"))
     assert not any("SGG1a" in codes for codes in seed["by_un"].values())
     assert all(group.get("alt_code") is None for group in seed["groups"])
@@ -237,7 +237,7 @@ def test_the_group_counts_match_the_entries():
         assert group["count"] == actual, group["code"]
 
 
-# --- Wat elke uitkomst over zijn eigen edities zegt --------------------------
+# --- What every outcome says about its own editions --------------------------
 
 def test_every_result_names_the_editions_it_used():
     rule_sets = imdg("1203")["rule_sets"]
@@ -254,11 +254,11 @@ def test_the_edition_metadata_survives_both_languages(language):
     assert rule_sets["IMDG_42_24_not_covered"]
 
 
-# --- De codetabel uit hoofdstuk 7.1.5, 7.1.6 en 7.2.8 ------------------------
+# --- The code table from chapters 7.1.5, 7.1.6 and 7.2.8 ---------------------
 
 def test_the_code_table_is_complete():
-    """SW1-SW31, H1-H5 en SG1-SG78. De enige echte gaten zijn SG64, SG66 en
-    SG73 (gereserveerd) en SG75, dat met 41-22 verviel — net als SGG1a."""
+    """SW1-SW31, H1-H5 and SG1-SG78. The only real gaps are SG64, SG66 and SG73
+    (reserved) and SG75, which lapsed with 41-22 — just like SGG1a."""
     table = json.loads((SEED / "imdg_codes.json").read_text("utf-8"))
     assert table["amendment"] == "42-24"
 
@@ -281,14 +281,14 @@ def test_a_reserved_code_carries_no_guidance():
 
 
 def test_the_official_wording_reaches_the_substance():
-    """Salpeterzuur draagt SG16; de gebruiker moet lezen wat dat betekent."""
+    """Nitric acid carries SG16; the user has to be able to read what that means."""
     definitions = offline_lookup("2031")["imdg_segregation_definitions"]
     by_code = {d["code"]: d["text"] for d in definitions}
     assert by_code["SG16"] == "Stow “separated from” class 4.1."
 
 
 def test_the_official_wording_beats_the_card_paraphrase():
-    """7.2.8 is de bron; de zin van de UN-kaart is een parafrase en wijkt."""
+    """7.2.8 is the source; the sentence from the UN card is a paraphrase and differs."""
     from app.services.dg.compliance import _wording
     from app.services.dg.enrichment import segregation_provisions
     rules = segregation_provisions()

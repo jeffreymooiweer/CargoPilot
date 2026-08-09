@@ -14,8 +14,8 @@ from app.services.parser.product_detector import detect_product_type
 
 _SYNONYMS_PATH = Path(__file__).resolve().parents[1] / "config" / "search_synonyms.json"
 
-# De suggestie die de gebruiker aanklikt wordt de omschrijving op zijn
-# document; die hoort dus in de taal te staan waarin hij werkt.
+# The suggestion the user clicks becomes the description on their document; it
+# therefore belongs in the language they are working in.
 PRODUCT_LABELS = {
     "angle_profile": {"nl": "hoekprofiel", "en": "angle profile", "de": "Winkelprofil", "fr": 'cornière'},
     "square_tube": {"nl": "kokerprofiel", "en": "square tube", "de": "Quadratrohr", "fr": 'tube carré'},
@@ -30,7 +30,7 @@ PRODUCT_LABELS = {
     "plastic_sheet": {"nl": "kunststof plaat", "en": "plastic sheet", "de": "Kunststoffplatte", "fr": 'plaque plastique'},
 }
 
-# Terugval voor materialen die de database niet als label kent.
+# Fallback for materials the database does not know as a label.
 MATERIAL_LABELS = {
     "steel": {"nl": "staal", "en": "steel", "de": "Stahl", "fr": 'acier'},
     "stainless_steel": {"nl": "rvs", "en": "stainless steel", "de": "Edelstahl", "fr": 'acier inoxydable'},
@@ -55,7 +55,7 @@ MATERIAL_LABELS = {
 
 
 def material_label(material: Material, language: str) -> str:
-    """De naam van een materiaal in de gevraagde taal."""
+    """The name of a material in the requested language."""
     labels = json.loads(material.language_labels_json or "{}")
     return (
         pick(labels, language)
@@ -96,7 +96,7 @@ def _load_aliases(raw: str) -> list[str]:
 
 
 def _flatten_synonym_sections(data: dict[str, Any]) -> dict[str, str]:
-    """Maak één map van geneste secties (products, materials, …) of platte legacy-json."""
+    """Build one map from nested sections (products, materials, …) or flat legacy json."""
     if not data:
         return {}
     if any(isinstance(v, dict) for v in data.values()):
@@ -117,24 +117,23 @@ def _load_static_synonyms() -> dict[str, str]:
 
 
 def _db_synonyms(db: Session) -> dict[str, str]:
-    """Voeg aliassen uit materialen, referenties en materieel toe als zoek-synoniemen.
+    """Add aliases from materials, references and equipment as search synonyms.
 
-    In twee ronden, en die volgorde is het punt. Een sleutel wordt met
-    `setdefault` gezet, dus wie er het eerst bij is houdt hem. Ging alles in één
-    ronde, dan won het goed dat toevallig het eerst in de database stond — en
-    een lósse alias van dat goed kon zo de éigen naam van een ander goed
-    afvangen. Concreet: bloemkool droeg ooit "broccoli" als alias, en daarmee
-    kwam wie "broccoli" intikte bij bloemkool uit terwijl broccoli zelf gewoon
-    in de database staat.
+    In two passes, and that order is the point. A key is set with `setdefault`,
+    so whoever gets there first keeps it. Had it all gone in one pass, the
+    commodity that happened to come first in the database would win — and a mere
+    *alias* of that commodity could thereby intercept the *own name* of another.
+    Concretely: cauliflower once carried "broccoli" as an alias, so anyone typing
+    "broccoli" ended up at cauliflower while broccoli is simply in the database.
 
-    Eerst dus alle namen — canonieke naam en de labels in de drie talen — en pas
-    daarna de aliassen. Een naam laat zich niet meer door andermans alias
-    overschrijven, ongeacht de volgorde waarin de rijen zijn ingevoerd.
+    So first all the names — canonical name and the labels in the three
+    languages — and only then the aliases. A name can no longer be overwritten by
+    somebody else's alias, whatever order the rows were entered in.
     """
     synonyms: dict[str, str] = {}
-    # Namen die een goed van zichzelf heeft. Een naam die gelijk is aan zijn
-    # eigen doeltekst hoeft niet te worden vervangen, maar moet wél bezet zijn:
-    # anders staat hij niet in de tabel en pakt andermans alias hem alsnog.
+    # Names a commodity has of its own. A name equal to its own target text does
+    # not need replacing, but does need to be claimed: otherwise it is not in the
+    # table and somebody else's alias takes it after all.
     reserved: set[str] = set()
 
     materials = db.query(Material).filter(Material.active.is_(True)).all()
@@ -203,29 +202,30 @@ def _merged_synonyms(db: Session | None) -> dict[str, str]:
     return merged
 
 
-#: Letters die nog bij een woord horen. `\b` van de re-module rekent é en ü niet
-#: tot de woordtekens, waardoor "kupfer" middenin "Kupferkathoden" alsnog zou
-#: worden vervangen.
+#: Letters that still belong to a word. The re module's `\b` does not count é and
+#: ü as word characters, which would let "kupfer" in the middle of
+#: "Kupferkathoden" be replaced after all.
 _WORD_CHAR = r"[0-9A-Za-zÀ-ÖØ-öø-ÿ]"
 
 
 @lru_cache(maxsize=4096)
 def _synonym_pattern(src: str) -> re.Pattern[str]:
-    """Het synoniem als heel woord, niet als letterreeks middenin een woord."""
+    """The synonym as a whole word, not as a run of letters inside a word."""
     left = rf"(?<!{_WORD_CHAR})" if re.match(_WORD_CHAR, src[:1] or " ") else ""
     right = rf"(?!{_WORD_CHAR})" if re.match(_WORD_CHAR, src[-1:] or " ") else ""
     return re.compile(left + re.escape(src) + right, re.IGNORECASE)
 
 
 def normalize_synonyms(text: str, db: Session | None = None) -> tuple[str, list[tuple[str, str]]]:
-    """Vervang bekende synoniemen; retourneer genormaliseerde tekst + toegepaste vervangingen.
+    """Replace known synonyms; return normalised text plus applied replacements.
 
-    Op hele woorden. Dat het ooit op letterreeksen ging, viel niet op zolang de
-    goederendatabase klein was — maar élke alias van élk goed is hier een
-    synoniem, dus hoe meer goederen, hoe groter de kans dat een sleutel toevallig
-    middenin een ander woord staat. "cashew" bevat "as" (essen), "Kupferkathoden"
-    bevat "kupfer" én "per" (perchloorethyleen). De query werd dan tot onzin
-    herschreven en het goed dat de gebruiker intikte kwam niet bovenaan.
+    On whole words. That it once worked on runs of letters went unnoticed while
+    the goods database was small — but *every* alias of *every* commodity is a
+    synonym here, so the more commodities, the greater the chance that a key
+    happens to sit inside another word. "cashew" contains "as" (ash),
+    "Kupferkathoden" contains "kupfer" *and* "per" (perchloroethylene). The query
+    was then rewritten into nonsense and the commodity the user typed did not
+    come out on top.
     """
     synonyms = _merged_synonyms(db)
     if not synonyms:
@@ -233,15 +233,15 @@ def normalize_synonyms(text: str, db: Session | None = None) -> tuple[str, list[
     lower = text.lower()
     applied: list[tuple[str, str]] = []
     for src, dst in sorted(synonyms.items(), key=lambda x: len(x[0]), reverse=True):
-        # Eerst de goedkope toets. Er zijn ruim vierduizend synoniemen en voor
-        # bijna allemaal staat het antwoord al vast met een substring-test; een
-        # regex over alle vierduizend kostte 1,4 seconde per zoekopdracht.
+        # The cheap test first. There are well over four thousand synonyms and
+        # for nearly all of them a substring test settles the answer; a regex
+        # over all four thousand cost 1.4 seconds per search.
         if src not in lower:
             continue
         pattern = _synonym_pattern(src)
         if pattern.search(text):
-            # Een lambda als vervanging: een doeltekst met \1 of \g erin is een
-            # naam, geen groepsverwijzing.
+            # A lambda as the replacement: a target text with \1 or \g in it is a
+            # name, not a group reference.
             text = pattern.sub(lambda _match: dst, text, count=1)
             lower = text.lower()
             applied.append((src, dst))
@@ -249,7 +249,7 @@ def normalize_synonyms(text: str, db: Session | None = None) -> tuple[str, list[
 
 
 def _dimension_suffix(text: str) -> str:
-    """Behoud afmetings-/lengtedeel uit de query voor suggestie-waarden."""
+    """Keep the dimension/length part of the query for suggestion values."""
     dim_match = re.search(
         r"(\d+(?:[.,]\d+)?\s*[x×]\s*\d+(?:[.,]\d+)?(?:\s*[x×]\s*\d+(?:[.,]\d+)?){0,2}(?:\s*[x×]\s*\d+(?:[.,]\d+)?)?\s*(?:mm|cm|m)?)",
         text,
@@ -389,7 +389,7 @@ def _search_profiles(db: Session, query: str, normalized: str, query_tokens: set
 
 
 def _material_names(material: Material) -> set[str]:
-    """De namen die het goed van zichzelf heeft, zonder de aliassen."""
+    """The names the commodity has of its own, without the aliases."""
     labels = json.loads(material.language_labels_json or "{}")
     return {material.canonical_name.lower(), *(str(v).strip().lower() for v in labels.values())}
 
@@ -400,10 +400,11 @@ def _search_materials(db: Session, query: str, query_tokens: set[str]) -> list[t
     for material in db.query(Material).filter(Material.active.is_(True)).all():
         terms = _material_terms(material)
         score = max(_score_tokens(query_tokens, _collect_terms(*terms)), _substring_alias_score(lower, terms))
-        # Wie precies de naam van een goed intikt, bedoelt dat goed. Zonder deze
-        # voorrang scoort een ánder goed dat die naam als alias draagt even hoog
-        # en beslist de volgorde in de database — bloemkool droeg "broccoli" en
-        # stond vóór broccoli in de tabel, dus won bloemkool.
+        # Whoever types exactly the name of a commodity means that commodity.
+        # Without this precedence, *another* commodity carrying that name as an
+        # alias scores equally high and the order in the database decides —
+        # cauliflower carried "broccoli" and came before broccoli in the table, so
+        # cauliflower won.
         if lower.strip() in _material_names(material):
             score += 1
         if score > 0:

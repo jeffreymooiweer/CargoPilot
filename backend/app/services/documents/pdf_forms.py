@@ -9,7 +9,7 @@ import os
 import re
 import tempfile
 from pathlib import Path
-from typing import Any, Callable
+from typing import Any
 
 from pypdf import PdfReader, PdfWriter
 from pypdf.generic import BooleanObject, NameObject

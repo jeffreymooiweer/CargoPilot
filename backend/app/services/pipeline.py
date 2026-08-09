@@ -1,5 +1,4 @@
 import json
-import re
 from dataclasses import asdict, dataclass, field, replace
 from typing import Any
 
@@ -8,13 +7,12 @@ from sqlalchemy.orm import Session
 from app.models.user import Equipment, Material, Profile, ReferenceItem
 from app.services.calculator.engine import (
     STEEL_DENSITY,
-    CalculationResult,
-    LineStatus,
     calc_angle_profile,
     calc_catalog_profile,
     calc_hollow_rect,
     calc_round_bar,
     calc_round_tube,
+    calc_solid_block,
     transport_volume_outer,
 )
 from app.services.dg.detector import detect_dangerous_goods, detect_un_numbers
@@ -332,7 +330,7 @@ def process_line(
             width_cm = meters_to_cm(outer_w)
             height_cm = meters_to_cm(outer_h)
             method = "hollow_rect"
-        except ValueError as exc:
+        except ValueError:
             messages.append("wall_thickness_invalid")
             status = "error"
 
@@ -372,8 +370,7 @@ def process_line(
 
     elif product_type in {"plate", "beam"} and len(dims.values_m) >= 3:
         w, h, length_m = dims.values_m[:3]
-        material_vol = w * h * length_m
-        weight_each = material_vol * density
+        material_vol, weight_each = calc_solid_block(length_m, w, h, density)
         if qty:
             weight_total = weight_each * qty
         transport_vol = transport_volume_outer(w, h, length_m, qty or 1)
@@ -405,8 +402,7 @@ def process_line(
     elif material_obj and len(dims.values_m) >= 3:
         # Herkend materiaal met drie afmetingen: reken als massief blok op dichtheid.
         w, h, length_m = dims.values_m[:3]
-        material_vol = w * h * length_m
-        weight_each = material_vol * density
+        material_vol, weight_each = calc_solid_block(length_m, w, h, density)
         if qty:
             weight_total = weight_each * qty
         transport_vol = transport_volume_outer(w, h, length_m, qty or 1)

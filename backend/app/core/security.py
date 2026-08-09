@@ -53,12 +53,6 @@ def decode_access_token_claims(token: str) -> dict[str, Any] | None:
     return payload
 
 
-def decode_access_token(token: str) -> str | None:
-    """Compatibility helper for callers that only need the subject."""
-    payload = decode_access_token_claims(token)
-    return str(payload["sub"]) if payload else None
-
-
 def token_matches_password(claims: Mapping[str, Any], password_hash: str) -> bool:
     """Reject legacy tokens and tokens issued before a password change."""
     supplied = claims.get(SESSION_PASSWORD_CLAIM)

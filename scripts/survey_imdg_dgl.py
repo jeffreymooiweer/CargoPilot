@@ -35,9 +35,8 @@ import json
 import re
 import sys
 import urllib.request
-from collections import Counter, defaultdict
+from collections import Counter
 from pathlib import Path
-from typing import Any
 
 SOURCE_URL = "https://www.cepa.be/wp-content/uploads/IMDG_Code-amdt_42_24.pdf"
 UA = {"User-Agent": "CargoPilot data survey (github.com/jeffreymooiweer/CargoPilot)"}

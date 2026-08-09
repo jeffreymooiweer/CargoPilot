@@ -12,7 +12,6 @@ that no cards are available, rather than breaking the export.
 from __future__ import annotations
 
 import io
-import json
 import os
 import re
 import tempfile
@@ -130,14 +129,3 @@ def build_zip(dangerous_goods: list[dict[str, Any]] | None) -> tuple[Path, dict[
         archive.writestr("README.txt", readme.getvalue())
 
     return out_path, status
-
-
-def manifest_summary() -> dict[str, Any] | None:
-    """The fetcher's manifest summary, when one is present."""
-    path = cards_dir() / "manifest.json"
-    if not path.is_file():
-        return None
-    try:
-        return json.loads(path.read_text(encoding="utf-8")).get("summary")
-    except (ValueError, OSError):
-        return None

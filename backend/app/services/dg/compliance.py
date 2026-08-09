@@ -19,7 +19,6 @@ from app.services.dg import amendment_42_24, dangerous_goods_list
 from app.services.regulatory_manifest import stale_rule_sets, summary
 from app.services.dg.enrichment import (
     EXCEPTED_QUANTITY_LIMITS,
-    card_data_for,
     imdg_code_text,
     imdg_segregation_codes_for,
     parse_hazards,

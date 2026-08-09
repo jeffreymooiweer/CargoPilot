@@ -7,12 +7,21 @@ from sqlalchemy.orm import Session
 from app.core.config import get_settings
 from app.core.database import Base, SessionLocal, engine
 from app.core.security import hash_password
+from app.models.settings import InstanceSetting, UserPreference
 from app.models.user import Equipment, Job, Material, Profile, ReferenceItem, User
 from app.services.catalog_sync import sync_catalogs
+from app.services.settings_store import instance_settings
 
 logger = logging.getLogger(__name__)
 
 TEMPORARY_EXPORT_SUFFIXES = {".pdf", ".zip", ".xlsx", ".tmp"}
+
+#: ``Base.metadata.create_all`` only creates the tables whose model class has
+#: actually been imported. The settings models are used nowhere else in this
+#: module, so naming them here is what keeps the import — and with it the
+#: tables — from quietly disappearing. Without it the app starts fine and the
+#: settings screen fails on "no such table: user_preferences".
+SETTINGS_TABLES = (InstanceSetting, UserPreference)
 
 
 def ensure_directories() -> None:
@@ -106,9 +115,12 @@ def seed_catalogs(db: Session) -> None:
 
 
 def sync_catalogs_on_startup(db: Session) -> None:
-    settings = get_settings()
-    if not settings.catalog_auto_sync:
-        logger.info("Catalog auto-sync disabled (CATALOG_AUTO_SYNC=false)")
+    # The administrator setting wins over CATALOG_AUTO_SYNC, and falls back to
+    # it when nothing has ever been saved. Startup is the only moment this is
+    # read, so a change takes effect on the next restart — which is what the
+    # settings screen says.
+    if not instance_settings(db).catalog_auto_sync:
+        logger.info("Catalog auto-sync disabled by settings")
         return
     try:
         sync_catalogs(db)

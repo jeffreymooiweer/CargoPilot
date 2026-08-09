@@ -9,6 +9,7 @@ from app.core.deps import get_current_user
 from app.core.security import create_access_token, hash_password, verify_password
 from app.models.user import User
 from app.schemas.users import LoginRequest, PasswordChange, UserOut
+from app.services.settings_store import instance_settings
 
 router = APIRouter(prefix="/auth", tags=["auth"])
 limiter = Limiter(key_func=get_remote_address)
@@ -32,6 +33,7 @@ def _set_access_cookie(
     token: str,
     settings: Settings,
     request: Request | None = None,
+    expire_minutes: int | None = None,
 ) -> None:
     secure = cookie_is_secure(request, settings) if request is not None else settings.secure_cookies
     response.set_cookie(
@@ -40,7 +42,9 @@ def _set_access_cookie(
         httponly=True,
         samesite="lax",
         secure=secure,
-        max_age=settings.access_token_expire_minutes * 60,
+        # The cookie must not outlive the token it carries, or the browser keeps
+        # sending a session the server has already stopped accepting.
+        max_age=(expire_minutes or settings.access_token_expire_minutes) * 60,
         path="/",
     )
 
@@ -68,8 +72,11 @@ def login(request: Request, payload: LoginRequest, response: Response, db: Sessi
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid credentials")
     if not user.active:
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="User inactive")
-    token = create_access_token(user.username, password_hash=user.password_hash)
-    _set_access_cookie(response, token, get_settings(), request=request)
+    expire_minutes = instance_settings(db).session_timeout_minutes
+    token = create_access_token(
+        user.username, password_hash=user.password_hash, expires_minutes=expire_minutes
+    )
+    _set_access_cookie(response, token, get_settings(), request=request, expire_minutes=expire_minutes)
     return {"user": UserOut.model_validate(user)}
 
 

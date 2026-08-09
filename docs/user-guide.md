@@ -185,6 +185,39 @@ picked from the catalogue while entering packages.
 It starts **empty on purpose** — no operational data ships with the app. An
 administrator fills it by downloading the template, filling it in and importing it.
 
+## Settings
+
+Everything under **Settings** belongs to your account, not to the browser you happen to be
+using. Sign in somewhere else and it comes with you.
+
+**Appearance.** Light, dark or follow the system, and the interface language.
+
+**Defaults for a shipment.** If you always ship by the same mode, pick it here and
+CargoPilot opens straight into it — the transport-mode tiles are still one click away, via
+*change transport mode* at the top of the wizard. You can also set the unit a new package
+line starts with.
+
+**My details.** The consignor name and address, a contact, your usual carrier, your loading
+point, and the 24-hour emergency number that the IMDG Code and the IATA DGR want on a
+dangerous goods declaration. These are the fields that are the same on nearly every
+consignment, and they are filled in for you on every form that asks for them — only where
+the field is still empty, so nothing you typed yourself is ever overwritten. Switch
+*Pre-fill my details* off to keep the details without having them applied.
+
+**Signature.** Draw or upload it once and it is ready on every shipment; you can still
+replace or remove it per shipment. It is stored on your own server and nowhere else — see
+[Privacy](privacy.md#what-is-stored).
+
+### For administrators
+
+Administrators see one more section, applying to the whole installation: the language and
+theme new users start with, the organisation name and address offered as a consignor to
+anyone who has not filled in their own, whether the UN card download is offered, how long a
+session lasts, and — under **Outbound connections** — whether address lookup and catalogue
+sync are allowed to reach the internet at all. See
+[Configuration](configuration.md#two-places-and-which-one-wins) for how these relate to the
+environment variables.
+
 ## Language
 
 Under **Settings** you pick Dutch, English, German or French. That choice runs all the way

@@ -1,62 +1,106 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { api } from "../api/client";
-import { applySystemTheme, applyTheme, getStoredTheme, type Theme } from "../theme";
+import {
+  InstanceSettings,
+  SettingsOptions,
+  ThemeChoice,
+  User,
+  UserPreferences,
+  api,
+} from "../api/client";
+import SignaturePad from "../components/SignaturePad";
+import { LANGUAGE_NAMES, SUPPORTED_LANGUAGES } from "../i18n/language";
+import { usePreferences } from "../settings/preferences";
 
 const panelClass = "bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800";
 const inputClass =
   "w-full border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-950 text-slate-900 dark:text-slate-100 rounded-lg px-3 py-2.5 text-sm min-h-[44px]";
+const buttonPrimary =
+  "bg-brand-600 text-white px-5 py-2.5 rounded-lg font-medium hover:bg-brand-700 disabled:opacity-50 min-h-[44px] text-sm";
 
-export default function SettingsPage() {
-  const { t, i18n } = useTranslation();
-  const [theme, setTheme] = useState<Theme | "system">(() => getStoredTheme() ?? "system");
+const THEMES: ThemeChoice[] = ["light", "dark", "system"];
+
+interface Props {
+  user: User;
+}
+
+export default function SettingsPage({ user }: Props) {
+  const { t } = useTranslation();
+  const { preferences, save, loaded } = usePreferences();
+  const [draft, setDraft] = useState<UserPreferences>(preferences);
+  const [options, setOptions] = useState<SettingsOptions | null>(null);
   const [version, setVersion] = useState("");
+  const [saving, setSaving] = useState(false);
+  const [saved, setSaved] = useState(false);
+  const [error, setError] = useState("");
+
+  useEffect(() => setDraft(preferences), [preferences]);
 
   useEffect(() => {
     api.health().then((h) => setVersion(h.version)).catch(() => {});
+    api.settingsOptions().then(setOptions).catch(() => {});
   }, []);
 
-  useEffect(() => {
-    const sync = () => setTheme(getStoredTheme() ?? "system");
-    window.addEventListener("cargopilot-theme-change", sync);
-    return () => window.removeEventListener("cargopilot-theme-change", sync);
-  }, []);
+  const dirty = useMemo(
+    () => JSON.stringify(draft) !== JSON.stringify(preferences),
+    [draft, preferences],
+  );
 
-  const notifyTheme = () => window.dispatchEvent(new Event("cargopilot-theme-change"));
+  const set = <K extends keyof UserPreferences>(key: K, value: UserPreferences[K]) => {
+    setDraft((current) => ({ ...current, [key]: value }));
+    setSaved(false);
+  };
 
-  const setLanguage = (lang: string) => {
-    i18n.changeLanguage(lang);
-    localStorage.setItem("cargopilot-lang", lang);
+  /** The theme and the language take effect the moment they are picked — they
+   *  always did, and having to press Save to see a dark screen would be a step
+   *  backwards. Everything else waits for the button. */
+  const setAndApply = async (values: Partial<UserPreferences>) => {
+    const next = { ...draft, ...values };
+    setDraft(next);
+    setError("");
+    try {
+      await save(next);
+    } catch (e) {
+      setError(String(e));
+    }
+  };
+
+  const submit = async () => {
+    setSaving(true);
+    setError("");
+    try {
+      await save(draft);
+      setSaved(true);
+    } catch (e) {
+      setError(String(e));
+    } finally {
+      setSaving(false);
+    }
   };
 
   return (
-    <div className="space-y-6 max-w-lg">
+    <div className="space-y-6 max-w-2xl pb-4">
       <div>
         <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">{t("settings.title")}</h2>
         <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">{t("settings.intro")}</p>
       </div>
 
-      <div className={`${panelClass} p-5 space-y-5`}>
+      <section className={`${panelClass} p-5 space-y-5`}>
+        <h3 className="text-sm font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">
+          {t("settings.appearance")}
+        </h3>
+
         <div>
           <label className="text-sm font-medium text-slate-800 dark:text-slate-200">{t("settings.theme")}</label>
           <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">{t("settings.themeHint")}</p>
           <div className="grid grid-cols-3 gap-2 mt-2">
-            {(["light", "dark", "system"] as const).map((option) => (
+            {THEMES.map((option) => (
               <button
                 key={option}
                 type="button"
-                onClick={() => {
-                  if (option === "system") {
-                    applySystemTheme();
-                    setTheme("system");
-                  } else {
-                    applyTheme(option);
-                    setTheme(option);
-                  }
-                  notifyTheme();
-                }}
+                onClick={() => void setAndApply({ theme: option })}
                 className={`px-3 py-2.5 rounded-lg text-sm min-h-[44px] border ${
-                  theme === option
+                  draft.theme === option
                     ? "border-brand-500 bg-brand-50 text-brand-700 dark:bg-brand-950/50 dark:text-brand-200"
                     : "border-slate-200 dark:border-slate-700"
                 }`}
@@ -70,23 +114,402 @@ export default function SettingsPage() {
         <div>
           <label className="text-sm font-medium text-slate-800 dark:text-slate-200">{t("settings.language")}</label>
           <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">{t("settings.languageHint")}</p>
-          <select className={`${inputClass} mt-2`} value={i18n.language} onChange={(e) => setLanguage(e.target.value)}>
-            <option value="nl">Nederlands</option>
-            <option value="en">English</option>
-            <option value="de">Deutsch</option>
-            <option value="fr">Français</option>
+          <select
+            className={`${inputClass} mt-2`}
+            value={draft.language || ""}
+            onChange={(e) => void setAndApply({ language: e.target.value })}
+          >
+            {SUPPORTED_LANGUAGES.map((language) => (
+              <option key={language} value={language}>
+                {LANGUAGE_NAMES[language]}
+              </option>
+            ))}
           </select>
         </div>
 
         <p className="text-xs text-slate-500 dark:text-slate-400 border-t border-slate-100 dark:border-slate-800 pt-3">
           {t("settings.autoDetectNote")}
         </p>
-        {version && (
-          <p className="text-xs text-slate-500 dark:text-slate-400">
-            {t("settings.version")}: {version}
+      </section>
+
+      <section className={`${panelClass} p-5 space-y-5`}>
+        <div>
+          <h3 className="text-sm font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">
+            {t("settings.shipmentDefaults")}
+          </h3>
+          <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">{t("settings.shipmentDefaultsHint")}</p>
+        </div>
+
+        <div>
+          <label className="text-sm font-medium text-slate-800 dark:text-slate-200">{t("settings.defaultModality")}</label>
+          <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">{t("settings.defaultModalityHint")}</p>
+          <select
+            className={`${inputClass} mt-2`}
+            value={draft.default_modality}
+            onChange={(e) => set("default_modality", e.target.value)}
+          >
+            <option value="">{t("settings.askEveryTime")}</option>
+            {(options?.modalities ?? []).map((modality) => (
+              <option key={modality} value={modality}>
+                {t(`modality.${modality}`)}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        <div>
+          <label className="text-sm font-medium text-slate-800 dark:text-slate-200">{t("settings.defaultUnit")}</label>
+          <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">{t("settings.defaultUnitHint")}</p>
+          <select
+            className={`${inputClass} mt-2`}
+            value={draft.default_unit}
+            onChange={(e) => set("default_unit", e.target.value)}
+          >
+            {(options?.units ?? []).map((unit) => (
+              <option key={unit.code} value={unit.code}>
+                {t(`units.name.${unit.code}`, { defaultValue: `${unit.code} (${unit.symbol})` })}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        <Toggle
+          label={t("settings.prefillDocuments")}
+          hint={t("settings.prefillDocumentsHint")}
+          checked={draft.prefill_documents}
+          onChange={(value) => set("prefill_documents", value)}
+        />
+      </section>
+
+      <section className={`${panelClass} p-5 space-y-4`}>
+        <div>
+          <h3 className="text-sm font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">
+            {t("settings.myDetails")}
+          </h3>
+          <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">{t("settings.myDetailsHint")}</p>
+        </div>
+
+        <Field
+          label={t("settings.consignorName")}
+          value={draft.consignor_name}
+          onChange={(value) => set("consignor_name", value)}
+        />
+        <div>
+          <label className="text-sm font-medium text-slate-800 dark:text-slate-200">
+            {t("settings.consignorAddress")}
+          </label>
+          <textarea
+            className={`${inputClass} mt-1 min-h-[80px]`}
+            value={draft.consignor_address}
+            onChange={(e) => set("consignor_address", e.target.value)}
+          />
+        </div>
+        <Field
+          label={t("settings.consignorContact")}
+          value={draft.consignor_contact}
+          onChange={(value) => set("consignor_contact", value)}
+        />
+        <Field
+          label={t("settings.carrierName")}
+          value={draft.carrier_name}
+          onChange={(value) => set("carrier_name", value)}
+        />
+        <Field
+          label={t("settings.loadingPoint")}
+          value={draft.loading_point}
+          onChange={(value) => set("loading_point", value)}
+        />
+        <Field
+          label={t("settings.emergencyContact")}
+          hint={t("settings.emergencyContactHint")}
+          value={draft.emergency_contact}
+          onChange={(value) => set("emergency_contact", value)}
+        />
+      </section>
+
+      <div className="space-y-2">
+        <p className="text-xs text-slate-500 dark:text-slate-400">{t("settings.signatureHint")}</p>
+        <SignaturePad
+          value={draft.signature_image || null}
+          onChange={(dataUrl) => set("signature_image", dataUrl ?? "")}
+        />
+      </div>
+
+      <div className="flex flex-wrap items-center gap-3">
+        <button type="button" onClick={submit} disabled={saving || !dirty} className={buttonPrimary}>
+          {saving ? t("settings.saving") : t("settings.save")}
+        </button>
+        {saved && !dirty && (
+          <span className="text-sm text-emerald-600 dark:text-emerald-400">{t("settings.saved")}</span>
+        )}
+        {!loaded && <span className="text-sm text-slate-500 dark:text-slate-400">{t("wizard.loading")}</span>}
+      </div>
+
+      {error && <p className="text-sm text-red-600 dark:text-red-400">{error}</p>}
+
+      {user.role === "admin" && <AdminSettings />}
+
+      {version && (
+        <p className="text-xs text-slate-500 dark:text-slate-400">
+          {t("settings.version")}: {version}
+        </p>
+      )}
+    </div>
+  );
+}
+
+/**
+ * The instance-wide settings, for administrators.
+ *
+ * Separate from the block above in more than looks: these apply to everyone, and
+ * two of them decide whether this installation talks to the internet at all. The
+ * server enforces that with `require_admin`; hiding the section here only keeps
+ * it out of the way of people who cannot change it anyway.
+ */
+function AdminSettings() {
+  const { t } = useTranslation();
+  const [settings, setSettings] = useState<InstanceSettings | null>(null);
+  const [draft, setDraft] = useState<InstanceSettings | null>(null);
+  const [saving, setSaving] = useState(false);
+  const [saved, setSaved] = useState(false);
+  const [error, setError] = useState("");
+
+  useEffect(() => {
+    api
+      .instanceSettings()
+      .then((values) => {
+        setSettings(values);
+        setDraft(values);
+      })
+      .catch((e) => setError(String(e)));
+  }, []);
+
+  if (!draft || !settings) {
+    return error ? <p className="text-sm text-red-600 dark:text-red-400">{error}</p> : null;
+  }
+
+  const dirty = JSON.stringify(draft) !== JSON.stringify(settings);
+
+  const set = <K extends keyof InstanceSettings>(key: K, value: InstanceSettings[K]) => {
+    setDraft((current) => (current ? { ...current, [key]: value } : current));
+    setSaved(false);
+  };
+
+  const submit = async () => {
+    setSaving(true);
+    setError("");
+    try {
+      const stored = await api.saveInstanceSettings(draft);
+      setSettings(stored);
+      setDraft(stored);
+      setSaved(true);
+    } catch (e) {
+      setError(String(e));
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  return (
+    <div className="space-y-4">
+      <div className="rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 dark:border-amber-900/50 dark:bg-amber-900/20">
+        <h3 className="text-sm font-semibold text-amber-900 dark:text-amber-200">{t("settings.adminTitle")}</h3>
+        <p className="text-xs text-amber-800 dark:text-amber-300 mt-1">{t("settings.adminIntro")}</p>
+      </div>
+
+      <section className={`${panelClass} p-5 space-y-5`}>
+        <h4 className="text-sm font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">
+          {t("settings.adminNewUsers")}
+        </h4>
+
+        <div>
+          <label className="text-sm font-medium text-slate-800 dark:text-slate-200">
+            {t("settings.adminDefaultLanguage")}
+          </label>
+          <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+            {t("settings.adminDefaultLanguageHint")}
           </p>
+          <select
+            className={`${inputClass} mt-2`}
+            value={draft.default_language}
+            onChange={(e) => set("default_language", e.target.value)}
+          >
+            {SUPPORTED_LANGUAGES.map((language) => (
+              <option key={language} value={language}>
+                {LANGUAGE_NAMES[language]}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        <div>
+          <label className="text-sm font-medium text-slate-800 dark:text-slate-200">
+            {t("settings.adminDefaultTheme")}
+          </label>
+          <select
+            className={`${inputClass} mt-2`}
+            value={draft.default_theme}
+            onChange={(e) => set("default_theme", e.target.value as ThemeChoice)}
+          >
+            {THEMES.map((option) => (
+              <option key={option} value={option}>
+                {t(option === "system" ? "settings.auto" : `theme.${option}`)}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        <Field
+          label={t("settings.organisationName")}
+          hint={t("settings.organisationHint")}
+          value={draft.organisation_name}
+          onChange={(value) => set("organisation_name", value)}
+        />
+        <div>
+          <label className="text-sm font-medium text-slate-800 dark:text-slate-200">
+            {t("settings.organisationAddress")}
+          </label>
+          <textarea
+            className={`${inputClass} mt-1 min-h-[80px]`}
+            value={draft.organisation_address}
+            onChange={(e) => set("organisation_address", e.target.value)}
+          />
+        </div>
+      </section>
+
+      <section className={`${panelClass} p-5 space-y-5`}>
+        <div>
+          <h4 className="text-sm font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">
+            {t("settings.adminNetwork")}
+          </h4>
+          <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">{t("settings.adminNetworkHint")}</p>
+        </div>
+
+        <Toggle
+          label={t("settings.addressLookup")}
+          hint={t("settings.addressLookupHint")}
+          checked={draft.address_lookup_enabled}
+          onChange={(value) => set("address_lookup_enabled", value)}
+        />
+        {draft.address_lookup_enabled && (
+          <>
+            <Field
+              label={t("settings.addressApiUrl")}
+              hint={t("settings.addressApiUrlHint")}
+              value={draft.address_api_url}
+              onChange={(value) => set("address_api_url", value)}
+            />
+            <div>
+              <label className="text-sm font-medium text-slate-800 dark:text-slate-200">
+                {t("settings.addressTimeout")}
+              </label>
+              <input
+                type="number"
+                min={1}
+                max={60}
+                step={0.5}
+                className={`${inputClass} mt-1`}
+                value={draft.address_timeout_seconds}
+                onChange={(e) => set("address_timeout_seconds", Number(e.target.value))}
+              />
+            </div>
+          </>
+        )}
+
+        <Toggle
+          label={t("settings.catalogAutoSync")}
+          hint={t("settings.catalogAutoSyncHint")}
+          checked={draft.catalog_auto_sync}
+          onChange={(value) => set("catalog_auto_sync", value)}
+        />
+      </section>
+
+      <section className={`${panelClass} p-5 space-y-5`}>
+        <h4 className="text-sm font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">
+          {t("settings.adminFeatures")}
+        </h4>
+
+        <Toggle
+          label={t("settings.unCardsEnabled")}
+          hint={t("settings.unCardsEnabledHint")}
+          checked={draft.un_cards_enabled}
+          onChange={(value) => set("un_cards_enabled", value)}
+        />
+
+        <div>
+          <label className="text-sm font-medium text-slate-800 dark:text-slate-200">
+            {t("settings.sessionTimeout")}
+          </label>
+          <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">{t("settings.sessionTimeoutHint")}</p>
+          <input
+            type="number"
+            min={15}
+            max={10080}
+            step={15}
+            className={`${inputClass} mt-1`}
+            value={draft.session_timeout_minutes}
+            onChange={(e) => set("session_timeout_minutes", Number(e.target.value))}
+          />
+        </div>
+      </section>
+
+      <div className="flex flex-wrap items-center gap-3">
+        <button type="button" onClick={submit} disabled={saving || !dirty} className={buttonPrimary}>
+          {saving ? t("settings.saving") : t("settings.saveAdmin")}
+        </button>
+        {saved && !dirty && (
+          <span className="text-sm text-emerald-600 dark:text-emerald-400">{t("settings.saved")}</span>
         )}
       </div>
+
+      {error && <p className="text-sm text-red-600 dark:text-red-400">{error}</p>}
     </div>
+  );
+}
+
+function Field({
+  label,
+  hint,
+  value,
+  onChange,
+}: {
+  label: string;
+  hint?: string;
+  value: string;
+  onChange: (value: string) => void;
+}) {
+  return (
+    <div>
+      <label className="text-sm font-medium text-slate-800 dark:text-slate-200">{label}</label>
+      {hint && <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">{hint}</p>}
+      <input className={`${inputClass} mt-1`} value={value} onChange={(e) => onChange(e.target.value)} />
+    </div>
+  );
+}
+
+function Toggle({
+  label,
+  hint,
+  checked,
+  onChange,
+}: {
+  label: string;
+  hint?: string;
+  checked: boolean;
+  onChange: (value: boolean) => void;
+}) {
+  return (
+    <label className="flex items-start gap-3 cursor-pointer">
+      <input
+        type="checkbox"
+        checked={checked}
+        onChange={(e) => onChange(e.target.checked)}
+        className="mt-1 h-4 w-4 rounded border-slate-300 text-brand-600 focus:ring-brand-500"
+      />
+      <span className="min-w-0">
+        <span className="block text-sm font-medium text-slate-800 dark:text-slate-200">{label}</span>
+        {hint && <span className="block text-xs text-slate-500 dark:text-slate-400 mt-0.5">{hint}</span>}
+      </span>
+    </label>
   );
 }

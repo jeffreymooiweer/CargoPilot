@@ -75,6 +75,11 @@ chose.
 
 **Speaks Dutch, English, German and French**, in light or dark mode. The interface, the field labels, the dangerous goods guidance and the generated documents all follow the language you pick.
 
+**Remembers what does not change.** Your language, your consignor details, your emergency
+number, your signature — set once, filled in on every shipment, and stored with your
+account rather than in one browser. Administrators get their own section: what new users
+start with, and whether this installation is allowed to reach the internet at all.
+
 ## Try it in two minutes
 
 ```bash

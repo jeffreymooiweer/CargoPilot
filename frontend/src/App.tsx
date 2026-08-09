@@ -9,6 +9,7 @@ import UsersPage from "./pages/UsersPage";
 import MaterieelPage from "./pages/MaterieelPage";
 import SettingsPage from "./pages/SettingsPage";
 import LegalPage from "./pages/LegalPage";
+import { PreferencesProvider } from "./settings/preferences";
 
 export default function App() {
   const [user, setUser] = useState<User | null>(null);
@@ -36,17 +37,19 @@ export default function App() {
   }
 
   return (
-    <Routes>
-      <Route element={<Layout user={user} onLogout={() => setUser(null)} />}>
-        <Route path="/" element={<ModalitySelectPage />} />
-        <Route path="/wizard" element={<Navigate to="/" replace />} />
-        <Route path="/wizard/:modality" element={<WizardPage />} />
-        <Route path="/materieel" element={<MaterieelPage />} />
-        <Route path="/settings" element={<SettingsPage />} />
-        <Route path="/legal" element={<LegalPage />} />
-        <Route path="/users" element={<UsersPage />} />
-      </Route>
-      <Route path="*" element={<Navigate to="/" replace />} />
-    </Routes>
+    <PreferencesProvider>
+      <Routes>
+        <Route element={<Layout user={user} onLogout={() => setUser(null)} />}>
+          <Route path="/" element={<ModalitySelectPage />} />
+          <Route path="/wizard" element={<Navigate to="/" replace />} />
+          <Route path="/wizard/:modality" element={<WizardPage />} />
+          <Route path="/materieel" element={<MaterieelPage />} />
+          <Route path="/settings" element={<SettingsPage user={user} />} />
+          <Route path="/legal" element={<LegalPage />} />
+          <Route path="/users" element={<UsersPage />} />
+        </Route>
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Routes>
+    </PreferencesProvider>
   );
 }

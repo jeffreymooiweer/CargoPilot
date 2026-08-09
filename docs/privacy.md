@@ -13,8 +13,18 @@ Everything persistent lives in the `/data` volume:
 | Catalogue reference data | Materials, profiles, locations, UN numbers |
 | Catalogue sync status | So startup knows what is current |
 | Equipment **you** imported | Your own library |
+| Your settings | Language, theme, and the details you asked to have filled in for you |
+| The installation's settings | What an administrator set for everyone |
 
 That is the whole list.
+
+Settings are stored per account, so they follow you to a second device rather than staying
+behind in one browser. They hold what you chose to put there: your consignor name and
+address, a contact, a carrier, a loading point, an emergency number — and, if you draw one,
+**your signature**. That last one is worth naming explicitly, because it is the only image
+CargoPilot keeps. It is saved only when you draw or upload it on the settings screen,
+clearing it removes it, and it never leaves your server. If you would rather not keep one,
+leave that section on "skip" and sign the printed documents with a pen.
 
 ## What is deliberately not stored
 
@@ -32,11 +42,16 @@ This is a deliberate choice. If a job is finished, there is nothing left to leak
 Two things, and only if you let them:
 
 **Address autocomplete** sends what you type in an address field to a Photon geocoder
-(`photon.komoot.io` by default). Point `GEO_ADDRESS_API_URL` at your own instance, or
-simply do not use the suggestions — typing by hand always works.
+(`photon.komoot.io` by default). An administrator can switch it off entirely on the
+settings screen, point `GEO_ADDRESS_API_URL` at their own instance, or you can simply not
+use the suggestions — typing by hand always works.
 
 **Catalogue sync** fetches public reference data (steel profiles, material densities) at
-startup. Set `CATALOG_AUTO_SYNC=false` to switch it off.
+startup. Switch it off on the settings screen or with `CATALOG_AUTO_SYNC=false`.
+
+Both switches sit next to each other under **Outbound connections** in the administrator
+section of the settings screen, so an air-gapped installation can be made silent from one
+place.
 
 Airport, port, station, UN number and packaging lookups are all local. Nothing about
 your shipment ever goes anywhere.

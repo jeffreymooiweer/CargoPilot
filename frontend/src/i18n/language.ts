@@ -14,6 +14,19 @@ export type Language = (typeof SUPPORTED_LANGUAGES)[number];
 
 export const DEFAULT_LANGUAGE: Language = "nl";
 
+/** Hoe elke taal in de keuzelijst heet — in die taal zelf.
+ *
+ * "Deutsch" en niet "Duits": wie de interface op Duits wil zetten, leest op dat
+ * moment nog Nederlands en zoekt naar het woord dat hij kent. De lijst wordt uit
+ * SUPPORTED_LANGUAGES opgebouwd, zodat een taalbestand toevoegen zonder de
+ * keuzelijst bij te werken niet meer kan. */
+export const LANGUAGE_NAMES: Record<Language, string> = {
+  nl: "Nederlands",
+  en: "English",
+  de: "Deutsch",
+  fr: "Français",
+};
+
 /** De taalcode die de backend verwacht, afgeleid uit i18next.
  *
  * i18next levert ook varianten als "de-AT" of "en-GB"; die tellen mee voor hun

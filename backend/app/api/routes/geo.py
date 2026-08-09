@@ -1,8 +1,10 @@
-"""Geo-endpoints: locatie-typeahead (luchthavens/havens/stations) en adres-autocomplete.
+"""Geo endpoints: location typeahead (airports/ports/stations) and address autocomplete.
 
-Adres-autocomplete proxyt naar een Photon-compatibele API (standaard photon.komoot.io,
-OpenStreetMap-data). Instelbaar via GEO_ADDRESS_API_URL; faalt zacht zodat de wizard
-bruikbaar blijft zonder internettoegang.
+Address autocomplete proxies to a Photon-compatible API (photon.komoot.io by
+default, OpenStreetMap data). An administrator can point it elsewhere or switch
+it off entirely from the settings screen; ``GEO_ADDRESS_API_URL`` remains the
+default when nothing has been saved. It fails softly either way, so the wizard
+stays usable without internet access.
 """
 from __future__ import annotations
 
@@ -10,11 +12,13 @@ import logging
 
 import httpx
 from fastapi import APIRouter, Depends, Query
+from sqlalchemy.orm import Session
 
-from app.core.config import get_settings
+from app.core.database import get_db
 from app.core.deps import get_current_user
 from app.models.user import User
 from app.services.geo.locations import LOCATION_TYPES, search_locations
+from app.services.settings_store import instance_settings
 
 logger = logging.getLogger(__name__)
 
@@ -24,7 +28,7 @@ router = APIRouter(prefix="/geo", tags=["geo"])
 @router.get("/locations")
 def geo_locations(
     q: str = Query(..., min_length=2, max_length=80),
-    type: str | None = Query(default=None, description="Kommagescheiden: airport,port,station"),
+    type: str | None = Query(default=None, description="Comma-separated: airport,port,station"),
     country: str | None = Query(default=None, min_length=2, max_length=2),
     limit: int = Query(default=10, ge=1, le=25),
     user: User = Depends(get_current_user),
@@ -41,17 +45,23 @@ def geo_address(
     lang: str = Query(default="en", min_length=2, max_length=2),
     limit: int = Query(default=6, ge=1, le=15),
     user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
 ):
-    settings = get_settings()
+    settings = instance_settings(db)
+    # The one request this app makes to the outside world while somebody is
+    # typing. An administrator can switch it off, and then it is not made at
+    # all rather than made and discarded.
+    if not settings.address_lookup_enabled:
+        return {"results": [], "available": False}
     params = {"q": q, "limit": limit, "lang": lang if lang in ("en", "de", "fr") else "en"}
     headers = {"User-Agent": "CargoPilot (+https://github.com/jeffreymooiweer/CargoPilot)"}
     try:
-        with httpx.Client(timeout=settings.geo_address_timeout_seconds, headers=headers) as client:
-            response = client.get(settings.geo_address_api_url, params=params)
+        with httpx.Client(timeout=settings.address_timeout_seconds, headers=headers) as client:
+            response = client.get(settings.address_api_url, params=params)
             response.raise_for_status()
             data = response.json()
     except (httpx.HTTPError, ValueError) as exc:
-        logger.warning("Adres-API niet bereikbaar: %s", exc)
+        logger.warning("Address API unreachable: %s", exc)
         return {"results": [], "available": False}
 
     results = []

@@ -1,5 +1,7 @@
-import { useNavigate } from "react-router";
+import { useEffect } from "react";
+import { useNavigate, useSearchParams } from "react-router";
 import { useTranslation } from "react-i18next";
+import { usePreferences } from "../settings/preferences";
 
 export const MODALITIES = ["road", "rail", "sea", "inland", "air", "multimodal"] as const;
 export type ModalityKey = (typeof MODALITIES)[number];
@@ -11,6 +13,18 @@ export function isModalityKey(value: string | undefined): value is ModalityKey {
 export default function ModalitySelectPage() {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const [params] = useSearchParams();
+  const { preferences, loaded } = usePreferences();
+
+  // Someone who only ever ships by road should not tap the same tile every
+  // morning. `?choose=1` switches the tiles back on for one visit — without it,
+  // "change transport mode" would land here and bounce straight back.
+  const skipDefault = params.get("choose") === "1";
+  const preferred = preferences.default_modality;
+  useEffect(() => {
+    if (!loaded || skipDefault) return;
+    if (isModalityKey(preferred)) navigate(`/wizard/${preferred}`, { replace: true });
+  }, [loaded, skipDefault, preferred, navigate]);
 
   return (
     <div className="space-y-5 sm:space-y-6">

@@ -9,6 +9,7 @@ import {
   DocumentRegistry,
   LocalizedText,
   UnCardsAvailability,
+  UserPreferences,
 } from "../api/client";
 import { documentLanguage, localised } from "../i18n/language";
 import DangerousGoodsStep, { buildDgEntries } from "../components/DangerousGoodsStep";
@@ -19,6 +20,7 @@ import ImportDialog from "../components/ImportDialog";
 import ReviewLinesPanel, { DraftLine, draftToText, textToDraftLines } from "../components/ReviewLinesPanel";
 import WizardProgress from "../components/WizardProgress";
 import { isModalityKey } from "./ModalitySelectPage";
+import { usePreferences } from "../settings/preferences";
 import {
   applyLineWeightChange,
   recalcTotals,
@@ -28,8 +30,6 @@ import {
   mergeOverrides,
 } from "../utils/lineWeights";
 
-const inputClass =
-  "w-full border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-950 text-slate-900 dark:text-slate-100 rounded-lg px-3 py-2 text-sm min-h-[44px]";
 const weightInputClass =
   "w-full border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-950 text-slate-900 dark:text-slate-100 rounded-lg px-3 py-2 text-sm";
 const panelClass = "bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800";
@@ -72,6 +72,20 @@ const DG_EXTRA_FIELDS: Record<string, string[]> = {
   ],
 };
 
+/** Which saved detail belongs in which document field.
+ *
+ * The consignor, the haulier and the loading point are the same on nearly every
+ * consignment the same person makes, and were retyped every time. Only empty
+ * fields are filled: a prefill that overwrites what someone just typed is worse
+ * than no prefill at all. */
+const PREFILL_FIELDS: Record<string, keyof UserPreferences> = {
+  consignor_name: "consignor_name",
+  consignor_address: "consignor_address",
+  consignor_contact: "consignor_contact",
+  carrier_name: "carrier_name",
+  loading_point: "loading_point",
+};
+
 const MODALITY_DG_PROFILES: Record<string, string[]> = {
   road: ["ADR"],
   rail: ["RID"],
@@ -86,13 +100,15 @@ export default function WizardPage() {
   const { modality } = useParams();
   const lang = documentLanguage(i18n.language);
   const L = (text?: LocalizedText) => localised(text, lang);
+  const { preferences, loaded: preferencesLoaded } = usePreferences();
+  const prefill = preferencesLoaded && preferences.prefill_documents;
 
   const [registry, setRegistry] = useState<DocumentRegistry | null>(null);
   const [registryError, setRegistryError] = useState("");
   const [stepKey, setStepKey] = useState<StepKey>("forms");
   const [selectedDocs, setSelectedDocs] = useState<string[] | null>(null);
   const [docValues, setDocValues] = useState<Record<string, string>>({});
-  const [draftLines, setDraftLines] = useState<DraftLine[]>([{ id: 1, description: "", quantity: 1, unit: "stuks" }]);
+  const [draftLines, setDraftLines] = useState<DraftLine[]>([{ id: 1, description: "", quantity: 1, unit: "pcs" }]);
   const [nextId, setNextId] = useState(2);
   const [result, setResult] = useState<CalcResult | null>(null);
   const [dgEntries, setDgEntries] = useState<DgEntry[]>([]);
@@ -110,6 +126,40 @@ export default function WizardPage() {
       .then(setRegistry)
       .catch((e) => setRegistryError(String(e)));
   }, []);
+
+  // The saved details land in the form as soon as they arrive, and only in
+  // fields that are still empty — the preferences come back over the network,
+  // so someone may already have started typing by then.
+  useEffect(() => {
+    if (!prefill) return;
+    setDocValues((current) => {
+      const filled = { ...current };
+      for (const [field, key] of Object.entries(PREFILL_FIELDS)) {
+        const value = String(preferences[key] ?? "");
+        if (value && !(filled[field] ?? "").trim()) filled[field] = value;
+      }
+      return filled;
+    });
+  }, [prefill, preferences]);
+
+  // A signature that was drawn once in the settings. Never overwrites one drawn
+  // for this shipment.
+  useEffect(() => {
+    if (prefill && preferences.signature_image) {
+      setSignature((current) => current ?? preferences.signature_image);
+    }
+  }, [prefill, preferences.signature_image]);
+
+  // A blank starting line still carries the default unit; the moment something
+  // has been typed it is left alone.
+  useEffect(() => {
+    if (!preferencesLoaded || !preferences.default_unit) return;
+    setDraftLines((lines) =>
+      lines.some((line) => line.description.trim())
+        ? lines
+        : lines.map((line) => ({ ...line, unit: preferences.default_unit })),
+    );
+  }, [preferencesLoaded, preferences.default_unit]);
 
   const modalityDef = registry?.modalities.find((m) => m.key === modality);
 
@@ -279,7 +329,8 @@ export default function WizardPage() {
   }, [draftSignature, stepKey]);
 
   const addLine = () => {
-    setDraftLines((lines) => [...lines, { id: nextId, description: "", quantity: 1, unit: "stuks" }]);
+    const unit = preferences.default_unit || "pcs";
+    setDraftLines((lines) => [...lines, { id: nextId, description: "", quantity: 1, unit }]);
     setNextId((n) => n + 1);
   };
 
@@ -326,6 +377,20 @@ export default function WizardPage() {
     updateResultLines(scaleLinesToTotalWeight(result.lines, value));
   };
 
+  /** The 24-hour emergency number, which IMDG 5.4.1.5.11 and the IATA DGR
+   *  shipper's declaration both ask for. It never changes and was typed again
+   *  for every product on every consignment. */
+  const withEmergencyContact = (entries: DgEntry[]): DgEntry[] => {
+    const contact = prefill ? preferences.emergency_contact : "";
+    if (!contact) return entries;
+    return entries.map((entry) => ({
+      ...entry,
+      products: entry.products.map((product) =>
+        (product.emergency_contact ?? "").trim() ? product : { ...product, emergency_contact: contact },
+      ),
+    }));
+  };
+
   const goFromLines = async () => {
     const res = await calculateFromDraft();
     if (!res) return;
@@ -333,7 +398,7 @@ export default function WizardPage() {
       (line) => line.include && (line.dangerous_goods || (line.detected_un_numbers?.length ?? 0) > 0),
     );
     if (hasDg) {
-      setDgEntries(buildDgEntries(res.lines));
+      setDgEntries(withEmergencyContact(buildDgEntries(res.lines)));
       setStepKey("dg");
     } else if (genericDocs.length > 0) {
       setStepKey("details");
@@ -466,7 +531,7 @@ export default function WizardPage() {
         <span className="inline-flex items-center gap-2 rounded-full bg-brand-100 px-3 py-1 text-xs font-medium text-brand-700 dark:bg-brand-900/50 dark:text-brand-200">
           {t(`modality.${modality}`)}
         </span>
-        <Link to="/" className="text-xs text-slate-500 hover:underline dark:text-slate-400">
+        <Link to="/?choose=1" className="text-xs text-slate-500 hover:underline dark:text-slate-400">
           {t("wizard.changeModality")}
         </Link>
       </div>
@@ -775,15 +840,6 @@ function Stat({ label, value }: { label: string; value: string }) {
     <div className={`${panelClass} p-3 sm:p-4`}>
       <p className="text-xs text-slate-500 dark:text-slate-400">{label}</p>
       <p className="mt-1 text-base font-semibold text-slate-900 dark:text-slate-100 sm:text-lg">{value}</p>
-    </div>
-  );
-}
-
-function Field({ label, value, onChange }: { label: string; value: string; onChange: (v: string) => void }) {
-  return (
-    <div>
-      <label className="text-sm font-medium text-slate-800 dark:text-slate-200">{label}</label>
-      <input className={`${inputClass} mt-1`} value={value} onChange={(e) => onChange(e.target.value)} />
     </div>
   );
 }

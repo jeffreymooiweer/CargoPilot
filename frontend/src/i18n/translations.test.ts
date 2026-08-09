@@ -15,7 +15,12 @@ import de from "./de.json";
 import fr from "./fr.json";
 import en from "./en.json";
 import nl from "./nl.json";
-import { DEFAULT_LANGUAGE, documentLanguage, SUPPORTED_LANGUAGES } from "./language";
+import {
+  DEFAULT_LANGUAGE,
+  documentLanguage,
+  LANGUAGE_NAMES,
+  SUPPORTED_LANGUAGES,
+} from "./language";
 
 type Json = Record<string, unknown>;
 
@@ -35,12 +40,19 @@ function paths(value: unknown, prefix = ""): string[] {
 
 const BUNDLES: Record<string, Json> = { nl, en, de, fr };
 
+/** Elke taal behalve het Nederlands, want daar wordt tegen vergeleken.
+ *
+ * Stond hier eerst als `["en", "de"]`. Frans kwam er in v1.44.0 bij en viel
+ * daardoor buiten de vergelijking: precies de taal met de meeste kans op gaten
+ * werd als enige niet gecontroleerd. Vandaar afgeleid in plaats van opgesomd. */
+const COMPARED = SUPPORTED_LANGUAGES.filter((language) => language !== "nl");
+
 describe("de vertaalbestanden", () => {
   it("dekken elke taal die de app aanbiedt", () => {
     expect(Object.keys(BUNDLES).sort()).toEqual([...SUPPORTED_LANGUAGES].sort());
   });
 
-  for (const language of ["en", "de"]) {
+  for (const language of COMPARED) {
     it(`${language} draagt dezelfde sleutels als het Nederlands`, () => {
       const dutch = paths(nl);
       const other = paths(BUNDLES[language]);
@@ -60,7 +72,7 @@ describe("de vertaalbestanden", () => {
     // {{count}} dat in de vertaling {{aantal}} heet, komt als letterlijke
     // accolades op het scherm.
     const dutch = flatten(nl);
-    for (const language of ["en", "de"]) {
+    for (const language of COMPARED) {
       const other = flatten(BUNDLES[language]);
       for (const [key, value] of Object.entries(dutch)) {
         expect(variables(String(other[key])), `${language} · ${key}`).toEqual(
@@ -88,15 +100,18 @@ function variables(text: string): string[] {
 }
 
 describe("de talen die de app aanbiedt", () => {
-  it("staan alle drie in de keuzelijst van de instellingen", () => {
-    // Een taalbestand toevoegen zonder de keuzelijst bij te werken levert een
-    // taal op die niemand kan kiezen.
+  it("staan allemaal in de keuzelijst van de instellingen", () => {
+    // Een taalbestand toevoegen zonder de keuzelijst bij te werken leverde een
+    // taal op die niemand kon kiezen. De keuzelijst wordt nu uit
+    // SUPPORTED_LANGUAGES opgebouwd, dus dat kan niet meer — wat wél kan is een
+    // taal zonder naam, die dan als lege regel in de lijst staat.
+    expect(settingsSource).toContain("SUPPORTED_LANGUAGES.map");
     for (const language of SUPPORTED_LANGUAGES) {
-      expect(settingsSource, language).toContain(`<option value="${language}">`);
+      expect(LANGUAGE_NAMES[language]?.trim(), language).toBeTruthy();
     }
   });
 
-  it("zijn alle drie bij i18next geregistreerd", () => {
+  it("zijn allemaal bij i18next geregistreerd", () => {
     for (const language of SUPPORTED_LANGUAGES) {
       expect(i18nSetup, language).toMatch(new RegExp(`\\b${language}: \\{ translation:`));
     }

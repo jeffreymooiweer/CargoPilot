@@ -2,7 +2,9 @@ from datetime import datetime
 
 from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException
 from fastapi.responses import FileResponse
+from sqlalchemy.orm import Session
 
+from app.core.database import get_db
 from app.core.deps import get_current_user
 from app.models.user import User
 from app.schemas import DocumentExportRequest, UnCardsRequest
@@ -19,6 +21,7 @@ from app.services.documents import (
 )
 from app.services.documents.avc_form import fill_avc_waybill, has_avc_template
 from app.services.documents.signature import decode_signature_image
+from app.services.settings_store import instance_settings
 
 router = APIRouter(prefix="/documents", tags=["documents"])
 
@@ -103,9 +106,17 @@ def export(
 
 
 @router.post("/un-cards/availability")
-def un_cards_status(payload: UnCardsRequest, user: User = Depends(get_current_user)):
+def un_cards_status(
+    payload: UnCardsRequest,
+    user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
     """Which UN cards this shipment can be given, before offering the download."""
     status = un_cards_availability(payload.dangerous_goods)
+    if not instance_settings(db).un_cards_enabled:
+        # Switched off for this installation. Reported the same way as a missing
+        # card library, so the wizard simply does not offer the download.
+        return {**status, "enabled": False, "available": [], "count": 0, "library_size": 0}
     return {**status, "library_size": un_card_count()}
 
 
@@ -114,8 +125,11 @@ def export_un_cards(
     payload: UnCardsRequest,
     background_tasks: BackgroundTasks,
     user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
 ):
     """A zip with the UN cards for the substances in this shipment."""
+    if not instance_settings(db).un_cards_enabled:
+        raise HTTPException(status_code=404, detail="UN cards are disabled for this installation")
     try:
         out_path, status = build_un_cards_zip(payload.dangerous_goods)
     except FileNotFoundError as exc:

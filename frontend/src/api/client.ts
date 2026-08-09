@@ -122,6 +122,14 @@ export const api = {
     ),
   dgPackagings: (q = "", limit = 150) =>
     request<{ results: DgPackaging[] }>(`/dg/packagings?q=${encodeURIComponent(q)}&limit=${limit}`),
+  mySettings: () => request<UserPreferences>("/settings/me"),
+  saveMySettings: (payload: UserPreferences) =>
+    request<UserPreferences>("/settings/me", { method: "PUT", body: JSON.stringify(payload) }),
+  publicSettings: () => request<PublicSettings>("/settings/public"),
+  settingsOptions: () => request<SettingsOptions>("/settings/options"),
+  instanceSettings: () => request<InstanceSettings>("/settings/instance"),
+  saveInstanceSettings: (payload: InstanceSettings) =>
+    request<InstanceSettings>("/settings/instance", { method: "PUT", body: JSON.stringify(payload) }),
   listUsers: () => request<User[]>("/users"),
   createUser: (payload: Record<string, unknown>) =>
     request<User>("/users", { method: "POST", body: JSON.stringify(payload) }),
@@ -244,6 +252,56 @@ export interface User {
   email: string;
   role: string;
   active: boolean;
+}
+
+export type ThemeChoice = "light" | "dark" | "system";
+
+/** One user's own settings. Kept on the server, so they follow the account to a
+ *  second device instead of staying behind in one browser's localStorage. */
+export interface UserPreferences {
+  language: string;
+  theme: ThemeChoice;
+  default_modality: string;
+  default_unit: string;
+  prefill_documents: boolean;
+  consignor_name: string;
+  consignor_address: string;
+  consignor_contact: string;
+  carrier_name: string;
+  loading_point: string;
+  emergency_contact: string;
+  signature_image: string;
+}
+
+/** What the whole installation is set to. Administrators only. */
+export interface InstanceSettings {
+  default_language: string;
+  default_theme: ThemeChoice;
+  address_lookup_enabled: boolean;
+  address_api_url: string;
+  address_timeout_seconds: number;
+  catalog_auto_sync: boolean;
+  un_cards_enabled: boolean;
+  session_timeout_minutes: number;
+  organisation_name: string;
+  organisation_address: string;
+}
+
+/** The part of the instance settings every signed-in user may read. */
+export interface PublicSettings {
+  default_language: string;
+  default_theme: ThemeChoice;
+  address_lookup_enabled: boolean;
+  un_cards_enabled: boolean;
+  organisation_name: string;
+  organisation_address: string;
+}
+
+/** The lists the settings screen offers, from the backend that owns them. */
+export interface SettingsOptions {
+  languages: string[];
+  modalities: string[];
+  units: { code: string; symbol: string }[];
 }
 
 export interface LineItem {

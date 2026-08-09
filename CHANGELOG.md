@@ -2,6 +2,78 @@
 
 All notable changes are documented here, following [Semantic Versioning](https://semver.org/).
 
+## [1.45.0] — 2026-08-09
+
+### Added
+
+- **Settings that belong to you, and settings that belong to the installation.** Until now
+  the settings screen offered two things: a theme and a language. Both lived in
+  `localStorage`, which is to say in one browser — sign in from a second device and the app
+  was back in Dutch on a white background. Neither was ever really *yours*.
+
+  They are stored with the account now, and they brought company. Per user: the transport
+  mode to open straight into, the unit a new package line starts with, and the details that
+  are the same on every consignment and were retyped on every consignment — consignor name,
+  address and contact, the usual carrier, the loading point, the 24-hour emergency number
+  that IMDG 5.4.1.5.11 and the IATA DGR shipper's declaration both ask for, and a signature
+  drawn once instead of once per shipment. They are filled in only where the field is still
+  empty: a prefill that overwrites what somebody just typed is worse than no prefill.
+
+- **An administrator section.** Instance-wide, behind `require_admin`, and it exists mainly
+  for one question: *does this installation talk to the internet?* Address autocomplete and
+  the startup catalogue sync are the only two requests CargoPilot makes outward, and they
+  now have switches next to each other. Also there: the language and theme new users start
+  with, the organisation name and address offered as a consignor to anyone who has not
+  filled in their own, whether the UN card download is offered, and how long a session
+  lasts.
+
+  Each switch was checked through the endpoint it governs rather than only through the
+  store. A toggle that saves but changes nothing is worse than no toggle — the
+  administrator believes address lookups are off.
+
+- **The environment variables still decide when nothing is saved.** `GEO_ADDRESS_API_URL`,
+  `CATALOG_AUTO_SYNC` and `ACCESS_TOKEN_EXPIRE_MINUTES` were the only way to configure
+  these until now and are documented as such. A stored setting is an *overlay* on top of
+  them, so an installation that never opens this screen behaves exactly as its `.env` says.
+  What it gains is that a change no longer needs a container restart.
+
+### Changed
+
+- **A new package line starts in `pcs`, not `stuks`.** The default unit was the literal
+  Dutch string, hard-coded in the wizard, and it reached German and French screens too.
+
+### Fixed
+
+- **The French translation was never actually compared.** `translations.test.ts` checks
+  that every language file carries the same keys, in a loop that read
+  `for (const language of ["en", "de"])`. French was added in v1.44.0 and fell outside it —
+  the language with the most room for gaps was the one language not being checked. The loop
+  is derived from `SUPPORTED_LANGUAGES` now, so a fifth language cannot slip past it either.
+
+### Internal
+
+- **The settings tables hold one JSON document each, and that is deliberate.** This
+  application has no migration runner: `init_app` calls `Base.metadata.create_all`, which
+  creates *missing tables* but never adds a column to a table that already exists. A
+  column-per-setting schema would have worked perfectly on a fresh install and broken every
+  upgrade with "no such column". With a JSON payload the schema never changes again —
+  adding a preference is a field on a Pydantic model, and a database written by an older
+  version simply lacks the key and falls back to its default. `test_settings.py` pins that
+  in both directions, along with what a corrupt or no-longer-valid payload must do: fall
+  back, not take the app down.
+
+- Removed a dead `Field` component and its style constant from `WizardPage.tsx`.
+
+### Documentation
+
+- `docs/configuration.md` opens with which of the two places wins, and a table of the
+  environment variables that now have a screen counterpart — including when each takes
+  effect, because the catalogue sync is read at startup and cannot take effect sooner.
+- `docs/user-guide.md` has a **Settings** section, with the administrator part separate.
+- `docs/privacy.md` names the stored signature explicitly. It is the only image CargoPilot
+  keeps, it is opt-in, and a document about what is *not* stored has to be exact about what
+  now is.
+
 ## [1.44.0] — 2026-08-09
 
 ### Added

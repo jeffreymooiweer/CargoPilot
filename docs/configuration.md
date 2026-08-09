@@ -1,8 +1,38 @@
 # Configuration
 
-CargoPilot is configured entirely through environment variables. Copy `.env.example` to
-`.env` and adjust what you need — every setting has a working default, including the
-signing key, which the application makes for itself.
+CargoPilot is configured through environment variables. Copy `.env.example` to `.env` and
+adjust what you need — every setting has a working default, including the signing key,
+which the application makes for itself.
+
+## Two places, and which one wins
+
+Since v1.45.0 some of these settings also appear on the **Settings** screen, in a section
+only administrators see. The rule is simple:
+
+- An environment variable is the **starting value**. An installation that never opens the
+  settings screen behaves exactly as its `.env` says, on this version and on every
+  version before it.
+- A value **saved on the settings screen** takes precedence from then on, and takes effect
+  without restarting the container.
+
+Only the settings in the table below have a screen counterpart. Everything else — the
+signing key, the data folder, the cookie flags, the proxy headers — stays environment-only,
+because those are read while the application is starting and there is no screen yet.
+
+| Environment variable | On the settings screen | Takes effect |
+|---|---|---|
+| `GEO_ADDRESS_API_URL` | Address API | immediately |
+| `GEO_ADDRESS_TIMEOUT_SECONDS` | Timeout | immediately |
+| — | Address lookup on/off | immediately |
+| `CATALOG_AUTO_SYNC` | Update the catalogue at startup | next restart |
+| `ACCESS_TOKEN_EXPIRE_MINUTES` | Session lifetime | at the next login |
+| — | Offer UN cards | immediately |
+| — | Default language and theme for new users | at their next sign-in |
+| — | Organisation name and address | immediately |
+
+The screen also carries per-user preferences — language, theme, the consignor details that
+are retyped on every shipment, a saved signature. Those belong to the account rather than
+to the installation, and are described in the [user guide](user-guide.md#settings).
 
 ## Essentials
 
@@ -89,7 +119,9 @@ the catalogue sync status. Documents are never stored there.
 | `CATALOG_SYNC_TIMEOUT_SECONDS` | HTTP timeout per source | `20` |
 
 Set `CATALOG_AUTO_SYNC=false` for a faster or fully offline startup. The data bundled in
-the image is used instead, and weight calculations are unaffected.
+the image is used instead, and weight calculations are unaffected. The same switch sits on
+the settings screen; because it is only read while the application starts, a change there
+takes effect on the next restart.
 
 ## Address lookup
 
@@ -101,6 +133,10 @@ the image is used instead, and weight calculations are unaffected.
 Point this at your own Photon instance if you would rather not call an external service.
 Without it, address autocomplete simply stops offering suggestions — typing addresses by
 hand always works, and airport, port and station search runs entirely offline.
+
+This is the only request CargoPilot makes to the outside world while somebody is using it,
+so the settings screen carries a switch that stops it being made at all. Turning it off is
+not the same as pointing it at an unreachable address: no request leaves the server.
 
 ## Application and security
 
@@ -134,7 +170,7 @@ curl http://localhost:8080/api/health
 {
   "status": "ok",
   "app": "CargoPilot",
-  "version": "1.33.0",
+  "version": "1.45.0",
   "regulatory": {
     "manifest_id": "1dbeb6c1ca91cfd5",
     "editions": {

@@ -4,6 +4,7 @@ from pathlib import Path
 from fastapi import APIRouter, Depends, HTTPException, Query
 from pydantic import BaseModel, Field
 
+from app.core.messages import error as api_error
 from app.core.deps import get_current_user
 from app.models.user import User
 from app.schemas.dg_compliance import ComplianceRequest
@@ -41,7 +42,7 @@ def dg_lookup(
 ):
     result = lookup_un_number(un) or offline_lookup(un, language, profiles)
     if not result:
-        raise HTTPException(status_code=404, detail="UN-nummer niet gevonden in ADR-database")
+        raise api_error(404, "dg.un_number_not_found")
     offline_entries = get_un_entries(un)
     if offline_entries:
         for key, value in enrich_un_entry(offline_entries[0], language).items():

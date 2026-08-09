@@ -456,5 +456,28 @@
       "roll": "rouleau",
       "bundle": "botte"
     }
+  },
+  "errors": {
+    "request_failed": "La requête a échoué",
+    "import": {
+      "filename_missing": "Le fichier n'a pas de nom",
+      "empty_file": "Le fichier est vide",
+      "no_usable_lines": "Aucune ligne importable trouvée",
+      "no_rows_to_map": "Aucune ligne à associer",
+      "description_column_required": "Sans colonne de description, il n'y a rien à reconnaître",
+      "file_too_large": "Le fichier dépasse {{limit_mb}} Mo",
+      "too_many_rows": "L'import contient {{rows}} lignes ; {{limit}} au maximum sont autorisées",
+      "too_many_columns": "La ligne {{row}} contient {{columns}} colonnes ; {{limit}} au maximum sont autorisées",
+      "cell_too_long": "La cellule {{row}}:{{column}} contient plus de {{limit}} caractères",
+      "unpacked_too_large": "La feuille de calcul décompressée dépasse {{limit_mb}} Mo"
+    },
+    "equipment": {
+      "row_weight_missing": "Ligne {{row}} : le poids est absent ou inutilisable"
+    },
+    "dg": {
+      "un_number_not_found": "Numéro ONU introuvable dans la base ADR",
+      "quantity_not_a_number": "la quantité {{value}} ne contient aucun nombre",
+      "quantity_not_positive": "la quantité {{value}} doit être supérieure à zéro"
+    }
   }
 }

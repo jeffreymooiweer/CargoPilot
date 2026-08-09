@@ -1,7 +1,8 @@
-from fastapi import APIRouter, Depends, File, HTTPException, UploadFile
+from fastapi import APIRouter, Depends, File, UploadFile
 from fastapi.responses import Response
 from pydantic import BaseModel, Field, field_validator
 
+from app.core.messages import error as api_error
 from app.core.deps import get_current_user
 from app.models.user import User
 from app.services.spreadsheet_io import (
@@ -77,13 +78,13 @@ async def parse_wizard_file(
     user: User = Depends(get_current_user),
 ):
     if not file.filename:
-        raise HTTPException(status_code=400, detail="Bestandsnaam ontbreekt")
+        raise api_error(400, "import.filename_missing")
     try:
         content = await read_limited_upload(file)
     except ImportLimitError as exc:
-        raise HTTPException(status_code=413, detail=str(exc)) from exc
+        raise api_error(413, exc.code, **exc.params) from exc
     if not content:
-        raise HTTPException(status_code=400, detail="Leeg bestand")
+        raise api_error(400, "import.empty_file")
     try:
         rows = read_tabular_file(
             content,
@@ -93,10 +94,10 @@ async def parse_wizard_file(
             max_cell_chars=MAX_IMPORT_CELL_CHARS,
         )
     except ImportLimitError as exc:
-        raise HTTPException(status_code=422, detail=str(exc)) from exc
+        raise api_error(422, exc.code, **exc.params) from exc
     text, has_header = spreadsheet_to_wizard_text(rows)
     if not text.strip():
-        raise HTTPException(status_code=400, detail="Geen importeerbare regels gevonden")
+        raise api_error(400, "import.no_usable_lines")
     return WizardFileParseResult(
         text=text,
         has_header=has_header,
@@ -117,15 +118,12 @@ def remap_wizard_rows(
     guarantee that half a shipment never stays behind on the server.
     """
     if not payload.rows:
-        raise HTTPException(status_code=400, detail="Geen regels om in te delen")
+        raise api_error(400, "import.no_rows_to_map")
     if payload.mapping.get("description") is None:
-        raise HTTPException(
-            status_code=422,
-            detail="Zonder omschrijvingskolom valt er niets te herkennen",
-        )
+        raise api_error(422, "import.description_column_required")
     text = apply_mapping(payload.rows, payload.mapping, payload.has_header)
     if not text.strip():
-        raise HTTPException(status_code=400, detail="Geen importeerbare regels gevonden")
+        raise api_error(400, "import.no_usable_lines")
     return WizardFileParseResult(
         text=text,
         has_header=payload.has_header,

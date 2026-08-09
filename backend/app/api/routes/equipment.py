@@ -1,10 +1,12 @@
 import json
+from typing import Any
 
 from fastapi import APIRouter, Depends, File, HTTPException, UploadFile
 from fastapi.responses import Response
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 from sqlalchemy.orm import Session
 
+from app.core.messages import error as api_error
 from app.core.database import get_db
 from app.core.deps import get_current_user, require_admin
 from app.models.user import Equipment, User
@@ -23,11 +25,21 @@ from app.services.spreadsheet_io import (
 equipment_router = APIRouter(prefix="/equipment", tags=["equipment"])
 
 
+class MessageOut(BaseModel):
+    """A message the interface translates itself, with an English fallback."""
+
+    code: str
+    message: str
+    params: dict[str, Any] = Field(default_factory=dict)
+
+
 class EquipmentImportResultOut(BaseModel):
     created: int
     updated: int
     skipped: int
-    errors: list[str]
+    #: One entry per unusable row, as ``{"code", "message", "params"}`` so the
+    #: interface can render it in its own language.
+    errors: list[MessageOut]
 
 
 def _equipment_out(item: Equipment) -> EquipmentOut:
@@ -95,13 +107,13 @@ async def import_equipment_file(
     db: Session = Depends(get_db),
 ):
     if not file.filename:
-        raise HTTPException(status_code=400, detail="Bestandsnaam ontbreekt")
+        raise api_error(400, "import.filename_missing")
     try:
         content = await read_limited_upload(file)
     except ImportLimitError as exc:
-        raise HTTPException(status_code=413, detail=str(exc)) from exc
+        raise api_error(413, exc.code, **exc.params) from exc
     if not content:
-        raise HTTPException(status_code=400, detail="Leeg bestand")
+        raise api_error(400, "import.empty_file")
     try:
         rows = read_tabular_file(
             content,
@@ -111,10 +123,10 @@ async def import_equipment_file(
             max_cell_chars=MAX_IMPORT_CELL_CHARS,
         )
     except ImportLimitError as exc:
-        raise HTTPException(status_code=422, detail=str(exc)) from exc
+        raise api_error(422, exc.code, **exc.params) from exc
     result = import_equipment_rows(db, rows)
     if result.created == 0 and result.updated == 0 and not result.errors:
-        raise HTTPException(status_code=400, detail="Geen importeerbare regels gevonden")
+        raise api_error(400, "import.no_usable_lines")
     return EquipmentImportResultOut(
         created=result.created,
         updated=result.updated,

@@ -7,6 +7,7 @@ from dataclasses import dataclass, field
 
 from sqlalchemy.orm import Session
 
+from app.core.messages import detail as message_detail
 from app.models.user import Equipment
 from app.services.spreadsheet_io import normalize_header
 
@@ -49,7 +50,10 @@ class EquipmentImportResult:
     created: int = 0
     updated: int = 0
     skipped: int = 0
-    errors: list[str] = field(default_factory=list)
+    #: One entry per unusable row: ``{"code", "message", "params"}``. A bare
+    #: sentence would have to be written in one language, and this list is shown
+    #: to the user verbatim.
+    errors: list[dict] = field(default_factory=list)
 
 
 def _detect_column_map(header: list[str]) -> dict[str, int | None]:
@@ -149,7 +153,7 @@ def import_equipment_rows(db: Session, rows: list[list[str]]) -> EquipmentImport
             result.skipped += 1
             continue
         if weight is None or weight <= 0:
-            result.errors.append(f"Regel {line_no}: gewicht ontbreekt of is ongeldig.")
+            result.errors.append(message_detail("equipment.row_weight_missing", row=line_no))
             result.skipped += 1
             continue
 

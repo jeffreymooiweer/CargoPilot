@@ -10,6 +10,8 @@ from typing import Any
 import openpyxl
 from openpyxl import Workbook
 
+from app.core.messages import text as message_text
+
 MAX_IMPORT_BYTES = 10 * 1024 * 1024
 MAX_XLSX_UNCOMPRESSED_BYTES = 50 * 1024 * 1024
 MAX_IMPORT_ROWS = 20_000
@@ -18,16 +20,24 @@ MAX_IMPORT_CELL_CHARS = 10_000
 
 
 class ImportLimitError(ValueError):
-    """The import exceeds an explicit safety limit."""
+    """The import exceeds an explicit safety limit.
+
+    Carries the message code as well as the English text, so the route that
+    turns it into an HTTP error can hand the interface something translatable
+    instead of a sentence in one language.
+    """
+
+    def __init__(self, code: str, **params: Any) -> None:
+        super().__init__(message_text(code, **params))
+        self.code = code
+        self.params = params
 
 
 async def read_limited_upload(file: Any, max_bytes: int = MAX_IMPORT_BYTES) -> bytes:
     """Never read more than the configured limit plus one detection byte."""
     content = await file.read(max_bytes + 1)
     if len(content) > max_bytes:
-        raise ImportLimitError(
-            f"Bestand is groter dan {max_bytes // (1024 * 1024)} MB"
-        )
+        raise ImportLimitError("import.file_too_large", limit_mb=max_bytes // (1024 * 1024))
     return content
 
 
@@ -77,13 +87,19 @@ def _check_row(
 ) -> None:
     if max_columns is not None and len(cells) > max_columns:
         raise ImportLimitError(
-            f"Rij {row_number} bevat {len(cells)} kolommen; maximaal {max_columns} toegestaan"
+            "import.too_many_columns",
+            row=row_number,
+            columns=len(cells),
+            limit=max_columns,
         )
     if max_cell_chars is not None:
         for column_number, cell in enumerate(cells, start=1):
             if len(cell) > max_cell_chars:
                 raise ImportLimitError(
-                    f"Cel {row_number}:{column_number} bevat meer dan {max_cell_chars} tekens"
+                    "import.cell_too_long",
+                    row=row_number,
+                    column=column_number,
+                    limit=max_cell_chars,
                 )
 
 
@@ -95,9 +111,7 @@ def validate_tabular_rows(
     max_cell_chars: int = MAX_IMPORT_CELL_CHARS,
 ) -> None:
     if len(rows) > max_rows:
-        raise ImportLimitError(
-            f"Import bevat {len(rows)} rijen; maximaal {max_rows} toegestaan"
-        )
+        raise ImportLimitError("import.too_many_rows", rows=len(rows), limit=max_rows)
     for row_number, row in enumerate(rows, start=1):
         _check_row(row, row_number, max_columns, max_cell_chars)
 
@@ -114,7 +128,7 @@ def _append_checked_row(
         return
     next_row = len(rows) + 1
     if max_rows is not None and next_row > max_rows:
-        raise ImportLimitError(f"Import bevat meer dan {max_rows} rijen")
+        raise ImportLimitError("import.too_many_rows", rows=max_rows + 1, limit=max_rows)
     _check_row(cells, next_row, max_columns, max_cell_chars)
     rows.append(cells)
 
@@ -144,8 +158,8 @@ def _validate_xlsx_archive(
         uncompressed = sum(info.file_size for info in archive.infolist())
     if uncompressed > max_uncompressed_bytes:
         raise ImportLimitError(
-            "Uitgepakte spreadsheet is groter dan "
-            f"{max_uncompressed_bytes // (1024 * 1024)} MB"
+            "import.unpacked_too_large",
+            limit_mb=max_uncompressed_bytes // (1024 * 1024),
         )
 
 

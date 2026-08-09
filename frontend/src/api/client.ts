@@ -1,10 +1,12 @@
+import i18n from "i18next";
+
 const API_BASE = "/api";
 
 async function downloadBlob(path: string, filename: string): Promise<void> {
   const res = await fetch(`${API_BASE}${path}`, { credentials: "include" });
   if (!res.ok) {
     const err = await res.json().catch(() => ({ detail: res.statusText }));
-    throw new Error(err.detail || "Download failed");
+    throw new Error(describeDetail(err.detail));
   }
   const blob = await res.blob();
   const url = URL.createObjectURL(blob);
@@ -25,7 +27,10 @@ async function uploadFile<T>(path: string, file: File): Promise<T> {
   });
   if (!res.ok) {
     const err = await res.json().catch(() => ({ detail: res.statusText }));
-    throw new Error(typeof err.detail === "string" ? err.detail : "Upload failed");
+    // The import routes answer with a translatable message, so this cannot
+    // assume a string any more — that assumption is what produced "Upload
+    // failed" where the server had said exactly what was wrong.
+    throw new Error(describeDetail(err.detail));
   }
   return res.json();
 }
@@ -35,33 +40,74 @@ function profileQuery(profiles: string[]): string {
   return profiles.map((p) => `&profiles=${encodeURIComponent(p)}`).join("");
 }
 
-/** Make a FastAPI validation error readable.
+/** A message the backend sends with a code, so the interface can translate it.
  *
- * On a 422 `detail` is not a sentence but a list of `{loc, msg}` per field.
- * Handing that straight to `new Error()` produced "[object Object]" on the
- * screen: the user saw that something was wrong, but not what. Now it reads
- * "products → 1 → adr_total_quantity: quantity '-5 L' must be greater than
- * zero", with the path head ("body") removed because it adds nothing.
+ * The server does not translate. It cannot: an error is raised deep in a
+ * service that has no idea who is asking, and the language belongs to the
+ * screen. So it sends a code, the parameters that go in the sentence, and an
+ * English text to fall back on. */
+export interface ApiMessage {
+  code: string;
+  message: string;
+  params?: Record<string, unknown>;
+}
+
+/** The translation for a message code, or the server's English fallback.
+ *
+ * The fallback is what makes this safe to deploy: a backend newer than the
+ * frontend in front of it can send a code these language files do not know yet,
+ * and the user still reads a sentence instead of a dotted key. */
+export function translateMessage(message: ApiMessage): string {
+  const fallback = message.message || message.code;
+  const key = `errors.${message.code}`;
+  // `t` can return the key itself, or nothing at all when i18next has not
+  // finished initialising — on the very first paint, or in a unit test that
+  // never loads a bundle. Neither is a translation, and neither is worth
+  // showing when the server already sent a readable sentence.
+  const translated = i18n.t(key, { ...(message.params ?? {}), defaultValue: fallback });
+  return typeof translated === "string" && translated && translated !== key ? translated : fallback;
+}
+
+function isApiMessage(value: unknown): value is ApiMessage {
+  return !!value && typeof value === "object" && typeof (value as ApiMessage).code === "string";
+}
+
+/** Make a FastAPI error readable, and in the user's language where possible.
+ *
+ * Three shapes arrive here, and all three used to end up as "[object Object]"
+ * or as a Dutch sentence:
+ *
+ * - `{code, message}` — an error this application raised on purpose;
+ * - a list of `{type, loc, msg, ctx}` — FastAPI's own 422, where `type` carries
+ *   our code for the validators that set one;
+ * - a plain string — FastAPI's built-ins, which stay English.
+ *
+ * The field path is kept ("products → 1 → adr_total_quantity: …") with the head
+ * ("body") removed, because it adds nothing.
  */
 export function describeDetail(detail: unknown): string {
   if (typeof detail === "string" && detail) return detail;
+  if (isApiMessage(detail)) return translateMessage(detail);
   if (Array.isArray(detail)) {
     const lines = detail
       .map((item) => {
         if (typeof item === "string") return item;
         if (!item || typeof item !== "object") return "";
-        const entry = item as { loc?: unknown[]; msg?: string };
+        const entry = item as { loc?: unknown[]; msg?: string; type?: string; ctx?: Record<string, unknown> };
         const where = (entry.loc ?? [])
           .filter((part) => part !== "body")
           .map((part) => String(part))
           .join(" → ");
-        const message = entry.msg?.replace(/^Value error,\s*/, "") ?? "";
+        const fallback = entry.msg?.replace(/^Value error,\s*/, "") ?? "";
+        const message = entry.type
+          ? translateMessage({ code: entry.type, message: fallback, params: entry.ctx })
+          : fallback;
         return where ? `${where}: ${message}` : message;
       })
       .filter(Boolean);
     if (lines.length) return lines.join("\n");
   }
-  return "Request failed";
+  return translateMessage({ code: "request_failed", message: "Request failed" });
 }
 
 async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
@@ -518,7 +564,8 @@ export interface EquipmentImportResult {
   created: number;
   updated: number;
   skipped: number;
-  errors: string[];
+  /** One entry per unusable row, translated by the interface. */
+  errors: ApiMessage[];
 }
 
 export interface ImportColumn {

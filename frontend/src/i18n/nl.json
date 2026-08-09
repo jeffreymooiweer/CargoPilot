@@ -456,5 +456,28 @@
       "roll": "rol",
       "bundle": "bundel"
     }
+  },
+  "errors": {
+    "request_failed": "Het verzoek is mislukt",
+    "import": {
+      "filename_missing": "Het bestand heeft geen naam",
+      "empty_file": "Het bestand is leeg",
+      "no_usable_lines": "Geen importeerbare regels gevonden",
+      "no_rows_to_map": "Geen rijen om in te delen",
+      "description_column_required": "Zonder omschrijvingskolom valt er niets te herkennen",
+      "file_too_large": "Het bestand is groter dan {{limit_mb}} MB",
+      "too_many_rows": "De import bevat {{rows}} rijen; maximaal {{limit}} zijn toegestaan",
+      "too_many_columns": "Rij {{row}} bevat {{columns}} kolommen; maximaal {{limit}} zijn toegestaan",
+      "cell_too_long": "Cel {{row}}:{{column}} bevat meer dan {{limit}} tekens",
+      "unpacked_too_large": "De uitgepakte spreadsheet is groter dan {{limit_mb}} MB"
+    },
+    "equipment": {
+      "row_weight_missing": "Regel {{row}}: het gewicht ontbreekt of is onbruikbaar"
+    },
+    "dg": {
+      "un_number_not_found": "UN-nummer niet gevonden in de ADR-database",
+      "quantity_not_a_number": "hoeveelheid {{value}} bevat geen getal",
+      "quantity_not_positive": "hoeveelheid {{value}} moet groter dan nul zijn"
+    }
   }
 }

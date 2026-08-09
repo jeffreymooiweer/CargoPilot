@@ -456,5 +456,28 @@
       "roll": "Rolle",
       "bundle": "Bund"
     }
+  },
+  "errors": {
+    "request_failed": "Die Anfrage ist fehlgeschlagen",
+    "import": {
+      "filename_missing": "Die Datei hat keinen Namen",
+      "empty_file": "Die Datei ist leer",
+      "no_usable_lines": "Keine importierbaren Zeilen gefunden",
+      "no_rows_to_map": "Keine Zeilen zum Zuordnen",
+      "description_column_required": "Ohne Beschreibungsspalte gibt es nichts zu erkennen",
+      "file_too_large": "Die Datei ist größer als {{limit_mb}} MB",
+      "too_many_rows": "Der Import enthält {{rows}} Zeilen; höchstens {{limit}} sind zulässig",
+      "too_many_columns": "Zeile {{row}} enthält {{columns}} Spalten; höchstens {{limit}} sind zulässig",
+      "cell_too_long": "Zelle {{row}}:{{column}} enthält mehr als {{limit}} Zeichen",
+      "unpacked_too_large": "Die entpackte Tabelle ist größer als {{limit_mb}} MB"
+    },
+    "equipment": {
+      "row_weight_missing": "Zeile {{row}}: das Gewicht fehlt oder ist unbrauchbar"
+    },
+    "dg": {
+      "un_number_not_found": "UN-Nummer nicht in der ADR-Datenbank gefunden",
+      "quantity_not_a_number": "Menge {{value}} enthält keine Zahl",
+      "quantity_not_positive": "Menge {{value}} muss größer als null sein"
+    }
   }
 }

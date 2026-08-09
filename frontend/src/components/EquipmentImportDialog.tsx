@@ -1,6 +1,6 @@
 import { useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { api, EquipmentImportResult } from "../api/client";
+import { api, EquipmentImportResult, translateMessage } from "../api/client";
 
 const panelClass = "bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-xl";
 const iconActionClass =
@@ -133,8 +133,10 @@ export default function EquipmentImportDialog({ open, onClose, onComplete }: Pro
               </ul>
               {result.errors.length > 0 && (
                 <ul className="mt-3 space-y-1 text-amber-700 dark:text-amber-300">
-                  {result.errors.map((msg) => (
-                    <li key={msg}>{msg}</li>
+                  {result.errors.map((item) => (
+                    <li key={`${item.code}-${JSON.stringify(item.params ?? {})}`}>
+                      {translateMessage(item)}
+                    </li>
                   ))}
                 </ul>
               )}

@@ -1,32 +1,32 @@
-"""Wie "broccoli" intikte kreeg bloem, en wie "cashew" intikte kreeg essenhout.
+"""Whoever typed "broccoli" got flour, and whoever typed "cashew" got ash wood.
 
-De zoekfunctie normaliseert een query eerst met een synoniementabel. Die tabel
-is niet klein en niet handgeschreven: naast `search_synonyms.json` wordt **elke
-alias van elk goed** er als sleutel in gezet. Bij 400 goederen waren dat al ruim
-tweeduizend sleutels, bij 1.093 zijn het er ruim vierduizend.
+The search normalises a query first with a synonym table. That table is not
+small and not handwritten: alongside `search_synonyms.json`, **every alias of
+every commodity** is put into it as a key. With 400 commodities that was already
+well over two thousand keys; with 1,093 it is well over four thousand.
 
-De vervanging ging op letterreeksen en niet op woorden. Gemeten op de oude
-gegevensbestand, vóór de reparatie:
+The replacement worked on runs of letters and not on words. Measured on the old
+data file, before the repair:
 
     "broccoli"        ->  "meel / bloem / bloemsteenkool (kisten)"   -> Meel / bloem
     "cashew"          ->  "cessenew"                                 -> Essen
     "Kupferkathoden"  ->  "koperkathoden"                            -> Koper
 
-"cashew" bevat "as", en "as" is een alias van essenhout. Daarmee werd de query
-tot iets anders herschreven en kwam het goed dat de gebruiker letterlijk intikte
-niet eens in de lijst voor. Dit is dus geen gevolg van de uitbreiding — het stond
-er al — maar het wordt er wel erger van: hoe meer goederen, hoe meer korte
-aliassen, hoe groter de kans dat er één toevallig middenin een ander woord staat.
+"cashew" contains "as", and "as" is an alias of ash wood. The query was thereby
+rewritten into something else and the commodity the user typed literally did not
+even appear in the list. So this is not a consequence of the expansion — it was
+already there — but the expansion makes it worse: the more commodities, the more
+short aliases, the greater the chance that one happens to sit inside another word.
 
-Twee dingen die deze tests vastleggen:
+Two things these tests record:
 
-1. **Een synoniem vervangt alleen een heel woord.** Ook met accenten: `\\b` van
-   de re-module rekent ü en é niet tot de woordtekens, zodat "kupfer" middenin
-   "Kupferkathoden" er zonder eigen randvoorwaarde alsnog uit gehaald zou worden.
-2. **De goedkope voorfilter blijft staan.** De eerste reparatie liet de
-   substring-test vallen en draaide een regex over alle vierduizend sleutels;
-   dat kostte 1,4 seconde per zoekopdracht, tegen ongeveer 20 milliseconde
-   ervoor. Correct en onbruikbaar is ook stuk.
+1. **A synonym replaces a whole word only.** Including with accents: the re
+   module's `\\b` does not count ü and é as word characters, so "kupfer" in the
+   middle of "Kupferkathoden" would still be pulled out without a boundary of its
+   own.
+2. **The cheap pre-filter stays.** The first repair dropped the substring test
+   and ran a regex over all four thousand keys; that cost 1.4 seconds per search,
+   against roughly 20 milliseconds before. Correct and unusable is broken too.
 """
 
 import time
@@ -44,11 +44,11 @@ def db():
     Base.metadata.create_all(bind=engine)
     session = SessionLocal()
     seed_catalogs(session)
-    # `seed_catalogs` vult alleen een lége tabel; wat er al staat blijft staan.
-    # Een installatie die al draait krijgt nieuwe en gewijzigde goederen via de
-    # catalogussynchronisatie bij het opstarten, en dat is ook de weg waarlangs
-    # het foutieve alias "broccoli" bij bloemkool verdwijnt. Zonder deze stap
-    # test dit bestand tegen een gegevensbestand van een vorige versie.
+    # `seed_catalogs` only fills an *empty* table; what is already there stays.
+    # An installation that is already running gets new and changed commodities
+    # via the catalogue synchronisation at startup, and that is also the route by
+    # which the faulty alias "broccoli" disappears from cauliflower. Without this
+    # step this file tests against a data file from a previous version.
     sync_catalogs(session, use_network=False)
     yield session
     session.close()
@@ -56,13 +56,13 @@ def db():
 
 @pytest.mark.parametrize("query", ["pineapple", "plexiglasplaat", "splitsing", "alufolie"])
 def test_een_woord_wordt_niet_van_binnenuit_herschreven(db, query):
-    """Vier woorden die een synoniem als letterreeks in zich dragen.
+    """Four words carrying a synonym as a run of letters.
 
-    "pineapple" bevat "pine" (→ hout), "plexiglasplaat" bevat "plexiglas",
-    "splitsing" bevat "split" (→ grind) en "alufolie" bevat "alu" (→ aluminium).
-    Alle vier komen uit `search_synonyms.json`, zodat deze test niet meebeweegt
-    met de goederendatabase. Ze horen geen van alle te vuren: het synoniem staat
-    er wel, maar niet als woord.
+    "pineapple" contains "pine" (→ timber), "plexiglasplaat" contains
+    "plexiglas", "splitsing" contains "split" (→ gravel) and "alufolie" contains
+    "alu" (→ aluminium). All four come from `search_synonyms.json`, so this test
+    does not move along with the goods database. None of them should fire: the
+    synonym is there, but not as a word.
     """
     normalised, applied = normalize_synonyms(query, db)
 
@@ -70,11 +70,11 @@ def test_een_woord_wordt_niet_van_binnenuit_herschreven(db, query):
 
 
 def test_een_alias_wordt_wel_naar_zijn_eigen_goed_vertaald(db):
-    """Wat de normalisatie wél hoort te doen, zodat de reparatie niet te ver gaat.
+    """What the normalisation *should* do, so the repair does not go too far.
 
-    "cashew" is een alias van cashewnoten en mag daar naartoe worden herschreven.
-    Dat is geen verminking maar precies het nut van de tabel; de fout zat in het
-    herschrijven middenin een woord, niet in het herschrijven zelf.
+    "cashew" is an alias of cashew nuts and may be rewritten to those. That is
+    not mutilation but precisely the point of the table; the fault was in
+    rewriting inside a word, not in rewriting itself.
     """
     normalised, _ = normalize_synonyms("cashew", db)
 
@@ -82,12 +82,12 @@ def test_een_alias_wordt_wel_naar_zijn_eigen_goed_vertaald(db):
 
 
 def test_de_eigen_naam_van_een_goed_wint_van_andermans_alias(db):
-    """Bloemkool droeg "broccoli" als alias en kaapte daarmee de zoekopdracht.
+    """Cauliflower carried "broccoli" as an alias and hijacked the search with it.
 
-    De synoniementabel wordt in twee ronden gevuld — eerst alle namen, dan pas
-    alle aliassen — juist om dit te voorkomen. Zonder die volgorde bepaalt de
-    volgorde van de rijen in de database wie er wint, en dat is geen antwoord
-    maar toeval.
+    The synonym table is filled in two passes — first all the names, only then
+    all the aliases — precisely to prevent this. Without that order the order of
+    the rows in the database decides who wins, and that is not an answer but
+    coincidence.
     """
     normalised, _ = normalize_synonyms("broccoli", db)
 
@@ -95,7 +95,7 @@ def test_de_eigen_naam_van_een_goed_wint_van_andermans_alias(db):
 
 
 def test_een_synoniem_op_woordgrens_werkt_gewoon(db):
-    """De reparatie mag de tabel niet uitschakelen; hele woorden gaan wel om."""
+    """The repair must not switch the table off; whole words are still converted."""
     normalised, applied = normalize_synonyms("stalen plaat", db)
 
     assert applied, "er hoort hier wél een synoniem te vuren"
@@ -103,7 +103,7 @@ def test_een_synoniem_op_woordgrens_werkt_gewoon(db):
 
 
 def test_een_synoniem_aan_het_eind_van_de_query_telt_ook(db):
-    """Zonder rechterrandvoorwaarde zou het laatste woord buiten schot blijven."""
+    """Without a right-hand boundary the last word would escape."""
     normalised, _ = normalize_synonyms("plaat inox", db)
 
     assert "rvs" in normalised.lower()
@@ -120,7 +120,7 @@ def test_een_synoniem_aan_het_eind_van_de_query_telt_ook(db):
     ],
 )
 def test_wat_de_gebruiker_intikt_staat_bovenaan(db, query, expected):
-    """De uitkomst waar het om gaat: het goed zelf, niet iets wat erop lijkt."""
+    """The outcome that matters: the commodity itself, not something resembling it."""
     hits = search_catalog(db, query, language="nl", limit=5)
 
     assert hits, f"geen enkele treffer voor {query!r}"
@@ -128,12 +128,12 @@ def test_wat_de_gebruiker_intikt_staat_bovenaan(db, query, expected):
 
 
 def test_zoeken_blijft_binnen_een_tiende_seconde(db):
-    """Een bovengrens die de eerste reparatie ruim overschreed (1,4 s).
+    """An upper bound the first repair exceeded by a wide margin (1.4 s).
 
-    De wizard herberekent met een debounce van 600 ms en zoekt tijdens het
-    typen. Deze grens is bewust ruim — hij vangt een orde van grootte, geen
-    tiende procent, en op een trage bouwmachine mag het best twee keer zo lang
-    duren als hier gemeten.
+    The wizard recalculates with a 600 ms debounce and searches while you type.
+    This bound is deliberately generous — it catches an order of magnitude, not a
+    tenth of a percent, and on a slow build machine it may well take twice as
+    long as measured here.
     """
     search_catalog(db, "opwarmen", language="nl", limit=5)
 

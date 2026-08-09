@@ -114,10 +114,10 @@ def test_an_unknown_profile_is_rejected_instead_of_skipping_checks():
 
 
 def test_the_numeric_line_id_of_the_wizard_is_accepted():
-    """buildDgEntries stuurt line_id als getal; dat mag geen 422 opleveren.
+    """buildDgEntries sends line_id as a number; that must not give a 422.
 
-    Sinds de schema's van v1.30.0 werd 'line_id: 1' geweigerd en viel elke
-    live controle vanuit de wizard uit voordat er gerekend was.
+    Since the schemas of v1.30.0, 'line_id: 1' was refused and every live check
+    from the wizard failed before anything was computed.
     """
     payload = deepcopy(_payload(["ADR"]))
     payload["entries"][0]["line_id"] = 1

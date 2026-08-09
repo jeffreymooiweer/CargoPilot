@@ -1,29 +1,27 @@
-"""Zorgen dat de app veilig start — niet dat hij niet start.
+"""Making sure the app starts safely — not making sure it does not start.
 
-`APP_SECRET_KEY` tekent de JWT waarmee een gebruiker is ingelogd. De
-standaardwaarde staat in deze repository, dus een installatie die hem nooit
-heeft gezet draait op een sleutel die iedereen kan opzoeken, en wie de sleutel
-heeft schrijft zelf een geldig token voor de beheerder. Dat is een open
-voordeur en geen schoonheidsfoutje.
+`APP_SECRET_KEY` signs the JWT that says a user is logged in. Its default value
+is in this repository, so an installation that never set it runs on a key
+anybody can look up, and whoever holds that key writes themselves a valid admin
+token. That is an open front door, not a blemish.
 
-**Wat hier eerst stond, en waarom dat fout was.** Vanaf v1.25.0 weigerde
-CargoPilot in dat geval te starten. De redenering — een waarschuwing in een log
-leest niemand — klopte; de uitwerking niet. De standaardwaarden van deze
-applicatie zíjn `APP_SECRET_KEY=change-me` en `CORS_ALLOWED_ORIGINS=*`, en de
-Unraid-sjabloon laat de sleutel leeg. Daarmee crashte elke installatie die die
-twee niet uit zichzelf had ingevuld, meteen bij het opstarten, in een container
-die zo snel afsloot dat de melding niet eens te lezen was. De beveiliging werd
-er niet beter van: de app was gewoon weg.
+**What used to be here, and why that was wrong.** From v1.25.0 CargoPilot
+refused to start in that case. The reasoning — nobody reads a warning in a log
+— was sound; the execution was not. This application's own defaults *are*
+`APP_SECRET_KEY=change-me` and `CORS_ALLOWED_ORIGINS=*`, and the Unraid
+template leaves the key blank. So every installation that had not filled in
+those two by itself crashed on startup, in a container that exited too fast for
+the message to be read. Security gained nothing: the app was simply gone.
 
-Een self-hosted applicatie met een eigen gegevensmap hoeft dit ook niet aan de
-gebruiker te vragen. Zij maakt zelf een sleutel, bewaart die naast haar
-database en gebruikt hem voortaan. Dat is veiliger dan wat er stond
-(willekeurig in plaats van gepubliceerd), het kost de gebruiker niets, en de
-sleutel overleeft een herstart omdat hij op de gemounte map staat.
+A self-hosted application with its own data folder does not need to ask the
+user about this either. It makes a key itself, keeps it next to its database
+and uses it from then on. That is safer than what was there (random rather than
+published), it costs the user nothing, and the key survives a restart because
+it lives on the mounted volume.
 
-Wat overblijft is melden. CORS wijd open of een beheerderswachtwoord uit de
-documentatie is het waard om te zeggen, maar geen reden om de deur op slot te
-gooien met de gebruiker erbuiten.
+What remains is reporting. CORS wide open, or an admin password taken from the
+documentation, is worth saying out loud — but not worth bolting the door with
+the user on the outside.
 """
 from __future__ import annotations
 
@@ -34,8 +32,8 @@ from pathlib import Path
 
 logger = logging.getLogger(__name__)
 
-# Waarden die in deze repository, in de documentatie of in de voorbeelden staan.
-# Alles wat hier in staat is publiek en dus geen geheim.
+# Values that appear in this repository, in the documentation or in the
+# examples. Everything in here is public and therefore not a secret.
 PUBLISHED_SECRETS = {
     "change-me",
     "changeme",
@@ -45,13 +43,13 @@ PUBLISHED_SECRETS = {
     "cargopilot",
     "please-change",
     "your-secret-key",
-    # Staat letterlijk in .env.example en is lang genoeg om langs de
-    # lengtecontrole te glippen; wie het bestand kopieert is niet veilig.
+    # Appears verbatim in .env.example and is long enough to slip past the
+    # length check; whoever copies that file is not safe.
     "change-me-to-a-long-random-string",
 }
 
-# Idem voor het eerste beheerderswachtwoord: dit staat in docs/development.md en
-# in AGENTS.md als voorbeeld.
+# The same for the first admin password: this appears in docs/development.md
+# and in AGENTS.md as an example.
 PUBLISHED_ADMIN_PASSWORDS = {
     "cargopilot123",
     "admin",
@@ -60,13 +58,13 @@ PUBLISHED_ADMIN_PASSWORDS = {
     "change-me",
 }
 
-# Onder deze lengte is een HS256-sleutel te kort om zinvol te zijn.
+# Below this length an HS256 key is too short to be meaningful.
 MINIMUM_SECRET_LENGTH = 32
 
 DEVELOPMENT_ENVIRONMENTS = {"dev", "develop", "development", "local", "test", "testing"}
 
-#: Naast de database, op de gemounte gegevensmap, zodat de sleutel een herstart
-#: en het opnieuw aanmaken van de container overleeft.
+#: Next to the database, on the mounted data folder, so the key survives a
+#: restart and a re-created container.
 SECRET_KEY_FILENAME = "secret_key"
 
 
@@ -79,7 +77,7 @@ def suggested_secret() -> str:
 
 
 def is_usable_secret(secret: str) -> bool:
-    """Kan hiermee een token worden getekend dat niet te raden of op te zoeken is?"""
+    """Can this sign a token that cannot be guessed or looked up?"""
     value = str(secret or "").strip()
     if value.lower() in PUBLISHED_SECRETS:
         return False
@@ -94,25 +92,25 @@ def _read_stored_secret(path: Path) -> str:
 
 
 def _store_secret(path: Path, secret: str) -> bool:
-    """Bewaar de sleutel, alleen leesbaar voor de eigenaar. True als het lukte."""
+    """Store the key, readable by the owner only. True when that worked."""
     try:
         path.parent.mkdir(parents=True, exist_ok=True)
         path.write_text(secret + "\n", encoding="utf-8")
         path.chmod(stat.S_IRUSR | stat.S_IWUSR)
         return True
     except OSError as error:
-        # Op Unraid is /data wel eens niet schrijfbaar. Dat mag het opstarten
-        # niet tegenhouden; het kost alleen de duurzaamheid van de sleutel.
+        # On Unraid /data is occasionally not writable. That must not hold up
+        # startup; it only costs the key its durability.
         logger.warning("Kon de sleutel niet opslaan in %s: %s", path, error)
         return False
 
 
 def ensure_secret_key(settings) -> str:
-    """Lever een bruikbare ondertekeningssleutel, desnoods door er een te maken.
+    """Supply a usable signing key, making one if that is what it takes.
 
-    Volgorde: wat is ingesteld, anders wat er eerder is bewaard, anders een
-    nieuwe. De ingestelde waarde wint altijd wanneer zij deugt, zodat wie zijn
-    sleutel bewust beheert daar de baas over blijft.
+    In order: what was configured, otherwise what was stored earlier, otherwise
+    a new one. A configured value always wins when it is sound, so whoever
+    manages their key deliberately stays in charge of it.
     """
     configured = str(settings.app_secret_key or "").strip()
     if is_usable_secret(configured):
@@ -146,11 +144,11 @@ def ensure_secret_key(settings) -> str:
 
 
 def configuration_warnings(settings) -> list[str]:
-    """Wat er los van de sleutel nog aandacht verdient, in gewone taal.
+    """What deserves attention apart from the key, in plain words.
 
-    Dit zijn meldingen en geen weigeringen. Ze zeggen wat er open staat en wat
-    eraan te doen is; de gebruiker beslist zelf of dat in zijn opstelling erg is
-    — achter een reverse proxy op één domein is CORS bijvoorbeeld niet in beeld.
+    These are reports, not refusals. They say what is open and what can be done
+    about it; the user decides whether that matters in their setup — behind a
+    reverse proxy on a single domain, CORS is not in the picture.
     """
     if not is_production(settings.app_env):
         return []
@@ -177,11 +175,11 @@ def configuration_warnings(settings) -> list[str]:
 
 
 def apply_security_configuration(settings) -> list[str]:
-    """Maak de instellingen veilig genoeg om mee te starten, en meld de rest.
+    """Make the configuration safe enough to start with, and report the rest.
 
-    Wordt bij het opbouwen van de applicatie aangeroepen, dus vóórdat er ook
-    maar één verzoek beantwoord kan worden. Retourneert de meldingen, zodat een
-    test ze kan lezen zonder in het log te hoeven kijken.
+    Called while the application is being built, so before a single request can
+    be answered. Returns the reports, so a test can read them without having to
+    look in the log.
     """
     settings.app_secret_key = ensure_secret_key(settings)
 

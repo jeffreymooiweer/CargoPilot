@@ -1,16 +1,15 @@
-"""Een tabel is geen tekst, en de vinder zoekt tekst.
+"""A table is not text, and the finder looks for text.
 
-``locate`` kiest tussen alle plekken waar een artikelnummer voorkomt door te
-tellen hoeveel letters erop volgen. Voor een bepaling van zinnen is dat de juiste
-regel. Voor ADR 7.5.2.1 is het de verkeerde: dat artikel is vrijwel volledig een
-raster van kruisjes met een nummer in de kantlijn, dus het scoort bijna nul en
-verliest van elke kruisverwijzing elders in het deel. De vinder meldde
-"not found" terwijl de bepaling er gewoon staat.
+``locate`` chooses between all the places an article number occurs by counting
+how many letters follow it. For a provision made of sentences that is the right
+rule. For ADR 7.5.2.1 it is the wrong one: that article is almost entirely a grid
+of crosses with a number in the margin, so it scores nearly zero and loses to
+every cross-reference elsewhere in the volume. The finder reported "not found"
+while the provision is simply there.
 
-Vandaar ``--page``: als het nummer niet te vinden is, is de pagina dat wel. Wat
-hier wordt vastgelegd is vooral wat er *niet* mag gebeuren — een reeks van
-duizend pagina's in een runlog zetten, of een omgekeerde reeks stilzwijgend als
-leeg behandelen.
+Hence ``--page``: if the number cannot be found, the page can. What is recorded
+here is mainly what must *not* happen — putting a range of a thousand pages into
+a run log, or treating a reversed range silently as empty.
 """
 
 import importlib.util
@@ -35,8 +34,8 @@ def test_a_single_page_is_a_range_of_one():
 
 
 def test_a_range_runs_inclusive():
-    """600-606 is zeven pagina's, niet zes: wie een hoofdstuk opvraagt wil ook
-    de laatste bladzijde ervan."""
+    """600-606 is seven pages, not six: whoever asks for a chapter wants its last
+    page as well."""
     assert reader.parse_pages("600-606") == [600, 601, 602, 603, 604, 605, 606]
 
 
@@ -51,8 +50,8 @@ def test_a_range_that_makes_no_sense_is_refused(spec):
 
 
 def test_a_range_wider_than_a_chapter_is_refused():
-    """De rem. Zonder deze grens zet één typefout het hele deel in de runlog en
-    is er niets meer terug te lezen."""
+    """The brake. Without this limit one typo puts the whole volume in the run
+    log and there is nothing left to read back."""
     with pytest.raises(ValueError):
         reader.parse_pages("1-13")
 
@@ -67,12 +66,12 @@ def test_something_that_is_not_a_page_is_refused(spec):
         reader.parse_pages(spec)
 
 
-# --- Zoeken door een afbreekstreepje heen --------------------------------
+# --- Searching through a hyphenation --------------------------------------
 #
-# RID breekt woorden af aan het regeleinde. Een zoekopdracht op "alkaline earth
-# metal nitrates" leverde daardoor "no occurrence" op, en dat las als een
-# uitspraak over de regelgeving terwijl het een uitspraak over de opmaak was.
-# Voor een leesgereedschap is dat de ergste denkbare fout.
+# RID hyphenates words at the end of a line. A search for "alkaline earth metal
+# nitrates" therefore returned "no occurrence", and that read as a statement
+# about the regulations while it was a statement about the typesetting. For a
+# reading tool that is the worst imaginable fault.
 
 
 def test_a_word_broken_at_the_line_end_is_still_found():
@@ -83,8 +82,8 @@ def test_a_word_broken_at_the_line_end_is_still_found():
 
 
 def test_the_position_points_back_into_the_real_text():
-    """Het fragment dat wordt afgedrukt moet het echte fragment zijn, met
-    afbreekstreepje en al — anders citeer je iets wat er niet staat."""
+    """The fragment that gets printed has to be the real fragment, hyphen and
+    all — otherwise you quote something that is not there."""
     text = "zie divi-\nsion 1.1 hierna"
     haystack, origin = reader._searchable(text)
     needle, _ = reader._searchable("division")
@@ -99,27 +98,27 @@ def test_case_and_stray_spacing_do_not_matter():
 
 
 def test_a_genuine_hyphen_is_dropped_on_both_sides():
-    """"self-reactive" wordt "selfreactive", en de zoekterm ook. Zolang beide
-    kanten dezelfde behandeling krijgen, blijft de zoekterm werken."""
+    """"self-reactive" becomes "selfreactive", and so does the search term. As
+    long as both sides get the same treatment, the search term keeps working."""
     haystack, _ = reader._searchable("self-reactive substances")
     needle, _ = reader._searchable("self-reactive")
     assert needle in haystack
 
 
 def test_a_hyphen_between_words_does_not_glue_a_sentence_together():
-    """Het streepje verdwijnt, maar een gedachtestreepje mag geen twee woorden
-    aan elkaar plakken die in de tekst los staan."""
+    """The hyphen disappears, but an em dash must not glue together two words
+    that stand apart in the text."""
     haystack, _ = reader._searchable("klasse 5.1 - zie hierna")
     assert "5.1 zie hierna" in haystack
 
 
-# --- Een tabel is geen inhoudsopgave --------------------------------------
+# --- A table is not a table of contents ------------------------------------
 #
-# Het derde inhoudsopgave-signaal telde kale nummers, en sloeg daarmee precies
-# de verkeerde bladzijden over. Tabel 7.5.2.1 is een kolom van "1.4", "5.1",
-# "6.2" — tientallen kale nummers en geen inhoudsopgave te bekennen. RID's
-# 7.5.2.1 werd daardoor overgeslagen en de zoeker meldde "no occurrence" over
-# een voetnoot die er gewoon staat, op bladzijde 1101.
+# The third table-of-contents signal counted bare numbers, and thereby skipped
+# exactly the wrong pages. Table 7.5.2.1 is a column of "1.4", "5.1", "6.2" —
+# dozens of bare numbers and not a table of contents in sight. RID's 7.5.2.1 was
+# skipped because of it and the finder reported "no occurrence" about a footnote
+# that is simply there, on page 1101.
 
 TABLE_PAGE = (
     "\n".join(["1", "1.4", "1.5", "1.6", "2.1", "2.2", "2.3", "3", "4.1", "4.2",
@@ -149,8 +148,7 @@ def test_a_real_contents_page_is_still_recognised():
 
 
 def test_dot_leaders_still_count_on_their_own():
-    """Dat signaal is specifiek genoeg; alleen het tellen van nummers was dat
-    niet."""
+    """That signal is specific enough; counting numbers alone was not."""
     page = "\n".join([f"1.{n} Something ......... {n}" for n in range(1, 6)])
     assert reader._is_contents_page(page) is True
 
@@ -166,8 +164,8 @@ def test_the_finder_actually_uses_it():
 
 
 def test_the_dump_is_reachable_from_the_command_line():
-    """De optie bestaat pas echt als main hem doorgeeft; een functie zonder vlag
-    is precies het soort naad waar het eerder op misging."""
+    """The option only really exists once main passes it on; a function without a
+    flag is exactly the kind of seam this went wrong on before."""
     source = (ROOT / "scripts" / "read_land_regulations.py").read_text(encoding="utf-8")
     assert '"--page"' in source
     assert "dump(doc, number)" in source

@@ -61,13 +61,13 @@ class LineResult:
     unit: str | None
     material: str | None = None
     material_density: float | None = None
-    # De categorie van het herkende goed. De interface stelt hiermee de
-    # eenheden voor die bij dit soort lading horen: liter bij vloeistoffen,
-    # ton bij stortgoed, stuks bij stukgoed.
+    # The category of the recognised commodity. The interface uses it to suggest
+    # the units belonging to this kind of cargo: litres for liquids, tonnes for
+    # bulk, pieces for general cargo.
     material_category: str | None = None
-    # De vorm waarin dit goed reist. Een gebruiker die zich afvraagt waar 9360 kg
-    # vandaan komt hoort te kunnen zien dat er met een gestapelde kuub is
-    # gerekend en niet met massief hout.
+    # The form this commodity travels in. A user wondering where 9360 kg comes
+    # from should be able to see that a stacked cubic metre was used and not
+    # solid timber.
     cargo_form: str | None = None
     product_type: str | None = None
     dimensions: dict[str, Any] = field(default_factory=dict)
@@ -170,19 +170,19 @@ def build_output_description(description: str, product_type: str | None, dims: D
     return description
 
 
-# Doorsneden met een wand. Bij deze vormen zegt lengte-breedte-hoogte niets over
-# het gewicht: een hoekprofiel van 80x80 is twee benen van 8 mm dik en geen
-# massieve staaf van 80x80. Het verschil is een factor vijf, en dat is precies
-# het soort getal dat er op een vrachtbrief betrouwbaar uitziet.
+# Cross-sections with a wall. For these shapes length-width-height says nothing
+# about the weight: an 80x80 angle is two legs 8 mm thick and not a solid bar of
+# 80x80. The difference is a factor of five, and that is exactly the kind of
+# figure that looks reliable on a waybill.
 #
-# Voor een plaat, een balk, een plank of een blok speelt dit niet: daar
-# beschrijven drie maten het materiaal volledig. Het veld hoort dus alleen te
-# verschijnen waar het iets betekent.
+# For a plate, a beam, a plank or a block this does not come into play: there
+# three measurements describe the material completely. The field should
+# therefore only appear where it means something.
 WALL_PROFILE_TYPES = {"angle_profile", "square_tube", "round_tube"}
 
 
 def _positive(value: Any) -> float | None:
-    """Een maat is pas een maat als zij groter is dan nul."""
+    """A measurement is only a measurement when it is greater than zero."""
     try:
         number = float(value)
     except (TypeError, ValueError):
@@ -220,24 +220,24 @@ def process_line(
     width_cm = meters_to_cm(overrides.get("width_m") or dims.width_m)
     height_cm = meters_to_cm(overrides.get("height_m") or dims.height_m)
 
-    # Afmetingen die de gebruiker zelf in de tabel invult tellen mee in de
-    # berekening en niet alleen in de weergave. Tot v1.35.0 werden ze hier wel
-    # overgenomen voor het scherm, maar bleven de rekenpaden hieronder kijken
-    # naar wat er uit de *omschrijving* was gelezen. Wie "eiken balk" typte en
-    # daarna de maten in de kolommen zette, zag zijn invoer genegeerd worden.
-    # Een vierde maat: de wanddikte. Zonder deze is het gewicht van een
-    # hoekprofiel of koker niet te bepalen, en met de drie buitenmaten alleen is
-    # het antwoord vijf keer te zwaar.
+    # Dimensions the user fills in themselves in the table count towards the
+    # calculation and not only towards the display. Until v1.35.0 they were taken
+    # over here for the screen, but the calculation paths below kept looking at
+    # what had been read out of the *description*. Anyone typing "oak beam" and
+    # then putting the measurements in the columns saw their input ignored.
+    # A fourth measurement: the wall thickness. Without it the weight of an angle
+    # or a hollow section cannot be determined, and with the three outside
+    # measurements alone the answer is five times too heavy.
     wall_m = _positive(overrides.get("wall_thickness_m"))
-    # Bij een ronde doorsnede is de breedte de diameter en is er geen hoogte;
-    # die vullen we gelijk zodat de rest van de code niet op een ontbrekende
-    # derde maat struikelt.
+    # For a round cross-section the width is the diameter and there is no
+    # height; we set those equal so the rest of the code does not trip over a
+    # missing third measurement.
     if product_type in {"round_tube", "round_bar"} and overrides.get("width_m"):
         overrides = {**overrides, "height_m": overrides["width_m"]}
 
     entered = [overrides.get("width_m"), overrides.get("height_m"), overrides.get("length_m")]
     if all(value for value in entered):
-        # Dezelfde volgorde als de rekenpaden verwachten: breedte, hoogte, lengte.
+        # The same order the calculation paths expect: width, height, length.
         dims = replace(
             dims,
             values_m=[float(value) for value in entered],
@@ -246,7 +246,7 @@ def process_line(
             length_m=float(overrides["length_m"]),
         )
     elif overrides.get("length_m"):
-        # Alleen een lengte is genoeg voor een profiel uit de catalogus.
+        # A length alone is enough for a profile from the catalogue.
         dims = replace(dims, length_m=float(overrides["length_m"]))
 
     ref = match_reference(row.description, db)
@@ -335,10 +335,10 @@ def process_line(
             status = "error"
 
     elif product_type == "round_tube" and (diameter_m := dims.width_m or None) and wall_m and dims.length_m:
-        # Een ronde buis vraagt geen hoogte: de breedte ís de diameter, en de
-        # binnendiameter volgt uit de wanddikte. Twee maten en een dikte zijn
-        # genoeg, en om een derde vragen die niets toevoegt is alleen maar
-        # gelegenheid om iets verkeerds in te vullen.
+        # A round tube needs no height: the width *is* the diameter, and the
+        # inside diameter follows from the wall thickness. Two measurements and a
+        # thickness are enough, and asking for a third that adds nothing is only
+        # an opportunity to fill in something wrong.
         outer_r = diameter_m / 2
         inner_r = outer_r - wall_m
         if inner_r <= 0:
@@ -348,7 +348,7 @@ def process_line(
             material_vol, weight_each = calc_round_tube(outer_r, inner_r, dims.length_m, density)
             if qty:
                 weight_total = weight_each * qty
-            # Voor de stuwage telt de omhullende doos, niet de cirkel.
+            # For stowage the enclosing box counts, not the circle.
             transport_vol = transport_volume_outer(
                 diameter_m, diameter_m, dims.length_m, qty or 1
             )
@@ -357,8 +357,8 @@ def process_line(
             method = "round_tube"
 
     elif product_type == "round_bar" and (diameter_m := dims.width_m or None) and dims.length_m:
-        # Massief rond. Tot v1.37.1 viel dit door naar het blok hieronder en werd
-        # een staaf als een balk van d bij d gewogen — 4/pi, oftewel 27% te zwaar.
+        # Solid round. Until v1.37.1 this fell through to the block below and a
+        # bar was weighed as a beam of d by d — 4/pi, that is 27% too heavy.
         radius = diameter_m / 2
         material_vol, weight_each = calc_round_bar(radius, dims.length_m, density)
         if qty:
@@ -385,22 +385,23 @@ def process_line(
             status = "error"
 
     elif product_type in WALL_PROFILE_TYPES:
-        # De vorm heeft een wand, maar de dikte ontbreekt. Doorvallen naar het
-        # massieve blok hieronder is precies wat tot v1.36.1 gebeurde: een
-        # hoekprofiel L80x80x8 van 6 m woog 301 kg in plaats van 57 — ruim vijf
-        # keer te zwaar, en niets op het scherm dat verried dat er een maat
-        # ontbrak. Liever geen getal dan dat getal.
+        # The shape has a wall, but the thickness is missing. Falling through to
+        # the solid block below is exactly what happened until v1.36.1: an L80x80x8
+        # angle of 6 m weighed 301 kg instead of 57 — well over five times too
+        # heavy, and nothing on screen betraying that a measurement was missing.
+        # Better no figure than that figure.
         messages.append("wall_thickness_missing")
         status = "needs_review" if status == "ok" else status
         if dims.width_m and dims.height_m and dims.length_m:
-            # Het transportvolume kan wel: dat gaat over de buitenmaten en niet
-            # over hoeveel staal erin zit.
+            # The transport volume can be done: that is about the outside
+            # measurements and not about how much steel is in it.
             transport_vol = transport_volume_outer(
                 dims.width_m, dims.height_m, dims.length_m, qty or 1
             )
 
     elif material_obj and len(dims.values_m) >= 3:
-        # Herkend materiaal met drie afmetingen: reken als massief blok op dichtheid.
+        # Recognised material with three dimensions: compute as a solid block on
+        # density.
         w, h, length_m = dims.values_m[:3]
         material_vol, weight_each = calc_solid_block(length_m, w, h, density)
         if qty:
@@ -419,17 +420,16 @@ def process_line(
             messages.append("quantity_missing")
             status = "error"
 
-        # Niet elke zending heeft afmetingen nodig. "1500 liter benzine" is
-        # volledig bepaald: de eenheid geeft het volume, het soortelijk gewicht
-        # van het herkende goed geeft de massa. Tot v1.34.1 werd hier
-        # "dimensions_missing" gemeld en bleven gewicht en volume leeg, terwijl
-        # alles om het uit te rekenen op het scherm stond. De eenhedenmodule
-        # was er wel, maar werd alleen door de keuzelijst gebruikt en niet door
-        # de berekening.
+        # Not every consignment needs dimensions. "1500 litres of petrol" is
+        # fully determined: the unit gives the volume, the density of the
+        # recognised commodity gives the mass. Until v1.34.1 "dimensions_missing"
+        # was reported here and weight and volume stayed empty, while everything
+        # needed to work it out was on the screen. The units module existed, but
+        # was used only by the dropdown and not by the calculation.
         #
-        # Alleen bij een herkend goed: match_material valt terug op de
-        # dichtheid van staal, en 1500 liter maal 7850 zou er even stellig
-        # uitzien als het antwoord dat klopt.
+        # Only with a recognised commodity: match_material falls back to the
+        # density of steel, and 1500 litres times 7850 would look just as
+        # confident as the answer that is right.
         if material_obj and qty:
             converted = convert_units(
                 qty, row.unit, density, material_obj.category,
@@ -439,9 +439,8 @@ def process_line(
             if converted.mass_kg is not None or converted.volume_m3 is not None:
                 weight_total = converted.mass_kg
                 material_vol = converted.volume_m3
-                # Bij een vloeistof of stortgoed is het ingevoerde volume ook
-                # het vervoerde volume; er zit geen verpakking omheen die de
-                # app kent.
+                # For a liquid or bulk the entered volume is also the volume
+                # carried; there is no packaging around it that the app knows of.
                 transport_vol = converted.volume_m3
                 method = f"unit_{converted.basis.value}"
                 density = converted.density_used_kg_m3 or density

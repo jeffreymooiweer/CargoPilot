@@ -1,14 +1,14 @@
-"""Offline UN-nummer- en verpakkingendatabase.
+"""Offline UN number and packaging database.
 
-Bronnen (zie README):
-- ADR 2023 Tabel A (afgeleid uit officiële UNECE-publicatie): klasse,
-  classificatiecode, verpakkingsgroep, etiketten, LQ/EQ, verpakkingsinstructies,
-  vervoerscategorie, tunnelcode, gevaarsnummer.
-- 49 CFR 172.101 (eCFR, public domain): Engelse proper shipping names.
-- UN-verpakkingscodes volgens ADR 6.1.2 / 6.5.1.4 / 6.6.2.
+Sources (see README):
+- ADR 2023 Table A (derived from the official UNECE publication): class,
+  classification code, packing group, labels, LQ/EQ, packing instructions,
+  transport category, tunnel code, hazard number.
+- 49 CFR 172.101 (eCFR, public domain): English proper shipping names.
+- UN packaging codes per ADR 6.1.2 / 6.5.1.4 / 6.6.2.
 
-Let op: dit is een feitelijke compilatie als invulhulp; de actuele ADR/IMDG/IATA-
-uitgave blijft leidend.
+Note: this is a factual compilation as an aid to filling in; the current
+ADR/IMDG/IATA edition remains authoritative.
 """
 from __future__ import annotations
 
@@ -34,12 +34,12 @@ def _normalize(text: str) -> str:
 
 
 def _imdg_only_entries(known: set[str]) -> list[dict]:
-    """UN-nummers die IMDG 42-24 toevoegt en die ADR 2025 nog niet kent.
+    """UN numbers IMDG 42-24 adds that ADR 2025 does not know yet.
 
-    Natrium-ionbatterijen en de nieuwe voertuigvermeldingen komen uit de 23e
-    editie van de UN-modelvoorschriften. Die zit al in IMDG 42-24, maar pas in
-    een volgende ADR-uitgave. Wie ze over zee verscheept moet ze kunnen vinden;
-    daarom staan ze hier, uitdrukkelijk gemerkt als alleen-IMDG.
+    Sodium-ion batteries and the new vehicle entries come from the 23rd edition
+    of the UN Model Regulations. That is already in IMDG 42-24, but only in a
+    future ADR edition. Whoever ships them by sea has to be able to find them;
+    hence they are here, explicitly marked as IMDG-only.
     """
     entries: list[dict] = []
     for item in amendment_42_24.new_un_numbers():
@@ -50,7 +50,7 @@ def _imdg_only_entries(known: set[str]) -> list[dict]:
             "un": item["un"],
             "name_en": item.get("name_en", ""),
             "name_de": "",
-            # De DGL noemt de divisie zelf; Tabel A doet dat via de etiketten.
+            # The DGL names the division itself; Table A does so via the labels.
             "class": hazard.split(".")[0] if hazard.startswith("1.") else hazard,
             "classification_code": hazard if hazard.startswith("1.") else "",
             "packing_group": item.get("packing_group", ""),
@@ -128,8 +128,8 @@ def search_un_numbers(
                 scored.append((20, entry))
 
     scored.sort(key=lambda item: (-item[0], item[1]["un"], item[1].get("packing_group") or ""))
-    # De suggestie draagt de naam die op het document terechtkomt; die moet dus
-    # dezelfde taalkeuze volgen als de export.
+    # The suggestion carries the name that ends up on the document, so it has to
+    # follow the same language choice as the export.
     return [
         {
             **_public(entry),
@@ -148,7 +148,7 @@ def get_un_entries(un_number: str) -> list[dict]:
 def offline_lookup(
     un_number: str, language: str = "nl", profiles: list[str] | None = None
 ) -> dict | None:
-    """Zelfde vorm als de FreightUtils-lookup, als offline terugval."""
+    """Same shape as the FreightUtils lookup, as an offline fallback."""
     entries = get_un_entries(un_number)
     if not entries:
         return None
@@ -178,7 +178,7 @@ def offline_lookup(
 
 
 def is_transport_forbidden(un_number: str) -> bool:
-    """True wanneer ADR Tabel A de stof niet ten vervoer toelaat."""
+    """True when ADR Table A does not admit the substance for carriage."""
     entries = get_un_entries(un_number)
     if not entries:
         return False

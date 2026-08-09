@@ -1,25 +1,25 @@
-"""Stuwage-, behandelings- en scheidingscodes uit IMDG-code Amendment 42-24.
+"""Stowage, handling and segregation codes from IMDG Code Amendment 42-24.
 
-De app kent per stof de codes uit kolom 16a en 16b — SW1, H2, SG35 — maar tot nu
-toe alleen met de brokstukken tekst die van de UN-kaarten te schrapen waren. Een
-kale code zegt een gebruiker niets, en een half citaat is erger dan geen citaat.
+The app knows the codes of columns 16a and 16b per substance — SW1, H2, SG35 —
+but until now only with the fragments of text that could be scraped off the UN
+cards. A bare code says nothing to a user, and half a quotation is worse than no
+quotation.
 
-Dit script leest de definities uit hun eigen hoofdstukken:
+This script reads the definitions from their own chapters:
 
-- 7.1.5  stuwagecodes SW1 t/m SW31
-- 7.1.6  behandelingscodes H1 t/m H5
-- 7.2.8  scheidingscodes SG1 t/m SG78
+- 7.1.5  stowage codes SW1 to SW31
+- 7.1.6  handling codes H1 to H5
+- 7.2.8  segregation codes SG1 to SG78
 
-Bron: resolutie MSC.556(108), aangenomen op 23 mei 2024, in werking getreden op
-1 januari 2026 — het instrument waarmee Amendment 42-24 is vastgesteld. Het
-draait via GitHub Actions, omdat de ontwikkelomgeving geen uitgaand netwerk
-heeft.
+Source: resolution MSC.556(108), adopted on 23 May 2024, in force on 1 January
+2026 — the instrument by which Amendment 42-24 was adopted. It runs via GitHub
+Actions, because the development environment has no outbound network.
 
-Wat er wordt weggeschreven is een feitelijke codetabel: code, omschrijving en
-waar die vandaan komt. Dezelfde lijn als bij de rest van de gegevens in deze
-repo. De gepubliceerde tekst van de code blijft leidend.
+What is written out is a factual code table: code, description and where it came
+from. The same line as the rest of the data in this repo. The published text of
+the Code remains authoritative.
 
-Gebruik::
+Usage::
 
     python scripts/extract_imdg_codes.py --out backend/seed/dg/imdg_codes.json
 """
@@ -39,7 +39,7 @@ SOURCE_NAME = ("IMO-resolutie MSC.556(108), aangenomen 23 mei 2024 — Amendment
                "in werking sinds 1 januari 2026")
 UA = {"User-Agent": "CargoPilot data extraction (github.com/jeffreymooiweer/CargoPilot)"}
 
-# Elke reeks met de kop waarop de sectie begint en het patroon van haar codes.
+# Each series with the heading the section starts on and the pattern of its codes.
 SECTIONS = [
     {
         "key": "stowage_codes",
@@ -67,8 +67,8 @@ SECTIONS = [
     },
 ]
 
-# Kop- en voetregels van de uitgave. Die staan midden tussen de codes en zouden
-# anders als omschrijving worden meegenomen.
+# Headers and footers of the publication. Those sit in the middle of the codes
+# and would otherwise be taken along as a description.
 NOISE = re.compile(
     r"^(?:"
     r"MSC \d+/\d+/Add\.\d+"
@@ -84,7 +84,7 @@ NOISE = re.compile(
     r")$"
 )
 
-# "[Reserved]" is geen voorschrift maar een gat dat de code openhoudt.
+# "[Reserved]" is not a provision but a gap the Code keeps open.
 RESERVED = re.compile(r"^\[\s*reserved\s*\]\.?$", re.I)
 
 
@@ -96,7 +96,7 @@ def download(url: str, target: Path, timeout: int = 600) -> Path:
 
 
 def clean_lines(document, first: int, last: int) -> list[str]:
-    """Leesbare regels uit een paginabereik, zonder kop- en voetteksten."""
+    """Readable lines from a page range, without headers and footers."""
     out: list[str] = []
     for index in range(first, min(last, document.page_count)):
         for raw in document[index].get_text().splitlines():
@@ -107,11 +107,11 @@ def clean_lines(document, first: int, last: int) -> list[str]:
 
 
 def find_section(document, spec: dict[str, Any]) -> int:
-    """Paginanummer waarop een sectie begint, gezocht op haar inleidingszin.
+    """The page number a section starts on, found by its introductory sentence.
 
-    Op het sectienummer zoeken levert de inhoudsopgave en elke kruisverwijzing
-    op — 7.1.5 komt op vijf plaatsen voor. De inleidingszin ("The stowage codes
-    given in column 16a …") staat maar op één plaats.
+    Searching on the section number yields the table of contents and every
+    cross-reference — 7.1.5 occurs in five places. The introductory sentence
+    ("The stowage codes given in column 16a …") occurs in only one.
     """
     for index in range(document.page_count):
         if spec["intro"] in document[index].get_text():
@@ -121,11 +121,11 @@ def find_section(document, spec: dict[str, Any]) -> int:
 
 
 def parse_codes(lines: list[str], spec: dict[str, Any]) -> dict[str, str]:
-    """Codes en hun omschrijving uit een reeks regels.
+    """Codes and their description out of a run of lines.
 
-    De opmaak is een tabel van twee kolommen die als losse regels uit de PDF
-    komt: eerst de code alleen op een regel, daarna de omschrijving over een of
-    meer regels. Alles tot de volgende code hoort bij de vorige.
+    The layout is a two-column table that comes out of the PDF as separate
+    lines: first the code alone on a line, then the description over one or more
+    lines. Everything up to the next code belongs to the previous one.
     """
     codes: dict[str, list[str]] = {}
     current: str | None = None
@@ -142,8 +142,8 @@ def parse_codes(lines: list[str], spec: dict[str, Any]) -> dict[str, str]:
         if match:
             current = match.group(1)
             codes.setdefault(current, [])
-            # Meestal staat de code alleen op haar regel, maar de PDF trekt
-            # kolommen soms samen; dan begint de omschrijving hier al.
+            # Usually the code stands alone on its line, but the PDF sometimes
+            # contracts columns; then the description already begins here.
             if match.group(2).strip():
                 codes[current].append(match.group(2).strip())
             continue
@@ -180,8 +180,8 @@ def extract(path: Path) -> dict[str, Any]:
             codes = parse_codes(lines, spec)
             if not codes:
                 raise LookupError(f"geen codes gelezen in {spec['section']}")
-            # Gereserveerde codes hebben geen betekenis. Ze apart zetten
-            # voorkomt dat de interface "[Reserved]" als voorschrift toont.
+            # Reserved codes have no meaning. Putting them apart stops the
+            # interface showing "[Reserved]" as a provision.
             reserved = sorted((c for c, t in codes.items() if RESERVED.match(t)), key=sort_key)
             active = {c: t for c, t in codes.items() if not RESERVED.match(t)}
             result[spec["key"]] = {
@@ -196,10 +196,10 @@ def extract(path: Path) -> dict[str, Any]:
 
 
 def sanity_check(data: dict[str, Any]) -> list[str]:
-    """Wat er mis kan gaan bij het lezen van een PDF-tabel, expliciet gemaakt.
+    """What can go wrong when reading a PDF table, made explicit.
 
-    Een parser die stilletjes de helft mist is gevaarlijker dan een die faalt,
-    dus dit meldt onvolledigheid in plaats van haar te laten passeren.
+    A parser that quietly misses half is more dangerous than one that fails, so
+    this reports incompleteness instead of letting it pass.
     """
     problems: list[str] = []
     expected = {"stowage_codes": ("SW", 31), "handling_codes": ("H", 5),
@@ -210,9 +210,9 @@ def sanity_check(data: dict[str, Any]) -> list[str]:
         numbers = {int(c[len(prefix):]) for c in list(codes) + entry.get("reserved", [])}
         if highest not in numbers:
             problems.append(f"{key}: hoogste code {prefix}{highest} ontbreekt")
-        # Gaten mogen bestaan — SG64, SG66 en SG73 zijn gereserveerd, SG75 is
-        # met 41-22 vervallen — maar een gat van meer dan drie op rij wijst op
-        # een leesfout in plaats van op de code.
+        # Gaps may exist — SG64, SG66 and SG73 are reserved, SG75 lapsed with
+        # 41-22 — but a gap of more than three in a row points to a reading error
+        # rather than to the Code.
         missing = sorted(set(range(1, highest + 1)) - numbers)
         run: list[int] = []
         for number in missing + [None]:

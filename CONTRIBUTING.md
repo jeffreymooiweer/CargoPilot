@@ -109,6 +109,9 @@ Then the ground rules are the ones the project already follows:
 - **Update `CHANGELOG.md`** in the same change, under a heading for the version you
   bumped to.
 - **Explain why in the commit message**, not just what. The diff already says what.
+- **Comments and docstrings are in English.** The interface speaks four languages; the
+  source speaks one. A test docstring explains why the test exists and which defect
+  provoked it — that is the point of them, and it is worth the extra sentences.
 
 ## Code of conduct
 

@@ -1,10 +1,10 @@
-"""De Dangerous Goods List als bron voor kolom 16a en 16b.
+"""The Dangerous Goods List as the source for columns 16a and 16b.
 
-Wat de app hiervoor gebruikt is niet vrijblijvend: 7.2.3.1 laat kolom 16b
-vóórgaan op de scheidingstabel van 7.2.4. Zolang die kolom uit de UN-kaarten
-kwam was zij onvolledig — de kaarten zijn 41-22 en dekken lang niet elke stof.
-Deze tests leggen vast dat de lijst zelf nu de bron is, en dat het lezen van
-haar kolommen klopt op vermeldingen waarvan de inhoud onafhankelijk bekend is.
+What the app uses for this is not optional: 7.2.3.1 lets column 16b prevail over
+the segregation table of 7.2.4. As long as that column came from the UN cards it
+was incomplete — the cards are 41-22 and cover nowhere near every substance.
+These tests record that the list itself is now the source, and that the reading
+of its columns is right for entries whose content is independently known.
 """
 
 from app.services.dg import dangerous_goods_list as dgl
@@ -24,8 +24,8 @@ def test_the_list_is_present_and_carries_the_amendment_it_claims():
 
 
 def test_a_dash_is_layout_and_not_a_value():
-    """De uitgave zet een en-streepje waar niets geldt. Dat als waarde
-    doorgeven zou '–' als nevengevaar op een vervoersdocument zetten."""
+    """The publication puts an en dash where nothing applies. Passing that on as
+    a value would put '–' on a transport document as a subsidiary risk."""
     row = dgl.entry_for("1203")
     assert row["subsidiary_hazards"] == "–"
     assert dgl.value(row, "subsidiary_hazards") == ""
@@ -44,7 +44,7 @@ def test_a_class_1_entry_carries_a_numbered_stowage_category():
 
 
 def test_the_segregation_column_splits_into_groups_and_codes():
-    """Kolom 16b zet de scheidingsgroepen vóór de SG-codes: 'SGG2 SG27 SG31'."""
+    """Column 16b puts the segregation groups before the SG codes: 'SGG2 SG27 SG31'."""
     row = dgl.entry_for("0004")
     assert dgl.segregation_groups(row) == ["SGG2"]
     assert dgl.segregation_codes(row) == ["SG27", "SG31"]
@@ -57,8 +57,8 @@ def test_the_two_packing_groups_of_one_substance_stay_apart():
 
 
 def test_an_unknown_packing_group_still_yields_the_right_substance():
-    """Beter een rij van de goede stof dan geen rij: de kolommen die de app
-    gebruikt verschillen tussen verpakkingsgroepen zelden."""
+    """Better a row of the right substance than no row: the columns the app uses
+    rarely differ between packing groups."""
     row = dgl.entry_for("3424", "I")
     assert row["proper_shipping_name"].startswith("AMMONIUM DINITRO")
 
@@ -69,7 +69,7 @@ def test_a_substance_the_list_does_not_know_yields_nothing():
 
 
 def test_the_change_marker_is_carried_through_as_a_fact():
-    """UN 3423 is door 42-24 aangeraakt en draagt daarom het driehoekje."""
+    """UN 3423 was touched by 42-24 and therefore carries the triangle."""
     assert dgl.amended_in_42_24(dgl.entry_for("3423"))
     assert not dgl.amended_in_42_24(dgl.entry_for("1203"))
 
@@ -85,8 +85,8 @@ def test_column_16b_now_comes_from_the_list_itself():
 
 
 def test_the_segregation_groups_of_both_sources_are_taken_together():
-    """3.1.4.4 en kolom 16b zeggen hetzelfde; waar de een een groep kent die
-    de ander mist, telt die mee."""
+    """3.1.4.4 and column 16b say the same thing; where one knows a group the
+    other misses, that one counts."""
     groups = segregation_groups_for("3423")
     assert "SGG2" in groups and "SGG18" in groups
 
@@ -100,8 +100,8 @@ def test_the_enrichment_hands_the_official_codes_to_the_interface():
 
 
 def test_every_code_the_enrichment_reports_has_a_description():
-    """De codetabel van 7.1.5/7.1.6/7.2.8 en de lijst moeten op elkaar
-    aansluiten; een code zonder tekst is voor een gebruiker niets waard."""
+    """The code table of 7.1.5/7.1.6/7.2.8 and the list have to line up; a code
+    without text is worth nothing to a user."""
     entry = offline_lookup("2984")
     described = {item["code"] for item in entry["imdg_segregation_definitions"]}
     assert described == set(entry["imdg_segregation_codes"])

@@ -1,11 +1,11 @@
-"""Zoekservice voor luchthavens, havens en treinstations.
+"""Search service for airports, ports and railway stations.
 
-De seeds (backend/seed/locations/*.json) komen uit openbare bronnen:
-- OurAirports (public domain) — grote en middelgrote luchthavens met IATA-code
-- UN/LOCODE (UNECE) — locaties met havenfunctie
-- Trainline EU stations (ODbL) — hoofdstations
+The seeds (backend/seed/locations/*.json) come from public sources:
+- OurAirports (public domain) — large and medium airports with an IATA code
+- UN/LOCODE (UNECE) — locations with a port function
+- Trainline EU stations (ODbL) — main stations
 
-De data wordt lazy in het geheugen geladen; er is geen database nodig.
+The data is loaded lazily into memory; no database is needed.
 """
 from __future__ import annotations
 
@@ -55,7 +55,7 @@ def _load(location_type: str) -> list[dict]:
 
 
 def _score(entry: dict, query: str) -> int:
-    """Hoger = betere match. 0 = geen match."""
+    """Higher = better match. 0 = no match."""
     code = _normalize(str(entry.get("code") or ""))
     icao = _normalize(str(entry.get("icao") or ""))
     name = _normalize(str(entry.get("name") or ""))

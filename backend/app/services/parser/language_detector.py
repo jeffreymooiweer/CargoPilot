@@ -1,13 +1,13 @@
-"""In welke taal een geplakte goederenregel is geschreven.
+"""Which language a pasted goods line is written in.
 
-Dit bepaalt in welke taal de afgeleide omschrijving terugkomt — "Hoekprofiel
-staal 80×80×8×6000", "Steel angle profile …" of "Stahl Winkelprofil …". Het is
-een gok op trefwoorden en niet meer dan dat; de gebruiker kan de omschrijving
-altijd overschrijven.
+This decides which language the derived description comes back in — "Hoekprofiel
+staal 80×80×8×6000", "Steel angle profile …" or "Stahl Winkelprofil …". It is a
+guess on keywords and no more than that; the user can always overwrite the
+description.
 
-De herkenning van de materialen zelf loopt langs de synoniemenlijst van de
-catalogus, en die kent nog geen Duitse termen. Wat deze detectie oplost is
-alleen de taal van wat CargoPilot terugschrijft.
+Recognition of the materials themselves runs via the catalogue's synonym list,
+and that does not yet know German terms. What this detection solves is only the
+language of what CargoPilot writes back.
 """
 
 KEYWORDS = {
@@ -15,18 +15,18 @@ KEYWORDS = {
            "verzinkt", "hout", "beton", "aantal", "stuks", "lengte"},
     "en": {"steel", "angle", "profile", "galvanized", "galvanised", "wood",
            "concrete", "quantity", "length", "pieces"},
-    # "verzinkt" en "beton" staan ook in de Nederlandse lijst. Dat is geen
-    # fout maar een gelijkspel, en gelijkspel gaat naar het Nederlands.
+    # "verzinkt" and "beton" are in the Dutch list too. That is not an error but
+    # a tie, and a tie goes to Dutch.
     "de": {"stahl", "winkelprofil", "quadratrohr", "verzinkt", "holz", "beton",
            "menge", "stück", "länge", "blech", "träger", "rundstab"},
-    # "beton" en "profil" komen in meer talen voor; ook hier geldt dat een
-    # gelijkspel naar het Nederlands gaat.
+    # "beton" and "profil" occur in more than one language; here too a tie goes
+    # to Dutch.
     "fr": {"acier", "cornière", "tube", "galvanisé", "bois", "béton",
            "quantité", "longueur", "pièces", "tôle", "poutre", "profilé"},
 }
 
-# Bij gelijkspel wint de taal die het eerst staat: die waarin de gegevens het
-# volledigst zijn.
+# On a tie the language listed first wins: the one in which the data is most
+# complete.
 _ORDER = ("nl", "en", "de", "fr")
 
 

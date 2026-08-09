@@ -102,8 +102,8 @@ export default function EquipmentCombobox({ value, onChange, placeholder }: Prop
     return () => {
       if (debounceRef.current) clearTimeout(debounceRef.current);
     };
-    // Ook op de taal: wie tijdens het typen van taal wisselt, hoort de
-    // suggesties in de nieuwe taal terug te krijgen.
+    // On the language too: whoever switches language while typing should get
+    // the suggestions back in the new language.
   }, [query, i18n.language]);
 
   const browseEquipment = useMemo(() => {

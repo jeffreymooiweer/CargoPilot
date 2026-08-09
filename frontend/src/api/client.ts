@@ -30,18 +30,18 @@ async function uploadFile<T>(path: string, file: File): Promise<T> {
   return res.json();
 }
 
-/** FastAPI leest een herhaalde parameter als lijst: ?profiles=ADR&profiles=IMDG. */
+/** FastAPI reads a repeated parameter as a list: ?profiles=ADR&profiles=IMDG. */
 function profileQuery(profiles: string[]): string {
   return profiles.map((p) => `&profiles=${encodeURIComponent(p)}`).join("");
 }
 
-/** Een validatiefout van FastAPI leesbaar maken.
+/** Make a FastAPI validation error readable.
  *
- * Bij een 422 is `detail` geen zin maar een lijst met `{loc, msg}` per veld.
- * Die rechtstreeks aan `new Error()` geven leverde "[object Object]" op het
- * scherm op: de gebruiker zag dat er iets mis was, maar niet wat. Nu komt er
- * "producten → 1 → adr_total_quantity: hoeveelheid '-5 L' moet groter dan nul
- * zijn" te staan, met de padkop ("body") eraf omdat die niets toevoegt.
+ * On a 422 `detail` is not a sentence but a list of `{loc, msg}` per field.
+ * Handing that straight to `new Error()` produced "[object Object]" on the
+ * screen: the user saw that something was wrong, but not what. Now it reads
+ * "products → 1 → adr_total_quantity: quantity '-5 L' must be greater than
+ * zero", with the path head ("body") removed because it adds nothing.
  */
 export function describeDetail(detail: unknown): string {
   if (typeof detail === "string" && detail) return detail;
@@ -107,10 +107,10 @@ export const api = {
     mass_per_item_kg?: number | null;
     volume_per_item_m3?: number | null;
   }) => request<UnitConversion>("/units/convert", { method: "POST", body: JSON.stringify(payload) }),
-  // Taal en profielen gaan mee omdat de juiste vervoersnaam ervan afhangt:
-  // ADR 5.4.1.4.1 laat een Duitse benaming toe, IMDG 5.4.1.4.1 en IATA DGR
-  // 8.1.2.1 niet. De suggestie die de gebruiker aanklikt, is de tekst die op
-  // het document belandt.
+  // Language and profiles travel along because the proper shipping name depends
+  // on them: ADR 5.4.1.4.1 permits a German name, IMDG 5.4.1.4.1 and IATA DGR
+  // 8.1.2.1 do not. The suggestion the user clicks is the text that ends up on
+  // the document.
   dgLookup: (un: string, language = "nl", profiles: string[] = []) =>
     request<DgLookupResult>(
       `/dg/lookup?un=${encodeURIComponent(un)}&language=${language}${profileQuery(profiles)}`,
@@ -312,10 +312,10 @@ export interface LineItem {
   quantity: number | null;
   unit: string | null;
   material: string | null;
-  /** Categorie van het herkende goed, bijvoorbeeld "liquid" of "bulk_material".
-   *  Bepaalt welke eenheden en vormen de keuzelijsten als eerste voorstellen. */
+  /** Category of the recognised commodity, "liquid" or "bulk_material" for
+   *  instance. Determines which units and forms the dropdowns suggest first. */
   material_category?: string | null;
-  /** De vorm waarmee is gerekend: massief, gestapeld, los gestort. */
+  /** The form computed with: solid, stacked, loose bulk. */
   cargo_form?: string | null;
   product_type: string | null;
   weight_each_kg: number | null;
@@ -353,13 +353,13 @@ export interface DgProduct {
   type_of_package?: string;
   quantity_packages?: string;
   quantity_items_per_package?: string;
-  /** Netto per binnenverpakking, met eenheid — voor de LQ/EQ-toets (3.4/3.5). */
+  /** Net per inner packaging, with unit — for the LQ/EQ check (3.4/3.5). */
   net_per_inner_packaging?: string;
   net_mass_liters_per_package?: string;
   gross_mass_per_package?: string;
-  /** Alleen klasse 1: totale netto explosieve massa in kg (ADR 1.1.3.6.3). */
+  /** Class 1 only: total net explosive mass in kg (ADR 1.1.3.6.3). */
   net_explosive_mass?: string;
-  /** Gezet door /dg/prepare voor stoffen die niet ten vervoer mogen. */
+  /** Set by /dg/prepare for substances that may not be carried. */
   transport_forbidden?: boolean;
   eq_lq_points?: string;
   dimensions?: string;
@@ -401,7 +401,7 @@ export interface DgPrepareHint {
   ems_packing_group_options?: Record<string, string>;
   excepted_quantity_text?: string;
   limited_quantity_text?: string;
-  /** Waarschuwing wanneer een UN-nummer meerdere verpakkingsgroepen kent. */
+  /** A warning when a UN number has more than one packing group. */
   packing_group_note?: string;
   air_note?: string;
   air_forbidden?: boolean;
@@ -412,14 +412,14 @@ export interface DgPrepareHint {
   imdg_stowage_text?: string;
   imdg_segregation_codes?: string[];
   imdg_segregation_text?: string;
-  /** De omschrijving van elke code uit IMDG 7.1.5, 7.1.6 en 7.2.8. */
+  /** The description of every code from IMDG 7.1.5, 7.1.6 and 7.2.8. */
   imdg_stowage_definitions?: { code: string; text: string }[];
   imdg_segregation_definitions?: { code: string; text: string }[];
   imdg_stowage_category?: string;
-  /** Wat IMDG-amendement 42-24 aan deze stof verandert. */
+  /** What IMDG Amendment 42-24 changes about this substance. */
   imdg_amendment_changes?: string[];
   imdg_document_requirement?: { section: string; text: string; fields: string[] };
-  /** Uit de Dangerous Goods List zelf, hoofdstuk 3.2 van de IMDG-code. */
+  /** From the Dangerous Goods List itself, chapter 3.2 of the IMDG Code. */
   imdg_special_provisions?: string[];
   imdg_packing_instructions?: string;
   imdg_packing_provisions?: string;
@@ -427,7 +427,7 @@ export interface DgPrepareHint {
   imdg_tank_provisions?: string;
   imdg_subsidiary_hazards?: string;
   imdg_properties?: string;
-  /** De lijst wijst deze vermelding aan als gewijzigd door 42-24. */
+  /** The list marks this entry as amended by 42-24. */
   imdg_amended_in_42_24?: boolean;
   imdg_dgl_source?: string;
   imdg_amendment?: string;
@@ -536,7 +536,7 @@ export interface ImportMapping {
 export interface ImportAnalysis {
   columns: ImportColumn[];
   mapping: ImportMapping;
-  /** "header": de koptekst is herkend. "position": er is op volgorde geraden. */
+  /** "header": the heading row was recognised. "position": guessed from the order. */
   source: "header" | "position" | "user" | "none";
   has_header: boolean;
 }
@@ -548,9 +548,9 @@ export interface WizardFileParseResult {
   rows: string[][];
 }
 
-/** Nederlands en Engels zijn er altijd; een derde taal kan in een register dat
- *  van elders komt ontbreken. Gebruik `localised()` om er tekst uit te halen —
- *  dat valt terug in plaats van niets te tonen. */
+/** Dutch and English are always there; a third language can be missing in a
+ *  registry that comes from elsewhere. Use `localised()` to get text out of it —
+ *  that falls back instead of showing nothing. */
 export type LocalizedText = { nl: string; en: string; de?: string };
 
 export type FieldStatus =
@@ -592,7 +592,7 @@ export interface DocumentDefinition {
   short_label: LocalizedText;
   category: string;
   issue_status: LocalizedText;
-  /** "avc" vult, net als "pdf_template", een officieel formulier in. */
+  /** "avc" fills in an official form, just as "pdf_template" does. */
   exporter: "generic" | "pdf_template" | "avc";
   output_format?: "xlsx" | "pdf";
   dg_profile: string | null;
@@ -622,7 +622,7 @@ export interface DgUnEntry {
   un: string;
   name_en: string;
   name_de: string;
-  /** De benaming in de taal die voor de gekozen profielen is toegestaan. */
+  /** The name in the language permitted for the chosen profiles. */
   proper_shipping_name: string;
   class: string;
   classification_code: string;
@@ -672,19 +672,18 @@ export interface AdrPointsResult {
   total_points: number;
   threshold: number;
   status: "exempt_possible" | "above_threshold" | "not_exempt" | "incomplete";
-  /** Regels met een vervoersverbod staan niet in de telling. */
+  /** Lines with a transport prohibition are not in the count. */
   forbidden_products?: string[];
   category0_products: string[];
   incomplete_products: string[];
   quantity_units_note: string;
   exempt_provisions: string[];
   still_required: string[];
-  /** Met welke tabellen is gerekend, bijvoorbeeld "ADR 1.1.3.6". */
+  /** Which tables were computed with, for example "ADR 1.1.3.6". */
   basis?: string;
-  /** Wat de gekozen modaliteit zelf over deze grondslag zegt. Voor het RID dat
-   *  1.1.3.6.3/1.1.3.6.4 dezelfde categorieen, factoren en waarde 1000
-   *  voorschrijven; voor het ADN dat het in het geheel geen punten kent en
-   *  afzonderlijk wordt beoordeeld. */
+  /** What the chosen mode says about this basis itself. For RID, that
+   *  1.1.3.6.3/1.1.3.6.4 prescribe the same categories, factors and value 1000;
+   *  for ADN, that it has no points at all and is assessed separately. */
   basis_note?: string | null;
 }
 
@@ -696,8 +695,8 @@ export interface AdnExemptionRow {
   quantity: number | null;
 }
 
-/** ADN 1.1.3.6.1: vrijstelling op brutomassa, met een eigen grens per klasse.
- *  Geen puntentelling — het ADN kent die niet. */
+/** ADN 1.1.3.6.1: exemption on gross mass, with a limit of its own per class.
+ *  No points count — ADN does not have one. */
 export interface AdnExemptionResult {
   rows: AdnExemptionRow[];
   total_gross_mass_kg: number;
@@ -731,7 +730,7 @@ export interface LqEqRow {
   eq: { code: string | null; status: LqEqStatus; message: string };
 }
 
-/** ADR/IMDG 3.4 en 3.5: de ingevoerde hoeveelheden getoetst aan kolom 7a/7b. */
+/** ADR/IMDG 3.4 and 3.5: the entered quantities tested against columns 7a/7b. */
 export interface LqEqResult {
   rows: LqEqRow[];
   status: "checked" | "incomplete" | "not_checked";
@@ -744,15 +743,15 @@ export interface LqEqResult {
 export interface QValueResult {
   position: string | number;
   components: { product: string; net_quantity: number; max_per_package: number; ratio: number }[];
-  /** Null wanneer er niets te rekenen viel of de invoer onvolledig was. */
+  /** Null when there was nothing to compute or the input was incomplete. */
   q_value: number | null;
   exceeded: boolean | null;
   status?: "ok" | "exceeded" | "incomplete" | "not_checked";
   note: string;
 }
 
-/** Of de Q-controle van 5.0.2.11 daadwerkelijk is uitgevoerd. Hoort bij de
- *  uitkomst, zodat ook de export het ziet en niet alleen dit paneel. */
+/** Whether the Q check of 5.0.2.11 was actually performed. Belongs with the
+ *  result, so the export sees it too and not only this panel. */
 export interface QCheckStatus {
   status: "checked" | "incomplete" | "exceeded" | "not_checked";
   message: string;
@@ -762,14 +761,14 @@ export interface DgComplianceResult {
   sources: Record<string, string>;
   profiles: string[];
   adr_points?: AdrPointsResult;
-  /** Alleen bij het ADN-profiel: de eigen vrijstelling van 1.1.3.6.1. */
+  /** With the ADN profile only: its own exemption of 1.1.3.6.1. */
   adn_exemption?: AdnExemptionResult;
   adr_mixed_loading?: ComplianceWarning[];
-  /** Zelfde voorbehoud als `basis_note`, voor de samenlading van 7.5.2. */
+  /** The same caveat as `basis_note`, for the mixed loading of 7.5.2. */
   adr_mixed_loading_basis_note?: string;
-  /** Regelsets die zijn afgelopen zonder dat er iets voor in de plaats is. */
+  /** Rule sets that have run out without anything taking their place. */
   rule_set_warnings?: ComplianceWarning[];
-  /** Waar deze uitkomst mee is gerekend. */
+  /** What this result was computed with. */
   regulatory_manifest?: {
     manifest_id: string;
     editions: Record<string, string>;
@@ -783,7 +782,7 @@ export interface DgComplianceResult {
     groups: { code: string; label: string }[];
   };
   iata_segregation?: ComplianceWarning[];
-  /** LQ/EQ-toets van 3.4/3.5 — aanwezig bij ADR-, RID-, ADN- en IMDG-profielen. */
+  /** LQ/EQ check of 3.4/3.5 — present with the ADR, RID, ADN and IMDG profiles. */
   lq_eq?: LqEqResult;
   q_values?: QValueResult[];
   q_check_status?: QCheckStatus;
@@ -791,16 +790,16 @@ export interface DgComplianceResult {
 }
 
 
-/** De eenhedencatalogus. Eenheden en welke bij welke categorie voor de hand
- *  liggen worden op één plek onderhouden — in de backend — zodat de interface
- *  de lijst niet nog eens overschrijft. */
+/** The unit catalogue. Units, and which of them are obvious for which category,
+ *  are maintained in one place — in the backend — so the interface does not
+ *  overwrite the list with another. */
 export interface UnitCatalogue {
   units: { code: string; symbol: string; dimension: "mass" | "volume" | "length" | "count" }[];
-  /** De vorm waarin een goed reist, met het deel van een kuub dat materiaal is. */
+  /** The form a commodity travels in, with the part of a cubic metre that is material. */
   forms: { code: string; fill_factor: number }[];
-  /** Per categorie de toepasselijke vormen, standaard vooraan. Leeg betekent dat
-   *  de vorm niet speelt: bij grind is de opgeslagen dichtheid al een
-   *  stortdichtheid en zou een tweede factor de lucht dubbel tellen. */
+  /** Per category the applicable forms, the default first. Empty means the form
+   *  does not come into play: for gravel the stored density is already a bulk
+   *  density and a second factor would count the air twice. */
   forms_by_category: Record<string, string[]>;
   suggested_by_category: Record<string, string[]>;
   default_suggested: string[];
@@ -811,8 +810,8 @@ export interface UnitConversion {
   mass_kg: number | null;
   volume_m3: number | null;
   density_basis: string;
-  /** Gevuld wanneer een van beide niet te bepalen was, bijvoorbeeld "per_item"
-   *  bij een aantal zonder gewicht per stuk. Geen fout maar een uitkomst. */
+  /** Filled when one of the two could not be determined, for example "per_item"
+   *  with a count and no weight per item. Not an error but an outcome. */
   missing: string | null;
 }
 

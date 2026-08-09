@@ -39,8 +39,8 @@ export default function ImportDialog({ open, onClose, onImport }: Props) {
   const [mode, setMode] = useState<"append" | "replace">("replace");
   const [fileError, setFileError] = useState("");
   const [loadingFile, setLoadingFile] = useState(false);
-  // Wat de import van het bestand maakte, en de rijen om het opnieuw te kunnen
-  // indelen zonder het bestand nog eens te sturen.
+  // What the import made of the file, and the rows to be able to remap it
+  // without sending the file again.
   const [analysis, setAnalysis] = useState<ImportAnalysis | null>(null);
   const [rows, setRows] = useState<string[][]>([]);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -64,9 +64,9 @@ export default function ImportDialog({ open, onClose, onImport }: Props) {
     }
   };
 
-  // Dezelfde rijen, een andere indeling. De server bewaart niets, dus de
-  // rijen reizen mee — dat kost wat bandbreedte en levert op dat er nooit een
-  // halve zending op de server blijft liggen.
+  // The same rows, a different mapping. The server keeps nothing, so the rows
+  // travel along — that costs some bandwidth and buys the guarantee that half a
+  // consignment never stays behind on the server.
   const handleRemap = async (mapping: ImportMapping, hasHeader: boolean) => {
     if (rows.length === 0) return;
     setFileError("");

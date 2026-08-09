@@ -1,15 +1,15 @@
 name: Extract IMDG Dangerous Goods List
 
-# Leest de Dangerous Goods List van hoofdstuk 3.2 uit en zet haar als
-# feitelijke tabel in backend/seed/dg/imdg_dgl.json: per UN-nummer de klasse,
-# de verpakkingsgroep, de bijzondere bepalingen, de verpakkingsinstructies, de
-# EmS-codes en — het belangrijkste voor deze app — de stuwage- en
-# scheidingscodes van kolom 16a en 16b.
+# Reads out the Dangerous Goods List of chapter 3.2 and puts it as a factual
+# table in backend/seed/dg/imdg_dgl.json: per UN number the class, the packing
+# group, the special provisions, the packing instructions, the EmS codes and —
+# the most important for this app — the stowage and segregation codes of columns
+# 16a and 16b.
 #
-# Draait hier en niet lokaal omdat de ontwikkelomgeving geen uitgaand netwerk
-# heeft. Het script controleert zichzelf tegen klasse uit ADR Tabel A en EmS
-# uit de EmS Guide en weigert weg te schrijven zodra de overeenstemming onder
-# de drempel zakt; een verschoven kolom komt er zo niet ongemerkt door.
+# Runs here and not locally because the development environment has no outbound
+# network. The script checks itself against class from ADR Table A and EmS from
+# the EmS Guide and refuses to write out as soon as the agreement drops below the
+# threshold; a shifted column does not get through unnoticed that way.
 
 on:
   workflow_dispatch:
@@ -42,9 +42,9 @@ jobs:
 
       - run: pip install --quiet pymupdf
 
-      # Zonder --commit is dit een volledige leesbeurt over de hele lijst die
-      # wél alles controleert en niets vastlegt: de aangewezen manier om de
-      # aantallen en de overeenstemming te zien voordat er iets in de repo komt.
+      # Without --commit this is a full read over the whole list that *does*
+      # check everything and records nothing: the right way to see the counts and
+      # the agreement before anything enters the repo.
       - name: Extract
         run: |
           python scripts/extract_imdg_dgl.py \
@@ -57,7 +57,7 @@ jobs:
         if: ${{ inputs.commit }}
         run: |
           set -eu
-          # git diff ziet een nieuw bestand niet: dat staat untracked.
+          # git diff does not see a new file: that is untracked.
           if [ -z "$(git status --porcelain -- backend/seed/dg/imdg_dgl.json)" ]; then
             echo "Ongewijzigd; niets vast te leggen."
             exit 0

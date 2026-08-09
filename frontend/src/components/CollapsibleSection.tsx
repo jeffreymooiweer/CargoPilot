@@ -1,12 +1,12 @@
 import { ReactNode } from "react";
 
-/** Inklapbare kaart met een altijd zichtbare samenvattingsregel.
+/** A collapsible card with a summary line that is always visible.
  *
- * De gevaarlijke-stoffenstap toont veel bevindingen tegelijk; alles uitgeklapt
- * is onleesbaar, alles verstoppen is gevaarlijker. Het compromis: de kop
- * draagt de uitkomst (statuschips, aantallen) en blijft altijd in beeld, de
- * onderbouwing klapt open wanneer de gebruiker die nodig heeft. Wat rood is
- * hoort standaard open te staan — dat bepaalt de aanroeper via `defaultOpen`.
+ * The dangerous goods step shows many findings at once; everything expanded is
+ * unreadable, hiding everything is more dangerous. The compromise: the heading
+ * carries the outcome (status chips, counts) and stays in view, while the
+ * substantiation opens when the user needs it. Whatever is red should be open by
+ * default — the caller decides that with `defaultOpen`.
  */
 export default function CollapsibleSection({
   title,

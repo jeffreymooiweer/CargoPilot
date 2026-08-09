@@ -1,9 +1,9 @@
-"""Verwerking van door de gebruiker geplaatste handtekeningen.
+"""Processing of signatures placed by the user.
 
-De gebruiker kan in de wizard een handtekening tekenen of een afbeelding uploaden;
-die komt als data-URL (PNG/JPEG/WebP, base64) mee in de exportaanvraag. Hier wordt
-de afbeelding gevalideerd en genormaliseerd naar een transparante PNG die strak om
-de inkt is bijgesneden, zodat hij netjes in de handtekeningvakken past.
+In the wizard the user can draw a signature or upload an image; it arrives with
+the export request as a data URL (PNG/JPEG/WebP, base64). Here the image is
+validated and normalised to a transparent PNG cropped tightly around the ink, so
+that it fits neatly in the signature boxes.
 """
 from __future__ import annotations
 
@@ -20,7 +20,7 @@ _WHITE_THRESHOLD = 242
 
 
 def decode_signature_image(data_url: str) -> bytes:
-    """Data-URL → genormaliseerde PNG-bytes. Raise ValueError bij ongeldig beeld."""
+    """Data URL → normalised PNG bytes. Raises ValueError on an invalid image."""
     if len(data_url) > MAX_DATA_URL_BYTES:
         raise ValueError("signature_too_large")
     header, sep, b64 = data_url.partition(",")
@@ -59,8 +59,8 @@ def decode_signature_image(data_url: str) -> bytes:
 
 
 def _white_to_transparent(img: Image.Image) -> Image.Image:
-    """Maak (bijna-)witte achtergrond transparant, zodat een gefotografeerde of
-    gescande handtekening niet als wit blok over de formulierlijnen valt."""
+    """Make a (near-)white background transparent, so a photographed or scanned
+    signature does not fall over the form's rules as a white block."""
     from PIL import ImageChops
 
     luminance = img.convert("L")

@@ -37,7 +37,7 @@ const STATUS_BADGES: Partial<Record<FieldStatus, { key: string; className: strin
   },
 };
 
-// Velden uit het gedeelde "locations"-blok krijgen locatie-autocomplete.
+// Fields from the shared "locations" block get location autocomplete.
 const LOCATION_FIELD_KEYS = new Set([
   "place_of_receipt",
   "loading_point",
@@ -46,7 +46,7 @@ const LOCATION_FIELD_KEYS = new Set([
   "final_destination",
 ]);
 
-// Welke locatiesoorten per modaliteit worden voorgesteld.
+// Which location types are suggested per transport mode.
 const MODALITY_LOCATION_TYPES: Record<string, GeoLocationType[]> = {
   air: ["airport"],
   sea: ["port"],

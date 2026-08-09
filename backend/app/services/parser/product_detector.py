@@ -16,7 +16,7 @@ PRODUCT_PATTERNS = {
     "round_tube": [
         r"\bbuis\b", r"\bpipe\b", r"\btube\b", r"ronde\s*buis", r"ronde\s*pijp",
         r"stalen\s*buis", r"steel\s*pipe", r"steel\s*tube", r"\bchs\b",
-        # Geen kaal r"\brohr\b": dat zou ook een pvc-buis opslokken.
+        # Not a bare r"\brohr\b": that would swallow a PVC pipe as well.
         r"rundrohr", r"stahlrohr",
     ],
     "round_bar": [

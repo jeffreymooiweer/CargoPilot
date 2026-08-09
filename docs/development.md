@@ -92,6 +92,10 @@ A few notes on the test suite:
   repeats the Dutch. An AST pass over `app/` catches the same omission in code. The tests
   name no language: they read `SUPPORTED`, so switching a language on is one line and the
   guard grows with it. Adding an interface string means adding it in every language.
+- **The source is in English.** Comments and docstrings across `backend/`, `frontend/`,
+  `scripts/` and the workflows are English; only what a user reads is translated. Test
+  docstrings are deliberately long: they say why the test exists and which defect
+  provoked it, so a later reader knows what would break if the test were deleted.
 - **The app is started the way a user starts it.** `test_starts_out_of_the_box.py` builds
   the application in a real subprocess with a clean environment and nothing configured.
   It exists because everything else runs with `APP_ENV=test`, and a startup check that

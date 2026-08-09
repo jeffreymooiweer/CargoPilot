@@ -1,15 +1,15 @@
 /**
- * De eenheid van een regel, als keuzelijst in plaats van een tekstveld.
+ * The unit of a line, as a dropdown instead of a text field.
  *
- * Tot nu toe was dit een vrij invoerveld met "stuks" als standaard, dus wie
- * 1200 liter diesel invoerde kreeg 1200 stuks diesel en mocht het gewicht er
- * zelf bij zoeken. Een hoeveelheid zonder eenheid betekent niets.
+ * Until now this was a free input field with "stuks" as the default, so whoever
+ * entered 1200 litres of diesel got 1200 pieces of diesel and could look up the
+ * weight themselves. A quantity without a unit means nothing.
  *
- * De lijst is een voorstel en geen hek. De categorie van het goed bepaalt wat
- * bovenaan staat — liter en m³ bij vloeistoffen, ton en m³ bij stortgoed,
- * stuks en pallet bij stukgoed — maar alles blijft kiesbaar. Een database van
- * 400 goederen in 16 categorieen zit vol uitzonderingen, en vastlopen op een
- * uitzondering is erger dan een ongebruikelijke eenheid.
+ * The list is a suggestion and not a fence. The category of the commodity
+ * determines what comes first — litres and m³ for liquids, tonnes and m³ for
+ * bulk, pieces and pallets for general cargo — but everything stays selectable.
+ * A database of 400 commodities in 16 categories is full of exceptions, and
+ * getting stuck on an exception is worse than an unusual unit.
  */
 import { useTranslation } from "react-i18next";
 import { UnitCatalogue } from "../api/client";
@@ -17,7 +17,7 @@ import { UnitCatalogue } from "../api/client";
 interface Props {
   value: string;
   onChange: (unit: string) => void;
-  /** Categorie van het herkende goed; bepaalt welke eenheden bovenaan staan. */
+  /** Category of the recognised commodity; determines which units come first. */
   category?: string | null;
   catalogue?: UnitCatalogue | null;
   id?: string;
@@ -36,8 +36,8 @@ export default function UnitSelect({
 }: Props) {
   const { t } = useTranslation();
 
-  // Zonder catalogus (nog aan het laden, of offline) blijft het veld bruikbaar
-  // met wat er al in staat. Een leeg dropdownmenu is erger dan geen dropdown.
+  // Without a catalogue (still loading, or offline) the field stays usable with
+  // whatever is already in it. An empty dropdown is worse than no dropdown.
   if (!catalogue) {
     return (
       <input
@@ -57,9 +57,9 @@ export default function UnitSelect({
     .filter((unit): unit is UnitCatalogue["units"][number] => Boolean(unit));
   const rest_units = catalogue.units.filter((unit) => !suggestedCodes.includes(unit.code));
 
-  // Een waarde die niet in de catalogus staat komt uit een oudere zending of
-  // uit een import. Die hoort niet stilletjes te verdwijnen zodra iemand het
-  // veld aanraakt, dus hij krijgt zijn eigen regel.
+  // A value that is not in the catalogue comes from an older consignment or
+  // from an import. That must not quietly disappear the moment somebody touches
+  // the field, so it gets a line of its own.
   const known = catalogue.units.some((unit) => unit.code === value);
 
   return (

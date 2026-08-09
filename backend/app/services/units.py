@@ -1,24 +1,24 @@
-"""Eenheden, en het omrekenen ertussen met behulp van soortelijk gewicht.
+"""Units, and converting between them with the help of density.
 
-Tot nu toe was de eenheid van een regel een vrij tekstveld met "stuks" als
-standaard. Wie 1200 liter diesel invoerde kreeg 1200 *stuks* diesel, en het
-gewicht moest hij er zelf bij zetten. Dat is niet zozeer een ontbrekende functie
-als wel een ontbrekend begrip: een hoeveelheid zonder eenheid betekent niets, en
-met eenheid betekent zij precies één ding.
+Until now the unit of a line was a free text field with "stuks" as the default.
+Anyone entering 1200 litres of diesel got 1200 *pieces* of diesel, and had to
+add the weight themselves. That is not so much a missing feature as a missing
+concept: a quantity without a unit means nothing, and with a unit it means
+exactly one thing.
 
-Het model is klein met opzet. Elke eenheid heeft een **dimensie** — massa,
-volume, lengte of aantal — en een factor naar de basiseenheid van die dimensie
-(kilogram of kubieke meter). Tussen massa en volume ligt precies één brug: de
-dichtheid van het goed. Daarmee is elke omrekening die deze applicatie nodig
-heeft een vermenigvuldiging, en is er nergens een tabel met stof-specifieke
-uitzonderingen nodig.
+The model is small on purpose. Every unit has a **dimension** — mass, volume,
+length or count — and a factor to the base unit of that dimension (kilogram or
+cubic metre). Between mass and volume lies exactly one bridge: the density of
+the commodity. That makes every conversion this application needs a
+multiplication, and means no table of substance-specific exceptions is required
+anywhere.
 
-Waar het mis kan gaan, en waarom hier een ``DensityBasis`` staat: 20 m³ grind
-maal de dichtheid van grind is juist, 20 m³ staal maal de dichtheid van staal
-is juist, en 20 m³ *gestapeld* hout is geen van beide — daar zit lucht tussen.
-De goederendatabase draagt geen veld dat zegt welk soort dichtheid een getal is;
-``docs/data-sources.md`` beweerde jarenlang van wel. Die basis wordt hier dus
-uit de categorie *afgeleid* en als afgeleid gemeld, niet als vaststaand.
+Where this can go wrong, and why there is a ``DensityBasis`` here: 20 m³ of
+gravel times the density of gravel is right, 20 m³ of steel times the density of
+steel is right, and 20 m³ of *stacked* timber is neither — there is air in
+between. The goods database carries no field saying what kind of density a
+figure is; ``docs/data-sources.md`` claimed for years that it did. So that basis
+is *derived* here from the category and reported as derived, not as established.
 """
 from __future__ import annotations
 
@@ -27,7 +27,7 @@ from enum import Enum
 
 
 class Dimension(str, Enum):
-    """Waar een eenheid over gaat."""
+    """What a unit is about."""
 
     MASS = "mass"
     VOLUME = "volume"
@@ -36,28 +36,28 @@ class Dimension(str, Enum):
 
 
 class DensityBasis(str, Enum):
-    """Wat het getal in ``density_kg_m3`` van een goed betekent.
+    """What the figure in ``density_kg_m3`` of a commodity means.
 
-    Afgeleid uit de categorie, niet uit de data zelf. Zie de moduletoelichting.
+    Derived from the category, not from the data itself. See the module note.
     """
 
-    SOLID = "solid"          # het materiaal zelf, zonder holtes
-    BULK = "bulk"            # stortgoed: korrels met lucht ertussen
+    SOLID = "solid"          # the material itself, without voids
+    BULK = "bulk"            # bulk: grains with air between them
     LIQUID = "liquid"
-    STACKED = "stacked"      # gestapeld of gebundeld: lucht tussen de stukken
+    STACKED = "stacked"      # stacked or bundled: air between the pieces
     EFFECTIVE = "effective"  # praktijkgemiddelde per pallet of collo
     UNKNOWN = "unknown"
 
 
 @dataclass(frozen=True)
 class Unit:
-    """Eén eenheid: waar zij over gaat en hoeveel er in de basiseenheid gaat."""
+    """One unit: what it is about and how much of it goes into the base unit."""
 
     code: str
     dimension: Dimension
-    # Naar kg voor massa, naar m³ voor volume, naar meter voor lengte.
+    # To kg for mass, to m³ for volume, to metres for length.
     factor: float
-    # Korte weergave achter een getal, zoals het artikel het doet: "150 (sqm)".
+    # Short display after a figure, the way the article does it: "150 (sqm)".
     symbol: str
 
 
@@ -72,12 +72,12 @@ UNITS: dict[str, Unit] = {
     "l": Unit("l", Dimension.VOLUME, 0.001, "L"),
     "hl": Unit("hl", Dimension.VOLUME, 0.1, "hL"),
     "ml": Unit("ml", Dimension.VOLUME, 0.000001, "mL"),
-    # Lengte — voor profielen en balken, waar het gewicht per meter bekend is.
+    # Length — for profiles and beams, where the weight per metre is known.
     "m": Unit("m", Dimension.LENGTH, 1.0, "m"),
     "cm": Unit("cm", Dimension.LENGTH, 0.01, "cm"),
     "mm": Unit("mm", Dimension.LENGTH, 0.001, "mm"),
-    # Aantal. Een collo is geen natuurkundige eenheid; het gewicht ervan kan
-    # alleen uit de invoer komen, nooit uit een dichtheid.
+    # Count. A package is not a physical unit; its weight can only come from the
+    # input, never from a density.
     "pcs": Unit("pcs", Dimension.COUNT, 1.0, "st"),
     "pallet": Unit("pallet", Dimension.COUNT, 1.0, "pal"),
     "box": Unit("box", Dimension.COUNT, 1.0, "ds"),
@@ -88,10 +88,10 @@ UNITS: dict[str, Unit] = {
     "bundle": Unit("bundle", Dimension.COUNT, 1.0, "bundel"),
 }
 
-# Welke eenheden een categorie normaal gesproken gebruikt, met de standaard
-# vooraan. De gebruiker kan altijd iets anders kiezen — dit is een voorstel, geen
-# hek. Een goederendatabase van 400 stoffen in 16 categorieen heeft altijd
-# uitzonderingen, en vastlopen op een uitzondering is erger dan een rare eenheid.
+# Which units a category normally uses, with the default first. The user can
+# always pick something else — this is a suggestion, not a fence. A goods
+# database of 400 substances in 16 categories always has exceptions, and getting
+# stuck on an exception is worse than an odd unit.
 SUGGESTED_BY_CATEGORY: dict[str, tuple[str, ...]] = {
     "liquid": ("l", "m3", "kg", "ton", "ibc", "drum"),
     "chemical": ("kg", "l", "ton", "m3", "drum", "ibc"),
@@ -113,8 +113,8 @@ SUGGESTED_BY_CATEGORY: dict[str, tuple[str, ...]] = {
 
 DEFAULT_SUGGESTED: tuple[str, ...] = ("pcs", "kg", "ton", "m3", "l", "pallet")
 
-# Welk soort dichtheid het getal van een categorie is. Afgeleid, en als afgeleid
-# gerapporteerd — de data zelf zegt het niet.
+# What kind of density a category's figure is. Derived, and reported as derived
+# — the data itself does not say.
 BASIS_BY_CATEGORY: dict[str, DensityBasis] = {
     "liquid": DensityBasis.LIQUID,
     "chemical": DensityBasis.LIQUID,
@@ -135,42 +135,41 @@ BASIS_BY_CATEGORY: dict[str, DensityBasis] = {
 }
 
 
-# --- De vorm waarin het reist ---------------------------------------------
+# --- The form it travels in ------------------------------------------------
 #
-# De dichtheid van eiken is 720 kg/m³ en die van staal 7850. Dat zijn de
-# dichtheden van het materiaal zelf. Een kuub gestapelde planken, een kuub los
-# gestort haardhout en een kuub massieve balk zijn drie verschillende gewichten
-# van hetzelfde hout, en het verschil is lucht.
+# The density of oak is 720 kg/m³ and that of steel 7850. Those are the
+# densities of the material itself. A cubic metre of stacked planks, a cubic
+# metre of loose firewood and a cubic metre of solid beam are three different
+# weights of the same timber, and the difference is air.
 #
-# v1.35.0 loste dat op met één verborgen factor van 0,65 voor al het hout. Dat
-# was een gemiddelde dat niemands lading beschrijft. In plaats daarvan kiest de
-# gebruiker nu de vorm, en die vorm draagt de factor. Datzelfde geldt voor
-# staal (plaat tegenover schroot), kunststof (granulaat tegenover maalgoed) en
-# papier (balen tegenover los).
+# v1.35.0 solved that with a single hidden factor of 0.65 for all timber. That
+# was an average describing nobody's load. Instead the user now picks the form,
+# and the form carries the factor. The same goes for steel (plate versus scrap),
+# plastic (granulate versus regrind) and paper (bales versus loose).
 #
-# **Waar deze keuze niet geldt.** Bij grind, graan en erts is het opgeslagen
-# getal al een stortdichtheid: die stof wordt nooit anders dan gestort vervoerd
-# en de database beschrijft hem in die toestand. Daar nog eens een stortfactor
-# overheen leggen telt de lucht twee keer. Hetzelfde bij vloeistoffen en bij de
-# praktijkgemiddelden per pallet. De vorm wordt daarom alleen aangeboden waar
-# het opgeslagen getal de stof zelf beschrijft — zie ``form_applies``.
+# **Where this choice does not apply.** For gravel, grain and ore the stored
+# figure is already a bulk density: that substance is never carried other than
+# in bulk and the database describes it in that state. Laying another bulk
+# factor over it counts the air twice. The same holds for liquids and for the
+# practical averages per pallet. The form is therefore only offered where the
+# stored figure describes the substance itself — see ``form_applies``.
 #
-# De factoren zijn praktijkwaarden en geen normen. Ze staan hier omdat
-# ``seed_catalogs`` de goederentabel alleen vult wanneer die leeg is: nieuwe
-# seed-gegevens bereiken een bestaande installatie nooit.
+# The factors are practical values and not standards. They are here because
+# ``seed_catalogs`` only fills the goods table when it is empty: new seed data
+# never reaches an existing installation.
 
 
 class CargoForm(str, Enum):
-    """Hoe het goed op het vervoermiddel ligt."""
+    """How the commodity sits on the vehicle."""
 
-    SOLID = "solid"        # één stuk, of maatwerk met opgegeven afmetingen
+    SOLID = "solid"        # one piece, or made to measure with given dimensions
     SHEETS = "sheets"      # platen vlak op elkaar
     BUNDLED = "bundled"    # strak gebundeld of in pakket
-    STACKED = "stacked"    # netjes gestapeld, met lucht ertussen
+    STACKED = "stacked"    # neatly stacked, with air between
     LOOSE = "loose"        # los gestort
 
 
-# Welk deel van een kuub daadwerkelijk materiaal is.
+# Which part of a cubic metre is actually material.
 FILL_FACTOR: dict[CargoForm, float] = {
     CargoForm.SOLID: 1.0,
     CargoForm.SHEETS: 1.0,
@@ -179,8 +178,8 @@ FILL_FACTOR: dict[CargoForm, float] = {
     CargoForm.LOOSE: 0.45,
 }
 
-# Welke vormen bij een categorie horen, met de standaard vooraan. Alles blijft
-# kiesbaar; dit is een voorstel, net als bij de eenheden.
+# Which forms belong to a category, with the default first. Everything stays
+# selectable; this is a suggestion, just as with the units.
 FORMS_BY_CATEGORY: dict[str, tuple[CargoForm, ...]] = {
     "wood": (CargoForm.STACKED, CargoForm.SOLID, CargoForm.SHEETS,
              CargoForm.BUNDLED, CargoForm.LOOSE),
@@ -193,8 +192,8 @@ FORMS_BY_CATEGORY: dict[str, tuple[CargoForm, ...]] = {
     "textile": (CargoForm.BUNDLED, CargoForm.LOOSE, CargoForm.STACKED),
 }
 
-# Plaatmateriaal ligt vlak; daar is een kuub stapel bijna een kuub materiaal.
-# Dit bepaalt alleen de standaardvorm — de gebruiker mag altijd iets anders.
+# Sheet material lies flat; there a cubic metre of stack is nearly a cubic metre
+# of material. This only sets the default form — the user may always pick another.
 SHEET_LIKE_WOOD = frozenset({
     "plywood", "chipboard", "osb", "mdf", "hdf", "hardboard", "softboard",
     "cork", "clt", "glulam",
@@ -202,17 +201,17 @@ SHEET_LIKE_WOOD = frozenset({
 
 
 def form_applies(category: str | None) -> bool:
-    """Beschrijft het opgeslagen getal de stof zelf, of de gestorte toestand?
+    """Does the stored figure describe the substance itself, or the bulk state?
 
-    Alleen in het eerste geval valt er nog een vorm overheen te leggen. Grind
-    en graan dragen al een stortdichtheid; daar zou een tweede factor de lucht
-    dubbel tellen.
+    Only in the first case is there still a form to lay over it. Gravel and
+    grain already carry a bulk density; there a second factor would count the
+    air twice.
     """
     return density_basis(category) in {DensityBasis.SOLID, DensityBasis.STACKED}
 
 
 def available_forms(category: str | None) -> list[CargoForm]:
-    """De vormen die bij deze categorie horen, standaard vooraan."""
+    """The forms belonging to this category, the default first."""
     if not form_applies(category):
         return []
     key = str(category or "").strip().lower()
@@ -221,7 +220,7 @@ def available_forms(category: str | None) -> list[CargoForm]:
 
 
 def default_form(category: str | None, canonical_name: str | None = None) -> CargoForm | None:
-    """De vorm die zonder keuze wordt aangenomen."""
+    """The form assumed when none is chosen."""
     forms = available_forms(category)
     if not forms:
         return None
@@ -240,7 +239,7 @@ def get_form(value: str | None) -> CargoForm | None:
 def fill_factor(
     category: str | None, canonical_name: str | None = None, form: str | None = None
 ) -> float:
-    """Welk deel van een kuub materiaal is, gegeven de gekozen vorm."""
+    """Which part of a cubic metre is material, given the chosen form."""
     if not form_applies(category):
         return 1.0
     chosen = get_form(form) or default_form(category, canonical_name)
@@ -253,14 +252,14 @@ def effective_density(
     canonical_name: str | None = None,
     form: str | None = None,
 ) -> float | None:
-    """De dichtheid van een kuub zoals hij op het vervoermiddel staat."""
+    """The density of a cubic metre as it stands on the vehicle."""
     if density_kg_m3 is None:
         return None
     return density_kg_m3 * fill_factor(category, canonical_name, form)
 
 
 def get_unit(code: str | None) -> Unit | None:
-    """Zoek een eenheid op, ook als er 'M3', ' ton ' of 'liter' staat."""
+    """Look a unit up, including when it says 'M3', ' ton ' or 'liter'."""
     if not code:
         return None
     key = str(code).strip().lower().replace("³", "3").replace("²", "2")
@@ -269,9 +268,9 @@ def get_unit(code: str | None) -> Unit | None:
     return _ALIASES.get(key)
 
 
-# Wat mensen intypen, en wat ze bedoelen. Ruim opgezet omdat de oude vrije
-# tekstinvoer jarenlang van alles heeft opgeleverd dat nog in opgeslagen
-# zendingen zit en gewoon moet blijven werken.
+# What people type, and what they mean. Set up generously because the old free
+# text input has produced all sorts of things over the years that are still in
+# stored consignments and simply have to keep working.
 _ALIASES: dict[str, Unit] = {}
 for _code, _names in {
     "kg": ("kilo", "kilos", "kilogram", "kilograms", "kgs", "kilogramm"),
@@ -299,7 +298,7 @@ for _code, _names in {
 
 
 def suggested_units(category: str | None) -> list[str]:
-    """De eenheden die bij deze categorie voor de hand liggen, standaard vooraan."""
+    """The units that are the obvious ones for this category, the default first."""
     return list(SUGGESTED_BY_CATEGORY.get(str(category or "").strip().lower(), DEFAULT_SUGGESTED))
 
 
@@ -313,22 +312,22 @@ def density_basis(category: str | None) -> DensityBasis:
 
 @dataclass
 class Converted:
-    """Wat een hoeveelheid in massa en volume is, en wat er niet kon.
+    """What a quantity is in mass and volume, and what could not be worked out.
 
-    ``mass_kg`` of ``volume_m3`` is None wanneer de omrekening niet kan worden
-    gemaakt zonder te gokken. Dat is een uitkomst, geen fout: bij 40 pallets
-    zonder gewicht per pallet is het gewicht onbekend, en een 0 neerzetten zou
-    een totaal opleveren dat er goed uitziet en nergens op slaat.
+    ``mass_kg`` or ``volume_m3`` is None when the conversion cannot be made
+    without guessing. That is an outcome, not an error: with 40 pallets and no
+    weight per pallet the weight is unknown, and putting a 0 there would produce
+    a total that looks fine and means nothing.
     """
 
     mass_kg: float | None = None
     volume_m3: float | None = None
     basis: DensityBasis = DensityBasis.UNKNOWN
-    # Waarom een van beide leeg bleef, als machineleesbare reden.
+    # Why one of the two stayed empty, as a machine-readable reason.
     missing: str | None = None
-    # De dichtheid waarmee daadwerkelijk is gerekend, en het deel van een kuub
-    # dat materiaal is. Bij een gestapelde of gestorte vorm wijkt dat af van de
-    # dichtheid van het goed zelf, en dat hoort de gebruiker te kunnen zien.
+    # The density actually computed with, and the part of a cubic metre that is
+    # material. With a stacked or bulk form that differs from the density of the
+    # commodity itself, and the user should be able to see that.
     density_used_kg_m3: float | None = None
     fill_factor: float = 1.0
     form: str | None = None
@@ -344,13 +343,13 @@ def convert(
     canonical_name: str | None = None,
     form: str | None = None,
 ) -> Converted:
-    """Reken een ingevoerde hoeveelheid om naar massa en volume.
+    """Convert an entered quantity to mass and volume.
 
-    De dichtheid slaat de brug tussen massa en volume. Ontbreekt zij, dan wordt
-    alleen de kant ingevuld die rechtstreeks uit de eenheid volgt.
+    Density bridges mass and volume. When it is missing, only the side that
+    follows directly from the unit is filled in.
 
-    De vorm bepaalt hoeveel van een kuub daadwerkelijk materiaal is: een kuub
-    gestapelde planken is geen kuub hout. Zie ``fill_factor``.
+    The form determines how much of a cubic metre is actually material: a cubic
+    metre of stacked planks is not a cubic metre of timber. See ``fill_factor``.
     """
     basis = density_basis(category)
     chosen = get_form(form) or default_form(category, canonical_name)
@@ -379,8 +378,8 @@ def convert(
                          density_kg_m3, factor, chosen_name)
 
     if unit.dimension is Dimension.COUNT:
-        # Een aantal draagt geen natuurkunde in zich. Zonder gewicht of volume
-        # per stuk valt er niets te berekenen, en dat wordt gemeld.
+        # A count carries no physics in itself. Without a weight or volume per
+        # item there is nothing to compute, and that is reported.
         mass = amount * mass_per_item_kg if mass_per_item_kg else None
         volume = amount * volume_per_item_m3 if volume_per_item_m3 else None
         if mass is None and volume is not None and density_kg_m3:
@@ -390,16 +389,16 @@ def convert(
         missing = None if (mass is not None or volume is not None) else "per_item"
         return Converted(mass, volume, basis, missing, density_kg_m3, factor, chosen_name)
 
-    # Lengte: alleen bruikbaar met een gewicht per meter, dat de profielentabel
-    # levert. Dat pad loopt via pipeline.py en niet hierlangs.
+    # Length: only usable with a weight per metre, which the profiles table
+    # supplies. That path runs via pipeline.py and not through here.
     return Converted(basis=basis, missing="length_needs_profile")
 
 
 def format_quantity(quantity: float | None, unit_code: str | None) -> str:
-    """"1200 L" — het getal met het symbool van zijn eenheid erachter.
+    """"1200 L" — the figure with the symbol of its unit behind it.
 
-    Het artikel zet de eenheid klein achter de waarde in plaats van er een
-    kolom voor te reserveren; dit levert de tekst waar de interface dat mee doet.
+    The article puts the unit small behind the value instead of reserving a
+    column for it; this produces the text the interface does that with.
     """
     if quantity is None:
         return ""

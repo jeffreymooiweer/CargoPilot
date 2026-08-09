@@ -20,7 +20,7 @@ interface Props<T> {
   className?: string;
 }
 
-/** Tekstinvoer met debounced suggestiedropdown; vrije tekst blijft altijd mogelijk. */
+/** Text input with a debounced suggestion dropdown; free text always stays possible. */
 export default function SuggestInput<T>({
   value,
   onChange,

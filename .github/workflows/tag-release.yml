@@ -1,9 +1,9 @@
 name: Tag release
 
-# Maakt de release-tag aan op main en publiceert de GitHub Release.
-# Nodig omdat tags die binnen een workflow met GITHUB_TOKEN worden gepusht
-# geen nieuwe tag-workflows triggeren; deze workflow doet daarom zelf de
-# release en start de CI (Docker-build) expliciet op de tag-ref.
+# Creates the release tag on main and publishes the GitHub Release.
+# Needed because tags pushed inside a workflow with GITHUB_TOKEN do not trigger
+# new tag workflows; this workflow therefore does the release itself and starts
+# CI (the Docker build) explicitly on the tag ref.
 
 on:
   workflow_dispatch:
@@ -33,13 +33,12 @@ jobs:
           ref: main
           fetch-depth: 0
 
-      # Releasen verandert main niet. Deze stap repareerde vroeger de versie in
-      # package-lock.json met een commit naar main, en dat verschoof main onder
-      # de volgende branch vandaan: die conflicteerde vervolgens op VERSION en
-      # CHANGELOG.md en kon pas na een rebase worden gemerged. De controle zelf
-      # is nu een poort in de CI van elke pull request, dus als hij hier faalt
-      # is er iets gemerged dat rood had moeten staan — en dan is stoppen beter
-      # dan repareren.
+      # Releasing does not change main. This step used to repair the version in
+      # package-lock.json with a commit to main, and that slid main out from
+      # under the next branch: it then conflicted on VERSION and CHANGELOG.md and
+      # could only be merged after a rebase. The check itself is now a gate in the
+      # CI of every pull request, so if it fails here something was merged that
+      # should have been red — and then stopping is better than repairing.
       - name: Verify the version files agree
         run: python scripts/check_versions.py
 
@@ -114,16 +113,16 @@ jobs:
             gh release create "$TAG" --title "CargoPilot $TAG" --notes-file release-body.md
           fi
 
-      # Hier stond: bouw de image nog een keer, nu op de tag-ref. Dat kostte vier
-      # tot zes minuten om precies dezelfde commit nog eens te vertalen, plus de
-      # testsuites er nog eens overheen. Main had die bits al gebouwd, getest en
-      # gepusht onder zijn korte SHA.
+      # This used to say: build the image once more, now on the tag ref. That
+      # cost four to six minutes to compile precisely the same commit again, plus
+      # the test suites over it once more. Main had already built, tested and
+      # pushed those bits under its short SHA.
       #
-      # Een tag is geen build maar een naam. `imagetools create` zet die naam
-      # server-side op het bestaande manifest — beide architecturen, in seconden,
-      # zonder één laag over te halen. En het is strenger dan een herbouw: de
-      # uitgebrachte image is bit voor bit de image die groen door de CI kwam,
-      # in plaats van een tweede vertaling die er net naast kan zitten.
+      # A tag is not a build but a name. `imagetools create` puts that name on
+      # the existing manifest server-side — both architectures, in seconds,
+      # without pulling a single layer. And it is stricter than a rebuild: the
+      # released image is bit for bit the image that came green through CI,
+      # instead of a second compilation that can come out slightly different.
       - name: Log in to Docker Hub
         uses: docker/login-action@v3
         with:
@@ -138,10 +137,10 @@ jobs:
           SHORT="$(git rev-parse --short=7 HEAD)"
           echo "Looking for $IMAGE:$SHORT — the image built from this very commit."
 
-          # De release wordt meestal binnen een minuut na de merge gestart en de
-          # build op main duurt een paar minuten, dus even wachten hoort erbij.
-          # Twintig minuten is ruim; daarna is er iets mis en is stoppen beter
-          # dan een versietag op een image van gisteren.
+          # The release is usually started within a minute of the merge and the
+          # build on main takes a few minutes, so some waiting is part of it.
+          # Twenty minutes is generous; after that something is wrong and stopping
+          # is better than a version tag on an image from yesterday.
           for attempt in $(seq 1 60); do
             if docker buildx imagetools inspect "$IMAGE:$SHORT" >/dev/null 2>&1; then
               docker buildx imagetools create -t "$IMAGE:$VERSION" "$IMAGE:$SHORT"

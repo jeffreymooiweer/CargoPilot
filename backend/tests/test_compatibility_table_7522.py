@@ -1,45 +1,44 @@
-"""Tabel 7.5.2.2 gelezen in plaats van doorverwezen — en het RID leest anders.
+"""Table 7.5.2.2 read instead of referred on — and RID reads differently.
 
-Tot v1.41.0 telde CargoPilot bij twee compatibiliteitsgroepen alleen hoeveel er
-waren en gaf het de vraag terug: "controleer de compatibiliteitsgroepen". Dat is
-op zichzelf eerlijk, maar het is ook precies de vraag die de gebruiker niet kan
-beantwoorden — hij heeft de boekwerken niet. De tabel staat nu in de
-configuratie en wordt gelezen.
+Until v1.41.0 CargoPilot only counted how many compatibility groups there were
+and handed the question back: "check the compatibility groups". That is honest in
+itself, but it is also precisely the question the user cannot answer — they do
+not have the books. The table is now in the configuration and is read.
 
-De teksten zijn woordelijk opgehaald met `scripts/read_land_regulations.py`:
+The texts were retrieved verbatim with `scripts/read_land_regulations.py`:
 
-- **ADR 2025 Volume II (ECE/TRANS/352 Vol. II), 7.5.2.2, gedrukte bladzijde 593**
+- **ADR 2025 Volume II (ECE/TRANS/352 Vol. II), 7.5.2.2, printed page 593**
   (`--doc adr2 --page 602-603`)
-- **RID 2025 (Aanhangsel C bij het COTIF, Bijlage), 7.5.2.2, bladzijde 1102**
+- **RID 2025 (Appendix C to COTIF, Annex), 7.5.2.2, page 1102**
   (`--doc rid --page 1101-1103`)
 
-En daar zit een verschil dat het waard is om vast te leggen: **de RID-tabel is de
-ADR-tabel zonder compatibiliteitsgroep A.** Het ADR loopt van A tot en met S, het
-RID van B tot en met S. Geen van beide kent groep K. Dat is een verschil in wat
-de tabel beantwoordt en niet in het antwoord — dus krijgt een spoortraject de
-spoortabel, en krijgt een collo van groep A op het spoor te horen dat de tabel er
-niets over zegt. Een verbod lenen is voorzichtig, een toestemming lenen niet, en
-een tabelrij lenen die er in het andere regime niet ís, is geen van beide.
+And there is a difference there worth recording: **the RID table is the ADR table
+without compatibility group A.** ADR runs from A to S, RID from B to S. Neither
+knows group K. That is a difference in what the table answers and not in the
+answer — so a rail leg gets the rail table, and a package of group A on the
+railway is told that the table says nothing about it. Borrowing a prohibition is
+cautious, borrowing a permission is not, and borrowing a table row that does not
+*exist* in the other regime is neither.
 
-De vier voetnoten staan in beide teksten in dezelfde bewoordingen (het RID zegt
-"wagen" waar het ADR "voertuig" zegt):
+The four footnotes appear in both texts in the same wording (RID says "wagon"
+where ADR says "vehicle"):
 
-    (a) Colli van groep B en colli van groep D mogen samen worden geladen mits
-        doeltreffend gescheiden, zodat detonatie niet van B naar D kan overslaan.
-        Scheiding met gescheiden compartimenten of een bijzonder omhullingssysteem,
-        en de bevoegde autoriteit moet de methode goedkeuren.
-    (b) Verschillende soorten voorwerpen van 1.6N alleen samen als door beproeving
-        of analogie is aangetoond dat er geen sympathische detonatie optreedt.
-    (c) Voorwerpen van groep N samen met C, D of E: N wordt behandeld als D.
-    (d) Colli van groep L alleen samen met colli met hetzelfde soort stof of
-        voorwerp van die groep.
+    (a) Packages of group B and packages of group D may be loaded together
+        provided they are effectively segregated, so that detonation cannot pass
+        from B to D. Segregation by separate compartments or a special
+        containment system, and the competent authority has to approve the method.
+    (b) Different types of articles of 1.6N together only where it has been
+        demonstrated by testing or analogy that no sympathetic detonation occurs.
+    (c) Articles of group N together with C, D or E: N is treated as D.
+    (d) Packages of group L only together with packages holding the same type of
+        substance or article of that group.
 
-Eén ding dat hier fout in had gekund en het niet is: **1.4S hoort er wél bij.**
-Voetnoot (a) bij 7.5.2.1 haalt 1.4S weg uit de vergelijking met ándere klassen,
-en de oude code liet 1.4S daarom overal buiten. Maar 7.5.2.2 gaat over
-explosieven onderling en heeft een rij S — die niet overal op X staat. S naast
-groep L is leeg, dus verboden. Een uitzondering uit de ene bepaling naar de
-andere doortrekken had die combinatie stilzwijgend goedgekeurd.
+One thing that could have gone wrong here and did not: **1.4S does belong.**
+Footnote (a) to 7.5.2.1 removes 1.4S from the comparison with *other* classes,
+and the old code therefore left 1.4S out everywhere. But 7.5.2.2 is about
+explosives among themselves and has an S row — which is not X everywhere. S next
+to group L is empty, hence forbidden. Carrying an exception from one provision
+over to the other would have approved that combination silently.
 """
 
 import pytest
@@ -66,13 +65,13 @@ def table(which):
 
 @pytest.mark.parametrize("which,size", [("road", 12), ("rail", 11)])
 def test_de_tabel_is_symmetrisch(which, size):
-    """De controle waarmee het aflezen van het raster is geverifieerd.
+    """The check with which the reading of the grid was verified.
 
-    Een tabel van kruisjes komt als een kolom losse tekens uit een PDF; één
-    kolom verkeerd tellen levert een tabel op die er plausibel uitziet. Maar
-    samenladen is wederkerig: als B naast D mag, mag D naast B. Een verschoven
-    kolom breekt die symmetrie vrijwel zeker ergens. Dat is hier de enige
-    onafhankelijke toets op het aflezen, en daarom staat hij vast.
+    A table of crosses comes out of a PDF as a column of loose characters;
+    counting one column wrong yields a table that looks plausible. But mixed
+    loading is reciprocal: if B may travel next to D, D may travel next to B. A
+    shifted column almost certainly breaks that symmetry somewhere. That is the
+    only independent test on the reading here, and that is why it is pinned.
     """
     data = table(which)
     order, matrix = data["group_order"], data["matrix"]
@@ -87,10 +86,10 @@ def test_de_tabel_is_symmetrisch(which, size):
 
 
 def test_de_spoortabel_is_de_wegtabel_zonder_groep_a():
-    """Het enige verschil tussen de twee teksten, hier vastgelegd.
+    """The only difference between the two texts, recorded here.
 
-    Zou het RID ergens anders van het ADR afwijken, dan hoort deze test te
-    breken en niet stilletjes mee te gaan.
+    Were RID to deviate from ADR somewhere else, this test should break rather
+    than quietly go along with it.
     """
     road, rail = table("road"), table("rail")
 
@@ -103,12 +102,12 @@ def test_de_spoortabel_is_de_wegtabel_zonder_groep_a():
 
 
 def test_toegestane_combinatie_levert_geen_melding():
-    """C naast D is een X in de tabel; dan hoort de gebruiker niets te horen."""
+    """C next to D is an X in the table; then the user should hear nothing."""
     assert load(product("0160", "1.1C", "POWDER"), product("0027", "1.1D")) == []
 
 
 def test_verboden_combinatie_is_een_fout_en_geen_waarschuwing():
-    """Groep A naast D is een leeg vakje: dat is een verbod, niet een aandachtspunt."""
+    """Group A next to D is an empty cell: that is a prohibition, not a caveat."""
     found = load(product("0473", "1.1A"), product("0027", "1.1D"))
 
     assert len(found) == 1
@@ -117,7 +116,7 @@ def test_verboden_combinatie_is_een_fout_en_geen_waarschuwing():
 
 
 def test_voetnoot_a_maakt_van_een_verbod_een_voorwaarde():
-    """B naast D mag, maar alleen met goedgekeurde scheiding — en dat staat erbij."""
+    """B next to D is allowed, but only with approved segregation — and it says so."""
     found = load(product("0029", "1.1B", "DETONATORS"), product("0027", "1.1D"))
 
     assert len(found) == 1
@@ -126,7 +125,7 @@ def test_voetnoot_a_maakt_van_een_verbod_een_voorwaarde():
 
 
 def test_een_vakje_met_twee_voetnoten_geeft_ze_allebei():
-    """Bij D × N staat "(b), (c)"; beide voorwaarden gelden, dus beide worden genoemd."""
+    """At D × N the table says "(b), (c)"; both conditions apply, so both are named."""
     found = load(product("0027", "1.1D"), product("0486", "1.6N"))
 
     assert {w["rule"] for w in found} == {
@@ -136,10 +135,10 @@ def test_een_vakje_met_twee_voetnoten_geeft_ze_allebei():
 
 
 def test_veertien_s_telt_mee_voor_de_compatibiliteitstabel():
-    """1.4S valt buiten 7.5.2.1, maar niet buiten 7.5.2.2 — en S × L is leeg.
+    """1.4S falls outside 7.5.2.1, but not outside 7.5.2.2 — and S × L is empty.
 
-    De oude code sloot 1.4S overal uit met de uitzondering die bij 7.5.2.1
-    hoort. Deze combinatie kwam daardoor niet eens aan de tabel toe.
+    The old code excluded 1.4S everywhere with the exception belonging to
+    7.5.2.1. This combination therefore never even reached the table.
     """
     found = load(product("0349", "1.4S"), product("0190", "1.1L", "SAMPLES"))
 
@@ -149,19 +148,19 @@ def test_veertien_s_telt_mee_voor_de_compatibiliteitstabel():
 
 
 def test_twee_colli_van_groep_l_krijgen_voetnoot_d():
-    """Op de diagonaal gaat het over twee colli van dezelfde groep."""
+    """On the diagonal this is about two packages of the same group."""
     found = load(product("0190", "1.1L", "SAMPLES A"), product("0224", "1.1L", "SAMPLES B"))
 
     assert [w["rule"] for w in found] == ["ADR 7.5.2.2 (L × L) (d)"]
 
 
 def test_een_enkel_collo_van_groep_l_valt_niets_samen_te_laden():
-    """Met één collo is er geen combinatie; voetnoot (d) gaat dan nergens over."""
+    """With one package there is no combination; footnote (d) is then about nothing."""
     assert load(product("0190", "1.1L", "SAMPLES")) == []
 
 
 def test_het_spoor_zegt_dat_groep_a_niet_in_zijn_tabel_staat():
-    """Geen ADR-rij op leen: het RID kent groep A niet en zegt dat."""
+    """No ADR row on loan: RID does not know group A and says so."""
     found = load(product("0473", "1.1A"), product("0027", "1.1D"), profiles=("RID",))
 
     assert len(found) == 1
@@ -171,7 +170,7 @@ def test_het_spoor_zegt_dat_groep_a_niet_in_zijn_tabel_staat():
 
 
 def test_zonder_groep_wordt_er_niet_gegokt():
-    """Een klasse 1-collo zonder classificatiecode is niet te toetsen; dat staat er."""
+    """A class 1 package without a classification code cannot be tested; it says so."""
     found = load({"un_number": "0027", "class": "1", "proper_shipping_name": "BLACK POWDER"},
                  product("0029", "1.1B", "DETONATORS"))
 
@@ -180,7 +179,7 @@ def test_zonder_groep_wordt_er_niet_gegokt():
 
 
 def test_de_bron_staat_bij_de_tabel():
-    """Regelgevingswaarden dragen hier hun vindplaats; anders is er niets na te lezen."""
+    """Regulatory values carry their source here; otherwise there is nothing to check."""
     compatibility = get_compliance_rules()["adr_mixed_loading"]["compatibility"]
 
     assert "7.5.2.2" in compatibility["_source"]

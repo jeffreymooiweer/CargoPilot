@@ -1,13 +1,13 @@
-"""Tests voor de AVC-vrachtbrief en de ADR-omschrijving op de CMR.
+"""Tests for the AVC waybill and the ADR description on the CMR.
 
-ADR 5.4.1 schrijft geen vorm voor het vervoersdocument voor: een vrachtbrief
-met de omschrijving van 5.4.1.1.1 volstaat. Daarom draagt zowel de CMR als de
-AVC-vrachtbrief die omschrijving, en is een apart ADR-wegdocument vervallen.
+ADR 5.4.1 prescribes no form for the transport document: a waybill carrying the
+description of 5.4.1.1.1 suffices. That is why both the CMR and the AVC waybill
+carry that description, and why a separate ADR road document has been dropped.
 
-De AVC-vrachtbrief vult — net als de CMR — het officiële formulier in. Dat
-formulier heeft geen AcroForm-velden, dus de waarden komen als tekstlaag over
-templates/forms/avc.pdf heen; de tests controleren daarom zowel de tekst als
-de positie waarop die tekst terechtkomt.
+The AVC waybill fills in the official form, just as the CMR does. That form has
+no AcroForm fields, so the values go over templates/forms/avc.pdf as a text
+layer; the tests therefore check both the text and the position that text ends
+up at.
 """
 
 import fitz
@@ -51,7 +51,7 @@ def prepared():
 
 
 def _render(dangerous_goods, lang="nl"):
-    """Vul het formulier en lever (volledige tekst, woorden met positie) op."""
+    """Fill the form and produce (full text, words with position)."""
     path = fill_avc_waybill(VALUES, LINES, dangerous_goods, lang)
     try:
         page = fitz.open(path)[0]
@@ -61,7 +61,7 @@ def _render(dangerous_goods, lang="nl"):
 
 
 def test_adr_road_document_is_replaced_by_the_avc_waybill():
-    """Het losse ADR-wegdocument is vervallen; de AVC-vrachtbrief staat ervoor in de plaats."""
+    """The separate ADR road document has been dropped; the AVC waybill takes its place."""
     registry = get_registry()
     keys = [doc["key"] for doc in registry["documents"]]
     assert "adr_transport_doc" not in keys
@@ -69,26 +69,26 @@ def test_adr_road_document_is_replaced_by_the_avc_waybill():
 
     road = next(m for m in registry["modalities"] if m["key"] == "road")
     assert "avc_waybill" in road["documents"]
-    # Binnenvaart houdt wel een eigen ADN-document: daar is geen vrachtbrief.
+    # Inland waterway does keep an ADN document of its own: there is no waybill there.
     assert "adn_transport_doc" in keys
 
     avc = get_document("avc_waybill")
     assert avc["dg_profile"] == "ADR"
-    # Geen dg_only: de vrachtbrief is er ook voor zendingen zonder gevaarlijke stoffen.
+    # No dg_only: the waybill is there for consignments without dangerous goods too.
     assert not avc.get("dg_only")
 
 
 def test_cmr_carries_the_adr_description_and_category_totals(prepared):
-    """Zonder de 5.4.1.1.1-regel zou de CMR niet als vervoersdocument volstaan."""
+    """Without the 5.4.1.1.1 line the CMR would not suffice as a transport document."""
     fields = fill_cmr({**VALUES, "sender_instructions": "Voorzichtig laden"}, LINES, prepared, "nl")
 
     assert fields["VakRood06Regel01Kolom06"] == "UN 1203, GASOLINE, 3, II, (D/E), 10 jerrycan, 200 L"
-    # Regels zonder gevaarlijke stoffen houden hun gewone omschrijving.
+    # Lines without dangerous goods keep their ordinary description.
     assert fields["VakRood06Regel02Kolom06"] == "4 × pallets kalkzandsteen"
-    # De massa wordt niet dubbel geteld over de DG-regels.
+    # The mass is not counted twice over the DG lines.
     assert fields["VakRood06Regel01Kolom11"] == "165"
 
-    # Vak 13: instructie van de afzender plus het totaal per vervoerscategorie.
+    # Box 13: the consignor's instruction plus the total per transport category.
     assert "Voorzichtig laden" in fields["VakRood13"]
     assert "Totale hoeveelheid per vervoerscategorie: 2: 200 L" in fields["VakRood13"]
 
@@ -100,37 +100,37 @@ def test_cmr_without_dangerous_goods_keeps_plain_descriptions():
 
 
 def test_the_official_avc_template_is_shipped():
-    """De vrachtbrief vult een bestaand formulier in; die template hoort in de repo."""
+    """The waybill fills in an existing form; that template belongs in the repo."""
     assert has_avc_template()
 
 
 def test_avc_waybill_fills_the_official_form(prepared):
     text, _words = _render(prepared)
 
-    # De template zelf blijft staan: beide panelen en de AVC-verwijzing.
+    # The template itself stays: both panels and the AVC reference.
     assert "VRACHTBRIEF - VERVOERDOCUMENT" in text
     assert "ONTVANGSTBEWIJS" in text
     assert "vervoercondities 2002" in text
-    # Onze waarden staan erin, in beide panelen.
+    # Our values are in it, in both panels.
     assert text.count("Mooiweer Logistiek BV") == 2
     assert text.count("Bouwbedrijf De Vries") == 2
     assert text.count("Transport Jansen") == 2
     assert "12-BXG-4" in text
     assert "Rotterdam" in text and "2026-08-02" in text
-    # Franco aangekruist, niet franco niet: één kruisje per paneel.
+    # Franco ticked, not-franco not: one tick per panel.
     crosses = sorted((round(w[0]), round(w[1])) for w in _words if w[4] == "X")
     assert crosses == [(38, 248), (419, 248)]
-    # De gevaarlijke stof staat als ADR-omschrijving in de kolom 'inhoud'.
+    # The dangerous substance appears as the ADR description in the 'inhoud' column.
     assert "UN 1203, GASOLINE, 3, II," in text
     assert "Totale hoeveelheid per vervoerscategorie" in text
-    # Totalen over beide regels: 10 + 4 colli, 165 + 820 kg.
+    # Totals over both lines: 10 + 4 packages, 165 + 820 kg.
     assert text.count("14") >= 2 and text.count("985") >= 2
-    # De disclaimer hoort op elk gegenereerd document te staan.
+    # The disclaimer belongs on every generated document.
     assert "CONCEPT" in text
 
 
 def test_avc_values_land_inside_their_boxes(prepared):
-    """De overlay is coördinaatgestuurd: verschuift die, dan is het formulier fout."""
+    """The overlay is coordinate-driven: if that shifts, the form is wrong."""
     _text, words = _render(prepared)
 
     def box_of(needle):
@@ -138,24 +138,24 @@ def test_avc_values_land_inside_their_boxes(prepared):
         assert hits, f"{needle} niet gevonden"
         return hits[0]
 
-    # 'Mooiweer' staat in het afzendervak: onder het label (y > 52) en
-    # boven de scheidingslijn op y 110.
+    # 'Mooiweer' sits in the consignor box: below the label (y > 52) and above
+    # the dividing line at y 110.
     x0, y0, _x1, y1, *_ = box_of("Mooiweer")
     assert 33 < x0 < 121 and 52 < y0 and y1 < 110
-    # 'Bouwbedrijf' staat in het afleveradresvak (y 110-228).
+    # 'Bouwbedrijf' sits in the delivery address box (y 110-228).
     _x0, y0, _x1, y1, *_ = box_of("Bouwbedrijf")
     assert 121 < y0 and y1 < 228
-    # De vervoerder staat rechts van de frankeringskolom (x > 120,8).
+    # The carrier sits to the right of the franking column (x > 120.8).
     x0, y0, _x1, y1, *_ = box_of("Jansen")
     assert x0 > 120.8 and 243 < y0 and y1 < 275
 
-    # Het afzendervak is smaller dan het kader: de kleine-letterkolom begint
-    # op x 299,2 en mag niet worden overschreven.
+    # The consignor box is narrower than the frame: the small-print column starts
+    # at x 299.2 and must not be written over.
     for x0, _y0, x1, y1, word, *_ in words:
         if x0 < 299 and y1 < 110 and word not in {"niet", "voor", "in", "de"}:
             assert x1 <= 299.2, f"{word} loopt in de kleine-letterkolom"
 
-    # De gewichten staan rechtsuitgelijnd in de gewichtskolom.
+    # The weights are right-aligned in the weight column.
     x0, _y0, x1, _y1, *_ = box_of("165")
     assert 350 < x1 <= 391
 
@@ -169,13 +169,13 @@ def test_avc_waybill_without_dangerous_goods():
 
 def test_avc_waybill_in_english():
     text, _words = _render(None, "en")
-    # De template is Nederlands; alleen onze eigen tekst volgt de taalkeuze.
+    # The template is Dutch; only our own text follows the language choice.
     assert "DRAFT" in text and "CONCEPT" not in text
     assert "jerrycan benzine" in text
 
 
 def test_avc_long_description_wraps_inside_the_contents_column(prepared):
-    """De kolom 'inhoud' mag niet in de kolom 'gewicht in kg' lopen."""
+    """The 'inhoud' column must not run into the 'gewicht in kg' column."""
     _text, words = _render(prepared)
     goods = [w for w in words if 283 < w[1] < 552 and 240 < w[0] < 406]
     assert goods, "geen goederenregels gevonden"

@@ -84,15 +84,15 @@ export function weightOverridesFromLines(lines: LineItem[]) {
 
 
 /**
- * Afmetingen die de gebruiker in de tabel invulde, als overrides.
+ * Dimensions the user filled in in the table, as overrides.
  *
- * `line_id` is in de backend simpelweg de volgorde van de niet-lege regels, en
- * `draftToText` stuurt precies die regels. Daarom is de index hier voldoende en
- * is er geen uitgerekend resultaat nodig — dimensies moeten ook bij de éérste
- * berekening al meetellen.
+ * `line_id` in the backend is simply the order of the non-empty lines, and
+ * `draftToText` sends exactly those lines. So the index is enough here and no
+ * computed result is needed — dimensions have to count towards the *first*
+ * calculation as well.
  *
- * Centimeters op het scherm, meters naar de backend: die rekent in meters en
- * dat is niet aan de gebruiker om te weten.
+ * Centimetres on the screen, metres to the backend: that computes in metres and
+ * it is not for the user to know.
  */
 export function dimensionOverridesFromDrafts(
   drafts: {
@@ -114,8 +114,8 @@ export function dimensionOverridesFromDrafts(
         entry.cargo_form = draft.cargo_form;
         any = true;
       }
-      // Millimeters op het scherm voor de wanddikte — een wand van 0,8 cm
-      // schrijft niemand op — en meters naar de backend.
+      // Millimetres on the screen for the wall thickness — nobody writes down a
+      // wall of 0.8 cm — and metres to the backend.
       if (typeof draft.wall_thickness_mm === "number" && draft.wall_thickness_mm > 0) {
         entry.wall_thickness_m = draft.wall_thickness_mm / 1000;
         any = true;
@@ -134,7 +134,7 @@ export function dimensionOverridesFromDrafts(
   return overrides;
 }
 
-/** Gewichts- en afmetingoverrides samen, per regel samengevoegd. */
+/** Weight and dimension overrides together, merged per line. */
 export function mergeOverrides(
   ...groups: Record<string, number | string>[][]
 ): Record<string, number | string>[] {

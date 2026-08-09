@@ -1,22 +1,21 @@
-"""Elke stap één keer, en emulatie alleen als er iets wordt gepubliceerd.
+"""Every step once, and emulation only when something is published.
 
-Er stonden twee workflows in deze repository die allebei ``CI`` heetten en
-allebei op dezelfde duw afgingen: ``ci.yml`` en ``dockerhub.yml``. Ze deden
-grotendeels hetzelfde. ``pytest`` liep twee keer, ``npm ci`` liep twee keer, en
-er stonden vijf checks onder een pull request waarvan er twee een kopie waren
-van twee andere. Bij een release met drie commits op de branch waren dat vijftien
-jobs voordat er iets gemerged was.
+There were two workflows in this repository both called ``CI`` and both firing
+on the same push: ``ci.yml`` and ``dockerhub.yml``. They largely did the same
+thing. ``pytest`` ran twice, ``npm ci`` ran twice, and there were five checks
+under a pull request of which two were copies of two others. On a release with
+three commits on the branch that was fifteen jobs before anything was merged.
 
-De tweede kostenpost was de Docker-build. Die vroeg altijd om ``linux/arm64``,
-ook op een pull request, waar het resultaat daarna werd weggegooid omdat er niets
-wordt gepusht. arm64 draait op een amd64-runner onder QEMU, en die emulatie was
-het leeuwendeel van de looptijd.
+The second cost was the Docker build. It always asked for ``linux/arm64``, on a
+pull request too, where the result was then thrown away because nothing is
+pushed. arm64 runs on an amd64 runner under QEMU, and that emulation was the
+lion's share of the runtime.
 
-Dat soort dubbel werk sluipt er ongemerkt weer in — een tweede workflow is zo
-toegevoegd en niemand telt de checks. Vandaar deze tests. Ze lezen de YAML als
-tekst; dat is bewust grof, want wat hier wordt bewaakt is niet de precieze
-formulering maar de vorm: één workflow die vanzelf draait, geen duplicaten,
-en geen emulatie zonder publicatie.
+That kind of duplicated work creeps back in unnoticed — a second workflow is
+quickly added and nobody counts the checks. Hence these tests. They read the
+YAML as text; that is deliberately crude, because what is guarded here is not
+the exact wording but the shape: one workflow that runs by itself, no
+duplicates, and no emulation without publication.
 """
 
 from pathlib import Path
@@ -29,7 +28,7 @@ WORKFLOWS = Path(__file__).resolve().parents[2] / ".github" / "workflows"
 
 def load(name: str) -> dict:
     text = (WORKFLOWS / name).read_text(encoding="utf-8")
-    # PyYAML leest de sleutel `on:` als de booleaanse waarde True.
+    # PyYAML reads the key `on:` as the boolean value True.
     return yaml.safe_load(text)
 
 
@@ -38,18 +37,18 @@ def triggers(definition: dict) -> dict:
 
 
 def steps_only(name: str) -> str:
-    """De workflow zonder commentaar.
+    """The workflow without its comments.
 
-    Deze bestanden leggen in commentaar uit wat er misging, en daarin staan de
-    woorden die deze tests tellen — "dockerhub.yml", "npm ci". Zonder deze
-    zeef meet een test zijn eigen toelichting.
+    These files explain in comments what went wrong, and those comments contain
+    the words these tests count — "dockerhub.yml", "npm ci". Without this sieve
+    a test measures its own explanation.
     """
     lines = (WORKFLOWS / name).read_text(encoding="utf-8").splitlines()
     return "\n".join(line for line in lines if not line.lstrip().startswith("#"))
 
 
 def automatic() -> list[str]:
-    """De workflows die uit zichzelf beginnen, en dus geld kosten per duw."""
+    """The workflows that start by themselves, and therefore cost money per push."""
     started = []
     for path in sorted(WORKFLOWS.glob("*.yml")):
         on = triggers(load(path.name))
@@ -58,18 +57,18 @@ def automatic() -> list[str]:
     return started
 
 
-# --- Wat er vanzelf draait ------------------------------------------------
+# --- What runs by itself ---------------------------------------------------
 
 
 def test_only_two_workflows_start_by_themselves():
-    """ci.yml op elke duw, en tag-release.yml op een gemergede releasebranch.
-    Alle andere wachten tot iemand erom vraagt en kosten tot dat moment niets."""
+    """ci.yml on every push, and tag-release.yml on a merged release branch. All
+    the others wait until somebody asks, and cost nothing until then."""
     assert automatic() == ["ci.yml", "tag-release.yml"]
 
 
 def test_no_two_workflows_share_a_name():
-    """Twee keer "CI" in de lijst is precies hoe het dubbele werk zo lang
-    onzichtbaar bleef."""
+    """Two entries called "CI" in the list is exactly how the duplicated work
+    stayed invisible for so long."""
     names = [load(p.name).get("name") for p in sorted(WORKFLOWS.glob("*.yml"))]
     assert len(names) == len(set(names)), names
 
@@ -80,8 +79,8 @@ def test_the_duplicate_is_gone():
 
 
 def test_nothing_still_points_at_the_deleted_workflow():
-    """De tag-workflow zwengelt de build op de tag-ref aan; wijst die naar een
-    bestand dat niet meer bestaat, dan komt er stilzwijgend geen image."""
+    """The tag workflow kicks off the build on the tag ref; if that points at a
+    file that no longer exists, no image appears and nothing says so."""
     for path in WORKFLOWS.glob("*.yml"):
         assert "dockerhub.yml" not in steps_only(path.name), path.name
 
@@ -97,18 +96,18 @@ def test_the_test_suites_run_exactly_once_per_push():
 
 @pytest.mark.parametrize("step", ["npm test", "npm run build", "npm audit"])
 def test_the_frontend_checks_survived_the_merge(step):
-    """Bij het samenvoegen is de uitgebreidste van de twee frontend-jobs
-    aangehouden. De audit en de tests zaten alleen in ci.yml en mogen niet
-    sneuvelen omdat de andere job korter was."""
+    """When the two were merged, the more thorough of the two frontend jobs was
+    kept. The audit and the tests were only in ci.yml and must not be lost
+    because the other job was shorter."""
     assert step in (WORKFLOWS / "ci.yml").read_text(encoding="utf-8")
 
 
-# --- Geen emulatie zonder publicatie --------------------------------------
+# --- No emulation without publication ---------------------------------------
 
 
 def test_arm64_is_not_hardcoded_into_the_build():
-    """Stond het er vast, dan bouwde elke pull request het weer — onder QEMU,
-    en voor niets."""
+    """With it hard-coded, every pull request built it again — under QEMU, and
+    for nothing."""
     ci = (WORKFLOWS / "ci.yml").read_text(encoding="utf-8")
     assert "platforms: linux/amd64,linux/arm64" not in ci
     assert "platforms: ${{ steps.plan.outputs.platforms }}" in ci
@@ -130,7 +129,7 @@ def test_qemu_is_only_set_up_when_arm64_is_wanted():
     assert "if: steps.plan.outputs.publishing == 'true'" in qemu[: qemu.index("uses:")]
 
 
-# --- Niet twee keer dezelfde uitslag --------------------------------------
+# --- Not the same result twice ----------------------------------------------
 
 
 def test_a_superseded_pull_request_run_is_cancelled():
@@ -141,19 +140,19 @@ def test_a_superseded_pull_request_run_is_cancelled():
 
 
 def test_but_a_publishing_run_is_never_cancelled():
-    """main en een tag draaien af: daar hangt een image aan. De expressie
-    hierboven regelt dat al, maar het is het soort ding dat iemand ooit
-    vereenvoudigt tot `true`."""
+    """main and a tag do run: an image hangs off those. The expression above
+    already arranges that, but it is the kind of thing somebody eventually
+    simplifies to `true`."""
     ci = load("ci.yml")
     assert ci["concurrency"]["cancel-in-progress"] != True  # noqa: E712
 
 
-# --- Een tag is een naam, geen bouwopdracht -------------------------------
+# --- A tag is a name, not a build instruction --------------------------------
 #
-# De release bouwde dezelfde commit een tweede keer, nu op de tag-ref: vier tot
-# zes minuten om precies dezelfde bits te vertalen, met de testsuites er nog
-# eens overheen. Main had die image al gebouwd, getest en gepusht onder zijn
-# korte SHA. `imagetools create` zet de versienaam server-side op dat manifest.
+# The release built the same commit a second time, now on the tag ref: four to
+# six minutes to compile precisely the same bits, with the test suites over it
+# again. Main had already built, tested and pushed that image under its short
+# SHA. `imagetools create` puts the version name on that manifest server-side.
 
 
 def test_the_release_does_not_rebuild_what_main_already_built():
@@ -163,32 +162,32 @@ def test_the_release_does_not_rebuild_what_main_already_built():
 
 
 def test_the_released_image_is_the_one_that_was_tested():
-    """Het manifest wordt hernoemd, niet nagemaakt. Een tweede vertaling van
-    dezelfde broncode kan er net naast zitten; hetzelfde manifest niet."""
+    """The manifest is renamed, not remade. A second compilation of the same
+    source can come out slightly different; the same manifest cannot."""
     tag_release = steps_only("tag-release.yml")
     assert "rev-parse --short=7 HEAD" in tag_release
     assert 'imagetools create -t "$IMAGE:$VERSION" "$IMAGE:$SHORT"' in tag_release
 
 
 def test_it_gives_up_rather_than_release_an_older_image():
-    """Als de build op main faalde is er geen geteste image. Dan is stoppen
-    beter dan een versietag op iets van gisteren."""
+    """If the build on main failed there is no tested image. Stopping is then
+    better than a version tag on something from yesterday."""
     tag_release = steps_only("tag-release.yml")
     assert "never appeared" in tag_release
     assert "exit 1" in tag_release
 
 
 def test_ci_no_longer_runs_on_a_tag():
-    """Anders bestaan er weer twee manieren waarop een versie-image ontstaat,
-    en die lopen op den duur uiteen."""
+    """Otherwise there are two ways again for a version image to come about, and
+    those drift apart in the long run."""
     assert "tags" not in triggers(load("ci.yml"))["push"]
 
 
-# --- Het leesgereedschap draait niet meer mee ------------------------------
+# --- The reading tool no longer runs along ----------------------------------
 
 
 def test_reading_a_regulation_is_something_you_ask_for():
-    """Deze workflow haalde vier PDF's van samen zo'n 40 MB op bij elke duw die
-    het script raakte, op een branch waar niemand de log las."""
+    """This workflow fetched four PDFs of some 40 MB together on every push that
+    touched the script, on a branch where nobody read the log."""
     on = triggers(load("read-land-regulations.yml"))
     assert set(on) == {"workflow_dispatch"}

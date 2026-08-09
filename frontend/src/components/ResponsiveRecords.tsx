@@ -1,23 +1,23 @@
 /**
- * Eén set gegevens, twee vormen: een tabel op desktop, kaarten op mobiel.
+ * One set of data, two shapes: a table on desktop, cards on mobile.
  *
- * Gebaseerd op "Designing User-Friendly Data Tables for Mobile Devices"
- * (Zahra Mohammadi, Bootcamp, juli 2025). De kern van dat stuk is dat een
- * tabel op een telefoon niet kleiner moet worden gemaakt maar van vorm moet
- * veranderen, en dat horizontaal scrollen een laatste redmiddel is en geen
- * oplossing. Wat daar wordt aanbevolen en hier is overgenomen:
+ * Based on "Designing User-Friendly Data Tables for Mobile Devices" (Zahra
+ * Mohammadi, Bootcamp, July 2025). The core of that piece is that a table on a
+ * phone should not be made smaller but should change shape, and that horizontal
+ * scrolling is a last resort and not a solution. What it recommends and is
+ * adopted here:
  *
- * - Elke rij wordt een kaart. De kop draagt het identificerende veld links en
- *   de acties als iconen rechts.
- * - Het lichaam is een lijst van label-waardeparen: label klein en grijs links,
- *   waarde rechts, met een dunne scheidingslijn ertussen.
- * - Toon twee of drie velden en zet de rest achter "Toon meer", zodat er meer
- *   regels tegelijk op het scherm passen. Dat is hun uitgeklapte kaart.
- * - Zet de eenheid klein achter de waarde in plaats van er een kolom voor te
- *   reserveren: "1 200 (L)", niet een kolom "aantal" en een kolom "eenheid".
+ * - Every row becomes a card. The heading carries the identifying field on the
+ *   left and the actions as icons on the right.
+ * - The body is a list of label-value pairs: label small and grey on the left,
+ *   value on the right, with a thin dividing line between them.
+ * - Show two or three fields and put the rest behind "Show more", so more lines
+ *   fit on the screen at once. That is their expanded card.
+ * - Put the unit small behind the value instead of reserving a column for it:
+ *   "1 200 (L)", not a column "quantity" and a column "unit".
  *
- * Het onderdeel is bewust generiek: het weet niets van goederen, alleen van
- * kolommen. Een kolom zegt zelf of hij op een dichtgeklapte kaart hoort.
+ * The component is deliberately generic: it knows nothing about goods, only
+ * about columns. A column says for itself whether it belongs on a collapsed card.
  */
 import { ReactNode, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -25,14 +25,14 @@ import { useTranslation } from "react-i18next";
 export interface RecordColumn<T> {
   key: string;
   header: string;
-  /** Op mobiel staat dit label links van de waarde; standaard de kolomkop. */
+  /** On mobile this label sits to the left of the value; the column heading by default. */
   cardLabel?: string;
   render: (row: T, index: number) => ReactNode;
-  /** Zichtbaar op een dichtgeklapte kaart. Houd er twee of drie. */
+  /** Visible on a collapsed card. Keep two or three of them. */
   primary?: boolean;
-  /** Rechts uitlijnen in de tabel — getallen lezen zo beter. */
+  /** Right-align in the table — figures read better that way. */
   numeric?: boolean;
-  /** Kolombreedte op desktop, bijvoorbeeld "w-32". */
+  /** Column width on desktop, for example "w-32". */
   width?: string;
 }
 
@@ -40,12 +40,12 @@ interface Props<T> {
   rows: T[];
   columns: RecordColumn<T>[];
   rowKey: (row: T, index: number) => string | number;
-  /** De kaartkop op mobiel: het veld waaraan je de regel herkent. */
+  /** The card heading on mobile: the field you recognise the line by. */
   cardTitle: (row: T, index: number) => ReactNode;
-  /** Iconen rechtsboven in de kaartkop, en de laatste kolom van de tabel. */
+  /** Icons at the top right of the card heading, and the last column of the table. */
   actions?: (row: T, index: number) => ReactNode;
   empty?: ReactNode;
-  /** Onder de laatste rij, bijvoorbeeld een knop om een regel toe te voegen. */
+  /** Below the last row, for example a button to add a line. */
   footer?: ReactNode;
 }
 
@@ -64,9 +64,9 @@ export default function ResponsiveRecords<T>({
   const { t } = useTranslation();
   const [expanded, setExpanded] = useState<Set<string>>(new Set());
 
-  // Zonder expliciete keuze zijn de eerste twee kolommen de belangrijkste. Dat
-  // is het "less is more" van het artikel: liever te weinig op de kaart dan een
-  // kaart die zelf weer een scrollprobleem wordt.
+  // Without an explicit choice the first two columns are the most important.
+  // That is the article's "less is more": better too little on the card than a
+  // card that becomes a scrolling problem of its own.
   const marked = columns.filter((column) => column.primary);
   const primary = marked.length > 0 ? marked : columns.slice(0, 2);
   const secondary = columns.filter((column) => !primary.includes(column));
@@ -203,11 +203,11 @@ function Chevron({ open }: { open: boolean }) {
 }
 
 /**
- * Een waarde met haar eenheid klein erachter: "1 200 L".
+ * A value with its unit small behind it: "1 200 L".
  *
- * Het artikel zet de eenheid als kleine grijze toevoeging achter het getal in
- * plaats van er een kolom voor te reserveren. Dat scheelt op een telefoon een
- * hele kolom en leest bovendien als één gegeven, wat het ook is.
+ * The article puts the unit as a small grey addition behind the figure instead
+ * of reserving a column for it. On a phone that saves a whole column and it
+ * reads as one piece of data, which is what it is.
  */
 export function QuantityWithUnit({ value, unit }: { value: ReactNode; unit?: string | null }) {
   return (

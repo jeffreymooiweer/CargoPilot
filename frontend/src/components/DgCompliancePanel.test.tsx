@@ -1,16 +1,15 @@
 /**
- * Het nalevingspaneel: wat er op het scherm staat moet bij de invoer horen die
- * er nú staat.
+ * The compliance panel: what is on the screen has to belong to the input that is
+ * there *now*.
  *
- * Dat klinkt vanzelfsprekend, maar het is precies waar dit soort schermen
- * stukgaat. Een uitkomst is groen, de gebruiker verhoogt een hoeveelheid, en
- * het groen blijft staan omdat niemand het heeft weggehaald. Of twee controles
- * lopen tegelijk en de tráágste — die bij oudere invoer hoort — komt als
- * laatste binnen en wint. In beide gevallen ziet de gebruiker een geldige
- * uitslag voor een zending die niet meer bestaat.
+ * That sounds obvious, but it is precisely where screens like this come apart.
+ * An outcome is green, the user increases a quantity, and the green stays
+ * because nobody removed it. Or two checks run at once and the *slower* one —
+ * belonging to older input — comes in last and wins. In both cases the user sees
+ * a valid result for a consignment that no longer exists.
  *
- * Deze tests draaien op een nagebootste API zodat het gedrag van het paneel
- * wordt vastgelegd en niet dat van de rekenlaag; die heeft haar eigen tests.
+ * These tests run on a mocked API so that the behaviour of the panel is
+ * recorded and not that of the calculation layer; that has tests of its own.
  */
 import { act, render, screen, waitFor } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
@@ -64,8 +63,8 @@ beforeEach(() => {
   vi.useFakeTimers({ shouldAdvanceTime: true });
 });
 
-/** De debounce laten aflopen binnen act(), zodat React de statuswijziging
- * verwerkt zoals in de browser. */
+/** Let the debounce elapse inside act(), so React processes the state change
+ * the way it does in the browser. */
 async function tick(ms = 500) {
   await act(async () => {
     await vi.advanceTimersByTimeAsync(ms);
@@ -82,7 +81,7 @@ describe("het resultaat hoort bij de invoer die er nu staat", () => {
     const check = vi.spyOn(api, "dgCompliance").mockResolvedValue(result(300));
     render(<DgCompliancePanel entries={entries("20 L")} profiles={["ADR"]} />);
 
-    expect(check).not.toHaveBeenCalled(); // nog binnen de debounce
+    expect(check).not.toHaveBeenCalled(); // still inside the debounce
     await tick();
     await waitFor(() => expect(check).toHaveBeenCalledTimes(1));
     expect(await screen.findByText(/compliance.totalPoints/)).toHaveTextContent("300");
@@ -94,9 +93,9 @@ describe("het resultaat hoort bij de invoer die er nu staat", () => {
     await tick();
     expect(await screen.findByText(/compliance.totalPoints/)).toBeInTheDocument();
 
-    // Meer benzine: de oude uitslag hoort per direct weg te zijn, nog vóór de
-    // nieuwe controle is teruggekomen. Blijven staan zou een geldige uitslag
-    // tonen voor een zending die niet meer bestaat.
+    // More petrol: the old result should be gone immediately, before the new
+    // check has even come back. Leaving it would show a valid result for a
+    // consignment that no longer exists.
     view.rerender(<DgCompliancePanel entries={entries("600 L")} profiles={["ADR"]} />);
     expect(screen.queryByText(/compliance.totalPoints/)).not.toBeInTheDocument();
   });
@@ -117,9 +116,9 @@ describe("het resultaat hoort bij de invoer die er nu staat", () => {
   });
 
   it("laat een trage oudere reactie de nieuwere niet overschrijven", async () => {
-    // De eerste controle blijft hangen; de tweede is er meteen. Wint de eerste
-    // alsnog omdat hij later binnenkomt, dan staat er een uitkomst op het
-    // scherm die bij invoer van twee wijzigingen geleden hoort.
+    // The first check hangs; the second is there straight away. If the first
+    // wins anyway because it arrives later, the screen shows an outcome
+    // belonging to input from two changes ago.
     let releaseFirst: (value: DgComplianceResult) => void = () => {};
     const slowFirst = new Promise<DgComplianceResult>((resolve) => {
       releaseFirst = resolve;
@@ -177,7 +176,7 @@ describe("een validatiefout van de server", () => {
 
 describe("een verlopen regelset", () => {
   it("staat bovenaan, vóór de inhoudelijke bevindingen", async () => {
-    // De bevindingen zijn ermee gerekend, dus de gebruiker moet dit eerst zien.
+    // The findings were computed with it, so the user has to see this first.
     vi.spyOn(api, "dgCompliance").mockResolvedValue({
       rule_set_warnings: [{
         rule: "IATA DGR — luchtvracht",
@@ -195,8 +194,8 @@ describe("een verlopen regelset", () => {
 
     const stale = await screen.findByText("IATA DGR — luchtvracht");
     const segregation = await screen.findByText("IATA 9.3.2");
-    // DOCUMENT_POSITION_FOLLOWING: de scheidingsbevinding komt ná de melding
-    // over de verlopen editie.
+    // DOCUMENT_POSITION_FOLLOWING: the segregation finding comes *after* the
+    // message about the expired edition.
     expect(stale.compareDocumentPosition(segregation) & Node.DOCUMENT_POSITION_FOLLOWING)
       .toBeTruthy();
   });
@@ -255,7 +254,7 @@ describe("de LQ/EQ-toets van 3.4 en 3.5", () => {
     expect(screen.getByText(/LQ 5 L/)).toHaveTextContent("lqeqStatus.within_limits");
     expect(screen.getByText(/EQ E2/)).toHaveTextContent("lqeqStatus.not_within");
     expect(screen.getByText("Binnen de grenzen van 3.4.")).toBeInTheDocument();
-    // De 3.5.5-waarschuwing (1000 colli) hoort in dezelfde sectie te staan.
+    // The 3.5.5 warning (1000 packages) belongs in the same section.
     expect(screen.getByText("ADR/IMDG 3.5.5")).toBeInTheDocument();
     expect(screen.getByText(/vrijgesteld zijn/)).toBeInTheDocument();
   });
@@ -293,7 +292,7 @@ describe("de inklapbare secties", () => {
 
     expect(await screen.findByText(/1 × compliance.sevError/)).toBeInTheDocument();
     expect(screen.getByText(/1 × compliance.sevWarning/)).toBeInTheDocument();
-    // Een fout mag niet achter een dichtgeklapte kop schuilgaan.
+    // An error must not hide behind a collapsed heading.
     const section = screen.getByText("IMDG 7.2.4").closest("details");
     expect(section?.open).toBe(true);
   });
@@ -310,7 +309,7 @@ describe("de inklapbare secties", () => {
 
     const section = screen.getByText("IMDG 16b").closest("details");
     expect(section?.open).toBe(false);
-    // De kop verzwijgt niets: het aantal staat erin.
+    // The heading conceals nothing: the count is in it.
     expect(screen.getByText(/1 × compliance.sevWarning/)).toBeInTheDocument();
   });
 });

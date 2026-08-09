@@ -1,22 +1,21 @@
-"""IMDG-code Amendment 42-24 als verschillenlaag over de 41-22-gegevens.
+"""IMDG Code Amendment 42-24 as a differences layer over the 41-22 data.
 
-De app draagt ADR 2025 als basistabel en de Cantell UN-kaarten (41-22) als
-stof-specifieke IMDG-laag. Sinds 1 januari 2026 is 42-24 verplicht. In plaats
-van de hele dataset opnieuw op te bouwen — waarvoor de gepubliceerde tekst
-nodig is — legt deze module de wijzigingen die uit de bron af te leiden zijn
-bovenop de bestaande gegevens, en zegt er per stof bij wat er veranderd is.
+The app carries ADR 2025 as its base table and the Cantell UN cards (41-22) as
+its substance-specific IMDG layer. Since 1 January 2026, 42-24 is mandatory.
+Instead of rebuilding the whole dataset — which needs the published text — this
+module lays the changes that can be derived from the source on top of the
+existing data, and says per substance what changed.
 
-Twee dingen bepalen wat hier wel en niet in staat:
+Two things decide what is and is not in here:
 
-- Wat de bron letterlijk noemt, staat erin. Wat zij niet noemt, is niet
-  verzonnen; `not_covered` in het seed-bestand somt op wat buiten beeld blijft.
-- Hoofdstuk 7.2 kent in 42-24 één wijziging: de herformulering van 7.2.6.1. De
-  scheidingstabel van 7.2.4, de vrijstellingstabellen van 7.2.6.3, de
-  compatibiliteitsmatrix van 7.2.7.1.4 en de scheidingsgroepen van 3.1.4.4
-  blijven ongewijzigd. Die tabellen zijn dus ook onder 42-24 juist, en worden
-  niet langer als achterlopend gemarkeerd.
+- What the source states literally is in it. What it does not state is not
+  invented; `not_covered` in the seed file lists what stays out of view.
+- Chapter 7.2 has one change in 42-24: the rewording of 7.2.6.1. The segregation
+  table of 7.2.4, the exemption tables of 7.2.6.3, the compatibility matrix of
+  7.2.7.1.4 and the segregation groups of 3.1.4.4 stay unchanged. Those tables
+  are therefore correct under 42-24 as well, and are no longer marked as lagging.
 
-De gepubliceerde tekst van de code blijft leidend; dit is een invulhulp.
+The published text of the Code remains authoritative; this is an aid to filling in.
 """
 from __future__ import annotations
 
@@ -57,13 +56,13 @@ def source() -> str:
 
 
 def verified_unchanged_sections() -> list[str]:
-    """Secties waarvan de bron bevestigt dat 42-24 ze niet wijzigt."""
+    """Sections the source confirms 42-24 does not change."""
     data = _load().get("verified_unchanged") or {}
     return [item["section"] for item in data.get("sections", [])]
 
 
 def new_un_numbers() -> list[dict[str, Any]]:
-    """UN-nummers die 42-24 toevoegt en die in ADR 2025 nog niet bestaan."""
+    """UN numbers 42-24 adds that do not yet exist in ADR 2025."""
     return list(_load().get("new_un_numbers") or [])
 
 
@@ -72,11 +71,11 @@ def ems_additions() -> dict[str, dict[str, str]]:
 
 
 def _entry_for(un: str, packing_group: str = "") -> dict[str, Any]:
-    """De wijziging voor dit UN-nummer, zo nodig per verpakkingsgroep.
+    """The change for this UN number, per packing group where needed.
 
-    UN 1835 en UN 3423 verschillen per verpakkingsgroep: dezelfde stof, een
-    andere vermelding. Wie de verpakkingsgroep niet meegeeft, krijgt alleen wat
-    voor alle groepen geldt — nooit de striktere variant stilzwijgend.
+    UN 1835 and UN 3423 differ per packing group: the same substance, a different
+    entry. Whoever does not pass the packing group gets only what applies to all
+    groups — never the stricter variant silently.
     """
     change = (_load().get("amended_un_numbers") or {}).get(_digits(un))
     if not isinstance(change, dict):
@@ -92,7 +91,7 @@ def _entry_for(un: str, packing_group: str = "") -> dict[str, Any]:
 
 
 def changes_for(un: str, packing_group: str = "", language: str = "nl") -> list[str]:
-    """Wat er voor deze stof onder 42-24 verandert, in gewone taal."""
+    """What changes for this substance under 42-24, in plain words."""
     entry = _entry_for(un, packing_group)
     value = pick(
         {lang: entry.get(f"changes_{lang}") for lang in SUPPORTED}, language, []
@@ -101,16 +100,16 @@ def changes_for(un: str, packing_group: str = "", language: str = "nl") -> list[
 
 
 def overlay_for(un: str, packing_group: str = "") -> dict[str, Any]:
-    """De ruwe wijzigingsvelden voor een stof, zonder de toelichtende teksten."""
+    """The raw change fields for a substance, without the explanatory texts."""
     entry = _entry_for(un, packing_group)
     return {k: v for k, v in entry.items() if not k.startswith("changes_")}
 
 
 def apply_card_overlay(un: str, card: dict[str, Any], packing_group: str = "") -> dict[str, Any]:
-    """Werk de gegevens van de 41-22-UN-kaart bij naar 42-24.
+    """Update the data of the 41-22 UN card to 42-24.
 
-    Alleen toevoegen en corrigeren; er wordt niets weggehaald wat de bron niet
-    expliciet intrekt. Een stuwagecode die er in 41-22 al stond blijft staan.
+    Adding and correcting only; nothing is removed that the source does not
+    explicitly withdraw. A stowage code that was already in 41-22 stays.
     """
     overlay = overlay_for(un, packing_group)
     if not overlay or not isinstance(card, dict):
@@ -134,7 +133,7 @@ def apply_card_overlay(un: str, card: dict[str, Any], packing_group: str = "") -
 
 
 def document_requirement(un: str, language: str = "nl") -> dict[str, Any] | None:
-    """Aanvullende documentvereiste per stof, zoals 5.4.1.5.18 voor UN 1361."""
+    """Additional document requirement per substance, such as 5.4.1.5.18 for UN 1361."""
     item = (_load().get("document_requirements") or {}).get(_digits(un))
     if not isinstance(item, dict):
         return None

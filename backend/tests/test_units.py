@@ -1,15 +1,15 @@
-"""Een hoeveelheid zonder eenheid betekent niets.
+"""A quantity without a unit means nothing.
 
-De eenheid van een regel was een vrij tekstveld met "stuks" als standaard. Wie
-1200 liter diesel invoerde kreeg 1200 stuks diesel en mocht het gewicht er zelf
-bij zoeken. Deze tests leggen vast dat een hoeveelheid nu een dimensie heeft, en
-dat het soortelijk gewicht de brug slaat tussen massa en volume.
+The unit of a line was a free text field with "stuks" as the default. Whoever
+entered 1200 litres of diesel got 1200 pieces of diesel and could look up the
+weight themselves. These tests record that a quantity now has a dimension, and
+that density bridges mass and volume.
 
-Het tweede thema is even belangrijk als het eerste: waar niet gerekend kán
-worden, wordt niet gerekend. Veertig pallets zonder gewicht per pallet wegen een
-onbekend aantal kilo. Daar 0 van maken levert een totaal op dat er goed uitziet
-en nergens op slaat — dezelfde fout als een controle die niet liep tonen als een
-controle die slaagde.
+The second theme is as important as the first: where it *cannot* be computed, it
+is not computed. Forty pallets without a weight per pallet weigh an unknown
+number of kilos. Making that 0 produces a total that looks fine and means
+nothing — the same fault as showing a check that did not run as a check that
+passed.
 """
 
 import pytest
@@ -30,7 +30,7 @@ GRAVEL = 1600.0     # stortdichtheid
 STEEL = 7850.0
 
 
-# --- De brug tussen massa en volume ---------------------------------------
+# --- The bridge between mass and volume -----------------------------------
 
 
 def test_litres_of_a_liquid_become_kilograms():
@@ -53,7 +53,7 @@ def test_cubic_metres_of_bulk_become_tonnes():
 
 
 def test_the_same_volume_of_steel_is_a_different_mass():
-    """Triviaal, en precies het punt: de eenheid alleen zegt niets over gewicht."""
+    """Trivial, and exactly the point: the unit alone says nothing about weight."""
     assert convert(5, "m3", STEEL, "metal").mass_kg == pytest.approx(39250.0)
     assert convert(5, "m3", GRAVEL, "bulk_material").mass_kg == pytest.approx(8000.0)
 
@@ -65,7 +65,7 @@ def test_without_a_density_only_the_entered_side_is_filled():
     assert out.missing == "density"
 
 
-# --- Waar niet gerekend kan worden, wordt niet gerekend --------------------
+# --- Where it cannot be computed, it is not computed -----------------------
 
 
 def test_a_count_without_a_weight_per_item_reports_that():
@@ -95,8 +95,8 @@ def test_an_unknown_unit_is_reported_rather_than_assumed():
 
 
 def test_a_negative_quantity_is_refused():
-    """Een negatieve hoeveelheid zou een totaal omlaag brengen en een limiet
-    kunnen laten halen die niet gehaald wordt."""
+    """A negative quantity would bring a total down and could let a limit be met
+    that is not met."""
     assert convert(-5, "kg", 1000).missing == "negative"
 
 
@@ -110,8 +110,8 @@ def test_a_negative_quantity_is_refused():
      ("Stück", "pcs"), ("europallets", "pallet"), ("big bag", "bag")],
 )
 def test_the_units_people_actually_type_are_understood(text, expected):
-    """De oude vrije invoer heeft jaren van uiteenlopende spelling opgeleverd en
-    die zit nog in opgeslagen zendingen. Die moeten blijven werken."""
+    """The old free input has produced years of divergent spellings and those are
+    still in stored consignments. Those have to keep working."""
     unit = get_unit(text)
     assert unit is not None and unit.code == expected
 
@@ -134,7 +134,7 @@ def test_wood_is_measured_in_cubic_metres_first():
 
 
 def test_an_unknown_category_still_gets_a_usable_list():
-    """Vastlopen op een uitzondering is erger dan een ongebruikelijke eenheid."""
+    """Getting stuck on an exception is worse than an unusual unit."""
     assert suggested_units("something_new")
     assert default_unit(None) == "pcs"
 
@@ -147,13 +147,13 @@ def test_every_suggested_unit_exists():
             assert code in UNITS, f"{category} suggests unknown unit {code}"
 
 
-# --- De grondslag van een dichtheid ---------------------------------------
+# --- The basis of a density -----------------------------------------------
 
 
 def test_the_density_basis_is_derived_and_named():
-    """De goederendatabase zegt niet of een getal een stort- of een
-    soortelijke dichtheid is; de categorie is het enige aanknopingspunt. Dat
-    hier expliciet te maken is beter dan doen alsof het bekend is."""
+    """The goods database does not say whether a figure is a bulk or a material
+    density; the category is the only handhold. Making that explicit here is
+    better than pretending it is known."""
     assert density_basis("liquid") is DensityBasis.LIQUID
     assert density_basis("bulk_material") is DensityBasis.BULK
     assert density_basis("metal") is DensityBasis.SOLID

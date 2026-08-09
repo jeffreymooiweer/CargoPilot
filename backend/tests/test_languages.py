@@ -1,23 +1,22 @@
-"""Een extra taal moet compleet zijn, anders is zij misleidend.
+"""An extra language has to be complete, or it is misleading.
 
-Het gevaar van een taal erbij zit niet in wat er misgaat maar in wat er
-stilletjes goed lijkt te gaan: een ontbrekende vertaling valt terug op een
-andere taal, het scherm blijft werken en de gebruiker ziet een Frans formulier
-met Nederlandse veldnamen zonder te merken dat er iets mist. Bij een
-vervoersdocument is dat geen cosmetisch probleem — een afzender die
-"Verpakkingsgroep" niet leest, vult hem niet in.
+The danger of one more language is not in what goes wrong but in what quietly
+looks right: a missing translation falls back to another language, the screen
+keeps working, and the user sees a French form with Dutch field names without
+noticing anything is missing. On a transport document that is not a cosmetic
+problem — a consignor who does not read "Verpakkingsgroep" does not fill it in.
 
-Deze tests lopen daarom over de gegevensbestanden zelf: elk blokje dat een
-Nederlandse én een Engelse tekst draagt, moet er ook één dragen in elke andere
-taal die de applicatie zegt te spreken. Zo landt een nieuwe tekst in alle talen
-tegelijk of hij landt niet.
+These tests therefore run over the data files themselves: every block carrying a
+Dutch *and* an English text has to carry one in every other language the
+application claims to speak. That way a new text lands in every language at once
+or it does not land.
 
-**Deze tests noemen geen enkele taal bij naam.** Ze lezen `SUPPORTED` uit
-`app.core.languages` en eisen elke taal daarin behalve `nl` en `en`, die de
-brontalen zijn. Tot v1.44.0 stond overal letterlijk `"de"`, en toen het Frans
-erbij kwam bewaakten ze het Frans dus niet — een taal toevoegen betekende toen
-óók de bewaker uitbreiden, en precies dat vergeet je. Nu is `SUPPORTED` de enige
-plek waar een taal wordt aangezet.
+**These tests name no language at all.** They read `SUPPORTED` from
+`app.core.languages` and require every language in it except `nl` and `en`, which
+are the source languages. Until v1.44.0 there was a literal `"de"` everywhere,
+so when French arrived they did not guard French — adding a language then meant
+extending the guard as well, and that is exactly what you forget. Now `SUPPORTED`
+is the only place a language is switched on.
 """
 
 import ast
@@ -32,7 +31,7 @@ from app.services.parser.product_detector import detect_product_type
 
 ROOT = Path(__file__).resolve().parents[1]
 
-# De bestanden waaruit tekst naar het scherm en naar de documenten gaat.
+# The files from which text goes to the screen and to the documents.
 TRANSLATED_FILES = [
     "app/config/dg_instructions.json",
     "app/config/dg_compliance.json",
@@ -41,22 +40,22 @@ TRANSLATED_FILES = [
     "seed/dg/packagings.json",
     "seed/dg/segregation_groups.json",
     "seed/dg/imdg_42_24.json",
-    # De goederendatabase: de naam die de gebruiker aanklikt wordt de
-    # omschrijving op zijn vrachtbrief.
+    # The goods database: the name the user clicks becomes the description on
+    # their waybill.
     "seed/materials.json",
     "seed/reference_items.json",
 ]
 
-# Sommige blokken dragen hun talen als achtervoegsel: note_nl/note_en.
+# Some blocks carry their languages as a suffix: note_nl/note_en.
 SUFFIXES = ("note", "items", "changes", "assigned_to_note")
 
-#: De talen die bewaakt worden: alles wat de applicatie spreekt, behalve de twee
-#: brontalen. Groeit vanzelf mee met `SUPPORTED`.
+#: The languages that are guarded: everything the application speaks, except the
+#: two source languages. Grows with `SUPPORTED` by itself.
 EXTRA_LANGUAGES = tuple(language for language in SUPPORTED if language not in ("nl", "en"))
 
 
 def translated_blocks(value, language, path=""):
-    """Elk blokje met een Nederlandse én Engelse tekst, met zijn pad."""
+    """Every block with a Dutch *and* an English text, with its path."""
     if isinstance(value, dict):
         if "nl" in value and "en" in value:
             yield path or ".", value, language
@@ -71,7 +70,7 @@ def translated_blocks(value, language, path=""):
 
 
 def source_key(block_key, language):
-    """Bij `de` hoort `en`; bij `note_de` hoort `note_en`."""
+    """`de` goes with `en`; `note_de` goes with `note_en`."""
     return "en" if block_key == language else f"{block_key[: -len(language)]}en"
 
 
@@ -90,11 +89,11 @@ def test_every_translated_text_carries_each_extra_language(name, language):
 @pytest.mark.parametrize("language", EXTRA_LANGUAGES)
 @pytest.mark.parametrize("name", TRANSLATED_FILES)
 def test_a_translation_keeps_the_shape_of_the_other_languages(name, language):
-    """Een lijst blijft een lijst, en even lang.
+    """A list stays a list, and the same length.
 
-    De vaste teksten van een formulier en de vrijstellingsbepalingen van
-    1.1.3.6 zijn lijsten; een vertaling die daar één regel van maakt levert
-    een document met vier ontbrekende bepalingen op.
+    The fixed texts of a form and the exemption provisions of 1.1.3.6 are lists;
+    a translation that turns those into one line produces a document with four
+    missing provisions.
     """
     wrong = []
     for path, block, key in translated_blocks(load(name), language):
@@ -108,13 +107,13 @@ def test_a_translation_keeps_the_shape_of_the_other_languages(name, language):
 
 @pytest.mark.parametrize("language", EXTRA_LANGUAGES)
 def test_a_translation_is_not_simply_the_dutch_text(language):
-    """Een 'vertaling' die de Nederlandse tekst herhaalt, is geen vertaling.
+    """A 'translation' that repeats the Dutch text is not a translation.
 
-    Vakbegrippen die overal onvertaald blijven staan zijn de uitzondering —
-    "Proper Shipping Name", "Verified Gross Mass", de letterlijk voor te
-    drukken IATA-waarschuwing. Die zijn te herkennen doordat het Nederlands en
-    het Engels er al gelijk waren; wat daar níét gelijk was, is een zin die
-    vertaald hoort te zijn.
+    Technical terms that stay untranslated everywhere are the exception —
+    "Proper Shipping Name", "Verified Gross Mass", the IATA warning that has to
+    be printed verbatim. Those are recognisable because Dutch and English were
+    already identical; what was *not* identical there is a sentence that ought to
+    be translated.
     """
     copies = []
     for name in TRANSLATED_FILES:
@@ -124,18 +123,19 @@ def test_a_translation_is_not_simply_the_dutch_text(language):
             english = block[source]
             if not isinstance(dutch, str) or len(dutch.split()) <= 3:
                 continue
-            # Alleen hoofdletterverschil telt niet als vertaling: "Air Waybill
-            # Shipping Instructions" is in elke taal dezelfde term.
+            # A difference in capitals alone does not count as a translation:
+            # "Air Waybill Shipping Instructions" is the same term in every
+            # language.
             if dutch.casefold() != english.casefold() and block[key] == dutch:
                 copies.append(f"{name}{path}")
     assert copies == []
 
 
-# --- Ook de teksten die in de code zelf staan ------------------------------
+# --- The texts that live in the code itself --------------------------------
 
 
 def bilingual_literals(tree):
-    """Elk dict-literaal in de broncode met een 'nl'- én een 'en'-sleutel."""
+    """Every dict literal in the source with an 'nl' *and* an 'en' key."""
     for node in ast.walk(tree):
         if not isinstance(node, ast.Dict):
             continue
@@ -147,11 +147,10 @@ def bilingual_literals(tree):
 
 @pytest.mark.parametrize("language", EXTRA_LANGUAGES)
 def test_no_translation_left_behind_in_the_code(language):
-    """De helft van de teksten staat niet in een gegevensbestand maar in de
-    code: de vaste teksten van de exporter, de scheidingswoorden, de
-    productnamen. Die zijn bij het toevoegen van een taal net zo makkelijk te
-    vergeten, en juist daar valt het niet op — een tweewegkeuze levert dan
-    zonder klacht de verkeerde taal.
+    """Half the texts are not in a data file but in the code: the fixed texts of
+    the exporter, the segregation wordings, the product names. Those are just as
+    easy to forget when a language is added, and there of all places it does not
+    show — a two-way choice then serves up the wrong language without complaint.
     """
     missing = []
     for path in sorted((ROOT / "app").rglob("*.py")):
@@ -163,9 +162,9 @@ def test_no_translation_left_behind_in_the_code(language):
 
 
 def test_nothing_decides_between_two_languages_any_more():
-    """`"en" if language.startswith("en") else "nl"` was de oude manier. Zo'n
-    tak geeft een derde taal stilzwijgend het verkeerde antwoord; hij hoort
-    door `normalise()` en `pick()` te zijn vervangen."""
+    """`"en" if language.startswith("en") else "nl"` was the old way. Such a
+    branch silently gives a third language the wrong answer; it should have been
+    replaced by `normalise()` and `pick()`."""
     offenders = []
     for path in sorted((ROOT / "app").rglob("*.py")):
         if path.name == "languages.py":
@@ -176,12 +175,12 @@ def test_nothing_decides_between_two_languages_any_more():
     assert offenders == []
 
 
-# --- De keuze zelf --------------------------------------------------------
+# --- The choice itself -----------------------------------------------------
 
 
 def test_the_frontend_offers_the_same_languages():
-    """Duits op het scherm en Nederlands in de export is erger dan alleen
-    Nederlands: de gebruiker denkt dan dat hij een Duits document krijgt."""
+    """German on the screen and Dutch in the export is worse than Dutch alone:
+    the user then thinks they are getting a German document."""
     source = (ROOT.parent / "frontend/src/i18n/language.ts").read_text(encoding="utf-8")
     line = next(line for line in source.splitlines() if "SUPPORTED_LANGUAGES" in line)
     assert all(f'"{lang}"' in line for lang in SUPPORTED), line
@@ -190,9 +189,9 @@ def test_the_frontend_offers_the_same_languages():
 @pytest.mark.parametrize("given,expected", [
     ("de", "de"), ("DE", "de"), ("de-AT", "de"), ("de_DE", "de"),
     ("en", "en"), ("en-GB", "en"), ("nl", "nl"),
-    # Frans hoort sinds v1.44.0 bij SUPPORTED en valt dus niet meer terug op
-    # de standaardtaal. Deze regel stond er als bewijs dat een onbekende taal
-    # netjes werd opgevangen; die rol is nu voor "it".
+    # French has belonged to SUPPORTED since v1.44.0 and therefore no longer
+    # falls back to the default language. This line was here as proof that an
+    # unknown language was caught properly; "it" now takes that role.
     ("fr", "fr"), ("fr-BE", "fr"), ("FR_CH", "fr"),
     ("it", DEFAULT), ("", DEFAULT), (None, DEFAULT), (123, DEFAULT),
 ])
@@ -201,19 +200,19 @@ def test_a_language_code_is_narrowed_to_one_we_speak(given, expected):
 
 
 def test_a_missing_translation_falls_back_instead_of_showing_nothing():
-    """Een veldnaam in een andere taal kan de gebruiker nog lezen; een veld
-    zonder naam niet."""
+    """A user can still read a field name in another language; a field without a
+    name they cannot."""
     assert pick({"nl": "Afzender", "en": "Consignor"}, "de") == "Consignor"
     assert pick({"nl": "Afzender"}, "en") == "Afzender"
     assert pick({"de": "Absender"}, "de") == "Absender"
 
 
 def test_an_empty_translation_counts_as_missing():
-    # Een lege string in het register zou anders een leeg label opleveren.
+    # An empty string in the registry would otherwise produce an empty label.
     assert pick({"nl": "Afzender", "en": "", "de": ""}, "de") == "Afzender"
 
 
-# --- De taal van wat de gebruiker plakt ------------------------------------
+# --- The language of what the user pastes -----------------------------------
 
 
 @pytest.mark.parametrize("text,expected", [
@@ -223,8 +222,8 @@ def test_an_empty_translation_counts_as_missing():
     ("Träger HEA200, Länge 6000", "de"),
 ])
 def test_a_pasted_line_gets_its_answer_in_its_own_language(text, expected):
-    """De afgeleide omschrijving komt terug in de taal van de invoer; wie
-    Duits plakt kreeg tot nu toe Engels terug."""
+    """The derived description comes back in the language of the input; whoever
+    pasted German used to get English back."""
     assert detect_language(text) == expected
 
 
@@ -246,21 +245,21 @@ def test_without_a_clue_the_paste_counts_as_dutch(text):
     ("Kunststoffplatte 3 mm", "plastic_sheet"),
 ])
 def test_a_german_description_is_recognised_as_a_product(text, expected):
-    """De taal van het scherm helpt niet als de invoer niet herkend wordt: een
-    onherkend product levert geen gewicht en dus geen bruikbaar document."""
+    """The language of the screen does not help when the input is not recognised:
+    an unrecognised product yields no weight and therefore no usable document."""
     assert detect_product_type(text) == expected
 
 
 def test_a_german_plastic_pipe_is_not_mistaken_for_a_steel_one():
-    """Een kaal 'Rohr' zou ook een pvc-buis opslokken, en die weegt een orde
-    van grootte minder."""
+    """A bare 'Rohr' would swallow a PVC pipe as well, and that weighs an order
+    of magnitude less."""
     assert detect_product_type("PVC-Rohr 110 mm") == "pvc_pipe"
     assert detect_product_type("Kunststoffrohr 110 mm") == "pvc_pipe"
 
 
 def test_a_word_that_two_languages_share_does_not_decide():
-    """'verzinkt' en 'beton' staan in de Nederlandse én de Duitse lijst. Een
-    regel die alleen zo'n woord draagt mag niet naar het Duits kantelen."""
+    """'verzinkt' and 'beton' are in the Dutch *and* the German list. A line
+    carrying only such a word must not tip over into German."""
     assert detect_language("beton verzinkt") == "nl"
     assert detect_language("Blech beton verzinkt") == "de"  # 'Blech' geeft de doorslag
 

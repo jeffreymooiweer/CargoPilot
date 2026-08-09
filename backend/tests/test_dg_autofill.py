@@ -1,4 +1,4 @@
-"""Tests voor automatische invulling en modaliteitsverrijking van DG-gegevens."""
+"""Tests for automatic completion and per-mode enrichment of DG data."""
 
 import json
 import re
@@ -25,7 +25,7 @@ from app.services.documents.registry import get_document
 
 
 def test_parse_hazards_separates_classification_code_from_subsidiary_risks():
-    """De classificatiecode (F1) is geen nevengevaar — dat waren de etiketten."""
+    """The classification code (F1) is not a subsidiary risk — the labels were."""
     petrol = parse_hazards({"class": "3", "classification_code": "F1", "labels": "3"})
     assert petrol["division"] == "3"
     assert petrol["subsidiary_risks"] == []
@@ -37,7 +37,7 @@ def test_parse_hazards_separates_classification_code_from_subsidiary_risks():
 
 
 def test_parse_hazards_resolves_division_for_gases_and_explosives():
-    """Tabel A geeft bij gassen alleen '2' en bij explosieven alleen '1'."""
+    """Table A gives only '2' for gases and only '1' for explosives."""
     lpg = parse_hazards({"class": "2", "classification_code": "2F", "labels": "2.1"})
     assert lpg["division"] == "2.1"
 
@@ -65,7 +65,7 @@ def test_enrichment_provides_ems_and_air_rules():
 
 
 def test_ems_seed_matches_the_official_guide_structure():
-    """Index van MSC.1/Circ.1588/Rev.3: 10 brand- en 26 lekkageschema's."""
+    """Index of MSC.1/Circ.1588/Rev.3: 10 fire and 26 spillage schedules."""
     seed = json.loads(
         (Path(__file__).resolve().parents[1] / "seed" / "dg" / "ems.json").read_text(encoding="utf-8")
     )
@@ -86,7 +86,7 @@ def test_ems_seed_matches_the_official_guide_structure():
 
 
 def test_ems_lookup_matches_the_official_index():
-    """Steekproef, letterlijk uit de index van de EmS Guide."""
+    """A sample, taken verbatim from the index of the EmS Guide."""
     expected = {
         "1203": ("F-E", "S-E"),  # benzine
         "1170": ("F-E", "S-D"),  # ethanol
@@ -105,16 +105,16 @@ def test_ems_lookup_matches_the_official_index():
 
 
 def test_ems_handles_packing_group_and_variant_entries():
-    """Enkele vermeldingen hebben per verpakkingsgroep of variant een eigen schema."""
+    """A few entries have their own schedule per packing group or variant."""
     # UN 1826, nitreerzuurmengsel: PG I oxiderend (S-Q), PG II bijtend (S-B).
     pg1 = lookup_ems("1826", "I")
     pg2 = lookup_ems("1826", "II")
     assert (pg1["fire"], pg1["spillage"]) == ("F-A", "S-Q")
     assert (pg2["fire"], pg2["spillage"]) == ("F-A", "S-B")
-    # Zonder verpakkingsgroep worden de keuzes teruggegeven in plaats van een gok.
+    # Without a packing group the choices are returned instead of a guess.
     assert "packing_group_options" in lookup_ems("1826")
 
-    # UN 3166: gas- of vloeistofaangedreven voertuigen hebben elk een eigen schema.
+    # UN 3166: gas- and liquid-powered vehicles each have their own schedule.
     variants = enrich_un_entry({"un": "3166", "class": "9"}, "nl")["ems_variants"]
     codes = {v["label"]: v["code"] for v in variants}
     assert codes == {"for gases": "F-D, S-U", "for liquids": "F-E, S-E"}
@@ -127,7 +127,7 @@ def test_ems_schedule_descriptions_are_available_in_both_languages():
 
 
 def test_ems_falls_back_to_division_for_gases():
-    """Tabel A geeft bij gassen alleen '2'; de divisie komt uit de etiketten."""
+    """Table A gives only '2' for gases; the division comes from the labels."""
     flammable = enrich_un_entry({"un": "9998", "class": "2", "labels": "2.1"})
     assert flammable["ems_class_default"] == "F-D, S-U"
     inert = enrich_un_entry({"un": "9997", "class": "2", "labels": "2.2"})
@@ -136,7 +136,7 @@ def test_ems_falls_back_to_division_for_gases():
 
 
 def test_transport_forbidden_substances_are_flagged_and_block_export():
-    """ADR Tabel A markeert 14 stoffen als niet ten vervoer toegelaten."""
+    """ADR Table A marks 14 substances as not admitted for carriage."""
     forbidden = enrich_un_entry({"un": "1798", "class": "8", "labels": "BEFÖRDERUNG VERBOTEN"}, "nl")
     assert forbidden["transport_forbidden"] is True
     assert "niet ten vervoer" in forbidden["transport_forbidden_note"]
@@ -186,7 +186,7 @@ def test_prepare_fills_classification_and_quantities_from_lines():
     assert product["tunnel_code"] == "D/E"
     assert product["quantity_packages"] == "10"
     assert product["type_of_package"] == "jerrycan"
-    # 10 colli × 20 L = 200 L, automatisch voor de 1.1.3.6-punten
+    # 10 packages × 20 L = 200 L, automatically for the 1.1.3.6 points
     assert product["adr_total_quantity"] == "200 L"
 
 
@@ -239,7 +239,7 @@ def test_description_line_adds_imdg_and_iata_specifics():
 
     iata = description_line(product, "IATA_DGR")
     assert "PI 965" in iata and "CARGO AIRCRAFT ONLY" in iata
-    # De ADR-verpakkingsinstructie hoort niet op een luchtvrachtdocument.
+    # The ADR packing instruction does not belong on an air freight document.
     assert "P001" not in iata
 
 
@@ -272,7 +272,7 @@ def test_imdg_segregation_table_is_symmetric_and_complete():
 
 
 def test_imdg_segregation_table_matches_amendment_40_20():
-    """Woordelijk overgenomen uit IMDG-code hoofdstuk 7.2, tabel 7.2.4 (Amdt 40-20)."""
+    """Taken verbatim from IMDG Code chapter 7.2, table 7.2.4 (Amdt 40-20)."""
     official = {
         "1.1-1.2-1.5": "* * * 4 2 2 4 4 4 4 4 4 2 4 2 4 X",
         "1.3-1.6":     "* * * 4 2 2 4 3 3 4 4 4 2 4 2 2 X",
@@ -307,16 +307,16 @@ def test_imdg_class1_compatibility_matches_7_2_7_1_4():
     def permitted(a: str, b: str) -> bool:
         return matrix[a][order.index(b)] == "X"
 
-    # Groep S is verenigbaar met alles behalve L.
+    # Group S is compatible with everything except L.
     for group in order:
         assert permitted("S", group) is (group != "L"), group
-    # L uitsluitend met L (noot 2).
+    # L only with L (note 2).
     assert [g for g in order if permitted("L", g)] == ["L"]
-    # C, D en E onderling en met G en N.
+    # C, D and E among themselves and with G and N.
     for group in ("C", "D", "E"):
         for other in ("C", "D", "E", "G", "N", "S"):
             assert permitted(group, other), f"{group}×{other}"
-    # Onverenigbaar: springstof groep D met ontstekers groep B.
+    # Incompatible: blasting explosive group D with detonators group B.
     assert not permitted("B", "D")
     assert not permitted("A", "B")
     # Symmetrie.
@@ -341,24 +341,24 @@ def test_class1_compatibility_check_flags_incompatible_groups():
 
 
 def test_subsidiary_class1_hazard_segregates_as_division_1_3():
-    """IMDG 7.2.3.3: een nevengevaar van klasse 1 telt als divisie 1.3."""
+    """IMDG 7.2.3.3: a subsidiary risk of class 1 counts as division 1.3."""
     entries = [{
         "line_id": 1,
         "vehicle": "Mix",
         "products": [
-            # Klasse 3 met nevengevaar klasse 1 → moet als 1.3 tegen 4.1 worden gewogen.
+            # Class 3 with subsidiary risk class 1 → has to be weighed as 1.3 against 4.1.
             {"un_number": "9990", "proper_shipping_name": "TESTSTOF", "class": "3",
              "subsidiary_risks": "1"},
             {"un_number": "1350", "proper_shipping_name": "ZWAVEL", "class": "4.1"},
         ],
     }]
     warnings = check_imdg_segregation(entries, "nl")
-    # 1.3 × 4.1 = 3 in de tabel, strenger dan 3 × 4.1 = X.
+    # 1.3 × 4.1 = 3 in the table, stricter than 3 × 4.1 = X.
     assert warnings and warnings[0]["code"] == "3"
 
 
 def test_segregation_groups_are_loaded_from_imdg_3_1_4_4():
-    """Alle achttien groepen met hun UN-nummers uit hoofdstuk 3.1."""
+    """All eighteen groups with their UN numbers from chapter 3.1."""
     seed = json.loads(
         (Path(__file__).resolve().parents[1] / "seed" / "dg" / "segregation_groups.json")
         .read_text(encoding="utf-8")
@@ -367,20 +367,20 @@ def test_segregation_groups_are_loaded_from_imdg_3_1_4_4():
     assert codes == [f"SGG{n}" for n in range(1, 19)]
     assert len(seed["by_un"]) >= 500
 
-    # Zoutzuur hoort bij de zuren. De aparte SGG1a-markering voor sterke zuren
-    # verviel met Amendment 41-22 en mag nergens meer opduiken.
+    # Hydrochloric acid belongs with the acids. The separate SGG1a marking for
+    # strong acids lapsed with Amendment 41-22 and must not turn up anywhere.
     assert segregation_groups_for("1789") == ["SGG1"]
     assert not any("SGG1a" in codes for codes in seed["by_un"].values())
     assert segregation_groups_for("1824") == ["SGG18"]   # natronloog, alkali
     assert segregation_groups_for("1689") == ["SGG6"]    # natriumcyanide
-    assert segregation_groups_for("1203") == []          # benzine valt buiten de groepen
+    assert segregation_groups_for("1203") == []          # petrol falls outside the groups
 
     # Loodazide hoort in drie groepen tegelijk.
     assert set(segregation_groups_for("0129")) == {"SGG7", "SGG9", "SGG17"}
 
 
 def test_segregation_group_conflicts_are_reported():
-    """Zuren met alkaliën en zuren met cyaniden vragen om scheiding."""
+    """Acids with alkalis and acids with cyanides call for segregation."""
     entries = [{
         "line_id": 1,
         "vehicle": "Mix",
@@ -394,7 +394,7 @@ def test_segregation_group_conflicts_are_reported():
     assert "IMDG 7.2.5 (SGG1 × SGG18)" in rules
     assert "IMDG 7.2.5 (SGG1 × SGG6)" in rules
 
-    # Zonder conflicterende groepen blijft het stil.
+    # Without conflicting groups it stays quiet.
     assert check_imdg_segregation_groups(
         [{"line_id": 1, "vehicle": "x", "products": [{"un_number": "1789"}]}], "nl"
     ) == []
@@ -411,7 +411,7 @@ def test_imdg_segregation_warns_for_incompatible_classes():
     }]
     warnings = check_imdg_segregation(entries, "nl")
     assert len(warnings) == 1
-    # Klasse 3 × 5.1 = code 2 ("separated from"); nevengevaar telt mee.
+    # Class 3 × 5.1 = code 2 ("separated from"); a subsidiary risk counts.
     assert warnings[0]["code"] == "2"
     assert "Gescheiden van" in warnings[0]["message"]
 
@@ -425,7 +425,7 @@ def test_imdg_segregation_silent_for_compatible_classes():
             {"un_number": "1830", "class": "8"},
         ],
     }]
-    # 3 × 8 = X in de tabel: geen algemene scheiding voorgeschreven.
+    # 3 × 8 = X in the table: no general segregation prescribed.
     assert check_imdg_segregation(entries, "nl") == []
 
 

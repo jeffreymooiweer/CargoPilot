@@ -1,17 +1,17 @@
-"""Wat de compliance-endpoint binnen mag krijgen.
+"""What the compliance endpoint is allowed to receive.
 
-De controle stond tot nu toe op `list[dict]`: Pydantic keek er niet naar en de
-rekenlaag moest elke waarde zelf defensief omzetten. Dat maakt één soort fout
-onzichtbaar en juist die is hier gevaarlijk — een hoeveelheid van -5 L verlaagt
-het ADR-puntentotaal en spiegelt een vrijstelling voor die er niet is, en een
-profiel dat "IDMG" heet levert stilzwijgend géén zeevaartcontrole op in plaats
-van een foutmelding.
+The check used to be `list[dict]`: Pydantic did not look at it and the
+calculation layer had to convert every value defensively itself. That makes one
+kind of mistake invisible, and that is exactly the dangerous one here — a
+quantity of -5 L lowers the ADR points total and mirrors an exemption that does
+not exist, and a profile called "IDMG" silently produces no sea-transport check
+instead of an error.
 
-Deze modellen zetten die twee dingen vast aan de rand: een onbekend profiel of
-een onbruikbare hoeveelheid geeft HTTP 422 vóórdat er gerekend wordt. Wat de
-regelgeving zelf betreft blijven de velden bewust ruim — de klasse van een stof
-is 1.4S of 4.1 of straks iets wat nu nog niet bestaat, en daar hoort de
-regelgevingslaag over te gaan, niet het schema.
+These models pin those two things down at the edge: an unknown profile or an
+unusable quantity gives HTTP 422 before anything is computed. Where the
+regulations themselves are concerned the fields stay deliberately wide — the
+class of a substance is 1.4S or 4.1 or, before long, something that does not
+exist yet, and that is for the regulatory layer to rule on, not the schema.
 """
 from __future__ import annotations
 
@@ -22,7 +22,7 @@ from pydantic import BaseModel, ConfigDict, Field, field_validator
 
 
 class RegulatoryProfile(str, Enum):
-    """De canonieke profielnamen die frontend, API en rekenlaag delen."""
+    """The canonical profile names shared by frontend, API and engine."""
 
     ADR = "ADR"
     RID = "RID"
@@ -31,17 +31,17 @@ class RegulatoryProfile(str, Enum):
     IATA_DGR = "IATA_DGR"
 
 
-# ADR 1.1.3.6 kent categorie 0 t/m 4; 0 betekent "geen vrijstelling mogelijk".
+# ADR 1.1.3.6 has categories 0 to 4; 0 means "no exemption possible".
 TRANSPORT_CATEGORIES = {"0", "1", "2", "3", "4"}
 PACKING_GROUPS = {"I", "II", "III"}
 
 
 class DangerousGoodsProduct(BaseModel):
-    """Eén gevaarlijke stof op een positie.
+    """One dangerous substance in one position.
 
-    Alles is optioneel: de wizard stuurt onderweg halve invoer door en de
-    controle hoort dan "incomplete" te melden, niet om te vallen. Wat wél wordt
-    afgedwongen is dat een ingevulde waarde bruikbaar is.
+    Everything is optional: the wizard sends half-finished input along the way
+    and the check should then report "incomplete" rather than fall over. What
+    *is* enforced is that a value which has been filled in is usable.
     """
 
     model_config = ConfigDict(extra="allow")
@@ -56,14 +56,14 @@ class DangerousGoodsProduct(BaseModel):
     transport_category: str | None = None
     cargo_aircraft_only: bool | None = None
 
-    # Hoeveelheden komen als tekst binnen ("5 kg", "12,5 L"); de rekenlaag pelt
-    # het getal eruit. Hier wordt alleen geweigerd wat niet door de beugel kan.
+    # Quantities arrive as text ("5 kg", "12,5 L"); the engine peels the number
+    # out. Only what cannot possibly be right is refused here.
     adr_total_quantity: str | float | int | None = None
     q_net_quantity: str | float | int | None = None
     q_max_net_quantity: str | float | int | None = None
-    # Netto per binnenverpakking, voor de LQ/EQ-toets van 3.4 en 3.5.
+    # Net per inner packaging, for the LQ/EQ check of 3.4 and 3.5.
     net_per_inner_packaging: str | float | int | None = None
-    # Netto explosieve massa (klasse 1), voor de 1.1.3.6-punten en 5.4.1.2.1.
+    # Net explosive mass (class 1), for the 1.1.3.6 points and 5.4.1.2.1.
     net_explosive_mass: str | float | int | None = None
 
     @field_validator("packing_group")
@@ -94,11 +94,11 @@ class DangerousGoodsProduct(BaseModel):
     )
     @classmethod
     def _usable_quantity(cls, value: Any) -> Any:
-        """Een ingevulde hoeveelheid moet positief zijn.
+        """A quantity that has been filled in must be positive.
 
-        Leeg mag: dan is het veld nog niet ingevuld en meldt de controle dat
-        zelf. Nul of negatief mag niet — dat zou het puntentotaal verlagen of
-        een Q-component laten verdwijnen zonder dat iemand het merkt.
+        Empty is allowed: the field simply is not filled in yet and the check
+        reports that itself. Zero or negative is not — that would lower the
+        points total or make a Q component disappear without anybody noticing.
         """
         if value is None or not str(value).strip():
             return value
@@ -113,7 +113,7 @@ class DangerousGoodsProduct(BaseModel):
 
 
 class ShipmentPosition(BaseModel):
-    """Een voertuig, container of regel met de stoffen die erop staan."""
+    """A vehicle, container or line, with the substances on it."""
 
     model_config = ConfigDict(extra="allow")
 
@@ -124,11 +124,11 @@ class ShipmentPosition(BaseModel):
     @field_validator("line_id", mode="before")
     @classmethod
     def _line_id_as_text(cls, value: Any) -> Any:
-        """De wizard nummert zijn regels en stuurt line_id als getal.
+        """The wizard numbers its lines and sends line_id as a number.
 
-        Pydantic v2 maakt van een int geen str, dus 'line_id: 1' gaf een 422
-        en daarmee viel élke live controle vanuit de wizard uit — het paneel
-        toonde een validatiefout in plaats van een uitkomst.
+        Pydantic v2 does not turn an int into a str, so 'line_id: 1' gave a 422
+        and with it *every* live check from the wizard failed — the panel showed
+        a validation error instead of a result.
         """
         if isinstance(value, (int, float)) and not isinstance(value, bool):
             return str(int(value)) if float(value).is_integer() else str(value)
@@ -143,13 +143,13 @@ class ComplianceRequest(BaseModel):
     @field_validator("profiles", mode="before")
     @classmethod
     def _normalise_profile_aliases(cls, value: Any) -> Any:
-        """Accepteer tijdelijk de oude naam IATA, maar werk intern canoniek.
+        """Accept the old name IATA for now, but work canonically internally.
 
-        De wizard en rekenlaag gebruiken al `IATA_DGR`. De API gebruikte nog
-        `IATA`, waardoor de echte frontendpayload een 422 kreeg en een client die
-        wél `IATA` stuurde juist geen luchtvrachtcontrole activeerde. De alias is
-        alleen voor achterwaartse compatibiliteit; de response en rekenlaag zien
-        altijd `IATA_DGR`.
+        The wizard and the engine already use `IATA_DGR`. The API still used
+        `IATA`, which gave the real frontend payload a 422 while a client that
+        did send `IATA` activated no air-freight check at all. The alias exists
+        for backwards compatibility only; the response and the engine always see
+        `IATA_DGR`.
         """
         if value is None:
             return []
@@ -166,10 +166,10 @@ class ComplianceRequest(BaseModel):
         return normalised
 
     def as_dicts(self) -> list[dict[str, Any]]:
-        """De posities zoals de rekenlaag ze leest.
+        """The positions as the engine reads them.
 
-        `by_alias` houdt "class" op zijn eigen naam — in Python kan dat geen
-        veldnaam zijn, maar de hele rekenlaag en de frontend kennen hem zo.
+        `by_alias` keeps "class" under its own name — in Python that cannot be a
+        field name, but the whole engine and the frontend know it that way.
         """
         return [
             entry.model_dump(by_alias=True, exclude_none=True) for entry in self.entries

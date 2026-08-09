@@ -1,18 +1,18 @@
-"""De Dangerous Goods List van IMDG-code Amendment 42-24 uitlezen.
+"""Read out the Dangerous Goods List of IMDG Code Amendment 42-24.
 
-De lijst staat op ongeveer 170 liggende pagina's van 1180 punten breed, met
-achttien kolommen in een vast raster. De inventarisatie
-(scripts/survey_imdg_dgl.py) stelde vast dat zij alle 2.336 UN-nummers bevat
-die we nu uit de kaarten van 41-22 kennen, plus de elf die 42-24 toevoegt.
+The list sits on about 170 landscape pages 1180 points wide, with eighteen
+columns in a fixed grid. The survey (scripts/survey_imdg_dgl.py) established
+that it contains all 2,336 UN numbers we currently know from the 41-22 cards,
+plus the eleven 42-24 adds.
 
-Deze stap zet dat om in gegevens. Het gevaar bij zo'n tabel is niet dat de
-parser omvalt maar dat hij stilzwijgend één kolom verschuift: dan staan er
-2.300 stoffen met een verkeerde scheidingscode in de app en ziet niemand het.
-Daarom controleert dit script zichzelf tegen wat we al langs twee andere wegen
-weten — klasse en verpakkingsgroep uit ADR Tabel A, EmS uit de EmS Guide — en
-weigert het weg te schrijven als er te veel afwijkt.
+This step turns that into data. The danger with such a table is not that the
+parser falls over but that it silently shifts one column: then there are 2,300
+substances with the wrong segregation code in the app and nobody sees it. So this
+script checks itself against what we already know by two other routes — class and
+packing group from ADR Table A, EmS from the EmS Guide — and refuses to write out
+when too much deviates.
 
-Gebruik::
+Usage::
 
     python scripts/extract_imdg_dgl.py --out backend/seed/dg/imdg_dgl.json
     python scripts/extract_imdg_dgl.py --dry-run --pages 600,601,627
@@ -35,18 +35,18 @@ UA = {"User-Agent": "CargoPilot data extraction (github.com/jeffreymooiweer/Carg
 
 SEED = Path(__file__).resolve().parents[1] / "backend" / "seed" / "dg"
 
-# De kolommen dragen in de koptekst hun nummer uit de code: "(1)" boven het
-# UN-nummer, "(16b)" boven de scheiding. Die nummerband staat op elke
-# lijstpagina, precies boven de kolom die zij benoemt, en is daarmee de enige
-# bron die de gemeten celranden een náám kan geven zonder te tellen.
+# In the heading the columns carry their number from the Code: "(1)" above the
+# UN number, "(16b)" above the segregation. That number band appears on every
+# list page, precisely above the column it names, and is thereby the only source
+# that can give the measured cell rules a *name* without counting.
 #
-# Tellen ging namelijk mis. Een tabel met gemeten x-posities veronderstelde
-# negentien kolommen; de getekende randen leveren er eenentwintig, want de
-# lijst staat als spread op één liggend vel en de goot tussen beide helften
-# telt als cel mee, en kolom (12) was over het hoofd gezien. De uitlijning
-# klopte daardoor nergens, de parser viel terug op het midden tussen twee
-# koppen, en de vervoersnaam — die op x 68 begint, net links van die schatting
-# — belandde met haar eerste woord van elke regel in de UN-kolom:
+# Counting went wrong, you see. A table of measured x positions assumed nineteen
+# columns; the drawn rules produce twenty-one, because the list appears as a
+# spread on one landscape sheet and the gutter between the two halves counts as a
+# cell, and column (12) had been overlooked. The alignment was therefore wrong
+# everywhere, the parser fell back on the middle between two headings, and the
+# shipping name — which starts at x 68, just left of that estimate — ended up
+# with the first word of every line in the UN column:
 # "1354 TRINITROBENZENE, with by G".
 COLUMN_NAMES: dict[str, str] = {
     "1": "un_number",
@@ -71,52 +71,52 @@ COLUMN_NAMES: dict[str, str] = {
     "18": "_un_number_repeat",
 }
 
-# Zonder deze kolommen is een pagina niet als lijstpagina gelezen en wordt zij
-# liever overgeslagen dan half vastgelegd.
+# Without these columns a page has not been read as a list page and is skipped
+# rather than half recorded.
 REQUIRED_COLUMNS = frozenset({
     "un_number", "proper_shipping_name", "class", "packing_group",
     "special_provisions", "ems", "stowage_and_handling", "segregation",
     "properties_and_observations",
 })
 
-# De nummerband ligt tussen de koppen en de gegevens. Eronder, op y 140.5,
-# staan de verwijzingen naar de secties die elke kolom regelen; die dragen geen
-# haakjes en komen dus niet als nummer binnen.
+# The number band sits between the headings and the data. Below it, at y 140.5,
+# are the references to the sections governing each column; those carry no
+# brackets and therefore do not come in as a number.
 MARKER_BAND = (120.0, 150.0)
 MARKER = re.compile(r"^\((\d{1,2}[ab]?)\)$")
 
-# Twee of meer koppen maken een pagina tot lijstpagina. De scheidingsgroep-
-# lijsten van 3.1.4.4 beginnen ook met UN-nummers en horen er niet bij.
+# Two or more headings make a page a list page. The segregation group lists of
+# 3.1.4.4 also start with UN numbers and do not belong here.
 HEADINGS = ["UN No.", "Proper shipping name", "Class or division", "Subsidiary",
             "Packing group", "Special provisions", "Limited and excepted",
             "Portable tanks", "EmS", "Stowage and handling", "Segregation",
             "Properties and observations"]
 
-# Alles boven deze y is koptekst, alles eronder voettekst. De grens ligt onder
-# twee banden die er op het oog bij horen maar geen gegevens zijn: de
-# kolomnummers "(1) (2) (3) …" op y 131.7 en de verwijzingen naar de secties
-# die elke kolom regelen ("3.1.2", "2.0.1.3", "7.2–7.7") op y 140.5.
+# Everything above this y is header text, everything below it footer text. The
+# boundary lies below two bands that look as if they belong but are not data: the
+# column numbers "(1) (2) (3) …" at y 131.7 and the references to the sections
+# governing each column ("3.1.2", "2.0.1.3", "7.2–7.7") at y 140.5.
 BODY_TOP, BODY_BOTTOM = 150.0, 795.0
 
-# Terugval wanneer een pagina geen horizontale randen levert: woorden binnen
-# deze afstand in y horen dan tot dezelfde tekstregel. Als maat voor een
-# tabelrij is dat te grof — het plakte UN 0291 en UN 0292 tot één vermelding —
-# dus de rijbanden komen bij voorkeur van de getekende randen.
+# Fallback when a page yields no horizontal rules: words within this distance in
+# y then belong to the same text line. As a measure of a table row that is too
+# crude — it glued UN 0291 and UN 0292 into one entry — so the row bands come
+# from the drawn rules by preference.
 LINE_TOLERANCE = 3.0
 
-# Een vermelding die 42-24 heeft gewijzigd draagt een driehoekje vóór het
-# UN-nummer, en PyMuPDF levert dat als één woord: "△1361". Werd dat niet
-# herkend, dan gold de rij als vervolgregel en schoof zij bij de stof erboven
-# naar binnen — UN 1360 kreeg zo "4.3 4.2 4.2 4.2" als klasse en de EmS-codes
-# van vier stoffen achter elkaar. Het teken is bovendien zelf een gegeven: het
-# wijst precies de vermeldingen aan die het amendement heeft aangeraakt.
+# An entry amended by 42-24 carries a triangle before the UN number, and PyMuPDF
+# delivers that as one word: "△1361". If that was not recognised, the row counted
+# as a continuation line and was pulled into the substance above it — UN 1360 got
+# "4.3 4.2 4.2 4.2" as its class and the EmS codes of four substances in a row.
+# The character is moreover data in itself: it marks precisely the entries the
+# amendment touched.
 UN_CELL = re.compile(r"^([^\w\s]?)\s*(\d{4})$")
 
-# Hetzelfde, maar op één woord: waar in de eerste kolom een rij begint.
+# The same, but on a single word: where a row begins in the first column.
 UN_WORD = re.compile(r"^[^\w\s]?\d{4}$")
 
-# Een cel die met een UN-nummer begint maar doorloopt, betekent dat de tekst
-# over de kolomgrens heen is gelezen. Dat mag niet stilzwijgend passeren.
+# A cell that starts with a UN number but runs on means the text was read across
+# the column boundary. That must not pass silently.
 UN_OVERFLOW = re.compile(r"^[^\w\s]?\s*(\d{4})\s+\S")
 
 
@@ -128,14 +128,14 @@ def download(url: str, target: Path, timeout: int = 600) -> Path:
 
 
 def find_rules(page, tolerance: float = 2.5) -> list[float]:
-    """De x-posities van de verticale celranden van de tabel.
+    """The x positions of the table's vertical cell rules.
 
-    De lijst trekt geen doorlopende kolomlijn over de pagina maar omrandt elk
-    rijblok apart; de hoogste verticaal is een punt of tachtig hoog. Eisen dat
-    een lijn de halve pagina beslaat levert er dus nul op — dat was de eerste
-    poging. Wat de kolomgrenzen verraadt is dat dezelfde x steeds terugkomt:
-    een echte grens draagt tientallen randjes onder elkaar, een toevallige
-    streep één.
+    The list draws no continuous column line across the page but frames each row
+    block separately; the tallest vertical is some eighty points high. Requiring
+    a line to span half the page therefore yields none — that was the first
+    attempt. What gives the column boundaries away is that the same x keeps
+    recurring: a real boundary carries dozens of little rules under each other, a
+    stray line one.
     """
     counts: dict[float, int] = {}
     for drawing in page.get_drawings():
@@ -143,12 +143,12 @@ def find_rules(page, tolerance: float = 2.5) -> list[float]:
         if rect.width <= 2.0 and rect.height >= 10.0:
             key = round((rect.x0 + rect.x1) / 2, 1)
             counts[key] = counts.get(key, 0) + 1
-    # Een grens komt door de hele tabel terug; een enkele streep niet.
+    # A boundary recurs through the whole table; a single stroke does not.
     return _recurring(counts, tolerance)
 
 
 def column_markers(page) -> list[tuple[float, str]]:
-    """De kolomnummers uit de koptekst, met het midden waarboven ze staan."""
+    """The column numbers from the heading, with the centre they stand above."""
     found: list[tuple[float, str]] = []
     for x0, y0, x1, _y1, word, *_ in page.get_text("words"):
         if not MARKER_BAND[0] <= y0 < MARKER_BAND[1]:
@@ -161,14 +161,13 @@ def column_markers(page) -> list[tuple[float, str]]:
 
 def boundaries(rules: list[float], markers: list[tuple[float, str]]
                ) -> list[tuple[str, float, float]]:
-    """(naam, linkergrens, rechtergrens) per cel van het getekende raster.
+    """(name, left boundary, right boundary) per cell of the drawn grid.
 
-    De randen komen uit de tekening en zijn dus exact; de namen komen uit de
-    nummerband erboven. Valt er geen nummer in een cel, dan is dat de goot
-    tussen beide helften van de spread en blijft de cel naamloos. Vallen er
-    twéé in, dan sluiten randen en nummerband niet op elkaar aan en is de hele
-    indeling onbruikbaar — dan liever niets dan een raster dat er alleen
-    precies uitziet.
+    The rules come from the drawing and are therefore exact; the names come from
+    the number band above them. If no number falls in a cell, that is the gutter
+    between the two halves of the spread and the cell stays nameless. If *two*
+    fall in it, rules and number band do not line up and the whole layout is
+    unusable — then nothing is better than a grid that merely looks precise.
     """
     if len(rules) < 2 or not markers:
         return []
@@ -191,18 +190,18 @@ def boundaries(rules: list[float], markers: list[tuple[float, str]]
 
 
 def find_row_rules(page, tolerance: float = 2.5, coverage: float = 0.4) -> list[float]:
-    """De y-posities waar de ene rij eindigt en de volgende begint.
+    """The y positions where one row ends and the next begins.
 
-    De verticale celranden dragen dit al: elk segment is een punt of tachtig
-    hoog en loopt precies over één rijband, en er staan er achttien naast
-    elkaar — één per kolom. Hun boven- en onderkant zijn dus de rijgrenzen, en
-    een grens die achttien keer terugkomt is er een. Die y-waarden gooide de
-    eerste versie weg en ging op zoek naar horizontale lijnen, waarvan er te
-    weinig blijken te zijn; toen werd de hele pagina één band met twaalf
-    stoffen erin.
+    The vertical cell rules already carry this: each segment is some eighty
+    points high and runs across exactly one row band, and there are eighteen of
+    them side by side — one per column. Their tops and bottoms are therefore the
+    row boundaries, and a boundary that recurs eighteen times is one. The first
+    version threw those y values away and went looking for horizontal lines, of
+    which there turn out to be too few; then the whole page became one band with
+    twelve substances in it.
 
-    Levert dat niets op, dan alsnog de horizontale randen, gemeten op de
-    breedte die alle stukjes op dezelfde hoogte samen bestrijken.
+    If that yields nothing, the horizontal rules after all, measured on the width
+    that all the fragments at the same height cover together.
     """
     ends: dict[float, int] = {}
     for drawing in page.get_drawings():
@@ -238,7 +237,7 @@ def find_row_rules(page, tolerance: float = 2.5, coverage: float = 0.4) -> list[
 
 
 def un_number_rows(page, bounds: list[tuple[str, float, float]]) -> list[float]:
-    """De hoogtes waarop in de eerste kolom een UN-nummer staat."""
+    """The heights at which the first column holds a UN number."""
     found = []
     for x0, y0, x1, _y1, word, *_ in page.get_text("words"):
         if not BODY_TOP <= y0 <= BODY_BOTTOM:
@@ -250,14 +249,14 @@ def un_number_rows(page, bounds: list[tuple[str, float, float]]) -> list[float]:
 
 def row_rules_for(page, bounds: list[tuple[str, float, float]],
                   clearance: float = 3.0, tolerance: float = 4.0) -> list[float]:
-    """De rijgrenzen, aangevuld op de plaatsen waar de tabel er geen tekent.
+    """The row boundaries, filled in where the table draws none.
 
-    De getekende randen omranden een blók rijen zodra de vermeldingen kort
-    zijn. Op p627 belandden UN 1360, UN 1361 (twee verpakkingsgroepen) en
-    UN 1362 daardoor in één band en dus in één vermelding, met '4.3 4.2 4.2
-    4.2' als klasse. Elke rij begint met een UN-nummer in de eerste kolom, dus
-    net boven zo'n nummer hoort een grens — of de tabel daar nu een lijn trekt
-    of niet.
+    The drawn rules frame a *block* of rows as soon as the entries are short. On
+    p627 UN 1360, UN 1361 (two packing groups) and UN 1362 ended up in one band
+    that way and therefore in one entry, with '4.3 4.2 4.2 4.2' as the class.
+    Every row begins with a UN number in the first column, so just above such a
+    number there should be a boundary — whether the table draws a line there or
+    not.
     """
     candidates = list(find_row_rules(page))
     candidates += [y - clearance for y in un_number_rows(page, bounds)]
@@ -269,7 +268,7 @@ def row_rules_for(page, bounds: list[tuple[str, float, float]],
 
 
 def _recurring(counts: dict[float, int], tolerance: float) -> list[float]:
-    """Posities die vaak genoeg terugkomen om een echte rand te zijn."""
+    """Positions that recur often enough to be a real rule."""
     if not counts:
         return []
     merged: list[tuple[float, int]] = []
@@ -284,11 +283,10 @@ def _recurring(counts: dict[float, int], tolerance: float) -> list[float]:
 
 
 def column_of(x: float, bounds: list[tuple[str, float, float]]) -> str:
-    """De kolom waarin x valt, of "" voor wat buiten de tabel staat.
+    """The column x falls in, or "" for what sits outside the table.
 
-    Buiten de randen ligt de marge: paginanummers, het driehoekje dat een
-    gewijzigde vermelding aanwijst. Dat bij de dichtstbijzijnde kolom
-    optellen zou het als gegeven laten doorgaan.
+    Outside the rules lies the margin: page numbers, the triangle marking an
+    amended entry. Adding that to the nearest column would let it pass for data.
     """
     for name, left, right in bounds:
         if left <= x < right:
@@ -297,7 +295,7 @@ def column_of(x: float, bounds: list[tuple[str, float, float]]) -> str:
 
 
 def band_of(y: float, rules: list[float]) -> int:
-    """In welke rijband een woord valt, geteld tussen de horizontale randen."""
+    """Which row band a word falls in, counted between the horizontal rules."""
     band = 0
     for rule in rules:
         if y < rule:
@@ -308,25 +306,23 @@ def band_of(y: float, rules: list[float]) -> int:
 
 def page_lines(page, bounds: list[tuple[str, float, float]],
                row_rules: list[float] | None = None) -> list[dict[str, str]]:
-    """De rijen van een lijstpagina, per kolom uitgesplitst.
+    """The rows of a list page, split out per column.
 
-    Met de horizontale randen erbij is een rij precies wat tussen twee randen
-    staat, hoeveel tekstregels dat ook zijn: een lange vervoersnaam die
-    doorloopt hoort bij dezelfde vermelding, en de volgende vermelding begint
-    pas na de rand. Zonder die randen valt de indeling terug op afstand in y,
-    wat genoeg is om door te lezen maar twee korte vermeldingen aan elkaar kan
-    plakken.
+    With the horizontal rules included, a row is exactly what sits between two
+    rules, however many text lines that is: a long shipping name that runs on
+    belongs to the same entry, and the next entry only starts after the rule.
+    Without those rules the layout falls back on distance in y, which is enough
+    to read on with but can glue two short entries together.
 
-    Een woord hoort bij de kolom waarin zijn mídden valt, niet zijn linkerrand.
-    Een gewijzigde vermelding draagt een driehoekje vóór het UN-nummer, en dat
-    zet het woord "△1361" met zijn linkerrand buiten de tabel; op de linkerrand
-    afgaan liet die rijen zonder UN-nummer achter, waarna zij als vervolgregel
-    bij UN 1360 introkken — klasse '4.3 4.2 4.2 4.2'. Celtekst steekt verder
-    nooit over een kolomgrens heen, dus het midden wijst dezelfde kolom aan.
+    A word belongs to the column its *centre* falls in, not its left edge. An
+    amended entry carries a triangle before the UN number, and that puts the word
+    "△1361" with its left edge outside the table; going by the left edge left
+    those rows without a UN number, after which they were pulled into UN 1360 as
+    continuation lines — class '4.3 4.2 4.2 4.2'. Cell text moreover never
+    protrudes across a column boundary, so the centre points at the same column.
 
-    Binnen een rij worden de woorden op leesvolgorde gezet: eerst van boven
-    naar beneden, dan van links naar rechts, zodat een naam over twee regels in
-    de goede volgorde aan elkaar komt.
+    Within a row the words are put in reading order: first top to bottom, then
+    left to right, so that a name across two lines joins up in the right order.
     """
     rows: dict[Any, dict[str, list[tuple[float, float, str]]]] = defaultdict(
         lambda: defaultdict(list))
@@ -353,19 +349,20 @@ def page_lines(page, bounds: list[tuple[str, float, float]],
 
 
 def merge_rows(lines: list[dict[str, str]]) -> list[dict[str, str]]:
-    """Tekstregels samenvoegen tot vermeldingen.
+    """Join text lines into entries.
 
-    Een nieuwe vermelding begint waar de eerste kolom een UN-nummer draagt.
-    Alles daarna zonder eigen UN-nummer is een vervolgregel en hoort bij de
-    vorige — zo blijft "GASOLINE" niet los staan van de regel eronder.
+    A new entry begins where the first column carries a UN number. Everything
+    after it without a UN number of its own is a continuation line and belongs to
+    the previous one — that way "GASOLINE" does not end up detached from the line
+    below it.
     """
     entries: list[dict[str, str]] = []
     for cells in lines:
         first = cells.get("un_number", "").strip()
         if UN_OVERFLOW.match(first):
-            # Meelezen als vermelding zou een half afgekapte naam opleveren;
-            # overslaan zou hem verbergen. De cel blijft staan zoals hij is,
-            # zodat de telling in extract() hem als overloop kan melden.
+            # Reading it along as an entry would produce a truncated name;
+            # skipping it would hide it. The cell stays as it is, so the count in
+            # extract() can report it as an overflow.
             entries.append({k: v for k, v in cells.items() if not k.startswith("_")})
             continue
         clean = UN_CELL.match(first)
@@ -396,8 +393,8 @@ def extract(path: Path, only_pages: list[int] | None = None) -> tuple[list[dict]
     pages_read: list[int] = []
     skipped: list[int] = []
     rule_shapes: dict[tuple[float, ...], int] = {}
-    # Een pagina zonder leesbare nummerband mag meeliften op een pagina met
-    # exact hetzelfde randenpatroon; verder gaat zij ongelezen de telling in.
+    # A page without a readable number band may piggyback on a page with exactly
+    # the same rule pattern; otherwise it goes into the count unread.
     layouts: dict[tuple[float, ...], list[tuple[str, float, float]]] = {}
 
     with fitz.open(path) as document:
@@ -432,8 +429,8 @@ def extract(path: Path, only_pages: list[int] | None = None) -> tuple[list[dict]
                     clean["_page"] = number
                     entries.append(clean)
 
-    # Eén rasterindeling voor de hele lijst is het teken dat de detectie klopt;
-    # veel verschillende betekent dat er pagina's anders zijn opgemaakt.
+    # One grid layout for the whole list is the sign that the detection is right;
+    # many different ones mean some pages are laid out differently.
     shapes = sorted(rule_shapes.items(), key=lambda kv: -kv[1])
     overflow = [e["un_number"] for e in entries if UN_OVERFLOW.match(e["un_number"])]
     return entries, {
@@ -460,14 +457,14 @@ def load(name: str) -> Any:
 
 
 def division_matches(found: str, divisions: set[str]) -> bool:
-    """Of de klasse uit de lijst overeenkomt met wat ADR van deze stof zegt.
+    """Whether the class from the list agrees with what ADR says about this substance.
 
-    Twee dingen maken dit meer dan een vergelijking. Een UN-nummer kan in
-    Tabel A meerdere keren staan — UN 1950 (aerosolen) heeft een 2.1- en een
-    2.2-vermelding — dus er is niet één ADR-divisie maar een verzameling. En
-    de IMDG-code noemt aerosolen gewoon klasse 2 waar ADR de divisie geeft;
-    dat is geen tegenspraak maar een verschil in hoe fijn de twee regelingen
-    indelen. Een klasse die de kop is van een ADR-divisie telt daarom mee.
+    Two things make this more than a comparison. A UN number can appear in Table
+    A more than once — UN 1950 (aerosols) has a 2.1 and a 2.2 entry — so there is
+    not one ADR division but a set. And the IMDG Code simply calls aerosols class
+    2 where ADR gives the division; that is not a contradiction but a difference
+    in how finely the two schemes classify. A class that is the head of an ADR
+    division therefore counts.
     """
     found = found.strip()
     if not found or not divisions:
@@ -476,27 +473,27 @@ def division_matches(found: str, divisions: set[str]) -> bool:
 
 
 def adr_divisions() -> dict[str, set[str]]:
-    """De divisie per UN-nummer volgens ADR Tabel A.
+    """The division per UN number according to ADR Table A.
 
-    De kolom 'klasse' geeft bij gassen alleen '2' en bij explosieven alleen
-    '1'; de werkelijke divisie staat in de etikettenkolom respectievelijk de
-    classificatiecode. De Dangerous Goods List draagt die divisie wél voluit
-    ("1.1D", "2.3"), dus die moeten hier gelijk worden getrokken.
+    The 'class' column gives only '2' for gases and only '1' for explosives; the
+    actual division is in the labels column and the classification code
+    respectively. The Dangerous Goods List *does* carry that division in full
+    ("1.1D", "2.3"), so they have to be brought into line here.
 
-    Dit is een kopie van `parse_hazards()` uit
-    backend/app/services/dg/enrichment.py. Dit script draait in GitHub Actions
-    met alleen pymupdf geïnstalleerd en kan de applicatie niet importeren.
-    backend/tests/test_imdg_dgl_extraction.py bindt de twee aan elkaar, zodat
-    ze niet uit elkaar kunnen lopen.
+    This is a copy of `parse_hazards()` from
+    backend/app/services/dg/enrichment.py. This script runs in GitHub Actions
+    with only pymupdf installed and cannot import the application.
+    backend/tests/test_imdg_dgl_extraction.py binds the two together, so they
+    cannot drift apart.
     """
     divisions: dict[str, set[str]] = {}
     for entry in load("un_numbers.json") or []:
         hazard_class = str(entry.get("class") or "").strip()
         classification = str(entry.get("classification_code") or "").strip().upper()
-        # Etiketten normaliseren zoals de applicatie dat doet: "9A" is klasse 9,
-        # de modelletter hoort er niet bij. Zonder deze stap gaf UN 1950 hier
-        # "2.2" waar de app "2.1" zegt — precies het soort verschil dat een
-        # zelfcontrole waardeloos maakt.
+        # Normalise labels the way the application does: "9A" is class 9, the
+        # model letter is not part of it. Without this step UN 1950 gave "2.2"
+        # here where the app says "2.1" — exactly the kind of difference that
+        # makes a self-check worthless.
         tokens = []
         for raw in str(entry.get("labels") or "").split("+"):
             token = raw.strip().upper()
@@ -512,30 +509,30 @@ def adr_divisions() -> dict[str, set[str]]:
             division = tokens[0]
         elif not hazard_class and tokens:
             division = tokens[0]
-        # Klasse 1 en 2 worden altijd in divisies verdeeld; blijft er hier
-        # alleen "1" of "2" over, dan hééft ADR geen divisie gegeven. Dat
-        # gebeurt bij stoffen die over de weg verboden zijn (de etikettenkolom
-        # zegt dan BEFÖRDERUNG VERBOTEN) en bij voorwerpen die naar 5.2.2.1.12
-        # verwijzen. Over zee mogen die wél, en de IMDG-code noemt hun divisie
-        # gewoon. Zulke gevallen tegen elkaar leggen meet niets: de ene bron
-        # heeft er simpelweg geen antwoord op, en meetellen zou zeven valse
-        # afwijkingen opleveren.
+        # Classes 1 and 2 are always divided into divisions; if only "1" or "2"
+        # is left here, ADR *has* given no division. That happens with substances
+        # forbidden by road (the labels column then says BEFÖRDERUNG VERBOTEN)
+        # and with articles referring to 5.2.2.1.12. By sea those are permitted,
+        # and the IMDG Code simply names their division. Laying such cases against
+        # each other measures nothing: one source simply has no answer to it, and
+        # counting them would produce seven false deviations.
         if division and division not in {"1", "2"}:
             divisions.setdefault(str(entry.get("un", "")).strip(), set()).add(division)
     return divisions
 
 
 def cross_check(entries: list[dict[str, Any]]) -> dict[str, Any]:
-    """De uitkomst leggen naast wat we langs andere wegen al weten.
+    """Lay the outcome next to what we already know by other routes.
 
-    Klasse komt uit ADR Tabel A, EmS uit de EmS Guide. Beide zijn onafhankelijk
-    van deze PDF — dat is de hele bedoeling. Eerder kwam de klasse uit
-    card_data.json, maar dat zijn de UN-kaarten: óók een IMDG-bron, dus dan legt
-    de ene IMDG-lezing naast de andere. En die kaarten bleken voor UN 2984-2992,
-    3548 en 3550 volgnummers in het klasseveld te dragen in plaats van klassen,
-    wat elf valse afwijkingen opleverde die stuk voor stuk zijn nagelopen. Klopt de kolomindeling, dan moeten ze grotendeels
-    samenvallen; een verschoven kolom laat hier meteen honderden verschillen
-    zien in plaats van stilletjes de app in te lekken.
+    Class comes from ADR Table A, EmS from the EmS Guide. Both are independent of
+    this PDF — that is the whole point. Earlier the class came from
+    card_data.json, but those are the UN cards: an IMDG source too, so that lays
+    one IMDG reading next to another. And for UN 2984-2992, 3548 and 3550 those
+    cards turned out to carry sequence numbers in the class field instead of
+    classes, which produced eleven false deviations that were checked one by one.
+    If the column layout is right, they should largely coincide; a shifted column
+    shows hundreds of differences here straight away instead of quietly leaking
+    into the app.
     """
     adr = adr_divisions()
     ems_seed = (load("ems.json") or {}).get("entries", {})
@@ -574,11 +571,11 @@ def cross_check(entries: list[dict[str, Any]]) -> dict[str, Any]:
 
 
 def diagnose(path: Path, pages: list[int]) -> None:
-    """Tonen wat de parser op een pagina werkelijk aantreft.
+    """Show what the parser actually finds on a page.
 
-    Twee keer achter elkaar de verkeerde aanname doen kost meer tijd dan één
-    keer meten. Dit drukt de paginamaat af, wat er aan tekeningen op staat, de
-    eerste woorden met hun positie en de cellen die daaruit volgen.
+    Making the wrong assumption twice in a row costs more time than measuring
+    once. This prints the page size, what drawings are on it, the first words
+    with their position and the cells that follow from them.
     """
     import fitz
 

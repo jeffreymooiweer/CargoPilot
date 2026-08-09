@@ -34,8 +34,8 @@ class ImportColumn(BaseModel):
 class ImportAnalysis(BaseModel):
     columns: list[ImportColumn] = Field(default_factory=list)
     mapping: dict[str, int | None] = Field(default_factory=dict)
-    # "header" — de koptekst is herkend. "position" — er is op volgorde geraden
-    # en de interface hoort dat te laten bijstellen.
+    # "header" — the heading row was recognised. "position" — it was guessed
+    # from the order, and the interface should let that be adjusted.
     source: str = "none"
     has_header: bool = False
 
@@ -44,9 +44,8 @@ class WizardFileParseResult(BaseModel):
     text: str
     has_header: bool
     analysis: ImportAnalysis = Field(default_factory=ImportAnalysis)
-    # De rijen gaan mee terug zodat de interface een andere indeling kan laten
-    # toepassen zonder het bestand nog eens te sturen. Er blijft niets van op
-    # de server staan.
+    # The rows travel back so the interface can apply a different mapping
+    # without sending the file again. Nothing of it stays on the server.
     rows: list[list[str]] = Field(default_factory=list)
 
 
@@ -111,11 +110,11 @@ def remap_wizard_rows(
     payload: WizardRemapRequest,
     user: User = Depends(get_current_user),
 ):
-    """Dezelfde rijen, een andere kolomindeling.
+    """The same rows, a different column mapping.
 
-    Staat los van het uploaden omdat de server niets van het bestand bewaart:
-    de rijen reizen mee met het verzoek. Dat kost wat bandbreedte en levert op
-    dat er nooit een halve zending op de server blijft liggen.
+    Separate from the upload because the server keeps nothing of the file: the
+    rows travel with the request. That costs some bandwidth and buys the
+    guarantee that half a shipment never stays behind on the server.
     """
     if not payload.rows:
         raise HTTPException(status_code=400, detail="Geen regels om in te delen")

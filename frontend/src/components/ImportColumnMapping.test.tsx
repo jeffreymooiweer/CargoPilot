@@ -1,11 +1,11 @@
 /**
- * De kolomindeling van een geïmporteerd bestand.
+ * The column mapping of an imported file.
  *
- * De import raadt wanneer hij de koptekst niet herkent, en dat moet ook —
- * anders wordt elke import handwerk. Wat hier wordt vastgelegd is dat de
- * gebruiker ziet dát er geraden is, en genoeg te zien krijgt om de gok te
- * kunnen corrigeren. Een keuzelijst met "kolom 1, kolom 2, kolom 3" doet dat
- * niet; wat er in de kolom staat wel.
+ * The import guesses when it does not recognise the heading row, and it has to —
+ * otherwise every import becomes handwork. What is recorded here is that the
+ * user sees *that* it guessed, and gets to see enough to correct the guess. A
+ * dropdown saying "column 1, column 2, column 3" does not do that; what is in
+ * the column does.
  */
 import { fireEvent, render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
@@ -52,7 +52,7 @@ it("zegt het ook wanneer de koptekst wel is herkend", () => {
 
 it("toont per kolom wat erin staat, niet alleen een nummer", () => {
   render(<ImportColumnMapping analysis={GUESSED} onChange={vi.fn()} />);
-  // De gebruiker moet aan de inhoud kunnen zien welke kolom de omschrijving is.
+  // The user has to be able to tell from the content which column is the description.
   expect(
     screen.getAllByRole("option", { name: /Stalen hoekprofiel 80x80x8x6000/ }).length,
   ).toBeGreaterThan(0);
@@ -69,7 +69,7 @@ it("geeft een gewijzigde kolomkeuze door", () => {
   const onChange = vi.fn();
   render(<ImportColumnMapping analysis={GUESSED} onChange={onChange} />);
 
-  // Omschrijving van kolom 1 (de referenties) naar kolom 2 (de benamingen).
+  // Description from column 1 (the references) to column 2 (the names).
   fireEvent.change(screen.getAllByRole("combobox")[0], { target: { value: "1" } });
   expect(onChange).toHaveBeenCalledWith(
     { description: 1, quantity: 1, unit: 2 },
@@ -88,8 +88,8 @@ it("laat een kolom bewust leeg laten", () => {
 });
 
 it("laat de eerste regel als koptekst aanmerken", () => {
-  // Zonder herkende koptekst leest regel 1 mee als goederenregel; dat is vaak
-  // precies wat er misgaat.
+  // Without a recognised heading row, row 1 reads along as a goods line; that is
+  // often exactly what goes wrong.
   const onChange = vi.fn();
   render(<ImportColumnMapping analysis={GUESSED} onChange={onChange} />);
   fireEvent.click(screen.getByRole("checkbox"));

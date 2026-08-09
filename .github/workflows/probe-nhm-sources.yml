@@ -1,13 +1,13 @@
 name: Probe NHM sources
 
-# Verkenning van openbare bronnen voor de NHM-goederencodes (CIM vak 24).
-# Legt niets vast: zij meet of een bron bereikbaar is, of hij zescijferige
-# codes mét omschrijving levert, en of dat genoeg is om een keuzelijst op te
-# bouwen. Zescijferige codes verzinnen is hier geen optie — de vervoerder
-# rekent er zijn tarief mee en de douane leest hem.
+# A survey of public sources for the NHM goods codes (CIM box 24). Records
+# nothing: it measures whether a source is reachable, whether it supplies
+# six-digit codes *with* a description, and whether that is enough to build a
+# dropdown. Inventing six-digit codes is not an option here — the carrier
+# calculates its tariff with it and customs read it.
 #
-# Draait hier en niet lokaal omdat de ontwikkelomgeving geen uitgaand netwerk
-# heeft. Zie scripts/probe_nhm_sources.py.
+# Runs here and not locally because the development environment has no outbound
+# network. See scripts/probe_nhm_sources.py.
 
 on:
   workflow_dispatch:

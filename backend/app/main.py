@@ -33,9 +33,9 @@ limiter = Limiter(key_func=get_remote_address)
 def create_app() -> FastAPI:
     settings = get_settings()
     logging.basicConfig(level=settings.log_level)
-    # Vóór alles: een gepubliceerde ondertekeningssleutel is een app die zonder
-    # inloggen te gebruiken is. Daar wordt er zelf een voor gemaakt en bewaard —
-    # weigeren te starten liet de gebruiker alleen met een dode container achter.
+    # Before anything else: a published signing key is an app that can be used
+    # without logging in. One is made and stored for it here — refusing to start
+    # left the user with nothing but a dead container.
     apply_security_configuration(settings)
     app = FastAPI(title=settings.app_name)
     app.state.limiter = limiter
@@ -67,14 +67,14 @@ def create_app() -> FastAPI:
             "status": "ok",
             "app": settings.app_name,
             "version": get_version(),
-            # Welke edities deze installatie gebruikt, compact. Wie een fout
-            # meldt geeft hiermee meteen door waar zijn app mee rekent.
+            # Which editions this installation uses, compactly. Whoever reports a
+            # bug passes on straight away what their app computes with.
             "regulatory": summary(),
         }
 
     @app.get("/api/regulatory")
     def regulatory():
-        """Per regelset: editie, bron, geldigheid, errata en controlesom."""
+        """Per rule set: edition, source, validity, errata and checksum."""
         return build_manifest()
 
     @app.get("/api/setup-status")

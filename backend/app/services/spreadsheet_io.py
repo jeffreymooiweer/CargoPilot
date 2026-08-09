@@ -1,4 +1,4 @@
-"""Lezen en schrijven van import-templates (xlsx, csv, txt)."""
+"""Reading and writing import templates (xlsx, csv, txt)."""
 
 from __future__ import annotations
 
@@ -18,11 +18,11 @@ MAX_IMPORT_CELL_CHARS = 10_000
 
 
 class ImportLimitError(ValueError):
-    """De import overschrijdt een expliciete veiligheidsgrens."""
+    """The import exceeds an explicit safety limit."""
 
 
 async def read_limited_upload(file: Any, max_bytes: int = MAX_IMPORT_BYTES) -> bytes:
-    """Lees nooit meer dan de ingestelde limiet plus één detectiebyte."""
+    """Never read more than the configured limit plus one detection byte."""
     content = await file.read(max_bytes + 1)
     if len(content) > max_bytes:
         raise ImportLimitError(

@@ -138,7 +138,7 @@ def test_q_value_within_limit():
         {"class": "8", "q_net_quantity": "1", "q_max_net_quantity": "4"},
     ])]
     results = check_q_value(entries)
-    assert results[0]["q_value"] == 0.5  # 0.2 + 0.25 = 0.45 -> 0.5 naar boven
+    assert results[0]["q_value"] == 0.5  # 0.2 + 0.25 = 0.45 -> 0.5 rounded up
     assert results[0]["exceeded"] is False
 
 

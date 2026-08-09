@@ -1,18 +1,18 @@
 /**
- * Instellingen die van de server komen, in een app die al geverfd is.
+ * Settings that come from the server, in an app that is already painted.
  *
- * Twee dingen kunnen hier stukgaan, en geen van beide valt op zonder test.
+ * Two things can break here, and neither shows up without a test.
  *
- * Het eerste is de volgorde. De voorkeuren komen over het netwerk, maar er moet
- * al iets op het scherm staan voordat het antwoord binnen is. Daarom houdt de
- * app een kopie in `localStorage` en past die meteen toe; het antwoord van de
- * server wint daarna. Wie die kopie tot waarheid promoveert, krijgt precies het
- * gedrag terug dat we kwijt wilden: een gebruiker die op een tweede apparaat
- * inlogt en de app in het Nederlands en in het licht terugvindt.
+ * The first is the order. The preferences come over the network, but something
+ * has to be on the screen before the answer is in. So the app keeps a copy in
+ * `localStorage` and applies it straight away; the server's answer wins after
+ * that. Whoever promotes that copy to the truth gets back exactly the behaviour
+ * we wanted rid of: a user who signs in on a second device and finds the app in
+ * Dutch and in the light.
  *
- * Het tweede is de terugval. Een mislukt verzoek om instellingen mag de wizard
- * niet blokkeren — iemand die geen voorkeuren kan ophalen moet nog steeds een
- * vrachtbrief kunnen maken.
+ * The second is the fallback. A failed request for settings must not block the
+ * wizard — somebody who cannot fetch their preferences still has to be able to
+ * make a waybill.
  */
 import { render, screen, waitFor } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
@@ -69,8 +69,8 @@ describe("applyPreferences", () => {
   });
 
   it("laat 'system' het systeem volgen in plaats van een keuze te bewaren", () => {
-    // Een opgeslagen "light" zou het systeem blijven overstemmen; daarom wist
-    // applySystemTheme de sleutel in plaats van er een waarde in te zetten.
+    // A stored "light" would keep overruling the system; that is why
+    // applySystemTheme erases the key instead of putting a value in it.
     applyPreferences(preferences({ theme: "dark" }));
     applyPreferences(preferences({ theme: "system" }));
 
@@ -86,8 +86,8 @@ describe("applyPreferences", () => {
   });
 
   it("laat een taal die we niet kennen niet door naar i18next", () => {
-    // documentLanguage vangt het af: een onbekende code zou anders een leeg
-    // scherm opleveren, want er is geen vertaalbestand voor.
+    // documentLanguage catches it: an unknown code would otherwise produce an
+    // empty screen, because there is no translation file for it.
     applyPreferences(preferences({ language: "it" }));
 
     expect(i18n.changeLanguage).toHaveBeenCalledWith("nl");
@@ -121,7 +121,7 @@ describe("de voorkeurenprovider", () => {
   });
 
   it("blijft bruikbaar wanneer de instellingen niet op te halen zijn", async () => {
-    // Geen voorkeuren is geen reden om geen vrachtbrief te kunnen maken.
+    // No preferences is no reason not to be able to make a waybill.
     vi.spyOn(api, "mySettings").mockRejectedValue(new Error("offline"));
     vi.spyOn(api, "publicSettings").mockRejectedValue(new Error("offline"));
 

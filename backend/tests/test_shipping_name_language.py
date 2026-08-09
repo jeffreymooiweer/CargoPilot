@@ -1,19 +1,18 @@
-"""De juiste vervoersnaam is niet zomaar mee te vertalen met het scherm.
+"""The proper shipping name cannot simply be translated along with the screen.
 
-De ADR-tabel draagt per UN-nummer twee officiële benamingen — `name_en` en
-`name_de` — en de app pakte altijd de Engelse. Een Duitse afzender kreeg
-"GASOLINE" op zijn CMR terwijl "BENZIN ODER OTTOKRAFTSTOFF" er in Tabel A
-naast stond.
+The ADR table carries two official names per UN number — `name_en` and `name_de`
+— and the app always took the English one. A German consignor got "GASOLINE" on
+their CMR while "BENZIN ODER OTTOKRAFTSTOFF" was sitting next to it in Table A.
 
-Rechttrekken kan niet met één regel, want de modaliteiten verschillen:
+Putting that right cannot be done with one line, because the modes differ:
 
-* ADR 5.4.1.4.1 (en langs dezelfde lijn RID/ADN) laat een Duitse benaming toe;
-* IMDG 5.4.1.4.1 verlangt Engels, Frans of Spaans;
-* IATA DGR 8.1.2.1 verlangt Engels.
+* ADR 5.4.1.4.1 (and along the same lines RID/ADN) permits a German name;
+* IMDG 5.4.1.4.1 requires English, French or Spanish;
+* IATA DGR 8.1.2.1 requires English.
 
-"BENZIN" op een Shipper's Declaration is geen vertaalsmaak maar een geweigerde
-zending. Deze tests leggen die grens vast — inclusief het geval waarin iemand
-eerst een Duits wegdocument opmaakt en er daarna een zeetraject bij zet.
+"BENZIN" on a Shipper's Declaration is not a matter of translation taste but a
+refused consignment. These tests record that boundary — including the case where
+somebody first draws up a German road document and then adds a sea leg.
 """
 
 import pytest
@@ -26,8 +25,8 @@ from app.services.dg.naming import (
     resolve_for_profile,
 )
 
-# UN 1203 heet in Tabel A anders in het Duits dan in het Engels; dat maakt hem
-# geschikt om het verschil aan af te lezen.
+# UN 1203 is called something different in German from English in Table A; that
+# makes it suitable for reading the difference off.
 BENZINE = "1203"
 
 
@@ -38,7 +37,7 @@ def entry(un: str) -> dict:
 
 
 def test_the_adr_table_actually_carries_german_names():
-    """Zonder deze kolom heeft de rest van dit bestand geen grond."""
+    """Without this column the rest of this file has no ground to stand on."""
     assert entry(BENZINE)["name_de"].upper().startswith("BENZIN")
     assert entry(BENZINE)["name_en"].upper() == "GASOLINE"
 
@@ -50,20 +49,20 @@ def test_a_land_document_in_german_gets_the_german_name(profiles):
 
 @pytest.mark.parametrize("profiles", [["IMDG"], ["IATA_DGR"], ["ADR", "IMDG"], ["ADR", "IATA_DGR"]])
 def test_sea_and_air_keep_english_whatever_the_screen_says(profiles):
-    """Bij een multimodale zending voldoet Engels aan alle drie de regimes;
-    Duits aan maar één ervan."""
+    """For a multimodal consignment English satisfies all three regimes; German
+    only one of them."""
     assert proper_shipping_name(entry(BENZINE), "de", profiles) == "GASOLINE"
 
 
 @pytest.mark.parametrize("language", ["nl", "en", "fr", ""])
 def test_every_other_language_keeps_english(language):
-    """De ADR-tabel heeft geen Nederlandse kolom, dus Nederlands krijgt — net
-    als voorheen — de Engelse benaming."""
+    """The ADR table has no Dutch column, so Dutch gets — as before — the English
+    name."""
     assert proper_shipping_name(entry(BENZINE), language, ["ADR"]) == "GASOLINE"
 
 
 def test_an_entry_without_a_german_name_falls_back_instead_of_going_blank():
-    # De alleen-IMDG-vermeldingen uit 42-24 dragen geen Duitse naam.
+    # The IMDG-only entries from 42-24 carry no German name.
     assert proper_shipping_name({"name_en": "DISILANE", "name_de": ""}, "de", ["ADR"]) == "DISILANE"
 
 
@@ -74,12 +73,12 @@ def test_requires_english_name_is_case_and_whitespace_proof():
     assert not requires_english_name(None)
 
 
-# --- Het gevaarlijke geval: eerst weg, daarna zee -------------------------
+# --- The dangerous case: road first, sea afterwards ------------------------
 #
-# De taal van de benaming hoort bij het document, niet bij de zending. Eén
-# zending levert een CMR met de Duitse naam en een IMO DGF met de Engelse, uit
-# dezelfde gegevens. De export weigeren en de gebruiker "GASOLINE" laten
-# overtypen zou hem laten doen wat de app zelf al weet.
+# The language of the name belongs to the document, not to the consignment. One
+# consignment produces a CMR with the German name and an IMO DGF with the
+# English, from the same data. Refusing the export and making the user retype
+# "GASOLINE" would have them do what the app already knows.
 
 
 def german_goods():
@@ -120,7 +119,7 @@ def test_a_sea_document_is_not_refused_but_corrected():
     assert [e for e in errors if "5.4.1.4.1" in e] == [], "export mag hier niet blokkeren"
     said = [w for w in warnings if "5.4.1.4.1" in w]
     assert said, warnings
-    # De melding zegt wat er is gebeurd, niet wat de gebruiker nog moet doen.
+    # The message says what happened, not what the user still has to do.
     assert "BENZIN ODER OTTOKRAFTSTOFF" in said[0] and "GASOLINE" in said[0]
 
 
@@ -137,7 +136,7 @@ def test_the_road_document_keeps_the_german_name_and_says_nothing():
 
 
 def test_the_exported_sea_document_actually_carries_the_english_name():
-    """De waarschuwing is niet genoeg — het moet ook echt op het blad staan."""
+    """The warning is not enough — it has to actually be on the sheet."""
     import openpyxl
 
     from app.services.documents.exporter import export_document
@@ -173,7 +172,7 @@ def test_the_exported_road_document_carries_the_german_name():
 
 
 def test_the_description_line_follows_the_document_too():
-    """De 5.4.1.1.1-regel is de tekst die letterlijk in de goederenkolom komt."""
+    """The 5.4.1.1.1 line is the text that goes into the goods column verbatim."""
     from app.services.dg.autofill import description_line
 
     product = german_goods()[0]["products"][0]
@@ -183,8 +182,8 @@ def test_the_description_line_follows_the_document_too():
 
 
 def test_wording_the_user_wrote_themselves_is_left_alone():
-    """Een technische naam bij een n.e.g.-vermelding of een eigen aanvulling
-    kunnen we niet beoordelen, en al helemaal niet stilzwijgend vervangen."""
+    """A technical name with an n.o.s. entry or an addition of the user's own is
+    something we cannot assess, and certainly must not replace silently."""
     own = {"un_number": "1203", "proper_shipping_name": "BENZIN, ENTHÄLT ETHANOL"}
     name, replaced = resolve_for_profile(own, "IMDG")
     assert name == "BENZIN, ENTHÄLT ETHANOL"
@@ -199,8 +198,8 @@ def test_an_english_name_is_not_touched_and_not_reported():
 
 
 def test_an_empty_name_stays_empty_rather_than_being_invented():
-    """Een ontbrekende benaming is een aparte fout; die wordt al als ontbrekend
-    veld gemeld en mag hier niet stilletjes worden ingevuld."""
+    """A missing name is a separate fault; that is already reported as a missing
+    field and must not be quietly filled in here."""
     assert resolve_for_profile({"un_number": "1203"}, "IMDG") == ("", "")
 
 
@@ -209,19 +208,19 @@ def test_an_english_name_never_trips_the_check():
 
 
 def test_a_name_that_reads_the_same_in_both_languages_is_not_flagged():
-    """Veel vermeldingen luiden in beide talen hetzelfde; daar valt niets over
-    te melden en een waarschuwing zou alleen ruis zijn."""
+    """Many entries read the same in both languages; there is nothing to report
+    about those and a warning would be nothing but noise."""
     assert not is_german_name({"name_en": "TOLUENE", "name_de": "TOLUENE"}, "TOLUENE")
 
 
 def test_a_technical_name_in_brackets_is_not_flagged():
-    """Bij een n.e.g.-vermelding vult de afzender zelf een technische naam aan;
-    dat is geen taalfout."""
+    """With an n.o.s. entry the consignor adds a technical name themselves; that
+    is not a language fault."""
     nos = entry("3082")
     assert not is_german_name(nos, f"{nos['name_en']} (ALLYLALCOHOL)")
 
 
-# --- De lookup levert dezelfde naam als de export -------------------------
+# --- The lookup produces the same name as the export ----------------------
 
 
 @pytest.mark.parametrize("profiles,expected", [
@@ -229,7 +228,7 @@ def test_a_technical_name_in_brackets_is_not_flagged():
     (["IMDG"], "GASOLINE"),
 ])
 def test_the_lookup_suggests_the_name_that_the_document_will_carry(profiles, expected):
-    """De suggestie die de gebruiker aanklikt ís de tekst die op het document
-    belandt; die twee mogen niet uiteenlopen."""
+    """The suggestion the user clicks *is* the text that ends up on the document;
+    those two must not diverge."""
     result = offline_lookup(BENZINE, "de", profiles)
     assert result["proper_shipping_name"] == expected

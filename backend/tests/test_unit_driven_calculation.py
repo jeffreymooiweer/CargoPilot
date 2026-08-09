@@ -1,14 +1,14 @@
-"""Niet elke zending heeft afmetingen nodig om uitgerekend te worden.
+"""Not every consignment needs dimensions to be worked out.
 
-"1500 liter benzine" is volledig bepaald: de eenheid geeft het volume, het
-soortelijk gewicht van het herkende goed geeft de massa. Toch meldde de
-applicatie "dimensions_missing" en bleven gewicht en volume leeg, terwijl alles
-om het uit te rekenen op het scherm stond.
+"1500 litres of petrol" is fully determined: the unit gives the volume, the
+density of the recognised commodity gives the mass. Yet the application reported
+"dimensions_missing" and weight and volume stayed empty, while everything needed
+to work it out was on the screen.
 
-De oorzaak is het soort dat de moeite van het vastleggen waard is: de
-eenhedenmodule van v1.34.0 werd wél gebruikt door de keuzelijst en niet door de
-berekening. Er was een nette lijst eenheden, een API om ermee te rekenen, en een
-pijplijn die er nooit naar vroeg. Half aangesloten is niet aangesloten.
+The cause is the kind worth recording: the units module of v1.34.0 *was* used by
+the dropdown and not by the calculation. There was a neat list of units, an API
+to compute with them, and a pipeline that never asked for it. Half connected is
+not connected.
 """
 
 import pytest
@@ -29,7 +29,7 @@ def line(db, text: str) -> dict:
 
 
 def test_fifteen_hundred_litres_of_petrol_is_enough_to_calculate(db):
-    """745 kg/m³ maal 1,5 m³. Er is geen lengte, breedte of hoogte voor nodig."""
+    """745 kg/m³ times 1.5 m³. No length, width or height is needed for it."""
     result = line(db, "Benzine | 1500 | l")
     assert result["weight_total_kg"] == pytest.approx(1117.5)
     assert result["transport_volume_m3"] == pytest.approx(1.5)
@@ -45,30 +45,30 @@ def test_a_mass_unit_gives_the_volume_back(db):
 
 
 def test_the_spellings_people_type_still_arrive_at_the_calculation(db):
-    """De eenheid was jarenlang een vrij tekstveld; "liter" moet gewoon werken."""
+    """The unit was a free text field for years; "liter" simply has to work."""
     assert line(db, "Diesel | 1000 | liter")["weight_total_kg"] == pytest.approx(840.0)
 
 
 def test_an_unrecognised_substance_is_not_given_the_density_of_steel(db):
-    """match_material valt terug op staal wanneer niets past. Zonder deze grens
-    zou 1500 liter van een onbekende stof 11 775 kg wegen — een getal dat er even
-    stellig uitziet als het antwoord dat klopt."""
+    """match_material falls back to steel when nothing fits. Without this limit
+    1500 litres of an unknown substance would weigh 11,775 kg — a figure that
+    looks just as confident as the answer that is right."""
     result = line(db, "Onbekendestof | 1500 | l")
     assert result["weight_total_kg"] is None
     assert "material_not_recognized" in result["messages"]
 
 
 def test_a_line_without_a_usable_unit_still_says_what_is_missing(db):
-    """Vijftien pallets zonder gewicht per pallet blijven onbekend: een aantal
-    draagt geen natuurkunde in zich."""
+    """Fifteen pallets without a weight per pallet stay unknown: a count carries
+    no physics in itself."""
     result = line(db, "Pallets diversen | 15 | pallet")
     assert result["weight_total_kg"] is None
     assert "dimensions_missing" in result["messages"]
 
 
 def test_dimensions_still_win_where_they_exist(db):
-    """Een stalen plaat met afmetingen wordt nog steeds uit die afmetingen
-    gerekend; de eenheid springt alleen bij wanneer er niets anders is."""
+    """A steel plate with dimensions is still computed from those dimensions; the
+    unit only steps in when there is nothing else."""
     result = line(db, "Stalen plaat 2000x1000x10 mm | 2 | stuks")
     assert result["weight_total_kg"] is not None
     assert result["weight_total_kg"] > 0

@@ -1,23 +1,24 @@
-"""Een kuub gestapeld hout is geen kuub hout, en maten horen niet in de naam.
+"""A cubic metre of stacked timber is not a cubic metre of timber, and
+measurements do not belong in the name.
 
-Twee klachten uit de praktijk, en ze hangen samen: allebei gaan ze over het
-verschil tussen wat er is ingevoerd en wat de applicatie daarvan maakte.
+Two complaints from practice, and they are connected: both are about the
+difference between what was entered and what the application made of it.
 
-**Hout.** De dichtheid van eiken is 720 kg/m³ en dat is de dichtheid van het
-hout zelf. Tussen de planken van een stapel zit lucht. Wie 20 m³ eiken invoerde
-kreeg 14 400 kg terug — het gewicht van 20 m³ massief eiken, wat vrijwel niemand
-vervoert.
+**Timber.** The density of oak is 720 kg/m³ and that is the density of the wood
+itself. Between the planks of a stack there is air. Anyone entering 20 m³ of oak
+got 14,400 kg back — the weight of 20 m³ of solid oak, which almost nobody
+carries.
 
-v1.35.0 loste dat op met één verborgen factor van 0,65 voor al het hout. Dat was
-een gemiddelde dat niemands lading beschrijft: los gestort haardhout is lichter,
-een strak pakket zwaarder. Sinds v1.36.0 kiest de gebruiker de **vorm** en draagt
-die de factor — en dat geldt net zo goed voor staal (plaat tegenover schroot) en
-kunststof (granulaat tegenover maalgoed).
+v1.35.0 solved that with one hidden factor of 0.65 for all timber. That was an
+average describing nobody's load: loose firewood is lighter, a tight bundle
+heavier. Since v1.36.0 the user picks the **form** and the form carries the
+factor — and that applies just as much to steel (plate against scrap) and plastic
+(granulate against regrind).
 
-**Afmetingen.** Lengte, breedte en hoogte moesten in de omschrijving worden
-verstopt ("balk 200x200x3000") omdat de rekenpaden alleen keken naar wat er uit
-de tekst was gelezen. De kolommen waarin je ze kon invullen werkten alleen door
-naar de weergave.
+**Dimensions.** Length, width and height had to be hidden in the description
+("balk 200x200x3000") because the calculation paths looked only at what had been
+read out of the text. The columns you could fill them in worked through to the
+display only.
 """
 
 import pytest
@@ -51,14 +52,14 @@ def line(db, text: str, overrides: dict | None = None) -> dict:
 
 
 def test_a_cubic_metre_of_stacked_oak_is_not_a_cubic_metre_of_oak(db):
-    """720 kg/m³ maal 0,65 is 468 kg/m³ voor de stapel zoals hij vervoerd wordt."""
+    """720 kg/m³ times 0.65 is 468 kg/m³ for the stack as it is carried."""
     result = line(db, "Eiken | 20 | m3")
     assert result["weight_total_kg"] == pytest.approx(9360.0)
-    assert result["weight_total_kg"] < 20 * 720  # niet massief gerekend
+    assert result["weight_total_kg"] < 20 * 720  # not computed as solid
 
 
 def test_sheet_material_stacks_flat_and_keeps_its_own_density(db):
-    """Platen liggen op elkaar zonder tussenruimte; daar valt niets af te halen."""
+    """Plates lie on top of each other without a gap; there is nothing to take off."""
     assert line(db, "Multiplex | 20 | m3")["weight_total_kg"] == pytest.approx(13000.0)
 
 
@@ -79,16 +80,16 @@ def test_sawn_and_round_timber_defaults_to_stacked(name):
     [("solid", 14400.0), ("bundled", 10800.0), ("stacked", 9360.0), ("loose", 6480.0)],
 )
 def test_the_chosen_form_decides_the_weight(form, expected):
-    """Eén gemiddelde beschrijft niemands lading; los gestort haardhout is
-    lichter dan een strak pakket en dat mag de gebruiker zelf zeggen."""
+    """One average describes nobody's load; loose firewood is lighter than a
+    tight bundle and the user may say so themselves."""
     assert convert(20, "m3", 720, "wood", canonical_name="oak", form=form).mass_kg == (
         pytest.approx(expected)
     )
 
 
 def test_the_form_never_double_counts_a_bulk_density():
-    """Bij grind is het opgeslagen getal al een stortdichtheid. Daar nog eens
-    "los gestort" overheen leggen zou de lucht twee keer aftrekken."""
+    """For gravel the stored figure is already a bulk density. Laying "loose
+    bulk" over that as well would subtract the air twice."""
     assert not form_applies("bulk_material")
     assert available_forms("bulk_material") == []
     assert convert(20, "m3", 1600, "bulk_material", form="loose").mass_kg == 32000.0
@@ -101,8 +102,8 @@ def test_a_liquid_has_no_form_either():
 
 
 def test_steel_offers_the_same_choice_as_timber():
-    """Plaat tegenover schroot is hetzelfde onderscheid als balk tegenover
-    gestapeld hout, en het scheelt net zoveel."""
+    """Plate against scrap is the same distinction as beam against stacked
+    timber, and it makes just as much difference."""
     forms = [form.value for form in available_forms("metal")]
     assert "solid" in forms and "loose" in forms
     assert default_form("metal").value == "solid"
@@ -113,8 +114,8 @@ def test_steel_offers_the_same_choice_as_timber():
 
 
 def test_the_density_actually_used_is_reported():
-    """Een gebruiker die zich afvraagt waar 9 360 kg vandaan komt, hoort het te
-    kunnen zien: er is met 468 kg/m³ gerekend en niet met 720."""
+    """A user wondering where 9,360 kg comes from should be able to see it: it
+    was computed with 468 kg/m³ and not with 720."""
     out = convert(20, "m3", 720, "wood", canonical_name="oak")
     assert out.density_used_kg_m3 == pytest.approx(468.0)
     assert out.fill_factor == pytest.approx(0.65)
@@ -136,8 +137,9 @@ def test_dimensions_from_the_table_drive_the_calculation(db):
 
 
 def test_a_beam_with_dimensions_is_solid_not_stacked(db):
-    """Bij opgegeven maten is het volume het volume van het hout zelf; daar hoort
-    de stapelfactor juist niet bij. Alleen wie in kuubs invoert koopt lucht mee."""
+    """With measurements given, the volume is the volume of the timber itself;
+    the stacking factor precisely does not belong there. Only whoever enters
+    cubic metres buys air along with it."""
     result = line(
         db, "Eiken balk | 1 | stuks",
         {"line_id": 1, "width_m": 0.2, "height_m": 0.2, "length_m": 3.0},
@@ -146,7 +148,7 @@ def test_a_beam_with_dimensions_is_solid_not_stacked(db):
 
 
 def test_the_description_no_longer_has_to_carry_the_measurements(db):
-    """Dezelfde balk, één keer via de naam en één keer via de kolommen."""
+    """The same beam, once via the name and once via the columns."""
     from_name = line(db, "Stalen plaat 2000x1000x10 mm | 1 | stuks")
     from_fields = line(
         db, "Stalen plaat | 1 | stuks",
@@ -166,15 +168,15 @@ def test_entered_dimensions_are_echoed_back_in_centimetres(db):
 
 
 def test_a_length_on_its_own_is_enough_for_a_catalogue_profile(db):
-    """Een HEA 200 heeft een gewicht per meter; alleen de lengte ontbreekt nog."""
+    """An HEA 200 has a weight per metre; only the length is still missing."""
     result = line(db, "HEA 200 | 3 | stuks", {"line_id": 1, "length_m": 6.0})
     assert result["weight_total_kg"] is not None
     assert result["weight_total_kg"] > 0
 
 
 def test_a_partial_set_of_dimensions_does_not_silently_become_a_volume(db):
-    """Twee van de drie maten is geen blok. Er wordt dan niets uit gerekend in
-    plaats van met een verzonnen derde maat te vermenigvuldigen."""
+    """Two of the three measurements is not a block. Nothing is computed from it
+    rather than multiplying by an invented third measurement."""
     result = line(
         db, "Onbekendestof plaat | 1 | stuks",
         {"line_id": 1, "width_m": 2.0, "height_m": 1.0},

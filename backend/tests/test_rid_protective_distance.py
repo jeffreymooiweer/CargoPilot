@@ -1,15 +1,14 @@
-"""RID 7.5.3: de bepaling waar het ADR niet voor kon invallen.
+"""RID 7.5.3: the provision ADR could not stand in for.
 
-Voor bijna alles wat het spoor van de weg onderscheidt geldt dat CargoPilot de
-ADR-tabel gebruikte en dat er een grondslagmelding onder stond: bruikbaar als
-indicatie, toets het aan de tekst. Voor 7.5.3 kon dat niet, en het is de moeite
-waard waarom: **het ADR heeft er geen tegenhanger van.** 7.5.3 gaat over hoe een
-trein wordt samengesteld, en een vervoerseenheid over de weg rijdt alleen. Het
-ADR-hoofdstuk leverde hier dus niet een minder precies antwoord — het leverde er
-geen.
+For nearly everything that separates rail from road, CargoPilot used the ADR
+table with a basis note under it: usable as an indication, check it against the
+text. For 7.5.3 that was not possible, and it is worth saying why: **ADR has no
+counterpart to it.** 7.5.3 is about how a train is assembled, and a transport
+unit on the road travels alone. So the ADR chapter did not give a less precise
+answer here — it gave none.
 
-De tekst, woordelijk opgehaald uit RID 2025 (Aanhangsel C bij het COTIF, Bijlage),
-bladzijde 1103, met `scripts/read_land_regulations.py --doc rid --page 1101-1103`:
+The text, retrieved verbatim from RID 2025 (Appendix C to COTIF, Annex), page
+1103, with `scripts/read_land_regulations.py --doc rid --page 1101-1103`:
 
     "Every wagon, large container, portable tank or road vehicle containing
      substances or articles of Class 1 and bearing a placard conforming to models
@@ -21,21 +20,21 @@ bladzijde 1103, met `scripts/read_land_regulations.py --doc rid --page 1101-1103
      (a) at least 18 m, or
      (b) occupied by two 2-axle wagons or a wagon with 4 or more axles."
 
-Twee dingen die de tekst precies zegt en waar je makkelijk overheen leest:
+Two things the text says precisely and that are easy to read past:
 
-**De aanleiding is het plakkaat, niet de divisie.** Genoemd worden de modellen 1,
-1.5 en 1.6. Model 1.4 wordt níét genoemd, en dat is geen omissie — 1.4 heeft zijn
-eigen plakkaatmodel. Een wagen met uitsluitend goederen van divisie 1.4 valt dus
-buiten deze bepaling.
+**The trigger is the placard, not the division.** Models 1, 1.5 and 1.6 are
+named. Model 1.4 is *not* named, and that is not an omission — 1.4 has its own
+placard model. A wagon carrying only division 1.4 goods therefore falls outside
+this provision.
 
-**De tegenhanger is een korte lijst.** 2.1, 3, 4.1, 4.2, 4.3, 5.1 en 5.2 — de
-brandbare en oxiderende kanten. Klasse 8, 6.1 en 9 staan er niet bij, hoe
-gevaarlijk ze verder ook zijn.
+**The counterpart is a short list.** 2.1, 3, 4.1, 4.2, 4.3, 5.1 and 5.2 — the
+flammable and oxidising sides. Class 8, 6.1 and 9 are not among them, however
+dangerous they may otherwise be.
 
-En wat CargoPilot hier niet kan weten, zegt het: de rest van de trein staat niet
-in de applicatie. Een zending met één wagen klasse 1 en verder niets krijgt
-daarom geen "niets aan de hand" maar de bepaling zelf, om door te geven aan de
-vervoerder.
+And what CargoPilot cannot know here, it says: the rest of the train is not in
+the application. A consignment with one class 1 wagon and nothing else therefore
+gets not "nothing to worry about" but the provision itself, to pass on to the
+carrier.
 """
 
 import pytest
@@ -69,12 +68,12 @@ def test_klasse_1_en_een_brandbare_wagen_vragen_om_de_afstand():
 
 
 def test_de_tegenhangerlijst_is_geen_lijst_van_gevaarlijke_stoffen():
-    """Klasse 8 staat niet in 7.5.3, hoe bijtend het ook is.
+    """Class 8 is not in 7.5.3, however corrosive it may be.
 
-    Er blijft wel een melding staan, maar dan de algemene: de trein bevat meer
-    dan deze zending. Wat er níét mag gebeuren is dat de wagen met zoutzuur als
-    tegenhanger wordt aangewezen — dat zou een afstand voorschrijven die de
-    tekst niet vraagt.
+    A message does remain, but the general one: the train holds more than this
+    consignment. What must *not* happen is that the wagon with hydrochloric acid
+    is designated as the counterpart — that would prescribe a distance the text
+    does not ask for.
     """
     found = findings(wagons(("Wagen 1", [BLACK_POWDER]), ("Wagen 2", [ACID])))
 
@@ -83,7 +82,7 @@ def test_de_tegenhangerlijst_is_geen_lijst_van_gevaarlijke_stoffen():
 
 
 def test_divisie_14_zet_de_bepaling_niet_in_werking():
-    """Model 1.4 wordt in 7.5.3 niet genoemd; alleen 1, 1.5 en 1.6."""
+    """Model 1.4 is not named in 7.5.3; only 1, 1.5 and 1.6."""
     assert findings(wagons(("Wagen 1", [FIREWORKS_14]), ("Wagen 2", [GASOLINE]))) == []
 
 
@@ -95,7 +94,7 @@ def test_elke_genoemde_tegenhanger_telt(counterpart):
 
 
 def test_een_zending_zonder_tegenhanger_krijgt_de_bepaling_toch_te_horen():
-    """CargoPilot ziet de trein niet, en dat mag er niet uitzien als vrij baan."""
+    """CargoPilot does not see the train, and that must not look like a clear road."""
     found = findings(wagons(("Wagen 1", [BLACK_POWDER])))
 
     assert len(found) == 1
@@ -108,7 +107,7 @@ def test_zonder_klasse_1_gebeurt_er_niets():
 
 
 def test_binnen_een_wagen_gaat_het_niet_over_afstand_maar_over_samenlading():
-    """7.5.3 scheidt eenheden in de trein; binnen één wagen geldt 7.5.2."""
+    """7.5.3 separates units in the train; within one wagon 7.5.2 applies."""
     found = findings([{"vehicle": "Wagen 1", "products": [BLACK_POWDER, GASOLINE]}])
 
     assert len(found) == 1
@@ -126,12 +125,12 @@ def test_de_bepaling_hoort_bij_het_spoor_en_niet_bij_de_weg():
 
 
 def test_het_spoor_haalt_de_levensmiddelenbepaling_onder_zijn_eigen_naam_aan():
-    """RID 7.5.4 verwijst naar CW 28 in kolom (18), het ADR naar CV28.
+    """RID 7.5.4 refers to CW 28 in column (18), ADR to CV28.
 
-    De tekst van 7.5.4 is in beide regimes woordelijk gelijk, dus inhoudelijk
-    verandert er niets. Maar een CIM-vrachtbrief die "CV28" aanhaalt noemt een
-    code die in het RID niet bestaat, en dat is onjuiste informatie die de
-    applicatie zelf toevoegt — dezelfde fout als de tunnelcode op een CIM.
+    The text of 7.5.4 is word for word the same in both regimes, so nothing
+    changes in substance. But a CIM waybill citing "CV28" names a code that does
+    not exist in RID, and that is incorrect information the application adds
+    itself — the same fault as the tunnel code on a CIM.
     """
     toxic = {"un_number": "1230", "class": "3", "subsidiary_risks": "6.1",
              "proper_shipping_name": "METHANOL"}
@@ -145,10 +144,10 @@ def test_het_spoor_haalt_de_levensmiddelenbepaling_onder_zijn_eigen_naam_aan():
 
 
 def test_de_bevinding_komt_in_de_lijst_die_ook_de_export_leest():
-    """Een spoorbepaling die alleen op het scherm staat, staat niet op het document.
+    """A rail provision that is only on the screen is not on the document.
 
-    De export leest `adr_mixed_loading`; daarom staat 7.5.3 daarin en niet onder
-    een eigen sleutel die alleen het paneel kent.
+    The export reads `adr_mixed_loading`; that is why 7.5.3 is in there and not
+    under a key of its own that only the panel knows.
     """
     entries = wagons(("Wagen 1", [BLACK_POWDER]), ("Wagen 2", [GASOLINE]))
 

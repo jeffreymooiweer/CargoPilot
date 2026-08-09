@@ -153,7 +153,7 @@ def test_fill_cim_pdf_populates_boxes():
     )
     path = fill_pdf_document("cim", values, LINES, None, "nl")
     try:
-        # Export platgebakken: geen AcroForm meer, wel zichtbare tekst.
+        # Export flattened: no AcroForm left, but visible text.
         assert PdfReader(str(path)).get_fields() in (None, {})
         visible = _pdf_visible_text(path)
         assert "Firma A" in visible
@@ -161,12 +161,12 @@ def test_fill_cim_pdf_populates_boxes():
         assert "Stalen hoekprofiel" in visible
         assert "Rotterdam" in visible
         assert "462.7" in visible
-        # NHM verschijnt in CIM als letterbox-tekst; rastercontrole hieronder.
+        # NHM appears in the CIM as letterbox text; grid check below.
         doc = fitz.open(str(path))
         try:
             assert len(list(doc[0].widgets() or [])) == 0
             pix = doc[0].get_pixmap(matrix=fitz.Matrix(2, 2), clip=fitz.Rect(360, 390, 490, 420))
-            # Gebakken NHM-cijfers moeten pixels hebben (niet volledig wit).
+            # Flattened NHM digits have to have pixels (not entirely white).
             assert pix.samples.count(255) < len(pix.samples)
         finally:
             doc.close()
@@ -245,7 +245,7 @@ def test_fill_iata_pdf_strikes_non_applicable_and_lists_dg():
         assert "Lithium ion batteries" in visible
         assert "965" in visible
         assert "J. Jansen" in visible
-        # Niet-van-toepassing doorgestreept (XXX in gebakken content).
+        # Non-applicable struck through (XXX in the flattened content).
         assert "XXX" in visible
     finally:
         path.unlink(missing_ok=True)
@@ -288,7 +288,7 @@ def test_render_imo_pdf_contains_declaration_and_dg():
     try:
         assert _pdf_bytes_start(path) == b"%PDF-"
         text = "\n".join(page.extract_text() or "" for page in PdfReader(str(path)).pages)
-        # Vaste teksten (Paragraphs) worden betrouwbaar geëxtraheerd door pypdf.
+        # Fixed texts (Paragraphs) are extracted reliably by pypdf.
         assert "fully and accurately" in text  # verplichte IMO-verklaring
         assert "Apache License 2.0" in text  # disclaimer
         assert "IMO Multimodal Dangerous Goods Form" in text

@@ -1,19 +1,19 @@
-"""Welke editie van welke regelgeving er in deze installatie zit.
+"""Which edition of which regulations sits in this installation.
 
-CargoPilot rekent met vijf regelsets die elk hun eigen ritme van herzien
-hebben: ADR om de twee jaar, de IMDG-code om de twee jaar met een
-overgangsjaar, de IATA DGR élk jaar. Tot nu toe stond die herkomst verspreid
-over de seeds, de compliance-configuratie en de documentatie, en was er van
-buitenaf niet te zien wat een draaiende installatie werkelijk gebruikt.
+CargoPilot computes with five rule sets, each with its own revision rhythm: ADR
+every two years, the IMDG Code every two years with a transitional year, the
+IATA DGR *every* year. Until now that provenance was spread over the seeds, the
+compliance configuration and the documentation, and there was no way to see from
+the outside what a running installation actually uses.
 
-Dat is niet alleen boekhouding. De IATA DGR 67e editie geldt tot en met
-31 december 2026; op 1 januari 2027 rekent deze app met een verlopen editie
-en is er niets dat dat zegt. Het manifest draagt daarom per regelset een
-geldigheidsperiode, en `expired_rule_sets()` maakt er een uitspraak van.
+That is not merely bookkeeping. The IATA DGR 67th edition applies up to and
+including 31 December 2026; on 1 January 2027 this app computes with an expired
+edition and there is nothing that says so. The manifest therefore carries a
+validity period per rule set, and `expired_rule_sets()` turns that into a
+statement.
 
-De controlesom is er voor het omgekeerde geval: een seed die stilletjes is
-veranderd. Twee installaties die hetzelfde manifest-id melden, rekenen met
-dezelfde gegevens.
+The checksum is there for the opposite case: a seed that changed quietly. Two
+installations reporting the same manifest id compute with the same data.
 """
 from __future__ import annotations
 
@@ -28,10 +28,10 @@ from app.version import get_version
 SEED = Path(__file__).resolve().parents[2] / "seed" / "dg"
 CONFIG = Path(__file__).resolve().parents[1] / "config"
 
-# Per regelset: wat er geldt, waar het vandaan komt en welke bestanden het
-# dragen. Alleen wat aan een bron te staven is — waar iets niet is bijgehouden
-# staat dat er als zodanig, want "onbekend" is een bruikbaarder antwoord dan
-# een editienummer dat niemand heeft nagekeken.
+# Per rule set: what applies, where it comes from and which files carry it.
+# Only what can be substantiated against a source — where something has not been
+# kept up, it says so, because "unknown" is a more usable answer than an edition
+# number nobody has checked.
 RULE_SETS: list[dict[str, Any]] = [
     {
         "key": "adr",
@@ -41,8 +41,8 @@ RULE_SETS: list[dict[str, Any]] = [
         "source": "UNECE ADR 2025, Tabel A via rkstgr/adr-substances",
         "source_url": "https://unece.org/transport/dangerous-goods/adr-2025-files",
         "valid_from": "2025-01-01",
-        # ADR wordt om de twee jaar herzien; ADR 2027 vervangt deze editie, met
-        # een overgangstermijn tot 30 juni van dat jaar.
+        # ADR is revised every two years; ADR 2027 replaces this edition, with a
+        # transitional period to 30 June of that year.
         "valid_until": "2027-06-30",
         "errata": [],
         "covers": [
@@ -98,7 +98,7 @@ RULE_SETS: list[dict[str, Any]] = [
         "edition": "MSC.1/Circ.1588/Rev.3",
         "source": "IMO MSC.1/Circ.1588/Rev.3, EmS Guide — index per UN-nummer",
         "valid_from": "2022-05-01",
-        # Een circulaire heeft geen einddatum; zij geldt tot een Rev.4 verschijnt.
+        # A circular has no end date; it applies until a Rev.4 appears.
         "valid_until": None,
         "errata": [
             "De UN-nummers die 42-24 toevoegt staan nog niet in deze index; "
@@ -114,7 +114,7 @@ RULE_SETS: list[dict[str, Any]] = [
         "edition": "67e editie (2026)",
         "source": "IATA Dangerous Goods Regulations, 67e editie",
         "valid_from": "2026-01-01",
-        # De DGR wordt jaarlijks vervangen; editie 68 geldt vanaf 1-1-2027.
+        # The DGR is replaced annually; edition 68 applies from 1-1-2027.
         "valid_until": "2026-12-31",
         "errata": [
             "Addenda en operator/state variations worden niet bijgehouden; "
@@ -130,10 +130,10 @@ RULE_SETS: list[dict[str, Any]] = [
     {
         "key": "imdg_un_cards",
         "profiles": ["IMDG"],
-        # Verlopen én dat weten we: kolom 16a en 16b komen sinds v1.23.0 uit de
-        # Dangerous Goods List van 42-24. Wat de kaarten nog leveren — marine
-        # pollutant en bulk — is niet met de editie meeveranderd. Hier elke
-        # controle over waarschuwen zou het waarschuwen zelf waardeloos maken.
+        # Expired, and we know it: columns 16a and 16b have come from the 42-24
+        # Dangerous Goods List since v1.23.0. What the cards still supply —
+        # marine pollutant and bulk — did not change with the edition. Warning
+        # about this on every check would make the warning itself worthless.
         "superseded_by": "imdg",
         "name": "IMDG UN-kaarten — aanvullende stofgegevens",
         "edition": "41-22 (2023)",
@@ -153,11 +153,11 @@ RULE_SETS: list[dict[str, Any]] = [
 
 
 def _checksum(path: Path) -> dict[str, Any] | None:
-    """Inhoudshash van een gegevensbestand.
+    """Content hash of a data file.
 
-    De hash gaat over de inhoud en niet over de tijdstempel: die laatste
-    verschilt per build zonder dat de gegevens veranderen, en zou twee gelijke
-    installaties verschillend laten lijken.
+    The hash is over the content and not over the timestamp: the latter differs
+    per build without the data changing, and would make two identical
+    installations look different.
     """
     try:
         data = path.read_bytes()
@@ -186,7 +186,7 @@ def rule_set_status(rule_set: dict[str, Any], today: date) -> str:
 
 
 def build_manifest(today: date | None = None) -> dict[str, Any]:
-    """Het volledige manifest, met controlesommen en geldigheid."""
+    """The full manifest, with checksums and validity."""
     today = today or date.today()
     rule_sets = []
     digest = hashlib.sha256()
@@ -201,8 +201,8 @@ def build_manifest(today: date | None = None) -> dict[str, Any]:
             "datasets": datasets,
         })
 
-    # Eén id over alle gegevensbestanden samen: twee installaties die hetzelfde
-    # id melden, rekenen met dezelfde gegevens.
+    # One id over all data files together: two installations reporting the same
+    # id compute with the same data.
     return {
         "manifest_version": 1,
         "application_version": get_version(),
@@ -218,18 +218,17 @@ def build_manifest(today: date | None = None) -> dict[str, Any]:
 
 def stale_rule_sets(profiles: list[str] | None = None,
                     today: date | None = None) -> list[dict[str, Any]]:
-    """Regelsets die verlopen zijn zonder dat er iets voor in de plaats is.
+    """Rule sets that have expired without anything taking their place.
 
-    Dit is niet hetzelfde als `expired_rule_sets()`. De UN-kaarten van 41-22
-    zijn verlopen én bewust vervangen: kolom 16a en 16b komen uit de lijst van
-    42-24 en wat de kaarten nog leveren is niet met de editie meeveranderd.
-    Daarover bij elke controle waarschuwen zou het waarschuwen zelf waardeloos
-    maken — wie elke keer een melding wegklikt, klikt straks ook de melding weg
-    die er wél toe doet.
+    This is not the same as `expired_rule_sets()`. The 41-22 UN cards have
+    expired *and* been deliberately replaced: columns 16a and 16b come from the
+    42-24 list and what the cards still supply did not change with the edition.
+    Warning about that on every check would make the warning itself worthless —
+    whoever dismisses a message every time will dismiss the one that matters too.
 
-    Wat overblijft is het geval waarvoor dit bedoeld is: een editie die is
-    afgelopen en waar niemand iets aan heeft gedaan. Vandaag levert dat niets
-    op; op 1 januari 2027 levert het de IATA DGR op.
+    What remains is the case this is meant for: an edition that has run out and
+    that nobody has done anything about. Today that yields nothing; on 1 January
+    2027 it yields the IATA DGR.
     """
     today = today or date.today()
     wanted = {str(p).strip().upper() for p in (profiles or [])}
@@ -251,10 +250,10 @@ def stale_rule_sets(profiles: list[str] | None = None,
 
 
 def expired_rule_sets(today: date | None = None) -> list[str]:
-    """De regelsets die niet meer geldig zijn op deze datum.
+    """The rule sets that are no longer valid on this date.
 
-    Hiermee kan de app zeggen dat zij met een verlopen editie rekent, in
-    plaats van dat stil te blijven doen.
+    With this the app can say that it is computing with an expired edition,
+    instead of quietly going on doing so.
     """
     today = today or date.today()
     return [r["key"] for r in RULE_SETS if rule_set_status(r, today) == "expired"]
@@ -266,7 +265,7 @@ def _cached_summary() -> dict[str, str]:
 
 
 def summary(today: date | None = None) -> dict[str, Any]:
-    """Compacte vorm, klein genoeg om aan /api/health te hangen."""
+    """Compact form, small enough to hang off /api/health."""
     manifest = build_manifest(today)
     return {
         "manifest_id": manifest["manifest_id"],

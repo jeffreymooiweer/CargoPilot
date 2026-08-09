@@ -1,33 +1,32 @@
-"""Twee explosieven in één zending gaven een serverfout in plaats van een antwoord.
+"""Two explosives in one consignment gave a server error instead of an answer.
 
-Gemeld gedrag: een zending met twee colli van klasse 1 — bijvoorbeeld slagpijpjes
-(compatibiliteitsgroep B) naast een springstof (groep D), wat een alledaagse
-combinatie is — leverde geen nalevingsuitkomst op maar een fout. Zowel het paneel
-in de wizard als de export loopt over `check_compliance`, dus er kwam ook geen
-document uit.
+Reported behaviour: a consignment with two class 1 packages — detonators
+(compatibility group B) next to an explosive (group D), which is an everyday
+combination — produced no compliance result but an error. Both the panel in the
+wizard and the export run through `check_compliance`, so no document came out
+either.
 
-De oorzaak zat op de naad, zoals hier vaker. In v1.38.0 werd `class1_products`
-van een lijst etiketten een lijst tupels `(etiket, UN-nummer)`, omdat de
-voetnoten van 7.5.2.1 het UN-nummer nodig hebben. De melding van 7.5.2.2 een
-paar regels verderop bleef `", ".join(class1_products)` doen en kreeg vanaf dat
-moment tupels aangeboden: `TypeError`. Geen enkele test merkte het, en daar zit
-het tweede defect.
+The cause sat on the seam, as it often does here. In v1.38.0 `class1_products`
+went from a list of labels to a list of tuples `(label, UN number)`, because the
+footnotes of 7.5.2.1 need the UN number. The message of 7.5.2.2 a few lines
+further on kept doing `", ".join(class1_products)` and was offered tuples from
+that moment on: `TypeError`. Not a single test noticed, and that is where the
+second defect sits.
 
-Want waarom merkte niemand het? Omdat de groep werd afgelezen uit het
-*klasseveld* met een strak anker (`^1\\.\\d([A-S])$`), en ADR Tabel A zet in de
-klassekolom bij explosieven alleen "1" — de divisie met haar
-compatibiliteitsgroep staat in de classificatiecode. Voor elke rij die
-rechtstreeks uit de seed komt, vond die controle dus nooit een groep, ging
-7.5.2.2 nooit af, en bleef de kapotte regel onbereikbaar. Een controle die niet
-liep zag eruit als een controle die niets te melden had.
+Because why did nobody notice? Because the group was read from the *class field*
+with a tight anchor (`^1\\.\\d([A-S])$`), and ADR Table A puts only "1" in the
+class column for explosives — the division with its compatibility group is in the
+classification code. For every row that comes straight from the seed, that check
+therefore never found a group, 7.5.2.2 never fired, and the broken line stayed
+unreachable. A check that did not run looked like a check with nothing to report.
 
-Twee defecten die elkaar dekten: de stille versie maskeerde de luide. Daarom
-staan ze in één bestand, en daarom staat er onderaan een veegtest die niet naar
-een specifieke regel kijkt maar alleen eist dat geen enkele zending de controle
-kan laten struikelen.
+Two defects covering for each other: the silent one masked the loud one. That is
+why they are in one file, and why there is a sweep at the bottom that does not
+look at any specific rule but only demands that no consignment can make the check
+stumble.
 
-Gemeten op de echte gegevens vóór herstel: 344 van 4.000 willekeurige zendingen
-van twee tot vijf UN-nummers eindigden in een uitzondering (8,6%).
+Measured on the real data before the repair: 344 out of 4,000 random consignments
+of two to five UN numbers ended in an exception (8.6%).
 """
 
 import json
@@ -39,9 +38,9 @@ import pytest
 from app.services.dg.autofill import derive_product
 from app.services.dg.compliance import check_adr_mixed_loading, check_compliance
 
-# UN 0027 zwart buskruit is 1.1D, UN 0029 slagpijpjes zijn 1.1B. Samen laden mag
-# alleen voor zover tabel 7.5.2.2 het toestaat — de vraag die de applicatie moet
-# stellen in plaats van erop stuk te lopen.
+# UN 0027 black powder is 1.1D, UN 0029 detonators are 1.1B. Loading them
+# together is allowed only as far as table 7.5.2.2 permits — the question the
+# application has to ask instead of breaking on it.
 BLACK_POWDER = {
     "un_number": "0027",
     "proper_shipping_name": "BLACK POWDER",
@@ -54,7 +53,7 @@ DETONATORS = {
     "class": "1.1B",
     "classification_code": "1.1B",
 }
-# Zoals Tabel A het werkelijk levert: klasse "1", groep in de classificatiecode.
+# As Table A actually delivers it: class "1", group in the classification code.
 DETONATORS_TABLE_A = dict(DETONATORS, **{"class": "1"})
 
 
@@ -67,10 +66,10 @@ def compat_warnings(warnings):
 
 
 def test_twee_compatibiliteitsgroepen_geven_een_antwoord_en_geen_fout():
-    """De crash zelf: dit riep tot v1.40.1 `TypeError` op in plaats van te melden.
+    """The crash itself: until v1.40.1 this raised `TypeError` instead of reporting.
 
-    Sinds v1.41.0 wordt de tabel ook echt gelezen, dus wat er uit komt is het
-    vakje B × D — voetnoot (a) — en niet meer de vraag teruggegeven.
+    Since v1.41.0 the table is actually read, so what comes out is the cell B × D
+    — footnote (a) — and no longer the question handed back.
     """
     found = compat_warnings(load(BLACK_POWDER, DETONATORS))
 
@@ -80,18 +79,19 @@ def test_twee_compatibiliteitsgroepen_geven_een_antwoord_en_geen_fout():
 
 
 def test_de_melding_noemt_de_betrokken_colli():
-    """`products` droeg tupels; wat de gebruiker zoekt is welke colli het betreft."""
+    """`products` carried tuples; what the user is looking for is which packages
+    are concerned."""
     found = compat_warnings(load(BLACK_POWDER, DETONATORS))[0]
 
     assert found["products"] == "UN 0029 DETONATORS, NON-ELECTRIC, UN 0027 BLACK POWDER"
 
 
 def test_de_groep_komt_uit_de_classificatiecode_niet_uit_de_klassekolom():
-    """Tabel A zegt in de klassekolom "1"; de groep staat in de classificatiecode.
+    """Table A says "1" in the class column; the group is in the classification code.
 
-    Dit is het stille defect. Zolang de groep alleen uit het klasseveld werd
-    gelezen, ging 7.5.2.2 op echte seedgegevens nooit af — en werd de crash
-    erboven nooit bereikt.
+    This is the silent defect. As long as the group was read from the class field
+    only, 7.5.2.2 never fired on real seed data — and the crash above was never
+    reached.
     """
     found = compat_warnings(load(BLACK_POWDER, DETONATORS_TABLE_A))
 
@@ -100,17 +100,17 @@ def test_de_groep_komt_uit_de_classificatiecode_niet_uit_de_klassekolom():
 
 
 def test_een_enkele_groep_geeft_geen_melding():
-    """7.5.2.2 gaat over verschíllende groepen; twee keer D is niets aan de hand."""
+    """7.5.2.2 is about *different* groups; twice D is nothing to worry about."""
     assert compat_warnings(load(BLACK_POWDER, dict(BLACK_POWDER, un_number="0028"))) == []
 
 
 def test_klasse_1_naast_klasse_1_met_nevengevaar_laat_de_zeecontrole_staan():
-    """IMDG 7.2.4: een "*" verwijst door naar 7.2.7 en mag geen cijfer verdringen.
+    """IMDG 7.2.4: a "*" refers on to 7.2.7 and must not displace a digit.
 
-    De tabel geeft voor klasse 1 tegen klasse 1 een "*". Stond die er als eerste,
-    dan vergeleek de volgende cel `int(value) > int("*")` en viel de controle om.
-    UN 0018 draagt nevengevaren 6.1 en 8, dus een tweede klasse 1-collo levert
-    precies die volgorde op: eerst de "*", daarna een cijfer.
+    For class 1 against class 1 the table gives a "*". If that came first, the
+    next cell compared `int(value) > int("*")` and the check fell over. UN 0018
+    carries subsidiary risks 6.1 and 8, so a second class 1 package produces
+    exactly that order: first the "*", then a digit.
     """
     entries = [{"line_id": "L1", "products": [
         {"un_number": "0018", "class": "1.2G", "classification_code": "1.2G",
@@ -123,8 +123,8 @@ def test_klasse_1_naast_klasse_1_met_nevengevaar_laat_de_zeecontrole_staan():
 
     table = [f for f in findings if f["rule"].startswith("IMDG 7.2.4")]
     assert table, "de klassescheidingstabel hoort een uitspraak te doen"
-    # Het cijfer wint van de "*": 4 is "separated longitudinally by an
-    # intervening complete compartment or hold from".
+    # The digit beats the "*": 4 is "separated longitudinally by an intervening
+    # complete compartment or hold from".
     assert table[0]["code"] == "4"
 
 
@@ -135,14 +135,15 @@ def _seed_un_numbers() -> list[str]:
 
 @pytest.mark.parametrize("profile", ["ADR", "RID", "ADN", "IMDG", "IATA_DGR"])
 def test_geen_enkele_zending_laat_de_nalevingscontrole_struikelen(profile):
-    """Een veegtest over de echte gegevens, langs de weg die de wizard ook loopt.
+    """A sweep over the real data, along the path the wizard also takes.
 
-    Beide defecten hierboven zijn zo gevonden en niet door te lezen. Ze zijn ook
-    alleen langs deze weg te vinden: op de kale seedrij staat "1" in de
-    klassekolom en gebeurt er niets, pas ná `derive_product` — wat de interface
-    invult zodra iemand een UN-nummer kiest — draagt het product de divisie.
+    Both defects above were found this way and not by reading. They can also only
+    be found this way: on the bare seed row the class column says "1" and nothing
+    happens; only *after* `derive_product` — what the interface fills in as soon
+    as somebody picks a UN number — does the product carry the division.
 
-    Vast ingezaaid, zodat een fout van vandaag ook morgen dezelfde fout is.
+    Seeded with a fixed value, so that a fault of today is the same fault
+    tomorrow.
     """
     uns = _seed_un_numbers()
     rng = random.Random(20260808)

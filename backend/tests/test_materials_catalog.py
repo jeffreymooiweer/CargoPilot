@@ -1,28 +1,27 @@
-"""De goederendatabase, en de eigenschappen waar de rest van de app op leunt.
+"""The goods database, and the properties the rest of the app leans on.
 
-Deze database is gegroeid van 400 naar ruim 1.000 goederen. Bij 400 kon je er
-nog met het oog naar kijken; bij 1.000 niet meer, en juist dan sluipen de fouten
-erin die niemand opmerkt omdat ze eruitzien als een gewone regel.
+This database has grown from 400 to well over 1,000 commodities. At 400 you could
+still look at it with the naked eye; at 1,000 you cannot, and that is exactly
+when the faults creep in that nobody spots because they look like an ordinary row.
 
-Wat hier wordt vastgelegd, en waarom telkens:
+What is recorded here, and why each time:
 
-- **Geen twee vermeldingen van hetzelfde goed.** De gebruiker kiest er één, en
-  welke hij kiest bepaalt zijn gewicht. Tijdens de uitbreiding bleken achttien
-  kandidaten een bestaand goed te herhalen — dat is niet zichtbaar aan de
-  vermelding zelf, alleen aan de botsing.
-- **Geen alias die twee goederen tegelijk claimt.** Een alias is een zoeksleutel;
-  als twee goederen dezelfde sleutel dragen, beslist de volgorde in de database
-  wie er wint, en dat is geen antwoord maar toeval.
-- **Drie talen, altijd.** `test_languages.py` bewaakt dat al voor élk bestand met
-  vertaalde tekst; hier staat het nog eens per goed, omdat de naam die de
-  gebruiker aanklikt de omschrijving op zijn vrachtbrief wordt.
-- **Een categorie die `units.py` kent.** De categorie bepaalt de
-  dichtheidsgrondslag (stort, vloeistof, massief, gestapeld) en welke eenheden de
-  goederenstap aanbiedt. Een categorie die daar niet in staat valt stilzwijgend
-  terug op de standaard — 20 m³ grind maal een massieve dichtheid is precies de
-  fout waar `units.py` voor bestaat.
-- **De dichtheid ligt binnen zijn eigen bandbreedte.** Een tikfout in min of max
-  maakt de opgegeven waarde onmogelijk zonder dat er iets omvalt.
+- **No two entries of the same commodity.** The user picks one, and which one
+  they pick determines their weight. During the expansion eighteen candidates
+  turned out to repeat an existing commodity — that is not visible from the entry
+  itself, only from the collision.
+- **No alias claiming two commodities at once.** An alias is a search key; if two
+  commodities carry the same key, the order in the database decides who wins, and
+  that is not an answer but coincidence.
+- **Three languages, always.** `test_languages.py` already guards that for
+  *every* file with translated text; here it is stated once more per commodity,
+  because the name the user clicks becomes the description on their waybill.
+- **A category `units.py` knows.** The category determines the density basis
+  (bulk, liquid, solid, stacked) and which units the goods step offers. A
+  category that is not in there falls back silently to the default — 20 m³ of
+  gravel times a solid density is precisely the fault `units.py` exists for.
+- **The density lies within its own band.** A typo in min or max makes the stated
+  value impossible without anything falling over.
 """
 
 import json
@@ -37,7 +36,7 @@ MATERIALS = json.loads(SEED.read_text(encoding="utf-8"))
 
 
 def test_de_database_is_flink_gegroeid_en_blijft_dat():
-    """Een ondergrens, zodat een half doorgevoerde samenvoeging opvalt."""
+    """A lower bound, so a half-completed merge stands out."""
     assert len(MATERIALS) >= 1000
 
 
@@ -74,7 +73,7 @@ def test_elk_goed_heeft_een_naam_in_alle_drie_de_talen(language):
 
 
 def test_elke_categorie_is_er_een_die_units_kent():
-    """Anders valt de dichtheidsgrondslag stil terug op de standaard."""
+    """Otherwise the density basis falls back quietly to the default."""
     unknown = sorted({
         item["category"] for item in MATERIALS if item["category"] not in BASIS_BY_CATEGORY
     })
@@ -97,18 +96,18 @@ def test_de_dichtheid_ligt_tussen_het_minimum_en_het_maximum():
 
 
 def test_geen_enkele_dichtheid_is_nul_of_negatief():
-    """Nul zou een deling verderop stilzwijgend laten ontsporen."""
+    """Zero would let a division further along go off the rails silently."""
     wrong = [item["canonical_name"] for item in MATERIALS if item["density_kg_m3"] <= 0]
 
     assert wrong == []
 
 
 def test_de_dichtheden_blijven_binnen_wat_natuurkundig_kan():
-    """Ruime grenzen: lichter dan piepschuim of zwaarder dan iridium is een tikfout.
+    """Generous bounds: lighter than polystyrene or heavier than iridium is a typo.
 
-    Iridium (22.560 kg/m³) is het zwaarste dat hier staat en EPS-korrels (20)
-    het lichtste. De grenzen liggen er ruim omheen; deze test vangt een
-    verdwaalde nul, geen discussie over de derde decimaal.
+    Iridium (22,560 kg/m³) is the heaviest thing in here and EPS beads (20) the
+    lightest. The bounds sit well outside those; this test catches a stray zero,
+    not a discussion about the third decimal.
     """
     outliers = [
         (item["canonical_name"], item["density_kg_m3"])
@@ -120,12 +119,12 @@ def test_de_dichtheden_blijven_binnen_wat_natuurkundig_kan():
 
 
 def test_de_talen_verschillen_waar_de_woorden_verschillen():
-    """Een steekproef die aantoont dat er echt vertaald is en niet gekopieerd.
+    """A sample showing there was really translation and not copying.
 
-    Sommige goederen heten in drie talen hetzelfde — "Aluminium", "Merbau",
-    "Bulgur" — en dat is juist. Maar als het overgrote deel identiek zou zijn,
-    was er niet vertaald maar geplakt, en dan is de Duitse kolom een belofte die
-    niet wordt waargemaakt.
+    Some commodities are called the same in three languages — "Aluminium",
+    "Merbau", "Bulgur" — and that is right. But if the vast majority were
+    identical, there had been no translation but pasting, and then the German
+    column is a promise that is not kept.
     """
     differing = [
         item

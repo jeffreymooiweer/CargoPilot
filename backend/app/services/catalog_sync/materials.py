@@ -195,7 +195,7 @@ def upsert_materials(db: Session, records: list[MaterialRecord]) -> tuple[int, i
 
 
 def merge_seed_material_aliases(db: Session, records: list[MaterialRecord]) -> None:
-    """Behoud extra aliassen uit de lokale seed wanneer canonical_name overeenkomt."""
+    """Keep extra aliases from the local seed when canonical_name matches."""
     by_name = {r.canonical_name: r for r in records}
     for material in db.query(Material).all():
         if material.canonical_name not in by_name:

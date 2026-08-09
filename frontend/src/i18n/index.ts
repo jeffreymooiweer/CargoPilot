@@ -13,8 +13,8 @@ i18n.use(initReactI18next).init({
     de: { translation: de },
     fr: { translation: fr },
   },
-  // Een opgeslagen taal die we niet (meer) kennen mag de interface niet leeg
-  // laten; documentLanguage valt in dat geval terug op Nederlands.
+  // A stored language we do not (or no longer) know must not leave the
+  // interface empty; documentLanguage falls back to Dutch in that case.
   lng: documentLanguage(localStorage.getItem("cargopilot-lang") || DEFAULT_LANGUAGE),
   fallbackLng: "en",
   interpolation: { escapeValue: false },

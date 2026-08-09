@@ -1,15 +1,15 @@
-"""Rekent de app met een verlopen regelset, dan hoort zij dat te zeggen.
+"""If the app computes with an expired rule set, it should say so.
 
-Het manifest wist sinds v1.26.0 al dat de IATA DGR op 31 december 2026 afloopt,
-maar zei het alleen tegen wie `/api/regulatory` opvroeg. Een gebruiker die in
-2027 een luchtvrachtverklaring maakt, zag niets.
+The manifest has known since v1.26.0 that the IATA DGR runs out on 31 December
+2026, but said it only to whoever asked `/api/regulatory`. A user making an air
+freight declaration in 2027 saw nothing.
 
-Het verschil dat deze tests bewaken zit tussen "verlopen" en "verlopen én
-vervangen". De UN-kaarten van 41-22 zijn verlopen, maar kolom 16a en 16b komen
-sinds v1.23.0 uit de lijst van 42-24 en wat de kaarten nog leveren is niet met
-de editie meeveranderd. Daar bij élke controle over waarschuwen zou het
-waarschuwen zelf waardeloos maken: wie elke keer een melding wegklikt, klikt
-straks ook de melding weg die er wél toe doet.
+The difference these tests guard sits between "expired" and "expired *and*
+replaced". The 41-22 UN cards have expired, but columns 16a and 16b have come
+from the 42-24 list since v1.23.0 and what the cards still supply did not change
+with the edition. Warning about that on *every* check would make the warning
+itself worthless: whoever dismisses a message every time will dismiss the one
+that matters too.
 """
 
 from datetime import date
@@ -34,7 +34,7 @@ ENTRIES = [{
 
 
 def test_an_expired_but_superseded_rule_set_does_not_warn():
-    """De UN-kaarten zijn verlopen en dat is bekend en opgevangen."""
+    """The UN cards have expired and that is known and accounted for."""
     assert "imdg_un_cards" in expired_rule_sets(date(2026, 8, 3))
     assert stale_rule_sets(["IMDG"], date(2026, 8, 3)) == []
 
@@ -46,20 +46,20 @@ def test_an_expired_rule_set_with_nothing_in_its_place_does_warn():
 
 
 def test_a_warning_only_reaches_the_profiles_that_lean_on_it():
-    """Wie over de weg vervoert heeft niets aan een melding over luchtvracht."""
+    """Whoever carries by road has no use for a message about air freight."""
     assert stale_rule_sets(["ADR"], date(2027, 1, 1)) == []
     assert stale_rule_sets(["IATA"], date(2027, 1, 1))
 
 
 def test_today_nothing_is_reported_at_all():
-    """Stilte is hier de juiste uitkomst; alles wat geldt is geldig."""
+    """Silence is the right outcome here; everything that applies is valid."""
     assert stale_rule_sets(["ADR", "IMDG", "IATA"]) == []
 
 
 # --- Wat de controle ermee doet -------------------------------------------------
 
 def test_the_compliance_result_carries_the_manifest_it_computed_with():
-    """Een bugmelding kan hiermee zeggen waar die installatie mee rekende."""
+    """A bug report can use this to say what that installation computed with."""
     result = check_compliance(ENTRIES, ["IATA"], "nl")
     manifest = result["regulatory_manifest"]
     assert manifest["manifest_id"]
@@ -72,7 +72,7 @@ def test_no_rule_set_warning_appears_while_everything_is_current():
 
 
 def test_the_warning_says_what_expired_and_when(monkeypatch):
-    """De melding moet bruikbaar zijn zonder de documentatie erbij."""
+    """The message has to be usable without the documentation alongside."""
     monkeypatch.setattr(
         "app.services.dg.compliance.stale_rule_sets",
         lambda profiles=None, today=None: [{
@@ -102,12 +102,12 @@ def test_the_warning_is_translated(monkeypatch):
     assert "expired on" in result["rule_set_warnings"][0]["message"]
 
 
-# --- Wat er op het document terechtkomt -----------------------------------------
+# --- What ends up on the document -----------------------------------------------
 
 def test_an_expired_rule_set_reaches_the_export(monkeypatch):
-    """Een document overleeft de sessie waarin het is gemaakt; het scherm niet.
+    """A document outlives the session it was made in; the screen does not.
 
-    Daarom hoort deze melding op de export en niet alleen in de wizard.
+    That is why this message belongs on the export and not only in the wizard.
     """
     monkeypatch.setattr(
         "app.services.dg.compliance.stale_rule_sets",
@@ -124,9 +124,9 @@ def test_an_expired_rule_set_reaches_the_export(monkeypatch):
 
 
 def test_an_expired_rule_set_does_not_block_the_export(monkeypatch):
-    """Verlopen is geen verbod. De zending mag doorgaan, mits iemand de
-    actuele uitgave erbij pakt — tegenhouden zou de gebruiker dwingen om de
-    controle te omzeilen."""
+    """Expired is not forbidden. The consignment may go ahead, provided somebody
+    picks up the current edition — stopping it would force the user to work
+    around the check."""
     monkeypatch.setattr(
         "app.services.dg.compliance.stale_rule_sets",
         lambda profiles=None, today=None: [{

@@ -1,17 +1,17 @@
-"""Welke talen de applicatie spreekt, en hoe zij een taal kiest.
+"""Which languages the application speaks, and how it picks one.
 
-Tot nu toe stond op elke plek waar tekst uit de configuratie kwam dezelfde
-regel::
+Until now, every place that pulled text out of the configuration carried the
+same line::
 
     return "en" if str(language).lower().startswith("en") else "nl"
 
-Met twee talen klopte dat. Met een derde erbij zou "de" stilzwijgend
-Nederlands opleveren: het scherm Duits, de waarschuwingen en de export
-Nederlands. Erger nog, ``TEXTS[key][lang]`` was een KeyError zodra er iets
-anders dan nl of en langskwam.
+With two languages that was correct. With a third it meant "de" silently
+produced Dutch: the screen in German, the warnings and the export in Dutch.
+Worse, ``TEXTS[key][lang]`` was a KeyError the moment anything other than nl
+or en came past.
 
-Daarom één plek. Een taal erbij is hier één regel, en de terugval is
-uitgeschreven in plaats van per aanroep opnieuw bedacht.
+Hence one place. A language more is one line here, and the fallback is written
+down instead of being reinvented at every call site.
 """
 
 from __future__ import annotations
@@ -19,27 +19,26 @@ from __future__ import annotations
 from collections.abc import Mapping
 from typing import Any
 
-#: De talen die de interface aanbiedt. De frontend draagt dezelfde lijst in
-#: ``src/i18n/language.ts``; ``test_languages.py`` bewaakt dat ze gelijk blijven.
+#: The languages the interface offers. The frontend carries the same list in
+#: ``src/i18n/language.ts``; ``test_languages.py`` guards that they stay equal.
 #:
-#: Frans staat er sinds v1.44.0 bij, en niet omdat het een grote taal is. Het
-#: ADR, het RID en het ADN worden door de UNECE en de OTIF uitgegeven in het
-#: Engels, het Frans en het Russisch, en de CMR- en CIM-vrachtbrief zijn van
-#: oorsprong Franstalige documenten — de afkortingen zelf zijn Frans. Wie een
-#: vrachtbrief opmaakt voor een Belgisch, Frans, Luxemburgs of Zwitsers traject
-#: heeft de Franse benaming nodig, niet als beleefdheid maar omdat de
-#: bevoegde autoriteit langs de weg die taal leest.
+#: French joined in v1.44.0, and not because it is a large language. ADR, RID
+#: and ADN are published by UNECE and OTIF in English, French and Russian, and
+#: the CMR and CIM waybills are French documents by origin — the abbreviations
+#: themselves are French. Anyone preparing a waybill for a Belgian, French,
+#: Luxembourgish or Swiss leg needs the French wording, not as a courtesy but
+#: because the competent authority at the roadside reads that language.
 SUPPORTED = ("nl", "en", "de", "fr")
 
-#: Nederlands is de taal waarin de gegevens het volledigst zijn: de
-#: brontabellen en de toelichtingen zijn erin geschreven en de overige talen
-#: zijn ervan afgeleid.
+#: Dutch is the language in which the data is most complete: the source tables
+#: and the explanations are written in it and the other languages are derived
+#: from it.
 DEFAULT = "nl"
 
-#: Waar naartoe wanneer een tekst in de gevraagde taal ontbreekt. Duits en Frans
-#: vallen eerst op Engels terug: die lezer komt verder met Engels dan met
-#: Nederlands. Nederlands blijft de laatste vangnetregel, want daar is altijd
-#: iets.
+#: Where to go when a text is missing in the requested language. German and
+#: French fall back to English first: that reader gets further with English
+#: than with Dutch. Dutch stays the last safety net, because there is always
+#: something there.
 _FALLBACKS: dict[str, tuple[str, ...]] = {
     "nl": ("nl", "en", "de", "fr"),
     "en": ("en", "nl", "de", "fr"),
@@ -49,22 +48,22 @@ _FALLBACKS: dict[str, tuple[str, ...]] = {
 
 
 def normalise(language: Any) -> str:
-    """De taalcode waarmee verder wordt gerekend.
+    """The language code everything downstream computes with.
 
-    Accepteert wat een browser of API-aanroep oplevert — ``"de-AT"``,
-    ``"EN_GB"``, ``None`` — en levert altijd een taal uit :data:`SUPPORTED`.
+    Accepts whatever a browser or an API call produces — ``"de-AT"``,
+    ``"EN_GB"``, ``None`` — and always returns a language from :data:`SUPPORTED`.
     """
     base = str(language or "").lower().replace("_", "-").split("-")[0]
     return base if base in SUPPORTED else DEFAULT
 
 
 def pick(texts: Mapping[str, Any] | None, language: Any, default: Any = "") -> Any:
-    """Haal tekst in de gevraagde taal uit een ``{nl, en, de}``-blokje.
+    """Take text in the requested language out of a ``{nl, en, de}`` block.
 
-    Een ontbrekende vertaling levert de eerstvolgende taal die er wél is; pas
-    als geen enkele taal iets biedt komt ``default`` terug. Een leeg scherm is
-    hier het slechtste antwoord: een veldnaam in de verkeerde taal kan de
-    gebruiker nog lezen, een veld zonder naam niet.
+    A missing translation yields the next language that does have something;
+    only when no language offers anything does ``default`` come back. An empty
+    screen is the worst answer here: a user can still read a field name in the
+    wrong language, but not a field without a name.
     """
     if not isinstance(texts, Mapping):
         return default

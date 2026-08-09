@@ -1,8 +1,8 @@
-"""Vul officiële, invulbare PDF-formulieren (AcroForm) in met CargoPilot-gegevens.
+"""Fill official, fillable PDF forms (AcroForm) with CargoPilot data.
 
-De templates staan als echte, door de uitgevende instantie gepubliceerde
-PDF-formulieren in ``templates/forms/`` en worden ingevuld — niet nagebouwd.
-Handtekening-, carrier- en operationele velden blijven bewust leeg.
+The templates sit in ``templates/forms/`` as genuine PDF forms published by the
+issuing body and are filled in — not rebuilt. Signature, carrier and
+operational fields are deliberately left empty.
 """
 
 import os
@@ -24,10 +24,10 @@ from app.core.languages import pick
 from app.services.dg.naming import resolve_for_profile
 from app.services.dg.autofill import adr_category_totals, description_line
 
-# IATA open-formaat: elk van de twee keuzeparen bestaat uit twee /Ch-velden. Het
-# doorgehaalde (niet-toepasselijke) veld krijgt de "XXX"-optie, het toepasselijke
-# veld de lege optie. De template pre-fillt deze velden, dus beide worden altijd
-# expliciet gezet zodat de standaardwaarde niet doorlekt.
+# IATA open format: each of the two choice pairs consists of two /Ch fields. The
+# struck-through (non-applicable) field gets the "XXX" option, the applicable
+# field the empty option. The template pre-fills these fields, so both are always
+# set explicitly so the default value does not leak through.
 _IATA_AIRCRAFT_STRIKE = "XXX"
 _IATA_AIRCRAFT_BLANK = " " * 11
 _IATA_SHIPTYPE_STRIKE = "XXXXXXXXXXX"
@@ -46,7 +46,7 @@ def templates_forms_dir() -> Path:
         resolved = path.resolve()
         if resolved.exists():
             return resolved
-    # Val terug op de repo-bundel zodat dev zonder /data ook werkt.
+    # Fall back to the repo bundle so development without /data works too.
     return (Path(__file__).resolve().parents[3] / ".." / "templates" / "forms").resolve()
 
 
@@ -76,12 +76,12 @@ def _cmr_goods_rows(
     lines: list[dict[str, Any]],
     dangerous_goods: list[dict[str, Any]] | None = None,
 ) -> list[tuple[str, str, str]]:
-    """Goederenregels voor vak 6-12.
+    """Goods lines for boxes 6-12.
 
-    Voor colli met gevaarlijke stoffen komt de officiële omschrijving volgens
-    ADR 5.4.1.1.1 in de plaats van de vrije omschrijving. Daarmee voldoet de
-    CMR zelf aan het vervoersdocument en is een apart ADR-document overbodig
-    (ADR 5.4.1.4.1 schrijft geen vorm voor).
+    For packages with dangerous goods the official description under ADR
+    5.4.1.1.1 takes the place of the free description. That makes the CMR itself
+    satisfy the transport document and a separate ADR document unnecessary (ADR
+    5.4.1.4.1 prescribes no form).
     """
     dg_by_line: dict[Any, list[str]] = {}
     for entry in dangerous_goods or []:
@@ -106,7 +106,7 @@ def _cmr_goods_rows(
                     "" if weight in (None, "") else str(weight),
                     "" if volume in (None, "") else str(volume),
                 ))
-                weight = volume = ""  # massa maar één keer meetellen
+                weight = volume = ""  # count the mass only once
             continue
         desc = line.get("output_description") or line.get("description") or ""
         prefix = f"{qty} × " if qty not in (None, "") else ""
@@ -166,7 +166,7 @@ def fill_cmr(
             fields[f"VakRood06Regel{n}Kolom11"] = weight
             fields[f"VakRood06Regel{n}Kolom12"] = volume
     else:
-        # Meer regels dan het formulier aankan: eerste regels + verwijzing naar bijlage.
+        # More lines than the form can take: first lines + a reference to an annex.
         for i in range(1, CMR_MAX_ROWS):
             desc, weight, volume = rows[i - 1]
             n = f"{i:02d}"
@@ -193,15 +193,14 @@ def fill_cmr(
 
 def _iata_dg_block(dangerous_goods: list[dict[str, Any]],
                    authorization: str = "") -> str:
-    """Regels voor het 'Nature and Quantity of Dangerous Goods'-veld, IATA-kolomvolgorde.
+    """Lines for the 'Nature and Quantity of Dangerous Goods' field, IATA column order.
 
-    Het Authorization-vak van de DGD hoort bij deze tabel: daar komt de
-    verwijzing te staan waaronder de zending mag vliegen — een goedkeuring
-    van de bevoegde autoriteit, een vrijstelling, een DGR-paragraaf. In de
-    template die CargoPilot invult bestaat daar geen apart invulveld voor,
-    dus het wordt als eigen regel onder de tabel gezet. Zichtbaar en
-    benoemd is beter dan weglaten: zonder die verwijzing is een zending
-    die er een nodig heeft niet aan te bieden.
+    The Authorization box of the DGD belongs with this table: that is where the
+    reference goes under which the consignment may fly — an approval from the
+    competent authority, an exemption, a DGR paragraph. The template CargoPilot
+    fills in has no separate field for it, so it is put as a line of its own
+    below the table. Visible and named is better than omitted: without that
+    reference, a consignment that needs one cannot be offered.
     """
     out: list[str] = []
     for entry in dangerous_goods or []:
@@ -225,10 +224,10 @@ def _iata_dg_block(dangerous_goods: list[dict[str, Any]],
             per = str(p.get("net_mass_liters_per_package") or "").strip()
             if per:
                 qty = f"{qty}, {per}" if qty else per
-            # Op de luchtvrachtbrief hoort de IATA-verpakkingsinstructie.
-            # Het veld packing_instruction wordt door de auto-afleiding met de
-            # ADR-instructie gevuld (P001, IBC02, …) en die is in de lucht
-            # ongeldig — liever leeg dan fout, dan valt het bij controle op.
+            # The IATA packing instruction belongs on the air waybill. The
+            # packing_instruction field is filled by the automatic derivation
+            # with the ADR instruction (P001, IBC02, …) and that is invalid in
+            # the air — better empty than wrong, then it stands out at a check.
             pi = str(p.get("iata_packing_instruction") or "").strip()
             if not pi:
                 fallback = str(p.get("packing_instruction") or "").strip()
@@ -263,16 +262,18 @@ def fill_iata(values: dict[str, Any], dangerous_goods: list[dict[str, Any]], lan
     handling = [str(values.get("handling_information") or "").strip()]
     emergency = str(values.get("emergency_contact") or "").strip()
     if emergency:
-        # Diverse state/operator variations eisen een 24-uurs noodnummer op de
-        # verklaring; het handling-informationvak is daarvoor de plek.
+        # Various state and operator variations require a 24-hour emergency
+        # number on the declaration; the handling information box is the place
+        # for it.
         handling.append(f"24-hour emergency contact: {emergency}")
     fields["Additional Handling Information"] = " / ".join(x for x in handling if x)
     fields["Nature and Quantity of Dangerous Goods"] = _iata_dg_block(
         dangerous_goods, str(values.get("authorization") or "").strip()
     )
 
-    # "Delete non-applicable": streep de NIET-toepasselijke optie door en zet het
-    # toepasselijke veld expliciet leeg (anders lekt de template-standaard door).
+    # "Delete non-applicable": strike through the NON-applicable option and set
+    # the applicable field explicitly empty (otherwise the template default leaks
+    # through).
     aircraft = str(values.get("aircraft_limitation") or "")
     if aircraft == "cargo_only":
         fields["Passenger and Cargo Aircraft"] = _IATA_AIRCRAFT_STRIKE
@@ -335,7 +336,7 @@ def fill_cim(
     if values.get("cod_amount"):
         fields["Remboursement28"] = str(values["cod_amount"])
 
-    # Vak 21: goederenomschrijving (één groot veld).
+    # Box 21: goods description (one large field).
     desc_lines = []
     for line in lines:
         if not line.get("include", True):
@@ -357,7 +358,7 @@ def fill_cim(
     if total_weight:
         fields["Masse0"] = str(round(total_weight, 2))
 
-    # Vak 29: plaats en datum van opmaak.
+    # Box 29: place and date of issue.
     place_date = " ".join(
         x for x in [_first(values.get("established_place")), _first(values.get("established_date"))] if x
     )
@@ -397,11 +398,11 @@ def has_pdf_template(document_key: str) -> bool:
     return (templates_forms_dir() / PDF_FILLERS[document_key]).exists()
 
 
-# Waar de handtekening van de afzender per formulier wordt geplaatst.
-# CMR: vak 22 (handtekening en stempel van de afzender) — linkerbox op alle
-# 4 doorslagen. IATA: het "Signature"-afbeeldingsveld van het open formaat.
-# CIM kent geen afzender-handtekeningvak (vak 61 is de ontvangstbevestiging
-# van de geadresseerde en blijft altijd leeg).
+# Where the consignor's signature is placed on each form.
+# CMR: box 22 (signature and stamp of the consignor) — the left box on all four
+# copies. IATA: the "Signature" image field of the open format. The CIM has no
+# consignor signature box (box 61 is the consignee's acknowledgement of receipt
+# and always stays empty).
 _SIGNATURE_RECTS: dict[str, list[tuple[int, tuple[float, float, float, float]]]] = {
     "cmr": [(page, (48.0, 742.0, 200.0, 786.0)) for page in range(4)],
 }
@@ -432,11 +433,11 @@ def _fill_with_pymupdf(
     document_key: str = "",
     signature_png: bytes | None = None,
 ) -> Path:
-    """Vul AcroForm-velden in en bak ze plat zodat waarden in alle PDF-viewers zichtbaar zijn.
+    """Fill AcroForm fields and flatten them so values are visible in all PDF viewers.
 
-    Alleen ``widget.update()`` (appearance streams) is onvoldoende voor Chrome/Edge/sommige
-    Preview-viewers: die negeren AcroForm-weergaven. ``bake()`` zet de waarden permanent
-    in de paginacontent.
+    ``widget.update()`` (appearance streams) alone is not enough for Chrome/Edge/
+    some Preview viewers: those ignore AcroForm appearances. ``bake()`` puts the
+    values permanently into the page content.
     """
     if fitz is None:
         raise RuntimeError("PyMuPDF (pymupdf) is required for PDF form filling")
@@ -454,7 +455,8 @@ def _fill_with_pymupdf(
         if signature_png:
             _stamp_signature(doc, document_key, signature_png)
 
-        # Platbakken: zichtbaar in Chrome PDF-viewer e.d., niet alleen in Acrobat/MuPDF.
+        # Flattening: visible in the Chrome PDF viewer and the like, not only in
+        # Acrobat/MuPDF.
         doc.bake(annots=True, widgets=True)
 
         doc.set_metadata(
@@ -479,7 +481,7 @@ def _fill_with_pymupdf(
 
 
 def _fill_with_pypdf(template_path: Path, fields: dict[str, str], disclaimer: str) -> Path:
-    """Fallback zonder zichtbare appearances (alleen /V-waarden)."""
+    """Fallback without visible appearances (/V values only)."""
     reader = PdfReader(str(template_path))
     writer = PdfWriter()
     writer.append(reader)

@@ -1,34 +1,34 @@
-"""Invullen van het officiële AVC-vrachtbriefformulier.
+"""Filling in the official AVC waybill form.
 
-Het formulier (templates/forms/avc.pdf) is — anders dan de CMR, CIM en de
-IATA-luchtvrachtbrief — een vlakke PDF zonder AcroForm-velden. De waarden
-worden daarom als tekstlaag over de template heen gelegd, op posities die uit
-het lijnenraster en de veldlabels van het formulier zelf zijn afgeleid.
+The form (templates/forms/avc.pdf) is — unlike the CMR, the CIM and the IATA
+air waybill — a flat PDF without AcroForm fields. The values are therefore laid
+over the template as a text layer, at positions derived from the rule grid and
+the field labels of the form itself.
 
-Rasterindeling van de template (595 × 640 punten, oorsprong linksboven):
+Grid layout of the template (595 × 640 points, origin top left):
 
-    linkerpaneel (vrachtbrief)      x  32,5 – 406,3   y  40,0 – 623,8
-      afzender                      x  32,5 – 299,2   y  40,0 – 110,0
-      afleveradres                  x  32,5 – 406,3   y 110,0 – 228,3
-      frankering | vervoerder       x  32,5 – 120,8 – 406,3   y 228,3 – 275,0
-      goederentabel                 x  32,5 – 406,3   y 275,0 – 571,7
-      plaats van afzending | datum  x  32,5 – 406,3   y 571,7 – 597,5
+    left panel (waybill)            x  32.5 – 406.3   y  40.0 – 623.8
+      consignor                     x  32.5 – 299.2   y  40.0 – 110.0
+      delivery address              x  32.5 – 406.3   y 110.0 – 228.3
+      franking | carrier            x  32.5 – 120.8 – 406.3   y 228.3 – 275.0
+      goods table                   x  32.5 – 406.3   y 275.0 – 571.7
+      place of dispatch | date      x  32.5 – 406.3   y 571.7 – 597.5
 
-    rechterpaneel (ontvangstbewijs) x 415,4 – 580,8   y  12,9 – 598,3
-      afzender                                        y  39,6 – 110,0
-      afleveradres                                    y 110,0 – 228,3
-      frankering | vervoerder       x 415,4 – 478,3 – 580,8   y 228,3 – 275,0
-      handtekening en kenteken                        y 275,0 – 393,7
-      inhoud + totalen                                y 507,5 – 571,7
-      datum                                           y 571,7 – 598,3
+    right panel (receipt)           x 415.4 – 580.8   y  12.9 – 598.3
+      consignor                                       y  39.6 – 110.0
+      delivery address                                y 110.0 – 228.3
+      franking | carrier            x 415.4 – 478.3 – 580.8   y 228.3 – 275.0
+      signature and registration                      y 275.0 – 393.7
+      contents + totals                               y 507.5 – 571.7
+      date                                            y 571.7 – 598.3
 
-De goederentabel heeft geen kolomlijnen; de kolomposities volgen uit de
-kopjes 'aantal', 'verpakking', 'inhoud' en 'gewicht in kg'.
+The goods table has no column rules; the column positions follow from the
+headings 'aantal', 'verpakking', 'inhoud' and 'gewicht in kg'.
 
-Voor gevaarlijke stoffen komt de omschrijving volgens ADR 5.4.1.1.1 in de
-kolom 'inhoud' en het totaal per vervoerscategorie (5.4.1.1.1.1) onder de
-laatste regel. Daarmee is de vrachtbrief tevens het vervoersdocument; ADR
-5.4.1 schrijft daarvoor geen aparte vorm voor.
+For dangerous goods the description under ADR 5.4.1.1.1 goes in the 'inhoud'
+column and the total per transport category (5.4.1.1.1.1) below the last line.
+That makes the waybill the transport document as well; ADR 5.4.1 prescribes no
+separate form for it.
 """
 from __future__ import annotations
 
@@ -56,8 +56,8 @@ FONT = "Helvetica"
 SIZE = 7.5
 LEADING = 8.6
 
-# Vakken: (x, y_van_de_eerste_basislijn, breedte). De y wordt van bovenaf
-# gerekend, net als in het raster hierboven; _y() rekent dat om.
+# Boxes: (x, y_of_the_first_baseline, width). The y is counted from the top,
+# just as in the grid above; _y() converts that.
 BOXES: dict[str, tuple[float, float, float]] = {
     # Linkerpaneel — vrachtbrief
     "consignor": (37.0, 62.0, 258.0),
@@ -78,8 +78,8 @@ BOXES: dict[str, tuple[float, float, float]] = {
     "r_date": (419.0, 594.0, 158.0),
 }
 
-# Aankruisvakjes voor het frankeringsvoorschrift: (x, basislijn-y).
-# De vakjes zelf staan op 36,7-43,3 respectievelijk 418,3-425,0.
+# Tick boxes for the franking instruction: (x, baseline y).
+# The boxes themselves sit at 36.7-43.3 and 418.3-425.0 respectively.
 CHECKBOXES: dict[str, tuple[float, float]] = {
     "franco": (37.6, 255.0),
     "not_franco": (37.6, 268.3),
@@ -88,25 +88,25 @@ CHECKBOXES: dict[str, tuple[float, float]] = {
 }
 CHECK_SIZE = 7.0
 
-# Goederentabel: kolomposities en het beschikbare bereik.
-GOODS_TOP = 293.0     # eerste basislijn, onder de kolomkoppen
-GOODS_BOTTOM = 551.0  # tot aan de labels 'totaal aantal' / 'gewicht'
+# Goods table: column positions and the available range.
+GOODS_TOP = 293.0     # first baseline, below the column headings
+GOODS_BOTTOM = 551.0  # up to the labels 'totaal aantal' / 'gewicht'
 COL_COUNT = 66.0            # aantal, linksuitgelijnd
 COL_PACKAGING = 136.0       # verpakking, linksuitgelijnd
 COL_PACKAGING_WIDTH = 100.0
 COL_CONTENTS = 245.0        # inhoud, linksuitgelijnd
 COL_CONTENTS_WIDTH = 105.0
 COL_WEIGHT_RIGHT = 390.0    # gewicht, rechtsuitgelijnd
-NOTE_WIDTH = 254.0          # breedte voor de ADR-slotregel onder de tabel
+NOTE_WIDTH = 254.0          # width for the ADR closing line below the table
 
 
 def has_avc_template() -> bool:
-    """Of het officiële AVC-formulier beschikbaar is om in te vullen."""
+    """Whether the official AVC form is available to be filled in."""
     return (templates_forms_dir() / TEMPLATE).exists()
 
 
 def _y(top: float) -> float:
-    """Reken een y van bovenaf om naar de PDF-oorsprong linksonder."""
+    """Convert a y measured from the top to the PDF origin at bottom left."""
     return PAGE_H - top
 
 
@@ -128,7 +128,7 @@ def _wrap(text: str, width: float, size: float = SIZE, font: str = FONT) -> list
 
 
 def _clip(text: str, width: float, size: float = SIZE, font: str = FONT) -> str:
-    """Kort af zodat de tekst niet in de volgende kolom loopt."""
+    """Truncate so the text does not run into the next column."""
     value = str(text or "")
     if stringWidth(value, font, size) <= width:
         return value
@@ -213,7 +213,7 @@ def _draw_goods(
     note: str,
     lang: str,
 ) -> None:
-    """Vul de goederentabel en zet de ADR-slotregel onder de laatste regel."""
+    """Fill the goods table and put the ADR closing line below the last line."""
     c.setFont(FONT, SIZE)
     c.setFillColor(TEXT)
     top = GOODS_TOP
@@ -253,7 +253,7 @@ def _draw_goods(
 
 
 def _draw_footer_note(c: canvas.Canvas, text: str) -> None:
-    """Kleine regel onder het formulier — het kader loopt tot y 623,8."""
+    """Small line below the form — the frame runs to y 623.8."""
     c.setFont(FONT, 5.4)
     c.setFillColor(HexColor("#555555"))
     for index, line in enumerate(_wrap(text, 540.0, size=5.4)[:2]):
@@ -267,7 +267,7 @@ def fill_avc_waybill(
     lang: str = "nl",
     signature_png: bytes | None = None,
 ) -> Path:
-    """Vul het officiële AVC-formulier en lever een PDF op."""
+    """Fill in the official AVC form and produce a PDF."""
     template_path = templates_forms_dir() / TEMPLATE
     if not template_path.exists():
         raise FileNotFoundError(f"PDF template not found: {template_path}")
@@ -301,7 +301,7 @@ def fill_avc_waybill(
 
     rows, total_count, total_weight = _goods_rows(lines, dangerous_goods)
 
-    # ADR 5.4.1.1.1.1: totale hoeveelheid per vervoerscategorie, onder de tabel.
+    # ADR 5.4.1.1.1.1: total quantity per transport category, below the table.
     statement = ""
     if dangerous_goods:
         statement = adr_category_totals(dangerous_goods, lang)["statement"] or ""
@@ -311,7 +311,7 @@ def fill_avc_waybill(
     _draw_box(c, "total_weight", _fmt(total_weight))
     _draw_box(c, "r_total_count", _fmt(total_count))
     _draw_box(c, "r_total_weight", _fmt(total_weight))
-    # Ontvangstbewijs: korte samenvatting van de inhoud.
+    # Receipt: short summary of the contents.
     _draw_box(c, "r_contents", "; ".join(r[2].split("\n")[0] for r in rows[:3]), max_lines=3)
 
     _draw_box(c, "dispatch_place", values.get("loading_point") or values.get("place_of_receipt"),
@@ -320,7 +320,7 @@ def fill_avc_waybill(
     _draw_box(c, "dispatch_date", dispatch_date, max_lines=1)
     _draw_box(c, "r_date", dispatch_date, max_lines=1)
 
-    # Handtekening van de afzender, tussen 'plaats van afzending' en 'datum'.
+    # Consignor's signature, between 'place of dispatch' and 'date'.
     if signature_png:
         try:
             image = ImageReader(io.BytesIO(signature_png))

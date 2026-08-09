@@ -1,11 +1,11 @@
 /**
- * Een taal die half af is, is erger dan geen taal.
+ * A language that is half finished is worse than no language.
  *
- * i18next valt bij een ontbrekende sleutel stil terug op het Engels. Dat is
- * precies wat een halve vertaling onzichtbaar maakt: het scherm blijft werken,
- * maar de gebruiker krijgt Frans met Engelse gaten en merkt niet dat er iets
- * mist. Deze test dwingt af dat alle taalbestanden dezelfde sleutels dragen —
- * en dat een nieuwe sleutel dus in alle talen tegelijk landt.
+ * On a missing key i18next falls back quietly to English. That is precisely what
+ * makes a half translation invisible: the screen keeps working, but the user
+ * gets French with English gaps and does not notice anything is missing. This
+ * test enforces that all the language files carry the same keys — and therefore
+ * that a new key lands in every language at once.
  */
 import { describe, expect, it } from "vitest";
 
@@ -24,8 +24,8 @@ import {
 
 type Json = Record<string, unknown>;
 
-/** Alle sleutelpaden, met arrays uitgeschreven, zodat ook een sectie die in één
- *  taal een alinea mist bovenkomt. */
+/** Every key path, with arrays written out, so that a section missing a
+ *  paragraph in one language surfaces too. */
 function paths(value: unknown, prefix = ""): string[] {
   if (Array.isArray(value)) {
     return value.flatMap((item, index) => paths(item, `${prefix}[${index}]`));
@@ -40,11 +40,11 @@ function paths(value: unknown, prefix = ""): string[] {
 
 const BUNDLES: Record<string, Json> = { nl, en, de, fr };
 
-/** Elke taal behalve het Nederlands, want daar wordt tegen vergeleken.
+/** Every language except Dutch, because that is what is compared against.
  *
- * Stond hier eerst als `["en", "de"]`. Frans kwam er in v1.44.0 bij en viel
- * daardoor buiten de vergelijking: precies de taal met de meeste kans op gaten
- * werd als enige niet gecontroleerd. Vandaar afgeleid in plaats van opgesomd. */
+ * This first said `["en", "de"]`. French arrived in v1.44.0 and thereby fell
+ * outside the comparison: the language with the most room for gaps was the only
+ * one not being checked. Hence derived rather than enumerated. */
 const COMPARED = SUPPORTED_LANGUAGES.filter((language) => language !== "nl");
 
 describe("de vertaalbestanden", () => {
@@ -69,8 +69,8 @@ describe("de vertaalbestanden", () => {
   }
 
   it("houdt de interpolatievariabelen gelijk, anders valt er een gat in de zin", () => {
-    // {{count}} dat in de vertaling {{aantal}} heet, komt als letterlijke
-    // accolades op het scherm.
+    // {{count}} that is called {{aantal}} in the translation ends up on the
+    // screen as literal braces.
     const dutch = flatten(nl);
     for (const language of COMPARED) {
       const other = flatten(BUNDLES[language]);
@@ -101,10 +101,10 @@ function variables(text: string): string[] {
 
 describe("de talen die de app aanbiedt", () => {
   it("staan allemaal in de keuzelijst van de instellingen", () => {
-    // Een taalbestand toevoegen zonder de keuzelijst bij te werken leverde een
-    // taal op die niemand kon kiezen. De keuzelijst wordt nu uit
-    // SUPPORTED_LANGUAGES opgebouwd, dus dat kan niet meer — wat wél kan is een
-    // taal zonder naam, die dan als lege regel in de lijst staat.
+    // Adding a language file without updating the dropdown produced a language
+    // nobody could choose. The dropdown is now built from SUPPORTED_LANGUAGES,
+    // so that can no longer happen — what *can* happen is a language without a
+    // name, which then appears as an empty line in the list.
     expect(settingsSource).toContain("SUPPORTED_LANGUAGES.map");
     for (const language of SUPPORTED_LANGUAGES) {
       expect(LANGUAGE_NAMES[language]?.trim(), language).toBeTruthy();
@@ -124,16 +124,16 @@ describe("documentLanguage", () => {
   });
 
   it("telt een landvariant mee voor haar basistaal", () => {
-    // i18next levert "de-AT" wanneer de browser dat zegt; Oostenrijk krijgt
-    // gewoon Duits en niet stilzwijgend Nederlands.
+    // i18next produces "de-AT" when the browser says so; Austria simply gets
+    // German and not Dutch by stealth.
     expect(documentLanguage("de-AT")).toBe("de");
     expect(documentLanguage("en_GB")).toBe("en");
   });
 
   it("valt bij een onbekende taal terug op het Nederlands", () => {
-    // Nederlands is de taal waarin de gegevens het volledigst zijn.
-    // "fr" hoort sinds v1.44.0 bij de ondersteunde talen; "it" neemt hier de
-    // rol over van onbekende taal.
+    // Dutch is the language in which the data is most complete.
+    // "fr" has belonged to the supported languages since v1.44.0; "it" takes
+    // over the role of unknown language here.
     expect(documentLanguage("it")).toBe(DEFAULT_LANGUAGE);
     expect(documentLanguage(undefined)).toBe(DEFAULT_LANGUAGE);
     expect(documentLanguage("")).toBe(DEFAULT_LANGUAGE);

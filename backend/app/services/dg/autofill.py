@@ -1,21 +1,22 @@
-"""Automatische invulling van gevaarlijke-stoffengegevens.
+"""Automatic completion of dangerous goods data.
 
-Doel: de gebruiker vult zo min mogelijk in. Uit het UN-nummer volgt vrijwel de
-volledige classificatie (offline ADR-tabel A + afgeleide modaliteitsgegevens),
-uit de reeds ingevoerde colli volgen aantallen en massa's, en daaruit worden de
-officiële omschrijvingsregels voor de vervoersdocumenten samengesteld.
+The aim: the user fills in as little as possible. The UN number yields almost
+the complete classification (offline ADR table A plus derived per-mode data),
+the package lines already entered yield counts and masses, and from those the
+official description lines for the transport documents are composed.
 
-Wettelijke basis van de gegenereerde regels:
-- ADR/RID/ADN 5.4.1.1.1: UN-nummer, juiste vervoersnaam, gevaarsetiketten,
-  verpakkingsgroep, tunnelbeperkingscode, aantal en omschrijving van de colli en
-  de totale hoeveelheid per stof.
-- ADR 5.4.1.1.1.1: bij gebruik van de 1.1.3.6-vrijstelling moet de totale
-  hoeveelheid per vervoerscategorie in het vervoersdocument staan.
-- IMDG 5.4.1.4/5.4.1.5: aanvullend vlampunt, marine pollutant en EmS.
-- IATA DGR 8.1.6: UN-nummer, PSN, klasse/divisie, verpakkingsgroep, aantal en
-  soort colli, netto hoeveelheid per collo en verpakkingsinstructie.
+Legal basis of the generated lines:
+- ADR/RID/ADN 5.4.1.1.1: UN number, proper shipping name, hazard labels,
+  packing group, tunnel restriction code, number and description of the packages
+  and the total quantity per substance.
+- ADR 5.4.1.1.1.1: when using the 1.1.3.6 exemption, the total quantity per
+  transport category must appear in the transport document.
+- IMDG 5.4.1.4/5.4.1.5: additionally flashpoint, marine pollutant and EmS.
+- IATA DGR 8.1.6: UN number, PSN, class/division, packing group, number and type
+  of packages, net quantity per package and packing instruction.
 
-Alle uitkomsten zijn invulhulp; de afzender blijft verantwoordelijk (DISCLAIMER.md).
+All results are an aid to filling in; the consignor stays responsible
+(DISCLAIMER.md).
 """
 from __future__ import annotations
 
@@ -33,7 +34,7 @@ from app.services.dg.enrichment import (
     parse_hazards,
 )
 
-# Velden die nooit automatisch worden overschreven zodra de gebruiker ze vulde.
+# Fields that are never overwritten automatically once the user has filled them.
 _AUTOFILL_FIELDS = (
     "proper_shipping_name",
     "class",
@@ -78,7 +79,7 @@ def _un_prefixed(value: Any) -> str:
 def derive_product(
     product: dict[str, Any], language: str = "nl", profiles: list[str] | None = None
 ) -> dict[str, Any]:
-    """Vul alles in wat uit het UN-nummer volgt; bestaande invoer blijft staan."""
+    """Fill in everything that follows from the UN number; existing input stays."""
     un = str(product.get("un_number") or "").strip()
     if not un:
         return {}
@@ -86,10 +87,10 @@ def derive_product(
     if not entries:
         return {}
 
-    # Eén UN-nummer kan meerdere Tabel A-rijen hebben (per verpakkingsgroep),
-    # met elk een eigen vervoerscategorie, LQ en E-code. Heeft de gebruiker de
-    # verpakkingsgroep al ingevuld, dan hoort díé rij de bron te zijn — niet
-    # stilzwijgend de eerste.
+    # One UN number can have several Table A rows (per packing group), each with
+    # its own transport category, LQ and E code. If the user has already filled
+    # in the packing group, *that* row should be the source — not silently the
+    # first one.
     user_pg = str(product.get("packing_group") or "").strip().upper()
     entry = entries[0]
     if user_pg:
@@ -130,7 +131,7 @@ def derive_product(
     if extras.get("iata_packing_instruction"):
         derived["iata_packing_instruction"] = extras["iata_packing_instruction"]
 
-    # Alleen lege velden aanvullen: handmatige correcties blijven behouden.
+    # Complete empty fields only: manual corrections are preserved.
     patch = {
         key: value
         for key, value in derived.items()
@@ -143,9 +144,9 @@ def derive_product(
                          "_options", "_codes", "_changes", "_requirement", "_category"))
     }
 
-    # Meerdere verpakkingsgroepen zonder keuze van de gebruiker: de eerste rij
-    # is ingevuld, maar categorie (puntenfactor!), LQ en E-code verschillen per
-    # rij. Dat mag geen stille keuze zijn.
+    # Several packing groups without a choice by the user: the first row has
+    # been filled in, but category (a points factor!), LQ and E code differ per
+    # row. That must not be a silent choice.
     if len(distinct_pgs) > 1 and not user_pg:
         chosen = clean_value(entry.get("packing_group")).strip().upper()
         variants = "; ".join(
@@ -180,10 +181,10 @@ def derive_product(
     if extras.get("transport_forbidden"):
         hints["transport_forbidden"] = True
 
-    # B8: aandachtspunten horen bij de actieve modaliteit. Zee-informatie
-    # (EmS, stuwage, scheiding, marine pollutant) is op een zuiver wegtraject
-    # ruis, en het luchtvaartverbod zegt niets op een binnenvaartdocument.
-    # Zonder profielen wordt niets gefilterd.
+    # B8: points of attention belong to the active mode. Sea information (EmS,
+    # stowage, segregation, marine pollutant) is noise on a pure road leg, and
+    # the aviation prohibition says nothing on an inland waterway document.
+    # Without profiles nothing is filtered.
     active = {p.upper() for p in (profiles or [])}
     if active:
         def _relevant(key: str) -> bool:
@@ -201,7 +202,7 @@ def derive_product(
 
 
 def derive_from_line(product: dict[str, Any], line: dict[str, Any] | None) -> dict[str, Any]:
-    """Aantallen en massa's overnemen uit de al ingevoerde colli-regel."""
+    """Take counts and masses over from the package line already entered."""
     if not line:
         return {}
     patch: dict[str, Any] = {}
@@ -218,7 +219,7 @@ def derive_from_line(product: dict[str, Any], line: dict[str, Any] | None) -> di
 
 
 def total_quantity(product: dict[str, Any]) -> tuple[float | None, str]:
-    """Totale hoeveelheid van een product: netto per collo × aantal colli."""
+    """Total quantity of a product: net per package × number of packages."""
     per_package = _num(product.get("net_mass_liters_per_package"))
     count = _num(product.get("quantity_packages"))
     raw = str(product.get("net_mass_liters_per_package") or "")
@@ -236,12 +237,12 @@ def _is_class1(product: dict[str, Any]) -> bool:
 
 
 def adr_quantity(product: dict[str, Any]) -> tuple[float | None, str]:
-    """De hoeveelheid waarmee 1.1.3.6 rekent.
+    """The quantity 1.1.3.6 computes with.
 
-    Voor klasse 1 is dat de netto explosieve massa (1.1.3.6.3), niet de
-    productmassa: 50 kg vuurwerk is geen 50 kg ontplofbare stof. Zonder
-    ingevulde NEM levert dit bewust niets op, zodat de puntentelling
-    "incomplete" meldt in plaats van met de verkeerde massa te rekenen.
+    For class 1 that is the net explosive mass (1.1.3.6.3), not the product
+    mass: 50 kg of fireworks is not 50 kg of explosive substance. Without a NEM
+    filled in this deliberately yields nothing, so that the points count reports
+    "incomplete" instead of computing with the wrong mass.
     """
     if _is_class1(product):
         nem = _num(product.get("net_explosive_mass"))
@@ -250,9 +251,9 @@ def adr_quantity(product: dict[str, Any]) -> tuple[float | None, str]:
 
 
 def description_line(product: dict[str, Any], profile: str) -> str:
-    """Officiële omschrijvingsregel voor het vervoersdocument."""
-    # De benaming volgt het document: op een IMDG- of IATA-regel hoort het
-    # Engels, ook als de zending in het Duits is opgemaakt (IMDG 5.4.1.4.1,
+    """Official description line for the transport document."""
+    # The name follows the document: on an IMDG or IATA line it should be
+    # English, even when the consignment was drawn up in German (IMDG 5.4.1.4.1,
     # IATA DGR 8.1.2.1).
     psn = resolve_for_profile(product, profile)[0].upper()
     technical = str(product.get("technical_name") or "").strip()
@@ -268,17 +269,18 @@ def description_line(product: dict[str, Any], profile: str) -> str:
         hazard,
         str(product.get("packing_group") or "").strip(),
     ]
-    # Alleen ADR. De tunnelbeperkingscode komt uit kolom 15 van ADR Tabel A en
-    # hoort volgens 5.4.1.1.1 (k) op het wegdocument. RID Tabel A kent die kolom
-    # niet en het ADN-vervoersdocument draagt hem evenmin — "(D/E)" op een CIM
-    # of een ADN-document is een verzonnen vermelding op een officieel papier.
+    # ADR only. The tunnel restriction code comes from column 15 of ADR Table A
+    # and belongs on the road document under 5.4.1.1.1 (k). RID Table A does not
+    # have that column and the ADN transport document does not carry it either —
+    # "(D/E)" on a CIM or an ADN document is an invented entry on an official
+    # piece of paper.
     if profile == "ADR":
         tunnel = str(product.get("tunnel_code") or "").strip().strip("()")
         if tunnel:
             parts.append(f"({tunnel})")
     if profile == "IATA_DGR":
-        # Uitsluitend een IATA-verpakkingsinstructie tonen: de ADR-instructie
-        # (P001, IBC02, …) is voor luchtvracht niet geldig.
+        # Show an IATA packing instruction only: the ADR instruction (P001,
+        # IBC02, …) is not valid for air freight.
         instruction = str(product.get("iata_packing_instruction") or "").strip()
         if instruction:
             parts.append(f"PI {instruction}")
@@ -296,7 +298,7 @@ def description_line(product: dict[str, Any], profile: str) -> str:
 
     line = ", ".join(p for p in parts if p)
 
-    # Aantal en soort colli + totale hoeveelheid (ADR 5.4.1.1.1 f/g).
+    # Number and type of packages + total quantity (ADR 5.4.1.1.1 f/g).
     count = str(product.get("quantity_packages") or "").strip()
     package = str(product.get("type_of_package") or "").strip()
     packages = " ".join(p for p in [count, package] if p)
@@ -306,8 +308,8 @@ def description_line(product: dict[str, Any], profile: str) -> str:
         tail.append(packages)
     if total is not None:
         tail.append(f"{_fmt(total)} {unit}")
-    # Klasse 1 op een landdocument: de totale netto explosieve massa hoort in
-    # het vervoersdocument (ADR 5.4.1.2.1 (a)).
+    # Class 1 on a land document: the total net explosive mass belongs in the
+    # transport document (ADR 5.4.1.2.1 (a)).
     if profile in ("ADR", "RID", "ADN") and _is_class1(product):
         nem = _num(product.get("net_explosive_mass"))
         if nem is not None:
@@ -357,7 +359,7 @@ def prepare_entries(
     profiles: list[str] | None = None,
     language: str = "nl",
 ) -> dict[str, Any]:
-    """Vul DG-posities automatisch aan en stel de documentregels samen."""
+    """Complete DG positions automatically and compose the document lines."""
     lines_by_id = {line.get("line_id"): line for line in (lines or [])}
     profiles = [p.upper() for p in (profiles or [])] or ["ADR"]
     prepared: list[dict[str, Any]] = []
@@ -378,21 +380,21 @@ def prepare_entries(
                         **derived["hints"],
                     })
             merged.update(derive_from_line(merged, lines_by_id.get(entry.get("line_id"))))
-            # Een vervoersverbod hoort op het product zelf te staan: de
-            # puntentelling, documentregels en totalen slaan zo'n regel over
-            # in plaats van erop te rekenen.
+            # A transport prohibition belongs on the product itself: the points
+            # count, document lines and totals then skip such a line instead of
+            # computing with it.
             if derived and derived["hints"].get("transport_forbidden"):
                 merged["transport_forbidden"] = True
-            # Totale hoeveelheid voor de 1.1.3.6-puntenberekening en de
-            # Q-waarde. Deze twee zijn BEREKENDE waarden en worden bij elke
-            # aanroep opnieuw afgeleid uit de actuele colli-invoer. Vroeger
-            # werden ze alleen ingevuld als ze leeg waren, waardoor na een
-            # wijziging van aantal of inhoud de oude totalen bleven staan en
-            # de puntentelling en Q-waarde met verouderde getallen rekenden.
-            # Wie het totaal wil vastzetten, zet adr_total_quantity_override
-            # respectievelijk q_net_quantity_override. Voor klasse 1 rekent
-            # 1.1.3.6.3 met de netto explosieve massa; zonder NEM blijft het
-            # totaal bewust leeg zodat de telling "incomplete" meldt.
+            # Total quantity for the 1.1.3.6 points calculation and the Q value.
+            # These two are COMPUTED values and are derived afresh from the
+            # current package input on every call. They used to be filled in only
+            # when empty, so after a change of count or contents the old totals
+            # stayed and the points count and Q value computed with stale
+            # figures. Anyone wanting to fix the total sets
+            # adr_total_quantity_override or q_net_quantity_override
+            # respectively. For class 1, 1.1.3.6.3 computes with the net
+            # explosive mass; without a NEM the total deliberately stays empty so
+            # the count reports "incomplete".
             total, unit = adr_quantity(merged)
             override = str(merged.get("adr_total_quantity_override") or "").strip()
             if override:
@@ -416,14 +418,14 @@ def prepare_entries(
             description_line(product, profile)
             for entry in prepared
             for product in entry["products"]
-            # Voor een stof die niet ten vervoer mag worden aangeboden valt
-            # geen documentregel op te stellen; het verbod staat er al.
+            # For a substance that may not be offered for carriage there is no
+            # document line to compose; the prohibition is already there.
             if str(product.get("un_number") or "").strip()
             and not product.get("transport_forbidden")
         ]
         document_lines[profile] = [row for row in rows if row]
 
-    # Aanvullende documentvereisten die de gebruiker zelf moet aanleveren.
+    # Additional document requirements the user has to supply themselves.
     requirements: list[str] = []
     seen_classes: set[str] = set()
     for entry in prepared:

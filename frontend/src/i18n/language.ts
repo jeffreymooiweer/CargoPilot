@@ -1,11 +1,11 @@
 /**
- * Welke taal de backend meekrijgt.
+ * Which language the backend is given.
  *
- * De interface en de documenten spreken dezelfde taal, maar dat werd op zes
- * plaatsen apart uitgerekend met `startsWith("en") ? "en" : "nl"`. Zolang er
- * twee talen waren viel dat niet op; bij een derde taal betekende het dat de
- * schermen Duits werden en de waarschuwingen, veldnamen en exports Nederlands
- * bleven. Eén plek, dus een taal erbij is één regel.
+ * The interface and the documents speak the same language, but that was worked
+ * out separately in six places with `startsWith("en") ? "en" : "nl"`. While
+ * there were two languages that went unnoticed; with a third it meant the
+ * screens went German and the warnings, field names and exports stayed Dutch.
+ * One place, so one more language is one line.
  */
 
 export const SUPPORTED_LANGUAGES = ["nl", "en", "de", "fr"] as const;
@@ -14,12 +14,12 @@ export type Language = (typeof SUPPORTED_LANGUAGES)[number];
 
 export const DEFAULT_LANGUAGE: Language = "nl";
 
-/** Hoe elke taal in de keuzelijst heet — in die taal zelf.
+/** What each language is called in the dropdown — in that language itself.
  *
- * "Deutsch" en niet "Duits": wie de interface op Duits wil zetten, leest op dat
- * moment nog Nederlands en zoekt naar het woord dat hij kent. De lijst wordt uit
- * SUPPORTED_LANGUAGES opgebouwd, zodat een taalbestand toevoegen zonder de
- * keuzelijst bij te werken niet meer kan. */
+ * "Deutsch" and not "German": whoever wants to set the interface to German is
+ * still reading Dutch at that moment and looks for the word they know. The list
+ * is built from SUPPORTED_LANGUAGES, so adding a language file without updating
+ * the dropdown is no longer possible. */
 export const LANGUAGE_NAMES: Record<Language, string> = {
   nl: "Nederlands",
   en: "English",
@@ -27,11 +27,11 @@ export const LANGUAGE_NAMES: Record<Language, string> = {
   fr: "Français",
 };
 
-/** De taalcode die de backend verwacht, afgeleid uit i18next.
+/** The language code the backend expects, derived from i18next.
  *
- * i18next levert ook varianten als "de-AT" of "en-GB"; die tellen mee voor hun
- * basistaal. Wat we niet kennen valt terug op Nederlands — dat is de taal
- * waarin de gegevens het volledigst zijn. */
+ * i18next also produces variants like "de-AT" or "en-GB"; those count towards
+ * their base language. What we do not know falls back to Dutch — the language in
+ * which the data is most complete. */
 export function documentLanguage(language: string | undefined): Language {
   const base = String(language || "").toLowerCase().split(/[-_]/)[0];
   return (SUPPORTED_LANGUAGES as readonly string[]).includes(base)
@@ -39,12 +39,12 @@ export function documentLanguage(language: string | undefined): Language {
     : DEFAULT_LANGUAGE;
 }
 
-/** Tekst uit een {nl, en, de, fr}-blokje van de backend.
+/** Text from a {nl, en, de, fr} block from the backend.
  *
- * Het documentregister komt van de server en kan uit een oudere of eigen
- * uitgave komen waarin een taal ontbreekt. Een leeg label is dan erger dan een
- * label in een andere taal: de gebruiker ziet een veld zonder naam. Vandaar de
- * volgorde gevraagd → Nederlands → Engels. */
+ * The document registry comes from the server and can come from an older or a
+ * custom edition in which a language is missing. An empty label is then worse
+ * than a label in another language: the user sees a field without a name. Hence
+ * the order requested → Dutch → English. */
 export function localised(
   text: Partial<Record<Language, string>> | undefined | null,
   language: Language,

@@ -1,17 +1,16 @@
-"""Een release verandert main niet.
+"""A release does not change main.
 
-Vijf plekken dragen het versienummer, en de lockfile draagt hem twee keer. Die
-lockfile werd niet gecontroleerd, dus hij liep bij elke release achter, en de
-release-workflow repareerde dat met een commit naar ``main`` *na* de merge.
+Five places carry the version number, and the lockfile carries it twice. That
+lockfile was not checked, so it lagged behind on every release, and the release
+workflow repaired that with a commit to ``main`` *after* the merge.
 
-Die reparatie werkte, en veroorzaakte het probleem: main schoof onder de
-volgende branch vandaan, die daarna conflicteerde op ``VERSION`` en
-``CHANGELOG.md`` en pas na een rebase te mergen was. Twee keer op één dag, en de
-oorzaak waren vier regels JSON.
+That repair worked, and caused the problem: main slid out from under the next
+branch, which then conflicted on ``VERSION`` and ``CHANGELOG.md`` and could only
+be merged after a rebase. Twice in one day, and the cause was four lines of JSON.
 
-De controle staat nu in de CI van elke pull request, waar de vergissing wordt
-gemaakt. Deze tests leggen vast dat hij ook echt alle vijf de plekken ziet — een
-controle die de lockfile overslaat is precies de controle die dit liet gebeuren.
+The check now sits in the CI of every pull request, where the mistake is made.
+These tests record that it really does see all five places — a check that skips
+the lockfile is precisely the check that let this happen.
 """
 
 import json
@@ -41,7 +40,7 @@ def run(script: Path, *args: str) -> subprocess.CompletedProcess:
 
 @pytest.fixture
 def restore():
-    """Herstel de versiebestanden na een test die ze opzettelijk sloopt."""
+    """Restore the version files after a test that deliberately breaks them."""
     saved = {name: (ROOT / name).read_text(encoding="utf-8") for name in VERSION_FILES}
     yield
     for name, text in saved.items():
@@ -55,7 +54,7 @@ def test_the_repository_is_consistent_right_now():
 
 @pytest.mark.parametrize("name", VERSION_FILES)
 def test_every_version_file_is_actually_checked(name, restore):
-    """Zet er één op een ander nummer en de controle hoort te vallen."""
+    """Put one of them on a different number and the check should fail."""
     path = ROOT / name
     if path.suffix == ".json":
         data = json.loads(path.read_text(encoding="utf-8"))
@@ -70,8 +69,8 @@ def test_every_version_file_is_actually_checked(name, restore):
 
 
 def test_the_second_version_inside_the_lock_file_is_checked_too(restore):
-    """npm schrijft hem twee keer. Wie er één controleert, mist een halve fout —
-    en dat is precies wat er gebeurde."""
+    """npm writes it twice. Whoever checks one of them misses half a mistake —
+    and that is exactly what happened."""
     path = ROOT / "frontend" / "package-lock.json"
     data = json.loads(path.read_text(encoding="utf-8"))
     data["packages"][""]["version"] = "0.0.1"
@@ -93,8 +92,8 @@ def test_bumping_sets_all_five_at_once(restore):
 
 
 def test_bumping_leaves_the_lock_file_otherwise_untouched(restore):
-    """Een lockfile herschrijven mag geen ruis in de diff geven; anders wordt
-    een versiebump onleesbaar en gaat niemand er nog naar kijken."""
+    """Rewriting a lockfile must not add noise to the diff; otherwise a version
+    bump becomes unreadable and nobody looks at it any more."""
     path = ROOT / "frontend" / "package-lock.json"
     before = json.loads(path.read_text(encoding="utf-8"))
     run(BUMP, "9.9.9")
@@ -116,15 +115,15 @@ def test_a_v_prefix_is_accepted_because_tags_carry_one(restore):
 
 
 def test_the_release_workflow_no_longer_writes_to_main():
-    """De kern van de zaak. Taggen mag main niet verplaatsen."""
+    """The heart of the matter. Tagging must not move main."""
     workflow = (ROOT / ".github" / "workflows" / "tag-release.yml").read_text(encoding="utf-8")
     assert "HEAD:main" not in workflow
     assert "finalize_release_metadata" not in workflow
-    # Wat het in plaats daarvan doet: controleren en stoppen als het niet klopt.
+    # What it does instead: check, and stop when it does not add up.
     assert "scripts/check_versions.py" in workflow
 
 
 def test_the_pull_request_gate_exists():
-    """Als dit uit de CI verdwijnt, komt het probleem via de achterdeur terug."""
+    """If this disappears from CI, the problem comes back through the back door."""
     ci = (ROOT / ".github" / "workflows" / "ci.yml").read_text(encoding="utf-8")
     assert "scripts/check_versions.py" in ci

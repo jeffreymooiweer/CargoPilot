@@ -41,9 +41,15 @@ Non-obvious gotchas for running/testing:
   reused from then on. That happens in every environment — `APP_ENV=development` only
   silences the CORS and admin-password warnings, it does not license signing tokens with
   a published string. Delete `DATA_DIR/secret_key` and you are logged out once.
-- **Three interface languages.** Any new string goes into `frontend/src/i18n/nl.json`,
-  `en.json` *and* `de.json`, and any new `{nl, en}` block in the config or seed data
-  needs a `de`. `backend/tests/test_languages.py` fails otherwise.
+- **Four interface languages.** Any new string goes into `frontend/src/i18n/nl.json`,
+  `en.json`, `de.json` *and* `fr.json`, and any new `{nl, en}` block in the config or
+  seed data needs a `de` and an `fr`. `backend/tests/test_languages.py` reads
+  `SUPPORTED` and fails otherwise — it names no language, so a fifth is one line.
+- **Comments and docstrings are in English.** Everything a user reads is translated;
+  everything a developer reads is English, across `backend/`, `frontend/`, `scripts/`
+  and the workflows. Test docstrings stay long and explain *why* the test exists, with
+  the real defect that provoked it — that is the project's institutional memory, and it
+  is written in English since v1.46.0.
 
 Example dev run (from repo root):
 

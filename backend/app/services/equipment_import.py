@@ -1,4 +1,4 @@
-"""Bulk-import van materieel uit spreadsheet."""
+"""Bulk import of equipment from a spreadsheet."""
 
 from __future__ import annotations
 

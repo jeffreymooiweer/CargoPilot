@@ -28,7 +28,7 @@ def test_search_by_name():
 
 
 def test_search_by_german_name_diacritics():
-    # "Gasöl" (diesel) moet ook via "gasol" gevonden worden
+    # "Gasöl" (diesel) has to be findable via "gasol" as well
     results = search_un_numbers("gasol")
     assert any(r["un"] == "1202" for r in results)
 

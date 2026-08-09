@@ -10,11 +10,11 @@ interface Props {
 
 const FIELDS: (keyof ImportMapping)[] = ["description", "quantity", "unit"];
 
-/** Wat er in een kolom staat, kort genoeg voor een keuzelijst.
+/** What is in a column, short enough for a dropdown.
  *
- * De kopnaam als die herkend is, anders de eerste waarden. Bij een bestand
- * zonder herkende koptekst is dat het enige houvast dat de gebruiker heeft —
- * "kolom 2" zegt niets, "Benaming, Stalen hoekprofiel 80x80x8x6000" wel.
+ * The heading name if it was recognised, otherwise the first values. With a file
+ * that has no recognised heading row that is the only handhold the user has —
+ * "column 2" says nothing, "Benaming, Stalen hoekprofiel 80x80x8x6000" does.
  */
 function describe(column: { header: string; samples: string[] }): string {
   const parts = [column.header, ...column.samples].filter(Boolean);

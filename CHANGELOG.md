@@ -2,6 +2,55 @@
 
 All notable changes are documented here, following [Semantic Versioning](https://semver.org/).
 
+## [1.46.0] — 2026-08-09
+
+### Changed
+
+- **The source speaks English.** Roughly **3,000 lines of comment and docstring**
+  across `backend/app`, `backend/tests`, `scripts/`, `frontend/src`, the workflows and
+  `.env.example` were Dutch. That was defensible while one person wrote all of it and
+  stopped being defensible the moment anyone else read it — because this project puts a
+  great deal of its reasoning *in* those docstrings. A test that explains which defect
+  provoked it is worth nothing to a reader who cannot read the explanation.
+
+  Nothing a **user** reads changed. The interface files, the seed labels, the field
+  names and the regulatory texts stay in four languages; only what a developer reads was
+  translated. The test docstrings kept their length and their voice — they still name the
+  defect, the measurement and the trade-off, in English now.
+
+- **A new package line starts in `pcs`.** Left over from v1.45.0: `WizardPage` still had
+  the Dutch string in two more places.
+
+### Added
+
+- **`test_source_language.py` keeps it that way.** Without a guard, the next change adds
+  one Dutch comment, the one after it adds three, and in a year the work has to be done
+  again. It scans every comment and docstring in those five trees.
+
+  Two things it does *not* do, both deliberate. It ignores text inside string literals,
+  because Dutch in a string is data — the import format is
+  `Stalen hoekprofiel 80x80x8x6000 | 8 | stuks` and the AVC form's own column is called
+  `gewicht in kg`. And its word list holds only function words, leaving out anything that
+  collides with English: "door" is a Dutch preposition and an English noun, and this
+  repository really does write about the back door of a CI pipeline. A guard that cries
+  wolf gets switched off.
+
+### Documentation
+
+- `AGENTS.md`, `CONTRIBUTING.md` and `docs/development.md` state the rule, so it is a
+  convention rather than a one-off sweep. `AGENTS.md` also still said "three interface
+  languages"; French arrived in v1.44.0.
+
+### Internal
+
+- The translation ran through a line-based extract/splice tool rather than an AST pass.
+  The previous bulk edit in this repository used `ast` column offsets, which count UTF-8
+  **bytes**, and dropped text outside the braces of every dict containing a word like
+  "Träger". Whole lines have no such trap. The tool also refuses to replace a block that
+  contains code — a string constant's closing `"""` looks exactly like a docstring
+  opening, and three such blocks were caught that way instead of deleting the code
+  between them.
+
 ## [1.45.0] — 2026-08-09
 
 ### Added

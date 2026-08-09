@@ -1,29 +1,28 @@
-"""Inventarisatie van de Dangerous Goods List in het 42-24-document.
+"""A survey of the Dangerous Goods List in the 42-24 document.
 
-Dit is de eerste van twee stappen en legt bewust niets vast. De lijst beslaat
-zo'n 170 pagina's met achttien kolommen, en een parser die stilzwijgend één
-kolom verkeerd leest is gevaarlijker dan helemaal geen parser: dan staan er
-2.300 stoffen met een verkeerde scheidingscode in de app zonder dat iemand het
-merkt. Dus eerst meten:
+This is the first of two steps and deliberately records nothing. The list covers
+some 170 pages with eighteen columns, and a parser that silently reads one column
+wrong is more dangerous than no parser at all: then there are 2,300 substances
+with the wrong segregation code in the app without anybody noticing. So measure
+first:
 
-1. Waar begint en eindigt de lijst precies?
-2. Waar liggen de kolomgrenzen? Die worden afgeleid uit de x-posities van de
-   koptekst en gecontroleerd tegen de x-posities van de gegevens zelf.
-3. Welke UN-nummers levert de lijst op, en hoe verhoudt zich dat tot de 2.336
-   nummers die we nu uit de UN-kaarten van 41-22 kennen? Elk verschil is een
-   aanwijzing: een gemiste pagina, een rij die anders is opgemaakt, of een
-   echte wijziging in 42-24.
+1. Where exactly does the list begin and end?
+2. Where are the column boundaries? Those are derived from the x positions of the
+   heading and checked against the x positions of the data itself.
+3. Which UN numbers does the list yield, and how does that compare with the 2,336
+   numbers we currently know from the 41-22 UN cards? Every difference is a
+   clue: a missed page, a row laid out differently, or a real change in 42-24.
 
-De verkenning meldde eerder dat UN 1361, 3551 en 3560 ontbraken terwijl er
-gaten in de paginareeks zaten op p734 en p757. Juist die drie zijn
-42-24-wijzigingen, dus dat wijst eerder op een leesfout dan op ontbrekende
-gegevens; deze inventarisatie moet dat uitwijzen.
+The earlier probe reported that UN 1361, 3551 and 3560 were missing while there
+were gaps in the page range at p734 and p757. Those three are precisely 42-24
+changes, so that points to a reading error rather than to missing data; this
+survey has to settle it.
 
-Draait via GitHub Actions, omdat de ontwikkelomgeving geen uitgaand netwerk
-heeft. Wat er uiteindelijk in de repo landt zijn afgeleide gegevens, nooit de
-regelgevingstekst.
+Runs via GitHub Actions, because the development environment has no outbound
+network. What ends up in the repo in the end is derived data, never the
+regulatory text.
 
-Gebruik::
+Usage::
 
     python scripts/survey_imdg_dgl.py
     python scripts/survey_imdg_dgl.py --sample-pages 600,650 --pdf /tmp/imdg.pdf
@@ -42,17 +41,17 @@ SOURCE_URL = "https://www.cepa.be/wp-content/uploads/IMDG_Code-amdt_42_24.pdf"
 UA = {"User-Agent": "CargoPilot data survey (github.com/jeffreymooiweer/CargoPilot)"}
 CARD_DATA = Path(__file__).resolve().parents[1] / "backend" / "seed" / "dg" / "card_data.json"
 
-# Een pagina van de lijst draagt deze koppen. Ze staan er niet allemaal op elke
-# pagina — de lijst loopt over twee tegenover elkaar liggende pagina's — dus
-# twee treffers is genoeg om een pagina als lijstpagina aan te merken.
+# A page of the list carries these headings. They are not all on every page — the
+# list runs across two facing pages — so two hits is enough to mark a page as a
+# list page.
 HEADINGS = ["UN No.", "Proper shipping name", "Class or division", "Subsidiary",
             "Packing group", "Special provisions", "Limited and excepted",
             "Packagings and IBCs", "Portable tanks", "EmS", "Stowage and handling",
             "Segregation", "Properties and observations"]
 
-# Een rij begint met een UN-nummer op een eigen tekstregel. Zonder re.MULTILINE
-# matcht ^ alleen het begin van de hele paginatekst; dat heeft deze verkenning
-# al twee keer op een vals-negatief gezet.
+# A row begins with a UN number on a text line of its own. Without re.MULTILINE,
+# ^ matches only the beginning of the whole page text; that has put this survey
+# on a false negative twice already.
 ROW_START = re.compile(r"^[ \t]*(\d{4})(?:[ \t]|$)", re.M)
 
 
@@ -64,7 +63,7 @@ def download(url: str, target: Path, timeout: int = 600) -> Path:
 
 
 def known_un_numbers() -> set[str]:
-    """De UN-nummers die we nu uit de kaarten van 41-22 kennen."""
+    """The UN numbers we currently know from the 41-22 cards."""
     try:
         return set(json.loads(CARD_DATA.read_text(encoding="utf-8"))["entries"])
     except (OSError, ValueError, KeyError):  # pragma: no cover - seed ontbreekt
@@ -72,10 +71,10 @@ def known_un_numbers() -> set[str]:
 
 
 def list_pages(document) -> list[int]:
-    """Pagina's die tot de lijst zelf horen, op koptekst herkend.
+    """Pages belonging to the list itself, recognised by their headings.
 
-    Op koppen zoeken in plaats van op rijen: de scheidingsgroeplijsten van
-    3.1.4.4 beginnen ook met UN-nummers en horen hier niet bij.
+    Searching on headings rather than on rows: the segregation group lists of
+    3.1.4.4 also start with UN numbers and do not belong here.
     """
     pages = []
     for index in range(document.page_count):
@@ -96,10 +95,10 @@ def contiguous(pages: list[int]) -> list[tuple[int, int]]:
 
 
 def column_positions(document, pages: list[int], limit: int = 40) -> list[tuple[float, int]]:
-    """De x-posities waarop tekst begint, geteld over een aantal lijstpagina's.
+    """The x positions text starts at, counted over a number of list pages.
 
-    In een vaste tabelopmaak clusteren die posities rond de kolomgrenzen. Wat
-    er tussen de clusters zit is doorlopende tekst binnen een kolom.
+    In a fixed table layout those positions cluster around the column
+    boundaries. What sits between the clusters is continuous text within a column.
     """
     counts: Counter[float] = Counter()
     for page in pages[:limit]:
@@ -137,7 +136,7 @@ def survey(path: Path, sample_pages: list[int]) -> int:
         print(f"== lijstpagina's: {len(pages)} ==")
         print("  " + ", ".join(f"p{a}-p{b}" if a != b else f"p{a}" for a, b in ranges))
 
-        # Gaten binnen het bereik zijn verdacht: een lijst loopt door.
+        # Gaps inside the range are suspect: a list runs on.
         gaps = [p for p in range(pages[0], pages[-1] + 1) if p not in set(pages)]
         print(f"  gaten binnen het bereik: {gaps or 'geen'}")
         for page in gaps[:6]:
@@ -158,7 +157,7 @@ def survey(path: Path, sample_pages: list[int]) -> int:
             for word in sorted(top, key=lambda w: (round(w[1], 1), w[0]))[:80]:
                 print(f"{word[0]:8.1f} {word[1]:8.1f}  {word[4]}")
 
-        # Dekking: wat de lijst oplevert tegenover wat we al hebben.
+        # Coverage: what the list yields against what we already have.
         found: dict[str, int] = {}
         rows_per_page: dict[int, int] = {}
         for page in pages:
@@ -180,8 +179,8 @@ def survey(path: Path, sample_pages: list[int]) -> int:
             print(f"  wel in de lijst, geen kaart   : {len(extra)}")
             print(f"    {extra[:40]}{' …' if len(extra) > 40 else ''}")
 
-        # De drie die de eerdere verkenning miste, apart nagelopen: staan ze
-        # ergens in het document, en zo ja hoe zijn ze daar opgemaakt?
+        # The three the earlier probe missed, checked separately: are they
+        # anywhere in the document, and if so how are they laid out there?
         print("\n== de nummers die eerder ontbraken ==")
         for un in ("1361", "3551", "3552", "3556", "3560", "0514", "3553"):
             page = found.get(un)

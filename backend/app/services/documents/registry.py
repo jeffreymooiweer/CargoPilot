@@ -19,7 +19,7 @@ def get_document(document_key: str) -> dict[str, Any] | None:
 
 
 def resolve_sections(document: dict[str, Any]) -> list[dict[str, Any]]:
-    """Vervang {"ref": ...}-verwijzingen door de gedeelde sectiedefinities."""
+    """Replace {"ref": ...} references with the shared section definitions."""
     shared = {section["key"]: section for section in get_registry()["shared_sections"]}
     resolved: list[dict[str, Any]] = []
     for section in document.get("sections", []):
@@ -33,7 +33,7 @@ def resolve_sections(document: dict[str, Any]) -> list[dict[str, Any]]:
 
 
 def condition_met(condition: str | None, values: dict[str, Any]) -> bool:
-    """Evalueer een 'veld=waarde'-conditie tegen de ingevulde waarden."""
+    """Evaluate a 'field=value' condition against the values filled in."""
     if not condition:
         return True
     field, _, expected = condition.partition("=")

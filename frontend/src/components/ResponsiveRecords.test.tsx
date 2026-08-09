@@ -1,11 +1,11 @@
 /**
- * Dezelfde gegevens, twee vormen — en op mobiel niet minder gegevens.
+ * The same data, two shapes — and on mobile not less data.
  *
- * De verleiding bij een kaartweergave is om velden te laten vallen die niet op
- * het scherm passen. Het artikel waar dit onderdeel op is gebaseerd zegt juist
- * het omgekeerde: toon er eerst een paar en zet de rest achter "toon meer", zodat
- * alles bereikbaar blijft. Deze tests leggen dat vast, want een veld dat op
- * mobiel stilletjes verdwijnt is erger dan een lange kaart.
+ * The temptation with a card view is to drop fields that do not fit on the
+ * screen. The article this component is based on says the opposite: show a few
+ * of them and put the rest behind "show more", so everything stays reachable.
+ * These tests record that, because a field that quietly disappears on mobile is
+ * worse than a long card.
  */
 import { render, screen, fireEvent } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
@@ -46,15 +46,15 @@ function setup() {
 describe("ResponsiveRecords", () => {
   it("renders a real table for desktop", () => {
     setup();
-    // Een tabel laat rijen met elkaar vergelijken; dat kan een kaart niet.
+    // A table lets rows be compared with each other; a card cannot.
     expect(screen.getByRole("table")).toBeInTheDocument();
     expect(screen.getAllByRole("columnheader").map((h) => h.textContent)).toEqual([
       "Omschrijving",
       "Aantal",
       "Gewicht",
       "Volume",
-      // i18n draait in deze tests zonder geladen vertalingen, dus de sleutel
-      // zelf komt eruit. Dat is genoeg: de kolom bestaat en is vertaalbaar.
+      // i18n runs in these tests without loaded translations, so the key itself
+      // comes out. That is enough: the column exists and is translatable.
       "records.actions",
     ]);
     expect(screen.getAllByRole("row")).toHaveLength(rows.length + 1);
@@ -62,7 +62,7 @@ describe("ResponsiveRecords", () => {
 
   it("renders one card per row alongside it", () => {
     setup();
-    // De kaartkop draagt het veld waaraan je de regel herkent.
+    // The card heading carries the field you recognise the line by.
     const cards = document.querySelectorAll("article");
     expect(cards).toHaveLength(2);
     expect(cards[0].textContent).toContain("Diesel");
@@ -72,7 +72,7 @@ describe("ResponsiveRecords", () => {
     setup();
     const card = document.querySelectorAll("article")[0];
     expect(card.textContent).toContain("1 200 L");
-    // Gewicht en volume zitten achter "toon meer" — maar staan wel in de tabel.
+    // Weight and volume sit behind "show more" — but are in the table.
     expect(card.textContent).not.toContain("1 002 kg");
     expect(screen.getByRole("table").textContent).toContain("1 002 kg");
   });
@@ -103,7 +103,7 @@ describe("ResponsiveRecords", () => {
 
   it("puts the actions in the card header as well as the table", () => {
     setup();
-    // Twee kaarten en twee tabelrijen, dus elke actie bestaat twee keer.
+    // Two cards and two table rows, so every action exists twice.
     expect(screen.getAllByRole("button", { name: /verwijder 1/ })).toHaveLength(2);
   });
 
@@ -136,7 +136,7 @@ describe("ResponsiveRecords", () => {
 
 describe("QuantityWithUnit", () => {
   it("puts the unit behind the value instead of in its own column", () => {
-    // Zoals het artikel het doet: "150 (sqm)", niet een kolom "eenheid".
+    // As the article does it: "150 (sqm)", not a column "unit".
     render(<QuantityWithUnit value="1 200" unit="L" />);
     expect(screen.getByText("1 200").parentElement?.textContent).toBe("1 200L");
   });

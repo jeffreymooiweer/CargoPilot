@@ -18,41 +18,36 @@ TEXTS = {
     "generated_with": {
         "nl": "Gegenereerd met CargoPilot op",
         "en": "Generated with CargoPilot on",
-        "de": "Erstellt mit CargoPilot am",
-    },
-    "status": {"nl": "Documentstatus", "en": "Document status", "de": "Dokumentstatus"},
-    "goods": {"nl": "Goederenregels", "en": "Cargo lines", "de": "Güterzeilen"},
-    "dg_table": {"nl": "Gevaarlijke stoffen", "en": "Dangerous goods", "de": "Gefahrgut"},
+        "de": "Erstellt mit CargoPilot am", "fr": 'Généré avec CargoPilot le'},
+    "status": {"nl": "Documentstatus", "en": "Document status", "de": "Dokumentstatus", "fr": 'Statut du document'},
+    "goods": {"nl": "Goederenregels", "en": "Cargo lines", "de": "Güterzeilen", "fr": 'Lignes de marchandises'},
+    "dg_table": {"nl": "Gevaarlijke stoffen", "en": "Dangerous goods", "de": "Gefahrgut", "fr": 'Marchandises dangereuses'},
     "not_prefilled": {
         "nl": "niet vooraf ingevuld — handtekening/bevestiging vereist",
         "en": "not pre-filled — signature/confirmation required",
-        "de": "nicht vorausgefüllt — Unterschrift/Bestätigung erforderlich",
-    },
+        "de": "nicht vorausgefüllt — Unterschrift/Bestätigung erforderlich", "fr": 'non prérempli — signature ou confirmation requise'},
     "carrier_provided": {
         "nl": "in te vullen door vervoerder/expediteur",
         "en": "to be provided by carrier/forwarder",
-        "de": "vom Frachtführer/Spediteur auszufüllen",
-    },
+        "de": "vom Frachtführer/Spediteur auszufüllen", "fr": 'à fournir par le transporteur ou le commissionnaire'},
     "operational": {
         "nl": "in te vullen tijdens uitvoering",
         "en": "to be filled in during execution",
-        "de": "während der Durchführung auszufüllen",
-    },
+        "de": "während der Durchführung auszufüllen", "fr": "à compléter lors de l'exécution"},
     "confirmed": {
         "nl": "Bevestigd in CargoPilot; ondertekening op het document blijft vereist",
         "en": "Confirmed in CargoPilot; signature on the document is still required",
-        "de": "In CargoPilot bestätigt; die Unterschrift auf dem Dokument bleibt erforderlich",
-    },
+        "de": "In CargoPilot bestätigt; die Unterschrift auf dem Dokument bleibt erforderlich", "fr": 'Confirmé dans CargoPilot ; la signature sur le document reste requise'},
     "not_confirmed": {
         "nl": "NIET bevestigd",
         "en": "NOT confirmed",
-        "de": "NICHT bestätigt",
-    },
-    "totals": {"nl": "Totalen", "en": "Totals", "de": "Summen"},
+        "de": "NICHT bestätigt", "fr": 'NON confirmé'},
+    "totals": {"nl": "Totalen", "en": "Totals", "de": "Summen", "fr": 'Totaux'},
     "line_headers": {
         "nl": ["Nr", "Omschrijving", "Aantal", "Eenheid", "Gewicht (kg)", "Volume (m³)", "L×B×H (cm)"],
         "en": ["No", "Description", "Qty", "Unit", "Weight (kg)", "Volume (m³)", "L×W×H (cm)"],
         "de": ["Nr.", "Bezeichnung", "Menge", "Einheit", "Gewicht (kg)", "Volumen (m³)", "L×B×H (cm)"],
+        "fr": ["N°", "Désignation", "Quantité", "Unité", "Poids (kg)", "Volume (m³)", "L×l×h (cm)"],
     },
     "dg_headers": {
         "nl": [
@@ -106,66 +101,72 @@ TEXTS = {
             "Cargo Aircraft Only",
             "Zusätzliche Angaben",
         ],
+        "fr": [
+            "Position",
+            "Numéro ONU",
+            "Désignation officielle de transport",
+            "Nom technique",
+            "Classe",
+            "Risque subsidiaire",
+            "Groupe d'emballage",
+            "Instruction d'emballage",
+            "Nombre de colis",
+            "Type d'emballage",
+            "Quantité par emballage",
+            "Masse brute par emballage",
+            "Polluant marin",
+            "Cargo Aircraft Only",
+            "Informations complémentaires",
+        ],
     },
     "dg_missing": {
         "nl": "Gevaarlijke-stoffenclassificatie onvolledig voor",
         "en": "Dangerous goods classification incomplete for",
-        "de": "Gefahrgutklassifizierung unvollständig für",
-    },
+        "de": "Gefahrgutklassifizierung unvollständig für", "fr": 'Classification des marchandises dangereuses incomplète pour'},
     "dg_forbidden": {
         "nl": "Niet ten vervoer toegelaten volgens ADR Tabel A (vervoer alleen onder ontheffing van de bevoegde autoriteit)",
         "en": "Not permitted for carriage per ADR Table A (carriage only under an exemption from the competent authority)",
-        "de": "Nach ADR Tabelle A zur Beförderung nicht zugelassen (Beförderung nur mit Ausnahmegenehmigung der zuständigen Behörde)",
-    },
+        "de": "Nach ADR Tabelle A zur Beförderung nicht zugelassen (Beförderung nur mit Ausnahmegenehmigung der zuständigen Behörde)", "fr": "Non admis au transport selon le tableau A de l'ADR (transport uniquement sous dérogation de l'autorité compétente)"},
     "field_required": {
         "nl": "Verplicht veld ontbreekt",
         "en": "Required field missing",
-        "de": "Pflichtfeld fehlt",
-    },
+        "de": "Pflichtfeld fehlt", "fr": 'Champ obligatoire manquant'},
     "dg_name_language": {
         "nl": "Vervoersnaam op dit document in het Engels gezet, zoals "
               "IMDG 5.4.1.4.1 / IATA DGR 8.1.2.1 voorschrijven",
         "en": "Proper shipping name set to English on this document, as "
               "IMDG 5.4.1.4.1 / IATA DGR 8.1.2.1 require",
         "de": "Offizielle Benennung auf diesem Dokument auf Englisch gesetzt, "
-              "wie IMDG 5.4.1.4.1 / IATA DGR 8.1.2.1 es verlangen",
-    },
+              "wie IMDG 5.4.1.4.1 / IATA DGR 8.1.2.1 es verlangen", "fr": "Désignation officielle de transport mise en anglais sur ce document, comme l'exigent le 5.4.1.4.1 de l'IMDG et le 8.1.2.1 de l'IATA DGR"},
     "field_format": {
         "nl": "Veld heeft niet de vereiste vorm",
         "en": "Field does not have the required format",
-        "de": "Feld hat nicht die vorgeschriebene Form",
-    },
+        "de": "Feld hat nicht die vorgeschriebene Form", "fr": "Le champ n'a pas le format requis"},
     "no_dg_lines": {
         "nl": "Dit document vereist gevaarlijke-stoffenregels, maar er zijn geen DG-posities.",
         "en": "This document requires dangerous goods lines, but no DG positions exist.",
-        "de": "Dieses Dokument verlangt Gefahrgutzeilen, es sind aber keine Gefahrgutpositionen vorhanden.",
-    },
+        "de": "Dieses Dokument verlangt Gefahrgutzeilen, es sind aber keine Gefahrgutpositionen vorhanden.", "fr": "Ce document exige des lignes de marchandises dangereuses, mais aucune position n'a été saisie."},
     "vgm_mismatch": {
         "nl": "VGM wijkt af van de som van de componenten (methode 2)",
         "en": "VGM differs from the sum of the components (method 2)",
-        "de": "VGM weicht von der Summe der Bestandteile ab (Methode 2)",
-    },
+        "de": "VGM weicht von der Summe der Bestandteile ab (Methode 2)", "fr": 'La masse brute vérifiée diffère de la somme des composants (méthode 2)'},
     "fixed_texts": {
         "nl": "Vaste teksten en verklaringen (officieel formulier)",
         "en": "Fixed texts and declarations (official form)",
-        "de": "Feste Texte und Erklärungen (amtliches Formular)",
-    },
-    "legal_reference": {"nl": "Regelgeving", "en": "Regulations", "de": "Vorschriften"},
+        "de": "Feste Texte und Erklärungen (amtliches Formular)", "fr": 'Textes fixes et déclarations (formulaire officiel)'},
+    "legal_reference": {"nl": "Regelgeving", "en": "Regulations", "de": "Vorschriften", "fr": 'Réglementation'},
     "adr_points_incomplete": {
         "nl": "puntentelling onvolledig — controleer vervoerscategorie en hoeveelheid",
         "en": "points calculation incomplete — check transport category and quantity",
-        "de": "Punkteberechnung unvollständig — Beförderungskategorie und Menge prüfen",
-    },
+        "de": "Punkteberechnung unvollständig — Beförderungskategorie und Menge prüfen", "fr": 'calcul des points incomplet — vérifiez la catégorie de transport et la quantité'},
     "adr_exemption_lost": {
         "nl": "vrijstelling vervalt ({detail}) — de volledige ADR-eisen gelden",
         "en": "exemption does not apply ({detail}) — the full ADR requirements apply",
-        "de": "Freistellung entfällt ({detail}) — es gelten die vollen ADR-Anforderungen",
-    },
+        "de": "Freistellung entfällt ({detail}) — es gelten die vollen ADR-Anforderungen", "fr": "l'exemption ne s'applique pas ({detail}) — l'ensemble des prescriptions de l'ADR s'applique"},
     "dg_description": {
         "nl": "Omschrijving vervoersdocument",
         "en": "Transport document description",
-        "de": "Angabe im Beförderungspapier",
-    },
+        "de": "Angabe im Beförderungspapier", "fr": 'Description du document de transport'},
     "disclaimer": {
         "nl": (
             "Dit document is automatisch gegenereerd met CargoPilot en is een concept: het moet vóór gebruik "
@@ -185,8 +186,7 @@ TEXTS = {
             "unterschrieben werden. CargoPilot und seine Urheber übernehmen keinerlei Haftung; die "
             "Software wird \"AS IS\" unter der Apache License 2.0 mit Commons Clause bereitgestellt "
             "(siehe DISCLAIMER.md und LICENSE)."
-        ),
-    },
+        ), "fr": "Ce document a été généré automatiquement avec CargoPilot et constitue un projet : avant utilisation, il doit être intégralement vérifié, complété et signé par une personne dûment habilitée. CargoPilot et son ou ses auteurs déclinent toute responsabilité ; le logiciel est fourni « EN L'ÉTAT » sous licence Apache 2.0 avec Commons Clause (voir DISCLAIMER.md et LICENSE)."},
     "iata_dg_headers": {
         "nl": [
             "UN- of ID-nr.",
@@ -212,6 +212,15 @@ TEXTS = {
             "Klasse oder Unterklasse (Nebengefahr)",
             "Verpackungsgruppe",
             "Menge und Verpackungsart",
+            "Packing Inst.",
+            "Authorization",
+        ],
+        "fr": [
+            "N° ONU ou ID",
+            "Désignation officielle de transport (nom technique)",
+            "Classe ou division (risque subsidiaire)",
+            "Groupe d'emballage",
+            "Quantité et type d'emballage",
             "Packing Inst.",
             "Authorization",
         ],
@@ -241,6 +250,14 @@ TEXTS = {
             "Bruttomasse je Verpackung",
             "Zusätzliche Angaben",
         ],
+        "fr": [
+            "Description selon le 5.4.1.1.1",
+            "Nombre de colis",
+            "Type d'emballage",
+            "Quantité par emballage",
+            "Masse brute par emballage",
+            "Informations complémentaires",
+        ],
     },
     "imdg_dg_headers": {
         "nl": [
@@ -266,6 +283,18 @@ TEXTS = {
             "Number and kind of packages",
             "Quantity per package",
             "Gross mass per package",
+        ],
+        "fr": [
+            "Numéro ONU",
+            "Désignation officielle de transport (nom technique)",
+            "Classe (risque subsidiaire)",
+            "Groupe d'emballage",
+            "Polluant marin",
+            "Point d'éclair",
+            "EmS",
+            "Nombre et type de colis",
+            "Quantité par emballage",
+            "Masse brute par emballage",
         ],
         "de": [
             "UN-Nummer",

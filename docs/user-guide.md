@@ -65,7 +65,7 @@ a header**, or that row is imported as a piece of cargo.
 ### What happens next
 
 CargoPilot reads each line and tries to recognise the material and any dimensions in it,
-in Dutch, English or German. `Steel angle 80x80x8x6000` becomes steel, 80 × 80 × 8 mm,
+in Dutch, English, German or French. `Steel angle 80x80x8x6000` becomes steel, 80 × 80 × 8 mm,
 6000 mm long, and so does `Stahl Winkelprofil 80x80x8x6000`. From there it calculates the weight, the material volume and the transport volume.
 
 A green line means it worked. An orange or red line means it could not work out the
@@ -187,7 +187,7 @@ administrator fills it by downloading the template, filling it in and importing 
 
 ## Language
 
-Under **Settings** you pick Dutch, English or German. That choice runs all the way
+Under **Settings** you pick Dutch, English, German or French. That choice runs all the way
 through: the screens, the field labels, the dangerous goods help, the compliance warnings
 and the documents you download.
 

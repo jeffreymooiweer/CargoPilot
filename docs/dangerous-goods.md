@@ -54,6 +54,16 @@ multimodal shipment, where English is the only choice that satisfies all three �
 shipment then carries the same goods description on every document, which is what a
 forwarder and a customs officer want to see match.
 
+**The interface speaks French; the shipping name does not.** Since v1.44.0 the screen, the
+field labels, the compliance findings and the goods database are available in French, and
+that is not decoration: ADR, RID and ADN are published by UNECE and OTIF in English, French
+and Russian, and the CMR and CIM are French documents by origin. But the ADR Table A export
+this application is built on carries only an English and a German name column — there is no
+French one — so a French user preparing a road document gets the English proper shipping
+name, not `ESSENCE`. That is a gap in the data rather than in the translation, and it is
+better to say so than to manufacture a name that no table prescribes. IMDG 5.4.1.4.1 does
+accept French, so a sea document could carry it if the names were held.
+
 The language belongs to the document rather than to the shipment, so it is resolved when
 the name goes on paper. Draft a German road document and add a sea leg afterwards, and
 the IMO form gets `GASOLINE` while the CMR keeps `BENZIN ODER OTTOKRAFTSTOFF`; the export

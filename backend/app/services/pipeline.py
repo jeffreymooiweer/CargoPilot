@@ -24,18 +24,18 @@ from app.services.units import convert as convert_units
 from app.services.parser.product_detector import detect_product_type
 
 PRODUCT_LABELS = {
-    "angle_profile": {"nl": "Hoekprofiel", "en": "Angle profile", "de": "Winkelprofil"},
-    "square_tube": {"nl": "Kokerprofiel", "en": "Square tube", "de": "Quadratrohr"},
-    "round_tube": {"nl": "Buis", "en": "Pipe", "de": "Rohr"},
-    "round_bar": {"nl": "Ronde staf", "en": "Round bar", "de": "Rundstab"},
-    "plate": {"nl": "Plaat", "en": "Plate", "de": "Blech"},
-    "beam": {"nl": "Balk", "en": "Beam", "de": "Träger"},
-    "standard_profile": {"nl": "Staalprofiel", "en": "Steel profile", "de": "Stahlprofil"},
-    "concrete_slab": {"nl": "Betonplaat", "en": "Concrete slab", "de": "Betonplatte"},
-    "plywood": {"nl": "Plaatmateriaal", "en": "Sheet material", "de": "Plattenwerkstoff"},
-    "reference_item": {"nl": "Artikel", "en": "Item", "de": "Artikel"},
-    "equipment": {"nl": "Materieel", "en": "Equipment", "de": "Material"},
-    "unknown": {"nl": "Onbekend", "en": "Unknown", "de": "Unbekannt"},
+    "angle_profile": {"nl": "Hoekprofiel", "en": "Angle profile", "de": "Winkelprofil", "fr": 'Cornière'},
+    "square_tube": {"nl": "Kokerprofiel", "en": "Square tube", "de": "Quadratrohr", "fr": 'Tube carré'},
+    "round_tube": {"nl": "Buis", "en": "Pipe", "de": "Rohr", "fr": 'Tube'},
+    "round_bar": {"nl": "Ronde staf", "en": "Round bar", "de": "Rundstab", "fr": 'Barre ronde'},
+    "plate": {"nl": "Plaat", "en": "Plate", "de": "Blech", "fr": 'Tôle'},
+    "beam": {"nl": "Balk", "en": "Beam", "de": "Träger", "fr": 'Poutre'},
+    "standard_profile": {"nl": "Staalprofiel", "en": "Steel profile", "de": "Stahlprofil", "fr": 'Profilé en acier'},
+    "concrete_slab": {"nl": "Betonplaat", "en": "Concrete slab", "de": "Betonplatte", "fr": 'Dalle de béton'},
+    "plywood": {"nl": "Plaatmateriaal", "en": "Sheet material", "de": "Plattenwerkstoff", "fr": 'Panneau'},
+    "reference_item": {"nl": "Artikel", "en": "Item", "de": "Artikel", "fr": 'Article'},
+    "equipment": {"nl": "Materieel", "en": "Equipment", "de": "Material", "fr": 'Matériel'},
+    "unknown": {"nl": "Onbekend", "en": "Unknown", "de": "Unbekannt", "fr": 'Inconnu'},
 }
 
 STEEL_PRODUCT_TYPES = {

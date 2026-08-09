@@ -236,8 +236,7 @@ def _draw_goods(
             {
                 "nl": "+{n} regels — zie bijgevoegde paklijst",
                 "en": "+{n} lines — see attached packing list",
-                "de": "+{n} Zeilen — siehe beigefügte Packliste",
-            },
+                "de": "+{n} Zeilen — siehe beigefügte Packliste", "fr": '+{n} lignes — voir la liste de colisage jointe'},
             lang,
         ).format(n=overflow)
         if top <= GOODS_BOTTOM:
@@ -343,8 +342,7 @@ def fill_avc_waybill(
                   "License 2.0 with Commons Clause).",
             "de": "ENTWURF — mit CargoPilot erstellt; vor der Verwendung von einer befugten "
                   "Person prüfen, ergänzen und unterschreiben lassen. Keine Haftung, "
-                  "bereitgestellt AS IS (Apache License 2.0 mit Commons Clause).",
-        },
+                  "bereitgestellt AS IS (Apache License 2.0 mit Commons Clause).", "fr": "PROJET — généré avec CargoPilot ; à vérifier, à compléter et à faire signer par une personne habilitée avant utilisation. Aucune responsabilité, fourni EN L'ÉTAT (licence Apache 2.0 avec Commons Clause)."},
         lang,
     )
     _draw_footer_note(c, disclaimer)

@@ -87,10 +87,11 @@ A few notes on the test suite:
 - **The AVC overlay is tested by coordinate.** `test_avc_waybill.py` checks where text
   lands on the page, not just that it is present.
 - **A language is complete or it is not.** `test_languages.py` walks the config and seed
-  files and requires a German text wherever there is a Dutch and an English one, holds
-  lists to the same length, and rejects a "translation" that only repeats the Dutch. An
-  AST pass over `app/` catches the same omission in code. Adding an interface string
-  therefore means adding it three times.
+  files and requires a text in every language of `SUPPORTED` wherever there is a Dutch and
+  an English one, holds lists to the same length, and rejects a "translation" that only
+  repeats the Dutch. An AST pass over `app/` catches the same omission in code. The tests
+  name no language: they read `SUPPORTED`, so switching a language on is one line and the
+  guard grows with it. Adding an interface string means adding it in every language.
 - **The app is started the way a user starts it.** `test_starts_out_of_the_box.py` builds
   the application in a real subprocess with a clean environment and nothing configured.
   It exists because everything else runs with `APP_ENV=test`, and a startup check that

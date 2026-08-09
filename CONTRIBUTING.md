@@ -85,8 +85,8 @@ A redacted report is worth just as much.
 
 ## Translations
 
-The interface is Dutch, English and German, in `frontend/src/i18n/nl.json`, `en.json`
-and `de.json`. If a string reads badly in any of the three, an issue quoting the key and
+The interface is Dutch, English, German and French, in `frontend/src/i18n/nl.json`, `en.json`
+`de.json` and `fr.json`. If a string reads badly in any of them, an issue quoting the key and
 a better wording is genuinely useful and takes two minutes to apply.
 
 That goes double for the German transport terminology. Where the regulations prescribe a

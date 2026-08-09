@@ -19,11 +19,15 @@ KEYWORDS = {
     # fout maar een gelijkspel, en gelijkspel gaat naar het Nederlands.
     "de": {"stahl", "winkelprofil", "quadratrohr", "verzinkt", "holz", "beton",
            "menge", "stück", "länge", "blech", "träger", "rundstab"},
+    # "beton" en "profil" komen in meer talen voor; ook hier geldt dat een
+    # gelijkspel naar het Nederlands gaat.
+    "fr": {"acier", "cornière", "tube", "galvanisé", "bois", "béton",
+           "quantité", "longueur", "pièces", "tôle", "poutre", "profilé"},
 }
 
 # Bij gelijkspel wint de taal die het eerst staat: die waarin de gegevens het
 # volledigst zijn.
-_ORDER = ("nl", "en", "de")
+_ORDER = ("nl", "en", "de", "fr")
 
 
 def detect_language(text: str) -> str:

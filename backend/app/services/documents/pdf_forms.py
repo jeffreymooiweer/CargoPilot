@@ -64,10 +64,10 @@ def _first(*values: Any) -> str:
 
 def _freight_payment_label(value: str, lang: str) -> str:
     labels = {
-        "prepaid": {"nl": "Franco", "en": "Carriage paid", "de": "Frei"},
-        "collect": {"nl": "Ongefrankeerd", "en": "Carriage forward", "de": "Unfrei"},
+        "prepaid": {"nl": "Franco", "en": "Carriage paid", "de": "Frei", "fr": 'Port payé'},
+        "collect": {"nl": "Ongefrankeerd", "en": "Carriage forward", "de": "Unfrei", "fr": 'Port dû'},
         "agreement": {"nl": "Volgens overeenkomst", "en": "As per agreement",
-                      "de": "Laut Vereinbarung"},
+                      "de": "Laut Vereinbarung", "fr": 'Selon convention'},
     }
     return pick(labels.get(value), lang, value or "")
 
@@ -180,8 +180,7 @@ def fill_cmr(
             {
                 "nl": "+{count} regels — zie bijgevoegde paklijst",
                 "en": "+{count} lines — see attached packing list",
-                "de": "+{count} Zeilen — siehe beigefügte Packliste",
-            },
+                "de": "+{count} Zeilen — siehe beigefügte Packliste", "fr": '+{count} lignes — voir la liste de colisage jointe'},
             lang,
         )
         fields[f"VakRood06Regel{n}Kolom06"] = overflow.format(
@@ -303,9 +302,9 @@ def fill_iata(values: dict[str, Any], dangerous_goods: list[dict[str, Any]], lan
 
 def _cim_payment_label(value: str, lang: str) -> str:
     labels = {
-        "franco": {"nl": "Franco de port", "en": "Carriage paid", "de": "Franco de port"},
-        "collect": {"nl": "Non franco", "en": "Carriage forward", "de": "Non franco"},
-        "shared": {"nl": "Volgens afspraak", "en": "As agreed", "de": "Laut Vereinbarung"},
+        "franco": {"nl": "Franco de port", "en": "Carriage paid", "de": "Franco de port", "fr": 'Port payé'},
+        "collect": {"nl": "Non franco", "en": "Carriage forward", "de": "Non franco", "fr": 'Port dû'},
+        "shared": {"nl": "Volgens afspraak", "en": "As agreed", "de": "Laut Vereinbarung", "fr": 'Comme convenu'},
     }
     return pick(labels.get(value), lang, value or "")
 

@@ -23,8 +23,8 @@ it — thresholds, limits, multipliers — are stored, each with the provision i
 
 ## Goods and densities
 
-**1,093 goods** with densities, min/max ranges, search aliases and names in Dutch, English
-and German, in `backend/seed/materials.json`. Each entry carries a **category** —
+**1,093 goods** with densities, min/max ranges, search aliases and names in Dutch, English,
+German and French, in `backend/seed/materials.json`. Each entry carries a **category** —
 `liquid`, `agri`, `bulk_material`, `ore_mineral`, `metal`, `wood`, `general_cargo` and nine
 others — which drives which units the goods step offers first.
 
@@ -40,7 +40,7 @@ others — which drives which units the goods step offers first.
 | `food` | 61 | `concrete` | 8 |
 
 The invariants are held by `backend/tests/test_materials_catalog.py`: no good appears
-twice, no alias belongs to two goods, every good carries all three languages, every
+twice, no alias belongs to two goods, every good carries every supported language, every
 category is one `units.py` knows, and every density lies inside its own min/max band.
 
 **How a new good reaches an installation that already runs.** `seed_catalogs` fills the

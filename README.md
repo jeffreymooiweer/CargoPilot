@@ -17,7 +17,7 @@ CMR, CIM, AVC and IATA forms, and checks your dangerous goods before you print.
 [![Backend](https://img.shields.io/badge/backend-FastAPI%20%C2%B7%20Python%203.12-009688?logo=fastapi&logoColor=white)](docs/development.md)
 [![Frontend](https://img.shields.io/badge/frontend-React%2018%20%C2%B7%20TypeScript-61DAFB?logo=react&logoColor=black)](docs/development.md)
 [![Unraid](https://img.shields.io/badge/Unraid-ready-F15A2C?logo=unraid&logoColor=white)](docs/getting-started.md#unraid)
-[![Interface](https://img.shields.io/badge/interface-NL%20%C2%B7%20EN%20%C2%B7%20DE-lightgrey)](#)
+[![Interface](https://img.shields.io/badge/interface-NL%20%C2%B7%20EN%20%C2%B7%20DE%20%C2%B7%20FR-lightgrey)](#)
 [![Self-hosted](https://img.shields.io/badge/self--hosted-your%20data%20stays%20yours-6f42c1)](docs/privacy.md)
 
 </div>
@@ -46,7 +46,7 @@ shipment history is kept.
 ## What it does
 
 **Understands your load.** Paste a list, or import an Excel or CSV file. CargoPilot
-recognises materials and dimensions in Dutch, English and German — `Steel angle 80x80x8x6000` —
+recognises materials and dimensions in Dutch, English, German and French — `Steel angle 80x80x8x6000` —
 and works out the weight from a built-in database of **1,093 goods**, from cement and
 timber to grain, chemicals and white goods. Anything it cannot work out, you can correct
 by hand.
@@ -73,7 +73,7 @@ substances it declared.
 17,500+ ports and 750+ European railway stations, filtered to the transport mode you
 chose.
 
-**Speaks Dutch, English and German**, in light or dark mode. The interface, the field labels, the dangerous goods guidance and the generated documents all follow the language you pick.
+**Speaks Dutch, English, German and French**, in light or dark mode. The interface, the field labels, the dangerous goods guidance and the generated documents all follow the language you pick.
 
 ## Try it in two minutes
 

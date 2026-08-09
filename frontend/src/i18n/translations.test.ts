@@ -3,15 +3,16 @@
  *
  * i18next valt bij een ontbrekende sleutel stil terug op het Engels. Dat is
  * precies wat een halve vertaling onzichtbaar maakt: het scherm blijft werken,
- * maar de gebruiker krijgt Duits met Engelse gaten en merkt niet dat er iets
- * mist. Deze test dwingt af dat de drie bestanden dezelfde sleutels dragen —
- * en dat een nieuwe sleutel dus in alle drie tegelijk landt.
+ * maar de gebruiker krijgt Frans met Engelse gaten en merkt niet dat er iets
+ * mist. Deze test dwingt af dat alle taalbestanden dezelfde sleutels dragen —
+ * en dat een nieuwe sleutel dus in alle talen tegelijk landt.
  */
 import { describe, expect, it } from "vitest";
 
 import settingsSource from "../pages/SettingsPage.tsx?raw";
 import i18nSetup from "./index.ts?raw";
 import de from "./de.json";
+import fr from "./fr.json";
 import en from "./en.json";
 import nl from "./nl.json";
 import { DEFAULT_LANGUAGE, documentLanguage, SUPPORTED_LANGUAGES } from "./language";
@@ -32,7 +33,7 @@ function paths(value: unknown, prefix = ""): string[] {
   return [prefix];
 }
 
-const BUNDLES: Record<string, Json> = { nl, en, de };
+const BUNDLES: Record<string, Json> = { nl, en, de, fr };
 
 describe("de vertaalbestanden", () => {
   it("dekken elke taal die de app aanbiedt", () => {
@@ -116,7 +117,9 @@ describe("documentLanguage", () => {
 
   it("valt bij een onbekende taal terug op het Nederlands", () => {
     // Nederlands is de taal waarin de gegevens het volledigst zijn.
-    expect(documentLanguage("fr")).toBe(DEFAULT_LANGUAGE);
+    // "fr" hoort sinds v1.44.0 bij de ondersteunde talen; "it" neemt hier de
+    // rol over van onbekende taal.
+    expect(documentLanguage("it")).toBe(DEFAULT_LANGUAGE);
     expect(documentLanguage(undefined)).toBe(DEFAULT_LANGUAGE);
     expect(documentLanguage("")).toBe(DEFAULT_LANGUAGE);
   });

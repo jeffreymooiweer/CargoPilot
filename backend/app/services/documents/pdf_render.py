@@ -182,8 +182,7 @@ def _signature_block(signature_png: bytes, styles: dict, lang: str) -> list:
             "en": "Signature of consignor / responsible person — digitally placed via "
                   "CargoPilot on ",
             "de": "Unterschrift des Absenders / der verantwortlichen Person — digital "
-                  "eingefügt über CargoPilot am ",
-        },
+                  "eingefügt über CargoPilot am ", "fr": "Signature de l'expéditeur ou de la personne responsable — apposée numériquement via CargoPilot le "},
         lang,
     ) + datetime.now().strftime("%Y-%m-%d")
     caption_table = Table(

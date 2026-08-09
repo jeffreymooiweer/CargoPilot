@@ -18,6 +18,7 @@ import pytest
 
 from app.core.database import Base, SessionLocal, engine
 from app.core.startup import seed_catalogs
+from app.core.languages import SUPPORTED
 from app.services.catalog_search import (
     MATERIAL_LABELS,
     PRODUCT_LABELS,
@@ -87,15 +88,21 @@ def test_an_unknown_language_falls_back_rather_than_returning_nothing(db):
 # --- De labeltabellen -----------------------------------------------------
 
 
-def test_every_product_type_has_all_three_languages():
+def test_every_product_type_speaks_every_language():
+    """Meegroeien met SUPPORTED in plaats van drie talen bij naam te noemen.
+
+    Deze twee tests eisten letterlijk {"nl", "en", "de"}. Toen het Frans erbij
+    kwam faalden ze niet omdat er iets miste, maar omdat er iets bij was — een
+    bewaker die een nieuwe taal als fout ziet, bewaakt die taal niet.
+    """
     for product_type, names in PRODUCT_LABELS.items():
-        assert set(names) == {"nl", "en", "de"}, product_type
+        assert set(names) == set(SUPPORTED), product_type
         assert all(names.values()), product_type
 
 
-def test_every_fallback_material_has_all_three_languages():
+def test_every_fallback_material_speaks_every_language():
     for name, names in MATERIAL_LABELS.items():
-        assert set(names) == {"nl", "en", "de"}, name
+        assert set(names) == set(SUPPORTED), name
         assert all(names.values()), name
 
 

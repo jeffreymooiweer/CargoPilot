@@ -2,6 +2,60 @@
 
 All notable changes are documented here, following [Semantic Versioning](https://semver.org/).
 
+## [1.43.0] — 2026-08-09
+
+A clearing-out. Nothing here changes what the application answers; it changes how much of
+it there is.
+
+### Removed
+
+- **Two scripts that had finished their work.** `purge-history.sh` says so itself — *"Status:
+  reeds uitgevoerd (juli 2026)"* — and `cleanup-dockerhub-tags.sh` was never wired to
+  anything: the Cleanup Docker Hub tags workflow carries its own copy of that logic inline.
+  Both remain in the git history if they are ever wanted back.
+
+- **Four functions with no callers anywhere**: `decode_access_token` (a compatibility
+  helper for callers that never arrived), `stowage_code_text`, `manifest_summary`, and the
+  four schema classes `MaterialBase`, `MaterialOut`, `ProfileBase`, `ProfileOut`.
+
+- **Twelve unused imports** across the backend, the tests and the scripts.
+
+### Changed
+
+- **The pipeline computes the solid block through `calc_solid_block` instead of writing the
+  formula out again.** This is the one item here that is more than tidying. The calculation
+  engine holds a function for it, and the pipeline computed `w * h * length_m` and then
+  `* density` in two separate branches — the same formula in three places, two of them out
+  of reach of the tests that check the engine. It is the pattern this project has paid for
+  four times: `calc_round_bar` and `calc_round_tube` also sat there uncalled until v1.37.1,
+  and a round bar weighed 27% too much for as long as they did.
+
+  `test_no_dead_code.py` now asserts the general form of it: every `calc_` function in the
+  engine has a caller outside the engine.
+
+- **A `.dockerignore`.** There was none, so the whole working tree went to the daemon as
+  build context on every build, `.git` included. Measured: **637 MB before, 586 MB after**.
+
+### Documentation
+
+- **`un_cards/` is not empty, and the cost is now written down.** Both `docs/data-sources.md`
+  and the `Dockerfile` said the folder is empty in a fresh checkout and gets filled by a
+  workflow. That was the design. What the repository actually contains is **2,849 PDFs,
+  575 MB**, and the `Dockerfile` copies them into the image — roughly nine tenths of what a
+  `docker pull` transfers, paid by every installation on every update, including the ones
+  that never open a UN card.
+
+  They are not dead weight: the UN card export serves exactly those files. But 575 MB per
+  pull is a decision rather than a default, and nothing in the repository said so. Nothing
+  is removed here; the number is now visible, with the two ways out named.
+
+### Note on the method
+
+While clearing out, a deletion without an end boundary truncated
+`app/services/dg/amendment_42_24.py` and took `not_covered()` with it. 117 tests went red
+and the cause was clear within a minute. Worth recording, because the risk in a clearing-out
+is never what you meant to remove.
+
 ## [1.42.0] — 2026-08-09
 
 ### Added

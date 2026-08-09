@@ -1,4 +1,3 @@
-import pytest
 from app.services.parser.paste_parser import parse_paste
 
 

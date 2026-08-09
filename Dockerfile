@@ -29,7 +29,10 @@ RUN pip install -r requirements-runtime.txt && pip check
 
 COPY backend/ ./backend/
 COPY templates/ ./templates/
-# The UN card library. Empty until the Fetch UN cards workflow populates it.
+# The UN card library that the card export serves. This is by far the largest
+# thing in the image: 2,849 PDFs, 575 MB, committed to the repository rather
+# than fetched at build time. Removing it would shrink the image by roughly
+# nine tenths and take the UN card export with it.
 COPY un_cards/ ./un_cards/
 
 COPY --from=frontend-build /build/dist ./backend/static/

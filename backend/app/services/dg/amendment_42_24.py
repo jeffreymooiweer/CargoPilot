@@ -71,15 +71,6 @@ def ems_additions() -> dict[str, dict[str, str]]:
     return dict((_load().get("ems_additions") or {}).get("entries") or {})
 
 
-def stowage_code_text(code: str, language: str = "nl") -> str:
-    """Tekst van een stuwagecode die 42-24 toevoegt, bijv. SW31."""
-    item = (_load().get("new_stowage_codes") or {}).get(str(code).strip().upper())
-    if not isinstance(item, dict):
-        return ""
-    # "text" is de Engelse brontekst; de vertalingen staan per taalcode.
-    return str(pick({**item, "en": item.get("en") or item.get("text")}, language, ""))
-
-
 def _entry_for(un: str, packing_group: str = "") -> dict[str, Any]:
     """De wijziging voor dit UN-nummer, zo nodig per verpakkingsgroep.
 

@@ -1,0 +1,57 @@
+# What Docker never needs to receive.
+#
+# Without this file the whole working tree is sent to the daemon as build
+# context, .git included, while the Dockerfile copies four directories. The
+# context is transferred before the first instruction runs, so it is paid on
+# every build, including the ones that hit the layer cache and produce nothing.
+#
+# Measured: 637 MB of context before, 586 MB after — 52 MB saved, almost all of
+# it the .git directory.
+#
+# The remaining 575 MB is `un_cards/`, and that is not excluded here because
+# the Dockerfile genuinely copies it: the UN card export serves those PDFs.
+# It is by far the largest thing in the image and worth a decision rather than
+# a default; docs/data-sources.md states what it costs and what it buys.
+
+.git
+.github
+.gitignore
+
+# Node dependencies are installed inside the frontend build stage.
+node_modules
+frontend/node_modules
+frontend/dist
+
+# Python bytecode and virtualenvs.
+__pycache__
+**/__pycache__
+*.py[cod]
+.venv
+venv
+
+# Local runtime data: the database, exports and the generated secret key. Never
+# part of an image, and shipping them would mean shipping someone's data.
+data
+exports
+
+# Test and tooling output.
+.pytest_cache
+.ruff_cache
+.mypy_cache
+coverage
+htmlcov
+*.log
+
+# Documentation and repository furniture. The application does not read these.
+docs
+*.md
+!backend/**/*.md
+scripts
+unraid
+assets
+
+# Editor and OS noise.
+.vscode
+.idea
+.DS_Store
+Thumbs.db

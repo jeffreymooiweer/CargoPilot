@@ -31,7 +31,6 @@ from reportlab.platypus import (
 from app.core.languages import pick
 from app.services.dg.autofill import adr_category_totals
 from app.services.documents.exporter import (
-    DG_PRODUCT_FIELDS,
     _dg_headers,
     _dg_rows,
     _dims,

@@ -181,8 +181,20 @@ and falls back to the offline database automatically.
 ## UN cards
 
 `un_cards/` holds one reference card per UN number, named after the number it describes.
-The folder is empty in a fresh checkout and is filled once by the **Fetch UN cards**
-workflow.
+
+> **A correction, and a number worth knowing.** This page said the folder is empty in a
+> fresh checkout and is filled once by the **Fetch UN cards** workflow. That was the design;
+> it is not what the repository contains. **2,849 PDFs totalling 575 MB are committed**, and
+> the `Dockerfile` copies them into the image. That is roughly nine tenths of what a `docker
+> pull` transfers, and it is paid by every installation on every update — including the ones
+> that never open a UN card.
+>
+> They are not dead weight: the UN card export serves exactly these files. But whether the
+> feature is worth 575 MB per pull is a decision, not a default, and it should be made
+> deliberately rather than inherited from whoever committed them. Two ways out if it is not
+> worth it: exclude `un_cards/` from the image and let the workflow fill a mounted volume,
+> or keep only the cards for the UN numbers actually held in `card_data.json`. Neither is
+> done here — this note exists so the cost is visible.
 
 | Data | Source |
 |---|---|

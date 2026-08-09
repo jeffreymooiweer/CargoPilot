@@ -69,47 +69,6 @@ class DocumentExportRequest(BaseModel):
     signature_image: str | None = None
 
 
-class MaterialBase(BaseModel):
-    canonical_name: str
-    category: str
-    density_kg_m3: float
-    density_min_kg_m3: float | None = None
-    density_max_kg_m3: float | None = None
-    unit: str = "kg/m3"
-    condition: str | None = None
-    language_labels: dict = Field(default_factory=dict)
-    aliases: list[str] = Field(default_factory=list)
-    source: str | None = None
-    notes: str | None = None
-    active: bool = True
-
-
-class MaterialOut(MaterialBase):
-    id: int
-
-    class Config:
-        from_attributes = True
-
-
-class ProfileBase(BaseModel):
-    profile_type: str
-    size_label: str
-    kg_per_meter: float
-    material: str = "steel"
-    standard: str | None = None
-    aliases: list[str] = Field(default_factory=list)
-    source: str | None = None
-    notes: str | None = None
-    active: bool = True
-
-
-class ProfileOut(ProfileBase):
-    id: int
-
-    class Config:
-        from_attributes = True
-
-
 class ReferenceItemBase(BaseModel):
     canonical_name: str
     category: str = "electrical"

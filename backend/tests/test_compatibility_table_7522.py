@@ -42,9 +42,6 @@ groep L is leeg, dus verboden. Een uitzondering uit de ene bepaling naar de
 andere doortrekken had die combinatie stilzwijgend goedgekeurd.
 """
 
-import json
-from pathlib import Path
-
 import pytest
 
 from app.services.dg.compliance import check_adr_mixed_loading, get_compliance_rules

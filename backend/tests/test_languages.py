@@ -1,15 +1,23 @@
-"""Een derde taal moet compleet zijn, anders is zij misleidend.
+"""Een extra taal moet compleet zijn, anders is zij misleidend.
 
-Duits is toegevoegd naast Nederlands en Engels. Het gevaar van een derde taal
-zit niet in wat er misgaat maar in wat er stilletjes goed lijkt te gaan: een
-ontbrekende vertaling valt terug op een andere taal, het scherm blijft werken
-en de gebruiker ziet een Duits formulier met Nederlandse veldnamen zonder te
-merken dat er iets mist. Bij een vervoersdocument is dat geen cosmetisch
-probleem — een afzender die "Verpakkingsgroep" niet leest, vult hem niet in.
+Het gevaar van een taal erbij zit niet in wat er misgaat maar in wat er
+stilletjes goed lijkt te gaan: een ontbrekende vertaling valt terug op een
+andere taal, het scherm blijft werken en de gebruiker ziet een Frans formulier
+met Nederlandse veldnamen zonder te merken dat er iets mist. Bij een
+vervoersdocument is dat geen cosmetisch probleem — een afzender die
+"Verpakkingsgroep" niet leest, vult hem niet in.
 
 Deze tests lopen daarom over de gegevensbestanden zelf: elk blokje dat een
-Nederlandse én een Engelse tekst draagt, moet ook een Duitse dragen. Zo landt
-een nieuwe tekst voortaan in alle drie tegelijk of hij landt niet.
+Nederlandse én een Engelse tekst draagt, moet er ook één dragen in elke andere
+taal die de applicatie zegt te spreken. Zo landt een nieuwe tekst in alle talen
+tegelijk of hij landt niet.
+
+**Deze tests noemen geen enkele taal bij naam.** Ze lezen `SUPPORTED` uit
+`app.core.languages` en eisen elke taal daarin behalve `nl` en `en`, die de
+brontalen zijn. Tot v1.44.0 stond overal letterlijk `"de"`, en toen het Frans
+erbij kwam bewaakten ze het Frans dus niet — een taal toevoegen betekende toen
+óók de bewaker uitbreiden, en precies dat vergeet je. Nu is `SUPPORTED` de enige
+plek waar een taal wordt aangezet.
 """
 
 import ast
@@ -42,35 +50,46 @@ TRANSLATED_FILES = [
 # Sommige blokken dragen hun talen als achtervoegsel: note_nl/note_en.
 SUFFIXES = ("note", "items", "changes", "assigned_to_note")
 
+#: De talen die bewaakt worden: alles wat de applicatie spreekt, behalve de twee
+#: brontalen. Groeit vanzelf mee met `SUPPORTED`.
+EXTRA_LANGUAGES = tuple(language for language in SUPPORTED if language not in ("nl", "en"))
 
-def translated_blocks(value, path=""):
+
+def translated_blocks(value, language, path=""):
     """Elk blokje met een Nederlandse én Engelse tekst, met zijn pad."""
     if isinstance(value, dict):
         if "nl" in value and "en" in value:
-            yield path or ".", value, "de"
+            yield path or ".", value, language
         for suffix in SUFFIXES:
             if f"{suffix}_nl" in value and f"{suffix}_en" in value:
-                yield f"{path}#{suffix}", value, f"{suffix}_de"
+                yield f"{path}#{suffix}", value, f"{suffix}_{language}"
         for key, item in value.items():
-            yield from translated_blocks(item, f"{path}.{key}")
+            yield from translated_blocks(item, language, f"{path}.{key}")
     elif isinstance(value, list):
         for index, item in enumerate(value):
-            yield from translated_blocks(item, f"{path}[{index}]")
+            yield from translated_blocks(item, language, f"{path}[{index}]")
+
+
+def source_key(block_key, language):
+    """Bij `de` hoort `en`; bij `note_de` hoort `note_en`."""
+    return "en" if block_key == language else f"{block_key[: -len(language)]}en"
 
 
 def load(name):
     return json.loads((ROOT / name).read_text(encoding="utf-8"))
 
 
+@pytest.mark.parametrize("language", EXTRA_LANGUAGES)
 @pytest.mark.parametrize("name", TRANSLATED_FILES)
-def test_every_translated_text_carries_german(name):
-    incomplete = [path for path, block, key in translated_blocks(load(name))
+def test_every_translated_text_carries_each_extra_language(name, language):
+    incomplete = [path for path, block, key in translated_blocks(load(name), language)
                   if not block.get(key)]
-    assert incomplete == [], f"{name}: geen Duits voor {incomplete[:5]}"
+    assert incomplete == [], f"{name}: geen {language} voor {incomplete[:5]}"
 
 
+@pytest.mark.parametrize("language", EXTRA_LANGUAGES)
 @pytest.mark.parametrize("name", TRANSLATED_FILES)
-def test_german_keeps_the_shape_of_the_other_languages(name):
+def test_a_translation_keeps_the_shape_of_the_other_languages(name, language):
     """Een lijst blijft een lijst, en even lang.
 
     De vaste teksten van een formulier en de vrijstellingsbepalingen van
@@ -78,16 +97,17 @@ def test_german_keeps_the_shape_of_the_other_languages(name):
     een document met vier ontbrekende bepalingen op.
     """
     wrong = []
-    for path, block, key in translated_blocks(load(name)):
-        english, german = block["en" if key == "de" else key[:-3] + "_en"], block[key]
-        if type(german) is not type(english):
-            wrong.append(f"{path}: {type(german).__name__} vs {type(english).__name__}")
-        elif isinstance(english, list) and len(german) != len(english):
-            wrong.append(f"{path}: {len(german)} regels vs {len(english)}")
+    for path, block, key in translated_blocks(load(name), language):
+        english, translated = block[source_key(key, language)], block[key]
+        if type(translated) is not type(english):
+            wrong.append(f"{path}: {type(translated).__name__} vs {type(english).__name__}")
+        elif isinstance(english, list) and len(translated) != len(english):
+            wrong.append(f"{path}: {len(translated)} regels vs {len(english)}")
     assert wrong == []
 
 
-def test_german_texts_are_not_simply_the_dutch_ones():
+@pytest.mark.parametrize("language", EXTRA_LANGUAGES)
+def test_a_translation_is_not_simply_the_dutch_text(language):
     """Een 'vertaling' die de Nederlandse tekst herhaalt, is geen vertaling.
 
     Vakbegrippen die overal onvertaald blijven staan zijn de uitzondering —
@@ -98,13 +118,14 @@ def test_german_texts_are_not_simply_the_dutch_ones():
     """
     copies = []
     for name in TRANSLATED_FILES:
-        for path, block, key in translated_blocks(load(name)):
-            dutch = block["nl" if key == "de" else key[:-3] + "_nl"]
-            english = block["en" if key == "de" else key[:-3] + "_en"]
+        for path, block, key in translated_blocks(load(name), language):
+            source = source_key(key, language)
+            dutch = block[f"{source[:-2]}nl"]
+            english = block[source]
             if not isinstance(dutch, str) or len(dutch.split()) <= 3:
                 continue
             # Alleen hoofdletterverschil telt niet als vertaling: "Air Waybill
-            # Shipping Instructions" is in alle drie de talen dezelfde term.
+            # Shipping Instructions" is in elke taal dezelfde term.
             if dutch.casefold() != english.casefold() and block[key] == dutch:
                 copies.append(f"{name}{path}")
     assert copies == []
@@ -124,7 +145,8 @@ def bilingual_literals(tree):
             yield node.lineno, keys
 
 
-def test_no_translation_left_behind_in_the_code():
+@pytest.mark.parametrize("language", EXTRA_LANGUAGES)
+def test_no_translation_left_behind_in_the_code(language):
     """De helft van de teksten staat niet in een gegevensbestand maar in de
     code: de vaste teksten van de exporter, de scheidingswoorden, de
     productnamen. Die zijn bij het toevoegen van een taal net zo makkelijk te
@@ -135,7 +157,7 @@ def test_no_translation_left_behind_in_the_code():
     for path in sorted((ROOT / "app").rglob("*.py")):
         tree = ast.parse(path.read_text(encoding="utf-8"))
         for lineno, keys in bilingual_literals(tree):
-            if "de" not in keys:
+            if language not in keys:
                 missing.append(f"{path.relative_to(ROOT)}:{lineno}")
     assert missing == []
 
@@ -168,7 +190,11 @@ def test_the_frontend_offers_the_same_languages():
 @pytest.mark.parametrize("given,expected", [
     ("de", "de"), ("DE", "de"), ("de-AT", "de"), ("de_DE", "de"),
     ("en", "en"), ("en-GB", "en"), ("nl", "nl"),
-    ("fr", DEFAULT), ("", DEFAULT), (None, DEFAULT), (123, DEFAULT),
+    # Frans hoort sinds v1.44.0 bij SUPPORTED en valt dus niet meer terug op
+    # de standaardtaal. Deze regel stond er als bewijs dat een onbekende taal
+    # netjes werd opgevangen; die rol is nu voor "it".
+    ("fr", "fr"), ("fr-BE", "fr"), ("FR_CH", "fr"),
+    ("it", DEFAULT), ("", DEFAULT), (None, DEFAULT), (123, DEFAULT),
 ])
 def test_a_language_code_is_narrowed_to_one_we_speak(given, expected):
     assert normalise(given) == expected

@@ -8,7 +8,7 @@
  * bleven. Eén plek, dus een taal erbij is één regel.
  */
 
-export const SUPPORTED_LANGUAGES = ["nl", "en", "de"] as const;
+export const SUPPORTED_LANGUAGES = ["nl", "en", "de", "fr"] as const;
 
 export type Language = (typeof SUPPORTED_LANGUAGES)[number];
 
@@ -26,7 +26,7 @@ export function documentLanguage(language: string | undefined): Language {
     : DEFAULT_LANGUAGE;
 }
 
-/** Tekst uit een {nl, en, de}-blokje van de backend.
+/** Tekst uit een {nl, en, de, fr}-blokje van de backend.
  *
  * Het documentregister komt van de server en kan uit een oudere of eigen
  * uitgave komen waarin een taal ontbreekt. Een leeg label is dan erger dan een

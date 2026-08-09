@@ -10,126 +10,145 @@
       "note_nl": "De aparte markering SGG1a voor sterke zuren bestaat sinds Amendment 41-22 niet meer; sterke zuren vallen onder SGG1.",
       "note_en": "The separate SGG1a marking for strong acids no longer exists since Amendment 41-22; strong acids fall under SGG1.",
       "de": "Säuren",
-      "note_de": "Die gesonderte Kennzeichnung SGG1a für starke Säuren gibt es seit Amendment 41-22 nicht mehr; starke Säuren fallen unter SGG1."
+      "note_de": "Die gesonderte Kennzeichnung SGG1a für starke Säuren gibt es seit Amendment 41-22 nicht mehr; starke Säuren fallen unter SGG1.",
+      "fr": "Acides",
+      "note_fr": "Le marquage distinct SGG1a pour les acides forts n'existe plus depuis l'amendement 41-22 ; les acides forts relèvent du SGG1."
     },
     {
       "code": "SGG2",
       "en": "Ammonium compounds",
       "nl": "Ammoniumverbindingen",
       "count": 30,
-      "de": "Ammoniumverbindungen"
+      "de": "Ammoniumverbindungen",
+      "fr": "Composés ammoniacaux"
     },
     {
       "code": "SGG3",
       "en": "Bromates",
       "nl": "Bromaten",
       "count": 7,
-      "de": "Bromate"
+      "de": "Bromate",
+      "fr": "Bromates"
     },
     {
       "code": "SGG4",
       "en": "Chlorates",
       "nl": "Chloraten",
       "count": 17,
-      "de": "Chlorate"
+      "de": "Chlorate",
+      "fr": "Chlorates"
     },
     {
       "code": "SGG5",
       "en": "Chlorites",
       "nl": "Chlorieten",
       "count": 4,
-      "de": "Chlorite"
+      "de": "Chlorite",
+      "fr": "Chlorites"
     },
     {
       "code": "SGG6",
       "en": "Cyanides",
       "nl": "Cyaniden",
       "count": 24,
-      "de": "Cyanide"
+      "de": "Cyanide",
+      "fr": "Cyanures"
     },
     {
       "code": "SGG7",
       "en": "Heavy metals and their salts (including their organometallic compounds)",
       "nl": "Zware metalen en hun zouten (inclusief organometaalverbindingen)",
       "count": 82,
-      "de": "Schwermetalle und ihre Salze (einschließlich ihrer metallorganischen Verbindungen)"
+      "de": "Schwermetalle und ihre Salze (einschließlich ihrer metallorganischen Verbindungen)",
+      "fr": "Métaux lourds et leurs sels (y compris leurs composés organométalliques)"
     },
     {
       "code": "SGG8",
       "en": "Hypochlorites",
       "nl": "Hypochlorieten",
       "count": 11,
-      "de": "Hypochlorite"
+      "de": "Hypochlorite",
+      "fr": "Hypochlorites"
     },
     {
       "code": "SGG9",
       "en": "Lead and its compounds",
       "nl": "Lood en loodverbindingen",
       "count": 15,
-      "de": "Blei und Bleiverbindungen"
+      "de": "Blei und Bleiverbindungen",
+      "fr": "Plomb et ses composés"
     },
     {
       "code": "SGG10",
       "en": "Liquid halogenated hydrocarbons",
       "nl": "Vloeibare gehalogeneerde koolwaterstoffen",
       "count": 43,
-      "de": "Flüssige halogenierte Kohlenwasserstoffe"
+      "de": "Flüssige halogenierte Kohlenwasserstoffe",
+      "fr": "Hydrocarbures halogénés liquides"
     },
     {
       "code": "SGG11",
       "en": "Mercury and mercury compounds",
       "nl": "Kwik en kwikverbindingen",
       "count": 35,
-      "de": "Quecksilber und Quecksilberverbindungen"
+      "de": "Quecksilber und Quecksilberverbindungen",
+      "fr": "Mercure et composés du mercure"
     },
     {
       "code": "SGG12",
       "en": "Nitrites and their mixtures",
       "nl": "Nitrieten en mengsels daarvan",
       "count": 6,
-      "de": "Nitrite und ihre Mischungen"
+      "de": "Nitrite und ihre Mischungen",
+      "fr": "Nitrites et leurs mélanges"
     },
     {
       "code": "SGG13",
       "en": "Perchlorates",
       "nl": "Perchloraten",
       "count": 12,
-      "de": "Perchlorate"
+      "de": "Perchlorate",
+      "fr": "Perchlorates"
     },
     {
       "code": "SGG14",
       "en": "Permanganates",
       "nl": "Permanganaten",
       "count": 7,
-      "de": "Permanganate"
+      "de": "Permanganate",
+      "fr": "Permanganates"
     },
     {
       "code": "SGG15",
       "en": "Powdered metals",
       "nl": "Metaalpoeders",
       "count": 22,
-      "de": "Metallpulver"
+      "de": "Metallpulver",
+      "fr": "Métaux en poudre"
     },
     {
       "code": "SGG16",
       "en": "Peroxides",
       "nl": "Peroxiden",
       "count": 16,
-      "de": "Peroxide"
+      "de": "Peroxide",
+      "fr": "Peroxydes"
     },
     {
       "code": "SGG17",
       "en": "Azides",
       "nl": "Aziden",
       "count": 4,
-      "de": "Azide"
+      "de": "Azide",
+      "fr": "Azotures"
     },
     {
       "code": "SGG18",
       "en": "Alkalis",
       "nl": "Alkaliën",
       "count": 69,
-      "de": "Laugen"
+      "de": "Laugen",
+      "fr": "Alcalis"
     }
   ],
   "by_un": {

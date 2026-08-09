@@ -12,7 +12,8 @@
     "language_labels": {
       "nl": "Schakelaar",
       "en": "Switch",
-      "de": "Schalter"
+      "de": "Schalter",
+      "fr": "Interrupteur"
     }
   },
   {
@@ -29,7 +30,8 @@
     "language_labels": {
       "nl": "Stopcontact",
       "en": "Socket",
-      "de": "Steckdose"
+      "de": "Steckdose",
+      "fr": "Prise de courant"
     }
   },
   {
@@ -47,7 +49,8 @@
     "language_labels": {
       "nl": "Lasdoos",
       "en": "Junction box",
-      "de": "Abzweigdose"
+      "de": "Abzweigdose",
+      "fr": "Boîte de dérivation"
     }
   },
   {
@@ -64,7 +67,8 @@
     "language_labels": {
       "nl": "Wartel",
       "en": "Cable gland",
-      "de": "Kabelverschraubung"
+      "de": "Kabelverschraubung",
+      "fr": "Presse-étoupe"
     }
   }
 ]

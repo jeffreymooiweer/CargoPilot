@@ -20,6 +20,8 @@ it — thresholds, limits, multipliers — are stored, each with the provision i
 - [Locations](#locations)
 - [Dangerous goods regulations](#dangerous-goods-regulations)
 - [Official form templates](#official-form-templates)
+- [Which edition is running](#which-edition-is-running)
+- [UN cards](#un-cards)
 
 ## Goods and densities
 
@@ -165,7 +167,7 @@ Where the data lives:
 
 | File | Contents |
 |---|---|
-| `backend/seed/dg/un_numbers.json` | 2,928 UN entries |
+| `backend/seed/dg/un_numbers.json` | 2,928 Table A rows over 2,336 UN numbers |
 | `backend/seed/dg/ems.json` | 2,338 UN numbers with fire and spillage schedules |
 | `backend/seed/dg/segregation_groups.json` | 18 groups, 629 substance entries |
 | `backend/seed/dg/packagings.json` | 107 UN packaging codes |

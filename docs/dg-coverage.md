@@ -81,7 +81,7 @@ vehicle, the vessel, the aircraft or the route — and those are not marginal.
 
 | Source | Contents | Covers |
 |---|---|---|
-| `seed/dg/un_numbers.json` | ADR Table A: class, classification code, packing group, labels, special provisions, LQ, EQ, packing instructions, transport category, tunnel code, hazard number, English and German names | 2,928 UN numbers |
+| `seed/dg/un_numbers.json` | ADR Table A: class, classification code, packing group, labels, special provisions, LQ, EQ, packing instructions, transport category, tunnel code, hazard number, English and German names | 2,928 rows over 2,336 UN numbers |
 | `seed/dg/imdg_dgl.json` | IMDG Dangerous Goods List (Amdt. 42-24): class, subsidiary hazards, PG, special provisions, LQ, EQ, packing/IBC/tank instructions, EmS, stowage and handling (16a), segregation (16b), properties | 2,860 rows over 2,347 UN numbers |
 | `seed/dg/card_data.json` | Per-substance marine pollutant status and bulk carriage | 2,336 UN numbers |
 | `seed/dg/ems.json` | Fire and spillage schedules | 2,338 UN numbers |
@@ -458,6 +458,8 @@ verification.
 
 ---
 
-*This assessment covers CargoPilot v1.41.0. It is guidance for development, not a
+*This assessment covers CargoPilot v1.47.0. Nothing in it has changed since v1.41.0 —
+v1.42.0 to v1.46.0 touched the goods catalogue, the interface language, the settings and
+the source comments, not a single regulatory check. It is guidance for development, not a
 compliance statement. Every document the application produces is a draft; see
 [DISCLAIMER.md](../DISCLAIMER.md).*

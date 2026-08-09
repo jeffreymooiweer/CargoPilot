@@ -2,6 +2,66 @@
 
 All notable changes are documented here, following [Semantic Versioning](https://semver.org/).
 
+## [1.47.0] — 2026-08-09
+
+### Fixed
+
+- **`MAX_PASTE_BYTES` was a setting that did nothing.** It sat in `Settings` with a
+  default of 512000 and in `docs/configuration.md` as "maximum size of a pasted import",
+  and no line of the application ever read it. The upload cap has always come from
+  `MAX_IMPORT_BYTES` in `spreadsheet_io.py` — 10 MB, alongside caps on rows, columns and
+  uncompressed `.xlsx` size that are safety limits against a malformed file, not
+  preferences. The variable is gone and the real limits are documented instead.
+
+  A documented setting that does nothing is worse than an undocumented one: it invites
+  somebody to tune it and then conclude the app ignores them.
+
+- **`APP_NAME` was documented as "the name shown in the interface".** It is the FastAPI
+  title and the `app` field of `GET /api/health`; the interface takes its name from its
+  own language files and always has.
+
+- **`ROADMAP.md` still advertised 400 goods**, three releases after the catalogue reached
+  1,093 — and Dutch, English and German, two releases after French. Nothing breaks; the
+  number was simply a lie in the shop window.
+
+- **`docs/getting-started.md` pinned v1.33.0** as the example version to pull and to keep
+  when cleaning up Docker Hub tags.
+
+- **`2,928 UN numbers` was never right.** `un_numbers.json` holds 2,928 ADR Table A
+  **rows** over **2,336 UN numbers** — a substance with several packing groups has a row
+  per group. Three documents stated the row count as a UN-number count. Every other figure
+  on those pages was re-measured against the seed files and is correct: 2,338 EmS
+  schedules, 2,860 DGL rows over 2,347 UN numbers, 629 segregation assignments over 539 UN
+  numbers, 110 stowage/handling/segregation codes, 2,849 UN cards.
+
+- Missing entries in three tables of contents, including the **Settings** section added in
+  v1.45.0.
+
+### Added
+
+- **`test_documentation_matches_the_app.py`.** Three guards, each pinning a defect this
+  pass actually found: every `Settings` field is documented and every documented variable
+  is still a setting; the goods count claimed anywhere in the documentation is the count
+  in `materials.json`; and every internal link resolves to a file *and* an anchor that
+  exists. Prose and regulatory reasoning are deliberately not guarded — those cannot be
+  checked mechanically and the suite should not pretend otherwise.
+
+- **`docs/development.md` explains that there is no migration runner.** `create_all`
+  creates missing tables and never adds a column to an existing one, which is why the
+  settings tables hold JSON and why `startup.SETTINGS_TABLES` exists. That was load-bearing
+  knowledge living only in a test docstring.
+
+### Documentation
+
+- The **Settings** screen now appears where a reader would look for it: the transport-mode
+  step of the user guide, the signature section of `docs/documents.md`, the first-admin and
+  troubleshooting sections of `docs/getting-started.md` — the last of those because
+  "address search returns nothing" now has a legitimate cause that is not a fault.
+- `docs/dg-coverage.md` is stamped v1.47.0 with a note that nothing in it has changed since
+  v1.41.0: v1.42.0 to v1.46.0 touched the catalogue, the interface language, the settings
+  and the source comments, and not one regulatory check.
+- `.env.example` speaks English along with the rest of the source.
+
 ## [1.46.0] — 2026-08-09
 
 ### Changed

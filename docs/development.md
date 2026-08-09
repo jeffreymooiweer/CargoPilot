@@ -7,9 +7,11 @@ database; there is no separate database service.
 - [Running from source](#running-from-source)
 - [Tests](#tests)
 - [Project layout](#project-layout)
+- [There is no migration runner](#there-is-no-migration-runner)
 - [How documents are produced](#how-documents-are-produced)
 - [Versioning](#versioning)
 - [Releasing](#releasing)
+- [The UN cards](#the-un-cards)
 
 ## Running from source
 
@@ -108,6 +110,8 @@ backend/
   app/
     api/routes/         FastAPI endpoints
     config/             document_registry.json, dg_compliance.json, dg_instructions.json
+    models/             SQLAlchemy tables
+    schemas/            Pydantic request and response models
     services/
       documents/        PDF filling and generation
       dg/               dangerous goods: enrichment, autofill, compliance
@@ -116,13 +120,30 @@ backend/
 frontend/
   src/components/       wizard steps and panels
   src/pages/            routed pages
-  src/i18n/             nl.json, en.json, de.json
+  src/settings/         the user's own settings, loaded once and shared
+  src/i18n/             nl.json, en.json, de.json, fr.json
 templates/forms/        official PDF forms that get filled in
 un_cards/               UN reference cards, one per UN number
 scripts/                one-off maintenance scripts
 docs/                   this documentation
 unraid/                 Unraid Community Applications template
 ```
+
+## There is no migration runner
+
+`init_app` calls `Base.metadata.create_all`. That creates **missing tables** and never
+adds a column to a table that already exists — so a new column on an existing model works
+on a fresh install and breaks every upgrade with "no such column".
+
+That is why the settings tables (`user_preferences`, `instance_settings`) hold a single
+JSON document each rather than a column per setting: adding a preference is a field on a
+Pydantic model in `app/schemas/settings.py`, and a database written by an older version
+simply lacks the key and falls back to its default. `test_settings.py` pins that in both
+directions.
+
+Adding a **table** is fine — import its model somewhere `startup` reaches, or
+`create_all` will not know about it. `startup.SETTINGS_TABLES` exists purely so that
+import cannot look removable.
 
 ## How documents are produced
 

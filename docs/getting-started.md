@@ -48,7 +48,7 @@ Every other setting has a sensible default. If you want to change one, see
    manually.
 2. Map the volume `/mnt/user/appdata/cargopilot` → `/data`.
 3. Use the image `jeffersonmouze/cargopilot:latest`, or pin a specific version such as
-   `jeffersonmouze/cargopilot:v1.33.0`.
+   `jeffersonmouze/cargopilot:v1.46.0`.
 4. Fill in the `ADMIN_*` variables. `APP_SECRET_KEY` may stay empty — it is generated on
    first start and kept in `/data/secret_key`.
 5. Pick a WebUI port, for example `http://<server-ip>:9935`.
@@ -67,6 +67,8 @@ and only if all three of these are set:
 - `ADMIN_PASSWORD`
 
 Log in with those credentials. You can create more users from inside the app afterwards.
+Under **Settings** an administrator sets what those new users start with — language, theme
+and the organisation name offered as their consignor.
 
 If you forget the password, stop the container, set `ADMIN_PASSWORD` to something new
 and delete `cargopilot.db` from your data folder — note that this also removes any
@@ -89,7 +91,7 @@ which happens at startup.
 > Docker images older than **v1.4.0** still contain an internal form that is not meant
 > for civilian use. Use `v1.4.0` or newer. To clean up old tags on Docker Hub, go to
 > GitHub → **Actions** → **Cleanup Docker Hub tags** → **Run workflow** and pass
-> `keep_tags`: `latest,v1.33.0,1.33.0`.
+> `keep_tags`: `latest,v1.46.0,1.46.0`.
 
 ## Troubleshooting
 
@@ -111,14 +113,17 @@ The admin account is only created when `ADMIN_USERNAME`, `ADMIN_EMAIL` *and*
 bootstrap step reports what it did.
 
 **Startup is slow, or hangs on a network call.**
-CargoPilot refreshes its reference catalogues from public sources at startup. Set
-`CATALOG_AUTO_SYNC=false` to skip that. The bundled data in the image is used instead,
-and weight calculations are unaffected.
+CargoPilot refreshes its reference catalogues from public sources at startup. Switch that
+off under **Settings → Outbound connections**, or set `CATALOG_AUTO_SYNC=false`. The
+bundled data in the image is used instead, and weight calculations are unaffected. Because
+it is only read while the application starts, the setting takes effect on the next restart.
 
 **Address search does not return anything.**
 Address autocomplete calls an external geocoder (`photon.komoot.io` by default), so it
-needs internet access. Airport, port and station search works fully offline. You can
-always type an address by hand.
+needs internet access. Check first whether an administrator has switched it off under
+**Settings → Outbound connections** — on an installation that is meant to stay off the
+internet that is deliberate. Airport, port and station search works fully offline, and you
+can always type an address by hand.
 
 **Permission errors on `/data`.**
 Set `PUID` and `PGID` to match the owner of your host folder.

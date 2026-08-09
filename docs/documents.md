@@ -84,6 +84,10 @@ Draw your signature with a mouse, finger or stylus, or upload an image (PNG, JPE
 WebP — a white background is made transparent and the image is trimmed automatically).
 You can also skip it entirely and sign on paper.
 
+Draw it once under **Settings** and it is ready on every shipment from then on; you can
+still replace or remove it per shipment. It is stored on your own server and nowhere
+else — see [Privacy](privacy.md#what-is-stored).
+
 Your signature appears in the sender's box: CMR box 22 on all four copies, the IATA
 signature field, the AVC sender panel, and a signature section on generated PDFs.
 

@@ -142,14 +142,23 @@ not the same as pointing it at an unreachable address: no request leaves the ser
 
 | Variable | What it does | Default |
 |---|---|---|
-| `APP_NAME` | Name shown in the interface | `CargoPilot` |
+| `APP_NAME` | Name in the API title and in `GET /api/health`. **Not** the name on screen — the interface takes that from its own language files. | `CargoPilot` |
 | `APP_ENV` | `production` or `development` | `production` |
 | `ACCESS_TOKEN_EXPIRE_MINUTES` | How long a login stays valid | `480` (8 hours) |
 | `COOKIE_SECURE` | Override the login-cookie `Secure` flag. Empty means automatic: enabled for HTTPS or trusted `X-Forwarded-Proto=https`. | automatic |
 | `CORS_ALLOWED_ORIGINS` | Comma-separated list, or `*` | `*` |
 | `TRUSTED_PROXY_HEADERS` | Honour `X-Forwarded-*` headers behind a reverse proxy | `true` |
 | `LOG_LEVEL` | `DEBUG`, `INFO`, `WARNING`, `ERROR` | `INFO` |
-| `MAX_PASTE_BYTES` | Maximum size of a pasted import | `512000` |
+
+Upload limits are not configurable. An imported file is capped at 10 MB, 20,000 rows and
+100 columns, and an `.xlsx` at 50 MB uncompressed — those are safety limits against a
+malformed or hostile file, not a preference, and they live in
+`backend/app/services/spreadsheet_io.py`.
+
+> `MAX_PASTE_BYTES` was listed here until v1.47.0 and was read by nothing at all. The
+> upload cap has always come from the constant above. A documented setting that does
+> nothing is worse than an undocumented one: it invites somebody to tune it and conclude
+> the app ignores them.
 
 If you put CargoPilot behind a reverse proxy, keep `TRUSTED_PROXY_HEADERS=true` and set
 `CORS_ALLOWED_ORIGINS` to your actual hostname instead of `*`. The login cookie is then

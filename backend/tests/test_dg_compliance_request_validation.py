@@ -57,12 +57,16 @@ def test_an_unknown_profile_is_refused():
 def test_a_quantity_that_is_not_positive_is_refused(quantity):
     with pytest.raises(ValidationError) as error:
         request(un_number="1203", adr_total_quantity=quantity)
-    assert "groter dan nul" in str(error.value)
+    # The code, not the sentence: the sentence is an English fallback that the
+    # interface replaces with its own wording, and a test that pins the wording
+    # is a test that breaks on every translation.
+    assert error.value.errors()[0]["type"] == "dg.quantity_not_positive"
 
 
 def test_a_quantity_without_a_number_is_refused():
-    with pytest.raises(ValidationError):
-        request(un_number="1203", adr_total_quantity="een paar vaten")
+    with pytest.raises(ValidationError) as error:
+        request(un_number="1203", adr_total_quantity="a few drums")
+    assert error.value.errors()[0]["type"] == "dg.quantity_not_a_number"
 
 
 def test_an_empty_quantity_is_allowed_because_the_check_reports_it_itself():

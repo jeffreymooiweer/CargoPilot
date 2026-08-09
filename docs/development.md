@@ -94,6 +94,12 @@ A few notes on the test suite:
   repeats the Dutch. An AST pass over `app/` catches the same omission in code. The tests
   name no language: they read `SUPPORTED`, so switching a language on is one line and the
   guard grows with it. Adding an interface string means adding it in every language.
+- **Errors carry a code, not a sentence.** Anything a user reads goes through
+  `app/core/messages.py`: the server sends `{code, message, params}` and the interface
+  translates on the code, falling back to the English `message` when it does not know it.
+  A sentence typed straight into `HTTPException` can only be written in one language, and
+  `test_error_messages.py` fails on one. Schema validators use `PydanticCustomError`, which
+  puts the code in the `type` field of the 422 body and the parameters in `ctx`.
 - **The source is in English.** Comments and docstrings across `backend/`, `frontend/`,
   `scripts/` and the workflows are English; only what a user reads is translated. Test
   docstrings are deliberately long: they say why the test exists and which defect

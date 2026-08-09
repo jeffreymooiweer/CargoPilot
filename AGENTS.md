@@ -45,6 +45,9 @@ Non-obvious gotchas for running/testing:
   `en.json`, `de.json` *and* `fr.json`, and any new `{nl, en}` block in the config or
   seed data needs a `de` and an `fr`. `backend/tests/test_languages.py` reads
   `SUPPORTED` and fails otherwise — it names no language, so a fifth is one line.
+- **An error the user reads goes through `app/core/messages.py`.** It carries a code the
+  interface translates, with an English fallback. A Dutch sentence in a `raise` fails
+  `test_error_messages.py`.
 - **Comments and docstrings are in English.** Everything a user reads is translated;
   everything a developer reads is English, across `backend/`, `frontend/`, `scripts/`
   and the workflows. Test docstrings stay long and explain *why* the test exists, with

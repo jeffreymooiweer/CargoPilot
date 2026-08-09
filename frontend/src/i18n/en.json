@@ -456,5 +456,28 @@
       "roll": "roll",
       "bundle": "bundle"
     }
+  },
+  "errors": {
+    "request_failed": "The request failed",
+    "import": {
+      "filename_missing": "The file has no name",
+      "empty_file": "The file is empty",
+      "no_usable_lines": "No importable lines found",
+      "no_rows_to_map": "No rows to map",
+      "description_column_required": "Without a description column there is nothing to recognise",
+      "file_too_large": "The file is larger than {{limit_mb}} MB",
+      "too_many_rows": "The import holds {{rows}} rows; at most {{limit}} are allowed",
+      "too_many_columns": "Row {{row}} holds {{columns}} columns; at most {{limit}} are allowed",
+      "cell_too_long": "Cell {{row}}:{{column}} holds more than {{limit}} characters",
+      "unpacked_too_large": "The unpacked spreadsheet is larger than {{limit_mb}} MB"
+    },
+    "equipment": {
+      "row_weight_missing": "Row {{row}}: the weight is missing or unusable"
+    },
+    "dg": {
+      "un_number_not_found": "UN number not found in the ADR database",
+      "quantity_not_a_number": "quantity {{value}} holds no number",
+      "quantity_not_positive": "quantity {{value}} must be greater than zero"
+    }
   }
 }

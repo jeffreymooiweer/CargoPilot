@@ -101,7 +101,7 @@ def _store_secret(path: Path, secret: str) -> bool:
     except OSError as error:
         # On Unraid /data is occasionally not writable. That must not hold up
         # startup; it only costs the key its durability.
-        logger.warning("Kon de sleutel niet opslaan in %s: %s", path, error)
+        logger.warning("Could not store the key in %s: %s", path, error)
         return False
 
 
@@ -120,24 +120,24 @@ def ensure_secret_key(settings) -> str:
     stored = _read_stored_secret(path)
     if is_usable_secret(stored):
         logger.info(
-            "APP_SECRET_KEY niet ingesteld; de bewaarde sleutel uit %s wordt gebruikt.", path
+            "APP_SECRET_KEY is not set; using the key stored in %s.", path
         )
         return stored
 
     generated = suggested_secret()
     if _store_secret(path, generated):
         logger.warning(
-            "APP_SECRET_KEY was niet ingesteld of te kort. Er is een sleutel "
-            "gemaakt en bewaard in %s. Wil je hem zelf beheren, zet dan "
-            "APP_SECRET_KEY in de omgeving; die gaat dan voor.",
+            "APP_SECRET_KEY was not set, or too short. A key has been generated "
+            "and stored in %s. To manage it yourself, set APP_SECRET_KEY in the "
+            "environment; that value takes precedence.",
             path,
         )
     else:
         logger.warning(
-            "APP_SECRET_KEY was niet ingesteld of te kort en de gemaakte sleutel "
-            "kon niet worden bewaard. De app draait veilig, maar iedereen moet "
-            "na een herstart opnieuw inloggen. Zet APP_SECRET_KEY in de omgeving "
-            "of maak %s schrijfbaar.",
+            "APP_SECRET_KEY was not set, or too short, and the generated key "
+            "could not be stored. The app runs safely, but everybody has to log "
+            "in again after a restart. Set APP_SECRET_KEY in the environment, or "
+            "make %s writable.",
             path.parent,
         )
     return generated
@@ -157,18 +157,18 @@ def configuration_warnings(settings) -> list[str]:
 
     if settings.cors_allowed_origins.strip() == "*":
         warnings.append(
-            "CORS_ALLOWED_ORIGINS staat op '*'. Browsers weigeren dat te "
-            "combineren met cookies, dus een aanroep vanaf een andere website "
-            "werkt niet — maar noem liever de adressen waarop je CargoPilot "
-            "bereikt:\n    CORS_ALLOWED_ORIGINS=https://cargopilot.example.com"
+            "CORS_ALLOWED_ORIGINS is set to '*'. Browsers refuse to combine "
+            "that with cookies, so a call from another website does not work "
+            "anyway — better to name the addresses you reach CargoPilot on:"
+            "\n    CORS_ALLOWED_ORIGINS=https://cargopilot.example.com"
         )
 
     password = str(settings.admin_password or "")
     if password and password.strip().lower() in PUBLISHED_ADMIN_PASSWORDS:
         warnings.append(
-            "ADMIN_PASSWORD staat op een wachtwoord dat in de documentatie van "
-            "dit project staat. Kies er een eigen, en verander het na de eerste "
-            "keer inloggen."
+            "ADMIN_PASSWORD is set to a password that appears in this project's "
+            "documentation. Pick one of your own, and change it after the first "
+            "login."
         )
 
     return warnings

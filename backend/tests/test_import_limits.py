@@ -30,8 +30,9 @@ class FakeUpload:
 def test_upload_reader_stops_at_limit_plus_one_byte():
     upload = FakeUpload(b"0123456789")
 
-    with pytest.raises(ImportLimitError, match="groter dan"):
+    with pytest.raises(ImportLimitError) as raised:
         asyncio.run(read_limited_upload(upload, max_bytes=5))
+    assert raised.value.code == "import.file_too_large"
 
     assert upload.requested_size == 6
 
@@ -43,25 +44,30 @@ def test_small_upload_is_returned_unchanged():
 
 
 def test_csv_row_limit_is_enforced_while_reading():
-    with pytest.raises(ImportLimitError, match="meer dan 1 rijen"):
+    with pytest.raises(ImportLimitError) as raised:
         read_tabular_file(b"a;b\nc;d\n", "items.csv", max_rows=1)
+    assert raised.value.code == "import.too_many_rows"
 
 
 def test_column_limit_is_enforced():
-    with pytest.raises(ImportLimitError, match="3 kolommen"):
+    with pytest.raises(ImportLimitError) as raised:
         read_tabular_file(b"a;b;c\n", "items.csv", max_columns=2)
+    assert raised.value.code == "import.too_many_columns"
+    assert raised.value.params["columns"] == 3
 
 
 def test_cell_length_limit_is_enforced():
-    with pytest.raises(ImportLimitError, match="meer dan 5 tekens"):
+    with pytest.raises(ImportLimitError) as raised:
         read_tabular_file(b"abcdef\n", "items.txt", max_cell_chars=5)
+    assert raised.value.code == "import.cell_too_long"
 
 
 def test_xlsx_row_limit_is_enforced_in_read_only_iteration():
     content = build_xlsx_template(["header"], ["value"])
 
-    with pytest.raises(ImportLimitError, match="meer dan 1 rijen"):
+    with pytest.raises(ImportLimitError) as raised:
         read_tabular_file(content, "items.xlsx", max_rows=1)
+    assert raised.value.code == "import.too_many_rows"
 
 
 def test_xlsx_archive_expansion_is_bounded_before_openpyxl_reads_it():
@@ -69,12 +75,13 @@ def test_xlsx_archive_expansion_is_bounded_before_openpyxl_reads_it():
     with zipfile.ZipFile(buffer, "w", compression=zipfile.ZIP_DEFLATED) as archive:
         archive.writestr("xl/worksheets/sheet1.xml", "x" * 100)
 
-    with pytest.raises(ImportLimitError, match="Uitgepakte spreadsheet"):
+    with pytest.raises(ImportLimitError) as raised:
         _validate_xlsx_archive(buffer.getvalue(), max_uncompressed_bytes=50)
+    assert raised.value.code == "import.unpacked_too_large"
 
 
 def test_remap_payload_rejects_excessive_columns_before_processing():
-    with pytest.raises(ValidationError, match="kolommen"):
+    with pytest.raises(ValidationError, match="columns"):
         WizardRemapRequest(
             rows=[["x"] * (MAX_IMPORT_COLUMNS + 1)],
             mapping={"description": 0},

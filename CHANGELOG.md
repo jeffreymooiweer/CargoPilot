@@ -2,6 +2,69 @@
 
 All notable changes are documented here, following [Semantic Versioning](https://semver.org/).
 
+## [1.48.0] — 2026-08-09
+
+### Fixed
+
+- **The error messages spoke Dutch, and only Dutch.** Everything on screen was translated
+  into four languages and the errors were not: they were written straight into the `raise`
+  as Dutch sentences. A German user who uploaded an empty file was told so in Dutch; so was
+  a French one who asked after a UN number the ADR table does not hold. Nineteen messages
+  in all — ten HTTP errors, six import limits, two quantity validators and the per-row
+  message of the equipment import.
+
+  It is the kind of gap nobody reports, because it only appears once something has already
+  gone wrong — the moment the user is least able to work out what happened.
+
+- **The equipment import reported its per-row problems in Dutch too**, in a list shown
+  verbatim on screen. Those are now structured the same way and translated per row.
+
+- **An upload error read "Upload failed" where the server had said exactly what was
+  wrong.** `uploadFile` assumed `detail` was a string and fell back to a generic sentence
+  for anything else. It now goes through the same reader as every other error.
+
+### Changed
+
+- **The server no longer writes sentences; it writes codes.** It cannot translate: an
+  error is raised deep in a service that has no idea who is asking, and the language
+  belongs to the screen. So the API sends `{"code", "message", "params"}` — the interface
+  looks the code up in its own language files and falls back to the English `message` when
+  it does not know it.
+
+  That fallback is what makes it safe to deploy: a backend newer than the frontend in
+  front of it can send a code the language files do not have yet, and the user still reads
+  a sentence rather than a dotted key.
+
+  Schema validators use `PydanticCustomError`, which puts the code in the `type` field of
+  the 422 body and the parameters in `ctx` — the mechanism FastAPI already had, rather than
+  a convention invented on top of the message text.
+
+- **The operator log speaks English**, along with the rest of the source. The startup
+  messages about `APP_SECRET_KEY`, CORS and the admin password were the last Dutch text
+  outside the language files.
+
+- Tests that matched on a Dutch sentence now assert on the code. Pinning the wording of a
+  message is what makes it painful to translate — and these had to be changed by hand for
+  exactly that reason.
+
+### Added
+
+- **`test_error_messages.py`.** Every code has a translation in all four languages; the
+  interpolation names survive that translation, because a sentence that loses its
+  `{{limit_mb}}` loses the number it was about; the Dutch file is not the English one
+  copied; and — the guard that matters most — no message to the user is written in Dutch
+  at the raise site any more. That last one reads the `raise` calls rather than the
+  catalogue, because a sentence typed straight into `HTTPException` never passes through
+  the catalogue at all.
+
+  Both guards were verified by breaking the code on purpose and watching them fail.
+
+### Documentation
+
+- `AGENTS.md` and `docs/development.md` state the rule, so the next message added goes
+  through the catalogue instead of round it.
+- `docs/user-guide.md` adds error messages to the list of what follows your language.
+
 ## [1.47.0] — 2026-08-09
 
 ### Fixed

@@ -106,8 +106,8 @@ def test_a_data_directory_that_cannot_be_written_still_starts(tmp_path, caplog):
     with caplog.at_level(logging.WARNING):
         key = ensure_secret_key(FakeSettings(data_dir=blocked, app_secret_key=""))
 
-    assert is_usable_secret(key), "de app hoort gewoon te draaien"
-    assert "opnieuw inloggen" in caplog.text
+    assert is_usable_secret(key), "the app should simply keep running"
+    assert "log in again after a restart" in caplog.text
 
 
 # --- And it keeps its hands off a key of your own -------------------------

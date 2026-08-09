@@ -227,8 +227,8 @@ environment variables.
 ## Language
 
 Under **Settings** you pick Dutch, English, German or French. That choice runs all the way
-through: the screens, the field labels, the dangerous goods help, the compliance warnings
-and the documents you download.
+through: the screens, the field labels, the dangerous goods help, the compliance warnings,
+the error messages and the documents you download.
 
 One thing follows the regulations rather than your choice. The proper shipping name of a
 dangerous substance is prescribed per mode: a German CMR or CIM may carry the German name

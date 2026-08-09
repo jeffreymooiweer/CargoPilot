@@ -77,21 +77,18 @@ _MARINE_POLLUTANT_TEXT = {
     "yes": {
         "nl": "Marine pollutant: ja — merken en vermelden op het vervoersdocument.",
         "en": "Marine pollutant: yes — mark and declare on the transport document.",
-        "de": "Meeresschadstoff: ja — kennzeichnen und im Beförderungspapier angeben.",
-    },
+        "de": "Meeresschadstoff: ja — kennzeichnen und im Beförderungspapier angeben.", "fr": 'Polluant marin : oui — à marquer et à déclarer sur le document de transport.'},
     "no": {
         "nl": "Marine pollutant: nee.",
         "en": "Marine pollutant: no.",
-        "de": "Meeresschadstoff: nein.",
-    },
+        "de": "Meeresschadstoff: nein.", "fr": 'Polluant marin : non.'},
     "maybe": {
         "nl": "Marine pollutant: hangt van de stof af. Beoordeel aan de criteria van "
               "IMDG 2.10 en merk zo nodig alsnog.",
         "en": "Marine pollutant: depends on the substance. Assess against the criteria "
               "of IMDG 2.10 and mark if it meets them.",
         "de": "Meeresschadstoff: hängt vom Stoff ab. Beurteilen Sie ihn anhand der Kriterien "
-              "des IMDG 2.10 und kennzeichnen Sie gegebenenfalls.",
-    },
+              "des IMDG 2.10 und kennzeichnen Sie gegebenenfalls.", "fr": "Polluant marin : dépend de la matière. Appréciez-la au regard des critères du 2.10 de l'IMDG et marquez-la si elle y répond."},
 }
 
 # Scheidingsgroepen (IMDG 3.1.4.4) — geladen uit seed/dg/segregation_groups.json.
@@ -343,33 +340,27 @@ CLASS_DOCUMENT_NOTES: dict[str, dict[str, str]] = {
     "1": {
         "nl": "Klasse 1: vermeld in het vervoersdocument de totale netto explosieve massa (NEM) per stof en, bij samenlading, de compatibiliteitsgroepen (ADR 5.4.1.2.1).",
         "en": "Class 1: state the total net explosive mass (NEM) per substance in the transport document and, when mixed, the compatibility groups (ADR 5.4.1.2.1).",
-        "de": "Klasse 1: Geben Sie im Beförderungspapier die gesamte Nettoexplosivstoffmasse (NEM) je Stoff an und bei Zusammenladung die Verträglichkeitsgruppen (ADR 5.4.1.2.1).",
-    },
+        "de": "Klasse 1: Geben Sie im Beförderungspapier die gesamte Nettoexplosivstoffmasse (NEM) je Stoff an und bei Zusammenladung die Verträglichkeitsgruppen (ADR 5.4.1.2.1).", "fr": 'Classe 1 : indiquez dans le document de transport la masse nette explosive (MNE) totale par matière et, en cas de mélange, les groupes de compatibilité (ADR 5.4.1.2.1).'},
     "2": {
         "nl": "Klasse 2: bij tankvervoer en drukhouders horen de vuldatum, beproevingsdatum en het toegestane vulgewicht bij de zending (ADR 5.4.1.2.2).",
         "en": "Class 2: for tanks and pressure receptacles the filling date, test date and permitted filling mass accompany the consignment (ADR 5.4.1.2.2).",
-        "de": "Klasse 2: Bei Tankbeförderung und Druckgefäßen gehören Fülldatum, Prüfdatum und die zulässige Füllmasse zur Sendung (ADR 5.4.1.2.2).",
-    },
+        "de": "Klasse 2: Bei Tankbeförderung und Druckgefäßen gehören Fülldatum, Prüfdatum und die zulässige Füllmasse zur Sendung (ADR 5.4.1.2.2).", "fr": "Classe 2 : pour les citernes et récipients à pression, la date de remplissage, la date d'épreuve et la masse de remplissage admissible accompagnent l'envoi (ADR 5.4.1.2.2)."},
     "4.1": {
         "nl": "Zelfontledende stoffen en gedesensibiliseerde explosieven: vermeld de temperatuurbeheersing (controle- en noodtemperatuur) wanneer die geldt (ADR 5.4.1.2.3.1).",
         "en": "Self-reactive substances and desensitized explosives: state the control and emergency temperature where applicable (ADR 5.4.1.2.3.1).",
-        "de": "Selbstzersetzliche Stoffe und desensibilisierte explosive Stoffe: Geben Sie die Kontroll- und Notfalltemperatur an, wo sie vorgeschrieben ist (ADR 5.4.1.2.3.1).",
-    },
+        "de": "Selbstzersetzliche Stoffe und desensibilisierte explosive Stoffe: Geben Sie die Kontroll- und Notfalltemperatur an, wo sie vorgeschrieben ist (ADR 5.4.1.2.3.1).", "fr": 'Matières autoréactives et explosibles désensibilisés : indiquez le cas échéant la température de régulation et la température critique (ADR 5.4.1.2.3.1).'},
     "5.2": {
         "nl": "Organische peroxiden: vermeld de controle- en noodtemperatuur wanneer temperatuurbeheersing is voorgeschreven (ADR 5.4.1.2.3.1).",
         "en": "Organic peroxides: state the control and emergency temperature where temperature control is required (ADR 5.4.1.2.3.1).",
-        "de": "Organische Peroxide: Geben Sie die Kontroll- und Notfalltemperatur an, wenn eine Temperaturkontrolle vorgeschrieben ist (ADR 5.4.1.2.3.1).",
-    },
+        "de": "Organische Peroxide: Geben Sie die Kontroll- und Notfalltemperatur an, wenn eine Temperaturkontrolle vorgeschrieben ist (ADR 5.4.1.2.3.1).", "fr": 'Peroxydes organiques : indiquez la température de régulation et la température critique lorsque la régulation de température est exigée (ADR 5.4.1.2.3.1).'},
     "6.2": {
         "nl": "Klasse 6.2: vermeld naam en telefoonnummer van een verantwoordelijke persoon in het vervoersdocument (ADR 5.4.1.2.4).",
         "en": "Class 6.2: state the name and telephone number of a responsible person in the transport document (ADR 5.4.1.2.4).",
-        "de": "Klasse 6.2: Geben Sie Namen und Telefonnummer einer verantwortlichen Person im Beförderungspapier an (ADR 5.4.1.2.4).",
-    },
+        "de": "Klasse 6.2: Geben Sie Namen und Telefonnummer einer verantwortlichen Person im Beförderungspapier an (ADR 5.4.1.2.4).", "fr": "Classe 6.2 : indiquez dans le document de transport le nom et le numéro de téléphone d'une personne responsable (ADR 5.4.1.2.4)."},
     "7": {
         "nl": "Klasse 7: het vervoersdocument vereist aanvullend de radionucliden, fysische en chemische vorm, maximale activiteit, collo-categorie (I-WIT/II-GEEL/III-GEEL), transportindex en waar van toepassing de veiligheidsindex kritikaliteit (ADR 5.4.1.2.5.1).",
         "en": "Class 7: the transport document additionally requires the radionuclides, physical and chemical form, maximum activity, package category (I-WHITE/II-YELLOW/III-YELLOW), transport index and, where applicable, the criticality safety index (ADR 5.4.1.2.5.1).",
-        "de": "Klasse 7: Das Beförderungspapier verlangt zusätzlich die Radionuklide, die physikalische und chemische Form, die höchste Aktivität, die Versandstückkategorie (I-WEISS/II-GELB/III-GELB), die Transportkennzahl und, wo zutreffend, die Kritikalitätssicherheitskennzahl (ADR 5.4.1.2.5.1).",
-    },
+        "de": "Klasse 7: Das Beförderungspapier verlangt zusätzlich die Radionuklide, die physikalische und chemische Form, die höchste Aktivität, die Versandstückkategorie (I-WEISS/II-GELB/III-GELB), die Transportkennzahl und, wo zutreffend, die Kritikalitätssicherheitskennzahl (ADR 5.4.1.2.5.1).", "fr": "Classe 7 : le document de transport exige en outre les radionucléides, la forme physique et chimique, l'activité maximale, la catégorie du colis (I-BLANCHE/II-JAUNE/III-JAUNE), l'indice de transport et, le cas échéant, l'indice de sûreté-criticité (ADR 5.4.1.2.5.1)."},
 }
 
 # Aanvullende vereisten per modaliteitsprofiel.
@@ -377,13 +368,11 @@ PROFILE_DOCUMENT_NOTES: dict[str, dict[str, str]] = {
     "IMDG": {
         "nl": "Zeevervoer: het containerbeladingscertificaat (CTU-packing certificate) hoort bij de zending, en bij containers over zee geldt de geverifieerde bruto massa (VGM, SOLAS VI/2).",
         "en": "Sea transport: the container/vehicle packing certificate accompanies the consignment, and containers require a verified gross mass (VGM, SOLAS VI/2).",
-        "de": "Seebeförderung: Die Container-/Fahrzeugpackbescheinigung gehört zur Sendung, und für Container gilt die verifizierte Bruttomasse (VGM, SOLAS VI/2).",
-    },
+        "de": "Seebeförderung: Die Container-/Fahrzeugpackbescheinigung gehört zur Sendung, und für Container gilt die verifizierte Bruttomasse (VGM, SOLAS VI/2).", "fr": "Transport maritime : le certificat d'empotage du conteneur/véhicule accompagne l'envoi et les conteneurs exigent une masse brute vérifiée (MBV, SOLAS VI/2)."},
     "IATA_DGR": {
         "nl": "Luchtvervoer: de Shipper's Declaration wordt in tweevoud ondertekend aangeleverd en de hoeveelheden per collo mogen de limieten van de gekozen verpakkingsinstructie niet overschrijden.",
         "en": "Air transport: the Shipper's Declaration is provided signed in duplicate and quantities per package must not exceed the limits of the applicable packing instruction.",
-        "de": "Luftbeförderung: Die Shipper's Declaration wird in zweifacher Ausfertigung unterschrieben beigefügt, und die Mengen je Versandstück dürfen die Grenzwerte der gewählten Verpackungsanweisung nicht überschreiten.",
-    },
+        "de": "Luftbeförderung: Die Shipper's Declaration wird in zweifacher Ausfertigung unterschrieben beigefügt, und die Mengen je Versandstück dürfen die Grenzwerte der gewählten Verpackungsanweisung nicht überschreiten.", "fr": "Transport aérien : la déclaration de l'expéditeur est fournie signée en deux exemplaires et les quantités par colis ne doivent pas dépasser les limites de l'instruction d'emballage applicable."},
 }
 
 
@@ -446,8 +435,7 @@ def describe_excepted_quantity(code: str, language: str = "nl") -> str | None:
             {
                 "nl": "E0: niet toegestaan als vrijgestelde hoeveelheid",
                 "en": "E0: not permitted as excepted quantity",
-                "de": "E0: als freigestellte Menge nicht zugelassen",
-            },
+                "de": "E0: als freigestellte Menge nicht zugelassen", "fr": 'E0 : non admis en quantité exceptée'},
             language,
         )
     limits = EXCEPTED_QUANTITY_LIMITS.get(code)
@@ -458,8 +446,7 @@ def describe_excepted_quantity(code: str, language: str = "nl") -> str | None:
         {
             "nl": "{code}: max. {inner} g/ml per binnenverpakking, {outer} g/ml per buitenverpakking",
             "en": "{code}: max. {inner} g/ml per inner packaging, {outer} g/ml per outer packaging",
-            "de": "{code}: max. {inner} g/ml je Innenverpackung, {outer} g/ml je Außenverpackung",
-        },
+            "de": "{code}: max. {inner} g/ml je Innenverpackung, {outer} g/ml je Außenverpackung", "fr": '{code} : max. {inner} g/ml par emballage intérieur, {outer} g/ml par emballage extérieur'},
         language,
     ).format(code=code, inner=inner, outer=outer)
 
@@ -491,8 +478,7 @@ def enrich_un_entry(entry: dict[str, Any], language: str = "nl") -> dict[str, An
                       "authority.",
                 "de": "Dieser Stoff darf nach ADR Tabelle A nicht zur Beförderung aufgegeben "
                       "werden. Eine Beförderung ist nur mit einer Ausnahmegenehmigung der "
-                      "zuständigen Behörde möglich.",
-            },
+                      "zuständigen Behörde möglich.", "fr": "Selon le tableau A de l'ADR, cette matière n'est pas admise au transport. Le transport n'est possible que sous dérogation de l'autorité compétente."},
             language,
         )
     if "5.2.2.1.12" in labels_raw:
@@ -503,8 +489,7 @@ def enrich_un_entry(entry: dict[str, Any], language: str = "nl") -> dict[str, An
                 "en": "Labelling per 5.2.2.1.12: articles containing dangerous goods bear "
                       "the labels for each hazard present.",
                 "de": "Bezettelung nach 5.2.2.1.12: Gegenstände, die gefährliche Güter "
-                      "enthalten, tragen die Gefahrzettel jeder vorhandenen Gefahr.",
-            },
+                      "enthalten, tragen die Gefahrzettel jeder vorhandenen Gefahr.", "fr": 'Étiquetage selon le 5.2.2.1.12 : les objets contenant des marchandises dangereuses portent les étiquettes de chacun des dangers présents.'},
             language,
         )
 
@@ -675,8 +660,7 @@ def enrich_un_entry(entry: dict[str, Any], language: str = "nl") -> dict[str, An
                 "en": "Division 2.3 (toxic gases) is forbidden in air transport, with few "
                       "exceptions.",
                 "de": "Unterklasse 2.3 (giftige Gase) ist in der Luftbeförderung bis auf "
-                      "wenige Ausnahmen verboten.",
-            },
+                      "wenige Ausnahmen verboten.", "fr": 'La division 2.3 (gaz toxiques) est interdite au transport aérien, à de rares exceptions près.'},
             language,
         )
 
@@ -691,8 +675,7 @@ def enrich_un_entry(entry: dict[str, Any], language: str = "nl") -> dict[str, An
             {
                 "nl": "LQ: max. {lq} per binnenverpakking (ADR/IMDG 3.4)",
                 "en": "LQ: max. {lq} per inner packaging (ADR/IMDG 3.4)",
-                "de": "LQ: max. {lq} je Innenverpackung (ADR/IMDG 3.4)",
-            },
+                "de": "LQ: max. {lq} je Innenverpackung (ADR/IMDG 3.4)", "fr": 'QL : max. {lq} par emballage intérieur (ADR/IMDG 3.4)'},
             language,
         ).format(lq=lq)
 

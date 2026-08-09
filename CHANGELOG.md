@@ -2,6 +2,63 @@
 
 All notable changes are documented here, following [Semantic Versioning](https://semver.org/).
 
+## [1.44.0] — 2026-08-09
+
+### Added
+
+- **French, as a fourth language.** Not for reach — for the regulations. ADR, RID and ADN
+  are published by UNECE and OTIF in English, **French** and Russian; the CMR and the CIM
+  are French documents by origin, abbreviations included. Anyone preparing a waybill for a
+  Belgian, French, Luxembourgish or Swiss leg needs the French wording because the
+  authority at the roadside reads it, not as a courtesy.
+
+  Complete on arrival, because a half language is worse than none: **1,706 translated
+  blocks** in the data files, **161 dictionaries in the source code**, **335 interface keys**
+  and the **1,093 goods** of the catalogue.
+
+  The vocabulary is the one the French editions use, not a dictionary rendering: *fût* and
+  *jerricane* rather than "tonneau", **GRV** for an IBC, *désignation officielle de
+  transport* for the proper shipping name, *séparation* against *arrimage*, *disposition
+  spéciale* for a special provision, and for the CMR the terms of the convention itself —
+  *expéditeur*, *destinataire*, *prescriptions d'affranchissement*.
+
+  A missing French text falls back to English before Dutch: that reader gets further with
+  English. It should rarely fire — `test_languages.py` refuses an incomplete language — but
+  it does apply to goods a user adds or renames themselves.
+
+### Changed
+
+- **The language guards no longer name a language.** `test_languages.py`,
+  `test_catalog_search_language.py` and the frontend's `translations.test.ts` had `"de"`
+  written into them. That is fine until a fourth language arrives, and then the guard does
+  not guard it: the tests kept passing while French was missing everywhere, and two of them
+  actually *failed* on French being present because they asserted the set was exactly
+  `{nl, en, de}`. A guard that treats a new language as an error is not a guard.
+
+  They all read `SUPPORTED` now and require every language in it beyond the two source
+  languages. Switching on a fifth is one line in `app/core/languages.py`, and the tests
+  immediately say what is missing.
+
+### Fixed
+
+- **The French for boxwood is *buis*, which is Dutch for a pipe.** The catalogue search
+  deliberately matches across all languages — someone typing "Stahl" while reading Dutch
+  should still find steel — so a bare `Buis` on boxwood outranked every Dutch search for a
+  tube. Boxwood is now `Bois de buis`, which is equally correct and does not collide. Found
+  by two existing tests, which is what they are for.
+
+### Documentation
+
+- README, `CONTRIBUTING.md`, `docs/user-guide.md`, `docs/data-sources.md` and
+  `docs/development.md` name the fourth language.
+
+- **`docs/dangerous-goods.md` states what French does *not* get.** The interface, the
+  labels, the compliance findings and the goods database are French; the proper shipping
+  name is not. The ADR Table A export this application is built on carries an English and a
+  German name column and no French one, so a French user preparing a road document gets the
+  English name rather than `ESSENCE`. That is a gap in the data, not in the translation, and
+  it is written down rather than papered over with a name no table prescribes.
+
 ## [1.43.0] — 2026-08-09
 
 A clearing-out. Nothing here changes what the application answers; it changes how much of

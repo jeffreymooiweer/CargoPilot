@@ -171,8 +171,7 @@ def derive_product(
                 "de": "Dieser Stoff hat mehrere Verpackungsgruppen ({pgs}); Verpackungs"
                       "gruppe {chosen} wurde vorläufig eingetragen. Beförderungskategorie, "
                       "LQ und E-Code unterscheiden sich je Gruppe ({variants}) — prüfen "
-                      "Sie die Verpackungsgruppe Ihres Produkts.",
-            },
+                      "Sie die Verpackungsgruppe Ihres Produkts.", "fr": "Cette matière comporte plusieurs groupes d'emballage ({pgs}) ; le groupe d'emballage {chosen} a été rempli à titre provisoire. La catégorie de transport, la QL et le code E diffèrent d'un groupe à l'autre ({variants}) — vérifiez le groupe d'emballage de votre produit."},
             language,
         ).format(pgs=", ".join(distinct_pgs), chosen=chosen, variants=variants)
 
@@ -345,8 +344,7 @@ def adr_category_totals(entries: list[dict[str, Any]], language: str = "nl") -> 
         {
             "nl": "Totale hoeveelheid per vervoerscategorie",
             "en": "Total quantity per transport category",
-            "de": "Gesamtmenge je Beförderungskategorie",
-        },
+            "de": "Gesamtmenge je Beförderungskategorie", "fr": 'Quantité totale par catégorie de transport'},
         language,
     )
     statement = f"{prefix}: " + "; ".join(f"{r['transport_category']}: {r['total']}" for r in rows)

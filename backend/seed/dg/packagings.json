@@ -5,7 +5,8 @@
     "label": {
       "nl": "Stalen vat, niet-afneembaar deksel",
       "en": "Steel drum, non-removable head",
-      "de": "Fass aus Stahl, nicht abnehmbarer Deckel"
+      "de": "Fass aus Stahl, nicht abnehmbarer Deckel",
+      "fr": "Fût en acier à dessus non amovible"
     },
     "contents": "vloeistof"
   },
@@ -15,7 +16,8 @@
     "label": {
       "nl": "Stalen vat, afneembaar deksel",
       "en": "Steel drum, removable head",
-      "de": "Fass aus Stahl, abnehmbarer Deckel"
+      "de": "Fass aus Stahl, abnehmbarer Deckel",
+      "fr": "Fût en acier à dessus amovible"
     },
     "contents": "vaste_stof"
   },
@@ -25,7 +27,8 @@
     "label": {
       "nl": "Aluminium vat, niet-afneembaar deksel",
       "en": "Aluminium drum, non-removable head",
-      "de": "Fass aus Aluminium, nicht abnehmbarer Deckel"
+      "de": "Fass aus Aluminium, nicht abnehmbarer Deckel",
+      "fr": "Fût en aluminium à dessus non amovible"
     },
     "contents": "vloeistof"
   },
@@ -35,7 +38,8 @@
     "label": {
       "nl": "Aluminium vat, afneembaar deksel",
       "en": "Aluminium drum, removable head",
-      "de": "Fass aus Aluminium, abnehmbarer Deckel"
+      "de": "Fass aus Aluminium, abnehmbarer Deckel",
+      "fr": "Fût en aluminium à dessus amovible"
     },
     "contents": "vaste_stof"
   },
@@ -45,7 +49,8 @@
     "label": {
       "nl": "Vat van ander metaal, niet-afneembaar deksel",
       "en": "Metal drum (other than steel/aluminium), non-removable head",
-      "de": "Fass aus anderem Metall (nicht Stahl/Aluminium), nicht abnehmbarer Deckel"
+      "de": "Fass aus anderem Metall (nicht Stahl/Aluminium), nicht abnehmbarer Deckel",
+      "fr": "Fût en métal (autre que l'acier ou l'aluminium) à dessus non amovible"
     },
     "contents": "vloeistof"
   },
@@ -55,7 +60,8 @@
     "label": {
       "nl": "Vat van ander metaal, afneembaar deksel",
       "en": "Metal drum (other than steel/aluminium), removable head",
-      "de": "Fass aus anderem Metall (nicht Stahl/Aluminium), abnehmbarer Deckel"
+      "de": "Fass aus anderem Metall (nicht Stahl/Aluminium), abnehmbarer Deckel",
+      "fr": "Fût en métal (autre que l'acier ou l'aluminium) à dessus amovible"
     },
     "contents": "vaste_stof"
   },
@@ -65,7 +71,8 @@
     "label": {
       "nl": "Kunststof vat, niet-afneembaar deksel",
       "en": "Plastics drum, non-removable head",
-      "de": "Fass aus Kunststoff, nicht abnehmbarer Deckel"
+      "de": "Fass aus Kunststoff, nicht abnehmbarer Deckel",
+      "fr": "Fût en plastique à dessus non amovible"
     },
     "contents": "vloeistof"
   },
@@ -75,7 +82,8 @@
     "label": {
       "nl": "Kunststof vat, afneembaar deksel",
       "en": "Plastics drum, removable head",
-      "de": "Fass aus Kunststoff, abnehmbarer Deckel"
+      "de": "Fass aus Kunststoff, abnehmbarer Deckel",
+      "fr": "Fût en plastique à dessus amovible"
     },
     "contents": "vaste_stof"
   },
@@ -85,7 +93,8 @@
     "label": {
       "nl": "Multiplex vat",
       "en": "Plywood drum",
-      "de": "Fass aus Sperrholz"
+      "de": "Fass aus Sperrholz",
+      "fr": "Fût en contreplaqué"
     },
     "contents": "vaste_stof"
   },
@@ -95,7 +104,8 @@
     "label": {
       "nl": "Vezelvat (kartonvat)",
       "en": "Fibre drum",
-      "de": "Fass aus Pappe"
+      "de": "Fass aus Pappe",
+      "fr": "Fût en carton"
     },
     "contents": "vaste_stof"
   },
@@ -105,7 +115,8 @@
     "label": {
       "nl": "Stalen jerrycan, niet-afneembaar deksel",
       "en": "Steel jerrican, non-removable head",
-      "de": "Kanister aus Stahl, nicht abnehmbarer Deckel"
+      "de": "Kanister aus Stahl, nicht abnehmbarer Deckel",
+      "fr": "Jerricane en acier à dessus non amovible"
     },
     "contents": "vloeistof"
   },
@@ -115,7 +126,8 @@
     "label": {
       "nl": "Stalen jerrycan, afneembaar deksel",
       "en": "Steel jerrican, removable head",
-      "de": "Kanister aus Stahl, abnehmbarer Deckel"
+      "de": "Kanister aus Stahl, abnehmbarer Deckel",
+      "fr": "Jerricane en acier à dessus amovible"
     },
     "contents": "beide"
   },
@@ -125,7 +137,8 @@
     "label": {
       "nl": "Aluminium jerrycan, niet-afneembaar deksel",
       "en": "Aluminium jerrican, non-removable head",
-      "de": "Kanister aus Aluminium, nicht abnehmbarer Deckel"
+      "de": "Kanister aus Aluminium, nicht abnehmbarer Deckel",
+      "fr": "Jerricane en aluminium à dessus non amovible"
     },
     "contents": "vloeistof"
   },
@@ -135,7 +148,8 @@
     "label": {
       "nl": "Aluminium jerrycan, afneembaar deksel",
       "en": "Aluminium jerrican, removable head",
-      "de": "Kanister aus Aluminium, abnehmbarer Deckel"
+      "de": "Kanister aus Aluminium, abnehmbarer Deckel",
+      "fr": "Jerricane en aluminium à dessus amovible"
     },
     "contents": "beide"
   },
@@ -145,7 +159,8 @@
     "label": {
       "nl": "Kunststof jerrycan, niet-afneembaar deksel",
       "en": "Plastics jerrican, non-removable head",
-      "de": "Kanister aus Kunststoff, nicht abnehmbarer Deckel"
+      "de": "Kanister aus Kunststoff, nicht abnehmbarer Deckel",
+      "fr": "Jerricane en plastique à dessus non amovible"
     },
     "contents": "vloeistof"
   },
@@ -155,7 +170,8 @@
     "label": {
       "nl": "Kunststof jerrycan, afneembaar deksel",
       "en": "Plastics jerrican, removable head",
-      "de": "Kanister aus Kunststoff, abnehmbarer Deckel"
+      "de": "Kanister aus Kunststoff, abnehmbarer Deckel",
+      "fr": "Jerricane en plastique à dessus amovible"
     },
     "contents": "beide"
   },
@@ -165,7 +181,8 @@
     "label": {
       "nl": "Stalen kist",
       "en": "Steel box",
-      "de": "Kiste aus Stahl"
+      "de": "Kiste aus Stahl",
+      "fr": "Caisse en acier"
     },
     "contents": "vaste_stof"
   },
@@ -175,7 +192,8 @@
     "label": {
       "nl": "Aluminium kist",
       "en": "Aluminium box",
-      "de": "Kiste aus Aluminium"
+      "de": "Kiste aus Aluminium",
+      "fr": "Caisse en aluminium"
     },
     "contents": "vaste_stof"
   },
@@ -185,7 +203,8 @@
     "label": {
       "nl": "Kist van ander metaal",
       "en": "Metal box (other than steel/aluminium)",
-      "de": "Kiste aus anderem Metall (nicht Stahl/Aluminium)"
+      "de": "Kiste aus anderem Metall (nicht Stahl/Aluminium)",
+      "fr": "Caisse en métal (autre que l'acier ou l'aluminium)"
     },
     "contents": "vaste_stof"
   },
@@ -195,7 +214,8 @@
     "label": {
       "nl": "Houten kist, gewoon",
       "en": "Natural wood box, ordinary",
-      "de": "Kiste aus Naturholz, gewöhnlich"
+      "de": "Kiste aus Naturholz, gewöhnlich",
+      "fr": "Caisse en bois naturel, ordinaire"
     },
     "contents": "vaste_stof"
   },
@@ -205,7 +225,8 @@
     "label": {
       "nl": "Houten kist, stofdichte wanden",
       "en": "Natural wood box, sift-proof walls",
-      "de": "Kiste aus Naturholz mit staubdichten Wänden"
+      "de": "Kiste aus Naturholz mit staubdichten Wänden",
+      "fr": "Caisse en bois naturel à parois étanches aux pulvérulents"
     },
     "contents": "vaste_stof"
   },
@@ -215,7 +236,8 @@
     "label": {
       "nl": "Multiplex kist",
       "en": "Plywood box",
-      "de": "Kiste aus Sperrholz"
+      "de": "Kiste aus Sperrholz",
+      "fr": "Caisse en contreplaqué"
     },
     "contents": "vaste_stof"
   },
@@ -225,7 +247,8 @@
     "label": {
       "nl": "Kist van houtvezelmateriaal",
       "en": "Reconstituted wood box",
-      "de": "Kiste aus Holzfaserwerkstoff"
+      "de": "Kiste aus Holzfaserwerkstoff",
+      "fr": "Caisse en bois reconstitué"
     },
     "contents": "vaste_stof"
   },
@@ -235,7 +258,8 @@
     "label": {
       "nl": "Kartonnen doos (massief of golfkarton)",
       "en": "Fibreboard box",
-      "de": "Kiste aus Pappe"
+      "de": "Kiste aus Pappe",
+      "fr": "Caisse en carton"
     },
     "contents": "vaste_stof"
   },
@@ -245,7 +269,8 @@
     "label": {
       "nl": "Kist van geëxpandeerd kunststof (schuim)",
       "en": "Expanded plastics box",
-      "de": "Kiste aus Schaumstoff"
+      "de": "Kiste aus Schaumstoff",
+      "fr": "Caisse en plastique expansé"
     },
     "contents": "vaste_stof"
   },
@@ -255,7 +280,8 @@
     "label": {
       "nl": "Kist van massief kunststof",
       "en": "Solid plastics box",
-      "de": "Kiste aus festem Kunststoff"
+      "de": "Kiste aus festem Kunststoff",
+      "fr": "Caisse en plastique rigide"
     },
     "contents": "vaste_stof"
   },
@@ -265,7 +291,8 @@
     "label": {
       "nl": "Zak van kunststofweefsel, zonder binnenvoering",
       "en": "Woven plastics bag, without inner liner or coating",
-      "de": "Sack aus Kunststoffgewebe, ohne Innenauskleidung oder Beschichtung"
+      "de": "Sack aus Kunststoffgewebe, ohne Innenauskleidung oder Beschichtung",
+      "fr": "Sac en tissu de plastique sans doublure ni revêtement intérieur"
     },
     "contents": "vaste_stof"
   },
@@ -275,7 +302,8 @@
     "label": {
       "nl": "Zak van kunststofweefsel, stofdicht",
       "en": "Woven plastics bag, sift-proof",
-      "de": "Sack aus Kunststoffgewebe, staubdicht"
+      "de": "Sack aus Kunststoffgewebe, staubdicht",
+      "fr": "Sac en tissu de plastique étanche aux pulvérulents"
     },
     "contents": "vaste_stof"
   },
@@ -285,7 +313,8 @@
     "label": {
       "nl": "Zak van kunststofweefsel, waterbestendig",
       "en": "Woven plastics bag, water-resistant",
-      "de": "Sack aus Kunststoffgewebe, wasserbeständig"
+      "de": "Sack aus Kunststoffgewebe, wasserbeständig",
+      "fr": "Sac en tissu de plastique résistant à l'eau"
     },
     "contents": "vaste_stof"
   },
@@ -295,7 +324,8 @@
     "label": {
       "nl": "Zak van kunststoffolie",
       "en": "Plastics film bag",
-      "de": "Sack aus Kunststofffolie"
+      "de": "Sack aus Kunststofffolie",
+      "fr": "Sac en film de plastique"
     },
     "contents": "vaste_stof"
   },
@@ -305,7 +335,8 @@
     "label": {
       "nl": "Textielen zak, zonder binnenvoering",
       "en": "Textile bag, without inner liner or coating",
-      "de": "Sack aus Textilgewebe, ohne Innenauskleidung oder Beschichtung"
+      "de": "Sack aus Textilgewebe, ohne Innenauskleidung oder Beschichtung",
+      "fr": "Sac en textile sans doublure ni revêtement intérieur"
     },
     "contents": "vaste_stof"
   },
@@ -315,7 +346,8 @@
     "label": {
       "nl": "Textielen zak, stofdicht",
       "en": "Textile bag, sift-proof",
-      "de": "Sack aus Textilgewebe, staubdicht"
+      "de": "Sack aus Textilgewebe, staubdicht",
+      "fr": "Sac en textile étanche aux pulvérulents"
     },
     "contents": "vaste_stof"
   },
@@ -325,7 +357,8 @@
     "label": {
       "nl": "Textielen zak, waterbestendig",
       "en": "Textile bag, water-resistant",
-      "de": "Sack aus Textilgewebe, wasserbeständig"
+      "de": "Sack aus Textilgewebe, wasserbeständig",
+      "fr": "Sac en textile résistant à l'eau"
     },
     "contents": "vaste_stof"
   },
@@ -335,7 +368,8 @@
     "label": {
       "nl": "Papieren zak, meerlagig",
       "en": "Paper bag, multiwall",
-      "de": "Sack aus Papier, mehrlagig"
+      "de": "Sack aus Papier, mehrlagig",
+      "fr": "Sac en papier multiplis"
     },
     "contents": "vaste_stof"
   },
@@ -345,7 +379,8 @@
     "label": {
       "nl": "Papieren zak, meerlagig, waterbestendig",
       "en": "Paper bag, multiwall, water-resistant",
-      "de": "Sack aus Papier, mehrlagig, wasserbeständig"
+      "de": "Sack aus Papier, mehrlagig, wasserbeständig",
+      "fr": "Sac en papier multiplis résistant à l'eau"
     },
     "contents": "vaste_stof"
   },
@@ -355,7 +390,8 @@
     "label": {
       "nl": "Kunststof houder in stalen vat",
       "en": "Plastics receptacle in steel drum",
-      "de": "Kunststoffgefäß in Fass aus Stahl"
+      "de": "Kunststoffgefäß in Fass aus Stahl",
+      "fr": "Récipient en plastique dans un fût en acier"
     },
     "contents": "vloeistof"
   },
@@ -365,7 +401,8 @@
     "label": {
       "nl": "Kunststof houder in stalen krat of kist",
       "en": "Plastics receptacle in steel crate or box",
-      "de": "Kunststoffgefäß in Kiste oder Verschlag aus Stahl"
+      "de": "Kunststoffgefäß in Kiste oder Verschlag aus Stahl",
+      "fr": "Récipient en plastique dans une caisse ou un harasse en acier"
     },
     "contents": "beide"
   },
@@ -375,7 +412,8 @@
     "label": {
       "nl": "Kunststof houder in aluminium vat",
       "en": "Plastics receptacle in aluminium drum",
-      "de": "Kunststoffgefäß in Fass aus Aluminium"
+      "de": "Kunststoffgefäß in Fass aus Aluminium",
+      "fr": "Récipient en plastique dans un fût en aluminium"
     },
     "contents": "vloeistof"
   },
@@ -385,7 +423,8 @@
     "label": {
       "nl": "Kunststof houder in aluminium krat of kist",
       "en": "Plastics receptacle in aluminium crate or box",
-      "de": "Kunststoffgefäß in Kiste oder Verschlag aus Aluminium"
+      "de": "Kunststoffgefäß in Kiste oder Verschlag aus Aluminium",
+      "fr": "Récipient en plastique dans une caisse ou un harasse en aluminium"
     },
     "contents": "beide"
   },
@@ -395,7 +434,8 @@
     "label": {
       "nl": "Kunststof houder in houten kist",
       "en": "Plastics receptacle in wooden box",
-      "de": "Kunststoffgefäß in Kiste aus Holz"
+      "de": "Kunststoffgefäß in Kiste aus Holz",
+      "fr": "Récipient en plastique dans une caisse en bois"
     },
     "contents": "beide"
   },
@@ -405,7 +445,8 @@
     "label": {
       "nl": "Kunststof houder in multiplex vat",
       "en": "Plastics receptacle in plywood drum",
-      "de": "Kunststoffgefäß in Fass aus Sperrholz"
+      "de": "Kunststoffgefäß in Fass aus Sperrholz",
+      "fr": "Récipient en plastique dans un fût en contreplaqué"
     },
     "contents": "vloeistof"
   },
@@ -415,7 +456,8 @@
     "label": {
       "nl": "Kunststof houder in multiplex kist",
       "en": "Plastics receptacle in plywood box",
-      "de": "Kunststoffgefäß in Kiste aus Sperrholz"
+      "de": "Kunststoffgefäß in Kiste aus Sperrholz",
+      "fr": "Récipient en plastique dans une caisse en contreplaqué"
     },
     "contents": "beide"
   },
@@ -425,7 +467,8 @@
     "label": {
       "nl": "Kunststof houder in vezelvat",
       "en": "Plastics receptacle in fibre drum",
-      "de": "Kunststoffgefäß in Fass aus Pappe"
+      "de": "Kunststoffgefäß in Fass aus Pappe",
+      "fr": "Récipient en plastique dans un fût en carton"
     },
     "contents": "vloeistof"
   },
@@ -435,7 +478,8 @@
     "label": {
       "nl": "Kunststof houder in kartonnen doos",
       "en": "Plastics receptacle in fibreboard box",
-      "de": "Kunststoffgefäß in Kiste aus Pappe"
+      "de": "Kunststoffgefäß in Kiste aus Pappe",
+      "fr": "Récipient en plastique dans une caisse en carton"
     },
     "contents": "beide"
   },
@@ -445,7 +489,8 @@
     "label": {
       "nl": "Kunststof houder in kunststof vat",
       "en": "Plastics receptacle in plastics drum",
-      "de": "Kunststoffgefäß in Fass aus Kunststoff"
+      "de": "Kunststoffgefäß in Fass aus Kunststoff",
+      "fr": "Récipient en plastique dans un fût en plastique"
     },
     "contents": "vloeistof"
   },
@@ -455,7 +500,8 @@
     "label": {
       "nl": "Kunststof houder in kist van massief kunststof",
       "en": "Plastics receptacle in solid plastics box",
-      "de": "Kunststoffgefäß in Kiste aus festem Kunststoff"
+      "de": "Kunststoffgefäß in Kiste aus festem Kunststoff",
+      "fr": "Récipient en plastique dans une caisse en plastique rigide"
     },
     "contents": "beide"
   },
@@ -465,7 +511,8 @@
     "label": {
       "nl": "Glazen/porseleinen/aardewerken houder in stalen vat",
       "en": "Glass, porcelain or stoneware receptacle in steel drum",
-      "de": "Gefäß aus Glas, Porzellan oder Steinzeug in Fass aus Stahl"
+      "de": "Gefäß aus Glas, Porzellan oder Steinzeug in Fass aus Stahl",
+      "fr": "Récipient en verre, porcelaine ou grès dans un fût en acier"
     },
     "contents": "vloeistof"
   },
@@ -475,7 +522,8 @@
     "label": {
       "nl": "Glazen houder in stalen krat of kist",
       "en": "Glass receptacle in steel crate or box",
-      "de": "Gefäß aus Glas in Kiste oder Verschlag aus Stahl"
+      "de": "Gefäß aus Glas in Kiste oder Verschlag aus Stahl",
+      "fr": "Récipient en verre dans une caisse ou un harasse en acier"
     },
     "contents": "beide"
   },
@@ -485,7 +533,8 @@
     "label": {
       "nl": "Glazen houder in aluminium vat",
       "en": "Glass receptacle in aluminium drum",
-      "de": "Gefäß aus Glas in Fass aus Aluminium"
+      "de": "Gefäß aus Glas in Fass aus Aluminium",
+      "fr": "Récipient en verre dans un fût en aluminium"
     },
     "contents": "vloeistof"
   },
@@ -495,7 +544,8 @@
     "label": {
       "nl": "Glazen houder in aluminium krat of kist",
       "en": "Glass receptacle in aluminium crate or box",
-      "de": "Gefäß aus Glas in Kiste oder Verschlag aus Aluminium"
+      "de": "Gefäß aus Glas in Kiste oder Verschlag aus Aluminium",
+      "fr": "Récipient en verre dans une caisse ou un harasse en aluminium"
     },
     "contents": "beide"
   },
@@ -505,7 +555,8 @@
     "label": {
       "nl": "Glazen houder in houten kist",
       "en": "Glass receptacle in wooden box",
-      "de": "Gefäß aus Glas in Kiste aus Holz"
+      "de": "Gefäß aus Glas in Kiste aus Holz",
+      "fr": "Récipient en verre dans une caisse en bois"
     },
     "contents": "beide"
   },
@@ -515,7 +566,8 @@
     "label": {
       "nl": "Glazen houder in multiplex vat",
       "en": "Glass receptacle in plywood drum",
-      "de": "Gefäß aus Glas in Fass aus Sperrholz"
+      "de": "Gefäß aus Glas in Fass aus Sperrholz",
+      "fr": "Récipient en verre dans un fût en contreplaqué"
     },
     "contents": "vloeistof"
   },
@@ -525,7 +577,8 @@
     "label": {
       "nl": "Glazen houder in rieten mand",
       "en": "Glass receptacle in wickerwork hamper",
-      "de": "Gefäß aus Glas in Weidenkorb"
+      "de": "Gefäß aus Glas in Weidenkorb",
+      "fr": "Récipient en verre dans un panier en osier"
     },
     "contents": "beide"
   },
@@ -535,7 +588,8 @@
     "label": {
       "nl": "Glazen houder in vezelvat",
       "en": "Glass receptacle in fibre drum",
-      "de": "Gefäß aus Glas in Fass aus Pappe"
+      "de": "Gefäß aus Glas in Fass aus Pappe",
+      "fr": "Récipient en verre dans un fût en carton"
     },
     "contents": "vloeistof"
   },
@@ -545,7 +599,8 @@
     "label": {
       "nl": "Glazen houder in kartonnen doos",
       "en": "Glass receptacle in fibreboard box",
-      "de": "Gefäß aus Glas in Kiste aus Pappe"
+      "de": "Gefäß aus Glas in Kiste aus Pappe",
+      "fr": "Récipient en verre dans une caisse en carton"
     },
     "contents": "beide"
   },
@@ -555,7 +610,8 @@
     "label": {
       "nl": "Glazen houder in verpakking van geëxpandeerd kunststof",
       "en": "Glass receptacle in expanded plastics packaging",
-      "de": "Gefäß aus Glas in Schaumstoffverpackung"
+      "de": "Gefäß aus Glas in Schaumstoffverpackung",
+      "fr": "Récipient en verre dans un emballage en plastique expansé"
     },
     "contents": "beide"
   },
@@ -565,7 +621,8 @@
     "label": {
       "nl": "Glazen houder in verpakking van massief kunststof",
       "en": "Glass receptacle in solid plastics packaging",
-      "de": "Gefäß aus Glas in Verpackung aus festem Kunststoff"
+      "de": "Gefäß aus Glas in Verpackung aus festem Kunststoff",
+      "fr": "Récipient en verre dans un emballage en plastique rigide"
     },
     "contents": "beide"
   },
@@ -575,7 +632,8 @@
     "label": {
       "nl": "Verpakking van licht metaal, niet-afneembaar deksel",
       "en": "Light gauge metal packaging, non-removable head",
-      "de": "Feinstblechverpackung, nicht abnehmbarer Deckel"
+      "de": "Feinstblechverpackung, nicht abnehmbarer Deckel",
+      "fr": "Emballage métallique léger à dessus non amovible"
     },
     "contents": "vloeistof"
   },
@@ -585,7 +643,8 @@
     "label": {
       "nl": "Verpakking van licht metaal, afneembaar deksel",
       "en": "Light gauge metal packaging, removable head",
-      "de": "Feinstblechverpackung, abnehmbarer Deckel"
+      "de": "Feinstblechverpackung, abnehmbarer Deckel",
+      "fr": "Emballage métallique léger à dessus amovible"
     },
     "contents": "beide"
   },
@@ -595,7 +654,8 @@
     "label": {
       "nl": "Metalen IBC (staal) voor vaste stoffen, lossen door zwaartekracht",
       "en": "Metal IBC (steel) for solids, gravity discharge",
-      "de": "IBC aus Metall (Stahl) für feste Stoffe, Entleerung durch Schwerkraft"
+      "de": "IBC aus Metall (Stahl) für feste Stoffe, Entleerung durch Schwerkraft",
+      "fr": "GRV métallique (acier) pour matières solides, à décharge par gravité"
     },
     "contents": "vaste_stof"
   },
@@ -605,7 +665,8 @@
     "label": {
       "nl": "Metalen IBC (aluminium) voor vaste stoffen, lossen door zwaartekracht",
       "en": "Metal IBC (aluminium) for solids, gravity discharge",
-      "de": "IBC aus Metall (Aluminium) für feste Stoffe, Entleerung durch Schwerkraft"
+      "de": "IBC aus Metall (Aluminium) für feste Stoffe, Entleerung durch Schwerkraft",
+      "fr": "GRV métallique (aluminium) pour matières solides, à décharge par gravité"
     },
     "contents": "vaste_stof"
   },
@@ -615,7 +676,8 @@
     "label": {
       "nl": "Metalen IBC (ander metaal) voor vaste stoffen, lossen door zwaartekracht",
       "en": "Metal IBC (other metal) for solids, gravity discharge",
-      "de": "IBC aus Metall (anderes Metall) für feste Stoffe, Entleerung durch Schwerkraft"
+      "de": "IBC aus Metall (anderes Metall) für feste Stoffe, Entleerung durch Schwerkraft",
+      "fr": "GRV métallique (autre métal) pour matières solides, à décharge par gravité"
     },
     "contents": "vaste_stof"
   },
@@ -625,7 +687,8 @@
     "label": {
       "nl": "Metalen IBC (staal) voor vaste stoffen, lossen onder druk",
       "en": "Metal IBC (steel) for solids, pressure discharge",
-      "de": "IBC aus Metall (Stahl) für feste Stoffe, Entleerung unter Druck"
+      "de": "IBC aus Metall (Stahl) für feste Stoffe, Entleerung unter Druck",
+      "fr": "GRV métallique (acier) pour matières solides, à décharge sous pression"
     },
     "contents": "vaste_stof"
   },
@@ -635,7 +698,8 @@
     "label": {
       "nl": "Metalen IBC (aluminium) voor vaste stoffen, lossen onder druk",
       "en": "Metal IBC (aluminium) for solids, pressure discharge",
-      "de": "IBC aus Metall (Aluminium) für feste Stoffe, Entleerung unter Druck"
+      "de": "IBC aus Metall (Aluminium) für feste Stoffe, Entleerung unter Druck",
+      "fr": "GRV métallique (aluminium) pour matières solides, à décharge sous pression"
     },
     "contents": "vaste_stof"
   },
@@ -645,7 +709,8 @@
     "label": {
       "nl": "Metalen IBC (ander metaal) voor vaste stoffen, lossen onder druk",
       "en": "Metal IBC (other metal) for solids, pressure discharge",
-      "de": "IBC aus Metall (anderes Metall) für feste Stoffe, Entleerung unter Druck"
+      "de": "IBC aus Metall (anderes Metall) für feste Stoffe, Entleerung unter Druck",
+      "fr": "GRV métallique (autre métal) pour matières solides, à décharge sous pression"
     },
     "contents": "vaste_stof"
   },
@@ -655,7 +720,8 @@
     "label": {
       "nl": "Metalen IBC (staal) voor vloeistoffen",
       "en": "Metal IBC (steel) for liquids",
-      "de": "IBC aus Metall (Stahl) für flüssige Stoffe"
+      "de": "IBC aus Metall (Stahl) für flüssige Stoffe",
+      "fr": "GRV métallique (acier) pour liquides"
     },
     "contents": "vloeistof"
   },
@@ -665,7 +731,8 @@
     "label": {
       "nl": "Metalen IBC (aluminium) voor vloeistoffen",
       "en": "Metal IBC (aluminium) for liquids",
-      "de": "IBC aus Metall (Aluminium) für flüssige Stoffe"
+      "de": "IBC aus Metall (Aluminium) für flüssige Stoffe",
+      "fr": "GRV métallique (aluminium) pour liquides"
     },
     "contents": "vloeistof"
   },
@@ -675,7 +742,8 @@
     "label": {
       "nl": "Metalen IBC (ander metaal) voor vloeistoffen",
       "en": "Metal IBC (other metal) for liquids",
-      "de": "IBC aus Metall (anderes Metall) für flüssige Stoffe"
+      "de": "IBC aus Metall (anderes Metall) für flüssige Stoffe",
+      "fr": "GRV métallique (autre métal) pour liquides"
     },
     "contents": "vloeistof"
   },
@@ -685,7 +753,8 @@
     "label": {
       "nl": "Flexibele IBC (big bag), kunststofweefsel zonder coating/voering",
       "en": "Flexible IBC (big bag), woven plastics without coating or liner",
-      "de": "Flexibles IBC (Big Bag), Kunststoffgewebe ohne Beschichtung und Innenauskleidung"
+      "de": "Flexibles IBC (Big Bag), Kunststoffgewebe ohne Beschichtung und Innenauskleidung",
+      "fr": "GRV souple (big bag) en tissu de plastique sans revêtement ni doublure"
     },
     "contents": "vaste_stof"
   },
@@ -695,7 +764,8 @@
     "label": {
       "nl": "Flexibele IBC (big bag), kunststofweefsel met coating",
       "en": "Flexible IBC (big bag), woven plastics, coated",
-      "de": "Flexibles IBC (Big Bag), Kunststoffgewebe, beschichtet"
+      "de": "Flexibles IBC (Big Bag), Kunststoffgewebe, beschichtet",
+      "fr": "GRV souple (big bag) en tissu de plastique avec revêtement"
     },
     "contents": "vaste_stof"
   },
@@ -705,7 +775,8 @@
     "label": {
       "nl": "Flexibele IBC (big bag), kunststofweefsel met voering",
       "en": "Flexible IBC (big bag), woven plastics with liner",
-      "de": "Flexibles IBC (Big Bag), Kunststoffgewebe mit Innenauskleidung"
+      "de": "Flexibles IBC (Big Bag), Kunststoffgewebe mit Innenauskleidung",
+      "fr": "GRV souple (big bag) en tissu de plastique avec doublure"
     },
     "contents": "vaste_stof"
   },
@@ -715,7 +786,8 @@
     "label": {
       "nl": "Flexibele IBC (big bag), kunststofweefsel met coating en voering",
       "en": "Flexible IBC (big bag), woven plastics, coated and with liner",
-      "de": "Flexibles IBC (Big Bag), Kunststoffgewebe, beschichtet und mit Innenauskleidung"
+      "de": "Flexibles IBC (Big Bag), Kunststoffgewebe, beschichtet und mit Innenauskleidung",
+      "fr": "GRV souple (big bag) en tissu de plastique avec revêtement et doublure"
     },
     "contents": "vaste_stof"
   },
@@ -725,7 +797,8 @@
     "label": {
       "nl": "Flexibele IBC (big bag), kunststoffolie",
       "en": "Flexible IBC (big bag), plastics film",
-      "de": "Flexibles IBC (Big Bag), Kunststofffolie"
+      "de": "Flexibles IBC (Big Bag), Kunststofffolie",
+      "fr": "GRV souple (big bag) en film de plastique"
     },
     "contents": "vaste_stof"
   },
@@ -735,7 +808,8 @@
     "label": {
       "nl": "Flexibele IBC, textiel zonder coating/voering",
       "en": "Flexible IBC, textile without coating or liner",
-      "de": "Flexibles IBC, Textilgewebe ohne Beschichtung und Innenauskleidung"
+      "de": "Flexibles IBC, Textilgewebe ohne Beschichtung und Innenauskleidung",
+      "fr": "GRV souple en textile sans revêtement ni doublure"
     },
     "contents": "vaste_stof"
   },
@@ -745,7 +819,8 @@
     "label": {
       "nl": "Flexibele IBC, textiel met coating",
       "en": "Flexible IBC, textile, coated",
-      "de": "Flexibles IBC, Textilgewebe, beschichtet"
+      "de": "Flexibles IBC, Textilgewebe, beschichtet",
+      "fr": "GRV souple en textile avec revêtement"
     },
     "contents": "vaste_stof"
   },
@@ -755,7 +830,8 @@
     "label": {
       "nl": "Flexibele IBC, textiel met voering",
       "en": "Flexible IBC, textile with liner",
-      "de": "Flexibles IBC, Textilgewebe mit Innenauskleidung"
+      "de": "Flexibles IBC, Textilgewebe mit Innenauskleidung",
+      "fr": "GRV souple en textile avec doublure"
     },
     "contents": "vaste_stof"
   },
@@ -765,7 +841,8 @@
     "label": {
       "nl": "Flexibele IBC, textiel met coating en voering",
       "en": "Flexible IBC, textile, coated and with liner",
-      "de": "Flexibles IBC, Textilgewebe, beschichtet und mit Innenauskleidung"
+      "de": "Flexibles IBC, Textilgewebe, beschichtet und mit Innenauskleidung",
+      "fr": "GRV souple en textile avec revêtement et doublure"
     },
     "contents": "vaste_stof"
   },
@@ -775,7 +852,8 @@
     "label": {
       "nl": "Flexibele IBC, papier, meerlagig",
       "en": "Flexible IBC, paper, multiwall",
-      "de": "Flexibles IBC, Papier, mehrlagig"
+      "de": "Flexibles IBC, Papier, mehrlagig",
+      "fr": "GRV souple en papier multiplis"
     },
     "contents": "vaste_stof"
   },
@@ -785,7 +863,8 @@
     "label": {
       "nl": "Flexibele IBC, papier, meerlagig, waterbestendig",
       "en": "Flexible IBC, paper, multiwall, water-resistant",
-      "de": "Flexibles IBC, Papier, mehrlagig, wasserbeständig"
+      "de": "Flexibles IBC, Papier, mehrlagig, wasserbeständig",
+      "fr": "GRV souple en papier multiplis résistant à l'eau"
     },
     "contents": "vaste_stof"
   },
@@ -795,7 +874,8 @@
     "label": {
       "nl": "Rigide kunststof IBC voor vaste stoffen, met constructieve uitrusting, zwaartekrachtlossing",
       "en": "Rigid plastics IBC for solids, with structural equipment, gravity discharge",
-      "de": "IBC aus starrem Kunststoff für feste Stoffe, mit Konstruktionsausrüstung, Entleerung durch Schwerkraft"
+      "de": "IBC aus starrem Kunststoff für feste Stoffe, mit Konstruktionsausrüstung, Entleerung durch Schwerkraft",
+      "fr": "GRV en plastique rigide pour matières solides, avec équipement de structure, à décharge par gravité"
     },
     "contents": "vaste_stof"
   },
@@ -805,7 +885,8 @@
     "label": {
       "nl": "Rigide kunststof IBC voor vaste stoffen, vrijdragend, zwaartekrachtlossing",
       "en": "Rigid plastics IBC for solids, freestanding, gravity discharge",
-      "de": "IBC aus starrem Kunststoff für feste Stoffe, freistehend, Entleerung durch Schwerkraft"
+      "de": "IBC aus starrem Kunststoff für feste Stoffe, freistehend, Entleerung durch Schwerkraft",
+      "fr": "GRV en plastique rigide pour matières solides, autoportant, à décharge par gravité"
     },
     "contents": "vaste_stof"
   },
@@ -815,7 +896,8 @@
     "label": {
       "nl": "Rigide kunststof IBC voor vaste stoffen, met constructieve uitrusting, druklossing",
       "en": "Rigid plastics IBC for solids, with structural equipment, pressure discharge",
-      "de": "IBC aus starrem Kunststoff für feste Stoffe, mit Konstruktionsausrüstung, Entleerung unter Druck"
+      "de": "IBC aus starrem Kunststoff für feste Stoffe, mit Konstruktionsausrüstung, Entleerung unter Druck",
+      "fr": "GRV en plastique rigide pour matières solides, avec équipement de structure, à décharge sous pression"
     },
     "contents": "vaste_stof"
   },
@@ -825,7 +907,8 @@
     "label": {
       "nl": "Rigide kunststof IBC voor vaste stoffen, vrijdragend, druklossing",
       "en": "Rigid plastics IBC for solids, freestanding, pressure discharge",
-      "de": "IBC aus starrem Kunststoff für feste Stoffe, freistehend, Entleerung unter Druck"
+      "de": "IBC aus starrem Kunststoff für feste Stoffe, freistehend, Entleerung unter Druck",
+      "fr": "GRV en plastique rigide pour matières solides, autoportant, à décharge sous pression"
     },
     "contents": "vaste_stof"
   },
@@ -835,7 +918,8 @@
     "label": {
       "nl": "Rigide kunststof IBC voor vloeistoffen, met constructieve uitrusting",
       "en": "Rigid plastics IBC for liquids, with structural equipment",
-      "de": "IBC aus starrem Kunststoff für flüssige Stoffe, mit Konstruktionsausrüstung"
+      "de": "IBC aus starrem Kunststoff für flüssige Stoffe, mit Konstruktionsausrüstung",
+      "fr": "GRV en plastique rigide pour liquides, avec équipement de structure"
     },
     "contents": "vloeistof"
   },
@@ -845,7 +929,8 @@
     "label": {
       "nl": "Rigide kunststof IBC voor vloeistoffen, vrijdragend",
       "en": "Rigid plastics IBC for liquids, freestanding",
-      "de": "IBC aus starrem Kunststoff für flüssige Stoffe, freistehend"
+      "de": "IBC aus starrem Kunststoff für flüssige Stoffe, freistehend",
+      "fr": "GRV en plastique rigide pour liquides, autoportant"
     },
     "contents": "vloeistof"
   },
@@ -855,7 +940,8 @@
     "label": {
       "nl": "Composiet-IBC voor vaste stoffen, rigide kunststof binnenhouder, zwaartekrachtlossing",
       "en": "Composite IBC for solids, rigid plastics inner receptacle, gravity discharge",
-      "de": "Kombinations-IBC für feste Stoffe, Innengefäß aus starrem Kunststoff, Entleerung durch Schwerkraft"
+      "de": "Kombinations-IBC für feste Stoffe, Innengefäß aus starrem Kunststoff, Entleerung durch Schwerkraft",
+      "fr": "GRV composite pour matières solides, récipient intérieur en plastique rigide, à décharge par gravité"
     },
     "contents": "vaste_stof"
   },
@@ -865,7 +951,8 @@
     "label": {
       "nl": "Composiet-IBC voor vaste stoffen, flexibele kunststof binnenhouder, zwaartekrachtlossing",
       "en": "Composite IBC for solids, flexible plastics inner receptacle, gravity discharge",
-      "de": "Kombinations-IBC für feste Stoffe, Innengefäß aus flexiblem Kunststoff, Entleerung durch Schwerkraft"
+      "de": "Kombinations-IBC für feste Stoffe, Innengefäß aus flexiblem Kunststoff, Entleerung durch Schwerkraft",
+      "fr": "GRV composite pour matières solides, récipient intérieur en plastique souple, à décharge par gravité"
     },
     "contents": "vaste_stof"
   },
@@ -875,7 +962,8 @@
     "label": {
       "nl": "Composiet-IBC voor vaste stoffen, rigide kunststof binnenhouder, druklossing",
       "en": "Composite IBC for solids, rigid plastics inner receptacle, pressure discharge",
-      "de": "Kombinations-IBC für feste Stoffe, Innengefäß aus starrem Kunststoff, Entleerung unter Druck"
+      "de": "Kombinations-IBC für feste Stoffe, Innengefäß aus starrem Kunststoff, Entleerung unter Druck",
+      "fr": "GRV composite pour matières solides, récipient intérieur en plastique rigide, à décharge sous pression"
     },
     "contents": "vaste_stof"
   },
@@ -885,7 +973,8 @@
     "label": {
       "nl": "Composiet-IBC voor vaste stoffen, flexibele kunststof binnenhouder, druklossing",
       "en": "Composite IBC for solids, flexible plastics inner receptacle, pressure discharge",
-      "de": "Kombinations-IBC für feste Stoffe, Innengefäß aus flexiblem Kunststoff, Entleerung unter Druck"
+      "de": "Kombinations-IBC für feste Stoffe, Innengefäß aus flexiblem Kunststoff, Entleerung unter Druck",
+      "fr": "GRV composite pour matières solides, récipient intérieur en plastique souple, à décharge sous pression"
     },
     "contents": "vaste_stof"
   },
@@ -895,7 +984,8 @@
     "label": {
       "nl": "Composiet-IBC voor vloeistoffen, rigide kunststof binnenhouder (bijv. 1000 l op pallet)",
       "en": "Composite IBC for liquids, rigid plastics inner receptacle (e.g. 1000 L tote)",
-      "de": "Kombinations-IBC für flüssige Stoffe, Innengefäß aus starrem Kunststoff (z. B. 1000-L-Container)"
+      "de": "Kombinations-IBC für flüssige Stoffe, Innengefäß aus starrem Kunststoff (z. B. 1000-L-Container)",
+      "fr": "GRV composite pour liquides, récipient intérieur en plastique rigide (p. ex. cuve de 1000 L)"
     },
     "contents": "vloeistof"
   },
@@ -905,7 +995,8 @@
     "label": {
       "nl": "Composiet-IBC voor vloeistoffen, flexibele kunststof binnenhouder",
       "en": "Composite IBC for liquids, flexible plastics inner receptacle",
-      "de": "Kombinations-IBC für flüssige Stoffe, Innengefäß aus flexiblem Kunststoff"
+      "de": "Kombinations-IBC für flüssige Stoffe, Innengefäß aus flexiblem Kunststoff",
+      "fr": "GRV composite pour liquides, récipient intérieur en plastique souple"
     },
     "contents": "vloeistof"
   },
@@ -915,7 +1006,8 @@
     "label": {
       "nl": "Houten IBC met binnenvoering",
       "en": "Wooden IBC with inner liner",
-      "de": "IBC aus Holz mit Innenauskleidung"
+      "de": "IBC aus Holz mit Innenauskleidung",
+      "fr": "GRV en bois avec doublure intérieure"
     },
     "contents": "vaste_stof"
   },
@@ -925,7 +1017,8 @@
     "label": {
       "nl": "Multiplex IBC met binnenvoering",
       "en": "Plywood IBC with inner liner",
-      "de": "IBC aus Sperrholz mit Innenauskleidung"
+      "de": "IBC aus Sperrholz mit Innenauskleidung",
+      "fr": "GRV en contreplaqué avec doublure intérieure"
     },
     "contents": "vaste_stof"
   },
@@ -935,7 +1028,8 @@
     "label": {
       "nl": "IBC van houtvezelmateriaal met binnenvoering",
       "en": "Reconstituted wood IBC with inner liner",
-      "de": "IBC aus Holzfaserwerkstoff mit Innenauskleidung"
+      "de": "IBC aus Holzfaserwerkstoff mit Innenauskleidung",
+      "fr": "GRV en bois reconstitué avec doublure intérieure"
     },
     "contents": "vaste_stof"
   },
@@ -945,7 +1039,8 @@
     "label": {
       "nl": "Kartonnen IBC",
       "en": "Fibreboard IBC",
-      "de": "IBC aus Pappe"
+      "de": "IBC aus Pappe",
+      "fr": "GRV en carton"
     },
     "contents": "vaste_stof"
   },
@@ -955,7 +1050,8 @@
     "label": {
       "nl": "Grote verpakking, staal",
       "en": "Large packaging, steel",
-      "de": "Großverpackung aus Stahl"
+      "de": "Großverpackung aus Stahl",
+      "fr": "Grand emballage en acier"
     },
     "contents": "vaste_stof"
   },
@@ -965,7 +1061,8 @@
     "label": {
       "nl": "Grote verpakking, aluminium",
       "en": "Large packaging, aluminium",
-      "de": "Großverpackung aus Aluminium"
+      "de": "Großverpackung aus Aluminium",
+      "fr": "Grand emballage en aluminium"
     },
     "contents": "vaste_stof"
   },
@@ -975,7 +1072,8 @@
     "label": {
       "nl": "Grote verpakking, ander metaal",
       "en": "Large packaging, metal other than steel/aluminium",
-      "de": "Großverpackung aus anderem Metall als Stahl/Aluminium"
+      "de": "Großverpackung aus anderem Metall als Stahl/Aluminium",
+      "fr": "Grand emballage en métal autre que l'acier ou l'aluminium"
     },
     "contents": "vaste_stof"
   },
@@ -985,7 +1083,8 @@
     "label": {
       "nl": "Grote verpakking, natuurhout",
       "en": "Large packaging, natural wood",
-      "de": "Großverpackung aus Naturholz"
+      "de": "Großverpackung aus Naturholz",
+      "fr": "Grand emballage en bois naturel"
     },
     "contents": "vaste_stof"
   },
@@ -995,7 +1094,8 @@
     "label": {
       "nl": "Grote verpakking, multiplex",
       "en": "Large packaging, plywood",
-      "de": "Großverpackung aus Sperrholz"
+      "de": "Großverpackung aus Sperrholz",
+      "fr": "Grand emballage en contreplaqué"
     },
     "contents": "vaste_stof"
   },
@@ -1005,7 +1105,8 @@
     "label": {
       "nl": "Grote verpakking, houtvezelmateriaal",
       "en": "Large packaging, reconstituted wood",
-      "de": "Großverpackung aus Holzfaserwerkstoff"
+      "de": "Großverpackung aus Holzfaserwerkstoff",
+      "fr": "Grand emballage en bois reconstitué"
     },
     "contents": "vaste_stof"
   },
@@ -1015,7 +1116,8 @@
     "label": {
       "nl": "Grote verpakking, karton",
       "en": "Large packaging, fibreboard",
-      "de": "Großverpackung aus Pappe"
+      "de": "Großverpackung aus Pappe",
+      "fr": "Grand emballage en carton"
     },
     "contents": "vaste_stof"
   },
@@ -1025,7 +1127,8 @@
     "label": {
       "nl": "Grote verpakking, rigide kunststof",
       "en": "Large packaging, rigid plastics",
-      "de": "Großverpackung aus starrem Kunststoff"
+      "de": "Großverpackung aus starrem Kunststoff",
+      "fr": "Grand emballage en plastique rigide"
     },
     "contents": "vaste_stof"
   },
@@ -1035,7 +1138,8 @@
     "label": {
       "nl": "Grote verpakking, flexibel",
       "en": "Large packaging, flexible",
-      "de": "Großverpackung, flexibel"
+      "de": "Großverpackung, flexibel",
+      "fr": "Grand emballage souple"
     },
     "contents": "vaste_stof"
   },
@@ -1045,7 +1149,8 @@
     "label": {
       "nl": "Gasfles (drukhouder)",
       "en": "Gas cylinder (pressure receptacle)",
-      "de": "Gasflasche (Druckgefäß)"
+      "de": "Gasflasche (Druckgefäß)",
+      "fr": "Bouteille à gaz (récipient à pression)"
     },
     "contents": "beide"
   },
@@ -1055,7 +1160,8 @@
     "label": {
       "nl": "Flessenbatterij / bundel",
       "en": "Bundle of cylinders",
-      "de": "Flaschenbündel"
+      "de": "Flaschenbündel",
+      "fr": "Cadre de bouteilles"
     },
     "contents": "beide"
   },
@@ -1065,7 +1171,8 @@
     "label": {
       "nl": "Gesloten cryohouder",
       "en": "Closed cryogenic receptacle",
-      "de": "Geschlossenes Kryo-Behältnis"
+      "de": "Geschlossenes Kryo-Behältnis",
+      "fr": "Récipient cryogénique fermé"
     },
     "contents": "vloeistof"
   }

@@ -74,6 +74,7 @@ export default function SettingsPage() {
             <option value="nl">Nederlands</option>
             <option value="en">English</option>
             <option value="de">Deutsch</option>
+            <option value="fr">Français</option>
           </select>
         </div>
 

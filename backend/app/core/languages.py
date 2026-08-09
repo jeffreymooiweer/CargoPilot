@@ -21,21 +21,30 @@ from typing import Any
 
 #: De talen die de interface aanbiedt. De frontend draagt dezelfde lijst in
 #: ``src/i18n/language.ts``; ``test_languages.py`` bewaakt dat ze gelijk blijven.
-SUPPORTED = ("nl", "en", "de")
+#:
+#: Frans staat er sinds v1.44.0 bij, en niet omdat het een grote taal is. Het
+#: ADR, het RID en het ADN worden door de UNECE en de OTIF uitgegeven in het
+#: Engels, het Frans en het Russisch, en de CMR- en CIM-vrachtbrief zijn van
+#: oorsprong Franstalige documenten — de afkortingen zelf zijn Frans. Wie een
+#: vrachtbrief opmaakt voor een Belgisch, Frans, Luxemburgs of Zwitsers traject
+#: heeft de Franse benaming nodig, niet als beleefdheid maar omdat de
+#: bevoegde autoriteit langs de weg die taal leest.
+SUPPORTED = ("nl", "en", "de", "fr")
 
 #: Nederlands is de taal waarin de gegevens het volledigst zijn: de
 #: brontabellen en de toelichtingen zijn erin geschreven en de overige talen
 #: zijn ervan afgeleid.
 DEFAULT = "nl"
 
-#: Waar naartoe wanneer een tekst in de gevraagde taal ontbreekt. Duits valt
-#: eerst op Engels terug: een Duitse gebruiker leest eerder Engels dan
+#: Waar naartoe wanneer een tekst in de gevraagde taal ontbreekt. Duits en Frans
+#: vallen eerst op Engels terug: die lezer komt verder met Engels dan met
 #: Nederlands. Nederlands blijft de laatste vangnetregel, want daar is altijd
 #: iets.
 _FALLBACKS: dict[str, tuple[str, ...]] = {
-    "nl": ("nl", "en", "de"),
-    "en": ("en", "nl", "de"),
-    "de": ("de", "en", "nl"),
+    "nl": ("nl", "en", "de", "fr"),
+    "en": ("en", "nl", "de", "fr"),
+    "de": ("de", "en", "nl", "fr"),
+    "fr": ("fr", "en", "nl", "de"),
 }
 
 

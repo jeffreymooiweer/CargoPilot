@@ -36,7 +36,8 @@
     "quantity_units": {
       "nl": "Hoeveelheid per ADR 1.1.3.6.3: voorwerpen = bruto kg (klasse 1: netto kg ontplofbare stof); vaste stoffen en vloeibaar gemaakte/opgeloste gassen = netto kg; vloeistoffen = liter; samengeperste/geadsorbeerde gassen en chemicaliën onder druk = waterinhoud van de houder in liter.",
       "en": "Quantity per ADR 1.1.3.6.3: articles = gross kg (class 1: net explosive kg); solids and liquefied/dissolved gases = net kg; liquids = litres; compressed/adsorbed gases and chemicals under pressure = water capacity of the receptacle in litres.",
-      "de": "Menge nach ADR 1.1.3.6.3: Gegenstände = brutto kg (Klasse 1: netto kg explosiver Stoff); feste Stoffe und verflüssigte/gelöste Gase = netto kg; flüssige Stoffe = Liter; verdichtete/adsorbierte Gase und Chemikalien unter Druck = Fassungsraum des Gefäßes in Liter."
+      "de": "Menge nach ADR 1.1.3.6.3: Gegenstände = brutto kg (Klasse 1: netto kg explosiver Stoff); feste Stoffe und verflüssigte/gelöste Gase = netto kg; flüssige Stoffe = Liter; verdichtete/adsorbierte Gase und Chemikalien unter Druck = Fassungsraum des Gefäßes in Liter.",
+      "fr": "Quantité selon le 1.1.3.6.3 de l'ADR : objets = kg bruts (classe 1 : kg de masse nette explosive) ; matières solides et gaz liquéfiés ou dissous = kg nets ; liquides = litres ; gaz comprimés ou adsorbés et produits chimiques sous pression = capacité en eau du récipient en litres."
     },
     "exempt_provisions": {
       "nl": [
@@ -59,6 +60,13 @@
         "ADR-Schulungsbescheinigung für Fahrzeugführer (8.2.1) — die Unterweisung nach 8.2.3 bleibt erforderlich",
         "Sicherungsplan nach Kapitel 1.10 (außer bei Gütern mit hohem Gefahrenpotenzial)",
         "Tunnelbeschränkungen (8.6) gelten für die Beförderungseinheit nicht"
+      ],
+      "fr": [
+        "Panneaux orange et plaques-étiquettes sur l'unité de transport (chapitre 5.3)",
+        "Consignes écrites (5.4.3)",
+        "Certificat de formation du conducteur ADR (8.2.1) — la sensibilisation du 8.2.3 reste exigée",
+        "Plan de sûreté du chapitre 1.10 (sauf marchandises dangereuses à haut risque)",
+        "Les restrictions en tunnel (8.6) ne s'appliquent pas à l'unité de transport"
       ]
     },
     "still_required": {
@@ -82,6 +90,13 @@
         "2-kg-Pulverfeuerlöscher an Bord (8.1.4)",
         "Unterweisung des Personals (8.2.3) mit Nachweis",
         "Zusammenladeverbote (7.5.2) und CV-Vorschriften gelten weiterhin"
+      ],
+      "fr": [
+        "Document de transport indiquant la quantité totale par catégorie de transport",
+        "Emballages agréés ONU, correctement marqués et étiquetés",
+        "Extincteur à poudre de 2 kg à bord (8.1.4)",
+        "Sensibilisation du personnel (8.2.3), avec conservation des attestations",
+        "Les interdictions de chargement en commun (7.5.2) et les dispositions CV restent applicables"
       ]
     },
     "category_1_note_a": {
@@ -107,7 +122,11 @@
     "_footnotes_rail": "RID 2025 (Appendix C to COTIF, Annex), table 7.5.2.1, page 1101, carries footnotes (a) to (d) in the same words and with the same UN numbers, so these permissions are the rail rule as well and not a road rule borrowed for rail. Checked against OTIF's own text; ADN is a different regime for stowage and still borrows this table under a stated basis note.",
     "footnotes": {
       "b": {
-        "life_saving_un_numbers": ["2990", "3072", "3268"]
+        "life_saving_un_numbers": [
+          "2990",
+          "3072",
+          "3268"
+        ]
       },
       "c": {
         "class1_un": "0503",
@@ -115,12 +134,31 @@
       },
       "d": {
         "_note": "The class 1 side must be a blasting explosive; UN 0083 (type C) is excluded by the footnote itself.",
-        "blasting_explosive_un_numbers": ["0081", "0082", "0084", "0241", "0331", "0332"],
-        "excluded_un_numbers": ["0083"],
+        "blasting_explosive_un_numbers": [
+          "0081",
+          "0082",
+          "0084",
+          "0241",
+          "0331",
+          "0332"
+        ],
+        "excluded_un_numbers": [
+          "0083"
+        ],
         "nitrate_un_numbers": [
-          "1942", "2067", "3375",
-          "1451", "2722", "1486", "1477", "1498",
-          "1446", "2464", "1454", "1474", "1507"
+          "1942",
+          "2067",
+          "3375",
+          "1451",
+          "2722",
+          "1486",
+          "1477",
+          "1498",
+          "1446",
+          "2464",
+          "1454",
+          "1474",
+          "1507"
         ]
       }
     },
@@ -141,36 +179,349 @@
         "RID": "rail"
       },
       "road": {
-        "group_order": ["A", "B", "C", "D", "E", "F", "G", "H", "J", "L", "N", "S"],
+        "group_order": [
+          "A",
+          "B",
+          "C",
+          "D",
+          "E",
+          "F",
+          "G",
+          "H",
+          "J",
+          "L",
+          "N",
+          "S"
+        ],
         "matrix": {
-          "A": ["X", "",  "",   "",   "",   "",  "",  "",  "",  "",  "",   ""],
-          "B": ["",  "X", "",   "a",  "",   "",  "",  "",  "",  "",  "",   "X"],
-          "C": ["",  "",  "X",  "X",  "X",  "",  "X", "",  "",  "",  "bc", "X"],
-          "D": ["",  "a", "X",  "X",  "X",  "",  "X", "",  "",  "",  "bc", "X"],
-          "E": ["",  "",  "X",  "X",  "X",  "",  "X", "",  "",  "",  "bc", "X"],
-          "F": ["",  "",  "",   "",   "",   "X", "",  "",  "",  "",  "",   "X"],
-          "G": ["",  "",  "X",  "X",  "X",  "",  "X", "",  "",  "",  "",   "X"],
-          "H": ["",  "",  "",   "",   "",   "",  "",  "X", "",  "",  "",   "X"],
-          "J": ["",  "",  "",   "",   "",   "",  "",  "",  "X", "",  "",   "X"],
-          "L": ["",  "",  "",   "",   "",   "",  "",  "",  "",  "d", "",   ""],
-          "N": ["",  "",  "bc", "bc", "bc", "",  "",  "",  "",  "",  "b",  "X"],
-          "S": ["",  "X", "X",  "X",  "X",  "X", "X", "X", "X", "",  "X",  "X"]
+          "A": [
+            "X",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            ""
+          ],
+          "B": [
+            "",
+            "X",
+            "",
+            "a",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "X"
+          ],
+          "C": [
+            "",
+            "",
+            "X",
+            "X",
+            "X",
+            "",
+            "X",
+            "",
+            "",
+            "",
+            "bc",
+            "X"
+          ],
+          "D": [
+            "",
+            "a",
+            "X",
+            "X",
+            "X",
+            "",
+            "X",
+            "",
+            "",
+            "",
+            "bc",
+            "X"
+          ],
+          "E": [
+            "",
+            "",
+            "X",
+            "X",
+            "X",
+            "",
+            "X",
+            "",
+            "",
+            "",
+            "bc",
+            "X"
+          ],
+          "F": [
+            "",
+            "",
+            "",
+            "",
+            "",
+            "X",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "X"
+          ],
+          "G": [
+            "",
+            "",
+            "X",
+            "X",
+            "X",
+            "",
+            "X",
+            "",
+            "",
+            "",
+            "",
+            "X"
+          ],
+          "H": [
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "X",
+            "",
+            "",
+            "",
+            "X"
+          ],
+          "J": [
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "X",
+            "",
+            "",
+            "X"
+          ],
+          "L": [
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "d",
+            "",
+            ""
+          ],
+          "N": [
+            "",
+            "",
+            "bc",
+            "bc",
+            "bc",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "b",
+            "X"
+          ],
+          "S": [
+            "",
+            "X",
+            "X",
+            "X",
+            "X",
+            "X",
+            "X",
+            "X",
+            "X",
+            "",
+            "X",
+            "X"
+          ]
         }
       },
       "rail": {
-        "group_order": ["B", "C", "D", "E", "F", "G", "H", "J", "L", "N", "S"],
+        "group_order": [
+          "B",
+          "C",
+          "D",
+          "E",
+          "F",
+          "G",
+          "H",
+          "J",
+          "L",
+          "N",
+          "S"
+        ],
         "matrix": {
-          "B": ["X", "",   "a",  "",   "",  "",  "",  "",  "",  "",   "X"],
-          "C": ["",  "X",  "X",  "X",  "",  "X", "",  "",  "",  "bc", "X"],
-          "D": ["a", "X",  "X",  "X",  "",  "X", "",  "",  "",  "bc", "X"],
-          "E": ["",  "X",  "X",  "X",  "",  "X", "",  "",  "",  "bc", "X"],
-          "F": ["",  "",   "",   "",   "X", "",  "",  "",  "",  "",   "X"],
-          "G": ["",  "X",  "X",  "X",  "",  "X", "",  "",  "",  "",   "X"],
-          "H": ["",  "",   "",   "",   "",  "",  "X", "",  "",  "",   "X"],
-          "J": ["",  "",   "",   "",   "",  "",  "",  "X", "",  "",   "X"],
-          "L": ["",  "",   "",   "",   "",  "",  "",  "",  "d", "",   ""],
-          "N": ["",  "bc", "bc", "bc", "",  "",  "",  "",  "",  "b",  "X"],
-          "S": ["X", "X",  "X",  "X",  "X", "X", "X", "X", "",  "X",  "X"]
+          "B": [
+            "X",
+            "",
+            "a",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "X"
+          ],
+          "C": [
+            "",
+            "X",
+            "X",
+            "X",
+            "",
+            "X",
+            "",
+            "",
+            "",
+            "bc",
+            "X"
+          ],
+          "D": [
+            "a",
+            "X",
+            "X",
+            "X",
+            "",
+            "X",
+            "",
+            "",
+            "",
+            "bc",
+            "X"
+          ],
+          "E": [
+            "",
+            "X",
+            "X",
+            "X",
+            "",
+            "X",
+            "",
+            "",
+            "",
+            "bc",
+            "X"
+          ],
+          "F": [
+            "",
+            "",
+            "",
+            "",
+            "X",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "X"
+          ],
+          "G": [
+            "",
+            "X",
+            "X",
+            "X",
+            "",
+            "X",
+            "",
+            "",
+            "",
+            "",
+            "X"
+          ],
+          "H": [
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "X",
+            "",
+            "",
+            "",
+            "X"
+          ],
+          "J": [
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "X",
+            "",
+            "",
+            "X"
+          ],
+          "L": [
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "d",
+            "",
+            ""
+          ],
+          "N": [
+            "",
+            "bc",
+            "bc",
+            "bc",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "b",
+            "X"
+          ],
+          "S": [
+            "X",
+            "X",
+            "X",
+            "X",
+            "X",
+            "X",
+            "X",
+            "X",
+            "",
+            "X",
+            "X"
+          ]
         }
       }
     },
@@ -178,67 +529,80 @@
       "class1_with_others": {
         "nl": "Colli met etiket klasse 1 (behalve 1.4S) mogen volgens ADR 7.5.2.1 niet met colli van andere klassen in één voertuig of container worden geladen. Uitzonderingen bestaan o.a. voor 1.4S, springstoffen met ammoniumnitraat (UN 1942/2067) en reddingsmiddelen (UN 2990/3072/3268).",
         "en": "Packages bearing class 1 labels (except 1.4S) must not be loaded with packages of other classes in the same vehicle or container per ADR 7.5.2.1. Exceptions exist e.g. for 1.4S, blasting explosives with ammonium nitrate (UN 1942/2067) and life-saving appliances (UN 2990/3072/3268).",
-        "de": "Versandstücke mit Gefahrzettel der Klasse 1 (außer 1.4S) dürfen nach ADR 7.5.2.1 nicht mit Versandstücken anderer Klassen in dasselbe Fahrzeug oder denselben Container geladen werden. Ausnahmen bestehen unter anderem für 1.4S, Sprengstoffe mit Ammoniumnitrat (UN 1942/2067) und Rettungsmittel (UN 2990/3072/3268)."
+        "de": "Versandstücke mit Gefahrzettel der Klasse 1 (außer 1.4S) dürfen nach ADR 7.5.2.1 nicht mit Versandstücken anderer Klassen in dasselbe Fahrzeug oder denselben Container geladen werden. Ausnahmen bestehen unter anderem für 1.4S, Sprengstoffe mit Ammoniumnitrat (UN 1942/2067) und Rettungsmittel (UN 2990/3072/3268).",
+        "fr": "Les colis portant une étiquette de la classe 1 (sauf 1.4S) ne doivent pas être chargés avec des colis d'autres classes dans le même véhicule ou conteneur, conformément au 7.5.2.1 de l'ADR. Des exceptions existent, notamment pour la division 1.4S, les explosifs de mine avec du nitrate d'ammonium (nos ONU 1942/2067) et les engins de sauvetage (nos ONU 2990/3072/3268)."
       },
       "class1_footnote_d": {
         "nl": "Toegestaan op grond van voetnoot (d) bij tabel 7.5.2.1: springstoffen (behalve UN 0083) mogen samen met ammoniumnitraat, ammoniumnitraat-emulsie/suspensie/gel en alkali- en aardalkalinitraten worden geladen. Voorwaarde: het geheel wordt als springstof van klasse 1 behandeld voor de placardering, de scheiding, de stuwage en de maximaal toegestane hoeveelheid (7.5.5.2.1).",
         "en": "Permitted under footnote (d) to table 7.5.2.1: blasting explosives (except UN 0083) may be loaded together with ammonium nitrate, ammonium nitrate emulsion/suspension/gel and alkali and alkaline earth metal nitrates. On condition that the aggregate is treated as blasting explosives of class 1 for placarding, segregation, stowage and the maximum permissible load (7.5.5.2.1).",
-        "de": "Zulässig nach Fußnote (d) zu Tabelle 7.5.2.1: Sprengstoffe (außer UN 0083) dürfen zusammen mit Ammoniumnitrat, Ammoniumnitrat-Emulsion/-Suspension/-Gel sowie Alkali- und Erdalkalinitraten geladen werden. Bedingung: die Gesamtheit wird für die Placardierung, die Trennung, die Stauung und die höchstzulässige Menge (7.5.5.2.1) als Sprengstoff der Klasse 1 behandelt."
+        "de": "Zulässig nach Fußnote (d) zu Tabelle 7.5.2.1: Sprengstoffe (außer UN 0083) dürfen zusammen mit Ammoniumnitrat, Ammoniumnitrat-Emulsion/-Suspension/-Gel sowie Alkali- und Erdalkalinitraten geladen werden. Bedingung: die Gesamtheit wird für die Placardierung, die Trennung, die Stauung und die höchstzulässige Menge (7.5.5.2.1) als Sprengstoff der Klasse 1 behandelt.",
+        "fr": "Autorisé au titre de la note de bas de tableau (d) du tableau 7.5.2.1 : les explosifs de mine (sauf le no ONU 0083) peuvent être chargés avec du nitrate d'ammonium, des émulsions, suspensions ou gels de nitrate d'ammonium et des nitrates de métaux alcalins ou alcalino-terreux. À condition que l'ensemble soit traité comme des explosifs de mine de la classe 1 pour le placardage, la séparation, l'arrimage et la quantité maximale admissible (7.5.5.2.1)."
       },
       "class1_footnote_b": {
         "nl": "Toegestaan op grond van voetnoot (b) bij tabel 7.5.2.1: goederen van klasse 1 mogen samen met reddingsmiddelen van klasse 9 (UN 2990, 3072 en 3268) worden geladen.",
         "en": "Permitted under footnote (b) to table 7.5.2.1: goods of class 1 may be loaded together with life-saving appliances of class 9 (UN 2990, 3072 and 3268).",
-        "de": "Zulässig nach Fußnote (b) zu Tabelle 7.5.2.1: Güter der Klasse 1 dürfen zusammen mit Rettungsmitteln der Klasse 9 (UN 2990, 3072 und 3268) geladen werden."
+        "de": "Zulässig nach Fußnote (b) zu Tabelle 7.5.2.1: Güter der Klasse 1 dürfen zusammen mit Rettungsmitteln der Klasse 9 (UN 2990, 3072 und 3268) geladen werden.",
+        "fr": "Autorisé au titre de la note (b) du tableau 7.5.2.1 : les marchandises de la classe 1 peuvent être chargées avec des engins de sauvetage de la classe 9 (nos ONU 2990, 3072 et 3268)."
       },
       "class1_footnote_c": {
         "nl": "Toegestaan op grond van voetnoot (c) bij tabel 7.5.2.1: pyrotechnische veiligheidsinrichtingen van 1.4G (UN 0503) mogen samen met elektrisch geactiveerde veiligheidsinrichtingen van klasse 9 (UN 3268) worden geladen.",
         "en": "Permitted under footnote (c) to table 7.5.2.1: safety devices, pyrotechnic of division 1.4, compatibility group G (UN 0503) may be loaded together with safety devices, electrically initiated of class 9 (UN 3268).",
-        "de": "Zulässig nach Fußnote (c) zu Tabelle 7.5.2.1: pyrotechnische Sicherheitseinrichtungen der Unterklasse 1.4, Verträglichkeitsgruppe G (UN 0503) dürfen zusammen mit elektrisch aktivierten Sicherheitseinrichtungen der Klasse 9 (UN 3268) geladen werden."
+        "de": "Zulässig nach Fußnote (c) zu Tabelle 7.5.2.1: pyrotechnische Sicherheitseinrichtungen der Unterklasse 1.4, Verträglichkeitsgruppe G (UN 0503) dürfen zusammen mit elektrisch aktivierten Sicherheitseinrichtungen der Klasse 9 (UN 3268) geladen werden.",
+        "fr": "Autorisé au titre de la note (c) du tableau 7.5.2.1 : les dispositifs de sécurité pyrotechniques de la division 1.4, groupe de compatibilité G (no ONU 0503) peuvent être chargés avec des dispositifs de sécurité à amorçage électrique de la classe 9 (no ONU 3268)."
       },
       "class1_compat_forbidden": {
         "nl": "Tabel 7.5.2.2 laat het vakje voor de groepen {groups} leeg: deze colli mogen niet samen in één voertuig of container worden geladen.",
         "en": "Table 7.5.2.2 leaves the cell for groups {groups} empty: these packages must not be loaded together in one vehicle or container.",
-        "de": "Tabelle 7.5.2.2 lässt das Feld für die Gruppen {groups} leer: diese Versandstücke dürfen nicht zusammen in ein Fahrzeug oder einen Container geladen werden."
+        "de": "Tabelle 7.5.2.2 lässt das Feld für die Gruppen {groups} leer: diese Versandstücke dürfen nicht zusammen in ein Fahrzeug oder einen Container geladen werden.",
+        "fr": "Le tableau 7.5.2.2 laisse vide la case des groupes {groups} : ces colis ne doivent pas être chargés ensemble dans un même véhicule ou conteneur."
       },
       "class1_compat_forbidden_rail": {
         "nl": "Tabel 7.5.2.2 van het RID laat het vakje voor de groepen {groups} leeg: deze colli mogen niet samen in één wagen of container worden geladen.",
         "en": "Table 7.5.2.2 of RID leaves the cell for groups {groups} empty: these packages must not be loaded together in one wagon or container.",
-        "de": "Tabelle 7.5.2.2 des RID lässt das Feld für die Gruppen {groups} leer: diese Versandstücke dürfen nicht zusammen in einen Wagen oder Container geladen werden."
+        "de": "Tabelle 7.5.2.2 des RID lässt das Feld für die Gruppen {groups} leer: diese Versandstücke dürfen nicht zusammen in einen Wagen oder Container geladen werden.",
+        "fr": "Le tableau 7.5.2.2 du RID laisse vide la case des groupes {groups} : ces colis ne doivent pas être chargés ensemble dans un même wagon ou conteneur."
       },
       "class1_compat_note_a": {
         "nl": "Groep B met groep D is toegestaan op voorwaarde van doeltreffende scheiding, zó dat detonatie niet van de voorwerpen van groep B kan overslaan op groep D. Dat gebeurt met gescheiden compartimenten of door één van beide in een bijzonder omhullingssysteem te plaatsen, en de bevoegde autoriteit moet de gekozen methode goedkeuren. Zonder die goedkeuring mogen ze niet samen.",
         "en": "Group B with group D is permitted provided they are effectively segregated such that there is no danger of transmission of detonation from the articles of group B to those of group D. Segregation is by separate compartments or by placing one of the two in a special containment system, and the competent authority must approve the method chosen. Without that approval they may not travel together.",
-        "de": "Gruppe B mit Gruppe D ist zulässig, sofern sie wirksam getrennt sind, so dass keine Gefahr der Detonationsübertragung von den Gegenständen der Gruppe B auf die der Gruppe D besteht. Die Trennung erfolgt durch getrennte Abteile oder dadurch, dass einer der beiden Stoffe in ein besonderes Umschließungssystem gebracht wird; die zuständige Behörde muss das gewählte Verfahren genehmigen. Ohne diese Genehmigung dürfen sie nicht zusammen befördert werden."
+        "de": "Gruppe B mit Gruppe D ist zulässig, sofern sie wirksam getrennt sind, so dass keine Gefahr der Detonationsübertragung von den Gegenständen der Gruppe B auf die der Gruppe D besteht. Die Trennung erfolgt durch getrennte Abteile oder dadurch, dass einer der beiden Stoffe in ein besonderes Umschließungssystem gebracht wird; die zuständige Behörde muss das gewählte Verfahren genehmigen. Ohne diese Genehmigung dürfen sie nicht zusammen befördert werden.",
+        "fr": "Le groupe B avec le groupe D est autorisé à condition qu'ils soient effectivement séparés de telle sorte qu'il n'y ait pas de risque de transmission de la détonation des objets du groupe B aux matières ou objets du groupe D. La séparation est réalisée au moyen de compartiments distincts ou en plaçant l'un des deux dans un système de confinement spécial, et l'autorité compétente doit approuver la méthode retenue. Sans cette approbation, ils ne peuvent pas voyager ensemble."
       },
       "class1_compat_note_b": {
         "nl": "Verschillende soorten voorwerpen van 1.6N mogen alleen samen worden vervoerd als door beproeving of analogie is aangetoond dat er geen extra gevaar van sympathische detonatie tussen de voorwerpen bestaat. Is dat niet aangetoond, dan moeten ze als 1.1 worden behandeld.",
         "en": "Different types of articles of division 1.6, compatibility group N, may be carried together only where it is proven by testing or analogy that there is no additional hazard of sympathetic detonation between the articles. Where that is not proven they are to be treated as division 1.1.",
-        "de": "Verschiedene Arten von Gegenständen der Unterklasse 1.6, Verträglichkeitsgruppe N, dürfen nur zusammen befördert werden, wenn durch Prüfung oder Analogie nachgewiesen ist, dass keine zusätzliche Gefahr der Detonationsübertragung zwischen den Gegenständen besteht. Ist das nicht nachgewiesen, sind sie als Unterklasse 1.1 zu behandeln."
+        "de": "Verschiedene Arten von Gegenständen der Unterklasse 1.6, Verträglichkeitsgruppe N, dürfen nur zusammen befördert werden, wenn durch Prüfung oder Analogie nachgewiesen ist, dass keine zusätzliche Gefahr der Detonationsübertragung zwischen den Gegenständen besteht. Ist das nicht nachgewiesen, sind sie als Unterklasse 1.1 zu behandeln.",
+        "fr": "Des objets de types différents de la division 1.6, groupe de compatibilité N, ne peuvent être transportés ensemble que s'il est prouvé, par des épreuves ou par analogie, qu'il n'existe aucun risque supplémentaire de détonation par influence entre ces objets. À défaut, ils doivent être traités comme relevant de la division 1.1."
       },
       "class1_compat_note_c": {
         "nl": "Worden voorwerpen van groep N samen met stoffen of voorwerpen van de groepen C, D of E vervoerd, dan moeten de voorwerpen van groep N worden beschouwd als hadden zij de eigenschappen van groep D.",
         "en": "Where articles of compatibility group N are carried with substances or articles of compatibility groups C, D or E, the articles of group N are to be considered as having the characteristics of compatibility group D.",
-        "de": "Werden Gegenstände der Verträglichkeitsgruppe N zusammen mit Stoffen oder Gegenständen der Verträglichkeitsgruppen C, D oder E befördert, sind die Gegenstände der Gruppe N so zu betrachten, als hätten sie die Eigenschaften der Verträglichkeitsgruppe D."
+        "de": "Werden Gegenstände der Verträglichkeitsgruppe N zusammen mit Stoffen oder Gegenständen der Verträglichkeitsgruppen C, D oder E befördert, sind die Gegenstände der Gruppe N so zu betrachten, als hätten sie die Eigenschaften der Verträglichkeitsgruppe D.",
+        "fr": "Lorsque des objets du groupe de compatibilité N sont transportés avec des matières ou objets des groupes de compatibilité C, D ou E, les objets du groupe N doivent être considérés comme présentant les caractéristiques du groupe de compatibilité D."
       },
       "class1_compat_note_d": {
         "nl": "Colli met stoffen en voorwerpen van groep L mogen alleen samen worden geladen met colli die hetzelfde soort stof of voorwerp van die groep bevatten. Verschillende soorten binnen groep L mogen dus niet samen. Zie ook CV4: groep L wordt uitsluitend als volle lading vervoerd.",
         "en": "Packages containing substances and articles of compatibility group L may only be loaded together with packages containing the same type of substance or article of that group. Different types within group L may therefore not travel together. See also CV4: group L is carried as a full load only.",
-        "de": "Versandstücke mit Stoffen und Gegenständen der Verträglichkeitsgruppe L dürfen nur mit Versandstücken zusammengeladen werden, die dieselbe Art von Stoff oder Gegenstand dieser Gruppe enthalten. Verschiedene Arten innerhalb der Gruppe L dürfen daher nicht zusammen befördert werden. Siehe auch CV4: Gruppe L wird nur als vollständige Ladung befördert."
+        "de": "Versandstücke mit Stoffen und Gegenständen der Verträglichkeitsgruppe L dürfen nur mit Versandstücken zusammengeladen werden, die dieselbe Art von Stoff oder Gegenstand dieser Gruppe enthalten. Verschiedene Arten innerhalb der Gruppe L dürfen daher nicht zusammen befördert werden. Siehe auch CV4: Gruppe L wird nur als vollständige Ladung befördert.",
+        "fr": "Les colis contenant des matières et objets du groupe de compatibilité L ne peuvent être chargés qu'avec des colis contenant le même type de matière ou d'objet de ce groupe. Des types différents au sein du groupe L ne peuvent donc pas voyager ensemble. Voir également la CV4 : le groupe L n'est transporté qu'en chargement complet."
       },
       "class1_compat_unknown_group": {
         "nl": "Van {products} is de compatibiliteitsgroep niet bekend, dus is het samenladen met de andere klasse 1-colli niet aan tabel 7.5.2.2 getoetst. Vul de classificatiecode (bijvoorbeeld 1.1D) in of toets deze combinatie zelf aan de tabel.",
         "en": "The compatibility group of {products} is not known, so loading it with the other class 1 packages has not been checked against table 7.5.2.2. Enter the classification code (for example 1.1D) or check this combination against the table yourself.",
-        "de": "Die Verträglichkeitsgruppe von {products} ist nicht bekannt, daher wurde das Zusammenladen mit den übrigen Versandstücken der Klasse 1 nicht anhand der Tabelle 7.5.2.2 geprüft. Tragen Sie den Klassifizierungscode (zum Beispiel 1.1D) ein oder prüfen Sie diese Kombination selbst an der Tabelle."
+        "de": "Die Verträglichkeitsgruppe von {products} ist nicht bekannt, daher wurde das Zusammenladen mit den übrigen Versandstücken der Klasse 1 nicht anhand der Tabelle 7.5.2.2 geprüft. Tragen Sie den Klassifizierungscode (zum Beispiel 1.1D) ein oder prüfen Sie diese Kombination selbst an der Tabelle.",
+        "fr": "Le groupe de compatibilité de {products} n'est pas connu ; le chargement en commun avec les autres colis de la classe 1 n'a donc pas été vérifié au regard du tableau 7.5.2.2. Indiquez le code de classification (par exemple 1.1D) ou vérifiez vous-même cette combinaison dans le tableau."
       },
       "class1_compat_not_in_table": {
         "nl": "Compatibiliteitsgroep {group} komt in tabel 7.5.2.2 van {regime} niet voor, dus die tabel geeft geen antwoord over {products}. Toets deze combinatie aan de tekst die voor uw traject geldt.",
         "en": "Compatibility group {group} does not appear in table 7.5.2.2 of {regime}, so that table gives no answer about {products}. Check this combination against the text that applies to your leg.",
-        "de": "Die Verträglichkeitsgruppe {group} kommt in Tabelle 7.5.2.2 des {regime} nicht vor, daher gibt diese Tabelle keine Antwort zu {products}. Prüfen Sie diese Kombination anhand des für Ihre Strecke geltenden Textes."
+        "de": "Die Verträglichkeitsgruppe {group} kommt in Tabelle 7.5.2.2 des {regime} nicht vor, daher gibt diese Tabelle keine Antwort zu {products}. Prüfen Sie diese Kombination anhand des für Ihre Strecke geltenden Textes.",
+        "fr": "Le groupe de compatibilité {group} ne figure pas dans le tableau 7.5.2.2 du {regime} ; ce tableau ne dit donc rien de {products}. Vérifiez cette combinaison dans le texte applicable à votre trajet."
       },
       "cv28_foodstuffs": {
         "nl": "CV28/7.5.4: colli met etiket 6.1 of 6.2, en klasse 9-colli met UN 2212, 2315, 2590, 3151, 3152 of 3245, mogen niet op of direct naast colli met levensmiddelen, genotmiddelen of diervoeders worden geladen.",
         "en": "CV28/7.5.4: packages bearing labels 6.1 or 6.2, and class 9 packages of UN 2212, 2315, 2590, 3151, 3152 or 3245, must not be stacked on or loaded in immediate proximity to packages containing foodstuffs, other articles of consumption or animal feeds.",
-        "de": "CV28/7.5.4: Versandstücke mit Gefahrzettel 6.1 oder 6.2 sowie Versandstücke der Klasse 9 mit UN 2212, 2315, 2590, 3151, 3152 oder 3245 dürfen nicht auf oder unmittelbar neben Versandstücken mit Lebensmitteln, Genussmitteln oder Futtermitteln geladen werden."
+        "de": "CV28/7.5.4: Versandstücke mit Gefahrzettel 6.1 oder 6.2 sowie Versandstücke der Klasse 9 mit UN 2212, 2315, 2590, 3151, 3152 oder 3245 dürfen nicht auf oder unmittelbar neben Versandstücken mit Lebensmitteln, Genussmitteln oder Futtermitteln geladen werden.",
+        "fr": "CV28/7.5.4 : les colis portant une étiquette 6.1 ou 6.2, ainsi que les colis de la classe 9 des nos ONU 2212, 2315, 2590, 3151, 3152 ou 3245, ne doivent pas être gerbés sur des colis contenant des denrées alimentaires, d'autres objets de consommation ou des aliments pour animaux, ni chargés à proximité immédiate de ceux-ci."
       }
     }
   },
@@ -246,7 +610,8 @@
     "note": {
       "nl": "IATA Table 9.3.A: divisie 1.4S en de klassen 6 en 7 zijn uitgesloten van de tabel en vereisen geen segregatie. Nevengevaren tellen mee.",
       "en": "IATA Table 9.3.A: division 1.4S and classes 6 and 7 are excluded from the table and require no segregation. Subsidiary hazards count.",
-      "de": "IATA Tabelle 9.3.A: Unterklasse 1.4S sowie die Klassen 6 und 7 sind von der Tabelle ausgenommen und erfordern keine Trennung. Nebengefahren zählen mit."
+      "de": "IATA Tabelle 9.3.A: Unterklasse 1.4S sowie die Klassen 6 und 7 sind von der Tabelle ausgenommen und erfordern keine Trennung. Nebengefahren zählen mit.",
+      "fr": "Tableau 9.3.A de l'IATA : la division 1.4S et les classes 6 et 7 sont exclues du tableau et n'exigent aucune séparation. Les risques subsidiaires sont pris en compte."
     },
     "incompatible_pairs": [
       [
@@ -284,7 +649,8 @@
     "lithium_note": {
       "nl": "UN 3090/3480 (lithiumbatterijen, los verpakt) moeten worden gescheiden van klasse 1 (behalve 1.4S), divisie 2.1, klasse 3, divisie 4.1 en divisie 5.1 (IATA DGR 9.3.2).",
       "en": "UN 3090/3480 (lithium batteries, packed alone) must be segregated from class 1 (except 1.4S), division 2.1, class 3, division 4.1 and division 5.1 (IATA DGR 9.3.2).",
-      "de": "UN 3090/3480 (Lithiumbatterien, einzeln verpackt) sind von Klasse 1 (außer 1.4S), Unterklasse 2.1, Klasse 3, Unterklasse 4.1 und Unterklasse 5.1 zu trennen (IATA DGR 9.3.2)."
+      "de": "UN 3090/3480 (Lithiumbatterien, einzeln verpackt) sind von Klasse 1 (außer 1.4S), Unterklasse 2.1, Klasse 3, Unterklasse 4.1 und Unterklasse 5.1 zu trennen (IATA DGR 9.3.2).",
+      "fr": "Les nos ONU 3090/3480 (piles au lithium emballées seules) doivent être séparés de la classe 1 (sauf 1.4S), de la division 2.1, de la classe 3, de la division 4.1 et de la division 5.1 (IATA DGR 9.3.2)."
     }
   },
   "q_value": {
@@ -292,7 +658,8 @@
     "note": {
       "nl": "IATA DGR 5.0.2.11: bij verschillende gevaarlijke stoffen in één combinatieverpakking ('all packed in one') geldt Q = n1/M1 + n2/M2 + … ≤ 1, waarbij n de netto hoeveelheid per stof is en M de maximale netto hoeveelheid per verpakking volgens de packing instruction. Q wordt naar boven afgerond op één decimaal en op de Shipper's Declaration vermeld.",
       "en": "IATA DGR 5.0.2.11: for different dangerous goods in one combination packaging ('all packed in one'), Q = n1/M1 + n2/M2 + … ≤ 1, where n is the net quantity per substance and M the maximum net quantity per package per the packing instruction. Q is rounded up to the first decimal and shown on the Shipper's Declaration.",
-      "de": "IATA DGR 5.0.2.11: Bei verschiedenen gefährlichen Gütern in einer zusammengesetzten Verpackung ('all packed in one') gilt Q = n1/M1 + n2/M2 + … ≤ 1, wobei n die Nettomenge je Stoff und M die höchste Nettomenge je Verpackung nach der Verpackungsanweisung ist. Q wird auf eine Dezimalstelle aufgerundet und auf der Shipper's Declaration angegeben."
+      "de": "IATA DGR 5.0.2.11: Bei verschiedenen gefährlichen Gütern in einer zusammengesetzten Verpackung ('all packed in one') gilt Q = n1/M1 + n2/M2 + … ≤ 1, wobei n die Nettomenge je Stoff und M die höchste Nettomenge je Verpackung nach der Verpackungsanweisung ist. Q wird auf eine Dezimalstelle aufgerundet und auf der Shipper's Declaration angegeben.",
+      "fr": "IATA DGR 5.0.2.11 : pour des marchandises dangereuses différentes réunies dans un même emballage combiné (« all packed in one »), Q = n1/M1 + n2/M2 + … ≤ 1, où n est la quantité nette par matière et M la quantité nette maximale par colis selon l'instruction d'emballage. Q est arrondi à la décimale supérieure et porté sur la déclaration de l'expéditeur."
     }
   },
   "imdg_segregation": {
@@ -644,171 +1011,200 @@
       "1": {
         "nl": "Uit de buurt van (away from) — minimaal 3 meter horizontaal gescheiden, niet in hetzelfde collo of dezelfde stapel.",
         "en": "Away from — at least 3 metres horizontal separation; not in the same package or stack.",
-        "de": "Entfernt von (away from) — mindestens 3 Meter horizontaler Abstand, nicht im selben Versandstück und nicht im selben Stapel."
+        "de": "Entfernt von (away from) — mindestens 3 Meter horizontaler Abstand, nicht im selben Versandstück und nicht im selben Stapel.",
+        "fr": "« À l'écart de » — séparation horizontale d'au moins 3 mètres ; pas dans le même colis ni dans la même pile."
       },
       "2": {
         "nl": "Gescheiden van (separated from) — in verschillende ruimen/compartimenten; aan dek minimaal 6 meter horizontaal.",
         "en": "Separated from — different holds/compartments; on deck at least 6 metres horizontally.",
-        "de": "Getrennt von (separated from) — in verschiedenen Laderäumen/Abteilungen; an Deck mindestens 6 Meter horizontal."
+        "de": "Getrennt von (separated from) — in verschiedenen Laderäumen/Abteilungen; an Deck mindestens 6 Meter horizontal.",
+        "fr": "« Séparé de » — cales ou compartiments différents ; en pontée, au moins 6 mètres horizontalement."
       },
       "3": {
         "nl": "Gescheiden door een volledig compartiment of ruim — minimaal 12 meter horizontaal aan dek.",
         "en": "Separated by a complete compartment or hold — at least 12 metres horizontally on deck.",
-        "de": "Getrennt durch eine vollständige Abteilung oder einen vollständigen Laderaum — an Deck mindestens 12 Meter horizontal."
+        "de": "Getrennt durch eine vollständige Abteilung oder einen vollständigen Laderaum — an Deck mindestens 12 Meter horizontal.",
+        "fr": "« Séparé par un compartiment ou une cale complète » — au moins 12 mètres horizontalement en pontée."
       },
       "4": {
         "nl": "In de lengterichting gescheiden door een tussenliggend volledig compartiment of ruim — minimaal 24 meter.",
         "en": "Separated longitudinally by an intervening complete compartment or hold — at least 24 metres.",
-        "de": "In Längsrichtung getrennt durch eine dazwischenliegende vollständige Abteilung oder einen vollständigen Laderaum — mindestens 24 Meter."
+        "de": "In Längsrichtung getrennt durch eine dazwischenliegende vollständige Abteilung oder einen vollständigen Laderaum — mindestens 24 Meter.",
+        "fr": "« Séparé longitudinalement par un compartiment ou une cale complète intercalaire » — au moins 24 mètres."
       },
       "X": {
         "nl": "Geen algemene scheiding voorgeschreven; de Dangerous Goods List (kolom 16b) bepaalt of er toch scheiding geldt.",
         "en": "No general segregation; the Dangerous Goods List (column 16b) determines any segregation.",
-        "de": "Keine allgemeine Trennung vorgeschrieben; die Dangerous Goods List (Spalte 16b) bestimmt, ob doch eine Trennung gilt."
+        "de": "Keine allgemeine Trennung vorgeschrieben; die Dangerous Goods List (Spalte 16b) bestimmt, ob doch eine Trennung gilt.",
+        "fr": "Pas de séparation générale ; la liste des marchandises dangereuses (colonne 16b) détermine la séparation éventuelle."
       },
       "*": {
         "nl": "Explosieven onderling: scheiding volgens de compatibiliteitsgroepentabel van IMDG 7.2.7.2.",
         "en": "Explosives with explosives: segregate per the compatibility group table in IMDG 7.2.7.2.",
-        "de": "Explosivstoffe untereinander: Trennung nach der Verträglichkeitsgruppentabelle des IMDG 7.2.7.2."
+        "de": "Explosivstoffe untereinander: Trennung nach der Verträglichkeitsgruppentabelle des IMDG 7.2.7.2.",
+        "fr": "Explosifs avec explosifs : séparer conformément au tableau des groupes de compatibilité du 7.2.7.2 de l'IMDG."
       }
     },
     "note": {
       "nl": "IMDG-code 7.2.4 (klassescheidingstabel). Deze tabel geldt op klasseniveau; scheidingsgroepen (7.2.5, o.a. zuren, alkaliën, azides) en de vermeldingen in kolom 16b van de Dangerous Goods List kunnen strengere eisen stellen. Nevengevaren tellen mee.",
       "en": "IMDG Code 7.2.4 (class segregation table). This table applies at class level; segregation groups (7.2.5, e.g. acids, alkalis, azides) and column 16b of the Dangerous Goods List may impose stricter requirements. Subsidiary hazards count.",
-      "de": "IMDG-Code 7.2.4 (Klassentrenntabelle). Diese Tabelle gilt auf Klassenebene; Trenngruppen (7.2.5, unter anderem Säuren, Laugen, Azide) und die Einträge in Spalte 16b der Dangerous Goods List können strengere Anforderungen stellen. Nebengefahren zählen mit."
+      "de": "IMDG-Code 7.2.4 (Klassentrenntabelle). Diese Tabelle gilt auf Klassenebene; Trenngruppen (7.2.5, unter anderem Säuren, Laugen, Azide) und die Einträge in Spalte 16b der Dangerous Goods List können strengere Anforderungen stellen. Nebengefahren zählen mit.",
+      "fr": "Code IMDG 7.2.4 (tableau de séparation par classe). Ce tableau s'applique au niveau de la classe ; les groupes de séparation (7.2.5, p. ex. acides, alcalis, azotures) et la colonne 16b de la liste des marchandises dangereuses peuvent imposer des exigences plus strictes. Les risques subsidiaires sont pris en compte."
     },
     "source_note": {
       "nl": "Overgenomen uit de IMDG-code, hoofdstuk 7.2, segregatietabel 7.2.4 (Amendement 40-20).",
       "en": "Taken from the IMDG Code, chapter 7.2, segregation table 7.2.4 (Amendment 40-20).",
-      "de": "Übernommen aus dem IMDG-Code, Kapitel 7.2, Trenntabelle 7.2.4 (Amendment 40-20)."
+      "de": "Übernommen aus dem IMDG-Code, Kapitel 7.2, Trenntabelle 7.2.4 (Amendment 40-20).",
+      "fr": "Issu du Code IMDG, chapitre 7.2, tableau de séparation 7.2.4 (amendement 40-20)."
     }
   },
   "imdg_segregation_groups": {
     "note": {
       "nl": "IMDG 7.2.5: stoffen met vergelijkbare chemische eigenschappen zijn ingedeeld in scheidingsgroepen. De groepscode staat in kolom 16b van de Dangerous Goods List; de vermeldingen per groep in 3.1.4.4. Bij een n.e.g.-vermelding beslist de afzender zelf of indeling in een scheidingsgroep van toepassing is en vermeldt dat in het vervoersdocument (5.4.1.5.11).",
       "en": "IMDG 7.2.5: substances with similar chemical properties are grouped into segregation groups. The group code appears in column 16b of the Dangerous Goods List; entries per group in 3.1.4.4. For an N.O.S. entry the consignor decides whether inclusion in a segregation group applies and states this in the transport document (5.4.1.5.11).",
-      "de": "IMDG 7.2.5: Stoffe mit ähnlichen chemischen Eigenschaften sind in Trenngruppen zusammengefasst. Der Gruppencode steht in Spalte 16b der Dangerous Goods List, die Einträge je Gruppe in 3.1.4.4. Bei einer N.A.G.-Eintragung entscheidet der Absender selbst, ob die Zuordnung zu einer Trenngruppe zutrifft, und gibt dies im Beförderungspapier an (5.4.1.5.11)."
+      "de": "IMDG 7.2.5: Stoffe mit ähnlichen chemischen Eigenschaften sind in Trenngruppen zusammengefasst. Der Gruppencode steht in Spalte 16b der Dangerous Goods List, die Einträge je Gruppe in 3.1.4.4. Bei einer N.A.G.-Eintragung entscheidet der Absender selbst, ob die Zuordnung zu einer Trenngruppe zutrifft, und gibt dies im Beförderungspapier an (5.4.1.5.11).",
+      "fr": "IMDG 7.2.5 : les matières présentant des propriétés chimiques voisines sont réunies en groupes de séparation. Le code du groupe figure à la colonne 16b de la liste des marchandises dangereuses ; les rubriques par groupe se trouvent au 3.1.4.4. Pour une rubrique N.S.A., l'expéditeur décide si l'appartenance à un groupe de séparation s'applique et l'indique dans le document de transport (5.4.1.5.11)."
     },
     "groups": [
       {
         "code": "SGG1",
         "nl": "zuren",
         "en": "acids",
-        "de": "Säuren"
+        "de": "Säuren",
+        "fr": "acides"
       },
       {
         "code": "SGG1a",
         "nl": "sterke zuren (in 3.1.4.4 gemarkeerd met **)",
         "en": "strong acids (marked ** in 3.1.4.4)",
-        "de": "starke Säuren (in 3.1.4.4 mit ** gekennzeichnet)"
+        "de": "starke Säuren (in 3.1.4.4 mit ** gekennzeichnet)",
+        "fr": "acides forts (marqués ** au 3.1.4.4)"
       },
       {
         "code": "SGG2",
         "nl": "ammoniumverbindingen",
         "en": "ammonium compounds",
-        "de": "Ammoniumverbindungen"
+        "de": "Ammoniumverbindungen",
+        "fr": "composés ammoniacaux"
       },
       {
         "code": "SGG3",
         "nl": "bromaten",
         "en": "bromates",
-        "de": "Bromate"
+        "de": "Bromate",
+        "fr": "bromates"
       },
       {
         "code": "SGG4",
         "nl": "chloraten",
         "en": "chlorates",
-        "de": "Chlorate"
+        "de": "Chlorate",
+        "fr": "chlorates"
       },
       {
         "code": "SGG5",
         "nl": "chlorieten",
         "en": "chlorites",
-        "de": "Chlorite"
+        "de": "Chlorite",
+        "fr": "chlorites"
       },
       {
         "code": "SGG6",
         "nl": "cyaniden",
         "en": "cyanides",
-        "de": "Cyanide"
+        "de": "Cyanide",
+        "fr": "cyanures"
       },
       {
         "code": "SGG7",
         "nl": "zware metalen en hun zouten (inclusief organometaalverbindingen)",
         "en": "heavy metals and their salts (including their organometallic compounds)",
-        "de": "Schwermetalle und ihre Salze (einschließlich ihrer metallorganischen Verbindungen)"
+        "de": "Schwermetalle und ihre Salze (einschließlich ihrer metallorganischen Verbindungen)",
+        "fr": "métaux lourds et leurs sels (y compris leurs composés organométalliques)"
       },
       {
         "code": "SGG8",
         "nl": "hypochlorieten",
         "en": "hypochlorites",
-        "de": "Hypochlorite"
+        "de": "Hypochlorite",
+        "fr": "hypochlorites"
       },
       {
         "code": "SGG9",
         "nl": "lood en loodverbindingen",
         "en": "lead and its compounds",
-        "de": "Blei und Bleiverbindungen"
+        "de": "Blei und Bleiverbindungen",
+        "fr": "plomb et ses composés"
       },
       {
         "code": "SGG10",
         "nl": "vloeibare gehalogeneerde koolwaterstoffen",
         "en": "liquid halogenated hydrocarbons",
-        "de": "flüssige halogenierte Kohlenwasserstoffe"
+        "de": "flüssige halogenierte Kohlenwasserstoffe",
+        "fr": "hydrocarbures halogénés liquides"
       },
       {
         "code": "SGG11",
         "nl": "kwik en kwikverbindingen",
         "en": "mercury and mercury compounds",
-        "de": "Quecksilber und Quecksilberverbindungen"
+        "de": "Quecksilber und Quecksilberverbindungen",
+        "fr": "mercure et composés du mercure"
       },
       {
         "code": "SGG12",
         "nl": "nitrieten en mengsels daarvan",
         "en": "nitrites and their mixtures",
-        "de": "Nitrite und ihre Mischungen"
+        "de": "Nitrite und ihre Mischungen",
+        "fr": "nitrites et leurs mélanges"
       },
       {
         "code": "SGG13",
         "nl": "perchloraten",
         "en": "perchlorates",
-        "de": "Perchlorate"
+        "de": "Perchlorate",
+        "fr": "perchlorates"
       },
       {
         "code": "SGG14",
         "nl": "permanganaten",
         "en": "permanganates",
-        "de": "Permanganate"
+        "de": "Permanganate",
+        "fr": "permanganates"
       },
       {
         "code": "SGG15",
         "nl": "metaalpoeders",
         "en": "powdered metals",
-        "de": "Metallpulver"
+        "de": "Metallpulver",
+        "fr": "métaux en poudre"
       },
       {
         "code": "SGG16",
         "nl": "peroxiden",
         "en": "peroxides",
-        "de": "Peroxide"
+        "de": "Peroxide",
+        "fr": "peroxydes"
       },
       {
         "code": "SGG17",
         "nl": "aziden",
         "en": "azides",
-        "de": "Azide"
+        "de": "Azide",
+        "fr": "azotures"
       },
       {
         "code": "SGG18",
         "nl": "alkaliën",
         "en": "alkalis",
-        "de": "Laugen"
+        "de": "Laugen",
+        "fr": "alcalis"
       }
     ],
     "class8_exception": {
       "nl": "IMDG 7.2.6.5: stoffen van klasse 8, verpakkingsgroep II of III die volgens kolom 16b van elkaar gescheiden moeten blijven als zuur of alkali, mogen tóch in dezelfde laadeenheid wanneer per verpakking niet meer dan 30 L (vloeistof) of 30 kg (vaste stof) wordt vervoerd, de stoffen niet gevaarlijk met elkaar reageren, en het vervoersdocument de verklaring van 5.4.1.5.11.3 bevat.",
       "en": "IMDG 7.2.6.5: class 8 substances of packing group II or III that would need segregation as acids or alkalis per column 16b may share a cargo transport unit where each package holds no more than 30 L (liquid) or 30 kg (solid), the substances do not react dangerously, and the transport document contains the statement of 5.4.1.5.11.3.",
-      "de": "IMDG 7.2.6.5: Stoffe der Klasse 8, Verpackungsgruppe II oder III, die nach Spalte 16b als Säure oder Lauge voneinander zu trennen wären, dürfen dennoch in dieselbe Beförderungseinheit, wenn je Verpackung nicht mehr als 30 L (flüssig) oder 30 kg (fest) befördert werden, die Stoffe nicht gefährlich miteinander reagieren und das Beförderungspapier die Erklärung nach 5.4.1.5.11.3 enthält."
+      "de": "IMDG 7.2.6.5: Stoffe der Klasse 8, Verpackungsgruppe II oder III, die nach Spalte 16b als Säure oder Lauge voneinander zu trennen wären, dürfen dennoch in dieselbe Beförderungseinheit, wenn je Verpackung nicht mehr als 30 L (flüssig) oder 30 kg (fest) befördert werden, die Stoffe nicht gefährlich miteinander reagieren und das Beförderungspapier die Erklärung nach 5.4.1.5.11.3 enthält.",
+      "fr": "IMDG 7.2.6.5 : les matières de la classe 8 des groupes d'emballage II ou III qui devraient être séparées en tant qu'acides ou alcalis selon la colonne 16b peuvent partager un même engin de transport lorsque chaque colis ne contient pas plus de 30 L (liquide) ou 30 kg (solide), que les matières ne réagissent pas dangereusement entre elles et que le document de transport porte la mention du 5.4.1.5.11.3."
     }
   },
   "imdg_class1_compatibility": {
@@ -1027,29 +1423,34 @@
     "note": {
       "nl": "IMDG 7.2.7.1.4: 'X' betekent dat goederen van deze compatibiliteitsgroepen in dezelfde ruimte, hetzelfde ruim of dezelfde gesloten laadeenheid mogen worden gestuwd. Ontbreekt de X, dan zijn afzonderlijke ruimten of gesloten laadeenheden vereist. Bij een gemengde lading van verschillende divisies geldt de gehele lading als de gevaarlijkste divisie in de volgorde 1.1, 1.5, 1.2, 1.3, 1.6, 1.4 (7.2.7.1.3).",
       "en": "IMDG 7.2.7.1.4: 'X' means goods of these compatibility groups may be stowed in the same compartment, hold or closed cargo transport unit. Without an X, separate compartments or closed cargo transport units are required. For a mixed load of different divisions the entire load counts as the most dangerous division in the order 1.1, 1.5, 1.2, 1.3, 1.6, 1.4 (7.2.7.1.3).",
-      "de": "IMDG 7.2.7.1.4: 'X' bedeutet, dass Güter dieser Verträglichkeitsgruppen in derselben Abteilung, demselben Laderaum oder derselben geschlossenen Beförderungseinheit gestaut werden dürfen. Fehlt das X, sind getrennte Abteilungen oder geschlossene Beförderungseinheiten erforderlich. Bei einer gemischten Ladung verschiedener Unterklassen gilt die gesamte Ladung als die gefährlichste Unterklasse in der Reihenfolge 1.1, 1.5, 1.2, 1.3, 1.6, 1.4 (7.2.7.1.3)."
+      "de": "IMDG 7.2.7.1.4: 'X' bedeutet, dass Güter dieser Verträglichkeitsgruppen in derselben Abteilung, demselben Laderaum oder derselben geschlossenen Beförderungseinheit gestaut werden dürfen. Fehlt das X, sind getrennte Abteilungen oder geschlossene Beförderungseinheiten erforderlich. Bei einer gemischten Ladung verschiedener Unterklassen gilt die gesamte Ladung als die gefährlichste Unterklasse in der Reihenfolge 1.1, 1.5, 1.2, 1.3, 1.6, 1.4 (7.2.7.1.3).",
+      "fr": "IMDG 7.2.7.1.4 : un « X » signifie que les marchandises de ces groupes de compatibilité peuvent être arrimées dans le même compartiment, la même cale ou le même engin de transport fermé. En l'absence de X, des compartiments distincts ou des engins de transport fermés distincts sont exigés. Pour un chargement mixte de divisions différentes, l'ensemble du chargement compte comme relevant de la division la plus dangereuse, dans l'ordre 1.1, 1.5, 1.2, 1.3, 1.6, 1.4 (7.2.7.1.3)."
     },
     "special_notes": {
       "G": {
         "nl": "Groep G (behalve vuurwerk en goederen met bijzondere stuwage) mag samen met C, D en E mits er geen explosieve stoffen in dezelfde ruimte of laadeenheid worden vervoerd (noot 1).",
         "en": "Group G (other than fireworks and goods requiring special stowage) may be stowed with C, D and E provided no explosive substances travel in the same compartment or unit (note 1).",
-        "de": "Gruppe G (außer Feuerwerkskörpern und Gütern mit besonderer Stauung) darf mit C, D und E zusammen gestaut werden, sofern in derselben Abteilung oder Einheit keine explosiven Stoffe befördert werden (Bem. 1)."
+        "de": "Gruppe G (außer Feuerwerkskörpern und Gütern mit besonderer Stauung) darf mit C, D und E zusammen gestaut werden, sofern in derselben Abteilung oder Einheit keine explosiven Stoffe befördert werden (Bem. 1).",
+        "fr": "Le groupe G (autre que les artifices de divertissement et les marchandises exigeant un arrimage particulier) peut être arrimé avec les groupes C, D et E à condition qu'aucune matière explosible ne se trouve dans le même compartiment ou engin (note 1)."
       },
       "L": {
         "nl": "Groep L: een zending van één type mag uitsluitend samen worden gestuwd met een zending van hetzelfde type binnen groep L (noot 2).",
         "en": "Group L: a consignment of one type may only be stowed with a consignment of the same type within group L (note 2).",
-        "de": "Gruppe L: Eine Sendung einer Art darf innerhalb der Gruppe L nur mit einer Sendung derselben Art zusammen gestaut werden (Bem. 2)."
+        "de": "Gruppe L: Eine Sendung einer Art darf innerhalb der Gruppe L nur mit einer Sendung derselben Art zusammen gestaut werden (Bem. 2).",
+        "fr": "Groupe L : un envoi d'un type donné ne peut être arrimé qu'avec un envoi du même type au sein du groupe L (note 2)."
       },
       "N": {
         "nl": "Groep N: samen met C, D of E wordt N behandeld als groep D; samen met S geldt de hele lading als N. Verschillende voorwerpen van divisie 1.6 groep N mogen alleen samen wanneer sympathische detonatie is uitgesloten (noten 3-5).",
         "en": "Group N: with C, D or E, N is treated as group D; with S the entire load counts as N. Different division 1.6 group N articles may only travel together where sympathetic detonation is excluded (notes 3-5).",
-        "de": "Gruppe N: zusammen mit C, D oder E wird N wie Gruppe D behandelt; zusammen mit S gilt die gesamte Ladung als N. Verschiedene Gegenstände der Unterklasse 1.6 Gruppe N dürfen nur zusammen befördert werden, wenn eine Detonationsübertragung ausgeschlossen ist (Bem. 3-5)."
+        "de": "Gruppe N: zusammen mit C, D oder E wird N wie Gruppe D behandelt; zusammen mit S gilt die gesamte Ladung als N. Verschiedene Gegenstände der Unterklasse 1.6 Gruppe N dürfen nur zusammen befördert werden, wenn eine Detonationsübertragung ausgeschlossen ist (Bem. 3-5).",
+        "fr": "Groupe N : avec les groupes C, D ou E, le groupe N est traité comme le groupe D ; avec le groupe S, l'ensemble du chargement compte comme N. Des objets différents de la division 1.6 du groupe N ne peuvent voyager ensemble que si la détonation par influence est exclue (notes 3 à 5)."
       }
     },
     "ammonium_nitrate_exception": {
       "nl": "IMDG 7.2.7.2.1: ammoniumnitraat (UN 1942), ammoniumnitraathoudende meststof (UN 2067), alkalimetaalnitraten (bijv. UN 1486) en aardalkalimetaalnitraten (bijv. UN 1454) mogen samen met springstoffen worden gestuwd — behalve met UN 0083 (EXPLOSIEF, VOOR SPRINGWERK, TYPE C) — mits het geheel als springstof van klasse 1 wordt behandeld.",
       "en": "IMDG 7.2.7.2.1: ammonium nitrate (UN 1942), ammonium nitrate based fertilizer (UN 2067), alkali metal nitrates (e.g. UN 1486) and alkaline earth metal nitrates (e.g. UN 1454) may be stowed with blasting explosives — except UN 0083 (EXPLOSIVE, BLASTING, TYPE C) — provided the aggregate is treated as class 1 blasting explosives.",
-      "de": "IMDG 7.2.7.2.1: Ammoniumnitrat (UN 1942), ammoniumnitrathaltiger Dünger (UN 2067), Alkalimetallnitrate (z. B. UN 1486) und Erdalkalimetallnitrate (z. B. UN 1454) dürfen zusammen mit Sprengstoffen gestaut werden — ausgenommen UN 0083 (SPRENGSTOFF, TYP C) —, sofern die Gesamtheit wie Sprengstoff der Klasse 1 behandelt wird."
+      "de": "IMDG 7.2.7.2.1: Ammoniumnitrat (UN 1942), ammoniumnitrathaltiger Dünger (UN 2067), Alkalimetallnitrate (z. B. UN 1486) und Erdalkalimetallnitrate (z. B. UN 1454) dürfen zusammen mit Sprengstoffen gestaut werden — ausgenommen UN 0083 (SPRENGSTOFF, TYP C) —, sofern die Gesamtheit wie Sprengstoff der Klasse 1 behandelt wird.",
+      "fr": "IMDG 7.2.7.2.1 : le nitrate d'ammonium (no ONU 1942), les engrais au nitrate d'ammonium (no ONU 2067), les nitrates de métaux alcalins (p. ex. no ONU 1486) et les nitrates de métaux alcalino-terreux (p. ex. no ONU 1454) peuvent être arrimés avec des explosifs de mine — sauf le no ONU 0083 (EXPLOSIF DE MINE DE TYPE C) — à condition que l'ensemble soit traité comme des explosifs de mine de la classe 1."
     }
   },
   "imdg_segregation_named_targets": {
@@ -1060,7 +1461,8 @@
       ],
       "nl": "tetrachloormethaan (UN 1846)",
       "en": "carbon tetrachloride (UN 1846)",
-      "de": "Tetrachlormethan (UN 1846)"
+      "de": "Tetrachlormethan (UN 1846)",
+      "fr": "tétrachlorure de carbone (no ONU 1846)"
     },
     "SG46": {
       "un": [
@@ -1069,7 +1471,8 @@
       ],
       "nl": "chloor",
       "en": "chlorine",
-      "de": "Chlor"
+      "de": "Chlor",
+      "fr": "chlore"
     },
     "SG43": {
       "un": [
@@ -1077,7 +1480,8 @@
       ],
       "nl": "broom",
       "en": "bromine",
-      "de": "Brom"
+      "de": "Brom",
+      "fr": "brome"
     },
     "SG62": {
       "un": [
@@ -1086,7 +1490,8 @@
       ],
       "nl": "zwavel",
       "en": "sulphur",
-      "de": "Schwefel"
+      "de": "Schwefel",
+      "fr": "soufre"
     },
     "SG37": {
       "un": [
@@ -1097,7 +1502,8 @@
       ],
       "nl": "ammoniak",
       "en": "ammonia",
-      "de": "Ammoniak"
+      "de": "Ammoniak",
+      "fr": "ammoniac"
     },
     "SG22": {
       "groups": [
@@ -1106,7 +1512,8 @@
       "broader": true,
       "nl": "ammoniumzouten",
       "en": "ammonium salts",
-      "de": "Ammoniumsalze"
+      "de": "Ammoniumsalze",
+      "fr": "sels d'ammonium"
     },
     "SG55": {
       "groups": [
@@ -1115,7 +1522,8 @@
       "broader": true,
       "nl": "kwikzouten",
       "en": "mercury salts",
-      "de": "Quecksilbersalze"
+      "de": "Quecksilbersalze",
+      "fr": "sels de mercure"
     },
     "SG27": {
       "classes": [
@@ -1128,7 +1536,8 @@
       "require_both": true,
       "nl": "explosieven met chloraten of perchloraten",
       "en": "explosives containing chlorates or perchlorates",
-      "de": "Explosivstoffe mit Chloraten oder Perchloraten"
+      "de": "Explosivstoffe mit Chloraten oder Perchloraten",
+      "fr": "explosifs contenant des chlorates ou des perchlorates"
     }
   },
   "imdg_segregation_cargo_requirements": {
@@ -1136,32 +1545,38 @@
     "SG23": {
       "nl": "Houd uit de buurt van dierlijke of plantaardige oliën.",
       "en": "Keep away from animal or vegetable oils.",
-      "de": "Von tierischen oder pflanzlichen Ölen entfernt halten."
+      "de": "Von tierischen oder pflanzlichen Ölen entfernt halten.",
+      "fr": "Tenir à l'écart des huiles animales ou végétales."
     },
     "SG29": {
       "nl": "Scheiding van levensmiddelen volgens IMDG 7.3.4.2.2, 7.6.3.1.2 of 7.7.3.7.",
       "en": "Segregation from foodstuffs per IMDG 7.3.4.2.2, 7.6.3.1.2 or 7.7.3.7.",
-      "de": "Trennung von Lebensmitteln nach IMDG 7.3.4.2.2, 7.6.3.1.2 oder 7.7.3.7."
+      "de": "Trennung von Lebensmitteln nach IMDG 7.3.4.2.2, 7.6.3.1.2 oder 7.7.3.7.",
+      "fr": "Séparation d'avec les denrées alimentaires selon les 7.3.4.2.2, 7.6.3.1.2 ou 7.7.3.7 de l'IMDG."
     },
     "SG41": {
       "nl": "Gescheiden houden van dierlijke of plantaardige olie.",
       "en": "Keep separated from animal or vegetable oil.",
-      "de": "Von tierischem oder pflanzlichem Öl getrennt halten."
+      "de": "Von tierischem oder pflanzlichem Öl getrennt halten.",
+      "fr": "Séparer des huiles animales ou végétales."
     },
     "SG50": {
       "nl": "Scheiding van levensmiddelen volgens IMDG 7.3.4.2.1, 7.6.3.1.2 of 7.7.3.6.",
       "en": "Segregation from foodstuffs per IMDG 7.3.4.2.1, 7.6.3.1.2 or 7.7.3.6.",
-      "de": "Trennung von Lebensmitteln nach IMDG 7.3.4.2.1, 7.6.3.1.2 oder 7.7.3.6."
+      "de": "Trennung von Lebensmitteln nach IMDG 7.3.4.2.1, 7.6.3.1.2 oder 7.7.3.6.",
+      "fr": "Séparation d'avec les denrées alimentaires selon les 7.3.4.2.1, 7.6.3.1.2 ou 7.7.3.6 de l'IMDG."
     },
     "SG53": {
       "nl": "Gescheiden houden van vloeibare organische stoffen.",
       "en": "Keep separated from liquid organic substances.",
-      "de": "Von flüssigen organischen Stoffen getrennt halten."
+      "de": "Von flüssigen organischen Stoffen getrennt halten.",
+      "fr": "Séparer des matières organiques liquides."
     },
     "SG57": {
       "nl": "Gescheiden houden van geurabsorberende lading.",
       "en": "Keep separated from odour-absorbing cargo.",
-      "de": "Von geruchsaufnehmender Ladung getrennt halten."
+      "de": "Von geruchsaufnehmender Ladung getrennt halten.",
+      "fr": "Séparer des cargaisons susceptibles d'absorber les odeurs."
     },
     "SG26": {
       "classes": [
@@ -1170,7 +1585,8 @@
       ],
       "nl": "Bij dekstuwage op een containerschip geldt bovendien een minimale afstand van twee containerplaatsen dwarsscheeps tot klasse 2.1 en 3.",
       "en": "When stowed on deck of a containership, a minimum distance of two container spaces athwartship from classes 2.1 and 3 also applies.",
-      "de": "Bei Decksstauung auf einem Containerschiff gilt zusätzlich ein Mindestabstand von zwei Containerplätzen querschiffs zu den Klassen 2.1 und 3."
+      "de": "Bei Decksstauung auf einem Containerschiff gilt zusätzlich ein Mindestabstand von zwei Containerplätzen querschiffs zu den Klassen 2.1 und 3.",
+      "fr": "En cas d'arrimage en pontée sur un porte-conteneurs, une distance minimale de deux emplacements de conteneur dans le sens transversal s'applique également vis-à-vis des classes 2.1 et 3."
     }
   },
   "imdg_segregation_exemptions": {
@@ -1229,26 +1645,43 @@
     "note": {
       "nl": "IMDG 7.2.6.3: tussen stoffen in dezelfde tabel hoeft geen scheiding te worden toegepast. Let bij tabel 7.2.6.3.4 op 7.2.6.4: de gevaarlijke reacties van 7.2.6.1.1 t/m 7.2.6.1.4 blijven gelden.",
       "en": "IMDG 7.2.6.3: no segregation needs to be applied between substances in the same table. For table 7.2.6.3.4, note 7.2.6.4: the dangerous reactions of 7.2.6.1.1 to 7.2.6.1.4 continue to apply.",
-      "de": "IMDG 7.2.6.3: Zwischen Stoffen derselben Tabelle ist keine Trennung anzuwenden. Beachten Sie bei Tabelle 7.2.6.3.4 die 7.2.6.4: die gefährlichen Reaktionen nach 7.2.6.1.1 bis 7.2.6.1.4 gelten weiterhin."
+      "de": "IMDG 7.2.6.3: Zwischen Stoffen derselben Tabelle ist keine Trennung anzuwenden. Beachten Sie bei Tabelle 7.2.6.3.4 die 7.2.6.4: die gefährlichen Reaktionen nach 7.2.6.1.1 bis 7.2.6.1.4 gelten weiterhin.",
+      "fr": "IMDG 7.2.6.3 : aucune séparation n'est à appliquer entre matières figurant dans un même tableau. Pour le tableau 7.2.6.3.4, voir le 7.2.6.4 : les réactions dangereuses des 7.2.6.1.1 à 7.2.6.1.4 restent applicables."
     }
   },
   "rid_protective_distance": {
     "_source": "RID 2025 (Appendix C to COTIF, Annex), 7.5.3 Protective distance, page 1103, quoted verbatim by scripts/read_land_regulations.py --doc rid --page 1101-1103.",
     "_no_road_equivalent": "ADR has no counterpart: 7.5.3 is about how a train is made up, and a road transport unit travels alone. This is therefore the one place where borrowing the ADR chapter would not have produced a wrong answer but no answer at all.",
     "_placards": "The trigger is the placard, not the division. Models Nos. 1, 1.5 and 1.6 are named; model No. 1.4 is not, so a wagon carrying only division 1.4 goods does not trigger the requirement.",
-    "class1_placards": ["1.1", "1.2", "1.3", "1.5", "1.6"],
-    "counterpart_placards": ["2.1", "3", "4.1", "4.2", "4.3", "5.1", "5.2"],
+    "class1_placards": [
+      "1.1",
+      "1.2",
+      "1.3",
+      "1.5",
+      "1.6"
+    ],
+    "counterpart_placards": [
+      "2.1",
+      "3",
+      "4.1",
+      "4.2",
+      "4.3",
+      "5.1",
+      "5.2"
+    ],
     "distance_m": 18,
     "rules": {
       "between_positions": {
         "nl": "RID 7.5.3: een wagen, grote container, transporttank of wegvoertuig met stoffen of voorwerpen van klasse 1 en een plakkaat volgens model 1, 1.5 of 1.6 moet in dezelfde trein van een geplakkateerde eenheid 2.1, 3, 4.1, 4.2, 4.3, 5.1 of 5.2 worden gescheiden door een beschermende afstand. Daaraan is voldaan als de ruimte tussen de bufferkop of de kopwand van de een en die van de ander ten minste 18 m bedraagt, of wordt ingenomen door twee tweeassige wagens of één wagen met vier of meer assen. CargoPilot ziet alleen deze zending; de treinsamenstelling ligt bij de vervoerder.",
         "en": "RID 7.5.3: a wagon, large container, portable tank or road vehicle holding substances or articles of class 1 and bearing a placard conforming to model No. 1, 1.5 or 1.6 must be separated on the same train from a unit placarded 2.1, 3, 4.1, 4.2, 4.3, 5.1 or 5.2 by a protective distance. That requirement is met where the space between the buffer head or end wall of the one and that of the other is at least 18 m, or is occupied by two 2-axle wagons or one wagon with four or more axles. CargoPilot sees only this consignment; how the train is made up rests with the carrier.",
-        "de": "RID 7.5.3: ein Wagen, Großcontainer, Aufsetztank oder Straßenfahrzeug mit Stoffen oder Gegenständen der Klasse 1 und einer Großzettel nach Muster 1, 1.5 oder 1.6 ist im selben Zug von einer mit 2.1, 3, 4.1, 4.2, 4.3, 5.1 oder 5.2 bezettelten Einheit durch einen Schutzabstand zu trennen. Dieser ist eingehalten, wenn der Raum zwischen dem Pufferkopf oder der Stirnwand des einen und dem des anderen mindestens 18 m beträgt oder von zwei zweiachsigen Wagen oder einem Wagen mit vier oder mehr Achsen eingenommen wird. CargoPilot sieht nur diese Sendung; die Zugbildung liegt beim Beförderer."
+        "de": "RID 7.5.3: ein Wagen, Großcontainer, Aufsetztank oder Straßenfahrzeug mit Stoffen oder Gegenständen der Klasse 1 und einer Großzettel nach Muster 1, 1.5 oder 1.6 ist im selben Zug von einer mit 2.1, 3, 4.1, 4.2, 4.3, 5.1 oder 5.2 bezettelten Einheit durch einen Schutzabstand zu trennen. Dieser ist eingehalten, wenn der Raum zwischen dem Pufferkopf oder der Stirnwand des einen und dem des anderen mindestens 18 m beträgt oder von zwei zweiachsigen Wagen oder einem Wagen mit vier oder mehr Achsen eingenommen wird. CargoPilot sieht nur diese Sendung; die Zugbildung liegt beim Beförderer.",
+        "fr": "RID 7.5.3 : un wagon, grand conteneur, citerne mobile ou véhicule routier contenant des matières ou objets de la classe 1 et portant une plaque-étiquette conforme au modèle no 1, 1.5 ou 1.6 doit être séparé, dans le même train, de toute unité placardée 2.1, 3, 4.1, 4.2, 4.3, 5.1 ou 5.2 par une distance de protection. Cette exigence est satisfaite lorsque l'espace entre la tête de tampon ou la paroi frontale de l'un et celle de l'autre est d'au moins 18 m, ou est occupé par deux wagons à deux essieux ou un wagon de quatre essieux ou plus. CargoPilot ne voit que cet envoi ; la composition du train relève du transporteur."
       },
       "train_formation": {
         "nl": "RID 7.5.3: deze zending draagt een plakkaat volgens model 1, 1.5 of 1.6. In de trein moet er een beschermende afstand blijven tot elke eenheid met een plakkaat 2.1, 3, 4.1, 4.2, 4.3, 5.1 of 5.2: ten minste 18 m, of twee tweeassige wagens dan wel één wagen met vier of meer assen ertussen. Welke wagens er verder in de trein lopen weet CargoPilot niet; geef dit door aan de vervoerder.",
         "en": "RID 7.5.3: this consignment bears a placard conforming to model No. 1, 1.5 or 1.6. In the train a protective distance must be kept to every unit placarded 2.1, 3, 4.1, 4.2, 4.3, 5.1 or 5.2: at least 18 m, or two 2-axle wagons or one wagon with four or more axles in between. CargoPilot does not know what else runs in the train; pass this on to the carrier.",
-        "de": "RID 7.5.3: diese Sendung trägt einen Großzettel nach Muster 1, 1.5 oder 1.6. Im Zug ist zu jeder mit 2.1, 3, 4.1, 4.2, 4.3, 5.1 oder 5.2 bezettelten Einheit ein Schutzabstand einzuhalten: mindestens 18 m oder zwei zweiachsige Wagen bzw. ein Wagen mit vier oder mehr Achsen dazwischen. Welche Wagen sonst im Zug laufen, weiß CargoPilot nicht; geben Sie dies an den Beförderer weiter."
+        "de": "RID 7.5.3: diese Sendung trägt einen Großzettel nach Muster 1, 1.5 oder 1.6. Im Zug ist zu jeder mit 2.1, 3, 4.1, 4.2, 4.3, 5.1 oder 5.2 bezettelten Einheit ein Schutzabstand einzuhalten: mindestens 18 m oder zwei zweiachsige Wagen bzw. ein Wagen mit vier oder mehr Achsen dazwischen. Welche Wagen sonst im Zug laufen, weiß CargoPilot nicht; geben Sie dies an den Beförderer weiter.",
+        "fr": "RID 7.5.3 : cet envoi porte une plaque-étiquette conforme au modèle no 1, 1.5 ou 1.6. Dans le train, une distance de protection doit être maintenue vis-à-vis de toute unité placardée 2.1, 3, 4.1, 4.2, 4.3, 5.1 ou 5.2 : au moins 18 m, ou deux wagons à deux essieux ou un wagon de quatre essieux ou plus intercalés. CargoPilot ignore ce qui circule par ailleurs dans le train ; transmettez cette information au transporteur."
       }
     }
   },
@@ -1428,6 +1861,14 @@
         "Die Güter werden in den Laderäumen gestaut — gilt nicht für geschlossene Container und bedeckte Fahrzeuge oder Wagen",
         "Güter verschiedener Klassen mindestens 3 m horizontal getrennt und nicht übereinander gestaut — gilt nicht für geschlossene Container und bedeckte Fahrzeuge oder Wagen",
         "Für UN 2910 und 2911 über dem A2-Wert bleiben 1.10.1 bis 1.10.3 anwendbar"
+      ],
+      "fr": [
+        "L'obligation de déclaration du 1.8.5 reste applicable",
+        "Les emballages doivent être conformes aux parties 4 et 6 de l'ADR ou du RID ; le marquage et l'étiquetage du chapitre 5.2 restent applicables",
+        "À bord : le document de transport (5.4.1.1) couvrant toutes les marchandises dangereuses transportées, ainsi que le plan d'arrimage (7.1.4.11.1)",
+        "Les marchandises sont arrimées dans les cales — non applicable aux conteneurs fermés ni aux véhicules ou wagons bâchés",
+        "Les marchandises de classes différentes sont séparées d'au moins 3 m horizontalement et ne sont pas gerbées les unes sur les autres — non applicable aux conteneurs fermés ni aux véhicules ou wagons bâchés",
+        "Pour les nos ONU 2910 et 2911 au-delà de la valeur A2, les 1.10.1 à 1.10.3 restent applicables"
       ]
     }
   }

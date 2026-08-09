@@ -33,19 +33,22 @@
         "section": "7.2.6.1",
         "nl": "Verduidelijkt: niettegenstaande 7.2.3.3 en 7.2.3.4 mogen stoffen van dezelfde klasse samen worden gestuwd zonder rekening te houden met de scheiding die door een nevengevaar wordt gevraagd, mits zij niet gevaarlijk met elkaar reageren.",
         "en": "Clarified: notwithstanding 7.2.3.3 and 7.2.3.4, substances of the same class may be stowed together without regard to segregation required by subsidiary hazards, provided they do not react dangerously with each other.",
-        "de": "Klargestellt: ungeachtet der 7.2.3.3 und 7.2.3.4 dürfen Stoffe derselben Klasse zusammen gestaut werden, ohne die durch eine Nebengefahr verlangte Trennung zu beachten, sofern sie nicht gefährlich miteinander reagieren."
+        "de": "Klargestellt: ungeachtet der 7.2.3.3 und 7.2.3.4 dürfen Stoffe derselben Klasse zusammen gestaut werden, ohne die durch eine Nebengefahr verlangte Trennung zu beachten, sofern sie nicht gefährlich miteinander reagieren.",
+        "fr": "Précisé : nonobstant les 7.2.3.3 et 7.2.3.4, les matières d'une même classe peuvent être arrimées ensemble sans tenir compte de la séparation exigée par les risques subsidiaires, à condition qu'elles ne réagissent pas dangereusement entre elles."
       },
       {
         "section": "7.6.2.7.2",
         "nl": "De bijzondere stuwagebepalingen voor klasse 4 op stukgoedschepen gelden nu ook voor UN 1361, CARBON.",
         "en": "The special stowage provisions for class 4 on general cargo ships now also cover UN 1361, CARBON.",
-        "de": "Die besonderen Stauvorschriften für Klasse 4 auf Stückgutschiffen gelten nun auch für UN 1361, CARBON."
+        "de": "Die besonderen Stauvorschriften für Klasse 4 auf Stückgutschiffen gelten nun auch für UN 1361, CARBON.",
+        "fr": "Les dispositions spéciales d'arrimage de la classe 4 à bord des navires de charge classiques visent désormais aussi le no ONU 1361, CHARBON."
       },
       {
         "section": "7.6.2.8.4",
         "nl": "Ammoniumnitraat UN 1942 en UN 2067: het openen van de luiken geldt voor de weerdek- en tussendeksluiken (indien aanwezig).",
         "en": "Ammonium nitrate UN 1942 and UN 2067: the requirement to open cargo space hatches applies to the weather deck and tween deck hatches (if any).",
-        "de": "Ammoniumnitrat UN 1942 und UN 2067: das Öffnen der Luken gilt für die Wetterdeck- und Zwischendeckluken (soweit vorhanden)."
+        "de": "Ammoniumnitrat UN 1942 und UN 2067: das Öffnen der Luken gilt für die Wetterdeck- und Zwischendeckluken (soweit vorhanden).",
+        "fr": "Nitrate d'ammonium nos ONU 1942 et 2067 : l'obligation d'ouvrir les panneaux d'écoutille des espaces à cargaison vise les écoutilles du pont découvert et, le cas échéant, celles de l'entrepont."
       }
     ]
   },
@@ -57,7 +60,8 @@
       "assigned_to_note_nl": "De bron zegt dat SW31 geldt voor 'bepaalde met water reagerende vloeistoffen', maar noemt de UN-nummers niet. De code is daarom wel gedefinieerd en niet toegewezen.",
       "assigned_to_note_en": "The source says SW31 applies to 'certain water-reactive liquids' but does not list the UN numbers. The code is therefore defined but not assigned.",
       "de": "Stauen Sie den Stoff entfernt von möglichen Zündquellen, wie in 7.4.2.3.2, 7.5.2.8 oder 7.6.2.2.2 bestimmt, je nachdem, was zutrifft.",
-      "assigned_to_note_de": "Die Quelle sagt, dass SW31 für 'bestimmte mit Wasser reagierende flüssige Stoffe' gilt, nennt die UN-Nummern aber nicht. Der Code ist daher zwar definiert, aber nicht zugeordnet."
+      "assigned_to_note_de": "Die Quelle sagt, dass SW31 für 'bestimmte mit Wasser reagierende flüssige Stoffe' gilt, nennt die UN-Nummern aber nicht. Der Code ist daher zwar definiert, aber nicht zugeordnet.",
+      "assigned_to_note_fr": "La source indique que le code SW31 s'applique à « certains liquides réagissant à l'eau » sans énumérer les numéros ONU. Le code est donc défini mais non attribué."
     }
   },
   "new_un_numbers": [
@@ -155,6 +159,10 @@
       "changes_de": [
         "Die Benennung gilt ab mehr als 20 % Butadiene statt ab 40 %.",
         "Die neue Sondervorschrift SP402 stellt klar, wann diese Eintragung anzuwenden ist."
+      ],
+      "changes_fr": [
+        "La désignation s'applique désormais à partir de plus de 20 % de butadiènes au lieu de 40 %.",
+        "La nouvelle disposition spéciale DS402 précise quand cette rubrique s'applique."
       ]
     },
     "1361": {
@@ -185,6 +193,12 @@
         "Die neue SP978 stellt Anforderungen an Herkunft, Verwitterung, Packtemperatur und Stauung in einer CTU.",
         "SW27 hinzugefügt: besondere Stauvorschriften nach 7.6.2.7.2.1.",
         "Spalte 17 spricht jetzt von 'carbon blacks of animal or vegetable origin'."
+      ],
+      "changes_fr": [
+        "Les DS223 et DS925 sont supprimées et la PP12 est retirée : plus d'exemption du Code et transport en sacs désormais interdit.",
+        "La nouvelle DS978 fixe des exigences relatives à l'origine, au vieillissement, à la température d'emballage et à l'arrimage dans un engin de transport.",
+        "Ajout du code SW27 : dispositions spéciales d'arrimage selon le 7.6.2.7.2.1.",
+        "La colonne 17 porte désormais « noirs de carbone d'origine animale ou végétale »."
       ]
     },
     "1362": {
@@ -203,6 +217,9 @@
       ],
       "changes_de": [
         "SP223 und SP925 entfallen; die neue SP979 regelt die Freistellungen für CARBON, ACTIVATED."
+      ],
+      "changes_fr": [
+        "Les DS223 et DS925 sont supprimées ; la nouvelle DS979 énonce les exemptions applicables au CHARBON ACTIF."
       ]
     },
     "1835": {
@@ -228,6 +245,10 @@
           "changes_de": [
             "Nebengefahr 6.1 hinzugefügt; die Benennung nennt jetzt den Gehalt.",
             "SP409 sieht eine Übergangsfrist vor, in der die Eintragung nach 41-22 noch verwendet werden darf."
+          ],
+          "changes_fr": [
+            "Ajout du risque subsidiaire 6.1 ; la désignation indique désormais la concentration.",
+            "La DS409 prévoit une période transitoire pendant laquelle la rubrique de l'amendement 41-22 peut encore être utilisée."
           ]
         },
         "III": {
@@ -244,6 +265,9 @@
           ],
           "changes_de": [
             "Die Benennung nennt jetzt den Gehalt."
+          ],
+          "changes_fr": [
+            "La désignation indique désormais la concentration."
           ]
         }
       }
@@ -264,6 +288,10 @@
       "changes_de": [
         "Anerkannter Meeresschadstoff: Spalte 4 erhält 'P'. Ebenso im Index für 2-Phenylpropen und alpha-Methylstyrol.",
         "SW1 hinzugefügt: vor Wärmequellen schützen."
+      ],
+      "changes_fr": [
+        "Reconnu comme polluant marin : la colonne 4 porte désormais « P ». Également à l'index pour le 2-phénylpropène et l'alpha-méthylstyrène.",
+        "Ajout du code SW1 : tenir à l'écart des sources de chaleur."
       ]
     },
     "2803": {
@@ -278,6 +306,9 @@
       ],
       "changes_de": [
         "SP365 hinzugefügt; P800 (PP41) und P803 wurden geändert, und P803 verlangt jetzt Verpackungen auf dem Leistungsniveau der Verpackungsgruppe II."
+      ],
+      "changes_fr": [
+        "Ajout de la DS365 ; les instructions P800 (PP41) et P803 sont modifiées, la P803 exigeant désormais des emballages du niveau d'épreuve du groupe d'emballage II."
       ]
     },
     "2795": {
@@ -292,6 +323,9 @@
       ],
       "changes_de": [
         "Neue SP401 zur Zuordnung von UN-Nummern zu Natrium-Ionen-Zellen und -Batterien."
+      ],
+      "changes_fr": [
+        "Nouvelle DS401 relative à l'attribution du numéro ONU aux piles et batteries sodium-ion."
       ]
     },
     "2956": {
@@ -306,6 +340,9 @@
       ],
       "changes_de": [
         "SW11 hinzugefügt: Versandstücke in einer CTU sind so zu stauen, dass eine ausreichende Luftzirkulation durch die Ladung möglich bleibt."
+      ],
+      "changes_fr": [
+        "Ajout du code SW11 : les colis placés dans un engin de transport doivent être arrimés de manière à permettre une circulation d'air suffisante dans toute la cargaison."
       ]
     },
     "3292": {
@@ -324,6 +361,10 @@
       "changes_de": [
         "Die Benennung spricht jetzt von 'metallic sodium or sodium alloy' statt von 'sodium'.",
         "Neue SP401 hinzugefügt."
+      ],
+      "changes_fr": [
+        "La désignation porte désormais « sodium métallique ou alliage de sodium » au lieu de « sodium ».",
+        "Ajout de la nouvelle DS401."
       ]
     },
     "3423": {
@@ -355,6 +396,12 @@
         "Nicht mehr als begrenzte Menge zugelassen; E5 durch E2 ersetzt.",
         "IBC nur noch mit Zustimmung der zuständigen Behörde (IBC99); die Tankanweisung T3 wird T6.",
         "SP409 sieht eine Übergangsfrist vor."
+      ],
+      "changes_fr": [
+        "Reclassé de la classe 8 vers la classe 6.1 avec risque subsidiaire 8, groupe d'emballage I.",
+        "Plus admis en quantité limitée ; le code E5 est remplacé par E2.",
+        "GRV uniquement avec l'agrément de l'autorité compétente (IBC99) ; l'instruction de citerne T3 devient T6.",
+        "La DS409 prévoit une période transitoire."
       ]
     },
     "3506": {
@@ -369,6 +416,10 @@
       "changes_de": [
         "Eigenschaften und Beobachtungen weisen jetzt darauf hin, dass Quecksilber stark korrosiv gegenüber Aluminium ist.",
         "EmS S-B: UN 3506 und UN 3554 stehen jetzt gemeinsam bei den Sonderfällen."
+      ],
+      "changes_fr": [
+        "Les propriétés et observations indiquent désormais que le mercure est fortement corrosif pour l'aluminium.",
+        "EmS S-B : les nos ONU 3506 et 3554 figurent désormais ensemble parmi les cas particuliers."
       ]
     },
     "3536": {
@@ -388,6 +439,10 @@
       "changes_de": [
         "Die Staukategorie wird D: nur an Deck und auf Fahrgastschiffen verboten.",
         "SW1 und SW2 hinzugefügt: vor Wärmequellen schützen und von Wohnräumen fernhalten."
+      ],
+      "changes_fr": [
+        "La catégorie d'arrimage devient D : en pontée seulement et interdit à bord des navires à passagers.",
+        "Ajout des codes SW1 et SW2 : tenir à l'écart des sources de chaleur et à distance des locaux d'habitation."
       ]
     },
     "3077": {
@@ -402,6 +457,9 @@
       ],
       "changes_de": [
         "Neue SP375: Freistellung für Einzel- oder zusammengesetzte Verpackungen mit höchstens 5 L oder 5 kg netto je Innenverpackung."
+      ],
+      "changes_fr": [
+        "Nouvelle DS375 : exemption pour les emballages simples ou combinés contenant au plus 5 L ou 5 kg nets par emballage intérieur."
       ]
     },
     "3082": {
@@ -416,6 +474,9 @@
       ],
       "changes_de": [
         "Neue SP375: Freistellung für Einzel- oder zusammengesetzte Verpackungen mit höchstens 5 L oder 5 kg netto je Innenverpackung."
+      ],
+      "changes_fr": [
+        "Nouvelle DS375 : exemption pour les emballages simples ou combinés contenant au plus 5 L ou 5 kg nets par emballage intérieur."
       ]
     },
     "1006": {
@@ -430,6 +491,9 @@
       ],
       "changes_de": [
         "SP406: höherer LQ-Wert bei Beförderung in Druckgefäßen von höchstens 1.000 mL."
+      ],
+      "changes_fr": [
+        "DS406 : valeur QL relevée en cas de transport dans des récipients à pression d'une capacité maximale de 1 000 mL."
       ]
     },
     "1013": {
@@ -444,6 +508,9 @@
       ],
       "changes_de": [
         "SP406: höherer LQ-Wert bei Beförderung in Druckgefäßen von höchstens 1.000 mL."
+      ],
+      "changes_fr": [
+        "DS406 : valeur QL relevée en cas de transport dans des récipients à pression d'une capacité maximale de 1 000 mL."
       ]
     },
     "1046": {
@@ -458,6 +525,9 @@
       ],
       "changes_de": [
         "SP406: höherer LQ-Wert bei Beförderung in Druckgefäßen von höchstens 1.000 mL."
+      ],
+      "changes_fr": [
+        "DS406 : valeur QL relevée en cas de transport dans des récipients à pression d'une capacité maximale de 1 000 mL."
       ]
     },
     "1066": {
@@ -472,6 +542,9 @@
       ],
       "changes_de": [
         "SP406: höherer LQ-Wert bei Beförderung in Druckgefäßen von höchstens 1.000 mL."
+      ],
+      "changes_fr": [
+        "DS406 : valeur QL relevée en cas de transport dans des récipients à pression d'une capacité maximale de 1 000 mL."
       ]
     },
     "1391": {
@@ -483,6 +556,9 @@
       ],
       "changes_de": [
         "Jetzt in Tanks zugelassen: T13 mit den besonderen Tankvorschriften TP2, TP7 und der neuen TP42 (keine Cäsium- oder Rubidiumdispersionen)."
+      ],
+      "changes_fr": [
+        "Désormais admis en citerne : T13 avec les dispositions spéciales de citerne TP2, TP7 et la nouvelle TP42 (pas de dispersions de césium ni de rubidium)."
       ]
     },
     "3482": {
@@ -494,6 +570,9 @@
       ],
       "changes_de": [
         "Jetzt in Tanks zugelassen: T13 mit den besonderen Tankvorschriften TP2, TP7 und der neuen TP42."
+      ],
+      "changes_fr": [
+        "Désormais admis en citerne : T13 avec les dispositions spéciales de citerne TP2, TP7 et la nouvelle TP42."
       ]
     },
     "2028": {
@@ -506,6 +585,9 @@
       ],
       "changes_de": [
         "Die Verpackungsgruppe entfällt (Gegenständen wird keine Verpackungsgruppe zugeordnet, 2.0.1.3)."
+      ],
+      "changes_fr": [
+        "Le groupe d'emballage est supprimé (aucun groupe d'emballage n'est attribué aux objets, 2.0.1.3)."
       ]
     },
     "3165": {
@@ -518,6 +600,9 @@
       ],
       "changes_de": [
         "Die Verpackungsgruppe entfällt (Gegenständen wird keine Verpackungsgruppe zugeordnet, 2.0.1.3)."
+      ],
+      "changes_fr": [
+        "Le groupe d'emballage est supprimé (aucun groupe d'emballage n'est attribué aux objets, 2.0.1.3)."
       ]
     },
     "0331": {
@@ -529,6 +614,9 @@
       ],
       "changes_de": [
         "Die Tankvorschrift TP1 entfällt."
+      ],
+      "changes_fr": [
+        "La disposition de citerne TP1 est supprimée."
       ]
     },
     "1204": {
@@ -543,6 +631,9 @@
       ],
       "changes_de": [
         "SP28 hinzugefügt: mögliche Beförderung als Klasse 4.1, mit einem neuen Schlusssatz für den Fall, dass der Gehalt des Phlegmatisierungsmittels nicht angegeben ist."
+      ],
+      "changes_fr": [
+        "Ajout de la DS28 : transport possible en classe 4.1, avec une nouvelle phrase finale pour le cas où la teneur en diluant n'est pas indiquée."
       ]
     },
     "2059": {
@@ -557,6 +648,9 @@
       ],
       "changes_de": [
         "SP28 hinzugefügt."
+      ],
+      "changes_fr": [
+        "Ajout de la DS28."
       ]
     },
     "2555": {
@@ -571,6 +665,9 @@
       ],
       "changes_de": [
         "SP28 hinzugefügt."
+      ],
+      "changes_fr": [
+        "Ajout de la DS28."
       ]
     },
     "2556": {
@@ -585,6 +682,9 @@
       ],
       "changes_de": [
         "SP28 hinzugefügt."
+      ],
+      "changes_fr": [
+        "Ajout de la DS28."
       ]
     },
     "2907": {
@@ -599,6 +699,9 @@
       ],
       "changes_de": [
         "SP28 hinzugefügt."
+      ],
+      "changes_fr": [
+        "Ajout de la DS28."
       ]
     },
     "3064": {
@@ -613,6 +716,9 @@
       ],
       "changes_de": [
         "SP28 hinzugefügt."
+      ],
+      "changes_fr": [
+        "Ajout de la DS28."
       ]
     },
     "3319": {
@@ -627,6 +733,9 @@
       ],
       "changes_de": [
         "SP28 hinzugefügt."
+      ],
+      "changes_fr": [
+        "Ajout de la DS28."
       ]
     },
     "3343": {
@@ -641,6 +750,9 @@
       ],
       "changes_de": [
         "SP28 hinzugefügt."
+      ],
+      "changes_fr": [
+        "Ajout de la DS28."
       ]
     },
     "3344": {
@@ -655,6 +767,9 @@
       ],
       "changes_de": [
         "SP28 hinzugefügt."
+      ],
+      "changes_fr": [
+        "Ajout de la DS28."
       ]
     },
     "3357": {
@@ -669,6 +784,9 @@
       ],
       "changes_de": [
         "SP28 hinzugefügt."
+      ],
+      "changes_fr": [
+        "Ajout de la DS28."
       ]
     },
     "3537": {
@@ -683,6 +801,9 @@
       ],
       "changes_de": [
         "SP310 hinzugefügt: der Gegenstand darf Zellen oder Batterien enthalten."
+      ],
+      "changes_fr": [
+        "Ajout de la DS310 : l'objet peut contenir des piles ou des batteries."
       ]
     },
     "3538": {
@@ -697,6 +818,9 @@
       ],
       "changes_de": [
         "SP310 hinzugefügt: der Gegenstand darf Zellen oder Batterien enthalten."
+      ],
+      "changes_fr": [
+        "Ajout de la DS310 : l'objet peut contenir des piles ou des batteries."
       ]
     },
     "3540": {
@@ -711,6 +835,9 @@
       ],
       "changes_de": [
         "SP310 hinzugefügt: der Gegenstand darf Zellen oder Batterien enthalten."
+      ],
+      "changes_fr": [
+        "Ajout de la DS310 : l'objet peut contenir des piles ou des batteries."
       ]
     },
     "3541": {
@@ -725,6 +852,9 @@
       ],
       "changes_de": [
         "SP310 hinzugefügt: der Gegenstand darf Zellen oder Batterien enthalten."
+      ],
+      "changes_fr": [
+        "Ajout de la DS310 : l'objet peut contenir des piles ou des batteries."
       ]
     },
     "3546": {
@@ -739,6 +869,9 @@
       ],
       "changes_de": [
         "SP310 hinzugefügt: der Gegenstand darf Zellen oder Batterien enthalten."
+      ],
+      "changes_fr": [
+        "Ajout de la DS310 : l'objet peut contenir des piles ou des batteries."
       ]
     },
     "3547": {
@@ -753,6 +886,9 @@
       ],
       "changes_de": [
         "SP310 hinzugefügt: der Gegenstand darf Zellen oder Batterien enthalten."
+      ],
+      "changes_fr": [
+        "Ajout de la DS310 : l'objet peut contenir des piles ou des batteries."
       ]
     },
     "3548": {
@@ -767,6 +903,9 @@
       ],
       "changes_de": [
         "SP310 hinzugefügt: der Gegenstand darf Zellen oder Batterien enthalten."
+      ],
+      "changes_fr": [
+        "Ajout de la DS310 : l'objet peut contenir des piles ou des batteries."
       ]
     },
     "3104": {
@@ -778,6 +917,9 @@
       ],
       "changes_de": [
         "Di-(2,4-dichlorbenzoyl)peroxid, höchstens 52 % als Paste mit Silikonöl, fällt jetzt unter UN 3104 statt unter UN 3106, Verpackungsmethode OP5."
+      ],
+      "changes_fr": [
+        "Le peroxyde de di-(2,4-dichlorobenzoyle), à 52 % au plus en pâte avec de l'huile de silicone, est désormais classé sous le no ONU 3104 au lieu du no ONU 3106, méthode d'emballage OP5."
       ]
     },
     "3106": {
@@ -789,6 +931,9 @@
       ],
       "changes_de": [
         "Di-(2,4-dichlorbenzoyl)peroxid, höchstens 52 % als Paste mit Silikonöl, wurde nach UN 3104 verschoben."
+      ],
+      "changes_fr": [
+        "Le peroxyde de di-(2,4-dichlorobenzoyle), à 52 % au plus en pâte avec de l'huile de silicone, est transféré au no ONU 3104."
       ]
     }
   },
@@ -803,7 +948,8 @@
         "material_temperature_c",
         "ambient_temperature_c"
       ],
-      "de": "UN 1361: Das Beförderungspapier muss zusätzlich das Herstellungsdatum, das Verpackungsdatum, die mittlere Temperatur des Materials am Tag des Verpackens (°C) und die Umgebungstemperatur an diesem Tag (°C) angeben."
+      "de": "UN 1361: Das Beförderungspapier muss zusätzlich das Herstellungsdatum, das Verpackungsdatum, die mittlere Temperatur des Materials am Tag des Verpackens (°C) und die Umgebungstemperatur an diesem Tag (°C) angeben.",
+      "fr": "No ONU 1361 : le document de transport doit en outre indiquer la date de production, la date d'emballage, la température moyenne de la matière le jour de l'emballage (°C) et la température ambiante ce même jour (°C)."
     }
   },
   "general_document_requirements": [
@@ -821,13 +967,15 @@
         "964",
         "979"
       ],
-      "de": "Eine Bescheinigung, mit der ein Stoff nach einer Sondervorschrift des Codes freigestellt ist, muss zusammen mit den Ladungsangaben nach SOLAS Regel VI/2 vorgelegt werden."
+      "de": "Eine Bescheinigung, mit der ein Stoff nach einer Sondervorschrift des Codes freigestellt ist, muss zusammen mit den Ladungsangaben nach SOLAS Regel VI/2 vorgelegt werden.",
+      "fr": "Le certificat exemptant une matière au titre d'une disposition spéciale du Code doit être présenté avec les renseignements sur la cargaison exigés par la règle VI/2 de la Convention SOLAS."
     },
     {
       "section": "5.4.3.1",
       "nl": "Wordt in plaats van een lijst of manifest een gedetailleerd stuwageplan gebruikt, dan moeten daarop ook de nevengevaren staan.",
       "en": "Where a detailed stowage plan is used instead of a special list or manifest, the subsidiary hazards must be shown on it as well.",
-      "de": "Wird anstelle einer Liste oder eines Manifests ein detaillierter Stauplan verwendet, so müssen darauf auch die Nebengefahren angegeben sein."
+      "de": "Wird anstelle einer Liste oder eines Manifests ein detaillierter Stauplan verwendet, so müssen darauf auch die Nebengefahren angegeben sein.",
+      "fr": "Lorsqu'un plan d'arrimage détaillé est utilisé au lieu d'une liste spéciale ou d'un manifeste, les risques subsidiaires doivent également y figurer."
     }
   ],
   "ems_additions": {
@@ -901,6 +1049,12 @@
       "Der vollständige Wortlaut der neuen Sondervorschriften SP375 und SP400 bis SP409, SP977 bis SP979 steht nicht in der Quelle; nur ihr Sinngehalt.",
       "Für UN 3090, 3091, 3480 und 3481 meldet die Quelle geänderte Eigenschaften und Beobachtungen, ohne sie anzugeben.",
       "Die Bau- und Prüfvorschriften des Teils 6 berühren diese Ausfüllhilfe nicht."
+    ],
+    "items_fr": [
+      "Les instructions d'emballage et de citerne (codes P, IBC, LP et T) ne sont pas vérifiées matière par matière ; leurs modifications n'apparaissent que sous forme de note sur les numéros ONU concernés.",
+      "Le texte intégral des nouvelles dispositions spéciales DS375 et DS400 à DS409, DS977 à DS979 ne figure pas dans la source ; seule leur teneur y est donnée.",
+      "Pour les nos ONU 3090, 3091, 3480 et 3481, la source signale des propriétés et observations modifiées sans les reproduire.",
+      "Les dispositions de construction et d'épreuve de la partie 6 sont sans effet sur cette aide à la saisie."
     ]
   }
 }

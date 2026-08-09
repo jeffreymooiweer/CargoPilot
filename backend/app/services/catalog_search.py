@@ -17,40 +17,40 @@ _SYNONYMS_PATH = Path(__file__).resolve().parents[1] / "config" / "search_synony
 # De suggestie die de gebruiker aanklikt wordt de omschrijving op zijn
 # document; die hoort dus in de taal te staan waarin hij werkt.
 PRODUCT_LABELS = {
-    "angle_profile": {"nl": "hoekprofiel", "en": "angle profile", "de": "Winkelprofil"},
-    "square_tube": {"nl": "kokerprofiel", "en": "square tube", "de": "Quadratrohr"},
-    "round_tube": {"nl": "buis", "en": "pipe", "de": "Rohr"},
-    "round_bar": {"nl": "ronde staf", "en": "round bar", "de": "Rundstab"},
-    "plate": {"nl": "plaat", "en": "plate", "de": "Blech"},
-    "beam": {"nl": "balk", "en": "beam", "de": "Träger"},
-    "standard_profile": {"nl": "staalprofiel", "en": "steel profile", "de": "Stahlprofil"},
-    "concrete_slab": {"nl": "betonplaat", "en": "concrete slab", "de": "Betonplatte"},
-    "plywood": {"nl": "multiplex", "en": "plywood", "de": "Sperrholz"},
-    "pvc_pipe": {"nl": "pvc buis", "en": "pvc pipe", "de": "PVC-Rohr"},
-    "plastic_sheet": {"nl": "kunststof plaat", "en": "plastic sheet", "de": "Kunststoffplatte"},
+    "angle_profile": {"nl": "hoekprofiel", "en": "angle profile", "de": "Winkelprofil", "fr": 'cornière'},
+    "square_tube": {"nl": "kokerprofiel", "en": "square tube", "de": "Quadratrohr", "fr": 'tube carré'},
+    "round_tube": {"nl": "buis", "en": "pipe", "de": "Rohr", "fr": 'tube'},
+    "round_bar": {"nl": "ronde staf", "en": "round bar", "de": "Rundstab", "fr": 'barre ronde'},
+    "plate": {"nl": "plaat", "en": "plate", "de": "Blech", "fr": 'tôle'},
+    "beam": {"nl": "balk", "en": "beam", "de": "Träger", "fr": 'poutre'},
+    "standard_profile": {"nl": "staalprofiel", "en": "steel profile", "de": "Stahlprofil", "fr": 'profilé en acier'},
+    "concrete_slab": {"nl": "betonplaat", "en": "concrete slab", "de": "Betonplatte", "fr": 'dalle de béton'},
+    "plywood": {"nl": "multiplex", "en": "plywood", "de": "Sperrholz", "fr": 'contreplaqué'},
+    "pvc_pipe": {"nl": "pvc buis", "en": "pvc pipe", "de": "PVC-Rohr", "fr": 'tube en pvc'},
+    "plastic_sheet": {"nl": "kunststof plaat", "en": "plastic sheet", "de": "Kunststoffplatte", "fr": 'plaque plastique'},
 }
 
 # Terugval voor materialen die de database niet als label kent.
 MATERIAL_LABELS = {
-    "steel": {"nl": "staal", "en": "steel", "de": "Stahl"},
-    "stainless_steel": {"nl": "rvs", "en": "stainless steel", "de": "Edelstahl"},
-    "aluminium": {"nl": "aluminium", "en": "aluminium", "de": "Aluminium"},
-    "copper": {"nl": "koper", "en": "copper", "de": "Kupfer"},
-    "brass": {"nl": "messing", "en": "brass", "de": "Messing"},
-    "concrete": {"nl": "beton", "en": "concrete", "de": "Beton"},
+    "steel": {"nl": "staal", "en": "steel", "de": "Stahl", "fr": 'acier'},
+    "stainless_steel": {"nl": "rvs", "en": "stainless steel", "de": "Edelstahl", "fr": 'acier inoxydable'},
+    "aluminium": {"nl": "aluminium", "en": "aluminium", "de": "Aluminium", "fr": 'aluminium'},
+    "copper": {"nl": "koper", "en": "copper", "de": "Kupfer", "fr": 'cuivre'},
+    "brass": {"nl": "messing", "en": "brass", "de": "Messing", "fr": 'laiton'},
+    "concrete": {"nl": "beton", "en": "concrete", "de": "Beton", "fr": 'béton'},
     "reinforced_concrete": {"nl": "gewapend beton", "en": "reinforced concrete",
-                            "de": "Stahlbeton"},
-    "spruce": {"nl": "hout", "en": "wood", "de": "Holz"},
-    "hardwood": {"nl": "hardhout", "en": "hardwood", "de": "Laubholz"},
-    "plywood": {"nl": "multiplex", "en": "plywood", "de": "Sperrholz"},
-    "pvc": {"nl": "pvc", "en": "pvc", "de": "PVC"},
-    "pe": {"nl": "pe", "en": "pe", "de": "PE"},
-    "pp": {"nl": "pp", "en": "pp", "de": "PP"},
-    "pom": {"nl": "pom", "en": "pom", "de": "POM"},
-    "nylon": {"nl": "nylon", "en": "nylon", "de": "Nylon"},
-    "acrylic": {"nl": "plexiglas", "en": "acrylic", "de": "Acrylglas"},
-    "sand": {"nl": "zand", "en": "sand", "de": "Sand"},
-    "gravel": {"nl": "grind", "en": "gravel", "de": "Kies"},
+                            "de": "Stahlbeton", "fr": 'béton armé'},
+    "spruce": {"nl": "hout", "en": "wood", "de": "Holz", "fr": 'bois'},
+    "hardwood": {"nl": "hardhout", "en": "hardwood", "de": "Laubholz", "fr": 'bois feuillu'},
+    "plywood": {"nl": "multiplex", "en": "plywood", "de": "Sperrholz", "fr": 'contreplaqué'},
+    "pvc": {"nl": "pvc", "en": "pvc", "de": "PVC", "fr": 'pvc'},
+    "pe": {"nl": "pe", "en": "pe", "de": "PE", "fr": 'pe'},
+    "pp": {"nl": "pp", "en": "pp", "de": "PP", "fr": 'pp'},
+    "pom": {"nl": "pom", "en": "pom", "de": "POM", "fr": 'pom'},
+    "nylon": {"nl": "nylon", "en": "nylon", "de": "Nylon", "fr": 'nylon'},
+    "acrylic": {"nl": "plexiglas", "en": "acrylic", "de": "Acrylglas", "fr": 'acrylique'},
+    "sand": {"nl": "zand", "en": "sand", "de": "Sand", "fr": 'sable'},
+    "gravel": {"nl": "grind", "en": "gravel", "de": "Kies", "fr": 'gravier'},
 }
 
 
@@ -472,14 +472,14 @@ def _template_suggestions(
     product_name = product_label(product_type, language)
     suffix = _dimension_suffix(query)
     dim_hint = suffix or pick(
-        {"nl": "bijv. 80x80x8x6000", "en": "e.g. 80x80x8x6000", "de": "z. B. 80x80x8x6000"},
+        {"nl": "bijv. 80x80x8x6000", "en": "e.g. 80x80x8x6000", "de": "z. B. 80x80x8x6000", "fr": 'p. ex. 80x80x8x6000'},
         language,
     )
     add_dims = pick(
-        {"nl": "Voeg afmetingen toe", "en": "Add dimensions", "de": "Abmessungen ergänzen"},
+        {"nl": "Voeg afmetingen toe", "en": "Add dimensions", "de": "Abmessungen ergänzen", "fr": 'Ajouter les dimensions'},
         language,
     )
-    dims_label = pick({"nl": "Afmetingen", "en": "Dimensions", "de": "Abmessungen"}, language)
+    dims_label = pick({"nl": "Afmetingen", "en": "Dimensions", "de": "Abmessungen", "fr": 'Dimensions'}, language)
 
     if materials:
         for material in materials:

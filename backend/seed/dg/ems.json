@@ -6,61 +6,71 @@
       "phonetic": "Alfa",
       "nl": "Algemeen brandschema",
       "en": "General fire schedule",
-      "de": "Allgemeines Brandschema"
+      "de": "Allgemeines Brandschema",
+      "fr": "Schéma général d'incendie"
     },
     "F-B": {
       "phonetic": "Bravo",
       "nl": "Explosieve stoffen en voorwerpen",
       "en": "Explosive substances and articles",
-      "de": "Explosive Stoffe und Gegenstände"
+      "de": "Explosive Stoffe und Gegenstände",
+      "fr": "Matières et objets explosibles"
     },
     "F-C": {
       "phonetic": "Charlie",
       "nl": "Niet-brandbare gassen",
       "en": "Non-flammable gases",
-      "de": "Nicht entzündbare Gase"
+      "de": "Nicht entzündbare Gase",
+      "fr": "Gaz non inflammables"
     },
     "F-D": {
       "phonetic": "Delta",
       "nl": "Brandbare gassen",
       "en": "Flammable gases",
-      "de": "Entzündbare Gase"
+      "de": "Entzündbare Gase",
+      "fr": "Gaz inflammables"
     },
     "F-E": {
       "phonetic": "Echo",
       "nl": "Brandbare vloeistoffen die niet met water reageren",
       "en": "Non-water-reactive flammable liquids",
-      "de": "Nicht wasserreaktive entzündbare flüssige Stoffe"
+      "de": "Nicht wasserreaktive entzündbare flüssige Stoffe",
+      "fr": "Liquides inflammables ne réagissant pas à l'eau"
     },
     "F-F": {
       "phonetic": "Foxtrot",
       "nl": "Temperatuurgeregelde zelfontledende stoffen en organische peroxiden",
       "en": "Temperature-controlled self-reactives and organic peroxides",
-      "de": "Temperaturkontrollierte selbstzersetzliche Stoffe und organische Peroxide"
+      "de": "Temperaturkontrollierte selbstzersetzliche Stoffe und organische Peroxide",
+      "fr": "Matières autoréactives et peroxydes organiques avec régulation de température"
     },
     "F-G": {
       "phonetic": "Golf",
       "nl": "Met water reagerende stoffen",
       "en": "Water-reactive substances",
-      "de": "Mit Wasser reagierende Stoffe"
+      "de": "Mit Wasser reagierende Stoffe",
+      "fr": "Matières réagissant à l'eau"
     },
     "F-H": {
       "phonetic": "Hotel",
       "nl": "Oxiderende stoffen met explosiepotentieel",
       "en": "Oxidizing substances with explosive potential",
-      "de": "Oxidierende Stoffe mit Explosionspotenzial"
+      "de": "Oxidierende Stoffe mit Explosionspotenzial",
+      "fr": "Matières comburantes présentant un risque d'explosion"
     },
     "F-I": {
       "phonetic": "India",
       "nl": "Radioactieve stoffen",
       "en": "Radioactive material",
-      "de": "Radioaktive Stoffe"
+      "de": "Radioaktive Stoffe",
+      "fr": "Matières radioactives"
     },
     "F-J": {
       "phonetic": "Juliet",
       "nl": "Niet-temperatuurgeregelde zelfontledende stoffen en organische peroxiden",
       "en": "Non-temperature-controlled self-reactives and organic peroxides",
-      "de": "Nicht temperaturkontrollierte selbstzersetzliche Stoffe und organische Peroxide"
+      "de": "Nicht temperaturkontrollierte selbstzersetzliche Stoffe und organische Peroxide",
+      "fr": "Matières autoréactives et peroxydes organiques sans régulation de température"
     }
   },
   "spillage_schedules": {
@@ -68,157 +78,183 @@
       "phonetic": "Alfa",
       "nl": "Giftige stoffen",
       "en": "Toxic substances",
-      "de": "Giftige Stoffe"
+      "de": "Giftige Stoffe",
+      "fr": "Matières toxiques"
     },
     "S-B": {
       "phonetic": "Bravo",
       "nl": "Bijtende stoffen",
       "en": "Corrosive substances",
-      "de": "Ätzende Stoffe"
+      "de": "Ätzende Stoffe",
+      "fr": "Matières corrosives"
     },
     "S-C": {
       "phonetic": "Charlie",
       "nl": "Brandbare, bijtende vloeistoffen",
       "en": "Flammable, corrosive liquids",
-      "de": "Entzündbare, ätzende flüssige Stoffe"
+      "de": "Entzündbare, ätzende flüssige Stoffe",
+      "fr": "Liquides inflammables et corrosifs"
     },
     "S-D": {
       "phonetic": "Delta",
       "nl": "Brandbare vloeistoffen",
       "en": "Flammable liquids",
-      "de": "Entzündbare flüssige Stoffe"
+      "de": "Entzündbare flüssige Stoffe",
+      "fr": "Liquides inflammables"
     },
     "S-E": {
       "phonetic": "Echo",
       "nl": "Brandbare vloeistoffen die op water drijven",
       "en": "Flammable liquids, floating on water",
-      "de": "Entzündbare flüssige Stoffe, die auf Wasser schwimmen"
+      "de": "Entzündbare flüssige Stoffe, die auf Wasser schwimmen",
+      "fr": "Liquides inflammables surnageant sur l'eau"
     },
     "S-F": {
       "phonetic": "Foxtrot",
       "nl": "In water oplosbare mariene verontreinigende stoffen",
       "en": "Water-soluble marine pollutants",
-      "de": "Wasserlösliche Meeresschadstoffe"
+      "de": "Wasserlösliche Meeresschadstoffe",
+      "fr": "Polluants marins solubles dans l'eau"
     },
     "S-G": {
       "phonetic": "Golf",
       "nl": "Brandbare vaste stoffen en zelfontledende stoffen",
       "en": "Flammable solids and self-reactive substances",
-      "de": "Entzündbare feste Stoffe und selbstzersetzliche Stoffe"
+      "de": "Entzündbare feste Stoffe und selbstzersetzliche Stoffe",
+      "fr": "Matières solides inflammables et matières autoréactives"
     },
     "S-H": {
       "phonetic": "Hotel",
       "nl": "Brandbare vaste stoffen (gesmolten materiaal)",
       "en": "Flammable solids (molten material)",
-      "de": "Entzündbare feste Stoffe (geschmolzenes Material)"
+      "de": "Entzündbare feste Stoffe (geschmolzenes Material)",
+      "fr": "Matières solides inflammables (matière fondue)"
     },
     "S-I": {
       "phonetic": "India",
       "nl": "Brandbare vaste stoffen (herverpakken mogelijk)",
       "en": "Flammable solids (repacking possible)",
-      "de": "Entzündbare feste Stoffe (Umpacken möglich)"
+      "de": "Entzündbare feste Stoffe (Umpacken möglich)",
+      "fr": "Matières solides inflammables (remballage possible)"
     },
     "S-J": {
       "phonetic": "Juliet",
       "nl": "Bevochtigde explosieven en bepaalde zelfverhittende stoffen",
       "en": "Wetted explosives and certain self-heating substances",
-      "de": "Angefeuchtete Explosivstoffe und bestimmte selbsterhitzungsfähige Stoffe"
+      "de": "Angefeuchtete Explosivstoffe und bestimmte selbsterhitzungsfähige Stoffe",
+      "fr": "Explosifs mouillés et certaines matières auto-échauffantes"
     },
     "S-K": {
       "phonetic": "Kilo",
       "nl": "Temperatuurgeregelde zelfontledende stoffen",
       "en": "Temperature-controlled self-reactive substances",
-      "de": "Temperaturkontrollierte selbstzersetzliche Stoffe"
+      "de": "Temperaturkontrollierte selbstzersetzliche Stoffe",
+      "fr": "Matières autoréactives avec régulation de température"
     },
     "S-L": {
       "phonetic": "Lima",
       "nl": "Voor zelfontbranding vatbare, met water reagerende stoffen",
       "en": "Spontaneously combustible, water-reactive substances",
-      "de": "Selbstentzündliche, mit Wasser reagierende Stoffe"
+      "de": "Selbstentzündliche, mit Wasser reagierende Stoffe",
+      "fr": "Matières spontanément inflammables réagissant à l'eau"
     },
     "S-M": {
       "phonetic": "Mike",
       "nl": "Gevaar voor zelfontbranding",
       "en": "Hazard of spontaneous ignition",
-      "de": "Gefahr der Selbstentzündung"
+      "de": "Gefahr der Selbstentzündung",
+      "fr": "Risque d'inflammation spontanée"
     },
     "S-N": {
       "phonetic": "November",
       "nl": "Stoffen die heftig met water reageren",
       "en": "Substances reacting vigorously with water",
-      "de": "Stoffe, die heftig mit Wasser reagieren"
+      "de": "Stoffe, die heftig mit Wasser reagieren",
+      "fr": "Matières réagissant vivement avec l'eau"
     },
     "S-O": {
       "phonetic": "Oscar",
       "nl": "Stoffen die gevaarlijk zijn bij vocht (niet-verzamelbare voorwerpen)",
       "en": "Substances dangerous when wet (non-collectable articles)",
-      "de": "Stoffe, die in Berührung mit Wasser gefährlich sind (nicht aufnehmbare Gegenstände)"
+      "de": "Stoffe, die in Berührung mit Wasser gefährlich sind (nicht aufnehmbare Gegenstände)",
+      "fr": "Matières dangereuses au contact de l'eau (objets non récupérables)"
     },
     "S-P": {
       "phonetic": "Papa",
       "nl": "Stoffen die gevaarlijk zijn bij vocht (verzamelbare voorwerpen)",
       "en": "Substances dangerous when wet (collectable articles)",
-      "de": "Stoffe, die in Berührung mit Wasser gefährlich sind (aufnehmbare Gegenstände)"
+      "de": "Stoffe, die in Berührung mit Wasser gefährlich sind (aufnehmbare Gegenstände)",
+      "fr": "Matières dangereuses au contact de l'eau (objets récupérables)"
     },
     "S-Q": {
       "phonetic": "Quebec",
       "nl": "Oxiderende stoffen",
       "en": "Oxidizing substances",
-      "de": "Oxidierende Stoffe"
+      "de": "Oxidierende Stoffe",
+      "fr": "Matières comburantes"
     },
     "S-R": {
       "phonetic": "Romeo",
       "nl": "Organische peroxiden",
       "en": "Organic peroxides",
-      "de": "Organische Peroxide"
+      "de": "Organische Peroxide",
+      "fr": "Peroxydes organiques"
     },
     "S-S": {
       "phonetic": "Sierra",
       "nl": "Radioactieve stoffen",
       "en": "Radioactive material",
-      "de": "Radioaktive Stoffe"
+      "de": "Radioaktive Stoffe",
+      "fr": "Matières radioactives"
     },
     "S-T": {
       "phonetic": "Tango",
       "nl": "Gevaarlijke goederen met biologisch gevaar",
       "en": "Dangerous goods with biohazard",
-      "de": "Gefährliche Güter mit biologischer Gefahr"
+      "de": "Gefährliche Güter mit biologischer Gefahr",
+      "fr": "Marchandises dangereuses présentant un risque biologique"
     },
     "S-U": {
       "phonetic": "Uniform",
       "nl": "Gassen (brandbaar, giftig of bijtend)",
       "en": "Gases (flammable, toxic or corrosive)",
-      "de": "Gase (entzündbar, giftig oder ätzend)"
+      "de": "Gase (entzündbar, giftig oder ätzend)",
+      "fr": "Gaz (inflammables, toxiques ou corrosifs)"
     },
     "S-V": {
       "phonetic": "Victor",
       "nl": "Gassen (niet-brandbaar, niet-giftig)",
       "en": "Gases (non-flammable, non-toxic)",
-      "de": "Gase (nicht entzündbar, nicht giftig)"
+      "de": "Gase (nicht entzündbar, nicht giftig)",
+      "fr": "Gaz (non inflammables, non toxiques)"
     },
     "S-W": {
       "phonetic": "Whisky",
       "nl": "Oxiderende gassen",
       "en": "Oxidizing gases",
-      "de": "Oxidierende Gase"
+      "de": "Oxidierende Gase",
+      "fr": "Gaz comburants"
     },
     "S-X": {
       "phonetic": "X-Ray",
       "nl": "Explosieve voorwerpen",
       "en": "Explosive items and articles",
-      "de": "Explosive Gegenstände"
+      "de": "Explosive Gegenstände",
+      "fr": "Objets et articles explosibles"
     },
     "S-Y": {
       "phonetic": "Yankee",
       "nl": "Explosieve chemicaliën",
       "en": "Explosive chemicals",
-      "de": "Explosive Chemikalien"
+      "de": "Explosive Chemikalien",
+      "fr": "Produits chimiques explosibles"
     },
     "S-Z": {
       "phonetic": "Zulu",
       "nl": "Giftige explosieven",
       "en": "Toxic explosives",
-      "de": "Giftige Explosivstoffe"
+      "de": "Giftige Explosivstoffe",
+      "fr": "Explosifs toxiques"
     }
   },
   "entries": {

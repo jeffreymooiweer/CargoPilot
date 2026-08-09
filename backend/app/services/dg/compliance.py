@@ -125,8 +125,7 @@ BASIS_NOTE = {
           "against the text that applies to your leg.",
     "de": "Mit den Tabellen des ADR berechnet. {other} hat einen eigenen "
           "{section}, den CargoPilot nicht enthält. Nehmen Sie das Ergebnis als "
-          "Anhaltspunkt und prüfen Sie es an dem für Ihre Strecke geltenden Text.",
-}
+          "Anhaltspunkt und prüfen Sie es an dem für Ihre Strecke geltenden Text.", "fr": "Calculé avec les tableaux de l'ADR. Le {other} possède son propre {section}, dont CargoPilot ne dispose pas. Prenez ce résultat à titre indicatif et vérifiez-le dans le texte applicable à votre trajet."}
 
 # For 1.1.3.6 the hedge above is no longer the truth, and saying less than we
 # know is its own kind of wrong. RID 1.1.3.6.3 sets out the same five transport
@@ -147,8 +146,7 @@ RID_POINTS_NOTE = {
           "Beförderungskategorien, dieselben Faktoren (50, 3 und 1) und "
           "denselben berechneten Wert von 1000 vor wie das ADR. Der Unterschied "
           "liegt in der Einheit: das RID rechnet je Wagen oder Großcontainer, "
-          "das ADR je Beförderungseinheit.",
-}
+          "das ADR je Beförderungseinheit.", "fr": "Les 1.1.3.6.3 et 1.1.3.6.4 du RID prescrivent les mêmes catégories de transport, les mêmes facteurs (50, 3 et 1) et la même valeur calculée de 1000 que l'ADR. La différence tient à l'unité : le RID compte par wagon ou grand conteneur, l'ADR par unité de transport."}
 
 # ADN does not have a points system at all. Its 1.1.3.6.1 exempts a consignment
 # in packages when the gross mass of everything stays under 3000 kg and no class
@@ -167,8 +165,7 @@ ADN_POINTS_NOTE = {
     "de": "Hinweis: das ADN kennt keine Punkteberechnung. ADN 1.1.3.6.1 stellt "
           "anhand der Gesamtbruttomasse (höchstens 3000 kg) und einer eigenen "
           "Grenze je Klasse frei. Diese Punkte gelten für die Straßenstrecke; "
-          "das ADN-Ergebnis wird im Panel gesondert ausgewiesen.",
-}
+          "das ADN-Ergebnis wird im Panel gesondert ausgewiesen.", "fr": "Attention : l'ADN ne connaît pas de calcul de points. Le 1.1.3.6.1 de l'ADN exempte sur la masse brute totale (3 000 kg au plus) et sur une limite propre à chaque classe. Ces points valent pour le trajet routier ; le résultat ADN est présenté séparément dans le panneau."}
 
 
 def basis_note(profiles: list[str] | None, section: str, language: str) -> str | None:
@@ -424,8 +421,7 @@ def check_adn_exemption(
                       "Punkten: die Summe bleibt unter 3000 kg und keine Klasse "
                       "überschreitet ihre eigene Grenze. Beförderung in Tanks ist "
                       "nie freigestellt. Die Bedingungen nach 1.1.3.6.2 gelten "
-                      "weiter.",
-            },
+                      "weiter.", "fr": "L'ADN exempte sur la masse brute et non sur des points : le total reste inférieur à 3 000 kg et aucune classe ne dépasse sa propre limite. Le transport en citerne n'est jamais exempté. Les conditions du 1.1.3.6.2 restent applicables."},
             lang,
         ),
     }
@@ -931,39 +927,39 @@ _SGG_CONFLICTS: list[tuple[str, str, dict[str, str]]] = [
     ("SGG1", "SGG18", {
         "nl": "zuren en alkaliën",
         "en": "acids and alkalis",
-        "de": "Säuren und Laugen"}),
+        "de": "Säuren und Laugen", "fr": 'acides et alcalis'}),
     ("SGG1", "SGG6", {
         "nl": "zuren en cyaniden (ontwikkeling van blauwzuur)",
         "en": "acids and cyanides (release of hydrogen cyanide)",
-        "de": "Säuren und Cyanide (Freisetzung von Blausäure)"}),
+        "de": "Säuren und Cyanide (Freisetzung von Blausäure)", "fr": "acides et cyanures (dégagement d'acide cyanhydrique)"}),
     ("SGG1", "SGG5", {
         "nl": "zuren en chlorieten (ontwikkeling van chloordioxide)",
         "en": "acids and chlorites (release of chlorine dioxide)",
-        "de": "Säuren und Chlorite (Freisetzung von Chlordioxid)"}),
+        "de": "Säuren und Chlorite (Freisetzung von Chlordioxid)", "fr": 'acides et chlorites (dégagement de dioxyde de chlore)'}),
     ("SGG1", "SGG8", {
         "nl": "zuren en hypochlorieten (ontwikkeling van chloorgas)",
         "en": "acids and hypochlorites (release of chlorine gas)",
-        "de": "Säuren und Hypochlorite (Freisetzung von Chlorgas)"}),
+        "de": "Säuren und Hypochlorite (Freisetzung von Chlorgas)", "fr": 'acides et hypochlorites (dégagement de chlore gazeux)'}),
     ("SGG1", "SGG12", {
         "nl": "zuren en nitrieten (ontwikkeling van nitreuze dampen)",
         "en": "acids and nitrites (release of nitrous fumes)",
-        "de": "Säuren und Nitrite (Freisetzung nitroser Gase)"}),
+        "de": "Säuren und Nitrite (Freisetzung nitroser Gase)", "fr": 'acides et nitrites (dégagement de vapeurs nitreuses)'}),
     ("SGG1", "SGG17", {
         "nl": "zuren en aziden (vorming van explosief waterstofazide)",
         "en": "acids and azides (formation of explosive hydrazoic acid)",
-        "de": "Säuren und Azide (Bildung von explosiver Stickstoffwasserstoffsäure)"}),
+        "de": "Säuren und Azide (Bildung von explosiver Stickstoffwasserstoffsäure)", "fr": "acides et azotures (formation d'acide hydrazoïque explosible)"}),
     ("SGG1", "SGG14", {
         "nl": "zuren en permanganaten",
         "en": "acids and permanganates",
-        "de": "Säuren und Permanganate"}),
+        "de": "Säuren und Permanganate", "fr": 'acides et permanganates'}),
     ("SGG1", "SGG15", {
         "nl": "zuren en metaalpoeders (ontwikkeling van waterstof)",
         "en": "acids and powdered metals (release of hydrogen)",
-        "de": "Säuren und Metallpulver (Freisetzung von Wasserstoff)"}),
+        "de": "Säuren und Metallpulver (Freisetzung von Wasserstoff)", "fr": "acides et métaux en poudre (dégagement d'hydrogène)"}),
     ("SGG16", "SGG1", {
         "nl": "peroxiden en zuren",
         "en": "peroxides and acids",
-        "de": "Peroxide und Säuren"}),
+        "de": "Peroxide und Säuren", "fr": 'peroxydes et acides'}),
 ]
 
 
@@ -1010,8 +1006,7 @@ def check_imdg_segregation_groups(
                                   "per substance.",
                             "de": "Trenngruppen {groups}: Spalte 16b der Dangerous Goods List "
                                   "schreibt hier eine Trennung vor. Prüfen Sie den Eintrag je "
-                                  "Stoff.",
-                        },
+                                  "Stoff.", "fr": 'Groupes de séparation {groups} : la colonne 16b de la liste des marchandises dangereuses prescrit ici une séparation. Vérifiez la rubrique de chaque matière.'},
                         lang,
                     ).format(groups=pick(names, lang)),
                     "products": f"{label_a}  ×  {label_b}",
@@ -1026,24 +1021,20 @@ _ACTION_TEXT = {
     "away_from": {
         "nl": "uit de buurt van",
         "en": "away from",
-        "de": "entfernt von",
-    },
+        "de": "entfernt von", "fr": "à l'écart de"},
     "separated_from": {
         "nl": "gescheiden van",
         "en": "separated from",
-        "de": "getrennt von",
-    },
+        "de": "getrennt von", "fr": 'séparé de'},
     "separated_by_compartment": {
         "nl": "gescheiden door een volledig compartiment of ruim van",
         "en": "separated by a complete compartment or hold from",
-        "de": "durch eine vollständige Abteilung oder einen vollständigen Laderaum getrennt von",
-    },
+        "de": "durch eine vollständige Abteilung oder einen vollständigen Laderaum getrennt von", "fr": 'séparé par un compartiment ou une cale complète de'},
     "separated_longitudinally": {
         "nl": "in de lengterichting gescheiden door een tussenliggend compartiment of ruim van",
         "en": "separated longitudinally by an intervening complete compartment or hold from",
         "de": "in Längsrichtung durch eine dazwischenliegende vollständige Abteilung oder "
-              "einen vollständigen Laderaum getrennt von",
-    },
+              "einen vollständigen Laderaum getrennt von", "fr": 'séparé longitudinalement par un compartiment ou une cale complète intercalaire de'},
 }
 
 # Dezelfde vier scheidingscodes als in de tabel van 7.2.4, zodat een SG-code en
@@ -1186,8 +1177,7 @@ def check_imdg_segregation_provisions(
                                 "en": " Matched on the segregation group, which is broader "
                                       "than the wording; verify.",
                                 "de": " Über die Trenngruppe zugeordnet, die weiter reicht als "
-                                      "der Wortlaut; bitte prüfen.",
-                            },
+                                      "der Wortlaut; bitte prüfen.", "fr": ' Correspondance établie sur le groupe de séparation, plus large que le libellé ; à vérifier.'},
                             lang,
                         )
                     warnings.append({
@@ -1230,7 +1220,7 @@ def check_imdg_segregation_provisions(
                 # "SGG1" zegt niets; "SGG1 (zuren)" wel.
                 if hit_class:
                     what = pick(
-                        {"nl": "klasse {c}", "en": "class {c}", "de": "Klasse {c}"}, lang
+                        {"nl": "klasse {c}", "en": "class {c}", "de": "Klasse {c}", "fr": 'classe {c}'}, lang
                     ).format(c=hit_class)
                 else:
                     what = f"{hit_group} ({segregation_group_label(hit_group, lang)})"
@@ -1241,8 +1231,7 @@ def check_imdg_segregation_provisions(
                         {
                             "nl": "Stuw {action} {what}. {wording}",
                             "en": "Stow {action} {what}. {wording}",
-                            "de": "Stauen Sie {action} {what}. {wording}",
-                        },
+                            "de": "Stauen Sie {action} {what}. {wording}", "fr": 'Arrimer {action} {what}. {wording}'},
                         lang,
                     ).format(action=action, what=what, wording=_wording(code, rules)),
                     "products": f"{source['label']}  \u00d7  {other['label']}",
@@ -1299,8 +1288,7 @@ def apply_column_16b_precedence(
                     "en": " Note 7.2.3.1: {rules} in column 16b takes precedence over this "
                           "(segregation code {code} instead of {was}).",
                     "de": " Beachten Sie 7.2.3.1: {rules} in Spalte 16b geht dem vor "
-                          "(Trennkennzahl {code} statt {was}).",
-                },
+                          "(Trennkennzahl {code} statt {was}).", "fr": ' Note 7.2.3.1 : {rules} à la colonne 16b prime sur ce résultat (code de séparation {code} au lieu de {was}).'},
                 lang,
             ).format(rules=", ".join(rules), code=strictest_code, was=finding["code"])
         for finding in governing:
@@ -1312,8 +1300,7 @@ def apply_column_16b_precedence(
                     "en": " Per 7.2.3.1 this column 16b provision takes precedence over the "
                           "class segregation table.",
                     "de": " Diese Bestimmung aus Spalte 16b geht nach 7.2.3.1 der "
-                          "Klassentrenntabelle vor.",
-                },
+                          "Klassentrenntabelle vor.", "fr": ' En vertu du 7.2.3.1, cette disposition de la colonne 16b prime sur le tableau de séparation par classe.'},
                 lang,
             )
             if strictest_code >= 3:
@@ -1364,8 +1351,7 @@ def check_imdg_segregation_exemptions(
                             "en": " Note 7.2.6.4: the dangerous reactions of 7.2.6.1.1 to "
                                   "7.2.6.1.4 continue to apply.",
                             "de": " Beachten Sie 7.2.6.4: die gefährlichen Reaktionen nach "
-                                  "7.2.6.1.1 bis 7.2.6.1.4 gelten weiterhin.",
-                        },
+                                  "7.2.6.1.1 bis 7.2.6.1.4 gelten weiterhin.", "fr": ' Note 7.2.6.4 : les réactions dangereuses des 7.2.6.1.1 à 7.2.6.1.4 restent applicables.'},
                         lang,
                     )
                 findings.append({
@@ -1378,8 +1364,7 @@ def check_imdg_segregation_exemptions(
                             "en": "Both substances appear in table {name}: no segregation "
                                   "needs to be applied between them.{extra}",
                             "de": "Beide Stoffe stehen in Tabelle {name}: zwischen ihnen ist "
-                                  "keine Trennung anzuwenden.{extra}",
-                        },
+                                  "keine Trennung anzuwenden.{extra}", "fr": "Les deux matières figurent au tableau {name} : aucune séparation n'est à appliquer entre elles.{extra}"},
                         lang,
                     ).format(name=name, extra=extra),
                     "products": f"{label_a}  \u00d7  {label_b}",
@@ -1444,8 +1429,7 @@ def append_class8_pair_exception(
                           "untereinander nicht getrennt werden, sofern sie nicht "
                           "gefährlich miteinander reagieren und das Beförderungspapier "
                           "die Erklärung nach 5.4.1.5.11.3 trägt. Der Trennhinweis oben "
-                          "bleibt bestehen; die Beurteilung liegt beim Versender.",
-                },
+                          "bleibt bestehen; die Beurteilung liegt beim Versender.", "fr": "Exception possible : les matières de la classe 8 des groupes d'emballage II ou III en colis d'au plus 30 L ou 30 kg n'ont pas à être séparées entre elles, à condition qu'elles ne réagissent pas dangereusement entre elles et que le document de transport porte la mention du 5.4.1.5.11.3. La constatation de séparation ci-dessus reste valable ; l'appréciation appartient au chargeur."},
                 lang,
             ),
             "products": "  \u00d7  ".join(pair),
@@ -1499,8 +1483,7 @@ def check_imdg_amendment_42_24(
                     {
                         "nl": "classificatie",
                         "en": "classification",
-                        "de": "Klassifizierung",
-                    },
+                        "de": "Klassifizierung", "fr": 'classification'},
                     lang,
                 ),
                 "severity": "warning",
@@ -1518,8 +1501,7 @@ def check_imdg_amendment_42_24(
                               "Die App berechnet die Trennung anhand der Klassifizierung nach "
                               "ADR Tabelle A und passt sie nicht selbsttätig an; prüfen Sie "
                               "das Ergebnis gegen den Eintrag in der Dangerous Goods List von "
-                              "42-24.",
-                    },
+                              "42-24.", "fr": "La classification de cette matière a changé dans l'amendement 42-24. L'application calcule la séparation sur la classification du tableau A de l'ADR et ne l'ajuste pas automatiquement ; vérifiez le résultat au regard de la rubrique de la liste des marchandises dangereuses 42-24."},
                     lang,
                 ),
                 "products": label,
@@ -1577,8 +1559,7 @@ def check_air_forbidden(entries: list[dict[str, Any]], language: str = "nl") -> 
                           "Passagier- wie Frachtflugzeugen bis auf wenige Ausnahmen "
                           "verboten. Eine Beförderung ist nur mit einer Ausnahme oder "
                           "vorheriger Genehmigung der betroffenen Behörden möglich "
-                          "(A1/A2).",
-                },
+                          "(A1/A2).", "fr": "La division 2.3 (gaz toxiques) est interdite au transport aérien, tant sur aéronef de passagers que sur aéronef cargo, à de rares exceptions près. Le transport n'est possible que sous dérogation ou accord préalable des autorités concernées (A1/A2)."},
                 lang,
             ),
             "products": _product_label(entry, product, index),
@@ -1633,8 +1614,7 @@ def check_q_value(entries: list[dict[str, Any]], language: str = "nl") -> list[d
                                   "packed in one applies, enter them.",
                             "de": "Kein Q für diese Position berechnet: sie enthält "
                                   "mehrere Stoffe, aber n und M wurden nicht angegeben. "
-                                  "Falls All packed in one zutrifft, geben Sie sie an.",
-                        },
+                                  "Falls All packed in one zutrifft, geben Sie sie an.", "fr": "Aucune valeur Q calculée pour cette position : elle contient plusieurs matières mais n et M n'ont pas été saisis. Si le « tout compris dans un seul emballage » s'applique, indiquez-les."},
                         lang,
                     ),
                 })
@@ -1682,8 +1662,7 @@ def check_q_value(entries: list[dict[str, Any]], language: str = "nl") -> list[d
                     {
                         "nl": "Q kan niet worden bepaald: ",
                         "en": "Q cannot be determined: ",
-                        "de": "Q kann nicht bestimmt werden: ",
-                    },
+                        "de": "Q kann nicht bestimmt werden: ", "fr": 'Q ne peut pas être déterminé : '},
                     lang,
                 ) + "; ".join(invalid),
             })
@@ -1729,6 +1708,12 @@ _Q_STATUS_MESSAGE = {
         "incomplete": "Die Q-Prüfung ist unvollständig: Geben Sie für jeden beteiligten Stoff n und M größer als null ein.",
         "exceeded": "Der berechnete Q-Wert ist größer als 1.",
         "not_checked": "Keine Q-Prüfung durchgeführt. Falls All packed in one zutrifft, geben Sie je Stoff die Nettomenge n und die höchstzulässige Menge M ein.",
+    },
+    "fr": {
+        "checked": "Le contrôle Q a été effectué pour les données « all packed in one » saisies.",
+        "incomplete": "Le contrôle Q est incomplet : indiquez pour chaque matière participante un n et un M supérieurs à zéro.",
+        "exceeded": "La valeur Q calculée est supérieure à 1.",
+        "not_checked": "Aucun contrôle Q effectué. Si le « all packed in one » s'applique, indiquez pour chaque matière la quantité nette n et la quantité maximale admissible M.",
     },
 }
 
@@ -1806,32 +1791,28 @@ _LQ_MESSAGES = {
     "no_data": {
         "nl": "Geen LQ-waarde (kolom 7a) beschikbaar voor deze stof; niet getoetst.",
         "en": "No LQ value (column 7a) available for this substance; not assessed.",
-        "de": "Kein LQ-Wert (Spalte 7a) für diesen Stoff verfügbar; nicht geprüft.",
-    },
+        "de": "Kein LQ-Wert (Spalte 7a) für diesen Stoff verfügbar; nicht geprüft.", "fr": 'Aucune valeur QL (colonne 7a) disponible pour cette matière ; non évaluée.'},
     "special_provision": {
         "nl": "Kolom 7a verwijst naar een bijzondere bepaling ({raw}); die tekst staat "
               "niet in CargoPilot. Raadpleeg hoofdstuk 3.3.",
         "en": "Column 7a refers to a special provision ({raw}); that text is not held "
               "by CargoPilot. Consult chapter 3.3.",
         "de": "Spalte 7a verweist auf eine Sondervorschrift ({raw}); dieser Text ist "
-              "nicht in CargoPilot enthalten. Ziehen Sie Kapitel 3.3 heran.",
-    },
+              "nicht in CargoPilot enthalten. Ziehen Sie Kapitel 3.3 heran.", "fr": 'La colonne 7a renvoie à une disposition spéciale ({raw}) dont CargoPilot ne dispose pas. Consultez le chapitre 3.3.'},
     "not_permitted": {
         "nl": "Kolom 7a is '0': vervoer als gelimiteerde hoeveelheid (3.4) is voor "
               "deze stof niet toegestaan.",
         "en": "Column 7a is '0': carriage as limited quantity (3.4) is not permitted "
               "for this substance.",
         "de": "Spalte 7a ist '0': Die Beförderung als begrenzte Menge (3.4) ist für "
-              "diesen Stoff nicht zugelassen.",
-    },
+              "diesen Stoff nicht zugelassen.", "fr": "La colonne 7a porte « 0 » : le transport en quantité limitée (3.4) n'est pas autorisé pour cette matière."},
     "missing_inner": {
         "nl": "LQ-grens {limit}: niet getoetst. Vul de netto hoeveelheid per "
               "binnenverpakking in, met eenheid (bijv. '500 g' of '0,5 L').",
         "en": "LQ limit {limit}: not assessed. Enter the net quantity per inner "
               "packaging, with a unit (e.g. '500 g' or '0.5 L').",
         "de": "LQ-Grenze {limit}: nicht geprüft. Geben Sie die Nettomenge je "
-              "Innenverpackung mit Einheit an (z. B. '500 g' oder '0,5 L').",
-    },
+              "Innenverpackung mit Einheit an (z. B. '500 g' oder '0,5 L').", "fr": 'Limite QL {limit} : non évaluée. Indiquez la quantité nette par emballage intérieur, avec son unité (p. ex. « 500 g » ou « 0,5 L »).'},
     "unit_mismatch": {
         "nl": "De eenheid van de binnenverpakking ({inner}) past niet bij de "
               "LQ-grens ({limit}): massa en volume zijn niet uitwisselbaar. "
@@ -1840,8 +1821,7 @@ _LQ_MESSAGES = {
               "({limit}): mass and volume are not interchangeable. Check the input.",
         "de": "Die Einheit der Innenverpackung ({inner}) passt nicht zur LQ-Grenze "
               "({limit}): Masse und Volumen sind nicht austauschbar. Prüfen Sie die "
-              "Eingabe.",
-    },
+              "Eingabe.", "fr": "L'unité de l'emballage intérieur ({inner}) ne correspond pas à celle de la limite QL ({limit}) : masse et volume ne sont pas interchangeables. Vérifiez la saisie."},
     "inner_exceeded": {
         "nl": "De netto hoeveelheid per binnenverpakking ({inner}) is groter dan de "
               "LQ-grens van {limit}. Deze regel kan niet als gelimiteerde hoeveelheid "
@@ -1851,16 +1831,14 @@ _LQ_MESSAGES = {
               "remains fully regulated.",
         "de": "Die Nettomenge je Innenverpackung ({inner}) überschreitet die LQ-Grenze "
               "von {limit}. Diese Zeile kann nicht als begrenzte Menge (3.4) befördert "
-              "werden und unterliegt weiterhin allen Vorschriften.",
-    },
+              "werden und unterliegt weiterhin allen Vorschriften.", "fr": 'La quantité nette par emballage intérieur ({inner}) dépasse la limite QL de {limit}. Cette ligne ne peut pas voyager en quantité limitée (3.4) et reste intégralement soumise à la réglementation.'},
     "missing_gross": {
         "nl": "Binnenverpakking ({inner}) ≤ LQ-grens {limit}. Vul de bruto massa per "
               "collo in om ook de grens van 30 kg (3.4.2) te toetsen.",
         "en": "Inner packaging ({inner}) ≤ LQ limit {limit}. Enter the gross mass per "
               "package to also assess the 30 kg limit (3.4.2).",
         "de": "Innenverpackung ({inner}) ≤ LQ-Grenze {limit}. Geben Sie die Bruttomasse "
-              "je Versandstück an, um auch die 30-kg-Grenze (3.4.2) zu prüfen.",
-    },
+              "je Versandstück an, um auch die 30-kg-Grenze (3.4.2) zu prüfen.", "fr": 'Emballage intérieur ({inner}) ≤ limite QL {limit}. Indiquez la masse brute par colis pour évaluer également la limite de 30 kg (3.4.2).'},
     "gross_exceeded": {
         "nl": "Binnenverpakking ({inner}) ≤ LQ-grens {limit}, maar de bruto massa per "
               "collo ({gross} kg) is groter dan de 30 kg van 3.4.2. Deze regel kan zo "
@@ -1870,8 +1848,7 @@ _LQ_MESSAGES = {
               "cannot travel as a limited quantity.",
         "de": "Innenverpackung ({inner}) ≤ LQ-Grenze {limit}, aber die Bruttomasse je "
               "Versandstück ({gross} kg) überschreitet die 30 kg nach 3.4.2. So "
-              "verpackt kann diese Zeile nicht als begrenzte Menge befördert werden.",
-    },
+              "verpackt kann diese Zeile nicht als begrenzte Menge befördert werden.", "fr": 'Emballage intérieur ({inner}) ≤ limite QL {limit}, mais la masse brute par colis ({gross} kg) dépasse les 30 kg du 3.4.2. Emballée ainsi, cette ligne ne peut pas voyager en quantité limitée.'},
     "within_limits": {
         "nl": "Binnen de grenzen van 3.4: {inner} per binnenverpakking ≤ {limit} en "
               "{gross} kg bruto per collo ≤ 30 kg (voor trays met krimp- of rekfolie "
@@ -1884,8 +1861,7 @@ _LQ_MESSAGES = {
         "de": "Innerhalb der Grenzen von 3.4: {inner} je Innenverpackung ≤ {limit} und "
               "{gross} kg brutto je Versandstück ≤ 30 kg (für Trays mit Schrumpf- "
               "oder Dehnfolie gelten 20 kg, 3.4.3). Die LQ-Kennzeichnung und die "
-              "Verpackungsvorschriften von 3.4 gelten weiterhin.",
-    },
+              "Verpackungsvorschriften von 3.4 gelten weiterhin.", "fr": "Dans les limites du 3.4 : {inner} par emballage intérieur ≤ {limit} et {gross} kg bruts par colis ≤ 30 kg (20 kg pour les plateaux houssés ou filmés, 3.4.3). La marque QL et les prescriptions d'emballage du 3.4 restent applicables."},
 }
 
 # Alleen zinvol naast een puntentabel, dus alleen bij een landprofiel: een
@@ -1899,31 +1875,27 @@ _LQ_POINTS_NOTE = {
           "per 1.1.3.6.5; the points table still includes it for completeness.",
     "de": " Wird diese Zeile als LQ befördert, zählt sie nach 1.1.3.6.5 nicht zu den "
           "Punkten nach 1.1.3.6; die Punktetabelle führt sie der Vollständigkeit "
-          "halber dennoch auf.",
-}
+          "halber dennoch auf.", "fr": " Si cette ligne voyage en quantité limitée, elle ne compte pas dans les points du 1.1.3.6 en vertu du 1.1.3.6.5 ; le tableau des points la reprend néanmoins par souci d'exhaustivité."}
 
 _EQ_MESSAGES = {
     "no_data": {
         "nl": "Geen E-code (kolom 7b) beschikbaar voor deze stof; niet getoetst.",
         "en": "No E code (column 7b) available for this substance; not assessed.",
-        "de": "Kein E-Code (Spalte 7b) für diesen Stoff verfügbar; nicht geprüft.",
-    },
+        "de": "Kein E-Code (Spalte 7b) für diesen Stoff verfügbar; nicht geprüft.", "fr": 'Aucun code E (colonne 7b) disponible pour cette matière ; non évalué.'},
     "special_provision": {
         "nl": "Kolom 7b verwijst naar een bijzondere bepaling ({raw}); die tekst staat "
               "niet in CargoPilot. Raadpleeg hoofdstuk 3.3.",
         "en": "Column 7b refers to a special provision ({raw}); that text is not held "
               "by CargoPilot. Consult chapter 3.3.",
         "de": "Spalte 7b verweist auf eine Sondervorschrift ({raw}); dieser Text ist "
-              "nicht in CargoPilot enthalten. Ziehen Sie Kapitel 3.3 heran.",
-    },
+              "nicht in CargoPilot enthalten. Ziehen Sie Kapitel 3.3 heran.", "fr": 'La colonne 7b renvoie à une disposition spéciale ({raw}) dont CargoPilot ne dispose pas. Consultez le chapitre 3.3.'},
     "not_permitted": {
         "nl": "E0: vervoer als vrijgestelde hoeveelheid (3.5) is voor deze stof niet "
               "toegestaan.",
         "en": "E0: carriage as excepted quantity (3.5) is not permitted for this "
               "substance.",
         "de": "E0: Die Beförderung als freigestellte Menge (3.5) ist für diesen Stoff "
-              "nicht zugelassen.",
-    },
+              "nicht zugelassen.", "fr": "E0 : le transport en quantité exceptée (3.5) n'est pas autorisé pour cette matière."},
     "missing_inner": {
         "nl": "{code} (max. {inner_cap} g/ml per binnenverpakking, {outer_cap} g/ml "
               "per collo): niet getoetst. Vul de netto hoeveelheid per "
@@ -1933,8 +1905,7 @@ _EQ_MESSAGES = {
               "with a unit.",
         "de": "{code} (max. {inner_cap} g/ml je Innenverpackung, {outer_cap} g/ml je "
               "Versandstück): nicht geprüft. Geben Sie die Nettomenge je "
-              "Innenverpackung mit Einheit an.",
-    },
+              "Innenverpackung mit Einheit an.", "fr": '{code} (max. {inner_cap} g/ml par emballage intérieur, {outer_cap} g/ml par colis) : non évalué. Indiquez la quantité nette par emballage intérieur, avec son unité.'},
     "missing_outer": {
         "nl": "{code}: binnenverpakking ({inner}) ≤ {inner_cap} g/ml. Vul de netto "
               "hoeveelheid per collo in (met eenheid) om ook de grens van {outer_cap} "
@@ -1944,8 +1915,7 @@ _EQ_MESSAGES = {
               "limit per outer packaging.",
         "de": "{code}: Innenverpackung ({inner}) ≤ {inner_cap} g/ml. Geben Sie die "
               "Nettomenge je Versandstück (mit Einheit) an, um auch die Grenze von "
-              "{outer_cap} g/ml je Außenverpackung zu prüfen.",
-    },
+              "{outer_cap} g/ml je Außenverpackung zu prüfen.", "fr": '{code} : emballage intérieur ({inner}) ≤ {inner_cap} g/ml. Indiquez la quantité nette par colis (avec son unité) pour évaluer également la limite de {outer_cap} g/ml par emballage extérieur.'},
     "inner_exceeded": {
         "nl": "De netto hoeveelheid per binnenverpakking ({inner}) is groter dan de "
               "{inner_cap} g/ml van {code} (3.5.1.2). Deze regel kan niet als "
@@ -1955,8 +1925,7 @@ _EQ_MESSAGES = {
               "quantity.",
         "de": "Die Nettomenge je Innenverpackung ({inner}) überschreitet die "
               "{inner_cap} g/ml von {code} (3.5.1.2). Diese Zeile kann nicht als "
-              "freigestellte Menge befördert werden.",
-    },
+              "freigestellte Menge befördert werden.", "fr": 'La quantité nette par emballage intérieur ({inner}) dépasse les {inner_cap} g/ml du {code} (3.5.1.2). Cette ligne ne peut pas voyager en quantité exceptée.'},
     "outer_exceeded": {
         "nl": "De netto hoeveelheid per collo ({outer}) is groter dan de {outer_cap} "
               "g/ml van {code} (3.5.1.2). Deze regel kan zo niet als vrijgestelde "
@@ -1966,8 +1935,7 @@ _EQ_MESSAGES = {
               "quantity.",
         "de": "Die Nettomenge je Versandstück ({outer}) überschreitet die {outer_cap} "
               "g/ml von {code} (3.5.1.2). So verpackt kann diese Zeile nicht als "
-              "freigestellte Menge befördert werden.",
-    },
+              "freigestellte Menge befördert werden.", "fr": 'La quantité nette par colis ({outer}) dépasse les {outer_cap} g/ml du {code} (3.5.1.2). Emballée ainsi, cette ligne ne peut pas voyager en quantité exceptée.'},
     "within_limits": {
         "nl": "Binnen de grenzen van {code}: {inner} per binnenverpakking ≤ "
               "{inner_cap} g/ml en {outer} per collo ≤ {outer_cap} g/ml (3.5.1.2). De "
@@ -1983,8 +1951,7 @@ _EQ_MESSAGES = {
               "{inner_cap} g/ml und {outer} je Versandstück ≤ {outer_cap} g/ml "
               "(3.5.1.2). Die Verpackungs- und Prüfvorschriften nach 3.5.2 und 3.5.3 "
               "sowie die EQ-Kennzeichnung gelten weiterhin; je Fahrzeug oder "
-              "Container sind höchstens 1000 Versandstücke zulässig (3.5.5).",
-    },
+              "Container sind höchstens 1000 Versandstücke zulässig (3.5.5).", "fr": "Dans les limites du {code} : {inner} par emballage intérieur ≤ {inner_cap} g/ml et {outer} par colis ≤ {outer_cap} g/ml (3.5.1.2). Les prescriptions d'emballage et d'épreuve des 3.5.2 et 3.5.3 ainsi que la marque QE restent applicables ; 1 000 colis au plus sont admis par véhicule ou conteneur (3.5.5)."},
 }
 
 # ADR 3.4.2 / IMDG 3.4.2.1: totale bruto massa van een LQ-collo.
@@ -2183,8 +2150,7 @@ def check_lq_eq(
                                       "leg.",
                                 "de": "Hinweis: die IMDG-Liste (42-24) nennt hier "
                                       "{value}; prüfen Sie, welcher Wert für die "
-                                      "Seestrecke gilt.",
-                            },
+                                      "Seestrecke gilt.", "fr": "Attention : la liste IMDG (42-24) indique ici {value} ; vérifiez quelle valeur s'applique au trajet maritime."},
                             lang,
                         ).format(value=dgl_value)
 
@@ -2239,8 +2205,7 @@ def check_lq_eq(
                         "de": "Diese Position zählt {count} Versandstücke innerhalb "
                               "der EQ-Grenzen; je Fahrzeug oder Container sind "
                               "höchstens 1000 Versandstücke mit freigestellten Mengen "
-                              "zulässig (3.5.5).",
-                    },
+                              "zulässig (3.5.5).", "fr": 'Cette position compte {count} colis dans les limites QE ; 1 000 colis de quantités exceptées au plus sont admis par véhicule ou conteneur (3.5.5).'},
                     lang,
                 ).format(count=_fmt_kg(eq_packages)),
                 "products": ", ".join(eq_products),
@@ -2265,8 +2230,7 @@ def check_lq_eq(
                           "{tonnes} kg brutto. Über 8 Tonnen je Beförderungseinheit ist "
                           "die LQ-Kennzeichnung nach 3.4.15 (250 × 250 mm) vorn und "
                           "hinten vorgeschrieben (3.4.13); die Erleichterung nach "
-                          "3.4.14 gilt dann nicht mehr.",
-                },
+                          "3.4.14 gilt dann nicht mehr.", "fr": "Les colis situés dans les limites QL totalisent {tonnes} kg bruts. Au-delà de 8 tonnes par unité de transport, la marque QL du 3.4.15 (250 × 250 mm) est exigée à l'avant et à l'arrière (3.4.13) ; la dispense du 3.4.14 ne s'applique plus."},
                 lang,
             ).format(tonnes=_fmt_kg(lq_gross_total_kg)),
             "products": ", ".join(lq_gross_products),
@@ -2302,8 +2266,7 @@ def check_lq_eq(
                       "freigestellt zu sein: die LQ- bzw. EQ-Kennzeichnung und die "
                       "Verpackungsvorschriften von 3.4 und 3.5 bleiben Bedingungen. "
                       "Die Punkteberechnung nach 1.1.3.6 wird durch dieses Ergebnis "
-                      "nicht verändert.",
-            },
+                      "nicht verändert.", "fr": "Rester dans les limites n'équivaut pas à être exempté : la marque QL ou QE et les prescriptions d'emballage des 3.4 et 3.5 demeurent des conditions. Le calcul des points du 1.1.3.6 n'est pas modifié par ce résultat."},
             lang,
         ),
     }
@@ -2371,8 +2334,7 @@ def check_compliance(
                           "current edition.",
                     "de": "{edition} ist am {on} abgelaufen. Diese Prüfung rechnet mit einer "
                           "Ausgabe, die nicht mehr gilt; aktualisieren Sie CargoPilot oder "
-                          "ziehen Sie die geltende Ausgabe heran.",
-                },
+                          "ziehen Sie die geltende Ausgabe heran.", "fr": "{edition} a expiré le {on}. Cette vérification calcule avec une édition qui n'est plus en vigueur ; mettez CargoPilot à jour ou consultez l'édition applicable."},
                 language,
             ).format(edition=stale["edition"], on=stale["expired_on"]),
             "products": ", ".join(stale["profiles"]),

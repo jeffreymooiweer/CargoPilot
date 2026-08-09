@@ -10,6 +10,8 @@ flow is one wizard; you can go back to any earlier step at any time.
 - [5. Shipment details](#5-shipment-details)
 - [6. Export](#6-export)
 - [The equipment library](#the-equipment-library)
+- [Settings](#settings)
+- [Language](#language)
 - [Tips](#tips)
 
 ## 1. Pick a transport mode
@@ -21,6 +23,10 @@ This choice decides which forms are offered, which rulebook applies to any dange
 goods (ADR for road, RID for rail, IMDG for sea, ADN for inland waterway, IATA DGR for
 air), and which kind of locations the route fields suggest. Pick **multimodal** if the
 shipment changes mode along the way, or if you simply want every form available.
+
+Always ship the same way? Set a fixed transport mode under [Settings](#settings) and
+CargoPilot opens straight into it; *change transport mode* at the top of the wizard brings
+the tiles back.
 
 ## 2. Choose your forms
 

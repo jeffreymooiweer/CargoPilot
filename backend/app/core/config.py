@@ -20,7 +20,6 @@ class Settings(BaseSettings):
     trusted_proxy_headers: bool = True
     access_token_expire_minutes: int = 480
     cookie_secure: bool | None = None
-    max_paste_bytes: int = 512_000
     catalog_auto_sync: bool = True
     catalog_sync_timeout_seconds: float = 20.0
     geo_address_api_url: str = "https://photon.komoot.io/api"

@@ -19,12 +19,13 @@ registry are settled.
 | Transport modes | Road, rail, sea, inland waterway, air, multimodal |
 | Official forms filled in | CMR, CIM, IATA Shipper's Declaration, AVC waybill |
 | Generated documents | IMO DG Form, VGM, AWB and B/L instructions, ADN document, packing list, delivery note |
-| Goods database | 400 goods with densities and NL/EN/DE names |
-| Dangerous goods | 2,928 UN entries, 2,338 EmS schedules, full IMDG segregation, ADR and IATA compliance checks |
+| Goods database | 1,093 goods with densities and NL/EN/DE/FR names |
+| Dangerous goods | 2,336 UN numbers over 2,928 Table A rows, 2,338 EmS schedules, full IMDG segregation, ADR/RID/ADN and IATA compliance checks |
 | Per-substance IMDG data | Marine pollutant, stowage (SW) and segregation (SG) codes for 2,336 UN numbers |
 | UN cards | 2,849 reference cards, downloadable per shipment |
 | Locations | 4,500+ airports, 17,500+ ports, 750+ stations, offline |
-| Interface | Dutch, English and German, light and dark |
+| Interface | Dutch, English, German and French, light and dark |
+| Settings | Per user: language, theme, default transport mode and unit, consignor details, emergency number, saved signature. Per installation, admin only: outbound connections, session lifetime, defaults for new users |
 
 ## Planned
 

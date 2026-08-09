@@ -361,7 +361,7 @@ which the source reports without giving.
 
 | Data | Coverage |
 |---|---|
-| UN numbers with full ADR classification | 2,928 entries |
+| UN numbers with full ADR classification | 2,336 UN numbers, over 2,928 Table A rows — a substance with several packing groups has a row per group |
 | EmS emergency schedules | 2,338 UN numbers — **99.5%** exact, from the official EmS Guide |
 | Segregation groups | 629 entries across 539 UN numbers |
 | UN packaging codes | All 107 codes of ADR 6.1.2 / 6.5.1.4 / 6.6.2 |

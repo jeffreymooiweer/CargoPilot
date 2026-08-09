@@ -1,6 +1,7 @@
 import json
 import re
 from dataclasses import dataclass
+from functools import lru_cache
 from pathlib import Path
 from typing import Any
 
@@ -116,24 +117,71 @@ def _load_static_synonyms() -> dict[str, str]:
 
 
 def _db_synonyms(db: Session) -> dict[str, str]:
-    """Voeg aliassen uit materialen, referenties en materieel toe als zoek-synoniemen."""
+    """Voeg aliassen uit materialen, referenties en materieel toe als zoek-synoniemen.
+
+    In twee ronden, en die volgorde is het punt. Een sleutel wordt met
+    `setdefault` gezet, dus wie er het eerst bij is houdt hem. Ging alles in één
+    ronde, dan won het goed dat toevallig het eerst in de database stond — en
+    een lósse alias van dat goed kon zo de éigen naam van een ander goed
+    afvangen. Concreet: bloemkool droeg ooit "broccoli" als alias, en daarmee
+    kwam wie "broccoli" intikte bij bloemkool uit terwijl broccoli zelf gewoon
+    in de database staat.
+
+    Eerst dus alle namen — canonieke naam en de labels in de drie talen — en pas
+    daarna de aliassen. Een naam laat zich niet meer door andermans alias
+    overschrijven, ongeacht de volgorde waarin de rijen zijn ingevoerd.
+    """
     synonyms: dict[str, str] = {}
+    # Namen die een goed van zichzelf heeft. Een naam die gelijk is aan zijn
+    # eigen doeltekst hoeft niet te worden vervangen, maar moet wél bezet zijn:
+    # anders staat hij niet in de tabel en pakt andermans alias hem alsnog.
+    reserved: set[str] = set()
 
-    for material in db.query(Material).filter(Material.active.is_(True)).all():
+    materials = db.query(Material).filter(Material.active.is_(True)).all()
+    references = db.query(ReferenceItem).filter(ReferenceItem.active.is_(True)).all()
+
+    def register(keys: list[str], target: str, *, is_name: bool) -> None:
+        for alias in keys:
+            key = str(alias).strip().lower()
+            if len(key) <= 2:
+                continue
+            if is_name:
+                reserved.add(key)
+            elif key in reserved:
+                continue
+            if key != target:
+                synonyms.setdefault(key, target)
+
+    for material in materials:
         labels = json.loads(material.language_labels_json or "{}")
-        target = material_label(material, "nl").lower()
-        for alias in [material.canonical_name, *_load_aliases(material.aliases_json), *labels.values()]:
-            key = str(alias).strip().lower()
-            if len(key) > 2 and key != target:
-                synonyms.setdefault(key, target)
+        register(
+            [material.canonical_name, *labels.values()],
+            material_label(material, "nl").lower(),
+            is_name=True,
+        )
 
-    for item in db.query(ReferenceItem).filter(ReferenceItem.active.is_(True)).all():
+    for item in references:
         labels = json.loads(item.language_labels_json or "{}")
-        target = (labels.get("nl") or item.canonical_name).lower()
-        for alias in [item.canonical_name, *_load_aliases(item.aliases_json), *labels.values()]:
-            key = str(alias).strip().lower()
-            if len(key) > 2 and key != target:
-                synonyms.setdefault(key, target)
+        register(
+            [item.canonical_name, *labels.values()],
+            (labels.get("nl") or item.canonical_name).lower(),
+            is_name=True,
+        )
+
+    for material in materials:
+        register(
+            _load_aliases(material.aliases_json),
+            material_label(material, "nl").lower(),
+            is_name=False,
+        )
+
+    for item in references:
+        labels = json.loads(item.language_labels_json or "{}")
+        register(
+            _load_aliases(item.aliases_json),
+            (labels.get("nl") or item.canonical_name).lower(),
+            is_name=False,
+        )
 
     for equip in db.query(Equipment).filter(Equipment.active.is_(True)).all():
         target = (equip.sap_code or equip.specifications or "").strip().lower()
@@ -155,17 +203,46 @@ def _merged_synonyms(db: Session | None) -> dict[str, str]:
     return merged
 
 
+#: Letters die nog bij een woord horen. `\b` van de re-module rekent é en ü niet
+#: tot de woordtekens, waardoor "kupfer" middenin "Kupferkathoden" alsnog zou
+#: worden vervangen.
+_WORD_CHAR = r"[0-9A-Za-zÀ-ÖØ-öø-ÿ]"
+
+
+@lru_cache(maxsize=4096)
+def _synonym_pattern(src: str) -> re.Pattern[str]:
+    """Het synoniem als heel woord, niet als letterreeks middenin een woord."""
+    left = rf"(?<!{_WORD_CHAR})" if re.match(_WORD_CHAR, src[:1] or " ") else ""
+    right = rf"(?!{_WORD_CHAR})" if re.match(_WORD_CHAR, src[-1:] or " ") else ""
+    return re.compile(left + re.escape(src) + right, re.IGNORECASE)
+
+
 def normalize_synonyms(text: str, db: Session | None = None) -> tuple[str, list[tuple[str, str]]]:
-    """Vervang bekende synoniemen; retourneer genormaliseerde tekst + toegepaste vervangingen."""
+    """Vervang bekende synoniemen; retourneer genormaliseerde tekst + toegepaste vervangingen.
+
+    Op hele woorden. Dat het ooit op letterreeksen ging, viel niet op zolang de
+    goederendatabase klein was — maar élke alias van élk goed is hier een
+    synoniem, dus hoe meer goederen, hoe groter de kans dat een sleutel toevallig
+    middenin een ander woord staat. "cashew" bevat "as" (essen), "Kupferkathoden"
+    bevat "kupfer" én "per" (perchloorethyleen). De query werd dan tot onzin
+    herschreven en het goed dat de gebruiker intikte kwam niet bovenaan.
+    """
     synonyms = _merged_synonyms(db)
     if not synonyms:
         return text, []
     lower = text.lower()
     applied: list[tuple[str, str]] = []
     for src, dst in sorted(synonyms.items(), key=lambda x: len(x[0]), reverse=True):
-        if src in lower:
-            pattern = re.compile(re.escape(src), re.IGNORECASE)
-            text = pattern.sub(dst, text, count=1)
+        # Eerst de goedkope toets. Er zijn ruim vierduizend synoniemen en voor
+        # bijna allemaal staat het antwoord al vast met een substring-test; een
+        # regex over alle vierduizend kostte 1,4 seconde per zoekopdracht.
+        if src not in lower:
+            continue
+        pattern = _synonym_pattern(src)
+        if pattern.search(text):
+            # Een lambda als vervanging: een doeltekst met \1 of \g erin is een
+            # naam, geen groepsverwijzing.
+            text = pattern.sub(lambda _match: dst, text, count=1)
             lower = text.lower()
             applied.append((src, dst))
     return text, applied
@@ -311,12 +388,24 @@ def _search_profiles(db: Session, query: str, normalized: str, query_tokens: set
     return hits
 
 
+def _material_names(material: Material) -> set[str]:
+    """De namen die het goed van zichzelf heeft, zonder de aliassen."""
+    labels = json.loads(material.language_labels_json or "{}")
+    return {material.canonical_name.lower(), *(str(v).strip().lower() for v in labels.values())}
+
+
 def _search_materials(db: Session, query: str, query_tokens: set[str]) -> list[tuple[Material, float]]:
     lower = query.lower()
     matched: list[tuple[Material, float]] = []
     for material in db.query(Material).filter(Material.active.is_(True)).all():
         terms = _material_terms(material)
         score = max(_score_tokens(query_tokens, _collect_terms(*terms)), _substring_alias_score(lower, terms))
+        # Wie precies de naam van een goed intikt, bedoelt dat goed. Zonder deze
+        # voorrang scoort een ánder goed dat die naam als alias draagt even hoog
+        # en beslist de volgorde in de database — bloemkool droeg "broccoli" en
+        # stond vóór broccoli in de tabel, dus won bloemkool.
+        if lower.strip() in _material_names(material):
+            score += 1
         if score > 0:
             matched.append((material, score))
     matched.sort(key=lambda x: x[1], reverse=True)

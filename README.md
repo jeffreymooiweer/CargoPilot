@@ -47,7 +47,7 @@ shipment history is kept.
 
 **Understands your load.** Paste a list, or import an Excel or CSV file. CargoPilot
 recognises materials and dimensions in Dutch, English and German — `Steel angle 80x80x8x6000` —
-and works out the weight from a built-in database of **400 goods**, from cement and
+and works out the weight from a built-in database of **1,093 goods**, from cement and
 timber to grain, chemicals and white goods. Anything it cannot work out, you can correct
 by hand.
 

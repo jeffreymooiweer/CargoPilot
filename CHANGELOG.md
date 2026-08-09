@@ -2,6 +2,83 @@
 
 All notable changes are documented here, following [Semantic Versioning](https://semver.org/).
 
+## [1.42.0] — 2026-08-09
+
+### Added
+
+- **The goods database grows from 400 to 1,093 entries**, each with a density, a min/max
+  band, search aliases and a name in Dutch, English and German. What came in is what
+  actually moves: 173 more agricultural commodities (grains and their by-products, oilseeds
+  and meals, pulses, nuts, vegetables, fruit, spices), 68 more timbers including the
+  tropical hardwoods a shipper meets on a packing list, 56 more steel and non-ferrous
+  products in the form they travel in — coils, plate, rebar, billets, cathodes, turnings —
+  76 more liquids and 43 more chemicals, 67 more construction materials, 39 more ores and
+  minerals, and the rest spread over food, plastics, paper, textile, packaged general
+  cargo, waste and insulation.
+
+  Eighteen candidates were dropped during the merge because they turned out to repeat a
+  good that was already there. That is worth saying out loud: a second entry for the same
+  goods is worse than no entry, because the user picks one of the two and which one he
+  picks decides his weight.
+
+- **`test_materials_catalog.py` holds the invariants** that at 400 entries you could still
+  check by eye and at 1,093 you cannot: no good appears twice, no alias belongs to two
+  goods, all three languages are present on every good, every category is one `units.py`
+  knows — an unknown one would silently fall back to the default density basis — and every
+  density lies inside its own min/max band.
+
+### Fixed
+
+- **Searching for a good could return a different good entirely.** Before a query is
+  matched it is normalised against a synonym table, and that table is not the small
+  hand-written file it looks like: every alias of every good is added to it, so it holds
+  some 4,400 keys. The replacement worked on character sequences rather than words. What
+  that did, measured on the old 400-entry database:
+
+  | typed | rewritten to | top hit |
+  |---|---|---|
+  | `broccoli` | `meel / bloem / bloemsteenkool (kisten)` | Flour |
+  | `cashew` | `cessenew` | Ash *(the wood)* |
+  | `Kupferkathoden` | `koperkathoden` | Copper |
+
+  "cashew" contains "as", which is an alias of ash wood. The query was rewritten into
+  something else and the good the user had literally typed did not even make the list. This
+  predates the expansion — but more goods means more short aliases, so it was going to get
+  worse, not better. A synonym now has to match a whole word, accents included: `\b` does
+  not count ü or é as word characters, so "kupfer" inside "Kupferkathoden" needed its own
+  boundary.
+
+- **A good's own name now outranks another good's alias.** Cauliflower carried `broccoli`
+  as an alias, so typing "broccoli" landed on cauliflower even though broccoli is itself in
+  the database. Two things were wrong: the synonym table let a stray alias claim a name
+  before its owner could, and the scoring left the two tied so the order of the rows
+  decided. Names are registered before aliases now, and an exact match on a good's own name
+  scores higher than a match on someone else's alias.
+
+- **The stray `broccoli` alias is removed from cauliflower** in the seed. Note what that
+  does and does not reach: the catalogue sync deliberately folds locally present aliases
+  back in so that anything added by hand survives an update, which means a *deletion* never
+  propagates. A fresh install is clean; an existing one keeps the alias but is no longer
+  misled by it, thanks to the ranking fix above.
+
+### Performance
+
+- The first version of the word-boundary fix dropped the cheap substring pre-check and ran
+  a regular expression over all 4,400 synonyms. That was correct and unusable: **1,446 ms
+  per search**, against roughly 20 ms before. The pre-check is back in front of the regex.
+  Measured end to end on the full 1,093-entry database: **median 63 ms per search, 115 ms
+  at the slowest**, against 20–53 ms on the old 400-entry database. Search does get slower
+  when the catalogue is 2.7× larger; it does not get slower per good.
+
+### Documentation
+
+- `docs/data-sources.md` now carries the count per category and states how a new good
+  reaches an installation that is already running. The page implied it could not:
+  `seed_catalogs` fills the table only when it is empty. That is true of `seed_catalogs`
+  and false of the application — the startup catalogue sync reads the same seed file and
+  upserts. Measured rather than assumed: seeding an old database, adding one good and
+  restarting, `seed_catalogs` added nothing and the sync added it.
+
 ## [1.41.0] — 2026-08-08
 
 ### Added

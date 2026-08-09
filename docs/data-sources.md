@@ -23,10 +23,40 @@ it — thresholds, limits, multipliers — are stored, each with the provision i
 
 ## Goods and densities
 
-**400 goods** with densities, min/max ranges, search aliases and names in Dutch, English
+**1,093 goods** with densities, min/max ranges, search aliases and names in Dutch, English
 and German, in `backend/seed/materials.json`. Each entry carries a **category** —
-`liquid`, `agri`, `bulk_material`, `ore_mineral`, `metal`, `wood`, `general_cargo` and ten
+`liquid`, `agri`, `bulk_material`, `ore_mineral`, `metal`, `wood`, `general_cargo` and nine
 others — which drives which units the goods step offers first.
+
+| Category | Goods | Category | Goods |
+|---|--:|---|--:|
+| `agri` | 241 | `general_cargo` | 55 |
+| `liquid` | 137 | `plastic` | 39 |
+| `wood` | 111 | `waste` | 32 |
+| `construction` | 103 | `bulk_material` | 28 |
+| `metal` | 88 | `paper` | 21 |
+| `chemical` | 67 | `insulation` | 20 |
+| `ore_mineral` | 62 | `textile` | 20 |
+| `food` | 61 | `concrete` | 8 |
+
+The invariants are held by `backend/tests/test_materials_catalog.py`: no good appears
+twice, no alias belongs to two goods, every good carries all three languages, every
+category is one `units.py` knows, and every density lies inside its own min/max band.
+
+**How a new good reaches an installation that already runs.** `seed_catalogs` fills the
+materials table only when it is empty, so on its own it would never deliver anything to an
+existing database. The startup catalogue sync does: it reads the same seed file and
+*upserts*, so new goods are added and changed ones updated. Measured on a database seeded
+with the old set, adding one good to the seed and restarting: `seed_catalogs` added
+nothing, the sync added it. This is why `CATALOG_AUTO_SYNC=false` also freezes the goods
+database at whatever it held on first start.
+
+One thing the sync deliberately does *not* do: remove an alias. `merge_seed_material_aliases`
+folds the aliases already in the database back into the record so that anything added
+locally survives an update — which also means a **deletion in the seed never propagates**.
+The stray `broccoli` alias on cauliflower, corrected in v1.42.0, therefore disappears on a
+fresh install but stays on an existing one. It no longer does harm there: an exact match on
+a good's own name now outranks another good's alias.
 
 > **A correction.** This page used to claim that each entry states whether its figure is a
 > bulk, solid, liquid or effective pallet density. It does not: there is no such field, only

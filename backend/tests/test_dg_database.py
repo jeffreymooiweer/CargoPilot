@@ -41,7 +41,8 @@ def test_lithium_batteries_present():
 
 def test_offline_lookup_shape():
     result = offline_lookup("1090")
-    assert result["proper_shipping_name"] == "ACETONE"
+    # The default language is Dutch, and a Dutch document carries both names.
+    assert result["proper_shipping_name"] == "ACETON (ACETONE)"
     assert result["packing_instruction"] == "P001"
     assert result["tunnel_restriction_code"] == "(D/E)"
 

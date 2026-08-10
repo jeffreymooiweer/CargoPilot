@@ -103,7 +103,7 @@ So CargoPilot puts it there. When a package contains dangerous goods, the CMR an
 AVC waybill carry the official description from ADR 5.4.1.1.1 in the goods column:
 
 ```
-UN 1203, GASOLINE, 3, II, (D/E), 10 jerrycan, 200 L
+UN 1203, BENZINE OF MOTORBRANDSTOF (GASOLINE), 3, II, (D/E), 10 jerrycan, 200 L
 ```
 
 and the total per transport category (5.4.1.1.1.1) required when you rely on the

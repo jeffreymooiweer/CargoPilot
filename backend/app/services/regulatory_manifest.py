@@ -37,20 +37,35 @@ RULE_SETS: list[dict[str, Any]] = [
         "key": "adr",
         "profiles": ["ADR", "RID", "ADN"],
         "name": "ADR — vervoer over de weg",
-        "edition": "2025",
-        "source": "UNECE ADR 2025, Tabel A via rkstgr/adr-substances",
+        "edition": "2025, met een tabel A uit de uitgave 2023",
+        "source": ("UNECE ADR 2025 voor de voorschriften; tabel A via "
+                   "rkstgr/adr-substances (uitgave 2023); Nederlandse "
+                   "benamingen uit de officiële Nederlandse uitgave ADR 2025"),
         "source_url": "https://unece.org/transport/dangerous-goods/adr-2025-files",
         "valid_from": "2025-01-01",
         # ADR is revised every two years; ADR 2027 replaces this edition, with a
         # transitional period to 30 June of that year.
         "valid_until": "2027-06-30",
-        "errata": [],
+        # Measured against the Dutch ADR 2025 while the Dutch names were being
+        # read out, and therefore stated here rather than left to be discovered.
+        "errata": [
+            "De classificatietabel is een export van ADR 2023, niet van 2025. "
+            "UN 0514 en UN 3551 t/m 3560 ontbreken daarin; die staan wel in de "
+            "app, maar met zeegegevens uit IMDG 42-24 en zonder "
+            "vervoerscategorie, tunnelcode en Kemler-nummer. UN 1499 en UN 1999 "
+            "staan er nog in terwijl ADR 2025 ze niet meer kent.",
+            "Enkele Engelse benamingen uit die export zijn beschadigd of "
+            "onjuist (UN 1139 'Coating solution (', UN 1993 'Compounds, "
+            "cleaning liquid'). De Nederlandse benamingen komen uit het boek "
+            "zelf en hebben dit niet.",
+        ],
         "covers": [
             "classificatie per UN-nummer (klasse, verpakkingsgroep, etiketten, LQ/EQ)",
+            "Nederlandse benamingen uit tabel A, kolom (2)",
             "1.1.3.6 puntentelling",
             "7.5.2 samenlading en 7.5.4/CV28",
         ],
-        "files": ["un_numbers.json", "packagings.json"],
+        "files": ["un_numbers.json", "adr_names_nl.json", "packagings.json"],
     },
     {
         "key": "imdg",

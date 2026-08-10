@@ -2,6 +2,52 @@
 
 All notable changes are documented here, following [Semantic Versioning](https://semver.org/).
 
+## [1.49.0] — 2026-08-10
+
+### Added
+
+- **De Nederlandse benamingen uit het ADR staan er nu in.** Tot nu toe kende de app elk
+  UN-nummer alleen bij zijn Engelse en Duitse naam, want de tabel-A-export waarop hij is
+  gebouwd heeft alleen die twee kolommen. Op vier plaatsen in de broncode en documentatie
+  stond daarom dat het ADR geen Nederlandse benaming kent. Dat klopt niet. Het ADR
+  verschijnt in een officiële Nederlandse uitgave en kolom (2) van tabel A leest daar
+  BENZINE, ZOUTZUUR, LITHIUM-ION-BATTERIJEN. Alleen de export had het niet.
+
+  Die kolom is nu uitgelezen: **2.345 UN-nummers, 3.158 rijen, 294 pagina's**. Er is geen
+  open bron voor — deze kolom staat nergens op internet — dus is hij uit het boek zelf
+  gelezen door het nieuwe `scripts/extract_adr_names.py`. Het boek zelf gaat niet mee de
+  repository in; alleen het afgeleide feit, precies zoals `docs/data-sources.md` dat voor
+  elke andere regelgevingsbron belooft.
+
+- **Zoeken op een Nederlandse stofnaam werkt.** Wie "zoutzuur" typte kreeg niets, omdat de
+  zoekindex alleen Engels en Duits bevatte. UN 1789 staat nu bovenaan, "benzine" vindt
+  UN 1203 en "lithium-ion" vindt UN 3480.
+
+### Changed
+
+- **Een Nederlands wegdocument draagt beide namen.** ADR 5.4.1.4.1 vraagt om een officiële
+  taal van het land van afzending en, als dat niet Engels, Frans of Duits is, **bovendien**
+  om een van die drie. Nederlands is de enige taal die daardoor niet alleen kan staan. De
+  omschrijvingsregel luidt nu `UN 1203, BENZINE OF MOTORBRANDSTOF (GASOLINE), 3, II,
+  (D/E), 10 jerrycan, 200 L` — op de CMR, op de AVC-vrachtbrief en in het veld zelf. Voor
+  zee en lucht blijft het de Engelse naam alleen, want IMDG 5.4.1.4.1 en IATA DGR 8.1.2.1
+  willen er één. Wie eerst een Nederlands wegdocument opmaakt en er daarna een zeetraject
+  bij zet, krijgt op de IMO-DGD vanzelf `GASOLINE`, net als bij de Duitse naam.
+
+- **De regelgevingsmanifest zegt nu wat er werkelijk in zit.** Bij het uitlezen van de
+  Nederlandse namen bleek de classificatietabel een export van **ADR 2023** te zijn, niet
+  van 2025, terwijl het manifest "2025" meldde. Dat staat er nu bij, met wat het kost:
+  UN 0514 en UN 3551 t/m 3560 ontbreken in die tabel — ze zitten wel in de app, maar met
+  zeegegevens uit IMDG 42-24 en zonder vervoerscategorie, tunnelcode en Kemler-nummer — en
+  UN 1499 en UN 1999 staan er nog in terwijl ADR 2025 ze niet meer kent.
+
+### Fixed
+
+- **Een klik op een zoeksuggestie maakte ongedaan wat de lijst goed had.** De suggestie
+  toonde de naam in de taal die het gekozen profiel toestaat, maar bij het aanklikken werd
+  de Engelse kolom in het veld gezet. Nu komt in het veld te staan wat er in de lijst
+  stond.
+
 ## [1.48.0] — 2026-08-09
 
 ### Fixed

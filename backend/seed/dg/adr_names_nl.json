@@ -1,0 +1,7296 @@
+{
+ "_comment": "Nederlandse benamingen uit tabel A van het ADR, machinaal gelezen door scripts/extract_adr_names.py. Feitelijke invulhulp; de gepubliceerde tekst van het ADR blijft leidend.",
+ "edition": "ADR 2025",
+ "source": "ADR 2025, Nederlandse uitgave — tabel A van hoofdstuk 3.2, kolom (2) 'Benaming en beschrijving', met de alfabetische index als tweede lezing",
+ "summary": {
+  "table_rows": 3158,
+  "table_un_numbers": 2345,
+  "index_rows": 3422,
+  "index_un_numbers": 2345,
+  "unreadable_rows": 3
+ },
+ "cross_check": {
+  "index": {
+   "same": 2342,
+   "differs": 3,
+   "examples": [
+    "UN 2422: tabel ['OCTAFLUOR-2-BUTEEN (KOELGAS R 1318)'] niet in index []",
+    "UN 2857: tabel ['KOELMACHINES met niet brandbare, niet giftige gassen of ammoniakoplossingen (UN 2672)'] niet in index []",
+    "UN 3337: tabel ['KOELGAS R 404A (zeotropisch mengsel van pentafluorethaan, 1,1,1- trifluorethaan en 1,1,1,2-tetrafluorethaan, met ongeveer 44 % pentafluorethaan en 52 % 1,1,1-trifluorethaan)'] niet in index ['KOELGAS R 404A (zeotropisch mengsel van pentafluorethaan, 1,1,1- trifluorethaan en 1,1,1,2- tetrafluorethaan, met ongeveer 44 % pentafluorethaan en 52 % 1,1,1-trifluorethaan)']"
+   ],
+   "agreement": 0.9987
+  },
+  "un_numbers": {
+   "same": 2334,
+   "differs": 2,
+   "only_in_adr_2025": [
+    "0514",
+    "3551",
+    "3552",
+    "3553",
+    "3554",
+    "3555",
+    "3556",
+    "3557",
+    "3558",
+    "3559",
+    "3560"
+   ],
+   "only_in_the_app": [
+    "1499",
+    "1999"
+   ],
+   "agreement": 0.9991
+  }
+ },
+ "names": {
+  "0004": [
+   "AMMONIUMPIKRAAT droog of bevochtigd met minder dan 10 massa-% water"
+  ],
+  "0005": [
+   "PATRONEN VOOR WAPENS met springlading"
+  ],
+  "0006": [
+   "PATRONEN VOOR WAPENS met springlading"
+  ],
+  "0007": [
+   "PATRONEN VOOR WAPENS met springlading"
+  ],
+  "0009": [
+   "BRANDMUNITIE met of zonder verspreidings-, uitstoot- of voortdrijvende lading"
+  ],
+  "0010": [
+   "BRANDMUNITIE met of zonder verspreidings-, uitstoot- of voortdrijvende lading"
+  ],
+  "0012": [
+   "PATRONEN VOOR WAPENS, MET INERT PROJECTIEL",
+   "PATRONEN VOOR KLEINKALIBERWAPENS"
+  ],
+  "0014": [
+   "LOSSE PATRONEN VOOR WAPENS",
+   "LOSSE PATRONEN VOOR KLEINKALIBERWAPENS",
+   "LOSSE PATRONEN VOOR GEREEDSCHAP"
+  ],
+  "0015": [
+   "ROOKMUNITIE met of zonder verspreidings-, uitstoot- of voortdrijvende lading",
+   "ROOKMUNITIE met of zonder verspreidings-, uitstoot- of voortdrijvende lading, die bijtende stoffen bevat",
+   "ROOKMUNITIE met of zonder verspreidings-, uitstoot- of voortdrijvende lading, die bij inademing giftige stoffen bevat"
+  ],
+  "0016": [
+   "ROOKMUNITIE met of zonder verspreidings-, uitstoot- of voortdrijvende lading",
+   "ROOKMUNITIE met of zonder verspreidings-, uitstoot- of voortdrijvende lading, die bijtende stoffen bevat",
+   "ROOKMUNITIE met of zonder verspreidings-, uitstoot- of voortdrijvende lading, die bij inademing giftige stoffen bevat"
+  ],
+  "0018": [
+   "MUNITIE, TRAANVERWEKKEND met verspreidings-, uitstoot- of voortdrijvende lading"
+  ],
+  "0019": [
+   "MUNITIE, TRAANVERWEKKEND met verspreidings-, uitstoot- of voortdrijvende lading"
+  ],
+  "0020": [
+   "MUNITIE, GIFTIG met verspreidings-, uitstoot- of voortdrijvende lading"
+  ],
+  "0021": [
+   "MUNITIE, GIFTIG met verspreidings-, uitstoot- of voortdrijvende lading"
+  ],
+  "0027": [
+   "ZWART BUSKRUIT korrels of poeder"
+  ],
+  "0028": [
+   "ZWART BUSKRUIT, GEPERST",
+   "ZWART BUSKRUIT, IN PELLETS"
+  ],
+  "0029": [
+   "SLAGPIJPJES, NIET ELEKTRISCH voor springstofladingen"
+  ],
+  "0030": [
+   "SLAGPIJPJES, ELEKTRISCH voor springstofladingen"
+  ],
+  "0033": [
+   "BOMMEN met springlading"
+  ],
+  "0034": [
+   "BOMMEN met springlading"
+  ],
+  "0035": [
+   "BOMMEN met springlading"
+  ],
+  "0037": [
+   "FLITSLICHTBOMMEN"
+  ],
+  "0038": [
+   "FLITSLICHTBOMMEN"
+  ],
+  "0039": [
+   "FLITSLICHTBOMMEN"
+  ],
+  "0042": [
+   "OVERDRACHTSLADINGEN zonder slagpijpje"
+  ],
+  "0043": [
+   "VERSPREIDINGSLADINGEN ontplofbaar"
+  ],
+  "0044": [
+   "SLAGHOEDJES"
+  ],
+  "0048": [
+   "SPRINGLADINGEN"
+  ],
+  "0049": [
+   "FLITSLICHTPATRONEN"
+  ],
+  "0050": [
+   "FLITSLICHTPATRONEN"
+  ],
+  "0054": [
+   "SEINPATRONEN"
+  ],
+  "0055": [
+   "PATROONHULZEN, LEEG, MET ONTSTEKER"
+  ],
+  "0056": [
+   "DIEPTEBOMMEN"
+  ],
+  "0059": [
+   "HOLLE LADINGEN zonder slagpijpje"
+  ],
+  "0060": [
+   "AANVULLINGSSPRINGLADINGEN"
+  ],
+  "0065": [
+   "SLAGSNOER buigzaam"
+  ],
+  "0066": [
+   "SNELKOORD"
+  ],
+  "0070": [
+   "KABELSNIJDERS, ONTPLOFBAAR"
+  ],
+  "0072": [
+   "CYCLOTRIMETHYLEENTRINITRAMINE, BEVOCHTIGD (CYCLONIET, BEVOCHTIGD) (HEXOGEEN, BEVOCHTIGD) (RDX, BEVOCHTIGD) met ten minste 15 massa-% water"
+  ],
+  "0073": [
+   "SLAGPIJPJES VOOR MUNITIE"
+  ],
+  "0074": [
+   "DIAZODINITROFENOL, BEVOCHTIGD met ten minste 40 massa-% water, of mengsel van alcohol en water"
+  ],
+  "0075": [
+   "DIETHYLEENGLYCOLDINITRAAT, GEDESENSIBILISEERD met ten minste 25 massa-% niet-vluchtig, niet in water oplosbaar flegmatiseermiddel"
+  ],
+  "0076": [
+   "DINITROFENOL droog of bevochtigd met minder dan 15 massa-% water"
+  ],
+  "0077": [
+   "DINITROFENOLATEN van alkalimetalen, droog of bevochtigd met minder dan 15 massa-% water"
+  ],
+  "0078": [
+   "DINITRORESORCINOL droog of bevochtigd met minder dan 15 massa-% water"
+  ],
+  "0079": [
+   "HEXANITRODIFENYLAMINE (DIPICRYLAMINE) (HEXYL)"
+  ],
+  "0081": [
+   "SPRINGSTOF, TYPE A"
+  ],
+  "0082": [
+   "SPRINGSTOF, TYPE B"
+  ],
+  "0083": [
+   "SPRINGSTOF, TYPE C"
+  ],
+  "0084": [
+   "SPRINGSTOF, TYPE D"
+  ],
+  "0092": [
+   "GRONDFAKKELS"
+  ],
+  "0093": [
+   "FAKKELS VOOR VLIEGTUIGEN"
+  ],
+  "0094": [
+   "FLITSLICHTPOEDER"
+  ],
+  "0099": [
+   "SCHEURVORMENDE MIDDELEN, ONTPLOFBAAR voor olieboringen, zonder slagpijpje"
+  ],
+  "0101": [
+   "GEZWINDE LONT, NIET-DETONEREND"
+  ],
+  "0102": [
+   "SLAGSNOER met metalen bekleding"
+  ],
+  "0103": [
+   "VUURKOORD kokervormig, met metalen bekleding"
+  ],
+  "0104": [
+   "SLAGSNOER MET GERING EFFECT met metalen bekleding"
+  ],
+  "0105": [
+   "VEILIGHEIDSVUURKOORD"
+  ],
+  "0106": [
+   "BUIZEN, DETONEREND"
+  ],
+  "0107": [
+   "BUIZEN, DETONEREND"
+  ],
+  "0110": [
+   "OEFENGRANATEN hand- of geweer-"
+  ],
+  "0113": [
+   "GUANYLNITROSAMINOGUANYLIDEENHYDRAZINE, BEVOCHTIGD met ten minste 30 massa-% water"
+  ],
+  "0114": [
+   "GUANYL NITROSAMINOGUANYLTETRAZEEN, BEVOCHTIGD (TETRAZEEN, BEVOCHTIGD) met ten minste 30 massa-% water, of mengsel van alcohol en water"
+  ],
+  "0118": [
+   "HEXOLIET (HEXOTOL) droog of bevochtigd met minder dan 15 massa-% water"
+  ],
+  "0121": [
+   "ONTSTEKERS"
+  ],
+  "0124": [
+   "OLIEPIJPDOORBORINGSAPPARATEN zonder slagpijpje"
+  ],
+  "0129": [
+   "LOODAZIDE, BEVOCHTIGD met ten minste 20 massa-% water, of mengsel van alcohol en water"
+  ],
+  "0130": [
+   "LOODSTYFNAAT, BEVOCHTIGD (LOODTRINITRORESORCINAAT, BEVOCHTIGD) met ten minste 20 massa-% water, of mengsel van alcohol en water"
+  ],
+  "0131": [
+   "ONTSTEKERS VOOR VUURKOORD"
+  ],
+  "0132": [
+   "DEFLAGRERENDE METAALZOUTEN VAN AROMATISCHE NITROVERBINDINGEN, N.E.G."
+  ],
+  "0133": [
+   "MANNITOLHEXANITRAAT, BEVOCHTIGD (NITROMANNIET, BEVOCHTIGD) met ten minste 40 massa-% water, of mengsel van alcohol en water"
+  ],
+  "0135": [
+   "KWIKFULMINAAT, BEVOCHTIGD met ten minste 20 massa-% water, of mengsel van alcohol en water"
+  ],
+  "0136": [
+   "MIJNEN met springlading"
+  ],
+  "0137": [
+   "MIJNEN met springlading"
+  ],
+  "0138": [
+   "MIJNEN met springlading"
+  ],
+  "0143": [
+   "NITROGLYCERINE, GEDESENSIBILISEERD met ten minste 40 massa-% niet-vluchtig, niet in water oplosbaar flegmatiseermiddel"
+  ],
+  "0144": [
+   "NITROGLYCERINE, OPLOSSING IN ALCOHOL met meer dan 1%, maar ten hoogste 10% nitroglycerine"
+  ],
+  "0146": [
+   "ZETMEELNITRAAT droog of bevochtigd met minder dan 20 massa-% water"
+  ],
+  "0147": [
+   "NITRO-UREUM"
+  ],
+  "0150": [
+   "PENTAERYTHRIETTETRANITRAAT, GEDESENSIBILISEERD (PENTAERYTHRITOLTETRANITRAAT, GEDESENSIBILISEERD) (PETN, GEDESENSIBILISEERD) met ten minste 15 massa-% flegmatiseermiddel",
+   "PENTAERYTHRIETTETRANITRAAT, BEVOCHTIGD (PENTAERYTHRITOLTETRANITRAAT, BEVOCHTIGD) (PETN, BEVOCHTIGD) met ten minste 25 massa-% water,"
+  ],
+  "0151": [
+   "PENTOLIET droog of bevochtigd met minder dan 15 massa-% water"
+  ],
+  "0153": [
+   "TRINITROANILINE (PICRAMIDE)"
+  ],
+  "0154": [
+   "TRINITROFENOL (PIKRINEZUUR) droog of bevochtigd met minder dan 30 massa-% water"
+  ],
+  "0155": [
+   "TRINITROCHLOORBENZEEN (PICRYLCHLORIDE)"
+  ],
+  "0159": [
+   "GRONDSTOF VOOR ROOKZWAK BUSKRUIT, BEVOCHTIGD met ten minste 25 massa-% water"
+  ],
+  "0160": [
+   "ROOKZWAK BUSKRUIT"
+  ],
+  "0161": [
+   "ROOKZWAK BUSKRUIT"
+  ],
+  "0167": [
+   "PROJECTIELEN met springlading"
+  ],
+  "0168": [
+   "PROJECTIELEN met springlading"
+  ],
+  "0169": [
+   "PROJECTIELEN met springlading"
+  ],
+  "0171": [
+   "LICHTMUNITIE met of zonder verspreidings-, uitstoot- of voortdrijvende lading"
+  ],
+  "0173": [
+   "ONTSPANNINGSONTSTEKERS, ONTPLOFBAAR"
+  ],
+  "0174": [
+   "KLINKNAGELPATRONEN"
+  ],
+  "0180": [
+   "RAKETTEN met springlading"
+  ],
+  "0181": [
+   "RAKETTEN met springlading"
+  ],
+  "0182": [
+   "RAKETTEN met springlading"
+  ],
+  "0183": [
+   "RAKETTEN met inerte kop"
+  ],
+  "0186": [
+   "RAKETAANDRIJVINGEN"
+  ],
+  "0190": [
+   "ONTPLOFBARE STOF, MONSTER met uitzondering van inleispringstof"
+  ],
+  "0191": [
+   "HANDSEINMIDDELEN"
+  ],
+  "0192": [
+   "KNALSEINEN VOOR SPOORWEGDOELEINDEN"
+  ],
+  "0193": [
+   "KNALSEINEN VOOR SPOORWEGDOELEINDEN"
+  ],
+  "0194": [
+   "SCHEEPSNOODSIGNALEN"
+  ],
+  "0195": [
+   "SCHEEPSNOODSIGNALEN"
+  ],
+  "0196": [
+   "ROOKSIGNALEN"
+  ],
+  "0197": [
+   "ROOKSIGNALEN"
+  ],
+  "0204": [
+   "DIEPTEPEILVOORWERPEN, ONTPLOFBAAR"
+  ],
+  "0207": [
+   "TETRANITROANILINE"
+  ],
+  "0208": [
+   "TRINITROFENYLMETHYLNITRAMINE (TETRYL)"
+  ],
+  "0209": [
+   "TRINITROTOLUEEN (TNT) droog of bevochtigd met minder dan 30 massa-% water"
+  ],
+  "0212": [
+   "LICHTSPOORELEMENTEN VOOR MUNITIE"
+  ],
+  "0213": [
+   "TRINITROANISOL"
+  ],
+  "0214": [
+   "TRINITROBENZEEN droog of bevochtigd met minder dan 30 massa-% water"
+  ],
+  "0215": [
+   "TRINITROBENZOËZUUR droog of bevochtigd met minder dan 30 massa-% water"
+  ],
+  "0216": [
+   "TRINITRO-m-CRESOL"
+  ],
+  "0217": [
+   "TRINITRONAFTALEEN"
+  ],
+  "0218": [
+   "TRINITROFENETOL"
+  ],
+  "0219": [
+   "TRINITRORESORCINOL (STYFNINEZUUR) droog of bevochtigd met minder dan 20 massa-% water, of mengsel van alcohol en water"
+  ],
+  "0220": [
+   "UREUMNITRAAT droog of bevochtigd met minder dan 20 massa-% water"
+  ],
+  "0221": [
+   "TORPEDOKOPPEN met springlading"
+  ],
+  "0222": [
+   "AMMONIUMNITRAAT met meer dan 0,2% brandbare stoffen (organische stoffen, berekend als koolstof, inbegrepen) en zonder andere toegevoegde stoffen"
+  ],
+  "0224": [
+   "BARIUMAZIDE droog of bevochtigd met minder dan 50 massa-% water"
+  ],
+  "0225": [
+   "OVERDRACHTSLADINGEN MET SLAGPIJPJE"
+  ],
+  "0226": [
+   "CYCLOTETRAMETHYLEENTETRANITRAMINE, BEVOCHTIGD (HMX, BEVOCHTIGD) (OCTOGEEN, BEVOCHTIGD) met ten minste 15 massa-% water"
+  ],
+  "0234": [
+   "NATRIUMDINITRO-o-CRESOLAAT droog of bevochtigd met minder dan 15 massa-% water"
+  ],
+  "0235": [
+   "NATRIUMPIKRAMAAT droog of bevochtigd met minder dan 20 massa-% water"
+  ],
+  "0236": [
+   "ZIRKONIUMPIKRAMAAT droog of bevochtigd met minder dan 20 massa-% water"
+  ],
+  "0237": [
+   "HOLLE LADINGEN, BUIGZAAM, GESTREKT"
+  ],
+  "0238": [
+   "LIJNWERPRAKETTEN"
+  ],
+  "0240": [
+   "LIJNWERPRAKETTEN"
+  ],
+  "0241": [
+   "SPRINGSTOF, TYPE E"
+  ],
+  "0242": [
+   "VOORTDRIJVENDE LADINGEN VOOR GESCHUT"
+  ],
+  "0243": [
+   "BRANDMUNITIE, WITTE FOSFOR met verspreidings-, uitstoot- of voortdrijvende lading"
+  ],
+  "0244": [
+   "BRANDMUNITIE, WITTE FOSFOR met verspreidings-, uitstoot- of voortdrijvende lading"
+  ],
+  "0245": [
+   "ROOKMUNITIE, WITTE FOSFOR met verspreidings-, uitstoot- of voortdrijvende lading"
+  ],
+  "0246": [
+   "ROOKMUNITIE, WITTE FOSFOR met verspreidings-, uitstoot- of voortdrijvende lading"
+  ],
+  "0247": [
+   "BRANDMUNITIE, met vloeistof of gel met verspreidings-, uitstoot- of voortdrijvende lading"
+  ],
+  "0248": [
+   "INRICHTINGEN, DOOR WATER TE ACTIVEREN met verspreidings-, uitstoot- of voortdrijvende lading"
+  ],
+  "0249": [
+   "INRICHTINGEN, DOOR WATER TE ACTIVEREN met verspreidings-, uitstoot- of voortdrijvende lading"
+  ],
+  "0250": [
+   "RAKETAANDRIJVINGEN MET HYPERGOLISCHE VLOEISTOFFEN met of zonder uitstootlading"
+  ],
+  "0254": [
+   "LICHTMUNITIE met of zonder verspreidings-, uitstoot- of voortdrijvende lading"
+  ],
+  "0255": [
+   "SLAGPIJPJES, ELEKTRISCH voor springstofladingen"
+  ],
+  "0257": [
+   "BUIZEN, DETONEREND"
+  ],
+  "0266": [
+   "OCTOLIET droog of bevochtigd met minder dan 15 massa-% water"
+  ],
+  "0267": [
+   "SLAGPIJPJES, NIET ELEKTRISCH voor springstofladingen"
+  ],
+  "0268": [
+   "OVERDRACHTSLADINGEN MET SLAGPIJPJE"
+  ],
+  "0271": [
+   "VOORTDRIJVENDE LADINGEN"
+  ],
+  "0272": [
+   "VOORTDRIJVENDE LADINGEN"
+  ],
+  "0275": [
+   "PATRONEN VOOR TECHNISCHE DOELEINDEN"
+  ],
+  "0276": [
+   "PATRONEN VOOR TECHNISCHE DOELEINDEN"
+  ],
+  "0277": [
+   "PATRONEN VOOR OLIEBORINGEN"
+  ],
+  "0278": [
+   "PATRONEN VOOR OLIEBORINGEN"
+  ],
+  "0279": [
+   "VOORTDRIJVENDE LADINGEN VOOR GESCHUT"
+  ],
+  "0280": [
+   "RAKETAANDRIJVINGEN"
+  ],
+  "0281": [
+   "RAKETAANDRIJVINGEN"
+  ],
+  "0282": [
+   "NITROGUANIDINE (PIKRIET) droog of bevochtigd met minder dan 20 massa-% water"
+  ],
+  "0283": [
+   "OVERDRACHTSLADINGEN zonder slagpijpje"
+  ],
+  "0284": [
+   "GRANATEN hand- of geweer-, met springlading"
+  ],
+  "0285": [
+   "GRANATEN hand- of geweer-, met springlading"
+  ],
+  "0286": [
+   "RAKETKOPPEN met springlading"
+  ],
+  "0287": [
+   "RAKETKOPPEN met springlading"
+  ],
+  "0288": [
+   "HOLLE LADINGEN, BUIGZAAM, GESTREKT"
+  ],
+  "0289": [
+   "SLAGSNOER buigzaam"
+  ],
+  "0290": [
+   "SLAGSNOER met metalen bekleding"
+  ],
+  "0291": [
+   "BOMMEN met springlading"
+  ],
+  "0292": [
+   "GRANATEN hand- of geweer-, met springlading"
+  ],
+  "0293": [
+   "GRANATEN hand- of geweer-, met springlading"
+  ],
+  "0294": [
+   "MIJNEN met springlading"
+  ],
+  "0295": [
+   "RAKETTEN met springlading"
+  ],
+  "0296": [
+   "DIEPTEPEILVOORWERPEN, ONTPLOFBAAR"
+  ],
+  "0297": [
+   "LICHTMUNITIE met of zonder verspreidings-, uitstoot- of voortdrijvende lading"
+  ],
+  "0299": [
+   "FLITSLICHTBOMMEN"
+  ],
+  "0300": [
+   "BRANDMUNITIE met of zonder verspreidings-, uitstoot- of voortdrijvende lading"
+  ],
+  "0301": [
+   "MUNITIE, TRAANVERWEKKEND met verspreidings-, uitstoot- of voortdrijvende lading"
+  ],
+  "0303": [
+   "ROOKMUNITIE met of zonder verspreidings-, uitstoot- of voortdrijvende lading",
+   "ROOKMUNITIE met of zonder verspreidings-, uitstoot- of voortdrijvende lading, die bijtende stoffen bevat",
+   "ROOKMUNITIE met of zonder verspreidings-, uitstoot- of voortdrijvende lading, die bij inademing giftige stoffen bevat"
+  ],
+  "0305": [
+   "FLITSLICHTPOEDER"
+  ],
+  "0306": [
+   "LICHTSPOORELEMENTEN VOOR MUNITIE"
+  ],
+  "0312": [
+   "SEINPATRONEN"
+  ],
+  "0313": [
+   "ROOKSIGNALEN"
+  ],
+  "0314": [
+   "ONTSTEKERS"
+  ],
+  "0315": [
+   "ONTSTEKERS"
+  ],
+  "0316": [
+   "BUIZEN, NIET DETONEREND"
+  ],
+  "0317": [
+   "BUIZEN, NIET DETONEREND"
+  ],
+  "0318": [
+   "OEFENGRANATEN hand- of geweer-"
+  ],
+  "0319": [
+   "ONTSTEKINGSDOPPEN"
+  ],
+  "0320": [
+   "ONTSTEKINGSDOPPEN"
+  ],
+  "0321": [
+   "PATRONEN VOOR WAPENS met springlading"
+  ],
+  "0322": [
+   "RAKETAANDRIJVINGEN MET HYPERGOLISCHE VLOEISTOFFEN met of zonder uitstootlading"
+  ],
+  "0323": [
+   "PATRONEN VOOR TECHNISCHE DOELEINDEN"
+  ],
+  "0324": [
+   "PROJECTIELEN met springlading"
+  ],
+  "0325": [
+   "ONTSTEKERS"
+  ],
+  "0326": [
+   "LOSSE PATRONEN VOOR WAPENS"
+  ],
+  "0327": [
+   "LOSSE PATRONEN VOOR WAPENS",
+   "LOSSE PATRONEN VOOR KLEINKALIBERWAPENS"
+  ],
+  "0328": [
+   "PATRONEN VOOR WAPENS, MET INERT PROJECTIEL"
+  ],
+  "0329": [
+   "TORPEDO'S met springlading"
+  ],
+  "0330": [
+   "TORPEDO'S met springlading"
+  ],
+  "0331": [
+   "SPRINGSTOF, TYPE B"
+  ],
+  "0332": [
+   "SPRINGSTOF, TYPE E"
+  ],
+  "0333": [
+   "VUURWERK"
+  ],
+  "0334": [
+   "VUURWERK"
+  ],
+  "0335": [
+   "VUURWERK"
+  ],
+  "0336": [
+   "VUURWERK"
+  ],
+  "0337": [
+   "VUURWERK"
+  ],
+  "0338": [
+   "LOSSE PATRONEN VOOR WAPENS",
+   "LOSSE PATRONEN VOOR KLEINKALIBERWAPENS"
+  ],
+  "0339": [
+   "PATRONEN VOOR WAPENS, MET INERT PROJECTIEL",
+   "PATRONEN VOOR KLEINKALIBERWAPENS"
+  ],
+  "0340": [
+   "NITROCELLULOSE droog of bevochtigd met minder dan 25 massa-% water (of alcohol)"
+  ],
+  "0341": [
+   "NITROCELLULOSE onbehandeld of geplastificeerd met minder dan 18 massa-% plastificeermiddel"
+  ],
+  "0342": [
+   "NITROCELLULOSE, BEVOCHTIGD met ten minste 25 massa-% alcohol"
+  ],
+  "0343": [
+   "NITROCELLULOSE, GEPLASTIFICEERD met ten minste 18 massa-% plastificeermiddel"
+  ],
+  "0344": [
+   "PROJECTIELEN met springlading"
+  ],
+  "0345": [
+   "PROJECTIELEN inert, met lichtspoorelement"
+  ],
+  "0346": [
+   "PROJECTIELEN met verspreidings- of uitstootlading"
+  ],
+  "0347": [
+   "PROJECTIELEN met verspreidings- of uitstootlading"
+  ],
+  "0348": [
+   "PATRONEN VOOR WAPENS met springlading"
+  ],
+  "0349": [
+   "ONTPLOFBARE VOORWERPEN, N.E.G."
+  ],
+  "0350": [
+   "ONTPLOFBARE VOORWERPEN, N.E.G."
+  ],
+  "0351": [
+   "ONTPLOFBARE VOORWERPEN, N.E.G."
+  ],
+  "0352": [
+   "ONTPLOFBARE VOORWERPEN, N.E.G."
+  ],
+  "0353": [
+   "ONTPLOFBARE VOORWERPEN, N.E.G."
+  ],
+  "0354": [
+   "ONTPLOFBARE VOORWERPEN, N.E.G."
+  ],
+  "0355": [
+   "ONTPLOFBARE VOORWERPEN, N.E.G."
+  ],
+  "0356": [
+   "ONTPLOFBARE VOORWERPEN, N.E.G."
+  ],
+  "0357": [
+   "ONTPLOFBARE STOFFEN, N.E.G."
+  ],
+  "0358": [
+   "ONTPLOFBARE STOFFEN, N.E.G."
+  ],
+  "0359": [
+   "ONTPLOFBARE STOFFEN, N.E.G."
+  ],
+  "0360": [
+   "SLAGPIJPJES, SAMENGESTELD, NIET-ELEKTRISCH voor springstofladingen"
+  ],
+  "0361": [
+   "SLAGPIJPJES, SAMENGESTELD, NIET-ELEKTRISCH voor springstofladingen"
+  ],
+  "0362": [
+   "OEFENMUNITIE"
+  ],
+  "0363": [
+   "MUNITIE VOOR BEPROEVINGEN"
+  ],
+  "0364": [
+   "SLAGPIJPJES VOOR MUNITIE"
+  ],
+  "0365": [
+   "SLAGPIJPJES VOOR MUNITIE"
+  ],
+  "0366": [
+   "SLAGPIJPJES VOOR MUNITIE"
+  ],
+  "0367": [
+   "BUIZEN, DETONEREND"
+  ],
+  "0368": [
+   "BUIZEN, NIET DETONEREND"
+  ],
+  "0369": [
+   "RAKETKOPPEN met springlading"
+  ],
+  "0370": [
+   "RAKETKOPPEN met verspreidings- of uitstootlading"
+  ],
+  "0371": [
+   "RAKETKOPPEN met verspreidings- of uitstootlading"
+  ],
+  "0372": [
+   "OEFENGRANATEN hand- of geweer-"
+  ],
+  "0373": [
+   "HANDSEINMIDDELEN"
+  ],
+  "0374": [
+   "DIEPTEPEILVOORWERPEN, ONTPLOFBAAR"
+  ],
+  "0375": [
+   "DIEPTEPEILVOORWERPEN, ONTPLOFBAAR"
+  ],
+  "0376": [
+   "ONTSTEKINGSDOPPEN"
+  ],
+  "0377": [
+   "SLAGHOEDJES"
+  ],
+  "0378": [
+   "SLAGHOEDJES"
+  ],
+  "0379": [
+   "PATROONHULZEN, LEEG, MET ONTSTEKER"
+  ],
+  "0380": [
+   "PYROFORE VOORWERPEN"
+  ],
+  "0381": [
+   "PATRONEN VOOR TECHNISCHE DOELEINDEN"
+  ],
+  "0382": [
+   "BESTANDDELEN VAN EEN PYROTECHNISCHE KETEN, N.E.G."
+  ],
+  "0383": [
+   "BESTANDDELEN VAN EEN PYROTECHNISCHE KETEN, N.E.G."
+  ],
+  "0384": [
+   "BESTANDDELEN VAN EEN PYROTECHNISCHE KETEN, N.E.G."
+  ],
+  "0385": [
+   "5-NITROBENZOTRIAZOL"
+  ],
+  "0386": [
+   "TRINITROBENZEENSULFON ZUUR"
+  ],
+  "0387": [
+   "TRINITROFLUORENON"
+  ],
+  "0388": [
+   "TRINITROTOLUEEN GEMENGD MET HEXANITROSTILBEEN (TNT GEMENGD MET HEXANITROSTILBEEN)",
+   "TRINITROTOLUEEN GEMENGD MET TRINITROBENZEEN (TNT GEMENGD MET TRINITROBENZEEN)"
+  ],
+  "0389": [
+   "TRINITROTOLUEEN GEMENGD MET TRINITROBENZEEN EN HEXANITROSTILBEEN (TNT GEMENGD MET TRINITROBENZEEN EN HEXANITROSTILBEEN)"
+  ],
+  "0390": [
+   "TRITONAL"
+  ],
+  "0391": [
+   "CYCLOTRIMETHYLEENTRINITRAMINE EN CYCLOTETRAMETHYLEENTETRANITRAMINE MENGSEL, GEDESENSIBILISEERD (CYCLONIET EN CYCLOTETRAMETHYLEENTETRANITRAMINE MENGSEL, GEDESENSIBILISEERD) (HEXOGEEN EN CYCLOTETRAMETHYLEENTETRANITRAMINE MENGSEL, GEDESENSIBILISEERD) (RDX) met ten minste 10 massa-% flegmatiseermiddel",
+   "CYCLOTRIMETHYLEENTRINITRAMINE EN CYCLOTETRAMETHYLEENTETRANITRAMINE MENGSEL, BEVOCHTIGD (CYCLONIET EN CYCLOTETRAMETHYLEENTETRANITRAMINE MENGSEL, BEVOCHTIGD) (HEXOGEEN EN CYCLOTETRAMETHYLEENTETRANITRAMINE MENGSEL, BEVOCHTIGD) (RDX EN CYCLOTETRAMETHYLEENTE) met ten minste 15 massa-% water,"
+  ],
+  "0392": [
+   "HEXANITROSTILBEEN"
+  ],
+  "0393": [
+   "HEXOTONAL"
+  ],
+  "0394": [
+   "TRINITRORESORCINOL, BEVOCHTIGD (STYFNINEZUUR, BEVOCHTIGD) met ten minste 20 massa-% water, of mengsel van alcohol en water"
+  ],
+  "0395": [
+   "RAKETAANDRIJVINGEN MET VLOEIBARE BRANDSTOF"
+  ],
+  "0396": [
+   "RAKETAANDRIJVINGEN MET VLOEIBARE BRANDSTOF"
+  ],
+  "0397": [
+   "RAKETTEN MET VLOEIBARE BRANDSTOF met springlading"
+  ],
+  "0398": [
+   "RAKETTEN MET VLOEIBARE BRANDSTOF met springlading"
+  ],
+  "0399": [
+   "BOMMEN, BRANDBARE VLOEISTOF BEVATTEND met springlading"
+  ],
+  "0400": [
+   "BOMMEN, BRANDBARE VLOEISTOF BEVATTEND met springlading"
+  ],
+  "0401": [
+   "DIPICRYLSULFIDE droog of bevochtigd met minder dan 10 massa-% water"
+  ],
+  "0402": [
+   "AMMONIUMPERCHLORAAT"
+  ],
+  "0403": [
+   "FAKKELS VOOR VLIEGTUIGEN"
+  ],
+  "0404": [
+   "FAKKELS VOOR VLIEGTUIGEN"
+  ],
+  "0405": [
+   "SEINPATRONEN"
+  ],
+  "0406": [
+   "DINITROSOBENZEEN"
+  ],
+  "0407": [
+   "TETRAZOL-1-AZIJNZUUR"
+  ],
+  "0408": [
+   "BUIZEN, DETONEREND met veiligheidsvoorzieningen"
+  ],
+  "0409": [
+   "BUIZEN, DETONEREND met veiligheidsvoorzieningen"
+  ],
+  "0410": [
+   "BUIZEN, DETONEREND met veiligheidsvoorzieningen"
+  ],
+  "0411": [
+   "PENTAERYTHRIETTETRANITRAAT (PENTAERYTHRITOLTETRANITRAAT) (PETN) met ten minste 7 massa-% was"
+  ],
+  "0412": [
+   "PATRONEN VOOR WAPENS met springlading"
+  ],
+  "0413": [
+   "LOSSE PATRONEN VOOR WAPENS"
+  ],
+  "0414": [
+   "VOORTDRIJVENDE LADINGEN VOOR GESCHUT"
+  ],
+  "0415": [
+   "VOORTDRIJVENDE LADINGEN"
+  ],
+  "0417": [
+   "PATRONEN VOOR WAPENS, MET INERT PROJECTIEL",
+   "PATRONEN VOOR KLEINKALIBERWAPENS"
+  ],
+  "0418": [
+   "GRONDFAKKELS"
+  ],
+  "0419": [
+   "GRONDFAKKELS"
+  ],
+  "0420": [
+   "FAKKELS VOOR VLIEGTUIGEN"
+  ],
+  "0421": [
+   "FAKKELS VOOR VLIEGTUIGEN"
+  ],
+  "0424": [
+   "PROJECTIELEN inert, met lichtspoorelement"
+  ],
+  "0425": [
+   "PROJECTIELEN inert, met lichtspoorelement"
+  ],
+  "0426": [
+   "PROJECTIELEN met verspreidings- of uitstootlading"
+  ],
+  "0427": [
+   "PROJECTIELEN met verspreidings- of uitstootlading"
+  ],
+  "0428": [
+   "PYROTECHNISCHE VOORWERPEN voor technische doeleinden"
+  ],
+  "0429": [
+   "PYROTECHNISCHE VOORWERPEN voor technische doeleinden"
+  ],
+  "0430": [
+   "PYROTECHNISCHE VOORWERPEN voor technische doeleinden"
+  ],
+  "0431": [
+   "PYROTECHNISCHE VOORWERPEN voor technische doeleinden"
+  ],
+  "0432": [
+   "PYROTECHNISCHE VOORWERPEN voor technische doeleinden"
+  ],
+  "0433": [
+   "GRONDSTOF VOOR ROOKZWAK BUSKRUIT, BEVOCHTIGD met ten minste 17 massa-% alcohol"
+  ],
+  "0434": [
+   "PROJECTIELEN met verspreidings- of uitstootlading"
+  ],
+  "0435": [
+   "PROJECTIELEN met verspreidings- of uitstootlading"
+  ],
+  "0436": [
+   "RAKETTEN met uitstootlading"
+  ],
+  "0437": [
+   "RAKETTEN met uitstootlading"
+  ],
+  "0438": [
+   "RAKETTEN met uitstootlading"
+  ],
+  "0439": [
+   "HOLLE LADINGEN zonder slagpijpje"
+  ],
+  "0440": [
+   "HOLLE LADINGEN zonder slagpijpje"
+  ],
+  "0441": [
+   "HOLLE LADINGEN zonder slagpijpje"
+  ],
+  "0442": [
+   "SPRINGLADINGEN VOOR INDUSTRIËLE DOELEINDEN zonder slagpijpje"
+  ],
+  "0443": [
+   "SPRINGLADINGEN VOOR INDUSTRIËLE DOELEINDEN zonder slagpijpje"
+  ],
+  "0444": [
+   "SPRINGLADINGEN VOOR INDUSTRIËLE DOELEINDEN zonder slagpijpje"
+  ],
+  "0445": [
+   "SPRINGLADINGEN VOOR INDUSTRIËLE DOELEINDEN zonder slagpijpje"
+  ],
+  "0446": [
+   "PATROONHULZEN, MEEBRANDEND, LEEG, ZONDER ONTSTEKER"
+  ],
+  "0447": [
+   "PATROONHULZEN, MEEBRANDEND, LEEG, ZONDER ONTSTEKER"
+  ],
+  "0448": [
+   "5-MERCAPTOTETRAZOL-1-AZIJNZUUR"
+  ],
+  "0449": [
+   "TORPEDO'S MET VLOEIBARE BRANDSTOF met of zonder springlading"
+  ],
+  "0450": [
+   "TORPEDO'S MET VLOEIBARE BRANDSTOF met inerte kop"
+  ],
+  "0451": [
+   "TORPEDO'S met springlading"
+  ],
+  "0452": [
+   "OEFENGRANATEN hand- of geweer-"
+  ],
+  "0453": [
+   "LIJNWERPRAKETTEN"
+  ],
+  "0454": [
+   "ONTSTEKERS"
+  ],
+  "0455": [
+   "SLAGPIJPJES, NIET ELEKTRISCH voor springstofladingen"
+  ],
+  "0456": [
+   "SLAGPIJPJES, ELEKTRISCH voor springstofladingen"
+  ],
+  "0457": [
+   "SPRINGLADINGEN, KUNSTSTOFGEBONDEN"
+  ],
+  "0458": [
+   "SPRINGLADINGEN, KUNSTSTOFGEBONDEN"
+  ],
+  "0459": [
+   "SPRINGLADINGEN, KUNSTSTOFGEBONDEN"
+  ],
+  "0460": [
+   "SPRINGLADINGEN, KUNSTSTOFGEBONDEN"
+  ],
+  "0461": [
+   "BESTANDDELEN VAN EEN PYROTECHNISCHE KETEN, N.E.G."
+  ],
+  "0462": [
+   "ONTPLOFBARE VOORWERPEN, N.E.G."
+  ],
+  "0463": [
+   "ONTPLOFBARE VOORWERPEN, N.E.G."
+  ],
+  "0464": [
+   "ONTPLOFBARE VOORWERPEN, N.E.G."
+  ],
+  "0465": [
+   "ONTPLOFBARE VOORWERPEN, N.E.G."
+  ],
+  "0466": [
+   "ONTPLOFBARE VOORWERPEN, N.E.G."
+  ],
+  "0467": [
+   "ONTPLOFBARE VOORWERPEN, N.E.G."
+  ],
+  "0468": [
+   "ONTPLOFBARE VOORWERPEN, N.E.G."
+  ],
+  "0469": [
+   "ONTPLOFBARE VOORWERPEN, N.E.G."
+  ],
+  "0470": [
+   "ONTPLOFBARE VOORWERPEN, N.E.G."
+  ],
+  "0471": [
+   "ONTPLOFBARE VOORWERPEN, N.E.G."
+  ],
+  "0472": [
+   "ONTPLOFBARE VOORWERPEN, N.E.G."
+  ],
+  "0473": [
+   "ONTPLOFBARE STOFFEN, N.E.G."
+  ],
+  "0474": [
+   "ONTPLOFBARE STOFFEN, N.E.G."
+  ],
+  "0475": [
+   "ONTPLOFBARE STOFFEN, N.E.G."
+  ],
+  "0476": [
+   "ONTPLOFBARE STOFFEN, N.E.G."
+  ],
+  "0477": [
+   "ONTPLOFBARE STOFFEN, N.E.G."
+  ],
+  "0478": [
+   "ONTPLOFBARE STOFFEN, N.E.G."
+  ],
+  "0479": [
+   "ONTPLOFBARE STOFFEN, N.E.G."
+  ],
+  "0480": [
+   "ONTPLOFBARE STOFFEN, N.E.G."
+  ],
+  "0481": [
+   "ONTPLOFBARE STOFFEN, N.E.G."
+  ],
+  "0482": [
+   "ONTPLOFBARE STOFFEN, ZEER WEINIG GEVOELIG, N.E.G. (STOFFEN, EVI, N.E.G.)"
+  ],
+  "0483": [
+   "CYCLOTRIMETHYLEENTRINITRAMINE, GEDESENSIBILISEERD (CYCLONIET, GEDESENSIBILISEERD) (HEXOGEEN, GEDESENSIBILISEERD) (RDX, GEDESENSIBILISEERD)"
+  ],
+  "0484": [
+   "CYCLOTETRAMETHYLEENTETRANITRAMINE, GEDESENSIBILISEERD (HMX, GEDESENSIBILISEERD) (OCTOGEEN, GEDESENSIBILISEERD)"
+  ],
+  "0485": [
+   "ONTPLOFBARE STOFFEN, N.E.G."
+  ],
+  "0486": [
+   "ONTPLOFBARE VOORWERPEN, EXTREEM WEINIG GEVOELIG (VOORWERPEN, EEI)"
+  ],
+  "0487": [
+   "ROOKSIGNALEN"
+  ],
+  "0488": [
+   "OEFENMUNITIE"
+  ],
+  "0489": [
+   "DINITROGLYCOLURIL (DINGU)"
+  ],
+  "0490": [
+   "OXYNITROTRIAZOL (ONTA)"
+  ],
+  "0491": [
+   "VOORTDRIJVENDE LADINGEN"
+  ],
+  "0492": [
+   "KNALSEINEN VOOR SPOORWEGDOELEINDEN"
+  ],
+  "0493": [
+   "KNALSEINEN VOOR SPOORWEGDOELEINDEN"
+  ],
+  "0494": [
+   "OLIEPIJPDOORBORINGSAPPARATEN zonder slagpijpje"
+  ],
+  "0495": [
+   "VOORTDRIJVENDE STOF, VLOEIBAAR"
+  ],
+  "0496": [
+   "OCTONAL"
+  ],
+  "0497": [
+   "VOORTDRIJVENDE STOF, VLOEIBAAR"
+  ],
+  "0498": [
+   "VOORTDRIJVENDE STOF, VAST"
+  ],
+  "0499": [
+   "VOORTDRIJVENDE STOF, VAST"
+  ],
+  "0500": [
+   "SLAGPIJPJES, SAMENGESTELD, NIET-ELEKTRISCH voor springstofladingen"
+  ],
+  "0501": [
+   "VOORTDRIJVENDE STOF, VAST"
+  ],
+  "0502": [
+   "RAKETTEN met inerte kop"
+  ],
+  "0503": [
+   "VEILIGHEIDSINRICHTINGEN, PYROTECHNISCH"
+  ],
+  "0504": [
+   "1H-TETRAZOL"
+  ],
+  "0505": [
+   "SCHEEPSNOODSIGNALEN"
+  ],
+  "0506": [
+   "SCHEEPSNOODSIGNALEN"
+  ],
+  "0507": [
+   "ROOKSIGNALEN"
+  ],
+  "0508": [
+   "1-HYDROXYBENZOTRIAZOL, WATERVRIJ droog of bevochtigd met minder dan 20 massa-% water"
+  ],
+  "0509": [
+   "ROOKZWAK BUSKRUIT"
+  ],
+  "0510": [
+   "RAKETAANDRIJVINGEN"
+  ],
+  "0511": [
+   "SLAGPIJPJES, ELEKTRONISCH programmeerbaar"
+  ],
+  "0512": [
+   "SLAGPIJPJES, ELEKTRONISCH programmeerbaar"
+  ],
+  "0513": [
+   "SLAGPIJPJES, ELEKTRONISCH programmeerbaar"
+  ],
+  "0514": [
+   "INRICHTINGEN VOOR VERSPREIDEN VAN BRANDBLUSMIDDEL"
+  ],
+  "1001": [
+   "ACETYLEEN, OPGELOST (ETHYN, OPGELOST)"
+  ],
+  "1002": [
+   "LUCHT, SAMENGEPERST (PERSLUCHT)"
+  ],
+  "1003": [
+   "LUCHT, STERK GEKOELD, VLOEIBAAR"
+  ],
+  "1005": [
+   "AMMONIAK, WATERVRIJ"
+  ],
+  "1006": [
+   "ARGON, SAMENGEPERST"
+  ],
+  "1008": [
+   "BORIUMTRIFLUORIDE"
+  ],
+  "1009": [
+   "BROOMTRIFLUORMETHAAN (KOELGAS R 13B1)"
+  ],
+  "1010": [
+   "BUTADIENEN, GESTABILISEERD",
+   "MENGSEL VAN BUTADIENEN EN KOOLWATERSTOF, GESTABILISEERD met meer dan 20% butadienen"
+  ],
+  "1011": [
+   "BUTAAN"
+  ],
+  "1012": [
+   "BUTEEN"
+  ],
+  "1013": [
+   "KOOLDIOXIDE (KOOLSTOFDIOXIDE) (KOOLZUUR)"
+  ],
+  "1016": [
+   "KOOLMONOXIDE, SAMENGEPERST (KOOLSTOFMONOXIDE, SAMENGEPERST)"
+  ],
+  "1017": [
+   "CHLOOR"
+  ],
+  "1018": [
+   "CHLOORDIFLUORMETHAAN (KOELGAS R 22)"
+  ],
+  "1020": [
+   "CHLOORPENTAFLUOR ETHAAN (KOELGAS R 115)"
+  ],
+  "1021": [
+   "1-CHLOOR-1,2,2,2-TETRAFLUORETHAAN (KOELGAS R 124)"
+  ],
+  "1022": [
+   "CHLOORTRIFLUORMETHAAN (KOELGAS R 13)"
+  ],
+  "1023": [
+   "STADSGAS, SAMENGEPERST"
+  ],
+  "1026": [
+   "DICYAAN"
+  ],
+  "1027": [
+   "CYCLOPROPAAN"
+  ],
+  "1028": [
+   "DICHLOORDIFLUORMETHAAN (KOELGAS R 12)"
+  ],
+  "1029": [
+   "DICHLOORFLUORMETHAAN (KOELGAS R 21)"
+  ],
+  "1030": [
+   "1,1-DIFLUORETHAAN (KOELGAS R 152A)"
+  ],
+  "1032": [
+   "DIMETHYLAMINE, WATERVRIJ"
+  ],
+  "1033": [
+   "DIMETHYLETHER"
+  ],
+  "1035": [
+   "ETHAAN"
+  ],
+  "1036": [
+   "ETHYLAMINE"
+  ],
+  "1037": [
+   "ETHYLCHLORIDE"
+  ],
+  "1038": [
+   "ETHYLEEN, STERK GEKOELD VLOEIBAAR (ETHEEN, STERK GEKOELD VLOEIBAAR)"
+  ],
+  "1039": [
+   "ETHYLMETHYLETHER"
+  ],
+  "1040": [
+   "ETHYLEENOXIDE",
+   "ETHYLEENOXIDE MET STIKSTOF tot een totale druk van 1 MPa (10 bar) bij 50 °C"
+  ],
+  "1041": [
+   "MENGSEL VAN ETHYLEENOXIDE EN KOOLDIOXIDE (MENGSEL VAN ETHYLEENOXIDE EN KOOLSTOFDIOXIDE) (MENGSEL VAN ETHYLEENOXIDE EN KOOLZUUR) met meer dan 9%, maar ten hoogste 87% ethyleenoxide"
+  ],
+  "1043": [
+   "MESTSTOF, OPLOSSING met niet gebonden ammoniak"
+  ],
+  "1044": [
+   "BRANDBLUSAPPARATEN met samengeperst of vloeibaar gemaakt gas"
+  ],
+  "1045": [
+   "FLUOR, SAMENGEPERST"
+  ],
+  "1046": [
+   "HELIUM, SAMENGEPERST"
+  ],
+  "1048": [
+   "WATERSTOFBROMIDE, WATERVRIJ (BROOMWATERSTOF, WATERVRIJ)"
+  ],
+  "1049": [
+   "WATERSTOF, SAMENGEPERST"
+  ],
+  "1050": [
+   "WATERSTOFCHLORIDE, WATERVRIJ (CHLOORWATERSTOF, WATERVRIJ)"
+  ],
+  "1051": [
+   "CYAANWATERSTOF, GESTABILISEERD met minder dan 3% water"
+  ],
+  "1052": [
+   "FLUORWATERSTOF, WATERVRIJ"
+  ],
+  "1053": [
+   "WATERSTOFSULFIDE (ZWAVELWATERSTOF)"
+  ],
+  "1055": [
+   "ISOBUTEEN"
+  ],
+  "1056": [
+   "KRYPTON, SAMENGEPERST"
+  ],
+  "1057": [
+   "NAVULPATRONEN VOOR AANSTEKERS met brandbaar gas",
+   "AANSTEKERS met brandbaar gas"
+  ],
+  "1058": [
+   "VLOEIBAAR GEMAAKTE GASSEN niet-brandbaar, onder een atmosfeer van stikstof, kool(stof)dioxide of lucht"
+  ],
+  "1060": [
+   "MENGSEL VAN METHYLACETYLEEN EN PROPADIEEN, GESTABILISEERD zoals mengsel P1 of mengsel P2"
+  ],
+  "1061": [
+   "METHYLAMINE, WATERVRIJ"
+  ],
+  "1062": [
+   "METHYLBROMIDE met ten hoogste 2% chloorpikrine"
+  ],
+  "1063": [
+   "METHYLCHLORIDE (KOELGAS R 40)"
+  ],
+  "1064": [
+   "METHYLMERCAPTAAN"
+  ],
+  "1065": [
+   "NEON, SAMENGEPERST"
+  ],
+  "1066": [
+   "STIKSTOF, SAMENGEPERST"
+  ],
+  "1067": [
+   "DISTIKSTOFTETROXIDE (STIKSTOFDIOXIDE)"
+  ],
+  "1069": [
+   "NITROSYLCHLORIDE"
+  ],
+  "1070": [
+   "DISTIKSTOFOXIDE (LACHGAS)"
+  ],
+  "1071": [
+   "OLIEGAS, SAMENGEPERST (PETROLEUMGAS, SAMENGEPERST)"
+  ],
+  "1072": [
+   "ZUURSTOF, SAMENGEPERST"
+  ],
+  "1073": [
+   "ZUURSTOF, STERK GEKOELD, VLOEIBAAR"
+  ],
+  "1075": [
+   "PETROLEUMGASSEN, VLOEIBAAR GEMAAKT"
+  ],
+  "1076": [
+   "FOSGEEN"
+  ],
+  "1077": [
+   "PROPEEN (PROPYLEEN)"
+  ],
+  "1078": [
+   "KOELGAS, N.E.G. zoals mengsel F1, mengsel F2 of mengsel F3"
+  ],
+  "1079": [
+   "ZWAVELDIOXIDE"
+  ],
+  "1080": [
+   "ZWAVELHEXAFLUORIDE"
+  ],
+  "1081": [
+   "TETRAFLUORETHYLEEN, GESTABILISEERD"
+  ],
+  "1082": [
+   "KOELGAS R 1113"
+  ],
+  "1083": [
+   "TRIMETHYLAMINE, WATERVRIJ"
+  ],
+  "1085": [
+   "VINYLBROMIDE, GESTABILISEERD"
+  ],
+  "1086": [
+   "VINYLCHLORIDE, GESTABILISEERD"
+  ],
+  "1087": [
+   "VINYLMETHYLETHER, GESTABILISEERD"
+  ],
+  "1088": [
+   "ACETAL (1,1-diethoxyethaan)"
+  ],
+  "1089": [
+   "ACEETALDEHYDE (ethanal)"
+  ],
+  "1090": [
+   "ACETON"
+  ],
+  "1091": [
+   "ACETONOLIËN"
+  ],
+  "1092": [
+   "ACROLEÏNE, GESTABILISEERD"
+  ],
+  "1093": [
+   "ACRYLNITRIL, GESTABILISEERD"
+  ],
+  "1098": [
+   "ALLYLALCOHOL"
+  ],
+  "1099": [
+   "ALLYLBROMIDE"
+  ],
+  "1100": [
+   "ALLYLCHLORIDE"
+  ],
+  "1104": [
+   "AMYLACETATEN"
+  ],
+  "1105": [
+   "PENTANOLEN"
+  ],
+  "1106": [
+   "AMYLAMINE"
+  ],
+  "1107": [
+   "AMYLCHLORIDEN"
+  ],
+  "1108": [
+   "PENTEEN-1 (n-AMYLEEN)"
+  ],
+  "1109": [
+   "AMYLFORMIATEN"
+  ],
+  "1110": [
+   "n-AMYLMETHYLKETON"
+  ],
+  "1111": [
+   "AMYLMERCAPTANEN"
+  ],
+  "1112": [
+   "AMYLNITRAAT"
+  ],
+  "1113": [
+   "AMYLNITRIETEN"
+  ],
+  "1114": [
+   "BENZEEN"
+  ],
+  "1120": [
+   "BUTANOLEN"
+  ],
+  "1123": [
+   "BUTYLACETATEN"
+  ],
+  "1125": [
+   "n-BUTYLAMINE"
+  ],
+  "1126": [
+   "1-BROOMBUTAAN (n-butylbromide)"
+  ],
+  "1127": [
+   "CHLOORBUTANEN"
+  ],
+  "1128": [
+   "n-BUTYLFORMIAAT"
+  ],
+  "1129": [
+   "BUTYRALDEHYDE"
+  ],
+  "1130": [
+   "KAMFEROLIE"
+  ],
+  "1131": [
+   "KOOLSTOFDISULFIDE (ZWAVELKOOLSTOF)"
+  ],
+  "1133": [
+   "LIJMEN met brandbare vloeistof"
+  ],
+  "1134": [
+   "CHLOORBENZEEN (fenylchloride)"
+  ],
+  "1135": [
+   "ETHYLEENCHLOORHYDRINE (2-chloorethanol)"
+  ],
+  "1136": [
+   "KOOLTEERDESTILLATEN, BRANDBAAR"
+  ],
+  "1139": [
+   "BESCHERMLAK, OPLOSSING (waaronder voor industriële of andere doeleinden gebruikte oppervlaktebehandelingen of deklagen, zoals beschermlaag voor voertuigcarrosserieën, bekleding van vaten)",
+   "BESCHERMLAK, OPLOSSING ( waaronder voor industriële of andere doeleinden gebruikte oppervlaktebehandelingen of deklagen, zoals beschermlaag voor voertuigcarrosserieën, bekleding van vaten)"
+  ],
+  "1143": [
+   "CROTONALDEHYDE",
+   "CROTONALDEHYDE, GESTABILISEERD"
+  ],
+  "1144": [
+   "CROTONYLEEN (butyn-2)"
+  ],
+  "1145": [
+   "CYCLOHEXAAN"
+  ],
+  "1146": [
+   "CYCLOPENTAAN"
+  ],
+  "1147": [
+   "DECAHYDRONAFTALEEN (decaline)"
+  ],
+  "1148": [
+   "DIACETONALCOHOL technisch",
+   "DIACETONALCOHOL chemisch zuiver"
+  ],
+  "1149": [
+   "DIBUTYLETHERS"
+  ],
+  "1150": [
+   "1,2-DICHLOORETHYLEEN"
+  ],
+  "1152": [
+   "DICHLOORPENTANEN"
+  ],
+  "1153": [
+   "ETHYLEENGLYCOLDIETHYLETHER (1,2--diethoxyethaan)"
+  ],
+  "1154": [
+   "DIETHYLAMINE"
+  ],
+  "1155": [
+   "DIETHYLETHER (ETHYLETHER)"
+  ],
+  "1156": [
+   "DIETHYLKETON"
+  ],
+  "1157": [
+   "DIISOBUTYLKETON"
+  ],
+  "1158": [
+   "DIISOPROPYLAMINE"
+  ],
+  "1159": [
+   "DIISOPROPYLETHER"
+  ],
+  "1160": [
+   "DIMETHYLAMINE, OPLOSSING IN WATER"
+  ],
+  "1161": [
+   "DIMETHYLCARBONAAT"
+  ],
+  "1162": [
+   "DIMETHYLDICHLOORSILAAN"
+  ],
+  "1163": [
+   "DIMETHYLHYDRAZINE, ASYMMETRISCH"
+  ],
+  "1164": [
+   "DIMETHYLSULFIDE"
+  ],
+  "1165": [
+   "DIOXAAN"
+  ],
+  "1166": [
+   "DIOXOLAAN"
+  ],
+  "1167": [
+   "DIVINYLETHER, GESTABILISEERD"
+  ],
+  "1170": [
+   "ETHANOL, OPLOSSING (ETHYLALCOHOL, OPLOSSING)",
+   "ETHANOL (ETHYLALCOHOL)"
+  ],
+  "1171": [
+   "ETHYLEENGLYCOLMONOETHYLETHER (2-ethoxyethanol)"
+  ],
+  "1172": [
+   "ETHYLEENGLYCOLMONOETHYLETHERACETAAT (2-ethoxyethylacetaat)"
+  ],
+  "1173": [
+   "ETHYLACETAAT"
+  ],
+  "1175": [
+   "ETHYLBENZEEN"
+  ],
+  "1176": [
+   "TRIETHYLBORAAT"
+  ],
+  "1177": [
+   "2-ETHYLBUTYLACETAAT"
+  ],
+  "1178": [
+   "2-ETHYLBUTYRALDEHYDE"
+  ],
+  "1179": [
+   "ETHYLBUTYLETHER"
+  ],
+  "1180": [
+   "ETHYLBUTYRAAT"
+  ],
+  "1181": [
+   "ETHYLCHLOORACETAAT"
+  ],
+  "1182": [
+   "ETHYLCHLOORFORMIAAT"
+  ],
+  "1183": [
+   "ETHYLDICHLOORSILAAN"
+  ],
+  "1184": [
+   "ETHYLEENDICHLORIDE"
+  ],
+  "1185": [
+   "ETHYLEENIMINE, GESTABILISEERD"
+  ],
+  "1188": [
+   "ETHYLEENGLYCOLMONOMETHYLETHER (2-methoxyethanol)"
+  ],
+  "1189": [
+   "ETHYLEENGLYCOLMONOMETHYLETHERACETAAT"
+  ],
+  "1190": [
+   "ETHYLFORMIAAT"
+  ],
+  "1191": [
+   "OCTYLALDEHYDEN (ethylhexaldehyden) (2-ethylhexaldehyde, 3-ethylhexaldehyde)"
+  ],
+  "1192": [
+   "ETHYLLACTAAT"
+  ],
+  "1193": [
+   "ETHYLMETHYLKETON (METHYLETHYLKETON)"
+  ],
+  "1194": [
+   "ETHYLNITRIET, OPLOSSING"
+  ],
+  "1195": [
+   "ETHYLPROPIONAAT"
+  ],
+  "1196": [
+   "ETHYLTRICHLOORSILAAN"
+  ],
+  "1197": [
+   "EXTRACTEN, VLOEIBAAR voor smaak of aroma"
+  ],
+  "1198": [
+   "FORMALDEHYDE, OPLOSSING, BRANDBAAR"
+  ],
+  "1199": [
+   "FURALDEHYDEN"
+  ],
+  "1201": [
+   "FOEZELOLIE"
+  ],
+  "1202": [
+   "DIESELOLIE (vlampunt ten hoogste 60°C)",
+   "DIESELOLIE (vlampunt hoger dan 60 °C, doch ten hoogste 100°C)",
+   "GASOLIE (vlampunt ten hoogste 60°C)",
+   "GASOLIE (vlampunt hoger dan 60 °C, doch ten hoogste 100°C)",
+   "STOOKOLIE, LICHT (vlampunt ten hoogste 60 °C)",
+   "STOOKOLIE, LICHT (vlampunt hoger dan 60 °C, doch ten hoogste 100°C)",
+   "DIESELOLIE overeenkomstig norm EN 590:2013 + A1:2017",
+   "STOOKOLIE, LICHT",
+   "GASOLIE met een vlampunt overeenkomstig norm EN 590:2013 + A1:2017"
+  ],
+  "1203": [
+   "BENZINE",
+   "MOTORBRANDSTOF"
+  ],
+  "1204": [
+   "NITROGLYCERINE, OPLOSSING IN ALCOHOL met ten hoogste 1% nitroglycerine"
+  ],
+  "1206": [
+   "HEPTANEN"
+  ],
+  "1207": [
+   "HEXALDEHYDE"
+  ],
+  "1208": [
+   "HEXANEN"
+  ],
+  "1210": [
+   "DRUKINKT brandbaar",
+   "DRUKINKT-VERWANTE PRODUCTEN (waaronder begrepen drukinktverdunners of drukinktoplosmiddelen), brandbaar"
+  ],
+  "1212": [
+   "ISOBUTANOL (ISOBUTYLALCOHOL)"
+  ],
+  "1213": [
+   "ISOBUTYLACETAAT"
+  ],
+  "1214": [
+   "ISOBUTYLAMINE"
+  ],
+  "1216": [
+   "ISOOCTENEN"
+  ],
+  "1218": [
+   "ISOPREEN, GESTABILISEERD"
+  ],
+  "1219": [
+   "ISOPROPYLALCOHOL (ISOPROPANOL)"
+  ],
+  "1220": [
+   "ISOPROPYLACETAAT"
+  ],
+  "1221": [
+   "ISOPROPYLAMINE"
+  ],
+  "1222": [
+   "ISOPROPYLNITRAAT"
+  ],
+  "1223": [
+   "KEROSINE"
+  ],
+  "1224": [
+   "KETONEN, VLOEIBAAR, N.E.G."
+  ],
+  "1228": [
+   "MERCAPTANEN, MENGSEL, VLOEIBAAR, BRANDBAAR, GIFTIG, N.E.G.",
+   "MERCAPTANEN, VLOEIBAAR, BRANDBAAR, GIFTIG, N.E.G."
+  ],
+  "1229": [
+   "MESITYLOXIDE"
+  ],
+  "1230": [
+   "METHANOL"
+  ],
+  "1231": [
+   "METHYLACETAAT"
+  ],
+  "1233": [
+   "METHYLAMYLACETAAT"
+  ],
+  "1234": [
+   "METHYLAL (dimethoxymethaan)"
+  ],
+  "1235": [
+   "METHYLAMINE, OPLOSSING IN WATER"
+  ],
+  "1237": [
+   "METHYLBUTYRAAT"
+  ],
+  "1238": [
+   "METHYLCHLOORFORMIAAT"
+  ],
+  "1239": [
+   "METHYLCHLOORMETHYLETHER"
+  ],
+  "1242": [
+   "METHYLDICHLOORSILAAN"
+  ],
+  "1243": [
+   "METHYLFORMIAAT"
+  ],
+  "1244": [
+   "METHYLHYDRAZINE"
+  ],
+  "1245": [
+   "METHYLISOBUTYLKETON"
+  ],
+  "1246": [
+   "METHYLISOPROPENYLKETON, GESTABILISEERD"
+  ],
+  "1247": [
+   "METHYLMETHACRYLAAT MONOMEER, GESTABILISEERD"
+  ],
+  "1248": [
+   "METHYLPROPIONAAT"
+  ],
+  "1249": [
+   "METHYLPROPYLKETON"
+  ],
+  "1250": [
+   "METHYLTRICHLOORSILAAN"
+  ],
+  "1251": [
+   "METHYLVINYLKETON, GESTABILISEERD"
+  ],
+  "1259": [
+   "NIKKELTETRACARBONYL"
+  ],
+  "1261": [
+   "NITROMETHAAN"
+  ],
+  "1262": [
+   "OCTANEN"
+  ],
+  "1263": [
+   "VERF (waaronder begrepen verf, lakverf, emaillak, beits, schellakoplossing, vernis, polijstmiddel, vloeibare plamuur en vloeibare lakbasis)",
+   "VERF-VERWANTE PRODUCTEN (waaronder begrepen verfverdunners en verfoplosmiddelen)"
+  ],
+  "1264": [
+   "PARALDEHYDE"
+  ],
+  "1265": [
+   "PENTANEN vloeibaar"
+  ],
+  "1266": [
+   "PARFUMERIEPRODUCTEN met brandbare oplosmiddelen"
+  ],
+  "1267": [
+   "RUWE AARDOLIE"
+  ],
+  "1268": [
+   "AARDOLIEDESTILLATEN, N.E.G.",
+   "AARDOLIEPRODUCTEN, N.E.G."
+  ],
+  "1272": [
+   "PIJNOLIE"
+  ],
+  "1274": [
+   "n-PROPANOL (n-PROPYLALCOHOL)"
+  ],
+  "1275": [
+   "PROPIONALDEHYDE"
+  ],
+  "1276": [
+   "n-PROPYLACETAAT"
+  ],
+  "1277": [
+   "PROPYLAMINE"
+  ],
+  "1278": [
+   "1-CHLOORPROPAAN (propylchloride)"
+  ],
+  "1279": [
+   "1,2-DICHLOORPROPAAN"
+  ],
+  "1280": [
+   "PROPYLEENOXIDE"
+  ],
+  "1281": [
+   "PROPYLFORMIATEN"
+  ],
+  "1282": [
+   "PYRIDINE"
+  ],
+  "1286": [
+   "HARSOLIE"
+  ],
+  "1287": [
+   "RUBBERSOLUTIE"
+  ],
+  "1288": [
+   "LEISTEENOLIE"
+  ],
+  "1289": [
+   "NATRIUMMETHYLAAT, OPLOSSING in alcohol"
+  ],
+  "1292": [
+   "TETRAETHYLSILICAAT"
+  ],
+  "1293": [
+   "TINCTUREN, MEDICINALE"
+  ],
+  "1294": [
+   "TOLUEEN"
+  ],
+  "1295": [
+   "TRICHLOORSILAAN (silicochloroform)"
+  ],
+  "1296": [
+   "TRIETHYLAMINE"
+  ],
+  "1297": [
+   "TRIMETHYLAMINE, OPLOSSING IN WATER met ten hoogste 50 massa-% trimethylamine"
+  ],
+  "1298": [
+   "TRIMETHYLCHLOORSILAAN"
+  ],
+  "1299": [
+   "TERPENTIJN"
+  ],
+  "1300": [
+   "KUNSTTERPENTIJN (WHITE SPIRIT)"
+  ],
+  "1301": [
+   "VINYLACETAAT, GESTABILISEERD"
+  ],
+  "1302": [
+   "VINYLETHYLETHER, GESTABILISEERD"
+  ],
+  "1303": [
+   "VINYLIDEENCHLORIDE, GESTABILISEERD (1,1-DICHLOORETHYLEEN, GESTABILISEERD)"
+  ],
+  "1304": [
+   "VINYLISOBUTYLETHER, GESTABILISEERD"
+  ],
+  "1305": [
+   "VINYLTRICHLOORSILAAN"
+  ],
+  "1306": [
+   "HOUTCONSERVERINGSMIDDELEN, VLOEIBAAR"
+  ],
+  "1307": [
+   "XYLENEN"
+  ],
+  "1308": [
+   "ZIRKONIUM, GESUSPENDEERD IN EEN BRANDBARE VLOEISTOF"
+  ],
+  "1309": [
+   "ALUMINIUMPOEDER, GECOAT"
+  ],
+  "1310": [
+   "AMMONIUMPIKRAAT, BEVOCHTIGD met ten minste 10 massa-% water"
+  ],
+  "1312": [
+   "BORNEOL"
+  ],
+  "1313": [
+   "CALCIUMRESINAAT"
+  ],
+  "1314": [
+   "CALCIUMRESINAAT, GESMOLTEN"
+  ],
+  "1318": [
+   "KOBALTRESINAAT, NEERGESLAGEN"
+  ],
+  "1320": [
+   "DINITROFENOL, BEVOCHTIGD met ten minste 15 massa-% water"
+  ],
+  "1321": [
+   "DINITROFENOLATEN, BEVOCHTIGD met ten minste 15 massa-% water"
+  ],
+  "1322": [
+   "DINITRORESORCINOL, BEVOCHTIGD met ten minste 15 massa-% water"
+  ],
+  "1323": [
+   "FERROCERIUM"
+  ],
+  "1324": [
+   "FILMS, MET EEN BASIS VAN NITROCELLULOSE gecoat met gelatine, uitgezonderd afval"
+  ],
+  "1325": [
+   "BRANDBARE VASTE STOF, ORGANISCH, N.E.G."
+  ],
+  "1326": [
+   "HAFNIUMPOEDER, BEVOCHTIGD met ten minste 25% water"
+  ],
+  "1327": [
+   "BHUSA (strohaksel)",
+   "HOOI",
+   "STRO"
+  ],
+  "1328": [
+   "HEXAMETHYLEENTETRAMINE"
+  ],
+  "1330": [
+   "MANGAANRESINAAT"
+  ],
+  "1331": [
+   "WRIJVINGSLUCIFERS"
+  ],
+  "1332": [
+   "METALDEHYDE"
+  ],
+  "1333": [
+   "CERIUM platen, gietblokken of staven"
+  ],
+  "1334": [
+   "NAFTALEEN, RUW",
+   "NAFTALEEN, GERAFFINEERD"
+  ],
+  "1336": [
+   "NITROGUANIDINE, BEVOCHTIGD (PIKRIET, BEVOCHTIGD) met ten minste 20 massa-% water"
+  ],
+  "1337": [
+   "ZETNMEELNITRAAT, BEVOCHTIGD met ten minste 20 massa-% water"
+  ],
+  "1338": [
+   "FOSFOR, ROOD, AMORF"
+  ],
+  "1339": [
+   "FOSFORHEPTASULFIDE (chemische formule P4S7) vrij van gele of witte fosfor"
+  ],
+  "1340": [
+   "FOSFORPENTASULFIDE (chemische formule P2S5) vrij van gele of witte fosfor"
+  ],
+  "1341": [
+   "FOSFORSESQUISULFIDE (chemische formule P4S3) vrij van gele of witte fosfor"
+  ],
+  "1343": [
+   "FOSFORTRISULFIDE (chemische formule P4S6) vrij van gele of witte fosfor"
+  ],
+  "1344": [
+   "TRINITROFENOL , BEVOCHTIGD (PIKRINEZUUR, BEVOCHTIGD) met ten minste 30 massa-% water"
+  ],
+  "1345": [
+   "RUBBERAFVAL poeder- of korrelvormig, van ten hoogste 840 μm en rubbergehalte van meer dan 45%",
+   "RUBBERRESTEN poeder- of korrelvormig, van ten hoogste 840 μm en rubbergehalte van meer dan 45%"
+  ],
+  "1346": [
+   "SILICIUMPOEDER, AMORF"
+  ],
+  "1347": [
+   "ZILVERPIKRAAT, BEVOCHTIGD met ten minste 30 massa-% water"
+  ],
+  "1348": [
+   "NATRIUMDINITRO-o-CRESOLAAT, BEVOCHTIGD met ten minste 15 massa-% water"
+  ],
+  "1349": [
+   "NATRIUMPIKRAMAAT, BEVOCHTIGD met ten minste 20 massa-% water"
+  ],
+  "1350": [
+   "ZWAVEL"
+  ],
+  "1352": [
+   "TITANIUMPOEDER, BEVOCHTIGD met ten minste 25% water"
+  ],
+  "1353": [
+   "WEEFSELS, GEÏMPREGNEERD MET ZWAK GENITREERDE NITROCELLULOSE, N.E.G.",
+   "VEZELS GEÏMPREGNEERD MET ZWAK GENITREERDE NITROCELLULOSE, N.E.G."
+  ],
+  "1354": [
+   "TRINITROBENZEEN, BEVOCHTIGD met ten minste 30 massa-% water"
+  ],
+  "1355": [
+   "TRINITROBENZOËZUUR, BEVOCHTIGD met ten minste 30 massa-% water"
+  ],
+  "1356": [
+   "TRINITROTOLUEEN BEVOCHTIGD (TNT BEVOCHTIGD) met ten minste 30 massa-% water"
+  ],
+  "1357": [
+   "UREUMNITRAAT, BEVOCHTIGD met ten minste 20 massa-% water"
+  ],
+  "1358": [
+   "ZIRKONIUMPOEDER, BEVOCHTIGD met ten minste 25% water"
+  ],
+  "1360": [
+   "CALCIUMFOSFIDE"
+  ],
+  "1361": [
+   "KOOL (ROET) van dierlijke of plantaardige oorsprong"
+  ],
+  "1362": [
+   "KOOL, GEACTIVEERD"
+  ],
+  "1363": [
+   "COPRA"
+  ],
+  "1364": [
+   "KATOENAFVAL, OLIEHOUDEND"
+  ],
+  "1365": [
+   "KATOEN, VOCHTIG"
+  ],
+  "1369": [
+   "p-NITROSODIMETHYLANILINE"
+  ],
+  "1372": [
+   "Vezels van plantaardige oorsprong, gebrand, nat of vochtig",
+   "Vezels van dierlijke oorsprong, gebrand, nat of vochtig"
+  ],
+  "1373": [
+   "WEEFSELS VAN DIERLIJKE OORSPRONG, N.E.G. geïmpregneerd met olie",
+   "WEEFSELS VAN SYNTHETISCHE OORSPRONG, N.E.G. geïmpregneerd met olie",
+   "WEEFSELS VAN PLANTAARDIGE OORSPRONG, N.E.G. geïmpregneerd met olie",
+   "VEZELS VAN DIERLIJKE OORSPRONG, N.E.G. geïmpregneerd met olie",
+   "VEZELS VAN SYNTHETISCHE OORSPRONG, N.E.G. geïmpregneerd met olie",
+   "VEZELS VAN PLANTAARDIGE OORSPRONG, N.E.G. geïmpregneerd met olie"
+  ],
+  "1374": [
+   "VISMEEL, NIET GESTABILISEERD (VISAFVAL, NIET GESTABILISEERD)"
+  ],
+  "1376": [
+   "IJZEROXIDE, AFGEWERKT afkomstig van lichtgasreiniging",
+   "IJZERSPONS, AFGEWERKT afkomstig van lichtgasreiniging"
+  ],
+  "1378": [
+   "METAALKATALYSATOR, BEVOCHTIGD met een zichtbare overmaat vloeistof"
+  ],
+  "1379": [
+   "PAPIER, BEHANDELD MET ONVERZADIGDE OLIËN onvolledig gedroogd (met inbegrip van carbonpapier)"
+  ],
+  "1380": [
+   "PENTABORAAN"
+  ],
+  "1381": [
+   "FOSFOR, WIT, DROOG",
+   "FOSFOR, WIT, ONDER WATER",
+   "FOSFOR, WIT, IN OPLOSSING",
+   "FOSFOR, GEEL, DROOG",
+   "FOSFOR, GEEL, ONDER WATER",
+   "FOSFOR, GEEL, IN OPLOSSING"
+  ],
+  "1382": [
+   "KALIUMSULFIDE met minder dan 30% kristalwater",
+   "KALIUMSULFIDE, WATERVRIJ"
+  ],
+  "1383": [
+   "PYROFORE LEGERING, N.E.G.",
+   "PYROFOOR METAAL, N.E.G."
+  ],
+  "1384": [
+   "NATRIUMDITHIONIET"
+  ],
+  "1385": [
+   "NATRIUMSULFIDE met minder dan 30% kristalwater",
+   "NATRIUMSULFIDE, WATERVRIJ"
+  ],
+  "1386": [
+   "OLIEZAADKOEKEN met meer dan 1,5% olie en ten hoogste 11% vocht"
+  ],
+  "1387": [
+   "Wolafval, vochtig"
+  ],
+  "1389": [
+   "AMALGAAM VAN ALKALIMETALEN, VLOEIBAAR"
+  ],
+  "1390": [
+   "ALKALIMETAALAMIDEN"
+  ],
+  "1391": [
+   "DISPERSIE VAN ALKALIMETALEN met een vlampunt hoger dan 60 °C",
+   "DISPERSIE VAN AARDALKALIMETALEN met een vlampunt hoger dan 60 °C"
+  ],
+  "1392": [
+   "AMALGAAM VAN AARDALKALIMETALEN, VLOEIBAAR"
+  ],
+  "1393": [
+   "LEGERING VAN AARDALKALIMETALEN, N.E.G."
+  ],
+  "1394": [
+   "ALUMINIUMCARBIDE"
+  ],
+  "1395": [
+   "ALUMINIUMFERROSILICIUMPOEDER"
+  ],
+  "1396": [
+   "ALUMINIUMPOEDER, ONGECOAT"
+  ],
+  "1397": [
+   "ALUMINIUMFOSFIDE"
+  ],
+  "1398": [
+   "ALUMINIUMSILICIUMPOEDER, ONGECOAT"
+  ],
+  "1400": [
+   "BARIUM"
+  ],
+  "1401": [
+   "CALCIUM"
+  ],
+  "1402": [
+   "CALCIUMCARBIDE"
+  ],
+  "1403": [
+   "CALCIUMCYAANAMIDE met meer dan 0,1% calciumcarbide"
+  ],
+  "1404": [
+   "CALCIUMHYDRIDE"
+  ],
+  "1405": [
+   "CALCIUMSILICIDE"
+  ],
+  "1407": [
+   "CESIUM"
+  ],
+  "1408": [
+   "FERROSILICIUM met 30% of meer, maar minder dan 90% silicium"
+  ],
+  "1409": [
+   "METAALHYDRIDEN, REACTIEF MET WATER, N.E.G"
+  ],
+  "1410": [
+   "LITHIUMALUMINIUMHYDRIDE"
+  ],
+  "1411": [
+   "LITHIUMALUMINIUMHYDRIDE, IN ETHER"
+  ],
+  "1413": [
+   "LITHIUMBOORHYDRIDE"
+  ],
+  "1414": [
+   "LITHIUMHYDRIDE"
+  ],
+  "1415": [
+   "LITHIUM"
+  ],
+  "1417": [
+   "LITHIUMSILICIUM"
+  ],
+  "1418": [
+   "POEDER VAN MAGNESIUMLEGERINGEN",
+   "MAGNESIUMPOEDER"
+  ],
+  "1419": [
+   "MAGNESIUMALUMINIUM-FOSFIDE"
+  ],
+  "1420": [
+   "METALLISCHE LEGERINGEN VAN KALIUM, VLOEIBAAR"
+  ],
+  "1421": [
+   "LEGERING VAN ALKALIMETALEN, VLOEIBAAR, N.E.G."
+  ],
+  "1422": [
+   "LEGERINGEN VAN KALIUM EN NATRIUM, VLOEIBAAR"
+  ],
+  "1423": [
+   "RUBIDIUM"
+  ],
+  "1426": [
+   "NATRIUMBOORHYDRIDE"
+  ],
+  "1427": [
+   "NATRIUMHYDRIDE"
+  ],
+  "1428": [
+   "NATRIUM"
+  ],
+  "1431": [
+   "NATRIUMMETHYLAAT"
+  ],
+  "1432": [
+   "NATRIUMFOSFIDE"
+  ],
+  "1433": [
+   "TINFOSFIDEN"
+  ],
+  "1435": [
+   "ZINKAS"
+  ],
+  "1436": [
+   "ZINKSTOF",
+   "ZINKPOEDER"
+  ],
+  "1437": [
+   "ZIRKONIUMHYDRIDE"
+  ],
+  "1438": [
+   "ALUMINIUMNITRAAT"
+  ],
+  "1439": [
+   "AMMONIUMDICHROMAAT"
+  ],
+  "1442": [
+   "AMMONIUMPERCHLORAAT"
+  ],
+  "1444": [
+   "AMMONIUMPERSULFAAT"
+  ],
+  "1445": [
+   "BARIUMCHLORAAT, VAST"
+  ],
+  "1446": [
+   "BARIUMNITRAAT"
+  ],
+  "1447": [
+   "BARIUMPERCHLORAAT, VAST"
+  ],
+  "1448": [
+   "BARIUMPERMANGANAAT"
+  ],
+  "1449": [
+   "BARIUMPEROXIDE"
+  ],
+  "1450": [
+   "ANORGANISCHE BROMATEN, N.E.G."
+  ],
+  "1451": [
+   "CESIUMNITRAAT"
+  ],
+  "1452": [
+   "CALCIUMCHLORAAT"
+  ],
+  "1453": [
+   "CALCIUMCHLORIET"
+  ],
+  "1454": [
+   "CALCIUMNITRAAT"
+  ],
+  "1455": [
+   "CALCIUMPERCHLORAAT"
+  ],
+  "1456": [
+   "CALCIUMPERMANGANAAT"
+  ],
+  "1457": [
+   "CALCIUMPEROXIDE"
+  ],
+  "1458": [
+   "CHLORAAT EN BORAAT, MENGSEL"
+  ],
+  "1459": [
+   "CHLORAAT EN MAGNESIUMCHLORIDE, MENGSEL, VAST"
+  ],
+  "1461": [
+   "ANORGANISCHE CHLORATEN, N.E.G."
+  ],
+  "1462": [
+   "ANORGANISCHE CHLORIETEN, N.E.G."
+  ],
+  "1463": [
+   "CHROOMTRIOXIDE, WATERVRIJ (chroomzuur, vast)"
+  ],
+  "1465": [
+   "DIDYMIUMNITRAAT"
+  ],
+  "1466": [
+   "IJZER(III)NITRAAT"
+  ],
+  "1467": [
+   "GUANIDINENITRAAT"
+  ],
+  "1469": [
+   "LOODNITRAAT"
+  ],
+  "1470": [
+   "LOODPERCHLORAAT, VAST"
+  ],
+  "1471": [
+   "LITHIUMHYPOCHLORIET, MENGSEL",
+   "LITHIUMHYPOCHLORIET, DROOG"
+  ],
+  "1472": [
+   "LITHIUMPEROXIDE"
+  ],
+  "1473": [
+   "MAGNESIUMBROMAAT"
+  ],
+  "1474": [
+   "MAGNESIUMNITRAAT"
+  ],
+  "1475": [
+   "MAGNESIUMPERCHLORAAT"
+  ],
+  "1476": [
+   "MAGNESIUMPEROXIDE"
+  ],
+  "1477": [
+   "ANORGANISCHE NITRATEN, N.E.G."
+  ],
+  "1479": [
+   "OXIDERENDE VASTE STOF, N.E.G."
+  ],
+  "1481": [
+   "ANORGANISCHE PERCHLORATEN, N.E.G."
+  ],
+  "1482": [
+   "ANORGANISCHE PERMANGANATEN, N.E.G."
+  ],
+  "1483": [
+   "ANORGANISCHE PEROXIDEN, N.E.G."
+  ],
+  "1484": [
+   "KALIUMBROMAAT"
+  ],
+  "1485": [
+   "KALIUMCHLORAAT"
+  ],
+  "1486": [
+   "KALIUMNITRAAT"
+  ],
+  "1487": [
+   "MENGSEL VAN KALIUMNITRAAT EN NATRIUMNITRIET"
+  ],
+  "1488": [
+   "KALIUMNITRIET"
+  ],
+  "1489": [
+   "KALIUMPERCHLORAAT"
+  ],
+  "1490": [
+   "KALIUMPERMANGANAAT"
+  ],
+  "1491": [
+   "KALIUMPEROXIDE"
+  ],
+  "1492": [
+   "KALIUMPERSULFAAT"
+  ],
+  "1493": [
+   "ZILVERNITRAAT"
+  ],
+  "1494": [
+   "NATRIUMBROMAAT"
+  ],
+  "1495": [
+   "NATRIUMCHLORAAT"
+  ],
+  "1496": [
+   "NATRIUMCHLORIET"
+  ],
+  "1498": [
+   "NATRIUMNITRAAT"
+  ],
+  "1500": [
+   "NATRIUMNITRIET"
+  ],
+  "1502": [
+   "NATRIUMPERCHLORAAT"
+  ],
+  "1503": [
+   "NATRIUMPERMANGANAAT"
+  ],
+  "1504": [
+   "NATRIUMPEROXIDE"
+  ],
+  "1505": [
+   "NATRIUMPERSULFAAT"
+  ],
+  "1506": [
+   "STRONTIUMCHLORAAT"
+  ],
+  "1507": [
+   "STRONTIUMNITRAAT"
+  ],
+  "1508": [
+   "STRONTIUMPERCHLORAAT"
+  ],
+  "1509": [
+   "STRONTIUMPEROXIDE"
+  ],
+  "1510": [
+   "TETRANITROMETHAAN"
+  ],
+  "1511": [
+   "UREUMWATERSTOFPEROXIDE"
+  ],
+  "1512": [
+   "ZINKAMMONIUMNITRIET"
+  ],
+  "1513": [
+   "ZINKCHLORAAT"
+  ],
+  "1514": [
+   "ZINKNITRAAT"
+  ],
+  "1515": [
+   "ZINKPERMANGANAAT"
+  ],
+  "1516": [
+   "ZINKPEROXIDE"
+  ],
+  "1517": [
+   "ZIRKONIUMPIKRAMAAT, BEVOCHTIGD met tenminste 20 massa-% water"
+  ],
+  "1541": [
+   "ACETONCYAANHYDRINE, GESTABILISEERD"
+  ],
+  "1544": [
+   "ALKALOÏDEZOUTEN, VAST, N.E.G.",
+   "ALKALOÏDEN, VAST, N.E.G."
+  ],
+  "1545": [
+   "ALLYLISOTHIOCYANAAT, GESTABILISEERD"
+  ],
+  "1546": [
+   "AMMONIUMARSENAAT"
+  ],
+  "1547": [
+   "ANILINE"
+  ],
+  "1548": [
+   "ANILINEHYDROCHLORIDE"
+  ],
+  "1549": [
+   "ANTIMOONVERBINDING, ANORGANISCH, VAST, N.E.G."
+  ],
+  "1550": [
+   "ANTIMOONLACTAAT"
+  ],
+  "1551": [
+   "ANTIMOONKALIUMTARTRAAT"
+  ],
+  "1553": [
+   "ARSEENZUUR, VLOEIBAAR"
+  ],
+  "1554": [
+   "ARSEENZUUR, VAST"
+  ],
+  "1555": [
+   "ARSEENBROMIDE"
+  ],
+  "1556": [
+   "ARSEENVERBINDING, VLOEIBAAR, N.E.G. anorganisch, met inbegrip van: Arsenaten, n.e.g., Arsenieten, n.e.g.; en Arseensulfiden, n.e.g."
+  ],
+  "1557": [
+   "ARSEENVERBINDING, VAST, N.E.G. anorganisch, met inbegrip van: Arsenaten, n.e.g.; Arsenieten, n.e.g.; en Arseensulfiden, n.e.g."
+  ],
+  "1558": [
+   "ARSEEN (ARSENICUM)"
+  ],
+  "1559": [
+   "ARSEENPENTOXIDE"
+  ],
+  "1560": [
+   "ARSEENTRICHLORIDE"
+  ],
+  "1561": [
+   "ARSEENTRIOXIDE"
+  ],
+  "1562": [
+   "ARSEENSTOF"
+  ],
+  "1564": [
+   "BARIUMVERBINDING, N.E.G."
+  ],
+  "1565": [
+   "BARIUMCYANIDE"
+  ],
+  "1566": [
+   "BERYLLIUMVERBINDING, N.E.G."
+  ],
+  "1567": [
+   "BERYLLIUMPOEDER"
+  ],
+  "1569": [
+   "BROOMACETON"
+  ],
+  "1570": [
+   "BRUCINE"
+  ],
+  "1571": [
+   "BARIUMAZIDE, BEVOCHTIGD met ten minste 50 massa-% water"
+  ],
+  "1572": [
+   "KAKODYLZUUR"
+  ],
+  "1573": [
+   "CALCIUMARSENAAT"
+  ],
+  "1574": [
+   "CALCIUMARSENAAT EN CALCIUMARSENIET MENGSEL, VAST"
+  ],
+  "1575": [
+   "CALCIUMCYANIDE"
+  ],
+  "1577": [
+   "CHLOORDINITROBENZENEN, VLOEIBAAR"
+  ],
+  "1578": [
+   "CHLOORNITROBENZENEN, VAST"
+  ],
+  "1579": [
+   "4-CHLOOR-o-TOLUÏDINEHYDROCHLORIDE, VAST"
+  ],
+  "1580": [
+   "CHLOORPIKRINE"
+  ],
+  "1581": [
+   "CHLOORPIKRINE EN METHYLBROMIDE, MENGSEL met meer dan 2% chloorpikrine"
+  ],
+  "1582": [
+   "MENGSEL VAN CHLOORPIKRINE EN METHYLCHLORIDE"
+  ],
+  "1583": [
+   "CHLOORPIKRINE, MENGSEL, N.E.G."
+  ],
+  "1585": [
+   "KOPERACETOARSENIET"
+  ],
+  "1586": [
+   "KOPERARSENIET"
+  ],
+  "1587": [
+   "KOPERCYANIDE"
+  ],
+  "1588": [
+   "CYANIDEN, ANORGANISCH, VAST, N.E.G."
+  ],
+  "1589": [
+   "CHLOORCYAAN, GESTABILISEERD (CYAANCHLORIDE, GESTABILISEERD)"
+  ],
+  "1590": [
+   "DICHLOORANILINEN, VLOEIBAAR"
+  ],
+  "1591": [
+   "o-DICHLOORBENZEEN"
+  ],
+  "1593": [
+   "DICHLOORMETHAAN (methyleenchloride)"
+  ],
+  "1594": [
+   "DIETHYLSULFAAT"
+  ],
+  "1595": [
+   "DIMETHYLSULFAAT"
+  ],
+  "1596": [
+   "DINITROANILINEN"
+  ],
+  "1597": [
+   "DINITROBENZENEN, VLOEIBAAR"
+  ],
+  "1598": [
+   "DINITRO-o-CRESOL"
+  ],
+  "1599": [
+   "DINITROFENOL, OPLOSSING"
+  ],
+  "1600": [
+   "DINITROTOLUENEN, GESMOLTEN"
+  ],
+  "1601": [
+   "DESINFECTIEMIDDEL, VAST, GIFTIG, N.E.G."
+  ],
+  "1602": [
+   "HALFFABRIKAAT VOOR KLEURSTOF, VLOEIBAAR, GIFTIG, N.E.G.",
+   "KLEURSTOF, VLOEIBAAR, GIFTIG, N.E.G."
+  ],
+  "1603": [
+   "ETHYLBROOMACETAAT"
+  ],
+  "1604": [
+   "ETHYLEENDIAMINE"
+  ],
+  "1605": [
+   "ETHYLEENDIBROMIDE (1,2-dibroomethaan)"
+  ],
+  "1606": [
+   "IJZER(III)ARSENAAT"
+  ],
+  "1607": [
+   "IJZER(III)ARSENIET"
+  ],
+  "1608": [
+   "IJZER(II)ARSENAAT"
+  ],
+  "1611": [
+   "HEXAETHYLTETRAFOSFAAT"
+  ],
+  "1612": [
+   "MENGSEL VAN HEXAETHYLTETRAFOSFAAT EN SAMENGEPERST GAS"
+  ],
+  "1613": [
+   "CYAANWATERSTOFZUUR, OPLOSSING IN WATER (CYAANWATERSTOF, OPLOSSING IN WATER) met ten hoogste 20% cyaanwaterstof"
+  ],
+  "1614": [
+   "CYAANWATERSTOF, GESTABILISEERD met minder dan 3% water en geabsorbeerd door een inert poreus materiaal"
+  ],
+  "1616": [
+   "LOODACETAAT"
+  ],
+  "1617": [
+   "LOODARSENATEN"
+  ],
+  "1618": [
+   "LOODARSENIETEN"
+  ],
+  "1620": [
+   "LOODCYANIDE"
+  ],
+  "1621": [
+   "LONDON PURPLE"
+  ],
+  "1622": [
+   "MAGNESIUMARSENAAT"
+  ],
+  "1623": [
+   "KWIK(II)ARSENAAT"
+  ],
+  "1624": [
+   "KWIK(II)CHLORIDE"
+  ],
+  "1625": [
+   "KWIK(II)NITRAAT"
+  ],
+  "1626": [
+   "KWIK(II)KALIUMCYANIDE"
+  ],
+  "1627": [
+   "KWIK(I)NITRAAT"
+  ],
+  "1629": [
+   "KWIKACETAAT"
+  ],
+  "1630": [
+   "KWIKAMMONIUMCHLORIDE"
+  ],
+  "1631": [
+   "KWIKBENZOAAT"
+  ],
+  "1634": [
+   "KWIKBROMIDEN"
+  ],
+  "1636": [
+   "KWIKCYANIDE"
+  ],
+  "1637": [
+   "KWIKGLUCONAAT"
+  ],
+  "1638": [
+   "KWIKJODIDE"
+  ],
+  "1639": [
+   "KWIKNUCLEAAT"
+  ],
+  "1640": [
+   "KWIKOLEAAT"
+  ],
+  "1641": [
+   "KWIKOXIDE"
+  ],
+  "1642": [
+   "KWIKOXYCYANIDE, GEDESENSIBILISEERD"
+  ],
+  "1643": [
+   "KALIUMKWIKJODIDE"
+  ],
+  "1644": [
+   "KWIKSALICYLAAT"
+  ],
+  "1645": [
+   "KWIKSULFAAT"
+  ],
+  "1646": [
+   "KWIKTHIOCYANAAT"
+  ],
+  "1647": [
+   "METHYLBROMIDE EN ETHYLEENDIBROMIDE, MENGSEL, VLOEIBAAR"
+  ],
+  "1648": [
+   "ACETONITRIL"
+  ],
+  "1649": [
+   "ANTIKLOPMIDDEL VOOR MOTORBRANDSTOF met een vlampunt hoger dan 60 °C"
+  ],
+  "1650": [
+   "beta-NAFTYLAMINE, VAST"
+  ],
+  "1651": [
+   "NAFTYLTHIOUREUM"
+  ],
+  "1652": [
+   "NAFTYLUREUM"
+  ],
+  "1653": [
+   "NIKKELCYANIDE"
+  ],
+  "1654": [
+   "NICOTINE"
+  ],
+  "1655": [
+   "NICOTINEVERBINDING, VAST, N.E.G.",
+   "NICOTINEPREPARAAT, VAST, N.E.G."
+  ],
+  "1656": [
+   "NICOTINEHYDROCHLORIDE, VLOEIBAAR",
+   "NICOTINEHYDROCHLORIDE, IN OPLOSSING"
+  ],
+  "1657": [
+   "NICOTINESALICYLAAT"
+  ],
+  "1658": [
+   "NICOTINESULFAAT, OPLOSSING"
+  ],
+  "1659": [
+   "NICOTINETARTRAAT"
+  ],
+  "1660": [
+   "STIKSTOFMONOXIDE, SAMENGEPERST"
+  ],
+  "1661": [
+   "NITROANILINEN"
+  ],
+  "1662": [
+   "NITROBENZEEN"
+  ],
+  "1663": [
+   "NITROFENOLEN"
+  ],
+  "1664": [
+   "NITROTOLUENEN, VLOEIBAAR"
+  ],
+  "1665": [
+   "NITROXYLENEN, VLOEIBAAR"
+  ],
+  "1669": [
+   "PENTACHLOORETHAAN"
+  ],
+  "1670": [
+   "PERCHLOORMETHYLMERCAPTAAN"
+  ],
+  "1671": [
+   "FENOL, VAST"
+  ],
+  "1672": [
+   "FENYLCARBYLAMINECHLORIDE"
+  ],
+  "1673": [
+   "FENYLEENDIAMINEN"
+  ],
+  "1674": [
+   "FENYLKWIKACETAAT"
+  ],
+  "1677": [
+   "KALIUMARSENAAT"
+  ],
+  "1678": [
+   "KALIUMARSENIET"
+  ],
+  "1679": [
+   "KALIUMKOPER(I)CYANIDE"
+  ],
+  "1680": [
+   "KALIUMCYANIDE, VAST"
+  ],
+  "1683": [
+   "ZILVERARSENIET"
+  ],
+  "1684": [
+   "ZILVERCYANIDE"
+  ],
+  "1685": [
+   "NATRIUMARSENAAT"
+  ],
+  "1686": [
+   "NATRIUMARSENIET, OPLOSSING IN WATER"
+  ],
+  "1687": [
+   "NATRIUMAZIDE"
+  ],
+  "1688": [
+   "NATRIUMKAKODYLAAT"
+  ],
+  "1689": [
+   "NATRIUMCYANIDE, VAST"
+  ],
+  "1690": [
+   "NATRIUMFLUORIDE, VAST"
+  ],
+  "1691": [
+   "STRONTIUMARSENIET"
+  ],
+  "1692": [
+   "STRYCHNINE",
+   "STRYCHNINEZOUTEN"
+  ],
+  "1693": [
+   "TRAANGASINGREDIËNT, VLOEIBAAR, N.E.G."
+  ],
+  "1694": [
+   "BROOMBENZYLCYANIDEN, VLOEIBAAR"
+  ],
+  "1695": [
+   "CHLOORACETON, GESTABILISEERD"
+  ],
+  "1697": [
+   "CHLOORACETOFENON, VAST (fenacylchloride, vast)"
+  ],
+  "1698": [
+   "DIFENYLAMINOCHLOORARSINE"
+  ],
+  "1699": [
+   "DIFENYLCHLOORARSINE, VLOEIBAAR"
+  ],
+  "1700": [
+   "TRAANGASKAARSEN"
+  ],
+  "1701": [
+   "XYLYLBROMIDE, VLOEIBAAR"
+  ],
+  "1702": [
+   "1,1,2,2-TETRACHLOORETHAAN (acetyleentetrachloride)"
+  ],
+  "1704": [
+   "TETRAETHYLDITHIOPYROFOSFAAT"
+  ],
+  "1707": [
+   "THALLIUMVERBINDING, N.E.G."
+  ],
+  "1708": [
+   "TOLUÏDINEN, VLOEIBAAR"
+  ],
+  "1709": [
+   "2,4-TOLUEENDIAMINE, VAST"
+  ],
+  "1710": [
+   "TRICHLOORETHYLEEN"
+  ],
+  "1711": [
+   "XYLIDINEN, VLOEIBAAR"
+  ],
+  "1712": [
+   "ZINKARSENAAT",
+   "ZINKARSENAAT EN ZINKARSENIET, MENGSEL",
+   "ZINKARSENIET"
+  ],
+  "1713": [
+   "ZINKCYANIDE"
+  ],
+  "1714": [
+   "ZINKFOSFIDE"
+  ],
+  "1715": [
+   "AZIJNZUURANHYDRIDE"
+  ],
+  "1716": [
+   "ACETYLBROMIDE"
+  ],
+  "1717": [
+   "ACETYLCHLORIDE"
+  ],
+  "1718": [
+   "BUTYLFOSFAAT"
+  ],
+  "1719": [
+   "BIJTENDE ALKALISCHE VLOEISTOF, N.E.G."
+  ],
+  "1722": [
+   "ALLYLCHLOORFORMIAAT"
+  ],
+  "1723": [
+   "ALLYLJODIDE"
+  ],
+  "1724": [
+   "ALLYLTRICHLOORSILAAN, GESTABILISEERD"
+  ],
+  "1725": [
+   "ALUMINIUMBROMIDE, WATERVRIJ"
+  ],
+  "1726": [
+   "ALUMINIUMCHLORIDE, WATERVRIJ"
+  ],
+  "1727": [
+   "AMMONIUMWATERSTOFDIFLUORIDE, VAST"
+  ],
+  "1728": [
+   "AMYLTRICHLOORSILAAN"
+  ],
+  "1729": [
+   "ANISOYLCHLORIDE"
+  ],
+  "1730": [
+   "ANTIMOONPENTACHLORIDE, VLOEIBAAR"
+  ],
+  "1731": [
+   "ANTIMOONPENTACHLORIDE, OPLOSSING"
+  ],
+  "1732": [
+   "ANTIMOONPENTAFLUORIDE"
+  ],
+  "1733": [
+   "ANTIMOONTRICHLORIDE"
+  ],
+  "1736": [
+   "BENZOYLCHLORIDE"
+  ],
+  "1737": [
+   "BENZYLBROMIDE"
+  ],
+  "1738": [
+   "BENZYLCHLORIDE"
+  ],
+  "1739": [
+   "BENZYLCHLOORFORMIAAT"
+  ],
+  "1740": [
+   "WATERSTOFDIFLUORIDEN, VAST, N.E.G."
+  ],
+  "1741": [
+   "BOORTRICHLORIDE"
+  ],
+  "1742": [
+   "BORIUMTRIFLUORIDEAZIJNZUUR-COMPLEX"
+  ],
+  "1743": [
+   "BORIUMTRIFLUORIDE-PROPIONZUUR-COMPLEX, VLOEIBAAR"
+  ],
+  "1744": [
+   "BROOM",
+   "BROOM, OPLOSSING"
+  ],
+  "1745": [
+   "BROOMPENTAFLUORIDE"
+  ],
+  "1746": [
+   "BROOMTRIFLUORIDE"
+  ],
+  "1747": [
+   "BUTYLTRICHLOORSILAAN"
+  ],
+  "1748": [
+   "CALCIUMHYPOCHLORIET, MENGSEL, DROOG met meer dan 39% actief chloor (8,8% actieve zuurstof)",
+   "CALCIUMHYPOCHLORIET, DROOG"
+  ],
+  "1749": [
+   "CHLOORTRIFLUORIDE"
+  ],
+  "1750": [
+   "CHLOORAZIJNZUUR, OPLOSSING"
+  ],
+  "1751": [
+   "CHLOORAZIJNZUUR, VAST"
+  ],
+  "1752": [
+   "CHLOORACETYLCHLORIDE"
+  ],
+  "1753": [
+   "CHLOORFENYLTRICHLOORSILAAN"
+  ],
+  "1754": [
+   "CHLOORSULFONZUUR) (met of zonder zwaveltrioxide)"
+  ],
+  "1755": [
+   "CHROOMZUUR, OPLOSSING"
+  ],
+  "1756": [
+   "CHROOM(III)FLUORIDE, VAST (chroomtrifluoride, vast)"
+  ],
+  "1757": [
+   "CHROOM(III)FLUORIDE, OPLOSSING (chroomtrifluoride, oplossing)"
+  ],
+  "1758": [
+   "CHROOMOXYCHLORIDE (CHROMYLCHLORIDE)"
+  ],
+  "1759": [
+   "BIJTENDE VASTE STOF, N.E.G."
+  ],
+  "1760": [
+   "BIJTENDE VLOEISTOF, N.E.G."
+  ],
+  "1761": [
+   "KOPERETHYLEENDIAMINE, OPLOSSING"
+  ],
+  "1762": [
+   "CYCLOHEXENYLTRICHLOORSILAAN"
+  ],
+  "1763": [
+   "CYCLOHEXYLTRICHLOORSILAAN"
+  ],
+  "1764": [
+   "DICHLOORAZIJNZUUR"
+  ],
+  "1765": [
+   "DICHLOORACETYLCHLORIDE"
+  ],
+  "1766": [
+   "DICHLOORFENYLTRICHLOORSILAAN"
+  ],
+  "1767": [
+   "DIETHYLDICHLOORSILAAN"
+  ],
+  "1768": [
+   "DIFLUORFOSFORZUUR, WATERVRIJ"
+  ],
+  "1769": [
+   "DIFENYLDICHLOORSILAAN"
+  ],
+  "1770": [
+   "DIFENYLBROOMMETHAAN"
+  ],
+  "1771": [
+   "DODECYLTRICHLOORSILAAN"
+  ],
+  "1773": [
+   "IJZER(III)CHLORIDE, WATERVRIJ (ijzertrichloride, watervrij)"
+  ],
+  "1774": [
+   "VULLINGEN VOOR BRANDBLUSAPPARATEN bijtende vloeistof"
+  ],
+  "1775": [
+   "FLUORBOORZUUR"
+  ],
+  "1776": [
+   "FLUORFOSFORZUUR, WATERVRIJ"
+  ],
+  "1777": [
+   "FLUORSULFONZUUR"
+  ],
+  "1778": [
+   "KIEZELFLUORWATERSTOFZUUR"
+  ],
+  "1779": [
+   "MIERENZUUR met meer dan 85 massa-% zuur"
+  ],
+  "1780": [
+   "FUMARYLCHLORIDE"
+  ],
+  "1781": [
+   "HEXADECYLTRICHLOORSILAAN"
+  ],
+  "1782": [
+   "HEXAFLUORFOSFORZUUR"
+  ],
+  "1783": [
+   "HEXAMETHYLEENDIAMINE, OPLOSSING"
+  ],
+  "1784": [
+   "HEXYLTRICHLOORSILAAN"
+  ],
+  "1786": [
+   "MENGSEL VAN FLUORWATERSTOFZUUR EN ZWAVELZUUR"
+  ],
+  "1787": [
+   "JOODWATERSTOFZUUR"
+  ],
+  "1788": [
+   "BROOMWATERSTOFZUUR"
+  ],
+  "1789": [
+   "ZOUTZUUR"
+  ],
+  "1790": [
+   "FLUORWATERSTOFZUUR met meer dan 60%, doch ten hoogste 85% fluorwaterstof",
+   "FLUORWATERSTOFZUUR met meer dan 85% fluorwaterstof",
+   "FLUORWATERSTOFZUUR met ten hoogste 60% fluorwaterstof"
+  ],
+  "1791": [
+   "HYPOCHLORIET, OPLOSSING"
+  ],
+  "1792": [
+   "JOODMONOCHLORIDE, VAST"
+  ],
+  "1793": [
+   "ISOPROPYLFOSFAAT"
+  ],
+  "1794": [
+   "LOODSULFAAT met meer dan 3% vrij zuur"
+  ],
+  "1796": [
+   "NITREERZUURMENGSEL met meer dan 50% salpeterzuur",
+   "NITREERZUURMENGSEL met ten hoogste 50% salpeterzuur"
+  ],
+  "1798": [
+   "MENGSEL VAN SALPETERZUUR EN ZOUTZUUR"
+  ],
+  "1799": [
+   "NONYLTRICHLOORSILAAN"
+  ],
+  "1800": [
+   "OCTADECYLTRICHLOORSILAAN"
+  ],
+  "1801": [
+   "OCTYLTRICHLOORSILAAN"
+  ],
+  "1802": [
+   "PERCHLOORZUUR met ten hoogste 50 massa-% zuur"
+  ],
+  "1803": [
+   "FENOLSULFONZUUR, VLOEIBAAR"
+  ],
+  "1804": [
+   "FENYLTRICHLOORSILAAN"
+  ],
+  "1805": [
+   "FOSFORZUUR, OPLOSSING"
+  ],
+  "1806": [
+   "FOSFORPENTACHLORIDE"
+  ],
+  "1807": [
+   "FOSFORPENTOXIDE"
+  ],
+  "1808": [
+   "FOSFORTRIBROMIDE"
+  ],
+  "1809": [
+   "FOSFORTRICHLORIDE"
+  ],
+  "1810": [
+   "FOSFOROXYCHLORIDE"
+  ],
+  "1811": [
+   "KALIUMWATERSTOFDIFLUORIDE, VAST (kaliumbifluoride, vast)"
+  ],
+  "1812": [
+   "KALIUMFLUORIDE, VAST"
+  ],
+  "1813": [
+   "KALIUMHYDROXIDE, VAST (caustische potas)"
+  ],
+  "1814": [
+   "KALIUMHYDROXIDE, OPLOSSING (kaliloog)"
+  ],
+  "1815": [
+   "PROPIONYLCHLORIDE"
+  ],
+  "1816": [
+   "PROPYLTRICHLOORSILAAN"
+  ],
+  "1817": [
+   "PYROSULFURYLCHLORIDE"
+  ],
+  "1818": [
+   "SILICIUMTETRACHLORIDE"
+  ],
+  "1819": [
+   "NATRIUMALUMINAAT, OPLOSSING"
+  ],
+  "1823": [
+   "NATRIUMHYDROXIDE, VAST"
+  ],
+  "1824": [
+   "NATRIUMHYDROXIDE, OPLOSSING (natronloog)"
+  ],
+  "1825": [
+   "NATRIUMMONOXIDE (natriumoxide)"
+  ],
+  "1826": [
+   "NITREERZUUR, MENGSEL, AFGEWERKT met meer dan 50% salpeterzuur",
+   "NITREERZUUR, MENGSEL, AFGEWERKT met ten hoogste 50% salpeterzuur"
+  ],
+  "1827": [
+   "TINTETRACHLORIDE, WATERVRIJ"
+  ],
+  "1828": [
+   "ZWAVELCHLORIDEN"
+  ],
+  "1829": [
+   "ZWAVELTRIOXIDE, GESTABILISEERD (zwavelzuuranhydride, gestabiliseerd)"
+  ],
+  "1830": [
+   "ZWAVELZUUR met meer dan 51% zuur"
+  ],
+  "1831": [
+   "ZWAVELZUUR, ROKEND (oleum)"
+  ],
+  "1832": [
+   "ZWAVELZUUR, AFGEWERKT"
+  ],
+  "1833": [
+   "ZWAVELIGZUUR"
+  ],
+  "1834": [
+   "SULPHURYLCHLORIDE"
+  ],
+  "1835": [
+   "TETRAMETHYLAMMONIUMHYDROXIDE, OPLOSSING IN WATER met meer dan 2,5% maar minder dan 25% tetramethylammoniumhydroxid",
+   "TETRAMETHYLAMMONIUMHYDROXIDE, OPLOSSING IN WATER Met ten hoogste 2,5% tetramethylammoniumhydroxide"
+  ],
+  "1836": [
+   "THIONYLCHLORIDE"
+  ],
+  "1837": [
+   "THIOFOSFORYLCHLORIDE"
+  ],
+  "1838": [
+   "TITAANTETRACHLORIDE"
+  ],
+  "1839": [
+   "TRICHLOORAZIJNZUUR"
+  ],
+  "1840": [
+   "ZINKCHLORIDE, OPLOSSING"
+  ],
+  "1841": [
+   "ACEETALDEHYDEAMMONIAK"
+  ],
+  "1843": [
+   "AMMONIUMDINITRO-o-CRESOLAAT, VAST"
+  ],
+  "1845": [
+   "KOOLDIOXIDE, VAST (DROOGIJS)"
+  ],
+  "1846": [
+   "TETRACHLOORKOOLSTOF"
+  ],
+  "1847": [
+   "KALIUMSULFIDE, GEHYDRATEERD met ten minste 30% kristalwater"
+  ],
+  "1848": [
+   "PROPIONZUUR met ten minste 10 massa-% en minder dan 90 massa-% zuur"
+  ],
+  "1849": [
+   "NATRIUMSULFIDE, GEHYDRATEERD met ten minste 30% (kristal)water"
+  ],
+  "1851": [
+   "MEDICAMENT, VLOEIBAAR, GIFTIG, N.E.G."
+  ],
+  "1854": [
+   "BARIUMLEGERINGEN, PYROFOOR"
+  ],
+  "1855": [
+   "CALCIUMLEGERINGEN, PYROFOOR",
+   "CALCIUM, PYROFOOR"
+  ],
+  "1856": [
+   "LOMPEN / POETSDOEKEN, DOORDRENKT MET OLIE"
+  ],
+  "1857": [
+   "TEXTIELAFVAL, NAT"
+  ],
+  "1858": [
+   "HEXAFLUORPROPEEN (KOELGAS R 1216)"
+  ],
+  "1859": [
+   "SILICIUMTETRAFLUORIDE"
+  ],
+  "1860": [
+   "VINYLFLUORIDE, GESTABILISEERD"
+  ],
+  "1862": [
+   "ETHYLCROTONAAT"
+  ],
+  "1863": [
+   "BRANDSTOF VOOR STRAALVLIEGTUIGEN"
+  ],
+  "1865": [
+   "n-PROPYLNITRAAT"
+  ],
+  "1866": [
+   "HARSOPLOSSING brandbaar",
+   "HARS, OPLOSSING brandbaar"
+  ],
+  "1868": [
+   "DECABORAAN"
+  ],
+  "1869": [
+   "MAGNESIUM met meer dan 50% magnesium in korrels, krullen of lint",
+   "MAGNESIUMLEGERINGEN met meer dan 50% magnesium in korrels, krullen of lint"
+  ],
+  "1870": [
+   "KALIUMBOORHYDRIDE"
+  ],
+  "1871": [
+   "TITANIUMHYDRIDE"
+  ],
+  "1872": [
+   "LOODDIOXIDE"
+  ],
+  "1873": [
+   "PERCHLOORZUUR met meer dan 50 massa-%, maar niet meer dan 72 massa-% zuur"
+  ],
+  "1884": [
+   "BARIUMOXIDE"
+  ],
+  "1885": [
+   "BENZIDINE"
+  ],
+  "1886": [
+   "BENZYLIDEENCHLORIDE"
+  ],
+  "1887": [
+   "BROOMCHLOORMETHAAN"
+  ],
+  "1888": [
+   "CHLOROFORM"
+  ],
+  "1889": [
+   "CYAANBROMIDE"
+  ],
+  "1891": [
+   "ETHYLBROMIDE"
+  ],
+  "1892": [
+   "ETHYLDICHLOORARSINE"
+  ],
+  "1894": [
+   "FENYLKWIK(II)HYDROXIDE"
+  ],
+  "1895": [
+   "FENYLKWIK(II)NITRAAT"
+  ],
+  "1897": [
+   "TETRACHLOORETHYLEEN (perchloorethyleen)"
+  ],
+  "1898": [
+   "ACETYLJODIDE"
+  ],
+  "1902": [
+   "DIISOOCTYLFOSFAAT"
+  ],
+  "1903": [
+   "DESINFECTIEMIDDEL, VLOEIBAAR, BIJTEND, N.E.G."
+  ],
+  "1905": [
+   "SELEENZUUR"
+  ],
+  "1906": [
+   "AFVALZWAVELZUUR"
+  ],
+  "1907": [
+   "NATRONKALK met meer dan 4% natriumhydroxide"
+  ],
+  "1908": [
+   "CHLORIET, OPLOSSING"
+  ],
+  "1910": [
+   "CALCIUMOXIDE"
+  ],
+  "1911": [
+   "DIBORAAN"
+  ],
+  "1912": [
+   "MENGSEL VAN METHYLCHLORIDE EN DICHLOORMETHAAN"
+  ],
+  "1913": [
+   "NEON, STERK GEKOELD, VLOEIBAAR"
+  ],
+  "1914": [
+   "BUTYLPROPIONATEN"
+  ],
+  "1915": [
+   "CYCLOHEXANON"
+  ],
+  "1916": [
+   "2,2'-DICHLOORDIETHYLETHER"
+  ],
+  "1917": [
+   "ETHYLACRYLAAT, GESTABILISEERD"
+  ],
+  "1918": [
+   "ISOPROPYLBENZEEN (cumeen)"
+  ],
+  "1919": [
+   "METHYLACRYLAAT, GESTABILISEERD"
+  ],
+  "1920": [
+   "NONANEN"
+  ],
+  "1921": [
+   "PROPYLEENIMINE, GESTABILISEERD"
+  ],
+  "1922": [
+   "PYRROLIDINE"
+  ],
+  "1923": [
+   "CALCIUMDITHIONIET"
+  ],
+  "1928": [
+   "METHYLMAGNESIUMBROMIDE IN ETHYLETHER"
+  ],
+  "1929": [
+   "KALIUMDITHIONIET"
+  ],
+  "1931": [
+   "ZINKDITHIONIET"
+  ],
+  "1932": [
+   "ZIRKONIUMAFVAL"
+  ],
+  "1935": [
+   "CYANIDE, OPLOSSING, N.E.G."
+  ],
+  "1938": [
+   "BROOMAZIJNZUUR, OPLOSSING"
+  ],
+  "1939": [
+   "FOSFOROXYBROMIDE"
+  ],
+  "1940": [
+   "THIOGLYCOLZUUR"
+  ],
+  "1941": [
+   "DIBROOMDIFLUORMETHAAN (difluordibroommethaan)"
+  ],
+  "1942": [
+   "AMMONIUMNITRAAT met ten hoogste 0,2% brandbare stoffen (met inbegrip van organisch materiaal, berekend als koolstof) en zonder andere toegevoegde stof"
+  ],
+  "1944": [
+   "VEILIGHEIDSLUCIFERS (boekjes, kaartjes of doosjes)"
+  ],
+  "1945": [
+   "WASLUCIFERS"
+  ],
+  "1950": [
+   "SPUITBUSSEN (AËROSOLEN) brandbaar",
+   "SPUITBUSSEN (AËROSOLEN) giftig, brandbaar",
+   "SPUITBUSSEN (AËROSOLEN) brandbaar, bijtend",
+   "SPUITBUSSEN (AËROSOLEN) giftig, brandbaar, bijtend",
+   "SPUITBUSSEN (AËROSOLEN) verstikkend",
+   "SPUITBUSSEN (AËROSOLEN) oxiderend",
+   "SPUITBUSSEN (AËROSOLEN) giftig",
+   "SPUITBUSSEN (AËROSOLEN) bijtend",
+   "SPUITBUSSEN (AËROSOLEN) giftig, oxiderend",
+   "SPUITBUSSEN (AËROSOLEN) bijtend, oxiderend",
+   "SPUITBUSSEN (AËROSOLEN) giftig, bijtend",
+   "SPUITBUSSEN (AËROSOLEN) giftig, oxiderend, bijtend"
+  ],
+  "1951": [
+   "ARGON, STERK GEKOELDE VLOEISTOF"
+  ],
+  "1952": [
+   "MENGSEL VAN ETHYLEENOXIDE EN KOOLDIOXIDE (MENGSEL VAN ETHYLEENOXIDE EN KOOLSTOFDIOXIDE) (MENGSEL VAN ETHYLEENOXIDE EN KOOLZUUR) met ten hoogste 9% ethyleenoxide"
+  ],
+  "1953": [
+   "SAMENGEPERST GAS, GIFTIG, BRANDBAAR, N.E.G."
+  ],
+  "1954": [
+   "SAMENGEPERST GAS, BRANDBAAR, N.E.G."
+  ],
+  "1955": [
+   "SAMENGEPERST GAS, GIFTIG, N.E.G."
+  ],
+  "1956": [
+   "SAMENGEPERST GAS, N.E.G."
+  ],
+  "1957": [
+   "DEUTERIUM, SAMENGEPERST"
+  ],
+  "1958": [
+   "1,2-DICHLOOR-1,1,2,2-TETRAFLUORETHAAN (KOELGAS R 114)"
+  ],
+  "1959": [
+   "1,1-DIFLUORETHYLEEN (1,1-DIFLUORETHEEN) (KOELGAS R 1132a)"
+  ],
+  "1961": [
+   "ETHAAN, STERK GEKOELD, VLOEIBAAR"
+  ],
+  "1962": [
+   "ETHYLEEN (ETHEEN)"
+  ],
+  "1963": [
+   "HELIUM, STERK GEKOELD, VLOEIBAAR"
+  ],
+  "1964": [
+   "MENGSEL VAN KOOLWATERSTOFGASSEN, SAMENGEPERST, N.E.G."
+  ],
+  "1965": [
+   "MENGSEL VAN KOOLWATERSTOFGASSEN, VLOEIBAAR GEMAAKT, N.E.G. zoals de mengsels A, A01, A02, A0, A1, B1, B2, B of C"
+  ],
+  "1966": [
+   "WATERSTOF, STERK GEKOELD, VLOEIBAAR"
+  ],
+  "1967": [
+   "INSECTICIDE, GAS, GIFTIG, N.E.G."
+  ],
+  "1968": [
+   "INSECTICIDE GAS, N.E.G."
+  ],
+  "1969": [
+   "ISOBUTAAN"
+  ],
+  "1970": [
+   "KRYPTON, STERK GEKOELD, VLOEIBAAR"
+  ],
+  "1971": [
+   "METHAAN, SAMENGEPERST",
+   "AARDGAS, SAMENGEPERST met hoog methaan gehalte"
+  ],
+  "1972": [
+   "METHAAN, STERK GEKOELD, VLOEIBAAR",
+   "AARDGAS, STERK GEKOELD, VLOEIBAAR met hoog methaangehalte"
+  ],
+  "1973": [
+   "MENGSEL VAN CHLOORDIFLUORMETHAAN EN CHLOORPENTAFLUORETHAAN (KOELGAS R 502) met een vast kookpunt en dat ca. 49% chloordifluormethaan bevat"
+  ],
+  "1974": [
+   "BROOMCHLOORDIFLUORMETHAAN (KOELGAS R 12B1)"
+  ],
+  "1975": [
+   "MENGSEL VAN STIKSTOFMONOXIDE EN DISTIKSTOFTETROXIDE (MENGSEL VAN STIKSTOFMONOXIDE EN STIKSTOFDIOXIDE)"
+  ],
+  "1976": [
+   "OCTAFLUORCYCLOBUTAAN (KOELGAS RC 318)"
+  ],
+  "1977": [
+   "STIKSTOF, STERK GEKOELD, VLOEIBAAR"
+  ],
+  "1978": [
+   "PROPAAN"
+  ],
+  "1982": [
+   "TETRAFLUORMETHAAN (KOELGAS R 14)"
+  ],
+  "1983": [
+   "1-CHLOOR-2,2,2-TRIFLUORETHAAN (KOELGAS R133a)"
+  ],
+  "1984": [
+   "TRIFLUORMETHAAN (KOELGAS R 23)"
+  ],
+  "1986": [
+   "ALCOHOLEN, BRANDBAAR, GIFTIG, N.E.G."
+  ],
+  "1987": [
+   "ALCOHOLEN, N.E.G."
+  ],
+  "1988": [
+   "ALDEHYDEN, BRANDBAAR, GIFTIG, N.E.G."
+  ],
+  "1989": [
+   "ALDEHYDEN, N.E.G."
+  ],
+  "1990": [
+   "BENZALDEHYDE"
+  ],
+  "1991": [
+   "CHLOROPREEN, GESTABILISEERD"
+  ],
+  "1992": [
+   "BRANDBARE VLOEISTOF, GIFTIG, N.E.G."
+  ],
+  "1993": [
+   "BRANDBARE VLOEISTOF, N.E.G."
+  ],
+  "1994": [
+   "IJZERPENTACARBONYL"
+  ],
+  "2000": [
+   "CELLULOID in blokken, staven, rollen, bladen, pijpen, enz. (uitgezonderd afval)"
+  ],
+  "2001": [
+   "KOBALTNAFTENATEN, POEDER"
+  ],
+  "2002": [
+   "CELLULOIDAFVAL"
+  ],
+  "2004": [
+   "MAGNESIUMDIAMIDE"
+  ],
+  "2006": [
+   "KUNSTSTOFFEN, OP BASIS VAN NITROCELLULOSE, VOOR ZELFVERHITTING VATBAAR, N.E.G."
+  ],
+  "2008": [
+   "ZIRKONIUMPOEDER, DROOG"
+  ],
+  "2009": [
+   "ZIRKONIUM, DROOG in de vorm van platen, repen of draad (dunner dan 18 µm)"
+  ],
+  "2010": [
+   "MAGNESIUMHYDRIDE"
+  ],
+  "2011": [
+   "MAGNESIUMFOSFIDE"
+  ],
+  "2012": [
+   "KALIUMFOSFIDE"
+  ],
+  "2013": [
+   "STRONTIUMFOSFIDE"
+  ],
+  "2014": [
+   "WATERSTOFPEROXIDE, OPLOSSING IN WATER met ten minste 20%, maar ten hoogste 60% waterstofperoxide (zo nodig gestabiliseerd)"
+  ],
+  "2015": [
+   "WATERSTOFPEROXIDE, OPLOSSING IN WATER, GESTABILISEERD met meer dan 70% waterstofperoxide",
+   "WATERSTOFPEROXIDE, OPLOSSING IN WATER, GESTABILISEERD met meer dan 60% waterstofperoxide en ten hoogste 70% waterstofperoxide",
+   "WATERSTOFPEROXIDE, GESTABILISEERD"
+  ],
+  "2016": [
+   "MUNITIE, GIFTIG, NIET-ONTPLOFBAAR zonder verspreidings- of uitstootlading, zonder ontsteker"
+  ],
+  "2017": [
+   "MUNITIE, TRAANVERWEKKEND, NIET-ONTPLOFBAAR zonder verspreidings- of uitstootlading, zonder ontsteker"
+  ],
+  "2018": [
+   "CHLOORANILINEN, VAST"
+  ],
+  "2019": [
+   "CHLOORANILINEN, VLOEIBAAR"
+  ],
+  "2020": [
+   "CHLOORFENOLEN, VAST"
+  ],
+  "2021": [
+   "CHLOORFENOLEN, VLOEIBAAR"
+  ],
+  "2022": [
+   "CRESYLZUUR"
+  ],
+  "2023": [
+   "EPICHLOORHYDRINE"
+  ],
+  "2024": [
+   "KWIKVERBINDING, VLOEIBAAR, N.E.G."
+  ],
+  "2025": [
+   "KWIKVERBINDING, VAST, N.E.G."
+  ],
+  "2026": [
+   "FENYLKWIKVERBINDING, N.E.G."
+  ],
+  "2027": [
+   "NATRIUMARSENIET, VAST"
+  ],
+  "2028": [
+   "ROOKBOMMEN, NIET-ONTPLOFBAAR met bijtende vloeistof, zonder ontsteker"
+  ],
+  "2029": [
+   "HYDRAZINE, WATERVRIJ"
+  ],
+  "2030": [
+   "HYDRAZINE, OPLOSSING IN WATER met meer dan 37 massa-% hydrazine, met een vlampunt hoger dan 60 °C",
+   "HYDRAZINE, OPLOSSING IN WATER met meer dan 37 massa-% hydrazine"
+  ],
+  "2031": [
+   "SALPETERZUUR anders dan roodrokend, met meer dan 70% zuur",
+   "SALPETERZUUR anders dan roodrokend, met ten minste 65% doch ten hoogste 70% zuur",
+   "SALPETERZUUR anders dan roodrokend, met minder dan 65% salpeterzuur"
+  ],
+  "2032": [
+   "SALPETERZUUR, ROODROKEND"
+  ],
+  "2033": [
+   "KALIUMMONOXIDE"
+  ],
+  "2034": [
+   "MENGSEL VAN WATERSTOF EN METHAAN, SAMENGEPERST"
+  ],
+  "2035": [
+   "1,1,1-TRIFLUORETHAAN (KOELGAS R 143a)"
+  ],
+  "2036": [
+   "XENON"
+  ],
+  "2037": [
+   "HOUDERS, KLEIN, MET GAS (GASPATRONEN) zonder aftapinrichting, niet-hervulbaar"
+  ],
+  "2038": [
+   "DINITROTOLUENEN, VLOEIBAAR"
+  ],
+  "2044": [
+   "2,2-DIMETHYLPROPAAN"
+  ],
+  "2045": [
+   "ISOBUTYRALDEHYDE"
+  ],
+  "2046": [
+   "CYMENEN"
+  ],
+  "2047": [
+   "DICHLOORPROPENEN"
+  ],
+  "2048": [
+   "DICYCLOPENTADIEEN"
+  ],
+  "2049": [
+   "DIETHYLBENZEEN"
+  ],
+  "2050": [
+   "DIISOBUTYLEEN, ISOMERE VERBINDINGEN"
+  ],
+  "2051": [
+   "2-DIMETHYLAMINOETHANOL"
+  ],
+  "2052": [
+   "DIPENTEEN (limoneen)"
+  ],
+  "2053": [
+   "METHYLISOBUTYLCARBINOL (methylamylalcohol)"
+  ],
+  "2054": [
+   "MORFOLINE"
+  ],
+  "2055": [
+   "STYREEN MONOMEER, GESTABILISEERD (vinylbenzeen, monomeer, gestabiliseerd)"
+  ],
+  "2056": [
+   "TETRAHYDROFURAN"
+  ],
+  "2057": [
+   "TRIPROPYLEEN (propyleen trimeer)"
+  ],
+  "2058": [
+   "VALERALDEHYDE"
+  ],
+  "2059": [
+   "NITROCELLULOSE, OPLOSSING, BRANDBAAR met een stikstofgehalte van ten hoogste 12,6% in de droge stof en ten hoogste 55% nitrocellulose",
+   "NITROCELLULOSE, OPLOSSING, BRANDBAAR met een stikstofgehalte van ten hoogste 12,6 % in de droge stof en ten hoogste 55 % nitrocellulose"
+  ],
+  "2067": [
+   "AMMONIUMNITRAATHOUDENDE MESTSTOFFEN"
+  ],
+  "2071": [
+   "AMMONIUMNITRAATHOUDENDE MESTSTOFFEN"
+  ],
+  "2073": [
+   "AMMONIAK, OPLOSSING in water, relatieve dichtheid minder dan 0,880 bij 15 °C, met meer dan 35%, doch ten hoogste 50% ammoniak"
+  ],
+  "2074": [
+   "ACRYLAMIDE, VAST"
+  ],
+  "2075": [
+   "CHLORAAL, WATERVRIJ, GESTABILISEERD"
+  ],
+  "2076": [
+   "CRESOLEN, VLOEIBAAR"
+  ],
+  "2077": [
+   "alpha-NAFTYLAMINE"
+  ],
+  "2078": [
+   "TOLUEENDIISOCYANAAT"
+  ],
+  "2079": [
+   "DIETHYLEENTRIAMINE"
+  ],
+  "2186": [
+   "CHLOORWATERSTOF, STERK GEKOELD, VLOEIBAAR"
+  ],
+  "2187": [
+   "KOOLDIOXIDE, STERK GEKOELD, VLOEIBAAR (KOOLSTOFDIOXIDE, STERK GEKOELD, VLOEIBAAR) (KOOLZUUR, STERK GEKOELD, VLOEIBAAR)"
+  ],
+  "2188": [
+   "ARSEENWATERSTOF (ARSINE)"
+  ],
+  "2189": [
+   "DICHLOORSILAAN"
+  ],
+  "2190": [
+   "ZUURSTOFDIFLUORIDE, SAMENGEPERST"
+  ],
+  "2191": [
+   "SULFURYLFLUORIDE"
+  ],
+  "2192": [
+   "GERMAANWATERSTOF (GERMAAN)"
+  ],
+  "2193": [
+   "HEXAFLUORETHAAN (KOELGAS R 116)"
+  ],
+  "2194": [
+   "SELEENHEXAFLUORIDE"
+  ],
+  "2195": [
+   "TELLURIUMHEXAFLUORIDE"
+  ],
+  "2196": [
+   "WOLFRAAMHEXAFLUORIDE"
+  ],
+  "2197": [
+   "WATERSTOFJODIDE, WATERVRIJ (JOODWATERSTOF, WATERVRIJ)"
+  ],
+  "2198": [
+   "FOSFORPENTAFLUORIDE"
+  ],
+  "2199": [
+   "FOSFORWATERSTOF (FOSFINE)"
+  ],
+  "2200": [
+   "PROPADIEEN, GESTABILISEERD"
+  ],
+  "2201": [
+   "DISTIKSTOFOXIDE, STERK GEKOELD, VLOEIBAAR (LACHGAS, STERK GEKOELD, VLOEIBAAR)"
+  ],
+  "2202": [
+   "SELEENWATERSTOF, WATERVRIJ (WATERSTOFSELENIDE, WATERVRIJ)"
+  ],
+  "2203": [
+   "SILICIUMWATERSTOF (SILAAN)"
+  ],
+  "2204": [
+   "CARBONYLSULFIDE"
+  ],
+  "2205": [
+   "ADIPONITRIL"
+  ],
+  "2206": [
+   "ISOCYANAAT, OPLOSSING, GIFTIG, N.E.G.",
+   "ISOCYANATEN, GIFTIG, N.E.G."
+  ],
+  "2208": [
+   "CALCIUMHYPOCHLORIET, MENGSEL, DROOG met meer dan 10%, doch niet meer dan 39% actief chloor"
+  ],
+  "2209": [
+   "FORMALDEHYDE, OPLOSSING met ten minste 25% formaldehyde"
+  ],
+  "2210": [
+   "MANEB",
+   "MANEB-PREPARAAT met ten minste 60% maneb"
+  ],
+  "2211": [
+   "EXPANDEERBARE POLYMEERKORRELS die brandbare dampen ontwikkelen"
+  ],
+  "2212": [
+   "ASBEST, AMFIBOOL (amosiet, tremoliet, actinoliet, anthofylliet, crocidoliet)"
+  ],
+  "2213": [
+   "PARAFORMALDEHYDE"
+  ],
+  "2214": [
+   "FTAALZUURANHYDRIDE met meer dan 0,05% maleïnezuuranhydride"
+  ],
+  "2215": [
+   "MALEÏNEZUURANHYDRIDE",
+   "MALEÏNEZUURANHYDRIDE, GESMOLTEN"
+  ],
+  "2216": [
+   "VISMEEL, GESTABILISEERD",
+   "VISAFVAL, GESTABILISEERD"
+  ],
+  "2217": [
+   "OLIEZAADKOEKEN met ten hoogste 1,5 massa-% olie en ten hoogste 11 massa-% vocht"
+  ],
+  "2218": [
+   "ACRYLZUUR, GESTABILISEERD"
+  ],
+  "2219": [
+   "ALLYLGLYCIDYLETHER"
+  ],
+  "2222": [
+   "ANISOL (fenylmethylether)"
+  ],
+  "2224": [
+   "BENZONITRIL"
+  ],
+  "2225": [
+   "BENZEENSULFONYLCHLORIDE"
+  ],
+  "2226": [
+   "BENZOTRICHLORIDE (trichloormethylbenzeen)"
+  ],
+  "2227": [
+   "n-BUTYLMETHACRYLAAT, GESTABILISEERD"
+  ],
+  "2232": [
+   "2-CHLOORETHANAL (chlooraceetaldehyde)"
+  ],
+  "2233": [
+   "CHLOORANISIDINEN"
+  ],
+  "2234": [
+   "CHLOORBENZOTRIFLUORIDEN"
+  ],
+  "2235": [
+   "CHLOORBENZYLCHLORIDEN, VLOEIBAAR"
+  ],
+  "2236": [
+   "3-CHLOOR-4-METHYLFENYLISOCYANAAT, VLOEIBAAR"
+  ],
+  "2237": [
+   "CHLOORNITROANILINEN"
+  ],
+  "2238": [
+   "CHLOORTOLUENEN"
+  ],
+  "2239": [
+   "CHLOORTOLUÏDINEN, VAST"
+  ],
+  "2240": [
+   "CHROOMZWAVELZUUR"
+  ],
+  "2241": [
+   "CYCLOHEPTAAN"
+  ],
+  "2242": [
+   "CYCLOHEPTEEN"
+  ],
+  "2243": [
+   "CYCLOHEXYLACETAAT"
+  ],
+  "2244": [
+   "CYCLOPENTANOL"
+  ],
+  "2245": [
+   "CYCLOPENTANON"
+  ],
+  "2246": [
+   "CYCLOPENTEEN"
+  ],
+  "2247": [
+   "n-DECAAN"
+  ],
+  "2248": [
+   "DI-n-BUTYLAMINE"
+  ],
+  "2249": [
+   "DICHLOORMETHYLETHER, SYMMETRISCH"
+  ],
+  "2250": [
+   "DICHLOORFENYLISOCYANATEN"
+  ],
+  "2251": [
+   "BICYCLO-[2,2,1]-HEPTADIEEN-2,5, GESTABILISEERD (NORBORNADIEEN-2,5, GESTABILISEERD)"
+  ],
+  "2252": [
+   "1,2-DIMETHOXYETHAAN"
+  ],
+  "2253": [
+   "N,N-DIMETHYLANILINE"
+  ],
+  "2254": [
+   "STORMLUCIFERS"
+  ],
+  "2256": [
+   "CYCLOHEXEEN"
+  ],
+  "2257": [
+   "KALIUM"
+  ],
+  "2258": [
+   "1,2-PROPYLEENDIAMINE"
+  ],
+  "2259": [
+   "TRIETHYLEENTETRAMINE"
+  ],
+  "2260": [
+   "TRIPROPYLAMINE"
+  ],
+  "2261": [
+   "XYLENOLEN, VAST"
+  ],
+  "2262": [
+   "N,N-DIMETHYLCARBAMOYLCHLORIDE"
+  ],
+  "2263": [
+   "DIMETHYLCYCLOHEXANEN"
+  ],
+  "2264": [
+   "N,N-DIMETHYLCYCLOHEXYLAMINE"
+  ],
+  "2265": [
+   "N,N-DIMETHYLFORMAMIDE"
+  ],
+  "2266": [
+   "N,N-DIMETHYLPROPYLAMINE"
+  ],
+  "2267": [
+   "DIMETHYLTHIOFOSFORYLCHLORIDE"
+  ],
+  "2269": [
+   "3,3'-IMINOBISPROPYLAMINE (dipropyleentriamine)"
+  ],
+  "2270": [
+   "ETHYLAMINE, OPLOSSING IN WATER met ten minste 50 massa-%, doch niet meer dan 70 massa-% ethylamine"
+  ],
+  "2271": [
+   "ETHYLAMYLKETON"
+  ],
+  "2272": [
+   "N-ETHYLANILINE"
+  ],
+  "2273": [
+   "2-ETHYLANILINE"
+  ],
+  "2274": [
+   "N-ETHYL-N-BENZYLANILINE"
+  ],
+  "2275": [
+   "2-ETHYLBUTANOL"
+  ],
+  "2276": [
+   "2-ETHYLHEXYLAMINE"
+  ],
+  "2277": [
+   "ETHYLMETHACRYLAAT, GESTABILISEERD"
+  ],
+  "2278": [
+   "n-HEPTEEN"
+  ],
+  "2279": [
+   "HEXACHLOORBUTADIEEN"
+  ],
+  "2280": [
+   "HEXAMETHYLEENDIAMINE, VAST"
+  ],
+  "2281": [
+   "HEXAMETHYLEENDIISOCYANAAT"
+  ],
+  "2282": [
+   "HEXANOLEN"
+  ],
+  "2283": [
+   "ISOBUTYLMETHACRYLAAT, GESTABILISEERD"
+  ],
+  "2284": [
+   "ISOBUTYRONITRIL"
+  ],
+  "2285": [
+   "ISOCYANATOBENZOTRIFLUORIDEN"
+  ],
+  "2286": [
+   "PENTAMETHYLHEPTAAN (isododecaan)"
+  ],
+  "2287": [
+   "ISOHEPTENEN"
+  ],
+  "2288": [
+   "ISOHEXENEN"
+  ],
+  "2289": [
+   "ISOFORONDIAMINE"
+  ],
+  "2290": [
+   "ISOFORONDIISOCYANAAT (3-isocyanatomethyl-3,5,5-trimethylcyclohexylisocyanaat)"
+  ],
+  "2291": [
+   "LOODVERBINDING, OPLOSBAAR, N.E.G."
+  ],
+  "2293": [
+   "4-METHOXY-4-METHYLPENTAAN-2-ON"
+  ],
+  "2294": [
+   "N-METHYLANILINE"
+  ],
+  "2295": [
+   "METHYLCHLOORACETAAT"
+  ],
+  "2296": [
+   "METHYLCYCLOHEXAAN"
+  ],
+  "2297": [
+   "METHYLCYCLOHEXANON"
+  ],
+  "2298": [
+   "METHYLCYCLOPENTAAN"
+  ],
+  "2299": [
+   "METHYLDICHLOORACETAAT"
+  ],
+  "2300": [
+   "2-METHYL-5-ETHYLPYRIDINE"
+  ],
+  "2301": [
+   "2-METHYLFURAN"
+  ],
+  "2302": [
+   "5-METHYLHEXAAN-2-ON"
+  ],
+  "2303": [
+   "ISOPROPENYLBENZEEN"
+  ],
+  "2304": [
+   "NAFTALEEN, GESMOLTEN"
+  ],
+  "2305": [
+   "NITROBENZEENSULFONZUUR"
+  ],
+  "2306": [
+   "NITROBENZOTRIFLUORIDEN, VLOEIBAAR"
+  ],
+  "2307": [
+   "3-NITRO-4-CHLOORBENZOTRIFLUORIDE"
+  ],
+  "2308": [
+   "NITROSYLZWAVELZUUR, VLOEIBAAR"
+  ],
+  "2309": [
+   "OCTADIËNEN"
+  ],
+  "2310": [
+   "PENTAANDION (acetylaceton)"
+  ],
+  "2311": [
+   "FENETIDINEN"
+  ],
+  "2312": [
+   "FENOL, GESMOLTEN"
+  ],
+  "2313": [
+   "PICOLINEN"
+  ],
+  "2315": [
+   "POLYCHLOORBIFENYLEN, VLOEIBAAR"
+  ],
+  "2316": [
+   "NATRIUMKOPER(I)CYANIDE, VAST"
+  ],
+  "2317": [
+   "NATRIUMKOPER(I)CYANIDE, OPLOSSING"
+  ],
+  "2318": [
+   "NATRIUMWATERSTOFSULFIDE met minder dan 25% kristalwater"
+  ],
+  "2319": [
+   "TERPEENKOOLWATERSTOFFEN, N.E.G."
+  ],
+  "2320": [
+   "TETRAETHYLEENPENTAMINE"
+  ],
+  "2321": [
+   "TRICHLOORBENZENEN, VLOEIBAAR"
+  ],
+  "2322": [
+   "TRICHLOORBUTEEN"
+  ],
+  "2323": [
+   "TRIETHYLFOSFIET"
+  ],
+  "2324": [
+   "TRIISOBUTYLEEN"
+  ],
+  "2325": [
+   "1,3,5-TRIMETHYLBENZEEN (mesityleen)"
+  ],
+  "2326": [
+   "TRIMETHYLCYCLOHEXYLAMINE"
+  ],
+  "2327": [
+   "TRIMETHYLHEXAMETHYLEENDIAMINEN"
+  ],
+  "2328": [
+   "TRIMETHYLHEXAMETHYLEENDIISOCYANAAT (en mengsels van isomeren)"
+  ],
+  "2329": [
+   "TRIMETHYLFOSFIET"
+  ],
+  "2330": [
+   "UNDECAAN"
+  ],
+  "2331": [
+   "ZINKCHLORIDE, WATERVRIJ"
+  ],
+  "2332": [
+   "ACETALDOXIME"
+  ],
+  "2333": [
+   "ALLYLACETAAT"
+  ],
+  "2334": [
+   "ALLYLAMINE"
+  ],
+  "2335": [
+   "ALLYLETHYLETHER"
+  ],
+  "2336": [
+   "ALLYLFORMIAAT"
+  ],
+  "2337": [
+   "FENYLMERCAPTAAN (thiofenol)"
+  ],
+  "2338": [
+   "BENZOTRIFLUORIDE"
+  ],
+  "2339": [
+   "2-BROOMBUTAAN"
+  ],
+  "2340": [
+   "2-BROOMETHYLETHYLETHER"
+  ],
+  "2341": [
+   "1-BROOM-3-METHYLBUTAAN"
+  ],
+  "2342": [
+   "BROOMMETHYLPROPANEN"
+  ],
+  "2343": [
+   "2-BROOMPENTAAN"
+  ],
+  "2344": [
+   "BROOMPROPANEN"
+  ],
+  "2345": [
+   "3-BROOMPROPYN"
+  ],
+  "2346": [
+   "BUTAANDION (diacetyl)"
+  ],
+  "2347": [
+   "BUTYLMERCAPTAAN"
+  ],
+  "2348": [
+   "BUTYLACRYLATEN, GESTABILISEERD"
+  ],
+  "2350": [
+   "BUTYLMETHYLETHER"
+  ],
+  "2351": [
+   "BUTYLNITRIETEN"
+  ],
+  "2352": [
+   "BUTYLVINYLETHER, GESTABILISEERD"
+  ],
+  "2353": [
+   "BUTYRYLCHLORIDE"
+  ],
+  "2354": [
+   "CHLOORMETHYLETHYLETHER"
+  ],
+  "2356": [
+   "2-CHLOORPROPAAN (isopropylchloride)"
+  ],
+  "2357": [
+   "CYCLOHEXYLAMINE"
+  ],
+  "2358": [
+   "CYCLOOCTATETRAEEN"
+  ],
+  "2359": [
+   "DIALLYLAMINE"
+  ],
+  "2360": [
+   "DIALLYLETHER"
+  ],
+  "2361": [
+   "DIISOBUTYLAMINE"
+  ],
+  "2362": [
+   "1,1-DICHLOORETHAAN (ethylideenchloride)"
+  ],
+  "2363": [
+   "ETHYLMERCAPTAAN"
+  ],
+  "2364": [
+   "n-PROPYLBENZEEN"
+  ],
+  "2366": [
+   "DIETHYLCARBONAAT"
+  ],
+  "2367": [
+   "alpha-METHYLVALERALDEHYDE"
+  ],
+  "2368": [
+   "alpha-PINEEN"
+  ],
+  "2370": [
+   "HEXEEN-1"
+  ],
+  "2371": [
+   "ISOPENTENEN"
+  ],
+  "2372": [
+   "1,2-BIS-(DIMETHYLAMINO)-ETHAAN"
+  ],
+  "2373": [
+   "DIETHOXYMETHAAN"
+  ],
+  "2374": [
+   "3,3-DIETHOXYPROPEEN"
+  ],
+  "2375": [
+   "DIETHYLSULFIDE"
+  ],
+  "2376": [
+   "2,3-DIHYDROPYRAN"
+  ],
+  "2377": [
+   "1,1-DIMETHOXYETHAAN"
+  ],
+  "2378": [
+   "2-DIMETHYLAMINOACETONITRIL"
+  ],
+  "2379": [
+   "1,3-DIMETHYLBUTYLAMINE"
+  ],
+  "2380": [
+   "DIMETHYLDIETHOXYSILAAN"
+  ],
+  "2381": [
+   "DIMETHYLDISULFIDE"
+  ],
+  "2382": [
+   "DIMETHYLHYDRAZINE, SYMMETRISCH"
+  ],
+  "2383": [
+   "DIPROPYLAMINE"
+  ],
+  "2384": [
+   "DI-n-PROPYLETHER"
+  ],
+  "2385": [
+   "ETHYLISOBUTYRAAT"
+  ],
+  "2386": [
+   "1-ETHYLPIPERIDINE"
+  ],
+  "2387": [
+   "FLUORBENZEEN"
+  ],
+  "2388": [
+   "FLUORTOLUENEN"
+  ],
+  "2389": [
+   "FURAN"
+  ],
+  "2390": [
+   "2-JOODBUTAAN"
+  ],
+  "2391": [
+   "JOODMETHYLPROPANEN"
+  ],
+  "2392": [
+   "JOODPROPANEN"
+  ],
+  "2393": [
+   "ISOBUTYLFORMIAAT"
+  ],
+  "2394": [
+   "ISOBUTYLPROPIONAAT"
+  ],
+  "2395": [
+   "ISOBUTYRYLCHLORIDE"
+  ],
+  "2396": [
+   "METHACRYLALDEHYDE, GESTABILISEERD"
+  ],
+  "2397": [
+   "3-METHYLBUTAAN-2-ON"
+  ],
+  "2398": [
+   "METHYL-tert-BUTYLETHER"
+  ],
+  "2399": [
+   "1-METHYLPIPERIDINE"
+  ],
+  "2400": [
+   "METHYLISOVALERAAT"
+  ],
+  "2401": [
+   "PIPERIDINE"
+  ],
+  "2402": [
+   "PROPANETHIOLEN (propylmercaptanen)"
+  ],
+  "2403": [
+   "ISOPROPENYLACETAAT"
+  ],
+  "2404": [
+   "PROPIONITRIL"
+  ],
+  "2405": [
+   "ISOPROPYLBUTYRAAT"
+  ],
+  "2406": [
+   "ISOPROPYLISOBUTYRAAT"
+  ],
+  "2407": [
+   "ISOPROPYLCHLOORFORMIAAT"
+  ],
+  "2409": [
+   "ISOPROPYLPROPIONAAT"
+  ],
+  "2410": [
+   "1,2,3,6-TETRAHYDROPYRIDINE"
+  ],
+  "2411": [
+   "BUTYRONITRIL"
+  ],
+  "2412": [
+   "TETRAHYDROTHIOFEEN"
+  ],
+  "2413": [
+   "TETRAPROPYLORTHOTITANAAT"
+  ],
+  "2414": [
+   "THIOFEEN"
+  ],
+  "2416": [
+   "TRIMETHYLBORAAT"
+  ],
+  "2417": [
+   "CARBONYLFLUORIDE"
+  ],
+  "2418": [
+   "ZWAVELTETRAFLUORIDE"
+  ],
+  "2419": [
+   "BROOMTRIFLUORETHYLEEN (BROOMTRIFLUORETHEEN)"
+  ],
+  "2420": [
+   "HEXAFLUORACETON"
+  ],
+  "2421": [
+   "DISTIKSTOFTRIOXIDE"
+  ],
+  "2422": [
+   "OCTAFLUOR-2-BUTEEN (KOELGAS R 1318)"
+  ],
+  "2424": [
+   "OCTAFLUORPROPAAN (KOELGAS R 218)"
+  ],
+  "2426": [
+   "AMMONIUM NITRATE, VLOEIBAAR (warme geconcentreerde oplossing)"
+  ],
+  "2427": [
+   "KALIUMCHLORAAT, OPLOSSING IN WATER"
+  ],
+  "2428": [
+   "NATRIUMCHLORAAT, OPLOSSING IN WATER"
+  ],
+  "2429": [
+   "CALCIUMCHLORAAT, OPLOSSING IN WATER"
+  ],
+  "2430": [
+   "ALKYLFENOLEN, VAST, N.E.G. (met inbegrip van de homologe reeks C2-C12)"
+  ],
+  "2431": [
+   "ANISIDINEN"
+  ],
+  "2432": [
+   "N,N-DIETHYLANILINE"
+  ],
+  "2433": [
+   "CHLOORNITROTOLUENEN, VLOEIBAAR"
+  ],
+  "2434": [
+   "DIBENZYLDICHLOORSILAAN"
+  ],
+  "2435": [
+   "ETHYLFENYLDICHLOORSILAAN"
+  ],
+  "2436": [
+   "THIOAZIJNZUUR"
+  ],
+  "2437": [
+   "METHYLFENYLDICHLOORSILAAN"
+  ],
+  "2438": [
+   "TRIMETHYLACETYLCHLORIDE (pivaloylchloride)"
+  ],
+  "2439": [
+   "NATRIUMWATERSTOFDIFLUORIDE (natriumbifluoride)"
+  ],
+  "2440": [
+   "TINTETRACHLORIDEPENTAHYDRAAT"
+  ],
+  "2441": [
+   "TITAANTRICHLORIDE, MENGSEL, PYROFOOR",
+   "TITAANTRICHLORIDE, PYROFOOR"
+  ],
+  "2442": [
+   "TRICHLOORACETYLCHLORIDE"
+  ],
+  "2443": [
+   "VANADIUMOXYTRICHLORIDE"
+  ],
+  "2444": [
+   "VANADIUMTETRACHLORIDE"
+  ],
+  "2446": [
+   "NITROCRESOLEN, VAST"
+  ],
+  "2447": [
+   "FOSFOR, WIT, GESMOLTEN"
+  ],
+  "2448": [
+   "ZWAVEL, GESMOLTEN"
+  ],
+  "2451": [
+   "STIKSTOFTRIFLUORIDE"
+  ],
+  "2452": [
+   "ETHYLACETYLEEN, GESTABILISEERD"
+  ],
+  "2453": [
+   "ETHYLFLUORIDE (KOELGAS R 161)"
+  ],
+  "2454": [
+   "METHYLFLUORIDE (KOELGAS R 41)"
+  ],
+  "2455": [
+   "METHYLNITRIET"
+  ],
+  "2456": [
+   "2-CHLOORPROPEEN"
+  ],
+  "2457": [
+   "2,3-DIMETHYLBUTAAN"
+  ],
+  "2458": [
+   "HEXADIENEN"
+  ],
+  "2459": [
+   "2-METHYL-1-BUTEEN"
+  ],
+  "2460": [
+   "2-METHYL-2-BUTEEN"
+  ],
+  "2461": [
+   "METHYLPENTADIEEN"
+  ],
+  "2463": [
+   "ALUMINIUMHYDRIDE"
+  ],
+  "2464": [
+   "BERYLLIUMNITRAAT"
+  ],
+  "2465": [
+   "DICHLOORISOCYANUURZURE ZOUTEN",
+   "DICHLOORISOCYANUURZUUR, DROOG"
+  ],
+  "2466": [
+   "KALIUMSUPEROXIDE"
+  ],
+  "2468": [
+   "TRICHLOORISOCYANUURZUUR, DROOG"
+  ],
+  "2469": [
+   "ZINKBROMAAT"
+  ],
+  "2470": [
+   "FENYLACETONITRIL, VLOEIBAAR"
+  ],
+  "2471": [
+   "OSMIUMTETROXIDE"
+  ],
+  "2473": [
+   "NATRIUMARSANILAAT"
+  ],
+  "2474": [
+   "THIOFOSGEEN"
+  ],
+  "2475": [
+   "VANADIUMTRICHLORIDE"
+  ],
+  "2477": [
+   "METHYLISOTHIOCYANAAT"
+  ],
+  "2478": [
+   "ISOCYANATEN, BRANDBAAR, GIFTIG, N.E.G.",
+   "ISOCYANAAT, OPLOSSING, BRANDBAAR, GIFTIG, N.E.G."
+  ],
+  "2480": [
+   "METHYLISOCYANAAT"
+  ],
+  "2481": [
+   "ETHYLISOCYANAAT"
+  ],
+  "2482": [
+   "n-PROPYLISOCYANAAT"
+  ],
+  "2483": [
+   "ISOPROPYLISOCYANAAT"
+  ],
+  "2484": [
+   "tert-BUTYLISOCYANAAT"
+  ],
+  "2485": [
+   "n-BUTYLISOCYANAAT"
+  ],
+  "2486": [
+   "ISOBUTYLISOCYANAAT"
+  ],
+  "2487": [
+   "FENYLISOCYANAAT"
+  ],
+  "2488": [
+   "CYCLOHEXYLISOCYANAAT"
+  ],
+  "2490": [
+   "DICHLOORISOPROPYLETHER"
+  ],
+  "2491": [
+   "ETHANOLAMINE",
+   "ETHANOLAMINE, OPLOSSING"
+  ],
+  "2493": [
+   "HEXAMETHYLEENIMINE"
+  ],
+  "2495": [
+   "JOODPENTAFLUORIDE"
+  ],
+  "2496": [
+   "PROPIONZUURANHYDRIDE"
+  ],
+  "2498": [
+   "1,2,3,6-TETRAHYDROBENZALDEHYDE"
+  ],
+  "2501": [
+   "TRIS-(1-AZIRIDINYL)-FOSFINEOXIDE, OPLOSSING"
+  ],
+  "2502": [
+   "VALERYLCHLORIDE (valeriaanzuurchloride)"
+  ],
+  "2503": [
+   "ZIRKONIUMTETRACHLORIDE"
+  ],
+  "2504": [
+   "TETRABROOMETHAAN"
+  ],
+  "2505": [
+   "AMMONIUMFLUORIDE"
+  ],
+  "2506": [
+   "AMMONIUMWATERSTOFSULFAAT (ammoniumbisulfaat)"
+  ],
+  "2507": [
+   "HEXACHLOORPLATINAZUUR, VAST"
+  ],
+  "2508": [
+   "MOLYBDEENPENTACHLORIDE"
+  ],
+  "2509": [
+   "KALIUMWATERSTOFSULFAAT (kaliumbisulfaat)"
+  ],
+  "2511": [
+   "alfa-CHLOORPROPIONZUUR"
+  ],
+  "2512": [
+   "AMINOFENOLEN (o-, m-, p-)"
+  ],
+  "2513": [
+   "BROOMACETYLBROMIDE"
+  ],
+  "2514": [
+   "BROOMBENZEEN"
+  ],
+  "2515": [
+   "BROMOFORM"
+  ],
+  "2516": [
+   "TETRABROOMKOOLSTOF"
+  ],
+  "2517": [
+   "1-CHLOOR-1,1-DIFLUORETHAAN (KOELGAS R 142b)"
+  ],
+  "2518": [
+   "1,5,9-CYCLODODECATRIEEN"
+  ],
+  "2520": [
+   "CYCLOOCTADIENEN"
+  ],
+  "2521": [
+   "DIKETEEN, GESTABILISEERD"
+  ],
+  "2522": [
+   "2-DIMETHYLAMINOETHYLMETHACRYLAAT, GESTABILISEERD"
+  ],
+  "2524": [
+   "ETHYLORTHOFORMIAAT"
+  ],
+  "2525": [
+   "ETHYLOXALAAT"
+  ],
+  "2526": [
+   "FURFURYLAMINE"
+  ],
+  "2527": [
+   "ISOBUTYLACRYLAAT, GESTABILISEERD"
+  ],
+  "2528": [
+   "ISOBUTYLISOBUTYRAAT"
+  ],
+  "2529": [
+   "ISOBOTERZUUR"
+  ],
+  "2531": [
+   "METHACRYLZUUR, GESTABILISEERD"
+  ],
+  "2533": [
+   "METHYLTRICHLOORACETAAT"
+  ],
+  "2534": [
+   "METHYLCHLOORSILAAN"
+  ],
+  "2535": [
+   "4-METHYLMORFOLINE (N-METHYLMORFOLINE)"
+  ],
+  "2536": [
+   "METHYLTETRAHYDROFURAN"
+  ],
+  "2538": [
+   "NITRONAFTALEEN"
+  ],
+  "2541": [
+   "TERPINOLEEN"
+  ],
+  "2542": [
+   "TRIBUTYLAMINE"
+  ],
+  "2545": [
+   "HAFNIUMPOEDER, DROOG"
+  ],
+  "2546": [
+   "TITANIUMPOEDER, DROOG"
+  ],
+  "2547": [
+   "NATRIUMSUPEROXIDE"
+  ],
+  "2548": [
+   "CHLOORPENTAFLUORIDE"
+  ],
+  "2552": [
+   "HEXAFLUORACETONHYDRAAT, VLOEIBAAR"
+  ],
+  "2554": [
+   "METHYLALLYLCHLORIDE"
+  ],
+  "2555": [
+   "NITROCELLULOSE MET ten minste 25 massa-% WATER"
+  ],
+  "2556": [
+   "NITROCELLULOSE MET ten minste 25 massa-% ALCOHOL en een stikstofgehalte in de droge stof van niet meer dan 12,6%"
+  ],
+  "2557": [
+   "NITROCELLULOSE, MENGSEL MET PLASTIFICEERMIDDEL, MET PIGMENT met een stikstofgehalte in de droge stof van niet meer dan 12,6%",
+   "NITROCELLULOSE, MENGSEL MET PLASTIFICEERMIDDEL, ZONDER PIGMENT met een stikstofgehalte in de droge stof van niet meer dan 12,6%",
+   "NITROCELLULOSE, MENGSEL ZONDER PLASTIFICEERMIDDEL, MET PIGMENT met een stikstofgehalte in de droge stof van niet meer dan 12,6%",
+   "NITROCELLULOSE, MENGSEL ZONDER PLASTIFICEERMIDDEL, ZONDER PIGMENT met een stikstofgehalte in de droge stof van niet meer dan 12,6%"
+  ],
+  "2558": [
+   "EPIBROOMHYDRINE"
+  ],
+  "2560": [
+   "2-METHYLPENTANOL-2"
+  ],
+  "2561": [
+   "3-METHYL-1-BUTEEN (isoamyleen-1) (isopropylethyleen)"
+  ],
+  "2564": [
+   "TRICHLOORAZIJNZUUR, OPLOSSING"
+  ],
+  "2565": [
+   "DICYCLOHEXYLAMINE"
+  ],
+  "2567": [
+   "NATRIUMPENTACHLOORFENOLAAT"
+  ],
+  "2570": [
+   "CADMIUMVERBINDING"
+  ],
+  "2571": [
+   "ALKYLZWAVELZUREN"
+  ],
+  "2572": [
+   "FENYLHYDRAZINE"
+  ],
+  "2573": [
+   "THALLIUMCHLORAAT"
+  ],
+  "2574": [
+   "TRICRESYLFOSFAAT met meer dan 3% van het ortho-isomeer"
+  ],
+  "2576": [
+   "FOSFOROXYBROMIDE, GESMOLTEN"
+  ],
+  "2577": [
+   "FENYLACETYLCHLORIDE"
+  ],
+  "2578": [
+   "FOSFORTRIOXIDE"
+  ],
+  "2579": [
+   "PIPERAZINE (diethyleendiamine)"
+  ],
+  "2580": [
+   "ALUMINIUMBROMIDE, OPLOSSING"
+  ],
+  "2581": [
+   "ALUMINIUMCHLORIDE, OPLOSSING"
+  ],
+  "2582": [
+   "IJZER(III)CHLORIDE, OPLOSSING"
+  ],
+  "2583": [
+   "ALKYLSULFONZUREN, VAST",
+   "ARYLSULFONZUREN, VAST met meer dan 5% vrij zwavelzuur"
+  ],
+  "2584": [
+   "ALKYLSULFONZUREN, VLOEIBAAR",
+   "ARYLSULFONZUREN, VLOEIBAAR met meer dan 5% vrij zwavelzuur"
+  ],
+  "2585": [
+   "ALKYLSULFONZUREN, VAST",
+   "ARYLSULFONZUREN, VAST met ten hoogste 5% vrij zwavelzuur"
+  ],
+  "2586": [
+   "ALKYLSULFONZUREN, VLOEIBAAR",
+   "ARYLSULFONZUREN, VLOEIBAAR met ten hoogste 5% vrij zwavelzuur"
+  ],
+  "2587": [
+   "BENZOCHINON"
+  ],
+  "2588": [
+   "PESTICIDE, VAST, GIFTIG, N.E.G."
+  ],
+  "2589": [
+   "VINYLCHLOORACETAAT"
+  ],
+  "2590": [
+   "ASBEST, CHRYSOTIEL"
+  ],
+  "2591": [
+   "XENON, STERK GEKOELD, VLOEIBAAR"
+  ],
+  "2599": [
+   "CHLOORTRIFLUORMETHAAN EN TRIFLUORMETHAAN, AZEOTROPISCH MENGSEL (KOELGAS R 503) dat ca. 60% chloortrifluormethaan bevat"
+  ],
+  "2601": [
+   "CYCLOBUTAAN"
+  ],
+  "2602": [
+   "DICHLOORDIFLUORMETHAAN EN 1,1-DIFLUORETHAAN, AZEOTROPISCH MENGSEL (KOELGAS R 500) dat ca. 74% dichloordifluormethaan bevat"
+  ],
+  "2603": [
+   "CYCLOHEPTATRIEEN"
+  ],
+  "2604": [
+   "BORIUMTRIFLUORIDEDIETHYLETHERAAT (boortrifluoride-ether-complex)"
+  ],
+  "2605": [
+   "METHOXYMETHYLISOCYANAAT"
+  ],
+  "2606": [
+   "METHYLORTHOSILICAAT (tetramethoxysilaan)"
+  ],
+  "2607": [
+   "ACROLEÏNE DIMEER, GESTABILISEERD"
+  ],
+  "2608": [
+   "NITROPROPANEN"
+  ],
+  "2609": [
+   "TRIALLYLBORAAT"
+  ],
+  "2610": [
+   "TRIALLYLAMINE"
+  ],
+  "2611": [
+   "1-CHLOORPROPANOL-2"
+  ],
+  "2612": [
+   "METHYLPROPYLETHER"
+  ],
+  "2614": [
+   "METHALLYLALCOHOL"
+  ],
+  "2615": [
+   "ETHYLPROPYLETHER"
+  ],
+  "2616": [
+   "TRIISOPROPYLBORAAT"
+  ],
+  "2617": [
+   "METHYLCYCLOHEXANOLEN brandbaar"
+  ],
+  "2618": [
+   "VINYLTOLUENEN, GESTABILISEERD"
+  ],
+  "2619": [
+   "BENZYLDIMETHYLAMINE"
+  ],
+  "2620": [
+   "AMYLBUTYRATEN"
+  ],
+  "2621": [
+   "ACETYLMETHYLCARBINOL"
+  ],
+  "2622": [
+   "GLYCIDALDEHYDE"
+  ],
+  "2623": [
+   "AANMAAKBLOKJES, VAST geïmpregneerd met brandbare vloeistof"
+  ],
+  "2624": [
+   "MAGNESIUMSILICIDE"
+  ],
+  "2626": [
+   "CHLOORZUUR, OPLOSSING IN WATER met ten hoogste 10% chloorzuur"
+  ],
+  "2627": [
+   "NITRIETEN, ANORGANISCH, N.E.G."
+  ],
+  "2628": [
+   "KALIUMFLUORACETAAT"
+  ],
+  "2629": [
+   "NATRIUMFLUORACETAAT"
+  ],
+  "2630": [
+   "SELENATEN",
+   "SELENIETEN"
+  ],
+  "2642": [
+   "FLUORAZIJNZUUR"
+  ],
+  "2643": [
+   "METHYLBROOMACETAAT"
+  ],
+  "2644": [
+   "METHYLJODIDE"
+  ],
+  "2645": [
+   "FENACYLBROMIDE (omega-broomacetofenon)"
+  ],
+  "2646": [
+   "HEXACHLOORCYCLOPENTADIEEN"
+  ],
+  "2647": [
+   "MALONITRIL"
+  ],
+  "2648": [
+   "1,2-DIBROOMBUTANON-3"
+  ],
+  "2649": [
+   "1,3-DICHLOORACETON"
+  ],
+  "2650": [
+   "1,1-DICHLOOR-1-NITROETHAAN"
+  ],
+  "2651": [
+   "4,4'-DIAMINODIFENYLMETHAAN"
+  ],
+  "2653": [
+   "BENZYLJODIDE"
+  ],
+  "2655": [
+   "KALIUMFLUORSILICAAT"
+  ],
+  "2656": [
+   "CHINOLINE"
+  ],
+  "2657": [
+   "SELENIUMDISULFIDE"
+  ],
+  "2659": [
+   "NATRIUMCHLOORACETAAT"
+  ],
+  "2660": [
+   "NITROTOLUIDÏNEN (MONO)"
+  ],
+  "2661": [
+   "HEXACHLOORACETON"
+  ],
+  "2664": [
+   "DIBROOMMETHAAN"
+  ],
+  "2667": [
+   "BUTYLTOLUENEN"
+  ],
+  "2668": [
+   "CHLOORACETONITRIL"
+  ],
+  "2669": [
+   "CHLOORCRESOLEN, OPLOSSING"
+  ],
+  "2670": [
+   "CYANUURCHLORIDE"
+  ],
+  "2671": [
+   "AMINOPYRIDINEN (o-, m-, p-)"
+  ],
+  "2672": [
+   "AMMONIAK, OPLOSSING in water, relatieve dichtheid tussen 0,880 en 0,957 bij 15 °C, met meer dan 10%, doch ten hoogste 35% ammoniak"
+  ],
+  "2673": [
+   "2-AMINO-4-CHLOORFENOL"
+  ],
+  "2674": [
+   "NATRIUMFLUORSILICAAT"
+  ],
+  "2676": [
+   "ANTIMOONWATERSTOF (STIBINE)"
+  ],
+  "2677": [
+   "RUBIDIUMHYDROXIDE, OPLOSSING"
+  ],
+  "2678": [
+   "RUBIDIUMHYDROXIDE"
+  ],
+  "2679": [
+   "LITHIUMHYDROXIDE, OPLOSSING"
+  ],
+  "2680": [
+   "LITHIUMHYDROXIDE"
+  ],
+  "2681": [
+   "CESIUMHYDROXIDE, OPLOSSING"
+  ],
+  "2682": [
+   "CESIUMHYDROXIDE"
+  ],
+  "2683": [
+   "AMMONIUMSULFIDE, OPLOSSING"
+  ],
+  "2684": [
+   "3-DIETHYLAMINOPROPYLAMINE"
+  ],
+  "2685": [
+   "N,N-DIETHYLETHYLEENDIAMINE"
+  ],
+  "2686": [
+   "2-DIETHYLAMINOETHANOL"
+  ],
+  "2687": [
+   "DICYCLOHEXYLAMMONIUMNITRIET"
+  ],
+  "2688": [
+   "1-BROOM-3-CHLOORPROPAAN"
+  ],
+  "2689": [
+   "GLYCEROL-alfa-MONOCHLOORHYDRINE"
+  ],
+  "2690": [
+   "N,n-BUTYLIMIDAZOOL"
+  ],
+  "2691": [
+   "FOSFORPENTABROMIDE"
+  ],
+  "2692": [
+   "BORIUMTRIBROMIDE"
+  ],
+  "2693": [
+   "WATERSTOFSULFIETEN, OPLOSSING IN WATER, N.E.G."
+  ],
+  "2698": [
+   "TETRAHYDROFTAALZUURANHYDRIDEN met meer dan 0,05% maleïnezuuranhydride"
+  ],
+  "2699": [
+   "TRIFLUORAZIJNZUUR"
+  ],
+  "2705": [
+   "1-PENTOL"
+  ],
+  "2707": [
+   "DIMETHYLDIOXANEN"
+  ],
+  "2709": [
+   "BUTYLBENZENEN"
+  ],
+  "2710": [
+   "DIPROPYLKETON"
+  ],
+  "2713": [
+   "ACRIDINE"
+  ],
+  "2714": [
+   "ZINKRESINAAT"
+  ],
+  "2715": [
+   "ALUMINIUMRESINAAT"
+  ],
+  "2716": [
+   "BUTYNDIOL-1,4"
+  ],
+  "2717": [
+   "KAMFER synthetisch"
+  ],
+  "2719": [
+   "BARIUMBROMAAT"
+  ],
+  "2720": [
+   "CHROOMNITRAAT"
+  ],
+  "2721": [
+   "KOPERCHLORAAT"
+  ],
+  "2722": [
+   "LITHIUMNITRAAT"
+  ],
+  "2723": [
+   "MAGNESIUMCHLORAAT"
+  ],
+  "2724": [
+   "MANGAANNITRAAT"
+  ],
+  "2725": [
+   "NIKKELNITRAAT"
+  ],
+  "2726": [
+   "NIKKELNITRIET"
+  ],
+  "2727": [
+   "THALLIUMNITRAAT"
+  ],
+  "2728": [
+   "ZIRKONIUMNITRAAT"
+  ],
+  "2729": [
+   "HEXACHLOORBENZEEN"
+  ],
+  "2730": [
+   "NITROANISOLEN, VLOEIBAAR"
+  ],
+  "2732": [
+   "NITROBROOMBENZENEN, VLOEIBAAR"
+  ],
+  "2733": [
+   "AMINEN, BRANDBAAR, BIJTEND, N.E.G.",
+   "POLYAMINEN, BRANDBAAR, BIJTEND, N.E.G."
+  ],
+  "2734": [
+   "AMINEN, VLOEIBAAR, BIJTEND, BRANDBAAR, N.E.G.",
+   "POLYAMINEN, VLOEIBAAR, BIJTEND, BRANDBAAR, N.E.G."
+  ],
+  "2735": [
+   "AMINEN, VLOEIBAAR, BIJTEND, N.E.G.",
+   "POLYAMINEN, VLOEIBAAR, BIJTEND, N.E.G."
+  ],
+  "2738": [
+   "N-BUTYLANILINE"
+  ],
+  "2739": [
+   "BOTERZUURANHYDRIDE"
+  ],
+  "2740": [
+   "n-PROPYLCHLOORFORMIAAT"
+  ],
+  "2741": [
+   "BARIUMHYPOCHLORIET met meer dan 22% actief chloor"
+  ],
+  "2742": [
+   "CHLOORFORMIATEN, GIFTIG, BIJTEND, BRANDBAAR, N.E.G."
+  ],
+  "2743": [
+   "n-BUTYLCHLOORFORMIAAT"
+  ],
+  "2744": [
+   "CYCLOBUTYLCHLOORFORMIAAT"
+  ],
+  "2745": [
+   "CHLOORMETHYLCHLOORFORMIAAT"
+  ],
+  "2746": [
+   "FENYLCHLOORFORMIAAT"
+  ],
+  "2747": [
+   "tert-BUTYLCYCLOHEXYLCHLOORFORMIAAT"
+  ],
+  "2748": [
+   "2-ETHYLHEXYLCHLOORFORMIAAT"
+  ],
+  "2749": [
+   "TETRAMETHYLSILAAN"
+  ],
+  "2750": [
+   "1,3-DICHLOORPROPANOL-2 (alfa-dichloorhydrine)"
+  ],
+  "2751": [
+   "DIETHYLTHIOFOSFORYLCHLORIDE"
+  ],
+  "2752": [
+   "1,2-EPOXY-3-ETHOXYPROPAAN"
+  ],
+  "2753": [
+   "N-ETHYLBENZYLTOLUÏDINEN, VLOEIBAAR"
+  ],
+  "2754": [
+   "N-ETHYLTOLUÏDINEN"
+  ],
+  "2757": [
+   "PESTICIDE, CARBAMAAT, VAST, GIFTIG"
+  ],
+  "2758": [
+   "PESTICIDE, CARBAMAAT, VLOEIBAAR, BRANDBAAR, GIFTIG vlampunt lager dan 23 °C"
+  ],
+  "2759": [
+   "PESTICIDE, ARSEENVERBINDING, VAST, GIFTIG"
+  ],
+  "2760": [
+   "PESTICIDE, ARSEENVERBINDING, VLOEIBAAR, BRANDBAAR, GIFTIG vlampunt lager dan 23 °C"
+  ],
+  "2761": [
+   "PESTICIDE, ORGANISCHE CHLOORVERBINDING, VAST, GIFTIG"
+  ],
+  "2762": [
+   "PESTICIDE, ORGANISCHE CHLOORVERBINDING, VLOEIBAAR, BRANDBAAR, GIFTIG vlampunt lager dan 23 °C"
+  ],
+  "2763": [
+   "PESTICIDE, TRIAZINEVERBINDING, VAST, GIFTIG"
+  ],
+  "2764": [
+   "PESTICIDE, TRIAZINEVERBINDING, VLOEIBAAR, BRANDBAAR, GIFTIG vlampunt lager dan 23 °C"
+  ],
+  "2771": [
+   "PESTICIDE, THIOCARBAMAAT, VAST, GIFTIG"
+  ],
+  "2772": [
+   "PESTICIDE, THIOCARBAMAAT, VLOEIBAAR, BRANDBAAR, GIFTIG vlampunt lager dan 23 °C"
+  ],
+  "2775": [
+   "PESTICIDE, KOPERVERBINDING, VAST, GIFTIG"
+  ],
+  "2776": [
+   "PESTICIDE, KOPERVERBINDING, VLOEIBAAR, BRANDBAAR, GIFTIG vlampunt lager dan 23 °C"
+  ],
+  "2777": [
+   "PESTICIDE, KWIKVERBINDING, VAST, GIFTIG"
+  ],
+  "2778": [
+   "PESTICIDE, KWIKVERBINDING, VLOEIBAAR, BRANDBAAR, GIFTIG vlampunt lager dan 23 °C"
+  ],
+  "2779": [
+   "PESTICIDE MET GESUBSTITUEERD NITROFENOL, VAST, GIFTIG"
+  ],
+  "2780": [
+   "PESTICIDE MET GESUBSTITUEERD NITROFENOL, VLOEIBAAR, BRANDBAAR, GIFTIG vlampunt lager dan23 °C",
+   "PESTICIDE MET GESUBSTITUEERD NITROFENOL, VLOEIBAAR, BRANDBAAR, GIFTIG vlampunt lager dan 23 °C"
+  ],
+  "2781": [
+   "PESTICIDE, BIPYRIDILIUMVERBINDING, VAST, GIFTIG"
+  ],
+  "2782": [
+   "PESTICIDE, BIPYRIDILIUMVERBINDING, VLOEIBAAR, BRANDBAAR, GIFTIG vlampunt lager dan 23 °C"
+  ],
+  "2783": [
+   "PESTICIDE, ORGANISCHE FOSFORVERBINDING, VAST, GIFTIG"
+  ],
+  "2784": [
+   "PESTICIDE, ORGANISCHE FOSFORVERBINDING, VLOEIBAAR, BRANDBAAR, GIFTIG vlampunt lager dan 23 °C"
+  ],
+  "2785": [
+   "4-THIAPENTANAL (3-METHYLMERCAPTOPROPIONALDEHYDE)"
+  ],
+  "2786": [
+   "PESTICIDE, ORGANISCHE TINVERBINDING, VAST, GIFTIG"
+  ],
+  "2787": [
+   "PESTICIDE, ORGANISCHE TINVERBINDING, VLOEIBAAR, BRANDBAAR, GIFTIG vlampunt lager dan 23 °C"
+  ],
+  "2788": [
+   "ORGANISCHE TINVERBINDING, VLOEIBAAR, N.E.G."
+  ],
+  "2789": [
+   "AZIJNZUUR, OPLOSSING met meer dan 80 massa-% zuur",
+   "IJSAZIJN"
+  ],
+  "2790": [
+   "AZIJNZUUR, OPLOSSING met ten minste 50 massa-%, maar ten hoogste 80 massa-% zuur",
+   "AZIJNZUUR, OPLOSSING met meer dan 10 massa-%, en minder dan 50 massa-% zuur"
+  ],
+  "2793": [
+   "BOORSPANEN VAN FERROMETALEN in een vorm die voor zelfverhitting vatbaar is",
+   "FREESSPANEN VAN FERROMETALEN in een vorm die voor zelfverhitting vatbaar is",
+   "DRAAISPANEN VAN FERROMETALEN in een vorm die voor zelfverhitting vatbaar is",
+   "AFVAL VAN FERROMETALEN in een vorm die voor zelfverhitting vatbaar is"
+  ],
+  "2794": [
+   "ACCUMULATOREN, NAT, GEVULD MET ZURE ELEKTROLYT (BATTERIJEN, NAT, GEVULD MET ZURE ELEKTROLYT) elektrische stroombron"
+  ],
+  "2795": [
+   "ACCUMULATOREN, NAT, GEVULD MET ALKALISCHE ELEKTROLYT (BATTERIJEN, NAT, GEVULD MET ALKALISCHE ELEKTROLYT) elektrische stroombron"
+  ],
+  "2796": [
+   "ACCUMULATORVLOEISTOF, ZUUR",
+   "ZWAVELZUUR met ten hoogste 51% zuur"
+  ],
+  "2797": [
+   "ACCUMULATORVLOEISTOF, ALKALISCH (ELEKTROLYT VOOR BATTERIJEN, ALKALISCH)"
+  ],
+  "2798": [
+   "FENYLFOSFORDICHLORIDE"
+  ],
+  "2799": [
+   "FENYLFOSFORTHIODICHLORIDE"
+  ],
+  "2800": [
+   "ACCUMULATOREN, NAT, VAN HET GESLOTEN TYPE (BATTERIJEN, NAT, VAN HET GESLOTEN TYPE) electrische opslag"
+  ],
+  "2801": [
+   "HALFFABRIKAAT VOOR KLEURSTOF, VLOEIBAAR, BIJTEND, N.E.G.",
+   "KLEURSTOF, VLOEIBAAR, BIJTEND, N.E.G."
+  ],
+  "2802": [
+   "KOPERCHLORIDE"
+  ],
+  "2803": [
+   "GALLIUM"
+  ],
+  "2805": [
+   "LITHIUMHYDRIDE, VAST, GIETSTUKKEN"
+  ],
+  "2806": [
+   "LITHIUMNITRIDE"
+  ],
+  "2807": [
+   "GEMAGNETISEERD MATERIAAL"
+  ],
+  "2809": [
+   "KWIK"
+  ],
+  "2810": [
+   "GIFTIGE ORGANISCHE VLOEISTOF, N.E.G."
+  ],
+  "2811": [
+   "GIFTIGE ORGANISCHE VASTE STOF, N.E.G."
+  ],
+  "2812": [
+   "NATRIUMALUMINAAT, VAST"
+  ],
+  "2813": [
+   "MET WATER REACTIEVE VASTE STOF, N.E.G."
+  ],
+  "2814": [
+   "INFECTUEUZE STOF, GEVAARLIJK VOOR MENSEN (BESMETTELIJKE STOF, GEVAARLIJK VOOR MENSEN)",
+   "INFECTUEUZE STOF, GEVAARLIJK VOOR MENSEN (BESMETTELIJKE STOF, GEVAARLIJK VOOR MENSEN) (alleen dierlijke stoffen)",
+   "INFECTUEUZE STOF, GEVAARLIJK VOOR MENSEN (BESMETTELIJKE STOF, GEVAARLIJK VOOR MENSEN) in sterk gekoelde vloeibare stikstof"
+  ],
+  "2815": [
+   "N-AMINOETHYLPIPERAZINE"
+  ],
+  "2817": [
+   "AMMONIUMWATERSTOFDIFLUORIDE, OPLOSSING (ammoniumbifluoride, oplossing)"
+  ],
+  "2818": [
+   "AMMONIUMPOLYSULFIDE, OPLOSSING"
+  ],
+  "2819": [
+   "AMYLFOSFAAT"
+  ],
+  "2820": [
+   "BOTERZUUR"
+  ],
+  "2821": [
+   "FENOL, OPLOSSING"
+  ],
+  "2822": [
+   "2-CHLOORPYRIDINE"
+  ],
+  "2823": [
+   "CROTONZUUR, VAST"
+  ],
+  "2826": [
+   "ETHYLCHLOORTHIOFORMIAAT"
+  ],
+  "2829": [
+   "CAPRONZUUR"
+  ],
+  "2830": [
+   "LITHIUMFERROSILICIUM"
+  ],
+  "2831": [
+   "1,1,1-TRICHLOORETHAAN"
+  ],
+  "2834": [
+   "FOSFORIGZUUR"
+  ],
+  "2835": [
+   "NATRIUMALUMINIUMHYDRIDE"
+  ],
+  "2837": [
+   "WATERSTOFSULFATEN, OPLOSSING IN WATER (bisulfaten, oplossing in water)"
+  ],
+  "2838": [
+   "VINYLBUTYRAAT, GESTABILISEERD"
+  ],
+  "2839": [
+   "ALDOL (3-HYDROXYBUTYRALDEHYDE)"
+  ],
+  "2840": [
+   "BUTYRALDOXIME"
+  ],
+  "2841": [
+   "DI-n-AMYLAMINE"
+  ],
+  "2842": [
+   "NITROETHAAN"
+  ],
+  "2844": [
+   "CALCIUMMANGAANSILICIDE"
+  ],
+  "2845": [
+   "PYROFORE ORGANISCHE VLOEISTOF, N.E.G."
+  ],
+  "2846": [
+   "PYROFORE ORGANISCHE VASTE STOF, N.E.G."
+  ],
+  "2849": [
+   "3-CHLOORPROPANOL-1"
+  ],
+  "2850": [
+   "TETRAPROPYLEEN (PROPYLEEN-TETRAMEER)"
+  ],
+  "2851": [
+   "BORIUMTRIFLUORIDEDIHYDRAAT"
+  ],
+  "2852": [
+   "DIPICRYLSULFIDE, BEVOCHTIGD met ten minste 10 massa-% water"
+  ],
+  "2853": [
+   "MAGNESIUMFLUORSILICAAT"
+  ],
+  "2854": [
+   "AMMONIUMFLUORSILICAAT"
+  ],
+  "2855": [
+   "ZINKFLUORSILICAAT"
+  ],
+  "2856": [
+   "FLUORSILICATEN, N.E.G."
+  ],
+  "2857": [
+   "KOELMACHINES met niet brandbare, niet giftige gassen of ammoniakoplossingen (UN 2672)"
+  ],
+  "2858": [
+   "ZIRKONIUM, DROOG opgerolde draad, afgewerkte platen, stroken (dunner dan 254 micron, maar niet dunner dan 18 micron)"
+  ],
+  "2859": [
+   "AMMONIUMMETAVANADAAT"
+  ],
+  "2861": [
+   "AMMONIUMPOLYVANADAAT"
+  ],
+  "2862": [
+   "VANADIUMPENTOXIDE niet omgesmolten"
+  ],
+  "2863": [
+   "NATRIUMAMMONIUMVANADAAT"
+  ],
+  "2864": [
+   "KALIUMMETAVANADAAT"
+  ],
+  "2865": [
+   "HYDROXYLAMINESULFAAT"
+  ],
+  "2869": [
+   "TITAANTRICHLORIDE, MENGSEL"
+  ],
+  "2870": [
+   "ALUMINIUMBOORHYDRIDE",
+   "ALUMINIUMBOORHYDRIDE IN APPARATEN"
+  ],
+  "2871": [
+   "ANTIMOONPOEDER"
+  ],
+  "2872": [
+   "DIBROOMCHLOORPROPANEN"
+  ],
+  "2873": [
+   "DIBUTYLAMINOETHANOL"
+  ],
+  "2874": [
+   "FURFURYLALCOHOL"
+  ],
+  "2875": [
+   "HEXACHLOROFEEN"
+  ],
+  "2876": [
+   "RESORCINOL"
+  ],
+  "2878": [
+   "TITANIUMSPONS, GRANULAAT",
+   "TITANIUMSPONS, POEDER"
+  ],
+  "2879": [
+   "SELEENOXYCHLORIDE (seleenoxydichloride)"
+  ],
+  "2880": [
+   "CALCIUMHYPOCHLORIET, GEHYDRATEERD",
+   "CALCIUMHYPOCHLORIET, GEHYDRATEERD, MENGSEL met ten minste 5,5% maar ten hoogste 16% water"
+  ],
+  "2881": [
+   "METAALKATALYSATOR, DROOG"
+  ],
+  "2900": [
+   "INFECTUEUZE STOF, GEVAARLIJK VOOR DIEREN (BESMETTELIJKE STOF, alleen GEVAARLIJK VOOR DIEREN)",
+   "INFECTUEUZE STOF, GEVAARLIJK VOOR DIEREN (BESMETTELIJKE STOF, alleen GEVAARLIJK VOOR DIEREN) (alleen dierlijke stoffen)",
+   "INFECTUEUZE STOF, GEVAARLIJK VOOR DIEREN in sterk gekoelde vloeibare stikstof"
+  ],
+  "2901": [
+   "BROOMCHLORIDE"
+  ],
+  "2902": [
+   "PESTICIDE, VLOEIBAAR, GIFTIG, N.E.G."
+  ],
+  "2903": [
+   "PESTICIDE, VLOEIBAAR, GIFTIG, BRANDBAAR, N.E.G. vlampunt gelijk aan of hoger dan 23 °C"
+  ],
+  "2904": [
+   "CHLOORFENOLATEN, VLOEIBAAR",
+   "FENOLATEN, VLOEIBAAR"
+  ],
+  "2905": [
+   "CHLOORFENOLATEN, VAST",
+   "FENOLATEN, VAST"
+  ],
+  "2907": [
+   "ISOSORBIDEDINITRAAT, MENGSEL met ten minste 60% lactose, mannose, zetmeel of calciumwaterstoffosfaat"
+  ],
+  "2908": [
+   "RADIOACTIEVE STOFFEN, VRIJGESTELD COLLO - LEGE VERPAKKING"
+  ],
+  "2909": [
+   "RADIOACTIEVE STOFFEN, VRIJGESTELD COLLO - VOORWERPEN VERVAARDIGD UIT VERARMD URANIUM",
+   "RADIOACTIEVE STOFFEN, VRIJGESTELD COLLO - VOORWERPEN VERVAARDIGD UIT NATUURLIJK THORIUM",
+   "RADIOACTIEVE STOFFEN, VRIJGESTELD COLLO - VOORWERPEN VERVAARDIGD UIT NATUURLIJK URANIUM"
+  ],
+  "2910": [
+   "RADIOACTIEVE STOFFEN, VRIJGESTELD COLLO - BEPERKTE HOEVEELHEID STOF"
+  ],
+  "2911": [
+   "RADIOACTIEVE STOFFEN, VRIJGESTELD COLLO - VOORWERPEN",
+   "RADIOACTIEVE STOFFEN, VRIJGESTELD COLLO - INSTRUMENTEN"
+  ],
+  "2912": [
+   "RADIOACTIEVE STOFFEN MET GERINGE SPECIFIEKE ACTIVITEIT (LSA-I) niet splijtbaar of splijtbaar, vrijgesteld"
+  ],
+  "2913": [
+   "RADIOACTIEVE STOFFEN, VOORWERPEN MET BESMETTING AAN HET OPPERVLAK (SCO-I) niet-splijtbaar of splijtbaar, vrijgesteld",
+   "RADIOACTIEVE STOFFEN, VOORWERPEN MET BESMETTING AAN HET OPPERVLAK (SCO-II) niet-splijtbaar of splijtbaar, vrijgesteld",
+   "RADIOACTIEVE STOFFEN, VOORWERPEN MET BESMETTING AAN HET OPPERVLAK (SCO-III) niet-splijtbaar of splijtbaar, vrijgesteld"
+  ],
+  "2915": [
+   "RADIOACTIEVE STOFFEN, IN COLLO VAN TYPE A niet in speciale toestand, niet-splijtbaar of splijtbaar, vrijgesteld"
+  ],
+  "2916": [
+   "RADIOACTIEVE STOFFEN, IN COLLO VAN TYPE B(U) niet-splijtbaar of splijtbaar, vrijgesteld"
+  ],
+  "2917": [
+   "RADIOACTIEVE STOFFEN, IN COLLO VAN TYPE B(M) niet-splijtbaar of splijtbaar, vrijgesteld"
+  ],
+  "2919": [
+   "RADIOACTIEVE STOFFEN, VERVOERD KRACHTENS BIJZONDERE REGELING niet-splijtbaar of splijtbaar, vrijgesteld"
+  ],
+  "2920": [
+   "BIJTENDE VLOEISTOF, BRANDBAAR, N.E.G."
+  ],
+  "2921": [
+   "BIJTENDE VASTE STOF, BRANDBAAR, N.E.G."
+  ],
+  "2922": [
+   "BIJTENDE VLOEISTOF, GIFTIG, N.E.G."
+  ],
+  "2923": [
+   "BIJTENDE VASTE STOF, GIFTIG, N.E.G."
+  ],
+  "2924": [
+   "BRANDBARE VLOEISTOF, BIJTEND, N.E.G."
+  ],
+  "2925": [
+   "BRANDBARE ORGANISCHE VASTE STOF, BIJTEND, N.E.G."
+  ],
+  "2926": [
+   "BRANDBARE ORGANISCHE VASTE STOF, GIFTIG, N.E.G."
+  ],
+  "2927": [
+   "GIFTIGE ORGANISCHE VLOEISTOF, BIJTEND, N.E.G."
+  ],
+  "2928": [
+   "GIFTIGE ORGANISCHE VASTE STOF, BIJTEND, N.E.G."
+  ],
+  "2929": [
+   "GIFTIGE ORGANISCHE VLOEISTOF, BRANDBAAR, N.E.G."
+  ],
+  "2930": [
+   "GIFTIGE ORGANISCHE VASTE STOF, BRANDBAAR, N.E.G."
+  ],
+  "2931": [
+   "VANADYLSULFAAT"
+  ],
+  "2933": [
+   "METHYL-2-CHLOORPROPIONAAT"
+  ],
+  "2934": [
+   "ISOPROPYL-2-CHLOORPROPIONAAT"
+  ],
+  "2935": [
+   "ETHYL-2-CHLOORPROPIONAAT"
+  ],
+  "2936": [
+   "THIOMELKZUUR"
+  ],
+  "2937": [
+   "alfa-METHYLBENZYLALCOHOL, VLOEIBAAR"
+  ],
+  "2940": [
+   "9-FOSFABICYCLONONANEN (CYCLOOCTADIEENFOSFINEN)"
+  ],
+  "2941": [
+   "FLUORANILINEN"
+  ],
+  "2942": [
+   "2-TRIFLUORMETHYLANILINE"
+  ],
+  "2943": [
+   "TETRAHYDROFURFURYLAMINE"
+  ],
+  "2945": [
+   "N-METHYLBUTYLAMINE"
+  ],
+  "2946": [
+   "2-AMINO-5-DIETHYLAMINOPENTAAN"
+  ],
+  "2947": [
+   "ISOPROPYLCHLOORACETAAT"
+  ],
+  "2948": [
+   "3-TRIFLUORMETHYLANILINE"
+  ],
+  "2949": [
+   "NATRIUMWATERSTOFSULFIDE, GEHYDRATEERD met ten minste 25% kristalwater"
+  ],
+  "2950": [
+   "MAGNESIUMKORRELS, GECOAT met een korrelgrootte van ten minste 149 micron"
+  ],
+  "2956": [
+   "5-tert-BUTYL-2,4,6-TRINITRO-m-XYLEEN (MUSKUS-XYLEEN)"
+  ],
+  "2965": [
+   "BORIUMTRIFLUORIDEDIMETHYLETHERAAT"
+  ],
+  "2966": [
+   "THIOGLYCOL (mercaptoethanol)"
+  ],
+  "2967": [
+   "SULFAMINEZUUR (aminosulfonzuur)"
+  ],
+  "2968": [
+   "MANEB PREPARATEN, GESTABILISEERD tegen zelfverhitting",
+   "MANEB, GESTABILISEERD tegen zelfverhitting"
+  ],
+  "2969": [
+   "RICINUSZAAD",
+   "RICINUSVLOKKEN",
+   "RICINUSMEEL",
+   "RICINUSKOEKEN"
+  ],
+  "2977": [
+   "RADIOACTIEVE STOFFEN, URANIUMHEXAFLUORIDE, SPLIJTBAAR"
+  ],
+  "2978": [
+   "RADIOACTIEVE STOFFEN, URANIUMHEXAFLUORIDE"
+  ],
+  "2983": [
+   "ETHYLEENOXIDE EN PROPYLEENOXIDE, MENGSEL met ten hoogste 30% ethyleenoxide"
+  ],
+  "2984": [
+   "WATERSTOFPEROXIDE, OPLOSSING IN WATER met ten minste 8% doch minder dan 20% waterstofperoxide (zo nodig gestabiliseerd)"
+  ],
+  "2985": [
+   "CHLOORSILANEN, BRANDBAAR, BIJTEND, N.E.G."
+  ],
+  "2986": [
+   "CHLOORSILANEN, BIJTEND, BRANDBAAR, N.E.G."
+  ],
+  "2987": [
+   "CHLOORSILANEN, BIJTEND, N.E.G."
+  ],
+  "2988": [
+   "CHLOORSILANEN, REACTIEF MET WATER, BRANDBAAR, BIJTEND, N.E.G."
+  ],
+  "2989": [
+   "LOODFOSFIET, DIBASISCH"
+  ],
+  "2990": [
+   "REDDINGSMIDDELEN, AUTOMATISCH OPBLAASBAAR"
+  ],
+  "2991": [
+   "PESTICIDE, CARBAMAAT, VLOEIBAAR, GIFTIG, BRANDBAAR vlampunt gelijk aan of hoger dan 23 °C"
+  ],
+  "2992": [
+   "PESTICIDE, CARBAMAAT, VLOEIBAAR, GIFTIG"
+  ],
+  "2993": [
+   "PESTICIDE, ARSEENVERBINDING, VLOEIBAAR, GIFTIG, BRANDBAAR vlampunt gelijk aan of hoger dan 23 °C"
+  ],
+  "2994": [
+   "PESTICIDE, ARSEENVERBINDING, VLOEISTOF, GIFTIG"
+  ],
+  "2995": [
+   "PESTICIDE, ORGANISCHE CHLOORVERBINDING, VLOEIBAAR, GIFTIG, BRANDBAAR vlampunt gelijk aan of hoger dan 23 °C"
+  ],
+  "2996": [
+   "PESTICIDE, ORGANISCHE CHLOORVERBINDING, VLOEIBAAR, GIFTIG"
+  ],
+  "2997": [
+   "PESTICIDE, TRIAZINEVERBINDING, VLOEIBAAR, GIFTIG, BRANDBAAR vlampunt gelijk aan of hoger dan 23 °C"
+  ],
+  "2998": [
+   "PESTICIDE, TRIAZINEVERBINDING, VLOEIBAAR, GIFTIG"
+  ],
+  "3005": [
+   "PESTICIDE, THIOCARBAMAAT, VLOEIBAAR, GIFTIG, BRANDBAAR vlampunt gelijk aan of hoger dan 23 °C"
+  ],
+  "3006": [
+   "PESTICIDE, THIOCARBAMAAT, VLOEIBAAR, GIFTIG"
+  ],
+  "3009": [
+   "PESTICIDE, KOPERVERBINDING, VLOEIBAAR, GIFTIG, BRANDBAAR vlampunt gelijk aan of hoger dan 23 °C"
+  ],
+  "3010": [
+   "PESTICIDE, KOPERVERBINDING, VLOEIBAAR, GIFTIG"
+  ],
+  "3011": [
+   "PESTICIDE, KWIKVERBINDING, VLOEIBAAR, GIFTIG, BRANDBAAR met een vlampunt gelijk aan of hoger dan 23 °C"
+  ],
+  "3012": [
+   "PESTICIDE, KWIKVERBINDING, VLOEIBAAR, GIFTIG"
+  ],
+  "3013": [
+   "PESTICIDE MET GESUBSTITUEERD NITROFENOL, VLOEIBAAR, GIFTIG, BRANDBAAR met een vlampunt gelijk aan of hoger dan 23 °C"
+  ],
+  "3014": [
+   "PESTICIDE MET GESUBSTITUEERD NITROFENOL, VLOEIBAAR, GIFTIG"
+  ],
+  "3015": [
+   "PESTICIDE, BIPYRIDILIUMVERBINDING, VLOEIBAAR, GIFTIG, BRANDBAAR met een vlampunt gelijk aan of hoger dan 23 °C"
+  ],
+  "3016": [
+   "PESTICIDE, BIPYRIDILIUMVERBINDING, VLOEIBAAR, GIFTIG"
+  ],
+  "3017": [
+   "PESTICIDE, ORGANISCHE FOSFORVERBINDING, VLOEIBAAR, GIFTIG, BRANDBAAR met een vlampunt gelijk aan of hoger dan 23 °C"
+  ],
+  "3018": [
+   "PESTICIDE, ORGANISCHE FOSFORVERBINDING, VLOEIBAAR, GIFTIG"
+  ],
+  "3019": [
+   "PESTICIDE, ORGANISCHE TINVERBINDING, VLOEIBAAR, GIFTIG, BRANDBAAR met een vlampunt gelijk aan of hoger dan 23 °C"
+  ],
+  "3020": [
+   "PESTICIDE, ORGANISCHE TINVERBINDING, VLOEIBAAR, GIFTIG"
+  ],
+  "3021": [
+   "PESTICIDE, VLOEIBAAR, BRANDBAAR, GIFTIG, N.E.G. met een vlampunt lager dan 23 °C",
+   "PESTICIDE, VLOEIBAAR, BRANDBAAR, GIFTIG, N.E.G. met een vlampunt gelijk aan of hoger dan 23 °C"
+  ],
+  "3022": [
+   "1,2-BUTYLEENOXIDE, GESTABILISEERD"
+  ],
+  "3023": [
+   "2-METHYL-2-HEPTAANTHIOL"
+  ],
+  "3024": [
+   "PESTICIDE, CUMARINEVERBINDING, VLOEIBAAR, BRANDBAAR, GIFTIG met een vlampunt lager dan 23 °C"
+  ],
+  "3025": [
+   "PESTICIDE, CUMARINEVERBINDING, VLOEIBAAR, GIFTIG, BRANDBAAR met een vlampunt gelijk aan of hoger dan 23 °C"
+  ],
+  "3026": [
+   "PESTICIDE, CUMARINEVERBINDING, VLOEIBAAR, GIFTIG"
+  ],
+  "3027": [
+   "PESTICIDE, CUMARINEVERBINDING, VAST, GIFTIG"
+  ],
+  "3028": [
+   "ACCUMULATOREN, DROOG, MET VAST KALIUMHYDROXIDE (BATTERIJEN, DROOG, MET VAST KALIUMHYDROXIDE) electrische stroombron"
+  ],
+  "3048": [
+   "ALUMINIUMFOSFIDE, PESTICIDE"
+  ],
+  "3054": [
+   "CYCLOHEXYLMERCAPTAAN"
+  ],
+  "3055": [
+   "2-(2-AMINOETHOXY) ETHANOL"
+  ],
+  "3056": [
+   "n-HEPTALDEHYDE"
+  ],
+  "3057": [
+   "TRIFLUORACETYLCHLORIDE"
+  ],
+  "3064": [
+   "NITROGLYCERINE, OPLOSSING IN ALCOHOL met meer dan 1% doch ten hoogste 5% nitroglycerine"
+  ],
+  "3065": [
+   "ALCOHOLISCHE DRANKEN met meer dan 70 vol.-% alcohol",
+   "ALCOHOLISCHE DRANKEN met meer dan 24 vol.-% en ten hoogste 70 vol.-% alcohol"
+  ],
+  "3066": [
+   "VERF waaronder begrepen verf, lakverf, emaillak, beits, schellakoplossing, vernis, polijstmiddel, vloeibare lakbasis",
+   "VERF-VERWANTE PRODUCTEN waaronder begrepen verfverdunners en verfoplosmiddelen"
+  ],
+  "3070": [
+   "MENGSEL VAN ETHYLEENOXIDE EN DICHLOORDIFLUORMETHAAN met ten hoogste 12,5% ethyleenoxide"
+  ],
+  "3071": [
+   "MERCAPTANEN, MENGSEL, VLOEIBAAR, GIFTIG, BRANDBAAR, N.E.G.",
+   "MERCAPTANEN, VLOEIBAAR, GIFTIG, BRANDBAAR, N.E.G."
+  ],
+  "3072": [
+   "REDDINGSMIDDELEN, NIET AUTOMATISCH OPBLAASBAAR die met gevaarlijke stoffen of voorwerpen zijn uitgerust"
+  ],
+  "3073": [
+   "VINYLPYRIDINEN, GESTABILISEERD"
+  ],
+  "3077": [
+   "MILIEUGEVAARLIJKE VASTE STOF, N.E.G."
+  ],
+  "3078": [
+   "CERIUM spanen of gruis"
+  ],
+  "3079": [
+   "METHACRYLNITRIL, GESTABILISEERD"
+  ],
+  "3080": [
+   "ISOCYANAAT, OPLOSSING, GIFTIG, BRANDBAAR, N.E.G.",
+   "ISOCYANATEN, GIFTIG, BRANDBAAR, N.E.G."
+  ],
+  "3082": [
+   "MILIEUGEVAARLIJKE VLOEISTOF, N.E.G."
+  ],
+  "3083": [
+   "PERCHLORYLFLUORIDE"
+  ],
+  "3084": [
+   "BIJTENDE VASTE STOF, OXIDEREND, N.E.G."
+  ],
+  "3085": [
+   "OXIDERENDE VASTE STOF, BIJTEND, N.E.G."
+  ],
+  "3086": [
+   "GIFTIGE VASTE STOF, OXIDEREND, N.E.G."
+  ],
+  "3087": [
+   "OXIDERENDE VASTE STOF, GIFTIG, N.E.G."
+  ],
+  "3088": [
+   "VOOR ZELFVERHITTING VATBARE, ORGANISCHE VASTE STOF, N.E.G."
+  ],
+  "3089": [
+   "BRANDBAAR METAALPOEDER, N.E.G."
+  ],
+  "3090": [
+   "BATTERIJEN MET METALLISCH LITHIUM (met inbegrip van batterijen met lithiumlegeringen)"
+  ],
+  "3091": [
+   "BATTERIJEN MET METALLISCH LITHIUM IN APPARATUUR (met inbegrip van batterijen met lithiumlegeringen)",
+   "BATTERIJEN MET METALLISCH LITHIUM VERPAKT MET APPARATUUR (met inbegrip van batterijen met lithiumlegeringen)"
+  ],
+  "3092": [
+   "1-METHOXY-2-PROPANOL"
+  ],
+  "3093": [
+   "BIJTENDE VLOEISTOF, OXIDEREND, N.E.G."
+  ],
+  "3094": [
+   "BIJTENDE VLOEISTOF, REACTIEF MET WATER, N.E.G."
+  ],
+  "3095": [
+   "BIJTENDE VASTE STOF, VOOR ZELFVERHITTING VATBAAR, N.E.G."
+  ],
+  "3096": [
+   "BIJTENDE VASTE STOF, REACTIEF MET WATER, N.E.G."
+  ],
+  "3097": [
+   "BRANDBARE VASTE STOF, OXIDEREND, N.E.G."
+  ],
+  "3098": [
+   "OXIDERENDE VLOEISTOF, BIJTEND, N.E.G."
+  ],
+  "3099": [
+   "OXIDERENDE VLOEISTOF, GIFTIG, N.E.G."
+  ],
+  "3100": [
+   "OXIDERENDE VASTE STOF, VOOR ZELFVERHITTING VATBAAR, N.E.G."
+  ],
+  "3101": [
+   "ORGANISCH PEROXIDE TYPE B, VLOEIBAAR"
+  ],
+  "3102": [
+   "ORGANISCH PEROXIDE TYPE B, VAST"
+  ],
+  "3103": [
+   "ORGANISCH PEROXIDE TYPE C, VLOEIBAAR"
+  ],
+  "3104": [
+   "ORGANISCH PEROXIDE TYPE C, VAST"
+  ],
+  "3105": [
+   "ORGANISCH PEROXIDE TYPE D, VLOEIBAAR"
+  ],
+  "3106": [
+   "ORGANISCH PEROXIDE TYPE D, VAST"
+  ],
+  "3107": [
+   "ORGANISCH PEROXIDE TYPE E, VLOEIBAAR"
+  ],
+  "3108": [
+   "ORGANISCH PEROXIDE TYPE E, VAST"
+  ],
+  "3109": [
+   "ORGANISCH PEROXIDE TYPE F, VLOEIBAAR"
+  ],
+  "3110": [
+   "ORGANISCH PEROXIDE TYPE F, VAST"
+  ],
+  "3111": [
+   "ORGANISCH PEROXIDE TYPE B, VLOEIBAAR, MET TEMPERATUURBEHEERSING"
+  ],
+  "3112": [
+   "ORGANISCH PEROXIDE TYPE B, VAST, MET TEMPERATUURBEHEERSING"
+  ],
+  "3113": [
+   "ORGANISCH PEROXIDE TYPE C, VLOEIBAAR, MET TEMPERATUURBEHEERSING"
+  ],
+  "3114": [
+   "ORGANISCH PEROXIDE TYPE C, VAST, MET TEMPERATUURBEHEERSING"
+  ],
+  "3115": [
+   "ORGANISCH PEROXIDE TYPE D, VLOEIBAAR, MET TEMPERATUURBEHEERSING"
+  ],
+  "3116": [
+   "ORGANISCH PEROXIDE TYPE D, VAST, MET TEMPERATUURBEHEERSING"
+  ],
+  "3117": [
+   "ORGANISCH PEROXIDE TYPE E, VLOEIBAAR, MET TEMPERATUURBEHEERSING"
+  ],
+  "3118": [
+   "ORGANISCH PEROXIDE TYPE E, VAST, MET TEMPERATUURBEHEERSING"
+  ],
+  "3119": [
+   "ORGANISCH PEROXIDE TYPE F, VLOEIBAAR, MET TEMPERATUURBEHEERSING"
+  ],
+  "3120": [
+   "ORGANISCH PEROXIDE TYPE F, VAST, MET TEMPERATUURBEHEERSING"
+  ],
+  "3121": [
+   "OXIDERENDE VASTE STOF, REACTIEF MET WATER, N.E.G."
+  ],
+  "3122": [
+   "GIFTIGE VLOEISTOF, OXIDEREND, N.E.G."
+  ],
+  "3123": [
+   "GIFTIGE VLOEISTOF, REACTIEF MET WATER, N.E.G."
+  ],
+  "3124": [
+   "GIFTIGE VASTE STOF, VOOR ZELFVERHITTING VATBAAR, N.E.G."
+  ],
+  "3125": [
+   "GIFTIGE VASTE STOF, REACTIEF MET WATER, N.E.G."
+  ],
+  "3126": [
+   "VOOR ZELFVERHITTING VATBARE, ORGANISCHE VASTE STOF, BIJTEND, N.E.G."
+  ],
+  "3127": [
+   "VOOR ZELFVERHITTING VATBARE VASTE STOF, OXIDEREND, N.E.G."
+  ],
+  "3128": [
+   "VOOR ZELFVERHITTING VATBARE, ORGANISCHE VASTE STOF, GIFTIG, N.E.G."
+  ],
+  "3129": [
+   "MET WATER REACTIEVE VLOEISTOF, BIJTEND, N.E.G."
+  ],
+  "3130": [
+   "MET WATER REACTIEVE VLOEISTOF, GIFTIG, N.E.G."
+  ],
+  "3131": [
+   "MET WATER REACTIEVE VASTE STOF, BIJTEND, N.E.G."
+  ],
+  "3132": [
+   "MET WATER REACTIEVE VASTE STOF, BRANDBAAR, N.E.G."
+  ],
+  "3133": [
+   "MET WATER REACTIEVE VASTE STOF, OXIDEREND, N.E.G."
+  ],
+  "3134": [
+   "MET WATER REACTIEVE VASTE STOF, GIFTIG, N.E.G."
+  ],
+  "3135": [
+   "MET WATER REACTIEVE VASTE STOF, VOOR ZELFVERHITTING VATBAAR, N.E.G"
+  ],
+  "3136": [
+   "TRIFLUORMETHAAN, STERK GEKOELD, VLOEIBAAR"
+  ],
+  "3137": [
+   "OXIDERENDE VASTE STOF, BRANDBAAR, N.E.G."
+  ],
+  "3138": [
+   "MENGSEL VAN ETHYLEEN, ACETYLEEN EN PROPYLEEN, STERK GEKOELD, VLOEIBAAR (MENGSEL VAN ETHEEN, ETHYN EN PROPEEN, STERK GEKOELD, VLOEIBAAR) met tenminste 71,5% ethyleen, ten hoogste 22,5% acetyleen en ten hoogste 6% propyleen"
+  ],
+  "3139": [
+   "OXIDERENDE VLOEISTOF, N.E.G."
+  ],
+  "3140": [
+   "ALKALOÏDEZOUTEN, VLOEIBAAR, N.E.G.",
+   "ALKALOÏDEN, VLOEIBAAR, N.E.G."
+  ],
+  "3141": [
+   "ANORGANISCHE ANTIMOONVERBINDING, VLOEIBAAR, N.E.G."
+  ],
+  "3142": [
+   "DESINFECTIEMIDDEL, VLOEIBAAR, GIFTIG, N.E.G."
+  ],
+  "3143": [
+   "HALFFABRIKAAT VOOR KLEURSTOF, VAST, GIFTIG, N.E.G.",
+   "KLEURSTOF, VAST, GIFTIG, N.E.G."
+  ],
+  "3144": [
+   "NICOTINEVERBINDING, VLOEIBAAR, N.E.G.",
+   "NICOTINEPREPARAAT, VLOEIBAAR, N.E.G."
+  ],
+  "3145": [
+   "ALKYLFENOLEN, VLOEIBAAR, N.E.G. met inbegrip van de homologe reeks C2-C12"
+  ],
+  "3146": [
+   "ORGANISCHE TINVERBINDING, VAST, N.E.G."
+  ],
+  "3147": [
+   "HALFFABRIKAAT VOOR KLEURSTOF, VAST, BIJTEND, N.E.G.",
+   "KLEURSTOF, VAST, BIJTEND, N.E.G."
+  ],
+  "3148": [
+   "MET WATER REACTIEVE VLOEISTOF, N.E.G."
+  ],
+  "3149": [
+   "WATERSTOFPEROXIDE EN PEROXYAZIJNZUUR, MENGSEL, GESTABILISEERD met zuur (zuren), water en ten hoogste 5% peroxyazijnzuur,"
+  ],
+  "3150": [
+   "APPARATEN, KLEIN, MET KOOLWATERSTOFGAS met aftapinrichting",
+   "NAVULPATRONEN MET KOOLWATERSTOFGAS VOOR KLEINE APPARATEN met aftapinrichting"
+  ],
+  "3151": [
+   "POLYHALOGEENBIFENYLEN, VLOEIBAAR",
+   "POLYHALOGEENTERFENYLEN, VLOEIBAAR",
+   "GEHALOGENEERDE MONOMETHYLDIFENYLMETHANEN, VLOEIBAAR"
+  ],
+  "3152": [
+   "POLYHALOGEENBIFENYLEN, VAST",
+   "POLYHALOGEENTERFENYLEN, VAST",
+   "GEHALOGENEERDE MONOMETHYLDIFENYLMETHANEN, VAST"
+  ],
+  "3153": [
+   "PERFLUOR(METHYLVINYL)ETHER"
+  ],
+  "3154": [
+   "PERFLUOR(ETHYLVINYL)ETHER"
+  ],
+  "3155": [
+   "PENTACHLOORFENOL"
+  ],
+  "3156": [
+   "SAMENGEPERST GAS, OXIDEREND, N.E.G."
+  ],
+  "3157": [
+   "VLOEIBAAR GEMAAKT GAS, OXIDEREND, N.E.G."
+  ],
+  "3158": [
+   "STERK GEKOELD, VLOEIBAAR GAS, N.E.G."
+  ],
+  "3159": [
+   "1,1,1,2-TETRAFLUORETHAAN (KOELGAS R 134a)"
+  ],
+  "3160": [
+   "VLOEIBAAR GEMAAKT GAS, GIFTIG, BRANDBAAR, N.E.G."
+  ],
+  "3161": [
+   "VLOEIBAAR GEMAAKT GAS, BRANDBAAR, N.E.G."
+  ],
+  "3162": [
+   "VLOEIBAAR GEMAAKT GAS, GIFTIG, N.E.G."
+  ],
+  "3163": [
+   "VLOEIBAAR GEMAAKT GAS, N.E.G."
+  ],
+  "3164": [
+   "VOORWERPEN ONDER HYDRAULISCHE DRUK met niet-brandbaar gas",
+   "VOORWERPEN ONDER PNEUMATISCHE DRUK met niet brandbaar gas"
+  ],
+  "3165": [
+   "BRANDSTOFRESERVOIR VOOR HYDRAULISCH AGGREGAAT VOOR VLIEGTUIGEN (met een mengsel van watervrije hydrazine en methylhydrazine) (M86-brandstof)"
+  ],
+  "3166": [
+   "VOERTUIG, DOOR BRANDBAAR GAS AANGEDREVEN",
+   "VOERTUIG, DOOR BRANDBARE VLOEISTOF AANGEDREVEN",
+   "VOERTUIG MET BRANDSTOFCEL, DOOR BRANDBAAR GAS AANGEDREVEN",
+   "VOERTUIG MET BRANDSTOFCEL, DOOR BRANDBARE VLOEISTOF AANGEDREVEN"
+  ],
+  "3167": [
+   "GASMONSTER, DRUKLOOS, BRANDBAAR, N.E.G. niet sterk gekoeld, vloeibaar"
+  ],
+  "3168": [
+   "GASMONSTER, DRUKLOOS, GIFTIG, BRANDBAAR, N.E.G. niet sterk gekoeld, vloeibaar"
+  ],
+  "3169": [
+   "GASMONSTER, DRUKLOOS, GIFTIG, N.E.G. niet sterk gekoeld, vloeibaar"
+  ],
+  "3170": [
+   "BIJPRODUCTEN VAN HET OMSMELTEN VAN ALUMINIUM",
+   "BIJPRODUCTEN VAN DE ALUMINIUMFABRICAGE"
+  ],
+  "3171": [
+   "APPARAAT MET ACCUVOEDING",
+   "VOERTUIG MET ACCUVOEDING"
+  ],
+  "3172": [
+   "TOXINEN, GEWONNEN UIT LEVENDE ORGANISMEN, VLOEIBAAR, N.E.G."
+  ],
+  "3174": [
+   "TITAANDISULFIDE"
+  ],
+  "3175": [
+   "VASTE STOFFEN DIE BRANDBARE VLOEISTOFFEN BEVATTEN, N.E.G. of mengsels van vaste stoffen (zoals preparaten en afvalstoffen) met een vlampunt van ten hoogste 60°C"
+  ],
+  "3176": [
+   "BRANDBARE, ORGANISCHE VASTE STOF, GESMOLTEN, N.E.G."
+  ],
+  "3178": [
+   "BRANDBARE, ANORGANISCHE VASTE STOF, N.E.G."
+  ],
+  "3179": [
+   "BRANDBARE, ANORGANISCHE VASTE STOF, GIFTIG, N.E.G."
+  ],
+  "3180": [
+   "BRANDBARE, ANORGANISCHE VASTE STOF, BIJTEND, N.E.G."
+  ],
+  "3181": [
+   "BRANDBARE METAALZOUTEN VAN ORGANISCHE VERBINDINGEN, N.E.G."
+  ],
+  "3182": [
+   "BRANDBARE METAALHYDRIDEN, N.E.G."
+  ],
+  "3183": [
+   "VOOR ZELFVERHITTING VATBARE, ORGANISCHE VLOEISTOF, N.E.G."
+  ],
+  "3184": [
+   "VOOR ZELFVERHITTING VATBARE, ORGANISCHE VLOEISTOF, GIFTIG, N.E.G."
+  ],
+  "3185": [
+   "VOOR ZELFVERHITTING VATBARE, ORGANISCHE VLOEISTOF, BIJTEND, N.E.G."
+  ],
+  "3186": [
+   "VOOR ZELFVERHITTING VATBARE, ANORGANISCHE VLOEISTOF, N.E.G."
+  ],
+  "3187": [
+   "VOOR ZELFVERHITTING VATBARE, ANORGANISCHE VLOEISTOF, GIFTIG, N.E.G."
+  ],
+  "3188": [
+   "VOOR ZELFVERHITTING VATBARE, ANORGANISCHE VLOEISTOF, BIJTEND, N.E.G."
+  ],
+  "3189": [
+   "VOOR ZELFVERHITTING VATBAAR METAALPOEDER, N.E.G."
+  ],
+  "3190": [
+   "VOOR ZELFVERHITTING VATBARE, ANORGANISCHE VASTE STOF, N.E.G."
+  ],
+  "3191": [
+   "VOOR ZELFVERHITTING VATBARE, ANORGANISCHE VASTE STOF, GIFTIG, N.E.G."
+  ],
+  "3192": [
+   "VOOR ZELFVERHITTING VATBARE, ANORGANISCHE VASTE STOF, BIJTEND, N.E.G."
+  ],
+  "3194": [
+   "PYROFORE ANORGANISCHE VLOEISTOF, N.E.G."
+  ],
+  "3200": [
+   "PYROFORE, ANORGANISCHE VASTE STOF, N.E.G."
+  ],
+  "3205": [
+   "ALCOHOLATEN VAN AARDALKALIMETALEN, N.E.G."
+  ],
+  "3206": [
+   "ALCOHOLATEN VAN ALKALIMETALEN, VOOR ZELFVERHITTING VATBAAR, BIJTEND, N.E.G."
+  ],
+  "3208": [
+   "METALLISCHE STOF, REACTIEF MET WATER, N.E.G."
+  ],
+  "3209": [
+   "METALLISCHE STOF, REACTIEF MET WATER, VOOR ZELFVERHITTING VATBAAR, N.E.G."
+  ],
+  "3210": [
+   "ANORGANISCHE CHLORATEN, OPLOSSING IN WATER, N.E.G."
+  ],
+  "3211": [
+   "ANORGANISCHE PERCHLORATEN, OPLOSSING IN WATER, N.E.G."
+  ],
+  "3212": [
+   "ANORGANISCHE HYPOCHLORIETEN, N.E.G."
+  ],
+  "3213": [
+   "ANORGANISCHE BROMATEN, OPLOSSING IN WATER, N.E.G."
+  ],
+  "3214": [
+   "ANORGANISCHE PERMANGANATEN, OPLOSSING IN WATER, N.E.G."
+  ],
+  "3215": [
+   "ANORGANISCHE PERSULFATEN, N.E.G."
+  ],
+  "3216": [
+   "ANORGANISCHE PERSULFATEN, OPLOSSING IN WATER, N.E.G."
+  ],
+  "3218": [
+   "ANORGANISCHE NITRATEN, OPLOSSING IN WATER, N.E.G."
+  ],
+  "3219": [
+   "ANORGANISCHE NITRIETEN, OPLOSSING IN WATER, N.E.G."
+  ],
+  "3220": [
+   "PENTAFLUORETHAAN (KOELGAS R 125)"
+  ],
+  "3221": [
+   "ZELFONTLEDENDE VLOEISTOF TYPE B"
+  ],
+  "3222": [
+   "ZELFONTLEDENDE VASTE STOF TYPE B"
+  ],
+  "3223": [
+   "ZELFONTLEDENDE VLOEISTOF TYPE C"
+  ],
+  "3224": [
+   "ZELFONTLEDENDE VASTE STOF TYPE C"
+  ],
+  "3225": [
+   "ZELFONTLEDENDE VLOEISTOF TYPE D"
+  ],
+  "3226": [
+   "ZELFONTLEDENDE VASTE STOF TYPE D"
+  ],
+  "3227": [
+   "ZELFONTLEDENDE VLOEISTOF TYPE E"
+  ],
+  "3228": [
+   "ZELFONTLEDENDE VASTE STOF TYPE E"
+  ],
+  "3229": [
+   "ZELFONTLEDENDE VLOEISTOF TYPE F"
+  ],
+  "3230": [
+   "ZELFONTLEDENDE VASTE STOF TYPE F"
+  ],
+  "3231": [
+   "ZELFONTLEDENDE VLOEISTOF, TYPE B, MET TEMPERATUURBEHEERSING"
+  ],
+  "3232": [
+   "ZELFONTLEDENDE VASTE STOF, TYPE B, MET TEMPERATUURBEHEERSING"
+  ],
+  "3233": [
+   "ZELFONTLEDENDE VLOEISTOF, TYPE C, MET TEMPERATUURBEHEERSING"
+  ],
+  "3234": [
+   "ZELFONTLEDENDE VASTE STOF, TYPE C, MET TEMPERATUURBEHEERSING"
+  ],
+  "3235": [
+   "ZELFONTLEDENDE VLOEISTOF, TYPE D, MET TEMPERATUURBEHEERSING"
+  ],
+  "3236": [
+   "ZELFONTLEDENDE VASTE STOF, TYPE D, MET TEMPERATUURBEHEERSING"
+  ],
+  "3237": [
+   "ZELFONTLEDENDE VLOEISTOF, TYPE E, MET TEMPERATUURBEHEERSING"
+  ],
+  "3238": [
+   "ZELFONTLEDENDE VASTE STOF, TYPE E, MET TEMPERATUURBEHEERSING"
+  ],
+  "3239": [
+   "ZELFONTLEDENDE VLOEISTOF, TYPE F, MET TEMPERATUURBEHEERSING"
+  ],
+  "3240": [
+   "ZELFONTLEDENDE VASTE STOF, TYPE F, MET TEMPERATUURBEHEERSING"
+  ],
+  "3241": [
+   "2-BROOM-2-NITROPROPAAN-1,3-DIOL"
+  ],
+  "3242": [
+   "AZODICARBONAMIDE"
+  ],
+  "3243": [
+   "VASTE STOFFEN DIE GIFTIGE VLOEISTOF BEVATTEN, N.E.G."
+  ],
+  "3244": [
+   "VASTE STOFFEN DIE BIJTENDE VLOEISTOF BEVATTEN, N.E.G."
+  ],
+  "3245": [
+   "GENETISCH GEMODIFICEERDE ORGANISMEN",
+   "GENETISCH GEMODIFICEERDE ORGANISMEN in sterk gekoelde vloeibare stikstof",
+   "GENETISCH GEMODIFICEERDE MICRO-ORGANISMEN",
+   "GENETISCH GEMODIFICEERDE MICRO-ORGANISMEN in sterk gekoelde vloeibare stikstof"
+  ],
+  "3246": [
+   "METHAANSULFONYLCHLORIDE"
+  ],
+  "3247": [
+   "NATRIUMPEROXOBORAAT, WATERVRIJ"
+  ],
+  "3248": [
+   "MEDICAMENT, VLOEIBAAR, BRANDBAAR, GIFTIG, N.E.G."
+  ],
+  "3249": [
+   "MEDICAMENT, VAST, GIFTIG, N.E.G."
+  ],
+  "3250": [
+   "CHLOORAZIJNZUUR, GESMOLTEN"
+  ],
+  "3251": [
+   "ISOSORBIDE-5-MONONITRAAT"
+  ],
+  "3252": [
+   "DIFLUORMETHAAN (KOELGAS R 32)"
+  ],
+  "3253": [
+   "DINATRIUMTRIOXOSILICAAT (NATRIUMMETASILICAAT)"
+  ],
+  "3254": [
+   "TRIBUTYLFOSFAAN"
+  ],
+  "3255": [
+   "tert-BUTYLHYPOCHLORIET"
+  ],
+  "3256": [
+   "VERWARMDE VLOEISTOF, BRANDBAAR, N.E.G. vlampunt hoger dan 60 °C, bij een temperatuur gelijk aan of hoger dan haar vlampunt en lager dan 100 °C",
+   "VERWARMDE VLOEISTOF, BRANDBAAR, N.E.G. , met een vlampunt hoger dan 60 °C, bij een temperatuur die ten minste gelijk is aan haar vlampunt, geladen bij een temperatuur gelijk aan of hoger dan 100°C"
+  ],
+  "3257": [
+   "VERWARMDE VLOEISTOF, N.E.G. bij een temperatuur gelijk aan of hoger dan 100 °C en lager dan haar vlampunt (met inbegrip van gesmolten metalen, gesmolten zouten, etc.), gevuld bij een temperatuur gelijk aan of lager dan 190°C",
+   "VERWARMDE VLOEISTOF, N.E.G. bij een temperatuur gelijk aan of hoger dan 100 °C en lager dan haar vlampunt (met inbegrip van gesmolten metalen, gesmolten zouten, etc.), gevuld bij een temperatuur hoger dan 190°C"
+  ],
+  "3258": [
+   "VERWARMDE VASTE STOF, N.E.G. bij of boven 240 °C"
+  ],
+  "3259": [
+   "AMINEN, VAST, BIJTEND, N.E.G.",
+   "POLYAMINEN, VAST, BIJTEND, N.E.G."
+  ],
+  "3260": [
+   "BIJTENDE, ZURE, ANORGANISCHE VASTE STOF, N.E.G."
+  ],
+  "3261": [
+   "BIJTENDE, ZURE, ORGANISCHE VASTE STOF, N.E.G."
+  ],
+  "3262": [
+   "BIJTENDE, BASISCHE, ANORGANISCHE VASTE STOF, N.E.G."
+  ],
+  "3263": [
+   "BIJTENDE, BASISCHE, ORGANISCHE VASTE STOF, N.E.G."
+  ],
+  "3264": [
+   "BIJTENDE, ZURE, ANORGANISCHE VLOEISTOF, N.E.G."
+  ],
+  "3265": [
+   "BIJTENDE, ZURE, ORGANISCHE VLOEISTOF, N.E.G."
+  ],
+  "3266": [
+   "BIJTENDE, BASISCHE, ANORGANISCHE VLOEISTOF, N.E.G."
+  ],
+  "3267": [
+   "BIJTENDE, BASISCHE, ORGANISCHE VLOEISTOF, N.E.G."
+  ],
+  "3268": [
+   "VEILIGHEIDSINRICHTINGEN elektrisch ingeleid"
+  ],
+  "3269": [
+   "POLYESTERHARS-KIT vloeibaar basismateriaal"
+  ],
+  "3270": [
+   "MEMBRAANFILTERS VAN NITROCELLULOSE met ten hoogste 12,6% stikstof, berekend op droge stof"
+  ],
+  "3271": [
+   "ETHERS, N.E.G."
+  ],
+  "3272": [
+   "ESTERS, N.E.G."
+  ],
+  "3273": [
+   "NITRILLEN, BRANDBAAR, GIFTIG, N.E.G."
+  ],
+  "3274": [
+   "ALCOHOLATEN, OPLOSSING, N.E.G. in alcohol"
+  ],
+  "3275": [
+   "NITRILLEN, GIFTIG, BRANDBAAR, N.E.G."
+  ],
+  "3276": [
+   "NITRILLEN, VLOEIBAAR, GIFTIG, N.E.G."
+  ],
+  "3277": [
+   "CHLOORFORMIATEN, GIFTIG, BIJTEND, N.E.G."
+  ],
+  "3278": [
+   "ORGANISCHE FOSFORVERBINDING, VLOEIBAAR, GIFTIG, N.E.G."
+  ],
+  "3279": [
+   "ORGANISCHE FOSFORVERBINDING, GIFTIG, BRANDBAAR, N.E.G."
+  ],
+  "3280": [
+   "ORGANISCHE ARSENICUMVERBINDING, VLOEIBAAR, N.E.G."
+  ],
+  "3281": [
+   "METAALCARBONYLEN, VLOEIBAAR, N.E.G."
+  ],
+  "3282": [
+   "METAALORGANISCHE VERBINDING, VLOEIBAAR, GIFTIG, N.E.G."
+  ],
+  "3283": [
+   "SELEENVERBINDING, VAST, N.E.G."
+  ],
+  "3284": [
+   "TELLUURVERBINDING, N.E.G."
+  ],
+  "3285": [
+   "VANADIUMVERBINDING, N.E.G."
+  ],
+  "3286": [
+   "BRANDBARE VLOEISTOF, GIFTIG, BIJTEND, N.E.G."
+  ],
+  "3287": [
+   "GIFTIGE, ANORGANISCHE VLOEISTOF, N.E.G."
+  ],
+  "3288": [
+   "GIFTIGE, ANORGANISCHE VASTE STOF, N.E.G."
+  ],
+  "3289": [
+   "GIFTIGE, ANORGANISCHE VLOEISTOF, BIJTEND, N.E.G."
+  ],
+  "3290": [
+   "GIFTIGE, ANORGANISCHE VASTE STOF, BIJTEND, N.E.G."
+  ],
+  "3291": [
+   "ZIEKENHUISAFVAL, NIET GESPECIFICEERD, N.E.G.",
+   "ZIEKENHUISAFVAL, NIET GESPECIFICEERD, N.E.G. in sterk gekoelde vloeibare stikstof",
+   "GEREGLEMENTEERD MEDISCH AFVAL, N.E.G.",
+   "GEREGLEMENTEERD MEDISCH AFVAL, N.E.G. in sterk gekoelde vloeibare stikstof",
+   "MEDISCH AFVAL, N.E.G. (BIOMEDISCH AFVAL, N.E.G.)",
+   "MEDISCH AFVAL, N.E.G. (BIOMEDISCH AFVAL, N.E.G.) in sterk gekoelde vloeibare stikstof"
+  ],
+  "3292": [
+   "BATTERIJEN MET METALLISCH NATRIUM OF NATRIUMLEGERING",
+   "CELLEN MET METALLISCH NATRIUM OF NATRIUMLEGERING"
+  ],
+  "3293": [
+   "HYDRAZINE, OPLOSSING IN WATER met ten hoogste 37 massa-% hydrazine"
+  ],
+  "3294": [
+   "CYAANWATERSTOF, OPLOSSING IN ALCOHOL met ten hoogste 45 massa-% cyaanwaterstof"
+  ],
+  "3295": [
+   "KOOLWATERSTOFFEN, VLOEIBAAR, N.E.G."
+  ],
+  "3296": [
+   "HEPTAFLUORPROPAAN (KOELGAS R 227)"
+  ],
+  "3297": [
+   "MENGSEL VAN ETHYLEENOXIDE EN CHLOORTETRAFLUORETHAAN met ten hoogste 8,8% ethyleenoxide"
+  ],
+  "3298": [
+   "MENGSEL VAN ETHYLEENOXIDE EN PENTAFLUORETHAAN met ten hoogste 7,9% ethyleenoxide"
+  ],
+  "3299": [
+   "MENGSEL VAN ETHYLEENOXIDE EN TETRAFLUORETHAAN met ten hoogste 5,6% ethyleenoxide"
+  ],
+  "3300": [
+   "MENGSEL VAN ETHYLEENOXIDE EN KOOLDIOXIDE (MENGSEL VAN ETHYLEENOXIDE EN KOOLSTOFDIOXIDE) (MENGSEL VAN ETHYLEENOXIDE EN KOOLZUUR) met meer dan 87% ethyleenoxide"
+  ],
+  "3301": [
+   "BIJTENDE VLOEISTOF, VOOR ZELFVERHITTING VATBAAR, N.E.G."
+  ],
+  "3302": [
+   "2-DIMETHYLAMINOETHYLACRYLAAT, GESTABILISEERT"
+  ],
+  "3303": [
+   "SAMENGEPERST GAS, GIFTIG, OXIDEREND, N.E.G."
+  ],
+  "3304": [
+   "SAMENGEPERST GAS, GIFTIG, BIJTEND, N.E.G."
+  ],
+  "3305": [
+   "SAMENGEPERST GAS, GIFTIG, BRANDBAAR, BIJTEND, N.E.G."
+  ],
+  "3306": [
+   "SAMENGEPERST GAS, GIFTIG, OXIDEREND, BIJTEND, N.E.G."
+  ],
+  "3307": [
+   "VLOEIBAAR GEMAAKT GAS, GIFTIG, OXIDEREND, N.E.G."
+  ],
+  "3308": [
+   "VLOEIBAAR GEMAAKT GAS, GIFTIG, BIJTEND, N.E.G."
+  ],
+  "3309": [
+   "VLOEIBAAR GEMAAKT GAS, GIFTIG, BRANDBAAR, BIJTEND, N.E.G."
+  ],
+  "3310": [
+   "VLOEIBAAR GEMAAKT GAS, GIFTIG, OXIDEREND, BIJTEND, N.E.G."
+  ],
+  "3311": [
+   "STERK GEKOELD, VLOEIBAAR GAS, OXIDEREND, N.E.G."
+  ],
+  "3312": [
+   "STERK GEKOELD, VLOEIBAAR GAS, BRANDBAAR, N.E.G."
+  ],
+  "3313": [
+   "VOOR ZELFVERHITTING VATBARE, ORGANISCHE PIGMENTEN"
+  ],
+  "3314": [
+   "KUNSTSTOF PERSMASSA in de vorm van pasta, vellen of geextrudeerde draden, die brandbare dampen ontwikkelen"
+  ],
+  "3315": [
+   "MONSTER VAN CHEMISCHE STOF, GIFTIG"
+  ],
+  "3316": [
+   "CHEMISCHE REAGENTIASET",
+   "SET VOOR EERSTE HULP"
+  ],
+  "3317": [
+   "2-AMINO-4,6-DINITROFENOL, BEVOCHTIGD met tenminste 20 massa-% water"
+  ],
+  "3318": [
+   "AMMONIAK, OPLOSSING in water, met een dichtheid bij 15°C lager dan 0,880 kg/l, met meer dan 50% ammoniak"
+  ],
+  "3319": [
+   "NITROGLYCERINE, MENGSEL, GEDESENSIBILISEERD, VAST, N.E.G. met meer dan 2 massa-%, maar ten hoogste 10 massa-% nitroglycerine"
+  ],
+  "3320": [
+   "NATRIUMBOORHYDRIDE EN NATRIUMHYDROXIDE, OPLOSSING met niet meer dan 12 massa-% natriumboorhydride en niet meer dan 40 massa-% natriumhydroxide"
+  ],
+  "3321": [
+   "RADIOACTIEVE STOFFEN MET GERINGE SPECIFIEKE ACTIVITEIT (LSA-II) niet splijtbaar of splijtbaar, vrijgesteld"
+  ],
+  "3322": [
+   "RADIOACTIEVE STOFFEN MET GERINGE SPECIFIEKE ACTIVITEIT (LSA-III) niet splijtbaar of splijtbaar, vrijgesteld"
+  ],
+  "3323": [
+   "RADIOACTIEVE STOFFEN, IN COLLO VAN TYPE C niet splijtbaar of splijtbaar, vrijgesteld"
+  ],
+  "3324": [
+   "RADIOACTIEVE STOFFEN MET GERINGE SPECIFIEKE ACTIVITEIT (LSA-II, SPLIJTBAAR)"
+  ],
+  "3325": [
+   "RADIOACTIEVE STOFFEN MET GERINGE SPECIFIEKE ACTIVITEIT (LSA-III, SPLIJTBAAR)"
+  ],
+  "3326": [
+   "RADIOACTIEVE STOFFEN, VOORWERPEN MET BESMETTING AAN HET OPPERVLAK (SCO-I), SPLIJTBAAR",
+   "RADIOACTIEVE STOFFEN, VOORWERPEN MET BESMETTING AAN HET OPPERVLAK (SCO-II), SPLIJTBAAR"
+  ],
+  "3327": [
+   "RADIOACTIEVE STOFFEN IN COLLO VAN TYPE A, SPLIJTBAAR niet in speciale toestand"
+  ],
+  "3328": [
+   "RADIOACTIEVE STOFFEN IN COLLO VAN TYPE B(U), SPLIJTBAAR"
+  ],
+  "3329": [
+   "RADIOACTIEVE STOFFEN IN COLLO VAN TYPE B(M), SPLIJTBAAR"
+  ],
+  "3330": [
+   "RADIOACTIEVE STOFFEN IN COLLO VAN TYPE C, SPLIJTBAAR"
+  ],
+  "3331": [
+   "RADIOACTIEVE STOFFEN, VERVOERD KRACHTENS BIJZONDERE REGELING, SPLIJTBAAR"
+  ],
+  "3332": [
+   "RADIOACTIEVE STOFFEN, IN COLLO VAN TYPE A, IN SPECIALE TOESTAND niet splijtbaar of splijtbaar, vrijgesteld"
+  ],
+  "3333": [
+   "RADIOACTIEVE STOFFEN IN COLLO VAN TYPE A, IN SPECIALE TOESTAND, SPLIJTBAAR"
+  ],
+  "3334": [
+   "VLOEISTOF, ONDERWORPEN AAN DE VOORSCHRIFTEN VOOR DE LUCHTVAART, N.E.G."
+  ],
+  "3335": [
+   "VASTE STOF, ONDERWORPEN AAN DE VOORSCHRIFTEN VOOR DE LUCHTVAART, N.E.G."
+  ],
+  "3336": [
+   "MERCAPTANEN, MENGSEL, VLOEIBAAR, BRANDBAAR, N.E.G.",
+   "MERCAPTANEN, VLOEIBAAR, BRANDBAAR, N.E.G."
+  ],
+  "3337": [
+   "KOELGAS R 404A (zeotropisch mengsel van pentafluorethaan, 1,1,1- trifluorethaan en 1,1,1,2-tetrafluorethaan, met ongeveer 44 % pentafluorethaan en 52 % 1,1,1-trifluorethaan)"
+  ],
+  "3338": [
+   "KOELGAS R 407A (zeotropisch mengsel van difluormethaan, pentafluorethaan en 1,1,1,2-tetrafluorethaan, met ongeveer 20 % difluormethaan en 40 % pentafluorethaan)"
+  ],
+  "3339": [
+   "KOELGAS R 407B (zeotropisch mengsel van difluormethaan, pentafluorethaan en 1,1,1,2-tetrafluorethaan, met ongeveer 10 % difluormethaan en 70 % pentafluorethaan)"
+  ],
+  "3340": [
+   "KOELGAS R 407C (zeotropisch mengsel van difluormethaan, pentafluorethaan en 1,1,1,2-tetrafluorethaan, met ongeveer 23 % difluormethaan en 25 % pentafluorethaan)"
+  ],
+  "3341": [
+   "THIOUREUMDIOXIDE"
+  ],
+  "3342": [
+   "XANTHATEN"
+  ],
+  "3343": [
+   "NITROGLYCERINE, MENGSEL, GEDESENSIBILISEERD, VLOEIBAAR, BRANDBAAR, N.E.G. met niet meer dan 30 massa-% nitroglycerine"
+  ],
+  "3344": [
+   "PENTAERYTHRIETTETRANITRAAT, MENGSEL, GEDESENSIBILISEERD, VAST, N.E.G. (PENTAERYTHRITOLTETRANITRAAT, MENGSEL, GEDESENSIBILISEERD, VAST, N.E.G.) (PETN, MENGSEL, GEDESENSIBILISEERD, VAST, N.E.G.) met meer dan 10 massa-% maar niet meer dan 20 massa-% PETN"
+  ],
+  "3345": [
+   "PESTICIDE, FENOXYAZIJNZUURDERIVAAT, VAST, GIFTIG"
+  ],
+  "3346": [
+   "PESTICIDE, FENOXYAZIJNZUURDERIVAAT, VLOEIBAAR, BRANDBAAR, GIFTIG vlampunt lager dan 23 °C"
+  ],
+  "3347": [
+   "PESTICIDE, FENOXYAZIJNZUURDERIVAAT, VLOEIBAAR, GIFTIG, BRANDBAAR vlampunt tenminste 23 °C"
+  ],
+  "3348": [
+   "PESTICIDE, FENOXYAZIJNZUURDERIVAAT, VLOEIBAAR, GIFTIG"
+  ],
+  "3349": [
+   "PESTICIDE, PYRETHROÏDE, VAST, GIFTIG"
+  ],
+  "3350": [
+   "PESTICIDE, PYRETHROÏDE, VLOEIBAAR, BRANDBAAR, GIFTIG vlampunt lager dan 23 °C"
+  ],
+  "3351": [
+   "PESTICIDE, PYRETHROÏDE, VLOEIBAAR, GIFTIG, BRANDBAAR vlampunt tenminste 23 °C"
+  ],
+  "3352": [
+   "PESTICIDE, PYRETHROÏDE, VLOEIBAAR, GIFTIG"
+  ],
+  "3354": [
+   "INSECTICIDE, GAS, BRANDBAAR, N.E.G."
+  ],
+  "3355": [
+   "INSECTICIDE, GAS, GIFTIG, BRANDBAAR, N.E.G."
+  ],
+  "3356": [
+   "ZUURSTOFGENERATOR, CHEMISCH"
+  ],
+  "3357": [
+   "NITROGLYCERINE, MENGSEL, GEDESENSIBILISEERD, VLOEIBAAR, N.E.G. met niet meer dan 30 massa-% nitroglycerine"
+  ],
+  "3358": [
+   "KOELMACHINES met brandbaar, niet giftig, vloeibaar gemaakt gas"
+  ],
+  "3359": [
+   "GEGASTE LAADEENHEID"
+  ],
+  "3360": [
+   "VEZELS, PLANTAARDIG, DROOG"
+  ],
+  "3361": [
+   "CHLOORSILANEN, GIFTIG, BIJTEND, N.E.G."
+  ],
+  "3362": [
+   "CHLOORSILANEN, GIFTIG, BIJTEND, BRANDBAAR, N.E.G."
+  ],
+  "3363": [
+   "GEVAARLIJKE GOEDEREN IN APPARATEN",
+   "GEVAARLIJKE GOEDEREN IN MACHINES",
+   "GEVAARLIJKE GOEDEREN IN VOORWERPEN"
+  ],
+  "3364": [
+   "TRINITROFENOL, BEVOCHTIGD (PIKRINEZUUR, BEVOCHTIGD) met ten minste 10 massa-% water"
+  ],
+  "3365": [
+   "TRINITROCHLOORBENZEEN, BEVOCHTIGD (PICRYLCHLORIDE, BEVOCHTIGD) met ten minste 10 massa-% water"
+  ],
+  "3366": [
+   "TRINITROTOLUEEN, BEVOCHTIGD (TNT, BEVOCHTIGD) met ten minste 10 massa-% water"
+  ],
+  "3367": [
+   "TRINITROBENZEEN, BEVOCHTIGD met ten minste 10 massa-% water"
+  ],
+  "3368": [
+   "TRINITROBENZOËZUUR, BEVOCHTIGD met ten minste 10 massa-% water"
+  ],
+  "3369": [
+   "NATRIUMDINITRO-o-CRESOLAAT, BEVOCHTIGD met ten minste 10 massa-% water"
+  ],
+  "3370": [
+   "UREUMNITRAAT, BEVOCHTIGD met ten minste 10 massa-% water"
+  ],
+  "3371": [
+   "2-METHYLBUTANAL"
+  ],
+  "3373": [
+   "BIOLOGISCHE STOF, CATEGORIE B",
+   "BIOLOGISCHE STOF, CATEGORIE B (alleen dierlijke stoffen)"
+  ],
+  "3374": [
+   "ACETYLEEN, OPLOSMIDDELVRIJ (ETHYN, OPLOSMIDDELVRIJ)"
+  ],
+  "3375": [
+   "AMMONIUMNITRAAT, EMULSIE vloeibaar, tussenproduct voor de bereiding van springstoffen",
+   "AMMONIUMNITRAAT, EMULSIE vast, tussenproduct voor de bereiding van springstoffen",
+   "AMMONIUMNITRAAT, GEL vloeibaar, tussenproduct voor de bereiding van springstoffen",
+   "AMMONIUMNITRAAT, GEL vast, tussenproduct voor de bereiding van springstoffen",
+   "AMMONIUMNITRAAT, SUSPENSIE vloeibaar, tussenproduct voor de bereiding van springstoffen",
+   "AMMONIUMNITRAAT, SUSPENSIE vast, tussenproduct voor de bereiding van springstoffen"
+  ],
+  "3376": [
+   "4-NITROFENYLHYDRAZINE met tenminste 30 massa-% water"
+  ],
+  "3377": [
+   "NATRIUMPERBORAATMONOHYDRAAT"
+  ],
+  "3378": [
+   "NATRIUMCARBONAATPEROXYHYDRAAT"
+  ],
+  "3379": [
+   "GEDESENSIBILISEERDE ONTPLOFBARE STOF, VLOEIBAAR, N.E.G."
+  ],
+  "3380": [
+   "GEDESENSIBILISEERDE ONTPLOFBARE STOF, VAST, N.E.G."
+  ],
+  "3381": [
+   "BIJ INADEMEN GIFTIGE VLOEISTOF, N.E.G. met een LC50 van ten hoogste 200 ml/m3 en een verzadigde dampconcentratie van ten minste 500 LC50"
+  ],
+  "3382": [
+   "BIJ INADEMEN GIFTIGE VLOEISTOF, N.E.G. met een LC50 van ten hoogste 1000 ml/ m3 en een verzadigde dampconcentratie van tenminste 10 LC50"
+  ],
+  "3383": [
+   "BIJ INADEMEN GIFTIGE VLOEISTOF, BRANDBAAR, N.E.G. met een LC50 van ten hoogste 200 ml/m3 en een verzadigde dampconcentratie van ten minste 500 LC50"
+  ],
+  "3384": [
+   "BIJ INADEMEN GIFTIGE VLOEISTOF, BRANDBAAR, N.E.G. met een LC50 van ten hoogste 1000 ml/m3 en een verzadigde dampconcentratie van ten minste 10 LC50"
+  ],
+  "3385": [
+   "BIJ INADEMEN GIFTIGE VLOEISTOF, REACTIEF MET WATER, N.E.G. met een LC50 van ten hoogste 200 ml/m³ en met een verzadigde dampconcentratie van tenminste 500 LC50"
+  ],
+  "3386": [
+   "BIJ INADEMEN GIFTIGE VLOEISTOF, REACTIEF MET WATER, N.E.G. met een LC50 van ten hoogste 1000 ml/m3 en een verzadigde dampconcentratie van ten minste 10 LC50"
+  ],
+  "3387": [
+   "BIJ INADEMEN GIFTIGE VLOEISTOF, OXIDEREND, N.E.G. met een LC50 die lager is of gelijk is aan 200 ml/m³ en met een verzadigde-dampconcentratie groter is dan of gelijk is aan LC50"
+  ],
+  "3388": [
+   "BIJ INADEMEN GIFTIGE VLOEISTOF, OXIDEREND, N.E.G. met een LC50 van ten hoogste 1000 ml/m3 en een verzadigde dampconcentratie van ten minste 10 LC50"
+  ],
+  "3389": [
+   "BIJ INADEMEN GIFTIGE VLOEISTOF, BIJTEND, N.E.G. met een LC50 die lager is of gelijk is aan 200 ml/m³ en met een verzadigde-dampconcentratie groter is dan of gelijk is aan LC50"
+  ],
+  "3390": [
+   "BIJ INADEMEN GIFTIGE VLOEISTOF, BIJTEND, N.E.G. met een LC50 van ten hoogste 1000 ml/m3 en een verzadigde dampconcentratie van ten minste 10 LC50"
+  ],
+  "3391": [
+   "PYROFORE METAALORGANISCHE STOF, VAST"
+  ],
+  "3392": [
+   "PYROFORE METAALORGANISCHE STOF, VLOEIBAAR"
+  ],
+  "3393": [
+   "PYROFORE METAALORGANISCHE STOF, VAST, REACTIEF MET WATER"
+  ],
+  "3394": [
+   "PYROFORE METAALORGANISCHE STOF, VLOEIBAAR, REACTIEF MET WATER, REACTIEF MET WATER"
+  ],
+  "3395": [
+   "MET WATER RACTIEVE METAALORGANISCHE STOF, VAST"
+  ],
+  "3396": [
+   "MET WATER RACTIEVE METAALORGANISCHE STOF, VAST, BRANDBAAR"
+  ],
+  "3397": [
+   "MET WATER RACTIEVE METAALORGANISCHE STOF, VAST, VOOR ZELFVERHITTING VATBAAR"
+  ],
+  "3398": [
+   "MET WATER RACTIEVE METAALORGANISCHE STOF, VLOEIBAAR"
+  ],
+  "3399": [
+   "MET WATER RACTIEVE METAALORGANISCHE STOF, VLOEIBAAR, BRANDBAAR"
+  ],
+  "3400": [
+   "VOOR ZELFVERHITTING VATBARE METAALORGANISCHE STOF, VAST"
+  ],
+  "3401": [
+   "AMALGAAM VAN ALKALIMETALEN, VAST"
+  ],
+  "3402": [
+   "AMALGAAM VAN AARDALKALIMETALEN, VAST"
+  ],
+  "3403": [
+   "METAALLEGERINGEN VAN KALIUM, VAST"
+  ],
+  "3404": [
+   "METAALLEGERINGEN VAN NATRIUM, VAST"
+  ],
+  "3405": [
+   "BARIUMCHLORAAT, OPLOSSING"
+  ],
+  "3406": [
+   "BARIUMPERCHLORAAT, OPLOSSING"
+  ],
+  "3407": [
+   "CHLORAAT EN MAGNESIUMCHLORIDE, MENGSEL, OPLOSSING"
+  ],
+  "3408": [
+   "LOODPERCHLORAAT, OPLOSSING"
+  ],
+  "3409": [
+   "CHLOORNITROBENZENEN, VLOEIBAAR"
+  ],
+  "3410": [
+   "4-CHLOOR-o-TOLUÏDINEHYDROCHLORIDE, OPLOSSING"
+  ],
+  "3411": [
+   "bèta-NAFTYLAMINE, OPLOSSING"
+  ],
+  "3412": [
+   "MIERENZUUR met ten minste 10 massa-% en ten hoogste 85 massa-% zuur",
+   "MIERENZUUR met ten minste 5 massa-% en minder dan 10 massa-% zuur"
+  ],
+  "3413": [
+   "KALIUMCYANIDE, OPLOSSING"
+  ],
+  "3414": [
+   "NATRIUMCYANIDE, OPLOSSING"
+  ],
+  "3415": [
+   "NATRIUMFLUORIDE, OPLOSSING"
+  ],
+  "3416": [
+   "CHLOORACETOFENON, VLOEIBAAR (fenacylchloride, vloeibaar)"
+  ],
+  "3417": [
+   "XYLYLBROMIDE, VAST"
+  ],
+  "3418": [
+   "2,4-TOLUEENDIAMINE, OPLOSSING"
+  ],
+  "3419": [
+   "BORIUMTRIFLUORIDE-AZIJNZUUR-COMPLEX, VAST"
+  ],
+  "3420": [
+   "BORIUMTRIFLUORIDE-PROPIONZUUR-COMPLEX, VAST"
+  ],
+  "3421": [
+   "KALIUMWATERSTOFDIFLUORIDE, OPLOSSING (kaliumbifluoride, oplossing)"
+  ],
+  "3422": [
+   "KALIUMFLUORIDE, OPLOSSING"
+  ],
+  "3423": [
+   "TETRAMETHYLAMMONIUMHYDROXIDE, VAST"
+  ],
+  "3424": [
+   "AMMONIUMDINITRO-o-CRESOLAAT, OPLOSSING"
+  ],
+  "3425": [
+   "BROOMAZIJNZUUR, VAST"
+  ],
+  "3426": [
+   "ACRYLAMIDE, OPLOSSING"
+  ],
+  "3427": [
+   "CHLOORBENZYLCHLORIDEN, VAST"
+  ],
+  "3428": [
+   "3-CHLOOR-4-METHYLFENYLISOCYANAAT, VAST"
+  ],
+  "3429": [
+   "CHLOORTOLUÏDINEN, VLOEIBAAR"
+  ],
+  "3430": [
+   "XYLENOLEN, VLOEIBAAR"
+  ],
+  "3431": [
+   "NITROBENZOTRIFLUORIDEN, VAST"
+  ],
+  "3432": [
+   "POLYCHLOORBIFENYLEN, VAST"
+  ],
+  "3434": [
+   "NITROCRESOLEN, VLOEIBAAR"
+  ],
+  "3436": [
+   "HEXAFLUORACETONHYDRAAT, VAST"
+  ],
+  "3437": [
+   "CHLOORCRESOLEN, VAST"
+  ],
+  "3438": [
+   "alfa-METHYLBENZYLALCOHOL, VAST"
+  ],
+  "3439": [
+   "NITRILLEN, VAST, GIFTIG, N.E.G."
+  ],
+  "3440": [
+   "SELEENVERBINDING, VLOEIBAAR, N.E.G."
+  ],
+  "3441": [
+   "CHLOORDINITROBENZENEN, VAST"
+  ],
+  "3442": [
+   "DICHLOORANILINEN, VAST"
+  ],
+  "3443": [
+   "DINITROBENZENEN, VAST"
+  ],
+  "3444": [
+   "NICOTINEHYDROCHLORIDE, VAST"
+  ],
+  "3445": [
+   "NICOTINESULFAAT, VAST"
+  ],
+  "3446": [
+   "NITROTOLUENEN, VAST"
+  ],
+  "3447": [
+   "NITROXYLENEN, VAST"
+  ],
+  "3448": [
+   "TRAANGASINGREDIËNT, VAST, N.E.G."
+  ],
+  "3449": [
+   "BROOMBENZYLCYANIDEN, VAST"
+  ],
+  "3450": [
+   "DIFENYLCHLOORWATERSTOFARSENIDE, VAST"
+  ],
+  "3451": [
+   "TOLUÏDINEN, VAST"
+  ],
+  "3452": [
+   "XYLIDINEN, VAST"
+  ],
+  "3453": [
+   "FOSFORZUUR, VAST"
+  ],
+  "3454": [
+   "DINITROTOLUENEN, VAST"
+  ],
+  "3455": [
+   "CRESOLEN, VAST"
+  ],
+  "3456": [
+   "NITROSYLZWAVELZUUR, VAST"
+  ],
+  "3457": [
+   "CHLOORNITROTOLUENEN, VAST"
+  ],
+  "3458": [
+   "NITROANISOLEN, VAST"
+  ],
+  "3459": [
+   "NITROBROOMBENZENEN, VAST"
+  ],
+  "3460": [
+   "N-ETHYLBENZYLTOLUÏDINEN, VAST"
+  ],
+  "3462": [
+   "TOXINEN, GEWONNEN UIT LEVENDE ORGANISMEN, VAST, N.E.G."
+  ],
+  "3463": [
+   "PROPIONZUUR met ten minste 90 massa-% zuur"
+  ],
+  "3464": [
+   "ORGANISCHE FOSFORVERBINDING, VAST, GIFTIG, N.E.G."
+  ],
+  "3465": [
+   "ORGANISCHE ARSEENVERBINDING, VAST, N.E.G."
+  ],
+  "3466": [
+   "METAALCARBONYLEN, VAST, N.E.G."
+  ],
+  "3467": [
+   "METAALORGANISCHE VERBINDING, VAST, GIFTIG, N.E.G."
+  ],
+  "3468": [
+   "WATERSTOF IN EEN OPSLAGSYSTEEM MET METAALHYDRIDEN",
+   "WATERSTOF IN EEN OPSLAGSYSTEEM MET METAALHYDRIDEN IN APPARATUUR",
+   "WATERSTOF IN EEN OPSLAGSYSTEEM MET METAALHYDRIDEN VERPAKT MET APPARATUUR"
+  ],
+  "3469": [
+   "VERF-VERWANTE PRODUCTEN, BRANDBAAR, BIJTEND (waaronder begrepen verfverdunners en verfoplosmiddelen)",
+   "VERF, BRANDBAAR, BIJTEND (waaronder begrepen verf, lakverf, emaillak, beits, schellakoplossing, vernis, polijstmiddel, vloeibare plamuur, vloeibare lakbasis)"
+  ],
+  "3470": [
+   "VERF-VERWANTE PRODUCTEN, BIJTEND, BRANDBAAR (waaronder begrepen verfverdunners en verfoplosmiddelen)",
+   "VERF, BIJTEND, BRANDBAAR (waaronder begrepen verf, lakverf, emaillak, beits, schellakoplossing, vernis, polijstmiddel, vloeibare plamuur, vloeibare lakbasis)"
+  ],
+  "3471": [
+   "WATERSTOFDIFLUORIDEN, OPLOSSING, N.E.G."
+  ],
+  "3472": [
+   "CROTONZUUR, VLOEIBAAR"
+  ],
+  "3473": [
+   "PATRONEN VOOR BRANDSTOFCELLEN die brandbare vloeistoffen bevatten",
+   "PATRONEN VOOR BRANDSTOFCELLEN IN APPARATUUR die brandbare vloeistoffen bevatten",
+   "PATRONEN VOOR BRANDSTOFCELLEN VERPAKT MET APPARATUUR die brandbare vloeistoffen bevatten"
+  ],
+  "3474": [
+   "1 HYDROXYBENZOTRIAZOL-MONOHYDRAAT"
+  ],
+  "3475": [
+   "MENGSEL VAN ETHANOL EN BENZINE met meer dan 10 % ethanol"
+  ],
+  "3476": [
+   "PATRONEN VOOR BRANDSTOFCELLEN die met water reactieve stoffen bevatten",
+   "PATRONEN VOOR BRANDSTOFCELLEN IN APPARATUUR die met water reactieve stoffen bevatten",
+   "PATRONEN VOOR BRANDSTOFCELLEN VERPAKT MET APPARATUUR, die met water reactieve stoffen bevatten"
+  ],
+  "3477": [
+   "PATRONEN VOOR BRANDSTOFCELLEN die bijtende stoffen bevatten",
+   "PATRONEN VOOR BRANDSTOFCELLEN IN APPARATUUR die bijtende stoffen bevatten",
+   "PATRONEN VOOR BRANDSTOFCELLEN VERPAKT MET APPARATUUR, die bijtende stoffen bevatten"
+  ],
+  "3478": [
+   "PATRONEN VOOR BRANDSTOFCELLEN die een vloeibaar gemaakt, brandbaar gas bevatten",
+   "PATRONEN VOOR BRANDSTOFCELLEN IN APPARATUUR die een vloeibaar gemaakt, brandbaar gas bevatten",
+   "PATRONEN VOOR BRANDSTOFCELLEN VERPAKT MET APPARATUUR, die een vloeibaar gemaakt, brandbaar gas bevatten"
+  ],
+  "3479": [
+   "PATRONEN VOOR BRANDSTOFCELLEN die waterstof in een metaalhydride bevatten",
+   "PATRONEN VOOR BRANDSTOFCELLEN IN APPARATUUR die waterstof in een metaalhydride bevatten",
+   "PATRONEN VOOR BRANDSTOFCELLEN VERPAKT MET APPARATUUR, die waterstof in een metaalhydride bevatten"
+  ],
+  "3480": [
+   "LITHIUM-ION-BATTERIJEN (met inbegrip van lithium-ion-polymeer-batterijen)"
+  ],
+  "3481": [
+   "LITHIUM-ION-BATTERIJEN IN APPARATUUR (met inbegrip van lithium-ion-polymeer-batterijen)",
+   "LITHIUM-ION-BATTERIJEN VERPAKT MET APPARATUUR (met inbegrip van lithium-ion-polymeer-batterijen)"
+  ],
+  "3482": [
+   "DISPERSIE VAN ALKALIMETALEN, BRANDBAAR",
+   "DISPERSIE VAN AARDALKALIMETALEN, BRANDBAAR"
+  ],
+  "3483": [
+   "ANTIKLOPMIDDEL VOOR MOTORBRANDSTOF, BRANDBAAR"
+  ],
+  "3484": [
+   "HYDRAZINE, OPLOSSING IN WATER, BRANDBAAR met meer dan 37 massa-% hydrazine"
+  ],
+  "3485": [
+   "CALCIUMHYPOCHLORIET, DROOG, BIJTEND met meer dan 39% actief chloor (8,8% actieve zuurstof)",
+   "CALCIUMHYPOCHLORIET, MENGSEL, DROOG, BIJTEND met meer dan 39% actief chloor (8,8% actieve zuurstof)"
+  ],
+  "3486": [
+   "CALCIUMHYPOCHLORIET, MENGSEL, DROOG, BIJTEND met meer dan 10%, doch ten hoogste 39% actief chloor"
+  ],
+  "3487": [
+   "CALCIUMHYPOCHLORIET, GEHYDRATEERD, BIJTEND met ten minste 5,5%, doch ten hoogste 16% water",
+   "CALCIUMHYPOCHLORIET, GEHYDRATEERD MENGSEL, BIJTEND met ten minste 5,5%, doch ten hoogste 16% water"
+  ],
+  "3488": [
+   "BIJ INADEMEN GIFTIGE VLOEISTOF, BRANDBAAR, BIJTEND, N.E.G. met een LC50 van ten hoogste 200 ml/m³ en een verzadigde dampconcentratie van ten minste 500 LC50"
+  ],
+  "3489": [
+   "BIJ INADEMEN GIFTIGE VLOEISTOF, BRANDBAAR, BIJTEND, N.E.G. met een LC50 van ten hoogste 1000 ml/m³ en een verzadigde dampconcentratie van ten minste 10 LC50"
+  ],
+  "3490": [
+   "BIJ INADEMEN GIFTIGE VLOEISTOF, REACTIEF MET WATER, BRANDBAAR, N.E.G. met een LC50 van ten hoogste 200 ml/m³ en een verzadigde dampconcentratie van ten minste 500 LC50"
+  ],
+  "3491": [
+   "BIJ INADEMEN GIFTIGE VLOEISTOF, REACTIEF MET WATER, BRANDBAAR, N.E.G. met een LC50 van ten hoogste 1000 ml/m³ en een verzadigde dampconcentratie van ten minste 10 LC50"
+  ],
+  "3494": [
+   "HOOGZWAVELIGE AARDOLIE, BRANDBAAR, GIFTIG"
+  ],
+  "3495": [
+   "JODIUM (JOOD)"
+  ],
+  "3496": [
+   "Nikkel-metaalhydride-batterijen"
+  ],
+  "3497": [
+   "KRILLMEEL"
+  ],
+  "3498": [
+   "JOODMONOCLHORIDE, VLOEIBAAR"
+  ],
+  "3499": [
+   "CONDENSATOR, ELEKTRISCH, DUBBELLAAGS (met een energieopslagcapaciteit van meer dan 0,3 Wh)"
+  ],
+  "3500": [
+   "CHEMISCHE STOF ONDER DRUK, N.E.G."
+  ],
+  "3501": [
+   "CHEMISCHE STOF ONDER DRUK, BRANDBAAR, N.E.G."
+  ],
+  "3502": [
+   "CHEMISCHE STOF ONDER DRUK, GIFTIG, N.E.G."
+  ],
+  "3503": [
+   "CHEMISCHE STOF ONDER DRUK, BIJTEND, N.E.G."
+  ],
+  "3504": [
+   "CHEMISCHE STOF ONDER DRUK, BRANDBAAR, GIFTIG, N.E.G."
+  ],
+  "3505": [
+   "CHEMISCHE STOF ONDER DRUK, BRANDBAAR, BIJTEND, N.E.G."
+  ],
+  "3506": [
+   "KWIK IN GEFABRICEERDE ARTIKELEN"
+  ],
+  "3507": [
+   "URANIUMHEXAFLUORIDE, RADIOACTIEVE STOFFEN, VRIJGESTELD COLLO minder dan 0,1 kg per collo, niet splijtbaar of splijtbaar, vrijgesteld"
+  ],
+  "3508": [
+   "CONDENSATOR, ASYMMETRISCH (met een energieopslagcapaciteit van meer dan 0,3Wh)"
+  ],
+  "3509": [
+   "AFGEDANKTE VERPAKKINGEN, LEEG, ONGEREINIGD"
+  ],
+  "3510": [
+   "GEADSORBEERD GAS, BRANDBAAR, N.E.G."
+  ],
+  "3511": [
+   "GEADSORBEERD GAS, N.E.G."
+  ],
+  "3512": [
+   "GEADSORBEED GAS, GIFTIG, N.E.G."
+  ],
+  "3513": [
+   "GEADSORBEERD GAS, OXIDEREND, N.E.G."
+  ],
+  "3514": [
+   "GEADSORBEERD GAS, GIFTIG, BRANDBAAR, N.E.G."
+  ],
+  "3515": [
+   "GEADSORBEERD GAS, GIFTIG, OXIDEREND, N.E.G."
+  ],
+  "3516": [
+   "GEADSORBEERD GAS, GIFTIG, BIJTEND, N.E.G."
+  ],
+  "3517": [
+   "GEADSORBEERD GAS, GIFTIG, BRANDBAAR, BIJTEND, N.E.G."
+  ],
+  "3518": [
+   "GEADSORBEERD GAS, GIFTIG, OXIDEREND, BIJTEND, N.E.G."
+  ],
+  "3519": [
+   "BOORTRIFLUORIDE, GEADSORBEERD"
+  ],
+  "3520": [
+   "CHLOOR, GEADSORBEERD"
+  ],
+  "3521": [
+   "SILICIUMTETRAFLUORIDE, GEADSORBEERD"
+  ],
+  "3522": [
+   "ARSEENWATERSTOF (ARSINE), GEADSORBEERD"
+  ],
+  "3523": [
+   "GERMAANWATERSTOF, GEADSORBEERD"
+  ],
+  "3524": [
+   "FOSFORPENTAFLUORIDE, GEADSORBEERD"
+  ],
+  "3525": [
+   "FOSFINE, GEADSORBEERD"
+  ],
+  "3526": [
+   "SELEENWATERSTOF (WATERSTOFSELENIDE), GEADSORBEERD"
+  ],
+  "3527": [
+   "POLYESTERHARS-KIT vast basisproduct"
+  ],
+  "3528": [
+   "VERBRANDINGSMOTOR, DOOR BRANDBARE VLOEISTOF AANGEDREVEN",
+   "MOTOR MET BRANDSTOFCEL, DOOR BRANDBARE VLOEISTOF AANGEDREVEN",
+   "MACHINE MET BRANDSTOFCEL, DOOR BRANDBARE VLOEISTOF AANGEDREVEN"
+  ],
+  "3529": [
+   "VERBRANDINGSMOTOR, DOOR BRANDBAAR GAS AANGEDREVEN",
+   "MOTOR MET BRANDSTOFCEL, DOOR BRANDBAAR GAS AANGEDREVEN",
+   "VERBRANDINGSMACHINE, DOOR BRANDBAAR GAS AANGEDREVEN",
+   "MACHINE MET BRANDSTOFCEL, DOOR DOOR BRANDBAAR GAS AANGEDREVEN"
+  ],
+  "3530": [
+   "VERBRANDINGSMOTOR",
+   "VERBRANDINGSMACHINE"
+  ],
+  "3531": [
+   "POLYMERISERENDE STOF, VAST, GESTABILISEERD, N.E.G."
+  ],
+  "3532": [
+   "POLYMERISERENDE STOF, VLOEIBAAR, GESTABILISEERD, N.E.G."
+  ],
+  "3533": [
+   "POLYMERISERENDE STOF, VAST, MET TEMPERATUURBEHEERSING N.E.G."
+  ],
+  "3534": [
+   "POLYMERISERENDE STOF, VLOEIBAAR, MET TEMPERATUURBEHEERSING N.E.G."
+  ],
+  "3535": [
+   "GIFTIGE ANORGANISCHE VASTE STOF, BRANDBAAR, N.E.G."
+  ],
+  "3536": [
+   "LITHIUMBATTERIJEN INGEBOUWD IN LAADEENHEID lithium-ion-batterijen of batterijen van metallisch lithium"
+  ],
+  "3537": [
+   "VOORWERPEN MET BRANDBAAR GAS, N.E.G."
+  ],
+  "3538": [
+   "VOORWERPEN MET NIET-BRANDBAAR, NIET-GIFTIG GAS, N.E.G."
+  ],
+  "3539": [
+   "VOORWERPEN MET GIFTIG GAS, N.E.G."
+  ],
+  "3540": [
+   "VOORWERPEN MET BRANDBARE VLOEISTOF, N.E.G."
+  ],
+  "3541": [
+   "VOORWERPEN MET BRANDBARE VASTE STOF, N.E.G."
+  ],
+  "3542": [
+   "VOORWERPEN MET EEN VOOR ZELFONTBRANDING VATBARE STOF, N.E.G."
+  ],
+  "3543": [
+   "VOORWERPEN DIE IN CONTACT MET WATER BRANDBARE GASSEN ONTWIKKELEN, N.E.G."
+  ],
+  "3544": [
+   "VOORWERPEN MET EEN OXIDERENDE STOF, N.E.G."
+  ],
+  "3545": [
+   "VOORWERPEN MET EEN ORGANISCH PEROXIDE, N.E.G."
+  ],
+  "3546": [
+   "VOORWERPEN MET EEN GIFTIGE STOF, N.E.G."
+  ],
+  "3547": [
+   "VOORWERPEN MET EEN BIJTENDE STOF, N.E.G."
+  ],
+  "3548": [
+   "VOORWERPEN MET DIVERSE GEVAARLIJKE GOEDEREN, N.E.G."
+  ],
+  "3549": [
+   "MEDISCH AFVAL, CATEGORIE A, GEVAARLIJK VOOR MENSEN vast",
+   "MEDISCH AFVAL, CATEGORIE A, alleen GEVAARLIJK VOOR DIEREN vast"
+  ],
+  "3550": [
+   "KOBALDIHYDROXIDE POEDER (met ten minste 10% inadembare deeltjes)"
+  ],
+  "3551": [
+   "NATRIUM-ION BATTERIJEN met organisch elektrolyt"
+  ],
+  "3552": [
+   "NATRIUM-ION BATTERIJEN IN APPARATUUR met organisch elektrolyt",
+   "NATRIUM-ION BATTERIJEN VERPAKT MET APPARATUUR met organisch elektrolyt"
+  ],
+  "3553": [
+   "DISILAAN"
+  ],
+  "3554": [
+   "GALLIUM AANWEZIG IN VERVAARDIGDE VOORWERPEN"
+  ],
+  "3555": [
+   "TRIFLUORMETHYLTETRAZOOL-NATRIUMZOUT IN ACETON met minimaal 68 massa-% aceton"
+  ],
+  "3556": [
+   "VOERTUIG, DOOR LITHIUM-ION BATTERIJ AANGEDREVEN"
+  ],
+  "3557": [
+   "VOERTUIG, DOOR BATTERIJEN MET METALLISCH LITHIUM AANGEDREVEN"
+  ],
+  "3558": [
+   "VOERTUIG, DOOR NATRIUM ION BATTERIJ AANGEDREVEN"
+  ],
+  "3559": [
+   "INRICHTINGEN VOOR VERSPREIDEN VAN BRANDBLUSMIDDEL"
+  ],
+  "3560": [
+   "TETRAMETHYLAMMONIUMHYDROXIDE, WATERIGE OPLOSSING met ten minste 25% tetramethylammoniumhydroxide"
+  ]
+ }
+}

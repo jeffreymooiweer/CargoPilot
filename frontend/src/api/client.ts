@@ -669,6 +669,8 @@ export interface DgUnEntry {
   un: string;
   name_en: string;
   name_de: string;
+  /** Column (2) of Table A in the Dutch ADR edition; empty where it has none. */
+  name_nl: string;
   /** The name in the language permitted for the chosen profiles. */
   proper_shipping_name: string;
   class: string;

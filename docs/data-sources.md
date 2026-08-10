@@ -131,7 +131,8 @@ goes quiet; typing an address by hand always works.
 | Data | Source |
 |---|---|
 | Classification per UN number — class, packing group, labels, LQ/EQ, packing instruction, transport category, tunnel code, Kemler number | ADR Table A via [rkstgr/adr-substances](https://github.com/rkstgr/adr-substances), based on the official UNECE publication |
-| Proper shipping names, English and German | The same ADR Table A export — it carries `name_en` and `name_de` per UN number. There is no Dutch column, so Dutch readers get the English name |
+| Proper shipping names, English and German | The same ADR Table A export — it carries `name_en` and `name_de` per UN number |
+| Proper shipping names, Dutch | **ADR 2025, official Dutch edition**, table A column (2), read by `scripts/extract_adr_names.py` and cross-checked against the alphabetical index of the same edition (2,345 UN numbers, 99.9% agreement). The book itself is not in this repository; only the derived names are |
 | English proper shipping names, cross-check | 49 CFR 172.101 (eCFR / GovInfo, public domain) |
 | UN packaging codes (107) | ADR 6.1.2 / 6.5.1.4 / 6.6.2 |
 | EmS emergency schedules per UN number, and the schedule descriptions | IMO **MSC.1/Circ.1588/Rev.3** — EmS Guide (IMO circular, freely distributable) |

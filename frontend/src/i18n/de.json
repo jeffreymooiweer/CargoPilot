@@ -421,7 +421,9 @@
       "incomplete": "unvollständig",
       "unknown_code": "Code unbekannt",
       "not_checked": "nicht geprüft"
-    }
+    },
+    "equipmentTitle": "Ausrüstung der Beförderungseinheit (8.1.4 / 8.1.5)",
+    "equipmentCount": "{{count}} Ausrüstungsteile"
   },
   "dgauto": {
     "title": "Automatisch abgeleitet",

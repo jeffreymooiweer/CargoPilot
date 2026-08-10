@@ -811,6 +811,18 @@ export interface AdrTunnelResult {
   note: string;
 }
 
+/** ADR 8.1.4 / 8.1.5: the equipment the transport unit has to carry, derived
+ *  from the hazard label numbers of the load as 8.1.5.1 prescribes. A checklist,
+ *  not a finding — CargoPilot cannot see what is actually in the cab. */
+export interface AdrEquipmentResult {
+  items: { key: string; rule: string; text: string }[];
+  /** The label numbers the list was derived from. */
+  labels: string[];
+  status: "derived" | "not_checked";
+  basis: string;
+  note: string;
+}
+
 export interface QValueResult {
   position: string | number;
   components: { product: string; net_quantity: number; max_per_package: number; ratio: number }[];
@@ -857,6 +869,8 @@ export interface DgComplianceResult {
   lq_eq?: LqEqResult;
   /** Tunnel restriction code for the whole load — road only. */
   adr_tunnel?: AdrTunnelResult;
+  /** Vehicle equipment per 8.1.4/8.1.5 — road only. */
+  adr_equipment?: AdrEquipmentResult;
   q_values?: QValueResult[];
   q_check_status?: QCheckStatus;
   cargo_aircraft_only_products?: string[];

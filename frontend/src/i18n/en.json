@@ -421,7 +421,9 @@
       "incomplete": "incomplete",
       "unknown_code": "unknown code",
       "not_checked": "not assessed"
-    }
+    },
+    "equipmentTitle": "Equipment of the transport unit (8.1.4 / 8.1.5)",
+    "equipmentCount": "{{count}} items"
   },
   "dgauto": {
     "title": "Derived automatically",

@@ -89,6 +89,7 @@ export default function DgCompliancePanel({ entries, profiles }: Props) {
   const adr = result?.adr_points;
   const adn = result?.adn_exemption;
   const tunnel = result?.adr_tunnel;
+  const equipment = result?.adr_equipment;
   // An expired rule set comes before all substantive findings: those findings
   // were computed with it.
   const warnings: ComplianceWarning[] = [
@@ -398,6 +399,42 @@ export default function DgCompliancePanel({ entries, profiles }: Props) {
           )}
           <p className="text-[11px] text-slate-500 dark:text-slate-400">
             {tunnel.note} ({tunnel.basis})
+          </p>
+        </CollapsibleSection>
+      )}
+
+      {equipment && equipment.items.length > 0 && (
+        <CollapsibleSection
+          title={t("compliance.equipmentTitle")}
+          chips={
+            <>
+              <SummaryChip className="bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-300">
+                {t("compliance.equipmentCount", { count: equipment.items.length })}
+              </SummaryChip>
+              {equipment.labels.map((label) => (
+                <span
+                  key={label}
+                  className="rounded-full bg-slate-100 px-2 py-0.5 font-mono text-[11px] text-slate-700 dark:bg-slate-800 dark:text-slate-200"
+                >
+                  {label}
+                </span>
+              ))}
+            </>
+          }
+        >
+          {equipment.items.map((item, i) => (
+            <div
+              key={i}
+              className="flex items-start gap-2 rounded-lg border border-slate-200 px-3 py-2 text-xs dark:border-slate-700"
+            >
+              <span className="shrink-0 rounded-full bg-slate-100 px-2 py-0.5 text-[11px] font-medium text-slate-700 dark:bg-slate-800 dark:text-slate-200">
+                {item.rule}
+              </span>
+              <span className="text-slate-700 dark:text-slate-200">{item.text}</span>
+            </div>
+          ))}
+          <p className="text-[11px] text-slate-500 dark:text-slate-400">
+            {equipment.note} ({equipment.basis})
           </p>
         </CollapsibleSection>
       )}

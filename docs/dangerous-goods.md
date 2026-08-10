@@ -138,6 +138,20 @@ the route and what category they carry — 1.9.5 puts that with the carrier — 
 tanks or in bulk, which is stricter for five of the twelve codes and which CargoPilot,
 being a packaged-goods tool, does not model.
 
+**ADR 8.1.4 and 8.1.5 — what has to be aboard.** Equipment was absent from every mode, and
+for a reason: CargoPilot cannot see a vehicle, so it can never establish that a wheel chock
+is in the cab. What it can do is derive the list, and 8.1.5.1 asks for exactly that — the
+equipment is chosen *according to the hazard label numbers of the goods loaded*, and the
+article points at the transport document to identify them. So since v1.53.0 the panel shows
+the checklist: the general equipment of 8.1.5.2, the eye-rinsing liquid where the footnote
+does not exempt it (label numbers 1, 1.4, 1.5, 1.6, 2.1, 2.2 and 2.3 are exempt, so a load
+of propane cylinders is not asked for one), the escape mask for 2.3 and 6.1, and the shovel,
+drain seal and collecting container for solids and liquids with labels 3, 4.1, 4.3, 8 and 9.
+The fire extinguishers come with the whole table of 8.1.4.1 rather than one answer, because
+they hang on the maximum permissible mass of the transport unit — except inside the 1.1.3.6
+exemption, where 8.1.4.2 replaces the table with a single 2 kg extinguisher. It is a
+checklist, and the panel says so.
+
 **ADR 7.5.2 — loading together.** Warns on class 1 (other than 1.4S) with other classes,
 on mixed compatibility groups within class 1, and on the CV28 separation of foodstuffs
 from labels 6.1/6.2 and certain class 9 substances.

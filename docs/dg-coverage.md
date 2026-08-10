@@ -169,10 +169,12 @@ dataset it was built on.
   everything but 3.5.2 and 3.5.3 — including the 3.5.5 cap, so those packages no longer
   count towards the 1,000. The two fail in opposite directions: the first let a package
   through that the text caps, the second refused a load the text permits.
-- **Nothing about the vehicle.** Equipment (8.1.4/8.1.5), placarding and marking (5.3),
-  driver training (8.2), the ADR certificate of approval, tank codes. All outside the
-  application. The 1.1.3.6 output does list what the exemption releases you from and what
-  it does not, which is guidance rather than a check.
+- **The vehicle, except its equipment.** Placarding and marking (5.3), driver training
+  (8.2), the ADR certificate of approval, tank codes: all outside the application. The
+  equipment of **8.1.4 and 8.1.5 is derived** since v1.53.0, because 8.1.5.1 chooses it by
+  the hazard label numbers of the goods loaded and points at the transport document to
+  identify them — which is what CargoPilot holds. It is a checklist and not a finding; the
+  application cannot see what is in the cab.
 - **No security provisions.** Chapter 1.10 and high consequence dangerous goods are
   mentioned in the exemption text and nowhere else.
 
@@ -389,7 +391,7 @@ Ordered by how much harm someone could take before noticing, not by effort.
 | 4 | **Mixed loading for ADN still answered with ADR's 7.5.2** | Narrowed twice. v1.38.0 read RID's 7.5.2.1 and found it identical to ADR's, footnotes included; v1.41.0 read RID's 7.5.2.2 and 7.5.3 and gave rail its own table and its own protective distance. Rail is no longer a loan. ADN still is, and remains labelled. |
 | 5 | **LQ/EQ conditions not checked** | The arithmetic of 3.4/3.5 is verified correct and 3.5.1.3/3.5.1.4 are applied since v1.50.0, but the mark, the packagings and the 3.5.3 tests are declarations the application cannot see. A line "within the limits" is a candidate, not an exemption — and the panel says so. |
 | 6 | **IMDG stowage category shown, not enforced** | Lower because on-deck/under-deck is usually the carrier's call, not the consignor's. **[verify]** |
-| 7 | **No marking, placarding or equipment checks in any mode** | Consistently absent, so unlikely to be mistaken for present — but it is the most common real-world failure. |
+| 7 | **No marking or placarding checks in any mode** | Consistently absent, so unlikely to be mistaken for present — but it is the most common real-world failure. The equipment half of this gap closed in v1.53.0: 8.1.4 and 8.1.5 are derived from the load's label numbers, as 8.1.5.1 prescribes. |
 
 Two of the top gaps from earlier versions of this table are gone, and it is worth being
 precise about why. "RID and ADN answered with ADR tables" ranked second for three releases;
@@ -490,7 +492,7 @@ verification.
 
 ---
 
-*This assessment covers CargoPilot v1.50.0. v1.42.0 to v1.48.0 touched the goods
+*This assessment covers CargoPilot v1.53.0. v1.42.0 to v1.48.0 touched the goods
 catalogue, the interface language, the settings, the documentation and the error messages,
 not a single regulatory check; v1.49.0 and v1.50.0 changed the ADR side, from the Dutch
 edition of the book. It is guidance for development, not a compliance statement. Every document the application produces is a draft; see

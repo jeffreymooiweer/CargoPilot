@@ -421,7 +421,9 @@
       "incomplete": "onvolledig",
       "unknown_code": "code onbekend",
       "not_checked": "niet getoetst"
-    }
+    },
+    "equipmentTitle": "Uitrusting van de transporteenheid (8.1.4 / 8.1.5)",
+    "equipmentCount": "{{count}} onderdelen"
   },
   "dgauto": {
     "title": "Automatisch afgeleid",

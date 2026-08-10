@@ -2,6 +2,43 @@
 
 All notable changes are documented here, following [Semantic Versioning](https://semver.org/).
 
+## [1.53.0] — 2026-08-10
+
+### Added
+
+- **De uitrusting van de transporteenheid wordt afgeleid uit de lading (ADR 8.1.4 en
+  8.1.5).** Uitrusting was het enige kopje in `docs/dg-coverage.md` dat zichzelf "de meest
+  voorkomende praktijkfout" noemde en dat in geen enkele modaliteit aanwezig was. Dat had
+  een reden die het waard is te benoemen: CargoPilot ziet geen voertuig en kan dus nooit
+  vaststellen dát er een wielkeg in de cabine ligt.
+
+  Wat de app wél kan, is de lijst afleiden — en 8.1.5.1 vraagt daar letterlijk om: de
+  uitrusting wordt gekozen *overeenkomstig het gevaarsetiketnummer van de geladen goederen*,
+  en het artikel wijst voor die nummers naar het vervoersdocument. Dat is precies het
+  document dat deze app opstelt.
+
+  - **8.1.5.2** — stopblok, twee waarschuwingssignalen, en per bemanningslid een
+    waarschuwingsvest, draagbaar verlichtingsapparaat, handschoenen en oogbescherming.
+  - **De vloeistof om de ogen te spoelen is een vrijstelling, geen eis.** De voetnoot zegt
+    dat zij *niet* is voorgeschreven voor de etiketnummers 1, 1.4, 1.5, 1.6, 2.1, 2.2 en
+    2.3. Een vracht propaanflessen krijgt er dus geen — maar ammoniak (2.3 mét nevengevaar
+    8) wel, want dat ene etiket 8 staat niet op de lijst.
+  - **8.1.5.3** — een vluchtmasker per bemanningslid bij etiketnummer 2.3 of 6.1, en een
+    schop, een rioolafdichting en een opvangreservoir bij de etiketnummers 3, 4.1, 4.3, 8 en
+    9 — maar alleen voor vaste stoffen en vloeistoffen. Een gasfles met een bijkomend etiket
+    8 heeft niets aan een schop.
+  - **8.1.4.1** komt met de hele tabel in plaats van één antwoord, want de blussers hangen
+    aan de maximaal toegestane massa van de transporteenheid en die kent de app niet. Blijft
+    de zending binnen 1.1.3.6, dan vervangt **8.1.4.2** die tabel door één blusser van 2 kg
+    — een van de weinige plaatsen waar de vrijstelling zichtbaar scheelt in wat er in de
+    cabine hoort te liggen.
+
+  Het etiketnummer is niet de klasse, en dat is precies waar het op aankomt: klasse 2 heet
+  "2" in de klassekolom en 2.1, 2.2 of 2.3 op het etiket, en de voetnoot noemt de
+  onderklassen. Wie de klassekolom leest laat de vrijstelling nooit gelden voor gassen.
+
+  Het paneel zegt erbij wat het is: een lijst om mee af te vinken, geen vaststelling.
+
 ## [1.52.0] — 2026-08-10
 
 ### Added

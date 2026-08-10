@@ -964,6 +964,262 @@ def check_adr_tunnel(
     return result
 
 
+#: The equipment of 8.1.5, in the words a driver checks it by. Kept out of the
+#: configuration because these are labels for the user; the *conditions* — which
+#: label numbers call for what — are in the configuration, read from the ADR.
+_EQUIPMENT_LABELS: dict[str, dict[str, str]] = {
+    "wheel_chock": {
+        "nl": "Per voertuig een stopblok (wielkeg), passend bij de massa van het "
+              "voertuig en de wieldiameter",
+        "en": "A wheel chock per vehicle, sized to the vehicle's mass and the wheel "
+              "diameter",
+        "de": "Je Fahrzeug ein Unterlegkeil, passend zur Fahrzeugmasse und zum "
+              "Raddurchmesser",
+        "fr": "Une cale de roue par véhicule, adaptée à la masse du véhicule et au "
+              "diamètre de la roue",
+    },
+    "warning_signs": {
+        "nl": "Twee zelfstandig staande waarschuwingssignalen",
+        "en": "Two self-standing warning signs",
+        "de": "Zwei selbststehende Warnzeichen",
+        "fr": "Deux signaux d'avertissement autoportants",
+    },
+    "eye_rinsing_liquid": {
+        "nl": "Vloeistof om de ogen te spoelen",
+        "en": "Eye-rinsing liquid",
+        "de": "Augenspülflüssigkeit",
+        "fr": "Liquide de rinçage pour les yeux",
+    },
+    "warning_vest": {
+        "nl": "Per bemanningslid een waarschuwingsvest",
+        "en": "A warning vest per crew member",
+        "de": "Je Mitglied der Fahrzeugbesatzung eine Warnweste",
+        "fr": "Un gilet d'avertissement par membre d'équipage",
+    },
+    "portable_lighting": {
+        "nl": "Per bemanningslid een draagbaar verlichtingsapparaat (8.3.4)",
+        "en": "A portable lighting apparatus per crew member (8.3.4)",
+        "de": "Je Mitglied der Fahrzeugbesatzung ein tragbares Beleuchtungsgerät (8.3.4)",
+        "fr": "Un appareil d'éclairage portatif par membre d'équipage (8.3.4)",
+    },
+    "gloves": {
+        "nl": "Per bemanningslid een paar beschermende handschoenen",
+        "en": "A pair of protective gloves per crew member",
+        "de": "Je Mitglied der Fahrzeugbesatzung ein Paar Schutzhandschuhe",
+        "fr": "Une paire de gants de protection par membre d'équipage",
+    },
+    "eye_protection": {
+        "nl": "Per bemanningslid bescherming voor de ogen (bijv. een veiligheidsbril)",
+        "en": "Eye protection per crew member (safety goggles, for instance)",
+        "de": "Je Mitglied der Fahrzeugbesatzung Augenschutz (z. B. eine Schutzbrille)",
+        "fr": "Une protection des yeux par membre d'équipage (lunettes de sécurité)",
+    },
+    "escape_mask": {
+        "nl": "Per bemanningslid een vluchtmasker voor noodgevallen (gecombineerd "
+              "gas/stof filter A1B1E1K1-P1 of A2B2E2K2-P2)",
+        "en": "An emergency escape mask per crew member (combined gas/dust filter "
+              "A1B1E1K1-P1 or A2B2E2K2-P2)",
+        "de": "Je Mitglied der Fahrzeugbesatzung eine Notfall-Fluchtmaske "
+              "(Kombinationsfilter A1B1E1K1-P1 oder A2B2E2K2-P2)",
+        "fr": "Un masque d'évacuation d'urgence par membre d'équipage (filtre combiné "
+              "gaz/poussières A1B1E1K1-P1 ou A2B2E2K2-P2)",
+    },
+    "shovel": {"nl": "Een schop", "en": "A shovel", "de": "Eine Schaufel",
+               "fr": "Une pelle"},
+    "drain_seal": {"nl": "Een rioolafdichting", "en": "A drain seal",
+                   "de": "Eine Kanalabdeckung", "fr": "Une protection d'obturation "
+                                                      "d'égout"},
+    "collecting_container": {
+        "nl": "Een opvangreservoir", "en": "A collecting container",
+        "de": "Ein Auffangbehälter", "fr": "Un récipient collecteur"},
+}
+
+_EXTINGUISHER_MESSAGE = {
+    "nl": "Per transporteenheid ten minste {count} draagbare brandblusapparaten voor de "
+          "brandbaarheidsklassen A, B en C. De totale capaciteit hangt af van de maximaal "
+          "toegestane massa van de transporteenheid: {rows} (8.1.4.1). Eén exemplaar van "
+          "ten minste 2 kg moet geschikt zijn voor een brand in de motor of de "
+          "bestuurderscabine.",
+    "en": "At least {count} portable fire extinguishers for flammability classes A, B and "
+          "C per transport unit. The total capacity depends on the maximum permissible "
+          "mass of the transport unit: {rows} (8.1.4.1). One of at least 2 kg has to be "
+          "suitable for a fire in the engine or the driver's cab.",
+    "de": "Je Beförderungseinheit mindestens {count} tragbare Feuerlöscher für die "
+          "Brandklassen A, B und C. Die Gesamtkapazität hängt von der höchstzulässigen "
+          "Masse der Beförderungseinheit ab: {rows} (8.1.4.1). Einer von mindestens 2 kg "
+          "muss für einen Brand im Motor oder im Fahrerhaus geeignet sein.",
+    "fr": "Au moins {count} extincteurs portatifs pour les classes d'inflammabilité A, B "
+          "et C par unité de transport. La capacité totale dépend de la masse maximale "
+          "admissible de l'unité de transport : {rows} (8.1.4.1). L'un d'au moins 2 kg "
+          "doit convenir à un feu de moteur ou de cabine.",
+}
+
+_EXTINGUISHER_EXEMPT_MESSAGE = {
+    "nl": "Vervoer overeenkomstig 1.1.3.6: één draagbaar brandblusapparaat voor de "
+          "brandbaarheidsklassen A, B en C van ten minste 2 kg poeder (8.1.4.2).",
+    "en": "Carriage under 1.1.3.6: one portable fire extinguisher for flammability "
+          "classes A, B and C of at least 2 kg of powder (8.1.4.2).",
+    "de": "Beförderung nach 1.1.3.6: ein tragbarer Feuerlöscher für die Brandklassen A, "
+          "B und C mit mindestens 2 kg Pulver (8.1.4.2).",
+    "fr": "Transport selon le 1.1.3.6 : un extincteur portatif pour les classes "
+          "d'inflammabilité A, B et C d'au moins 2 kg de poudre (8.1.4.2).",
+}
+
+_EQUIPMENT_NOTE = {
+    "nl": "Afgeleid uit de gevaarsetiketnummers van de lading, zoals 8.1.5.1 het "
+          "voorschrijft. Wat er werkelijk aan boord ligt, weet CargoPilot niet — dit is "
+          "de lijst om mee af te vinken, geen vaststelling. De brandblusapparaten hangen "
+          "bovendien aan de maximaal toegestane massa van de transporteenheid, en die is "
+          "hier niet bekend.",
+    "en": "Derived from the hazard label numbers of the load, the way 8.1.5.1 prescribes. "
+          "What is actually on board CargoPilot does not know — this is the list to check "
+          "against, not a finding. The extinguishers moreover depend on the maximum "
+          "permissible mass of the transport unit, which is not known here.",
+    "de": "Abgeleitet aus den Gefahrzettelnummern der Ladung, wie 8.1.5.1 es vorschreibt. "
+          "Was tatsächlich an Bord ist, weiß CargoPilot nicht — dies ist die Liste zum "
+          "Abhaken, keine Feststellung. Die Feuerlöscher hängen zudem von der "
+          "höchstzulässigen Masse der Beförderungseinheit ab, die hier nicht bekannt ist.",
+    "fr": "Déduit des numéros d'étiquette de danger du chargement, comme le prescrit le "
+          "8.1.5.1. Ce qui se trouve réellement à bord, CargoPilot l'ignore : ceci est la "
+          "liste à cocher, pas un constat. Les extincteurs dépendent en outre de la masse "
+          "maximale admissible de l'unité de transport, inconnue ici.",
+}
+
+#: 8.1.5.3 asks for the shovel, the drain seal and the collecting container for
+#: *solids and liquids* only. Gases carry the same label numbers 3 and 9 in no
+#: case, but class 2 does carry 9-labelled articles, and a gas cylinder needs no
+#: shovel. The physical state follows from the classification code: G and A are
+#: gases, and class 2 is a gas throughout.
+def _label_numbers(product: dict[str, Any]) -> set[str]:
+    """The hazard label numbers of a product, as 8.1.5.1 means them.
+
+    Column (5) of Table A, not the class column, because that is what the
+    article points at — and the two differ exactly where it matters. Class 2 is
+    "2" in the class column and 2.1, 2.2 or 2.3 on the label, and the footnote
+    to 8.1.5.2 exempts 2.1, 2.2 and 2.3 from the eye-rinsing liquid while saying
+    nothing about a bare "2". Reading the class column would have made a load of
+    propane cylinders carry an eye wash the ADR does not ask for.
+
+    The model letter is not part of the number: label 9A is a class 9 label, and
+    8.1.5.3 lists "9".
+    """
+    numbers: set[str] = set()
+    raw = str(product.get("labels") or "").strip()
+    if raw:
+        for token in re.split(r"[,;/\s()+]+", raw):
+            match = re.match(r"^(\d(?:\.\d)?)", token.strip().upper())
+            if match:
+                numbers.add(match.group(1))
+    if not numbers:
+        # An entry without a labels column — the IMDG-only additions had none —
+        # falls back on the division and the subsidiary risks.
+        for token in _hazard_tokens(product):
+            match = re.match(r"^(\d(?:\.\d)?)", token)
+            if match:
+                numbers.add(match.group(1))
+    return numbers
+
+
+def _is_gas(product: dict[str, Any]) -> bool:
+    return any(number.startswith("2") for number in _label_numbers(product))
+
+
+def check_adr_equipment(
+    entries: list[dict[str, Any]], language: str = "nl",
+    points_status: str | None = None,
+) -> dict[str, Any]:
+    """ADR 8.1.4 and 8.1.5: what has to be aboard the transport unit.
+
+    Equipment was the one heading in ``docs/dg-coverage.md`` that named itself
+    "the most common real-world failure" and was absent from every mode. It is
+    absent for a reason worth stating: CargoPilot cannot see a vehicle, so it can
+    never establish that a wheel chock is in the cab.
+
+    What it *can* do is derive the list, and that turns out to be most of the
+    value. 8.1.5.1 says so itself: the equipment is chosen **according to the
+    hazard label numbers of the goods loaded**, and it points at the transport
+    document to identify them — which is precisely the document this application
+    produces. So the label numbers are the input, and the output is the list a
+    driver checks against, with the provision beside each line.
+
+    Two things stay outside it. The number of crew members is not known, so the
+    per-crew items say "per crew member" rather than a count. And the fire
+    extinguishers of 8.1.4.1 hang on the maximum permissible mass of the
+    transport unit, which is a property of the vehicle; the three rows of the
+    table are given instead of one answer. Where the consignment stays inside the
+    1.1.3.6 exemption, 8.1.4.2 replaces the table with a single 2 kg extinguisher
+    — which is one of the few places where the exemption makes a visible
+    difference to what has to be in the cab.
+    """
+    rules = get_compliance_rules()["adr_equipment"]
+    lang = _lang(language)
+
+    labels: set[str] = set()
+    has_non_gas = False
+    for _entry, _index, product in _iter_products(entries):
+        if product.get("transport_forbidden"):
+            continue
+        labels |= _label_numbers(product)
+        if not _is_gas(product):
+            has_non_gas = True
+
+    if not labels:
+        return {"items": [], "status": "not_checked", "labels": [],
+                "basis": "ADR 8.1.4 / 8.1.5", "note": pick(_EQUIPMENT_NOTE, lang)}
+
+    items: list[dict[str, str]] = []
+
+    exempt = points_status == "exempt_possible"
+    if exempt:
+        items.append({"key": "fire_extinguisher", "rule": "ADR 8.1.4.2",
+                      "text": pick(_EXTINGUISHER_EXEMPT_MESSAGE, lang)})
+    else:
+        table = rules["fire_extinguishers"]["rows"]
+        rows = "; ".join(
+            (f"≤ {row['max_mass_tonnes']} t: {row['total_kg']} kg"
+             if row["max_mass_tonnes"] else f"> 7,5 t: {row['total_kg']} kg")
+            for row in table
+        )
+        items.append({
+            "key": "fire_extinguisher", "rule": "ADR 8.1.4.1",
+            "text": pick(_EXTINGUISHER_MESSAGE, lang).format(
+                count=table[0]["count"], rows=rows),
+        })
+
+    general = rules["general"]
+    for key in general["per_unit"]:
+        items.append({"key": key, "rule": "ADR 8.1.5.2",
+                      "text": pick(_EQUIPMENT_LABELS[key], lang)})
+    for key, excluded in general["per_unit_unless_label"].items():
+        # The footnote is an exemption, not a requirement: eye-rinsing liquid is
+        # *not* prescribed for the label numbers listed, so a load that carries
+        # nothing else does not need it.
+        if labels - set(excluded):
+            items.append({"key": key, "rule": "ADR 8.1.5.2",
+                          "text": pick(_EQUIPMENT_LABELS[key], lang)})
+    for key in general["per_crew_member"]:
+        items.append({"key": key, "rule": "ADR 8.1.5.2",
+                      "text": pick(_EQUIPMENT_LABELS[key], lang)})
+
+    per_label = rules["per_label"]
+    if labels & set(per_label["escape_mask"]["labels"]):
+        items.append({"key": "escape_mask", "rule": "ADR 8.1.5.3",
+                      "text": pick(_EQUIPMENT_LABELS["escape_mask"], lang)})
+    spill = per_label["spill_kit"]
+    if labels & set(spill["labels"]) and (has_non_gas or not spill["solids_and_liquids_only"]):
+        for key in spill["items"]:
+            items.append({"key": key, "rule": "ADR 8.1.5.3",
+                          "text": pick(_EQUIPMENT_LABELS[key], lang)})
+
+    return {
+        "items": items,
+        "labels": sorted(labels),
+        "status": "derived",
+        "basis": "ADR 8.1.4 / 8.1.5",
+        "note": pick(_EQUIPMENT_NOTE, lang),
+    }
+
+
 def check_iata_segregation(entries: list[dict[str, Any]], language: str = "nl") -> list[dict[str, str]]:
     """IATA Table 9.3.A: segregation between packages, lithium rule included."""
     rules = get_compliance_rules()["iata_segregation"]
@@ -2721,6 +2977,11 @@ def check_compliance(
     # runs after the two checks it depends on, because 8.6.3.3 turns on whether
     # the goods travel under 1.1.3 and whether the unit needs the 3.4.13 mark.
     if "ADR" in normalized:
+        # 8.1.5.1 chooses the equipment by the hazard label numbers of the goods
+        # loaded, and 8.1.4.2 by whether the load stays inside 1.1.3.6.
+        result["adr_equipment"] = check_adr_equipment(
+            entries, language,
+            points_status=(result.get("adr_points") or {}).get("status"))
         result["adr_tunnel"] = check_adr_tunnel(
             entries,
             language,

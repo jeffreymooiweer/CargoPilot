@@ -2,6 +2,47 @@
 
 All notable changes are documented here, following [Semantic Versioning](https://semver.org/).
 
+## [1.52.0] — 2026-08-10
+
+### Added
+
+- **De elf rijen die ADR 2025 heeft toegevoegd, staan er nu met hun wegvervoergegevens in.**
+  De classificatietabel waarop de app is gebouwd is een export van **2023**. UN 0514 en
+  UN 3551 t/m 3560 — natrium-ionbatterijen, de nieuwe voertuiginvoeringen, disilaan,
+  gallium in vervaardigde voorwerpen en tetramethylammoniumhydroxide — kwamen wél in de
+  app, via de IMDG 42-24-laag, maar dus met **zeegegevens**: geen vervoerscategorie, geen
+  tunnelcode, geen Kemler-nummer. Die drie kolommen bestaan alleen in tabel A van het ADR.
+
+  Wie natrium-ionbatterijen over de weg verzond kreeg dus geen puntenfactor, en de
+  1.1.3.6-tabel meldde de regel als onvolledig zonder te kunnen zeggen wát er ontbrak.
+
+  Elf rijen is weinig genoeg om met de hand over te nemen, en dat is ook hoe deze
+  repository met een regelgevingstabel omgaat. Wat het verdedigbaar maakt is dezelfde
+  discipline als overal elders: elke rij is **twee keer gelezen**, uit tabel A én uit de
+  alfabetische index van dezelfde uitgave — twee onafhankelijke zetsels — en de pagina
+  waarop zij staat is meegeschreven.
+
+  | UN | Vervoerscategorie | Tunnelcode | Kemler |
+  |---|---|---|---|
+  | 0514 | 4 | E | — |
+  | 3551 / 3552 | 2 | E | — |
+  | 3553 | 2 | B/D | 23 |
+  | 3554 | 3 | E | — |
+  | 3555 | 2 | B | — |
+  | 3556 / 3557 / 3558 | — | — | — |
+  | 3559 | 4 | E | — |
+  | 3560 | 1 | C/E | 668 |
+
+  Dat de voertuiginvoeringen geen vervoerscategorie en geen tunnelcode krijgen is geen
+  leesfout: UN 3166 en UN 3171 hebben ze in de bestaande tabel evenmin.
+
+### Changed
+
+- **UN 1499 en UN 1999 melden zelf dat ADR 2025 ze niet meer kent.** Zij blijven vindbaar —
+  een ouder vervoersdocument mag ernaar verwijzen, en een opzoeking die niets teruggeeft
+  leest als "dit UN-nummer bestaat niet" — maar zij gaan niet meer door voor een actuele
+  invoering.
+
 ## [1.51.0] — 2026-08-10
 
 ### Fixed

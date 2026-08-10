@@ -132,6 +132,7 @@ goes quiet; typing an address by hand always works.
 |---|---|
 | Classification per UN number — class, packing group, labels, LQ/EQ, packing instruction, transport category, tunnel code, Kemler number | ADR Table A via [rkstgr/adr-substances](https://github.com/rkstgr/adr-substances), based on the official UNECE publication |
 | Proper shipping names, English and German | The same ADR Table A export — it carries `name_en` and `name_de` per UN number |
+| The eleven Table A rows ADR 2025 added (UN 0514, 3551–3560) | **ADR 2025, official Dutch edition**, table A — copied by hand, each row read twice (table A and the alphabetical index) with the page recorded. The export the rest of the table comes from is an ADR 2023 one and does not have them |
 | Proper shipping names, Dutch | **ADR 2025, official Dutch edition**, table A column (2), read by `scripts/extract_adr_names.py` and cross-checked against the alphabetical index of the same edition (2,345 UN numbers, 99.9% agreement). The book itself is not in this repository; only the derived names are |
 | English proper shipping names, cross-check | 49 CFR 172.101 (eCFR / GovInfo, public domain) |
 | UN packaging codes (107) | ADR 6.1.2 / 6.5.1.4 / 6.6.2 |
@@ -169,6 +170,8 @@ Where the data lives:
 | File | Contents |
 |---|---|
 | `backend/seed/dg/un_numbers.json` | 2,928 Table A rows over 2,336 UN numbers |
+| `backend/seed/dg/adr_names_nl.json` | The Dutch proper shipping names, 2,345 UN numbers |
+| `backend/seed/dg/adr_2025_additions.json` | The eleven rows ADR 2025 added, and the two it dropped |
 | `backend/seed/dg/ems.json` | 2,338 UN numbers with fire and spillage schedules |
 | `backend/seed/dg/segregation_groups.json` | 18 groups, 629 substance entries |
 | `backend/seed/dg/packagings.json` | 107 UN packaging codes |

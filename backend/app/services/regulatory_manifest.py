@@ -49,11 +49,12 @@ RULE_SETS: list[dict[str, Any]] = [
         # Measured against the Dutch ADR 2025 while the Dutch names were being
         # read out, and therefore stated here rather than left to be discovered.
         "errata": [
-            "De classificatietabel is een export van ADR 2023, niet van 2025. "
-            "UN 0514 en UN 3551 t/m 3560 ontbreken daarin; die staan wel in de "
-            "app, maar met zeegegevens uit IMDG 42-24 en zonder "
-            "vervoerscategorie, tunnelcode en Kemler-nummer. UN 1499 en UN 1999 "
-            "staan er nog in terwijl ADR 2025 ze niet meer kent.",
+            "De classificatietabel is een export van ADR 2023, niet van 2025. De "
+            "elf rijen die 2025 toevoegt — UN 0514 en UN 3551 t/m 3560 — zijn "
+            "sinds v1.52.0 met de hand uit de Nederlandse uitgave overgenomen en "
+            "staan in adr_2025_additions.json. UN 1499 en UN 1999 staan nog in de "
+            "tabel terwijl ADR 2025 ze niet meer kent; zij blijven vindbaar en "
+            "melden dat zelf.",
             "Enkele Engelse benamingen uit die export zijn beschadigd of "
             "onjuist (UN 1139 'Coating solution (', UN 1993 'Compounds, "
             "cleaning liquid'). De Nederlandse benamingen komen uit het boek "
@@ -65,7 +66,8 @@ RULE_SETS: list[dict[str, Any]] = [
             "1.1.3.6 puntentelling",
             "7.5.2 samenlading en 7.5.4/CV28",
         ],
-        "files": ["un_numbers.json", "adr_names_nl.json", "packagings.json"],
+        "files": ["un_numbers.json", "adr_names_nl.json",
+                  "adr_2025_additions.json", "packagings.json"],
     },
     {
         "key": "imdg",

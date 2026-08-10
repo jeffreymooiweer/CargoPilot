@@ -433,6 +433,10 @@ verification.
   code into the categories that are barred.
 - **ADR 3.5.1.3 and 3.5.1.4**, the two excepted-quantity provisions that can only be seen
   across lines.
+- **The eleven rows ADR 2025 added.** UN 0514 and UN 3551–3560 reached the app through the
+  IMDG 42-24 layer, and therefore with sea data only — no transport category, no tunnel
+  code, no hazard identification number. Copied by hand from the Dutch edition, each row
+  read twice.
 - **The silent Table A row choice.** Fifteen UN numbers had several rows that the old
   packing-group check could not see, because their rows share one packing group or have
   none. UN 1950 aerosols is twelve rows apart on transport category, tunnel code and

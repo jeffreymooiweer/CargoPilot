@@ -2,6 +2,58 @@
 
 All notable changes are documented here, following [Semantic Versioning](https://semver.org/).
 
+## [1.50.0] — 2026-08-10
+
+### Added
+
+- **De tunnelcode wordt nu ook uitgerekend, niet alleen afgedrukt.** De code uit kolom (15)
+  stond al op het vervoersdocument — 5.4.1.1.1 (k) vraagt daarom — en werd verder nergens
+  beoordeeld. Dat is de gevaarlijkere helft van de twee: wie `(D/E)` op een CMR leest, mag
+  aannemen dat iemand heeft nagedacht over wat dat voor déze lading betekent. Dat was niet
+  zo.
+
+  Uit het ADR 2025 gelezen en toegepast:
+
+  - **8.6.3.2** — de meest restrictieve code van de lading geldt voor de **gehele** lading.
+    Een chauffeur kiest één route en heeft één code nodig, geen lijstje om te wegen. De
+    volgorde van restrictiviteit staat nergens in woorden; het is de volgorde van de tabel
+    in 8.6.4, en daar komt hij vandaan.
+  - **8.6.3.3** — goederen die overeenkomstig 1.1.3 worden vervoerd zijn niet aan
+    tunnelbeperkingen onderworpen **en tellen niet mee** bij het vaststellen van de code.
+    Voor een zending binnen de 1.1.3.6-vrijstelling is er dus helemaal geen code toe te
+    kennen. De enige uitzondering die het artikel noemt: een transporteenheid die de
+    LQ-kenmerking van 3.4.13 moet dragen, is uit tunnels van categorie E geweerd, hoe mild
+    de codes van de goederen zelf ook zijn.
+  - **De tabel van 8.6.4** — welke tunnelcategorieën per code verboden zijn. `B1000C` en
+    `C5000D` splitsen op de totale netto massa ontplofbare stof per transporteenheid, en
+    die wordt over de hele eenheid opgeteld in plaats van per regel gelezen. Het uitgewerkte
+    voorbeeld uit het ADR zelf — UN 0161, 3.000 kg, verboden door D en E — staat als test
+    vast.
+
+  De uitkomst staat in het compliancepaneel én bij de export. Wat CargoPilot niet weet
+  staat erbij: welke tunnels op de route liggen en in welke categorie zij vallen (dat is aan
+  de vervoerder, 1.9.5), en of er los gestort of in tanks wordt vervoerd — dat is bij vijf
+  van de twaalf codes strenger.
+
+- **ADR 3.5.1.3 en 3.5.1.4 worden toegepast.** Twee bepalingen die alleen over regels heen
+  zichtbaar zijn, en die in tegengestelde richting misgingen:
+
+  - **3.5.1.3** — vrijgestelde hoeveelheden met verschillende E-codes die samen in één
+    buitenverpakking zitten, worden begrensd door de meest restrictieve code. 400 g van een
+    E1-stof naast 200 g van een E3-stof zit boven de 300 g die dan geldt, terwijl elke regel
+    op zichzelf ruim binnen zijn eigen code valt. Precies het collo dat de regel-voor-regel
+    toets doorliet.
+  - **3.5.1.4** — de kleinste hoeveelheden onder E1, E2, E4 en E5 (ten hoogste 1 g/ml per
+    binnenverpakking en 100 g/ml per collo) zijn alleen onderworpen aan 3.5.2 en 3.5.3. Het
+    kenmerk van 3.5.4 en de grens van 1000 colli van 3.5.5 gelden dan niet — die colli
+    tellen dus niet meer mee voor die grens. De app weigerde een lading die het ADR toestaat.
+
+### Changed
+
+- **De 8.6.3-uitkomst gaat mee naar het document.** De code per stof stond er al op; de
+  code voor de gehele lading — die waar 8.6.3.2 om vraagt en waar de chauffeur naar handelt
+  — stond er nog nooit op.
+
 ## [1.49.0] — 2026-08-10
 
 ### Added

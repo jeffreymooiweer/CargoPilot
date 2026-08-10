@@ -506,6 +506,13 @@ def validate_document(
                         "ADR 1.1.3.6: "
                         + _text("adr_exemption_lost", lang).format(detail=detail)
                     )
+            # The tunnel code of column (15) is on the document per 5.4.1.1.1 (k)
+            # and, until v1.50.0, evaluated nowhere. What the driver needs is the
+            # code of the *whole load* (8.6.3.2), and that never appeared on the
+            # sheet at all — only the per-substance codes it is derived from.
+            tunnel = outcome.get("adr_tunnel")
+            if tunnel and profile == "ADR" and tunnel.get("status") not in {None, "not_checked"}:
+                warnings.append(f"ADR 8.6.3: {tunnel['message']}")
 
     if document["key"] == "vgm" and str(values.get("vgm_method")) == "method2":
         components = [

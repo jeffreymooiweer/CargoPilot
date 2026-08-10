@@ -28,6 +28,19 @@ const LQEQ_STATUS_STYLES: Record<string, string> = {
   no_data: "bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-300",
 };
 
+// The tunnel outcome is not a pass/fail. "Exempt" is the best answer there is —
+// 8.6.3.3 takes the goods out of the determination — while "derived" simply
+// states which categories are barred, which is information rather than a fault.
+const TUNNEL_STATUS_STYLES: Record<string, string> = {
+  exempt: "bg-emerald-100 text-emerald-800 dark:bg-emerald-900/40 dark:text-emerald-300",
+  unrestricted: "bg-emerald-100 text-emerald-800 dark:bg-emerald-900/40 dark:text-emerald-300",
+  derived: "bg-sky-100 text-sky-800 dark:bg-sky-900/40 dark:text-sky-300",
+  lq_marking_only: "bg-sky-100 text-sky-800 dark:bg-sky-900/40 dark:text-sky-300",
+  incomplete: "bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-300",
+  unknown_code: "bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-300",
+  not_checked: "bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-300",
+};
+
 export default function DgCompliancePanel({ entries, profiles }: Props) {
   const { t, i18n } = useTranslation();
   const lang = documentLanguage(i18n.language);
@@ -75,6 +88,7 @@ export default function DgCompliancePanel({ entries, profiles }: Props) {
 
   const adr = result?.adr_points;
   const adn = result?.adn_exemption;
+  const tunnel = result?.adr_tunnel;
   // An expired rule set comes before all substantive findings: those findings
   // were computed with it.
   const warnings: ComplianceWarning[] = [
@@ -346,6 +360,44 @@ export default function DgCompliancePanel({ entries, profiles }: Props) {
           )}
           <p className="text-[11px] text-slate-500 dark:text-slate-400">
             {result.lq_eq.note} ({result.lq_eq.basis})
+          </p>
+        </CollapsibleSection>
+      )}
+
+      {tunnel && tunnel.rows.length > 0 && (
+        <CollapsibleSection
+          title={t("compliance.tunnelTitle")}
+          chips={
+            <>
+              <SummaryChip className={TUNNEL_STATUS_STYLES[tunnel.status]}>
+                {t(`compliance.tunnelStatus.${tunnel.status}`)}
+              </SummaryChip>
+              {tunnel.code && (
+                <span className="font-mono text-xs text-slate-700 dark:text-slate-200">
+                  ({tunnel.code})
+                </span>
+              )}
+            </>
+          }
+        >
+          <p className="text-xs text-slate-700 dark:text-slate-200">{tunnel.message}</p>
+          <div className="flex flex-wrap gap-1.5">
+            {tunnel.rows.map((row, i) => (
+              <span
+                key={i}
+                className="rounded-full bg-slate-100 px-2 py-0.5 text-[11px] text-slate-700 dark:bg-slate-800 dark:text-slate-200"
+              >
+                {row.product} · {row.code ? `(${row.code})` : t("compliance.tunnelNoCode")}
+              </span>
+            ))}
+          </div>
+          {tunnel.explosive_mass_kg != null && (
+            <p className="text-[11px] text-slate-500 dark:text-slate-400">
+              {t("compliance.tunnelExplosiveMass", { mass: tunnel.explosive_mass_kg })}
+            </p>
+          )}
+          <p className="text-[11px] text-slate-500 dark:text-slate-400">
+            {tunnel.note} ({tunnel.basis})
           </p>
         </CollapsibleSection>
       )}

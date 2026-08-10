@@ -724,6 +724,246 @@ def check_rid_protective_distance(
     }]
 
 
+#: The wording of the tunnel result, per outcome. Kept here rather than in the
+#: configuration because these are sentences about what the app did, not values
+#: read out of the ADR; the figures and the table itself are in the config.
+_TUNNEL_MESSAGES: dict[str, dict[str, str]] = {
+    "derived": {
+        "nl": "De meest restrictieve code van de hele lading is {code} (8.6.3.2). "
+              "Doorgang verboden door tunnels van categorie {categories}.",
+        "en": "The most restrictive code for the whole load is {code} (8.6.3.2). "
+              "Passage forbidden through tunnels of category {categories}.",
+        "de": "Der restriktivste Code der gesamten Ladung ist {code} (8.6.3.2). "
+              "Durchfahrt durch Tunnel der Kategorie {categories} verboten.",
+        "fr": "Le code le plus restrictif de l'ensemble du chargement est {code} "
+              "(8.6.3.2). Passage interdit dans les tunnels de catégorie {categories}.",
+    },
+    "unrestricted": {
+        "nl": "De meest restrictieve code van de hele lading is {code} (8.6.3.2): "
+              "doorgang toegestaan door alle tunnels.",
+        "en": "The most restrictive code for the whole load is {code} (8.6.3.2): "
+              "passage permitted through all tunnels.",
+        "de": "Der restriktivste Code der gesamten Ladung ist {code} (8.6.3.2): "
+              "Durchfahrt durch alle Tunnel erlaubt.",
+        "fr": "Le code le plus restrictif de l'ensemble du chargement est {code} "
+              "(8.6.3.2) : passage autorisé dans tous les tunnels.",
+    },
+    "exempt": {
+        "nl": "Alle goederen worden overeenkomstig 1.1.3 vervoerd. Die tellen niet "
+              "mee bij het vaststellen van de code voor de hele lading en zijn niet "
+              "aan tunnelbeperkingen onderworpen (8.6.3.3).",
+        "en": "Every item is carried under 1.1.3. Those do not count towards the "
+              "code for the whole load and are not subject to tunnel restrictions "
+              "(8.6.3.3).",
+        "de": "Alle Güter werden nach 1.1.3 befördert. Sie zählen bei der "
+              "Bestimmung des Codes für die gesamte Ladung nicht mit und "
+              "unterliegen keinen Tunnelbeschränkungen (8.6.3.3).",
+        "fr": "Toutes les marchandises sont transportées selon le 1.1.3. Elles ne "
+              "comptent pas pour la détermination du code de l'ensemble du "
+              "chargement et ne sont pas soumises aux restrictions en tunnel "
+              "(8.6.3.3).",
+    },
+    "lq_marking_only": {
+        "nl": "De goederen zelf worden overeenkomstig 1.1.3 vervoerd, maar de "
+              "transporteenheid moet de LQ-kenmerking van 3.4.13 dragen. Daarmee "
+              "geldt het verbod op doorgang door tunnels van categorie {categories} "
+              "(8.6.3.3 en 8.6.4).",
+        "en": "The goods themselves are carried under 1.1.3, but the transport unit "
+              "has to carry the LQ marking of 3.4.13. That brings the ban on passage "
+              "through tunnels of category {categories} with it (8.6.3.3 and 8.6.4).",
+        "de": "Die Güter selbst werden nach 1.1.3 befördert, die Beförderungseinheit "
+              "muss jedoch die LQ-Kennzeichnung nach 3.4.13 tragen. Damit gilt das "
+              "Verbot der Durchfahrt durch Tunnel der Kategorie {categories} "
+              "(8.6.3.3 und 8.6.4).",
+        "fr": "Les marchandises elles-mêmes relèvent du 1.1.3, mais l'unité de "
+              "transport doit porter la marque QL du 3.4.13. L'interdiction de "
+              "passage dans les tunnels de catégorie {categories} s'applique donc "
+              "(8.6.3.3 et 8.6.4).",
+    },
+    "incomplete": {
+        "nl": "Voor {products} staat geen code voor beperkingen in tunnels in de "
+              "regel. Zolang die ontbreekt kan de code voor de hele lading niet "
+              "worden vastgesteld (8.6.3.2).",
+        "en": "No tunnel restriction code is on the line for {products}. Until it is "
+              "there the code for the whole load cannot be determined (8.6.3.2).",
+        "de": "Für {products} steht kein Code für Tunnelbeschränkungen in der Zeile. "
+              "Solange er fehlt, kann der Code für die gesamte Ladung nicht bestimmt "
+              "werden (8.6.3.2).",
+        "fr": "Aucun code de restriction en tunnel ne figure sur la ligne pour "
+              "{products}. Tant qu'il manque, le code de l'ensemble du chargement ne "
+              "peut être déterminé (8.6.3.2).",
+    },
+    "unknown_code": {
+        "nl": "De code {code} bij {products} staat niet in de tabel van 8.6.4. De "
+              "code voor de hele lading is daarom niet vastgesteld.",
+        "en": "The code {code} on {products} is not in the table of 8.6.4. The code "
+              "for the whole load has therefore not been determined.",
+        "de": "Der Code {code} bei {products} steht nicht in der Tabelle von 8.6.4. "
+              "Der Code für die gesamte Ladung wurde daher nicht bestimmt.",
+        "fr": "Le code {code} de {products} ne figure pas au tableau du 8.6.4. Le "
+              "code de l'ensemble du chargement n'a donc pas été déterminé.",
+    },
+}
+
+#: What the answer does *not* cover. The app knows packages, not tanks, and it
+#: does not know the route — both of which change the answer, so both are said.
+_TUNNEL_NOTE = {
+    "nl": "Berekend voor vervoer in colli. Los gestort vervoer of vervoer in tanks "
+          "geeft bij de codes B/D, B/E, C/D, C/E en D/E een strengere uitkomst. "
+          "Welke tunnels op de route liggen en in welke categorie zij vallen, weet "
+          "CargoPilot niet — dat blijft aan de vervoerder (1.9.5).",
+    "en": "Computed for carriage in packages. Carriage in bulk or in tanks gives a "
+          "stricter answer for the codes B/D, B/E, C/D, C/E and D/E. Which tunnels "
+          "lie on the route, and which category they are in, CargoPilot does not "
+          "know — that stays with the carrier (1.9.5).",
+    "de": "Berechnet für die Beförderung in Versandstücken. Beförderung in loser "
+          "Schüttung oder in Tanks ergibt bei den Codes B/D, B/E, C/D, C/E und D/E "
+          "ein strengeres Ergebnis. Welche Tunnel auf der Strecke liegen und in "
+          "welche Kategorie sie fallen, weiß CargoPilot nicht — das bleibt beim "
+          "Beförderer (1.9.5).",
+    "fr": "Calculé pour le transport en colis. Le transport en vrac ou en citernes "
+          "donne un résultat plus strict pour les codes B/D, B/E, C/D, C/E et D/E. "
+          "Quels tunnels se trouvent sur l'itinéraire, et dans quelle catégorie ils "
+          "sont classés, CargoPilot l'ignore — cela reste au transporteur (1.9.5).",
+}
+
+
+def _tunnel_code_of(product: dict[str, Any]) -> str:
+    """The code from column (15), however it was written into the field.
+
+    It reaches the line as "D/E", as "(D/E)" or — where the ADR says there is no
+    restriction — as "-" or "(-)". All three mean the same thing.
+    """
+    raw = str(product.get("tunnel_code") or "").strip()
+    raw = raw.strip("()").strip()
+    if raw in {"–", "—"}:
+        return "-"
+    return raw.upper() if raw else ""
+
+
+def check_adr_tunnel(
+    entries: list[dict[str, Any]],
+    language: str = "nl",
+    points_status: str | None = None,
+    lq_marking_required: bool = False,
+) -> dict[str, Any]:
+    """ADR 8.6.3: the tunnel restriction code for the whole load.
+
+    Until now the code was printed on the transport document — correctly, per
+    5.4.1.1.1 (k) — and evaluated nowhere. That is the more dangerous half of the
+    two: a consignor who reads "(D/E)" on a CMR may reasonably assume that
+    something has been considered, and nothing had been.
+
+    Two provisions make this more than picking the strictest of a list.
+
+    **8.6.3.2** assigns the most restrictive of the codes present to the *whole
+    load*, so a load is not a set of separately restricted substances but one
+    unit with one code. The order of restrictiveness is not stated in words; it
+    is the order of the table in 8.6.4, and that is where it is read from.
+
+    **8.6.3.3** takes goods carried under 1.1.3 out of the determination
+    altogether. They are not subject to tunnel restrictions and must not be
+    counted — so for a consignment that stays within the 1.1.3.6 exemption there
+    is no code to assign at all, and printing one is not merely unevaluated but
+    arguably not applicable. The single exception the article names is the
+    transport unit that has to carry the marking of 3.4.13 subject to 3.4.14;
+    that unit is restricted for category E tunnels under 8.6.4, whatever its
+    goods' own codes say.
+
+    ``points_status`` comes from :func:`check_adr_points` and ``lq_marking_required``
+    from :func:`check_lq_eq`, so the two things 8.6.3.3 turns on are read from the
+    checks that already establish them rather than derived a second time here.
+    """
+    rules = get_compliance_rules()["adr_tunnel"]
+    lang = _lang(language)
+    order: list[str] = rules["order"]
+    table: dict[str, Any] = rules["codes"]
+
+    rows: list[dict[str, Any]] = []
+    missing: list[str] = []
+    unknown: list[tuple[str, str]] = []
+    present: list[str] = []
+    explosive_mass = 0.0
+
+    for entry, index, product in _iter_products(entries):
+        if product.get("transport_forbidden"):
+            continue
+        label = _product_label(entry, product, index)
+        code = _tunnel_code_of(product)
+        rows.append({"product": label, "code": code or None})
+        if not code:
+            missing.append(label)
+            continue
+        if code not in table:
+            unknown.append((label, code))
+            continue
+        present.append(code)
+        if table[code].get("explosive_mass_kg"):
+            # The two split codes count the *total* net explosive mass per
+            # transport unit, not the mass of the one line that carries them.
+            mass = _num(product.get("net_explosive_mass"))
+            if mass:
+                explosive_mass += mass
+
+    result: dict[str, Any] = {
+        "rows": rows,
+        "code": None,
+        "restricted_categories": [],
+        "explosive_mass_kg": round(explosive_mass, 3) if explosive_mass else None,
+        "basis": "ADR 8.6.3 / 8.6.4",
+        "note": pick(_TUNNEL_NOTE, lang),
+    }
+
+    if not rows:
+        result["status"] = "not_checked"
+        result["message"] = ""
+        return result
+
+    # 8.6.3.3 first: what is carried under 1.1.3 does not take part in the
+    # determination, and if that is everything there is nothing to determine.
+    if points_status == "exempt_possible":
+        if lq_marking_required:
+            categories = list(rules["lq_marking_categories"])
+            result.update({
+                "status": "lq_marking_only",
+                "restricted_categories": categories,
+                "message": pick(_TUNNEL_MESSAGES["lq_marking_only"], lang).format(
+                    categories=", ".join(categories)),
+            })
+        else:
+            result["status"] = "exempt"
+            result["message"] = pick(_TUNNEL_MESSAGES["exempt"], lang)
+        return result
+
+    if unknown:
+        label, code = unknown[0]
+        result["status"] = "unknown_code"
+        result["message"] = pick(_TUNNEL_MESSAGES["unknown_code"], lang).format(
+            code=code, products=label)
+        return result
+    if missing:
+        result["status"] = "incomplete"
+        result["message"] = pick(_TUNNEL_MESSAGES["incomplete"], lang).format(
+            products=", ".join(missing))
+        return result
+
+    code = min(present, key=order.index)
+    spec = table[code]
+    categories = list(spec["packages"])
+    threshold = spec.get("explosive_mass_kg")
+    if threshold and explosive_mass > threshold:
+        categories = list(spec["above"])
+    result.update({
+        "code": code,
+        "restricted_categories": categories,
+        "status": "unrestricted" if not categories else "derived",
+    })
+    result["message"] = pick(
+        _TUNNEL_MESSAGES["unrestricted" if not categories else "derived"], lang
+    ).format(code=code, categories=", ".join(categories))
+    return result
+
+
 def check_iata_segregation(entries: list[dict[str, Any]], language: str = "nl") -> list[dict[str, str]]:
     """IATA Table 9.3.A: segregation between packages, lithium rule included."""
     rules = get_compliance_rules()["iata_segregation"]
@@ -1953,12 +2193,74 @@ _EQ_MESSAGES = {
               "(3.5.1.2). Die Verpackungs- und Prüfvorschriften nach 3.5.2 und 3.5.3 "
               "sowie die EQ-Kennzeichnung gelten weiterhin; je Fahrzeug oder "
               "Container sind höchstens 1000 Versandstücke zulässig (3.5.5).", "fr": "Dans les limites du {code} : {inner} par emballage intérieur ≤ {inner_cap} g/ml et {outer} par colis ≤ {outer_cap} g/ml (3.5.1.2). Les prescriptions d'emballage et d'épreuve des 3.5.2 et 3.5.3 ainsi que la marque QE restent applicables ; 1 000 colis au plus sont admis par véhicule ou conteneur (3.5.5)."},
+    "relief_3_5_1_4": {
+        "nl": "Ten hoogste 1 g/ml per binnenverpakking en 100 g/ml per collo: "
+              "hiervoor gelden alleen 3.5.2 en 3.5.3 (3.5.1.4). Het EQ-kenmerk van "
+              "3.5.4 en de grens van 1000 colli van 3.5.5 gelden niet, en een "
+              "tussenverpakking is niet vereist als de binnenverpakkingen met "
+              "opvulmateriaal zijn verpakt en er bij vloeistoffen genoeg absorberend "
+              "materiaal in de buitenverpakking zit.",
+        "en": "At most 1 g/ml per inner packaging and 100 g/ml per package: only "
+              "3.5.2 and 3.5.3 apply to these (3.5.1.4). The EQ mark of 3.5.4 and the "
+              "1,000-package limit of 3.5.5 do not, and no intermediate packaging is "
+              "required where the inner packagings are cushioned and, for liquids, "
+              "the outer packaging holds enough absorbent material.",
+        "de": "Höchstens 1 g/ml je Innenverpackung und 100 g/ml je Versandstück: "
+              "hierfür gelten nur 3.5.2 und 3.5.3 (3.5.1.4). Die EQ-Kennzeichnung "
+              "nach 3.5.4 und die Grenze von 1000 Versandstücken nach 3.5.5 gelten "
+              "nicht, und eine Zwischenverpackung ist nicht erforderlich, wenn die "
+              "Innenverpackungen mit Polstermaterial verpackt sind und bei "
+              "Flüssigkeiten genügend saugfähiges Material in der Außenverpackung "
+              "vorhanden ist.",
+        "fr": "Au plus 1 g/ml par emballage intérieur et 100 g/ml par colis : seuls "
+              "les 3.5.2 et 3.5.3 s'y appliquent (3.5.1.4). La marque QE du 3.5.4 et "
+              "la limite de 1 000 colis du 3.5.5 ne s'appliquent pas, et aucun "
+              "emballage intermédiaire n'est exigé si les emballages intérieurs sont "
+              "calés et si, pour les liquides, l'emballage extérieur contient assez "
+              "de matériau absorbant.",
+    },
 }
 
 # ADR 3.4.2 / IMDG 3.4.2.1: total gross mass of an LQ package.
 _LQ_GROSS_LIMIT_KG = 30.0
+# ADR 3.4.13/3.4.14: above this gross mass of LQ packages the transport unit
+# carries the large mark of 3.4.15 — and with it, per 8.6.4, a tunnel
+# restriction it would not otherwise have had.
+_LQ_MARKING_THRESHOLD_KG = 8000.0
 # ADR/IMDG 3.5.5: ten hoogste 1000 EQ-colli per voertuig of container.
 _EQ_PACKAGE_CAP = 1000
+
+# ADR 3.5.1.4: the smallest excepted quantities. For the codes E1, E2, E4 and E5
+# with at most 1 g or 1 ml per inner packaging and at most 100 g or 100 ml per
+# outer packaging, only 3.5.2 (packagings, with the intermediate packaging
+# waived where the inner ones are cushioned and, for liquids, absorbed) and
+# 3.5.3 (the package tests) apply. Everything else in chapter 3.5 falls away —
+# including the marking of 3.5.4 and the cap of 3.5.5, which is what makes this
+# more than a note on screen: such packages do not count towards the 1,000.
+_EQ_RELIEF_CODES = frozenset({"E1", "E2", "E4", "E5"})
+_EQ_RELIEF_INNER = 1.0
+_EQ_RELIEF_OUTER = 100.0
+
+#: ADR/IMDG 3.5.1.3, the other provision that only shows up across lines.
+_EQ_TOGETHER_MESSAGE = {
+    "nl": "Deze positie bevat vrijgestelde hoeveelheden met verschillende E-codes "
+          "({codes}). Zijn zij samen in één buitenverpakking verpakt, dan geldt de "
+          "meest restrictieve code: ten hoogste {cap} g/ml per buitenverpakking "
+          "({code}, 3.5.1.3). De ingevoerde hoeveelheden tellen op tot {total} g/ml.",
+    "en": "This position holds excepted quantities with different E codes ({codes}). "
+          "Packed together in one outer packaging, the most restrictive code applies: "
+          "at most {cap} g/ml per outer packaging ({code}, 3.5.1.3). The entered "
+          "quantities total {total} g/ml.",
+    "de": "Diese Position enthält freigestellte Mengen mit verschiedenen E-Codes "
+          "({codes}). Zusammen in einer Außenverpackung verpackt gilt der "
+          "restriktivste Code: höchstens {cap} g/ml je Außenverpackung ({code}, "
+          "3.5.1.3). Die eingegebenen Mengen ergeben zusammen {total} g/ml.",
+    "fr": "Cette position contient des quantités exceptées avec des codes E "
+          "différents ({codes}). Emballées ensemble dans un même emballage "
+          "extérieur, le code le plus restrictif s'applique : au plus {cap} g/ml par "
+          "emballage extérieur ({code}, 3.5.1.3). Les quantités saisies totalisent "
+          "{total} g/ml.",
+}
 
 
 def _fmt_kg(value: float) -> str:
@@ -2072,12 +2374,20 @@ def _assess_eq(
             "not_within", "outer_exceeded",
             outer=_format_base(outer_amount, outer_kind), outer_cap=outer_cap, code=code,
         )
-    return outcome(
+    outcome(
         "within_limits", "within_limits",
         code=code,
         inner=_format_base(inner_amount, inner_kind), inner_cap=inner_cap,
         outer=_format_base(outer_amount, outer_kind), outer_cap=outer_cap,
     )
+    result["outer_cap"] = outer_cap
+    result["outer_amount"] = outer_amount
+    # 3.5.1.4: the smallest quantities are subject only to 3.5.2 and 3.5.3.
+    if (code in _EQ_RELIEF_CODES and inner_amount <= _EQ_RELIEF_INNER
+            and outer_amount <= _EQ_RELIEF_OUTER):
+        result["relief_3_5_1_4"] = True
+        result["message"] += " " + pick(_EQ_MESSAGES["relief_3_5_1_4"], lang)
+    return result
 
 
 def check_lq_eq(
@@ -2111,6 +2421,11 @@ def check_lq_eq(
     for entry in entries:
         eq_packages = 0.0
         eq_products: list[str] = []
+        # 3.5.1.3, per position: what is packed together in one outer packaging.
+        # A position holding several substances is what the application already
+        # reads as one outer packaging for the IATA "all packed in one" check;
+        # the same reading is used here rather than a second, different one.
+        eq_together: list[tuple[str, str, int, float]] = []
         for index, product in enumerate(entry.get("products") or []):
             un = str(product.get("un_number") or "").strip()
             lq_raw = str(product.get("limited_quantity") or "").strip()
@@ -2181,16 +2496,46 @@ def check_lq_eq(
             })
 
             if eq["status"] == "within_limits":
-                count = _num(product.get("quantity_packages"))
-                if count:
-                    eq_packages += count
-                    eq_products.append(label)
+                # 3.5.1.4 takes the smallest quantities out of the whole of
+                # chapter 3.5 except 3.5.2 and 3.5.3, so out of the 3.5.5 cap
+                # as well. Counting them would refuse a load the text permits.
+                if not eq.get("relief_3_5_1_4"):
+                    count = _num(product.get("quantity_packages"))
+                    if count:
+                        eq_packages += count
+                        eq_products.append(label)
+                if eq.get("outer_cap"):
+                    eq_together.append((label, eq["code"], eq["outer_cap"],
+                                        eq.get("outer_amount") or 0.0))
 
             if lq["status"] == "within_limits" and gross_kg:
                 count = _num(product.get("quantity_packages"))
                 if count:
                     lq_gross_total_kg += gross_kg * count
                     lq_gross_products.append(label)
+
+        # ADR/IMDG 3.5.1.3: where excepted quantities with different E codes are
+        # packed together, the total per outer packaging is capped by the most
+        # restrictive of those codes. Each line on its own can be within its own
+        # code and the package still be over — which is exactly the case that
+        # assessing line by line cannot see.
+        codes_together = {code for _label, code, _cap, _amount in eq_together}
+        if len(codes_together) > 1:
+            strictest = min(eq_together, key=lambda item: item[2])
+            together_total = sum(amount for _l, _c, _cap, amount in eq_together)
+            if together_total > strictest[2]:
+                warnings.append({
+                    "rule": "ADR/IMDG 3.5.1.3",
+                    "severity": "warning",
+                    "message": pick(_EQ_TOGETHER_MESSAGE, lang).format(
+                        codes=", ".join(sorted(codes_together)),
+                        code=strictest[1],
+                        cap=strictest[2],
+                        total=_fmt_kg(round(together_total, 3)),
+                    ),
+                    "products": ", ".join(label for label, _c, _cap, _a in eq_together),
+                })
+                statuses.add("not_within")
 
         if eq_packages > _EQ_PACKAGE_CAP:
             warnings.append({
@@ -2214,7 +2559,9 @@ def check_lq_eq(
                 "products": ", ".join(eq_products),
             })
 
-    if lq_gross_total_kg > 8000 and {"ADR", "RID", "ADN"} & set(normalized):
+    lq_marking_required = (lq_gross_total_kg > _LQ_MARKING_THRESHOLD_KG
+                           and bool({"ADR", "RID", "ADN"} & set(normalized)))
+    if lq_marking_required:
         warnings.append({
             "rule": "ADR 3.4.13/3.4.14",
             "severity": "warning",
@@ -2253,6 +2600,9 @@ def check_lq_eq(
         "rows": rows,
         "status": status,
         "warnings": warnings,
+        # Read by the tunnel check: 8.6.3.3 leaves 1.1.3 goods out of the
+        # determination *except* where this marking is required.
+        "lq_marking_required": lq_marking_required,
         "basis": basis,
         "basis_note": basis_note(normalized, "3.4/3.5", language),
         "note": pick(
@@ -2365,6 +2715,19 @@ def check_compliance(
     # system in the Y packing instructions, which is not claimed here.
     if {"ADR", "RID", "ADN", "IMDG"} & normalized:
         result["lq_eq"] = check_lq_eq(entries, language, sorted(normalized))
+
+    # The tunnel code is a road provision and only a road one: RID table A has
+    # no column (15) and the ADN document does not carry the code either. It
+    # runs after the two checks it depends on, because 8.6.3.3 turns on whether
+    # the goods travel under 1.1.3 and whether the unit needs the 3.4.13 mark.
+    if "ADR" in normalized:
+        result["adr_tunnel"] = check_adr_tunnel(
+            entries,
+            language,
+            points_status=(result.get("adr_points") or {}).get("status"),
+            lq_marking_required=bool(
+                (result.get("lq_eq") or {}).get("lq_marking_required")),
+        )
 
     if "IMDG" in normalized:
         result["imdg_segregation"] = append_class8_pair_exception(

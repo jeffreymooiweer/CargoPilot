@@ -789,6 +789,25 @@ export interface LqEqResult {
   note: string;
 }
 
+/** ADR 8.6.3: the tunnel restriction code derived for the whole load.
+ *
+ *  `status` says what happened, and the difference matters more than the code:
+ *  `exempt` means 8.6.3.3 leaves the goods out of the determination entirely,
+ *  `lq_marking_only` that the goods are exempt but the unit's 3.4.13 mark
+ *  brings a category E restriction with it anyway. */
+export interface AdrTunnelResult {
+  rows: { product: string; code: string | null }[];
+  /** Null where nothing was determined. */
+  code: string | null;
+  restricted_categories: string[];
+  /** Total net explosive mass, only for the codes that split on it. */
+  explosive_mass_kg: number | null;
+  status: "derived" | "unrestricted" | "exempt" | "lq_marking_only" | "incomplete" | "unknown_code" | "not_checked";
+  message: string;
+  basis: string;
+  note: string;
+}
+
 export interface QValueResult {
   position: string | number;
   components: { product: string; net_quantity: number; max_per_package: number; ratio: number }[];
@@ -833,6 +852,8 @@ export interface DgComplianceResult {
   iata_segregation?: ComplianceWarning[];
   /** LQ/EQ check of 3.4/3.5 — present with the ADR, RID, ADN and IMDG profiles. */
   lq_eq?: LqEqResult;
+  /** Tunnel restriction code for the whole load — road only. */
+  adr_tunnel?: AdrTunnelResult;
   q_values?: QValueResult[];
   q_check_status?: QCheckStatus;
   cargo_aircraft_only_products?: string[];

@@ -409,7 +409,19 @@
     "adnOverClass": "Class {{cls}}: {{carried}} kg over the {{limit}} kg limit",
     "adnConditions": "Conditions that continue to apply (1.1.3.6.2)",
     "colClass": "Class",
-    "colAdnLimit": "Limit"
+    "colAdnLimit": "Limit",
+    "tunnelTitle": "Tunnel restrictions (8.6.3)",
+    "tunnelNoCode": "no code",
+    "tunnelExplosiveMass": "Total net explosive mass: {{mass}} kg",
+    "tunnelStatus": {
+      "derived": "code determined",
+      "unrestricted": "no restriction",
+      "exempt": "1.1.3 — not applicable",
+      "lq_marking_only": "through the LQ marking only",
+      "incomplete": "incomplete",
+      "unknown_code": "unknown code",
+      "not_checked": "not assessed"
+    }
   },
   "dgauto": {
     "title": "Derived automatically",

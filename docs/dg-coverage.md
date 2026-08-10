@@ -106,7 +106,8 @@ For class 1 the 1.1.3.6 points use the entered net explosive mass, not the produ
 Classification comes from Table A; when a UN number has several packing-group rows the
 chosen group is used and an unchosen multi-row substance is flagged. Carriage-prohibited
 substances are kept out of the points table. The description line follows 5.4.1.1.1 and
-the tunnel code is printed, correctly, only here.
+the tunnel code is printed, correctly, only here — and since v1.50.0 the code for the whole
+load is derived from it under 8.6.3.
 
 Since v1.33.0 the figures behind those checks have been read out of ADR 2025 Volume I
 rather than recalled. Confirmed verbatim: the 30 kg gross mass of **3.4.2**, the 20 kg for
@@ -131,15 +132,16 @@ dataset it was built on.
 
 **Not checked, and worth knowing:**
 
-- **Tunnel restrictions are never evaluated,** and reading chapter 8.6 shows the gap is
-  wider than "no route data". The code is printed on the document, but 8.6.3.2 requires the
-  *most restrictive* code of the whole load to be assigned to the load — CargoPilot prints
-  each substance's own code and never derives one for the transport unit. 8.6.3.3 goes
-  further: goods carried under 1.1.3 are not subject to tunnel restrictions at all and must
-  not be counted when determining the load's code, except where 3.4.13 marking applies. So
-  for a consignment that qualifies for the 1.1.3.6 exemption the printed code is not merely
-  unevaluated, it is arguably not applicable. A consignor reading `(D/E)` on a CMR may
-  reasonably assume something has been considered. Nothing has.
+- **The route is still not known, and that is the part that remains.** Since v1.50.0 the
+  load's own tunnel restriction code *is* derived, from ADR 8.6.3 read out of the book:
+  8.6.3.2 assigns the most restrictive code of the load to the whole load; 8.6.3.3 leaves
+  goods carried under 1.1.3 out of that determination entirely, except where the 3.4.13
+  marking applies; and the table of 8.6.4 turns the code into the tunnel categories that
+  are barred, with B1000C and C5000D splitting on the total net explosive mass per
+  transport unit. The result reaches the export as well as the panel. What CargoPilot still
+  does not know is which tunnels lie on the route and which category they carry — that is
+  the carrier's, under 1.9.5 — and whether the goods travel in tanks or in bulk, which is
+  stricter for five of the twelve codes. Both are said next to the answer.
 - **LQ and EQ are compared, not granted.** The quantity check of 3.4 and 3.5 says
   whether a line falls within or outside the limits, or that the input is incomplete.
   What it deliberately does not do is treat qualifying as being exempt: the LQ/EQ mark,
@@ -155,11 +157,15 @@ dataset it was built on.
   sit in the class column, which for explosives it does not. Group S is now included, so
   1.4S beside a group L package is refused — the old code carried the 7.5.2.1 exception for
   1.4S into a table where it does not belong.
-- **Two EQ provisions are not applied.** 3.5.1.3: where goods with different E codes are
-  packed together, the total per outer packaging is limited to the most restrictive code —
-  CargoPilot assesses each line alone. And 3.5.1.4 relieves the smallest quantities
-  (E1/E2/E4/E5, ≤ 1 g or 1 ml inner and ≤ 100 g or 100 ml outer) of everything but 3.5.2
-  and 3.5.3. Both read from the text; neither implemented.
+- **The two EQ provisions that only show up across lines are applied since v1.50.0.**
+  3.5.1.3: where goods with different E codes are packed together, the total per outer
+  packaging is capped by the most restrictive of those codes — 400 g of an E1 substance
+  beside 200 g of an E3 one is over the 300 g cap while each line on its own is within its
+  own code, which is exactly what assessing line by line cannot see. And 3.5.1.4 relieves
+  the smallest quantities (E1/E2/E4/E5, ≤ 1 g or 1 ml inner and ≤ 100 g or 100 ml outer) of
+  everything but 3.5.2 and 3.5.3 — including the 3.5.5 cap, so those packages no longer
+  count towards the 1,000. The two fail in opposite directions: the first let a package
+  through that the text caps, the second refused a load the text permits.
 - **Nothing about the vehicle.** Equipment (8.1.4/8.1.5), placarding and marking (5.3),
   driver training (8.2), the ADR certificate of approval, tank codes. All outside the
   application. The 1.1.3.6 output does list what the exemption releases you from and what
@@ -376,9 +382,9 @@ Ordered by how much harm someone could take before noticing, not by effort.
 |---|---|---|
 | 1 | **IATA quantity limits absent; Q depends on user-entered M** | CargoPilot warns when the Q check did not run — since v1.33.0 on the document as well as the screen — but it cannot derive the applicable passenger/cargo-aircraft limit or verify the entered M against Table 4.2. **[verify]** |
 | 2 | **The ADN tank vessel regime is entirely absent** | Table C, vessel types, degassing. A tank vessel shipment gets nothing, and nothing says the mode is only half covered. |
-| 3 | **Tunnel code printed, never evaluated, and not derived for the load** | 8.6.3.2 wants the most restrictive code for the whole load; 8.6.3.3 excludes 1.1.3-exempt goods from that determination. Printing a per-substance code that nobody has evaluated invites the assumption that somebody has. |
+| 3 | **Route data absent: which tunnels, and in which category** | Closed for the part that is CargoPilot's since v1.50.0 — 8.6.3.2, 8.6.3.3 and the table of 8.6.4 are applied and the load's code reaches the export. What is left is the route itself, which 1.9.5 puts with the carrier, and the tanks/bulk branch of five codes. |
 | 4 | **Mixed loading for ADN still answered with ADR's 7.5.2** | Narrowed twice. v1.38.0 read RID's 7.5.2.1 and found it identical to ADR's, footnotes included; v1.41.0 read RID's 7.5.2.2 and 7.5.3 and gave rail its own table and its own protective distance. Rail is no longer a loan. ADN still is, and remains labelled. |
-| 5 | **LQ/EQ conditions not checked, and 3.5.1.3/3.5.1.4 not applied** | The arithmetic of 3.4/3.5 is verified correct, but the mark, the packagings and the 3.5.3 tests are declarations the application cannot see. A line "within the limits" is a candidate, not an exemption — and the panel says so. |
+| 5 | **LQ/EQ conditions not checked** | The arithmetic of 3.4/3.5 is verified correct and 3.5.1.3/3.5.1.4 are applied since v1.50.0, but the mark, the packagings and the 3.5.3 tests are declarations the application cannot see. A line "within the limits" is a candidate, not an exemption — and the panel says so. |
 | 6 | **IMDG stowage category shown, not enforced** | Lower because on-deck/under-deck is usually the carrier's call, not the consignor's. **[verify]** |
 | 7 | **No marking, placarding or equipment checks in any mode** | Consistently absent, so unlikely to be mistaken for present — but it is the most common real-world failure. |
 
@@ -414,6 +420,20 @@ verification.
   acid × alkali pair; forbidden substances out of points and document lines; hints filtered
   to active modalities; the inner-packaging field hidden when LQ is 0 and EQ is E0.
 
+**Shipped in v1.49.0 and v1.50.0 — the Dutch ADR read out:**
+
+- **The Dutch proper shipping names.** Column (2) of Table A in the official Dutch edition,
+  2,345 UN numbers, read twice from two independently typeset documents and cross-checked
+  against each other. There is no open source for that column.
+- **ADR 8.6.3, the tunnel restriction code for the whole load**, with 8.6.3.3 leaving
+  goods carried under 1.1.3 out of the determination and the table of 8.6.4 turning the
+  code into the categories that are barred.
+- **ADR 3.5.1.3 and 3.5.1.4**, the two excepted-quantity provisions that can only be seen
+  across lines.
+- **The edition the classification table actually is.** Reading the book showed it to be an
+  ADR 2023 export while the manifest reported 2025; UN 0514 and UN 3551–3560 are missing
+  from it and UN 1499 and 1999 are still in it. The manifest now says so.
+
 **Shipped in v1.33.0 — the land regulations read rather than recalled:**
 
 - **`scripts/read_land_regulations.py`** fetches ADR, RID and ADN from UNECE and OTIF on a
@@ -438,10 +458,9 @@ verification.
    of each package.
 3. **ADN's own stowage regime**, the part of 7.5.2 still borrowed. Rail is done: 7.5.2.1,
    7.5.2.2 and 7.5.3 are now cited to RID.
-4. **Derive the load's tunnel restriction code** per 8.6.3.2, and stop printing one where
-   8.6.3.3 says it does not apply.
-5. **ADR 3.5.1.3 and 3.5.1.4** — the most-restrictive code for mixed EQ packing, and the
-   relief for the smallest quantities.
+4. **ADR 5.4.1.1.1 (c) for batteries.** ADR 2025 names UN 3551 and 3552 alongside 3090,
+   3091, 3480 and 3481 as entries whose description carries class "9". The application does
+   not hold those two as ADR entries at all yet — see the note on the edition below.
 
 **Not worth building, or not buildable here:**
 
@@ -458,8 +477,8 @@ verification.
 
 ---
 
-*This assessment covers CargoPilot v1.47.0. Nothing in it has changed since v1.41.0 —
-v1.42.0 to v1.46.0 touched the goods catalogue, the interface language, the settings and
-the source comments, not a single regulatory check. It is guidance for development, not a
-compliance statement. Every document the application produces is a draft; see
+*This assessment covers CargoPilot v1.50.0. v1.42.0 to v1.48.0 touched the goods
+catalogue, the interface language, the settings, the documentation and the error messages,
+not a single regulatory check; v1.49.0 and v1.50.0 changed the ADR side, from the Dutch
+edition of the book. It is guidance for development, not a compliance statement. Every document the application produces is a draft; see
 [DISCLAIMER.md](../DISCLAIMER.md).*

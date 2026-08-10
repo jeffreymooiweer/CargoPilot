@@ -7,7 +7,38 @@
     "q_value": "IATA DGR 67e editie (2026) 5.0.2.11 — Q-waarde voor 'all packed in one'",
     "imdg_segregation": "IMDG-code (Amendement 40-20) 7.2.4 segregatietabel, 7.2.5 scheidingsgroepen en 7.2.7 klasse 1",
     "imdg_class1": "IMDG-code (Amendement 40-20) 7.2.7 — segregatie van goederen van klasse 1",
-    "rid_protective_distance": "RID 2025 (OTIF) 7.5.3 — beschermende afstand in de trein tussen een wagen met klasse 1 en een geplakkateerde wagen 2.1/3/4.1/4.2/4.3/5.1/5.2"
+    "rid_protective_distance": "RID 2025 (OTIF) 7.5.3 — beschermende afstand in de trein tussen een wagen met klasse 1 en een geplakkateerde wagen 2.1/3/4.1/4.2/4.3/5.1/5.2",
+    "adr_tunnel": "ADR 2025 (UNECE) 8.6.3 en 8.6.4 — code voor beperkingen in tunnels voor de gehele lading"
+  },
+  "adr_tunnel": {
+    "source": "ADR 2025 (UNECE) 8.6.3.1 t/m 8.6.3.3 en de tabel van 8.6.4",
+    "order": ["B", "B1000C", "B/D", "B/E", "C", "C5000D", "C/D", "C/E", "D", "D/E", "E", "-"],
+    "codes": {
+      "B": {"packages": ["B", "C", "D", "E"], "tanks": ["B", "C", "D", "E"]},
+      "B1000C": {
+        "packages": ["C", "D", "E"],
+        "tanks": ["C", "D", "E"],
+        "explosive_mass_kg": 1000,
+        "above": ["B", "C", "D", "E"]
+      },
+      "B/D": {"packages": ["D", "E"], "tanks": ["B", "C", "D", "E"]},
+      "B/E": {"packages": ["E"], "tanks": ["B", "C", "D", "E"]},
+      "C": {"packages": ["C", "D", "E"], "tanks": ["C", "D", "E"]},
+      "C5000D": {
+        "packages": ["D", "E"],
+        "tanks": ["D", "E"],
+        "explosive_mass_kg": 5000,
+        "above": ["C", "D", "E"]
+      },
+      "C/D": {"packages": ["D", "E"], "tanks": ["C", "D", "E"]},
+      "C/E": {"packages": ["E"], "tanks": ["C", "D", "E"]},
+      "D": {"packages": ["D", "E"], "tanks": ["D", "E"]},
+      "D/E": {"packages": ["E"], "tanks": ["D", "E"]},
+      "E": {"packages": ["E"], "tanks": ["E"]},
+      "-": {"packages": [], "tanks": []}
+    },
+    "lq_marking_categories": ["E"],
+    "lq_marking_threshold_kg": 8000
   },
   "adr_points": {
     "threshold": 1000,

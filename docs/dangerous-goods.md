@@ -108,6 +108,26 @@ their transport category (×50, ×3, ×1, ×0) and totalled. You get one of four
 exemption possible, over 1,000 points, category 0 (no exemption), or incomplete — plus
 what the exemption does and does not release you from.
 
+**ADR 8.6.3 — the tunnel restriction code of the whole load.** The code from column (15)
+has always been printed on the document, as 5.4.1.1.1 (k) requires. Since v1.50.0 it is
+also evaluated. 8.6.3.2 assigns the *most restrictive* code of the load to the whole load —
+a driver has one route to choose and needs one code, not a list to reconcile — and the
+table of 8.6.4 turns that code into the tunnel categories that are barred. `B1000C` and
+`C5000D` split on the total net explosive mass per transport unit, so those are totalled
+over the load rather than read per line.
+
+8.6.3.3 is the provision that changes the answer rather than adding to it: goods carried
+under 1.1.3 are not subject to tunnel restrictions **and must not be counted** when
+determining the load's code. A consignment inside the 1.1.3.6 exemption therefore gets no
+code at all, and the panel says why. The one exception the article names is the transport
+unit carrying the 3.4.13 mark, which is barred from category E tunnels however mild its
+goods' own codes are.
+
+Two things the answer does not cover, and both are stated next to it: which tunnels lie on
+the route and what category they carry — 1.9.5 puts that with the carrier — and carriage in
+tanks or in bulk, which is stricter for five of the twelve codes and which CargoPilot,
+being a packaged-goods tool, does not model.
+
 **ADR 7.5.2 — loading together.** Warns on class 1 (other than 1.4S) with other classes,
 on mixed compatibility groups within class 1, and on the CV28 separation of foodstuffs
 from labels 6.1/6.2 and certain class 9 substances.
@@ -158,7 +178,20 @@ asked about rather than guessed at. Falling within the limits is reported as exa
 that — the LQ/EQ mark and the packaging requirements remain conditions, and a qualifying
 line is never silently removed from the 1,000-point calculation. When LQ packages that
 qualify on quantity total more than 8 tonnes gross per transport unit, 3.4.13/3.4.14 is
-raised for the large mark of 3.4.15. On rail and inland waterway the same basis note
+raised for the large mark of 3.4.15.
+
+Two provisions of chapter 3.5 can only be seen across lines, and both are applied since
+v1.50.0. **3.5.1.3**: excepted quantities with different E codes packed together in one
+outer packaging are capped by the most restrictive of those codes — 400 g of an E1
+substance beside 200 g of an E3 one is over the 300 g cap while each line on its own is
+comfortably inside its own code. **3.5.1.4**: the smallest quantities under E1, E2, E4 and
+E5 — at most 1 g or 1 ml per inner packaging and 100 g or 100 ml per package — are subject
+only to 3.5.2 and 3.5.3, so the mark of 3.5.4 and the 1,000-package cap of 3.5.5 fall away
+and those packages no longer count towards the cap. The two failed in opposite directions:
+the first let a package through that the text caps, the second refused a load the text
+permits.
+
+On rail and inland waterway the same basis note
 appears as for the points table; for air, which has its own LQ apparatus in the Y packing
 instructions, no claim is made. The net-per-inner field is shown only when column 7a or
 the E code offers a limited or excepted route.

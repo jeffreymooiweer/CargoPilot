@@ -328,3 +328,119 @@ def test_a_zero_inner_quantity_is_rejected_at_the_boundary():
         "language": "en",
     })
     assert response.status_code == 422
+
+
+# --- The two provisions that only show up across lines ---------------------
+#
+# 3.5.1.3 and 3.5.1.4 were both read from ADR 2025 and both left unimplemented
+# for several releases, and they fail in opposite directions: the first lets a
+# package through that the text caps, the second refuses a load the text
+# permits. Neither can be seen while assessing one line at a time, which is why
+# they sat unnoticed.
+
+
+def _eq(**overrides) -> dict:
+    base = {
+        "un_number": "1263",
+        "class": "3",
+        "packing_group": "II",
+        "limited_quantity": "0",
+        "excepted_quantity": "E1",
+        "net_per_inner_packaging": "20 g",
+        "net_mass_liters_per_package": "400 g",
+    }
+    base.update(overrides)
+    return base
+
+
+def test_mixed_e_codes_in_one_outer_packaging_are_capped_by_the_strictest():
+    """ADR/IMDG 3.5.1.3. E1 allows 1000 g per outer packaging and E3 allows 300.
+    Packed together, 300 is the cap for the two of them — and 400 + 200 is over
+    it, while each line on its own is comfortably within its own code. That is
+    exactly the package the old line-by-line check waved through."""
+    products = [
+        _eq(excepted_quantity="E1", net_mass_liters_per_package="400 g"),
+        _eq(un_number="1993", excepted_quantity="E3", net_mass_liters_per_package="200 g"),
+    ]
+    result = check_lq_eq(_entry(products), "nl", ["ADR"])
+
+    together = [w for w in result["warnings"] if w["rule"] == "ADR/IMDG 3.5.1.3"]
+    assert together, result["warnings"]
+    assert "300" in together[0]["message"]
+    assert "E3" in together[0]["message"]
+    # Both lines are named: the fault is the combination, not one of the two.
+    assert "UN 1263" in together[0]["products"] and "UN 1993" in together[0]["products"]
+
+
+def test_mixed_e_codes_that_stay_under_the_strictest_cap_are_not_reported():
+    products = [
+        _eq(excepted_quantity="E1", net_mass_liters_per_package="200 g"),
+        _eq(un_number="1993", excepted_quantity="E3", net_mass_liters_per_package="50 g"),
+    ]
+    result = check_lq_eq(_entry(products), "nl", ["ADR"])
+    assert [w for w in result["warnings"] if w["rule"] == "ADR/IMDG 3.5.1.3"] == []
+
+
+def test_one_e_code_twice_is_not_a_mixed_packing():
+    """3.5.1.3 applies where goods "to which different codes are assigned" are
+    packed together. Two lines of the same code are governed by their own code's
+    limit, which the per-line check already applies."""
+    products = [
+        _eq(excepted_quantity="E3", net_mass_liters_per_package="200 g"),
+        _eq(un_number="1993", excepted_quantity="E3", net_mass_liters_per_package="200 g"),
+    ]
+    result = check_lq_eq(_entry(products), "nl", ["ADR"])
+    assert [w for w in result["warnings"] if w["rule"] == "ADR/IMDG 3.5.1.3"] == []
+
+
+def test_the_smallest_quantities_are_relieved_by_3_5_1_4():
+    """1 g per inner packaging and 100 g per package, under E1: only 3.5.2 and
+    3.5.3 apply. The message says so, because a user reading "within the limits
+    of E1" would otherwise go on to apply the mark and the package cap."""
+    result = check_lq_eq(
+        _entry([_eq(net_per_inner_packaging="1 g", net_mass_liters_per_package="100 g")]),
+        "nl", ["ADR"],
+    )
+    row = _single(result)["eq"]
+    assert row["status"] == "within_limits"
+    assert row.get("relief_3_5_1_4") is True
+    assert "3.5.1.4" in row["message"]
+
+
+def test_a_hair_over_the_relief_limit_is_not_relieved():
+    """The boundary is the whole content of 3.5.1.4: 101 g per outer packaging is
+    an ordinary E1 package again, with the mark and the cap."""
+    result = check_lq_eq(
+        _entry([_eq(net_per_inner_packaging="1 g", net_mass_liters_per_package="101 g")]),
+        "nl", ["ADR"],
+    )
+    row = _single(result)["eq"]
+    assert row["status"] == "within_limits"
+    assert "relief_3_5_1_4" not in row
+
+
+def test_e3_is_not_relieved_however_small_the_quantity():
+    """3.5.1.4 lists E1, E2, E4 and E5 and leaves E3 out. Reading "the smallest
+    quantities" as a rule about quantities alone would relieve a code the text
+    does not name."""
+    result = check_lq_eq(
+        _entry([_eq(excepted_quantity="E3", net_per_inner_packaging="1 g",
+                    net_mass_liters_per_package="50 g")]),
+        "nl", ["ADR"],
+    )
+    assert "relief_3_5_1_4" not in _single(result)["eq"]
+
+
+def test_relieved_packages_do_not_count_towards_the_1000_of_3_5_5():
+    """The consequence that makes 3.5.1.4 more than a sentence on screen. 3.5.5
+    is part of chapter 3.5 and 3.5.1.4 leaves only 3.5.2 and 3.5.3 standing, so
+    counting these packages would refuse a load the text permits."""
+    relieved = _eq(net_per_inner_packaging="1 g", net_mass_liters_per_package="100 g",
+                   quantity_packages="1500")
+    result = check_lq_eq(_entry([relieved]), "nl", ["ADR"])
+    assert [w for w in result["warnings"] if w["rule"] == "ADR/IMDG 3.5.5"] == []
+
+    ordinary = _eq(net_per_inner_packaging="20 g", net_mass_liters_per_package="400 g",
+                   quantity_packages="1500")
+    result = check_lq_eq(_entry([ordinary]), "nl", ["ADR"])
+    assert [w for w in result["warnings"] if w["rule"] == "ADR/IMDG 3.5.5"]

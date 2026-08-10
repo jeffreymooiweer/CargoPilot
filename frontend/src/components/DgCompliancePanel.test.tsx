@@ -323,3 +323,60 @@ describe("wanneer het paneel niets te zeggen heeft", () => {
     expect(zonderProfiel.container).toBeEmptyDOMElement();
   });
 });
+
+describe("de tunnelsectie", () => {
+  function withTunnel(tunnel: Record<string, unknown>): DgComplianceResult {
+    return { ...result(400), adr_tunnel: tunnel } as unknown as DgComplianceResult;
+  }
+
+  it("toont de code van de hele lading en de codes waaruit hij volgt", async () => {
+    vi.spyOn(api, "dgCompliance").mockResolvedValue(
+      withTunnel({
+        rows: [
+          { product: "UN 1203", code: "D/E" },
+          { product: "UN 1017", code: "C/D" },
+        ],
+        code: "C/D",
+        restricted_categories: ["D", "E"],
+        explosive_mass_kg: null,
+        status: "derived",
+        message: "De meest restrictieve code van de hele lading is C/D.",
+        basis: "ADR 8.6.3 / 8.6.4",
+        note: "Berekend voor vervoer in colli.",
+      }),
+    );
+    render(<DgCompliancePanel entries={entries("400")} profiles={["ADR"]} />);
+
+    await waitFor(() =>
+      expect(screen.getByText(/meest restrictieve code/)).toBeInTheDocument(),
+    );
+    // Both the derived code and the codes it was derived from: a user who
+    // disagrees has to be able to see where the answer came from.
+    expect(screen.getByText("(C/D)")).toBeInTheDocument();
+    expect(screen.getByText(/UN 1203/)).toBeInTheDocument();
+    expect(screen.getByText(/UN 1017/)).toBeInTheDocument();
+  });
+
+  it("blijft staan als er juist geen beperking geldt", async () => {
+    // 8.6.3.3: a consignment inside the 1.1.3.6 exemption gets no code, and an
+    // empty section would read as "not checked" rather than as an answer.
+    vi.spyOn(api, "dgCompliance").mockResolvedValue(
+      withTunnel({
+        rows: [{ product: "UN 1203", code: "D/E" }],
+        code: null,
+        restricted_categories: [],
+        explosive_mass_kg: null,
+        status: "exempt",
+        message: "Alle goederen worden overeenkomstig 1.1.3 vervoerd.",
+        basis: "ADR 8.6.3 / 8.6.4",
+        note: "Berekend voor vervoer in colli.",
+      }),
+    );
+    render(<DgCompliancePanel entries={entries("200")} profiles={["ADR"]} />);
+
+    await waitFor(() =>
+      expect(screen.getByText(/overeenkomstig 1.1.3/)).toBeInTheDocument(),
+    );
+    expect(screen.getByText("compliance.tunnelStatus.exempt")).toBeInTheDocument();
+  });
+});

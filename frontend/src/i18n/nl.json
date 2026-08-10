@@ -409,7 +409,19 @@
     "adnOverClass": "Klasse {{cls}}: {{carried}} kg boven de grens van {{limit}} kg",
     "adnConditions": "Voorwaarden die blijven gelden (1.1.3.6.2)",
     "colClass": "Klasse",
-    "colAdnLimit": "Grens"
+    "colAdnLimit": "Grens",
+    "tunnelTitle": "Tunnelbeperkingen (8.6.3)",
+    "tunnelNoCode": "geen code",
+    "tunnelExplosiveMass": "Totale netto massa ontplofbare stof: {{mass}} kg",
+    "tunnelStatus": {
+      "derived": "code vastgesteld",
+      "unrestricted": "geen beperking",
+      "exempt": "1.1.3 — niet van toepassing",
+      "lq_marking_only": "alleen via LQ-kenmerking",
+      "incomplete": "onvolledig",
+      "unknown_code": "code onbekend",
+      "not_checked": "niet getoetst"
+    }
   },
   "dgauto": {
     "title": "Automatisch afgeleid",

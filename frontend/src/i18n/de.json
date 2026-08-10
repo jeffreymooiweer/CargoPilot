@@ -409,7 +409,19 @@
     "adnOverClass": "Klasse {{cls}}: {{carried}} kg über der Grenze von {{limit}} kg",
     "adnConditions": "Bedingungen, die weiter gelten (1.1.3.6.2)",
     "colClass": "Klasse",
-    "colAdnLimit": "Grenze"
+    "colAdnLimit": "Grenze",
+    "tunnelTitle": "Tunnelbeschränkungen (8.6.3)",
+    "tunnelNoCode": "kein Code",
+    "tunnelExplosiveMass": "Gesamte Nettomasse explosiver Stoffe: {{mass}} kg",
+    "tunnelStatus": {
+      "derived": "Code bestimmt",
+      "unrestricted": "keine Beschränkung",
+      "exempt": "1.1.3 — nicht anwendbar",
+      "lq_marking_only": "nur über die LQ-Kennzeichnung",
+      "incomplete": "unvollständig",
+      "unknown_code": "Code unbekannt",
+      "not_checked": "nicht geprüft"
+    }
   },
   "dgauto": {
     "title": "Automatisch abgeleitet",

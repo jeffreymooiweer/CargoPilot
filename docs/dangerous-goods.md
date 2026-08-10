@@ -80,6 +80,16 @@ ADR 2025 by `scripts/extract_adr_names.py`, cross-checked against the alphabetic
 the same edition. Where the ADR knows no Dutch name — the IMDG-only additions do not have
 one — the English name stays on its own.
 
+**One UN number, several Table A rows.** Paint has three packing groups; aerosols have
+twelve rows and *no* packing group at all, told apart only by the classification code of
+column (3b) — 5A is non-flammable, 5F flammable, 5T toxic — and each with its own transport
+category, tunnel code and labels. CargoPilot narrows the rows by whatever you have already
+filled in, the classification code first, and where more than one row is still in the
+running it says so: how many, what they differ in, and which field settles it. Until
+v1.51.0 it warned only when the *packing group* varied, so a shipment of ordinary flammable
+spray cans was quietly given the row for the non-flammable ones — transport category 3
+instead of 2, which is a points factor three times too low, and tunnel code E instead of D.
+
 **About divisions.** ADR Table A lists gases as class "2" and explosives as class "1",
 with the real division hiding in the labels column (2.1 / 2.2 / 2.3) or the
 classification code (`1.4S`). CargoPilot resolves the actual division, because

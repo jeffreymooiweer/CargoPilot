@@ -293,3 +293,74 @@ def test_the_lookup_suggests_the_name_that_the_document_will_carry(profiles, exp
     those two must not diverge."""
     result = offline_lookup(BENZINE, "de", profiles)
     assert result["proper_shipping_name"] == expected
+
+
+# --- Entries the table has no English name for ----------------------------
+#
+# Fourteen of them, plus one truncated. `english_name` falls back on the German
+# so a field is never blank, and that fallback is right — but on a document it
+# is a German name where the rulebook wants English, and it must not pass
+# unremarked.
+
+
+@pytest.mark.parametrize("un", ["3245", "3374", "2807", "1327"])
+def test_the_table_holds_no_english_name_for_these(un):
+    """The premise, measured rather than assumed. If a later edition of the
+    export fills these in, this test says so and the warning can go."""
+    from app.services.dg.naming import english_name_is_usable
+
+    assert not english_name_is_usable(entry(un))
+
+
+def test_a_truncated_english_name_counts_as_missing():
+    """UN 1139 reads "Coating solution (" in the export — cut off mid-bracket.
+    A name that ends on an opening bracket is not a name."""
+    from app.services.dg.naming import english_name_is_usable
+
+    assert entry("1139")["name_en"] == "Coating solution ("
+    assert not english_name_is_usable(entry("1139"))
+
+
+def test_an_ordinary_entry_is_not_flagged():
+    from app.services.dg.naming import english_name_is_usable
+
+    assert english_name_is_usable(entry(BENZINE))
+    # Brackets are ordinary in a shipping name and must not trip the check.
+    assert english_name_is_usable(entry("3082"))
+
+
+def test_the_export_says_when_it_had_to_fall_back_on_the_german_name():
+    """Silence here is the failure: the field is filled, the document looks
+    complete, and the name on it is in a language the rulebook does not allow."""
+    from app.services.documents.exporter import validate_document
+    from app.services.documents.registry import get_document
+    from tests.test_documents import BASE_VALUES, LINES
+
+    goods = [{
+        "line_id": "L1",
+        "products": [{
+            "un_number": "3245",
+            "proper_shipping_name": "GENETISCH VERÄNDERTE MIKROORGANISMEN",
+            "class": "9",
+            "quantity_packages": "1",
+            "type_of_package": "kist",
+            "net_mass_liters_per_package": "1",
+        }],
+    }]
+    _errors, warnings = validate_document(
+        get_document("cmr"), dict(BASE_VALUES), LINES, goods, "nl"
+    )
+    said = [w for w in warnings if "3245" in w and "Engelse vervoersnaam" in w]
+    assert said, warnings
+
+
+def test_an_entry_with_a_proper_english_name_is_not_reported():
+    from app.services.documents.exporter import validate_document
+    from app.services.documents.registry import get_document
+    from tests.test_documents import BASE_VALUES, LINES
+
+    _errors, warnings = validate_document(
+        get_document("cmr"), dict(BASE_VALUES), LINES, german_goods(), "de"
+    )
+    assert [w for w in warnings if "proper shipping name" in w.lower()
+            and "1203" in w] == []

@@ -103,8 +103,11 @@ limit of 3.4.2 (naming the 20 kg tray limit of 3.4.3), and the 1,000-package cap
 3.5.5. When packages that fall within the LQ limits total more than 8 tonnes gross on the
 transport unit, ADR 3.4.13/3.4.14 is raised so the large LQ mark of 3.4.15 is not missed.
 For class 1 the 1.1.3.6 points use the entered net explosive mass, not the product mass.
-Classification comes from Table A; when a UN number has several packing-group rows the
-chosen group is used and an unchosen multi-row substance is flagged. Carriage-prohibited
+Classification comes from Table A; the row is narrowed by whatever the user has filled in —
+the classification code first, then the packing group — and where more than one row is still
+in the running, the panel says how many, what they differ in and which field settles it.
+Until v1.51.0 only a varying *packing group* was flagged, which left fifteen UN numbers to
+be resolved in silence, UN 1950 aerosols and UN 2037 gas cartridges among them. Carriage-prohibited
 substances are kept out of the points table. The description line follows 5.4.1.1.1 and
 the tunnel code is printed, correctly, only here — and since v1.50.0 the code for the whole
 load is derived from it under 8.6.3.
@@ -430,6 +433,12 @@ verification.
   code into the categories that are barred.
 - **ADR 3.5.1.3 and 3.5.1.4**, the two excepted-quantity provisions that can only be seen
   across lines.
+- **The silent Table A row choice.** Fifteen UN numbers had several rows that the old
+  packing-group check could not see, because their rows share one packing group or have
+  none. UN 1950 aerosols is twelve rows apart on transport category, tunnel code and
+  labels; UN 2037 gas cartridges is nine.
+- **Entries with no usable English proper shipping name.** Fourteen empty and one
+  truncated in the export; the German name was substituted without a word.
 - **The edition the classification table actually is.** Reading the book showed it to be an
   ADR 2023 export while the manifest reported 2025; UN 0514 and UN 3551–3560 are missing
   from it and UN 1499 and 1999 are still in it. The manifest now says so.

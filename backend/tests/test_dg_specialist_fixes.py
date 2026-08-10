@@ -110,7 +110,24 @@ def test_b3_user_packing_group_selects_that_table_a_row():
     # row-dependent fields are, and those belong to PG III (cat 3, E1).
     assert derived["patch"]["transport_category"] == "3"
     assert derived["patch"]["excepted_quantity"] == "E1"
-    assert "packing_group_note" not in derived["hints"]
+
+
+def test_b3_choosing_the_packing_group_does_not_always_settle_the_row():
+    """Since v1.51.0 the note is not about the packing group but about the row.
+
+    Until then this case asserted that choosing PG III silenced the note, and
+    that was wrong: UN 1263 has *three* PG III rows, one with tunnel code D/E and
+    hazard number 30 and two with tunnel code E and no hazard number. The
+    application filled the first and printed "(D/E)" on the document without a
+    word. Choosing the packing group narrows the field; it does not always close
+    it.
+    """
+    derived = derive_product(
+        {"un_number": "1263", "packing_group": "III"}, "nl", ["ADR"]
+    )
+    note = derived["hints"]["table_a_variant_note"]
+    assert "tunnelcode" in note
+    assert "D/E" in note and "E" in note
 
 
 # --- B4: class 1 computes with NEM, not product mass ------------------------

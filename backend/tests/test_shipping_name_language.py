@@ -54,11 +54,72 @@ def test_sea_and_air_keep_english_whatever_the_screen_says(profiles):
     assert proper_shipping_name(entry(BENZINE), "de", profiles) == "GASOLINE"
 
 
-@pytest.mark.parametrize("language", ["nl", "en", "fr", ""])
-def test_every_other_language_keeps_english(language):
-    """The ADR table has no Dutch column, so Dutch gets — as before — the English
-    name."""
+@pytest.mark.parametrize("language", ["en", "fr"])
+def test_english_and_french_readers_keep_the_english_name(language):
+    """French is one of the three ADR 5.4.1.4.1 allows on its own, and Table A
+    carries no French column to do better with."""
     assert proper_shipping_name(entry(BENZINE), language, ["ADR"]) == "GASOLINE"
+
+
+# --- Dutch: not one of the three ------------------------------------------
+#
+# ADR 5.4.1.4.1 asks for an official language of the forwarding country and,
+# where that is not English, French or German, one of those three *in addition*.
+# So Dutch is the one language that cannot stand alone on the document, and the
+# field carries both names.
+
+
+@pytest.mark.parametrize("language", ["nl", "", "xx"])
+def test_a_dutch_road_document_carries_the_dutch_name_and_the_english_beside_it(language):
+    """An unset or unknown language is Dutch — that is the app's default — and so
+    it lands on the same rule rather than quietly on the English one."""
+    assert (proper_shipping_name(entry(BENZINE), language, ["ADR"])
+            == "BENZINE OF MOTORBRANDSTOF (GASOLINE)")
+
+
+@pytest.mark.parametrize("un,expected", [
+    ("1789", "ZOUTZUUR (HYDROCHLORIC ACID)"),
+    ("1090", "ACETON (ACETONE)"),
+])
+def test_the_dutch_name_comes_from_the_adr_and_not_from_a_translation(un, expected):
+    """These names are read out of table A of the Dutch ADR edition, not
+    translated. ZOUTZUUR is what the book says; a translator would have produced
+    "WATERSTOFCHLORIDE-OPLOSSING" or worse."""
+    assert proper_shipping_name(entry(un), "nl", ["ADR"]) == expected
+
+
+@pytest.mark.parametrize("profiles", [["IMDG"], ["IATA_DGR"], ["ADR", "IMDG"]])
+def test_sea_and_air_get_the_english_name_alone_from_a_dutch_screen_too(profiles):
+    """Two names in one field is what the road document wants; IMDG 5.4.1.4.1
+    and IATA DGR 8.1.2.1 want one, in English."""
+    assert proper_shipping_name(entry(BENZINE), "nl", profiles) == "GASOLINE"
+
+
+def test_a_un_number_without_a_dutch_name_keeps_the_english_one_alone():
+    """Not every entry the app knows is in the Dutch table A — the IMDG-only
+    additions are not. An empty pair of brackets would be worse than nothing."""
+    assert proper_shipping_name(
+        {"un": "9999", "name_en": "SOMETHING", "name_de": ""}, "nl", ["ADR"]
+    ) == "SOMETHING"
+
+
+def test_a_name_that_reads_the_same_in_both_languages_is_not_doubled():
+    """"TOLUEEN (TOLUEEN)" is not a requirement met, it is a printing error."""
+    assert proper_shipping_name(
+        {"un": "9999", "name_en": "TOLUENE", "name_de": "", "name_nl": "TOLUENE"},
+        "nl", ["ADR"],
+    ) == "TOLUENE"
+
+
+def test_the_dutch_document_name_is_corrected_for_a_sea_leg():
+    """Same trap as with German: a road document drawn up first keeps its name in
+    the field, and on the IMO DGF only the English belongs."""
+    product = {"un_number": "1203",
+               "proper_shipping_name": "BENZINE OF MOTORBRANDSTOF (GASOLINE)"}
+    assert resolve_for_profile(product, "IMDG") == (
+        "GASOLINE", "BENZINE OF MOTORBRANDSTOF (GASOLINE)")
+    assert resolve_for_profile(dict(product), "ADR")[0] == (
+        "BENZINE OF MOTORBRANDSTOF (GASOLINE)")
 
 
 def test_an_entry_without_a_german_name_falls_back_instead_of_going_blank():

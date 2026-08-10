@@ -62,15 +62,20 @@ def test_the_layer_says_what_it_does_not_cover():
 # --- Nieuwe UN-nummers -------------------------------------------------------
 
 def test_the_new_42_24_un_numbers_are_findable():
-    """Sodium-ion batteries are already in IMDG 42-24 and not yet in ADR 2025.
-    Whoever ships them by sea has to be able to look them up."""
+    """Sodium-ion batteries are in IMDG 42-24 and not in the Table A export the
+    app was built on, which is a 2023 one. ADR 2025 does know them — the Dutch
+    edition lists UN 3551 as NATRIUM-ION BATTERIJEN — but their road data has
+    not been read out yet, so for now they carry only what the sea code says.
+    Whoever ships them has to be able to look them up either way."""
     hits = {r["un"] for r in search_un_numbers("sodium ion", 10)}
     assert {"3551", "3552", "3558"} <= hits
 
 
 def test_a_new_un_number_carries_its_ems_and_says_where_it_comes_from():
     entry = offline_lookup("3553")
-    assert entry["proper_shipping_name"] == "DISILANE"
+    # The Dutch name comes from ADR 2025 even though the rest of the entry comes
+    # from the sea code: the two seeds are separate on purpose.
+    assert entry["proper_shipping_name"] == "DISILAAN (DISILANE)"
     assert entry["class"] == "2.1"
     assert entry["ems_code"] == "F-D, S-U"
     assert "42-24" in entry["source"]

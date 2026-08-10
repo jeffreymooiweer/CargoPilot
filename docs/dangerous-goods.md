@@ -23,7 +23,7 @@ Type `1203`, or search for "gasoline". CargoPilot fills in:
 
 | | |
 |---|---|
-| **Proper shipping name** | English, or German where the regulations allow it — see below |
+| **Proper shipping name** | English, German or Dutch, depending on what the rulebook for that document allows — see below |
 | **Class and division** | Real divisions, not just the class — see the note below |
 | **Subsidiary risks** | From the labels column, e.g. `8 (5.1)` for nitric acid |
 | **Classification code** | `F1`, `M4`, `C1` — kept separate, never mixed into the description |
@@ -70,8 +70,15 @@ the IMO form gets `GASOLINE` while the CMR keeps `BENZIN ODER OTTOKRAFTSTOFF`; t
 tells you it did so. Only what CargoPilot derived itself is adjusted — wording you typed,
 such as a technical name on an N.O.S. entry, is left exactly as it stands.
 
-There is no Dutch column in Table A, so Dutch readers get the English name, exactly as
-before.
+**Dutch is the one language that cannot stand alone.** ADR 5.4.1.4.1 asks for an official
+language of the forwarding country and, where that is not English, French or German, one
+of those three *in addition*. So a Dutch road document does not read `ZOUTZUUR` but
+`ZOUTZUUR (HYDROCHLORIC ACID)`, and `UN 1203, BENZINE OF MOTORBRANDSTOF (GASOLINE), 3, II,
+(D/E)` is the description line a Dutch consignor needs. Those Dutch names are not
+translations: they are read out of column (2) of Table A in the official Dutch edition of
+ADR 2025 by `scripts/extract_adr_names.py`, cross-checked against the alphabetical index of
+the same edition. Where the ADR knows no Dutch name — the IMDG-only additions do not have
+one — the English name stays on its own.
 
 **About divisions.** ADR Table A lists gases as class "2" and explosives as class "1",
 with the real division hiding in the labels column (2.1 / 2.2 / 2.3) or the
@@ -85,7 +92,7 @@ official line per profile and shows it before you export:
 
 | Profile | Example |
 |---|---|
-| **ADR / RID / ADN** | `UN 1203, GASOLINE, 3, II, (D/E), 10 jerrycan, 200 L` |
+| **ADR / RID / ADN** | `UN 1203, BENZINE OF MOTORBRANDSTOF (GASOLINE), 3, II, (D/E), 10 jerrycan, 200 L` |
 | **IMDG** | Adds the EmS code and marine pollutant marking |
 | **IATA** | Adds the packing instruction and Cargo Aircraft Only |
 

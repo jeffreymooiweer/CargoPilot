@@ -5,6 +5,10 @@ Sources (see README):
   classification code, packing group, labels, LQ/EQ, packing instructions,
   transport category, tunnel code, hazard number.
 - 49 CFR 172.101 (eCFR, public domain): English proper shipping names.
+- ADR 2025, Dutch edition, table A column (2): the Dutch proper shipping names,
+  read by ``scripts/extract_adr_names.py``. They are attached here rather than
+  in the table itself, because they come from a later edition than the export
+  the rest of the entry is built on.
 - UN packaging codes per ADR 6.1.2 / 6.5.1.4 / 6.6.2.
 
 Note: this is a factual compilation as an aid to filling in; the current
@@ -19,6 +23,7 @@ from pathlib import Path
 
 from app.services.dg import amendment_42_24
 from app.services.dg.enrichment import clean_value, enrich_un_entry, parse_hazards
+from app.services.dg.names_nl import dutch_name
 from app.services.dg.naming import proper_shipping_name
 
 _SEED_DIR = Path(__file__).resolve().parents[3] / "seed" / "dg"
@@ -75,7 +80,14 @@ def _load_un() -> list[dict]:
             entries = json.loads((_SEED_DIR / "un_numbers.json").read_text(encoding="utf-8"))
             entries += _imdg_only_entries({e["un"] for e in entries})
             for entry in entries:
-                entry["_search"] = _normalize(f"{entry.get('name_en', '')} {entry.get('name_de', '')}")
+                # The Dutch name comes from a separate seed, and searching on it
+                # is the point of having it: whoever types "zoutzuur" used to get
+                # nothing at all, because the index held only English and German.
+                entry["name_nl"] = dutch_name(entry["un"])
+                entry["_search"] = _normalize(
+                    f"{entry.get('name_en', '')} {entry.get('name_de', '')} "
+                    f"{entry['name_nl']}"
+                )
             _un_cache = entries
     return _un_cache
 
@@ -119,8 +131,13 @@ def search_un_numbers(
     elif len(text) >= 2:
         for entry in entries:
             hay = entry["_search"]
-            name = _normalize(entry.get("name_en") or entry.get("name_de") or "")
-            if name.startswith(text):
+            # A name the entry *starts* with outranks one it merely contains, and
+            # that has to hold for each of the three languages. Weighing only the
+            # English put "zoutzuur" behind every entry with the word somewhere in
+            # the middle, while it is the name of UN 1789 itself.
+            names = [_normalize(entry.get(key) or "")
+                     for key in ("name_en", "name_de", "name_nl")]
+            if any(name.startswith(text) for name in names if name):
                 scored.append((60, entry))
             elif any(word.startswith(text) for word in hay.split()):
                 scored.append((40, entry))

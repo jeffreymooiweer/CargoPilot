@@ -210,9 +210,13 @@ export default function DangerousGoodsStep({
     // category, tunnel code, EmS and air freight rules) is derived by
     // /dg/prepare. The classification code (F1, M4, C1) is emphatically *not* a
     // subsidiary risk.
+    // The name the server already resolved for these profiles, not the English
+    // column: the suggestion showed "BENZINE OF MOTORBRANDSTOF (GASOLINE)" and
+    // writing "GASOLINE" into the field instead made the click undo what the
+    // list had just got right.
     updateProduct(entryIndex, productIndex, {
       un_number: un.un,
-      proper_shipping_name: (un.name_en || un.name_de).toUpperCase(),
+      proper_shipping_name: (un.proper_shipping_name || un.name_en || un.name_de).toUpperCase(),
     });
     // Live ADR 2025 enrichment (exact PSN and so on) when the external source is reachable.
     void lookupUn(entryIndex, productIndex, un.un, true);

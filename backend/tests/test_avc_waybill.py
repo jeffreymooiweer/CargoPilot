@@ -82,7 +82,13 @@ def test_cmr_carries_the_adr_description_and_category_totals(prepared):
     """Without the 5.4.1.1.1 line the CMR would not suffice as a transport document."""
     fields = fill_cmr({**VALUES, "sender_instructions": "Voorzichtig laden"}, LINES, prepared, "nl")
 
-    assert fields["VakRood06Regel01Kolom06"] == "UN 1203, GASOLINE, 3, II, (D/E), 10 jerrycan, 200 L"
+    # Both names, because this is a Dutch document. ADR 5.4.1.4.1 wants an
+    # official language of the forwarding country and, since Dutch is not
+    # English, French or German, one of those three in addition. "BENZINE" on
+    # its own would be short of a requirement.
+    assert fields["VakRood06Regel01Kolom06"] == (
+        "UN 1203, BENZINE OF MOTORBRANDSTOF (GASOLINE), 3, II, (D/E), 10 jerrycan, 200 L"
+    )
     # Lines without dangerous goods keep their ordinary description.
     assert fields["VakRood06Regel02Kolom06"] == "4 × pallets kalkzandsteen"
     # The mass is not counted twice over the DG lines.
@@ -121,7 +127,12 @@ def test_avc_waybill_fills_the_official_form(prepared):
     crosses = sorted((round(w[0]), round(w[1])) for w in _words if w[4] == "X")
     assert crosses == [(38, 248), (419, 248)]
     # The dangerous substance appears as the ADR description in the 'inhoud' column.
-    assert "UN 1203, GASOLINE, 3, II," in text
+    # Wrapped over three lines inside the narrow column, so it is checked in
+    # pieces; test_cmr_carries_the_adr_description_and_category_totals pins the
+    # sentence itself.
+    assert "UN 1203, BENZINE OF" in text
+    assert "MOTORBRANDSTOF" in text
+    assert "(GASOLINE), 3, II, (D/E), 10" in text
     assert "Totale hoeveelheid per vervoerscategorie" in text
     # Totals over both lines: 10 + 4 packages, 165 + 820 kg.
     assert text.count("14") >= 2 and text.count("985") >= 2

@@ -76,6 +76,167 @@ def _un_prefixed(value: Any) -> str:
     return text if text.upper().startswith(("UN", "ID")) else f"UN {text}"
 
 
+#: The columns of Table A that differ between the rows of one UN number and that
+#: the application fills in from them. Two rows that agree on all of these are
+#: interchangeable for everything CargoPilot derives, and choosing between them
+#: is not worth a word to the user.
+TABLE_A_VARIANT_FIELDS = (
+    "packing_group",
+    "classification_code",
+    "labels",
+    "transport_category",
+    "tunnel_code",
+    "limited_quantity",
+    "excepted_quantity",
+    "hazard_number",
+    "packing_instructions",
+)
+
+#: How each of those columns is named to the user. Short, because they end up in
+#: one sentence together.
+TABLE_A_FIELD_LABELS: dict[str, dict[str, str]] = {
+    "packing_group": {"nl": "verpakkingsgroep", "en": "packing group",
+                      "de": "Verpackungsgruppe", "fr": "groupe d'emballage"},
+    "classification_code": {"nl": "classificatiecode", "en": "classification code",
+                            "de": "Klassifizierungscode", "fr": "code de classification"},
+    "labels": {"nl": "etiketten", "en": "labels", "de": "Gefahrzettel",
+               "fr": "étiquettes"},
+    "transport_category": {"nl": "vervoerscategorie", "en": "transport category",
+                           "de": "Beförderungskategorie", "fr": "catégorie de transport"},
+    "tunnel_code": {"nl": "tunnelcode", "en": "tunnel code", "de": "Tunnelcode",
+                    "fr": "code tunnel"},
+    "limited_quantity": {"nl": "LQ", "en": "LQ", "de": "LQ", "fr": "QL"},
+    "excepted_quantity": {"nl": "E-code", "en": "E code", "de": "E-Code",
+                          "fr": "code E"},
+    "hazard_number": {"nl": "gevaarsidentificatienummer", "en": "hazard identification No.",
+                      "de": "Gefahrnummer", "fr": "numéro d'identification du danger"},
+    "packing_instructions": {"nl": "verpakkingsinstructie", "en": "packing instruction",
+                             "de": "Verpackungsanweisung", "fr": "instruction d'emballage"},
+}
+
+#: The two shapes of the variant note: one that can name a field to enter, and
+#: one for the rows no field the user fills in can tell apart.
+_VARIANT_NOTE = {
+    "nl": "UN {un} heeft {count} rijen in tabel A die verschillen in {fields}. Rij "
+          "{chosen} is voorlopig ingevuld. Vul de {settle} in om de juiste rij te "
+          "kiezen: {variants}.",
+    "en": "UN {un} has {count} rows in Table A differing in {fields}. Row {chosen} was "
+          "filled in provisionally. Enter the {settle} to pick the right one: {variants}.",
+    "de": "UN {un} hat {count} Zeilen in Tabelle A, die sich in {fields} unterscheiden. "
+          "Zeile {chosen} wurde vorläufig eingetragen. Geben Sie die {settle} ein, um die "
+          "richtige zu wählen: {variants}.",
+    "fr": "L'ONU {un} a {count} lignes au tableau A qui diffèrent par {fields}. La ligne "
+          "{chosen} a été remplie à titre provisoire. Indiquez le {settle} pour choisir "
+          "la bonne : {variants}.",
+}
+
+_VARIANT_NOTE_UNRESOLVABLE = {
+    "nl": "UN {un} heeft {count} rijen in tabel A die verschillen in {fields}. Rij "
+          "{chosen} is voorlopig ingevuld; classificatiecode en verpakkingsgroep zijn "
+          "voor alle rijen gelijk, dus controleer zelf welke van deze op uw zending "
+          "slaat: {variants}.",
+    "en": "UN {un} has {count} rows in Table A differing in {fields}. Row {chosen} was "
+          "filled in provisionally; the classification code and packing group are the "
+          "same for every row, so check for yourself which of these describes your "
+          "consignment: {variants}.",
+    "de": "UN {un} hat {count} Zeilen in Tabelle A, die sich in {fields} unterscheiden. "
+          "Zeile {chosen} wurde vorläufig eingetragen; Klassifizierungscode und "
+          "Verpackungsgruppe sind für alle Zeilen gleich, prüfen Sie daher selbst, welche "
+          "auf Ihre Sendung zutrifft: {variants}.",
+    "fr": "L'ONU {un} a {count} lignes au tableau A qui diffèrent par {fields}. La ligne "
+          "{chosen} a été remplie à titre provisoire ; le code de classification et le "
+          "groupe d'emballage sont identiques pour toutes les lignes, vérifiez donc "
+          "vous-même laquelle correspond à votre envoi : {variants}.",
+}
+
+
+def _same_value(value: Any, given: str) -> bool:
+    return clean_value(value).strip().upper() == given
+
+
+def select_table_a_row(
+    entries: list[dict[str, Any]], product: dict[str, Any]
+) -> tuple[dict[str, Any], list[dict[str, Any]]]:
+    """The Table A row to fill from, and the rows that were still in the running.
+
+    Until v1.51.0 this looked at the packing group only, and where every row had
+    the same one — or none — the first row was taken in silence. That is not a
+    marginal case. **UN 1950, aerosols, has twelve rows in Table A** and they all
+    have no packing group: 5A is non-flammable, transport category 3, tunnel code
+    E; 5F is flammable (2.1), category 2, tunnel code D; 5T is toxic, category 1.
+    A user shipping ordinary flammable spray cans was given the row for the
+    non-flammable ones — a points factor three times too low, the wrong tunnel
+    code and no flammability label — without a word about it. UN 2037, gas
+    cartridges, has nine rows and the same problem, and UN 0015, 0016 and 0303
+    differ only in whether the ammunition carries a corrosive or a toxic label.
+
+    What tells the rows apart in ADR is the **classification code** of column
+    (3b): 5A, 5F, 5T, 1.2G. So that is looked at first, then the packing group.
+    Whatever the user has filled in narrows the field; what is left over is
+    returned so the caller can say that a choice is still open.
+    """
+    candidates = list(entries)
+    for field in ("classification_code", "packing_group"):
+        given = str(product.get(field) or "").strip().upper()
+        if not given:
+            continue
+        narrowed = [e for e in candidates if _same_value(e.get(field), given)]
+        if narrowed:
+            candidates = narrowed
+    return (candidates[0] if candidates else entries[0]), candidates
+
+
+def table_a_variant_note(
+    entry: dict[str, Any], candidates: list[dict[str, Any]], language: str = "nl"
+) -> str | None:
+    """What the rows still in the running differ in, and how to choose between them.
+
+    A note that only said "there are several packing groups" could not describe
+    UN 1950 at all, because its twelve rows have no packing group. This one names
+    the columns that actually differ and lists the alternatives by their
+    classification code, which is the field the user can enter to settle it.
+    """
+    if len(candidates) < 2:
+        return None
+    differing = [
+        field for field in TABLE_A_VARIANT_FIELDS
+        if len({clean_value(e.get(field)).strip().upper() for e in candidates}) > 1
+    ]
+    if not differing:
+        # Rows that agree on everything the application uses. UN 1202 has three
+        # of them, apart from a special provision it does not compute with.
+        return None
+
+    def describe(row: dict[str, Any]) -> str:
+        code = clean_value(row.get("classification_code")).strip().upper()
+        pg = clean_value(row.get("packing_group")).strip().upper()
+        head = " ".join(part for part in (code, f"VG {pg}" if pg else "") if part) or "?"
+        detail = ", ".join(
+            f"{pick(TABLE_A_FIELD_LABELS[field], language)} "
+            f"{clean_value(row.get(field)) or '—'}"
+            for field in differing
+            if field not in ("classification_code", "packing_group")
+        )
+        return f"{head} ({detail})" if detail else head
+
+    # What to tell the user to enter. The classification code settles it for UN
+    # 1950 and UN 2037, but not for UN 0015, whose three rows are all 1.2G and
+    # differ only in the label. Naming a field that does not discriminate is
+    # worse than naming none.
+    key = next((field for field in ("classification_code", "packing_group")
+                if field in differing), None)
+    template = _VARIANT_NOTE if key else _VARIANT_NOTE_UNRESOLVABLE
+    return pick(template, language).format(
+        settle=pick(TABLE_A_FIELD_LABELS[key], language) if key else "",
+        un=clean_value(entry.get("un")),
+        count=len(candidates),
+        fields=", ".join(pick(TABLE_A_FIELD_LABELS[field], language)
+                         for field in differing),
+        chosen=describe(entry),
+        variants="; ".join(describe(row) for row in candidates),
+    )
+
+
 def derive_product(
     product: dict[str, Any], language: str = "nl", profiles: list[str] | None = None
 ) -> dict[str, Any]:
@@ -87,23 +248,12 @@ def derive_product(
     if not entries:
         return {}
 
-    # One UN number can have several Table A rows (per packing group), each with
-    # its own transport category, LQ and E code. If the user has already filled
-    # in the packing group, *that* row should be the source — not silently the
-    # first one.
-    user_pg = str(product.get("packing_group") or "").strip().upper()
-    entry = entries[0]
-    if user_pg:
-        entry = next(
-            (e for e in entries
-             if clean_value(e.get("packing_group")).strip().upper() == user_pg),
-            entries[0],
-        )
-    distinct_pgs: list[str] = []
-    for candidate in entries:
-        pg = clean_value(candidate.get("packing_group")).strip().upper()
-        if pg and pg not in distinct_pgs:
-            distinct_pgs.append(pg)
+    # One UN number can have several Table A rows, and picking the wrong one is
+    # not a detail: it changes the transport category (and with it the points
+    # factor), the tunnel code, the labels and the LQ. What the user has already
+    # filled in narrows the choice — the classification code first, because that
+    # is the column ADR uses to tell the rows apart.
+    entry, candidates = select_table_a_row(entries, product)
 
     extras = enrich_un_entry(entry, language)
     hazards = parse_hazards(entry)
@@ -144,37 +294,15 @@ def derive_product(
                          "_options", "_codes", "_changes", "_requirement", "_category"))
     }
 
-    # Several packing groups without a choice by the user: the first row has
-    # been filled in, but category (a points factor!), LQ and E code differ per
-    # row. That must not be a silent choice.
-    if len(distinct_pgs) > 1 and not user_pg:
-        chosen = clean_value(entry.get("packing_group")).strip().upper()
-        variants = "; ".join(
-            "PG {pg}: cat {cat}, LQ {lq}, {eq}".format(
-                pg=clean_value(e.get("packing_group")).strip().upper() or "—",
-                cat=clean_value(e.get("transport_category")) or "—",
-                lq=clean_value(e.get("limited_quantity")) or "—",
-                eq=clean_value(e.get("excepted_quantity")) or "—",
-            )
-            for e in entries
-            if clean_value(e.get("packing_group")).strip().upper()
-        )
-        hints["packing_group_note"] = pick(
-            {
-                "nl": "Deze stof kent meerdere verpakkingsgroepen ({pgs}); verpakkingsgroep "
-                      "{chosen} is voorlopig ingevuld. Vervoerscategorie, LQ en E-code "
-                      "verschillen per groep ({variants}) — controleer de verpakkingsgroep "
-                      "van uw product.",
-                "en": "This substance has several packing groups ({pgs}); packing group "
-                      "{chosen} was filled in provisionally. Transport category, LQ and E "
-                      "code differ per group ({variants}) — verify the packing group of "
-                      "your product.",
-                "de": "Dieser Stoff hat mehrere Verpackungsgruppen ({pgs}); Verpackungs"
-                      "gruppe {chosen} wurde vorläufig eingetragen. Beförderungskategorie, "
-                      "LQ und E-Code unterscheiden sich je Gruppe ({variants}) — prüfen "
-                      "Sie die Verpackungsgruppe Ihres Produkts.", "fr": "Cette matière comporte plusieurs groupes d'emballage ({pgs}) ; le groupe d'emballage {chosen} a été rempli à titre provisoire. La catégorie de transport, la QL et le code E diffèrent d'un groupe à l'autre ({variants}) — vérifiez le groupe d'emballage de votre produit."},
-            language,
-        ).format(pgs=", ".join(distinct_pgs), chosen=chosen, variants=variants)
+    # More than one row still in the running: the first was filled in, and that
+    # was a choice nobody made. It has to be said, and it has to say what the
+    # rows differ in — otherwise the user cannot tell whether it matters.
+    note = table_a_variant_note(entry, candidates, language)
+    if note:
+        hints["table_a_variant_note"] = note
+        # Kept under the old key as well: the interface, the export and the
+        # tests all read that one, and a note nobody renders is no note.
+        hints["packing_group_note"] = note
 
     if extras.get("air_forbidden"):
         hints["air_forbidden"] = True

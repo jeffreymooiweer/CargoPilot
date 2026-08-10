@@ -2,6 +2,53 @@
 
 All notable changes are documented here, following [Semantic Versioning](https://semver.org/).
 
+## [1.51.0] — 2026-08-10
+
+### Fixed
+
+- **Eén UN-nummer, meerdere rijen in tabel A — en de app koos er stilzwijgend één.** Dit is
+  het duurste dat het doorlopen van de ADR-kant heeft opgeleverd.
+
+  De rij werd gekozen op **verpakkingsgroep**, en er kwam een waarschuwing zodra een
+  UN-nummer er meer dan één had. Dat dekt UN 1263 verf en UN 1993 N.E.G. en het leest als
+  het hele probleem. Dat is het niet.
+
+  **UN 1950, spuitbussen, heeft twaalf rijen in tabel A en geen van alle heeft een
+  verpakkingsgroep.** Zij worden onderscheiden door de classificatiecode van kolom (3b):
+
+  | Code | Etiketten | Vervoerscategorie | Tunnelcode |
+  |---|---|---|---|
+  | 5A | 2.2 | 3 | E |
+  | 5F | 2.1 | 2 | D |
+  | 5T | 2.2 + 6.1 | 1 | D |
+
+  Wie gewone brandbare spuitbussen verzond — verreweg het meest voorkomende geval — kreeg
+  de rij van de niet-brandbare. Vervoerscategorie 3 in plaats van 2 is een puntenfactor 1
+  waar het ADR er 3 voorschrijft, dus een lading spuitbussen scoorde een derde van wat zij
+  hoort te scoren en kon een vrijstelling behouden die zij kwijt was. De tunnelcode kwam op
+  E uit in plaats van D, en het etiket brandbaar ontbrak op het document. Zonder één woord,
+  omdat alle rijen dezelfde (lege) verpakkingsgroep hebben.
+
+  UN 2037 gaspatronen heeft negen zulke rijen. UN 0015, 0016 en 0303 hebben er elk drie die
+  alleen verschillen in of de munitie een bijtend of een giftig etiket draagt — een
+  nevengevaar dat stilzwijgend van de omschrijvingsregel viel. En zelfs het kiezen van een
+  verpakkingsgroep sluit het niet altijd: UN 1263 heeft drie VG III-rijen, één met
+  tunnelcode D/E en Kemler 30 en twee met tunnelcode E en geen van beide.
+
+  Vijftien UN-nummers werden zo stil opgelost. De rij wordt nu eerst op classificatiecode
+  gekozen, en wat openblijft wordt benoemd: hoeveel rijen, waarin zij verschillen, en welk
+  veld het beslist. Waar geen enkel veld dat de gebruiker invult ze uit elkaar houdt — de
+  drie munitierijen zijn alle 1.2G — zegt de opmerking dat ook, in plaats van een veld te
+  noemen dat niet kan werken.
+
+- **Veertien UN-nummers hebben geen bruikbare Engelse vervoersnaam, en de Duitse werd er
+  zonder mededeling voor in de plaats gezet.** UN 3245 genetisch gemodificeerde
+  organismen, UN 3374 acetyleen oplosmiddelvrij, UN 2807 gemagnetiseerd materiaal en elf
+  andere hebben een lege `name_en` in de tabel-A-export; UN 1139 heeft het afgekapte
+  "Coating solution (". De terugval op het Duits blijft — een leeg veld is erger — maar de
+  export waarschuwt nu: IMDG 5.4.1.4.1 en IATA DGR 8.1.2.1 eisen Engels, en ADR 5.4.1.4.1
+  vraagt naast het Nederlands om Engels, Frans of Duits.
+
 ## [1.50.0] — 2026-08-10
 
 ### Added

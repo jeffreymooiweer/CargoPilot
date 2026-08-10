@@ -10,8 +10,8 @@ from openpyxl.styles import Alignment, Border, Font, PatternFill, Side
 from openpyxl.utils import get_column_letter
 
 from app.core.languages import normalise, pick
-from app.services.dg.database import is_transport_forbidden
-from app.services.dg.naming import resolve_for_profile
+from app.services.dg.database import get_un_entries, is_transport_forbidden
+from app.services.dg.naming import english_name_is_usable, resolve_for_profile
 from app.services.documents.registry import condition_met, get_document, resolve_sections
 
 TEXTS = {
@@ -138,6 +138,26 @@ TEXTS = {
               "IMDG 5.4.1.4.1 / IATA DGR 8.1.2.1 require",
         "de": "Offizielle Benennung auf diesem Dokument auf Englisch gesetzt, "
               "wie IMDG 5.4.1.4.1 / IATA DGR 8.1.2.1 es verlangen", "fr": "Désignation officielle de transport mise en anglais sur ce document, comme l'exigent le 5.4.1.4.1 de l'IMDG et le 8.1.2.1 de l'IATA DGR"},
+    "no_english_name": {
+        "nl": "De ADR-tabel bevat geen bruikbare Engelse vervoersnaam voor UN {un}; "
+              "op dit document staat nu de Duitse. IMDG 5.4.1.4.1 en IATA DGR 8.1.2.1 "
+              "eisen Engels, en ADR 5.4.1.4.1 vraagt naast het Nederlands om Engels, "
+              "Frans of Duits. Vul de naam zelf in.",
+        "en": "The ADR table holds no usable English proper shipping name for UN {un}; "
+              "this document now carries the German one. IMDG 5.4.1.4.1 and IATA DGR "
+              "8.1.2.1 require English, and ADR 5.4.1.4.1 asks for English, French or "
+              "German beside the Dutch. Enter the name yourself.",
+        "de": "Die ADR-Tabelle enthält für UN {un} keine brauchbare englische Benennung; "
+              "auf diesem Dokument steht jetzt die deutsche. IMDG 5.4.1.4.1 und IATA DGR "
+              "8.1.2.1 verlangen Englisch, und ADR 5.4.1.4.1 verlangt neben dem "
+              "Niederländischen Englisch, Französisch oder Deutsch. Tragen Sie die "
+              "Benennung selbst ein.",
+        "fr": "Le tableau ADR ne contient pas de désignation officielle anglaise "
+              "utilisable pour l'ONU {un} ; ce document porte donc l'allemande. Le "
+              "5.4.1.4.1 de l'IMDG et le 8.1.2.1 de l'IATA DGR exigent l'anglais, et le "
+              "5.4.1.4.1 de l'ADR demande l'anglais, le français ou l'allemand à côté du "
+              "néerlandais. Indiquez la désignation vous-même.",
+    },
     "field_format": {
         "nl": "Veld heeft niet de vereiste vorm",
         "en": "Field does not have the required format",
@@ -510,6 +530,16 @@ def validate_document(
             # and, until v1.50.0, evaluated nowhere. What the driver needs is the
             # code of the *whole load* (8.6.3.2), and that never appeared on the
             # sheet at all — only the per-substance codes it is derived from.
+            for entry in entries:
+                for product in entry.get("products", []):
+                    un = str(product.get("un_number") or "").strip()
+                    if not un:
+                        continue
+                    rows = get_un_entries(un)
+                    if rows and not english_name_is_usable(rows[0]):
+                        warnings.append(
+                            _text("no_english_name", lang).format(un=un)
+                        )
             tunnel = outcome.get("adr_tunnel")
             if tunnel and profile == "ADR" and tunnel.get("status") not in {None, "not_checked"}:
                 warnings.append(f"ADR 8.6.3: {tunnel['message']}")

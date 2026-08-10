@@ -62,6 +62,26 @@ def english_name(entry: dict[str, Any]) -> str:
     return str(entry.get("name_en") or entry.get("name_de") or "").strip().upper()
 
 
+def english_name_is_usable(entry: dict[str, Any]) -> bool:
+    """Is there an English proper shipping name, and is it whole?
+
+    Fourteen entries in the Table A export carry an empty ``name_en`` — UN 3245
+    genetically modified organisms, UN 3374 acetylene solvent free, UN 2807
+    magnetized material and eleven more — and UN 1139 carries the truncated
+    "Coating solution (". ``english_name`` falls back on the German so a field
+    is never blank, but on an IMDG or IATA document a German name is not a
+    fallback: 5.4.1.4.1 and 8.1.2.1 require English, and a Dutch road document
+    reading "BESCHERMLAK, OPLOSSING (SCHUTZANSTRICHLÖSUNG)" satisfies nothing
+    either. So it has to be visible rather than papered over.
+    """
+    name = str(entry.get("name_en") or "").strip()
+    if not name:
+        return False
+    # A name that ends on an opening bracket was cut off in the export; the rest
+    # of the entry may be right but this field is not.
+    return name.count("(") == name.count(")")
+
+
 def dutch_name_of(entry: dict[str, Any]) -> str:
     """The Dutch name of an entry, from the entry or from the ADR seed."""
     given = str(entry.get("name_nl") or "").strip()

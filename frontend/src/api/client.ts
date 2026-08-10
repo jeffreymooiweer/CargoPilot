@@ -447,8 +447,11 @@ export interface DgPrepareHint {
   ems_packing_group_options?: Record<string, string>;
   excepted_quantity_text?: string;
   limited_quantity_text?: string;
-  /** A warning when a UN number has more than one packing group. */
+  /** A warning when several Table A rows are still in the running for this UN
+   *  number. Kept under the old name as well, because it is the key the
+   *  interface, the export and the tests already read. */
   packing_group_note?: string;
+  table_a_variant_note?: string;
   air_note?: string;
   air_forbidden?: boolean;
   segregation_groups?: string[];

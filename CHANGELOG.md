@@ -2,6 +2,43 @@
 
 All notable changes are documented here, following [Semantic Versioning](https://semver.org/).
 
+## [1.55.0] — 2026-08-11
+
+### Changed
+
+- **De collitabel toont nog alleen de kolommen die er echt op passen; de rest staat in het
+  detailpaneel.** Het paneel van v1.54.0 gaf de regel de volle breedte, maar de tabel zelf
+  bleef alle dertien kolommen tonen en dus zijwaarts schuiven. Nu vallen de kolommen weg
+  die niet meer passen, en dat mag omdat er niets verloren gaat: wat wegvalt staat in het
+  paneel, en de tabel zegt eronder hoeveel dat er zijn.
+
+  **Gemeten op de tabel zelf en niet op het venster,** want dat is hier niet hetzelfde: het
+  zijmenu kan tijdens de wizard opengeklapt worden en scheelt 224 px. Een breekpunt op de
+  vensterbreedte zou dan dertien kolommen in de ruimte van zes blijven tonen. Een
+  `ResizeObserver` op de tabel klopt in beide gevallen.
+
+  De kolommen zijn gerangschikt naar wat u nodig hebt terwijl u regels invoert:
+
+  | | Kolommen |
+  |---|---|
+  | Blijven altijd | Omschrijving, Aantal |
+  | Daarna | Totaalgewicht, Status, Gevaarlijke stoffen-collo |
+  | Daarna | Lengte, Breedte, Hoogte |
+  | Daarna | Gewicht/st, Vorm |
+  | Als laatste | Volume, Wanddikte |
+
+  Wat dat oplevert, in de browser nagemeten, telkens **zonder zijwaarts schuiven**: 1920 px
+  alle dertien kolommen, 1536 px elf, 1280 px negen, 1024 px zes.
+
+  Twee dingen die anders scheef gaan en die apart vastliggen: lengte, breedte en hoogte
+  worden als één geheel behandeld — twee van de drie tonen omdat de derde net over de rand
+  viel leest als een fout — en zodra een kolom niet meer past stopt het, in plaats van hem
+  over te slaan en de volgende te proberen. Dat laatste liet bij 700 px het volume
+  verschijnen terwijl het totaalgewicht wegviel, en een tabel die het getal waar de hele
+  stap om draait weglaat maar wel het volume toont ziet er kapot uit.
+
+- **Het detailicoon is nu een document met een vergrootglas**, in plaats van het lijstje.
+
 ## [1.54.0] — 2026-08-11
 
 ### Added

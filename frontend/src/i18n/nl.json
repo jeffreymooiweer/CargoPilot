@@ -449,7 +449,9 @@
     "viewLess": "Toon minder",
     "showDetail": "Details tonen",
     "closeDetail": "Details sluiten",
-    "detailTitle": "Regeldetails"
+    "detailTitle": "Regeldetails",
+    "hiddenColumns_one": "Nog {{count}} kolom staat in de details van de regel.",
+    "hiddenColumns_other": "Nog {{count}} kolommen staan in de details van de regel."
   },
   "units": {
     "suggested": "Gebruikelijk voor dit goed",

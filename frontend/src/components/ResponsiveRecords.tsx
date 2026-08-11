@@ -34,6 +34,64 @@ export interface RecordColumn<T> {
   numeric?: boolean;
   /** Column width on desktop, for example "w-32". */
   width?: string;
+  /**
+   * Roughly the room this column needs before it is worth showing, in pixels.
+   * Used to decide which columns fit; not a CSS width.
+   */
+  minPx?: number;
+  /** Lower goes first when there is not enough room for everything. */
+  priority?: number;
+  /**
+   * Columns with the same group are taken or dropped together.
+   *
+   * Length, width and height are one measurement in three cells. Showing two of
+   * the three because the third happened to fall over the edge looks like a
+   * fault rather than a choice.
+   */
+  group?: string;
+}
+
+/** Room set aside for the actions column when deciding what else fits. */
+const ACTIONS_PX = 132;
+
+/**
+ * Which columns fit, in the order they were given.
+ *
+ * Pure, and exported, because this is the part worth testing: the measuring is
+ * a `ResizeObserver` and the arithmetic is where a column silently disappears
+ * that should not have.
+ *
+ * Priority decides what goes first, not the column order — the description and
+ * the quantity are worth more than the wall thickness whatever place they have
+ * in the table. The most important column is always kept, however narrow the
+ * screen: a table of nothing but action buttons is not a table.
+ */
+export function fitColumns<T>(
+  columns: RecordColumn<T>[],
+  available: number,
+  reserved = 0,
+): RecordColumn<T>[] {
+  const byPriority = [...columns].sort((a, b) => (a.priority ?? 50) - (b.priority ?? 50));
+  const kept = new Set<string>();
+  let room = available - reserved;
+
+  for (const column of byPriority) {
+    if (kept.has(column.key)) continue;
+    // A group is weighed as one; its members stand or fall together.
+    const members = column.group
+      ? byPriority.filter((other) => other.group === column.group)
+      : [column];
+    const need = members.reduce((total, member) => total + (member.minPx ?? 110), 0);
+    // Stop at the first one that does not fit rather than skipping it and
+    // trying the next. Carrying on lets a *less* important narrow column
+    // overtake a wider one above it — at 700px the volume appeared while the
+    // total mass did not — and a table that leaves out the figure the whole
+    // step is for, but shows the volume, reads as a fault rather than a choice.
+    if (kept.size > 0 && need > room) break;
+    for (const member of members) kept.add(member.key);
+    room -= need;
+  }
+  return columns.filter((column) => kept.has(column.key));
 }
 
 interface Props<T> {
@@ -76,6 +134,16 @@ interface Props<T> {
    * Desktop only, because on a phone the card *is* that view.
    */
   detail?: boolean;
+  /**
+   * Drop the columns that do not fit, rather than squeezing all of them in.
+   *
+   * Measured on the table's own container and not on the viewport, because the
+   * two are not the same thing here: the side menu can be folded open during
+   * the wizard, and a breakpoint on the window would then keep showing thirteen
+   * columns in the width of six. What falls away stays reachable in the detail
+   * panel, so nothing is lost — which is what makes dropping them allowed.
+   */
+  fit?: boolean;
 }
 
 const cellText = "text-sm text-slate-800 dark:text-slate-100";
@@ -91,6 +159,7 @@ export default function ResponsiveRecords<T>({
   footer,
   minWidth,
   detail = false,
+  fit = false,
 }: Props<T>) {
   const { t } = useTranslation();
   const [expanded, setExpanded] = useState<Set<string>>(new Set());
@@ -104,6 +173,26 @@ export default function ResponsiveRecords<T>({
   const closing = useRef<number | undefined>(undefined);
   const opener = useRef<HTMLElement | null>(null);
   const panel = useRef<HTMLDivElement | null>(null);
+
+  // The width the table actually has, which is not the window's: the side menu
+  // takes 200px off it whenever it is folded open.
+  const wrap = useRef<HTMLDivElement | null>(null);
+  const [available, setAvailable] = useState<number | null>(null);
+  useEffect(() => {
+    const node = wrap.current;
+    if (!fit || !node || typeof ResizeObserver === "undefined") return undefined;
+    const observer = new ResizeObserver(([entry]) => setAvailable(entry.contentRect.width));
+    observer.observe(node);
+    return () => observer.disconnect();
+  }, [fit]);
+
+  // Before the first measurement everything is shown — one frame of too much is
+  // better than a table that starts empty and fills in.
+  const shown =
+    fit && available !== null
+      ? fitColumns(columns, available, actions || detail ? ACTIONS_PX : 0)
+      : columns;
+  const hidden = columns.length - shown.length;
 
   const detailIndex = rows.findIndex((row, index) => String(rowKey(row, index)) === detailKey);
   const detailRow = detailIndex >= 0 ? rows[detailIndex] : null;
@@ -161,9 +250,12 @@ export default function ResponsiveRecords<T>({
   useEffect(() => () => window.clearTimeout(closing.current), []);
 
   // A table with a floor can scroll sideways, and then the actions — including
-  // the button that opens the panel and makes the scrolling unnecessary — end
-  // up off the right-hand edge. Pinning that column keeps them in reach. It
-  // needs its own background, or the cells sliding under it show through.
+  // the button that opens the panel — end up off the right-hand edge. Pinning
+  // that column keeps them in reach. With `fit` on, the columns give way before
+  // the table does and it rarely scrolls at all; what is left is the dividing
+  // line, which sets the buttons apart from the data and is worth having. The
+  // column needs its own background, or the cells sliding under it show
+  // through.
   const stickyActions = minWidth
     ? "sticky right-0 bg-white pl-2 dark:bg-slate-900 before:absolute before:inset-y-0 before:left-0 before:w-px before:bg-slate-200 dark:before:bg-slate-700"
     : "";
@@ -192,11 +284,11 @@ export default function ResponsiveRecords<T>({
     <>
       {/* Desktop: een gewone tabel. Daar is de ruimte er wel voor, en een tabel
           laat je rijen met elkaar vergelijken zoals een kaart dat nooit kan. */}
-      <div className="hidden md:block overflow-x-auto">
+      <div ref={wrap} className="hidden md:block overflow-x-auto">
         <table className={`w-full text-left ${minWidth ?? ""}`}>
           <thead>
             <tr className="border-b border-slate-200 dark:border-slate-700">
-              {columns.map((column) => (
+              {shown.map((column) => (
                 <th
                   key={column.key}
                   scope="col"
@@ -220,7 +312,7 @@ export default function ResponsiveRecords<T>({
           <tbody>
             {rows.map((row, index) => (
               <tr key={rowKey(row, index)} className="border-b border-slate-100 align-top dark:border-slate-800">
-                {columns.map((column) => (
+                {shown.map((column) => (
                   <td key={column.key} className={`py-2 pr-3 ${cellText} ${column.numeric ? "text-right tabular-nums" : ""}`}>
                     {column.render(row, index)}
                   </td>
@@ -306,7 +398,16 @@ export default function ResponsiveRecords<T>({
         {footer}
       </div>
 
-      <div className="hidden md:block">{footer}</div>
+      <div className="hidden md:block">
+        {hidden > 0 && (
+          // Columns that vanish without a word look like a fault. This says
+          // where they went, and the detail button is right there.
+          <p className="mt-2 text-[11px] text-slate-500 dark:text-slate-400">
+            {t("records.hiddenColumns", { count: hidden })}
+          </p>
+        )}
+        {footer}
+      </div>
 
       {/* The detail panel. Every column under each other, in the order the table
           has them, with the same controls — so it is a place to *work*, not a
@@ -375,13 +476,21 @@ export default function ResponsiveRecords<T>({
 
 function DetailIcon() {
   return (
-    <svg className="h-5 w-5" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
-      <rect x="2" y="3.5" width="5.5" height="5.5" rx="1.6" />
-      <rect x="2" y="9.25" width="5.5" height="5.5" rx="1.6" />
-      <rect x="2" y="15" width="5.5" height="5.5" rx="1.6" />
-      <rect x="9.75" y="4.9" width="12.25" height="2.7" rx="1.35" />
-      <rect x="9.75" y="10.65" width="12.25" height="2.7" rx="1.35" />
-      <rect x="9.75" y="16.4" width="12.25" height="2.7" rx="1.35" />
+    <svg
+      className="h-5 w-5"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={1.7}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden
+    >
+      <path d="M12.5 21H6a3 3 0 0 1-3-3V5a3 3 0 0 1 3-3h7l6 6v1.5" />
+      <path d="M13 2v3.5A2.5 2.5 0 0 0 15.5 8H19" />
+      <path d="M6.5 7h4M6.5 11.5h4M6.5 16h4" />
+      <circle cx="15.6" cy="15.6" r="3.6" />
+      <path d="M18.3 18.3 21.8 21.8" />
     </svg>
   );
 }

@@ -16,7 +16,11 @@ import {
 } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it } from "vitest";
-import ResponsiveRecords, { QuantityWithUnit, RecordColumn } from "./ResponsiveRecords";
+import ResponsiveRecords, {
+  QuantityWithUnit,
+  RecordColumn,
+  fitColumns,
+} from "./ResponsiveRecords";
 
 interface Row {
   id: number;
@@ -171,6 +175,82 @@ describe("de vloer onder de desktoptabel", () => {
       />,
     );
     expect(screen.getByRole("table").className).not.toContain("min-w-");
+  });
+});
+
+describe("welke kolommen passen", () => {
+  /**
+   * The lines table has twelve columns of input fields. Squeezing all of them
+   * into a laptop gave the quantity field 30px; scrolling sideways hid the very
+   * button that opens the detail panel. The third answer is to show fewer, and
+   * the arithmetic that decides *which* is what can go quietly wrong — a column
+   * that disappears looks the same whether it was a decision or a bug.
+   *
+   * Measured on the table's own container rather than on the window, because
+   * the side menu can be folded open and then the two differ by 224px. The
+   * measuring is a ResizeObserver; this is the part worth testing.
+   */
+  const wide: RecordColumn<Row>[] = [
+    { key: "name", header: "Omschrijving", priority: 0, minPx: 240, render: (r) => r.name },
+    { key: "quantity", header: "Aantal", priority: 1, minPx: 220, render: (r) => r.quantity },
+    { key: "weight", header: "Gewicht", priority: 2, minPx: 115, render: (r) => r.weight },
+    { key: "l", header: "Lengte", priority: 5, minPx: 82, group: "afmetingen", render: () => "" },
+    { key: "b", header: "Breedte", priority: 5, minPx: 82, group: "afmetingen", render: () => "" },
+    { key: "h", header: "Hoogte", priority: 5, minPx: 82, group: "afmetingen", render: () => "" },
+    { key: "volume", header: "Volume", priority: 10, minPx: 95, render: (r) => r.volume },
+  ];
+  const keys = (width: number, reserved = 0) =>
+    fitColumns(wide, width, reserved).map((column) => column.key);
+
+  it("toont alles zodra er ruimte is", () => {
+    expect(keys(1200)).toHaveLength(wide.length);
+  });
+
+  it("laat de minst belangrijke als eerste vallen", () => {
+    // 240 + 220 + 115 + 3 × 82 = 821 fits in 900; the volume's 95 does not.
+    expect(keys(900)).toEqual(["name", "quantity", "weight", "l", "b", "h"]);
+  });
+
+  it("houdt de belangrijkste kolom altijd, hoe smal ook", () => {
+    // A table of nothing but action buttons is not a table.
+    expect(keys(50)).toEqual(["name"]);
+  });
+
+  it("neemt lengte, breedte en hoogte samen of geen van drieën", () => {
+    // 240 + 220 + 115 = 575, plus two of the three dimensions would fit in 740
+    // and the third would not. Two out of three reads as a fault.
+    expect(keys(740)).toEqual(["name", "quantity", "weight"]);
+    expect(keys(830)).toEqual(["name", "quantity", "weight", "l", "b", "h"]);
+  });
+
+  it("houdt de volgorde van de tabel aan, niet die van de prioriteit", () => {
+    expect(keys(1200)).toEqual(wide.map((column) => column.key));
+  });
+
+  it("laat een smallere kolom geen belangrijkere inhalen", () => {
+    // The regression: skipping the one that does not fit and trying the next
+    // showed the volume while the total mass was left out.
+    expect(keys(700)).not.toContain("volume");
+  });
+
+  it("rekent de ruimte voor de actieknoppen eraf", () => {
+    expect(keys(830, 132)).toEqual(["name", "quantity", "weight"]);
+  });
+
+  it("laat een tabel zonder de instelling met rust", () => {
+    // Without `fit` nothing is dropped — the guard against this arithmetic
+    // reaching tables it was never meant for.
+    render(
+      <ResponsiveRecords
+        rows={rows}
+        columns={columns}
+        rowKey={(r) => r.id}
+        cardTitle={(r) => r.name}
+      />,
+    );
+    for (const column of columns) {
+      expect(screen.getByRole("columnheader", { name: column.header })).toBeInTheDocument();
+    }
   });
 });
 

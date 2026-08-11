@@ -179,6 +179,10 @@ export default function ReviewLinesPanel({
       key: "description",
       header: t("review.description"),
       width: "w-[28%]",
+      // What the line *is*. Without it the table says nothing, so it is never
+      // the column that falls away.
+      priority: 0,
+      minPx: 240,
       render: (draft) => (
         <EquipmentCombobox
           value={draft.description}
@@ -193,6 +197,8 @@ export default function ReviewLinesPanel({
       primary: true,
       numeric: true,
       width: "w-40",
+      priority: 1,
+      minPx: 220,
       render: (draft, index) => (
         // Two controls in one cell, and the cell has to reserve room for both.
         // Without the floor the table's auto layout sized this column on the
@@ -227,6 +233,10 @@ export default function ReviewLinesPanel({
       key: "cargoForm",
       header: t("review.cargoForm"),
       width: "w-40",
+      // Only offered for goods whose stored density describes the material
+      // itself, so on many lines it is a dash. Late.
+      priority: 9,
+      minPx: 130,
       render: (draft, index) => {
         const category = resultFor(index)?.material_category;
         const forms = (category && catalogue?.forms_by_category[category]) || [];
@@ -251,6 +261,10 @@ export default function ReviewLinesPanel({
     },
     ...(["length_cm", "width_cm", "height_cm"] as const).map((field) => ({
       key: field,
+      // One measurement in three cells: they come and go together.
+      group: "dimensions",
+      priority: 5,
+      minPx: 82,
       header: t(`review.${field}`),
       numeric: true,
       width: "w-24",
@@ -283,6 +297,9 @@ export default function ReviewLinesPanel({
     })),
     {
       key: "wall_thickness_mm",
+      // Only meaningful for hollow profiles. Last.
+      priority: 11,
+      minPx: 100,
       header: t("review.wallThickness"),
       numeric: true,
       width: "w-28",
@@ -315,6 +332,8 @@ export default function ReviewLinesPanel({
     },
     {
       key: "weightEach",
+      priority: 8,
+      minPx: 110,
       header: t("review.weightEach"),
       numeric: true,
       width: "w-28",
@@ -337,6 +356,9 @@ export default function ReviewLinesPanel({
     },
     {
       key: "weightTotal",
+      // The figure the whole step is for.
+      priority: 2,
+      minPx: 115,
       header: t("review.weightTotal"),
       numeric: true,
       width: "w-28",
@@ -359,6 +381,8 @@ export default function ReviewLinesPanel({
     },
     {
       key: "volume",
+      priority: 10,
+      minPx: 95,
       header: t("review.volume"),
       numeric: true,
       width: "w-24",
@@ -373,6 +397,9 @@ export default function ReviewLinesPanel({
     },
     {
       key: "dg",
+      // A tick that changes the rest of the wizard; worth keeping in view.
+      priority: 4,
+      minPx: 120,
       header: t("review.dangerousGoods"),
       width: "w-32",
       render: (draft, index) => {
@@ -397,6 +424,9 @@ export default function ReviewLinesPanel({
     },
     {
       key: "status",
+      // Says whether the line is usable at all.
+      priority: 3,
+      minPx: 130,
       header: t("review.status"),
       width: "w-36",
       render: (_draft, index) => {
@@ -436,13 +466,14 @@ export default function ReviewLinesPanel({
         <ResponsiveRecords
           rows={draftLines}
           columns={columns}
-          // Measured, not guessed: thirteen columns of input fields want 1,620px
-          // together. Below that the browser was taking it out of the fields
-          // rather than out of the table, and the quantity field ended up 30px
-          // wide. On a screen that cannot give it 1,620px the table scrolls —
-          // and the detail panel is the way round that: every column of one
-          // line under each other, at full width.
-          minWidth="min-w-[1620px]"
+          // Since v1.55.0 the table drops what does not fit instead of
+          // scrolling: the columns are ranked, the ones that fall off are in
+          // the detail panel, and the fields keep their width. The floor stays
+          // as the last line of defence for the case where even the columns
+          // that *are* shown do not fit — a very narrow window with the side
+          // menu folded open.
+          minWidth="min-w-[720px]"
+          fit
           detail
           rowKey={(draft) => draft.id}
           cardTitle={(draft, index) => (

@@ -47,7 +47,7 @@ def payload() -> dict:
 
 def test_the_seed_names_its_edition_and_its_cross_check(payload):
     assert payload["edition"] == "ADR 2025"
-    assert "alfabetische index" in payload["cross_check"]
+    assert "alphabetical index" in payload["cross_check"]
     assert [row["un"] for row in payload["entries"]] == ADDED
 
 

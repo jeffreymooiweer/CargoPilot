@@ -552,7 +552,7 @@ def cross_check(entries: list[dict[str, Any]]) -> dict[str, Any]:
             checks["class"][key] += 1
             if key == "differs" and len(checks["class"]["examples"]) < 15:
                 checks["class"]["examples"].append(
-                    f"UN {un}: lijst {found!r} vs ADR {sorted(divisions)!r}")
+                    f"UN {un}: list {found!r} vs ADR {sorted(divisions)!r}")
 
         seeded = ems_seed.get(un)
         if isinstance(seeded, dict) and seeded.get("fire"):
@@ -562,7 +562,7 @@ def cross_check(entries: list[dict[str, Any]]) -> dict[str, Any]:
             checks["ems"][key] += 1
             if key == "differs" and len(checks["ems"]["examples"]) < 15:
                 checks["ems"]["examples"].append(
-                    f"UN {un}: lijst {entry.get('ems')!r} vs EmS Guide {expected!r}")
+                    f"UN {un}: list {entry.get('ems')!r} vs EmS Guide {expected!r}")
 
     for name, result in checks.items():
         total = result["same"] + result["differs"]
@@ -589,7 +589,7 @@ def diagnose(path: Path, pages: list[int]) -> None:
 
             drawings = page.get_drawings()
             vertical = [d["rect"] for d in drawings if d["rect"].width <= 2.0]
-            print(f"  tekeningen: {len(drawings)}, waarvan smal-en-verticaal: {len(vertical)}")
+            print(f"  drawings: {len(drawings)}, of which narrow-and-vertical: {len(vertical)}")
             if vertical:
                 tallest = sorted(vertical, key=lambda r: -r.height)[:8]
                 print("    hoogste: " + ", ".join(
@@ -606,7 +606,7 @@ def diagnose(path: Path, pages: list[int]) -> None:
             print(f"  binnen BODY_TOP..BODY_BOTTOM ({BODY_TOP}..{BODY_BOTTOM}): "
                   f"{sum(1 for y in ys if BODY_TOP <= y <= BODY_BOTTOM)}")
 
-            print("  eerste 25 woorden onder de koptekst:")
+            print("  first 25 words below the header:")
             for word in sorted((w for w in words if w[1] > BODY_TOP),
                                key=lambda w: (w[1], w[0]))[:25]:
                 print(f"    x{word[0]:8.1f} y{word[1]:8.1f}  {word[4]!r}")
@@ -623,30 +623,30 @@ def diagnose(path: Path, pages: list[int]) -> None:
                        if d["rect"].width <= 2.0 and d["rect"].height >= 10.0]
             print(f"  verticale segmenten: {len(heights)}, hoogte "
                   f"{min(heights, default=0):.1f}..{max(heights, default=0):.1f}")
-            print(f"  getekende horizontale randen: {len(find_row_rules(page))}")
+            print(f"  drawn horizontal rules: {len(find_row_rules(page))}")
 
             rules = find_rules(page)
             markers = column_markers(page)
-            print(f"  kolomnummers in de koptekst: {len(markers)}")
+            print(f"  column numbers in the header: {len(markers)}")
             print("    " + ", ".join(f"({label})@{x:.0f}" for x, label in markers))
             bounds = boundaries(rules, markers)
             if not bounds:
-                print("  GEEN bruikbare kolomindeling; deze pagina wordt overgeslagen.")
+                print("  NO usable column layout; this page is skipped.")
                 continue
-            print("  kolommen:")
+            print("  columns:")
             for name, left, right in bounds:
                 print(f"    {left:7.1f} - {right:7.1f}  {name}")
 
             starts = un_number_rows(page, bounds)
             row_rules = row_rules_for(page, bounds)
-            print(f"  UN-nummers in de eerste kolom: {len(starts)}; "
-                  f"rijgrenzen na aanvulling: {len(row_rules)}")
+            print(f"  UN numbers in the first column: {len(starts)}; "
+                  f"row boundaries after filling in: {len(row_rules)}")
 
             lines = page_lines(page, bounds, row_rules)
-            print(f"  rijen na kolom- en rijindeling: {len(lines)}")
+            print(f"  rows after column and row banding: {len(lines)}")
             odd = [ascii(cells.get("un_number", "")) for cells in lines
                    if not UN_CELL.match(cells.get("un_number", "").strip())]
-            print(f"  eerste cellen die geen UN-nummer zijn: {odd}")
+            print(f"  first cells that are not a UN number: {odd}")
             for cells in lines[:5]:
                 print(f"    {cells}")
 
@@ -655,16 +655,16 @@ def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--out", type=Path, default=SEED / "imdg_dgl.json")
     parser.add_argument("--pdf", type=Path)
-    parser.add_argument("--pages", help="Alleen deze pagina's, voor een proef")
+    parser.add_argument("--pages", help="Only these pages, for a trial run")
     parser.add_argument("--dry-run", action="store_true",
-                        help="Wel lezen en controleren, niet wegschrijven")
+                        help="Read and check, but do not write anything")
     parser.add_argument("--debug", action="store_true",
-                        help="Per proefpagina tonen wat de parser werkelijk ziet")
+                        help="Show what the parser actually sees, per trial page")
     parser.add_argument("--min-agreement", type=float, default=0.95,
-                        help="Onder deze overeenstemming wordt niets vastgelegd")
+                        help="Below this agreement nothing is written")
     parser.add_argument("--show-un", default="",
-                        help="Deze UN-nummers voluit tonen, met de pagina waar "
-                             "ze vandaan komen — om een afwijking na te lopen")
+                        help="Show these UN numbers in full, with the page they "
+                             "came from — to chase down a discrepancy")
     args = parser.parse_args(argv)
 
     path = args.pdf or download(SOURCE_URL, Path("/tmp/imdg_42_24.pdf"))
@@ -674,43 +674,44 @@ def main(argv: list[str] | None = None) -> int:
         diagnose(path, only)
 
     entries, summary = extract(path, only)
-    print(f"gelezen: {summary}")
+    print(f"read: {summary}")
     if not entries:
-        print("Geen vermeldingen gelezen.")
+        print("No entries read.")
         return 1
 
-    print("\n--- eerste drie vermeldingen ---")
+    print("\n--- first three entries ---")
     for entry in entries[:3]:
         print(json.dumps(entry, ensure_ascii=False, indent=1))
 
     wanted = {u.strip() for u in args.show_un.split(",") if u.strip()}
     if wanted:
-        print("\n--- opgevraagde vermeldingen ---")
+        print("\n--- requested entries ---")
         for entry in entries:
             if entry.get("un_number") in wanted:
                 print(json.dumps(entry, ensure_ascii=False, indent=1))
 
     checks = cross_check(entries)
-    print("\n--- zelfcontrole tegen onafhankelijke bronnen ---")
+    print("\n--- self-check against independent sources ---")
     for name, result in checks.items():
-        print(f"  {name}: {result['same']} gelijk, {result['differs']} anders, "
-              f"overeenstemming {result['agreement']}")
+        print(f"  {name}: {result['same']} same, {result['differs']} different, "
+              f"agreement {result['agreement']}")
         for example in result["examples"]:
             print(f"      {example}")
 
     weakest = [r["agreement"] for r in checks.values() if r["agreement"] is not None]
     if not weakest:
-        print("\nNiets te vergelijken; er wordt niets vastgelegd.")
+        print("\nNothing to compare against; nothing is written.")
         return 1
     if min(weakest) < args.min_agreement:
-        print(f"\nOvereenstemming {min(weakest)} ligt onder {args.min_agreement}: "
-              "de kolomindeling klopt niet. Er wordt niets vastgelegd.")
+        print(f"\nAgreement {min(weakest)} is below {args.min_agreement}: "
+              "the column layout is wrong. Nothing is written.")
         return 1
 
     payload = {
-        "_comment": ("Dangerous Goods List van IMDG-code Amendment 42-24, machinaal "
-                     "gelezen door scripts/extract_imdg_dgl.py. Feitelijke invulhulp; "
-                     "de gepubliceerde tekst van de code blijft leidend."),
+        "_comment": ("Dangerous Goods List of IMDG Code Amendment 42-24, read by "
+                     "machine with scripts/extract_imdg_dgl.py. A compilation of "
+                     "facts offered as an aid; the published text of the code "
+                     "remains authoritative."),
         "amendment": "42-24",
         "source": SOURCE_NAME,
         "source_url": SOURCE_URL,
@@ -722,7 +723,7 @@ def main(argv: list[str] | None = None) -> int:
     print(f"\n{len(entries)} vermeldingen, {len(document.encode('utf-8'))} bytes")
 
     if args.dry_run or only:
-        print("Proefrun; er wordt niets vastgelegd.")
+        print("Dry run; nothing is written.")
         return 0
 
     args.out.parent.mkdir(parents=True, exist_ok=True)

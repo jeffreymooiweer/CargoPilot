@@ -124,34 +124,34 @@ def cluster(positions: list[tuple[float, int]], gap: float = 4.0,
 def survey(path: Path, sample_pages: list[int]) -> int:
     import fitz
 
-    print(f"bron: {path} ({path.stat().st_size} bytes)")
+    print(f"source: {path} ({path.stat().st_size} bytes)")
     with fitz.open(path) as document:
-        print(f"{document.page_count} pagina's\n")
+        print(f"{document.page_count} pages\n")
 
         pages = list_pages(document)
         if not pages:
-            print("Geen lijstpagina's herkend aan hun koptekst.")
+            print("No list pages recognised by their header.")
             return 1
         ranges = contiguous(pages)
-        print(f"== lijstpagina's: {len(pages)} ==")
+        print(f"== list pages: {len(pages)} ==")
         print("  " + ", ".join(f"p{a}-p{b}" if a != b else f"p{a}" for a, b in ranges))
 
         # Gaps inside the range are suspect: a list runs on.
         gaps = [p for p in range(pages[0], pages[-1] + 1) if p not in set(pages)]
-        print(f"  gaten binnen het bereik: {gaps or 'geen'}")
+        print(f"  gaps inside the range: {gaps or 'none'}")
         for page in gaps[:6]:
             first = document[page - 1].get_text().strip().splitlines()[:3]
             print(f"    p{page}: {' | '.join(line.strip() for line in first)}")
 
-        print("\n== kolomposities over de eerste 40 lijstpagina's ==")
+        print("\n== column positions over the first 40 list pages ==")
         clusters = cluster(column_positions(document, pages))
         for start, end, count in clusters:
-            print(f"  x {start:7.1f} - {end:7.1f}   {count:6d} woorden")
+            print(f"  x {start:7.1f} - {end:7.1f}   {count:6d} words")
 
         for number in sample_pages:
             if not 0 < number <= document.page_count:
                 continue
-            print(f"\n===== p{number}: koptekst met positie =====")
+            print(f"\n===== p{number}: header with position =====")
             words = document[number - 1].get_text("words")
             top = [w for w in words if w[1] < 120]
             for word in sorted(top, key=lambda w: (round(w[1], 1), w[0]))[:80]:
@@ -167,31 +167,31 @@ def survey(path: Path, sample_pages: list[int]) -> int:
                 found.setdefault(un, page)
 
         known = known_un_numbers()
-        print(f"\n== dekking ==")
-        print(f"  UN-nummers in de lijst : {len(found)}")
-        print(f"  UN-nummers uit de kaarten (41-22): {len(known)}")
-        print(f"  rijen totaal           : {sum(rows_per_page.values())}")
+        print(f"\n== coverage ==")
+        print(f"  UN numbers in the list   : {len(found)}")
+        print(f"  UN numbers from the cards (41-22): {len(known)}")
+        print(f"  rows in total            : {sum(rows_per_page.values())}")
         if known:
             missing = sorted(known - set(found))
             extra = sorted(set(found) - known)
-            print(f"  wel op kaart, niet in de lijst: {len(missing)}")
+            print(f"  on a card, not in the list: {len(missing)}")
             print(f"    {missing[:40]}{' …' if len(missing) > 40 else ''}")
-            print(f"  wel in de lijst, geen kaart   : {len(extra)}")
+            print(f"  in the list, no card      : {len(extra)}")
             print(f"    {extra[:40]}{' …' if len(extra) > 40 else ''}")
 
         # The three the earlier probe missed, checked separately: are they
         # anywhere in the document, and if so how are they laid out there?
-        print("\n== de nummers die eerder ontbraken ==")
+        print("\n== the numbers that were missing before ==")
         for un in ("1361", "3551", "3552", "3556", "3560", "0514", "3553"):
             page = found.get(un)
             if page:
-                print(f"  UN {un}: rij op p{page}")
+                print(f"  UN {un}: row on p{page}")
                 continue
             hits = [i + 1 for i in range(document.page_count)
                     if re.search(rf"\b{un}\b", document[i].get_text())]
             inside = [p for p in hits if p in set(pages)]
-            print(f"  UN {un}: geen rij. Komt voor op {hits[:8]}"
-                  f"{' …' if len(hits) > 8 else ''}; daarvan lijstpagina's: {inside[:8]}")
+            print(f"  UN {un}: no row. Appears on {hits[:8]}"
+                  f"{' …' if len(hits) > 8 else ''}; of those, list pages: {inside[:8]}")
             for p in inside[:1]:
                 context = document[p - 1].get_text()
                 spot = context.find(un)
@@ -201,9 +201,9 @@ def survey(path: Path, sample_pages: list[int]) -> int:
 
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--pdf", type=Path, help="Al gedownload bestand hergebruiken")
+    parser.add_argument("--pdf", type=Path, help="Reuse an already downloaded file")
     parser.add_argument("--sample-pages", default="600,601",
-                        help="Lijstpagina's waarvan de koptekst wordt afgedrukt")
+                        help="List pages whose header is printed")
     args = parser.parse_args(argv)
 
     path = args.pdf or download(SOURCE_URL, Path("/tmp/imdg_42_24.pdf"))

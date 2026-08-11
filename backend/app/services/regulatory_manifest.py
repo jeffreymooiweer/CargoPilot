@@ -36,11 +36,11 @@ RULE_SETS: list[dict[str, Any]] = [
     {
         "key": "adr",
         "profiles": ["ADR", "RID", "ADN"],
-        "name": "ADR — vervoer over de weg",
-        "edition": "2025, met een tabel A uit de uitgave 2023",
-        "source": ("UNECE ADR 2025 voor de voorschriften; tabel A via "
-                   "rkstgr/adr-substances (uitgave 2023); Nederlandse "
-                   "benamingen uit de officiële Nederlandse uitgave ADR 2025"),
+        "name": "ADR — carriage by road",
+        "edition": "2025, with a Table A from the 2023 edition",
+        "source": ("UNECE ADR 2025 for the provisions; Table A via "
+                   "rkstgr/adr-substances (2023 edition); Dutch proper "
+                   "shipping names from the official Dutch ADR 2025 edition"),
         "source_url": "https://unece.org/transport/dangerous-goods/adr-2025-files",
         "valid_from": "2025-01-01",
         # ADR is revised every two years; ADR 2027 replaces this edition, with a
@@ -49,22 +49,21 @@ RULE_SETS: list[dict[str, Any]] = [
         # Measured against the Dutch ADR 2025 while the Dutch names were being
         # read out, and therefore stated here rather than left to be discovered.
         "errata": [
-            "De classificatietabel is een export van ADR 2023, niet van 2025. De "
-            "elf rijen die 2025 toevoegt — UN 0514 en UN 3551 t/m 3560 — zijn "
-            "sinds v1.52.0 met de hand uit de Nederlandse uitgave overgenomen en "
-            "staan in adr_2025_additions.json. UN 1499 en UN 1999 staan nog in de "
-            "tabel terwijl ADR 2025 ze niet meer kent; zij blijven vindbaar en "
-            "melden dat zelf.",
-            "Enkele Engelse benamingen uit die export zijn beschadigd of "
-            "onjuist (UN 1139 'Coating solution (', UN 1993 'Compounds, "
-            "cleaning liquid'). De Nederlandse benamingen komen uit het boek "
-            "zelf en hebben dit niet.",
+            "The classification table is an ADR 2023 export, not a 2025 one. The "
+            "eleven rows 2025 adds — UN 0514 and UN 3551 through 3560 — have been "
+            "transcribed by hand from the Dutch edition since v1.52.0 and are in "
+            "adr_2025_additions.json. UN 1499 and UN 1999 are still in the table "
+            "while ADR 2025 no longer knows them; they stay findable and report "
+            "that themselves.",
+            "Some English names in that export are damaged or wrong (UN 1139 "
+            "'Coating solution (', UN 1993 'Compounds, cleaning liquid'). The "
+            "Dutch names come from the book itself and do not have this.",
         ],
         "covers": [
-            "classificatie per UN-nummer (klasse, verpakkingsgroep, etiketten, LQ/EQ)",
-            "Nederlandse benamingen uit tabel A, kolom (2)",
-            "1.1.3.6 puntentelling",
-            "7.5.2 samenlading en 7.5.4/CV28",
+            "classification per UN number (class, packing group, labels, LQ/EQ)",
+            "Dutch proper shipping names from Table A, column (2)",
+            "1.1.3.6 points calculation",
+            "7.5.2 mixed loading and 7.5.4/CV28",
         ],
         "files": ["un_numbers.json", "adr_names_nl.json",
                   "adr_2025_additions.json", "packagings.json"],
@@ -72,75 +71,75 @@ RULE_SETS: list[dict[str, Any]] = [
     {
         "key": "imdg",
         "profiles": ["IMDG"],
-        "name": "IMDG-code — vervoer over zee",
+        "name": "IMDG Code — carriage by sea",
         "edition": "Amendment 42-24 (2024 Edition)",
-        "source": "IMO-resolutie MSC.556(108), aangenomen 23 mei 2024",
+        "source": "IMO resolution MSC.556(108), adopted 23 May 2024",
         "source_url": "https://www.cepa.be/wp-content/uploads/IMDG_Code-amdt_42_24.pdf",
         "valid_from": "2026-01-01",
-        # 44-26 volgt de gebruikelijke tweejaarlijkse cyclus.
+        # 44-26 follows the usual two-yearly cycle.
         "valid_until": "2028-12-31",
         "errata": [],
         "covers": [
-            "Dangerous Goods List (hoofdstuk 3.2), inclusief kolom 16a en 16b",
-            "stuwage-, behandelings- en scheidingscodes (7.1.5, 7.1.6, 7.2.8)",
-            "de verschillenlaag 42-24 over de UN-kaarten van 41-22",
+            "Dangerous Goods List (chapter 3.2), including columns 16a and 16b",
+            "stowage, handling and segregation codes (7.1.5, 7.1.6, 7.2.8)",
+            "the 42-24 difference layer over the 41-22 UN cards",
         ],
         "files": ["imdg_dgl.json", "imdg_codes.json", "imdg_42_24.json"],
     },
     {
         "key": "imdg_class_tables",
         "profiles": ["IMDG"],
-        "name": "IMDG-code — scheidingstabellen hoofdstuk 7.2 en 3.1.4.4",
-        "edition": "Amendment 40-20, geverifieerd ongewijzigd in 42-24",
+        "name": "IMDG Code — segregation tables of chapters 7.2 and 3.1.4.4",
+        "edition": "Amendment 40-20, verified unchanged in 42-24",
         "source": (
-            "IMDG-code hoofdstuk 7.2 en 3.1.4.4. De secties 7.2.4, 7.2.6.3, "
-            "7.2.7.1.4 en 3.1.4.4 zijn tegen 42-24 nagelopen en ongewijzigd; "
-            "de enige wijziging in 7.2 is een herformulering van 7.2.6.1."
+            "IMDG Code chapters 7.2 and 3.1.4.4. Sections 7.2.4, 7.2.6.3, "
+            "7.2.7.1.4 and 3.1.4.4 were checked against 42-24 and are "
+            "unchanged; the only change in 7.2 is a rewording of 7.2.6.1."
         ),
         "valid_from": "2026-01-01",
         "valid_until": "2028-12-31",
         "errata": [],
         "covers": [
-            "7.2.4 klassescheidingstabel",
-            "7.2.6.3 vrijstellingstabellen",
-            "7.2.7.1.4 compatibiliteitsmatrix klasse 1",
-            "3.1.4.4 scheidingsgroepen",
+            "7.2.4 class segregation table",
+            "7.2.6.3 exemption tables",
+            "7.2.7.1.4 class 1 compatibility matrix",
+            "3.1.4.4 segregation groups",
         ],
         "files": ["segregation_groups.json"],
     },
     {
         "key": "ems",
         "profiles": ["IMDG"],
-        "name": "EmS Guide — noodprocedures aan boord",
+        "name": "EmS Guide — emergency procedures on board",
         "edition": "MSC.1/Circ.1588/Rev.3",
-        "source": "IMO MSC.1/Circ.1588/Rev.3, EmS Guide — index per UN-nummer",
+        "source": "IMO MSC.1/Circ.1588/Rev.3, EmS Guide — index per UN number",
         "valid_from": "2022-05-01",
         # A circular has no end date; it applies until a Rev.4 appears.
         "valid_until": None,
         "errata": [
-            "De UN-nummers die 42-24 toevoegt staan nog niet in deze index; "
-            "hun schema's komen uit imdg_42_24.json."
+            "The UN numbers 42-24 adds are not yet in this index; their "
+            "schedules come from imdg_42_24.json."
         ],
-        "covers": ["brand- en lekkageschema's per UN-nummer"],
+        "covers": ["fire and spillage schedules per UN number"],
         "files": ["ems.json"],
     },
     {
         "key": "iata",
         "profiles": ["IATA"],
-        "name": "IATA DGR — luchtvracht",
-        "edition": "67e editie (2026)",
-        "source": "IATA Dangerous Goods Regulations, 67e editie",
+        "name": "IATA DGR — air freight",
+        "edition": "67th edition (2026)",
+        "source": "IATA Dangerous Goods Regulations, 67th edition",
         "valid_from": "2026-01-01",
         # The DGR is replaced annually; edition 68 applies from 1-1-2027.
         "valid_until": "2026-12-31",
         "errata": [
-            "Addenda en operator/state variations worden niet bijgehouden; "
-            "raadpleeg die apart.",
+            "Addenda and operator/state variations are not tracked; consult "
+            "those separately.",
         ],
         "covers": [
-            "9.3.2 Table 9.3.A segregatie",
-            "5.0.2.11 Q-waarde voor 'all packed in one'",
-            "lithium- en natrium-ionbatterijen (Guidance 2026)",
+            "9.3.2 Table 9.3.A segregation",
+            "5.0.2.11 Q value for 'all packed in one'",
+            "lithium and sodium-ion batteries (Guidance 2026)",
         ],
         "files": [],
     },
@@ -152,18 +151,18 @@ RULE_SETS: list[dict[str, Any]] = [
         # marine pollutant and bulk — did not change with the edition. Warning
         # about this on every check would make the warning itself worthless.
         "superseded_by": "imdg",
-        "name": "IMDG UN-kaarten — aanvullende stofgegevens",
+        "name": "IMDG UN cards — supplementary substance data",
         "edition": "41-22 (2023)",
         "source": "Cantell IMDG UN cards, 2023 edition",
         "valid_from": "2024-01-01",
         "valid_until": "2025-12-31",
         "errata": [
-            "Achterhaald voor kolom 16a en 16b: die komen sinds v1.23.0 uit de "
-            "Dangerous Goods List van 42-24.",
-            "De klasse is onbruikbaar voor UN 2984-2992, 3548 en 3550: daar "
-            "staan volgnummers in plaats van klassen.",
+            "Superseded for columns 16a and 16b: those have come from the "
+            "42-24 Dangerous Goods List since v1.23.0.",
+            "The class is unusable for UN 2984-2992, 3548 and 3550: those "
+            "hold sequence numbers instead of classes.",
         ],
-        "covers": ["marine pollutant (kolom 4)", "bulkvervoer"],
+        "covers": ["marine pollutant (column 4)", "carriage in bulk"],
         "files": ["card_data.json"],
     },
 ]
@@ -178,7 +177,7 @@ def _checksum(path: Path) -> dict[str, Any] | None:
     """
     try:
         data = path.read_bytes()
-    except OSError:  # pragma: no cover - bestand ontbreekt
+    except OSError:  # pragma: no cover - file is missing
         return None
     return {
         "file": path.name,
@@ -192,7 +191,7 @@ def _parse(value: str | None) -> date | None:
 
 
 def rule_set_status(rule_set: dict[str, Any], today: date) -> str:
-    """"current", "not_yet_in_force" of "expired"."""
+    """"current", "not_yet_in_force" or "expired"."""
     starts = _parse(rule_set.get("valid_from"))
     ends = _parse(rule_set.get("valid_until"))
     if starts and today < starts:
@@ -227,8 +226,9 @@ def build_manifest(today: date | None = None) -> dict[str, Any]:
         "manifest_id": digest.hexdigest()[:16],
         "rule_sets": rule_sets,
         "disclaimer": (
-            "Feitencompilatie als invulhulp. De gepubliceerde uitgave van ADR, "
-            "RID, ADN, de IMDG-code en de IATA DGR blijft leidend; zie DISCLAIMER.md."
+            "A compilation of facts, offered as an aid to filling in documents. "
+            "The published editions of ADR, RID, ADN, the IMDG Code and the IATA "
+            "DGR remain authoritative; see DISCLAIMER.md."
         ),
     }
 

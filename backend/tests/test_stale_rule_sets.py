@@ -78,7 +78,7 @@ def test_the_warning_says_what_expired_and_when(monkeypatch):
         lambda profiles=None, today=None: [{
             "key": "iata",
             "name": "IATA DGR — luchtvracht",
-            "edition": "67e editie (2026)",
+            "edition": "67th edition (2026)",
             "expired_on": "2026-12-31",
             "profiles": ["IATA"],
         }],
@@ -86,7 +86,7 @@ def test_the_warning_says_what_expired_and_when(monkeypatch):
     result = check_compliance(ENTRIES, ["IATA"], "nl")
     warning = result["rule_set_warnings"][0]
     assert warning["severity"] == "warning"
-    assert "67e editie" in warning["message"]
+    assert "67th edition" in warning["message"]
     assert "2026-12-31" in warning["message"]
 
 
@@ -113,14 +113,14 @@ def test_an_expired_rule_set_reaches_the_export(monkeypatch):
         "app.services.dg.compliance.stale_rule_sets",
         lambda profiles=None, today=None: [{
             "key": "iata", "name": "IATA DGR — luchtvracht",
-            "edition": "67e editie (2026)", "expired_on": "2026-12-31",
+            "edition": "67th edition (2026)", "expired_on": "2026-12-31",
             "profiles": ["IATA"],
         }],
     )
     _errors, warnings = validate_document(
         get_document("cmr"), BASE_VALUES, LINES, ENTRIES, "ADR"
     )
-    assert any("67e editie" in w for w in warnings), warnings
+    assert any("67th edition" in w for w in warnings), warnings
 
 
 def test_an_expired_rule_set_does_not_block_the_export(monkeypatch):
@@ -130,7 +130,7 @@ def test_an_expired_rule_set_does_not_block_the_export(monkeypatch):
     monkeypatch.setattr(
         "app.services.dg.compliance.stale_rule_sets",
         lambda profiles=None, today=None: [{
-            "key": "iata", "name": "IATA DGR", "edition": "67e editie (2026)",
+            "key": "iata", "name": "IATA DGR", "edition": "67th edition (2026)",
             "expired_on": "2026-12-31", "profiles": ["IATA"],
         }],
     )

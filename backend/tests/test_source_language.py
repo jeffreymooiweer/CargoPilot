@@ -96,9 +96,12 @@ def comment_lines(path: Path):
                 if "*/" in stripped:
                     open_block = False
                 continue
-            if stripped.startswith("/*"):
+            # `{/* … */}` is how a comment is written inside JSX, and it is the
+            # form the panels use. Reading only `/*` at the start of a line
+            # missed every one of them; three Dutch ones survived v1.46.0 there.
+            if stripped.startswith("/*") or stripped.startswith("{/*"):
                 yield number, line
-                if "*/" not in stripped[2:]:
+                if "*/" not in stripped.split("/*", 1)[1]:
                     open_block = True
                 continue
             cleaned = _strip_strings(line)
@@ -106,6 +109,12 @@ def comment_lines(path: Path):
                 yield number, cleaned.split("//", 1)[1]
         elif suffix == ".yml":
             if stripped.startswith("#"):
+                yield number, line
+            # A workflow's own prose: what an input means and what it prints
+            # when it refuses. Read by whoever runs the workflow from the
+            # Actions tab, so it is interface rather than data.
+            elif stripped.startswith("description:") or "::error::" in line \
+                    or "::warning::" in line or stripped.startswith("echo "):
                 yield number, line
 
 

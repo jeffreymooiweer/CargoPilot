@@ -74,9 +74,9 @@ export default function ImportColumnMapping({ analysis, onChange, busy }: Props)
         ))}
       </div>
 
-      {/* Zonder herkende koptekst wordt regel 1 als goederenregel ingelezen.
-          Dat is vaak precies wat er misgaat, en de gebruiker ziet het meteen
-          in de voorbeeldwaarden hierboven staan. */}
+      {/* Without a recognised header row, line 1 is read as a goods line. That
+          is often exactly what goes wrong, and the user sees it straight away
+          in the sample values above. */}
       <label className="mt-3 flex items-center gap-2 text-xs text-slate-600 dark:text-slate-300">
         <input
           type="checkbox"

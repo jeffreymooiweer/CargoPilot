@@ -15,14 +15,14 @@ on:
   workflow_dispatch:
     inputs:
       commit:
-        description: "Het resultaat vastleggen op deze branch"
+        description: "Commit the result to this branch"
         type: boolean
         default: false
       min_agreement:
-        description: "Onder deze overeenstemming wordt niets vastgelegd"
+        description: "Below this agreement nothing is written"
         default: "0.99"
       show_un:
-        description: "Deze UN-nummers voluit in het log, om een afwijking na te lopen"
+        description: "These UN numbers in full in the log, to chase down a discrepancy"
         default: ""
         required: false
 
@@ -59,7 +59,7 @@ jobs:
           set -eu
           # git diff does not see a new file: that is untracked.
           if [ -z "$(git status --porcelain -- backend/seed/dg/imdg_dgl.json)" ]; then
-            echo "Ongewijzigd; niets vast te leggen."
+            echo "Unchanged; nothing to commit."
             exit 0
           fi
           ls -l backend/seed/dg/imdg_dgl.json

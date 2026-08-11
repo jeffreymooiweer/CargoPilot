@@ -299,9 +299,9 @@ export default function DangerousGoodsStep({
         </div>
       )}
 
-      {/* Velden die alleen bestaan waar ze iets betekenen: NEM alleen voor
-          klasse 1 (ADR 1.1.3.6.3), en de binnenverpakking alleen wanneer er
-          een LQ- of EQ-route bestaat (kolom 7a ≠ 0 of code ≠ E0). */}
+      {/* Fields that exist only where they mean something: NEM only for class 1
+          (ADR 1.1.3.6.3), and the inner packaging only where an LQ or EQ route
+          exists (column 7a ≠ 0 or code ≠ E0). */}
       {visibleEntries.map((entry, localIndex) => {
         const entryIndex = visibleEntryOffset + localIndex;
         return (
@@ -493,8 +493,8 @@ function AutoDerivedPanel({ prepared }: { prepared: DgPrepareResult }) {
         <p className="text-sm text-slate-500 dark:text-slate-400">{t("dgauto.intro")}</p>
       </div>
 
-      {/* Een vervoersverbod blijft altijd in beeld: dat mag nooit achter een
-          dichtgeklapte kop verdwijnen. */}
+      {/* A carriage prohibition stays in view at all times: it must never
+          disappear behind a collapsed heading. */}
       {blockers.map((blocker, i) => (
         <div
           key={i}

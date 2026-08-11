@@ -1,5 +1,5 @@
 {
-  "_comment": "Stuwagecodes (16a), behandelingscodes (16a) en scheidingscodes (16b) met hun omschrijving, overgenomen uit de hoofdstukken 7.1.5, 7.1.6 en 7.2.8 van de IMDG-code. Feitelijke invulhulp; de gepubliceerde tekst van de code blijft leidend. Machinaal gelezen door scripts/extract_imdg_codes.py.",
+  "_comment": "Stowage codes (16a), handling codes (16a) and segregation codes (16b) with their descriptions, taken from chapters 7.1.5, 7.1.6 and 7.2.8 of the IMDG Code. A compilation of facts offered as an aid; the published text of the code remains authoritative. Read by machine with scripts/extract_imdg_codes.py.",
   "amendment": "42-24",
   "source": "IMO-resolutie MSC.556(108), aangenomen 23 mei 2024 — Amendments to the International Maritime Dangerous Goods (IMDG) Code, Amendment 42-24, in werking sinds 1 januari 2026",
   "source_url": "https://www.cepa.be/wp-content/uploads/IMDG_Code-amdt_42_24.pdf",

@@ -2,165 +2,231 @@
 
 All notable changes are documented here, following [Semantic Versioning](https://semver.org/).
 
+## [1.55.1] — 2026-08-11
+
+### Changed
+
+- **The repository speaks English again, including where the guard could not
+  look.** v1.46.0 translated some 3,000 lines of comment and left
+  `test_source_language.py` behind to keep them that way. That guard throws away
+  every quoted string before it looks, on purpose — the import format really is
+  `Stalen hoekprofiel 80x80x8x6000 | 8 | stuks` and a guard that fired on it
+  would be switched off within the week. The exemption turned out to be a hole,
+  and four kinds of prose fell through it:
+
+  - **The changelog.** English until v1.49.0, when ten releases' worth of Dutch
+    entries went in — mine, because the person I write to writes Dutch. Nobody
+    reading the repository does. All ten are translated, along with v1.34.1,
+    which had been Dutch since it was written. The one Dutch fragment that stays
+    is the quoted error message in v1.24.1: it is an example of what the app
+    actually renders.
+  - **Provenance metadata in the seeds.** The `_comment`, `source` and
+    `cross_check` fields say where a table came from and how it was checked —
+    the closest thing this project has to a chain of custody, and written for a
+    reader rather than for the code.
+  - **What the scripts print.** `--help` and the self-check output of
+    `scripts/extract_*.py` are the interface of a tool a contributor runs, and
+    they answered in Dutch.
+  - **The workflow inputs.** What `commit`, `min_agreement` and `show_un` mean
+    is read from the Actions tab, and `tag-release.yml` refused a mismatched
+    version in Dutch.
+
+  The `{nl, en, de, fr}` blocks, the goods names, the Dutch proper shipping
+  names out of ADR Table A and `DISCLAIMER.nl.md` are untouched. Those are the
+  product.
+
+- **The rule set manifest reads in English.** It is provenance rather than
+  interface, but one line of it reaches the screen: the compliance panel shows
+  the editions the result was computed with. That line now says
+  `2025, with a Table A from the 2023 edition` and `67th edition (2026)`.
+
+### Fixed
+
+- **The comment guard could not see a JSX comment.** It read `//` and a `/*` at
+  the start of a line, which is not how a comment is written inside JSX — that
+  is `{/* … */}`, and it is the form the panels use. Six Dutch comments had sat
+  in `DgCompliancePanel`, `DangerousGoodsStep`, `ImportColumnMapping` and
+  `ResponsiveRecords` since v1.46.0 without the guard ever looking at them. It
+  looks now, and found them on the first run.
+
+- **A workflow's own prose was never scanned at all** — only its `#` comments
+  were. Input descriptions, `::error::` and `::warning::` output and `echo`
+  lines are what a person reading the Actions tab sees, so they are read now
+  too.
+
+### Added
+
+- **`test_repository_language.py`**, covering the three places the older guard
+  cannot reach by design: the changelog with its code spans removed, the
+  provenance metadata in `backend/seed` and `backend/app/config`, and — read out
+  of the syntax tree rather than with a regular expression — everything the
+  scripts print. Each has a companion assertion that the scan reaches the files
+  it claims to, because a scan of nothing passes just as well as a scan of
+  something clean. The translation exemption is asserted rather than assumed:
+  the day someone tightens this, `"nl": "Gescheiden van (separated from)"` must
+  not start failing, because the fix for that would be to delete Dutch a user is
+  meant to read.
+
 ## [1.55.0] — 2026-08-11
 
 ### Changed
 
-- **De collitabel toont nog alleen de kolommen die er echt op passen; de rest staat in het
-  detailpaneel.** Het paneel van v1.54.0 gaf de regel de volle breedte, maar de tabel zelf
-  bleef alle dertien kolommen tonen en dus zijwaarts schuiven. Nu vallen de kolommen weg
-  die niet meer passen, en dat mag omdat er niets verloren gaat: wat wegvalt staat in het
-  paneel, en de tabel zegt eronder hoeveel dat er zijn.
+- **The lines table now shows only the columns that genuinely fit; the rest are in the
+  detail panel.** The panel of v1.54.0 gave the line the full width, but the table itself
+  went on showing all thirteen columns and therefore scrolling sideways. Now the columns
+  that no longer fit fall away, and that is allowed because nothing is lost: what falls
+  away is in the panel, and the table says underneath how many that is.
 
-  **Gemeten op de tabel zelf en niet op het venster,** want dat is hier niet hetzelfde: het
-  zijmenu kan tijdens de wizard opengeklapt worden en scheelt 224 px. Een breekpunt op de
-  vensterbreedte zou dan dertien kolommen in de ruimte van zes blijven tonen. Een
-  `ResizeObserver` op de tabel klopt in beide gevallen.
+  **Measured on the table itself and not on the window,** because here the two are not the
+  same thing: the side menu can be folded open during the wizard and costs 224px. A
+  breakpoint on the window width would then go on showing thirteen columns in the room for
+  six. A `ResizeObserver` on the table is right in both cases.
 
-  De kolommen zijn gerangschikt naar wat u nodig hebt terwijl u regels invoert:
+  The columns are ranked by what you need while entering lines:
 
-  | | Kolommen |
+  | | Columns |
   |---|---|
-  | Blijven altijd | Omschrijving, Aantal |
-  | Daarna | Totaalgewicht, Status, Gevaarlijke stoffen-collo |
-  | Daarna | Lengte, Breedte, Hoogte |
-  | Daarna | Gewicht/st, Vorm |
-  | Als laatste | Volume, Wanddikte |
+  | Always stay | Description, Quantity |
+  | Then | Total mass, Status, Dangerous goods package |
+  | Then | Length, Width, Height |
+  | Then | Mass each, Cargo form |
+  | Last | Volume, Wall thickness |
 
-  Wat dat oplevert, in de browser nagemeten, telkens **zonder zijwaarts schuiven**: 1920 px
-  alle dertien kolommen, 1536 px elf, 1280 px negen, 1024 px zes.
+  What that yields, measured in the browser, in every case **without scrolling sideways**:
+  1920px all thirteen columns, 1536px eleven, 1280px nine, 1024px six.
 
-  Twee dingen die anders scheef gaan en die apart vastliggen: lengte, breedte en hoogte
-  worden als één geheel behandeld — twee van de drie tonen omdat de derde net over de rand
-  viel leest als een fout — en zodra een kolom niet meer past stopt het, in plaats van hem
-  over te slaan en de volgende te proberen. Dat laatste liet bij 700 px het volume
-  verschijnen terwijl het totaalgewicht wegviel, en een tabel die het getal waar de hele
-  stap om draait weglaat maar wel het volume toont ziet er kapot uit.
+  Two things go wrong otherwise, and both are pinned separately: length, width and height
+  are treated as one — showing two of the three because the third happened to fall over the
+  edge reads as a fault — and as soon as a column no longer fits it stops, rather than
+  skipping that one and trying the next. The latter made the volume appear at 700px while
+  the total mass fell away, and a table that leaves out the figure the whole step is for
+  but does show the volume looks broken.
 
-- **Het detailicoon is nu een document met een vergrootglas**, in plaats van het lijstje.
+- **The detail icon is now a document with a magnifying glass**, instead of the list.
 
 ## [1.54.0] — 2026-08-11
 
 ### Added
 
-- **Een detailknop per regel, die een paneel vanaf rechts naar binnen schuift met alle
-  kolommen onder elkaar.** De collitabel heeft dertien kolommen met invoervelden en wil
-  1.620 px; op alles wat smaller is moet er iets wijken — de tabel schuift zijwaarts of de
-  velden worden platgedrukt. Dit is de derde uitweg: de regel waar u mee bezig bent krijgt
-  de volle breedte van een paneel, één veld per regel, en de tabel mag zo breed of zo smal
-  blijven als zij wil.
+- **A detail button per line, sliding a panel in from the right with every column under
+  each other.** The lines table has thirteen columns of input fields and wants 1,620px; on
+  anything narrower something has to give — the table scrolls sideways or the fields get
+  squeezed. This is the third way out: the line you are working on gets the full width of a
+  panel, one field per row, and the table may stay as wide or as narrow as it likes.
 
-  Het paneel bevat **dezelfde velden** als de rij erachter, niet een leesbare kopie. Een
-  paneel dat u alleen kunt lezen zou u terugsturen naar de krappe tabel om iets te wijzigen.
-  De acties van de regel staan onderin mee.
+  The panel holds the **same fields** as the row behind it, not a readable copy. A panel you
+  can only read would send you back to the cramped table to change anything. The line's
+  actions come along at the bottom.
 
-  Het paneel hoort bij `ResponsiveRecords` en niet bij de collitabel, omdat het dezelfde
-  vorm heeft als de mobiele kaart: label en waarde onder elkaar. Die component wist dat al.
-  Alleen op desktop, want op een telefoon *is* de kaart die weergave.
+  The panel belongs to `ResponsiveRecords` and not to the lines table, because it has the
+  same shape as the mobile card: label and value under each other. That component already
+  knew how. Desktop only, because on a phone the card *is* that view.
 
-  Verder: Escape en het kruisje sluiten het, de focus gaat het paneel in en bij het sluiten
-  terug naar de knop, de pagina erachter zit vast zolang het openstaat, en een regel die
-  onder het paneel vandaan verdwijnt neemt het paneel mee — het paneel houdt de regel bij
-  zijn sleutel vast en niet bij zijn plaats in de lijst.
+  Further: Escape and the cross close it, focus moves into the panel and back to the button
+  on closing, the page behind it is locked while it is open, and a line that disappears from
+  under the panel takes the panel with it — the panel holds the line by its key and not by
+  its place in the list.
 
-- **De actieknoppen staan naast elkaar en blijven rechts staan.** Zij stonden onder elkaar
-  omdat de cel te smal was voor twee knoppen van 36 px; met het paneel is er ruimte voor
-  drie. En de kolom is vastgezet aan de rechterkant, want juist de knop die het zijwaarts
-  schuiven overbodig maakt stond zelf achter dat schuiven.
+- **The action buttons sit side by side and stay on the right.** They used to stack because
+  the cell was too narrow for two 36px buttons; with the panel there is room for three. And
+  the column is pinned to the right-hand edge, because the very button that makes the
+  sideways scrolling unnecessary was itself behind that scrolling.
 
 ### Fixed
 
-- **De omschrijving kon zichzelf terugdraaien.** De omschrijvingsbox houdt de getypte tekst
-  in eigen beheer — die heeft zij nodig voor het zoeken in de catalogus — en keek na de
-  eerste weergave nooit meer naar de waarde die zij van buiten kreeg. Met één box op het
-  scherm is dat onzichtbaar. Het detailpaneel zet er een tweede op dezelfde regel: typte u
-  in de ene, dan toonde de andere nog de oude tekst, en zodra u die aanraakte schreef zij
-  die oude tekst terug over wat u net had ingevoerd.
+- **The description could revert itself.** The description box keeps the typed text in its
+  own hands — it needs it for searching the catalogue — and never looked at the value it
+  was given from outside again after the first render. With one box on screen that is
+  invisible. The detail panel puts a second one on the same line: type in one and the other
+  still showed the old text, and the moment you touched it, it wrote that old text back over
+  what you had just entered.
 
 ## [1.53.1] — 2026-08-11
 
 ### Fixed
 
-- **De collitabel paste niet op het scherm, en de invoervelden waren te smal om iets in te
-  typen.** Drie dingen werkten tegen elkaar in, en pas alle drie samen leverden een
-  bruikbare tabel op. Gemeten in de browser: de tabel wíl 1.620 px en kreeg er 1.214.
+- **The lines table did not fit on the screen, and the input fields were too narrow to type
+  anything into.** Three things worked against each other, and only all three together
+  produced a usable table. Measured in the browser: the table *wants* 1,620px and was given
+  1,214.
 
-  - **Het zijmenu klapt weg zodra de modaliteit gekozen is**, met een animatie naar links,
-    en klapt met de knop linksboven altijd weer terug. Dat scheelt 224 px. Het menu volgt de
-    route één keer — bij het binnengaan en bij het verlaten van de wizard — en daarna
-    beslist de gebruiker; anders klapt het zichzelf weer dicht zodra je het opent.
-  - **De schil mag het scherm gebruiken zolang het menu weg is.** Alleen inklappen was
-    niet genoeg: de app is afgetopt op 80 rem, dus op een breed scherm ging die 224 px de
-    marge in en schoot de tabel er niets mee op. Met het menu weg gaat de afkapping naar
-    1.800 px, kop en inhoud samen zodat zij op één lijn blijven.
-  - **De tabel heeft een ondergrens gekregen.** Een `w-full`-tabel kan nooit breder worden
-    dan zijn omhulsel, dus de `overflow-x-auto` eromheen sloeg nooit aan en de browser haalde
-    de ontbrekende breedte uit de cellen. Bij een tabel die je *leest* is dat prima — tekst
-    loopt door. Bij een tabel waarin je *typt* niet: het aantalveld werd 30 px en de
-    eenheidskeuze 28 px. Nu houdt de tabel de breedte die haar velden nodig hebben en
-    schuift zij horizontaal als het scherm te klein is.
+  - **The side menu folds away as soon as the modality is chosen**, with an animation to the
+    left, and the button at the top left always folds it back. That is 224px. The menu
+    follows the route once — on the way into the wizard and on the way out — and after that
+    the user decides; otherwise it folds itself shut again the moment you open it.
+  - **The shell may use the screen while the menu is away.** Folding alone was not enough:
+    the app is capped at 80rem, so on a wide monitor those 224px went into the margin and
+    the table was no better off. With the menu away the cap moves to 1,800px, header and
+    content together so that they stay in line.
+  - **The table has been given a floor.** A `w-full` table can never be wider than its
+    container, so the `overflow-x-auto` around it never engaged and the browser took the
+    missing width out of the cells. On a table you *read* that is fine — text wraps. On a
+    table you *type* in it is not: the quantity field became 30px and the unit select 28px.
+    Now the table keeps the width its fields need and scrolls horizontally when the screen
+    is too small for it.
 
-  Op 1920 px past alles nu zonder schuiven, met het aantalveld en de eenheidskeuze elk
-  ruim 100 px. Op 1440 px schuift alleen de tabel, niet de pagina.
+  At 1920px everything now fits without scrolling, with the quantity field and the unit
+  select each a good 100px. At 1440px only the table scrolls, not the page.
 
 ## [1.53.0] — 2026-08-10
 
 ### Added
 
-- **De uitrusting van de transporteenheid wordt afgeleid uit de lading (ADR 8.1.4 en
-  8.1.5).** Uitrusting was het enige kopje in `docs/dg-coverage.md` dat zichzelf "de meest
-  voorkomende praktijkfout" noemde en dat in geen enkele modaliteit aanwezig was. Dat had
-  een reden die het waard is te benoemen: CargoPilot ziet geen voertuig en kan dus nooit
-  vaststellen dát er een wielkeg in de cabine ligt.
+- **The transport unit's equipment is derived from the load (ADR 8.1.4 and 8.1.5).**
+  Equipment was the one heading in `docs/dg-coverage.md` that called itself "the most common
+  real-world failure" and was absent from every mode. That had a reason worth naming:
+  CargoPilot cannot see a vehicle and can therefore never establish *that* a wheel chock is
+  in the cab.
 
-  Wat de app wél kan, is de lijst afleiden — en 8.1.5.1 vraagt daar letterlijk om: de
-  uitrusting wordt gekozen *overeenkomstig het gevaarsetiketnummer van de geladen goederen*,
-  en het artikel wijst voor die nummers naar het vervoersdocument. Dat is precies het
-  document dat deze app opstelt.
+  What the app *can* do is derive the list — and 8.1.5.1 asks for exactly that: the
+  equipment is chosen *according to the hazard label numbers of the goods loaded*, and the
+  article points at the transport document to identify those numbers. That is precisely the
+  document this app draws up.
 
-  - **8.1.5.2** — stopblok, twee waarschuwingssignalen, en per bemanningslid een
-    waarschuwingsvest, draagbaar verlichtingsapparaat, handschoenen en oogbescherming.
-  - **De vloeistof om de ogen te spoelen is een vrijstelling, geen eis.** De voetnoot zegt
-    dat zij *niet* is voorgeschreven voor de etiketnummers 1, 1.4, 1.5, 1.6, 2.1, 2.2 en
-    2.3. Een vracht propaanflessen krijgt er dus geen — maar ammoniak (2.3 mét nevengevaar
-    8) wel, want dat ene etiket 8 staat niet op de lijst.
-  - **8.1.5.3** — een vluchtmasker per bemanningslid bij etiketnummer 2.3 of 6.1, en een
-    schop, een rioolafdichting en een opvangreservoir bij de etiketnummers 3, 4.1, 4.3, 8 en
-    9 — maar alleen voor vaste stoffen en vloeistoffen. Een gasfles met een bijkomend etiket
-    8 heeft niets aan een schop.
-  - **8.1.4.1** komt met de hele tabel in plaats van één antwoord, want de blussers hangen
-    aan de maximaal toegestane massa van de transporteenheid en die kent de app niet. Blijft
-    de zending binnen 1.1.3.6, dan vervangt **8.1.4.2** die tabel door één blusser van 2 kg
-    — een van de weinige plaatsen waar de vrijstelling zichtbaar scheelt in wat er in de
-    cabine hoort te liggen.
+  - **8.1.5.2** — wheel chock, two warning signs, and per crew member a warning vest, a
+    portable lighting apparatus, gloves and eye protection.
+  - **The eye-rinsing liquid is an exemption, not a requirement.** The footnote says it is
+    *not* prescribed for label numbers 1, 1.4, 1.5, 1.6, 2.1, 2.2 and 2.3. A load of propane
+    cylinders is therefore not asked for one — but ammonia (2.3 *with* subsidiary hazard 8)
+    is, because that one label 8 is not on the list.
+  - **8.1.5.3** — an escape mask per crew member for label numbers 2.3 or 6.1, and a shovel,
+    a drain seal and a collecting container for label numbers 3, 4.1, 4.3, 8 and 9 — but for
+    solids and liquids only. A gas cylinder with a subsidiary label 8 has no use for a
+    shovel.
+  - **8.1.4.1** comes with the whole table instead of one answer, because the extinguishers
+    hang on the maximum permissible mass of the transport unit and the app does not know it.
+    If the consignment stays within 1.1.3.6, **8.1.4.2** replaces that table with a single
+    2 kg extinguisher — one of the few places where the exemption makes a visible difference
+    to what belongs in the cab.
 
-  Het etiketnummer is niet de klasse, en dat is precies waar het op aankomt: klasse 2 heet
-  "2" in de klassekolom en 2.1, 2.2 of 2.3 op het etiket, en de voetnoot noemt de
-  onderklassen. Wie de klassekolom leest laat de vrijstelling nooit gelden voor gassen.
+  The label number is not the class, and that is exactly what it turns on: class 2 is "2" in
+  the class column and 2.1, 2.2 or 2.3 on the label, and the footnote names the divisions.
+  Read the class column and the exemption never applies to gases at all.
 
-  Het paneel zegt erbij wat het is: een lijst om mee af te vinken, geen vaststelling.
+  The panel says what it is: a list to check against, not a finding.
 
 ## [1.52.0] — 2026-08-10
 
 ### Added
 
-- **De elf rijen die ADR 2025 heeft toegevoegd, staan er nu met hun wegvervoergegevens in.**
-  De classificatietabel waarop de app is gebouwd is een export van **2023**. UN 0514 en
-  UN 3551 t/m 3560 — natrium-ionbatterijen, de nieuwe voertuiginvoeringen, disilaan,
-  gallium in vervaardigde voorwerpen en tetramethylammoniumhydroxide — kwamen wél in de
-  app, via de IMDG 42-24-laag, maar dus met **zeegegevens**: geen vervoerscategorie, geen
-  tunnelcode, geen Kemler-nummer. Die drie kolommen bestaan alleen in tabel A van het ADR.
+- **The eleven rows ADR 2025 added are now in, with their road transport data.**
+  The classification table the app is built on is a **2023** export. UN 0514 and
+  UN 3551 through 3560 — sodium-ion batteries, the new vehicle entries, disilane,
+  gallium in manufactured articles and tetramethylammonium hydroxide — did reach the
+  app through the IMDG 42-24 layer, but with **sea data**: no transport category, no
+  tunnel code, no Kemler number. Those three columns exist only in ADR Table A.
 
-  Wie natrium-ionbatterijen over de weg verzond kreeg dus geen puntenfactor, en de
-  1.1.3.6-tabel meldde de regel als onvolledig zonder te kunnen zeggen wát er ontbrak.
+  So anyone shipping sodium-ion batteries by road got no points factor, and the
+  1.1.3.6 table reported the line as incomplete without being able to say *what* was
+  missing.
 
-  Elf rijen is weinig genoeg om met de hand over te nemen, en dat is ook hoe deze
-  repository met een regelgevingstabel omgaat. Wat het verdedigbaar maakt is dezelfde
-  discipline als overal elders: elke rij is **twee keer gelezen**, uit tabel A én uit de
-  alfabetische index van dezelfde uitgave — twee onafhankelijke zetsels — en de pagina
-  waarop zij staat is meegeschreven.
+  Eleven rows is few enough to transcribe by hand, and that is also how this repository
+  deals with a regulatory table. What makes it defensible is the same discipline as
+  everywhere else: every row was **read twice**, from Table A and from the alphabetical
+  index of the same edition — two independent typesettings — and the page it appears on
+  was recorded with it.
 
-  | UN | Vervoerscategorie | Tunnelcode | Kemler |
+  | UN | Transport category | Tunnel code | Kemler |
   |---|---|---|---|
   | 0514 | 4 | E | — |
   | 3551 / 3552 | 2 | E | — |
@@ -171,160 +237,155 @@ All notable changes are documented here, following [Semantic Versioning](https:/
   | 3559 | 4 | E | — |
   | 3560 | 1 | C/E | 668 |
 
-  Dat de voertuiginvoeringen geen vervoerscategorie en geen tunnelcode krijgen is geen
-  leesfout: UN 3166 en UN 3171 hebben ze in de bestaande tabel evenmin.
+  That the vehicle entries get no transport category and no tunnel code is not a
+  misreading: UN 3166 and UN 3171 do not have them in the existing table either.
 
 ### Changed
 
-- **UN 1499 en UN 1999 melden zelf dat ADR 2025 ze niet meer kent.** Zij blijven vindbaar —
-  een ouder vervoersdocument mag ernaar verwijzen, en een opzoeking die niets teruggeeft
-  leest als "dit UN-nummer bestaat niet" — maar zij gaan niet meer door voor een actuele
-  invoering.
+- **UN 1499 and UN 1999 now say for themselves that ADR 2025 no longer knows them.** They
+  remain findable — an older transport document may refer to them, and a lookup that
+  returns nothing reads as "this UN number does not exist" — but they no longer pass for a
+  current entry.
 
 ## [1.51.0] — 2026-08-10
 
 ### Fixed
 
-- **Eén UN-nummer, meerdere rijen in tabel A — en de app koos er stilzwijgend één.** Dit is
-  het duurste dat het doorlopen van de ADR-kant heeft opgeleverd.
+- **One UN number, several Table A rows — and the app silently picked one.** This is the
+  most expensive thing the pass over the ADR side turned up.
 
-  De rij werd gekozen op **verpakkingsgroep**, en er kwam een waarschuwing zodra een
-  UN-nummer er meer dan één had. Dat dekt UN 1263 verf en UN 1993 N.E.G. en het leest als
-  het hele probleem. Dat is het niet.
+  The row was chosen on **packing group**, and a warning appeared as soon as a UN number
+  had more than one. That covers UN 1263 paint and UN 1993 N.O.S. and it reads like the
+  whole problem. It is not.
 
-  **UN 1950, spuitbussen, heeft twaalf rijen in tabel A en geen van alle heeft een
-  verpakkingsgroep.** Zij worden onderscheiden door de classificatiecode van kolom (3b):
+  **UN 1950, aerosols, has twelve rows in Table A and not one of them has a packing
+  group.** They are told apart by the classification code in column (3b):
 
-  | Code | Etiketten | Vervoerscategorie | Tunnelcode |
+  | Code | Labels | Transport category | Tunnel code |
   |---|---|---|---|
   | 5A | 2.2 | 3 | E |
   | 5F | 2.1 | 2 | D |
   | 5T | 2.2 + 6.1 | 1 | D |
 
-  Wie gewone brandbare spuitbussen verzond — verreweg het meest voorkomende geval — kreeg
-  de rij van de niet-brandbare. Vervoerscategorie 3 in plaats van 2 is een puntenfactor 1
-  waar het ADR er 3 voorschrijft, dus een lading spuitbussen scoorde een derde van wat zij
-  hoort te scoren en kon een vrijstelling behouden die zij kwijt was. De tunnelcode kwam op
-  E uit in plaats van D, en het etiket brandbaar ontbrak op het document. Zonder één woord,
-  omdat alle rijen dezelfde (lege) verpakkingsgroep hebben.
+  Anyone shipping ordinary flammable aerosols — by far the most common case — got the
+  non-flammable row. Transport category 3 instead of 2 is a points factor of 1 where the
+  ADR prescribes 3, so a load of aerosols scored a third of what it should and could keep
+  an exemption it had actually lost. The tunnel code came out as E instead of D, and the
+  flammable label was missing from the document. Without a word, because every row has the
+  same (empty) packing group.
 
-  UN 2037 gaspatronen heeft negen zulke rijen. UN 0015, 0016 en 0303 hebben er elk drie die
-  alleen verschillen in of de munitie een bijtend of een giftig etiket draagt — een
-  nevengevaar dat stilzwijgend van de omschrijvingsregel viel. En zelfs het kiezen van een
-  verpakkingsgroep sluit het niet altijd: UN 1263 heeft drie VG III-rijen, één met
-  tunnelcode D/E en Kemler 30 en twee met tunnelcode E en geen van beide.
+  UN 2037 gas cartridges has nine such rows. UN 0015, 0016 and 0303 have three each that
+  differ only in whether the ammunition carries a corrosive or a toxic label — a subsidiary
+  hazard that dropped silently off the description line. And even choosing a packing group
+  does not always settle it: UN 1263 has three PG III rows, one with tunnel code D/E and
+  Kemler 30 and two with tunnel code E and neither.
 
-  Vijftien UN-nummers werden zo stil opgelost. De rij wordt nu eerst op classificatiecode
-  gekozen, en wat openblijft wordt benoemd: hoeveel rijen, waarin zij verschillen, en welk
-  veld het beslist. Waar geen enkel veld dat de gebruiker invult ze uit elkaar houdt — de
-  drie munitierijen zijn alle 1.2G — zegt de opmerking dat ook, in plaats van een veld te
-  noemen dat niet kan werken.
+  Fifteen UN numbers were resolved this quietly. The row is now chosen on classification
+  code first, and what remains open is named: how many rows, what they differ in, and which
+  field decides it. Where no field the user fills in tells them apart — the three ammunition
+  rows are all 1.2G — the note says so, instead of naming a field that cannot work.
 
-- **Veertien UN-nummers hebben geen bruikbare Engelse vervoersnaam, en de Duitse werd er
-  zonder mededeling voor in de plaats gezet.** UN 3245 genetisch gemodificeerde
-  organismen, UN 3374 acetyleen oplosmiddelvrij, UN 2807 gemagnetiseerd materiaal en elf
-  andere hebben een lege `name_en` in de tabel-A-export; UN 1139 heeft het afgekapte
-  "Coating solution (". De terugval op het Duits blijft — een leeg veld is erger — maar de
-  export waarschuwt nu: IMDG 5.4.1.4.1 en IATA DGR 8.1.2.1 eisen Engels, en ADR 5.4.1.4.1
-  vraagt naast het Nederlands om Engels, Frans of Duits.
+- **Fourteen UN numbers have no usable English proper shipping name, and the German one was
+  substituted without notice.** UN 3245 genetically modified organisms, UN 3374 acetylene
+  solvent free, UN 2807 magnetized material and eleven others have an empty `name_en` in
+  the Table A export; UN 1139 has the truncated "Coating solution (". The fallback to
+  German stays — an empty field is worse — but the export now warns: IMDG 5.4.1.4.1 and
+  IATA DGR 8.1.2.1 require English, and ADR 5.4.1.4.1 asks for English, French or German
+  alongside the Dutch.
 
 ## [1.50.0] — 2026-08-10
 
 ### Added
 
-- **De tunnelcode wordt nu ook uitgerekend, niet alleen afgedrukt.** De code uit kolom (15)
-  stond al op het vervoersdocument — 5.4.1.1.1 (k) vraagt daarom — en werd verder nergens
-  beoordeeld. Dat is de gevaarlijkere helft van de twee: wie `(D/E)` op een CMR leest, mag
-  aannemen dat iemand heeft nagedacht over wat dat voor déze lading betekent. Dat was niet
-  zo.
+- **The tunnel code is now worked out as well, not just printed.** The code from column (15)
+  was already on the transport document — 5.4.1.1.1 (k) asks for it — and was assessed
+  nowhere else. That is the more dangerous half of the two: anyone reading `(D/E)` on a CMR
+  may assume someone thought about what that means for *this* load. They had not.
 
-  Uit het ADR 2025 gelezen en toegepast:
+  Read from ADR 2025 and applied:
 
-  - **8.6.3.2** — de meest restrictieve code van de lading geldt voor de **gehele** lading.
-    Een chauffeur kiest één route en heeft één code nodig, geen lijstje om te wegen. De
-    volgorde van restrictiviteit staat nergens in woorden; het is de volgorde van de tabel
-    in 8.6.4, en daar komt hij vandaan.
-  - **8.6.3.3** — goederen die overeenkomstig 1.1.3 worden vervoerd zijn niet aan
-    tunnelbeperkingen onderworpen **en tellen niet mee** bij het vaststellen van de code.
-    Voor een zending binnen de 1.1.3.6-vrijstelling is er dus helemaal geen code toe te
-    kennen. De enige uitzondering die het artikel noemt: een transporteenheid die de
-    LQ-kenmerking van 3.4.13 moet dragen, is uit tunnels van categorie E geweerd, hoe mild
-    de codes van de goederen zelf ook zijn.
-  - **De tabel van 8.6.4** — welke tunnelcategorieën per code verboden zijn. `B1000C` en
-    `C5000D` splitsen op de totale netto massa ontplofbare stof per transporteenheid, en
-    die wordt over de hele eenheid opgeteld in plaats van per regel gelezen. Het uitgewerkte
-    voorbeeld uit het ADR zelf — UN 0161, 3.000 kg, verboden door D en E — staat als test
-    vast.
+  - **8.6.3.2** — the most restrictive code in the load applies to the **whole** load. A
+    driver picks one route and needs one code, not a list to weigh up. The order of
+    restrictiveness is nowhere written out in words; it is the order of the table in 8.6.4,
+    and that is where it comes from.
+  - **8.6.3.3** — goods carried in accordance with 1.1.3 are not subject to tunnel
+    restrictions **and do not count** towards establishing the code. So for a consignment
+    within the 1.1.3.6 exemption there is no code to assign at all. The one exception the
+    article names: a transport unit that must carry the LQ marking of 3.4.13 is barred from
+    category E tunnels, however mild the codes of the goods themselves are.
+  - **The table in 8.6.4** — which tunnel categories are prohibited per code. `B1000C` and
+    `C5000D` split on the total net explosive mass per transport unit, and that is summed
+    over the whole unit rather than read per line. The worked example from the ADR itself —
+    UN 0161, 3,000 kg, prohibited by D and E — is fixed as a test.
 
-  De uitkomst staat in het compliancepaneel én bij de export. Wat CargoPilot niet weet
-  staat erbij: welke tunnels op de route liggen en in welke categorie zij vallen (dat is aan
-  de vervoerder, 1.9.5), en of er los gestort of in tanks wordt vervoerd — dat is bij vijf
-  van de twaalf codes strenger.
+  The outcome appears in the compliance panel and with the export. What CargoPilot does not
+  know is stated alongside it: which tunnels lie on the route and what category they fall
+  in (that is the carrier's, 1.9.5), and whether carriage is in bulk or in tanks — which is
+  stricter for five of the twelve codes.
 
-- **ADR 3.5.1.3 en 3.5.1.4 worden toegepast.** Twee bepalingen die alleen over regels heen
-  zichtbaar zijn, en die in tegengestelde richting misgingen:
+- **ADR 3.5.1.3 and 3.5.1.4 are applied.** Two provisions that are only visible across
+  lines, and that went wrong in opposite directions:
 
-  - **3.5.1.3** — vrijgestelde hoeveelheden met verschillende E-codes die samen in één
-    buitenverpakking zitten, worden begrensd door de meest restrictieve code. 400 g van een
-    E1-stof naast 200 g van een E3-stof zit boven de 300 g die dan geldt, terwijl elke regel
-    op zichzelf ruim binnen zijn eigen code valt. Precies het collo dat de regel-voor-regel
-    toets doorliet.
-  - **3.5.1.4** — de kleinste hoeveelheden onder E1, E2, E4 en E5 (ten hoogste 1 g/ml per
-    binnenverpakking en 100 g/ml per collo) zijn alleen onderworpen aan 3.5.2 en 3.5.3. Het
-    kenmerk van 3.5.4 en de grens van 1000 colli van 3.5.5 gelden dan niet — die colli
-    tellen dus niet meer mee voor die grens. De app weigerde een lading die het ADR toestaat.
+  - **3.5.1.3** — excepted quantities with different E codes packed together in one outer
+    packaging are bounded by the most restrictive code. 400 g of an E1 substance next to
+    200 g of an E3 substance is above the 300 g that then applies, while each line on its
+    own sits well within its own code. Exactly the package the line-by-line check let
+    through.
+  - **3.5.1.4** — the smallest quantities under E1, E2, E4 and E5 (at most 1 g/ml per inner
+    packaging and 100 g/ml per package) are subject only to 3.5.2 and 3.5.3. The mark of
+    3.5.4 and the limit of 1000 packages in 3.5.5 then do not apply — so those packages no
+    longer count towards that limit. The app was refusing a load the ADR allows.
 
 ### Changed
 
-- **De 8.6.3-uitkomst gaat mee naar het document.** De code per stof stond er al op; de
-  code voor de gehele lading — die waar 8.6.3.2 om vraagt en waar de chauffeur naar handelt
-  — stond er nog nooit op.
+- **The 8.6.3 outcome goes onto the document.** The code per substance was already on it;
+  the code for the whole load — the one 8.6.3.2 asks for and the one the driver acts on —
+  had never been.
 
 ## [1.49.0] — 2026-08-10
 
 ### Added
 
-- **De Nederlandse benamingen uit het ADR staan er nu in.** Tot nu toe kende de app elk
-  UN-nummer alleen bij zijn Engelse en Duitse naam, want de tabel-A-export waarop hij is
-  gebouwd heeft alleen die twee kolommen. Op vier plaatsen in de broncode en documentatie
-  stond daarom dat het ADR geen Nederlandse benaming kent. Dat klopt niet. Het ADR
-  verschijnt in een officiële Nederlandse uitgave en kolom (2) van tabel A leest daar
-  BENZINE, ZOUTZUUR, LITHIUM-ION-BATTERIJEN. Alleen de export had het niet.
+- **The Dutch proper shipping names from the ADR are now in.** Until now the app knew every
+  UN number only by its English and German name, because the Table A export it is built on
+  has only those two columns. In four places in the source and the documentation it
+  therefore said the ADR has no Dutch name. That is not true. The ADR appears in an
+  official Dutch edition and column (2) of Table A reads BENZINE, ZOUTZUUR,
+  LITHIUM-ION-BATTERIJEN there. Only the export did not have it.
 
-  Die kolom is nu uitgelezen: **2.345 UN-nummers, 3.158 rijen, 294 pagina's**. Er is geen
-  open bron voor — deze kolom staat nergens op internet — dus is hij uit het boek zelf
-  gelezen door het nieuwe `scripts/extract_adr_names.py`. Het boek zelf gaat niet mee de
-  repository in; alleen het afgeleide feit, precies zoals `docs/data-sources.md` dat voor
-  elke andere regelgevingsbron belooft.
+  That column has now been read out: **2,345 UN numbers, 3,158 rows, 294 pages**. There is
+  no open source for it — this column is nowhere on the internet — so it was read from the
+  book itself by the new `scripts/extract_adr_names.py`. The book itself does not go into
+  the repository; only the derived fact, exactly as `docs/data-sources.md` promises for
+  every other regulatory source.
 
-- **Zoeken op een Nederlandse stofnaam werkt.** Wie "zoutzuur" typte kreeg niets, omdat de
-  zoekindex alleen Engels en Duits bevatte. UN 1789 staat nu bovenaan, "benzine" vindt
-  UN 1203 en "lithium-ion" vindt UN 3480.
+- **Searching on a Dutch substance name works.** Typing "zoutzuur" returned nothing,
+  because the search index held only English and German. UN 1789 is now top of the list,
+  "benzine" finds UN 1203 and "lithium-ion" finds UN 3480.
 
 ### Changed
 
-- **Een Nederlands wegdocument draagt beide namen.** ADR 5.4.1.4.1 vraagt om een officiële
-  taal van het land van afzending en, als dat niet Engels, Frans of Duits is, **bovendien**
-  om een van die drie. Nederlands is de enige taal die daardoor niet alleen kan staan. De
-  omschrijvingsregel luidt nu `UN 1203, BENZINE OF MOTORBRANDSTOF (GASOLINE), 3, II,
-  (D/E), 10 jerrycan, 200 L` — op de CMR, op de AVC-vrachtbrief en in het veld zelf. Voor
-  zee en lucht blijft het de Engelse naam alleen, want IMDG 5.4.1.4.1 en IATA DGR 8.1.2.1
-  willen er één. Wie eerst een Nederlands wegdocument opmaakt en er daarna een zeetraject
-  bij zet, krijgt op de IMO-DGD vanzelf `GASOLINE`, net als bij de Duitse naam.
+- **A Dutch road document carries both names.** ADR 5.4.1.4.1 asks for an official language
+  of the country of dispatch and, if that is not English, French or German, **in addition**
+  for one of those three. Dutch is the only language that therefore cannot stand alone. The
+  description line now reads `UN 1203, BENZINE OF MOTORBRANDSTOF (GASOLINE), 3, II, (D/E),
+  10 jerrycan, 200 L` — on the CMR, on the AVC consignment note and in the field itself.
+  For sea and air it stays the English name alone, because IMDG 5.4.1.4.1 and IATA DGR
+  8.1.2.1 want one. Draw up a Dutch road document first and add a sea leg afterwards and
+  the IMO DGD gets `GASOLINE` by itself, just as with the German name.
 
-- **De regelgevingsmanifest zegt nu wat er werkelijk in zit.** Bij het uitlezen van de
-  Nederlandse namen bleek de classificatietabel een export van **ADR 2023** te zijn, niet
-  van 2025, terwijl het manifest "2025" meldde. Dat staat er nu bij, met wat het kost:
-  UN 0514 en UN 3551 t/m 3560 ontbreken in die tabel — ze zitten wel in de app, maar met
-  zeegegevens uit IMDG 42-24 en zonder vervoerscategorie, tunnelcode en Kemler-nummer — en
-  UN 1499 en UN 1999 staan er nog in terwijl ADR 2025 ze niet meer kent.
+- **The regulatory manifest now says what is really in there.** While reading out the Dutch
+  names the classification table turned out to be an **ADR 2023** export, not a 2025 one,
+  while the manifest reported "2025". That is now stated, along with what it costs: UN 0514
+  and UN 3551 through 3560 are missing from that table — they are in the app, but with sea
+  data from IMDG 42-24 and without transport category, tunnel code and Kemler number — and
+  UN 1499 and UN 1999 are still in it while ADR 2025 no longer knows them.
 
 ### Fixed
 
-- **Een klik op een zoeksuggestie maakte ongedaan wat de lijst goed had.** De suggestie
-  toonde de naam in de taal die het gekozen profiel toestaat, maar bij het aanklikken werd
-  de Engelse kolom in het veld gezet. Nu komt in het veld te staan wat er in de lijst
-  stond.
+- **Clicking a search suggestion undid what the list had got right.** The suggestion showed
+  the name in the language the chosen profile allows, but clicking it put the English
+  column in the field. The field now gets what was in the list.
 
 ## [1.48.0] — 2026-08-09
 
@@ -1162,21 +1223,20 @@ is never what you meant to remove.
 
 ### Fixed
 
-- **"1500 liter benzine" is genoeg om mee te rekenen, en werd toch afgewezen.** De regel
-  meldde `dimensions_missing` en liet gewicht en volume leeg, terwijl alles om het uit te
-  rekenen op het scherm stond: de eenheid geeft het volume, het soortelijk gewicht van
-  benzine (745 kg/m³) geeft de massa. 1500 L is nu 1 117,5 kg en 1,5 m³.
+- **"1500 litres of petrol" is enough to compute with, and was rejected anyway.** The line
+  reported `dimensions_missing` and left weight and volume empty, while everything needed
+  to work it out was on the screen: the unit gives the volume, the density of petrol
+  (745 kg/m³) gives the mass. 1500 L is now 1,117.5 kg and 1.5 m³.
 
-  De oorzaak is het soort dat vermelding verdient. v1.34.0 leverde een eenhedenmodule,
-  een keuzelijst die hem gebruikte en een API om ermee te rekenen — maar de pijplijn die
-  het gewicht bepaalt vroeg er nooit naar en bleef afmetingen eisen. Half aangesloten is
-  niet aangesloten.
+  The cause is the kind worth recording. v1.34.0 delivered a units module, a dropdown that
+  used it and an API to compute with it — but the pipeline that determines the weight never
+  asked for any of it and went on demanding dimensions. Half connected is not connected.
 
-  De omrekening springt alleen bij wanneer er geen afmetingen en geen profiel zijn, en
-  uitsluitend voor een **herkend** goed: `match_material` valt terug op de dichtheid van
-  staal, en 1500 liter maal 7850 zou er even stellig uitzien als het antwoord dat klopt.
-  Een onbekende stof blijft dus gemeld als onbekend, en vijftien pallets zonder gewicht
-  per pallet blijven onbekend — een aantal draagt geen natuurkunde in zich.
+  The conversion only steps in when there are no dimensions and no profile, and only for a
+  **recognised** goods item: `match_material` falls back on the density of steel, and 1500
+  litres times 7850 would look every bit as confident as the answer that is right. So an
+  unknown substance stays reported as unknown, and fifteen pallets without a weight per
+  pallet stay unknown — a count carries no physics in it.
 
 ## [1.34.0] — 2026-08-08
 

@@ -1,5 +1,5 @@
 {
-  "_comment": "EmS-noodschema's per UN-nummer, overgenomen uit de index van IMO MSC.1/Circ.1588/Rev.3 (EmS Guide, Revised Emergency Response Procedures for Ships Carrying Dangerous Goods). Feitelijke invulhulp; de actuele uitgave blijft leidend.",
+  "_comment": "EmS emergency schedules per UN number, taken from the index of IMO MSC.1/Circ.1588/Rev.3 (EmS Guide, Revised Emergency Response Procedures for Ships Carrying Dangerous Goods). A compilation of facts offered as an aid; the current edition remains authoritative.",
   "source": "IMO MSC.1/Circ.1588/Rev.3 — EmS Guide, index",
   "fire_schedules": {
     "F-A": {

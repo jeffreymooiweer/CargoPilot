@@ -1,7 +1,7 @@
 {
- "_comment": "Nederlandse benamingen uit tabel A van het ADR, machinaal gelezen door scripts/extract_adr_names.py. Feitelijke invulhulp; de gepubliceerde tekst van het ADR blijft leidend.",
+ "_comment": "Dutch proper shipping names from ADR Table A, read by machine with scripts/extract_adr_names.py. A compilation of facts offered as an aid; the published text of the ADR remains authoritative.",
  "edition": "ADR 2025",
- "source": "ADR 2025, Nederlandse uitgave — tabel A van hoofdstuk 3.2, kolom (2) 'Benaming en beschrijving', met de alfabetische index als tweede lezing",
+ "source": "ADR 2025, Dutch edition — Table A of chapter 3.2, column (2) 'Benaming en beschrijving', with the alphabetical index as a second reading",
  "summary": {
   "table_rows": 3158,
   "table_un_numbers": 2345,
@@ -14,9 +14,9 @@
    "same": 2342,
    "differs": 3,
    "examples": [
-    "UN 2422: tabel ['OCTAFLUOR-2-BUTEEN (KOELGAS R 1318)'] niet in index []",
-    "UN 2857: tabel ['KOELMACHINES met niet brandbare, niet giftige gassen of ammoniakoplossingen (UN 2672)'] niet in index []",
-    "UN 3337: tabel ['KOELGAS R 404A (zeotropisch mengsel van pentafluorethaan, 1,1,1- trifluorethaan en 1,1,1,2-tetrafluorethaan, met ongeveer 44 % pentafluorethaan en 52 % 1,1,1-trifluorethaan)'] niet in index ['KOELGAS R 404A (zeotropisch mengsel van pentafluorethaan, 1,1,1- trifluorethaan en 1,1,1,2- tetrafluorethaan, met ongeveer 44 % pentafluorethaan en 52 % 1,1,1-trifluorethaan)']"
+    "UN 2422: table ['OCTAFLUOR-2-BUTEEN (KOELGAS R 1318)'] not in index []",
+    "UN 2857: table ['KOELMACHINES met niet brandbare, niet giftige gassen of ammoniakoplossingen (UN 2672)'] not in index []",
+    "UN 3337: table ['KOELGAS R 404A (zeotropisch mengsel van pentafluorethaan, 1,1,1- trifluorethaan en 1,1,1,2-tetrafluorethaan, met ongeveer 44 % pentafluorethaan en 52 % 1,1,1-trifluorethaan)'] not in index ['KOELGAS R 404A (zeotropisch mengsel van pentafluorethaan, 1,1,1- trifluorethaan en 1,1,1,2- tetrafluorethaan, met ongeveer 44 % pentafluorethaan en 52 % 1,1,1-trifluorethaan)']"
    ],
    "agreement": 0.9987
   },

@@ -2896,28 +2896,28 @@ def check_compliance(
         # 41-22 with the 42-24 differences laid over it. What that layer does not
         # cover is in IMDG_42_24_not_covered.
         "rule_sets": {
-            "ADR": "ADR 2025 (Tabel A via rkstgr/adr-substances)",
+            "ADR": "ADR 2025 (Table A via rkstgr/adr-substances)",
             "IMDG_class_tables": (
-                "Amendment 40-20 (hoofdstuk 7.2) — in 42-24 ongewijzigd voor "
+                "Amendment 40-20 (chapter 7.2) — unchanged in 42-24 for "
                 + ", ".join(amendment_42_24.verified_unchanged_sections())
             ),
             "IMDG_dangerous_goods_list": (
-                f"Amendment 42-24, hoofdstuk 3.2 — "
-                f"{dangerous_goods_list.source().get('entries', 0)} vermeldingen; "
-                "kolom 16a en 16b komen hiervandaan"
+                f"Amendment 42-24, chapter 3.2 — "
+                f"{dangerous_goods_list.source().get('entries', 0)} entries; "
+                "columns 16a and 16b come from here"
             ),
             "IMDG_per_substance": (
-                "Amendment 41-22 (Cantell UN-kaarten, 2023) met de verschillenlaag 42-24 "
-                "— nog alleen voor marine pollutant en bulkvervoer"
+                "Amendment 41-22 (Cantell UN cards, 2023) with the 42-24 difference "
+                "layer — now only for marine pollutant and carriage in bulk"
             ),
             "IMDG_current_mandatory": (
-                "Amendment 42-24, verplicht sinds 1-1-2026 — verschillenlaag toegepast; "
-                "de gepubliceerde tekst blijft leidend"
+                "Amendment 42-24, mandatory since 1-1-2026 — difference layer applied; "
+                "the published text remains authoritative"
             ),
             "IMDG_42_24_source": amendment_42_24.source(),
             "IMDG_42_24_not_covered": amendment_42_24.not_covered(_lang(language)),
-            "EmS": "MSC.1/Circ.1588/Rev.3, aangevuld met de EmS-vermeldingen van 42-24",
-            "IATA": "IATA DGR (lithium/natrium-ion: Guidance 2026)",
+            "EmS": "MSC.1/Circ.1588/Rev.3, supplemented with the EmS entries of 42-24",
+            "IATA": "IATA DGR (lithium/sodium-ion: Guidance 2026)",
         },
     }
     normalized = {p.upper() for p in profiles}

@@ -66,7 +66,7 @@ def test_the_exact_air_wizard_profile_reaches_the_iata_engine():
     assert "iata_segregation" in body
     assert body["q_values"][0]["status"] == "ok"
     assert body["q_check_status"]["status"] == "checked"
-    assert "67e editie (2026)" in body["regulatory_manifest"]["editions"]["iata"]
+    assert "67th edition (2026)" in body["regulatory_manifest"]["editions"]["iata"]
 
 
 def test_the_exact_multimodal_wizard_profiles_are_accepted():

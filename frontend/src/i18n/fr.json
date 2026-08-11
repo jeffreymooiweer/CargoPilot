@@ -446,7 +446,10 @@
   "records": {
     "actions": "Actions",
     "viewMore": "Afficher plus",
-    "viewLess": "Afficher moins"
+    "viewLess": "Afficher moins",
+    "showDetail": "Afficher les détails",
+    "closeDetail": "Fermer les détails",
+    "detailTitle": "Détail de la ligne"
   },
   "units": {
     "suggested": "Habituel pour ces marchandises",

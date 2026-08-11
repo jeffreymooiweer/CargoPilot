@@ -111,6 +111,16 @@ export default function EquipmentCombobox({ value, onChange, placeholder }: Prop
     return equipment.filter((e) => e.active !== false).slice(0, 40);
   }, [equipment, query]);
 
+  // The typed text lives here as well as in the parent, and until v1.54.0 it
+  // never came back from the parent. With one box on screen that is invisible;
+  // with two — the table row and the same row in the detail panel — they drift
+  // apart the moment you type in one of them, and the stale one overwrites the
+  // other as soon as you touch it. The parent updates on every keystroke, so
+  // this is a no-op while typing and a correction the rest of the time.
+  useEffect(() => {
+    setQuery(value);
+  }, [value]);
+
   const sourceLabel = (source: CatalogSearchHit["source"]) => t(`review.catalogSource.${source}` as "review.catalogSource.equipment");
 
   const pickValue = (label: string, item?: EquipmentItem | null) => {

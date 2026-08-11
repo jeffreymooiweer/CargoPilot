@@ -163,10 +163,11 @@ def extract(path: Path) -> dict[str, Any]:
 
     result: dict[str, Any] = {
         "_comment": (
-            "Stuwagecodes (16a), behandelingscodes (16a) en scheidingscodes (16b) met hun "
-            "omschrijving, overgenomen uit de hoofdstukken 7.1.5, 7.1.6 en 7.2.8 van de "
-            "IMDG-code. Feitelijke invulhulp; de gepubliceerde tekst van de code blijft "
-            "leidend. Machinaal gelezen door scripts/extract_imdg_codes.py."
+            "Stowage codes (16a), handling codes (16a) and segregation codes (16b) with "
+            "their descriptions, taken from chapters 7.1.5, 7.1.6 and 7.2.8 of the IMDG "
+            "Code. A compilation of facts offered as an aid; the published text of the "
+            "code remains authoritative. Read by machine with "
+            "scripts/extract_imdg_codes.py."
         ),
         "amendment": "42-24",
         "source": SOURCE_NAME,

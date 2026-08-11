@@ -1,11 +1,11 @@
 {
-  "_comment": "Verschillenlaag IMDG-code Amendment 42-24 ten opzichte van 41-22. De app draagt ADR 2025 als basistabel en 41-22 als stof-specifieke IMDG-laag (de Cantell UN-kaarten). Dit bestand legt daar de 42-24-wijzigingen overheen die uit de bron af te leiden zijn, zodat een zeezending op de sinds 1 januari 2026 verplichte editie uitkomt in plaats van op een oudere. Alleen wat de bron letterlijk zegt staat hier; wat de bron niet noemt is niet ingevuld.",
+  "_comment": "Difference layer of IMDG Code Amendment 42-24 against 41-22. The app carries ADR 2025 as its base table and 41-22 as the substance-specific IMDG layer (the Cantell UN cards). This file lays the 42-24 changes that can be derived from the source over that, so a sea consignment lands on the edition mandatory since 1 January 2026 instead of on an older one. Only what the source states literally is here; what the source does not name is not filled in.",
   "amendment": "42-24",
   "mandatory_from": "2026-01-01",
   "optional_from": "2025-01-01",
-  "source": "NCB Hazcheck, 'IMDG Code Amendment 42-24 changes detailed summary', oktober 2024 v1.0, aangevuld met IMO E&T 38/3/9 (8 februari 2023) voor de UN 1361-tekst. Beide zijn samenvattingen respectievelijk werkdocumenten; de gepubliceerde tekst van 42-24 blijft leidend.",
+  "source": "NCB Hazcheck, 'IMDG Code Amendment 42-24 changes detailed summary', October 2024 v1.0, supplemented with IMO E&T 38/3/9 (8 February 2023) for the UN 1361 text. Both are summaries and working documents respectively; the published text of 42-24 remains authoritative.",
   "verified_unchanged": {
-    "_comment": "Wat de bron over hoofdstuk 7.2 zegt, is één wijziging: de herformulering van 7.2.6.1. De tabellen waar deze app op rekent worden niet genoemd en zijn dus ongewijzigd overgenomen uit 40-20. Dat is de reden dat die tabellen niet langer als 'achterlopend' worden gemarkeerd.",
+    "_comment": "What the source says about chapter 7.2 is one change: the rewording of 7.2.6.1. The tables this app computes with are not named and are therefore taken over unchanged from 40-20. That is why those tables are no longer marked as lagging behind.",
     "sections": [
       {
         "section": "7.2.4",
@@ -979,7 +979,7 @@
     }
   ],
   "ems_additions": {
-    "_comment": "Nieuwe EmS-vermeldingen bij 42-24 en de uitbreiding van de bijzondere gevallen van S-B.",
+    "_comment": "New EmS entries under 42-24 and the extension of the special cases of S-B.",
     "entries": {
       "0514": {
         "fire": "F-B",
@@ -1031,7 +1031,7 @@
     ]
   },
   "not_covered": {
-    "_comment": "Wat de bron wel noemt maar deze app niet modelleert, zodat de omvang van de laag eerlijk is af te lezen.",
+    "_comment": "What the source does name but this app does not model, so the extent of the layer can be read off honestly.",
     "items_nl": [
       "Verpakkings- en tankinstructies (P-, IBC-, LP- en T-codes) worden niet per stof gecontroleerd; de wijzigingen daarin staan alleen als toelichting bij de betrokken UN-nummers.",
       "De volledige tekst van de nieuwe bijzondere bepalingen SP375 en SP400 t/m SP409, SP977 t/m SP979 staat niet in de bron; alleen hun strekking.",

@@ -146,20 +146,20 @@ def probe_cantell() -> int:
 
     newest_imdg = next((y for c, y in available if c == "imdg"), None)
     if newest_imdg is None:
-        print("\nGeen enkele IMDG-set bereikbaar.")
+        print("\nNo IMDG set reachable at all.")
         return 1
 
-    print(f"\nNieuwste IMDG-set: imdg_{newest_imdg}")
+    print(f"\nNewest IMDG set: imdg_{newest_imdg}")
     if newest_imdg <= 2023:
-        print("Dat is de editie die we al verwerkt hebben (Amendment 41-22).")
-        print("Er is langs deze weg niets nieuws te halen.")
+        print("That is the edition we have already processed (Amendment 41-22).")
+        print("There is nothing new to be had this way.")
     else:
         parts = count_parts("imdg", newest_imdg)
-        print(f"Omvang: ongeveer {parts} parts.")
-        print("Dit is een nieuwere editie — de bestaande pijplijn van")
-        print("scripts/fetch_un_cards.py kan haar rechtstreeks verwerken.")
+        print(f"Size: roughly {parts} parts.")
+        print("This is a newer edition — the existing pipeline in")
+        print("scripts/fetch_un_cards.py can process it directly.")
 
-    print(f"\n-- eerste kaart van imdg_{newest_imdg} --")
+    print(f"\n-- first card of imdg_{newest_imdg} --")
     print(read_pdf_text(card_url("imdg", newest_imdg, 1), Path("/tmp/card.pdf"))[:2000])
     return 0
 
@@ -185,7 +185,7 @@ def probe_model_regulations(sample_pages: list[int]) -> int:
 
         for index in range(min(80, document.page_count)):
             if re.search(r"DANGEROUS GOODS LIST", document[index].get_text(), re.I):
-                print(f"  'DANGEROUS GOODS LIST' voor het eerst op pagina {index + 1}")
+                print(f"  'DANGEROUS GOODS LIST' first on page {index + 1}")
                 break
 
         found: dict[str, int] = {}
@@ -194,9 +194,9 @@ def probe_model_regulations(sample_pages: list[int]) -> int:
             for un in NEW_UN_NUMBERS:
                 if un not in found and re.search(rf"\b{un}\b", text):
                     found[un] = index + 1
-        print(f"  nieuwe UN-nummers gevonden: {found}")
+        print(f"  new UN numbers found: {found}")
         missing = [un for un in NEW_UN_NUMBERS if un not in found]
-        print(f"  ontbreekt: {missing or 'niets'}")
+        print(f"  missing: {missing or 'nothing'}")
 
         for number in sample_pages:
             index = number - 1
@@ -223,7 +223,7 @@ def probe_model_regulations(sample_pages: list[int]) -> int:
                     print(f"\n--- SP{provision}, pagina {index + 1} ---")
                     print(match.group(0).strip())
                     pending.remove(provision)
-        print(f"\n  niet teruggevonden: {pending or 'niets'}")
+        print(f"\n  not found again: {pending or 'nothing'}")
     return 0
 
 
@@ -260,7 +260,7 @@ def probe_cepa() -> int:
     try:
         path = download(CEPA, Path("/tmp/cepa.pdf"), timeout=600)
     except (urllib.error.URLError, urllib.error.HTTPError, TimeoutError, OSError) as error:
-        print(f"  niet bereikbaar: {error}")
+        print(f"  not reachable: {error}")
         return 1
     print(f"  {path.stat().st_size} bytes")
 
@@ -279,13 +279,13 @@ def probe_cepa() -> int:
         offset = find_page_offset(document)
         print(f"\n--- paginaverschuiving: PDF-pagina = codepagina + {offset} ---")
 
-        print("\n--- de secties die wij nodig hebben ---")
+        print("\n--- the sections we need ---")
         for label, code_page in CODE_PAGES.items():
             index = code_page + offset - 1
             marker = "?" if not 0 <= index < document.page_count else ""
             print(f"  {label:<52} codepagina {code_page} -> PDF {index + 1}{marker}")
 
-        print("\n--- waar komen de secties voor in de tekst? ---")
+        print("\n--- where do the sections appear in the text? ---")
         located: dict[str, list[int]] = {}
         for index in range(document.page_count):
             text = document[index].get_text()
@@ -302,9 +302,9 @@ def probe_cepa() -> int:
         joined = " ".join(document[i].get_text() for i in range(min(40, document.page_count)))
         directives = sum(len(re.findall(rf"\b{verb}\b", joined, re.I))
                          for verb in ("replace", "insert", "delete", "amend"))
-        print(f"\n  wijzigingsopdrachten in de eerste 40 pagina's: {directives}")
-        print("  -> waarschijnlijk een amendementstekst" if directives > 60
-              else "  -> waarschijnlijk doorlopende, geconsolideerde codetekst")
+        print(f"\n  amendment directives in the first 40 pages: {directives}")
+        print("  -> probably an amendment text" if directives > 60
+              else "  -> probably a running, consolidated code text")
 
         # The stowage and segregation codes are the biggest gain and the easiest
         # to parse: numbered lists. Print them in full so the parser can be
@@ -327,7 +327,7 @@ def probe_cepa() -> int:
 
         # Appendix 2 is the Dangerous Goods List: the top prize, and the hardest.
         start = CODE_PAGES["Appendix 2 (Dangerous Goods List)"] + offset - 1
-        print(f"\n===== Appendix 2 — PDF p{start + 1} en p{start + 3}, woorden met positie =====")
+        print(f"\n===== Appendix 2 — PDF p{start + 1} and p{start + 3}, words with position =====")
         for index in (start, start + 2):
             if 0 <= index < document.page_count:
                 print(f"--- PDF p{index + 1} ---")
@@ -359,11 +359,11 @@ def probe_dangerous_goods_list() -> int:
     """
     import fitz
 
-    print("== Dangerous Goods List in het 42-24-document ==")
+    print("== Dangerous Goods List in the 42-24 document ==")
     try:
         path = download(CEPA, Path("/tmp/cepa.pdf"), timeout=600)
     except (urllib.error.URLError, urllib.error.HTTPError, TimeoutError, OSError) as error:
-        print(f"  niet bereikbaar: {error}")
+        print(f"  not reachable: {error}")
         return 1
 
     with fitz.open(path) as document:
@@ -393,16 +393,16 @@ def probe_dangerous_goods_list() -> int:
                 rows_per_page[index + 1] = len(rows)
                 un_numbers.update(rows)
 
-        print("\n  kolomkoppen van de lijst:")
+        print("\n  column headers of the list:")
         for heading in DGL_HEADINGS:
             pages = heading_hits.get(heading, [])
             print(f"    {heading:<30} {len(pages)}x"
-                  + (f", eerst p{pages[0]}" if pages else ""))
+                  + (f", first p{pages[0]}" if pages else ""))
 
         if not table_pages:
-            print("\n  Geen enkele pagina met acht of meer UN-nummers.")
-            print("  De volledige Dangerous Goods List staat NIET in dit document.")
-            print("\n  -- wat staat er dan rond 'Appendix 2'? --")
+            print("\n  No page at all with eight or more UN numbers.")
+            print("  The full Dangerous Goods List is NOT in this document.")
+            print("\n  -- what is around 'Appendix 2' then? --")
             for index in range(562, min(570, document.page_count)):
                 print(f"--- PDF p{index + 1} ---")
                 print(document[index].get_text()[:1200])
@@ -422,7 +422,7 @@ def probe_dangerous_goods_list() -> int:
 
         # Does this cover the whole list? Our own database counts 2,336 with a card.
         for un in ("0004", "1203", "1361", "3480", "3551", "3560"):
-            print(f"  UN {un}: {'aanwezig' if un in un_numbers else 'NIET gevonden'}")
+            print(f"  UN {un}: {'present' if un in un_numbers else 'NOT found'}")
 
         biggest = max(rows_per_page, key=rows_per_page.get)
         print(f"\n===== dichtstbezette pagina p{biggest} "
@@ -438,7 +438,7 @@ def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("source", choices=["cantell", "model-regs", "cepa", "dgl", "all"])
     parser.add_argument("--sample-pages", default="60,61,120",
-                        help="Pagina's van de DGL die als voorbeeld op de uitvoer komen")
+                        help="DGL pages to print as a sample of the output")
     args = parser.parse_args(argv)
 
     pages = [int(p) for p in args.sample_pages.split(",") if p.strip().isdigit()]

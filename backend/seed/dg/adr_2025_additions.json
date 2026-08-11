@@ -1,8 +1,8 @@
 {
- "_comment": "De rijen van tabel A die ADR 2025 heeft toegevoegd en die ontbreken in de tabel-A-export waarop de app is gebouwd (een uitgave 2023). Met de hand overgenomen uit de officiële Nederlandse uitgave van ADR 2025, elke rij twee keer gelezen — uit tabel A en uit de alfabetische index — en met de pagina waar zij staat. Feitelijke invulhulp; de gepubliceerde tekst van het ADR blijft leidend.",
+ "_comment": "The Table A rows ADR 2025 added that are missing from the Table A export the app is built on (a 2023 edition). Transcribed by hand from the official Dutch edition of ADR 2025, every row read twice — from Table A and from the alphabetical index — and with the page it appears on. A compilation of facts offered as an aid; the published text of the ADR remains authoritative.",
  "edition": "ADR 2025",
- "source": "ADR 2025, Nederlandse uitgave — tabel A van hoofdstuk 3.2",
- "cross_check": "Elke rij is uit twee onafhankelijk gezette documenten van dezelfde uitgave gelezen, tabel A en de alfabetische index. Zij komen overeen op klasse, classificatiecode, verpakkingsgroep, etiketten, bijzondere bepalingen, LQ, EQ, vervoerscategorie, tunnelcode en gevaarsidentificatienummer.",
+ "source": "ADR 2025, Dutch edition — Table A of chapter 3.2",
+ "cross_check": "Every row was read from two independently typeset documents of the same edition, Table A and the alphabetical index. They agree on class, classification code, packing group, labels, special provisions, LQ, EQ, transport category, tunnel code and hazard identification number.",
  "entries": [
   {
    "un": "0514",
@@ -182,7 +182,7 @@
   }
  ],
  "withdrawn": {
-  "_comment": "UN-nummers die nog in de export staan maar die ADR 2025 niet meer kent. Zij blijven vindbaar — een oud document mag ernaar verwijzen — maar de app zegt erbij dat de editie ze niet meer voert.",
+  "_comment": "UN numbers that are still in the export but that ADR 2025 no longer knows. They stay findable — an old document may refer to them — but the app states that the edition no longer carries them.",
   "un_numbers": [
    "1499",
    "1999"

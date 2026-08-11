@@ -200,8 +200,9 @@ export default function DgCompliancePanel({ entries, profiles }: Props) {
           )}
           <p className="text-[11px] text-slate-500 dark:text-slate-400">{adr.quantity_units_note}</p>
 
-          {/* Bij spoor en binnenvaart is met de ADR-tabellen gerekend. Dat mag
-              de gebruiker niet hoeven raden uit de kop "ADR 1.1.3.6". */}
+          {/* For rail and inland waterway the ADR tables are what was computed
+              with. The user should not have to guess that from a heading that
+              says "ADR 1.1.3.6". */}
           {adr.basis_note && (
             <p className="rounded-lg border border-amber-200 bg-amber-50 px-2 py-1.5 text-[11px] text-amber-800 dark:border-amber-900/50 dark:bg-amber-900/20 dark:text-amber-200">
               {adr.basis_note}
@@ -223,10 +224,10 @@ export default function DgCompliancePanel({ entries, profiles }: Props) {
         </CollapsibleSection>
       )}
 
-      {/* Het ADN kent geen puntentelling. Zijn vrijstelling van 1.1.3.6.1 gaat
-          over brutomassa met een eigen grens per klasse, en die uitkomst kan
-          tegengesteld zijn aan de ADR-punten hierboven. Daarom een eigen kaart
-          in plaats van een voetnoot bij een telling die hier niet geldt. */}
+      {/* The ADN has no points calculation. Its exemption of 1.1.3.6.1 is about
+          gross mass with its own limit per class, and that outcome can be the
+          opposite of the ADR points above. Hence a card of its own rather than a
+          footnote to a calculation that does not apply here. */}
       {adn && (
         <CollapsibleSection
           title={t("compliance.adnExemptionTitle")}

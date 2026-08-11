@@ -282,8 +282,8 @@ export default function ResponsiveRecords<T>({
 
   return (
     <>
-      {/* Desktop: een gewone tabel. Daar is de ruimte er wel voor, en een tabel
-          laat je rijen met elkaar vergelijken zoals een kaart dat nooit kan. */}
+      {/* Desktop: an ordinary table. The room is there for it, and a table lets
+          you compare rows against each other in a way a card never can. */}
       <div ref={wrap} className="hidden md:block overflow-x-auto">
         <table className={`w-full text-left ${minWidth ?? ""}`}>
           <thead>

@@ -118,7 +118,7 @@ def test_the_manifest_carries_the_application_version():
 
 
 def test_the_manifest_repeats_that_the_published_code_is_what_counts():
-    assert "leidend" in build_manifest()["disclaimer"]
+    assert "authoritative" in build_manifest()["disclaimer"]
 
 
 @pytest.mark.parametrize("key", [entry["key"] for entry in RULE_SETS])

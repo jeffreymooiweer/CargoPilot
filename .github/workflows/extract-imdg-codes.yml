@@ -11,7 +11,7 @@ on:
   workflow_dispatch:
     inputs:
       commit:
-        description: "Het resultaat vastleggen op deze branch"
+        description: "Commit the result to this branch"
         type: boolean
         default: true
 
@@ -42,7 +42,7 @@ jobs:
           # there was therefore nothing to record while the table had simply been
           # written.
           if [ -z "$(git status --porcelain -- backend/seed/dg/imdg_codes.json)" ]; then
-            echo "Ongewijzigd; niets vast te leggen."
+            echo "Unchanged; nothing to commit."
             exit 0
           fi
           git config user.name "github-actions[bot]"

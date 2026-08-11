@@ -44,22 +44,22 @@ UA = {"User-Agent": "CargoPilot data survey (github.com/jeffreymooiweer/CargoPil
 # first four digits and the descriptions; the last two digits are NHM-specific.
 CANDIDATES = [
     {
-        "name": "EU RAMON — Combined Nomenclature (CN), de basis onder de NHM",
+        "name": "EU RAMON — Combined Nomenclature (CN), the basis under the NHM",
         "url": "https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/codelist/ESTAT/CN",
-        "note": "Officiële EU-nomenclatuur, openbaar. Levert CN-codes; NHM wijkt "
-                "op de laatste twee cijfers af.",
+        "note": "Official EU nomenclature, public. Supplies CN codes; the NHM "
+                "differs in the last two digits.",
     },
     {
-        "name": "UIC NHM — de nomenclatuur zelf",
+        "name": "UIC NHM — the nomenclature itself",
         "url": "https://uic.org/freight/rail-freight-nomenclature",
-        "note": "De bron die telt. Waarschijnlijk geen open gegevensbestand; "
-                "dit meet of er iets machinaal leesbaars achter zit.",
+        "note": "The source that counts. Probably not an open data set; this "
+                "measures whether anything machine-readable sits behind it.",
     },
     {
-        "name": "Eurostat SDMX — goederennomenclatuur voor vervoerstatistiek",
+        "name": "Eurostat SDMX — goods nomenclature for transport statistics",
         "url": "https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/codelist/ESTAT/NST07",
-        "note": "NST/R-hoofdgroepen, grover dan NHM maar wel open en "
-                "eenduidig — bruikbaar als vangnet, niet als vervanging.",
+        "note": "NST/R main groups, coarser than the NHM but open and "
+                "unambiguous — usable as a fallback, not as a replacement.",
     },
 ]
 
@@ -75,7 +75,7 @@ def fetch(url: str, timeout: int = 60) -> tuple[int, bytes, str]:
             return response.status, response.read(), response.headers.get("Content-Type", "")
     except urllib.error.HTTPError as error:
         return error.code, error.read()[:2000], error.headers.get("Content-Type", "")
-    except Exception as error:  # pragma: no cover - netwerk
+    except Exception as error:  # pragma: no cover - network
         return 0, str(error).encode(), ""
 
 
@@ -87,18 +87,18 @@ def describe(name: str, url: str, note: str) -> None:
     status, body, content_type = fetch(url)
     print(f"  status {status}, {len(body)} bytes, type {content_type or '—'}")
     if status != 200 or not body:
-        print("  → niet bruikbaar langs deze weg.")
+        print("  → not usable this way.")
         return
 
     text = body.decode("utf-8", errors="replace")
     codes = sorted(set(NHM_CODE.findall(text)))
-    print(f"  zescijferige codes gevonden: {len(codes)}")
+    print(f"  six-digit codes found: {len(codes)}")
     if codes:
-        print(f"    voorbeeld: {codes[:8]}")
+        print(f"    sample: {codes[:8]}")
     # A list without descriptions is unusable for a user; they have to be able to
     # see from the text *what* they are choosing.
-    print(f"  bevat woorden naast codes: {'ja' if re.search(r'[A-Za-z]{6,}', text) else 'nee'}")
-    print(f"  eerste 300 tekens: {text[:300]!r}")
+    print(f"  holds words besides codes: {'yes' if re.search(r'[A-Za-z]{6,}', text) else 'no'}")
+    print(f"  first 300 characters: {text[:300]!r}")
 
 
 def coverage_hint() -> None:
@@ -112,28 +112,28 @@ def coverage_hint() -> None:
     try:
         materials = json.loads(seed.read_text(encoding="utf-8"))
     except (OSError, ValueError):
-        print("\n(materials.json niet gevonden; dekkingsvraag overgeslagen)")
+        print("\n(materials.json not found; coverage question skipped)")
         return
     names = materials if isinstance(materials, list) else materials.get("entries", [])
-    print(f"\n===== waartegen een bron moet worden afgezet =====")
-    print(f"  materialen in CargoPilot: {len(names)}")
+    print(f"\n===== what a source has to be measured against =====")
+    print(f"  materials in CargoPilot: {len(names)}")
 
 
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--url", help="Eén eigen bron beproeven in plaats van de lijst")
+    parser.add_argument("--url", help="Try one source of your own instead of the list")
     args = parser.parse_args(argv)
 
     if args.url:
-        describe("opgegeven bron", args.url, "handmatig meegegeven")
+        describe("supplied source", args.url, "passed in by hand")
     else:
         for candidate in CANDIDATES:
             describe(candidate["name"], candidate["url"], candidate["note"])
 
     coverage_hint()
-    print("\nDeze verkenning legt niets vast. Zolang er geen bron is die "
-          "zescijferige codes mét omschrijving levert, blijft vak 24 een "
-          "vrij tekstveld met een vormcontrole.")
+    print("\nThis survey writes nothing. As long as there is no source that "
+          "supplies six-digit codes *with* descriptions, box 24 stays a free "
+          "text field with a format check.")
     return 0
 
 

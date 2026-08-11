@@ -9,7 +9,7 @@ on:
   workflow_dispatch:
     inputs:
       version:
-        description: "Versie zonder v-prefix (bijv. 1.2.0); moet overeenkomen met VERSION"
+        description: "Version without the v prefix (e.g. 1.2.0); must match VERSION"
         required: true
   pull_request:
     branches: [main]
@@ -51,7 +51,7 @@ jobs:
           if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
             RELEASE_VERSION="${{ inputs.version }}"
             if [ "$RELEASE_VERSION" != "$FILE_VERSION" ]; then
-              echo "::error::Input versie '$RELEASE_VERSION' komt niet overeen met VERSION ($FILE_VERSION)."
+              echo "::error::Input version '$RELEASE_VERSION' does not match VERSION ($FILE_VERSION)."
               exit 1
             fi
           else
@@ -60,7 +60,7 @@ jobs:
             case "$HEAD_REF" in
               agent/release-v"$RELEASE_VERSION"*) ;;
               *)
-                echo "::error::Releasebranch '$HEAD_REF' komt niet overeen met VERSION ($RELEASE_VERSION)."
+                echo "::error::Release branch '$HEAD_REF' does not match VERSION ($RELEASE_VERSION)."
                 exit 1
                 ;;
             esac

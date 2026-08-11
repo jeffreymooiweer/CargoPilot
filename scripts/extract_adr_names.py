@@ -61,9 +61,9 @@ from typing import Any
 
 SEED = Path(__file__).resolve().parents[1] / "backend" / "seed" / "dg"
 
-SOURCE_NAME = ("ADR 2025, Nederlandse uitgave — tabel A van hoofdstuk 3.2, "
-               "kolom (2) 'Benaming en beschrijving', met de alfabetische "
-               "index als tweede lezing")
+SOURCE_NAME = ("ADR 2025, Dutch edition — Table A of chapter 3.2, column (2) "
+               "'Benaming en beschrijving', with the alphabetical index as a "
+               "second reading")
 
 #: The column numbers stand in one band above the table; a page that shows at
 #: least this many of them has a readable header.
@@ -283,7 +283,7 @@ def cross_check(table: dict[str, list[str]], index: dict[str, list[str]]) -> dic
         differs += 1
         if len(examples) < 15:
             missing = sorted(set(names) - known)
-            examples.append(f"UN {un}: tabel {missing[:1]!r} niet in index "
+            examples.append(f"UN {un}: table {missing[:1]!r} not in index "
                             f"{sorted(known)[:1]!r}")
     total = same + differs
     return {"same": same, "differs": differs, "examples": examples,
@@ -316,15 +316,15 @@ def against_known(table: dict[str, list[str]]) -> dict[str, Any]:
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--pdf", type=Path, required=True,
-                        help="Tabel A van de Nederlandse ADR-uitgave")
+                        help="Table A of the Dutch ADR edition")
     parser.add_argument("--index", type=Path, required=True,
-                        help="De alfabetische index van dezelfde uitgave")
+                        help="The alphabetical index of the same edition")
     parser.add_argument("--out", type=Path, default=SEED / "adr_names_nl.json")
     parser.add_argument("--edition", default="ADR 2025")
     parser.add_argument("--dry-run", action="store_true",
-                        help="Wel lezen en controleren, niet wegschrijven")
+                        help="Read and check, but do not write anything")
     parser.add_argument("--min-agreement", type=float, default=0.99,
-                        help="Onder deze overeenstemming wordt niets vastgelegd")
+                        help="Below this agreement nothing is written")
     args = parser.parse_args(argv)
 
     table_rows, table_problems = read(args.pdf)
@@ -337,40 +337,40 @@ def main(argv: list[str] | None = None) -> int:
         "index_rows": len(index_rows), "index_un_numbers": len(index),
         "unreadable_rows": len(table_problems) + len(index_problems),
     }
-    print(f"gelezen: {summary}")
+    print(f"read: {summary}")
     for problem in (table_problems + index_problems)[:10]:
         print("  ", problem)
     if not table:
-        print("Geen namen gelezen.")
+        print("No names read.")
         return 1
 
     checks = {"index": cross_check(table, index), "un_numbers": against_known(table)}
-    print("\n--- zelfcontrole ---")
+    print("\n--- self-check ---")
     for name, result in checks.items():
-        print(f"  {name}: {result.get('same')} gelijk, {result.get('differs')} anders, "
-              f"overeenstemming {result.get('agreement')}")
+        print(f"  {name}: {result.get('same')} same, {result.get('differs')} different, "
+              f"agreement {result.get('agreement')}")
         for example in result.get("examples", []):
             print(f"      {example}")
     if checks["un_numbers"].get("only_in_adr_2025"):
-        print(f"  alleen in ADR 2025: {checks['un_numbers']['only_in_adr_2025']}")
+        print(f"  only in ADR 2025: {checks['un_numbers']['only_in_adr_2025']}")
     if checks["un_numbers"].get("only_in_the_app"):
-        print(f"  alleen in de app:   {checks['un_numbers']['only_in_the_app']}")
+        print(f"  only in the app:  {checks['un_numbers']['only_in_the_app']}")
 
     weakest = [result["agreement"] for result in checks.values()
                if result.get("agreement") is not None]
     if not weakest:
-        print("\nNiets te vergelijken; er wordt niets vastgelegd.")
+        print("\nNothing to compare against; nothing is written.")
         return 1
     if min(weakest) < args.min_agreement:
-        print(f"\nOvereenstemming {min(weakest)} ligt onder {args.min_agreement}: "
-              "de lezing klopt niet. Er wordt niets vastgelegd.")
+        print(f"\nAgreement {min(weakest)} is below {args.min_agreement}: "
+              "the reading is wrong. Nothing is written.")
         return 1
 
     payload = {
-        "_comment": ("Nederlandse benamingen uit tabel A van het ADR, machinaal "
-                     "gelezen door scripts/extract_adr_names.py. Feitelijke "
-                     "invulhulp; de gepubliceerde tekst van het ADR blijft "
-                     "leidend."),
+        "_comment": ("Dutch proper shipping names from ADR Table A, read by "
+                     "machine with scripts/extract_adr_names.py. A compilation "
+                     "of facts offered as an aid; the published text of the ADR "
+                     "remains authoritative."),
         "edition": args.edition,
         "source": SOURCE_NAME,
         "summary": summary,
@@ -378,14 +378,14 @@ def main(argv: list[str] | None = None) -> int:
         "names": {un: names for un, names in sorted(table.items())},
     }
     document = json.dumps(payload, ensure_ascii=False, indent=1) + "\n"
-    print(f"\n{len(table)} UN-nummers, {len(document.encode('utf-8'))} bytes")
+    print(f"\n{len(table)} UN numbers, {len(document.encode('utf-8'))} bytes")
 
     if args.dry_run:
-        print("Proefrun; er wordt niets vastgelegd.")
+        print("Dry run; nothing is written.")
         return 0
     args.out.parent.mkdir(parents=True, exist_ok=True)
     args.out.write_text(document, encoding="utf-8")
-    print(f"geschreven: {args.out}")
+    print(f"written: {args.out}")
     return 0
 
 

@@ -1,6 +1,6 @@
 {
-  "_comment": "Scheidingsgroepen volgens IMDG-code 3.1.4.4, per UN-nummer de groepscodes. De aparte markering SGG1a voor sterke zuren is met Amendment 41-22 uit de code verdwenen en is hier verwijderd: de UN-kaarten van 41-22 noemen haar nergens meer en Amendment 42-24 laat 3.1.4.4 ongewijzigd. Feitelijke invulhulp; de actuele IMDG-uitgave blijft leidend.",
-  "source": "IMDG-code hoofdstuk 3.1, sectie 3.1.4.4 (Amendement 40-20; sectie 3.1.4.4 is in Amendment 42-24 ongewijzigd, SGG1a verviel met 41-22)",
+  "_comment": "Segregation groups per IMDG Code 3.1.4.4, the group codes per UN number. The separate marking SGG1a for strong acids disappeared from the code with Amendment 41-22 and has been removed here: the 41-22 UN cards no longer name it anywhere and Amendment 42-24 leaves 3.1.4.4 unchanged. A compilation of facts offered as an aid; the current IMDG edition remains authoritative.",
+  "source": "IMDG Code chapter 3.1, section 3.1.4.4 (Amendment 40-20; section 3.1.4.4 is unchanged in Amendment 42-24, SGG1a lapsed with 41-22)",
   "groups": [
     {
       "code": "SGG1",

@@ -150,7 +150,7 @@ jobs:
             echo "configured=true" >> "$GITHUB_OUTPUT"
           else
             echo "configured=false" >> "$GITHUB_OUTPUT"
-            echo "::warning::DOCKER_USERNAME en DOCKER_TOKEN zijn niet ingesteld. De image wordt wel gebouwd maar niet naar DockerHub gepusht."
+            echo "::warning::DOCKER_USERNAME and DOCKER_TOKEN are not set. The image is built but not pushed to DockerHub."
           fi
 
       # QEMU is there only to emulate arm64. Without arm64, setting it up is

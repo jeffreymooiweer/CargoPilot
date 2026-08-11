@@ -4,11 +4,11 @@ on:
   workflow_dispatch:
     inputs:
       keep_tags:
-        description: "Tags om te behouden (kommagescheiden; leeg = alles verwijderen)"
+        description: "Tags to keep (comma separated; empty = delete everything)"
         required: false
         default: ""
       dry_run:
-        description: "Alleen tonen wat verwijderd zou worden"
+        description: "Only show what would be deleted"
         type: boolean
         default: false
 
@@ -24,7 +24,7 @@ jobs:
         run: |
           TOKEN="${DOCKER_TOKEN:-$DOCKER_PASSWORD}"
           if [ -z "$DOCKER_USERNAME" ] || [ -z "$TOKEN" ]; then
-            echo "::error::DOCKER_USERNAME en DOCKER_TOKEN (of DOCKER_PASSWORD) zijn vereist."
+            echo "::error::DOCKER_USERNAME and DOCKER_TOKEN (or DOCKER_PASSWORD) are required."
             exit 1
           fi
 

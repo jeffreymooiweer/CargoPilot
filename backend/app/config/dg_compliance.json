@@ -1,17 +1,17 @@
 {
   "version": "2026-07",
   "sources": {
-    "adr_points": "ADR 2025 (UNECE) 1.1.3.6 — vrijstelling in samenhang met vervoerde hoeveelheden per vervoerseenheid",
-    "adr_mixed_loading": "ADR 2025 (UNECE) 7.5.2 (samenladingsverbod) en 7.5.4 / CV28 (levensmiddelen)",
-    "iata_segregation": "IATA DGR 67e editie (2026) 9.3.2, Table 9.3.A — Segregation of Packages",
-    "q_value": "IATA DGR 67e editie (2026) 5.0.2.11 — Q-waarde voor 'all packed in one'",
-    "imdg_segregation": "IMDG-code (Amendement 40-20) 7.2.4 segregatietabel, 7.2.5 scheidingsgroepen en 7.2.7 klasse 1",
-    "imdg_class1": "IMDG-code (Amendement 40-20) 7.2.7 — segregatie van goederen van klasse 1",
-    "rid_protective_distance": "RID 2025 (OTIF) 7.5.3 — beschermende afstand in de trein tussen een wagen met klasse 1 en een geplakkateerde wagen 2.1/3/4.1/4.2/4.3/5.1/5.2",
-    "adr_tunnel": "ADR 2025 (UNECE) 8.6.3 en 8.6.4 — code voor beperkingen in tunnels voor de gehele lading"
+    "adr_points": "ADR 2025 (UNECE) 1.1.3.6 — exemption related to quantities carried per transport unit",
+    "adr_mixed_loading": "ADR 2025 (UNECE) 7.5.2 (mixed loading prohibition) and 7.5.4 / CV28 (foodstuffs)",
+    "iata_segregation": "IATA DGR 67th edition (2026) 9.3.2, Table 9.3.A — Segregation of Packages",
+    "q_value": "IATA DGR 67th edition (2026) 5.0.2.11 — Q value for 'all packed in one'",
+    "imdg_segregation": "IMDG Code (Amendment 40-20) 7.2.4 segregation table, 7.2.5 segregation groups and 7.2.7 class 1",
+    "imdg_class1": "IMDG Code (Amendment 40-20) 7.2.7 — segregation of class 1 goods",
+    "rid_protective_distance": "RID 2025 (OTIF) 7.5.3 — protective distance in the train between a wagon holding class 1 and a placarded wagon 2.1/3/4.1/4.2/4.3/5.1/5.2",
+    "adr_tunnel": "ADR 2025 (UNECE) 8.6.3 and 8.6.4 — tunnel restriction code for the whole load"
   },
   "adr_equipment": {
-    "source": "ADR 2025 (UNECE) 8.1.4 en 8.1.5",
+    "source": "ADR 2025 (UNECE) 8.1.4 and 8.1.5",
     "fire_extinguishers": {
       "source": "8.1.4.1",
       "rows": [
@@ -37,7 +37,7 @@
     }
   },
   "adr_tunnel": {
-    "source": "ADR 2025 (UNECE) 8.6.3.1 t/m 8.6.3.3 en de tabel van 8.6.4",
+    "source": "ADR 2025 (UNECE) 8.6.3.1 through 8.6.3.3 and the table of 8.6.4",
     "order": ["B", "B1000C", "B/D", "B/E", "C", "C5000D", "C/D", "C/E", "D", "D/E", "E", "-"],
     "codes": {
       "B": {"packages": ["B", "C", "D", "E"], "tanks": ["B", "C", "D", "E"]},

@@ -42,7 +42,7 @@ def test_the_seed_says_which_edition_it_was_read_from(payload):
     """Table A is renumbered every two years. A name file without an edition is
     a file nobody can check afterwards."""
     assert payload["edition"] == "ADR 2025"
-    assert "tabel A" in payload["source"]
+    assert "Table A" in payload["source"]
     assert edition() == "ADR 2025"
 
 

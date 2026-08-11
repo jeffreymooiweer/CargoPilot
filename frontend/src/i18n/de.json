@@ -449,7 +449,9 @@
     "viewLess": "Weniger anzeigen",
     "showDetail": "Details anzeigen",
     "closeDetail": "Details schließen",
-    "detailTitle": "Zeilendetails"
+    "detailTitle": "Zeilendetails",
+    "hiddenColumns_one": "Noch {{count}} Spalte steht in den Details der Zeile.",
+    "hiddenColumns_other": "Noch {{count}} Spalten stehen in den Details der Zeile."
   },
   "units": {
     "suggested": "Üblich für dieses Gut",

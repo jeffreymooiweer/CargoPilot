@@ -449,7 +449,9 @@
     "viewLess": "Afficher moins",
     "showDetail": "Afficher les détails",
     "closeDetail": "Fermer les détails",
-    "detailTitle": "Détail de la ligne"
+    "detailTitle": "Détail de la ligne",
+    "hiddenColumns_one": "Encore {{count}} colonne se trouve dans le détail de la ligne.",
+    "hiddenColumns_other": "Encore {{count}} colonnes se trouvent dans le détail de la ligne."
   },
   "units": {
     "suggested": "Habituel pour ces marchandises",

@@ -449,7 +449,9 @@
     "viewLess": "View less",
     "showDetail": "Show details",
     "closeDetail": "Close details",
-    "detailTitle": "Line details"
+    "detailTitle": "Line details",
+    "hiddenColumns_one": "{{count}} more column is in the line's details.",
+    "hiddenColumns_other": "{{count}} more columns are in the line's details."
   },
   "units": {
     "suggested": "Usual for these goods",

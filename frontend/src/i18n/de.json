@@ -13,7 +13,9 @@
     "menu": "Menü",
     "openMenu": "Menü öffnen",
     "closeMenu": "Menü schließen",
-    "legal": "Haftungsausschluss"
+    "legal": "Haftungsausschluss",
+    "collapseMenu": "Menü einklappen",
+    "expandMenu": "Menü ausklappen"
   },
   "theme": {
     "dark": "Dunkel",

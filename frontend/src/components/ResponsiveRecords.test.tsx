@@ -134,6 +134,39 @@ describe("ResponsiveRecords", () => {
   });
 });
 
+describe("de vloer onder de desktoptabel", () => {
+  // A `w-full` table can never be wider than its container, so the
+  // `overflow-x-auto` around it never engages and the browser takes the missing
+  // width out of the cells instead. On a table you read that is fine — the text
+  // wraps. On a table you *type* in it is not: the lines step gave its number
+  // field 30px and its unit select 28px.
+  it("laat de tabel breder worden dan zijn container", () => {
+    render(
+      <ResponsiveRecords
+        rows={rows}
+        columns={columns}
+        rowKey={(r) => r.id}
+        cardTitle={(r) => r.name}
+        minWidth="min-w-[1620px]"
+      />,
+    );
+    expect(screen.getByRole("table").className).toContain("min-w-[1620px]");
+    expect(screen.getByRole("table").parentElement?.className).toContain("overflow-x-auto");
+  });
+
+  it("laat een tabel zonder vloer met rust", () => {
+    render(
+      <ResponsiveRecords
+        rows={rows}
+        columns={columns}
+        rowKey={(r) => r.id}
+        cardTitle={(r) => r.name}
+      />,
+    );
+    expect(screen.getByRole("table").className).not.toContain("min-w-");
+  });
+});
+
 describe("QuantityWithUnit", () => {
   it("puts the unit behind the value instead of in its own column", () => {
     // As the article does it: "150 (sqm)", not a column "unit".

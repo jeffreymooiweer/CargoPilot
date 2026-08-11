@@ -47,6 +47,20 @@ interface Props<T> {
   empty?: ReactNode;
   /** Below the last row, for example a button to add a line. */
   footer?: ReactNode;
+  /**
+   * A floor for the desktop table, for example "min-w-[1620px]".
+   *
+   * Without one the table is `w-full` and can never be wider than its
+   * container, so `overflow-x-auto` never engages and the browser squeezes the
+   * cells instead. On a reading table that is fine — text wraps. On a table you
+   * *type* in it is not: the lines step gave its 80px quantity field 30px and
+   * its unit select 28px, which is a field you cannot enter anything in.
+   *
+   * With a floor the table keeps the width its inputs need and scrolls when the
+   * screen is too small for it. A scrollbar is a nuisance; a 30px number field
+   * is a dead end.
+   */
+  minWidth?: string;
 }
 
 const cellText = "text-sm text-slate-800 dark:text-slate-100";
@@ -60,6 +74,7 @@ export default function ResponsiveRecords<T>({
   actions,
   empty,
   footer,
+  minWidth,
 }: Props<T>) {
   const { t } = useTranslation();
   const [expanded, setExpanded] = useState<Set<string>>(new Set());
@@ -89,7 +104,7 @@ export default function ResponsiveRecords<T>({
       {/* Desktop: een gewone tabel. Daar is de ruimte er wel voor, en een tabel
           laat je rijen met elkaar vergelijken zoals een kaart dat nooit kan. */}
       <div className="hidden md:block overflow-x-auto">
-        <table className="w-full text-left">
+        <table className={`w-full text-left ${minWidth ?? ""}`}>
           <thead>
             <tr className="border-b border-slate-200 dark:border-slate-700">
               {columns.map((column) => (

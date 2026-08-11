@@ -2,6 +2,44 @@
 
 All notable changes are documented here, following [Semantic Versioning](https://semver.org/).
 
+## [1.54.0] — 2026-08-11
+
+### Added
+
+- **Een detailknop per regel, die een paneel vanaf rechts naar binnen schuift met alle
+  kolommen onder elkaar.** De collitabel heeft dertien kolommen met invoervelden en wil
+  1.620 px; op alles wat smaller is moet er iets wijken — de tabel schuift zijwaarts of de
+  velden worden platgedrukt. Dit is de derde uitweg: de regel waar u mee bezig bent krijgt
+  de volle breedte van een paneel, één veld per regel, en de tabel mag zo breed of zo smal
+  blijven als zij wil.
+
+  Het paneel bevat **dezelfde velden** als de rij erachter, niet een leesbare kopie. Een
+  paneel dat u alleen kunt lezen zou u terugsturen naar de krappe tabel om iets te wijzigen.
+  De acties van de regel staan onderin mee.
+
+  Het paneel hoort bij `ResponsiveRecords` en niet bij de collitabel, omdat het dezelfde
+  vorm heeft als de mobiele kaart: label en waarde onder elkaar. Die component wist dat al.
+  Alleen op desktop, want op een telefoon *is* de kaart die weergave.
+
+  Verder: Escape en het kruisje sluiten het, de focus gaat het paneel in en bij het sluiten
+  terug naar de knop, de pagina erachter zit vast zolang het openstaat, en een regel die
+  onder het paneel vandaan verdwijnt neemt het paneel mee — het paneel houdt de regel bij
+  zijn sleutel vast en niet bij zijn plaats in de lijst.
+
+- **De actieknoppen staan naast elkaar en blijven rechts staan.** Zij stonden onder elkaar
+  omdat de cel te smal was voor twee knoppen van 36 px; met het paneel is er ruimte voor
+  drie. En de kolom is vastgezet aan de rechterkant, want juist de knop die het zijwaarts
+  schuiven overbodig maakt stond zelf achter dat schuiven.
+
+### Fixed
+
+- **De omschrijving kon zichzelf terugdraaien.** De omschrijvingsbox houdt de getypte tekst
+  in eigen beheer — die heeft zij nodig voor het zoeken in de catalogus — en keek na de
+  eerste weergave nooit meer naar de waarde die zij van buiten kreeg. Met één box op het
+  scherm is dat onzichtbaar. Het detailpaneel zet er een tweede op dezelfde regel: typte u
+  in de ene, dan toonde de andere nog de oude tekst, en zodra u die aanraakte schreef zij
+  die oude tekst terug over wat u net had ingevoerd.
+
 ## [1.53.1] — 2026-08-11
 
 ### Fixed

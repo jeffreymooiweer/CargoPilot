@@ -446,7 +446,10 @@
   "records": {
     "actions": "Aktionen",
     "viewMore": "Mehr anzeigen",
-    "viewLess": "Weniger anzeigen"
+    "viewLess": "Weniger anzeigen",
+    "showDetail": "Details anzeigen",
+    "closeDetail": "Details schließen",
+    "detailTitle": "Zeilendetails"
   },
   "units": {
     "suggested": "Üblich für dieses Gut",

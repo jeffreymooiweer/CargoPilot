@@ -7,7 +7,14 @@
  * These tests record that, because a field that quietly disappears on mobile is
  * worse than a long card.
  */
-import { render, screen, fireEvent } from "@testing-library/react";
+import {
+  render,
+  screen,
+  fireEvent,
+  waitForElementToBeRemoved,
+  within,
+} from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import { describe, expect, it } from "vitest";
 import ResponsiveRecords, { QuantityWithUnit, RecordColumn } from "./ResponsiveRecords";
 
@@ -164,6 +171,127 @@ describe("de vloer onder de desktoptabel", () => {
       />,
     );
     expect(screen.getByRole("table").className).not.toContain("min-w-");
+  });
+});
+
+describe("het detailpaneel", () => {
+  /**
+   * The third way out of a table that is too wide.
+   *
+   * The lines table has thirteen columns of input fields and wants 1,620px, so
+   * on anything narrower something has to give: the table scrolls sideways or
+   * the fields get squeezed. The panel is the alternative — one line, every
+   * column under each other, at full width — and it is the *same* shape as the
+   * mobile card, which is why it belongs to this component.
+   *
+   * What makes it worth testing is that it holds the same controls as the row
+   * behind it. A panel you can only read would send you back to the cramped
+   * table to change anything.
+   */
+  function open() {
+    render(
+      <ResponsiveRecords
+        rows={rows}
+        columns={columns}
+        rowKey={(r) => r.id}
+        cardTitle={(r) => r.name}
+        detail
+        actions={(r) => <button type="button">Verwijder {r.name}</button>}
+      />,
+    );
+    return screen.getAllByRole("button", { name: "records.showDetail" });
+  }
+
+  it("geeft elke rij een detailknop", () => {
+    expect(open()).toHaveLength(rows.length);
+  });
+
+  it("blijft weg als er niet om gevraagd is", () => {
+    render(
+      <ResponsiveRecords
+        rows={rows}
+        columns={columns}
+        rowKey={(r) => r.id}
+        cardTitle={(r) => r.name}
+      />,
+    );
+    expect(screen.queryByRole("button", { name: "records.showDetail" })).toBeNull();
+  });
+
+  it("toont alle kolommen van die ene regel onder elkaar", async () => {
+    const [, second] = open();
+    await userEvent.click(second);
+
+    const panel = screen.getByRole("dialog");
+    // Every column, including the ones the mobile card hides behind "show more".
+    for (const column of columns) {
+      expect(within(panel).getByText(column.header)).toBeInTheDocument();
+    }
+    // And it is the *clicked* row, not the first one.
+    expect(within(panel).getByText("20 t")).toBeInTheDocument();
+  });
+
+  it("neemt de acties van de regel mee", async () => {
+    await userEvent.click(open()[0]);
+    expect(
+      within(screen.getByRole("dialog")).getByRole("button", { name: "Verwijder Diesel" }),
+    ).toBeInTheDocument();
+  });
+
+  it("sluit met Escape en geeft de focus terug aan de knop", async () => {
+    const [first] = open();
+    await userEvent.click(first);
+    expect(screen.getByRole("dialog")).toHaveFocus();
+
+    await userEvent.keyboard("{Escape}");
+    await waitForElementToBeRemoved(() => screen.queryByRole("dialog"));
+    expect(first).toHaveFocus();
+  });
+
+  it("sluit met het kruisje", async () => {
+    await userEvent.click(open()[0]);
+    await userEvent.click(
+      within(screen.getByRole("dialog")).getByRole("button", { name: "records.closeDetail" }),
+    );
+    await waitForElementToBeRemoved(() => screen.queryByRole("dialog"));
+  });
+
+  it("zet de pagina achter het paneel vast en laat hem daarna weer los", async () => {
+    await userEvent.click(open()[0]);
+    expect(document.body.style.overflow).toBe("hidden");
+    await userEvent.keyboard("{Escape}");
+    await waitForElementToBeRemoved(() => screen.queryByRole("dialog"));
+    expect(document.body.style.overflow).not.toBe("hidden");
+  });
+
+  it("verdwijnt als de regel eronder verdwijnt", async () => {
+    // The row is held by its key and not by its index, so a line deleted from
+    // the table behind the panel takes the panel with it instead of leaving one
+    // that describes a different line.
+    const { rerender } = render(
+      <ResponsiveRecords
+        rows={rows}
+        columns={columns}
+        rowKey={(r) => r.id}
+        cardTitle={(r) => r.name}
+        detail
+      />,
+    );
+    await userEvent.click(screen.getAllByRole("button", { name: "records.showDetail" })[1]);
+    expect(screen.getByRole("dialog")).toBeInTheDocument();
+
+    rerender(
+      <ResponsiveRecords
+        rows={[rows[0]]}
+        columns={columns}
+        rowKey={(r) => r.id}
+        cardTitle={(r) => r.name}
+        detail
+      />,
+    );
+    // Straight away, without the slide-out: what it described is gone, so
+    // watching it leave would be watching a panel about nothing.
+    expect(screen.queryByRole("dialog")).toBeNull();
   });
 });
 

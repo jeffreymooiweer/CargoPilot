@@ -446,7 +446,10 @@
   "records": {
     "actions": "Actions",
     "viewMore": "View more",
-    "viewLess": "View less"
+    "viewLess": "View less",
+    "showDetail": "Show details",
+    "closeDetail": "Close details",
+    "detailTitle": "Line details"
   },
   "units": {
     "suggested": "Usual for these goods",

@@ -439,8 +439,11 @@ export default function ReviewLinesPanel({
           // Measured, not guessed: thirteen columns of input fields want 1,620px
           // together. Below that the browser was taking it out of the fields
           // rather than out of the table, and the quantity field ended up 30px
-          // wide.
+          // wide. On a screen that cannot give it 1,620px the table scrolls —
+          // and the detail panel is the way round that: every column of one
+          // line under each other, at full width.
           minWidth="min-w-[1620px]"
+          detail
           rowKey={(draft) => draft.id}
           cardTitle={(draft, index) => (
             <div className="flex items-center gap-2">

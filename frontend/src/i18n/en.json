@@ -13,7 +13,9 @@
     "menu": "Menu",
     "openMenu": "Open menu",
     "closeMenu": "Close menu",
-    "legal": "Disclaimer"
+    "legal": "Disclaimer",
+    "collapseMenu": "Collapse menu",
+    "expandMenu": "Expand menu"
   },
   "theme": {
     "dark": "Dark",

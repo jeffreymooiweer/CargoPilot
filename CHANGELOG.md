@@ -2,6 +2,32 @@
 
 All notable changes are documented here, following [Semantic Versioning](https://semver.org/).
 
+## [1.53.1] — 2026-08-11
+
+### Fixed
+
+- **De collitabel paste niet op het scherm, en de invoervelden waren te smal om iets in te
+  typen.** Drie dingen werkten tegen elkaar in, en pas alle drie samen leverden een
+  bruikbare tabel op. Gemeten in de browser: de tabel wíl 1.620 px en kreeg er 1.214.
+
+  - **Het zijmenu klapt weg zodra de modaliteit gekozen is**, met een animatie naar links,
+    en klapt met de knop linksboven altijd weer terug. Dat scheelt 224 px. Het menu volgt de
+    route één keer — bij het binnengaan en bij het verlaten van de wizard — en daarna
+    beslist de gebruiker; anders klapt het zichzelf weer dicht zodra je het opent.
+  - **De schil mag het scherm gebruiken zolang het menu weg is.** Alleen inklappen was
+    niet genoeg: de app is afgetopt op 80 rem, dus op een breed scherm ging die 224 px de
+    marge in en schoot de tabel er niets mee op. Met het menu weg gaat de afkapping naar
+    1.800 px, kop en inhoud samen zodat zij op één lijn blijven.
+  - **De tabel heeft een ondergrens gekregen.** Een `w-full`-tabel kan nooit breder worden
+    dan zijn omhulsel, dus de `overflow-x-auto` eromheen sloeg nooit aan en de browser haalde
+    de ontbrekende breedte uit de cellen. Bij een tabel die je *leest* is dat prima — tekst
+    loopt door. Bij een tabel waarin je *typt* niet: het aantalveld werd 30 px en de
+    eenheidskeuze 28 px. Nu houdt de tabel de breedte die haar velden nodig hebben en
+    schuift zij horizontaal als het scherm te klein is.
+
+  Op 1920 px past alles nu zonder schuiven, met het aantalveld en de eenheidskeuze elk
+  ruim 100 px. Op 1440 px schuift alleen de tabel, niet de pagina.
+
 ## [1.53.0] — 2026-08-10
 
 ### Added

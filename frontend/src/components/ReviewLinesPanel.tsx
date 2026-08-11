@@ -194,7 +194,14 @@ export default function ReviewLinesPanel({
       numeric: true,
       width: "w-40",
       render: (draft, index) => (
-        <div className="flex items-center justify-end gap-1.5">
+        // Two controls in one cell, and the cell has to reserve room for both.
+        // Without the floor the table's auto layout sized this column on the
+        // *text* in it — nothing, since both are inputs — and handed the number
+        // field 30px and the unit select 28px, which is a field you cannot type
+        // in. Note that the `w-20` and `w-24` below do nothing: weightInputClass
+        // already carries `w-full`, and that wins whatever order they are
+        // written in. The width is the cell's to give.
+        <div className="flex min-w-[13rem] items-center justify-end gap-1.5">
           <input
             type="number"
             inputMode="decimal"
@@ -429,6 +436,11 @@ export default function ReviewLinesPanel({
         <ResponsiveRecords
           rows={draftLines}
           columns={columns}
+          // Measured, not guessed: thirteen columns of input fields want 1,620px
+          // together. Below that the browser was taking it out of the fields
+          // rather than out of the table, and the quantity field ended up 30px
+          // wide.
+          minWidth="min-w-[1620px]"
           rowKey={(draft) => draft.id}
           cardTitle={(draft, index) => (
             <div className="flex items-center gap-2">

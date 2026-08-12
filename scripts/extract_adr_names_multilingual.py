@@ -115,7 +115,7 @@ def learn_banding(document, sample: list[int]) -> tuple[str, float]:
         top_marker, centres = band_of(page)
         if top_marker is None or not all(n in centres for n in NEEDED):
             continue
-        ys = [y for y, _text in name_column(page, top_marker + 10, centres)]
+        ys = [y for y, _text in name_column(page, top_marker, centres)]
         gaps.extend(round(b - a, 1) for a, b in zip(ys, ys[1:]) if b > a)
     if len(gaps) < 20:
         return BY_UN_NUMBER, ROW_GAP
@@ -162,16 +162,23 @@ def band_of(page) -> tuple[float | None, dict[str, float]]:
     band is taken as it comes, and the caller checks it holds what it needs.
     """
     rows: dict[float, dict[str, float]] = defaultdict(dict)
+    bottoms: dict[float, float] = {}
     limit = body_bottom(page)
-    for x0, y0, x1, _y1, word, *_rest in page.get_text("words"):
+    for x0, y0, x1, y1, word, *_rest in page.get_text("words"):
         if y0 > limit:
             continue
         found = MARKER.match(word.strip())
         if found:
-            rows[round(y0, 1)][found.group(1)] = (x0 + x1) / 2
+            key = round(y0, 1)
+            rows[key][found.group(1)] = (x0 + x1) / 2
+            bottoms[key] = max(bottoms.get(key, y1), y1)
     for y in sorted(rows):
         if len(rows[y]) >= MARKERS_NEEDED:
-            return y, dict(rows[y])
+            # Where the body starts is the foot of the band itself, not a fixed
+            # step below its head. `extract_adr_table_a` steps ten points, which
+            # clears the marker line in the Dutch extract and eats the first
+            # data row of a tighter one — one entry per page, 123 of them.
+            return bottoms[y] + 1.0, dict(rows[y])
     return None, {}
 
 
@@ -231,7 +238,7 @@ def read(path: Path) -> tuple[dict[str, list[str]], list[str], dict[str, int]]:
             if top_marker is None or not all(n in centres for n in NEEDED):
                 continue
             counts["table_pages"] += 1
-            top = top_marker + 10
+            top = top_marker
 
             bands: list[list[str]] = []
             current: list[str] = []

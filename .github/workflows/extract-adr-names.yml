@@ -1,0 +1,106 @@
+name: Extract ADR proper shipping names
+
+# Reads column (2) of table A out of ADR 2025 in English and in French and puts
+# the names in backend/seed/dg/adr_names_<language>.json.
+#
+# It runs here and not locally for the same reason the regulation reader does:
+# UNECE is not reachable from the development container, and a runner reaches it
+# fine. The volumes are published free of charge; the books do not go into the
+# repository, only the derived names.
+#
+# The script refuses to write below an agreement threshold against the Dutch
+# table A already in the repository. It compares UN numbers and not names — the
+# names are supposed to differ, the set of rows is not — so a column boundary
+# that has slipped shows up as missing entries rather than passing unnoticed.
+
+on:
+  workflow_dispatch:
+    inputs:
+      language:
+        description: "Which edition to read"
+        type: choice
+        options:
+          - en
+          - fr
+          - both
+        default: both
+      commit:
+        description: "Commit the result to this branch"
+        type: boolean
+        default: false
+      min_agreement:
+        description: "Below this agreement nothing is written"
+        default: "0.98"
+
+permissions:
+  contents: write
+
+jobs:
+  extract:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install --quiet pymupdf
+
+      - name: Read the volumes
+        env:
+          LANGUAGE: ${{ inputs.language }}
+          MIN_AGREEMENT: ${{ inputs.min_agreement }}
+        run: |
+          set -euo pipefail
+          # Volume I holds parts 1 to 3, and chapter 3.2 with it. The French
+          # edition is the same document with F where the English has E.
+          declare -A URLS=(
+            [en]="https://unece.org/sites/default/files/2025-01/2412006_E_ECE_TRANS_352_Vol.I_WEB_0.pdf"
+            [fr]="https://unece.org/sites/default/files/2025-01/2412007_F_ECE_TRANS_352_Vol.I_WEB.pdf"
+          )
+          # A second address for each, because UNECE renames these files: the
+          # reader already carries two for every volume it fetches.
+          declare -A FALLBACK=(
+            [en]="https://unece.org/sites/default/files/2025-01/2412006_E_ECE_TRANS_352_Vol.I_WEB.pdf"
+            [fr]="https://unece.org/sites/default/files/2025-01/2412007_F_ECE_TRANS_352_Vol.I_WEB_0.pdf"
+          )
+          LANGS="$LANGUAGE"
+          if [ "$LANGUAGE" = "both" ]; then LANGS="en fr"; fi
+          for lang in $LANGS; do
+            echo "=============================================================="
+            echo "ADR 2025 Volume I — $lang"
+            echo "=============================================================="
+            ok=0
+            for url in "${URLS[$lang]}" "${FALLBACK[$lang]}"; do
+              echo "trying $url"
+              if curl -sSL --fail -o "/tmp/adr_$lang.pdf" "$url" \
+                 && head -c 5 "/tmp/adr_$lang.pdf" | grep -q '%PDF-'; then
+                ok=1; break
+              fi
+              echo "  not a PDF, or not reachable"
+            done
+            if [ "$ok" != "1" ]; then
+              echo "::error::could not fetch ADR 2025 Volume I in $lang"
+              exit 1
+            fi
+            ls -la "/tmp/adr_$lang.pdf"
+            python scripts/extract_adr_names_multilingual.py \
+              --pdf "/tmp/adr_$lang.pdf" --language "$lang" \
+              --min-agreement "$MIN_AGREEMENT"
+          done
+
+      - name: Commit
+        if: ${{ inputs.commit }}
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add backend/seed/dg/adr_names_*.json
+          if git diff --cached --quiet; then
+            echo "Unchanged; nothing to commit."
+            exit 0
+          fi
+          git commit -m "Read the ADR 2025 proper shipping names in English and French
+
+          Column (2) of table A, from the official UNECE editions, checked
+          against the Dutch table A already in the repository."
+          git push origin HEAD:${GITHUB_REF_NAME}

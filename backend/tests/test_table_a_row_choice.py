@@ -79,9 +79,17 @@ def test_flammable_aerosols_are_not_filled_in_as_non_flammable_ones():
 
 def test_without_a_classification_code_the_first_row_is_filled_but_said_so():
     """Filling something in is still right — the user has to start somewhere —
-    but it must not look like an answer."""
+    but it must not look like an answer.
+
+    Which row is first stopped being an accident in v1.56.0. The 2023 export
+    listed the twelve in alphabetical order of the classification code, so 5A —
+    the *non-flammable* aerosol — was what an unspecified UN 1950 was filled
+    with, and that is the reading v1.51.0 showed costs a factor of three in
+    points. Table A itself puts them in the ADR's order, which begins at 5F: the
+    flammable spray can, and the overwhelmingly common case.
+    """
     outcome = derived("1950")
-    assert outcome["patch"]["classification_code"] == "5A"
+    assert outcome["patch"]["classification_code"] == "5F"
     note = outcome["hints"]["table_a_variant_note"]
     assert "12" in note
     assert "5F" in note and "5T" in note
@@ -111,7 +119,7 @@ def test_ammunition_rows_differing_only_in_the_label_are_not_pinned_on_a_code():
     the classification code would be advice that cannot work, so the note says
     what the rows are and leaves the choice with them."""
     note = derived("0015")["hints"]["table_a_variant_note"]
-    assert "1+8" in note and "1+6.1" in note
+    assert "1, 8" in note and "1, 6.1" in note
     assert "classificatiecode en verpakkingsgroep zijn voor alle rijen gelijk" in note
 
 

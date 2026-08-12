@@ -2,6 +2,93 @@
 
 All notable changes are documented here, following [Semantic Versioning](https://semver.org/).
 
+## [1.56.0] — 2026-08-12
+
+### Changed
+
+- **The classification table is ADR 2025, read out of the book.** It was an export of ADR
+  **2023**. That was written down honestly — the manifest has said so since v1.49.0 — and
+  patched where the gap showed: v1.52.0 carried the eleven rows 2025 added in by hand and
+  flagged the two it withdrew.
+
+  A patch covers what an edition *added*. It cannot cover what an edition *changed*, and
+  2025 changes a field on **316 of the 2,334** UN numbers the two editions share. Three of
+  those were answers the application was giving with confidence:
+
+  - **UN 3423 tetramethylammonium hydroxide, solid** is class **6.1**, not class 8. Labels
+    6.1 + 8 instead of 8, transport category 1 instead of 2, and hazard identification
+    number **668** instead of 80 — the number that goes on the orange plate.
+  - **The three UN 0015 rows** have their own subsidiary hazard back: 1, 1 + 8 and 1 + 6.1.
+    The export gave all three the same labels column, so the corrosive and the toxic
+    variant lost their second label on the way to the document, and nothing distinguished
+    the rows well enough to warn about it.
+  - **UN 1950 aerosols** now stand in the ADR's own order, which opens at 5F — the
+    flammable spray can, and the overwhelmingly common case. The export was sorted
+    alphabetically by classification code, so an aerosol whose code the user had not given
+    was filled in as 5A, the *non-flammable* row. That is the exact reading v1.51.0
+    measured as costing a factor of three in 1.1.3.6 points.
+
+  All twenty-three columns are read by the new `scripts/extract_adr_table_a.py`: **3,158
+  rows over 2,345 UN numbers, no unreadable page**. Four columns the application did not
+  hold before come with it — the carriage provisions of (16) to (19), the V, VC/AP, CV and
+  S codes.
+
+- **The alphabetical index turns out to be the whole of table A, set a second time.** 325
+  pages against 294, different column widths, different line breaks — an independent
+  typesetting of the same data. So every field is read twice and the two readings are laid
+  against each other, which is the discipline this repository already applies to a machine
+  reading and which could previously only be applied to the names.
+
+  | | |
+  |---|---|
+  | classification code, packing group, labels, special provisions, LQ, EQ, packing instructions, all four carriage columns, hazard number, tunnel code | agree on **every** one of the 2,345 UN numbers |
+  | class, transport category | agree on all but eight |
+
+  The sixteen that differ are named rather than rounded away. Eight are the *index* failing
+  over one run of its own pages — every iodine entry, which the alphabetical order puts
+  together — and three are classes the table dropped that the index supplied, which is what
+  a second reading is for.
+
+- **The eleven rows transcribed by hand in v1.52.0 have become the check on the machine.**
+  `adr_2025_additions.json` has stopped being a source the application reads and is now a
+  fixture: a reading made by eye, off the page, of the hardest rows in the book, for the
+  machine reading to be compared against. Two methods, one page, and they agree.
+
+- **Which UN numbers ADR 2025 no longer knows is derived, not listed.** It is the
+  difference between the two tables — UN 1499 and UN 1999 — and a difference cannot be
+  forgotten at the next edition the way a hand-kept list can.
+
+### Fixed
+
+- **`is_transport_forbidden` was reading a German sentence out of a Dutch table.** The 2023
+  export wrote `BEFÖRDERUNG VERBOTEN` across the row of a substance not admitted for
+  carriage, and the check looked for that word in the labels column. The Dutch edition
+  writes nothing at all — the row is simply empty.
+
+  Reading the emptiness instead would have been worse than the bug: **it is also how "not
+  subject to ADR" is written.** UN 1798 nitrohydrochloric acid may not be carried and UN
+  1845 dry ice travels freely, and their rows are equally blank. So the prohibition is
+  taken from the export, which names it in words, and the manifest errata says that is
+  where it comes from. Nineteen entries that travel freely would have been refused
+  otherwise.
+
+- **The packing instruction was cut at the first space.** Table A separates the
+  instructions with commas — `P001, IBC02, R001` — where the export used spaces, so the
+  field came back as `P001,` with the comma attached.
+
+### Added
+
+- **`scripts/extract_adr_table_a.py`.** What the reading had to survive is in its module
+  docstring, because none of it is guessable from the output: there are no column rules
+  anywhere in the table, the layout is made anew on every page, the column numbers are
+  centred over cells whose content is left-aligned, a wrapped name leaves an indent that is
+  every bit as sharp a mode as a real column, the UN number is set vertically centred so a
+  row does not begin where its number is, and two cells can abut with nothing between them
+  so that the text layer hands over `(B1000C)V2` as a single word.
+
+- **`backend/tests/test_adr_table_a.py`** — 24 tests over both halves of the claim: that
+  the reading is sound, and that the change reached the checks that compute with it.
+
 ## [1.55.1] — 2026-08-11
 
 ### Changed

@@ -124,11 +124,18 @@ def test_carbon_carries_the_new_document_requirement():
 
 
 def test_a_reclassified_substance_is_reported_and_not_silently_rewritten():
-    """UN 3423 becomes class 6.1 with subsidiary risk 8 in 42-24. The app still
-    computes the segregation on the ADR classification and says so out loud; it
-    does not change the class behind the scenes."""
+    """UN 3423 became class 6.1 with subsidiary risk 8 in 42-24 — and, it turns
+    out, in ADR 2025 as well.
+
+    This test was written when the two disagreed: the sea code had moved the
+    substance and the road table this app ran on, a 2023 export, still called it
+    class 8. The point of it was that the app must not quietly rewrite the road
+    class on the strength of the sea layer. It still must not. What changed in
+    v1.56.0 is the road table, which is now the 2025 edition and says 6.1 of its
+    own accord — so the two agree, and the reported change is now a statement
+    about the layer rather than a contradiction of it."""
     entry = offline_lookup("3423")
-    assert entry["class"] == "8"  # ADR 2025 ongewijzigd
+    assert entry["class"] == "6.1"  # ADR 2025, read from the book
     assert any("6.1" in line for line in entry["imdg_amendment_changes"])
 
     findings = imdg("3423")["imdg_segregation"]

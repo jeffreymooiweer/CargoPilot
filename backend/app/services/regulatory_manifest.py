@@ -37,10 +37,11 @@ RULE_SETS: list[dict[str, Any]] = [
         "key": "adr",
         "profiles": ["ADR", "RID", "ADN"],
         "name": "ADR — carriage by road",
-        "edition": "2025, with a Table A from the 2023 edition",
-        "source": ("UNECE ADR 2025 for the provisions; Table A via "
-                   "rkstgr/adr-substances (2023 edition); Dutch proper "
-                   "shipping names from the official Dutch ADR 2025 edition"),
+        "edition": "2025",
+        "source": ("UNECE ADR 2025 for the provisions; table A read out of the "
+                   "official Dutch ADR 2025 edition and checked against the "
+                   "alphabetical index of that edition; English and German "
+                   "proper shipping names via rkstgr/adr-substances"),
         "source_url": "https://unece.org/transport/dangerous-goods/adr-2025-files",
         "valid_from": "2025-01-01",
         # ADR is revised every two years; ADR 2027 replaces this edition, with a
@@ -49,23 +50,24 @@ RULE_SETS: list[dict[str, Any]] = [
         # Measured against the Dutch ADR 2025 while the Dutch names were being
         # read out, and therefore stated here rather than left to be discovered.
         "errata": [
-            "The classification table is an ADR 2023 export, not a 2025 one. The "
-            "eleven rows 2025 adds — UN 0514 and UN 3551 through 3560 — have been "
-            "transcribed by hand from the Dutch edition since v1.52.0 and are in "
-            "adr_2025_additions.json. UN 1499 and UN 1999 are still in the table "
-            "while ADR 2025 no longer knows them; they stay findable and report "
-            "that themselves.",
-            "Some English names in that export are damaged or wrong (UN 1139 "
-            "'Coating solution (', UN 1993 'Compounds, cleaning liquid'). The "
-            "Dutch names come from the book itself and do not have this.",
+            "Table A has no English or German column — the edition read is the "
+            "Dutch one — so those two names still come from the 2023 export. "
+            "Where 2025 moved a field the row cannot be matched and the UN "
+            "number's name is used, which for 55 UN numbers with per-row names "
+            "can be the wrong variant.",
+            "A carriage prohibition is not in the Dutch table in words: the row "
+            "is simply left empty, which is also how an entry not subject to "
+            "ADR is written. The fourteen prohibited UN numbers therefore come "
+            "from the 2023 export, which names them.",
         ],
         "covers": [
             "classification per UN number (class, packing group, labels, LQ/EQ)",
+            "the carriage provisions of columns (16) to (19)",
             "Dutch proper shipping names from Table A, column (2)",
             "1.1.3.6 points calculation",
             "7.5.2 mixed loading and 7.5.4/CV28",
         ],
-        "files": ["un_numbers.json", "adr_names_nl.json",
+        "files": ["adr_table_a.json", "un_numbers.json", "adr_names_nl.json",
                   "adr_2025_additions.json", "packagings.json"],
     },
     {

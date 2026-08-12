@@ -130,6 +130,34 @@ exactly the 1,000 the text allows. The application was insisting on orange plate
 certificate, written instructions and an ADR vehicle for consignments entitled to the
 exemption. Fixed in v1.33.0.
 
+**Since v1.56.0 the table is ADR 2025 itself.** Until then it was an export of ADR **2023**,
+patched: the eleven rows 2025 added were carried in by hand and the two it withdrew were
+flagged in place. A patch covers what an edition added and nothing of what it changed, and
+2025 changes a field on 316 of the 2,334 UN numbers the two share. All twenty-three columns
+are now read out of the official Dutch edition — 3,158 rows, 2,345 UN numbers, no unreadable
+page — and checked against the alphabetical index of that edition, which is the same table
+set a second time. Eleven of the thirteen compared fields agree on every UN number.
+
+Three of those changes are worth naming, because each was an answer the application was
+giving with confidence:
+
+- **UN 3423 tetramethylammonium hydroxide, solid** moved from class 8 to **class 6.1**.
+  Different labels, transport category 1 instead of 2, hazard identification number 668
+  instead of 80 — the number that goes on the orange plate.
+- **The three UN 0015 rows** carry their own subsidiary hazard again: 1, 1 + 8 and
+  1 + 6.1. The export gave all three the same labels column, so the corrosive and the toxic
+  variant lost their second label on the way to the document.
+- **UN 1950 aerosols** are in the ADR's own order, which opens at 5F — the flammable spray
+  can. The export was sorted alphabetically, so an unspecified aerosol was filled in as 5A,
+  the *non-flammable* row: the exact reading v1.51.0 showed costs a factor of three in
+  points.
+
+Two things the Dutch edition cannot supply, and where they come from instead: the **English
+and German** proper shipping names, which have no column in it, and **which UN numbers are
+not admitted for carriage** — the Dutch table writes a prohibition by leaving the row empty,
+and writes "not subject to ADR" the same way, so the fourteen prohibited entries come from
+the 2023 export, which names them in words. Both are in the manifest errata.
+
 This is the mode CargoPilot serves best, and the reason is simple: ADR Table A is the
 dataset it was built on.
 
@@ -447,7 +475,8 @@ verification.
   truncated in the export; the German name was substituted without a word.
 - **The edition the classification table actually is.** Reading the book showed it to be an
   ADR 2023 export while the manifest reported 2025; UN 0514 and UN 3551–3560 are missing
-  from it and UN 1499 and 1999 are still in it. The manifest now says so.
+  from it and UN 1499 and 1999 are still in it. The manifest said so from v1.49.0, and
+  v1.56.0 closed it: the table is now ADR 2025, read out of the book itself.
 
 **Shipped in v1.33.0 — the land regulations read rather than recalled:**
 

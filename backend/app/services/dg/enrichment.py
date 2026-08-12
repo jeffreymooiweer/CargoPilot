@@ -465,10 +465,13 @@ def enrich_un_entry(entry: dict[str, Any], language: str = "nl") -> dict[str, An
     classification = str(entry.get("classification_code") or "").strip().upper()
     extras: dict[str, Any] = {}
 
-    # Transport prohibition: ADR Table A states "BEFÖRDERUNG VERBOTEN" in the
-    # labels column for substances that may not be offered for carriage.
+    # Transport prohibition. The 2023 export wrote "BEFÖRDERUNG VERBOTEN" across
+    # the row; the Dutch 2025 table writes nothing at all, which is the same
+    # signature as "not subject to ADR" and cannot be acted on. So the database
+    # marks the entry from the export's own words and this reads that mark —
+    # falling back on the text for the two withdrawn rows that still carry it.
     labels_raw = str(entry.get("labels") or "")
-    if "VERBOTEN" in labels_raw.upper():
+    if entry.get("transport_forbidden") or "VERBOTEN" in labels_raw.upper():
         extras["transport_forbidden"] = True
         extras["transport_forbidden_note"] = pick(
             {

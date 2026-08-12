@@ -130,9 +130,10 @@ goes quiet; typing an address by hand always works.
 
 | Data | Source |
 |---|---|
-| Classification per UN number — class, packing group, labels, LQ/EQ, packing instruction, transport category, tunnel code, Kemler number | ADR Table A via [rkstgr/adr-substances](https://github.com/rkstgr/adr-substances), based on the official UNECE publication |
-| Proper shipping names, English and German | The same ADR Table A export — it carries `name_en` and `name_de` per UN number |
-| The eleven Table A rows ADR 2025 added (UN 0514, 3551–3560) | **ADR 2025, official Dutch edition**, table A — copied by hand, each row read twice (table A and the alphabetical index) with the page recorded. The export the rest of the table comes from is an ADR 2023 one and does not have them |
+| Classification per UN number — class, classification code, packing group, labels, special provisions, LQ/EQ, packing instructions, the carriage provisions of columns (16)–(19), transport category, tunnel code, Kemler number | **ADR 2025, official Dutch edition**, table A of chapter 3.2, read by `scripts/extract_adr_table_a.py`. 3,158 rows over 2,345 UN numbers, no unreadable page. Checked against the alphabetical index of the same edition, which is that table set a second time: eleven of the thirteen compared fields agree on every UN number, class and transport category on all but eight. The book is not in this repository; only the derived table is |
+| Proper shipping names, English and German | ADR Table A via [rkstgr/adr-substances](https://github.com/rkstgr/adr-substances), an ADR 2023 export. The Dutch edition has no such column and there is no other source, so this is the one thing that export still supplies |
+| Which UN numbers ADR does not admit for carriage | The same 2023 export, which marks them in words. The Dutch table writes a prohibition by leaving the row empty, and so writes "not subject to ADR" — the two cannot be told apart from the table alone |
+| The eleven Table A rows ADR 2025 added (UN 0514, 3551–3560) | **ADR 2025, official Dutch edition** — copied by hand in v1.52.0, each row read twice with the page recorded. Since v1.56.0 they come out of the machine reading like every other row, and the hand transcription is kept as a third reading to check it against |
 | Proper shipping names, Dutch | **ADR 2025, official Dutch edition**, table A column (2), read by `scripts/extract_adr_names.py` and cross-checked against the alphabetical index of the same edition (2,345 UN numbers, 99.9% agreement). The book itself is not in this repository; only the derived names are |
 | English proper shipping names, cross-check | 49 CFR 172.101 (eCFR / GovInfo, public domain) |
 | UN packaging codes (107) | ADR 6.1.2 / 6.5.1.4 / 6.6.2 |

@@ -109,6 +109,50 @@ def read(path: Path) -> tuple[dict[str, list[str]], list[str], dict[str, int]]:
     return dict(names), problems, counts
 
 
+def probe(path: Path, samples: int = 6) -> None:
+    """Report what the table pages of this edition actually look like.
+
+    The Dutch table A came as a standalone extract with all twenty-three column
+    numbers in one band above every page. The UNECE volume answered with none at
+    all, which is a difference in the document and not a fault in the reading —
+    the printed ADR lays table A across a two-page spread, so a page carries
+    half the columns and the band never reaches the fifteen the reader looks
+    for. Guessing which half would be guessing; this prints it.
+    """
+    import fitz
+    import re as _re
+
+    token = _re.compile(r"^\((\d{1,2}[ab]?)\)$")
+    with fitz.open(path) as document:
+        print(f"{document.page_count} pages")
+        found = []
+        for index in range(document.page_count):
+            words = document[index].get_text("words")
+            marks: dict[float, list[tuple[float, str]]] = defaultdict(list)
+            for x0, y0, _x1, _y1, word, *_rest in words:
+                hit = token.match(word.strip())
+                if hit:
+                    marks[round(y0, 0)].append((round(x0, 1), hit.group(1)))
+            best = max((row for row in marks.values()), key=len, default=[])
+            if len(best) >= 4:
+                found.append((index + 1, sorted(best)))
+        print(f"pages with a band of four or more column numbers: {len(found)}")
+        for number, band in found[:samples]:
+            print(f"  p{number}: {len(band)} -> "
+                  + " ".join(f"({name})@{x:.0f}" for x, name in band))
+        if not found:
+            # Nothing recognisable at all: say what the pages do hold, or the
+            # next run is another guess.
+            print("  none. First lines of three pages in the middle:")
+            for index in (document.page_count // 3,
+                          document.page_count // 2,
+                          2 * document.page_count // 3):
+                head = " | ".join(
+                    line.strip() for line in
+                    document[index].get_text().splitlines()[:6] if line.strip())
+                print(f"    p{index + 1}: {head[:220]}")
+
+
 def against_the_dutch(names: dict[str, list[str]]) -> dict[str, Any]:
     """The self-check: the same table in another language holds the same rows.
 
@@ -143,10 +187,12 @@ def main(argv: list[str] | None = None) -> int:
                              "headers first, the web archive after. Hand-rolling "
                              "the download here got a 403 twice and taught "
                              "nothing that file did not already know.")
-    parser.add_argument("--language", required=True, choices=["en", "fr"],
+    parser.add_argument("--language", default="en", choices=["en", "fr"],
                         help="Which language this volume is in")
     parser.add_argument("--out", type=Path)
     parser.add_argument("--edition", default="ADR 2025")
+    parser.add_argument("--probe", action="store_true",
+                        help="Report the layout of this edition and stop")
     parser.add_argument("--dry-run", action="store_true",
                         help="Read and check, but do not write anything")
     parser.add_argument("--min-agreement", type=float, default=0.98,
@@ -160,6 +206,9 @@ def main(argv: list[str] | None = None) -> int:
         path = fetch(args.source)
         print(f"read {SOURCES[args.source]['title']} "
               f"({SOURCES[args.source].get('resolved_via', 'direct')})")
+    if args.probe:
+        probe(path)
+        return 0
     names, problems, counts = read(path)
     print(f"{counts['pages']} pages, {counts['table_pages']} of them table A, "
           f"{counts['rows']} rows, {len(names)} UN numbers")

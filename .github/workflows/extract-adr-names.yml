@@ -24,6 +24,10 @@ on:
           - fr
           - both
         default: both
+      probe:
+        description: "Report the layout of the edition and stop"
+        type: boolean
+        default: false
       commit:
         description: "Commit the result to this branch"
         type: boolean
@@ -49,6 +53,7 @@ jobs:
         env:
           LANGUAGE: ${{ inputs.language }}
           MIN_AGREEMENT: ${{ inputs.min_agreement }}
+          PROBE: ${{ inputs.probe }}
         run: |
           set -euo pipefail
           # The download goes through read_land_regulations.py, which is the one
@@ -63,9 +68,11 @@ jobs:
             echo "=============================================================="
             source_id="adr1"
             if [ "$lang" = "fr" ]; then source_id="adr1_fr"; fi
+            EXTRA=""
+            if [ "$PROBE" = "true" ]; then EXTRA="--probe"; fi
             python scripts/extract_adr_names_multilingual.py \
               --source "$source_id" --language "$lang" \
-              --min-agreement "$MIN_AGREEMENT"
+              --min-agreement "$MIN_AGREEMENT" $EXTRA
           done
 
       - name: Commit

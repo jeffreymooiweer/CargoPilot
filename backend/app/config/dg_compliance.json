@@ -9,7 +9,8 @@
     "imdg_class1": "IMDG Code (Amendment 40-20) 7.2.7 — segregation of class 1 goods",
     "rid_protective_distance": "RID 2025 (OTIF) 7.5.3 — protective distance in the train between a wagon holding class 1 and a placarded wagon 2.1/3/4.1/4.2/4.3/5.1/5.2",
     "adr_tunnel": "ADR 2025 (UNECE) 8.6.3 and 8.6.4 — tunnel restriction code for the whole load",
-    "adr_placarding": "ADR 2025 (UNECE) 5.3 — placarding and marking of the transport unit: 5.3.1.5, 5.3.2.1, 5.3.3 and 5.3.6"
+    "adr_placarding": "ADR 2025 (UNECE) 5.3 — placarding and marking of the transport unit: 5.3.1.5, 5.3.2.1, 5.3.3 and 5.3.6",
+    "adr_security": "ADR 2025 (UNECE) 1.10.3 — high consequence dangerous goods and the security plan"
   },
   "adr_equipment": {
     "source": "ADR 2025 (UNECE) 8.1.4 and 8.1.5",
@@ -2173,6 +2174,158 @@
       "en": "Within the 1.1.3.6 exemption, orange plates and placards are not required.",
       "de": "Innerhalb der Freistellung nach 1.1.3.6 sind orangefarbene Tafeln und Großzettel nicht erforderlich.",
       "fr": "Dans le cadre de l'exemption du 1.1.3.6, les panneaux orange et les plaques-étiquettes ne sont pas exigés."
+    }
+  },
+  "adr_security": {
+    "source": "ADR 2025 (UNECE) table 1.10.3.1.2 and 1.10.3.2, read from the official Dutch edition, printed pages 184-185",
+    "_scope": "The packages column of table 1.10.3.1.2. The tank and bulk columns carry their own thresholds — 3000 litres or 3000 kg for most of the b) rows — and footnotes c) and d) make them relevant only where table A column (10), (12) or (17) permits that form of carriage. CargoPilot computes for packages and says so.",
+    "_the_answer_is_mostly_no": "For carriage in packages the column holds two values and no others: 0, meaning any quantity at all, and footnote b), meaning 1.10.3 does not apply whatever the quantity. So a full load of packaged petrol of packing group II is not high consequence dangerous goods and never becomes so, while a single kilogram of a packing group I toxic is.",
+    "_footnote_b": "Footnote b) to table 1.10.3.1.2: whatever the quantity, the provisions of 1.10.3 do not apply. Quoted here in rendering only — the published text is not redistributed in this repository, and the provision number is enough to find it.",
+    "class_7": {
+      "provision": "1.10.3.1.3",
+      "nl": "Klasse 7: radioactieve stoffen met een hoog gevarenpotentieel zijn stoffen met een activiteit vanaf 3000 A2 per collo, met eigen grenswaarden per radionuclide in tabel 1.10.3.1.3. CargoPilot kent de activiteit niet en beantwoordt deze vraag niet.",
+      "en": "Class 7: radioactive material of high consequence is material with an activity of 3000 A2 or more per package, with its own limits per radionuclide in table 1.10.3.1.3. CargoPilot does not know the activity and does not answer this.",
+      "de": "Klasse 7: radioaktive Stoffe mit hohem Gefahrenpotenzial sind Stoffe mit einer Aktivität ab 3000 A2 je Versandstück, mit eigenen Grenzwerten je Radionuklid in Tabelle 1.10.3.1.3. CargoPilot kennt die Aktivität nicht und beantwortet dies nicht.",
+      "fr": "Classe 7 : les matières radioactives à haut risque sont celles dont l'activité atteint 3000 A2 par colis, avec des seuils propres par radionucléide au tableau 1.10.3.1.3. CargoPilot ne connaît pas l'activité et ne répond pas à cette question."
+    },
+    "rows": [
+      {
+        "match": "class_1",
+        "divisions": [
+          "1.1",
+          "1.2",
+          "1.5",
+          "1.6"
+        ],
+        "packages_kg": 0,
+        "nl": "Ontplofbare stoffen en voorwerpen van subklasse {division}",
+        "en": "Explosive substances and articles of division {division}",
+        "de": "Explosive Stoffe und Gegenstände der Unterklasse {division}",
+        "fr": "Matières et objets explosibles de la division {division}"
+      },
+      {
+        "match": "class_1_group_c",
+        "divisions": [
+          "1.3"
+        ],
+        "compatibility_groups": [
+          "C"
+        ],
+        "packages_kg": 0,
+        "nl": "Ontplofbare stoffen en voorwerpen van subklasse 1.3, compatibiliteitsgroep C",
+        "en": "Explosive substances and articles of division 1.3, compatibility group C",
+        "de": "Explosive Stoffe und Gegenstände der Unterklasse 1.3, Verträglichkeitsgruppe C",
+        "fr": "Matières et objets explosibles de la division 1.3, groupe de compatibilité C"
+      },
+      {
+        "match": "un_numbers",
+        "un_numbers": [
+          "0104",
+          "0237",
+          "0255",
+          "0267",
+          "0289",
+          "0361",
+          "0365",
+          "0366",
+          "0440",
+          "0441",
+          "0455",
+          "0456",
+          "0500",
+          "0512",
+          "0513"
+        ],
+        "packages_kg": 0,
+        "nl": "Ontplofbare stoffen en voorwerpen van subklasse 1.4 die in tabel 1.10.3.1.2 bij naam staan",
+        "en": "Explosive substances and articles of division 1.4 named in table 1.10.3.1.2",
+        "de": "Explosive Stoffe und Gegenstände der Unterklasse 1.4, die in Tabelle 1.10.3.1.2 namentlich genannt sind",
+        "fr": "Matières et objets explosibles de la division 1.4 nommés au tableau 1.10.3.1.2"
+      },
+      {
+        "match": "classification_letters",
+        "hazard_class": "2",
+        "letters": [
+          "T",
+          "TF",
+          "TC",
+          "TO",
+          "TFC",
+          "TOC"
+        ],
+        "exclude_un_numbers": [
+          "1950",
+          "2037"
+        ],
+        "packages_kg": 0,
+        "nl": "Giftige gassen (classificatiecode met T), spuitbussen uitgezonderd",
+        "en": "Toxic gases (classification code with T), aerosols excepted",
+        "de": "Giftige Gase (Klassifizierungscode mit T), ausgenommen Druckgaspackungen",
+        "fr": "Gaz toxiques (code de classification comportant un T), aérosols exceptés"
+      },
+      {
+        "match": "classification_letters",
+        "hazard_class": "3",
+        "letters": [
+          "D"
+        ],
+        "packages_kg": 0,
+        "nl": "Vloeibare ontplofbare stoffen in niet-explosieve toestand",
+        "en": "Desensitized explosive liquids",
+        "de": "Desensibilisierte explosive flüssige Stoffe",
+        "fr": "Matières explosibles liquides désensibilisées"
+      },
+      {
+        "match": "classification_letters",
+        "hazard_class": "4.1",
+        "letters": [
+          "D",
+          "DT"
+        ],
+        "packages_kg": 0,
+        "nl": "Vaste ontplofbare stoffen in niet-explosieve toestand",
+        "en": "Desensitized explosive solids",
+        "de": "Desensibilisierte explosive feste Stoffe",
+        "fr": "Matières explosibles solides désensibilisées"
+      },
+      {
+        "match": "packing_group",
+        "hazard_class": "6.1",
+        "packing_groups": [
+          "I"
+        ],
+        "packages_kg": 0,
+        "nl": "Giftige stoffen van verpakkingsgroep I",
+        "en": "Toxic substances of packing group I",
+        "de": "Giftige Stoffe der Verpackungsgruppe I",
+        "fr": "Matières toxiques du groupe d'emballage I"
+      },
+      {
+        "match": "un_numbers",
+        "un_numbers": [
+          "2814",
+          "2900",
+          "3549"
+        ],
+        "packages_kg": 0,
+        "nl": "Infectueuze stoffen van categorie A en medisch afval van categorie A",
+        "en": "Category A infectious substances and category A medical waste",
+        "de": "Ansteckungsgefährliche Stoffe der Kategorie A und medizinische Abfälle der Kategorie A",
+        "fr": "Matières infectieuses de catégorie A et déchets médicaux de catégorie A"
+      }
+    ],
+    "plan": {
+      "provision": "1.10.3.2",
+      "nl": "Deze zending bevat gevaarlijke goederen met een hoog gevarenpotentieel ({products}). 1.10.3.2 vraagt van vervoerders, afzenders en andere betrokkenen een beveiligingsplan met ten minste de onderdelen van 1.10.3.2.2, en 1.10.1 vraagt om identiteitsbewijs met foto voor elk bemanningslid.",
+      "en": "This consignment holds high consequence dangerous goods ({products}). 1.10.3.2 requires carriers, consignors and other participants to adopt a security plan covering at least the items of 1.10.3.2.2, and 1.10.1 requires photographic identification for each crew member.",
+      "de": "Diese Sendung enthält gefährliche Güter mit hohem Gefahrenpotenzial ({products}). Nach 1.10.3.2 haben Beförderer, Absender und weitere Beteiligte einen Sicherungsplan mit mindestens den Bestandteilen nach 1.10.3.2.2 anzuwenden; nach 1.10.1 führt jedes Mitglied der Fahrzeugbesatzung einen Lichtbildausweis mit.",
+      "fr": "Cet envoi contient des marchandises dangereuses à haut risque ({products}). Le 1.10.3.2 impose aux transporteurs, expéditeurs et autres intervenants un plan de sûreté comportant au moins les éléments du 1.10.3.2.2, et le 1.10.1 exige une pièce d'identité avec photographie pour chaque membre de l'équipage."
+    },
+    "none": {
+      "nl": "Geen gevaarlijke goederen met een hoog gevarenpotentieel. Bij vervoer in colli kent tabel 1.10.3.1.2 maar twee waarden: 0, wat elke hoeveelheid betekent, en voetnoot b), wat betekent dat 1.10.3 ongeacht de hoeveelheid niet van toepassing is. Een volle vracht verpakte benzine valt onder b) en wordt dat ook niet bij een grotere hoeveelheid.",
+      "en": "No high consequence dangerous goods. For carriage in packages, table 1.10.3.1.2 holds two values and no others: 0, meaning any quantity at all, and footnote b), meaning 1.10.3 does not apply whatever the quantity. A full load of packaged petrol falls under b) and does not become high consequence at a larger quantity.",
+      "de": "Keine gefährlichen Güter mit hohem Gefahrenpotenzial. Bei Beförderung in Versandstücken kennt Tabelle 1.10.3.1.2 nur zwei Werte: 0, also jede Menge, und Fußnote b), wonach 1.10.3 ungeachtet der Menge nicht gilt. Eine volle Ladung Benzin in Versandstücken fällt unter b) und wird es auch bei größerer Menge nicht.",
+      "fr": "Pas de marchandises dangereuses à haut risque. Pour un transport en colis, le tableau 1.10.3.1.2 ne comporte que deux valeurs : 0, c'est-à-dire toute quantité, et la note b), selon laquelle le 1.10.3 ne s'applique pas quelle que soit la quantité. Un chargement complet d'essence en colis relève de la note b) et ne le devient pas à plus grande quantité."
     }
   }
 }

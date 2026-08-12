@@ -429,7 +429,10 @@
     "placardingTitle": "Placarding and marking (ADR 5.3)",
     "placardingNone": "no placards",
     "placardingRequired": "placards required",
-    "placardingPackages": "computed for carriage in packages"
+    "placardingPackages": "computed for carriage in packages",
+    "securityTitle": "Security (ADR 1.10.3)",
+    "securityHigh": "high consequence",
+    "securityNone": "not high consequence"
   },
   "dgauto": {
     "title": "Derived automatically",

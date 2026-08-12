@@ -1124,6 +1124,110 @@ def _is_gas(product: dict[str, Any]) -> bool:
     return any(number.startswith("2") for number in _label_numbers(product))
 
 
+def check_adr_security(
+    entries: list[dict[str, Any]], language: str = "nl",
+) -> dict[str, Any]:
+    """ADR 1.10.3: high consequence dangerous goods, and the security plan.
+
+    Chapter 1.10 was named in the 1.1.3.6 exemption text and nowhere else — the
+    one remaining heading in `docs/dg-coverage.md` with nothing behind it.
+
+    Table 1.10.3.1.2 is the rare regulatory table that is *easier* than it looks,
+    and only once it has been read. For carriage in packages its column holds two
+    values and no others: **0**, meaning any quantity at all, and footnote
+    **b)**, "whatever the quantity, the provisions of 1.10.3 do not apply". There
+    is no threshold to compare against and no arithmetic to get wrong. A full
+    load of packaged petrol of packing group II is not high consequence dangerous
+    goods and does not become so at a larger quantity; a single kilogram of a
+    packing group I toxic is.
+
+    So this is a membership test, and it is worth having precisely because the
+    intuition it corrects runs the other way. Flammable liquids, corrosives and
+    packing group I oxidisers all look like the dangerous end of the load and are
+    all footnote b) in packages. What is caught instead is class 1, the toxic
+    gases, the desensitised explosives, packing group I toxics and category A
+    infectious substances.
+
+    The tank and bulk columns are not answered. They carry thresholds of their
+    own — 3,000 litres or 3,000 kg for most of the b) rows — and footnotes c) and
+    d) make each relevant only where table A column (10), (12) or (17) permits
+    that form of carriage. Class 7 is not answered either: 1.10.3.1.3 measures it
+    in activity against 3,000 A2, and CargoPilot is not told an activity.
+    """
+    rules = get_compliance_rules()["adr_security"]
+    lang = _lang(language)
+    products = [(entry, index, product)
+                for entry, index, product in _iter_products(entries)
+                if not product.get("transport_forbidden")]
+    if not products:
+        return {"status": "not_checked", "items": []}
+
+    items: list[dict[str, Any]] = []
+    for entry, index, product in products:
+        hazard = str(product.get("class") or "").strip()
+        code = str(product.get("classification_code") or "").strip().upper()
+        division = code if re.match(r"^\d\.\d", code) else hazard
+        un_number = str(product.get("un_number") or product.get("un") or "").strip()
+        group = str(product.get("packing_group") or "").strip().upper()
+        # The classification code carries the division for class 1 and the
+        # hazard letters for everything else — "1.2G" against "TFC" — which is
+        # exactly the two things the table sorts on.
+        letters = re.sub(r"^\d(\.\d)?", "", code)
+
+        for rule in rules["rows"]:
+            kind = rule["match"]
+            hit = False
+            if kind == "class_1":
+                hit = division.split(" ")[0][:3] in rule["divisions"]
+            elif kind == "class_1_group_c":
+                hit = (division[:3] in rule["divisions"]
+                       and letters[:1] in rule["compatibility_groups"])
+            elif kind == "un_numbers":
+                hit = un_number.zfill(4) in rule["un_numbers"]
+            elif kind == "classification_letters":
+                hit = (hazard == rule["hazard_class"]
+                       and letters in rule["letters"]
+                       and un_number.zfill(4) not in rule.get("exclude_un_numbers", []))
+            elif kind == "packing_group":
+                hit = hazard == rule["hazard_class"] and group in rule["packing_groups"]
+            if hit:
+                items.append({
+                    "position": _product_label(entry, product, index),
+                    "un_number": un_number,
+                    # The division and not the whole classification code:
+                    # table 1.10.3.1.2 sorts on 1.2, and "division 1.2G" would
+                    # quote the table as saying something it does not.
+                    "reason": (rule.get(lang) or rule["en"]).format(
+                        division=division[:3]),
+                    "threshold_kg": rule["packages_kg"],
+                })
+                break
+
+    if str(rules["class_7"]["provision"]) and any(
+            str(p.get("class") or "").strip() == "7" for _e, _i, p in products):
+        items.append({"position": None, "un_number": None,
+                      "reason": rules["class_7"].get(lang) or rules["class_7"]["en"],
+                      "threshold_kg": None, "not_answered": True})
+
+    answered = [item for item in items if not item.get("not_answered")]
+    if answered:
+        plan = rules["plan"]
+        message = (plan.get(lang) or plan["en"]).format(
+            products=", ".join(sorted({item["position"] for item in answered})))
+    else:
+        none = rules["none"]
+        message = none.get(lang) or none["en"]
+
+    return {
+        "status": "high_consequence" if answered else "ok",
+        "scope": "packages",
+        "items": items,
+        "message": message,
+        "provision": rules["plan"]["provision"] if answered else "1.10.3.1.2",
+        "source": rules["source"],
+    }
+
+
 def check_adr_placarding(
     entries: list[dict[str, Any]], language: str = "nl",
     points_status: str | None = None,
@@ -3119,6 +3223,7 @@ def check_compliance(
             points_status=(result.get("adr_points") or {}).get("status"))
         # 5.3 turns on the same exemption: 1.1.3.6.2 relieves the unit of the
         # plates and the placards together.
+        result["adr_security"] = check_adr_security(entries, language)
         result["adr_placarding"] = check_adr_placarding(
             entries, language,
             points_status=(result.get("adr_points") or {}).get("status"))

@@ -429,7 +429,10 @@
     "placardingTitle": "Plaques-étiquettes et marquage (ADR 5.3)",
     "placardingNone": "pas de plaques-étiquettes",
     "placardingRequired": "plaques-étiquettes exigées",
-    "placardingPackages": "calculé pour un transport en colis"
+    "placardingPackages": "calculé pour un transport en colis",
+    "securityTitle": "Sûreté (ADR 1.10.3)",
+    "securityHigh": "haut risque",
+    "securityNone": "pas à haut risque"
   },
   "dgauto": {
     "title": "Déduit automatiquement",

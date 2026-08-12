@@ -429,7 +429,10 @@
     "placardingTitle": "Großzettel und Kennzeichnung (ADR 5.3)",
     "placardingNone": "keine Großzettel",
     "placardingRequired": "Großzettel erforderlich",
-    "placardingPackages": "berechnet für die Beförderung in Versandstücken"
+    "placardingPackages": "berechnet für die Beförderung in Versandstücken",
+    "securityTitle": "Sicherung (ADR 1.10.3)",
+    "securityHigh": "hohes Gefahrenpotenzial",
+    "securityNone": "kein hohes Gefahrenpotenzial"
   },
   "dgauto": {
     "title": "Automatisch abgeleitet",

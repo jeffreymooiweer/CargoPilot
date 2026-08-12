@@ -2,6 +2,59 @@
 
 All notable changes are documented here, following [Semantic Versioning](https://semver.org/).
 
+## [1.57.0] — 2026-08-12
+
+### Added
+
+- **Placarding and marking of the vehicle, ADR 5.3.** The last of the seven gaps in
+  `docs/dg-coverage.md`, and the one carrying the note that it is "the most common
+  real-world failure". The application named chapter 5.3 in its 1.1.3.6 output — *orange
+  plates and placards on the transport unit* — and derived nothing.
+
+  **That sentence was also wrong, in the direction that matters.** 5.3.1.5 gives a vehicle
+  carrying packages exactly two reasons to placard: 5.3.1.5.1 for class 1 other than
+  division 1.4 compatibility group S, and 5.3.1.5.2 for class 7 other than excepted
+  packages. A load of packaged petrol, nitric acid or toxic liquid needs **no placard at
+  all** — the orange plates of 5.3.2.1.1 are the whole of it.
+
+  Telling a driver to placard anyway is not a harmless excess. It teaches that the placard
+  is decoration, and the next load where it *is* class 1 on board is the one where that
+  lesson has already been learnt. So the refusal is a stated finding with its provision
+  beside it, and not an empty list — an empty list reads as a check that did not run, and
+  whoever cannot tell those apart will placard to be safe.
+
+  Three things come with it:
+
+  - **The two numbers, printed.** Where the consignment holds one dangerous substance and
+    nothing else, 5.3.2.1.6 lets the front and rear plates carry the hazard identification
+    number over the UN number instead of being blank. Both come out of table A — columns
+    (20) and (1) — so the check prints them rather than describing them: `33 / UN 1203`.
+  - **The environmentally hazardous mark hangs on the placard, not on the substance.**
+    5.3.6.1 opens *"When a placard is required to be displayed in accordance with the
+    provisions of section 5.3.1"*. So packaged environmentally hazardous class 9 puts no
+    mark on the truck, while the same substance beside a class 1 line does. Reading 5.3.6
+    without its opening clause would mark every vehicle carrying a marine pollutant. The
+    finding says in the same breath that the mark on the *package* (5.2.1.8.3) is a
+    separate question, so "not the case" cannot be read as relieving it.
+  - **1.1.3.6.2 relieves the unit of the plates and the placards together.** Inside the
+    exemption the section says so and stops.
+
+  What is not answered is said rather than assumed: this is **carriage in packages**. Tanks
+  and bulk have their own subsections of 5.3 — numbered plates on the sides under 5.3.2.1.2
+  and 5.3.2.1.4, placards for every class rather than two — and the elevated temperature
+  mark of 5.3.3 turns on a carriage temperature of 100 °C liquid or 240 °C solid, which
+  nobody tells the application.
+
+- **`scripts/read_land_regulations.py` can be asked for chapter 5.3 and chapter 1.10.** The
+  provisions above were quoted from ADR 2025 Volume II on a runner and implemented from
+  that text, not from memory of it — the rule this repository set for itself in v1.33.0.
+  The Dutch edition was read alongside as a second reading; its complete-volume PDF turns
+  out to have a text layer clipped at the right margin on about 5% of its lines, which is
+  worth knowing before anyone quotes from it.
+
+- **`backend/tests/test_adr_placarding.py`** — 18 tests, weighted towards the refusals,
+  because those are the findings that are easy to get wrong in the safe-looking direction.
+
 ## [1.56.0] — 2026-08-12
 
 ### Changed

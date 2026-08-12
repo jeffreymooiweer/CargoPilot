@@ -8,62 +8,249 @@
     "imdg_segregation": "IMDG Code (Amendment 40-20) 7.2.4 segregation table, 7.2.5 segregation groups and 7.2.7 class 1",
     "imdg_class1": "IMDG Code (Amendment 40-20) 7.2.7 — segregation of class 1 goods",
     "rid_protective_distance": "RID 2025 (OTIF) 7.5.3 — protective distance in the train between a wagon holding class 1 and a placarded wagon 2.1/3/4.1/4.2/4.3/5.1/5.2",
-    "adr_tunnel": "ADR 2025 (UNECE) 8.6.3 and 8.6.4 — tunnel restriction code for the whole load"
+    "adr_tunnel": "ADR 2025 (UNECE) 8.6.3 and 8.6.4 — tunnel restriction code for the whole load",
+    "adr_placarding": "ADR 2025 (UNECE) 5.3 — placarding and marking of the transport unit: 5.3.1.5, 5.3.2.1, 5.3.3 and 5.3.6"
   },
   "adr_equipment": {
     "source": "ADR 2025 (UNECE) 8.1.4 and 8.1.5",
     "fire_extinguishers": {
       "source": "8.1.4.1",
       "rows": [
-        {"max_mass_tonnes": 3.5, "count": 2, "total_kg": 4, "engine_kg": 2, "extra_kg": 2},
-        {"max_mass_tonnes": 7.5, "count": 2, "total_kg": 8, "engine_kg": 2, "extra_kg": 6},
-        {"max_mass_tonnes": null, "count": 2, "total_kg": 12, "engine_kg": 2, "extra_kg": 6}
+        {
+          "max_mass_tonnes": 3.5,
+          "count": 2,
+          "total_kg": 4,
+          "engine_kg": 2,
+          "extra_kg": 2
+        },
+        {
+          "max_mass_tonnes": 7.5,
+          "count": 2,
+          "total_kg": 8,
+          "engine_kg": 2,
+          "extra_kg": 6
+        },
+        {
+          "max_mass_tonnes": null,
+          "count": 2,
+          "total_kg": 12,
+          "engine_kg": 2,
+          "extra_kg": 6
+        }
       ],
-      "exempt": {"source": "8.1.4.2", "count": 1, "total_kg": 2}
+      "exempt": {
+        "source": "8.1.4.2",
+        "count": 1,
+        "total_kg": 2
+      }
     },
     "general": {
       "source": "8.1.5.2",
-      "per_unit": ["wheel_chock", "warning_signs"],
+      "per_unit": [
+        "wheel_chock",
+        "warning_signs"
+      ],
       "per_unit_unless_label": {
-        "eye_rinsing_liquid": ["1", "1.4", "1.5", "1.6", "2.1", "2.2", "2.3"]
+        "eye_rinsing_liquid": [
+          "1",
+          "1.4",
+          "1.5",
+          "1.6",
+          "2.1",
+          "2.2",
+          "2.3"
+        ]
       },
-      "per_crew_member": ["warning_vest", "portable_lighting", "gloves", "eye_protection"]
+      "per_crew_member": [
+        "warning_vest",
+        "portable_lighting",
+        "gloves",
+        "eye_protection"
+      ]
     },
     "per_label": {
       "source": "8.1.5.3",
-      "escape_mask": {"labels": ["2.3", "6.1"], "per_crew_member": true},
-      "spill_kit": {"labels": ["3", "4.1", "4.3", "8", "9"], "solids_and_liquids_only": true,
-                    "items": ["shovel", "drain_seal", "collecting_container"]}
+      "escape_mask": {
+        "labels": [
+          "2.3",
+          "6.1"
+        ],
+        "per_crew_member": true
+      },
+      "spill_kit": {
+        "labels": [
+          "3",
+          "4.1",
+          "4.3",
+          "8",
+          "9"
+        ],
+        "solids_and_liquids_only": true,
+        "items": [
+          "shovel",
+          "drain_seal",
+          "collecting_container"
+        ]
+      }
     }
   },
   "adr_tunnel": {
     "source": "ADR 2025 (UNECE) 8.6.3.1 through 8.6.3.3 and the table of 8.6.4",
-    "order": ["B", "B1000C", "B/D", "B/E", "C", "C5000D", "C/D", "C/E", "D", "D/E", "E", "-"],
+    "order": [
+      "B",
+      "B1000C",
+      "B/D",
+      "B/E",
+      "C",
+      "C5000D",
+      "C/D",
+      "C/E",
+      "D",
+      "D/E",
+      "E",
+      "-"
+    ],
     "codes": {
-      "B": {"packages": ["B", "C", "D", "E"], "tanks": ["B", "C", "D", "E"]},
+      "B": {
+        "packages": [
+          "B",
+          "C",
+          "D",
+          "E"
+        ],
+        "tanks": [
+          "B",
+          "C",
+          "D",
+          "E"
+        ]
+      },
       "B1000C": {
-        "packages": ["C", "D", "E"],
-        "tanks": ["C", "D", "E"],
+        "packages": [
+          "C",
+          "D",
+          "E"
+        ],
+        "tanks": [
+          "C",
+          "D",
+          "E"
+        ],
         "explosive_mass_kg": 1000,
-        "above": ["B", "C", "D", "E"]
+        "above": [
+          "B",
+          "C",
+          "D",
+          "E"
+        ]
       },
-      "B/D": {"packages": ["D", "E"], "tanks": ["B", "C", "D", "E"]},
-      "B/E": {"packages": ["E"], "tanks": ["B", "C", "D", "E"]},
-      "C": {"packages": ["C", "D", "E"], "tanks": ["C", "D", "E"]},
+      "B/D": {
+        "packages": [
+          "D",
+          "E"
+        ],
+        "tanks": [
+          "B",
+          "C",
+          "D",
+          "E"
+        ]
+      },
+      "B/E": {
+        "packages": [
+          "E"
+        ],
+        "tanks": [
+          "B",
+          "C",
+          "D",
+          "E"
+        ]
+      },
+      "C": {
+        "packages": [
+          "C",
+          "D",
+          "E"
+        ],
+        "tanks": [
+          "C",
+          "D",
+          "E"
+        ]
+      },
       "C5000D": {
-        "packages": ["D", "E"],
-        "tanks": ["D", "E"],
+        "packages": [
+          "D",
+          "E"
+        ],
+        "tanks": [
+          "D",
+          "E"
+        ],
         "explosive_mass_kg": 5000,
-        "above": ["C", "D", "E"]
+        "above": [
+          "C",
+          "D",
+          "E"
+        ]
       },
-      "C/D": {"packages": ["D", "E"], "tanks": ["C", "D", "E"]},
-      "C/E": {"packages": ["E"], "tanks": ["C", "D", "E"]},
-      "D": {"packages": ["D", "E"], "tanks": ["D", "E"]},
-      "D/E": {"packages": ["E"], "tanks": ["D", "E"]},
-      "E": {"packages": ["E"], "tanks": ["E"]},
-      "-": {"packages": [], "tanks": []}
+      "C/D": {
+        "packages": [
+          "D",
+          "E"
+        ],
+        "tanks": [
+          "C",
+          "D",
+          "E"
+        ]
+      },
+      "C/E": {
+        "packages": [
+          "E"
+        ],
+        "tanks": [
+          "C",
+          "D",
+          "E"
+        ]
+      },
+      "D": {
+        "packages": [
+          "D",
+          "E"
+        ],
+        "tanks": [
+          "D",
+          "E"
+        ]
+      },
+      "D/E": {
+        "packages": [
+          "E"
+        ],
+        "tanks": [
+          "D",
+          "E"
+        ]
+      },
+      "E": {
+        "packages": [
+          "E"
+        ],
+        "tanks": [
+          "E"
+        ]
+      },
+      "-": {
+        "packages": [],
+        "tanks": []
+      }
     },
-    "lq_marking_categories": ["E"],
+    "lq_marking_categories": [
+      "E"
+    ],
     "lq_marking_threshold_kg": 8000
   },
   "adr_points": {
@@ -1927,6 +2114,65 @@
         "Les marchandises de classes différentes sont séparées d'au moins 3 m horizontalement et ne sont pas gerbées les unes sur les autres — non applicable aux conteneurs fermés ni aux véhicules ou wagons bâchés",
         "Pour les nos ONU 2910 et 2911 au-delà de la valeur A2, les 1.10.1 à 1.10.3 restent applicables"
       ]
+    }
+  },
+  "adr_placarding": {
+    "source": "ADR 2025 (UNECE) 5.3.1.5, 5.3.2.1.1, 5.3.2.1.6, 5.3.3 and 5.3.6.1, quoted verbatim by scripts/read_land_regulations.py --groups placarding --doc adr2",
+    "_scope": "Carriage in packages. Tanks, bulk and MEMUs each have their own subsection of 5.3 and a different answer; the check says so rather than pretending the package rule covers them.",
+    "_placards_are_narrow": "5.3.1.5 gives a vehicle carrying packages only two reasons to placard: 5.3.1.5.1 for class 1 other than division 1.4 compatibility group S, and 5.3.1.5.2 for class 7 in packagings or IBCs other than excepted packages. A load of packaged petrol, acid or toxic liquid needs no placard at all. Saying otherwise is not a harmless excess: it teaches the driver that the placard is decoration.",
+    "placard_classes": {
+      "1": {
+        "provision": "5.3.1.5.1",
+        "except_classification_codes": [
+          "1.4S"
+        ],
+        "nl": "Klasse 1: grote etiketten aan beide lengtezijden en aan de achterzijde van het voertuig (5.3.1.5.1). Uitgezonderd zijn uitsluitend goederen van subklasse 1.4, compatibiliteitsgroep S.",
+        "en": "Class 1: placards on both sides and at the rear of the vehicle (5.3.1.5.1). Only goods of division 1.4, compatibility group S are excepted.",
+        "de": "Klasse 1: Großzettel an beiden Längsseiten und an der Rückseite des Fahrzeugs (5.3.1.5.1). Ausgenommen sind nur Güter der Unterklasse 1.4, Verträglichkeitsgruppe S.",
+        "fr": "Classe 1 : plaques-étiquettes sur les deux côtés et à l'arrière du véhicule (5.3.1.5.1). Seules les marchandises de la division 1.4, groupe de compatibilité S, sont exemptées."
+      },
+      "7": {
+        "provision": "5.3.1.5.2",
+        "nl": "Klasse 7: grote etiketten aan beide lengtezijden en aan de achterzijde van het voertuig (5.3.1.5.2). Niet van toepassing op vrijgestelde colli.",
+        "en": "Class 7: placards on both sides and at the rear of the vehicle (5.3.1.5.2). Not applicable to excepted packages.",
+        "de": "Klasse 7: Großzettel an beiden Längsseiten und an der Rückseite des Fahrzeugs (5.3.1.5.2). Gilt nicht für freigestellte Versandstücke.",
+        "fr": "Classe 7 : plaques-étiquettes sur les deux côtés et à l'arrière du véhicule (5.3.1.5.2). Ne s'applique pas aux colis exceptés."
+      }
+    },
+    "no_placards": {
+      "nl": "Geen grote etiketten op het voertuig. Bij vervoer van uitsluitend colli schrijft 5.3.1.5 ze alleen voor klasse 1 en klasse 7 voor; voor de overige klassen volstaan de oranje borden.",
+      "en": "No placards on the vehicle. For carriage in packages only, 5.3.1.5 prescribes them for class 1 and class 7 alone; for the other classes the orange plates are enough.",
+      "de": "Keine Großzettel am Fahrzeug. Bei Beförderung ausschließlich in Versandstücken schreibt 5.3.1.5 sie nur für Klasse 1 und Klasse 7 vor; für die übrigen Klassen genügen die orangefarbenen Tafeln.",
+      "fr": "Pas de plaques-étiquettes sur le véhicule. Pour un transport en colis seulement, le 5.3.1.5 ne les prescrit que pour les classes 1 et 7 ; pour les autres classes, les panneaux orange suffisent."
+    },
+    "orange_plates": {
+      "provision": "5.3.2.1.1",
+      "nl": "Twee rechthoekige oranje borden van 40 x 30 cm, aan de voorzijde en aan de achterzijde van de transporteenheid, loodrecht op de lengteas (5.3.2.1.1 en 5.3.2.2.1).",
+      "en": "Two rectangular orange-coloured plates of 40 x 30 cm, at the front and at the rear of the transport unit, perpendicular to its longitudinal axis (5.3.2.1.1 and 5.3.2.2.1).",
+      "de": "Zwei rechteckige orangefarbene Tafeln von 40 x 30 cm, vorn und hinten an der Beförderungseinheit, senkrecht zur Längsachse (5.3.2.1.1 und 5.3.2.2.1).",
+      "fr": "Deux panneaux orange rectangulaires de 40 x 30 cm, à l'avant et à l'arrière de l'unité de transport, perpendiculaires à son axe longitudinal (5.3.2.1.1 et 5.3.2.2.1)."
+    },
+    "numbered_plates": {
+      "provision": "5.3.2.1.6",
+      "nl": "Deze zending bevat één gevaarlijke stof. 5.3.2.1.6 staat dan toe de oranje borden aan voor- en achterzijde te voorzien van het gevaarsidentificatienummer boven het UN-nummer: {numbers}. Dat is geen verplichting bij collivervoer, maar het is de gebruikelijke uitvoering.",
+      "en": "This consignment holds one dangerous substance. 5.3.2.1.6 then allows the front and rear orange plates to bear the hazard identification number above the UN number: {numbers}. That is not a requirement for carriage in packages, but it is the usual practice.",
+      "de": "Diese Sendung enthält einen gefährlichen Stoff. Nach 5.3.2.1.6 dürfen die orangefarbenen Tafeln vorn und hinten dann die Gefahrnummer über der UN-Nummer tragen: {numbers}. Bei Beförderung in Versandstücken ist das keine Pflicht, aber die übliche Ausführung.",
+      "fr": "Cet envoi ne contient qu'une seule matière dangereuse. Le 5.3.2.1.6 permet alors aux panneaux orange avant et arrière de porter le numéro d'identification du danger au-dessus du numéro ONU : {numbers}. Ce n'est pas une obligation pour un transport en colis, mais c'est l'usage."
+    },
+    "environmental_mark": {
+      "provision": "5.3.6.1",
+      "_reading": "5.3.6.1 opens with 'When a placard is required to be displayed in accordance with the provisions of section 5.3.1'. The mark on the *vehicle* therefore hangs on the placard, not on the substance: a load of packaged environmentally hazardous class 9 needs no vehicle mark at all, because 5.3.1.5 asks for no placard. The mark on the *package* is 5.2.1.8.3 and is a different question, which this check says so as not to be read as relieving it.",
+      "nl": "Milieugevaarlijke stoffen aan boord ({products}). Het kenmerk van 5.3.6.1 op het voertuig geldt alleen wanneer er ook grote etiketten vereist zijn; dat is hier {applies}. Het kenmerk op het collo zelf (5.2.1.8.3) staat hier los van.",
+      "en": "Environmentally hazardous substances on board ({products}). The mark of 5.3.6.1 on the vehicle applies only where placards are also required, which here is {applies}. The mark on the package itself (5.2.1.8.3) is a separate question.",
+      "de": "Umweltgefährdende Stoffe an Bord ({products}). Das Kennzeichen nach 5.3.6.1 am Fahrzeug gilt nur, wenn auch Großzettel erforderlich sind; das ist hier {applies}. Das Kennzeichen am Versandstück selbst (5.2.1.8.3) ist davon unabhängig.",
+      "fr": "Matières dangereuses pour l'environnement à bord ({products}). La marque du 5.3.6.1 sur le véhicule ne s'applique que lorsque des plaques-étiquettes sont également exigées, ce qui est ici {applies}. La marque sur le colis lui-même (5.2.1.8.3) est une question distincte."
+    },
+    "exempt": {
+      "provision": "1.1.3.6.2",
+      "nl": "Binnen de vrijstelling van 1.1.3.6 zijn oranje borden en grote etiketten niet vereist.",
+      "en": "Within the 1.1.3.6 exemption, orange plates and placards are not required.",
+      "de": "Innerhalb der Freistellung nach 1.1.3.6 sind orangefarbene Tafeln und Großzettel nicht erforderlich.",
+      "fr": "Dans le cadre de l'exemption du 1.1.3.6, les panneaux orange et les plaques-étiquettes ne sont pas exigés."
     }
   }
 }

@@ -1124,6 +1124,141 @@ def _is_gas(product: dict[str, Any]) -> bool:
     return any(number.startswith("2") for number in _label_numbers(product))
 
 
+def check_adr_placarding(
+    entries: list[dict[str, Any]], language: str = "nl",
+    points_status: str | None = None,
+) -> dict[str, Any]:
+    """ADR 5.3: what goes on the outside of the vehicle.
+
+    `docs/dg-coverage.md` has ranked this as the last of the seven gaps for
+    several releases with a note that it is "the most common real-world
+    failure", and the application named chapter 5.3 in its 1.1.3.6 output
+    without deriving a word of it. The half about equipment closed in v1.53.0
+    the same way this one does: by reading what the provision chooses on, and
+    finding that CargoPilot already holds it.
+
+    **The point of this check is that it says no.** 5.3.1.5 gives a vehicle
+    carrying packages exactly two reasons to placard — 5.3.1.5.1 for class 1
+    other than division 1.4 compatibility group S, and 5.3.1.5.2 for class 7 in
+    packagings or IBCs other than excepted packages. A load of packaged petrol,
+    nitric acid or a toxic liquid needs no placard at all; the orange plates of
+    5.3.2.1.1 are the whole of it. Telling a driver to placard anyway is not a
+    harmless excess. It teaches that the placard is decoration, and the next time
+    it is class 1 on board that lesson is already learnt.
+
+    The same reading runs through 5.3.6.1, which opens "When a placard is
+    required to be displayed in accordance with the provisions of section
+    5.3.1". The environmentally hazardous mark on the *vehicle* therefore hangs
+    on the placard and not on the substance: packaged environmentally hazardous
+    class 9 puts no mark on the truck. The mark on the *package* is 5.2.1.8.3
+    and a different question, which is said out loud so this cannot be read as
+    relieving it.
+
+    What is not answered: this is carriage in packages. Tanks, bulk and MEMUs
+    each have their own subsection of 5.3 — numbered plates on the sides under
+    5.3.2.1.2 and 5.3.2.1.4, placards for every class — and the answer there is
+    a different one. Nor is the elevated temperature mark of 5.3.3 derived: it
+    turns on a carriage temperature of 100 °C liquid or 240 °C solid, and
+    CargoPilot is not told the temperature.
+    """
+    rules = get_compliance_rules()["adr_placarding"]
+    lang = _lang(language)
+    products = [(entry, index, product)
+                for entry, index, product in _iter_products(entries)
+                if not product.get("transport_forbidden")]
+    if not products:
+        return {"status": "not_checked", "placards": [], "marks": []}
+    named = {id(product): _product_label(entry, product, index)
+             for entry, index, product in products}
+    goods = [product for _entry, _index, product in products]
+
+    exempt = points_status == "exempt"
+    placards: list[dict[str, Any]] = []
+    for hazard, rule in rules["placard_classes"].items():
+        matched = [p for p in goods
+                   if str(p.get("class") or "").split(".")[0] == hazard
+                   and str(p.get("classification_code") or "").upper()
+                   not in {c.upper() for c in rule.get("except_classification_codes", [])}]
+        if matched:
+            placards.append({
+                "class": hazard,
+                "provision": rule["provision"],
+                "message": rule.get(lang) or rule["en"],
+                "products": sorted({named[id(p)] for p in matched}),
+            })
+
+    if not placards:
+        # The finding this check exists for. An empty list is not an answer —
+        # it reads as "not computed" — so the absence is stated with the
+        # provision that makes it an absence.
+        none = rules["no_placards"]
+        placards.append({"class": None, "provision": "5.3.1.5",
+                         "message": none.get(lang) or none["en"],
+                         "products": []})
+
+    marks: list[dict[str, Any]] = []
+    plates = rules["orange_plates"]
+    if exempt:
+        marks.append({"provision": rules["exempt"]["provision"],
+                      "message": rules["exempt"].get(lang) or rules["exempt"]["en"],
+                      "kind": "exempt"})
+    else:
+        marks.append({"provision": plates["provision"],
+                      "message": plates.get(lang) or plates["en"],
+                      "kind": "orange_plates"})
+        # 5.3.2.1.6 — one substance and nothing else on board, and the plates
+        # may carry the two numbers. Both come out of table A, so the check can
+        # print them rather than describe them.
+        numbers = {(str(p.get("hazard_number") or "").strip(),
+                    str(p.get("un_number") or p.get("un") or "").strip())
+                   for p in goods}
+        numbers = {n for n in numbers if n[0] and n[1]}
+        if len(numbers) == 1:
+            hazard_number, un_number = next(iter(numbers))
+            numbered = rules["numbered_plates"]
+            marks.append({
+                "provision": numbered["provision"],
+                "message": (numbered.get(lang) or numbered["en"]).format(
+                    numbers=f"{hazard_number} / UN {un_number}"),
+                "kind": "numbered_plates",
+                "hazard_number": hazard_number,
+                "un_number": un_number,
+            })
+
+    required_placards = [p for p in placards if p.get("class")]
+    green = [p for p in goods if p.get("environmentally_hazardous")]
+    if green:
+        mark = rules["environmental_mark"]
+        applies = bool(required_placards) and not exempt
+        marks.append({
+            "provision": mark["provision"],
+            "message": (mark.get(lang) or mark["en"]).format(
+                products=", ".join(sorted({named[id(p)] for p in green})),
+                applies=_YES_NO[lang][applies]),
+            "kind": "environmental_mark",
+            "applies": applies,
+        })
+
+    return {
+        "status": "exempt" if exempt else "ok",
+        "scope": "packages",
+        "placards": placards,
+        "placards_required": bool(required_placards),
+        "marks": marks,
+        "source": rules["source"],
+    }
+
+
+#: "yes" and "no" in the four languages the interface speaks, for the one
+#: message that has to say which of the two applies inside a sentence.
+_YES_NO = {
+    "nl": {True: "het geval", False: "niet het geval"},
+    "en": {True: "the case", False: "not the case"},
+    "de": {True: "der Fall", False: "nicht der Fall"},
+    "fr": {True: "le cas", False: "pas le cas"},
+}
+
+
 def check_adr_equipment(
     entries: list[dict[str, Any]], language: str = "nl",
     points_status: str | None = None,
@@ -2980,6 +3115,11 @@ def check_compliance(
         # 8.1.5.1 chooses the equipment by the hazard label numbers of the goods
         # loaded, and 8.1.4.2 by whether the load stays inside 1.1.3.6.
         result["adr_equipment"] = check_adr_equipment(
+            entries, language,
+            points_status=(result.get("adr_points") or {}).get("status"))
+        # 5.3 turns on the same exemption: 1.1.3.6.2 relieves the unit of the
+        # plates and the placards together.
+        result["adr_placarding"] = check_adr_placarding(
             entries, language,
             points_status=(result.get("adr_points") or {}).get("status"))
         result["adr_tunnel"] = check_adr_tunnel(

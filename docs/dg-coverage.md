@@ -203,6 +203,18 @@ dataset it was built on.
   the hazard label numbers of the goods loaded and points at the transport document to
   identify them — which is what CargoPilot holds. It is a checklist and not a finding; the
   application cannot see what is in the cab.
+- **Placarding and marking are derived since v1.57.0, for carriage in packages.** The
+  useful half of 5.3 turned out to be the refusals. 5.3.1.5 gives a vehicle carrying
+  packages two reasons to placard — class 1 other than division 1.4 compatibility group S,
+  and class 7 other than excepted packages — so a load of packaged petrol, nitric acid or
+  toxic liquid needs none, and the orange plates of 5.3.2.1.1 are the whole of it. Where the
+  consignment is a single substance, 5.3.2.1.6 lets those plates carry the hazard
+  identification number over the UN number, and both come out of table A, so they are
+  printed. And 5.3.6.1 opens "when a placard is required": the environmentally hazardous
+  mark on the *vehicle* therefore hangs on the placard, not on the substance, so packaged
+  class 9 marine pollutant marks the package and not the truck. Tanks and bulk have their
+  own subsections and are not answered; the elevated temperature mark of 5.3.3 turns on a
+  carriage temperature nobody tells the application.
 - **No security provisions.** Chapter 1.10 and high consequence dangerous goods are
   mentioned in the exemption text and nowhere else.
 
@@ -419,7 +431,7 @@ Ordered by how much harm someone could take before noticing, not by effort.
 | 4 | **Mixed loading for ADN still answered with ADR's 7.5.2** | Narrowed twice. v1.38.0 read RID's 7.5.2.1 and found it identical to ADR's, footnotes included; v1.41.0 read RID's 7.5.2.2 and 7.5.3 and gave rail its own table and its own protective distance. Rail is no longer a loan. ADN still is, and remains labelled. |
 | 5 | **LQ/EQ conditions not checked** | The arithmetic of 3.4/3.5 is verified correct and 3.5.1.3/3.5.1.4 are applied since v1.50.0, but the mark, the packagings and the 3.5.3 tests are declarations the application cannot see. A line "within the limits" is a candidate, not an exemption — and the panel says so. |
 | 6 | **IMDG stowage category shown, not enforced** | Lower because on-deck/under-deck is usually the carrier's call, not the consignor's. **[verify]** |
-| 7 | **No marking or placarding checks in any mode** | Consistently absent, so unlikely to be mistaken for present — but it is the most common real-world failure. The equipment half of this gap closed in v1.53.0: 8.1.4 and 8.1.5 are derived from the load's label numbers, as 8.1.5.1 prescribes. |
+| 7 | **No marking or placarding checks outside the road mode** | Closed for ADR in v1.57.0: 5.3.1.5, 5.3.2.1 and 5.3.6.1 are derived for carriage in packages, and the answer is mostly that no placard is required — the provision names only class 1 and class 7. The equipment half closed in v1.53.0. Rail, inland waterway, sea and air still have nothing. |
 
 Two of the top gaps from earlier versions of this table are gone, and it is worth being
 precise about why. "RID and ADN answered with ADR tables" ranked second for three releases;

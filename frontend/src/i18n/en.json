@@ -425,7 +425,11 @@
       "not_checked": "not assessed"
     },
     "equipmentTitle": "Equipment of the transport unit (8.1.4 / 8.1.5)",
-    "equipmentCount": "{{count}} items"
+    "equipmentCount": "{{count}} items",
+    "placardingTitle": "Placarding and marking (ADR 5.3)",
+    "placardingNone": "no placards",
+    "placardingRequired": "placards required",
+    "placardingPackages": "computed for carriage in packages"
   },
   "dgauto": {
     "title": "Derived automatically",

@@ -425,7 +425,11 @@
       "not_checked": "niet getoetst"
     },
     "equipmentTitle": "Uitrusting van de transporteenheid (8.1.4 / 8.1.5)",
-    "equipmentCount": "{{count}} onderdelen"
+    "equipmentCount": "{{count}} onderdelen",
+    "placardingTitle": "Bestikkering en kenmerking (ADR 5.3)",
+    "placardingNone": "geen grote etiketten",
+    "placardingRequired": "grote etiketten vereist",
+    "placardingPackages": "berekend voor vervoer in colli"
   },
   "dgauto": {
     "title": "Automatisch afgeleid",

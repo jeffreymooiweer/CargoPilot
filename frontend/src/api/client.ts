@@ -823,6 +823,24 @@ export interface AdrEquipmentResult {
   note: string;
 }
 
+/** ADR 5.3 — what goes on the outside of the vehicle. Carriage in packages:
+ *  `placards_required` is false for everything but class 1 and class 7. */
+export interface AdrPlacardingResult {
+  status: "ok" | "exempt" | "not_checked";
+  scope?: "packages";
+  placards: { class: string | null; provision: string; message: string; products: string[] }[];
+  placards_required?: boolean;
+  marks: {
+    kind: "orange_plates" | "numbered_plates" | "environmental_mark" | "exempt";
+    provision: string;
+    message: string;
+    hazard_number?: string;
+    un_number?: string;
+    applies?: boolean;
+  }[];
+  source?: string;
+}
+
 export interface QValueResult {
   position: string | number;
   components: { product: string; net_quantity: number; max_per_package: number; ratio: number }[];
@@ -871,6 +889,8 @@ export interface DgComplianceResult {
   adr_tunnel?: AdrTunnelResult;
   /** Vehicle equipment per 8.1.4/8.1.5 — road only. */
   adr_equipment?: AdrEquipmentResult;
+  /** Placarding and marking per ADR 5.3 — road only. */
+  adr_placarding?: AdrPlacardingResult;
   q_values?: QValueResult[];
   q_check_status?: QCheckStatus;
   cargo_aircraft_only_products?: string[];

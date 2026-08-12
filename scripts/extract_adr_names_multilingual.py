@@ -139,6 +139,20 @@ def learn_banding(document, sample: list[int]) -> tuple[str, float]:
     return BY_UN_NUMBER, ROW_GAP
 
 
+#: Where the body of a page stops and its running foot begins, as a fraction of
+#: the page height. `extract_adr_table_a.BODY_BOTTOM` is 812 points, which is
+#: the same kind of borrowed constant as the row gap: it is 96.5% of the Dutch
+#: extract's page and says nothing about anyone else's. On the UNECE volume it
+#: falls *below* the running foot, so every page's last entry collected its own
+#: page number — which is why UN 1000 came back from a table that has no UN 1000
+#: in it, and why an entry went missing on almost every page.
+BODY_FRACTION = 0.965
+
+
+def body_bottom(page) -> float:
+    return page.rect.height * BODY_FRACTION
+
+
 def band_of(page) -> tuple[float | None, dict[str, float]]:
     """The column numbers on this page, however few of them there are.
 
@@ -148,7 +162,10 @@ def band_of(page) -> tuple[float | None, dict[str, float]]:
     band is taken as it comes, and the caller checks it holds what it needs.
     """
     rows: dict[float, dict[str, float]] = defaultdict(dict)
+    limit = body_bottom(page)
     for x0, y0, x1, _y1, word, *_rest in page.get_text("words"):
+        if y0 > limit:
+            continue
         found = MARKER.match(word.strip())
         if found:
             rows[round(y0, 1)][found.group(1)] = (x0 + x1) / 2
@@ -168,6 +185,7 @@ def name_column(page, top: float, centres: dict[str, float]):
     over its cell and the estimate that follows is some points too far left,
     which is enough to cut the last word off a long name.
     """
+    limit = body_bottom(page)
     right = class_left(page, top, centres["3a"])
     if right is None:
         right = centres["3a"] - (centres["3a"] - centres["2"]) / 2
@@ -180,7 +198,7 @@ def name_column(page, top: float, centres: dict[str, float]):
             for span in line["spans"]:
                 for char in span["chars"]:
                     x0, y0, x1, _y1 = char["bbox"]
-                    if top <= y0 <= BODY_BOTTOM and (x0 + x1) / 2 < right:
+                    if top <= y0 <= limit and (x0 + x1) / 2 < right:
                         kept.append((x0, char["c"]))
             if kept:
                 kept.sort()

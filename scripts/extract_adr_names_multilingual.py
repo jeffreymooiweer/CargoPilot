@@ -54,6 +54,7 @@ from extract_adr_table_a import (  # noqa: E402
     BODY_BOTTOM,
     MARKER,
     ROW_GAP,
+    UN_START,
     class_left,
     join,
     un_and_name,
@@ -82,20 +83,31 @@ MARKERS_NEEDED = 8
 NEEDED = ("1", "2", "3a")
 
 
-def learn_row_gap(document, sample: list[int]) -> float:
-    """Where one entry of table A ends and the next begins, in this typesetting.
+#: Two ways a row of table A can be told from the next one, and the reader picks
+#: whichever the document supports.
+BY_GAP, BY_UN_NUMBER = "gap", "un_number"
 
-    `extract_adr_table_a.ROW_GAP` is 21 points, and that is not a fact about the
-    ADR — it is a fact about the Dutch extract, measured on it: 7.1 points
-    between the lines of a row, 14.2 inside a wrapped name, 28.3 between two
-    entries, and nothing at all in between. Carrying that constant to a document
-    typeset by someone else was the mistake that made UN 0005 of the English
-    volume swallow the twenty entries after it.
 
-    The distribution is bimodal in any typesetting of this table, because the
-    leading inside a cell and the space between rows are set separately. So the
-    gap is measured here too: take the gaps, and cut at the widest empty stretch
-    between the crowd of small ones and the crowd of large ones.
+def learn_banding(document, sample: list[int]) -> tuple[str, float]:
+    """How rows are separated in *this* typesetting, measured rather than assumed.
+
+    `extract_adr_table_a.ROW_GAP` is 21 points, and that is a fact about the
+    Dutch extract and not about the ADR: 7.1 points between the lines of a row,
+    14.2 inside a wrapped name, 28.3 between two entries, and nothing at all in
+    between. A gap of 21 sits in that emptiness and cuts cleanly.
+
+    The UNECE volume has no such emptiness. It sets the table tightly enough
+    that most entries occupy a single line, so the space between two rows is the
+    space between two lines and there is nothing to find. Carrying the Dutch
+    constant over made UN 0005 swallow the twenty entries after it; measuring a
+    cut made no difference at all, because there is no valley to measure.
+
+    What survives in both is the table itself: **a row begins at its UN number**.
+    That is why this returns a method and not only a number. Where the gaps are
+    genuinely bimodal the gap decides, because the Dutch edition sets the number
+    vertically centred — beside the *second* line of a three-line name — and
+    splitting on it there would cut rows in half. Where they are not, the UN
+    number decides, because nothing else can.
     """
     gaps: list[float] = []
     for index in sample:
@@ -106,18 +118,25 @@ def learn_row_gap(document, sample: list[int]) -> float:
         ys = [y for y, _text in name_column(page, top_marker + 10, centres)]
         gaps.extend(round(b - a, 1) for a, b in zip(ys, ys[1:]) if b > a)
     if len(gaps) < 20:
-        return ROW_GAP
+        return BY_UN_NUMBER, ROW_GAP
+
     gaps.sort()
-    # The widest step in the sorted gaps is the valley between the two crowds.
-    # Below a couple of points nothing is a row boundary, so the search starts
-    # past the noise of characters sitting on one line.
-    best, cut = 0.0, ROW_GAP
-    for a, b in zip(gaps, gaps[1:]):
-        if a < 3.0:
-            continue
-        if b - a > best:
-            best, cut = b - a, (a + b) / 2
-    return cut
+    body = [gap for gap in gaps if gap >= 3.0]
+    if not body:
+        return BY_UN_NUMBER, ROW_GAP
+    # A valley worth trusting has crowds on both sides of it. A step with two
+    # gaps to its left and eight hundred to its right is an outlier, not a
+    # boundary, and cutting there merges the whole page into one row.
+    best, cut, share = 0.0, ROW_GAP, 0.0
+    for position, (a, b) in enumerate(zip(body, body[1:]), start=1):
+        step = b - a
+        if step > best:
+            below = position / len(body)
+            if 0.15 <= below <= 0.95:
+                best, cut, share = step, (a + b) / 2, below
+    if best >= 3.0 and share:
+        return BY_GAP, cut
+    return BY_UN_NUMBER, ROW_GAP
 
 
 def band_of(page) -> tuple[float | None, dict[str, float]]:
@@ -184,8 +203,9 @@ def read(path: Path) -> tuple[dict[str, list[str]], list[str], dict[str, int]]:
         counts["pages"] = document.page_count
         sample = list(range(0, document.page_count,
                             max(1, document.page_count // 40)))
-        row_gap = learn_row_gap(document, sample)
-        counts["row_gap"] = round(row_gap, 1)
+        method, cut = learn_banding(document, sample)
+        counts["banding"] = method
+        counts["row_gap"] = round(cut, 1)
         for index in range(document.page_count):
             page = document[index]
             top_marker, centres = band_of(page)
@@ -202,7 +222,11 @@ def read(path: Path) -> tuple[dict[str, list[str]], list[str], dict[str, int]]:
                 text = re.sub(r"\s+", " ", text).strip()
                 if not text:
                     continue
-                if previous_y is not None and y - previous_y > row_gap:
+                if method == BY_GAP:
+                    starts = previous_y is not None and y - previous_y > cut
+                else:
+                    starts = bool(current) and UN_START.match(text) is not None
+                if starts:
                     bands.append(current)
                     current = []
                 previous_y = y
@@ -340,7 +364,9 @@ def main(argv: list[str] | None = None) -> int:
     names, problems, counts = read(path)
     print(f"{counts['pages']} pages, {counts['table_pages']} of them table A, "
           f"{counts['rows']} rows, {len(names)} UN numbers "
-          f"(row gap measured at {counts.get('row_gap')} points)")
+          f"(rows separated by {counts.get('banding')}"
+          + (f", cut at {counts.get('row_gap')} points" if counts.get('banding') == 'gap' else '')
+          + ")")
     for problem in problems[:10]:
         print("  ", problem)
     if not names:

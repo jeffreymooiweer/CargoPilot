@@ -48,6 +48,7 @@ from typing import Any
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
+from read_land_regulations import SOURCES, fetch  # noqa: E402
 from extract_adr_table_a import (  # noqa: E402
     COLS,
     UN_START,
@@ -133,8 +134,15 @@ def against_the_dutch(names: dict[str, list[str]]) -> dict[str, Any]:
 
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--pdf", type=Path, required=True,
-                        help="The ADR volume that holds chapter 3.2, table A")
+    parser.add_argument("--pdf", type=Path,
+                        help="An ADR volume already on disk that holds table A")
+    parser.add_argument("--source", choices=sorted(SOURCES),
+                        help="Fetch this text instead. UNECE answers a bare "
+                             "request from a runner with 403, and the regulation "
+                             "reader already knows the way round that — browser "
+                             "headers first, the web archive after. Hand-rolling "
+                             "the download here got a 403 twice and taught "
+                             "nothing that file did not already know.")
     parser.add_argument("--language", required=True, choices=["en", "fr"],
                         help="Which language this volume is in")
     parser.add_argument("--out", type=Path)
@@ -145,7 +153,14 @@ def main(argv: list[str] | None = None) -> int:
                         help="Below this agreement nothing is written")
     args = parser.parse_args(argv)
 
-    names, problems, counts = read(args.pdf)
+    path = args.pdf
+    if path is None:
+        if not args.source:
+            parser.error("give either --pdf or --source")
+        path = fetch(args.source)
+        print(f"read {SOURCES[args.source]['title']} "
+              f"({SOURCES[args.source].get('resolved_via', 'direct')})")
+    names, problems, counts = read(path)
     print(f"{counts['pages']} pages, {counts['table_pages']} of them table A, "
           f"{counts['rows']} rows, {len(names)} UN numbers")
     for problem in problems[:10]:

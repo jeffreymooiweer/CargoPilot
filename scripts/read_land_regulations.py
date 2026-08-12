@@ -53,6 +53,18 @@ SOURCES: dict[str, dict[str, Any]] = {
         "publisher": "UNECE",
         "edition": "ADR 2025, in force 1 January 2025",
     },
+    # The French edition of Volume I, for the proper shipping names of column
+    # (2). ADR is authentic in English and French alike, so this is a source
+    # text and not a translation of one.
+    "adr1_fr": {
+        "urls": [
+            "https://unece.org/sites/default/files/2025-01/2412007_F_ECE_TRANS_352_Vol.I_WEB.pdf",
+            "https://unece.org/sites/default/files/2025-01/2412007_F_ECE_TRANS_352_Vol.I_WEB_0.pdf",
+        ],
+        "title": "ADR 2025 Volume I, French (ECE/TRANS/352 Vol. I)",
+        "publisher": "UNECE",
+        "edition": "ADR 2025, in force 1 January 2025",
+    },
     "adr2": {
         "urls": [
             "https://unece.org/sites/default/files/2025-01/2412010_E_ECE_TRANS_352_Vol.II_WEB.pdf",

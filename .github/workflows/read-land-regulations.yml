@@ -29,6 +29,8 @@ on:
           - mixed_loading
           - document
           - tunnels
+          - placarding
+          - security
           - all
         default: lq_eq
       doc:

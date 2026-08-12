@@ -82,6 +82,44 @@ MARKERS_NEEDED = 8
 NEEDED = ("1", "2", "3a")
 
 
+def learn_row_gap(document, sample: list[int]) -> float:
+    """Where one entry of table A ends and the next begins, in this typesetting.
+
+    `extract_adr_table_a.ROW_GAP` is 21 points, and that is not a fact about the
+    ADR — it is a fact about the Dutch extract, measured on it: 7.1 points
+    between the lines of a row, 14.2 inside a wrapped name, 28.3 between two
+    entries, and nothing at all in between. Carrying that constant to a document
+    typeset by someone else was the mistake that made UN 0005 of the English
+    volume swallow the twenty entries after it.
+
+    The distribution is bimodal in any typesetting of this table, because the
+    leading inside a cell and the space between rows are set separately. So the
+    gap is measured here too: take the gaps, and cut at the widest empty stretch
+    between the crowd of small ones and the crowd of large ones.
+    """
+    gaps: list[float] = []
+    for index in sample:
+        page = document[index]
+        top_marker, centres = band_of(page)
+        if top_marker is None or not all(n in centres for n in NEEDED):
+            continue
+        ys = [y for y, _text in name_column(page, top_marker + 10, centres)]
+        gaps.extend(round(b - a, 1) for a, b in zip(ys, ys[1:]) if b > a)
+    if len(gaps) < 20:
+        return ROW_GAP
+    gaps.sort()
+    # The widest step in the sorted gaps is the valley between the two crowds.
+    # Below a couple of points nothing is a row boundary, so the search starts
+    # past the noise of characters sitting on one line.
+    best, cut = 0.0, ROW_GAP
+    for a, b in zip(gaps, gaps[1:]):
+        if a < 3.0:
+            continue
+        if b - a > best:
+            best, cut = b - a, (a + b) / 2
+    return cut
+
+
 def band_of(page) -> tuple[float | None, dict[str, float]]:
     """The column numbers on this page, however few of them there are.
 
@@ -144,6 +182,10 @@ def read(path: Path) -> tuple[dict[str, list[str]], list[str], dict[str, int]]:
 
     with fitz.open(path) as document:
         counts["pages"] = document.page_count
+        sample = list(range(0, document.page_count,
+                            max(1, document.page_count // 40)))
+        row_gap = learn_row_gap(document, sample)
+        counts["row_gap"] = round(row_gap, 1)
         for index in range(document.page_count):
             page = document[index]
             top_marker, centres = band_of(page)
@@ -160,7 +202,7 @@ def read(path: Path) -> tuple[dict[str, list[str]], list[str], dict[str, int]]:
                 text = re.sub(r"\s+", " ", text).strip()
                 if not text:
                     continue
-                if previous_y is not None and y - previous_y > ROW_GAP:
+                if previous_y is not None and y - previous_y > row_gap:
                     bands.append(current)
                     current = []
                 previous_y = y
@@ -214,6 +256,15 @@ def probe(path: Path, samples: int = 6) -> None:
             if len(best) >= 4:
                 found.append((index + 1, sorted(best)))
         print(f"pages with a band of four or more column numbers: {len(found)}")
+        sizes: dict[int, int] = defaultdict(int)
+        for _number, band in found:
+            sizes[len(band)] += 1
+        print("  band sizes: " + ", ".join(
+            f"{size}->{count} pages" for size, count in sorted(sizes.items())))
+        with_un = sum(1 for index in range(document.page_count)
+                      if _re.search(r"^\s*\d{4}\s", document[index].get_text(),
+                                    _re.M))
+        print(f"  pages whose text has a line starting with four digits: {with_un}")
         for number, band in found[:samples]:
             print(f"  p{number}: {len(band)} -> "
                   + " ".join(f"({name})@{x:.0f}" for x, name in band))
@@ -288,7 +339,8 @@ def main(argv: list[str] | None = None) -> int:
         return 0
     names, problems, counts = read(path)
     print(f"{counts['pages']} pages, {counts['table_pages']} of them table A, "
-          f"{counts['rows']} rows, {len(names)} UN numbers")
+          f"{counts['rows']} rows, {len(names)} UN numbers "
+          f"(row gap measured at {counts.get('row_gap')} points)")
     for problem in problems[:10]:
         print("  ", problem)
     if not names:

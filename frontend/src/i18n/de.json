@@ -425,7 +425,11 @@
       "not_checked": "nicht geprüft"
     },
     "equipmentTitle": "Ausrüstung der Beförderungseinheit (8.1.4 / 8.1.5)",
-    "equipmentCount": "{{count}} Ausrüstungsteile"
+    "equipmentCount": "{{count}} Ausrüstungsteile",
+    "placardingTitle": "Großzettel und Kennzeichnung (ADR 5.3)",
+    "placardingNone": "keine Großzettel",
+    "placardingRequired": "Großzettel erforderlich",
+    "placardingPackages": "berechnet für die Beförderung in Versandstücken"
   },
   "dgauto": {
     "title": "Automatisch abgeleitet",

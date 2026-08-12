@@ -165,6 +165,36 @@ GROUPS: dict[str, list[Provision]] = {
         Provision("5.4.1.1.1", ("adr1", "rid", "adn"), chars=4200,
                   note="the particulars of the description line, item by item"),
     ],
+    # Placarding and marking of the vehicle. The one chapter CargoPilot names
+    # in its output and does not derive. What has to be settled from the text:
+    # which placards a vehicle carrying only *packages* needs — the rule is much
+    # narrower than "the labels of what is on board" — and when an orange plate
+    # has to carry the hazard identification number rather than be blank.
+    "placarding": [
+        Provision("5.3.1.5", ("adr2",), chars=3000,
+                  anchors=("carrying packages only",),
+                  note="placards on a vehicle carrying packages"),
+        Provision("5.3.2.1", ("adr2",), chars=6000,
+                  anchors=("orange-coloured plate",),
+                  note="which units carry orange plates, blank or numbered"),
+        Provision("5.3.3", ("adr2",), chars=2000,
+                  anchors=("elevated temperature",),
+                  note="the elevated temperature mark"),
+        Provision("5.3.6", ("adr2",), chars=2000,
+                  anchors=("environmentally hazardous",),
+                  note="the environmentally hazardous substance mark"),
+    ],
+    # Security. Chapter 1.10 is named nowhere in the application, and the table
+    # of 1.10.3.1.2 is a quantity threshold per substance, which is exactly the
+    # shape CargoPilot can compute with.
+    "security": [
+        Provision("1.10.3.1", ("adr1",), chars=5000,
+                  anchors=("high consequence dangerous goods",),
+                  note="the definition and the table of thresholds"),
+        Provision("1.10.3.2", ("adr1",), chars=3000,
+                  anchors=("security plan",),
+                  note="who needs a security plan and what is in it"),
+    ],
     # Tunnel restrictions, road only as far as we know.
     "tunnels": [
         Provision("8.6.1", ("adr2",), chars=2000, note="tunnel categories"),

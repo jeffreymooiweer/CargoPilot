@@ -41,6 +41,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import re
 import sys
 from collections import defaultdict
 from pathlib import Path
@@ -50,11 +51,11 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 from read_land_regulations import SOURCES, fetch  # noqa: E402
 from extract_adr_table_a import (  # noqa: E402
-    COLS,
-    UN_START,
-    learn_left_ratios,
-    learn_marker_ratios,
-    read_page,
+    BODY_BOTTOM,
+    MARKER,
+    ROW_GAP,
+    class_left,
+    join,
     un_and_name,
 )
 
@@ -66,6 +67,72 @@ SEED = Path(__file__).resolve().parents[1] / "backend" / "seed" / "dg"
 REFERENCE = SEED / "adr_table_a.json"
 
 
+#: How many column numbers a page has to show before it is treated as table A.
+#: The Dutch extract put all twenty-three above every page; the UNECE volume
+#: lays the table across a two-page spread and shows (1) to (11) on the left and
+#: the rest on the right, so a page of this edition carries fourteen at most.
+#: Three would be enough for what is read here and would also match a page that
+#: merely quotes a few column numbers in running text.
+MARKERS_NEEDED = 8
+
+#: The three columns a proper shipping name needs, and the whole reason this
+#: reader can work on a layout the twenty-three-column one cannot: (1) and (2)
+#: are the UN number and the name, and (3a) is only ever consulted for where the
+#: name has to stop. All three are on the left-hand page of the spread.
+NEEDED = ("1", "2", "3a")
+
+
+def band_of(page) -> tuple[float | None, dict[str, float]]:
+    """The column numbers on this page, however few of them there are.
+
+    `extract_adr_table_a.marker_band` wants fifteen and reconstructs the rest
+    from the (3a)…(20) span, neither of which survives a table split over two
+    pages: column (20) is not on this sheet to measure a span against. So the
+    band is taken as it comes, and the caller checks it holds what it needs.
+    """
+    rows: dict[float, dict[str, float]] = defaultdict(dict)
+    for x0, y0, x1, _y1, word, *_rest in page.get_text("words"):
+        found = MARKER.match(word.strip())
+        if found:
+            rows[round(y0, 1)][found.group(1)] = (x0 + x1) / 2
+    for y in sorted(rows):
+        if len(rows[y]) >= MARKERS_NEEDED:
+            return y, dict(rows[y])
+    return None, {}
+
+
+def name_column(page, top: float, centres: dict[str, float]):
+    """The lines of columns (1) and (2), read character by character.
+
+    Character by character because the UN number and the name run together in
+    the text layer — "1098ALLYLALCOHOL" — and the split is made on the four
+    digits. Where the name has to stop is measured on the class values
+    themselves, as it is for the Dutch table: the number "(3a)" stands centred
+    over its cell and the estimate that follows is some points too far left,
+    which is enough to cut the last word off a long name.
+    """
+    right = class_left(page, top, centres["3a"])
+    if right is None:
+        right = centres["3a"] - (centres["3a"] - centres["2"]) / 2
+    lines: list[tuple[float, str]] = []
+    for block in page.get_text("rawdict")["blocks"]:
+        if block["type"] != 0:
+            continue
+        for line in block["lines"]:
+            kept = []
+            for span in line["spans"]:
+                for char in span["chars"]:
+                    x0, y0, x1, _y1 = char["bbox"]
+                    if top <= y0 <= BODY_BOTTOM and (x0 + x1) / 2 < right:
+                        kept.append((x0, char["c"]))
+            if kept:
+                kept.sort()
+                lines.append((round(line["bbox"][1], 1),
+                              "".join(c for _x, c in kept)))
+    lines.sort()
+    return lines
+
+
 def read(path: Path) -> tuple[dict[str, list[str]], list[str], dict[str, int]]:
     """The names per UN number, in the order table A gives them."""
     import fitz
@@ -73,39 +140,49 @@ def read(path: Path) -> tuple[dict[str, list[str]], list[str], dict[str, int]]:
     names: dict[str, list[str]] = defaultdict(list)
     problems: list[str] = []
     counts = {"pages": 0, "table_pages": 0, "rows": 0}
+    carried: str | None = None
 
     with fitz.open(path) as document:
         counts["pages"] = document.page_count
-        ratios = learn_marker_ratios(document)
-        if not ratios:
-            return {}, ["no page in this document carries the column numbers of "
-                        "table A — is this the volume that holds chapter 3.2?"], counts
-        left_ratios = learn_left_ratios(document, ratios)
-
-        carried: str | None = None
         for index in range(document.page_count):
-            rows, page_problems = read_page(document[index], index + 1,
-                                            ratios, left_ratios)
+            page = document[index]
+            top_marker, centres = band_of(page)
             # A page of running text is not a problem, it is most of the book.
-            # Only a page that *has* the band and could not be laid out is.
-            if not rows and page_problems and "no column numbers" in page_problems[0]:
-                continue
-            problems.extend(page_problems)
-            if not rows:
+            if top_marker is None or not all(n in centres for n in NEEDED):
                 continue
             counts["table_pages"] += 1
-            for row in rows:
-                number, name = un_and_name(row)
+            top = top_marker + 10
+
+            bands: list[list[str]] = []
+            current: list[str] = []
+            previous_y: float | None = None
+            for y, text in name_column(page, top, centres):
+                text = re.sub(r"\s+", " ", text).strip()
+                if not text:
+                    continue
+                if previous_y is not None and y - previous_y > ROW_GAP:
+                    bands.append(current)
+                    current = []
+                previous_y = y
+                current.append(text)
+            if current:
+                bands.append(current)
+
+            for band in bands:
+                number, name = un_and_name({"1": band})
                 if number is None:
                     # A name running over the page break belongs to the row that
                     # began at the foot of the page before.
-                    if carried and name:
-                        names[carried][-1] = f"{names[carried][-1]} {name}".strip()
+                    if carried and name and names[carried]:
+                        names[carried][-1] = join(names[carried][-1], name)
                     continue
                 carried = number
                 counts["rows"] += 1
                 if name and name not in names[number]:
                     names[number].append(name)
+    if counts["table_pages"] == 0:
+        problems.append("no page in this document carries the column numbers of "
+                        "table A — is this the volume that holds chapter 3.2?")
     return dict(names), problems, counts
 
 

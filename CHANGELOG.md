@@ -2,6 +2,52 @@
 
 All notable changes are documented here, following [Semantic Versioning](https://semver.org/).
 
+## [1.58.0] — 2026-08-12
+
+### Added
+
+- **High consequence dangerous goods, ADR 1.10.3.** The last heading in
+  `docs/dg-coverage.md` with nothing behind it: chapter 1.10 was named in the 1.1.3.6
+  exemption text and nowhere else.
+
+  Table 1.10.3.1.2 turns out to be *easier* than it looks — but only once it has been read.
+  For carriage in packages its column holds two values and no others: **0**, meaning any
+  quantity at all, and footnote **b)**, "whatever the quantity, the provisions of 1.10.3 do
+  not apply". There is no threshold to compare against and no arithmetic to get wrong. It
+  is a membership test.
+
+  It is worth having because **the intuition it corrects runs the other way.** Flammable
+  liquids, corrosives and packing group I oxidisers all look like the dangerous end of a
+  load, and in packages every one of them is footnote b): a full truck of packaged petrol
+  is not high consequence dangerous goods and does not become so at a larger quantity. What
+  the table catches instead is class 1 — divisions 1.1, 1.2, 1.5, 1.6, division 1.3
+  compatibility group C and fifteen named 1.4 entries — the toxic gases with aerosols
+  excepted in the table's own words, the desensitised explosives, packing group I toxics and
+  category A infectious substances. A single kilogram of any of those qualifies.
+
+  Where a line qualifies, the finding asks for the security plan of 1.10.3.2 and the
+  photographic identification of 1.10.1.4, and names the line that caused it.
+
+  Two things are not answered and say so rather than defaulting to "ok": **class 7**, which
+  1.10.3.1.3 measures in activity against 3,000 A2 with its own limits per radionuclide, and
+  the **tank and bulk columns**, whose 3,000 litre and 3,000 kg thresholds are made relevant
+  by footnotes c) and d) only where table A column (10), (12) or (17) permits that form of
+  carriage.
+
+- **`backend/tests/test_adr_security.py`** — 23 tests, again weighted towards the
+  refusals, because a check that answers "no" to petrol and "yes" to chlorine is only
+  useful if the "no" is trustworthy.
+
+### Fixed
+
+- **The language guard caught a verbatim Dutch quotation in the configuration**, which is
+  the guard working rather than failing. Reshaping it as an `{nl, en}` pair then tripped the
+  *translation* guard, which requires all four languages — also correct, since a two-language
+  block is an incomplete translation to anything that cannot see intent. Both were right and
+  the field was wrong: this repository does not redistribute regulatory text, only the facts
+  read out of it, so the footnote is carried in rendering with its provision number and the
+  original stays in the book.
+
 ## [1.57.0] — 2026-08-12
 
 ### Added

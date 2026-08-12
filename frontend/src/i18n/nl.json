@@ -429,7 +429,10 @@
     "placardingTitle": "Bestikkering en kenmerking (ADR 5.3)",
     "placardingNone": "geen grote etiketten",
     "placardingRequired": "grote etiketten vereist",
-    "placardingPackages": "berekend voor vervoer in colli"
+    "placardingPackages": "berekend voor vervoer in colli",
+    "securityTitle": "Beveiliging (ADR 1.10.3)",
+    "securityHigh": "hoog gevarenpotentieel",
+    "securityNone": "geen hoog gevarenpotentieel"
   },
   "dgauto": {
     "title": "Automatisch afgeleid",

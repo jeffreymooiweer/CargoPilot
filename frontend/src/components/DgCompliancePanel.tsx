@@ -91,6 +91,7 @@ export default function DgCompliancePanel({ entries, profiles }: Props) {
   const tunnel = result?.adr_tunnel;
   const equipment = result?.adr_equipment;
   const placarding = result?.adr_placarding;
+  const security = result?.adr_security;
   // An expired rule set comes before all substantive findings: those findings
   // were computed with it.
   const warnings: ComplianceWarning[] = [
@@ -402,6 +403,45 @@ export default function DgCompliancePanel({ entries, profiles }: Props) {
           <p className="text-[11px] text-slate-500 dark:text-slate-400">
             {tunnel.note} ({tunnel.basis})
           </p>
+        </CollapsibleSection>
+      )}
+
+      {security && security.status !== "not_checked" && (
+        <CollapsibleSection
+          title={t("compliance.securityTitle")}
+          chips={
+            <SummaryChip
+              className={
+                security.status === "high_consequence"
+                  ? "bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-200"
+                  : "bg-emerald-100 text-emerald-800 dark:bg-emerald-900/40 dark:text-emerald-200"
+              }
+            >
+              {security.status === "high_consequence"
+                ? t("compliance.securityHigh")
+                : t("compliance.securityNone")}
+            </SummaryChip>
+          }
+        >
+          <div className="flex items-start gap-2 rounded-lg border border-slate-200 px-3 py-2 text-xs dark:border-slate-700">
+            <span className="shrink-0 rounded-full bg-slate-100 px-2 py-0.5 text-[11px] font-medium text-slate-700 dark:bg-slate-800 dark:text-slate-200">
+              {security.provision}
+            </span>
+            <span className="text-slate-700 dark:text-slate-200">{security.message}</span>
+          </div>
+          {security.items.map((item, i) => (
+            <div
+              key={i}
+              className="flex items-start gap-2 rounded-lg border border-slate-200 px-3 py-2 text-xs dark:border-slate-700"
+            >
+              {item.un_number && (
+                <span className="shrink-0 rounded-full bg-slate-100 px-2 py-0.5 text-[11px] font-mono text-slate-700 dark:bg-slate-800 dark:text-slate-200">
+                  UN {item.un_number}
+                </span>
+              )}
+              <span className="text-slate-700 dark:text-slate-200">{item.reason}</span>
+            </div>
+          ))}
         </CollapsibleSection>
       )}
 

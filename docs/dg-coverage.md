@@ -215,8 +215,17 @@ dataset it was built on.
   class 9 marine pollutant marks the package and not the truck. Tanks and bulk have their
   own subsections and are not answered; the elevated temperature mark of 5.3.3 turns on a
   carriage temperature nobody tells the application.
-- **No security provisions.** Chapter 1.10 and high consequence dangerous goods are
-  mentioned in the exemption text and nowhere else.
+- **High consequence dangerous goods are derived since v1.58.0.** Table 1.10.3.1.2 turns
+  out to be easier than it looks once it has been read: for carriage in packages its column
+  holds two values and no others — **0**, meaning any quantity at all, and footnote **b)**,
+  meaning 1.10.3 does not apply whatever the quantity. There is no threshold to compare
+  against. What the table catches is class 1 (divisions 1.1, 1.2, 1.5, 1.6, 1.3 group C and
+  fifteen named 1.4 entries), the toxic gases, the desensitised explosives, packing group I
+  toxics and category A infectious substances. What it does *not* catch is the half a user
+  would guess: flammable liquids, corrosives and packing group I oxidisers are all footnote
+  b) in packages. Class 7 is not answered — 1.10.3.1.3 measures it in activity against
+  3,000 A2 — and neither are the tank and bulk columns, whose 3,000 litre and 3,000 kg
+  thresholds are relevant only where table A permits that form of carriage.
 
 ## Rail — RID
 

@@ -841,6 +841,24 @@ export interface AdrPlacardingResult {
   source?: string;
 }
 
+/** ADR 1.10.3 — high consequence dangerous goods. For carriage in packages the
+ *  table has no thresholds to compare against: a line either qualifies at any
+ *  quantity or is outside 1.10.3 at every quantity. */
+export interface AdrSecurityResult {
+  status: "high_consequence" | "ok" | "not_checked";
+  scope?: "packages";
+  items: {
+    position: string | null;
+    un_number: string | null;
+    reason: string;
+    threshold_kg: number | null;
+    not_answered?: boolean;
+  }[];
+  message?: string;
+  provision?: string;
+  source?: string;
+}
+
 export interface QValueResult {
   position: string | number;
   components: { product: string; net_quantity: number; max_per_package: number; ratio: number }[];
@@ -891,6 +909,8 @@ export interface DgComplianceResult {
   adr_equipment?: AdrEquipmentResult;
   /** Placarding and marking per ADR 5.3 — road only. */
   adr_placarding?: AdrPlacardingResult;
+  /** High consequence dangerous goods per ADR 1.10.3 — road only. */
+  adr_security?: AdrSecurityResult;
   q_values?: QValueResult[];
   q_check_status?: QCheckStatus;
   cargo_aircraft_only_products?: string[];

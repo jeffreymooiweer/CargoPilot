@@ -2,6 +2,46 @@
 
 All notable changes are documented here, following [Semantic Versioning](https://semver.org/).
 
+## [1.62.0] — 2026-08-13
+
+### Fixed
+
+- **The document warnings reach the person about to download.** `validate_document`
+  has always returned two lists: blocking errors and warnings. The errors worked.
+  The warnings were computed and went nowhere, along two routes at once — the
+  export route discarded them (`errors, _warnings = ...`; a file response has no
+  body to carry them), and the endpoint that does return them,
+  `POST /documents/validate`, had **no caller anywhere in the frontend**.
+  `api.validateDocument` sat in `client.ts` unused.
+
+  Fourteen warning sites fed that dead channel: the missing-unit notice of
+  v1.61.1 (ADR 5.4.1.1.1 (f)), the missing English proper shipping name, the
+  name-language substitution, the lost 1.1.3.6 exemption and its "incomplete"
+  counterpart, the mixed-loading findings, the LQ/EQ notes, the IATA Q-check
+  notes, the 8.6.3 tunnel message for the whole load, and the VGM mass check —
+  that last one has nothing to do with dangerous goods, which is why the fix is
+  not gated on a consignment carrying any.
+
+  The warnings now stand on each document's card on the export step, **before**
+  the download button — a warning shown after the file is on disk is a warning
+  shown too late. They never disable the button: that distinction from errors is
+  the point of having two lists. One payload builder now serves validation and
+  export both, so what is validated is what is exported by construction. The
+  texts arrive from the backend already in the document's language; the frontend
+  translates nothing.
+
+### Known limitation, found while proving the fix in the browser
+
+- **A total quantity typed at the wrong moment is silently reverted.** The
+  dangerous-goods step re-derives its data 250 ms after every change to the
+  fields its signature watches — and `adr_total_quantity` is not one of them, by
+  design, because it is a computed value. A user who types a total while such a
+  derivation round-trip is in flight gets it overwritten by the response's
+  snapshot, which was taken before they typed. Reproduced live: the first "100"
+  vanished, the retry stuck. This predates this release and sits in a delicate
+  two-way sync; it is reported here rather than patched in passing, and wants a
+  change of its own.
+
 ## [1.61.1] — 2026-08-13
 
 ### Fixed

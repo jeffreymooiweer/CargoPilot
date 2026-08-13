@@ -317,6 +317,7 @@
     "statusNotApplicable": "Not applicable (no dangerous goods)",
     "waitingCarrier": "Waiting for carrier data",
     "missingFields": "Missing: {{fields}}",
+    "checkWarnings": "Points to check on this document:",
     "dgBlocked": "Dangerous goods classification is incomplete. Fill in UN number, Proper Shipping Name, class and packaging details in the dangerous goods step.",
     "exporting": "Exporting…",
     "exportNotice": "Note: generated documents are drafts. Verify, complete and sign by an authorised person before use. See the disclaimer."

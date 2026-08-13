@@ -6,6 +6,7 @@ import {
   CalcResult,
   DgEntry,
   DocumentDefinition,
+  DocumentExportPayload,
   DocumentRegistry,
   LocalizedText,
   UnCardsAvailability,
@@ -14,6 +15,7 @@ import {
 import { documentLanguage, localised } from "../i18n/language";
 import DangerousGoodsStep, { buildDgEntries } from "../components/DangerousGoodsStep";
 import DgCompliancePanel from "../components/DgCompliancePanel";
+import DocumentWarnings, { useDocumentValidation } from "../components/DocumentWarnings";
 import DocumentFieldsStep, { resolveSections } from "../components/DocumentFieldsStep";
 import FormSelectionStep from "../components/FormSelectionStep";
 import ImportDialog from "../components/ImportDialog";
@@ -458,17 +460,36 @@ export default function WizardPage() {
     return { status: "ready", missing: [], waitingCarrier };
   };
 
+  // One payload builder for validation and export both, so that what is
+  // validated is what is exported by construction. These used to be able to
+  // drift — and did: the validate endpoint had no caller at all, so every
+  // warning it computed (missing unit, lost exemption, VGM mismatch, eleven
+  // more) was thrown away twice over. The signature is export-only; validation
+  // does not read it.
+  const payloadFor = (doc: DocumentDefinition): DocumentExportPayload => ({
+    document_key: doc.key,
+    values: exportValuesFor(doc),
+    lines: result?.lines ?? [],
+    dangerous_goods: dgEntries.length > 0 ? dgEntries : undefined,
+    output_language: lang,
+  });
+
+  // Warnings per document, shown on the card before the download button — a
+  // warning after the file is on disk is a warning shown too late. This runs
+  // whether or not there are dangerous goods: the VGM mass check warns on a
+  // plain sea consignment.
+  const docWarnings = useDocumentValidation(
+    stepKey === "export" && result ? selectedDefinitions.map(payloadFor) : [],
+    stepKey === "export" && !!result,
+  );
+
   const exportGenericDoc = async (doc: DocumentDefinition) => {
     if (!result) return;
     setExportingDoc(doc.key);
     setError("");
     try {
       await api.exportDocument({
-        document_key: doc.key,
-        values: exportValuesFor(doc),
-        lines: result.lines,
-        dangerous_goods: dgEntries.length > 0 ? dgEntries : undefined,
-        output_language: lang,
+        ...payloadFor(doc),
         signature_image: signature ?? undefined,
       });
     } catch (e) {
@@ -752,6 +773,10 @@ export default function WizardPage() {
                         {info.status === "blocked" && (
                           <p className="mt-1 text-xs text-red-600 dark:text-red-400">{t("wizardDocs.dgBlocked")}</p>
                         )}
+                        <DocumentWarnings
+                          heading={t("wizardDocs.checkWarnings")}
+                          warnings={docWarnings[doc.key] ?? []}
+                        />
                       </div>
                       <button
                         type="button"

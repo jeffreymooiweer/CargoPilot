@@ -3354,7 +3354,13 @@ def check_compliance(
         # 41-22 with the 42-24 differences laid over it. What that layer does not
         # cover is in IMDG_42_24_not_covered.
         "rule_sets": {
-            "ADR": "ADR 2025 (Table A via rkstgr/adr-substances)",
+            # Table A has come out of the book itself since v1.56.0; the 2023
+            # export was reduced to the one thing the Dutch edition cannot
+            # supply, which is the English and German proper shipping names.
+            # This line still credited the export for the whole table.
+            "ADR": ("ADR 2025 — table A read from the official Dutch edition "
+                    "(scripts/extract_adr_table_a.py); English and German "
+                    "proper shipping names via the 2023 export"),
             "IMDG_class_tables": (
                 "Amendment 40-20 (chapter 7.2) — unchanged in 42-24 for "
                 + ", ".join(amendment_42_24.verified_unchanged_sections())

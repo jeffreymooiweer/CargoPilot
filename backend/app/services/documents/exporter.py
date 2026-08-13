@@ -10,6 +10,7 @@ from openpyxl.styles import Alignment, Border, Font, PatternFill, Side
 from openpyxl.utils import get_column_letter
 
 from app.core.languages import normalise, pick
+from app.services.dg.autofill import adr_quantity
 from app.services.dg.database import get_un_entries, is_transport_forbidden
 from app.services.dg.naming import english_name_is_usable, resolve_for_profile
 from app.services.documents.registry import condition_met, get_document, resolve_sections
@@ -138,6 +139,29 @@ TEXTS = {
               "IMDG 5.4.1.4.1 / IATA DGR 8.1.2.1 require",
         "de": "Offizielle Benennung auf diesem Dokument auf Englisch gesetzt, "
               "wie IMDG 5.4.1.4.1 / IATA DGR 8.1.2.1 es verlangen", "fr": "Désignation officielle de transport mise en anglais sur ce document, comme l'exigent le 5.4.1.4.1 de l'IMDG et le 8.1.2.1 de l'IATA DGR"},
+    # The counterpart of not inventing a unit. CargoPilot used to default a
+    # unitless quantity to kilograms, so "100" silently became "100 kg" on the
+    # consignment note; now the number stands bare and the omission is named.
+    "quantity_without_unit": {
+    # {un} arrives already prefixed ("UN 1090"), like every other UN number in
+    # these texts — do not write "UN {un}" or the number reads "UN UN 1090".
+        "nl": "ADR 5.4.1.1.1 (f): bij {un} staat een totale hoeveelheid zonder "
+              "eenheid. Vul de eenheid in — vloeistoffen in liter, vaste stoffen "
+              "in netto kg, gassen in waterinhoud (liter). Zonder eenheid staat er "
+              "een getal op het document waarvan niemand weet wat het meet.",
+        "en": "ADR 5.4.1.1.1 (f): {un} carries a total quantity with no unit. "
+              "Enter the unit — litres for liquids, net kg for solids, water "
+              "capacity in litres for gases. Without it the document shows a "
+              "number and no one can tell what it measures.",
+        "de": "ADR 5.4.1.1.1 (f): Bei {un} steht eine Gesamtmenge ohne Einheit. "
+              "Tragen Sie die Einheit ein — Flüssigkeiten in Liter, feste Stoffe in "
+              "netto kg, Gase als Fassungsraum in Liter. Ohne sie steht auf dem "
+              "Dokument eine Zahl, von der niemand weiß, was sie misst.",
+        "fr": "ADR 5.4.1.1.1 (f) : la quantité totale de {un} n'a pas d'unité. "
+              "Indiquez-la — litres pour les liquides, kg nets pour les solides, "
+              "contenance en eau en litres pour les gaz. Sans elle, le document "
+              "porte un nombre dont personne ne sait ce qu'il mesure.",
+    },
     "no_english_name": {
         "nl": "De ADR-tabel bevat geen bruikbare Engelse vervoersnaam voor UN {un}; "
               "op dit document staat nu de Duitse. IMDG 5.4.1.4.1 en IATA DGR 8.1.2.1 "
@@ -430,6 +454,17 @@ def validate_document(
                     errors.append(
                         f"{_text('dg_forbidden', lang)}: {_un_prefixed(product.get('un_number'))}"
                     )
+                # A quantity whose unit nobody wrote down. The land regimes count
+                # in the unit of 1.1.3.6.3 — litres, net kilograms, or a gas's
+                # water capacity — and the three are not interchangeable.
+                # `adr_quantity` rather than `total_quantity` so that class 1
+                # stays out of this by itself: its quantity is the net explosive
+                # mass, which 5.4.1.2.1 (a) states in kilograms by definition.
+                if profile in ("ADR", "RID", "ADN"):
+                    amount, unit = adr_quantity(product)
+                    if amount is not None and not unit:
+                        warnings.append(_text("quantity_without_unit", lang).format(
+                            un=_un_prefixed(product.get("un_number"))))
                 # Sea and air prescribe the language of the name: IMDG 5.4.1.4.1
                 # permits English, French or Spanish and IATA DGR 8.1.2.1 only
                 # English. Whoever first drew up a German road document keeps the

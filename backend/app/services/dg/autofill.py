@@ -69,6 +69,38 @@ def _fmt(value: float) -> str:
     return str(int(value)) if float(value).is_integer() else f"{value:.2f}".rstrip("0").rstrip(".")
 
 
+#: Kilograms before litres, because "kilogram" and "kilo" both contain an "l"
+#: and would otherwise be read as litres. The lookarounds are letter-only rather
+#: than `\b`: a word boundary does not fire between a digit and a letter, so
+#: "100L" — which is how people type it — would have fallen through to the
+#: default and become kilograms.
+_KILOGRAMS = re.compile(r"(?<![a-z])(kg|kilo(?:gram)?s?)(?![a-z])", re.IGNORECASE)
+_LITRES = re.compile(r"(?<![a-z])(l|ltr|lit(?:er|re)s?)(?![a-z])", re.IGNORECASE)
+
+
+def _unit_of(raw: Any) -> str:
+    """The unit written in a quantity, or nothing at all.
+
+    Nothing means nothing: this deliberately does not fall back to kilograms.
+    Whether a substance travels by mass or by volume is not reliably derivable
+    from table A, and a unit invented here ends up on a signed consignment note
+    — 100 litres of acetone is about 79 kg, and 1.1.3.6.3 counts the two
+    differently. An absent unit is reported to the user instead (ADR
+    5.4.1.1.1 (f)).
+    """
+    text = str(raw or "")
+    if _KILOGRAMS.search(text):
+        return "kg"
+    if _LITRES.search(text):
+        return "L"
+    return ""
+
+
+def _amount(value: float, unit: str) -> str:
+    """A quantity for a document: the number, and the unit only if there is one."""
+    return f"{_fmt(value)} {unit}".strip()
+
+
 def _un_prefixed(value: Any) -> str:
     text = str(value or "").strip()
     if not text:
@@ -347,14 +379,25 @@ def derive_from_line(product: dict[str, Any], line: dict[str, Any] | None) -> di
 
 
 def total_quantity(product: dict[str, Any]) -> tuple[float | None, str]:
-    """Total quantity of a product: net per package × number of packages."""
+    """Total quantity of a product: net per package × number of packages.
+
+    The unit is read from **the same field the number came from**. It used to be
+    read from the per-package field alone, which is right while that field is
+    filled and wrong the moment it is empty: the number then fell back to
+    `adr_total_quantity` while the unit stayed on its "kg" default, so "100 L"
+    came out as "100 kg" — on the document, in the category totals of
+    5.4.1.1.1.1, and written back over what the user had typed.
+
+    That is not a corner: the wizard requires only UN number, name and class for
+    ADR, RID and ADN, so a consignor who fills in nothing but the total quantity
+    the 1.1.3.6 points count needs takes this path every time.
+    """
     per_package = _num(product.get("net_mass_liters_per_package"))
     count = _num(product.get("quantity_packages"))
-    raw = str(product.get("net_mass_liters_per_package") or "")
-    unit = "L" if re.search(r"\b(l|ltr|liter|litre)\b", raw, re.IGNORECASE) else "kg"
     if per_package is None:
-        total = _num(product.get("adr_total_quantity"))
-        return total, unit
+        raw_total = product.get("adr_total_quantity")
+        return _num(raw_total), _unit_of(raw_total)
+    unit = _unit_of(product.get("net_mass_liters_per_package"))
     if count is None:
         return per_package, unit
     return per_package * count, unit
@@ -435,7 +478,7 @@ def description_line(product: dict[str, Any], profile: str) -> str:
     if packages:
         tail.append(packages)
     if total is not None:
-        tail.append(f"{_fmt(total)} {unit}")
+        tail.append(_amount(total, unit))
     # Class 1 on a land document: the total net explosive mass belongs in the
     # transport document (ADR 5.4.1.2.1 (a)).
     if profile in ("ADR", "RID", "ADN") and _is_class1(product):
@@ -468,7 +511,7 @@ def adr_category_totals(entries: list[dict[str, Any]], language: str = "nl") -> 
 
     rows = []
     for category in sorted(totals):
-        amounts = ", ".join(f"{_fmt(value)} {unit}" for unit, value in sorted(totals[category].items()))
+        amounts = ", ".join(_amount(value, unit) for unit, value in sorted(totals[category].items()))
         rows.append({"transport_category": category, "total": amounts})
     prefix = pick(
         {
@@ -528,7 +571,7 @@ def prepare_entries(
             if override:
                 merged["adr_total_quantity"] = override
             elif total is not None:
-                merged["adr_total_quantity"] = f"{_fmt(total)} {unit}"
+                merged["adr_total_quantity"] = _amount(total, unit)
             elif _is_class1(merged):
                 merged.pop("adr_total_quantity", None)
             per_package = merged.get("net_mass_liters_per_package")

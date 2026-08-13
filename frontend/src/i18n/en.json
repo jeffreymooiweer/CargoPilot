@@ -240,7 +240,9 @@
     "air": "Air freight",
     "airDesc": "AWB instructions and IATA DG declaration",
     "multimodal": "Multimodal",
-    "multimodalDesc": "Combination of modes — all forms"
+    "multimodalDesc": "Combination of modes — all forms",
+    "locked": "in development",
+    "lockedReason": "This modality has not been released yet. Its regulatory checks are not complete, and a half-right document is worse than none. Carriage by road is available."
   },
   "forms": {
     "title": "Which forms do you want to prepare?",

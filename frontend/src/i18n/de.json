@@ -240,7 +240,9 @@
     "air": "Luftfracht",
     "airDesc": "AWB-Anweisungen und IATA-Gefahrguterklärung",
     "multimodal": "Multimodal",
-    "multimodalDesc": "Kombination von Verkehrsträgern — alle Formulare"
+    "multimodalDesc": "Kombination von Verkehrsträgern — alle Formulare",
+    "locked": "in Entwicklung",
+    "lockedReason": "Diese Verkehrsträger ist noch nicht freigegeben. Die Prüfungen sind unvollständig, und ein halb richtiges Dokument ist schlimmer als keines. Der Straßenverkehr steht zur Verfügung."
   },
   "forms": {
     "title": "Welche Formulare möchten Sie erstellen?",

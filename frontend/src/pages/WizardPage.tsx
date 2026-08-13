@@ -19,7 +19,7 @@ import FormSelectionStep from "../components/FormSelectionStep";
 import ImportDialog from "../components/ImportDialog";
 import ReviewLinesPanel, { DraftLine, draftToText, textToDraftLines } from "../components/ReviewLinesPanel";
 import WizardProgress from "../components/WizardProgress";
-import { isModalityKey } from "./ModalitySelectPage";
+import { isModalityAvailable } from "./ModalitySelectPage";
 import { usePreferences } from "../settings/preferences";
 import {
   applyLineWeightChange,
@@ -241,8 +241,10 @@ export default function WizardPage() {
     if (prev) setStepKey(prev);
   };
 
-  if (!isModalityKey(modality)) {
-    return <Navigate to="/" replace />;
+  // Not only "is this a modality" but "may documents be drawn up for it". A
+  // bookmark to /wizard/rail is the route that skips every tile.
+  if (!isModalityAvailable(modality)) {
+    return <Navigate to="/?choose=1" replace />;
   }
 
   const updateResultLines = (lines: CalcResult["lines"]) => {

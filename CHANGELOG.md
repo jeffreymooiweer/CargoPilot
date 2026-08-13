@@ -2,6 +2,38 @@
 
 All notable changes are documented here, following [Semantic Versioning](https://semver.org/).
 
+## [1.60.0] — 2026-08-13
+
+### Changed
+
+- **Only carriage by road may be used to draw up documents.** Rail, sea, inland waterway
+  and air are locked: the tiles are greyed out and say why, and the wizard refuses the
+  route.
+
+  They were built, reachable, and **wrong in ways that do not announce themselves.** Inland
+  waterway answered its separation question with the *road* table until v1.59.0, and it
+  still has no table C — so a tank vessel consignment gets nothing at all, silently. Rail
+  and sea carry known gaps of their own, listed in `docs/dg-coverage.md`.
+
+  A half-right document is worse than no document. It gets signed and handed over, and the
+  consignor has no way to see which half was right. That is the whole reason for this
+  release: the application was perfectly willing to produce one.
+
+  **The lock is checked in three places, because the tile is not the only way in.** A
+  bookmark reaches `/wizard/rail` without touching a tile, and a `default_modality` set
+  while a modality was open navigates there on its own, on load, before anything is
+  clicked. Guarding the tiles alone would guard the honest route and leave the other two
+  open — the shape of lock that is found out in production rather than in review.
+
+  The tiles are locked rather than hidden. Hiding them raises the wrong question — *where
+  did rail go?* — where the true answer is *not yet, and here is why*, in all four
+  languages.
+
+### Added
+
+- **`frontend/src/pages/ModalitySelectPage.test.tsx`** — six tests, three of them on the
+  ways in that are not the tile.
+
 ## [1.59.0] — 2026-08-12
 
 ### Fixed

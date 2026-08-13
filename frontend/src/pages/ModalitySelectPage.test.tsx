@@ -1,12 +1,17 @@
 /**
- * Only road may be used to draw up documents, and the lock has three ways in.
+ * Which modalities may draw up documents, and the lock that has three ways in.
  *
- * Rail, sea, inland waterway and air are built and reachable and *wrong* in
- * ways that do not announce themselves. Inland waterway answered its
- * separation question with the road table until v1.59.0 and still has no
- * table C, so a tank vessel consignment gets nothing at all. A half-right
- * document is worse than no document: it is signed and handed over, and the
- * consignor has no way to see which half was right.
+ * Rail, sea and air are built and reachable and *wrong* in ways that do not
+ * announce themselves. A half-right document is worse than no document: it is
+ * signed and handed over, and the consignor has no way to see which half was
+ * right.
+ *
+ * Inland waterway came off the lock in v1.63.0. It went on in v1.60.0 because
+ * it answered its separation question with the road table and held no cone
+ * data; the exemption, the separation of 7.1.4.3 and the signals of 7.1.5.0
+ * now all come out of the ADN itself. The tank vessel regime is still missing
+ * and a tank vessel consignment cannot be entered here at all — this wizard
+ * models packages — so what can be drawn up is what is covered.
  *
  * The reason this file exists rather than a line in the component is that the
  * tile is not the only way in. A bookmark reaches `/wizard/rail` without
@@ -47,10 +52,11 @@ function renderAt(path = "/") {
 }
 
 describe("de modaliteitkeuze", () => {
-  it("laat alleen wegvervoer toe", () => {
-    expect([...AVAILABLE_MODALITIES]).toEqual(["road"]);
+  it("laat wegvervoer en binnenvaart toe", () => {
+    expect([...AVAILABLE_MODALITIES]).toEqual(["road", "inland"]);
     expect(isModalityAvailable("road")).toBe(true);
-    for (const key of MODALITIES.filter((m) => m !== "road")) {
+    expect(isModalityAvailable("inland")).toBe(true);
+    for (const key of MODALITIES.filter((m) => m !== "road" && m !== "inland")) {
       expect(isModalityAvailable(key)).toBe(false);
     }
   });
@@ -62,8 +68,10 @@ describe("de modaliteitkeuze", () => {
     renderAt("/?choose=1");
     const tiles = screen.getAllByRole("button");
     const locked = tiles.filter((tile) => tile.hasAttribute("disabled"));
-    expect(locked).toHaveLength(MODALITIES.length - 1);
-    expect(screen.getAllByText("modality.locked").length).toBe(MODALITIES.length - 1);
+    expect(locked).toHaveLength(MODALITIES.length - AVAILABLE_MODALITIES.length);
+    expect(screen.getAllByText("modality.locked").length).toBe(
+      MODALITIES.length - AVAILABLE_MODALITIES.length,
+    );
   });
 
   it("doet niets als er op een vergrendelde tegel wordt geklikt", async () => {
@@ -84,9 +92,9 @@ describe("de modaliteitkeuze", () => {
   });
 
   it("volgt een voorkeur voor een vergrendelde modaliteit niet meer", async () => {
-    // The route that skips every tile: a preference set while inland waterway
-    // was open would otherwise keep opening it after the lock went on.
-    preferences.default_modality = "inland";
+    // The route that skips every tile: a preference set while a modality was
+    // open would otherwise keep opening it after the lock went on.
+    preferences.default_modality = "rail";
     renderAt("/");
     await waitFor(() => expect(screen.getAllByRole("button").length).toBeGreaterThan(0));
     expect(screen.queryByText("wizard")).not.toBeInTheDocument();
@@ -94,6 +102,12 @@ describe("de modaliteitkeuze", () => {
 
   it("volgt een voorkeur voor wegvervoer wel", async () => {
     preferences.default_modality = "road";
+    renderAt("/");
+    await waitFor(() => expect(screen.getByText("wizard")).toBeInTheDocument());
+  });
+
+  it("volgt een voorkeur voor binnenvaart nu ook", async () => {
+    preferences.default_modality = "inland";
     renderAt("/");
     await waitFor(() => expect(screen.getByText("wizard")).toBeInTheDocument());
   });

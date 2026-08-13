@@ -383,8 +383,16 @@ questions. **Column (12), the number of blue cones or blue lights**, closes two 
 - **No ADN certificate and no expert on board.**
 
 **Assessment:** for packaged goods on a dry cargo vessel the exemption, the separation and
-the signals are all answered from the ADN's own text. For tank vessels, still nothing —
-which is why the mode is locked in the interface since v1.60.0.
+the signals are all answered from the ADN's own text, and since v1.63.0 all three are
+visible — in the compliance panel and on the document, where until then they were computed
+for every consignment and shown to nobody.
+
+**The mode came off the lock in v1.63.0.** It went on in v1.60.0 because inland waterway
+answered its separation question with the *road* table and held no cone data at all. What
+still does not exist is the tank vessel regime — and a tank vessel consignment cannot be
+entered here in the first place, because this wizard models packages. So what a user can
+draw up is exactly the part that is covered, which is the condition the lock existed to
+enforce.
 
 ## Sea — IMDG
 

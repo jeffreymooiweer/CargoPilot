@@ -272,3 +272,49 @@ def test_an_unsettled_substance_beside_a_settled_one_is_named_not_dropped():
         line(product("1203", "3", "F1"), product("1005", "2", "2TC")))
     assert out["cones"] == 2
     assert out["cones_not_settled"] == ["UN 1203"]
+
+
+# --- and they reach the document -------------------------------------------
+#
+# v1.62.0 made the exporter's warnings visible on the document card. Until this
+# release the ADN had nothing in that channel: the separation and the signals
+# were computed for every inland waterway consignment and appeared on no
+# document at all. Which cones a vessel shows is a fact about the voyage; it
+# belongs with the papers.
+
+
+def adn_warnings(products, language="nl"):
+    from app.services.documents.exporter import validate_document
+    from app.services.documents.registry import get_document
+
+    _errors, warnings = validate_document(
+        get_document("adn_transport_doc"), {}, [],
+        [{"line_id": "1", "vehicle": "Ruim 1", "products": list(products)}], language)
+    return warnings
+
+
+def test_the_signals_are_on_the_document():
+    warnings = adn_warnings([product("1005", "2", "2TC")])
+    assert any("7.1.5.0.1" in w and "kegel" in w.lower() for w in warnings), warnings
+
+
+def test_no_cones_is_stated_on_the_document_too():
+    """Nought is the commonest answer and the easiest to mistake for silence."""
+    warnings = adn_warnings([product("3082", "9", "M6")])
+    assert any("7.1.5.0.1" in w for w in warnings), warnings
+
+
+def test_the_separation_findings_are_on_the_document():
+    warnings = adn_warnings([product("1005", "2", "2TC"), product("1090", "3", "F1")])
+    assert any("7.1.4.3.2" in w for w in warnings), warnings
+    assert any("7.1.4.3.1" in w for w in warnings), warnings
+
+
+def test_the_tie_break_is_stated_when_the_load_disagrees_with_itself():
+    warnings = adn_warnings([product("1005", "2", "2TC"), product("1090", "3", "F1")])
+    assert any("7.1.5.0.4" in w for w in warnings), warnings
+
+
+def test_an_unsettled_substance_is_named_on_the_document():
+    warnings = adn_warnings([product("1203", "3", "F1")])
+    assert any("1203" in w and "5.4.1.1.1" not in w for w in warnings), warnings

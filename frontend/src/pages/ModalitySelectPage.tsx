@@ -8,18 +8,26 @@ export type ModalityKey = (typeof MODALITIES)[number];
 
 /** The modalities a user may actually draw up documents for.
  *
- *  The other four are built and reachable and *wrong* in ways that do not
- *  announce themselves. Inland waterway answered its separation question with
- *  the road table until v1.59.0 and still has no table C, so a tank vessel
- *  consignment gets nothing; rail and sea carry known gaps of their own. A
- *  half-right document is worse than no document, because it is signed and
- *  handed over — the consignor has no way to see which half was right.
+ *  Rail, sea and air are built and reachable and *wrong* in ways that do not
+ *  announce themselves, and they carry known gaps listed in
+ *  `docs/dg-coverage.md`. A half-right document is worse than no document,
+ *  because it is signed and handed over — the consignor has no way to see which
+ *  half was right.
  *
- *  So this is a lock and not a hint. It is checked in three places, because the
- *  tile is not the only way in: a bookmark reaches /wizard/rail directly, and
- *  the default-modality preference navigates there without anyone touching a
- *  tile. Guarding only the tiles would guard only the honest route. */
-export const AVAILABLE_MODALITIES: readonly ModalityKey[] = ["road"];
+ *  **Inland waterway was unlocked in v1.63.0.** It went on the lock in v1.60.0
+ *  because it answered its separation question with the *road* table and had no
+ *  cone data at all. Both are now answered out of the ADN itself: the exemption
+ *  from 1.1.3.6.1, the separation in the holds from 7.1.4.3, and the signals the
+ *  vessel must show from 7.1.5.0 — each visible in the panel and on the
+ *  document. What is still missing is the tank vessel regime, and a tank vessel
+ *  consignment cannot be entered here at all: this wizard models packages. So
+ *  what a user can draw up is exactly the part that is covered.
+ *
+ *  This remains a lock and not a hint. It is checked in three places, because
+ *  the tile is not the only way in: a bookmark reaches /wizard/rail directly,
+ *  and the default-modality preference navigates there without anyone touching
+ *  a tile. Guarding only the tiles would guard only the honest route. */
+export const AVAILABLE_MODALITIES: readonly ModalityKey[] = ["road", "inland"];
 
 export function isModalityKey(value: string | undefined): value is ModalityKey {
   return !!value && (MODALITIES as readonly string[]).includes(value);

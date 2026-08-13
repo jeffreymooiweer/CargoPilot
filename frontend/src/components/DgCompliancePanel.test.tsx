@@ -380,3 +380,110 @@ describe("de tunnelsectie", () => {
     expect(screen.getByText("compliance.tunnelStatus.exempt")).toBeInTheDocument();
   });
 });
+
+/**
+ * The inland waterway outcomes reach the screen.
+ *
+ * v1.59.0 gave the ADN its own separation rule and v1.61.0 the blue cones out
+ * of its own table A. Both computed correctly and appeared nowhere: the panel
+ * only ever showed `adn_exemption`, so two provisions were answered into the
+ * void. What is pinned here is that they are shown, and *how* — a cone count of
+ * zero is an answer, and a substance whose row could not be settled is named
+ * rather than quietly dropped.
+ */
+describe("de binnenvaartuitkomsten", () => {
+  function withAdn(extra: Record<string, unknown>) {
+    return { ...result(300), ...extra } as unknown as DgComplianceResult;
+  }
+
+  it("toont de scheidingsbevindingen van 7.1.4.3", async () => {
+    vi.spyOn(api, "dgCompliance").mockResolvedValue(
+      withAdn({
+        adn_hold_separation: {
+          status: "ok",
+          scope: "packages_in_holds",
+          findings: [
+            { provision: "7.1.4.3.1", metres: 3.0, message: "Ten minste 3,00 m ertussen." },
+            {
+              provision: "7.1.4.3.2",
+              message: "Twee kegels niet met brandbaar één kegel in één laadruim.",
+              two_cones: ["UN 1005"],
+              one_cone_flammable: ["UN 1090"],
+            },
+          ],
+          source: "ADN 2025 7.1.4.3",
+        },
+      }),
+    );
+    render(<DgCompliancePanel entries={entries("100")} profiles={["ADN"]} />);
+    await waitFor(() => expect(screen.getByText(/3,00 m/)).toBeInTheDocument());
+    expect(screen.getByText(/één laadruim/)).toBeInTheDocument();
+    expect(screen.getByText("7.1.4.3.1")).toBeInTheDocument();
+    expect(screen.getByText("7.1.4.3.2")).toBeInTheDocument();
+  });
+
+  it("noemt de stoffen waarvan de kegels niet vaststaan", async () => {
+    vi.spyOn(api, "dgCompliance").mockResolvedValue(
+      withAdn({
+        adn_hold_separation: {
+          status: "ok",
+          findings: [],
+          not_assessed: "Voor UN 1203 is niet vast te stellen welke rij geldt.",
+          cones_not_settled: ["UN 1203"],
+        },
+      }),
+    );
+    render(<DgCompliancePanel entries={entries("100")} profiles={["ADN"]} />);
+    await waitFor(() =>
+      expect(screen.getByText(/niet vast te stellen/)).toBeInTheDocument(),
+    );
+  });
+
+  it("toont de seinvoering, en nul kegels net zo nadrukkelijk als twee", async () => {
+    // A check that only ever speaks up when there is danger teaches the user
+    // that silence means safe. Nought cones is a finding: the vessel shows none.
+    vi.spyOn(api, "dgCompliance").mockResolvedValue(
+      withAdn({
+        adn_signals: {
+          status: "ok",
+          provision: "7.1.5.0.1",
+          cones: 0,
+          message: "Geen blauwe kegel of blauw licht.",
+          set_by: ["UN 3082"],
+          containers_note: "Bij uitsluitend containervervoer kan 7.1.5.0.2 verlagen.",
+        },
+      }),
+    );
+    render(<DgCompliancePanel entries={entries("100")} profiles={["ADN"]} />);
+    await waitFor(() =>
+      expect(screen.getByText("Geen blauwe kegel of blauw licht.")).toBeInTheDocument(),
+    );
+    expect(screen.getByText("0")).toBeInTheDocument();
+  });
+
+  it("laat zien welke stof de zwaarste seinvoering bepaalt", async () => {
+    vi.spyOn(api, "dgCompliance").mockResolvedValue(
+      withAdn({
+        adn_signals: {
+          status: "ok",
+          provision: "7.1.5.0.1",
+          cones: 2,
+          message: "Twee blauwe kegels of twee blauwe lichten.",
+          set_by: ["UN 1005"],
+          highest_wins: "Volgens 7.1.5.0.4 geldt de zwaarste. Bepalend is UN 1005.",
+        },
+      }),
+    );
+    render(<DgCompliancePanel entries={entries("100")} profiles={["ADN"]} />);
+    await waitFor(() => expect(screen.getByText("2")).toBeInTheDocument());
+    expect(screen.getByText(/Bepalend is UN 1005/)).toBeInTheDocument();
+  });
+
+  it("toont geen binnenvaartkaarten als het ADN niet gekozen is", async () => {
+    vi.spyOn(api, "dgCompliance").mockResolvedValue(result(300));
+    render(<DgCompliancePanel entries={entries("100")} profiles={["ADR"]} />);
+    await waitFor(() => expect(api.dgCompliance).toHaveBeenCalled());
+    expect(screen.queryByText("compliance.adnSeparationTitle")).not.toBeInTheDocument();
+    expect(screen.queryByText("compliance.adnSignalsTitle")).not.toBeInTheDocument();
+  });
+});

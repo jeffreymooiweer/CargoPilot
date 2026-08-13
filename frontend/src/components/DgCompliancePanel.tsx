@@ -88,6 +88,8 @@ export default function DgCompliancePanel({ entries, profiles }: Props) {
 
   const adr = result?.adr_points;
   const adn = result?.adn_exemption;
+  const separation = result?.adn_hold_separation;
+  const signals = result?.adn_signals;
   const tunnel = result?.adr_tunnel;
   const equipment = result?.adr_equipment;
   const placarding = result?.adr_placarding;
@@ -300,6 +302,119 @@ export default function DgCompliancePanel({ entries, profiles }: Props) {
               {adn.conditions.map((x, i) => <li key={i}>{x}</li>)}
             </ul>
           </details>
+        </CollapsibleSection>
+      )}
+
+      {/* ADN 7.1.4.3 — separation in the holds. Not the road rule renamed: ADR
+          7.5.2 asks whether two packages may share a vehicle and answers yes or
+          no, this one answers in metres. Two of its three provisions are stated
+          in blue cones, and a substance whose cone count could not be settled is
+          named rather than guessed at. */}
+      {separation && separation.status !== "not_checked" && (
+        <CollapsibleSection
+          title={t("compliance.adnSeparationTitle")}
+          defaultOpen={separation.findings.length > 0}
+          chips={
+            <>
+              <SummaryChip
+                className={
+                  separation.findings.length > 0
+                    ? "bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-300"
+                    : "bg-emerald-100 text-emerald-800 dark:bg-emerald-900/40 dark:text-emerald-300"
+                }
+              >
+                {separation.findings.length > 0
+                  ? t("compliance.adnSeparationFindings", { count: separation.findings.length })
+                  : t("compliance.adnSeparationNone")}
+              </SummaryChip>
+              {separation.cones_not_settled && separation.cones_not_settled.length > 0 && (
+                <SummaryChip className="bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300">
+                  {t("compliance.adnConesUnsettled", {
+                    count: separation.cones_not_settled.length,
+                  })}
+                </SummaryChip>
+              )}
+            </>
+          }
+        >
+          {separation.findings.length === 0 ? (
+            <p className="text-xs text-slate-600 dark:text-slate-300">
+              {t("compliance.adnSeparationNoneHint")}
+            </p>
+          ) : (
+            <ul className="space-y-2">
+              {separation.findings.map((finding, i) => (
+                <li key={i} className="text-xs text-slate-700 dark:text-slate-300">
+                  <span className="font-medium text-slate-900 dark:text-slate-100">
+                    {finding.provision}
+                  </span>
+                  {finding.metres != null && (
+                    <span className="ml-2 rounded bg-amber-100 px-1.5 py-0.5 text-[11px] font-medium text-amber-800 dark:bg-amber-900/40 dark:text-amber-300">
+                      {finding.metres} m
+                    </span>
+                  )}
+                  <p className="mt-0.5">{finding.message}</p>
+                  {finding.two_cones && finding.one_cone_flammable && (
+                    <p className="mt-0.5 text-[11px] text-slate-500 dark:text-slate-400">
+                      {finding.two_cones.join(", ")} ↔ {finding.one_cone_flammable.join(", ")}
+                    </p>
+                  )}
+                </li>
+              ))}
+            </ul>
+          )}
+          {separation.not_assessed && (
+            <p className="text-xs text-amber-600 dark:text-amber-300">{separation.not_assessed}</p>
+          )}
+          {separation.source && (
+            <p className="text-[11px] text-slate-500 dark:text-slate-400">{separation.source}</p>
+          )}
+        </CollapsibleSection>
+      )}
+
+      {/* ADN 7.1.5.0 — the signals the vessel must show. Nought cones is an
+          answer, not a silence, and it is the commonest one: a card that only
+          appeared when cones were needed would teach the user that an absent
+          card means safe. Under 7.1.5.0.4 the heaviest signal on board wins, so
+          one package can set the signals for everything else. */}
+      {signals && signals.status !== "not_checked" && signals.cones != null && (
+        <CollapsibleSection
+          title={t("compliance.adnSignalsTitle")}
+          defaultOpen={signals.cones > 0}
+          chips={
+            <>
+              <SummaryChip
+                className={
+                  signals.cones > 0
+                    ? "bg-blue-100 text-blue-800 dark:bg-blue-900/40 dark:text-blue-300"
+                    : "bg-emerald-100 text-emerald-800 dark:bg-emerald-900/40 dark:text-emerald-300"
+                }
+              >
+                {signals.cones}
+              </SummaryChip>
+              <span className="text-xs text-slate-600 dark:text-slate-300">{signals.message}</span>
+            </>
+          }
+        >
+          {signals.set_by && signals.set_by.length > 0 && (
+            <p className="text-xs text-slate-700 dark:text-slate-300">
+              {t("compliance.adnSignalsSetBy", { products: signals.set_by.join(", ") })}
+            </p>
+          )}
+          {signals.highest_wins && (
+            <p className="text-xs text-slate-700 dark:text-slate-300">{signals.highest_wins}</p>
+          )}
+          {signals.not_assessed && (
+            <p className="text-xs text-amber-600 dark:text-amber-300">{signals.not_assessed}</p>
+          )}
+          {signals.containers_note && (
+            <p className="text-[11px] text-slate-500 dark:text-slate-400">
+              {signals.containers_note}
+            </p>
+          )}
+          {signals.source && (
+            <p className="text-[11px] text-slate-500 dark:text-slate-400">{signals.source}</p>
+          )}
         </CollapsibleSection>
       )}
 

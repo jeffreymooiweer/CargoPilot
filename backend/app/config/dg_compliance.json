@@ -10,7 +10,8 @@
     "rid_protective_distance": "RID 2025 (OTIF) 7.5.3 — protective distance in the train between a wagon holding class 1 and a placarded wagon 2.1/3/4.1/4.2/4.3/5.1/5.2",
     "adr_tunnel": "ADR 2025 (UNECE) 8.6.3 and 8.6.4 — tunnel restriction code for the whole load",
     "adr_placarding": "ADR 2025 (UNECE) 5.3 — placarding and marking of the transport unit: 5.3.1.5, 5.3.2.1, 5.3.3 and 5.3.6",
-    "adr_security": "ADR 2025 (UNECE) 1.10.3 — high consequence dangerous goods and the security plan"
+    "adr_security": "ADR 2025 (UNECE) 1.10.3 — high consequence dangerous goods and the security plan",
+    "adn_hold_separation": "ADN 2025 (UNECE) 7.1.4.3 — separation of packages in the holds of a vessel"
   },
   "adr_equipment": {
     "source": "ADR 2025 (UNECE) 8.1.4 and 8.1.5",
@@ -2326,6 +2327,59 @@
       "en": "No high consequence dangerous goods. For carriage in packages, table 1.10.3.1.2 holds two values and no others: 0, meaning any quantity at all, and footnote b), meaning 1.10.3 does not apply whatever the quantity. A full load of packaged petrol falls under b) and does not become high consequence at a larger quantity.",
       "de": "Keine gefährlichen Güter mit hohem Gefahrenpotenzial. Bei Beförderung in Versandstücken kennt Tabelle 1.10.3.1.2 nur zwei Werte: 0, also jede Menge, und Fußnote b), wonach 1.10.3 ungeachtet der Menge nicht gilt. Eine volle Ladung Benzin in Versandstücken fällt unter b) und wird es auch bei größerer Menge nicht.",
       "fr": "Pas de marchandises dangereuses à haut risque. Pour un transport en colis, le tableau 1.10.3.1.2 ne comporte que deux valeurs : 0, c'est-à-dire toute quantité, et la note b), selon laquelle le 1.10.3 ne s'applique pas quelle que soit la quantité. Un chargement complet d'essence en colis relève de la note b) et ne le devient pas à plus grande quantité."
+    }
+  },
+  "adn_hold_separation": {
+    "source": "ADN 2025, official Dutch edition, 7.1.4.3 'Samenladingsverbod (colli in laadruimen)'",
+    "_why_not_the_road_table": "Until v1.59.0 an inland waterway consignment was answered with ADR 7.5.2, labelled as borrowed. It is not merely another mode's table — it answers a different question. ADR asks whether two packages may share a vehicle; ADN asks how many metres must lie between them and whether they may share a hold. A prohibition and a distance are not the same answer, and the application could not express the second at all.",
+    "_still_borrowed": "7.1.4.3.4 gives ADN its own compatibility group table for class 1, twelve groups with four numbered conditions and a footnote that differs from the road one. It is not transcribed yet: a 12x12 regulatory table gets two independent readings in this repository or none.",
+    "rules": [
+      {
+        "provision": "7.1.4.3.1",
+        "kind": "classes_apart",
+        "metres": 3.0,
+        "message": {
+          "nl": "Goederen van verschillende klassen moeten door een horizontale afstand van ten minste 3,00 m van elkaar zijn gescheiden en mogen niet op elkaar worden geplaatst. Aan boord betreft dit {classes}.",
+          "en": "Goods of different classes must be separated by a horizontal distance of at least 3.00 m and must not be stacked on one another. On board this concerns {classes}.",
+          "de": "Güter verschiedener Klassen müssen durch einen horizontalen Abstand von mindestens 3,00 m getrennt sein und dürfen nicht aufeinander gestapelt werden. An Bord betrifft das {classes}.",
+          "fr": "Les marchandises de classes différentes doivent être séparées par une distance horizontale d'au moins 3,00 m et ne doivent pas être empilées. À bord, cela concerne {classes}."
+        }
+      },
+      {
+        "provision": "7.1.4.3.3",
+        "kind": "explosives_apart",
+        "metres": 12.0,
+        "classes": [
+          "1"
+        ],
+        "also_classes": [
+          "4.1",
+          "5.2"
+        ],
+        "cones": 3,
+        "message": {
+          "nl": "Colli van klasse 1, en colli van klasse 4.1 en 5.2 waarvoor kolom (12) drie blauwe kegels of drie blauwe lichten voorschrijft, moeten ten minste 12 m gescheiden zijn van goederen van alle andere klassen. Aan boord betreft dit {products}.",
+          "en": "Packages of class 1, and packages of class 4.1 and 5.2 for which column (12) prescribes three blue cones or three blue lights, must be separated by at least 12 m from goods of all other classes. On board this concerns {products}.",
+          "de": "Versandstücke der Klasse 1 sowie der Klassen 4.1 und 5.2, für die Spalte (12) drei blaue Kegel oder drei blaue Lichter vorschreibt, müssen mindestens 12 m von Gütern aller anderen Klassen getrennt sein. An Bord betrifft das {products}.",
+          "fr": "Les colis de la classe 1, ainsi que ceux des classes 4.1 et 5.2 pour lesquels la colonne (12) prescrit trois cônes ou trois feux bleus, doivent être séparés d'au moins 12 m des marchandises de toutes les autres classes. À bord, cela concerne {products}."
+        }
+      },
+      {
+        "provision": "7.1.4.3.2",
+        "kind": "cones_not_together",
+        "message": {
+          "nl": "Ongeacht de hoeveelheid mogen goederen waarvoor kolom (12) twee blauwe kegels of twee blauwe lichten voorschrijft, niet in hetzelfde laadruim staan met brandbare goederen waarvoor kolom (12) één blauwe kegel of één blauw licht voorschrijft.",
+          "en": "Whatever the quantity, goods for which column (12) prescribes two blue cones or two blue lights must not be placed in the same hold as flammable goods for which column (12) prescribes one blue cone or one blue light.",
+          "de": "Ungeachtet der Menge dürfen Güter, für die Spalte (12) zwei blaue Kegel oder zwei blaue Lichter vorschreibt, nicht in denselben Laderaum wie entzündbare Güter mit einem blauen Kegel oder einem blauen Licht nach Spalte (12) gestellt werden.",
+          "fr": "Quelle que soit la quantité, les marchandises pour lesquelles la colonne (12) prescrit deux cônes ou deux feux bleus ne doivent pas être placées dans la même cale que des marchandises inflammables pour lesquelles la colonne (12) prescrit un cône ou un feu bleu."
+        }
+      }
+    ],
+    "cones_not_known": {
+      "nl": "De kegelvoorschriften van kolom (12) van ADN-tabel A staan nog niet in de app, dus 7.1.4.3.2 en het driekegeldeel van 7.1.4.3.3 zijn niet beoordeeld. Kolom (12) komt met tabel A van het ADN.",
+      "en": "The blue cone requirements of column (12) of ADN table A are not in the application yet, so 7.1.4.3.2 and the three-cone half of 7.1.4.3.3 were not assessed. Column (12) comes with the ADN's own table A.",
+      "de": "Die Kegelvorschriften der Spalte (12) der ADN-Tabelle A liegen der Anwendung noch nicht vor, daher wurden 7.1.4.3.2 und der Drei-Kegel-Teil von 7.1.4.3.3 nicht geprüft.",
+      "fr": "Les prescriptions de cônes de la colonne (12) du tableau A de l'ADN ne sont pas encore dans l'application ; le 7.1.4.3.2 et la partie « trois cônes » du 7.1.4.3.3 n'ont donc pas été évalués."
     }
   }
 }

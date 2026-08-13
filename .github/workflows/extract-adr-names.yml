@@ -24,6 +24,10 @@ on:
           - fr
           - both
         default: both
+      probe:
+        description: "Report the layout of the edition and stop"
+        type: boolean
+        default: false
       commit:
         description: "Commit the result to this branch"
         type: boolean
@@ -49,43 +53,26 @@ jobs:
         env:
           LANGUAGE: ${{ inputs.language }}
           MIN_AGREEMENT: ${{ inputs.min_agreement }}
+          PROBE: ${{ inputs.probe }}
         run: |
           set -euo pipefail
-          # Volume I holds parts 1 to 3, and chapter 3.2 with it. The French
-          # edition is the same document with F where the English has E.
-          declare -A URLS=(
-            [en]="https://unece.org/sites/default/files/2025-01/2412006_E_ECE_TRANS_352_Vol.I_WEB_0.pdf"
-            [fr]="https://unece.org/sites/default/files/2025-01/2412007_F_ECE_TRANS_352_Vol.I_WEB.pdf"
-          )
-          # A second address for each, because UNECE renames these files: the
-          # reader already carries two for every volume it fetches.
-          declare -A FALLBACK=(
-            [en]="https://unece.org/sites/default/files/2025-01/2412006_E_ECE_TRANS_352_Vol.I_WEB.pdf"
-            [fr]="https://unece.org/sites/default/files/2025-01/2412007_F_ECE_TRANS_352_Vol.I_WEB_0.pdf"
-          )
+          # The download goes through read_land_regulations.py, which is the one
+          # place that knows how to get these files: UNECE answers a bare
+          # request from a runner with 403, and that module tries browser
+          # headers first and the web archive after.
           LANGS="$LANGUAGE"
           if [ "$LANGUAGE" = "both" ]; then LANGS="en fr"; fi
           for lang in $LANGS; do
             echo "=============================================================="
             echo "ADR 2025 Volume I — $lang"
             echo "=============================================================="
-            ok=0
-            for url in "${URLS[$lang]}" "${FALLBACK[$lang]}"; do
-              echo "trying $url"
-              if curl -sSL --fail -o "/tmp/adr_$lang.pdf" "$url" \
-                 && head -c 5 "/tmp/adr_$lang.pdf" | grep -q '%PDF-'; then
-                ok=1; break
-              fi
-              echo "  not a PDF, or not reachable"
-            done
-            if [ "$ok" != "1" ]; then
-              echo "::error::could not fetch ADR 2025 Volume I in $lang"
-              exit 1
-            fi
-            ls -la "/tmp/adr_$lang.pdf"
+            source_id="adr1"
+            if [ "$lang" = "fr" ]; then source_id="adr1_fr"; fi
+            EXTRA=""
+            if [ "$PROBE" = "true" ]; then EXTRA="--probe"; fi
             python scripts/extract_adr_names_multilingual.py \
-              --pdf "/tmp/adr_$lang.pdf" --language "$lang" \
-              --min-agreement "$MIN_AGREEMENT"
+              --source "$source_id" --language "$lang" \
+              --min-agreement "$MIN_AGREEMENT" $EXTRA
           done
 
       - name: Commit

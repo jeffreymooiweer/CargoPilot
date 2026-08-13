@@ -2,6 +2,46 @@
 
 All notable changes are documented here, following [Semantic Versioning](https://semver.org/).
 
+## [1.59.0] — 2026-08-12
+
+### Fixed
+
+- **Inland waterway consignments were being answered with a road table, and the two do not
+  ask the same question.** `docs/dg-coverage.md` has ranked "mixed loading for ADN answered
+  with ADR's 7.5.2" as a gap for several releases, and that wording undersold it. It was
+  labelled as borrowed, which sounds like an approximation. It is not.
+
+  **ADR 7.5.2 asks whether two packages may share a vehicle, and answers yes or no. ADN
+  7.1.4.3 asks how many metres must lie between them, and whether they may share a hold.**
+  A distance was not an answer this application could give at all, so a consignor reading
+  "permitted" on an inland waterway shipment was reading a yes to a question nobody had
+  asked.
+
+  Two of the three rules have no counterpart in the road regime at all:
+
+  - **7.1.4.3.1** — goods of different classes at least **3.00 m** apart horizontally, and
+    never stacked on one another.
+  - **7.1.4.3.3** — class 1, and the three-blue-cone goods of 4.1 and 5.2, at least
+    **12 m** from goods of every other class.
+  - **7.1.4.3.2** — two blue cones may not share a hold with one-blue-cone flammable goods,
+    whatever the quantity.
+
+  Read from the official Dutch edition of ADN 2025, which is a text and not a recollection.
+
+### Changed
+
+- **What the check did *not* assess is named in its own output.** The blue cone provisions
+  come out of column (12) of the ADN's own table A, and the application holds the road
+  table, which has no column (12). So the class rules are applied and the cone rules are
+  reported as unassessed. A check that silently drops half a provision is worse than one
+  that says which half it kept — the first reads as a clean bill of health.
+
+  The compatibility group table of 7.1.4.3.4 is not transcribed either, and says so:
+  twelve groups, four numbered conditions, and footnotes that differ from the road table's.
+  A regulatory table gets two independent readings in this repository or none.
+
+  Both wait on the same thing: the ADN's own table A and table C, which come from UNECE.
+
 ## [1.58.0] — 2026-08-12
 
 ### Added

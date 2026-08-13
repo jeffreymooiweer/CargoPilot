@@ -124,3 +124,21 @@ def test_the_manifest_repeats_that_the_published_code_is_what_counts():
 @pytest.mark.parametrize("key", [entry["key"] for entry in RULE_SETS])
 def test_no_rule_set_key_is_duplicated(key):
     assert [entry["key"] for entry in RULE_SETS].count(key) == 1
+
+
+def test_the_adr_rule_set_credits_the_book_and_not_the_export():
+    """Provenance the user is shown must not lag the data.
+
+    Table A came out of an export until v1.56.0 and out of the official Dutch
+    edition after it, with the export reduced to the English and German names.
+    The `rule_sets` label kept crediting the export for the whole table for five
+    releases — a claim about where a regulatory fact came from, and wrong.
+    """
+    from app.services.dg.compliance import check_compliance
+
+    label = check_compliance(
+        [{"line_id": "L1", "products": [{"un_number": "1203", "class": "3"}]}],
+        ["ADR"], "nl")["rule_sets"]["ADR"]
+    assert "Dutch edition" in label
+    assert "extract_adr_table_a" in label
+    assert "Table A via" not in label

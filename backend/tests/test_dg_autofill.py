@@ -4,7 +4,12 @@ import json
 import re
 from pathlib import Path
 
-from app.services.dg.autofill import adr_category_totals, description_line, prepare_entries
+from app.services.dg.autofill import (
+    adr_category_totals,
+    description_line,
+    prepare_entries,
+    total_quantity,
+)
 from app.services.dg.compliance import (
     check_imdg_class1_compatibility,
     check_imdg_segregation,
@@ -440,3 +445,146 @@ def test_prepare_lists_class_specific_document_requirements():
     requirements = prepare_entries(entries, [], ["ADR", "IATA_DGR"], "nl")["requirements"]
     assert any("transportindex" in item for item in requirements)
     assert any("Shipper's Declaration" in item for item in requirements)
+
+
+# --- The unit follows the number, not an empty field --------------------------
+#
+# `total_quantity` sniffed the unit out of `net_mass_liters_per_package` only.
+# When that field is empty the number falls back to `adr_total_quantity` but the
+# unit stayed on its "kg" default, so a consignor who typed "100 L" got "100 kg"
+# — on the signed transport document, in the 5.4.1.1.1.1 category totals, and
+# written back into the field itself. 100 L of acetone is about 79 kg. That is a
+# wrong quantity on a consignment note, and the wizard makes it the ordinary
+# route: for ADR only UN number, name and class are required, so the per-package
+# field is routinely empty.
+
+
+def test_the_unit_comes_from_the_field_the_number_came_from():
+    """The reproduction. Before the fix this returned (100.0, 'kg')."""
+    assert total_quantity({"adr_total_quantity": "100 L"}) == (100.0, "L")
+
+
+def test_kilograms_are_read_as_kilograms():
+    assert total_quantity({"adr_total_quantity": "100 kg"}) == (100.0, "kg")
+
+
+def test_a_unit_glued_to_the_number_still_counts():
+    """"100L" without a space: \\b does not fire between a digit and a letter,
+    so a word-boundary rule would have called this kilograms."""
+    assert total_quantity({"adr_total_quantity": "100L"}) == (100.0, "L")
+    assert total_quantity({"adr_total_quantity": "100kg"}) == (100.0, "kg")
+
+
+def test_no_unit_in_the_input_means_no_unit_in_the_answer():
+    """Not "kg". The physical state is not reliably derivable from table A, and
+    inventing a unit on a transport document is the failure this fixes."""
+    assert total_quantity({"adr_total_quantity": "100"}) == (100.0, "")
+
+
+def test_the_per_package_path_is_unchanged():
+    """The existing behaviour, which was right: the unit is sniffed where the
+    number is computed from."""
+    assert total_quantity({
+        "net_mass_liters_per_package": "20 L", "quantity_packages": "10",
+    }) == (200.0, "L")
+    assert total_quantity({
+        "net_mass_liters_per_package": "25 kg", "quantity_packages": "4",
+    }) == (100.0, "kg")
+
+
+def test_the_document_line_carries_the_unit_that_was_entered():
+    product = {
+        "un_number": "1090", "proper_shipping_name": "ACETON", "class": "3",
+        "packing_group": "II", "adr_total_quantity": "100 L",
+    }
+    assert description_line(product, "ADR").endswith("100 L")
+
+
+def test_the_document_line_invents_no_unit():
+    product = {
+        "un_number": "1090", "proper_shipping_name": "ACETON", "class": "3",
+        "packing_group": "II", "adr_total_quantity": "100",
+    }
+    line = description_line(product, "ADR")
+    assert line.endswith("100")
+    assert "kg" not in line
+
+
+def test_prepare_writes_back_the_unit_that_was_entered():
+    """The total is recomputed on every call, so a wrong unit does not merely
+    print — it replaces what the user typed."""
+    result = prepare_entries(
+        [{"line_id": 1, "products": [{"un_number": "1090", "adr_total_quantity": "100 L"}]}],
+        [], ["ADR"], "nl")
+    assert result["entries"][0]["products"][0]["adr_total_quantity"] == "100 L"
+
+
+def test_prepare_leaves_no_hanging_space_without_a_unit():
+    result = prepare_entries(
+        [{"line_id": 1, "products": [{"un_number": "1090", "adr_total_quantity": "100"}]}],
+        [], ["ADR"], "nl")
+    assert result["entries"][0]["products"][0]["adr_total_quantity"] == "100"
+
+
+def test_category_totals_keep_litres_and_kilograms_apart():
+    """Two substances of one category, one entered per package and one as a
+    total, must not be added into a single made-up unit."""
+    entries = [{"line_id": 1, "products": [
+        {"transport_category": "2", "quantity_packages": "10",
+         "net_mass_liters_per_package": "20 L"},
+        {"transport_category": "2", "adr_total_quantity": "10 L"},
+        {"transport_category": "3", "adr_total_quantity": "50 kg"},
+    ]}]
+    rows = {r["transport_category"]: r["total"]
+            for r in adr_category_totals(entries, "nl")["categories"]}
+    assert rows["2"] == "210 L"
+    assert rows["3"] == "50 kg"
+
+
+def test_category_totals_render_a_missing_unit_without_a_suffix():
+    entries = [{"line_id": 1, "products": [
+        {"transport_category": "2", "adr_total_quantity": "40"},
+    ]}]
+    rows = {r["transport_category"]: r["total"]
+            for r in adr_category_totals(entries, "nl")["categories"]}
+    assert rows["2"] == "40"
+
+
+def test_a_total_quantity_without_a_unit_is_reported_on_export():
+    """The other half of not guessing: if the unit is not invented, the user has
+    to be told it is missing, or the omission simply travels to the document."""
+    document = get_document("avc_waybill")
+    _errors, warnings = validate_document(
+        document, {}, [],
+        [{"line_id": 1, "vehicle": "Vat", "products": [{
+            "un_number": "1090", "proper_shipping_name": "ACETON", "class": "3",
+            "packing_group": "II", "adr_total_quantity": "100"}]}],
+        "nl")
+    missing = [w for w in warnings if "5.4.1.1.1" in w and "1090" in w]
+    assert missing, warnings
+    # The UN number arrives already prefixed; "UN UN 1090" is what happens when
+    # the message adds its own.
+    assert "UN UN" not in missing[0]
+
+
+def test_a_total_quantity_with_a_unit_is_not_reported():
+    document = get_document("avc_waybill")
+    _errors, warnings = validate_document(
+        document, {}, [],
+        [{"line_id": 1, "vehicle": "Vat", "products": [{
+            "un_number": "1090", "proper_shipping_name": "ACETON", "class": "3",
+            "packing_group": "II", "adr_total_quantity": "100 L"}]}],
+        "nl")
+    assert not [w for w in warnings if "5.4.1.1.1" in w]
+
+
+def test_no_quantity_at_all_is_not_a_missing_unit():
+    """An empty field is a different complaint, and 1.1.3.6 already makes it."""
+    document = get_document("avc_waybill")
+    _errors, warnings = validate_document(
+        document, {}, [],
+        [{"line_id": 1, "vehicle": "Vat", "products": [{
+            "un_number": "1090", "proper_shipping_name": "ACETON", "class": "3",
+            "packing_group": "II"}]}],
+        "nl")
+    assert not [w for w in warnings if "5.4.1.1.1" in w]

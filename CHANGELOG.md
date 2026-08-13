@@ -2,6 +2,44 @@
 
 All notable changes are documented here, following [Semantic Versioning](https://semver.org/).
 
+## [1.61.1] — 2026-08-13
+
+### Fixed
+
+- **The unit on the transport document followed an empty field.** A consignor who
+  entered a total quantity of "100 L" got **"100 kg"** — on the signed consignment
+  note, in the total per transport category of 5.4.1.1.1.1, and written back over
+  what they had typed. 100 litres of acetone is about 79 kg, and 1.1.3.6.3 counts
+  litres and kilograms differently, so this was a wrong quantity on a document
+  somebody signs.
+
+  `total_quantity` sniffed the unit out of the *per package* field only. While
+  that field is filled the reading is right; the moment it is empty the number
+  falls back to the total-quantity field and the unit stayed on its "kg" default.
+  That is not a corner of the application: the wizard requires only UN number,
+  proper shipping name and class for ADR, RID and ADN, so anyone who fills in
+  nothing but the total the 1.1.3.6 points count needs took this path every time.
+
+  The unit is now read from **the same field the number came from**, and a unit
+  glued to its number ("100L") counts — a word boundary does not fire between a
+  digit and a letter, which is exactly how the old rule would have missed it.
+
+- **A missing unit is now named rather than invented.** Where the input carries no
+  unit at all the document shows the bare number, and the export reports it
+  against ADR 5.4.1.1.1 (f) in all four languages. Defaulting to kilograms was the
+  original mistake in miniature: whether a substance travels by mass or by volume
+  is not reliably derivable from table A, and this application does not guess at a
+  regulatory fact. Class 1 is unaffected — its quantity is the net explosive mass,
+  which 5.4.1.2.1 (a) states in kilograms by definition.
+
+- **The ADR provenance label credited the wrong source.** The rule set was
+  reported as "Table A via rkstgr/adr-substances". Table A has been read out of
+  the official Dutch ADR 2025 edition since v1.56.0, with the 2023 export reduced
+  to the one thing that edition cannot supply — the English and German proper
+  shipping names. The regulatory manifest already said so; this label had lagged
+  it for five releases. A claim about where a regulatory fact came from is exactly
+  the claim that must not go stale.
+
 ## [1.61.0] — 2026-08-13
 
 ### Added

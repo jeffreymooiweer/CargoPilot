@@ -2375,11 +2375,61 @@
         }
       }
     ],
-    "cones_not_known": {
-      "nl": "De kegelvoorschriften van kolom (12) van ADN-tabel A staan nog niet in de app, dus 7.1.4.3.2 en het driekegeldeel van 7.1.4.3.3 zijn niet beoordeeld. Kolom (12) komt met tabel A van het ADN.",
-      "en": "The blue cone requirements of column (12) of ADN table A are not in the application yet, so 7.1.4.3.2 and the three-cone half of 7.1.4.3.3 were not assessed. Column (12) comes with the ADN's own table A.",
-      "de": "Die Kegelvorschriften der Spalte (12) der ADN-Tabelle A liegen der Anwendung noch nicht vor, daher wurden 7.1.4.3.2 und der Drei-Kegel-Teil von 7.1.4.3.3 nicht geprüft.",
-      "fr": "Les prescriptions de cônes de la colonne (12) du tableau A de l'ADN ne sont pas encore dans l'application ; le 7.1.4.3.2 et la partie « trois cônes » du 7.1.4.3.3 n'ont donc pas été évalués."
+    "cones_not_settled": {
+      "nl": "Kolom (12) van ADN-tabel A geeft per UN-nummer één rij. Waar het boek meerdere rijen drukt die in de scheepskolommen verschillen, is niet vast te stellen welke rij geldt: {products}. Voor deze stoffen zijn 7.1.4.3.2 en het driekegeldeel van 7.1.4.3.3 niet beoordeeld.",
+      "en": "Column (12) of ADN table A is held one row per UN number. Where the book prints several that differ in the vessel's columns, which row applies cannot be settled: {products}. For these substances 7.1.4.3.2 and the three-cone half of 7.1.4.3.3 were not assessed.",
+      "de": "Spalte (12) der ADN-Tabelle A liegt mit einer Zeile je UN-Nummer vor. Wo das Buch mehrere Zeilen druckt, die sich in den Schiffsspalten unterscheiden, lässt sich nicht feststellen, welche Zeile gilt: {products}. Für diese Stoffe wurden 7.1.4.3.2 und der Drei-Kegel-Teil von 7.1.4.3.3 nicht geprüft.",
+      "fr": "La colonne (12) du tableau A de l'ADN n'est disponible qu'à raison d'une ligne par numéro ONU. Lorsque le livre en imprime plusieurs qui diffèrent dans les colonnes du bateau, la ligne applicable ne peut être établie : {products}. Pour ces matières, le 7.1.4.3.2 et la partie « trois cônes » du 7.1.4.3.3 n'ont pas été évalués."
+    },
+    "_column_12": "Column (12) comes from backend/seed/dg/adn_table_a.json, read by scripts/extract_adn_table_a.py out of the Dutch ADN 2025 and checked against the printed list pages and against the ADR table A already in the repository."
+  },
+  "adn_signals": {
+    "source": "ADN 2025, official Dutch edition, 7.1.5.0 'Seinvoering'",
+    "_what_is_answered": "7.1.5.0.1 — the vessel shows the signals given in column (12) of table A — and 7.1.5.0.4, which says that where several apply the highest is the one to show: three before two before one.",
+    "_what_is_not": "7.1.5.0.2 lowers the count for goods carried exclusively in containers, against thresholds of 130,000 kg and 30,000 kg. The comparison operator on the second row of that table is not legible in the source available here, and a threshold read wrong is worse than a threshold not read. Leaving it out can only overstate the signals, which is the safe direction, and it is stated rather than left to be discovered.",
+    "cones": {
+      "0": {
+        "nl": "Geen blauwe kegel of blauw licht.",
+        "en": "No blue cone or blue light.",
+        "de": "Kein blauer Kegel und kein blaues Licht.",
+        "fr": "Aucun cône bleu ni feu bleu."
+      },
+      "1": {
+        "nl": "Eén blauwe kegel of één blauw licht.",
+        "en": "One blue cone or one blue light.",
+        "de": "Ein blauer Kegel oder ein blaues Licht.",
+        "fr": "Un cône bleu ou un feu bleu."
+      },
+      "2": {
+        "nl": "Twee blauwe kegels of twee blauwe lichten.",
+        "en": "Two blue cones or two blue lights.",
+        "de": "Zwei blaue Kegel oder zwei blaue Lichter.",
+        "fr": "Deux cônes bleus ou deux feux bleus."
+      },
+      "3": {
+        "nl": "Drie blauwe kegels of drie blauwe lichten.",
+        "en": "Three blue cones or three blue lights.",
+        "de": "Drei blaue Kegel oder drei blaue Lichter.",
+        "fr": "Trois cônes bleus ou trois feux bleus."
+      }
+    },
+    "highest_wins": {
+      "nl": "Meerdere stoffen aan boord schrijven verschillende seinvoering voor; volgens 7.1.5.0.4 geldt de zwaarste. Bepalend is {products}.",
+      "en": "Several substances on board prescribe different signals; under 7.1.5.0.4 the heaviest applies. It is set by {products}.",
+      "de": "Mehrere Stoffe an Bord schreiben unterschiedliche Signale vor; nach 7.1.5.0.4 gilt das strengste. Maßgebend ist {products}.",
+      "fr": "Plusieurs matières à bord prescrivent des signaux différents ; selon le 7.1.5.0.4, le plus contraignant s'applique. Il est déterminé par {products}."
+    },
+    "not_settled": {
+      "nl": "Voor {products} geeft kolom (12) meerdere rijen die van elkaar verschillen; de seinvoering van deze stoffen is niet vastgesteld en kan hoger uitvallen dan hier staat.",
+      "en": "For {products} column (12) gives several rows that differ; the signals for these substances are not settled and may be higher than shown here.",
+      "de": "Für {products} enthält Spalte (12) mehrere voneinander abweichende Zeilen; die Signale dieser Stoffe sind nicht festgestellt und können höher ausfallen als hier angegeben.",
+      "fr": "Pour {products}, la colonne (12) comporte plusieurs lignes divergentes ; les signaux de ces matières ne sont pas établis et peuvent être plus élevés qu'indiqué ici."
+    },
+    "containers_note": {
+      "nl": "Worden de goederen uitsluitend in containers vervoerd, dan kan 7.1.5.0.2 de seinvoering verlagen aan de hand van de totale brutomassa. Die verlaging staat niet in CargoPilot; de hier getoonde seinvoering is daarom nooit te laag.",
+      "en": "Where the goods travel exclusively in containers, 7.1.5.0.2 may lower the signals against the total gross mass. That reduction is not in CargoPilot, so the signals shown here are never too few.",
+      "de": "Werden die Güter ausschließlich in Containern befördert, kann 7.1.5.0.2 die Signale anhand der Bruttogesamtmasse verringern. Diese Verringerung ist nicht in CargoPilot enthalten; die hier gezeigte Signalführung ist daher nie zu gering.",
+      "fr": "Lorsque les marchandises voyagent exclusivement en conteneurs, le 7.1.5.0.2 peut abaisser les signaux en fonction de la masse brute totale. Cette réduction ne figure pas dans CargoPilot ; les signaux affichés ne sont donc jamais insuffisants."
     }
   }
 }

@@ -15,7 +15,7 @@ from typing import Any
 
 from app.core.config import get_settings
 from app.core.languages import normalise, pick
-from app.services.dg import amendment_42_24, dangerous_goods_list
+from app.services.dg import amendment_42_24, dangerous_goods_list, database
 from app.services.regulatory_manifest import stale_rule_sets, summary
 from app.services.dg.enrichment import (
     EXCEPTED_QUANTITY_LIMITS,
@@ -1148,13 +1148,18 @@ def check_adn_hold_separation(
       flammable goods, whatever the quantity.
 
     The cone provisions come out of column (12) of the ADN's *own* table A,
-    which this application does not hold — the road table has no column (12).
-    So the class rules are applied and the cone rules are named as unassessed,
-    because a check that silently drops half a provision is worse than one that
-    says which half it kept. 7.1.4.3.4 gives class 1 its own compatibility
-    table, twelve groups with four numbered conditions, and that is not
-    transcribed yet: a regulatory table gets two independent readings in this
-    repository or none.
+    which v1.61.0 read out of the Dutch edition, so both are answered now. What
+    is *not* answered is named per substance rather than in general: the ADN
+    table gives one row per UN number, and where the book prints several that
+    differ in the vessel's columns, the cone count that was read may belong to a
+    sibling. UN 1203 petrol is that case and UN 0015 smoke ammunition is not —
+    its three rows all carry three cones. So the substances whose cones could
+    not be settled are listed by name, and 439 of 2,352 is a number a consignor
+    can act on where "the cone rules were not assessed" was not.
+
+    7.1.4.3.4 gives class 1 its own compatibility table, twelve groups with four
+    numbered conditions, and that is still not transcribed: a regulatory table
+    gets two independent readings in this repository or none.
     """
     rules = get_compliance_rules()["adn_hold_separation"]
     lang = _lang(language)
@@ -1178,28 +1183,164 @@ def check_adn_hold_separation(
                 classes=", ".join(sorted(classes))),
         })
 
-    explosives = [(entry, index, product)
-                  for entry, index, product in products
-                  if str(product.get("class") or "").strip() == "1"]
-    if explosives and len(classes) > 1:
-        rule = by_provision["7.1.4.3.3"]
+    # Column (12) per package, with the doubt attached. `cones` is None where
+    # the ADN does not list the substance and where the count is not settled —
+    # in both cases the provisions below must not fire, and the reason differs.
+    cones: dict[int, int | None] = {}
+    unsettled: list[str] = []
+    for entry, index, product in products:
+        un_number = str(product.get("un_number") or product.get("un") or "").strip()
+        signal = database.adn_blue_cones(un_number)
+        if signal is None or not signal["certain"]:
+            cones[id(product)] = None
+            if signal is not None:
+                unsettled.append(_product_label(entry, product, index))
+            continue
+        cones[id(product)] = signal["cones"]
+
+    rule = by_provision["7.1.4.3.3"]
+    far_apart = [
+        (entry, index, product) for entry, index, product in products
+        if str(product.get("class") or "").strip() in rule["classes"]
+        or (str(product.get("class") or "").strip() in rule["also_classes"]
+            and cones[id(product)] == rule["cones"])
+    ]
+    if far_apart and len(classes) > 1:
         findings.append({
             "provision": rule["provision"],
             "metres": rule["metres"],
             "message": (rule["message"].get(lang) or rule["message"]["en"]).format(
                 products=", ".join(sorted(
                     _product_label(entry, product, index)
-                    for entry, index, product in explosives))),
+                    for entry, index, product in far_apart))),
         })
 
-    unassessed = rules["cones_not_known"]
-    return {
+    # 7.1.4.3.2 is a prohibition on sharing a hold, not a distance, and it needs
+    # both sides: two cones on one package and one cone on a *flammable* one.
+    # Flammable is read from the classification code, where F is the letter the
+    # ADN itself sorts on, and from class 3, which is flammable by definition.
+    two_cones = [(entry, index, product) for entry, index, product in products
+                 if cones[id(product)] == 2]
+    one_cone_flammable = [
+        (entry, index, product) for entry, index, product in products
+        if cones[id(product)] == 1 and (
+            str(product.get("class") or "").strip() == "3"
+            or "F" in re.sub(r"^\d(\.\d)?", "",
+                             str(product.get("classification_code") or "").upper()))
+    ]
+    if two_cones and one_cone_flammable:
+        rule = by_provision["7.1.4.3.2"]
+        findings.append({
+            "provision": rule["provision"],
+            "message": rule["message"].get(lang) or rule["message"]["en"],
+            "two_cones": sorted(_product_label(entry, product, index)
+                                for entry, index, product in two_cones),
+            "one_cone_flammable": sorted(
+                _product_label(entry, product, index)
+                for entry, index, product in one_cone_flammable),
+        })
+
+    result: dict[str, Any] = {
         "status": "ok",
         "scope": "packages_in_holds",
         "findings": findings,
-        "not_assessed": unassessed.get(lang) or unassessed["en"],
         "source": rules["source"],
     }
+    if unsettled:
+        unknown = rules["cones_not_settled"]
+        result["not_assessed"] = (unknown.get(lang) or unknown["en"]).format(
+            products=", ".join(sorted(unsettled)))
+        result["cones_not_settled"] = sorted(unsettled)
+    return result
+
+
+def check_adn_signals(
+    entries: list[dict[str, Any]], language: str = "nl",
+) -> dict[str, Any]:
+    """ADN 7.1.5.0: the blue cones and blue lights the vessel must show.
+
+    This is not a warning and that is the point of it. A vessel carrying
+    dangerous goods on the inland waterways shows nought, one, two or three blue
+    cones by day and the same number of blue lights by night, and which it is
+    follows from column (12) of the ADN's table A. Until v1.61.0 CargoPilot did
+    not hold column (12) and so could not answer at all — not "unknown", not
+    "check the text": the question had no place to be asked.
+
+    Two provisions, and the second is why a consignment is more than a list:
+
+    - **7.1.5.0.1** — the vessel shows what column (12) gives for the goods.
+    - **7.1.5.0.4** — where several apply, the heaviest is the one to show:
+      three before two before one. So the answer belongs to the *load*, and a
+      single package of a two-cone substance sets the signals for everything
+      else on board.
+
+    What is not applied is **7.1.5.0.2**, which lowers the count for goods
+    carried exclusively in containers against a gross mass of 130,000 kg or
+    30,000 kg. The comparison on the second row of that table is not legible in
+    the text available here, and a threshold read wrong is worse than one not
+    read. Its absence can only overstate the signals, which is the safe
+    direction; `containers_note` says so rather than leaving it to be found out.
+    """
+    rules = get_compliance_rules()["adn_signals"]
+    lang = _lang(language)
+    products = [(entry, index, product)
+                for entry, index, product in _iter_products(entries)
+                if not product.get("transport_forbidden")]
+    if not products:
+        return {"status": "not_checked"}
+
+    highest: int | None = None
+    setters: list[str] = []
+    unsettled: list[str] = []
+    for entry, index, product in products:
+        un_number = str(product.get("un_number") or product.get("un") or "").strip()
+        signal = database.adn_blue_cones(un_number)
+        if signal is None:
+            continue
+        label = _product_label(entry, product, index)
+        if not signal["certain"]:
+            unsettled.append(label)
+            continue
+        count = signal["cones"]
+        if count is None:
+            continue
+        if highest is None or count > highest:
+            highest, setters = count, [label]
+        elif count == highest:
+            setters.append(label)
+
+    if highest is None:
+        return {"status": "not_checked",
+                "not_assessed": (rules["not_settled"].get(lang)
+                                 or rules["not_settled"]["en"]).format(
+                    products=", ".join(sorted(unsettled))) if unsettled else None}
+
+    described = rules["cones"][str(highest)]
+    result: dict[str, Any] = {
+        "status": "ok",
+        "provision": "7.1.5.0.1",
+        "cones": highest,
+        "message": described.get(lang) or described["en"],
+        "set_by": sorted(setters),
+        "containers_note": (rules["containers_note"].get(lang)
+                            or rules["containers_note"]["en"]),
+        "source": rules["source"],
+    }
+    # Only worth saying when the load actually disagrees with itself; on a
+    # single-substance consignment "the heaviest applies" is noise.
+    if len(products) > 1 and any(
+            (database.adn_blue_cones(
+                str(p.get("un_number") or p.get("un") or "").strip()) or {}
+             ).get("cones") not in (None, highest) for _e, _i, p in products):
+        result["highest_wins"] = (rules["highest_wins"].get(lang)
+                                  or rules["highest_wins"]["en"]).format(
+            products=", ".join(sorted(setters)))
+    if unsettled:
+        result["not_assessed"] = (rules["not_settled"].get(lang)
+                                  or rules["not_settled"]["en"]).format(
+            products=", ".join(sorted(unsettled)))
+        result["cones_not_settled"] = sorted(unsettled)
+    return result
 
 
 def check_adr_security(
@@ -3284,6 +3425,9 @@ def check_compliance(
             # answers in metres where 7.5.2 answers yes or no.
             result["adn_hold_separation"] = check_adn_hold_separation(
                 entries, language)
+            # And what the vessel must show while it carries them. Column (12)
+            # answers both, and this half had no answer at all before v1.61.0.
+            result["adn_signals"] = check_adn_signals(entries, language)
         note = basis_note(land, "7.5.2", language)
         if note:
             result["adr_mixed_loading_basis_note"] = note

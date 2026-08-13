@@ -81,6 +81,31 @@ def _table_a() -> list[dict]:
     return list(payload.get("entries", []))
 
 
+@lru_cache(maxsize=1)
+def _adn_table_a() -> dict[str, dict]:
+    """Table A of the ADN, by UN number — the inland waterway table.
+
+    Its first columns hold the same identification as the ADR's, and then it
+    asks a vessel's questions instead of a vehicle's. Column (12) is the one
+    this application was missing: **the number of blue cones or blue lights**.
+    Two of the three provisions of 7.1.4.3 are stated in cones and had to be
+    named unassessed, and 7.1.5.0.1 — which signals the vessel must show — could
+    not be answered at all.
+
+    Only one row per UN number is available. Where the book gives a substance
+    several rows the entry carries ``printed_rows`` above one, and the value may
+    belong to a sibling: UN 1203 petrol has three rows. `blue_cones` is
+    therefore read together with `cones_certain`, and a check that cannot tell
+    the rows apart says so rather than picking one.
+    """
+    try:
+        payload = json.loads(
+            (_SEED_DIR / "adn_table_a.json").read_text(encoding="utf-8"))
+    except (OSError, ValueError):  # pragma: no cover - seed missing
+        return {}
+    return {entry["un"]: entry for entry in payload.get("entries", [])}
+
+
 def _row_key(entry: dict) -> tuple[str, ...]:
     labels = "+".join(sorted(
         part.strip() for part in
@@ -243,6 +268,18 @@ def _load_un() -> list[dict]:
                          "name_nl": dutch_name(row["un"]) or row.get("name_nl", ""),
                          "name_nl_row": row.get("name_nl", "")}
                 entry.update({field: row.get(field, "") for field in _TABLE_A_FIELDS})
+                inland = _adn_table_a().get(row["un"])
+                if inland:
+                    entry["adn_blue_cones"] = inland.get("blue_cones")
+                    entry["adn_carriage_permitted"] = inland.get(
+                        "carriage_permitted", "")
+                    # The ADN table gives one row per UN number. Where the book
+                    # gives several *and they differ in the vessel's columns*,
+                    # every ADR row of that number gets the same cone count here
+                    # and one of them is the wrong one. UN 0015 has three rows
+                    # and all three carry three cones; UN 1203 has three and they
+                    # do not agree. The extraction settles which is which.
+                    entry["adn_cones_certain"] = bool(inland.get("certain"))
                 if sea:
                     entry["source_note"] = (
                         f"ADR 2025 tabel A (blz. {row.get('page')}) + IMDG 42-24")
@@ -397,3 +434,26 @@ def search_packagings(query: str = "", limit: int = 150) -> list[dict]:
             scored.append((20, entry))
     scored.sort(key=lambda item: (-item[0], item[1]["code"]))
     return [_public(entry) for _, entry in scored[:limit]]
+
+
+def adn_blue_cones(un_number: str) -> dict[str, Any] | None:
+    """Column (12) of the ADN's table A for one UN number, with its doubt.
+
+    Returns the number of blue cones or blue lights the vessel must show, and
+    whether that number is settled. It is not settled where the book gives the
+    substance several rows that differ in the vessel's columns and only one of
+    them could be read — UN 1203 petrol is the clearest case. A caller that
+    cannot tell the rows apart is expected to say so rather than pick one.
+
+    ``None`` where the ADN does not list the substance at all: the ADN's table A
+    is not the ADR's, and 1,499 and 1,999 are gone from both while 9000 to 9006
+    exist only here.
+    """
+    row = _adn_table_a().get(str(un_number or "").strip())
+    if row is None:
+        return None
+    return {
+        "cones": row.get("blue_cones"),
+        "certain": bool(row.get("certain")),
+        "carriage_permitted": row.get("carriage_permitted", ""),
+    }

@@ -2,6 +2,79 @@
 
 All notable changes are documented here, following [Semantic Versioning](https://semver.org/).
 
+## [1.61.0] — 2026-08-13
+
+### Added
+
+- **The ADN's own table A, and with it the blue cones.** The inland waterway regime has a
+  substance table of its own and CargoPilot has never held it. Its first columns identify
+  the goods exactly as the ADR's do, and then it asks a vessel's questions instead of a
+  vehicle's: whether the goods may go in packages, in bulk or in a tank vessel, what
+  equipment must be aboard, how the holds are ventilated — and **column (12), the number of
+  blue cones by day or blue lights by night**.
+
+  That column decides two things the application could not answer.
+
+  **ADN 7.1.4.3 was half a check.** Since v1.59.0 it has applied its class rules and named
+  its two cone rules as unassessed, which is honest and not much use. Both are answered now:
+  7.1.4.3.2, which forbids two-cone goods a hold with one-cone flammable goods whatever the
+  quantity; and the three-cone extension of 7.1.4.3.3, which sends organic peroxides and
+  self-reactive substances 12 m from everything else — a provision that previously reached
+  class 1 and nothing more.
+
+  **ADN 7.1.5.0.1 had no answer at all.** Which signals a vessel must show is not a nuance
+  or a warning; it is a plain fact about the voyage, and the question had nowhere to be
+  asked. It is answered now, together with 7.1.5.0.4: where the load disagrees with itself
+  the heaviest signal wins, so a single package of a two-cone substance sets the signals for
+  everything else on board.
+
+### Verified
+
+- **The table was read twice and checked against a third.** The Dutch edition publishes it
+  in two renderings and they do not agree in usefulness: the list pages print every row, the
+  per-substance pages print one row per UN number. Where both exist, all 378 rows assembled
+  from the per-substance pages appear verbatim in the list pages, all fourteen fields, with
+  nothing contradicted. Then the identifying columns were checked against the **ADR** table
+  A already in the repository — a different book, read from a PDF by different code in
+  v1.56.0 — and the class and the name agree on every one of the 2,343 substances the two
+  regimes share.
+
+  Nine substances are in the ADN table and not the ADR's, and all nine are explained: 1499
+  and 1999 are the two the 2025 edition withdrew, and 9000 to 9006 are ADN substance numbers
+  that exist only for tank vessels.
+
+  One cell disagrees. UN 2071 ammonium nitrate based fertiliser carries classification code
+  M11 in the ADN and a dash in the Dutch ADR 2025, whose row for it is blank throughout. Both
+  readings match their own book — checked character by character against the page — so the
+  disagreement is recorded rather than resolved.
+
+### Known limitation
+
+- **439 of 2,352 substances get no cone count.** The table is available one row per UN
+  number and the book prints several for 452 of them. Several rows is not by itself a reason
+  to withhold an answer — UN 0015 smoke ammunition has three and all three carry three cones,
+  because they differ only in the labels. UN 1203 petrol has three and they do not agree.
+  Which kind a substance is was measured from the printed rows rather than assumed, and where
+  it could not be settled the substance is **named** rather than silently guessed at. A
+  consignor can act on "not settled for UN 1203"; nobody can act on "the cone rules were not
+  assessed".
+
+- **ADN 7.1.5.0.2 is not applied.** It lowers the signal count for goods carried exclusively
+  in containers against a gross mass threshold, and the comparison operator on one row of
+  that table is not legible in the text available here. A threshold read wrong is worse than
+  one not read. Leaving it out can only overstate the signals, which is the safe direction,
+  and the panel says so instead of leaving it to be discovered.
+
+### Fixed
+
+- **A download is asked for once, not once per run.** UNECE refuses a CI runner outright and
+  the Internet Archive, which is the way round, rate-limits: the same ADN address served
+  19 MB in the morning, 503 twice in the afternoon and then 498. Three runs were spent
+  discovering that the internet was briefly crowded. A temporary status is now retried with
+  a widening wait, and the volumes are kept between runs — including when the run fails,
+  because the run that fetched one book and then tripped over the next is precisely the one
+  whose first download must survive.
+
 ## [1.60.0] — 2026-08-13
 
 ### Changed

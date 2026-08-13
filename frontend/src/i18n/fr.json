@@ -317,6 +317,7 @@
     "statusNotApplicable": "Sans objet (pas de marchandises dangereuses)",
     "waitingCarrier": "En attente des données du transporteur",
     "missingFields": "Manquant : {{fields}}",
+    "checkWarnings": "Points à vérifier sur ce document :",
     "dgBlocked": "La classification des marchandises dangereuses est incomplète. Renseignez le numéro ONU, la désignation officielle de transport, la classe et les données d'emballage à l'étape « marchandises dangereuses ».",
     "exporting": "Export en cours…",
     "exportNotice": "Attention : les documents générés sont des projets. À vérifier, à compléter et à faire signer par une personne habilitée avant utilisation. Voir la clause de non-responsabilité."

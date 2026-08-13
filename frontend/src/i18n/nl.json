@@ -317,6 +317,7 @@
     "statusNotApplicable": "Niet van toepassing (geen gevaarlijke stoffen)",
     "waitingCarrier": "Wacht op carriergegevens",
     "missingFields": "Ontbrekend: {{fields}}",
+    "checkWarnings": "Aandachtspunten voor dit document:",
     "dgBlocked": "Gevaarlijke-stoffenclassificatie is onvolledig. Vul UN-nummer, Proper Shipping Name, klasse en verpakkingsgegevens in bij de gevaarlijke-stoffenstap.",
     "exporting": "Bezig met exporteren…",
     "exportNotice": "Let op: gegenereerde documenten zijn concepten. Controleer, vul aan en onderteken door een bevoegde persoon vóór gebruik. Zie de disclaimer."

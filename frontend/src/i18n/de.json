@@ -317,6 +317,7 @@
     "statusNotApplicable": "Nicht zutreffend (kein Gefahrgut)",
     "waitingCarrier": "Wartet auf Angaben des Frachtführers",
     "missingFields": "Fehlt: {{fields}}",
+    "checkWarnings": "Hinweise zu diesem Dokument:",
     "dgBlocked": "Die Gefahrgutklassifizierung ist unvollständig. Erfassen Sie UN-Nummer, Proper Shipping Name, Klasse und Verpackungsangaben im Gefahrgutschritt.",
     "exporting": "Export läuft…",
     "exportNotice": "Achtung: erzeugte Dokumente sind Entwürfe. Vor der Verwendung von einer befugten Person prüfen, ergänzen und unterschreiben lassen. Siehe Haftungsausschluss."

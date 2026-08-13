@@ -89,7 +89,16 @@ vehicle, the vessel, the aircraft or the route — and those are not marginal.
 | `seed/dg/imdg_codes.json` | SW1–SW31, H1–H5, SG1–SG78 with their wording | 110 codes |
 
 What is **not** held for any substance: IATA quantity limits per packing instruction,
-ADN Table C, vehicle or tank codes, and any state or operator variation.
+ADN Table C, and any state or operator variation.
+
+**The ADR tank columns are held since v1.65.0** — the portable tank instruction (10) and its
+provisions (11), the ADR tank code (12), its provisions (13) and the vehicle the substance
+then requires (14). They were read and cross-checked from the first day of the extractor and
+kept out of the seed on purpose, because nothing computed with them. They are data and
+nothing more for now: they appear on the substance lookup, and **no check acts on them yet**.
+In particular nothing reads an empty column (12) as "not accepted in a tank", however plainly
+the pattern suggests it — that is a statement about what the ADR permits, and it gets read
+out of the text before anything acts on it.
 
 ## Road — ADR
 

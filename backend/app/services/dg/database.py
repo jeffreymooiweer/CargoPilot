@@ -50,6 +50,11 @@ _TABLE_A_FIELDS = (
     "packing_instructions", "carriage_packages", "carriage_bulk",
     "carriage_loading", "carriage_operation", "transport_category",
     "tunnel_code", "hazard_number",
+    # The tank columns, carried since v1.65.0. (10) and (11) are the portable
+    # tank instruction and its provisions, (12) the ADR tank code, (13) its
+    # provisions, (14) the vehicle the substance then requires — FL, AT or EX/III.
+    "portable_tank_instructions", "portable_tank_provisions",
+    "tank_code", "tank_provisions", "tank_vehicle",
 )
 
 #: What decides that a row of the book and a row of the export describe the same

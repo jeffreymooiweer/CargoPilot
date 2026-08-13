@@ -1124,6 +1124,84 @@ def _is_gas(product: dict[str, Any]) -> bool:
     return any(number.startswith("2") for number in _label_numbers(product))
 
 
+def check_adn_hold_separation(
+    entries: list[dict[str, Any]], language: str = "nl",
+) -> dict[str, Any]:
+    """ADN 7.1.4.3: how far apart packages must lie in a vessel's holds.
+
+    `docs/dg-coverage.md` has ranked "mixed loading for ADN answered with ADR's
+    7.5.2" as a gap for several releases, and that wording undersold it. It is
+    not another mode's table applied for want of a better one. **It answers a
+    different question.** ADR 7.5.2 asks whether two packages may share a
+    vehicle, and answers yes or no. ADN 7.1.4.3 asks how many metres must lie
+    between them and whether they may share a hold — and a distance is not an
+    answer this application could give at all, so a consignor reading
+    "permitted" was reading a yes to a question nobody had asked.
+
+    Three rules, two of which have no counterpart in the road regime:
+
+    - **7.1.4.3.1** — goods of different classes at least **3.00 m** apart
+      horizontally, and never stacked on one another.
+    - **7.1.4.3.3** — class 1, and the three-blue-cone goods of 4.1 and 5.2, at
+      least **12 m** from goods of every other class.
+    - **7.1.4.3.2** — two blue cones may not share a hold with one-blue-cone
+      flammable goods, whatever the quantity.
+
+    The cone provisions come out of column (12) of the ADN's *own* table A,
+    which this application does not hold — the road table has no column (12).
+    So the class rules are applied and the cone rules are named as unassessed,
+    because a check that silently drops half a provision is worse than one that
+    says which half it kept. 7.1.4.3.4 gives class 1 its own compatibility
+    table, twelve groups with four numbered conditions, and that is not
+    transcribed yet: a regulatory table gets two independent readings in this
+    repository or none.
+    """
+    rules = get_compliance_rules()["adn_hold_separation"]
+    lang = _lang(language)
+    products = [(entry, index, product)
+                for entry, index, product in _iter_products(entries)
+                if not product.get("transport_forbidden")]
+    if not products:
+        return {"status": "not_checked", "findings": []}
+
+    classes = {str(p.get("class") or "").strip() for _e, _i, p in products}
+    classes.discard("")
+    findings: list[dict[str, Any]] = []
+    by_provision = {rule["provision"]: rule for rule in rules["rules"]}
+
+    if len(classes) > 1:
+        rule = by_provision["7.1.4.3.1"]
+        findings.append({
+            "provision": rule["provision"],
+            "metres": rule["metres"],
+            "message": (rule["message"].get(lang) or rule["message"]["en"]).format(
+                classes=", ".join(sorted(classes))),
+        })
+
+    explosives = [(entry, index, product)
+                  for entry, index, product in products
+                  if str(product.get("class") or "").strip() == "1"]
+    if explosives and len(classes) > 1:
+        rule = by_provision["7.1.4.3.3"]
+        findings.append({
+            "provision": rule["provision"],
+            "metres": rule["metres"],
+            "message": (rule["message"].get(lang) or rule["message"]["en"]).format(
+                products=", ".join(sorted(
+                    _product_label(entry, product, index)
+                    for entry, index, product in explosives))),
+        })
+
+    unassessed = rules["cones_not_known"]
+    return {
+        "status": "ok",
+        "scope": "packages_in_holds",
+        "findings": findings,
+        "not_assessed": unassessed.get(lang) or unassessed["en"],
+        "source": rules["source"],
+    }
+
+
 def check_adr_security(
     entries: list[dict[str, Any]], language: str = "nl",
 ) -> dict[str, Any]:
@@ -3202,6 +3280,10 @@ def check_compliance(
         # own result rather than borrowing the points total.
         if "ADN" in normalized:
             result["adn_exemption"] = check_adn_exemption(entries, language)
+            # 7.1.4.3 is the inland waterway's own separation rule, and it
+            # answers in metres where 7.5.2 answers yes or no.
+            result["adn_hold_separation"] = check_adn_hold_separation(
+                entries, language)
         note = basis_note(land, "7.5.2", language)
         if note:
             result["adr_mixed_loading_basis_note"] = note

@@ -35,6 +35,7 @@ import argparse
 import re
 import subprocess
 import sys
+import time
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
@@ -273,6 +274,37 @@ STRATEGIES: list[tuple[str, list[str], bool]] = [
     ("web archive", [], True),
 ]
 
+#: Statuses that mean "ask again later" rather than "no".
+#:
+#: The Archive answers 503 when it is busy, and busy is the normal state of it.
+#: The same ADN URL that served 19 MB in the morning served 503 twice in the
+#: afternoon and 200 again after a wait — nothing about the request had changed.
+#: Without this a whole run is spent discovering that the internet was briefly
+#: crowded, which is the most expensive way to learn nothing.
+RETRY_STATUSES = frozenset({0, 408, 429, 500, 502, 503, 504})
+
+#: Seconds to wait before asking again. curl's own ``--retry`` covers the first
+#: few seconds; these cover the minutes, because a busy Archive stays busy
+#: longer than curl is willing to wait. Three waits, then give up honestly.
+RETRY_WAITS = (15, 45, 90)
+
+
+def _ask(address: str, target: Path, extra: list[str], label: str) -> tuple[int, str]:
+    """Ask once, and ask again while the answer is "later" rather than "no"."""
+    for wait in (*RETRY_WAITS, None):
+        code, kind = _curl(address, target, extra)
+        size = target.stat().st_size if target.exists() else 0
+        ok = _looks_like_pdf(target)
+        print(f"      [{label}] {code} {kind} {size:,}B "
+              f"{'-> PDF' if ok else ''}", file=sys.stderr)
+        if ok or code not in RETRY_STATUSES or wait is None:
+            return code, kind
+        target.unlink(missing_ok=True)
+        print(f"      [{label}] {code} is temporary; asking again in {wait}s",
+              file=sys.stderr)
+        time.sleep(wait)
+    raise AssertionError("unreachable")  # pragma: no cover
+
 
 def fetch(doc: str) -> Path:
     """Download a text, reporting the status of every attempt."""
@@ -286,11 +318,8 @@ def fetch(doc: str) -> Path:
     for url in SOURCES[doc]["urls"]:
         for label, extra, via_archive in STRATEGIES:
             address = _wayback(url) if via_archive else url
-            code, kind = _curl(address, target, extra)
+            code, _kind = _ask(address, target, extra, label)
             ok = _looks_like_pdf(target)
-            size = target.stat().st_size if target.exists() else 0
-            print(f"      [{label}] {code} {kind} {size:,}B "
-                  f"{'-> PDF' if ok else ''}", file=sys.stderr)
             attempts.append(f"{label} {url} -> {code}")
             if ok:
                 SOURCES[doc]["resolved_url"] = address

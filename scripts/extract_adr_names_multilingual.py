@@ -43,7 +43,7 @@ import argparse
 import json
 import re
 import sys
-from collections import defaultdict
+from collections import Counter, defaultdict
 from pathlib import Path
 from typing import Any
 
@@ -280,12 +280,18 @@ def read(path: Path) -> tuple[dict[str, list[str]], list[str], dict[str, int]]:
 def probe(path: Path, samples: int = 6) -> None:
     """Report what the table pages of this edition actually look like.
 
-    The Dutch table A came as a standalone extract with all twenty-three column
-    numbers in one band above every page. The UNECE volume answered with none at
-    all, which is a difference in the document and not a fault in the reading —
-    the printed ADR lays table A across a two-page spread, so a page carries
-    half the columns and the band never reaches the fifteen the reader looks
-    for. Guessing which half would be guessing; this prints it.
+    Two questions, because two documents have now answered them differently.
+
+    **Where are the columns?** The Dutch table A put all twenty-three column
+    numbers above every page; the UNECE ADR shows fourteen on the left page of a
+    spread and eleven on the right; ADN shows none at all. So the band is
+    reported when it exists, and when it does not, the *content* is measured
+    instead: the left edge of a cell is a sharp mode of the word starts, because
+    every row of a page begins its cells at the same x.
+
+    **Where are the rows?** A page of table A or table C begins its rows at a UN
+    number. Counting the pages that have a line starting with four digits gives
+    the true extent of the table, independent of any header.
     """
     import fitz
     import re as _re
@@ -294,8 +300,10 @@ def probe(path: Path, samples: int = 6) -> None:
     with fitz.open(path) as document:
         print(f"{document.page_count} pages")
         found = []
+        table_pages = []
         for index in range(document.page_count):
-            words = document[index].get_text("words")
+            page = document[index]
+            words = page.get_text("words")
             marks: dict[float, list[tuple[float, str]]] = defaultdict(list)
             for x0, y0, _x1, _y1, word, *_rest in words:
                 hit = token.match(word.strip())
@@ -304,30 +312,42 @@ def probe(path: Path, samples: int = 6) -> None:
             best = max((row for row in marks.values()), key=len, default=[])
             if len(best) >= 4:
                 found.append((index + 1, sorted(best)))
+            if _re.search(r"^\s*\d{4}\s", page.get_text(), _re.M):
+                table_pages.append(index + 1)
+
         print(f"pages with a band of four or more column numbers: {len(found)}")
         sizes: dict[int, int] = defaultdict(int)
         for _number, band in found:
             sizes[len(band)] += 1
-        print("  band sizes: " + ", ".join(
-            f"{size}->{count} pages" for size, count in sorted(sizes.items())))
-        with_un = sum(1 for index in range(document.page_count)
-                      if _re.search(r"^\s*\d{4}\s", document[index].get_text(),
-                                    _re.M))
-        print(f"  pages whose text has a line starting with four digits: {with_un}")
+        if sizes:
+            print("  band sizes: " + ", ".join(
+                f"{size}->{count} pages" for size, count in sorted(sizes.items())))
+        print(f"pages whose text has a line starting with four digits: "
+              f"{len(table_pages)}")
         for number, band in found[:samples]:
             print(f"  p{number}: {len(band)} -> "
                   + " ".join(f"({name})@{x:.0f}" for x, name in band))
-        if not found:
-            # Nothing recognisable at all: say what the pages do hold, or the
-            # next run is another guess.
-            print("  none. First lines of three pages in the middle:")
-            for index in (document.page_count // 3,
-                          document.page_count // 2,
-                          2 * document.page_count // 3):
-                head = " | ".join(
-                    line.strip() for line in
-                    document[index].get_text().splitlines()[:6] if line.strip())
-                print(f"    p{index + 1}: {head[:220]}")
+
+        # Where no band exists the columns have to come from the content. The
+        # left edge of a cell is a mode of the word starts, sharp because every
+        # row on the page begins its cells at the same x — this is the same
+        # measurement the table A reader makes, without a band to seed it.
+        if table_pages:
+            print("\n--- column left edges, measured on the content ---")
+            for number in table_pages[len(table_pages) // 2:][:3]:
+                page = document[number - 1]
+                hist: Counter = Counter()
+                for x0, y0, *_rest in page.get_text("words"):
+                    hist[round(x0 * 2) / 2] += 1
+                rows = hist[min(hist)] if hist else 0
+                peaks = sorted(x for x, n in hist.items()
+                               if n >= max(2, rows * 0.5))
+                print(f"  p{number}: {rows} rows, {len(peaks)} column edges")
+                print("     " + " ".join(f"{x:.0f}" for x in peaks[:26]))
+                lines = [line.strip() for line in page.get_text().splitlines()
+                         if _re.match(r"^\s*\d{4}\s", line)]
+                if lines:
+                    print(f"     first row: {lines[0][:150]}")
 
 
 def against_the_dutch(names: dict[str, list[str]]) -> dict[str, Any]:

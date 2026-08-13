@@ -24,6 +24,10 @@ on:
           - fr
           - both
         default: both
+      source:
+        description: "Probe a different registered text instead (e.g. adn), layout only"
+        default: ""
+        required: false
       probe:
         description: "Report the layout of the edition and stop"
         type: boolean
@@ -49,17 +53,47 @@ jobs:
           python-version: "3.12"
       - run: pip install --quiet pymupdf
 
+      # Keep the volumes between runs. UNECE refuses a runner outright (403) and
+      # the Internet Archive, which is the way round, rate-limits after a few
+      # asks — it answered 503 twice and then 498 for the ADN, and each of those
+      # cost a whole run. The books do not change: once a volume has been
+      # fetched, every later run should read it off the disk and not ask anyone.
+      # `restore-keys` matters more than the key here — a run that adds a new
+      # source still starts from the volumes already downloaded, instead of
+      # going back to the Archive for all of them.
+      - name: Volumes already fetched
+        id: volumes
+        uses: actions/cache/restore@v4
+        with:
+          path: /tmp/cargopilot-regulations
+          key: regulations-${{ github.run_id }}
+          restore-keys: |
+            regulations-
+
       - name: Read the volumes
         env:
           LANGUAGE: ${{ inputs.language }}
           MIN_AGREEMENT: ${{ inputs.min_agreement }}
           PROBE: ${{ inputs.probe }}
+          SOURCE: ${{ inputs.source }}
         run: |
           set -euo pipefail
           # The download goes through read_land_regulations.py, which is the one
           # place that knows how to get these files: UNECE answers a bare
           # request from a runner with 403, and that module tries browser
           # headers first and the web archive after.
+          # A named source overrides the language map. Used to look at the
+          # layout of a text this reader has not met before — ADN table C is a
+          # different table with different columns, and guessing at it across a
+          # runner round-trip is what cost six of them on the ADR.
+          if [ -n "$SOURCE" ]; then
+            echo "=============================================================="
+            echo "layout of $SOURCE"
+            echo "=============================================================="
+            python scripts/extract_adr_names_multilingual.py \
+              --source "$SOURCE" --probe
+            exit 0
+          fi
           LANGS="$LANGUAGE"
           if [ "$LANGUAGE" = "both" ]; then LANGS="en fr"; fi
           for lang in $LANGS; do
@@ -74,6 +108,17 @@ jobs:
               --source "$source_id" --language "$lang" \
               --min-agreement "$MIN_AGREEMENT" $EXTRA
           done
+
+      # Save even when the reading failed. The run that fetched ADR and then
+      # tripped over ADN is exactly the one whose ADR download must survive —
+      # `actions/cache` on its own skips the save when the job fails, which
+      # would send the next run back to the Archive for a volume it already had.
+      - name: Keep the volumes for the next run
+        if: always()
+        uses: actions/cache/save@v4
+        with:
+          path: /tmp/cargopilot-regulations
+          key: regulations-${{ github.run_id }}
 
       - name: Commit
         if: ${{ inputs.commit }}

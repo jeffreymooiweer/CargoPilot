@@ -176,3 +176,77 @@ def test_the_workflow_offers_it_too():
         encoding="utf-8"
     )
     assert "--page" in workflow
+
+
+# --- "later" is not "no" ----------------------------------------------------
+#
+# The Archive answers 503 when it is busy, and busy is its normal state. The ADN
+# URL that served 19 MB at 05:11 served 503 at 13:48 and again at 15:56, and
+# each of those cost a whole workflow run to find out. What is checked here is
+# that a temporary status is asked again and a permanent one is not — waiting
+# out a 404 would be just as wasteful in the other direction.
+
+
+class _Answers:
+    """Stands in for curl: hands out a prepared reply per call and counts them."""
+
+    def __init__(self, replies, pdf_on=None):
+        self.replies = list(replies)
+        self.pdf_on = pdf_on
+        self.calls = 0
+
+    def __call__(self, url, target, extra=None):
+        code = self.replies[min(self.calls, len(self.replies) - 1)]
+        self.calls += 1
+        if self.pdf_on is not None and self.calls >= self.pdf_on:
+            target.write_bytes(b"%PDF-1.7\n")
+        return code, "application/pdf" if code == 200 else "text/html"
+
+
+@pytest.fixture
+def no_waiting(monkeypatch):
+    """The waits are real seconds; the test is about the decisions, not the clock."""
+    monkeypatch.setattr(reader.time, "sleep", lambda _s: None)
+
+
+def test_a_busy_archive_is_asked_again(monkeypatch, no_waiting, tmp_path):
+    answers = _Answers([503, 503, 200], pdf_on=3)
+    monkeypatch.setattr(reader, "_curl", answers)
+    code, _kind = reader._ask("https://example.invalid/x.pdf", tmp_path / "x.pdf", [], "web archive")
+    assert code == 200
+    assert answers.calls == 3
+
+
+def test_a_missing_file_is_not_asked_again(monkeypatch, no_waiting, tmp_path):
+    """404 means the address moved. Asking four times still gets a 404, and the
+    run needs to reach the message that says to check the download page."""
+    answers = _Answers([404])
+    monkeypatch.setattr(reader, "_curl", answers)
+    code, _kind = reader._ask("https://example.invalid/x.pdf", tmp_path / "x.pdf", [], "direct")
+    assert code == 404
+    assert answers.calls == 1
+
+
+def test_it_gives_up_rather_than_asking_forever(monkeypatch, no_waiting, tmp_path):
+    answers = _Answers([503])
+    monkeypatch.setattr(reader, "_curl", answers)
+    reader._ask("https://example.invalid/x.pdf", tmp_path / "x.pdf", [], "web archive")
+    assert answers.calls == len(reader.RETRY_WAITS) + 1
+
+
+def test_the_half_written_error_page_is_cleared_between_asks(monkeypatch, no_waiting, tmp_path):
+    """curl writes the 503 page to the target. Left in place, the next ask would
+    append to it and the PDF check would look at a file that is part error."""
+    target = tmp_path / "x.pdf"
+
+    def curl(url, dest, extra=None):
+        if not dest.exists():
+            dest.write_bytes(b"<html>busy</html>")
+            return 503, "text/html"
+        curl.left_behind = True
+        return 503, "text/html"
+
+    curl.left_behind = False
+    monkeypatch.setattr(reader, "_curl", curl)
+    reader._ask("https://example.invalid/x.pdf", target, [], "web archive")
+    assert curl.left_behind is False

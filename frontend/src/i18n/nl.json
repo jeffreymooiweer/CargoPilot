@@ -240,7 +240,9 @@
     "air": "Luchtvracht",
     "airDesc": "AWB-instructies en IATA DG-verklaring",
     "multimodal": "Multimodaal",
-    "multimodalDesc": "Combinatie van modaliteiten — alle formulieren"
+    "multimodalDesc": "Combinatie van modaliteiten — alle formulieren",
+    "locked": "in ontwikkeling",
+    "lockedReason": "Deze modaliteit is nog niet vrijgegeven. De regelgevingscontroles zijn nog niet compleet en een half kloppend document is erger dan geen document. Wegvervoer is wel beschikbaar."
   },
   "forms": {
     "title": "Welke formulieren wilt u opmaken?",

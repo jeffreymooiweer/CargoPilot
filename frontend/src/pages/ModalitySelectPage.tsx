@@ -6,8 +6,27 @@ import { usePreferences } from "../settings/preferences";
 export const MODALITIES = ["road", "rail", "sea", "inland", "air", "multimodal"] as const;
 export type ModalityKey = (typeof MODALITIES)[number];
 
+/** The modalities a user may actually draw up documents for.
+ *
+ *  The other four are built and reachable and *wrong* in ways that do not
+ *  announce themselves. Inland waterway answered its separation question with
+ *  the road table until v1.59.0 and still has no table C, so a tank vessel
+ *  consignment gets nothing; rail and sea carry known gaps of their own. A
+ *  half-right document is worse than no document, because it is signed and
+ *  handed over — the consignor has no way to see which half was right.
+ *
+ *  So this is a lock and not a hint. It is checked in three places, because the
+ *  tile is not the only way in: a bookmark reaches /wizard/rail directly, and
+ *  the default-modality preference navigates there without anyone touching a
+ *  tile. Guarding only the tiles would guard only the honest route. */
+export const AVAILABLE_MODALITIES: readonly ModalityKey[] = ["road"];
+
 export function isModalityKey(value: string | undefined): value is ModalityKey {
   return !!value && (MODALITIES as readonly string[]).includes(value);
+}
+
+export function isModalityAvailable(value: string | undefined): value is ModalityKey {
+  return isModalityKey(value) && AVAILABLE_MODALITIES.includes(value);
 }
 
 export default function ModalitySelectPage() {
@@ -23,7 +42,9 @@ export default function ModalitySelectPage() {
   const preferred = preferences.default_modality;
   useEffect(() => {
     if (!loaded || skipDefault) return;
-    if (isModalityKey(preferred)) navigate(`/wizard/${preferred}`, { replace: true });
+    // A preference set while a modality was open must not keep opening it after
+    // it has been locked. The tiles come back instead, with the reason on them.
+    if (isModalityAvailable(preferred)) navigate(`/wizard/${preferred}`, { replace: true });
   }, [loaded, skipDefault, preferred, navigate]);
 
   return (
@@ -41,12 +62,21 @@ export default function ModalitySelectPage() {
       </div>
 
       <div className="grid gap-3 sm:gap-4 sm:grid-cols-2 xl:grid-cols-3">
-        {MODALITIES.map((key) => (
+        {MODALITIES.map((key) => {
+          const available = isModalityAvailable(key);
+          return (
           <button
             key={key}
             type="button"
-            onClick={() => navigate(`/wizard/${key}`)}
-            className="group relative overflow-hidden rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-left shadow-sm transition hover:border-brand-400 hover:shadow-lg focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 dark:hover:border-brand-500"
+            disabled={!available}
+            aria-disabled={!available}
+            onClick={() => available && navigate(`/wizard/${key}`)}
+            title={available ? undefined : t("modality.lockedReason")}
+            className={`group relative overflow-hidden rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-left shadow-sm transition focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 ${
+              available
+                ? "hover:border-brand-400 hover:shadow-lg dark:hover:border-brand-500"
+                : "cursor-not-allowed opacity-60 grayscale"
+            }`}
           >
             <div className="aspect-[3/1] w-full overflow-hidden">
               <img
@@ -66,11 +96,16 @@ export default function ModalitySelectPage() {
             </div>
             <div className="flex items-center justify-between gap-3 px-4 py-3 sm:px-5 sm:py-4">
               <div className="min-w-0">
-                <h3 className="font-semibold text-slate-900 dark:text-slate-100">
+                <h3 className="flex flex-wrap items-center gap-2 font-semibold text-slate-900 dark:text-slate-100">
                   {t(`modality.${key}`)}
+                  {!available && (
+                    <span className="rounded-full bg-amber-100 px-2 py-0.5 text-[11px] font-medium text-amber-800 dark:bg-amber-900/40 dark:text-amber-200">
+                      {t("modality.locked")}
+                    </span>
+                  )}
                 </h3>
                 <p className="mt-0.5 text-xs sm:text-sm text-slate-500 dark:text-slate-400">
-                  {t(`modality.${key}Desc`)}
+                  {available ? t(`modality.${key}Desc`) : t("modality.lockedReason")}
                 </p>
               </div>
               <span
@@ -83,7 +118,8 @@ export default function ModalitySelectPage() {
               </span>
             </div>
           </button>
-        ))}
+          );
+        })}
       </div>
     </div>
   );

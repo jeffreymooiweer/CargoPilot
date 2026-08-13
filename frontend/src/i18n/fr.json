@@ -240,7 +240,9 @@
     "air": "Fret aérien",
     "airDesc": "Instructions LTA et déclaration IATA",
     "multimodal": "Multimodal",
-    "multimodalDesc": "Combinaison de modes — tous les formulaires"
+    "multimodalDesc": "Combinaison de modes — tous les formulaires",
+    "locked": "en développement",
+    "lockedReason": "Ce mode n'est pas encore disponible. Ses vérifications réglementaires sont incomplètes, et un document à moitié juste est pire que pas de document. Le transport routier est disponible."
   },
   "forms": {
     "title": "Quels formulaires souhaitez-vous préparer ?",

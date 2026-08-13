@@ -318,3 +318,156 @@ def test_the_tie_break_is_stated_when_the_load_disagrees_with_itself():
 def test_an_unsettled_substance_is_named_on_the_document():
     warnings = adn_warnings([product("1203", "3", "F1")])
     assert any("1203" in w and "5.4.1.1.1" not in w for w in warnings), warnings
+
+
+# --- 7.1.4.3.4, the class 1 compatibility table -----------------------------
+#
+# Twelve groups, four numbered conditions, and it took two readings to get. The
+# Dutch HTML edition is damaged here: row N carries thirteen cells where twelve
+# belong, and the D/B cell lost its footnote marker so the table read "1)" one
+# way and "(*)" the other. A compatibility table must mirror across its
+# diagonal — that is a property of the thing and not of a typesetting — and the
+# English edition does, in all 144 cells. It is what this computes with.
+
+
+def compat():
+    from app.services.dg.compliance import get_compliance_rules
+    return get_compliance_rules()["adn_hold_separation"]["class_1_compatibility"]
+
+
+def test_the_table_mirrors_across_its_diagonal():
+    """The check that caught the damage, kept as a test so it stays caught."""
+    table, groups = compat()["table"], compat()["groups"]
+    assert len(groups) == 12
+    for a in groups:
+        assert set(table[a]) == set(groups), a
+        for b in groups:
+            assert table[a][b] == table[b][a], f"{a}/{b}"
+
+
+def test_every_condition_the_table_points_at_exists():
+    table, conditions = compat()["table"], compat()["conditions"]
+    used = {n for row in table.values() for cell in row.values()
+            if isinstance(cell, list) for n in cell}
+    assert used == {1, 2, 3, 4}
+    for number in used:
+        assert str(number) in conditions
+
+
+def test_two_incompatible_explosives_may_not_share_a_hold():
+    out = check_adn_hold_separation(
+        line(product("0004", "1", "1.1D"), product("0072", "1", "1.1A")))
+    finding = next(f for f in out["findings"] if f["provision"] == "7.1.4.3.4")
+    assert sorted(finding["compatibility_groups"]) == ["A", "D"]
+    assert "UN 0004" in finding["message"] and "UN 0072" in finding["message"]
+
+
+def test_two_compatible_explosives_raise_nothing():
+    """C with D is an X in the table: the check must stay quiet, or a consignor
+    learns that every pair of explosives is a problem and stops reading."""
+    out = check_adn_hold_separation(
+        line(product("0160", "1", "1.1C"), product("0004", "1", "1.1D")))
+    assert "7.1.4.3.4" not in {f["provision"] for f in out["findings"]}
+
+
+def test_a_conditional_pair_names_its_condition():
+    """B with D is permitted only in closed containers — the answer is neither
+    yes nor no, and a check that rounded it either way would be wrong."""
+    out = check_adn_hold_separation(
+        line(product("0073", "1", "1.1B"), product("0004", "1", "1.1D")))
+    finding = next(f for f in out["findings"] if f["provision"] == "7.1.4.3.4")
+    assert sorted(finding["compatibility_groups"]) == ["B", "D"]
+    assert any("gesloten containers" in c for c in finding["conditions"])
+
+
+def test_group_n_with_c_d_or_e_carries_both_its_conditions():
+    out = check_adn_hold_separation(
+        line(product("0482", "1", "1.5D"), product("0501", "1", "1.6N")))
+    finding = next(f for f in out["findings"] if f["provision"] == "7.1.4.3.4")
+    assert len(finding["conditions"]) == 2
+
+
+def test_a_single_explosive_is_not_paired_with_itself():
+    out = check_adn_hold_separation(line(product("0004", "1", "1.1D")))
+    assert "7.1.4.3.4" not in {f["provision"] for f in out["findings"]}
+
+
+def test_two_packages_of_group_l_are_conditional_even_together():
+    """L against L is the one diagonal cell that is not a plain X: two group L
+    packages may share a hold only if they hold the same type of substance."""
+    out = check_adn_hold_separation(
+        line(product("0224", "1", "1.1L"), product("0224", "1", "1.1L")))
+    finding = next(f for f in out["findings"] if f["provision"] == "7.1.4.3.4")
+    assert finding["compatibility_groups"] == ["L", "L"]
+
+
+def test_class_1_beside_another_class_still_gets_the_twelve_metres():
+    out = check_adn_hold_separation(
+        line(product("0004", "1", "1.1D"), product("1090", "3", "F1")))
+    provisions = {f["provision"] for f in out["findings"]}
+    assert "7.1.4.3.3" in provisions
+    assert "7.1.4.3.4" not in provisions
+
+
+# --- 7.1.5.0.2, the threshold that was not legible -------------------------
+#
+# The Dutch HTML edition lost the comparison sign: both rows of each pair read
+# "> 130.000 kg" and "> 30.000 kg", which is not a rule, it is the same rule
+# twice. v1.61.0 therefore left the reduction out and said so. The English
+# edition has the signs, so the thresholds are recorded here rather than
+# guessed — and the guess would have been right, which is exactly why it was
+# not good enough.
+
+
+def reduction():
+    from app.services.dg.compliance import get_compliance_rules
+    return get_compliance_rules()["adn_signals"]["containers_reduction"]
+
+
+def test_each_threshold_has_a_side():
+    """The defect in miniature: a row that says "above" needs a partner that
+    says "at or below", or the table decides nothing."""
+    rows = reduction()["rows"]
+    for column in (1, 2):
+        pair = [r for r in rows if r["column_12"] == column
+                and r["selector"] == "class_2_or_pg_i"]
+        assert len(pair) == 2, column
+        assert {"above_kg"} <= set(pair[0]) or {"at_or_below_kg"} <= set(pair[0])
+        limits = {r.get("above_kg") or r.get("at_or_below_kg") for r in pair}
+        assert len(limits) == 1, f"the two sides must share one threshold: {limits}"
+        assert {"above_kg" in r for r in pair} == {True, False}
+
+
+def test_the_thresholds_are_the_ones_the_book_prints():
+    rows = {(r["column_12"], "above" if "above_kg" in r else "below"): r
+            for r in reduction()["rows"] if r["selector"] == "class_2_or_pg_i"}
+    assert rows[(1, "above")]["above_kg"] == 130000
+    assert rows[(1, "above")]["cones"] == 1
+    assert rows[(1, "below")]["at_or_below_kg"] == 130000
+    assert rows[(1, "below")]["cones"] == 0
+    assert rows[(2, "above")]["above_kg"] == 30000
+    assert rows[(2, "above")]["cones"] == 2
+    assert rows[(2, "below")]["at_or_below_kg"] == 30000
+    assert rows[(2, "below")]["cones"] == 0
+
+
+def test_three_cones_are_never_reduced():
+    three = [r for r in reduction()["rows"] if r["column_12"] == 3]
+    assert len(three) == 1
+    assert three[0]["cones"] == 3 and three[0]["selector"] == "all"
+
+
+def test_the_reduction_is_recorded_and_not_applied():
+    """Applying it needs the consignor to say the load travels only in
+    containers, and there is nowhere to say that yet. Inferring it from a
+    packaging type would be guessing at the fact the provision turns on."""
+    assert reduction()["applied"] is False
+
+
+def test_the_note_states_both_thresholds_in_every_language():
+    from app.services.dg.compliance import get_compliance_rules
+    note = get_compliance_rules()["adn_signals"]["containers_note"]
+    for language in ("nl", "en", "de", "fr"):
+        text = note[language]
+        assert "7.1.5.0.2" in text
+        assert "130" in text and "30" in text

@@ -2332,7 +2332,6 @@
   "adn_hold_separation": {
     "source": "ADN 2025, official Dutch edition, 7.1.4.3 'Samenladingsverbod (colli in laadruimen)'",
     "_why_not_the_road_table": "Until v1.59.0 an inland waterway consignment was answered with ADR 7.5.2, labelled as borrowed. It is not merely another mode's table — it answers a different question. ADR asks whether two packages may share a vehicle; ADN asks how many metres must lie between them and whether they may share a hold. A prohibition and a distance are not the same answer, and the application could not express the second at all.",
-    "_still_borrowed": "7.1.4.3.4 gives ADN its own compatibility group table for class 1, twelve groups with four numbered conditions and a footnote that differs from the road one. It is not transcribed yet: a 12x12 regulatory table gets two independent readings in this repository or none.",
     "rules": [
       {
         "provision": "7.1.4.3.1",
@@ -2381,12 +2380,265 @@
       "de": "Spalte (12) der ADN-Tabelle A liegt mit einer Zeile je UN-Nummer vor. Wo das Buch mehrere Zeilen druckt, die sich in den Schiffsspalten unterscheiden, lässt sich nicht feststellen, welche Zeile gilt: {products}. Für diese Stoffe wurden 7.1.4.3.2 und der Drei-Kegel-Teil von 7.1.4.3.3 nicht geprüft.",
       "fr": "La colonne (12) du tableau A de l'ADN n'est disponible qu'à raison d'une ligne par numéro ONU. Lorsque le livre en imprime plusieurs qui diffèrent dans les colonnes du bateau, la ligne applicable ne peut être établie : {products}. Pour ces matières, le 7.1.4.3.2 et la partie « trois cônes » du 7.1.4.3.3 n'ont pas été évalués."
     },
-    "_column_12": "Column (12) comes from backend/seed/dg/adn_table_a.json, read by scripts/extract_adn_table_a.py out of the Dutch ADN 2025 and checked against the printed list pages and against the ADR table A already in the repository."
+    "_column_12": "Column (12) comes from backend/seed/dg/adn_table_a.json, read by scripts/extract_adn_table_a.py out of the Dutch ADN 2025 and checked against the printed list pages and against the ADR table A already in the repository.",
+    "class_1_compatibility": {
+      "provision": "7.1.4.3.4",
+      "source": "ADN 2025, UNECE English edition, table of 7.1.4.3.4, read with scripts/read_land_regulations.py; verified against the Dutch edition",
+      "_two_readings": "The English table is the reading this computes with, and it is self-consistent: a compatibility table must mirror across its diagonal, and this one does in all 144 cells. The Dutch HTML edition agrees cell for cell on ten of the twelve rows and is damaged on the other two — row N carries thirteen cells where twelve belong, and the D/B cell lost its footnote marker so that B/D read '1)' against D/B '(*)'. Both defects are conversion damage rather than a difference between the editions, and both are exactly what a symmetry check catches.",
+      "groups": [
+        "A",
+        "B",
+        "C",
+        "D",
+        "E",
+        "F",
+        "G",
+        "H",
+        "J",
+        "L",
+        "N",
+        "S"
+      ],
+      "table": {
+        "A": {
+          "A": "permitted",
+          "B": "forbidden",
+          "C": "forbidden",
+          "D": "forbidden",
+          "E": "forbidden",
+          "F": "forbidden",
+          "G": "forbidden",
+          "H": "forbidden",
+          "J": "forbidden",
+          "L": "forbidden",
+          "N": "forbidden",
+          "S": "forbidden"
+        },
+        "B": {
+          "A": "forbidden",
+          "B": "permitted",
+          "C": "forbidden",
+          "D": [
+            1
+          ],
+          "E": "forbidden",
+          "F": "forbidden",
+          "G": "forbidden",
+          "H": "forbidden",
+          "J": "forbidden",
+          "L": "forbidden",
+          "N": "forbidden",
+          "S": "permitted"
+        },
+        "C": {
+          "A": "forbidden",
+          "B": "forbidden",
+          "C": "permitted",
+          "D": "permitted",
+          "E": "permitted",
+          "F": "forbidden",
+          "G": "permitted",
+          "H": "forbidden",
+          "J": "forbidden",
+          "L": "forbidden",
+          "N": [
+            2,
+            3
+          ],
+          "S": "permitted"
+        },
+        "D": {
+          "A": "forbidden",
+          "B": [
+            1
+          ],
+          "C": "permitted",
+          "D": "permitted",
+          "E": "permitted",
+          "F": "forbidden",
+          "G": "permitted",
+          "H": "forbidden",
+          "J": "forbidden",
+          "L": "forbidden",
+          "N": [
+            2,
+            3
+          ],
+          "S": "permitted"
+        },
+        "E": {
+          "A": "forbidden",
+          "B": "forbidden",
+          "C": "permitted",
+          "D": "permitted",
+          "E": "permitted",
+          "F": "forbidden",
+          "G": "permitted",
+          "H": "forbidden",
+          "J": "forbidden",
+          "L": "forbidden",
+          "N": [
+            2,
+            3
+          ],
+          "S": "permitted"
+        },
+        "F": {
+          "A": "forbidden",
+          "B": "forbidden",
+          "C": "forbidden",
+          "D": "forbidden",
+          "E": "forbidden",
+          "F": "permitted",
+          "G": "forbidden",
+          "H": "forbidden",
+          "J": "forbidden",
+          "L": "forbidden",
+          "N": "forbidden",
+          "S": "permitted"
+        },
+        "G": {
+          "A": "forbidden",
+          "B": "forbidden",
+          "C": "permitted",
+          "D": "permitted",
+          "E": "permitted",
+          "F": "forbidden",
+          "G": "permitted",
+          "H": "forbidden",
+          "J": "forbidden",
+          "L": "forbidden",
+          "N": "forbidden",
+          "S": "permitted"
+        },
+        "H": {
+          "A": "forbidden",
+          "B": "forbidden",
+          "C": "forbidden",
+          "D": "forbidden",
+          "E": "forbidden",
+          "F": "forbidden",
+          "G": "forbidden",
+          "H": "permitted",
+          "J": "forbidden",
+          "L": "forbidden",
+          "N": "forbidden",
+          "S": "permitted"
+        },
+        "J": {
+          "A": "forbidden",
+          "B": "forbidden",
+          "C": "forbidden",
+          "D": "forbidden",
+          "E": "forbidden",
+          "F": "forbidden",
+          "G": "forbidden",
+          "H": "forbidden",
+          "J": "permitted",
+          "L": "forbidden",
+          "N": "forbidden",
+          "S": "permitted"
+        },
+        "L": {
+          "A": "forbidden",
+          "B": "forbidden",
+          "C": "forbidden",
+          "D": "forbidden",
+          "E": "forbidden",
+          "F": "forbidden",
+          "G": "forbidden",
+          "H": "forbidden",
+          "J": "forbidden",
+          "L": [
+            4
+          ],
+          "N": "forbidden",
+          "S": "forbidden"
+        },
+        "N": {
+          "A": "forbidden",
+          "B": "forbidden",
+          "C": [
+            2,
+            3
+          ],
+          "D": [
+            2,
+            3
+          ],
+          "E": [
+            2,
+            3
+          ],
+          "F": "forbidden",
+          "G": "forbidden",
+          "H": "forbidden",
+          "J": "forbidden",
+          "L": "forbidden",
+          "N": [
+            2
+          ],
+          "S": "permitted"
+        },
+        "S": {
+          "A": "forbidden",
+          "B": "permitted",
+          "C": "permitted",
+          "D": "permitted",
+          "E": "permitted",
+          "F": "permitted",
+          "G": "permitted",
+          "H": "permitted",
+          "J": "permitted",
+          "L": "forbidden",
+          "N": "permitted",
+          "S": "permitted"
+        }
+      },
+      "conditions": {
+        "1": {
+          "nl": "Colli met voorwerpen van compatibiliteitsgroep B en colli met stoffen of voorwerpen van groep D mogen alleen samen in één laadruim als zij in gesloten containers, voertuigen of wagens zijn geladen.",
+          "en": "Packages of compatibility group B and packages of group D may share a hold only when they are carried in closed containers, vehicles or wagons.",
+          "de": "Versandstücke der Verträglichkeitsgruppe B und der Gruppe D dürfen nur dann denselben Laderaum teilen, wenn sie in geschlossenen Containern, Fahrzeugen oder Wagen befördert werden.",
+          "fr": "Les colis du groupe de compatibilité B et ceux du groupe D ne peuvent partager une cale que s'ils sont transportés en conteneurs, véhicules ou wagons fermés."
+        },
+        "2": {
+          "nl": "Verschillende soorten voorwerpen van subklasse 1.6, groep N, mogen alleen samen worden vervoerd als door beproeving of analogie is aangetoond dat er geen bijkomend gevaar van overslaande detonatie bestaat; anders gelden zij als subklasse 1.1.",
+          "en": "Different categories of articles of division 1.6, group N, may travel together only where testing or analogy shows there is no additional risk of sympathetic detonation; otherwise they count as division 1.1.",
+          "de": "Verschiedene Arten von Gegenständen der Unterklasse 1.6, Gruppe N, dürfen nur zusammen befördert werden, wenn durch Prüfung oder Analogie nachgewiesen ist, dass keine zusätzliche Gefahr einer Detonationsübertragung besteht; andernfalls gelten sie als Unterklasse 1.1.",
+          "fr": "Des catégories différentes d'objets de la division 1.6, groupe N, ne peuvent voyager ensemble que s'il est démontré par essai ou analogie qu'il n'existe aucun risque supplémentaire de détonation par influence ; sinon ils relèvent de la division 1.1."
+        },
+        "3": {
+          "nl": "Worden voorwerpen van groep N samen met stoffen of voorwerpen van groep C, D of E geladen, dan moeten de voorwerpen van groep N worden behandeld alsof zij tot groep D behoren.",
+          "en": "Where articles of group N are loaded with substances or articles of groups C, D or E, the group N articles must be treated as belonging to group D.",
+          "de": "Werden Gegenstände der Gruppe N mit Stoffen oder Gegenständen der Gruppen C, D oder E geladen, sind die Gegenstände der Gruppe N wie Gruppe D zu behandeln.",
+          "fr": "Lorsque des objets du groupe N sont chargés avec des matières ou objets des groupes C, D ou E, les objets du groupe N doivent être traités comme relevant du groupe D."
+        },
+        "4": {
+          "nl": "Colli met stoffen of voorwerpen van groep L mogen alleen in hetzelfde laadruim staan met colli van hetzelfde type stof of voorwerp van diezelfde groep.",
+          "en": "Packages of group L may share a hold only with packages of the same type of substance or article of that same group.",
+          "de": "Versandstücke der Gruppe L dürfen denselben Laderaum nur mit Versandstücken desselben Stofftyps derselben Gruppe teilen.",
+          "fr": "Les colis du groupe L ne peuvent partager une cale qu'avec des colis du même type de matière ou objet de ce même groupe."
+        }
+      },
+      "forbidden_message": {
+        "nl": "Stoffen en voorwerpen van klasse 1 uit de compatibiliteitsgroepen {a} en {b} mogen volgens de tabel van 7.1.4.3.4 niet in hetzelfde laadruim worden geplaatst. Aan boord betreft dit {products}.",
+        "en": "Substances and articles of class 1 in compatibility groups {a} and {b} must not be placed in the same hold under the table of 7.1.4.3.4. On board this concerns {products}.",
+        "de": "Stoffe und Gegenstände der Klasse 1 der Verträglichkeitsgruppen {a} und {b} dürfen nach der Tabelle des 7.1.4.3.4 nicht in denselben Laderaum gestellt werden. An Bord betrifft das {products}.",
+        "fr": "Les matières et objets de la classe 1 des groupes de compatibilité {a} et {b} ne doivent pas être placés dans la même cale selon le tableau du 7.1.4.3.4. À bord, cela concerne {products}."
+      },
+      "conditional_message": {
+        "nl": "Compatibiliteitsgroepen {a} en {b} mogen volgens 7.1.4.3.4 alleen onder voorwaarde samen in één laadruim. Aan boord betreft dit {products}.",
+        "en": "Compatibility groups {a} and {b} may share a hold under 7.1.4.3.4 only on a condition. On board this concerns {products}.",
+        "de": "Die Verträglichkeitsgruppen {a} und {b} dürfen nach 7.1.4.3.4 nur unter einer Bedingung denselben Laderaum teilen. An Bord betrifft das {products}.",
+        "fr": "Les groupes de compatibilité {a} et {b} ne peuvent partager une cale selon le 7.1.4.3.4 que sous condition. À bord, cela concerne {products}."
+      }
+    }
   },
   "adn_signals": {
     "source": "ADN 2025, official Dutch edition, 7.1.5.0 'Seinvoering'",
     "_what_is_answered": "7.1.5.0.1 — the vessel shows the signals given in column (12) of table A — and 7.1.5.0.4, which says that where several apply the highest is the one to show: three before two before one.",
-    "_what_is_not": "7.1.5.0.2 lowers the count for goods carried exclusively in containers, against thresholds of 130,000 kg and 30,000 kg. The comparison operator on the second row of that table is not legible in the source available here, and a threshold read wrong is worse than a threshold not read. Leaving it out can only overstate the signals, which is the safe direction, and it is stated rather than left to be discovered.",
+    "_what_is_not": "7.1.5.0.2 lowers the count for goods carried exclusively in containers, and its thresholds are now read rather than guessed: where column (12) gives one cone, class 2 and packing group I above 130,000 kg keep one and at or below it show none; where column (12) gives two, class 2 and packing group I above 30,000 kg keep two and at or below it show none; other classes and packing groups II and III show none at any mass; three cones stay three. The reduction is not applied, because applying it needs the consignor to state that the goods travel exclusively in containers and there is nowhere yet to say so — inferring it from a packaging type would be guessing at the very fact the provision turns on. Leaving it out can only overstate the signals.",
     "cones": {
       "0": {
         "nl": "Geen blauwe kegel of blauw licht.",
@@ -2426,10 +2678,60 @@
       "fr": "Pour {products}, la colonne (12) comporte plusieurs lignes divergentes ; les signaux de ces matières ne sont pas établis et peuvent être plus élevés qu'indiqué ici."
     },
     "containers_note": {
-      "nl": "Worden de goederen uitsluitend in containers vervoerd, dan kan 7.1.5.0.2 de seinvoering verlagen aan de hand van de totale brutomassa. Die verlaging staat niet in CargoPilot; de hier getoonde seinvoering is daarom nooit te laag.",
-      "en": "Where the goods travel exclusively in containers, 7.1.5.0.2 may lower the signals against the total gross mass. That reduction is not in CargoPilot, so the signals shown here are never too few.",
-      "de": "Werden die Güter ausschließlich in Containern befördert, kann 7.1.5.0.2 die Signale anhand der Bruttogesamtmasse verringern. Diese Verringerung ist nicht in CargoPilot enthalten; die hier gezeigte Signalführung ist daher nie zu gering.",
-      "fr": "Lorsque les marchandises voyagent exclusivement en conteneurs, le 7.1.5.0.2 peut abaisser les signaux en fonction de la masse brute totale. Cette réduction ne figure pas dans CargoPilot ; les signaux affichés ne sont donc jamais insuffisants."
+      "nl": "Worden de goederen uitsluitend in containers vervoerd, dan verlaagt 7.1.5.0.2 de seinvoering aan de hand van de totale brutomassa: bij één kegel houdt klasse 2 of VG I boven 130.000 kg één kegel en daaronder geen, bij twee kegels houdt klasse 2 of VG I boven 30.000 kg twee kegels en daaronder geen, andere klassen en VG II of III voeren geen kegel, en drie kegels blijven drie. CargoPilot past die verlaging niet toe — daarvoor moet u verklaren dat de lading uitsluitend in containers gaat — dus de hier getoonde seinvoering is nooit te laag.",
+      "en": "Where the goods travel exclusively in containers, 7.1.5.0.2 lowers the signals against the total gross mass: at one cone, class 2 or packing group I keeps one cone above 130,000 kg and shows none at or below it; at two cones, class 2 or packing group I keeps two above 30,000 kg and none at or below; other classes and packing groups II and III show none at any mass; three cones stay three. CargoPilot does not apply the reduction — that needs you to state that the load travels only in containers — so the signals shown here are never too few.",
+      "de": "Werden die Güter ausschließlich in Containern befördert, verringert 7.1.5.0.2 die Signalführung anhand der Bruttogesamtmasse: bei einem Kegel behält Klasse 2 oder Verpackungsgruppe I über 130.000 kg einen Kegel und darunter keinen, bei zwei Kegeln über 30.000 kg zwei und darunter keinen, andere Klassen sowie Verpackungsgruppen II und III führen keinen Kegel, und drei Kegel bleiben drei. CargoPilot wendet die Verringerung nicht an — dafür müssten Sie erklären, dass die Ladung ausschließlich in Containern fährt — die gezeigte Signalführung ist daher nie zu gering.",
+      "fr": "Lorsque les marchandises voyagent exclusivement en conteneurs, le 7.1.5.0.2 abaisse la signalisation selon la masse brute totale : à un cône, la classe 2 ou le groupe d'emballage I conserve un cône au-dessus de 130 000 kg et n'en porte aucun en deçà ; à deux cônes, au-dessus de 30 000 kg deux cônes et aucun en deçà ; les autres classes et les groupes II et III n'en portent aucun ; trois cônes restent trois. CargoPilot n'applique pas cette réduction — il faudrait déclarer que le chargement voyage uniquement en conteneurs — les signaux affichés ne sont donc jamais insuffisants."
+    },
+    "containers_reduction": {
+      "provision": "7.1.5.0.2",
+      "source": "ADN 2025, UNECE English edition, table of 7.1.5.0.2, read with scripts/read_land_regulations.py",
+      "applied": false,
+      "_why_not_applied": "Needs an explicit statement that the goods travel only in containers; there is no such input yet. Recorded so the thresholds are not read a second time when there is.",
+      "rows": [
+        {
+          "column_12": 1,
+          "selector": "class_2_or_pg_i",
+          "above_kg": 130000,
+          "cones": 1
+        },
+        {
+          "column_12": 1,
+          "selector": "class_2_or_pg_i",
+          "at_or_below_kg": 130000,
+          "cones": 0
+        },
+        {
+          "column_12": 1,
+          "selector": "other",
+          "any_mass": true,
+          "cones": 0
+        },
+        {
+          "column_12": 2,
+          "selector": "class_2_or_pg_i",
+          "above_kg": 30000,
+          "cones": 2
+        },
+        {
+          "column_12": 2,
+          "selector": "class_2_or_pg_i",
+          "at_or_below_kg": 30000,
+          "cones": 0
+        },
+        {
+          "column_12": 2,
+          "selector": "other",
+          "any_mass": true,
+          "cones": 0
+        },
+        {
+          "column_12": 3,
+          "selector": "all",
+          "any_mass": true,
+          "cones": 3
+        }
+      ]
     }
   }
 }

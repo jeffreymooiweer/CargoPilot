@@ -203,3 +203,63 @@ def test_the_aerosol_rows_are_in_the_order_the_adr_puts_them_in():
     codes = [row["classification_code"] for row in get_un_entries("1950")]
     assert codes[0] == "5F"
     assert codes[:4] == ["5F", "5TF", "5FC", "5TFC"]
+
+
+# --- the tank columns ------------------------------------------------------
+#
+# Columns (10) to (14) were read and cross-checked from the first day of this
+# extractor and deliberately not carried into the seed: nothing computed with
+# them, and a field nobody reads is a field nobody notices going stale. Tank
+# carriage changes that — they are what a tank consignment is judged on.
+#
+# They are data here and nothing more. **No check acts on them yet**, and in
+# particular nothing yet reads an empty column (12) as "not accepted in a tank",
+# however plainly the pattern suggests it: that is a statement about what the
+# ADR permits, and it gets read out of the text before anything acts on it.
+
+
+def _row(table, un):
+    return next(e for e in table["entries"] if e["un"] == un)
+
+
+def test_the_tank_columns_are_in_the_seed(table):
+    row = _row(table, "1203")
+    assert row["tank_code"] == "LGBF"
+    assert row["tank_vehicle"] == "FL"
+    assert row["portable_tank_instructions"] == "T4"
+
+
+def test_a_toxic_gas_carries_its_own_tank_code_and_vehicle(table):
+    row = _row(table, "1017")            # chlorine
+    assert row["tank_code"] == "P22DH(M)"
+    assert row["tank_vehicle"] == "AT"
+
+
+def test_an_explosive_has_no_tank_code_at_all(table):
+    """UN 0004 leaves every tank column empty. What that *means* is not asserted
+    here — only that the reading finds the cells empty rather than inventing a
+    value for them."""
+    row = _row(table, "0004")
+    assert row["tank_code"] == ""
+    assert row["tank_vehicle"] == ""
+    assert row["portable_tank_instructions"] == ""
+
+
+def test_the_tank_columns_were_read_twice(table):
+    """The alphabetical index is the second typesetting, and it agrees. The one
+    column that does not reach 1.0 is (14), on the same eight rows where the
+    index also loses the transport category — the digit lands one column over in
+    *that* reading, and table A is the one this computes with."""
+    checks = table["cross_check"]["fields"]
+    for field in ("portable_tank_instructions", "portable_tank_provisions",
+                  "tank_code", "tank_provisions"):
+        assert checks[field]["agreement"] == 1.0, field
+    assert checks["tank_vehicle"]["agreement"] > 0.99
+
+
+def test_the_vehicle_column_holds_only_vehicle_types(table):
+    """FL, AT and EX/III are the three ADR names for a tank vehicle. A stray
+    digit here is the signature of the column slip described above, so this
+    fails loudly if the boundary ever moves in the reading that is kept."""
+    seen = {row["tank_vehicle"] for row in table["entries"]}
+    assert seen <= {"", "FL", "AT", "EX/III", "EX/II"}, sorted(seen)

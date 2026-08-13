@@ -2,6 +2,40 @@
 
 All notable changes are documented here, following [Semantic Versioning](https://semver.org/).
 
+## [1.65.0] — 2026-08-13
+
+### Added
+
+- **The ADR tank columns are in the substance database.** Columns (10) to (14) of
+  table A — the portable tank instruction and its provisions, the ADR tank code,
+  its provisions, and the vehicle the substance then requires (FL, AT, EX/III) —
+  now reach the seed and the substance lookup. UN 1203 petrol reads LGBF and FL;
+  UN 1017 chlorine reads P22DH(M) and AT; UN 0004 ammonium picrate leaves every
+  tank column empty.
+
+  Nothing new had to be read to get them. The extractor has read and
+  cross-checked these five columns since v1.56.0 and dropped them on the way to
+  the seed, with the reason written down: nothing in the application computed
+  with them, and a field nobody reads is a field nobody notices going stale.
+  Tank carriage changes that, so the reason expired.
+
+  Both readings agree: the portable tank instruction, its provisions, the tank
+  code and the tank provisions match on all 2,345 shared UN numbers between
+  table A and the alphabetical index. Column (14) reaches 0.9966 — the eight
+  disagreements are the same eight rows where the *index* also loses the
+  transport category, because the digit lands one column over in that reading.
+  Table A is the reading the application computes with, and a test pins the
+  column to the three vehicle types so a boundary that moves is caught.
+
+### Not yet
+
+- **No check acts on the tank columns.** In particular nothing reads an empty
+  column (12) as "not accepted in an ADR tank", however plainly the pattern
+  suggests it — UN 0004 and every other class 1 entry leaves it blank. That is a
+  statement about what the regulation permits, not an observation about a table,
+  and it gets read out of the text before anything acts on it. This release
+  carries the data; the checks come with the carriage mode.
+
 ## [1.64.0] — 2026-08-13
 
 ### Added

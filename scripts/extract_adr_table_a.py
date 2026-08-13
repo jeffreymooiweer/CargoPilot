@@ -484,10 +484,17 @@ def un_and_name(row: dict) -> tuple[str | None, str]:
     return number, name
 
 
-#: What comes out per row. The tank and portable-tank columns (9a…14) are read
-#: and checked like the rest but are not carried into the seed: nothing in this
-#: application computes with them, and a field nobody reads is a field nobody
-#: notices going stale.
+#: What comes out per row. Columns 9a and 9b — the packing special provisions
+#: and the mixed-packing provisions — are read and checked like the rest but are
+#: not carried into the seed, because nothing computes with them and a field
+#: nobody reads is a field nobody notices going stale.
+#:
+#: The tank columns (10) to (14) were in that category until v1.65.0 and are not
+#: any more. They are what a tank consignment is judged on: whether the substance
+#: may travel in a portable tank at all (10), in an ADR tank at all (12), and
+#: which vehicle it then requires (14). An empty (12) is not a missing value here
+#: — it means the substance is not accepted in an ADR tank, which is a fact worth
+#: as much as a code.
 FIELDS = {
     "class": "3a",
     "classification_code": "3b",
@@ -497,6 +504,11 @@ FIELDS = {
     "limited_quantity": "7a",
     "excepted_quantity": "7b",
     "packing_instructions": "8",
+    "portable_tank_instructions": "10",
+    "portable_tank_provisions": "11",
+    "tank_code": "12",
+    "tank_provisions": "13",
+    "tank_vehicle": "14",
     "carriage_packages": "16",
     "carriage_bulk": "17",
     "carriage_loading": "18",

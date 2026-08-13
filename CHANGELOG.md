@@ -2,6 +2,46 @@
 
 All notable changes are documented here, following [Semantic Versioning](https://semver.org/).
 
+## [1.63.0] — 2026-08-13
+
+### Added
+
+- **The inland waterway outcomes reach the screen and the document.** v1.59.0 gave
+  the ADN its own separation rule and v1.61.0 the blue cones out of its own table
+  A. Both computed correctly for every consignment and appeared **nowhere**: the
+  compliance panel showed only the 1.1.3.6.1 exemption, and no ADN warning had
+  ever been written to a document. Two provisions were answered into the void.
+
+  The panel now carries two more cards. **Separation in the holds (7.1.4.3)**
+  lists each finding with the distance it prescribes — 3.00 m between classes,
+  12 m around class 1 and the three-cone goods of 4.1 and 5.2 — and the
+  shared-hold prohibition of 7.1.4.3.2 with the two substances it stands
+  between. **Signals (7.1.5.0)** shows the number of blue cones or blue lights,
+  which substance sets it under 7.1.5.0.4, and the container reduction of
+  7.1.5.0.2 that CargoPilot deliberately does not apply.
+
+  A cone count of **nought is displayed as prominently as two**. It is the
+  commonest answer and means the vessel shows no signal; a card that appeared
+  only when cones were needed would teach a consignor that an absent card means
+  safe.
+
+  The same outcomes now travel with the papers: the signals, the tie-break and
+  every separation finding are warnings on the ADN transport document, through
+  the channel opened in v1.62.0.
+
+### Changed
+
+- **Inland waterway is off the lock.** It went on in v1.60.0 because it answered
+  its separation question with the *road* table and held no cone data at all.
+  The exemption of 1.1.3.6.1, the separation of 7.1.4.3 and the signals of
+  7.1.5.0 now all come out of the ADN itself, and all three are visible.
+
+  What is still missing is the tank vessel regime — and a tank vessel
+  consignment cannot be entered here in the first place, because this wizard
+  models packages. So what a user can draw up is exactly the part that is
+  covered, which is the condition the lock existed to enforce. Rail, sea, air
+  and multimodal stay locked, with their gaps listed in `docs/dg-coverage.md`.
+
 ## [1.62.0] — 2026-08-13
 
 ### Fixed

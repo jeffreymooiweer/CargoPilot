@@ -579,6 +579,30 @@ def validate_document(
             if tunnel and profile == "ADR" and tunnel.get("status") not in {None, "not_checked"}:
                 warnings.append(f"ADR 8.6.3: {tunnel['message']}")
 
+            # The inland waterway answers two questions the road does not, and
+            # until now it answered them into the void: the separation in the
+            # holds and the signals the vessel must show were computed for every
+            # ADN consignment and appeared on no document. The signals in
+            # particular belong here — which cones a vessel shows is a fact
+            # about the voyage that the papers travel with.
+            if profile == "ADN":
+                signals = outcome.get("adn_signals") or {}
+                if signals.get("status") not in {None, "not_checked"}:
+                    warnings.append(
+                        f"ADN {signals.get('provision', '7.1.5.0.1')}: "
+                        f"{signals.get('message', '')}".strip()
+                    )
+                    if signals.get("highest_wins"):
+                        warnings.append(f"ADN 7.1.5.0.4: {signals['highest_wins']}")
+                for source in (signals, outcome.get("adn_hold_separation") or {}):
+                    # Named per substance rather than as a blanket disclaimer:
+                    # "not settled for UN 1203" is something a consignor can act
+                    # on, "the cone rules were not assessed" is not.
+                    if source.get("not_assessed"):
+                        warnings.append(str(source["not_assessed"]))
+                for finding in (outcome.get("adn_hold_separation") or {}).get("findings", []):
+                    warnings.append(f"ADN {finding['provision']}: {finding['message']}")
+
     if document["key"] == "vgm" and str(values.get("vgm_method")) == "method2":
         components = [
             values.get("cargo_mass_kg"),

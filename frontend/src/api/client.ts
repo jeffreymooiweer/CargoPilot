@@ -761,6 +761,46 @@ export interface AdnExemptionResult {
   note: string;
 }
 
+/** ADN 7.1.4.3 — how far apart packages must lie in a vessel's holds.
+ *
+ *  Not the road rule renamed: ADR 7.5.2 asks whether two packages may share a
+ *  vehicle and answers yes or no; this asks how many metres must lie between
+ *  them. Two of its three provisions are stated in blue cones, and where the
+ *  cone count for a substance could not be settled the substance is named in
+ *  `cones_not_settled` rather than guessed at. */
+export interface AdnHoldSeparationResult {
+  status: "ok" | "not_checked";
+  scope?: "packages_in_holds";
+  findings: {
+    provision: string;
+    metres?: number;
+    message: string;
+    two_cones?: string[];
+    one_cone_flammable?: string[];
+  }[];
+  not_assessed?: string;
+  cones_not_settled?: string[];
+  source?: string;
+}
+
+/** ADN 7.1.5.0 — the blue cones or blue lights the vessel must show.
+ *
+ *  `cones` of 0 is an answer and not a silence: it means the vessel shows none.
+ *  Under 7.1.5.0.4 the heaviest signal on board wins, so one package can set the
+ *  signals for everything else — `set_by` names which. */
+export interface AdnSignalsResult {
+  status: "ok" | "not_checked";
+  provision?: string;
+  cones?: number;
+  message?: string;
+  set_by?: string[];
+  highest_wins?: string;
+  containers_note?: string;
+  not_assessed?: string | null;
+  cones_not_settled?: string[];
+  source?: string;
+}
+
 export interface ComplianceWarning {
   rule: string;
   severity: "error" | "warning" | "info";
@@ -882,6 +922,8 @@ export interface DgComplianceResult {
   adr_points?: AdrPointsResult;
   /** With the ADN profile only: its own exemption of 1.1.3.6.1. */
   adn_exemption?: AdnExemptionResult;
+  adn_hold_separation?: AdnHoldSeparationResult;
+  adn_signals?: AdnSignalsResult;
   adr_mixed_loading?: ComplianceWarning[];
   /** The same caveat as `basis_note`, for the mixed loading of 7.5.2. */
   adr_mixed_loading_basis_note?: string;

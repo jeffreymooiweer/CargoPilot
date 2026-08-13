@@ -24,6 +24,10 @@ on:
           - fr
           - both
         default: both
+      source:
+        description: "Probe a different registered text instead (e.g. adn), layout only"
+        default: ""
+        required: false
       probe:
         description: "Report the layout of the edition and stop"
         type: boolean
@@ -54,12 +58,25 @@ jobs:
           LANGUAGE: ${{ inputs.language }}
           MIN_AGREEMENT: ${{ inputs.min_agreement }}
           PROBE: ${{ inputs.probe }}
+          SOURCE: ${{ inputs.source }}
         run: |
           set -euo pipefail
           # The download goes through read_land_regulations.py, which is the one
           # place that knows how to get these files: UNECE answers a bare
           # request from a runner with 403, and that module tries browser
           # headers first and the web archive after.
+          # A named source overrides the language map. Used to look at the
+          # layout of a text this reader has not met before — ADN table C is a
+          # different table with different columns, and guessing at it across a
+          # runner round-trip is what cost six of them on the ADR.
+          if [ -n "$SOURCE" ]; then
+            echo "=============================================================="
+            echo "layout of $SOURCE"
+            echo "=============================================================="
+            python scripts/extract_adr_names_multilingual.py \
+              --source "$SOURCE" --probe
+            exit 0
+          fi
           LANGS="$LANGUAGE"
           if [ "$LANGUAGE" = "both" ]; then LANGS="en fr"; fi
           for lang in $LANGS; do

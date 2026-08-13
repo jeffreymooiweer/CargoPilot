@@ -2,6 +2,53 @@
 
 All notable changes are documented here, following [Semantic Versioning](https://semver.org/).
 
+## [1.64.0] — 2026-08-13
+
+### Added
+
+- **ADN 7.1.4.3.4, the class 1 compatibility table, is applied.** Twelve
+  compatibility groups, four numbered conditions, and until now the one part of
+  7.1.4.3 that was named as untranscribed. Two explosives may share a hold only
+  where the table says so; where it says so *on a condition* the condition is
+  named, because neither "permitted" nor "forbidden" would be the truth. The
+  answer does not depend on the order the two were entered — the table mirrors,
+  and a test holds it to that.
+
+  **Getting it is why this repository insists on two readings.** The Dutch HTML
+  edition is *damaged* at this table: row N carries thirteen cells where twelve
+  belong, and the D/B cell lost its footnote marker so the table read "1)" one
+  way and "(*)" the other. A compatibility table must mirror across its
+  diagonal — that is a property of the thing itself, not of a typesetting — and
+  checking it caught both defects. The English UNECE edition mirrors in all 144
+  cells and is what the application computes with; the Dutch confirms ten of the
+  twelve rows cell for cell. The symmetry check is kept as a test.
+
+### Fixed
+
+- **ADN 7.1.5.0.2: the thresholds are read rather than guessed.** The Dutch
+  edition lost the comparison sign, so both rows of each pair read "> 130,000 kg"
+  and "> 30,000 kg" — the same rule twice, which decides nothing. v1.61.0
+  therefore left the reduction out and said so. The English edition has the
+  signs: above 130,000 kg keeps one cone and at or below shows none; above
+  30,000 kg keeps two and at or below none; other classes and packing groups II
+  and III show none at any mass; three cones stay three.
+
+  The figures were what one would have guessed, and that is exactly why guessing
+  would not have done. They are recorded with their provision so nobody reads
+  them a second time.
+
+  The reduction is still **not applied**: doing so needs the consignor to state
+  that the load travels exclusively in containers, and there is nowhere to say
+  that yet. Inferring it from a packaging type would be guessing at the very
+  fact the provision turns on. Its absence can only overstate the signals, and
+  the panel now names both thresholds instead of gesturing at them.
+
+- **The reading workflow uses the volumes that are already fetched.** The
+  extraction workflow has kept them between runs since v1.61.0; this one did
+  not, so quoting three lines of the ADN re-fetched 19 MB from the Internet
+  Archive — which had already cost three runs to 503 and 498 answers. It now
+  restores the same cache.
+
 ## [1.63.0] — 2026-08-13
 
 ### Added

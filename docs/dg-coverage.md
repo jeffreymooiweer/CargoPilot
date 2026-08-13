@@ -370,12 +370,19 @@ questions. **Column (12), the number of blue cones or blue lights**, closes two 
   number and the book prints several for 452 of the 2,352 substances. Where those rows
   differ in the vessel's columns — UN 1203 petrol is the clear case — no cone count is
   offered and the substance is named. 1,913 substances are settled; 439 are not.
-- **ADN 7.1.5.0.2**, which lowers the signal count for goods carried exclusively in
-  containers against a gross mass threshold. The comparison operator on one row of that
-  table is not legible in the text available here. Its absence can only overstate the
+- **ADN 7.1.5.0.2**, the reduction for goods carried exclusively in containers. Its
+  thresholds are **read** since v1.64.0 — above 130,000 kg keeps one cone, at or below shows
+  none; above 30,000 kg keeps two, at or below none; three cones stay three — but the
+  reduction is not applied. Doing so needs the consignor to state that the load travels only
+  in containers, and there is nowhere to say that yet; inferring it from a packaging type
+  would be guessing at the fact the provision turns on. Its absence can only overstate the
   signals, and the panel says so.
-- **7.1.4.3.4**, the class 1 compatibility table: twelve groups, four numbered conditions.
-  Not transcribed — a regulatory table gets two independent readings here or none.
+- ~~**7.1.4.3.4**, the class 1 compatibility table~~ — applied since v1.64.0. Twelve groups,
+  four numbered conditions, and the two readings the rule demands were not a formality: the
+  Dutch HTML edition is damaged there (row N has thirteen cells where twelve belong, and the
+  D/B cell lost its footnote marker). The English edition mirrors across its diagonal in all
+  144 cells, which is a property of a compatibility table and not of a typesetting, and that
+  check is kept as a test.
 - **Anything else vessel-specific** for dry cargo: requirements following from the vessel
   type, degassing and venting.
 - **ADN 5.4.1.1.1 (j)**: where column (11) of Table A carries `ST01`, the document needs a
@@ -474,7 +481,7 @@ Ordered by how much harm someone could take before noticing, not by effort.
 | 1 | **IATA quantity limits absent; Q depends on user-entered M** | CargoPilot warns when the Q check did not run — since v1.33.0 on the document as well as the screen — but it cannot derive the applicable passenger/cargo-aircraft limit or verify the entered M against Table 4.2. **[verify]** |
 | 2 | **The ADN tank vessel regime is entirely absent** | Table C, vessel types, degassing. A tank vessel shipment gets nothing, and nothing says the mode is only half covered. |
 | 3 | **Route data absent: which tunnels, and in which category** | Closed for the part that is CargoPilot's since v1.50.0 — 8.6.3.2, 8.6.3.3 and the table of 8.6.4 are applied and the load's code reaches the export. What is left is the route itself, which 1.9.5 puts with the carrier, and the tanks/bulk branch of five codes. |
-| 4 | **Mixed loading for ADN answered with ADR's 7.5.2** | Closed. v1.38.0 read RID's 7.5.2.1 and found it identical to ADR's, footnotes included; v1.41.0 gave rail its own table and its own protective distance. v1.59.0 gave inland waterway ADN 7.1.4.3, which asks a different question again — how many metres, not whether — and v1.61.0 read column (12) of the ADN's own table A so the two cone provisions are answered as well. What is left is 7.1.4.3.4, the class 1 compatibility table, still untranscribed. |
+| 4 | **Mixed loading for ADN answered with ADR's 7.5.2** | Closed. v1.38.0 read RID's 7.5.2.1 and found it identical to ADR's, footnotes included; v1.41.0 gave rail its own table and its own protective distance. v1.59.0 gave inland waterway ADN 7.1.4.3, which asks a different question again — how many metres, not whether — and v1.61.0 read column (12) of the ADN's own table A so the two cone provisions are answered as well. v1.64.0 closed the last of it: 7.1.4.3.4, the class 1 compatibility table, is applied — and getting it exposed that the Dutch HTML edition of that table is damaged, which the two-reading rule caught. |
 | 5 | **LQ/EQ conditions not checked** | The arithmetic of 3.4/3.5 is verified correct and 3.5.1.3/3.5.1.4 are applied since v1.50.0, but the mark, the packagings and the 3.5.3 tests are declarations the application cannot see. A line "within the limits" is a candidate, not an exemption — and the panel says so. |
 | 6 | **IMDG stowage category shown, not enforced** | Lower because on-deck/under-deck is usually the carrier's call, not the consignor's. **[verify]** |
 | 7 | **No marking or placarding checks outside the road mode** | Closed for ADR in v1.57.0: 5.3.1.5, 5.3.2.1 and 5.3.6.1 are derived for carriage in packages, and the answer is mostly that no placard is required — the provision names only class 1 and class 7. The equipment half closed in v1.53.0. Rail, inland waterway, sea and air still have nothing. |

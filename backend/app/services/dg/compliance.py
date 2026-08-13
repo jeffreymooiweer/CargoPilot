@@ -1157,9 +1157,15 @@ def check_adn_hold_separation(
     not be settled are listed by name, and 439 of 2,352 is a number a consignor
     can act on where "the cone rules were not assessed" was not.
 
-    7.1.4.3.4 gives class 1 its own compatibility table, twelve groups with four
-    numbered conditions, and that is still not transcribed: a regulatory table
-    gets two independent readings in this repository or none.
+    **7.1.4.3.4** gives class 1 its own compatibility table — twelve groups,
+    four numbered conditions — and it is applied since v1.64.0. Getting it took
+    the two readings this repository insists on, and it was worth insisting: the
+    Dutch HTML edition is *damaged* there. Row N carries thirteen cells where
+    twelve belong, and the D/B cell lost its footnote marker so the table read
+    "1)" one way and "(*)" the other. A compatibility table must mirror across
+    its diagonal; that is a property of the thing itself, not of a typesetting,
+    and checking it caught both defects. The English edition mirrors in all 144
+    cells and is what this computes with.
     """
     rules = get_compliance_rules()["adn_hold_separation"]
     lang = _lang(language)
@@ -1239,6 +1245,55 @@ def check_adn_hold_separation(
                 _product_label(entry, product, index)
                 for entry, index, product in one_cone_flammable),
         })
+
+    # 7.1.4.3.4 — class 1 against itself. Two explosives may share a hold only
+    # where the table says so, and the table sorts on the *compatibility group*:
+    # the trailing letter of the classification code, 1.1D → D. Each unordered
+    # pair is judged once; the table mirrors, so the order the user typed them in
+    # cannot change the answer.
+    compat = rules.get("class_1_compatibility")
+    if compat:
+        by_group: dict[str, list[str]] = {}
+        for entry, index, product in products:
+            if not str(product.get("class") or "").strip().startswith("1"):
+                continue
+            code = str(product.get("classification_code") or "").strip().upper()
+            group = re.sub(r"^\d(\.\d)?", "", code)[:1]
+            if group in compat["table"]:
+                by_group.setdefault(group, []).append(
+                    _product_label(entry, product, index))
+        present = sorted(by_group)
+        for i, a in enumerate(present):
+            for b in present[i:]:
+                # A group against itself only matters where the table makes it
+                # conditional — L with L, N with N — and never where it says X.
+                if a == b and len(by_group[a]) < 2:
+                    continue
+                cell = compat["table"][a][b]
+                if cell == "permitted":
+                    continue
+                names = ", ".join(sorted(set(by_group[a] + by_group[b])))
+                if cell == "forbidden":
+                    text = compat["forbidden_message"]
+                    findings.append({
+                        "provision": compat["provision"],
+                        "compatibility_groups": [a, b],
+                        "message": (text.get(lang) or text["en"]).format(
+                            a=a, b=b, products=names),
+                    })
+                else:
+                    text = compat["conditional_message"]
+                    findings.append({
+                        "provision": compat["provision"],
+                        "compatibility_groups": [a, b],
+                        "message": (text.get(lang) or text["en"]).format(
+                            a=a, b=b, products=names),
+                        "conditions": [
+                            compat["conditions"][str(number)].get(lang)
+                            or compat["conditions"][str(number)]["en"]
+                            for number in cell
+                        ],
+                    })
 
     result: dict[str, Any] = {
         "status": "ok",

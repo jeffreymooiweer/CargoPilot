@@ -70,6 +70,20 @@ jobs:
 
       - run: pip install --quiet pymupdf
 
+      # The same volumes the extraction workflow keeps. UNECE refuses a runner
+      # outright and the Internet Archive, which is the way round, rate-limits —
+      # so a run that re-fetches 19 MB to quote three lines is paying the one
+      # cost that has actually broken runs here. `restore-keys` means a run that
+      # needs a volume nobody has fetched yet still starts from the ones that
+      # are already there.
+      - name: Volumes already fetched
+        uses: actions/cache/restore@v4
+        with:
+          path: /tmp/cargopilot-regulations
+          key: regulations-${{ github.run_id }}
+          restore-keys: |
+            regulations-
+
       - name: Quote the provisions
         env:
           # A push runs the whole set; a dispatch quotes what was asked for.

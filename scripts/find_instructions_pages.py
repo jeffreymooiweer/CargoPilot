@@ -70,12 +70,19 @@ def look(path: Path) -> None:
             return
         first_543, first_544 = pairs[-1]
         stop = (first_544 + 1) if first_544 is not None else first_543 + 6
+        print(f"  the model sits on pages {first_543 + 1}..{first_544} "
+              f"(one-based, 5.4.3's own page first, 5.4.4's page excluded)")
         for index in range(max(0, first_543 - 1), min(stop + 1, document.page_count)):
             page = document[index]
+            # The running head and the copyright line are on every page and say
+            # nothing about which page this is; the first lines that are not
+            # those are what identifies the model.
             lines = [line.strip() for line in
-                     page.get_text("text").strip().split("\n") if line.strip()]
-            print(f"  p{index}: images {len(page.get_images())}, "
-                  f"first {lines[0][:60]!r}, last {lines[-1][:40]!r}")
+                     page.get_text("text").strip().split("\n")
+                     if line.strip() and not re.fullmatch(r"-\s*[\dxvi]+\s*-", line.strip())
+                     and not line.strip().startswith(("Copyright", "©"))]
+            print(f"  p{index + 1}: images {len(page.get_images())}, "
+                  + " / ".join(line[:44] for line in lines[:3]))
 
 
 def main() -> int:

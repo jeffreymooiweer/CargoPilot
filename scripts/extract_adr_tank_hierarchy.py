@@ -275,12 +275,23 @@ def rationalised_rows(doc, pages: list[int],
             # out as a new block with no group, which is how L4BN, L10CH and
             # SGAN went missing from the Dutch reading altogether.
             if inheriting:
-                if current is not None:
-                    for code in _codes_in(text):
-                        if code not in current["inherits"]:
-                            current["inherits"].append(code)
-                inheriting = _sentence_runs_on(text, words)
-                continue
+                # A sentence that never meets its closing words would run to
+                # the end of the table, swallowing the blocks after it: the
+                # Dutch reading had L4BN, L10CH, L15CH and L21DH inside
+                # L10DH's inheritance and missing from the table. So the tail
+                # of a sentence is only ever a line of tank codes and the
+                # edition's own joining words. Anything else ends it, and is
+                # then read as the line it is.
+                closes = _closing(text, words)
+                tail = _codes_in(text)
+                if closes or _only_codes(text, tokens, words):
+                    if current is not None:
+                        for code in tail:
+                            if code not in current["inherits"]:
+                                current["inherits"].append(code)
+                    inheriting = not closes and _sentence_runs_on(text, words)
+                    continue
+                inheriting = False
 
             inherit = words["inherit"].search(text)
             if inherit:
@@ -336,6 +347,21 @@ def _strip_markers(tokens: list[str]) -> tuple[list[str], list[str]]:
         else:
             kept.append(token)
     return kept, markers
+
+
+def _closing(text: str, words: dict[str, Any]) -> bool:
+    """Does this line carry the words the edition ends the sentence with?"""
+    end = words.get("inherit_end")
+    return bool(end and end.search(text))
+
+
+def _only_codes(text: str, tokens: list[str], words: dict[str, Any]) -> bool:
+    """Is this line nothing but tank codes and the words that join them?"""
+    if not tokens:
+        return False
+    joined = words["and"]
+    return all(TANK_CODE.fullmatch(token) or joined.fullmatch(token)
+               for token in tokens)
 
 
 def _sentence_runs_on(text: str, words: dict[str, Any]) -> bool:

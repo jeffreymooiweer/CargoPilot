@@ -604,7 +604,17 @@ def main() -> int:
                         help="report the layout of the English pages and stop")
     parser.add_argument("--dump", action="store_true",
                         help="print every row to the log, one JSON per line")
+    parser.add_argument("--probe-page", type=int, default=None,
+                        help="dump every word of one PDF page with coordinates")
     args = parser.parse_args()
+
+    if args.english and args.probe_page is not None:
+        import fitz
+        page = fitz.open(args.english)[args.probe_page]
+        for x0, y0, _x1, y1, word, *_ in sorted(page.get_text("words"),
+                                                key=lambda w: (w[0], -w[1])):
+            print(f"  {round(x0):4d},{round((y0 + y1) / 2):4d} {word!r}")
+        return 0
 
     if args.english and args.probe:
         return probe_english(args.english)

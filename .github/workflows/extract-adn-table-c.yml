@@ -22,6 +22,10 @@ on:
         description: "Print every row to the log as well (the development container cannot reach the artifact store)"
         type: boolean
         default: false
+      probe_page:
+        description: "Dump every word of this PDF page with coordinates and stop"
+        default: ""
+        required: false
 
 permissions:
   contents: read
@@ -51,11 +55,13 @@ jobs:
         env:
           PROBE: ${{ inputs.probe }}
           DUMP: ${{ inputs.dump }}
+          PROBE_PAGE: ${{ inputs.probe_page }}
         run: |
           set -euo pipefail
           EXTRA=""
           if [ "$PROBE" = "true" ]; then EXTRA="--probe"; fi
           if [ "$DUMP" = "true" ]; then EXTRA="$EXTRA --dump"; fi
+          if [ -n "$PROBE_PAGE" ]; then EXTRA="$EXTRA --probe-page $PROBE_PAGE"; fi
           python scripts/extract_adn_table_c.py \
             --english /tmp/cargopilot-regulations/adn.pdf \
             --out table_c_en.json $EXTRA

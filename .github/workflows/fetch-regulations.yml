@@ -47,8 +47,8 @@ jobs:
           set -uo pipefail
           echo "=== headers ==="
           curl -sS -L -I "$URL" || true
-          echo "=== body, first 300 lines ==="
-          curl -sS -L "$URL" | head -300 || true
+          echo "=== body, first 2000 bytes (may be binary) ==="
+          curl -sS -L "$URL" | head -c 2000 | od -c | head -40 || true
 
       - name: Fetch what is missing
         if: ${{ inputs.probe_url == '' }}

@@ -221,21 +221,6 @@ def rationalised_pages(doc, language: str) -> list[int]:
     return found
 
 
-def _class_boundary(page, below: float) -> float:
-    """Where the tank code column ends and the group columns begin.
-
-    The tank code stands alone on the left of a wide table; the widest corridor
-    in the left third of the page is the gutter after it.
-    """
-    corridors = _corridor(page, below)
-    limit = page.rect.width / 3
-    candidates = [(end - start, (start + end) / 2)
-                  for start, end in corridors if end < limit]
-    if not candidates:
-        return limit
-    return max(candidates)[1]
-
-
 def rationalised_rows(doc, pages: list[int],
                       language: str) -> tuple[list[dict[str, Any]], list[str]]:
     """The group of substances each tank code is permitted to carry.
@@ -244,51 +229,63 @@ def rationalised_rows(doc, pages: list[int],
     leaving the class blank while it repeats — so a blank class means the class
     above, and a line without a tank code belongs to the code above. The
     sentence that ends a block names the codes whose groups this one inherits;
-    it is kept as it is written, because the inheritance is what makes the table
-    a hierarchy at all.
+    that inheritance is what makes the table a hierarchy at all, so it is read
+    rather than skipped, over as many lines as the sentence takes.
+
+    Where the columns are is not measured, because it does not have to be. The
+    four columns hold four shapes that cannot be mistaken for each other — a
+    tank code begins with L or S and has a fixed form, a class is a bare digit
+    with at most one decimal, a classification code is capitals and digits, a
+    packing group is one to three I's — and they are printed in that order. So
+    a line is read by what its tokens are, which also means a running head, a
+    page number or a footnote is not a line of the table at all: it carries a
+    token that is none of those four things.
     """
     words = LANGUAGES[language]
     blocks: list[dict[str, Any]] = []
     failures: list[str] = []
     current: dict[str, Any] | None = None
     seen_class = ""
+    inheriting = False
 
     for index in pages:
-        page = doc[index]
-        lines = _lines(page)
-        header = next((y for y, items in lines
-                       if words["code_column"] in flatten(
-                           " ".join(w for _x, w in items)).lower()), 0.0)
-        boundary = _class_boundary(page, header)
-        for _y, items in lines:
-            if _y <= header:
-                continue
+        for _y, items in _lines(doc[index]):
             text = flatten(" ".join(word for _x, word in items))
+            tokens = [word.strip(",").strip() for _x, word in items]
+            tokens = [token for token in tokens if token]
+
             inherit = words["inherit"].search(text)
             if inherit:
                 if current is None:
                     failures.append(f"p{index + 1}: inheritance before any code")
                     continue
-                current["inherits"] = [
-                    code for code in TANK_CODE.findall(inherit.group(1)) or []
-                ] or _codes_in(inherit.group(1))
+                current["inherits"] = _codes_in(inherit.group(1))
+                inheriting = True
                 continue
-            left = [word for x, word in items if x < boundary]
-            right = [(x, word) for x, word in items if x >= boundary]
-            code = next((word for word in left
-                         if TANK_CODE.fullmatch(word.strip(","))), "")
-            if code:
-                current = {"tank_code": code.rstrip(")"), "groups": [],
+
+            codes = [token for token in tokens if TANK_CODE.fullmatch(token)]
+            # A sentence naming several codes is the inheritance running on to
+            # the next line; a block never begins with two tank codes.
+            if current is not None and len(codes) == len(tokens) and len(codes) > 1:
+                if inheriting:
+                    current["inherits"].extend(
+                        code for code in codes if code not in current["inherits"])
+                continue
+
+            if codes and TANK_CODE.fullmatch(tokens[0]):
+                current = {"tank_code": tokens[0], "groups": [],
                            "inherits": [], "page": index + 1}
                 blocks.append(current)
                 seen_class = ""
-            if current is None:
+                inheriting = False
+                tokens = tokens[1:]
+
+            if current is None or not tokens:
                 continue
-            group, seen_class = _group(right, seen_class)
+            group, seen_class = _group(tokens, seen_class)
             if group:
                 current["groups"].append(group)
-            elif right and not code:
-                failures.append(f"p{index + 1} {current['tank_code']}: {text[:70]!r}")
+                inheriting = False
     return blocks, failures
 
 
@@ -296,30 +293,39 @@ def _codes_in(text: str) -> list[str]:
     return [match.group(0).rstrip(")") for match in TANK_CODE.finditer(text)]
 
 
-def _group(items: list[tuple[float, str]],
+def _group(tokens: list[str],
            seen_class: str) -> tuple[dict[str, Any] | None, str]:
     """One line of the group columns: class, classification code, packing group.
 
     The class is printed once for a run of classification codes and left blank
     after that, so a blank one is the class above rather than a missing value.
+    A line that carries anything else is not a line of the table, and is left
+    alone rather than half-read: that is what keeps the running head, the page
+    number and the footnote out of the group.
     """
-    tokens = [word.strip(",") for _x, word in items if word.strip(",")]
     if not tokens:
         return None, seen_class
     klass = seen_class
     if CLASS.fullmatch(tokens[0]):
         klass = tokens[0]
         tokens = tokens[1:]
-    if not tokens:
+    if not tokens or not CLASSIFICATION.fullmatch(tokens[0]):
         return None, klass
     code = tokens[0]
-    if not CLASSIFICATION.fullmatch(code):
+    if not all(PACKING_GROUP.fullmatch(token) for token in tokens[1:]):
         return None, klass
-    groups = [token for token in tokens[1:] if PACKING_GROUP.fullmatch(token)]
     if not klass:
         return None, klass
-    return {"class": klass, "classification_code": code.rstrip(")"),
-            "packing_groups": groups}, klass
+    # A classification code is capitals and digits; a lower-case letter against
+    # it is the table's footnote marker and not part of the code. Keeping them
+    # apart matters because the marker is what carries the exception — "except
+    # hydrofluoric acid" hangs off one of these letters.
+    group: dict[str, Any] = {"class": klass, "classification_code": code.rstrip(
+        "abcdefghijklmnopqrstuvwxyz"), "packing_groups": tokens[1:]}
+    marker = code[len(group["classification_code"]):]
+    if marker:
+        group["footnote"] = marker
+    return group, klass
 
 
 # --- probing --------------------------------------------------------------

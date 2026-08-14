@@ -848,7 +848,16 @@ export interface AdnCarriageAdmissionResult {
     permitted: boolean;
     provision?: string;
     message: string;
+    /** Table C column (6): the tank vessel type, where every variant agrees. */
+    vessel_type?: string;
+    /** The types seen across variants, where they differ. */
+    vessel_types?: string[];
+    vessel_message?: string;
   }[];
+  /** Table C's remaining per-row conditions are shown, not checked. */
+  conditions_note?: string;
+  /** Rows the Dutch export lacks rest on one reading, and say so. */
+  single_reading_note?: string;
   not_assessed?: string;
   source?: string;
 }

@@ -441,6 +441,71 @@ def search_packagings(query: str = "", limit: int = 150) -> list[dict]:
     return [_public(entry) for _, entry in scored[:limit]]
 
 
+@lru_cache(maxsize=1)
+def _adn_table_c() -> dict[str, list[dict]]:
+    """Table C of the ADN, by UN number — the tank vessel table.
+
+    A substance can carry several rows (variants by benzene content, boiling
+    point, vapour pressure), and unlike table A this seed holds them all: the
+    English edition supplied the row set and every cell, the Dutch edition the
+    corroboration. A row carries ``readings`` (2 where both editions were read,
+    1 where the Dutch export lacks the row) and possibly ``disputed`` — cells
+    the two readings give differently, stored with both values. A disputed
+    cell is not settled and must not be presented as an answer.
+    """
+    try:
+        payload = json.loads(
+            (_SEED_DIR / "adn_table_c.json").read_text(encoding="utf-8"))
+    except (OSError, ValueError):  # pragma: no cover - seed missing
+        return {}
+    rows: dict[str, list[dict]] = {}
+    for entry in payload.get("entries", []):
+        rows.setdefault(entry["un"], []).append(entry)
+    return rows
+
+
+def adn_table_c_rows(un_number: str) -> list[dict]:
+    """Every table C row for one UN number; empty where the ADN admits the
+    substance to no tank vessel at all."""
+    return list(_adn_table_c().get(str(un_number or "").strip(), []))
+
+
+def adn_tank_vessel_answer(un_number: str) -> dict[str, Any] | None:
+    """What table C settles for one UN number, and what it does not.
+
+    The two questions the application asks of table C today: which vessel
+    type(s) the substance's rows demand, and which signals the vessel shows.
+    Either answer is offered only when every variant row agrees on it and no
+    row disputes the cell — variants are real (petrol's plain rows sail type N,
+    its high-benzene rows type C), and averaging them would answer a question
+    the consignment has not answered yet.
+    """
+    rows = adn_table_c_rows(un_number)
+    if not rows:
+        return None
+
+    def settled(field: str) -> str | None:
+        values = set()
+        for row in rows:
+            if field in (row.get("disputed") or {}):
+                return None
+            value = str(row.get(field) or "").strip()
+            if value in ("", "*", "-"):
+                return None
+            values.add(value)
+        return values.pop() if len(values) == 1 else None
+
+    return {
+        "rows": len(rows),
+        "vessel_type": settled("vessel_type"),
+        "vessel_types_seen": sorted({
+            str(r.get("vessel_type") or "").strip() for r in rows
+            if str(r.get("vessel_type") or "").strip() not in ("", "*", "-")}),
+        "cones": settled("blue_cones"),
+        "readings_min": min(int(r.get("readings", 1)) for r in rows),
+    }
+
+
 def adn_blue_cones(un_number: str) -> dict[str, Any] | None:
     """Column (12) of the ADN's table A for one UN number, with its doubt.
 

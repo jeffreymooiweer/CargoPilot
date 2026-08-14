@@ -24,9 +24,11 @@ when it does, and a check that treated a tank container like a cargo tank would
 take away the cone count, the hold separation and the exemption for a carriage
 that is entitled to all three.
 
-Table C itself is not in this repository. Where column (8) permits a tank vessel,
-the application says so and then says plainly that the vessel type, the cargo
-tank type and the conditions that go with them have not been read.
+Table C itself entered the repository in v1.73.0, read twice. Where column (8)
+permits a tank vessel the admission now names the vessel type of column (6) —
+or the variants, where the type is a property of the variant — and the signals
+come from column (19) under 7.2.5. What is still not checked is the vessel
+itself, and the conditions note says so.
 """
 
 import json
@@ -104,14 +106,35 @@ def test_geen_enkele_ontplofbare_stof_gaat_in_een_ladingtank():
     assert all(not row["carriage_permitted"] for row in class1)
 
 
-def test_de_tabel_c_wordt_niet_verzwegen():
-    """Permitting the carriage is only half the answer, and the half this
-    application does not have is the half worth admitting to."""
+def test_de_tabel_c_spreekt_nu_zelf():
+    """v1.71.0 could only admit to not having read table C. The table is in
+    the repository now, with two readings, and the admission names what the
+    row settles: petrol's six variants split between vessel types N and C, so
+    the type is a property of the variant and the message says so."""
     permitted = admission("1203", "tank")
-    assert "table C" in permitted["not_assessed"]
-    assert "UN 1203" in permitted["not_assessed"]
+    item = permitted["items"][0]
+    assert item["vessel_types"] == ["C", "N"]
+    assert "6" in item["vessel_message"]
 
-    assert "not_assessed" not in admission("1942", "bulk")
+    # Anhydrous ammonia has one row and one answer.
+    single = admission("1005", "tank")
+    assert single["items"][0]["vessel_type"] == "G"
+
+    # What is still not checked is the vessel itself, and the note says that
+    # instead of claiming the table is absent.
+    assert "conditions_note" in permitted
+    assert "not_assessed" not in permitted
+    assert "conditions_note" not in admission("1942", "bulk")
+
+
+def test_een_rij_met_een_lezing_zegt_dat():
+    """UN 1977 is genuinely in table C — the UNECE edition prints it — but the
+    Dutch export omits it, so its row rests on one reading and the result
+    names it rather than presenting the row as settled."""
+    result = admission("1977", "tank")
+    assert result["items"][0]["permitted"] is True
+    assert "UN 1977" in result["single_reading_note"]
+    assert "single_reading_note" not in admission("1005", "tank")
 
 
 # --- 7.1.1.18: a tank container is not a cargo tank -------------------------
@@ -141,20 +164,41 @@ def test_de_tankcontainer_houdt_zijn_kegels_en_zijn_afstanden():
 # --- chapter 7.1 is for dry cargo vessels ----------------------------------
 
 
-@pytest.mark.parametrize("check", [check_adn_signals, check_adn_hold_separation])
-def test_hoofdstuk_71_zwijgt_over_ladingtanks(check):
-    result = check(line(product("1203", "tank")), "en")
+def test_hoofdstuk_71_zwijgt_over_ladingtanks():
+    result = check_adn_hold_separation(line(product("1203", "tank")), "en")
     assert result["status"] == "not_available_for_mode"
     assert "chapter 7.2" in result["mode_note"]
     assert "UN 1203" in result["mode_note"]
 
 
-def test_de_kegels_worden_niet_op_nul_gezet():
-    """Withholding the answer and answering nought look the same on a screen and
-    are opposites in a lock. Column (12) is table A's answer, and table A is not
-    the table for a tank vessel."""
+def test_de_seinvoering_komt_nu_uit_tabel_c():
+    """v1.71.0 withheld the cones for a cargo tank load because table A is not
+    the tank vessel's table. Table C is, and its column (19) settles petrol at
+    one cone across all six variant rows — so the answer exists again, under
+    the tank vessel's own provision."""
     result = check_adn_signals(line(product("1203", "tank")), "en")
-    assert "cones" not in result
+    assert result["status"] == "ok"
+    assert result["provision"] == "7.2.5.0.1"
+    assert result["cones"] == 1
+
+
+def test_de_zwaarste_seinvoering_wint_op_een_tankschip():
+    """7.2.5.0.2 ranks the options: two blue cones or lights before one.
+    Ammonia (2 cones) sets the signals over molten sulphur (0)."""
+    entries = line(product("1005", "tank"), product("2448", "tank"))
+    result = check_adn_signals(entries, "en")
+    assert result["cones"] == 2
+    assert result["set_by"] == ["UN 1005"]
+    assert "7.2.5.0.2" in result["highest_wins"]
+
+
+def test_gemengde_wijzen_krijgen_geen_tankantwoord():
+    """A consignment mixing cargo tanks with packages is not one vessel under
+    either chapter, and inventing a vessel to answer for would be worse than
+    the honest note."""
+    entries = line(product("1203", "tank"), product("1263", "packages"))
+    result = check_adn_signals(entries, "en")
+    assert result["status"] == "not_available_for_mode"
 
 
 def test_een_gemengde_lading_valt_ook_buiten_71():
@@ -209,7 +253,7 @@ def test_elke_melding_bestaat_in_vier_talen():
     block = json.loads(CONFIG.read_text(encoding="utf-8"))["adn_carriage_admission"]
     messages = [value for key, value in block.items()
                 if isinstance(value, dict) and not key.startswith("_")]
-    assert len(messages) == 8
+    assert len(messages) == 12
     for message in messages:
         assert set(message) == set(LANGUAGES)
         assert all(message[language].strip() for language in LANGUAGES)

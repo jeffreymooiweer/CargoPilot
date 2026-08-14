@@ -604,8 +604,14 @@ def validate_document(
                     if not item.get("permitted"):
                         warnings.append(f"ADN {item.get('provision', '3.2.1')}: "
                                         f"{item['message']}")
-                if admission.get("not_assessed"):
-                    warnings.append(str(admission["not_assessed"]))
+                    # The vessel type of table C column (6) is a fact about the
+                    # voyage the papers travel with, like the cones are.
+                    if item.get("vessel_message"):
+                        warnings.append(str(item["vessel_message"]))
+                for key in ("single_reading_note", "conditions_note",
+                            "not_assessed"):
+                    if admission.get(key):
+                        warnings.append(str(admission[key]))
 
                 signals = outcome.get("adn_signals") or {}
                 separation = outcome.get("adn_hold_separation") or {}
@@ -623,7 +629,13 @@ def validate_document(
                         f"{signals.get('message', '')}".strip()
                     )
                     if signals.get("highest_wins"):
-                        warnings.append(f"ADN 7.1.5.0.4: {signals['highest_wins']}")
+                        # The ranking provision differs per vessel: 7.1.5.0.4
+                        # for holds, 7.2.5.0.2 for tank vessels — and the
+                        # result's own provision says which world this is.
+                        ranking = ("7.2.5.0.2"
+                                   if str(signals.get("provision", "")).startswith("7.2")
+                                   else "7.1.5.0.4")
+                        warnings.append(f"ADN {ranking}: {signals['highest_wins']}")
                 for source in (signals, outcome.get("adn_hold_separation") or {}):
                     # Named per substance rather than as a blanket disclaimer:
                     # "not settled for UN 1203" is something a consignor can act

@@ -1433,6 +1433,7 @@ def check_adn_carriage_admission(
     items: list[dict[str, Any]] = []
     blocked = False
     table_c: list[str] = []
+    table_c_single: list[str] = []
     for entry, index, product in products:
         mode = str(product.get("carriage_mode") or "packages").strip()
         if mode not in ("tank", "portable_tank", "bulk"):
@@ -1460,14 +1461,30 @@ def check_adn_carriage_admission(
         else:
             permitted = "T" in codes
             blocked = blocked or not permitted
-            if permitted:
-                table_c.append(label)
-            items.append({
+            item: dict[str, Any] = {
                 "position": label, "mode": mode, "permitted": permitted,
                 "provision": "7.2.1.21" if permitted else "7.1.1.21",
                 "message": text("tank_permitted" if permitted
                                 else "tank_not_permitted", product=label),
-            })
+            }
+            if permitted:
+                answer = database.adn_tank_vessel_answer(
+                    str(product.get("un_number") or "").strip())
+                if answer and answer["vessel_type"]:
+                    item["vessel_type"] = answer["vessel_type"]
+                    item["vessel_message"] = text(
+                        "tank_vessel_type", product=label,
+                        type=answer["vessel_type"])
+                elif answer and answer["vessel_types_seen"]:
+                    item["vessel_types"] = answer["vessel_types_seen"]
+                    item["vessel_message"] = text(
+                        "tank_vessel_variants", product=label,
+                        rows=answer["rows"],
+                        types=", ".join(answer["vessel_types_seen"]))
+                if answer and answer["readings_min"] < 2:
+                    table_c_single.append(label)
+                table_c.append(label)
+            items.append(item)
 
     if not items:
         return {"status": "not_checked", "items": []}
@@ -1477,9 +1494,72 @@ def check_adn_carriage_admission(
         "source": rules["source"],
     }
     if table_c:
-        result["not_assessed"] = text("table_c_not_covered",
-                                      products=", ".join(sorted(table_c)))
+        result["conditions_note"] = text("tank_conditions_note")
+    if table_c_single:
+        result["single_reading_note"] = text(
+            "single_reading_note", products=", ".join(sorted(table_c_single)))
     return result
+
+
+def _tank_vessel_signals(products, rules, lang: str) -> dict[str, Any]:
+    """ADN 7.2.5.0: the signals a tank vessel shows, from table C column (19).
+
+    7.2.5.0.1 takes the count from the column; 7.2.5.0.2 ranks the options
+    where several apply — two blue cones or lights before one. The count is
+    used only where table C settles it: every variant row of the substance
+    agrees and neither reading disputes the cell. Petrol settles at one cone
+    across all six of its rows; a substance whose variants disagree is named
+    instead of averaged.
+    """
+    highest: int | None = None
+    setters: list[str] = []
+    unsettled: list[str] = []
+    for entry, index, product in products:
+        label = _product_label(entry, product, index)
+        answer = database.adn_tank_vessel_answer(
+            str(product.get("un_number") or "").strip())
+        if answer is None:
+            continue
+        if answer["cones"] is None:
+            unsettled.append(label)
+            continue
+        count = int(answer["cones"])
+        if highest is None or count > highest:
+            highest, setters = count, [label]
+        elif count == highest:
+            setters.append(label)
+
+    if highest is None:
+        result: dict[str, Any] = {"status": "not_checked"}
+        if unsettled:
+            result["not_assessed"] = (
+                rules["tank_not_settled"].get(lang)
+                or rules["tank_not_settled"]["en"]).format(
+                products=", ".join(sorted(unsettled)))
+        return result
+
+    described = rules["cones"][str(highest)]
+    result = {
+        "status": "ok",
+        "provision": "7.2.5.0.1",
+        "cones": highest,
+        "message": described.get(lang) or described["en"],
+        "set_by": sorted(setters),
+        "source": "ADN 2025, 7.2.5 and table C column (19)",
+    }
+    if len(products) > 1:
+        result["highest_wins"] = (
+            rules["tank_highest"].get(lang)
+            or rules["tank_highest"]["en"]).format(
+            products=", ".join(sorted(setters)))
+    if unsettled:
+        result["not_assessed"] = (
+            rules["tank_not_settled"].get(lang)
+            or rules["tank_not_settled"]["en"]).format(
+            products=", ".join(sorted(unsettled)))
+        result["cones_not_settled"] = sorted(unsettled)
+    return result
+
 
 
 def check_adn_signals(
@@ -1519,6 +1599,12 @@ def check_adn_signals(
 
     in_cargo_tanks = _adn_cargo_tank_positions(products)
     if in_cargo_tanks:
+        modes = {str(p.get("carriage_mode") or "packages").strip()
+                 for _e, _i, p in products}
+        if modes == {"tank"}:
+            return _tank_vessel_signals(products, rules, lang)
+        # A consignment that mixes cargo tanks with packages is not one vessel
+        # under either chapter; the honest answer stays the chapter note.
         return {"status": "not_available_for_mode",
                 "mode_note": _adn_mode_note(in_cargo_tanks, lang)}
 

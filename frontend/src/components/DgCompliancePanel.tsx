@@ -320,9 +320,24 @@ export default function DgCompliancePanel({ entries, profiles }: Props) {
                 >
                   {item.message}
                 </p>
+                {item.vessel_message && (
+                  <p className="mt-0.5 font-medium text-slate-900 dark:text-slate-100">
+                    {item.vessel_message}
+                  </p>
+                )}
               </li>
             ))}
           </ul>
+          {adnAdmission.single_reading_note && (
+            <p className="text-xs text-amber-600 dark:text-amber-300">
+              {adnAdmission.single_reading_note}
+            </p>
+          )}
+          {adnAdmission.conditions_note && (
+            <p className="text-[11px] text-slate-500 dark:text-slate-400">
+              {adnAdmission.conditions_note}
+            </p>
+          )}
           {adnAdmission.not_assessed && (
             <p className="text-xs text-amber-600 dark:text-amber-300">
               {adnAdmission.not_assessed}

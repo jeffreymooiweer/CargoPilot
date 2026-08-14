@@ -1003,7 +1003,8 @@ def _third_value(field: str, value: str) -> str:
 
 
 def check_readings(english: list[dict], dutch: list[dict],
-                   french: list[dict] | None = None) -> dict[str, Any]:
+                   french: list[dict] | None = None,
+                   dutch_twins: bool = True) -> dict[str, Any]:
     """Pair the readings per UN and inventory what they settle and what differs.
 
     With two readings a disagreement is a stand-off: neither reading outranks
@@ -1041,7 +1042,8 @@ def check_readings(english: list[dict], dutch: list[dict],
         en_rows = [dict(r) for r in by_un_en.get(un, [])]
         nl_rows = list(by_un_nl.get(un, []))
         fr_rows = list(by_un_fr.get(un, []))
-        taken_e, partners, unplaced = _pair_within_un(en_rows, nl_rows)
+        taken_e, partners, unplaced = _pair_within_un(
+            en_rows, nl_rows, twins=dutch_twins)
         unmatched_dutch.extend(unplaced)
         taken_fr, _fr_partners, unplaced_fr = _pair_within_un(
             en_rows, fr_rows, twins=False)
@@ -1137,7 +1139,8 @@ def check_readings(english: list[dict], dutch: list[dict],
 
 
 def emit_seed(english: list[dict], dutch: list[dict], out: Path,
-              french: list[dict] | None = None) -> dict:
+              french: list[dict] | None = None,
+              dutch_twins: bool = True) -> dict:
     """Write the seed from the paired readings.
 
     Every row carries the English cells — the UNECE edition is the complete
@@ -1147,7 +1150,7 @@ def emit_seed(english: list[dict], dutch: list[dict], out: Path,
     under `disputed` and the application must treat that field as not settled.
     Nothing is averaged and nothing is discarded silently.
     """
-    outcome = check_readings(english, dutch, french)
+    outcome = check_readings(english, dutch, french, dutch_twins)
     entries = [row for row, _twins in outcome["matched"]]
     for row in outcome["single"]:
         row = dict(row)
@@ -1234,6 +1237,10 @@ def main() -> int:
                         help="dump every word of one PDF page with coordinates")
     parser.add_argument("--emit", nargs=3, metavar=("ENGLISH", "DUTCH", "SEED"),
                         help="pair the readings (JSON files) and write the seed")
+    parser.add_argument("--book-dutch", action="store_true",
+                        help="the Dutch reading came from the printed book, "
+                             "not the export: it prints one row per printed "
+                             "row, so no or-name twins join a row")
     parser.add_argument("--third", type=Path,
                         help="the French reading (JSON), which decides a cell "
                              "wherever two of the three readings agree")
@@ -1244,7 +1251,8 @@ def main() -> int:
         dutch = json.loads(Path(args.emit[1]).read_text(encoding="utf-8"))
         french = (json.loads(args.third.read_text(encoding="utf-8"))
                   if args.third else None)
-        outcome = emit_seed(english, dutch, Path(args.emit[2]), french)
+        outcome = emit_seed(english, dutch, Path(args.emit[2]), french,
+                            dutch_twins=not args.book_dutch)
         print(f"seed written: {args.emit[2]}")
         print(f"  matched: {len(outcome['matched'])}, of which disputed: "
               f"{len(outcome['disagreements'])}")

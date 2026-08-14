@@ -162,7 +162,7 @@
       "profiles": [
         "ADN"
       ],
-      "role": "First reading of adn_table_a.json and of the ADN provisions implemented since v1.59.0: 1.1.3.6, 7.1.4.3, 7.1.5.0, 3.2.1 column (8). 2,626 sections; holds the table C pages (706 rows) still awaiting their second reading.",
+      "role": "First reading of adn_table_a.json and of the ADN provisions implemented since v1.71.0. It was the Dutch reading of table C as well until v1.80.0, when the printed edition (adn_nl_2025) took that over: this export splits a row per alternative name, swaps the cells of columns (7) and (9) against its own header and omits UN 1977 and UN 1999. Each was measured and undone; none of it decides a cell any more.",
       "filename": "ADN-2025-NL-mindef-index.json",
       "urls": [],
       "obtained": "built from the mindef.nl HTML pages, one JSON object per section number",
@@ -360,7 +360,7 @@
       "profiles": [
         "ADN"
       ],
-      "role": "The Dutch ADN as a printed edition. Until now the Dutch reading of the inland-waterway rules came from an HTML export whose damage this repository has had to measure and undo cell by cell; this is the book itself, and the source of the Dutch model of 5.4.3.",
+      "role": "The Dutch reading of table C since v1.80.0, read across the page with scripts/extract_adn_table_c.py --dutch-book, and the source of the Dutch model of 5.4.3. The book behind the export this repository had been undoing cell by cell.",
       "filename": "ADN-2025-NL.pdf",
       "urls": [],
       "obtained": "supplied by the operator",

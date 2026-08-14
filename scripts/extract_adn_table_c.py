@@ -394,12 +394,15 @@ def _pages_of_table_c(doc) -> list[int]:
     for number in range(doc.page_count):
         text = doc[number].get_text("text")
         if "(20)" in text and "(14)" in text and "(1)" in text:
-            if "Table C" in text or "3.2.3" in text:
+            # "Tableau C" for the French edition; the section number is the
+            # same in every language and carries the page on its own.
+            if "Table C" in text or "Tableau C" in text or "3.2.3" in text:
                 pages.append(number)
     return pages
 
 
-def english_rows(pdf_path: Path) -> tuple[list[dict[str, Any]], list[str]]:
+def english_rows(pdf_path: Path,
+                 language: str = "en") -> tuple[list[dict[str, Any]], list[str]]:
     import fitz
 
     doc = fitz.open(pdf_path)
@@ -567,6 +570,11 @@ def english_rows(pdf_path: Path) -> tuple[list[dict[str, Any]], list[str]]:
     print("pages and column counts:", per_page)
     from collections import Counter
     print("UN multiset:", sorted(Counter(r["un"] for r in rows).items()))
+    if language != "en":
+        # The geometry is the same in either authentic language; only the name
+        # column speaks a different one, and it is named for what it holds.
+        for row in rows:
+            row[f"name_{language}"] = row.pop("name_en")
     return rows, failures
 
 
@@ -583,7 +591,10 @@ def _english_row(values: dict[str, str], failures: list[str]) -> dict[str, Any] 
         return None
     for key in ("pump_room_below_deck", "explosion_protection"):
         low = row[key].strip().lower()
-        row[key] = {"yes": "True", "no": "False"}.get(low, row[key])
+        # The English edition prints yes/no, the French oui/non; the seed holds
+        # the boolean either way.
+        row[key] = {"yes": "True", "oui": "True",
+                    "no": "False", "non": "False"}.get(low, row[key])
     checks = [
         ("vessel_type", VESSEL), ("cargo_tank_design", SMALL),
         ("cargo_tank_type", SMALL), ("cargo_tank_equipment", SMALL),
@@ -805,7 +816,10 @@ def main() -> int:
     parser.add_argument("--dutch", type=Path,
                         help="path of the stored Dutch ADN index JSON")
     parser.add_argument("--english", type=Path,
-                        help="path of the English ADN PDF")
+                        help="path of a UNECE ADN PDF, read geometrically")
+    parser.add_argument("--language", default="en", choices=["en", "fr"],
+                        help="which authentic language that PDF is in; the "
+                             "name column is stored as name_<language>")
     parser.add_argument("--check", type=Path,
                         help="compare against a previous reading (JSON)")
     parser.add_argument("--out", type=Path, help="write the rows to this file")
@@ -844,7 +858,7 @@ def main() -> int:
         return probe_english(args.english)
 
     if args.english:
-        rows, failures = english_rows(args.english)
+        rows, failures = english_rows(args.english, args.language)
         print(f"rows parsed: {len(rows)}")
         print(f"failures: {len(failures)}")
         for failure in failures[:30]:

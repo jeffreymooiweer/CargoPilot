@@ -215,6 +215,85 @@ def name_column(page, top: float, centres: dict[str, float]):
     return lines
 
 
+def split_bands(lines, method: str, cut: float) -> list[tuple[list[str], float]]:
+    """Cut a page's name column into rows, and say where each row began.
+
+    The y of the first line comes back with the row because the diagnostic
+    needs it: a row that never appears in the result has either been glued to
+    its predecessor or fallen outside the body, and only the coordinate tells
+    which.
+    """
+    bands: list[tuple[list[str], float]] = []
+    current: list[str] = []
+    start_y = 0.0
+    previous_y: float | None = None
+    for y, text in lines:
+        text = re.sub(r"\s+", " ", text).strip()
+        if not text:
+            continue
+        if method == BY_GAP:
+            starts = previous_y is not None and y - previous_y > cut
+        else:
+            starts = bool(current) and UN_START.match(text) is not None
+        if starts:
+            bands.append((current, start_y))
+            current = []
+        if not current:
+            start_y = y
+        previous_y = y
+        current.append(text)
+    if current:
+        bands.append((current, start_y))
+    return bands
+
+
+def explain(path: Path, targets: list[str]) -> int:
+    """Show what happened to the rows of the named UN numbers.
+
+    The French reading of ADR 2025 stops at 0.9633 agreement and the entries it
+    loses are one per table page — the shape of a boundary that is a line too
+    low, or of a row the band split swallows. Guessing at that across a runner
+    round trip is what six runs of the table C reading cost; this prints the
+    lines with their coordinates instead.
+    """
+    import fitz
+
+    wanted = set(targets)
+    with fitz.open(path) as document:
+        sample = list(range(0, document.page_count,
+                            max(1, document.page_count // 40)))
+        method, cut = learn_banding(document, sample)
+        print(f"banding: {method}, cut {cut}")
+        seen = 0
+        for index in range(document.page_count):
+            page = document[index]
+            top, centres = band_of(page)
+            if top is None or not all(n in centres for n in NEEDED):
+                continue
+            lines = name_column(page, top, centres)
+            if not any(any(re.match(rf"\s*{un}\b", text) for un in wanted)
+                       for _y, text in lines):
+                continue
+            seen += 1
+            print(f"\n--- page {index + 1}: band foot {top:.1f}, "
+                  f"body bottom {body_bottom(page):.1f} ---")
+            marks = {round(y, 1) for _band, y in
+                     split_bands(lines, method, cut)}
+            for y, text in lines[:14]:
+                head = "ROW " if round(y, 1) in marks else "    "
+                flat = re.sub(r"\s+", " ", text)[:90]
+                print(f"  {head}{y:7.1f} {flat!r}")
+            for band, y in split_bands(lines, method, cut)[:6]:
+                number, name = un_and_name({"1": band})
+                print(f"  -> y {y:7.1f} un {number} name {name[:60]!r}")
+            if seen >= 4:
+                break
+        if seen == 0:
+            print("none of those UN numbers appears in a name column at all — "
+                  "the rows are lost before the band split, not by it")
+    return 0
+
+
 def read(path: Path) -> tuple[dict[str, list[str]], list[str], dict[str, int]]:
     """The names per UN number, in the order table A gives them."""
     import fitz
@@ -240,24 +319,8 @@ def read(path: Path) -> tuple[dict[str, list[str]], list[str], dict[str, int]]:
             counts["table_pages"] += 1
             top = top_marker
 
-            bands: list[list[str]] = []
-            current: list[str] = []
-            previous_y: float | None = None
-            for y, text in name_column(page, top, centres):
-                text = re.sub(r"\s+", " ", text).strip()
-                if not text:
-                    continue
-                if method == BY_GAP:
-                    starts = previous_y is not None and y - previous_y > cut
-                else:
-                    starts = bool(current) and UN_START.match(text) is not None
-                if starts:
-                    bands.append(current)
-                    current = []
-                previous_y = y
-                current.append(text)
-            if current:
-                bands.append(current)
+            bands = [band for band, _starts
+                     in split_bands(name_column(page, top, centres), method, cut)]
 
             for band in bands:
                 number, name = un_and_name({"1": band})
@@ -390,6 +453,10 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--edition", default="ADR 2025")
     parser.add_argument("--probe", action="store_true",
                         help="Report the layout of this edition and stop")
+    parser.add_argument("--explain", default="",
+                        help="Comma-separated UN numbers whose rows to trace "
+                             "line by line, or 'auto' for the first the "
+                             "reading loses against the Dutch table")
     parser.add_argument("--dry-run", action="store_true",
                         help="Read and check, but do not write anything")
     parser.add_argument("--min-agreement", type=float, default=0.98,
@@ -406,6 +473,8 @@ def main(argv: list[str] | None = None) -> int:
     if args.probe:
         probe(path)
         return 0
+    if args.explain and args.explain != "auto":
+        return explain(path, [un.strip() for un in args.explain.split(",")])
     names, problems, counts = read(path)
     print(f"{counts['pages']} pages, {counts['table_pages']} of them table A, "
           f"{counts['rows']} rows, {len(names)} UN numbers "
@@ -428,6 +497,11 @@ def main(argv: list[str] | None = None) -> int:
         print(f"  extra here:   {check['only_in_this_language']}")
     for un in sorted(names)[:3]:
         print(f"  UN {un}: {names[un]}")
+
+    if args.explain == "auto":
+        missing = check.get("only_in_the_dutch_table") or []
+        print(f"\n--- tracing the rows this reading lost: {missing[:6]} ---")
+        return explain(path, missing[:6])
 
     if check.get("agreement") is None or check["agreement"] < args.min_agreement:
         print(f"\nAgreement {check.get('agreement')} is below {args.min_agreement}: "

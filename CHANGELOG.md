@@ -2,6 +2,24 @@
 
 All notable changes are documented here, following [Semantic Versioning](https://semver.org/).
 
+## [1.70.3] — 2026-08-14
+
+### Fixed
+
+- **The API is not a way round it either, so the workflow says what is missing.**
+  v1.70.2 fell back to the tag object API when the push of a tag on an older
+  commit was refused. Measured: `git/tags` accepts the tag object, and `git/refs`
+  then answers `403 Resource not accessible by integration`. The same restriction
+  is enforced there, so that fallback was a path that could never work — and a
+  fallback that cannot work is worse than none, because the failure it leaves
+  behind names the wrong thing.
+
+  It is gone. The only credential that can make such a tag is one carrying
+  workflow scope of its own, which has to be a secret; if `RELEASE_TOKEN` is set
+  the push uses it, and if it is not, the step ends with a message naming what is
+  missing instead of a line about App permissions. Tagging the head of main needs
+  none of this and is untouched.
+
 ## [1.70.2] — 2026-08-14
 
 ### Fixed

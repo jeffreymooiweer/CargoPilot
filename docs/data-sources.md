@@ -15,6 +15,12 @@ provisions the application implements to the run log, so a rule can be checked a
 text. It commits nothing: the quoted text stays in the log, and only the values read out of
 it — thresholds, limits, multipliers — are stored, each with the provision it came from.
 
+Since v1.72.0 the documents themselves have a durable home: a **document store** outside
+the repository (`/data/regulations`), registered file by file in
+`backend/seed/dg/sources.json` with edition and sha256, managed by
+`scripts/regulations_store.py`. See [docs/regulatory-database.md](regulatory-database.md)
+for the architecture and the procedure when a new edition appears.
+
 - [Goods and densities](#goods-and-densities)
 - [Steel and timber profiles](#steel-and-timber-profiles)
 - [Locations](#locations)

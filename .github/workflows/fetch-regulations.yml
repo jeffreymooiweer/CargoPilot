@@ -1,0 +1,49 @@
+name: Fetch regulations into the store
+
+# Fill the document store from the register in backend/seed/dg/sources.json and
+# keep the volumes in the Actions cache, where the reading and extraction
+# workflows already look. The development container often cannot reach the
+# publishers (UNECE refuses non-browser requests and the proxy blocks the rest);
+# a runner can, and once a volume is in the cache every later run starts warm.
+#
+# Nothing is committed and nothing is published: the cache is repository-
+# internal storage, the documents stay out of git, and the only thing that may
+# change in the repository is a pinned sha256 in sources.json — which is a fact
+# about a file, not the file.
+
+on:
+  workflow_dispatch:
+    inputs:
+      ids:
+        description: "Document ids to fetch (space separated); empty means everything fetchable"
+        default: ""
+        required: false
+
+permissions:
+  contents: read
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/cache/restore@v4
+        with:
+          path: /tmp/cargopilot-regulations
+          key: regulations-${{ github.run_id }}
+          restore-keys: |
+            regulations-
+
+      - name: Fetch what is missing
+        run: python scripts/regulations_store.py fetch ${{ inputs.ids }}
+
+      - name: Report the store
+        if: always()
+        run: python scripts/regulations_store.py status || true
+
+      - uses: actions/cache/save@v4
+        if: always()
+        with:
+          path: /tmp/cargopilot-regulations
+          key: regulations-${{ github.run_id }}

@@ -1,0 +1,95 @@
+# The regulatory database
+
+Every dangerous-goods answer CargoPilot gives was read out of a book. This page
+describes the machinery that keeps that honest: where the books live, how facts
+get out of them, and what to do when a new edition appears.
+
+## The shape of it
+
+```
+publishers (UNECE, OTIF, IMO, Rijksoverheid, mindef.nl)
+        │  download or operator-supplied file
+        ▼
+document store          /data/regulations (outside git; CARGOPILOT_REGULATIONS_DIR
+        │               overrides; /tmp/cargopilot-regulations is the CI cache twin)
+        │  scripts/regulations_store.py — status / fetch / add / verify
+        ▼
+register                backend/seed/dg/sources.json (in git: editions, URLs,
+        │               pinned sha256 per document — metadata, never text)
+        │  scripts/extract_*.py, scripts/read_land_regulations.py
+        ▼
+derived facts           backend/seed/dg/*.json + backend/app/config/dg_compliance.json
+        │               (in git: every value carries its provision and source)
+        ▼
+the application         backend/app/services/dg — loads seeds, computes, and
+                        reports which editions it runs on (regulatory_manifest)
+```
+
+Two rules carry the whole design, and neither is negotiable:
+
+1. **Regulatory text never enters the repository.** The books are not ours to
+   redistribute, and `docs/data-sources.md` promises it. The repository holds
+   derived facts — thresholds, codes, table rows — each with the provision it
+   came from, and the register holds hashes so a future reading can prove it
+   read the same book. The language guards enforce the spirit of this: even a
+   quoted Dutch sentence in a docstring fails the build.
+
+2. **A regulatory table gets two independent readings or none.** One reading is
+   an anecdote; the seed records both (`readings`, `cross_check` fields) and a
+   table with only one stays out — which is why ADN table C is registered,
+   present in the store, and still not in the seeds.
+
+## The store
+
+`/data/regulations` is a volume, not a directory in the container image: it
+survives the container. On an installation it is the same `/data` the database
+lives on. The CI workflows keep a twin under `/tmp/cargopilot-regulations` via
+`actions/cache`, and `read_land_regulations.py` looks in the store first.
+
+```
+python scripts/regulations_store.py status    # what is present, what is missing
+python scripts/regulations_store.py fetch     # download everything fetchable
+python scripts/regulations_store.py add adr_nl_complete ~/Downloads/ADR-2025-NL.pdf
+python scripts/regulations_store.py verify    # exit non-zero on any hash mismatch
+```
+
+The publishers are hostile to scripts in ways that change by the day — UNECE
+answers 403 to anything that does not look like a browser, the web archive
+rate-limits by mood. `fetch` climbs the same ladder the reader uses (browser
+headers, then the archive) and gives up loudly, not silently. When the
+development container cannot reach a publisher at all, the
+**Fetch regulations into the store** workflow does the same work on a runner
+and leaves the volumes in the Actions cache; the printed sha256 in its log is
+what gets pinned into the register afterwards.
+
+Two of the sources cannot be re-downloaded at all — the Dutch ADR PDFs and the
+Dutch ADN HTML index were supplied by the operator. Their hashes are pinned;
+if the store copy is ever lost, the operator's original is the way back, and
+`status` will name exactly which file is owed.
+
+## When a new edition appears
+
+ADR, RID and ADN revise every two years (2027 next, transition to 30 June);
+the IMDG Code every two years with a transitional year; the IATA DGR yearly.
+The procedure is the same each time:
+
+1. **Register the new edition** in `sources.json` — a new entry (or updated
+   URLs and a cleared hash) with the new edition string. A changed publisher
+   file is a manifest change, never a silent swap: `add` and `fetch` refuse a
+   file that contradicts a pinned hash.
+2. **Fetch it into the store**, locally or via the workflow, and pin the hash.
+3. **Re-run the extractors** (`extract_adr_table_a.py`, `extract_adn_table_a.py`,
+   `extract_imdg_dgl.py`, …) against the new files, with both readings.
+4. **Diff the seeds.** The diff *is* the review: every changed row is a change
+   the new edition made, and rows that changed unexpectedly are the reason the
+   two-readings rule exists.
+5. **Update the validity dates** in
+   `backend/app/services/regulatory_manifest.py`, whose `expired_rule_sets()`
+   is what tells a running installation its data has aged out.
+
+## What the register holds today
+
+Ten documents: the five free land-mode texts (ADR volumes I/II, ADR I French,
+RID, ADN), the four operator-supplied Dutch sources the first readings came
+from, and the IMDG 42-24 amendment resolution. `status` is the live answer;
+the register file is the durable one.

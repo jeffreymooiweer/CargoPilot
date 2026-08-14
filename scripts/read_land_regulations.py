@@ -32,6 +32,7 @@ Usage::
 from __future__ import annotations
 
 import argparse
+import os
 import re
 import subprocess
 import sys
@@ -40,7 +41,13 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
-CACHE = Path("/tmp/cargopilot-regulations")
+# The store first, the CI cache path second. /data/regulations is the document
+# store of backend/seed/dg/sources.json — a volume that outlives the container —
+# and a runner without /data lands on the path its actions/cache step persists.
+CACHE = Path(
+    os.environ.get("CARGOPILOT_REGULATIONS_DIR")
+    or ("/data/regulations" if Path("/data").is_dir() else "/tmp/cargopilot-regulations")
+)
 
 # Official, free-of-charge sources. Any change here changes what the app claims
 # to be based on, so each entry records the edition and the publisher.

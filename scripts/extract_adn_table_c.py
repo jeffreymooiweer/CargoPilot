@@ -793,6 +793,13 @@ def dutch_book_rows(pdf_path: Path) -> tuple[list[dict[str, Any]], list[str]]:
                         # the column holds decides, as it does for (1).
                         elif marker == "4" and not PG.fullmatch(word.strip(",")):
                             marker = "5"
+                        # Column (3a) holds a class: one digit, sometimes with
+                        # a decimal. A name long enough to wrap sets its later
+                        # lines wider than the corridor allows for — "(KOELGAS
+                        # R 115)" reached into the class — and the name is what
+                        # such a word is.
+                        elif marker == "3a" and not CLASS.fullmatch(word.strip(",")):
+                            marker = "2"
                         cells.setdefault(marker, []).append((y0, x0, word))
                         break
             values = {field: _read_cell(cells.get(marker, []))

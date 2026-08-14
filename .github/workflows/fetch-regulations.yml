@@ -18,6 +18,10 @@ on:
         description: "Document ids to fetch (space separated); empty means everything fetchable"
         default: ""
         required: false
+      probe_url:
+        description: "Fetch this URL and print what it answers, instead of fetching documents. The development container's proxy blocks most hosts; the runner does not, so this is how a mirror or share page gets looked at."
+        default: ""
+        required: false
 
 permissions:
   contents: read
@@ -35,11 +39,23 @@ jobs:
           restore-keys: |
             regulations-
 
+      - name: Look at a URL
+        if: ${{ inputs.probe_url != '' }}
+        env:
+          URL: ${{ inputs.probe_url }}
+        run: |
+          set -uo pipefail
+          echo "=== headers ==="
+          curl -sS -L -I "$URL" || true
+          echo "=== body, first 300 lines ==="
+          curl -sS -L "$URL" | head -300 || true
+
       - name: Fetch what is missing
+        if: ${{ inputs.probe_url == '' }}
         run: python scripts/regulations_store.py fetch ${{ inputs.ids }}
 
       - name: Report the store
-        if: always()
+        if: ${{ always() && inputs.probe_url == '' }}
         run: python scripts/regulations_store.py status || true
 
       - uses: actions/cache/save@v4

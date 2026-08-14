@@ -2,6 +2,38 @@
 
 All notable changes are documented here, following [Semantic Versioning](https://semver.org/).
 
+## [1.74.0] — 2026-08-14
+
+### Added
+
+- **The store takes in what the operator brings.** The publishers' servers are
+  not the only source of the books: the operator has their own downloads. The
+  store tool gains `adopt` — a file whose sha256 matches a pinned hash is
+  recognised and stored under its canonical name whatever it arrived as, a
+  mapped file is stored and pinned, and the rest is reported with name, size
+  and hash so the next mapping is written from the report. The fetch workflow
+  drains a public Google Drive folder into the store with `gdown`, and can
+  probe any URL from the runner, whose network is open where the development
+  container's is not.
+
+- **The register grows to fifteen documents, and the French ADR mystery is
+  solved.** The operator's folder held the UNECE originals: three volumes
+  verified byte-identical against their pinned hashes, and the French ADR
+  Volume I — whose file is numbered `2412006_F`, not the `2412007_F` the
+  published links carried, which explains every 404 it ever answered. The
+  corrected URL is recorded. Newly registered and pinned: the French ADR
+  Volume II, the French ADN — a third edition of that treaty, available for
+  settling cells the English and Dutch readings dispute — and three
+  ADN Administrative Committee session documents, honestly marked unread.
+
+### Known
+
+- The French proper-shipping-name extraction now reads the true French Volume
+  I and reaches 0.9633 agreement — up from 0.9475, still under the 0.98 gate,
+  and nothing is written below the gate. The diagnostic points at the first
+  row of nearly every table page going missing in this edition's layout; that
+  is an extractor iteration of its own.
+
 ## [1.73.0] — 2026-08-14
 
 ### Added

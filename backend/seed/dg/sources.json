@@ -40,12 +40,13 @@
       "role": "French proper shipping names of column (2). ADR is authentic in English and French alike, so this is a source text and not a translation of one.",
       "filename": "adr1_fr.pdf",
       "urls": [
+        "https://unece.org/sites/default/files/2025-01/2412006_F_ECE_TRANS_352_Vol.I_WEB.pdf",
         "https://unece.org/sites/default/files/2025-01/2412007_F_ECE_TRANS_352_Vol.I_WEB.pdf",
         "https://unece.org/sites/default/files/2025-01/2412007_F_ECE_TRANS_352_Vol.I_WEB_0.pdf"
       ],
       "obtained": "download",
-      "sha256": null,
-      "note": "Free of charge from the publisher, but unreachable on 2026-08-14: 403 direct at both URLs, 404 in the web archive. The French names in the seeds predate this register; retry, or check the publisher's download page for a moved address."
+      "sha256": "27d9afeafb861f2fa38ed63e99df591e2d1cfdc1ab957909ebb7d3187411b223",
+      "note": "Supplied by the operator from their own UNECE download; the file is named 2412006_F, which explains why the 2412007_F addresses answered 404 — the published link carried the wrong document number. The corrected URL is listed first for future fetches."
     },
     {
       "id": "adr2",
@@ -185,6 +186,90 @@
       "obtained": "download",
       "sha256": "01c23711f04b8649fd0cdb66362b272748903ca738d4ba9196e4badeb6a8a797",
       "note": "The IMDG Code itself is paywalled; this amendment resolution is publicly hosted. The consolidated code remains unavailable, which is why the sea seeds name the amendment as their source."
+    },
+    {
+      "id": "adr2_fr",
+      "title": "ADR 2025 Volume II, French (ECE/TRANS/352 Vol. II)",
+      "publisher": "UNECE",
+      "edition": "ADR 2025, in force 1 January 2025",
+      "language": "fr",
+      "profiles": [
+        "ADR"
+      ],
+      "role": "The French half of table A where a second authentic-language reading is wanted; not yet used by an extractor.",
+      "filename": "adr2_fr.pdf",
+      "urls": [
+        "https://unece.org/sites/default/files/2025-01/2412010_F_ECE_TRANS_352_Vol.II_WEB.pdf"
+      ],
+      "obtained": "supplied by the operator (their own UNECE download)",
+      "sha256": "f99c20bd3c75c7d43d3715be145e8133e339270aec50eaadf6d67ce809295afa",
+      "note": "Arrived with the operator's Drive folder on 2026-08-14."
+    },
+    {
+      "id": "adn_fr",
+      "title": "ADN 2025, French",
+      "publisher": "UNECE",
+      "edition": "ADN 2025, in force 1 January 2025",
+      "language": "fr",
+      "profiles": [
+        "ADN"
+      ],
+      "role": "A third edition of the ADN, in the treaty's other authentic language; available for settling cells the English and Dutch readings dispute.",
+      "filename": "adn_fr.pdf",
+      "urls": [
+        "https://unece.org/sites/default/files/2025-01/ADN%202025%20French.pdf"
+      ],
+      "obtained": "supplied by the operator (their own UNECE download)",
+      "sha256": "783cd7bc4573bf984d7f05dcbcad2e62b5f7ec0746e89feaf90782828b9a30a1",
+      "note": "Arrived with the operator's Drive folder on 2026-08-14."
+    },
+    {
+      "id": "adn_79_en",
+      "title": "ECE-ADN-79: ADN Administrative Committee session document, English",
+      "publisher": "UNECE",
+      "edition": "ADN 2025 cycle",
+      "language": "en",
+      "profiles": [
+        "ADN"
+      ],
+      "role": "Session document supplied alongside the 2025 volumes; likely corrections or amendments. Not yet read.",
+      "filename": "ECE-ADN-79e.pdf",
+      "urls": [],
+      "obtained": "supplied by the operator (their own UNECE download)",
+      "sha256": "0635b11a605d33aa247d623b420c3849f23bc861fb5c99d1915f8981c001d9f0",
+      "note": "Arrived with the operator's Drive folder on 2026-08-14."
+    },
+    {
+      "id": "adn_79_fr",
+      "title": "ECE-ADN-79: ADN Administrative Committee session document, French",
+      "publisher": "UNECE",
+      "edition": "ADN 2025 cycle",
+      "language": "fr",
+      "profiles": [
+        "ADN"
+      ],
+      "role": "Session document supplied alongside the 2025 volumes; likely corrections or amendments. Not yet read.",
+      "filename": "ECE-ADN-79f.pdf",
+      "urls": [],
+      "obtained": "supplied by the operator (their own UNECE download)",
+      "sha256": "8291328b0ffee9a2bc4d2e83062c94b5ae238eb42b9f7efd97c804afcadad5c3",
+      "note": "Arrived with the operator's Drive folder on 2026-08-14."
+    },
+    {
+      "id": "adn_79_de",
+      "title": "CCNR/ZKR ADN-79: session document, German",
+      "publisher": "CCNR/UNECE",
+      "edition": "ADN 2025 cycle",
+      "language": "de",
+      "profiles": [
+        "ADN"
+      ],
+      "role": "Session document supplied alongside the 2025 volumes; likely corrections or amendments. Not yet read.",
+      "filename": "CCNR_ZKR_ADN_79de.pdf",
+      "urls": [],
+      "obtained": "supplied by the operator (their own UNECE download)",
+      "sha256": "f3d7d3bda03cd8c639f8919159fb8d3894ed764886430a3cf3a89ece880c2879",
+      "note": "Arrived with the operator's Drive folder on 2026-08-14."
     }
   ]
 }

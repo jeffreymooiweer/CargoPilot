@@ -18,6 +18,18 @@ on:
         description: "Document ids to fetch (space separated); empty means everything fetchable"
         default: ""
         required: false
+      probe_url:
+        description: "Fetch this URL and print what it answers, instead of fetching documents. The development container's proxy blocks most hosts; the runner does not, so this is how a mirror or share page gets looked at."
+        default: ""
+        required: false
+      drive_folder:
+        description: "Download a public Google Drive folder into the store's incoming directory and adopt what is recognised"
+        default: ""
+        required: false
+      adopt_as:
+        description: "Mappings for unrecognised incoming files, space separated: filename.pdf=document-id"
+        default: ""
+        required: false
 
 permissions:
   contents: read
@@ -35,11 +47,42 @@ jobs:
           restore-keys: |
             regulations-
 
+      - name: Look at a URL
+        if: ${{ inputs.probe_url != '' }}
+        env:
+          URL: ${{ inputs.probe_url }}
+        run: |
+          set -uo pipefail
+          echo "=== headers ==="
+          curl -sS -L -I "$URL" || true
+          echo "=== body, first 2000 bytes (may be binary) ==="
+          curl -sS -L "$URL" | head -c 2000 | od -c | head -40 || true
+
+      - name: Take in a Drive folder
+        if: ${{ inputs.drive_folder != '' }}
+        env:
+          FOLDER: ${{ inputs.drive_folder }}
+          ADOPT_AS: ${{ inputs.adopt_as }}
+        run: |
+          set -euo pipefail
+          pip install --quiet gdown
+          mkdir -p /tmp/cargopilot-regulations/incoming
+          gdown --folder "$FOLDER" -O /tmp/cargopilot-regulations/incoming
+          echo "=== incoming ==="
+          ls -la /tmp/cargopilot-regulations/incoming
+          MAPPINGS=""
+          for pair in $ADOPT_AS; do MAPPINGS="$MAPPINGS --as $pair"; done
+          python scripts/regulations_store.py adopt \
+            /tmp/cargopilot-regulations/incoming $MAPPINGS
+
       - name: Fetch what is missing
+        if: ${{ inputs.probe_url == '' && inputs.drive_folder == '' }}
         run: python scripts/regulations_store.py fetch ${{ inputs.ids }}
 
       - name: Report the store
-        if: always()
+        if: ${{ always() && inputs.probe_url == '' }}
+        env:
+          IGNORED: report runs after fetch and after adopt alike
         run: python scripts/regulations_store.py status || true
 
       - uses: actions/cache/save@v4

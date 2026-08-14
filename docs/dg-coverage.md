@@ -404,11 +404,36 @@ questions. **Column (12), the number of blue cones or blue lights**, closes two 
   7.1.5.0.4: where the load disagrees with itself, the heaviest signal wins, so one package
   can set the signals for the whole vessel.
 
+**And since v1.71.0:** **column (8)**, the way the goods may travel. Everything above it is
+chapter 7.1, which is the ADN's chapter for *dry cargo vessels*, and until this release a
+consignment declared as a cargo tank was measured against it anyway. Column (8) is where the
+regulation says which way is open: empty means carriage in packages only, `B` adds bulk and
+points at 7.1.1.11, `T` adds tank vessels and points at 7.2.1.21, where Table C takes over.
+Two further provisions fix what the modes mean here — **7.1.1.21** forbids carriage in cargo
+tanks on a dry cargo vessel, so a cargo tank load is a tank vessel; **7.1.1.18** puts tank
+containers and portable tanks under the requirements for carriage of packages, so they sail
+on a dry cargo vessel and keep every answer chapter 7.1 gives them.
+
+So a cargo tank load now gets the chapter it belongs to named rather than the wrong
+chapter's answers, and 1.1.3.6.1 — whose own note has said "carriage in tanks is never
+exempt" since v1.32.0 while the arithmetic granted the exemption anyway — withholds it.
+
 **What is missing beyond that:**
 
-- **The tank vessel regime entirely.** ADN splits into dry cargo and tank vessels, and the
-  tank vessel side with its own substance table (Table C) is a different discipline.
-  CargoPilot has nothing to say about it and should not be read as though it has.
+- **Column (8) rests on one edition.** Its *values* carry two readings. What the codes
+  mean does not: the UNECE English ADN was unreachable when v1.71.0 was built — 403 from the
+  publisher, 503 and 404 from the web archive — so the wording comes from the Dutch 2025
+  edition alone. Four separately typeset places in that edition agree (the 3.2.1 note,
+  7.1.1.11, 7.1.1.21, and 7.2.1.21.1 with the title of 3.2.3), and the data agrees with them,
+  but corroboration is not a second reading. Re-check it when the English volume can be
+  reached.
+- **The tank vessel regime beyond admission.** ADN splits into dry cargo and tank vessels.
+  Since v1.71.0 the application says whether a tank vessel is permitted at all, and then says
+  plainly that the vessel type, the cargo tank type and the conditions that go with them are
+  in **Table C**, which this repository does not carry. That table is one reading short: the
+  Dutch export holds 706 rows and a second, independent reading is what the rule for a
+  regulatory table demands. The rest of the regime — 7.2.x, 9.3, 8.1 — is a different
+  discipline again and CargoPilot should not be read as though it has it.
 - **The rows the ADN table A holds only once.** The table is available one row per UN
   number and the book prints several for 452 of the 2,352 substances. Where those rows
   differ in the vessel's columns — UN 1203 petrol is the clear case — no cone count is
@@ -438,11 +463,11 @@ visible — in the compliance panel and on the document, where until then they w
 for every consignment and shown to nobody.
 
 **The mode came off the lock in v1.63.0.** It went on in v1.60.0 because inland waterway
-answered its separation question with the *road* table and held no cone data at all. What
-still does not exist is the tank vessel regime — and a tank vessel consignment cannot be
-entered here in the first place, because this wizard models packages. So what a user can
-draw up is exactly the part that is covered, which is the condition the lock existed to
-enforce.
+answered its separation question with the *road* table and held no cone data at all. Since
+v1.66.0 a consignment can say how it travels, which changed what the lock was holding back:
+a tank vessel consignment can now be *entered*, and v1.71.0 is what makes entering one
+honest. It is admitted or refused on column (8), and everything the application cannot say
+about it is named rather than left to be discovered.
 
 ## Sea — IMDG
 

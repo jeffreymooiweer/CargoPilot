@@ -579,6 +579,16 @@ def validate_document(
             if tunnel and profile == "ADR" and tunnel.get("status") not in {None, "not_checked"}:
                 warnings.append(f"ADR 8.6.3: {tunnel['message']}")
 
+            # v1.66.0 works out whether the goods may travel in a tank at all and
+            # showed the answer on screen only. A prohibition that reaches the
+            # panel and not the paper is a prohibition the person filling in the
+            # document never meets.
+            if profile == "ADR":
+                for item in (outcome.get("adr_tank_admission") or {}).get("items", []):
+                    if not item.get("permitted"):
+                        warnings.append(f"ADR {item.get('provision', '3.2.1')}: "
+                                        f"{item['message']}")
+
             # The inland waterway answers two questions the road does not, and
             # until now it answered them into the void: the separation in the
             # holds and the signals the vessel must show were computed for every
@@ -586,8 +596,28 @@ def validate_document(
             # particular belong here — which cones a vessel shows is a fact
             # about the voyage that the papers travel with.
             if profile == "ADN":
+                # Whether the goods may travel that way at all comes first: a
+                # carriage the ADN does not permit is not a remark under the cone
+                # count, it is the reason there is no voyage to paper.
+                admission = outcome.get("adn_carriage_admission") or {}
+                for item in admission.get("items", []):
+                    if not item.get("permitted"):
+                        warnings.append(f"ADN {item.get('provision', '3.2.1')}: "
+                                        f"{item['message']}")
+                if admission.get("not_assessed"):
+                    warnings.append(str(admission["not_assessed"]))
+
                 signals = outcome.get("adn_signals") or {}
-                if signals.get("status") not in {None, "not_checked"}:
+                separation = outcome.get("adn_hold_separation") or {}
+                # A cargo tank load is not on a dry cargo vessel, so chapter 7.1
+                # has no answer to put here. Saying which chapter does is worth a
+                # line; a cone count of nothing would be a wrong one.
+                for source in (signals, separation):
+                    if source.get("mode_note"):
+                        warnings.append(str(source["mode_note"]))
+                        break
+                if signals.get("status") not in {None, "not_checked",
+                                                 "not_available_for_mode"}:
                     warnings.append(
                         f"ADN {signals.get('provision', '7.1.5.0.1')}: "
                         f"{signals.get('message', '')}".strip()

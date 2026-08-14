@@ -410,7 +410,22 @@ def check_adn_exemption(
             over_class.append({"class": class_name, "selector": selector,
                                "limit": limit, "carried": round(carried, 2)})
 
-    if incomplete:
+    # 1.1.3.6.1 grants this for the carriage of dangerous goods *in packages*,
+    # and its own table opens by giving carriage in tanks a limit of nought for
+    # every class. The note under this result has said so since v1.32.0 while the
+    # arithmetic granted the exemption anyway — a sentence to the reader is not a
+    # rule. Bulk is not carriage in packages either, and a tank container is a
+    # tank; withholding an exemption is the safe direction to be wrong in.
+    not_in_packages = sorted({
+        _product_label(entry, product, index)
+        for entry, index, product in _iter_products(entries)
+        if not product.get("transport_forbidden")
+        and str(product.get("carriage_mode") or "").strip()
+        in ("tank", "portable_tank", "bulk")})
+
+    if not_in_packages:
+        status = "not_available_for_mode"
+    elif incomplete:
         status = "incomplete"
     elif over_class:
         status = "not_exempt"
@@ -419,11 +434,18 @@ def check_adn_exemption(
     else:
         status = "exempt_possible"
 
+    mode_note: dict[str, Any] = {}
+    if not_in_packages:
+        text = get_compliance_rules()["adn_carriage_admission"]["not_in_packages"]
+        mode_note["mode_note"] = (text.get(lang) or text["en"]).format(
+            products=", ".join(not_in_packages))
+
     return {
         "rows": rows,
         "total_gross_mass_kg": round(total, 2),
         "threshold": cap,
         "status": status,
+        **mode_note,
         "over_class_limit": over_class,
         "incomplete_products": incomplete,
         "basis": "ADN 1.1.3.6.1",
@@ -1208,6 +1230,11 @@ def check_adn_hold_separation(
     if not products:
         return {"status": "not_checked", "findings": []}
 
+    in_cargo_tanks = _adn_cargo_tank_positions(products)
+    if in_cargo_tanks:
+        return {"status": "not_available_for_mode", "findings": [],
+                "mode_note": _adn_mode_note(in_cargo_tanks, lang)}
+
     classes = {str(p.get("class") or "").strip() for _e, _i, p in products}
     classes.discard("")
     findings: list[dict[str, Any]] = []
@@ -1342,6 +1369,119 @@ def check_adn_hold_separation(
     return result
 
 
+def _adn_cargo_tank_positions(products: list[tuple[Any, int, dict[str, Any]]]) -> list[str]:
+    """The positions that travel in cargo tanks, and are therefore not on a dry
+    cargo vessel.
+
+    Only `tank` counts. `portable_tank` is a tank container, and 7.1.1.18 puts
+    the carriage of tank containers and portable tanks under the requirements
+    for carriage of packages — so it sails on a dry cargo vessel and chapter 7.1
+    is exactly the right chapter for it. Rounding the two together would take
+    away answers that do apply.
+    """
+    return sorted({
+        _product_label(entry, product, index)
+        for entry, index, product in products
+        if str(product.get("carriage_mode") or "").strip() == "tank"})
+
+
+def _adn_mode_note(positions: list[str], lang: str) -> str:
+    text = get_compliance_rules()["adn_carriage_admission"][
+        "chapter_7_1_not_for_tank_vessels"]
+    return (text.get(lang) or text["en"]).format(products=", ".join(positions))
+
+
+def check_adn_carriage_admission(
+    entries: list[dict[str, Any]], language: str = "nl",
+) -> dict[str, Any]:
+    """ADN 3.2.1, column (8): may these goods travel this way on the water?
+
+    The road side got this answer in v1.66.0 and the water side did not, so an
+    inland consignment declared as bulk or as a cargo tank was measured against
+    chapter 7.1 as though it were a stack of packages. Column (8) is where the
+    ADN says which of the three is allowed, and it is a short list:
+
+    - **empty** — carriage in packages only.
+    - **B** — packages and bulk, and 7.1.1.11 forbids bulk without it.
+    - **T** — packages and tank vessels, and 7.2.1.21 hands that carriage to
+      table C.
+
+    Two provisions decide what the modes mean here. **7.1.1.21** forbids carriage
+    in cargo tanks on a dry cargo vessel, so a cargo tank load is a tank vessel
+    and belongs to chapter 7.2 rather than to the chapter every other ADN check
+    in this file implements. **7.1.1.18** goes the other way for tank containers
+    and portable tanks: their carriage must meet the requirements for carriage of
+    packages, so they sail on a dry cargo vessel and column (8) is not their gate.
+
+    Table C is not in this repository. Where column (8) permits a tank vessel,
+    saying so is the whole of the answer — the vessel type, the cargo tank type
+    and the conditions that go with them are in table C, and this says plainly
+    that it has not read them rather than leaving the silence to be discovered.
+    """
+    rules = get_compliance_rules()["adn_carriage_admission"]
+    lang = _lang(language)
+    products = [(entry, index, product)
+                for entry, index, product in _iter_products(entries)
+                if not product.get("transport_forbidden")]
+    if not products:
+        return {"status": "not_checked", "items": []}
+
+    def text(key: str, **values: Any) -> str:
+        block = rules[key]
+        return (block.get(lang) or block["en"]).format(**values)
+
+    items: list[dict[str, Any]] = []
+    blocked = False
+    table_c: list[str] = []
+    for entry, index, product in products:
+        mode = str(product.get("carriage_mode") or "packages").strip()
+        if mode not in ("tank", "portable_tank", "bulk"):
+            continue
+        label = _product_label(entry, product, index)
+        rows = database.get_un_entries(str(product.get("un_number") or "").strip())
+        row = rows[0] if rows else {}
+        codes = str(row.get("adn_carriage_permitted") or "").upper()
+
+        if mode == "portable_tank":
+            items.append({
+                "position": label, "mode": mode, "permitted": True,
+                "provision": "7.1.1.18",
+                "message": text("portable_tank_as_packages", product=label),
+            })
+        elif mode == "bulk":
+            permitted = "B" in codes
+            blocked = blocked or not permitted
+            items.append({
+                "position": label, "mode": mode, "permitted": permitted,
+                "provision": "3.2.1 column (8)" if permitted else "7.1.1.11",
+                "message": text("bulk_permitted" if permitted
+                                else "bulk_not_permitted", product=label),
+            })
+        else:
+            permitted = "T" in codes
+            blocked = blocked or not permitted
+            if permitted:
+                table_c.append(label)
+            items.append({
+                "position": label, "mode": mode, "permitted": permitted,
+                "provision": "7.2.1.21" if permitted else "7.1.1.21",
+                "message": text("tank_permitted" if permitted
+                                else "tank_not_permitted", product=label),
+            })
+
+    if not items:
+        return {"status": "not_checked", "items": []}
+    result: dict[str, Any] = {
+        "status": "not_permitted" if blocked else "ok",
+        "items": items,
+        "source": rules["source"],
+    }
+    if table_c:
+        result["not_assessed"] = text("table_c_not_covered",
+                                      products=", ".join(sorted(table_c)))
+    return result
+
+
 def check_adn_signals(
     entries: list[dict[str, Any]], language: str = "nl",
 ) -> dict[str, Any]:
@@ -1376,6 +1516,11 @@ def check_adn_signals(
                 if not product.get("transport_forbidden")]
     if not products:
         return {"status": "not_checked"}
+
+    in_cargo_tanks = _adn_cargo_tank_positions(products)
+    if in_cargo_tanks:
+        return {"status": "not_available_for_mode",
+                "mode_note": _adn_mode_note(in_cargo_tanks, lang)}
 
     highest: int | None = None
     setters: list[str] = []
@@ -3759,6 +3904,14 @@ def check_compliance(
         # ADN answers the exemption question with its own rule, so it gets its
         # own result rather than borrowing the points total.
         if "ADN" in normalized:
+            # Whether the goods may travel that way on the water at all. Like
+            # its road counterpart it only speaks once a carriage mode says the
+            # goods are not in packages, and it runs first because the answers
+            # below it are chapter 7.1 — dry cargo vessels — and a cargo tank
+            # load is not on one.
+            admission = check_adn_carriage_admission(entries, language)
+            if admission.get("status") != "not_checked":
+                result["adn_carriage_admission"] = admission
             result["adn_exemption"] = check_adn_exemption(entries, language)
             # 7.1.4.3 is the inland waterway's own separation rule, and it
             # answers in metres where 7.5.2 answers yes or no.

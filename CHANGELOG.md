@@ -2,6 +2,51 @@
 
 All notable changes are documented here, following [Semantic Versioning](https://semver.org/).
 
+## [1.71.0] — 2026-08-14
+
+### Fixed
+
+- **Chapter 7.1 of the ADN is for dry cargo vessels, and every inland check in
+  this application implements it.** A consignment declared as a cargo tank was
+  measured against that chapter anyway: the separation in the holds (7.1.4.3),
+  the blue cones off table A (7.1.5.0) and the exemption of 1.1.3.6.1 all came
+  back with answers, and none of them applied. That is the same shape of wrong
+  the road side had before v1.66.0 — not a gap, which looks like a gap, but an
+  answer.
+
+  **Column (8)** is where the ADN says which way is open, and it is a short
+  list: empty means carriage in packages only, `B` adds bulk and points at
+  7.1.1.11, `T` adds tank vessels and points at 7.2.1.21, where table C takes
+  over. The value has been in the substance database since v1.61.0 and nothing
+  read it. A new check does, and it refuses gas oil in bulk (no `B`) and
+  ammonium picrate in a cargo tank (no `T`) while admitting ammonium nitrate in
+  bulk and petrol in a tank vessel.
+
+  Two provisions fix what the modes mean here, and they point opposite ways.
+  **7.1.1.21** forbids carriage in cargo tanks on a dry cargo vessel, so a cargo
+  tank load is a tank vessel and chapter 7.1 has nothing to say about it; the
+  three checks above now name chapter 7.2 instead of answering. **7.1.1.18** puts
+  tank containers and portable tanks under the requirements for carriage of
+  packages, so they sail on a dry cargo vessel and keep every answer — which is
+  the more expensive half to get wrong, and most of the new tests are about it.
+
+- **1.1.3.6.1 is granted for carriage in packages.** The note printed under that
+  result has said "carriage in tanks is never exempt" since v1.32.0 while the
+  arithmetic granted the exemption anyway. A sentence to the reader is not a
+  rule.
+
+- **A tank prohibition reached the panel and not the paper.** v1.66.0 works out
+  whether goods may travel in a tank at all and showed the answer on screen only.
+  Both the road and the water admission findings now go into the document
+  warnings, where the person filling in the document meets them.
+
+### Added
+
+- Where column (8) permits a tank vessel, the answer says plainly that **table C**
+  is not in this repository — the vessel type, the cargo tank type and the
+  conditions that go with them are in it and have not been read. Silence there
+  would be read as "nothing further applies".
+
 ## [1.70.3] — 2026-08-14
 
 ### Fixed

@@ -919,7 +919,8 @@ def _norm(field: str, value: str) -> str:
         # substance and "F or S", the French "inst." and "F ou S". Same fact,
         # and the comparison is of facts. It happens after the spaces go,
         # because the rotated cell breaks the word itself ("ins t.").
-        packed = packed.replace("INST.", "UNST.").replace("OU", "OR")
+        packed = (packed.replace("INST.", "UNST.").replace("OU", "OR")
+                  .replace("OF", "OR").replace("NIETGESTAB.", "UNST."))
         packed = re.sub(r"(\d),(\d)", r"\1.\2", packed)
         tokens = sorted(t.rstrip(".") for t in re.split(r"[+(),]+", packed) if t)
         return "+".join(tokens)

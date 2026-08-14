@@ -2,6 +2,34 @@
 
 All notable changes are documented here, following [Semantic Versioning](https://semver.org/).
 
+## [1.79.3] — 2026-08-14
+
+### Changed
+
+- **The reading of table C from the printed Dutch ADN stands up.** 653 rows off
+  35 pages, 25 cells it still will not guess at, and — the number that matters
+  — **628 of the 678 rows of the English edition match a Dutch row on every
+  compared cell**, with 39 differing and 11 having no Dutch row at all. The
+  export it would replace needed four documented repairs before it could be
+  compared at all and still left 153 cells disputed.
+
+  What it took, each measured on a run and none of it guessed: the boundary
+  between two columns is the empty corridor the typesetter left, not the
+  midpoint between two column numbers — a number is centred over its column and
+  the cells under it are not, so the equipment codes of column (18) began a
+  point left of the midpoint and "PP," landed in the explosion protection.
+  Where a page's widest row bridges that corridor there is none to measure, and
+  then what the column *holds* decides: (1) a UN number, (4) a packing group,
+  (3a) a class. And the danger cell is the one code written in words, so the
+  Dutch "F of S" is the English "F or S" — that alone accounted for 95 of the
+  first 118 differences.
+
+- The reading is **not yet adopted**: swapping it in means re-emitting the seed
+  the application answers from and re-pinning the bookkeeping its tests hold to,
+  and that is a step to take with a full test pass in front of it rather than at
+  the end of a long session. The three readings in `adn_table_c.json` are
+  untouched.
+
 ## [1.79.2] — 2026-08-14
 
 ### Fixed

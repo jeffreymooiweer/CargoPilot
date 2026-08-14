@@ -308,34 +308,44 @@ def dutch_rows(index_path: Path) -> tuple[list[dict[str, Any]], list[str]]:
 
 # --- the English reading ----------------------------------------------------
 #
-# The UNECE PDF prints table C on landscape pages with a numbered header row —
-# (1) to (20) — whose x positions are the column boundaries. Words are assigned
-# to columns by those positions, lines are grouped into rows by the UN number
-# in column (1), and every cell then faces the same closed vocabularies as the
-# Dutch reading. Booleans print as yes/no in this edition and are mapped onto
-# True/False so the two readings compare directly.
+# The UNECE PDF prints table C *transposed*: portrait pages on which the twenty
+# column numbers run down the left edge — (20) at the top, (1) at the bottom —
+# each opening a horizontal band, while the substances stand side by side as up
+# to eight page-columns. The probe run measured it: markers at x≈165, provision
+# references beside them at x≈178, and the substance columns from x≈198. A cell
+# is the intersection of its attribute band and its substance column, wrapped
+# over several lines, so words are gathered per (band, column) and joined in
+# reading order. Booleans print as yes/no and are mapped onto True/False so the
+# two readings compare directly.
 
 ENGLISH_FIELDS = [field if field != "name_nl" else "name_en" for field in FIELDS]
 
+#: Band markers sit in a narrow x window at the left edge; anything to the left
+#: of the first substance column is label or provision text, not a value.
+MARKER_X = (150.0, 195.0)
+MARKER = re.compile(r"\((?:\d{1,2})\)|\(3\)[ab]")
 
-def _pages_of_table_c(doc) -> list[int]:
-    pages = []
-    for number in range(doc.page_count):
-        text = doc[number].get_text("text")
-        if "(20)" in text and re.search(r"\(3\s?\)?\s?a|\(3a\)", text):
-            if re.search(r"Type of (?:tank )?vessel|3\.2\.3\.2|Table C", text):
-                pages.append(number)
-    return pages
+#: The order the markers carry down the page maps onto the seed fields.
+BAND_FIELDS = {
+    "1": "un", "2": "name_en", "3a": "class", "3b": "classification_code",
+    "4": "packing_group", "5": "dangers", "6": "vessel_type",
+    "7": "cargo_tank_design", "8": "cargo_tank_type",
+    "9": "cargo_tank_equipment", "10": "opening_pressure_kpa",
+    "11": "max_filling_percent", "12": "density", "13": "sampling_device",
+    "14": "pump_room_below_deck", "15": "temperature_class",
+    "16": "explosion_group", "17": "explosion_protection", "18": "equipment",
+    "19": "blue_cones", "20": "remarks",
+}
 
 
-def _header_anchors(page) -> list[tuple[str, float, float]]:
-    """The x span of every numbered header cell on this page."""
-    anchors = []
-    for x0, y0, x1, y1, word, *_ in page.get_text("words"):
-        if re.fullmatch(r"\((?:\d{1,2}|3\)?a|3\)?b)\)?", word):
-            anchors.append((word.strip("()"), x0, x1, y1))
-    anchors.sort(key=lambda a: a[1])
-    return [(name, x0, x1) for name, x0, x1, _ in anchors]
+def _bands(page) -> list[tuple[str, float]]:
+    """The column-number markers down the left edge, top to bottom."""
+    found = []
+    for x0, y0, _x1, _y1, word, *_ in page.get_text("words"):
+        if MARKER_X[0] <= x0 <= MARKER_X[1] and MARKER.fullmatch(word):
+            found.append((word.strip("()").replace(")", ""), y0))
+    found.sort(key=lambda item: item[1])
+    return found
 
 
 def probe_english(pdf_path: Path) -> int:
@@ -344,25 +354,33 @@ def probe_english(pdf_path: Path) -> int:
     doc = fitz.open(pdf_path)
     pages = _pages_of_table_c(doc)
     print(f"table C candidate pages: {len(pages)}")
-    print(f"first, last: {pages[:3]} ... {pages[-3:]}" if pages else "none found")
+    print(f"first, last: {pages[:3]} ... {pages[-3:]}" if pages else "none")
     if not pages:
-        # Fall back: show what the header of a likely page looks like.
-        for number in range(doc.page_count):
-            if "Table C" in doc[number].get_text("text"):
-                print(f"page {number} mentions Table C; first 400 chars:")
-                print(doc[number].get_text("text")[:400])
-                break
         return 1
-    page = doc[pages[0]]
-    print(f"page {pages[0]}: rect {page.rect}")
-    anchors = _header_anchors(page)
-    print("header anchors:", [(n, round(a), round(b)) for n, a, b in anchors])
-    words = page.get_text("words")
-    words.sort(key=lambda w: (round(w[1]), w[0]))
-    print("first 120 words with x,y:")
-    for x0, y0, _x1, _y1, word, *_ in words[:120]:
-        print(f"  {round(x0):4d},{round(y0):4d} {word}")
+    for number in pages[:2]:
+        page = doc[number]
+        bands = _bands(page)
+        print(f"page {number}: rect {page.rect}")
+        print("  bands:", [(name, round(y)) for name, y in bands])
+        un_band = next(((n, y) for n, y in bands if n == "1"), None)
+        print("  un band:", un_band)
+        words = [w for w in page.get_text("words") if w[0] > MARKER_X[1]]
+        if un_band:
+            top = un_band[1] - 2
+            below = [w for w in words if w[1] >= top][:20]
+            print("  words in and under the (1) band:",
+                  [(round(w[0]), round(w[1]), w[4]) for w in below])
     return 0
+
+
+def _pages_of_table_c(doc) -> list[int]:
+    pages = []
+    for number in range(doc.page_count):
+        text = doc[number].get_text("text")
+        if "(20)" in text and "(14)" in text and "(1)" in text:
+            if "Table C" in text or "3.2.3" in text:
+                pages.append(number)
+    return pages
 
 
 def english_rows(pdf_path: Path) -> tuple[list[dict[str, Any]], list[str]]:
@@ -377,50 +395,67 @@ def english_rows(pdf_path: Path) -> tuple[list[dict[str, Any]], list[str]]:
     failures: list[str] = []
     for number in pages:
         page = doc[number]
-        anchors = _header_anchors(page)
-        if len(anchors) != 21:  # (1),(2),(3)a,(3)b,(4)..(20)
-            failures.append(f"page {number}: {len(anchors)} header anchors")
+        bands = _bands(page)
+        names = [name for name, _y in bands]
+        if sorted(names, key=lambda n: BAND_ORDER[n]) != ORDERED or len(names) != 21:
+            failures.append(f"page {number}: bands {names}")
             continue
-        # Column k spans from its anchor's left edge to the next anchor's.
-        edges = [x0 for _n, x0, _x1 in anchors] + [page.rect.width]
-        header_bottom = max(
-            y1 for _x0, _y0, _x1, y1, word, *_ in page.get_text("words")
-            if re.fullmatch(r"\((?:\d{1,2}|3\)?a|3\)?b)\)?", word))
 
-        lines: dict[int, list[tuple[float, str]]] = {}
-        for x0, y0, x1, _y1, word, *_ in page.get_text("words"):
-            if y0 <= header_bottom:
+        # Band k reaches from its own marker down to the next marker; the last
+        # runs to the bottom of the page. The markers come (20) first, so the
+        # field order on the page is the reverse of the table's.
+        edges = [y for _n, y in bands] + [page.rect.height]
+        spans = {name: (edges[i] - 2, edges[i + 1] - 2)
+                 for i, (name, _y) in enumerate(bands)}
+
+        words = [w for w in page.get_text("words") if w[0] > MARKER_X[1]]
+
+        # The substance columns come from the UN band itself: every four-digit
+        # number in it anchors one column.
+        top, bottom = spans["1"]
+        anchors = sorted(
+            w[0] for w in words
+            if top <= w[1] < bottom and re.fullmatch(r"\d{4}", w[4]))
+        if not anchors:
+            failures.append(f"page {number}: no UN anchors")
+            continue
+        bounds = [(a + b) / 2 for a, b in zip(anchors, anchors[1:])]
+
+        def column_of(x0: float) -> int:
+            for i, bound in enumerate(bounds):
+                if x0 < bound:
+                    return i
+            return len(bounds)
+
+        cells: dict[tuple[str, int], list[tuple[float, float, str]]] = {}
+        for x0, y0, _x1, _y1, word, *_ in words:
+            band = next((n for n, (a, b) in spans.items() if a <= y0 < b), None)
+            if band is None:
                 continue
-            lines.setdefault(round(y0), []).append((x0, word))
+            cells.setdefault((band, column_of(x0)), []).append((y0, x0, word))
 
-        current: list[list[str]] | None = None
-        margin = edges[0] - 2
-        for y in sorted(lines):
-            cells = [[] for _ in range(21)]
-            for x0, word in sorted(lines[y]):
-                column = max(0, min(20, next(
-                    (i for i in range(21) if x0 < edges[i + 1] - 1), 20)))
-                cells[column].append(word)
-            first = " ".join(cells[0])
-            if re.fullmatch(r"\d{4}", first):
-                if current:
-                    rows.append(_english_row(current, failures))
-                current = cells
-            elif current:
-                for i, extra in enumerate(cells):
-                    current[i].extend(extra)
-            del margin
-        if current:
-            rows.append(_english_row(current, failures))
-            current = None
-    return [row for row in rows if row], failures
+        for column in range(len(anchors)):
+            values: dict[str, str] = {}
+            for band, field in BAND_FIELDS.items():
+                got = sorted(cells.get((band, column), []))
+                values[field] = " ".join(word for _y, _x, word in got)
+            row = _english_row(values, failures)
+            if row:
+                rows.append(row)
+    return rows, failures
 
 
-def _english_row(cells: list[list[str]], failures: list[str]) -> dict[str, Any] | None:
-    values = [" ".join(cell).strip() for cell in cells]
-    row = dict(zip(ENGLISH_FIELDS, values))
+BAND_ORDER = {"1": 1, "2": 2, "3a": 3, "3b": 4, **{str(n): n + 2 for n in range(4, 21)}}
+ORDERED = sorted(BAND_FIELDS, key=lambda n: BAND_ORDER[n])
+
+
+def _english_row(values: dict[str, str], failures: list[str]) -> dict[str, Any] | None:
+    row = dict(values)
+    if not re.fullmatch(r"\d{4}", row.get("un", "")):
+        failures.append(f"un {row.get('un')!r} is no UN number")
+        return None
     for key in ("pump_room_below_deck", "explosion_protection"):
-        low = row[key].lower()
+        low = row[key].strip().lower()
         row[key] = {"yes": "True", "no": "False"}.get(low, row[key])
     checks = [
         ("vessel_type", VESSEL), ("cargo_tank_design", SMALL),

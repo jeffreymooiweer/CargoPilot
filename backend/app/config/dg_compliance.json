@@ -2216,7 +2216,12 @@
         "nl": "Ontplofbare stoffen en voorwerpen van subklasse {division}",
         "en": "Explosive substances and articles of division {division}",
         "de": "Explosive Stoffe und Gegenstände der Unterklasse {division}",
-        "fr": "Matières et objets explosibles de la division {division}"
+        "fr": "Matières et objets explosibles de la division {division}",
+        "tank_litres": null,
+        "bulk_kg": null,
+        "tank_litres_by_division": {
+          "1.5": 0
+        }
       },
       {
         "match": "class_1_group_c",
@@ -2230,7 +2235,9 @@
         "nl": "Ontplofbare stoffen en voorwerpen van subklasse 1.3, compatibiliteitsgroep C",
         "en": "Explosive substances and articles of division 1.3, compatibility group C",
         "de": "Explosive Stoffe und Gegenstände der Unterklasse 1.3, Verträglichkeitsgruppe C",
-        "fr": "Matières et objets explosibles de la division 1.3, groupe de compatibilité C"
+        "fr": "Matières et objets explosibles de la division 1.3, groupe de compatibilité C",
+        "tank_litres": null,
+        "bulk_kg": null
       },
       {
         "match": "un_numbers",
@@ -2255,7 +2262,9 @@
         "nl": "Ontplofbare stoffen en voorwerpen van subklasse 1.4 die in tabel 1.10.3.1.2 bij naam staan",
         "en": "Explosive substances and articles of division 1.4 named in table 1.10.3.1.2",
         "de": "Explosive Stoffe und Gegenstände der Unterklasse 1.4, die in Tabelle 1.10.3.1.2 namentlich genannt sind",
-        "fr": "Matières et objets explosibles de la division 1.4 nommés au tableau 1.10.3.1.2"
+        "fr": "Matières et objets explosibles de la division 1.4 nommés au tableau 1.10.3.1.2",
+        "tank_litres": null,
+        "bulk_kg": null
       },
       {
         "match": "classification_letters",
@@ -2276,7 +2285,9 @@
         "nl": "Giftige gassen (classificatiecode met T), spuitbussen uitgezonderd",
         "en": "Toxic gases (classification code with T), aerosols excepted",
         "de": "Giftige Gase (Klassifizierungscode mit T), ausgenommen Druckgaspackungen",
-        "fr": "Gaz toxiques (code de classification comportant un T), aérosols exceptés"
+        "fr": "Gaz toxiques (code de classification comportant un T), aérosols exceptés",
+        "tank_litres": 0,
+        "bulk_kg": null
       },
       {
         "match": "classification_letters",
@@ -2288,7 +2299,9 @@
         "nl": "Vloeibare ontplofbare stoffen in niet-explosieve toestand",
         "en": "Desensitized explosive liquids",
         "de": "Desensibilisierte explosive flüssige Stoffe",
-        "fr": "Matières explosibles liquides désensibilisées"
+        "fr": "Matières explosibles liquides désensibilisées",
+        "tank_litres": 0,
+        "bulk_kg": null
       },
       {
         "match": "classification_letters",
@@ -2301,7 +2314,9 @@
         "nl": "Vaste ontplofbare stoffen in niet-explosieve toestand",
         "en": "Desensitized explosive solids",
         "de": "Desensibilisierte explosive feste Stoffe",
-        "fr": "Matières explosibles solides désensibilisées"
+        "fr": "Matières explosibles solides désensibilisées",
+        "tank_litres": null,
+        "bulk_kg": null
       },
       {
         "match": "packing_group",
@@ -2313,7 +2328,9 @@
         "nl": "Giftige stoffen van verpakkingsgroep I",
         "en": "Toxic substances of packing group I",
         "de": "Giftige Stoffe der Verpackungsgruppe I",
-        "fr": "Matières toxiques du groupe d'emballage I"
+        "fr": "Matières toxiques du groupe d'emballage I",
+        "tank_litres": 0,
+        "bulk_kg": null
       },
       {
         "match": "un_numbers",
@@ -2326,7 +2343,153 @@
         "nl": "Infectueuze stoffen van categorie A en medisch afval van categorie A",
         "en": "Category A infectious substances and category A medical waste",
         "de": "Ansteckungsgefährliche Stoffe der Kategorie A und medizinische Abfälle der Kategorie A",
-        "fr": "Matières infectieuses de catégorie A et déchets médicaux de catégorie A"
+        "fr": "Matières infectieuses de catégorie A et déchets médicaux de catégorie A",
+        "tank_litres": null,
+        "bulk_kg": 0
+      },
+      {
+        "match": "classification_letters",
+        "letters": [
+          "F",
+          "FC"
+        ],
+        "hazard_class": "2",
+        "tank_litres": 3000,
+        "bulk_kg": null,
+        "nl": "Brandbare, niet-giftige gassen",
+        "en": "Flammable, non-toxic gases",
+        "de": "Entzündbare, nicht giftige Gase",
+        "fr": "Gaz inflammables, non toxiques"
+      },
+      {
+        "match": "packing_group",
+        "hazard_class": "3",
+        "tank_litres": 3000,
+        "bulk_kg": null,
+        "nl": "Brandbare vloeistoffen van de verpakkingsgroepen I en II",
+        "en": "Flammable liquids of packing groups I and II",
+        "de": "Entzündbare flüssige Stoffe der Verpackungsgruppen I und II",
+        "fr": "Liquides inflammables des groupes d'emballage I et II",
+        "packing_groups": [
+          "I",
+          "II"
+        ]
+      },
+      {
+        "match": "packing_group",
+        "hazard_class": "4.2",
+        "tank_litres": 3000,
+        "bulk_kg": null,
+        "nl": "Stoffen van de verpakkingsgroep I (klasse 4.2)",
+        "en": "Substances of packing group I (class 4.2)",
+        "de": "Stoffe der Verpackungsgruppe I (Klasse 4.2)",
+        "fr": "Matières du groupe d'emballage I (classe 4.2)",
+        "packing_groups": [
+          "I"
+        ]
+      },
+      {
+        "match": "packing_group",
+        "hazard_class": "4.3",
+        "tank_litres": 3000,
+        "bulk_kg": null,
+        "nl": "Stoffen van de verpakkingsgroep I (klasse 4.3)",
+        "en": "Substances of packing group I (class 4.3)",
+        "de": "Stoffe der Verpackungsgruppe I (Klasse 4.3)",
+        "fr": "Matières du groupe d'emballage I (classe 4.3)",
+        "packing_groups": [
+          "I"
+        ]
+      },
+      {
+        "match": "packing_group",
+        "hazard_class": "5.1",
+        "tank_litres": 3000,
+        "bulk_kg": null,
+        "nl": "Oxiderende vloeistoffen van de verpakkingsgroep I",
+        "en": "Oxidising liquids of packing group I",
+        "de": "Oxidierende flüssige Stoffe der Verpackungsgruppe I",
+        "fr": "Liquides comburants du groupe d'emballage I",
+        "packing_groups": [
+          "I"
+        ]
+      },
+      {
+        "match": "un_numbers",
+        "un_numbers": [
+          "1442",
+          "1444",
+          "1447",
+          "1448",
+          "1449",
+          "1450",
+          "1451",
+          "1452",
+          "1453",
+          "1455",
+          "1456",
+          "1457",
+          "1458",
+          "1459",
+          "1461",
+          "1462",
+          "1475",
+          "1481",
+          "1482",
+          "1483",
+          "1484",
+          "1485",
+          "1486",
+          "1487",
+          "1488",
+          "1489",
+          "1490",
+          "1491",
+          "1492",
+          "1493",
+          "1494",
+          "1495",
+          "1502",
+          "1503",
+          "1505",
+          "1506",
+          "1507",
+          "1508",
+          "1509",
+          "1510",
+          "1511",
+          "1512",
+          "1513",
+          "1514",
+          "1515",
+          "1516",
+          "1748",
+          "1942",
+          "2067",
+          "2071",
+          "2426",
+          "2627",
+          "3375"
+        ],
+        "bulk_kg": 3000,
+        "tank_litres": 3000,
+        "nl": "Perchloraten, ammoniumnitraat, ammoniumnitraathoudende meststoffen en ammoniumnitraat-emulsies, -suspensies of -gels",
+        "en": "Perchlorates, ammonium nitrate, ammonium nitrate based fertilizers and ammonium nitrate emulsions, suspensions or gels",
+        "de": "Perchlorate, Ammoniumnitrat, ammoniumnitrathaltige Düngemittel und Ammoniumnitrat-Emulsionen, -Suspensionen oder -Gele",
+        "fr": "Perchlorates, nitrate d'ammonium, engrais au nitrate d'ammonium et émulsions, suspensions ou gels de nitrate d'ammonium"
+      },
+      {
+        "match": "packing_group",
+        "hazard_class": "8",
+        "tank_litres": 3000,
+        "bulk_kg": null,
+        "nl": "Bijtende stoffen van de verpakkingsgroep I",
+        "en": "Corrosive substances of packing group I",
+        "de": "Ätzende Stoffe der Verpackungsgruppe I",
+        "fr": "Matières corrosives du groupe d'emballage I",
+        "packing_groups": [
+          "I"
+        ]
       }
     ],
     "plan": {
@@ -2341,6 +2504,19 @@
       "en": "No high consequence dangerous goods. For carriage in packages, table 1.10.3.1.2 holds two values and no others: 0, meaning any quantity at all, and footnote b), meaning 1.10.3 does not apply whatever the quantity. A full load of packaged petrol falls under b) and does not become high consequence at a larger quantity.",
       "de": "Keine gefährlichen Güter mit hohem Gefahrenpotenzial. Bei Beförderung in Versandstücken kennt Tabelle 1.10.3.1.2 nur zwei Werte: 0, also jede Menge, und Fußnote b), wonach 1.10.3 ungeachtet der Menge nicht gilt. Eine volle Ladung Benzin in Versandstücken fällt unter b) und wird es auch bei größerer Menge nicht.",
       "fr": "Pas de marchandises dangereuses à haut risque. Pour un transport en colis, le tableau 1.10.3.1.2 ne comporte que deux valeurs : 0, c'est-à-dire toute quantité, et la note b), selon laquelle le 1.10.3 ne s'applique pas quelle que soit la quantité. Un chargement complet d'essence en colis relève de la note b) et ne le devient pas à plus grande quantité."
+    },
+    "_the_tank_column": "Answered since v1.68.0. Footnote c) makes a tank figure relevant only where column (10) or (12) of table A permits carriage in tanks, and footnote d) does the same for bulk against column (10) or (17) — so the figures are read together with the columns v1.65.0 carried. Seven rows exist only for that column: in packages they are footnote b) and never qualify, in a tank they qualify above 3,000 litres. A tanker of petrol is the plainest of them, and until now this check called it not high consequence.",
+    "tank_threshold_message": {
+      "nl": "boven {threshold} liter in een tank",
+      "en": "above {threshold} litres in a tank",
+      "de": "über {threshold} Liter in einem Tank",
+      "fr": "au-dessus de {threshold} litres en citerne"
+    },
+    "bulk_threshold_message": {
+      "nl": "boven {threshold} kg los gestort",
+      "en": "above {threshold} kg in bulk",
+      "de": "über {threshold} kg in loser Schüttung",
+      "fr": "au-dessus de {threshold} kg en vrac"
     }
   },
   "adn_hold_separation": {

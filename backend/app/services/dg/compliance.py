@@ -1531,11 +1531,21 @@ def check_adr_security(
     gases, the desensitised explosives, packing group I toxics and category A
     infectious substances.
 
-    The tank and bulk columns are not answered. They carry thresholds of their
-    own — 3,000 litres or 3,000 kg for most of the b) rows — and footnotes c) and
-    d) make each relevant only where table A column (10), (12) or (17) permits
-    that form of carriage. Class 7 is not answered either: 1.10.3.1.3 measures it
-    in activity against 3,000 A2, and CargoPilot is not told an activity.
+    Since v1.68.0 the **tank and bulk columns are answered too**, and they turn
+    the packages reading on its head: seven rows that are footnote b) in packages
+    — never high consequence, whatever the quantity — carry 3,000 litres in a
+    tank. Flammable liquids of packing groups I and II are among them, so a road
+    tanker of petrol is high consequence dangerous goods and this check used to
+    say it was not. Footnotes c) and d) are applied with the figures: a tank or
+    bulk value counts only where table A admits that form of carriage, which is
+    what the columns carried since v1.65.0 settle.
+
+    A threshold needs a quantity. Where none is entered the row is reported as
+    unanswered rather than read as "under the figure" — the difference between
+    not knowing and knowing it is safe.
+
+    Class 7 is still not answered: 1.10.3.1.3 measures it in activity against
+    3,000 A2, and CargoPilot is not told an activity.
     """
     rules = get_compliance_rules()["adr_security"]
     lang = _lang(language)
@@ -1573,18 +1583,69 @@ def check_adr_security(
                        and un_number.zfill(4) not in rule.get("exclude_un_numbers", []))
             elif kind == "packing_group":
                 hit = hazard == rule["hazard_class"] and group in rule["packing_groups"]
-            if hit:
-                items.append({
-                    "position": _product_label(entry, product, index),
-                    "un_number": un_number,
-                    # The division and not the whole classification code:
-                    # table 1.10.3.1.2 sorts on 1.2, and "division 1.2G" would
-                    # quote the table as saying something it does not.
-                    "reason": (rule.get(lang) or rule["en"]).format(
-                        division=division[:3]),
-                    "threshold_kg": rule["packages_kg"],
-                })
+            if not hit:
+                continue
+            # Which column of table 1.10.3.1.2 applies, and whether it applies
+            # at all. Footnotes c) and d) make a tank or bulk figure relevant
+            # only where table A admits that form of carriage, so the columns
+            # v1.65.0 carried are what settles it — not the figure alone.
+            mode = str(product.get("carriage_mode") or "packages").strip()
+            row = database.get_un_entries(un_number)
+            row = row[0] if row else {}
+            if mode in ("tank", "portable_tank"):
+                threshold = rule.get("tank_litres")
+                by_division = rule.get("tank_litres_by_division") or {}
+                if division[:3] in by_division:
+                    threshold = by_division[division[:3]]
+                admitted = bool(str(row.get("tank_code") or "").strip()
+                                or str(row.get("portable_tank_instructions") or "").strip())
+                unit, message_key = "litres", "tank_threshold_message"
+            elif mode == "bulk":
+                threshold = rule.get("bulk_kg")
+                admitted = bool(str(row.get("carriage_bulk") or "").strip())
+                unit, message_key = "kg", "bulk_threshold_message"
+            else:
+                threshold = rule.get("packages_kg")
+                admitted, unit, message_key = True, "kg", None
+            # Footnote a) — not relevant for this form of carriage — or a form
+            # table A does not admit: either way the row says nothing about
+            # this consignment.
+            if threshold is None or not admitted:
                 break
+            quantity = _num(product.get("adr_total_quantity"))
+            if threshold > 0 and (quantity is None or quantity <= threshold):
+                # Below the figure, or no figure entered. Not high consequence
+                # on this row — and where the quantity is missing that is a
+                # statement about the input, so it is recorded rather than
+                # silently treated as "under".
+                if quantity is None:
+                    items.append({
+                        "position": _product_label(entry, product, index),
+                        "un_number": un_number,
+                        "reason": (rule.get(lang) or rule["en"]).format(
+                            division=division[:3]),
+                        "threshold_kg": threshold,
+                        "carriage_mode": mode,
+                        "not_answered": True,
+                    })
+                break
+            item = {
+                "position": _product_label(entry, product, index),
+                "un_number": un_number,
+                # The division and not the whole classification code:
+                # table 1.10.3.1.2 sorts on 1.2, and "division 1.2G" would
+                # quote the table as saying something it does not.
+                "reason": (rule.get(lang) or rule["en"]).format(
+                    division=division[:3]),
+                "threshold_kg": threshold,
+                "carriage_mode": mode,
+            }
+            if message_key and threshold > 0:
+                block = rules[message_key]
+                item["threshold_note"] = (block.get(lang) or block["en"]).format(
+                    threshold=threshold)
+            items.append(item)
+            break
 
     if str(rules["class_7"]["provision"]) and any(
             str(p.get("class") or "").strip() == "7" for _e, _i, p in products):

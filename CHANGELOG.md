@@ -2,6 +2,39 @@
 
 All notable changes are documented here, following [Semantic Versioning](https://semver.org/).
 
+## [1.68.0] — 2026-08-13
+
+### Fixed
+
+- **A road tanker of petrol is high consequence dangerous goods, and this check
+  used to say it was not.** Table 1.10.3.1.2 has three quantity columns — tank,
+  bulk and packages — and only the packages one was ever answered.
+
+  For packages the answer is mostly footnote b): whatever the quantity, 1.10.3
+  does not apply. That reading is right and it is why v1.58.0 could answer
+  packages with a membership test and no arithmetic at all. **Seven rows are
+  footnote b) in packages and 3,000 litres in a tank**, so they had no reason to
+  exist in this configuration until the application knew about tanks: flammable
+  non-toxic gases, flammable liquids of packing groups I and II, packing group I
+  substances of classes 4.2, 4.3, 5.1 and 8, and the perchlorate and ammonium
+  nitrate entries.
+
+  Above 3,000 litres in a tank, those now qualify — and with them comes the
+  security plan of 1.10.3.2 and the identity documents of 1.10.1. Not every tank
+  row is a threshold: a toxic gas carries 0, meaning any quantity at all.
+
+  **Footnotes c) and d) are applied with the figures.** A tank or bulk value
+  counts only where table A admits that form of carriage, which the columns
+  carried since v1.65.0 settle — so an explosive, which has no tank code, is not
+  dragged into the tank column by a mode somebody set in error.
+
+  A threshold needs a quantity. Where none is entered the row is reported as
+  **unanswered** rather than read as under the figure: the difference between not
+  knowing and knowing it is safe.
+
+  Read from ADR 2025, Dutch edition, table 1.10.3.1.2 and its four footnotes,
+  printed pages 184-185.
+
 ## [1.67.0] — 2026-08-13
 
 ### Fixed

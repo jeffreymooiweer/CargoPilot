@@ -134,9 +134,38 @@ def learn_banding(document, sample: list[int]) -> tuple[str, float]:
             below = position / len(body)
             if 0.15 <= below <= 0.95:
                 best, cut, share = step, (a + b) / 2, below
-    if best >= 3.0 and share:
+    if best >= 3.0 and share and cut_holds(document, sample, cut):
         return BY_GAP, cut
     return BY_UN_NUMBER, ROW_GAP
+
+
+def cut_holds(document, sample: list[int], cut: float) -> bool:
+    """Does this cut leave as many rows as the page has UN numbers?
+
+    The valley test above asks whether a step in the sorted gaps looks like a
+    boundary. On the German edition it found one at 31.2 points and there is no
+    boundary there at all: the cut merged about twenty printed rows into one
+    band, so UN 0004 came back carrying the twenty-one entries after it inside
+    its own name, and 145 table pages yielded 531 rows instead of some 2,400.
+
+    So the cut is not believed on its looks; it is tried. A page's rows and its
+    UN numbers are the same thing counted twice, and a cut that produces fewer
+    bands than the page has UN numbers is provably gluing rows together. This
+    does not disqualify the Dutch extract, which needs the gap: it sets the UN
+    number beside the *second* line of a wrapped name, and one line per row
+    still starts with one.
+    """
+    bands = starts = 0
+    for index in sample:
+        page = document[index]
+        top, centres = band_of(page)
+        if top is None or not all(n in centres for n in NEEDED):
+            continue
+        lines = name_column(page, top, centres)
+        starts += sum(1 for _y, text in lines
+                      if UN_START.match(re.sub(r"\s+", " ", text).strip()))
+        bands += len(split_bands(lines, BY_GAP, cut))
+    return starts == 0 or bands >= starts * 0.9
 
 
 #: Where the body of a page stops and its running foot begins, as a fraction of

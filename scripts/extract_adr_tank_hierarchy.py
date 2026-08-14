@@ -662,6 +662,47 @@ def report_differences(report: dict[str, Any], first: str, second: str) -> None:
     print(f"disputes: {report['disputes']}")
 
 
+#: What the two editions are, for the record the seed has to carry. A seed that
+#: does not say which books it was read from cannot be checked by anyone later.
+EDITIONS = {
+    "en": "ADR 2025 Volume II (ECE/TRANS/352 Vol. II), UNECE",
+    "nl": "ADR 2025, Dutch edition, printed text (adr_nl_2025 in the store)",
+    "de": "ADR 2025, German edition (Bundesamt für Strassen), volume II",
+}
+
+
+def as_seed(report: dict[str, Any], first: dict[str, Any],
+            second: dict[str, Any]) -> dict[str, Any]:
+    """The comparison as the application will read it, bookkeeping and all."""
+    languages = [first["language"], second["language"]]
+    settled = sum(1 for row in report["rationalised"]
+                  if row["readings"] == 2 and not row.get("disputed"))
+    return {
+        "_comment": (
+            "The two tank hierarchies of ADR 4.3, read from two books and "
+            "compared. 4.3.3.1.2 is a hierarchy of codes and applies to gases; "
+            "4.3.4.1.2 is the rationalized approach and applies to classes 3 to "
+            "9, where a tank code names the group of substances it may carry by "
+            "class, classification code and packing group, and inherits the "
+            "groups of the codes below it. A cell the two readings do not agree "
+            "on carries both values under 'disputed' and settles nothing."),
+        "provisions": ["4.3.3.1.2", "4.3.4.1.2"],
+        "editions": {language: EDITIONS[language] for language in languages},
+        "note_of_the_regulation": (
+            "The hierarchy takes no special provision into account; see 4.3.5 "
+            "and 6.8.4, which are column (13) of table A."),
+        "cross_check": {
+            "readings": languages,
+            "gas_rows": len(report["gases"]),
+            "tank_codes": len(report["rationalised"]),
+            "codes_settled_on_every_cell": settled,
+            "cells_no_two_readings_agree_on": report["disputes"],
+        },
+        "gases": report["gases"],
+        "rationalised": report["rationalised"],
+    }
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description="Read the ADR 4.3 tank hierarchies")
     parser.add_argument("--pdf", type=Path, help="the volume to read")
@@ -687,7 +728,8 @@ def main() -> int:
         report_differences(report, first["language"], second["language"])
         if args.emit:
             args.emit.write_text(
-                json.dumps(report, ensure_ascii=False, indent=1) + "\n",
+                json.dumps(as_seed(report, first, second),
+                           ensure_ascii=False, indent=1) + "\n",
                 encoding="utf-8")
         return 0
 

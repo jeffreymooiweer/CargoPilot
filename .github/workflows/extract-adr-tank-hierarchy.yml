@@ -44,9 +44,13 @@ on:
         description: "Print the reading to the log (the development container cannot reach the artifact store)"
         type: boolean
         default: true
+      commit:
+        description: "With language=compare: write the compared seed to this branch"
+        type: boolean
+        default: false
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   extract:
@@ -147,7 +151,31 @@ jobs:
         run: |
           echo "=== where the two readings differ ==="
           python scripts/extract_adr_tank_hierarchy.py --check en.json nl.json \
+            --emit backend/seed/dg/adr_tank_hierarchy.json \
             || echo "no comparison was made"
+
+      # The seed travels by commit, not through the log. The development
+      # container cannot reach the artifact store, and a reading is ten
+      # thousand characters; the other extraction workflows in this repository
+      # hand their result back the same way.
+      - name: Commit the compared seed
+        if: ${{ inputs.commit && inputs.language == 'compare' }}
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add backend/seed/dg/adr_tank_hierarchy.json
+          if git diff --cached --quiet; then
+            echo "Unchanged; nothing to commit."
+            exit 0
+          fi
+          git commit -m "Read the two tank hierarchies of ADR 4.3 from two books
+
+          4.3.3.1.2 for gases and the rationalized approach of 4.3.4.1.2,
+          from the English volume II and the printed Dutch edition. A cell
+          the two readings do not agree on carries both values and settles
+          nothing."
+          git push origin HEAD:${GITHUB_REF_NAME}
 
       - name: What was read
         if: ${{ always() && !inputs.probe && !inputs.words && !inputs.probe_page && inputs.language != 'compare' }}

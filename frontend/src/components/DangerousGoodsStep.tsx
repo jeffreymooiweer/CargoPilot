@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
   api,
@@ -14,6 +14,55 @@ import { documentLanguage, localised } from "../i18n/language";
 import CollapsibleSection, { SummaryChip } from "./CollapsibleSection";
 import InfoTooltip from "./InfoTooltip";
 import SuggestInput, { SuggestItem } from "./SuggestInput";
+
+/** What the derivation added, laid over the form as it stands *now*.
+ *
+ *  `dg/prepare` is debounced and then takes a round trip, and it only runs again
+ *  when the UN number, the counts or the packaging change. Anything else the user
+ *  types while a request is in flight — a total, a technical name — is typed into
+ *  a form the reply knows nothing about, and replacing the entries with that reply
+ *  put the old value back. The field emptied itself under the cursor.
+ *
+ *  So the reply is not taken as the new truth. `sent` is what the request was
+ *  built from, `derived` is what came back, and the difference between those two
+ *  is exactly what the backend contributed. That difference is applied to
+ *  `current`, and only where `current` still has nothing of its own — which is the
+ *  rule the derivation already followed, now applied against the right form.
+ *
+ *  If the shape moved while the request was out (a position or a product added or
+ *  removed), the reply is dropped: the indices no longer line up, and a new
+ *  derivation is on its way regardless.
+ */
+export function mergeDerived(
+  current: DgEntry[],
+  sent: DgEntry[],
+  derived: DgEntry[],
+): DgEntry[] {
+  if (current.length !== sent.length || sent.length !== derived.length) return current;
+  return current.map((entry, i) => {
+    const sentEntry = sent[i];
+    const derivedEntry = derived[i];
+    if (entry.products.length !== sentEntry.products.length
+        || sentEntry.products.length !== derivedEntry.products.length) {
+      return entry;
+    }
+    return {
+      ...entry,
+      products: entry.products.map((product, j) => {
+        const sentProduct = sentEntry.products[j] as Record<string, unknown>;
+        const derivedProduct = derivedEntry.products[j] as Record<string, unknown>;
+        const now = product as Record<string, unknown>;
+        const patch: Record<string, unknown> = {};
+        for (const key of Object.keys(derivedProduct)) {
+          const contributed = JSON.stringify(derivedProduct[key]) !== JSON.stringify(sentProduct[key]);
+          const empty = now[key] === undefined || now[key] === null || now[key] === "";
+          if (contributed && empty) patch[key] = derivedProduct[key];
+        }
+        return Object.keys(patch).length ? ({ ...product, ...patch } as DgProduct) : product;
+      }),
+    };
+  });
+}
 
 const inputClass =
   "w-full border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-950 text-slate-900 dark:text-slate-100 rounded-lg px-3 py-2 text-sm";
@@ -99,6 +148,10 @@ export default function DangerousGoodsStep({
   const [lookupError, setLookupError] = useState("");
   const [positionIndex, setPositionIndex] = useState(0);
   const [prepared, setPrepared] = useState<DgPrepareResult | null>(null);
+  // What the form holds at the moment a reply lands, which is not what it held
+  // when the request left. Kept in a ref so reading it does not re-run the effect.
+  const entriesRef = useRef(entries);
+  entriesRef.current = entries;
 
   useEffect(() => {
     api.dgInstructions().then(setInstructions).catch(() => setInstructions(null));
@@ -131,13 +184,15 @@ export default function DangerousGoodsStep({
     }
     let cancelled = false;
     const timer = window.setTimeout(() => {
+      const sent = entriesRef.current;
       api
-        .dgPrepare(entries, lines, profiles, lang)
+        .dgPrepare(sent, lines, profiles, lang)
         .then((res) => {
           if (cancelled) return;
           setPrepared(res);
-          if (JSON.stringify(res.entries) !== JSON.stringify(entries)) {
-            onChange(res.entries);
+          const merged = mergeDerived(entriesRef.current, sent, res.entries);
+          if (JSON.stringify(merged) !== JSON.stringify(entriesRef.current)) {
+            onChange(merged);
           }
         })
         .catch(() => {

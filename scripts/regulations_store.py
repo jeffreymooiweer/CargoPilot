@@ -176,6 +176,51 @@ def cmd_add(manifest: dict, doc_id: str, source: Path) -> int:
     return 0
 
 
+def cmd_adopt(manifest: dict, incoming: Path, mapping: dict[str, str]) -> int:
+    """Take in files the operator supplied — a phone upload, a Drive folder.
+
+    A file whose sha256 matches a pinned hash is recognised and stored under
+    its canonical name, whatever it arrived as. A file named in the mapping
+    (``filename=document-id``) is stored as that document and its hash pinned
+    if none was. Everything else is reported with name, size and hash, so the
+    next mapping can be written from the report instead of from guesswork.
+    """
+    base = store_dir(manifest)
+    base.mkdir(parents=True, exist_ok=True)
+    docs = {doc["id"]: doc for doc in manifest["documents"]}
+    by_pin = {doc["sha256"]: doc for doc in manifest["documents"] if doc["sha256"]}
+    failures = 0
+    for path in sorted(incoming.iterdir()):
+        if not path.is_file():
+            continue
+        digest = sha256(path)
+        doc = by_pin.get(digest)
+        if doc is None and path.name in mapping:
+            doc_id = mapping[path.name]
+            if doc_id not in docs:
+                print(f"  {path.name}: mapped to unknown id {doc_id!r}")
+                failures += 1
+                continue
+            doc = docs[doc_id]
+            if doc["sha256"] is not None and doc["sha256"] != digest:
+                print(f"  {path.name}: contradicts the pinned hash of {doc_id} "
+                      "— not stored; a different file needs a manifest change, "
+                      "not a silent swap")
+                failures += 1
+                continue
+        if doc is None:
+            print(f"  unrecognized: {path.name} "
+                  f"({path.stat().st_size:,} bytes, sha256 {digest})")
+            continue
+        target = base / doc["filename"]
+        if not target.is_file():
+            shutil.copyfile(path, target)
+        if doc["sha256"] is None:
+            _pin(manifest, doc, digest)
+        print(f"  {doc['id']}: {path.name} -> {target.name} (verified)")
+    return 1 if failures else 0
+
+
 def cmd_verify(manifest: dict) -> int:
     bad = 0
     for doc in manifest["documents"]:
@@ -199,6 +244,11 @@ def main() -> int:
     add_parser = sub.add_parser("add")
     add_parser.add_argument("id")
     add_parser.add_argument("file", type=Path)
+    adopt_parser = sub.add_parser("adopt")
+    adopt_parser.add_argument("directory", type=Path)
+    adopt_parser.add_argument("--as", dest="mapping", action="append", default=[],
+                              metavar="FILENAME=ID",
+                              help="store this incoming file as this document")
     sub.add_parser("verify")
     args = parser.parse_args()
 
@@ -209,6 +259,9 @@ def main() -> int:
         return cmd_fetch(manifest, args.ids)
     if args.command == "add":
         return cmd_add(manifest, args.id, args.file)
+    if args.command == "adopt":
+        mapping = dict(pair.split("=", 1) for pair in args.mapping)
+        return cmd_adopt(manifest, args.directory, mapping)
     return cmd_verify(manifest)
 
 

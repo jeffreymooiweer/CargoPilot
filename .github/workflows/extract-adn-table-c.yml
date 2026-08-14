@@ -54,8 +54,11 @@ jobs:
             --english /tmp/cargopilot-regulations/adn.pdf \
             --out table_c_en.json $EXTRA
 
+      # Even a run with failures hands back what it read: the comparison in the
+      # development container is where shortfalls are diagnosed, and it needs
+      # the file to do it.
       - name: Hand the rows back
-        if: ${{ !inputs.probe }}
+        if: ${{ always() && !inputs.probe }}
         uses: actions/upload-artifact@v4
         with:
           name: adn-table-c-english

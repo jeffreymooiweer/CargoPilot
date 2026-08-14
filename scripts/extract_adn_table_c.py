@@ -392,6 +392,7 @@ def english_rows(pdf_path: Path) -> tuple[list[dict[str, Any]], list[str]]:
 
     rows: list[dict[str, Any]] = []
     failures: list[str] = []
+    per_page: list[tuple[int, int]] = []
     for number in pages:
         page = doc[number]
         bands = _bands(page)
@@ -471,17 +472,21 @@ def english_rows(pdf_path: Path) -> tuple[list[dict[str, Any]], list[str]]:
             values["name_en"] = read([w for w in pool if w is not un_words[0]])
 
             pool = cells.get(("19", column), []) + cells.get(("20", column), [])
-            near = [item for item in pool
-                    if re.fullmatch(r"[012*\-]", item[2])
-                    and abs(item[1] - marker_y["19"]) <= 8]
-            if len(near) > 1:
+            near = sorted(
+                (item for item in pool
+                 if re.fullmatch(r"[012*\-]", item[2])
+                 and abs(item[1] - marker_y["19"]) <= 8),
+                key=lambda item: abs(item[1] - marker_y["19"]))
+            if len(near) > 1 and (abs(near[0][1] - marker_y["19"])
+                                  == abs(near[1][1] - marker_y["19"])):
                 failures.append(
                     f"page {number} column {column}: "
-                    f"cones candidates {sorted(w for _x, _y, w in near)}")
+                    f"cones tie {sorted(w for _x, _y, w in near)}")
                 continue
-            values["blue_cones"] = near[0][2] if near else "-"
+            chosen = near[0] if near else None
+            values["blue_cones"] = chosen[2] if chosen else "-"
             values["remarks"] = read(
-                [w for w in pool if not near or w is not near[0]])
+                [w for w in pool if w is not chosen])
 
             for band, field in BAND_FIELDS.items():
                 if band in ("1", "2", "19", "20"):
@@ -491,6 +496,10 @@ def english_rows(pdf_path: Path) -> tuple[list[dict[str, Any]], list[str]]:
             row = _english_row(values, failures)
             if row:
                 rows.append(row)
+        per_page.append((number, len(anchors)))
+    print("pages and column counts:", per_page)
+    from collections import Counter
+    print("UN multiset:", sorted(Counter(r["un"] for r in rows).items()))
     return rows, failures
 
 
@@ -521,7 +530,12 @@ def _english_row(values: dict[str, str], failures: list[str]) -> dict[str, Any] 
         cell = tighten(row[key]) or "-"
         row[key] = cell
         if not pattern.fullmatch(cell):
-            failures.append(f"{row['un']}: {key} {cell!r} fails its shape")
+            failures.append(
+                f"{row['un']}: {key} {cell!r} fails its shape; row: "
+                + " | ".join(f"{k}={row.get(k, '')!r}" for k in
+                             ("un", "vessel_type", "cargo_tank_design",
+                              "cargo_tank_type", "opening_pressure_kpa",
+                              "max_filling_percent", "blue_cones", "remarks")))
             return None
     return row
 

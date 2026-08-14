@@ -352,6 +352,38 @@
       "note": "Supplied as a file; OTIF publishes the same edition, but this copy is the one pinned."
     },
     {
+      "id": "adn_nl_2025",
+      "title": "ADN 2025, Dutch edition",
+      "publisher": "supplied by the operator; the edition names itself on its title page",
+      "edition": "ADN 2025, in force 1 January 2025",
+      "language": "nl",
+      "profiles": [
+        "ADN"
+      ],
+      "role": "The Dutch ADN as a printed edition. Until now the Dutch reading of the inland-waterway rules came from an HTML export whose damage this repository has had to measure and undo cell by cell; this is the book itself, and the source of the Dutch model of 5.4.3.",
+      "filename": "ADN-2025-NL.pdf",
+      "urls": [],
+      "obtained": "supplied by the operator",
+      "sha256": "8efe4ac617076693acf5702fc65924e0e676a31b0e843faaf5dca8e57e046743",
+      "note": "Supplied as a file; no stable public URL is recorded."
+    },
+    {
+      "id": "adn_de",
+      "title": "ADN 2025, German edition",
+      "publisher": "supplied by the operator",
+      "edition": "ADN 2025, in force 1 January 2025",
+      "language": "de",
+      "profiles": [
+        "ADN"
+      ],
+      "role": "The ADN in German, which UNECE does not publish — it issues the text in English, French and Russian. The source of the German model of 5.4.3 for the inland-waterway regime.",
+      "filename": "adn_de.pdf",
+      "urls": [],
+      "obtained": "supplied by the operator",
+      "sha256": "5061089af19f22d0c2670b757931a3de8712e31835b2da75735b88d392938bd0",
+      "note": "Supplied as a file; no stable public URL is recorded."
+    },
+    {
       "id": "adn_instructions_nl",
       "title": "Instructions in writing according to the ADN, Dutch",
       "publisher": "national edition",
@@ -370,7 +402,16 @@
         "language": "nl",
         "provision": "5.4.3"
       },
-      "note": "No edition this project can read prints this model, and nobody has supplied the file: the application reports it as missing rather than serving a neighbouring language. Supply it with scripts/regulations_store.py add, or register a page range in cut_from once an edition that prints it is in the store."
+      "note": "Not a file of its own: cut from adn_nl_2025, pages 746-749, measured with scripts/find_instructions_pages.py. The identity of what is served is the identity of that edition, whose hash is pinned above.",
+      "cut_from": {
+        "document": "adn_nl_2025",
+        "pages": [
+          746,
+          749
+        ],
+        "measured_with": "scripts/find_instructions_pages.py",
+        "note": "Like the Dutch ADR, this edition begins the model partway down the sheet that carries 5.4.3's own paragraphs. The range is the wider one deliberately: a page short at the front would lose the model's title and its first measures."
+      }
     },
     {
       "id": "adn_instructions_en",
@@ -420,7 +461,15 @@
         "language": "de",
         "provision": "5.4.3"
       },
-      "note": "No edition this project can read prints this model, and nobody has supplied the file: the application reports it as missing rather than serving a neighbouring language. Supply it with scripts/regulations_store.py add, or register a page range in cut_from once an edition that prints it is in the store."
+      "note": "Not a file of its own: cut from adn_de, pages 818-821, measured with scripts/find_instructions_pages.py. Four pages, the model's own title at the head of the first; the section's own heading stands on the page before. The identity of what is served is the identity of that edition, whose hash is pinned above.",
+      "cut_from": {
+        "document": "adn_de",
+        "pages": [
+          818,
+          821
+        ],
+        "measured_with": "scripts/find_instructions_pages.py"
+      }
     },
     {
       "id": "adn_instructions_fr",

@@ -89,12 +89,12 @@ The procedure is the same each time:
 
 ## What the register holds today
 
-Twenty source documents: the free land-mode texts (ADR volumes I and II in
+Twenty-two source documents: the free land-mode texts (ADR volumes I and II in
 English and French, RID, ADN in English and French), the operator-supplied
 editions the first readings came from and the ones that closed gaps no free
-publisher could — the German ADR in two volumes, a printed Dutch ADR 2025, the
-RID in German and French — the IMDG 42-24 amendment resolution and three ADN
-session documents. `status` is the live answer; the register file is the
+publisher could — the German ADR in two volumes, the ADN in Dutch and in
+German, a printed Dutch ADR 2025, the RID in German and French — the IMDG 42-24
+amendment resolution and three ADN session documents. `status` is the live answer; the register file is the
 durable one.
 
 Beside them stand eight entries of a second kind — the **models of 5.4.3**, the
@@ -121,7 +121,9 @@ sheet. Whether a cut is the model and nothing else is checked, not assumed —
 cuts every registered model and prints, page by page, whether it carries the
 model's title and whether a neighbouring section leaked in. It runs on a runner
 (`fetch-regulations`, input `verify_instructions`), where the store holds the
-editions. A combination no edition here prints is reported as
-missing, naming the document that would produce it. It is never filled in from
-a neighbouring language: instructions in a language the crew cannot read are
-what 5.4.3.2 exists to prevent.
+editions. All eight are registered with a measured range and all eight come out of the
+store. Should a range ever point at an edition an installation lacks, the
+application reports that model as missing and names the document that would
+produce it; it is never filled in from a neighbouring language, because
+instructions in a language the crew cannot read are what 5.4.3.2 exists to
+prevent.

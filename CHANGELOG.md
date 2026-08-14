@@ -2,6 +2,22 @@
 
 All notable changes are documented here, following [Semantic Versioning](https://semver.org/).
 
+## [1.79.1] — 2026-08-14
+
+### Changed
+
+- **A reader for table C as the printed Dutch ADN sets it**, across the page
+  rather than down it: a page's columns from the band of column numbers over
+  it, a row from one UN number to the next, a cell the crossing of the two.
+  Its first run found the 35 table C pages and read 33 rows past every shape
+  check, and reported 645 cells it would not guess at. The reading is **not
+  adopted**; what the reports say, in their own words, is that the boundary
+  between columns (1) and (2) sits wrong for a column that wide
+  ("1010 BUTADIENEN BUTADIENEN" came back as a UN number), that a footnote
+  reference set above its line sorts before the cell it belongs to
+  ("12) T1" for "T1 12)"), and that a name running over two lines still splits
+  its row. Each is a measurement to act on rather than a mystery.
+
 ## [1.79.0] — 2026-08-14
 
 ### Added

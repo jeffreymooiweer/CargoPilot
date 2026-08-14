@@ -584,6 +584,152 @@ BAND_ORDER = {"1": 1, "2": 2, "3a": 3, "3b": 4, **{str(n): n + 2 for n in range(
 ORDERED = sorted(BAND_FIELDS, key=lambda n: BAND_ORDER[n])
 
 
+#: The twenty-one markers of table C, in print order, and the field each holds.
+#: The same map as BAND_FIELDS, read across a page instead of down one.
+COLUMN_FIELDS = {
+    "1": "un", "2": "name_nl", "3a": "class", "3b": "classification_code",
+    "4": "packing_group", "5": "dangers", "6": "vessel_type",
+    "7": "cargo_tank_design", "8": "cargo_tank_type",
+    "9": "cargo_tank_equipment", "10": "opening_pressure_kpa",
+    "11": "max_filling_percent", "12": "density", "13": "sampling_device",
+    "14": "pump_room_below_deck", "15": "temperature_class",
+    "16": "explosion_group", "17": "explosion_protection", "18": "equipment",
+    "19": "blue_cones", "20": "remarks",
+}
+
+
+def _column_band(page) -> list[tuple[str, float]]:
+    """The column numbers printed across the top of this page, left to right.
+
+    The UNECE volumes set table C rotated and the markers run *down* the page;
+    the printed Dutch edition sets it the ordinary way and they run across it.
+    So the band is the line of the page that carries the most of them.
+    """
+    from collections import defaultdict
+
+    rows: dict[float, list[tuple[float, str]]] = defaultdict(list)
+    for x0, y0, x1, _y1, word, *_ in page.get_text("words"):
+        if MARKER.fullmatch(word.strip()):
+            rows[round(y0)].append(((x0 + x1) / 2, word.strip("()")))
+    if not rows:
+        return []
+    best = max(rows.values(), key=len)
+    return [(name, x) for x, name in sorted(best)]
+
+
+def dutch_book_rows(pdf_path: Path) -> tuple[list[dict[str, Any]], list[str]]:
+    """Read table C out of the printed Dutch ADN.
+
+    The Dutch reading has come from an HTML export since v1.73.0, and that
+    export is damaged in four measured ways — rows split per alternative name,
+    the cells of columns (7) and (9) swapped against its own header, UN 1977
+    and UN 1999 missing, the remark column glued four languages deep. The book
+    itself is in the store now, and it prints the table as an ordinary
+    landscape table: one substance per line, the columns spread across x.
+
+    Which makes this the simpler of the two geometries. A page's columns come
+    from the band of column numbers across its top, a row begins at a UN number
+    under column (1) and runs to the next one, and a cell is what falls in the
+    crossing of the two.
+    """
+    import fitz
+
+    doc = fitz.open(pdf_path)
+    rows: list[dict[str, Any]] = []
+    failures: list[str] = []
+    pages = 0
+    for number in range(doc.page_count):
+        page = doc[number]
+        band = _column_band(page)
+        names = [name for name, _x in band]
+        if len(band) < 20 or "1" not in names or "20" not in names:
+            continue
+        if sorted(names, key=lambda n: BAND_ORDER[n]) != ORDERED:
+            failures.append(f"page {number}: columns {names}")
+            continue
+        pages += 1
+        centres = [x for _n, x in band]
+        # A cell sits under its own column number, so the boundary between two
+        # columns is the midpoint between their markers. The outer edges are
+        # open: the name column runs to the page's left margin and the remarks
+        # to its right.
+        edges = ([-1e6] + [(a + b) / 2 for a, b in zip(centres, centres[1:])]
+                 + [1e6])
+        band_bottom = max(y for y in [0.0] + [
+            w[3] for w in page.get_text("words")
+            if MARKER.fullmatch(w[4].strip())])
+
+        words = [w for w in page.get_text("words") if w[1] > band_bottom]
+        un_words = sorted(
+            (w for w in words
+             if re.fullmatch(r"\d{4}", w[4]) and edges[0] <= w[0] < edges[1]),
+            key=lambda w: w[1])
+        if not un_words:
+            continue
+        starts = [w[1] for w in un_words]
+        for index, un_word in enumerate(un_words):
+            top = starts[index] - 2.0
+            bottom = (starts[index + 1] - 2.0 if index + 1 < len(starts)
+                      else 1e6)
+            cells: dict[str, list[tuple[float, float, str]]] = {}
+            for x0, y0, _x1, _y1, word, *_ in words:
+                if not top <= y0 < bottom:
+                    continue
+                for column, (left, right) in enumerate(zip(edges, edges[1:])):
+                    if left <= x0 < right:
+                        cells.setdefault(band[column][0], []).append(
+                            (y0, x0, word))
+                        break
+            values = {
+                field: " ".join(word for _y, _x, word
+                                in sorted(cells.get(marker, [])))
+                for marker, field in COLUMN_FIELDS.items()}
+            row = _dutch_book_row(values, failures)
+            if row:
+                rows.append(row)
+    print(f"table C pages: {pages}, rows: {len(rows)}")
+    return rows, failures
+
+
+def _dutch_book_row(values: dict[str, str], failures: list[str]) -> dict[str, Any] | None:
+    """One row of the printed Dutch edition, checked cell by cell.
+
+    The same vocabularies as the other readings — they are codes, not words —
+    with the booleans of columns (14) and (17) in this edition's language.
+    """
+    row = dict(values)
+    if not re.fullmatch(r"\d{4}", row.get("un", "")):
+        failures.append(f"un {row.get('un')!r} is no UN number")
+        return None
+    for key in ("pump_room_below_deck", "explosion_protection"):
+        low = row[key].strip().lower()
+        row[key] = {"ja": "True", "neen": "False", "nee": "False"}.get(low, row[key])
+    row["name_nl"] = flatten(row["name_nl"])
+    row["remarks"] = tidy(row["remarks"])
+    checks = [
+        ("vessel_type", VESSEL), ("cargo_tank_design", SMALL),
+        ("cargo_tank_type", SMALL), ("cargo_tank_equipment", SMALL),
+        ("opening_pressure_kpa", NUMBER), ("max_filling_percent", NUMBER),
+        ("sampling_device", SMALL), ("pump_room_below_deck", BOOL),
+        ("temperature_class", TEMP), ("explosion_group", EXPLOSION),
+        ("explosion_protection", BOOL), ("equipment", EQUIPMENT),
+        ("blue_cones", CONES), ("packing_group", PG), ("class", CLASS),
+        ("classification_code", CODE),
+    ]
+    for key, pattern in checks:
+        cell = tighten(row[key]) or "-"
+        row[key] = cell
+        if not pattern.fullmatch(cell):
+            failures.append(
+                f"{row['un']}: {key} {cell!r} fails its shape; row: "
+                + " | ".join(f"{k}={row.get(k, '')!r}" for k in
+                             ("un", "name_nl", "vessel_type",
+                              "cargo_tank_design", "max_filling_percent",
+                              "blue_cones", "remarks")))
+            return None
+    return row
+
+
 def _english_row(values: dict[str, str], failures: list[str]) -> dict[str, Any] | None:
     row = dict(values)
     if not re.fullmatch(r"\d{4}", row.get("un", "")):
@@ -945,6 +1091,9 @@ def main() -> int:
     parser = argparse.ArgumentParser(description="Read ADN table C")
     parser.add_argument("--dutch", type=Path,
                         help="path of the stored Dutch ADN index JSON")
+    parser.add_argument("--dutch-book", type=Path,
+                        help="path of the printed Dutch ADN PDF, read across "
+                             "the page instead of out of the export")
     parser.add_argument("--english", type=Path,
                         help="path of a UNECE ADN PDF, read geometrically")
     parser.add_argument("--language", default="en", choices=["en", "fr", "nl"],
@@ -989,6 +1138,24 @@ def main() -> int:
         for row in outcome["unmatched_dutch"]:
             print(f"    unplaced: {row['un']} {row['name_nl'][:60]}")
         return 0
+
+    if args.dutch_book:
+        rows, failures = dutch_book_rows(args.dutch_book)
+        print(f"rows parsed: {len(rows)}")
+        print(f"failures: {len(failures)}")
+        for failure in failures[:25]:
+            print("  !", failure)
+        if args.out and rows:
+            args.out.write_text(
+                json.dumps(rows, ensure_ascii=False, indent=1) + "\n",
+                encoding="utf-8")
+            print(f"written: {args.out}")
+        if args.dump:
+            print("=== ROWS BEGIN ===")
+            for row in rows:
+                print("ROW " + json.dumps(row, ensure_ascii=False))
+            print("=== ROWS END ===")
+        return 1 if failures else 0
 
     if args.english and args.probe_page is not None:
         import fitz

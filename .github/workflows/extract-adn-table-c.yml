@@ -84,11 +84,16 @@ jobs:
           PDF=/tmp/cargopilot-regulations/adn.pdf
           if [ "$LANGUAGE" = "fr" ]; then PDF=/tmp/cargopilot-regulations/adn_fr.pdf; fi
           if [ "$LANGUAGE" = "nl" ]; then
+            # The printed Dutch edition sets table C the ordinary way round,
+            # so it is read across the page and not down it.
             PDF=$(python scripts/regulations_store.py path adn_nl_2025)
+            python scripts/extract_adn_table_c.py \
+              --dutch-book "$PDF" --out table_c_nl.json $EXTRA
+          else
+            python scripts/extract_adn_table_c.py \
+              --english "$PDF" --language "$LANGUAGE" \
+              --out "table_c_$LANGUAGE.json" $EXTRA
           fi
-          python scripts/extract_adn_table_c.py \
-            --english "$PDF" --language "$LANGUAGE" \
-            --out "table_c_$LANGUAGE.json" $EXTRA
 
       # Even a run with failures hands back what it read: the comparison in the
       # development container is where shortfalls are diagnosed, and it needs

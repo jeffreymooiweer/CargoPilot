@@ -420,7 +420,15 @@
         "language": "en",
         "provision": "5.4.3"
       },
-      "note": "No edition this project can read prints this model, and nobody has supplied the file: the application reports it as missing rather than serving a neighbouring language. Supply it with scripts/regulations_store.py add, or register a page range in cut_from once an edition that prints it is in the store."
+      "note": "Not a file of its own: cut from adr2, pages 284-287, measured with scripts/find_instructions_pages.py. The identity of what is served is the identity of that edition, whose hash is pinned above.",
+      "cut_from": {
+        "document": "adr2",
+        "pages": [
+          284,
+          287
+        ],
+        "measured_with": "scripts/find_instructions_pages.py"
+      }
     },
     {
       "id": "adr_instructions_de",
@@ -462,7 +470,15 @@
         "language": "fr",
         "provision": "5.4.3"
       },
-      "note": "No edition this project can read prints this model, and nobody has supplied the file: the application reports it as missing rather than serving a neighbouring language. Supply it with scripts/regulations_store.py add, or register a page range in cut_from once an edition that prints it is in the store."
+      "note": "Not a file of its own: cut from adr2_fr, pages 301-304, measured with scripts/find_instructions_pages.py. The identity of what is served is the identity of that edition, whose hash is pinned above.",
+      "cut_from": {
+        "document": "adr2_fr",
+        "pages": [
+          301,
+          304
+        ],
+        "measured_with": "scripts/find_instructions_pages.py"
+      }
     }
   ]
 }

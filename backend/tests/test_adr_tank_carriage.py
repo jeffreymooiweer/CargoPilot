@@ -269,3 +269,91 @@ def test_bulk_is_not_given_the_tank_plate_rule():
     provisions, and answering it here would be the borrowing this release is
     supposed to end."""
     assert "tank_plates" not in kinds(placarding("bulk"))
+
+
+# --- 1.10.3.1.2: the tank column, and the seven rows that only live there ---
+#
+# The table has three quantity columns — tank, bulk and packages — and only the
+# packages one was answered. For packages the answer is mostly footnote b):
+# whatever the quantity, 1.10.3 does not apply. Seven rows are b) in packages
+# and **3,000 litres in a tank**, so they had no reason to exist here until the
+# application knew about tanks. A road tanker of petrol is the plainest of them,
+# and this check used to call it not high consequence.
+#
+# Footnotes c) and d) matter as much as the figures: a tank or bulk value counts
+# only where table A admits that form of carriage.
+
+
+def security(mode=None, quantity="5000", un="1203", hazard="3",
+             group="II", code="F1"):
+    from app.services.dg.compliance import check_adr_security
+    row = {"un_number": un, "class": hazard, "packing_group": group,
+           "classification_code": code}
+    if quantity is not None:
+        row["adr_total_quantity"] = quantity
+    if mode:
+        row["carriage_mode"] = mode
+    return check_adr_security(line(row), "nl")
+
+
+def qualifying(out):
+    return [i for i in out["items"] if not i.get("not_answered")]
+
+
+def test_a_tanker_of_petrol_above_three_thousand_litres_is_high_consequence():
+    """The finding this release exists for. In packages the same petrol is
+    footnote b) at any quantity; in a tank it crosses at 3,000 litres."""
+    out = security("tank", "5000")
+    assert out["status"] == "high_consequence"
+    item = qualifying(out)[0]
+    assert item["threshold_kg"] == 3000
+    assert "3000" in item["threshold_note"]
+
+
+def test_the_same_tanker_below_the_figure_is_not():
+    assert security("tank", "2000")["status"] == "ok"
+
+
+def test_packaged_petrol_stays_outside_1_10_3_at_any_quantity():
+    """Footnote b), and the reason v1.58.0 could answer packages with a
+    membership test and no arithmetic at all. That must not have changed."""
+    assert security(None, "10000")["status"] == "ok"
+    assert security("packages", "10000")["status"] == "ok"
+
+
+def test_a_toxic_gas_in_a_tank_qualifies_at_any_quantity():
+    """Its tank figure is 0, not 3,000 — the table does not treat every tank
+    row the same and neither may the check."""
+    out = security("tank", "1", un="1017", hazard="2", group="", code="2TC")
+    assert out["status"] == "high_consequence"
+    assert qualifying(out)[0]["threshold_kg"] == 0
+
+
+def test_packing_group_ii_corrosive_stays_out_where_group_i_falls_in():
+    """The row names packing group I. Reading it as "corrosives" would put a
+    tanker of dilute acid under a security plan it does not need."""
+    assert security("tank", "5000", un="1830", hazard="8", group="II",
+                    code="C1")["status"] == "ok"
+    assert security("tank", "5000", un="1830", hazard="8", group="I",
+                    code="C1")["status"] == "high_consequence"
+
+
+def test_a_missing_quantity_is_reported_rather_than_read_as_under():
+    """A threshold needs a quantity. Absent, the honest answer is that the row
+    was not answered — not that the load is below the figure."""
+    out = security("tank", None)
+    assert out["status"] == "ok"
+    unanswered = [i for i in out["items"] if i.get("not_answered")]
+    assert unanswered and unanswered[0]["threshold_kg"] == 3000
+
+
+def test_footnote_c_keeps_a_substance_out_where_tanks_are_not_admitted():
+    """An explosive has no tank code, so the tank column says nothing about it —
+    and the admission check has already refused the consignment anyway."""
+    assert security("tank", "5000", un="0004", hazard="1", group="",
+                    code="1.1D")["status"] == "ok"
+
+
+def test_an_explosive_in_packages_is_unchanged():
+    assert security(None, "1", un="0004", hazard="1", group="",
+                    code="1.1D")["status"] == "high_consequence"

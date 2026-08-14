@@ -105,6 +105,12 @@ the packages one ever read. And the **orange plates**: 5.3.2.1.6 *permits* the h
 numbers for packages, while 5.3.2.1.2 *requires* them on both sides of every tank and
 compartment. Permitted and required are not the same finding.
 
+**And since v1.68.0 the security table.** Table 1.10.3.1.2 has three quantity columns and
+only the packages one was answered. Seven of its rows are footnote b) in packages — never
+high consequence, whatever the quantity — and **3,000 litres in a tank**. Flammable liquids
+of packing groups I and II are among them, so a road tanker of petrol is high consequence
+dangerous goods and needs the security plan of 1.10.3.2; this check used to say it did not.
+
 **The ADR tank columns are held since v1.65.0** — the portable tank instruction (10) and its
 provisions (11), the ADR tank code (12), its provisions (13) and the vehicle the substance
 then requires (14). They were read and cross-checked from the first day of the extractor and

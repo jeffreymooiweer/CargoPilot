@@ -8,6 +8,11 @@ name: Extract ADR tank hierarchy
 #
 # Nothing is committed. Two readings are compared in the development container
 # and only a comparison that accounts for every disagreement becomes a seed.
+#
+# Dispatch this on the working branch, not on main. The volumes live in the
+# Actions cache, and a cache is scoped to the branch that wrote it: a run on
+# main cannot see the 344 MB the branch's runs have built up, spends four
+# minutes discovering that UNECE still answers 403, and reads nothing.
 
 on:
   workflow_dispatch:
@@ -88,8 +93,20 @@ jobs:
           path: hierarchy_${{ inputs.language }}.json
           if-no-files-found: ignore
 
-      - name: Keep the volumes for the next run
+      # An empty store must never be saved. The cache is restored by prefix and
+      # the newest match wins, so a run that found nothing and saved its nothing
+      # puts every later run on an empty store — which is exactly what the first
+      # run of this workflow did.
+      - name: Is there a store worth keeping
         if: always()
+        id: store
+        run: |
+          SIZE=$(du -sm /tmp/cargopilot-regulations 2>/dev/null | cut -f1 || echo 0)
+          echo "megabytes=$SIZE" >> "$GITHUB_OUTPUT"
+          echo "the store holds ${SIZE} MB"
+
+      - name: Keep the volumes for the next run
+        if: ${{ always() && steps.store.outputs.megabytes > 10 }}
         uses: actions/cache/save@v4
         with:
           path: /tmp/cargopilot-regulations

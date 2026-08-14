@@ -527,3 +527,83 @@ def adn_blue_cones(un_number: str) -> dict[str, Any] | None:
         "certain": bool(row.get("certain")),
         "carriage_permitted": row.get("carriage_permitted", ""),
     }
+
+
+@lru_cache(maxsize=1)
+def _tank_hierarchy() -> dict[str, Any]:
+    """The two hierarchies of ADR 4.3, read from more than one book.
+
+    ``gases`` is 4.3.3.1.2: a required code and the other codes a substance
+    under it may also travel in, with the pressure figure of the permitted code
+    at least that of the required one. ``rationalised`` is 4.3.4.1.2, and it is
+    a different thing entirely: each tank code names the group of substances it
+    may carry — class, classification code and packing group — and inherits the
+    groups of the codes below it.
+
+    A cell no two readings agree on is stored under ``disputed`` with every
+    value read, and is not an answer. So is a cell only one book was read for.
+    """
+    try:
+        return json.loads(
+            (_SEED_DIR / "adr_tank_hierarchy.json").read_text(encoding="utf-8"))
+    except (OSError, ValueError):  # pragma: no cover - seed missing
+        return {"gases": [], "rationalised": []}
+
+
+def _tank_code(value: str) -> str:
+    """One spelling: the editions differ on the decimal separator only."""
+    return str(value or "").strip().upper().replace(",", ".")
+
+
+def adr_gas_hierarchy(required: str) -> dict[str, Any] | None:
+    """4.3.3.1.2 for one required code, or None where it names no such code."""
+    wanted = _tank_code(required)
+    for row in _tank_hierarchy().get("gases", []):
+        if _tank_code(row["tank_code"]) == wanted:
+            return row
+    return None
+
+
+def adr_tank_permissions(offered: str) -> dict[str, Any] | None:
+    """4.3.4.1.2 for one offered code, with the groups it inherits folded in.
+
+    The inheritance is what makes the table a hierarchy, so a code's permitted
+    group is its own plus every group of the codes it inherits — read down the
+    chain, because those codes inherit in their turn. Where any link in that
+    chain has a cell no two readings settled, the answer says so instead of
+    quietly presenting a shorter list as the whole of it.
+    """
+    table = {_tank_code(row["tank_code"]): row
+             for row in _tank_hierarchy().get("rationalised", [])}
+    start = table.get(_tank_code(offered))
+    if start is None:
+        return None
+
+    permitted: list[dict] = []
+    unsettled: set[str] = set()
+    seen: set[str] = set()
+    queue = [_tank_code(offered)]
+    while queue:
+        code = queue.pop(0)
+        if code in seen:
+            continue
+        seen.add(code)
+        row = table.get(code)
+        if row is None:
+            unsettled.add(code)
+            continue
+        disputed = row.get("disputed") or {}
+        if "permitted" in disputed:
+            unsettled.add(code)
+        else:
+            permitted.extend(row.get("permitted") or [])
+        if "inherits" in disputed:
+            unsettled.add(code)
+        else:
+            queue.extend(_tank_code(other) for other in row.get("inherits") or [])
+    return {
+        "tank_code": start["tank_code"],
+        "permitted": permitted,
+        "inherits": sorted(seen - {_tank_code(offered)}),
+        "unsettled": sorted(unsettled),
+    }

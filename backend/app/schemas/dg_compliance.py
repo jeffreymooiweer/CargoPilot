@@ -68,6 +68,11 @@ class DangerousGoodsProduct(BaseModel):
     # with nothing to mark it as the wrong one. Absent means packages, which is
     # what every consignment drawn up before v1.66.0 was.
     carriage_mode: str | None = None
+    # The code on the tank that is actually standing there — column (12) says
+    # which code the substance requires, not whether this tank may carry it.
+    # ADR 4.3.3.1.2 and 4.3.4.1.2 answer that, and neither can be asked without
+    # this field.
+    tank_code: str | None = None
 
     # Quantities arrive as text ("5 kg", "12,5 L"); the engine peels the number
     # out. Only what cannot possibly be right is refused here.

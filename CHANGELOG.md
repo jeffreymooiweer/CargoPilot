@@ -2,6 +2,55 @@
 
 All notable changes are documented here, following [Semantic Versioning](https://semver.org/).
 
+## [1.82.0] — 2026-08-14
+
+### Added
+
+- **The tank on the yard is now part of the question.** CargoPilot showed the
+  tank code column (12) *requires*; it could not say whether the tank actually
+  standing there may carry the goods. That is the consignor's question, and ADR
+  answers it in two provisions that share nothing but their purpose:
+
+  - **4.3.3.1.2**, gases, is a hierarchy of *codes*: a substance under C\*BN may
+    also travel in C#BN, C#CN, C#DN, C#BH, C#CH and C#DH, where the figure for
+    \# is at least the figure for \*.
+  - **4.3.4.1.2**, classes 3 to 9, is the rationalized approach and is not a
+    hierarchy of codes at all: each tank code names the *group of substances* it
+    may carry — class, classification code and packing group — and inherits the
+    groups of the codes below it. The required code is never compared with the
+    offered one; the substance is looked up in the offered code's group.
+
+  A new field on the dangerous goods step takes the tank's own code, and shows
+  only once the mode of carriage says a tank is involved. Petrol in an L4BN
+  semi-trailer now comes back as a fit with the hierarchy step shown; an
+  ammonia tank of the wrong family comes back as one that does not.
+
+- **"Cannot be assessed" is an answer.** Where the reading of the regulation did
+  not settle a cell the answer would rest on, the check says so instead of
+  guessing in either direction — and it names which codes in the inheritance
+  chain are unsettled. The same applies to a tank code the regulation does not
+  name at all, which is what a typo on an approval document looks like.
+
+- **The two hierarchies are in the repository, read from three books**: the
+  English volume II, the printed Dutch edition and the German volume II. 15 of
+  the 16 rows of the gas hierarchy are settled by more than one reading; of the
+  18 tank codes of the rationalized approach, 7 are settled on every cell and 11
+  carry a cell no two readings agree on, stored with every value read. Those 11
+  are shortfalls of the readers, not disagreements between the books, and each
+  one makes the check decline rather than answer.
+
+- The regulation's own note travels with every answer: the hierarchy takes no
+  account of the special provisions of 4.3.5 and 6.8.4 — column (13) — so where
+  the substance carries any, they are named. One of them can require equipment
+  the hierarchy knows nothing about, and another can switch the hierarchy off.
+
+- A condition inside the packing group cell is part of the permission and is
+  shown as one: LGBF admits packing group II of class 3 F1 only where the
+  vapour pressure at 50 °C is at most 1.1 bar. For gases the required test
+  pressure is usually printed as **x** in column (12) — it comes from the table
+  of 4.3.3.2.5, which this application does not hold, and the answer says so
+  rather than comparing a figure that is not there.
+
 ## [1.81.0] — 2026-08-14
 
 ### Added

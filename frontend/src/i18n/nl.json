@@ -452,6 +452,11 @@
       "not_permitted": "niet toegelaten"
     },
     "tankProvisions": "Bijzondere bepalingen: {{codes}}",
+    "tankFitTitle": "Past deze tank bij deze stof? (ADR 4.3)",
+    "tankFit": {
+      "ok": "past",
+      "not_permitted": "past niet"
+    },
     "adnAdmissionTitle": "Toegelaten wijze van vervoer (ADN 3.2.1, kolom (8))",
     "adnAdmission": {
       "ok": "toegelaten",

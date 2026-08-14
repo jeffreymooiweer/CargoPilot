@@ -91,6 +91,7 @@ export default function DgCompliancePanel({ entries, profiles }: Props) {
 
   const adr = result?.adr_points;
   const tankAdmission = result?.adr_tank_admission;
+  const tankFit = result?.adr_tank_fit;
   const adnAdmission = result?.adn_carriage_admission;
   const adn = result?.adn_exemption;
   const separation = result?.adn_hold_separation;
@@ -283,6 +284,55 @@ export default function DgCompliancePanel({ entries, profiles }: Props) {
           </ul>
           {tankAdmission.source && (
             <p className="text-[11px] text-slate-500 dark:text-slate-400">{tankAdmission.source}</p>
+          )}
+        </CollapsibleSection>
+      )}
+
+      {/* ADR 4.3 — and it comes straight after the admission card, because it
+          is the next question in the same conversation: the goods may travel in
+          a tank, but may they travel in *this* one? The card leads with the
+          outcome per position, and "cannot be assessed" is shown as its own
+          state rather than folded into either yes or no. */}
+      {tankFit && tankFit.status !== "not_checked" && (
+        <CollapsibleSection
+          title={t("compliance.tankFitTitle")}
+          defaultOpen={tankFit.status === "not_permitted"}
+          chips={
+            <SummaryChip
+              className={
+                tankFit.status === "not_permitted"
+                  ? "bg-red-100 text-red-800 dark:bg-red-900/40 dark:text-red-300"
+                  : "bg-emerald-100 text-emerald-800 dark:bg-emerald-900/40 dark:text-emerald-300"
+              }
+            >
+              {t(`compliance.tankFit.${tankFit.status}`)}
+            </SummaryChip>
+          }
+        >
+          <ul className="space-y-2">
+            {tankFit.items.map((item, i) => (
+              <li key={i} className="text-xs">
+                <p
+                  className={
+                    item.fit === "fits"
+                      ? "text-slate-700 dark:text-slate-300"
+                      : item.fit === "does_not_fit"
+                        ? "text-red-600 dark:text-red-400"
+                        : "text-amber-600 dark:text-amber-300"
+                  }
+                >
+                  {item.message}
+                </p>
+                {item.provisions_note && (
+                  <p className="mt-0.5 text-[11px] text-slate-500 dark:text-slate-400">
+                    {item.provisions_note}
+                  </p>
+                )}
+              </li>
+            ))}
+          </ul>
+          {tankFit.source && (
+            <p className="text-[11px] text-slate-500 dark:text-slate-400">{tankFit.source}</p>
           )}
         </CollapsibleSection>
       )}

@@ -452,6 +452,11 @@
       "not_permitted": "nicht zugelassen"
     },
     "tankProvisions": "Sondervorschriften: {{codes}}",
+    "tankFitTitle": "Passt dieser Tank zu diesem Stoff? (ADR 4.3)",
+    "tankFit": {
+      "ok": "passt",
+      "not_permitted": "passt nicht"
+    },
     "adnAdmissionTitle": "Zugelassene Beförderungsart (ADN 3.2.1, Spalte (8))",
     "adnAdmission": {
       "ok": "zugelassen",

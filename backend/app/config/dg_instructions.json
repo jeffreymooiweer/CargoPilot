@@ -450,6 +450,21 @@
           }
         }
       ]
+    },
+    "tank_code": {
+      "label": {
+        "nl": "Tankcode van de tank",
+        "en": "Tank code of the tank",
+        "de": "Tankcodierung des Tanks",
+        "fr": "Code-citerne de la citerne"
+      },
+      "help": {
+        "nl": "De tankcode die op het keuringsdocument van de tank staat, bijvoorbeeld L4BN of PxBH(M). Kolom (12) zegt welke code de stof vraagt; of déze tank de stof mag vervoeren staat in ADR 4.3.3.1.2 (gassen) en 4.3.4.1.2 (klassen 3 t/m 9). Zonder deze code kan die toets niet gedaan worden.",
+        "en": "The tank code on the tank's approval document, for example L4BN or PxBH(M). Column (12) says which code the substance requires; whether *this* tank may carry it is decided by ADR 4.3.3.1.2 (gases) and 4.3.4.1.2 (classes 3 to 9). Without this code that check cannot be made.",
+        "de": "Die Tankcodierung auf dem Prüfdokument des Tanks, zum Beispiel L4BN oder PxBH(M). Spalte (12) nennt die verlangte Codierung; ob dieser Tank den Stoff befördern darf, entscheiden ADR 4.3.3.1.2 (Gase) und 4.3.4.1.2 (Klassen 3 bis 9).",
+        "fr": "Le code-citerne figurant sur le document d'agrément de la citerne, par exemple L4BN ou PxBH(M). La colonne (12) indique le code exigé ; si cette citerne peut transporter la matière relève de l'ADR 4.3.3.1.2 (gaz) et 4.3.4.1.2 (classes 3 à 9)."
+      },
+      "type": "text"
     }
   }
 }

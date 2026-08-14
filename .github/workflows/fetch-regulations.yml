@@ -34,6 +34,10 @@ on:
         description: "Report where the four-page model of 5.4.3 sits in these stored documents (ids, space separated)"
         default: ""
         required: false
+      verify_instructions:
+        description: "Cut every registered model of 5.4.3 out of the store and print what came out"
+        type: boolean
+        default: false
 
 permissions:
   contents: read
@@ -111,14 +115,21 @@ jobs:
           cat /tmp/paths.txt
           xargs -r python scripts/find_instructions_pages.py < /tmp/paths.txt
 
+      - name: Cut every model of 5.4.3 and look at it
+        if: ${{ inputs.verify_instructions }}
+        run: |
+          set -euo pipefail
+          pip install --quiet pymupdf
+          python scripts/check_instruction_models.py
+
       - name: Fetch what is missing
-        if: ${{ inputs.probe_url == '' && inputs.drive_folder == '' && inputs.find_instructions == '' }}
+        if: ${{ inputs.probe_url == '' && inputs.drive_folder == '' && inputs.find_instructions == '' && !inputs.verify_instructions }}
         run: python scripts/regulations_store.py fetch ${{ inputs.ids }}
 
       # Not after a page-range measurement: that report is what the run is for,
       # and a store listing under it only pushes it out of reach of a log tail.
       - name: Report the store
-        if: ${{ always() && inputs.probe_url == '' && inputs.find_instructions == '' }}
+        if: ${{ always() && inputs.probe_url == '' && inputs.find_instructions == '' && !inputs.verify_instructions }}
         env:
           IGNORED: report runs after fetch and after adopt alike
         run: python scripts/regulations_store.py status || true

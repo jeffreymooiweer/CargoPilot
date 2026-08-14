@@ -89,11 +89,13 @@ The procedure is the same each time:
 
 ## What the register holds today
 
-Fifteen source documents: the free land-mode texts (ADR volumes I and II in
-English and French, RID, ADN in English and French), the four operator-supplied
-Dutch sources the first readings came from, the IMDG 42-24 amendment resolution
-and three ADN session documents. `status` is the live answer; the register file
-is the durable one.
+Twenty source documents: the free land-mode texts (ADR volumes I and II in
+English and French, RID, ADN in English and French), the operator-supplied
+editions the first readings came from and the ones that closed gaps no free
+publisher could — the German ADR in two volumes, a printed Dutch ADR 2025, the
+RID in German and French — the IMDG 42-24 amendment resolution and three ADN
+session documents. `status` is the live answer; the register file is the
+durable one.
 
 Beside them stand eight entries of a second kind — the **models of 5.4.3**, the
 instructions in writing, one per regime and language. They are not sources: they
@@ -107,8 +109,19 @@ the page range and the tool that measured it:
 
 reports where the model sits, and the range goes in the register. The
 application (`app/services/regulations.py`) cuts those pages on request and
-keeps the result in `<store>/derived/`. A combination no edition here prints —
-German, for one; there is no free official German ADR or ADN — is reported as
+keeps the result in `<store>/derived/`, named after the edition and the range
+it came from so that a register pointing somewhere new never gets yesterday's
+pages. Measuring and cutting use the same library on purpose: pypdf counts one
+page more from the front of the ADN volumes than PyMuPDF does, and a range
+measured with one and cut with the other put 5.4.3.5 on the driver's first
+sheet. Whether a cut is the model and nothing else is checked, not assumed —
+
+    python scripts/check_instruction_models.py
+
+cuts every registered model and prints, page by page, whether it carries the
+model's title and whether a neighbouring section leaked in. It runs on a runner
+(`fetch-regulations`, input `verify_instructions`), where the store holds the
+editions. A combination no edition here prints is reported as
 missing, naming the document that would produce it. It is never filled in from
 a neighbouring language: instructions in a language the crew cannot read are
 what 5.4.3.2 exists to prevent.

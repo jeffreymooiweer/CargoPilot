@@ -42,6 +42,17 @@ def look(path: Path) -> None:
 
     with fitz.open(path) as document:
         print(f"=== {path.name}: {document.page_count} pages")
+        # Which edition this is, in the file's own words. An operator-supplied
+        # volume arrives without provenance, and the title page is the only
+        # place it says who published it.
+        meta = document.metadata or {}
+        print("  metadata: "
+              + ", ".join(f"{key}={meta.get(key)!r}" for key in
+                          ("title", "author", "producer", "creationDate")
+                          if meta.get(key)))
+        first = [line.strip() for line in
+                 document[0].get_text("text").strip().split("\n") if line.strip()]
+        print("  title page: " + " / ".join(line[:50] for line in first[:5]))
         # The table of contents names 5.4.3 and 5.4.4 on one page and would
         # end the search in the front matter, so every candidate is collected
         # and the *last* run is the body. The model's own title decides where

@@ -617,6 +617,52 @@ def _column_band(page) -> list[tuple[str, float]]:
     return [(name, x) for x, name in sorted(best)]
 
 
+def _column_edges(page, below: float, centres: list[float]) -> list[float]:
+    """Where one column ends and the next begins, measured on the content.
+
+    The midpoint between two column numbers is not that boundary. A column
+    number is centred over its column and the cells under it are not: the
+    equipment codes of column (18) begin a point left of the midpoint between
+    (17) and (18), so "PP," landed in the explosion protection and "ja PP,"
+    failed its shape. The same slip put the tail of a wrapped name in the class
+    column.
+
+    What is a boundary is the empty corridor the typesetter leaves between two
+    columns. Every word below the band claims the x it covers; what no word
+    claims, over the whole page, is corridor. Between two column numbers there
+    is one such corridor, and its middle is the edge. Where a page shows none —
+    a column so tightly set that some row bridges the gap — the midpoint is
+    still the best guess there is, and it is used.
+    """
+    words = [w for w in page.get_text("words") if w[1] > below]
+    if not words:
+        return [-1e6] + [(a + b) / 2 for a, b in zip(centres, centres[1:])] + [1e6]
+    left = int(min(w[0] for w in words))
+    right = int(max(w[2] for w in words)) + 1
+    claimed = bytearray(right - left + 1)
+    for x0, _y0, x1, *_ in words:
+        for x in range(int(x0) - left, min(int(x1) + 1, right) - left + 1):
+            claimed[x] = 1
+    corridors: list[tuple[float, float]] = []
+    start = None
+    for index, taken in enumerate(claimed):
+        if taken:
+            if start is not None and index - start >= 3:
+                corridors.append(((start + index) / 2 + left, index - start))
+            start = None
+        elif start is None:
+            start = index
+
+    edges = [-1e6]
+    for before, after in zip(centres, centres[1:]):
+        middle = (before + after) / 2
+        between = [(abs(x - middle), x) for x, _width in corridors
+                   if before < x < after]
+        edges.append(min(between)[1] if between else middle)
+    edges.append(1e6)
+    return edges
+
+
 def _row_rules(page, below: float) -> list[float]:
     """The horizontal rules of the table on this page, top to bottom.
 
@@ -691,15 +737,13 @@ def dutch_book_rows(pdf_path: Path) -> tuple[list[dict[str, Any]], list[str]]:
             continue
         pages += 1
         centres = [x for _n, x in band]
-        # A cell sits under its own column number, so the boundary between two
-        # columns is the midpoint between their markers. The outer edges are
-        # open: the name column runs to the page's left margin and the remarks
-        # to its right.
-        edges = ([-1e6] + [(a + b) / 2 for a, b in zip(centres, centres[1:])]
-                 + [1e6])
         band_bottom = max(y for y in [0.0] + [
             w[3] for w in page.get_text("words")
             if MARKER.fullmatch(w[4].strip())])
+        # Where the columns meet is measured on the page, not taken from the
+        # midpoint between two column numbers: a number is centred over its
+        # column and the cells under it are not.
+        edges = _column_edges(page, band_bottom, centres)
 
         words = [w for w in page.get_text("words") if w[1] > band_bottom]
         un_words = sorted(
@@ -740,6 +784,21 @@ def dutch_book_rows(pdf_path: Path) -> tuple[list[dict[str, Any]], list[str]]:
                         # number. What the column holds is not a measurement,
                         # it is what the table is, so it decides here.
                         if marker == "1" and not re.fullmatch(r"\d{4}", word):
+                            marker = "2"
+                        # And column (4) holds a packing group: I, II, III, or
+                        # the book's dash and asterisk. Where a page's widest
+                        # row bridges the corridor between (4) and (5) there is
+                        # no corridor left to measure and the midpoint stands
+                        # in — which put "3+(N1," in front of the group. What
+                        # the column holds decides, as it does for (1).
+                        elif marker == "4" and not PG.fullmatch(word.strip(",")):
+                            marker = "5"
+                        # Column (3a) holds a class: one digit, sometimes with
+                        # a decimal. A name long enough to wrap sets its later
+                        # lines wider than the corridor allows for — "(KOELGAS
+                        # R 115)" reached into the class — and the name is what
+                        # such a word is.
+                        elif marker == "3a" and not CLASS.fullmatch(word.strip(",")):
                             marker = "2"
                         cells.setdefault(marker, []).append((y0, x0, word))
                         break
@@ -860,7 +919,8 @@ def _norm(field: str, value: str) -> str:
         # substance and "F or S", the French "inst." and "F ou S". Same fact,
         # and the comparison is of facts. It happens after the spaces go,
         # because the rotated cell breaks the word itself ("ins t.").
-        packed = packed.replace("INST.", "UNST.").replace("OU", "OR")
+        packed = (packed.replace("INST.", "UNST.").replace("OU", "OR")
+                  .replace("OF", "OR").replace("NIETGESTAB.", "UNST."))
         packed = re.sub(r"(\d),(\d)", r"\1.\2", packed)
         tokens = sorted(t.rstrip(".") for t in re.split(r"[+(),]+", packed) if t)
         return "+".join(tokens)

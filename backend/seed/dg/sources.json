@@ -352,6 +352,38 @@
       "note": "Supplied as a file; OTIF publishes the same edition, but this copy is the one pinned."
     },
     {
+      "id": "adn_nl_2025",
+      "title": "ADN 2025, Dutch edition",
+      "publisher": "supplied by the operator; the edition names itself on its title page",
+      "edition": "ADN 2025, in force 1 January 2025",
+      "language": "nl",
+      "profiles": [
+        "ADN"
+      ],
+      "role": "The Dutch ADN as a printed edition. Until now the Dutch reading of the inland-waterway rules came from an HTML export whose damage this repository has had to measure and undo cell by cell; this is the book itself, and the source of the Dutch model of 5.4.3.",
+      "filename": "ADN-2025-NL.pdf",
+      "urls": [],
+      "obtained": "supplied by the operator",
+      "sha256": "8efe4ac617076693acf5702fc65924e0e676a31b0e843faaf5dca8e57e046743",
+      "note": "Supplied as a file; no stable public URL is recorded."
+    },
+    {
+      "id": "adn_de",
+      "title": "ADN 2025, German edition",
+      "publisher": "supplied by the operator",
+      "edition": "ADN 2025, in force 1 January 2025",
+      "language": "de",
+      "profiles": [
+        "ADN"
+      ],
+      "role": "The ADN in German, which UNECE does not publish — it issues the text in English, French and Russian. The source of the German model of 5.4.3 for the inland-waterway regime.",
+      "filename": "adn_de.pdf",
+      "urls": [],
+      "obtained": "supplied by the operator",
+      "sha256": "5061089af19f22d0c2670b757931a3de8712e31835b2da75735b88d392938bd0",
+      "note": "Supplied as a file; no stable public URL is recorded."
+    },
+    {
       "id": "adn_instructions_nl",
       "title": "Instructions in writing according to the ADN, Dutch",
       "publisher": "national edition",

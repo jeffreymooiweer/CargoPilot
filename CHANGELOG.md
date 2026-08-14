@@ -2,6 +2,37 @@
 
 All notable changes are documented here, following [Semantic Versioning](https://semver.org/).
 
+## [1.81.0] — 2026-08-14
+
+### Added
+
+- **A reader for the two tank hierarchies of ADR 4.3.** Table A column (12)
+  says which tank code a substance requires; it does not say whether the tank
+  standing on the yard may carry it, which is the question a consignor actually
+  has. ADR answers it twice, and the two answers share nothing but their
+  purpose: 4.3.3.1.2 is a hierarchy of *codes* for gases, while 4.3.4.1.2 is
+  the rationalized approach, where each code names the *group of substances* it
+  may carry — by class, classification code and packing group — and inherits
+  the groups of the codes below it. They are read and stored apart, because
+  reading them as one thing is the mistake that would make the answer wrong.
+- The reader takes the English volume II, the printed Dutch edition and the
+  German volume II, and compares two readings cell by cell. Nothing is
+  committed from a run: a cell two editions disagree on is kept with both
+  values and settles nothing, the rule every regulatory table in this
+  repository follows.
+
+### Changed
+
+- **The regulation reader can quote the books in the store.** Chapter 4.3 is
+  not in the assembled Dutch edition the container holds — it prints part 4 as
+  far as 4.1 and no further — so the provision had to come from the printed
+  edition, which the reader could not name: it knew only the five volumes it
+  can download itself. The store register is now merged into its source list, a
+  document supplied by the operator is never fetched (it is in the store, or
+  the run says so and names the file it expected), and the workflow takes
+  several documents at once, passes every input as an argument instead of
+  splicing it into the script, and can be asked to quote no group at all.
+
 ## [1.80.0] — 2026-08-14
 
 ### Changed

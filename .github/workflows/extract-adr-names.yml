@@ -101,6 +101,10 @@ jobs:
           fi
           LANGS="$LANGUAGE"
           if [ "$LANGUAGE" = "both" ]; then LANGS="en fr"; fi
+          # One language failing its agreement gate must not take the other's
+          # reading with it: a run that reports both is a run worth its round
+          # trip, and the failure is still a failure at the end.
+          FAILED=0
           for lang in $LANGS; do
             echo "=============================================================="
             echo "ADR 2025 Volume I — $lang"
@@ -112,8 +116,9 @@ jobs:
             if [ -n "$EXPLAIN" ]; then EXTRA="$EXTRA --explain $EXPLAIN"; fi
             python scripts/extract_adr_names_multilingual.py \
               --source "$source_id" --language "$lang" \
-              --min-agreement "$MIN_AGREEMENT" $EXTRA
+              --min-agreement "$MIN_AGREEMENT" $EXTRA || FAILED=1
           done
+          exit $FAILED
 
       # Save even when the reading failed. The run that fetched ADR and then
       # tripped over ADN is exactly the one whose ADR download must survive —

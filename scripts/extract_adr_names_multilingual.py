@@ -163,6 +163,7 @@ def band_of(page) -> tuple[float | None, dict[str, float]]:
     """
     rows: dict[float, dict[str, float]] = defaultdict(dict)
     bottoms: dict[float, float] = {}
+    tops: dict[float, float] = {}
     limit = body_bottom(page)
     for x0, y0, x1, y1, word, *_rest in page.get_text("words"):
         if y0 > limit:
@@ -172,6 +173,7 @@ def band_of(page) -> tuple[float | None, dict[str, float]]:
             key = round(y0, 1)
             rows[key][found.group(1)] = (x0 + x1) / 2
             bottoms[key] = max(bottoms.get(key, y1), y1)
+            tops[key] = min(tops.get(key, y0), y0)
     for y in sorted(rows):
         if len(rows[y]) >= MARKERS_NEEDED:
             # Where the body starts is the foot of the band itself, not a fixed
@@ -183,9 +185,14 @@ def band_of(page) -> tuple[float | None, dict[str, float]]:
             # until the trace measured a page: on page 300 of the French volume
             # the marker line ends at y 114.6 and UN 0004's number begins at
             # y 114.6, so the row touches the band and a single point of margin
-            # takes it. The foot exactly excludes the markers — their tops lie
-            # above it — and keeps the row that starts on it.
-            return bottoms[y], dict(rows[y])
+            # takes it. The English volume sets the two a shade closer still.
+            #
+            # So the boundary is the middle of the marker line itself. Every
+            # marker begins above that middle and every row of the body begins
+            # below it — two lines of print cannot overlap — and the boundary
+            # scales with the type size instead of being a constant borrowed
+            # from another document.
+            return bottoms[y] - (bottoms[y] - tops[y]) / 2, dict(rows[y])
     return None, {}
 
 

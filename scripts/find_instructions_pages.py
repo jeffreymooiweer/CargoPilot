@@ -58,11 +58,17 @@ def look(path: Path) -> None:
         print(f"  pages naming 5.4.3: {heads_543[:8]}")
         print(f"  pages naming 5.4.4: {heads_544[:8]}")
         print(f"  pages carrying the model's title: {titles[:8]}")
-        body_titles = [i for i in titles if i > 20]
-        if not body_titles:
+        # The section's own page is the last one naming 5.4.3 that has 5.4.4
+        # within a model's length of it. In the table of contents the two names
+        # sit on one page and the model does not follow, which rules it out;
+        # elsewhere in the book "instructions in writing" is only ever
+        # mentioned (1.4.3, 8.1.2), never printed.
+        pairs = [(a, b) for a in dict.fromkeys(heads_543)
+                 for b in heads_544 if 0 < b - a <= 20]
+        if not pairs:
+            print("  the model is not in this volume")
             return
-        first_543 = body_titles[0]
-        first_544 = next((i for i in heads_544 if i > first_543), None)
+        first_543, first_544 = pairs[-1]
         stop = (first_544 + 1) if first_544 is not None else first_543 + 6
         for index in range(max(0, first_543 - 1), min(stop + 1, document.page_count)):
             page = document[index]

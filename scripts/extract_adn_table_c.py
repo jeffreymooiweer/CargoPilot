@@ -617,6 +617,25 @@ def _column_band(page) -> list[tuple[str, float]]:
     return [(name, x) for x, name in sorted(best)]
 
 
+def _read_cell(items: list[tuple[float, float, str]]) -> str:
+    """A cell's words in reading order: line by line, and left to right in it.
+
+    Not simply sorted by y and then x. A footnote reference is set above its
+    own line — the edition prints T1 with a raised 12) after it — and sorting
+    on y alone puts the reference first, which turned "T1 12)" into "12) T1"
+    and failed the cell's shape. So words within a few points of each other in
+    y are one line, whatever their height inside it.
+    """
+    lines: list[tuple[float, list[tuple[float, str]]]] = []
+    for y, x, word in sorted(items):
+        if lines and y - lines[-1][0] <= 4.0:
+            lines[-1][1].append((x, word))
+        else:
+            lines.append((y, [(x, word)]))
+    return " ".join(word for _y, line in lines
+                    for _x, word in sorted(line))
+
+
 def dutch_book_rows(pdf_path: Path) -> tuple[list[dict[str, Any]], list[str]]:
     """Read table C out of the printed Dutch ADN.
 
@@ -677,13 +696,20 @@ def dutch_book_rows(pdf_path: Path) -> tuple[list[dict[str, Any]], list[str]]:
                     continue
                 for column, (left, right) in enumerate(zip(edges, edges[1:])):
                     if left <= x0 < right:
-                        cells.setdefault(band[column][0], []).append(
-                            (y0, x0, word))
+                        marker = band[column][0]
+                        # Column (1) holds a UN number and nothing else. The
+                        # boundary from the markers falls inside the name,
+                        # because a column number is centred over its column
+                        # and the name column is far wider than the number's:
+                        # "1010 BUTADIENEN BUTADIENEN" came back as a UN
+                        # number. What the column holds is not a measurement,
+                        # it is what the table is, so it decides here.
+                        if marker == "1" and not re.fullmatch(r"\d{4}", word):
+                            marker = "2"
+                        cells.setdefault(marker, []).append((y0, x0, word))
                         break
-            values = {
-                field: " ".join(word for _y, _x, word
-                                in sorted(cells.get(marker, [])))
-                for marker, field in COLUMN_FIELDS.items()}
+            values = {field: _read_cell(cells.get(marker, []))
+                      for marker, field in COLUMN_FIELDS.items()}
             row = _dutch_book_row(values, failures)
             if row:
                 rows.append(row)

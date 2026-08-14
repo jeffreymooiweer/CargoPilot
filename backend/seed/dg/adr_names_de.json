@@ -4,29 +4,20 @@
  "language": "de",
  "source": "ADR 2025, official UNECE edition — table A of chapter 3.2, column (2)",
  "summary": {
-  "un_numbers": 2337,
-  "rows": 2929,
+  "un_numbers": 2346,
+  "rows": 2938,
   "table_pages": 145
  },
  "cross_check": {
-  "same": 2335,
+  "same": 2344,
   "only_in_this_language": [
    "1499",
    "1999"
   ],
   "only_in_the_dutch_table": [
-   "0504",
-   "1916",
-   "2077",
-   "2269",
-   "2367",
-   "2368",
-   "2511",
-   "2651",
-   "2937",
-   "3438"
+   "2956"
   ],
-  "agreement": 0.9957
+  "agreement": 0.9996
  },
  "names": {
   "0004": [
@@ -274,7 +265,7 @@
    "NITROHARNSTOFF"
   ],
   "0150": [
-   "PENTAERYTHRITTETRA-NITRAT (PENTAERYTHRITOL-TETRANITRAT) (PETN), ANGEFEUCHTET mit mindestens 25 Masse-% Wasser oder DESENSIBILISIERT mit mindestens 15 Masse-% Phlegmatisierungsmittel"
+   "PENTAERYTHRITTETRA-NITRAT (PENTAERYTHRITOLTETRANITRAT) (PETN), ANGEFEUCHTET mit mindestens 25 Masse-% Wasser oder DESENSIBILISIERT mit mindestens 15 Masse-% Phlegmatisierungsmittel"
   ],
   "0151": [
    "PENTOLIT, trocken oder angefeuchtet mit weniger als 15 Masse-% Wasser"
@@ -792,7 +783,7 @@
    "5-NITROBENZOTRIAZOL"
   ],
   "0386": [
-   "TRINITROBENZENSULFON-SÄURE"
+   "TRINITROBENZENSULFONSÄURE"
   ],
   "0387": [
    "TRINITROFLUORENON"
@@ -807,7 +798,7 @@
    "TRITONAL"
   ],
   "0391": [
-   "CYCLOTRIMETHYLENTRINI-TRAMIN (CYCLONIT), (HEXOGEN), (RDX), IN MISCHUNG MIT CYCLOTETRAMETHYLEN-TETRANITRAMIN (HMX), (OKTOGEN), ANGEFEUCHTET mit mindestens 15 Masse-% Wasser oder DESENSIBILISIERT mit mindestens 10 Masse-% Phlegmatisierungsmittel"
+   "CYCLOTRIMETHYLENTRINITRAMIN (CYCLONIT), (HEXOGEN), (RDX), IN MISCHUNG MIT CYCLOTETRAMETHYLEN-TETRANITRAMIN (HMX), (OKTOGEN), ANGEFEUCHTET mit mindestens 15 Masse-% Wasser oder DESENSIBILISIERT mit mindestens 10 Masse-% Phlegmatisierungsmittel"
   ],
   "0392": [
    "HEXANITROSTILBEN"
@@ -867,7 +858,7 @@
    "ZÜNDER, SPRENGKRÄFTIG, mit Sicherungsvorrichtungen"
   ],
   "0411": [
-   "PENTAERYTHRITTETRA-NITRAT (PENTAERYTHRITOL-TETRANITRAT) (PETN), mit nicht weniger als 7 Masse-% Wachs"
+   "PENTAERYTHRITTETRA-NITRAT (PENTAERYTHRITOLTETRANITRAT) (PETN), mit nicht weniger als 7 Masse-% Wachs"
   ],
   "0412": [
    "PATRONEN FÜR WAFFEN, mit Sprengladung"
@@ -1135,6 +1126,9 @@
   ],
   "0503": [
    "SICHERHEITSEINRICHTUN-GEN, PYROTECHNISCH"
+  ],
+  "0504": [
+   "1H-TETRAZOL"
   ],
   "0505": [
    "SIGNALKÖRPER, SEENOT"
@@ -1672,11 +1666,11 @@
    "HEXANE"
   ],
   "1210": [
-   "DRUCKFARBE, entzündbar oder DRUCKFARBZUBEHÖR-STOFFE (einschliesslich Druckfarbverdünnung und -lösemittel), entzündbar",
-   "DRUCKFARBE, entzündbar oder DRUCKFARBZUBEHÖR-STOFFE (einschliesslich Druckfarbverdünnung und -lösemittel), entzündbar (Dampfdruck bei 50 °C grösser als 110 kPa)",
-   "DRUCKFARBE, entzündbar oder DRUCKFARBZUBEHÖR-STOFFE (einschliesslich Druckfarbverdünnung und -lösemittel), entzündbar (Dampfdruck bei 50 °C höchstens 110 kPa)",
-   "DRUCKFARBE, entzündbar oder DRUCKFARBZUBEHÖR-STOFFE (einschliesslich Druckfarbverdünnung und -lösemittel), entzündbar (mit einem Flammpunkt unter 23 °C und viskos gemäss 2.2.3.1.4) (Dampfdruck bei 50 °C grösser als 110 kPa)",
-   "DRUCKFARBE, entzündbar oder DRUCKFARBZUBEHÖR-STOFFE (einschliesslich Druckfarbverdünnung und -lösemittel), entzündbar (mit einem Flammpunkt unter 23 °C und viskos gemäss 2.2.3.1.4) (Dampfdruck bei 50 °C höchstens 110 kPa)"
+   "DRUCKFARBE, entzündbar oder DRUCKFARBZUBEHÖRSTOFFE (einschliesslich Druckfarbverdünnung und -lösemittel), entzündbar",
+   "DRUCKFARBE, entzündbar oder DRUCKFARBZUBEHÖRSTOFFE (einschliesslich Druckfarbverdünnung und -lösemittel), entzündbar (Dampfdruck bei 50 °C grösser als 110 kPa)",
+   "DRUCKFARBE, entzündbar oder DRUCKFARBZUBEHÖRSTOFFE (einschliesslich Druckfarbverdünnung und -lösemittel), entzündbar (Dampfdruck bei 50 °C höchstens 110 kPa)",
+   "DRUCKFARBE, entzündbar oder DRUCKFARBZUBEHÖRSTOFFE (einschliesslich Druckfarbverdünnung und -lösemittel), entzündbar (mit einem Flammpunkt unter 23 °C und viskos gemäss 2.2.3.1.4) (Dampfdruck bei 50 °C grösser als 110 kPa)",
+   "DRUCKFARBE, entzündbar oder DRUCKFARBZUBEHÖRSTOFFE (einschliesslich Druckfarbverdünnung und -lösemittel), entzündbar (mit einem Flammpunkt unter 23 °C und viskos gemäss 2.2.3.1.4) (Dampfdruck bei 50 °C höchstens 110 kPa)"
   ],
   "1212": [
    "ISOBUTANOL (ISOBUTYLALKOHOL)"
@@ -2004,7 +1998,7 @@
    "TRINITROPHENOL (PIKRIN-SÄURE), ANGEFEUCHTET mit mindestens 30 Masse-% Wasser"
   ],
   "1345": [
-   "KAUTSCHUK- (Gummi-) ABFÄLLE oder KAUTSCHUK-(Gummi-) RESTE, pulverförmig oder granuliert, höchstens 840 µm und mehr als 45 % Kautschuk-Gehalt"
+   "KAUTSCHUK- (Gummi-) ABFÄLLE oder KAUTSCHUK(Gummi-) RESTE, pulverförmig oder granuliert, höchstens 840 µm und mehr als 45 % Kautschuk-Gehalt"
   ],
   "1346": [
    "SILICIUM-PULVER, AMORPH"
@@ -2125,7 +2119,7 @@
    "ALUMINIUMCARBID"
   ],
   "1395": [
-   "ALUMINIUMFERROSILICIUM-PULVER"
+   "ALUMINIUMFERROSILICIUMPULVER"
   ],
   "1396": [
    "ALUMINIUM-PULVER, NICHT ÜBERZOGEN"
@@ -2416,7 +2410,7 @@
    "TETRANITROMETHAN"
   ],
   "1511": [
-   "HARNSTOFFWASSERSTOFF-PEROXID"
+   "HARNSTOFFWASSERSTOFFPEROXID"
   ],
   "1512": [
    "ZINKAMMONIUMNITRIT"
@@ -2851,7 +2845,7 @@
    "1,1,2,2-TETRACHLORETHAN"
   ],
   "1704": [
-   "TETRAETHYLDITHIOPYRO-PHOSPHAT"
+   "TETRAETHYLDITHIOPYROPHOSPHAT"
   ],
   "1707": [
    "THALLIUMVERBINDUNG, N.A.G."
@@ -3007,7 +3001,7 @@
    "KUPFERETHYLENDIAMIN, LÖSUNG"
   ],
   "1762": [
-   "CYCLOHEXENYLTRICHLOR-SILAN"
+   "CYCLOHEXENYLTRICHLORSILAN"
   ],
   "1763": [
    "CYCLOHEXYLTRICHLOR-SILAN"
@@ -3019,7 +3013,7 @@
    "DICHLORACETYLCHLORID"
   ],
   "1766": [
-   "DICHLORPHENYLTRICHLOR-SILAN"
+   "DICHLORPHENYLTRICHLORSILAN"
   ],
   "1767": [
    "DIETHYLDICHLORSILAN"
@@ -3379,6 +3373,9 @@
   ],
   "1915": [
    "CYCLOHEXANON"
+  ],
+  "1916": [
+   "2,2'-DICHLORDIETHYLETHER"
   ],
   "1917": [
    "ETHYLACRYLAT, STABILISIERT"
@@ -3762,6 +3759,9 @@
   "2076": [
    "CRESOLE, FLÜSSIG"
   ],
+  "2077": [
+   "alpha-NAPHTHYLAMIN"
+  ],
   "2078": [
    "TOLUENDIISOCYANAT"
   ],
@@ -3896,7 +3896,7 @@
    "CHLORBENZYLCHLORIDE, FLÜSSIG"
   ],
   "2236": [
-   "3-CHLOR-4-METHYLPHENYL-ISOCYANAT, FLÜSSIG"
+   "3-CHLOR-4-METHYLPHENYLISOCYANAT, FLÜSSIG"
   ],
   "2237": [
    "CHLORNITROANILINE"
@@ -3987,6 +3987,9 @@
   ],
   "2267": [
    "DIMETHYLTHIOPHOSPHO-RYLCHLORID"
+  ],
+  "2269": [
+   "3,3'-IMINOBISPROPYLAMIN"
   ],
   "2270": [
    "ETHYLAMIN, WÄSSERIGE LÖSUNG mit mindestens 50 Masse-% und höchstens 70 Masse-% Ethylamin"
@@ -4154,10 +4157,10 @@
    "TRIMETHYLCYCLOHEXYL-AMIN"
   ],
   "2327": [
-   "TRIMETHYLHEXAMETHYLEN-DIAMINE"
+   "TRIMETHYLHEXAMETHYLENDIAMINE"
   ],
   "2328": [
-   "TRIMETHYLHEXAMETHYLEN-DIISOCYANAT (und isomere Gemische)"
+   "TRIMETHYLHEXAMETHYLENDIISOCYANAT (und isomere Gemische)"
   ],
   "2329": [
    "TRIMETHYLPHOSPHIT"
@@ -4264,6 +4267,12 @@
   "2366": [
    "DIETHYLCARBONAT"
   ],
+  "2367": [
+   "alpha-METHYLVALERALDEHYD"
+  ],
+  "2368": [
+   "alpha-PINEN"
+  ],
   "2370": [
    "HEX-1-EN"
   ],
@@ -4289,7 +4298,7 @@
    "1,1-DIMETHOXYETHAN"
   ],
   "2378": [
-   "2-DIMETHYLAMINOACETO-NITRIL"
+   "2-DIMETHYLAMINOACETONITRIL"
   ],
   "2379": [
    "1,3-DIMETHYLBUTYLAMIN"
@@ -4601,7 +4610,7 @@
    "PROPIONSÄUREANHYDRID"
   ],
   "2498": [
-   "1,2,3,6-TETRAHYDROBENZ-ALDEHYD"
+   "1,2,3,6-TETRAHYDROBENZALDEHYD"
   ],
   "2501": [
    "TRIS-(1-AZIRIDINYL)-PHOSPHINOXID, LÖSUNG"
@@ -4629,6 +4638,9 @@
   ],
   "2509": [
    "KALIUMHYDROGENSULFAT"
+  ],
+  "2511": [
+   "alpha-CHLORPROPIONSÄURE"
   ],
   "2512": [
    "AMINOPHENOLE (o-, m-, p-)"
@@ -4924,6 +4936,9 @@
   "2650": [
    "1,1-DICHLOR-1-NITROETHAN"
   ],
+  "2651": [
+   "4,4'-DIAMINODIPHENYLMETHAN"
+  ],
   "2653": [
    "BENZYLIODID"
   ],
@@ -5006,7 +5021,7 @@
    "2-DIETHYLAMINOETHANOL"
   ],
   "2687": [
-   "DICYCLOHEXYLAMMONIUM-NITRIT"
+   "DICYCLOHEXYLAMMONIUMNITRIT"
   ],
   "2688": [
    "1-BROM-3-CHLORPROPAN"
@@ -5147,7 +5162,7 @@
    "1,3-DICHLORPROPAN-2-OL"
   ],
   "2751": [
-   "DIETHYLTHIOPHOSPHORYL-CHLORID"
+   "DIETHYLTHIOPHOSPHORYLCHLORID"
   ],
   "2752": [
    "1,2-EPOXY-3-ETHOXYPROPAN"
@@ -5554,8 +5569,11 @@
   "2936": [
    "THIOMILCHSÄURE"
   ],
+  "2937": [
+   "alpha-METHYLBENZYLALKOHOL, FLÜSSIG"
+  ],
   "2940": [
-   "9-PHOSPHABICYCLO-NONANE (CYCLOOCTADIEN-PHOSPHINE)"
+   "9-PHOSPHABICYCLO-NONANE (CYCLOOCTADIENPHOSPHINE)"
   ],
   "2941": [
    "FLUORANILINE"
@@ -5584,11 +5602,8 @@
   "2950": [
    "MAGNESIUM-GRANULATE, ÜBERZOGEN, mit einer Teilchengrösse von mindestens 149 µm"
   ],
-  "2956": [
-   "5-tert-BUTYL-2,4,6-TRINITRO-m-XYLEN (XYLENMOSCHUS)"
-  ],
   "2965": [
-   "BORTRIFLUORIDDIMETHYL-ETHERAT"
+   "BORTRIFLUORIDDIMETHYLETHERAT"
   ],
   "2966": [
    "THIOGLYCOL"
@@ -5976,7 +5991,7 @@
    "WASSERSTOFFPEROXID UND PERESSIGSÄURE, MISCHUNG mit Säure(n), Wasser und höchstens 5 % Peressigsäure, STABILISIERT"
   ],
   "3150": [
-   "GERÄTE, KLEIN, MIT KOHLENWASSER-STOFFGAS, mit Entnahmeeinrichtung oder KOHLENWASSERSTOFFGAS-NACHFÜLLPATRONEN FÜR KLEINE GERÄTE, mit Entnahmeeinrichtung"
+   "GERÄTE, KLEIN, MIT KOHLENWASSER-STOFFGAS, mit Entnahmeeinrichtung oder KOHLENWASSERSTOFFGASNACHFÜLLPATRONEN FÜR KLEINE GERÄTE, mit Entnahmeeinrichtung"
   ],
   "3151": [
    "POLYHALOGENIERTE BIPHENYLE, FLÜSSIG oder HALOGENIERTE MONOMETHYLDIPHENYL-METHANE, FLÜSSIG oder POLYHALOGENIERTE TERPHENYLE, FLÜSSIG"
@@ -6108,7 +6123,7 @@
    "ERDALKALIMETALL-ALKOHOLATE, N.A.G."
   ],
   "3206": [
-   "ALKALIMETALLALKOHO-LATE, SELBSTERHITZUNGS-FÄHIG, ÄTZEND, N.A.G."
+   "ALKALIMETALLALKOHO-LATE, SELBSTERHITZUNGSFÄHIG, ÄTZEND, N.A.G."
   ],
   "3208": [
    "METALLISCHER STOFF, MIT WASSER REAGIEREND, N.A.G."
@@ -6207,7 +6222,7 @@
    "SELBSTZERSETZLICHER STOFF TYP F, FEST, TEMPERATURKONTROL-LIERT"
   ],
   "3241": [
-   "2-BROM-2-NITROPROPAN-1,3-DIOL"
+   "2-BROM-2-NITROPROPAN1,3-DIOL"
   ],
   "3242": [
    "AZODICARBONAMID"
@@ -6524,7 +6539,7 @@
    "NITROGLYCERIN, GEMISCH, DESENSIBILISIERT, FLÜSSIG, ENTZÜNDBAR, N.A.G., mit höchstens 30 Masse-% Nitroglycerin"
   ],
   "3344": [
-   "PENTAERYTHRITTETRA-NITRAT (PENTAERYTHRITOL-TETRANITRAT) (PETN), GEMISCH, DESENSIBILISIERT, FEST, N.A.G., mit mehr als 10 Masse-%, aber höchstens 20 Masse-% PETN"
+   "PENTAERYTHRITTETRA-NITRAT (PENTAERYTHRITOLTETRANITRAT) (PETN), GEMISCH, DESENSIBILISIERT, FEST, N.A.G., mit mehr als 10 Masse-%, aber höchstens 20 Masse-% PETN"
   ],
   "3345": [
    "PHENOXYESSIGSÄURE-DERIVAT-PESTIZID, FEST, GIFTIG"
@@ -6773,7 +6788,7 @@
    "CHLORBENZYLCHLORIDE, FEST"
   ],
   "3428": [
-   "3-CHLOR-4-METHYLPHENYL-ISOCYANAT, FEST"
+   "3-CHLOR-4-METHYLPHENYLISOCYANAT, FEST"
   ],
   "3429": [
    "CHLORTOLUIDINE, FLÜSSIG"
@@ -6795,6 +6810,9 @@
   ],
   "3437": [
    "CHLORCRESOLE, FEST"
+  ],
+  "3438": [
+   "alpha-METHYLBENZYLALKOHOL, FEST"
   ],
   "3439": [
    "NITRILE, FEST, GIFTIG, N.A.G."
@@ -6881,7 +6899,7 @@
    "METALLORGANISCHE VERBINDUNG, FEST, GIFTIG, N.A.G."
   ],
   "3468": [
-   "WASSERSTOFF IN EINEM METALLHYDRID-SPEICHER-SYSTEM oder WASSERSTOFF IN EINEM METALLHYDRID-SPEICHER-SYSTEM IN AUSRÜSTUNGEN oder WASSERSTOFF IN EINEM METALLHYDRID-SPEICHER-SYSTEM, MIT AUSRÜS-TUNGEN VERPACKT"
+   "WASSERSTOFF IN EINEM METALLHYDRID-SPEICHERSYSTEM oder WASSERSTOFF IN EINEM METALLHYDRID-SPEICHERSYSTEM IN AUSRÜSTUNGEN oder WASSERSTOFF IN EINEM METALLHYDRID-SPEICHERSYSTEM, MIT AUSRÜS-TUNGEN VERPACKT"
   ],
   "3469": [
    "FARBE, ENTZÜNDBAR, ÄTZEND (einschliesslich Farbe, Lack, Emaille, Beize, Schellack, Firnis, Politur, flüssiger Füllstoff und flüssige Lackgrundlage) oder FARBZUBEHÖRSTOFFE, ENTZÜNDBAR, ÄTZEND (einschliesslich Farbver-dünnung und -lösemittel)"
@@ -6992,7 +7010,7 @@
    "QUECKSILBER IN HERGESTELLTEN GEGENSTÄNDEN"
   ],
   "3507": [
-   "URANHEXAFLUORID, RADIOAKTIVE STOFFE, FREIGESTELLTES VERSAND-STÜCK mit weniger als 0,1 kg je Versandstück, nicht spaltbar oder spaltbar, freigestellt"
+   "URANHEXAFLUORID, RADIOAKTIVE STOFFE, FREIGESTELLTES VERSANDSTÜCK mit weniger als 0,1 kg je Versandstück, nicht spaltbar oder spaltbar, freigestellt"
   ],
   "3508": [
    "KONDENSATOR, ASYMMETRISCH (mit einer Energiespeicherkapazität von mehr als 0,3 Wh)"
@@ -7070,7 +7088,7 @@
    "POLYMERISIERENDER STOFF, FLÜSSIG, STABILISIERT, N.A.G."
   ],
   "3533": [
-   "POLYMERISIERENDER STOFF, FEST, TEMPERATUR-KONTROLLIERT, N.A.G."
+   "POLYMERISIERENDER STOFF, FEST, TEMPERATURKONTROLLIERT, N.A.G."
   ],
   "3534": [
    "POLYMERISIERENDER STOFF, FLÜSSIG, TEMPERATUR-KONTROLLIERT, N.A.G."

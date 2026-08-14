@@ -617,6 +617,29 @@ def _column_band(page) -> list[tuple[str, float]]:
     return [(name, x) for x, name in sorted(best)]
 
 
+def _row_rules(page, below: float) -> list[float]:
+    """The horizontal rules of the table on this page, top to bottom.
+
+    A printed table draws its rows; the rules are the boundary the typesetter
+    intended, and reading them is cheaper and truer than inferring boundaries
+    from where the numbers happen to sit. Only rules that run across most of
+    the page count — the short ones inside a cell are not row boundaries.
+    """
+    width = page.rect.width
+    found: set[int] = set()
+    for drawing in page.get_drawings():
+        for item in drawing.get("items", ()):
+            if item[0] == "l":
+                start, end = item[1], item[2]
+                if abs(start.y - end.y) < 1.0 and abs(start.x - end.x) > width / 2:
+                    found.add(round((start.y + end.y) / 2))
+            elif item[0] == "re":
+                rect = item[1]
+                if rect.height < 2.0 and rect.width > width / 2:
+                    found.add(round((rect.y0 + rect.y1) / 2))
+    return sorted(y for y in found if y > below)
+
+
 def _read_cell(items: list[tuple[float, float, str]]) -> str:
     """A cell's words in reading order: line by line, and left to right in it.
 
@@ -685,11 +708,23 @@ def dutch_book_rows(pdf_path: Path) -> tuple[list[dict[str, Any]], list[str]]:
             key=lambda w: w[1])
         if not un_words:
             continue
+        # Where one row ends and the next begins is drawn on the page. It has
+        # to be read there and not guessed from the UN numbers: this edition
+        # sets the number level with the *middle* of its row, so a band that
+        # ran from one number to the next took the top of the following row
+        # with it — ACETON came back carrying the next substance's equipment.
+        rules = _row_rules(page, band_bottom)
         starts = [w[1] for w in un_words]
         for index, un_word in enumerate(un_words):
-            top = starts[index] - 2.0
-            bottom = (starts[index + 1] - 2.0 if index + 1 < len(starts)
-                      else 1e6)
+            here = starts[index]
+            above = [y for y in rules if y < here]
+            below = [y for y in rules if y > here]
+            if above and below:
+                top, bottom = max(above), min(below)
+            else:
+                top = here - 2.0
+                bottom = (starts[index + 1] - 2.0 if index + 1 < len(starts)
+                          else 1e6)
             cells: dict[str, list[tuple[float, float, str]]] = {}
             for x0, y0, _x1, _y1, word, *_ in words:
                 if not top <= y0 < bottom:

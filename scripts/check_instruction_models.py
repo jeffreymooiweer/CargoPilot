@@ -51,6 +51,18 @@ def main() -> int:
               f" ({status.get('from_document', '')})")
         for number, page in enumerate(reader.pages, start=1):
             print(f"    p{number}: {first_lines(page)}")
+        # And the neighbourhood in the source, numbered as the cutter numbers
+        # it. The page ranges were measured with a different library, and two
+        # libraries counting from different ends is exactly the kind of thing
+        # that puts a model's title outside its own range.
+        cut = doc.get("cut_from")
+        if cut:
+            source = regulations.locate(cut["document"])
+            first, last = cut["pages"]
+            pages = PdfReader(str(source)).pages
+            for number in range(max(1, first - 2), min(len(pages), last + 2) + 1):
+                mark = "IN " if first <= number <= last else "   "
+                print(f"      {mark}source p{number}: {first_lines(pages[number - 1])}")
     print(f"{missing} model(s) this store cannot produce")
     return 0
 

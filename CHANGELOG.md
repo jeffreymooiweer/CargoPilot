@@ -2,6 +2,25 @@
 
 All notable changes are documented here, following [Semantic Versioning](https://semver.org/).
 
+## [1.78.0] — 2026-08-14
+
+### Added
+
+- **All eight models of the instructions in writing now come out of the
+  store.** The operator supplied the ADN in Dutch and in German — the two
+  editions UNECE does not publish, and the last two combinations the
+  application had to report as missing. The German model sits on pages 818-821
+  and was verified page by page against its own title; the Dutch edition begins
+  the model partway down the sheet that carries 5.4.3's own paragraphs, so the
+  range is the wider one deliberately, as it is for the Dutch ADR.
+
+- The Dutch ADN also enters the register as a **printed edition of the book
+  whose HTML export this repository has been undoing cell by cell** since
+  v1.73.0 — the export that splits rows per alternative name, swaps columns (7)
+  and (9) against its own header and omits UN 1977 and UN 1999. Nothing is read
+  from it yet; it is registered and pinned, and a reading of table C from the
+  book itself is now possible where before there was only the export.
+
 ## [1.77.0] — 2026-08-14
 
 ### Added

@@ -291,7 +291,7 @@ def rationalised_rows(doc, pages: list[int],
         # blocks — so the second sight of it continues the first.
         if code not in blocks:
             blocks[code] = {"tank_code": code, "groups": [], "inherits": [],
-                            "pages": []}
+                            "sentence": "", "pages": []}
             order.append(code)
         if page not in blocks[code]["pages"]:
             blocks[code]["pages"].append(page)
@@ -310,6 +310,12 @@ def rationalised_rows(doc, pages: list[int],
             # out as a new block with no group, which is how L4BN, L10CH and
             # SGAN went missing from the Dutch reading altogether.
             if inheriting:
+                # What the sentence actually said is kept beside what was made
+                # of it: when two readings disagree about an inheritance, the
+                # sentence is the evidence, and without it the next correction
+                # is a guess about a line nobody has seen.
+                if current is not None:
+                    current["sentence"] = f"{current.get('sentence', '')} {text}".strip()
                 # A sentence that never meets its closing words would run to
                 # the end of the table, swallowing the blocks after it: the
                 # Dutch reading had L4BN, L10CH, L15CH and L21DH inside
@@ -344,6 +350,7 @@ def rationalised_rows(doc, pages: list[int],
                 if current is None:
                     failures.append(f"p{index + 1}: inheritance before any code")
                     continue
+                current["sentence"] = text
                 for code in _codes_in(inherit.group(1)):
                     if code not in current["inherits"]:
                         current["inherits"].append(code)
@@ -397,7 +404,8 @@ def _as_triples(block: dict[str, Any]) -> dict[str, Any]:
             if row not in permitted:
                 permitted.append(row)
     return {"tank_code": block["tank_code"], "permitted": permitted,
-            "inherits": block["inherits"], "pages": block["pages"]}
+            "inherits": block["inherits"], "sentence": block["sentence"],
+            "pages": block["pages"]}
 
 
 #: A footnote marker as the table sets it against a cell: a single lower-case
@@ -585,6 +593,9 @@ def check(first: dict[str, Any], second: dict[str, Any]) -> dict[str, Any]:
                 row.setdefault("only_in", {})[field] = {
                     first["language"]: sorted(set(here) - set(there)),
                     second["language"]: sorted(set(there) - set(here))}
+                if field == "inherits":
+                    row["sentences"] = {first["language"]: left.get("sentence", ""),
+                                        second["language"]: right.get("sentence", "")}
                 report["disputes"] += 1
             else:
                 row[field] = (left or right)[field]
@@ -631,6 +642,9 @@ def report_differences(report: dict[str, Any], first: str, second: str) -> None:
         for field, sides in (row.get("only_in") or {}).items():
             print(f"  {row['tank_code']} {field}: "
                   f"only {first} {sides[first]} / only {second} {sides[second]}")
+            if field == "inherits":
+                for language, sentence in (row.get("sentences") or {}).items():
+                    print(f"      {language}: {sentence[:150]!r}")
     print(f"disputes: {report['disputes']}")
 
 

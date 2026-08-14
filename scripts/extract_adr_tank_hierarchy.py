@@ -65,7 +65,7 @@ LANGUAGES: dict[str, dict[str, Any]] = {
         "group_column": "group of permitted substances",
         "class_column": "class",
         "inherit": re.compile(
-            r"groups? of permitted substances for tank codes?(.*)", re.IGNORECASE),
+            r"groups? of permitted substances for tank codes?", re.IGNORECASE),
         "inherit_end": None,
         "and": re.compile(r"\band\b", re.IGNORECASE),
     },
@@ -76,7 +76,7 @@ LANGUAGES: dict[str, dict[str, Any]] = {
         "group_column": "groep van toegestane stoffen",
         "class_column": "klasse",
         "inherit": re.compile(
-            r"groepen van de voor de tankcodes?(.*)", re.IGNORECASE | re.DOTALL),
+            r"groepen van de voor de tankcodes?", re.IGNORECASE),
         "inherit_end": re.compile(r"toegestane stoffen", re.IGNORECASE),
         "and": re.compile(r"\ben\b", re.IGNORECASE),
     },
@@ -87,7 +87,7 @@ LANGUAGES: dict[str, dict[str, Any]] = {
         "group_column": "gruppe der zugelassenen stoffe",
         "class_column": "klasse",
         "inherit": re.compile(
-            r"gruppen der für die tankcodierungen?(.*)", re.IGNORECASE | re.DOTALL),
+            r"gruppen der für die tankcodierungen?", re.IGNORECASE),
         "inherit_end": re.compile(r"zugelassenen stoffe", re.IGNORECASE),
         "and": re.compile(r"\bund\b", re.IGNORECASE),
     },
@@ -284,6 +284,7 @@ def rationalised_rows(doc, pages: list[int],
     current: dict[str, Any] | None = None
     seen_class = ""
     inheriting = False
+    previous = ""
 
     def block(code: str, page: int) -> dict[str, Any]:
         # A block that runs over a page break has its tank code printed again
@@ -298,8 +299,10 @@ def rationalised_rows(doc, pages: list[int],
         return blocks[code]
 
     for index in pages:
+        previous = ""
         for _y, items in _lines(doc[index]):
             text = flatten(" ".join(word for _x, word in items))
+            previous_line, previous = previous, text
             tokens, markers = _strip_markers(
                 [word.strip(",").strip() for _x, word in items])
 
@@ -334,7 +337,18 @@ def rationalised_rows(doc, pages: list[int],
                     continue
                 inheriting = False
 
-            inherit = words["inherit"].search(text)
+            # The phrase that opens the sentence wraps like any other text, and
+            # a reader that asks each line on its own never sees it: "en de
+            # groepen van de voor de" / "tankcodes SGAV, SGAN en SGAH". Four of
+            # the Dutch sentences and two of the English were lost that way. So
+            # the phrase is looked for across the line before as well, and only
+            # counts when it reaches into this one — otherwise it was already
+            # read on the line before.
+            joined = f"{previous_line} {text}".strip() if previous_line else text
+            start = len(joined) - len(text)
+            inherit = words["inherit"].search(joined)
+            if inherit and inherit.end() < start:
+                inherit = None
             if inherit:
                 # Which block the sentence belongs to is a matter of where the
                 # edition puts it. The English volume sets it at the end of a
@@ -350,8 +364,8 @@ def rationalised_rows(doc, pages: list[int],
                 if current is None:
                     failures.append(f"p{index + 1}: inheritance before any code")
                     continue
-                current["sentence"] = text
-                for code in _codes_in(inherit.group(1)):
+                current["sentence"] = joined
+                for code in _codes_in(joined[inherit.end():]):
                     if code not in current["inherits"]:
                         current["inherits"].append(code)
                 inheriting = _sentence_runs_on(text, words)

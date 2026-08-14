@@ -42,27 +42,29 @@ def look(path: Path) -> None:
 
     with fitz.open(path) as document:
         print(f"=== {path.name}: {document.page_count} pages")
-        first_543 = last_543 = first_544 = None
+        # The table of contents names 5.4.3 and 5.4.4 on one page and would
+        # end the search in the front matter, so every candidate is collected
+        # and the *last* run is the body. The model's own title decides where
+        # it starts: a page that carries it and the pictograms is a model page.
+        heads_543: list[int] = []
+        heads_544: list[int] = []
         titles: list[int] = []
         for index in range(document.page_count):
             text = document[index].get_text("text")
             for found in SECTION.finditer(text):
-                if found.group(1) == "3":
-                    first_543 = index if first_543 is None else first_543
-                    last_543 = index
-                elif first_543 is not None and first_544 is None:
-                    first_544 = index
-            if first_543 is not None and TITLE.search(text):
+                (heads_543 if found.group(1) == "3" else heads_544).append(index)
+            if TITLE.search(text):
                 titles.append(index)
-            if first_544 is not None and index > first_544 + 2:
-                break
-        print(f"  5.4.3 from page {first_543} to {last_543}, "
-              f"5.4.4 starts on page {first_544}")
-        print(f"  pages whose text carries the model's title: {titles[:6]}")
-        if first_543 is None:
+        print(f"  pages naming 5.4.3: {heads_543[:8]}")
+        print(f"  pages naming 5.4.4: {heads_544[:8]}")
+        print(f"  pages carrying the model's title: {titles[:8]}")
+        body_titles = [i for i in titles if i > 20]
+        if not body_titles:
             return
-        stop = (first_544 + 1) if first_544 is not None else last_543 + 1
-        for index in range(first_543, min(stop + 1, document.page_count)):
+        first_543 = body_titles[0]
+        first_544 = next((i for i in heads_544 if i > first_543), None)
+        stop = (first_544 + 1) if first_544 is not None else first_543 + 6
+        for index in range(max(0, first_543 - 1), min(stop + 1, document.page_count)):
             page = document[index]
             lines = [line.strip() for line in
                      page.get_text("text").strip().split("\n") if line.strip()]

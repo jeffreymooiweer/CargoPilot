@@ -258,39 +258,45 @@ def explain(path: Path, targets: list[str]) -> int:
     """
     import fitz
 
-    wanted = set(targets)
+    wanted = list(dict.fromkeys(targets))
     with fitz.open(path) as document:
         sample = list(range(0, document.page_count,
                             max(1, document.page_count // 40)))
         method, cut = learn_banding(document, sample)
         print(f"banding: {method}, cut {cut}")
-        seen = 0
-        for index in range(document.page_count):
-            page = document[index]
-            top, centres = band_of(page)
-            if top is None or not all(n in centres for n in NEEDED):
-                continue
-            lines = name_column(page, top, centres)
-            if not any(any(re.match(rf"\s*{un}\b", text) for un in wanted)
-                       for _y, text in lines):
-                continue
-            seen += 1
-            print(f"\n--- page {index + 1}: band foot {top:.1f}, "
-                  f"body bottom {body_bottom(page):.1f} ---")
-            marks = {round(y, 1) for _band, y in
-                     split_bands(lines, method, cut)}
-            for y, text in lines[:14]:
-                head = "ROW " if round(y, 1) in marks else "    "
-                flat = re.sub(r"\s+", " ", text)[:90]
-                print(f"  {head}{y:7.1f} {flat!r}")
-            for band, y in split_bands(lines, method, cut)[:6]:
-                number, name = un_and_name({"1": band})
-                print(f"  -> y {y:7.1f} un {number} name {name[:60]!r}")
-            if seen >= 4:
-                break
-        if seen == 0:
-            print("none of those UN numbers appears in a name column at all — "
-                  "the rows are lost before the band split, not by it")
+        # The page is found on the number itself, not on the reader's own idea
+        # of which pages hold the table: a row can be lost because its page was
+        # never treated as a table page at all, and that has to be visible.
+        for un in wanted[:4]:
+            pages = [index for index in range(document.page_count)
+                     if re.search(rf"(?m)^\s*{un}\b",
+                                  document[index].get_text("text"))]
+            print(f"\n=== UN {un}: on page(s) {[p + 1 for p in pages][:4]}")
+            for index in pages[:2]:
+                page = document[index]
+                top, centres = band_of(page)
+                print(f"  page {index + 1}: band foot "
+                      f"{'none' if top is None else round(top, 1)}, "
+                      f"columns {sorted(centres)[:8]}, "
+                      f"body bottom {body_bottom(page):.1f}")
+                if top is None or not all(n in centres for n in NEEDED):
+                    print("    this page is not treated as table A: the column "
+                          "numbers it shows are too few or the wrong ones")
+                    continue
+                right = class_left(page, top, centres["3a"])
+                print(f"    name column ends at "
+                      f"{'measured ' + str(round(right, 1)) if right else 'estimated'}")
+                for x0, y0, _x1, _y1, word, *_ in page.get_text("words"):
+                    if word.strip().startswith(un):
+                        print(f"    the number itself: x {x0:.1f} y {y0:.1f} "
+                              f"{'inside' if top <= y0 <= body_bottom(page) else 'OUTSIDE'}"
+                              " the body")
+                lines = name_column(page, top, centres)
+                marks = {round(y, 1) for _band, y in split_bands(lines, method, cut)}
+                for y, text in lines[:8]:
+                    head = "ROW " if round(y, 1) in marks else "    "
+                    flat = re.sub(r"\s+", " ", text)[:80]
+                    print(f"    {head}{y:7.1f} {flat!r}")
     return 0
 
 

@@ -111,6 +111,13 @@ high consequence, whatever the quantity — and **3,000 litres in a tank**. Flam
 of packing groups I and II are among them, so a road tanker of petrol is high consequence
 dangerous goods and needs the security plan of 1.10.3.2; this check used to say it did not.
 
+**And the exemption itself, since v1.69.0.** 1.1.3.6.2 grants it for goods carried *in
+packages* in one transport unit. A tank or bulk load is not carriage in packages, so it
+cannot claim the exemption whatever the quantity — and the points arithmetic, which exists
+only to test that exemption, is answering a question that does not arise. This also reaches
+the tunnel: 8.6.3.3 drops goods carried under 1.1.3 out of the determination, and a tank
+load is no longer dropped on the strength of a points total.
+
 **The ADR tank columns are held since v1.65.0** — the portable tank instruction (10) and its
 provisions (11), the ADR tank code (12), its provisions (13) and the vehicle the substance
 then requires (14). They were read and cross-checked from the first day of the extractor and

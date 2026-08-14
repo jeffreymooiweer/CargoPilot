@@ -360,6 +360,13 @@
       ],
       "factor": 20,
       "max_quantity": 50
+    },
+    "_packages_only": "1.1.3.6.2 grants the exemption for goods carried *in packages* in one transport unit. A load in a tank or in bulk is not carriage in packages, so the exemption is not available to it however small the quantity — and the points arithmetic, which exists only to test that exemption, answers a question that does not arise. Withholding an exemption is the safe direction to be wrong in; granting one is not.",
+    "not_available_for_mode": {
+      "nl": "ADR 1.1.3.6.2 verleent deze vrijstelling voor goederen die **in colli** in één transporteenheid worden vervoerd. Deze zending gaat in een tank of los gestort ({products}), dus de vrijstelling geldt hier niet — ongeacht de hoeveelheid. De puntentelling bestaat alleen om die vrijstelling te toetsen en is hier dus niet van toepassing.",
+      "en": "ADR 1.1.3.6.2 grants this exemption for goods carried **in packages** in one transport unit. This consignment travels in a tank or in bulk ({products}), so the exemption is not available here, whatever the quantity. The points calculation exists only to test that exemption and therefore does not apply.",
+      "de": "ADR 1.1.3.6.2 gewährt diese Freistellung für Güter, die **in Versandstücken** in einer Beförderungseinheit befördert werden. Diese Sendung fährt in einem Tank oder in loser Schüttung ({products}); die Freistellung steht hier daher unabhängig von der Menge nicht zur Verfügung. Die Punkteberechnung dient allein der Prüfung dieser Freistellung und ist somit nicht anwendbar.",
+      "fr": "Le 1.1.3.6.2 de l'ADR accorde cette exemption aux marchandises transportées **en colis** dans une unité de transport. Cet envoi voyage en citerne ou en vrac ({products}) ; l'exemption n'est donc pas disponible ici, quelle que soit la quantité. Le calcul de points ne sert qu'à vérifier cette exemption et ne s'applique donc pas."
     }
   },
   "adr_mixed_loading": {

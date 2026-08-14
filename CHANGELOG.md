@@ -2,6 +2,29 @@
 
 All notable changes are documented here, following [Semantic Versioning](https://semver.org/).
 
+## [1.69.0] — 2026-08-13
+
+### Fixed
+
+- **The 1.1.3.6 exemption is for carriage in packages, and a tank load can no
+  longer claim it.** The operative sentence of 1.1.3.6.2 grants the exemption
+  for goods carried *in packages* in one transport unit. A tank or a bulk load is
+  not carriage in packages, so the exemption is not available to it however small
+  the quantity — and the points arithmetic, which exists only to test that
+  exemption, is answering a question that does not arise.
+
+  The panel now says so in place of a total: neither green nor red, because the
+  exemption is not failed, it is not on offer. One litre in a tank does not buy
+  it back; the provision turns on the form of carriage and not on the amount.
+
+  **This reaches the tunnel too.** 8.6.3.3 takes goods carried under 1.1.3 out of
+  the tunnel determination altogether, and until now a tank load could be dropped
+  out of it on the strength of a points total it was never entitled to. Its code
+  now stands — and with v1.67.0 that code is read from the stricter column.
+
+  Withholding an exemption is the safe direction to be wrong in; granting one is
+  not. Read from ADR 2025, Dutch edition, 1.1.3.6.2, printed page 77.
+
 ## [1.68.0] — 2026-08-13
 
 ### Fixed

@@ -16,6 +16,9 @@ const STATUS_STYLES: Record<string, string> = {
   above_threshold: "bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-300",
   not_exempt: "bg-red-100 text-red-800 dark:bg-red-900/40 dark:text-red-300",
   incomplete: "bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-300",
+  // Not a failure and not a pass: the exemption is simply not on offer for this
+  // mode, so neither green nor red would be honest.
+  not_available_for_mode: "bg-sky-100 text-sky-800 dark:bg-sky-900/40 dark:text-sky-300",
 };
 
 // Within the limits is green, outside it amber: a missed exemption is not an
@@ -214,6 +217,9 @@ export default function DgCompliancePanel({ entries, profiles }: Props) {
             </p>
           )}
 
+          {adr.mode_note && (
+            <p className="text-xs text-sky-700 dark:text-sky-300">{adr.mode_note}</p>
+          )}
           {adr.status === "exempt_possible" && (
             <details className="text-xs text-slate-600 dark:text-slate-300">
               <summary className="cursor-pointer font-medium">{t("compliance.exemptDetails")}</summary>

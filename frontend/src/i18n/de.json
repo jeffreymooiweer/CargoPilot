@@ -380,7 +380,8 @@
       "exempt_possible": "Freistellung nach 1.1.3.6 möglich",
       "above_threshold": "Über 1000 Punkte — volle ADR-Pflichten",
       "not_exempt": "Kategorie 0 — keine Freistellung möglich",
-      "incomplete": "Unvollständig — Kategorie und Menge erfassen"
+      "incomplete": "Unvollständig — Kategorie und Menge erfassen",
+      "not_available_for_mode": "bei Tank- oder Schüttgutbeförderung nicht anwendbar"
     },
     "incompleteHint": "Erfassen Sie Beförderungskategorie und Gesamtmenge nach ADR für: {{products}}. Verwenden Sie die UN-Suche oder ADR Tabelle A Spalte 15.",
     "category0Hint": "Beförderungskategorie 0 ({{products}}): eine Beförderung unter der Freistellung nach 1.1.3.6 ist nicht zulässig; sämtliche ADR-Vorschriften gelten uneingeschränkt.",

@@ -357,19 +357,18 @@ def probe_english(pdf_path: Path) -> int:
     print(f"first, last: {pages[:3]} ... {pages[-3:]}" if pages else "none")
     if not pages:
         return 1
-    for number in pages[:2]:
-        page = doc[number]
-        bands = _bands(page)
-        print(f"page {number}: rect {page.rect}")
-        print("  bands:", [(name, round(y)) for name, y in bands])
-        un_band = next(((n, y) for n, y in bands if n == "1"), None)
-        print("  un band:", un_band)
-        words = [w for w in page.get_text("words") if w[0] > MARKER_X[1]]
-        if un_band:
-            top = un_band[1] - 2
-            below = [w for w in words if w[1] >= top][:20]
-            print("  words in and under the (1) band:",
-                  [(round(w[0]), round(w[1]), w[4]) for w in below])
+    page = doc[pages[0]]
+    print(f"page {pages[0]}: rect {page.rect}")
+    print("marker column, x 140-200, every word:")
+    for x0, y0, _x1, _y1, word, *_ in sorted(page.get_text("words"),
+                                             key=lambda w: (w[1], w[0])):
+        if 140 <= x0 <= 200:
+            print(f"  {round(x0):4d},{round(y0):4d} {word!r}")
+    print("bottom stripe, y 560-800, x > 195:")
+    for x0, y0, _x1, _y1, word, *_ in sorted(page.get_text("words"),
+                                             key=lambda w: (w[1], w[0])):
+        if y0 > 560 and x0 > 195:
+            print(f"  {round(x0):4d},{round(y0):4d} {word!r}")
     return 0
 
 

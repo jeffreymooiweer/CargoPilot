@@ -125,10 +125,32 @@ jobs:
       # here, it is the last thing in the log and the tail is the reading.
       - name: What was read
         if: ${{ always() && !inputs.probe && !inputs.words }}
+        env:
+          LANGUAGE: ${{ inputs.language }}
+          DUMP: ${{ inputs.dump }}
         run: |
-          # On one line: the tail is counted in lines, and a reading spread
-          # over eighteen hundred of them is as unreachable as one buried in
-          # the middle of the run.
-          python -c "import json,sys;print(json.dumps(json.load(open(sys.argv[1])),ensure_ascii=False))" \
-            "hierarchy_${{ inputs.language }}.json" 2>/dev/null \
-            || echo "nothing was written"
+          # A summary by default, the reading itself only when asked for.
+          # Correcting the parser takes several runs and a whole reading is
+          # some ten thousand characters; what a run has to answer in between
+          # is only whether every code is there with its groups and its
+          # inheritance, and that fits on a line each. Both are printed on one
+          # line, because the tail of a log is counted in lines.
+          python - "hierarchy_$LANGUAGE.json" "$DUMP" <<'PY'
+          import json, sys
+          try:
+              reading = json.load(open(sys.argv[1], encoding="utf-8"))
+          except OSError:
+              print("nothing was written")
+              raise SystemExit(0)
+          print(f"gases: {len(reading['gases'])} rows")
+          for row in reading["gases"]:
+              print(f"  {row['tank_code']}: {' '.join(row['also_permitted'])}")
+          print(f"rationalized: {len(reading['rationalised'])} codes")
+          for block in reading["rationalised"]:
+              codes = ",".join(group["classification_code"]
+                               for group in block["groups"])
+              print(f"  {block['tank_code']}: {len(block['groups'])} groups "
+                    f"[{codes[:80]}] inherits {'+'.join(block['inherits']) or '-'}")
+          if sys.argv[2] == "true":
+              print(json.dumps(reading, ensure_ascii=False))
+          PY

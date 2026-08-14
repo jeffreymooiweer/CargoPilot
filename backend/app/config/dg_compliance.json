@@ -2952,6 +2952,19 @@
           "cones": 3
         }
       ]
+    },
+    "_tank_vessels": "For tank vessels the signals come from table C column (19) under 7.2.5.0.1, and where several signals would apply 7.2.5.0.2 ranks them: two blue cones or lights before one. Both provisions read from the ADN 2025 Dutch edition, 7.2.5; the column values carry the table's two readings.",
+    "tank_highest": {
+      "nl": "Volgens 7.2.5.0.2 geldt bij meerdere seinvoeringen de zwaarste: twee blauwe kegels of lichten vóór één. Bepalend: {products}.",
+      "en": "Under 7.2.5.0.2, where several signals apply the heaviest one is shown: two blue cones or lights before one. Set by: {products}.",
+      "de": "Nach 7.2.5.0.2 gilt bei mehreren Signalführungen die schwerste: zwei blaue Kegel oder Lichter vor einem. Bestimmend: {products}.",
+      "fr": "Selon le 7.2.5.0.2, lorsque plusieurs signalisations s'appliquent, la plus lourde prévaut : deux cônes ou feux bleus avant un. Déterminant : {products}."
+    },
+    "tank_not_settled": {
+      "nl": "Voor {products} staat het kegelaantal in Tabel C niet vast (varianten verschillen of de twee lezingen zijn het oneens); de seinvoering is hier niet beoordeeld.",
+      "en": "For {products} the cone count in table C is not settled (variants differ or the two readings disagree); the signals are not assessed here.",
+      "de": "Für {products} steht die Kegelzahl in Tabelle C nicht fest (Varianten unterscheiden sich oder die zwei Lesungen widersprechen sich); die Signalführung ist hier nicht beurteilt.",
+      "fr": "Pour {products}, le nombre de cônes du tableau C n'est pas arrêté (les variantes diffèrent ou les deux lectures divergent) ; la signalisation n'est pas évaluée ici."
     }
   },
   "adn_carriage_admission": {
@@ -3011,6 +3024,31 @@
       "en": "ADN 1.1.3.6.1 applies to the carriage of dangerous goods in packages. {products} does not travel in packages, so the exemption is not available for it however small the quantity.",
       "de": "ADN 1.1.3.6.1 gilt für die Beförderung gefährlicher Güter in Versandstücken. {products} reist nicht in Versandstücken, die Freistellung steht dafür also nicht zur Verfügung, wie klein die Menge auch ist.",
       "fr": "L'ADN 1.1.3.6.1 s'applique au transport de marchandises dangereuses en colis. {products} ne voyage pas en colis, l'exemption n'est donc pas disponible pour lui, quelle que soit la faible quantité."
+    },
+    "_table_c": "Since v1.73.0 table C itself is in the repository (adn_table_c.json), read twice: the row set and every cell from the UNECE English 2025 PDF, the corroboration and the Dutch names from the mindef export. Column (6) names the tank vessel type; 7.2.5.0.1 takes the signals from column (19), and 7.2.5.0.2 ranks two cones before one where several apply. A cell the two readings give differently is stored with both values and never presented as an answer.",
+    "tank_vessel_type": {
+      "nl": "Tabel C, kolom (6): {product} vaart in een tankschip van het type {type}.",
+      "en": "Table C, column (6): {product} travels in a type {type} tank vessel.",
+      "de": "Tabelle C, Spalte (6): {product} fährt in einem Tankschiff des Typs {type}.",
+      "fr": "Tableau C, colonne (6) : {product} voyage dans un bateau-citerne de type {type}."
+    },
+    "tank_vessel_variants": {
+      "nl": "Tabel C geeft voor {product} {rows} rijen, en het scheepstype verschilt per variant ({types}). Welke rij geldt hangt af van de precieze stof; kolom (6) van die rij bepaalt het schip.",
+      "en": "Table C gives {rows} rows for {product}, and the vessel type differs per variant ({types}). Which row applies depends on the exact substance; column (6) of that row settles the vessel.",
+      "de": "Tabelle C enthält für {product} {rows} Zeilen, und der Schiffstyp unterscheidet sich je Variante ({types}). Welche Zeile gilt, hängt vom genauen Stoff ab; Spalte (6) dieser Zeile bestimmt das Schiff.",
+      "fr": "Le tableau C donne {rows} lignes pour {product}, et le type de bateau diffère selon la variante ({types}). La ligne applicable dépend de la matière exacte ; la colonne (6) de cette ligne détermine le bateau."
+    },
+    "tank_conditions_note": {
+      "nl": "Tabel C stelt per rij ook eisen aan ladingtankontwerp, -type en -uitrusting, openingsdruk en vullingsgraad. CargoPilot kent het schip niet; controleer die kolommen tegen het schip dat vaart.",
+      "en": "Table C also sets, per row, the cargo tank design, type and equipment, the opening pressure and the filling degree. CargoPilot does not know the vessel; check those columns against the vessel that sails.",
+      "de": "Tabelle C stellt je Zeile auch Anforderungen an Ladetank-Bauart, -Typ und -Ausrüstung, Öffnungsdruck und Füllungsgrad. CargoPilot kennt das Schiff nicht; prüfen Sie diese Spalten gegen das fahrende Schiff.",
+      "fr": "Le tableau C fixe aussi, par ligne, la conception, le type et l'équipement des citernes, la pression d'ouverture et le degré de remplissage. CargoPilot ne connaît pas le bateau ; vérifiez ces colonnes par rapport au bateau."
+    },
+    "single_reading_note": {
+      "nl": "De rij voor {products} berust op één lezing: de Nederlandse editie-export mist hem. De waarden komen uit de Engelse UNECE-uitgave; verifieer tegen het boek.",
+      "en": "The row for {products} rests on one reading: the Dutch edition export lacks it. The values come from the English UNECE edition; verify against the book.",
+      "de": "Die Zeile für {products} beruht auf einer Lesung: dem Export der niederländischen Ausgabe fehlt sie. Die Werte stammen aus der englischen UNECE-Ausgabe; prüfen Sie gegen das Buch.",
+      "fr": "La ligne pour {products} repose sur une seule lecture : l'export de l'édition néerlandaise ne la contient pas. Les valeurs proviennent de l'édition anglaise de la CEE-ONU ; vérifiez contre le livre."
     }
   },
   "adr_tank_admission": {

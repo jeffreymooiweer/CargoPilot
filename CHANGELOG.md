@@ -2,6 +2,44 @@
 
 All notable changes are documented here, following [Semantic Versioning](https://semver.org/).
 
+## [1.73.0] — 2026-08-14
+
+### Added
+
+- **Table C of the ADN — the tank vessel table — is in the repository, read
+  twice.** The English UNECE 2025 PDF supplied the row set and every cell: its
+  pages print the table rotated, substances as page columns and the twenty
+  column numbers as bands down the left edge, and the extractor measured that
+  layout with probe runs rather than assuming it. The Dutch mindef export
+  supplied the corroboration and the Dutch names. 678 printed rows.
+
+  The comparison is a record the seed carries, not a gate it passed: 491 rows
+  agree on every cell; 153 carry a `disputed` cell with both readings' values,
+  and a disputed cell is never presented as an answer; 34 rows exist only in
+  the English edition — the Dutch export omits UN 1977 and UN 1999 entirely,
+  along with single variant rows of several N.O.S. entries — and each says
+  `readings: 1`. The export's other damage is measured and documented in
+  place: it splits a printed row per alternative name (52 rows for the 26
+  printed rows of UN 1268), swaps the data cells of columns (7) and (9)
+  against its own header, sets nine row names with a lower-case prefix the
+  list grammar had to learn, and glues its remark column four languages deep.
+
+  What the application answers from it, for a cargo tank consignment:
+
+  - **The tank vessel type of column (6).** Anhydrous ammonia sails a type G
+    vessel and the admission card says so; petrol's six variant rows split
+    between types N and C, and the card presents the variants instead of
+    picking one.
+  - **The signals of column (19), under 7.2.5.0.1** — the provision the page
+    itself points at — with 7.2.5.0.2 ranking two blue cones before one where
+    several apply. Petrol settles at one cone across all six variants; a
+    substance whose variants disagree, or whose cell the two readings dispute,
+    is named as not settled rather than averaged.
+
+  Both reach the document warnings. What is still not checked is the vessel
+  itself: cargo tank design, type and equipment, opening pressure and filling
+  degree are shown as conditions to verify against the vessel that sails.
+
 ## [1.72.1] — 2026-08-14
 
 ### Changed

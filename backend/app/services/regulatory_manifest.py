@@ -68,7 +68,8 @@ RULE_SETS: list[dict[str, Any]] = [
             "7.5.2 mixed loading and 7.5.4/CV28",
         ],
         "files": ["adr_table_a.json", "un_numbers.json", "adr_names_nl.json",
-                  "adr_2025_additions.json", "packagings.json"],
+                  "adr_2025_additions.json", "packagings.json",
+                  "adn_table_a.json", "adn_table_c.json"],
     },
     {
         "key": "imdg",

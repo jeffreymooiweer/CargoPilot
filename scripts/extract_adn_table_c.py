@@ -267,6 +267,17 @@ def parse_row(un: str, row: str) -> dict[str, Any]:
     if not dangers:
         raise RowError(f"empty dangers cell in: {row[:90]}")
 
+    # The export writes the cells of columns (7) and (9) in each other's
+    # place, against its own header. Measured, not assumed: of the English
+    # rows blocked on exactly this pair, 362 match the Dutch perfectly once
+    # the two are swapped, and every row that matched *without* the swap has
+    # design equal to equipment, where a swap cannot show. The English
+    # assignment is verified against its own printed band labels, and the
+    # physics sides with it — anhydrous ammonia requires pressure cargo tank
+    # design 1, which the unswapped export would deny. One more entry in the
+    # export's damage record, alongside the 7.1.4.3.4 matrix.
+    design, tank_equipment = tank_equipment, design
+
     return {
         "un": un,
         "name_nl": tidy(name),
@@ -596,6 +607,199 @@ def _english_row(values: dict[str, str], failures: list[str]) -> dict[str, Any] 
     return row
 
 
+# --- the comparison ---------------------------------------------------------
+#
+# The two readings do not agree row for row by design: where the book names a
+# substance "PETROLEUM DISTILLATES, N.O.S. or PETROLEUM PRODUCTS, N.O.S." the
+# English edition prints one row and the Dutch export prints one row per
+# alternative name with identical cells. So the English reading is the row
+# set, and every English row must be matched by at least one Dutch row on all
+# comparable cells — names aside — while every Dutch row must find exactly one
+# English home. Dutch rows the export provably lacks (its known damage) leave
+# English rows with a single reading, and the seed says so per row.
+
+COMPARED = [
+    "class", "classification_code", "packing_group", "dangers", "vessel_type",
+    "cargo_tank_design", "cargo_tank_type", "cargo_tank_equipment",
+    "opening_pressure_kpa", "max_filling_percent", "density",
+    "sampling_device", "pump_room_below_deck", "temperature_class",
+    "explosion_group", "explosion_protection", "equipment", "blue_cones",
+]
+
+
+def _norm(field: str, value: str) -> str:
+    value = (value or "").strip().replace("–", "-")
+    if value in ("-", ""):
+        return ""
+    if field == "dangers":
+        # The English cell wraps mid-token ("2." / "1+N1"), so spaces go
+        # first; and the export prints "2, 1" where the book prints "2.1".
+        packed = re.sub(r"\s+", "", value.upper())
+        packed = re.sub(r"(\d),(\d)", r"\1.\2", packed)
+        tokens = sorted(t.rstrip(".") for t in re.split(r"[+(),]+", packed) if t)
+        return "+".join(tokens)
+    if field == "equipment":
+        # The rotated English cell wraps over lines whose reading order the
+        # geometry cannot always settle; the codes are a set either way.
+        return ",".join(sorted(re.findall(r"PP|EP|EX|TOX|A(?![A-Z])", value)))
+    if field == "explosion_group":
+        # Same story with glue: "II B 4) (II B2)" arrives as "II B B24) (II".
+        # The alphabet is tiny, so the sorted characters are the comparison.
+        return "".join(sorted(re.sub(r"[^0-9A-Z]", "", value.upper())))
+    if field == "density":
+        value = value.replace(",", ".")
+    if field == "remarks":
+        numbers = sorted(set(re.findall(r"\d+", value)), key=int)
+        see = "see" if "3.2.3.3" in value or "*" in value else ""
+        return ",".join(numbers) + see
+    return re.sub(r"[\s,]+", "", value.upper())
+
+
+def _key(row: dict[str, Any]) -> tuple:
+    return tuple(_norm(field, row.get(field, "")) for field in COMPARED)
+
+
+def _diff(a: dict, b: dict) -> list[str]:
+    return [f for f in COMPARED if _norm(f, a.get(f, "")) != _norm(f, b.get(f, ""))]
+
+
+def check_readings(english: list[dict], dutch: list[dict]) -> dict[str, Any]:
+    """Pair the readings per UN, best pairs first, and inventory what differs.
+
+    Variant families make greedy first-fit treacherous: near-identical rows
+    differ in one late column, and pairing the wrong twins manufactures two
+    disagreements out of none. So within each UN every English row is scored
+    against every free Dutch row, the globally closest pair binds first, and a
+    second Dutch row may join an English one only when it matches exactly —
+    that is the export's or-name split, two rows for one printed row.
+    """
+    from collections import defaultdict
+
+    by_un_en: dict[str, list[dict]] = defaultdict(list)
+    by_un_nl: dict[str, list[dict]] = defaultdict(list)
+    for row in english:
+        by_un_en[row["un"]].append(row)
+    for row in dutch:
+        by_un_nl[row["un"]].append(row)
+
+    matched, disagreements, single = [], [], []
+    unmatched_dutch: list[dict] = []
+    for un in sorted(set(by_un_en) | set(by_un_nl)):
+        en_rows = [dict(r) for r in by_un_en.get(un, [])]
+        nl_rows = list(by_un_nl.get(un, []))
+        scored = sorted(
+            (len(_diff(e, d)), ei, di)
+            for ei, e in enumerate(en_rows)
+            for di, d in enumerate(nl_rows))
+        taken_e: dict[int, dict] = {}
+        taken_d: set[int] = set()
+        partners: dict[int, list[dict]] = defaultdict(list)
+        for score, ei, di in scored:
+            if di in taken_d:
+                continue
+            if ei in taken_e:
+                # A second Dutch row joins only as an exact or-split twin.
+                if score == 0:
+                    partners[ei].append(nl_rows[di])
+                    taken_d.add(di)
+                continue
+            if score > 4:
+                continue
+            taken_e[ei] = nl_rows[di]
+            partners[ei].append(nl_rows[di])
+            taken_d.add(di)
+        for ei, row in enumerate(en_rows):
+            if ei not in taken_e:
+                row["readings"] = 1
+                single.append(row)
+                continue
+            twins = partners[ei]
+            row["name_nl"] = " / ".join(
+                dict.fromkeys(p["name_nl"] for p in twins))
+            row["readings"] = 2
+            fields = _diff(row, taken_e[ei])
+            if fields:
+                # The dispute is attached here, on the pairing itself: tagging
+                # rows afterwards by value-lookalike marked innocent variant
+                # twins as disputed too.
+                row["disputed"] = {
+                    f: {"en": row.get(f, ""), "nl": taken_e[ei].get(f, "")}
+                    for f in fields}
+                disagreements.append({
+                    "un": un, "fields": fields,
+                    "english": {f: row.get(f, "") for f in fields},
+                    "dutch": {f: taken_e[ei].get(f, "") for f in fields},
+                })
+            matched.append((row, twins))
+        unmatched_dutch.extend(
+            d for di, d in enumerate(nl_rows) if di not in taken_d)
+
+    return {
+        "matched": matched,
+        "single": single,
+        "disagreements": disagreements,
+        "unmatched_dutch": unmatched_dutch,
+    }
+
+
+def emit_seed(english: list[dict], dutch: list[dict], out: Path) -> dict:
+    """Write the seed from the paired readings.
+
+    Every row carries the English cells — the UNECE edition is the complete
+    print and its band layout is verified against its own labels — with the
+    Dutch name(s) joined on. `readings` says how many independent readings
+    stand behind the row; where the two disagree on a cell the row keeps both
+    under `disputed` and the application must treat that field as not settled.
+    Nothing is averaged and nothing is discarded silently.
+    """
+    outcome = check_readings(english, dutch)
+    entries = [row for row, _twins in outcome["matched"]]
+    for row in outcome["single"]:
+        row = dict(row)
+        row["name_nl"] = ""
+        entries.append(row)
+    entries.sort(key=lambda r: (r["un"], r.get("name_en", "")))
+    seed = {
+        "_comment": (
+            "Table C of chapter 3.2 of the ADN — the substances admitted to "
+            "carriage in tank vessels — read twice: geometrically from the "
+            "UNECE English ADN 2025 PDF (the row set and every cell) and from "
+            "the official Dutch edition's list pages (the corroboration and "
+            "the Dutch names). A compilation of facts offered as an aid; the "
+            "published text of the ADN remains authoritative."),
+        "edition": "ADN 2025, in force 1 January 2025",
+        "source": (
+            "English reading: UNECE ADN 2025 (sources.json id adn), table C "
+            "pages read by band and column with scripts/extract_adn_table_c.py. "
+            "Dutch reading: the mindef.nl HTML export (id adn_nl_index), five "
+            "ADNC list pages."),
+        "cross_check": {
+            "rows_english": len(english),
+            "rows_dutch": len(dutch),
+            "rows": len(entries),
+            "settled_rows": len(outcome["matched"]) - len(outcome["disagreements"]),
+            "rows_with_disputed_cells": len(outcome["disagreements"]),
+            "rows_read_once": len(outcome["single"]),
+            "dutch_rows_unplaced": len(outcome["unmatched_dutch"]),
+            "note": (
+                "The Dutch export splits a printed row per alternative name "
+                "(52 rows for the 26 printed rows of UN 1268), swaps the data "
+                "cells of columns (7) and (9) against its own header, omits "
+                "UN 1977 and UN 1999 entirely along with single variant rows "
+                "of several N.O.S. entries, and glues its remark column four "
+                "languages deep. Each was measured during the comparison; "
+                "rows the export lacks carry readings 1, and a cell the two "
+                "readings give differently is kept under `disputed` with both "
+                "values — such a cell is not settled and must not be "
+                "presented as an answer."),
+        },
+        "entries": entries,
+    }
+    out.write_text(json.dumps(seed, ensure_ascii=False, indent=1) + "\n",
+                   encoding="utf-8")
+    return outcome
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description="Read ADN table C")
     parser.add_argument("--dutch", type=Path,
@@ -611,7 +815,22 @@ def main() -> int:
                         help="print every row to the log, one JSON per line")
     parser.add_argument("--probe-page", type=int, default=None,
                         help="dump every word of one PDF page with coordinates")
+    parser.add_argument("--emit", nargs=3, metavar=("ENGLISH", "DUTCH", "SEED"),
+                        help="pair the two readings (JSON files) and write the seed")
     args = parser.parse_args()
+
+    if args.emit:
+        english = json.loads(Path(args.emit[0]).read_text(encoding="utf-8"))
+        dutch = json.loads(Path(args.emit[1]).read_text(encoding="utf-8"))
+        outcome = emit_seed(english, dutch, Path(args.emit[2]))
+        print(f"seed written: {args.emit[2]}")
+        print(f"  matched: {len(outcome['matched'])}, of which disputed: "
+              f"{len(outcome['disagreements'])}")
+        print(f"  single-reading rows: {len(outcome['single'])}")
+        print(f"  dutch rows unplaced: {len(outcome['unmatched_dutch'])}")
+        for row in outcome["unmatched_dutch"]:
+            print(f"    unplaced: {row['un']} {row['name_nl'][:60]}")
+        return 0
 
     if args.english and args.probe_page is not None:
         import fitz

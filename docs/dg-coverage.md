@@ -420,20 +420,28 @@ exempt" since v1.32.0 while the arithmetic granted the exemption anyway — with
 
 **What is missing beyond that:**
 
-- **Column (8) rests on one edition.** Its *values* carry two readings. What the codes
-  mean does not: the UNECE English ADN was unreachable when v1.71.0 was built — 403 from the
-  publisher, 503 and 404 from the web archive — so the wording comes from the Dutch 2025
-  edition alone. Four separately typeset places in that edition agree (the 3.2.1 note,
-  7.1.1.11, 7.1.1.21, and 7.2.1.21.1 with the title of 3.2.3), and the data agrees with them,
-  but corroboration is not a second reading. Re-check it when the English volume can be
-  reached.
-- **The tank vessel regime beyond admission.** ADN splits into dry cargo and tank vessels.
-  Since v1.71.0 the application says whether a tank vessel is permitted at all, and then says
-  plainly that the vessel type, the cargo tank type and the conditions that go with them are
-  in **Table C**, which this repository does not carry. That table is one reading short: the
-  Dutch export holds 706 rows and a second, independent reading is what the rule for a
-  regulatory table demands. The rest of the regime — 7.2.x, 9.3, 8.1 — is a different
-  discipline again and CargoPilot should not be read as though it has it.
+- ~~Column (8) rests on one edition~~ — since v1.73.0 the English ADN is in the document
+  store (fetched via the web archive by the first run of the fetch workflow) and table C
+  itself carries both editions' readings.
+- **The tank vessel regime beyond table C's facts.** Since v1.73.0 **table C is in the
+  repository** (`adn_table_c.json`): 678 printed rows, read twice — the row set and every
+  cell geometrically from the UNECE English 2025 PDF (the pages print the table rotated,
+  which the extractor measures rather than assumes), the corroboration and the Dutch names
+  from the mindef export. The comparison is recorded in the seed, not summarised away:
+  491 rows settle on every cell, 153 carry a `disputed` cell with both readings' values (a
+  disputed cell is never presented as an answer), 34 exist only in the English edition
+  because the Dutch export omits them — UN 1977 and UN 1999 entirely — and each says
+  `readings: 1`. The export's other damage is on record too: it splits a printed row per
+  alternative name (52 rows for the 26 printed rows of UN 1268) and swaps the data cells of
+  columns (7) and (9) against its own header — caught because 362 rows matched perfectly
+  once swapped and every row that matched unswapped had design equal to equipment.
+
+  What the application now answers from it: the **tank vessel type** of column (6) (or the
+  variants, where petrol's six rows split between N and C), and the **signals** of column
+  (19) under **7.2.5.0.1**, with 7.2.5.0.2 ranking two cones before one. What it still does
+  not do: check the actual vessel (design, tank type, equipment, opening pressure, filling
+  degree are shown as conditions to verify), or the rest of the regime — 7.2.x operations,
+  9.3 construction, 8.1 documents — which is a different discipline again.
 - **The rows the ADN table A holds only once.** The table is available one row per UN
   number and the book prints several for 452 of the 2,352 substances. Where those rows
   differ in the vessel's columns — UN 1203 petrol is the clear case — no cone count is

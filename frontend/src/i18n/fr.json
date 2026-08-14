@@ -380,7 +380,8 @@
       "exempt_possible": "Exemption du 1.1.3.6 possible",
       "above_threshold": "Au-delà de 1000 points — obligations ADR intégrales",
       "not_exempt": "Catégorie 0 — aucune exemption possible",
-      "incomplete": "Incomplet — indiquez la catégorie et la quantité"
+      "incomplete": "Incomplet — indiquez la catégorie et la quantité",
+      "not_available_for_mode": "non applicable en citerne ou en vrac"
     },
     "incompleteHint": "Indiquez la catégorie de transport ADR et la quantité totale pour : {{products}}. Utilisez la recherche ONU ou la colonne 15 du tableau A de l'ADR.",
     "category0Hint": "Catégorie de transport 0 ({{products}}) : le transport sous l'exemption du 1.1.3.6 n'est pas autorisé ; l'ensemble des dispositions de l'ADR s'applique intégralement.",

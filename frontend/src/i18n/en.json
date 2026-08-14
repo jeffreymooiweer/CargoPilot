@@ -380,7 +380,8 @@
       "exempt_possible": "1.1.3.6 exemption possible",
       "above_threshold": "Above 1000 points — full ADR obligations",
       "not_exempt": "Category 0 — no exemption possible",
-      "incomplete": "Incomplete — enter category and quantity"
+      "incomplete": "Incomplete — enter category and quantity",
+      "not_available_for_mode": "not available for tank or bulk carriage"
     },
     "incompleteHint": "Enter the ADR transport category and total quantity for: {{products}}. Use the UN lookup or ADR Table A column 15.",
     "category0Hint": "Transport category 0 ({{products}}): carriage under the 1.1.3.6 exemption is not permitted; all ADR provisions apply in full.",

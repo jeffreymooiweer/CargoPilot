@@ -357,3 +357,55 @@ def test_footnote_c_keeps_a_substance_out_where_tanks_are_not_admitted():
 def test_an_explosive_in_packages_is_unchanged():
     assert security(None, "1", un="0004", hazard="1", group="",
                     code="1.1D")["status"] == "high_consequence"
+
+
+# --- 1.1.3.6.2: the exemption is for packages ------------------------------
+#
+# The operative sentence grants it for goods carried **in packages** in one
+# transport unit. A tank load is not carriage in packages, so the exemption is
+# not available to it however small the quantity — and the points arithmetic,
+# which exists only to test that exemption, is answering a question that does
+# not arise. Withholding an exemption is the safe direction to be wrong in;
+# granting one is not.
+
+
+def points(mode=None, quantity="100"):
+    from app.services.dg.compliance import check_adr_points
+    row = {"un_number": "1203", "class": "3", "transport_category": "2",
+           "adr_total_quantity": quantity}
+    if mode:
+        row["carriage_mode"] = mode
+    return check_adr_points(line(row), ["ADR"], "nl")
+
+
+def test_packages_can_still_claim_the_exemption():
+    assert points()["status"] == "exempt_possible"
+    assert points("packages")["status"] == "exempt_possible"
+
+
+@pytest.mark.parametrize("mode", ["tank", "portable_tank", "bulk"])
+def test_a_load_that_is_not_in_packages_cannot(mode):
+    out = points(mode)
+    assert out["status"] == "not_available_for_mode"
+    assert "1.1.3.6.2" in out["mode_note"]
+    assert out["not_in_packages"] == ["UN 1203"]
+
+
+def test_a_tiny_tank_quantity_does_not_buy_the_exemption_back():
+    """The exemption turns on the form of carriage, not on the amount. One
+    litre in a tank is still not carriage in packages."""
+    assert points("tank", "1")["status"] == "not_available_for_mode"
+
+
+def test_the_tunnel_no_longer_treats_a_tank_load_as_exempt():
+    """8.6.3.3 takes goods carried under 1.1.3 out of the tunnel determination.
+    A tank load is not carried under 1.1.3, so its code stands — and before this
+    it could be dropped as exempt on the strength of a points total."""
+    from app.services.dg.compliance import check_adr_tunnel
+    out = check_adr_tunnel(
+        line({"un_number": "1203", "class": "3", "tunnel_code": "(D/E)",
+              "transport_category": "2", "adr_total_quantity": "100",
+              "carriage_mode": "tank"}),
+        "nl", points_status="not_available_for_mode")
+    assert out["status"] == "derived"
+    assert out["restricted_categories"] == ["D", "E"]

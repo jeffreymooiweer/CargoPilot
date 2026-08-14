@@ -734,7 +734,17 @@ export interface AdrPointsResult {
   rows: AdrPointsRow[];
   total_points: number;
   threshold: number;
-  status: "exempt_possible" | "above_threshold" | "not_exempt" | "incomplete";
+  /** `not_available_for_mode` is 1.1.3.6.2: the exemption is granted for goods
+   *  carried in packages, so a tank or bulk load cannot claim it whatever the
+   *  quantity — and the arithmetic that tests it does not apply. */
+  status:
+    | "exempt_possible"
+    | "above_threshold"
+    | "not_exempt"
+    | "incomplete"
+    | "not_available_for_mode";
+  mode_note?: string;
+  not_in_packages?: string[];
   /** Lines with a transport prohibition are not in the count. */
   forbidden_products?: string[];
   category0_products: string[];

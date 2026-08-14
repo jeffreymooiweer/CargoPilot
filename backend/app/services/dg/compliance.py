@@ -260,7 +260,21 @@ def check_adr_points(
             **({"note_a": True} if note_a else {}),
         })
 
-    if category0:
+    # 1.1.3.6.2 grants the exemption for goods carried *in packages* in one
+    # transport unit. A tank or a bulk load is not carriage in packages, so the
+    # exemption is not available to it however small the quantity — and the
+    # points arithmetic, which exists only to test that exemption, is answering
+    # a question that does not arise. Withholding an exemption is the safe
+    # direction to be wrong in; granting one is not.
+    not_in_packages = sorted({
+        _product_label(entry, product, index)
+        for entry, index, product in _iter_products(entries)
+        if str(product.get("carriage_mode") or "").strip()
+        in ("tank", "portable_tank", "bulk")})
+
+    if not_in_packages:
+        status = "not_available_for_mode"
+    elif category0:
         status = "not_exempt"
     elif incomplete:
         status = "incomplete"
@@ -269,7 +283,15 @@ def check_adr_points(
     else:
         status = "above_threshold"
 
+    result_extra: dict[str, Any] = {}
+    if not_in_packages:
+        text = rules["not_available_for_mode"]
+        result_extra["mode_note"] = (text.get(lang) or text["en"]).format(
+            products=", ".join(not_in_packages))
+        result_extra["not_in_packages"] = not_in_packages
+
     return {
+        **result_extra,
         "rows": rows,
         "total_points": round(total, 2),
         "threshold": threshold,

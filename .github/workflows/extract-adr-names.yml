@@ -32,6 +32,10 @@ on:
         description: "Report the layout of the edition and stop"
         type: boolean
         default: false
+      explain:
+        description: "Trace these UN numbers line by line ('auto' = the rows the reading loses)"
+        default: ""
+        required: false
       commit:
         description: "Commit the result to this branch"
         type: boolean
@@ -76,6 +80,7 @@ jobs:
           MIN_AGREEMENT: ${{ inputs.min_agreement }}
           PROBE: ${{ inputs.probe }}
           SOURCE: ${{ inputs.source }}
+          EXPLAIN: ${{ inputs.explain }}
         run: |
           set -euo pipefail
           # The download goes through read_land_regulations.py, which is the one
@@ -96,6 +101,10 @@ jobs:
           fi
           LANGS="$LANGUAGE"
           if [ "$LANGUAGE" = "both" ]; then LANGS="en fr"; fi
+          # One language failing its agreement gate must not take the other's
+          # reading with it: a run that reports both is a run worth its round
+          # trip, and the failure is still a failure at the end.
+          FAILED=0
           for lang in $LANGS; do
             echo "=============================================================="
             echo "ADR 2025 Volume I — $lang"
@@ -104,10 +113,12 @@ jobs:
             if [ "$lang" = "fr" ]; then source_id="adr1_fr"; fi
             EXTRA=""
             if [ "$PROBE" = "true" ]; then EXTRA="--probe"; fi
+            if [ -n "$EXPLAIN" ]; then EXTRA="$EXTRA --explain $EXPLAIN"; fi
             python scripts/extract_adr_names_multilingual.py \
               --source "$source_id" --language "$lang" \
-              --min-agreement "$MIN_AGREEMENT" $EXTRA
+              --min-agreement "$MIN_AGREEMENT" $EXTRA || FAILED=1
           done
+          exit $FAILED
 
       # Save even when the reading failed. The run that fetched ADR and then
       # tripped over ADN is exactly the one whose ADR download must survive —

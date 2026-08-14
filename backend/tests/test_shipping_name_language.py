@@ -54,11 +54,19 @@ def test_sea_and_air_keep_english_whatever_the_screen_says(profiles):
     assert proper_shipping_name(entry(BENZINE), "de", profiles) == "GASOLINE"
 
 
-@pytest.mark.parametrize("language", ["en", "fr"])
-def test_english_and_french_readers_keep_the_english_name(language):
-    """French is one of the three ADR 5.4.1.4.1 allows on its own, and Table A
-    carries no French column to do better with."""
-    assert proper_shipping_name(entry(BENZINE), language, ["ADR"]) == "GASOLINE"
+def test_an_english_reader_keeps_the_english_name():
+    assert proper_shipping_name(entry(BENZINE), "en", ["ADR"]) == "GASOLINE"
+
+
+def test_a_french_road_document_carries_the_french_name_alone():
+    """The ADR is authentic in French too, and table A prints the column: a
+    French reader gets the name the French edition gives, which 5.4.1.4.1 lets
+    stand on its own."""
+    assert proper_shipping_name(entry(BENZINE), "fr", ["ADR"]) == "ESSENCE"
+
+
+def test_sea_and_air_take_the_french_name_off_again():
+    assert proper_shipping_name(entry(BENZINE), "fr", ["IMDG"]) == "GASOLINE"
 
 
 # --- Dutch: not one of the three ------------------------------------------

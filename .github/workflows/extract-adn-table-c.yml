@@ -26,6 +26,13 @@ on:
         description: "Dump every word of this PDF page with coordinates and stop"
         default: ""
         required: false
+      language:
+        description: "Which authentic edition to read: en (adn.pdf) or fr (adn_fr.pdf, the third reading)"
+        type: choice
+        options:
+          - en
+          - fr
+        default: en
 
 permissions:
   contents: read
@@ -48,23 +55,34 @@ jobs:
           restore-keys: |
             regulations-
 
-      - name: The ADN must be in the store
-        run: python scripts/regulations_store.py fetch adn
+      - name: The edition must be in the store
+        env:
+          LANGUAGE: ${{ inputs.language }}
+        run: |
+          set -euo pipefail
+          if [ "$LANGUAGE" = "fr" ]; then
+            python scripts/regulations_store.py fetch adn_fr
+          else
+            python scripts/regulations_store.py fetch adn
+          fi
 
       - name: Read table C
         env:
           PROBE: ${{ inputs.probe }}
           DUMP: ${{ inputs.dump }}
           PROBE_PAGE: ${{ inputs.probe_page }}
+          LANGUAGE: ${{ inputs.language }}
         run: |
           set -euo pipefail
           EXTRA=""
           if [ "$PROBE" = "true" ]; then EXTRA="--probe"; fi
           if [ "$DUMP" = "true" ]; then EXTRA="$EXTRA --dump"; fi
           if [ -n "$PROBE_PAGE" ]; then EXTRA="$EXTRA --probe-page $PROBE_PAGE"; fi
+          PDF=/tmp/cargopilot-regulations/adn.pdf
+          if [ "$LANGUAGE" = "fr" ]; then PDF=/tmp/cargopilot-regulations/adn_fr.pdf; fi
           python scripts/extract_adn_table_c.py \
-            --english /tmp/cargopilot-regulations/adn.pdf \
-            --out table_c_en.json $EXTRA
+            --english "$PDF" --language "$LANGUAGE" \
+            --out "table_c_$LANGUAGE.json" $EXTRA
 
       # Even a run with failures hands back what it read: the comparison in the
       # development container is where shortfalls are diagnosed, and it needs
@@ -73,8 +91,8 @@ jobs:
         if: ${{ always() && !inputs.probe }}
         uses: actions/upload-artifact@v4
         with:
-          name: adn-table-c-english
-          path: table_c_en.json
+          name: adn-table-c-${{ inputs.language }}
+          path: table_c_${{ inputs.language }}.json
 
       - name: Keep the volumes for the next run
         if: always()

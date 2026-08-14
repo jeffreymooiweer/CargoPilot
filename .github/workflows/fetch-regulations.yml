@@ -19,7 +19,7 @@ on:
         default: ""
         required: false
       probe_url:
-        description: "Fetch this URL and print what it answers, instead of fetching documents. The development container's proxy blocks most hosts; the runner does not, so this is how a mirror or share page gets looked at."
+        description: "Fetch these URLs (space separated) and print what they answer, instead of fetching documents. The development container's proxy blocks most hosts; the runner does not, so this is how a mirror or share page gets looked at."
         default: ""
         required: false
       drive_folder:
@@ -27,7 +27,11 @@ on:
         default: ""
         required: false
       adopt_as:
-        description: "Mappings for unrecognised incoming files, space separated: filename.pdf=document-id"
+        description: "Mappings for unrecognised incoming files, one per line: filename.pdf=document-id"
+        default: ""
+        required: false
+      find_instructions:
+        description: "Report where the four-page model of 5.4.3 sits in these stored documents (ids, space separated)"
         default: ""
         required: false
 
@@ -53,10 +57,29 @@ jobs:
           URL: ${{ inputs.probe_url }}
         run: |
           set -uo pipefail
+          # The publishers answer a bare request with 403 — measured on
+          # unece.org, which is behind Cloudflare. The reader's ladder starts
+          # with browser headers for that reason, so the probe starts there too.
+          UA="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0 Safari/537.36"
+          for URL in $URL; do
+          echo "############ $URL"
           echo "=== headers ==="
-          curl -sS -L -I "$URL" || true
-          echo "=== body, first 2000 bytes (may be binary) ==="
-          curl -sS -L "$URL" | head -c 2000 | od -c | head -40 || true
+          curl -sS -L -A "$UA" -H "Accept: text/html,application/pdf,*/*" -I "$URL" || true
+          curl -sS -L -A "$UA" -H "Accept: text/html,application/pdf,*/*" "$URL" -o /tmp/probe.bin || true
+          if file /tmp/probe.bin | grep -qi 'html\|text'; then
+            # A landing page is asked for because of what it links to. Printing
+            # two thousand bytes of it says nothing: the links are the answer.
+            echo "=== links to documents ==="
+            grep -o 'href="[^"]*"' /tmp/probe.bin \
+              | grep -iE '\.pdf|\.docx?' | sort -u | head -80 || true
+            echo "=== headings ==="
+            grep -o '<title>[^<]*</title>' /tmp/probe.bin | head -3 || true
+          else
+            echo "=== body, first 2000 bytes (binary) ==="
+            ls -l /tmp/probe.bin
+            head -c 2000 /tmp/probe.bin | od -c | head -20 || true
+          fi
+          done
 
       - name: Take in a Drive folder
         if: ${{ inputs.drive_folder != '' }}
@@ -70,17 +93,32 @@ jobs:
           gdown --folder "$FOLDER" -O /tmp/cargopilot-regulations/incoming
           echo "=== incoming ==="
           ls -la /tmp/cargopilot-regulations/incoming
-          MAPPINGS=""
-          for pair in $ADOPT_AS; do MAPPINGS="$MAPPINGS --as $pair"; done
+          # One mapping per line, not per word: the files an operator uploads
+          # are named "ADR 2025 French.pdf" as often as not, and splitting the
+          # input on spaces would cut such a name in three.
+          printf '%s\n' "$ADOPT_AS" > /tmp/adopt-as.txt
           python scripts/regulations_store.py adopt \
-            /tmp/cargopilot-regulations/incoming $MAPPINGS
+            /tmp/cargopilot-regulations/incoming --map-file /tmp/adopt-as.txt
+
+      - name: Where the instructions model sits
+        if: ${{ inputs.find_instructions != '' }}
+        env:
+          IDS: ${{ inputs.find_instructions }}
+        run: |
+          set -euo pipefail
+          pip install --quiet pymupdf
+          python scripts/regulations_store.py path $IDS > /tmp/paths.txt || true
+          cat /tmp/paths.txt
+          xargs -r python scripts/find_instructions_pages.py < /tmp/paths.txt
 
       - name: Fetch what is missing
-        if: ${{ inputs.probe_url == '' && inputs.drive_folder == '' }}
+        if: ${{ inputs.probe_url == '' && inputs.drive_folder == '' && inputs.find_instructions == '' }}
         run: python scripts/regulations_store.py fetch ${{ inputs.ids }}
 
+      # Not after a page-range measurement: that report is what the run is for,
+      # and a store listing under it only pushes it out of reach of a log tail.
       - name: Report the store
-        if: ${{ always() && inputs.probe_url == '' }}
+        if: ${{ always() && inputs.probe_url == '' && inputs.find_instructions == '' }}
         env:
           IGNORED: report runs after fetch and after adopt alike
         run: python scripts/regulations_store.py status || true

@@ -529,5 +529,14 @@
       "quantity_not_a_number": "hoeveelheid {{value}} bevat geen getal",
       "quantity_not_positive": "hoeveelheid {{value}} moet groter dan nul zijn"
     }
+  },
+  "instructions": {
+    "title": "Schriftelijke instructies (5.4.3)",
+    "intro": "Het verplichte model van vier bladzijden dat in de cabine of het stuurhuis aanwezig moet zijn. De app geeft het model zoals de editie het drukt; zelf iets naspelen mag niet.",
+    "language": "Taal",
+    "download": "Downloaden",
+    "unavailable": "Niet in de documentopslag van deze installatie ({{document}}).",
+    "howto": "Zet de ontbrekende uitgave in de documentopslag; zie docs/regulatory-database.md.",
+    "languageRule": "5.4.3.2: in een taal die elk bemanningslid kan lezen en begrijpen."
   }
 }

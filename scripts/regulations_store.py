@@ -221,6 +221,25 @@ def cmd_adopt(manifest: dict, incoming: Path, mapping: dict[str, str]) -> int:
     return 1 if failures else 0
 
 
+def cmd_path(manifest: dict, ids: list[str]) -> int:
+    """Where the named documents are, one path per line, missing ones silent.
+
+    So that a tool that reads a volume can be handed the store's own answer
+    instead of a path spelled out again in a workflow.
+    """
+    docs = {doc["id"]: doc for doc in manifest["documents"]}
+    missing = 0
+    for doc_id in ids:
+        doc = docs.get(doc_id)
+        path = locate(manifest, doc) if doc else None
+        if path is None:
+            print(f"{doc_id}: not in the store", file=sys.stderr)
+            missing += 1
+            continue
+        print(path)
+    return 1 if missing else 0
+
+
 def cmd_verify(manifest: dict) -> int:
     bad = 0
     for doc in manifest["documents"]:
@@ -249,6 +268,11 @@ def main() -> int:
     adopt_parser.add_argument("--as", dest="mapping", action="append", default=[],
                               metavar="FILENAME=ID",
                               help="store this incoming file as this document")
+    adopt_parser.add_argument("--map-file", type=Path,
+                              help="the same mappings, one per line — a file "
+                                   "because uploaded names contain spaces")
+    path_parser = sub.add_parser("path")
+    path_parser.add_argument("ids", nargs="+")
     sub.add_parser("verify")
     args = parser.parse_args()
 
@@ -260,8 +284,15 @@ def main() -> int:
     if args.command == "add":
         return cmd_add(manifest, args.id, args.file)
     if args.command == "adopt":
-        mapping = dict(pair.split("=", 1) for pair in args.mapping)
+        pairs = list(args.mapping)
+        if args.map_file and args.map_file.is_file():
+            pairs += [line.strip() for line
+                      in args.map_file.read_text(encoding="utf-8").splitlines()
+                      if line.strip()]
+        mapping = dict(pair.split("=", 1) for pair in pairs if "=" in pair)
         return cmd_adopt(manifest, args.directory, mapping)
+    if args.command == "path":
+        return cmd_path(manifest, args.ids)
     return cmd_verify(manifest)
 
 

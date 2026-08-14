@@ -250,6 +250,24 @@ export const api = {
     a.click();
     URL.revokeObjectURL(url);
   },
+  writtenInstructions: () =>
+    request<{ documents: WrittenInstruction[] }>("/documents/instructions"),
+  downloadInstructions: async (regime: string, language: string) => {
+    const res = await fetch(`${API_BASE}/documents/instructions/${regime}/${language}`, {
+      credentials: "include",
+    });
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({ detail: res.statusText }));
+      throw new Error(describeDetail(err.detail));
+    }
+    const blob = await res.blob();
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `${regime}-2025-instructions-${language}.pdf`;
+    a.click();
+    URL.revokeObjectURL(url);
+  },
   unCardsAvailability: (payload: UnCardsPayload) =>
     request<UnCardsAvailability>("/documents/un-cards/availability", {
       method: "POST",
@@ -277,6 +295,21 @@ export const api = {
     URL.revokeObjectURL(url);
   },
 };
+
+/** One model of the instructions in writing: a regime, a language, and
+ *  whether this installation's document store can produce it. */
+export interface WrittenInstruction {
+  regime: string;
+  language: string;
+  available: boolean;
+  document_id?: string;
+  edition?: string;
+  provision?: string;
+  source?: string;
+  from_document?: string;
+  reason?: string;
+  needs?: string;
+}
 
 export interface UnCardsPayload {
   dangerous_goods?: unknown[] | null;

@@ -89,7 +89,26 @@ The procedure is the same each time:
 
 ## What the register holds today
 
-Ten documents: the five free land-mode texts (ADR volumes I/II, ADR I French,
-RID, ADN), the four operator-supplied Dutch sources the first readings came
-from, and the IMDG 42-24 amendment resolution. `status` is the live answer;
-the register file is the durable one.
+Fifteen source documents: the free land-mode texts (ADR volumes I and II in
+English and French, RID, ADN in English and French), the four operator-supplied
+Dutch sources the first readings came from, the IMDG 42-24 amendment resolution
+and three ADN session documents. `status` is the live answer; the register file
+is the durable one.
+
+Beside them stand eight entries of a second kind — the **models of 5.4.3**, the
+instructions in writing, one per regime and language. They are not sources: they
+are pages the application serves back out of a source, because ADR and ADN
+5.4.3.4 require the document the crew carries to correspond in form and content
+to a four-page model the book prints. Such an entry carries `model_of` (regime,
+language) and, where an edition in the store prints that model, `cut_from` with
+the page range and the tool that measured it:
+
+    python scripts/find_instructions_pages.py /data/regulations/adn.pdf
+
+reports where the model sits, and the range goes in the register. The
+application (`app/services/regulations.py`) cuts those pages on request and
+keeps the result in `<store>/derived/`. A combination no edition here prints —
+German, for one; there is no free official German ADR or ADN — is reported as
+missing, naming the document that would produce it. It is never filled in from
+a neighbouring language: instructions in a language the crew cannot read are
+what 5.4.3.2 exists to prevent.

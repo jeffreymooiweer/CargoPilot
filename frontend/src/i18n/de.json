@@ -529,5 +529,14 @@
       "quantity_not_a_number": "Menge {{value}} enthält keine Zahl",
       "quantity_not_positive": "Menge {{value}} muss größer als null sein"
     }
+  },
+  "instructions": {
+    "title": "Schriftliche Weisungen (5.4.3)",
+    "intro": "Das vorgeschriebene vierseitige Muster, das im Führerhaus oder im Steuerhaus mitzuführen ist. Die Anwendung gibt das Muster so aus, wie die Ausgabe es druckt; ein Nachbau ist nicht zulässig.",
+    "language": "Sprache",
+    "download": "Herunterladen",
+    "unavailable": "Nicht im Dokumentenspeicher dieser Installation ({{document}}).",
+    "howto": "Legen Sie die fehlende Ausgabe im Dokumentenspeicher ab; siehe docs/regulatory-database.md.",
+    "languageRule": "5.4.3.2: in einer Sprache, die jedes Mitglied der Besatzung lesen und verstehen kann."
   }
 }

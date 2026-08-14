@@ -529,5 +529,14 @@
       "quantity_not_a_number": "la quantité {{value}} ne contient aucun nombre",
       "quantity_not_positive": "la quantité {{value}} doit être supérieure à zéro"
     }
+  },
+  "instructions": {
+    "title": "Consignes écrites (5.4.3)",
+    "intro": "Le modèle obligatoire de quatre pages qui doit se trouver dans la cabine ou la timonerie. L'application remet le modèle tel que l'édition l'imprime ; le reconstituer soi-même n'est pas permis.",
+    "language": "Langue",
+    "download": "Télécharger",
+    "unavailable": "Absent du magasin de documents de cette installation ({{document}}).",
+    "howto": "Placez l'édition manquante dans le magasin de documents ; voir docs/regulatory-database.md.",
+    "languageRule": "5.4.3.2 : dans une langue que chaque membre de l'équipage peut lire et comprendre."
   }
 }

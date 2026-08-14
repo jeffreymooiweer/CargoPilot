@@ -270,6 +270,215 @@
       "obtained": "supplied by the operator (their own UNECE download)",
       "sha256": "f3d7d3bda03cd8c639f8919159fb8d3894ed764886430a3cf3a89ece880c2879",
       "note": "Arrived with the operator's Drive folder on 2026-08-14."
+    },
+    {
+      "id": "adn_instructions_nl",
+      "title": "Instructions in writing according to the ADN, Dutch",
+      "publisher": "national edition",
+      "edition": "ADN 2025, in force 1 January 2025",
+      "language": "nl",
+      "profiles": [
+        "ADN"
+      ],
+      "role": "The four-page model of 5.4.3.4, which the regulation requires to be reproduced in form and content and carried in the cab or the wheelhouse. Served by the application from the store.",
+      "filename": "adn-2025-instructions-nl.pdf",
+      "urls": [],
+      "obtained": "cut from the edition named in cut_from, or supplied by the operator",
+      "sha256": null,
+      "model_of": {
+        "regime": "adn",
+        "language": "nl",
+        "provision": "5.4.3"
+      },
+      "note": "No edition this project can read prints this model, and nobody has supplied the file: the application reports it as missing rather than serving a neighbouring language. Supply it with scripts/regulations_store.py add, or register a page range in cut_from once an edition that prints it is in the store."
+    },
+    {
+      "id": "adn_instructions_en",
+      "title": "Instructions in writing according to the ADN, English",
+      "publisher": "UNECE",
+      "edition": "ADN 2025, in force 1 January 2025",
+      "language": "en",
+      "profiles": [
+        "ADN"
+      ],
+      "role": "The four-page model of 5.4.3.4, which the regulation requires to be reproduced in form and content and carried in the cab or the wheelhouse. Served by the application from the store.",
+      "filename": "adn-2025-instructions-en.pdf",
+      "urls": [],
+      "obtained": "cut from the edition named in cut_from, or supplied by the operator",
+      "sha256": null,
+      "model_of": {
+        "regime": "adn",
+        "language": "en",
+        "provision": "5.4.3"
+      },
+      "cut_from": {
+        "document": "adn",
+        "pages": [
+          363,
+          366
+        ],
+        "measured_with": "scripts/find_instructions_pages.py"
+      },
+      "note": "Not a file of its own: cut from adn, pages 363-366, measured with scripts/find_instructions_pages.py. The identity of what is served is the identity of that edition, whose hash is pinned above."
+    },
+    {
+      "id": "adn_instructions_de",
+      "title": "Instructions in writing according to the ADN, German",
+      "publisher": "national edition",
+      "edition": "ADN 2025, in force 1 January 2025",
+      "language": "de",
+      "profiles": [
+        "ADN"
+      ],
+      "role": "The four-page model of 5.4.3.4, which the regulation requires to be reproduced in form and content and carried in the cab or the wheelhouse. Served by the application from the store.",
+      "filename": "adn-2025-instructions-de.pdf",
+      "urls": [],
+      "obtained": "cut from the edition named in cut_from, or supplied by the operator",
+      "sha256": null,
+      "model_of": {
+        "regime": "adn",
+        "language": "de",
+        "provision": "5.4.3"
+      },
+      "note": "No edition this project can read prints this model, and nobody has supplied the file: the application reports it as missing rather than serving a neighbouring language. Supply it with scripts/regulations_store.py add, or register a page range in cut_from once an edition that prints it is in the store."
+    },
+    {
+      "id": "adn_instructions_fr",
+      "title": "Instructions in writing according to the ADN, French",
+      "publisher": "UNECE",
+      "edition": "ADN 2025, in force 1 January 2025",
+      "language": "fr",
+      "profiles": [
+        "ADN"
+      ],
+      "role": "The four-page model of 5.4.3.4, which the regulation requires to be reproduced in form and content and carried in the cab or the wheelhouse. Served by the application from the store.",
+      "filename": "adn-2025-instructions-fr.pdf",
+      "urls": [],
+      "obtained": "cut from the edition named in cut_from, or supplied by the operator",
+      "sha256": null,
+      "model_of": {
+        "regime": "adn",
+        "language": "fr",
+        "provision": "5.4.3"
+      },
+      "cut_from": {
+        "document": "adn_fr",
+        "pages": [
+          375,
+          378
+        ],
+        "measured_with": "scripts/find_instructions_pages.py"
+      },
+      "note": "Not a file of its own: cut from adn_fr, pages 375-378, measured with scripts/find_instructions_pages.py. The identity of what is served is the identity of that edition, whose hash is pinned above."
+    },
+    {
+      "id": "adr_instructions_nl",
+      "title": "Instructions in writing according to the ADR, Dutch",
+      "publisher": "national edition",
+      "edition": "ADR 2025, in force 1 January 2025",
+      "language": "nl",
+      "profiles": [
+        "ADR"
+      ],
+      "role": "The four-page model of 5.4.3.4, which the regulation requires to be reproduced in form and content and carried in the cab or the wheelhouse. Served by the application from the store.",
+      "filename": "adr-2025-instructions-nl.pdf",
+      "urls": [],
+      "obtained": "cut from the edition named in cut_from, or supplied by the operator",
+      "sha256": null,
+      "model_of": {
+        "regime": "adr",
+        "language": "nl",
+        "provision": "5.4.3"
+      },
+      "cut_from": {
+        "document": "adr_nl_complete",
+        "pages": [
+          1005,
+          1014
+        ],
+        "measured_with": "scripts/find_instructions_pages.py",
+        "note": "The Dutch edition reflows the model over ten of its pages and opens 5.4.4 at the foot of the last one; the model is complete and in order, with that section's first lines under it."
+      },
+      "note": "Not a file of its own: cut from adr_nl_complete, pages 1005-1014, measured with scripts/find_instructions_pages.py. The identity of what is served is the identity of that edition, whose hash is pinned above. The Dutch edition reflows the model over ten of its pages and opens 5.4.4 at the foot of the last one; the model is complete and in order, with that section's first lines under it."
+    },
+    {
+      "id": "adr_instructions_en",
+      "title": "Instructions in writing according to the ADR, English",
+      "publisher": "UNECE",
+      "edition": "ADR 2025, in force 1 January 2025",
+      "language": "en",
+      "profiles": [
+        "ADR"
+      ],
+      "role": "The four-page model of 5.4.3.4, which the regulation requires to be reproduced in form and content and carried in the cab or the wheelhouse. Served by the application from the store.",
+      "filename": "adr-2025-instructions-en.pdf",
+      "urls": [],
+      "obtained": "cut from the edition named in cut_from, or supplied by the operator",
+      "sha256": null,
+      "model_of": {
+        "regime": "adr",
+        "language": "en",
+        "provision": "5.4.3"
+      },
+      "note": "Not a file of its own: cut from adr2, pages 284-287, measured with scripts/find_instructions_pages.py. The identity of what is served is the identity of that edition, whose hash is pinned above.",
+      "cut_from": {
+        "document": "adr2",
+        "pages": [
+          284,
+          287
+        ],
+        "measured_with": "scripts/find_instructions_pages.py"
+      }
+    },
+    {
+      "id": "adr_instructions_de",
+      "title": "Instructions in writing according to the ADR, German",
+      "publisher": "national edition",
+      "edition": "ADR 2025, in force 1 January 2025",
+      "language": "de",
+      "profiles": [
+        "ADR"
+      ],
+      "role": "The four-page model of 5.4.3.4, which the regulation requires to be reproduced in form and content and carried in the cab or the wheelhouse. Served by the application from the store.",
+      "filename": "adr-2025-instructions-de.pdf",
+      "urls": [],
+      "obtained": "cut from the edition named in cut_from, or supplied by the operator",
+      "sha256": null,
+      "model_of": {
+        "regime": "adr",
+        "language": "de",
+        "provision": "5.4.3"
+      },
+      "note": "No edition this project can read prints this model, and nobody has supplied the file: the application reports it as missing rather than serving a neighbouring language. Supply it with scripts/regulations_store.py add, or register a page range in cut_from once an edition that prints it is in the store."
+    },
+    {
+      "id": "adr_instructions_fr",
+      "title": "Instructions in writing according to the ADR, French",
+      "publisher": "UNECE",
+      "edition": "ADR 2025, in force 1 January 2025",
+      "language": "fr",
+      "profiles": [
+        "ADR"
+      ],
+      "role": "The four-page model of 5.4.3.4, which the regulation requires to be reproduced in form and content and carried in the cab or the wheelhouse. Served by the application from the store.",
+      "filename": "adr-2025-instructions-fr.pdf",
+      "urls": [],
+      "obtained": "cut from the edition named in cut_from, or supplied by the operator",
+      "sha256": null,
+      "model_of": {
+        "regime": "adr",
+        "language": "fr",
+        "provision": "5.4.3"
+      },
+      "note": "Not a file of its own: cut from adr2_fr, pages 301-304, measured with scripts/find_instructions_pages.py. The identity of what is served is the identity of that edition, whose hash is pinned above.",
+      "cut_from": {
+        "document": "adr2_fr",
+        "pages": [
+          301,
+          304
+        ],
+        "measured_with": "scripts/find_instructions_pages.py"
+      }
     }
   ]
 }

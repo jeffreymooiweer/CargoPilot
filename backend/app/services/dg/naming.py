@@ -19,6 +19,11 @@ regulations say something different about it per mode:
 "SALZSÄURE" on a Shipper's Declaration is therefore not a translation choice but
 a refused consignment. Hence: German only when no sea or air profile is in play.
 
+**French is the ADR's own second language.** The treaty is authentic in English
+and in French, and column (2) of table A is printed in both; since v1.75.0 the
+French column is read (``seed/dg/adr_names_fr.json``) and a French reader is
+given ESSENCE rather than GASOLINE. It stands on its own, as 5.4.1.4.1 allows.
+
 **Dutch is the case where that "and additionally" bites.** Dutch is not one of
 the three, so ADR 5.4.1.4.1 permits ZOUTZUUR only *together with* the English,
 French or German name — not instead of it. So a Dutch road document does not get
@@ -45,6 +50,7 @@ from __future__ import annotations
 from typing import Any
 
 from app.core.languages import normalise
+from app.services.dg.names_fr import french_name
 from app.services.dg.names_nl import dutch_name
 
 #: Profiles for which the name has to stay English.
@@ -82,6 +88,12 @@ def english_name_is_usable(entry: dict[str, Any]) -> bool:
     return name.count("(") == name.count(")")
 
 
+def french_name_of(entry: dict[str, Any]) -> str:
+    """The French name of an entry, from the entry or from the ADR seed."""
+    given = str(entry.get("name_fr") or "").strip()
+    return given.upper() if given else french_name(str(entry.get("un") or "")).upper()
+
+
 def dutch_name_of(entry: dict[str, Any]) -> str:
     """The Dutch name of an entry, from the entry or from the ADR seed."""
     given = str(entry.get("name_nl") or "").strip()
@@ -111,16 +123,22 @@ def proper_shipping_name(
 ) -> str:
     """The proper shipping name from an ADR entry, in capitals.
 
-    German when the user reads German, Dutch-plus-English when they read Dutch,
-    and English as soon as a chosen profile forces it. French readers get the
-    English name: French is one of the three ADR 5.4.1.4.1 allows on its own, and
-    Table A carries no French column to do better with.
+    German when the user reads German, French when they read French, and
+    Dutch-plus-English when they read Dutch; English as soon as a chosen profile
+    forces it. The French name is the ADR's own — the treaty is authentic in
+    English and in French and table A prints both columns — so it stands alone,
+    as 5.4.1.4.1 allows. Where the French edition gives no name for an entry
+    the English one carries the field rather than nothing.
     """
     if not requires_english_name(profiles):
         if normalise(language) == "de":
             german = str(entry.get("name_de") or "").strip()
             if german:
                 return german.upper()
+        elif normalise(language) == "fr":
+            french = french_name_of(entry)
+            if french:
+                return french
         elif normalise(language) == "nl":
             return dutch_document_name(entry)
     return english_name(entry)

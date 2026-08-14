@@ -2,6 +2,70 @@
 
 All notable changes are documented here, following [Semantic Versioning](https://semver.org/).
 
+## [1.75.0] — 2026-08-14
+
+### Added
+
+- **The instructions in writing (5.4.3), from the document store.** ADR and ADN
+  5.4.3.4 do not describe the instructions, they print them: the document a
+  crew carries has to correspond "in form and content" to a four-page model the
+  book sets out. So this is the one regulatory document CargoPilot does not
+  compose. The export step now offers the model per regime and per language,
+  cut out of the edition in the document store — page ranges measured per
+  edition with the new `scripts/find_instructions_pages.py` and written into
+  the register, never guessed. Four are measured and registered: the ADR model
+  in Dutch (from the official Dutch edition), in English and in French (from
+  UNECE volume II), and the ADN model in English and in French. A combination
+  no edition in the store prints is reported as missing and names the document
+  that would produce it; it is never filled in from a neighbouring language,
+  because instructions in a language the crew cannot read are exactly what
+  5.4.3.2 exists to prevent. There is no free official German ADR or ADN, so
+  German waits for an operator to supply it.
+
+- **French proper shipping names.** The ADR is authentic in English *and* in
+  French and table A prints both columns; until now a French reader was handed
+  the English name. Reading the French volume now clears its agreement gate at
+  0.9983 against the UN numbers of the Dutch table A, so UN 1203 reads ESSENCE
+  where it read GASOLINE. 5.4.1.4.1 lets French stand on its own, so it does —
+  unless a sea or air profile is in play, which takes the name back to English
+  as it always did.
+
+### Changed
+
+- **Table C of the ADN is read three times, and five rows still disagree where
+  153 did.** The French edition — the treaty's other authentic language — reads
+  with the same geometry as the English one: 677 of 678 rows. Paired against
+  the English row set it decides a cell wherever two of the three readings
+  agree. What that settles: **673 of 678 rows now settle on every cell** (it
+  was 491), **five carry a disputed cell** (it was 153), and **no row rests on
+  a single reading any more** (it was 34) — the rows the Dutch export omits,
+  UN 1977 and UN 1999 among them, are corroborated by the French edition. The
+  French reading decided 180 cells and sided with the English edition in every
+  one of them, which is the Dutch export's measured damage showing up a third
+  time. The two cells it alone reads differently are recorded on their rows and
+  do not re-open a cell the first two agreed on.
+
+- The comparison learned one thing about language first: the danger cell is the
+  only code in table C written in words, so "unst." and "F or S" are "inst."
+  and "F ou S" in French — and the reading order of a rotated cell breaks the
+  word itself, which is why the mapping happens after the spaces are gone.
+
+### Fixed
+
+- **The name reader lost the first row of nearly every table page.** Traced on
+  page 300 of the French ADR: the column-number line ends at y 114.6 and UN
+  0004's number begins at y 114.6. The body's top is now the middle of the
+  marker line, which no line of print can straddle, instead of a constant
+  borrowed from another document. It took the French reading from 0.9633 to
+  0.9983 and the English from 0.9475 to 0.9821.
+
+### Known
+
+- The English 2025 reading of the names is **not** adopted at 0.9821: it still
+  loses rows and turns a page number into a UN 1000. The English names stay
+  where they were, in the 2023 export, because an edition-old official name
+  beats a fresh damaged one.
+
 ## [1.74.0] — 2026-08-14
 
 ### Added

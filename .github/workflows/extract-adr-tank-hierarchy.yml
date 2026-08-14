@@ -33,6 +33,10 @@ on:
         description: "Print the geometry of the pages found, so the reader can be corrected in the development container"
         type: boolean
         default: false
+      probe_page:
+        description: "Print one page line by line, with the x of every word"
+        default: ""
+        required: false
       dump:
         description: "Print the reading to the log (the development container cannot reach the artifact store)"
         type: boolean
@@ -77,6 +81,7 @@ jobs:
           LANGUAGE: ${{ inputs.language }}
           PROBE: ${{ inputs.probe }}
           WORDS: ${{ inputs.words }}
+          PROBE_PAGE: ${{ inputs.probe_page }}
           DUMP: ${{ inputs.dump }}
         run: |
           set -euo pipefail
@@ -88,11 +93,12 @@ jobs:
           ARGS=(--pdf "$PDF" --language "$LANGUAGE" --out "hierarchy_$LANGUAGE.json")
           if [ "$PROBE" = "true" ]; then ARGS+=(--probe); fi
           if [ "$WORDS" = "true" ]; then ARGS+=(--words); fi
+          if [ -n "$PROBE_PAGE" ]; then ARGS+=(--probe-page "$PROBE_PAGE"); fi
           if [ "$DUMP" = "true" ]; then ARGS+=(--dump); fi
           python scripts/extract_adr_tank_hierarchy.py "${ARGS[@]}"
 
       - name: Hand the reading back
-        if: ${{ always() && !inputs.probe && !inputs.words }}
+        if: ${{ always() && !inputs.probe && !inputs.words && !inputs.probe_page }}
         uses: actions/upload-artifact@v4
         with:
           name: adr-tank-hierarchy-${{ inputs.language }}
@@ -124,7 +130,7 @@ jobs:
       # cache uploads, artifact chatter and cleanup all come after it. Printed
       # here, it is the last thing in the log and the tail is the reading.
       - name: What was read
-        if: ${{ always() && !inputs.probe && !inputs.words }}
+        if: ${{ always() && !inputs.probe && !inputs.words && !inputs.probe_page }}
         env:
           LANGUAGE: ${{ inputs.language }}
           DUMP: ${{ inputs.dump }}

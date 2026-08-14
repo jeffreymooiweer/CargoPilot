@@ -450,6 +450,20 @@ def words(doc, language: str) -> int:
     return 0
 
 
+def probe_page(doc, number: int) -> int:
+    """One page, line by line, with the x of every word.
+
+    Guessing what a page looks like from what a reader made of it is how three
+    runs get spent on a layout nobody has looked at. This is the looking.
+    """
+    page = doc[number - 1]
+    print(f"--- page {number} of {doc.page_count} " + "-" * 30)
+    for y, items in _lines(page):
+        cells = " | ".join(f"{round(x)}:{word}" for x, word in items)
+        print(f"{round(y, 1)} {cells[:170]}")
+    return 0
+
+
 def probe(doc, language: str) -> int:
     gases = gas_pages(doc, language)
     rational = rationalised_pages(doc, language)
@@ -521,6 +535,8 @@ def main() -> int:
                         help="report the layout of the pages found and stop")
     parser.add_argument("--words", action="store_true",
                         help="print the geometry of the pages found and stop")
+    parser.add_argument("--probe-page", type=int, default=0,
+                        help="print one page line by line, with the x of every word")
     parser.add_argument("--dump", action="store_true",
                         help="print every row to the log as well")
     parser.add_argument("--out", type=Path, help="write the reading here")
@@ -546,6 +562,8 @@ def main() -> int:
     import pymupdf
 
     with pymupdf.open(args.pdf) as doc:
+        if args.probe_page:
+            return probe_page(doc, args.probe_page)
         if args.words:
             return words(doc, args.language)
         if args.probe:

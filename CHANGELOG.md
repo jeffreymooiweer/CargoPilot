@@ -2,6 +2,30 @@
 
 All notable changes are documented here, following [Semantic Versioning](https://semver.org/).
 
+## [1.70.2] — 2026-08-14
+
+### Fixed
+
+- **The tag for an older commit could be resolved, and then not pushed.** v1.70.1
+  let the release workflow name the commit to tag, and it got as far as the push:
+
+      ! [remote rejected] v1.67.0 -> v1.67.0 (refusing to allow a GitHub App to
+        create or update workflow `.github/workflows/tag-release.yml` without
+        `workflows` permission)
+
+  `GITHUB_TOKEN` belongs to a GitHub App, and a ref carrying a different
+  `.github/workflows/` tree than the default branch counts to the remote as
+  creating a workflow. Tagging the head of main never trips this — the trees are
+  the same — which is why every release so far went through. A tag on an older
+  commit does trip it, and the permission it asks for cannot be granted: the
+  `permissions:` block of a workflow has no `workflows` key.
+
+  The tag object API does not go through that check. The push stays the primary
+  path, because that is the one every release has proven; when it is refused, the
+  workflow now creates the annotated tag through `git/tags` and `git/refs`
+  instead. The existence check also moved from the local repository to
+  `git ls-remote`, since a checkout by commit does not fetch the tags.
+
 ## [1.70.1] — 2026-08-14
 
 ### Fixed

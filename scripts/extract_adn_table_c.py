@@ -947,9 +947,12 @@ def main() -> int:
                         help="path of the stored Dutch ADN index JSON")
     parser.add_argument("--english", type=Path,
                         help="path of a UNECE ADN PDF, read geometrically")
-    parser.add_argument("--language", default="en", choices=["en", "fr"],
-                        help="which authentic language that PDF is in; the "
-                             "name column is stored as name_<language>")
+    parser.add_argument("--language", default="en", choices=["en", "fr", "nl"],
+                        help="which language that PDF is in; the name column is "
+                             "stored as name_<language>. Not only the authentic "
+                             "languages: the printed Dutch edition is read the "
+                             "same way, and is a better reading than the export "
+                             "the Dutch rows came from until now")
     parser.add_argument("--check", type=Path,
                         help="compare against a previous reading (JSON)")
     parser.add_argument("--out", type=Path, help="write the rows to this file")

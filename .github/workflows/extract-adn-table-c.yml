@@ -27,11 +27,12 @@ on:
         default: ""
         required: false
       language:
-        description: "Which authentic edition to read: en (adn.pdf) or fr (adn_fr.pdf, the third reading)"
+        description: "Which edition to read: en (adn.pdf), fr (adn_fr.pdf) or nl (the printed Dutch book)"
         type: choice
         options:
           - en
           - fr
+          - nl
         default: en
 
 permissions:
@@ -60,11 +61,13 @@ jobs:
           LANGUAGE: ${{ inputs.language }}
         run: |
           set -euo pipefail
-          if [ "$LANGUAGE" = "fr" ]; then
-            python scripts/regulations_store.py fetch adn_fr
-          else
-            python scripts/regulations_store.py fetch adn
-          fi
+          case "$LANGUAGE" in
+            fr) python scripts/regulations_store.py fetch adn_fr ;;
+            # The Dutch edition is operator-supplied: nothing to fetch, it is
+            # either in the store or the run has nothing to read.
+            nl) python scripts/regulations_store.py path adn_nl_2025 ;;
+            *)  python scripts/regulations_store.py fetch adn ;;
+          esac
 
       - name: Read table C
         env:
@@ -80,6 +83,9 @@ jobs:
           if [ -n "$PROBE_PAGE" ]; then EXTRA="$EXTRA --probe-page $PROBE_PAGE"; fi
           PDF=/tmp/cargopilot-regulations/adn.pdf
           if [ "$LANGUAGE" = "fr" ]; then PDF=/tmp/cargopilot-regulations/adn_fr.pdf; fi
+          if [ "$LANGUAGE" = "nl" ]; then
+            PDF=$(python scripts/regulations_store.py path adn_nl_2025)
+          fi
           python scripts/extract_adn_table_c.py \
             --english "$PDF" --language "$LANGUAGE" \
             --out "table_c_$LANGUAGE.json" $EXTRA

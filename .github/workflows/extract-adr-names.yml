@@ -22,6 +22,7 @@ on:
         options:
           - en
           - fr
+          - de
           - both
         default: both
       source:
@@ -111,12 +112,24 @@ jobs:
             echo "=============================================================="
             source_id="adr1"
             if [ "$lang" = "fr" ]; then source_id="adr1_fr"; fi
+            # German is the one language UNECE does not publish. It comes from
+            # the operator-supplied national edition in the store, which is a
+            # different typesetting and is therefore read from its file rather
+            # than through the download ladder.
+            if [ "$lang" = "de" ]; then source_id="adr_de_1"; fi
             EXTRA=""
             if [ "$PROBE" = "true" ]; then EXTRA="--probe"; fi
             if [ -n "$EXPLAIN" ]; then EXTRA="$EXTRA --explain $EXPLAIN"; fi
-            python scripts/extract_adr_names_multilingual.py \
-              --source "$source_id" --language "$lang" \
-              --min-agreement "$MIN_AGREEMENT" $EXTRA || FAILED=1
+            if [ "$lang" = "de" ]; then
+              PDF=$(python scripts/regulations_store.py path "$source_id")
+              python scripts/extract_adr_names_multilingual.py \
+                --pdf "$PDF" --language "$lang" \
+                --min-agreement "$MIN_AGREEMENT" $EXTRA || FAILED=1
+            else
+              python scripts/extract_adr_names_multilingual.py \
+                --source "$source_id" --language "$lang" \
+                --min-agreement "$MIN_AGREEMENT" $EXTRA || FAILED=1
+            fi
           done
           exit $FAILED
 

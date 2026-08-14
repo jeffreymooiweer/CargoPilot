@@ -467,7 +467,7 @@ def main(argv: list[str] | None = None) -> int:
                              "headers first, the web archive after. Hand-rolling "
                              "the download here got a 403 twice and taught "
                              "nothing that file did not already know.")
-    parser.add_argument("--language", default="en", choices=["en", "fr"],
+    parser.add_argument("--language", default="en", choices=["en", "fr", "de"],
                         help="Which language this volume is in")
     parser.add_argument("--out", type=Path)
     parser.add_argument("--edition", default="ADR 2025")

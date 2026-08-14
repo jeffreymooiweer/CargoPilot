@@ -314,15 +314,21 @@ def split_bands(lines, method: str, cut: float) -> list[tuple[list[str], float]]
 BROKEN_WORD = re.compile(r"[A-ZÄÖÜ]{4,}-$")
 
 
-def glue_broken_words(lines: list[tuple[str, float]], right: float) -> list[str]:
+def glue_broken_words(lines: list[tuple[str, float]]) -> list[str]:
     """Undo the typesetter's word breaks, and only those.
 
     A hyphen at the end of a line is either part of the name — 1,2-DICHLORETHAN,
     n-PROPANOL, alpha-NAPHTHYLAMIN — or the typesetter breaking a word across
-    the column. Two things separate them, and both have to hold: a break is set
-    against the column's own right margin, because that is why it was made, and
-    it falls inside a word set in capitals, where the hyphens a name owns follow
-    a locant or a lower-case prefix.
+    the column. What separates them is where the hyphen sits *in the word*: the
+    hyphens a name owns follow a locant or a lower-case prefix, and a break
+    falls inside a run of capitals.
+
+    Position was tried first and does not hold: a break is not always set hard
+    against the column's margin — the typesetter breaks at a syllable and
+    leaves what slack that costs — so a margin test either misses breaks or
+    needs a tolerance nobody can defend. The second reading settles it instead:
+    against the 2023 export, this rule turns CYCLOTRIMETHYLENTRI-NITRAMIN back
+    into CYCLOTRIMETHYLENTRINITRAMIN, which is what that edition prints too.
 
     The German edition breaks constantly (CHLORWASSERSTOFF-SÄURE,
     DIETHYLENGLYCOLDINI-TRAT, LOCKERUNGSSPRENGGE-RÄTE); the UNECE volumes hardly
@@ -335,7 +341,7 @@ def glue_broken_words(lines: list[tuple[str, float]], right: float) -> list[str]
             out[-1] += text
         else:
             out.append(text)
-        glue = bool(BROKEN_WORD.search(out[-1])) and edge >= right - 4.0
+        glue = bool(BROKEN_WORD.search(out[-1]))
         if glue:
             out[-1] = out[-1][:-1]
     return out
@@ -420,12 +426,7 @@ def read(path: Path) -> tuple[dict[str, list[str]], list[str], dict[str, int]]:
             top = top_marker
 
             lines, _right = name_column(page, top, centres)
-            # The column's own right margin, measured on this page: the widest
-            # line the name column holds. `class_left` marks where the *next*
-            # column begins, which is several points further right and would
-            # let no break through.
-            margin = max((edge for _y, _text, edge in lines), default=0.0)
-            bands = [glue_broken_words(band, margin)
+            bands = [glue_broken_words(band)
                      for band, _starts in split_bands(lines, method, cut)]
 
             for band in bands:

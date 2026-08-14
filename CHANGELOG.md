@@ -2,6 +2,40 @@
 
 All notable changes are documented here, following [Semantic Versioning](https://semver.org/).
 
+## [1.72.0] — 2026-08-14
+
+### Added
+
+- **The regulatory database has a durable foundation.** Every dangerous-goods
+  fact in this repository was read out of a book, and the books were the fragile
+  half: UNECE refuses non-browser requests, the web archive rate-limits by mood,
+  and the Dutch editions lived as uploads in a container that forgets. Session
+  after session, the work started with getting at the sources again.
+
+  Three pieces close that:
+
+  - **A document store outside the repository** — `/data/regulations`, a volume
+    that outlives the container (override with `CARGOPILOT_REGULATIONS_DIR`; the
+    CI cache path is read as a twin). The books stay out of git, as
+    `docs/data-sources.md` has always promised.
+  - **A register in the repository** — `backend/seed/dg/sources.json`, one entry
+    per document with publisher, edition, URLs and the sha256 of the exact file
+    the facts were read from. Ten documents: the five free land-mode texts, the
+    four operator-supplied Dutch sources behind the first readings, and the IMDG
+    42-24 amendment. The four Dutch files are stored and their hashes pinned;
+    they cannot be re-downloaded, so the pin is the proof of provenance.
+  - **One tool connecting the two** — `scripts/regulations_store.py` with
+    `status`, `fetch`, `add` and `verify`. A pinned hash is never silently
+    rewritten: a file that contradicts it is refused, because a new printing and
+    a damaged download need different answers. A new *Fetch regulations into the
+    store* workflow does the downloading where the network allows it and prints
+    the hash to pin.
+
+  `read_land_regulations.py` now reads from the store first, and the procedure
+  for a new edition — register, fetch, re-extract with two readings, diff the
+  seeds, update the validity dates — is written down in
+  `docs/regulatory-database.md` instead of living in one session's memory.
+
 ## [1.71.1] — 2026-08-14
 
 ### Fixed

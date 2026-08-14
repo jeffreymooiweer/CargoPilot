@@ -1,0 +1,168 @@
+{
+  "_comment": "The register of source documents behind every regulatory fact in this repository. The documents themselves live in a store OUTSIDE the repository — /data/regulations on an installation, override with CARGOPILOT_REGULATIONS_DIR — because regulatory texts are not ours to redistribute and docs/data-sources.md promises they never enter the repository. What is recorded here is metadata: where a document comes from, which edition it is, and the sha256 of the exact file the facts were read from, so a future reading can prove it read the same book. Managed with scripts/regulations_store.py; architecture and update procedure in docs/regulatory-database.md.",
+  "store": {
+    "default_path": "/data/regulations",
+    "environment_variable": "CARGOPILOT_REGULATIONS_DIR",
+    "fallback_path": "/tmp/cargopilot-regulations",
+    "note": "The fallback is the cache path the CI workflows already persist with actions/cache. A document is looked up by its filename below, identical in every location."
+  },
+  "documents": [
+    {
+      "id": "adr1",
+      "title": "ADR 2025 Volume I (ECE/TRANS/352 Vol. I)",
+      "publisher": "UNECE",
+      "edition": "ADR 2025, in force 1 January 2025",
+      "language": "en",
+      "profiles": ["ADR", "RID", "ADN"],
+      "role": "Second reading of the land-mode provisions: exemptions, LQ/EQ, tunnels, placarding, security, documentation. Quoted to run logs by scripts/read_land_regulations.py; never committed.",
+      "filename": "adr1.pdf",
+      "urls": [
+        "https://unece.org/sites/default/files/2025-01/2412006_E_ECE_TRANS_352_Vol.I_WEB_0.pdf",
+        "https://unece.org/sites/default/files/2025-01/2412006_E_ECE_TRANS_352_Vol.I_WEB.pdf"
+      ],
+      "obtained": "download",
+      "sha256": null,
+      "note": "Free of charge from the publisher. The server refuses non-browser requests; the store tool knows the way round (browser headers, then the web archive)."
+    },
+    {
+      "id": "adr1_fr",
+      "title": "ADR 2025 Volume I, French (ECE/TRANS/352 Vol. I)",
+      "publisher": "UNECE",
+      "edition": "ADR 2025, in force 1 January 2025",
+      "language": "fr",
+      "profiles": ["ADR"],
+      "role": "French proper shipping names of column (2). ADR is authentic in English and French alike, so this is a source text and not a translation of one.",
+      "filename": "adr1_fr.pdf",
+      "urls": [
+        "https://unece.org/sites/default/files/2025-01/2412007_F_ECE_TRANS_352_Vol.I_WEB.pdf",
+        "https://unece.org/sites/default/files/2025-01/2412007_F_ECE_TRANS_352_Vol.I_WEB_0.pdf"
+      ],
+      "obtained": "download",
+      "sha256": null,
+      "note": "Free of charge from the publisher."
+    },
+    {
+      "id": "adr2",
+      "title": "ADR 2025 Volume II (ECE/TRANS/352 Vol. II)",
+      "publisher": "UNECE",
+      "edition": "ADR 2025, in force 1 January 2025",
+      "language": "en",
+      "profiles": ["ADR"],
+      "role": "Second reading of table A against the Dutch reading, and the English half of the class 1 compatibility check of 7.1.4.3.4 borrowed by the ADN work.",
+      "filename": "adr2.pdf",
+      "urls": [
+        "https://unece.org/sites/default/files/2025-01/2412010_E_ECE_TRANS_352_Vol.II_WEB.pdf",
+        "https://unece.org/sites/default/files/2025-01/2412010_E_ECE_TRANS_352_Vol.II_WEB_0.pdf"
+      ],
+      "obtained": "download",
+      "sha256": null,
+      "note": "Free of charge from the publisher."
+    },
+    {
+      "id": "rid",
+      "title": "RID 2025 (Appendix C to COTIF, Annex)",
+      "publisher": "OTIF",
+      "edition": "RID 2025, in force 1 January 2025",
+      "language": "en",
+      "profiles": ["RID"],
+      "role": "The rail provisions where they differ from road: 7.5.3 protective distance, the RID points basis.",
+      "filename": "rid.pdf",
+      "urls": [
+        "https://otif.org/fileadmin/docs/LegalTexts/COTIF/DangerousGoodsRID/RID/RID_2025_e_1_January_2025.pdf",
+        "https://www.cit-rail.org/media/files/cim-unterlagen/rid_2025_e_1_january_2025.pdf?cid=395946"
+      ],
+      "obtained": "download",
+      "sha256": null,
+      "note": "Free of charge from the publisher."
+    },
+    {
+      "id": "adn",
+      "title": "ADN 2025",
+      "publisher": "UNECE",
+      "edition": "ADN 2025, in force 1 January 2025",
+      "language": "en",
+      "profiles": ["ADN"],
+      "role": "Second reading of the inland-waterway provisions and of the Dutch ADN readings: 1.1.3.6, 7.1.4.3, 7.1.5.0, column (8), and — still owed — table C.",
+      "filename": "adn.pdf",
+      "urls": [
+        "https://unece.org/sites/default/files/2025-01/ADN%202025%20English.pdf",
+        "https://unece.org/sites/default/files/2025-01/ADN_2025_English.pdf"
+      ],
+      "obtained": "download",
+      "sha256": null,
+      "note": "Free of charge from the publisher, but unreachable on 2026-08-14 (403 direct, 503/404 via the web archive). Retry; the archive's mood changes by the day."
+    },
+    {
+      "id": "adr_nl_complete",
+      "title": "ADR 2025, official Dutch edition, complete text",
+      "publisher": "Rijksoverheid (Dutch official edition of UNECE ADR 2025)",
+      "edition": "ADR 2025, in force 1 January 2025",
+      "language": "nl",
+      "profiles": ["ADR"],
+      "role": "First reading of the provisions implemented since v1.56.0: 5.3 placarding, 1.10.3 security, 3.2.1 column explanations, 1.1.3.6, 8.6.3. 2,102 printed pages.",
+      "filename": "ADR-2025-NL-Compleet.pdf",
+      "urls": [],
+      "obtained": "supplied by the operator",
+      "sha256": "4d2a134ea1a3575cd162d57f699b53572be9b4fc271c52b3b81345941e4ba550",
+      "note": "Supplied as a file; no stable public URL is recorded. If the store copy is lost, the operator's original is the way back."
+    },
+    {
+      "id": "adr_nl_table_a",
+      "title": "ADR 2025, official Dutch edition, table A extract",
+      "publisher": "Rijksoverheid (Dutch official edition of UNECE ADR 2025)",
+      "edition": "ADR 2025, in force 1 January 2025",
+      "language": "nl",
+      "profiles": ["ADR"],
+      "role": "First reading of adr_table_a.json via scripts/extract_adr_table_a.py.",
+      "filename": "ADR-2025-NL-Tabel-A.pdf",
+      "urls": [],
+      "obtained": "supplied by the operator",
+      "sha256": "7b3047c6c591755adc1b4ade605fded8dd7c64c5f56099e30d70ad0d4620711e",
+      "note": "Supplied as a file."
+    },
+    {
+      "id": "adr_nl_index",
+      "title": "ADR 2025, official Dutch edition, alphabetical index",
+      "publisher": "Rijksoverheid (Dutch official edition of UNECE ADR 2025)",
+      "edition": "ADR 2025, in force 1 January 2025",
+      "language": "nl",
+      "profiles": ["ADR"],
+      "role": "The independent cross-check of the table A reading: every name looked up backwards.",
+      "filename": "ADR-2025-NL-Alfabetische-Index.pdf",
+      "urls": [],
+      "obtained": "supplied by the operator",
+      "sha256": "bbfc57926bc4372ec737f112867fdbebe6a6d95c00693046f335a3a6f7b5b410",
+      "note": "Supplied as a file."
+    },
+    {
+      "id": "adn_nl_index",
+      "title": "ADN 2025, official Dutch edition, HTML export indexed by section",
+      "publisher": "Ministerie van Defensie (visitorsweb.mindef.nl publication of ADN 2025)",
+      "edition": "ADN 2025, in force 1 January 2025",
+      "language": "nl",
+      "profiles": ["ADN"],
+      "role": "First reading of adn_table_a.json and of the ADN provisions implemented since v1.59.0: 1.1.3.6, 7.1.4.3, 7.1.5.0, 3.2.1 column (8). 2,626 sections; holds the table C pages (706 rows) still awaiting their second reading.",
+      "filename": "ADN-2025-NL-mindef-index.json",
+      "urls": [],
+      "obtained": "built from the mindef.nl HTML pages, one JSON object per section number",
+      "sha256": "38c8d7edb99eba2b67c7cc45f01f4c289851a93dc881ec3ae745ac5c33fb110d",
+      "note": "The source host answers only from some networks. The known damage in this edition is recorded where it was found: the 7.1.4.3.4 compatibility matrix (row N carries thirteen cells) and the 7.1.5.0.2 comparison operators."
+    },
+    {
+      "id": "imdg_42_24",
+      "title": "IMDG Code Amendment 42-24 (IMO resolution MSC.556(108))",
+      "publisher": "IMO, adopted 23 May 2024, in force 1 January 2026",
+      "edition": "Amendment 42-24",
+      "language": "en",
+      "profiles": ["IMDG"],
+      "role": "First reading of imdg_dgl.json, imdg_codes.json and imdg_42_24.json via scripts/extract_imdg_dgl.py and extract_imdg_codes.py.",
+      "filename": "imdg_42_24.pdf",
+      "urls": [
+        "https://www.cepa.be/wp-content/uploads/IMDG_Code-amdt_42_24.pdf"
+      ],
+      "obtained": "download",
+      "sha256": null,
+      "note": "The IMDG Code itself is paywalled; this amendment resolution is publicly hosted. The consolidated code remains unavailable, which is why the sea seeds name the amendment as their source."
+    }
+  ]
+}

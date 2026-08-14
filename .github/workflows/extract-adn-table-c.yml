@@ -1,0 +1,69 @@
+name: Extract ADN table C
+
+# Reads table C — the tank vessel substances — out of the English ADN 2025 and
+# hands the rows back as a run artifact. The Dutch reading comes from the
+# operator-supplied index in the document store and happens in the development
+# container; this workflow is the English half, because the PDF lives in the
+# Actions cache where the fetch workflow put it and the development container
+# cannot reach the publisher.
+#
+# Nothing is committed here. The two readings are compared in the development
+# container, and only a comparison with every disagreement accounted for
+# becomes backend/seed/dg/adn_table_c.json — the rule for regulatory tables.
+
+on:
+  workflow_dispatch:
+    inputs:
+      probe:
+        description: "Report the layout of the table C pages and stop"
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+jobs:
+  extract:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install --quiet pymupdf
+
+      - name: Volumes already fetched
+        uses: actions/cache/restore@v4
+        with:
+          path: /tmp/cargopilot-regulations
+          key: regulations-${{ github.run_id }}
+          restore-keys: |
+            regulations-
+
+      - name: The ADN must be in the store
+        run: python scripts/regulations_store.py fetch adn
+
+      - name: Read table C
+        env:
+          PROBE: ${{ inputs.probe }}
+        run: |
+          set -euo pipefail
+          EXTRA=""
+          if [ "$PROBE" = "true" ]; then EXTRA="--probe"; fi
+          python scripts/extract_adn_table_c.py \
+            --english /tmp/cargopilot-regulations/adn.pdf \
+            --out table_c_en.json $EXTRA
+
+      - name: Hand the rows back
+        if: ${{ !inputs.probe }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: adn-table-c-english
+          path: table_c_en.json
+
+      - name: Keep the volumes for the next run
+        if: always()
+        uses: actions/cache/save@v4
+        with:
+          path: /tmp/cargopilot-regulations
+          key: regulations-${{ github.run_id }}

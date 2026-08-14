@@ -126,6 +126,9 @@ jobs:
       - name: What was read
         if: ${{ always() && !inputs.probe && !inputs.words }}
         run: |
-          echo "=== the reading ==="
-          cat "hierarchy_${{ inputs.language }}.json" 2>/dev/null \
+          # On one line: the tail is counted in lines, and a reading spread
+          # over eighteen hundred of them is as unreachable as one buried in
+          # the middle of the run.
+          python -c "import json,sys;print(json.dumps(json.load(open(sys.argv[1])),ensure_ascii=False))" \
+            "hierarchy_${{ inputs.language }}.json" 2>/dev/null \
             || echo "nothing was written"

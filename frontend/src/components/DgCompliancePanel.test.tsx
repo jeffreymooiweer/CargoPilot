@@ -479,11 +479,58 @@ describe("de binnenvaartuitkomsten", () => {
     expect(screen.getByText(/Bepalend is UN 1005/)).toBeInTheDocument();
   });
 
+  it("toont de toegelaten wijze van vervoer van kolom (8)", async () => {
+    vi.spyOn(api, "dgCompliance").mockResolvedValue(
+      withAdn({
+        adn_carriage_admission: {
+          status: "not_permitted",
+          items: [
+            {
+              position: "UN 1202",
+              mode: "bulk",
+              permitted: false,
+              provision: "7.1.1.11",
+              message: "Voor UN 1202 staat geen code “B”.",
+            },
+          ],
+          source: "ADN 2025 3.2.1",
+        },
+      }),
+    );
+    render(<DgCompliancePanel entries={entries("100")} profiles={["ADN"]} />);
+    await waitFor(() =>
+      expect(screen.getByText(/geen code “B”/)).toBeInTheDocument(),
+    );
+    expect(screen.getByText("compliance.adnAdmission.not_permitted")).toBeInTheDocument();
+  });
+
+  it("laat de kegelkaart staan als het hoofdstuk niet geldt", async () => {
+    // A card that disappears is a card that never said anything was wrong. The
+    // cone count is withheld for a cargo tank load, and withholding is exactly
+    // the thing that has to be visible.
+    vi.spyOn(api, "dgCompliance").mockResolvedValue(
+      withAdn({
+        adn_signals: {
+          status: "not_available_for_mode",
+          mode_note: "Hoofdstuk 7.1 gaat over drogeladingschepen.",
+        },
+      }),
+    );
+    render(<DgCompliancePanel entries={entries("100")} profiles={["ADN"]} />);
+    await waitFor(() =>
+      expect(screen.getByText(/drogeladingschepen/)).toBeInTheDocument(),
+    );
+    expect(
+      screen.getByText("compliance.status.not_available_for_mode"),
+    ).toBeInTheDocument();
+  });
+
   it("toont geen binnenvaartkaarten als het ADN niet gekozen is", async () => {
     vi.spyOn(api, "dgCompliance").mockResolvedValue(result(300));
     render(<DgCompliancePanel entries={entries("100")} profiles={["ADR"]} />);
     await waitFor(() => expect(api.dgCompliance).toHaveBeenCalled());
     expect(screen.queryByText("compliance.adnSeparationTitle")).not.toBeInTheDocument();
     expect(screen.queryByText("compliance.adnSignalsTitle")).not.toBeInTheDocument();
+    expect(screen.queryByText("compliance.adnAdmissionTitle")).not.toBeInTheDocument();
   });
 });

@@ -449,7 +449,12 @@
       "ok": "permitted",
       "not_permitted": "not permitted"
     },
-    "tankProvisions": "Special provisions: {{codes}}"
+    "tankProvisions": "Special provisions: {{codes}}",
+    "adnAdmissionTitle": "Carriage permitted (ADN 3.2.1, column (8))",
+    "adnAdmission": {
+      "ok": "permitted",
+      "not_permitted": "not permitted"
+    }
   },
   "dgauto": {
     "title": "Derived automatically",

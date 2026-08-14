@@ -449,7 +449,12 @@
       "ok": "toegelaten",
       "not_permitted": "niet toegelaten"
     },
-    "tankProvisions": "Bijzondere bepalingen: {{codes}}"
+    "tankProvisions": "Bijzondere bepalingen: {{codes}}",
+    "adnAdmissionTitle": "Toegelaten wijze van vervoer (ADN 3.2.1, kolom (8))",
+    "adnAdmission": {
+      "ok": "toegelaten",
+      "not_permitted": "niet toegelaten"
+    }
   },
   "dgauto": {
     "title": "Automatisch afgeleid",

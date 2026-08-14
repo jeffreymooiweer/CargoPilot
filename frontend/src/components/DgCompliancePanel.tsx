@@ -91,6 +91,7 @@ export default function DgCompliancePanel({ entries, profiles }: Props) {
 
   const adr = result?.adr_points;
   const tankAdmission = result?.adr_tank_admission;
+  const adnAdmission = result?.adn_carriage_admission;
   const adn = result?.adn_exemption;
   const separation = result?.adn_hold_separation;
   const signals = result?.adn_signals;
@@ -286,6 +287,53 @@ export default function DgCompliancePanel({ entries, profiles }: Props) {
         </CollapsibleSection>
       )}
 
+      {/* ADN 3.2.1, column (8) — the water's counterpart of the tank admission
+          card above, and it comes first for the same reason: everything below it
+          is chapter 7.1, which is the chapter for dry cargo vessels. A cargo tank
+          load is not on one, and where column (8) does permit a tank vessel the
+          honest end of the answer is that table C is not in this application. */}
+      {adnAdmission && adnAdmission.status !== "not_checked" && (
+        <CollapsibleSection
+          title={t("compliance.adnAdmissionTitle")}
+          defaultOpen={adnAdmission.status === "not_permitted"}
+          chips={
+            <SummaryChip
+              className={
+                adnAdmission.status === "not_permitted"
+                  ? "bg-red-100 text-red-800 dark:bg-red-900/40 dark:text-red-300"
+                  : "bg-emerald-100 text-emerald-800 dark:bg-emerald-900/40 dark:text-emerald-300"
+              }
+            >
+              {t(`compliance.adnAdmission.${adnAdmission.status}`)}
+            </SummaryChip>
+          }
+        >
+          <ul className="space-y-2">
+            {adnAdmission.items.map((item, i) => (
+              <li key={i} className="text-xs">
+                <p
+                  className={
+                    item.permitted
+                      ? "text-slate-700 dark:text-slate-300"
+                      : "text-red-600 dark:text-red-400"
+                  }
+                >
+                  {item.message}
+                </p>
+              </li>
+            ))}
+          </ul>
+          {adnAdmission.not_assessed && (
+            <p className="text-xs text-amber-600 dark:text-amber-300">
+              {adnAdmission.not_assessed}
+            </p>
+          )}
+          {adnAdmission.source && (
+            <p className="text-[11px] text-slate-500 dark:text-slate-400">{adnAdmission.source}</p>
+          )}
+        </CollapsibleSection>
+      )}
+
       {/* The ADN has no points calculation. Its exemption of 1.1.3.6.1 is about
           gross mass with its own limit per class, and that outcome can be the
           opposite of the ADR points above. Hence a card of its own rather than a
@@ -308,6 +356,9 @@ export default function DgCompliancePanel({ entries, profiles }: Props) {
             </>
           }
         >
+          {adn.mode_note && (
+            <p className="text-xs text-sky-700 dark:text-sky-300">{adn.mode_note}</p>
+          )}
           <div className="overflow-x-auto">
             <table className="w-full min-w-[420px] text-left text-xs">
               <thead>
@@ -376,14 +427,18 @@ export default function DgCompliancePanel({ entries, profiles }: Props) {
             <>
               <SummaryChip
                 className={
-                  separation.findings.length > 0
-                    ? "bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-300"
-                    : "bg-emerald-100 text-emerald-800 dark:bg-emerald-900/40 dark:text-emerald-300"
+                  separation.status === "not_available_for_mode"
+                    ? STATUS_STYLES.not_available_for_mode
+                    : separation.findings.length > 0
+                      ? "bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-300"
+                      : "bg-emerald-100 text-emerald-800 dark:bg-emerald-900/40 dark:text-emerald-300"
                 }
               >
-                {separation.findings.length > 0
-                  ? t("compliance.adnSeparationFindings", { count: separation.findings.length })
-                  : t("compliance.adnSeparationNone")}
+                {separation.status === "not_available_for_mode"
+                  ? t("compliance.status.not_available_for_mode")
+                  : separation.findings.length > 0
+                    ? t("compliance.adnSeparationFindings", { count: separation.findings.length })
+                    : t("compliance.adnSeparationNone")}
               </SummaryChip>
               {separation.cones_not_settled && separation.cones_not_settled.length > 0 && (
                 <SummaryChip className="bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300">
@@ -395,7 +450,9 @@ export default function DgCompliancePanel({ entries, profiles }: Props) {
             </>
           }
         >
-          {separation.findings.length === 0 ? (
+          {separation.mode_note ? (
+            <p className="text-xs text-sky-700 dark:text-sky-300">{separation.mode_note}</p>
+          ) : separation.findings.length === 0 ? (
             <p className="text-xs text-slate-600 dark:text-slate-300">
               {t("compliance.adnSeparationNoneHint")}
             </p>
@@ -435,25 +492,34 @@ export default function DgCompliancePanel({ entries, profiles }: Props) {
           appeared when cones were needed would teach the user that an absent
           card means safe. Under 7.1.5.0.4 the heaviest signal on board wins, so
           one package can set the signals for everything else. */}
-      {signals && signals.status !== "not_checked" && signals.cones != null && (
+      {signals && signals.status !== "not_checked" && (signals.cones != null || signals.mode_note) && (
         <CollapsibleSection
           title={t("compliance.adnSignalsTitle")}
-          defaultOpen={signals.cones > 0}
+          defaultOpen={(signals.cones ?? 0) > 0}
           chips={
             <>
               <SummaryChip
                 className={
-                  signals.cones > 0
-                    ? "bg-blue-100 text-blue-800 dark:bg-blue-900/40 dark:text-blue-300"
-                    : "bg-emerald-100 text-emerald-800 dark:bg-emerald-900/40 dark:text-emerald-300"
+                  signals.mode_note
+                    ? STATUS_STYLES.not_available_for_mode
+                    : (signals.cones ?? 0) > 0
+                      ? "bg-blue-100 text-blue-800 dark:bg-blue-900/40 dark:text-blue-300"
+                      : "bg-emerald-100 text-emerald-800 dark:bg-emerald-900/40 dark:text-emerald-300"
                 }
               >
-                {signals.cones}
+                {signals.mode_note
+                  ? t("compliance.status.not_available_for_mode")
+                  : signals.cones}
               </SummaryChip>
-              <span className="text-xs text-slate-600 dark:text-slate-300">{signals.message}</span>
+              {signals.message && (
+                <span className="text-xs text-slate-600 dark:text-slate-300">{signals.message}</span>
+              )}
             </>
           }
         >
+          {signals.mode_note && (
+            <p className="text-xs text-sky-700 dark:text-sky-300">{signals.mode_note}</p>
+          )}
           {signals.set_by && signals.set_by.length > 0 && (
             <p className="text-xs text-slate-700 dark:text-slate-300">
               {t("compliance.adnSignalsSetBy", { products: signals.set_by.join(", ") })}

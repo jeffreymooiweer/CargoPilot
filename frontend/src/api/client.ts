@@ -774,7 +774,15 @@ export interface AdnExemptionResult {
   rows: AdnExemptionRow[];
   total_gross_mass_kg: number;
   threshold: number;
-  status: "exempt_possible" | "above_threshold" | "not_exempt" | "incomplete";
+  status:
+    | "exempt_possible"
+    | "above_threshold"
+    | "not_exempt"
+    | "incomplete"
+    /** 1.1.3.6.1 is for carriage in packages; a tank or bulk load is not. */
+    | "not_available_for_mode";
+  /** Present with `not_available_for_mode`: which positions, and why. */
+  mode_note?: string;
   over_class_limit: { class: string; selector: string; limit: number; carried: number }[];
   incomplete_products: string[];
   basis: string;
@@ -790,7 +798,7 @@ export interface AdnExemptionResult {
  *  cone count for a substance could not be settled the substance is named in
  *  `cones_not_settled` rather than guessed at. */
 export interface AdnHoldSeparationResult {
-  status: "ok" | "not_checked";
+  status: "ok" | "not_checked" | "not_available_for_mode";
   scope?: "packages_in_holds";
   findings: {
     provision: string;
@@ -801,6 +809,8 @@ export interface AdnHoldSeparationResult {
   }[];
   not_assessed?: string;
   cones_not_settled?: string[];
+  /** Chapter 7.1 is for dry cargo vessels; a cargo tank load is not on one. */
+  mode_note?: string;
   source?: string;
 }
 
@@ -810,7 +820,7 @@ export interface AdnHoldSeparationResult {
  *  Under 7.1.5.0.4 the heaviest signal on board wins, so one package can set the
  *  signals for everything else — `set_by` names which. */
 export interface AdnSignalsResult {
-  status: "ok" | "not_checked";
+  status: "ok" | "not_checked" | "not_available_for_mode";
   provision?: string;
   cones?: number;
   message?: string;
@@ -819,6 +829,27 @@ export interface AdnSignalsResult {
   containers_note?: string;
   not_assessed?: string | null;
   cones_not_settled?: string[];
+  /** Chapter 7.1 is for dry cargo vessels; a cargo tank load is not on one. */
+  mode_note?: string;
+  source?: string;
+}
+
+/** ADN 3.2.1, column (8) — may these goods travel this way on the water?
+ *
+ *  Empty means packages only, `B` adds bulk (7.1.1.11) and `T` adds tank vessels
+ *  (7.2.1.21), where table C takes over — and this repository does not carry
+ *  table C, which is what `not_assessed` says. A tank container is not judged by
+ *  column (8) at all: 7.1.1.18 puts it under the requirements for packages. */
+export interface AdnCarriageAdmissionResult {
+  status: "ok" | "not_permitted" | "not_checked";
+  items: {
+    position: string;
+    mode: "tank" | "portable_tank" | "bulk";
+    permitted: boolean;
+    provision?: string;
+    message: string;
+  }[];
+  not_assessed?: string;
   source?: string;
 }
 
@@ -967,6 +998,7 @@ export interface DgComplianceResult {
   adr_points?: AdrPointsResult;
   /** With the ADN profile only: its own exemption of 1.1.3.6.1. */
   adr_tank_admission?: AdrTankAdmissionResult;
+  adn_carriage_admission?: AdnCarriageAdmissionResult;
   adn_exemption?: AdnExemptionResult;
   adn_hold_separation?: AdnHoldSeparationResult;
   adn_signals?: AdnSignalsResult;

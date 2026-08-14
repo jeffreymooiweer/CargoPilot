@@ -449,7 +449,12 @@
       "ok": "autorisé",
       "not_permitted": "non autorisé"
     },
-    "tankProvisions": "Dispositions spéciales : {{codes}}"
+    "tankProvisions": "Dispositions spéciales : {{codes}}",
+    "adnAdmissionTitle": "Transport autorisé (ADN 3.2.1, colonne (8))",
+    "adnAdmission": {
+      "ok": "autorisé",
+      "not_permitted": "non autorisé"
+    }
   },
   "dgauto": {
     "title": "Déduit automatiquement",

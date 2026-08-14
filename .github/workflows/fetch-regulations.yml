@@ -19,7 +19,7 @@ on:
         default: ""
         required: false
       probe_url:
-        description: "Fetch this URL and print what it answers, instead of fetching documents. The development container's proxy blocks most hosts; the runner does not, so this is how a mirror or share page gets looked at."
+        description: "Fetch these URLs (space separated) and print what they answer, instead of fetching documents. The development container's proxy blocks most hosts; the runner does not, so this is how a mirror or share page gets looked at."
         default: ""
         required: false
       drive_folder:
@@ -53,9 +53,15 @@ jobs:
           URL: ${{ inputs.probe_url }}
         run: |
           set -uo pipefail
+          # The publishers answer a bare request with 403 — measured on
+          # unece.org, which is behind Cloudflare. The reader's ladder starts
+          # with browser headers for that reason, so the probe starts there too.
+          UA="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0 Safari/537.36"
+          for URL in $URL; do
+          echo "############ $URL"
           echo "=== headers ==="
-          curl -sS -L -I "$URL" || true
-          curl -sS -L "$URL" -o /tmp/probe.bin || true
+          curl -sS -L -A "$UA" -H "Accept: text/html,application/pdf,*/*" -I "$URL" || true
+          curl -sS -L -A "$UA" -H "Accept: text/html,application/pdf,*/*" "$URL" -o /tmp/probe.bin || true
           if file /tmp/probe.bin | grep -qi 'html\|text'; then
             # A landing page is asked for because of what it links to. Printing
             # two thousand bytes of it says nothing: the links are the answer.
@@ -66,8 +72,10 @@ jobs:
             grep -o '<title>[^<]*</title>' /tmp/probe.bin | head -3 || true
           else
             echo "=== body, first 2000 bytes (binary) ==="
-            head -c 2000 /tmp/probe.bin | od -c | head -40 || true
+            ls -l /tmp/probe.bin
+            head -c 2000 /tmp/probe.bin | od -c | head -20 || true
           fi
+          done
 
       - name: Take in a Drive folder
         if: ${{ inputs.drive_folder != '' }}

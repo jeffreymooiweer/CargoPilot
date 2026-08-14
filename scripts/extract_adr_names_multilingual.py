@@ -88,11 +88,13 @@ NEEDED = ("1", "2", "3a")
 BY_GAP, BY_UN_NUMBER = "gap", "un_number"
 
 #: What a proper shipping name may open with. Table A names begin with a
-#: capital, a digit-led chemical (1,2-DICHLORETHAN), a bracket or a lower-case
-#: chemical prefix (n-, o-, p-, sec-, tert-, cis-, alpha-). Running text that
+#: capital, a bracket, or a locant or prefix followed by a hyphen — 1H-TETRAZOL,
+#: 2,2'-DICHLORDIETHYLETHER, alpha-NAPHTHYLAMIN, n-PROPANOL. Running text that
 #: happens to start with four digits does not, and that is the difference
-#: between a row and a sentence about millilitres per cubic metre.
-NAME_START = re.compile(r"[A-ZÄÖÜÉÈ(\"“]|\d[\d,.]*-|[a-z]{1,4}-[A-Z0-9]")
+#: between a row and a sentence about millilitres per cubic metre. Ten entries
+#: were lost to a stricter version of this: the prefix is not always short and
+#: not always letters.
+NAME_START = re.compile(r"[A-ZÄÖÜÉÈ(\"“]|[\w,.'’]+-[A-Z0-9(]")
 
 
 def learn_banding(document, sample: list[int]) -> tuple[str, float]:
@@ -305,14 +307,22 @@ def split_bands(lines, method: str, cut: float) -> list[tuple[list[str], float]]
     return bands
 
 
+#: A word break the typesetter made, as opposed to a hyphen the name owns.
+#: The name is set in capitals, so a break falls inside a run of them; the
+#: hyphens that belong to a name follow a locant or a lower-case prefix
+#: (2,2'-, alpha-, n-, tert-) and never a long capitalised fragment.
+BROKEN_WORD = re.compile(r"[A-ZÄÖÜ]{4,}-$")
+
+
 def glue_broken_words(lines: list[tuple[str, float]], right: float) -> list[str]:
     """Undo the typesetter's word breaks, and only those.
 
     A hyphen at the end of a line is either part of the name — 1,2-DICHLORETHAN,
-    n-PROPANOL, tert-BUTYLBENZEN — or the typesetter breaking a word across the
-    column. The letters cannot tell them apart; the position can. A break is set
-    against the column's right edge because that is why it was made, and a
-    hyphen that belongs to the name falls wherever the word falls.
+    n-PROPANOL, alpha-NAPHTHYLAMIN — or the typesetter breaking a word across
+    the column. Two things separate them, and both have to hold: a break is set
+    against the column's own right margin, because that is why it was made, and
+    it falls inside a word set in capitals, where the hyphens a name owns follow
+    a locant or a lower-case prefix.
 
     The German edition breaks constantly (CHLORWASSERSTOFF-SÄURE,
     DIETHYLENGLYCOLDINI-TRAT, LOCKERUNGSSPRENGGE-RÄTE); the UNECE volumes hardly
@@ -325,7 +335,7 @@ def glue_broken_words(lines: list[tuple[str, float]], right: float) -> list[str]
             out[-1] += text
         else:
             out.append(text)
-        glue = out[-1].endswith("-") and edge >= right - 3.0
+        glue = bool(BROKEN_WORD.search(out[-1])) and edge >= right - 4.0
         if glue:
             out[-1] = out[-1][:-1]
     return out
@@ -409,8 +419,13 @@ def read(path: Path) -> tuple[dict[str, list[str]], list[str], dict[str, int]]:
             counts["table_pages"] += 1
             top = top_marker
 
-            lines, right = name_column(page, top, centres)
-            bands = [glue_broken_words(band, right)
+            lines, _right = name_column(page, top, centres)
+            # The column's own right margin, measured on this page: the widest
+            # line the name column holds. `class_left` marks where the *next*
+            # column begins, which is several points further right and would
+            # let no break through.
+            margin = max((edge for _y, _text, edge in lines), default=0.0)
+            bands = [glue_broken_words(band, margin)
                      for band, _starts in split_bands(lines, method, cut)]
 
             for band in bands:

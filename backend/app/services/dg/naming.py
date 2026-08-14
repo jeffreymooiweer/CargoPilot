@@ -50,6 +50,7 @@ from __future__ import annotations
 from typing import Any
 
 from app.core.languages import normalise
+from app.services.dg.names_de import german_name
 from app.services.dg.names_fr import french_name
 from app.services.dg.names_nl import dutch_name
 
@@ -86,6 +87,21 @@ def english_name_is_usable(entry: dict[str, Any]) -> bool:
     # A name that ends on an opening bracket was cut off in the export; the rest
     # of the entry may be right but this field is not.
     return name.count("(") == name.count(")")
+
+
+def german_name_of(entry: dict[str, Any]) -> str:
+    """The German name of an entry, from the 2025 edition where it has one.
+
+    ``un_numbers.json`` carries a German name from a 2023 export; since v1.79.0
+    the same column is read from the ADR 2025 of the Bundesamt für Strassen and
+    that reading comes first. Same language, newer edition — and where the 2025
+    reading has no name for an entry (the IMDG-only additions have none) the
+    older one still carries the field.
+    """
+    fresh = german_name(str(entry.get("un") or ""))
+    if fresh:
+        return fresh.upper()
+    return str(entry.get("name_de") or "").strip().upper()
 
 
 def french_name_of(entry: dict[str, Any]) -> str:
@@ -132,9 +148,9 @@ def proper_shipping_name(
     """
     if not requires_english_name(profiles):
         if normalise(language) == "de":
-            german = str(entry.get("name_de") or "").strip()
+            german = german_name_of(entry)
             if german:
-                return german.upper()
+                return german
         elif normalise(language) == "fr":
             french = french_name_of(entry)
             if french:
@@ -151,8 +167,8 @@ def is_german_name(entry: dict[str, Any], name: Any) -> bool:
     and then adds a sea leg keeps the German name already filled in — and it may
     not stand there.
     """
-    german = str(entry.get("name_de") or "").strip()
-    english = str(entry.get("name_en") or "").strip()
+    german = german_name_of(entry)
+    english = english_name(entry)
     given = str(name or "").strip()
     if not german or not given:
         return False

@@ -84,3 +84,47 @@ def test_het_model_wordt_geleverd_als_de_editie_er_is(regime, language):
                and d["model_of"]["language"] == language)
     first, last = doc["cut_from"]["pages"]
     assert len(PdfReader(str(path)).pages) == last - first + 1
+
+
+# --- through the API, because that is how a driver reaches it ---------------
+
+
+def _client():
+    from types import SimpleNamespace
+    from fastapi.testclient import TestClient
+    from app.core.deps import get_current_user
+    from app.main import app
+
+    app.dependency_overrides[get_current_user] = lambda: SimpleNamespace(
+        id=1, username="test", role="admin", active=True)
+    return TestClient(app)
+
+
+def test_de_lijst_zegt_per_regeling_en_taal_wat_er_is():
+    response = _client().get("/api/documents/instructions")
+    assert response.status_code == 200
+    documents = response.json()["documents"]
+    assert len(documents) == len(regulations.REGIMES) * len(regulations.LANGUAGES)
+    for item in documents:
+        assert item["provision"] == "5.4.3"
+        if not item["available"]:
+            assert item["needs"], item
+
+
+def test_een_ontbrekend_model_weigert_met_de_reden():
+    response = _client().get("/api/documents/instructions/adr/de")
+    assert response.status_code == 409
+    assert response.json()["detail"]["reason"] == "missing_in_store"
+
+
+def test_een_onbekende_regeling_bestaat_niet():
+    assert _client().get("/api/documents/instructions/rid/nl").status_code == 404
+
+
+def test_het_model_komt_als_pdf_binnen():
+    if not regulations.instruction_status("adr", "nl")["available"]:
+        pytest.skip("this store lacks the Dutch ADR")
+    response = _client().get("/api/documents/instructions/adr/nl")
+    assert response.status_code == 200
+    assert response.headers["content-type"] == "application/pdf"
+    assert response.content[:5] == b"%PDF-"

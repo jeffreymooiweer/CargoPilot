@@ -2,6 +2,15 @@
 
 All notable changes are documented here, following [Semantic Versioning](https://semver.org/).
 
+## [1.76.1] — 2026-08-14
+
+### Changed
+
+- The instructions in writing are now reached the way a driver reaches them:
+  four checks through the API itself, so the list, the honest refusal for a
+  model no edition here prints, and the PDF that comes back are held to their
+  behaviour and not only to the service that produces them.
+
 ## [1.76.0] — 2026-08-14
 
 ### Added

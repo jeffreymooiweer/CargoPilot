@@ -66,6 +66,7 @@ LANGUAGES: dict[str, dict[str, Any]] = {
         "class_column": "class",
         "inherit": re.compile(
             r"groups? of permitted substances for tank codes?(.*)", re.IGNORECASE),
+        "inherit_end": None,
         "and": re.compile(r"\band\b", re.IGNORECASE),
     },
     "nl": {
@@ -75,8 +76,8 @@ LANGUAGES: dict[str, dict[str, Any]] = {
         "group_column": "groep van toegestane stoffen",
         "class_column": "klasse",
         "inherit": re.compile(
-            r"groepen van de voor de tankcodes?(.*?)toegestane stoffen",
-            re.IGNORECASE | re.DOTALL),
+            r"groepen van de voor de tankcodes?(.*)", re.IGNORECASE | re.DOTALL),
+        "inherit_end": re.compile(r"toegestane stoffen", re.IGNORECASE),
         "and": re.compile(r"\ben\b", re.IGNORECASE),
     },
     "de": {
@@ -86,8 +87,8 @@ LANGUAGES: dict[str, dict[str, Any]] = {
         "group_column": "gruppe der zugelassenen stoffe",
         "class_column": "klasse",
         "inherit": re.compile(
-            r"gruppen der für die tankcodierungen?(.*?)zugelassenen stoffe",
-            re.IGNORECASE | re.DOTALL),
+            r"gruppen der für die tankcodierungen?(.*)", re.IGNORECASE | re.DOTALL),
+        "inherit_end": re.compile(r"zugelassenen stoffe", re.IGNORECASE),
         "and": re.compile(r"\bund\b", re.IGNORECASE),
     },
 }
@@ -267,6 +268,20 @@ def rationalised_rows(doc, pages: list[int],
             tokens, markers = _strip_markers(
                 [word.strip(",").strip() for _x, word in items])
 
+            # The inheritance is a sentence, and a sentence is not a line. The
+            # English edition sets it on one and wraps the tail — "… L10BH and"
+            # / "L10CH" — while the Dutch wraps it in the middle and closes it
+            # two lines later with "toegestane stoffen". Read as lines it comes
+            # out as a new block with no group, which is how L4BN, L10CH and
+            # SGAN went missing from the Dutch reading altogether.
+            if inheriting:
+                if current is not None:
+                    for code in _codes_in(text):
+                        if code not in current["inherits"]:
+                            current["inherits"].append(code)
+                inheriting = _sentence_runs_on(text, words)
+                continue
+
             inherit = words["inherit"].search(text)
             if inherit:
                 if current is None:
@@ -275,25 +290,22 @@ def rationalised_rows(doc, pages: list[int],
                 for code in _codes_in(inherit.group(1)):
                     if code not in current["inherits"]:
                         current["inherits"].append(code)
-                inheriting = _runs_on(text, words)
+                inheriting = _sentence_runs_on(text, words)
+                continue
+
+            # A packing group on a line of its own belongs to the row above:
+            # both editions wrap "II, III" that way, and read as a row of its
+            # own it becomes a group whose classification code is "III" — the
+            # one shape a packing group and a classification code share.
+            if (tokens and current is not None and current["groups"]
+                    and all(PACKING_GROUP.fullmatch(token) for token in tokens)):
+                current["groups"][-1]["packing_groups"].extend(tokens)
                 continue
 
             codes = [token for token in tokens if TANK_CODE.fullmatch(token)]
-            # The sentence runs on to the next line often enough that its tail
-            # would otherwise read as a new block: "… L4BH, L10BH and" then
-            # "L10CH" on a line of its own. A line of nothing but tank codes,
-            # while a sentence is still open, is that tail.
-            if current is not None and inheriting and codes and len(codes) == len(tokens):
-                for code in codes:
-                    if code not in current["inherits"]:
-                        current["inherits"].append(code)
-                inheriting = _runs_on(text, words)
-                continue
-
             if codes and TANK_CODE.fullmatch(tokens[0]):
                 current = block(tokens[0], index + 1)
                 seen_class = ""
-                inheriting = False
                 tokens = tokens[1:]
 
             if current is None or not tokens:
@@ -303,7 +315,6 @@ def rationalised_rows(doc, pages: list[int],
                 if markers and "footnote" not in group:
                     group["footnote"] = "".join(markers)
                 current["groups"].append(group)
-                inheriting = False
     return [blocks[code] for code in order], failures
 
 
@@ -327,9 +338,19 @@ def _strip_markers(tokens: list[str]) -> tuple[list[str], list[str]]:
     return kept, markers
 
 
-def _runs_on(text: str, words: dict[str, Any]) -> bool:
-    """Does this line end mid-sentence, so the next one continues it?"""
+def _sentence_runs_on(text: str, words: dict[str, Any]) -> bool:
+    """Is the inheritance sentence still open after this line?
+
+    Where the edition ends the sentence with words of its own — the Dutch
+    "toegestane stoffen", the German "zugelassenen Stoffe" — those words close
+    it, and nothing else does. The English sentence ends where its list does,
+    so it is the comma or the conjunction at the line's end that says it runs
+    on.
+    """
     tail = text.rstrip()
+    closing = words.get("inherit_end")
+    if closing is not None:
+        return not closing.search(tail)
     return tail.endswith(",") or bool(words["and"].search(tail[-6:]))
 
 

@@ -325,6 +325,23 @@ def _group(items: list[tuple[float, str]],
 # --- probing --------------------------------------------------------------
 
 
+def words(doc, language: str) -> int:
+    """Print the geometry of the table pages, once, as one JSON line.
+
+    The volumes live on a runner and the development container cannot reach
+    them, so every correction to the reader would otherwise cost a CI run to
+    find out what it did. The words and their positions are all a reader needs;
+    with them saved outside the repository the parser can be fixed against the
+    real page in the container, and the runner is asked again only to confirm.
+    """
+    pages = {}
+    for index in gas_pages(doc, language) + rationalised_pages(doc, language):
+        pages[index + 1] = [[round(y, 1), [[round(x, 1), word] for x, word in items]]
+                            for y, items in _lines(doc[index])]
+    print(f"WORDS {json.dumps({'language': language, 'pages': pages}, ensure_ascii=False)}")
+    return 0
+
+
 def probe(doc, language: str) -> int:
     gases = gas_pages(doc, language)
     rational = rationalised_pages(doc, language)
@@ -394,6 +411,8 @@ def main() -> int:
     parser.add_argument("--language", default="en", choices=sorted(LANGUAGES))
     parser.add_argument("--probe", action="store_true",
                         help="report the layout of the pages found and stop")
+    parser.add_argument("--words", action="store_true",
+                        help="print the geometry of the pages found and stop")
     parser.add_argument("--dump", action="store_true",
                         help="print every row to the log as well")
     parser.add_argument("--out", type=Path, help="write the reading here")
@@ -419,6 +438,8 @@ def main() -> int:
     import pymupdf
 
     with pymupdf.open(args.pdf) as doc:
+        if args.words:
+            return words(doc, args.language)
         if args.probe:
             return probe(doc, args.language)
         gases, gas_failures = gas_rows(doc, gas_pages(doc, args.language))

@@ -29,6 +29,10 @@ on:
         description: "Report the layout of the pages found and stop"
         type: boolean
         default: false
+      words:
+        description: "Print the geometry of the pages found, so the reader can be corrected in the development container"
+        type: boolean
+        default: false
       dump:
         description: "Print the reading to the log (the development container cannot reach the artifact store)"
         type: boolean
@@ -72,6 +76,7 @@ jobs:
         env:
           LANGUAGE: ${{ inputs.language }}
           PROBE: ${{ inputs.probe }}
+          WORDS: ${{ inputs.words }}
           DUMP: ${{ inputs.dump }}
         run: |
           set -euo pipefail
@@ -82,11 +87,12 @@ jobs:
           esac
           ARGS=(--pdf "$PDF" --language "$LANGUAGE" --out "hierarchy_$LANGUAGE.json")
           if [ "$PROBE" = "true" ]; then ARGS+=(--probe); fi
+          if [ "$WORDS" = "true" ]; then ARGS+=(--words); fi
           if [ "$DUMP" = "true" ]; then ARGS+=(--dump); fi
           python scripts/extract_adr_tank_hierarchy.py "${ARGS[@]}"
 
       - name: Hand the reading back
-        if: ${{ always() && !inputs.probe }}
+        if: ${{ always() && !inputs.probe && !inputs.words }}
         uses: actions/upload-artifact@v4
         with:
           name: adr-tank-hierarchy-${{ inputs.language }}

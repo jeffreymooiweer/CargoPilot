@@ -2,6 +2,26 @@
 
 All notable changes are documented here, following [Semantic Versioning](https://semver.org/).
 
+## [1.76.0] — 2026-08-14
+
+### Added
+
+- **The documents have their own language now.** ADR 5.4.1.4.1 — and RID and
+  ADN in the same words — asks for an official language of the *forwarding
+  country*, and where that is not German, English or French, additionally one
+  of those three. That is a fact about the consignment, not about who is
+  typing, so the export step asks for it instead of following the screen. It
+  defaults to the language of the screen, states the article underneath, and
+  carries into the transport document, the description line of 5.4.1.1.1 and
+  the UN cards.
+
+- A proper shipping name the application derived is re-derived in that
+  language: a consignment entered in Dutch and exported in French leaves with
+  ESSENCE, and the export reports the replacement as it already did for a sea
+  leg. Wording of the user's own is never touched, and a sea or air profile
+  still wins over the choice — 5.4.1.4.1 at sea and 8.1.2.1 in the air leave no
+  room for a preference.
+
 ## [1.75.0] — 2026-08-14
 
 ### Added

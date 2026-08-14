@@ -13,7 +13,7 @@ import {
   WrittenInstruction,
   UserPreferences,
 } from "../api/client";
-import { documentLanguage, localised } from "../i18n/language";
+import { documentLanguage, localised, LANGUAGE_NAMES, SUPPORTED_LANGUAGES, Language } from "../i18n/language";
 import DangerousGoodsStep, { buildDgEntries } from "../components/DangerousGoodsStep";
 import DgCompliancePanel from "../components/DgCompliancePanel";
 import DocumentWarnings, { useDocumentValidation } from "../components/DocumentWarnings";
@@ -106,6 +106,14 @@ export default function WizardPage() {
   const { modality } = useParams();
   const lang = documentLanguage(i18n.language);
   const L = (text?: LocalizedText) => localised(text, lang);
+  // The language the documents are drawn up in is not the language the screen
+  // is in. ADR 5.4.1.4.1 (and RID and ADN in the same words) asks for an
+  // official language of the forwarding country and, where that is not German,
+  // English or French, additionally one of those three — which is about the
+  // consignment, not about who is typing. So it is a choice, defaulting to the
+  // screen's language because that is right more often than not.
+  const [chosenDocLang, setChosenDocLang] = useState<Language | null>(null);
+  const docLang = chosenDocLang ?? lang;
   const { preferences, loaded: preferencesLoaded } = usePreferences();
   const prefill = preferencesLoaded && preferences.prefill_documents;
 
@@ -476,7 +484,7 @@ export default function WizardPage() {
     values: exportValuesFor(doc),
     lines: result?.lines ?? [],
     dangerous_goods: dgEntries.length > 0 ? dgEntries : undefined,
-    output_language: lang,
+    output_language: docLang,
   });
 
   // Warnings per document, shown on the card before the download button — a
@@ -513,7 +521,7 @@ export default function WizardPage() {
     }
     let cancelled = false;
     api
-      .unCardsAvailability({ dangerous_goods: dgEntries, output_language: lang })
+      .unCardsAvailability({ dangerous_goods: dgEntries, output_language: docLang })
       .then((status) => {
         if (!cancelled) setUnCards(status);
       })
@@ -523,7 +531,7 @@ export default function WizardPage() {
     return () => {
       cancelled = true;
     };
-  }, [stepKey, dgEntries, lang]);
+  }, [stepKey, dgEntries, docLang]);
 
   // The instructions in writing of 5.4.3, which the crew has to carry with the
   // transport document. Asked for the regimes this shipment actually travels
@@ -566,7 +574,7 @@ export default function WizardPage() {
     setUnCardsBusy(true);
     setError("");
     try {
-      await api.downloadUnCards({ dangerous_goods: dgEntries, output_language: lang });
+      await api.downloadUnCards({ dangerous_goods: dgEntries, output_language: docLang });
     } catch (e) {
       setError(String(e));
     } finally {
@@ -833,6 +841,30 @@ export default function WizardPage() {
                 );
               })}
             </div>
+          </div>
+
+          <div className={`${panelClass} space-y-2 p-4 sm:p-6`}>
+            <label
+              htmlFor="document-language"
+              className="text-sm font-medium text-slate-800 dark:text-slate-100"
+            >
+              {t("wizardDocs.documentLanguage")}
+            </label>
+            <select
+              id="document-language"
+              value={docLang}
+              onChange={(event) => setChosenDocLang(event.target.value as Language)}
+              className={weightInputClass + " sm:max-w-xs"}
+            >
+              {SUPPORTED_LANGUAGES.map((code) => (
+                <option key={code} value={code}>
+                  {LANGUAGE_NAMES[code]}
+                </option>
+              ))}
+            </select>
+            <p className="text-xs text-slate-500 dark:text-slate-400">
+              {t("wizardDocs.documentLanguageRule")}
+            </p>
           </div>
 
           {instructionRegimes.length > 0 && instructions.length > 0 && (

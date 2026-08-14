@@ -178,18 +178,37 @@ def is_dutch_name(entry: dict[str, Any], name: Any) -> bool:
     return given.casefold() == dutch.casefold()
 
 
+def is_french_name(entry: dict[str, Any], name: Any) -> bool:
+    """Does this text carry the French name of this entry?"""
+    french = french_name_of(entry)
+    given = str(name or "").strip()
+    if not french or not given:
+        return False
+    if french.casefold() == english_name(entry).casefold():
+        return False
+    return given.casefold() == french.casefold()
+
+
+def is_english_name(entry: dict[str, Any], name: Any) -> bool:
+    english = english_name(entry)
+    return bool(english) and str(name or "").strip().casefold() == english.casefold()
+
+
 def is_derived_name(entry: dict[str, Any], name: Any) -> bool:
     """Is this a name CargoPilot itself put in the field?
 
     Only what the app derived is adjusted for another document. Wording of the
     user's own — a technical name with an n.o.s. entry, an addition by the
     consignor — stays as it is; we cannot assess that and must not overwrite it
-    silently.
+    silently. All four of the languages the app can derive count, because all
+    four can be the one a document was first drawn up in.
     """
-    return is_german_name(entry, name) or is_dutch_name(entry, name)
+    return (is_german_name(entry, name) or is_dutch_name(entry, name)
+            or is_french_name(entry, name) or is_english_name(entry, name))
 
 
-def resolve_for_profile(product: dict[str, Any], profile: str) -> tuple[str, str]:
+def resolve_for_profile(product: dict[str, Any], profile: str,
+                        language: str = "") -> tuple[str, str]:
     """The shipping name belonging on *this* document, and the name replaced.
 
     The language of the name belongs to the document, not to the consignment.
@@ -203,11 +222,24 @@ def resolve_for_profile(product: dict[str, Any], profile: str) -> tuple[str, str
     consignor — it stays; we cannot assess that and certainly must not overwrite
     it silently.
 
+    Since v1.76.0 the same applies to the language the *document* is drawn up
+    in, which the export step asks for separately from the language of the
+    screen: a consignment entered in Dutch and exported in French carries
+    ESSENCE, without anyone retyping it. A profile that forces English still
+    wins over that choice — 5.4.1.4.1 at sea and 8.1.2.1 in the air leave no
+    room for a preference.
+
     Returns ``(name_for_this_document, replaced_name)``. When nothing was
     adjusted, the second field is empty.
     """
     current = str(product.get("proper_shipping_name") or "").strip()
-    if not current or not requires_english_name([profile]):
+    if not current:
+        return current, ""
+    if requires_english_name([profile]):
+        wanted_language = "en"
+    elif language:
+        wanted_language = normalise(language)
+    else:
         return current, ""
 
     # Enclosed import: database reads naming, so the other way round only here.
@@ -215,8 +247,8 @@ def resolve_for_profile(product: dict[str, Any], profile: str) -> tuple[str, str
 
     for entry in get_un_entries(str(product.get("un_number") or "")):
         if is_derived_name(entry, current):
-            english = proper_shipping_name(entry, "en")
-            if english:
-                return english, current
+            wanted = proper_shipping_name(entry, wanted_language, [profile])
+            if wanted and wanted.casefold() != current.casefold():
+                return wanted, current
         break
     return current, ""

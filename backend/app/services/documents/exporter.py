@@ -475,7 +475,7 @@ def validate_document(
                 # which name has to be here. It puts it there itself and reports
                 # it — blocking would only make the user retype what the app
                 # already knew.
-                english, replaced = resolve_for_profile(product, profile)
+                english, replaced = resolve_for_profile(product, profile, lang)
                 if replaced:
                     warnings.append(
                         f"{_text('dg_name_language', lang)}: "
@@ -673,9 +673,10 @@ def _un_prefixed(value: Any) -> str:
     return text if text.upper().startswith(("UN", "ID")) else f"UN {text}"
 
 
-def _dg_description(product: dict[str, Any], profile: str, values: dict[str, Any]) -> str:
+def _dg_description(product: dict[str, Any], profile: str, values: dict[str, Any],
+                    lang: str = "") -> str:
     """Officiële omschrijvingsregel per ADR/RID/ADN 5.4.1.1.1, bijv. 'UN 1203, BENZINE, 3, II, (D/E)'."""
-    psn = resolve_for_profile(product, profile)[0].upper()
+    psn = resolve_for_profile(product, profile, lang)[0].upper()
     technical = str(product.get("technical_name") or "").strip()
     if technical:
         psn = f"{psn} ({technical})"
@@ -705,7 +706,7 @@ def _dg_rows(profile: str, entry: dict[str, Any], product: dict[str, Any], value
         per_package = str(product.get("net_mass_liters_per_package") or "").strip()
         if per_package:
             quantity = f"{quantity}, {per_package}" if quantity else per_package
-        psn = resolve_for_profile(product, profile)[0]
+        psn = resolve_for_profile(product, profile, lang)[0]
         technical = str(product.get("technical_name") or "").strip()
         if technical:
             psn = f"{psn} ({technical})"
@@ -724,7 +725,7 @@ def _dg_rows(profile: str, entry: dict[str, Any], product: dict[str, Any], value
         ]
     if profile in {"ADR", "RID", "ADN"}:
         return [
-            _dg_description(product, profile, values),
+            _dg_description(product, profile, values, lang),
             product.get("quantity_packages", ""),
             product.get("type_of_package", ""),
             product.get("net_mass_liters_per_package", ""),
@@ -732,7 +733,7 @@ def _dg_rows(profile: str, entry: dict[str, Any], product: dict[str, Any], value
             product.get("additional_information", ""),
         ]
     if profile == "IMDG":
-        psn = resolve_for_profile(product, profile)[0]
+        psn = resolve_for_profile(product, profile, lang)[0]
         technical = str(product.get("technical_name") or "").strip()
         if technical:
             psn = f"{psn} ({technical})"

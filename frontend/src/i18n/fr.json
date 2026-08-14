@@ -320,7 +320,9 @@
     "checkWarnings": "Points à vérifier sur ce document :",
     "dgBlocked": "La classification des marchandises dangereuses est incomplète. Renseignez le numéro ONU, la désignation officielle de transport, la classe et les données d'emballage à l'étape « marchandises dangereuses ».",
     "exporting": "Export en cours…",
-    "exportNotice": "Attention : les documents générés sont des projets. À vérifier, à compléter et à faire signer par une personne habilitée avant utilisation. Voir la clause de non-responsabilité."
+    "exportNotice": "Attention : les documents générés sont des projets. À vérifier, à compléter et à faire signer par une personne habilitée avant utilisation. Voir la clause de non-responsabilité.",
+    "documentLanguage": "Langue des documents",
+    "documentLanguageRule": "5.4.1.4.1 : une langue officielle du pays d'expédition et, si ce n'est pas l'allemand, l'anglais ou le français, en outre dans l'une de ces trois. Pour le néerlandais, l'application inscrit les deux noms dans le champ."
   },
   "unCards": {
     "title": "Fiches ONU pour votre dossier",

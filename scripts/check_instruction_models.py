@@ -27,7 +27,7 @@ from app.services import regulations  # noqa: E402
 
 #: The model's own title, in every language an edition here is printed in. A
 #: page is identified by what it *contains*, not by what comes out of it first:
-#: pypdf returns a page's text in the order the content stream draws it, and on
+#: a reader returns a page’s text in the order the content stream draws it, and on
 #: a page that is one full-width table that order is not the reading order.
 TITLE = re.compile(
     r"INSTRUCTIONS? IN WRITING|CONSIGNES ÉCRITES|SCHRIFTELIJKE INSTRUCTIES"
@@ -37,14 +37,14 @@ NEIGHBOURS = re.compile(r"5\.4\.3\.5|5\.4\.4|5\.4\.2\b")
 
 
 def marks(page) -> str:
-    text = page.extract_text() or ""
+    text = page.get_text("text") or ""
     found = [name for name, pattern in
              (("TITLE", TITLE), ("neighbour", NEIGHBOURS)) if pattern.search(text)]
     return f"[{','.join(found) or '—'}, {len(text)} chars]"
 
 
 def first_lines(page, count: int = 2) -> str:
-    lines = [line.strip() for line in page.extract_text().strip().split("\n")
+    lines = [line.strip() for line in page.get_text("text").strip().split("\n")
              if line.strip()
              and not re.fullmatch(r"-\s*[\dxvi.\-]+\s*-", line.strip())
              and not line.strip().startswith(("Copyright", "©"))]
@@ -52,7 +52,7 @@ def first_lines(page, count: int = 2) -> str:
 
 
 def main() -> int:
-    from pypdf import PdfReader
+    import fitz
 
     missing = 0
     for doc in regulations.instruction_documents():
@@ -64,10 +64,10 @@ def main() -> int:
             missing += 1
             continue
         path = regulations.instructions_pdf(model["regime"], model["language"])
-        reader = PdfReader(str(path))
-        print(f"{head} {len(reader.pages)} pages from {status.get('source')}"
+        cut_document = fitz.open(str(path))
+        print(f"{head} {cut_document.page_count} pages from {status.get('source')}"
               f" ({status.get('from_document', '')})")
-        for number, page in enumerate(reader.pages, start=1):
+        for number, page in enumerate(cut_document, start=1):
             print(f"    p{number}: {marks(page)} {first_lines(page, 1)}")
         # And the neighbourhood in the source, numbered as the cutter numbers
         # it. The page ranges were measured with a different library, and two
@@ -77,10 +77,11 @@ def main() -> int:
         if cut:
             source = regulations.locate(cut["document"])
             first, last = cut["pages"]
-            pages = PdfReader(str(source)).pages
-            for number in range(max(1, first - 2), min(len(pages), last + 2) + 1):
+            volume = fitz.open(str(source))
+            for number in range(max(1, first - 2),
+                                min(volume.page_count, last + 2) + 1):
                 mark = "IN " if first <= number <= last else "   "
-                page = pages[number - 1]
+                page = volume[number - 1]
                 print(f"      {mark}source p{number}: {marks(page)} "
                       f"{first_lines(page, 1)}")
     print(f"{missing} model(s) this store cannot produce")

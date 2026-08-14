@@ -127,26 +127,39 @@ def instructions_pdf(regime: str, language: str) -> Path | None:
     if source is None:  # pragma: no cover - status said it was there
         return None
 
-    target = store_dir() / "derived" / doc["filename"]
+    first, last = cut["pages"]
+    # The kept cut is named after what it was cut from and where. A register
+    # that comes to point at another edition, or at another range in the same
+    # one, then asks for a file that does not exist yet instead of being handed
+    # yesterday's pages under today's name.
+    edition = (documents()[cut["document"]].get("sha256") or "unpinned")[:12]
+    stem = Path(doc["filename"]).stem
+    target = store_dir() / "derived" / f"{stem}-{edition}-{first}-{last}.pdf"
     if target.is_file() and target.stat().st_size > 0:
         return target
-    first, last = cut["pages"]
-    from pypdf import PdfReader, PdfWriter
+    # PyMuPDF, because that is what measured the range. The two PDF libraries
+    # this project has do not always agree on how many pages a file has: on the
+    # ADN volumes pypdf counts one page more than PyMuPDF does from the front,
+    # and a range measured with one and cut with the other put 5.4.3.5 on the
+    # driver's first sheet and left the equipment list off the last. Measuring
+    # and cutting with one library removes the question.
+    import fitz
 
-    reader = PdfReader(str(source))
-    writer = PdfWriter()
-    for number in range(first - 1, min(last, len(reader.pages))):
-        writer.add_page(reader.pages[number])
-    try:
-        target.parent.mkdir(parents=True, exist_ok=True)
-        with target.open("wb") as handle:
-            writer.write(handle)
-        return target
-    except OSError:
-        # A read-only store is a deployment choice, not an error: the pages
-        # still get cut, they are just not kept.
-        handle = tempfile.NamedTemporaryFile(
-            suffix=".pdf", prefix="instructions-", delete=False)
-        with handle:
-            writer.write(handle)
-        return Path(handle.name)
+    with fitz.open(str(source)) as document:
+        pages = fitz.open()
+        pages.insert_pdf(document, from_page=first - 1,
+                         to_page=min(last, document.page_count) - 1)
+        try:
+            target.parent.mkdir(parents=True, exist_ok=True)
+            pages.save(str(target))
+            pages.close()
+            return target
+        except OSError:
+            # A read-only store is a deployment choice, not an error: the pages
+            # still get cut, they are just not kept.
+            handle = tempfile.NamedTemporaryFile(
+                suffix=".pdf", prefix="instructions-", delete=False)
+            handle.close()
+            pages.save(handle.name)
+            pages.close()
+            return Path(handle.name)

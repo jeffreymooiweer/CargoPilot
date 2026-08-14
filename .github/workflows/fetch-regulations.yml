@@ -119,7 +119,7 @@ jobs:
         if: ${{ inputs.verify_instructions }}
         run: |
           set -euo pipefail
-          pip install --quiet pypdf
+          pip install --quiet pymupdf
           python scripts/check_instruction_models.py
 
       - name: Fetch what is missing

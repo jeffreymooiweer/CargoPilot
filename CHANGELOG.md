@@ -2,6 +2,40 @@
 
 All notable changes are documented here, following [Semantic Versioning](https://semver.org/).
 
+## [1.66.0] — 2026-08-13
+
+### Added
+
+- **The application knows how the goods travel.** Every check in the compliance
+  layer was written for **packages**, and said so nowhere. A consignor filling in
+  a tank load got the packages answer with nothing to mark it as the wrong one —
+  the most expensive shape of wrong this application can produce, because it does
+  not look like a gap, it looks like an answer.
+
+  A per-substance **mode of carriage** now says which it is: in packages, in an
+  ADR tank, in a portable tank, or in bulk. It is a list and not a text box —
+  free text there would fall through every check that branches on it and the
+  consignment would quietly be judged as packages again. An unknown value is
+  refused at the API edge for the same reason. Absent means packages, which is
+  what every consignment drawn up before this release was.
+
+- **ADR 3.2.1: may these goods travel in a tank at all?** The first check to use
+  the mode, and it only speaks once somebody has said the goods travel in one.
+  UN 1203 petrol is admitted with tank code LGBF on an FL vehicle; UN 0004
+  ammonium picrate is refused, because it has no tank code.
+
+  **The two tank columns do not say the same thing, and the check keeps them
+  apart.** Column (12) is absolute: where no code is given, carriage in ADR tanks
+  is not permitted, and the provision carries no exception. Column (10) is not:
+  where no portable tank instruction is given, carriage is not permitted *unless
+  the competent authority allows it* under 6.7.1.3. Rounding those two to one
+  answer would either invent a prohibition or hide one, so an item can be "not
+  permitted" and still say that approval is open — and only column (12) blocks.
+
+  v1.65.0 carried the tank columns and refused to read an empty column (12) as a
+  prohibition until the text had been read. It has now been read: ADR 2025, Dutch
+  edition, 3.2.1, printed pages 546-547.
+
 ## [1.65.0] — 2026-08-13
 
 ### Added

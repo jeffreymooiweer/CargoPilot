@@ -442,7 +442,13 @@
     "placardingPackages": "berechnet für die Beförderung in Versandstücken",
     "securityTitle": "Sicherung (ADR 1.10.3)",
     "securityHigh": "hohes Gefahrenpotenzial",
-    "securityNone": "kein hohes Gefahrenpotenzial"
+    "securityNone": "kein hohes Gefahrenpotenzial",
+    "tankAdmissionTitle": "Zulassung zum Tank (ADR 3.2.1)",
+    "tankAdmission": {
+      "ok": "zugelassen",
+      "not_permitted": "nicht zugelassen"
+    },
+    "tankProvisions": "Sondervorschriften: {{codes}}"
   },
   "dgauto": {
     "title": "Automatisch abgeleitet",

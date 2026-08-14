@@ -60,9 +60,12 @@ const DG_PROFILE_REQUIRED: Record<string, string[]> = {
 };
 
 const DG_EXTRA_FIELDS: Record<string, string[]> = {
-  ADR: ["transport_category", "adr_total_quantity"],
-  RID: ["transport_category", "adr_total_quantity"],
-  ADN: ["transport_category", "adr_total_quantity"],
+  // The mode comes first because it decides what the rest of the answers mean:
+  // admission, the tunnel code and the placarding all branch on it, and until
+  // v1.66.0 a tank load silently got the answers for packages.
+  ADR: ["carriage_mode", "transport_category", "adr_total_quantity"],
+  RID: ["carriage_mode", "transport_category", "adr_total_quantity"],
+  ADN: ["carriage_mode", "transport_category", "adr_total_quantity"],
   IMDG: ["technical_name", "marine_pollutant", "ems_code", "emergency_contact"],
   IATA_DGR: [
     "technical_name",

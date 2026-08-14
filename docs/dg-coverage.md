@@ -91,14 +91,21 @@ vehicle, the vessel, the aircraft or the route — and those are not marginal.
 What is **not** held for any substance: IATA quantity limits per packing instruction,
 ADN Table C, and any state or operator variation.
 
+**Tank carriage is modelled since v1.66.0.** Every check in this application was
+written for packages and said so nowhere, so a tank load got the packages answer with
+nothing to mark it as the wrong one. A per-substance **mode of carriage** — packages, ADR
+tank, portable tank or bulk — now says how the goods travel, and the first check to use it
+answers whether they may travel that way at all (ADR 3.2.1). Absent means packages, which
+is what every consignment drawn up before this release was.
+
 **The ADR tank columns are held since v1.65.0** — the portable tank instruction (10) and its
 provisions (11), the ADR tank code (12), its provisions (13) and the vehicle the substance
 then requires (14). They were read and cross-checked from the first day of the extractor and
-kept out of the seed on purpose, because nothing computed with them. They are data and
-nothing more for now: they appear on the substance lookup, and **no check acts on them yet**.
-In particular nothing reads an empty column (12) as "not accepted in a tank", however plainly
-the pattern suggests it — that is a statement about what the ADR permits, and it gets read
-out of the text before anything acts on it.
+kept out of the seed on purpose, because nothing computed with them. That release carried
+them as data and deliberately refused to read an empty column (12) as "not accepted in a
+tank", however plainly the pattern suggested it — a statement about what the ADR *permits*
+is not an observation about a table. v1.66.0 read the text (3.2.1, printed pages 546-547)
+and the admission check acts on it now.
 
 ## Road — ADR
 

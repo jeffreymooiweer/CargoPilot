@@ -397,6 +397,59 @@
         "de": "Höchste Nettomenge je Verpackung nach der Verpackungsanweisung (IATA Tabelle 4.2) für den verwendeten Flugzeugtyp. Für Q = Σ n/M ≤ 1 erforderlich.",
         "fr": "Quantité nette maximale par colis selon l'instruction d'emballage (tableau 4.2 de l'IATA) pour le type d'aéronef utilisé. Nécessaire pour Q = Σ n/M ≤ 1."
       }
+    },
+    "carriage_mode": {
+      "label": {
+        "nl": "Vervoerswijze",
+        "en": "Mode of carriage",
+        "de": "Beförderungsart",
+        "fr": "Mode de transport"
+      },
+      "help": {
+        "nl": "Hoe deze stof reist: in colli, in een ADR-tank, in een transporttank of los gestort. De regels verschillen per wijze — een tanklading krijgt andere toelatings-, tunnel- en bestikkeringsvoorschriften dan colli.",
+        "en": "How this substance travels: in packages, in an ADR tank, in a portable tank or in bulk. The rules differ by mode — a tank load is subject to different admission, tunnel and placarding provisions than packages.",
+        "de": "Wie dieser Stoff reist: in Versandstücken, in einem ADR-Tank, in einem ortsbeweglichen Tank oder in loser Schüttung. Die Vorschriften unterscheiden sich je Art.",
+        "fr": "Comment cette matière voyage : en colis, en citerne ADR, en citerne mobile ou en vrac. Les règles diffèrent selon le mode."
+      },
+      "type": "select",
+      "options": [
+        {
+          "value": "packages",
+          "label": {
+            "nl": "In colli",
+            "en": "In packages",
+            "de": "In Versandstücken",
+            "fr": "En colis"
+          }
+        },
+        {
+          "value": "tank",
+          "label": {
+            "nl": "In een ADR-tank",
+            "en": "In an ADR tank",
+            "de": "In einem ADR-Tank",
+            "fr": "En citerne ADR"
+          }
+        },
+        {
+          "value": "portable_tank",
+          "label": {
+            "nl": "In een transporttank",
+            "en": "In a portable tank",
+            "de": "In einem ortsbeweglichen Tank",
+            "fr": "En citerne mobile"
+          }
+        },
+        {
+          "value": "bulk",
+          "label": {
+            "nl": "Los gestort",
+            "en": "In bulk",
+            "de": "In loser Schüttung",
+            "fr": "En vrac"
+          }
+        }
+      ]
     }
   }
 }

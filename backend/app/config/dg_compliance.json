@@ -2733,5 +2733,45 @@
         }
       ]
     }
+  },
+  "adr_tank_admission": {
+    "source": "ADR 2025, official Dutch edition, 3.2.1 — the explanations of columns (10) and (12) of table A, printed pages 546-547",
+    "_the_two_are_not_the_same": "Column (12) is absolute: where no code is given, carriage in ADR tanks is not permitted, full stop. Column (10) is not: where no code is given, carriage in portable tanks is not permitted *unless the competent authority permits it* under 6.7.1.3. Rounding those two to one answer would either invent a prohibition or hide one, so the check keeps them apart and says which it is. Read from ADR 2025, Dutch edition, 3.2.1, printed pages 546-547; the wording is rendered rather than quoted, because this repository carries derived facts and not regulatory text.",
+    "modes": [
+      "packages",
+      "tank",
+      "portable_tank",
+      "bulk"
+    ],
+    "tank_not_permitted": {
+      "nl": "ADR 3.2.1, kolom (12): voor {product} is geen tankcode aangegeven, dus vervoer in ADR-tanks is niet toegestaan.",
+      "en": "ADR 3.2.1, column (12): no tank code is given for {product}, so carriage in ADR tanks is not permitted.",
+      "de": "ADR 3.2.1, Spalte (12): für {product} ist kein Tankcode angegeben, daher ist die Beförderung in ADR-Tanks nicht zugelassen.",
+      "fr": "ADR 3.2.1, colonne (12) : aucun code-citerne n'est indiqué pour {product}, le transport en citernes ADR n'est donc pas autorisé."
+    },
+    "portable_tank_not_permitted": {
+      "nl": "ADR 3.2.1, kolom (10): voor {product} is geen instructie voor transporttanks aangegeven. Vervoer in transporttanks is dan niet toegestaan, tenzij de bevoegde autoriteit daarvoor toestemming verleent (6.7.1.3).",
+      "en": "ADR 3.2.1, column (10): no portable tank instruction is given for {product}. Carriage in portable tanks is then not permitted unless the competent authority allows it (6.7.1.3).",
+      "de": "ADR 3.2.1, Spalte (10): für {product} ist keine Anweisung für ortsbewegliche Tanks angegeben. Die Beförderung in ortsbeweglichen Tanks ist dann nicht zugelassen, es sei denn, die zuständige Behörde erlaubt sie (6.7.1.3).",
+      "fr": "ADR 3.2.1, colonne (10) : aucune instruction de citerne mobile n'est indiquée pour {product}. Le transport en citernes mobiles n'est alors pas autorisé, sauf autorisation de l'autorité compétente (6.7.1.3)."
+    },
+    "tank_permitted": {
+      "nl": "{product} mag in een ADR-tank worden vervoerd: tankcode {code}, voertuig {vehicle}.",
+      "en": "{product} may be carried in an ADR tank: tank code {code}, vehicle {vehicle}.",
+      "de": "{product} darf in einem ADR-Tank befördert werden: Tankcode {code}, Fahrzeug {vehicle}.",
+      "fr": "{product} peut être transporté en citerne ADR : code-citerne {code}, véhicule {vehicle}."
+    },
+    "portable_tank_permitted": {
+      "nl": "{product} mag in een transporttank worden vervoerd: instructie {code}.",
+      "en": "{product} may be carried in a portable tank: instruction {code}.",
+      "de": "{product} darf in einem ortsbeweglichen Tank befördert werden: Anweisung {code}.",
+      "fr": "{product} peut être transporté en citerne mobile : instruction {code}."
+    },
+    "no_vehicle": {
+      "nl": "geen voertuigtype in kolom (14)",
+      "en": "no vehicle type in column (14)",
+      "de": "kein Fahrzeugtyp in Spalte (14)",
+      "fr": "aucun type de véhicule en colonne (14)"
+    }
   }
 }

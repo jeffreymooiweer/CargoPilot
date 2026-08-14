@@ -38,6 +38,11 @@ class RegulatoryProfile(str, Enum):
 TRANSPORT_CATEGORIES = {"0", "1", "2", "3", "4"}
 PACKING_GROUPS = {"I", "II", "III"}
 
+#: How a consignment travels. "packages" is what this application has always
+#: modelled and stays the default; the other three are the ones whose answers
+#: differ, and naming them is what lets a check say so.
+CARRIAGE_MODES = {"packages", "tank", "portable_tank", "bulk"}
+
 
 class DangerousGoodsProduct(BaseModel):
     """One dangerous substance in one position.
@@ -58,6 +63,11 @@ class DangerousGoodsProduct(BaseModel):
     segregation_group: str | None = None
     transport_category: str | None = None
     cargo_aircraft_only: bool | None = None
+    # How the goods travel. Everything in this application was written for
+    # packages and said so nowhere; a tank load used to get the packages answer
+    # with nothing to mark it as the wrong one. Absent means packages, which is
+    # what every consignment drawn up before v1.66.0 was.
+    carriage_mode: str | None = None
 
     # Quantities arrive as text ("5 kg", "12,5 L"); the engine peels the number
     # out. Only what cannot possibly be right is refused here.
@@ -68,6 +78,24 @@ class DangerousGoodsProduct(BaseModel):
     net_per_inner_packaging: str | float | int | None = None
     # Net explosive mass (class 1), for the 1.1.3.6 points and 5.4.1.2.1.
     net_explosive_mass: str | float | int | None = None
+
+    @field_validator("carriage_mode")
+    @classmethod
+    def _known_carriage_mode(cls, value: str | None) -> str | None:
+        """An unknown mode must not silently fall back to packages.
+
+        That is the same failure this field exists to end: a tank consignment
+        answered as if it were packages. A typo here is refused at the edge
+        rather than rounded to the answer that looks normal.
+        """
+        if value is None or not str(value).strip():
+            return None
+        cleaned = str(value).strip().lower()
+        if cleaned not in CARRIAGE_MODES:
+            raise ValueError(
+                f"onbekende vervoerswijze {value!r}; verwacht "
+                + ", ".join(sorted(CARRIAGE_MODES)))
+        return cleaned
 
     @field_validator("packing_group")
     @classmethod

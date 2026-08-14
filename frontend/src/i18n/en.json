@@ -442,7 +442,13 @@
     "placardingPackages": "computed for carriage in packages",
     "securityTitle": "Security (ADR 1.10.3)",
     "securityHigh": "high consequence",
-    "securityNone": "not high consequence"
+    "securityNone": "not high consequence",
+    "tankAdmissionTitle": "Admission to the tank (ADR 3.2.1)",
+    "tankAdmission": {
+      "ok": "permitted",
+      "not_permitted": "not permitted"
+    },
+    "tankProvisions": "Special provisions: {{codes}}"
   },
   "dgauto": {
     "title": "Derived automatically",

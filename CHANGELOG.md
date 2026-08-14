@@ -2,6 +2,27 @@
 
 All notable changes are documented here, following [Semantic Versioning](https://semver.org/).
 
+## [1.79.2] — 2026-08-14
+
+### Fixed
+
+- **Three of the four things the Dutch table C reader reported are gone.**
+  Column (1) holds a UN number and nothing else — the boundary taken from the
+  column numbers falls inside the name, because a number is centred over its
+  column and the name column is far wider. A footnote reference is set above
+  its line, so a cell sorted on y alone read "12) T1" for "T1 12)"; words
+  within a few points of each other are one line whatever their height in it.
+  And the row boundary is now read from the rules the typesetter drew: this
+  edition sets the UN number level with the middle of its row, so a band from
+  one number to the next took the top of the following row with it and ACETON
+  came back carrying the next substance's equipment codes.
+
+- What is left is one class of report: text that runs a little past a column
+  boundary ("R 115) 2" for the class, "ja PP," for the explosion protection).
+  The boundary is still the midpoint between two column numbers where it should
+  be the empty corridor between two columns, measured on the content. The
+  reading remains **not adopted** until it is.
+
 ## [1.79.1] — 2026-08-14
 
 ### Changed

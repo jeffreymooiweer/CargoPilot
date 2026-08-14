@@ -2,6 +2,39 @@
 
 All notable changes are documented here, following [Semantic Versioning](https://semver.org/).
 
+## [1.77.0] — 2026-08-14
+
+### Added
+
+- **The German model of the instructions in writing, and a printed Dutch
+  edition to cut the Dutch one from.** UNECE publishes the ADR in English and
+  French only, so the German model of 5.4.3 was the one the application had to
+  report as missing. The operator's own volumes closed it: the German ADR of
+  the Bundesamt für Strassen sets the model on four pages (345-348 of volume
+  II), and a printed Dutch ADR 2025 replaces the assembly the Dutch model was
+  cut from — that file reflows the model over ten pages and runs 5.4.4 onto the
+  last of them. **Six of the eight models now come out of the store**; what is
+  left is the ADN in Dutch and in German, which no edition here prints.
+
+- Five documents joined the register with them: the German ADR in two volumes,
+  the Dutch ADR 2025, and the RID in German and French. Twenty source documents
+  now, each with its hash.
+
+### Fixed
+
+- **A model was cut one page off.** The new verification run — cut every
+  registered model and print what came out — earned its keep immediately: the
+  English ADN model arrived with 5.4.3.5 on the driver's first sheet and the
+  equipment list missing from the last. Not the range: pypdf counts one page
+  more from the front of the ADN volumes than PyMuPDF does, and the ranges were
+  measured with one library and cut with the other. Measuring and cutting now
+  use the same one, and all six cuts are verified page by page against the
+  model's own title.
+
+- A kept cut is named after the edition and the page range it came from, so a
+  register that comes to point at another edition asks for a file that does not
+  exist yet instead of being handed yesterday's pages under today's name.
+
 ## [1.76.1] — 2026-08-14
 
 ### Changed

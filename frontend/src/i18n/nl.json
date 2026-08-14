@@ -320,7 +320,9 @@
     "checkWarnings": "Aandachtspunten voor dit document:",
     "dgBlocked": "Gevaarlijke-stoffenclassificatie is onvolledig. Vul UN-nummer, Proper Shipping Name, klasse en verpakkingsgegevens in bij de gevaarlijke-stoffenstap.",
     "exporting": "Bezig met exporteren…",
-    "exportNotice": "Let op: gegenereerde documenten zijn concepten. Controleer, vul aan en onderteken door een bevoegde persoon vóór gebruik. Zie de disclaimer."
+    "exportNotice": "Let op: gegenereerde documenten zijn concepten. Controleer, vul aan en onderteken door een bevoegde persoon vóór gebruik. Zie de disclaimer.",
+    "documentLanguage": "Taal van de documenten",
+    "documentLanguageRule": "5.4.1.4.1: een officiële taal van het land van verzending, en is dat geen Duits, Engels of Frans, dan bovendien in een van die drie. Bij Nederlands zet de app beide namen in het veld."
   },
   "unCards": {
     "title": "UN-kaarten voor uw administratie",

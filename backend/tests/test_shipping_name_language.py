@@ -372,3 +372,36 @@ def test_an_entry_with_a_proper_english_name_is_not_reported():
     )
     assert [w for w in warnings if "proper shipping name" in w.lower()
             and "1203" in w] == []
+
+
+# --- the language of the document, chosen on the export step ---------------
+#
+# Since v1.76.0 the export asks which language the documents are drawn up in,
+# separately from the language of the screen: 5.4.1.4.1 is about the country
+# the consignment leaves from, not about who is typing. So a name the app
+# derived is re-derived for the document, and only such a name.
+
+
+def test_de_documenttaal_herschrijft_een_afgeleide_naam():
+    product = {"un_number": BENZINE,
+               "proper_shipping_name": "BENZINE OF MOTORBRANDSTOF (GASOLINE)"}
+    assert resolve_for_profile(product, "ADR", "fr")[0] == "ESSENCE"
+    assert resolve_for_profile(product, "ADR", "de")[0] == "BENZIN ODER OTTOKRAFTSTOFF"
+    assert resolve_for_profile(product, "ADR", "fr")[1] == product["proper_shipping_name"]
+
+
+def test_zonder_documenttaal_verandert_er_niets():
+    product = {"un_number": BENZINE, "proper_shipping_name": "ESSENCE"}
+    assert resolve_for_profile(product, "ADR") == ("ESSENCE", "")
+
+
+def test_eigen_bewoordingen_blijven_staan():
+    """A name of the user's own is not one of the four the app can derive, and
+    is left exactly as it stands whatever language the document is in."""
+    product = {"un_number": BENZINE, "proper_shipping_name": "BENZINE, ONZE EIGEN OMSCHRIJVING"}
+    assert resolve_for_profile(product, "ADR", "fr")[0] == "BENZINE, ONZE EIGEN OMSCHRIJVING"
+
+
+def test_zee_en_lucht_winnen_van_de_taalkeuze():
+    product = {"un_number": BENZINE, "proper_shipping_name": "ESSENCE"}
+    assert resolve_for_profile(product, "IMDG", "fr")[0] == "GASOLINE"

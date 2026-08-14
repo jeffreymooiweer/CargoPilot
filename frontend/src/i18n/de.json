@@ -320,7 +320,9 @@
     "checkWarnings": "Hinweise zu diesem Dokument:",
     "dgBlocked": "Die Gefahrgutklassifizierung ist unvollständig. Erfassen Sie UN-Nummer, Proper Shipping Name, Klasse und Verpackungsangaben im Gefahrgutschritt.",
     "exporting": "Export läuft…",
-    "exportNotice": "Achtung: erzeugte Dokumente sind Entwürfe. Vor der Verwendung von einer befugten Person prüfen, ergänzen und unterschreiben lassen. Siehe Haftungsausschluss."
+    "exportNotice": "Achtung: erzeugte Dokumente sind Entwürfe. Vor der Verwendung von einer befugten Person prüfen, ergänzen und unterschreiben lassen. Siehe Haftungsausschluss.",
+    "documentLanguage": "Sprache der Dokumente",
+    "documentLanguageRule": "5.4.1.4.1: eine Amtssprache des Versandlandes und, wenn das nicht Deutsch, Englisch oder Französisch ist, zusätzlich in einer dieser drei. Bei Niederländisch setzt die Anwendung beide Namen in das Feld."
   },
   "unCards": {
     "title": "UN-Karten für Ihre Unterlagen",

@@ -320,7 +320,9 @@
     "checkWarnings": "Points to check on this document:",
     "dgBlocked": "Dangerous goods classification is incomplete. Fill in UN number, Proper Shipping Name, class and packaging details in the dangerous goods step.",
     "exporting": "Exporting…",
-    "exportNotice": "Note: generated documents are drafts. Verify, complete and sign by an authorised person before use. See the disclaimer."
+    "exportNotice": "Note: generated documents are drafts. Verify, complete and sign by an authorised person before use. See the disclaimer.",
+    "documentLanguage": "Language of the documents",
+    "documentLanguageRule": "5.4.1.4.1: an official language of the forwarding country, and where that is not German, English or French, additionally in one of those three. For Dutch the application puts both names in the field."
   },
   "unCards": {
     "title": "UN cards for your records",

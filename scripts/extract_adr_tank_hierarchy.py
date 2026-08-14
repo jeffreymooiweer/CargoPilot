@@ -372,7 +372,32 @@ def rationalised_rows(doc, pages: list[int],
                 if markers and "footnote" not in group:
                     group["footnote"] = "".join(markers)
                 current["groups"].append(group)
-    return [blocks[code] for code in order], failures
+    return [_as_triples(blocks[code]) for code in order], failures
+
+
+def _as_triples(block: dict[str, Any]) -> dict[str, Any]:
+    """One row per class, classification code and packing group.
+
+    The editions do not agree on how to *set* a row and there is no reason they
+    should: the English volume prints "F1 II" and "F1 III" on two lines where
+    the Dutch prints "F1 II, III" on one. That is typesetting, not content, and
+    comparing the lines would report a disagreement where the two books say
+    exactly the same thing. A permission is a class, a classification code and
+    a packing group; where the regulation assigns no packing group — class 6.2
+    is the case — the permission has none, and that is a value too.
+    """
+    permitted: list[dict[str, Any]] = []
+    for group in block["groups"]:
+        for packing_group in group["packing_groups"] or [None]:
+            row = {"class": group["class"],
+                   "classification_code": group["classification_code"],
+                   "packing_group": packing_group}
+            if group.get("footnote"):
+                row["footnote"] = group["footnote"]
+            if row not in permitted:
+                permitted.append(row)
+    return {"tank_code": block["tank_code"], "permitted": permitted,
+            "inherits": block["inherits"], "pages": block["pages"]}
 
 
 #: A footnote marker as the table sets it against a cell: a single lower-case
@@ -549,7 +574,7 @@ def check(first: dict[str, Any], second: dict[str, Any]) -> dict[str, Any]:
     for code in sorted(set(a_rat) | set(b_rat)):
         left, right = a_rat.get(code), b_rat.get(code)
         row = {"tank_code": code, "readings": bool(left) + bool(right)}
-        for field in ("groups", "inherits"):
+        for field in ("permitted", "inherits"):
             if left and right and left[field] == right[field]:
                 row[field] = left[field]
             elif left and right:

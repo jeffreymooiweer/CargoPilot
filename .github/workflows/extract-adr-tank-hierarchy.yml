@@ -153,10 +153,10 @@ jobs:
               print(f"  {row['tank_code']}: {' '.join(row['also_permitted'])}")
           print(f"rationalized: {len(reading['rationalised'])} codes")
           for block in reading["rationalised"]:
-              codes = ",".join(group["classification_code"]
-                               for group in block["groups"])
-              print(f"  {block['tank_code']}: {len(block['groups'])} groups "
-                    f"[{codes[:80]}] inherits {'+'.join(block['inherits']) or '-'}")
+              codes = ",".join(f"{row['classification_code']}{row['packing_group'] or ''}"
+                               for row in block["permitted"])
+              print(f"  {block['tank_code']}: {len(block['permitted'])} permitted "
+                    f"[{codes[:110]}] inherits {'+'.join(block['inherits']) or '-'}")
           if sys.argv[2] == "true":
               print(json.dumps(reading, ensure_ascii=False))
           PY

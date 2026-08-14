@@ -2,6 +2,29 @@
 
 All notable changes are documented here, following [Semantic Versioning](https://semver.org/).
 
+## [1.70.1] — 2026-08-14
+
+### Fixed
+
+- **A tag that was missed can now still be made.** The release workflow always
+  checked out the head of main and demanded that the version given match the
+  `VERSION` file there. That is right when a release is tagged straight after the
+  merge, and wrong the moment the dispatch is forgotten: main moves on, `VERSION`
+  moves with it, and the tag for the commit that was actually released can never
+  be created — while that commit is still sitting in the history, unchanged. It
+  happened here to v1.67.0 and v1.68.0.
+
+  The workflow now takes an optional `commit`. Everything downstream already read
+  from the checked-out tree, so naming a commit makes `VERSION`, the changelog
+  section and the image SHA all come from that commit rather than from today's
+  main; the version check then compares against the right file. Left empty, the
+  workflow behaves exactly as before. The one thing added is a guard that the
+  commit is an ancestor of main — a tag on a stray branch would claim a release
+  that never happened.
+
+- The workflow's own log lines and the fallback release note were still Dutch.
+  They are English now, like the rest of the repository.
+
 ## [1.70.0] — 2026-08-13
 
 ### Fixed

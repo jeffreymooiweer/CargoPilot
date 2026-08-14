@@ -11,6 +11,9 @@ on:
       version:
         description: "Version without the v prefix (e.g. 1.2.0); must match VERSION"
         required: true
+      commit:
+        description: "Commit on main to tag. Empty means the head of main. Fill this in to make a tag that was missed at the time."
+        required: false
   pull_request:
     branches: [main]
     types: [closed]
@@ -30,8 +33,28 @@ jobs:
       - name: Checkout main
         uses: actions/checkout@v4
         with:
-          ref: main
+          ref: ${{ inputs.commit || 'main' }}
           fetch-depth: 0
+
+      # A release is normally started right after the merge, and then the head of
+      # main is the commit to name. But the dispatch can be forgotten, and by the
+      # time anyone notices, main has moved on and VERSION with it. The version
+      # then no longer matches and the tag can never be made — while the commit
+      # that deserves it is still sitting in the history, unchanged.
+      #
+      # So the commit may be named. Everything below reads from the checked-out
+      # tree, so VERSION, CHANGELOG and the image SHA all come from that commit
+      # instead of from today's main. The only thing to guard is that the commit
+      # really is part of main: a tag on a stray branch would say released about
+      # something that was never released.
+      - name: Verify the commit is on main
+        if: inputs.commit != ''
+        run: |
+          git fetch --no-tags origin main
+          if ! git merge-base --is-ancestor HEAD FETCH_HEAD; then
+            echo "::error::Commit ${{ inputs.commit }} is not part of main."
+            exit 1
+          fi
 
       # Releasing does not change main. This step used to repair the version in
       # package-lock.json with a commit to main, and that slid main out from
@@ -73,7 +96,7 @@ jobs:
         run: |
           TAG="${{ steps.release.outputs.tag }}"
           if git rev-parse "$TAG" >/dev/null 2>&1; then
-            echo "Tag $TAG bestaat al lokaal/op remote — overslaan."
+            echo "Tag $TAG already exists — skipping."
           else
             git config user.name "github-actions[bot]"
             git config user.email "github-actions[bot]@users.noreply.github.com"
@@ -98,7 +121,7 @@ jobs:
           text = Path("CHANGELOG.md").read_text(encoding="utf-8")
           pattern = rf"## \[{re.escape(version)}\][^\n]*\n(.*?)(?=\n## \[|\n## Previous releases|\Z)"
           match = re.search(pattern, text, re.DOTALL)
-          print(match.group(1).strip() if match else f"Release {version}. Zie CHANGELOG.md voor details.")
+          print(match.group(1).strip() if match else f"Release {version}. See CHANGELOG.md for details.")
           PY
           fi
 
@@ -108,7 +131,7 @@ jobs:
         run: |
           TAG="${{ steps.release.outputs.tag }}"
           if gh release view "$TAG" >/dev/null 2>&1; then
-            echo "Release $TAG bestaat al — overslaan."
+            echo "Release $TAG already exists — skipping."
           else
             gh release create "$TAG" --title "CargoPilot $TAG" --notes-file release-body.md
           fi

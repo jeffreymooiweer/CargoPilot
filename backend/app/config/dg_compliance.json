@@ -2196,6 +2196,29 @@
       "en": "This unit carries in a tank, but column (20) of table A gives no hazard identification number for {products}. 5.3.2.1.2 turns on that number; check this against the text yourself.",
       "de": "Diese Einheit befördert in einem Tank, doch für {products} gibt Spalte (20) der Tabelle A keine Gefahrnummer an. 5.3.2.1.2 knüpft daran an; prüfen Sie dies selbst am Text.",
       "fr": "Cette unité transporte en citerne, mais la colonne (20) du tableau A ne donne aucun numéro d'identification du danger pour {products}. Le 5.3.2.1.2 en dépend ; vérifiez-le vous-même dans le texte."
+    },
+    "tank_placards": {
+      "provision_vehicle": "5.3.1.4.1",
+      "provision_container": "5.3.1.2",
+      "_why_it_differs": "For packages 5.3.1.5 places a placard on the vehicle only for class 1 and class 7, which is why the packages answer is mostly that no placard is needed. A tank does not work that way: the label model of the goods goes on both long sides and the rear of the vehicle (5.3.1.4.1), or on both long sides and each end of a tank container or portable tank (5.3.1.2). Answering a tank with the packages rule turns a requirement into an absence.",
+      "vehicle": {
+        "nl": "Deze eenheid vervoert in een tank of los gestort. 5.3.1.4.1 schrijft dan grote etiketten voor van elk gevaarsetiketmodel van de lading, aan beide lengtezijden én aan de achterzijde van het voertuig. Hier betreft dat: {labels}. Heeft de tank meerdere compartimenten met verschillende goederen, dan gaan de etiketten op de betreffende compartimenten, plus één van elk model aan elke zijde aan de achterzijde.",
+        "en": "This unit carries in a tank or in bulk. 5.3.1.4.1 then requires a placard of every label model of the load, on both long sides and on the rear of the vehicle. Here that means: {labels}. Where the tank has several compartments carrying different goods, the placards go on the relevant compartments, plus one of each model on each side at the rear.",
+        "de": "Diese Einheit befördert in einem Tank oder in loser Schüttung. 5.3.1.4.1 verlangt dann Großzettel jedes Gefahrzettelmusters der Ladung an beiden Längsseiten und an der Rückseite des Fahrzeugs. Hier betrifft das: {labels}. Hat der Tank mehrere Abteile mit verschiedenen Gütern, gehören die Großzettel an die betreffenden Abteile, dazu je einer jedes Musters an jeder Seite hinten.",
+        "fr": "Cette unité transporte en citerne ou en vrac. Le 5.3.1.4.1 impose alors une plaque-étiquette de chaque modèle d'étiquette du chargement, sur les deux côtés et à l'arrière du véhicule. Ici : {labels}. Si la citerne comporte plusieurs compartiments transportant des marchandises différentes, les plaques vont sur les compartiments concernés, plus une de chaque modèle de chaque côté à l'arrière."
+      },
+      "container": {
+        "nl": "Gaat de lading in een tankcontainer of transporttank, dan schrijft 5.3.1.2 dezelfde grote etiketten voor aan beide lengtezijden én aan elk uiteinde daarvan.",
+        "en": "Where the load travels in a tank container or portable tank, 5.3.1.2 requires the same placards on both long sides and at each end of it.",
+        "de": "Fährt die Ladung in einem Tankcontainer oder ortsbeweglichen Tank, verlangt 5.3.1.2 dieselben Großzettel an beiden Längsseiten und an jedem Ende.",
+        "fr": "Si le chargement voyage en conteneur-citerne ou en citerne mobile, le 5.3.1.2 impose les mêmes plaques sur les deux côtés et à chaque extrémité."
+      },
+      "no_labels": {
+        "nl": "Deze eenheid vervoert in een tank of los gestort, maar voor {products} staat geen gevaarsetiket in kolom (5) van tabel A. 5.3.1.4.1 hangt daaraan; controleer dit zelf aan de tekst.",
+        "en": "This unit carries in a tank or in bulk, but no label is given in column (5) of table A for {products}. 5.3.1.4.1 turns on that label; check this against the text yourself.",
+        "de": "Diese Einheit befördert in einem Tank oder in loser Schüttung, doch für {products} ist in Spalte (5) der Tabelle A kein Gefahrzettel angegeben. 5.3.1.4.1 knüpft daran an; prüfen Sie dies selbst am Text.",
+        "fr": "Cette unité transporte en citerne ou en vrac, mais aucune étiquette n'est indiquée en colonne (5) du tableau A pour {products}. Le 5.3.1.4.1 en dépend ; vérifiez-le vous-même dans le texte."
+      }
     }
   },
   "adr_security": {

@@ -409,3 +409,69 @@ def test_the_tunnel_no_longer_treats_a_tank_load_as_exempt():
         "nl", points_status="not_available_for_mode")
     assert out["status"] == "derived"
     assert out["restricted_categories"] == ["D", "E"]
+
+
+# --- 5.3.1.4.1 against 5.3.1.5: the answer inverts --------------------------
+#
+# For packages a placard goes on the vehicle only for class 1 and class 7, which
+# is why the packages answer is mostly that none is needed — the finding v1.57.0
+# was built around. A tank does not work that way: every label model of the load
+# goes on both long sides and the rear. Answering a tank with the packages rule
+# turns a requirement into an absence, which is the worst direction for a
+# placard to be wrong in.
+
+
+def placards(mode=None, labels="3", un="1203", hazard="3"):
+    from app.services.dg.compliance import check_adr_placarding
+    row = {"un_number": un, "class": hazard, "labels": labels,
+           "hazard_number": "33"}
+    if mode:
+        row["carriage_mode"] = mode
+    return check_adr_placarding(line(row), "nl")["placards"]
+
+
+def provisions(rows):
+    return {row["provision"] for row in rows}
+
+
+def test_packaged_petrol_still_needs_no_placard():
+    """The finding v1.57.0 was built around, and it must survive."""
+    assert provisions(placards()) == {"5.3.1.5"}
+
+
+def test_a_tank_of_the_same_petrol_needs_one():
+    rows = placards("tank")
+    assert "5.3.1.4.1" in provisions(rows)
+    assert "5.3.1.5" not in provisions(rows)
+    vehicle = next(r for r in rows if r["provision"] == "5.3.1.4.1")
+    assert vehicle["label_models"] == ["3"]
+    assert vehicle["required"] is True
+
+
+def test_the_tank_container_placement_is_named_beside_the_vehicle_one():
+    """5.3.1.2 puts them on both long sides and each end of the tank container
+    itself, which is a different placement from the vehicle's."""
+    assert "5.3.1.2" in provisions(placards("tank"))
+
+
+def test_bulk_is_placarded_like_a_tank():
+    """5.3.1.4 is headed carriage in bulk and tanks alike — the one rule in this
+    work where bulk and tanks share an answer."""
+    assert "5.3.1.4.1" in provisions(placards("bulk"))
+
+
+def test_every_label_model_of_the_load_is_named():
+    from app.services.dg.compliance import check_adr_placarding
+    rows = check_adr_placarding(line(
+        {"un_number": "1203", "class": "3", "labels": "3",
+         "carriage_mode": "tank"},
+        {"un_number": "1017", "class": "2", "labels": "2.3+8",
+         "carriage_mode": "tank"}), "nl")["placards"]
+    vehicle = next(r for r in rows if r["provision"] == "5.3.1.4.1")
+    assert vehicle["label_models"] == ["2.3", "3", "8"]
+
+
+def test_a_tank_without_a_label_is_told_the_rule_hangs_on_one():
+    rows = placards("tank", labels="")
+    unresolved = [r for r in rows if r.get("required") is None]
+    assert unresolved and "1203" in unresolved[0]["message"]

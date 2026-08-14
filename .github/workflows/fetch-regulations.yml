@@ -67,7 +67,7 @@ jobs:
           set -euo pipefail
           pip install --quiet gdown
           mkdir -p /tmp/cargopilot-regulations/incoming
-          gdown --folder "$FOLDER" -O /tmp/cargopilot-regulations/incoming --remaining-ok
+          gdown --folder "$FOLDER" -O /tmp/cargopilot-regulations/incoming
           echo "=== incoming ==="
           ls -la /tmp/cargopilot-regulations/incoming
           MAPPINGS=""

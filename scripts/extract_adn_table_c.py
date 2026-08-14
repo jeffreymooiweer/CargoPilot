@@ -62,7 +62,13 @@ FIELDS = [
 #: A row begins with a four-digit number followed by a name in capitals. The
 #: same guard as table A: a digit-led name is accepted, a number inside a cell
 #: (followed by lower case or another bare number) is not.
-ROW_START = re.compile(r"(?:^|(?<= ))(\d{4}) (?=[A-Z“(]|\d\S*[A-Za-z])")
+#: Nine table C names begin with a lower-case prefix — n-PROPANOL,
+#: sec-BUTYL CHLORIDE and their kind — and the table A rule of "a capital
+#: begins a name" silently fed those rows into their predecessor's remark
+#: cell. The lower-case branch demands the hyphenated shape so that prose
+#: inside a cell ("met ten hoogste") still does not pass.
+ROW_START = re.compile(
+    r"(?:^|(?<= ))(\d{4}) (?=[A-Z“(]|\d\S*[A-Za-z]|[a-z][A-Za-z]*-[A-Z])")
 
 #: Closed vocabularies, one per anchoring cell. ``*`` is the book's "several
 #: answers, see 3.2.3.3" and is legal almost everywhere.
@@ -405,7 +411,10 @@ def english_rows(pdf_path: Path) -> tuple[list[dict[str, Any]], list[str]]:
         # midpoint above its marker to the midpoint below. The markers come
         # (20) first: the page prints the table's columns in reverse.
         centres = [y for _n, y in bands]
-        mids = [0.0] + [(a + b) / 2 for a, b in zip(centres, centres[1:])] + [790.0]
+        # The page's copyright line sits above the table; the first band opens
+        # half a band-width above its own marker, not at the page top.
+        top = centres[0] - (centres[1] - centres[0]) / 2
+        mids = [top] + [(a + b) / 2 for a, b in zip(centres, centres[1:])] + [790.0]
         spans = {name: (mids[i], mids[i + 1])
                  for i, (name, _y) in enumerate(bands)}
 
@@ -417,7 +426,8 @@ def english_rows(pdf_path: Path) -> tuple[list[dict[str, Any]], list[str]]:
 
         # The substance columns come from the UN band itself: every four-digit
         # number in it anchors one column, and cells are left-aligned on it.
-        top, bottom = spans["1"]
+        top_1, bottom_1 = spans["1"]
+        top, bottom = top_1, bottom_1
         anchors = sorted(
             w[0] for w in words
             if top <= (w[1] + w[3]) / 2 < bottom and re.fullmatch(r"\d{4}", w[4]))
@@ -461,7 +471,7 @@ def english_rows(pdf_path: Path) -> tuple[list[dict[str, Any]], list[str]]:
             # band pairs are pooled, and the single-token cell is the token of
             # its own shape nearest its marker; everything else in the pool is
             # the neighbour's text.
-            pool = cells.get(("1", column), []) + cells.get(("2", column), [])
+            pool = cells.get(("1", column), [])
             un_words = [item for item in pool if re.fullmatch(r"\d{4}", item[2])]
             if len(un_words) != 1:
                 failures.append(
@@ -469,7 +479,28 @@ def english_rows(pdf_path: Path) -> tuple[list[dict[str, Any]], list[str]]:
                     f"{len(un_words)} UN numbers in {read(pool)!r}")
                 continue
             values["un"] = un_words[0][2]
-            values["name_en"] = read([w for w in pool if w is not un_words[0]])
+            name_low = [w for w in pool if w is not un_words[0]]
+
+            pool = (cells.get(("2", column), [])
+                    + cells.get(("3a", column), [])
+                    + cells.get(("3b", column), []))
+            cls = [item for item in pool
+                   if CLASS.fullmatch(item[2])
+                   and abs(item[1] - marker_y["3a"]) <= 8]
+            code = [item for item in pool
+                    if item[2] not in {i[2] for i in cls} or item not in cls]
+            code = [item for item in pool
+                    if item is not (cls[0] if cls else None)
+                    and CODE.fullmatch(item[2])
+                    and abs(item[1] - marker_y["3b"]) <= 8]
+            chosen_class = min(
+                cls, key=lambda i: abs(i[1] - marker_y["3a"])) if cls else None
+            chosen_code = min(
+                code, key=lambda i: abs(i[1] - marker_y["3b"])) if code else None
+            values["class"] = chosen_class[2] if chosen_class else "-"
+            values["classification_code"] = chosen_code[2] if chosen_code else "-"
+            name_extra = [item for item in pool
+                          if item is not chosen_class and item is not chosen_code]
 
             pool = cells.get(("19", column), []) + cells.get(("20", column), [])
             near = sorted(
@@ -487,8 +518,10 @@ def english_rows(pdf_path: Path) -> tuple[list[dict[str, Any]], list[str]]:
             values["remarks"] = read(
                 [w for w in pool if w is not chosen])
 
+            values["name_en"] = read(name_extra + name_low)
+
             for band, field in BAND_FIELDS.items():
-                if band in ("1", "2", "19", "20"):
+                if band in ("1", "2", "3a", "3b", "19", "20"):
                     continue
                 values[field] = read(cells.get((band, column), []))
             del problems
@@ -506,6 +539,15 @@ def english_rows(pdf_path: Path) -> tuple[list[dict[str, Any]], list[str]]:
             if row:
                 rows.append(row)
         per_page.append((number, len(anchors)))
+        strays = [w[4] for w in words
+                  if top_1 <= (w[1] + w[3]) / 2 < bottom_1
+                  and not re.fullmatch(r"\d{4}", w[4])]
+        print(f"page {number}: uns "
+              + " ".join(w[4] for w in sorted(
+                  (w for w in words
+                   if top_1 <= (w[1] + w[3]) / 2 < bottom_1
+                   and re.fullmatch(r"\d{4}", w[4])), key=lambda w: w[0]))
+              + (f" | strays {strays}" if strays else ""))
     print("pages and column counts:", per_page)
     from collections import Counter
     print("UN multiset:", sorted(Counter(r["un"] for r in rows).items()))

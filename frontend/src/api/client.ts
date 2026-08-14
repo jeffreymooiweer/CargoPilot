@@ -440,6 +440,10 @@ export interface DgProduct {
   net_explosive_mass?: string;
   /** Set by /dg/prepare for substances that may not be carried. */
   transport_forbidden?: boolean;
+  /** How these goods travel; absent means packages. */
+  carriage_mode?: string;
+  /** The code on the tank that is actually standing there, for ADR 4.3. */
+  tank_code?: string;
   eq_lq_points?: string;
   dimensions?: string;
   additional_information?: string;
@@ -919,6 +923,34 @@ export interface AdrTankAdmissionResult {
   source?: string;
 }
 
+/** ADR 4.3: may *this* tank carry these goods?
+ *
+ *  Column (12) says which code the substance requires; it does not say whether
+ *  the tank standing on the yard may carry it. 4.3.3.1.2 answers that for gases
+ *  with a hierarchy of codes, 4.3.4.1.2 for classes 3 to 9 with the rationalized
+ *  approach, where the offered code names the group of substances it may carry.
+ *
+ *  `cannot_be_assessed` is an answer, not a failure: the seed's cells are
+ *  settled by two readings or they are not, and the check declines rather than
+ *  guessing. `fits_under_condition` carries a condition the consignor has to
+ *  check — a vapour pressure limit, or a test pressure that comes from a table
+ *  this application does not hold. */
+export interface AdrTankFitResult {
+  status: "ok" | "not_permitted" | "not_checked";
+  items: {
+    position: string;
+    offered: string;
+    required: string;
+    fit?: "fits" | "fits_under_condition" | "does_not_fit" | "cannot_be_assessed";
+    condition?: string;
+    unsettled?: string[];
+    tank_provisions?: string;
+    provisions_note?: string;
+    message: string;
+  }[];
+  source?: string;
+}
+
 export interface ComplianceWarning {
   rule: string;
   severity: "error" | "warning" | "info";
@@ -1040,6 +1072,7 @@ export interface DgComplianceResult {
   adr_points?: AdrPointsResult;
   /** With the ADN profile only: its own exemption of 1.1.3.6.1. */
   adr_tank_admission?: AdrTankAdmissionResult;
+  adr_tank_fit?: AdrTankFitResult;
   adn_carriage_admission?: AdnCarriageAdmissionResult;
   adn_exemption?: AdnExemptionResult;
   adn_hold_separation?: AdnHoldSeparationResult;

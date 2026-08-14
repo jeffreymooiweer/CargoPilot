@@ -3090,5 +3090,99 @@
       "de": "kein Fahrzeugtyp in Spalte (14)",
       "fr": "aucun type de véhicule en colonne (14)"
     }
+  },
+  "adr_tank_fit": {
+    "source": "ADR 2025, 4.3.3.1.2 and 4.3.4.1.2, read from the English volume II, the printed Dutch edition and the German volume II",
+    "_two_rules_not_one": "4.3.3.1.2 is a hierarchy of tank codes and applies to gases; 4.3.4.1.2 is the rationalized approach and applies to classes 3 to 9, where the offered code names the group of substances it may carry and the required code is not compared with it at all. The regulation's own note says the hierarchy takes no account of the special provisions of 4.3.5 and 6.8.4 — column (13) — so a fit is never the whole answer.",
+    "same_code": {
+      "nl": "{product}: de aangeboden tank heeft de vereiste tankcode {code}.",
+      "en": "{product}: the tank offered carries the required tank code {code}.",
+      "de": "{product}: der angebotene Tank trägt die verlangte Tankcodierung {code}.",
+      "fr": "{product} : la citerne proposée porte le code-citerne exigé {code}."
+    },
+    "gas_yes": {
+      "nl": "{product}: tank {offered} is volgens de hiërarchie van 4.3.3.1.2 toegelaten voor een stof met tankcode {required}.",
+      "en": "{product}: tank {offered} is permitted under the hierarchy of 4.3.3.1.2 for a substance with tank code {required}.",
+      "de": "{product}: Tank {offered} ist nach der Rangfolge von 4.3.3.1.2 für einen Stoff mit Tankcodierung {required} zugelassen.",
+      "fr": "{product} : la citerne {offered} est admise selon la hiérarchie du 4.3.3.1.2 pour une matière de code-citerne {required}."
+    },
+    "gas_no": {
+      "nl": "{product}: tank {offered} staat niet in de hiërarchie van 4.3.3.1.2 voor tankcode {required}.",
+      "en": "{product}: tank {offered} is not among the codes 4.3.3.1.2 permits for tank code {required}.",
+      "de": "{product}: Tank {offered} steht nicht in der Rangfolge von 4.3.3.1.2 für die Tankcodierung {required}.",
+      "fr": "{product} : la citerne {offered} ne figure pas dans la hiérarchie du 4.3.3.1.2 pour le code-citerne {required}."
+    },
+    "gas_pressure": {
+      "nl": "{product}: tank {offered} heeft een lagere proefdruk dan tankcode {required} vraagt; 4.3.3.1.2 eist dat het cijfer ten minste gelijk is.",
+      "en": "{product}: tank {offered} has a lower test pressure figure than tank code {required} requires; 4.3.3.1.2 asks for at least the same figure.",
+      "de": "{product}: Tank {offered} hat eine niedrigere Prüfdruckziffer als die Tankcodierung {required} verlangt; 4.3.3.1.2 fordert mindestens dieselbe Ziffer.",
+      "fr": "{product} : la citerne {offered} a un chiffre de pression d'épreuve inférieur à celui qu'exige le code-citerne {required} ; le 4.3.3.1.2 demande au moins le même chiffre."
+    },
+    "group_yes": {
+      "nl": "{product}: tank {offered} mag stoffen van klasse {klass}, classificatiecode {code}, verpakkingsgroep {group} vervoeren (4.3.4.1.2).",
+      "en": "{product}: tank {offered} may carry substances of class {klass}, classification code {code}, packing group {group} (4.3.4.1.2).",
+      "de": "{product}: Tank {offered} darf Stoffe der Klasse {klass}, Klassifizierungscode {code}, Verpackungsgruppe {group} befördern (4.3.4.1.2).",
+      "fr": "{product} : la citerne {offered} peut transporter les matières de la classe {klass}, code de classification {code}, groupe d'emballage {group} (4.3.4.1.2)."
+    },
+    "group_condition": {
+      "nl": "{product}: tank {offered} mag deze stof vervoeren op voorwaarde dat {condition} (4.3.4.1.2). Controleer die voorwaarde voor deze zending.",
+      "en": "{product}: tank {offered} may carry this substance on condition that {condition} (4.3.4.1.2). Check that condition for this consignment.",
+      "de": "{product}: Tank {offered} darf diesen Stoff unter der Bedingung {condition} befördern (4.3.4.1.2). Prüfen Sie diese Bedingung für diese Sendung.",
+      "fr": "{product} : la citerne {offered} peut transporter cette matière à condition que {condition} (4.3.4.1.2). Vérifiez cette condition pour cet envoi."
+    },
+    "group_no": {
+      "nl": "{product}: klasse {klass}, classificatiecode {code}, verpakkingsgroep {group} staat niet in de groep die tank {offered} volgens 4.3.4.1.2 mag vervoeren.",
+      "en": "{product}: class {klass}, classification code {code}, packing group {group} is not in the group tank {offered} may carry under 4.3.4.1.2.",
+      "de": "{product}: Klasse {klass}, Klassifizierungscode {code}, Verpackungsgruppe {group} gehört nicht zu der Gruppe, die Tank {offered} nach 4.3.4.1.2 befördern darf.",
+      "fr": "{product} : la classe {klass}, code de classification {code}, groupe d'emballage {group} ne fait pas partie du groupe que la citerne {offered} peut transporter selon le 4.3.4.1.2."
+    },
+    "chain_not_settled": {
+      "nl": "{product}: niet te beoordelen. De groep van tank {offered} berust mede op {codes}, en daarvan is een cel door geen twee lezingen bevestigd.",
+      "en": "{product}: cannot be assessed. The group of tank {offered} rests in part on {codes}, and a cell of those is not confirmed by two readings.",
+      "de": "{product}: nicht beurteilbar. Die Gruppe des Tanks {offered} beruht mit auf {codes}, und dort ist eine Zelle nicht von zwei Lesungen bestätigt.",
+      "fr": "{product} : impossible à évaluer. Le groupe de la citerne {offered} repose en partie sur {codes}, dont une cellule n'est pas confirmée par deux lectures."
+    },
+    "not_settled": {
+      "nl": "{product}: niet te beoordelen. De hiërarchie voor tankcode {code} is door geen twee lezingen bevestigd.",
+      "en": "{product}: cannot be assessed. The hierarchy for tank code {code} is not confirmed by two readings.",
+      "de": "{product}: nicht beurteilbar. Die Rangfolge für die Tankcodierung {code} ist nicht von zwei Lesungen bestätigt.",
+      "fr": "{product} : impossible à évaluer. La hiérarchie pour le code-citerne {code} n'est pas confirmée par deux lectures."
+    },
+    "unknown_code": {
+      "nl": "{product}: niet te beoordelen. Tankcode {code} komt niet voor in 4.3; controleer de code op het keuringsdocument van de tank.",
+      "en": "{product}: cannot be assessed. Tank code {code} does not appear in 4.3; check the code on the tank's approval document.",
+      "de": "{product}: nicht beurteilbar. Die Tankcodierung {code} kommt in 4.3 nicht vor; prüfen Sie die Codierung auf dem Prüfdokument des Tanks.",
+      "fr": "{product} : impossible à évaluer. Le code-citerne {code} ne figure pas au 4.3 ; vérifiez le code sur le document d'agrément de la citerne."
+    },
+    "no_classification": {
+      "nl": "{product}: niet te beoordelen. 4.3.4.1.2 werkt met klasse en classificatiecode, en die zijn hier niet bekend.",
+      "en": "{product}: cannot be assessed. 4.3.4.1.2 works from class and classification code, and those are not known here.",
+      "de": "{product}: nicht beurteilbar. 4.3.4.1.2 arbeitet mit Klasse und Klassifizierungscode, und die sind hier nicht bekannt.",
+      "fr": "{product} : impossible à évaluer. Le 4.3.4.1.2 part de la classe et du code de classification, inconnus ici."
+    },
+    "no_packing_group": {
+      "nl": "geen",
+      "en": "none",
+      "de": "keine",
+      "fr": "aucun"
+    },
+    "provisions": {
+      "nl": "De hiërarchie houdt geen rekening met de bijzondere bepalingen van kolom (13): {codes} (zie 4.3.5 en 6.8.4).",
+      "en": "The hierarchy takes no account of the special provisions of column (13): {codes} (see 4.3.5 and 6.8.4).",
+      "de": "Die Rangfolge berücksichtigt die Sondervorschriften der Spalte (13) nicht: {codes} (siehe 4.3.5 und 6.8.4).",
+      "fr": "La hiérarchie ne tient pas compte des dispositions spéciales de la colonne (13) : {codes} (voir 4.3.5 et 6.8.4)."
+    },
+    "gas_pressure_from_table": {
+      "nl": "{product}: tank {offered} past qua letters bij tankcode {required}, maar de vereiste proefdruk staat als x in kolom (12): die volgt uit de tabel van 4.3.3.2.5 en zit niet in CargoPilot. Vergelijk de proefdruk zelf.",
+      "en": "{product}: tank {offered} matches tank code {required} on its letters, but the required test pressure is printed as x in column (12): it follows from the table of 4.3.3.2.5, which CargoPilot does not hold. Compare the test pressure yourself.",
+      "de": "{product}: Tank {offered} passt nach den Buchstaben zur Tankcodierung {required}, die verlangte Prüfdruckziffer steht in Spalte (12) aber als x: sie folgt aus der Tabelle in 4.3.3.2.5, die CargoPilot nicht enthält. Vergleichen Sie den Prüfdruck selbst.",
+      "fr": "{product} : la citerne {offered} correspond au code-citerne {required} par ses lettres, mais la pression d'épreuve exigée est imprimée x à la colonne (12) : elle découle du tableau du 4.3.3.2.5, que CargoPilot ne contient pas. Comparez la pression d'épreuve vous-même."
+    },
+    "gas_suffix": {
+      "nl": "{product}: tank {offered} haalt de hiërarchie van 4.3.3.1.2, maar de vereiste code {required} draagt de toevoeging {suffix}, waarover de hiërarchie niets zegt. Controleer die op het keuringsdocument.",
+      "en": "{product}: tank {offered} meets the hierarchy of 4.3.3.1.2, but the required code {required} carries the suffix {suffix}, about which the hierarchy says nothing. Check it against the tank's approval document.",
+      "de": "{product}: Tank {offered} erfüllt die Rangfolge von 4.3.3.1.2, die verlangte Codierung {required} trägt aber den Zusatz {suffix}, zu dem die Rangfolge nichts sagt. Prüfen Sie ihn am Prüfdokument.",
+      "fr": "{product} : la citerne {offered} satisfait à la hiérarchie du 4.3.3.1.2, mais le code exigé {required} porte la mention {suffix}, sur laquelle la hiérarchie ne dit rien. Vérifiez-la sur le document d'agrément."
+    }
   }
 }

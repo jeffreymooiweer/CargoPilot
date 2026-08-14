@@ -452,6 +452,11 @@
       "not_permitted": "non autorisé"
     },
     "tankProvisions": "Dispositions spéciales : {{codes}}",
+    "tankFitTitle": "Cette citerne convient-elle ? (ADR 4.3)",
+    "tankFit": {
+      "ok": "convient",
+      "not_permitted": "ne convient pas"
+    },
     "adnAdmissionTitle": "Transport autorisé (ADN 3.2.1, colonne (8))",
     "adnAdmission": {
       "ok": "autorisé",

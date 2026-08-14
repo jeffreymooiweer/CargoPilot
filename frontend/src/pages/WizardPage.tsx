@@ -64,7 +64,11 @@ const DG_EXTRA_FIELDS: Record<string, string[]> = {
   // The mode comes first because it decides what the rest of the answers mean:
   // admission, the tunnel code and the placarding all branch on it, and until
   // v1.66.0 a tank load silently got the answers for packages.
-  ADR: ["carriage_mode", "transport_category", "adr_total_quantity"],
+  // The tank's own code comes straight after the mode that makes it relevant:
+  // column (12) says which code the substance requires, and ADR 4.3 decides
+  // whether the tank standing on the yard may carry it. The field only shows
+  // once the mode says a tank is involved.
+  ADR: ["carriage_mode", "tank_code", "transport_category", "adr_total_quantity"],
   RID: ["carriage_mode", "transport_category", "adr_total_quantity"],
   ADN: ["carriage_mode", "transport_category", "adr_total_quantity"],
   IMDG: ["technical_name", "marine_pollutant", "ems_code", "emergency_contact"],

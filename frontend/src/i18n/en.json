@@ -452,6 +452,11 @@
       "not_permitted": "not permitted"
     },
     "tankProvisions": "Special provisions: {{codes}}",
+    "tankFitTitle": "Does this tank fit these goods? (ADR 4.3)",
+    "tankFit": {
+      "ok": "fits",
+      "not_permitted": "does not fit"
+    },
     "adnAdmissionTitle": "Carriage permitted (ADN 3.2.1, column (8))",
     "adnAdmission": {
       "ok": "permitted",

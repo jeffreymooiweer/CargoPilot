@@ -53,6 +53,10 @@ CLASS = re.compile(r"[1-9](?:\.\d)?")
 PACKING_GROUP = re.compile(r"I{1,3}")
 #: A classification code of table A column (3b): F1, FT2, ST3, M11, C1, I3, W1.
 CLASSIFICATION = re.compile(r"[A-Z]{1,3}\d{0,2}([a-z])?")
+#: What a condition inside the packing group cell looks like in every edition:
+#: a comparison. Nothing else in the table carries one, so it is what tells a
+#: condition apart from a stray line of running text.
+CONDITION = re.compile(r"[≤≥<>]|kPa|bar")
 
 #: What each edition calls the two tables, and the sentence that carries the
 #: inheritance. The phrases are the edition's own headings; they are how a page
@@ -65,7 +69,8 @@ LANGUAGES: dict[str, dict[str, Any]] = {
         "group_column": "group of permitted substances",
         "class_column": "class",
         "inherit": re.compile(
-            r"groups? of permitted substances for tank codes?(.*)", re.IGNORECASE),
+            r"groups? of permitted substances for tank codes?", re.IGNORECASE),
+        "inherit_end": None,
         "and": re.compile(r"\band\b", re.IGNORECASE),
     },
     "nl": {
@@ -75,19 +80,20 @@ LANGUAGES: dict[str, dict[str, Any]] = {
         "group_column": "groep van toegestane stoffen",
         "class_column": "klasse",
         "inherit": re.compile(
-            r"groepen van de voor de tankcodes?(.*?)toegestane stoffen",
-            re.IGNORECASE | re.DOTALL),
+            r"groepen van de voor de tankcodes?", re.IGNORECASE),
+        "inherit_end": re.compile(r"toegestane stoffen", re.IGNORECASE),
         "and": re.compile(r"\ben\b", re.IGNORECASE),
     },
     "de": {
-        "gases_heading": "rangordnung der tanks",
-        "gases_column": "andere tankcodierung",
+        # Measured in the book, not guessed: the first guesses at these
+        # phrases found no page at all.
+        "gases_heading": "hierarchische aufstellung",
+        "gases_column": "weitere tankcodierung",
         "code_column": "tankcodierung",
-        "group_column": "gruppe der zugelassenen stoffe",
+        "group_column": "klassifizierungs",
         "class_column": "klasse",
-        "inherit": re.compile(
-            r"gruppen der für die tankcodierungen?(.*?)zugelassenen stoffe",
-            re.IGNORECASE | re.DOTALL),
+        "inherit": re.compile(r"für die tankcodierungen?", re.IGNORECASE),
+        "inherit_end": re.compile(r"zugelassenen stoffgruppen", re.IGNORECASE),
         "and": re.compile(r"\bund\b", re.IGNORECASE),
     },
 }
@@ -207,33 +213,53 @@ def gas_rows(doc, pages: list[int]) -> tuple[list[dict[str, Any]], list[str]]:
 
 
 def rationalised_pages(doc, language: str) -> list[int]:
+    """The pages of the rationalized approach, header or no header.
+
+    Requiring the table's headings on every page is what the first reader did,
+    and the printed Dutch edition does not repeat them: page 846 fell out of
+    the reading, the twenty-odd rows of L4BN with it, and the two rows that
+    happened to sit on the next page were handed to the block above. So the
+    heading is what finds the table, and the rows themselves are what say
+    where it ends — the section runs on until a page stops looking like it.
+    """
     words = LANGUAGES[language]
-    found = []
+    start = None
     for index in range(doc.page_count):
         text = doc[index].get_text()
         if _is_contents(text):
             continue
         low = text.lower()
-        if words["group_column"] not in low or words["code_column"] not in low:
-            continue
-        if len(TANK_CODE.findall(text)) >= 3:
-            found.append(index)
+        if (words["group_column"] in low and words["code_column"] in low
+                and len(TANK_CODE.findall(text)) >= 3):
+            start = index
+            break
+    if start is None:
+        return []
+
+    found = [start]
+    for index in range(start + 1, doc.page_count):
+        if _rows_of_the_table(doc[index]) < 5:
+            break
+        found.append(index)
     return found
 
 
-def _class_boundary(page, below: float) -> float:
-    """Where the tank code column ends and the group columns begin.
-
-    The tank code stands alone on the left of a wide table; the widest corridor
-    in the left third of the page is the gutter after it.
-    """
-    corridors = _corridor(page, below)
-    limit = page.rect.width / 3
-    candidates = [(end - start, (start + end) / 2)
-                  for start, end in corridors if end < limit]
-    if not candidates:
-        return limit
-    return max(candidates)[1]
+def _rows_of_the_table(page) -> int:
+    """How many lines of this page read as rows of the rationalized approach."""
+    rows = 0
+    for _y, items in _lines(page):
+        tokens, _markers = _strip_markers(
+            [word.strip(",").strip() for _x, word in items])
+        if not tokens:
+            continue
+        if TANK_CODE.fullmatch(tokens[0]):
+            tokens = tokens[1:]
+        if tokens and CLASS.fullmatch(tokens[0]):
+            tokens = tokens[1:]
+        if (tokens and CLASSIFICATION.fullmatch(tokens[0])
+                and all(PACKING_GROUP.fullmatch(token) for token in tokens[1:])):
+            rows += 1
+    return rows
 
 
 def rationalised_rows(doc, pages: list[int],
@@ -244,85 +270,302 @@ def rationalised_rows(doc, pages: list[int],
     leaving the class blank while it repeats — so a blank class means the class
     above, and a line without a tank code belongs to the code above. The
     sentence that ends a block names the codes whose groups this one inherits;
-    it is kept as it is written, because the inheritance is what makes the table
-    a hierarchy at all.
+    that inheritance is what makes the table a hierarchy at all, so it is read
+    rather than skipped, over as many lines as the sentence takes.
+
+    Where the columns are is not measured, because it does not have to be. The
+    four columns hold four shapes that cannot be mistaken for each other — a
+    tank code begins with L or S and has a fixed form, a class is a bare digit
+    with at most one decimal, a classification code is capitals and digits, a
+    packing group is one to three I's — and they are printed in that order. So
+    a line is read by what its tokens are, which also means a running head, a
+    page number or a footnote is not a line of the table at all: it carries a
+    token that is none of those four things.
     """
     words = LANGUAGES[language]
-    blocks: list[dict[str, Any]] = []
+    blocks: dict[str, dict[str, Any]] = {}
+    order: list[str] = []
     failures: list[str] = []
     current: dict[str, Any] | None = None
     seen_class = ""
+    inheriting = False
+    previous = ""
+
+    def block(code: str, page: int) -> dict[str, Any]:
+        # A block that runs over a page break has its tank code printed again
+        # at the head of the continuation, and the same code is never two
+        # blocks — so the second sight of it continues the first.
+        if code not in blocks:
+            blocks[code] = {"tank_code": code, "groups": [], "inherits": [],
+                            "sentence": "", "pages": []}
+            order.append(code)
+        if page not in blocks[code]["pages"]:
+            blocks[code]["pages"].append(page)
+        return blocks[code]
 
     for index in pages:
-        page = doc[index]
-        lines = _lines(page)
-        header = next((y for y, items in lines
-                       if words["code_column"] in flatten(
-                           " ".join(w for _x, w in items)).lower()), 0.0)
-        boundary = _class_boundary(page, header)
-        for _y, items in lines:
-            if _y <= header:
-                continue
+        previous = ""
+        for _y, items in _lines(doc[index]):
             text = flatten(" ".join(word for _x, word in items))
-            inherit = words["inherit"].search(text)
+            previous_line, previous = previous, text
+            tokens, markers = _strip_markers(
+                [word.strip(",").strip() for _x, word in items])
+
+            # The inheritance is a sentence, and a sentence is not a line. The
+            # English edition sets it on one and wraps the tail — "… L10BH and"
+            # / "L10CH" — while the Dutch wraps it in the middle and closes it
+            # two lines later with "toegestane stoffen". Read as lines it comes
+            # out as a new block with no group, which is how L4BN, L10CH and
+            # SGAN went missing from the Dutch reading altogether.
+            if inheriting:
+                # What the sentence actually said is kept beside what was made
+                # of it: when two readings disagree about an inheritance, the
+                # sentence is the evidence, and without it the next correction
+                # is a guess about a line nobody has seen.
+                if current is not None:
+                    current["sentence"] = f"{current.get('sentence', '')} {text}".strip()
+                # A sentence that never meets its closing words would run to
+                # the end of the table, swallowing the blocks after it: the
+                # Dutch reading had L4BN, L10CH, L15CH and L21DH inside
+                # L10DH's inheritance and missing from the table. So the tail
+                # of a sentence is only ever a line of tank codes and the
+                # edition's own joining words. Anything else ends it, and is
+                # then read as the line it is.
+                closes = _closing(text, words)
+                tail = _codes_in(text)
+                if closes or _only_codes(text, tokens, words):
+                    if current is not None:
+                        for code in tail:
+                            if code not in current["inherits"]:
+                                current["inherits"].append(code)
+                    inheriting = not closes and _sentence_runs_on(text, words)
+                    continue
+                inheriting = False
+
+            # The phrase that opens the sentence wraps like any other text, and
+            # a reader that asks each line on its own never sees it: "en de
+            # groepen van de voor de" / "tankcodes SGAV, SGAN en SGAH". Four of
+            # the Dutch sentences and two of the English were lost that way. So
+            # the phrase is looked for across the line before as well, and only
+            # counts when it reaches into this one — otherwise it was already
+            # read on the line before.
+            joined = f"{previous_line} {text}".strip() if previous_line else text
+            start = len(joined) - len(text)
+            inherit = words["inherit"].search(joined)
+            if inherit and inherit.end() < start:
+                inherit = None
             if inherit:
+                # Which block the sentence belongs to is a matter of where the
+                # edition puts it. The English volume sets it at the end of a
+                # block's cell, so it belongs to the block being read. The
+                # printed Dutch edition sets it at the *start*, on the same
+                # line as the tank code it belongs to — and a reader that took
+                # that line for the block above lost the block itself and gave
+                # its rows to its predecessor. L4BN and L10CH went missing that
+                # way, and L1,5BN came back inheriting from itself.
+                if tokens and TANK_CODE.fullmatch(tokens[0]) and text.startswith(tokens[0]):
+                    current = block(tokens[0], index + 1)
+                    seen_class = ""
                 if current is None:
                     failures.append(f"p{index + 1}: inheritance before any code")
                     continue
-                current["inherits"] = [
-                    code for code in TANK_CODE.findall(inherit.group(1)) or []
-                ] or _codes_in(inherit.group(1))
+                current["sentence"] = joined
+                for code in _codes_in(joined[inherit.end():]):
+                    if code not in current["inherits"]:
+                        current["inherits"].append(code)
+                inheriting = _sentence_runs_on(text, words)
                 continue
-            left = [word for x, word in items if x < boundary]
-            right = [(x, word) for x, word in items if x >= boundary]
-            code = next((word for word in left
-                         if TANK_CODE.fullmatch(word.strip(","))), "")
-            if code:
-                current = {"tank_code": code.rstrip(")"), "groups": [],
-                           "inherits": [], "page": index + 1}
-                blocks.append(current)
+
+            # A packing group on a line of its own belongs to the row above:
+            # both editions wrap "II, III" that way, and read as a row of its
+            # own it becomes a group whose classification code is "III" — the
+            # one shape a packing group and a classification code share.
+            if (tokens and current is not None and current["groups"]
+                    and all(PACKING_GROUP.fullmatch(token) for token in tokens)):
+                current["groups"][-1]["packing_groups"].extend(tokens)
+                continue
+
+            codes = [token for token in tokens if TANK_CODE.fullmatch(token)]
+            if codes and TANK_CODE.fullmatch(tokens[0]):
+                current = block(tokens[0], index + 1)
                 seen_class = ""
-            if current is None:
+                tokens = tokens[1:]
+
+            if current is None or not tokens:
                 continue
-            group, seen_class = _group(right, seen_class)
+            group, seen_class = _group(tokens, seen_class)
             if group:
+                if markers and "footnote" not in group:
+                    group["footnote"] = "".join(markers)
                 current["groups"].append(group)
-            elif right and not code:
-                failures.append(f"p{index + 1} {current['tank_code']}: {text[:70]!r}")
-    return blocks, failures
+    return [_as_triples(blocks[code]) for code in order], failures
+
+
+def _as_triples(block: dict[str, Any]) -> dict[str, Any]:
+    """One row per class, classification code and packing group.
+
+    The editions do not agree on how to *set* a row and there is no reason they
+    should: the English volume prints "F1 II" and "F1 III" on two lines where
+    the Dutch prints "F1 II, III" on one. That is typesetting, not content, and
+    comparing the lines would report a disagreement where the two books say
+    exactly the same thing. A permission is a class, a classification code and
+    a packing group; where the regulation assigns no packing group — class 6.2
+    is the case — the permission has none, and that is a value too.
+    """
+    permitted: list[dict[str, Any]] = []
+    for group in block["groups"]:
+        for packing_group in group["packing_groups"] or [None]:
+            row = {"class": group["class"],
+                   "classification_code": group["classification_code"],
+                   "packing_group": packing_group}
+            if group.get("condition"):
+                row["condition"] = group["condition"]
+            if group.get("footnote"):
+                row["footnote"] = group["footnote"]
+            if row not in permitted:
+                permitted.append(row)
+    return {"tank_code": block["tank_code"], "permitted": permitted,
+            "inherits": block["inherits"], "sentence": block["sentence"],
+            "pages": block["pages"]}
+
+
+#: A footnote marker as the table sets it against a cell: a single lower-case
+#: letter, sometimes with the bracket it is printed with. Left in the line it
+#: would fail every column's shape and take the whole row down with it — which
+#: is what happened to class 6.1 T1 under L10CH, and to the class cell with it,
+#: so that six rows below it were read as class 3.
+MARKER = re.compile(r"[a-z]\)?")
+
+
+def _strip_markers(tokens: list[str]) -> tuple[list[str], list[str]]:
+    kept, markers = [], []
+    for token in tokens:
+        if not token:
+            continue
+        if MARKER.fullmatch(token):
+            markers.append(token.rstrip(")"))
+        else:
+            kept.append(token)
+    return kept, markers
+
+
+def _closing(text: str, words: dict[str, Any]) -> bool:
+    """Does this line carry the words the edition ends the sentence with?"""
+    end = words.get("inherit_end")
+    return bool(end and end.search(text))
+
+
+def _only_codes(text: str, tokens: list[str], words: dict[str, Any]) -> bool:
+    """Is this line nothing but tank codes and the words that join them?"""
+    if not tokens:
+        return False
+    joined = words["and"]
+    return all(TANK_CODE.fullmatch(token) or joined.fullmatch(token)
+               for token in tokens)
+
+
+def _sentence_runs_on(text: str, words: dict[str, Any]) -> bool:
+    """Is the inheritance sentence still open after this line?
+
+    Where the edition ends the sentence with words of its own — the Dutch
+    "toegestane stoffen", the German "zugelassenen Stoffe" — those words close
+    it, and nothing else does. The English sentence ends where its list does,
+    so it is the comma or the conjunction at the line's end that says it runs
+    on.
+    """
+    tail = text.rstrip()
+    closing = words.get("inherit_end")
+    if closing is not None:
+        return not closing.search(tail)
+    return tail.endswith(",") or bool(words["and"].search(tail[-6:]))
 
 
 def _codes_in(text: str) -> list[str]:
     return [match.group(0).rstrip(")") for match in TANK_CODE.finditer(text)]
 
 
-def _group(items: list[tuple[float, str]],
+def _group(tokens: list[str],
            seen_class: str) -> tuple[dict[str, Any] | None, str]:
     """One line of the group columns: class, classification code, packing group.
 
     The class is printed once for a run of classification codes and left blank
     after that, so a blank one is the class above rather than a missing value.
+    A line that carries anything else is not a line of the table, and is left
+    alone rather than half-read: that is what keeps the running head, the page
+    number and the footnote out of the group.
     """
-    tokens = [word.strip(",") for _x, word in items if word.strip(",")]
     if not tokens:
         return None, seen_class
     klass = seen_class
     if CLASS.fullmatch(tokens[0]):
         klass = tokens[0]
         tokens = tokens[1:]
-    if not tokens:
+    if not tokens or not CLASSIFICATION.fullmatch(tokens[0]):
         return None, klass
     code = tokens[0]
-    if not CLASSIFICATION.fullmatch(code):
+    # The packing group cell is not always only a packing group. LGBF admits
+    # packing group II of class 3 F1 only where the vapour pressure at 50 °C is
+    # at most 1.1 bar, and every edition prints that condition inside the cell:
+    # "II, Dampfdruck bei 50 °C ≤ 1,1 bar". A reader that demands the cell hold
+    # nothing but Roman numerals drops the whole row — which is how the Dutch
+    # reading lost the packing group II rows of LGBF and L1,5BN, and the
+    # English one lost the packing group of L4BN's first row. The condition is
+    # part of the permission and is kept.
+    rest = list(tokens[1:])
+    packing_groups: list[str] = []
+    while rest and PACKING_GROUP.fullmatch(rest[0]):
+        packing_groups.append(rest.pop(0))
+    condition = " ".join(rest)
+    if rest and not CONDITION.search(condition):
         return None, klass
-    groups = [token for token in tokens[1:] if PACKING_GROUP.fullmatch(token)]
     if not klass:
         return None, klass
-    return {"class": klass, "classification_code": code.rstrip(")"),
-            "packing_groups": groups}, klass
+    # A classification code is capitals and digits; a lower-case letter against
+    # it is the table's footnote marker and not part of the code. Keeping them
+    # apart matters because the marker is what carries the exception — "except
+    # hydrofluoric acid" hangs off one of these letters.
+    group: dict[str, Any] = {"class": klass, "classification_code": code.rstrip(
+        "abcdefghijklmnopqrstuvwxyz"), "packing_groups": packing_groups}
+    if condition:
+        group["condition"] = condition
+    marker = code[len(group["classification_code"]):]
+    if marker:
+        group["footnote"] = marker
+    return group, klass
 
 
 # --- probing --------------------------------------------------------------
+
+
+def words(doc, language: str) -> int:
+    """Print the geometry of the table pages, once, as one JSON line.
+
+    The volumes live on a runner and the development container cannot reach
+    them, so every correction to the reader would otherwise cost a CI run to
+    find out what it did. The words and their positions are all a reader needs;
+    with them saved outside the repository the parser can be fixed against the
+    real page in the container, and the runner is asked again only to confirm.
+    """
+    pages = {}
+    for index in gas_pages(doc, language) + rationalised_pages(doc, language):
+        pages[index + 1] = [[round(y, 1), [[round(x, 1), word] for x, word in items]]
+                            for y, items in _lines(doc[index])]
+    print(f"WORDS {json.dumps({'language': language, 'pages': pages}, ensure_ascii=False)}")
+    return 0
+
+
+def probe_page(doc, number: int) -> int:
+    """One page, line by line, with the x of every word.
+
+    Guessing what a page looks like from what a reader made of it is how three
+    runs get spent on a layout nobody has looked at. This is the looking.
+    """
+    page = doc[number - 1]
+    print(f"--- page {number} of {doc.page_count} " + "-" * 30)
+    for y, items in _lines(page):
+        cells = " | ".join(f"{round(x)}:{word}" for x, word in items)
+        print(f"{round(y, 1)} {cells[:170]}")
+    return 0
 
 
 def probe(doc, language: str) -> int:
@@ -344,48 +587,205 @@ def probe(doc, language: str) -> int:
 # --- the two readings against each other ----------------------------------
 
 
-def check(first: dict[str, Any], second: dict[str, Any]) -> dict[str, Any]:
+def check(first: dict[str, Any], second: dict[str, Any],
+          third: dict[str, Any] | None = None) -> dict[str, Any]:
     """Compare two readings cell by cell, and keep every disagreement.
 
     A cell the two editions do not agree on is not a cell to choose between. It
     is stored with both values and counted as unsettled, so that what the
     application answers with is only ever what two books said the same.
     """
-    report: dict[str, Any] = {"gases": [], "rationalised": [], "disputes": 0}
+    readings = [reading for reading in (first, second, third) if reading]
+    languages = [reading["language"] for reading in readings]
+    report: dict[str, Any] = {"gases": [], "rationalised": [], "disputes": 0,
+                              "readings": languages, "settled_by_third": 0}
 
-    a_gas = {row["tank_code"]: row for row in first["gases"]}
-    b_gas = {row["tank_code"]: row for row in second["gases"]}
-    for code in sorted(set(a_gas) | set(b_gas)):
-        left, right = a_gas.get(code), b_gas.get(code)
-        row: dict[str, Any] = {"tank_code": code, "readings": bool(left) + bool(right)}
-        if left and right and left["also_permitted"] == right["also_permitted"]:
-            row["also_permitted"] = left["also_permitted"]
-        elif left and right:
-            row["disputed"] = {"also_permitted": {
-                first["language"]: left["also_permitted"],
-                second["language"]: right["also_permitted"]}}
-            report["disputes"] += 1
+    gases = [{row["tank_code"]: row for row in reading["gases"]}
+             for reading in readings]
+    for code in sorted(set().union(*(set(side) for side in gases))):
+        rows = {language: side.get(code)
+                for language, side in zip(languages, gases)}
+        present = {language: row for language, row in rows.items() if row}
+        row = {"tank_code": code, "readings": len(present)}
+        values = {language: tuple(found["also_permitted"])
+                  for language, found in present.items()}
+        if len(present) < 2:
+            row["disputed"] = {"also_permitted":
+                               {language: found["also_permitted"]
+                                for language, found in present.items()}}
+            report["gases"].append(row)
+            continue
+        winner, agreed = _majority(values)
+        if winner is not None:
+            row["also_permitted"] = list(winner)
+            if agreed < len(present):
+                report["settled_by_third"] += 1
+                row["settled_by"] = [language for language, value in values.items()
+                                     if value == winner]
         else:
-            source = left or right
-            row["also_permitted"] = source["also_permitted"]
+            row["disputed"] = {"also_permitted":
+                               {language: found["also_permitted"]
+                                for language, found in present.items()}}
+            report["disputes"] += 1
         report["gases"].append(row)
 
-    a_rat = {row["tank_code"]: row for row in first["rationalised"]}
-    b_rat = {row["tank_code"]: row for row in second["rationalised"]}
-    for code in sorted(set(a_rat) | set(b_rat)):
-        left, right = a_rat.get(code), b_rat.get(code)
-        row = {"tank_code": code, "readings": bool(left) + bool(right)}
-        for field in ("groups", "inherits"):
-            if left and right and left[field] == right[field]:
-                row[field] = left[field]
-            elif left and right:
+    tables = [{_canonical(row["tank_code"]): row for row in reading["rationalised"]}
+              for reading in readings]
+    for code in sorted(set().union(*(set(side) for side in tables))):
+        rows = {language: side.get(code)
+                for language, side in zip(languages, tables)}
+        present = {language: row for language, row in rows.items() if row}
+        row = {"tank_code": code, "readings": len(present)}
+        for field in ("permitted", "inherits"):
+            values = {language: tuple(sorted(_comparable(found, field)))
+                      for language, found in present.items()}
+            if len(present) < 2:
+                # One book is not a check on anything: the value is kept, but
+                # under the same name a disputed cell uses, so that nothing
+                # downstream can mistake it for something two readings agreed
+                # on.
                 row.setdefault("disputed", {})[field] = {
-                    first["language"]: left[field], second["language"]: right[field]}
-                report["disputes"] += 1
+                    language: found[field] for language, found in present.items()}
+                continue
+            winner, agreed = _majority(values)
+            if winner is not None:
+                source = next(language for language, value in values.items()
+                              if value == winner)
+                row[field] = present[source][field]
+                if agreed < len(present):
+                    report["settled_by_third"] += 1
+                    row.setdefault("settled_by", {})[field] = [
+                        language for language, value in values.items()
+                        if value == winner]
             else:
-                row[field] = (left or right)[field]
+                row.setdefault("disputed", {})[field] = {
+                    language: found[field] for language, found in present.items()}
+                row.setdefault("only_in", {})[field] = {
+                    language: sorted(set(value) - set().union(
+                        *(set(other) for other_language, other in values.items()
+                          if other_language != language)))
+                    for language, value in values.items()}
+                if field == "inherits":
+                    row["sentences"] = {language: found.get("sentence", "")
+                                        for language, found in present.items()}
+                report["disputes"] += 1
         report["rationalised"].append(row)
     return report
+
+
+def _majority(values: dict[str, Any]) -> tuple[Any, int]:
+    """The value at least two readings agree on, and how many said it.
+
+    Two books are the minimum this repository accepts for a regulatory table
+    and three is what it takes to settle a stand-off: where the editions
+    disagree, the reading that stands alone is the one that is wrong, and where
+    all three differ nothing is settled at all. A single reading settles
+    nothing either — one book is not a check on anything.
+    """
+    if len(values) < 2:
+        return None, 0
+    counts: dict[Any, int] = {}
+    for value in values.values():
+        counts[value] = counts.get(value, 0) + 1
+    best, agreed = max(counts.items(), key=lambda item: item[1])
+    return (best, agreed) if agreed >= 2 else (None, 0)
+
+
+def _canonical(code: str) -> str:
+    """One spelling of a tank code, so two editions can be compared at all.
+
+    The English volume prints L1.5BN and the Dutch L1,5BN. That is a decimal
+    separator, not a difference about the tank, and treating it as one would
+    leave both editions' rows unmatched and every cell in them unsettled.
+    """
+    return code.replace(",", ".")
+
+
+def _numbers(condition: str | None) -> str:
+    """A condition reduced to its numbers, which is the part that is not a
+    language. "vapour pressure at 50 °C ≤ 1.1 bar" and "Dampfdruck bei 50 °C ≤
+    1,1 bar" are one condition; comparing the words would call them two."""
+    if not condition:
+        return ""
+    return ",".join(re.findall(r"\d+(?:[.,]\d+)?", condition.replace(",", ".")))
+
+
+def _comparable(block: dict[str, Any], field: str) -> list[str]:
+    """A field flattened to strings, so the comparison is about content."""
+    if field == "inherits":
+        return [_canonical(code) for code in block[field]]
+    return [f"{row['class']}/{row['classification_code']}/{row['packing_group'] or '-'}"
+            f"/{_numbers(row.get('condition'))}" for row in block[field]]
+
+
+def report_differences(report: dict[str, Any]) -> None:
+    """Say where the two readings differ, and nothing else.
+
+    Between corrections this is the only thing worth printing: the readings
+    themselves are ten thousand characters each, and what a run has to answer
+    is which cells two books do not yet say the same thing about.
+    """
+    for row in report["gases"]:
+        if row.get("disputed"):
+            sides = row["disputed"]["also_permitted"]
+            print(f"  gases {row['tank_code']}: "
+                  + " ".join(f"{language}={value}"
+                             for language, value in sides.items()))
+    for row in report["rationalised"]:
+        if row["readings"] < 2:
+            print(f"  {row['tank_code']}: only one reading ({row['readings']})")
+        for field, sides in (row.get("only_in") or {}).items():
+            print(f"  {row['tank_code']} {field}: "
+                  + " / ".join(f"only {language} {value}"
+                               for language, value in sides.items()))
+            if field == "inherits":
+                for language, sentence in (row.get("sentences") or {}).items():
+                    print(f"      {language}: {sentence[:130]!r}")
+    print(f"readings: {'+'.join(report['readings'])}  "
+          f"settled by a third reading: {report['settled_by_third']}  "
+          f"disputes: {report['disputes']}")
+
+
+#: What the two editions are, for the record the seed has to carry. A seed that
+#: does not say which books it was read from cannot be checked by anyone later.
+EDITIONS = {
+    "en": "ADR 2025 Volume II (ECE/TRANS/352 Vol. II), UNECE",
+    "nl": "ADR 2025, Dutch edition, printed text (adr_nl_2025 in the store)",
+    "de": "ADR 2025, German edition (Bundesamt für Strassen), volume II",
+}
+
+
+def as_seed(report: dict[str, Any],
+            readings: list[dict[str, Any]]) -> dict[str, Any]:
+    """The comparison as the application will read it, bookkeeping and all."""
+    languages = [reading["language"] for reading in readings]
+    settled = sum(1 for row in report["rationalised"]
+                  if row["readings"] >= 2 and not row.get("disputed"))
+    return {
+        "_comment": (
+            "The two tank hierarchies of ADR 4.3, read from two books and "
+            "compared. 4.3.3.1.2 is a hierarchy of codes and applies to gases; "
+            "4.3.4.1.2 is the rationalized approach and applies to classes 3 to "
+            "9, where a tank code names the group of substances it may carry by "
+            "class, classification code and packing group, and inherits the "
+            "groups of the codes below it. A cell the two readings do not agree "
+            "on carries both values under 'disputed' and settles nothing."),
+        "provisions": ["4.3.3.1.2", "4.3.4.1.2"],
+        "editions": {language: EDITIONS[language] for language in languages},
+        "note_of_the_regulation": (
+            "The hierarchy takes no special provision into account; see 4.3.5 "
+            "and 6.8.4, which are column (13) of table A."),
+        "cross_check": {
+            "readings": languages,
+            "gas_rows": len(report["gases"]),
+            "tank_codes": len(report["rationalised"]),
+            "codes_settled_on_every_cell": settled,
+            "cells_a_third_reading_settled": report["settled_by_third"],
+            "cells_no_two_readings_agree_on": report["disputes"],
+        },
+        "gases": report["gases"],
+        "rationalised": report["rationalised"],
+    }
 
 
 def main() -> int:
@@ -394,22 +794,30 @@ def main() -> int:
     parser.add_argument("--language", default="en", choices=sorted(LANGUAGES))
     parser.add_argument("--probe", action="store_true",
                         help="report the layout of the pages found and stop")
+    parser.add_argument("--words", action="store_true",
+                        help="print the geometry of the pages found and stop")
+    parser.add_argument("--probe-page", type=int, default=0,
+                        help="print one page line by line, with the x of every word")
     parser.add_argument("--dump", action="store_true",
                         help="print every row to the log as well")
     parser.add_argument("--out", type=Path, help="write the reading here")
-    parser.add_argument("--check", type=Path, nargs=2, metavar=("FIRST", "SECOND"),
-                        help="compare two readings")
+    parser.add_argument("--check", type=Path, nargs="+",
+                        metavar="READING",
+                        help="compare two readings, or three to settle them")
     parser.add_argument("--emit", type=Path, help="write the compared seed here")
     args = parser.parse_args()
 
     if args.check:
-        first, second = (json.loads(path.read_text(encoding="utf-8"))
-                         for path in args.check)
-        report = check(first, second)
-        print(json.dumps({k: v for k, v in report.items() if k == "disputes"}))
+        if not 2 <= len(args.check) <= 3:
+            parser.error("--check takes two readings, or three to settle them")
+        readings = [json.loads(path.read_text(encoding="utf-8"))
+                    for path in args.check]
+        report = check(*readings)
+        report_differences(report)
         if args.emit:
             args.emit.write_text(
-                json.dumps(report, ensure_ascii=False, indent=1) + "\n",
+                json.dumps(as_seed(report, readings),
+                           ensure_ascii=False, indent=1) + "\n",
                 encoding="utf-8")
         return 0
 
@@ -419,6 +827,10 @@ def main() -> int:
     import pymupdf
 
     with pymupdf.open(args.pdf) as doc:
+        if args.probe_page:
+            return probe_page(doc, args.probe_page)
+        if args.words:
+            return words(doc, args.language)
         if args.probe:
             return probe(doc, args.language)
         gases, gas_failures = gas_rows(doc, gas_pages(doc, args.language))

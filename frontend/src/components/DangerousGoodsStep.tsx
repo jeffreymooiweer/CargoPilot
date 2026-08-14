@@ -418,7 +418,12 @@ export default function DangerousGoodsStep({
                 </div>
                 <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">{t("dgsearch.unHint")}</p>
               </div>
-              {[...productFields, ...extraFields.filter((f) => !(CORE_FIELDS as readonly string[]).includes(f))].map((field) =>
+              {[...productFields, ...extraFields.filter((f) => !(CORE_FIELDS as readonly string[]).includes(f))]
+                // A tank code is a question about a tank. Asking it of a
+                // packages consignment is noise, and noise on this step is
+                // what makes people stop reading it.
+                .filter((field) => field !== "tank_code" || product.carriage_mode === "tank")
+                .map((field) =>
                 field === "type_of_package" ? (
                   <div key={field}>
                     <div className="flex items-center gap-1.5">

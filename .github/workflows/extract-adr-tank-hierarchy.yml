@@ -8,6 +8,11 @@ name: Extract ADR tank hierarchy
 #
 # Nothing is committed. Two readings are compared in the development container
 # and only a comparison that accounts for every disagreement becomes a seed.
+#
+# Dispatch this on the working branch, not on main. The volumes live in the
+# Actions cache, and a cache is scoped to the branch that wrote it: a run on
+# main cannot see the 344 MB the branch's runs have built up, spends four
+# minutes discovering that UNECE still answers 403, and reads nothing.
 
 on:
   workflow_dispatch:
@@ -19,18 +24,33 @@ on:
           - en
           - nl
           - de
+          # Both, and print only where the two readings differ — which between
+          # corrections is the only thing worth carrying back.
+          - compare
         default: en
       probe:
         description: "Report the layout of the pages found and stop"
         type: boolean
         default: false
+      words:
+        description: "Print the geometry of the pages found, so the reader can be corrected in the development container"
+        type: boolean
+        default: false
+      probe_page:
+        description: "Print one page line by line, with the x of every word"
+        default: ""
+        required: false
       dump:
         description: "Print the reading to the log (the development container cannot reach the artifact store)"
         type: boolean
         default: true
+      commit:
+        description: "With language=compare: write the compared seed to this branch"
+        type: boolean
+        default: false
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   extract:
@@ -60,6 +80,9 @@ jobs:
             # read, and saying which is the useful answer.
             nl) python scripts/regulations_store.py path adr_nl_2025 ;;
             de) python scripts/regulations_store.py path adr_de_2 ;;
+            compare) python scripts/regulations_store.py path adr_nl_2025
+                     python scripts/regulations_store.py path adr_de_2
+                     python scripts/regulations_store.py fetch adr2 ;;
             *)  python scripts/regulations_store.py fetch adr2 ;;
           esac
 
@@ -67,9 +90,26 @@ jobs:
         env:
           LANGUAGE: ${{ inputs.language }}
           PROBE: ${{ inputs.probe }}
+          WORDS: ${{ inputs.words }}
+          PROBE_PAGE: ${{ inputs.probe_page }}
           DUMP: ${{ inputs.dump }}
         run: |
           set -euo pipefail
+          if [ "$LANGUAGE" = "compare" ]; then
+            python scripts/extract_adr_tank_hierarchy.py \
+              --pdf /tmp/cargopilot-regulations/adr2.pdf --language en --out en.json
+            python scripts/extract_adr_tank_hierarchy.py \
+              --pdf "$(python scripts/regulations_store.py path adr_nl_2025)" \
+              --language nl --out nl.json
+            # The third book settles the stand-offs. Where an edition stands
+            # alone against the other two it is the one that is wrong, and
+            # where all three differ nothing is settled — which is the whole
+            # reason for reading a table three times.
+            python scripts/extract_adr_tank_hierarchy.py \
+              --pdf "$(python scripts/regulations_store.py path adr_de_2)" \
+              --language de --out de.json || echo "the German reading failed"
+            exit 0
+          fi
           case "$LANGUAGE" in
             nl) PDF=$(python scripts/regulations_store.py path adr_nl_2025) ;;
             de) PDF=$(python scripts/regulations_store.py path adr_de_2) ;;
@@ -77,20 +117,104 @@ jobs:
           esac
           ARGS=(--pdf "$PDF" --language "$LANGUAGE" --out "hierarchy_$LANGUAGE.json")
           if [ "$PROBE" = "true" ]; then ARGS+=(--probe); fi
+          if [ "$WORDS" = "true" ]; then ARGS+=(--words); fi
+          if [ -n "$PROBE_PAGE" ]; then ARGS+=(--probe-page "$PROBE_PAGE"); fi
           if [ "$DUMP" = "true" ]; then ARGS+=(--dump); fi
           python scripts/extract_adr_tank_hierarchy.py "${ARGS[@]}"
 
       - name: Hand the reading back
-        if: ${{ always() && !inputs.probe }}
+        if: ${{ always() && !inputs.probe && !inputs.words && !inputs.probe_page && inputs.language != 'compare' }}
         uses: actions/upload-artifact@v4
         with:
           name: adr-tank-hierarchy-${{ inputs.language }}
           path: hierarchy_${{ inputs.language }}.json
           if-no-files-found: ignore
 
-      - name: Keep the volumes for the next run
+      # An empty store must never be saved. The cache is restored by prefix and
+      # the newest match wins, so a run that found nothing and saved its nothing
+      # puts every later run on an empty store — which is exactly what the first
+      # run of this workflow did.
+      - name: Is there a store worth keeping
         if: always()
+        id: store
+        run: |
+          SIZE=$(du -sm /tmp/cargopilot-regulations 2>/dev/null | cut -f1 || echo 0)
+          echo "megabytes=$SIZE" >> "$GITHUB_OUTPUT"
+          echo "the store holds ${SIZE} MB"
+
+      - name: Keep the volumes for the next run
+        if: ${{ always() && steps.store.outputs.megabytes > 10 }}
         uses: actions/cache/save@v4
         with:
           path: /tmp/cargopilot-regulations
           key: regulations-${{ github.run_id }}
+
+      # Last, and that is the whole point. The development container reads this
+      # log through an API that only returns its tail, so a reading printed in
+      # the middle of the run costs several times its own length to fetch —
+      # cache uploads, artifact chatter and cleanup all come after it. Printed
+      # here, it is the last thing in the log and the tail is the reading.
+      - name: Where the two readings differ
+        if: ${{ always() && inputs.language == 'compare' }}
+        run: |
+          echo "=== where the two readings differ ==="
+          READINGS="en.json nl.json"
+          if [ -s de.json ]; then READINGS="$READINGS de.json"; fi
+          python scripts/extract_adr_tank_hierarchy.py --check $READINGS \
+            --emit backend/seed/dg/adr_tank_hierarchy.json \
+            || echo "no comparison was made"
+
+      # The seed travels by commit, not through the log. The development
+      # container cannot reach the artifact store, and a reading is ten
+      # thousand characters; the other extraction workflows in this repository
+      # hand their result back the same way.
+      - name: Commit the compared seed
+        if: ${{ inputs.commit && inputs.language == 'compare' }}
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add backend/seed/dg/adr_tank_hierarchy.json
+          if git diff --cached --quiet; then
+            echo "Unchanged; nothing to commit."
+            exit 0
+          fi
+          git commit -m "Read the two tank hierarchies of ADR 4.3 from two books
+
+          4.3.3.1.2 for gases and the rationalized approach of 4.3.4.1.2,
+          from the English volume II and the printed Dutch edition. A cell
+          the two readings do not agree on carries both values and settles
+          nothing."
+          git push origin HEAD:${GITHUB_REF_NAME}
+
+      - name: What was read
+        if: ${{ always() && !inputs.probe && !inputs.words && !inputs.probe_page && inputs.language != 'compare' }}
+        env:
+          LANGUAGE: ${{ inputs.language }}
+          DUMP: ${{ inputs.dump }}
+        run: |
+          # A summary by default, the reading itself only when asked for.
+          # Correcting the parser takes several runs and a whole reading is
+          # some ten thousand characters; what a run has to answer in between
+          # is only whether every code is there with its groups and its
+          # inheritance, and that fits on a line each. Both are printed on one
+          # line, because the tail of a log is counted in lines.
+          python - "hierarchy_$LANGUAGE.json" "$DUMP" <<'PY'
+          import json, sys
+          try:
+              reading = json.load(open(sys.argv[1], encoding="utf-8"))
+          except OSError:
+              print("nothing was written")
+              raise SystemExit(0)
+          print(f"gases: {len(reading['gases'])} rows")
+          for row in reading["gases"]:
+              print(f"  {row['tank_code']}: {' '.join(row['also_permitted'])}")
+          print(f"rationalized: {len(reading['rationalised'])} codes")
+          for block in reading["rationalised"]:
+              codes = ",".join(f"{row['classification_code']}{row['packing_group'] or ''}"
+                               for row in block["permitted"])
+              print(f"  {block['tank_code']}: {len(block['permitted'])} permitted "
+                    f"[{codes[:110]}] inherits {'+'.join(block['inherits']) or '-'}")
+          if sys.argv[2] == "true":
+              print(json.dumps(reading, ensure_ascii=False))
+          PY

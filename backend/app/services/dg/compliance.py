@@ -1760,6 +1760,194 @@ def check_adr_tank_admission(
     }
 
 
+def check_adr_tank_fit(
+    entries: list[dict[str, Any]], language: str = "nl",
+) -> dict[str, Any]:
+    """ADR 4.3: may *this* tank carry these goods?
+
+    Column (12) says which tank code the substance requires. It does not say
+    whether the tank standing on the yard may carry it, and that is the
+    question a consignor actually has — the vehicle has the code it has. ADR
+    answers it twice and the two answers share nothing but their purpose:
+
+    - **4.3.3.1.2**, gases, is a hierarchy of *codes*. A substance under C*BN
+      may also travel in C#BN, C#CN, C#DN, C#BH, C#CH and C#DH, where the
+      figure standing for # is at least the figure standing for *. So the
+      answer is read off the offered code's own letters and pressure.
+    - **4.3.4.1.2**, classes 3 to 9, is the rationalized approach and is not a
+      hierarchy of codes at all. Each tank code names the group of substances
+      it may carry — class, classification code and packing group — and
+      inherits the groups of the codes below it. The required code is not
+      compared with the offered one; the substance is looked up in the offered
+      code's group.
+
+    Rounding those two to one rule is the mistake that would make this check
+    wrong, so they stay apart.
+
+    Three outcomes, and the third is not a failure of the check but an answer:
+    **fits**, **does not fit**, and **cannot be assessed** — the last where the
+    seed's readings did not settle a cell the answer would rest on, or where
+    the offered code is not one the table names.
+
+    The regulation's own note is why a fit is never the whole answer: the
+    hierarchy takes no account of the special provisions of 4.3.5 and 6.8.4,
+    which are column (13). Where the substance carries any, they are named with
+    the answer, because one of them can require equipment the hierarchy knows
+    nothing about, and another can switch the hierarchy off altogether.
+    """
+    rules = get_compliance_rules()["adr_tank_fit"]
+    lang = _lang(language)
+
+    def text(key: str, **values: Any) -> str:
+        block = rules[key]
+        return (block.get(lang) or block["en"]).format(**values)
+
+    items: list[dict[str, Any]] = []
+    blocked = False
+    for entry, index, product in _iter_products(entries):
+        if product.get("transport_forbidden"):
+            continue
+        if str(product.get("carriage_mode") or "").strip() != "tank":
+            continue
+        typed = str(product.get("tank_code") or "").strip()
+        offered = typed.upper()
+        if not offered:
+            continue
+        label = _product_label(entry, product, index)
+        rows = database.get_un_entries(str(product.get("un_number") or "").strip())
+        row = rows[0] if rows else {}
+        required = str(row.get("tank_code") or "").strip().upper()
+        provisions = str(row.get("tank_provisions") or "").strip()
+        item: dict[str, Any] = {
+            # What the consignor typed is what the answer names: a code read
+            # back in a case nobody used reads like a different code.
+            "position": label, "offered": typed, "required": required,
+            "tank_provisions": provisions,
+        }
+        if not required:
+            # Column (12) empty means the goods may not travel in an ADR tank
+            # at all; the admission check says so, and this one does not repeat
+            # it in different words.
+            continue
+        if _same_tank_code(offered, required):
+            item["fit"] = "fits"
+            item["message"] = text("same_code", product=label, code=required)
+        elif str(row.get("class") or "").strip() == "2":
+            item.update(_gas_fit(offered, required, label, text, typed))
+        else:
+            item.update(_rationalised_fit(offered, row, label, text, typed))
+        if provisions:
+            item["provisions_note"] = text("provisions", codes=provisions)
+        blocked = blocked or item.get("fit") == "does_not_fit"
+        items.append(item)
+
+    if not items:
+        return {"status": "not_checked", "items": []}
+    return {
+        "status": "not_permitted" if blocked else "ok",
+        "items": items,
+        "source": rules["source"],
+    }
+
+
+def _same_tank_code(one: str, other: str) -> bool:
+    return one.replace(",", ".") == other.replace(",", ".")
+
+
+#: A gas tank code as column (12) and the tank's own plate print it: C10BN,
+#: PxBH(M). The figure is often the letter x — "the minimum test pressure
+#: according to 4.3.3.2.5" — and the code can carry a suffix the hierarchy
+#: itself says nothing about, so both are read rather than refused.
+_GAS_CODE = re.compile(r"^([CPR])(x|\d+(?:[.,]\d+)?)([BCD])([NH])(\(.*\))?$",
+                       re.IGNORECASE)
+
+
+def _gas_fit(offered: str, required: str, label: str, text: Any,
+             typed: str) -> dict[str, Any]:
+    """4.3.3.1.2: the offered code against the required one, for gases."""
+    here = _GAS_CODE.match(offered.replace(",", "."))
+    there = _GAS_CODE.match(required.replace(",", "."))
+    if not here or not there:
+        return {"fit": "cannot_be_assessed",
+                "message": text("unknown_code", product=label, code=typed)}
+    row = database.adr_gas_hierarchy(f"{there.group(1)}*{there.group(3)}{there.group(4)}")
+    if row is None or (row.get("disputed") or {}):
+        return {"fit": "cannot_be_assessed",
+                "message": text("not_settled", product=label, code=required)}
+    wanted = f"{here.group(1)}#{here.group(3)}{here.group(4)}"
+    if wanted not in (row.get("also_permitted") or []):
+        return {"fit": "does_not_fit",
+                "message": text("gas_no", product=label, offered=typed,
+                                required=required)}
+    # "The figure represented by # shall be equal to or greater than the figure
+    # represented by *" — the one line of arithmetic in the whole hierarchy.
+    # "The figure represented by # shall be equal to or greater than the figure
+    # represented by *" — the one line of arithmetic in the whole hierarchy,
+    # and it can only be done when both codes print a figure. Column (12)
+    # prints x for most gases: the minimum test pressure then comes from
+    # 4.3.3.2.5, which is a table of gases this application does not hold.
+    if there.group(2).lower() == "x" or here.group(2).lower() == "x":
+        return {"fit": "fits_under_condition",
+                "message": text("gas_pressure_from_table", product=label,
+                                offered=typed, required=required)}
+    if float(here.group(2)) < float(there.group(2)):
+        return {"fit": "does_not_fit",
+                "message": text("gas_pressure", product=label, offered=typed,
+                                required=required)}
+    if there.group(5) and there.group(5) != here.group(5):
+        return {"fit": "fits_under_condition",
+                "message": text("gas_suffix", product=label, offered=typed,
+                                required=required, suffix=there.group(5))}
+    return {"fit": "fits",
+            "message": text("gas_yes", product=label, offered=typed,
+                            required=required)}
+
+
+def _rationalised_fit(offered: str, row: dict[str, Any], label: str,
+                      text: Any, typed: str) -> dict[str, Any]:
+    """4.3.4.1.2: is the substance in the group the offered tank may carry?"""
+    permissions = database.adr_tank_permissions(offered)
+    if permissions is None:
+        return {"fit": "cannot_be_assessed",
+                "message": text("unknown_code", product=label, code=typed)}
+    klass = str(row.get("class") or "").strip()
+    code = str(row.get("classification_code") or "").strip()
+    group = str(row.get("packing_group") or "").strip()
+    if not klass or not code:
+        return {"fit": "cannot_be_assessed",
+                "message": text("no_classification", product=label)}
+    for permission in permissions["permitted"]:
+        if (permission["class"] != klass
+                or permission["classification_code"] != code):
+            continue
+        if permission.get("packing_group") and permission["packing_group"] != group:
+            continue
+        answer = {"fit": "fits",
+                  "message": text("group_yes", product=label, offered=typed,
+                                  klass=klass, code=code,
+                                  group=group or text("no_packing_group"))}
+        if permission.get("condition"):
+            answer["condition"] = permission["condition"]
+            answer["fit"] = "fits_under_condition"
+            answer["message"] = text("group_condition", product=label,
+                                     offered=typed,
+                                     condition=permission["condition"])
+        return answer
+    if permissions["unsettled"]:
+        # The substance is not in what was settled, and part of the chain was
+        # not settled at all. Saying "does not fit" here would be a claim the
+        # books have not made.
+        return {"fit": "cannot_be_assessed",
+                "unsettled": permissions["unsettled"],
+                "message": text("chain_not_settled", product=label,
+                                offered=typed,
+                                codes=", ".join(permissions["unsettled"]))}
+    return {"fit": "does_not_fit",
+            "message": text("group_no", product=label, offered=typed,
+                            klass=klass, code=code,
+                            group=group or text("no_packing_group"))}
+
+
 def check_adr_security(
     entries: list[dict[str, Any]], language: str = "nl",
 ) -> dict[str, Any]:
@@ -3976,6 +4164,11 @@ def check_compliance(
         admission = check_adr_tank_admission(entries, language)
         if admission.get("status") != "not_checked":
             result["adr_tank_admission"] = admission
+        # And once admitted: may *this* tank carry it? Only speaks when the
+        # consignor has said which tank is standing there.
+        fit = check_adr_tank_fit(entries, language)
+        if fit.get("status") != "not_checked":
+            result["adr_tank_fit"] = fit
 
     if {"ADR", "RID", "ADN"} & normalized:
         land = sorted({"ADR", "RID", "ADN"} & normalized)

@@ -242,40 +242,56 @@ def rationalised_rows(doc, pages: list[int],
     token that is none of those four things.
     """
     words = LANGUAGES[language]
-    blocks: list[dict[str, Any]] = []
+    blocks: dict[str, dict[str, Any]] = {}
+    order: list[str] = []
     failures: list[str] = []
     current: dict[str, Any] | None = None
     seen_class = ""
     inheriting = False
 
+    def block(code: str, page: int) -> dict[str, Any]:
+        # A block that runs over a page break has its tank code printed again
+        # at the head of the continuation, and the same code is never two
+        # blocks — so the second sight of it continues the first.
+        if code not in blocks:
+            blocks[code] = {"tank_code": code, "groups": [], "inherits": [],
+                            "pages": []}
+            order.append(code)
+        if page not in blocks[code]["pages"]:
+            blocks[code]["pages"].append(page)
+        return blocks[code]
+
     for index in pages:
         for _y, items in _lines(doc[index]):
             text = flatten(" ".join(word for _x, word in items))
-            tokens = [word.strip(",").strip() for _x, word in items]
-            tokens = [token for token in tokens if token]
+            tokens, markers = _strip_markers(
+                [word.strip(",").strip() for _x, word in items])
 
             inherit = words["inherit"].search(text)
             if inherit:
                 if current is None:
                     failures.append(f"p{index + 1}: inheritance before any code")
                     continue
-                current["inherits"] = _codes_in(inherit.group(1))
-                inheriting = True
+                for code in _codes_in(inherit.group(1)):
+                    if code not in current["inherits"]:
+                        current["inherits"].append(code)
+                inheriting = _runs_on(text, words)
                 continue
 
             codes = [token for token in tokens if TANK_CODE.fullmatch(token)]
-            # A sentence naming several codes is the inheritance running on to
-            # the next line; a block never begins with two tank codes.
-            if current is not None and len(codes) == len(tokens) and len(codes) > 1:
-                if inheriting:
-                    current["inherits"].extend(
-                        code for code in codes if code not in current["inherits"])
+            # The sentence runs on to the next line often enough that its tail
+            # would otherwise read as a new block: "… L4BH, L10BH and" then
+            # "L10CH" on a line of its own. A line of nothing but tank codes,
+            # while a sentence is still open, is that tail.
+            if current is not None and inheriting and codes and len(codes) == len(tokens):
+                for code in codes:
+                    if code not in current["inherits"]:
+                        current["inherits"].append(code)
+                inheriting = _runs_on(text, words)
                 continue
 
             if codes and TANK_CODE.fullmatch(tokens[0]):
-                current = {"tank_code": tokens[0], "groups": [],
-                           "inherits": [], "page": index + 1}
-                blocks.append(current)
+                current = block(tokens[0], index + 1)
                 seen_class = ""
                 inheriting = False
                 tokens = tokens[1:]
@@ -284,9 +300,37 @@ def rationalised_rows(doc, pages: list[int],
                 continue
             group, seen_class = _group(tokens, seen_class)
             if group:
+                if markers and "footnote" not in group:
+                    group["footnote"] = "".join(markers)
                 current["groups"].append(group)
                 inheriting = False
-    return blocks, failures
+    return [blocks[code] for code in order], failures
+
+
+#: A footnote marker as the table sets it against a cell: a single lower-case
+#: letter, sometimes with the bracket it is printed with. Left in the line it
+#: would fail every column's shape and take the whole row down with it — which
+#: is what happened to class 6.1 T1 under L10CH, and to the class cell with it,
+#: so that six rows below it were read as class 3.
+MARKER = re.compile(r"[a-z]\)?")
+
+
+def _strip_markers(tokens: list[str]) -> tuple[list[str], list[str]]:
+    kept, markers = [], []
+    for token in tokens:
+        if not token:
+            continue
+        if MARKER.fullmatch(token):
+            markers.append(token.rstrip(")"))
+        else:
+            kept.append(token)
+    return kept, markers
+
+
+def _runs_on(text: str, words: dict[str, Any]) -> bool:
+    """Does this line end mid-sentence, so the next one continues it?"""
+    tail = text.rstrip()
+    return tail.endswith(",") or bool(words["and"].search(tail[-6:]))
 
 
 def _codes_in(text: str) -> list[str]:

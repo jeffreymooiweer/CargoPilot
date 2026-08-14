@@ -18,6 +18,10 @@ on:
         description: "Report the layout of the table C pages and stop"
         type: boolean
         default: false
+      dump:
+        description: "Print every row to the log as well (the development container cannot reach the artifact store)"
+        type: boolean
+        default: false
 
 permissions:
   contents: read
@@ -46,10 +50,12 @@ jobs:
       - name: Read table C
         env:
           PROBE: ${{ inputs.probe }}
+          DUMP: ${{ inputs.dump }}
         run: |
           set -euo pipefail
           EXTRA=""
           if [ "$PROBE" = "true" ]; then EXTRA="--probe"; fi
+          if [ "$DUMP" = "true" ]; then EXTRA="$EXTRA --dump"; fi
           python scripts/extract_adn_table_c.py \
             --english /tmp/cargopilot-regulations/adn.pdf \
             --out table_c_en.json $EXTRA

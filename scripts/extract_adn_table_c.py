@@ -477,12 +477,11 @@ def english_rows(pdf_path: Path) -> tuple[list[dict[str, Any]], list[str]]:
                  if re.fullmatch(r"[012*\-]", item[2])
                  and abs(item[1] - marker_y["19"]) <= 8),
                 key=lambda item: abs(item[1] - marker_y["19"]))
-            if len(near) > 1 and (abs(near[0][1] - marker_y["19"])
-                                  == abs(near[1][1] - marker_y["19"])):
-                failures.append(
-                    f"page {number} column {column}: "
-                    f"cones tie {sorted(w for _x, _y, w in near)}")
-                continue
+            if len(near) > 1:
+                # Equidistant from the marker: the cones digit stands on the
+                # cell's first rotated line, remark numbers wrap onto later
+                # lines further right — the leftmost candidate is the cell.
+                near.sort(key=lambda item: item[0])
             chosen = near[0] if near else None
             values["blue_cones"] = chosen[2] if chosen else "-"
             values["remarks"] = read(
@@ -493,6 +492,16 @@ def english_rows(pdf_path: Path) -> tuple[list[dict[str, Any]], list[str]]:
                     continue
                 values[field] = read(cells.get((band, column), []))
             del problems
+
+            # A substance that continues onto the next page repeats its UN
+            # number above an otherwise empty column. That is a continuation
+            # head, not a row.
+            if not any(values[f] for f in ENGLISH_FIELDS
+                       if f not in ("un", "name_en", "remarks")):
+                print(f"    continuation column skipped: page {number}, "
+                      f"UN {values['un']}, name {values['name_en']!r}, "
+                      f"remarks {values['remarks']!r}")
+                continue
             row = _english_row(values, failures)
             if row:
                 rows.append(row)
@@ -551,6 +560,8 @@ def main() -> int:
     parser.add_argument("--out", type=Path, help="write the rows to this file")
     parser.add_argument("--probe", action="store_true",
                         help="report the layout of the English pages and stop")
+    parser.add_argument("--dump", action="store_true",
+                        help="print every row to the log, one JSON per line")
     args = parser.parse_args()
 
     if args.english and args.probe:
@@ -567,6 +578,13 @@ def main() -> int:
                 json.dumps(rows, ensure_ascii=False, indent=1) + "\n",
                 encoding="utf-8")
             print(f"written: {args.out}")
+        if args.dump:
+            # The development container cannot reach the artifact's blob store,
+            # but it can read this log. One row per line, between markers.
+            print("=== ROWS BEGIN ===")
+            for row in rows:
+                print("ROW " + json.dumps(row, ensure_ascii=False))
+            print("=== ROWS END ===")
         return 1 if failures else 0
 
     if args.dutch:

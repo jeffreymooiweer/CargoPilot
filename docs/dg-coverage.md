@@ -420,6 +420,13 @@ exempt" since v1.32.0 while the arithmetic granted the exemption anyway — with
 
 **What is missing beyond that:**
 
+- **Column (8) rests on one edition.** Its *values* carry two readings. What the codes
+  mean does not: the UNECE English ADN was unreachable when v1.71.0 was built — 403 from the
+  publisher, 503 and 404 from the web archive — so the wording comes from the Dutch 2025
+  edition alone. Four separately typeset places in that edition agree (the 3.2.1 note,
+  7.1.1.11, 7.1.1.21, and 7.2.1.21.1 with the title of 3.2.3), and the data agrees with them,
+  but corroboration is not a second reading. Re-check it when the English volume can be
+  reached.
 - **The tank vessel regime beyond admission.** ADN splits into dry cargo and tank vessels.
   Since v1.71.0 the application says whether a tank vessel is permitted at all, and then says
   plainly that the vessel type, the cargo tank type and the conditions that go with them are

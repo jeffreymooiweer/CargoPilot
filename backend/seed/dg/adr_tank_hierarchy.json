@@ -16,8 +16,8 @@
   ],
   "gas_rows": 16,
   "tank_codes": 18,
-  "codes_settled_on_every_cell": 8,
-  "cells_no_two_readings_agree_on": 11
+  "codes_settled_on_every_cell": 7,
+  "cells_no_two_readings_agree_on": 12
  },
  "gases": [
   {
@@ -179,16 +179,32 @@
        "packing_group": "II"
       }
      ],
-     "nl": []
+     "nl": [
+      {
+       "class": "3",
+       "classification_code": "F1",
+       "packing_group": "II",
+       "condition": "dampdruk bij 50 °C>1,1 bar"
+      },
+      {
+       "class": "3",
+       "classification_code": "D",
+       "packing_group": "II",
+       "condition": "dampdruk bij 50 °C > 1,1 bar"
+      }
+     ]
     }
    },
    "only_in": {
     "permitted": {
      "en": [
-      "3/D/II",
-      "3/F1/II"
+      "3/D/II/",
+      "3/F1/II/"
      ],
-     "nl": []
+     "nl": [
+      "3/D/II/50,1.1",
+      "3/F1/II/50,1.1"
+     ]
     }
    },
    "inherits": [
@@ -379,9 +395,9 @@
     "permitted": {
      "en": [],
      "nl": [
-      "8/CF2/I",
-      "8/CW1/I",
-      "8/CW2/I"
+      "8/CF2/I/",
+      "8/CW1/I/",
+      "8/CW2/I/"
      ]
     }
    },
@@ -1272,7 +1288,19 @@
       {
        "class": "3",
        "classification_code": "F1",
+       "packing_group": "II",
+       "condition": "dampdruk bij 50 oC  1,1 bar"
+      },
+      {
+       "class": "3",
+       "classification_code": "F1",
        "packing_group": "III"
+      },
+      {
+       "class": "3",
+       "classification_code": "D",
+       "packing_group": "II",
+       "condition": "dampdruk bij 50 oC < 1,1 bar"
       },
       {
        "class": "3",
@@ -1285,10 +1313,13 @@
    "only_in": {
     "permitted": {
      "en": [
-      "3/D/II",
-      "3/F1/II"
+      "3/D/II/",
+      "3/F1/II/"
      ],
-     "nl": []
+     "nl": [
+      "3/D/II/50,1.1",
+      "3/F1/II/50,1.1"
+     ]
     }
    },
    "inherits": [
@@ -1355,53 +1386,144 @@
   {
    "tank_code": "S10AH",
    "readings": 2,
-   "permitted": [
-    {
-     "class": "6.1",
-     "classification_code": "T2",
-     "packing_group": "I"
-    },
-    {
-     "class": "6.1",
-     "classification_code": "T3",
-     "packing_group": "I"
-    },
-    {
-     "class": "6.1",
-     "classification_code": "T5",
-     "packing_group": "I"
-    },
-    {
-     "class": "6.1",
-     "classification_code": "T7",
-     "packing_group": "I"
-    },
-    {
-     "class": "6.1",
-     "classification_code": "TS",
-     "packing_group": "I"
-    },
-    {
-     "class": "6.1",
-     "classification_code": "TW2",
-     "packing_group": "I"
-    },
-    {
-     "class": "6.1",
-     "classification_code": "TO2",
-     "packing_group": "I"
-    },
-    {
-     "class": "6.1",
-     "classification_code": "TC2",
-     "packing_group": "I"
-    },
-    {
-     "class": "6.1",
-     "classification_code": "TC4",
-     "packing_group": "I"
+   "disputed": {
+    "permitted": {
+     "en": [
+      {
+       "class": "6.1",
+       "classification_code": "T2",
+       "packing_group": "I"
+      },
+      {
+       "class": "6.1",
+       "classification_code": "T3",
+       "packing_group": "I"
+      },
+      {
+       "class": "6.1",
+       "classification_code": "T5",
+       "packing_group": "I"
+      },
+      {
+       "class": "6.1",
+       "classification_code": "T7",
+       "packing_group": "I"
+      },
+      {
+       "class": "6.1",
+       "classification_code": "TS",
+       "packing_group": "I"
+      },
+      {
+       "class": "6.1",
+       "classification_code": "TW2",
+       "packing_group": "I"
+      },
+      {
+       "class": "6.1",
+       "classification_code": "TO2",
+       "packing_group": "I"
+      },
+      {
+       "class": "6.1",
+       "classification_code": "TC2",
+       "packing_group": "I"
+      },
+      {
+       "class": "6.1",
+       "classification_code": "TC4",
+       "packing_group": "I"
+      },
+      {
+       "class": "6.1",
+       "classification_code": "G",
+       "packing_group": null,
+       "condition": "→ 1.5 → 2.65 → 4 → 10 → 15 → 21 bar"
+      }
+     ],
+     "nl": [
+      {
+       "class": "6.1",
+       "classification_code": "T2",
+       "packing_group": "I"
+      },
+      {
+       "class": "6.1",
+       "classification_code": "T3",
+       "packing_group": "I"
+      },
+      {
+       "class": "6.1",
+       "classification_code": "T5",
+       "packing_group": "I"
+      },
+      {
+       "class": "6.1",
+       "classification_code": "T7",
+       "packing_group": "I"
+      },
+      {
+       "class": "6.1",
+       "classification_code": "TS",
+       "packing_group": "I"
+      },
+      {
+       "class": "6.1",
+       "classification_code": "TW2",
+       "packing_group": "I"
+      },
+      {
+       "class": "6.1",
+       "classification_code": "TO2",
+       "packing_group": "I"
+      },
+      {
+       "class": "6.1",
+       "classification_code": "TC2",
+       "packing_group": "I"
+      },
+      {
+       "class": "6.1",
+       "classification_code": "TC4",
+       "packing_group": "I"
+      },
+      {
+       "class": "6.1",
+       "classification_code": "S",
+       "packing_group": null,
+       "condition": "─> L"
+      },
+      {
+       "class": "6.1",
+       "classification_code": "G",
+       "packing_group": null,
+       "condition": "----> 1,5 ----> 2,65 ----> 4 ----> 10 ----> 15 ----> 21 bar"
+      },
+      {
+       "class": "6.1",
+       "classification_code": "A",
+       "packing_group": null,
+       "condition": "----> B ----> C ----> D"
+      },
+      {
+       "class": "6.1",
+       "classification_code": "V",
+       "packing_group": null,
+       "condition": "----> F ----> N ----> H"
+      }
+     ]
     }
-   ],
+   },
+   "only_in": {
+    "permitted": {
+     "en": [],
+     "nl": [
+      "6.1/A/-/",
+      "6.1/S/-/",
+      "6.1/V/-/"
+     ]
+    }
+   },
    "inherits": [
     "SGAV",
     "SGAN",
@@ -2093,10 +2215,10 @@
     "permitted": {
      "en": [],
      "nl": [
-      "8/C10/II",
-      "8/C4/II",
-      "8/C6/II",
-      "8/C8/II"
+      "8/C10/II/",
+      "8/C4/II/",
+      "8/C6/II/",
+      "8/C8/II/"
      ]
     },
     "inherits": {
@@ -2301,7 +2423,7 @@
     "permitted": {
      "en": [],
      "nl": [
-      "8/CT2/III"
+      "8/CT2/III/"
      ]
     }
    },

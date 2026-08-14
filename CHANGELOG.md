@@ -2,6 +2,35 @@
 
 All notable changes are documented here, following [Semantic Versioning](https://semver.org/).
 
+## [1.67.0] — 2026-08-13
+
+### Fixed
+
+- **The tunnel code applies the stricter side for tanks and bulk.** Five of the
+  twelve codes of 8.6.4 carry two answers: B/D, B/E, C/D, C/E and D/E bar more
+  tunnel categories for carriage in tanks and in bulk than for packages. **Both
+  lists have been in this repository's configuration since v1.50.0** and only the
+  packages one was ever read, because nothing knew how the goods travelled. The
+  note under the tunnel card said as much — and a note is not a check.
+
+  A tank of petrol under code D/E is now barred from categories D **and** E,
+  where the same petrol in packages is barred from E alone. One tank position
+  decides for the whole load, because 8.6.3.2 assigns one code to the load and
+  not one per substance.
+
+- **The orange plates tell a tank load what it must do, not what it may.** For
+  packages 5.3.2.1.6 *permits* the hazard identification number above the UN
+  number on the front and rear plates, and only where a single substance is on
+  board. For a tank vehicle 5.3.2.1.2 *requires* an orange plate on both sides of
+  every tank and every compartment, bearing the numbers of the substance that
+  compartment holds. Permitted and required are not the same finding, and a tank
+  load was being shown the permitted one.
+
+  Where column (20) gives no hazard identification number the check says that
+  5.3.2.1.2 turns on one, rather than printing a plate with a gap in it.
+
+  Read from ADR 2025, Dutch edition, 5.3.2.1.2 and 5.3.2.1.6.
+
 ## [1.66.0] — 2026-08-13
 
 ### Added

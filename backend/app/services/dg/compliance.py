@@ -949,13 +949,24 @@ def check_adr_tunnel(
 
     code = min(present, key=order.index)
     spec = table[code]
-    categories = list(spec["packages"])
+    # 8.6.4 gives five codes two answers: B/D, B/E, C/D, C/E and D/E bar more
+    # tunnel categories for carriage in tanks and in bulk than for packages.
+    # Both lists have been in this configuration since v1.50.0 and only the
+    # packages one was ever read, because nothing knew how the goods travelled.
+    # The note said so — and a note is not a check. Now that the consignment
+    # says, the stricter side is applied where it applies.
+    in_tanks = any(
+        str(product.get("carriage_mode") or "").strip()
+        in ("tank", "portable_tank", "bulk")
+        for _entry, _index, product in _iter_products(entries))
+    categories = list(spec["tanks" if in_tanks else "packages"])
     threshold = spec.get("explosive_mass_kg")
     if threshold and explosive_mass > threshold:
         categories = list(spec["above"])
     result.update({
         "code": code,
         "restricted_categories": categories,
+        "carriage": "tanks_or_bulk" if in_tanks else "packages",
         "status": "unrestricted" if not categories else "derived",
     })
     result["message"] = pick(
@@ -1630,10 +1641,15 @@ def check_adr_placarding(
     and a different question, which is said out loud so this cannot be read as
     relieving it.
 
-    What is not answered: this is carriage in packages. Tanks, bulk and MEMUs
-    each have their own subsection of 5.3 — numbered plates on the sides under
-    5.3.2.1.2 and 5.3.2.1.4, placards for every class — and the answer there is
-    a different one. Nor is the elevated temperature mark of 5.3.3 derived: it
+    Since v1.67.0 the plates branch on the mode of carriage. For packages
+    5.3.2.1.6 *permits* the hazard and UN numbers on the front and rear plates,
+    and only where a single substance is on board; for a tank 5.3.2.1.2
+    *requires* them, on both sides of every tank and every compartment, for each
+    substance it holds. Permitted and required are not the same finding.
+
+    What is still not answered: the placards themselves for tanks and bulk —
+    5.3.1 gives them their own subsections — and 5.3.2.1.4 for containers under
+    exclusive use. Nor is the elevated temperature mark of 5.3.3 derived: it
     turns on a carriage temperature of 100 °C liquid or 240 °C solid, and
     CargoPilot is not told the temperature.
     """
@@ -1689,7 +1705,39 @@ def check_adr_placarding(
                     str(p.get("un_number") or p.get("un") or "").strip())
                    for p in goods}
         numbers = {n for n in numbers if n[0] and n[1]}
-        if len(numbers) == 1:
+        # 5.3.2.1.2 against 5.3.2.1.6: for a tank the numbered plates are
+        # *required*, on both sides of every tank and compartment, for each
+        # substance in it. For packages 5.3.2.1.6 merely permits them, and only
+        # where a single substance is on board. Permitted and required are not
+        # the same finding, and a tank load used to be shown the permitted one.
+        in_tanks = any(
+            str(p.get("carriage_mode") or "").strip() in ("tank", "portable_tank")
+            for p in goods)
+        if in_tanks:
+            without = sorted(
+                str(p.get("un_number") or p.get("un") or "").strip()
+                for p in goods
+                if not str(p.get("hazard_number") or "").strip())
+            if numbers:
+                tank = rules["tank_plates"]
+                marks.append({
+                    "provision": tank["provision"],
+                    "message": (tank.get(lang) or tank["en"]).format(
+                        numbers=", ".join(
+                            f"{hazard} / UN {un}" for hazard, un in sorted(numbers))),
+                    "kind": "tank_plates",
+                    "required": True,
+                })
+            if without:
+                missing_text = rules["tank_plates_no_number"]
+                marks.append({
+                    "provision": "5.3.2.1.2",
+                    "message": (missing_text.get(lang) or missing_text["en"]).format(
+                        products=", ".join(f"UN {un}" for un in without if un)),
+                    "kind": "tank_plates",
+                    "required": None,
+                })
+        elif len(numbers) == 1:
             hazard_number, un_number = next(iter(numbers))
             numbered = rules["numbered_plates"]
             marks.append({

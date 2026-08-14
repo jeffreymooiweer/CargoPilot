@@ -2175,6 +2175,20 @@
       "en": "Within the 1.1.3.6 exemption, orange plates and placards are not required.",
       "de": "Innerhalb der Freistellung nach 1.1.3.6 sind orangefarbene Tafeln und Großzettel nicht erforderlich.",
       "fr": "Dans le cadre de l'exemption du 1.1.3.6, les panneaux orange et les plaques-étiquettes ne sont pas exigés."
+    },
+    "tank_plates": {
+      "provision": "5.3.2.1.2",
+      "_why_it_differs": "For packages 5.3.2.1.6 *permits* the two numbers on the front and rear plates and only where a single substance is on board. For a tank vehicle 5.3.2.1.2 *requires* them, on both sides of every tank and every compartment, for each substance that compartment carries. Permitted and required are not the same finding, and until v1.67.0 a tank load was shown the permitted one.",
+      "nl": "Deze eenheid vervoert in een tank. 5.3.2.1.2 schrijft dan voor dat aan weerszijden van elke tank of elk tankcompartiment een oranje bord wordt aangebracht met het gevaarsidentificatienummer boven het UN-nummer van de stof die daarin zit: {numbers}. Dat is bij tankvervoer een verplichting, niet de keuze die 5.3.2.1.6 bij collivervoer laat.",
+      "en": "This unit carries in a tank. 5.3.2.1.2 then requires an orange plate on both sides of every tank and every tank compartment, bearing the hazard identification number above the UN number of the substance it holds: {numbers}. For tank carriage that is an obligation, not the choice 5.3.2.1.6 leaves for packages.",
+      "de": "Diese Einheit befördert in einem Tank. 5.3.2.1.2 schreibt dann an beiden Seiten jedes Tanks und jedes Tankabteils eine orangefarbene Tafel mit der Gefahrnummer über der UN-Nummer des darin enthaltenen Stoffes vor: {numbers}. Bei Tankbeförderung ist das eine Pflicht und nicht die Wahl, die 5.3.2.1.6 für Versandstücke lässt.",
+      "fr": "Cette unité transporte en citerne. Le 5.3.2.1.2 impose alors un panneau orange des deux côtés de chaque citerne et de chaque compartiment, portant le numéro d'identification du danger au-dessus du numéro ONU de la matière qu'il contient : {numbers}. En transport en citerne c'est une obligation, et non le choix que le 5.3.2.1.6 laisse pour les colis."
+    },
+    "tank_plates_no_number": {
+      "nl": "Deze eenheid vervoert in een tank, maar voor {products} geeft kolom (20) van tabel A geen gevaarsidentificatienummer. 5.3.2.1.2 hangt daaraan; controleer dit zelf aan de tekst.",
+      "en": "This unit carries in a tank, but column (20) of table A gives no hazard identification number for {products}. 5.3.2.1.2 turns on that number; check this against the text yourself.",
+      "de": "Diese Einheit befördert in einem Tank, doch für {products} gibt Spalte (20) der Tabelle A keine Gefahrnummer an. 5.3.2.1.2 knüpft daran an; prüfen Sie dies selbst am Text.",
+      "fr": "Cette unité transporte en citerne, mais la colonne (20) du tableau A ne donne aucun numéro d'identification du danger pour {products}. Le 5.3.2.1.2 en dépend ; vérifiez-le vous-même dans le texte."
     }
   },
   "adr_security": {

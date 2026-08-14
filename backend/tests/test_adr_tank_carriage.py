@@ -145,3 +145,127 @@ def test_a_packages_consignment_carries_no_tank_section():
     that travel in packages."""
     out = check_compliance(line(product("1203", **{"class": "3"})), ["ADR"], "nl")
     assert "adr_tank_admission" not in out
+
+
+# --- 8.6.4: the stricter side, which was in the table all along -------------
+#
+# Five codes carry two answers: B/D, B/E, C/D, C/E and D/E bar more tunnel
+# categories for carriage in tanks and in bulk than for packages. Both lists
+# have been in this repository's configuration since v1.50.0 and only the
+# packages one was ever read, because nothing knew how the goods travelled. The
+# note under the tunnel card said as much — and a note is not a check.
+
+
+def tunnel(mode=None, code="(D/E)", **extra):
+    from app.services.dg.compliance import check_adr_tunnel
+    row = {"un_number": "1203", "class": "3", "tunnel_code": code,
+           "transport_category": "2", "adr_total_quantity": "5000", **extra}
+    if mode:
+        row["carriage_mode"] = mode
+    return check_adr_tunnel(line(row), "nl", points_status="above_threshold")
+
+
+def test_packages_keep_the_answer_they_had():
+    """The whole point of defaulting to packages: nothing already right moves."""
+    assert tunnel()["restricted_categories"] == ["E"]
+    assert tunnel("packages")["restricted_categories"] == ["E"]
+
+
+def test_a_tank_is_barred_from_more_tunnels_than_packages():
+    out = tunnel("tank")
+    assert out["restricted_categories"] == ["D", "E"]
+    assert out["carriage"] == "tanks_or_bulk"
+
+
+def test_bulk_is_judged_with_the_tanks_column():
+    """8.6.4 puts bulk on the same side as tanks — the one place in this release
+    where bulk is not simply left alone."""
+    assert tunnel("bulk")["restricted_categories"] == ["D", "E"]
+
+
+def test_a_portable_tank_is_a_tank_here_too():
+    assert tunnel("portable_tank")["restricted_categories"] == ["D", "E"]
+
+
+def test_a_code_with_one_answer_is_unchanged_by_the_mode():
+    """Only five of the twelve codes have two sides. Code E has one, and a mode
+    that changed it would be inventing a restriction."""
+    assert tunnel("packages", code="(E)")["restricted_categories"] == \
+        tunnel("tank", code="(E)")["restricted_categories"]
+
+
+def test_one_tank_position_decides_for_the_whole_load():
+    """8.6.3.2 assigns one code to the whole load, so a single tank position
+    cannot be answered as packages because the rest of the load is."""
+    from app.services.dg.compliance import check_adr_tunnel
+    out = check_adr_tunnel(line(
+        {"un_number": "1203", "class": "3", "tunnel_code": "(D/E)",
+         "transport_category": "2", "adr_total_quantity": "5000",
+         "carriage_mode": "packages"},
+        {"un_number": "1203", "class": "3", "tunnel_code": "(D/E)",
+         "transport_category": "2", "adr_total_quantity": "5000",
+         "carriage_mode": "tank"}), "nl", points_status="above_threshold")
+    assert out["restricted_categories"] == ["D", "E"]
+
+
+# --- 5.3.2.1.2 against 5.3.2.1.6: permitted is not required -----------------
+#
+# For packages 5.3.2.1.6 *permits* the two numbers on the front and rear plates,
+# and only where a single substance is on board. For a tank vehicle 5.3.2.1.2
+# *requires* them, on both sides of every tank and every compartment, for each
+# substance that compartment carries. Those are not the same finding, and a tank
+# load used to be shown the permitted one.
+
+
+def placarding(mode=None, hazard="33", **extra):
+    from app.services.dg.compliance import check_adr_placarding
+    row = {"un_number": "1203", "class": "3", "hazard_number": hazard, **extra}
+    if mode:
+        row["carriage_mode"] = mode
+    return check_adr_placarding(line(row), "nl")
+
+
+def kinds(out):
+    return {mark["kind"] for mark in out["marks"]}
+
+
+def test_packages_get_the_permission_of_5_3_2_1_6():
+    out = placarding()
+    assert "numbered_plates" in kinds(out)
+    assert "tank_plates" not in kinds(out)
+
+
+def test_a_tank_gets_the_obligation_of_5_3_2_1_2():
+    out = placarding("tank")
+    assert "tank_plates" in kinds(out)
+    assert "numbered_plates" not in kinds(out)
+    mark = next(m for m in out["marks"] if m["kind"] == "tank_plates")
+    assert mark["provision"] == "5.3.2.1.2"
+    assert mark["required"] is True
+    assert "33 / UN 1203" in mark["message"]
+
+
+def test_the_front_and_rear_plates_are_required_either_way():
+    """5.3.2.1.1 does not move: the plain orange plates stay on both."""
+    for mode in (None, "tank"):
+        assert "orange_plates" in kinds(placarding(mode))
+
+
+def test_a_tank_without_a_hazard_number_is_told_the_rule_hangs_on_one():
+    """5.3.2.1.2 opens on column (20) carrying a number. Where it does not, the
+    check says so rather than printing a plate with a gap in it."""
+    out = placarding("tank", hazard="")
+    mark = next(m for m in out["marks"] if m["kind"] == "tank_plates")
+    assert mark["required"] is None
+    assert "1203" in mark["message"]
+
+
+def test_a_portable_tank_is_a_tank_for_the_plates_too():
+    assert "tank_plates" in kinds(placarding("portable_tank"))
+
+
+def test_bulk_is_not_given_the_tank_plate_rule():
+    """5.3.2.1.2 names tank vehicles and battery vehicles. Bulk has its own
+    provisions, and answering it here would be the borrowing this release is
+    supposed to end."""
+    assert "tank_plates" not in kinds(placarding("bulk"))

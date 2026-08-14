@@ -98,6 +98,13 @@ tank, portable tank or bulk — now says how the goods travel, and the first che
 answers whether they may travel that way at all (ADR 3.2.1). Absent means packages, which
 is what every consignment drawn up before this release was.
 
+**Two more answers branch on it since v1.67.0.** The **tunnel** code of 8.6.4 gives five of
+its twelve codes two answers — B/D, B/E, C/D, C/E and D/E bar more categories for tanks and
+bulk than for packages — and both lists had been in this repository since v1.50.0 with only
+the packages one ever read. And the **orange plates**: 5.3.2.1.6 *permits* the hazard and UN
+numbers for packages, while 5.3.2.1.2 *requires* them on both sides of every tank and
+compartment. Permitted and required are not the same finding.
+
 **The ADR tank columns are held since v1.65.0** — the portable tank instruction (10) and its
 provisions (11), the ADR tank code (12), its provisions (13) and the vehicle the substance
 then requires (14). They were read and cross-checked from the first day of the extractor and

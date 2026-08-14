@@ -1,0 +1,7175 @@
+{
+ "_comment": "Proper shipping names from column (2) of ADR table A, language de, read by machine with scripts/extract_adr_names_multilingual.py. A compilation of facts offered as an aid; the published text of the ADR remains authoritative.",
+ "edition": "ADR 2025",
+ "language": "de",
+ "source": "ADR 2025, official UNECE edition — table A of chapter 3.2, column (2)",
+ "summary": {
+  "un_numbers": 2346,
+  "rows": 2938,
+  "table_pages": 145
+ },
+ "cross_check": {
+  "same": 2344,
+  "only_in_this_language": [
+   "1499",
+   "1999"
+  ],
+  "only_in_the_dutch_table": [
+   "2956"
+  ],
+  "agreement": 0.9996
+ },
+ "names": {
+  "0004": [
+   "AMMONIUMPIKRAT, trocken oder angefeuchtet mit weniger als 10 Masse-% Wasser"
+  ],
+  "0005": [
+   "PATRONEN FÜR WAFFEN, mit Sprengladung"
+  ],
+  "0006": [
+   "PATRONEN FÜR WAFFEN, mit Sprengladung"
+  ],
+  "0007": [
+   "PATRONEN FÜR WAFFEN, mit Sprengladung"
+  ],
+  "0009": [
+   "MUNITION, BRAND, mit oder ohne Zerleger, Ausstoss- oder Treibladung"
+  ],
+  "0010": [
+   "MUNITION, BRAND, mit oder ohne Zerleger, Ausstoss- oder Treibladung"
+  ],
+  "0012": [
+   "PATRONEN FÜR WAFFEN, MIT INERTEM GESCHOSS oder PATRONEN FÜR HANDFEUERWAFFEN"
+  ],
+  "0014": [
+   "PATRONEN FÜR WAFFEN, MANÖVER oder PATRONEN FÜR HANDFEUERWAFFEN, MANÖVER oder PATRONEN FÜR WERKZEUGE, OHNE GESCHOSS"
+  ],
+  "0015": [
+   "MUNITION, NEBEL, mit oder ohne Zerleger, Ausstoss- oder Treibladung",
+   "MUNITION, NEBEL, mit oder ohne Zerleger, Ausstoss- oder Treibladung, mit ätzenden Stoffen",
+   "MUNITION, NEBEL, mit oder ohne Zerleger, Ausstoss- oder Treibladung, mit beim Einatmen giftigen Stoffen"
+  ],
+  "0016": [
+   "MUNITION, NEBEL, mit oder ohne Zerleger, Ausstoss- oder Treibladung",
+   "MUNITION, NEBEL, mit oder ohne Zerleger, Ausstoss- oder Treibladung, mit ätzenden Stoffen",
+   "MUNITION, NEBEL, mit oder ohne Zerleger, Ausstoss- oder Treibladung, mit beim Einatmen giftigen Stoffen"
+  ],
+  "0018": [
+   "MUNITION, AUGENREIZSTOFF, mit Zerleger, Ausstoss- oder Treibladung"
+  ],
+  "0019": [
+   "MUNITION, AUGENREIZSTOFF, mit Zerleger, Ausstoss- oder Treibladung"
+  ],
+  "0020": [
+   "MUNITION, GIFTIG, mit Zerleger, Ausstoss- oder Treibladung"
+  ],
+  "0021": [
+   "MUNITION, GIFTIG, mit Zerleger, Ausstoss- oder Treibladung"
+  ],
+  "0027": [
+   "SCHWARZPULVER, gekörnt oder in Mehlform"
+  ],
+  "0028": [
+   "SCHWARZPULVER, GEPRESST oder als PELLETS"
+  ],
+  "0029": [
+   "SPRENGKAPSELN, NICHT ELEKTRISCH"
+  ],
+  "0030": [
+   "SPRENGKAPSELN, ELEKTRISCH"
+  ],
+  "0033": [
+   "BOMBEN, mit Sprengladung"
+  ],
+  "0034": [
+   "BOMBEN, mit Sprengladung"
+  ],
+  "0035": [
+   "BOMBEN, mit Sprengladung"
+  ],
+  "0037": [
+   "BOMBEN, BLITZLICHT"
+  ],
+  "0038": [
+   "BOMBEN, BLITZLICHT"
+  ],
+  "0039": [
+   "BOMBEN, BLITZLICHT"
+  ],
+  "0042": [
+   "ZÜNDVERSTÄRKER, ohne Detonator"
+  ],
+  "0043": [
+   "ZERLEGER, mit Explosivstoff"
+  ],
+  "0044": [
+   "ANZÜNDHÜTCHEN"
+  ],
+  "0048": [
+   "SPRENGKÖRPER"
+  ],
+  "0049": [
+   "PATRONEN, BLITZLICHT"
+  ],
+  "0050": [
+   "PATRONEN, BLITZLICHT"
+  ],
+  "0054": [
+   "PATRONEN, SIGNAL"
+  ],
+  "0055": [
+   "TREIBLADUNGSHÜLSEN, LEER, MIT TREIBLADUNGSANZÜNDER"
+  ],
+  "0056": [
+   "WASSERBOMBEN"
+  ],
+  "0059": [
+   "HOHLLADUNGEN, ohne Zündmittel"
+  ],
+  "0060": [
+   "FÜLLSPRENGKÖRPER"
+  ],
+  "0065": [
+   "SPRENGSCHNUR, biegsam"
+  ],
+  "0066": [
+   "ANZÜNDLITZE"
+  ],
+  "0070": [
+   "SCHNEIDVORRICHTUNGEN, KABEL, MIT EXPLOSIVSTOFF"
+  ],
+  "0072": [
+   "CYCLOTRIMETHYLENTRINITRAMIN (CYCLONIT), (HEXOGEN), (RDX), ANGEFEUCHTET mit mindestens 15 Masse-% Wasser"
+  ],
+  "0073": [
+   "DETONATOREN FÜR MUNITION"
+  ],
+  "0074": [
+   "DIAZODINITROPHENOL, ANGEFEUCHTET mit mindestens 40 Masse-% Wasser oder einer Alkohol/Wasser-Mischung"
+  ],
+  "0075": [
+   "DIETHYLENGLYCOLDINITRAT, DESENSIBILISIERT, mit mindestens 25 Masse-% nicht flüchtigem, wasserunlöslichem Phlegmatisierungsmittel"
+  ],
+  "0076": [
+   "DINITROPHENOL, trocken oder angefeuchtet mit weniger als 15 Masse-% Wasser"
+  ],
+  "0077": [
+   "DINITROPHENOLATE der Alkalimetalle, trocken oder angefeuchtet mit weniger als 15 Masse-% Wasser"
+  ],
+  "0078": [
+   "DINITRORESORCINOL, trocken oder angefeuchtet mit weniger als 15 Masse-% Wasser"
+  ],
+  "0079": [
+   "HEXANITRODIPHENYLAMIN (DIPIKRYLAMIN), (HEXYL)"
+  ],
+  "0081": [
+   "SPRENGSTOFF, TYP A"
+  ],
+  "0082": [
+   "SPRENGSTOFF, TYP B"
+  ],
+  "0083": [
+   "SPRENGSTOFF, TYP C"
+  ],
+  "0084": [
+   "SPRENGSTOFF, TYP D"
+  ],
+  "0092": [
+   "LEUCHTKÖRPER, BODEN"
+  ],
+  "0093": [
+   "LEUCHTKÖRPER, LUFTFAHRZEUG"
+  ],
+  "0094": [
+   "BLITZLICHTPULVER"
+  ],
+  "0099": [
+   "LOCKERUNGSSPRENGGERÄTE MIT EXPLOSIVSTOFF, für Erdölbohrungen, ohne Zündmittel"
+  ],
+  "0101": [
+   "STOPPINEN, NICHT SPRENGKRÄFTIG"
+  ],
+  "0102": [
+   "SPRENGSCHNUR, mit Metallmantel"
+  ],
+  "0103": [
+   "ANZÜNDSCHNUR, rohrförmig, mit Metallmantel"
+  ],
+  "0104": [
+   "SPRENGSCHNUR MIT GERINGER WIRKUNG, mit Metallmantel"
+  ],
+  "0105": [
+   "ANZÜNDSCHNUR (SICHERHEITSZÜNDSCHNUR)"
+  ],
+  "0106": [
+   "ZÜNDER, SPRENGKRÄFTIG"
+  ],
+  "0107": [
+   "ZÜNDER, SPRENGKRÄFTIG"
+  ],
+  "0110": [
+   "GRANATEN, ÜBUNG, Hand oder Gewehr"
+  ],
+  "0113": [
+   "GUANYLNITROSAMINOGUANYLIDENHYDRAZIN, ANGEFEUCHTET mit mindestens 30 Masse-% Wasser"
+  ],
+  "0114": [
+   "GUANYLNITROSAMINOGUANYLTETRAZEN (TETRACEN), ANGEFEUCHTET mit mindestens 30 Masse-% Wasser oder einer Alkohol/Wasser-Mischung"
+  ],
+  "0118": [
+   "HEXOLIT (HEXOTOL), trocken oder angefeuchtet mit weniger als 15 Masse-% Wasser"
+  ],
+  "0121": [
+   "ANZÜNDER"
+  ],
+  "0124": [
+   "PERFORATIONSHOHLLADUNGSTRÄGER, GELADEN, für Erdölbohrlöcher, ohne Zündmittel"
+  ],
+  "0129": [
+   "BLEIAZID, ANGEFEUCHTET mit mindestens 20 Masse-% Wasser oder einer Alkohol/Wasser-Mischung"
+  ],
+  "0130": [
+   "BLEISTYPHNAT (BLEITRINITRORESORCINAT), ANGEFEUCHTET mit mindestens 20 Masse-% Wasser oder einer Alkohol/Wasser-Mischung"
+  ],
+  "0131": [
+   "ANZÜNDER, ANZÜNDSCHNUR"
+  ],
+  "0132": [
+   "DEFLAGRIERENDE METALLSALZE AROMATISCHER NITROVERBINDUNGEN, N.A.G."
+  ],
+  "0133": [
+   "MANNITOLHEXANITRAT (NITROMANNITOL), ANGEFEUCHTET mit mindestens 40 Masse-% Wasser oder einer Alkohol/Wasser-Mischung"
+  ],
+  "0135": [
+   "QUECKSILBERFULMINAT, ANGEFEUCHTET mit mindestens 20 Masse-% Wasser oder einer Alkohol/Wasser-Mischung"
+  ],
+  "0136": [
+   "MINEN, mit Sprengladung"
+  ],
+  "0137": [
+   "MINEN, mit Sprengladung"
+  ],
+  "0138": [
+   "MINEN, mit Sprengladung"
+  ],
+  "0143": [
+   "NITROGLYCERIN, DESENSIBILISIERT mit mindestens 40 Masse-% nicht flüchtigem, wasserunlöslichem Phlegmatisierungsmittel"
+  ],
+  "0144": [
+   "NITROGLYCERIN, LÖSUNG IN ALKOHOL mit mehr als 1 %, aber nicht mehr als 10 % Nitroglycerin"
+  ],
+  "0146": [
+   "NITROSTÄRKE, trocken oder angefeuchtet mit weniger als 20 Masse-% Wasser"
+  ],
+  "0147": [
+   "NITROHARNSTOFF"
+  ],
+  "0150": [
+   "PENTAERYTHRITTETRANITRAT (PENTAERYTHRITOLTETRANITRAT) (PETN), ANGEFEUCHTET mit mindestens 25 Masse-% Wasser oder DESENSIBILISIERT mit mindestens 15 Masse-% Phlegmatisierungsmittel"
+  ],
+  "0151": [
+   "PENTOLIT, trocken oder angefeuchtet mit weniger als 15 Masse-% Wasser"
+  ],
+  "0153": [
+   "TRINITROANILIN (PIKRAMID)"
+  ],
+  "0154": [
+   "TRINITROPHENOL (PIKRINSÄURE), trocken oder angefeuchtet mit weniger als 30 Masse-% Wasser"
+  ],
+  "0155": [
+   "TRINITROCHLORBENZEN (PIKRYLCHLORID)"
+  ],
+  "0159": [
+   "PULVERROHMASSE, ANGEFEUCHTET mit mindestens 25 Masse-% Wasser"
+  ],
+  "0160": [
+   "TREIBLADUNGSPULVER"
+  ],
+  "0161": [
+   "TREIBLADUNGSPULVER"
+  ],
+  "0167": [
+   "GESCHOSSE, mit Sprengladung"
+  ],
+  "0168": [
+   "GESCHOSSE, mit Sprengladung"
+  ],
+  "0169": [
+   "GESCHOSSE, mit Sprengladung"
+  ],
+  "0171": [
+   "MUNITION, LEUCHT, mit oder ohne Zerleger, Ausstoss- oder Treibladung"
+  ],
+  "0173": [
+   "AUSLÖSEVORRICHTUNGEN MIT EXPLOSIVSTOFF"
+  ],
+  "0174": [
+   "SPRENGNIETE"
+  ],
+  "0180": [
+   "RAKETEN, mit Sprengladung"
+  ],
+  "0181": [
+   "RAKETEN, mit Sprengladung"
+  ],
+  "0182": [
+   "RAKETEN, mit Sprengladung"
+  ],
+  "0183": [
+   "RAKETEN, mit inertem Kopf"
+  ],
+  "0186": [
+   "RAKETENMOTOREN"
+  ],
+  "0190": [
+   "EXPLOSIVSTOFF, MUSTER, ausser Initialsprengstoff"
+  ],
+  "0191": [
+   "SIGNALKÖRPER, HAND"
+  ],
+  "0192": [
+   "KNALLKAPSELN, EISENBAHN"
+  ],
+  "0193": [
+   "KNALLKAPSELN, EISENBAHN"
+  ],
+  "0194": [
+   "SIGNALKÖRPER, SEENOT"
+  ],
+  "0195": [
+   "SIGNALKÖRPER, SEENOT"
+  ],
+  "0196": [
+   "SIGNALKÖRPER, RAUCH"
+  ],
+  "0197": [
+   "SIGNALKÖRPER, RAUCH"
+  ],
+  "0204": [
+   "FALLLOTE, MIT EXPLOSIVSTOFF"
+  ],
+  "0207": [
+   "TETRANITROANILIN"
+  ],
+  "0208": [
+   "TRINITROPHENYLMETHYLNITRAMIN (TETRYL)"
+  ],
+  "0209": [
+   "TRINITROTOLUEN (TNT), trocken oder angefeuchtet mit weniger als 30 Masse-% Wasser"
+  ],
+  "0212": [
+   "LEUCHTSPURKÖRPER FÜR MUNITION"
+  ],
+  "0213": [
+   "TRINITROANISOL"
+  ],
+  "0214": [
+   "TRINITROBENZEN, trocken oder angefeuchtet mit weniger als 30 Masse-% Wasser"
+  ],
+  "0215": [
+   "TRINITROBENZOESÄURE, trocken oder angefeuchtet mit weniger als 30 Masse-% Wasser"
+  ],
+  "0216": [
+   "TRINITRO-m-CRESOL"
+  ],
+  "0217": [
+   "TRINITRONAPHTHALEN"
+  ],
+  "0218": [
+   "TRINITROPHENETOL"
+  ],
+  "0219": [
+   "TRINITRORESORCINOL (STYPHNINSÄURE), trocken oder angefeuchtet mit weniger als 20 Masse-% Wasser oder einer Alkohol/Wasser-Mischung"
+  ],
+  "0220": [
+   "HARNSTOFFNITRAT, trocken oder angefeuchtet mit weniger als 20 Masse-% Wasser"
+  ],
+  "0221": [
+   "GEFECHTSKÖPFE, TORPEDO, mit Sprengladung"
+  ],
+  "0222": [
+   "AMMONIUMNITRAT"
+  ],
+  "0224": [
+   "BARIUMAZID, trocken oder angefeuchtet mit weniger als 50 Masse-% Wasser"
+  ],
+  "0225": [
+   "ZÜNDVERSTÄRKER, MIT DETONATOR"
+  ],
+  "0226": [
+   "CYCLOTETRAMETHYLENTETRANITRAMIN (HMX) (OKTOGEN), ANGEFEUCHTET mit mindestens 15 Masse-% Wasser"
+  ],
+  "0234": [
+   "NATRIUMDINITROORTHOCRESOLAT, trocken oder angefeuchtet mit weniger als 15 Masse-% Wasser"
+  ],
+  "0235": [
+   "NATRIUMPIKRAMAT, trocken oder angefeuchtet mit weniger als 20 Masse-% Wasser"
+  ],
+  "0236": [
+   "ZIRKONIUMPIKRAMAT, trocken oder angefeuchtet mit weniger als 20 Masse-% Wasser"
+  ],
+  "0237": [
+   "SCHNEIDLADUNG, BIEGSAM, GESTRECKT"
+  ],
+  "0238": [
+   "RAKETEN, LEINENWURF"
+  ],
+  "0240": [
+   "RAKETEN, LEINENWURF"
+  ],
+  "0241": [
+   "SPRENGSTOFF, TYP E"
+  ],
+  "0242": [
+   "TREIBLADUNGEN FÜR GESCHÜTZE"
+  ],
+  "0243": [
+   "MUNITION, BRAND, WEISSER PHOSPHOR, mit Zerleger, Ausstoss- oder Treibladung"
+  ],
+  "0244": [
+   "MUNITION, BRAND, WEISSER PHOSPHOR, mit Zerleger, Ausstoss- oder Treibladung"
+  ],
+  "0245": [
+   "MUNITION, NEBEL, WEISSER PHOSPHOR, mit Zerleger, Ausstoss- oder Treibladung"
+  ],
+  "0246": [
+   "MUNITION, NEBEL, WEISSER PHOSPHOR, mit Zerleger, Ausstoss- oder Treibladung"
+  ],
+  "0247": [
+   "MUNITION, BRAND, mit flüssigem oder geliertem Brandstoff, mit Zerleger, Ausstoss- oder Treibladung"
+  ],
+  "0248": [
+   "VORRICHTUNGEN, DURCH WASSER AKTIVIERBAR, mit Zerleger, Ausstoss- oder Treibladung"
+  ],
+  "0249": [
+   "VORRICHTUNGEN, DURCH WASSER AKTIVIERBAR, mit Zerleger, Ausstoss- oder Treibladung"
+  ],
+  "0250": [
+   "RAKETENTRIEBWERKE MIT HYPERGOLEN, mit oder ohne Ausstossladung"
+  ],
+  "0254": [
+   "MUNITION, LEUCHT, mit oder ohne Zerleger, Ausstoss- oder Treibladung"
+  ],
+  "0255": [
+   "SPRENGKAPSELN, ELEKTRISCH"
+  ],
+  "0257": [
+   "ZÜNDER, SPRENGKRÄFTIG"
+  ],
+  "0266": [
+   "OKTOLIT (OCTOL), trocken oder angefeuchtet mit weniger als 15 Masse-% Wasser"
+  ],
+  "0267": [
+   "SPRENGKAPSELN, NICHT ELEKTRISCH"
+  ],
+  "0268": [
+   "ZÜNDVERSTÄRKER, MIT DETONATOR"
+  ],
+  "0271": [
+   "TREIBSÄTZE"
+  ],
+  "0272": [
+   "TREIBSÄTZE"
+  ],
+  "0275": [
+   "KARTUSCHEN FÜR TECHNISCHE ZWECKE"
+  ],
+  "0276": [
+   "KARTUSCHEN FÜR TECHNISCHE ZWECKE"
+  ],
+  "0277": [
+   "KARTUSCHEN, ERDÖLBOHRLOCH"
+  ],
+  "0278": [
+   "KARTUSCHEN, ERDÖLBOHRLOCH"
+  ],
+  "0279": [
+   "TREIBLADUNGEN FÜR GESCHÜTZE"
+  ],
+  "0280": [
+   "RAKETENMOTOREN"
+  ],
+  "0281": [
+   "RAKETENMOTOREN"
+  ],
+  "0282": [
+   "NITROGUANIDIN (PICRIT), trocken oder angefeuchtet mit weniger als 20 Masse-% Wasser"
+  ],
+  "0283": [
+   "ZÜNDVERSTÄRKER, ohne Detonator"
+  ],
+  "0284": [
+   "GRANATEN, Hand oder Gewehr, mit Sprengladung"
+  ],
+  "0285": [
+   "GRANATEN, Hand oder Gewehr, mit Sprengladung"
+  ],
+  "0286": [
+   "GEFECHTSKÖPFE, RAKETE, mit Sprengladung"
+  ],
+  "0287": [
+   "GEFECHTSKÖPFE, RAKETE, mit Sprengladung"
+  ],
+  "0288": [
+   "SCHNEIDLADUNG, BIEGSAM, GESTRECKT"
+  ],
+  "0289": [
+   "SPRENGSCHNUR, biegsam"
+  ],
+  "0290": [
+   "SPRENGSCHNUR, mit Metallmantel"
+  ],
+  "0291": [
+   "BOMBEN, mit Sprengladung"
+  ],
+  "0292": [
+   "GRANATEN, Hand oder Gewehr, mit Sprengladung"
+  ],
+  "0293": [
+   "GRANATEN, Hand oder Gewehr, mit Sprengladung"
+  ],
+  "0294": [
+   "MINEN, mit Sprengladung"
+  ],
+  "0295": [
+   "RAKETEN, mit Sprengladung"
+  ],
+  "0296": [
+   "FALLLOTE, MIT EXPLOSIVSTOFF"
+  ],
+  "0297": [
+   "MUNITION, LEUCHT, mit oder ohne Zerleger, Ausstoss- oder Treibladung"
+  ],
+  "0299": [
+   "BOMBEN, BLITZLICHT"
+  ],
+  "0300": [
+   "MUNITION, BRAND, mit oder ohne Zerleger, Ausstoss- oder Treibladung"
+  ],
+  "0301": [
+   "MUNITION, AUGENREIZSTOFF, mit Zerleger, Ausstoss- oder Treibladung"
+  ],
+  "0303": [
+   "MUNITION, NEBEL, mit oder ohne Zerleger, Ausstoss- oder Treibladung",
+   "MUNITION, NEBEL, mit oder ohne Zerleger, Ausstoss- oder Treibladung, mit ätzenden Stoffen",
+   "MUNITION, NEBEL, mit oder ohne Zerleger, Ausstoss- oder Treibladung, mit beim Einatmen giftigen Stoffen"
+  ],
+  "0305": [
+   "BLITZLICHTPULVER"
+  ],
+  "0306": [
+   "LEUCHTSPURKÖRPER FÜR MUNITION"
+  ],
+  "0312": [
+   "PATRONEN, SIGNAL"
+  ],
+  "0313": [
+   "SIGNALKÖRPER, RAUCH"
+  ],
+  "0314": [
+   "ANZÜNDER"
+  ],
+  "0315": [
+   "ANZÜNDER"
+  ],
+  "0316": [
+   "ZÜNDER, NICHT SPRENGKRÄFTIG"
+  ],
+  "0317": [
+   "ZÜNDER, NICHT SPRENGKRÄFTIG"
+  ],
+  "0318": [
+   "GRANATEN, ÜBUNG, Hand oder Gewehr"
+  ],
+  "0319": [
+   "TREIBLADUNGSANZÜNDER"
+  ],
+  "0320": [
+   "TREIBLADUNGSANZÜNDER"
+  ],
+  "0321": [
+   "PATRONEN FÜR WAFFEN, mit Sprengladung"
+  ],
+  "0322": [
+   "RAKETENTRIEBWERKE, MIT HYPERGOLEN, mit oder ohne Ausstossladung"
+  ],
+  "0323": [
+   "KARTUSCHEN FÜR TECHNISCHE ZWECKE"
+  ],
+  "0324": [
+   "GESCHOSSE, mit Sprengladung"
+  ],
+  "0325": [
+   "ANZÜNDER"
+  ],
+  "0326": [
+   "PATRONEN FÜR WAFFEN, MANÖVER"
+  ],
+  "0327": [
+   "PATRONEN FÜR WAFFEN, MANÖVER oder PATRONEN FÜR HANDFEUERWAFFEN, MANÖVER"
+  ],
+  "0328": [
+   "PATRONEN FÜR WAFFEN, MIT INERTEM GESCHOSS"
+  ],
+  "0329": [
+   "TORPEDOS, mit Sprengladung"
+  ],
+  "0330": [
+   "TORPEDOS, mit Sprengladung"
+  ],
+  "0331": [
+   "SPRENGSTOFF, TYP B"
+  ],
+  "0332": [
+   "SPRENGSTOFF, TYP E"
+  ],
+  "0333": [
+   "FEUERWERKSKÖRPER"
+  ],
+  "0334": [
+   "FEUERWERKSKÖRPER"
+  ],
+  "0335": [
+   "FEUERWERKSKÖRPER"
+  ],
+  "0336": [
+   "FEUERWERKSKÖRPER"
+  ],
+  "0337": [
+   "FEUERWERKSKÖRPER"
+  ],
+  "0338": [
+   "PATRONEN FÜR WAFFEN, MANÖVER oder PATRONEN FÜR HANDFEUERWAFFEN, MANÖVER"
+  ],
+  "0339": [
+   "PATRONEN FÜR WAFFEN MIT INERTEM GESCHOSS oder PATRONEN FÜR HANDFEUERWAFFEN"
+  ],
+  "0340": [
+   "NITROCELLULOSE, trocken oder angefeuchtet mit weniger als 25 Masse-% Wasser (oder Alkohol)"
+  ],
+  "0341": [
+   "NITROCELLULOSE, nicht behandelt oder plastifiziert mit weniger als 18 Masse-% Plastifizierungsmittel"
+  ],
+  "0342": [
+   "NITROCELLULOSE, ANGEFEUCHTET mit mindestens 25 Masse-% Alkohol"
+  ],
+  "0343": [
+   "NITROCELLULOSE, PLASTIFIZIERT, mit mindestens 18 Masse-% Plastifizierungsmittel"
+  ],
+  "0344": [
+   "GESCHOSSE, mit Sprengladung"
+  ],
+  "0345": [
+   "GESCHOSSE, inert, mit Leuchtspurmitteln"
+  ],
+  "0346": [
+   "GESCHOSSE, mit Zerleger oder Ausstossladung"
+  ],
+  "0347": [
+   "GESCHOSSE, mit Zerleger oder Ausstossladung"
+  ],
+  "0348": [
+   "PATRONEN FÜR WAFFEN, mit Sprengladung"
+  ],
+  "0349": [
+   "GEGENSTÄNDE MIT EXPLOSIVSTOFF, N.A.G."
+  ],
+  "0350": [
+   "GEGENSTÄNDE MIT EXPLOSIVSTOFF, N.A.G."
+  ],
+  "0351": [
+   "GEGENSTÄNDE MIT EXPLOSIVSTOFF, N.A.G."
+  ],
+  "0352": [
+   "GEGENSTÄNDE MIT EXPLOSIVSTOFF, N.A.G."
+  ],
+  "0353": [
+   "GEGENSTÄNDE MIT EXPLOSIVSTOFF, N.A.G."
+  ],
+  "0354": [
+   "GEGENSTÄNDE MIT EXPLOSIVSTOFF, N.A.G."
+  ],
+  "0355": [
+   "GEGENSTÄNDE MIT EXPLOSIVSTOFF, N.A.G."
+  ],
+  "0356": [
+   "GEGENSTÄNDE MIT EXPLOSIVSTOFF, N.A.G."
+  ],
+  "0357": [
+   "EXPLOSIVE STOFFE, N.A.G."
+  ],
+  "0358": [
+   "EXPLOSIVE STOFFE, N.A.G."
+  ],
+  "0359": [
+   "EXPLOSIVE STOFFE, N.A.G."
+  ],
+  "0360": [
+   "ZÜNDEINRICHTUNGEN für Sprengungen, NICHT ELEKTRISCH"
+  ],
+  "0361": [
+   "ZÜNDEINRICHTUNGEN für Sprengungen, NICHT ELEKTRISCH"
+  ],
+  "0362": [
+   "MUNITION, ÜBUNG"
+  ],
+  "0363": [
+   "MUNITION, PRÜF"
+  ],
+  "0364": [
+   "DETONATOREN FÜR MUNITION"
+  ],
+  "0365": [
+   "DETONATOREN FÜR MUNITION"
+  ],
+  "0366": [
+   "DETONATOREN FÜR MUNITION"
+  ],
+  "0367": [
+   "ZÜNDER, SPRENGKRÄFTIG"
+  ],
+  "0368": [
+   "ZÜNDER, NICHT SPRENGKRÄFTIG"
+  ],
+  "0369": [
+   "GEFECHTSKÖPFE, RAKETE, mit Sprengladung"
+  ],
+  "0370": [
+   "GEFECHTSKÖPFE, RAKETE, mit Zerleger oder Ausstossladung"
+  ],
+  "0371": [
+   "GEFECHTSKÖPFE, RAKETE, mit Zerleger oder Ausstossladung"
+  ],
+  "0372": [
+   "GRANATEN, ÜBUNG, Hand oder Gewehr"
+  ],
+  "0373": [
+   "SIGNALKÖRPER, HAND"
+  ],
+  "0374": [
+   "FALLLOTE, MIT EXPLOSIVSTOFF"
+  ],
+  "0375": [
+   "FALLLOTE, MIT EXPLOSIVSTOFF"
+  ],
+  "0376": [
+   "TREIBLADUNGSANZÜNDER"
+  ],
+  "0377": [
+   "ANZÜNDHÜTCHEN"
+  ],
+  "0378": [
+   "ANZÜNDHÜTCHEN"
+  ],
+  "0379": [
+   "TREIBLADUNGSHÜLSEN, LEER, MIT TREIBLADUNGSANZÜNDER"
+  ],
+  "0380": [
+   "GEGENSTÄNDE, PYROPHOR"
+  ],
+  "0381": [
+   "KARTUSCHEN FÜR TECHNISCHE ZWECKE"
+  ],
+  "0382": [
+   "BESTANDTEILE, ZÜNDKETTE, N.A.G."
+  ],
+  "0383": [
+   "BESTANDTEILE, ZÜNDKETTE, N.A.G."
+  ],
+  "0384": [
+   "BESTANDTEILE, ZÜNDKETTE, N.A.G."
+  ],
+  "0385": [
+   "5-NITROBENZOTRIAZOL"
+  ],
+  "0386": [
+   "TRINITROBENZENSULFONSÄURE"
+  ],
+  "0387": [
+   "TRINITROFLUORENON"
+  ],
+  "0388": [
+   "TRINITROTOLUEN (TNT) IN MISCHUNG MIT TRINITROBENZEN oder TRINITROTOLUEN (TNT) IN MISCHUNG MIT HEXANITROSTILBEN"
+  ],
+  "0389": [
+   "TRINITROTOLUEN (TNT) IN MISCHUNG MIT TRINITROBENZEN UND HEXANITROSTILBEN"
+  ],
+  "0390": [
+   "TRITONAL"
+  ],
+  "0391": [
+   "CYCLOTRIMETHYLENTRINITRAMIN (CYCLONIT), (HEXOGEN), (RDX), IN MISCHUNG MIT CYCLOTETRAMETHYLENTETRANITRAMIN (HMX), (OKTOGEN), ANGEFEUCHTET mit mindestens 15 Masse-% Wasser oder DESENSIBILISIERT mit mindestens 10 Masse-% Phlegmatisierungsmittel"
+  ],
+  "0392": [
+   "HEXANITROSTILBEN"
+  ],
+  "0393": [
+   "HEXOTONAL"
+  ],
+  "0394": [
+   "TRINITRORESORCINOL (STYPHNINSÄURE), ANGEFEUCHTET mit mindestens 20 Masse-% Wasser oder einer Alkohol/Wasser-Mischung"
+  ],
+  "0395": [
+   "RAKETENMOTOREN, FLÜSSIGTREIBSTOFF"
+  ],
+  "0396": [
+   "RAKETENMOTOREN, FLÜSSIGTREIBSTOFF"
+  ],
+  "0397": [
+   "RAKETEN, FLÜSSIGTREIBSTOFF, mit Sprengladung"
+  ],
+  "0398": [
+   "RAKETEN, FLÜSSIGTREIBSTOFF, mit Sprengladung"
+  ],
+  "0399": [
+   "BOMBEN, DIE ENTZÜNDBARE FLÜSSIGKEIT ENTHALTEN, mit Sprengladung"
+  ],
+  "0400": [
+   "BOMBEN, DIE ENTZÜNDBARE FLÜSSIGKEIT ENTHALTEN, mit Sprengladung"
+  ],
+  "0401": [
+   "DIPIKRYLSULFID, trocken oder angefeuchtet mit weniger als 10 Masse-% Wasser"
+  ],
+  "0402": [
+   "AMMONIUMPERCHLORAT"
+  ],
+  "0403": [
+   "LEUCHTKÖRPER, LUFTFAHRZEUG"
+  ],
+  "0404": [
+   "LEUCHTKÖRPER, LUFTFAHRZEUG"
+  ],
+  "0405": [
+   "PATRONEN, SIGNAL"
+  ],
+  "0406": [
+   "DINITROSOBENZEN"
+  ],
+  "0407": [
+   "TETRAZOL-1-ESSIGSÄURE"
+  ],
+  "0408": [
+   "ZÜNDER, SPRENGKRÄFTIG, mit Sicherungsvorrichtungen"
+  ],
+  "0409": [
+   "ZÜNDER, SPRENGKRÄFTIG, mit Sicherungsvorrichtungen"
+  ],
+  "0410": [
+   "ZÜNDER, SPRENGKRÄFTIG, mit Sicherungsvorrichtungen"
+  ],
+  "0411": [
+   "PENTAERYTHRITTETRANITRAT (PENTAERYTHRITOLTETRANITRAT) (PETN), mit nicht weniger als 7 Masse-% Wachs"
+  ],
+  "0412": [
+   "PATRONEN FÜR WAFFEN, mit Sprengladung"
+  ],
+  "0413": [
+   "PATRONEN FÜR WAFFEN, MANÖVER"
+  ],
+  "0414": [
+   "TREIBLADUNGEN FÜR GESCHÜTZE"
+  ],
+  "0415": [
+   "TREIBSÄTZE"
+  ],
+  "0417": [
+   "PATRONEN FÜR WAFFEN, MIT INERTEM GESCHOSS oder PATRONEN FÜR HANDFEUERWAFFEN"
+  ],
+  "0418": [
+   "LEUCHTKÖRPER, BODEN"
+  ],
+  "0419": [
+   "LEUCHTKÖRPER, BODEN"
+  ],
+  "0420": [
+   "LEUCHTKÖRPER, LUFTFAHRZEUG"
+  ],
+  "0421": [
+   "LEUCHTKÖRPER, LUFTFAHRZEUG"
+  ],
+  "0424": [
+   "GESCHOSSE, inert, mit Leuchtspurmitteln"
+  ],
+  "0425": [
+   "GESCHOSSE, inert, mit Leuchtspurmitteln"
+  ],
+  "0426": [
+   "GESCHOSSE, mit Zerleger oder Ausstossladung"
+  ],
+  "0427": [
+   "GESCHOSSE, mit Zerleger oder Ausstossladung"
+  ],
+  "0428": [
+   "PYROTECHNISCHE GEGENSTÄNDE für technische Zwecke"
+  ],
+  "0429": [
+   "PYROTECHNISCHE GEGENSTÄNDE für technische Zwecke"
+  ],
+  "0430": [
+   "PYROTECHNISCHE GEGENSTÄNDE für technische Zwecke"
+  ],
+  "0431": [
+   "PYROTECHNISCHE GEGENSTÄNDE für technische Zwecke"
+  ],
+  "0432": [
+   "PYROTECHNISCHE GEGENSTÄNDE für technische Zwecke"
+  ],
+  "0433": [
+   "PULVERROHMASSE, ANGEFEUCHTET mit nicht weniger als 17 Masse-% Alkohol"
+  ],
+  "0434": [
+   "GESCHOSSE, mit Zerleger oder Ausstossladung"
+  ],
+  "0435": [
+   "GESCHOSSE, mit Zerleger oder Ausstossladung"
+  ],
+  "0436": [
+   "RAKETEN, mit Ausstossladung"
+  ],
+  "0437": [
+   "RAKETEN, mit Ausstossladung"
+  ],
+  "0438": [
+   "RAKETEN, mit Ausstossladung"
+  ],
+  "0439": [
+   "HOHLLADUNGEN, ohne Zündmittel"
+  ],
+  "0440": [
+   "HOHLLADUNGEN, ohne Zündmittel"
+  ],
+  "0441": [
+   "HOHLLADUNGEN, ohne Zündmittel"
+  ],
+  "0442": [
+   "SPRENGLADUNGEN, GEWERBLICHE, ohne Zündmittel"
+  ],
+  "0443": [
+   "SPRENGLADUNGEN, GEWERBLICHE, ohne Zündmittel"
+  ],
+  "0444": [
+   "SPRENGLADUNGEN, GEWERBLICHE, ohne Zündmittel"
+  ],
+  "0445": [
+   "SPRENGLADUNGEN, GEWERBLICHE, ohne Zündmittel"
+  ],
+  "0446": [
+   "TREIBLADUNGSHÜLSEN, VERBRENNLICH, LEER, OHNE TREIBLADUNGSANZÜNDER"
+  ],
+  "0447": [
+   "TREIBLADUNGSHÜLSEN, VERBRENNLICH, LEER, OHNE TREIBLADUNGSANZÜNDER"
+  ],
+  "0448": [
+   "5-MERCAPTOTETRAZOL-1-ESSIGSÄURE"
+  ],
+  "0449": [
+   "TORPEDOS, MIT FLÜSSIGTREIBSTOFF, mit oder ohne Sprengladung"
+  ],
+  "0450": [
+   "TORPEDOS, MIT FLÜSSIGTREIBSTOFF, mit inertem Kopf"
+  ],
+  "0451": [
+   "TORPEDOS, mit Sprengladung"
+  ],
+  "0452": [
+   "GRANATEN, ÜBUNG, Hand oder Gewehr"
+  ],
+  "0453": [
+   "RAKETEN, LEINENWURF"
+  ],
+  "0454": [
+   "ANZÜNDER"
+  ],
+  "0455": [
+   "SPRENGKAPSELN, NICHT ELEKTRISCH"
+  ],
+  "0456": [
+   "SPRENGKAPSELN, ELEKTRISCH"
+  ],
+  "0457": [
+   "SPRENGLADUNGEN, KUNSTSTOFFGEBUNDEN"
+  ],
+  "0458": [
+   "SPRENGLADUNGEN, KUNSTSTOFFGEBUNDEN"
+  ],
+  "0459": [
+   "SPRENGLADUNGEN, KUNSTSTOFFGEBUNDEN"
+  ],
+  "0460": [
+   "SPRENGLADUNGEN, KUNSTSTOFFGEBUNDEN"
+  ],
+  "0461": [
+   "BESTANDTEILE, ZÜNDKETTE, N.A.G."
+  ],
+  "0462": [
+   "GEGENSTÄNDE MIT EXPLOSIVSTOFF, N.A.G."
+  ],
+  "0463": [
+   "GEGENSTÄNDE MIT EXPLOSIVSTOFF, N.A.G."
+  ],
+  "0464": [
+   "GEGENSTÄNDE MIT EXPLOSIVSTOFF, N.A.G."
+  ],
+  "0465": [
+   "GEGENSTÄNDE MIT EXPLOSIVSTOFF, N.A.G."
+  ],
+  "0466": [
+   "GEGENSTÄNDE MIT EXPLOSIVSTOFF, N.A.G."
+  ],
+  "0467": [
+   "GEGENSTÄNDE MIT EXPLOSIVSTOFF, N.A.G."
+  ],
+  "0468": [
+   "GEGENSTÄNDE MIT EXPLOSIVSTOFF, N.A.G."
+  ],
+  "0469": [
+   "GEGENSTÄNDE MIT EXPLOSIVSTOFF, N.A.G."
+  ],
+  "0470": [
+   "GEGENSTÄNDE MIT EXPLOSIVSTOFF, N.A.G."
+  ],
+  "0471": [
+   "GEGENSTÄNDE MIT EXPLOSIVSTOFF, N.A.G."
+  ],
+  "0472": [
+   "GEGENSTÄNDE MIT EXPLOSIVSTOFF, N.A.G."
+  ],
+  "0473": [
+   "EXPLOSIVE STOFFE, N.A.G."
+  ],
+  "0474": [
+   "EXPLOSIVE STOFFE, N.A.G."
+  ],
+  "0475": [
+   "EXPLOSIVE STOFFE, N.A.G."
+  ],
+  "0476": [
+   "EXPLOSIVE STOFFE, N.A.G."
+  ],
+  "0477": [
+   "EXPLOSIVE STOFFE, N.A.G."
+  ],
+  "0478": [
+   "EXPLOSIVE STOFFE, N.A.G."
+  ],
+  "0479": [
+   "EXPLOSIVE STOFFE, N.A.G."
+  ],
+  "0480": [
+   "EXPLOSIVE STOFFE, N.A.G."
+  ],
+  "0481": [
+   "EXPLOSIVE STOFFE, N.A.G."
+  ],
+  "0482": [
+   "EXPLOSIVE STOFFE, SEHR UNEMPFINDLICH, N.A.G. (STOFFE, EVI, N.A.G.)"
+  ],
+  "0483": [
+   "CYCLOTRIMETHYLENTRINITRAMIN (CYCLONIT), (HEXOGEN), (RDX), DESENSIBILISIERT"
+  ],
+  "0484": [
+   "CYCLOTETRAMETHYLENTETRANITRAMIN (HMX), (OKTOGEN), DESENSIBILISIERT"
+  ],
+  "0485": [
+   "EXPLOSIVE STOFFE, N.A.G."
+  ],
+  "0486": [
+   "GEGENSTÄNDE MIT EXPLOSIVSTOFF, EXTREM UNEMPFINDLICH (GEGENSTÄNDE, EEI)"
+  ],
+  "0487": [
+   "SIGNALKÖRPER, RAUCH"
+  ],
+  "0488": [
+   "MUNITION, ÜBUNG"
+  ],
+  "0489": [
+   "DINITROGLYCOLURIL (DINGU)"
+  ],
+  "0490": [
+   "OXYNITROTRIAZOL (ONTA)"
+  ],
+  "0491": [
+   "TREIBSÄTZE"
+  ],
+  "0492": [
+   "KNALLKAPSELN, EISENBAHN"
+  ],
+  "0493": [
+   "KNALLKAPSELN, EISENBAHN"
+  ],
+  "0494": [
+   "PERFORATIONSHOHLLADUNGSTRÄGER, GELADEN, für Erdölbohrlöcher, ohne Zündmittel"
+  ],
+  "0495": [
+   "TREIBSTOFF, FLÜSSIG"
+  ],
+  "0496": [
+   "OCTONAL"
+  ],
+  "0497": [
+   "TREIBSTOFF, FLÜSSIG"
+  ],
+  "0498": [
+   "TREIBSTOFF, FEST"
+  ],
+  "0499": [
+   "TREIBSTOFF, FEST"
+  ],
+  "0500": [
+   "ZÜNDEINRICHTUNGEN für Sprengungen, NICHT ELEKTRISCH"
+  ],
+  "0501": [
+   "TREIBSTOFF, FEST"
+  ],
+  "0502": [
+   "RAKETEN, mit inertem Kopf"
+  ],
+  "0503": [
+   "SICHERHEITSEINRICHTUNGEN, PYROTECHNISCH"
+  ],
+  "0504": [
+   "1H-TETRAZOL"
+  ],
+  "0505": [
+   "SIGNALKÖRPER, SEENOT"
+  ],
+  "0506": [
+   "SIGNALKÖRPER, SEENOT"
+  ],
+  "0507": [
+   "SIGNALKÖRPER, RAUCH"
+  ],
+  "0508": [
+   "1-HYDROXYBENZOTRIAZOL, WASSERFREI, trocken oder angefeuchtet mit weniger als 20 Masse-% Wasser"
+  ],
+  "0509": [
+   "TREIBLADUNGSPULVER"
+  ],
+  "0510": [
+   "RAKETENMOTOREN"
+  ],
+  "0511": [
+   "SPRENGKAPSELN, ELEKTRONISCH, programmierbar"
+  ],
+  "0512": [
+   "SPRENGKAPSELN, ELEKTRONISCH, programmierbar"
+  ],
+  "0513": [
+   "SPRENGKAPSELN, ELEKTRONISCH, programmierbar"
+  ],
+  "0514": [
+   "FEUERLÖSCHMITTELDISPERGIERVORRICHTUNGEN"
+  ],
+  "1001": [
+   "ACETYLEN, GELÖST"
+  ],
+  "1002": [
+   "LUFT, VERDICHTET (DRUCKLUFT)"
+  ],
+  "1003": [
+   "LUFT, TIEFGEKÜHLT, FLÜSSIG"
+  ],
+  "1005": [
+   "AMMONIAK, WASSERFREI"
+  ],
+  "1006": [
+   "ARGON, VERDICHTET"
+  ],
+  "1008": [
+   "BORTRIFLUORID"
+  ],
+  "1009": [
+   "BROMTRIFLUORMETHAN (GAS ALS KÄLTEMITTEL R 13B1)"
+  ],
+  "1010": [
+   "BUTADIENE, STABILISIERT oder BUTADIENE UND KOHLENWASSERSTOFF, GEMISCH, STABILISIERT mit mehr als 20 % Butadienen"
+  ],
+  "1011": [
+   "BUTAN"
+  ],
+  "1012": [
+   "BUTEN"
+  ],
+  "1013": [
+   "KOHLENDIOXID"
+  ],
+  "1016": [
+   "KOHLENMONOXID, VERDICHTET"
+  ],
+  "1017": [
+   "CHLOR"
+  ],
+  "1018": [
+   "CHLORDIFLUORMETHAN (GAS ALS KÄLTEMITTEL R 22)"
+  ],
+  "1020": [
+   "CHLORPENTAFLUORETHAN (GAS ALS KÄLTEMITTEL R 115)"
+  ],
+  "1021": [
+   "1-CHLOR-1,2,2,2-TETRAFLUORETHAN (GAS ALS KÄLTEMITTEL R 124)"
+  ],
+  "1022": [
+   "CHLORTRIFLUORMETHAN (GAS ALS KÄLTEMITTEL R 13)"
+  ],
+  "1023": [
+   "STADTGAS, VERDICHTET"
+  ],
+  "1026": [
+   "DICYAN"
+  ],
+  "1027": [
+   "CYCLOPROPAN"
+  ],
+  "1028": [
+   "DICHLORDIFLUORMETHAN (GAS ALS KÄLTEMITTEL R 12)"
+  ],
+  "1029": [
+   "DICHLORMONOFLUORMETHAN (GAS ALS KÄLTEMITTEL R 21)"
+  ],
+  "1030": [
+   "1,1-DIFLUORETHAN (GAS ALS KÄLTEMITTEL R 152a)"
+  ],
+  "1032": [
+   "DIMETHYLAMIN, WASSERFREI"
+  ],
+  "1033": [
+   "DIMETHYLETHER"
+  ],
+  "1035": [
+   "ETHAN"
+  ],
+  "1036": [
+   "ETHYLAMIN"
+  ],
+  "1037": [
+   "ETHYLCHLORID"
+  ],
+  "1038": [
+   "ETHYLEN, TIEFGEKÜHLT, FLÜSSIG"
+  ],
+  "1039": [
+   "ETHYLMETHYLETHER"
+  ],
+  "1040": [
+   "ETHYLENOXID",
+   "ETHYLENOXID MIT STICKSTOFF bis zu einem Gesamtdruck von 1 MPa (10 bar) bei 50 °C"
+  ],
+  "1041": [
+   "ETHYLENOXID UND KOHLENDIOXID, GEMISCH mit mehr als 9 %, aber höchstens 87 % Ethylenoxid"
+  ],
+  "1043": [
+   "DÜNGEMITTEL, LÖSUNG, mit freiem Ammoniak"
+  ],
+  "1044": [
+   "FEUERLÖSCHER mit verdichtetem oder verflüssigtem Gas"
+  ],
+  "1045": [
+   "FLUOR, VERDICHTET"
+  ],
+  "1046": [
+   "HELIUM, VERDICHTET"
+  ],
+  "1048": [
+   "BROMWASSERSTOFF, WASSERFREI"
+  ],
+  "1049": [
+   "WASSERSTOFF, VERDICHTET"
+  ],
+  "1050": [
+   "CHLORWASSERSTOFF, WASSERFREI"
+  ],
+  "1051": [
+   "CYANWASSERSTOFF, STABILISIERT, mit weniger als 3 % Wasser"
+  ],
+  "1052": [
+   "FLUORWASSERSTOFF, WASSERFREI"
+  ],
+  "1053": [
+   "SCHWEFELWASSERSTOFF"
+  ],
+  "1055": [
+   "ISOBUTEN"
+  ],
+  "1056": [
+   "KRYPTON, VERDICHTET"
+  ],
+  "1057": [
+   "FEUERZEUGE mit entzündbarem Gas oder NACHFÜLLPATRONEN FÜR FEUERZEUGE mit entzündbarem Gas"
+  ],
+  "1058": [
+   "VERFLÜSSIGTE GASE, nicht entzündbar, überlagert mit Stickstoff, Kohlendioxid oder Luft"
+  ],
+  "1060": [
+   "METHYLACETYLEN UND PROPADIEN, GEMISCH, STABILISIERT (Gemisch P 1) (Gemisch P 2)"
+  ],
+  "1061": [
+   "METHYLAMIN, WASSERFREI"
+  ],
+  "1062": [
+   "METHYLBROMID mit höchstens 2 % Chlorpikrin"
+  ],
+  "1063": [
+   "METHYLCHLORID (GAS ALS KÄLTEMITTEL R 40)"
+  ],
+  "1064": [
+   "METHYLMERCAPTAN"
+  ],
+  "1065": [
+   "NEON, VERDICHTET"
+  ],
+  "1066": [
+   "STICKSTOFF, VERDICHTET"
+  ],
+  "1067": [
+   "DISTICKSTOFFTETROXID (STICKSTOFFDIOXID)"
+  ],
+  "1069": [
+   "NITROSYLCHLORID"
+  ],
+  "1070": [
+   "DISTICKSTOFFMONOXID"
+  ],
+  "1071": [
+   "ÖLGAS, VERDICHTET"
+  ],
+  "1072": [
+   "SAUERSTOFF, VERDICHTET"
+  ],
+  "1073": [
+   "SAUERSTOFF, TIEFGEKÜHLT, FLÜSSIG"
+  ],
+  "1075": [
+   "PETROLEUMGASE, VERFLÜSSIGT"
+  ],
+  "1076": [
+   "PHOSGEN"
+  ],
+  "1077": [
+   "PROPEN"
+  ],
+  "1078": [
+   "GAS ALS KÄLTEMITTEL, N.A.G. (Gemisch F 1) (Gemisch F 2) (Gemisch F 3)"
+  ],
+  "1079": [
+   "SCHWEFELDIOXID"
+  ],
+  "1080": [
+   "SCHWEFELHEXAFLUORID"
+  ],
+  "1081": [
+   "TETRAFLUORETHYLEN, STABILISIERT"
+  ],
+  "1082": [
+   "CHLORTRIFLUORETHYLEN, STABILISIERT (GAS ALS KÄLTEMITTEL R 1113)"
+  ],
+  "1083": [
+   "TRIMETHYLAMIN, WASSERFREI"
+  ],
+  "1085": [
+   "VINYLBROMID, STABILISIERT"
+  ],
+  "1086": [
+   "VINYLCHLORID, STABILISIERT"
+  ],
+  "1087": [
+   "VINYLMETHYLETHER, STABILISIERT"
+  ],
+  "1088": [
+   "ACETAL"
+  ],
+  "1089": [
+   "ACETALDEHYD"
+  ],
+  "1090": [
+   "ACETON"
+  ],
+  "1091": [
+   "ACETONÖLE"
+  ],
+  "1092": [
+   "ACROLEIN, STABILISIERT"
+  ],
+  "1093": [
+   "ACRYLNITRIL, STABILISIERT"
+  ],
+  "1098": [
+   "ALLYLALKOHOL"
+  ],
+  "1099": [
+   "ALLYLBROMID"
+  ],
+  "1100": [
+   "ALLYLCHLORID"
+  ],
+  "1104": [
+   "AMYLACETATE"
+  ],
+  "1105": [
+   "PENTANOLE"
+  ],
+  "1106": [
+   "AMYLAMINE"
+  ],
+  "1107": [
+   "AMYLCHLORIDE"
+  ],
+  "1108": [
+   "PENT-1-EN (n-AMYLEN)"
+  ],
+  "1109": [
+   "AMYLFORMIATE"
+  ],
+  "1110": [
+   "n-AMYLMETHYLKETON"
+  ],
+  "1111": [
+   "AMYLMERCAPTAN"
+  ],
+  "1112": [
+   "AMYLNITRATE"
+  ],
+  "1113": [
+   "AMYLNITRITE"
+  ],
+  "1114": [
+   "BENZEN"
+  ],
+  "1120": [
+   "BUTANOLE"
+  ],
+  "1123": [
+   "BUTYLACETATE"
+  ],
+  "1125": [
+   "n-BUTYLAMIN"
+  ],
+  "1126": [
+   "1-BROMBUTAN"
+  ],
+  "1127": [
+   "CHLORBUTANE"
+  ],
+  "1128": [
+   "n-BUTYLFORMIAT"
+  ],
+  "1129": [
+   "BUTYRALDEHYD"
+  ],
+  "1130": [
+   "KAMPFERÖL"
+  ],
+  "1131": [
+   "KOHLENSTOFFDISULFID"
+  ],
+  "1133": [
+   "KLEBSTOFFE, mit entzündbarem flüssigem Stoff",
+   "KLEBSTOFFE, mit entzündbarem flüssigem Stoff (Dampfdruck bei 50 °C grösser als 110 kPa)",
+   "KLEBSTOFFE, mit entzündbarem flüssigem Stoff (Dampfdruck bei 50 °C höchstens 110 kPa)",
+   "KLEBSTOFFE, mit entzündbarem flüssigem Stoff (mit einem Flammpunkt unter 23 °C und viskos gemäss 2.2.3.1.4) (Dampfdruck bei 50 °C grösser als 110 kPa)",
+   "KLEBSTOFFE, mit entzündbarem flüssigem Stoff (mit einem Flammpunkt unter 23 °C und viskos gemäss 2.2.3.1.4) (Dampfdruck bei 50 °C höchstens 110 kPa)"
+  ],
+  "1134": [
+   "CHLORBENZEN"
+  ],
+  "1135": [
+   "ETHYLENCHLORHYDRIN"
+  ],
+  "1136": [
+   "STEINKOHLENTEERDESTILLATE, ENTZÜNDBAR"
+  ],
+  "1139": [
+   "SCHUTZANSTRICHLÖSUNG (einschliesslich zu Industrie-oder anderen Zwecken verwendete Oberflächenbehandlungen oder Beschichtungen, wie Zwischenbeschichtung für Fahrzeugkarosserien, Auskleidung für Fässer)",
+   "SCHUTZANSTRICHLÖSUNG (einschliesslich zu Industrie-oder anderen Zwecken verwendete Oberflächenbehandlungen oder Beschichtungen, wie Zwischenbeschichtung für Fahrzeugkarosserien, Auskleidung für Fässer) (Dampfdruck bei 50 °C grösser als 110 kPa)",
+   "SCHUTZANSTRICHLÖSUNG (einschliesslich zu Industrie-oder anderen Zwecken verwendete Oberflächenbehandlungen oder Beschichtungen, wie Zwischenbeschichtung für Fahrzeugkarosserien, Auskleidung für Fässer) (Dampfdruck bei 50 °C höchstens 110 kPa)",
+   "SCHUTZANSTRICHLÖSUNG (einschliesslich zu Industrie-oder anderen Zwecken verwendete Oberflächenbehandlungen oder Beschichtungen, wie Zwischenbeschichtung für Fahrzeugkarosserien, Auskleidung für Fässer) (mit einem Flammpunkt unter 23 °C und viskos gemäss 2.2.3.1.4) (Dampfdruck bei 50 °C grösser als 110 kPa)",
+   "SCHUTZANSTRICHLÖSUNG (einschliesslich zu Industrie-oder anderen Zwecken verwendete Oberflächenbehandlungen oder Beschichtungen, wie Zwischenbeschichtung für Fahrzeugkarosserien, Auskleidung für Fässer) (mit einem Flammpunkt unter 23 °C und viskos gemäss 2.2.3.1.4) (Dampfdruck bei 50 °C höchstens 110 kPa)"
+  ],
+  "1143": [
+   "CROTONALDEHYD oder CROTONALDEHYD, STABILISIERT"
+  ],
+  "1144": [
+   "CROTONYLEN"
+  ],
+  "1145": [
+   "CYCLOHEXAN"
+  ],
+  "1146": [
+   "CYCLOPENTAN"
+  ],
+  "1147": [
+   "DECAHYDRONAPHTHALEN"
+  ],
+  "1148": [
+   "DIACETONALKOHOL"
+  ],
+  "1149": [
+   "DIBUTYLETHER"
+  ],
+  "1150": [
+   "1,2-DICHLORETHYLEN"
+  ],
+  "1152": [
+   "DICHLORPENTANE"
+  ],
+  "1153": [
+   "ETHYLENGLYCOLDIETHYLETHER"
+  ],
+  "1154": [
+   "DIETHYLAMIN"
+  ],
+  "1155": [
+   "DIETHYLETHER (ETHYLETHER)"
+  ],
+  "1156": [
+   "DIETHYLKETON"
+  ],
+  "1157": [
+   "DIISOBUTYLKETON"
+  ],
+  "1158": [
+   "DIISOPROPYLAMIN"
+  ],
+  "1159": [
+   "DIISOPROPYLETHER"
+  ],
+  "1160": [
+   "DIMETHYLAMIN, WÄSSERIGE LÖSUNG"
+  ],
+  "1161": [
+   "DIMETHYLCARBONAT"
+  ],
+  "1162": [
+   "DIMETHYLDICHLORSILAN"
+  ],
+  "1163": [
+   "DIMETHYLHYDRAZIN, ASYMMETRISCH"
+  ],
+  "1164": [
+   "DIMETHYLSULFID"
+  ],
+  "1165": [
+   "DIOXAN"
+  ],
+  "1166": [
+   "DIOXOLAN"
+  ],
+  "1167": [
+   "DIVINYLETHER, STABILISIERT"
+  ],
+  "1170": [
+   "ETHANOL (ETHYLALKOHOL) oder ETHANOL, LÖSUNG (ETHYLALKOHOL, LÖSUNG)",
+   "ETHANOL, LÖSUNG (ETHYLALKOHOL, LÖSUNG)"
+  ],
+  "1171": [
+   "ETHYLENGLYCOLMONOETHYLETHER"
+  ],
+  "1172": [
+   "ETHYLENGLYCOLMONOETHYLETHERACETAT"
+  ],
+  "1173": [
+   "ETHYLACETAT"
+  ],
+  "1175": [
+   "ETHYLBENZEN"
+  ],
+  "1176": [
+   "TRIETHYLBORAT"
+  ],
+  "1177": [
+   "2-ETHYLBUTYLACETAT"
+  ],
+  "1178": [
+   "2-ETHYLBUTYRALDEHYD"
+  ],
+  "1179": [
+   "ETHYLBUTYLETHER"
+  ],
+  "1180": [
+   "ETHYLBUTYRAT"
+  ],
+  "1181": [
+   "ETHYLCHLORACETAT"
+  ],
+  "1182": [
+   "ETHYLCHLORFORMIAT"
+  ],
+  "1183": [
+   "ETHYLDICHLORSILAN"
+  ],
+  "1184": [
+   "ETHYLENDICHLORID"
+  ],
+  "1185": [
+   "ETHYLENIMIN, STABILISIERT"
+  ],
+  "1188": [
+   "ETHYLENGLYCOLMONOMETHYLETHER"
+  ],
+  "1189": [
+   "ETHYLENGLYCOLMONOMETHYLETHERACETAT"
+  ],
+  "1190": [
+   "ETHYLFORMIAT"
+  ],
+  "1191": [
+   "OCTYLALDEHYDE"
+  ],
+  "1192": [
+   "ETHYLLACTAT"
+  ],
+  "1193": [
+   "ETHYLMETHYLKETON (METHYLETHYLKETON)"
+  ],
+  "1194": [
+   "ETHYLNITRIT, LÖSUNG"
+  ],
+  "1195": [
+   "ETHYLPROPIONAT"
+  ],
+  "1196": [
+   "ETHYLTRICHLORSILAN"
+  ],
+  "1197": [
+   "EXTRAKTE, FLÜSSIG, für Geschmack oder Aroma (Dampfdruck bei 50 °C grösser als 110 kPa)",
+   "EXTRAKTE, FLÜSSIG, für Geschmack oder Aroma (Dampfdruck bei 50 °C höchstens 110 kPa)",
+   "EXTRAKTE, FLÜSSIG, für Geschmack oder Aroma",
+   "EXTRAKTE, FLÜSSIG, für Geschmack oder Aroma (mit einem Flammpunkt unter 23 °C und viskos gemäss 2.2.3.1.4) (Dampfdruck bei 50 °C grösser als 110 kPa)",
+   "EXTRAKTE, FLÜSSIG, für Geschmack oder Aroma (mit einem Flammpunkt unter 23 °C und viskos gemäss 2.2.3.1.4) (Dampfdruck bei 50 °C höchstens 110 kPa)"
+  ],
+  "1198": [
+   "FORMALDEHYDLÖSUNG, ENTZÜNDBAR"
+  ],
+  "1199": [
+   "FURALDEHYDE"
+  ],
+  "1201": [
+   "FUSELÖL"
+  ],
+  "1202": [
+   "DIESELKRAFTSTOFF oder GASÖL oder HEIZÖL, LEICHT (Flammpunkt höchstens 60 °C)",
+   "DIESELKRAFTSTOFF, der Norm EN 590:2013 + A1:2017 entsprechend, oder GASÖL oder HEIZÖL, LEICHT mit einem Flammpunkt gemäss EN 590:2013 + A1:2017",
+   "DIESELKRAFTSTOFF oder GASÖL oder HEIZÖL, LEICHT (Flammpunkt über 60 °C bis einschliesslich 100 °C)"
+  ],
+  "1203": [
+   "BENZIN oder OTTOKRAFTSTOFF"
+  ],
+  "1204": [
+   "NITROGLYCERIN, LÖSUNG IN ALKOHOL mit höchstens 1 % Nitroglycerin"
+  ],
+  "1206": [
+   "HEPTANE"
+  ],
+  "1207": [
+   "HEXALDEHYD"
+  ],
+  "1208": [
+   "HEXANE"
+  ],
+  "1210": [
+   "DRUCKFARBE, entzündbar oder DRUCKFARBZUBEHÖRSTOFFE (einschliesslich Druckfarbverdünnung und -lösemittel), entzündbar",
+   "DRUCKFARBE, entzündbar oder DRUCKFARBZUBEHÖRSTOFFE (einschliesslich Druckfarbverdünnung und -lösemittel), entzündbar (Dampfdruck bei 50 °C grösser als 110 kPa)",
+   "DRUCKFARBE, entzündbar oder DRUCKFARBZUBEHÖRSTOFFE (einschliesslich Druckfarbverdünnung und -lösemittel), entzündbar (Dampfdruck bei 50 °C höchstens 110 kPa)",
+   "DRUCKFARBE, entzündbar oder DRUCKFARBZUBEHÖRSTOFFE (einschliesslich Druckfarbverdünnung und -lösemittel), entzündbar (mit einem Flammpunkt unter 23 °C und viskos gemäss 2.2.3.1.4) (Dampfdruck bei 50 °C grösser als 110 kPa)",
+   "DRUCKFARBE, entzündbar oder DRUCKFARBZUBEHÖRSTOFFE (einschliesslich Druckfarbverdünnung und -lösemittel), entzündbar (mit einem Flammpunkt unter 23 °C und viskos gemäss 2.2.3.1.4) (Dampfdruck bei 50 °C höchstens 110 kPa)"
+  ],
+  "1212": [
+   "ISOBUTANOL (ISOBUTYLALKOHOL)"
+  ],
+  "1213": [
+   "ISOBUTYLACETAT"
+  ],
+  "1214": [
+   "ISOBUTYLAMIN"
+  ],
+  "1216": [
+   "ISOOCTENE"
+  ],
+  "1218": [
+   "ISOPREN, STABILISIERT"
+  ],
+  "1219": [
+   "ISOPROPANOL (ISOPROPYLALKOHOL)"
+  ],
+  "1220": [
+   "ISOPROPYLACETAT"
+  ],
+  "1221": [
+   "ISOPROPYLAMIN"
+  ],
+  "1222": [
+   "ISOPROPYLNITRAT"
+  ],
+  "1223": [
+   "KEROSIN"
+  ],
+  "1224": [
+   "KETONE, FLÜSSIG, N.A.G. (Dampfdruck bei 50 °C grösser als 110 kPa)",
+   "KETONE, FLÜSSIG, N.A.G. (Dampfdruck bei 50 °C höchstens 110 kPa)",
+   "KETONE, FLÜSSIG, N.A.G."
+  ],
+  "1228": [
+   "MERCAPTANE, FLÜSSIG, ENTZÜNDBAR, GIFTIG, N.A.G. oder MERCAPTANE, MISCHUNG, FLÜSSIG, ENTZÜNDBAR, GIFTIG, N.A.G."
+  ],
+  "1229": [
+   "MESITYLOXID"
+  ],
+  "1230": [
+   "METHANOL"
+  ],
+  "1231": [
+   "METHYLACETAT"
+  ],
+  "1233": [
+   "METHYLAMYLACETAT"
+  ],
+  "1234": [
+   "METHYLAL"
+  ],
+  "1235": [
+   "METHYLAMIN, WÄSSERIGE LÖSUNG"
+  ],
+  "1237": [
+   "METHYLBUTYRAT"
+  ],
+  "1238": [
+   "METHYLCHLORFORMIAT"
+  ],
+  "1239": [
+   "METHYLCHLORMETHYLETHER"
+  ],
+  "1242": [
+   "METHYLDICHLORSILAN"
+  ],
+  "1243": [
+   "METHYLFORMIAT"
+  ],
+  "1244": [
+   "METHYLHYDRAZIN"
+  ],
+  "1245": [
+   "METHYLISOBUTYLKETON"
+  ],
+  "1246": [
+   "METHYLISOPROPENYLKETON, STABILISIERT"
+  ],
+  "1247": [
+   "METHYLMETHACRYLAT, MONOMER, STABILISIERT"
+  ],
+  "1248": [
+   "METHYLPROPIONAT"
+  ],
+  "1249": [
+   "METHYLPROPYLKETON"
+  ],
+  "1250": [
+   "METHYLTRICHLORSILAN"
+  ],
+  "1251": [
+   "METHYLVINYLKETON, STABILISIERT"
+  ],
+  "1259": [
+   "NICKELTETRACARBONYL"
+  ],
+  "1261": [
+   "NITROMETHAN"
+  ],
+  "1262": [
+   "OCTANE"
+  ],
+  "1263": [
+   "FARBE (einschliesslich Farbe, Lack, Emaille, Beize, Schellack, Firnis, Politur, flüssiger Füllstoff und flüssige Lackgrundlage) oder FARBZUBEHÖRSTOFFE (einschliesslich Farbverdünnung und -lösemittel)",
+   "FARBE (einschliesslich Farbe, Lack, Emaille, Beize, Schellack, Firnis, Politur, flüssiger Füllstoff und flüssige Lackgrundlage) oder FARBZUBEHÖRSTOFFE (einschliesslich Farbverdünnung und -lösemittel) (Dampfdruck bei 50 °C grösser als 110 kPa)",
+   "FARBE (einschliesslich Farbe, Lack, Emaille, Beize, Schellack, Firnis, Politur, flüssiger Füllstoff und flüssige Lackgrundlage) oder FARBZUBEHÖRSTOFFE (einschliesslich Farbverdünnung und -lösemittel) (Dampfdruck bei 50 °C höchstens 110 kPa)",
+   "FARBE (einschliesslich Farbe, Lack, Emaille, Beize, Schellack, Firnis, Politur, flüssiger Füllstoff und flüssige Lackgrundlage) oder FARBZUBEHÖRSTOFFE (einschliesslich Farbverdünnung und -lösemittel) (mit einem Flammpunkt unter 23 °C und viskos gemäss 2.2.3.1.4) (Dampfdruck bei 50 °C grösser als 110 kPa)",
+   "FARBE (einschliesslich Farbe, Lack, Emaille, Beize, Schellack, Firnis, Politur, flüssiger Füllstoff und flüssige Lackgrundlage) oder FARBZUBEHÖRSTOFFE (einschliesslich Farbverdünnung und -lösemittel) (mit einem Flammpunkt unter 23 °C und viskos gemäss 2.2.3.1.4) (Dampfdruck bei 50 °C höchstens 110 kPa)"
+  ],
+  "1264": [
+   "PARALDEHYD"
+  ],
+  "1265": [
+   "PENTANE, flüssig"
+  ],
+  "1266": [
+   "PARFÜMERIEERZEUGNISSE mit entzündbaren Lösungsmitteln (Dampfdruck bei 50 °C grösser als 110 kPa)",
+   "PARFÜMERIEERZEUGNISSE mit entzündbaren Lösungsmitteln (Dampfdruck bei 50 °C höchstens 110 kPa)",
+   "PARFÜMERIEERZEUGNISSE mit entzündbaren Lösungsmitteln",
+   "PARFÜMERIEERZEUGNISSE mit entzündbaren Lösungsmitteln (mit einem Flammpunkt unter 23 °C und viskos gemäss 2.2.3.1.4) (Dampfdruck bei 50 °C grösser als 110 kPa)",
+   "PARFÜMERIEERZEUGNISSE mit entzündbaren Lösungsmitteln (mit einem Flammpunkt unter 23 °C und viskos gemäss 2.2.3.1.4) (Dampfdruck bei 50 °C höchstens 110 kPa)"
+  ],
+  "1267": [
+   "ROHERDÖL",
+   "ROHERDÖL (Dampfdruck bei 50 °C grösser als 110 kPa)",
+   "ROHERDÖL (Dampfdruck bei 50 °C höchstens 110 kPa)"
+  ],
+  "1268": [
+   "ERDÖLDESTILLATE, N.A.G. oder ERDÖLPRODUKTE, N.A.G.",
+   "ERDÖLDESTILLATE, N.A.G. oder ERDÖLPRODUKTE, N.A.G. (Dampfdruck bei 50 °C grösser als 110 kPa)",
+   "ERDÖLDESTILLATE, N.A.G. oder ERDÖLPRODUKTE, N.A.G. (Dampfdruck bei 50 °C höchstens 110 kPa)"
+  ],
+  "1272": [
+   "KIEFERNÖL"
+  ],
+  "1274": [
+   "n-PROPANOL (n-PROPYLALKOHOL)"
+  ],
+  "1275": [
+   "PROPIONALDEHYD"
+  ],
+  "1276": [
+   "n-PROPYLACETAT"
+  ],
+  "1277": [
+   "PROPYLAMIN"
+  ],
+  "1278": [
+   "1-CHLORPROPAN"
+  ],
+  "1279": [
+   "1,2-DICHLORPROPAN"
+  ],
+  "1280": [
+   "PROPYLENOXID"
+  ],
+  "1281": [
+   "PROPYLFORMIATE"
+  ],
+  "1282": [
+   "PYRIDIN"
+  ],
+  "1286": [
+   "HARZÖL (Dampfdruck bei 50 °C grösser als 110 kPa)",
+   "HARZÖL (Dampfdruck bei 50 °C höchstens 110 kPa)",
+   "HARZÖL",
+   "HARZÖL (mit einem Flammpunkt unter 23 °C und viskos gemäss 2.2.3.1.4) (Dampfdruck bei 50 °C grösser als 110 kPa)",
+   "HARZÖL (mit einem Flammpunkt unter 23 °C und viskos gemäss 2.2.3.1.4) (Dampfdruck bei 50 °C höchstens 110 kPa)"
+  ],
+  "1287": [
+   "GUMMILÖSUNG (Dampfdruck bei 50 °C grösser als 110 kPa)",
+   "GUMMILÖSUNG (Dampfdruck bei 50 °C höchstens 110 kPa)",
+   "GUMMILÖSUNG",
+   "GUMMILÖSUNG (mit einem Flammpunkt unter 23 °C und viskos gemäss 2.2.3.1.4) (Dampfdruck bei 50 °C grösser als 110 kPa)",
+   "GUMMILÖSUNG (mit einem Flammpunkt unter 23 °C und viskos gemäss 2.2.3.1.4) (Dampfdruck bei 50 °C höchstens 110 kPa)"
+  ],
+  "1288": [
+   "SCHIEFERÖL"
+  ],
+  "1289": [
+   "NATRIUMMETHYLAT, LÖSUNG in Alkohol"
+  ],
+  "1292": [
+   "TETRAETHYLSILICAT"
+  ],
+  "1293": [
+   "TINKTUREN, MEDIZINISCHE"
+  ],
+  "1294": [
+   "TOLUEN"
+  ],
+  "1295": [
+   "TRICHLORSILAN"
+  ],
+  "1296": [
+   "TRIETHYLAMIN"
+  ],
+  "1297": [
+   "TRIMETHYLAMIN, WÄSSERIGE LÖSUNG mit höchstens 50 Masse-% Trimethylamin"
+  ],
+  "1298": [
+   "TRIMETHYLCHLORSILAN"
+  ],
+  "1299": [
+   "TERPENTIN"
+  ],
+  "1300": [
+   "TERPENTINÖLERSATZ"
+  ],
+  "1301": [
+   "VINYLACETAT, STABILISIERT"
+  ],
+  "1302": [
+   "VINYLETHYLETHER, STABILISIERT"
+  ],
+  "1303": [
+   "VINYLIDENCHLORID, STABILISIERT"
+  ],
+  "1304": [
+   "VINYLISOBUTYLETHER, STABILISIERT"
+  ],
+  "1305": [
+   "VINYLTRICHLORSILAN"
+  ],
+  "1306": [
+   "HOLZSCHUTZMITTEL, FLÜSSIG (Dampfdruck bei 50 °C grösser als 110 kPa)",
+   "HOLZSCHUTZMITTEL, FLÜSSIG (Dampfdruck bei 50 °C höchstens 110 kPa)",
+   "HOLZSCHUTZMITTEL, FLÜSSIG",
+   "HOLZSCHUTZMITTEL, FLÜSSIG (mit einem Flammpunkt unter 23 °C und viskos gemäss 2.2.3.1.4) (Dampfdruck bei 50 °C grösser als 110 kPa)",
+   "HOLZSCHUTZMITTEL, FLÜSSIG (mit einem Flammpunkt unter 23 °C und viskos gemäss 2.2.3.1.4) (Dampfdruck bei 50 °C höchstens 110 kPa)"
+  ],
+  "1307": [
+   "XYLENE"
+  ],
+  "1308": [
+   "ZIRKONIUM, SUSPENDIERT IN EINEM ENTZÜNDBAREN FLÜSSIGEN STOFF",
+   "ZIRKONIUM, SUSPENDIERT IN EINEM ENTZÜNDBAREN FLÜSSIGEN STOFF (Dampfdruck bei 50 °C grösser als 110 kPa)",
+   "ZIRKONIUM, SUSPENDIERT IN EINEM ENTZÜNDBAREN FLÜSSIGEN STOFF (Dampfdruck bei 50 °C höchstens 110 kPa)"
+  ],
+  "1309": [
+   "ALUMINIUM-PULVER, ÜBERZOGEN"
+  ],
+  "1310": [
+   "AMMONIUMPIKRAT, ANGEFEUCHTET mit mindestens 10 Masse-% Wasser"
+  ],
+  "1312": [
+   "BORNEOL"
+  ],
+  "1313": [
+   "CALCIUMRESINAT"
+  ],
+  "1314": [
+   "CALCIUMRESINAT, GESCHMOLZEN und erstarrt"
+  ],
+  "1318": [
+   "COBALTRESINAT, GEFÄLLT"
+  ],
+  "1320": [
+   "DINITROPHENOL, ANGEFEUCHTET mit mindestens 15 Masse-% Wasser"
+  ],
+  "1321": [
+   "DINITROPHENOLATE, ANGEFEUCHTET mit mindestens 15 Masse-% Wasser"
+  ],
+  "1322": [
+   "DINITRORESORCINOL, ANGEFEUCHTET mit mindestens 15 Masse-% Wasser"
+  ],
+  "1323": [
+   "CEREISEN"
+  ],
+  "1324": [
+   "FILME AUF NITROCELLULOSEBASIS, gelatiniert, ausgenommen Abfälle"
+  ],
+  "1325": [
+   "ENTZÜNDBARER ORGANISCHER FESTER STOFF, N.A.G."
+  ],
+  "1326": [
+   "HAFNIUM-PULVER, ANGEFEUCHTET mit mindestens 25 % Wasser"
+  ],
+  "1327": [
+   "Heu oder Stroh oder Bhusa"
+  ],
+  "1328": [
+   "HEXAMETHYLENTETRAMIN"
+  ],
+  "1330": [
+   "MANGANRESINAT"
+  ],
+  "1331": [
+   "ZÜNDHÖLZER, ÜBERALL ZÜNDBAR"
+  ],
+  "1332": [
+   "METALDEHYD"
+  ],
+  "1333": [
+   "CER, Platten, Barren, Stangen"
+  ],
+  "1334": [
+   "NAPHTHALEN, ROH oder NAPHTHALEN, RAFFINIERT"
+  ],
+  "1336": [
+   "NITROGUANIDIN (PICRIT), ANGEFEUCHTET mit mindestens 20 Masse-% Wasser"
+  ],
+  "1337": [
+   "NITROSTÄRKE, ANGEFEUCHTET mit mindestens 20 Masse-% Wasser"
+  ],
+  "1338": [
+   "PHOSPHOR, AMORPH"
+  ],
+  "1339": [
+   "PHOSPHORHEPTASULFID (chemische Formel P4S7), frei von gelbem oder weissem Phosphor"
+  ],
+  "1340": [
+   "PHOSPHORPENTASULFID (chemische Formel P2S5), frei von gelbem oder weissem Phosphor"
+  ],
+  "1341": [
+   "PHOSPHORSESQUISULFID (chemische Formel P4S3), frei von gelbem oder weissem Phosphor"
+  ],
+  "1343": [
+   "PHOSPHORTRISULFID (chemische Formel P4S6), frei von gelbem oder weissem Phosphor"
+  ],
+  "1344": [
+   "TRINITROPHENOL (PIKRINSÄURE), ANGEFEUCHTET mit mindestens 30 Masse-% Wasser"
+  ],
+  "1345": [
+   "KAUTSCHUK- (Gummi-) ABFÄLLE oder KAUTSCHUK(Gummi-) RESTE, pulverförmig oder granuliert, höchstens 840 µm und mehr als 45 % Kautschuk-Gehalt"
+  ],
+  "1346": [
+   "SILICIUM-PULVER, AMORPH"
+  ],
+  "1347": [
+   "SILBERPIKRAT, ANGEFEUCHTET mit mindestens 30 Masse-% Wasser"
+  ],
+  "1348": [
+   "NATRIUMDINITROORTHOCRESOLAT, ANGEFEUCHTET mit mindestens 15 Masse-% Wasser"
+  ],
+  "1349": [
+   "NATRIUMPIKRAMAT, ANGEFEUCHTET mit mindestens 20 Masse-% Wasser"
+  ],
+  "1350": [
+   "SCHWEFEL"
+  ],
+  "1352": [
+   "TITAN-PULVER, ANGEFEUCHTET mit mindestens 25 % Wasser"
+  ],
+  "1353": [
+   "FASERN, IMPRÄGNIERT MIT SCHWACH NITRIERTER CELLULOSE, N.A.G. oder GEWEBE, IMPRÄGNIERT MIT SCHWACH NITRIERTER CELLULOSE, N.A.G."
+  ],
+  "1354": [
+   "TRINITROBENZEN, ANGEFEUCHTET mit mindestens 30 Masse-% Wasser"
+  ],
+  "1355": [
+   "TRINITROBENZOESÄURE, ANGEFEUCHTET mit mindestens 30 Masse-% Wasser"
+  ],
+  "1356": [
+   "TRINITROTOLUEN (TNT), ANGEFEUCHTET mit mindestens 30 Masse-% Wasser"
+  ],
+  "1357": [
+   "HARNSTOFFNITRAT, ANGEFEUCHTET mit mindestens 20 Masse-% Wasser"
+  ],
+  "1358": [
+   "ZIRKONIUM-PULVER, ANGEFEUCHTET mit mindestens 25 % Wasser"
+  ],
+  "1360": [
+   "CALCIUMPHOSPHID"
+  ],
+  "1361": [
+   "KOHLE oder RUSS, tierischen oder pflanzlichen Ursprungs"
+  ],
+  "1362": [
+   "KOHLE, AKTIVIERT"
+  ],
+  "1363": [
+   "KOPRA"
+  ],
+  "1364": [
+   "BAUMWOLLABFÄLLE, ÖLHALTIG"
+  ],
+  "1365": [
+   "BAUMWOLLE, NASS"
+  ],
+  "1369": [
+   "p-NITROSODIMETHYLANILIN"
+  ],
+  "1372": [
+   "Fasern, tierischen Ursprungs oder Fasern, pflanzlichen Ursprungs, gebrannt, nass oder feucht"
+  ],
+  "1373": [
+   "FASERN oder GEWEBE, TIERISCHEN oder PFLANZLICHEN oder SYNTHETISCHEN URSPRUNGS, N.A.G., imprägniert mit Öl"
+  ],
+  "1374": [
+   "FISCHMEHL (FISCHABFALL), NICHT STABILISIERT"
+  ],
+  "1376": [
+   "EISENOXID, GEBRAUCHT oder EISEN-SCHWAMM, GEBRAUCHT, aus der Kokereigasreinigung"
+  ],
+  "1378": [
+   "METALLKATALYSATOR, ANGEFEUCHTET mit einem sichtbaren Überschuss an Flüssigkeit"
+  ],
+  "1379": [
+   "PAPIER, MIT UNGESÄTTIGTEN ÖLEN BEHANDELT, unvollständig getrocknet (auch Kohlepapier)"
+  ],
+  "1380": [
+   "PENTABORAN"
+  ],
+  "1381": [
+   "PHOSPHOR, WEISS oder GELB, UNTER WASSER oder IN LÖSUNG",
+   "PHOSPHOR, WEISS oder GELB, TROCKEN"
+  ],
+  "1382": [
+   "KALIUMSULFID, WASSERFREI oder KALIUMSULFID mit weniger als 30 % Kristallwasser"
+  ],
+  "1383": [
+   "PYROPHORES METALL, N.A.G. oder PYROPHORE LEGIERUNG, N.A.G."
+  ],
+  "1384": [
+   "NATRIUMDITHIONIT (NATRIUMHYDROSULFIT)"
+  ],
+  "1385": [
+   "NATRIUMSULFID, WASSERFREI oder NATRIUMSULFID mit weniger als 30 % Kristallwasser"
+  ],
+  "1386": [
+   "ÖLSAATKUCHEN mit mehr als 1,5 Masse-% Öl und höchstens 11 Masse-% Feuchtigkeit"
+  ],
+  "1387": [
+   "Wollabfälle, nass"
+  ],
+  "1389": [
+   "ALKALIMETALLAMALGAM, FLÜSSIG"
+  ],
+  "1390": [
+   "ALKALIMETALLAMIDE"
+  ],
+  "1391": [
+   "ALKALIMETALLDISPERSION oder ERDALKALIMETALLDISPERSION"
+  ],
+  "1392": [
+   "ERDALKALIMETALLAMALGAM, FLÜSSIG"
+  ],
+  "1393": [
+   "ERDALKALIMETALLLEGIERUNG, N.A.G."
+  ],
+  "1394": [
+   "ALUMINIUMCARBID"
+  ],
+  "1395": [
+   "ALUMINIUMFERROSILICIUMPULVER"
+  ],
+  "1396": [
+   "ALUMINIUM-PULVER, NICHT ÜBERZOGEN"
+  ],
+  "1397": [
+   "ALUMINIUMPHOSPHID"
+  ],
+  "1398": [
+   "ALUMINIUMSILICIUMPULVER, NICHT ÜBERZOGEN"
+  ],
+  "1400": [
+   "BARIUM"
+  ],
+  "1401": [
+   "CALCIUM"
+  ],
+  "1402": [
+   "CALCIUMCARBID"
+  ],
+  "1403": [
+   "CALCIUMCYANAMID mit mehr als 0,1 Masse-% Calciumcarbid"
+  ],
+  "1404": [
+   "CALCIUMHYDRID"
+  ],
+  "1405": [
+   "CALCIUMSILICID"
+  ],
+  "1407": [
+   "CAESIUM"
+  ],
+  "1408": [
+   "FERROSILICIUM mit mindestens 30 Masse-%, aber weniger als 90 Masse-% Silicium"
+  ],
+  "1409": [
+   "METALLHYDRIDE, MIT WASSER REAGIEREND, N.A.G."
+  ],
+  "1410": [
+   "LITHIUMALUMINIUMHYDRID"
+  ],
+  "1411": [
+   "LITHIUMALUMINIUMHYDRID IN ETHER"
+  ],
+  "1413": [
+   "LITHIUMBORHYDRID"
+  ],
+  "1414": [
+   "LITHIUMHYDRID"
+  ],
+  "1415": [
+   "LITHIUM"
+  ],
+  "1417": [
+   "LITHIUMSILICIUM"
+  ],
+  "1418": [
+   "MAGNESIUM-PULVER oder MAGNESIUMLEGIERUNGSPULVER"
+  ],
+  "1419": [
+   "MAGNESIUMALUMINIUMPHOSPHID"
+  ],
+  "1420": [
+   "KALIUMMETALLLEGIERUNGEN, FLÜSSIG"
+  ],
+  "1421": [
+   "ALKALIMETALLLEGIERUNG, FLÜSSIG, N.A.G."
+  ],
+  "1422": [
+   "KALIUM-NATRIUMLEGIERUNGEN, FLÜSSIG"
+  ],
+  "1423": [
+   "RUBIDIUM"
+  ],
+  "1426": [
+   "NATRIUMBORHYDRID"
+  ],
+  "1427": [
+   "NATRIUMHYDRID"
+  ],
+  "1428": [
+   "NATRIUM"
+  ],
+  "1431": [
+   "NATRIUMMETHYLAT"
+  ],
+  "1432": [
+   "NATRIUMPHOSPHID"
+  ],
+  "1433": [
+   "ZINNPHOSPHIDE"
+  ],
+  "1435": [
+   "ZINK-ASCHEN"
+  ],
+  "1436": [
+   "ZINK-PULVER oder ZINKSTAUB"
+  ],
+  "1437": [
+   "ZIRKONIUMHYDRID"
+  ],
+  "1438": [
+   "ALUMINIUMNITRAT"
+  ],
+  "1439": [
+   "AMMONIUMDICHROMAT"
+  ],
+  "1442": [
+   "AMMONIUMPERCHLORAT"
+  ],
+  "1444": [
+   "AMMONIUMPERSULFAT"
+  ],
+  "1445": [
+   "BARIUMCHLORAT, FEST"
+  ],
+  "1446": [
+   "BARIUMNITRAT"
+  ],
+  "1447": [
+   "BARIUMPERCHLORAT, FEST"
+  ],
+  "1448": [
+   "BARIUMPERMANGANAT"
+  ],
+  "1449": [
+   "BARIUMPEROXID"
+  ],
+  "1450": [
+   "BROMATE, ANORGANISCHE, N.A.G."
+  ],
+  "1451": [
+   "CAESIUMNITRAT"
+  ],
+  "1452": [
+   "CALCIUMCHLORAT"
+  ],
+  "1453": [
+   "CALCIUMCHLORIT"
+  ],
+  "1454": [
+   "CALCIUMNITRAT"
+  ],
+  "1455": [
+   "CALCIUMPERCHLORAT"
+  ],
+  "1456": [
+   "CALCIUMPERMANGANAT"
+  ],
+  "1457": [
+   "CALCIUMPEROXID"
+  ],
+  "1458": [
+   "CHLORAT UND BORAT, MISCHUNG"
+  ],
+  "1459": [
+   "CHLORAT UND MAGNESIUMCHLORID, MISCHUNG, FEST"
+  ],
+  "1461": [
+   "CHLORATE, ANORGANISCHE, N.A.G."
+  ],
+  "1462": [
+   "CHLORITE, ANORGANISCHE, N.A.G."
+  ],
+  "1463": [
+   "CHROMTRIOXID, WASSERFREI"
+  ],
+  "1465": [
+   "DIDYMIUMNITRAT"
+  ],
+  "1466": [
+   "EISEN(III)NITRAT"
+  ],
+  "1467": [
+   "GUANIDINNITRAT"
+  ],
+  "1469": [
+   "BLEINITRAT"
+  ],
+  "1470": [
+   "BLEIPERCHLORAT, FEST"
+  ],
+  "1471": [
+   "LITHIUMHYPOCHLORIT, TROCKEN oder LITHIUMHYPOCHLORIT, MISCHUNG"
+  ],
+  "1472": [
+   "LITHIUMPEROXID"
+  ],
+  "1473": [
+   "MAGNESIUMBROMAT"
+  ],
+  "1474": [
+   "MAGNESIUMNITRAT"
+  ],
+  "1475": [
+   "MAGNESIUMPERCHLORAT"
+  ],
+  "1476": [
+   "MAGNESIUMPEROXID"
+  ],
+  "1477": [
+   "NITRATE, ANORGANISCHE, N.A.G."
+  ],
+  "1479": [
+   "ENTZÜNDEND (OXIDIEREND) WIRKENDER FESTER STOFF, N.A.G."
+  ],
+  "1481": [
+   "PERCHLORATE, ANORGANISCHE, N.A.G."
+  ],
+  "1482": [
+   "PERMANGANATE, ANORGANISCHE, N.A.G."
+  ],
+  "1483": [
+   "PEROXIDE, ANORGANISCHE, N.A.G."
+  ],
+  "1484": [
+   "KALIUMBROMAT"
+  ],
+  "1485": [
+   "KALIUMCHLORAT"
+  ],
+  "1486": [
+   "KALIUMNITRAT"
+  ],
+  "1487": [
+   "KALIUMNITRAT UND NATRIUMNITRIT, MISCHUNG"
+  ],
+  "1488": [
+   "KALIUMNITRIT"
+  ],
+  "1489": [
+   "KALIUMPERCHLORAT"
+  ],
+  "1490": [
+   "KALIUMPERMANGANAT"
+  ],
+  "1491": [
+   "KALIUMPEROXID"
+  ],
+  "1492": [
+   "KALIUMPERSULFAT"
+  ],
+  "1493": [
+   "SILBERNITRAT"
+  ],
+  "1494": [
+   "NATRIUMBROMAT"
+  ],
+  "1495": [
+   "NATRIUMCHLORAT"
+  ],
+  "1496": [
+   "NATRIUMCHLORIT"
+  ],
+  "1498": [
+   "NATRIUMNITRAT"
+  ],
+  "1499": [
+   "NATRIUMNITRAT UND KALIUMNITRAT, MISCHUNG"
+  ],
+  "1500": [
+   "NATRIUMNITRIT"
+  ],
+  "1502": [
+   "NATRIUMPERCHLORAT"
+  ],
+  "1503": [
+   "NATRIUMPERMANGANAT"
+  ],
+  "1504": [
+   "NATRIUMPEROXID"
+  ],
+  "1505": [
+   "NATRIUMPERSULFAT"
+  ],
+  "1506": [
+   "STRONTIUMCHLORAT"
+  ],
+  "1507": [
+   "STRONTIUMNITRAT"
+  ],
+  "1508": [
+   "STRONTIUMPERCHLORAT"
+  ],
+  "1509": [
+   "STRONTIUMPEROXID"
+  ],
+  "1510": [
+   "TETRANITROMETHAN"
+  ],
+  "1511": [
+   "HARNSTOFFWASSERSTOFFPEROXID"
+  ],
+  "1512": [
+   "ZINKAMMONIUMNITRIT"
+  ],
+  "1513": [
+   "ZINKCHLORAT"
+  ],
+  "1514": [
+   "ZINKNITRAT"
+  ],
+  "1515": [
+   "ZINKPERMANGANAT"
+  ],
+  "1516": [
+   "ZINKPEROXID"
+  ],
+  "1517": [
+   "ZIRKONIUMPIKRAMAT, ANGEFEUCHTET mit mindestens 20 Masse-% Wasser"
+  ],
+  "1541": [
+   "ACETONCYANHYDRIN, STABILISIERT"
+  ],
+  "1544": [
+   "ALKALOIDE, FEST, N.A.G. oder ALKALOIDSALZE, FEST, N.A.G."
+  ],
+  "1545": [
+   "ALLYLISOTHIOCYANAT, STABILISIERT"
+  ],
+  "1546": [
+   "AMMONIUMARSENAT"
+  ],
+  "1547": [
+   "ANILIN"
+  ],
+  "1548": [
+   "ANILINHYDROCHLORID"
+  ],
+  "1549": [
+   "ANORGANISCHE ANTIMONVERBINDUNG, FEST, N.A.G."
+  ],
+  "1550": [
+   "ANTIMONLAKTAT"
+  ],
+  "1551": [
+   "ANTIMONYLKALIUMTARTRAT"
+  ],
+  "1553": [
+   "ARSENSÄURE, FLÜSSIG"
+  ],
+  "1554": [
+   "ARSENSÄURE, FEST"
+  ],
+  "1555": [
+   "ARSENBROMID"
+  ],
+  "1556": [
+   "ARSENVERBINDUNG, FLÜSSIG, N.A.G., anorganisch, einschliesslich Arsenate, n.a.g., Arsenite, n.a.g. und Arsensulfide, n.a.g."
+  ],
+  "1557": [
+   "ARSENVERBINDUNG, FEST, N.A.G., anorganisch, einschliesslich Arsenate, n.a.g., Arsenite, n.a.g. und Arsensulfide, n.a.g."
+  ],
+  "1558": [
+   "ARSEN"
+  ],
+  "1559": [
+   "ARSENPENTOXID"
+  ],
+  "1560": [
+   "ARSENTRICHLORID"
+  ],
+  "1561": [
+   "ARSENTRIOXID"
+  ],
+  "1562": [
+   "ARSEN-STAUB"
+  ],
+  "1564": [
+   "BARIUMVERBINDUNG, N.A.G."
+  ],
+  "1565": [
+   "BARIUMCYANID"
+  ],
+  "1566": [
+   "BERYLLIUMVERBINDUNG, N.A.G."
+  ],
+  "1567": [
+   "BERYLLIUM-PULVER"
+  ],
+  "1569": [
+   "BROMACETON"
+  ],
+  "1570": [
+   "BRUCIN"
+  ],
+  "1571": [
+   "BARIUMAZID, ANGEFEUCHTET mit mindestens 50 Masse-% Wasser"
+  ],
+  "1572": [
+   "KAKODYLSÄURE"
+  ],
+  "1573": [
+   "CALCIUMARSENAT"
+  ],
+  "1574": [
+   "CALCIUMARSENAT UND CALCIUMARSENIT, MISCHUNG, FEST"
+  ],
+  "1575": [
+   "CALCIUMCYANID"
+  ],
+  "1577": [
+   "CHLORDINITROBENZENE, FLÜSSIG"
+  ],
+  "1578": [
+   "CHLORNITROBENZENE, FEST"
+  ],
+  "1579": [
+   "4-CHLOR-o-TOLUIDINHYDROCHLORID, FEST"
+  ],
+  "1580": [
+   "CHLORPIKRIN"
+  ],
+  "1581": [
+   "CHLORPIKRIN UND METHYLBROMID, GEMISCH mit mehr als 2 % Chlorpikrin"
+  ],
+  "1582": [
+   "CHLORPIKRIN UND METHYLCHLORID, GEMISCH"
+  ],
+  "1583": [
+   "CHLORPIKRIN, MISCHUNG, N.A.G."
+  ],
+  "1585": [
+   "KUPFERACETOARSENIT"
+  ],
+  "1586": [
+   "KUPFERARSENIT"
+  ],
+  "1587": [
+   "KUPFERCYANID"
+  ],
+  "1588": [
+   "CYANIDE, ANORGANISCH, FEST, N.A.G."
+  ],
+  "1589": [
+   "CHLORCYAN, STABILISIERT"
+  ],
+  "1590": [
+   "DICHLORANILINE, FLÜSSIG"
+  ],
+  "1591": [
+   "o-DICHLORBENZEN"
+  ],
+  "1593": [
+   "DICHLORMETHAN"
+  ],
+  "1594": [
+   "DIETHYLSULFAT"
+  ],
+  "1595": [
+   "DIMETHYLSULFAT"
+  ],
+  "1596": [
+   "DINITROANILINE"
+  ],
+  "1597": [
+   "DINITROBENZENE, FLÜSSIG"
+  ],
+  "1598": [
+   "DINITRO-o-CRESOL"
+  ],
+  "1599": [
+   "DINITROPHENOL, LÖSUNG"
+  ],
+  "1600": [
+   "DINITROTOLUENE, GESCHMOLZEN"
+  ],
+  "1601": [
+   "DESINFEKTIONSMITTEL, FEST, GIFTIG, N.A.G."
+  ],
+  "1602": [
+   "FARBSTOFF, FLÜSSIG, GIFTIG, N.A.G. oder FARBSTOFFZWISCHENPRODUKT, FLÜSSIG, GIFTIG, N.A.G."
+  ],
+  "1603": [
+   "ETHYLBROMACETAT"
+  ],
+  "1604": [
+   "ETHYLENDIAMIN"
+  ],
+  "1605": [
+   "ETHYLENDIBROMID"
+  ],
+  "1606": [
+   "EISEN(III)ARSENAT"
+  ],
+  "1607": [
+   "EISEN(III)ARSENIT"
+  ],
+  "1608": [
+   "EISEN(II)ARSENAT"
+  ],
+  "1611": [
+   "HEXAETHYLTETRAPHOSPHAT"
+  ],
+  "1612": [
+   "HEXAETHYLTETRAPHOSPHAT UND VERDICHTETES GAS, GEMISCH"
+  ],
+  "1613": [
+   "CYANWASSERSTOFF, WÄSSERIGE LÖSUNG (CYANWASSERSTOFFSÄURE, WÄSSERIGE LÖSUNG) mit höchstens 20 % Cyanwasserstoff"
+  ],
+  "1614": [
+   "CYANWASSERSTOFF, STABILISIERT, mit weniger als 3 % Wasser und aufgesaugt durch ein inertes poröses Material"
+  ],
+  "1616": [
+   "BLEIACETAT"
+  ],
+  "1617": [
+   "BLEIARSENATE"
+  ],
+  "1618": [
+   "BLEIARSENITE"
+  ],
+  "1620": [
+   "BLEICYANID"
+  ],
+  "1621": [
+   "LONDON PURPLE"
+  ],
+  "1622": [
+   "MAGNESIUMARSENAT"
+  ],
+  "1623": [
+   "QUECKSILBER(II)ARSENAT"
+  ],
+  "1624": [
+   "QUECKSILBER(II)CHLORID"
+  ],
+  "1625": [
+   "QUECKSILBER(II)NITRAT"
+  ],
+  "1626": [
+   "KALIUMQUECKSILBER(II)-CYANID"
+  ],
+  "1627": [
+   "QUECKSILBER(I)NITRAT"
+  ],
+  "1629": [
+   "QUECKSILBERACETAT"
+  ],
+  "1630": [
+   "QUECKSILBER(II)-AMMONIUMCHLORID"
+  ],
+  "1631": [
+   "QUECKSILBER(II)BENZOAT"
+  ],
+  "1634": [
+   "QUECKSILBERBROMIDE"
+  ],
+  "1636": [
+   "QUECKSILBERCYANID"
+  ],
+  "1637": [
+   "QUECKSILBERGLUCONAT"
+  ],
+  "1638": [
+   "QUECKSILBERIODID"
+  ],
+  "1639": [
+   "QUECKSILBERNUCLEAT"
+  ],
+  "1640": [
+   "QUECKSILBEROLEAT"
+  ],
+  "1641": [
+   "QUECKSILBEROXID"
+  ],
+  "1642": [
+   "QUECKSILBEROXYCYANID, DESENSIBILISIERT"
+  ],
+  "1643": [
+   "KALIUMQUECKSILBER(II)-IODID"
+  ],
+  "1644": [
+   "QUECKSILBERSALICYLAT"
+  ],
+  "1645": [
+   "QUECKSILBERSULFAT"
+  ],
+  "1646": [
+   "QUECKSILBERTHIOCYANAT"
+  ],
+  "1647": [
+   "METHYLBROMID UND ETHYLENDIBROMID, MISCHUNG, FLÜSSIG"
+  ],
+  "1648": [
+   "ACETONITRIL"
+  ],
+  "1649": [
+   "ANTIKLOPFMISCHUNG FÜR MOTORKRAFTSTOFF"
+  ],
+  "1650": [
+   "beta-NAPHTHYLAMIN, FEST"
+  ],
+  "1651": [
+   "NAPHTHYLTHIOHARNSTOFF"
+  ],
+  "1652": [
+   "NAPHTHYLHARNSTOFF"
+  ],
+  "1653": [
+   "NICKELCYANID"
+  ],
+  "1654": [
+   "NICOTIN"
+  ],
+  "1655": [
+   "NICOTINVERBINDUNG, FEST, N.A.G. oder NICOTINZUBEREITUNG, FEST, N.A.G."
+  ],
+  "1656": [
+   "NICOTINHYDROCHLORID, FLÜSSIG oder NICOTINHYDROCHLORID, LÖSUNG"
+  ],
+  "1657": [
+   "NICOTINSALICYLAT"
+  ],
+  "1658": [
+   "NICOTINSULFAT, LÖSUNG"
+  ],
+  "1659": [
+   "NICOTINTARTRAT"
+  ],
+  "1660": [
+   "STICKSTOFFMONOXID, VERDICHTET (STICKSTOFFOXID, VERDICHTET)"
+  ],
+  "1661": [
+   "NITROANILINE (o-, m-, p-)"
+  ],
+  "1662": [
+   "NITROBENZEN"
+  ],
+  "1663": [
+   "NITROPHENOLE (o-, m-, p-)"
+  ],
+  "1664": [
+   "NITROTOLUENE, FLÜSSIG"
+  ],
+  "1665": [
+   "NITROXYLENE, FLÜSSIG"
+  ],
+  "1669": [
+   "PENTACHLORETHAN"
+  ],
+  "1670": [
+   "PERCHLORMETHYLMERCAPTAN"
+  ],
+  "1671": [
+   "PHENOL, FEST"
+  ],
+  "1672": [
+   "PHENYLCARBYLAMINCHLORID"
+  ],
+  "1673": [
+   "PHENYLENDIAMINE (o-, m-, p-)"
+  ],
+  "1674": [
+   "PHENYLQUECKSILBER(II)-ACETAT"
+  ],
+  "1677": [
+   "KALIUMARSENAT"
+  ],
+  "1678": [
+   "KALIUMARSENIT"
+  ],
+  "1679": [
+   "KALIUMKUPFER(I)CYANID"
+  ],
+  "1680": [
+   "KALIUMCYANID, FEST"
+  ],
+  "1683": [
+   "SILBERARSENIT"
+  ],
+  "1684": [
+   "SILBERCYANID"
+  ],
+  "1685": [
+   "NATRIUMARSENAT"
+  ],
+  "1686": [
+   "NATRIUMARSENIT, WÄSSERIGE LÖSUNG"
+  ],
+  "1687": [
+   "NATRIUMAZID"
+  ],
+  "1688": [
+   "NATRIUMKAKODYLAT"
+  ],
+  "1689": [
+   "NATRIUMCYANID, FEST"
+  ],
+  "1690": [
+   "NATRIUMFLUORID, FEST"
+  ],
+  "1691": [
+   "STRONTIUMARSENIT"
+  ],
+  "1692": [
+   "STRYCHNIN oder STRYCHNINSALZE"
+  ],
+  "1693": [
+   "STOFF ZUR HERSTELLUNG VON TRÄNENGASEN, FLÜSSIG, N.A.G."
+  ],
+  "1694": [
+   "BROMBENZYLCYANIDE, FLÜSSIG"
+  ],
+  "1695": [
+   "CHLORACETON, STABILISIERT"
+  ],
+  "1697": [
+   "CHLORACETOPHENON, FEST"
+  ],
+  "1698": [
+   "DIPHENYLAMINOCHLORARSIN"
+  ],
+  "1699": [
+   "DIPHENYLCHLORARSIN, FLÜSSIG"
+  ],
+  "1700": [
+   "TRÄNENGAS-KERZEN"
+  ],
+  "1701": [
+   "XYLYLBROMID, FLÜSSIG"
+  ],
+  "1702": [
+   "1,1,2,2-TETRACHLORETHAN"
+  ],
+  "1704": [
+   "TETRAETHYLDITHIOPYROPHOSPHAT"
+  ],
+  "1707": [
+   "THALLIUMVERBINDUNG, N.A.G."
+  ],
+  "1708": [
+   "TOLUIDINE, FLÜSSIG"
+  ],
+  "1709": [
+   "2,4-TOLUYLENDIAMIN, FEST"
+  ],
+  "1710": [
+   "TRICHLORETHYLEN"
+  ],
+  "1711": [
+   "XYLIDINE, FLÜSSIG"
+  ],
+  "1712": [
+   "ZINKARSENAT oder ZINKARSENIT oder ZINKARSENAT UND ZINKARSENIT, MISCHUNG"
+  ],
+  "1713": [
+   "ZINKCYANID"
+  ],
+  "1714": [
+   "ZINKPHOSPHID"
+  ],
+  "1715": [
+   "ESSIGSÄUREANHYDRID"
+  ],
+  "1716": [
+   "ACETYLBROMID"
+  ],
+  "1717": [
+   "ACETYLCHLORID"
+  ],
+  "1718": [
+   "BUTYLPHOSPHAT"
+  ],
+  "1719": [
+   "ÄTZENDER ALKALISCHER FLÜSSIGER STOFF, N.A.G."
+  ],
+  "1722": [
+   "ALLYLCHLORFORMIAT"
+  ],
+  "1723": [
+   "ALLYLIODID"
+  ],
+  "1724": [
+   "ALLYLTRICHLORSILAN, STABILISIERT"
+  ],
+  "1725": [
+   "ALUMINIUMBROMID, WASSERFREI"
+  ],
+  "1726": [
+   "ALUMINIUMCHLORID, WASSERFREI"
+  ],
+  "1727": [
+   "AMMONIUMHYDROGENDIFLUORID, FEST"
+  ],
+  "1728": [
+   "AMYLTRICHLORSILAN"
+  ],
+  "1729": [
+   "ANISOYLCHLORID"
+  ],
+  "1730": [
+   "ANTIMONPENTACHLORID, FLÜSSIG"
+  ],
+  "1731": [
+   "ANTIMONPENTACHLORID, LÖSUNG"
+  ],
+  "1732": [
+   "ANTIMONPENTAFLUORID"
+  ],
+  "1733": [
+   "ANTIMONTRICHLORID"
+  ],
+  "1736": [
+   "BENZOYLCHLORID"
+  ],
+  "1737": [
+   "BENZYLBROMID"
+  ],
+  "1738": [
+   "BENZYLCHLORID"
+  ],
+  "1739": [
+   "BENZYLCHLORFORMIAT"
+  ],
+  "1740": [
+   "HYDROGENDIFLUORIDE, FEST, N.A.G."
+  ],
+  "1741": [
+   "BORTRICHLORID"
+  ],
+  "1742": [
+   "BORTRIFLUORIDESSIGSÄURE-KOMPLEX, FLÜSSIG"
+  ],
+  "1743": [
+   "BORTRIFLUORIDPROPIONSÄURE-KOMPLEX, FLÜSSIG"
+  ],
+  "1744": [
+   "BROM oder BROM, LÖSUNG"
+  ],
+  "1745": [
+   "BROMPENTAFLUORID"
+  ],
+  "1746": [
+   "BROMTRIFLUORID"
+  ],
+  "1747": [
+   "BUTYLTRICHLORSILAN"
+  ],
+  "1748": [
+   "CALCIUMHYPOCHLORIT, TROCKEN oder CALCIUMHYPOCHLORIT, MISCHUNG, TROCKEN, mit mehr als 39 % aktivem Chlor (8,8 % aktivem Sauerstoff)"
+  ],
+  "1749": [
+   "CHLORTRIFLUORID"
+  ],
+  "1750": [
+   "CHLORESSIGSÄURE, LÖSUNG"
+  ],
+  "1751": [
+   "CHLORESSIGSÄURE, FEST"
+  ],
+  "1752": [
+   "CHLORACETYLCHLORID"
+  ],
+  "1753": [
+   "CHLORPHENYLTRICHLORSILAN"
+  ],
+  "1754": [
+   "CHLORSULFONSÄURE mit oder ohne Schwefeltrioxid"
+  ],
+  "1755": [
+   "CHROMSÄURE, LÖSUNG"
+  ],
+  "1756": [
+   "CHROMFLUORID, FEST"
+  ],
+  "1757": [
+   "CHROMFLUORID, LÖSUNG"
+  ],
+  "1758": [
+   "CHROMOXYCHLORID"
+  ],
+  "1759": [
+   "ÄTZENDER FESTER STOFF, N.A.G."
+  ],
+  "1760": [
+   "ÄTZENDER FLÜSSIGER STOFF, N.A.G."
+  ],
+  "1761": [
+   "KUPFERETHYLENDIAMIN, LÖSUNG"
+  ],
+  "1762": [
+   "CYCLOHEXENYLTRICHLORSILAN"
+  ],
+  "1763": [
+   "CYCLOHEXYLTRICHLORSILAN"
+  ],
+  "1764": [
+   "DICHLORESSIGSÄURE"
+  ],
+  "1765": [
+   "DICHLORACETYLCHLORID"
+  ],
+  "1766": [
+   "DICHLORPHENYLTRICHLORSILAN"
+  ],
+  "1767": [
+   "DIETHYLDICHLORSILAN"
+  ],
+  "1768": [
+   "DIFLUORPHOSPHORSÄURE, WASSERFREI"
+  ],
+  "1769": [
+   "DIPHENYLDICHLORSILAN"
+  ],
+  "1770": [
+   "DIPHENYLBROMMETHAN"
+  ],
+  "1771": [
+   "DODECYLTRICHLORSILAN"
+  ],
+  "1773": [
+   "EISENCHLORID, WASSERFREI"
+  ],
+  "1774": [
+   "FEUERLÖSCHERLADUNGEN, ätzender flüssiger Stoff"
+  ],
+  "1775": [
+   "FLUORBORSÄURE"
+  ],
+  "1776": [
+   "FLUORPHOSPHORSÄURE, WASSERFREI"
+  ],
+  "1777": [
+   "FLUORSULFONSÄURE"
+  ],
+  "1778": [
+   "FLUORKIESELSÄURE"
+  ],
+  "1779": [
+   "AMEISENSÄURE mit mehr als 85 Masse-% Säure"
+  ],
+  "1780": [
+   "FUMARYLCHLORID"
+  ],
+  "1781": [
+   "HEXADECYLTRICHLORSILAN"
+  ],
+  "1782": [
+   "HEXAFLUORPHOSPHORSÄURE"
+  ],
+  "1783": [
+   "HEXAMETHYLENDIAMIN, LÖSUNG"
+  ],
+  "1784": [
+   "HEXYLTRICHLORSILAN"
+  ],
+  "1786": [
+   "FLUORWASSERSTOFFSÄURE UND SCHWEFELSÄURE, MISCHUNG"
+  ],
+  "1787": [
+   "IODWASSERSTOFFSÄURE"
+  ],
+  "1788": [
+   "BROMWASSERSTOFFSÄURE"
+  ],
+  "1789": [
+   "CHLORWASSERSTOFFSÄURE"
+  ],
+  "1790": [
+   "FLUORWASSERSTOFFSÄURE mit mehr als 85 % Fluorwasserstoff",
+   "FLUORWASSERSTOFFSÄURE mit mehr als 60 % Fluorwasserstoff, aber höchstens 85 % Fluorwasserstoff",
+   "FLUORWASSERSTOFFSÄURE mit höchstens 60 % Fluorwasserstoff"
+  ],
+  "1791": [
+   "HYPOCHLORITLÖSUNG"
+  ],
+  "1792": [
+   "IODMONOCHLORID, FEST"
+  ],
+  "1793": [
+   "ISOPROPYLPHOSPHAT"
+  ],
+  "1794": [
+   "BLEISULFAT mit mehr als 3 % freier Säure"
+  ],
+  "1796": [
+   "NITRIERSÄUREMISCHUNG mit mehr als 50 % Salpetersäure",
+   "NITRIERSÄUREMISCHUNG mit höchstens 50 % Salpetersäure"
+  ],
+  "1798": [
+   "GEMISCHE AUS SALPETERSÄURE UND SALZSÄURE"
+  ],
+  "1799": [
+   "NONYLTRICHLORSILAN"
+  ],
+  "1800": [
+   "OCTADECYLTRICHLORSILAN"
+  ],
+  "1801": [
+   "OCTYLTRICHLORSILAN"
+  ],
+  "1802": [
+   "PERCHLORSÄURE mit höchstens 50 Masse-% Säure"
+  ],
+  "1803": [
+   "PHENOLSULFONSÄURE, FLÜSSIG"
+  ],
+  "1804": [
+   "PHENYLTRICHLORSILAN"
+  ],
+  "1805": [
+   "PHOSPHORSÄURE, LÖSUNG"
+  ],
+  "1806": [
+   "PHOSPHORPENTACHLORID"
+  ],
+  "1807": [
+   "PHOSPHORPENTOXID"
+  ],
+  "1808": [
+   "PHOSPHORTRIBROMID"
+  ],
+  "1809": [
+   "PHOSPHORTRICHLORID"
+  ],
+  "1810": [
+   "PHOSPHOROXYCHLORID"
+  ],
+  "1811": [
+   "KALIUMHYDROGENDIFLUORID, FEST"
+  ],
+  "1812": [
+   "KALIUMFLUORID, FEST"
+  ],
+  "1813": [
+   "KALIUMHYDROXID, FEST"
+  ],
+  "1814": [
+   "KALIUMHYDROXIDLÖSUNG"
+  ],
+  "1815": [
+   "PROPIONYLCHLORID"
+  ],
+  "1816": [
+   "PROPYLTRICHLORSILAN"
+  ],
+  "1817": [
+   "PYROSULFURYLCHLORID"
+  ],
+  "1818": [
+   "SILICIUMTETRACHLORID"
+  ],
+  "1819": [
+   "NATRIUMALUMINATLÖSUNG"
+  ],
+  "1823": [
+   "NATRIUMHYDROXID, FEST"
+  ],
+  "1824": [
+   "NATRIUMHYDROXIDLÖSUNG"
+  ],
+  "1825": [
+   "NATRIUMMONOXID"
+  ],
+  "1826": [
+   "ABFALLNITRIERSÄUREMISCHUNG mit mehr als 50 % Salpetersäure",
+   "ABFALLNITRIERSÄUREMISCHUNG mit höchstens 50 % Salpetersäure"
+  ],
+  "1827": [
+   "ZINNTETRACHLORID, WASSERFREI"
+  ],
+  "1828": [
+   "SCHWEFELCHLORIDE"
+  ],
+  "1829": [
+   "SCHWEFELTRIOXID, STABILISIERT"
+  ],
+  "1830": [
+   "SCHWEFELSÄURE mit mehr als 51 % Säure"
+  ],
+  "1831": [
+   "SCHWEFELSÄURE, RAUCHEND"
+  ],
+  "1832": [
+   "SCHWEFELSÄURE, GEBRAUCHT"
+  ],
+  "1833": [
+   "SCHWEFELIGE SÄURE"
+  ],
+  "1834": [
+   "SULFURYLCHLORID"
+  ],
+  "1835": [
+   "TETRAMETHYLAMMONIUMHYDROXID, WÄSSERIGE LÖSUNG mit mehr als 2,5 %, aber weniger als 25 % Tetramethylammoniumhydroxid",
+   "TETRAMETHYLAMMONIUMHYDROXID, WÄSSERIGE LÖSUNG mit höchstens 2,5 % Tetramethylammoniumhydroxid"
+  ],
+  "1836": [
+   "THIONYLCHLORID"
+  ],
+  "1837": [
+   "THIOPHOSPHORYLCHLORID"
+  ],
+  "1838": [
+   "TITANTETRACHLORID"
+  ],
+  "1839": [
+   "TRICHLORESSIGSÄURE"
+  ],
+  "1840": [
+   "ZINKCHLORID, LÖSUNG"
+  ],
+  "1841": [
+   "ACETALDEHYDAMMONIAK"
+  ],
+  "1843": [
+   "AMMONIUMDINITRO-o-CRESOLAT, FEST"
+  ],
+  "1845": [
+   "Kohlendioxid, fest (Trockeneis)"
+  ],
+  "1846": [
+   "TETRACHLORKOHLENSTOFF"
+  ],
+  "1847": [
+   "KALIUMSULFID, HYDRATISIERT mit mindestens 30 % Kristallwasser"
+  ],
+  "1848": [
+   "PROPIONSÄURE mit mindestens 10 % und weniger als 90 Masse-% Säure"
+  ],
+  "1849": [
+   "NATRIUMSULFID, HYDRATISIERT mit mindestens 30 % Kristallwasser"
+  ],
+  "1851": [
+   "MEDIKAMENT, FLÜSSIG, GIFTIG, N.A.G."
+  ],
+  "1854": [
+   "BARIUMLEGIERUNGEN, PYROPHOR"
+  ],
+  "1855": [
+   "CALCIUM, PYROPHOR oder CALCIUMLEGIERUNGEN, PYROPHOR"
+  ],
+  "1856": [
+   "Lappen, ölhaltig"
+  ],
+  "1857": [
+   "Textilabfälle, nass"
+  ],
+  "1858": [
+   "HEXAFLUORPROPYLEN (GAS ALS KÄLTEMITTEL R 1216)"
+  ],
+  "1859": [
+   "SILICIUMTETRAFLUORID"
+  ],
+  "1860": [
+   "VINYLFLUORID, STABILISIERT"
+  ],
+  "1862": [
+   "ETHYLCROTONAT"
+  ],
+  "1863": [
+   "DÜSENKRAFTSTOFF",
+   "DÜSENKRAFTSTOFF (Dampfdruck bei 50 °C grösser als 110 kPa)",
+   "DÜSENKRAFTSTOFF (Dampfdruck bei 50 °C höchstens 110 kPa)"
+  ],
+  "1865": [
+   "n-PROPYLNITRAT"
+  ],
+  "1866": [
+   "HARZLÖSUNG, entzündbar",
+   "HARZLÖSUNG, entzündbar (Dampfdruck bei 50 °C grösser als 110 kPa)",
+   "HARZLÖSUNG, entzündbar (Dampfdruck bei 50 °C höchstens 110 kPa)",
+   "HARZLÖSUNG, entzündbar (mit einem Flammpunkt unter 23 °C und viskos gemäss 2.2.3.1.4) (Dampfdruck bei 50 °C grösser als 110 kPa)",
+   "HARZLÖSUNG, entzündbar (mit einem Flammpunkt unter 23 °C und viskos gemäss 2.2.3.1.4) (Dampfdruck bei 50 °C höchstens 110 kPa)"
+  ],
+  "1868": [
+   "DECABORAN"
+  ],
+  "1869": [
+   "MAGNESIUM oder MAGNESIUMLEGIERUNGEN, mit mehr als 50 % Magnesium, in Pellets, Spänen, Bändern"
+  ],
+  "1870": [
+   "KALIUMBORHYDRID"
+  ],
+  "1871": [
+   "TITANHYDRID"
+  ],
+  "1872": [
+   "BLEIDIOXID"
+  ],
+  "1873": [
+   "PERCHLORSÄURE mit mehr als 50 Masse-%, aber höchstens 72 Masse-% Säure"
+  ],
+  "1884": [
+   "BARIUMOXID"
+  ],
+  "1885": [
+   "BENZIDIN"
+  ],
+  "1886": [
+   "BENZYLIDENCHLORID"
+  ],
+  "1887": [
+   "BROMCHLORMETHAN"
+  ],
+  "1888": [
+   "CHLOROFORM"
+  ],
+  "1889": [
+   "CYANBROMID"
+  ],
+  "1891": [
+   "ETHYLBROMID"
+  ],
+  "1892": [
+   "ETHYLDICHLORARSIN"
+  ],
+  "1894": [
+   "PHENYLQUECKSILBER(II)-HYDROXID"
+  ],
+  "1895": [
+   "PHENYLQUECKSILBER(II)-NITRAT"
+  ],
+  "1897": [
+   "TETRACHLORETHYLEN"
+  ],
+  "1898": [
+   "ACETYLIODID"
+  ],
+  "1902": [
+   "DIISOOCTYLPHOSPHAT"
+  ],
+  "1903": [
+   "DESINFEKTIONSMITTEL, FLÜSSIG, ÄTZEND, N.A.G."
+  ],
+  "1905": [
+   "SELENSÄURE"
+  ],
+  "1906": [
+   "ABFALLSCHWEFELSÄURE"
+  ],
+  "1907": [
+   "NATRONKALK mit mehr als 4 % Natriumhydroxid"
+  ],
+  "1908": [
+   "CHLORITLÖSUNG"
+  ],
+  "1910": [
+   "Calciumoxid"
+  ],
+  "1911": [
+   "DIBORAN"
+  ],
+  "1912": [
+   "METHYLCHLORID UND DICHLORMETHAN, GEMISCH"
+  ],
+  "1913": [
+   "NEON, TIEFGEKÜHLT, FLÜSSIG"
+  ],
+  "1914": [
+   "BUTYLPROPIONATE"
+  ],
+  "1915": [
+   "CYCLOHEXANON"
+  ],
+  "1916": [
+   "2,2'-DICHLORDIETHYLETHER"
+  ],
+  "1917": [
+   "ETHYLACRYLAT, STABILISIERT"
+  ],
+  "1918": [
+   "ISOPROPYLBENZEN"
+  ],
+  "1919": [
+   "METHYLACRYLAT, STABILISIERT"
+  ],
+  "1920": [
+   "NONANE"
+  ],
+  "1921": [
+   "PROPYLENIMIN, STABILISIERT"
+  ],
+  "1922": [
+   "PYRROLIDIN"
+  ],
+  "1923": [
+   "CALCIUMDITHIONIT (CALCIUMHYDROSULFIT)"
+  ],
+  "1928": [
+   "METHYLMAGNESIUMBROMID IN ETHYLETHER"
+  ],
+  "1929": [
+   "KALIUMDITHIONIT (KALIUMHYDROSULFIT)"
+  ],
+  "1931": [
+   "ZINKDITHIONIT"
+  ],
+  "1932": [
+   "ZIRKONIUM-ABFALL"
+  ],
+  "1935": [
+   "CYANID, LÖSUNG, N.A.G."
+  ],
+  "1938": [
+   "BROMESSIGSÄURE, LÖSUNG"
+  ],
+  "1939": [
+   "PHOSPHOROXYBROMID"
+  ],
+  "1940": [
+   "THIOGLYCOLSÄURE"
+  ],
+  "1941": [
+   "DIBROMDIFLUORMETHAN"
+  ],
+  "1942": [
+   "AMMONIUMNITRAT mit höchstens 0,2 % brennbaren Stoffen, einschliesslich jedes als Kohlenstoff berechneten organischen Stoffes, unter Ausschluss jedes anderen zugesetzten Stoffes"
+  ],
+  "1944": [
+   "SICHERHEITSZÜNDHÖLZER (Heftchen, Kärtchen oder Schachteln mit Reibfläche)"
+  ],
+  "1945": [
+   "WACHSZÜNDHÖLZER"
+  ],
+  "1950": [
+   "DRUCKGASPACKUNGEN, erstickend",
+   "DRUCKGASPACKUNGEN, ätzend",
+   "DRUCKGASPACKUNGEN, ätzend, oxidierend",
+   "DRUCKGASPACKUNGEN, entzündbar",
+   "DRUCKGASPACKUNGEN, entzündbar, ätzend",
+   "DRUCKGASPACKUNGEN, oxidierend",
+   "DRUCKGASPACKUNGEN, giftig",
+   "DRUCKGASPACKUNGEN, giftig, ätzend",
+   "DRUCKGASPACKUNGEN, giftig, entzündbar",
+   "DRUCKGASPACKUNGEN, giftig, entzündbar, ätzend",
+   "DRUCKGASPACKUNGEN, giftig, oxidierend",
+   "DRUCKGASPACKUNGEN, giftig, oxidierend, ätzend"
+  ],
+  "1951": [
+   "ARGON, TIEFGEKÜHLT, FLÜSSIG"
+  ],
+  "1952": [
+   "ETHYLENOXID UND KOHLENDIOXID, GEMISCH mit höchstens 9 % Ethylenoxid"
+  ],
+  "1953": [
+   "VERDICHTETES GAS, GIFTIG, ENTZÜNDBAR, N.A.G."
+  ],
+  "1954": [
+   "VERDICHTETES GAS, ENTZÜNDBAR, N.A.G."
+  ],
+  "1955": [
+   "VERDICHTETES GAS, GIFTIG, N.A.G."
+  ],
+  "1956": [
+   "VERDICHTETES GAS, N.A.G."
+  ],
+  "1957": [
+   "DEUTERIUM, VERDICHTET"
+  ],
+  "1958": [
+   "1,2-DICHLOR-1,1,2,2-TETRAFLUORETHAN (GAS ALS KÄLTEMITTEL R 114)"
+  ],
+  "1959": [
+   "1,1-DIFLUORETHYLEN (GAS ALS KÄLTEMITTEL R 1132a)"
+  ],
+  "1961": [
+   "ETHAN, TIEFGEKÜHLT, FLÜSSIG"
+  ],
+  "1962": [
+   "ETHYLEN"
+  ],
+  "1963": [
+   "HELIUM, TIEFGEKÜHLT, FLÜSSIG"
+  ],
+  "1964": [
+   "KOHLENWASSERSTOFFGAS, GEMISCH, VERDICHTET, N.A.G."
+  ],
+  "1965": [
+   "KOHLENWASSERSTOFFGAS, GEMISCH, VERFLÜSSIGT, N.A.G. (Gemisch A, A 01, A 02, A 0, A 1, B 1, B 2, B oder C)"
+  ],
+  "1966": [
+   "WASSERSTOFF, TIEFGEKÜHLT, FLÜSSIG"
+  ],
+  "1967": [
+   "INSEKTENBEKÄMPFUNGSMITTEL, GASFÖRMIG, GIFTIG, N.A.G."
+  ],
+  "1968": [
+   "INSEKTENBEKÄMPFUNGSMITTEL, GASFÖRMIG, N.A.G."
+  ],
+  "1969": [
+   "ISOBUTAN"
+  ],
+  "1970": [
+   "KRYPTON, TIEFGEKÜHLT, FLÜSSIG"
+  ],
+  "1971": [
+   "METHAN, VERDICHTET oder ERDGAS, VERDICHTET, mit hohem Methangehalt"
+  ],
+  "1972": [
+   "METHAN, TIEFGEKÜHLT, FLÜSSIG oder ERDGAS, TIEFGEKÜHLT, FLÜSSIG, mit hohem Methangehalt"
+  ],
+  "1973": [
+   "CHLORDIFLUORMETHAN UND CHLORPENTAFLUORETHAN, GEMISCH mit einem konstanten Siedepunkt, mit ca. 49 % Chlordifluormethan (GAS ALS KÄLTEMITTEL R 502)"
+  ],
+  "1974": [
+   "BROMCHLORDIFLUORMETHAN (GAS ALS KÄLTEMITTEL R 12B1)"
+  ],
+  "1975": [
+   "STICKSTOFFMONOXID UND DISTICKSTOFFTETROXID, GEMISCH (STICKSTOFFMONOXID UND STICKSTOFFDIOXID, GEMISCH)"
+  ],
+  "1976": [
+   "OCTAFLUORCYCLOBUTAN (GAS ALS KÄLTEMITTEL RC 318)"
+  ],
+  "1977": [
+   "STICKSTOFF, TIEFGEKÜHLT, FLÜSSIG"
+  ],
+  "1978": [
+   "PROPAN"
+  ],
+  "1982": [
+   "TETRAFLUORMETHAN (GAS ALS KÄLTEMITTEL R 14)"
+  ],
+  "1983": [
+   "1-CHLOR-2,2,2-TRIFLUORETHAN (GAS ALS KÄLTEMITTEL R 133a)"
+  ],
+  "1984": [
+   "TRIFLUORMETHAN (GAS ALS KÄLTEMITTEL R 23)"
+  ],
+  "1986": [
+   "ALKOHOLE, ENTZÜNDBAR, GIFTIG, N.A.G."
+  ],
+  "1987": [
+   "ALKOHOLE, N.A.G. (Dampfdruck bei 50 °C grösser als 110 kPa)",
+   "ALKOHOLE, N.A.G. (Dampfdruck bei 50 °C höchstens 110 kPa)",
+   "ALKOHOLE, N.A.G."
+  ],
+  "1988": [
+   "ALDEHYDE, ENTZÜNDBAR, GIFTIG, N.A.G."
+  ],
+  "1989": [
+   "ALDEHYDE, N.A.G.",
+   "ALDEHYDE, N.A.G. (Dampfdruck bei 50 °C grösser als 110 kPa)",
+   "ALDEHYDE, N.A.G. (Dampfdruck bei 50 °C höchstens 110 kPa)"
+  ],
+  "1990": [
+   "BENZALDEHYD"
+  ],
+  "1991": [
+   "CHLOROPREN, STABILISIERT"
+  ],
+  "1992": [
+   "ENTZÜNDBARER FLÜSSIGER STOFF, GIFTIG, N.A.G."
+  ],
+  "1993": [
+   "ENTZÜNDBARER FLÜSSIGER STOFF, N.A.G.",
+   "ENTZÜNDBARER FLÜSSIGER STOFF, N.A.G. (Dampfdruck bei 50 °C grösser als 110 kPa)",
+   "ENTZÜNDBARER FLÜSSIGER STOFF, N.A.G. (Dampfdruck bei 50 °C höchstens 110 kPa)",
+   "ENTZÜNDBARER FLÜSSIGER STOFF, N.A.G. (mit einem Flammpunkt unter 23 °C und viskos gemäss 2.2.3.1.4) (Dampfdruck bei 50 °C grösser als 110 kPa)",
+   "ENTZÜNDBARER FLÜSSIGER STOFF, N.A.G. (mit einem Flammpunkt unter 23 °C und viskos gemäss 2.2.3.1.4) (Dampfdruck bei 50 °C höchstens 110 kPa)"
+  ],
+  "1994": [
+   "EISENPENTACARBONYL"
+  ],
+  "1999": [
+   "TEERE, FLÜSSIG, einschliesslich Strassenöle und Cutback-Bitumen (Verschnittbitumen) (Dampfdruck bei 50 °C grösser als 110 kPa)",
+   "TEERE, FLÜSSIG, einschliesslich Strassenöle und Cutback-Bitumen (Verschnittbitumen) (Dampfdruck bei 50 °C höchstens 110 kPa)",
+   "TEERE, FLÜSSIG, einschliesslich Strassenöle und Cutback-Bitumen (Verschnittbitumen)",
+   "TEERE, FLÜSSIG, einschliesslich Strassenöle und Cutback-Bitumen (Verschnittbitumen) (mit einem Flammpunkt unter 23 °C und viskos gemäss 2.2.3.1.4) (Dampfdruck bei 50 °C grösser als 110 kPa)",
+   "TEERE, FLÜSSIG, einschliesslich Strassenöle und Cutback-Bitumen (Verschnittbitumen) (mit einem Flammpunkt unter 23 °C und viskos gemäss 2.2.3.1.4) (Dampfdruck bei 50 °C höchstens 110 kPa)"
+  ],
+  "2000": [
+   "ZELLULOID in Blöcken, Stangen, Platten, Rohren, usw. (ausgenommen Abfälle)"
+  ],
+  "2001": [
+   "COBALTNAPHTHENATPULVER"
+  ],
+  "2002": [
+   "ZELLULOID, ABFALL"
+  ],
+  "2004": [
+   "MAGNESIUMDIAMID"
+  ],
+  "2006": [
+   "KUNSTSTOFFE AUF NITROCELLULOSEBASIS, SELBSTERHITZUNGSFÄHIG, N.A.G."
+  ],
+  "2008": [
+   "ZIRKONIUM-PULVER, TROCKEN"
+  ],
+  "2009": [
+   "ZIRKONIUM, TROCKEN, Bleche, Streifen oder gerollter Draht (dünner als 18 µm)"
+  ],
+  "2010": [
+   "MAGNESIUMHYDRID"
+  ],
+  "2011": [
+   "MAGNESIUMPHOSPHID"
+  ],
+  "2012": [
+   "KALIUMPHOSPHID"
+  ],
+  "2013": [
+   "STRONTIUMPHOSPHID"
+  ],
+  "2014": [
+   "WASSERSTOFFPEROXID, WÄSSERIGE LÖSUNG mit mindestens 20 %, aber höchstens 60 % Wasserstoffperoxid (Stabilisierung nach Bedarf)"
+  ],
+  "2015": [
+   "WASSERSTOFFPEROXID, STABILISIERT oder WASSERSTOFFPEROXID, WÄSSERIGE LÖSUNG, STABILISIERT, mit mehr als 70 % Wasserstoffperoxid",
+   "WASSERSTOFFPEROXID, WÄSSERIGE LÖSUNG, STABILISIERT, mit mehr als 60 %, aber höchstens 70 % Wasserstoffperoxid"
+  ],
+  "2016": [
+   "MUNITION, GIFTIG, NICHT EXPLOSIV, ohne Zerleger oder Ausstossladung, nicht scharf"
+  ],
+  "2017": [
+   "MUNITION, TRÄNENERZEUGEND, NICHT EXPLOSIV, ohne Zerleger oder Ausstossladung, nicht scharf"
+  ],
+  "2018": [
+   "CHLORANILINE, FEST"
+  ],
+  "2019": [
+   "CHLORANILINE, FLÜSSIG"
+  ],
+  "2020": [
+   "CHLORPHENOLE, FEST"
+  ],
+  "2021": [
+   "CHLORPHENOLE, FLÜSSIG"
+  ],
+  "2022": [
+   "CRESYLSÄURE"
+  ],
+  "2023": [
+   "EPICHLORHYDRIN"
+  ],
+  "2024": [
+   "QUECKSILBERVERBINDUNG, FLÜSSIG, N.A.G."
+  ],
+  "2025": [
+   "QUECKSILBERVERBINDUNG, FEST, N.A.G."
+  ],
+  "2026": [
+   "PHENYLQUECKSILBERVERBINDUNG, N.A.G."
+  ],
+  "2027": [
+   "NATRIUMARSENIT, FEST"
+  ],
+  "2028": [
+   "RAUCHBOMBEN, NEBELBOMBEN, NICHT EXPLOSIV, ätzenden flüssigen Stoff enthaltend, ohne Zünder"
+  ],
+  "2029": [
+   "HYDRAZIN, WASSERFREI"
+  ],
+  "2030": [
+   "HYDRAZIN, WÄSSERIGE LÖSUNG mit mehr als 37 Masse-% Hydrazin"
+  ],
+  "2031": [
+   "SALPETERSÄURE, andere als rotrauchende, mit mehr als 70 % Säure",
+   "SALPETERSÄURE, andere als rotrauchende, mit mindestens 65 %, aber höchstens 70 % Säure",
+   "SALPETERSÄURE, andere als rotrauchende, mit weniger als 65 % Säure"
+  ],
+  "2032": [
+   "SALPETERSÄURE, ROTRAUCHEND"
+  ],
+  "2033": [
+   "KALIUMMONOXID"
+  ],
+  "2034": [
+   "WASSERSTOFF UND METHAN, GEMISCH, VERDICHTET"
+  ],
+  "2035": [
+   "1,1,1-TRIFLUORETHAN (GAS ALS KÄLTEMITTEL R 143a)"
+  ],
+  "2036": [
+   "XENON"
+  ],
+  "2037": [
+   "GEFÄSSE, KLEIN, MIT GAS (GASPATRONEN), ohne Entnahmeeinrichtung, nicht wiederbefüllbar"
+  ],
+  "2038": [
+   "DINITROTOLUENE, FLÜSSIG"
+  ],
+  "2044": [
+   "2,2-DIMETHYLPROPAN"
+  ],
+  "2045": [
+   "ISOBUTYRALDEHYD (ISOBUTYLALDEHYD)"
+  ],
+  "2046": [
+   "CYMENE"
+  ],
+  "2047": [
+   "DICHLORPROPENE"
+  ],
+  "2048": [
+   "DICYCLOPENTADIEN"
+  ],
+  "2049": [
+   "DIETHYLBENZEN"
+  ],
+  "2050": [
+   "DIISOBUTYLEN, ISOMERE VERBINDUNGEN"
+  ],
+  "2051": [
+   "2-DIMETHYLAMINOETHANOL"
+  ],
+  "2052": [
+   "DIPENTEN"
+  ],
+  "2053": [
+   "METHYLISOBUTYLCARBINOL"
+  ],
+  "2054": [
+   "MORPHOLIN"
+  ],
+  "2055": [
+   "STYREN, MONOMER, STABILISIERT"
+  ],
+  "2056": [
+   "TETRAHYDROFURAN"
+  ],
+  "2057": [
+   "TRIPROPYLEN"
+  ],
+  "2058": [
+   "VALERALDEHYD"
+  ],
+  "2059": [
+   "NITROCELLULOSE, LÖSUNG, ENTZÜNDBAR, mit höchstens 12,6 % Stickstoff in der Trockenmasse und höchstens 55 % Nitrocellulose",
+   "NITROCELLULOSE, LÖSUNG, ENTZÜNDBAR, mit höchstens 12,6 % Stickstoff in der Trockenmasse und höchstens 55 % Nitrocellulose (Dampfdruck bei 50 °C grösser als 110 kPa)",
+   "NITROCELLULOSE, LÖSUNG, ENTZÜNDBAR, mit höchstens 12,6 % Stickstoff in der Trockenmasse und höchstens 55 % Nitrocellulose (Dampfdruck bei 50 °C höchstens 110 kPa)"
+  ],
+  "2067": [
+   "AMMONIUMNITRATHALTIGES DÜNGEMITTEL"
+  ],
+  "2071": [
+   "AMMONIUMNITRATHALTIGES DÜNGEMITTEL"
+  ],
+  "2073": [
+   "AMMONIAKLÖSUNG in Wasser, relative Dichte kleiner als 0,880 bei 15 °C, mit mehr als 35 %, aber höchstens 50 % Ammoniak"
+  ],
+  "2074": [
+   "ACRYLAMID, FEST"
+  ],
+  "2075": [
+   "CHLORAL, WASSERFREI, STABILISIERT"
+  ],
+  "2076": [
+   "CRESOLE, FLÜSSIG"
+  ],
+  "2077": [
+   "alpha-NAPHTHYLAMIN"
+  ],
+  "2078": [
+   "TOLUENDIISOCYANAT"
+  ],
+  "2079": [
+   "DIETHYLENTRIAMIN"
+  ],
+  "2186": [
+   "CHLORWASSERSTOFF, TIEFGEKÜHLT, FLÜSSIG"
+  ],
+  "2187": [
+   "KOHLENDIOXID, TIEFGEKÜHLT, FLÜSSIG"
+  ],
+  "2188": [
+   "ARSENWASSERSTOFF (ARSIN)"
+  ],
+  "2189": [
+   "DICHLORSILAN"
+  ],
+  "2190": [
+   "SAUERSTOFFDIFLUORID, VERDICHTET"
+  ],
+  "2191": [
+   "SULFURYLFLUORID"
+  ],
+  "2192": [
+   "GERMANIUMWASSERSTOFF (GERMAN)"
+  ],
+  "2193": [
+   "HEXAFLUORETHAN (GAS ALS KÄLTEMITTEL R 116)"
+  ],
+  "2194": [
+   "SELENHEXAFLUORID"
+  ],
+  "2195": [
+   "TELLURHEXAFLUORID"
+  ],
+  "2196": [
+   "WOLFRAMHEXAFLUORID"
+  ],
+  "2197": [
+   "IODWASSERSTOFF, WASSERFREI"
+  ],
+  "2198": [
+   "PHOSPHORPENTAFLUORID"
+  ],
+  "2199": [
+   "PHOSPHORWASSERSTOFF (PHOSPHIN)"
+  ],
+  "2200": [
+   "PROPADIEN, STABILISIERT"
+  ],
+  "2201": [
+   "DISTICKSTOFFMONOXID, TIEFGEKÜHLT, FLÜSSIG"
+  ],
+  "2202": [
+   "SELENWASSERSTOFF, WASSERFREI"
+  ],
+  "2203": [
+   "SILICIUMWASSERSTOFF (SILAN)"
+  ],
+  "2204": [
+   "CARBONYLSULFID"
+  ],
+  "2205": [
+   "ADIPONITRIL"
+  ],
+  "2206": [
+   "ISOCYANATE, GIFTIG, N.A.G. oder ISOCYANAT, LÖSUNG, GIFTIG, N.A.G."
+  ],
+  "2208": [
+   "CALCIUMHYPOCHLORIT, MISCHUNG, TROCKEN, mit mehr als 10 %, aber höchstens 39 % aktivem Chlor"
+  ],
+  "2209": [
+   "FORMALDEHYDLÖSUNG mit mindestens 25 % Formaldehyd"
+  ],
+  "2210": [
+   "MANEB oder MANEBZUBEREITUNGEN mit mindestens 60 Masse-% Maneb"
+  ],
+  "2211": [
+   "SCHÄUMBARE POLYMERKÜGELCHEN, entzündbare Dämpfe abgebend"
+  ],
+  "2212": [
+   "ASBEST, AMPHIBOL (Amosit, Tremolit, Aktinolith, Anthophyllit, Krokydolith)"
+  ],
+  "2213": [
+   "PARAFORMALDEHYD"
+  ],
+  "2214": [
+   "PHTHALSÄUREANHYDRID mit mehr als 0,05 % Maleinsäureanhydrid"
+  ],
+  "2215": [
+   "MALEINSÄUREANHYDRID, GESCHMOLZEN",
+   "MALEINSÄUREANHYDRID"
+  ],
+  "2216": [
+   "Fischmehl (Fischabfälle), stabilisiert"
+  ],
+  "2217": [
+   "ÖLSAATKUCHEN mit höchstens 1,5 Masse-% Öl und höchstens 11 Masse-% Feuchtigkeit"
+  ],
+  "2218": [
+   "ACRYLSÄURE, STABILISIERT"
+  ],
+  "2219": [
+   "ALLYLGLYCIDYLETHER"
+  ],
+  "2222": [
+   "ANISOL"
+  ],
+  "2224": [
+   "BENZONITRIL"
+  ],
+  "2225": [
+   "BENZENSULFONYLCHLORID"
+  ],
+  "2226": [
+   "BENZOTRICHLORID"
+  ],
+  "2227": [
+   "n-BUTYLMETHACRYLAT, STABILISIERT"
+  ],
+  "2232": [
+   "2-CHLORETHANAL"
+  ],
+  "2233": [
+   "CHLORANISIDINE"
+  ],
+  "2234": [
+   "CHLORBENZOTRIFLUORIDE"
+  ],
+  "2235": [
+   "CHLORBENZYLCHLORIDE, FLÜSSIG"
+  ],
+  "2236": [
+   "3-CHLOR-4-METHYLPHENYLISOCYANAT, FLÜSSIG"
+  ],
+  "2237": [
+   "CHLORNITROANILINE"
+  ],
+  "2238": [
+   "CHLORTOLUENE"
+  ],
+  "2239": [
+   "CHLORTOLUIDINE, FEST"
+  ],
+  "2240": [
+   "CHROMSCHWEFELSÄURE"
+  ],
+  "2241": [
+   "CYCLOHEPTAN"
+  ],
+  "2242": [
+   "CYCLOHEPTEN"
+  ],
+  "2243": [
+   "CYCLOHEXYLACETAT"
+  ],
+  "2244": [
+   "CYCLOPENTANOL"
+  ],
+  "2245": [
+   "CYCLOPENTANON"
+  ],
+  "2246": [
+   "CYCLOPENTEN"
+  ],
+  "2247": [
+   "n-DECAN"
+  ],
+  "2248": [
+   "DI-n-BUTYLAMIN"
+  ],
+  "2249": [
+   "DICHLORDIMETHYLETHER, SYMMETRISCH"
+  ],
+  "2250": [
+   "DICHLORPHENYLISOCYANATE"
+  ],
+  "2251": [
+   "BICYCLO-[2,2,1]-HEPTA-2,5-DIEN, STABILISIERT (NORBORNAN-2,5-DIEN, STABILISIERT)"
+  ],
+  "2252": [
+   "1,2-DIMETHOXYETHAN"
+  ],
+  "2253": [
+   "N,N-DIMETHYLANILIN"
+  ],
+  "2254": [
+   "STURMZÜNDHÖLZER"
+  ],
+  "2256": [
+   "CYCLOHEXEN"
+  ],
+  "2257": [
+   "KALIUM"
+  ],
+  "2258": [
+   "1,2-PROPYLENDIAMIN"
+  ],
+  "2259": [
+   "TRIETHYLENTETRAMIN"
+  ],
+  "2260": [
+   "TRIPROPYLAMIN"
+  ],
+  "2261": [
+   "XYLENOLE, FEST"
+  ],
+  "2262": [
+   "N,N-DIMETHYLCARBAMOYLCHLORID"
+  ],
+  "2263": [
+   "DIMETHYLCYCLOHEXANE"
+  ],
+  "2264": [
+   "N,N-DIMETHYLCYCLOHEXYLAMIN"
+  ],
+  "2265": [
+   "N,N-DIMETHYLFORMAMID"
+  ],
+  "2266": [
+   "DIMETHYL-N-PROPYLAMIN"
+  ],
+  "2267": [
+   "DIMETHYLTHIOPHOSPHORYLCHLORID"
+  ],
+  "2269": [
+   "3,3'-IMINOBISPROPYLAMIN"
+  ],
+  "2270": [
+   "ETHYLAMIN, WÄSSERIGE LÖSUNG mit mindestens 50 Masse-% und höchstens 70 Masse-% Ethylamin"
+  ],
+  "2271": [
+   "ETHYLAMYLKETON"
+  ],
+  "2272": [
+   "N-ETHYLANILIN"
+  ],
+  "2273": [
+   "2-ETHYLANILIN"
+  ],
+  "2274": [
+   "N-ETHYL-N-BENZYLANILIN"
+  ],
+  "2275": [
+   "2-ETHYLBUTANOL"
+  ],
+  "2276": [
+   "2-ETHYLHEXYLAMIN"
+  ],
+  "2277": [
+   "ETHYLMETHACRYLAT, STABILISIERT"
+  ],
+  "2278": [
+   "n-HEPTEN"
+  ],
+  "2279": [
+   "HEXACHLORBUTADIEN"
+  ],
+  "2280": [
+   "HEXAMETHYLENDIAMIN, FEST"
+  ],
+  "2281": [
+   "HEXAMETHYLENDIISOCYANAT"
+  ],
+  "2282": [
+   "HEXANOLE"
+  ],
+  "2283": [
+   "ISOBUTYLMETHACRYLAT, STABILISIERT"
+  ],
+  "2284": [
+   "ISOBUTYRONITRIL"
+  ],
+  "2285": [
+   "ISOCYANATOBENZOTRIFLUORIDE"
+  ],
+  "2286": [
+   "PENTAMETHYLHEPTAN"
+  ],
+  "2287": [
+   "ISOHEPTENE"
+  ],
+  "2288": [
+   "ISOHEXENE"
+  ],
+  "2289": [
+   "ISOPHORONDIAMIN"
+  ],
+  "2290": [
+   "ISOPHORONDIISOCYANAT"
+  ],
+  "2291": [
+   "BLEIVERBINDUNG, LÖSLICH, N.A.G."
+  ],
+  "2293": [
+   "4-METHOXY-4-METHYLPENTAN-2-ON"
+  ],
+  "2294": [
+   "N-METHYLANILIN"
+  ],
+  "2295": [
+   "METHYLCHLORACETAT"
+  ],
+  "2296": [
+   "METHYLCYCLOHEXAN"
+  ],
+  "2297": [
+   "METHYLCYCLOHEXANON"
+  ],
+  "2298": [
+   "METHYLCYCLOPENTAN"
+  ],
+  "2299": [
+   "METHYLDICHLORACETAT"
+  ],
+  "2300": [
+   "2-METHYL-5-ETHYLPYRIDIN"
+  ],
+  "2301": [
+   "2-METHYLFURAN"
+  ],
+  "2302": [
+   "5-METHYLHEXAN-2-ON"
+  ],
+  "2303": [
+   "ISOPROPENYLBENZEN"
+  ],
+  "2304": [
+   "NAPHTHALEN, GESCHMOLZEN"
+  ],
+  "2305": [
+   "NITROBENZENSULFONSÄURE"
+  ],
+  "2306": [
+   "NITROBENZOTRIFLUORIDE, FLÜSSIG"
+  ],
+  "2307": [
+   "3-NITRO-4-CHLORBENZOTRIFLUORID"
+  ],
+  "2308": [
+   "NITROSYLSCHWEFELSÄURE, FLÜSSIG"
+  ],
+  "2309": [
+   "OCTADIENE"
+  ],
+  "2310": [
+   "PENTAN-2,4-DION"
+  ],
+  "2311": [
+   "PHENETIDINE"
+  ],
+  "2312": [
+   "PHENOL, GESCHMOLZEN"
+  ],
+  "2313": [
+   "PICOLINE"
+  ],
+  "2315": [
+   "POLYCHLORIERTE BIPHENYLE, FLÜSSIG"
+  ],
+  "2316": [
+   "NATRIUMKUPFER(I)CYANID, FEST"
+  ],
+  "2317": [
+   "NATRIUMKUPFER(I)CYANID, LÖSUNG"
+  ],
+  "2318": [
+   "NATRIUMHYDROGENSULFID mit weniger als 25 % Kristallwasser"
+  ],
+  "2319": [
+   "TERPENKOHLENWASSERSTOFFE, N.A.G."
+  ],
+  "2320": [
+   "TETRAETHYLENPENTAMIN"
+  ],
+  "2321": [
+   "TRICHLORBENZENE, FLÜSSIG"
+  ],
+  "2322": [
+   "TRICHLORBUTEN"
+  ],
+  "2323": [
+   "TRIETHYLPHOSPHIT"
+  ],
+  "2324": [
+   "TRIISOBUTYLEN"
+  ],
+  "2325": [
+   "1,3,5-TRIMETHYLBENZEN"
+  ],
+  "2326": [
+   "TRIMETHYLCYCLOHEXYLAMIN"
+  ],
+  "2327": [
+   "TRIMETHYLHEXAMETHYLENDIAMINE"
+  ],
+  "2328": [
+   "TRIMETHYLHEXAMETHYLENDIISOCYANAT (und isomere Gemische)"
+  ],
+  "2329": [
+   "TRIMETHYLPHOSPHIT"
+  ],
+  "2330": [
+   "UNDECAN"
+  ],
+  "2331": [
+   "ZINKCHLORID, WASSERFREI"
+  ],
+  "2332": [
+   "ACETALDEHYDOXIM"
+  ],
+  "2333": [
+   "ALLYLACETAT"
+  ],
+  "2334": [
+   "ALLYLAMIN"
+  ],
+  "2335": [
+   "ALLYLETHYLETHER"
+  ],
+  "2336": [
+   "ALLYLFORMIAT"
+  ],
+  "2337": [
+   "PHENYLMERCAPTAN"
+  ],
+  "2338": [
+   "BENZOTRIFLUORID"
+  ],
+  "2339": [
+   "2-BROMBUTAN"
+  ],
+  "2340": [
+   "2-BROMETHYLETHYLETHER"
+  ],
+  "2341": [
+   "1-BROM-3-METHYLBUTAN"
+  ],
+  "2342": [
+   "BROMMETHYLPROPANE"
+  ],
+  "2343": [
+   "2-BROMPENTAN"
+  ],
+  "2344": [
+   "BROMPROPANE"
+  ],
+  "2345": [
+   "3-BROMPROPIN"
+  ],
+  "2346": [
+   "BUTANDION"
+  ],
+  "2347": [
+   "BUTYLMERCAPTAN"
+  ],
+  "2348": [
+   "BUTYLACRYLATE, STABILISIERT"
+  ],
+  "2350": [
+   "BUTYLMETHYLETHER"
+  ],
+  "2351": [
+   "BUTYLNITRITE"
+  ],
+  "2352": [
+   "BUTYLVINYLETHER, STABILISIERT"
+  ],
+  "2353": [
+   "BUTYRYLCHLORID"
+  ],
+  "2354": [
+   "CHLORMETHYLETHYLETHER"
+  ],
+  "2356": [
+   "2-CHLORPROPAN"
+  ],
+  "2357": [
+   "CYCLOHEXYLAMIN"
+  ],
+  "2358": [
+   "CYCLOOCTATETRAEN"
+  ],
+  "2359": [
+   "DIALLYLAMIN"
+  ],
+  "2360": [
+   "DIALLYLETHER"
+  ],
+  "2361": [
+   "DIISOBUTYLAMIN"
+  ],
+  "2362": [
+   "1,1-DICHLORETHAN"
+  ],
+  "2363": [
+   "ETHYLMERCAPTAN"
+  ],
+  "2364": [
+   "n-PROPYLBENZEN"
+  ],
+  "2366": [
+   "DIETHYLCARBONAT"
+  ],
+  "2367": [
+   "alpha-METHYLVALERALDEHYD"
+  ],
+  "2368": [
+   "alpha-PINEN"
+  ],
+  "2370": [
+   "HEX-1-EN"
+  ],
+  "2371": [
+   "ISOPENTENE"
+  ],
+  "2372": [
+   "1,2-DI-(DIMETHYLAMINO)-ETHAN"
+  ],
+  "2373": [
+   "DIETHOXYMETHAN"
+  ],
+  "2374": [
+   "3,3-DIETHOXYPROPEN"
+  ],
+  "2375": [
+   "DIETHYLSULFID"
+  ],
+  "2376": [
+   "2,3-DIHYDROPYRAN"
+  ],
+  "2377": [
+   "1,1-DIMETHOXYETHAN"
+  ],
+  "2378": [
+   "2-DIMETHYLAMINOACETONITRIL"
+  ],
+  "2379": [
+   "1,3-DIMETHYLBUTYLAMIN"
+  ],
+  "2380": [
+   "DIMETHYLDIETHOXYSILAN"
+  ],
+  "2381": [
+   "DIMETHYLDISULFID"
+  ],
+  "2382": [
+   "DIMETHYLHYDRAZIN, SYMMETRISCH"
+  ],
+  "2383": [
+   "DIPROPYLAMIN"
+  ],
+  "2384": [
+   "DI-n-PROPYLETHER"
+  ],
+  "2385": [
+   "ETHYLISOBUTYRAT"
+  ],
+  "2386": [
+   "1-ETHYLPIPERIDIN"
+  ],
+  "2387": [
+   "FLUORBENZEN"
+  ],
+  "2388": [
+   "FLUORTOLUENE"
+  ],
+  "2389": [
+   "FURAN"
+  ],
+  "2390": [
+   "2-IODBUTAN"
+  ],
+  "2391": [
+   "IODMETHYLPROPANE"
+  ],
+  "2392": [
+   "IODPROPANE"
+  ],
+  "2393": [
+   "ISOBUTYLFORMIAT"
+  ],
+  "2394": [
+   "ISOBUTYLPROPIONAT"
+  ],
+  "2395": [
+   "ISOBUTYRYLCHLORID"
+  ],
+  "2396": [
+   "METHACRYLALDEHYD, STABILISIERT"
+  ],
+  "2397": [
+   "3-METHYLBUTAN-2-ON"
+  ],
+  "2398": [
+   "METHYL-tert-BUTYLETHER"
+  ],
+  "2399": [
+   "1-METHYLPIPERIDIN"
+  ],
+  "2400": [
+   "METHYLISOVALERAT"
+  ],
+  "2401": [
+   "PIPERIDIN"
+  ],
+  "2402": [
+   "PROPANTHIOLE"
+  ],
+  "2403": [
+   "ISOPROPENYLACETAT"
+  ],
+  "2404": [
+   "PROPIONITRIL"
+  ],
+  "2405": [
+   "ISOPROPYLBUTYRAT"
+  ],
+  "2406": [
+   "ISOPROPYLISOBUTYRAT"
+  ],
+  "2407": [
+   "ISOPROPYLCHLORFORMIAT"
+  ],
+  "2409": [
+   "ISOPROPYLPROPIONAT"
+  ],
+  "2410": [
+   "1,2,3,6-TETRAHYDROPYRIDIN"
+  ],
+  "2411": [
+   "BUTYRONITRIL"
+  ],
+  "2412": [
+   "TETRAHYDROTHIOPHEN"
+  ],
+  "2413": [
+   "TETRAPROPYLORTHOTITANAT"
+  ],
+  "2414": [
+   "THIOPHEN"
+  ],
+  "2416": [
+   "TRIMETHYLBORAT"
+  ],
+  "2417": [
+   "CARBONYLFLUORID"
+  ],
+  "2418": [
+   "SCHWEFELTETRAFLUORID"
+  ],
+  "2419": [
+   "BROMTRIFLUORETHYLEN"
+  ],
+  "2420": [
+   "HEXAFLUORACETON"
+  ],
+  "2421": [
+   "DISTICKSTOFFTRIOXID"
+  ],
+  "2422": [
+   "OCTAFLUORBUT-2-EN (GAS ALS KÄLTEMITTEL R 1318)"
+  ],
+  "2424": [
+   "OCTAFLUORPROPAN (GAS ALS KÄLTEMITTEL R 218)"
+  ],
+  "2426": [
+   "AMMONIUMNITRAT, FLÜSSIG (heisse konzentrierte Lösung)"
+  ],
+  "2427": [
+   "KALIUMCHLORAT, WÄSSERIGE LÖSUNG"
+  ],
+  "2428": [
+   "NATRIUMCHLORAT, WÄSSERIGE LÖSUNG"
+  ],
+  "2429": [
+   "CALCIUMCHLORAT, WÄSSERIGE LÖSUNG"
+  ],
+  "2430": [
+   "ALKYLPHENOLE, FEST, N.A.G. (einschliesslich C2-C12-Homologe)"
+  ],
+  "2431": [
+   "ANISIDINE"
+  ],
+  "2432": [
+   "N,N-DIETHYLANILIN"
+  ],
+  "2433": [
+   "CHLORNITROTOLUENE, FLÜSSIG"
+  ],
+  "2434": [
+   "DIBENZYLDICHLORSILAN"
+  ],
+  "2435": [
+   "ETHYLPHENYLDICHLORSILAN"
+  ],
+  "2436": [
+   "THIOESSIGSÄURE"
+  ],
+  "2437": [
+   "METHYLPHENYLDICHLORSILAN"
+  ],
+  "2438": [
+   "TRIMETHYLACETYLCHLORID"
+  ],
+  "2439": [
+   "NATRIUMHYDROGENDIFLUORID"
+  ],
+  "2440": [
+   "ZINNTETRACHLORIDPENTAHYDRAT"
+  ],
+  "2441": [
+   "TITANTRICHLORID, PYROPHOR oder TITANTRICHLORIDMISCHUNGEN, PYROPHOR"
+  ],
+  "2442": [
+   "TRICHLORACETYLCHLORID"
+  ],
+  "2443": [
+   "VANADIUMOXYTRICHLORID"
+  ],
+  "2444": [
+   "VANADIUMTETRACHLORID"
+  ],
+  "2446": [
+   "NITROCRESOLE, FEST"
+  ],
+  "2447": [
+   "PHOSPHOR, WEISS, GESCHMOLZEN"
+  ],
+  "2448": [
+   "SCHWEFEL, GESCHMOLZEN"
+  ],
+  "2451": [
+   "STICKSTOFFTRIFLUORID"
+  ],
+  "2452": [
+   "ETHYLACETYLEN, STABILISIERT"
+  ],
+  "2453": [
+   "ETHYLFLUORID (GAS ALS KÄLTEMITTEL R 161)"
+  ],
+  "2454": [
+   "METHYLFLUORID (GAS ALS KÄLTEMITTEL R 41)"
+  ],
+  "2455": [
+   "METHYLNITRIT"
+  ],
+  "2456": [
+   "2-CHLORPROPEN"
+  ],
+  "2457": [
+   "2,3-DIMETHYLBUTAN"
+  ],
+  "2458": [
+   "HEXADIENE"
+  ],
+  "2459": [
+   "2-METHYLBUT-1-EN"
+  ],
+  "2460": [
+   "2-METHYLBUT-2-EN"
+  ],
+  "2461": [
+   "METHYLPENTADIENE"
+  ],
+  "2463": [
+   "ALUMINIUMHYDRID"
+  ],
+  "2464": [
+   "BERYLLIUMNITRAT"
+  ],
+  "2465": [
+   "DICHLORISOCYANURSÄURE, TROCKEN oder DICHLORISOCYANURSÄURESALZE"
+  ],
+  "2466": [
+   "KALIUMSUPEROXID"
+  ],
+  "2468": [
+   "TRICHLORISOCYANURSÄURE, TROCKEN"
+  ],
+  "2469": [
+   "ZINKBROMAT"
+  ],
+  "2470": [
+   "PHENYLACETONITRIL, FLÜSSIG"
+  ],
+  "2471": [
+   "OSMIUMTETROXID"
+  ],
+  "2473": [
+   "NATRIUMARSANILAT"
+  ],
+  "2474": [
+   "THIOPHOSGEN"
+  ],
+  "2475": [
+   "VANADIUMTRICHLORID"
+  ],
+  "2477": [
+   "METHYLISOTHIOCYANAT"
+  ],
+  "2478": [
+   "ISOCYANATE, ENTZÜNDBAR, GIFTIG, N.A.G. oder ISOCYANAT, LÖSUNG, ENTZÜNDBAR, GIFTIG, N.A.G."
+  ],
+  "2480": [
+   "METHYLISOCYANAT"
+  ],
+  "2481": [
+   "ETHYLISOCYANAT"
+  ],
+  "2482": [
+   "n-PROPYLISOCYANAT"
+  ],
+  "2483": [
+   "ISOPROPYLISOCYANAT"
+  ],
+  "2484": [
+   "tert-BUTYLISOCYANAT"
+  ],
+  "2485": [
+   "n-BUTYLISOCYANAT"
+  ],
+  "2486": [
+   "ISOBUTYLISOCYANAT"
+  ],
+  "2487": [
+   "PHENYLISOCYANAT"
+  ],
+  "2488": [
+   "CYCLOHEXYLISOCYANAT"
+  ],
+  "2490": [
+   "DICHLORISOPROPYLETHER"
+  ],
+  "2491": [
+   "ETHANOLAMIN oder ETHANOLAMIN, LÖSUNG"
+  ],
+  "2493": [
+   "HEXAMETHYLENIMIN"
+  ],
+  "2495": [
+   "IODPENTAFLUORID"
+  ],
+  "2496": [
+   "PROPIONSÄUREANHYDRID"
+  ],
+  "2498": [
+   "1,2,3,6-TETRAHYDROBENZALDEHYD"
+  ],
+  "2501": [
+   "TRIS-(1-AZIRIDINYL)-PHOSPHINOXID, LÖSUNG"
+  ],
+  "2502": [
+   "VALERYLCHLORID"
+  ],
+  "2503": [
+   "ZIRKONIUMTETRACHLORID"
+  ],
+  "2504": [
+   "TETRABROMETHAN"
+  ],
+  "2505": [
+   "AMMONIUMFLUORID"
+  ],
+  "2506": [
+   "AMMONIUMHYDROGENSULFAT"
+  ],
+  "2507": [
+   "HEXACHLORPLATINSÄURE, FEST"
+  ],
+  "2508": [
+   "MOLYBDÄNPENTACHLORID"
+  ],
+  "2509": [
+   "KALIUMHYDROGENSULFAT"
+  ],
+  "2511": [
+   "alpha-CHLORPROPIONSÄURE"
+  ],
+  "2512": [
+   "AMINOPHENOLE (o-, m-, p-)"
+  ],
+  "2513": [
+   "BROMACETYLBROMID"
+  ],
+  "2514": [
+   "BROMBENZEN"
+  ],
+  "2515": [
+   "BROMOFORM"
+  ],
+  "2516": [
+   "TETRABROMKOHLENSTOFF"
+  ],
+  "2517": [
+   "1-CHLOR-1,1-DIFLUORETHAN (GAS ALS KÄLTEMITTEL R 142b)"
+  ],
+  "2518": [
+   "1,5,9-CYCLODODECATRIEN"
+  ],
+  "2520": [
+   "CYCLOOCTADIENE"
+  ],
+  "2521": [
+   "DIKETEN, STABILISIERT"
+  ],
+  "2522": [
+   "2-DIMETHYLAMINOETHYLMETHACRYLAT, STABILISIERT"
+  ],
+  "2524": [
+   "ETHYLORTHOFORMIAT"
+  ],
+  "2525": [
+   "ETHYLOXALAT"
+  ],
+  "2526": [
+   "FURFURYLAMIN"
+  ],
+  "2527": [
+   "ISOBUTYLACRYLAT, STABILISIERT"
+  ],
+  "2528": [
+   "ISOBUTYLISOBUTYRAT"
+  ],
+  "2529": [
+   "ISOBUTTERSÄURE"
+  ],
+  "2531": [
+   "METHACRYLSÄURE, STABILISIERT"
+  ],
+  "2533": [
+   "METHYLTRICHLORACETAT"
+  ],
+  "2534": [
+   "METHYLCHLORSILAN"
+  ],
+  "2535": [
+   "4-METHYLMORPHOLIN (N-METHYLMORPHOLIN)"
+  ],
+  "2536": [
+   "METHYLTETRAHYDROFURAN"
+  ],
+  "2538": [
+   "NITRONAPHTHALEN"
+  ],
+  "2541": [
+   "TERPINOLEN"
+  ],
+  "2542": [
+   "TRIBUTYLAMIN"
+  ],
+  "2545": [
+   "HAFNIUM-PULVER, TROCKEN"
+  ],
+  "2546": [
+   "TITAN-PULVER, TROCKEN"
+  ],
+  "2547": [
+   "NATRIUMSUPEROXID"
+  ],
+  "2548": [
+   "CHLORPENTAFLUORID"
+  ],
+  "2552": [
+   "HEXAFLUORACETONHYDRAT, FLÜSSIG"
+  ],
+  "2554": [
+   "METHYLALLYLCHLORID"
+  ],
+  "2555": [
+   "NITROCELLULOSE MIT mindestens 25 Masse-% WASSER"
+  ],
+  "2556": [
+   "NITROCELLULOSE MIT mindestens 25 Masse-% ALKOHOL und höchstens 12,6 % Stickstoff in der Trockenmasse"
+  ],
+  "2557": [
+   "NITROCELLULOSE, MISCHUNG mit höchstens 12,6 % Stickstoff in der Trockenmasse, MIT oder OHNE PLASTIFIZIERUNGSMITTEL, MIT oder OHNE PIGMENT"
+  ],
+  "2558": [
+   "EPIBROMHYDRIN"
+  ],
+  "2560": [
+   "2-METHYLPENTAN-2-OL"
+  ],
+  "2561": [
+   "3-METHYLBUT-1-EN"
+  ],
+  "2564": [
+   "TRICHLORESSIGSÄURE, LÖSUNG"
+  ],
+  "2565": [
+   "DICYCLOHEXYLAMIN"
+  ],
+  "2567": [
+   "NATRIUMPENTACHLORPHENOLAT"
+  ],
+  "2570": [
+   "CADMIUMVERBINDUNG"
+  ],
+  "2571": [
+   "ALKYLSCHWEFELSÄUREN"
+  ],
+  "2572": [
+   "PHENYLHYDRAZIN"
+  ],
+  "2573": [
+   "THALLIUMCHLORAT"
+  ],
+  "2574": [
+   "TRICRESYLPHOSPHAT mit mehr als 3 % ortho-Isomer"
+  ],
+  "2576": [
+   "PHOSPHOROXYBROMID, GESCHMOLZEN"
+  ],
+  "2577": [
+   "PHENYLACETYLCHLORID"
+  ],
+  "2578": [
+   "PHOSPHORTRIOXID"
+  ],
+  "2579": [
+   "PIPERAZIN"
+  ],
+  "2580": [
+   "ALUMINIUMBROMID, LÖSUNG"
+  ],
+  "2581": [
+   "ALUMINIUMCHLORID, LÖSUNG"
+  ],
+  "2582": [
+   "EISEN(III)CHLORID, LÖSUNG"
+  ],
+  "2583": [
+   "ALKYLSULFONSÄUREN, FEST oder ARYLSULFONSÄUREN, FEST, mit mehr als 5 % freier Schwefelsäure"
+  ],
+  "2584": [
+   "ALKYLSULFONSÄUREN, FLÜSSIG oder ARYLSULFONSÄUREN, FLÜSSIG, mit mehr als 5 % freier Schwefelsäure"
+  ],
+  "2585": [
+   "ALKYLSULFONSÄUREN, FEST oder ARYLSULFONSÄUREN, FEST, mit höchstens 5 % freier Schwefelsäure"
+  ],
+  "2586": [
+   "ALKYLSULFONSÄUREN, FLÜSSIG oder ARYLSULFONSÄUREN, FLÜSSIG, mit höchstens 5 % freier Schwefelsäure"
+  ],
+  "2587": [
+   "BENZOCHINON"
+  ],
+  "2588": [
+   "PESTIZID, FEST, GIFTIG, N.A.G."
+  ],
+  "2589": [
+   "VINYLCHLORACETAT"
+  ],
+  "2590": [
+   "ASBEST, CHRYSOTIL"
+  ],
+  "2591": [
+   "XENON, TIEFGEKÜHLT, FLÜSSIG"
+  ],
+  "2599": [
+   "CHLORTRIFLUORMETHAN UND TRIFLUORMETHAN, AZEOTROPES GEMISCH mit ca. 60 % Chlortrifluormethan (GAS ALS KÄLTEMITTEL R 503)"
+  ],
+  "2601": [
+   "CYCLOBUTAN"
+  ],
+  "2602": [
+   "DICHLORDIFLUORMETHAN UND 1,1-DIFLUORETHAN, AZEOTROPES GEMISCH mit ca. 74 % Dichlordifluormethan (GAS ALS KÄLTEMITTEL R 500)"
+  ],
+  "2603": [
+   "CYCLOHEPTATRIEN"
+  ],
+  "2604": [
+   "BORTRIFLUORIDDIETHYLETHERAT"
+  ],
+  "2605": [
+   "METHOXYMETHYLISOCYANAT"
+  ],
+  "2606": [
+   "METHYLORTHOSILICAT"
+  ],
+  "2607": [
+   "ACROLEIN, DIMER, STABILISIERT"
+  ],
+  "2608": [
+   "NITROPROPANE"
+  ],
+  "2609": [
+   "TRIALLYLBORAT"
+  ],
+  "2610": [
+   "TRIALLYLAMIN"
+  ],
+  "2611": [
+   "1-CHLORPROPAN-2-OL"
+  ],
+  "2612": [
+   "METHYLPROPYLETHER"
+  ],
+  "2614": [
+   "METHYLALLYLALKOHOL"
+  ],
+  "2615": [
+   "ETHYLPROPYLETHER"
+  ],
+  "2616": [
+   "TRIISOPROPYLBORAT"
+  ],
+  "2617": [
+   "METHYLCYCLOHEXANOLE, entzündbar"
+  ],
+  "2618": [
+   "VINYLTOLUENE, STABILISIERT"
+  ],
+  "2619": [
+   "BENZYLDIMETHYLAMIN"
+  ],
+  "2620": [
+   "AMYLBUTYRATE"
+  ],
+  "2621": [
+   "ACETYLMETHYLCARBINOL"
+  ],
+  "2622": [
+   "GLYCIDALDEHYD"
+  ],
+  "2623": [
+   "FEUERANZÜNDER, FEST, mit entzündbarem flüssigem Stoff getränkt"
+  ],
+  "2624": [
+   "MAGNESIUMSILICID"
+  ],
+  "2626": [
+   "CHLORSÄURE, WÄSSERIGE LÖSUNG mit höchstens 10 % Säure"
+  ],
+  "2627": [
+   "NITRITE, ANORGANISCHE, N.A.G."
+  ],
+  "2628": [
+   "KALIUMFLUORACETAT"
+  ],
+  "2629": [
+   "NATRIUMFLUORACETAT"
+  ],
+  "2630": [
+   "SELENATE oder SELENITE"
+  ],
+  "2642": [
+   "FLUORESSIGSÄURE"
+  ],
+  "2643": [
+   "METHYLBROMACETAT"
+  ],
+  "2644": [
+   "METHYLIODID"
+  ],
+  "2645": [
+   "PHENACYLBROMID"
+  ],
+  "2646": [
+   "HEXACHLORCYCLOPENTADIEN"
+  ],
+  "2647": [
+   "MALONONITRIL"
+  ],
+  "2648": [
+   "1,2-DIBROMBUTAN-3-ON"
+  ],
+  "2649": [
+   "1,3-DICHLORACETON"
+  ],
+  "2650": [
+   "1,1-DICHLOR-1-NITROETHAN"
+  ],
+  "2651": [
+   "4,4'-DIAMINODIPHENYLMETHAN"
+  ],
+  "2653": [
+   "BENZYLIODID"
+  ],
+  "2655": [
+   "KALIUMFLUOROSILICAT"
+  ],
+  "2656": [
+   "CHINOLIN"
+  ],
+  "2657": [
+   "SELENDISULFID"
+  ],
+  "2659": [
+   "NATRIUMCHLORACETAT"
+  ],
+  "2660": [
+   "NITROTOLUIDINE (MONO)"
+  ],
+  "2661": [
+   "HEXACHLORACETON"
+  ],
+  "2664": [
+   "DIBROMMETHAN"
+  ],
+  "2667": [
+   "BUTYLTOLUENE"
+  ],
+  "2668": [
+   "CHLORACETONITRIL"
+  ],
+  "2669": [
+   "CHLORCRESOLE, LÖSUNG"
+  ],
+  "2670": [
+   "CYANURCHLORID"
+  ],
+  "2671": [
+   "AMINOPYRIDINE (o-, m-, p-)"
+  ],
+  "2672": [
+   "AMMONIAKLÖSUNG in Wasser, relative Dichte zwischen 0,880 und 0,957 bei 15 °C, mit mehr als 10 %, aber höchstens 35 % Ammoniak"
+  ],
+  "2673": [
+   "2-AMINO-4-CHLORPHENOL"
+  ],
+  "2674": [
+   "NATRIUMFLUOROSILICAT"
+  ],
+  "2676": [
+   "ANTIMONWASSERSTOFF (STIBIN)"
+  ],
+  "2677": [
+   "RUBIDIUMHYDROXIDLÖSUNG"
+  ],
+  "2678": [
+   "RUBIDIUMHYDROXID"
+  ],
+  "2679": [
+   "LITHIUMHYDROXIDLÖSUNG"
+  ],
+  "2680": [
+   "LITHIUMHYDROXID"
+  ],
+  "2681": [
+   "CAESIUMHYDROXIDLÖSUNG"
+  ],
+  "2682": [
+   "CAESIUMHYDROXID"
+  ],
+  "2683": [
+   "AMMONIUMSULFID, LÖSUNG"
+  ],
+  "2684": [
+   "3-DIETHYLAMINOPROPYLAMIN"
+  ],
+  "2685": [
+   "N,N-DIETHYLETHYLENDIAMIN"
+  ],
+  "2686": [
+   "2-DIETHYLAMINOETHANOL"
+  ],
+  "2687": [
+   "DICYCLOHEXYLAMMONIUMNITRIT"
+  ],
+  "2688": [
+   "1-BROM-3-CHLORPROPAN"
+  ],
+  "2689": [
+   "GLYCEROL-alpha-MONOCHLORHYDRIN"
+  ],
+  "2690": [
+   "N,n-BUTYLIMIDAZOL"
+  ],
+  "2691": [
+   "PHOSPHORPENTABROMID"
+  ],
+  "2692": [
+   "BORTRIBROMID"
+  ],
+  "2693": [
+   "HYDROGENSULFITE, WÄSSERIGE LÖSUNG, N.A.G."
+  ],
+  "2698": [
+   "TETRAHYDROPHTHALSÄUREANHYDRIDE mit mehr als 0,05 % Maleinsäureanhydrid"
+  ],
+  "2699": [
+   "TRIFLUORESSIGSÄURE"
+  ],
+  "2705": [
+   "1-PENTOL"
+  ],
+  "2707": [
+   "DIMETHYLDIOXANE"
+  ],
+  "2709": [
+   "BUTYLBENZENE"
+  ],
+  "2710": [
+   "DIPROPYLKETON"
+  ],
+  "2713": [
+   "ACRIDIN"
+  ],
+  "2714": [
+   "ZINKRESINAT"
+  ],
+  "2715": [
+   "ALUMINIUMRESINAT"
+  ],
+  "2716": [
+   "BUTIN-1,4-DIOL"
+  ],
+  "2717": [
+   "CAMPHER, synthetisch"
+  ],
+  "2719": [
+   "BARIUMBROMAT"
+  ],
+  "2720": [
+   "CHROMNITRAT"
+  ],
+  "2721": [
+   "KUPFERCHLORAT"
+  ],
+  "2722": [
+   "LITHIUMNITRAT"
+  ],
+  "2723": [
+   "MAGNESIUMCHLORAT"
+  ],
+  "2724": [
+   "MANGANNITRAT"
+  ],
+  "2725": [
+   "NICKELNITRAT"
+  ],
+  "2726": [
+   "NICKELNITRIT"
+  ],
+  "2727": [
+   "THALLIUMNITRAT"
+  ],
+  "2728": [
+   "ZIRKONIUMNITRAT"
+  ],
+  "2729": [
+   "HEXACHLORBENZEN"
+  ],
+  "2730": [
+   "NITROANISOLE, FLÜSSIG"
+  ],
+  "2732": [
+   "NITROBROMBENZENE, FLÜSSIG"
+  ],
+  "2733": [
+   "AMINE, ENTZÜNDBAR, ÄTZEND, N.A.G. oder POLYAMINE, ENTZÜNDBAR, ÄTZEND, N.A.G."
+  ],
+  "2734": [
+   "AMINE, FLÜSSIG, ÄTZEND, ENTZÜNDBAR, N.A.G. oder POLYAMINE, FLÜSSIG, ÄTZEND, ENTZÜNDBAR, N.A.G."
+  ],
+  "2735": [
+   "AMINE, FLÜSSIG, ÄTZEND, N.A.G. oder POLYAMINE, FLÜSSIG, ÄTZEND, N.A.G."
+  ],
+  "2738": [
+   "N-BUTYLANILIN"
+  ],
+  "2739": [
+   "BUTTERSÄUREANHYDRID"
+  ],
+  "2740": [
+   "n-PROPYLCHLORFORMIAT"
+  ],
+  "2741": [
+   "BARIUMHYPOCHLORIT mit mehr als 22 % aktivem Chlor"
+  ],
+  "2742": [
+   "CHLORFORMIATE, GIFTIG, ÄTZEND, ENTZÜNDBAR, N.A.G."
+  ],
+  "2743": [
+   "n-BUTYLCHLORFORMIAT"
+  ],
+  "2744": [
+   "CYCLOBUTYLCHLORFORMIAT"
+  ],
+  "2745": [
+   "CHLORMETHYLCHLORFORMIAT"
+  ],
+  "2746": [
+   "PHENYLCHLORFORMIAT"
+  ],
+  "2747": [
+   "tert-BUTYLCYCLOHEXYLCHLORFORMIAT"
+  ],
+  "2748": [
+   "2-ETHYLHEXYLCHLORFORMIAT"
+  ],
+  "2749": [
+   "TETRAMETHYLSILAN"
+  ],
+  "2750": [
+   "1,3-DICHLORPROPAN-2-OL"
+  ],
+  "2751": [
+   "DIETHYLTHIOPHOSPHORYLCHLORID"
+  ],
+  "2752": [
+   "1,2-EPOXY-3-ETHOXYPROPAN"
+  ],
+  "2753": [
+   "N-ETHYL-N-BENZYLTOLUIDINE, FLÜSSIG"
+  ],
+  "2754": [
+   "N-ETHYLTOLUIDINE"
+  ],
+  "2757": [
+   "CARBAMAT-PESTIZID, FEST, GIFTIG"
+  ],
+  "2758": [
+   "CARBAMAT-PESTIZID, FLÜSSIG, ENTZÜNDBAR, GIFTIG, Flammpunkt unter 23 °C"
+  ],
+  "2759": [
+   "ARSENHALTIGES PESTIZID, FEST, GIFTIG"
+  ],
+  "2760": [
+   "ARSENHALTIGES PESTIZID, FLÜSSIG, ENTZÜNDBAR, GIFTIG, Flammpunkt unter 23 °C"
+  ],
+  "2761": [
+   "ORGANOCHLOR-PESTIZID, FEST, GIFTIG"
+  ],
+  "2762": [
+   "ORGANOCHLOR-PESTIZID, FLÜSSIG, ENTZÜNDBAR, GIFTIG, Flammpunkt unter 23 °C"
+  ],
+  "2763": [
+   "TRIAZIN-PESTIZID, FEST, GIFTIG"
+  ],
+  "2764": [
+   "TRIAZIN-PESTIZID, FLÜSSIG, ENTZÜNDBAR, GIFTIG, Flammpunkt unter 23 °C"
+  ],
+  "2771": [
+   "THIOCARBAMAT-PESTIZID, FEST, GIFTIG"
+  ],
+  "2772": [
+   "THIOCARBAMAT-PESTIZID, FLÜSSIG, ENTZÜNDBAR, GIFTIG, Flammpunkt unter 23 °C"
+  ],
+  "2775": [
+   "KUPFERHALTIGES PESTIZID, FEST, GIFTIG"
+  ],
+  "2776": [
+   "KUPFERHALTIGES PESTIZID, FLÜSSIG, ENTZÜNDBAR, GIFTIG, Flammpunkt unter 23 °C"
+  ],
+  "2777": [
+   "QUECKSILBERHALTIGES PESTIZID, FEST, GIFTIG"
+  ],
+  "2778": [
+   "QUECKSILBERHALTIGES PESTIZID, FLÜSSIG, ENTZÜNDBAR, GIFTIG, Flammpunkt unter 23 °C"
+  ],
+  "2779": [
+   "SUBSTITUIERTES NITROPHENOL-PESTIZID, FEST, GIFTIG"
+  ],
+  "2780": [
+   "SUBSTITUIERTES NITROPHENOL-PESTIZID, FLÜSSIG, ENTZÜNDBAR, GIFTIG, Flammpunkt unter 23 °C"
+  ],
+  "2781": [
+   "BIPYRIDILIUM-PESTIZID, FEST, GIFTIG"
+  ],
+  "2782": [
+   "BIPYRIDILIUM-PESTIZID, FLÜSSIG, ENTZÜNDBAR, GIFTIG, Flammpunkt unter 23 °C"
+  ],
+  "2783": [
+   "ORGANOPHOSPHORPESTIZID, FEST, GIFTIG"
+  ],
+  "2784": [
+   "ORGANOPHOSPHORPESTIZID, FLÜSSIG, ENTZÜNDBAR, GIFTIG, Flammpunkt unter 23 °C"
+  ],
+  "2785": [
+   "4-THIAPENTANAL"
+  ],
+  "2786": [
+   "ORGANOZINN-PESTIZID, FEST, GIFTIG"
+  ],
+  "2787": [
+   "ORGANOZINN-PESTIZID, FLÜSSIG, ENTZÜNDBAR, GIFTIG, Flammpunkt unter 23 °C"
+  ],
+  "2788": [
+   "ORGANISCHE ZINNVERBINDUNG, FLÜSSIG, N.A.G."
+  ],
+  "2789": [
+   "EISESSIG oder ESSIGSÄURE, LÖSUNG mit mehr als 80 Masse-% Säure"
+  ],
+  "2790": [
+   "ESSIGSÄURE, LÖSUNG mit mindestens 50 Masse-% und höchstens 80 Masse-% Säure",
+   "ESSIGSÄURE, LÖSUNG mit mehr als 10 Masse-%, aber weniger als 50 Masse-% Säure"
+  ],
+  "2793": [
+   "METALLISCHES EISEN als BOHRSPÄNE, FRÄSSPÄNE, DREHSPÄNE, ABFÄLLE in selbsterhitzungsfähiger Form"
+  ],
+  "2794": [
+   "BATTERIEN (AKKUMULATOREN), NASS, GEFÜLLT MIT SÄURE, elektrische Sammler"
+  ],
+  "2795": [
+   "BATTERIEN (AKKUMULATOREN), NASS, GEFÜLLT MIT ALKALIEN, elektrische Sammler"
+  ],
+  "2796": [
+   "SCHWEFELSÄURE mit höchstens 51 % Säure oder BATTERIEFLÜSSIGKEIT, SAUER"
+  ],
+  "2797": [
+   "BATTERIEFLÜSSIGKEIT, ALKALISCH"
+  ],
+  "2798": [
+   "PHENYLPHOSPHORDICHLORID"
+  ],
+  "2799": [
+   "PHENYLPHOSPHORTHIODICHLORID"
+  ],
+  "2800": [
+   "BATTERIEN (AKKUMULATOREN), NASS, AUSLAUFSICHER, elektrische Sammler"
+  ],
+  "2801": [
+   "FARBSTOFF, FLÜSSIG, ÄTZEND, N.A.G. oder FARBSTOFFZWISCHENPRODUKT, FLÜSSIG, ÄTZEND, N.A.G."
+  ],
+  "2802": [
+   "KUPFERCHLORID"
+  ],
+  "2803": [
+   "GALLIUM"
+  ],
+  "2805": [
+   "LITHIUMHYDRID, GESCHMOLZEN UND ERSTARRT"
+  ],
+  "2806": [
+   "LITHIUMNITRID"
+  ],
+  "2807": [
+   "Magnetisierte Stoffe"
+  ],
+  "2809": [
+   "QUECKSILBER"
+  ],
+  "2810": [
+   "GIFTIGER ORGANISCHER FLÜSSIGER STOFF, N.A.G."
+  ],
+  "2811": [
+   "GIFTIGER ORGANISCHER FESTER STOFF, N.A.G."
+  ],
+  "2812": [
+   "Natriumaluminat, fest"
+  ],
+  "2813": [
+   "MIT WASSER REAGIERENDER FESTER STOFF, N.A.G."
+  ],
+  "2814": [
+   "ANSTECKUNGSGEFÄHRLICHER STOFF, GEFÄHRLICH FÜR MENSCHEN",
+   "ANSTECKUNGSGEFÄHRLICHER STOFF, GEFÄHRLICH FÜR MENSCHEN, in tiefgekühlt verflüssigtem Stickstoff",
+   "ANSTECKUNGSGEFÄHRLICHER STOFF, GEFÄHRLICH FÜR MENSCHEN (nur tierische Stoffe)"
+  ],
+  "2815": [
+   "N-AMINOETHYLPIPERAZIN"
+  ],
+  "2817": [
+   "AMMONIUMHYDROGENDIFLUORID, LÖSUNG"
+  ],
+  "2818": [
+   "AMMONIUMPOLYSULFID, LÖSUNG"
+  ],
+  "2819": [
+   "AMYLPHOSPHAT"
+  ],
+  "2820": [
+   "BUTTERSÄURE"
+  ],
+  "2821": [
+   "PHENOL, LÖSUNG"
+  ],
+  "2822": [
+   "2-CHLORPYRIDIN"
+  ],
+  "2823": [
+   "CROTONSÄURE, FEST"
+  ],
+  "2826": [
+   "ETHYLCHLORTHIOFORMIAT"
+  ],
+  "2829": [
+   "CAPRONSÄURE"
+  ],
+  "2830": [
+   "LITHIUMFERROSILICID"
+  ],
+  "2831": [
+   "1,1,1-TRICHLORETHAN"
+  ],
+  "2834": [
+   "PHOSPHORIGE SÄURE"
+  ],
+  "2835": [
+   "NATRIUMALUMINIUMHYDRID"
+  ],
+  "2837": [
+   "HYDROGENSULFATE, WÄSSERIGE LÖSUNG"
+  ],
+  "2838": [
+   "VINYLBUTYRAT, STABILISIERT"
+  ],
+  "2839": [
+   "ALDOL (3-HYDROXYBUTYRALDEHYD)"
+  ],
+  "2840": [
+   "BUTYRALDOXIM"
+  ],
+  "2841": [
+   "DI-n-AMYLAMIN"
+  ],
+  "2842": [
+   "NITROETHAN"
+  ],
+  "2844": [
+   "CALCIUMMANGANSILICIUM"
+  ],
+  "2845": [
+   "PYROPHORER ORGANISCHER FLÜSSIGER STOFF, N.A.G."
+  ],
+  "2846": [
+   "PYROPHORER ORGANISCHER FESTER STOFF, N.A.G."
+  ],
+  "2849": [
+   "3-CHLORPROPAN-1-OL"
+  ],
+  "2850": [
+   "TETRAPROPYLEN (PROPYLENTETRAMER)"
+  ],
+  "2851": [
+   "BORTRIFLUORID-DIHYDRAT"
+  ],
+  "2852": [
+   "DIPIKRYLSULFID, ANGEFEUCHTET mit mindestens 10 Masse-% Wasser"
+  ],
+  "2853": [
+   "MAGNESIUMFLUOROSILICAT"
+  ],
+  "2854": [
+   "AMMONIUMFLUOROSILICAT"
+  ],
+  "2855": [
+   "ZINKFLUOROSILICAT"
+  ],
+  "2856": [
+   "FLUOROSILICATE, N.A.G."
+  ],
+  "2857": [
+   "KÄLTEMASCHINEN mit nicht entzündbaren, nicht giftigen Gasen oder Ammoniaklösungen (UN 2672)"
+  ],
+  "2858": [
+   "ZIRKONIUM, TROCKEN, gerollter Draht, fertige Bleche, Streifen (dünner als 254 µm, aber nicht dünner als 18 µm)"
+  ],
+  "2859": [
+   "AMMONIUMMETAVANADAT"
+  ],
+  "2861": [
+   "AMMONIUMPOLYVANADAT"
+  ],
+  "2862": [
+   "VANADIUMPENTOXID, nicht geschmolzen"
+  ],
+  "2863": [
+   "NATRIUMAMMONIUMVANADAT"
+  ],
+  "2864": [
+   "KALIUMMETAVANADAT"
+  ],
+  "2865": [
+   "HYDROXYLAMINSULFAT"
+  ],
+  "2869": [
+   "TITANTRICHLORID, GEMISCH"
+  ],
+  "2870": [
+   "ALUMINIUMBORHYDRID",
+   "ALUMINIUMBORHYDRID IN GERÄTEN"
+  ],
+  "2871": [
+   "ANTIMON-PULVER"
+  ],
+  "2872": [
+   "DIBROMCHLORPROPANE"
+  ],
+  "2873": [
+   "DIBUTYLAMINOETHANOL"
+  ],
+  "2874": [
+   "FURFURYLALKOHOL"
+  ],
+  "2875": [
+   "HEXACHLOROPHEN"
+  ],
+  "2876": [
+   "RESORCINOL"
+  ],
+  "2878": [
+   "TITANSCHWAMMGRANULATE oder TITAN-SCHWAMMPULVER"
+  ],
+  "2879": [
+   "SELENOXYCHLORID"
+  ],
+  "2880": [
+   "CALCIUMHYPOCHLORIT, HYDRATISIERT oder CALCIUMHYPOCHLORIT, HYDRATISIERTE MISCHUNG mit mindestens 5,5 %, aber höchstens 16 % Wasser"
+  ],
+  "2881": [
+   "METALLKATALYSATOR, TROCKEN"
+  ],
+  "2900": [
+   "ANSTECKUNGSGEFÄHRLICHER STOFF, nur GEFÄHRLICH FÜR TIERE",
+   "ANSTECKUNGSGEFÄHRLICHER STOFF, nur GEFÄHRLICH FÜR TIERE, in tiefgekühlt verflüssigtem Stickstoff",
+   "ANSTECKUNGSGEFÄHRLICHER STOFF, nur GEFÄHRLICH FÜR TIERE (nur tierische Stoffe)"
+  ],
+  "2901": [
+   "BROMCHLORID"
+  ],
+  "2902": [
+   "PESTIZID, FLÜSSIG, GIFTIG, N.A.G."
+  ],
+  "2903": [
+   "PESTIZID, FLÜSSIG, GIFTIG, ENTZÜNDBAR, N.A.G., mit einem Flammpunkt von 23 °C oder darüber"
+  ],
+  "2904": [
+   "CHLORPHENOLATE, FLÜSSIG oder PHENOLATE, FLÜSSIG"
+  ],
+  "2905": [
+   "CHLORPHENOLATE, FEST oder PHENOLATE, FEST"
+  ],
+  "2907": [
+   "ISOSORBIDDINITRAT, MISCHUNG mit mindestens 60 % Lactose, Mannose, Stärke oder Calciumhydrogenphosphat"
+  ],
+  "2908": [
+   "RADIOAKTIVE STOFFE, FREIGESTELLTES VERSANDSTÜCK - LEERE VERPACKUNG"
+  ],
+  "2909": [
+   "RADIOAKTIVE STOFFE, FREIGESTELLTES VERSANDSTÜCK - FABRIKATE AUS NATÜRLICHEM URAN oder AUS ABGEREICHERTEM URAN oder AUS NATÜRLICHEM THORIUM"
+  ],
+  "2910": [
+   "RADIOAKTIVE STOFFE, FREIGESTELLTES VERSANDSTÜCK - BEGRENZTE STOFFMENGE"
+  ],
+  "2911": [
+   "RADIOAKTIVE STOFFE, FREIGESTELLTES VERSANDSTÜCK - INSTRUMENTE oder FABRIKATE"
+  ],
+  "2912": [
+   "RADIOAKTIVE STOFFE MIT GERINGER SPEZIFISCHER AKTIVITÄT (LSA-I), nicht spaltbar oder spaltbar, freigestellt"
+  ],
+  "2913": [
+   "RADIOAKTIVE STOFFE, OBERFLÄCHENKONTAMINIERTE GEGENSTÄNDE (SCO-I, SCO-II oder SCO-III), nicht spaltbar oder spaltbar, freigestellt"
+  ],
+  "2915": [
+   "RADIOAKTIVE STOFFE, TYP A-VERSANDSTÜCK, nicht in besonderer Form, nicht spaltbar oder spaltbar, freigestellt"
+  ],
+  "2916": [
+   "RADIOAKTIVE STOFFE, TYP B(U)-VERSANDSTÜCK, nicht spaltbar oder spaltbar, freigestellt"
+  ],
+  "2917": [
+   "RADIOAKTIVE STOFFE, TYP B(M)-VERSANDSTÜCK, nicht spaltbar oder spaltbar, freigestellt"
+  ],
+  "2919": [
+   "RADIOAKTIVE STOFFE, UNTER SONDERVEREINBARUNG BEFÖRDERT, nicht spaltbar oder spaltbar, freigestellt"
+  ],
+  "2920": [
+   "ÄTZENDER FLÜSSIGER STOFF, ENTZÜNDBAR, N.A.G."
+  ],
+  "2921": [
+   "ÄTZENDER FESTER STOFF, ENTZÜNDBAR, N.A.G."
+  ],
+  "2922": [
+   "ÄTZENDER FLÜSSIGER STOFF, GIFTIG, N.A.G."
+  ],
+  "2923": [
+   "ÄTZENDER FESTER STOFF, GIFTIG, N.A.G."
+  ],
+  "2924": [
+   "ENTZÜNDBARER FLÜSSIGER STOFF, ÄTZEND, N.A.G."
+  ],
+  "2925": [
+   "ENTZÜNDBARER ORGANISCHER FESTER STOFF, ÄTZEND, N.A.G."
+  ],
+  "2926": [
+   "ENTZÜNDBARER ORGANISCHER FESTER STOFF, GIFTIG, N.A.G."
+  ],
+  "2927": [
+   "GIFTIGER ORGANISCHER FLÜSSIGER STOFF, ÄTZEND, N.A.G."
+  ],
+  "2928": [
+   "GIFTIGER ORGANISCHER FESTER STOFF, ÄTZEND, N.A.G."
+  ],
+  "2929": [
+   "GIFTIGER ORGANISCHER FLÜSSIGER STOFF, ENTZÜNDBAR, N.A.G."
+  ],
+  "2930": [
+   "GIFTIGER ORGANISCHER FESTER STOFF, ENTZÜNDBAR, N.A.G."
+  ],
+  "2931": [
+   "VANADYLSULFAT"
+  ],
+  "2933": [
+   "METHYL-2-CHLORPROPIONAT"
+  ],
+  "2934": [
+   "ISOPROPYL-2-CHLORPROPIONAT"
+  ],
+  "2935": [
+   "ETHYL-2-CHLORPROPIONAT"
+  ],
+  "2936": [
+   "THIOMILCHSÄURE"
+  ],
+  "2937": [
+   "alpha-METHYLBENZYLALKOHOL, FLÜSSIG"
+  ],
+  "2940": [
+   "9-PHOSPHABICYCLONONANE (CYCLOOCTADIENPHOSPHINE)"
+  ],
+  "2941": [
+   "FLUORANILINE"
+  ],
+  "2942": [
+   "2-TRIFLUORMETHYLANILIN"
+  ],
+  "2943": [
+   "TETRAHYDROFURFURYLAMIN"
+  ],
+  "2945": [
+   "N-METHYLBUTYLAMIN"
+  ],
+  "2946": [
+   "2-AMINO-5-DIETHYLAMINOPENTAN"
+  ],
+  "2947": [
+   "ISOPROPYLCHLORACETAT"
+  ],
+  "2948": [
+   "3-TRIFLUORMETHYLANILIN"
+  ],
+  "2949": [
+   "NATRIUMHYDROGENSULFID, HYDRATISIERT mit mindestens 25 % Kristallwasser"
+  ],
+  "2950": [
+   "MAGNESIUM-GRANULATE, ÜBERZOGEN, mit einer Teilchengrösse von mindestens 149 µm"
+  ],
+  "2965": [
+   "BORTRIFLUORIDDIMETHYLETHERAT"
+  ],
+  "2966": [
+   "THIOGLYCOL"
+  ],
+  "2967": [
+   "SULFAMINSÄURE"
+  ],
+  "2968": [
+   "MANEB, STABILISIERT oder MANEBZUBEREITUNGEN, STABILISIERT gegen Selbsterhitzung"
+  ],
+  "2969": [
+   "RIZINUSSAAT oder RIZINUSMEHL oder RIZINUSSAATKUCHEN oder RIZINUSFLOCKEN"
+  ],
+  "2977": [
+   "RADIOAKTIVE STOFFE, URANHEXAFLUORID, SPALTBAR"
+  ],
+  "2978": [
+   "RADIOAKTIVE STOFFE, URANHEXAFLUORID, nicht spaltbar oder spaltbar, freigestellt"
+  ],
+  "2983": [
+   "ETHYLENOXID UND PROPYLENOXID, MISCHUNG mit höchstens 30 % Ethylenoxid"
+  ],
+  "2984": [
+   "WASSERSTOFFPEROXID, WÄSSERIGE LÖSUNG mit mindestens 8 %, aber weniger als 20 % Wasserstoffperoxid (Stabilisierung nach Bedarf)"
+  ],
+  "2985": [
+   "CHLORSILANE, ENTZÜNDBAR, ÄTZEND, N.A.G."
+  ],
+  "2986": [
+   "CHLORSILANE, ÄTZEND, ENTZÜNDBAR, N.A.G."
+  ],
+  "2987": [
+   "CHLORSILANE, ÄTZEND, N.A.G."
+  ],
+  "2988": [
+   "CHLORSILANE, MIT WASSER REAGIEREND, ENTZÜNDBAR, ÄTZEND, N.A.G."
+  ],
+  "2989": [
+   "BLEIPHOSPHIT, ZWEIBASIG"
+  ],
+  "2990": [
+   "RETTUNGSMITTEL, SELBSTAUFBLASEND"
+  ],
+  "2991": [
+   "CARBAMAT-PESTIZID, FLÜSSIG, GIFTIG, ENTZÜNDBAR, mit einem Flammpunkt von 23 °C oder darüber"
+  ],
+  "2992": [
+   "CARBAMAT-PESTIZID, FLÜSSIG, GIFTIG"
+  ],
+  "2993": [
+   "ARSENHALTIGES PESTIZID, FLÜSSIG, GIFTIG, ENTZÜNDBAR, mit einem Flammpunkt von 23 °C oder darüber"
+  ],
+  "2994": [
+   "ARSENHALTIGES PESTIZID, FLÜSSIG, GIFTIG"
+  ],
+  "2995": [
+   "ORGANOCHLOR-PESTIZID, FLÜSSIG, GIFTIG, ENTZÜNDBAR, mit einem Flammpunkt von 23 °C oder darüber"
+  ],
+  "2996": [
+   "ORGANOCHLOR-PESTIZID, FLÜSSIG, GIFTIG"
+  ],
+  "2997": [
+   "TRIAZIN-PESTIZID, FLÜSSIG, GIFTIG, ENTZÜNDBAR, mit einem Flammpunkt von 23 °C oder darüber"
+  ],
+  "2998": [
+   "TRIAZIN-PESTIZID, FLÜSSIG, GIFTIG"
+  ],
+  "3005": [
+   "THIOCARBAMAT-PESTIZID, FLÜSSIG, GIFTIG, ENTZÜNDBAR, mit einem Flammpunkt von 23 °C oder darüber"
+  ],
+  "3006": [
+   "THIOCARBAMAT-PESTIZID, FLÜSSIG, GIFTIG"
+  ],
+  "3009": [
+   "KUPFERHALTIGES PESTIZID, FLÜSSIG, GIFTIG, ENTZÜNDBAR, mit einem Flammpunkt von 23 °C oder darüber"
+  ],
+  "3010": [
+   "KUPFERHALTIGES PESTIZID, FLÜSSIG, GIFTIG"
+  ],
+  "3011": [
+   "QUECKSILBERHALTIGES PESTIZID, FLÜSSIG, GIFTIG, ENTZÜNDBAR, mit einem Flammpunkt von 23 °C oder darüber"
+  ],
+  "3012": [
+   "QUECKSILBERHALTIGES PESTIZID, FLÜSSIG, GIFTIG"
+  ],
+  "3013": [
+   "SUBSTITUIERTES NITROPHENOL-PESTIZID, FLÜSSIG, GIFTIG, ENTZÜNDBAR, mit einem Flammpunkt von 23 °C oder darüber"
+  ],
+  "3014": [
+   "SUBSTITUIERTES NITROPHENOL-PESTIZID, FLÜSSIG, GIFTIG"
+  ],
+  "3015": [
+   "BIPYRIDILIUM-PESTIZID, FLÜSSIG, GIFTIG, ENTZÜNDBAR, mit einem Flammpunkt von 23 °C oder darüber"
+  ],
+  "3016": [
+   "BIPYRIDILIUM-PESTIZID, FLÜSSIG, GIFTIG"
+  ],
+  "3017": [
+   "ORGANOPHOSPHORPESTIZID, FLÜSSIG, GIFTIG, ENTZÜNDBAR, mit einem Flammpunkt von 23 °C oder darüber"
+  ],
+  "3018": [
+   "ORGANOPHOSPHORPESTIZID, FLÜSSIG, GIFTIG"
+  ],
+  "3019": [
+   "ORGANOZINN-PESTIZID, FLÜSSIG, GIFTIG, ENTZÜNDBAR, mit einem Flammpunkt von 23 °C oder darüber"
+  ],
+  "3020": [
+   "ORGANOZINN-PESTIZID, FLÜSSIG, GIFTIG"
+  ],
+  "3021": [
+   "PESTIZID, FLÜSSIG, ENTZÜNDBAR, GIFTIG, N.A.G., Flammpunkt unter 23 °C"
+  ],
+  "3022": [
+   "1,2-BUTYLENOXID, STABILISIERT"
+  ],
+  "3023": [
+   "2-METHYL-2-HEPTANTHIOL"
+  ],
+  "3024": [
+   "CUMARIN-PESTIZID, FLÜSSIG, ENTZÜNDBAR, GIFTIG, Flammpunkt unter 23 °C"
+  ],
+  "3025": [
+   "CUMARIN-PESTIZID, FLÜSSIG, GIFTIG, ENTZÜNDBAR, mit einem Flammpunkt von 23 °C oder darüber"
+  ],
+  "3026": [
+   "CUMARIN-PESTIZID, FLÜSSIG, GIFTIG"
+  ],
+  "3027": [
+   "CUMARIN-PESTIZID, FEST, GIFTIG"
+  ],
+  "3028": [
+   "BATTERIEN (AKKUMULATOREN), TROCKEN, KALIUMHYDROXID, FEST, ENTHALTEND, elektrische Sammler"
+  ],
+  "3048": [
+   "ALUMINIUMPHOSPHIDPESTIZID"
+  ],
+  "3054": [
+   "CYCLOHEXYLMERCAPTAN"
+  ],
+  "3055": [
+   "2-(2-AMINOETHOXY)-ETHANOL"
+  ],
+  "3056": [
+   "n-HEPTALDEHYD"
+  ],
+  "3057": [
+   "TRIFLUORACETYLCHLORID"
+  ],
+  "3064": [
+   "NITROGLYCERIN, LÖSUNG IN ALKOHOL mit mehr als 1 %, aber höchstens 5 % Nitroglycerin"
+  ],
+  "3065": [
+   "ALKOHOLISCHE GETRÄNKE mit mehr als 70 Vol.-% Alkohol",
+   "ALKOHOLISCHE GETRÄNKE mit mehr als 24 Vol.-% und höchstens 70 Vol.-% Alkohol"
+  ],
+  "3066": [
+   "FARBE (einschliesslich Farbe, Lack, Emaille, Beize, Schellack, Firnis, Politur, flüssiger Füllstoff und flüssige Lackgrundlage) oder FARBZUBEHÖRSTOFFE (einschliesslich Farbverdünnung und -lösemittel)"
+  ],
+  "3070": [
+   "ETHYLENOXID UND DICHLORDIFLUORMETHAN, GEMISCH mit höchstens 12,5 % Ethylenoxid"
+  ],
+  "3071": [
+   "MERCAPTANE, FLÜSSIG, GIFTIG, ENTZÜNDBAR, N.A.G. oder MERCAPTANE, MISCHUNG, FLÜSSIG, GIFTIG, ENTZÜNDBAR, N.A.G."
+  ],
+  "3072": [
+   "RETTUNGSMITTEL, NICHT SELBSTAUFBLASEND, gefährliche Güter als Ausrüstung enthaltend"
+  ],
+  "3073": [
+   "VINYLPYRIDINE, STABILISIERT"
+  ],
+  "3077": [
+   "UMWELTGEFÄHRDENDER STOFF, FEST, N.A.G."
+  ],
+  "3078": [
+   "CER, Späne oder Griess"
+  ],
+  "3079": [
+   "METHACRYLNITRIL, STABILISIERT"
+  ],
+  "3080": [
+   "ISOCYANATE, GIFTIG, ENTZÜNDBAR, N.A.G. oder ISOCYANAT, LÖSUNG, GIFTIG, ENTZÜNDBAR, N.A.G."
+  ],
+  "3082": [
+   "UMWELTGEFÄHRDENDER STOFF, FLÜSSIG, N.A.G."
+  ],
+  "3083": [
+   "PERCHLORYLFLUORID"
+  ],
+  "3084": [
+   "ÄTZENDER FESTER STOFF, ENTZÜNDEND (OXIDIEREND) WIRKEND, N.A.G."
+  ],
+  "3085": [
+   "ENTZÜNDEND (OXIDIEREND) WIRKENDER FESTER STOFF, ÄTZEND, N.A.G."
+  ],
+  "3086": [
+   "GIFTIGER FESTER STOFF, ENTZÜNDEND (OXIDIEREND) WIRKEND, N.A.G."
+  ],
+  "3087": [
+   "ENTZÜNDEND (OXIDIEREND) WIRKENDER FESTER STOFF, GIFTIG, N.A.G."
+  ],
+  "3088": [
+   "SELBSTERHITZUNGSFÄHIGER ORGANISCHER FESTER STOFF, N.A.G."
+  ],
+  "3089": [
+   "ENTZÜNDBARES METALLPULVER, N.A.G."
+  ],
+  "3090": [
+   "LITHIUM-METALLBATTERIEN (einschliesslich Batterien aus Lithium-legierung)"
+  ],
+  "3091": [
+   "LITHIUM-METALLBATTERIEN IN AUSRÜSTUNGEN oder LITHIUM-METALLBATTERIEN, MIT AUSRÜSTUNGEN VERPACKT (einschliesslich Batterien aus Lithium-legierung)"
+  ],
+  "3092": [
+   "1-METHOXY-2-PROPANOL"
+  ],
+  "3093": [
+   "ÄTZENDER FLÜSSIGER STOFF, ENTZÜNDEND (OXIDIEREND) WIRKEND, N.A.G."
+  ],
+  "3094": [
+   "ÄTZENDER FLÜSSIGER STOFF, MIT WASSER REAGIEREND, N.A.G."
+  ],
+  "3095": [
+   "ÄTZENDER FESTER STOFF, SELBSTERHITZUNGSFÄHIG, N.A.G."
+  ],
+  "3096": [
+   "ÄTZENDER FESTER STOFF, MIT WASSER REAGIEREND, N.A.G."
+  ],
+  "3097": [
+   "ENTZÜNDBARER FESTER STOFF, ENTZÜNDEND (OXIDIEREND) WIRKEND, N.A.G."
+  ],
+  "3098": [
+   "ENTZÜNDEND (OXIDIEREND) WIRKENDER FLÜSSIGER STOFF, ÄTZEND, N.A.G."
+  ],
+  "3099": [
+   "ENTZÜNDEND (OXIDIEREND) WIRKENDER FLÜSSIGER STOFF, GIFTIG, N.A.G."
+  ],
+  "3100": [
+   "ENTZÜNDEND (OXIDIEREND) WIRKENDER FESTER STOFF, SELBSTERHITZUNGSFÄHIG, N.A.G."
+  ],
+  "3101": [
+   "ORGANISCHES PEROXID TYP B, FLÜSSIG"
+  ],
+  "3102": [
+   "ORGANISCHES PEROXID TYP B, FEST"
+  ],
+  "3103": [
+   "ORGANISCHES PEROXID TYP C, FLÜSSIG"
+  ],
+  "3104": [
+   "ORGANISCHES PEROXID TYP C, FEST"
+  ],
+  "3105": [
+   "ORGANISCHES PEROXID TYP D, FLÜSSIG"
+  ],
+  "3106": [
+   "ORGANISCHES PEROXID TYP D, FEST"
+  ],
+  "3107": [
+   "ORGANISCHES PEROXID TYP E, FLÜSSIG"
+  ],
+  "3108": [
+   "ORGANISCHES PEROXID TYP E, FEST"
+  ],
+  "3109": [
+   "ORGANISCHES PEROXID TYP F, FLÜSSIG"
+  ],
+  "3110": [
+   "ORGANISCHES PEROXID TYP F, FEST"
+  ],
+  "3111": [
+   "ORGANISCHES PEROXID TYP B, FLÜSSIG, TEMPERATURKONTROLLIERT"
+  ],
+  "3112": [
+   "ORGANISCHES PEROXID TYP B, FEST, TEMPERATURKONTROLLIERT"
+  ],
+  "3113": [
+   "ORGANISCHES PEROXID TYP C, FLÜSSIG, TEMPERATURKONTROLLIERT"
+  ],
+  "3114": [
+   "ORGANISCHES PEROXID TYP C, FEST, TEMPERATURKONTROLLIERT"
+  ],
+  "3115": [
+   "ORGANISCHES PEROXID TYP D, FLÜSSIG, TEMPERATURKONTROLLIERT"
+  ],
+  "3116": [
+   "ORGANISCHES PEROXID TYP D, FEST, TEMPERATURKONTROLLIERT"
+  ],
+  "3117": [
+   "ORGANISCHES PEROXID TYP E, FLÜSSIG, TEMPERATURKONTROLLIERT"
+  ],
+  "3118": [
+   "ORGANISCHES PEROXID TYP E, FEST, TEMPERATURKONTROLLIERT"
+  ],
+  "3119": [
+   "ORGANISCHES PEROXID TYP F, FLÜSSIG, TEMPERATURKONTROLLIERT"
+  ],
+  "3120": [
+   "ORGANISCHES PEROXID TYP F, FEST, TEMPERATURKONTROLLIERT"
+  ],
+  "3121": [
+   "ENTZÜNDEND (OXIDIEREND) WIRKENDER FESTER STOFF, MIT WASSER REAGIEREND, N.A.G."
+  ],
+  "3122": [
+   "GIFTIGER FLÜSSIGER STOFF, ENTZÜNDEND (OXIDIEREND) WIRKEND, N.A.G."
+  ],
+  "3123": [
+   "GIFTIGER FLÜSSIGER STOFF, MIT WASSER REAGIEREND, N.A.G."
+  ],
+  "3124": [
+   "GIFTIGER FESTER STOFF, SELBSTERHITZUNGSFÄHIG, N.A.G."
+  ],
+  "3125": [
+   "GIFTIGER FESTER STOFF, MIT WASSER REAGIEREND, N.A.G."
+  ],
+  "3126": [
+   "SELBSTERHITZUNGSFÄHIGER ORGANISCHER FESTER STOFF, ÄTZEND, N.A.G."
+  ],
+  "3127": [
+   "SELBSTERHITZUNGSFÄHIGER FESTER STOFF, ENTZÜNDEND (OXIDIEREND) WIRKEND, N.A.G."
+  ],
+  "3128": [
+   "SELBSTERHITZUNGSFÄHIGER ORGANISCHER FESTER STOFF, GIFTIG, N.A.G."
+  ],
+  "3129": [
+   "MIT WASSER REAGIERENDER FLÜSSIGER STOFF, ÄTZEND, N.A.G."
+  ],
+  "3130": [
+   "MIT WASSER REAGIERENDER FLÜSSIGER STOFF, GIFTIG, N.A.G."
+  ],
+  "3131": [
+   "MIT WASSER REAGIERENDER FESTER STOFF, ÄTZEND, N.A.G."
+  ],
+  "3132": [
+   "MIT WASSER REAGIERENDER FESTER STOFF, ENTZÜNDBAR, N.A.G."
+  ],
+  "3133": [
+   "MIT WASSER REAGIERENDER FESTER STOFF, ENTZÜNDEND (OXIDIEREND) WIRKEND, N.A.G."
+  ],
+  "3134": [
+   "MIT WASSER REAGIERENDER FESTER STOFF, GIFTIG, N.A.G."
+  ],
+  "3135": [
+   "MIT WASSER REAGIERENDER FESTER STOFF, SELBSTERHITZUNGSFÄHIG, N.A.G."
+  ],
+  "3136": [
+   "TRIFLUORMETHAN, TIEFGEKÜHLT, FLÜSSIG"
+  ],
+  "3137": [
+   "ENTZÜNDEND (OXIDIEREND) WIRKENDER FESTER STOFF, ENTZÜNDBAR, N.A.G."
+  ],
+  "3138": [
+   "ETHYLEN, ACETYLEN UND PROPYLEN, GEMISCH, TIEFGEKÜHLT, FLÜSSIG, mit mindestens 71,5 % Ethylen, höchstens 22,5 % Acetylen und höchstens 6 % Propylen"
+  ],
+  "3139": [
+   "ENTZÜNDEND (OXIDIEREND) WIRKENDER FLÜSSIGER STOFF, N.A.G."
+  ],
+  "3140": [
+   "ALKALOIDE, FLÜSSIG, N.A.G. oder ALKALOIDSALZE, FLÜSSIG, N.A.G."
+  ],
+  "3141": [
+   "ANORGANISCHE ANTIMONVERBINDUNG, FLÜSSIG, N.A.G."
+  ],
+  "3142": [
+   "DESINFEKTIONSMITTEL, FLÜSSIG, GIFTIG, N.A.G."
+  ],
+  "3143": [
+   "FARBSTOFF, FEST, GIFTIG, N.A.G. oder FARBSTOFFZWISCHENPRODUKT, FEST, GIFTIG, N.A.G."
+  ],
+  "3144": [
+   "NICOTINVERBINDUNG, FLÜSSIG, N.A.G. oder NICOTINZUBEREITUNG, FLÜSSIG, N.A.G."
+  ],
+  "3145": [
+   "ALKYLPHENOLE, FLÜSSIG, N.A.G. (einschliesslich C2-C12-Homologe)"
+  ],
+  "3146": [
+   "ORGANISCHE ZINNVERBINDUNG, FEST, N.A.G."
+  ],
+  "3147": [
+   "FARBSTOFF, FEST, ÄTZEND, N.A.G. oder FARBSTOFFZWISCHENPRODUKT, FEST, ÄTZEND, N.A.G."
+  ],
+  "3148": [
+   "MIT WASSER REAGIERENDER FLÜSSIGER STOFF, N.A.G."
+  ],
+  "3149": [
+   "WASSERSTOFFPEROXID UND PERESSIGSÄURE, MISCHUNG mit Säure(n), Wasser und höchstens 5 % Peressigsäure, STABILISIERT"
+  ],
+  "3150": [
+   "GERÄTE, KLEIN, MIT KOHLENWASSERSTOFFGAS, mit Entnahmeeinrichtung oder KOHLENWASSERSTOFFGASNACHFÜLLPATRONEN FÜR KLEINE GERÄTE, mit Entnahmeeinrichtung"
+  ],
+  "3151": [
+   "POLYHALOGENIERTE BIPHENYLE, FLÜSSIG oder HALOGENIERTE MONOMETHYLDIPHENYLMETHANE, FLÜSSIG oder POLYHALOGENIERTE TERPHENYLE, FLÜSSIG"
+  ],
+  "3152": [
+   "POLYHALOGENIERTE BIPHENYLE, FEST oder HALOGENIERTE MONOMETHYLDIPHENYLMETHANE, FEST oder POLYHALOGENIERTE TERPHENYLE, FEST"
+  ],
+  "3153": [
+   "PERFLUOR(METHYL-VINYLETHER)"
+  ],
+  "3154": [
+   "PERFLUOR(ETHYL-VINYLETHER)"
+  ],
+  "3155": [
+   "PENTACHLORPHENOL"
+  ],
+  "3156": [
+   "VERDICHTETES GAS, OXIDIEREND, N.A.G."
+  ],
+  "3157": [
+   "VERFLÜSSIGTES GAS, OXIDIEREND, N.A.G."
+  ],
+  "3158": [
+   "GAS, TIEFGEKÜHLT, FLÜSSIG, N.A.G."
+  ],
+  "3159": [
+   "1,1,1,2-TETRAFLUORETHAN (GAS ALS KÄLTEMITTEL R 134a)"
+  ],
+  "3160": [
+   "VERFLÜSSIGTES GAS, GIFTIG, ENTZÜNDBAR, N.A.G."
+  ],
+  "3161": [
+   "VERFLÜSSIGTES GAS, ENTZÜNDBAR, N.A.G."
+  ],
+  "3162": [
+   "VERFLÜSSIGTES GAS, GIFTIG, N.A.G."
+  ],
+  "3163": [
+   "VERFLÜSSIGTES GAS, N.A.G."
+  ],
+  "3164": [
+   "GEGENSTÄNDE UNTER PNEUMATISCHEM DRUCK oder GEGENSTÄNDE UNTER HYDRAULISCHEM DRUCK (mit nicht entzündbarem Gas)"
+  ],
+  "3165": [
+   "KRAFTSTOFFTANK FÜR HYDRAULISCHES AGGREGAT FÜR FLUGZEUGE (mit einer Mischung von wasserfreiem Hydrazin und Methylhydrazin) (Kraftstoff M86)"
+  ],
+  "3166": [
+   "FAHRZEUG MIT ANTRIEB DURCH ENTZÜNDBARES GAS oder FAHRZEUG MIT ANTRIEB DURCH ENTZÜNDBARE FLÜSSIGKEIT oder BRENNSTOFFZELLENFAHRZEUG MIT ANTRIEB DURCH ENTZÜNDBARES GAS oder BRENNSTOFFZELLENFAHRZEUG MIT ANTRIEB DURCH ENTZÜNDBARE FLÜSSIGKEIT"
+  ],
+  "3167": [
+   "GASPROBE, NICHT UNTER DRUCK STEHEND, ENTZÜNDBAR, N.A.G., nicht tiefgekühlt flüssig"
+  ],
+  "3168": [
+   "GASPROBE, NICHT UNTER DRUCK STEHEND, GIFTIG, ENTZÜNDBAR, N.A.G., nicht tiefgekühlt flüssig"
+  ],
+  "3169": [
+   "GASPROBE, NICHT UNTER DRUCK STEHEND, GIFTIG, N.A.G., nicht tiefgekühlt flüssig"
+  ],
+  "3170": [
+   "NEBENPRODUKTE DER ALU-MINIUMHERSTELLUNG oder NEBENPRODUKTE DER ALU-MINIUMUMSCHMELZUNG"
+  ],
+  "3171": [
+   "BATTERIEBETRIEBENES FAHRZEUG oder BATTERIEBETRIEBENES GERÄT"
+  ],
+  "3172": [
+   "TOXINE, GEWONNEN AUS LEBENDEN ORGANISMEN, FLÜSSIG, N.A.G."
+  ],
+  "3174": [
+   "TITANDISULFID"
+  ],
+  "3175": [
+   "FESTE STOFFE oder Gemische aus festen Stoffen (wie Präparate, Zubereitungen und Abfälle), DIE ENTZÜNDBARE FLÜSSIGE STOFFE mit einem Flammpunkt von höchstens 60 °C ENTHALTEN, N.A.G."
+  ],
+  "3176": [
+   "ENTZÜNDBARER ORGANISCHER FESTER STOFF IN GESCHMOLZENEM ZUSTAND, N.A.G."
+  ],
+  "3178": [
+   "ENTZÜNDBARER ANORGANISCHER FESTER STOFF, N.A.G."
+  ],
+  "3179": [
+   "ENTZÜNDBARER ANORGANISCHER FESTER STOFF, GIFTIG, N.A.G."
+  ],
+  "3180": [
+   "ENTZÜNDBARER ANORGANISCHER FESTER STOFF, ÄTZEND, N.A.G."
+  ],
+  "3181": [
+   "ENTZÜNDBARE METALLSALZE ORGANISCHER VERBINDUNGEN, N.A.G."
+  ],
+  "3182": [
+   "ENTZÜNDBARE METALLHYDRIDE, N.A.G."
+  ],
+  "3183": [
+   "SELBSTERHITZUNGSFÄHIGER ORGANISCHER FLÜSSIGER STOFF, N.A.G."
+  ],
+  "3184": [
+   "SELBSTERHITZUNGSFÄHIGER ORGANISCHER FLÜSSIGER STOFF, GIFTIG, N.A.G."
+  ],
+  "3185": [
+   "SELBSTERHITZUNGSFÄHIGER ORGANISCHER FLÜSSIGER STOFF, ÄTZEND, N.A.G."
+  ],
+  "3186": [
+   "SELBSTERHITZUNGSFÄHIGER ANORGANISCHER FLÜSSIGER STOFF, N.A.G."
+  ],
+  "3187": [
+   "SELBSTERHITZUNGSFÄHIGER ANORGANISCHER FLÜSSIGER STOFF, GIFTIG, N.A.G."
+  ],
+  "3188": [
+   "SELBSTERHITZUNGSFÄHIGER ANORGANISCHER FLÜSSIGER STOFF, ÄTZEND, N.A.G."
+  ],
+  "3189": [
+   "SELBSTERHITZUNGSFÄHIGES METALLPULVER, N.A.G."
+  ],
+  "3190": [
+   "SELBSTERHITZUNGSFÄHIGER ANORGANISCHER FESTER STOFF, N.A.G."
+  ],
+  "3191": [
+   "SELBSTERHITZUNGSFÄHIGER ANORGANISCHER FESTER STOFF, GIFTIG, N.A.G."
+  ],
+  "3192": [
+   "SELBSTERHITZUNGSFÄHIGER ANORGANISCHER FESTER STOFF, ÄTZEND, N.A.G."
+  ],
+  "3194": [
+   "PYROPHORER ANORGANISCHER FLÜSSIGER STOFF, N.A.G."
+  ],
+  "3200": [
+   "PYROPHORER ANORGANISCHER FESTER STOFF, N.A.G."
+  ],
+  "3205": [
+   "ERDALKALIMETALLALKOHOLATE, N.A.G."
+  ],
+  "3206": [
+   "ALKALIMETALLALKOHOLATE, SELBSTERHITZUNGSFÄHIG, ÄTZEND, N.A.G."
+  ],
+  "3208": [
+   "METALLISCHER STOFF, MIT WASSER REAGIEREND, N.A.G."
+  ],
+  "3209": [
+   "METALLISCHER STOFF, MIT WASSER REAGIEREND, SELBSTERHITZUNGSFÄHIG, N.A.G."
+  ],
+  "3210": [
+   "CHLORATE, ANORGANISCHE, WÄSSERIGE LÖSUNG, N.A.G."
+  ],
+  "3211": [
+   "PERCHLORATE, ANORGANISCHE, WÄSSERIGE LÖSUNG, N.A.G."
+  ],
+  "3212": [
+   "HYPOCHLORITE, ANORGANISCHE, N.A.G."
+  ],
+  "3213": [
+   "BROMATE, ANORGANISCHE, WÄSSERIGE LÖSUNG, N.A.G."
+  ],
+  "3214": [
+   "PERMANGANATE, ANORGANISCHE, WÄSSERIGE LÖSUNG, N.A.G."
+  ],
+  "3215": [
+   "PERSULFATE, ANORGANISCHE, N.A.G."
+  ],
+  "3216": [
+   "PERSULFATE, ANORGANISCHE, WÄSSERIGE LÖSUNG, N.A.G."
+  ],
+  "3218": [
+   "NITRATE, ANORGANISCHE, WÄSSERIGE LÖSUNG, N.A.G."
+  ],
+  "3219": [
+   "NITRITE, ANORGANISCHE, WÄSSERIGE LÖSUNG, N.A.G."
+  ],
+  "3220": [
+   "PENTAFLUORETHAN (GAS ALS KÄLTEMITTEL R 125)"
+  ],
+  "3221": [
+   "SELBSTZERSETZLICHER STOFF TYP B, FLÜSSIG"
+  ],
+  "3222": [
+   "SELBSTZERSETZLICHER STOFF TYP B, FEST"
+  ],
+  "3223": [
+   "SELBSTZERSETZLICHER STOFF TYP C, FLÜSSIG"
+  ],
+  "3224": [
+   "SELBSTZERSETZLICHER STOFF TYP C, FEST"
+  ],
+  "3225": [
+   "SELBSTZERSETZLICHER STOFF TYP D, FLÜSSIG"
+  ],
+  "3226": [
+   "SELBSTZERSETZLICHER STOFF TYP D, FEST"
+  ],
+  "3227": [
+   "SELBSTZERSETZLICHER STOFF TYP E, FLÜSSIG"
+  ],
+  "3228": [
+   "SELBSTZERSETZLICHER STOFF TYP E, FEST"
+  ],
+  "3229": [
+   "SELBSTZERSETZLICHER STOFF TYP F, FLÜSSIG"
+  ],
+  "3230": [
+   "SELBSTZERSETZLICHER STOFF TYP F, FEST"
+  ],
+  "3231": [
+   "SELBSTZERSETZLICHER STOFF TYP B, FLÜSSIG, TEMPERATURKONTROLLIERT"
+  ],
+  "3232": [
+   "SELBSTZERSETZLICHER STOFF TYP B, FEST, TEMPERATURKONTROLLIERT"
+  ],
+  "3233": [
+   "SELBSTZERSETZLICHER STOFF TYP C, FLÜSSIG, TEMPERATURKONTROLLIERT"
+  ],
+  "3234": [
+   "SELBSTZERSETZLICHER STOFF TYP C, FEST, TEMPERATURKONTROLLIERT"
+  ],
+  "3235": [
+   "SELBSTZERSETZLICHER STOFF TYP D, FLÜSSIG, TEMPERATURKONTROLLIERT"
+  ],
+  "3236": [
+   "SELBSTZERSETZLICHER STOFF TYP D, FEST, TEMPERATURKONTROLLIERT"
+  ],
+  "3237": [
+   "SELBSTZERSETZLICHER STOFF TYP E, FLÜSSIG, TEMPERATURKONTROLLIERT"
+  ],
+  "3238": [
+   "SELBSTZERSETZLICHER STOFF TYP E, FEST, TEMPERATURKONTROLLIERT"
+  ],
+  "3239": [
+   "SELBSTZERSETZLICHER STOFF TYP F, FLÜSSIG, TEMPERATURKONTROLLIERT"
+  ],
+  "3240": [
+   "SELBSTZERSETZLICHER STOFF TYP F, FEST, TEMPERATURKONTROLLIERT"
+  ],
+  "3241": [
+   "2-BROM-2-NITROPROPAN1,3-DIOL"
+  ],
+  "3242": [
+   "AZODICARBONAMID"
+  ],
+  "3243": [
+   "FESTE STOFFE MIT GIFTIGEM FLÜSSIGEM STOFF, N.A.G."
+  ],
+  "3244": [
+   "FESTE STOFFE MIT ÄTZENDEM FLÜSSIGEM STOFF, N.A.G."
+  ],
+  "3245": [
+   "GENETISCH VERÄNDERTE MIKROORGANISMEN oder GENETISCH VERÄNDERTE ORGANISMEN",
+   "GENETISCH VERÄNDERTE MIKROORGANISMEN oder GENETISCH VERÄNDERTE ORGANISMEN, in tiefgekühlt verflüssigtem Stickstoff"
+  ],
+  "3246": [
+   "METHANSULFONYLCHLORID"
+  ],
+  "3247": [
+   "NATRIUMPEROXOBORAT, WASSERFREI"
+  ],
+  "3248": [
+   "MEDIKAMENT, FLÜSSIG, ENTZÜNDBAR, GIFTIG, N.A.G."
+  ],
+  "3249": [
+   "MEDIKAMENT, FEST, GIFTIG, N.A.G."
+  ],
+  "3250": [
+   "CHLORESSIGSÄURE, GESCHMOLZEN"
+  ],
+  "3251": [
+   "ISOSORBID-5-MONONITRAT"
+  ],
+  "3252": [
+   "DIFLUORMETHAN (GAS ALS KÄLTEMITTEL R 32)"
+  ],
+  "3253": [
+   "DINATRIUMTRIOXOSILICAT"
+  ],
+  "3254": [
+   "TRIBUTYLPHOSPHAN"
+  ],
+  "3255": [
+   "tert-BUTYLHYPOCHLORIT"
+  ],
+  "3256": [
+   "ERWÄRMTER FLÜSSIGER STOFF, ENTZÜNDBAR, N.A.G., mit einem Flammpunkt über 60 °C, bei oder über seinem Flammpunkt und unter 100 °C",
+   "ERWÄRMTER FLÜSSIGER STOFF, ENTZÜNDBAR, N.A.G., mit einem Flammpunkt über 60 °C, bei oder über seinem Flammpunkt und bei oder über 100 °C"
+  ],
+  "3257": [
+   "ERWÄRMTER FLÜSSIGER STOFF, N.A.G., bei oder über 100 °C und, bei Stoffen mit einem Flammpunkt, unter seinem Flammpunkt (einschliesslich geschmolzenes Metall, geschmolzenes Salz usw.), eingefüllt bei einer Temperatur über 190 °C",
+   "ERWÄRMTER FLÜSSIGER STOFF, N.A.G., bei oder über 100 °C und, bei Stoffen mit einem Flammpunkt, unter seinem Flammpunkt (einschliesslich geschmolzenes Metall, geschmolzenes Salz usw.), eingefüllt bei einer Temperatur von höchstens 190 °C"
+  ],
+  "3258": [
+   "ERWÄRMTER FESTER STOFF, N.A.G., bei oder über 240 °C"
+  ],
+  "3259": [
+   "AMINE, FEST, ÄTZEND, N.A.G. oder POLYAMINE, FEST, ÄTZEND, N.A.G."
+  ],
+  "3260": [
+   "ÄTZENDER SAURER ANORGANISCHER FESTER STOFF, N.A.G."
+  ],
+  "3261": [
+   "ÄTZENDER SAURER ORGANISCHER FESTER STOFF, N.A.G."
+  ],
+  "3262": [
+   "ÄTZENDER BASISCHER ANORGANISCHER FESTER STOFF, N.A.G."
+  ],
+  "3263": [
+   "ÄTZENDER BASISCHER ORGANISCHER FESTER STOFF, N.A.G."
+  ],
+  "3264": [
+   "ÄTZENDER SAURER ANORGANISCHER FLÜSSIGER STOFF, N.A.G."
+  ],
+  "3265": [
+   "ÄTZENDER SAURER ORGANISCHER FLÜSSIGER STOFF, N.A.G."
+  ],
+  "3266": [
+   "ÄTZENDER BASISCHER ANORGANISCHER FLÜSSIGER STOFF, N.A.G."
+  ],
+  "3267": [
+   "ÄTZENDER BASISCHER ORGANISCHER FLÜSSIGER STOFF, N.A.G."
+  ],
+  "3268": [
+   "SICHERHEITSEINRICHTUNGEN, elektrische Auslösung"
+  ],
+  "3269": [
+   "POLYESTERHARZ-MEHRKOMPONENTENSYSTEME, flüssiges Grundprodukt"
+  ],
+  "3270": [
+   "MEMBRANFILTER AUS NITROCELLULOSE, mit höchstens 12,6 % Stickstoff in der Trockenmasse"
+  ],
+  "3271": [
+   "ETHER, N.A.G."
+  ],
+  "3272": [
+   "ESTER, N.A.G."
+  ],
+  "3273": [
+   "NITRILE, ENTZÜNDBAR, GIFTIG, N.A.G."
+  ],
+  "3274": [
+   "ALKOHOLATE, LÖSUNG in Alkohol, N.A.G."
+  ],
+  "3275": [
+   "NITRILE, GIFTIG, ENTZÜNDBAR, N.A.G."
+  ],
+  "3276": [
+   "NITRILE, FLÜSSIG, GIFTIG, N.A.G."
+  ],
+  "3277": [
+   "CHLORFORMIATE, GIFTIG, ÄTZEND, N.A.G."
+  ],
+  "3278": [
+   "ORGANISCHE PHOSPHORVERBINDUNG, FLÜSSIG, GIFTIG, N.A.G."
+  ],
+  "3279": [
+   "ORGANISCHE PHOSPHORVERBINDUNG, GIFTIG, ENTZÜNDBAR, N.A.G."
+  ],
+  "3280": [
+   "ORGANISCHE ARSENVERBINDUNG, FLÜSSIG, N.A.G."
+  ],
+  "3281": [
+   "METALLCARBONYLE, FLÜSSIG, N.A.G."
+  ],
+  "3282": [
+   "METALLORGANISCHE VERBINDUNG, FLÜSSIG, GIFTIG, N.A.G."
+  ],
+  "3283": [
+   "SELENVERBINDUNG, FEST, N.A.G."
+  ],
+  "3284": [
+   "TELLURVERBINDUNG, N.A.G."
+  ],
+  "3285": [
+   "VANADIUMVERBINDUNG, N.A.G."
+  ],
+  "3286": [
+   "ENTZÜNDBARER FLÜSSIGER STOFF, GIFTIG, ÄTZEND, N.A.G."
+  ],
+  "3287": [
+   "GIFTIGER ANORGANISCHER FLÜSSIGER STOFF, N.A.G."
+  ],
+  "3288": [
+   "GIFTIGER ANORGANISCHER FESTER STOFF, N.A.G."
+  ],
+  "3289": [
+   "GIFTIGER ANORGANISCHER FLÜSSIGER STOFF, ÄTZEND, N.A.G."
+  ],
+  "3290": [
+   "GIFTIGER ANORGANISCHER FESTER STOFF, ÄTZEND, N.A.G."
+  ],
+  "3291": [
+   "KLINISCHER ABFALL, UNSPEZIFIZIERT, N.A.G. oder (BIO)MEDIZINISCHER ABFALL, N.A.G. oder UNTER DIE VORSCHRIFTEN FALLENDER MEDIZINISCHER ABFALL, N.A.G.",
+   "KLINISCHER ABFALL, UNSPEZIFIZIERT, N.A.G. oder (BIO)MEDIZINISCHER ABFALL, N.A.G. oder UNTER DIE VORSCHRIFTEN FALLENDER MEDIZINISCHER ABFALL, N.A.G., in tiefgekühlt verflüssigtem Stickstoff"
+  ],
+  "3292": [
+   "BATTERIEN, DIE METALLISCHES NATRIUM ODER NATRIUMLEGIERUNGEN ENTHALTEN oder ZELLEN, DIE METALLISCHES NATRIUM ODER NATRIUMLEGIERUNGEN ENTHALTEN"
+  ],
+  "3293": [
+   "HYDRAZIN, WÄSSERIGE LÖSUNG mit höchstens 37 Masse-% Hydrazin"
+  ],
+  "3294": [
+   "CYANWASSERSTOFF, LÖSUNG IN ALKOHOL mit höchstens 45 % Cyanwasserstoff"
+  ],
+  "3295": [
+   "KOHLENWASSERSTOFFE, FLÜSSIG, N.A.G.",
+   "KOHLENWASSERSTOFFE, FLÜSSIG, N.A.G. (Dampfdruck bei 50 °C grösser als 110 kPa)",
+   "KOHLENWASSERSTOFFE, FLÜSSIG, N.A.G. (Dampfdruck bei 50 °C höchstens 110 kPa)"
+  ],
+  "3296": [
+   "HEPTAFLUORPROPAN (GAS ALS KÄLTEMITTEL R 227)"
+  ],
+  "3297": [
+   "ETHYLENOXID UND CHLORTETRAFLUORETHAN, GEMISCH mit höchstens 8,8 % Ethylenoxid"
+  ],
+  "3298": [
+   "ETHYLENOXID UND PENTAFLUORETHAN, GEMISCH mit höchstens 7,9 % Ethylenoxid"
+  ],
+  "3299": [
+   "ETHYLENOXID UND TETRAFLUORETHAN, GEMISCH mit höchstens 5,6 % Ethylenoxid"
+  ],
+  "3300": [
+   "ETHYLENOXID UND KOHLENDIOXID, GEMISCH mit mehr als 87 % Ethylenoxid"
+  ],
+  "3301": [
+   "ÄTZENDER FLÜSSIGER STOFF, SELBSTERHITZUNGSFÄHIG, N.A.G."
+  ],
+  "3302": [
+   "2-DIMETHYLAMINOETHYLACRYLAT, STABILISIERT"
+  ],
+  "3303": [
+   "VERDICHTETES GAS, GIFTIG, OXIDIEREND, N.A.G."
+  ],
+  "3304": [
+   "VERDICHTETES GAS, GIFTIG, ÄTZEND, N.A.G."
+  ],
+  "3305": [
+   "VERDICHTETES GAS, GIFTIG, ENTZÜNDBAR, ÄTZEND, N.A.G."
+  ],
+  "3306": [
+   "VERDICHTETES GAS, GIFTIG, OXIDIEREND, ÄTZEND, N.A.G."
+  ],
+  "3307": [
+   "VERFLÜSSIGTES GAS, GIFTIG, OXIDIEREND, N.A.G."
+  ],
+  "3308": [
+   "VERFLÜSSIGTES GAS, GIFTIG, ÄTZEND, N.A.G."
+  ],
+  "3309": [
+   "VERFLÜSSIGTES GAS, GIFTIG, ENTZÜNDBAR, ÄTZEND, N.A.G."
+  ],
+  "3310": [
+   "VERFLÜSSIGTES GAS, GIFTIG, OXIDIEREND, ÄTZEND, N.A.G."
+  ],
+  "3311": [
+   "GAS, TIEFGEKÜHLT, FLÜSSIG, OXIDIEREND, N.A.G."
+  ],
+  "3312": [
+   "GAS, TIEFGEKÜHLT, FLÜSSIG, ENTZÜNDBAR, N.A.G."
+  ],
+  "3313": [
+   "SELBSTERHITZUNGSFÄHIGE ORGANISCHE PIGMENTE"
+  ],
+  "3314": [
+   "KUNSTSTOFFPRESSMISCHUNG, in Teig-, Platten-oder Strangpressform, entzündbare Dämpfe abgebend"
+  ],
+  "3315": [
+   "CHEMISCHE PROBE, GIFTIG"
+  ],
+  "3316": [
+   "CHEMIE-TESTSATZ oder ERSTE-HILFE-AUSRÜSTUNG"
+  ],
+  "3317": [
+   "2-AMINO-4,6-DINITROPHENOL, ANGEFEUCHTET mit mindestens 20 Masse-% Wasser"
+  ],
+  "3318": [
+   "AMMONIAKLÖSUNG in Wasser, relative Dichte kleiner als 0,880 bei 15 °C, mit mehr als 50 % Ammoniak"
+  ],
+  "3319": [
+   "NITROGLYCERIN, GEMISCH, DESENSIBILISIERT, FEST, N.A.G., mit mehr als 2 Masse-%, aber höchstens 10 Masse-% Nitroglycerin"
+  ],
+  "3320": [
+   "NATRIUMBORHYDRID UND NATRIUMHYDROXID, LÖSUNG mit höchstens 12 Masse-% Natriumborhydrid und höchstens 40 Masse-% Natriumhydroxid"
+  ],
+  "3321": [
+   "RADIOAKTIVE STOFFE MIT GERINGER SPEZIFISCHER AKTIVITÄT (LSA-II), nicht spaltbar oder spaltbar, freigestellt"
+  ],
+  "3322": [
+   "RADIOAKTIVE STOFFE MIT GERINGER SPEZIFISCHER AKTIVITÄT (LSA-III), nicht spaltbar oder spaltbar, freigestellt"
+  ],
+  "3323": [
+   "RADIOAKTIVE STOFFE, TYP C-VERSANDSTÜCK, nicht spaltbar oder spaltbar, freigestellt"
+  ],
+  "3324": [
+   "RADIOAKTIVE STOFFE MIT GERINGER SPEZIFISCHER AKTIVITÄT (LSA-II), SPALTBAR"
+  ],
+  "3325": [
+   "RADIOAKTIVE STOFFE MIT GERINGER SPEZIFISCHER AKTIVITÄT (LSA-III), SPALTBAR"
+  ],
+  "3326": [
+   "RADIOAKTIVE STOFFE, OBERFLÄCHENKONTAMINIERTE GEGENSTÄNDE (SCO-I oder SCO-II), SPALTBAR"
+  ],
+  "3327": [
+   "RADIOAKTIVE STOFFE, TYP A-VERSANDSTÜCK, SPALTBAR, nicht in besonderer Form"
+  ],
+  "3328": [
+   "RADIOAKTIVE STOFFE, TYP B(U)-VERSANDSTÜCK, SPALTBAR"
+  ],
+  "3329": [
+   "RADIOAKTIVE STOFFE, TYP B(M)-VERSANDSTÜCK, SPALTBAR"
+  ],
+  "3330": [
+   "RADIOAKTIVE STOFFE, TYP C-VERSANDSTÜCK, SPALTBAR"
+  ],
+  "3331": [
+   "RADIOAKTIVE STOFFE, UNTER SONDERVEREINBARUNG BEFÖRDERT, SPALTBAR"
+  ],
+  "3332": [
+   "RADIOAKTIVE STOFFE, TYP A-VERSANDSTÜCK, IN BESONDERER FORM, nicht spaltbar oder spaltbar, freigestellt"
+  ],
+  "3333": [
+   "RADIOAKTIVE STOFFE, TYP A-VERSANDSTÜCK, IN BESONDERER FORM, SPALTBAR"
+  ],
+  "3334": [
+   "Flüssiger Stoff, den für die Luftfahrt geltenden Vorschriften unterliegend, n.a.g."
+  ],
+  "3335": [
+   "Fester Stoff, den für die Luftfahrt geltenden Vorschriften unterliegend, n.a.g."
+  ],
+  "3336": [
+   "MERCAPTANE, FLÜSSIG, ENTZÜNDBAR, N.A.G. oder MERCAPTANE, MISCHUNG, FLÜSSIG, ENTZÜNDBAR, N.A.G.",
+   "MERCAPTANE, FLÜSSIG, ENTZÜNDBAR, N.A.G. oder MERCAPTANE, MISCHUNG, FLÜSSIG, ENTZÜNDBAR, N.A.G. (Dampfdruck bei 50 °C grösser als 110 kPa)",
+   "MERCAPTANE, FLÜSSIG, ENTZÜNDBAR, N.A.G. oder MERCAPTANE, MISCHUNG, FLÜSSIG, ENTZÜNDBAR, N.A.G. (Dampfdruck bei 50 °C höchstens 110 kPa)"
+  ],
+  "3337": [
+   "GAS ALS KÄLTEMITTEL R 404A (Pentafluorethan, 1,1,1-Trifluorethan und 1,1,1,2-Tetrafluorethan, zeotropes Gemisch mit ca. 44 % Pentafluorethan und 52 % 1,1,1-Trifluorethan)"
+  ],
+  "3338": [
+   "GAS ALS KÄLTEMITTEL R 407A (Difluormethan, Pentafluorethan und 1,1,1,2-Tetrafluorethan, zeotropes Gemisch mit ca. 20 % Difluormethan und 40 % Pentafluorethan)"
+  ],
+  "3339": [
+   "GAS ALS KÄLTEMITTEL R 407B (Difluormethan, Pentafluorethan und 1,1,1,2-Tetrafluorethan, zeotropes Gemisch mit ca. 10 % Difluormethan und 70 % Pentafluorethan)"
+  ],
+  "3340": [
+   "GAS ALS KÄLTEMITTEL R 407C (Difluormethan, Pentafluorethan und 1,1,1,2-Tetrafluorethan, zeotropes Gemisch mit ca. 23 % Difluormethan und 25 % Pentafluorethan)"
+  ],
+  "3341": [
+   "THIOHARNSTOFFDIOXID"
+  ],
+  "3342": [
+   "XANTHATE"
+  ],
+  "3343": [
+   "NITROGLYCERIN, GEMISCH, DESENSIBILISIERT, FLÜSSIG, ENTZÜNDBAR, N.A.G., mit höchstens 30 Masse-% Nitroglycerin"
+  ],
+  "3344": [
+   "PENTAERYTHRITTETRANITRAT (PENTAERYTHRITOLTETRANITRAT) (PETN), GEMISCH, DESENSIBILISIERT, FEST, N.A.G., mit mehr als 10 Masse-%, aber höchstens 20 Masse-% PETN"
+  ],
+  "3345": [
+   "PHENOXYESSIGSÄUREDERIVAT-PESTIZID, FEST, GIFTIG"
+  ],
+  "3346": [
+   "PHENOXYESSIGSÄUREDERIVAT-PESTIZID, FLÜSSIG, ENTZÜNDBAR, GIFTIG, Flammpunkt unter 23 °C"
+  ],
+  "3347": [
+   "PHENOXYESSIGSÄUREDERIVAT-PESTIZID, FLÜSSIG, GIFTIG, ENTZÜNDBAR, mit einem Flammpunkt von 23 °C oder darüber"
+  ],
+  "3348": [
+   "PHENOXYESSIGSÄUREDERIVAT-PESTIZID, FLÜSSIG, GIFTIG"
+  ],
+  "3349": [
+   "PYRETHROID-PESTIZID, FEST, GIFTIG"
+  ],
+  "3350": [
+   "PYRETHROID-PESTIZID, FLÜSSIG, ENTZÜNDBAR, GIFTIG, Flammpunkt unter 23 °C"
+  ],
+  "3351": [
+   "PYRETHROID-PESTIZID, FLÜSSIG, GIFTIG, ENTZÜNDBAR, mit einem Flammpunkt von 23 °C oder darüber"
+  ],
+  "3352": [
+   "PYRETHROID-PESTIZID, FLÜSSIG, GIFTIG"
+  ],
+  "3354": [
+   "INSEKTENBEKÄMPFUNGSMITTEL, GASFÖRMIG, ENTZÜNDBAR, N.A.G."
+  ],
+  "3355": [
+   "INSEKTENBEKÄMPFUNGSMITTEL, GASFÖRMIG, GIFTIG, ENTZÜNDBAR, N.A.G."
+  ],
+  "3356": [
+   "SAUERSTOFFGENERATOR, CHEMISCH"
+  ],
+  "3357": [
+   "NITROGLYCERIN, GEMISCH, DESENSIBILISIERT, FLÜSSIG, N.A.G., mit höchstens 30 Masse-% Nitroglycerin"
+  ],
+  "3358": [
+   "KÄLTEMASCHINEN mit entzündbarem, nicht giftigem verflüssigtem Gas"
+  ],
+  "3359": [
+   "BEGASTE GÜTERBEFÖRDERUNGSEINHEIT"
+  ],
+  "3360": [
+   "Fasern, pflanzlichen Ursprungs, trocken"
+  ],
+  "3361": [
+   "CHLORSILANE, GIFTIG, ÄTZEND, N.A.G."
+  ],
+  "3362": [
+   "CHLORSILANE, GIFTIG, ÄTZEND, ENTZÜNDBAR, N.A.G."
+  ],
+  "3363": [
+   "GEFÄHRLICHE GÜTER IN GEGENSTÄNDEN oder GEFÄHRLICHE GÜTER IN MASCHINEN oder GEFÄHRLICHE GÜTER IN GERÄTEN"
+  ],
+  "3364": [
+   "TRINITROPHENOL (PIKRINSÄURE), ANGEFEUCHTET mit mindestens 10 Masse-% Wasser"
+  ],
+  "3365": [
+   "TRINITROCHLORBENZEN (PIKRYLCHLORID), ANGEFEUCHTET mit mindestens 10 Masse-% Wasser"
+  ],
+  "3366": [
+   "TRINITROTOLUEN (TNT), ANGEFEUCHTET mit mindestens 10 Masse-% Wasser"
+  ],
+  "3367": [
+   "TRINITROBENZEN, ANGEFEUCHTET mit mindestens 10 Masse-% Wasser"
+  ],
+  "3368": [
+   "TRINITROBENZOESÄURE, ANGEFEUCHTET mit mindestens 10 Masse-% Wasser"
+  ],
+  "3369": [
+   "NATRIUMDINITROORTHOCRESOLAT, ANGEFEUCHTET mit mindestens 10 Masse-% Wasser"
+  ],
+  "3370": [
+   "HARNSTOFFNITRAT, ANGEFEUCHTET mit mindestens 10 Masse-% Wasser"
+  ],
+  "3371": [
+   "2-METHYLBUTANAL"
+  ],
+  "3373": [
+   "BIOLOGISCHER STOFF, KATEGORIE B",
+   "BIOLOGISCHER STOFF, KATEGORIE B (nur tierische Stoffe)"
+  ],
+  "3374": [
+   "ACETYLEN, LÖSUNGSMITTELFREI"
+  ],
+  "3375": [
+   "AMMONIUMNITRATEMULSION oder AMMONIUMNITRATSUSPENSION oder AMMONIUMNITRAT-GEL, Zwischenprodukt für die Herstellung von Sprengstoffen, flüssig",
+   "AMMONIUMNITRATEMULSION oder AMMONIUMNITRATSUSPENSION oder AMMONIUMNITRAT-GEL, Zwischenprodukt für die Herstellung von Sprengstoffen, fest"
+  ],
+  "3376": [
+   "4-NITROPHENYLHYDRAZIN, mit mindestens 30 Masse-% Wasser"
+  ],
+  "3377": [
+   "NATRIUMPERBORATMONOHYDRAT"
+  ],
+  "3378": [
+   "NATRIUMCARBONATPEROXYHYDRAT"
+  ],
+  "3379": [
+   "DESENSIBILISIERTER EXPLOSIVER FLÜSSIGER STOFF, N.A.G."
+  ],
+  "3380": [
+   "DESENSIBILISIERTER EXPLOSIVER FESTER STOFF, N.A.G."
+  ],
+  "3381": [
+   "BEIM EINATMEN GIFTIGER FLÜSSIGER STOFF, N.A.G., mit einem LC50-Wert von höchstens 200 ml/m3 und einer gesättigten Dampfkonzentration von mindestens 500 LC50"
+  ],
+  "3382": [
+   "BEIM EINATMEN GIFTIGER FLÜSSIGER STOFF, N.A.G., mit einem LC50-Wert von höchstens 1000 ml/m3 und einer gesättigten Dampfkonzentration von mindestens 10 LC50"
+  ],
+  "3383": [
+   "BEIM EINATMEN GIFTIGER FLÜSSIGER STOFF, ENTZÜNDBAR, N.A.G., mit einem LC50-Wert von höchstens 200 ml/m3 und einer gesättigten Dampfkonzentration von mindestens 500 LC50"
+  ],
+  "3384": [
+   "BEIM EINATMEN GIFTIGER FLÜSSIGER STOFF, ENTZÜNDBAR, N.A.G., mit einem LC50-Wert von höchstens 1000 ml/m3 und einer gesättigten Dampfkonzentration von mindestens 10 LC50"
+  ],
+  "3385": [
+   "BEIM EINATMEN GIFTIGER FLÜSSIGER STOFF, MIT WASSER REAGIEREND, N.A.G., mit einem LC50-Wert von höchstens 200 ml/m3 und einer gesättigten Dampfkonzentration von mindestens 500 LC50"
+  ],
+  "3386": [
+   "BEIM EINATMEN GIFTIGER FLÜSSIGER STOFF, MIT WASSER REAGIEREND, N.A.G., mit einem LC50-Wert von höchstens 1000 ml/m3 und einer gesättigten Dampfkonzentration von mindestens 10 LC50"
+  ],
+  "3387": [
+   "BEIM EINATMEN GIFTIGER FLÜSSIGER STOFF, ENTZÜNDEND (OXIDIEREND) WIRKEND, N.A.G., mit einem LC50-Wert von höchstens 200 ml/m3 und einer gesättigten Dampfkonzentration von mindestens 500 LC50"
+  ],
+  "3388": [
+   "BEIM EINATMEN GIFTIGER FLÜSSIGER STOFF, ENTZÜNDEND (OXIDIEREND) WIRKEND, N.A.G., mit einem LC50-Wert von höchstens 1000 ml/m3 und einer gesättigten Dampfkonzentration von mindestens 10 LC50"
+  ],
+  "3389": [
+   "BEIM EINATMEN GIFTIGER FLÜSSIGER STOFF, ÄTZEND, N.A.G., mit einem LC50-Wert von höchstens 200 ml/m3 und einer gesättigten Dampfkonzentration von mindestens 500 LC50"
+  ],
+  "3390": [
+   "BEIM EINATMEN GIFTIGER FLÜSSIGER STOFF, ÄTZEND, N.A.G., mit einem LC50-Wert von höchstens"
+  ],
+  "3391": [
+   "PYROPHORER METALLORGANISCHER FESTER STOFF"
+  ],
+  "3392": [
+   "PYROPHORER METALLORGANISCHER FLÜSSIGER STOFF"
+  ],
+  "3393": [
+   "PYROPHORER METALLORGANISCHER FESTER STOFF, MIT WASSER REAGIEREND"
+  ],
+  "3394": [
+   "PYROPHORER METALLORGANISCHER FLÜSSIGER STOFF, MIT WASSER REAGIEREND"
+  ],
+  "3395": [
+   "MIT WASSER REAGIERENDER METALLORGANISCHER FESTER STOFF"
+  ],
+  "3396": [
+   "MIT WASSER REAGIERENDER METALLORGANISCHER FESTER STOFF, ENTZÜNDBAR"
+  ],
+  "3397": [
+   "MIT WASSER REAGIERENDER METALLORGANISCHER FESTER STOFF, SELBSTERHITZUNGSFÄHIG"
+  ],
+  "3398": [
+   "MIT WASSER REAGIERENDER METALLORGANISCHER FLÜSSIGER STOFF"
+  ],
+  "3399": [
+   "MIT WASSER REAGIERENDER METALLORGANISCHER FLÜSSIGER STOFF, ENTZÜNDBAR"
+  ],
+  "3400": [
+   "SELBSTERHITZUNGSFÄHIGER METALLORGANISCHER FESTER STOFF"
+  ],
+  "3401": [
+   "ALKALIMETALLAMALGAM, FEST"
+  ],
+  "3402": [
+   "ERDALKALIMETALLAMALGAM, FEST"
+  ],
+  "3403": [
+   "KALIUMMETALLLEGIERUNGEN, FEST"
+  ],
+  "3404": [
+   "KALIUM-NATRIUMLEGIERUNGEN, FEST"
+  ],
+  "3405": [
+   "BARIUMCHLORAT, LÖSUNG"
+  ],
+  "3406": [
+   "BARIUMPERCHLORAT, LÖSUNG"
+  ],
+  "3407": [
+   "CHLORAT UND MAGNESIUMCHLORID, MISCHUNG, LÖSUNG"
+  ],
+  "3408": [
+   "BLEIPERCHLORAT, LÖSUNG"
+  ],
+  "3409": [
+   "CHLORNITROBENZENE, FLÜSSIG"
+  ],
+  "3410": [
+   "4-CHLOR-o-TOLUIDINHYDROCHLORID, LÖSUNG"
+  ],
+  "3411": [
+   "beta-NAPHTHYLAMIN, LÖSUNG"
+  ],
+  "3412": [
+   "AMEISENSÄURE mit mindestens 10 Masse-%, aber höchstens 85 Masse-% Säure",
+   "AMEISENSÄURE mit mindestens 5 Masse-%, aber weniger als 10 Masse-% Säure"
+  ],
+  "3413": [
+   "KALIUMCYANID, LÖSUNG"
+  ],
+  "3414": [
+   "NATRIUMCYANID, LÖSUNG"
+  ],
+  "3415": [
+   "NATRIUMFLUORID, LÖSUNG"
+  ],
+  "3416": [
+   "CHLORACETOPHENON, FLÜSSIG"
+  ],
+  "3417": [
+   "XYLYLBROMID, FEST"
+  ],
+  "3418": [
+   "2,4-TOLUYLENDIAMIN, LÖSUNG"
+  ],
+  "3419": [
+   "BORTRIFLUORIDESSIGSÄURE-KOMPLEX, FEST"
+  ],
+  "3420": [
+   "BORTRIFLUORIDPROPIONSÄURE-KOMPLEX, FEST"
+  ],
+  "3421": [
+   "KALIUMHYDROGENDIFLUORID, LÖSUNG"
+  ],
+  "3422": [
+   "KALIUMFLUORID, LÖSUNG"
+  ],
+  "3423": [
+   "TETRAMETHYLAMMONIUMHYDROXID, FEST"
+  ],
+  "3424": [
+   "AMMONIUMDINITRO-o-CRESOLAT, LÖSUNG"
+  ],
+  "3425": [
+   "BROMESSIGSÄURE, FEST"
+  ],
+  "3426": [
+   "ACRYLAMID, LÖSUNG"
+  ],
+  "3427": [
+   "CHLORBENZYLCHLORIDE, FEST"
+  ],
+  "3428": [
+   "3-CHLOR-4-METHYLPHENYLISOCYANAT, FEST"
+  ],
+  "3429": [
+   "CHLORTOLUIDINE, FLÜSSIG"
+  ],
+  "3430": [
+   "XYLENOLE, FLÜSSIG"
+  ],
+  "3431": [
+   "NITROBENZOTRIFLUORIDE, FEST"
+  ],
+  "3432": [
+   "POLYCHLORIERTE BIPHENYLE, FEST"
+  ],
+  "3434": [
+   "NITROCRESOLE, FLÜSSIG"
+  ],
+  "3436": [
+   "HEXAFLUORACETONHYDRAT, FEST"
+  ],
+  "3437": [
+   "CHLORCRESOLE, FEST"
+  ],
+  "3438": [
+   "alpha-METHYLBENZYLALKOHOL, FEST"
+  ],
+  "3439": [
+   "NITRILE, FEST, GIFTIG, N.A.G."
+  ],
+  "3440": [
+   "SELENVERBINDUNG, FLÜSSIG, N.A.G."
+  ],
+  "3441": [
+   "CHLORDINITROBENZENE, FEST"
+  ],
+  "3442": [
+   "DICHLORANILINE, FEST"
+  ],
+  "3443": [
+   "DINITROBENZENE, FEST"
+  ],
+  "3444": [
+   "NICOTINHYDROCHLORID, FEST"
+  ],
+  "3445": [
+   "NICOTINSULFAT, FEST"
+  ],
+  "3446": [
+   "NITROTOLUENE, FEST"
+  ],
+  "3447": [
+   "NITROXYLENE, FEST"
+  ],
+  "3448": [
+   "STOFF ZUR HERSTELLUNG VON TRÄNENGASEN, FEST, N.A.G."
+  ],
+  "3449": [
+   "BROMBENZYLCYANIDE, FEST"
+  ],
+  "3450": [
+   "DIPHENYLCHLORARSIN, FEST"
+  ],
+  "3451": [
+   "TOLUIDINE, FEST"
+  ],
+  "3452": [
+   "XYLIDINE, FEST"
+  ],
+  "3453": [
+   "PHOSPHORSÄURE, FEST"
+  ],
+  "3454": [
+   "DINITROTOLUENE, FEST"
+  ],
+  "3455": [
+   "CRESOLE, FEST"
+  ],
+  "3456": [
+   "NITROSYLSCHWEFELSÄURE, FEST"
+  ],
+  "3457": [
+   "CHLORNITROTOLUENE, FEST"
+  ],
+  "3458": [
+   "NITROANISOLE, FEST"
+  ],
+  "3459": [
+   "NITROBROMBENZENE, FEST"
+  ],
+  "3460": [
+   "N-ETHYL-N-BENZYLTOLUIDINE, FEST"
+  ],
+  "3462": [
+   "TOXINE, GEWONNEN AUS LEBENDEN ORGANISMEN, FEST, N.A.G."
+  ],
+  "3463": [
+   "PROPIONSÄURE mit mindestens 90 Masse-% Säure"
+  ],
+  "3464": [
+   "ORGANISCHE PHOSPHORVERBINDUNG, FEST, GIFTIG, N.A.G."
+  ],
+  "3465": [
+   "ORGANISCHE ARSENVERBINDUNG, FEST, N.A.G."
+  ],
+  "3466": [
+   "METALLCARBONYLE, FEST, N.A.G."
+  ],
+  "3467": [
+   "METALLORGANISCHE VERBINDUNG, FEST, GIFTIG, N.A.G."
+  ],
+  "3468": [
+   "WASSERSTOFF IN EINEM METALLHYDRID-SPEICHERSYSTEM oder WASSERSTOFF IN EINEM METALLHYDRID-SPEICHERSYSTEM IN AUSRÜSTUNGEN oder WASSERSTOFF IN EINEM METALLHYDRID-SPEICHERSYSTEM, MIT AUSRÜSTUNGEN VERPACKT"
+  ],
+  "3469": [
+   "FARBE, ENTZÜNDBAR, ÄTZEND (einschliesslich Farbe, Lack, Emaille, Beize, Schellack, Firnis, Politur, flüssiger Füllstoff und flüssige Lackgrundlage) oder FARBZUBEHÖRSTOFFE, ENTZÜNDBAR, ÄTZEND (einschliesslich Farbver-dünnung und -lösemittel)"
+  ],
+  "3470": [
+   "FARBE, ÄTZEND, ENTZÜNDBAR (einschliesslich Farbe, Lack, Emaille, Beize, Schellack, Firnis, Politur, flüssiger Füllstoff und flüssige Lackgrundlage) oder FARBZUBEHÖRSTOFFE, ÄTZEND, ENTZÜNDBAR (einschliesslich Farbver-dünnung und -lösemittel)"
+  ],
+  "3471": [
+   "HYDROGENDIFLUORIDE, LÖSUNG, N.A.G."
+  ],
+  "3472": [
+   "CROTONSÄURE, FLÜSSIG"
+  ],
+  "3473": [
+   "BRENNSTOFFZELLENKARTUSCHEN oder BRENNSTOFFZELLENKARTUSCHEN IN AUSRÜSTUNGEN oder BRENNSTOFFZELLENKARTUSCHEN, MIT AUSRÜSTUNGEN VERPACKT, entzündbare flüssige Stoffe enthaltend"
+  ],
+  "3474": [
+   "1-HYDROXYBENZOTRIAZOL-MONOHYDRAT"
+  ],
+  "3475": [
+   "ETHANOL UND BENZIN, GEMISCH oder ETHANOL UND OTTOKRAFTSTOFF, GEMISCH mit mehr als 10 % Ethanol"
+  ],
+  "3476": [
+   "BRENNSTOFFZELLENKARTUSCHEN oder BRENNSTOFFZELLENKARTUSCHEN IN AUSRÜSTUNGEN oder BRENNSTOFFZELLENKARTUSCHEN, MIT AUSRÜSTUNGEN VERPACKT, mit Wasser reagierende Stoffe enthaltend"
+  ],
+  "3477": [
+   "BRENNSTOFFZELLENKARTUSCHEN oder BRENNSTOFFZELLENKARTUSCHEN IN AUSRÜSTUNGEN oder BRENNSTOFFZELLENKARTUSCHEN, MIT AUSRÜSTUNGEN VERPACKT, ätzende Stoffe enthaltend"
+  ],
+  "3478": [
+   "BRENNSTOFFZELLENKARTUSCHEN oder BRENNSTOFFZELLENKARTUSCHEN IN AUSRÜSTUNGEN oder BRENNSTOFFZELLENKARTUSCHEN, MIT AUSRÜSTUNGEN VERPACKT, verflüssigtes entzündbares Gas enthaltend"
+  ],
+  "3479": [
+   "BRENNSTOFFZELLENKARTUSCHEN oder BRENNSTOFFZELLENKARTUSCHEN IN AUSRÜSTUNGEN oder BRENNSTOFFZELLENKARTUSCHEN, MIT AUSRÜSTUNGEN VERPACKT, Wasserstoff in Metallhydrid enthaltend"
+  ],
+  "3480": [
+   "LITHIUM-IONEN-BATTERIEN (einschliesslich Lithium-Ionen-Polymer-Batterien)"
+  ],
+  "3481": [
+   "LITHIUM-IONEN-BATTERIEN IN AUSRÜSTUNGEN oder LITHIUM-IONEN-BATTERIEN, MIT AUSRÜSTUNGEN VERPACKT (einschliesslich Lithium-Ionen-Polymer-Batterien)"
+  ],
+  "3482": [
+   "ALKALIMETALLDISPERSION, ENTZÜNDBAR oder ERDALKALIMETALLDISPERSION, ENTZÜNDBAR"
+  ],
+  "3483": [
+   "ANTIKLOPFMISCHUNG FÜR MOTORKRAFTSTOFF, ENTZÜNDBAR"
+  ],
+  "3484": [
+   "HYDRAZIN, WÄSSERIGE LÖSUNG, ENTZÜNDBAR, mit mehr als 37 Masse-% Hydrazin"
+  ],
+  "3485": [
+   "CALCIUMHYPOCHLORIT, TROCKEN, ÄTZEND oder CALCIUMHYPOCHLORIT, MISCHUNG, TROCKEN, ÄTZEND mit mehr als 39 % aktivem Chlor (8,8 % aktivem Sauerstoff)"
+  ],
+  "3486": [
+   "CALCIUMHYPOCHLORIT, MISCHUNG, TROCKEN, ÄTZEND mit mehr als 10 %, aber höchstens 39 % aktivem Chlor"
+  ],
+  "3487": [
+   "CALCIUMHYPOCHLORIT, HYDRATISIERT, ÄTZEND oder CALCIUMHYPOCHLORIT, HYDRATISIERTE MISCHUNG, ÄTZEND mit mindestens 5,5 %, aber höchstens 16 % Wasser"
+  ],
+  "3488": [
+   "BEIM EINATMEN GIFTIGER FLÜSSIGER STOFF, ENTZÜNDBAR, ÄTZEND, N.A.G., mit einem LC50-Wert von höchstens 200 ml/m3 und einer gesättigten Dampfkonzentration von mindestens 500 LC50"
+  ],
+  "3489": [
+   "BEIM EINATMEN GIFTIGER FLÜSSIGER STOFF, ENTZÜNDBAR, ÄTZEND, N.A.G., mit einem LC50-Wert von höchstens 1000 ml/m3 und einer gesättigten Dampfkonzentration von mindestens 10 LC50"
+  ],
+  "3490": [
+   "BEIM EINATMEN GIFTIGER FLÜSSIGER STOFF, MIT WASSER REAGIEREND, ENTZÜNDBAR, N.A.G., mit einem LC50-Wert von höchstens 200 ml/m3 und einer gesättigten Dampfkonzentration von mindestens 500 LC50"
+  ],
+  "3491": [
+   "BEIM EINATMEN GIFTIGER FLÜSSIGER STOFF, MIT WASSER REAGIEREND, ENTZÜNDBAR, N.A.G., mit einem LC50-Wert von höchstens 1000 ml/m3 und einer gesättigten Dampfkonzentration von mindestens 10 LC50"
+  ],
+  "3494": [
+   "SCHWEFELREICHES ROHERDÖL, ENTZÜNDBAR, GIFTIG"
+  ],
+  "3495": [
+   "IOD"
+  ],
+  "3496": [
+   "Batterien, Nickelmetallhydrid"
+  ],
+  "3497": [
+   "KRILLMEHL"
+  ],
+  "3498": [
+   "IODMONOCHLORID, FLÜSSIG"
+  ],
+  "3499": [
+   "KONDENSATOR, ELEKTRISCHE DOPPELSCHICHT (mit einer Energiespeicherkapazität von mehr als 0,3 Wh )"
+  ],
+  "3500": [
+   "CHEMIKALIE UNTER DRUCK, N.A.G."
+  ],
+  "3501": [
+   "CHEMIKALIE UNTER DRUCK, ENTZÜNDBAR, N.A.G."
+  ],
+  "3502": [
+   "CHEMIKALIE UNTER DRUCK, GIFTIG, N.A.G."
+  ],
+  "3503": [
+   "CHEMIKALIE UNTER DRUCK, ÄTZEND, N.A.G."
+  ],
+  "3504": [
+   "CHEMIKALIE UNTER DRUCK, ENTZÜNDBAR, GIFTIG, N.A.G."
+  ],
+  "3505": [
+   "CHEMIKALIE UNTER DRUCK, ENTZÜNDBAR, ÄTZEND, N.A.G."
+  ],
+  "3506": [
+   "QUECKSILBER IN HERGESTELLTEN GEGENSTÄNDEN"
+  ],
+  "3507": [
+   "URANHEXAFLUORID, RADIOAKTIVE STOFFE, FREIGESTELLTES VERSANDSTÜCK mit weniger als 0,1 kg je Versandstück, nicht spaltbar oder spaltbar, freigestellt"
+  ],
+  "3508": [
+   "KONDENSATOR, ASYMMETRISCH (mit einer Energiespeicherkapazität von mehr als 0,3 Wh)"
+  ],
+  "3509": [
+   "ALTVERPACKUNGEN, LEER, UNGEREINIGT"
+  ],
+  "3510": [
+   "ADSORBIERTES GAS, ENTZÜNDBAR, N.A.G."
+  ],
+  "3511": [
+   "ADSORBIERTES GAS, N.A.G."
+  ],
+  "3512": [
+   "ADSORBIERTES GAS, GIFTIG, N.A.G."
+  ],
+  "3513": [
+   "ADSORBIERTES GAS, OXIDIEREND, N.A.G."
+  ],
+  "3514": [
+   "ADSORBIERTES GAS, GIFTIG, ENTZÜNDBAR, N.A.G."
+  ],
+  "3515": [
+   "ADSORBIERTES GAS, GIFTIG, OXIDIEREND, N.A.G."
+  ],
+  "3516": [
+   "ADSORBIERTES GAS, GIFTIG, ÄTZEND, N.A.G."
+  ],
+  "3517": [
+   "ADSORBIERTES GAS, GIFTIG, ENTZÜNDBAR, ÄTZEND, N.A.G."
+  ],
+  "3518": [
+   "ADSORBIERTES GAS, GIFTIG, OXIDIEREND, ÄTZEND, N.A.G."
+  ],
+  "3519": [
+   "BORTRIFLUORID, ADSORBIERT"
+  ],
+  "3520": [
+   "CHLOR, ADSORBIERT"
+  ],
+  "3521": [
+   "SILICIUMTETRAFLUORID, ADSORBIERT"
+  ],
+  "3522": [
+   "ARSENWASSERSTOFF (ARSIN), ADSORBIERT"
+  ],
+  "3523": [
+   "GERMANIUMWASSERSTOFF (GERMAN), ADSORBIERT"
+  ],
+  "3524": [
+   "PHOSPHORPENTAFLUORID, ADSORBIERT"
+  ],
+  "3525": [
+   "PHOSPHORWASSERSTOFF (PHOSPHIN), ADSORBIERT"
+  ],
+  "3526": [
+   "SELENWASSERSTOFF, AD-SORBIERT"
+  ],
+  "3527": [
+   "POLYESTERHARZMEHRKOMPONENTENSYSTEME, festes Grundprodukt"
+  ],
+  "3528": [
+   "VERBRENNUNGSMOTOR MIT ANTRIEB DURCH ENTZÜNDBARE FLÜSSIGKEIT oder BRENNSTOFFZELLENMOTOR MIT ANTRIEB DURCH ENTZÜNDBARE FLÜSSIGKEIT oder VERBRENNUNGSMASCHINE MIT ANTRIEB DURCH ENTZÜNDBARE FLÜSSIGKEIT oder MASCHINE MIT BRENNSTOFFZELLENMOTOR MIT ANTRIEB DURCH ENTZÜNDBARE FLÜSSIGKEIT"
+  ],
+  "3529": [
+   "VERBRENNUNGSMOTOR MIT ANTRIEB DURCH ENTZÜNDBARES GAS oder BRENNSTOFFZELLENMOTOR MIT ANTRIEB DURCH ENTZÜNDBARES GAS oder VERBRENNUNGSMASCHINE MIT ANTRIEB DURCH ENTZÜNDBARES GAS oder MASCHINE MIT BRENNSTOFFZELLENMOTOR MIT ANTRIEB DURCH ENTZÜNDBARES GAS"
+  ],
+  "3530": [
+   "VERBRENNUNGSMOTOR oder VERBRENNUNGSMASCHINE"
+  ],
+  "3531": [
+   "POLYMERISIERENDER STOFF, FEST, STABILISIERT, N.A.G."
+  ],
+  "3532": [
+   "POLYMERISIERENDER STOFF, FLÜSSIG, STABILISIERT, N.A.G."
+  ],
+  "3533": [
+   "POLYMERISIERENDER STOFF, FEST, TEMPERATURKONTROLLIERT, N.A.G."
+  ],
+  "3534": [
+   "POLYMERISIERENDER STOFF, FLÜSSIG, TEMPERATURKONTROLLIERT, N.A.G."
+  ],
+  "3535": [
+   "GIFTIGER ANORGANISCHER FESTER STOFF, ENTZÜNDBAR, N.A.G."
+  ],
+  "3536": [
+   "LITHIUMBATTERIEN, IN GÜTERBEFÖRDERUNGSEINHEITEN EINGEBAUT, Lithium-Ionen-Batterien oder Lithium-Metall-Batterien"
+  ],
+  "3537": [
+   "GEGENSTÄNDE, DIE ENTZÜNDBARES GAS ENTHALTEN, N.A.G."
+  ],
+  "3538": [
+   "GEGENSTÄNDE, DIE NICHT ENTZÜNDBARES, NICHT GIFTIGES GAS ENTHALTEN, N.A.G."
+  ],
+  "3539": [
+   "GEGENSTÄNDE, DIE GIFTIGES GAS ENTHALTEN, N.A.G."
+  ],
+  "3540": [
+   "GEGENSTÄNDE, DIE EINEN ENTZÜNDBAREN FLÜSSIGEN STOFF ENTHALTEN, N.A.G."
+  ],
+  "3541": [
+   "GEGENSTÄNDE, DIE EINEN ENTZÜNDBAREN FESTEN STOFF ENTHALTEN, N.A.G."
+  ],
+  "3542": [
+   "GEGENSTÄNDE, DIE EINEN SELBSTENTZÜNDLICHEN STOFF ENTHALTEN, N.A.G."
+  ],
+  "3543": [
+   "GEGENSTÄNDE, DIE EINEN STOFF ENTHALTEN, DER IN BERÜHRUNG MIT WASSER ENTZÜNDBARE GASE ENTWICKELT, N.A.G."
+  ],
+  "3544": [
+   "GEGENSTÄNDE, DIE EINEN ENTZÜNDEND (OXIDIEREND) WIRKENDEN STOFF ENTHALTEN, N.A.G."
+  ],
+  "3545": [
+   "GEGENSTÄNDE, DIE ORGANISCHES PEROXID ENTHALTEN, N.A.G."
+  ],
+  "3546": [
+   "GEGENSTÄNDE, DIE EINEN GIFTIGEN STOFF ENTHALTEN, N.A.G."
+  ],
+  "3547": [
+   "GEGENSTÄNDE, DIE EINEN ÄTZENDEN STOFF ENTHALTEN, N.A.G."
+  ],
+  "3548": [
+   "GEGENSTÄNDE, DIE VERSCHIEDENE GEFÄHRLICHE GÜTER ENTHALTEN, N.A.G."
+  ],
+  "3549": [
+   "MEDIZINISCHE ABFÄLLE, KATEGORIE A, GEFÄHRLICH FÜR MENSCHEN, fest oder MEDIZINISCHE ABFÄLLE, KATEGORIE A, nur GEFÄHRLICH FÜR TIERE, fest"
+  ],
+  "3550": [
+   "COBALTDIHYDROXIDPULVER mit mindestens 10 % lungengängigen Partikeln"
+  ],
+  "3551": [
+   "NATRIUM-IONENBATTERIEN mit einem organischen Elektrolyt"
+  ],
+  "3552": [
+   "NATRIUM-IONENBATTERIEN IN AUSRÜSTUNGEN oder NATRIUM-IONENBATTERIEN, MIT AUSRÜSTUNGEN VERPACKT, mit einem organischen Elektrolyt"
+  ],
+  "3553": [
+   "DISILAN"
+  ],
+  "3554": [
+   "GALLIUM IN HERGESTELLTEN GEGENSTÄNDEN"
+  ],
+  "3555": [
+   "TRIFLUORMETHYLTETRAZOL-NATRIUMSALZ IN ACETON mit mindestens 68 Masse-% Aceton"
+  ],
+  "3556": [
+   "FAHRZEUG MIT ANTRIEB DURCH LITHIUM-IONENBATTERIEN"
+  ],
+  "3557": [
+   "FAHRZEUG MIT ANTRIEB DURCH LITHIUM-METALLBATTERIEN"
+  ],
+  "3558": [
+   "FAHRZEUG MIT ANTRIEB DURCH NATRIUM-IONENBATTERIEN"
+  ],
+  "3559": [
+   "FEUERLÖSCHMITTELDISPERGIERVORRICHTUNGEN"
+  ],
+  "3560": [
+   "TETRAMETHYLAMMONIUMHYDROXID, WÄSSERIGE LÖSUNG mit mindestens 25 % Tetramethylammonium-hydroxid"
+  ]
+ }
+}

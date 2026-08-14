@@ -2,6 +2,44 @@
 
 All notable changes are documented here, following [Semantic Versioning](https://semver.org/).
 
+## [1.79.0] — 2026-08-14
+
+### Added
+
+- **German proper shipping names from the 2025 edition.** The last field still
+  coming from a 2023 export. It stood because UNECE publishes the ADR in
+  English and French only — the operator's national edition of the Bundesamt
+  für Strassen closed it. 2,346 UN numbers at 0.9996 agreement against the UN
+  numbers of the Dutch table A, and **2,210 of the names read exactly as the
+  export had them**; the rest is what two years of ADR did to them, plus a
+  handful the export had truncated (UN 0219 ended mid-word at
+  "Alkohol/Wasser-"). A German road document now carries the name the current
+  edition prints, and the manifest's erratum about it is closed.
+
+### Fixed
+
+- **A row cut is tried, not believed.** The German edition's line gaps offered
+  a step at 31.2 points that is no boundary at all: it merged about twenty
+  printed rows into one, so UN 0004 came back with the twenty-one entries after
+  it inside its own name and 145 table pages gave 531 rows instead of 2,938. A
+  page's rows and its UN numbers are the same thing counted twice, so a
+  candidate cut is now measured against that count before it is used.
+
+- **A word break is not a hyphen.** The German edition breaks words across the
+  column constantly — CHLORWASSERSTOFF-SÄURE, DIETHYLENGLYCOLDINI-TRAT — and a
+  name a driver hands over may not carry the typesetter's hyphen. Position was
+  tried first and does not hold (a break is not always set hard against the
+  margin); what does is where the hyphen sits in the word: the hyphens a name
+  owns follow a locant or a lower-case prefix (2,2'-, alpha-, n-), a break
+  falls inside a run of capitals. The second reading settled it — the 2023
+  export spells all of them without the hyphen.
+
+- **A sentence is not a row.** "1000 ml/m3 und einer gesättigten
+  Dampfkonzentration" came back as a UN 1000 the ADR does not have. A name
+  opens with a capital, a bracket, or a locant or prefix before a hyphen —
+  1H-TETRAZOL, 2,2'-DICHLORDIETHYLETHER, alpha-NAPHTHYLAMIN — never with a unit
+  of volume.
+
 ## [1.78.1] — 2026-08-14
 
 ### Changed

@@ -87,6 +87,15 @@ NEEDED = ("1", "2", "3a")
 #: whichever the document supports.
 BY_GAP, BY_UN_NUMBER = "gap", "un_number"
 
+#: What a proper shipping name may open with. Table A names begin with a
+#: capital, a bracket, or a locant or prefix followed by a hyphen — 1H-TETRAZOL,
+#: 2,2'-DICHLORDIETHYLETHER, alpha-NAPHTHYLAMIN, n-PROPANOL. Running text that
+#: happens to start with four digits does not, and that is the difference
+#: between a row and a sentence about millilitres per cubic metre. Ten entries
+#: were lost to a stricter version of this: the prefix is not always short and
+#: not always letters.
+NAME_START = re.compile(r"[A-ZÄÖÜÉÈ(\"“]|[\w,.'’]+-[A-Z0-9(]")
+
 
 def learn_banding(document, sample: list[int]) -> tuple[str, float]:
     """How rows are separated in *this* typesetting, measured rather than assumed.
@@ -115,7 +124,7 @@ def learn_banding(document, sample: list[int]) -> tuple[str, float]:
         top_marker, centres = band_of(page)
         if top_marker is None or not all(n in centres for n in NEEDED):
             continue
-        ys = [y for y, _text in name_column(page, top_marker, centres)]
+        ys = [y for y, _text, _edge in name_column(page, top_marker, centres)[0]]
         gaps.extend(round(b - a, 1) for a, b in zip(ys, ys[1:]) if b > a)
     if len(gaps) < 20:
         return BY_UN_NUMBER, ROW_GAP
@@ -134,9 +143,38 @@ def learn_banding(document, sample: list[int]) -> tuple[str, float]:
             below = position / len(body)
             if 0.15 <= below <= 0.95:
                 best, cut, share = step, (a + b) / 2, below
-    if best >= 3.0 and share:
+    if best >= 3.0 and share and cut_holds(document, sample, cut):
         return BY_GAP, cut
     return BY_UN_NUMBER, ROW_GAP
+
+
+def cut_holds(document, sample: list[int], cut: float) -> bool:
+    """Does this cut leave as many rows as the page has UN numbers?
+
+    The valley test above asks whether a step in the sorted gaps looks like a
+    boundary. On the German edition it found one at 31.2 points and there is no
+    boundary there at all: the cut merged about twenty printed rows into one
+    band, so UN 0004 came back carrying the twenty-one entries after it inside
+    its own name, and 145 table pages yielded 531 rows instead of some 2,400.
+
+    So the cut is not believed on its looks; it is tried. A page's rows and its
+    UN numbers are the same thing counted twice, and a cut that produces fewer
+    bands than the page has UN numbers is provably gluing rows together. This
+    does not disqualify the Dutch extract, which needs the gap: it sets the UN
+    number beside the *second* line of a wrapped name, and one line per row
+    still starts with one.
+    """
+    bands = starts = 0
+    for index in sample:
+        page = document[index]
+        top, centres = band_of(page)
+        if top is None or not all(n in centres for n in NEEDED):
+            continue
+        lines, _right = name_column(page, top, centres)
+        starts += sum(1 for _y, text, _edge in lines
+                      if UN_START.match(re.sub(r"\s+", " ", text).strip()))
+        bands += len(split_bands(lines, BY_GAP, cut))
+    return starts == 0 or bands >= starts * 0.9
 
 
 #: Where the body of a page stops and its running foot begins, as a fraction of
@@ -210,23 +248,31 @@ def name_column(page, top: float, centres: dict[str, float]):
     right = class_left(page, top, centres["3a"])
     if right is None:
         right = centres["3a"] - (centres["3a"] - centres["2"]) / 2
-    lines: list[tuple[float, str]] = []
+    # The right edge of each line comes back with it. A hyphen at the end of a
+    # line is either part of the name (1,2-DICHLORETHAN, n-PROPANOL) or the
+    # typesetter breaking a word, and the difference is not in the letters: it
+    # is that a break sits against the column's right edge and a real hyphen
+    # does not. The German edition breaks constantly — CHLORWASSERSTOFF-SÄURE,
+    # DIETHYLENGLYCOLDINI-TRAT — and a name is the identity of the goods.
+    lines: list[tuple[float, str, float]] = []
     for block in page.get_text("rawdict")["blocks"]:
         if block["type"] != 0:
             continue
         for line in block["lines"]:
             kept = []
+            edge = 0.0
             for span in line["spans"]:
                 for char in span["chars"]:
                     x0, y0, x1, _y1 = char["bbox"]
                     if top <= y0 <= limit and (x0 + x1) / 2 < right:
                         kept.append((x0, char["c"]))
+                        edge = max(edge, x1)
             if kept:
                 kept.sort()
                 lines.append((round(line["bbox"][1], 1),
-                              "".join(c for _x, c in kept)))
+                              "".join(c for _x, c in kept), edge))
     lines.sort()
-    return lines
+    return lines, right
 
 
 def split_bands(lines, method: str, cut: float) -> list[tuple[list[str], float]]:
@@ -237,11 +283,11 @@ def split_bands(lines, method: str, cut: float) -> list[tuple[list[str], float]]
     its predecessor or fallen outside the body, and only the coordinate tells
     which.
     """
-    bands: list[tuple[list[str], float]] = []
-    current: list[str] = []
+    bands: list[tuple[list[tuple[str, float]], float]] = []
+    current: list[tuple[str, float]] = []
     start_y = 0.0
     previous_y: float | None = None
-    for y, text in lines:
+    for y, text, edge in lines:
         text = re.sub(r"\s+", " ", text).strip()
         if not text:
             continue
@@ -255,10 +301,50 @@ def split_bands(lines, method: str, cut: float) -> list[tuple[list[str], float]]
         if not current:
             start_y = y
         previous_y = y
-        current.append(text)
+        current.append((text, edge))
     if current:
         bands.append((current, start_y))
     return bands
+
+
+#: A word break the typesetter made, as opposed to a hyphen the name owns.
+#: The name is set in capitals, so a break falls inside a run of them; the
+#: hyphens that belong to a name follow a locant or a lower-case prefix
+#: (2,2'-, alpha-, n-, tert-) and never a long capitalised fragment.
+BROKEN_WORD = re.compile(r"[A-ZÄÖÜ]{4,}-$")
+
+
+def glue_broken_words(lines: list[tuple[str, float]]) -> list[str]:
+    """Undo the typesetter's word breaks, and only those.
+
+    A hyphen at the end of a line is either part of the name — 1,2-DICHLORETHAN,
+    n-PROPANOL, alpha-NAPHTHYLAMIN — or the typesetter breaking a word across
+    the column. What separates them is where the hyphen sits *in the word*: the
+    hyphens a name owns follow a locant or a lower-case prefix, and a break
+    falls inside a run of capitals.
+
+    Position was tried first and does not hold: a break is not always set hard
+    against the column's margin — the typesetter breaks at a syllable and
+    leaves what slack that costs — so a margin test either misses breaks or
+    needs a tolerance nobody can defend. The second reading settles it instead:
+    against the 2023 export, this rule turns CYCLOTRIMETHYLENTRI-NITRAMIN back
+    into CYCLOTRIMETHYLENTRINITRAMIN, which is what that edition prints too.
+
+    The German edition breaks constantly (CHLORWASSERSTOFF-SÄURE,
+    DIETHYLENGLYCOLDINI-TRAT, LOCKERUNGSSPRENGGE-RÄTE); the UNECE volumes hardly
+    ever do, and there the rule simply never fires.
+    """
+    out: list[str] = []
+    glue = False
+    for text, edge in lines:
+        if glue and out:
+            out[-1] += text
+        else:
+            out.append(text)
+        glue = bool(BROKEN_WORD.search(out[-1]))
+        if glue:
+            out[-1] = out[-1][:-1]
+    return out
 
 
 def explain(path: Path, targets: list[str]) -> int:
@@ -305,9 +391,9 @@ def explain(path: Path, targets: list[str]) -> int:
                         print(f"    the number itself: x {x0:.1f} y {y0:.1f} "
                               f"{'inside' if top <= y0 <= body_bottom(page) else 'OUTSIDE'}"
                               " the body")
-                lines = name_column(page, top, centres)
+                lines, _right = name_column(page, top, centres)
                 marks = {round(y, 1) for _band, y in split_bands(lines, method, cut)}
-                for y, text in lines[:8]:
+                for y, text, _edge in lines[:8]:
                     head = "ROW " if round(y, 1) in marks else "    "
                     flat = re.sub(r"\s+", " ", text)[:80]
                     print(f"    {head}{y:7.1f} {flat!r}")
@@ -339,8 +425,9 @@ def read(path: Path) -> tuple[dict[str, list[str]], list[str], dict[str, int]]:
             counts["table_pages"] += 1
             top = top_marker
 
-            bands = [band for band, _starts
-                     in split_bands(name_column(page, top, centres), method, cut)]
+            lines, _right = name_column(page, top, centres)
+            bands = [glue_broken_words(band)
+                     for band, _starts in split_bands(lines, method, cut)]
 
             for band in bands:
                 number, name = un_and_name({"1": band})
@@ -349,6 +436,13 @@ def read(path: Path) -> tuple[dict[str, list[str]], list[str], dict[str, int]]:
                     # began at the foot of the page before.
                     if carried and name and names[carried]:
                         names[carried][-1] = join(names[carried][-1], name)
+                    continue
+                if not NAME_START.match(name):
+                    # Not a row: a line of running text that opens with four
+                    # digits. The German edition's special provisions speak of
+                    # "1000 ml/m3 und einer gesättigten Dampfkonzentration",
+                    # and that came back as a UN 1000 the ADR does not have.
+                    counts["not_a_row"] = counts.get("not_a_row", 0) + 1
                     continue
                 carried = number
                 counts["rows"] += 1

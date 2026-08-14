@@ -405,3 +405,31 @@ def test_eigen_bewoordingen_blijven_staan():
 def test_zee_en_lucht_winnen_van_de_taalkeuze():
     product = {"un_number": BENZINE, "proper_shipping_name": "ESSENCE"}
     assert resolve_for_profile(product, "IMDG", "fr")[0] == "GASOLINE"
+
+
+# --- German from the 2025 edition, not the 2023 export ---------------------
+
+
+def test_de_duitse_naam_komt_uit_de_editie_van_2025():
+    """The German names were the last field still coming from a 2023 export.
+    The Bundesamt für Strassen edition closed it: 2,346 UN numbers at 0.9996
+    agreement, and 2,210 of the names identical to the export that stood
+    before — the rest is what two years of ADR did to them."""
+    assert proper_shipping_name(entry(BENZINE), "de", ["ADR"]) == "BENZIN ODER OTTOKRAFTSTOFF"
+    # The export truncated this one at "Alkohol/Wasser-"; the edition does not.
+    assert proper_shipping_name(entry("0219"), "de", ["ADR"]).endswith("MISCHUNG")
+
+
+def test_een_afbreekstreepje_staat_niet_in_de_naam():
+    """The German edition breaks words across the column. A name a driver hands
+    over may not carry the typesetter's hyphen: the 2023 export spells this one
+    without it too, which is how the reading was checked."""
+    assert "-" not in proper_shipping_name(entry("1789"), "de", ["ADR"])
+    assert proper_shipping_name(entry("0072"), "de", ["ADR"]).startswith(
+        "CYCLOTRIMETHYLENTRINITRAMIN")
+
+
+def test_een_echt_streepje_blijft_staan():
+    """alpha-NAPHTHYLAMIN owns its hyphen: it follows a prefix, not a run of
+    capitals."""
+    assert proper_shipping_name(entry("2077"), "de", ["ADR"]) == "ALPHA-NAPHTHYLAMIN"

@@ -50,11 +50,14 @@ RULE_SETS: list[dict[str, Any]] = [
         # Measured against the Dutch ADR 2025 while the Dutch names were being
         # read out, and therefore stated here rather than left to be discovered.
         "errata": [
-            "Table A has no English or German column — the edition read is the "
-            "Dutch one — so those two names still come from the 2023 export. "
-            "Where 2025 moved a field the row cannot be matched and the UN "
-            "number's name is used, which for 55 UN numbers with per-row names "
-            "can be the wrong variant.",
+            "Table A has no English column — the edition read is the Dutch one "
+            "— so the English names still come from the 2023 export. Where 2025 "
+            "moved a field the row cannot be matched and the UN number's name "
+            "is used, which for 55 UN numbers with per-row names can be the "
+            "wrong variant. The German names no longer come from that export: "
+            "since v1.79.0 they are read from the ADR 2025 of the Bundesamt "
+            "für Strassen, 2,346 UN numbers, of which 2,210 read exactly as "
+            "the export had them.",
             "A carriage prohibition is not in the Dutch table in words: the row "
             "is simply left empty, which is also how an entry not subject to "
             "ADR is written. The fourteen prohibited UN numbers therefore come "
@@ -63,12 +66,12 @@ RULE_SETS: list[dict[str, Any]] = [
         "covers": [
             "classification per UN number (class, packing group, labels, LQ/EQ)",
             "the carriage provisions of columns (16) to (19)",
-            "Dutch and French proper shipping names from Table A, column (2)",
+            "Dutch, French and German proper shipping names from Table A, column (2)",
             "1.1.3.6 points calculation",
             "7.5.2 mixed loading and 7.5.4/CV28",
         ],
         "files": ["adr_table_a.json", "un_numbers.json", "adr_names_nl.json",
-                  "adr_names_fr.json",
+                  "adr_names_fr.json", "adr_names_de.json",
                   "adr_2025_additions.json", "packagings.json",
                   "adn_table_a.json", "adn_table_c.json"],
     },

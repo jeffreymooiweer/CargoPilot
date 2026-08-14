@@ -2,6 +2,28 @@
 
 All notable changes are documented here, following [Semantic Versioning](https://semver.org/).
 
+## [1.71.1] — 2026-08-14
+
+### Fixed
+
+- **The field emptied itself under the cursor.** `dg/prepare` fills in what
+  follows from the UN number. It is debounced by 250 ms, then takes a round trip,
+  and it only runs again when the UN number, the counts or the packaging change.
+  That leaves a window: anything else typed while a request is out — a total by
+  hand, a technical name — is typed into a form the reply knows nothing about, and
+  the reply was taken as the new truth. The value went back to what it had been
+  when the request left, a beat after the typing.
+
+  The reply is no longer taken whole. The difference between what the request was
+  built from and what came back is exactly what the backend contributed; only that
+  is applied, and only where the form still holds nothing of its own — the rule
+  the derivation already followed, now applied against the form as it stands
+  rather than as it stood. If a position or a product was added or removed while
+  the request was out the reply is dropped, because the indices no longer line up
+  and a fresh derivation is on its way regardless.
+
+  Reported in PR #148 and left unfixed through three releases.
+
 ## [1.71.0] — 2026-08-14
 
 ### Fixed

@@ -785,6 +785,14 @@ def dutch_book_rows(pdf_path: Path) -> tuple[list[dict[str, Any]], list[str]]:
                         # it is what the table is, so it decides here.
                         if marker == "1" and not re.fullmatch(r"\d{4}", word):
                             marker = "2"
+                        # And column (4) holds a packing group: I, II, III, or
+                        # the book's dash and asterisk. Where a page's widest
+                        # row bridges the corridor between (4) and (5) there is
+                        # no corridor left to measure and the midpoint stands
+                        # in — which put "3+(N1," in front of the group. What
+                        # the column holds decides, as it does for (1).
+                        elif marker == "4" and not PG.fullmatch(word.strip(",")):
+                            marker = "5"
                         cells.setdefault(marker, []).append((y0, x0, word))
                         break
             values = {field: _read_cell(cells.get(marker, []))

@@ -436,10 +436,15 @@ def english_rows(pdf_path: Path) -> tuple[list[dict[str, Any]], list[str]]:
             continue
 
         def column_of(x0: float) -> int | None:
-            if x0 < anchors[0] - 3:
+            # Cells are left-aligned on their UN number — almost. Page 205
+            # prints UN 1148 five points right of its own column's values, so
+            # the window opens eight points left of the anchor: wide enough for
+            # that indent, narrow enough that a neighbour's wrapped line (which
+            # shifts about nine points per line) rarely reaches it.
+            if x0 < anchors[0] - 8:
                 return None
             for i in range(len(anchors) - 1, -1, -1):
-                if x0 >= anchors[i] - 3:
+                if x0 >= anchors[i] - 8:
                     return i
             return None
 

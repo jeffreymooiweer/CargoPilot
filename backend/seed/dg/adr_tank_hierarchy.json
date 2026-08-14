@@ -6,23 +6,26 @@
  ],
  "editions": {
   "en": "ADR 2025 Volume II (ECE/TRANS/352 Vol. II), UNECE",
-  "nl": "ADR 2025, Dutch edition, printed text (adr_nl_2025 in the store)"
+  "nl": "ADR 2025, Dutch edition, printed text (adr_nl_2025 in the store)",
+  "de": "ADR 2025, German edition (Bundesamt für Strassen), volume II"
  },
  "note_of_the_regulation": "The hierarchy takes no special provision into account; see 4.3.5 and 6.8.4, which are column (13) of table A.",
  "cross_check": {
   "readings": [
    "en",
-   "nl"
+   "nl",
+   "de"
   ],
   "gas_rows": 16,
   "tank_codes": 18,
   "codes_settled_on_every_cell": 7,
+  "cells_a_third_reading_settled": 0,
   "cells_no_two_readings_agree_on": 12
  },
  "gases": [
   {
    "tank_code": "C*BH",
-   "readings": 2,
+   "readings": 3,
    "also_permitted": [
     "C#BH",
     "C#CH",
@@ -31,7 +34,7 @@
   },
   {
    "tank_code": "C*BN",
-   "readings": 2,
+   "readings": 3,
    "also_permitted": [
     "C#BN",
     "C#CN",
@@ -43,7 +46,7 @@
   },
   {
    "tank_code": "C*CH",
-   "readings": 2,
+   "readings": 3,
    "also_permitted": [
     "C#CH",
     "C#DH"
@@ -51,7 +54,7 @@
   },
   {
    "tank_code": "C*CN",
-   "readings": 2,
+   "readings": 3,
    "also_permitted": [
     "C#CN",
     "C#DN",
@@ -61,14 +64,14 @@
   },
   {
    "tank_code": "C*DH",
-   "readings": 2,
+   "readings": 3,
    "also_permitted": [
     "C#DH"
    ]
   },
   {
    "tank_code": "C*DN",
-   "readings": 2,
+   "readings": 3,
    "also_permitted": [
     "C#DN",
     "C#DH"
@@ -76,7 +79,7 @@
   },
   {
    "tank_code": "P*BH",
-   "readings": 2,
+   "readings": 3,
    "also_permitted": [
     "P#BH",
     "P#CH",
@@ -85,7 +88,7 @@
   },
   {
    "tank_code": "P*BN",
-   "readings": 2,
+   "readings": 3,
    "also_permitted": [
     "P#BN",
     "P#CN",
@@ -97,7 +100,7 @@
   },
   {
    "tank_code": "P*CH",
-   "readings": 2,
+   "readings": 3,
    "also_permitted": [
     "P#CH",
     "P#DH"
@@ -105,7 +108,7 @@
   },
   {
    "tank_code": "P*CN",
-   "readings": 2,
+   "readings": 3,
    "also_permitted": [
     "P#CN",
     "P#DN",
@@ -115,14 +118,14 @@
   },
   {
    "tank_code": "P*DH",
-   "readings": 2,
+   "readings": 3,
    "also_permitted": [
     "P#DH"
    ]
   },
   {
    "tank_code": "P*DN",
-   "readings": 2,
+   "readings": 3,
    "also_permitted": [
     "P#DN",
     "P#DH"
@@ -130,7 +133,7 @@
   },
   {
    "tank_code": "R*BN",
-   "readings": 2,
+   "readings": 3,
    "also_permitted": [
     "R#BN",
     "R#CN",
@@ -140,14 +143,18 @@
   {
    "tank_code": "R*CH",
    "readings": 1,
-   "also_permitted": [
-    "R#CN",
-    "R#DN"
-   ]
+   "disputed": {
+    "also_permitted": {
+     "nl": [
+      "R#CN",
+      "R#DN"
+     ]
+    }
+   }
   },
   {
    "tank_code": "R*CN",
-   "readings": 1,
+   "readings": 2,
    "also_permitted": [
     "R#CN",
     "R#DN"
@@ -155,7 +162,7 @@
   },
   {
    "tank_code": "R*DN",
-   "readings": 2,
+   "readings": 3,
    "also_permitted": [
     "R#DN"
    ]

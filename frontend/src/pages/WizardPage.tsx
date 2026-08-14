@@ -10,6 +10,7 @@ import {
   DocumentRegistry,
   LocalizedText,
   UnCardsAvailability,
+  WrittenInstruction,
   UserPreferences,
 } from "../api/client";
 import { documentLanguage, localised } from "../i18n/language";
@@ -121,6 +122,7 @@ export default function WizardPage() {
   const [loading, setLoading] = useState(false);
   const [exportingDoc, setExportingDoc] = useState<string | null>(null);
   const [unCards, setUnCards] = useState<UnCardsAvailability | null>(null);
+  const [instructions, setInstructions] = useState<WrittenInstruction[]>([]);
   const [unCardsBusy, setUnCardsBusy] = useState(false);
   const [error, setError] = useState("");
   const [importOpen, setImportOpen] = useState(false);
@@ -523,6 +525,43 @@ export default function WizardPage() {
     };
   }, [stepKey, dgEntries, lang]);
 
+  // The instructions in writing of 5.4.3, which the crew has to carry with the
+  // transport document. Asked for the regimes this shipment actually travels
+  // under — ADR on the road, ADN on the water — and only when dangerous goods
+  // were declared, because without them the document is not required.
+  useEffect(() => {
+    if (stepKey !== "export" || dgEntries.length === 0) {
+      setInstructions([]);
+      return;
+    }
+    let cancelled = false;
+    api
+      .writtenInstructions()
+      .then((answer) => {
+        if (!cancelled) setInstructions(answer.documents);
+      })
+      .catch(() => {
+        if (!cancelled) setInstructions([]);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [stepKey, dgEntries]);
+
+  const instructionRegimes = useMemo(
+    () => ["adr", "adn"].filter((regime) => dgProfiles.includes(regime.toUpperCase())),
+    [dgProfiles],
+  );
+
+  const downloadInstructions = async (regime: string, language: string) => {
+    setError("");
+    try {
+      await api.downloadInstructions(regime, language);
+    } catch (e) {
+      setError(String(e));
+    }
+  };
+
   const downloadUnCards = async () => {
     setUnCardsBusy(true);
     setError("");
@@ -795,6 +834,47 @@ export default function WizardPage() {
               })}
             </div>
           </div>
+
+          {instructionRegimes.length > 0 && instructions.length > 0 && (
+            <div className={`${panelClass} space-y-3 p-4 sm:p-6`}>
+              <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-100">
+                {t("instructions.title")}
+              </h3>
+              <p className="text-sm text-slate-600 dark:text-slate-400">
+                {t("instructions.intro")}
+              </p>
+              <p className="text-xs text-slate-500 dark:text-slate-400">
+                {t("instructions.languageRule")}
+              </p>
+              {instructionRegimes.map((regime) => (
+                <div key={regime} className="space-y-2">
+                  <p className="text-sm font-medium text-slate-800 dark:text-slate-100">
+                    {regime.toUpperCase()}
+                  </p>
+                  <div className="flex flex-wrap gap-2">
+                    {instructions
+                      .filter((item) => item.regime === regime)
+                      .map((item) => (
+                        <button
+                          key={`${item.regime}-${item.language}`}
+                          type="button"
+                          disabled={!item.available}
+                          title={
+                            item.available
+                              ? undefined
+                              : `${t("instructions.unavailable", { document: item.needs ?? "" })} ${t("instructions.howto")}`
+                          }
+                          onClick={() => downloadInstructions(item.regime, item.language)}
+                          className={`${buttonSecondary} ${item.available ? "" : "opacity-40"}`}
+                        >
+                          {item.language.toUpperCase()}
+                        </button>
+                      ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
 
           {unCards && unCards.enabled && unCards.count > 0 && (
             <div className={`${panelClass} space-y-3 p-4 sm:p-6`}>

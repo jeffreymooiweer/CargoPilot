@@ -115,8 +115,10 @@ jobs:
         if: ${{ inputs.probe_url == '' && inputs.drive_folder == '' && inputs.find_instructions == '' }}
         run: python scripts/regulations_store.py fetch ${{ inputs.ids }}
 
+      # Not after a page-range measurement: that report is what the run is for,
+      # and a store listing under it only pushes it out of reach of a log tail.
       - name: Report the store
-        if: ${{ always() && inputs.probe_url == '' }}
+        if: ${{ always() && inputs.probe_url == '' && inputs.find_instructions == '' }}
         env:
           IGNORED: report runs after fetch and after adopt alike
         run: python scripts/regulations_store.py status || true

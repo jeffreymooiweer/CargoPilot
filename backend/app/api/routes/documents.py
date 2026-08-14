@@ -19,6 +19,7 @@ from app.services.documents import (
     un_cards_availability,
     validate_document,
 )
+from app.services import regulations
 from app.services.documents.avc_form import fill_avc_waybill, has_avc_template
 from app.services.documents.signature import decode_signature_image
 from app.services.settings_store import instance_settings
@@ -103,6 +104,37 @@ def export(
         filename=f"{payload.document_key}_{ref}.pdf",
         media_type="application/pdf",
     )
+
+
+@router.get("/instructions")
+def instructions_overview(user: User = Depends(get_current_user)):
+    """What this installation can hand a driver or a boatmaster under 5.4.3.
+
+    Per regime and language, because the model is only ever offered as the
+    edition prints it: a language the store cannot produce is reported as
+    missing with the document that would produce it, never filled in from a
+    neighbouring language.
+    """
+    return {"documents": [
+        regulations.instruction_status(doc["model_of"]["regime"],
+                                       doc["model_of"]["language"])
+        for doc in regulations.instruction_documents()]}
+
+
+@router.get("/instructions/{regime}/{language}")
+def instructions_file(regime: str, language: str,
+                      user: User = Depends(get_current_user)):
+    if regime not in regulations.REGIMES or language not in regulations.LANGUAGES:
+        raise HTTPException(status_code=404, detail="Unknown regime or language")
+    status = regulations.instruction_status(regime, language)
+    if not status.get("available"):
+        raise HTTPException(status_code=409, detail=status)
+    path = regulations.instructions_pdf(regime, language)
+    if path is None:  # pragma: no cover - the status said it was there
+        raise HTTPException(status_code=409, detail=status)
+    return FileResponse(
+        path, media_type="application/pdf",
+        filename=f"{regime}-2025-instructions-{language}.pdf")
 
 
 @router.post("/un-cards/availability")

@@ -42,10 +42,34 @@ def test_de_ids_zijn_uniek_en_de_velden_compleet():
 def test_elke_bron_zonder_url_draagt_een_gepinde_hash():
     """A download can be repeated; an operator-supplied file cannot. For those
     the pinned hash is the only proof of which file the facts came from, so it
-    may never be absent."""
+    may never be absent.
+
+    The models of 5.4.3 are the exception, and a reasoned one: they are not
+    sources at all but pages served back out of a source. A model that is cut
+    from an edition inherits that edition's pinned hash — the range says which
+    pages — and one that nobody has supplied yet has no file to hash. Both are
+    held to their own rule below.
+    """
     for doc in register()["documents"]:
+        if doc.get("model_of"):
+            continue
         if not doc["urls"]:
             assert re.fullmatch(r"[0-9a-f]{64}", doc["sha256"] or ""), doc["id"]
+
+
+def test_een_model_van_5_4_3_wijst_naar_een_editie_of_zegt_dat_het_ontbreekt():
+    documents = {doc["id"]: doc for doc in register()["documents"]}
+    for doc in documents.values():
+        if not doc.get("model_of"):
+            continue
+        cut = doc.get("cut_from")
+        if cut is None:
+            assert doc["sha256"] is None, doc["id"]
+            continue
+        source = documents[cut["document"]]
+        assert re.fullmatch(r"[0-9a-f]{64}", source["sha256"] or ""), doc["id"]
+        first, last = cut["pages"]
+        assert 0 < first <= last, doc["id"]
 
 
 def test_het_leesscript_en_het_register_kennen_dezelfde_documenten():

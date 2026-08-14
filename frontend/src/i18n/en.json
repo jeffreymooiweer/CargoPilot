@@ -529,5 +529,14 @@
       "quantity_not_a_number": "quantity {{value}} holds no number",
       "quantity_not_positive": "quantity {{value}} must be greater than zero"
     }
+  },
+  "instructions": {
+    "title": "Instructions in writing (5.4.3)",
+    "intro": "The mandatory four-page model that has to be in the cab or the wheelhouse. The application hands over the model as the edition prints it; reproducing it by hand is not allowed.",
+    "language": "Language",
+    "download": "Download",
+    "unavailable": "Not in this installation's document store ({{document}}).",
+    "howto": "Put the missing edition in the document store; see docs/regulatory-database.md.",
+    "languageRule": "5.4.3.2: in a language each member of the crew can read and understand."
   }
 }

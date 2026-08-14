@@ -63,11 +63,12 @@ RULE_SETS: list[dict[str, Any]] = [
         "covers": [
             "classification per UN number (class, packing group, labels, LQ/EQ)",
             "the carriage provisions of columns (16) to (19)",
-            "Dutch proper shipping names from Table A, column (2)",
+            "Dutch and French proper shipping names from Table A, column (2)",
             "1.1.3.6 points calculation",
             "7.5.2 mixed loading and 7.5.4/CV28",
         ],
         "files": ["adr_table_a.json", "un_numbers.json", "adr_names_nl.json",
+                  "adr_names_fr.json",
                   "adr_2025_additions.json", "packagings.json",
                   "adn_table_a.json", "adn_table_c.json"],
     },

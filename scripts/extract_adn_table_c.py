@@ -442,15 +442,52 @@ def english_rows(pdf_path: Path) -> tuple[list[dict[str, Any]], list[str]]:
                 continue
             cells.setdefault((band, column), []).append((x0, centre, word))
 
+        marker_y = dict(bands)
+
+        def read(got: list[tuple[float, float, str]]) -> str:
+            # The table is printed rotated: a cell's words run bottom-up, and
+            # its lines stack left to right. Reading order is therefore by x
+            # first and by *descending* y within the line.
+            return " ".join(w for _x, _y, w in
+                            sorted(got, key=lambda item: (item[0], -item[1])))
+
         for column in range(len(anchors)):
             values: dict[str, str] = {}
+            problems: list[str] = []
+
+            # A long rotated name reaches down past the midpoint into the (1)
+            # band, and a long remark reaches down into the (19) band. So those
+            # band pairs are pooled, and the single-token cell is the token of
+            # its own shape nearest its marker; everything else in the pool is
+            # the neighbour's text.
+            pool = cells.get(("1", column), []) + cells.get(("2", column), [])
+            un_words = [item for item in pool if re.fullmatch(r"\d{4}", item[2])]
+            if len(un_words) != 1:
+                failures.append(
+                    f"page {number} column {column}: "
+                    f"{len(un_words)} UN numbers in {read(pool)!r}")
+                continue
+            values["un"] = un_words[0][2]
+            values["name_en"] = read([w for w in pool if w is not un_words[0]])
+
+            pool = cells.get(("19", column), []) + cells.get(("20", column), [])
+            near = [item for item in pool
+                    if re.fullmatch(r"[012*\-]", item[2])
+                    and abs(item[1] - marker_y["19"]) <= 8]
+            if len(near) > 1:
+                failures.append(
+                    f"page {number} column {column}: "
+                    f"cones candidates {sorted(w for _x, _y, w in near)}")
+                continue
+            values["blue_cones"] = near[0][2] if near else "-"
+            values["remarks"] = read(
+                [w for w in pool if not near or w is not near[0]])
+
             for band, field in BAND_FIELDS.items():
-                # The table is printed rotated: a cell's words run bottom-up,
-                # and its lines stack left to right. Reading order is therefore
-                # by x first and by *descending* y within the line.
-                got = sorted(cells.get((band, column), []),
-                             key=lambda item: (item[0], -item[1]))
-                values[field] = " ".join(word for _x, _y, word in got)
+                if band in ("1", "2", "19", "20"):
+                    continue
+                values[field] = read(cells.get((band, column), []))
+            del problems
             row = _english_row(values, failures)
             if row:
                 rows.append(row)

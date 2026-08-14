@@ -272,6 +272,86 @@
       "note": "Arrived with the operator's Drive folder on 2026-08-14."
     },
     {
+      "id": "adr_nl_2025",
+      "title": "ADR 2025, Dutch edition, complete text",
+      "publisher": "supplied by the operator; the edition names itself on its title page",
+      "edition": "ADR 2025, in force 1 January 2025",
+      "language": "nl",
+      "profiles": [
+        "ADR"
+      ],
+      "role": "A second Dutch ADR 2025, supplied alongside the mindef export. Kept beside adr_nl_complete rather than in place of it: two editions of one text are two readings, and which of them a fact came from is the kind of thing this register exists to record.",
+      "filename": "ADR-2025-NL.pdf",
+      "urls": [],
+      "obtained": "supplied by the operator",
+      "sha256": "8162f1320e0bf58bb4eab876b360aeceecc75791e806a665d3fb510027e04326",
+      "note": "Supplied as a file; no stable public URL is recorded."
+    },
+    {
+      "id": "adr_de_1",
+      "title": "ADR 2025, German edition, volume 1",
+      "publisher": "supplied by the operator",
+      "edition": "ADR 2025, in force 1 January 2025",
+      "language": "de",
+      "profiles": [
+        "ADR"
+      ],
+      "role": "The German ADR, which UNECE does not publish. Parts 1 to 3, and with them column (2) of table A in German — the one language whose proper shipping names the application still takes from a 2023 export.",
+      "filename": "adr_de_1.pdf",
+      "urls": [],
+      "obtained": "supplied by the operator",
+      "sha256": "b274d7789d164c0a77244185fc76ac06690633c0b8366d51b7cfdee6260636f0",
+      "note": "Supplied as a file; no stable public URL is recorded."
+    },
+    {
+      "id": "adr_de_2",
+      "title": "ADR 2025, German edition, volume 2",
+      "publisher": "supplied by the operator",
+      "edition": "ADR 2025, in force 1 January 2025",
+      "language": "de",
+      "profiles": [
+        "ADR"
+      ],
+      "role": "Parts 4 to 9 in German, and with them chapter 5.4 — the source of the German model of the instructions in writing, which no free edition prints and which the application therefore had to report as missing.",
+      "filename": "adr_de_2.pdf",
+      "urls": [],
+      "obtained": "supplied by the operator",
+      "sha256": "947ad3020df533c9d8d95c0c6a52167545733b114c646c68a6ed63b8e69ce463",
+      "note": "Supplied as a file; no stable public URL is recorded."
+    },
+    {
+      "id": "rid_de",
+      "title": "RID 2025, German",
+      "publisher": "OTIF",
+      "edition": "RID 2025, in force 1 January 2025",
+      "language": "de",
+      "profiles": [
+        "RID"
+      ],
+      "role": "The rail provisions in German, beside the English edition already registered. Not yet read from.",
+      "filename": "rid_de.pdf",
+      "urls": [],
+      "obtained": "supplied by the operator",
+      "sha256": "a1e95c8de338edf9325b4b0b05595eaeaa830f88c479f455997cd0236e1ac90d",
+      "note": "Supplied as a file; OTIF publishes the same edition, but this copy is the one pinned."
+    },
+    {
+      "id": "rid_fr",
+      "title": "RID 2025, French",
+      "publisher": "OTIF",
+      "edition": "RID 2025, in force 1 January 2025",
+      "language": "fr",
+      "profiles": [
+        "RID"
+      ],
+      "role": "The rail provisions in French, beside the English edition already registered. Not yet read from.",
+      "filename": "rid_fr.pdf",
+      "urls": [],
+      "obtained": "supplied by the operator",
+      "sha256": "83170b449f03ea76876761abe82cfce826dc4be12a753c9442f11a12a0ea2688",
+      "note": "Supplied as a file; OTIF publishes the same edition, but this copy is the one pinned."
+    },
+    {
       "id": "adn_instructions_nl",
       "title": "Instructions in writing according to the ADN, Dutch",
       "publisher": "national edition",

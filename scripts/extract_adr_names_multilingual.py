@@ -178,7 +178,14 @@ def band_of(page) -> tuple[float | None, dict[str, float]]:
             # step below its head. `extract_adr_table_a` steps ten points, which
             # clears the marker line in the Dutch extract and eats the first
             # data row of a tighter one — one entry per page, 123 of them.
-            return bottoms[y] + 1.0, dict(rows[y])
+            #
+            # Not one point below that foot either, which is what this did
+            # until the trace measured a page: on page 300 of the French volume
+            # the marker line ends at y 114.6 and UN 0004's number begins at
+            # y 114.6, so the row touches the band and a single point of margin
+            # takes it. The foot exactly excludes the markers — their tops lie
+            # above it — and keeps the row that starts on it.
+            return bottoms[y], dict(rows[y])
     return None, {}
 
 

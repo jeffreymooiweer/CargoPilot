@@ -55,8 +55,19 @@ jobs:
           set -uo pipefail
           echo "=== headers ==="
           curl -sS -L -I "$URL" || true
-          echo "=== body, first 2000 bytes (may be binary) ==="
-          curl -sS -L "$URL" | head -c 2000 | od -c | head -40 || true
+          curl -sS -L "$URL" -o /tmp/probe.bin || true
+          if file /tmp/probe.bin | grep -qi 'html\|text'; then
+            # A landing page is asked for because of what it links to. Printing
+            # two thousand bytes of it says nothing: the links are the answer.
+            echo "=== links to documents ==="
+            grep -o 'href="[^"]*"' /tmp/probe.bin \
+              | grep -iE '\.pdf|\.docx?' | sort -u | head -80 || true
+            echo "=== headings ==="
+            grep -o '<title>[^<]*</title>' /tmp/probe.bin | head -3 || true
+          else
+            echo "=== body, first 2000 bytes (binary) ==="
+            head -c 2000 /tmp/probe.bin | od -c | head -40 || true
+          fi
 
       - name: Take in a Drive folder
         if: ${{ inputs.drive_folder != '' }}

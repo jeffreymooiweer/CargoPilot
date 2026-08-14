@@ -1,0 +1,96 @@
+name: Extract ADR tank hierarchy
+
+# The two hierarchies of ADR 4.3 — 4.3.3.1.2 for gases and the rationalized
+# approach of 4.3.4.1.2 for classes 3 to 9 — read out of the official volumes.
+# The English volume II is downloadable; the printed Dutch edition is
+# operator-supplied and lives in the document store, which is why both readings
+# happen here rather than in the development container.
+#
+# Nothing is committed. Two readings are compared in the development container
+# and only a comparison that accounts for every disagreement becomes a seed.
+
+on:
+  workflow_dispatch:
+    inputs:
+      language:
+        description: "Which edition to read"
+        type: choice
+        options:
+          - en
+          - nl
+          - de
+        default: en
+      probe:
+        description: "Report the layout of the pages found and stop"
+        type: boolean
+        default: false
+      dump:
+        description: "Print the reading to the log (the development container cannot reach the artifact store)"
+        type: boolean
+        default: true
+
+permissions:
+  contents: read
+
+jobs:
+  extract:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install --quiet pymupdf
+
+      - name: Volumes already fetched
+        uses: actions/cache/restore@v4
+        with:
+          path: /tmp/cargopilot-regulations
+          key: regulations-${{ github.run_id }}
+          restore-keys: |
+            regulations-
+
+      - name: The edition must be in the store
+        env:
+          LANGUAGE: ${{ inputs.language }}
+        run: |
+          set -euo pipefail
+          case "$LANGUAGE" in
+            # Operator-supplied: either in the store or the run has nothing to
+            # read, and saying which is the useful answer.
+            nl) python scripts/regulations_store.py path adr_nl_2025 ;;
+            de) python scripts/regulations_store.py path adr_de_2 ;;
+            *)  python scripts/regulations_store.py fetch adr2 ;;
+          esac
+
+      - name: Read the hierarchies
+        env:
+          LANGUAGE: ${{ inputs.language }}
+          PROBE: ${{ inputs.probe }}
+          DUMP: ${{ inputs.dump }}
+        run: |
+          set -euo pipefail
+          case "$LANGUAGE" in
+            nl) PDF=$(python scripts/regulations_store.py path adr_nl_2025) ;;
+            de) PDF=$(python scripts/regulations_store.py path adr_de_2) ;;
+            *)  PDF=/tmp/cargopilot-regulations/adr2.pdf ;;
+          esac
+          ARGS=(--pdf "$PDF" --language "$LANGUAGE" --out "hierarchy_$LANGUAGE.json")
+          if [ "$PROBE" = "true" ]; then ARGS+=(--probe); fi
+          if [ "$DUMP" = "true" ]; then ARGS+=(--dump); fi
+          python scripts/extract_adr_tank_hierarchy.py "${ARGS[@]}"
+
+      - name: Hand the reading back
+        if: ${{ always() && !inputs.probe }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: adr-tank-hierarchy-${{ inputs.language }}
+          path: hierarchy_${{ inputs.language }}.json
+          if-no-files-found: ignore
+
+      - name: Keep the volumes for the next run
+        if: always()
+        uses: actions/cache/save@v4
+        with:
+          path: /tmp/cargopilot-regulations
+          key: regulations-${{ github.run_id }}

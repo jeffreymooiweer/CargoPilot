@@ -32,6 +32,7 @@ Usage::
 from __future__ import annotations
 
 import argparse
+import json
 import os
 import re
 import subprocess
@@ -101,6 +102,41 @@ SOURCES: dict[str, dict[str, Any]] = {
         "edition": "ADN 2025, in force 1 January 2025",
     },
 }
+
+#: The document register of the store, so a reading can name a book this script
+#: cannot download.
+#:
+#: The five sources above are the ones a runner can fetch. They are not the only
+#: books CargoPilot reads: the printed Dutch ADR, the German volumes and the
+#: Dutch ADN were supplied by the operator and live in the store, and a
+#: provision that has to be read twice needs a second edition more than it needs
+#: a downloadable one. Merging the register in means ``--doc adr_nl_2025`` works
+#: exactly like ``--doc adr2``, and a document that is not in the store says so
+#: instead of being unnameable.
+REGISTER = Path(__file__).resolve().parents[1] / "backend" / "seed" / "dg" / "sources.json"
+
+
+def _register_documents() -> dict[str, dict[str, Any]]:
+    try:
+        manifest = json.loads(REGISTER.read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        return {}
+    extra: dict[str, dict[str, Any]] = {}
+    for doc in manifest.get("documents", []):
+        name = doc.get("filename", "")
+        if doc["id"] in SOURCES or not name.lower().endswith(".pdf"):
+            continue
+        extra[doc["id"]] = {
+            "urls": list(doc.get("urls") or []),
+            "title": doc.get("title", doc["id"]),
+            "publisher": doc.get("publisher", ""),
+            "edition": doc.get("edition", ""),
+            "filename": name,
+        }
+    return extra
+
+
+SOURCES.update(_register_documents())
 
 # These servers refuse a request that does not look like a browser. The
 # documents are published free of charge and require no login; the headers only
@@ -314,11 +350,26 @@ def _ask(address: str, target: Path, extra: list[str], label: str) -> tuple[int,
 
 
 def fetch(doc: str) -> Path:
-    """Download a text, reporting the status of every attempt."""
+    """Download a text, reporting the status of every attempt.
+
+    A book that came from the operator is never downloaded: it is in the store
+    or the run has nothing to read, and saying which is more useful than a
+    fetch that cannot succeed.
+    """
     CACHE.mkdir(parents=True, exist_ok=True)
-    target = CACHE / f"{doc}.pdf"
-    if _looks_like_pdf(target):
-        return target
+    name = SOURCES[doc].get("filename", f"{doc}.pdf")
+    for base in (CACHE, Path("/tmp/cargopilot-regulations")):
+        target = base / name
+        if _looks_like_pdf(target):
+            return target
+    target = CACHE / name
+
+    if not SOURCES[doc]["urls"]:
+        raise SystemExit(
+            f"{doc} ({SOURCES[doc]['title']}) is operator-supplied and is not in "
+            f"the store: expected {target}. Put it there with "
+            f"scripts/regulations_store.py add {doc} <file>."
+        )
 
     print(f"    fetching {SOURCES[doc]['title']}", file=sys.stderr)
     attempts: list[str] = []
@@ -651,7 +702,10 @@ def main() -> None:
     for doc in sorted(_PAGES):
         info = SOURCES[doc]
         print(f"  {doc}: {info['title']} — {info['publisher']}, {info['edition']}")
-        print(f"       {info.get('resolved_url') or info['urls'][0]}")
+        # A book out of the store has no address to print; where it came from
+        # is what the register records, and the register is the citation.
+        where = info.get("resolved_url") or (info["urls"] or ["from the document store"])[0]
+        print(f"       {where}")
         if info.get("resolved_via"):
             print(f"       (via {info['resolved_via']})")
 

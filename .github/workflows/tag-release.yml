@@ -92,16 +92,22 @@ jobs:
           echo "version=$RELEASE_VERSION" >> "$GITHUB_OUTPUT"
           echo "tag=v$RELEASE_VERSION" >> "$GITHUB_OUTPUT"
 
-      # Pushing the tag is the normal way and works for the head of main. A tag on
-      # an older commit is refused: GITHUB_TOKEN belongs to a GitHub App, and a
-      # ref carrying a different `.github/workflows/` tree counts to the remote as
-      # creating a workflow. That needs a `workflows` permission, and the
-      # `permissions:` block of a workflow has no name for it — so it cannot be
-      # granted here at all. The tag object API does not go through that check, so
-      # it is the way back for a tag that was missed at the time.
+      # Tagging the head of main works and always has. A tag on an older commit is
+      # refused, and the message says why: GITHUB_TOKEN belongs to a GitHub App,
+      # and a ref carrying a different `.github/workflows/` tree than the default
+      # branch counts to the remote as creating a workflow. That asks for a
+      # `workflows` permission, and the `permissions:` block of a workflow has no
+      # such key — it cannot be granted here at all.
+      #
+      # Measured, not assumed: `git/tags` accepts the tag object, and `git/refs`
+      # then answers 403 "Resource not accessible by integration". So the API is
+      # not a way round it either. The only credential that can make such a tag is
+      # one with workflow scope of its own, and that has to be a secret. If
+      # RELEASE_TOKEN exists the push uses it; if it does not, the step says what
+      # is missing rather than failing on a line about permissions.
       - name: Create and push tag
         env:
-          GH_TOKEN: ${{ github.token }}
+          RELEASE_TOKEN: ${{ secrets.RELEASE_TOKEN }}
         run: |
           TAG="${{ steps.release.outputs.tag }}"
           if git ls-remote --exit-code --tags origin "$TAG" >/dev/null 2>&1; then
@@ -112,16 +118,19 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git tag -a "$TAG" -m "CargoPilot $TAG"
+
+          if [ -n "$RELEASE_TOKEN" ]; then
+            HEADER="AUTHORIZATION: basic $(printf 'x-access-token:%s' "$RELEASE_TOKEN" | base64 -w0)"
+            git -c http.extraheader="$HEADER" push origin "$TAG"
+            exit 0
+          fi
+
           if git push origin "$TAG"; then
             exit 0
           fi
 
-          echo "The push of $TAG was refused; making the tag through the API instead."
-          OBJECT="$(gh api "repos/$GITHUB_REPOSITORY/git/tags" \
-            -f tag="$TAG" -f message="CargoPilot $TAG" \
-            -f object="$(git rev-parse HEAD)" -f type=commit --jq .sha)"
-          gh api "repos/$GITHUB_REPOSITORY/git/refs" \
-            -f ref="refs/tags/$TAG" -f sha="$OBJECT" --jq .ref
+          echo "::error::Could not push $TAG. A tag on a commit whose .github/workflows differs from the default branch needs a credential with workflow scope; add it as the RELEASE_TOKEN secret. Tagging the head of main does not need one."
+          exit 1
 
       - name: Prepare release notes
         run: |

@@ -2,6 +2,26 @@
 
 All notable changes are documented here, following [Semantic Versioning](https://semver.org/).
 
+## [1.78.1] — 2026-08-14
+
+### Changed
+
+- The two readers can now be pointed at the editions the operator supplied: the
+  proper-shipping-name reader at the German ADR (the only source there has ever
+  been for the German names of column (2)) and the table C reader at the printed
+  Dutch ADN (the book behind the export whose damage this repository has been
+  undoing since v1.73.0). Both are operator-supplied, so they are read from the
+  store rather than through the download ladder.
+
+- Neither reading is adopted yet, and the first measurements say why. The German
+  edition is a different typesetting: its table pages are recognised — rows come
+  through as `2037 GEFÄSSE, KLEIN, MIT GAS` — but the reading reaches 0.2235
+  against the UN numbers of the Dutch table A, which is a band-recognition
+  problem and not a row one. The Dutch ADN prints table C as an ordinary
+  landscape table, one substance per line with the columns spread across x,
+  where the UNECE volumes print it rotated; that needs a reader of its own, and
+  a simpler one than the rotated pages needed.
+
 ## [1.78.0] — 2026-08-14
 
 ### Added

@@ -569,22 +569,69 @@ def check(first: dict[str, Any], second: dict[str, Any]) -> dict[str, Any]:
             row["also_permitted"] = source["also_permitted"]
         report["gases"].append(row)
 
-    a_rat = {row["tank_code"]: row for row in first["rationalised"]}
-    b_rat = {row["tank_code"]: row for row in second["rationalised"]}
+    a_rat = {_canonical(row["tank_code"]): row for row in first["rationalised"]}
+    b_rat = {_canonical(row["tank_code"]): row for row in second["rationalised"]}
     for code in sorted(set(a_rat) | set(b_rat)):
         left, right = a_rat.get(code), b_rat.get(code)
         row = {"tank_code": code, "readings": bool(left) + bool(right)}
         for field in ("permitted", "inherits"):
-            if left and right and left[field] == right[field]:
+            here = _comparable(left, field) if left else None
+            there = _comparable(right, field) if right else None
+            if left and right and here == there:
                 row[field] = left[field]
             elif left and right:
                 row.setdefault("disputed", {})[field] = {
                     first["language"]: left[field], second["language"]: right[field]}
+                row.setdefault("only_in", {})[field] = {
+                    first["language"]: sorted(set(here) - set(there)),
+                    second["language"]: sorted(set(there) - set(here))}
                 report["disputes"] += 1
             else:
                 row[field] = (left or right)[field]
         report["rationalised"].append(row)
     return report
+
+
+def _canonical(code: str) -> str:
+    """One spelling of a tank code, so two editions can be compared at all.
+
+    The English volume prints L1.5BN and the Dutch L1,5BN. That is a decimal
+    separator, not a difference about the tank, and treating it as one would
+    leave both editions' rows unmatched and every cell in them unsettled.
+    """
+    return code.replace(",", ".")
+
+
+def _comparable(block: dict[str, Any], field: str) -> list[str]:
+    """A field flattened to strings, so the comparison is about content."""
+    if field == "inherits":
+        return [_canonical(code) for code in block[field]]
+    return [f"{row['class']}/{row['classification_code']}/{row['packing_group'] or '-'}"
+            for row in block[field]]
+
+
+def report_differences(report: dict[str, Any], first: str, second: str) -> None:
+    """Say where the two readings differ, and nothing else.
+
+    Between corrections this is the only thing worth printing: the readings
+    themselves are ten thousand characters each, and what a run has to answer
+    is which cells two books do not yet say the same thing about.
+    """
+    for row in report["gases"]:
+        if row.get("disputed"):
+            sides = row["disputed"]["also_permitted"]
+            print(f"  gases {row['tank_code']}: {first}={sides[first]} "
+                  f"{second}={sides[second]}")
+        elif row["readings"] < 2:
+            print(f"  gases {row['tank_code']}: only one reading")
+    for row in report["rationalised"]:
+        if row["readings"] < 2:
+            print(f"  {row['tank_code']}: only one reading")
+            continue
+        for field, sides in (row.get("only_in") or {}).items():
+            print(f"  {row['tank_code']} {field}: "
+                  f"only {first} {sides[first]} / only {second} {sides[second]}")
+    print(f"disputes: {report['disputes']}")
 
 
 def main() -> int:
@@ -609,7 +656,7 @@ def main() -> int:
         first, second = (json.loads(path.read_text(encoding="utf-8"))
                          for path in args.check)
         report = check(first, second)
-        print(json.dumps({k: v for k, v in report.items() if k == "disputes"}))
+        report_differences(report, first["language"], second["language"])
         if args.emit:
             args.emit.write_text(
                 json.dumps(report, ensure_ascii=False, indent=1) + "\n",

@@ -24,6 +24,9 @@ on:
           - en
           - nl
           - de
+          # Both, and print only where the two readings differ — which between
+          # corrections is the only thing worth carrying back.
+          - compare
         default: en
       probe:
         description: "Report the layout of the pages found and stop"
@@ -73,6 +76,8 @@ jobs:
             # read, and saying which is the useful answer.
             nl) python scripts/regulations_store.py path adr_nl_2025 ;;
             de) python scripts/regulations_store.py path adr_de_2 ;;
+            compare) python scripts/regulations_store.py path adr_nl_2025
+                     python scripts/regulations_store.py fetch adr2 ;;
             *)  python scripts/regulations_store.py fetch adr2 ;;
           esac
 
@@ -85,6 +90,14 @@ jobs:
           DUMP: ${{ inputs.dump }}
         run: |
           set -euo pipefail
+          if [ "$LANGUAGE" = "compare" ]; then
+            python scripts/extract_adr_tank_hierarchy.py \
+              --pdf /tmp/cargopilot-regulations/adr2.pdf --language en --out en.json
+            python scripts/extract_adr_tank_hierarchy.py \
+              --pdf "$(python scripts/regulations_store.py path adr_nl_2025)" \
+              --language nl --out nl.json
+            exit 0
+          fi
           case "$LANGUAGE" in
             nl) PDF=$(python scripts/regulations_store.py path adr_nl_2025) ;;
             de) PDF=$(python scripts/regulations_store.py path adr_de_2) ;;
@@ -98,7 +111,7 @@ jobs:
           python scripts/extract_adr_tank_hierarchy.py "${ARGS[@]}"
 
       - name: Hand the reading back
-        if: ${{ always() && !inputs.probe && !inputs.words && !inputs.probe_page }}
+        if: ${{ always() && !inputs.probe && !inputs.words && !inputs.probe_page && inputs.language != 'compare' }}
         uses: actions/upload-artifact@v4
         with:
           name: adr-tank-hierarchy-${{ inputs.language }}
@@ -129,8 +142,15 @@ jobs:
       # the middle of the run costs several times its own length to fetch —
       # cache uploads, artifact chatter and cleanup all come after it. Printed
       # here, it is the last thing in the log and the tail is the reading.
+      - name: Where the two readings differ
+        if: ${{ always() && inputs.language == 'compare' }}
+        run: |
+          echo "=== where the two readings differ ==="
+          python scripts/extract_adr_tank_hierarchy.py --check en.json nl.json \
+            || echo "no comparison was made"
+
       - name: What was read
-        if: ${{ always() && !inputs.probe && !inputs.words && !inputs.probe_page }}
+        if: ${{ always() && !inputs.probe && !inputs.words && !inputs.probe_page && inputs.language != 'compare' }}
         env:
           LANGUAGE: ${{ inputs.language }}
           DUMP: ${{ inputs.dump }}

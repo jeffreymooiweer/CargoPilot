@@ -295,6 +295,17 @@ def rationalised_rows(doc, pages: list[int],
 
             inherit = words["inherit"].search(text)
             if inherit:
+                # Which block the sentence belongs to is a matter of where the
+                # edition puts it. The English volume sets it at the end of a
+                # block's cell, so it belongs to the block being read. The
+                # printed Dutch edition sets it at the *start*, on the same
+                # line as the tank code it belongs to — and a reader that took
+                # that line for the block above lost the block itself and gave
+                # its rows to its predecessor. L4BN and L10CH went missing that
+                # way, and L1,5BN came back inheriting from itself.
+                if tokens and TANK_CODE.fullmatch(tokens[0]) and text.startswith(tokens[0]):
+                    current = block(tokens[0], index + 1)
+                    seen_class = ""
                 if current is None:
                     failures.append(f"p{index + 1}: inheritance before any code")
                     continue

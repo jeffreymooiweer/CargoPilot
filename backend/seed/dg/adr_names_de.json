@@ -4,19 +4,29 @@
  "language": "de",
  "source": "ADR 2025, official UNECE edition — table A of chapter 3.2, column (2)",
  "summary": {
-  "un_numbers": 2348,
-  "rows": 2940,
+  "un_numbers": 2337,
+  "rows": 2929,
   "table_pages": 145
  },
  "cross_check": {
-  "same": 2345,
+  "same": 2335,
   "only_in_this_language": [
-   "1000",
    "1499",
    "1999"
   ],
-  "only_in_the_dutch_table": [],
-  "agreement": 1.0
+  "only_in_the_dutch_table": [
+   "0504",
+   "1916",
+   "2077",
+   "2269",
+   "2367",
+   "2368",
+   "2511",
+   "2651",
+   "2937",
+   "3438"
+  ],
+  "agreement": 0.9957
  },
  "names": {
   "0004": [
@@ -1126,9 +1136,6 @@
   "0503": [
    "SICHERHEITSEINRICHTUN-GEN, PYROTECHNISCH"
   ],
-  "0504": [
-   "1H-TETRAZOL"
-  ],
   "0505": [
    "SIGNALKÖRPER, SEENOT"
   ],
@@ -1158,9 +1165,6 @@
   ],
   "0514": [
    "FEUERLÖSCHMITTEL-DISPERGIERVORRICH-TUNGEN"
-  ],
-  "1000": [
-   "ml/m3 und einer gesättigten Dampfkonzentration von mindestens 10 LC50"
   ],
   "1001": [
    "ACETYLEN, GELÖST"
@@ -3376,9 +3380,6 @@
   "1915": [
    "CYCLOHEXANON"
   ],
-  "1916": [
-   "2,2'-DICHLORDIETHYLETHER"
-  ],
   "1917": [
    "ETHYLACRYLAT, STABILISIERT"
   ],
@@ -3761,9 +3762,6 @@
   "2076": [
    "CRESOLE, FLÜSSIG"
   ],
-  "2077": [
-   "alpha-NAPHTHYLAMIN"
-  ],
   "2078": [
    "TOLUENDIISOCYANAT"
   ],
@@ -3989,9 +3987,6 @@
   ],
   "2267": [
    "DIMETHYLTHIOPHOSPHO-RYLCHLORID"
-  ],
-  "2269": [
-   "3,3'-IMINOBISPROPYLAMIN"
   ],
   "2270": [
    "ETHYLAMIN, WÄSSERIGE LÖSUNG mit mindestens 50 Masse-% und höchstens 70 Masse-% Ethylamin"
@@ -4268,12 +4263,6 @@
   ],
   "2366": [
    "DIETHYLCARBONAT"
-  ],
-  "2367": [
-   "alpha-METHYLVALERALDEHYD"
-  ],
-  "2368": [
-   "alpha-PINEN"
   ],
   "2370": [
    "HEX-1-EN"
@@ -4641,9 +4630,6 @@
   "2509": [
    "KALIUMHYDROGENSULFAT"
   ],
-  "2511": [
-   "alpha-CHLORPROPIONSÄURE"
-  ],
   "2512": [
    "AMINOPHENOLE (o-, m-, p-)"
   ],
@@ -4937,9 +4923,6 @@
   ],
   "2650": [
    "1,1-DICHLOR-1-NITROETHAN"
-  ],
-  "2651": [
-   "4,4'-DIAMINODIPHENYLMETHAN"
   ],
   "2653": [
    "BENZYLIODID"
@@ -5570,9 +5553,6 @@
   ],
   "2936": [
    "THIOMILCHSÄURE"
-  ],
-  "2937": [
-   "alpha-METHYLBENZYLALKOHOL, FLÜSSIG"
   ],
   "2940": [
    "9-PHOSPHABICYCLO-NONANE (CYCLOOCTADIEN-PHOSPHINE)"
@@ -6815,9 +6795,6 @@
   ],
   "3437": [
    "CHLORCRESOLE, FEST"
-  ],
-  "3438": [
-   "alpha-METHYLBENZYLALKOHOL, FEST"
   ],
   "3439": [
    "NITRILE, FEST, GIFTIG, N.A.G."

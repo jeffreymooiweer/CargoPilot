@@ -64,7 +64,7 @@ def test_de_nederlandse_adr_instructie_komt_uit_de_editie(tmp_path, monkeypatch)
     regulations.manifest.cache_clear()
     status = regulations.instruction_status("adr", "nl")
     assert status["available"] is False
-    assert status["needs"] == "adr_nl_complete"
+    assert status["needs"] == "adr_nl_2025"
     assert regulations.instructions_pdf("adr", "nl") is None
 
 

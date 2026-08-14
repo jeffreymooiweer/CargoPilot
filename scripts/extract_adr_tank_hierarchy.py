@@ -53,6 +53,10 @@ CLASS = re.compile(r"[1-9](?:\.\d)?")
 PACKING_GROUP = re.compile(r"I{1,3}")
 #: A classification code of table A column (3b): F1, FT2, ST3, M11, C1, I3, W1.
 CLASSIFICATION = re.compile(r"[A-Z]{1,3}\d{0,2}([a-z])?")
+#: What a condition inside the packing group cell looks like in every edition:
+#: a comparison. Nothing else in the table carries one, so it is what tells a
+#: condition apart from a stray line of running text.
+CONDITION = re.compile(r"[≤≥<>]|kPa|bar")
 
 #: What each edition calls the two tables, and the sentence that carries the
 #: inheritance. The phrases are the edition's own headings; they are how a page
@@ -81,14 +85,15 @@ LANGUAGES: dict[str, dict[str, Any]] = {
         "and": re.compile(r"\ben\b", re.IGNORECASE),
     },
     "de": {
-        "gases_heading": "rangordnung der tanks",
-        "gases_column": "andere tankcodierung",
+        # Measured in the book, not guessed: the first guesses at these
+        # phrases found no page at all.
+        "gases_heading": "hierarchische aufstellung",
+        "gases_column": "weitere tankcodierung",
         "code_column": "tankcodierung",
-        "group_column": "gruppe der zugelassenen stoffe",
+        "group_column": "klassifizierungs",
         "class_column": "klasse",
-        "inherit": re.compile(
-            r"gruppen der für die tankcodierungen?", re.IGNORECASE),
-        "inherit_end": re.compile(r"zugelassenen stoffe", re.IGNORECASE),
+        "inherit": re.compile(r"für die tankcodierungen?", re.IGNORECASE),
+        "inherit_end": re.compile(r"zugelassenen stoffgruppen", re.IGNORECASE),
         "and": re.compile(r"\bund\b", re.IGNORECASE),
     },
 }
@@ -413,6 +418,8 @@ def _as_triples(block: dict[str, Any]) -> dict[str, Any]:
             row = {"class": group["class"],
                    "classification_code": group["classification_code"],
                    "packing_group": packing_group}
+            if group.get("condition"):
+                row["condition"] = group["condition"]
             if group.get("footnote"):
                 row["footnote"] = group["footnote"]
             if row not in permitted:
@@ -496,7 +503,20 @@ def _group(tokens: list[str],
     if not tokens or not CLASSIFICATION.fullmatch(tokens[0]):
         return None, klass
     code = tokens[0]
-    if not all(PACKING_GROUP.fullmatch(token) for token in tokens[1:]):
+    # The packing group cell is not always only a packing group. LGBF admits
+    # packing group II of class 3 F1 only where the vapour pressure at 50 °C is
+    # at most 1.1 bar, and every edition prints that condition inside the cell:
+    # "II, Dampfdruck bei 50 °C ≤ 1,1 bar". A reader that demands the cell hold
+    # nothing but Roman numerals drops the whole row — which is how the Dutch
+    # reading lost the packing group II rows of LGBF and L1,5BN, and the
+    # English one lost the packing group of L4BN's first row. The condition is
+    # part of the permission and is kept.
+    rest = list(tokens[1:])
+    packing_groups: list[str] = []
+    while rest and PACKING_GROUP.fullmatch(rest[0]):
+        packing_groups.append(rest.pop(0))
+    condition = " ".join(rest)
+    if rest and not CONDITION.search(condition):
         return None, klass
     if not klass:
         return None, klass
@@ -505,7 +525,9 @@ def _group(tokens: list[str],
     # apart matters because the marker is what carries the exception — "except
     # hydrofluoric acid" hangs off one of these letters.
     group: dict[str, Any] = {"class": klass, "classification_code": code.rstrip(
-        "abcdefghijklmnopqrstuvwxyz"), "packing_groups": tokens[1:]}
+        "abcdefghijklmnopqrstuvwxyz"), "packing_groups": packing_groups}
+    if condition:
+        group["condition"] = condition
     marker = code[len(group["classification_code"]):]
     if marker:
         group["footnote"] = marker
@@ -627,12 +649,21 @@ def _canonical(code: str) -> str:
     return code.replace(",", ".")
 
 
+def _numbers(condition: str | None) -> str:
+    """A condition reduced to its numbers, which is the part that is not a
+    language. "vapour pressure at 50 °C ≤ 1.1 bar" and "Dampfdruck bei 50 °C ≤
+    1,1 bar" are one condition; comparing the words would call them two."""
+    if not condition:
+        return ""
+    return ",".join(re.findall(r"\d+(?:[.,]\d+)?", condition.replace(",", ".")))
+
+
 def _comparable(block: dict[str, Any], field: str) -> list[str]:
     """A field flattened to strings, so the comparison is about content."""
     if field == "inherits":
         return [_canonical(code) for code in block[field]]
     return [f"{row['class']}/{row['classification_code']}/{row['packing_group'] or '-'}"
-            for row in block[field]]
+            f"/{_numbers(row.get('condition'))}" for row in block[field]]
 
 
 def report_differences(report: dict[str, Any], first: str, second: str) -> None:

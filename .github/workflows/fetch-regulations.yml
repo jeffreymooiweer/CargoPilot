@@ -27,7 +27,11 @@ on:
         default: ""
         required: false
       adopt_as:
-        description: "Mappings for unrecognised incoming files, space separated: filename.pdf=document-id"
+        description: "Mappings for unrecognised incoming files, one per line: filename.pdf=document-id"
+        default: ""
+        required: false
+      find_instructions:
+        description: "Report where the four-page model of 5.4.3 sits in these stored documents (ids, space separated)"
         default: ""
         required: false
 
@@ -89,13 +93,26 @@ jobs:
           gdown --folder "$FOLDER" -O /tmp/cargopilot-regulations/incoming
           echo "=== incoming ==="
           ls -la /tmp/cargopilot-regulations/incoming
-          MAPPINGS=""
-          for pair in $ADOPT_AS; do MAPPINGS="$MAPPINGS --as $pair"; done
+          # One mapping per line, not per word: the files an operator uploads
+          # are named "ADR 2025 French.pdf" as often as not, and splitting the
+          # input on spaces would cut such a name in three.
+          printf '%s\n' "$ADOPT_AS" > /tmp/adopt-as.txt
           python scripts/regulations_store.py adopt \
-            /tmp/cargopilot-regulations/incoming $MAPPINGS
+            /tmp/cargopilot-regulations/incoming --map-file /tmp/adopt-as.txt
+
+      - name: Where the instructions model sits
+        if: ${{ inputs.find_instructions != '' }}
+        env:
+          IDS: ${{ inputs.find_instructions }}
+        run: |
+          set -euo pipefail
+          pip install --quiet pymupdf
+          python scripts/regulations_store.py path $IDS > /tmp/paths.txt || true
+          cat /tmp/paths.txt
+          xargs -r python scripts/find_instructions_pages.py < /tmp/paths.txt
 
       - name: Fetch what is missing
-        if: ${{ inputs.probe_url == '' && inputs.drive_folder == '' }}
+        if: ${{ inputs.probe_url == '' && inputs.drive_folder == '' && inputs.find_instructions == '' }}
         run: python scripts/regulations_store.py fetch ${{ inputs.ids }}
 
       - name: Report the store

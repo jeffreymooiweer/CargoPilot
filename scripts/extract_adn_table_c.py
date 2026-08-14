@@ -639,13 +639,21 @@ COMPARED = [
 
 
 def _norm(field: str, value: str) -> str:
-    value = (value or "").strip().replace("–", "-")
+    # An en dash and a minus sign are one range in two typefaces: the English
+    # edition sets "0.65 – 0.70" and the French "0.65 − 0.70".
+    value = (value or "").strip().replace("–", "-").replace("−", "-")
     if value in ("-", ""):
         return ""
     if field == "dangers":
         # The English cell wraps mid-token ("2." / "1+N1"), so spaces go
         # first; and the export prints "2, 1" where the book prints "2.1".
         packed = re.sub(r"\s+", "", value.upper())
+        # The danger cell is the one place where an authentic language shows
+        # inside a code: the English prints "unst." for an unstabilised
+        # substance and "F or S", the French "inst." and "F ou S". Same fact,
+        # and the comparison is of facts. It happens after the spaces go,
+        # because the rotated cell breaks the word itself ("ins t.").
+        packed = packed.replace("INST.", "UNST.").replace("OU", "OR")
         packed = re.sub(r"(\d),(\d)", r"\1.\2", packed)
         tokens = sorted(t.rstrip(".") for t in re.split(r"[+(),]+", packed) if t)
         return "+".join(tokens)
@@ -674,86 +682,195 @@ def _diff(a: dict, b: dict) -> list[str]:
     return [f for f in COMPARED if _norm(f, a.get(f, "")) != _norm(f, b.get(f, ""))]
 
 
-def check_readings(english: list[dict], dutch: list[dict]) -> dict[str, Any]:
-    """Pair the readings per UN, best pairs first, and inventory what differs.
+def _pair_within_un(en_rows: list[dict], other: list[dict],
+                    twins: bool = True) -> tuple[
+        dict[int, dict], dict[int, list[dict]], list[dict]]:
+    """Bind one reading's rows to the English rows of a single UN number.
 
     Variant families make greedy first-fit treacherous: near-identical rows
     differ in one late column, and pairing the wrong twins manufactures two
-    disagreements out of none. So within each UN every English row is scored
-    against every free Dutch row, the globally closest pair binds first, and a
-    second Dutch row may join an English one only when it matches exactly —
-    that is the export's or-name split, two rows for one printed row.
+    disagreements out of none. So every English row is scored against every
+    free row of the other reading, the globally closest pair binds first, and a
+    second row may join an English one only when it matches exactly — that is
+    the Dutch export's or-name split, two rows for one printed row.
+    """
+    from collections import defaultdict
+
+    scored = sorted(
+        (len(_diff(e, d)), ei, di)
+        for ei, e in enumerate(en_rows)
+        for di, d in enumerate(other))
+    taken_e: dict[int, dict] = {}
+    taken_d: set[int] = set()
+    partners: dict[int, list[dict]] = defaultdict(list)
+    for score, ei, di in scored:
+        if di in taken_d:
+            continue
+        if ei in taken_e:
+            # Only the Dutch export prints two rows for one printed row, and
+            # only when their cells are identical. The French edition prints
+            # the same row set as the English, so letting a second French row
+            # join here would eat the partner a sister variant needs — sixteen
+            # rows of UN 1965 lost their second reading to exactly that.
+            if twins and score == 0:
+                partners[ei].append(other[di])
+                taken_d.add(di)
+            continue
+        if score > 4:
+            continue
+        taken_e[ei] = other[di]
+        partners[ei].append(other[di])
+        taken_d.add(di)
+    unmatched = [d for di, d in enumerate(other) if di not in taken_d]
+    return taken_e, partners, unmatched
+
+
+def _third_value(field: str, value: str) -> str:
+    """A cell of the French edition in the style the seed holds cells in."""
+    value = tighten(value)
+    if field == "density":
+        # The French edition sets decimals with a comma; the seed with a point,
+        # as the English edition prints them.
+        value = value.replace(",", ".")
+    return value
+
+
+def check_readings(english: list[dict], dutch: list[dict],
+                   french: list[dict] | None = None) -> dict[str, Any]:
+    """Pair the readings per UN and inventory what they settle and what differs.
+
+    With two readings a disagreement is a stand-off: neither reading outranks
+    the other, so the cell is not settled and the application withholds it.
+    A third independent reading — the French edition, the ADN's other
+    authentic language — breaks the stand-off wherever two of the three agree,
+    and the cell then holds the value those two carry. Where all three differ
+    the cell stays unsettled, now with three recorded values.
+
+    A cell the first two readings agree on is not re-opened by a dissenting
+    third: the two-reading rule settled it, and the extractor's known
+    weaknesses (a rotated cell whose lines can be read in either order) would
+    otherwise manufacture doubt out of typography. Those dissents are counted
+    and recorded on the row, so they can be looked at rather than lost.
     """
     from collections import defaultdict
 
     by_un_en: dict[str, list[dict]] = defaultdict(list)
     by_un_nl: dict[str, list[dict]] = defaultdict(list)
+    by_un_fr: dict[str, list[dict]] = defaultdict(list)
     for row in english:
         by_un_en[row["un"]].append(row)
     for row in dutch:
         by_un_nl[row["un"]].append(row)
+    for row in french or []:
+        by_un_fr[row["un"]].append(row)
 
     matched, disagreements, single = [], [], []
     unmatched_dutch: list[dict] = []
+    unmatched_french: list[dict] = []
+    settled_by_french = 0
+    overturned = 0
+    french_dissents = 0
     for un in sorted(set(by_un_en) | set(by_un_nl)):
         en_rows = [dict(r) for r in by_un_en.get(un, [])]
         nl_rows = list(by_un_nl.get(un, []))
-        scored = sorted(
-            (len(_diff(e, d)), ei, di)
-            for ei, e in enumerate(en_rows)
-            for di, d in enumerate(nl_rows))
-        taken_e: dict[int, dict] = {}
-        taken_d: set[int] = set()
-        partners: dict[int, list[dict]] = defaultdict(list)
-        for score, ei, di in scored:
-            if di in taken_d:
-                continue
-            if ei in taken_e:
-                # A second Dutch row joins only as an exact or-split twin.
-                if score == 0:
-                    partners[ei].append(nl_rows[di])
-                    taken_d.add(di)
-                continue
-            if score > 4:
-                continue
-            taken_e[ei] = nl_rows[di]
-            partners[ei].append(nl_rows[di])
-            taken_d.add(di)
+        fr_rows = list(by_un_fr.get(un, []))
+        taken_e, partners, unplaced = _pair_within_un(en_rows, nl_rows)
+        unmatched_dutch.extend(unplaced)
+        taken_fr, _fr_partners, unplaced_fr = _pair_within_un(
+            en_rows, fr_rows, twins=False)
+        unmatched_french.extend(unplaced_fr)
+
         for ei, row in enumerate(en_rows):
-            if ei not in taken_e:
-                row["readings"] = 1
-                single.append(row)
+            dutch_row = taken_e.get(ei)
+            french_row = taken_fr.get(ei)
+            if french_row is not None:
+                row["name_fr"] = french_row.get("name_fr", "")
+            if dutch_row is None:
+                if french_row is None:
+                    row["readings"] = 1
+                    single.append(row)
+                    continue
+                # No Dutch row to corroborate — the export lacks it. The French
+                # reading is then the second, and where it differs from the
+                # English the cell is a stand-off like any other.
+                row["readings"] = 2
+                row["name_nl"] = ""
+                fields = _diff(row, french_row)
+                if fields:
+                    row["disputed"] = {
+                        f: {"en": row.get(f, ""),
+                            "fr": _third_value(f, french_row.get(f, ""))}
+                        for f in fields}
+                    disagreements.append({
+                        "un": un, "fields": fields,
+                        "english": {f: row.get(f, "") for f in fields},
+                        "french": {f: french_row.get(f, "") for f in fields},
+                    })
+                matched.append((row, []))
                 continue
             twins = partners[ei]
             row["name_nl"] = " / ".join(
                 dict.fromkeys(p["name_nl"] for p in twins))
-            row["readings"] = 2
-            fields = _diff(row, taken_e[ei])
-            if fields:
+            row["readings"] = 2 + (french_row is not None)
+            fields = _diff(row, dutch_row)
+            settled: dict[str, str] = {}
+            disputed: dict[str, dict[str, str]] = {}
+            for field in fields:
+                if french_row is None:
+                    disputed[field] = {"en": row.get(field, ""),
+                                       "nl": dutch_row.get(field, "")}
+                    continue
+                third = french_row.get(field, "")
+                if _norm(field, third) == _norm(field, row.get(field, "")):
+                    settled[field] = "en"
+                    settled_by_french += 1
+                elif _norm(field, third) == _norm(field, dutch_row.get(field, "")):
+                    # Two readings against one: the cell takes the value the
+                    # French and Dutch editions agree on, printed as the French
+                    # edition prints it — the seed's own style.
+                    row[field] = _third_value(field, third)
+                    settled[field] = "nl"
+                    settled_by_french += 1
+                    overturned += 1
+                else:
+                    disputed[field] = {"en": row.get(field, ""),
+                                       "nl": dutch_row.get(field, ""),
+                                       "fr": _third_value(field, third)}
+            if french_row is not None:
+                dissent = [f for f in _diff(row, french_row)
+                           if f not in fields and f not in settled]
+                if dissent:
+                    french_dissents += len(dissent)
+                    row["french_reads_differently"] = {
+                        f: _third_value(f, french_row.get(f, "")) for f in dissent}
+            if settled:
+                row["settled_by_french"] = settled
+            if disputed:
                 # The dispute is attached here, on the pairing itself: tagging
                 # rows afterwards by value-lookalike marked innocent variant
                 # twins as disputed too.
-                row["disputed"] = {
-                    f: {"en": row.get(f, ""), "nl": taken_e[ei].get(f, "")}
-                    for f in fields}
+                row["disputed"] = disputed
                 disagreements.append({
-                    "un": un, "fields": fields,
-                    "english": {f: row.get(f, "") for f in fields},
-                    "dutch": {f: taken_e[ei].get(f, "") for f in fields},
+                    "un": un, "fields": sorted(disputed),
+                    "english": {f: row.get(f, "") for f in disputed},
+                    "dutch": {f: dutch_row.get(f, "") for f in disputed},
                 })
             matched.append((row, twins))
-        unmatched_dutch.extend(
-            d for di, d in enumerate(nl_rows) if di not in taken_d)
 
     return {
         "matched": matched,
         "single": single,
         "disagreements": disagreements,
         "unmatched_dutch": unmatched_dutch,
+        "unmatched_french": unmatched_french,
+        "cells_settled_by_french": settled_by_french,
+        "cells_overturned": overturned,
+        "french_dissents": french_dissents,
     }
 
 
-def emit_seed(english: list[dict], dutch: list[dict], out: Path) -> dict:
+def emit_seed(english: list[dict], dutch: list[dict], out: Path,
+              french: list[dict] | None = None) -> dict:
     """Write the seed from the paired readings.
 
     Every row carries the English cells — the UNECE edition is the complete
@@ -763,7 +880,7 @@ def emit_seed(english: list[dict], dutch: list[dict], out: Path) -> dict:
     under `disputed` and the application must treat that field as not settled.
     Nothing is averaged and nothing is discarded silently.
     """
-    outcome = check_readings(english, dutch)
+    outcome = check_readings(english, dutch, french)
     entries = [row for row, _twins in outcome["matched"]]
     for row in outcome["single"]:
         row = dict(row)
@@ -773,25 +890,34 @@ def emit_seed(english: list[dict], dutch: list[dict], out: Path) -> dict:
     seed = {
         "_comment": (
             "Table C of chapter 3.2 of the ADN — the substances admitted to "
-            "carriage in tank vessels — read twice: geometrically from the "
-            "UNECE English ADN 2025 PDF (the row set and every cell) and from "
+            "carriage in tank vessels — read three times: geometrically from "
+            "the UNECE English ADN 2025 PDF (the row set and every cell), from "
             "the official Dutch edition's list pages (the corroboration and "
-            "the Dutch names). A compilation of facts offered as an aid; the "
-            "published text of the ADN remains authoritative."),
+            "the Dutch names) and from the UNECE French edition, the treaty's "
+            "other authentic language, which decides a cell wherever two of "
+            "the three readings agree. A compilation of facts offered as an "
+            "aid; the published text of the ADN remains authoritative."),
         "edition": "ADN 2025, in force 1 January 2025",
         "source": (
             "English reading: UNECE ADN 2025 (sources.json id adn), table C "
             "pages read by band and column with scripts/extract_adn_table_c.py. "
             "Dutch reading: the mindef.nl HTML export (id adn_nl_index), five "
-            "ADNC list pages."),
+            "ADNC list pages. French reading: UNECE ADN 2025 in French (id "
+            "adn_fr), the same geometry as the English edition."),
         "cross_check": {
             "rows_english": len(english),
             "rows_dutch": len(dutch),
+            "rows_french": len(french or []),
             "rows": len(entries),
             "settled_rows": len(outcome["matched"]) - len(outcome["disagreements"]),
             "rows_with_disputed_cells": len(outcome["disagreements"]),
             "rows_read_once": len(outcome["single"]),
             "dutch_rows_unplaced": len(outcome["unmatched_dutch"]),
+            "french_rows_unplaced": len(outcome["unmatched_french"]),
+            "cells_settled_by_the_french_reading": outcome["cells_settled_by_french"],
+            "cells_the_french_reading_overturned": outcome["cells_overturned"],
+            "cells_the_french_reading_alone_reads_differently":
+                outcome["french_dissents"],
             "note": (
                 "The Dutch export splits a printed row per alternative name "
                 "(52 rows for the 26 printed rows of UN 1268), swaps the data "
@@ -799,10 +925,14 @@ def emit_seed(english: list[dict], dutch: list[dict], out: Path) -> dict:
                 "UN 1977 and UN 1999 entirely along with single variant rows "
                 "of several N.O.S. entries, and glues its remark column four "
                 "languages deep. Each was measured during the comparison; "
-                "rows the export lacks carry readings 1, and a cell the two "
-                "readings give differently is kept under `disputed` with both "
-                "values — such a cell is not settled and must not be "
-                "presented as an answer."),
+                "rows the export lacks are corroborated by the French reading "
+                "instead, and a cell no two readings agree on is kept under "
+                "`disputed` with every value read — such a cell is not settled "
+                "and must not be presented as an answer. `settled_by_french` "
+                "names the fields the third reading decided and which of the "
+                "first two it sided with; `french_reads_differently` records a "
+                "third reading that dissents from a cell the first two already "
+                "agreed on, which does not re-open it."),
         },
         "entries": entries,
     }
@@ -830,18 +960,29 @@ def main() -> int:
     parser.add_argument("--probe-page", type=int, default=None,
                         help="dump every word of one PDF page with coordinates")
     parser.add_argument("--emit", nargs=3, metavar=("ENGLISH", "DUTCH", "SEED"),
-                        help="pair the two readings (JSON files) and write the seed")
+                        help="pair the readings (JSON files) and write the seed")
+    parser.add_argument("--third", type=Path,
+                        help="the French reading (JSON), which decides a cell "
+                             "wherever two of the three readings agree")
     args = parser.parse_args()
 
     if args.emit:
         english = json.loads(Path(args.emit[0]).read_text(encoding="utf-8"))
         dutch = json.loads(Path(args.emit[1]).read_text(encoding="utf-8"))
-        outcome = emit_seed(english, dutch, Path(args.emit[2]))
+        french = (json.loads(args.third.read_text(encoding="utf-8"))
+                  if args.third else None)
+        outcome = emit_seed(english, dutch, Path(args.emit[2]), french)
         print(f"seed written: {args.emit[2]}")
         print(f"  matched: {len(outcome['matched'])}, of which disputed: "
               f"{len(outcome['disagreements'])}")
         print(f"  single-reading rows: {len(outcome['single'])}")
         print(f"  dutch rows unplaced: {len(outcome['unmatched_dutch'])}")
+        print(f"  french rows unplaced: {len(outcome['unmatched_french'])}")
+        print(f"  cells the french reading settled: "
+              f"{outcome['cells_settled_by_french']} "
+              f"(overturning the english cell in {outcome['cells_overturned']})")
+        print(f"  cells the french reading alone reads differently: "
+              f"{outcome['french_dissents']}")
         for row in outcome["unmatched_dutch"]:
             print(f"    unplaced: {row['un']} {row['name_nl'][:60]}")
         return 0

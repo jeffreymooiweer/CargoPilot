@@ -127,13 +127,22 @@ def test_de_tabel_c_spreekt_nu_zelf():
     assert "conditions_note" not in admission("1942", "bulk")
 
 
-def test_een_rij_met_een_lezing_zegt_dat():
+def test_geen_rij_rust_nog_op_een_lezing():
     """UN 1977 is genuinely in table C — the UNECE edition prints it — but the
-    Dutch export omits it, so its row rests on one reading and the result
-    names it rather than presenting the row as settled."""
+    Dutch export omits it. It rested on one reading until the French edition
+    was read as the third; it now has two, and the warning that used to name it
+    is silent. The seed's own record says the same, and the two are pinned
+    together: the day an edition brings a one-reading row back, this fails and
+    the warning has to be looked at again."""
+    import json
+    from pathlib import Path
+    seed = json.loads((Path(__file__).resolve().parents[1] / "seed" / "dg"
+                       / "adn_table_c.json").read_text(encoding="utf-8"))
+    assert seed["cross_check"]["rows_read_once"] == 0
+
     result = admission("1977", "tank")
     assert result["items"][0]["permitted"] is True
-    assert "UN 1977" in result["single_reading_note"]
+    assert "single_reading_note" not in result
     assert "single_reading_note" not in admission("1005", "tank")
 
 

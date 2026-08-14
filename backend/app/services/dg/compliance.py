@@ -1398,6 +1398,104 @@ def check_adn_signals(
     return result
 
 
+def check_adr_tank_admission(
+    entries: list[dict[str, Any]], language: str = "nl",
+) -> dict[str, Any]:
+    """ADR 3.2.1: may these goods travel in a tank at all?
+
+    The wizard has always modelled packages, and every check in this file was
+    written for them. A consignor filling in a tank load got the packages answer
+    with nothing to say it was the wrong one — the most expensive shape of wrong
+    this application can produce, because it looks like an answer.
+
+    The admission rule is in the explanation of table A's own columns, and the
+    two tank columns do **not** say the same thing:
+
+    - **Column (12), ADR tanks** — where no code is given, carriage in ADR tanks
+      is not permitted. The sentence carries no exception.
+    - **Column (10), portable tanks** — where no code is given, carriage in
+      portable tanks is not permitted *unless the competent authority allows it*
+      under 6.7.1.3.
+
+    Rounding those two to one answer would either invent a prohibition or hide
+    one, so they stay apart and the finding says which it is. A blank column is
+    not a missing value here — it is the regulation's way of saying no, and it is
+    the reason class 1 explosives have every tank column empty.
+
+    Carriage in packages is not judged here: this check answers a question that
+    only arises once somebody says the goods travel in a tank.
+    """
+    rules = get_compliance_rules()["adr_tank_admission"]
+    lang = _lang(language)
+    products = [(entry, index, product)
+                for entry, index, product in _iter_products(entries)
+                if not product.get("transport_forbidden")]
+    if not products:
+        return {"status": "not_checked", "items": []}
+
+    def text(key: str, **values: Any) -> str:
+        block = rules[key]
+        return (block.get(lang) or block["en"]).format(**values)
+
+    items: list[dict[str, Any]] = []
+    blocked = False
+    for entry, index, product in products:
+        mode = str(product.get("carriage_mode") or "packages").strip()
+        if mode not in ("tank", "portable_tank"):
+            continue
+        label = _product_label(entry, product, index)
+        rows = database.get_un_entries(str(product.get("un_number") or "").strip())
+        row = rows[0] if rows else {}
+        if mode == "tank":
+            code = str(row.get("tank_code") or "").strip()
+            if code:
+                items.append({
+                    "position": label, "mode": mode, "permitted": True,
+                    "tank_code": code,
+                    "tank_vehicle": str(row.get("tank_vehicle") or "").strip(),
+                    "tank_provisions": str(row.get("tank_provisions") or "").strip(),
+                    "message": text("tank_permitted", product=label, code=code,
+                                    vehicle=str(row.get("tank_vehicle") or "").strip()
+                                    or text("no_vehicle")),
+                })
+            else:
+                blocked = True
+                items.append({
+                    "position": label, "mode": mode, "permitted": False,
+                    "provision": "3.2.1 column (12)",
+                    "message": text("tank_not_permitted", product=label),
+                })
+        else:
+            code = str(row.get("portable_tank_instructions") or "").strip()
+            if code:
+                items.append({
+                    "position": label, "mode": mode, "permitted": True,
+                    "portable_tank_instructions": code,
+                    "portable_tank_provisions":
+                        str(row.get("portable_tank_provisions") or "").strip(),
+                    "message": text("portable_tank_permitted", product=label,
+                                    code=code),
+                })
+            else:
+                # Not a blocker: the competent authority may still permit it, and
+                # refusing outright would invent a prohibition the book does not
+                # make.
+                items.append({
+                    "position": label, "mode": mode, "permitted": False,
+                    "subject_to_approval": True,
+                    "provision": "3.2.1 column (10) / 6.7.1.3",
+                    "message": text("portable_tank_not_permitted", product=label),
+                })
+
+    if not items:
+        return {"status": "not_checked", "items": []}
+    return {
+        "status": "not_permitted" if blocked else "ok",
+        "items": items,
+        "source": rules["source"],
+    }
+
+
 def check_adr_security(
     entries: list[dict[str, Any]], language: str = "nl",
 ) -> dict[str, Any]:
@@ -3467,6 +3565,13 @@ def check_compliance(
             ).format(edition=stale["edition"], on=stale["expired_on"]),
             "products": ", ".join(stale["profiles"]),
         })
+
+    if "ADR" in normalized:
+        # Whether the goods may travel in a tank at all. Only speaks when a
+        # carriage mode says they do; a packages consignment is unchanged.
+        admission = check_adr_tank_admission(entries, language)
+        if admission.get("status") != "not_checked":
+            result["adr_tank_admission"] = admission
 
     if {"ADR", "RID", "ADN"} & normalized:
         land = sorted({"ADR", "RID", "ADN"} & normalized)

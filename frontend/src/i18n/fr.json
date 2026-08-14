@@ -442,7 +442,13 @@
     "placardingPackages": "calculé pour un transport en colis",
     "securityTitle": "Sûreté (ADR 1.10.3)",
     "securityHigh": "haut risque",
-    "securityNone": "pas à haut risque"
+    "securityNone": "pas à haut risque",
+    "tankAdmissionTitle": "Admission à la citerne (ADR 3.2.1)",
+    "tankAdmission": {
+      "ok": "autorisé",
+      "not_permitted": "non autorisé"
+    },
+    "tankProvisions": "Dispositions spéciales : {{codes}}"
   },
   "dgauto": {
     "title": "Déduit automatiquement",

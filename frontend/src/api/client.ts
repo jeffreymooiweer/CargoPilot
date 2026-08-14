@@ -512,7 +512,18 @@ export interface DgLookupResult {
 
 export interface DgInstructions {
   dg_intro: { nl: string; en: string };
-  dg_fields: Record<string, { label: { nl: string; en: string }; help: { nl: string; en: string } }>;
+  dg_fields: Record<
+    string,
+    {
+      label: LocalizedText;
+      help: LocalizedText;
+      /** A closed set of answers, rendered as a list. The mode of carriage is
+       *  the first: free text there would fall through every check that
+       *  branches on it. */
+      type?: string;
+      options?: { value: string; label: LocalizedText }[];
+    }
+  >;
 }
 
 export interface CatalogSearchHit {
@@ -801,6 +812,30 @@ export interface AdnSignalsResult {
   source?: string;
 }
 
+/** ADR 3.2.1 — may these goods travel in a tank at all?
+ *
+ *  Column (12) is absolute: no tank code, no carriage in an ADR tank. Column
+ *  (10) is not: no portable tank instruction means not permitted *unless the
+ *  competent authority allows it* under 6.7.1.3, which is why an item can be
+ *  `permitted: false` and still carry `subject_to_approval`. */
+export interface AdrTankAdmissionResult {
+  status: "ok" | "not_permitted" | "not_checked";
+  items: {
+    position: string;
+    mode: "tank" | "portable_tank";
+    permitted: boolean;
+    subject_to_approval?: boolean;
+    provision?: string;
+    tank_code?: string;
+    tank_vehicle?: string;
+    tank_provisions?: string;
+    portable_tank_instructions?: string;
+    portable_tank_provisions?: string;
+    message: string;
+  }[];
+  source?: string;
+}
+
 export interface ComplianceWarning {
   rule: string;
   severity: "error" | "warning" | "info";
@@ -921,6 +956,7 @@ export interface DgComplianceResult {
   profiles: string[];
   adr_points?: AdrPointsResult;
   /** With the ADN profile only: its own exemption of 1.1.3.6.1. */
+  adr_tank_admission?: AdrTankAdmissionResult;
   adn_exemption?: AdnExemptionResult;
   adn_hold_separation?: AdnHoldSeparationResult;
   adn_signals?: AdnSignalsResult;

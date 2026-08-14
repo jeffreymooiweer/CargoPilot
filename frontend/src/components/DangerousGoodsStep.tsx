@@ -152,6 +152,15 @@ export default function DangerousGoodsStep({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [unSignature, profileKey, lang]);
 
+  const optionsFor = (field: string) => {
+    const item = instructions?.dg_fields?.[field];
+    if (!item || item.type !== "select" || !item.options) return undefined;
+    return item.options.map((option) => ({
+      value: option.value,
+      label: localised(option.label, lang) || option.value,
+    }));
+  };
+
   const helpFor = (field: string) => {
     const item = instructions?.dg_fields?.[field];
     return localised(item?.help, lang);
@@ -382,6 +391,7 @@ export default function DangerousGoodsStep({
                     key={field}
                     label={labelFor(field)}
                     help={helpFor(field)}
+                    options={optionsFor(field)}
                     value={String(product[field as keyof DgProduct] ?? "")}
                     onChange={(v) => updateProduct(entryIndex, productIndex, { [field]: v })}
                   />
@@ -593,12 +603,19 @@ function Field({
   value,
   onChange,
   onBlur,
+  options,
 }: {
   label: string;
   help?: string;
   value: string;
   onChange: (v: string) => void;
   onBlur?: () => void;
+  /** A closed set of answers renders as a list rather than a text box.
+   *  The mode of carriage is the first field here where free text would be
+   *  worse than useless: "tank " with a space, or "Tank", would fall through
+   *  every check that branches on it and the consignment would quietly be
+   *  judged as packages again — the exact failure the field exists to end. */
+  options?: { value: string; label: string }[];
 }) {
   return (
     <div>
@@ -606,7 +623,22 @@ function Field({
         <label className="text-sm font-medium text-slate-800 dark:text-slate-200">{label}</label>
         {help && <InfoTooltip text={help} />}
       </div>
-      <input className={`${inputClass} mt-1`} value={value} onChange={(e) => onChange(e.target.value)} onBlur={onBlur} />
+      {options && options.length > 0 ? (
+        <select
+          className={`${inputClass} mt-1`}
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
+          onBlur={onBlur}
+        >
+          {options.map((option) => (
+            <option key={option.value} value={option.value}>
+              {option.label}
+            </option>
+          ))}
+        </select>
+      ) : (
+        <input className={`${inputClass} mt-1`} value={value} onChange={(e) => onChange(e.target.value)} onBlur={onBlur} />
+      )}
     </div>
   );
 }

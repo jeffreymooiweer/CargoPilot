@@ -442,7 +442,13 @@
     "placardingPackages": "berekend voor vervoer in colli",
     "securityTitle": "Beveiliging (ADR 1.10.3)",
     "securityHigh": "hoog gevarenpotentieel",
-    "securityNone": "geen hoog gevarenpotentieel"
+    "securityNone": "geen hoog gevarenpotentieel",
+    "tankAdmissionTitle": "Toelating tot de tank (ADR 3.2.1)",
+    "tankAdmission": {
+      "ok": "toegelaten",
+      "not_permitted": "niet toegelaten"
+    },
+    "tankProvisions": "Bijzondere bepalingen: {{codes}}"
   },
   "dgauto": {
     "title": "Automatisch afgeleid",

@@ -87,6 +87,7 @@ export default function DgCompliancePanel({ entries, profiles }: Props) {
   if (entries.length === 0 || profiles.length === 0) return null;
 
   const adr = result?.adr_points;
+  const tankAdmission = result?.adr_tank_admission;
   const adn = result?.adn_exemption;
   const separation = result?.adn_hold_separation;
   const signals = result?.adn_signals;
@@ -224,6 +225,57 @@ export default function DgCompliancePanel({ entries, profiles }: Props) {
           )}
           {adr.status === "above_threshold" && (
             <p className="text-xs text-amber-700 dark:text-amber-300">{t("compliance.aboveThresholdHint")}</p>
+          )}
+        </CollapsibleSection>
+      )}
+
+      {/* ADR 3.2.1 — may these goods travel in a tank at all? Only appears once
+          somebody has said they do; a packages consignment never sees it. The
+          two tank columns differ: (12) is an outright prohibition where empty,
+          (10) leaves room for the competent authority under 6.7.1.3, and the
+          card keeps them apart rather than rounding both to "no". */}
+      {tankAdmission && tankAdmission.status !== "not_checked" && (
+        <CollapsibleSection
+          title={t("compliance.tankAdmissionTitle")}
+          defaultOpen={tankAdmission.status === "not_permitted"}
+          chips={
+            <SummaryChip
+              className={
+                tankAdmission.status === "not_permitted"
+                  ? "bg-red-100 text-red-800 dark:bg-red-900/40 dark:text-red-300"
+                  : "bg-emerald-100 text-emerald-800 dark:bg-emerald-900/40 dark:text-emerald-300"
+              }
+            >
+              {t(`compliance.tankAdmission.${tankAdmission.status}`)}
+            </SummaryChip>
+          }
+        >
+          <ul className="space-y-2">
+            {tankAdmission.items.map((item, i) => (
+              <li key={i} className="text-xs">
+                <p
+                  className={
+                    item.permitted
+                      ? "text-slate-700 dark:text-slate-300"
+                      : item.subject_to_approval
+                        ? "text-amber-600 dark:text-amber-300"
+                        : "text-red-600 dark:text-red-400"
+                  }
+                >
+                  {item.message}
+                </p>
+                {(item.tank_provisions || item.portable_tank_provisions) && (
+                  <p className="mt-0.5 text-[11px] text-slate-500 dark:text-slate-400">
+                    {t("compliance.tankProvisions", {
+                      codes: item.tank_provisions || item.portable_tank_provisions,
+                    })}
+                  </p>
+                )}
+              </li>
+            ))}
+          </ul>
+          {tankAdmission.source && (
+            <p className="text-[11px] text-slate-500 dark:text-slate-400">{tankAdmission.source}</p>
           )}
         </CollapsibleSection>
       )}

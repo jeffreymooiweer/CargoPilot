@@ -587,56 +587,108 @@ def probe(doc, language: str) -> int:
 # --- the two readings against each other ----------------------------------
 
 
-def check(first: dict[str, Any], second: dict[str, Any]) -> dict[str, Any]:
+def check(first: dict[str, Any], second: dict[str, Any],
+          third: dict[str, Any] | None = None) -> dict[str, Any]:
     """Compare two readings cell by cell, and keep every disagreement.
 
     A cell the two editions do not agree on is not a cell to choose between. It
     is stored with both values and counted as unsettled, so that what the
     application answers with is only ever what two books said the same.
     """
-    report: dict[str, Any] = {"gases": [], "rationalised": [], "disputes": 0}
+    readings = [reading for reading in (first, second, third) if reading]
+    languages = [reading["language"] for reading in readings]
+    report: dict[str, Any] = {"gases": [], "rationalised": [], "disputes": 0,
+                              "readings": languages, "settled_by_third": 0}
 
-    a_gas = {row["tank_code"]: row for row in first["gases"]}
-    b_gas = {row["tank_code"]: row for row in second["gases"]}
-    for code in sorted(set(a_gas) | set(b_gas)):
-        left, right = a_gas.get(code), b_gas.get(code)
-        row: dict[str, Any] = {"tank_code": code, "readings": bool(left) + bool(right)}
-        if left and right and left["also_permitted"] == right["also_permitted"]:
-            row["also_permitted"] = left["also_permitted"]
-        elif left and right:
-            row["disputed"] = {"also_permitted": {
-                first["language"]: left["also_permitted"],
-                second["language"]: right["also_permitted"]}}
-            report["disputes"] += 1
+    gases = [{row["tank_code"]: row for row in reading["gases"]}
+             for reading in readings]
+    for code in sorted(set().union(*(set(side) for side in gases))):
+        rows = {language: side.get(code)
+                for language, side in zip(languages, gases)}
+        present = {language: row for language, row in rows.items() if row}
+        row = {"tank_code": code, "readings": len(present)}
+        values = {language: tuple(found["also_permitted"])
+                  for language, found in present.items()}
+        if len(present) < 2:
+            row["disputed"] = {"also_permitted":
+                               {language: found["also_permitted"]
+                                for language, found in present.items()}}
+            report["gases"].append(row)
+            continue
+        winner, agreed = _majority(values)
+        if winner is not None:
+            row["also_permitted"] = list(winner)
+            if agreed < len(present):
+                report["settled_by_third"] += 1
+                row["settled_by"] = [language for language, value in values.items()
+                                     if value == winner]
         else:
-            source = left or right
-            row["also_permitted"] = source["also_permitted"]
+            row["disputed"] = {"also_permitted":
+                               {language: found["also_permitted"]
+                                for language, found in present.items()}}
+            report["disputes"] += 1
         report["gases"].append(row)
 
-    a_rat = {_canonical(row["tank_code"]): row for row in first["rationalised"]}
-    b_rat = {_canonical(row["tank_code"]): row for row in second["rationalised"]}
-    for code in sorted(set(a_rat) | set(b_rat)):
-        left, right = a_rat.get(code), b_rat.get(code)
-        row = {"tank_code": code, "readings": bool(left) + bool(right)}
+    tables = [{_canonical(row["tank_code"]): row for row in reading["rationalised"]}
+              for reading in readings]
+    for code in sorted(set().union(*(set(side) for side in tables))):
+        rows = {language: side.get(code)
+                for language, side in zip(languages, tables)}
+        present = {language: row for language, row in rows.items() if row}
+        row = {"tank_code": code, "readings": len(present)}
         for field in ("permitted", "inherits"):
-            here = _comparable(left, field) if left else None
-            there = _comparable(right, field) if right else None
-            if left and right and here == there:
-                row[field] = left[field]
-            elif left and right:
+            values = {language: tuple(sorted(_comparable(found, field)))
+                      for language, found in present.items()}
+            if len(present) < 2:
+                # One book is not a check on anything: the value is kept, but
+                # under the same name a disputed cell uses, so that nothing
+                # downstream can mistake it for something two readings agreed
+                # on.
                 row.setdefault("disputed", {})[field] = {
-                    first["language"]: left[field], second["language"]: right[field]}
-                row.setdefault("only_in", {})[field] = {
-                    first["language"]: sorted(set(here) - set(there)),
-                    second["language"]: sorted(set(there) - set(here))}
-                if field == "inherits":
-                    row["sentences"] = {first["language"]: left.get("sentence", ""),
-                                        second["language"]: right.get("sentence", "")}
-                report["disputes"] += 1
+                    language: found[field] for language, found in present.items()}
+                continue
+            winner, agreed = _majority(values)
+            if winner is not None:
+                source = next(language for language, value in values.items()
+                              if value == winner)
+                row[field] = present[source][field]
+                if agreed < len(present):
+                    report["settled_by_third"] += 1
+                    row.setdefault("settled_by", {})[field] = [
+                        language for language, value in values.items()
+                        if value == winner]
             else:
-                row[field] = (left or right)[field]
+                row.setdefault("disputed", {})[field] = {
+                    language: found[field] for language, found in present.items()}
+                row.setdefault("only_in", {})[field] = {
+                    language: sorted(set(value) - set().union(
+                        *(set(other) for other_language, other in values.items()
+                          if other_language != language)))
+                    for language, value in values.items()}
+                if field == "inherits":
+                    row["sentences"] = {language: found.get("sentence", "")
+                                        for language, found in present.items()}
+                report["disputes"] += 1
         report["rationalised"].append(row)
     return report
+
+
+def _majority(values: dict[str, Any]) -> tuple[Any, int]:
+    """The value at least two readings agree on, and how many said it.
+
+    Two books are the minimum this repository accepts for a regulatory table
+    and three is what it takes to settle a stand-off: where the editions
+    disagree, the reading that stands alone is the one that is wrong, and where
+    all three differ nothing is settled at all. A single reading settles
+    nothing either — one book is not a check on anything.
+    """
+    if len(values) < 2:
+        return None, 0
+    counts: dict[Any, int] = {}
+    for value in values.values():
+        counts[value] = counts.get(value, 0) + 1
+    best, agreed = max(counts.items(), key=lambda item: item[1])
+    return (best, agreed) if agreed >= 2 else (None, 0)
 
 
 def _canonical(code: str) -> str:
@@ -666,7 +718,7 @@ def _comparable(block: dict[str, Any], field: str) -> list[str]:
             f"/{_numbers(row.get('condition'))}" for row in block[field]]
 
 
-def report_differences(report: dict[str, Any], first: str, second: str) -> None:
+def report_differences(report: dict[str, Any]) -> None:
     """Say where the two readings differ, and nothing else.
 
     Between corrections this is the only thing worth printing: the readings
@@ -676,21 +728,22 @@ def report_differences(report: dict[str, Any], first: str, second: str) -> None:
     for row in report["gases"]:
         if row.get("disputed"):
             sides = row["disputed"]["also_permitted"]
-            print(f"  gases {row['tank_code']}: {first}={sides[first]} "
-                  f"{second}={sides[second]}")
-        elif row["readings"] < 2:
-            print(f"  gases {row['tank_code']}: only one reading")
+            print(f"  gases {row['tank_code']}: "
+                  + " ".join(f"{language}={value}"
+                             for language, value in sides.items()))
     for row in report["rationalised"]:
         if row["readings"] < 2:
-            print(f"  {row['tank_code']}: only one reading")
-            continue
+            print(f"  {row['tank_code']}: only one reading ({row['readings']})")
         for field, sides in (row.get("only_in") or {}).items():
             print(f"  {row['tank_code']} {field}: "
-                  f"only {first} {sides[first]} / only {second} {sides[second]}")
+                  + " / ".join(f"only {language} {value}"
+                               for language, value in sides.items()))
             if field == "inherits":
                 for language, sentence in (row.get("sentences") or {}).items():
-                    print(f"      {language}: {sentence[:150]!r}")
-    print(f"disputes: {report['disputes']}")
+                    print(f"      {language}: {sentence[:130]!r}")
+    print(f"readings: {'+'.join(report['readings'])}  "
+          f"settled by a third reading: {report['settled_by_third']}  "
+          f"disputes: {report['disputes']}")
 
 
 #: What the two editions are, for the record the seed has to carry. A seed that
@@ -702,12 +755,12 @@ EDITIONS = {
 }
 
 
-def as_seed(report: dict[str, Any], first: dict[str, Any],
-            second: dict[str, Any]) -> dict[str, Any]:
+def as_seed(report: dict[str, Any],
+            readings: list[dict[str, Any]]) -> dict[str, Any]:
     """The comparison as the application will read it, bookkeeping and all."""
-    languages = [first["language"], second["language"]]
+    languages = [reading["language"] for reading in readings]
     settled = sum(1 for row in report["rationalised"]
-                  if row["readings"] == 2 and not row.get("disputed"))
+                  if row["readings"] >= 2 and not row.get("disputed"))
     return {
         "_comment": (
             "The two tank hierarchies of ADR 4.3, read from two books and "
@@ -727,6 +780,7 @@ def as_seed(report: dict[str, Any], first: dict[str, Any],
             "gas_rows": len(report["gases"]),
             "tank_codes": len(report["rationalised"]),
             "codes_settled_on_every_cell": settled,
+            "cells_a_third_reading_settled": report["settled_by_third"],
             "cells_no_two_readings_agree_on": report["disputes"],
         },
         "gases": report["gases"],
@@ -747,19 +801,22 @@ def main() -> int:
     parser.add_argument("--dump", action="store_true",
                         help="print every row to the log as well")
     parser.add_argument("--out", type=Path, help="write the reading here")
-    parser.add_argument("--check", type=Path, nargs=2, metavar=("FIRST", "SECOND"),
-                        help="compare two readings")
+    parser.add_argument("--check", type=Path, nargs="+",
+                        metavar="READING",
+                        help="compare two readings, or three to settle them")
     parser.add_argument("--emit", type=Path, help="write the compared seed here")
     args = parser.parse_args()
 
     if args.check:
-        first, second = (json.loads(path.read_text(encoding="utf-8"))
-                         for path in args.check)
-        report = check(first, second)
-        report_differences(report, first["language"], second["language"])
+        if not 2 <= len(args.check) <= 3:
+            parser.error("--check takes two readings, or three to settle them")
+        readings = [json.loads(path.read_text(encoding="utf-8"))
+                    for path in args.check]
+        report = check(*readings)
+        report_differences(report)
         if args.emit:
             args.emit.write_text(
-                json.dumps(as_seed(report, first, second),
+                json.dumps(as_seed(report, readings),
                            ensure_ascii=False, indent=1) + "\n",
                 encoding="utf-8")
         return 0

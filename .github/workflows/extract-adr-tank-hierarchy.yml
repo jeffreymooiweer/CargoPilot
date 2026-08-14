@@ -81,6 +81,7 @@ jobs:
             nl) python scripts/regulations_store.py path adr_nl_2025 ;;
             de) python scripts/regulations_store.py path adr_de_2 ;;
             compare) python scripts/regulations_store.py path adr_nl_2025
+                     python scripts/regulations_store.py path adr_de_2
                      python scripts/regulations_store.py fetch adr2 ;;
             *)  python scripts/regulations_store.py fetch adr2 ;;
           esac
@@ -100,6 +101,13 @@ jobs:
             python scripts/extract_adr_tank_hierarchy.py \
               --pdf "$(python scripts/regulations_store.py path adr_nl_2025)" \
               --language nl --out nl.json
+            # The third book settles the stand-offs. Where an edition stands
+            # alone against the other two it is the one that is wrong, and
+            # where all three differ nothing is settled — which is the whole
+            # reason for reading a table three times.
+            python scripts/extract_adr_tank_hierarchy.py \
+              --pdf "$(python scripts/regulations_store.py path adr_de_2)" \
+              --language de --out de.json || echo "the German reading failed"
             exit 0
           fi
           case "$LANGUAGE" in
@@ -150,7 +158,9 @@ jobs:
         if: ${{ always() && inputs.language == 'compare' }}
         run: |
           echo "=== where the two readings differ ==="
-          python scripts/extract_adr_tank_hierarchy.py --check en.json nl.json \
+          READINGS="en.json nl.json"
+          if [ -s de.json ]; then READINGS="$READINGS de.json"; fi
+          python scripts/extract_adr_tank_hierarchy.py --check $READINGS \
             --emit backend/seed/dg/adr_tank_hierarchy.json \
             || echo "no comparison was made"
 

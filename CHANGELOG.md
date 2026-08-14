@@ -2,6 +2,36 @@
 
 All notable changes are documented here, following [Semantic Versioning](https://semver.org/).
 
+## [1.70.0] — 2026-08-13
+
+### Fixed
+
+- **A tank needs placards, and this check used to say it needed none.** For
+  carriage in packages 5.3.1.5 puts a placard on the vehicle only for class 1 and
+  class 7. That reading is right, and it is the finding v1.57.0 was built around:
+  a full load of packaged petrol needs no placard at all, and telling a driver to
+  placard anyway teaches that the placard is decoration.
+
+  A tank does not work that way. **5.3.1.4.1** requires a placard of *every label
+  model of the load* on both long sides and on the rear of the vehicle;
+  **5.3.1.2** requires the same on both long sides and at each end of a tank
+  container or portable tank. Where a tank has several compartments carrying
+  different goods, the placards go on the relevant compartments plus one of each
+  model on each side at the rear.
+
+  So the answer inverts with the mode: the same petrol that needs no placard in
+  packages needs a class 3 placard on three faces in a tank. Answering the second
+  with the first turns a requirement into an absence, which is the worst
+  direction for a placard to be wrong in.
+
+  Bulk is placarded like a tank here — 5.3.1.4 is headed carriage in bulk and in
+  tanks alike, and this is the one rule in the tank work where the two share an
+  answer. Where table A gives no label in column (5) the check says the provision
+  turns on one, rather than reporting placards it cannot name.
+
+  Read from ADR 2025, Dutch edition, 5.3.1.2 and 5.3.1.4.1, printed pages
+  975-976.
+
 ## [1.69.0] — 2026-08-13
 
 ### Fixed

@@ -1762,7 +1762,49 @@ def check_adr_placarding(
                 "products": sorted({named[id(p)] for p in matched}),
             })
 
-    if not placards:
+    # 5.3.1.4.1 against 5.3.1.5: for packages a placard goes on the vehicle only
+    # for class 1 and class 7, which is why the packages answer is mostly that
+    # none is needed. A tank does not work that way — every label model of the
+    # load goes on both long sides and the rear. Answering a tank with the
+    # packages rule turns a requirement into an absence.
+    in_tanks_or_bulk = any(
+        str(p.get("carriage_mode") or "").strip()
+        in ("tank", "portable_tank", "bulk") for p in goods)
+    if in_tanks_or_bulk:
+        tank = rules["tank_placards"]
+        labels = sorted({
+            part.strip()
+            for p in goods
+            for part in str(p.get("labels") or "").replace("+", ",").split(",")
+            if part.strip()})
+        without = sorted({named[id(p)] for p in goods
+                          if not str(p.get("labels") or "").strip()})
+        if labels:
+            placards.append({
+                "class": None,
+                "provision": tank["provision_vehicle"],
+                "message": (tank["vehicle"].get(lang) or tank["vehicle"]["en"]).format(
+                    labels=", ".join(labels)),
+                "products": sorted({named[id(p)] for p in goods}),
+                "label_models": labels,
+                "required": True,
+            })
+            placards.append({
+                "class": None,
+                "provision": tank["provision_container"],
+                "message": tank["container"].get(lang) or tank["container"]["en"],
+                "products": [],
+            })
+        if without:
+            placards.append({
+                "class": None,
+                "provision": tank["provision_vehicle"],
+                "message": (tank["no_labels"].get(lang) or tank["no_labels"]["en"]).format(
+                    products=", ".join(without)),
+                "products": without,
+                "required": None,
+            })
+    elif not placards:
         # The finding this check exists for. An empty list is not an answer —
         # it reads as "not computed" — so the absence is stated with the
         # provision that makes it an absence.

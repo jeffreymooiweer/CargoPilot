@@ -424,24 +424,28 @@ exempt" since v1.32.0 while the arithmetic granted the exemption anyway — with
   store (fetched via the web archive by the first run of the fetch workflow) and table C
   itself carries both editions' readings.
 - **The tank vessel regime beyond table C's facts.** Since v1.73.0 **table C is in the
-  repository** (`adn_table_c.json`): 678 printed rows, and since v1.75.0 read **three
-  times** — the row set and every cell geometrically from the UNECE English 2025 PDF (the
-  pages print the table rotated, which the extractor measures rather than assumes), the
-  corroboration and the Dutch names from the mindef export, and the UNECE French 2025 PDF,
-  the treaty's other authentic language, which decides a cell wherever two of the three
-  agree. The comparison is recorded in the seed, not summarised away: **673 rows settle on
-  every cell and 5 carry a `disputed` cell** with every value read (a disputed cell is
-  never presented as an answer). It was 491 settled and 153 disputed on two readings.
-  **No row rests on one reading any more**: the rows the Dutch export omits — UN 1977 and
-  UN 1999 entirely — are corroborated by the French edition instead. The French reading
-  decided 180 cells and sided with the English edition in **every** one of them, which is
-  the export's measured damage showing up a third time; the two cells it alone reads
-  differently (the vessel type of UN 2709 and UN 2733) are recorded on their rows under
-  `french_reads_differently` and do not re-open a cell the first two readings agreed on.
-  The export's other damage is on record too: it splits a printed row per alternative name
-  (52 rows for the 26 printed rows of UN 1268) and swaps the data cells of columns (7) and
-  (9) against its own header — caught because 362 rows matched perfectly once swapped and
-  every row that matched unswapped had design equal to equipment.
+  repository** (`adn_table_c.json`): 678 printed rows, read **three times and, since
+  v1.80.0, from three books** — the row set and every cell geometrically from the UNECE
+  English 2025 PDF (those pages print the table rotated, which the extractor measures
+  rather than assumes), the corroboration and the Dutch names from the printed Dutch
+  edition (which prints it the ordinary way round, and needs its own reader for that),
+  and the UNECE French 2025 PDF, the treaty's other authentic language, which decides a
+  cell wherever two of the three agree. The comparison is recorded in the seed, not
+  summarised away: **677 rows settle on every cell and one carries a `disputed` cell** —
+  UN 2789's density, where all three editions print 1,05 and then qualify it in their own
+  language. It was 491 settled and 153 disputed when the Dutch reading came from an HTML
+  export, and 673 settled when the French edition was added to that. No row rests on one
+  reading, no row of any edition is left unplaced, and the French reading decided 27
+  stand-offs — siding with the Dutch against the English once, over UN 2672's density.
+  Four cells it alone reads differently are recorded under `french_reads_differently` and
+  do not re-open a cell the first two agreed on.
+
+  What the export cost, for the record, since the seed no longer carries it: it split a
+  printed row per alternative name (52 rows for the 26 printed rows of UN 1268), swapped
+  the data cells of columns (7) and (9) against its own header — caught because 362 rows
+  matched perfectly once swapped and every row that matched unswapped had design equal to
+  equipment — and omitted UN 1977 and UN 1999 entirely. All three are simply absent from
+  the printed edition's reading.
 
   What the application now answers from it: the **tank vessel type** of column (6) (or the
   variants, where petrol's six rows split between N and C), and the **signals** of column

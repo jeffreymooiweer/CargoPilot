@@ -2,6 +2,36 @@
 
 All notable changes are documented here, following [Semantic Versioning](https://semver.org/).
 
+## [1.80.0] — 2026-08-14
+
+### Changed
+
+- **Table C is read from three books.** The Dutch reading no longer comes from
+  an HTML export but from the printed Dutch ADN, and the difference is the
+  whole point of reading a table twice:
+
+  | | export as second reading | printed book as second reading |
+  |---|---|---|
+  | rows settled on every cell | 673 | **677** |
+  | rows with a disputed cell | 5 | **1** |
+  | rows of an edition left unplaced | 5 | **0** |
+  | rows resting on one reading | 0 | 0 |
+
+  The one cell left is UN 2789's density, where all three editions print 1,05
+  and then qualify it in their own language. The application withholds it, as
+  it withholds any cell no two readings agree on.
+
+- The export's four measured defects are simply absent now: no row split per
+  alternative name (UN 1268 keeps its "of" inside the name, in 26 rows), no
+  swapped columns (7) and (9), no missing UN 1977 and UN 1999 — both now carry
+  three readings and a name in every language — and no remark column glued four
+  languages deep. `adn_nl_index` stays in the register as the source the first
+  reading came from; it decides no cell any more.
+
+- The French reading settled 27 stand-offs and, for the first time, sided with
+  the Dutch against the English: UN 2672's density. That is what a third
+  reading is for.
+
 ## [1.79.3] — 2026-08-14
 
 ### Changed

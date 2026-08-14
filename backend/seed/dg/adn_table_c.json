@@ -4,17 +4,17 @@
  "source": "English reading: UNECE ADN 2025 (sources.json id adn), table C pages read by band and column with scripts/extract_adn_table_c.py. Dutch reading: the mindef.nl HTML export (id adn_nl_index), five ADNC list pages. French reading: UNECE ADN 2025 in French (id adn_fr), the same geometry as the English edition.",
  "cross_check": {
   "rows_english": 678,
-  "rows_dutch": 715,
+  "rows_dutch": 653,
   "rows_french": 677,
   "rows": 678,
-  "settled_rows": 673,
-  "rows_with_disputed_cells": 5,
+  "settled_rows": 677,
+  "rows_with_disputed_cells": 1,
   "rows_read_once": 0,
-  "dutch_rows_unplaced": 5,
+  "dutch_rows_unplaced": 0,
   "french_rows_unplaced": 0,
-  "cells_settled_by_the_french_reading": 180,
-  "cells_the_french_reading_overturned": 0,
-  "cells_the_french_reading_alone_reads_differently": 2,
+  "cells_settled_by_the_french_reading": 27,
+  "cells_the_french_reading_overturned": 1,
+  "cells_the_french_reading_alone_reads_differently": 4,
   "note": "The Dutch export splits a printed row per alternative name (52 rows for the 26 printed rows of UN 1268), swaps the data cells of columns (7) and (9) against its own header, omits UN 1977 and UN 1999 entirely along with single variant rows of several N.O.S. entries, and glues its remark column four languages deep. Each was measured during the comparison; rows the export lacks are corroborated by the French reading instead, and a cell no two readings agree on is kept under `disputed` with every value read — such a cell is not settled and must not be presented as an answer. `settled_by_french` names the fields the third reading decided and which of the first two it sided with; `french_reads_differently` records a third reading that dissents from a cell the first two already agreed on, which does not re-open it."
  },
  "entries": [
@@ -67,11 +67,8 @@
    "explosion_protection": "True",
    "equipment": "PP,EX,A",
    "name_fr": "BUTADIÈNES (BUTADIÈNE-1-2), STABILISÉ",
-   "name_nl": "MENGSEL VAN BUTADIENEN EN KOOLWATERSTOF, GESTABILISEERD dat bij 70 °C een dampdruk bezit van ten hoogste 1, 1 Mpa (11 bar) en bij 50 °C een dichtheid van ten minste 0, 525 kg/l (bevat minder dan 0.1% 1.3-butadiene)",
-   "readings": 3,
-   "settled_by_french": {
-    "explosion_group": "en"
-   }
+   "name_nl": "BUTADIENEN (1,2-BUTADIEEN), GESTABILISEERD",
+   "readings": 3
   },
   {
    "un": "1010",
@@ -96,7 +93,7 @@
    "explosion_protection": "True",
    "equipment": "PP,EX,A",
    "name_fr": "BUTADIÈNES (BUTADIÈNE-1-2) STABILISÉS, RÉFRIGÉRÉS",
-   "name_nl": "BUTADIENEN (1, 2-BUTADIEEN), GESTABILSEERD, STERK GEKOELD / BUTADIENEN, GESTABILISEERD, STERK GEKOELD met meer dan 40% butadienen (bevat minder dan 0.1% 1.3-butadieen) / MENGSEL VAN BUTADIENEN EN KOOLWATERSTOF, GESTABILISEERD, STERK GEKOELD met meer dan 40% butadienen (bevat minder dan 0.1% 1.3-butadieen)",
+   "name_nl": "BUTADIENEN (1,2-BUTADIEEN), GESTABILISEERD, STERK GEKOELD",
    "readings": 3
   },
   {
@@ -122,7 +119,7 @@
    "explosion_protection": "True",
    "equipment": "PP,EP,EX,TOX,A",
    "name_fr": "BUTADIÈNES (BUTADIÈNE-1-3), STABILISÉ",
-   "name_nl": "MENGSEL VAN BUTADIENEN EN KOOLWATERSTOF, GESTABILISEERD dat bij 70 °C een dampdruk bezit van ten hoogste 1, 1 Mpa (11 bar) en bij 50 °C een dichtheid van ten minste 0, 525 kg/l (met ten minste 0, 1% 1, 3-butadieen)",
+   "name_nl": "BUTADIENEN, (1,3-BUTADIEEN) GESTABILISEERD",
    "readings": 3,
    "settled_by_french": {
     "cargo_tank_equipment": "en"
@@ -151,14 +148,10 @@
    "explosion_protection": "True",
    "equipment": "PP,EP,EX,TOX,A",
    "name_fr": "BUTADIÈNES STABILISÉS ou BUTADIÈNES ET HYDROCARBURES EN MÉLANGE STABILISÉ, RÉFRIGÉRÉ, contenant plus de 40 % de butadiènes (contient au moins 0,1 % de butadiène-1-3)",
-   "name_nl": "BUTADIENEN (1, 3-BUTADIEEN), GESTABILISEERD, STERK GEKOELD",
+   "name_nl": "BUTADIENEN, (1,3-BUTADIEEN) GESTABILISEERD, STERK GEKOELD",
    "readings": 3,
-   "disputed": {
-    "explosion_group": {
-     "en": "II B B24) (II",
-     "nl": "II B 4)",
-     "fr": "II B4) B24) (II"
-    }
+   "french_reads_differently": {
+    "explosion_group": "II B4) B24) (II"
    }
   },
   {
@@ -184,11 +177,8 @@
    "explosion_protection": "True",
    "equipment": "PP,EP,EX,TOX,A",
    "name_fr": "BUTADIÈNES (BUTADIÈNE-1-3) STABILISÉS, RÉFRIGÉRÉS",
-   "name_nl": "BUTADIENEN, GESTABILISEERD, STERK GEKOELD met meer dan 40% butadienen (met 0.1% of meer 1.3-butadieen)",
-   "readings": 3,
-   "settled_by_french": {
-    "explosion_group": "en"
-   }
+   "name_nl": "BUTADIENEN, GESTABILISEERD of MENGSEL VAN BUTADIENEN EN KOOLWATERSTOF, GESTABILISEERD,STERK GEKOELD, met meer dan 40% butadienen (met ten minste 0.1% 1,3-butadieen)",
+   "readings": 3
   },
   {
    "un": "1010",
@@ -213,13 +203,8 @@
    "explosion_protection": "True",
    "equipment": "PP,EX,A",
    "name_fr": "BUTADIÈNES STABILISÉS ou BUTADIÈNES ET HYDROCARBURES EN MÉLANGE STABILISÉ, RÉFRIGÉRÉ, contenant plus de 40 % de butadiènes (contient moins de 0,1 % de butadiène-1-3)",
-   "name_nl": "MENGSEL VAN BUTADIENEN EN KOOLWATERSTOF, GESTABILISEERD, STERK GEKOELD met meer dan 40% butadienen (met 0.1% of meer 1.3-butadieen)",
-   "readings": 3,
-   "settled_by_french": {
-    "dangers": "en",
-    "explosion_group": "en",
-    "equipment": "en"
-   }
+   "name_nl": "BUTADIENEN, GESTABILISEERD of MENGSEL VAN BUTADIENEN EN KOOLWATERSTOF, GESTABILISEERD, STERK GEKOELD met meer dan 40% butadienen (met minder dan 0.1% 1,3-butadieen)",
+   "readings": 3
   },
   {
    "un": "1010",
@@ -244,11 +229,8 @@
    "explosion_protection": "True",
    "equipment": "PP,EX,A",
    "name_fr": "BUTADIÈNES STABILISÉS ou BUTADIÈNES ET HYDROCARBURES EN MÉLANGE STABILISÉ, contenant plus de 40 % de butadiène (contient moins de 0,1% de butadiene-1-3)",
-   "name_nl": "BUTADIENEN, GESTABILISEERD dat bij 70 °C een dampdruk bezit van ten hoogste 1, 1 Mpa (11 bar) en bij 50 °C een dichtheid van ten minste 0, 525 kg/l (bevat minder dan 0.1% 1.3-butadiene)",
-   "readings": 3,
-   "settled_by_french": {
-    "explosion_group": "en"
-   }
+   "name_nl": "BUTADIENEN, GESTABILISEERD of MENGSEL VAN BUTADIENEN EN KOOLWATERSTOF, GESTABILISEERD, met meer dan 40% butadienen (met minder dan 0.1% 1,3-butadieen)",
+   "readings": 3
   },
   {
    "un": "1010",
@@ -273,12 +255,8 @@
    "explosion_protection": "True",
    "equipment": "PP,EP,EX,TOX,A",
    "name_fr": "BUTADIÈNES STABILISÉS ou BUTADIÈNES ET HYDROCARBURES EN MÉLANGE STABILISÉ, contenant plus de 40 % de butadiènes (contient au moins 0,1 % de butadiène-1-3)",
-   "name_nl": "BUTADIENEN, GESTABILISEERD met meer dan 40% butadienen (met ten minste 0, 1% 1, 3-butadieen)",
-   "readings": 3,
-   "settled_by_french": {
-    "cargo_tank_equipment": "en",
-    "explosion_group": "en"
-   }
+   "name_nl": "BUTADIENEN, GESTABILISEERD of MENGSEL VAN BUTADIENEN EN KOOLWATERSTOF, GESTABILISEERD, met meer dan 40% butadienen (met ten minste 0.1% 1,3-butadieen)",
+   "readings": 3
   },
   {
    "un": "1011",
@@ -303,7 +281,7 @@
    "explosion_protection": "True",
    "equipment": "PP,EX,A",
    "name_fr": "BUTANE (contient moins de 0,1% de butadiene-1-3)",
-   "name_nl": "BUTAAN (met minder dan 0, 1% 1, 3-butadieen)",
+   "name_nl": "BUTAAN (met minder dan 0,1% 1,3-butadieen)",
    "readings": 3
   },
   {
@@ -329,7 +307,7 @@
    "explosion_protection": "True",
    "equipment": "PP,EP,EX,TOX,A",
    "name_fr": "BUTANE (contient 0,1 % ou plus de butadiène-1-3)",
-   "name_nl": "BUTAAN (met ten minste 0, 1% 1, 3-butadieen)",
+   "name_nl": "BUTAAN (met ten minste 0,1% 1,3-butadieen)",
    "readings": 3,
    "settled_by_french": {
     "cargo_tank_equipment": "en"
@@ -358,7 +336,7 @@
    "explosion_protection": "True",
    "equipment": "PP,EX,A",
    "name_fr": "BUTANE, RÉFRIGÉRÉ (contient moins de 0,1% de butadiène-1-3)",
-   "name_nl": "BUTAAN, STERK GEKOELD (met minder dan 0.1% 1, 3-butadieen)",
+   "name_nl": "BUTAAN, STERK GEKOELD (met minder dan 0,1% 1,3-butadieen)",
    "readings": 3
   },
   {
@@ -384,7 +362,7 @@
    "explosion_protection": "True",
    "equipment": "PP,EP,EX,TOX,A",
    "name_fr": "BUTANE, RÉFRIGÉRÉ (contient 0,1% ou plus de butadiène-1-3)",
-   "name_nl": "BUTAAN, STERK GEKOELD (met 0.1% of meer 1.3-butadieen",
+   "name_nl": "BUTAAN, STERK GEKOELD (met ten minste 0,1% 1,3- butadieen)",
    "readings": 3
   },
   {
@@ -436,7 +414,7 @@
    "explosion_protection": "True",
    "equipment": "PP,EX,A",
    "name_fr": "BUTYLÈNE-1, RÉFRIGÉRÉ",
-   "name_nl": "1-BUTYLEEN, STERK GEKOELD",
+   "name_nl": "1-BUTEEN, STERK GEKOELD",
    "readings": 3
   },
   {
@@ -462,7 +440,7 @@
    "explosion_protection": "False",
    "equipment": "PP",
    "name_fr": "CHLOROPENTAFLUORÉTHANE (gaz réfrigérant R 115)",
-   "name_nl": "CHLOORPENTAFLUOR ETHAAN (KOELGAS R 115)",
+   "name_nl": "CHLOORPENTAFLUORETHAAN (koelgas R 115)",
    "readings": 3
   },
   {
@@ -488,7 +466,7 @@
    "explosion_protection": "False",
    "equipment": "PP",
    "name_fr": "CHLOROPENTAFLUORÉTHANE, RÉFRIGÉRÉ (GAZ RÉFRIGÉRANT R 115)",
-   "name_nl": "CHLOORPENTAFLUORETHAAN, STERK GEKOELD (KOELGAS R115)",
+   "name_nl": "CHLOORPENTAFLUORETHAAN, STERK GEKOELD (koelgas R 115)",
    "readings": 3
   },
   {
@@ -514,7 +492,7 @@
    "explosion_protection": "True",
    "equipment": "PP,EX,A",
    "name_fr": "DIFLUORO-1,1 ÉTHANE (GAZ RÉFRIGÉRANT R 152a)",
-   "name_nl": "1, 1-DIFLUORETHAAN (KOELGAS R 152A)",
+   "name_nl": "1,1-DIFLUORETHAAN, (KOELGAS R 152a)",
    "readings": 3
   },
   {
@@ -540,12 +518,8 @@
    "explosion_protection": "True",
    "equipment": "PP,EX,A",
    "name_fr": "DIFLUORO-1,1 ÉTHANE, RÉFRIGÉRÉ (GAZ RÉFRIGÉRANT R 152a)",
-   "name_nl": "1, 1-DIFLUORETHAAN, STERK GEKOELD (KOELGAS R 152A)",
-   "readings": 3,
-   "settled_by_french": {
-    "cargo_tank_equipment": "en",
-    "temperature_class": "en"
-   }
+   "name_nl": "1,1-DIFLUORETHAAN, STERK GEKOELD (KOELGAS R 152a)",
+   "readings": 3
   },
   {
    "un": "1033",
@@ -648,11 +622,8 @@
    "explosion_protection": "True",
    "equipment": "PP,EX,A",
    "name_fr": "ÉTHYLÈNE LIQUIDE RÉFRIGÉRÉ",
-   "name_nl": "ETHYLEEN, STERK GEKOELD VLOEIBAAR (ETHEEN, STERK GEKOELD VLOEIBAAR)",
-   "readings": 3,
-   "settled_by_french": {
-    "cargo_tank_equipment": "en"
-   }
+   "name_nl": "ETHYLEEN, STERK GEKOELD VLOEIBAAR",
+   "readings": 3
   },
   {
    "un": "1040",
@@ -677,7 +648,7 @@
    "explosion_protection": "True",
    "equipment": "PP,EP,EX,TOX,A",
    "name_fr": "OXYDE D'ÉTHYLÈNE AVEC DE L'AZOTE jusqu'à une pression totale de 1 MPa (10 bar) à 50 °C",
-   "name_nl": "ETHYLEENOXIDE MET STIKSTOF tot een totale druk van 1 MPa (10 bar) bij 50 °C",
+   "name_nl": "ETHYLEENOXIDE MET STIKSTOF tot een maximale totale druk van 1 Mpa (10 bar) bij 50°C",
    "readings": 3
   },
   {
@@ -704,7 +675,10 @@
    "equipment": "PP,EX,A",
    "name_fr": "ISOBUTYLÈNE",
    "name_nl": "ISOBUTEEN",
-   "readings": 3
+   "readings": 3,
+   "settled_by_french": {
+    "temperature_class": "en"
+   }
   },
   {
    "un": "1055",
@@ -729,7 +703,7 @@
    "explosion_protection": "True",
    "equipment": "PP,EX,A",
    "name_fr": "ISOBUTYLÈNE, RÉFRIGÉRÉ",
-   "name_nl": "ISOBUTYLEEN, STEK GEKOELD",
+   "name_nl": "ISOBUTEEN, STERK GEKOELD",
    "readings": 3
   },
   {
@@ -807,7 +781,7 @@
    "explosion_protection": "True",
    "equipment": "PP,EX,A",
    "name_fr": "PROPYLÈNE",
-   "name_nl": "PROPEEN (PROPYLEEN)",
+   "name_nl": "PROPEEN",
    "readings": 3
   },
   {
@@ -833,7 +807,7 @@
    "explosion_protection": "True",
    "equipment": "PP,EX,A",
    "name_fr": "PROPYLÈNE, RÉFRIGÉRÉ",
-   "name_nl": "PROPYLEEN, STERK GEKOELD",
+   "name_nl": "PROPEEN, STERK GEKOELD",
    "readings": 3
   },
   {
@@ -937,7 +911,7 @@
    "explosion_protection": "True",
    "equipment": "PP,EX,A",
    "name_fr": "ACÉTAL",
-   "name_nl": "ACETAL (1, 1-diethoxyethaan)",
+   "name_nl": "ACETAL (1,1-diethoxyethaan)",
    "readings": 3
   },
   {
@@ -964,10 +938,7 @@
    "equipment": "PP,EX,A",
    "name_fr": "ACÉTALDÉHYDE (éthanal)",
    "name_nl": "ACEETALDEHYDE (ethanal)",
-   "readings": 3,
-   "settled_by_french": {
-    "dangers": "en"
-   }
+   "readings": 3
   },
   {
    "un": "1090",
@@ -1018,7 +989,7 @@
    "explosion_protection": "True",
    "equipment": "PP,EP,EX,TOX,A",
    "name_fr": "ACROLÉINE STABILISÉE",
-   "name_nl": "ACROLEÏNE, GESTABILISEERD",
+   "name_nl": "ACROLEINE, GESTABILISEERD",
    "readings": 3
   },
   {
@@ -1200,7 +1171,7 @@
    "explosion_protection": "True",
    "equipment": "PP,EX,A",
    "name_fr": "CHLORURES D'AMYLE (CHLORO-1 DIMÉTHYL-2,2 PROPANE)",
-   "name_nl": "AMYLCHLORIDEN (1-CHLOOR-2, 2-DIMETHYLPROPAAN)",
+   "name_nl": "AMYLCHLORIDEN (1-CHLOOR-2,2-DIMETHYLPROPAAN)",
    "readings": 3
   },
   {
@@ -1278,7 +1249,7 @@
    "explosion_protection": "True",
    "equipment": "PP,EX,A",
    "name_fr": "CHLORURES D'AMYLE (1-CHLOROPENTANE)",
-   "name_nl": "AMYLCHLORIDEN (1-CHLOOROPENTAAN)",
+   "name_nl": "AMYLCHLORIDEN (1-CHLOORPENTAAN)",
    "readings": 3
   },
   {
@@ -1304,11 +1275,8 @@
    "explosion_protection": "True",
    "equipment": "PP,EX,A",
    "name_fr": "PENTÈNE-1 (n-amylène)",
-   "name_nl": "PENTEEN-1 (n-AMYLEEN)",
-   "readings": 3,
-   "settled_by_french": {
-    "explosion_group": "en"
-   }
+   "name_nl": "1-PENTEEN (n-amyleen)",
+   "readings": 3
   },
   {
    "un": "1114",
@@ -1359,8 +1327,8 @@
    "explosion_protection": "True",
    "equipment": "PP,EX,A",
    "name_fr": "BUTANOLS (ALCOOL n-BUTYLIQUE)",
-   "readings": 2,
-   "name_nl": ""
+   "name_nl": "BUTANOLEN (n-BUTYLALCOHOL)",
+   "readings": 3
   },
   {
    "un": "1120",
@@ -1385,7 +1353,7 @@
    "explosion_protection": "True",
    "equipment": "PP,EX,A",
    "name_fr": "BUTANOLS (ALCOOL BUTYLIQUE secondaire)",
-   "name_nl": "BUTANOLEN (sec-BUTYLALCOHOL) / BUTANOLEN (n-BUTYLALCOHOL)",
+   "name_nl": "BUTANOLEN (sec.-BUTYLALCOHOL)",
    "readings": 3
   },
   {
@@ -1411,11 +1379,8 @@
    "explosion_protection": "True",
    "equipment": "PP,EX,A",
    "name_fr": "BUTANOLS (ALCOOL BUTYLIQUE tertiaire)",
-   "name_nl": "BUTANOLEN (tert-BUTYLALCOHOL)",
-   "readings": 3,
-   "settled_by_french": {
-    "explosion_group": "en"
-   }
+   "name_nl": "BUTANOLEN (tert.-BUTYLALCOHOL)",
+   "readings": 3
   },
   {
    "un": "1123",
@@ -1674,7 +1639,7 @@
    "explosion_protection": "True",
    "equipment": "PP,EP,EX,TOX,A",
    "name_fr": "DISULFURE DE CARBONE",
-   "name_nl": "KOOLSTOFDISULFIDE (ZWAVELKOOLSTOF)",
+   "name_nl": "KOOLSTOFDISULFIDE of ZWAVELKOOLSTOF",
    "readings": 3
   },
   {
@@ -1752,7 +1717,7 @@
    "explosion_protection": "True",
    "equipment": "PP,EP,EX,TOX,A",
    "name_fr": "ALDÉHYDE CROTONIQUE STABILISÉ (CROTONALDÉHYDE STABILISÉ)",
-   "name_nl": "CROTONALDEHYDE, GESTABILISEERD",
+   "name_nl": "CROTONALDEHYDE of CROTONALDEHYDE, GESTABILISEERD",
    "readings": 3
   },
   {
@@ -1779,12 +1744,7 @@
    "equipment": "PP,EX,A",
    "name_fr": "CYCLOHEXANE",
    "name_nl": "CYCLOHEXAAN",
-   "readings": 3,
-   "settled_by_french": {
-    "opening_pressure_kpa": "en",
-    "max_filling_percent": "en",
-    "sampling_device": "en"
-   }
+   "readings": 3
   },
   {
    "un": "1146",
@@ -1835,7 +1795,7 @@
    "explosion_protection": "True",
    "equipment": "PP,EX,A",
    "name_fr": "DIACÉTONE-ALCOOL",
-   "name_nl": "DIACETONALCOHOL chemisch zuiver",
+   "name_nl": "DIACETONALCOHOL",
    "readings": 3
   },
   {
@@ -1861,8 +1821,11 @@
    "explosion_protection": "True",
    "equipment": "PP,EX,A",
    "name_fr": "DICHLORO-1-2 ÉTHYLÈNE (cis-DICHLORO-1,2 ÉTHYLÈNE)",
-   "name_nl": "1, 2-DICHLOORETHYLEEN (cis-1, 2-DICHLOORETHYLEEN)",
-   "readings": 3
+   "name_nl": "1,2-DICHLOORETHYLEEN (cis-1,2-DICHLOORETHYLEEN)",
+   "readings": 3,
+   "settled_by_french": {
+    "temperature_class": "en"
+   }
   },
   {
    "un": "1150",
@@ -1887,7 +1850,7 @@
    "explosion_protection": "True",
    "equipment": "PP,EX,A",
    "name_fr": "DICHLORO-1-2 ÉTHYLÈNE (trans- DICHLORO-1,2 ÉTHYLÈNE)",
-   "name_nl": "1, 2-DICHLOORETHYLEEN (trans-1, 2-DICHLOORETHYLEEN)",
+   "name_nl": "1,2-DICHLOORETHYLEEN (trans-1,2-DICHLOORETHYLEEN)",
    "readings": 3
   },
   {
@@ -1913,7 +1876,7 @@
    "explosion_protection": "True",
    "equipment": "PP,EX,A",
    "name_fr": "ÉTHER DIÉTHYLIQUE DE L'ÉTHYLÈNEGLYCOL",
-   "name_nl": "ETHYLEENGLYCOLDIETHYLETHER (1, 2--diethoxyethaan)",
+   "name_nl": "ETHYLEENGLYCOLDIETHYLETHER",
    "readings": 3
   },
   {
@@ -1965,7 +1928,7 @@
    "explosion_protection": "True",
    "equipment": "PP,EX,A",
    "name_fr": "ÉTHER DIÉTHYLIQUE",
-   "name_nl": "DIETHYLETHER (ETHYLETHER)",
+   "name_nl": "DIETHYLETHER of ETHYLETHER",
    "readings": 3
   },
   {
@@ -1992,10 +1955,7 @@
    "equipment": "PP,EX,A",
    "name_fr": "DIISOBUTYLCÉTONE",
    "name_nl": "DIISOBUTYLKETON",
-   "readings": 3,
-   "settled_by_french": {
-    "explosion_group": "en"
-   }
+   "readings": 3
   },
   {
    "un": "1159",
@@ -2154,7 +2114,7 @@
    "explosion_protection": "True",
    "equipment": "PP,EX,A",
    "name_fr": "ÉTHANOL (ALCOOL ÉTHYLIQUE) ou ÉTHANOL EN SOLUTION (ALCOOL ÉTHYLIQUE EN SOLUTION), solution aqueuse contenant plus de 70 % en volume d'alcool",
-   "name_nl": "ETHANOL, OPLOSSING (ETHYLALCOHOL, OPLOSSING) waterige oplossing met meer dan 70 vol-% alcohol / ETHANOL (ETHYLALCOHOL) waterige oplossing met meer dan 70 vol-% alcohol",
+   "name_nl": "ETHANOL (ETHYLALCOHOL), ETHANOL, OPLOSSING (ETHYLALCOHOL, OPLOSSING), waterige oplossing met meer dan 70 vol-% alcohol",
    "readings": 3
   },
   {
@@ -2180,7 +2140,7 @@
    "explosion_protection": "True",
    "equipment": "PP,EX,A",
    "name_fr": "ÉTHANOL EN SOLUTION (ALCOOL ÉTHYLIQUE EN SOLUTION), solution aqueuse contenant plus de 24 % et au plus 70 % en volume d'alcool",
-   "name_nl": "ETHANOL, OPLOSSING (ETHYLALCOHOL, OPLOSSING) met meer dan 24 vol.-% en ten hoogste 70 vol.-% alcohol",
+   "name_nl": "ETHANOL, OPLOSSING (ETHYLALCOHOL, OPLOSSING), waterige oplossing met meer dan 24 vol.-% en ten hoogste 70 vol.-% alcohol",
    "readings": 3
   },
   {
@@ -2207,10 +2167,7 @@
    "equipment": "PP,EP,EX,TOX,A",
    "name_fr": "ÉTHER MONOÉTHYLIQUE DE L'ÉTHYLÈNEGLYCOL",
    "name_nl": "ETHYLEENGLYCOLMONO-ETHYLETHER",
-   "readings": 3,
-   "settled_by_french": {
-    "sampling_device": "en"
-   }
+   "readings": 3
   },
   {
    "un": "1172",
@@ -2236,10 +2193,7 @@
    "equipment": "PP,EP,EX,TOX,A",
    "name_fr": "ACÉTATE DE L'ÉTHER MONO- ÉTHYLIQUE DE L'ÉTHYLÈNEGLYCOL",
    "name_nl": "ETHYLEENGLYCOLMONO-ETHYLETHER-ACETAAT",
-   "readings": 3,
-   "settled_by_french": {
-    "sampling_device": "en"
-   }
+   "readings": 3
   },
   {
    "un": "1173",
@@ -2342,7 +2296,7 @@
    "explosion_protection": "True",
    "equipment": "PP,EX,A",
    "name_fr": "ÉTHER ÉTHYLBUTYLIQUE (ÉTHER ÉTHYL-tert-BUTYLIQUE)",
-   "name_nl": "ETHYLBUTYLETHER",
+   "name_nl": "ETHYLBUTYLETHER (ETHYL-tert-BUTYLETHER)",
    "readings": 3
   },
   {
@@ -2368,7 +2322,7 @@
    "explosion_protection": "True",
    "equipment": "PP,EP,EX,TOX,A",
    "name_fr": "DICHLORURE D'ÉTHYLÈNE (dichloro-1,2-éthane)",
-   "name_nl": "ETHYLEENDICHLORIDE (1, 2-dichloorethaan)",
+   "name_nl": "ETHYLEENDICHLORIDE (1,2-dichloorethaan)",
    "readings": 3
   },
   {
@@ -2394,11 +2348,8 @@
    "explosion_protection": "True",
    "equipment": "PP,EP,EX,TOX,A",
    "name_fr": "ÉTHER MONOMÉTHYLIQUE DE L'ÉTHYLÈNEGLYCOL",
-   "name_nl": "ETHYLEENGLYCOLMONOMETHYLETHER (2-methoxyethanol)",
-   "readings": 3,
-   "settled_by_french": {
-    "sampling_device": "en"
-   }
+   "name_nl": "ETHYLEENGLYCOLMONO-METHYLETHER",
+   "readings": 3
   },
   {
    "un": "1191",
@@ -2424,10 +2375,7 @@
    "equipment": "PP,EX,A",
    "name_fr": "ALDÉHYDES OCTYLIQUES (2-ÉTHYLCAPRONALDÉHYDE)",
    "name_nl": "OCTYLALDEHYDEN (2-ETHYLCAPRONALDEHYDE)",
-   "readings": 3,
-   "settled_by_french": {
-    "explosion_group": "en"
-   }
+   "readings": 3
   },
   {
    "un": "1191",
@@ -2452,7 +2400,7 @@
    "explosion_protection": "True",
    "equipment": "PP,EX,A",
    "name_fr": "ALDÉHYDES OCTYLIQUES (n-OCTALDÉHYDE)",
-   "name_nl": "OCTYLALDEHYDEN (n-OCTALDEHYDE)",
+   "name_nl": "OCTYLALDEHYDEN (n-OCTYLALDEHYDE)",
    "readings": 3
   },
   {
@@ -2478,7 +2426,7 @@
    "explosion_protection": "True",
    "equipment": "PP,EX,A",
    "name_fr": "ÉTHYLMÉTHYLCÉTONE (méthyléthylcétone)",
-   "name_nl": "ETHYLMETHYLKETON (METHYLETHYLKETON)",
+   "name_nl": "ETHYLMETHYLKETON (methylethylketon)",
    "readings": 3
   },
   {
@@ -2530,7 +2478,7 @@
    "explosion_protection": "True",
    "equipment": "PP,EP,EX,TOX,A",
    "name_fr": "FURALDÉHYDES (a-FURALDÉHYDE) ou FURFURALDÉHYDES (a-FURFURYLALDÉHYDE)",
-   "name_nl": "FURALDEHYDEN (a-FURALDEHYDE) (FURFURALDEHYDEN) (a-FURFURALDEHYDE)",
+   "name_nl": "FURALDEHYDEN (a-FURALDEHYDE) of FURFURALDEHYDEN (a-FURFURALDEHYDE)",
    "readings": 3
   },
   {
@@ -2556,7 +2504,7 @@
    "explosion_protection": "False",
    "equipment": "PP",
    "name_fr": "CARBURANT DIESEL conforme à la norme EN 590:2013 + A1:2017 ou GAZOLE ou HUILE DE CHAUFFE, LÉGÈRE à point d'éclair défini dans la norme EN 590:2013 + A1:2017",
-   "name_nl": "DIESELOLIE overeenkomstig norm EN 590:2013 + A1:2017 / STOOKOLIE, LICHT / GASOLIE met een vlampunt overeenkomstig norm EN 590:2013 + A1:2017",
+   "name_nl": "DIESELOLIE overeenkomstig norm EN 590:2013 + A1:2017 of GASOLIE of STOOKOLIE, LICHT met een vlampunt overeenkomstig norm EN 590: 2013 + A1:2017",
    "readings": 3
   },
   {
@@ -2582,7 +2530,7 @@
    "explosion_protection": "False",
    "equipment": "*",
    "name_fr": "CARBURANT DIESEL ou GAZOLE ou HUILE DE CHAUFFE, LÉGÈRE (point d'éclair supérieur à 60 °C mais pas plus que 100 °C)",
-   "name_nl": "DIESELOLIE (vlampunt hoger dan 60 °C, doch ten hoogste 100°C) / GASOLIE (vlampunt hoger dan 60 °C, doch ten hoogste 100°C) / STOOKOLIE, LICHT (vlampunt hoger dan 60 °C, doch ten hoogste 100°C)",
+   "name_nl": "DIESELOLIE of GASOLIE of STOOKOLIE, LICHT (vlampunt hoger dan 60 ºC, doch ten hoogste 100ºC)",
    "readings": 3
   },
   {
@@ -2608,7 +2556,7 @@
    "explosion_protection": "False",
    "equipment": "*",
    "name_fr": "CARBURANT DIESEL ou GAZOLE ou HUILE DE CHAUFFE, LÉGÈRE (point d'éclair ne dépassant pas 60 °C)",
-   "name_nl": "DIESELOLIE (vlampunt ten hoogste 60°C) / GASOLIE (vlampunt ten hoogste 60°C)",
+   "name_nl": "DIESELOLIE of GASOLIE of STOOKOLIE, LICHT (vlampunt ten hoogste 60 ºC)",
    "readings": 3
   },
   {
@@ -2634,13 +2582,8 @@
    "explosion_protection": "True",
    "equipment": "PP,EP,EX,TOX,A",
    "name_fr": "ESSENCE",
-   "name_nl": "BENZINE",
-   "readings": 3,
-   "settled_by_french": {
-    "cargo_tank_equipment": "en",
-    "density": "en",
-    "sampling_device": "en"
-   }
+   "name_nl": "BENZINE of MOTORBRANDSTOF",
+   "readings": 3
   },
   {
    "un": "1203",
@@ -2665,7 +2608,7 @@
    "explosion_protection": "True",
    "equipment": "PP,EP,EX,TOX,A",
    "name_fr": "ESSENCE CONTENANT PLUS DE 10 % DE BENZÈNE 60 °C < P. ÉBULLITION ≤ 85 °C",
-   "name_nl": "BENZINE, MET MEER DAN 10% BENZEEN 60 °C < KOOKPUNT <= 85 °C (MOTORBRANDSTOF, MET MEER DAN 10% BENZEEN 60 °C < KOOKPUNT <= 85 °C)",
+   "name_nl": "BENZINE of MOTORBRANDSTOF, MET MEER DAN 10% BENZEEN 60 °C < KOOKPUNT ≤ 85 °C",
    "readings": 3
   },
   {
@@ -2691,7 +2634,7 @@
    "explosion_protection": "True",
    "equipment": "PP,EP,EX,TOX,A",
    "name_fr": "ESSENCE CONTENANT PLUS DE 10 % DE BENZÈNE 85 °C < P. ÉBULLITION ≤ 115 °C",
-   "name_nl": "BENZINE, MET MEER DAN 10% BENZEEN 85 °C < KOOKPUNT <= 115 °C (MOTORBRANDSTOF, MET MEER DAN 10% BENZEEN 85 °C < KOOKPUNT <= 115 °C)",
+   "name_nl": "BENZINE of MOTORBRANDSTOF, MET MEER DAN 10% BENZEEN 85 °C < KOOKPUNT ≤ 115 °C",
    "readings": 3
   },
   {
@@ -2717,7 +2660,7 @@
    "explosion_protection": "True",
    "equipment": "PP,EP,EX,TOX,A",
    "name_fr": "ESSENCE CONTENANT PLUS DE 10 % DE BENZÈNE P. ÉBULLITION > 115 °C",
-   "name_nl": "BENZINE, MET MEER DAN 10% BENZEEN KOOKPUNT >115 °C (MOTORBRANDSTOF, MET MEER DAN 10% BENZEEN KOOKPUNT >115 °C)",
+   "name_nl": "BENZINE of MOTORBRANDSTOF, MET MEER DAN 10% BENZEEN KOOKPUNT >115 °C",
    "readings": 3
   },
   {
@@ -2743,7 +2686,7 @@
    "explosion_protection": "True",
    "equipment": "*",
    "name_fr": "ESSENCE CONTENANT PLUS DE 10 % DE BENZÈNE",
-   "name_nl": "BENZINE MET MEER DAN 10% BENZEEN (MOTORBRANDSTOF MET MEER DAN 10% BENZEEN)",
+   "name_nl": "BENZINE of MOTORBRANDSTOF, MET MEER DAN 10% BENZEEN",
    "readings": 3
   },
   {
@@ -2769,7 +2712,7 @@
    "explosion_protection": "True",
    "equipment": "PP,EP,EX,TOX,A",
    "name_fr": "ESSENCE CONTENANT PLUS DE 10 % DE BENZÈNE P. ÉBULLITION ≤ 60 °C",
-   "name_nl": "BENZINE, MET MEER DAN 10% BENZEEN KOOKPUNT<= 60 °C (MOTORBRANDSTOF, MET MEER DAN 10% BENZEEN KOOKPUNT<= 60 °C)",
+   "name_nl": "BENZINE of MOTORBRANDSTOF, MET MEER DAN 10% BENZEEN KOOKPUNT ≤ 60 °C",
    "readings": 3
   },
   {
@@ -2847,13 +2790,10 @@
    "explosion_protection": "True",
    "equipment": "PP,EX,A",
    "name_fr": "HEXANES",
-   "readings": 2,
-   "name_nl": "",
-   "disputed": {
-    "sampling_device": {
-     "en": "2",
-     "fr": "3"
-    }
+   "name_nl": "HEXANEN",
+   "readings": 3,
+   "french_reads_differently": {
+    "sampling_device": "3"
    }
   },
   {
@@ -2879,7 +2819,7 @@
    "explosion_protection": "True",
    "equipment": "PP,EX,A",
    "name_fr": "ISOBUTANOL (alcool isobutylique)",
-   "name_nl": "ISOBUTANOL (ISOBUTYLALCOHOL)",
+   "name_nl": "ISOBUTANOL (isobutyl alcohol)",
    "readings": 3
   },
   {
@@ -3009,7 +2949,7 @@
    "explosion_protection": "True",
    "equipment": "PP,EX,A",
    "name_fr": "ISOPROPANOL (alcool isopropylique)",
-   "name_nl": "ISOPROPYLALCOHOL (ISOPROPANOL)",
+   "name_nl": "ISOPROPANOL (isopropyl alcohol)",
    "readings": 3
   },
   {
@@ -3088,11 +3028,7 @@
    "equipment": "PP,EX,A",
    "name_fr": "KÉROSÈNE",
    "name_nl": "KEROSINE",
-   "readings": 3,
-   "settled_by_french": {
-    "density": "en",
-    "blue_cones": "en"
-   }
+   "readings": 3
   },
   {
    "un": "1224",
@@ -3118,10 +3054,7 @@
    "equipment": "*",
    "name_fr": "CÉTONES LIQUIDES, N.S.A.",
    "name_nl": "KETONEN, VLOEIBAAR, N.E.G.",
-   "readings": 3,
-   "settled_by_french": {
-    "classification_code": "en"
-   }
+   "readings": 3
   },
   {
    "un": "1224",
@@ -3146,7 +3079,7 @@
    "explosion_protection": "True",
    "equipment": "*",
    "name_fr": "CÉTONES LIQUIDES, N.S.A.",
-   "name_nl": "KETONEN, VLOEIBAAR, N.E.G. (dampdruk bij 50 °C hoger dan 110 kPa maar ten hoogste 175 kPa)",
+   "name_nl": "KETONEN, VLOEIBAAR, N.E.G",
    "readings": 3
   },
   {
@@ -3198,7 +3131,7 @@
    "explosion_protection": "True",
    "equipment": "*",
    "name_fr": "CÉTONES LIQUIDES, N.S.A.",
-   "name_nl": "KETONEN, VLOEIBAAR, N.E.G.",
+   "name_nl": "KETONEN, VLOEIBAAR, N.E.G",
    "readings": 3
   },
   {
@@ -3225,10 +3158,7 @@
    "equipment": "PP,EX,A",
    "name_fr": "OXYDE DE MÉSITYLE",
    "name_nl": "MESITYLOXIDE",
-   "readings": 3,
-   "settled_by_french": {
-    "blue_cones": "en"
-   }
+   "readings": 3
   },
   {
    "un": "1230",
@@ -3409,7 +3339,7 @@
    "explosion_protection": "True",
    "equipment": "PP,EX,A",
    "name_fr": "MÉTHACRYLATE DE MÉTHYLE MONOMÈRE STABILISÉ",
-   "name_nl": "METHYLMETHACRYLAAT MONOMEER, GESTABILISEERD",
+   "name_nl": "METHYLMETHACRYLAAT, MONOMEER, GESTABILISEERD",
    "readings": 3
   },
   {
@@ -3462,10 +3392,7 @@
    "equipment": "PP,EX,A",
    "name_fr": "PARALDÉHYDE",
    "name_nl": "PARALDEHYDE",
-   "readings": 3,
-   "settled_by_french": {
-    "blue_cones": "en"
-   }
+   "readings": 3
   },
   {
    "un": "1265",
@@ -3490,7 +3417,7 @@
    "explosion_protection": "True",
    "equipment": "PP,EX,A",
    "name_fr": "PENTANES, liquides",
-   "name_nl": "PENTANEN vloeibaar",
+   "name_nl": "PENTANEN, vloeibaar",
    "readings": 3
   },
   {
@@ -3516,7 +3443,7 @@
    "explosion_protection": "True",
    "equipment": "PP,EX,A",
    "name_fr": "PENTANES, liquides",
-   "name_nl": "PENTANEN vloeibaar",
+   "name_nl": "PENTANEN, vloeibaar",
    "readings": 3
   },
   {
@@ -3542,7 +3469,7 @@
    "explosion_protection": "True",
    "equipment": "PP,EX,A",
    "name_fr": "PENTANES, liquides (MÉTHYL-2 BUTANE)",
-   "name_nl": "PENTANEN (2-METHYLBUTAAN) vloeibaar",
+   "name_nl": "PENTANEN, vloeibaar (2-METHYLBUTAAN)",
    "readings": 3
   },
   {
@@ -3568,7 +3495,7 @@
    "explosion_protection": "True",
    "equipment": "PP,EX,A",
    "name_fr": "PENTANES, liquides (n-PENTANE)",
-   "name_nl": "PENTANEN (n-PENTAAN) vloeibaar",
+   "name_nl": "PENTANEN, vloeibaar (n-PENTAAN)",
    "readings": 3
   },
   {
@@ -3594,7 +3521,7 @@
    "explosion_protection": "True",
    "equipment": "PP,EX,A",
    "name_fr": "PENTANES, liquides (n-PENTANE)",
-   "name_nl": "PENTANEN (n-PENTAAN) vloeibaar",
+   "name_nl": "PENTANEN, vloeibaar (n-PENTAAN)",
    "readings": 3
   },
   {
@@ -3932,7 +3859,7 @@
    "explosion_protection": "True",
    "equipment": "PP,EP,EX,TOX,A",
    "name_fr": "PÉTROLE BRUT CONTENANT PLUS DE 10 % DE BENZÈNE 60 °C < POINT D’ÉBULLITION INITIAL ≤ 85 °C",
-   "name_nl": "RUWE AARDOLIE MET MEER DAN 10% BENZEEN 60 °C < BEGINKOOKPUNT <= 85 °C",
+   "name_nl": "RUWE AARDOLIE MET MEER DAN 10% BENZEEN 60 °C < BEGINKOOKPUNT ≤ 85°C",
    "readings": 3
   },
   {
@@ -3958,7 +3885,7 @@
    "explosion_protection": "True",
    "equipment": "PP,EP,EX,TOX,A",
    "name_fr": "PÉTROLE BRUT CONTENANT PLUS DE 10 % DE BENZÈNE 60 °C < POINT D’ÉBULLITION INITIAL ≤ 85 °C",
-   "name_nl": "RUWE AARDOLIE MET MEER DAN 10% BENZEEN 60 °C < BEGINKOOKPUNT <= 85 °C",
+   "name_nl": "RUWE AARDOLIE MET MEER DAN 10% BENZEEN 60 °C < BEGINKOOKPUNT ≤ 85 °C",
    "readings": 3
   },
   {
@@ -3984,7 +3911,7 @@
    "explosion_protection": "True",
    "equipment": "PP,EP,EX,TOX,A",
    "name_fr": "PÉTROLE BRUT CONTENANT PLUS DE 10 % DE BENZÈNE",
-   "name_nl": "RUWE AARDOLIE MET MEER DAN 10% BENZEEN 60 °C < BEGINKOOKPUNT <= 85 °C",
+   "name_nl": "RUWE AARDOLIE MET MEER DAN 10% BENZEEN 60°C < BEGINKOOKPUNT ≤ 85°C",
    "readings": 3
   },
   {
@@ -4010,11 +3937,8 @@
    "explosion_protection": "True",
    "equipment": "PP,EP,EX,TOX,A",
    "name_fr": "PÉTROLE BRUT CONTENANT PLUS DE 10 % DE BENZÈNE 60 °C < POINT D’ÉBULLITION INITIAL ≤ 85 °C",
-   "name_nl": "RUWE AARDOLIE MET MEER DAN 10% BENZEEN 60 °C < BEGINKOOKPUNT <= 85 °C",
-   "readings": 3,
-   "settled_by_french": {
-    "blue_cones": "en"
-   }
+   "name_nl": "RUWE AARDOLIE MET MEER DAN 10% BENZEEN 60 °C < BEGINKOOKPUNT ≤ 85 °C",
+   "readings": 3
   },
   {
    "un": "1267",
@@ -4039,7 +3963,7 @@
    "explosion_protection": "True",
    "equipment": "PP,EP,EX,TOX,A",
    "name_fr": "PÉTROLE BRUT CONTENANT PLUS DE 10 % DE BENZÈNE 85 °C < POINT D’ÉBULLITION INITIAL ≤ 115 °C",
-   "name_nl": "RUWE AARDOLIE MET MEER DAN 10% BENZEEN BEGINKOOKPUNT >115 °C",
+   "name_nl": "RUWE AARDOLIE MET MEER DAN 10% BENZEEN 85°C < BEGINKOOKPUNT ≤ 115°C",
    "readings": 3
   },
   {
@@ -4065,7 +3989,7 @@
    "explosion_protection": "True",
    "equipment": "PP,EP,EX,TOX,A",
    "name_fr": "PÉTROLE BRUT CONTENANT PLUS DE 10 % DE BENZÈNE 85 °C < POINT D’ÉBULLITION INITIAL ≤ 115 °C",
-   "name_nl": "RUWE AARDOLIE MET MEER DAN 10% BENZEEN BEGINKOOKPUNT >115 °C",
+   "name_nl": "RUWE AARDOLIE MET MEER DAN 10% BENZEEN 85 °C < BEGINKOOKPUNT ≤ 115 °C",
    "readings": 3
   },
   {
@@ -4091,11 +4015,8 @@
    "explosion_protection": "True",
    "equipment": "PP,EP,EX,TOX,A",
    "name_fr": "PÉTROLE BRUT CONTENANT PLUS DE 10 % DE BENZÈNE 85 °C < POINT D’ÉBULLITION INITIAL ≤ 115 °C",
-   "name_nl": "RUWE AARDOLIE MET MEER DAN 10% BENZEEN 85 °C < BEGINKOOKPUNT <= 115 °C",
-   "readings": 3,
-   "settled_by_french": {
-    "classification_code": "en"
-   }
+   "name_nl": "RUWE AARDOLIE MET MEER DAN 10% BENZEEN 85°C < BEGINKOOKPUNT ≤ 115°C",
+   "readings": 3
   },
   {
    "un": "1267",
@@ -4120,11 +4041,8 @@
    "explosion_protection": "True",
    "equipment": "PP,EP,EX,TOX,A",
    "name_fr": "PÉTROLE BRUT CONTENANT PLUS DE 10 % DE BENZÈNE 85 °C < POINT D’ÉBULLITION INITIAL ≤ 115 °C",
-   "name_nl": "RUWE AARDOLIE MET MEER DAN 10% BENZEEN 85 °C < BEGINKOOKPUNT <= 115 °C",
-   "readings": 3,
-   "settled_by_french": {
-    "classification_code": "en"
-   }
+   "name_nl": "RUWE AARDOLIE MET MEER DAN 10% BENZEEN 85 °C < BEGINKOOKPUNT ≤ 115 °C",
+   "readings": 3
   },
   {
    "un": "1267",
@@ -4149,7 +4067,7 @@
    "explosion_protection": "True",
    "equipment": "PP,EP,EX,TOX,A",
    "name_fr": "PÉTROLE BRUT CONTENANT PLUS DE 10 % DE BENZÈNE POINT D’ÉBULLITION INITIAL > 115 °C",
-   "name_nl": "RUWE AARDOLIE MET MEER DAN 10% BENZEEN BEGINKOOKPUNT >115 °C",
+   "name_nl": "RUWE AARDOLIE MET MEER DAN 10% BENZEEN BEGINKOOKPUNT > 115°C",
    "readings": 3
   },
   {
@@ -4175,12 +4093,8 @@
    "explosion_protection": "True",
    "equipment": "PP,EP,EX,TOX,A",
    "name_fr": "PÉTROLE BRUT CONTENANT PLUS DE 10 % DE BENZÈNE POINT D’ÉBULLITION INITIAL > 115 °C",
-   "name_nl": "RUWE AARDOLIE MET MEER DAN 10% BENZEEN 85 °C < BEGINKOOKPUNT <= 115 °C",
-   "readings": 3,
-   "settled_by_french": {
-    "classification_code": "en",
-    "opening_pressure_kpa": "en"
-   }
+   "name_nl": "RUWE AARDOLIE MET MEER DAN 10% BENZEEN BEGINKOOKPUNT > 115 °C",
+   "readings": 3
   },
   {
    "un": "1267",
@@ -4205,7 +4119,7 @@
    "explosion_protection": "True",
    "equipment": "PP,EP,EX,TOX,A",
    "name_fr": "PÉTROLE BRUT CONTENANT PLUS DE 10 % DE BENZÈNE POINT D’ÉBULLITION INITIAL > 115 °C",
-   "name_nl": "RUWE AARDOLIE MET MEER DAN 10% BENZEEN BEGINKOOKPUNT >115 °C",
+   "name_nl": "RUWE AARDOLIE MET MEER DAN 10% BENZEEN BEGINKOOKPUNT > 115°C",
    "readings": 3
   },
   {
@@ -4231,7 +4145,7 @@
    "explosion_protection": "True",
    "equipment": "PP,EP,EX,TOX,A",
    "name_fr": "PÉTROLE BRUT CONTENANT PLUS DE 10 % DE BENZÈNE POINT D’ÉBULLITION INITIAL > 115 °C",
-   "name_nl": "RUWE AARDOLIE MET MEER DAN 10% BENZEEN BEGINKOOKPUNT >115 °C",
+   "name_nl": "RUWE AARDOLIE MET MEER DAN 10% BENZEEN BEGINKOOKPUNT > 115 °C",
    "readings": 3
   },
   {
@@ -4257,7 +4171,7 @@
    "explosion_protection": "True",
    "equipment": "PP,EP,EX,TOX,A",
    "name_fr": "PÉTROLE BRUT CONTENANT PLUS DE 10 % DE BENZÈNE POINT D’ÉBULLITION INITIAL ≤ 60 °C",
-   "name_nl": "RUWE AARDOLIE MET MEER DAN 10% BENZEEN KOOKPUNT <= 60 °C",
+   "name_nl": "RUWE AARDOLIE MET MEER DAN 10% BENZEEN BEGINKOOKPUNT ≤ 60°C",
    "readings": 3
   },
   {
@@ -4283,7 +4197,7 @@
    "explosion_protection": "True",
    "equipment": "PP,EP,EX,TOX,A",
    "name_fr": "PÉTROLE BRUT CONTENANT PLUS DE 10 % DE BENZÈNE POINT D’ÉBULLITION INITIAL ≤ 60 °C",
-   "name_nl": "RUWE AARDOLIE MET MEER DAN 10% BENZEEN KOOKPUNT <= 60 °C",
+   "name_nl": "RUWE AARDOLIE MET MEER DAN 10% BENZEEN BEGINKOOKPUNT ≤ 60 °C",
    "readings": 3
   },
   {
@@ -4309,7 +4223,7 @@
    "explosion_protection": "True",
    "equipment": "PP,EP,EX,TOX,A",
    "name_fr": "PÉTROLE BRUT CONTENANT PLUS DE 10 % DE BENZÈNE POINT D’ÉBULLITION INITIAL ≤ 60 °C",
-   "name_nl": "RUWE AARDOLIE MET MEER DAN 10% BENZEEN BEGINKOOKPUNT <= 60 °C",
+   "name_nl": "RUWE AARDOLIE MET MEER DAN 10% BENZEEN BEGINKOOKPUNT ≤ 60°C",
    "readings": 3
   },
   {
@@ -4335,7 +4249,7 @@
    "explosion_protection": "True",
    "equipment": "PP,EP,EX,TOX,A",
    "name_fr": "PÉTROLE BRUT CONTENANT PLUS DE 10 % DE BENZÈNE POINT D’ÉBULLITION INITIAL ≤ 60 °C",
-   "name_nl": "RUWE AARDOLIE MET MEER DAN 10% BENZEEN BEGINKOOKPUNT <= 60 °C",
+   "name_nl": "RUWE AARDOLIE MET MEER DAN 10% BENZEEN BEGINKOOKPUNT ≤ 60 °C",
    "readings": 3
   },
   {
@@ -4361,11 +4275,8 @@
    "explosion_protection": "True",
    "equipment": "PP,EP,EX,TOX,A",
    "name_fr": "PÉTROLE BRUT CONTENANT PLUS DE 10 % DE BENZÈNE POINT D’ÉBULLITION INITIAL ≤ 60 °C",
-   "name_nl": "RUWE AARDOLIE MET MEER DAN 10% BENZEEN BEGINKOOKPUNT <= 60 °C",
-   "readings": 3,
-   "settled_by_french": {
-    "classification_code": "en"
-   }
+   "name_nl": "RUWE AARDOLIE MET MEER DAN 10% BENZEEN BEGINKOOKPUNT ≤ 60°C",
+   "readings": 3
   },
   {
    "un": "1267",
@@ -4390,11 +4301,8 @@
    "explosion_protection": "True",
    "equipment": "PP,EP,EX,TOX,A",
    "name_fr": "PÉTROLE BRUT CONTENANT PLUS DE 10 % DE BENZÈNE POINT D’ÉBULLITION INITIAL ≤ 60 °C",
-   "name_nl": "RUWE AARDOLIE MET MEER DAN 10% BENZEEN BEGINKOOKPUNT <= 60 °C",
-   "readings": 3,
-   "settled_by_french": {
-    "classification_code": "en"
-   }
+   "name_nl": "RUWE AARDOLIE MET MEER DAN 10% BENZEEN BEGINKOOKPUNT ≤ 60 °C",
+   "readings": 3
   },
   {
    "un": "1268",
@@ -4419,11 +4327,8 @@
    "explosion_protection": "True",
    "equipment": "PP,EP,EX,TOX,A",
    "name_fr": "DISTILLATS DE PÉTROLE, N.S.A. ou PRODUITS PÉTROLIERS N.S.A (HEART CUT DE BENZÈNE) pv50 ≤ 110 kPa",
-   "name_nl": "AARDOLIEDESTILLATEN, N.E.G. (BENZENE HEART CUT) (dampdruk bij 50°C ten hoogste 110 kPa)",
-   "readings": 3,
-   "settled_by_french": {
-    "sampling_device": "en"
-   }
+   "name_nl": "AARDOLIEDESTILLATEN, N.E.G. of AARDOLIEPRODUCTEN, N.E.G. (BENZENE HEART CUT) dampdruk bij 50°C ≤ 110 kPa",
+   "readings": 3
   },
   {
    "un": "1268",
@@ -4448,7 +4353,7 @@
    "explosion_protection": "True",
    "equipment": "*",
    "name_fr": "DISTILLATS DE PÉTROLE, N.S.A. ou PRODUITS PÉTROLIERS N.S.A.",
-   "name_nl": "AARDOLIEDESTILLATEN, N.E.G.",
+   "name_nl": "AARDOLIEDESTILLATEN, N.E.G. of AARDOLIEPRODUCTEN, N.E.G.",
    "readings": 3
   },
   {
@@ -4474,7 +4379,7 @@
    "explosion_protection": "True",
    "equipment": "*",
    "name_fr": "DISTILLATS DE PÉTROLE, N.S.A. ou PRODUITS PÉTROLIERS, N.S.A.",
-   "name_nl": "AARDOLIEDESTILLATEN, N.E.G. / AARDOLIEPRODUCTEN, N.E.G.",
+   "name_nl": "AARDOLIEDESTILLATEN, N.E.G. of AARDOLIEPRODUCTEN, N.E.G.",
    "readings": 3
   },
   {
@@ -4500,7 +4405,7 @@
    "explosion_protection": "True",
    "equipment": "*",
    "name_fr": "DISTILLATS DE PÉTROLE, N.S.A. ou PRODUITS PÉTROLIERS N.S.A.",
-   "name_nl": "AARDOLIEDESTILLATEN, N.E.G. / AARDOLIEPRODUCTEN, N.E.G.",
+   "name_nl": "AARDOLIEDESTILLATEN, N.E.G. of AARDOLIEPRODUCTEN, N.E.G.",
    "readings": 3
   },
   {
@@ -4526,7 +4431,7 @@
    "explosion_protection": "True",
    "equipment": "*",
    "name_fr": "DISTILLATS DE PÉTROLE, N.S.A. ou PRODUITS PÉTROLIERS, N.S.A.",
-   "name_nl": "AARDOLIEDESTILLATEN, N.E.G. / AARDOLIEPRODUCTEN, N.E.G.",
+   "name_nl": "AARDOLIEDESTILLATEN, N.E.G. of AARDOLIEPRODUCTEN, N.E.G.",
    "readings": 3
   },
   {
@@ -4552,7 +4457,7 @@
    "explosion_protection": "True",
    "equipment": "*",
    "name_fr": "DISTILLATS DE PÉTROLE, N.S.A. ou PRODUITS PÉTROLIERS N.S.A.",
-   "name_nl": "AARDOLIEDESTILLATEN, N.E.G. / AARDOLIEPRODUCTEN, N.E.G.",
+   "name_nl": "AARDOLIEDESTILLATEN, N.E.G. of AARDOLIEPRODUCTEN, N.E.G.",
    "readings": 3
   },
   {
@@ -4578,7 +4483,7 @@
    "explosion_protection": "True",
    "equipment": "*",
    "name_fr": "DISTILLATS DE PÉTROLE, N.S.A. ou PRODUITS PÉTROLIERS, N.S.A.",
-   "name_nl": "AARDOLIEDESTILLATEN, N.E.G. / AARDOLIEPRODUCTEN, N.E.G.",
+   "name_nl": "AARDOLIEDESTILLATEN, N.E.G. of AARDOLIEPRODUCTEN, N.E.G.",
    "readings": 3
   },
   {
@@ -4604,11 +4509,8 @@
    "explosion_protection": "True",
    "equipment": "PP,EP,EX,TOX,A",
    "name_fr": "DISTILLATS DE PÉTROLE, N.S.A. ou PRODUITS PÉTROLIERS N.S.A. (NAPHTA) 110 kPa < pv50 ≤ 150 kPa",
-   "name_nl": "AARDOLIEDESTILLATEN, N.E.G. MET MEER DAN 10% BENZEEN (NAFTA), 110 kPa < vp50 <= 150 kPa",
-   "readings": 3,
-   "settled_by_french": {
-    "sampling_device": "en"
-   }
+   "name_nl": "AARDOLIEDESTILLATEN, N.E.G. of AARDOLIEPRODUCTEN, N.E.G. (NAFTA) 110 kPa < dampdruk bij 50°C ≤ 150 kPa",
+   "readings": 3
   },
   {
    "un": "1268",
@@ -4633,11 +4535,8 @@
    "explosion_protection": "True",
    "equipment": "PP,EP,EX,TOX,A",
    "name_fr": "DISTILLATS DE PÉTROLE, N.S.A. ou PRODUITS PÉTROLIERS N.S.A. (NAPHTA) 110 kPa < pv50 ≤ 175 kPa",
-   "name_nl": "AARDOLIEDESTILLATEN, N.E.G. (dampdruk bij 50°C hoger dan 110 kPa, doch ten hoogste 175 kPa)",
-   "readings": 3,
-   "settled_by_french": {
-    "sampling_device": "en"
-   }
+   "name_nl": "AARDOLIEDESTILLATEN, N.E.G. of AARDOLIEPRODUCTEN, N.E.G. (NAFTA) 110 kPa < dampdruk bij 50°C ≤ 175 kPa",
+   "readings": 3
   },
   {
    "un": "1268",
@@ -4662,11 +4561,8 @@
    "explosion_protection": "True",
    "equipment": "PP,EP,EX,TOX,A",
    "name_fr": "DISTILLATS DE PÉTROLE, N.S.A. ou PRODUITS PÉTROLIERS N.S.A. (NAPHTA) pv50 ≤ 110 kPa",
-   "name_nl": "AARDOLIEPRODUCTEN, N.E.G. (NAFTA) (dampdruk bij 50°C ten hoogste 110 kPa)",
-   "readings": 3,
-   "settled_by_french": {
-    "sampling_device": "en"
-   }
+   "name_nl": "AARDOLIEDESTILLATEN, N.E.G. of AARDOLIEPRODUCTEN, N.E.G. (NAFTA) dampdruk bij 50°C ≤ 110 kPa",
+   "readings": 3
   },
   {
    "un": "1268",
@@ -4691,7 +4587,7 @@
    "explosion_protection": "True",
    "equipment": "*",
    "name_fr": "DISTILLATS DE PÉTROLE, N.S.A. ou PRODUITS PÉTROLIERS, N.S.A. CONTENANT PLUS DE 10 % DE BENZÈNE",
-   "name_nl": "AARDOLIEDESTILLATEN, N.E.G. MET MEER DAN 10% BENZEEN / AARDOLIEPRODUCTEN, N.E.G. MET MEER DAN 10% BENZEEN",
+   "name_nl": "AARDOLIEDESTILLATEN, N.E.G. of AARDOLIEPRODUCTEN, N.E.G. MET MEER DAN 10% BENZEEN",
    "readings": 3
   },
   {
@@ -4717,7 +4613,7 @@
    "explosion_protection": "True",
    "equipment": "*",
    "name_fr": "DISTILLATS DE PÉTROLE, N.S.A. ou PRODUITS PÉTROLIERS, N.S.A. CONTENANT PLUS DE 10 % DE BENZÈNE",
-   "name_nl": "AARDOLIEDESTILLATEN, N.E.G. MET MEER DAN 10% BENZEEN / AARDOLIEPRODUCTEN, N.E.G. MET MEER DAN 10% BENZEEN",
+   "name_nl": "AARDOLIEDESTILLATEN, N.E.G. of AARDOLIEPRODUCTEN, N.E.G. MET MEER DAN 10% BENZEEN",
    "readings": 3
   },
   {
@@ -4743,7 +4639,7 @@
    "explosion_protection": "True",
    "equipment": "*",
    "name_fr": "DISTILLATS DE PÉTROLE, N.S.A. ou PRODUITS PÉTROLIERS, N.S.A. CONTENANT PLUS DE 10 % DE BENZÈNE",
-   "name_nl": "AARDOLIEDESTILLATEN, N.E.G. MET MEER DAN 10% BENZEEN / AARDOLIEPRODUCTEN, N.E.G. MET MEER DAN 10% BENZEEN",
+   "name_nl": "AARDOLIEDESTILLATEN, N.E.G. of AARDOLIEPRODUCTEN, N.E.G. MET MEER DAN 10% BENZEEN",
    "readings": 3
   },
   {
@@ -4769,7 +4665,7 @@
    "explosion_protection": "True",
    "equipment": "*",
    "name_fr": "DISTILLATS DE PÉTROLE, N.S.A. ou PRODUITS PÉTROLIERS, N.S.A. CONTENANT PLUS DE 10 % DE BENZÈNE",
-   "name_nl": "AARDOLIEDESTILLATEN, N.E.G. MET MEER DAN 10% BENZEEN / AARDOLIEPRODUCTEN, N.E.G. MET MEER DAN 10% BENZEEN",
+   "name_nl": "AARDOLIEDESTILLATEN, N.E.G. of AARDOLIEPRODUCTEN, N.E.G. MET MEER DAN 10% BENZEEN",
    "readings": 3
   },
   {
@@ -4795,7 +4691,7 @@
    "explosion_protection": "True",
    "equipment": "*",
    "name_fr": "DISTILLATS DE PÉTROLE, N.S.A. ou PRODUITS PÉTROLIERS, N.S.A. CONTENANT PLUS DE 10 % DE BENZÈNE",
-   "name_nl": "AARDOLIEDESTILLATEN, N.E.G. MET MEER DAN 10% BENZEEN / AARDOLIEPRODUCTEN, N.E.G. MET MEER DAN 10% BENZEEN",
+   "name_nl": "AARDOLIEDESTILLATEN, N.E.G. of AARDOLIEPRODUCTEN, N.E.G. MET MEER DAN 10% BENZEEN",
    "readings": 3
   },
   {
@@ -4821,7 +4717,7 @@
    "explosion_protection": "True",
    "equipment": "*",
    "name_fr": "DISTILLATS DE PÉTROLE, N.S.A. ou PRODUITS PÉTROLIERS, N.S.A. CONTENANT PLUS DE 10 % DE BENZÈNE",
-   "name_nl": "AARDOLIEDESTILLATEN, N.E.G. MET MEER DAN 10% BENZEEN / AARDOLIEPRODUCTEN, N.E.G. MET MEER DAN 10% BENZEEN",
+   "name_nl": "AARDOLIEDESTILLATEN, N.E.G. of AARDOLIEPRODUCTEN, N.E.G. MET MEER DAN 10% BENZEEN",
    "readings": 3
   },
   {
@@ -4847,7 +4743,7 @@
    "explosion_protection": "True",
    "equipment": "PP,EP,EX,TOX,A",
    "name_fr": "DISTILLATS DE PÉTROLE, N.S.A. CONTENANT PLUS DE 10 % DE BENZÈNE ou PRODUITS PÉTROLIERS N.S.A. CONTENANT PLUS DE 10 % DE BENZÈNE 60 °C < POINT D’ÉBULLITION INITIAL ≤ 85 °C",
-   "name_nl": "AARDOLIEDESTILLATEN, N.E.G. MET MEER DAN 10% BENZEEN 60 °C < BEGINKOOKPUNT <= 85 °C",
+   "name_nl": "AARDOLIEDESTILLATEN, N.E.G. of AARDOLIEPRODUCTEN, N.E.G. MET MEER DAN 10% BENZEEN 60°C < BEGINKOOKPUNT ≤ 85°C",
    "readings": 3
   },
   {
@@ -4873,7 +4769,7 @@
    "explosion_protection": "True",
    "equipment": "PP,EP,EX,TOX,A",
    "name_fr": "DISTILLATS DE PÉTROLE, N.S.A. ou PRODUITS PÉTROLIERS, N.S.A. CONTENANT PLUS DE 10 % DE BENZÈNE 60 °C < POINT D’ÉBULLITION INITIAL ≤ 85 °C",
-   "name_nl": "AARDOLIEDESTILLATEN, N.E.G. MET MEER DAN 10% BENZEEN 60 °C < BEGINKOOKPUNT <= 85 °C",
+   "name_nl": "AARDOLIEDESTILLATEN, N.E.G. of AARDOLIEPRODUCTEN, N.E.G. MET MEER DAN 10% BENZEEN 60 °C < BEGINKOOKPUNT ≤ 85 °C",
    "readings": 3
   },
   {
@@ -4899,7 +4795,7 @@
    "explosion_protection": "True",
    "equipment": "PP,EP,EX,TOX,A",
    "name_fr": "DISTILLATS DE PÉTROLE, N.S.A. CONTENANT PLUS DE 10 % DE BENZÈNE ou PRODUITS PÉTROLIERS N.S.A. CONTENANT PLUS DE 10 % DE BENZÈNE",
-   "name_nl": "AARDOLIEPRODUCTEN, N.E.G. MET MEER DAN 10% BENZEEN 60 °C < BEGINKOOKPUNT <= 85 °C / AARDOLIEDESTILLATEN, N.E.G. MET MEER DAN 10% BENZEEN 85 °C < BEGINKOOKPUNT <= 115 °C / AARDOLIEPRODUCTEN, N.E.G. MET MEER DAN 10% BENZEEN 85 °C < BEGINKOOKPUNT <= 115 °C",
+   "name_nl": "AARDOLIEDESTILLATEN, N.E.G. of AARDOLIEPRODUCTEN, N.E.G. MET MEER DAN 10% BENZEEN 85°C < BEGINKOOKPUNT ≤ 115°C",
    "readings": 3
   },
   {
@@ -4925,7 +4821,7 @@
    "explosion_protection": "True",
    "equipment": "PP,EP,EX,TOX,A",
    "name_fr": "DISTILLATS DE PÉTROLE, N.S.A. ou PRODUITS PÉTROLIERS, N.S.A. CONTENANT PLUS DE 10 % DE BENZÈNE 85 °C < POINT D’ÉBULLITION INITIAL ≤ 115 °C",
-   "name_nl": "AARDOLIEPRODUCTEN, N.E.G. MET MEER DAN 10% BENZEEN 60 °C < BEGINKOOKPUNT <= 85 °C / AARDOLIEDESTILLATEN, N.E.G. MET MEER DAN 10% BENZEEN 85 °C < BEGINKOOKPUNT <= 115 °C / AARDOLIEPRODUCTEN, N.E.G. MET MEER DAN 10% BENZEEN 85 °C < BEGINKOOKPUNT <= 115 °C",
+   "name_nl": "AARDOLIEDESTILLATEN, N.E.G. of AARDOLIEPRODUCTEN, N.E.G. MET MEER DAN 10% BENZEEN 85 °C < BEGINKOOKPUNT ≤ 115 °C",
    "readings": 3
   },
   {
@@ -4951,7 +4847,7 @@
    "explosion_protection": "True",
    "equipment": "PP,EP,EX,TOX,A",
    "name_fr": "DISTILLATS DE PÉTROLE, N.S.A. CONTENANT PLUS DE 10 % DE BENZÈNE ou PRODUITS PÉTROLIERS N.S.A. CONTENANT PLUS DE 10 % DE BENZÈNE POINT D’ÉBULLITION INITIAL > 115 °C",
-   "name_nl": "AARDOLIEDESTILLATEN, N.E.G. MET MEER DAN 10% BENZEEN 85 °C < BEGINKOOKPUNT <= 115 °C / AARDOLIEPRODUCTEN, N.E.G. MET MEER DAN 10% BENZEEN 85 °C < BEGINKOOKPUNT <= 115 °C / AARDOLIEDESTILLATEN, N.E.G. MET MEER DAN 10% BENZEEN BEGINKOOKPUNT >115 °C / AARDOLIEPRODUCTEN, N.E.G. MET MEER DAN 10% BENZEEN BEGINKOOKPUNT > 115 °C",
+   "name_nl": "AARDOLIEDESTILLATEN, N.E.G. of AARDOLIEPRODUCTEN, N.E.G. MET MEER DAN 10% BENZEEN BEGINKOOKPUNT > 115°C",
    "readings": 3
   },
   {
@@ -4977,7 +4873,7 @@
    "explosion_protection": "True",
    "equipment": "PP,EP,EX,TOX,A",
    "name_fr": "DISTILLATS DE PÉTROLE, N.S.A. ou PRODUITS PÉTROLIERS, N.S.A. CONTENANT PLUS DE 10 % DE BENZÈNE POINT D’ÉBULLITION INITIAL > 115 °C",
-   "name_nl": "AARDOLIEDESTILLATEN, N.E.G. MET MEER DAN 10% BENZEEN 85 °C < BEGINKOOKPUNT <= 115 °C / AARDOLIEPRODUCTEN, N.E.G. MET MEER DAN 10% BENZEEN 85 °C < BEGINKOOKPUNT <= 115 °C / AARDOLIEDESTILLATEN, N.E.G. MET MEER DAN 10% BENZEEN BEGINKOOKPUNT >115 °C / AARDOLIEPRODUCTEN, N.E.G. MET MEER DAN 10% BENZEEN BEGINKOOKPUNT > 115 °C",
+   "name_nl": "AARDOLIEDESTILLATEN, N.E.G. of AARDOLIEPRODUCTEN, N.E.G. MET MEER DAN 10% BENZEEN BEGINKOOKPUNT > 115 °C",
    "readings": 3
   },
   {
@@ -5003,7 +4899,7 @@
    "explosion_protection": "True",
    "equipment": "PP,EP,EX,TOX,A",
    "name_fr": "DISTILLATS DE PÉTROLE, N.S.A. CONTENANT PLUS DE 10 % DE BENZÈNE ou PRODUITS PÉTROLIERS N.S.A. CONTENANT PLUS DE 10 % DE BENZÈNE POINT D’ÉBULLITION INITIAL ≤ 60 °C",
-   "name_nl": "AARDOLIEDESTILLATEN, N.E.G. MET MEER DAN 10% BENZEEN BEGINKOOKPUNT <= 60 °C / AARDOLIEPRODUCTEN, N.E.G. MET MEER DAN 10% BENZEEN BEGINKOOKPUNT <= 60 °C",
+   "name_nl": "AARDOLIEDESTILLATEN, N.E.G. of AARDOLIEPRODUCTEN, N.E.G. MET MEER DAN 10% BENZEEN BEGINKOOKPUNT ≤ 60°C",
    "readings": 3
   },
   {
@@ -5029,7 +4925,7 @@
    "explosion_protection": "True",
    "equipment": "PP,EP,EX,TOX,A",
    "name_fr": "DISTILLATS DE PÉTROLE, N.S.A. ou PRODUITS PÉTROLIERS, N.S.A. CONTENANT PLUS DE 10 % DE BENZÈNE",
-   "name_nl": "AARDOLIEDESTILLATEN, N.E.G. MET MEER DAN 10% BENZEEN BEGINKOOKPUNT <= 60 °C / AARDOLIEPRODUCTEN, N.E.G. MET MEER DAN 10% BENZEEN BEGINKOOKPUNT <= 60 °C",
+   "name_nl": "AARDOLIEDESTILLATEN, N.E.G. of AARDOLIEPRODUCTEN, N.E.G. MET MEER DAN 10% BENZEEN BEGINKOOKPUNT ≤ 60 °C",
    "readings": 3
   },
   {
@@ -5055,7 +4951,7 @@
    "explosion_protection": "True",
    "equipment": "PP,EP,EX,TOX,A",
    "name_fr": "DISTILLATS DE PÉTROLE, N.S.A. CONTENANT PLUS DE 10 % DE BENZÈNE ou PRODUITS PÉTROLIERS N.S.A. CONTENANT PLUS DE 10 % DE BENZÈNE POINT D’ÉBULLITION INITIAL ≤ 60 °C",
-   "name_nl": "AARDOLIEDESTILLATEN, N.E.G. MET MEER DAN 10% BENZEEN BEGINKOOKPUNT <= 60 °C / AARDOLIEPRODUCTEN, N.E.G. MET MEER DAN 10% BENZEEN BEGINKOOKPUNT <= 60 °C",
+   "name_nl": "AARDOLIEDESTILLATEN, N.E.G. of AARDOLIEPRODUCTEN, N.E.G. MET MEER DAN 10% BENZEEN BEGINKOOKPUNT ≤ 60°C",
    "readings": 3
   },
   {
@@ -5081,7 +4977,7 @@
    "explosion_protection": "True",
    "equipment": "PP,EP,EX,TOX,A",
    "name_fr": "DISTILLATS DE PÉTROLE, N.S.A. ou PRODUITS PÉTROLIERS, N.S.A. CONTENANT PLUS DE 10 % DE BENZÈNE POINT D’ÉBULLITION INITIAL ≤ 60 °C",
-   "name_nl": "AARDOLIEDESTILLATEN, N.E.G. MET MEER DAN 10% BENZEEN BEGINKOOKPUNT <= 60 °C / AARDOLIEPRODUCTEN, N.E.G. MET MEER DAN 10% BENZEEN BEGINKOOKPUNT <= 60 °C",
+   "name_nl": "AARDOLIEDESTILLATEN, N.E.G. of AARDOLIEPRODUCTEN, N.E.G. MET MEER DAN 10% BENZEEN BEGINKOOKPUNT ≤ 60 °C",
    "readings": 3
   },
   {
@@ -5107,7 +5003,7 @@
    "explosion_protection": "True",
    "equipment": "PP,EX,A",
    "name_fr": "n-PROPANOL (alcool propylique normal)",
-   "name_nl": "n-PROPANOL (n-PROPYLALCOHOL)",
+   "name_nl": "n-PROPANOL (propyl alcohol, normaal)",
    "readings": 3
   },
   {
@@ -5133,11 +5029,8 @@
    "explosion_protection": "True",
    "equipment": "PP,EX,A",
    "name_fr": "n-PROPANOL (alcool propylique normal)",
-   "name_nl": "n-PROPANOL (n-PROPYLALCOHOL)",
-   "readings": 3,
-   "settled_by_french": {
-    "blue_cones": "en"
-   }
+   "name_nl": "n-PROPANOL (propyl alcohol, normaal)",
+   "readings": 3
   },
   {
    "un": "1275",
@@ -5266,7 +5159,7 @@
    "explosion_protection": "True",
    "equipment": "PP,EX,A",
    "name_fr": "DICHLORO-1,2 PROPANE ou DICHLORURE DE PROPYLÈNE",
-   "name_nl": "1, 2-DICHLOROMETHAAN (PROPYLDICHLORIDE)",
+   "name_nl": "1,2-DICHLOORPROPAAN of PROPYLEENDICHLORIDE",
    "readings": 3
   },
   {
@@ -5347,7 +5240,7 @@
    "name_nl": "LEISTEENOLIE",
    "readings": 3,
    "settled_by_french": {
-    "sampling_device": "en"
+    "explosion_protection": "en"
    }
   },
   {
@@ -5403,10 +5296,7 @@
    "equipment": "PP,EP,EX,A",
    "name_fr": "MÉTHYLATE DE SODIUM EN SOLUTION dans l'alcool",
    "name_nl": "NATRIUMMETHYLAAT, OPLOSSING in alcohol",
-   "readings": 3,
-   "settled_by_french": {
-    "blue_cones": "en"
-   }
+   "readings": 3
   },
   {
    "un": "1294",
@@ -5483,11 +5373,8 @@
    "explosion_protection": "True",
    "equipment": "PP,EX,A",
    "name_fr": "SUCCÉDANÉ D'ESSENCE DE TÉRÉBENTHINE",
-   "name_nl": "KUNSTTERPENTIJN (WHITE SPIRIT)",
-   "readings": 3,
-   "settled_by_french": {
-    "blue_cones": "en"
-   }
+   "name_nl": "KUNSTTERPENTIJN",
+   "readings": 3
   },
   {
    "un": "1300",
@@ -5512,8 +5399,11 @@
    "explosion_protection": "True",
    "equipment": "PP,EX,A",
    "name_fr": "SUCCÉDANÉ D’ESSENCE DE TÉRÉBENTHINE",
-   "readings": 2,
-   "name_nl": ""
+   "name_nl": "KUNSTTERPENTIJN (WHITE SPIRIT)",
+   "readings": 3,
+   "settled_by_french": {
+    "explosion_protection": "en"
+   }
   },
   {
    "un": "1301",
@@ -5564,11 +5454,8 @@
    "explosion_protection": "True",
    "equipment": "PP,EX,A",
    "name_fr": "XYLÈNES (m-XYLÈNE)",
-   "name_nl": "XYLENEN (m-XYLENE)",
-   "readings": 3,
-   "settled_by_french": {
-    "blue_cones": "en"
-   }
+   "name_nl": "XYLENEN (m-XYLEEN)",
+   "readings": 3
   },
   {
    "un": "1307",
@@ -5594,10 +5481,7 @@
    "equipment": "PP,EX,A",
    "name_fr": "XYLÈNES (mélanges dont 0 °C < p. de fusion < 13° C)",
    "name_nl": "XYLENEN (Mengsels met een smeltpunt > 0°C < 13°C)",
-   "readings": 3,
-   "settled_by_french": {
-    "blue_cones": "en"
-   }
+   "readings": 3
   },
   {
    "un": "1307",
@@ -5622,7 +5506,7 @@
    "explosion_protection": "True",
    "equipment": "PP,EX,A",
    "name_fr": "XYLÈNES (mélanges dont p.de fusion ≤ 0° C)",
-   "name_nl": "XYLENEN (Mengsels met een smeltpunt <= 0°C)",
+   "name_nl": "XYLENEN (Mengsels met een smeltpunt ≤ 0°C)",
    "readings": 3
   },
   {
@@ -5648,11 +5532,8 @@
    "explosion_protection": "True",
    "equipment": "PP,EX,A",
    "name_fr": "XYLÈNES (mélanges dont p.de fusion ≤ 0° C)",
-   "name_nl": "XYLENEN (Mengsels met een smeltpunt <= 0°C)",
-   "readings": 3,
-   "settled_by_french": {
-    "blue_cones": "en"
-   }
+   "name_nl": "XYLENEN (Mengsels met een smeltpunt ≤ 0°C)",
+   "readings": 3
   },
   {
    "un": "1307",
@@ -5677,11 +5558,8 @@
    "explosion_protection": "True",
    "equipment": "PP,EX,A",
    "name_fr": "XYLÈNES (o-XYLÈNE)",
-   "name_nl": "XYLENEN (o-XYLENE)",
-   "readings": 3,
-   "settled_by_french": {
-    "blue_cones": "en"
-   }
+   "name_nl": "XYLENEN (o-XYLEEN)",
+   "readings": 3
   },
   {
    "un": "1307",
@@ -5706,11 +5584,8 @@
    "explosion_protection": "True",
    "equipment": "PP,EX,A",
    "name_fr": "XYLÈNES (p-XYLÈNE)",
-   "name_nl": "XYLENEN (p-XYLENE)",
-   "readings": 3,
-   "settled_by_french": {
-    "blue_cones": "en"
-   }
+   "name_nl": "XYLENEN (p-XYLEEN)",
+   "readings": 3
   },
   {
    "un": "1541",
@@ -5813,7 +5688,7 @@
    "explosion_protection": "True",
    "equipment": "PP,EP,EX,TOX,A",
    "name_fr": "CHLORONITROBENZÈNES, SOLIDES, FONDUS (p-CHLORONITROBENZÈNE)",
-   "name_nl": "CHLOORNITROBENZENEN, VAST, GESMOLTEN (p-CHLOORNITROBENZEEN)",
+   "name_nl": "CHLOORNITROBENZENEN, VAST, GESMOLTEN (p- CHLOORNITROBENZEEN)",
    "readings": 3
   },
   {
@@ -5839,7 +5714,7 @@
    "explosion_protection": "False",
    "equipment": "PP,EP,TOX,A",
    "name_fr": "CHLORONITROBENZÈNES, SOLIDES, FONDUS (p-CHLORONITROBENZÈNE)",
-   "name_nl": "CHLOORNITROBENZENEN, VAST, GESMOLTEN (p-CHLOORNITROBENZEEN)",
+   "name_nl": "CHLOORNITROBENZENEN, VAST, GESMOLTEN (p- CHLOORNITROBENZEEN)",
    "readings": 3
   },
   {
@@ -5866,10 +5741,7 @@
    "equipment": "PP,EP,TOX,A",
    "name_fr": "o-DICHLOROBENZÈNE",
    "name_nl": "o-DICHLOORBENZEEN",
-   "readings": 3,
-   "settled_by_french": {
-    "dangers": "en"
-   }
+   "readings": 3
   },
   {
    "un": "1593",
@@ -5998,7 +5870,7 @@
    "explosion_protection": "False",
    "equipment": "PP,EP,TOX,A",
    "name_fr": "DIBROMURE D'ÉTHYLÈNE",
-   "name_nl": "ETHYLEENDIBROMIDE (1, 2-dibroomethaan)",
+   "name_nl": "ETHYLEENDIBROMIDE (1,2-dibroomethaan)",
    "readings": 3
   },
   {
@@ -6076,7 +5948,7 @@
    "explosion_protection": "True",
    "equipment": "PP,EP,EX,TOX,A",
    "name_fr": "NITROPHÉNOLS FONDUS",
-   "name_nl": "NITROFENOLEN",
+   "name_nl": "NITROFENOLEN, GESMOLTEN",
    "readings": 3
   },
   {
@@ -6102,7 +5974,7 @@
    "explosion_protection": "False",
    "equipment": "PP,EP,TOX,A",
    "name_fr": "NITROPHÉNOLS FONDUS",
-   "name_nl": "NITROFENOLEN",
+   "name_nl": "NITROFENOLEN, GESMOLTEN",
    "readings": 3
   },
   {
@@ -6154,7 +6026,7 @@
    "explosion_protection": "False",
    "equipment": "PP,EP,TOX,A",
    "name_fr": "TOLUIDINES LIQUIDES (m-TOLUIDINE)",
-   "name_nl": "TOLUÏDINEN, VLOEIBAAR (m-TOLUIDINE)",
+   "name_nl": "TOLUIDINE, VLOEIBAAR (m-TOLUIDINE)",
    "readings": 3
   },
   {
@@ -6180,7 +6052,7 @@
    "explosion_protection": "False",
    "equipment": "PP,EP,TOX,A",
    "name_fr": "TOLUIDINES LIQUIDES (o-TOLUIDINE)",
-   "name_nl": "TOLUÏDINEN, VLOEIBAAR (o-TOLUIDINE)",
+   "name_nl": "TOLUIDINE, VLOEIBAAR (o-TOLUIDINE)",
    "readings": 3
   },
   {
@@ -6388,7 +6260,7 @@
    "explosion_protection": "False",
    "equipment": "PP,EP",
    "name_fr": "COMPLEXE DE TRIFLUORURE DE BORE ET D'ACIDE ACÉTIQUE, LIQUIDE",
-   "name_nl": "BORIUMTRIFLUORIDEAZIJNZUUR-COMPLEX",
+   "name_nl": "BOORTRIFLUORIDE-AZIJNZUUR-COMPLEX, VLOEIBAAR",
    "readings": 3
   },
   {
@@ -6415,10 +6287,7 @@
    "equipment": "PP,EP,EX,TOX,A",
    "name_fr": "ACIDE CHLORACÉTIQUE EN SOLUTION",
    "name_nl": "CHLOORAZIJNZUUR, OPLOSSING",
-   "readings": 3,
-   "settled_by_french": {
-    "dangers": "en"
-   }
+   "readings": 3
   },
   {
    "un": "1750",
@@ -6444,10 +6313,7 @@
    "equipment": "PP,EP,TOX,A",
    "name_fr": "ACIDE CHLORACÉTIQUE EN SOLUTION",
    "name_nl": "CHLOORAZIJNZUUR, OPLOSSING",
-   "readings": 3,
-   "settled_by_french": {
-    "dangers": "en"
-   }
+   "readings": 3
   },
   {
    "un": "1760",
@@ -6473,10 +6339,7 @@
    "equipment": "*",
    "name_fr": "LIQUIDE CORROSIF, N.S.A.",
    "name_nl": "BIJTENDE VLOEISTOF, N.E.G.",
-   "readings": 3,
-   "settled_by_french": {
-    "max_filling_percent": "en"
-   }
+   "readings": 3
   },
   {
    "un": "1760",
@@ -6502,10 +6365,7 @@
    "equipment": "*",
    "name_fr": "LIQUIDE CORROSIF, N.S.A.",
    "name_nl": "BIJTENDE VLOEISTOF, N.E.G.",
-   "readings": 3,
-   "settled_by_french": {
-    "max_filling_percent": "en"
-   }
+   "readings": 3
   },
   {
    "un": "1760",
@@ -6531,10 +6391,7 @@
    "equipment": "*",
    "name_fr": "LIQUIDE CORROSIF, N.S.A.",
    "name_nl": "BIJTENDE VLOEISTOF, N.E.G.",
-   "readings": 3,
-   "settled_by_french": {
-    "max_filling_percent": "en"
-   }
+   "readings": 3
   },
   {
    "un": "1760",
@@ -6559,7 +6416,7 @@
    "explosion_protection": "False",
    "equipment": "PP,EP",
    "name_fr": "LIQUIDE CORROSIF, N.S.A. (SEL TÉTRASODIQUE DE L'ACIDE ÉTHYLÈNE DIAMINETÉTRACÉTIQUE, 40 %, SOLUTION AQUEUSE)",
-   "name_nl": "BIJTENDE VLOEISTOF, N.E.G. (ETHYLENEDIAMINE-TETRAACETIC ACID, TETRASODIUM SALT, 40% AQUEOUS SOLUTION)",
+   "name_nl": "BIJTENDE VLOEISTOF, N.E.G. (ETHYLEENDIAMINETETRAAZIJNZUURTETRA- NATRIUMZOUT, 40%, OPLOSSING IN WATER)",
    "readings": 3
   },
   {
@@ -6585,7 +6442,7 @@
    "explosion_protection": "False",
    "equipment": "PP,EP",
    "name_fr": "LIQUIDE CORROSIF, N.S.A. (SEL SODIQUE DU MERCAPTOBENZOTHIAZOLE, 50 %, SOLUTION AQUEUSE)",
-   "name_nl": "BIJTENDE VLOEISTOF, N.E.G. (SODIUM MERCAPTOBENZOTHIAZOLE, 50% AQUEOUS SOLUTION)",
+   "name_nl": "BIJTENDE VLOEISTOF, N.E.G. (NATRIUMMERCAPTOBENZO-THIAZOL 50%, OPLOSSING IN WATER)",
    "readings": 3,
    "settled_by_french": {
     "vessel_type": "en"
@@ -6614,7 +6471,7 @@
    "explosion_protection": "False",
    "equipment": "PP,EP",
    "name_fr": "LIQUIDE CORROSIF, N.S.A. C12-C14) (ALCOOL GRAS",
-   "name_nl": "BIJTENDE VLOEISTOF, N.E.G. (FATTY ALCOHOL, C12-C14)",
+   "name_nl": "BIJTENDE VLOEISTOF, N.E.G. (VETALCOHOL C12 - C14)",
    "readings": 3
   },
   {
@@ -6666,7 +6523,7 @@
    "explosion_protection": "False",
    "equipment": "PP,EP",
    "name_fr": "ACIDE FLUOROSILICIQUE",
-   "name_nl": "KIEZELFLUORWATERSTOFZUUR",
+   "name_nl": "SILICOFLUORWATERSTOFZUUR",
    "readings": 3
   },
   {
@@ -6796,7 +6653,7 @@
    "explosion_protection": "False",
    "equipment": "PP,EP",
    "name_fr": "ACIDE CHLORHYDRIQUE",
-   "name_nl": "ZOUTZUUR",
+   "name_nl": "ZOUTZUUR (CHLOORWATERSTOFZUUR)",
    "readings": 3
   },
   {
@@ -6822,7 +6679,7 @@
    "explosion_protection": "False",
    "equipment": "PP,EP",
    "name_fr": "ACIDE CHLORHYDRIQUE",
-   "name_nl": "ZOUTZUUR",
+   "name_nl": "ZOUTZUUR (CHLOORWATERSTOFZUUR)",
    "readings": 3
   },
   {
@@ -6848,7 +6705,7 @@
    "explosion_protection": "False",
    "equipment": "PP,EP",
    "name_fr": "ACIDE PHOSPHORIQUE EN SOLUTION CONTENANT 80 % EN VOLUME D'ACIDE OU MOINS",
-   "name_nl": "FOSFORZUUR, OPLOSSING WITH 80% (VOLUME) ACID, OR LESS",
+   "name_nl": "FOSFORZUUR, OPLOSSING MET 80 vol.-% ZUUR OF MINDER",
    "readings": 3
   },
   {
@@ -6874,11 +6731,8 @@
    "explosion_protection": "False",
    "equipment": "PP,EP",
    "name_fr": "ACIDE PHOSPHORIQUE EN SOLUTION CONTENANT PLUS DE 80 % EN VOLUME D'ACIDE",
-   "name_nl": "FOSFORZUUR, OPLOSSING WITH MORE THAN 80% (VOLUME) ACID",
-   "readings": 3,
-   "settled_by_french": {
-    "density": "en"
-   }
+   "name_nl": "FOSFORZUUR, OPLOSSING MET MEER DAN 80 vol.- % ZUUR",
+   "readings": 3
   },
   {
    "un": "1814",
@@ -7137,7 +6991,7 @@
    "explosion_protection": "False",
    "equipment": "PP,EP",
    "name_fr": "ACIDE PROPIONIQUE contenant au moins 10 % mais moins de 90 % (masse) d'acide",
-   "name_nl": "PROPIONZUUR met ten minste 10 massa-% en minder dan 90 massa-% zuur",
+   "name_nl": "PROPIONZUUR met ten minste 10% en minder dan 90 massa-% zuur",
    "readings": 3
   },
   {
@@ -7475,7 +7329,7 @@
    "explosion_protection": "True",
    "equipment": "PP,EP,EX,TOX,A",
    "name_fr": "CARBURÉACTEUR CONTENANT PLUS DE 10 % DE BENZÈNE 60 °C < POINT D’ÉBULLITION INITIAL ≤ 85 °C",
-   "name_nl": "BRANDSTOF VOOR STRAALVLIEGTUIGEN MET MEER DAN 10% BENZEEN 60 °C < BEGINKOOKPUNT <= 85 °C",
+   "name_nl": "BRANDSTOF VOOR STRAALVLIEGTUIGEN MET MEER DAN 10% BENZEEN 60°C < BEGINKOOKPUNT ≤ 85°C",
    "readings": 3
   },
   {
@@ -7501,7 +7355,7 @@
    "explosion_protection": "True",
    "equipment": "PP,EP,EX,TOX,A",
    "name_fr": "CARBURÉACTEUR CONTENANT PLUS DE 10 % DE BENZÈNE 60 °C < POINT D’ÉBULLITION INITIAL ≤ 85 °C",
-   "name_nl": "BRANDSTOF VOOR STRAALVLIEGTUIGEN MET MEER DAN 10% BENZEEN 60 °C < BEGINKOOKPUNT <= 85 °C",
+   "name_nl": "BRANDSTOF VOOR STRAALVLIEGTUIGEN MET MEER DAN 10% BENZEEN 60 °C < BEGINKOOKPUNT ≤ 85 °C",
    "readings": 3
   },
   {
@@ -7527,7 +7381,7 @@
    "explosion_protection": "True",
    "equipment": "PP,EP,EX,TOX,A",
    "name_fr": "CARBURÉACTEUR CONTENANT PLUS DE 10 % DE BENZÈNE 85 °C < POINT D’ÉBULLITION INITIAL ≤ 115 °C",
-   "name_nl": "BRANDSTOF VOOR STRAALVLIEGTUIGEN MET MEER DAN 10% BENZEEN 85 °C < BEGINKOOKPUNT <= 115 °C",
+   "name_nl": "BRANDSTOF VOOR STRAALVLIEGTUIGEN MET MEER DAN 10% BENZEEN 85°C < BEGINKOOKPUNT ≤ 115°C",
    "readings": 3
   },
   {
@@ -7553,7 +7407,7 @@
    "explosion_protection": "True",
    "equipment": "PP,EP,EX,TOX,A",
    "name_fr": "CARBURÉACTEUR CONTENANT PLUS DE 10 % DE BENZÈNE 85 °C < POINT D’ÉBULLITION INITIAL ≤ 115 °C",
-   "name_nl": "BRANDSTOF VOOR STRAALVLIEGTUIGEN MET MEER DAN 10% BENZEEN 85 °C < BEGINKOOKPUNT <= 115 °C",
+   "name_nl": "BRANDSTOF VOOR STRAALVLIEGTUIGEN MET MEER DAN 10% BENZEEN 85 °C < BEGINKOOKPUNT ≤ 115 °C",
    "readings": 3
   },
   {
@@ -7579,7 +7433,7 @@
    "explosion_protection": "True",
    "equipment": "PP,EP,EX,TOX,A",
    "name_fr": "CARBURÉACTEUR CONTENANT PLUS DE 10 % DE BENZÈNE POINT D’ÉBULLITION INITIAL > 115 °C",
-   "name_nl": "BRANDSTOF VOOR STRAALVLIEGTUIGEN MET MEER DAN 10% BENZEEN BEGINKOOKPUNT > 115 °C",
+   "name_nl": "BRANDSTOF VOOR STRAALVLIEGTUIGEN MET MEER DAN 10% BENZEEN BEGINKOOKPUNT > 115°C",
    "readings": 3
   },
   {
@@ -7631,7 +7485,7 @@
    "explosion_protection": "True",
    "equipment": "PP,EP,EX,TOX,A",
    "name_fr": "CARBURÉACTEUR CONTENANT PLUS DE 10 % DE BENZÈNE POINT D’ÉBULLITION INITIAL ≤ 60 °C",
-   "name_nl": "BRANDSTOF VOOR STRAALVLIEGTUIGEN MET MEER DAN 10% BENZEEN BEGIN KOOKPUNT <= 60 °C",
+   "name_nl": "BRANDSTOF VOOR STRAALVLIEGTUIGEN MET MEER DAN 10% BENZEEN BEGINKOOKPUNT ≤ 60°C",
    "readings": 3
   },
   {
@@ -7657,7 +7511,7 @@
    "explosion_protection": "True",
    "equipment": "PP,EP,EX,TOX,A",
    "name_fr": "CARBURÉACTEUR CONTENANT PLUS DE 10 % DE BENZÈNE POINT D’ÉBULLITION INITIAL ≤ 60 °C",
-   "name_nl": "BRANDSTOF VOOR STRAALVLIEGTUIGEN MET MEER DAN 10% BENZEEN BEGIN KOOKPUNT <= 60 °C",
+   "name_nl": "BRANDSTOF VOOR STRAALVLIEGTUIGEN MET MEER DAN 10% BENZEEN BEGINKOOKPUNT ≤ 60 °C",
    "readings": 3
   },
   {
@@ -7683,7 +7537,7 @@
    "explosion_protection": "True",
    "equipment": "PP,EP,EX,TOX,A",
    "name_fr": "CARBURÉACTEUR CONTENANT PLUS DE 10 % DE BENZÈNE POINT D’ÉBULLITION INITIAL ≤ 60 °C",
-   "name_nl": "BRANDSTOF VOOR STRAALVLIEGTUIGEN MET MEER DAN 10% BENZEEN BEGIN KOOKPUNT <= 60 °C",
+   "name_nl": "BRANDSTOF VOOR STRAALVLIEGTUIGEN MET MEER DAN 10% BENZEEN BEGINKOOKPUNT ≤ 60°C",
    "readings": 3
   },
   {
@@ -7709,8 +7563,11 @@
    "explosion_protection": "True",
    "equipment": "PP,EP,EX,TOX,A",
    "name_fr": "CARBURÉACTEUR CONTENANT PLUS DE 10 % DE BENZÈNEPOINT D’ÉBULLITION INITIAL ≤ 60 °C",
-   "name_nl": "BRANDSTOF VOOR STRAALVLIEGTUIGEN MET MEER DAN 10% BENZEEN BEGIN KOOKPUNT <= 60 °C",
-   "readings": 3
+   "name_nl": "BRANDSTOF VOOR STRAALVLIEGTUIGEN MET MEER DAN 10% BENZEEN BEGINKOOKPUNT ≤ 60 °C",
+   "readings": 3,
+   "settled_by_french": {
+    "packing_group": "en"
+   }
   },
   {
    "un": "1888",
@@ -7761,7 +7618,7 @@
    "explosion_protection": "False",
    "equipment": "PP,EP,TOX,A",
    "name_fr": "TÉTRACHLORÉTHYLÈNE",
-   "name_nl": "TETRACHLOORETHYLEEN (perchloorethyleen)",
+   "name_nl": "TETRACHLOORETHYLEEN",
    "readings": 3
   },
   {
@@ -7970,10 +7827,7 @@
    "equipment": "PP,EX,A,EP,TOX",
    "name_fr": "HYDROCARBURES GAZEUX EN MÉLANGE LIQUÉFIÉ, N.S.A.",
    "name_nl": "MENGSEL VAN KOOLWATERSTOFGASSEN, VLOEIBAAR GEMAAKT, N.E.G.",
-   "readings": 3,
-   "settled_by_french": {
-    "dangers": "en"
-   }
+   "readings": 3
   },
   {
    "un": "1965",
@@ -7998,7 +7852,7 @@
    "explosion_protection": "True",
    "equipment": "PP,EX,A",
    "name_fr": "HYDROCARBURES GAZEUX EN MÉLANGE LIQUÉFIÉ, N.S.A., (MÉLANGE A)",
-   "name_nl": "MENGSEL VAN KOOLWATERSTOFGASSEN, VLOEIBAAR GEMAAKT, N.E.G. (MENGSEL A) / MENGSEL VAN KOOLWATERSTOFGASSEN, VLOEIBAAR GEMAAKT, N.E.G. (MENGSEL A0) / MENGSEL VAN KOOLWATERSTOFGASSEN, VLOEIBAAR GEMAAKT, N.E.G. (MENGSEL A01) / MENGSEL VAN KOOLWATERSTOFGASSEN, VLOEIBAAR GEMAAKT, N.E.G. (MENGSEL A02) / MENGSEL VAN KOOLWATERSTOFGASSEN, VLOEIBAAR GEMAAKT, N.E.G. (MENGSEL A1) / MENGSEL VAN KOOLWATERSTOFGASSEN, VLOEIBAAR GEMAAKT, N.E.G. (MENGSEL B) / MENGSEL VAN KOOLWATERSTOFGASSEN, VLOEIBAAR GEMAAKT, N.E.G. (MENGSEL B1) / MENGSEL VAN KOOLWATERSTOFGASSEN, VLOEIBAAR GEMAAKT, N.E.G. (MENGSEL B2) / MENGSEL VAN KOOLWATERSTOFGASSEN, VLOEIBAAR GEMAAKT, N.E.G. (MENGSEL C)",
+   "name_nl": "MENGSEL VAN KOOLWATERSTOFGASSEN, VLOEIBAAR GEMAAKT, N.E.G. (MENGSEL A)",
    "readings": 3
   },
   {
@@ -8024,8 +7878,8 @@
    "explosion_protection": "True",
    "equipment": "PP,EX,A",
    "name_fr": "HYDROCARBURES GAZEUX EN MÉLANGE LIQUÉFIÉ, N.S.A., (MÉLANGE A0)",
-   "readings": 2,
-   "name_nl": ""
+   "name_nl": "MENGSEL VAN KOOLWATERSTOFGASSEN, VLOEIBAAR GEMAAKT, N.E.G. (MENGSEL A0)",
+   "readings": 3
   },
   {
    "un": "1965",
@@ -8050,8 +7904,8 @@
    "explosion_protection": "True",
    "equipment": "PP,EX,A",
    "name_fr": "HYDROCARBURES GAZEUX EN MÉLANGE LIQUÉFIÉ, N.S.A., (MÉLANGE A01)",
-   "readings": 2,
-   "name_nl": ""
+   "name_nl": "MENGSEL VAN KOOLWATERSTOFGASSEN, VLOEIBAAR GEMAAKT, N.E.G. (MENGSEL A01)",
+   "readings": 3
   },
   {
    "un": "1965",
@@ -8076,8 +7930,8 @@
    "explosion_protection": "True",
    "equipment": "PP,EX,A",
    "name_fr": "HYDROCARBURES GAZEUX EN MÉLANGE LIQUÉFIÉ, N.S.A., (MÉLANGE A02)",
-   "readings": 2,
-   "name_nl": ""
+   "name_nl": "MENGSEL VAN KOOLWATERSTOFGASSEN, VLOEIBAAR GEMAAKT, N.E.G. (MENGSEL A02)",
+   "readings": 3
   },
   {
    "un": "1965",
@@ -8102,8 +7956,8 @@
    "explosion_protection": "True",
    "equipment": "PP,EX,A",
    "name_fr": "HYDROCARBURES GAZEUX EN MÉLANGE LIQUÉFIÉ, N.S.A., (MÉLANGE A1)",
-   "readings": 2,
-   "name_nl": ""
+   "name_nl": "MENGSEL VAN KOOLWATERSTOFGASSEN, VLOEIBAAR GEMAAKT, N.E.G. (MENGSEL A1)",
+   "readings": 3
   },
   {
    "un": "1965",
@@ -8128,8 +7982,8 @@
    "explosion_protection": "True",
    "equipment": "PP,EX,A",
    "name_fr": "HYDROCARBURES GAZEUX EN MÉLANGE LIQUÉFIÉ, N.S.A., (MÉLANGE B)",
-   "readings": 2,
-   "name_nl": ""
+   "name_nl": "MENGSEL VAN KOOLWATERSTOFGASSEN, VLOEIBAAR GEMAAKT, N.E.G. (MENGSEL B)",
+   "readings": 3
   },
   {
    "un": "1965",
@@ -8154,8 +8008,8 @@
    "explosion_protection": "True",
    "equipment": "PP,EX,A",
    "name_fr": "HYDROCARBURES GAZEUX EN MÉLANGE LIQUÉFIÉ, N.S.A., (MÉLANGE B1)",
-   "readings": 2,
-   "name_nl": ""
+   "name_nl": "MENGSEL VAN KOOLWATERSTOFGASSEN, VLOEIBAAR GEMAAKT, N.E.G. (MENGSEL B1)",
+   "readings": 3
   },
   {
    "un": "1965",
@@ -8180,8 +8034,8 @@
    "explosion_protection": "True",
    "equipment": "PP,EX,A",
    "name_fr": "HYDROCARBURES GAZEUX EN MÉLANGE LIQUÉFIÉ, N.S.A., (MÉLANGE B2)",
-   "readings": 2,
-   "name_nl": ""
+   "name_nl": "MENGSEL VAN KOOLWATERSTOFGASSEN, VLOEIBAAR GEMAAKT, N.E.G. (MENGSEL B2)",
+   "readings": 3
   },
   {
    "un": "1965",
@@ -8206,8 +8060,8 @@
    "explosion_protection": "True",
    "equipment": "PP,EX,A",
    "name_fr": "HYDROCARBURES GAZEUX EN MÉLANGE LIQUÉFIÉ, N.S.A., (MÉLANGE C)",
-   "readings": 2,
-   "name_nl": ""
+   "name_nl": "MENGSEL VAN KOOLWATERSTOFGASSEN, VLOEIBAAR GEMAAKT, N.E.G. (MENGSEL C)",
+   "readings": 3
   },
   {
    "un": "1965",
@@ -8258,7 +8112,7 @@
    "explosion_protection": "True",
    "equipment": "PP,EX,A",
    "name_fr": "HYDROCARBURES GAZEUX EN MÉLANGE LIQUÉFIÉ, RÉFRIGÉRÉ, N.S.A., (MÉLANGE A)",
-   "name_nl": "MENGSEL VAN KOOLWATERSTOFGASSEN, STERK GEKOELD, N.E.G. (MENGSEL A) / MENGSEL VAN KOOLWATERSTOFGASSEN, STERK GEKOELD, N.E.G. (MENGSEL A0) / MENGSEL VAN KOOLWATERSTOFGASSEN, STERK GEKOELD, N.E.G. (MENGSEL A01) / MENGSEL VAN KOOLWATERSTOFGASSEN, STERK GEKOELD, N.E.G. (MENGSEL A02) / MENGSEL VAN KOOLWATERSTOFGASSEN, STERK GEKOELD, N.E.G. (MENGSEL A1) / MENGSEL VAN KOOLWATERSTOFGASSEN, STERK GEKOELD, N.E.G. (MENGSEL B) / MENGSEL VAN KOOLWATERSTOFGASSEN, STERK GEKOELD, N.E.G. (MENGSEL B1 ) / MENGSEL VAN KOOLWATERSTOFGASSEN, STERK GEKOELD, N.E.G. (MENGSEL B2) / MENGSEL VAN KOOLWATERSTOFGASSEN, STERK GEKOELD, N.E.G. (MENGSEL C)",
+   "name_nl": "MENGSEL VAN KOOLWATERSTOFGASSEN, STERK GEKOELD, N.E.G. (MENGSEL A)",
    "readings": 3
   },
   {
@@ -8284,8 +8138,8 @@
    "explosion_protection": "True",
    "equipment": "PP,EX,A",
    "name_fr": "HYDROCARBURES GAZEUX EN MÉLANGE LIQUÉFIÉ, RÉFRIGÉRÉ, N.S.A., (MÉLANGE A0)",
-   "readings": 2,
-   "name_nl": ""
+   "name_nl": "MENGSEL VAN KOOLWATERSTOFGASSEN, STERK GEKOELD, N.E.G. (MENGSEL A0)",
+   "readings": 3
   },
   {
    "un": "1965",
@@ -8310,8 +8164,8 @@
    "explosion_protection": "True",
    "equipment": "PP,EX,A",
    "name_fr": "HYDROCARBURES GAZEUX EN MÉLANGE LIQUÉFIÉ, RÉFRIGÉRÉ, N.S.A., (MÉLANGE A01)",
-   "readings": 2,
-   "name_nl": ""
+   "name_nl": "MENGSEL VAN KOOLWATERSTOFGASSEN, STERK GEKOELD, N.E.G. (MENGSEL A02)",
+   "readings": 3
   },
   {
    "un": "1965",
@@ -8336,8 +8190,8 @@
    "explosion_protection": "True",
    "equipment": "PP,EX,A",
    "name_fr": "HYDROCARBURES GAZEUX EN MÉLANGE LIQUÉFIÉ, RÉFRIGÉRÉ, N.S.A., (MÉLANGE A02)",
-   "readings": 2,
-   "name_nl": ""
+   "name_nl": "MENGSEL VAN KOOLWATERSTOFGASSEN, STERK GEKOELD, N.E.G. (MENGSEL A1)",
+   "readings": 3
   },
   {
    "un": "1965",
@@ -8362,8 +8216,8 @@
    "explosion_protection": "True",
    "equipment": "PP,EX,A",
    "name_fr": "HYDROCARBURES GAZEUX EN MÉLANGE LIQUÉFIÉ, RÉFRIGÉRÉ, N.S.A., (MÉLANGE A1)",
-   "readings": 2,
-   "name_nl": ""
+   "name_nl": "MENGSEL VAN KOOLWATERSTOFGASSEN, STERK GEKOELD, N.E.G. (MENGSEL B)",
+   "readings": 3
   },
   {
    "un": "1965",
@@ -8388,8 +8242,8 @@
    "explosion_protection": "True",
    "equipment": "PP,EX,A",
    "name_fr": "HYDROCARBURES GAZEUX EN MÉLANGE LIQUÉFIÉ, RÉFRIGÉRÉ, N.S.A., (MÉLANGE B)",
-   "readings": 2,
-   "name_nl": ""
+   "name_nl": "MENGSEL VAN KOOLWATERSTOFGASSEN, STERK GEKOELD, N.E.G. (MENGSEL B1)",
+   "readings": 3
   },
   {
    "un": "1965",
@@ -8414,8 +8268,8 @@
    "explosion_protection": "True",
    "equipment": "PP,EX,A",
    "name_fr": "HYDROCARBURES GAZEUX EN MÉLANGE LIQUÉFIÉ, RÉFRIGÉRÉ, N.S.A., (MÉLANGE B1)",
-   "readings": 2,
-   "name_nl": ""
+   "name_nl": "MENGSEL VAN KOOLWATERSTOFGASSEN, STERK GEKOELD, N.E.G. (MENGSEL B2)",
+   "readings": 3
   },
   {
    "un": "1965",
@@ -8440,8 +8294,8 @@
    "explosion_protection": "True",
    "equipment": "PP,EX,A",
    "name_fr": "HYDROCARBURES GAZEUX EN MÉLANGE LIQUÉFIÉ, RÉFRIGÉRÉ, N.S.A., (MÉLANGE B2)",
-   "readings": 2,
-   "name_nl": ""
+   "name_nl": "MENGSEL VAN KOOLWATERSTOFGASSEN, STERK GEKOELD, N.E.G. (MENGSEL C)",
+   "readings": 3
   },
   {
    "un": "1965",
@@ -8466,8 +8320,11 @@
    "explosion_protection": "True",
    "equipment": "PP,EX,A",
    "name_fr": "HYDROCARBURES GAZEUX EN MÉLANGE LIQUÉFIÉ, RÉFRIGÉRÉ, N.S.A., (MÉLANGE C)",
-   "readings": 2,
-   "name_nl": ""
+   "name_nl": "MENGSEL VAN KOOLWATERSTOFGASSEN, STERK GEKOELD, N.E.G. (MENGSEL A01)",
+   "readings": 3,
+   "settled_by_french": {
+    "classification_code": "en"
+   }
   },
   {
    "un": "1969",
@@ -8492,8 +8349,11 @@
    "explosion_protection": "True",
    "equipment": "PP,EX,A",
    "name_fr": "ISOBUTANE (contient moins de 0,1% de butadiene-1-3)",
-   "name_nl": "ISOBUTAAN (met minder dan 0, 1% 1, 3-butadieen)",
-   "readings": 3
+   "name_nl": "ISOBUTAAN (met minder dan 0,1% 1,3-butadieen)",
+   "readings": 3,
+   "settled_by_french": {
+    "temperature_class": "en"
+   }
   },
   {
    "un": "1969",
@@ -8518,11 +8378,8 @@
    "explosion_protection": "True",
    "equipment": "PP,EP,EX,TOX,A",
    "name_fr": "ISOBUTANE (contient 0,1 % ou plus de butadiène-1-3)",
-   "name_nl": "ISOBUTAAN (met ten minste 0, 1% 1, 3-butadieen)",
-   "readings": 3,
-   "settled_by_french": {
-    "cargo_tank_equipment": "en"
-   }
+   "name_nl": "ISOBUTAAN (met ten minste 0,1% 1,3-butadieen)",
+   "readings": 3
   },
   {
    "un": "1972",
@@ -8547,7 +8404,7 @@
    "explosion_protection": "True",
    "equipment": "PP,EX,A",
    "name_fr": "MÉTHANE LIQUIDE RÉFRIGÉRÉ ou GAZ NATUREL (à haute teneur en méthane) LIQUIDE RÉFRIGÉRÉ",
-   "name_nl": "METHAAN, STERK GEKOELD / AARDGAS, STERK GEKOELD met hoog methaangehalte",
+   "name_nl": "METHAAN GEKOELD of AARDGAS, STERK GEKOELD, met een hoog methaangehalte",
    "readings": 3
   },
   {
@@ -8573,7 +8430,7 @@
    "explosion_protection": "True",
    "equipment": "PP,EX,A",
    "name_fr": "MÉTHANE LIQUIDE RÉFRIGÉRÉ ou GAZ NATUREL (à haute teneur en méthane) LIQUIDE RÉFRIGÉRÉ",
-   "name_nl": "METHAAN, STERK GEKOELD, VLOEIBAAR / AARDGAS, STERK GEKOELD, VLOEIBAAR met hoog methaangehalte",
+   "name_nl": "METHAAN GEKOELD VLOEIBAAR of AARDGAS, GEKOELD VLOEIBAAR, met een hoog methaangehalte",
    "readings": 3
   },
   {
@@ -8599,8 +8456,8 @@
    "explosion_protection": "False",
    "equipment": "PP",
    "name_fr": "AZOTE LIQUIDE RÉFRIGÉRÉ",
-   "readings": 2,
-   "name_nl": ""
+   "name_nl": "STIKSTOF, STERK GEKOELD, VLOEIBAAR",
+   "readings": 3
   },
   {
    "un": "1978",
@@ -8703,11 +8560,8 @@
    "explosion_protection": "True",
    "equipment": "PP,EP,EX,TOX,A",
    "name_fr": "ALCOOLS INFLAMMABLES, TOXIQUES, N.S.A.",
-   "name_nl": "ALCOHOLEN, BRANDBAAR, GIFTIG, N.E.G.",
-   "readings": 3,
-   "settled_by_french": {
-    "dangers": "en"
-   }
+   "readings": 2,
+   "name_nl": ""
   },
   {
    "un": "1986",
@@ -8758,11 +8612,8 @@
    "explosion_protection": "True",
    "equipment": "PP,EP,EX,TOX,A",
    "name_fr": "ALCOOLS INFLAMMABLES, TOXIQUES, N.S.A.",
-   "name_nl": "ALCOHOLEN, BRANDBAAR, GIFTIG, N.E.G.",
-   "readings": 3,
-   "settled_by_french": {
-    "dangers": "en"
-   }
+   "readings": 2,
+   "name_nl": ""
   },
   {
    "un": "1986",
@@ -8814,10 +8665,7 @@
    "equipment": "PP,EP,EX,TOX,A",
    "name_fr": "ALCOOLS INFLAMMABLES, TOXIQUES, N.S.A.",
    "name_nl": "ALCOHOLEN, BRANDBAAR, GIFTIG, N.E.G.",
-   "readings": 3,
-   "settled_by_french": {
-    "dangers": "en"
-   }
+   "readings": 3
   },
   {
    "un": "1986",
@@ -8868,8 +8716,8 @@
    "explosion_protection": "True",
    "equipment": "PP,EP,EX,TOX,A",
    "name_fr": "ALCOOLS INFLAMMABLES, TOXIQUES, N.S.A.",
-   "readings": 2,
-   "name_nl": ""
+   "name_nl": "ALCOHOLEN, BRANDBAAR, GIFTIG, N.E.G.",
+   "readings": 3
   },
   {
    "un": "1987",
@@ -8895,10 +8743,7 @@
    "equipment": "*",
    "name_fr": "ALCOOLS, N.S.A.",
    "name_nl": "ALCOHOLEN, N.E.G.",
-   "readings": 3,
-   "settled_by_french": {
-    "classification_code": "en"
-   }
+   "readings": 3
   },
   {
    "un": "1987",
@@ -8924,10 +8769,7 @@
    "equipment": "*",
    "name_fr": "ALCOOLS, N.S.A.",
    "name_nl": "ALCOHOLEN, N.E.G.",
-   "readings": 3,
-   "settled_by_french": {
-    "classification_code": "en"
-   }
+   "readings": 3
   },
   {
    "un": "1987",
@@ -9004,7 +8846,7 @@
    "explosion_protection": "True",
    "equipment": "PP,EX,A",
    "name_fr": "ALCOOLS, N.S.A. (MÉLANGE DE tert-BUTANOL ET 90 % EN MASSE DE DE 10 % EN MASSE DE MÉTHANOL)",
-   "name_nl": "ALCOHOLEN N.E.G. (MENGSEL VAN 90 massa-% tert-BUTANOL en 10 massa-% METHANOL)",
+   "name_nl": "ALCOHOLEN N.E.G. (MENGSEL VAN 90 massa-% tert.-BUTANOL en 10 massa-% METHANOL)",
    "readings": 3
   },
   {
@@ -9030,7 +8872,7 @@
    "explosion_protection": "True",
    "equipment": "PP,EX,A",
    "name_fr": "ALCOOLS, N.S.A. (CYCLOHEXANOL)",
-   "name_nl": "ALCOHOLEN, N.E.G. (CYCLOHEXANOL)",
+   "name_nl": "ALCOHOLEN (N.E.G.) (CYCLOHEXANOL)",
    "readings": 3
   },
   {
@@ -9056,7 +8898,7 @@
    "explosion_protection": "False",
    "equipment": "PP",
    "name_fr": "ALCOOLS, N.S.A. (CYCLOHEXANOL)",
-   "name_nl": "ALCOHOLEN, N.E.G. (CYCLOHEXANOL)",
+   "name_nl": "ALCOHOLEN (N.E.G.) (CYCLOHEXANOL)",
    "readings": 3
   },
   {
@@ -9083,10 +8925,7 @@
    "equipment": "*",
    "name_fr": "ALDÉHYDES, N.S.A.",
    "name_nl": "ALDEHYDEN, N.E.G.",
-   "readings": 3,
-   "settled_by_french": {
-    "classification_code": "en"
-   }
+   "readings": 3
   },
   {
    "un": "1989",
@@ -9112,10 +8951,7 @@
    "equipment": "*",
    "name_fr": "ALDÉHYDES, N.S.A.",
    "name_nl": "ALDEHYDEN, N.E.G.",
-   "readings": 3,
-   "settled_by_french": {
-    "classification_code": "en"
-   }
+   "readings": 3
   },
   {
    "un": "1989",
@@ -9296,8 +9132,8 @@
    "explosion_protection": "True",
    "equipment": "PP,EP,EX,TOX,A",
    "name_fr": "LIQUIDE INFLAMMABLE, TOXIQUE, N.S.A.",
-   "name_nl": "BRANDBARE VLOEISTOF, GIFTIG, N.E.G.",
-   "readings": 3
+   "readings": 2,
+   "name_nl": ""
   },
   {
    "un": "1992",
@@ -9348,8 +9184,8 @@
    "explosion_protection": "True",
    "equipment": "PP,EP,EX,TOX,A",
    "name_fr": "LIQUIDE INFLAMMABLE, TOXIQUE, N.S.A.",
-   "readings": 2,
-   "name_nl": ""
+   "name_nl": "BRANDBARE VLOEISTOF, GIFTIG, N.E.G.",
+   "readings": 3
   },
   {
    "un": "1992",
@@ -9426,7 +9262,7 @@
    "explosion_protection": "True",
    "equipment": "*",
    "name_fr": "LIQUIDE INFLAMMABLE, N.S.A.",
-   "name_nl": "BRANDBARE VLOEISTOF, N.E.G. / BRANDBARE VLOEISTOF, N.E.G. MET MEER DAN 10% BENZEEN",
+   "name_nl": "BRANDBARE VLOEISTOF, N.E.G.",
    "readings": 3
   },
   {
@@ -9452,7 +9288,7 @@
    "explosion_protection": "True",
    "equipment": "*",
    "name_fr": "LIQUIDE INFLAMMABLE, N.S.A.",
-   "name_nl": "BRANDBARE VLOEISTOF, N.E.G. / BRANDBARE VLOEISTOF, N.E.G. MET MEER DAN 10% BENZEEN",
+   "name_nl": "BRANDBARE VLOEISTOF, N.E.G.",
    "readings": 3
   },
   {
@@ -9479,10 +9315,7 @@
    "equipment": "*",
    "name_fr": "LIQUIDE INFLAMMABLE, N.S.A.",
    "name_nl": "BRANDBARE VLOEISTOF, N.E.G.",
-   "readings": 3,
-   "settled_by_french": {
-    "equipment": "en"
-   }
+   "readings": 3
   },
   {
    "un": "1993",
@@ -9508,10 +9341,7 @@
    "equipment": "*",
    "name_fr": "LIQUIDE INFLAMMABLE, N.S.A.",
    "name_nl": "BRANDBARE VLOEISTOF, N.E.G.",
-   "readings": 3,
-   "settled_by_french": {
-    "equipment": "en"
-   }
+   "readings": 3
   },
   {
    "un": "1993",
@@ -9537,10 +9367,7 @@
    "equipment": "*",
    "name_fr": "LIQUIDE INFLAMMABLE, N.S.A.",
    "name_nl": "BRANDBARE VLOEISTOF, N.E.G.",
-   "readings": 3,
-   "settled_by_french": {
-    "equipment": "en"
-   }
+   "readings": 3
   },
   {
    "un": "1993",
@@ -9566,10 +9393,7 @@
    "equipment": "*",
    "name_fr": "LIQUIDE INFLAMMABLE, N.S.A.",
    "name_nl": "BRANDBARE VLOEISTOF, N.E.G.",
-   "readings": 3,
-   "settled_by_french": {
-    "equipment": "en"
-   }
+   "readings": 3
   },
   {
    "un": "1993",
@@ -9594,11 +9418,8 @@
    "explosion_protection": "True",
    "equipment": "PP,EX,A",
    "name_fr": "LIQUIDE INFLAMMABLE, N.S.A. (MÉLANGE DE CYCLOHEXANONE/CYCLO- HEXANOL)",
-   "name_nl": "BRANDBARE VLOEISTOF, N.E.G. (CYCLOHEXANON / CYCLOHEXANOL MENGSEL",
-   "readings": 3,
-   "settled_by_french": {
-    "dangers": "en"
-   }
+   "name_nl": "BRANDBARE VLOEISTOF, N.E.G. (CYCLOHEXANON/CYCLOHEXANOL MENGSEL)",
+   "readings": 3
   },
   {
    "un": "1993",
@@ -9624,11 +9445,7 @@
    "equipment": "*",
    "name_fr": "LIQUIDE INFLAMMABLE, N.S.A. CONTENANT PLUS DE 10 % DE BENZÈNE",
    "name_nl": "BRANDBARE VLOEISTOF, N.E.G. MET MEER DAN 10% BENZEEN",
-   "readings": 3,
-   "settled_by_french": {
-    "vessel_type": "en",
-    "equipment": "en"
-   }
+   "readings": 3
   },
   {
    "un": "1993",
@@ -9654,11 +9471,7 @@
    "equipment": "*",
    "name_fr": "LIQUIDE INFLAMMABLE, N.S.A. CONTENANT PLUS DE 10 % DE BENZÈNE",
    "name_nl": "BRANDBARE VLOEISTOF, N.E.G. MET MEER DAN 10% BENZEEN",
-   "readings": 3,
-   "settled_by_french": {
-    "vessel_type": "en",
-    "equipment": "en"
-   }
+   "readings": 3
   },
   {
    "un": "1993",
@@ -9684,11 +9497,7 @@
    "equipment": "*",
    "name_fr": "LIQUIDE INFLAMMABLE, N.S.A. CONTENANT PLUS DE 10 % DE BENZÈNE",
    "name_nl": "BRANDBARE VLOEISTOF, N.E.G. MET MEER DAN 10% BENZEEN",
-   "readings": 3,
-   "settled_by_french": {
-    "vessel_type": "en",
-    "equipment": "en"
-   }
+   "readings": 3
   },
   {
    "un": "1993",
@@ -9714,11 +9523,7 @@
    "equipment": "*",
    "name_fr": "LIQUIDE INFLAMMABLE, N.S.A. CONTENANT PLUS DE 10 % DE BENZÈNE",
    "name_nl": "BRANDBARE VLOEISTOF, N.E.G. MET MEER DAN 10% BENZEEN",
-   "readings": 3,
-   "settled_by_french": {
-    "vessel_type": "en",
-    "equipment": "en"
-   }
+   "readings": 3
   },
   {
    "un": "1993",
@@ -9743,8 +9548,8 @@
    "explosion_protection": "True",
    "equipment": "*",
    "name_fr": "LIQUIDE INFLAMMABLE, N.S.A. CONTENANT PLUS DE 10 % DE BENZÈNE",
-   "readings": 2,
-   "name_nl": ""
+   "name_nl": "BRANDBARE VLOEISTOF, N.E.G. MET MEER DAN 10% BENZEEN",
+   "readings": 3
   },
   {
    "un": "1993",
@@ -9769,8 +9574,8 @@
    "explosion_protection": "True",
    "equipment": "*",
    "name_fr": "LIQUIDE INFLAMMABLE, N.S.A. CONTENANT PLUS DE 10 % DE BENZÈNE",
-   "readings": 2,
-   "name_nl": ""
+   "name_nl": "BRANDBARE VLOEISTOF, N.E.G. MET MEER DAN 10% BENZEEN",
+   "readings": 3
   },
   {
    "un": "1993",
@@ -9795,7 +9600,7 @@
    "explosion_protection": "True",
    "equipment": "PP,EP,EX,TOX,A",
    "name_fr": "LIQUIDE INFLAMMABLE, N.S.A. CONTENANT PLUS DE 10 % DE BENZÈNE 60 °C < POINT D’ÉBULLITION INITIAL ≤ 85 °C",
-   "name_nl": "BRANDBARE VLOEISTOF, N.E.G. MET MEER DAN 10% BENZEEN 60 °C < BEGINKOOKPUNT <= 85 °C",
+   "name_nl": "BRANDBARE VLOEISTOF, N.E.G. MET MEER DAN 10% BENZEEN 60°C < BEGINKOOKPUNT ≤ 85°C",
    "readings": 3
   },
   {
@@ -9821,7 +9626,7 @@
    "explosion_protection": "True",
    "equipment": "PP,EP,EX,TOX,A",
    "name_fr": "LIQUIDE INFLAMMABLE, N.S.A. CONTENANT PLUS DE 10 % DE BENZÈNE 60 °C < POINT D’ÉBULLITION INITIAL ≤ 85 °C",
-   "name_nl": "BRANDBARE VLOEISTOF, N.E.G. MET MEER DAN 10% BENZEEN 60 °C < BEGINKOOKPUNT <= 85 °C",
+   "name_nl": "BRANDBARE VLOEISTOF, N.E.G. MET MEER DAN 10% BENZEEN 60 °C < BEGINKOOKPUNT ≤ 85 °C",
    "readings": 3
   },
   {
@@ -9847,7 +9652,7 @@
    "explosion_protection": "True",
    "equipment": "PP,EP,EX,TOX,A",
    "name_fr": "LIQUIDE INFLAMMABLE, N.S.A. CONTENANT PLUS DE 10 % DE BENZÈNE 60 °C < POINT D’ÉBULLITION INITIAL ≤ 85 °C",
-   "name_nl": "BRANDBARE VLOEISTOF, N.E.G. MET MEER DAN 10% BENZEEN 60 °C < BEGINKOOKPUNT <= 85 °C",
+   "name_nl": "BRANDBARE VLOEISTOF, N.E.G. MET MEER DAN 10% BENZEEN 60°C < BEGINKOOKPUNT ≤ 85°C",
    "readings": 3
   },
   {
@@ -9873,7 +9678,7 @@
    "explosion_protection": "True",
    "equipment": "PP,EP,EX,TOX,A",
    "name_fr": "LIQUIDE INFLAMMABLE, N.S.A. CONTENANT PLUS DE 10 % DE BENZÈNE 60 °C < POINT D’ÉBULLITION INITIAL ≤ 85 °C",
-   "name_nl": "BRANDBARE VLOEISTOF, N.E.G. MET MEER DAN 10% BENZEEN 60 °C < BEGINKOOKPUNT <= 85 °C",
+   "name_nl": "BRANDBARE VLOEISTOF, N.E.G. MET MEER DAN 10% BENZEEN 60 °C < BEGINKOOKPUNT ≤ 85 °C",
    "readings": 3
   },
   {
@@ -9899,7 +9704,7 @@
    "explosion_protection": "True",
    "equipment": "PP,EP,EX,TOX,A",
    "name_fr": "LIQUIDE INFLAMMABLE, N.S.A. CONTENANT PLUS DE 10 % DE BENZÈNE 85 °C < POINT D’ÉBULLITION INITIAL ≤ 115 °C",
-   "name_nl": "BRANDBARE VLOEISTOF, N.E.G. MET MEER DAN 10% BENZEEN 85 °C < BEGINKOOKPUNT <= 115 °C",
+   "name_nl": "BRANDBARE VLOEISTOF, N.E.G. MET MEER DAN 10% BENZEEN 85°C < BEGINKOOKPUNT ≤ 115°C",
    "readings": 3
   },
   {
@@ -9925,7 +9730,7 @@
    "explosion_protection": "True",
    "equipment": "PP,EP,EX,TOX,A",
    "name_fr": "LIQUIDE INFLAMMABLE, N.S.A. CONTENANT PLUS DE 10 % DE BENZÈNE 85 °C < POINT D’ÉBULLITION INITIAL ≤ 115 °C",
-   "name_nl": "BRANDBARE VLOEISTOF, N.E.G. MET MEER DAN 10% BENZEEN 85 °C < BEGINKOOKPUNT <= 115 °C",
+   "name_nl": "BRANDBARE VLOEISTOF, N.E.G. MET MEER DAN 10% BENZEEN 85 °C < BEGINKOOKPUNT ≤ 115 °C",
    "readings": 3
   },
   {
@@ -9951,7 +9756,7 @@
    "explosion_protection": "True",
    "equipment": "PP,EP,EX,TOX,A",
    "name_fr": "LIQUIDE INFLAMMABLE, N.S.A. CONTENANT PLUS DE 10 % DE BENZÈNE 85 °C < POINT D’ÉBULLITION INITIAL ≤ 115°C",
-   "name_nl": "BRANDBARE VLOEISTOF, N.E.G. MET MEER DAN 10% BENZEEN 85 °C < BEGINKOOKPUNT <= 115 °C",
+   "name_nl": "BRANDBARE VLOEISTOF, N.E.G. MET MEER DAN 10% BENZEEN 85°C < BEGINKOOKPUNT ≤ 115°C",
    "readings": 3
   },
   {
@@ -9977,7 +9782,7 @@
    "explosion_protection": "True",
    "equipment": "PP,EP,EX,TOX,A",
    "name_fr": "LIQUIDE INFLAMMABLE, N.S.A. CONTENANT PLUS DE 10 % DE BENZÈNE 85 °C < POINT D’ÉBULLITION INITIAL ≤ 115 °C",
-   "name_nl": "BRANDBARE VLOEISTOF, N.E.G. MET MEER DAN 10% BENZEEN 85 °C < BEGINKOOKPUNT <= 115 °C",
+   "name_nl": "BRANDBARE VLOEISTOF, N.E.G. MET MEER DAN 10% BENZEEN 85 °C < BEGINKOOKPUNT ≤ 115 °C",
    "readings": 3
   },
   {
@@ -10003,7 +9808,7 @@
    "explosion_protection": "True",
    "equipment": "PP,EP,EX,TOX,A",
    "name_fr": "LIQUIDE INFLAMMABLE, N.S.A. CONTENANT PLUS DE 10 % DE BENZÈNE POINT D’ÉBULLITION INITIAL > 115 °C",
-   "name_nl": "BRANDBARE VLOEISTOF, N.E.G. MET MEER DAN 10% BENZEEN BEGINKOOKPUNT >115 °C",
+   "name_nl": "BRANDBARE VLOEISTOF, N.E.G. MET MEER DAN 10% BENZEEN BEGINKOOKPUNT > 115°C",
    "readings": 3
   },
   {
@@ -10029,7 +9834,7 @@
    "explosion_protection": "True",
    "equipment": "PP,EP,EX,TOX,A",
    "name_fr": "LIQUIDE INFLAMMABLE, N.S.A. CONTENANT PLUS DE 10 % DE BENZÈNE POINT D’ÉBULLITION INITIAL > 115 °C",
-   "name_nl": "BRANDBARE VLOEISTOF, N.E.G. MET MEER DAN 10% BENZEEN BEGINKOOKPUNT >115 °C",
+   "name_nl": "BRANDBARE VLOEISTOF, N.E.G. MET MEER DAN 10% BENZEEN BEGINKOOKPUNT > 115 °C",
    "readings": 3
   },
   {
@@ -10055,7 +9860,7 @@
    "explosion_protection": "True",
    "equipment": "PP,EP,EX,TOX,A",
    "name_fr": "LIQUIDE INFLAMMABLE, N.S.A. CONTENANT PLUS DE 10 % DE BENZÈNE POINT D’ÉBULLITION INITIAL > 115 °C",
-   "name_nl": "BRANDBARE VLOEISTOF, N.E.G. MET MEER DAN 10% BENZEEN BEGINKOOKPUNT >115 °C",
+   "name_nl": "BRANDBARE VLOEISTOF, N.E.G. MET MEER DAN 10% BENZEEN BEGINKOOKPUNT > 115°C",
    "readings": 3
   },
   {
@@ -10081,7 +9886,7 @@
    "explosion_protection": "True",
    "equipment": "PP,EP,EX,TOX,A",
    "name_fr": "LIQUIDE INFLAMMABLE, N.S.A. CONTENANT PLUS DE 10 % DE BENZÈNE POINT D’ÉBULLITION INITIAL > 115 °C",
-   "name_nl": "BRANDBARE VLOEISTOF, N.E.G. MET MEER DAN 10% BENZEEN BEGINKOOKPUNT >115 °C",
+   "name_nl": "BRANDBARE VLOEISTOF, N.E.G. MET MEER DAN 10% BENZEEN BEGINKOOKPUNT > 115 °C",
    "readings": 3
   },
   {
@@ -10107,7 +9912,7 @@
    "explosion_protection": "True",
    "equipment": "PP,EP,EX,TOX,A",
    "name_fr": "LIQUIDE INFLAMMABLE, N.S.A. CONTENANT PLUS DE 10 % DE BENZÈNE POINT D’ÉBULLITION INITIAL ≤ 60 °C",
-   "name_nl": "BRANDBARE VLOEISTOF, N.E.G. MET MEER DAN 10% BENZEEN KOOKPUNT <= 60 °C",
+   "name_nl": "BRANDBARE VLOEISTOF, N.E.G. MET MEER DAN 10% BENZEEN BEGINKOOKPUNT ≤ 60°C",
    "readings": 3
   },
   {
@@ -10133,7 +9938,7 @@
    "explosion_protection": "True",
    "equipment": "PP,EP,EX,TOX,A",
    "name_fr": "LIQUIDE INFLAMMABLE, N.S.A. CONTENANT PLUS DE 10 % DE BENZÈNE POINT D’ÉBULLITION INITIAL ≤ 60 °C",
-   "name_nl": "BRANDBARE VLOEISTOF, N.E.G. MET MEER DAN 10% BENZEEN KOOKPUNT <= 60 °C",
+   "name_nl": "BRANDBARE VLOEISTOF, N.E.G. MET MEER DAN 10% BENZEEN BEGINKOOKPUNT ≤ 60 °C",
    "readings": 3
   },
   {
@@ -10159,7 +9964,7 @@
    "explosion_protection": "True",
    "equipment": "PP,EP,EX,TOX,A",
    "name_fr": "LIQUIDE INFLAMMABLE, N.S.A. CONTENANT PLUS DE 10 % DE BENZÈNE POINT D’ÉBULLITION INITIAL ≤ 60 °C",
-   "name_nl": "BRANDBARE VLOEISTOF, N.E.G. MET MEER DAN 10% BENZEEN KOOKPUNT <= 60 °C",
+   "name_nl": "BRANDBARE VLOEISTOF, N.E.G. MET MEER DAN 10% BENZEEN BEGINKOOKPUNT ≤ 60°C",
    "readings": 3
   },
   {
@@ -10185,7 +9990,7 @@
    "explosion_protection": "True",
    "equipment": "PP,EP,EX,TOX,A",
    "name_fr": "LIQUIDE INFLAMMABLE, N.S.A. CONTENANT PLUS DE 10 % DE BENZÈNE POINT D’ÉBULLITION INITIAL ≤ 60 °C",
-   "name_nl": "BRANDBARE VLOEISTOF, N.E.G. MET MEER DAN 10% BENZEEN KOOKPUNT <= 60 °C",
+   "name_nl": "BRANDBARE VLOEISTOF, N.E.G. MET MEER DAN 10% BENZEEN BEGINKOOKPUNT ≤ 60 °C",
    "readings": 3
   },
   {
@@ -10211,7 +10016,7 @@
    "explosion_protection": "True",
    "equipment": "PP,EP,EX,TOX,A",
    "name_fr": "LIQUIDE INFLAMMABLE, N.S.A. CONTENANT PLUS DE 10 % DE BENZÈNE POINT D’ÉBULLITION INITIAL ≤ 60 °C",
-   "name_nl": "BRANDBARE VLOEISTOF, N.E.G. MET MEER DAN 10% BENZEEN KOOKPUNT <= 60 °C",
+   "name_nl": "BRANDBARE VLOEISTOF, N.E.G. MET MEER DAN 10% BENZEEN BEGINKOOKPUNT ≤ 60°C",
    "readings": 3
   },
   {
@@ -10237,7 +10042,7 @@
    "explosion_protection": "True",
    "equipment": "PP,EP,EX,TOX,A",
    "name_fr": "LIQUIDE INFLAMMABLE, N.S.A. CONTENANT PLUS DE 10 % DE BENZÈNE POINT D’ÉBULLITION INITIAL ≤ 60 °C",
-   "name_nl": "BRANDBARE VLOEISTOF, N.E.G. MET MEER DAN 10% BENZEEN KOOKPUNT <= 60 °C",
+   "name_nl": "BRANDBARE VLOEISTOF, N.E.G. MET MEER DAN 10% BENZEEN BEGINKOOKPUNT ≤ 60 °C",
    "readings": 3
   },
   {
@@ -10263,8 +10068,8 @@
    "explosion_protection": "True",
    "equipment": "PP,EX,A",
    "name_fr": "GOUDRONS LIQUIDES, y compris les liants routiers et les cutbacks bitumineux",
-   "readings": 2,
-   "name_nl": ""
+   "name_nl": "TEER, VLOEIBAAR (waaronder bij de aanleg van wegdekken gebruikte oliën en oplossingen van bitumen)",
+   "readings": 3
   },
   {
    "un": "2014",
@@ -10289,7 +10094,7 @@
    "explosion_protection": "False",
    "equipment": "PP,EP",
    "name_fr": "PEROXYDE D'HYDROGÈNE EN SOLUTION AQUEUSE contenant au moins 20 % mais au maximum 60 % de peroxyde d'hydrogène (stabilisé selon les besoins)",
-   "name_nl": "WATERSTOFPEROXIDE, OPLOSSING IN WATER met ten minste 20%, maar ten hoogste 60% waterstofperoxide (zo nodig gestabiliseerd)",
+   "name_nl": "WATERSTOFPEROXIDE, OPLOSSING IN WATER met ten minste 20% doch ten hoogste 60% waterstofperoxide (zo nodig gestabiliseerd)",
    "readings": 3
   },
   {
@@ -10315,7 +10120,7 @@
    "explosion_protection": "True",
    "equipment": "PP,EP,EX,TOX,A",
    "name_fr": "CHLOROPHÉNOLS LIQUIDES (CHLORO-2 PHÉNOL)",
-   "name_nl": "CHLOORFENOLEN, VLOEIBAAR (2-CHLOORFENOL)",
+   "name_nl": "CHLOORFENOLEN, VLOEIBAAR (2- CHLOORFENOL)",
    "readings": 3
   },
   {
@@ -10342,10 +10147,7 @@
    "equipment": "PP,EP,EX,TOX,A",
    "name_fr": "ACIDE CRÉSYLIQUE",
    "name_nl": "CRESYLZUUR",
-   "readings": 3,
-   "settled_by_french": {
-    "explosion_group": "en"
-   }
+   "readings": 3
   },
   {
    "un": "2023",
@@ -10396,7 +10198,7 @@
    "explosion_protection": "False",
    "equipment": "PP,EP",
    "name_fr": "ACIDE NITRIQUE, à l’exclusion de l’acide nitrique fumant rouge, contenant au moins 65 %, mais au plus 70 % d’acide nitrique",
-   "name_nl": "SALPETERZUUR anders dan roodrokend, met ten minste 65% doch ten hoogste 70% zuur",
+   "name_nl": "SALPETERZUUR, anders dan roodrokend, met ten minste 65% doch ten hoogste 70% zuur",
    "readings": 3
   },
   {
@@ -10422,11 +10224,8 @@
    "explosion_protection": "False",
    "equipment": "PP,EP",
    "name_fr": "ACIDE NITRIQUE, à l'exclusion de l'acide nitrique fumant rouge, contenant moins de 65 % d'acide nitrique",
-   "name_nl": "SALPETERZUUR anders dan roodrokend, met minder dan 65% salpeterzuur",
-   "readings": 3,
-   "settled_by_french": {
-    "classification_code": "en"
-   }
+   "name_nl": "SALPETERZUUR, anders dan roodrokend, met minder dan 65% zuur",
+   "readings": 3
   },
   {
    "un": "2031",
@@ -10451,7 +10250,7 @@
    "explosion_protection": "False",
    "equipment": "PP,EP",
    "name_fr": "ACIDE NITRIQUE, à l'exclusion de l'acide nitrique fumant rouge, contenant plus de 70 % d'acide nitrique",
-   "name_nl": "SALPETERZUUR anders dan roodrokend, met meer dan 70% zuur",
+   "name_nl": "SALPETERZUUR, anders dan roodrokend, met meer dan 70% zuur",
    "readings": 3
   },
   {
@@ -10478,10 +10277,7 @@
    "equipment": "PP,EP,TOX,A",
    "name_fr": "ACIDE NITRIQUE FUMANT ROUGE",
    "name_nl": "SALPETERZUUR, ROODROKEND",
-   "readings": 3,
-   "settled_by_french": {
-    "density": "en"
-   }
+   "readings": 3
   },
   {
    "un": "2045",
@@ -10506,7 +10302,7 @@
    "explosion_protection": "True",
    "equipment": "PP,EX,A",
    "name_fr": "ISOBUTYRALDÉHYDE (ALDÉHYDE ISOBUTYRIQUE)",
-   "name_nl": "ISOBUTYRALDEHYDE",
+   "name_nl": "ISOBUTYRALDEHYDE (ISOBUTYLALDEHYDE)",
    "readings": 3
   },
   {
@@ -10533,10 +10329,7 @@
    "equipment": "PP,EX,A",
    "name_fr": "CYMÈNES",
    "name_nl": "CYMENEN",
-   "readings": 3,
-   "settled_by_french": {
-    "explosion_group": "en"
-   }
+   "readings": 3
   },
   {
    "un": "2047",
@@ -10561,7 +10354,7 @@
    "explosion_protection": "True",
    "equipment": "PP,EP,EX,TOX,A",
    "name_fr": "DICHLOROPROPÈNES (1,3-DICHLOROPROPÈNE)",
-   "name_nl": "DICHLOORPROPENEN (1, 3-DICHLOROPROPEEN)",
+   "name_nl": "DICHLOORPROPENEN (1,3-DICHLOORPROPEEN)",
    "readings": 3
   },
   {
@@ -10587,11 +10380,8 @@
    "explosion_protection": "True",
    "equipment": "PP,EP,EX,TOX,A",
    "name_fr": "DICHLOROPROPÈNES (2,3-DICHLOROPROPÈNE-1)",
-   "name_nl": "DICHLOORPROPENEN (2, 3-DICHLOORPROPEEN-1)",
-   "readings": 3,
-   "settled_by_french": {
-    "explosion_group": "en"
-   }
+   "name_nl": "DICHLOORPROPENEN (2,3-DICHLOORPROPEEN-1)",
+   "readings": 3
   },
   {
    "un": "2047",
@@ -10616,11 +10406,8 @@
    "explosion_protection": "True",
    "equipment": "PP,EP,EX,TOX,A",
    "name_fr": "DICHLOROPROPÈNES (MÉLANGES DE 2,3- DICHLOROPROPÈNE-1 et de 1,3-DICHLOROPROPÈNE)",
-   "name_nl": "DICHLOORPROPENEN (MENGSEL van 2, 3-DICHLOORPROPEEN-1 en 1, 3-DICHLOORPROPEEN)",
-   "readings": 3,
-   "settled_by_french": {
-    "explosion_group": "en"
-   }
+   "name_nl": "DICHLOORPROPENEN (MENGSEL van 2,3- DICHLOORPROPEEN-1 en 1,3- DICHLOORPROPEEN)",
+   "readings": 3
   },
   {
    "un": "2047",
@@ -10645,11 +10432,8 @@
    "explosion_protection": "True",
    "equipment": "PP,EP,EX,TOX,A",
    "name_fr": "DICHLOROPROPÈNES (MÉLANGES DE 2,3-DICHLOROPROPÈNE-1 et de 1,3-DICHLOROPROPÈNE)",
-   "name_nl": "DICHLOORPROPENEN (MENGSEL van 2, 3-DICHLOORPROPEEN-1 en 1, 3-DICHLOORPROPEEN)",
-   "readings": 3,
-   "settled_by_french": {
-    "explosion_group": "en"
-   }
+   "name_nl": "DICHLOORPROPENEN (MENGSEL van 2,3- DICHLOORPROPEEN-1 en 1,3- DICHLOORPROPEEN)",
+   "readings": 3
   },
   {
    "un": "2048",
@@ -10727,10 +10511,7 @@
    "equipment": "PP,EP,EX,A",
    "name_fr": "DIMÉTHYLAMINO-2 ÉTHANOL",
    "name_nl": "2-DIMETHYLAMINOETHANOL",
-   "readings": 3,
-   "settled_by_french": {
-    "explosion_group": "en"
-   }
+   "readings": 3
   },
   {
    "un": "2053",
@@ -10860,10 +10641,7 @@
    "equipment": "PP,EX,A",
    "name_fr": "TRIPROPYLÈNE",
    "name_nl": "TRIPROPYLEEN (propyleen trimeer)",
-   "readings": 3,
-   "settled_by_french": {
-    "dangers": "en"
-   }
+   "readings": 3
   },
   {
    "un": "2057",
@@ -10889,10 +10667,7 @@
    "equipment": "PP,EX,A",
    "name_fr": "TRIPROPYLÈNE",
    "name_nl": "TRIPROPYLEEN (propyleen trimeer)",
-   "readings": 3,
-   "settled_by_french": {
-    "dangers": "en"
-   }
+   "readings": 3
   },
   {
    "un": "2078",
@@ -10917,7 +10692,7 @@
    "explosion_protection": "True",
    "equipment": "PP,EP,EX,TOX,A",
    "name_fr": "DIISOCYANATE DE TOLUÈNE (et mélanges isomères) (DIISOCYANATE DE TOLUÈNE-2,4)",
-   "name_nl": "TOLUEENDIISOCYANAAT (2, 4-TOLUEENDIISOCYANAAT)",
+   "name_nl": "TOLUEENDIISOCYANAAT (en isomerische mengsels) (2,4-TOLUEENDIISOCYANAAT)",
    "readings": 3
   },
   {
@@ -10943,7 +10718,7 @@
    "explosion_protection": "False",
    "equipment": "PP,EP,TOX,A",
    "name_fr": "DIISOCYANATE DE TOLUÈNE (et mélanges isomères) (DIISOCYANATE DE TOLUÈNE-2,4)",
-   "name_nl": "TOLUEENDIISOCYANAAT (2, 4-TOLUEENDIISOCYANAAT)",
+   "name_nl": "TOLUEENDIISOCYANAAT (en isomerische mengsels) (2,4-TOLUEENDIISOCYANAAT)",
    "readings": 3
   },
   {
@@ -10995,7 +10770,7 @@
    "explosion_protection": "False",
    "equipment": "PP",
    "name_fr": "DIOXYDE DE CARBONE LIQUIDE RÉFRIGÉRÉ",
-   "name_nl": "KOOLDIOXIDE, STERK GEKOELD, VLOEIBAAR (KOOLSTOFDIOXIDE, STERK GEKOELD, VLOEIBAAR) (KOOLZUUR, STERK GEKOELD, VLOEIBAAR)",
+   "name_nl": "KOOLDIOXIDE, STERK GEKOELD, VLOEIBAAR",
    "readings": 3
   },
   {
@@ -11047,7 +10822,7 @@
    "explosion_protection": "False",
    "equipment": "PP,EP,TOX,A",
    "name_fr": "ISOCYANATES TOXIQUES, N.S.A. (ISOCYANATE DE 4-CHLOROPHÉNYLE)",
-   "name_nl": "ISOCYANATEN, GIFTIG, N.E.G. (4-CHLOORFENYLISOCYANAAT)",
+   "name_nl": "ISOCYANATEN, GIFTIG, N.E.G. (4- CHLOORFENYLISOCYANAAT)",
    "readings": 3
   },
   {
@@ -11073,7 +10848,7 @@
    "explosion_protection": "False",
    "equipment": "PP,EP",
    "name_fr": "FORMALDÉHYDE EN SOLUTION contenant au moins 25% de formaldéhyde",
-   "name_nl": "FORMALDEHYDE, OPLOSSING met ten minste 25% formaldehyde",
+   "name_nl": "FORMALDEHYDE, OPLOSSING, met ten minste 25% formaldehyde",
    "readings": 3
   },
   {
@@ -11203,7 +10978,7 @@
    "explosion_protection": "True",
    "equipment": "PP,EX,A",
    "name_fr": "CHLOROTOLUÈNES (m-CHLOROTOLUÈNE)",
-   "name_nl": "CHLOORTOLUENEN (m-CHLOROTOLUEEN) / CHLOORTOLUENEN (o-CHLOROTOLUEEN)",
+   "name_nl": "CHLOORTOLUENEN (m-CHLOORTOLUEEN)",
    "readings": 3
   },
   {
@@ -11229,8 +11004,8 @@
    "explosion_protection": "True",
    "equipment": "PP,EX,A",
    "name_fr": "CHLOROTOLUÈNES (o-CHLOROTOLUÈNE)",
-   "readings": 2,
-   "name_nl": ""
+   "name_nl": "CHLOORTOLUENEN (o-CHLOORTOLUEEN)",
+   "readings": 3
   },
   {
    "un": "2238",
@@ -11255,7 +11030,7 @@
    "explosion_protection": "True",
    "equipment": "PP,EX,A",
    "name_fr": "CHLOROTOLUÈNES (p-CHLOROTOLUÈNE)",
-   "name_nl": "CHLOORTOLUENEN (p-CHLOROTOLUEEN)",
+   "name_nl": "CHLOORTOLUENEN (p-CHLOORTOLUEEN)",
    "readings": 3
   },
   {
@@ -11391,7 +11166,7 @@
    "explosion_protection": "True",
    "equipment": "PP,EX,A",
    "name_fr": "DIMÉTHYLCYCLOHEXANES (cis-1,4- DIMÉTHYLCYCLOHEXANE)",
-   "name_nl": "DIMETHYLCYCLOHEXANEN (cis-1, 4-DIMETHYLCYCLOHEXANE)",
+   "name_nl": "DIMETHYLCYCLOHEXANEN (cis-1,4- DIMETHYLCYCLOHEXAAN)",
    "readings": 3
   },
   {
@@ -11417,7 +11192,7 @@
    "explosion_protection": "True",
    "equipment": "PP,EX,A",
    "name_fr": "DIMÉTHYLCYCLOHEXANES (trans- 1,4-DIMÉTHYLCYCLOHEXANE)",
-   "name_nl": "DIMETHYLCYCLOHEXANEN (trans-1, 4-DIMETHYLCYCLOHEXANE)",
+   "name_nl": "DIMETHYLCYCLOHEXANEN (trans-1,4- DIMETHYLCYCLOHEXAAN)",
    "readings": 3
   },
   {
@@ -11443,7 +11218,7 @@
    "explosion_protection": "True",
    "equipment": "PP,EP,EX,A",
    "name_fr": "N,N-DIMETHYLCYCLO- HEXYLAMINE",
-   "name_nl": "N, N-DIMETHYLCYCLOHEXYLAMINE",
+   "name_nl": "N,N-DIMETHYLCYCLOHEXYLAMINE",
    "readings": 3
   },
   {
@@ -11469,11 +11244,8 @@
    "explosion_protection": "True",
    "equipment": "PP,EP,EX,TOX,A",
    "name_fr": "N,N-DIMÉTHYLFORMAMIDE",
-   "name_nl": "N, N-DIMETHYLFORMAMIDE",
-   "readings": 3,
-   "settled_by_french": {
-    "sampling_device": "en"
-   }
+   "name_nl": "N,N-DIMETHYLFORMAMIDE",
+   "readings": 3
   },
   {
    "un": "2266",
@@ -11498,7 +11270,7 @@
    "explosion_protection": "True",
    "equipment": "PP,EP,EX,A",
    "name_fr": "DIMÉTHYL-N-PROPYLAMINE",
-   "name_nl": "N, N-DIMETHYLPROPYLAMINE",
+   "name_nl": "N,N-DIMETHYLPROPYLAMINE (dimethyl-N- propylamine)",
    "readings": 3
   },
   {
@@ -11576,7 +11348,7 @@
    "explosion_protection": "True",
    "equipment": "PP,EP,EX,A",
    "name_fr": "HEXAMÉTHYLÈNEDIAMINE SOLIDE, FONDUE",
-   "name_nl": "HEXAMETHYLEENDIAMINE, VAST, GESMOLTEN",
+   "name_nl": "HEXAMETHYLEENDIAMINE, GESMOLTEN",
    "readings": 3
   },
   {
@@ -11602,7 +11374,7 @@
    "explosion_protection": "False",
    "equipment": "PP,EP",
    "name_fr": "HEXAMÉTHYLÈNEDIAMINE SOLIDE, FONDUE",
-   "name_nl": "HEXAMETHYLEENDIAMINE, VAST, GESMOLTEN",
+   "name_nl": "HEXAMETHYLEENDIAMINE, GESMOLTEN",
    "readings": 3
   },
   {
@@ -11654,7 +11426,7 @@
    "explosion_protection": "True",
    "equipment": "PP,EX,A",
    "name_fr": "PENTAMÉTHYLHEPTANE",
-   "name_nl": "PENTAMETHYLHEPTAAN (isododecaan)",
+   "name_nl": "PENTAMETHYLHEPTAAN",
    "readings": 3
   },
   {
@@ -11787,7 +11559,7 @@
    "explosion_protection": "True",
    "equipment": "PP,EX,A",
    "name_fr": "OCTADIÈNES (1,7-OCTADIÈNE)",
-   "name_nl": "OCTADIENEN (1, 7-OCTADIEEN))",
+   "name_nl": "OCTADIENEN (1,7-OCTADIEEN)",
    "readings": 3,
    "settled_by_french": {
     "cargo_tank_type": "en"
@@ -11920,7 +11692,7 @@
    "explosion_protection": "True",
    "equipment": "PP,EP,EX,TOX,A",
    "name_fr": "TRICHLOROBENZÈNES LIQUIDES (1,2,4-TRICHLOROBENZÈNE)",
-   "name_nl": "TRICHLOORBENZENEN, VLOEIBAAR (1, 2, 4-TRICHLOORBENZEEN)",
+   "name_nl": "TRICHLOORBENZENEN, VLOEIBAAR (1,2,4- TRICHLOORBENZEEN)",
    "readings": 3
   },
   {
@@ -11946,7 +11718,7 @@
    "explosion_protection": "False",
    "equipment": "PP,EP,TOX,A",
    "name_fr": "TRICHLOROBENZÈNES LIQUIDES (1,2,4-TRICHLOROBENZÈNE)",
-   "name_nl": "TRICHLOORBENZENEN, VLOEIBAAR (1, 2, 4-TRICHLOORBENZEEN)",
+   "name_nl": "TRICHLOORBENZENEN, VLOEIBAAR (1,2,4- TRICHLOORBENZEEN)",
    "readings": 3
   },
   {
@@ -11973,10 +11745,7 @@
    "equipment": "PP,EX,A",
    "name_fr": "PHOSPHITE DE TRIÉTHYLE",
    "name_nl": "TRIETHYLFOSFIET",
-   "readings": 3,
-   "settled_by_french": {
-    "explosion_group": "en"
-   }
+   "readings": 3
   },
   {
    "un": "2324",
@@ -12004,8 +11773,6 @@
    "name_nl": "TRIISOBUTYLEEN",
    "readings": 3,
    "settled_by_french": {
-    "opening_pressure_kpa": "en",
-    "max_filling_percent": "en",
     "sampling_device": "en"
    }
   },
@@ -12032,11 +11799,9 @@
    "explosion_protection": "True",
    "equipment": "PP,EX,A",
    "name_fr": "TRIMÉTHYL-1,3,5 BENZÈNE",
-   "name_nl": "1, 3, 5-TRIMETHYLBENZEEN (mesityleen)",
+   "name_nl": "1,3,5-TRIMETHYLBENZEEN",
    "readings": 3,
    "settled_by_french": {
-    "opening_pressure_kpa": "en",
-    "max_filling_percent": "en",
     "sampling_device": "en"
    }
   },
@@ -12089,7 +11854,7 @@
    "explosion_protection": "True",
    "equipment": "PP,EX,A",
    "name_fr": "ACRYLATES DE BUTYLE, STABILISÉS (ACRYLATE DE n- BUTYLE STABILISÉ)",
-   "name_nl": "BUTYLACRYLATEN, GESTABILISEERD (n-BUTYLACRYLAAT, GESTABILISEERD)",
+   "name_nl": "BUTYLACRYLATEN, GESTABILISEERD (n- BUTYLACRYLAAT, GESTABILISEERD)",
    "readings": 3
   },
   {
@@ -12141,7 +11906,7 @@
    "explosion_protection": "True",
    "equipment": "PP,EX,A",
    "name_fr": "CHLORO-2 PROPANE",
-   "name_nl": "2-CHLOORPROPAAN (isopropylchloride)",
+   "name_nl": "2-CHLOORPROPAAN",
    "readings": 3
   },
   {
@@ -12193,7 +11958,7 @@
    "explosion_protection": "True",
    "equipment": "PP,EX,A",
    "name_fr": "DICHLORO-1,1 ÉTHANE",
-   "name_nl": "1, 1-DICHLOORETHAAN (ethylideenchloride)",
+   "name_nl": "1,1-DICHLOORETHAAN",
    "readings": 3
   },
   {
@@ -12219,13 +11984,7 @@
    "explosion_protection": "True",
    "equipment": "PP,EX,A",
    "name_nl": "HEXEEN-1",
-   "readings": 2,
-   "disputed": {
-    "explosion_group": {
-     "en": "II A9)",
-     "nl": "II B, 4)"
-    }
-   }
+   "readings": 2
   },
   {
    "un": "2381",
@@ -12380,8 +12139,8 @@
    "explosion_protection": "True",
    "equipment": "PP,EP,EX,TOX,A",
    "name_fr": "PROPIONITRILE",
-   "name_nl": "PROPIONITRIL",
-   "readings": 3
+   "readings": 2,
+   "name_nl": ""
   },
   {
    "un": "2414",
@@ -12432,7 +12191,7 @@
    "explosion_protection": "True",
    "equipment": "PP,EP,EX,A",
    "name_fr": "ALKYLPHÉNOLS SOLIDES, N.S.A., (NONYLPHÉNOL, MÉLANGE D'ISOMÈRES, FONDU)",
-   "name_nl": "ALKYLFENOLEN, VAST, N.E.G. (NONYLFENOL-ISOMEREN-MENGSEL, GESMOLTEN)",
+   "name_nl": "ALKYLFENOLEN, VAST, N.E.G. (NONYLFENOL- ISOMEREN-MENGSEL, GESMOLTEN)",
    "readings": 3
   },
   {
@@ -12458,7 +12217,7 @@
    "explosion_protection": "False",
    "equipment": "PP,EP",
    "name_fr": "ALKYLPHÉNOLS SOLIDES, N.S.A., (NONYLPHÉNOL, MÉLANGE D'ISOMÈRES, FONDU)",
-   "name_nl": "ALKYLFENOLEN, VAST, N.E.G. (NONYLFENOL-ISOMEREN-MENGSEL, GESMOLTEN)",
+   "name_nl": "ALKYLFENOLEN, VAST, N.E.G. (NONYLFENOL- ISOMEREN-MENGSEL, GESMOLTEN)",
    "readings": 3
   },
   {
@@ -12484,7 +12243,7 @@
    "explosion_protection": "False",
    "equipment": "PP,EP,TOX,A",
    "name_fr": "N,N-DIÉTHYLANILINE",
-   "name_nl": "N, N-DIETHYLANILINE",
+   "name_nl": "N,N-DIETHYLANILINE",
    "readings": 3
   },
   {
@@ -12563,10 +12322,7 @@
    "equipment": "PP,EP,EX,TOX,A",
    "name_fr": "ISOTHIOCYANATE DE MÉTHYLE",
    "name_nl": "METHYLISOTHIOCYANAAT",
-   "readings": 3,
-   "settled_by_french": {
-    "density": "en"
-   }
+   "readings": 3
   },
   {
    "un": "2485",
@@ -12695,7 +12451,7 @@
    "explosion_protection": "True",
    "equipment": "PP,EP,EX,A",
    "name_fr": "ÉTHANOLAMINE ou ÉTHANOLAMINE EN SOLUTION",
-   "name_nl": "ETHANOLAMINE / ETHANOLAMINE, OPLOSSING",
+   "name_nl": "ETHANOLAMINE of ETHANOLAMINE, OPLOSSING",
    "readings": 3
   },
   {
@@ -12773,7 +12529,7 @@
    "explosion_protection": "False",
    "equipment": "PP,EP,TOX,A",
    "name_fr": "CYCLODODÉCATRIÈNE-1,5,9",
-   "name_nl": "1, 5, 9-CYCLODODECATRIEEN",
+   "name_nl": "1,5,9-CYCLODODECATRIEEN",
    "readings": 3
   },
   {
@@ -12799,11 +12555,8 @@
    "explosion_protection": "True",
    "equipment": "PP,EX,A",
    "name_fr": "ACRYLATE D'ISOBUTYLE STABILISÉ",
-   "name_nl": "ISOBUTYLACRYLAAT, GESTABILISEERD",
-   "readings": 3,
-   "settled_by_french": {
-    "explosion_group": "en"
-   }
+   "readings": 2,
+   "name_nl": ""
   },
   {
    "un": "2528",
@@ -12881,10 +12634,7 @@
    "equipment": "PP,EP,EX,A",
    "name_fr": "ACIDE TRICHLORACÉTIQUE EN SOLUTION",
    "name_nl": "TRICHLOORAZIJNZUUR, OPLOSSING",
-   "readings": 3,
-   "settled_by_french": {
-    "density": "en"
-   }
+   "readings": 3
   },
   {
    "un": "2564",
@@ -12910,10 +12660,7 @@
    "equipment": "PP,EP",
    "name_fr": "ACIDE TRICHLORACÉTIQUE EN SOLUTION",
    "name_nl": "TRICHLOORAZIJNZUUR, OPLOSSING",
-   "readings": 3,
-   "settled_by_french": {
-    "density": "en"
-   }
+   "readings": 3
   },
   {
    "un": "2574",
@@ -12938,7 +12685,7 @@
    "explosion_protection": "False",
    "equipment": "PP,EP,TOX,A",
    "name_fr": "PHOSPHATE DE TRICRÉSYLE avec plus de 3 % d'isomère ortho",
-   "name_nl": "TRICRESYLFOSFAAT met meer dan 3% van het ortho-isomeer",
+   "name_nl": "TRICRESYLFOSFAAT met meer dan 3% van het ortho- isomeer",
    "readings": 3
   },
   {
@@ -13016,7 +12763,7 @@
    "explosion_protection": "False",
    "equipment": "PP,EP",
    "name_fr": "ACIDES ALKYLSULFONIQUES LIQUIDES ou ACIDES ARYLSULFONIQUES LIQUIDES ne contenant pas plus de 5 % d'acide sulfurique libre",
-   "name_nl": "ARYLSULFONZUREN, VLOEIBAAR met ten hoogste 5% vrij zwavelzuur",
+   "name_nl": "ALKYLSULFONZUREN, VLOEIBAAR of ARYLSULFONZUREN, VLOEIBAAR, met ten hoogste 5% vrij zwavelzuur",
    "readings": 3
   },
   {
@@ -13120,7 +12867,7 @@
    "explosion_protection": "False",
    "equipment": "PP,EP,TOX,A",
    "name_fr": "DIAMINO-4,4' DIPHÉNYLMÉTHANE",
-   "name_nl": "4, 4'-DIAMINODIFENYLMETHAAN",
+   "name_nl": "4,4'-DIAMINODIFENYLMETHAAN",
    "readings": 3
   },
   {
@@ -13146,11 +12893,8 @@
    "explosion_protection": "False",
    "equipment": "PP,EP",
    "name_fr": "AMMONIAC EN SOLUTION aqueuse, densité relative comprise entre 0,880 et 0,957 à 15 °C, contenant plus de 10 % mais pas plus de 35 % d’ammoniac (plus de 25 % mais pas plus de 35 % d’ammoniac)",
-   "name_nl": "AMMONIAK, OPLOSSING in water, relatieve dichtheid tussen 0, 880 en 0, 957 bij 15 °C, met meer dan 10% maar ten hoogste 35% ammoniak (meer dan 25% maar ten hoogste 35% ammoniak)",
-   "readings": 3,
-   "settled_by_french": {
-    "density": "en"
-   }
+   "name_nl": "AMMONIAK, OPLOSSING in water, relatieve dichtheid tussen 0,880 en 0,957 bij 15 °C, met meer dan 10% maar ten hoogste 35% ammoniak (meer dan 25% maar ten hoogste 35% ammoniak)",
+   "readings": 3
   },
   {
    "un": "2672",
@@ -13167,7 +12911,7 @@
    "cargo_tank_equipment": "-",
    "opening_pressure_kpa": "10",
    "max_filling_percent": "95",
-   "density": "0,88 10) 0,96 – 10)",
+   "density": "0.88 10) –0.9610)",
    "sampling_device": "2",
    "pump_room_below_deck": "True",
    "temperature_class": "-",
@@ -13175,14 +12919,10 @@
    "explosion_protection": "False",
    "equipment": "PP,EP",
    "name_fr": "AMMONIAC EN SOLUTION aqueuse, densité relative comprise entre 0,880 et 0,957 à 15 °C, contenant plus de 10 % mais pas plus de 35 % d’ammoniac (pas plus de 25 % d’ammoniac)",
-   "name_nl": "AMMONIAK, OPLOSSING in water, relatieve dichtheid tussen 0, 880 en 0, 957 bij 15 °C, met meer dan 10% maar ten hoogste 35% ammoniak (niet meer dan 25% ammoniak)",
+   "name_nl": "AMMONIAK, OPLOSSING in water, relatieve dichtheid tussen 0,880 en 0,957 bij 15 °C, met meer dan 10% maar ten hoogste 35% ammoniak (niet meer dan 25% ammoniak)",
    "readings": 3,
-   "disputed": {
-    "density": {
-     "en": "0,88 10) 0,96 – 10)",
-     "nl": "0,88,10) - 0,96",
-     "fr": "0.88 10) –0.9610)"
-    }
+   "settled_by_french": {
+    "density": "nl"
    }
   },
   {
@@ -13264,9 +13004,6 @@
    "readings": 3,
    "french_reads_differently": {
     "vessel_type": "C"
-   },
-   "settled_by_french": {
-    "opening_pressure_kpa": "en"
    }
   },
   {
@@ -13318,7 +13055,7 @@
    "explosion_protection": "True",
    "equipment": "PP,EP,EX,A",
    "name_fr": "AMINES INFLAMMABLES, CORROSIVES, N.S.A. ou POLYAMINES INFLAMMABLES, CORROSIVES, N.S.A. (2-AMINOBUTANE)",
-   "name_nl": "AMINEN, BRANDBAAR, BIJTEND, N.E.G. (2-AMINOBUTAAN) / POLYAMINEN, BRANDBAAR, BIJTEND, N.E.G. (2-AMINOBUTAAN)",
+   "name_nl": "AMINEN, BRANDBAAR, BIJTEND, N.E.G. of POLYAMINEN, BRANDBAAR, BIJTEND, N.E.G. (2- AMINOBUTAAN)",
    "readings": 3,
    "french_reads_differently": {
     "vessel_type": "N"
@@ -13347,8 +13084,8 @@
    "explosion_protection": "False",
    "equipment": "*",
    "name_fr": "AMINES LIQUIDES CORROSIVES, N.S.A. ou POLYAMINES LIQUIDES CORROSIVES, N.S.A.",
-   "name_nl": "AMINEN, VLOEIBAAR, BIJTEND, N.E.G. / POLYAMINEN, VLOEIBAAR, BIJTEND, N.E.G.",
-   "readings": 3
+   "readings": 2,
+   "name_nl": ""
   },
   {
    "un": "2735",
@@ -13373,8 +13110,8 @@
    "explosion_protection": "False",
    "equipment": "*",
    "name_fr": "AMINES LIQUIDES CORROSIVES, N.S.A. ou POLYAMINES LIQUIDES CORROSIVES, N.S.A.",
-   "name_nl": "AMINEN, VLOEIBAAR, BIJTEND, N.E.G. / POLYAMINEN, VLOEIBAAR, BIJTEND, N.E.G.",
-   "readings": 3
+   "readings": 2,
+   "name_nl": ""
   },
   {
    "un": "2735",
@@ -13399,8 +13136,8 @@
    "explosion_protection": "False",
    "equipment": "*",
    "name_fr": "AMINES LIQUIDES CORROSIVES, N.S.A. ou POLYAMINES LIQUIDES CORROSIVES, N.S.A.",
-   "name_nl": "AMINEN, VLOEIBAAR, BIJTEND, N.E.G. / POLYAMINEN, VLOEIBAAR, BIJTEND, N.E.G.",
-   "readings": 3
+   "readings": 2,
+   "name_nl": ""
   },
   {
    "un": "2754",
@@ -13425,7 +13162,7 @@
    "explosion_protection": "False",
    "equipment": "PP,EP,TOX,A",
    "name_fr": "N-ÉTHYLTOLUIDINES (N-ÉTHYL-o-TOLUIDINE)",
-   "name_nl": "N-ETHYLTOLUIDINEN (N-ETHYL-o-TOLUIDINE) / N-ETHYLTOLUIDINEN (N-ETHYL-m-TOLUIDINE) / N-ETHYLTOLUIDINEN, MENGSEL van N-ETHYL-o-TOLUIDINE en N-ETHYL-m-TOLUIDINE",
+   "name_nl": "N-ETHYLTOLUIDINEN (N-ETHYL-o-TOLUIDINE)",
    "readings": 3
   },
   {
@@ -13451,8 +13188,8 @@
    "explosion_protection": "False",
    "equipment": "PP,EP,TOX,A",
    "name_fr": "N-ÉTHYLTOLUIDINES (N-ÉTHYL-m-TOLUIDINE)",
-   "readings": 2,
-   "name_nl": ""
+   "name_nl": "N-ETHYLTOLUIDINEN (N-ETHYL-m-TOLUIDINE)",
+   "readings": 3
   },
   {
    "un": "2754",
@@ -13477,8 +13214,8 @@
    "explosion_protection": "False",
    "equipment": "PP,EP,TOX,A",
    "name_fr": "N-ÉTHYLTOLUIDINES (MÉLANGES DE N-ÉTHYL-o-TOLUIDINE et N-ÉTHYL-m-TOLUIDINE)",
-   "readings": 2,
-   "name_nl": ""
+   "name_nl": "N-ETHYLTOLUIDINEN, MENGSEL van N-ETHYL-o- TOLUIDINE en N-ETHYL-m-TOLUIDINE",
+   "readings": 3
   },
   {
    "un": "2754",
@@ -13529,7 +13266,7 @@
    "explosion_protection": "False",
    "equipment": "PP,EP,TOX,A",
    "name_fr": "4-THIAPENTANAL (3-MÉTHYLMERCAPTO- PROPIONALDÉHYDE)",
-   "name_nl": "4-THIAPENTANAL (3-METHYLMERCAPTO-PROPIONALDEHYDE)",
+   "name_nl": "4-THIAPENTANAL (3-METHYLMERCAPTO- PROPIONALDEHYDE)",
    "readings": 3
   },
   {
@@ -13555,12 +13292,12 @@
    "explosion_protection": "True",
    "equipment": "PP,EP,EX,A",
    "name_fr": "ACIDE ACÉTIQUE GLACIAL ou ACIDE ACÉTIQUE EN SOLUTION contenant plus de 80% (masse) d'acide",
-   "name_nl": "AZIJNZUUR, OPLOSSING met meer dan 80 massa-% zuur",
+   "name_nl": "IJSAZIJN of AZIJNZUUR, OPLOSSING met meer dan 80 massa-% zuur",
    "readings": 3,
    "disputed": {
     "density": {
      "en": "1,05 with 100% acid",
-     "nl": "1,05 (bij 100%",
+     "nl": "1,05 (bij 100% zuur)",
      "fr": "1.05 à 100% d'acide"
     }
    }
@@ -13588,7 +13325,7 @@
    "explosion_protection": "False",
    "equipment": "PP,EP",
    "name_fr": "ACIDE ACÉTIQUE EN SOLUTION contenant plus de 10 % et moins de 50 % (masse) d'acide",
-   "name_nl": "AZIJNZUUR, OPLOSSING met meer dan 10 massa-%, en minder dan 50 massa-% zuur",
+   "name_nl": "AZIJNZUUR, OPLOSSING, met meer dan 10 massa- %, maar minder dan 50 massa-% zuur",
    "readings": 3
   },
   {
@@ -13614,7 +13351,7 @@
    "explosion_protection": "False",
    "equipment": "PP,EP",
    "name_fr": "ACIDE ACÉTIQUE EN SOLUTION contenant au moins 50 % et au plus 80 % (masse) d'acide",
-   "name_nl": "AZIJNZUUR, OPLOSSING met ten minste 50 massa-%, maar ten hoogste 80 massa-% zuur",
+   "name_nl": "AZIJNZUUR, OPLOSSING met ten minste 50 massa- % en ten hoogste 80 massa-% zuur",
    "readings": 3
   },
   {
@@ -13796,7 +13533,7 @@
    "explosion_protection": "True",
    "equipment": "PP,EP,EX,TOX,A",
    "name_fr": "SOLIDE ORGANIQUE TOXIQUE, N.S.A. (1,2,3-TRICHLOROBENZÈNE FONDU)",
-   "name_nl": "GIFTIGE ORGANISCHE VASTE STOF, N.E.G. (1, 2, 3-TRICHLOROBENZENE, MOLTEN) / GIFTIGE ORGANISCHE VASTE STOF, N.E.G. (1, 3, 5-TRICHLOROBENZENE, MOLTEN)",
+   "name_nl": "GIFTIGE ORGANISCHE VASTE STOF, N.E.G. (1,2,3- TRICHLOORBENZEEN, GESMOLTEN)",
    "readings": 3
   },
   {
@@ -13822,11 +13559,8 @@
    "explosion_protection": "False",
    "equipment": "PP,EP,TOX,A",
    "name_fr": "SOLIDE ORGANIQUE TOXIQUE, N.S.A. (1,2,3-TRICHLOROBENZÈNE FONDU)",
-   "name_nl": "GIFTIGE ORGANISCHE VASTE STOF, N.E.G. (1, 2, 3-TRICHLOROBENZENE, MOLTEN)",
-   "readings": 3,
-   "settled_by_french": {
-    "explosion_group": "en"
-   }
+   "name_nl": "GIFTIGE ORGANISCHE VASTE STOF, N.E.G. (1,2,3- TRICHLOORBENZEEN, GESMOLTEN)",
+   "readings": 3
   },
   {
    "un": "2811",
@@ -13851,11 +13585,8 @@
    "explosion_protection": "False",
    "equipment": "PP,EP,TOX,A",
    "name_fr": "SOLIDE ORGANIQUE TOXIQUE, N.S.A. (1,3,5-TRICHLOROBENZÈNE FONDU)",
-   "name_nl": "GIFTIGE ORGANISCHE VASTE STOF, N.E.G. (1, 3, 5-TRICHLOROBENZENE, MOLTEN)",
-   "readings": 3,
-   "settled_by_french": {
-    "explosion_group": "en"
-   }
+   "name_nl": "GIFTIGE ORGANISCHE VASTE STOF, N.E.G. (1,3,5- TRICHLOORBENZEEN, GESMOLTEN)",
+   "readings": 3
   },
   {
    "un": "2811",
@@ -13880,8 +13611,8 @@
    "explosion_protection": "True",
    "equipment": "PP,EP,EX,TOX,A",
    "name_fr": "SOLIDE ORGANIQUE TOXIQUE, N.S.A. (1,3,5-TRICHLOROBENZÈNE FONDU)",
-   "readings": 2,
-   "name_nl": ""
+   "name_nl": "GIFTIGE ORGANISCHE VASTE STOF, N.E.G. (1,3,5- TRICHLOORBENZEEN, GESMOLTEN)",
+   "readings": 3
   },
   {
    "un": "2815",
@@ -13984,7 +13715,7 @@
    "explosion_protection": "False",
    "equipment": "PP,EP,TOX,A",
    "name_fr": "TRICHLORO-1,1,1 ÉTHANE",
-   "name_nl": "1, 1, 1-TRICHLOORETHAAN",
+   "name_nl": "1,1,1-TRICHLOORETHAAN",
    "readings": 3,
    "settled_by_french": {
     "pump_room_below_deck": "en"
@@ -14013,7 +13744,7 @@
    "explosion_protection": "False",
    "equipment": "PP",
    "name_fr": "TÉTRAPROPYLÈNE",
-   "name_nl": "TETRAPROPYLEEN (PROPYLEEN-TETRAMEER)",
+   "name_nl": "TETRAPROPYLEEN (PROPYLEEN TETRAMEER)",
    "readings": 3,
    "settled_by_french": {
     "sampling_device": "en"
@@ -14097,7 +13828,7 @@
    "explosion_protection": "True",
    "equipment": "PP,EP,EX,A",
    "name_fr": "LIQUIDE CORROSIF, INFLAMMABLE, N.S.A. (SOLUTION AQUEUSE DE CHLORURE DE DODÉCYLDIMÉTHYLAMMONIUM ET DE PROPANOL-2)",
-   "name_nl": "BIJTENDE VLOEISTOF, BRANDBAAR, N.E.G. (WATERIGE OPLOSSING van 2-PROPANOL en DODECYLDIMETHYL-AMMONIUM CHLORIDE)",
+   "name_nl": "BIJTENDE VLOEISTOF, BRANDBAAR, N.E.G. (WATERIGE OPLOSSING van DODECYLDIMETHYLAMMONIUMCHLORIDE en 2- PROPANOL)",
    "readings": 3
   },
   {
@@ -14123,7 +13854,7 @@
    "explosion_protection": "True",
    "equipment": "PP,EP,EX,A",
    "name_fr": "LIQUIDE CORROSIF, INFLAMMABLE, N.S.A. (SOLUTION AQUEUSE DE CHLORURE D'HEXADÉCYLTRIMÉTHYLAMINE (50 %) ET D'ÉTHANOL (35 %)",
-   "name_nl": "BIJTENDE VLOEISTOF, BRANDBAAR, N.E.G. (WATERIGE OPLOSSING van HEXADECYCLTRIMETHYL-AMMONIUM CHLORIDE (50%) en ETHANOL (35%))",
+   "name_nl": "BIJTENDE VLOEISTOF, BRANDBAAR, N.E.G. (WATERIGE OPLOSSING van HEXADECYLTRIMETHYLAMINECHLORIDE (50%) en ETHANOL (35%)",
    "readings": 3
   },
   {
@@ -14149,7 +13880,7 @@
    "explosion_protection": "True",
    "equipment": "PP,EP,EX,A",
    "name_fr": "LIQUIDE CORROSIF, INFLAMMABLE, N.S.A. (SOLUTION AQUEUSE DE CHLORURE D’HEXADÉCYLTRIMÉTHYLAMINE (50 %) ET D’ÉTHANOL (35 %))",
-   "name_nl": "BIJTENDE VLOEISTOF, BRANDBAAR, N.E.G. (WATERIGE OPLOSSING van HEXADECYCLTRIMETHYL-AMMONIUM CHLORIDE (50%) en ETHANOL (35%))",
+   "name_nl": "BIJTENDE VLOEISTOF, BRANDBAAR, N.E.G. (WATERIGE OPLOSSING van HEXADECYLTRIMETHYLAMINECHLORIDE (50%) en ETHANOL (35%)",
    "readings": 3
   },
   {
@@ -14306,11 +14037,7 @@
    "equipment": "*",
    "name_fr": "LIQUIDE INFLAMMABLE, CORROSIF, N.S.A.",
    "name_nl": "BRANDBARE VLOEISTOF, BIJTEND, N.E.G.",
-   "readings": 3,
-   "settled_by_french": {
-    "cargo_tank_equipment": "en",
-    "opening_pressure_kpa": "en"
-   }
+   "readings": 3
   },
   {
    "un": "2924",
@@ -14336,11 +14063,7 @@
    "equipment": "*",
    "name_fr": "LIQUIDE INFLAMMABLE, CORROSIF, N.S.A.",
    "name_nl": "BRANDBARE VLOEISTOF, BIJTEND, N.E.G.",
-   "readings": 3,
-   "settled_by_french": {
-    "cargo_tank_equipment": "en",
-    "opening_pressure_kpa": "en"
-   }
+   "readings": 3
   },
   {
    "un": "2924",
@@ -14366,11 +14089,7 @@
    "equipment": "*",
    "name_fr": "LIQUIDE INFLAMMABLE, CORROSIF, N.S.A.",
    "name_nl": "BRANDBARE VLOEISTOF, BIJTEND, N.E.G.",
-   "readings": 3,
-   "settled_by_french": {
-    "cargo_tank_equipment": "en",
-    "opening_pressure_kpa": "en"
-   }
+   "readings": 3
   },
   {
    "un": "2924",
@@ -14396,11 +14115,7 @@
    "equipment": "*",
    "name_fr": "LIQUIDE INFLAMMABLE, CORROSIF, N.S.A.",
    "name_nl": "BRANDBARE VLOEISTOF, BIJTEND, N.E.G.",
-   "readings": 3,
-   "settled_by_french": {
-    "cargo_tank_equipment": "en",
-    "opening_pressure_kpa": "en"
-   }
+   "readings": 3
   },
   {
    "un": "2924",
@@ -14426,10 +14141,7 @@
    "equipment": "*",
    "name_fr": "LIQUIDE INFLAMMABLE, CORROSIF, N.S.A.",
    "name_nl": "BRANDBARE VLOEISTOF, BIJTEND, N.E.G.",
-   "readings": 3,
-   "settled_by_french": {
-    "blue_cones": "en"
-   }
+   "readings": 3
   },
   {
    "un": "2924",
@@ -14480,7 +14192,7 @@
    "explosion_protection": "True",
    "equipment": "PP,EP,EX,A",
    "name_fr": "LIQUIDE INFLAMMABLE, CORROSIF, N.S.A. (SOLUTION AQUEUSE DE CHLORURE DE DIALKYLDIMÉTHYLAMMONIUM à C18) ET DE PROPANOL-2) (C8",
-   "name_nl": "BRANDBARE VLOEISTOF, BIJTEND, N.E.G. (WATERIGE OPLOSSING van DIALKYL-(C8-C18)-DIMETHYLAMMONIUM CHLORIDE en 2-PROPANOL)",
+   "name_nl": "BRANDBARE VLOEISTOF, BIJTEND, N.E.G. (WATERIGE OPLOSSING van DIALKYLDIMETHYLAMMONIUMCHLORIDE (C8 tot en met C18) en 2-PROPANOL)",
    "readings": 3
   },
   {
@@ -14792,7 +14504,7 @@
    "explosion_protection": "False",
    "equipment": "PP",
    "name_fr": "MATIÈRE DANGEREUSE DU POINT DE VUE DE L'ENVIRONNEMENT, FONDUE, N.S.A. (ALKYLAMINE (C12 à C18))",
-   "name_nl": "MILIEUGEVAARLIJKE VASTE STOF, N.E.G. (ALKYLAMINE (C12 to C18)",
+   "name_nl": "MILIEUGEVAARLIJKE VASTE STOF, N.E.G. GESMOLTEN (ALKYLAMINE (C12 - C 18))",
    "readings": 3
   },
   {
@@ -14819,10 +14531,7 @@
    "equipment": "PP,EP,EX,TOX,A",
    "name_fr": "MÉTHACRYLONITRILE STABILISÉ",
    "name_nl": "METHACRYLNITRIL, GESTABILISEERD",
-   "readings": 3,
-   "settled_by_french": {
-    "explosion_group": "en"
-   }
+   "readings": 3
   },
   {
    "un": "3082",
@@ -14847,8 +14556,8 @@
    "explosion_protection": "False",
    "equipment": "*",
    "name_fr": "MATIÈRE DANGEREUSE DU POINT DE VUE DE L'ENVIRONNEMENT, LIQUIDE, N.S.A.",
-   "name_nl": "MILIEUGEVAARLIJKE VLOEISTOF, N.E.G.",
-   "readings": 3
+   "readings": 2,
+   "name_nl": ""
   },
   {
    "un": "3082",
@@ -14874,10 +14583,7 @@
    "equipment": "PP,EP TOX,A",
    "name_fr": "MATIÈRE DANGEREUSE DU POINT DE VUE DE L’ENVIRONNEMENT, LIQUIDE, N.S.A. (EAU DE FOND DE CALE, CONTIENT DES BOUES D’HYDROCARBURES)",
    "name_nl": "MILIEUGEVAARLIJKE VLOEISTOF, N.E.G. (BILGEWATER MET SLUDGE)",
-   "readings": 3,
-   "settled_by_french": {
-    "sampling_device": "en"
-   }
+   "readings": 3
   },
   {
    "un": "3082",
@@ -14902,11 +14608,8 @@
    "explosion_protection": "False",
    "equipment": "PP",
    "name_fr": "MATIÈRE DANGEREUSE DU POINT DE VUE DE L’ENVIRONNEMENT, LIQUIDE, N.S.A. (EAU DE FOND DE CALE, EXEMPTE DE BOUES D’HYDROCARBURES)",
-   "name_nl": "MILIEUGEVAARLIJKE VLOEISTOF, N.E.G. (BILGEWATER ZONDER SLUDGE)",
-   "readings": 3,
-   "settled_by_french": {
-    "sampling_device": "en"
-   }
+   "readings": 2,
+   "name_nl": ""
   },
   {
    "un": "3082",
@@ -14932,10 +14635,7 @@
    "equipment": "PP,EP,TOX,A",
    "name_fr": "MATIÈRE DANGEREUSE DU POINT DE VUE DE L’ENVIRONNEMENT, LIQUIDE, N.S.A. (BOUES D’HYDROCARBURES)",
    "name_nl": "MILIEUGEVAARLIJKE VLOEISTOF, N.E.G. (OLIEHOUDENDE SLUDGE)",
-   "readings": 3,
-   "settled_by_french": {
-    "sampling_device": "en"
-   }
+   "readings": 3
   },
   {
    "un": "3082",
@@ -14960,11 +14660,8 @@
    "explosion_protection": "False",
    "equipment": "PP",
    "name_fr": "MATIÈRES DANGEREUSES POUR L’ENVIRONNEMENT, LIQUIDES, N.S.A. (HUILE DE CHAUFFE LOURDE)",
-   "name_nl": "MILIEUGEVAARLIJKE VLOEISTOF, N.E.G. (ZWARE STOOKOLIE)",
-   "readings": 3,
-   "settled_by_french": {
-    "sampling_device": "en"
-   }
+   "readings": 2,
+   "name_nl": ""
   },
   {
    "un": "3092",
@@ -15015,7 +14712,7 @@
    "explosion_protection": "False",
    "equipment": "PP,EP",
    "name_fr": "ALKYLPHÉNOLS LIQUIDES, N.S.A. (y à C12) compris les homologues C2",
-   "name_nl": "ALKYLFENOLEN, VLOEIBAAR, N.E.G. met inbegrip van de homologe reeks C2-C12",
+   "name_nl": "ALKYLFENOLEN, VLOEIBAAR, N.E.G. (met inbegrip van de homologe reeks C2-C12)",
    "readings": 3
   },
   {
@@ -15041,7 +14738,7 @@
    "explosion_protection": "False",
    "equipment": "PP,EP",
    "name_fr": "ALKYLPHÉNOLS LIQUIDES, N.S.A. (y compris les homologues C2 à C12)",
-   "name_nl": "ALKYLFENOLEN, VLOEIBAAR, N.E.G. met inbegrip van de homologe reeks C2-C12",
+   "name_nl": "ALKYLFENOLEN, VLOEIBAAR, N.E.G. (met inbegrip van de homologe reeks C2-C12)",
    "readings": 3
   },
   {
@@ -15067,7 +14764,7 @@
    "explosion_protection": "True",
    "equipment": "PP,EX,A",
    "name_fr": "SOLIDES CONTENANT DU LIQUIDE INFLAMMABLE, N.S.A., FONDUS ayant un point d'éclair de 60 °C au plus, (CHLORURE DE DIALKYL (C12-C18) DIMÉTHYLAMMONIUM ET PROPANOL-2)",
-   "name_nl": "VASTE STOFFEN, DIE BRANDBARE VLOEISTOFFEN BEVATTEN, N.E.G., GESMOLTEN (DIALKYLDIMETHYLAMMONIUMCHLORIDE (C12-C18) en 2-PROPANOL) met een vlampunt van ten hoogste 60 °C",
+   "name_nl": "VASTE STOFFEN, DIE BRANDBARE VLOEISTOFFEN met een vlampunt van ten hoogste 60 °C BEVATTEN, N.E.G.,GESMOLTEN",
    "readings": 3
   },
   {
@@ -15093,7 +14790,7 @@
    "explosion_protection": "True",
    "equipment": "*",
    "name_fr": "LIQUIDE TRANSPORTÉ À CHAUD, INFLAMMABLE, N.S.A., ayant un point d'éclair supérieur à 60 °C, à une température égale ou supérieure à son point d'éclair",
-   "name_nl": "VERWARMDE VLOEISTOF, BRANDBAAR, N.E.G. met een vlampunt hoger dan 60 °C, bij of boven haar vlampunt",
+   "name_nl": "VERWARMDE VLOEISTOF, BRANDBAAR, N.E.G., met een vlampunt hoger dan 60 °C, bij een temperatuur gelijk aan of hoger dan haar vlampunt",
    "readings": 3
   },
   {
@@ -15119,7 +14816,7 @@
    "explosion_protection": "True",
    "equipment": "*",
    "name_fr": "LIQUIDE TRANSPORTÉ À CHAUD, INFLAMMABLE, N.S.A., ayant un point d’éclair supérieur à 60 °C, à une température égale ou supérieure à son point d’éclair",
-   "name_nl": "VERWARMDE VLOEISTOF, BRANDBAAR, N.E.G. met een vlampunt hoger dan 60 °C, bij of boven haar vlampunt",
+   "name_nl": "VERWARMDE VLOEISTOF, BRANDBAAR, N.E.G., met een vlampunt hoger dan 60°C, bij een temperatuur gelijk aan of hoger dan haar vlampunt",
    "readings": 3
   },
   {
@@ -15145,7 +14842,7 @@
    "explosion_protection": "True",
    "equipment": "PP,EX,A",
    "name_fr": "LIQUIDE TRANSPORTÉ À CHAUD, INFLAMMABLE, N.S.A., ayant un point d'éclair supérieur à 60 °C, à une température égale ou supérieure à son point d'éclair (CARBON BLACK REEDSTOCK) (HUILE DE PYROLYSE)",
-   "name_nl": "VERWARMDE VLOEISTOF, BRANDBAAR, N.E.G. (CARBON BLACK REEDSTOCK) (VERWARMDE VLOEISTOF, BRANDBAAR, N.E.G. (PYROLYSIS OIL)), met een vlampunt hoger dan 60 °C, bij een temperatuur die ten minste gelijk is aan haar vlampunt, geladen bij een temperatuur gelijk aan of hoger dan 100°C / VERWARMDE VLOEISTOF, BRANDBAAR, N.E.G. (PYROLYSIS OIL A) vlampunt hoger dan 60 °C, bij een temperatuur gelijk aan of hoger dan haar vlampunt en gelijk aan of hoger dan 100 °C / VERWARMDE VLOEISTOF, BRANDBAAR, N.E.G. (RESIDUAL OIL) met een vlampunt hoger dan 60 °C, bij of boven haar vlampunt / VERWARMDE VLOEISTOF, BRANDBAAR, N.E.G. (MIXTURE OF CRUDE NAPHTALENE) met een vlampunt hoger dan 60 °C, bij of boven haar vlampunt",
+   "name_nl": "VERWARMDE VLOEISTOF, BRANDBAAR, N.E.G., met een vlampunt hoger dan 60 °C, bij een temperatuur gelijk aan of hoger dan haar vlampunt (CARBON BLACK, FEEDSTOCK - E, PYROLYSE- OLIE)",
    "readings": 3
   },
   {
@@ -15171,7 +14868,7 @@
    "explosion_protection": "True",
    "equipment": "PP,EX,A",
    "name_fr": "LIQUIDE TRANSPORTÉ À CHAUD, INFLAMMABLE, N.S.A., ayant un point d'éclair supérieur à 60 °C, à une température égale ou supérieure à son point d'éclair (HUILE DE CRÉOSOTE)",
-   "name_nl": "VERWARMDE VLOEISTOF, BRANDBAAR, N.E.G. (CREOSOTE OIL) met een vlampunt hoger dan 60 °C, bij of boven haar vlampunt",
+   "name_nl": "VERWARMDE VLOEISTOF, BRANDBAAR, N.E.G., met een vlampunt hoger dan 60 °C, bij een temperatuur gelijk aan of hoger dan haar vlampunt (KREOSOT-OLIE)",
    "readings": 3
   },
   {
@@ -15197,7 +14894,7 @@
    "explosion_protection": "True",
    "equipment": "PP,EP,EX,TOX,A",
    "name_fr": "LIQUIDE TRANSPORTÉ À CHAUD, INFLAMMABLE, N.S.A., ayant un point d'éclair supérieur à 60 °C, à une température égale ou supérieure à son point d'éclair (Low QI Pitch)",
-   "name_nl": "VERWARMDE VLOEISTOF, BRANDBAAR, N.E.G. (Low QI Pitch) met een vlampunt hoger dan 60 °C, bij of boven haar vlampunt",
+   "name_nl": "VERWARMDE VLOEISTOF, BRANDBAAR, N.E.G., met een vlampunt hoger dan 60 °C, bij een temperatuur gelijk aan of hoger dan haar vlampunt (LOW QL PITCH)",
    "readings": 3
   },
   {
@@ -15223,8 +14920,8 @@
    "explosion_protection": "True",
    "equipment": "PP,EX,A",
    "name_fr": "LIQUIDE TRANSPORTÉ À CHAUD, INFLAMMABLE, N.S.A., ayant un point d'éclair supérieur à 60 °C, à une température égale ou supérieure à son point d'éclair (HUILE DE PYROLYSE A)",
-   "readings": 2,
-   "name_nl": ""
+   "name_nl": "VERWARMDE VLOEISTOF, BRANDBAAR, N.E.G., met een vlampunt hoger dan 60 °C, bij een temperatuur gelijk aan of hoger dan haar vlampunt (PYROLYSE-OLIE A)",
+   "readings": 3
   },
   {
    "un": "3256",
@@ -15249,8 +14946,8 @@
    "explosion_protection": "True",
    "equipment": "PP,EX,A",
    "name_fr": "LIQUIDE TRANSPORTÉ À CHAUD, INFLAMMABLE, N.S.A., ayant un point d'éclair supérieur à 60 °C, à une température égale ou supérieure à son point d'éclair (HUILE RÉSIDUELLE)",
-   "readings": 2,
-   "name_nl": ""
+   "name_nl": "VERWARMDE VLOEISTOF, BRANDBAAR, N.E.G., met een vlampunt hoger dan 60 °C, bij een temperatuur gelijk aan of hoger dan haar vlampunt (RESTOLIE)",
+   "readings": 3
   },
   {
    "un": "3256",
@@ -15275,8 +14972,8 @@
    "explosion_protection": "True",
    "equipment": "PP,EX,A",
    "name_fr": "LIQUIDE TRANSPORTÉ À CHAUD, INFLAMMABLE, N.S.A., ayant un point d'éclair supérieur à 60 °C, à une température égale ou supérieure à son point d'éclair (MÉLANGE DE NAPHTALINE BRUTE)",
-   "readings": 2,
-   "name_nl": ""
+   "name_nl": "VERWARMDE VLOEISTOF, BRANDBAAR, N.E.G., met een vlampunt hoger dan 60 °C, bij een temperatuur gelijk aan of hoger dan haar vlampunt (MENGSEL VAN RUWE NAFTALINE)",
+   "readings": 3
   },
   {
    "un": "3257",
@@ -15301,7 +14998,7 @@
    "explosion_protection": "False",
    "equipment": "*",
    "name_fr": "LIQUIDE TRANSPORTÉ À CHAUD, N.S.A. (y compris métal fondu, sel fondu, etc.) à une température égale ou supérieure à 100 °C et inférieure à son point d'éclair",
-   "name_nl": "VERWARMDE VLOEISTOF, N.E.G. bij een temperatuur gelijk aan of hoger dan 100 °C en lager dan haar vlampunt (met inbegrip van gesmolten metalen, gesmolten zouten, etc.)",
+   "name_nl": "VERWARMDE VLOEISTOF, N.E.G., bij een temperatuur hoger dan 100°C en lager dan haar vlampunt (met inbegrip van gesmolten metalen, gesmolten zouten, etc.)",
    "readings": 3
   },
   {
@@ -15327,11 +15024,8 @@
    "explosion_protection": "False",
    "equipment": "*",
    "name_fr": "LIQUIDE TRANSPORTÉ À CHAUD, N.S.A. (y compris métal fondu, sel fondu, etc.) à une température égale ou supérieure à 100 °C et inférieure à son point d'éclair",
-   "name_nl": "VERWARMDE VLOEISTOF, N.E.G. bij een temperatuur gelijk aan of hoger dan 100 °C en lager dan haar vlampunt (met inbegrip van gesmolten metalen, gesmolten zouten, etc.)",
-   "readings": 3,
-   "settled_by_french": {
-    "cargo_tank_design": "en"
-   }
+   "name_nl": "VERWARMDE VLOEISTOF, N.E.G., bij een temperatuur gelijk aan of hoger dan 100 °C en, bij stoffen met een vlampunt, lager dan haar vlampunt (met inbegrip van gesmolten metalen, gesmolten zouten, etc.)",
+   "readings": 3
   },
   {
    "un": "3257",
@@ -15408,8 +15102,8 @@
    "explosion_protection": "False",
    "equipment": "*",
    "name_fr": "LIQUIDE INORGANIQUE CORROSIF, ACIDE, N.S.A.",
-   "name_nl": "BIJTENDE, ZURE, ANORGANISCHE VLOEISTOF, N.E.G.",
-   "readings": 3
+   "readings": 2,
+   "name_nl": ""
   },
   {
    "un": "3264",
@@ -15434,8 +15128,8 @@
    "explosion_protection": "False",
    "equipment": "*",
    "name_fr": "LIQUIDE INORGANIQUE CORROSIF, ACIDE, N.S.A.",
-   "name_nl": "BIJTENDE, ZURE, ANORGANISCHE VLOEISTOF, N.E.G.",
-   "readings": 3
+   "readings": 2,
+   "name_nl": ""
   },
   {
    "un": "3264",
@@ -15460,8 +15154,8 @@
    "explosion_protection": "False",
    "equipment": "*",
    "name_fr": "LIQUIDE INORGANIQUE CORROSIF, ACIDE, N.S.A.",
-   "name_nl": "BIJTENDE, ZURE, ANORGANISCHE VLOEISTOF, N.E.G.",
-   "readings": 3
+   "readings": 2,
+   "name_nl": ""
   },
   {
    "un": "3264",
@@ -15486,7 +15180,7 @@
    "explosion_protection": "False",
    "equipment": "PP,EP",
    "name_fr": "LIQUIDE INORGANIQUE CORROSIF, ACIDE, N.S.A. (SOLUTION AQUEUSE D'ACIDE PHOSPHORIQUE ET D'ACIDE NITRIQUE)",
-   "name_nl": "BIJTENDE, ZURE, ANORGANISCHE VLOEISTOF, N.E.G. (WATERIGE OPLOSSING van FOSFORZUREN en SALTPETERZUREN)",
+   "name_nl": "BIJTENDE ZURE ANORGANISCHE VLOEISTOF, N.E.G. (WATERIGE OPLOSSING van FOSFORZUREN en SALPETERZUREN)",
    "readings": 3
   },
   {
@@ -15512,7 +15206,7 @@
    "explosion_protection": "False",
    "equipment": "PP,EP",
    "name_fr": "LIQUIDE INORGANIQUE CORROSIF, ACIDE, N.S.A. (SOLUTION AQUEUSE D'ACIDE PHOSPHORIQUE ET D'ACIDE NITRIQUE)",
-   "name_nl": "BIJTENDE, ZURE, ANORGANISCHE VLOEISTOF, N.E.G. (WATERIGE OPLOSSING van FOSFORZUREN en SALTPETERZUREN)",
+   "name_nl": "BIJTENDE ZURE ANORGANISCHE VLOEISTOF, N.E.G. (WATERIGE OPLOSSING van FOSFORZUREN en SALPETERZUREN)",
    "readings": 3
   },
   {
@@ -15538,7 +15232,7 @@
    "explosion_protection": "False",
    "equipment": "PP,EP",
    "name_fr": "LIQUIDE INORGANIQUE CORROSIF, ACIDE, N.S.A. (SOLUTION AQUEUSE D'ACIDE PHOSPHORIQUE ET D'ACIDE NITRIQUE)",
-   "name_nl": "BIJTENDE, ZURE, ANORGANISCHE VLOEISTOF, N.E.G. (WATERIGE OPLOSSING van FOSFORZUREN en SALTPETERZUREN)",
+   "name_nl": "BIJTENDE ZURE ANORGANISCHE VLOEISTOF, N.E.G. (WATERIGE OPLOSSING van FOSFORZUREN en SALPETERZUREN)",
    "readings": 3,
    "settled_by_french": {
     "sampling_device": "en"
@@ -15567,8 +15261,8 @@
    "explosion_protection": "False",
    "equipment": "*",
    "name_fr": "LIQUIDE ORGANIQUE CORROSIF, ACIDE, N.S.A.",
-   "name_nl": "BIJTENDE, ZURE, ORGANISCHE VLOEISTOF, N.E.G.",
-   "readings": 3
+   "readings": 2,
+   "name_nl": ""
   },
   {
    "un": "3265",
@@ -15593,8 +15287,8 @@
    "explosion_protection": "False",
    "equipment": "*",
    "name_fr": "LIQUIDE ORGANIQUE CORROSIF, ACIDE, N.S.A.",
-   "name_nl": "BIJTENDE, ZURE, ORGANISCHE VLOEISTOF, N.E.G.",
-   "readings": 3
+   "readings": 2,
+   "name_nl": ""
   },
   {
    "un": "3265",
@@ -15619,8 +15313,8 @@
    "explosion_protection": "False",
    "equipment": "*",
    "name_fr": "LIQUIDE ORGANIQUE CORROSIF, ACIDE, N.S.A.",
-   "name_nl": "BIJTENDE, ZURE, ORGANISCHE VLOEISTOF, N.E.G.",
-   "readings": 3
+   "readings": 2,
+   "name_nl": ""
   },
   {
    "un": "3266",
@@ -15645,8 +15339,8 @@
    "explosion_protection": "False",
    "equipment": "*",
    "name_fr": "LIQUIDE INORGANIQUE CORROSIF, BASIQUE, N.S.A.",
-   "name_nl": "BIJTENDE, BASISCHE, ANORGANISCHE VLOEISTOF, N.E.G.",
-   "readings": 3
+   "readings": 2,
+   "name_nl": ""
   },
   {
    "un": "3266",
@@ -15671,8 +15365,8 @@
    "explosion_protection": "False",
    "equipment": "*",
    "name_fr": "LIQUIDE INORGANIQUE CORROSIF, BASIQUE, N.S.A.",
-   "name_nl": "BIJTENDE, BASISCHE, ANORGANISCHE VLOEISTOF, N.E.G.",
-   "readings": 3
+   "readings": 2,
+   "name_nl": ""
   },
   {
    "un": "3266",
@@ -15697,8 +15391,8 @@
    "explosion_protection": "False",
    "equipment": "*",
    "name_fr": "LIQUIDE INORGANIQUE CORROSIF, BASIQUE, N.S.A.",
-   "name_nl": "BIJTENDE, BASISCHE, ANORGANISCHE VLOEISTOF, N.E.G.",
-   "readings": 3
+   "readings": 2,
+   "name_nl": ""
   },
   {
    "un": "3267",
@@ -15723,8 +15417,8 @@
    "explosion_protection": "False",
    "equipment": "*",
    "name_fr": "LIQUIDE ORGANIQUE CORROSIF, BASIQUE, N.S.A.",
-   "name_nl": "BIJTENDE, BASISCHE, ORGANISCHE VLOEISTOF, N.E.G.",
-   "readings": 3
+   "readings": 2,
+   "name_nl": ""
   },
   {
    "un": "3267",
@@ -15749,8 +15443,8 @@
    "explosion_protection": "False",
    "equipment": "*",
    "name_fr": "LIQUIDE ORGANIQUE CORROSIF, BASIQUE, N.S.A.",
-   "name_nl": "BIJTENDE, BASISCHE, ORGANISCHE VLOEISTOF, N.E.G.",
-   "readings": 3
+   "readings": 2,
+   "name_nl": ""
   },
   {
    "un": "3267",
@@ -15775,7 +15469,7 @@
    "explosion_protection": "False",
    "equipment": "*",
    "name_fr": "LIQUIDE ORGANIQUE CORROSIF, BASIQUE, N.S.A.",
-   "name_nl": "BIJTENDE, BASISCHE, ORGANISCHE VLOEISTOF, N.E.G.",
+   "name_nl": "BIJTENDE BASISCHE ORGANISCHE VLOEISTOF, N.E.G.",
    "readings": 3
   },
   {
@@ -15802,10 +15496,7 @@
    "equipment": "*",
    "name_fr": "ÉTHERS, N.S.A.",
    "name_nl": "ETHERS, N.E.G.",
-   "readings": 3,
-   "settled_by_french": {
-    "equipment": "en"
-   }
+   "readings": 3
   },
   {
    "un": "3271",
@@ -15831,10 +15522,7 @@
    "equipment": "*",
    "name_fr": "ÉTHERS, N.S.A.",
    "name_nl": "ETHERS, N.E.G.",
-   "readings": 3,
-   "settled_by_french": {
-    "equipment": "en"
-   }
+   "readings": 3
   },
   {
    "un": "3271",
@@ -15911,11 +15599,8 @@
    "explosion_protection": "True",
    "equipment": "PP,EX,A",
    "name_fr": "ÉTHERS, N.S.A. (ÉTHER AMYLMÉTHYLIQUE tertiaire)",
-   "name_nl": "ETHERS, N.E.G. (tert-AMYLMETHYLETHER)",
-   "readings": 3,
-   "settled_by_french": {
-    "equipment": "en"
-   }
+   "name_nl": "ETHERS, N.E.G. (tert.-AMYLMETHYLETHER)",
+   "readings": 3
   },
   {
    "un": "3272",
@@ -16044,7 +15729,7 @@
    "explosion_protection": "False",
    "equipment": "PP,EP,TOX,A",
    "name_fr": "NITRILES TOXIQUES, LIQUIDES, N.S.A. (2-MÉTHYLGLUTARONITRILE)",
-   "name_nl": "NITRILLEN, VLOEIBAAR, GIFTIG, N.E.G. (2-METHYLGLUTARONITRIL)",
+   "name_nl": "NITRILLEN, VLOEIBAAR, GIFTIG, N.E.G. (2- METHYLGLUTARONITRIL)",
    "readings": 3
   },
   {
@@ -16071,10 +15756,7 @@
    "equipment": "PP,EP,EX,TOX,A",
    "name_fr": "LIQUIDE INFLAMMABLE, TOXIQUE, CORROSIF, N.S.A.",
    "name_nl": "BRANDBARE VLOEISTOF, GIFTIG, BIJTEND, N.E.G.",
-   "readings": 3,
-   "settled_by_french": {
-    "pump_room_below_deck": "en"
-   }
+   "readings": 3
   },
   {
    "un": "3286",
@@ -16100,10 +15782,7 @@
    "equipment": "PP,EP,EX,TOX,A",
    "name_fr": "LIQUIDE INFLAMMABLE, TOXIQUE, CORROSIF, N.S.A.",
    "name_nl": "BRANDBARE VLOEISTOF, GIFTIG, BIJTEND, N.E.G.",
-   "readings": 3,
-   "settled_by_french": {
-    "pump_room_below_deck": "en"
-   }
+   "readings": 3
   },
   {
    "un": "3286",
@@ -16206,8 +15885,8 @@
    "explosion_protection": "True",
    "equipment": "PP,EP,EX,TOX,A",
    "name_fr": "LIQUIDE INFLAMMABLE, TOXIQUE, CORROSIF, N.S.A.",
-   "readings": 2,
-   "name_nl": ""
+   "name_nl": "BRANDBARE VLOEISTOF, GIFTIG, BIJTEND, N.E.G.",
+   "readings": 3
   },
   {
    "un": "3287",
@@ -16232,7 +15911,7 @@
    "explosion_protection": "False",
    "equipment": "PP,EP,TOX,A",
    "name_fr": "LIQUIDE INORGANIQUE TOXIQUE, N.S.A.",
-   "name_nl": "GIFTIGE, ANORGANISCHE VLOEISTOF, N.E.G.",
+   "name_nl": "GIFTIGE ANORGANISCHE VLOEISTOF, N.E.G.",
    "readings": 3
   },
   {
@@ -16258,7 +15937,7 @@
    "explosion_protection": "False",
    "equipment": "PP,EP,TOX,A",
    "name_fr": "LIQUIDE INORGANIQUE TOXIQUE, N.S.A.",
-   "name_nl": "GIFTIGE, ANORGANISCHE VLOEISTOF, N.E.G.",
+   "name_nl": "GIFTIGE ANORGANISCHE VLOEISTOF, N.E.G.",
    "readings": 3
   },
   {
@@ -16284,7 +15963,7 @@
    "explosion_protection": "False",
    "equipment": "PP,EP,TOX,A",
    "name_fr": "LIQUIDE INORGANIQUE TOXIQUE, N.S.A.",
-   "name_nl": "GIFTIGE, ANORGANISCHE VLOEISTOF, N.E.G.",
+   "name_nl": "GIFTIGE ANORGANISCHE VLOEISTOF, N.E.G.",
    "readings": 3
   },
   {
@@ -16310,7 +15989,7 @@
    "explosion_protection": "False",
    "equipment": "PP,EP,TOX,A",
    "name_fr": "LIQUIDE INORGANIQUE TOXIQUE, N.S.A. (SOLUTION DE DICHROMATE DE SODIUM)",
-   "name_nl": "GIFTIGE, ANORGANISCHE VLOEISTOF, N.E.G. (NATRIUMDICHROMAAT-OPLOSSING)",
+   "name_nl": "GIFTIGE ANORGANISCHE VLOEISTOF, N.E.G. (NATRIUMDICHROMAAT-OPLOSSING)",
    "readings": 3
   },
   {
@@ -16337,7 +16016,10 @@
    "equipment": "PP,EP,TOX,A",
    "name_fr": "LIQUIDE INORGANIQUE TOXIQUE, CORROSIF, N.S.A. POINT D'ÉBULLITION > 115 °C",
    "name_nl": "GIFTIGE ANORGANISCHE VLOEISTOF, BIJTEND, N.E.G. KOOKPUNT > 115 °C",
-   "readings": 3
+   "readings": 3,
+   "settled_by_french": {
+    "packing_group": "en"
+   }
   },
   {
    "un": "3289",
@@ -16362,11 +16044,8 @@
    "explosion_protection": "False",
    "equipment": "PP,EP,TOX,A",
    "name_fr": "LIQUIDE INORGANIQUE TOXIQUE, CORROSIF, N.S.A. POINT D'ÉBULLITION > 115 °C",
-   "name_nl": "GIFTIGE ANORGANISCHE VLOEISTOF, BIJTEND, N.E.G. KOOKPUNT > 115 °C",
-   "readings": 3,
-   "settled_by_french": {
-    "sampling_device": "en"
-   }
+   "readings": 2,
+   "name_nl": ""
   },
   {
    "un": "3295",
@@ -16392,10 +16071,7 @@
    "equipment": "*",
    "name_fr": "HYDROCARBURES LIQUIDES, N.S.A.",
    "name_nl": "KOOLWATERSTOFFEN, VLOEIBAAR, N.E.G.",
-   "readings": 3,
-   "settled_by_french": {
-    "equipment": "en"
-   }
+   "readings": 3
   },
   {
    "un": "3295",
@@ -16421,10 +16097,7 @@
    "equipment": "*",
    "name_fr": "HYDROCARBURES LIQUIDES, N.S.A.",
    "name_nl": "KOOLWATERSTOFFEN, VLOEIBAAR, N.E.G.",
-   "readings": 3,
-   "settled_by_french": {
-    "equipment": "en"
-   }
+   "readings": 3
   },
   {
    "un": "3295",
@@ -16553,11 +16226,8 @@
    "explosion_protection": "True",
    "equipment": "PP,EX,A",
    "name_fr": "HYDROCARBURES LIQUIDES, N.S.A. (OCTÈNE-1)",
-   "name_nl": "KOOLWATERSTOFFEN, VLOEIBAAR, N.E.G. (1-OCTEEN)",
-   "readings": 3,
-   "settled_by_french": {
-    "sampling_device": "en"
-   }
+   "name_nl": "KOOLWATERSTOFFEN, VLOEIBAAR, N.E.G. (1- OCTEEN)",
+   "readings": 3
   },
   {
    "un": "3295",
@@ -16582,11 +16252,8 @@
    "explosion_protection": "True",
    "equipment": "PP,EP,EX,TOX,A",
    "name_fr": "HYDROCARBURES LIQUIDES, N.S.A. (MÉLANGE D'AROMATES POLYCYCLIQUES)",
-   "name_nl": "KOOLWATERSTOFFEN, VLOEIBAAR, N.E.G. (MENGSEL van POLYCYCLISCHE AROMATEN)",
-   "readings": 3,
-   "settled_by_french": {
-    "sampling_device": "en"
-   }
+   "name_nl": "KOOLWATERSTOFFEN, VLOEIBAAR, N.E.G. (MENGSEL VAN POLYCYCLISCHE AROMATISCHE KOOLWATERSTOFFEN)",
+   "readings": 3
   },
   {
    "un": "3295",
@@ -16612,10 +16279,7 @@
    "equipment": "PP,EP,EX,TOX,A",
    "name_fr": "HYDROCARBURES LIQUIDES, N.S.A. CONTENANT DE L'ISOPRÈNE ET DU PENTADIÈNE, STABILISÉ",
    "name_nl": "KOOLWATERSTOFFEN, VLOEIBAAR, N.E.G. BEVAT ISOPREEN EN PENTADIEEN, GESTABILISEERD",
-   "readings": 3,
-   "settled_by_french": {
-    "dangers": "en"
-   }
+   "readings": 3
   },
   {
    "un": "3295",
@@ -16641,10 +16305,7 @@
    "equipment": "PP,EP,EX,TOX,A",
    "name_fr": "HYDROCARBURES LIQUIDES, N.S.A. CONTENANT DE L’ISOPRÈNE ET DU PENTADIÈNE, STABILISÉ",
    "name_nl": "KOOLWATERSTOFFEN, VLOEIBAAR, N.E.G. BEVAT ISOPREEN EN PENTADIEEN, GESTABILISEERD",
-   "readings": 3,
-   "settled_by_french": {
-    "dangers": "en"
-   }
+   "readings": 3
   },
   {
    "un": "3295",
@@ -16670,11 +16331,7 @@
    "equipment": "*",
    "name_fr": "HYDROCARBURES LIQUIDES, N.S.A. CONTENANT PLUS DE 10 % de BENZÈNE",
    "name_nl": "KOOLWATERSTOFFEN, VLOEIBAAR, N.E.G. MET MEER DAN 10% BENZEEN",
-   "readings": 3,
-   "settled_by_french": {
-    "vessel_type": "en",
-    "equipment": "en"
-   }
+   "readings": 3
   },
   {
    "un": "3295",
@@ -16700,11 +16357,7 @@
    "equipment": "*",
    "name_fr": "HYDROCARBURES LIQUIDES, N.S.A. CONTENANT PLUS DE 10 % DE BENZÈNE",
    "name_nl": "KOOLWATERSTOFFEN, VLOEIBAAR, N.E.G. MET MEER DAN 10% BENZEEN",
-   "readings": 3,
-   "settled_by_french": {
-    "vessel_type": "en",
-    "equipment": "en"
-   }
+   "readings": 3
   },
   {
    "un": "3295",
@@ -16730,10 +16383,7 @@
    "equipment": "*",
    "name_fr": "HYDROCARBURES LIQUIDES, N.S.A. CONTENANT PLUS DE 10 % de BENZÈNE",
    "name_nl": "KOOLWATERSTOFFEN, VLOEIBAAR, N.E.G. MET MEER DAN 10% BENZEEN",
-   "readings": 3,
-   "settled_by_french": {
-    "vessel_type": "en"
-   }
+   "readings": 3
   },
   {
    "un": "3295",
@@ -16759,10 +16409,7 @@
    "equipment": "*",
    "name_fr": "HYDROCARBURES LIQUIDES, N.S.A. CONTENANT PLUS DE 10 % DE BENZÈNE",
    "name_nl": "KOOLWATERSTOFFEN, VLOEIBAAR, N.E.G. MET MEER DAN 10% BENZEEN",
-   "readings": 3,
-   "settled_by_french": {
-    "vessel_type": "en"
-   }
+   "readings": 3
   },
   {
    "un": "3295",
@@ -16788,10 +16435,7 @@
    "equipment": "*",
    "name_fr": "HYDROCARBURES LIQUIDES, N.S.A. CONTENANT PLUS DE 10 % de BENZÈNE",
    "name_nl": "KOOLWATERSTOFFEN, VLOEIBAAR, N.E.G. MET MEER DAN 10% BENZEEN",
-   "readings": 3,
-   "settled_by_french": {
-    "vessel_type": "en"
-   }
+   "readings": 3
   },
   {
    "un": "3295",
@@ -16817,10 +16461,7 @@
    "equipment": "*",
    "name_fr": "HYDROCARBURES LIQUIDES, N.S.A. CONTENANT PLUS DE 10 % DE BENZÈNE",
    "name_nl": "KOOLWATERSTOFFEN, VLOEIBAAR, N.E.G. MET MEER DAN 10% BENZEEN",
-   "readings": 3,
-   "settled_by_french": {
-    "vessel_type": "en"
-   }
+   "readings": 3
   },
   {
    "un": "3295",
@@ -16845,11 +16486,8 @@
    "explosion_protection": "True",
    "equipment": "PP,EP,EX,TOX,A",
    "name_fr": "HYDROCARBURES LIQUIDES, N.S.A. CONTENANT PLUS DE 10 % DE BENZÈNE 60 °C < POINT D’ÉBULLITION INITIAL ≤ 85 °C",
-   "name_nl": "KOOLWATERSTOFFEN, VLOEIBAAR, N.E.G. N.E.G. MET MEER DAN 10% BENZEEN 60 °C < BEGINKOOKPUNT <= 85 °C",
-   "readings": 3,
-   "settled_by_french": {
-    "dangers": "en"
-   }
+   "name_nl": "KOOLWATERSTOFFEN, VLOEIBAAR, N.E.G. MET MEER DAN 10% BENZEEN 60°C < BEGINKOOKPUNT ≤ 85°C",
+   "readings": 3
   },
   {
    "un": "3295",
@@ -16874,7 +16512,7 @@
    "explosion_protection": "True",
    "equipment": "PP,EP,EX,TOX,A",
    "name_fr": "HYDROCARBURES LIQUIDES, N.S.A. CONTENANT PLUS DE 10 % DE BENZÈNE 60 °C < POINT D’ÉBULLITION INITIAL ≤ 85 °C",
-   "name_nl": "KOOLWATERSTOFFEN, VLOEIBAAR, N.E.G. N.E.G. MET MEER DAN 10% BENZEEN 60 °C < BEGINKOOKPUNT <= 85 °C",
+   "name_nl": "KOOLWATERSTOFFEN, VLOEIBAAR, N.E.G. MET MEER DAN 10% BENZEEN 60 °C < BEGINKOOKPUNT ≤ 85 °C",
    "readings": 3
   },
   {
@@ -16900,11 +16538,8 @@
    "explosion_protection": "True",
    "equipment": "PP,EP,EX,TOX,A",
    "name_fr": "HYDROCARBURES LIQUIDES, N.S.A. CONTENANT PLUS DE 10 % DE BENZÈNE 60 °C < POINT D’ÉBULLITION INITIAL ≤ 85 °C",
-   "name_nl": "KOOLWATERSTOFFEN, VLOEIBAAR, N.E.G.",
-   "readings": 3,
-   "settled_by_french": {
-    "dangers": "en"
-   }
+   "name_nl": "KOOLWATERSTOFFEN, VLOEIBAAR, N.E.G. MET MEER DAN 10% BENZEEN 60°C < BEGINKOOKPUNT ≤ 85°C",
+   "readings": 3
   },
   {
    "un": "3295",
@@ -16929,7 +16564,7 @@
    "explosion_protection": "True",
    "equipment": "PP,EP,EX,TOX,A",
    "name_fr": "HYDROCARBURES LIQUIDES, N.S.A. CONTENANT PLUS DE 10 % DE BENZÈNE 60 °C < POINT D’ÉBULLITION INITIAL ≤ 85 °C",
-   "name_nl": "KOOLWATERSTOFFEN, VLOEIBAAR, N.E.G.",
+   "name_nl": "KOOLWATERSTOFFEN, VLOEIBAAR, N.E.G. MET MEER DAN 10% BENZEEN 60 °C < BEGINKOOKPUNT ≤ 85 °C",
    "readings": 3
   },
   {
@@ -16955,11 +16590,8 @@
    "explosion_protection": "True",
    "equipment": "PP,EP,EX,TOX,A",
    "name_fr": "HYDROCARBURES LIQUIDES, N.S.A. CONTENANT PLUS DE 10 % DE BENZÈNE 85 °C < POINT D’ÉBULLITION INITIAL ≤115 °C",
-   "name_nl": "KOOLWATERSTOFFEN, VLOEIBAAR, N.E.G. N.E.G. MET MEER DAN 10% BENZEEN 85 °C < BEGINKOOKPUNT <= 115 °C",
-   "readings": 3,
-   "settled_by_french": {
-    "dangers": "en"
-   }
+   "name_nl": "KOOLWATERSTOFFEN, VLOEIBAAR, N.E.G. MET MEER DAN 10% BENZEEN 85°C < BEGINKOOKPUNT ≤ 115°C",
+   "readings": 3
   },
   {
    "un": "3295",
@@ -16984,7 +16616,7 @@
    "explosion_protection": "True",
    "equipment": "PP,EP,EX,TOX,A",
    "name_fr": "HYDROCARBURES LIQUIDES, N.S.A. CONTENANT PLUS DE 10 % DE BENZÈNE 85 °C < POINT D’ÉBULLITION INITIAL ≤ 115 °C",
-   "name_nl": "KOOLWATERSTOFFEN, VLOEIBAAR, N.E.G. N.E.G. MET MEER DAN 10% BENZEEN 85 °C < BEGINKOOKPUNT <= 115 °C",
+   "name_nl": "KOOLWATERSTOFFEN, VLOEIBAAR, N.E.G. MET MEER DAN 10% BENZEEN 85 °C < BEGINKOOKPUNT ≤ 115 °C",
    "readings": 3
   },
   {
@@ -17010,11 +16642,8 @@
    "explosion_protection": "True",
    "equipment": "PP,EP,EX,TOX,A",
    "name_fr": "HYDROCARBURES LIQUIDES, N.S.A. CONTENANT PLUS DE 10 % DE BENZÈNE 85 °C < POINT D’ÉBULLITION INITIAL ≤ 115 °C",
-   "name_nl": "KOOLWATERSTOFFEN, VLOEIBAAR, N.E.G. MET MEER DAN 10% BENZEEN 85 °C < BEGINKOOKPUNT <= 115 °C",
-   "readings": 3,
-   "settled_by_french": {
-    "dangers": "en"
-   }
+   "name_nl": "KOOLWATERSTOFFEN, VLOEIBAAR, N.E.G. MET MEER DAN 10% BENZEEN 85°C < BEGINKOOKPUNT ≤ 115°C",
+   "readings": 3
   },
   {
    "un": "3295",
@@ -17039,7 +16668,7 @@
    "explosion_protection": "True",
    "equipment": "PP,EP,EX,TOX,A",
    "name_fr": "HYDROCARBURES LIQUIDES, N.S.A. CONTENANT PLUS DE 10 % DE BENZÈNE 85 °C < POINT D’ÉBULLITION INITIAL ≤ 115 °C",
-   "name_nl": "KOOLWATERSTOFFEN, VLOEIBAAR, N.E.G. MET MEER DAN 10% BENZEEN 85 °C < BEGINKOOKPUNT <= 115 °C",
+   "name_nl": "KOOLWATERSTOFFEN, VLOEIBAAR, N.E.G. MET MEER DAN 10% BENZEEN 85 °C < BEGINKOOKPUNT ≤ 115 °C",
    "readings": 3
   },
   {
@@ -17065,11 +16694,8 @@
    "explosion_protection": "True",
    "equipment": "PP,EP,EX,TOX,A",
    "name_fr": "HYDROCARBURES LIQUIDES, N.S.A. CONTENANT PLUS DE 10 % DE BENZÈNE POINT D’ÉBULLITION INITIAL > 115 °C",
-   "name_nl": "KOOLWATERSTOFFEN, VLOEIBAAR, N.E.G. MET MEER DAN 10% BENZEEN BEGINKOOKPUNT >115 °C",
-   "readings": 3,
-   "settled_by_french": {
-    "dangers": "en"
-   }
+   "name_nl": "KOOLWATERSTOFFEN, VLOEIBAAR, N.E.G. MET MEER DAN 10% BENZEEN BEGINKOOKPUNT > 115°C",
+   "readings": 3
   },
   {
    "un": "3295",
@@ -17094,11 +16720,8 @@
    "explosion_protection": "True",
    "equipment": "PP,EP,EX,TOX,A",
    "name_fr": "HYDROCARBURES LIQUIDES, N.S.A. CONTENANT PLUS DE 10 % DE BENZÈNE POINT D’ÉBULLITION INITIAL > 115 °C",
-   "name_nl": "KOOLWATERSTOFFEN, VLOEIBAAR, N.E.G. MET MEER DAN 10% BENZEEN BEGINKOOKPUNT >115 °C",
-   "readings": 3,
-   "settled_by_french": {
-    "dangers": "en"
-   }
+   "name_nl": "KOOLWATERSTOFFEN, VLOEIBAAR, N.E.G. MET MEER DAN 10% BENZEEN BEGINKOOKPUNT > 115°C",
+   "readings": 3
   },
   {
    "un": "3295",
@@ -17123,7 +16746,7 @@
    "explosion_protection": "True",
    "equipment": "PP,EP,EX,TOX,A",
    "name_fr": "HYDROCARBURES LIQUIDES, N.S.A. CONTENANT PLUS DE 10 % DE BENZÈNE POINT D’ÉBULLITION INITIAL > 115 °C",
-   "name_nl": "KOOLWATERSTOFFEN, VLOEIBAAR, N.E.G. MET MEER DAN 10% BENZEEN BEGINKOOKPUNT >115 °C",
+   "name_nl": "KOOLWATERSTOFFEN, VLOEIBAAR, N.E.G. MET MEER DAN 10% BENZEEN BEGINKOOKPUNT > 115°C",
    "readings": 3
   },
   {
@@ -17149,7 +16772,7 @@
    "explosion_protection": "True",
    "equipment": "PP,EP,EX,TOX,A",
    "name_fr": "HYDROCARBURES LIQUIDES, N.S.A. CONTENANT PLUS DE 10 % DE BENZÈNE POINT D’ÉBULLITION INITIAL > 115 °C",
-   "name_nl": "KOOLWATERSTOFFEN, VLOEIBAAR, N.E.G. MET MEER DAN 10% BENZEEN BEGINKOOKPUNT >115 °C",
+   "name_nl": "KOOLWATERSTOFFEN, VLOEIBAAR, N.E.G. MET MEER DAN 10% BENZEEN BEGINKOOKPUNT > 115°C",
    "readings": 3
   },
   {
@@ -17175,11 +16798,8 @@
    "explosion_protection": "True",
    "equipment": "PP,EP,EX,TOX,A",
    "name_fr": "HYDROCARBURES LIQUIDES, N.S.A. CONTENANT PLUS DE 10 % DE BENZÈNE POINT D’ÉBULLITION INITIAL ≤ 60 °C",
-   "name_nl": "KOOLWATERSTOFFEN, VLOEIBAAR, N.E.G. MET MEER DAN 10% BENZEEN KOOKPUNT <= 60 °C",
-   "readings": 3,
-   "settled_by_french": {
-    "dangers": "en"
-   }
+   "name_nl": "KOOLWATERSTOFFEN, VLOEIBAAR, N.E.G. MET MEER DAN 10% BENZEEN BEGINKOOKPUNT ≤ 60°C",
+   "readings": 3
   },
   {
    "un": "3295",
@@ -17204,11 +16824,8 @@
    "explosion_protection": "True",
    "equipment": "PP,EP,EX,TOX,A",
    "name_fr": "HYDROCARBURES LIQUIDES, N.S.A. CONTENANT PLUS DE 10 % DE BENZÈNE POINT D’ÉBULLITION INITIAL ≤ 60 °C",
-   "name_nl": "KOOLWATERSTOFFEN, VLOEIBAAR, N.E.G. MET MEER DAN 10% BENZEEN KOOKPUNT <= 60 °C",
-   "readings": 3,
-   "settled_by_french": {
-    "explosion_group": "en"
-   }
+   "name_nl": "KOOLWATERSTOFFEN, VLOEIBAAR, N.E.G. MET MEER DAN 10% BENZEEN BEGINKOOKPUNT ≤ 60 °C",
+   "readings": 3
   },
   {
    "un": "3295",
@@ -17233,11 +16850,8 @@
    "explosion_protection": "True",
    "equipment": "PP,EP,EX,TOX,A",
    "name_fr": "HYDROCARBURES LIQUIDES, N.S.A. CONTENANT PLUS DE 10 % DE BENZÈNE POINT D’ÉBULLITION INITIAL ≤ 60 °C",
-   "name_nl": "KOOLWATERSTOFFEN, VLOEIBAAR, N.E.G. MET MEER DAN 10% BENZEEN KOOKPUNT <= 60 °C",
-   "readings": 3,
-   "settled_by_french": {
-    "dangers": "en"
-   }
+   "name_nl": "KOOLWATERSTOFFEN, VLOEIBAAR, N.E.G. MET MEER DAN 10% BENZEEN BEGINKOOKPUNT ≤ 60°C",
+   "readings": 3
   },
   {
    "un": "3295",
@@ -17262,7 +16876,7 @@
    "explosion_protection": "True",
    "equipment": "PP,EP,EX,TOX,A",
    "name_fr": "HYDROCARBURES LIQUIDES, N.S.A. CONTENANT PLUS DE 10 % DE BENZÈNE POINT D’ÉBULLITION INITIAL ≤ 60 °C",
-   "name_nl": "KOOLWATERSTOFFEN, VLOEIBAAR, N.E.G. MET MEER DAN 10% BENZEEN KOOKPUNT <= 60 °C",
+   "name_nl": "KOOLWATERSTOFFEN, VLOEIBAAR, N.E.G. MET MEER DAN 10% BENZEEN BEGINKOOKPUNT ≤ 60 °C",
    "readings": 3
   },
   {
@@ -17288,11 +16902,8 @@
    "explosion_protection": "True",
    "equipment": "PP,EP,EX,TOX,A",
    "name_fr": "HYDROCARBURES LIQUIDES, N.S.A. CONTENANT PLUS DE 10 % DE BENZÈNE POINT D’ÉBULLITION INITIAL ≤ 60 °C",
-   "name_nl": "KOOLWATERSTOFFEN, VLOEIBAAR, N.E.G. MET MEER DAN 10% BENZEEN KOOKPUNT <= 60 °C",
-   "readings": 3,
-   "settled_by_french": {
-    "dangers": "en"
-   }
+   "name_nl": "KOOLWATERSTOFFEN, VLOEIBAAR, N.E.G. MET MEER DAN 10% BENZEEN BEGINKOOKPUNT ≤ 60°C",
+   "readings": 3
   },
   {
    "un": "3295",
@@ -17317,7 +16928,7 @@
    "explosion_protection": "True",
    "equipment": "PP,EP,EX,TOX,A",
    "name_fr": "HYDROCARBURES LIQUIDES, N.S.A. CONTENANT PLUS DE 10 % DE BENZÈNE POINT D’ÉBULLITION INITIAL ≤ 60 °C",
-   "name_nl": "KOOLWATERSTOFFEN, VLOEIBAAR, N.E.G. MET MEER DAN 10% BENZEEN KOOKPUNT <= 60 °C",
+   "name_nl": "KOOLWATERSTOFFEN, VLOEIBAAR, N.E.G. MET MEER DAN 10% BENZEEN BEGINKOOKPUNT ≤ 60 °C",
    "readings": 3
   },
   {
@@ -17343,7 +16954,7 @@
    "explosion_protection": "True",
    "equipment": "PP,EP,EX,A",
    "name_fr": "ACIDE FORMIQUE contenant au moins 10 % et au plus 85 % (masse) d'acide",
-   "name_nl": "MIERENZUUR met ten minste 10 massa-% en ten hoogste 85 massa-% zuur",
+   "name_nl": "MIERENZUUR, met ten minste 10 massa-%, doch ten hoogste 85 massa-% zuur",
    "readings": 3
   },
   {
@@ -17369,7 +16980,7 @@
    "explosion_protection": "True",
    "equipment": "PP,EP,EX,A",
    "name_fr": "ACIDE FORMIQUE contenant au moins 5 % mais moins de 10 % (masse) d'acide",
-   "name_nl": "MIERENZUUR met ten minste 5 massa-% en minder dan 10 massa-% zuur",
+   "name_nl": "MIERENZUUR, met ten minste 5 massa-%, maar minder dan10 massa-% zuur",
    "readings": 3
   },
   {
@@ -17421,7 +17032,7 @@
    "explosion_protection": "True",
    "equipment": "PP,EP,EX,TOX,A",
    "name_fr": "CHLOROTOLUIDINES LIQUIDES",
-   "name_nl": "CHLOORTOLUÏDINEN, VLOEIBAAR",
+   "name_nl": "CHLOORTOLUIDINEN, VLOEIBAAR",
    "readings": 3
   },
   {
@@ -17447,7 +17058,7 @@
    "explosion_protection": "True",
    "equipment": "PP,EP,EX,TOX,A",
    "name_fr": "NITROTOLUÈNES SOLIDES, FONDUS (p-NITROTOLUÈNE)",
-   "name_nl": "NITROTOLUENEN, VAST, GESMOLTEN (p-NITROTOLUEEN)",
+   "name_nl": "NITROTOLUENEN, VAST, GESMOLTEN (p- NITROTOLUEEN)",
    "readings": 3
   },
   {
@@ -17473,7 +17084,7 @@
    "explosion_protection": "False",
    "equipment": "PP,EP,TOX,A",
    "name_fr": "NITROTOLUÈNES SOLIDES, FONDUS (p-NITROTOLUÈNE)",
-   "name_nl": "NITROTOLUENEN, VAST, GESMOLTEN (p-NITROTOLUEEN)",
+   "name_nl": "NITROTOLUENEN, VAST, GESMOLTEN (p- NITROTOLUEEN)",
    "readings": 3
   },
   {
@@ -17499,7 +17110,7 @@
    "explosion_protection": "True",
    "equipment": "PP,EP,EX,TOX,A",
    "name_fr": "TOLUIDINES SOLIDES, FONDUES (p-TOLUIDINE)",
-   "name_nl": "TOLUIDINE, VAST, GESMOLTEN (p-TOLUIDINE)",
+   "name_nl": "TOLUIDINE, VAST, GESMOLTEN (p- TOLUIDINE)",
    "readings": 3
   },
   {
@@ -17525,7 +17136,7 @@
    "explosion_protection": "False",
    "equipment": "PP,EP,TOX,A",
    "name_fr": "TOLUIDINES SOLIDES, FONDUES (p-TOLUIDINE)",
-   "name_nl": "TOLUIDINE, VAST, GESMOLTEN (p-TOLUIDINE)",
+   "name_nl": "TOLUIDINE, VAST, GESMOLTEN (p- TOLUIDINE)",
    "readings": 3
   },
   {
@@ -17603,7 +17214,7 @@
    "explosion_protection": "True",
    "equipment": "PP,EP,EX,A",
    "name_fr": "ACIDE PROPIONIQUE contenant au moins 90 % (masse) d'acide",
-   "name_nl": "PROPIONZUUR met ten minste 90 massa-% zuur",
+   "name_nl": "PROPIONZUUR, met ten minste 90 massa-% zuur",
    "readings": 3
   },
   {
@@ -17629,13 +17240,8 @@
    "explosion_protection": "True",
    "equipment": "PP,EP,EX,TOX,A",
    "name_fr": "ÉTHANOL ET ESSENCE EN MÉLANGE ou ÉTHANOL ET ESSENCE POUR MOTEURS D'AUTOMOBILES, EN MÉLANGE, contenant plus de 10 % et pas plus de 90 % d'éthanol",
-   "name_nl": "MENGSEL VAN ETHANOL EN BENZINE met meer dan 10 % ethanol maar niet meer als 90% ethanol",
-   "readings": 3,
-   "settled_by_french": {
-    "density": "en",
-    "sampling_device": "en",
-    "explosion_group": "en"
-   }
+   "name_nl": "MENGSEL VAN ETHANOL EN BENZINE met meer dan 10% maar niet meer dan 90% ethanol",
+   "readings": 3
   },
   {
    "un": "3475",
@@ -17660,12 +17266,8 @@
    "explosion_protection": "True",
    "equipment": "PP,EP,EX,TOX,A",
    "name_fr": "ÉTHANOL ET ESSENCE, EN MÉLANGE ou ÉTHANOL ET ESSENCE POUR MOTEURS D'AUTOMOBILES, EN MÉLANGE, contenant plus de 90 % d'éthanol",
-   "name_nl": "MENGSEL VAN ETHANOL EN BENZINE met meer dan 90 % ethanol",
-   "readings": 3,
-   "settled_by_french": {
-    "density": "en",
-    "sampling_device": "en"
-   }
+   "name_nl": "MENGSEL VAN ETHANOL EN BENZINE met meer dan 90% ethanol",
+   "readings": 3
   },
   {
    "un": "3494",
@@ -17872,7 +17474,7 @@
    "explosion_protection": "True",
    "equipment": "PP,EP,EX,TOX,A",
    "name_fr": "AMMONIAC, FORTEMENT RÉFRIGÉRÉ",
-   "name_nl": "AMMONIAK, WATERVRIJ, STERK GEKOELD",
+   "name_nl": "AMMONIAK, STERK GEKOELD",
    "readings": 3
   },
   {
@@ -17898,7 +17500,7 @@
    "explosion_protection": "True",
    "equipment": "*",
    "name_fr": "MATIÈRE DONT LE POINT D’ÉCLAIR EST SUPÉRIEUR À 60 °C, CHAUFFÉE K en dessous du point d’éclair. jusqu’à 15",
-   "name_nl": "STOFFEN MET EEN VLAMPUNT VAN MEER DAN 60 °C, VERWARMD binnen een marge van 15K beneden het vlampunt",
+   "name_nl": "STOFFEN MET EEN VLAMPUNT VAN MEER DAN 60 °C, VERWARMD binnen een marge van 15 K beneden het vlampunt",
    "readings": 3
   },
   {
@@ -17924,7 +17526,7 @@
    "explosion_protection": "True",
    "equipment": "*",
    "name_fr": "MATIÈRE DONT LE POINT D’ÉCLAIR EST SUPÉRIEUR À 60 °C, CHAUFFÉE K en dessous du point d’éclair. jusqu’à 15",
-   "name_nl": "STOFFEN MET EEN VLAMPUNT VAN MEER DAN 60 °C, VERWARMD binnen een marge van 15K beneden het vlampunt",
+   "name_nl": "STOFFEN MET EEN VLAMPUNT VAN MEER DAN 60 °C, VERWARMD binnen een marge van 15 K beneden het vlampunt",
    "readings": 3
   },
   {
@@ -17950,10 +17552,10 @@
    "explosion_protection": "True",
    "equipment": "*",
    "name_fr": "MATIÈRES AYANT UNE TEMPÉRATURE D'AUTO- INFLAMMATION ≤ 200 °C, N.S.A.",
-   "name_nl": "STOFFEN MET EEN ONTSTEKINGSTEMPERATUUR <= 200 °C, N.E.G.",
+   "name_nl": "STOFFEN MET EEN ONTSTEKINGSTEMPERATUUR ≤ 200 °C, N.E.G.",
    "readings": 3,
    "settled_by_french": {
-    "blue_cones": "en"
+    "classification_code": "en"
    }
   },
   {
@@ -17979,10 +17581,10 @@
    "explosion_protection": "True",
    "equipment": "*",
    "name_fr": "MATIÈRES AYANT UNE TEMPÉRATURE D’AUTO- INFLAMMATION ≤ 200 °C, N.S.A.",
-   "name_nl": "STOFFEN MET EEN ONTSTEKINGSTEMPERATUUR <= 200 °C, N.E.G.",
+   "name_nl": "STOFFEN MET EEN ONTSTEKINGSTEMPERATUUR ≤ 200 °C, N.E.G.",
    "readings": 3,
    "settled_by_french": {
-    "blue_cones": "en"
+    "classification_code": "en"
    }
   },
   {
@@ -18008,12 +17610,8 @@
    "explosion_protection": "False",
    "equipment": "*",
    "name_fr": "MATIÈRES DONT LE POINT D'ÉCLAIR EST SUPÉRIEUR À 60 °C MAIS INFÉRIEUR OU ÉGAL À 100 °C, qui ne sont pas affectées à une autre classe",
-   "name_nl": "STOFFEN 60 °C < Vp <= 100 °C die niet in andere Klassen ingedeeld kunnen worden",
-   "readings": 3,
-   "settled_by_french": {
-    "dangers": "en",
-    "sampling_device": "en"
-   }
+   "readings": 2,
+   "name_nl": ""
   },
   {
    "un": "9003",
@@ -18038,11 +17636,8 @@
    "explosion_protection": "False",
    "equipment": "PP",
    "name_fr": "MATIÈRES DONT LE POINT D'ÉCLAIR EST SUPÉRIEUR À 60 °C MAIS INFÉRIEUR OU ÉGAL À 100 °C, qui ne sont pas affectées à une autre classe (ACRYLATE D'ÉTHYL-2 HEXYLE)",
-   "name_nl": "STOFFEN MET EEN VLAMPUNT VAN MEER DAN 60 °C EN TEN HOOGSTE 100 °C (2-ETHYLHEXYLACRYLAAT, GESTABILISEERD) die niet in andere Klassen ingedeeld kunnen worden",
-   "readings": 3,
-   "settled_by_french": {
-    "blue_cones": "en"
-   }
+   "name_nl": "STOFFEN MET EEN VLAMPUNT VAN MEER DAN 60 °C EN TEN HOOGSTE 100 °C die niet in andere Klassen of in klasse 9 ingedeeld kunnen worden (2- ETHYLHEXYLACRYLAAT, GESTABILISEERD)",
+   "readings": 3
   },
   {
    "un": "9003",
@@ -18067,11 +17662,8 @@
    "explosion_protection": "False",
    "equipment": "PP",
    "name_fr": "MATIÈRES DONT LE POINT D'ÉCLAIR EST SUPÉRIEUR À 60 °C MAIS INFÉRIEUR OU ÉGAL À 100 °C, qui ne sont pas affectées à une autre classe (ÉTHER MONOBUTYLIQUE DE L'ÉTHYLÈNEGLYCOL)",
-   "name_nl": "STOFFEN MET EEN VLAMPUNT VAN MEER DAN 60 °C EN TEN HOOGSTE 100 °C (ETHYLEENGLYCOLMONOBUTYLETHER) die niet in andere Klassen ingedeeld kunnen worden",
-   "readings": 3,
-   "settled_by_french": {
-    "blue_cones": "en"
-   }
+   "name_nl": "STOFFEN MET EEN VLAMPUNT VAN MEER DAN 60 °C EN TEN HOOGSTE 100 °C die niet in andere klassen of in klasse 9 ingedeeld kunnen worden (ETHYLEENGLYCOLMONOBUTYLETHER)",
+   "readings": 3
   },
   {
    "un": "9004",
@@ -18096,12 +17688,8 @@
    "explosion_protection": "False",
    "equipment": "PP",
    "name_fr": "DIISOCYANATE DE DIPHÉNYLMÉTHANE-4,4'",
-   "name_nl": "DIFENYLMETHAAN-4, 4'-DIISOCYANAAT",
-   "readings": 3,
-   "settled_by_french": {
-    "density": "en",
-    "blue_cones": "en"
-   }
+   "name_nl": "DIFENYLMETHAAN-4,4'-DIISOCYANAAT",
+   "readings": 3
   },
   {
    "un": "9005",
@@ -18127,11 +17715,7 @@
    "equipment": "*",
    "name_fr": "MATIÈRE DANGEREUSE DU POINT DE VUE DE L'ENVIRONNEMENT, SOLIDE, FONDUE, N.S.A.",
    "name_nl": "MILIEUGEVAARLIJKE STOF, VAST, GESMOLTEN, N.E.G.",
-   "readings": 3,
-   "settled_by_french": {
-    "dangers": "en",
-    "blue_cones": "en"
-   }
+   "readings": 3
   },
   {
    "un": "9006",
@@ -18157,10 +17741,7 @@
    "equipment": "*",
    "name_fr": "MATIÈRE DANGEREUSE DU POINT DE VUE DE L'ENVIRONNEMENT, LIQUIDE, N.S.A.",
    "name_nl": "MILIEUGEVAARLIJKE STOF, VLOEIBAAR, N.E.G.",
-   "readings": 3,
-   "settled_by_french": {
-    "dangers": "en"
-   }
+   "readings": 3
   }
  ]
 }

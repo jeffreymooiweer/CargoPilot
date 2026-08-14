@@ -32,9 +32,12 @@ on:
           - placarding
           - security
           - all
+          # A run that only wants a section, a phrase or a page should not
+          # download three volumes to quote a group nobody asked for.
+          - none
         default: lq_eq
       doc:
-        description: "Restrict to one text (adr1, adr2, rid, adn); empty means all that apply"
+        description: "Restrict to these texts, comma separated. Downloadable: adr1, adr1_fr, adr2, adr2_fr, rid, adn, adn_fr. From the store: adr_nl_2025, adr_de_1, adr_de_2, adn_nl_2025, adn_de, rid_de, rid_fr. Empty means all that apply."
         default: ""
         required: false
       sections:
@@ -84,36 +87,43 @@ jobs:
           restore-keys: |
             regulations-
 
+      # Every input arrives as an environment variable and is passed as an
+      # argument, never spliced into the script text: a dispatch input is
+      # someone else's typing, and a phrase to search for is exactly the kind
+      # of input that carries quotes and spaces.
       - name: Quote the provisions
         env:
           # A push runs the whole set; a dispatch quotes what was asked for.
           GROUPS: ${{ inputs.groups || 'all' }}
+          DOCS: ${{ inputs.doc }}
+          SECTIONS: ${{ inputs.sections }}
+          CHARS: ${{ inputs.chars }}
+          FIND: ${{ inputs.find }}
+          PAGE: ${{ inputs.page }}
         run: |
-          ARGS=""
+          set -euo pipefail
+          ARGS=()
           if [ "$GROUPS" = "all" ]; then
             for g in lq_eq lq_marking exemptions mixed_loading document tunnels; do
-              ARGS="$ARGS --quote $g"
+              ARGS+=(--quote "$g")
             done
-          else
-            ARGS="--quote $GROUPS"
+          elif [ "$GROUPS" != "none" ]; then
+            ARGS+=(--quote "$GROUPS")
           fi
-          if [ -n "${{ inputs.doc }}" ]; then
-            ARGS="$ARGS --doc ${{ inputs.doc }}"
-          fi
-          if [ -n "${{ inputs.find }}" ]; then
-            ARGS="$ARGS --find \"${{ inputs.find }}\""
-          fi
-          if [ -n "${{ inputs.page }}" ]; then
-            ARGS="$ARGS --page ${{ inputs.page }}"
-          fi
-          if [ -n "${{ inputs.chars }}" ]; then
-            ARGS="$ARGS --chars ${{ inputs.chars }}"
-          fi
-          if [ -n "${{ inputs.sections }}" ]; then
-            IFS=',' read -ra SECTIONS <<< "${{ inputs.sections }}"
-            for s in "${SECTIONS[@]}"; do
-              ARGS="$ARGS --section $(echo "$s" | tr -d '[:space:]')"
+          if [ -n "$DOCS" ]; then
+            IFS=',' read -ra WANTED <<< "$DOCS"
+            for d in "${WANTED[@]}"; do
+              ARGS+=(--doc "$(echo "$d" | tr -d '[:space:]')")
             done
           fi
-          echo "read_land_regulations.py $ARGS"
-          eval "python scripts/read_land_regulations.py $ARGS"
+          if [ -n "$FIND" ]; then ARGS+=(--find "$FIND"); fi
+          if [ -n "$PAGE" ]; then ARGS+=(--page "$PAGE"); fi
+          if [ -n "$CHARS" ]; then ARGS+=(--chars "$CHARS"); fi
+          if [ -n "$SECTIONS" ]; then
+            IFS=',' read -ra WANTED <<< "$SECTIONS"
+            for s in "${WANTED[@]}"; do
+              ARGS+=(--section "$(echo "$s" | tr -d '[:space:]')")
+            done
+          fi
+          echo "read_land_regulations.py ${ARGS[*]}"
+          python scripts/read_land_regulations.py "${ARGS[@]}"

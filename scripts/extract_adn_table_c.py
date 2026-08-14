@@ -323,7 +323,7 @@ ENGLISH_FIELDS = [field if field != "name_nl" else "name_en" for field in FIELDS
 #: Band markers sit in a narrow x window at the left edge; anything to the left
 #: of the first substance column is label or provision text, not a value.
 MARKER_X = (150.0, 195.0)
-MARKER = re.compile(r"\((?:\d{1,2})\)|\(3\)[ab]")
+MARKER = re.compile(r"\(\d{1,2}\)|\(3[ab]\)")
 
 #: The order the markers carry down the page maps onto the seed fields.
 BAND_FIELDS = {
@@ -341,9 +341,9 @@ BAND_FIELDS = {
 def _bands(page) -> list[tuple[str, float]]:
     """The column-number markers down the left edge, top to bottom."""
     found = []
-    for x0, y0, _x1, _y1, word, *_ in page.get_text("words"):
+    for x0, y0, _x1, y1, word, *_ in page.get_text("words"):
         if MARKER_X[0] <= x0 <= MARKER_X[1] and MARKER.fullmatch(word):
-            found.append((word.strip("()").replace(")", ""), y0))
+            found.append((word.strip("()"), (y0 + y1) / 2))
     found.sort(key=lambda item: item[1])
     return found
 
@@ -400,44 +400,57 @@ def english_rows(pdf_path: Path) -> tuple[list[dict[str, Any]], list[str]]:
             failures.append(f"page {number}: bands {names}")
             continue
 
-        # Band k reaches from its own marker down to the next marker; the last
-        # runs to the bottom of the page. The markers come (20) first, so the
-        # field order on the page is the reverse of the table's.
-        edges = [y for _n, y in bands] + [page.rect.height]
-        spans = {name: (edges[i] - 2, edges[i + 1] - 2)
+        # A value sits centred on its marker's height, so a band runs from the
+        # midpoint above its marker to the midpoint below. The markers come
+        # (20) first: the page prints the table's columns in reverse.
+        centres = [y for _n, y in bands]
+        mids = [0.0] + [(a + b) / 2 for a, b in zip(centres, centres[1:])] + [790.0]
+        spans = {name: (mids[i], mids[i + 1])
                  for i, (name, _y) in enumerate(bands)}
 
-        words = [w for w in page.get_text("words") if w[0] > MARKER_X[1]]
+        # The page footer sits under the (1) band and is no substance.
+        words = [
+            w for w in page.get_text("words")
+            if w[0] > MARKER_X[1] and (w[1] + w[3]) / 2 < 790.0
+            and not re.fullmatch(r"-\s*\d+\s*-", w[4])]
 
         # The substance columns come from the UN band itself: every four-digit
-        # number in it anchors one column.
+        # number in it anchors one column, and cells are left-aligned on it.
         top, bottom = spans["1"]
         anchors = sorted(
             w[0] for w in words
-            if top <= w[1] < bottom and re.fullmatch(r"\d{4}", w[4]))
+            if top <= (w[1] + w[3]) / 2 < bottom and re.fullmatch(r"\d{4}", w[4]))
         if not anchors:
             failures.append(f"page {number}: no UN anchors")
             continue
-        bounds = [(a + b) / 2 for a, b in zip(anchors, anchors[1:])]
 
-        def column_of(x0: float) -> int:
-            for i, bound in enumerate(bounds):
-                if x0 < bound:
+        def column_of(x0: float) -> int | None:
+            if x0 < anchors[0] - 3:
+                return None
+            for i in range(len(anchors) - 1, -1, -1):
+                if x0 >= anchors[i] - 3:
                     return i
-            return len(bounds)
+            return None
 
         cells: dict[tuple[str, int], list[tuple[float, float, str]]] = {}
-        for x0, y0, _x1, _y1, word, *_ in words:
-            band = next((n for n, (a, b) in spans.items() if a <= y0 < b), None)
-            if band is None:
+        for x0, y0, _x1, y1, word, *_ in words:
+            centre = (y0 + y1) / 2
+            band = next(
+                (n for n, (a, b) in spans.items() if a <= centre < b), None)
+            column = column_of(x0)
+            if band is None or column is None:
                 continue
-            cells.setdefault((band, column_of(x0)), []).append((y0, x0, word))
+            cells.setdefault((band, column), []).append((x0, centre, word))
 
         for column in range(len(anchors)):
             values: dict[str, str] = {}
             for band, field in BAND_FIELDS.items():
-                got = sorted(cells.get((band, column), []))
-                values[field] = " ".join(word for _y, _x, word in got)
+                # The table is printed rotated: a cell's words run bottom-up,
+                # and its lines stack left to right. Reading order is therefore
+                # by x first and by *descending* y within the line.
+                got = sorted(cells.get((band, column), []),
+                             key=lambda item: (item[0], -item[1]))
+                values[field] = " ".join(word for _x, _y, word in got)
             row = _english_row(values, failures)
             if row:
                 rows.append(row)
@@ -445,6 +458,8 @@ def english_rows(pdf_path: Path) -> tuple[list[dict[str, Any]], list[str]]:
 
 
 BAND_ORDER = {"1": 1, "2": 2, "3a": 3, "3b": 4, **{str(n): n + 2 for n in range(4, 21)}}
+# The transposed page prints (3a) and (3b) with the letter inside the bracket.
+
 ORDERED = sorted(BAND_FIELDS, key=lambda n: BAND_ORDER[n])
 
 

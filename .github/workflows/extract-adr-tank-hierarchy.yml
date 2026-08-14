@@ -117,3 +117,15 @@ jobs:
         with:
           path: /tmp/cargopilot-regulations
           key: regulations-${{ github.run_id }}
+
+      # Last, and that is the whole point. The development container reads this
+      # log through an API that only returns its tail, so a reading printed in
+      # the middle of the run costs several times its own length to fetch —
+      # cache uploads, artifact chatter and cleanup all come after it. Printed
+      # here, it is the last thing in the log and the tail is the reading.
+      - name: What was read
+        if: ${{ always() && !inputs.probe && !inputs.words }}
+        run: |
+          echo "=== the reading ==="
+          cat "hierarchy_${{ inputs.language }}.json" 2>/dev/null \
+            || echo "nothing was written"

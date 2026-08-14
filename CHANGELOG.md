@@ -2,6 +2,21 @@
 
 All notable changes are documented here, following [Semantic Versioning](https://semver.org/).
 
+## [1.72.1] — 2026-08-14
+
+### Changed
+
+- **Five hashes pinned, measured on a runner.** The first run of the fetch
+  workflow filled the store from an empty cache: ADR volumes I and II and the
+  ADN via the web archive (the publisher answers 403 to runners), RID and the
+  IMDG 42-24 amendment directly. Their sha256 values are now pinned in the
+  register — including, for the first time, the **English ADN**, whose absence
+  was what kept table C waiting on its second reading.
+
+  The one that got away is recorded too: ADR Volume I in French answers 403 at
+  the publisher and 404 in the archive at both known addresses. The register
+  says so instead of leaving the next person to rediscover it.
+
 ## [1.72.0] — 2026-08-14
 
 ### Added

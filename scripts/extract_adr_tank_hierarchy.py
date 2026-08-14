@@ -208,18 +208,53 @@ def gas_rows(doc, pages: list[int]) -> tuple[list[dict[str, Any]], list[str]]:
 
 
 def rationalised_pages(doc, language: str) -> list[int]:
+    """The pages of the rationalized approach, header or no header.
+
+    Requiring the table's headings on every page is what the first reader did,
+    and the printed Dutch edition does not repeat them: page 846 fell out of
+    the reading, the twenty-odd rows of L4BN with it, and the two rows that
+    happened to sit on the next page were handed to the block above. So the
+    heading is what finds the table, and the rows themselves are what say
+    where it ends — the section runs on until a page stops looking like it.
+    """
     words = LANGUAGES[language]
-    found = []
+    start = None
     for index in range(doc.page_count):
         text = doc[index].get_text()
         if _is_contents(text):
             continue
         low = text.lower()
-        if words["group_column"] not in low or words["code_column"] not in low:
-            continue
-        if len(TANK_CODE.findall(text)) >= 3:
-            found.append(index)
+        if (words["group_column"] in low and words["code_column"] in low
+                and len(TANK_CODE.findall(text)) >= 3):
+            start = index
+            break
+    if start is None:
+        return []
+
+    found = [start]
+    for index in range(start + 1, doc.page_count):
+        if _rows_of_the_table(doc[index]) < 5:
+            break
+        found.append(index)
     return found
+
+
+def _rows_of_the_table(page) -> int:
+    """How many lines of this page read as rows of the rationalized approach."""
+    rows = 0
+    for _y, items in _lines(page):
+        tokens, _markers = _strip_markers(
+            [word.strip(",").strip() for _x, word in items])
+        if not tokens:
+            continue
+        if TANK_CODE.fullmatch(tokens[0]):
+            tokens = tokens[1:]
+        if tokens and CLASS.fullmatch(tokens[0]):
+            tokens = tokens[1:]
+        if (tokens and CLASSIFICATION.fullmatch(tokens[0])
+                and all(PACKING_GROUP.fullmatch(token) for token in tokens[1:])):
+            rows += 1
+    return rows
 
 
 def rationalised_rows(doc, pages: list[int],

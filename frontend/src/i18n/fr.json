@@ -545,5 +545,10 @@
     "unavailable": "Absent du magasin de documents de cette installation ({{document}}).",
     "howto": "Placez l'édition manquante dans le magasin de documents ; voir docs/regulatory-database.md.",
     "languageRule": "5.4.3.2 : dans une langue que chaque membre de l'équipage peut lire et comprendre."
+  },
+  "checklist": {
+    "title": "Liste de contrôle ADN (8.6.3)",
+    "intro": "Avant le chargement ou le déchargement d'un bateau-citerne, la liste de contrôle du 8.6.3 doit être remplie et signée par le conducteur et l'installation à terre. Il s'agit du modèle prescrit par l'édition ADN.",
+    "notFilledIn": "CargoPilot remet le modèle tel que le livre l'imprime et ne remplit rien à votre place : la liste se remplit à bord, avec l'installation à terre."
   }
 }

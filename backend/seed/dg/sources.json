@@ -616,6 +616,122 @@
         ],
         "measured_with": "scripts/find_instructions_pages.py"
       }
+    },
+    {
+      "id": "adn_checklist_en",
+      "title": "ADN checklist for loading and unloading (8.6.3), English",
+      "publisher": "UNECE",
+      "edition": "ADN 2025, in force 1 January 2025",
+      "language": "en",
+      "profiles": [
+        "ADN"
+      ],
+      "role": "The model checklist of 8.6.3, which 7.2.4.10 requires to be filled in and signed before loading or unloading a tank vessel. Served by the application from the store, as the edition prints it.",
+      "filename": "adn-2025-checklist-en.pdf",
+      "urls": [],
+      "obtained": "cut from the edition named in cut_from, or supplied by the operator",
+      "sha256": null,
+      "model_of": {
+        "regime": "adn",
+        "language": "en",
+        "provision": "8.6.3"
+      },
+      "cut_from": {
+        "document": "adn",
+        "pages": [
+          491,
+          495
+        ],
+        "measured_with": "scripts/find_instructions_pages.py --provision 8.6.3"
+      },
+      "note": "Not a file of its own: cut from adn, pages 491-495, measured with scripts/find_instructions_pages.py --provision 8.6.3."
+    },
+    {
+      "id": "adn_checklist_fr",
+      "title": "ADN checklist for loading and unloading (8.6.3), French",
+      "publisher": "UNECE",
+      "edition": "ADN 2025, in force 1 January 2025",
+      "language": "fr",
+      "profiles": [
+        "ADN"
+      ],
+      "role": "The model checklist of 8.6.3, which 7.2.4.10 requires to be filled in and signed before loading or unloading a tank vessel. Served by the application from the store, as the edition prints it.",
+      "filename": "adn-2025-checklist-fr.pdf",
+      "urls": [],
+      "obtained": "cut from the edition named in cut_from, or supplied by the operator",
+      "sha256": null,
+      "model_of": {
+        "regime": "adn",
+        "language": "fr",
+        "provision": "8.6.3"
+      },
+      "cut_from": {
+        "document": "adn_fr",
+        "pages": [
+          513,
+          517
+        ],
+        "measured_with": "scripts/find_instructions_pages.py --provision 8.6.3"
+      },
+      "note": "Not a file of its own: cut from adn_fr, pages 513-517, measured with scripts/find_instructions_pages.py --provision 8.6.3."
+    },
+    {
+      "id": "adn_checklist_nl",
+      "title": "ADN checklist for loading and unloading (8.6.3), Dutch",
+      "publisher": "Rijksoverheid (Dutch official edition)",
+      "edition": "ADN 2025, in force 1 January 2025",
+      "language": "nl",
+      "profiles": [
+        "ADN"
+      ],
+      "role": "The model checklist of 8.6.3, which 7.2.4.10 requires to be filled in and signed before loading or unloading a tank vessel. Served by the application from the store, as the edition prints it.",
+      "filename": "adn-2025-checklist-nl.pdf",
+      "urls": [],
+      "obtained": "cut from the edition named in cut_from, or supplied by the operator",
+      "sha256": null,
+      "model_of": {
+        "regime": "adn",
+        "language": "nl",
+        "provision": "8.6.3"
+      },
+      "cut_from": {
+        "document": "adn_nl_2025",
+        "pages": [
+          858,
+          863
+        ],
+        "measured_with": "scripts/find_instructions_pages.py --provision 8.6.3"
+      },
+      "note": "Not a file of its own: cut from adn_nl_2025, pages 858-863, measured with scripts/find_instructions_pages.py --provision 8.6.3."
+    },
+    {
+      "id": "adn_checklist_de",
+      "title": "ADN checklist for loading and unloading (8.6.3), German",
+      "publisher": "operator-supplied German edition",
+      "edition": "ADN 2025, in force 1 January 2025",
+      "language": "de",
+      "profiles": [
+        "ADN"
+      ],
+      "role": "The model checklist of 8.6.3, which 7.2.4.10 requires to be filled in and signed before loading or unloading a tank vessel. Served by the application from the store, as the edition prints it.",
+      "filename": "adn-2025-checklist-de.pdf",
+      "urls": [],
+      "obtained": "cut from the edition named in cut_from, or supplied by the operator",
+      "sha256": null,
+      "model_of": {
+        "regime": "adn",
+        "language": "de",
+        "provision": "8.6.3"
+      },
+      "cut_from": {
+        "document": "adn_de",
+        "pages": [
+          941,
+          945
+        ],
+        "measured_with": "scripts/find_instructions_pages.py --provision 8.6.3"
+      },
+      "note": "Not a file of its own: cut from adn_de, pages 941-945, measured with scripts/find_instructions_pages.py --provision 8.6.3."
     }
   ]
 }

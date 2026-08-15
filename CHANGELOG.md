@@ -19,15 +19,30 @@ All notable changes are documented here, following [Semantic Versioning](https:/
   that mistake. The placards and plates themselves have to meet 5.3.1.7 and
   5.3.2.2.
 
+- **The ADN checklist of 8.6.3.** Before a tank vessel is loaded or unloaded,
+  7.2.4.10 requires that checklist to be filled in and signed by the boatmaster
+  and the shore facility, and the regulation *prints* it rather than describing
+  it. So it is handed over the way the instructions in writing are: the model
+  itself, cut from the edition in the document store, in the language asked
+  for, or an honest "not here" naming the edition that would produce it. The
+  card appears on the export step only for an ADN shipment that actually
+  travels in cargo tanks — a dry cargo vessel does not fill this list in.
+- CargoPilot fills in nothing on that checklist. Every answer on it is agreed
+  between the vessel and the shore at the moment of loading, and a form this
+  application had already ticked would be a claim about a conversation that has
+  not happened.
+
 ### Changed
 
 - **A model is now addressed by its provision.** The instructions in writing
-  are not the only document a regime prints rather than describes: ADN 8.6.3
-  prints the checklist for loading and unloading a tank vessel and 8.6.4 the
-  one for degassing. The store's model lookup and the page-range finder take a
-  provision alongside regime and language, with each model's own title in the
-  four languages the editions are published in. Nothing new is served yet —
-  this is the shape the checklist needs.
+  were the only document the store served this way; 8.6.3 is the second and
+  8.6.4, the degassing checklist, will be the third. The store's model lookup,
+  the endpoint and the page-range finder all take a provision alongside regime
+  and language, with each model's own title in the four languages the editions
+  are published in. The 5.4.3 endpoint is untouched.
+- The page ranges of the checklist were measured, one run per edition, and the
+  register carries what measured them: English 491–495, French 513–517, Dutch
+  858–863, German 941–945.
 
 ### Fixed
 

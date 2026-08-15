@@ -135,6 +135,7 @@ export default function WizardPage() {
   const [exportingDoc, setExportingDoc] = useState<string | null>(null);
   const [unCards, setUnCards] = useState<UnCardsAvailability | null>(null);
   const [instructions, setInstructions] = useState<WrittenInstruction[]>([]);
+  const [checklist, setChecklist] = useState<WrittenInstruction[]>([]);
   const [unCardsBusy, setUnCardsBusy] = useState(false);
   const [error, setError] = useState("");
   const [importOpen, setImportOpen] = useState(false);
@@ -565,6 +566,47 @@ export default function WizardPage() {
     [dgProfiles],
   );
 
+  // ADN 8.6.3: the checklist that has to be filled in and signed before a tank
+  // vessel is loaded or unloaded. It is asked for only when this shipment is
+  // one — a dry cargo vessel does not fill it in, and a card that offered it
+  // anyway would be telling the boatmaster something untrue about his trip.
+  const inCargoTanks = useMemo(
+    () =>
+      dgProfiles.includes("ADN") &&
+      dgEntries.some((entry) =>
+        (entry.products ?? []).some((product) => product.carriage_mode === "tank"),
+      ),
+    [dgProfiles, dgEntries],
+  );
+
+  useEffect(() => {
+    if (stepKey !== "export" || !inCargoTanks) {
+      setChecklist([]);
+      return;
+    }
+    let cancelled = false;
+    api
+      .models("8.6.3")
+      .then((answer) => {
+        if (!cancelled) setChecklist(answer.documents);
+      })
+      .catch(() => {
+        if (!cancelled) setChecklist([]);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [stepKey, inCargoTanks]);
+
+  const downloadChecklist = async (regime: string, language: string) => {
+    setError("");
+    try {
+      await api.downloadModel("8.6.3", regime, language);
+    } catch (e) {
+      setError(String(e));
+    }
+  };
+
   const downloadInstructions = async (regime: string, language: string) => {
     setError("");
     try {
@@ -909,6 +951,38 @@ export default function WizardPage() {
                   </div>
                 </div>
               ))}
+            </div>
+          )}
+
+          {checklist.length > 0 && (
+            <div className={`${panelClass} space-y-3 p-4 sm:p-6`}>
+              <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-100">
+                {t("checklist.title")}
+              </h3>
+              <p className="text-sm text-slate-600 dark:text-slate-400">
+                {t("checklist.intro")}
+              </p>
+              <p className="text-xs text-slate-500 dark:text-slate-400">
+                {t("checklist.notFilledIn")}
+              </p>
+              <div className="flex flex-wrap gap-2">
+                {checklist.map((item) => (
+                  <button
+                    key={`${item.regime}-${item.language}`}
+                    type="button"
+                    disabled={!item.available}
+                    title={
+                      item.available
+                        ? undefined
+                        : `${t("instructions.unavailable", { document: item.needs ?? "" })} ${t("instructions.howto")}`
+                    }
+                    onClick={() => downloadChecklist(item.regime, item.language)}
+                    className={`${buttonSecondary} ${item.available ? "" : "opacity-40"}`}
+                  >
+                    {item.language.toUpperCase()}
+                  </button>
+                ))}
+              </div>
             </div>
           )}
 

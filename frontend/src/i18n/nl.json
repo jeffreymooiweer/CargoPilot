@@ -545,5 +545,10 @@
     "unavailable": "Niet in de documentopslag van deze installatie ({{document}}).",
     "howto": "Zet de ontbrekende uitgave in de documentopslag; zie docs/regulatory-database.md.",
     "languageRule": "5.4.3.2: in een taal die elk bemanningslid kan lezen en begrijpen."
+  },
+  "checklist": {
+    "title": "ADN-controlelijst (8.6.3)",
+    "intro": "Vóór het laden of lossen van een tankschip moet de controlelijst van 8.6.3 worden ingevuld en ondertekend door schipper en walinstallatie. Dit is het voorgeschreven model uit de ADN-uitgave.",
+    "notFilledIn": "CargoPilot levert het model zoals het boek het drukt en vult niets voor u in: de lijst wordt aan boord samen met de walinstallatie ingevuld."
   }
 }

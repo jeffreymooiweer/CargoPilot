@@ -252,6 +252,31 @@ export const api = {
   },
   writtenInstructions: () =>
     request<{ documents: WrittenInstruction[] }>("/documents/instructions"),
+  /** Any model the regulation prints rather than describes, by provision:
+   *  5.4.3 for the instructions in writing, 8.6.3 for the ADN checklist. */
+  models: (provision: string) =>
+    request<{ provision: string; documents: WrittenInstruction[] }>(
+      `/documents/models/${provision}`,
+    ),
+  downloadModel: async (provision: string, regime: string, language: string) => {
+    const res = await fetch(
+      `${API_BASE}/documents/models/${provision}/${regime}/${language}`,
+      { credentials: "include" },
+    );
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({ detail: res.statusText }));
+      throw new Error(describeDetail(err.detail));
+    }
+    const blob = await res.blob();
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `${regime}-${provision.replace(/\./g, "-")}-${language}.pdf`;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+  },
   downloadInstructions: async (regime: string, language: string) => {
     const res = await fetch(`${API_BASE}/documents/instructions/${regime}/${language}`, {
       credentials: "include",

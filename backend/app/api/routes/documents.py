@@ -149,6 +149,42 @@ def instructions_file(regime: str, language: str,
         filename=f"{regime}-2025-instructions-{language}.pdf")
 
 
+@router.get("/models/{provision}")
+def models_overview(provision: str, user: User = Depends(get_current_user)):
+    """What this installation can hand over for one prescribed model.
+
+    The instructions in writing were the first; ADN 8.6.3 — the checklist a
+    tank vessel fills in before loading or unloading — is another. Both are
+    printed by the regulation rather than described by it, and both are served
+    as the edition prints them or reported as missing. Nothing here paraphrases
+    a model, and nothing fills one in.
+    """
+    if provision not in regulations.model_provisions():
+        raise HTTPException(status_code=404, detail="No model for that provision")
+    return {"provision": provision, "documents": [
+        regulations.instruction_status(doc["model_of"]["regime"],
+                                       doc["model_of"]["language"], provision)
+        for doc in regulations.instruction_documents(provision)]}
+
+
+@router.get("/models/{provision}/{regime}/{language}")
+def model_file(provision: str, regime: str, language: str,
+               user: User = Depends(get_current_user)):
+    if regime not in regulations.REGIMES or language not in regulations.LANGUAGES:
+        raise HTTPException(status_code=404, detail="Unknown regime or language")
+    if provision not in regulations.model_provisions():
+        raise HTTPException(status_code=404, detail="No model for that provision")
+    status = regulations.instruction_status(regime, language, provision)
+    if not status.get("available"):
+        raise HTTPException(status_code=409, detail=status)
+    path = regulations.instructions_pdf(regime, language, provision)
+    if path is None:  # pragma: no cover - the status said it was there
+        raise HTTPException(status_code=409, detail=status)
+    return FileResponse(
+        path, media_type="application/pdf",
+        filename=f"{regime}-2025-{provision.replace('.', '-')}-{language}.pdf")
+
+
 @router.post("/un-cards/availability")
 def un_cards_status(
     payload: UnCardsRequest,

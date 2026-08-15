@@ -2,6 +2,26 @@
 
 All notable changes are documented here, following [Semantic Versioning](https://semver.org/).
 
+## [1.96.0] — 2026-08-15
+
+### Added
+
+- **Bulk admission answers the railway under its own name.** RID 7.3.1.1,
+  7.3.2.1 and 7.3.3.1 were read in the OTIF English edition (printed pages
+  1092–1095) and the German edition (1176–1179), which agree: the ADR's
+  provisions word for word, wagons in place of vehicles, the same BK/VC/AP
+  codes. Same answer — but a rail consignment now gets it at all (it got none),
+  the CIM cites `RID 7.3.1.1`, and the VC meanings speak of wagons, as that
+  edition does. The same split the compatibility table and CW 28 already make.
+- **The equipment sheet (ADR 8.1.4/8.1.5).** Derived since v1.53.0 and shown
+  on screen since — and the person who needs it is standing at the open door
+  of a cab, not at a browser. The list is now paper: one line per item with
+  the provision beside it, the hazard labels of the load named as the basis
+  (8.1.5.1), the fire extinguisher line carrying the three mass rows of
+  8.1.4.1 because the unit's maximum mass is the vehicle's property. A
+  checklist with nothing ticked: what actually lies in the cab this
+  application cannot see, and the sheet says so.
+
 ## [1.95.0] — 2026-08-15
 
 ### Added

@@ -2072,6 +2072,7 @@ _AP_CODE = re.compile(r"\bAP\d+\b")
 
 def check_adr_bulk_admission(
     entries: list[dict[str, Any]], language: str = "nl",
+    profiles: list[str] | None = None,
 ) -> dict[str, Any]:
     """ADR 7.3.1.1: may these goods travel in bulk at all, and in what?
 
@@ -2093,6 +2094,14 @@ def check_adr_bulk_admission(
     """
     rules = get_compliance_rules()["adr_bulk_admission"]
     lang = _lang(language)
+    # RID 7.3 was read in the OTIF English and German editions (printed
+    # 1092-1095 / 1176-1179): the ADR's provisions word for word, wagons in
+    # place of vehicles, the same BK/VC/AP codes. Same answer — but a rail
+    # document cites the RID and the VC meanings speak of wagons, the same
+    # split the compatibility table and CW 28 already make.
+    active = {str(p).upper() for p in (profiles or [])}
+    regime = "RID" if active == {"RID"} else "ADR"
+    vc_meanings = rules["vc_meanings_rail" if regime == "RID" else "vc_meanings"]
 
     def text(key: str, **values: Any) -> str:
         block = rules["rules"][key]
@@ -2120,14 +2129,14 @@ def check_adr_bulk_admission(
                 # the exception is said next to it rather than granted.
                 items.append({
                     "position": label, "permitted": False,
-                    "provision": "7.3.1.1",
+                    "provision": f"{regime} 7.3.1.1",
                     "message": text("not_permitted", product=label)
                                + " " + text("empty_uncleaned"),
                 })
             else:
                 items.append({
                     "position": label, "permitted": False,
-                    "provision": "7.3.1.1",
+                    "provision": f"{regime} 7.3.1.1",
                     "message": text("not_permitted", product=label),
                 })
             blocked = True
@@ -2136,9 +2145,9 @@ def check_adr_bulk_admission(
         codes = bk + vc
         meanings = "; ".join(
             (rules["bk_meanings"] if code.startswith("BK")
-             else rules["vc_meanings"])[code].get(lang)
+             else vc_meanings)[code].get(lang)
             or (rules["bk_meanings"] if code.startswith("BK")
-                else rules["vc_meanings"])[code]["en"]
+                else vc_meanings)[code]["en"]
             for code in codes)
         conditions = " + ".join(p for p, present in
                                 (("7.3.2", bool(bk)), ("7.3.3", bool(vc)))
@@ -2150,7 +2159,7 @@ def check_adr_bulk_admission(
         items.append({
             "position": label, "permitted": True,
             "bk_codes": bk, "vc_codes": vc, "ap_codes": ap,
-            "provision": "7.3.1.1",
+            "provision": f"{regime} 7.3.1.1",
             "message": message,
         })
 
@@ -2159,7 +2168,7 @@ def check_adr_bulk_admission(
     return {
         "status": "not_permitted" if blocked else "ok",
         "items": items,
-        "source": rules["source"],
+        "source": rules["source_rid" if regime == "RID" else "source"],
     }
 
 
@@ -4758,11 +4767,7 @@ def check_compliance(
         admission = check_adr_tank_admission(entries, language)
         if admission.get("status") != "not_checked":
             result["adr_tank_admission"] = admission
-        # And in bulk — the same question with its own columns (7.3.1.1). Only
-        # speaks when a carriage mode says the goods travel that way.
-        bulk = check_adr_bulk_admission(entries, language)
-        if bulk.get("status") != "not_checked":
-            result["adr_bulk_admission"] = bulk
+
         # And once admitted: may *this* tank carry it? Only speaks when the
         # consignor has said which tank is standing there.
         fit = check_adr_tank_fit(entries, language)
@@ -4782,6 +4787,13 @@ def check_compliance(
         result["technical_name_findings"] = check_technical_name_required(
             entries, language)
         result["adr_points"] = check_adr_points(entries, language, land)
+        # And in bulk — the same question with its own columns (7.3.1.1),
+        # answered for road and rail alike and cited to the regime whose
+        # document it lands on. Only speaks when a carriage mode says the
+        # goods travel that way.
+        bulk = check_adr_bulk_admission(entries, language, land)
+        if bulk.get("status") != "not_checked":
+            result["adr_bulk_admission"] = bulk
         result["adr_mixed_loading"] = check_adr_mixed_loading(entries, language, land)
         if "RID" in normalized:
             # 7.5.3 has no road equivalent and therefore does not belong with

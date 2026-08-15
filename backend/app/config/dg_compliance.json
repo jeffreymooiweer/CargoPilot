@@ -3429,6 +3429,27 @@
         "de": "Leere, ungereinigte Verpackungen dürfen in loser Schüttung befördert werden, wenn die enthaltenen Güter für diese Beförderungsart zugelassen sind (7.3.1.1); dieser Befund betrifft den Stoff selbst.",
         "fr": "Les emballages vides, non nettoyés peuvent être transportés en vrac lorsque les marchandises qu'ils contenaient sont autorisées pour ce mode (7.3.1.1) ; cette conclusion concerne la matière elle-même."
       }
+    },
+    "source_rid": "RID 2025 — 7.3.1.1, 7.3.2.1 and 7.3.3.1, read in the OTIF English edition (printed pages 1092-1095) and the German edition (1176-1179), which agree. The provisions are the ADR's word for word with wagons in place of vehicles; the codes BK, VC and AP are the same codes.",
+    "vc_meanings_rail": {
+      "VC1": {
+        "nl": "vervoer als losgestort goed in wagens met dekzeil, containers met dekzeil of bulkcontainers met dekzeil is toegestaan",
+        "en": "carriage in bulk in sheeted wagons, sheeted containers or sheeted bulk containers is permitted",
+        "de": "Beförderung in loser Schüttung in Wagen mit Decken, bedeckten Containern oder bedeckten Schüttgut-Containern ist zugelassen",
+        "fr": "le transport en vrac dans des wagons bâchés, des conteneurs bâchés ou des conteneurs pour vrac bâchés est autorisé"
+      },
+      "VC2": {
+        "nl": "vervoer als losgestort goed in gesloten wagens, gesloten containers of gesloten bulkcontainers is toegestaan",
+        "en": "carriage in bulk in closed wagons, closed containers or closed bulk containers is permitted",
+        "de": "Beförderung in loser Schüttung in gedeckten Wagen, geschlossenen Containern oder geschlossenen Schüttgut-Containern ist zugelassen",
+        "fr": "le transport en vrac dans des wagons couverts, des conteneurs fermés ou des conteneurs pour vrac fermés est autorisé"
+      },
+      "VC3": {
+        "nl": "vervoer als losgestort goed is toegestaan in speciaal uitgeruste wagens of grote containers volgens de normen van de bevoegde autoriteit van het land van herkomst",
+        "en": "carriage in bulk is permitted in specially equipped wagons or large containers in accordance with standards specified by the competent authority of the country of origin",
+        "de": "Beförderung in loser Schüttung ist in besonders ausgerüsteten Wagen oder Großcontainern nach den von der zuständigen Behörde des Ursprungslandes festgelegten Normen zugelassen",
+        "fr": "le transport en vrac est autorisé dans des wagons ou grands conteneurs spécialement équipés conformes aux normes spécifiées par l'autorité compétente du pays d'origine"
+      }
     }
   },
   "sp274_technical_name": {

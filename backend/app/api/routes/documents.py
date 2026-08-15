@@ -25,6 +25,7 @@ from app.services.documents.onboard_pack import (
     render_onboard_documents,
     render_packing_certificate,
 )
+from app.services.documents.equipment_sheet import render_equipment_sheet
 from app.services.documents.placarding_sheet import render_placarding_sheet
 from app.services.documents.stowage_plan import render_stowage_plan
 from app.services.documents.signature import decode_signature_image
@@ -110,6 +111,15 @@ def export(
         # document fields: 7.1.4.11.1 asks which goods are in which hold, and
         # the description is the transport document's own.
         out_path = render_stowage_plan(
+            payload.values,
+            payload.lines,
+            payload.dangerous_goods,
+            payload.output_language,
+        )
+    elif exporter == "equipment":
+        # The 8.1.4/8.1.5 list as paper: derived from the labels of the load,
+        # ticked at the vehicle and never beforehand.
+        out_path = render_equipment_sheet(
             payload.values,
             payload.lines,
             payload.dangerous_goods,

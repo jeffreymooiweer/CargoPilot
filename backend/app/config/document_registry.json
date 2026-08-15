@@ -70,7 +70,9 @@
         "avc_waybill",
         "placarding_sheet",
         "packing_list",
-        "delivery_note"
+        "delivery_note",
+        "packing_certificate",
+        "onboard_documents_adr"
       ]
     },
     {
@@ -134,7 +136,8 @@
         "vgm",
         "stowage_plan",
         "packing_list",
-        "delivery_note"
+        "delivery_note",
+        "onboard_documents_adn"
       ]
     },
     {
@@ -185,7 +188,10 @@
         "placarding_sheet",
         "stowage_plan",
         "packing_list",
-        "delivery_note"
+        "delivery_note",
+        "packing_certificate",
+        "onboard_documents_adr",
+        "onboard_documents_adn"
       ]
     }
   ],
@@ -2800,6 +2806,114 @@
         "en": "The stowage plan says which goods are where; it is not a drawing of the vessel.",
         "de": "Der Stauplan nennt, welche Güter wo stehen; er ist keine Zeichnung des Schiffes.",
         "fr": "Le plan d'arrimage indique quelles marchandises se trouvent où ; ce n'est pas un dessin du bateau."
+      }
+    },
+    {
+      "key": "packing_certificate",
+      "label": {
+        "nl": "Container-/voertuigbeladingscertificaat (5.4.2)",
+        "en": "Container/vehicle packing certificate (5.4.2)",
+        "de": "Container-/Fahrzeugpackzertifikat (5.4.2)",
+        "fr": "Certificat d'empotage (5.4.2)"
+      },
+      "short_label": {
+        "nl": "Beladingscertificaat",
+        "en": "Packing certificate",
+        "de": "Packzertifikat",
+        "fr": "Certificat d'empotage"
+      },
+      "category": "generated",
+      "issue_status": {
+        "nl": "Vereist wanneer containervervoer aan een zeereis voorafgaat (ADR 5.4.2 / IMDG 5.4.2); niet vereist voor transporttanks. De negen verklaringen worden niet vooraf ingevuld.",
+        "en": "Required where container carriage precedes a sea voyage (ADR 5.4.2 / IMDG 5.4.2); not required for portable tanks. The nine declarations are not pre-filled.",
+        "de": "Erforderlich, wenn dem Containertransport eine Seereise folgt (ADR 5.4.2 / IMDG 5.4.2); für ortsbewegliche Tanks nicht erforderlich. Die neun Erklärungen werden nicht vorausgefüllt.",
+        "fr": "Exigé lorsque le transport en conteneur précède un parcours maritime (ADR 5.4.2 / IMDG 5.4.2) ; non exigé pour les citernes mobiles. Les neuf déclarations ne sont pas préremplies."
+      },
+      "exporter": "packing_certificate",
+      "dg_profile": "ADR",
+      "dg_only": true,
+      "sections": [
+        {
+          "ref": "parties"
+        }
+      ],
+      "signature_note": {
+        "nl": "Elke verklaring gaat over wat bij de belading is vastgesteld; alleen de daarvoor verantwoordelijke persoon tekent.",
+        "en": "Every declaration concerns what was established at packing; only the person responsible signs.",
+        "de": "Jede Erklärung betrifft, was bei der Beladung festgestellt wurde; nur die verantwortliche Person unterschreibt.",
+        "fr": "Chaque déclaration porte sur ce qui a été constaté à l'empotage ; seule la personne responsable signe."
+      }
+    },
+    {
+      "key": "onboard_documents_adr",
+      "label": {
+        "nl": "Boorddocumentenlijst transporteenheid (ADR 8.1.2)",
+        "en": "On-board documents list, transport unit (ADR 8.1.2)",
+        "de": "Mitzuführende Dokumente, Beförderungseinheit (ADR 8.1.2)",
+        "fr": "Documents de bord, unité de transport (ADR 8.1.2)"
+      },
+      "short_label": {
+        "nl": "Boorddocumenten",
+        "en": "On-board list",
+        "de": "Borddokumente",
+        "fr": "Documents de bord"
+      },
+      "category": "generated",
+      "issue_status": {
+        "nl": "Hulpdocument: wat ADR 8.1.2 in de cabine vereist — wat deze applicatie opstelt en wat u zelf moet meenemen.",
+        "en": "Working document: what ADR 8.1.2 requires in the cab — what this application draws up and what you must bring yourself.",
+        "de": "Hilfsdokument: was ADR 8.1.2 im Führerhaus verlangt — was diese Anwendung erstellt und was Sie selbst mitführen müssen.",
+        "fr": "Document d'appui : ce que l'ADR 8.1.2 exige dans la cabine — ce que cette application établit et ce que vous devez apporter vous-même."
+      },
+      "exporter": "onboard_adr",
+      "dg_profile": "ADR",
+      "dg_only": true,
+      "sections": [
+        {
+          "ref": "parties"
+        }
+      ],
+      "signature_note": {
+        "nl": "Deze lijst is een hulpmiddel, geen volledigheidsverklaring (8.1.2.1, aanhef).",
+        "en": "This list is an aid, not a statement of completeness (opening words of 8.1.2.1).",
+        "de": "Diese Liste ist ein Hilfsmittel, keine Vollständigkeitserklärung (8.1.2.1, Eingangssatz).",
+        "fr": "Cette liste est une aide, non une attestation d'exhaustivité (préambule du 8.1.2.1)."
+      }
+    },
+    {
+      "key": "onboard_documents_adn",
+      "label": {
+        "nl": "Boorddocumentenlijst schip (ADN 8.1.2)",
+        "en": "On-board documents list, vessel (ADN 8.1.2)",
+        "de": "Mitzuführende Dokumente, Schiff (ADN 8.1.2)",
+        "fr": "Documents de bord, bateau (ADN 8.1.2)"
+      },
+      "short_label": {
+        "nl": "Boorddocumenten",
+        "en": "On-board list",
+        "de": "Borddokumente",
+        "fr": "Documents de bord"
+      },
+      "category": "generated",
+      "issue_status": {
+        "nl": "Hulpdocument: wat ADN 8.1.2 aan boord vereist — wat deze applicatie opstelt en wat u zelf moet meenemen.",
+        "en": "Working document: what ADN 8.1.2 requires on board — what this application draws up and what you must bring yourself.",
+        "de": "Hilfsdokument: was ADN 8.1.2 an Bord verlangt — was diese Anwendung erstellt und was Sie selbst mitführen müssen.",
+        "fr": "Document d'appui : ce que l'ADN 8.1.2 exige à bord — ce que cette application établit et ce que vous devez apporter vous-même."
+      },
+      "exporter": "onboard_adn",
+      "dg_profile": "ADN",
+      "dg_only": true,
+      "sections": [
+        {
+          "ref": "parties"
+        }
+      ],
+      "signature_note": {
+        "nl": "Deze lijst is een hulpmiddel, geen volledigheidsverklaring (8.1.2.1, aanhef).",
+        "en": "This list is an aid, not a statement of completeness (opening words of 8.1.2.1).",
+        "de": "Diese Liste ist ein Hilfsmittel, keine Vollständigkeitserklärung (8.1.2.1, Eingangssatz).",
+        "fr": "Cette liste est une aide, non une attestation d'exhaustivité (préambule du 8.1.2.1)."
       }
     }
   ],

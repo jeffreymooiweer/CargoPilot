@@ -21,6 +21,10 @@ from app.services.documents import (
 )
 from app.services import regulations
 from app.services.documents.avc_form import fill_avc_waybill, has_avc_template
+from app.services.documents.onboard_pack import (
+    render_onboard_documents,
+    render_packing_certificate,
+)
 from app.services.documents.placarding_sheet import render_placarding_sheet
 from app.services.documents.stowage_plan import render_stowage_plan
 from app.services.documents.signature import decode_signature_image
@@ -110,6 +114,25 @@ def export(
             payload.lines,
             payload.dangerous_goods,
             payload.output_language,
+        )
+    elif exporter == "packing_certificate":
+        # The certificate of 5.4.2: the model with nothing pre-ticked. Every
+        # declaration concerns what was established at packing.
+        out_path = render_packing_certificate(
+            payload.values,
+            payload.lines,
+            payload.dangerous_goods,
+            payload.output_language,
+        )
+    elif exporter in ("onboard_adr", "onboard_adn"):
+        # The list of 8.1.2, split by who can produce each paper: what this
+        # application drew up, and what has to be brought.
+        out_path = render_onboard_documents(
+            payload.values,
+            payload.lines,
+            payload.dangerous_goods,
+            payload.output_language,
+            regime="ADN" if exporter == "onboard_adn" else "ADR",
         )
     else:
         # Self-designed document: generate a clean PDF.

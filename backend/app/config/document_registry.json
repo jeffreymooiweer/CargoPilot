@@ -72,7 +72,8 @@
         "packing_list",
         "delivery_note",
         "packing_certificate",
-        "onboard_documents_adr"
+        "onboard_documents_adr",
+        "equipment_sheet"
       ]
     },
     {
@@ -191,7 +192,8 @@
         "delivery_note",
         "packing_certificate",
         "onboard_documents_adr",
-        "onboard_documents_adn"
+        "onboard_documents_adn",
+        "equipment_sheet"
       ]
     }
   ],
@@ -2914,6 +2916,42 @@
         "en": "This list is an aid, not a statement of completeness (opening words of 8.1.2.1).",
         "de": "Diese Liste ist ein Hilfsmittel, keine Vollständigkeitserklärung (8.1.2.1, Eingangssatz).",
         "fr": "Cette liste est une aide, non une attestation d'exhaustivité (préambule du 8.1.2.1)."
+      }
+    },
+    {
+      "key": "equipment_sheet",
+      "label": {
+        "nl": "Uitrustingsblad (ADR 8.1.4/8.1.5)",
+        "en": "Equipment sheet (ADR 8.1.4/8.1.5)",
+        "de": "Ausrüstungsblatt (ADR 8.1.4/8.1.5)",
+        "fr": "Feuille d'équipement (ADR 8.1.4/8.1.5)"
+      },
+      "short_label": {
+        "nl": "Uitrusting",
+        "en": "Equipment",
+        "de": "Ausrüstung",
+        "fr": "Équipement"
+      },
+      "category": "generated",
+      "issue_status": {
+        "nl": "Hulpdocument — de uitrusting die 8.1.5.1 uit de gevaarsetiketten van de lading afleidt, als afvinklijst. Geen vaststelling: wat er werkelijk in de cabine ligt ziet deze applicatie niet.",
+        "en": "Working document — the equipment 8.1.5.1 derives from the hazard labels of the load, as a checklist. Not a finding: what actually lies in the cab this application cannot see.",
+        "de": "Hilfsdokument — die Ausrüstung, die 8.1.5.1 aus den Gefahrzetteln der Ladung ableitet, als Abhakliste. Keine Feststellung: was tatsächlich im Führerhaus liegt, sieht diese Anwendung nicht.",
+        "fr": "Document d'appui — l'équipement que le 8.1.5.1 déduit des étiquettes de danger du chargement, sous forme de liste à cocher. Pas un constat : ce qui se trouve réellement dans la cabine, cette application ne le voit pas."
+      },
+      "exporter": "equipment",
+      "dg_profile": "ADR",
+      "dg_only": true,
+      "sections": [
+        {
+          "ref": "parties"
+        }
+      ],
+      "signature_note": {
+        "nl": "Afvinken gebeurt bij het voertuig; dit blad vinkt niets voor u af.",
+        "en": "Ticking happens at the vehicle; this sheet ticks nothing for you.",
+        "de": "Abgehakt wird am Fahrzeug; dieses Blatt hakt nichts für Sie ab.",
+        "fr": "Le pointage se fait au véhicule ; cette feuille ne coche rien pour vous."
       }
     }
   ],

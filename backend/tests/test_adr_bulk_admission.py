@@ -46,7 +46,7 @@ def test_petrol_is_refused():
     assert result["status"] == "not_permitted"
     item = only(result)
     assert item["permitted"] is False
-    assert item["provision"] == "7.3.1.1"
+    assert item["provision"] == "ADR 7.3.1.1"
 
 
 def test_ap_codes_travel_as_conditions():
@@ -113,3 +113,20 @@ def test_the_compliance_result_carries_it():
 
     result = check_compliance(line("1350"), ["ADR"], "nl")
     assert result["adr_bulk_admission"]["status"] == "ok"
+
+
+def test_rail_gets_the_same_answer_under_its_own_name():
+    """RID 7.3 was read in the OTIF English and German editions: the ADR's
+    provisions word for word, wagons in place of vehicles, the same BK/VC/AP
+    codes. Same answer, cited to the regime whose document it lands on — and
+    the VC meanings speak of wagons, as that edition does."""
+    from app.services.dg.compliance import check_compliance
+
+    result = check_compliance(line("1350"), ["RID"], "en")
+    item = result["adr_bulk_admission"]["items"][0]
+    assert item["provision"] == "RID 7.3.1.1"
+    assert "wagons" in item["message"]
+    assert "RID 2025" in result["adr_bulk_admission"]["source"]
+
+    refused = check_compliance(line("1203"), ["RID"], "en")
+    assert refused["adr_bulk_admission"]["status"] == "not_permitted"

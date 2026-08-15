@@ -613,19 +613,21 @@ def validate_document(
             # showed the answer on screen only. A prohibition that reaches the
             # panel and not the paper is a prohibition the person filling in the
             # document never meets.
+            # Bulk admission answers road and rail alike since v1.96.0 and the
+            # provision carries its own regime name: a refusal reaches the
+            # paper, and a permission travels too — the BK/VC codes and the AP
+            # conditions are exactly what the loader at the ramp checks the
+            # container against.
+            if profile in ("ADR", "RID"):
+                for item in (outcome.get("adr_bulk_admission") or {}).get("items", []):
+                    warnings.append(f"{item.get('provision', 'ADR 7.3.1.1')}: "
+                                    f"{item['message']}")
+
             if profile == "ADR":
                 for item in (outcome.get("adr_tank_admission") or {}).get("items", []):
                     if not item.get("permitted"):
                         warnings.append(f"ADR {item.get('provision', '3.2.1')}: "
                                         f"{item['message']}")
-
-                # Bulk gets the same treatment (7.3.1.1): a refusal reaches the
-                # paper, and a permission travels too — the BK/VC codes and the
-                # AP conditions are exactly what the loader at the ramp needs
-                # to check against the container that turned up.
-                for item in (outcome.get("adr_bulk_admission") or {}).get("items", []):
-                    warnings.append(f"ADR {item.get('provision', '7.3.1.1')}: "
-                                    f"{item['message']}")
 
                 # And whether *this* tank may carry it (4.3), which since
                 # v1.82.0 was answered on screen only — the same failure the

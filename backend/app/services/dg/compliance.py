@@ -1969,6 +1969,169 @@ def _rationalised_fit(offered: str, row: dict[str, Any], label: str,
                             group=group or text("no_packing_group"))}
 
 
+def check_adr_filling_degree(
+    entries: list[dict[str, Any]], language: str = "nl",
+) -> dict[str, Any]:
+    """ADR 4.3.2.2: how full the tank may be.
+
+    Read in the English volume II and the printed Dutch edition, which agree.
+    4.3.2.2.1 gives four maxima for a tank carrying a substance that is liquid
+    at normal temperatures, and they differ only in their numerator:
+
+    ======  ====================================================  ==========
+    case    the tank, and the substance                           numerator
+    ======  ====================================================  ==========
+    (a)     breather device or safety valves; flammable or         100
+            environmentally hazardous, no toxic or corrosive
+            subsidiary hazard
+    (b)     breather device or safety valves; toxic or corrosive    98
+    (c)     hermetically closed, no safety device; flammable,       97
+            environmentally hazardous, slightly toxic or
+            slightly corrosive
+    (d)     hermetically closed, no safety device; highly toxic,    95
+            toxic, highly corrosive or corrosive
+    ======  ====================================================  ==========
+
+    all over ``1 + α (50 − tF)``, with ``α = (d15 − d50) / (35 d50)`` from
+    4.3.2.2.2 — the mean coefficient of cubical expansion between 15 °C and
+    50 °C — and tF the mean temperature of the liquid during filling.
+
+    **What decides which of the four is the interesting part.** The tank's
+    venting is the *fourth letter of the tank code*: N is a tank with a
+    breather device or safety valves, H is hermetically closed without a
+    safety device. Since v1.82.0 the consignor types that code, so this half is
+    read rather than guessed. The other half — toxic or corrosive against
+    merely flammable — is derived from the class, the subsidiary risks and the
+    packing group, and *is* a derivation: it is shown with the answer so it can
+    be overruled, never applied in silence.
+
+    Table A carries neither density, so the arithmetic runs only once the
+    consignor has supplied d15, d50 and tF. Without them the formula itself is
+    the answer, and it goes on the document as a condition — which is the
+    honest end of a calculation whose inputs nobody has.
+    """
+    rules = get_compliance_rules()["adr_filling_degree"]
+    lang = _lang(language)
+
+    def text(key: str, **values: Any) -> str:
+        block = rules[key]
+        return (block.get(lang) or block["en"]).format(**values)
+
+    items: list[dict[str, Any]] = []
+    for entry, index, product in _iter_products(entries):
+        if product.get("transport_forbidden"):
+            continue
+        if str(product.get("carriage_mode") or "").strip() != "tank":
+            continue
+        label = _product_label(entry, product, index)
+        rows = database.get_un_entries(str(product.get("un_number") or "").strip())
+        row = rows[0] if rows else {}
+        item: dict[str, Any] = {"position": label}
+
+        # Classes 1, 5.2 and 7 are excepted by the provision's own footnote.
+        klass = str(row.get("class") or product.get("class") or "").strip()
+        if klass.split(".")[0] in ("1", "7") or klass == "5.2":
+            item.update({"status": "own_rule", "provision": "4.3.4.1.3",
+                         "message": text("own_rule", product=label)})
+            items.append(item)
+            continue
+
+        temperature = _num(product.get("filling_temperature"))
+        if temperature is not None and temperature > 50:
+            item.update({"status": "above_fifty", "provision": "4.3.2.2.3",
+                         "message": text("above_fifty", product=label)})
+            items.append(item)
+            continue
+
+        offered = str(product.get("tank_code") or "").strip().upper()
+        case = _filling_case(offered, row, product)
+        if case is None:
+            item.update({"status": "no_tank_code", "provision": "4.3.2.2.1",
+                         "message": text("no_tank_code", product=label)})
+            items.append(item)
+            continue
+
+        letter, spec = case
+        item.update({"case": letter, "provision": spec["provision"],
+                     "numerator": spec["numerator"],
+                     "formula": text("formula", numerator=spec["numerator"]),
+                     "derivation": text(
+                         "derivation", provision=spec["provision"], code=offered,
+                         venting=text("vented" if spec["vented"] else "hermetic"),
+                         hazard=text("toxic_or_corrosive" if spec["toxic_or_corrosive"]
+                                     else "not_toxic_or_corrosive"))})
+
+        alpha = _expansion(product)
+        if alpha is None or temperature is None:
+            item.update({"status": "needs_input",
+                         "message": text("needs_input", product=label,
+                                         provision=spec["provision"])})
+            items.append(item)
+            continue
+
+        degree = spec["numerator"] / (1 + alpha * (50 - temperature))
+        item.update({
+            "status": "computed",
+            "alpha": round(alpha, 6),
+            "filling_temperature": temperature,
+            "degree": round(degree, 1),
+            "message": text("computed", product=label, degree=f"{degree:.1f}",
+                            provision=spec["provision"], alpha=f"{alpha:.5f}",
+                            temperature=_fmt_number(temperature)),
+        })
+        items.append(item)
+
+    if not items:
+        return {"status": "not_checked", "items": []}
+    return {"status": "ok", "items": items, "source": rules["source"]}
+
+
+def _fmt_number(value: float) -> str:
+    return f"{value:g}"
+
+
+def _expansion(product: dict[str, Any]) -> float | None:
+    """α, from the two densities the provision names or straight from input.
+
+    4.3.2.2.2 defines it as (d15 − d50) / (35 d50). A user who has the figure
+    already may give it; a user who has the densities gives those. Neither is
+    in table A, which is the whole reason this is an input at all.
+    """
+    given = _num(product.get("expansion_coefficient"))
+    if given is not None and given > 0:
+        return given
+    d15 = _num(product.get("density_15"))
+    d50 = _num(product.get("density_50"))
+    if d15 is None or d50 is None or d50 <= 0 or d15 <= d50:
+        return None
+    return (d15 - d50) / (35 * d50)
+
+
+#: The letters of a tank code that say how it vents. The fourth letter of an
+#: ADR tank code is N where the tank has a breather device or safety valves and
+#: H where it is hermetically closed; 4.3.2.2.1 turns on exactly that.
+_VENTING = re.compile(r"^[LS](?:[A-Z]{2}|\d+(?:[.,]\d+)?[A-Z])([NH])$", re.IGNORECASE)
+
+
+def _filling_case(offered: str, row: dict[str, Any],
+                  product: dict[str, Any]) -> tuple[str, dict[str, Any]] | None:
+    """Which of 4.3.2.2.1 (a) to (d) applies, or None where the tank is unknown."""
+    match = _VENTING.match(offered.replace(",", "."))
+    if not match:
+        return None
+    vented = match.group(1).upper() == "N"
+    hazards = {str(row.get("class") or product.get("class") or "").strip()}
+    hazards |= {part.strip() for part in
+                str(row.get("subsidiary_risks")
+                    or product.get("subsidiary_risks") or "").split(",")}
+    toxic_or_corrosive = bool({"6.1", "8"} & hazards)
+    rules = get_compliance_rules()["adr_filling_degree"]["cases"]
+    for letter, spec in rules.items():
+        if spec["vented"] == vented and spec["toxic_or_corrosive"] == toxic_or_corrosive:
+            return letter, spec
+    return None  # pragma: no cover - the four cases cover both booleans
+
+
 def check_adr_security(
     entries: list[dict[str, Any]], language: str = "nl",
 ) -> dict[str, Any]:
@@ -4215,6 +4378,11 @@ def check_compliance(
         fit = check_adr_tank_fit(entries, language)
         if fit.get("status") != "not_checked":
             result["adr_tank_fit"] = fit
+        # And how full it may be. Speaks for any tank load, because the formula
+        # is the answer even where the densities to put in it are missing.
+        filling = check_adr_filling_degree(entries, language)
+        if filling.get("status") != "not_checked":
+            result["adr_filling_degree"] = filling
 
     if {"ADR", "RID", "ADN"} & normalized:
         land = sorted({"ADR", "RID", "ADN"} & normalized)

@@ -3196,5 +3196,101 @@
       "de": "{product}: Tank {offered} erfüllt die Rangfolge von 4.3.3.1.2, die verlangte Codierung {required} trägt aber den Zusatz {suffix}, zu dem die Rangfolge nichts sagt. Prüfen Sie ihn am Prüfdokument.",
       "fr": "{product} : la citerne {offered} satisfait à la hiérarchie du 4.3.3.1.2, mais le code exigé {required} porte la mention {suffix}, sur laquelle la hiérarchie ne dit rien. Vérifiez-la sur le document d'agrément."
     }
+  },
+  "adr_filling_degree": {
+    "source": "ADR 2025, 4.3.2.2.1 to 4.3.2.2.3, read in the English volume II and the printed Dutch edition, which agree",
+    "_what_decides_which_formula": "Two things, and the application holds one of them exactly. The tank's venting is the fourth letter of the tank code the consignor enters: N is a tank with a breather device or safety valves, H is a hermetically closed tank without a safety device. The other is how dangerous the substance is — toxic or corrosive against merely flammable or environmentally hazardous, and 'slightly' against not — which is derived from the class, the subsidiary risks and the packing group and is therefore shown as a derivation the user can overrule, never applied in silence.",
+    "cases": {
+      "a": {
+        "numerator": 100,
+        "vented": true,
+        "toxic_or_corrosive": false,
+        "provision": "4.3.2.2.1 (a)"
+      },
+      "b": {
+        "numerator": 98,
+        "vented": true,
+        "toxic_or_corrosive": true,
+        "provision": "4.3.2.2.1 (b)"
+      },
+      "c": {
+        "numerator": 97,
+        "vented": false,
+        "toxic_or_corrosive": false,
+        "provision": "4.3.2.2.1 (c)"
+      },
+      "d": {
+        "numerator": 95,
+        "vented": false,
+        "toxic_or_corrosive": true,
+        "provision": "4.3.2.2.1 (d)"
+      }
+    },
+    "formula": {
+      "nl": "vullingsgraad = {numerator} / (1 + α × (50 − tF)) % van de inhoud, met α = (d15 − d50) / (35 × d50)",
+      "en": "degree of filling = {numerator} / (1 + α × (50 − tF)) % of capacity, with α = (d15 − d50) / (35 × d50)",
+      "de": "Füllungsgrad = {numerator} / (1 + α × (50 − tF)) % des Fassungsraums, mit α = (d15 − d50) / (35 × d50)",
+      "fr": "taux de remplissage = {numerator} / (1 + α × (50 − tF)) % de la capacité, avec α = (d15 − d50) / (35 × d50)"
+    },
+    "computed": {
+      "nl": "{product}: maximale vullingsgraad {degree} % van de inhoud ({provision}). Gerekend met α = {alpha} en een vultemperatuur van {temperature} °C.",
+      "en": "{product}: maximum degree of filling {degree} % of capacity ({provision}). Computed with α = {alpha} and a filling temperature of {temperature} °C.",
+      "de": "{product}: höchster Füllungsgrad {degree} % des Fassungsraums ({provision}). Gerechnet mit α = {alpha} und einer Fülltemperatur von {temperature} °C.",
+      "fr": "{product} : taux de remplissage maximal {degree} % de la capacité ({provision}). Calculé avec α = {alpha} et une température de remplissage de {temperature} °C."
+    },
+    "needs_input": {
+      "nl": "{product}: de vullingsgraad kan niet berekend worden. {provision} geeft de formule; tabel A draagt de dichtheid niet, dus vul de dichtheid bij 15 °C en bij 50 °C en de gemiddelde vultemperatuur in. Zet de formule anders als voorwaarde op het document.",
+      "en": "{product}: the degree of filling cannot be computed. {provision} gives the formula; table A does not carry the density, so fill in the density at 15 °C and at 50 °C and the mean filling temperature. Otherwise put the formula on the document as a condition.",
+      "de": "{product}: der Füllungsgrad kann nicht berechnet werden. {provision} gibt die Formel; Tabelle A führt die Dichte nicht, also tragen Sie die Dichte bei 15 °C und bei 50 °C und die mittlere Fülltemperatur ein.",
+      "fr": "{product} : le taux de remplissage ne peut pas être calculé. Le {provision} donne la formule ; le tableau A ne porte pas la masse volumique, indiquez donc la masse volumique à 15 °C et à 50 °C et la température moyenne de remplissage."
+    },
+    "derivation": {
+      "nl": "Formule {provision} gekozen op de tankcode {code} ({venting}) en op {hazard}. Klopt dat niet voor deze stof, ga dan uit van de formule zelf.",
+      "en": "Formula {provision} chosen on the tank code {code} ({venting}) and on {hazard}. Where that is not right for this substance, work from the formula itself.",
+      "de": "Formel {provision} gewählt anhand der Tankcodierung {code} ({venting}) und {hazard}. Trifft das für diesen Stoff nicht zu, gehen Sie von der Formel selbst aus.",
+      "fr": "Formule {provision} choisie d'après le code-citerne {code} ({venting}) et {hazard}. Si cela ne convient pas à cette matière, partez de la formule elle-même."
+    },
+    "vented": {
+      "nl": "be- en ontluchtingsinrichting of veiligheidskleppen",
+      "en": "a breather device or safety valves",
+      "de": "Be- und Entlüftungseinrichtung oder Sicherheitsventile",
+      "fr": "un dispositif de respiration ou des soupapes de sécurité"
+    },
+    "hermetic": {
+      "nl": "hermetisch gesloten, zonder veiligheidsinrichting",
+      "en": "hermetically closed, without a safety device",
+      "de": "hermetisch geschlossen, ohne Sicherheitseinrichtung",
+      "fr": "hermétiquement clos, sans dispositif de sécurité"
+    },
+    "toxic_or_corrosive": {
+      "nl": "een giftige of bijtende stof",
+      "en": "a toxic or corrosive substance",
+      "de": "einen giftigen oder ätzenden Stoff",
+      "fr": "une matière toxique ou corrosive"
+    },
+    "not_toxic_or_corrosive": {
+      "nl": "een brandbare of milieugevaarlijke stof zonder giftige of bijtende bijkomende gevaren",
+      "en": "a flammable or environmentally hazardous substance with no toxic or corrosive subsidiary hazard",
+      "de": "einen brandbaren oder umweltgefährdenden Stoff ohne giftige oder ätzende Zusatzgefahr",
+      "fr": "une matière inflammable ou dangereuse pour l'environnement sans danger subsidiaire toxique ou corrosif"
+    },
+    "above_fifty": {
+      "nl": "{product}: bij een vultemperatuur boven 50 °C geldt 4.3.2.2.1 niet. 4.3.2.2.3 eist dan dat de tank tijdens het vervoer nooit voller dan 95 % is, met vullingsgraad = 95 × dr/df % van de inhoud (df en dr zijn de dichtheden bij de gemiddelde vultemperatuur en bij de hoogste gemiddelde temperatuur van de lading tijdens het vervoer).",
+      "en": "{product}: above a filling temperature of 50 °C, 4.3.2.2.1 does not apply. 4.3.2.2.3 then requires that the tank is never more than 95 % full during carriage, with degree of filling = 95 × dr/df % of capacity (df and dr being the densities at the mean filling temperature and at the maximum mean bulk temperature during carriage).",
+      "de": "{product}: über einer Fülltemperatur von 50 °C gilt 4.3.2.2.1 nicht. 4.3.2.2.3 verlangt dann, dass der Tank während der Beförderung nie mehr als 95 % gefüllt ist, mit Füllungsgrad = 95 × dr/df % des Fassungsraums.",
+      "fr": "{product} : au-dessus d'une température de remplissage de 50 °C, le 4.3.2.2.1 ne s'applique pas. Le 4.3.2.2.3 exige alors que la citerne ne soit jamais remplie à plus de 95 % pendant le transport, avec taux de remplissage = 95 × dr/df % de la capacité."
+    },
+    "own_rule": {
+      "nl": "{product}: voor tanks bestemd voor stoffen van de klassen 1, 5.2 en 7 maakt 4.3.2.2.1 een uitzondering (zie 4.3.4.1.3); de formule hierboven geldt daar niet.",
+      "en": "{product}: for tanks intended for substances of classes 1, 5.2 and 7, 4.3.2.2.1 makes an exception (see 4.3.4.1.3); the formula above does not apply there.",
+      "de": "{product}: für Tanks für Stoffe der Klassen 1, 5.2 und 7 macht 4.3.2.2.1 eine Ausnahme (siehe 4.3.4.1.3); die obige Formel gilt dort nicht.",
+      "fr": "{product} : pour les citernes destinées aux matières des classes 1, 5.2 et 7, le 4.3.2.2.1 prévoit une exception (voir 4.3.4.1.3) ; la formule ci-dessus ne s'y applique pas."
+    },
+    "no_tank_code": {
+      "nl": "{product}: welke formule van 4.3.2.2.1 geldt, hangt af van de uitrusting van de tank (be- en ontluchting of hermetisch gesloten). Vul de tankcode in, dan kiest CargoPilot de formule; anders geldt de formule zelf als voorwaarde.",
+      "en": "{product}: which formula of 4.3.2.2.1 applies depends on the tank's fittings (breather device or hermetically closed). Fill in the tank code and CargoPilot picks the formula; otherwise the formula itself stands as a condition.",
+      "de": "{product}: welche Formel des 4.3.2.2.1 gilt, hängt von der Ausrüstung des Tanks ab. Tragen Sie die Tankcodierung ein, dann wählt CargoPilot die Formel.",
+      "fr": "{product} : la formule applicable du 4.3.2.2.1 dépend de l'équipement de la citerne. Indiquez le code-citerne et CargoPilot choisit la formule."
+    }
   }
 }

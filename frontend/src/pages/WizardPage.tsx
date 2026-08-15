@@ -68,7 +68,10 @@ const DG_EXTRA_FIELDS: Record<string, string[]> = {
   // column (12) says which code the substance requires, and ADR 4.3 decides
   // whether the tank standing on the yard may carry it. The field only shows
   // once the mode says a tank is involved.
-  ADR: ["carriage_mode", "tank_code", "transport_category", "adr_total_quantity"],
+  // The tank's own code, then what 4.3.2.2 needs to say how full it may be.
+  // All four only show once the mode says a tank is involved.
+  ADR: ["carriage_mode", "tank_code", "filling_temperature", "density_15",
+        "density_50", "transport_category", "adr_total_quantity"],
   RID: ["carriage_mode", "transport_category", "adr_total_quantity"],
   // Where it goes on the vessel: 7.1.4.11.1 asks the boatmaster to say which
   // goods are in which hold or on deck, and no table can answer that.

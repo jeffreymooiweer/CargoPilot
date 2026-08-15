@@ -457,6 +457,11 @@
       "ok": "passt",
       "not_permitted": "passt nicht"
     },
+    "fillingDegreeTitle": "Füllungsgrad des Tanks (ADR 4.3.2.2)",
+    "fillingDegree": {
+      "computed": "berechnet",
+      "formula": "Formel als Bedingung"
+    },
     "adnAdmissionTitle": "Zugelassene Beförderungsart (ADN 3.2.1, Spalte (8))",
     "adnAdmission": {
       "ok": "zugelassen",

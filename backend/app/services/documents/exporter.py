@@ -589,6 +589,30 @@ def validate_document(
                         warnings.append(f"ADR {item.get('provision', '3.2.1')}: "
                                         f"{item['message']}")
 
+                # And whether *this* tank may carry it (4.3), which since
+                # v1.82.0 was answered on screen only — the same failure the
+                # admission check had before it. A tank that does not fit, a
+                # fit the books could not settle and a fit that carries a
+                # condition all belong on the paper; a plain fit does not, or
+                # every document would grow a line saying nothing happened.
+                for item in (outcome.get("adr_tank_fit") or {}).get("items", []):
+                    if item.get("fit") in ("does_not_fit", "cannot_be_assessed",
+                                           "fits_under_condition"):
+                        warnings.append(f"ADR 4.3: {item['message']}")
+                    if item.get("provisions_note") and item.get("fit") != "fits":
+                        warnings.append(str(item["provisions_note"]))
+
+                # How full it may be (4.3.2.2). The formula is the answer where
+                # the densities are missing, and that is exactly the kind of
+                # condition the person filling in the document has to carry
+                # out: table A does not hold the density, so nobody but the
+                # consignor can close it.
+                for item in (outcome.get("adr_filling_degree") or {}).get("items", []):
+                    warnings.append(f"ADR {item.get('provision', '4.3.2.2')}: "
+                                    f"{item['message']}")
+                    if item.get("status") == "needs_input" and item.get("formula"):
+                        warnings.append(str(item["formula"]))
+
             # The inland waterway answers two questions the road does not, and
             # until now it answered them into the void: the separation in the
             # holds and the signals the vessel must show were computed for every

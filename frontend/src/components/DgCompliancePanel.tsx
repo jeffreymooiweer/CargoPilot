@@ -92,6 +92,7 @@ export default function DgCompliancePanel({ entries, profiles }: Props) {
   const adr = result?.adr_points;
   const tankAdmission = result?.adr_tank_admission;
   const tankFit = result?.adr_tank_fit;
+  const filling = result?.adr_filling_degree;
   const adnAdmission = result?.adn_carriage_admission;
   const adn = result?.adn_exemption;
   const separation = result?.adn_hold_separation;
@@ -333,6 +334,53 @@ export default function DgCompliancePanel({ entries, profiles }: Props) {
           </ul>
           {tankFit.source && (
             <p className="text-[11px] text-slate-500 dark:text-slate-400">{tankFit.source}</p>
+          )}
+        </CollapsibleSection>
+      )}
+
+      {/* ADR 4.3.2.2 — how full that tank may be. The formula is the answer
+          even when the densities to put in it are missing, so the card shows it
+          either way and says which of the four cases it picked and why. */}
+      {filling && filling.status !== "not_checked" && (
+        <CollapsibleSection
+          title={t("compliance.fillingDegreeTitle")}
+          chips={
+            <SummaryChip className="bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-200">
+              {t(
+                filling.items.some((item) => item.status === "computed")
+                  ? "compliance.fillingDegree.computed"
+                  : "compliance.fillingDegree.formula",
+              )}
+            </SummaryChip>
+          }
+        >
+          <ul className="space-y-2">
+            {filling.items.map((item, i) => (
+              <li key={i} className="text-xs">
+                <p
+                  className={
+                    item.status === "computed"
+                      ? "text-slate-700 dark:text-slate-300"
+                      : "text-amber-600 dark:text-amber-300"
+                  }
+                >
+                  {item.message}
+                </p>
+                {item.formula && (
+                  <p className="mt-0.5 font-mono text-[11px] text-slate-500 dark:text-slate-400">
+                    {item.formula}
+                  </p>
+                )}
+                {item.derivation && (
+                  <p className="mt-0.5 text-[11px] text-slate-500 dark:text-slate-400">
+                    {item.derivation}
+                  </p>
+                )}
+              </li>
+            ))}
+          </ul>
+          {filling.source && (
+            <p className="text-[11px] text-slate-500 dark:text-slate-400">{filling.source}</p>
           )}
         </CollapsibleSection>
       )}

@@ -457,6 +457,11 @@
       "ok": "fits",
       "not_permitted": "does not fit"
     },
+    "fillingDegreeTitle": "Degree of filling of the tank (ADR 4.3.2.2)",
+    "fillingDegree": {
+      "computed": "computed",
+      "formula": "formula as a condition"
+    },
     "adnAdmissionTitle": "Carriage permitted (ADN 3.2.1, column (8))",
     "adnAdmission": {
       "ok": "permitted",

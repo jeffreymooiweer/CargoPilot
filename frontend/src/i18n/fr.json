@@ -457,6 +457,11 @@
       "ok": "convient",
       "not_permitted": "ne convient pas"
     },
+    "fillingDegreeTitle": "Taux de remplissage de la citerne (ADR 4.3.2.2)",
+    "fillingDegree": {
+      "computed": "calculé",
+      "formula": "formule comme condition"
+    },
     "adnAdmissionTitle": "Transport autorisé (ADN 3.2.1, colonne (8))",
     "adnAdmission": {
       "ok": "autorisé",

@@ -422,7 +422,12 @@ export default function DangerousGoodsStep({
                 // A tank code is a question about a tank. Asking it of a
                 // packages consignment is noise, and noise on this step is
                 // what makes people stop reading it.
-                .filter((field) => field !== "tank_code" || product.carriage_mode === "tank")
+                .filter(
+                  (field) =>
+                    !["tank_code", "filling_temperature", "density_15", "density_50"].includes(
+                      field,
+                    ) || product.carriage_mode === "tank",
+                )
                 // Holds belong to a dry cargo vessel. A cargo tank has no hold
                 // to be in, and 7.1.4.11 is a chapter 7.1 provision — asking
                 // for one on a tank vessel would be asking the wrong question.

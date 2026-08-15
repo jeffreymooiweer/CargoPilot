@@ -469,6 +469,10 @@ export interface DgProduct {
   carriage_mode?: string;
   /** The code on the tank that is actually standing there, for ADR 4.3. */
   tank_code?: string;
+  /** What ADR 4.3.2.2 needs and table A does not carry. */
+  filling_temperature?: string;
+  density_15?: string;
+  density_50?: string;
   /** Which hold this is in, or "deck" — ADN 7.1.4.11.1. */
   hold?: string;
   /** The container it travels in, if any — ADN 7.1.4.11.2. */
@@ -980,6 +984,32 @@ export interface AdrTankFitResult {
   source?: string;
 }
 
+/** ADR 4.3.2.2: how full the tank may be.
+ *
+ *  Four maxima, differing only in their numerator, all over 1 + α (50 − tF).
+ *  Which one applies turns on the fourth letter of the tank code — N vents, H
+ *  is hermetically closed — and on whether the substance is toxic or corrosive;
+ *  the second half is a derivation and is shown as one. Table A carries neither
+ *  density, so `needs_input` is the normal state until the consignor supplies
+ *  them, and the formula is then the answer that goes on the document. */
+export interface AdrFillingDegreeResult {
+  status: "ok" | "not_checked";
+  items: {
+    position: string;
+    status: "computed" | "needs_input" | "above_fifty" | "own_rule" | "no_tank_code";
+    provision?: string;
+    case?: string;
+    numerator?: number;
+    formula?: string;
+    derivation?: string;
+    alpha?: number;
+    degree?: number;
+    filling_temperature?: number;
+    message: string;
+  }[];
+  source?: string;
+}
+
 export interface ComplianceWarning {
   rule: string;
   severity: "error" | "warning" | "info";
@@ -1102,6 +1132,7 @@ export interface DgComplianceResult {
   /** With the ADN profile only: its own exemption of 1.1.3.6.1. */
   adr_tank_admission?: AdrTankAdmissionResult;
   adr_tank_fit?: AdrTankFitResult;
+  adr_filling_degree?: AdrFillingDegreeResult;
   adn_carriage_admission?: AdnCarriageAdmissionResult;
   adn_exemption?: AdnExemptionResult;
   adn_hold_separation?: AdnHoldSeparationResult;

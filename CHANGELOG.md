@@ -2,6 +2,40 @@
 
 All notable changes are documented here, following [Semantic Versioning](https://semver.org/).
 
+## [1.87.0] — 2026-08-15
+
+### Added
+
+- **The degree of filling (ADR 4.3.2.2).** Read in the English volume II and the
+  printed Dutch edition, which agree word for word. 4.3.2.2.1 gives four maxima
+  for a tank carrying a liquid — 100, 98, 97 and 95 — all over `1 + α (50 − tF)`,
+  with α = (d15 − d50) / (35 d50) from 4.3.2.2.2.
+- **What decides which of the four is half read and half derived, and the seam
+  is visible.** The tank's venting is the *fourth letter of the tank code* the
+  consignor already types: N is a breather device or safety valves, H is
+  hermetically closed without a safety device. That half is read. Whether the
+  substance is toxic or corrosive is derived from the class and the subsidiary
+  risks — so it is shown as a derivation, with the code and the reasoning, and
+  can be overruled instead of believed.
+- **Where the numbers are missing the formula is the answer.** Table A carries
+  neither density, so α comes from the consignor: three new fields (the filling
+  temperature and the densities at 15 °C and 50 °C, or α itself) turn the answer
+  into a percentage, and without them the formula stands as a condition. A
+  calculation whose inputs nobody has must not come back as a number.
+- Above 50 °C the application says 4.3.2.2.3 has taken over — a flat 95 % ceiling
+  and its own formula on two different densities — and does not compute with a
+  formula that no longer applies. Classes 1, 5.2 and 7 go to 4.3.4.1.3, as the
+  provision's own footnote does.
+
+### Fixed
+
+- **The tank fit check reached the panel and not the paper.** It shipped in
+  v1.82.0 answering on screen only, which is the exact failure the tank
+  admission check had before v1.66.0: a tank that does not fit, a fit the books
+  could not settle and a fit that carries a condition now all appear as document
+  warnings, with column (13) beside them. A plain fit does not — every document
+  would otherwise grow a line saying nothing happened.
+
 ## [1.86.0] — 2026-08-15
 
 ### Changed

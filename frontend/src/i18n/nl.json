@@ -457,6 +457,11 @@
       "ok": "past",
       "not_permitted": "past niet"
     },
+    "fillingDegreeTitle": "Vullingsgraad van de tank (ADR 4.3.2.2)",
+    "fillingDegree": {
+      "computed": "berekend",
+      "formula": "formule als voorwaarde"
+    },
     "adnAdmissionTitle": "Toegelaten wijze van vervoer (ADN 3.2.1, kolom (8))",
     "adnAdmission": {
       "ok": "toegelaten",

@@ -466,6 +466,51 @@
       },
       "type": "text"
     },
+    "filling_temperature": {
+      "label": {
+        "nl": "Vultemperatuur tF (°C)",
+        "en": "Filling temperature tF (°C)",
+        "de": "Fülltemperatur tF (°C)",
+        "fr": "Température de remplissage tF (°C)"
+      },
+      "help": {
+        "nl": "De gemiddelde temperatuur van de vloeistof tijdens het vullen. ADR 4.3.2.2 rekent de maximale vullingsgraad hiermee; boven 50 °C geldt 4.3.2.2.1 niet meer maar 4.3.2.2.3.",
+        "en": "The mean temperature of the liquid during filling. ADR 4.3.2.2 computes the maximum degree of filling with it; above 50 °C, 4.3.2.2.1 gives way to 4.3.2.2.3.",
+        "de": "Die mittlere Temperatur der Flüssigkeit beim Befüllen. ADR 4.3.2.2 berechnet damit den höchsten Füllungsgrad; über 50 °C gilt statt 4.3.2.2.1 der 4.3.2.2.3.",
+        "fr": "La température moyenne du liquide lors du remplissage. L'ADR 4.3.2.2 calcule ainsi le taux de remplissage maximal ; au-dessus de 50 °C, le 4.3.2.2.1 cède la place au 4.3.2.2.3."
+      },
+      "type": "text"
+    },
+    "density_15": {
+      "label": {
+        "nl": "Dichtheid bij 15 °C (d15)",
+        "en": "Density at 15 °C (d15)",
+        "de": "Dichte bei 15 °C (d15)",
+        "fr": "Masse volumique à 15 °C (d15)"
+      },
+      "help": {
+        "nl": "De relatieve dichtheid bij 15 °C. Samen met d50 bepaalt die de uitzettingscoëfficiënt α = (d15 − d50) / (35 × d50) van 4.3.2.2.2. Tabel A draagt deze waarden niet.",
+        "en": "The relative density at 15 °C. With d50 it gives the coefficient of expansion α = (d15 − d50) / (35 × d50) of 4.3.2.2.2. Table A does not carry these values.",
+        "de": "Die relative Dichte bei 15 °C. Zusammen mit d50 ergibt sie den Ausdehnungskoeffizienten α = (d15 − d50) / (35 × d50) nach 4.3.2.2.2.",
+        "fr": "La masse volumique relative à 15 °C. Avec d50 elle donne le coefficient de dilatation α = (d15 − d50) / (35 × d50) du 4.3.2.2.2."
+      },
+      "type": "text"
+    },
+    "density_50": {
+      "label": {
+        "nl": "Dichtheid bij 50 °C (d50)",
+        "en": "Density at 50 °C (d50)",
+        "de": "Dichte bei 50 °C (d50)",
+        "fr": "Masse volumique à 50 °C (d50)"
+      },
+      "help": {
+        "nl": "De relatieve dichtheid bij 50 °C, de tweede helft van α in 4.3.2.2.2.",
+        "en": "The relative density at 50 °C, the other half of α in 4.3.2.2.2.",
+        "de": "Die relative Dichte bei 50 °C, die andere Hälfte von α in 4.3.2.2.2.",
+        "fr": "La masse volumique relative à 50 °C, l'autre moitié de α au 4.3.2.2.2."
+      },
+      "type": "text"
+    },
     "hold": {
       "label": {
         "nl": "Laadruim of dek",

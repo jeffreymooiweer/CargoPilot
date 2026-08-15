@@ -315,8 +315,19 @@ dataset it was built on.
   group II of class 3 F1 only where the vapour pressure at 50 °C is at most 1.1 bar); and the
   test pressure printed as **x** in column (12) for most gases, which comes from the table of
   4.3.3.2.5 and is not in this application, so the answer says so instead of comparing a
-  figure that is not there. The filling degree of 4.3.2.2 is not computed: table A does not
-  carry the density or α.
+  figure that is not there.
+- **The degree of filling is computed since v1.87.0**, and what decides it is the same tank
+  code. 4.3.2.2.1 gives four maxima — 100, 98, 97 and 95 — over `1 + α (50 − tF)`, and which
+  applies turns on the tank's venting and on how dangerous the substance is. The venting is
+  the *fourth letter of the tank code*: N is a breather device or safety valves, H is
+  hermetically closed without a safety device, so that half is read rather than guessed. The
+  other half — toxic or corrosive against merely flammable — is derived from the class and
+  the subsidiary risks, and is shown as a derivation so it can be overruled. Table A carries
+  neither density, so α comes from the consignor: with d15, d50 and the filling temperature
+  the answer is a percentage, and without them the answer is the formula, which goes on the
+  document as a condition. Above 50 °C the application says 4.3.2.2.3 has taken over and
+  does not compute; classes 1, 5.2 and 7 are sent to 4.3.4.1.3, as the provision's own
+  footnote does.
 - **High consequence dangerous goods are derived since v1.58.0.** Table 1.10.3.1.2 turns
   out to be easier than it looks once it has been read: for carriage in packages its column
   holds two values and no others — **0**, meaning any quantity at all, and footnote **b)**,

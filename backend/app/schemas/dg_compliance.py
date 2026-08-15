@@ -96,6 +96,10 @@ class DangerousGoodsProduct(BaseModel):
     # ADN 7.1.5.0.2: the consignor's statement that the goods travel
     # exclusively in containers — the reduction's own condition.
     containers_only: str | bool | None = None
+    # 5.4.1.1.23 (molten), 5.4.1.1.19 (UN 3509 residues), 5.4.1.1.20 (2.1.2.8).
+    molten: str | bool | None = None
+    residue_classes: str | None = None
+    classified_2_1_2_8: str | bool | None = None
 
     @field_validator("salvage_packaging")
     @classmethod

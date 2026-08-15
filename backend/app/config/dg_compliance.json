@@ -3430,5 +3430,16 @@
         "fr": "Les emballages vides, non nettoyés peuvent être transportés en vrac lorsque les marchandises qu'ils contenaient sont autorisées pour ce mode (7.3.1.1) ; cette conclusion concerne la matière elle-même."
       }
     }
+  },
+  "sp274_technical_name": {
+    "_source": "ADR 2025 column (6) of table A carries special provision 274 on 816 rows; 3.1.2.8.1 requires the proper shipping name of such N.O.S. and generic entries to be supplemented with the technical name in brackets. The description-line builder appends the name where the field is filled; this check is what speaks when it is not.",
+    "rules": {
+      "missing": {
+        "nl": "Bijzondere bepaling 274 geldt voor {products}: de juiste vervoersnaam moet met de technische benaming worden aangevuld (3.1.2.8). Vul het veld technische benaming in — zonder die benaming is de omschrijving op het document onvolledig.",
+        "en": "Special provision 274 applies to {products}: the proper shipping name must be supplemented with the technical name (3.1.2.8). Fill in the technical name field — without it the description on the document is incomplete.",
+        "de": "Sondervorschrift 274 gilt für {products}: die offizielle Benennung ist durch die technische Benennung zu ergänzen (3.1.2.8). Tragen Sie die technische Benennung ein — ohne sie ist die Beschreibung im Beförderungspapier unvollständig.",
+        "fr": "La disposition spéciale 274 s'applique à {products} : la désignation officielle de transport doit être complétée par le nom technique (3.1.2.8). Renseignez le champ nom technique — sans lui, la description sur le document est incomplète."
+      }
+    }
   }
 }

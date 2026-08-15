@@ -2,6 +2,31 @@
 
 All notable changes are documented here, following [Semantic Versioning](https://semver.org/).
 
+## [1.95.0] — 2026-08-15
+
+### Added
+
+The description line closes. Read in the UNECE English and French volumes II
+and the RID German edition (printed 266–267 / 293 / 909), which agree; the
+Dutch words came with the fase-8 reading.
+
+- **Molten substances (5.4.1.1.23).** A substance solid by 1.2.1, offered
+  molten, carries the qualifying word as part of the name — GESMOLTEN /
+  MOLTEN / GESCHMOLZEN / FONDU, in the document's language, and never doubled
+  where the name already says it (UN 2448 SULPHUR, MOLTEN).
+- **UN 3509 (5.4.1.1.19).** The name is complemented with "(BEVAT RESTEN VAN
+  …)" and the residues' classes in class order, and 5.4.1.1.1 (f) does not
+  apply — no total quantity for residues nobody has weighed. The residues
+  field shows only for UN 3509.
+- **Classified per 2.1.2.8 (5.4.1.1.20).** The prescribed statement, worded as
+  each edition sets it — the German in its own capitals.
+- **Special provision 274 is enforced.** Column (6) carries it on 816 rows:
+  an N.O.S. entry must supplement its name with the technical name (3.1.2.8.1).
+  The builder has appended that name since the field existed — for the
+  consignor who filled it in; now the one who did not is told, on the panel
+  and on the document, that "UN 1993 FLAMMABLE LIQUID, N.O.S." with empty
+  brackets is a description the provision calls incomplete.
+
 ## [1.94.0] — 2026-08-15
 
 ### Added

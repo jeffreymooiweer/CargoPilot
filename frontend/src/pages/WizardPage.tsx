@@ -75,14 +75,17 @@ const DG_EXTRA_FIELDS: Record<string, string[]> = {
   // the goods are waste is a fact about the consignment.
   ADR: ["carriage_mode", "tank_code", "filling_temperature", "density_15",
         "density_50", "transport_category", "adr_total_quantity",
-        "is_waste", "empty_uncleaned", "salvage_packaging"],
+        "is_waste", "empty_uncleaned", "salvage_packaging",
+        "molten", "residue_classes", "classified_2_1_2_8"],
   RID: ["carriage_mode", "transport_category", "adr_total_quantity",
-        "is_waste", "empty_uncleaned", "salvage_packaging"],
+        "is_waste", "empty_uncleaned", "salvage_packaging",
+        "molten", "residue_classes", "classified_2_1_2_8"],
   // Where it goes on the vessel: 7.1.4.11.1 asks the boatmaster to say which
   // goods are in which hold or on deck, and no table can answer that.
   ADN: ["carriage_mode", "hold", "container_number", "containers_only",
         "transport_category", "adr_total_quantity", "is_waste",
-        "empty_uncleaned", "salvage_packaging"],
+        "empty_uncleaned", "salvage_packaging", "molten", "residue_classes",
+        "classified_2_1_2_8"],
   IMDG: ["technical_name", "marine_pollutant", "ems_code", "emergency_contact"],
   IATA_DGR: [
     "technical_name",

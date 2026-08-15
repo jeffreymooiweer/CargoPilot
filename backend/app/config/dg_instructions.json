@@ -689,6 +689,90 @@
           }
         }
       ]
+    },
+    "molten": {
+      "label": {
+        "nl": "Gesmolten aangeboden",
+        "en": "Offered molten",
+        "de": "Geschmolzen aufgegeben",
+        "fr": "Présenté à l'état fondu"
+      },
+      "help": {
+        "nl": "5.4.1.1.23: een stof die volgens 1.2.1 een vaste stof is en gesmolten ten vervoer wordt aangeboden, draagt het woord \"GESMOLTEN\" als deel van de vervoersnaam, tenzij dat er al in staat.",
+        "en": "5.4.1.1.23: a substance solid by the definition of 1.2.1, offered for carriage molten, carries the word \"MOLTEN\" as part of the proper shipping name, unless it is already part of it.",
+        "de": "5.4.1.1.23: Ein Stoff, der nach 1.2.1 ein fester Stoff ist und geschmolzen aufgegeben wird, trägt die Präzisierung \"GESCHMOLZEN\" als Teil der Benennung, sofern sie nicht bereits enthalten ist.",
+        "fr": "5.4.1.1.23 : une matière solide selon 1.2.1, présentée au transport à l'état fondu, porte le qualificatif \"FONDU\" dans la désignation officielle, sauf s'il y figure déjà."
+      },
+      "type": "select",
+      "options": [
+        {
+          "value": "",
+          "label": {
+            "nl": "Nee",
+            "en": "No",
+            "de": "Nein",
+            "fr": "Non"
+          }
+        },
+        {
+          "value": "yes",
+          "label": {
+            "nl": "Ja — gesmolten",
+            "en": "Yes — molten",
+            "de": "Ja — geschmolzen",
+            "fr": "Oui — fondu"
+          }
+        }
+      ]
+    },
+    "residue_classes": {
+      "label": {
+        "nl": "Klassen van de resten (UN 3509)",
+        "en": "Classes of the residues (UN 3509)",
+        "de": "Klassen der Rückstände (UN 3509)",
+        "fr": "Classes des résidus (UN 3509)"
+      },
+      "help": {
+        "nl": "5.4.1.1.19: bij UN 3509 wordt de vervoersnaam aangevuld met \"(BEVAT RESTEN VAN ...)\" gevolgd door de klassen en bijkomende gevaren van de resten, in klassenvolgorde — bijv. \"3, 4.1, 6.1\". De totale hoeveelheid (5.4.1.1.1 f) vervalt.",
+        "en": "5.4.1.1.19: for UN 3509 the proper shipping name is complemented with \"(WITH RESIDUES OF ...)\" followed by the classes and subsidiary hazards of the residues, in class order — e.g. \"3, 4.1, 6.1\". The total quantity of 5.4.1.1.1 (f) does not apply.",
+        "de": "5.4.1.1.19: Bei UN 3509 wird die Benennung durch \"(MIT RÜCKSTÄNDEN VON ...)\" ergänzt, gefolgt von den Klassen und Nebengefahren der Rückstände in numerischer Reihenfolge — z. B. \"3, 4.1, 6.1\". Die Gesamtmenge nach 5.4.1.1.1 f) entfällt.",
+        "fr": "5.4.1.1.19 : pour l'ONU 3509, la désignation est complétée par \"(AVEC DES RÉSIDUS DE ...)\" suivie des classes et dangers subsidiaires des résidus, par ordre de classe — p. ex. \"3, 4.1, 6.1\". La quantité totale du 5.4.1.1.1 f) ne s'applique pas."
+      }
+    },
+    "classified_2_1_2_8": {
+      "label": {
+        "nl": "Ingedeeld volgens 2.1.2.8",
+        "en": "Classified per 2.1.2.8",
+        "de": "Klassifiziert nach 2.1.2.8",
+        "fr": "Classé selon 2.1.2.8"
+      },
+      "help": {
+        "nl": "5.4.1.1.20: bij vervoer overeenkomstig 2.1.2.8 (indeling door de afzender) draagt het vervoerdocument de verklaring \"Ingedeeld overeenkomstig 2.1.2.8\".",
+        "en": "5.4.1.1.20: for carriage in accordance with 2.1.2.8 (classification by the consignor) the transport document carries the statement \"Classified in accordance with 2.1.2.8\".",
+        "de": "5.4.1.1.20: Bei Beförderungen gemäß 2.1.2.8 (Klassifizierung durch den Absender) trägt das Beförderungspapier den Vermerk \"GEMÄSS UNTERABSCHNITT 2.1.2.8 KLASSIFIZIERT\".",
+        "fr": "5.4.1.1.20 : pour le transport conformément au 2.1.2.8 (classement par l'expéditeur), le document de transport porte la mention \"Classé conformément au 2.1.2.8\"."
+      },
+      "type": "select",
+      "options": [
+        {
+          "value": "",
+          "label": {
+            "nl": "Nee",
+            "en": "No",
+            "de": "Nein",
+            "fr": "Non"
+          }
+        },
+        {
+          "value": "yes",
+          "label": {
+            "nl": "Ja",
+            "en": "Yes",
+            "de": "Ja",
+            "fr": "Oui"
+          }
+        }
+      ]
     }
   }
 }

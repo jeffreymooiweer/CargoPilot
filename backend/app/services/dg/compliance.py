@@ -905,6 +905,43 @@ def check_rid_limited_quantities_with_explosives(
     }]
 
 
+def check_technical_name_required(
+    entries: list[dict[str, Any]], language: str = "nl",
+) -> list[dict[str, str]]:
+    """Special provision 274: an N.O.S. entry needs its technical name.
+
+    Column (6) of table A carries 274 on 816 rows, and 3.1.2.8.1 is what it
+    points at: the proper shipping name of such an entry is supplemented with
+    the technical name in brackets. The description-line builder has appended
+    that name since the field existed — for the consignor who filled it in.
+    Nothing ever spoke for the one who did not, and "UN 1993 FLAMMABLE LIQUID,
+    N.O.S." with nothing in the brackets is a description the provision calls
+    incomplete, printed with full confidence.
+    """
+    rules = get_compliance_rules()["sp274_technical_name"]
+    lang = _lang(language)
+    missing: list[str] = []
+    for entry, index, product in _iter_products(entries):
+        if product.get("transport_forbidden"):
+            continue
+        un = str(product.get("un_number") or "").strip()
+        if not un or str(product.get("technical_name") or "").strip():
+            continue
+        rows = database.get_un_entries(un)
+        provisions = str((rows[0] if rows else {}).get("special_provisions") or "")
+        if "274" in provisions.replace(",", " ").split():
+            missing.append(_product_label(entry, product, index))
+    if not missing:
+        return []
+    return [{
+        "rule": "ADR/RID/ADN 3.3, special provision 274",
+        "severity": "warning",
+        "message": pick(rules["rules"]["missing"], lang).format(
+            products=", ".join(missing)),
+        "products": ", ".join(missing),
+    }]
+
+
 def check_adn_stabilisation(
     entries: list[dict[str, Any]], language: str = "nl",
 ) -> list[dict[str, str]]:
@@ -4739,6 +4776,11 @@ def check_compliance(
 
     if {"ADR", "RID", "ADN"} & normalized:
         land = sorted({"ADR", "RID", "ADN"} & normalized)
+        # Special provision 274 belongs to all three land regimes alike: the
+        # technical name is part of the description, and its absence has to
+        # speak before the document does.
+        result["technical_name_findings"] = check_technical_name_required(
+            entries, language)
         result["adr_points"] = check_adr_points(entries, language, land)
         result["adr_mixed_loading"] = check_adr_mixed_loading(entries, language, land)
         if "RID" in normalized:

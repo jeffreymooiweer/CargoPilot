@@ -2,6 +2,39 @@
 
 All notable changes are documented here, following [Semantic Versioning](https://semver.org/).
 
+## [1.98.0] — 2026-08-15
+
+### Added
+
+- **Dangerous goods are recognised by name.** Whoever types "20 vaten
+  benzine" on the lines step has told the application everything it needs to
+  find UN 1203 — the four-language name index has known the substance all
+  along — yet until now only a literal "UN 1203" in the text was recognised.
+  The pipeline now consults its own lexicon, built from the capital-printed
+  names of the four language columns: the book prints the name proper in
+  capitals and its qualifiers in lower case, and exactly the capital part
+  matches, as whole words. So "benzine" finds UN 1203 and "benzinemotor"
+  finds nothing, and an aluminium tube stays an aluminium tube — "ALUMINIUM,
+  GESMOLTEN" is capital-printed as a whole and matches only as a whole. No
+  trade names or synonyms are invented: a word matches only if an edition
+  prints it as the name.
+- **Recognition is a suggestion, never a decision.** The line shows a chip —
+  "Recognised: UN 1203 (class 3)" — and asks. Confirming sets the dangerous
+  goods tick *and* carries the UN number through to the DG step, so nothing
+  recognised is typed twice; rejecting puts the suggestion away for that
+  line. Where the text is ambiguous ("zwavelzuur" is UN 1830 above 51 % acid
+  and UN 2796 up to it) the chip offers a button per UN number and decides
+  nothing. A silent classification on the strength of a word in free text
+  would be answering for the consignor; the consignor stays the one who
+  answers.
+
+### Fixed
+
+- **Ticking the dangerous-goods box no longer wipes the calculation.** Any
+  change to a line cleared the computed weights, including changes that do
+  not affect them; ticking DG (or answering the new suggestion) now keeps
+  the result on screen.
+
 ## [1.97.0] — 2026-08-15
 
 ### Added

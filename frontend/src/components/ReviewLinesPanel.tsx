@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { LineItem, UnitCatalogue, api } from "../api/client";
+import { DgNameCandidate, LineItem, UnitCatalogue, api } from "../api/client";
 import EquipmentCombobox from "./EquipmentCombobox";
 import ResponsiveRecords, { QuantityWithUnit, RecordColumn } from "./ResponsiveRecords";
 import UnitSelect from "./UnitSelect";
@@ -23,6 +23,11 @@ export interface DraftLine {
   width_cm?: number | "";
   height_cm?: number | "";
   dangerous_goods?: boolean;
+  /** UN number the user confirmed from a name suggestion. Carries through to
+   *  the DG step so nothing recognised has to be typed again. */
+  confirmed_un?: string;
+  /** The suggestion was rejected for this line; it must not come back. */
+  dg_dismissed?: boolean;
 }
 
 const inputClass =
@@ -128,6 +133,70 @@ function CardAction({
     >
       {icon}
     </button>
+  );
+}
+
+/** A substance recognised by name, offered for confirmation.
+ *
+ *  The recognition is a suggestion and looks like one: it names the UN number,
+ *  the shipping name and the class, and it asks. One candidate gets a yes/no;
+ *  several (two sulphuric acids, differing in the qualifier) get a button per
+ *  UN number. Rejecting it puts it away for this line — a suggestion that
+ *  keeps coming back is nagging, not helping. */
+function DgSuggestion({
+  candidates,
+  onConfirm,
+  onDismiss,
+}: {
+  candidates: DgNameCandidate[];
+  onConfirm: (un: string) => void;
+  onDismiss: () => void;
+}) {
+  const { t } = useTranslation();
+  const chipButton =
+    "rounded-md border border-amber-300 bg-white px-2 py-0.5 text-[11px] font-medium text-amber-900 hover:bg-amber-100 dark:border-amber-700 dark:bg-slate-900 dark:text-amber-200 dark:hover:bg-amber-900/40";
+  return (
+    <div className="rounded-lg border border-amber-200 bg-amber-50 px-2 py-1.5 text-[11px] text-amber-800 dark:border-amber-900/50 dark:bg-amber-900/20 dark:text-amber-200">
+      {candidates.length === 1 ? (
+        <>
+          <p className="truncate" title={candidates[0].name}>
+            {t("review.dgSuggestedOne", {
+              un: candidates[0].un,
+              class: candidates[0].class,
+            })}{" "}
+            <span className="font-medium">{candidates[0].name}</span>
+          </p>
+          <div className="mt-1 flex flex-wrap gap-1.5">
+            <button type="button" className={chipButton} onClick={() => onConfirm(candidates[0].un)}>
+              {t("review.dgApply")}
+            </button>
+            <button type="button" className={chipButton} onClick={onDismiss}>
+              {t("review.dgDismiss")}
+            </button>
+          </div>
+        </>
+      ) : (
+        <>
+          <p>{t("review.dgSuggestedMany")}</p>
+          <div className="mt-1 flex flex-wrap gap-1.5">
+            {candidates.slice(0, 3).map((candidate) => (
+              <button
+                key={candidate.un}
+                type="button"
+                className={chipButton}
+                title={candidate.name}
+                onClick={() => onConfirm(candidate.un)}
+              >
+                UN {candidate.un}
+              </button>
+            ))}
+            <button type="button" className={chipButton} onClick={onDismiss}>
+              {t("review.dgDismiss")}
+            </button>
+          </div>
+        </>
+      )}
+    </div>
   );
 }
 
@@ -404,19 +473,38 @@ export default function ReviewLinesPanel({
       width: "w-32",
       render: (draft, index) => {
         const result = resultFor(index);
+        const candidates = result?.dg_name_candidates ?? [];
+        const showSuggestion =
+          candidates.length > 0 && !draft.confirmed_un && !draft.dg_dismissed;
         return (
-          <div className="flex items-center justify-end gap-2 md:justify-start">
-            <input
-              type="checkbox"
-              aria-label={t("review.dangerousGoods")}
-              checked={draft.dangerous_goods ?? false}
-              onChange={(e) => updateDraft(draft.id, { dangerous_goods: e.target.checked })}
-              className="h-4 w-4 rounded border-slate-300 text-amber-600 focus:ring-amber-500"
-            />
-            {result?.dangerous_goods && !draft.dangerous_goods && (
-              <span className="rounded-full bg-amber-100 px-2 py-0.5 text-[11px] font-medium text-amber-800 dark:bg-amber-900/40 dark:text-amber-300">
-                {t("review.dgDetected")}
-              </span>
+          <div className="space-y-1.5">
+            <div className="flex items-center justify-end gap-2 md:justify-start">
+              <input
+                type="checkbox"
+                aria-label={t("review.dangerousGoods")}
+                checked={draft.dangerous_goods ?? false}
+                onChange={(e) => updateDraft(draft.id, { dangerous_goods: e.target.checked })}
+                className="h-4 w-4 rounded border-slate-300 text-amber-600 focus:ring-amber-500"
+              />
+              {result?.dangerous_goods && !draft.dangerous_goods && (
+                <span className="rounded-full bg-amber-100 px-2 py-0.5 text-[11px] font-medium text-amber-800 dark:bg-amber-900/40 dark:text-amber-300">
+                  {t("review.dgDetected")}
+                </span>
+              )}
+              {draft.confirmed_un && (
+                <span className="rounded-full bg-emerald-100 px-2 py-0.5 text-[11px] font-medium text-emerald-800 dark:bg-emerald-900/40 dark:text-emerald-300">
+                  UN {draft.confirmed_un}
+                </span>
+              )}
+            </div>
+            {showSuggestion && (
+              <DgSuggestion
+                candidates={candidates}
+                onConfirm={(un) =>
+                  updateDraft(draft.id, { dangerous_goods: true, confirmed_un: un })
+                }
+                onDismiss={() => updateDraft(draft.id, { dg_dismissed: true })}
+              />
             )}
           </div>
         );

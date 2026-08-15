@@ -308,13 +308,21 @@ export default function WizardPage() {
           result ? weightOverridesFromLines(result.lines) : [],
         ),
       });
-      // Apply the DG ticks of the packages (same order as the non-empty lines).
+      // Apply the DG ticks of the packages (same order as the non-empty lines),
+      // and the UN number a user confirmed from a name suggestion: that answer
+      // travels to the DG step so nothing recognised is typed twice.
       const flagged = draftLines.filter((l) => l.description.trim());
       const withDg = {
         ...res,
         lines: res.lines.map((line, i) => ({
           ...line,
           dangerous_goods: Boolean(line.dangerous_goods || flagged[i]?.dangerous_goods),
+          detected_un_numbers: flagged[i]?.confirmed_un
+            ? [
+                flagged[i].confirmed_un as string,
+                ...(line.detected_un_numbers ?? []).filter((un) => un !== flagged[i].confirmed_un),
+              ]
+            : line.detected_un_numbers,
         })),
       };
       setResult(withDg);
@@ -334,18 +342,20 @@ export default function WizardPage() {
    * corrections are deliberately not in it: those are an *answer* to a
    * calculation and would otherwise set themselves off again.
    */
-  const draftSignature = JSON.stringify(
-    draftLines.map((line) => [
-      line.description.trim(),
-      line.quantity,
-      line.unit,
-      line.cargo_form ?? "",
-      line.length_cm ?? "",
-      line.width_cm ?? "",
-      line.height_cm ?? "",
-      line.wall_thickness_mm ?? "",
-    ]),
-  );
+  const signatureOf = (lines: DraftLine[]) =>
+    JSON.stringify(
+      lines.map((line) => [
+        line.description.trim(),
+        line.quantity,
+        line.unit,
+        line.cargo_form ?? "",
+        line.length_cm ?? "",
+        line.width_cm ?? "",
+        line.height_cm ?? "",
+        line.wall_thickness_mm ?? "",
+      ]),
+    );
+  const draftSignature = signatureOf(draftLines);
 
   // Recalculating used to be a button, and a button you have to press to see a
   // correct figure is a button that gets forgotten — with a stale weight on the
@@ -712,7 +722,10 @@ export default function WizardPage() {
             resultLines={result?.lines}
             onDraftChange={(lines) => {
               setDraftLines(lines);
-              setResult(null);
+              // Ticking DG or answering a name suggestion does not change what
+              // was calculated; clearing the result for it would wipe the
+              // weights off the screen for an answer, not an edit.
+              if (signatureOf(lines) !== draftSignature) setResult(null);
             }}
             onRemoveLine={removeLine}
             onDuplicateLine={duplicateLine}

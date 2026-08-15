@@ -393,10 +393,31 @@ def explain(path: Path, targets: list[str]) -> int:
                               " the body")
                 lines, _right = name_column(page, top, centres)
                 marks = {round(y, 1) for _band, y in split_bands(lines, method, cut)}
-                for y, text, _edge in lines[:8]:
+                # Around the row, not at the head of the page. Printing the
+                # first eight lines shows the top of the table and almost never
+                # the entry asked about — UN 1108 sits at y 308 and the trace
+                # stopped at 206, which is a picture of a page and not of a
+                # loss. The window follows the number's own y, and falls back
+                # to the head only where the number was not found in the body.
+                anchor = next(
+                    (y0 for _x0, y0, _x1, _y1, word, *_ in page.get_text("words")
+                     if word.strip().startswith(un)
+                     and top <= y0 <= body_bottom(page)), None)
+                if anchor is None:
+                    window = lines[:8]
+                else:
+                    window = [line for line in lines
+                              if anchor - 30 <= line[0] <= anchor + 45]
+                    print(f"    lines within 30 points above and 45 below "
+                          f"y {anchor:.1f}:")
+                for y, text, _edge in window:
                     head = "ROW " if round(y, 1) in marks else "    "
                     flat = re.sub(r"\s+", " ", text)[:80]
                     print(f"    {head}{y:7.1f} {flat!r}")
+                if anchor is not None and not window:
+                    print("    no line of the name column lies beside the "
+                          "number: the name is outside the column this page "
+                          "measured, which is why the row yields nothing")
     return 0
 
 

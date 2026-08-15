@@ -80,6 +80,43 @@ interface Props {
   profiles?: string[];
 }
 
+/** The special cases of 5.4.1.1 — waste, empty uncleaned, salvage, molten,
+ *  UN 3509 residues, the 2.1.2.8 statement, containers-only — behind one
+ *  door, closed by default. The answer is "none" on nearly every consignment,
+ *  and eight always-open selects made the step look like eight questions. */
+const SPECIAL_FIELDS = [
+  "is_waste",
+  "empty_uncleaned",
+  "salvage_packaging",
+  "molten",
+  "residue_classes",
+  "classified_2_1_2_8",
+  "containers_only",
+] as const;
+
+/** What the derived summary shows, in reading order: identification first,
+ *  then what follows from the table, then the quantities of this consignment. */
+const SUMMARY_FIELDS = [
+  "proper_shipping_name",
+  "class",
+  "subsidiary_risks",
+  "packing_group",
+  "labels",
+  "tunnel_code",
+  "transport_category",
+  "hazard_number",
+  "limited_quantity",
+  "excepted_quantity",
+  "packing_instruction",
+  "quantity_packages",
+  "type_of_package",
+  "net_mass_liters_per_package",
+  "gross_mass_per_package",
+  "adr_total_quantity",
+  "tank_code",
+  "ems_code",
+] as const;
+
 const CORE_FIELDS = [
   "un_number",
   "proper_shipping_name",
@@ -148,6 +185,9 @@ export default function DangerousGoodsStep({
   const [lookupError, setLookupError] = useState("");
   const [positionIndex, setPositionIndex] = useState(0);
   const [prepared, setPrepared] = useState<DgPrepareResult | null>(null);
+  // Per product: the full form instead of the summary. A choice the user
+  // makes, never a mode the step falls into by itself.
+  const [editAll, setEditAll] = useState<Record<string, boolean>>({});
   // What the form holds at the moment a reply lands, which is not what it held
   // when the request left. Kept in a ref so reading it does not re-run the effect.
   const entriesRef = useRef(entries);
@@ -396,86 +436,179 @@ export default function DangerousGoodsStep({
                 ? [field, "net_explosive_mass"]
                 : [field],
             );
-            return (
-            <div key={productIndex} className="grid md:grid-cols-2 gap-3 border-t border-slate-100 dark:border-slate-800 pt-4">
-              <div>
-                <div className="flex items-center gap-1.5">
-                  <label className="text-sm font-medium text-slate-800 dark:text-slate-200">
-                    {labelFor("un_number")}
-                  </label>
-                  {helpFor("un_number") && <InfoTooltip text={helpFor("un_number")} />}
-                </div>
-                <div className="mt-1">
-                  <SuggestInput<DgUnEntry>
-                    value={product.un_number ?? ""}
-                    onChange={(v) => updateProduct(entryIndex, productIndex, { un_number: v })}
-                    onPick={(un) => applyUnEntry(entryIndex, productIndex, un)}
-                    fetcher={unFetcher}
-                    placeholder={t("dgsearch.unPlaceholder")}
-                    minLength={2}
-                    onBlur={() => lookupUn(entryIndex, productIndex, product.un_number ?? "")}
-                  />
-                </div>
-                <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">{t("dgsearch.unHint")}</p>
-              </div>
-              {[...productFields, ...extraFields.filter((f) => !(CORE_FIELDS as readonly string[]).includes(f))]
-                // A tank code is a question about a tank. Asking it of a
-                // packages consignment is noise, and noise on this step is
-                // what makes people stop reading it.
-                .filter(
-                  (field) =>
-                    !["tank_code", "filling_temperature", "density_15", "density_50"].includes(
-                      field,
-                    ) || product.carriage_mode === "tank",
-                )
-                // Holds belong to a dry cargo vessel. A cargo tank has no hold
-                // to be in, and 7.1.4.11 is a chapter 7.1 provision — asking
-                // for one on a tank vessel would be asking the wrong question.
-                // The residues field belongs to UN 3509 alone (5.4.1.1.19);
-                // for every other substance it is noise.
-                .filter(
-                  (field) =>
-                    field !== "residue_classes" ||
-                    (product.un_number ?? "").includes("3509"),
-                )
-                .filter(
-                  (field) =>
-                    !["hold", "container_number"].includes(field) ||
-                    (product.carriage_mode ?? "packages") !== "tank",
-                )
-                .map((field) =>
-                field === "type_of_package" ? (
-                  <div key={field}>
-                    <div className="flex items-center gap-1.5">
-                      <label className="text-sm font-medium text-slate-800 dark:text-slate-200">{labelFor(field)}</label>
-                      {helpFor(field) && <InfoTooltip text={helpFor(field)} />}
-                    </div>
-                    <div className="mt-1">
-                      <SuggestInput<DgPackaging>
-                        value={String(product.type_of_package ?? "")}
-                        onChange={(v) => updateProduct(entryIndex, productIndex, { type_of_package: v })}
-                        onPick={(p) =>
-                          updateProduct(entryIndex, productIndex, {
-                            type_of_package: `${p.code} ${p.label[lang as "nl" | "en"]}`,
-                          })
-                        }
-                        fetcher={packagingFetcher}
-                        placeholder={t("dgsearch.packagingPlaceholder")}
-                        minLength={1}
-                      />
-                    </div>
-                    <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">{t("dgsearch.packagingHint")}</p>
+            const un = String(product.un_number ?? "").trim();
+            const stateKey = `${entryIndex}:${productIndex}`;
+            // Without a UN number the whole form is the question; with one,
+            // the summary is the default and the full form is a choice.
+            const showAll = !un || !!editAll[stateKey];
+            const productQuestions = (prepared?.open_questions ?? [])
+              .filter(
+                (block) =>
+                  block.line_id === entry.line_id && block.product_index === productIndex,
+              )
+              .flatMap((block) => block.questions);
+            const specialFields = SPECIAL_FIELDS.filter((f) => extraFields.includes(f)).filter(
+              (f) => f !== "residue_classes" || un.includes("3509"),
+            );
+            const specialAnswered = specialFields.filter((f) =>
+              String(product[f as keyof DgProduct] ?? "").trim(),
+            ).length;
+
+            const renderField = (field: string) =>
+              field === "type_of_package" ? (
+                <div key={field}>
+                  <div className="flex items-center gap-1.5">
+                    <label className="text-sm font-medium text-slate-800 dark:text-slate-200">{labelFor(field)}</label>
+                    {helpFor(field) && <InfoTooltip text={helpFor(field)} />}
                   </div>
-                ) : (
-                  <Field
-                    key={field}
-                    label={labelFor(field)}
-                    help={helpFor(field)}
-                    options={optionsFor(field)}
-                    value={String(product[field as keyof DgProduct] ?? "")}
-                    onChange={(v) => updateProduct(entryIndex, productIndex, { [field]: v })}
-                  />
-                ),
+                  <div className="mt-1">
+                    <SuggestInput<DgPackaging>
+                      value={String(product.type_of_package ?? "")}
+                      onChange={(v) => updateProduct(entryIndex, productIndex, { type_of_package: v })}
+                      onPick={(p) =>
+                        updateProduct(entryIndex, productIndex, {
+                          type_of_package: `${p.code} ${p.label[lang as "nl" | "en"]}`,
+                        })
+                      }
+                      fetcher={packagingFetcher}
+                      placeholder={t("dgsearch.packagingPlaceholder")}
+                      minLength={1}
+                    />
+                  </div>
+                  <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">{t("dgsearch.packagingHint")}</p>
+                </div>
+              ) : (
+                <Field
+                  key={field}
+                  label={labelFor(field)}
+                  help={helpFor(field)}
+                  options={optionsFor(field)}
+                  value={String(product[field as keyof DgProduct] ?? "")}
+                  onChange={(v) => updateProduct(entryIndex, productIndex, { [field]: v })}
+                />
+              );
+
+            return (
+            <div key={productIndex} className="space-y-3 border-t border-slate-100 dark:border-slate-800 pt-4">
+              <div className="grid md:grid-cols-2 gap-3">
+                <div>
+                  <div className="flex items-center gap-1.5">
+                    <label className="text-sm font-medium text-slate-800 dark:text-slate-200">
+                      {labelFor("un_number")}
+                    </label>
+                    {helpFor("un_number") && <InfoTooltip text={helpFor("un_number")} />}
+                  </div>
+                  <div className="mt-1">
+                    <SuggestInput<DgUnEntry>
+                      value={product.un_number ?? ""}
+                      onChange={(v) => updateProduct(entryIndex, productIndex, { un_number: v })}
+                      onPick={(un) => applyUnEntry(entryIndex, productIndex, un)}
+                      fetcher={unFetcher}
+                      placeholder={t("dgsearch.unPlaceholder")}
+                      minLength={2}
+                      onBlur={() => lookupUn(entryIndex, productIndex, product.un_number ?? "")}
+                    />
+                  </div>
+                  <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">{t("dgsearch.unHint")}</p>
+                </div>
+                {showAll &&
+                  [...productFields, ...extraFields.filter((f) => !(CORE_FIELDS as readonly string[]).includes(f))]
+                    // A tank code is a question about a tank. Asking it of a
+                    // packages consignment is noise, and noise on this step is
+                    // what makes people stop reading it.
+                    .filter(
+                      (field) =>
+                        !["tank_code", "filling_temperature", "density_15", "density_50"].includes(
+                          field,
+                        ) || product.carriage_mode === "tank",
+                    )
+                    // Holds belong to a dry cargo vessel. A cargo tank has no hold
+                    // to be in, and 7.1.4.11 is a chapter 7.1 provision — asking
+                    // for one on a tank vessel would be asking the wrong question.
+                    // The residues field belongs to UN 3509 alone (5.4.1.1.19);
+                    // for every other substance it is noise.
+                    .filter(
+                      (field) =>
+                        field !== "residue_classes" ||
+                        (product.un_number ?? "").includes("3509"),
+                    )
+                    .filter(
+                      (field) =>
+                        !["hold", "container_number"].includes(field) ||
+                        (product.carriage_mode ?? "packages") !== "tank",
+                    )
+                    .map(renderField)}
+              </div>
+
+              {!showAll && (
+                <>
+                  {/* What the tables answered, shown as answers. Every value is
+                      still editable — behind the one button below, not as
+                      twenty-two open fields. */}
+                  <div className="rounded-xl bg-slate-50 p-3 dark:bg-slate-950">
+                    <p className="text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">
+                      {t("dgstep.summaryTitle")}
+                    </p>
+                    <dl className="mt-2 grid grid-cols-2 gap-x-4 gap-y-1.5 md:grid-cols-3">
+                      {SUMMARY_FIELDS.map((field) => {
+                        const value = String(
+                          (product as Record<string, unknown>)[field] ?? "",
+                        ).trim();
+                        if (!value) return null;
+                        return (
+                          <div key={field}>
+                            <dt className="text-[11px] text-slate-500 dark:text-slate-400">{labelFor(field)}</dt>
+                            <dd className="break-words text-sm text-slate-800 dark:text-slate-200">{value}</dd>
+                          </div>
+                        );
+                      })}
+                    </dl>
+                  </div>
+
+                  {productQuestions.length > 0 && (
+                    <div>
+                      <p className="text-sm font-semibold text-slate-900 dark:text-slate-100">
+                        {t("dgstep.openTitle")}
+                      </p>
+                      <div className="mt-2 grid gap-3 md:grid-cols-2">
+                        {productQuestions.map((question) => (
+                          <div key={question.field}>
+                            {renderField(question.field)}
+                            <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
+                              {t(`dgopen.${question.reason}` as "dgopen.sp274")}
+                              {question.required ? " *" : ""}
+                            </p>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {specialFields.length > 0 && (
+                    <CollapsibleSection
+                      title={t("dgstep.special")}
+                      chips={
+                        <SummaryChip>
+                          {specialAnswered > 0 ? specialAnswered : t("dgstep.noneApply")}
+                        </SummaryChip>
+                      }
+                    >
+                      <div className="grid gap-3 md:grid-cols-2">{specialFields.map(renderField)}</div>
+                    </CollapsibleSection>
+                  )}
+                </>
+              )}
+
+              {un && (
+                <button
+                  type="button"
+                  className="text-xs font-medium text-slate-500 underline hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-100"
+                  onClick={() =>
+                    setEditAll((state) => ({ ...state, [stateKey]: !state[stateKey] }))
+                  }
+                >
+                  {editAll[stateKey] ? t("dgstep.backToSummary") : t("dgstep.editAll")}
+                </button>
               )}
             </div>
             );

@@ -564,5 +564,23 @@
     "title": "ADN-controlelijst (8.6.3)",
     "intro": "Vóór het laden of lossen van een tankschip moet de controlelijst van 8.6.3 worden ingevuld en ondertekend door schipper en walinstallatie. Dit is het voorgeschreven model uit de ADN-uitgave.",
     "notFilledIn": "CargoPilot levert het model zoals het boek het drukt en vult niets voor u in: de lijst wordt aan boord samen met de walinstallatie ingevuld."
+  },
+  "dgstep": {
+    "summaryTitle": "Afgeleid uit de regelgeving",
+    "openTitle": "Nog te beantwoorden",
+    "special": "Bijzondere situaties (afval, leeg, berging …)",
+    "noneApply": "geen van toepassing",
+    "editAll": "Alle velden bewerken",
+    "backToSummary": "Terug naar samenvatting"
+  },
+  "dgopen": {
+    "carriage_mode_decides": "Bepaalt toelating, tunnelcode en bebording",
+    "sp274": "Bijzondere bepaling 274 — technische benaming verplicht (3.1.2.8)",
+    "nem_class1": "Klasse 1 — netto explosieve massa voor de 1.1.3.6-telling",
+    "hold_74111": "ADN 7.1.4.11.1 — waar aan boord staat deze stof?",
+    "filling_degree": "Voor de vullingsgraad van 4.3.2.2",
+    "imdg_document": "IMDG 5.4.1 — vereist op het vervoersdocument",
+    "iata_declaration": "Vereist op de shipper's declaration",
+    "totals_11136": "Voor het totaal en de 1.1.3.6-puntentelling"
   }
 }

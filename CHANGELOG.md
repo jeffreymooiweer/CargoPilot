@@ -2,7 +2,37 @@
 
 All notable changes are documented here, following [Semantic Versioning](https://semver.org/).
 
-## [1.98.0] — 2026-08-15
+## [1.99.0] — 2026-08-15
+
+### Changed
+
+- **The DG step shows answers as answers and questions as questions.** With a
+  UN number in place, the twenty-odd fields of the step used to stand open as
+  if each were work to do, while the derivation had already answered most of
+  them. The step now shows a summary of what was derived — name, class,
+  packing group, tunnel code, transport category, quantities — and asks only
+  what `dg/prepare` names as genuinely open: facts of the consignment no
+  table can supply. Each question carries the reason it is asked ("decides
+  admission, tunnel code and placarding"; "special provision 274 — technical
+  name required"). The full form did not disappear: it is one button away,
+  per product, and it remains the default while the UN number is still the
+  question.
+- **The special cases live behind one door.** Waste, empty uncleaned,
+  salvage, molten, UN 3509 residues, the 2.1.2.8 statement and
+  containers-only are one collapsed section, closed by default and
+  summarised as "none apply" until one is. The answer is "none" on nearly
+  every consignment, and eight always-open selects made the step look like
+  eight questions.
+
+### Added
+
+- **`dg/prepare` names the open questions.** Per product, computed after
+  everything derivable is in, so a value the cargo line or the table already
+  supplied is never asked again: the mode of carriage (it decides what every
+  other answer means), the SP 274 technical name, the net explosive mass of
+  class 1, where on board for ADN dry cargo, the density for the degree of
+  filling of a tank, what the IMDG document and the IATA declaration require,
+  and whichever half of count × contents the 1.1.3.6 total still misses.
 
 ### Added
 

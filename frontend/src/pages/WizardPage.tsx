@@ -70,13 +70,18 @@ const DG_EXTRA_FIELDS: Record<string, string[]> = {
   // once the mode says a tank is involved.
   // The tank's own code, then what 4.3.2.2 needs to say how full it may be.
   // All four only show once the mode says a tank is involved.
+  // The three special cases of 5.4.1.1.3/.5/.6 change what the description
+  // line must say, and none of them is derivable from the UN number: whether
+  // the goods are waste is a fact about the consignment.
   ADR: ["carriage_mode", "tank_code", "filling_temperature", "density_15",
-        "density_50", "transport_category", "adr_total_quantity"],
-  RID: ["carriage_mode", "transport_category", "adr_total_quantity"],
+        "density_50", "transport_category", "adr_total_quantity",
+        "is_waste", "empty_uncleaned", "salvage_packaging"],
+  RID: ["carriage_mode", "transport_category", "adr_total_quantity",
+        "is_waste", "empty_uncleaned", "salvage_packaging"],
   // Where it goes on the vessel: 7.1.4.11.1 asks the boatmaster to say which
   // goods are in which hold or on deck, and no table can answer that.
   ADN: ["carriage_mode", "hold", "container_number", "transport_category",
-        "adr_total_quantity"],
+        "adr_total_quantity", "is_waste", "empty_uncleaned", "salvage_packaging"],
   IMDG: ["technical_name", "marine_pollutant", "ems_code", "emergency_contact"],
   IATA_DGR: [
     "technical_name",

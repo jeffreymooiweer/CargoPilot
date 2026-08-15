@@ -2,6 +2,35 @@
 
 All notable changes are documented here, following [Semantic Versioning](https://semver.org/).
 
+## [1.90.0] — 2026-08-15
+
+### Added
+
+The special cases of 5.4.1.1 that change what the description line must say —
+read in the official Dutch edition (printed pages 991–996), the UNECE English
+and French volumes II, and the RID German edition, which carries the provisions
+word for word. None of them can be derived: whether the goods are waste is a
+fact about the consignment, not about the UN number, so each is a field.
+
+- **Waste (5.4.1.1.3).** The word precedes the proper shipping name unless the
+  name already says it — the provision's own example is
+  `UN 1230 AFVAL METHANOL, 3 (6.1), II, (D/E)`. The word follows the language
+  of the *document*: AFVAL / WASTE / ABFALL / DÉCHET, and always English at sea
+  and in the air.
+- **Empty uncleaned (5.4.1.1.6.1).** "LEEG, ONGEREINIGD" joins the description,
+  and 5.4.1.1.1 (f) then does not apply — so the total quantity is dropped
+  rather than composed for residues nobody has weighed. The fuller
+  substitutions of 5.4.1.1.6.2 are permissions, not requirements; the form
+  always allowed is the one composed.
+- **Salvage packagings (5.4.1.1.5).** Two words for two provisions:
+  BERGINGSVERPAKKING (4.1.1.19) and BERGINGSDRUKHOUDER (4.1.1.20), after the
+  description. An unknown value is refused at the API edge rather than rounded
+  to the packaging word.
+- **Environmentally hazardous (5.4.1.1.18).** The additional entry
+  MILIEUGEVAARLIJK on the land documents — except UN 3077 and 3082, whose names
+  already say it, and except at sea, where the provision itself points at
+  "MARINE POLLUTANT" (IMDG 5.4.1.4.3), which the sea line already carries.
+
 ## [1.89.0] — 2026-08-15
 
 ### Added

@@ -84,6 +84,30 @@ class DangerousGoodsProduct(BaseModel):
     # Net explosive mass (class 1), for the 1.1.3.6 points and 5.4.1.2.1.
     net_explosive_mass: str | float | int | None = None
 
+    # The special cases of 5.4.1.1.3, 5.4.1.1.5 and 5.4.1.1.6: waste, salvage
+    # packagings and empty uncleaned means of containment each change what the
+    # description line must say, and none of them can be derived — whether the
+    # goods are waste is a fact about the consignment, not about the UN number.
+    # The wizard sends these as select values ("" or "yes"), older callers may
+    # send booleans; both spell truthiness the way the builder reads it.
+    is_waste: str | bool | None = None
+    empty_uncleaned: str | bool | None = None
+    salvage_packaging: str | None = None
+
+    @field_validator("salvage_packaging")
+    @classmethod
+    def _known_salvage(cls, value: str | None) -> str | None:
+        """5.4.1.1.5 knows two words, and the wrong key must not become the
+        packaging word by silent fallback."""
+        if value is None or not str(value).strip():
+            return None
+        cleaned = str(value).strip().lower()
+        if cleaned not in {"packaging", "pressure_receptacle"}:
+            raise ValueError(
+                f"onbekende bergingsverpakking {value!r}; verwacht "
+                "packaging of pressure_receptacle")
+        return cleaned
+
     @field_validator("carriage_mode")
     @classmethod
     def _known_carriage_mode(cls, value: str | None) -> str | None:

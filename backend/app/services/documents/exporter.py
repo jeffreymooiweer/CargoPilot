@@ -162,6 +162,27 @@ TEXTS = {
               "contenance en eau en litres pour les gaz. Sans elle, le document "
               "porte un nombre dont personne ne sait ce qu'il mesure.",
     },
+    "adn_remark_information": {
+        "nl": "ADN 5.4.1.1.2 (h): kolom (20) van tabel C draagt voor UN {un} "
+              "opmerking {remarks}. De informatie die deze opmerking vereist "
+              "moet in het vervoerdocument worden opgenomen; de tekst van de "
+              "opmerking staat in 3.2.3.1 van het ADN en is niet in deze "
+              "applicatie opgenomen.",
+        "en": "ADN 5.4.1.1.2 (h): column (20) of table C carries remark "
+              "{remarks} for UN {un}. The information that remark requires must "
+              "be included in the transport document; the remark's text is in "
+              "3.2.3.1 of the ADN and is not held in this application.",
+        "de": "ADN 5.4.1.1.2 (h): Spalte (20) der Tabelle C führt für UN {un} "
+              "die Bemerkung {remarks}. Die von dieser Bemerkung verlangte "
+              "Angabe muss in das Beförderungspapier aufgenommen werden; der "
+              "Wortlaut steht in 3.2.3.1 des ADN und ist in dieser Anwendung "
+              "nicht enthalten.",
+        "fr": "ADN 5.4.1.1.2 (h) : la colonne (20) du tableau C porte "
+              "l'observation {remarks} pour l'ONU {un}. L'information qu'elle "
+              "exige doit figurer dans le document de transport ; son texte se "
+              "trouve au 3.2.3.1 de l'ADN et n'est pas repris dans cette "
+              "application.",
+    },
     "no_english_name": {
         "nl": "De ADR-tabel bevat geen bruikbare Engelse vervoersnaam voor UN {un}; "
               "op dit document staat nu de Duitse. IMDG 5.4.1.4.1 en IATA DGR 8.1.2.1 "
@@ -628,6 +649,30 @@ def validate_document(
             # particular belong here — which cones a vessel shows is a fact
             # about the voyage that the papers travel with.
             if profile == "ADN":
+                # 5.4.1.1.2 (h): six numbered remarks of column (20) put
+                # information *in the transport document* — 3, 17, 22, 39 (b),
+                # 42 and 47. Their text lives in 3.2.3.1 and is not held here,
+                # so the document says which remark asks, rather than guessing
+                # at what it asks for.
+                from app.services.dg.database import adn_table_c_rows
+
+                document_remarks = {"3", "17", "22", "39", "42", "47"}
+                for entry in entries:
+                    for product in entry.get("products", []):
+                        if str(product.get("carriage_mode") or "") != "tank":
+                            continue
+                        un = str(product.get("un_number") or "").strip()
+                        asked = sorted({
+                            number
+                            for row in adn_table_c_rows(un)
+                            for number in re.findall(
+                                r"\d+", str(row.get("remarks") or ""))
+                            if number in document_remarks})
+                        if asked:
+                            warnings.append(
+                                _text("adn_remark_information", lang).format(
+                                    un=un, remarks=", ".join(asked)))
+
                 # Whether the goods may travel that way at all comes first: a
                 # carriage the ADN does not permit is not a remark under the cone
                 # count, it is the reason there is no voyage to paper.

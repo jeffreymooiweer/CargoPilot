@@ -279,7 +279,9 @@
     "sharedIntro": "Erfassen Sie diese Daten einmal; sie werden in allen ausgewählten Formularen wiederverwendet. Mit * gekennzeichnete Felder sind für den Export erforderlich.",
     "formStep": "Formular {{index}} von {{total}}: {{name}}",
     "formIntro": "Nur die Felder, die speziell für dieses Formular nötig sind. Angaben des Frachtführers und Unterschriften bleiben leer.",
-    "coveredByShared": "Für {{forms}} sind keine zusätzlichen Felder nötig; die Sendungsdaten genügen."
+    "coveredByShared": "Für {{forms}} sind keine zusätzlichen Felder nötig; die Sendungsdaten genügen.",
+    "reuseLast": "Vorherige Sendung übernehmen",
+    "reuseLastHint": "Füllt leere Felder mit den Angaben Ihrer vorherigen Sendung (ohne Datumsfelder)."
   },
   "geo": {
     "locationPlaceholder": "Flughafen, Hafen oder Bahnhof suchen — oder frei eingeben…",
@@ -326,7 +328,8 @@
     "exporting": "Export läuft…",
     "exportNotice": "Achtung: erzeugte Dokumente sind Entwürfe. Vor der Verwendung von einer befugten Person prüfen, ergänzen und unterschreiben lassen. Siehe Haftungsausschluss.",
     "documentLanguage": "Sprache der Dokumente",
-    "documentLanguageRule": "5.4.1.4.1: eine Amtssprache des Versandlandes und, wenn das nicht Deutsch, Englisch oder Französisch ist, zusätzlich in einer dieser drei. Bei Niederländisch setzt die Anwendung beide Namen in das Feld."
+    "documentLanguageRule": "5.4.1.4.1: eine Amtssprache des Versandlandes und, wenn das nicht Deutsch, Englisch oder Französisch ist, zusätzlich in einer dieser drei. Bei Niederländisch setzt die Anwendung beide Namen in das Feld.",
+    "downloadAll": "Alles herunterladen ({{count}})"
   },
   "unCards": {
     "title": "UN-Karten für Ihre Unterlagen",
@@ -582,5 +585,13 @@
     "imdg_document": "IMDG 5.4.1 — auf dem Beförderungsdokument erforderlich",
     "iata_declaration": "Auf der Erklärung des Versenders erforderlich",
     "totals_11136": "Für die Gesamtmenge und die Berechnung nach 1.1.3.6"
+  },
+  "advice": {
+    "title": "Dokumentenpaket",
+    "intro": "Aus der Sendung zusammengestellt. Entfernen Sie, was Sie nicht brauchen, oder wählen Sie Zusätzliches an.",
+    "required": "Erforderlich",
+    "requiredNote": "Bei Gefahrgut verlangt 5.4.1 ein Beförderungsdokument mit den vorgeschriebenen Angaben.",
+    "recommended": "Empfohlen",
+    "possible": "Möglich"
   }
 }

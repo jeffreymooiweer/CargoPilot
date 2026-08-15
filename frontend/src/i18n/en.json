@@ -279,7 +279,9 @@
     "sharedIntro": "Enter these details once; they are reused in all selected forms. Fields marked * are required for export.",
     "formStep": "Form {{index}} of {{total}}: {{name}}",
     "formIntro": "Only the fields specific to this form. Carrier data and signatures stay empty.",
-    "coveredByShared": "No extra fields are needed for {{forms}}; the shipment details are sufficient."
+    "coveredByShared": "No extra fields are needed for {{forms}}; the shipment details are sufficient.",
+    "reuseLast": "Reuse previous shipment",
+    "reuseLastHint": "Fills empty fields with your previous shipment's details (dates excluded)."
   },
   "geo": {
     "locationPlaceholder": "Search airport, port or station — or type freely…",
@@ -326,7 +328,8 @@
     "exporting": "Exporting…",
     "exportNotice": "Note: generated documents are drafts. Verify, complete and sign by an authorised person before use. See the disclaimer.",
     "documentLanguage": "Language of the documents",
-    "documentLanguageRule": "5.4.1.4.1: an official language of the forwarding country, and where that is not German, English or French, additionally in one of those three. For Dutch the application puts both names in the field."
+    "documentLanguageRule": "5.4.1.4.1: an official language of the forwarding country, and where that is not German, English or French, additionally in one of those three. For Dutch the application puts both names in the field.",
+    "downloadAll": "Download all ({{count}})"
   },
   "unCards": {
     "title": "UN cards for your records",
@@ -582,5 +585,13 @@
     "imdg_document": "IMDG 5.4.1 — required on the transport document",
     "iata_declaration": "Required on the shipper's declaration",
     "totals_11136": "For the total and the 1.1.3.6 points count"
+  },
+  "advice": {
+    "title": "Document pack",
+    "intro": "Assembled from the shipment. Untick what you do not need, or tick what you want in addition.",
+    "required": "Required",
+    "requiredNote": "With dangerous goods, 5.4.1 requires a transport document with the prescribed particulars.",
+    "recommended": "Recommended",
+    "possible": "Possible"
   }
 }

@@ -279,7 +279,9 @@
     "sharedIntro": "Vul deze gegevens één keer in; ze worden hergebruikt in alle geselecteerde formulieren. Velden met * zijn verplicht voor export.",
     "formStep": "Formulier {{index}} van {{total}}: {{name}}",
     "formIntro": "Alleen de velden die specifiek voor dit formulier nodig zijn. Carriergegevens en handtekeningen blijven leeg.",
-    "coveredByShared": "Voor {{forms}} zijn geen extra velden nodig; de zendinggegevens volstaan."
+    "coveredByShared": "Voor {{forms}} zijn geen extra velden nodig; de zendinggegevens volstaan.",
+    "reuseLast": "Vorige zending hergebruiken",
+    "reuseLastHint": "Vult lege velden met de gegevens van uw vorige zending (zonder datums)."
   },
   "geo": {
     "locationPlaceholder": "Zoek luchthaven, haven of station — of typ vrij…",
@@ -326,7 +328,8 @@
     "exporting": "Bezig met exporteren…",
     "exportNotice": "Let op: gegenereerde documenten zijn concepten. Controleer, vul aan en onderteken door een bevoegde persoon vóór gebruik. Zie de disclaimer.",
     "documentLanguage": "Taal van de documenten",
-    "documentLanguageRule": "5.4.1.4.1: een officiële taal van het land van verzending, en is dat geen Duits, Engels of Frans, dan bovendien in een van die drie. Bij Nederlands zet de app beide namen in het veld."
+    "documentLanguageRule": "5.4.1.4.1: een officiële taal van het land van verzending, en is dat geen Duits, Engels of Frans, dan bovendien in een van die drie. Bij Nederlands zet de app beide namen in het veld.",
+    "downloadAll": "Alles downloaden ({{count}})"
   },
   "unCards": {
     "title": "UN-kaarten voor uw administratie",
@@ -582,5 +585,13 @@
     "imdg_document": "IMDG 5.4.1 — vereist op het vervoersdocument",
     "iata_declaration": "Vereist op de shipper's declaration",
     "totals_11136": "Voor het totaal en de 1.1.3.6-puntentelling"
+  },
+  "advice": {
+    "title": "Documentenpakket",
+    "intro": "Samengesteld op basis van de zending. Vink uit wat u niet nodig hebt of aan wat u extra wilt.",
+    "required": "Vereist",
+    "requiredNote": "Bij gevaarlijke stoffen vraagt 5.4.1 een vervoersdocument met de voorgeschreven vermeldingen.",
+    "recommended": "Aanbevolen",
+    "possible": "Mogelijk"
   }
 }

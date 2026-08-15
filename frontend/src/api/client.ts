@@ -783,6 +783,9 @@ export interface DocumentRegistry {
   shared_sections: DocumentSection[];
   documents: DocumentDefinition[];
   modality_defaults?: Record<string, string>;
+  /** Which document carries the 5.4.1 particulars per modality — the one the
+   *  advice may honestly call required when dangerous goods are on board. */
+  dg_transport_documents?: Record<string, string>;
 }
 
 export interface DgUnEntry {

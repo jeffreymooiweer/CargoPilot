@@ -2,6 +2,38 @@
 
 All notable changes are documented here, following [Semantic Versioning](https://semver.org/).
 
+## [1.100.0] — 2026-08-15
+
+### Changed
+
+- **The wizard starts with the shipment, not with paperwork.** The forms
+  step is gone: the first question used to be "which of eight documents do
+  you want?", asked before the application knew what was being shipped —
+  while the document choice is the best derivable answer of the whole
+  wizard. The steps are now cargo lines → dangerous goods (when there are
+  any) → shipment details → documents.
+- **The document pack is assembled, in three honest groups.** *Required* is
+  reserved for what a read provision carries: with dangerous goods on board,
+  5.4.1 requires a transport document with the prescribed particulars, and
+  the registry names which document that is per modality (CMR, CIM, IMO
+  declaration, ADN transport document, IATA declaration). The DG support
+  papers and the customary transport document are *recommended*; the rest is
+  *possible*. Required and recommended are pre-selected; the selection
+  follows the shipment until the user touches it — a DG line appearing pulls
+  the DG papers in — and from that moment it is theirs. One button downloads
+  every document that is ready; drafts stay behind, visibly, so an
+  incomplete paper is never buried in a bulk download.
+
+### Added
+
+- **Three prefills that end retyping.** "Drawn up on" dates start as today
+  (each field defaulted at most once, so a cleared date stays cleared; the
+  operational loading and departure dates are never guessed). The previous
+  shipment's details can be reused with one button, filling empty fields
+  only and never dates. And the discharge point defaults to the consignee's
+  own address line when the details step is done — only while the user typed
+  nothing else.
+
 ## [1.99.0] — 2026-08-15
 
 ### Changed

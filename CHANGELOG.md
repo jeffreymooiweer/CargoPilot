@@ -2,6 +2,27 @@
 
 All notable changes are documented here, following [Semantic Versioning](https://semver.org/).
 
+## [1.97.0] — 2026-08-15
+
+### Added
+
+- **The fifth archetype: bulk by road.** Sulphur loose in a sheeted vehicle,
+  end to end through the API a wizard actually calls — the BK and VC codes on
+  the answer and on the paper, the tank checks silent, the refusal for a
+  liquid pinned. And the downloads of v1.91.0–v1.96.0 join the e2e: the tank
+  vessel line of 5.4.1.1.2, the packing certificate, both on-board lists and
+  the equipment sheet, each rendered through the real export route in two
+  languages.
+- **`docs/dg-coverage.md` carries the final state.** The driver's and
+  boatmaster's table now lists nine documents; the on-board documents list is
+  named for what it is — the split between "here are your documents" and
+  "this part you must bring yourself", itself a document since v1.93.0.
+
+This closes the completion plan (phases 13–15). What stays open stays with
+its reason recorded: ADN 8.6.4 until a degassing operation exists, IATA and
+IMDG texts until they are freely published, and everything that is the
+vehicle, the vessel or the route itself.
+
 ## [1.96.0] — 2026-08-15
 
 ### Added

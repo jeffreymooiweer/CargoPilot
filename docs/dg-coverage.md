@@ -85,9 +85,12 @@ what has to be carried anyway and cannot come from here.
 
 | Document | Provision | Road (ADR) | Inland waterway (ADN) |
 |---|---|---|---|
-| Transport document | 5.4.1 | CMR with the dangerous goods particulars | ADN transport document |
+| Transport document | 5.4.1 | CMR with the dangerous goods particulars | ADN transport document; tank vessels get the 5.4.1.1.2 line from table C (v1.91.0) |
 | Instructions in writing | 5.4.3 | the model out of the store, per language | the model out of the store, per language |
 | Placarding and marking sheet | 5.3 | generated (v1.83.0) | — |
+| Equipment sheet | 8.1.4 / 8.1.5 | generated (v1.96.0) | — |
+| Container/vehicle packing certificate | 5.4.2 | generated, nothing pre-ticked (v1.93.0) | — |
+| On-board documents list | 8.1.2 | generated (v1.93.0) | generated (v1.93.0) |
 | Checklist for loading and unloading | ADN 8.6.3 | — | the model out of the store (v1.83.0) |
 | Stowage plan | ADN 7.1.4.11.1 | — | generated (v1.84.0) |
 | Packing list, delivery note, AVC, VGM | trade / SOLAS | generated | generated |
@@ -103,7 +106,10 @@ already ticked would be a claim about a conversation that has not happened.
 
 What still has to be on board and cannot come from here: the driver's ADR certificate and
 the ADN expert, the vehicle's certificate of approval (9.1.3) and the tank's, the vessel's
-certificate of approval (ADN 8.1.2), and the insurance papers.
+certificate of approval (ADN 8.1.2), and the insurance papers. Since v1.93.0 the on-board
+documents list names every one of them, per consignment, next to the papers this
+application drew up — the split between "here are your documents" and "this part you
+must bring yourself" is itself a document now.
 
 ## What is held, per substance
 
@@ -792,7 +798,7 @@ reading and not as a coincidence.
 
 ---
 
-*This assessment is maintained up to CargoPilot v1.88.0; the sections above name the release
+*This assessment is maintained up to CargoPilot v1.97.0; the sections above name the release
 each finding shipped in. v1.42.0 to v1.48.0 touched the goods
 catalogue, the interface language, the settings, the documentation and the error messages,
 not a single regulatory check; v1.49.0 and v1.50.0 changed the ADR side, from the Dutch

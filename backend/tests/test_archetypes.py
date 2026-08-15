@@ -241,3 +241,63 @@ def test_every_answer_names_the_editions_it_computed_with(profiles, products):
     for expired in manifest.get("expired", []):
         assert expired in manifest["editions"]
     assert answer["rule_sets"]
+
+
+# --- 5. bulk by road (v1.97.0) --------------------------------------------
+
+
+def test_road_bulk():
+    """Sulphur loose in a sheeted vehicle. Column (10) gives BK1-BK3, column
+    (17) gives VC1 and VC2, and both the permission and its codes travel to the
+    paper — they are what the loader checks the container against. The new
+    documents of v1.93.0 come with the ride."""
+    bulk = goods("1350", carriage_mode="bulk")
+    answer = compliance(["ADR"], bulk)
+
+    admission = answer["adr_bulk_admission"]
+    assert admission["status"] == "ok"
+    item = admission["items"][0]
+    assert item["bk_codes"] == ["BK1", "BK2", "BK3"]
+    assert item["vc_codes"] == ["VC1", "VC2"]
+
+    # Not a tank: the tank checks stay silent on a bulk load.
+    assert answer.get("adr_tank_fit", {"status": "not_checked"})["status"] \
+        == "not_checked"
+
+    for key in ("equipment_sheet", "onboard_documents_adr",
+                "packing_certificate"):
+        assert key in documents_for("road")
+    assert export("cmr", bulk).status_code == 200
+    assert export("equipment_sheet", bulk).status_code == 200
+    assert export("onboard_documents_adr", bulk).status_code == 200
+
+
+def test_road_bulk_refused_for_a_liquid():
+    """Petrol carries neither a BK nor a VC code: 7.3.1.1 says no, on screen
+    and on the consignment note alike."""
+    answer = compliance(["ADR"], goods("1203", carriage_mode="bulk"))
+    assert answer["adr_bulk_admission"]["status"] == "not_permitted"
+
+
+# --- the newer downloads, through the same API ----------------------------
+
+
+def test_the_tank_vessel_document_line_reaches_the_export():
+    """v1.91.0 composes the 5.4.1.1.2 line from table C; the export is where
+    it has to arrive."""
+    cargo_tank = goods("1203", carriage_mode="tank",
+                       adr_total_quantity="250000 kg")
+    response = export("adn_transport_doc", cargo_tank)
+    assert response.status_code == 200
+
+
+@pytest.mark.parametrize("language", ["nl", "de"])
+def test_the_document_pack_renders_in_two_languages(language):
+    """The plan's own closing rule: every new document through the real API,
+    in two languages."""
+    product = goods("1263")
+    for key in ("packing_certificate", "onboard_documents_adr",
+                "equipment_sheet"):
+        assert export(key, product, language=language).status_code == 200, key
+    assert export("onboard_documents_adn", goods("1263", hold="1"),
+                  language=language).status_code == 200

@@ -19,6 +19,16 @@ All notable changes are documented here, following [Semantic Versioning](https:/
   that mistake. The placards and plates themselves have to meet 5.3.1.7 and
   5.3.2.2.
 
+### Changed
+
+- **A model is now addressed by its provision.** The instructions in writing
+  are not the only document a regime prints rather than describes: ADN 8.6.3
+  prints the checklist for loading and unloading a tank vessel and 8.6.4 the
+  one for degassing. The store's model lookup and the page-range finder take a
+  provision alongside regime and language, with each model's own title in the
+  four languages the editions are published in. Nothing new is served yet —
+  this is the shape the checklist needs.
+
 ### Fixed
 
 - **A tank load was told it needed no placards.** 5.3.1.5 picks placards by

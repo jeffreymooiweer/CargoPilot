@@ -2,6 +2,31 @@
 
 All notable changes are documented here, following [Semantic Versioning](https://semver.org/).
 
+## [1.91.0] — 2026-08-15
+
+### Added
+
+- **The tank vessel transport document (ADN 5.4.1.1.2).** A cargo tank
+  consignment used to get the packages line of 5.4.1.1.1, and the two are
+  different document entries. The provision — read on printed page 349 of the
+  UNECE English edition — takes its data from **table C**, in the repository
+  since v1.73.0: (b) the name of column (2) in the language of the document,
+  (c) the data of column (5) with the numbers after the first in brackets, (d)
+  the packing group, (e) the mass in tonnes. The composed line is the ADN's own
+  example: `UN 1203, MOTOR SPIRIT OR GASOLINE OR PETROL, 3 (N2, CMR, F), II,
+  250 t`. No tunnel code and no package count — the one is a road construct,
+  the other is the other chapter. Litres do not convert to tonnes without a
+  density this application does not presume to apply, so only a mass does.
+- **The document remarks of column (20), named (5.4.1.1.2 (h)).** Six numbered
+  remarks — 3, 17, 22, 39 (b), 42 and 47 — put information in the transport
+  document. Their text lives in 3.2.3.1 and is not held here, so the export
+  says which remark asks rather than guessing at what it asks for.
+- Where the rows of a substance disagree on column (5), or table C does not
+  list it, nothing is invented: the substance's own class stands alone — which
+  is what 5.4.1.1.2 (c) itself prescribes for goods not mentioned by name —
+  or the packages description remains as the least-bad line while the
+  admission check of 3.2.1 refuses the carriage.
+
 ## [1.90.0] — 2026-08-15
 
 ### Added

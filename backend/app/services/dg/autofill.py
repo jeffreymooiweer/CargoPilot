@@ -479,6 +479,74 @@ def _document_word(words: dict[str, str], profile: str, language: str) -> str:
     return words.get((language or "nl").split("-")[0].lower(), words["en"])
 
 
+def _adn_tank_vessel_line(product: dict[str, Any], language: str) -> str | None:
+    """The description of ADN 5.4.1.1.2, for carriage in tank vessels.
+
+    A cargo tank consignment used to get the packages line of 5.4.1.1.1, and
+    the two are not the same document entry. 5.4.1.1.2 takes its data from
+    **table C**: (b) the proper shipping name of column (2), (c) the data of
+    column (5) with the numbers after the first in brackets — the ADN's own
+    example is "UN 1203 MOTOR SPIRIT, 3 (N2, CMR, F), II" — (d) the packing
+    group, and (e) the mass in tonnes. Read on printed page 349 of the UNECE
+    English edition; table C itself is in the repository since v1.73.0, read
+    from three books.
+
+    Returns None where table C does not list the substance: composing the
+    packages line instead is wrong twice over, so the caller falls back to it
+    only as the least-bad line and the compliance side already refuses the
+    carriage (3.2.1 column (8)).
+    """
+    from app.services.dg.database import adn_table_c_rows
+
+    un = str(product.get("un_number") or "").strip()
+    rows = adn_table_c_rows(un)
+    if not rows:
+        return None
+    given_pg = str(product.get("packing_group") or "").strip().upper()
+    fitting = [r for r in rows
+               if not given_pg
+               or str(r.get("packing_group") or "").strip().upper() == given_pg]
+    rows = fitting or rows
+
+    # (b): the name of column (2), in the language of the document — and, the
+    # ADN being authentic in English and French with no German table C here,
+    # a German document gets the English name rather than an invented one.
+    lang = (language or "nl").split("-")[0].lower()
+    name = str(rows[0].get({"nl": "name_nl", "fr": "name_fr"}.get(lang, "name_en"))
+               or rows[0].get("name_en") or "").strip().upper()
+    technical = str(product.get("technical_name") or "").strip()
+    if technical:
+        name = f"{name} ({technical})"
+
+    # (c): the data of column (5). The reading splits tokens on "+" and may
+    # carry a line-break space inside one ("C MR"); whitespace inside a token
+    # is typesetting, not content. Where the rows in the running disagree on
+    # the cell, nothing is invented: the substance's own class stands alone,
+    # which is what 5.4.1.1.2 (c) itself prescribes for goods not mentioned by
+    # name in table C.
+    cells = {re.sub(r"\s+", "", str(r.get("dangers") or "")) for r in rows}
+    if len(cells) == 1 and next(iter(cells)):
+        tokens = [t for t in next(iter(cells)).split("+") if t]
+    else:
+        tokens = [str(product.get("class") or "").strip()]
+    hazard = tokens[0] if tokens else ""
+    if len(tokens) > 1:
+        hazard = f"{hazard} ({', '.join(tokens[1:])})"
+
+    parts = [_un_prefixed(un), name, hazard,
+             str(product.get("packing_group") or "").strip()]
+    line = ", ".join(p for p in parts if p)
+
+    # (e): the mass in tonnes. Litres are not tonnes without a density this
+    # application does not presume to apply, so only a mass converts; anything
+    # else is left to the quantity fields, where its absence is already
+    # reported rather than papered over.
+    total, unit = total_quantity(product)
+    if total is not None and unit == "kg":
+        line = f"{line}, {_fmt(total / 1000.0)} t"
+    return line
+
+
 def description_line(product: dict[str, Any], profile: str, language: str = "",
                      values: dict[str, Any] | None = None) -> str:
     """Official description line for the transport document.
@@ -489,6 +557,22 @@ def description_line(product: dict[str, Any], profile: str, language: str = "",
     have reached the wizard and not the CMR.
     """
     values = values or {}
+
+    # ADN, carriage in tank vessels: a different provision entirely.
+    # 5.4.1.1.2 composes from table C, and 7.1.1.21 is what makes a cargo tank
+    # load a tank vessel. The waste word of 5.4.1.1.3 applies there as much as
+    # anywhere — it is a special provision of 5.4.1.1, not of the packages line.
+    if (profile == "ADN"
+            and str(product.get("carriage_mode") or "").strip() == "tank"):
+        vessel_line = _adn_tank_vessel_line(product, language)
+        if vessel_line is not None:
+            if product.get("is_waste"):
+                word = _document_word(_WASTE_WORD, profile, language)
+                if word not in vessel_line:
+                    prefix, _, rest = vessel_line.partition(", ")
+                    vessel_line = f"{prefix}, {word} {rest}"
+            return vessel_line
+
     # The name follows the document: on an IMDG or IATA line it should be
     # English, even when the consignment was drawn up in German (IMDG 5.4.1.4.1,
     # IATA DGR 8.1.2.1).

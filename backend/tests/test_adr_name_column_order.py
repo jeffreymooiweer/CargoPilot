@@ -85,6 +85,54 @@ def test_a_wrapped_name_keeps_its_lines_under_the_first():
     ]
 
 
+EXPORT_AND_IMDG = [
+    # (what the volume reads, what the other two agree on, what it becomes)
+    ("HEXAMETHYLENETE-TRAMINE", "Hexamethylenetetramine",
+     "HEXAMETHYLENETETRAMINE"),
+    ("METHYL CHLORO-METHYL ETHER", "Methyl chloromethyl ether",
+     "METHYL CHLOROMETHYL ETHER"),
+    ("DECAHYDRO-NAPHTHALENE", "Decahydronaphthalene", "DECAHYDRONAPHTHALENE"),
+    ("p-NITROSODIMETHYL-ANILINE", "p-Nitrosodimethylaniline",
+     "p-NITROSODIMETHYLANILINE"),
+]
+
+
+def test_a_break_inside_a_line_is_undone_by_the_other_two_readings():
+    """The volume breaks a long name across the column, and where the break
+    falls inside one extracted line the end-of-line rule cannot see it. The
+    2023 export and the IMDG list agree against this reading on 54 of the 62
+    names in dispute and with it on 3, so their hyphenation is the answer."""
+    for book, settled, expected in EXPORT_AND_IMDG:
+        assert reader.take_hyphens_from(book, settled) == expected
+
+
+def test_a_hyphen_the_name_owns_is_put_back():
+    """It goes the other way too: TEAR-PRODUCING landed on a break and the glue
+    rule took its hyphen, which is part of the name."""
+    assert reader.take_hyphens_from(
+        "AMMUNITION, TEARPRODUCING with burster",
+        "Ammunition, tear-producing with burster",
+    ) == "AMMUNITION, TEAR-PRODUCING with burster"
+
+
+def test_the_volume_keeps_everything_that_is_not_a_hyphen():
+    """Casing, the lower-case qualifying text and the alternatives the export
+    flattened are the book's, and stay the book's."""
+    assert reader.take_hyphens_from(
+        "AMMONIUM PICRATE dry or wetted with less than 10 % water",
+        "AMMONIUM PICRATE dry or wetted with less than 10 % water",
+    ) == "AMMONIUM PICRATE dry or wetted with less than 10 % water"
+
+
+def test_a_disagreement_about_the_name_itself_settles_nothing():
+    """UN 1203: the volume prints three alternatives and the export kept one.
+    That is a disagreement about the name, not about its typesetting, and
+    nothing may be transferred across it."""
+    assert reader.take_hyphens_from(
+        "MOTOR SPIRIT or GASOLINE or PETROL", "Gasoline",
+    ) == "MOTOR SPIRIT or GASOLINE or PETROL"
+
+
 def test_the_splitter_then_gives_the_row_its_own_name():
     """The point of the order, end to end: with the number first, the row
     splitter opens a band at it and the name lands inside that band."""

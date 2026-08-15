@@ -411,6 +411,79 @@ def _is_class1(product: dict[str, Any]) -> bool:
     return str(product.get("class") or "").strip().startswith("1")
 
 
+_LAND_PROFILES = {"ADR", "RID", "ADN"}
+
+
+def open_questions_for(
+    product: dict[str, Any], profiles: list[str]
+) -> list[dict[str, Any]]:
+    """The questions that remain genuinely open after everything derivable is in.
+
+    The DG step used to show every field as if it were a question, and the ones
+    the derivation had already answered looked like work. This names the
+    remainder: facts of the consignment no table can supply, each with the
+    reason it is asked. The interface renders exactly this list and nothing
+    else as a question; everything answered is shown as an answer.
+
+    Computed on the *merged* product — after `derive_product` and
+    `derive_from_line` — so a value the line or the table already supplied is
+    never asked again.
+    """
+    un = str(product.get("un_number") or "").strip()
+    if not un or product.get("transport_forbidden"):
+        # Without a UN number the substance itself is the question; with a
+        # prohibition there is no consignment to complete.
+        return []
+
+    def empty(field: str) -> bool:
+        return not str(product.get(field) or "").strip()
+
+    active = {p.upper() for p in profiles}
+    land = bool(_LAND_PROFILES & active)
+    questions: list[dict[str, Any]] = []
+
+    def ask(field: str, required: bool, reason: str) -> None:
+        if empty(field) and not any(q["field"] == field for q in questions):
+            questions.append({"field": field, "required": required, "reason": reason})
+
+    if land:
+        # The mode decides what every other answer means: admission, tunnel,
+        # placarding and the tank checks all branch on it.
+        ask("carriage_mode", True, "carriage_mode_decides")
+
+    rows = get_un_entries(un)
+    provisions = str((rows[0] if rows else {}).get("special_provisions") or "")
+    if "274" in provisions.replace(",", " ").split():
+        ask("technical_name", True, "sp274")
+
+    if _is_class1(product):
+        ask("net_explosive_mass", True, "nem_class1")
+    elif land and empty("adr_total_quantity"):
+        # The total computes from count × net contents; what is missing is
+        # whichever of the two the line did not supply.
+        ask("quantity_packages", False, "totals_11136")
+        ask("net_mass_liters_per_package", False, "totals_11136")
+
+    if "ADN" in active and str(product.get("carriage_mode") or "") != "tank":
+        if empty("hold") and empty("container_number"):
+            ask("hold", False, "hold_74111")
+    if str(product.get("carriage_mode") or "") == "tank":
+        ask("density_15", False, "filling_degree")
+
+    if "IMDG" in active:
+        ask("quantity_packages", True, "imdg_document")
+        ask("type_of_package", True, "imdg_document")
+        # 5.4.1.5.11: the 24-hour emergency number. Usually prefilled from the
+        # saved preferences; asked only while nothing supplied it.
+        ask("emergency_contact", True, "imdg_document")
+    if "IATA_DGR" in active:
+        for field in ("packing_instruction", "quantity_packages",
+                      "type_of_package", "net_mass_liters_per_package",
+                      "emergency_contact"):
+            ask(field, True, "iata_declaration")
+    return questions
+
+
 def adr_quantity(product: dict[str, Any]) -> tuple[float | None, str]:
     """The quantity 1.1.3.6 computes with.
 
@@ -829,6 +902,18 @@ def prepare_entries(
             products.append(merged)
         prepared.append({**entry, "products": products})
 
+    open_questions: list[dict[str, Any]] = []
+    for entry in prepared:
+        for index, product in enumerate(entry["products"]):
+            questions = open_questions_for(product, profiles)
+            if questions:
+                open_questions.append({
+                    "line_id": entry.get("line_id"),
+                    "product_index": index,
+                    "un_number": product.get("un_number"),
+                    "questions": questions,
+                })
+
     document_lines: dict[str, list[str]] = {}
     for profile in profiles:
         rows = [
@@ -865,6 +950,7 @@ def prepare_entries(
         "document_lines": document_lines,
         "hints": hints,
         "requirements": requirements,
+        "open_questions": open_questions,
     }
     if {"ADR", "RID", "ADN"} & set(profiles):
         result["adr_category_totals"] = adr_category_totals(prepared, language)

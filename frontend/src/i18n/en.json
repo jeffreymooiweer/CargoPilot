@@ -564,5 +564,23 @@
     "title": "ADN checklist (8.6.3)",
     "intro": "Before a tank vessel is loaded or unloaded, the checklist of 8.6.3 must be filled in and signed by the boatmaster and the shore facility. This is the prescribed model from the ADN edition.",
     "notFilledIn": "CargoPilot hands over the model as the book prints it and fills in nothing for you: the list is completed on board, together with the shore facility."
+  },
+  "dgstep": {
+    "summaryTitle": "Derived from the regulations",
+    "openTitle": "Still to answer",
+    "special": "Special situations (waste, empty, salvage …)",
+    "noneApply": "none apply",
+    "editAll": "Edit all fields",
+    "backToSummary": "Back to summary"
+  },
+  "dgopen": {
+    "carriage_mode_decides": "Decides admission, tunnel code and placarding",
+    "sp274": "Special provision 274 — technical name required (3.1.2.8)",
+    "nem_class1": "Class 1 — net explosive mass for the 1.1.3.6 count",
+    "hold_74111": "ADN 7.1.4.11.1 — where on board is this substance?",
+    "filling_degree": "For the degree of filling of 4.3.2.2",
+    "imdg_document": "IMDG 5.4.1 — required on the transport document",
+    "iata_declaration": "Required on the shipper's declaration",
+    "totals_11136": "For the total and the 1.1.3.6 points count"
   }
 }

@@ -575,11 +575,27 @@ export interface DgPrepareHint {
   label_reference_note?: string;
 }
 
+/** One question the DG step still has to ask for a product: a fact of the
+ *  consignment no table can supply, with the reason it is asked. */
+export interface DgOpenQuestion {
+  field: string;
+  required: boolean;
+  reason: string;
+}
+
+export interface DgOpenQuestionBlock {
+  line_id: number;
+  product_index: number;
+  un_number?: string;
+  questions: DgOpenQuestion[];
+}
+
 export interface DgPrepareResult {
   entries: DgEntry[];
   document_lines: Record<string, string[]>;
   hints: DgPrepareHint[];
   requirements: string[];
+  open_questions?: DgOpenQuestionBlock[];
   adr_category_totals?: {
     statement: string;
     categories: { transport_category: string; total: string }[];

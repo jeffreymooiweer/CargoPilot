@@ -564,5 +564,23 @@
     "title": "ADN-Prüfliste (8.6.3)",
     "intro": "Vor dem Laden oder Löschen eines Tankschiffs muss die Prüfliste nach 8.6.3 von Schiffsführer und Landanlage ausgefüllt und unterschrieben werden. Dies ist das vorgeschriebene Muster aus der ADN-Ausgabe.",
     "notFilledIn": "CargoPilot übergibt das Muster so, wie das Buch es druckt, und füllt nichts für Sie aus: Die Liste wird an Bord gemeinsam mit der Landanlage ausgefüllt."
+  },
+  "dgstep": {
+    "summaryTitle": "Aus den Vorschriften abgeleitet",
+    "openTitle": "Noch zu beantworten",
+    "special": "Besondere Situationen (Abfall, leer, Bergung …)",
+    "noneApply": "keine zutreffend",
+    "editAll": "Alle Felder bearbeiten",
+    "backToSummary": "Zurück zur Übersicht"
+  },
+  "dgopen": {
+    "carriage_mode_decides": "Entscheidet über Zulassung, Tunnelcode und Kennzeichnung",
+    "sp274": "Sondervorschrift 274 — technische Benennung erforderlich (3.1.2.8)",
+    "nem_class1": "Klasse 1 — Nettoexplosivstoffmasse für die Berechnung nach 1.1.3.6",
+    "hold_74111": "ADN 7.1.4.11.1 — wo an Bord befindet sich dieser Stoff?",
+    "filling_degree": "Für den Füllungsgrad nach 4.3.2.2",
+    "imdg_document": "IMDG 5.4.1 — auf dem Beförderungsdokument erforderlich",
+    "iata_declaration": "Auf der Erklärung des Versenders erforderlich",
+    "totals_11136": "Für die Gesamtmenge und die Berechnung nach 1.1.3.6"
   }
 }

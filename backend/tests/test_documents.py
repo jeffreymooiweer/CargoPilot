@@ -53,6 +53,18 @@ def test_registry_modalities_reference_existing_documents():
             assert key in doc_keys, f"{modality['key']} verwijst naar onbekend document {key}"
 
 
+def test_registry_names_a_dg_transport_document_for_every_modality():
+    """The document advice needs to know which document carries the 5.4.1
+    information per modality, and that document has to exist and be offered
+    for that modality — an advice pointing at a document the modality cannot
+    produce would be a dead link on the most important recommendation."""
+    registry = get_registry()
+    dg_docs = registry["dg_transport_documents"]
+    for modality in registry["modalities"]:
+        key = dg_docs[modality["key"]]
+        assert key in modality["documents"], (modality["key"], key)
+
+
 def test_registry_multimodal_offers_all_generic_documents():
     registry = get_registry()
     multimodal = next(m for m in registry["modalities"] if m["key"] == "multimodal")

@@ -2962,5 +2962,13 @@
     "inland": "packing_list",
     "air": "awb_si",
     "multimodal": "cmr"
+  },
+  "dg_transport_documents": {
+    "road": "cmr",
+    "rail": "cim",
+    "sea": "imo_dgd",
+    "inland": "adn_transport_doc",
+    "air": "iata_dgd",
+    "multimodal": "cmr"
   }
 }

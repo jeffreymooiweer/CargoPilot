@@ -18,7 +18,7 @@ import DangerousGoodsStep, { buildDgEntries } from "../components/DangerousGoods
 import DgCompliancePanel from "../components/DgCompliancePanel";
 import DocumentWarnings, { useDocumentValidation } from "../components/DocumentWarnings";
 import DocumentFieldsStep, { resolveSections } from "../components/DocumentFieldsStep";
-import FormSelectionStep from "../components/FormSelectionStep";
+import DocumentAdvicePanel, { buildAdvice } from "../components/DocumentAdvicePanel";
 import ImportDialog from "../components/ImportDialog";
 import ReviewLinesPanel, { DraftLine, draftToText, textToDraftLines } from "../components/ReviewLinesPanel";
 import WizardProgress from "../components/WizardProgress";
@@ -41,7 +41,19 @@ const buttonSecondary =
 const buttonPrimary =
   "bg-brand-600 text-white px-5 py-2.5 rounded-lg font-medium hover:bg-brand-700 disabled:opacity-50 min-h-[44px] text-sm";
 
-type StepKey = "forms" | "lines" | "dg" | "details" | "export";
+type StepKey = "lines" | "dg" | "details" | "export";
+
+/** Dates that mean "drawn up today" and may therefore start as today. The
+ *  operational dates (loading, requested departure) are facts of the trip and
+ *  are never guessed. */
+const TODAY_DATE_FIELDS = new Set([
+  "established_date",
+  "declaration_date",
+  "document_date",
+  "determination_date",
+]);
+
+const LAST_SHIPMENT_KEY = "cargopilot:last-shipment";
 
 type DocStatus = "ready" | "draft" | "blocked" | "not_applicable";
 
@@ -138,7 +150,9 @@ export default function WizardPage() {
 
   const [registry, setRegistry] = useState<DocumentRegistry | null>(null);
   const [registryError, setRegistryError] = useState("");
-  const [stepKey, setStepKey] = useState<StepKey>("forms");
+  const [stepKey, setStepKey] = useState<StepKey>("lines");
+  // null means "the advice decides": the selection follows the shipment until
+  // the user touches it, and from that moment it is theirs.
   const [selectedDocs, setSelectedDocs] = useState<string[] | null>(null);
   const [docValues, setDocValues] = useState<Record<string, string>>({});
   const [draftLines, setDraftLines] = useState<DraftLine[]>([{ id: 1, description: "", quantity: 1, unit: "pcs" }]);
@@ -185,6 +199,47 @@ export default function WizardPage() {
     }
   }, [prefill, preferences.signature_image]);
 
+  // The previous shipment's details, saved at export. The same consignor ships
+  // to the same handful of parties; retyping them every ride was the details
+  // step's whole cost. Dates stay out: last week's date on today's document
+  // would be a wrong answer prefilled.
+  const [lastShipment] = useState<Record<string, string> | null>(() => {
+    try {
+      return JSON.parse(localStorage.getItem(LAST_SHIPMENT_KEY) ?? "null");
+    } catch {
+      return null;
+    }
+  });
+  const reuseLastShipment = () => {
+    if (!lastShipment) return;
+    setDocValues((current) => {
+      const filled = { ...current };
+      for (const [key, value] of Object.entries(lastShipment)) {
+        if (key.endsWith("_date") || !String(value ?? "").trim()) continue;
+        if (!(filled[key] ?? "").trim()) filled[key] = String(value);
+      }
+      return filled;
+    });
+  };
+
+  // The discharge point defaults to the consignee's own address line the
+  // moment the details step is done — only while the user typed nothing else,
+  // and visibly editable on the way back.
+  const completeDetails = () => {
+    setDocValues((current) => {
+      if ((current.discharge_point ?? "").trim() || !(current.consignee_address ?? "").trim()) {
+        return current;
+      }
+      const lines = current.consignee_address
+        .split(/\n/)
+        .map((line) => line.trim())
+        .filter(Boolean);
+      const place = lines[lines.length - 1];
+      return place ? { ...current, discharge_point: place } : current;
+    });
+    setStepKey("export");
+  };
+
   // A blank starting line still carries the default unit; the moment something
   // has been typed it is left alone.
   useEffect(() => {
@@ -198,14 +253,24 @@ export default function WizardPage() {
 
   const modalityDef = registry?.modalities.find((m) => m.key === modality);
 
-  useEffect(() => {
-    if (registry && modalityDef && selectedDocs === null) {
-      const preferred = registry.modality_defaults?.[modalityDef.key];
-      setSelectedDocs(preferred && modalityDef.documents.includes(preferred) ? [preferred] : []);
-    }
-  }, [registry, modalityDef, selectedDocs]);
+  const needsDg = useMemo(
+    () =>
+      result?.lines.some(
+        (line) =>
+          line.include &&
+          (line.dangerous_goods || (line.detected_un_numbers?.length ?? 0) > 0),
+      ) ?? false,
+    [result],
+  );
 
-  const selected = selectedDocs ?? [];
+  // The advice assembles the document set from the shipment; the user adjusts
+  // it on the export step. Until they do, the selection follows the shipment —
+  // a DG line appearing pulls the transport document and the DG papers in.
+  const advice = useMemo(
+    () => (registry && modalityDef ? buildAdvice(registry, modalityDef.key, needsDg) : null),
+    [registry, modalityDef, needsDg],
+  );
+  const selected = selectedDocs ?? advice?.preselected ?? [];
 
   const selectedDefinitions = useMemo(
     () =>
@@ -217,15 +282,36 @@ export default function WizardPage() {
 
   const genericDocs = selectedDefinitions;
 
-  const needsDg = useMemo(
-    () =>
-      result?.lines.some(
-        (line) =>
-          line.include &&
-          (line.dangerous_goods || (line.detected_un_numbers?.length ?? 0) > 0),
-      ) ?? false,
-    [result],
-  );
+  // "Drawn up on" dates start as today — that is what they mean — and each
+  // field is defaulted at most once, so a date the user deliberately cleared
+  // stays cleared. The operational dates (loading, departure) are facts of
+  // the trip and never guessed.
+  const datesDefaulted = useRef<Set<string>>(new Set());
+  useEffect(() => {
+    if (!registry) return;
+    const today = new Date().toISOString().slice(0, 10);
+    setDocValues((current) => {
+      const filled = { ...current };
+      let changed = false;
+      for (const doc of selectedDefinitions) {
+        for (const section of resolveSections(doc, registry)) {
+          for (const field of section.fields ?? []) {
+            if (
+              field.type === "date" &&
+              TODAY_DATE_FIELDS.has(field.key) &&
+              !datesDefaulted.current.has(field.key) &&
+              !(filled[field.key] ?? "").trim()
+            ) {
+              filled[field.key] = today;
+              datesDefaulted.current.add(field.key);
+              changed = true;
+            }
+          }
+        }
+      }
+      return changed ? filled : current;
+    });
+  }, [registry, selectedDefinitions]);
 
   const dgProfiles = useMemo(() => {
     const profiles = new Set<string>(MODALITY_DG_PROFILES[modality ?? ""] ?? []);
@@ -246,7 +332,7 @@ export default function WizardPage() {
   }, [dgProfiles]);
 
   const steps: StepKey[] = useMemo(() => {
-    const list: StepKey[] = ["forms", "lines"];
+    const list: StepKey[] = ["lines"];
     if (needsDg) list.push("dg");
     if (genericDocs.length > 0) list.push("details");
     list.push("export");
@@ -254,7 +340,6 @@ export default function WizardPage() {
   }, [needsDg, genericDocs.length]);
 
   const stepLabels: Record<StepKey, string> = {
-    forms: t("wizard.stepForms"),
     lines: t("wizard.step2"),
     dg: t("wizard.step3dg"),
     details: t("wizard.stepDetails"),
@@ -535,10 +620,32 @@ export default function WizardPage() {
         ...payloadFor(doc),
         signature_image: signature ?? undefined,
       });
+      // What was exported is worth offering next time.
+      try {
+        localStorage.setItem(LAST_SHIPMENT_KEY, JSON.stringify(docValues));
+      } catch {
+        // Storage full or blocked: the export succeeded, the memory is a bonus.
+      }
     } catch (e) {
       setError(String(e));
     } finally {
       setExportingDoc(null);
+    }
+  };
+
+  // One click for the whole pack: every selected document that is ready,
+  // in order. Drafts and blocked documents stay behind — downloading an
+  // incomplete paper on a bulk action would hide that it is incomplete.
+  const readyDocs = selectedDefinitions.filter((doc) => docStatus(doc).status === "ready");
+  const [downloadingAll, setDownloadingAll] = useState(false);
+  const downloadAll = async () => {
+    setDownloadingAll(true);
+    try {
+      for (const doc of readyDocs) {
+        await exportGenericDoc(doc);
+      }
+    } finally {
+      setDownloadingAll(false);
     }
   };
 
@@ -665,7 +772,7 @@ export default function WizardPage() {
     return <p className="text-sm text-red-600 dark:text-red-400">{registryError}</p>;
   }
 
-  if (!registry || selectedDocs === null) {
+  if (!registry) {
     return <div className="py-12 text-center text-slate-500 dark:text-slate-400">{t("wizard.loading")}</div>;
   }
 
@@ -681,30 +788,6 @@ export default function WizardPage() {
       </div>
 
       <WizardProgress steps={stepPills} currentStep={currentIndex + 1} />
-
-      {stepKey === "forms" && (
-        <div className="space-y-4">
-          <FormSelectionStep
-            registry={registry}
-            modality={modality}
-            selected={selected}
-            onChange={setSelectedDocs}
-          />
-          <div className="flex flex-col gap-2 sm:flex-row">
-            <button
-              type="button"
-              onClick={() => goNextFrom("forms")}
-              disabled={selected.length === 0}
-              className={`${buttonPrimary} sm:ml-auto`}
-            >
-              {t("wizard.toLines")}
-            </button>
-          </div>
-          {selected.length === 0 && (
-            <p className="text-sm text-amber-600 dark:text-amber-300">{t("forms.selectAtLeastOne")}</p>
-          )}
-        </div>
-      )}
 
       {stepKey === "lines" && (
         <div className="space-y-4">
@@ -736,9 +819,6 @@ export default function WizardPage() {
           />
 
           <div className="flex flex-col gap-2 sm:flex-row sm:gap-3">
-            <button type="button" onClick={() => setStepKey("forms")} className={buttonSecondary}>
-              {t("wizard.back")}
-            </button>
             <button type="button" onClick={goFromLines} disabled={loading} className={`${buttonPrimary} sm:ml-auto`}>
               {t("wizard.continue")}
             </button>
@@ -769,18 +849,28 @@ export default function WizardPage() {
       )}
 
       {stepKey === "details" && (
-        <DocumentFieldsStep
-          registry={registry}
-          documents={genericDocs}
-          values={docValues}
-          onChange={setDocValues}
-          autoValues={autoValues}
-          modality={modality}
-          onBack={() => goBackFrom("details")}
-          onDone={() => setStepKey("export")}
-          signature={signature}
-          onSignatureChange={setSignature}
-        />
+        <div className="space-y-4">
+          {lastShipment && (
+            <div className={`${panelClass} flex flex-col gap-2 p-4 sm:flex-row sm:items-center sm:justify-between`}>
+              <p className="text-sm text-slate-600 dark:text-slate-400">{t("docfields.reuseLastHint")}</p>
+              <button type="button" onClick={reuseLastShipment} className={buttonSecondary}>
+                {t("docfields.reuseLast")}
+              </button>
+            </div>
+          )}
+          <DocumentFieldsStep
+            registry={registry}
+            documents={genericDocs}
+            values={docValues}
+            onChange={setDocValues}
+            autoValues={autoValues}
+            modality={modality}
+            onBack={() => goBackFrom("details")}
+            onDone={completeDetails}
+            signature={signature}
+            onSignatureChange={setSignature}
+          />
+        </div>
       )}
 
       {stepKey === "export" && result && (
@@ -861,8 +951,30 @@ export default function WizardPage() {
 
           {needsDg && dgEntries.length > 0 && <DgCompliancePanel entries={dgEntries} profiles={dgProfiles} />}
 
+          <DocumentAdvicePanel
+            registry={registry}
+            modality={modality ?? ""}
+            needsDg={needsDg}
+            selected={selected}
+            onChange={setSelectedDocs}
+          />
+
           <div className={`${panelClass} space-y-3 p-4 sm:p-6`}>
-            <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-100">{t("wizardDocs.title")}</h3>
+            <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+              <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-100">{t("wizardDocs.title")}</h3>
+              {readyDocs.length > 1 && (
+                <button
+                  type="button"
+                  onClick={downloadAll}
+                  disabled={downloadingAll}
+                  className={buttonPrimary}
+                >
+                  {downloadingAll
+                    ? t("wizardDocs.exporting")
+                    : t("wizardDocs.downloadAll", { count: readyDocs.length })}
+                </button>
+              )}
+            </div>
             <p className="text-sm text-slate-600 dark:text-slate-400">{t("wizardDocs.intro")}</p>
             <p className="rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-800 dark:border-amber-900/50 dark:bg-amber-900/20 dark:text-amber-300">
               {t("wizardDocs.exportNotice")}{" "}

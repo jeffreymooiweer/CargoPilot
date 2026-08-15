@@ -279,7 +279,9 @@
     "sharedIntro": "Saisissez ces détails une seule fois ; ils sont repris dans tous les formulaires sélectionnés. Les champs marqués * sont obligatoires pour l'export.",
     "formStep": "Formulaire {{index}} sur {{total}} : {{name}}",
     "formIntro": "Uniquement les champs propres à ce formulaire. Les données du transporteur et les signatures restent vides.",
-    "coveredByShared": "Aucun champ supplémentaire n'est nécessaire pour {{forms}} ; les détails de l'envoi suffisent."
+    "coveredByShared": "Aucun champ supplémentaire n'est nécessaire pour {{forms}} ; les détails de l'envoi suffisent.",
+    "reuseLast": "Réutiliser l'envoi précédent",
+    "reuseLastHint": "Remplit les champs vides avec les données de votre envoi précédent (dates exclues)."
   },
   "geo": {
     "locationPlaceholder": "Rechercher un aéroport, un port ou une gare — ou saisir librement…",
@@ -326,7 +328,8 @@
     "exporting": "Export en cours…",
     "exportNotice": "Attention : les documents générés sont des projets. À vérifier, à compléter et à faire signer par une personne habilitée avant utilisation. Voir la clause de non-responsabilité.",
     "documentLanguage": "Langue des documents",
-    "documentLanguageRule": "5.4.1.4.1 : une langue officielle du pays d'expédition et, si ce n'est pas l'allemand, l'anglais ou le français, en outre dans l'une de ces trois. Pour le néerlandais, l'application inscrit les deux noms dans le champ."
+    "documentLanguageRule": "5.4.1.4.1 : une langue officielle du pays d'expédition et, si ce n'est pas l'allemand, l'anglais ou le français, en outre dans l'une de ces trois. Pour le néerlandais, l'application inscrit les deux noms dans le champ.",
+    "downloadAll": "Tout télécharger ({{count}})"
   },
   "unCards": {
     "title": "Fiches ONU pour votre dossier",
@@ -582,5 +585,13 @@
     "imdg_document": "IMDG 5.4.1 — requis sur le document de transport",
     "iata_declaration": "Requis sur la déclaration de l'expéditeur",
     "totals_11136": "Pour le total et le calcul des points du 1.1.3.6"
+  },
+  "advice": {
+    "title": "Dossier de documents",
+    "intro": "Composé à partir de l'envoi. Décochez ce dont vous n'avez pas besoin, ou cochez ce que vous voulez en plus.",
+    "required": "Requis",
+    "requiredNote": "Avec des marchandises dangereuses, le 5.4.1 exige un document de transport portant les mentions prescrites.",
+    "recommended": "Recommandé",
+    "possible": "Possible"
   }
 }

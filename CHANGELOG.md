@@ -2,6 +2,34 @@
 
 All notable changes are documented here, following [Semantic Versioning](https://semver.org/).
 
+## [1.93.0] — 2026-08-15
+
+### Added
+
+- **The container/vehicle packing certificate (ADR 5.4.2) as a document.**
+  Where carriage of dangerous goods in a container precedes a sea voyage, the
+  certificate of IMDG 5.4.2 must be provided to the maritime carrier — and the
+  ADR prints the IMDG's nine declarations in its own footnote to 5.4.2 (read on
+  printed pages 1002–1004 of the Dutch edition), which is what makes this
+  buildable from a free official text. The application had it as a single
+  checkbox; a checkbox is not a document anyone can hand to a carrier.
+  **Nothing on it is pre-ticked**: every declaration concerns what was
+  established at packing — the container clean, damaged packages left behind,
+  drums upright — and a certificate this application had already ticked would
+  claim knowledge it cannot have. Not required for portable tanks, and the
+  document says so.
+- **The on-board documents lists (ADR 8.1.2 / ADN 8.1.2).** Both regimes list
+  the papers that must travel — in the driver's cab, on the vessel — and the
+  list is split by who can produce each: what this application drew up
+  (transport documents, instructions in writing, the stowage plan), and what
+  it never can (the certificate of approval of 9.1.3 or 1.16.1.1, the driver's
+  8.2.1 certificate or the ADN expert of 8.2.1.2, photo identification of
+  1.10.1.4, the inspection certificates and the measurements log). Naming
+  those next to the generated papers is the difference between "here are your
+  documents" and "here is everything the regulation asks, and this is the part
+  you must bring yourself". Read from printed page 1431 of the Dutch ADR and
+  8.1.2 of the Dutch ADN edition.
+
 ## [1.92.0] — 2026-08-15
 
 ### Added

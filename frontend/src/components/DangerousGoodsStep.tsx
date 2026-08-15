@@ -423,6 +423,14 @@ export default function DangerousGoodsStep({
                 // packages consignment is noise, and noise on this step is
                 // what makes people stop reading it.
                 .filter((field) => field !== "tank_code" || product.carriage_mode === "tank")
+                // Holds belong to a dry cargo vessel. A cargo tank has no hold
+                // to be in, and 7.1.4.11 is a chapter 7.1 provision — asking
+                // for one on a tank vessel would be asking the wrong question.
+                .filter(
+                  (field) =>
+                    !["hold", "container_number"].includes(field) ||
+                    (product.carriage_mode ?? "packages") !== "tank",
+                )
                 .map((field) =>
                 field === "type_of_package" ? (
                   <div key={field}>

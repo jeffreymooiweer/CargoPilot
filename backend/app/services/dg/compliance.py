@@ -1296,7 +1296,7 @@ def check_adn_hold_separation(
     ]
     if two_cones and one_cone_flammable:
         rule = by_provision["7.1.4.3.2"]
-        findings.append({
+        finding = {
             "provision": rule["provision"],
             "message": rule["message"].get(lang) or rule["message"]["en"],
             "two_cones": sorted(_product_label(entry, product, index)
@@ -1304,7 +1304,28 @@ def check_adn_hold_separation(
             "one_cone_flammable": sorted(
                 _product_label(entry, product, index)
                 for entry, index, product in one_cone_flammable),
-        })
+        }
+        # 7.1.4.3.2 forbids *sharing a hold*, and until the stowage plan of
+        # v1.84.0 there was no hold to compare: the finding could only say the
+        # two kinds were both on board. Where the boatmaster has said which
+        # hold each is in, the prohibition can be applied to what he wrote —
+        # and the holds where it is actually breached are named.
+        clashing = sorted({
+            _hold_of(two) for _e, _i, two in two_cones
+            if _hold_of(two) and _hold_of(two) in {
+                _hold_of(one) for _e2, _i2, one in one_cone_flammable}})
+        if clashing:
+            finding["holds"] = clashing
+            finding["message"] = (
+                f"{finding['message']} "
+                + (rules["shared_hold"].get(lang) or rules["shared_hold"]["en"]).format(
+                    holds=", ".join(clashing)))
+        elif all(_hold_of(product) for _e, _i, product in two_cones + one_cone_flammable):
+            finding["holds"] = []
+            finding["message"] = (
+                f"{finding['message']} "
+                + (rules["separate_holds"].get(lang) or rules["separate_holds"]["en"]))
+        findings.append(finding)
 
     # 7.1.4.3.4 — class 1 against itself. Two explosives may share a hold only
     # where the table says so, and the table sorts on the *compatibility group*:
@@ -2324,6 +2345,17 @@ def check_adr_placarding(
         "marks": marks,
         "source": rules["source"],
     }
+
+
+def _hold_of(product: dict[str, Any]) -> str:
+    """Which hold the boatmaster put this in, normalised for comparison.
+
+    Only for comparing one position with another: what the plan prints is what
+    was typed. "1" and " 1 " are one hold; "dek" and "deck" are one deck.
+    """
+    value = str(product.get("hold") or "").strip().lower()
+    return "deck" if value in {"dek", "deck", "aan dek", "an deck", "auf deck",
+                               "pont", "sur le pont"} else value
 
 
 def _in_tanks(goods: list[dict[str, Any]]) -> bool:

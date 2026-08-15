@@ -469,6 +469,10 @@ export interface DgProduct {
   carriage_mode?: string;
   /** The code on the tank that is actually standing there, for ADR 4.3. */
   tank_code?: string;
+  /** Which hold this is in, or "deck" — ADN 7.1.4.11.1. */
+  hold?: string;
+  /** The container it travels in, if any — ADN 7.1.4.11.2. */
+  container_number?: string;
   eq_lq_points?: string;
   dimensions?: string;
   additional_information?: string;

@@ -132,6 +132,7 @@
       "documents": [
         "adn_transport_doc",
         "vgm",
+        "stowage_plan",
         "packing_list",
         "delivery_note"
       ]
@@ -182,6 +183,7 @@
         "avc_waybill",
         "adn_transport_doc",
         "placarding_sheet",
+        "stowage_plan",
         "packing_list",
         "delivery_note"
       ]
@@ -2762,6 +2764,42 @@
         "en": "This sheet is a working instruction and not a label: the placards and orange plates themselves must meet 5.3.1.7 and 5.3.2.2.",
         "de": "Dieses Blatt ist eine Arbeitsanweisung und kein Zettel: die Großzettel und orangefarbenen Tafeln selbst müssen 5.3.1.7 und 5.3.2.2 entsprechen.",
         "fr": "Cette feuille est une instruction de travail et non une étiquette : les plaques-étiquettes et les panneaux orange doivent eux-mêmes respecter les 5.3.1.7 et 5.3.2.2."
+      }
+    },
+    {
+      "key": "stowage_plan",
+      "label": {
+        "nl": "Stuwplan (ADN 7.1.4.11.1)",
+        "en": "Stowage plan (ADN 7.1.4.11.1)",
+        "de": "Stauplan (ADN 7.1.4.11.1)",
+        "fr": "Plan d'arrimage (ADN 7.1.4.11.1)"
+      },
+      "short_label": {
+        "nl": "Stuwplan",
+        "en": "Stowage",
+        "de": "Stauplan",
+        "fr": "Arrimage"
+      },
+      "category": "generated",
+      "issue_status": {
+        "nl": "Vereist aan boord van een drogeladingschip: welke goederen in welk laadruim of aan dek staan, omschreven als in het vervoersdocument. Geen voorgeschreven model.",
+        "en": "Required on board a dry cargo vessel: which goods are in which hold or on deck, described as in the transport document. No prescribed model.",
+        "de": "An Bord eines Trockengüterschiffs erforderlich: welche Güter in welchem Laderaum oder an Deck stehen, beschrieben wie im Beförderungspapier. Kein vorgeschriebenes Muster.",
+        "fr": "Requis à bord d'un bateau à cargaison sèche : quelles marchandises se trouvent dans quelle cale ou sur le pont, décrites comme dans le document de transport. Aucun modèle prescrit."
+      },
+      "exporter": "stowage",
+      "dg_profile": "ADN",
+      "dg_only": true,
+      "sections": [
+        {
+          "ref": "parties"
+        }
+      ],
+      "signature_note": {
+        "nl": "Het stuwplan zegt welke goederen waar staan; het is geen tekening van het schip.",
+        "en": "The stowage plan says which goods are where; it is not a drawing of the vessel.",
+        "de": "Der Stauplan nennt, welche Güter wo stehen; er ist keine Zeichnung des Schiffes.",
+        "fr": "Le plan d'arrimage indique quelles marchandises se trouvent où ; ce n'est pas un dessin du bateau."
       }
     }
   ],

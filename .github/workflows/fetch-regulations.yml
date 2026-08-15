@@ -30,6 +30,10 @@ on:
         description: "Mappings for unrecognised incoming files, one per line: filename.pdf=document-id"
         default: ""
         required: false
+      find_provision:
+        description: "Which model to look for: 5.4.3 (instructions), 8.6.3 (ADN checklist), 8.6.4 (degassing checklist)"
+        default: "5.4.3"
+        required: false
       find_instructions:
         description: "Report where the four-page model of 5.4.3 sits in these stored documents (ids, space separated)"
         default: ""
@@ -108,12 +112,14 @@ jobs:
         if: ${{ inputs.find_instructions != '' }}
         env:
           IDS: ${{ inputs.find_instructions }}
+          PROVISION: ${{ inputs.find_provision }}
         run: |
           set -euo pipefail
           pip install --quiet pymupdf
           python scripts/regulations_store.py path $IDS > /tmp/paths.txt || true
           cat /tmp/paths.txt
-          xargs -r python scripts/find_instructions_pages.py < /tmp/paths.txt
+          xargs -r python scripts/find_instructions_pages.py \
+            --provision "${PROVISION:-5.4.3}" < /tmp/paths.txt
 
       - name: Cut every model of 5.4.3 and look at it
         if: ${{ inputs.verify_instructions }}

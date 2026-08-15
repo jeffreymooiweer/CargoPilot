@@ -435,6 +435,16 @@ export interface LineItem {
   input_language?: string;
   dangerous_goods?: boolean;
   detected_un_numbers?: string[];
+  dg_name_candidates?: DgNameCandidate[];
+}
+
+/** A substance recognised by name in the line's description. A suggestion for
+ *  the user to confirm — the backend never classifies on it by itself. */
+export interface DgNameCandidate {
+  un: string;
+  name: string;
+  class: string;
+  packing_group?: string;
 }
 
 export interface CalcResult {

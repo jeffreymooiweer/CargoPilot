@@ -16,6 +16,7 @@ from app.services.calculator.engine import (
     transport_volume_outer,
 )
 from app.services.dg.detector import detect_dangerous_goods, detect_un_numbers
+from app.services.dg.name_detection import detect_name_candidates
 from app.services.parser.dimension_extractor import Dimensions, extract_dimensions, meters_to_cm
 from app.core.languages import pick
 from app.services.parser.language_detector import detect_language
@@ -87,6 +88,10 @@ class LineResult:
     calculation_method: str | None = None
     dangerous_goods: bool = False
     detected_un_numbers: list[str] = field(default_factory=list)
+    # Substances recognised by name in the description. Suggestions only: the
+    # interface proposes them and the user confirms — a DG classification is
+    # never set silently on the strength of a word in free text.
+    dg_name_candidates: list[dict[str, Any]] = field(default_factory=list)
 
 
 def _load_aliases_json(raw: str) -> list[str]:
@@ -465,6 +470,11 @@ def process_line(
         dangerous_goods = True
     messages.extend(dg_messages)
     detected_un_numbers = detect_un_numbers(row.description)
+    # With an explicit UN number in the text there is nothing left to suggest.
+    dg_name_candidates = (
+        [] if detected_un_numbers
+        else detect_name_candidates(row.description, output_language)
+    )
 
     if overrides.get("weight_each_kg") is not None:
         weight_each = float(overrides["weight_each_kg"])
@@ -508,6 +518,7 @@ def process_line(
         calculation_method=method,
         dangerous_goods=dangerous_goods,
         detected_un_numbers=detected_un_numbers,
+        dg_name_candidates=dg_name_candidates,
     )
 
 

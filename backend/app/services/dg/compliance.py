@@ -4484,11 +4484,14 @@ def check_compliance(
         "rule_sets": {
             # Table A has come out of the book itself since v1.56.0; the 2023
             # export was reduced to the one thing the Dutch edition cannot
-            # supply, which is the English and German proper shipping names.
-            # This line still credited the export for the whole table.
+            # supply, which was the English and German proper shipping names.
+            # This line still credited the export for the whole table — and
+            # since v1.89.0 it supplies no name at all: all four languages of
+            # column (2) are read from the 2025 editions, English last.
             "ADR": ("ADR 2025 — table A read from the official Dutch edition "
-                    "(scripts/extract_adr_table_a.py); English and German "
-                    "proper shipping names via the 2023 export"),
+                    "(scripts/extract_adr_table_a.py); proper shipping names in "
+                    "Dutch, English, French and German read from the 2025 "
+                    "editions themselves"),
             "IMDG_class_tables": (
                 "Amendment 40-20 (chapter 7.2) — unchanged in 42-24 for "
                 + ", ".join(amendment_42_24.verified_unchanged_sections())

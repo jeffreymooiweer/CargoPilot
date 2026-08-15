@@ -68,18 +68,32 @@ def requires_english_name(profiles: list[str] | set[str] | None) -> bool:
     return bool(chosen & ENGLISH_ONLY_PROFILES)
 
 
+def _whole(name: str) -> bool:
+    """A name that was not cut off where the column ran out."""
+    return bool(name) and name.count("(") == name.count(")")
+
+
 def english_name_of(entry: dict[str, Any]) -> str:
     """The English name of an entry, from the 2025 edition where it has one.
 
     Same shape as the German and the French: the reading of the book comes
     first and the 2023 export is what is left underneath it, for the entries
     the book does not have — the IMDG-only additions have no ADR row at all.
+
+    With one addition the other two languages do not need. A name can run past
+    the edge of the column and come back cut off, and one does: UN 2857 reads
+    "REFRIGERATING MACHINES ... or ammonia solutions (UN" in the 2025 volume,
+    where the export has the whole of it. A truncated name is not a name, and
+    preferring the newer edition is not a reason to put half a name on a
+    consignment note — so the export carries that one, and where both are cut
+    off ``english_name_is_usable`` still says so.
     """
     fresh = english_name_in_table_a(
-        str(entry.get("un") or entry.get("un_number") or ""))
-    if fresh:
-        return fresh.upper()
-    return str(entry.get("name_en") or "").strip().upper()
+        str(entry.get("un") or entry.get("un_number") or "")).upper()
+    export = str(entry.get("name_en") or "").strip().upper()
+    if fresh and not _whole(fresh) and _whole(export):
+        return export
+    return fresh or export
 
 
 def english_name(entry: dict[str, Any]) -> str:
@@ -106,12 +120,7 @@ def english_name_is_usable(entry: dict[str, Any]) -> bool:
     the bracket test stays for the same reason it was written: a name cut off
     mid-parenthesis is not an English name, wherever it came from.
     """
-    name = english_name_of(entry)
-    if not name:
-        return False
-    # A name that ends on an opening bracket was cut off; the rest of the entry
-    # may be right but this field is not.
-    return name.count("(") == name.count(")")
+    return _whole(english_name_of(entry))
 
 
 def german_name_of(entry: dict[str, Any]) -> str:

@@ -10,6 +10,8 @@ layer; the tests therefore check both the text and the position that text ends
 up at.
 """
 
+import re
+
 import fitz
 import pytest
 
@@ -87,7 +89,7 @@ def test_cmr_carries_the_adr_description_and_category_totals(prepared):
     # English, French or German, one of those three in addition. "BENZINE" on
     # its own would be short of a requirement.
     assert fields["VakRood06Regel01Kolom06"] == (
-        "UN 1203, BENZINE OF MOTORBRANDSTOF (GASOLINE), 3, II, (D/E), 10 jerrycan, 200 L"
+        "UN 1203, BENZINE OF MOTORBRANDSTOF (MOTOR SPIRIT OR GASOLINE OR PETROL), 3, II, (D/E), 10 jerrycan, 200 L"
     )
     # Lines without dangerous goods keep their ordinary description.
     assert fields["VakRood06Regel02Kolom06"] == "4 × pallets kalkzandsteen"
@@ -126,13 +128,15 @@ def test_avc_waybill_fills_the_official_form(prepared):
     # Franco ticked, not-franco not: one tick per panel.
     crosses = sorted((round(w[0]), round(w[1])) for w in _words if w[4] == "X")
     assert crosses == [(38, 248), (419, 248)]
-    # The dangerous substance appears as the ADR description in the 'inhoud' column.
-    # Wrapped over three lines inside the narrow column, so it is checked in
-    # pieces; test_cmr_carries_the_adr_description_and_category_totals pins the
-    # sentence itself.
-    assert "UN 1203, BENZINE OF" in text
-    assert "MOTORBRANDSTOF" in text
-    assert "(GASOLINE), 3, II, (D/E), 10" in text
+    # The dangerous substance appears as the ADR description in the 'inhoud'
+    # column, wrapped inside a narrow column. Where the line breaks fall is the
+    # typesetting's business and changes with the name — the 2025 volume prints
+    # three alternatives for UN 1203 where the export kept one — so the check
+    # collapses the whitespace and reads the sentence, instead of pinning the
+    # three fragments a particular wrap happened to produce.
+    flat = re.sub(r"\s+", " ", text)
+    assert ("UN 1203, BENZINE OF MOTORBRANDSTOF "
+            "(MOTOR SPIRIT OR GASOLINE OR PETROL), 3, II, (D/E), 10") in flat
     assert "Totale hoeveelheid per vervoerscategorie" in text
     # Totals over both lines: 10 + 4 packages, 165 + 820 kg.
     assert text.count("14") >= 2 and text.count("985") >= 2

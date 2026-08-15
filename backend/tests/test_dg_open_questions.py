@@ -91,5 +91,8 @@ def test_a_complete_packages_product_has_nothing_left_to_ask():
     q = questions({
         "un_number": "1203", "carriage_mode": "packages",
         "quantity_packages": "10", "net_mass_liters_per_package": "20 L",
+        # UN 1203 combines BENZINE and MOTORBRANDSTOF; since v1.102.0 the
+        # 3.1.2.2 choice is part of a complete product.
+        "chosen_name": "BENZINE", "chosen_name_en": "PETROL",
     })
     assert q == {}

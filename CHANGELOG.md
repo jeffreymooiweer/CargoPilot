@@ -2,6 +2,41 @@
 
 All notable changes are documented here, following [Semantic Versioning](https://semver.org/).
 
+## [1.102.0] — 2026-08-15
+
+### Added
+
+- **The most applicable name, chosen by the consignor (3.1.2.2).** Where a
+  position combines several proper shipping names — UN 1202 is DIESELOLIE or
+  GASOLIE or STOOKOLIE, LICHT — the provision, read from page 421 of the
+  Dutch edition, says only the most applicable one goes on the transport
+  document. The DG step now asks that choice as an open question, offering
+  exactly the capital-printed alternatives of the read name columns (3.1.2.1:
+  the capitals are the name; the lower-case qualifiers are not). A Dutch
+  document asks the English counterpart beside it, the way 5.4.1.4.1 is
+  served; German and French names stand alone; an English-only profile asks
+  the English choice only. The chosen name replaces the whole column on the
+  document — "UN 1202, DIESELOLIE (DIESEL FUEL), 3, III, (D/E)" instead of a
+  ~600-character line — and only names this application wrote itself are ever
+  replaced; the consignor's own wording stands.
+- **The jerrycan exists.** ADR defines it by name (1.2.1) and P001 admits it
+  to 60 litres as a single packaging; now the goods step can count in them
+  and the DG step carries them to the document. The packaging code joins the
+  description the way 5.4.1.1.1 (e) words it — "jerrycan (3H1)", a code only
+  as a supplement, never alone.
+- **"diesel" finds UN 1202.** The exact-name lexicon stays as it was; a
+  fallback now matches a typed word that is the exact first word of a printed
+  name ("DIESEL FUEL") or a near-complete single-word name ("DIESELOLIE"),
+  only when the exact pass found nothing and with a tighter candidate limit.
+  "benzinemotor" still matches nothing.
+
+### Fixed
+
+- **The CMR goods box no longer clips the description.** A line longer than
+  the row continues on the following rows, so packing group and tunnel code
+  stay on the paper — 5.4.1.1.2 requires the information on a transport
+  document to be legible, and a clipped line is not.
+
 ## [1.101.0] — 2026-08-15
 
 ### Added

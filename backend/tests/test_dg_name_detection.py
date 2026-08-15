@@ -82,6 +82,19 @@ def test_an_explicit_un_number_leaves_nothing_to_suggest(db):
     assert line["dg_name_candidates"] == []
 
 
+def test_the_word_at_the_pump_reaches_its_substance():
+    """"diesel" is not a name the book prints — "DIESELOLIE", "DIESEL FUEL" —
+    but it is the exact first word of one and a near-complete single-word
+    name of the other. The fallback match closes that gap without opening
+    the compound-word door: "benzinemotor" still matches nothing."""
+    assert uns("diesel") == ["1202"]
+    assert uns("20 vaten diesel") == ["1202"]
+    assert uns("gasolie") == ["1202"]
+    assert uns("benzinemotor") == []
+    for text in ("stalen buis 50x50x3", "plaat 2000x1000x5", "aluminium buis"):
+        assert uns(text) == [], text
+
+
 def test_the_pipeline_carries_the_candidates_without_deciding(db):
     result = parse_and_calculate("benzine | 10 | vaten", db)
     line = result["lines"][0]

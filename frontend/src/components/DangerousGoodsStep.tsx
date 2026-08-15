@@ -208,7 +208,11 @@ export default function DangerousGoodsStep({
       entry.products
         .map((p) =>
           [p.un_number, p.quantity_packages, p.net_mass_liters_per_package, p.type_of_package,
-           p.q_net_quantity, p.q_max_net_quantity]
+           p.q_net_quantity, p.q_max_net_quantity,
+           // These answers change what the derivation produces: the mode
+           // decides the tank questions and the table C density, the chosen
+           // names become the shipping name, the technical name settles SP 274.
+           p.carriage_mode, p.chosen_name, p.chosen_name_en, p.technical_name]
             .map((v) => v ?? "")
             .join("~"),
         )
@@ -573,7 +577,32 @@ export default function DangerousGoodsStep({
                       <div className="mt-2 grid gap-3 md:grid-cols-2">
                         {productQuestions.map((question) => (
                           <div key={question.field}>
-                            {renderField(question.field)}
+                            {question.options?.length ? (
+                              // A closed answer set from the backend (the
+                              // 3.1.2.2 name alternatives): a select, with an
+                              // empty first entry so nothing is pre-chosen.
+                              <Field
+                                label={labelFor(question.field)}
+                                help={helpFor(question.field)}
+                                options={[
+                                  { value: "", label: "—" },
+                                  ...question.options.map((option) => ({
+                                    value: option,
+                                    label: option,
+                                  })),
+                                ]}
+                                value={String(
+                                  (product as Record<string, unknown>)[question.field] ?? "",
+                                )}
+                                onChange={(v) =>
+                                  updateProduct(entryIndex, productIndex, {
+                                    [question.field]: v,
+                                  })
+                                }
+                              />
+                            ) : (
+                              renderField(question.field)
+                            )}
                             <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
                               {t(`dgopen.${question.reason}` as "dgopen.sp274")}
                               {question.required ? " *" : ""}

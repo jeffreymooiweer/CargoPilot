@@ -8,6 +8,7 @@ operational fields are deliberately left empty.
 import os
 import re
 import tempfile
+import textwrap
 from pathlib import Path
 from typing import Any
 
@@ -70,6 +71,31 @@ def _freight_payment_label(value: str, lang: str) -> str:
                       "de": "Laut Vereinbarung", "fr": 'Selon convention'},
     }
     return pick(labels.get(value), lang, value or "")
+
+
+#: What one goods row of the CMR template legibly holds. Measured on the
+#: rendered form: the row clipped a description around the 64th character, and
+#: 5.4.1.1.2 requires the information on a transport document to be legible —
+#: a line the box cuts off is not.
+CMR_ROW_WIDTH = 60
+
+
+def _wrap_goods_rows(
+    rows: list[tuple[str, str, str]],
+) -> list[tuple[str, str, str]]:
+    """A description longer than the row continues on the next row.
+
+    The weight and volume stay with the first segment, so the totals columns
+    keep one figure per consignment line. Before this, a long description —
+    the full 5.4.1.1.1 line of a substance with a long name — was silently
+    clipped at the box edge, packing group and tunnel code first.
+    """
+    wrapped: list[tuple[str, str, str]] = []
+    for description, weight, volume in rows:
+        parts = textwrap.wrap(description, width=CMR_ROW_WIDTH) or [""]
+        wrapped.append((parts[0], weight, volume))
+        wrapped.extend((part, "", "") for part in parts[1:])
+    return wrapped
 
 
 def _cmr_goods_rows(
@@ -158,7 +184,7 @@ def fill_cmr(
     fields["VakRood21-1"] = _first(values.get("established_place"))
     fields["VakRood21-2"] = _first(values.get("established_date"))
 
-    rows = _cmr_goods_rows(lines, dangerous_goods)
+    rows = _wrap_goods_rows(_cmr_goods_rows(lines, dangerous_goods))
     if len(rows) <= CMR_MAX_ROWS:
         for i, (desc, weight, volume) in enumerate(rows, start=1):
             n = f"{i:02d}"

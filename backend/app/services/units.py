@@ -82,6 +82,10 @@ UNITS: dict[str, Unit] = {
     "pallet": Unit("pallet", Dimension.COUNT, 1.0, "pal"),
     "box": Unit("box", Dimension.COUNT, 1.0, "ds"),
     "drum": Unit("drum", Dimension.COUNT, 1.0, "vat"),
+    # The jerrycan is a packaging ADR defines by name (1.2.1) and P001 admits
+    # to 60 litres as a single packaging; a fuel consignment is counted in
+    # them, so the lines step has to be able to say so.
+    "jerrycan": Unit("jerrycan", Dimension.COUNT, 1.0, "jerrycan"),
     "ibc": Unit("ibc", Dimension.COUNT, 1.0, "IBC"),
     "bag": Unit("bag", Dimension.COUNT, 1.0, "zak"),
     "roll": Unit("roll", Dimension.COUNT, 1.0, "rol"),
@@ -93,8 +97,8 @@ UNITS: dict[str, Unit] = {
 # database of 400 substances in 16 categories always has exceptions, and getting
 # stuck on an exception is worse than an odd unit.
 SUGGESTED_BY_CATEGORY: dict[str, tuple[str, ...]] = {
-    "liquid": ("l", "m3", "kg", "ton", "ibc", "drum"),
-    "chemical": ("kg", "l", "ton", "m3", "drum", "ibc"),
+    "liquid": ("l", "m3", "kg", "ton", "ibc", "drum", "jerrycan"),
+    "chemical": ("kg", "l", "ton", "m3", "drum", "ibc", "jerrycan"),
     "agri": ("ton", "kg", "m3", "bag", "pallet"),
     "bulk_material": ("ton", "m3", "kg"),
     "ore_mineral": ("ton", "m3", "kg"),
@@ -288,6 +292,7 @@ for _code, _names in {
     "pallet": ("pallets", "pal", "europallet", "europallets", "palette"),
     "box": ("boxes", "doos", "dozen", "ds", "karton", "carton", "cartons", "kiste"),
     "drum": ("drums", "vat", "vaten", "fass"),
+    "jerrycan": ("jerrycans", "jerrican", "jerricans", "kanister", "jerrycan 25l"),
     "ibc": ("ibcs", "ibc-tank", "container ibc"),
     "bag": ("bags", "zak", "zakken", "sack", "sacks", "big bag", "bigbag", "sack"),
     "roll": ("rolls", "rol", "rollen", "rolle"),

@@ -24,7 +24,11 @@ import re
 from typing import Any
 
 from app.core.languages import pick
-from app.services.dg.naming import proper_shipping_name, resolve_for_profile
+from app.services.dg.naming import (
+    ENGLISH_ONLY_PROFILES,
+    proper_shipping_name,
+    resolve_for_profile,
+)
 from app.services.dg.database import get_un_entries
 from app.services.dg.enrichment import (
     CLASS_DOCUMENT_NOTES,
@@ -438,6 +442,43 @@ def rid_marking_prescribed(product: dict[str, Any]) -> bool:
     return str(product.get("carriage_mode") or "").strip() in _RID_MARKED_MODES
 
 
+#: The words 5.4.1.1.3, 5.4.1.1.5, 5.4.1.1.6.1 and 5.4.1.1.18 put on the
+#: document, in the languages this application writes documents in. Read in the
+#: official Dutch edition (pages 991-996), the RID English and German editions
+#: (846/906 — the provisions are shared word for word) and the UNECE English
+#: and French volumes II. These are document entries, not interface strings:
+#: the regulation prescribes the word itself, so it follows the language of the
+#: document under 5.4.1.4.1 and is always English where the document must be
+#: (IMDG 5.4.1.4.1, IATA DGR 8.1.2.1).
+_WASTE_WORD = {
+    "nl": "AFVAL", "en": "WASTE", "de": "ABFALL", "fr": "DÉCHET"}
+_EMPTY_UNCLEANED = {
+    "nl": "LEEG, ONGEREINIGD", "en": "EMPTY, UNCLEANED",
+    "de": "LEER, UNGEREINIGT", "fr": "VIDE, NON NETTOYÉ"}
+_SALVAGE = {
+    "packaging": {
+        "nl": "BERGINGSVERPAKKING", "en": "SALVAGE PACKAGING",
+        "de": "BERGUNGSVERPACKUNG", "fr": "EMBALLAGE DE SECOURS"},
+    "pressure_receptacle": {
+        "nl": "BERGINGSDRUKHOUDER", "en": "SALVAGE PRESSURE RECEPTACLE",
+        "de": "BERGUNGSDRUCKGEFÄSS", "fr": "RÉCIPIENT À PRESSION DE SECOURS"},
+}
+_ENVIRONMENTALLY_HAZARDOUS = {
+    "nl": "MILIEUGEVAARLIJK", "en": "ENVIRONMENTALLY HAZARDOUS",
+    "de": "UMWELTGEFÄHRDEND", "fr": "DANGEREUX POUR L'ENVIRONNEMENT"}
+
+#: 5.4.1.1.18's own exception: the names of UN 3077 and 3082 already say it,
+#: and the additional entry is expressly not required for them.
+_ENV_SELF_EVIDENT = {"3077", "3082"}
+
+
+def _document_word(words: dict[str, str], profile: str, language: str) -> str:
+    """The regulation's word in the language of *this* document."""
+    if profile in ENGLISH_ONLY_PROFILES:
+        return words["en"]
+    return words.get((language or "nl").split("-")[0].lower(), words["en"])
+
+
 def description_line(product: dict[str, Any], profile: str, language: str = "",
                      values: dict[str, Any] | None = None) -> str:
     """Official description line for the transport document.
@@ -452,6 +493,13 @@ def description_line(product: dict[str, Any], profile: str, language: str = "",
     # English, even when the consignment was drawn up in German (IMDG 5.4.1.4.1,
     # IATA DGR 8.1.2.1).
     psn = resolve_for_profile(product, profile, language)[0].upper()
+    # 5.4.1.1.3: waste containing dangerous goods carries the word before the
+    # proper shipping name, unless the name already says it — the provision's
+    # own example is "UN 1230 AFVAL METHANOL, 3 (6.1), II, (D/E)".
+    if product.get("is_waste"):
+        word = _document_word(_WASTE_WORD, profile, language)
+        if word not in psn:
+            psn = f"{word} {psn}"
     technical = str(product.get("technical_name") or "").strip()
     if technical:
         psn = f"{psn} ({technical})"
@@ -507,6 +555,37 @@ def description_line(product: dict[str, Any], profile: str, language: str = "",
         if hazard_number:
             line = f"{hazard_number}, {line}"
 
+    # 5.4.1.1.6.1: an empty means of containment, uncleaned, carrying residues
+    # of anything but class 7, says so before or after the description — and
+    # 5.4.1.1.1 (f) then does not apply, so no total quantity is composed for
+    # residues nobody has weighed. The fuller substitutions of 5.4.1.1.6.2 are
+    # permissions, not requirements ("may be replaced"); the form always
+    # allowed is the one composed.
+    empty_uncleaned = bool(product.get("empty_uncleaned"))
+    if empty_uncleaned:
+        line = f"{line}, {_document_word(_EMPTY_UNCLEANED, profile, language)}"
+
+    # 5.4.1.1.5: goods travelling in a salvage packaging or salvage pressure
+    # receptacle carry the word after the description of the goods.
+    salvage = str(product.get("salvage_packaging") or "").strip().lower()
+    if salvage:
+        words = _SALVAGE.get(salvage, _SALVAGE["packaging"])
+        line = f"{line}, {_document_word(words, profile, language)}"
+
+    # 5.4.1.1.18: a substance meeting 2.2.9.1.10 carries the additional entry —
+    # except UN 3077 and 3082, whose names already say it, and except at sea,
+    # where "MARINE POLLUTANT" (which the IMDG branch above already adds) is
+    # the entry the provision itself points at.
+    if (profile in ("ADR", "RID", "ADN")
+            and (product.get("environmentally_hazardous")
+                 or str(product.get("marine_pollutant") or "").strip().upper()
+                 in {"P", "Y", "YES", "JA", "TRUE", "1"})):
+        un_digits = "".join(
+            c for c in str(product.get("un_number") or "") if c.isdigit()).zfill(4)
+        if un_digits not in _ENV_SELF_EVIDENT:
+            line = (f"{line}, "
+                    f"{_document_word(_ENVIRONMENTALLY_HAZARDOUS, profile, language)}")
+
     # Number and type of packages + total quantity (ADR 5.4.1.1.1 f/g).
     count = str(product.get("quantity_packages") or "").strip()
     package = str(product.get("type_of_package") or "").strip()
@@ -515,7 +594,7 @@ def description_line(product: dict[str, Any], profile: str, language: str = "",
     tail = []
     if packages:
         tail.append(packages)
-    if total is not None:
+    if total is not None and not empty_uncleaned:
         tail.append(_amount(total, unit))
     # Class 1 on a land document: the total net explosive mass belongs in the
     # transport document (ADR 5.4.1.2.1 (a)).

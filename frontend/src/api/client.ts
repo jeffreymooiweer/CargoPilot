@@ -469,6 +469,10 @@ export interface DgProduct {
   carriage_mode?: string;
   /** The code on the tank that is actually standing there, for ADR 4.3. */
   tank_code?: string;
+  /** 5.4.1.1.3 / 5.4.1.1.6.1 / 5.4.1.1.5: waste, empty uncleaned, salvage. */
+  is_waste?: string;
+  empty_uncleaned?: string;
+  salvage_packaging?: string;
   /** What ADR 4.3.2.2 needs and table A does not carry. */
   filling_temperature?: string;
   density_15?: string;

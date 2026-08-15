@@ -540,6 +540,120 @@
         "fr": "Pour les marchandises en conteneurs, le 7.1.4.11.2 de l'ADN admet le numéro du conteneur dans le plan d'arrimage ; la description des marchandises figure alors en annexe."
       },
       "type": "text"
+    },
+    "is_waste": {
+      "label": {
+        "nl": "Afvalstof",
+        "en": "Waste",
+        "de": "Abfall",
+        "fr": "Déchet"
+      },
+      "help": {
+        "nl": "5.4.1.1.3: bij afval dat gevaarlijke goederen bevat gaat het woord \"AFVAL\" vóór de vervoersnaam op het document, tenzij dat woord er al deel van uitmaakt.",
+        "en": "5.4.1.1.3: for waste containing dangerous goods the word \"WASTE\" precedes the proper shipping name on the document, unless it is already part of that name.",
+        "de": "5.4.1.1.3: Bei Abfällen, die gefährliche Güter enthalten, wird der offiziellen Benennung im Beförderungspapier das Wort \"ABFALL\" vorangestellt, sofern es nicht bereits Bestandteil der Benennung ist.",
+        "fr": "5.4.1.1.3 : pour les déchets contenant des marchandises dangereuses, le mot \"DÉCHET\" précède la désignation officielle de transport sur le document, sauf s'il en fait déjà partie."
+      },
+      "type": "select",
+      "options": [
+        {
+          "value": "",
+          "label": {
+            "nl": "Nee",
+            "en": "No",
+            "de": "Nein",
+            "fr": "Non"
+          }
+        },
+        {
+          "value": "yes",
+          "label": {
+            "nl": "Ja — afvalstof",
+            "en": "Yes — waste",
+            "de": "Ja — Abfall",
+            "fr": "Oui — déchet"
+          }
+        }
+      ]
+    },
+    "empty_uncleaned": {
+      "label": {
+        "nl": "Leeg, ongereinigd",
+        "en": "Empty, uncleaned",
+        "de": "Leer, ungereinigt",
+        "fr": "Vide, non nettoyé"
+      },
+      "help": {
+        "nl": "5.4.1.1.6.1: een leeg, ongereinigd middel van omsluiting met resten van gevaarlijke goederen (behalve klasse 7) draagt \"LEEG, ONGEREINIGD\" bij de beschrijving; de totale hoeveelheid (5.4.1.1.1 f) vervalt dan.",
+        "en": "5.4.1.1.6.1: an empty, uncleaned means of containment holding residues of dangerous goods (class 7 excepted) carries \"EMPTY, UNCLEANED\" with the description; the total quantity of 5.4.1.1.1 (f) then does not apply.",
+        "de": "5.4.1.1.6.1: Ein leeres, ungereinigtes Umschließungsmittel mit Rückständen gefährlicher Güter (außer Klasse 7) trägt \"LEER, UNGEREINIGT\" bei der Beschreibung; die Gesamtmenge nach 5.4.1.1.1 f) entfällt dann.",
+        "fr": "5.4.1.1.6.1 : un moyen de rétention vide, non nettoyé, contenant des résidus de marchandises dangereuses (classe 7 exceptée) porte \"VIDE, NON NETTOYÉ\" avec la description ; la quantité totale du 5.4.1.1.1 f) ne s'applique alors pas."
+      },
+      "type": "select",
+      "options": [
+        {
+          "value": "",
+          "label": {
+            "nl": "Nee",
+            "en": "No",
+            "de": "Nein",
+            "fr": "Non"
+          }
+        },
+        {
+          "value": "yes",
+          "label": {
+            "nl": "Ja — leeg, ongereinigd",
+            "en": "Yes — empty, uncleaned",
+            "de": "Ja — leer, ungereinigt",
+            "fr": "Oui — vide, non nettoyé"
+          }
+        }
+      ]
+    },
+    "salvage_packaging": {
+      "label": {
+        "nl": "Bergingsverpakking",
+        "en": "Salvage packaging",
+        "de": "Bergungsverpackung",
+        "fr": "Emballage de secours"
+      },
+      "help": {
+        "nl": "5.4.1.1.5: goederen in een bergingsverpakking (4.1.1.19) of bergingsdrukhouder (4.1.1.20) dragen dat woord na de omschrijving op het document.",
+        "en": "5.4.1.1.5: goods in a salvage packaging (4.1.1.19) or salvage pressure receptacle (4.1.1.20) carry that word after the description on the document.",
+        "de": "5.4.1.1.5: Güter in einer Bergungsverpackung (4.1.1.19) oder einem Bergungsdruckgefäß (4.1.1.20) tragen dieses Wort nach der Beschreibung im Beförderungspapier.",
+        "fr": "5.4.1.1.5 : les marchandises dans un emballage de secours (4.1.1.19) ou un récipient à pression de secours (4.1.1.20) portent ce mot après la description sur le document."
+      },
+      "type": "select",
+      "options": [
+        {
+          "value": "",
+          "label": {
+            "nl": "Nee",
+            "en": "No",
+            "de": "Nein",
+            "fr": "Non"
+          }
+        },
+        {
+          "value": "packaging",
+          "label": {
+            "nl": "Bergingsverpakking",
+            "en": "Salvage packaging",
+            "de": "Bergungsverpackung",
+            "fr": "Emballage de secours"
+          }
+        },
+        {
+          "value": "pressure_receptacle",
+          "label": {
+            "nl": "Bergingsdrukhouder",
+            "en": "Salvage pressure receptacle",
+            "de": "Bergungsdruckgefäß",
+            "fr": "Récipient à pression de secours"
+          }
+        }
+      ]
     }
   }
 }

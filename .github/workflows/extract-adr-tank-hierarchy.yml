@@ -36,6 +36,10 @@ on:
         description: "Print the geometry of the pages found, so the reader can be corrected in the development container"
         type: boolean
         default: false
+      why:
+        description: "Say which pages carry the table's headings, and stop"
+        type: boolean
+        default: false
       probe_page:
         description: "Print one page line by line, with the x of every word"
         default: ""
@@ -91,6 +95,7 @@ jobs:
           LANGUAGE: ${{ inputs.language }}
           PROBE: ${{ inputs.probe }}
           WORDS: ${{ inputs.words }}
+          WHY: ${{ inputs.why }}
           PROBE_PAGE: ${{ inputs.probe_page }}
           DUMP: ${{ inputs.dump }}
         run: |
@@ -118,12 +123,13 @@ jobs:
           ARGS=(--pdf "$PDF" --language "$LANGUAGE" --out "hierarchy_$LANGUAGE.json")
           if [ "$PROBE" = "true" ]; then ARGS+=(--probe); fi
           if [ "$WORDS" = "true" ]; then ARGS+=(--words); fi
+          if [ "$WHY" = "true" ]; then ARGS+=(--why); fi
           if [ -n "$PROBE_PAGE" ]; then ARGS+=(--probe-page "$PROBE_PAGE"); fi
           if [ "$DUMP" = "true" ]; then ARGS+=(--dump); fi
           python scripts/extract_adr_tank_hierarchy.py "${ARGS[@]}"
 
       - name: Hand the reading back
-        if: ${{ always() && !inputs.probe && !inputs.words && !inputs.probe_page && inputs.language != 'compare' }}
+        if: ${{ always() && !inputs.probe && !inputs.words && !inputs.why && !inputs.probe_page && inputs.language != 'compare' }}
         uses: actions/upload-artifact@v4
         with:
           name: adr-tank-hierarchy-${{ inputs.language }}
@@ -188,7 +194,7 @@ jobs:
           git push origin HEAD:${GITHUB_REF_NAME}
 
       - name: What was read
-        if: ${{ always() && !inputs.probe && !inputs.words && !inputs.probe_page && inputs.language != 'compare' }}
+        if: ${{ always() && !inputs.probe && !inputs.words && !inputs.why && !inputs.probe_page && inputs.language != 'compare' }}
         env:
           LANGUAGE: ${{ inputs.language }}
           DUMP: ${{ inputs.dump }}

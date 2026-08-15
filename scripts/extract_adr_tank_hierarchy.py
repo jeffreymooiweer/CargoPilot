@@ -53,6 +53,10 @@ CLASS = re.compile(r"[1-9](?:\.\d)?")
 PACKING_GROUP = re.compile(r"I{1,3}")
 #: A classification code of table A column (3b): F1, FT2, ST3, M11, C1, I3, W1.
 CLASSIFICATION = re.compile(r"[A-Z]{1,3}\d{0,2}([a-z])?")
+#: The provision that prints the rationalized approach, as it is set at the
+#: table's own head. Not a phrase, so not a language: the number is the same in
+#: every edition.
+PROVISION = re.compile(r"^\s*4\.3\.4\.1\.2\b", re.MULTILINE)
 #: What a condition inside the packing group cell looks like in every edition:
 #: a comparison. Nothing else in the table carries one, so it is what tells a
 #: condition apart from a stray line of running text.
@@ -223,16 +227,41 @@ def rationalised_pages(doc, language: str) -> list[int]:
     where it ends — the section runs on until a page stops looking like it.
     """
     words = LANGUAGES[language]
-    start = None
+    # The provision's own number first, because it is the one anchor that is
+    # not a phrase. The German edition heads the columns of *table A* with
+    # "Tankcodierung" and "Klassifizierungscode" too, so a reader that looked
+    # for those started three hundred pages early and read table A instead:
+    # the German reading of this table was empty for that reason alone.
+    # English and Dutch were saved only by the accident that their headings
+    # ("group of permitted substances") are unique to 4.3.4.1.2.
+    #
+    # The number appears in the contents and in cross-references as well, so
+    # the page also has to look like the table: tank codes on it, and lines
+    # that read as rows.
+    candidates = []
     for index in range(doc.page_count):
         text = doc[index].get_text()
         if _is_contents(text):
             continue
-        low = text.lower()
-        if (words["group_column"] in low and words["code_column"] in low
-                and len(TANK_CODE.findall(text)) >= 3):
-            start = index
-            break
+        if not PROVISION.search(text):
+            continue
+        if len(TANK_CODE.findall(text)) >= 3 and _rows_of_the_table(doc[index]) >= 5:
+            candidates.append(index)
+    start = candidates[-1] if candidates else None
+
+    if start is None:
+        # An edition that does not set the number on the table's own page still
+        # names its columns; that is how this reader began, and it stays as the
+        # way round.
+        for index in range(doc.page_count):
+            text = doc[index].get_text()
+            if _is_contents(text):
+                continue
+            low = text.lower()
+            if (words["group_column"] in low and words["code_column"] in low
+                    and len(TANK_CODE.findall(text)) >= 3):
+                start = index
+                break
     if start is None:
         return []
 
@@ -554,6 +583,38 @@ def words(doc, language: str) -> int:
     return 0
 
 
+def why(doc, language: str) -> int:
+    """Why the table was or was not found, page by page.
+
+    A reader that comes back with nothing has said only that: nothing. This
+    says which of the two headings a page carries, how many tank codes are on
+    it and how many of its lines read as rows — which is the whole of what
+    ``rationalised_pages`` decides on, so whatever it rejected is visible here
+    rather than guessed at.
+    """
+    words = LANGUAGES[language]
+    print(f"looking for {words['code_column']!r} and {words['group_column']!r}")
+    shown = 0
+    for index in range(doc.page_count):
+        text = doc[index].get_text()
+        low = text.lower()
+        here = [name for name in ("code_column", "group_column")
+                if words[name] in low]
+        if not here:
+            continue
+        rows = _rows_of_the_table(doc[index])
+        codes = len(TANK_CODE.findall(text))
+        print(f"  p{index + 1}: {'+'.join(here)} codes={codes} rows={rows}"
+              f"{' CONTENTS' if _is_contents(text) else ''}")
+        shown += 1
+        if shown >= 40:
+            print("  ... stopping at 40 pages")
+            break
+    if not shown:
+        print("  no page carries either heading")
+    return 0
+
+
 def probe_page(doc, number: int) -> int:
     """One page, line by line, with the x of every word.
 
@@ -794,6 +855,8 @@ def main() -> int:
     parser.add_argument("--language", default="en", choices=sorted(LANGUAGES))
     parser.add_argument("--probe", action="store_true",
                         help="report the layout of the pages found and stop")
+    parser.add_argument("--why", action="store_true",
+                        help="say which pages carry the table's headings, and stop")
     parser.add_argument("--words", action="store_true",
                         help="print the geometry of the pages found and stop")
     parser.add_argument("--probe-page", type=int, default=0,
@@ -827,6 +890,8 @@ def main() -> int:
     import pymupdf
 
     with pymupdf.open(args.pdf) as doc:
+        if args.why:
+            return why(doc, args.language)
         if args.probe_page:
             return probe_page(doc, args.probe_page)
         if args.words:

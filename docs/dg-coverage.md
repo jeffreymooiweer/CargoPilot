@@ -303,9 +303,13 @@ dataset it was built on.
   substances it may carry and the required code is never compared with it. Both were read
   from three books — the English volume II, the printed Dutch edition and the German volume
   II. Fifteen of the sixteen gas rows are settled by more than one reading; of the eighteen
-  tank codes of the rationalized approach seven are settled on every cell and eleven carry a
-  cell no two readings agree on, and **every one of those eleven makes the check decline
-  rather than answer**. Three measured details shape it: the regulation's own note that the
+  tank codes of the rationalized approach **fifteen are settled on every cell** since
+  v1.86.0, when the German reading began to work, and the three that are not still make the
+  check decline rather than answer. Finding the German table took the one anchor that is not
+  a phrase: that edition heads the columns of *table A* with "Tankcodierung" and
+  "Klassifizierungscode" as well, so a reader looking for headings started three hundred
+  pages early and read table A instead. The provision's own number does not have that
+  problem. Three measured details shape it: the regulation's own note that the
   hierarchy takes no account of the special provisions of 4.3.5 and 6.8.4 (column 13), which
   travel with every answer; a condition inside the packing group cell (LGBF admits packing
   group II of class 3 F1 only where the vapour pressure at 50 °C is at most 1.1 bar); and the
@@ -645,7 +649,7 @@ Ordered by how much harm someone could take before noticing, not by effort.
 | 5 | **LQ/EQ conditions not checked** | The arithmetic of 3.4/3.5 is verified correct and 3.5.1.3/3.5.1.4 are applied since v1.50.0, but the mark, the packagings and the 3.5.3 tests are declarations the application cannot see. A line "within the limits" is a candidate, not an exemption — and the panel says so. |
 | 6 | **IMDG stowage category shown, not enforced** | Lower because on-deck/under-deck is usually the carrier's call, not the consignor's. **[verify]** |
 | 7 | **No marking or placarding checks outside the road mode** | Closed for ADR in v1.57.0 (5.3.1.5, 5.3.2.1 and 5.3.6.1 for packages; the equipment half in v1.53.0), extended to tanks and put on paper in v1.83.0. Rail, inland waterway, sea and air still have nothing. |
-| 8 | **The tank hierarchy declines on eleven of eighteen codes** | New with v1.82.0, and the honest cost of the two-reading rule. Eleven tank codes of 4.3.4.1.2 carry a cell no two readings agreed on, so the fit check says "cannot be assessed" for them rather than guessing. They are shortfalls of the readers, not disagreements between the books; a working third reading of the German edition would settle most of them. Ranked here because a check that declines is safe but not useful. |
+| 8 | **The tank hierarchy declines on three of eighteen codes** | Was eleven when the check shipped in v1.82.0. The German volume II joined the two readings in v1.86.0 and settled seventeen cells: fifteen codes are now settled on every cell, and the three that are left — L10BH's group, L10DH's inheritance and S10AH's group — still make the check decline rather than guess. |
 
 Two of the top gaps from earlier versions of this table are gone, and it is worth being
 precise about why. "RID and ADN answered with ADR tables" ranked second for three releases;

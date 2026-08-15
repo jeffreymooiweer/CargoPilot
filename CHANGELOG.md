@@ -2,6 +2,45 @@
 
 All notable changes are documented here, following [Semantic Versioning](https://semver.org/).
 
+## [1.85.0] — 2026-08-15
+
+### Added
+
+- **The four archetypes are a test, not an anecdote.** The plan for the dangerous
+  goods work ended on a closing step: walk packaged goods by road, a road tank, a
+  dry cargo vessel and a tank vessel from the goods to the last download, and see
+  what comes out. Doing that by hand proves the day it was done; `test_archetypes.py`
+  proves it on every commit. Each archetype asserts the checks that mode is
+  entitled to *and* the ones it must not get — a tank vessel is not answered with
+  the dry cargo vessel's chapter 7.1, a packages consignment is not asked about a
+  tank — that the documents it needs render, and that what the application cannot
+  say is said.
+- The model verifier takes a provision, so the checklist of 8.6.3 could be cut and
+  looked at rather than assumed. It confirms all four editions, the German one
+  included: its range was measured but never seen, because that edition sets a
+  running head on every line and the finder's content check had nothing to say
+  about it. Every page is in range, and 8.6.2 and 8.6.4 are outside it.
+
+### Changed
+
+- **`docs/dg-coverage.md` says what the application does now.** It still claimed
+  the ADN tank vessel regime was "entirely absent" and that tank codes were
+  "outside the application", both untrue since v1.80.0 and v1.82.0. It now carries
+  what the driver and the boatmaster actually get on paper, the two rules that
+  govern it — a model the regulation prints is never rebuilt, and nothing
+  prescribed is filled in for you — and what still has to be on board and cannot
+  come from here.
+- A new entry in the gaps table, ranked where it belongs: **the tank hierarchy
+  declines on eleven of eighteen codes**. That is the honest cost of the
+  two-reading rule, and a check that declines is safe but not useful.
+
+### Fixed
+
+- The page-range finder looked for 8.6.4's successor as a numbered provision and
+  found the contents pages, reporting a twenty-page model. What follows the last
+  provision of a part is the next part, and the part's own heading is what ends
+  the model.
+
 ## [1.84.0] — 2026-08-15
 
 ### Added

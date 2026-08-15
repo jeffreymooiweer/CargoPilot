@@ -14,6 +14,13 @@ taken out of the edition in the store, page range measured with
 ``scripts/find_instructions_pages.py`` and written into the register beside the
 document it is cut from.
 
+The instructions are not the only such model. ADN 8.6.3 prints the checklist
+for loading and unloading a tank vessel the same way, and 8.6.4 the one for
+degassing. So a model is addressed by its **provision** as well as by regime
+and language, and everything below takes all three. Nothing here interprets a
+model or fills one in: the application may hand over the form, and the form is
+what the book prints.
+
 Nothing here downloads anything. A model the store cannot produce is reported
 as missing, with the document that would produce it named, because a carrier
 who thinks they have the instructions and has not is worse off than one who
@@ -74,25 +81,38 @@ def locate(doc_id: str) -> Path | None:
     return None
 
 
-def instruction_documents() -> list[dict]:
-    """Every model of 5.4.3 the register knows, in a fixed order."""
+def instruction_documents(provision: str = "5.4.3") -> list[dict]:
+    """Every model of one provision the register knows, in a fixed order."""
     found = []
     for doc in manifest().get("documents", []):
         model = doc.get("model_of")
-        if model:
+        if model and model.get("provision", "5.4.3") == provision:
             found.append(doc)
     return sorted(found, key=lambda d: (REGIMES.index(d["model_of"]["regime"]),
                                         LANGUAGES.index(d["model_of"]["language"])))
 
 
-def instruction_status(regime: str, language: str) -> dict:
+def model_provisions() -> list[str]:
+    """The provisions the register holds a model for, 5.4.3 first."""
+    seen = []
+    for doc in manifest().get("documents", []):
+        model = doc.get("model_of")
+        if model:
+            provision = model.get("provision", "5.4.3")
+            if provision not in seen:
+                seen.append(provision)
+    return sorted(seen, key=lambda p: (p != "5.4.3", p))
+
+
+def instruction_status(regime: str, language: str,
+                       provision: str = "5.4.3") -> dict:
     """What this installation can hand over for one regime and language."""
-    doc = next((d for d in instruction_documents()
+    doc = next((d for d in instruction_documents(provision)
                 if d["model_of"]["regime"] == regime
                 and d["model_of"]["language"] == language), None)
     if doc is None:
-        return {"regime": regime, "language": language, "available": False,
-                "reason": "not_registered"}
+        return {"regime": regime, "language": language, "provision": provision,
+                "available": False, "reason": "not_registered"}
     state = {"regime": regime, "language": language,
              "document_id": doc["id"], "edition": doc.get("edition", ""),
              "provision": doc["model_of"].get("provision", "5.4.3")}
@@ -106,7 +126,8 @@ def instruction_status(regime: str, language: str) -> dict:
             "needs": cut["document"] if cut else doc["id"]}
 
 
-def instructions_pdf(regime: str, language: str) -> Path | None:
+def instructions_pdf(regime: str, language: str,
+                     provision: str = "5.4.3") -> Path | None:
     """The four-page model as a file, cut from the edition if need be.
 
     The cut is kept beside the store when the store is writable, so the second
@@ -114,7 +135,7 @@ def instructions_pdf(regime: str, language: str) -> Path | None:
     to a temporary file. Either way the caller gets a path to a PDF that holds
     the model and nothing the model does not have.
     """
-    status = instruction_status(regime, language)
+    status = instruction_status(regime, language, provision)
     if not status.get("available"):
         return None
     ready = locate(status["document_id"])

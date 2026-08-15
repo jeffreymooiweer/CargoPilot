@@ -15,6 +15,12 @@ already. This reports where the model sits in a volume, so a page range can be
 application can cut those pages out of the operator's own copy.
 
     python scripts/find_instructions_pages.py store/adn.pdf [more.pdf ...]
+    python scripts/find_instructions_pages.py --provision 8.6.3 store/adn.pdf
+
+The instructions are not the only model a regime prints rather than describes.
+ADN 8.6.3 prints the checklist for loading and unloading a tank vessel and
+8.6.4 the one for degassing, and they are found the same way: the provision's
+own page, the model's title, and the page the next provision starts on.
 
 What it prints per volume: the pages that carry 5.4.3, the page the model
 starts on (the model opens with a title that names the regime, and its pages
@@ -29,16 +35,43 @@ import re
 import sys
 from pathlib import Path
 
-# The model's own title, in the three languages the volumes are published in
-# and in the Dutch edition. It is the first line of page one of the model.
-TITLE = re.compile(
-    r"INSTRUCTIONS? IN WRITING|CONSIGNES ÉCRITES|SCHRIFTELIJKE INSTRUCTIES"
-    r"|SCHRIFTLICHE WEISUNGEN", re.IGNORECASE)
-SECTION = re.compile(r"^\s*5\.4\.([34])\b", re.MULTILINE)
+#: Each model this script can find: the provision that prints it, the
+#: provision that follows it, and the model's own title in the four languages
+#: the editions are published in. The title is the first line of the model's
+#: first page and is what tells the model apart from a cross-reference to it.
+MODELS: dict[str, dict[str, object]] = {
+    "5.4.3": {
+        "next": "5.4.4",
+        "title": re.compile(
+            r"INSTRUCTIONS? IN WRITING|CONSIGNES ÉCRITES|SCHRIFTELIJKE INSTRUCTIES"
+            r"|SCHRIFTLICHE WEISUNGEN", re.IGNORECASE),
+        "span": 20,
+    },
+    "8.6.3": {
+        "next": "8.6.4",
+        "title": re.compile(
+            r"ADN CHECK ?LIST|LISTE DE CONTRÔLE ADN|CONTROLELIJST ADN"
+            r"|ADN[- ]KONTROLLISTE|PRÜFLISTE ADN", re.IGNORECASE),
+        "span": 20,
+    },
+    "8.6.4": {
+        "next": "8.6.5|9.1",
+        "title": re.compile(
+            r"CHECK ?LIST DEGASSING|LISTE DE CONTRÔLE DÉGAZAGE"
+            r"|CONTROLELIJST ONTGASSING|PRÜFLISTE ENTGASUNG", re.IGNORECASE),
+        "span": 20,
+    },
+}
 
 
-def look(path: Path) -> None:
+def look(path: Path, provision: str = "5.4.3") -> None:
     import fitz
+
+    model = MODELS[provision]
+    title_pattern = model["title"]
+    section = re.compile(
+        rf"^\s*(?:{re.escape(provision)}|{model['next']})\b", re.MULTILINE)
+    here = re.compile(rf"^\s*{re.escape(provision)}\b", re.MULTILINE)
 
     with fitz.open(path) as document:
         print(f"=== {path.name}: {document.page_count} pages")
@@ -62,20 +95,21 @@ def look(path: Path) -> None:
         titles: list[int] = []
         for index in range(document.page_count):
             text = document[index].get_text("text")
-            for found in SECTION.finditer(text):
-                (heads_543 if found.group(1) == "3" else heads_544).append(index)
-            if TITLE.search(text):
+            for found in section.finditer(text):
+                (heads_543 if here.match(found.group(0)) else heads_544).append(index)
+            if title_pattern.search(text):
                 titles.append(index)
-        print(f"  pages naming 5.4.3: {heads_543[:8]}")
-        print(f"  pages naming 5.4.4: {heads_544[:8]}")
+        print(f"  pages naming {provision}: {heads_543[:8]}")
+        print(f"  pages naming the next provision: {heads_544[:8]}")
         print(f"  pages carrying the model's title: {titles[:8]}")
         # The section's own page is the last one naming 5.4.3 that has 5.4.4
         # within a model's length of it. In the table of contents the two names
         # sit on one page and the model does not follow, which rules it out;
         # elsewhere in the book "instructions in writing" is only ever
         # mentioned (1.4.3, 8.1.2), never printed.
+        span = int(model["span"])
         pairs = [(a, b) for a in dict.fromkeys(heads_543)
-                 for b in heads_544 if 0 < b - a <= 20]
+                 for b in heads_544 if 0 < b - a <= span]
         if not pairs:
             print("  the model is not in this volume")
             return
@@ -97,15 +131,23 @@ def look(path: Path) -> None:
 
 
 def main() -> int:
-    if len(sys.argv) < 2:
+    arguments = sys.argv[1:]
+    provision = "5.4.3"
+    if arguments and arguments[0] == "--provision":
+        provision = arguments[1]
+        arguments = arguments[2:]
+    if provision not in MODELS:
+        print(f"no model registered for {provision}", file=sys.stderr)
+        return 2
+    if not arguments:
         print("give one or more PDF paths", file=sys.stderr)
         return 2
-    for name in sys.argv[1:]:
+    for name in arguments:
         path = Path(name)
         if not path.is_file():
             print(f"=== {path}: not in the store")
             continue
-        look(path)
+        look(path, provision)
     return 0
 
 

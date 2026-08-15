@@ -545,5 +545,10 @@
     "unavailable": "Nicht im Dokumentenspeicher dieser Installation ({{document}}).",
     "howto": "Legen Sie die fehlende Ausgabe im Dokumentenspeicher ab; siehe docs/regulatory-database.md.",
     "languageRule": "5.4.3.2: in einer Sprache, die jedes Mitglied der Besatzung lesen und verstehen kann."
+  },
+  "checklist": {
+    "title": "ADN-Prüfliste (8.6.3)",
+    "intro": "Vor dem Laden oder Löschen eines Tankschiffs muss die Prüfliste nach 8.6.3 von Schiffsführer und Landanlage ausgefüllt und unterschrieben werden. Dies ist das vorgeschriebene Muster aus der ADN-Ausgabe.",
+    "notFilledIn": "CargoPilot übergibt das Muster so, wie das Buch es druckt, und füllt nichts für Sie aus: Die Liste wird an Bord gemeinsam mit der Landanlage ausgefüllt."
   }
 }

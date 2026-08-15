@@ -21,6 +21,7 @@ from app.services.documents import (
 )
 from app.services import regulations
 from app.services.documents.avc_form import fill_avc_waybill, has_avc_template
+from app.services.documents.placarding_sheet import render_placarding_sheet
 from app.services.documents.signature import decode_signature_image
 from app.services.settings_store import instance_settings
 
@@ -88,6 +89,17 @@ def export(
             payload.output_language,
             signature_png=signature_png,
         )
+    elif exporter == "placarding":
+        # The placarding sheet is not a form to fill in: it is the answer
+        # chapter 5.3 gives for this consignment, printed. Nothing on it is
+        # typed by the user, so it is built from the goods rather than from
+        # the document's fields.
+        out_path = render_placarding_sheet(
+            payload.values,
+            payload.lines,
+            payload.dangerous_goods,
+            payload.output_language,
+        )
     else:
         # Self-designed document: generate a clean PDF.
         out_path = render_document_pdf(
@@ -135,6 +147,42 @@ def instructions_file(regime: str, language: str,
     return FileResponse(
         path, media_type="application/pdf",
         filename=f"{regime}-2025-instructions-{language}.pdf")
+
+
+@router.get("/models/{provision}")
+def models_overview(provision: str, user: User = Depends(get_current_user)):
+    """What this installation can hand over for one prescribed model.
+
+    The instructions in writing were the first; ADN 8.6.3 — the checklist a
+    tank vessel fills in before loading or unloading — is another. Both are
+    printed by the regulation rather than described by it, and both are served
+    as the edition prints them or reported as missing. Nothing here paraphrases
+    a model, and nothing fills one in.
+    """
+    if provision not in regulations.model_provisions():
+        raise HTTPException(status_code=404, detail="No model for that provision")
+    return {"provision": provision, "documents": [
+        regulations.instruction_status(doc["model_of"]["regime"],
+                                       doc["model_of"]["language"], provision)
+        for doc in regulations.instruction_documents(provision)]}
+
+
+@router.get("/models/{provision}/{regime}/{language}")
+def model_file(provision: str, regime: str, language: str,
+               user: User = Depends(get_current_user)):
+    if regime not in regulations.REGIMES or language not in regulations.LANGUAGES:
+        raise HTTPException(status_code=404, detail="Unknown regime or language")
+    if provision not in regulations.model_provisions():
+        raise HTTPException(status_code=404, detail="No model for that provision")
+    status = regulations.instruction_status(regime, language, provision)
+    if not status.get("available"):
+        raise HTTPException(status_code=409, detail=status)
+    path = regulations.instructions_pdf(regime, language, provision)
+    if path is None:  # pragma: no cover - the status said it was there
+        raise HTTPException(status_code=409, detail=status)
+    return FileResponse(
+        path, media_type="application/pdf",
+        filename=f"{regime}-2025-{provision.replace('.', '-')}-{language}.pdf")
 
 
 @router.post("/un-cards/availability")

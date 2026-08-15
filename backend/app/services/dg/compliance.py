@@ -2293,7 +2293,13 @@ def check_adr_placarding(
                 "un_number": un_number,
             })
 
-    required_placards = [p for p in placards if p.get("class")]
+    # A placard finding carries a class where 5.3.1.5 chose it by class, and
+    # none where 5.3.1.4.1 chose it because the load is in a tank — that one
+    # says so in `required` instead. Counting only the classed ones told a tank
+    # load it needed no placards at all, and told 5.3.6.1 the same, so the
+    # environmentally hazardous mark came out wrong with it.
+    required_placards = [p for p in placards
+                         if p.get("class") or p.get("required") is True]
     green = [p for p in goods if p.get("environmentally_hazardous")]
     if green:
         mark = rules["environmental_mark"]
@@ -2309,12 +2315,20 @@ def check_adr_placarding(
 
     return {
         "status": "exempt" if exempt else "ok",
-        "scope": "packages",
+        # What the answer was computed for. A tank load is not a packages load,
+        # and a card that says "computed for carriage in packages" over a tank
+        # answer is worse than no note at all.
+        "scope": "tanks_or_bulk" if _in_tanks(goods) else "packages",
         "placards": placards,
         "placards_required": bool(required_placards),
         "marks": marks,
         "source": rules["source"],
     }
+
+
+def _in_tanks(goods: list[dict[str, Any]]) -> bool:
+    return any(str(product.get("carriage_mode") or "").strip()
+               in ("tank", "portable_tank", "bulk") for product in goods)
 
 
 #: "yes" and "no" in the four languages the interface speaks, for the one

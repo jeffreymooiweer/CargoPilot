@@ -2,6 +2,36 @@
 
 All notable changes are documented here, following [Semantic Versioning](https://semver.org/).
 
+## [1.83.0] — 2026-08-15
+
+### Added
+
+- **The placarding sheet (ADR 5.3).** CargoPilot has derived chapter 5.3 since
+  v1.53.0 and shown the answer on screen, which is where it stayed. The person
+  who needs it is standing at the back of a trailer with plates in his hand,
+  and a browser panel is not a thing you hold while doing that. The sheet lists
+  the placards and the orange plates, each against the provision that asked for
+  it, with the numbers already worked out — "33 / UN 1203" rather than a
+  description of where to find them. It appears for road and multimodal
+  consignments with dangerous goods, in all four document languages.
+- The sheet says out loud that it is **not** a placard: a diamond off a laser
+  printer is not one, and a sheet that looked like one would invite exactly
+  that mistake. The placards and plates themselves have to meet 5.3.1.7 and
+  5.3.2.2.
+
+### Fixed
+
+- **A tank load was told it needed no placards.** 5.3.1.5 picks placards by
+  class and those findings carry one; 5.3.1.4.1 picks them because the load is
+  in a tank, and that finding says so in `required` instead. The summary
+  counted only the classed ones, so a tank of petrol reported "no placards
+  required" directly underneath the finding that required them.
+- **The environmentally hazardous mark inherited that error.** 5.3.6.1 hangs
+  the mark on a placard being required under 5.3.1, so the miscount made the
+  mark wrong for the same tank load.
+- The placarding answer described itself as "computed for carriage in packages"
+  whatever the mode of carriage was; it now says which it was computed for.
+
 ## [1.82.0] — 2026-08-14
 
 ### Added

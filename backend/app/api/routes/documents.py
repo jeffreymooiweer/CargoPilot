@@ -21,6 +21,7 @@ from app.services.documents import (
 )
 from app.services import regulations
 from app.services.documents.avc_form import fill_avc_waybill, has_avc_template
+from app.services.documents.placarding_sheet import render_placarding_sheet
 from app.services.documents.signature import decode_signature_image
 from app.services.settings_store import instance_settings
 
@@ -87,6 +88,17 @@ def export(
             payload.dangerous_goods,
             payload.output_language,
             signature_png=signature_png,
+        )
+    elif exporter == "placarding":
+        # The placarding sheet is not a form to fill in: it is the answer
+        # chapter 5.3 gives for this consignment, printed. Nothing on it is
+        # typed by the user, so it is built from the goods rather than from
+        # the document's fields.
+        out_path = render_placarding_sheet(
+            payload.values,
+            payload.lines,
+            payload.dangerous_goods,
+            payload.output_language,
         )
     else:
         # Self-designed document: generate a clean PDF.

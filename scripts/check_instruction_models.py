@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Cut every registered model of 5.4.3 and report what came out.
+"""Cut every registered model of a provision and report what came out.
 
 The page ranges in ``backend/seed/dg/sources.json`` were measured on the
 editions, and the application cuts them at run time — but the development
@@ -12,6 +12,11 @@ each, so that a range which starts a page too late (the model's title gone) or
 ends a page too early (the equipment list gone) is visible rather than assumed.
 
     python scripts/check_instruction_models.py
+    python scripts/check_instruction_models.py 8.6.3
+
+Without an argument it checks the models of 5.4.3, the instructions in writing.
+With one it checks another provision's models — 8.6.3 is the ADN checklist for
+loading and unloading a tank vessel, which the regulation prints the same way.
 """
 from __future__ import annotations
 
@@ -29,17 +34,36 @@ from app.services import regulations  # noqa: E402
 #: page is identified by what it *contains*, not by what comes out of it first:
 #: a reader returns a page’s text in the order the content stream draws it, and on
 #: a page that is one full-width table that order is not the reading order.
-TITLE = re.compile(
-    r"INSTRUCTIONS? IN WRITING|CONSIGNES ÉCRITES|SCHRIFTELIJKE INSTRUCTIES"
-    r"|SCHRIFTLICHE WEISUNGEN", re.IGNORECASE)
-#: What must not be inside the model: the sections around it.
-NEIGHBOURS = re.compile(r"5\.4\.3\.5|5\.4\.4|5\.4\.2\b")
+MODELS: dict[str, dict[str, re.Pattern]] = {
+    "5.4.3": {
+        "title": re.compile(
+            r"INSTRUCTIONS? IN WRITING|CONSIGNES ÉCRITES|SCHRIFTELIJKE INSTRUCTIES"
+            r"|SCHRIFTLICHE WEISUNGEN", re.IGNORECASE),
+        #: What must not be inside the model: the sections around it.
+        "neighbours": re.compile(r"5\.4\.3\.5|5\.4\.4|5\.4\.2\b"),
+        #: A page of this model carries the label pictograms.
+        "inside": re.compile(r"Extra guidance|Aanvullende|Zusätzliche|indications",
+                             re.IGNORECASE),
+    },
+    "8.6.3": {
+        "title": re.compile(
+            r"ADN CHECK ?LIST|LISTE DE CONTRÔLE ADN|CONTROLELIJST ADN"
+            r"|ADN[- ]KONTROLLISTE|PRÜFLISTE ADN", re.IGNORECASE),
+        "neighbours": re.compile(r"8\.6\.4|8\.6\.2\b"),
+        #: The checklist's own furniture: it is a form with numbered questions
+        #: and a signature block, and a page of it says so in any language.
+        "inside": re.compile(
+            r"Question|Vraag|Frage|scheepsnaam|vessel|bateau|Schiff|"
+            r"ondertekend|signed|signé|unterschrieben", re.IGNORECASE),
+    },
+}
 
 
-def marks(page) -> str:
+def marks(page, model: dict[str, re.Pattern]) -> str:
     text = page.get_text("text") or ""
     found = [name for name, pattern in
-             (("TITLE", TITLE), ("neighbour", NEIGHBOURS)) if pattern.search(text)]
+             (("TITLE", model["title"]), ("neighbour", model["neighbours"]),
+              ("inside", model["inside"])) if pattern.search(text)]
     return f"[{','.join(found) or '—'}, {len(text)} chars]"
 
 
@@ -54,21 +78,29 @@ def first_lines(page, count: int = 2) -> str:
 def main() -> int:
     import fitz
 
+    provision = sys.argv[1] if len(sys.argv) > 1 else "5.4.3"
+    if provision not in MODELS:
+        print(f"no model description for {provision}", file=sys.stderr)
+        return 2
+    model_marks = MODELS[provision]
+    print(f"=== models of {provision}")
     missing = 0
-    for doc in regulations.instruction_documents():
+    for doc in regulations.instruction_documents(provision):
         model = doc["model_of"]
-        status = regulations.instruction_status(model["regime"], model["language"])
+        status = regulations.instruction_status(model["regime"], model["language"],
+                                                provision)
         head = f"{doc['id']:24s}"
         if not status["available"]:
             print(f"{head} missing — needs {status['needs']}")
             missing += 1
             continue
-        path = regulations.instructions_pdf(model["regime"], model["language"])
+        path = regulations.instructions_pdf(model["regime"], model["language"],
+                                            provision)
         cut_document = fitz.open(str(path))
         print(f"{head} {cut_document.page_count} pages from {status.get('source')}"
               f" ({status.get('from_document', '')})")
         for number, page in enumerate(cut_document, start=1):
-            print(f"    p{number}: {marks(page)} {first_lines(page, 1)}")
+            print(f"    p{number}: {marks(page, model_marks)} {first_lines(page, 1)}")
         # And the neighbourhood in the source, numbered as the cutter numbers
         # it. The page ranges were measured with a different library, and two
         # libraries counting from different ends is exactly the kind of thing
@@ -82,7 +114,7 @@ def main() -> int:
                                 min(volume.page_count, last + 2) + 1):
                 mark = "IN " if first <= number <= last else "   "
                 page = volume[number - 1]
-                print(f"      {mark}source p{number}: {marks(page)} "
+                print(f"      {mark}source p{number}: {marks(page, model_marks)} "
                       f"{first_lines(page, 1)}")
     print(f"{missing} model(s) this store cannot produce")
     return 0

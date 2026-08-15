@@ -121,12 +121,14 @@ jobs:
           xargs -r python scripts/find_instructions_pages.py \
             --provision "${PROVISION:-5.4.3}" < /tmp/paths.txt
 
-      - name: Cut every model of 5.4.3 and look at it
+      - name: Cut every model and look at it
         if: ${{ inputs.verify_instructions }}
+        env:
+          PROVISION: ${{ inputs.find_provision }}
         run: |
           set -euo pipefail
           pip install --quiet pymupdf
-          python scripts/check_instruction_models.py
+          python scripts/check_instruction_models.py "${PROVISION:-5.4.3}"
 
       - name: Fetch what is missing
         if: ${{ inputs.probe_url == '' && inputs.drive_folder == '' && inputs.find_instructions == '' && !inputs.verify_instructions }}

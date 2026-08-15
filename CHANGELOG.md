@@ -2,6 +2,27 @@
 
 All notable changes are documented here, following [Semantic Versioning](https://semver.org/).
 
+## [1.92.0] — 2026-08-15
+
+### Added
+
+- **Admission to carriage in bulk (ADR 7.3.1.1).** The columns have been in
+  the seed since v1.65.0 — the BK codes inside column (10), the VC and AP codes
+  of column (17) — and nothing computed with them: a bulk consignment got no
+  admission answer where a tank load has had one since v1.66.0. Read in the
+  official Dutch edition (printed pages 1398–1403) and the UNECE English and
+  French volumes II, which agree. A **BK code** admits the goods to bulk
+  containers under the conditions of 7.3.2; a **VC code** admits them to
+  sheeted or closed vehicles and containers with any **AP provisions** of
+  7.3.3.2 alongside; **neither means no**, full stop — with 7.3.1.1's own
+  exception for empty uncleaned packagings named beside the refusal rather
+  than granted, because it turns on what the packagings contained.
+- Every code travels with its read meaning, and the equipment conditions of
+  7.3.2/7.3.3 travel as conditions — the application cannot see the container
+  that turned up at the ramp. Both the refusal and the permission reach the
+  document: the codes are what the loader checks the container against. Panel
+  card beside the tank admission, four languages, 11 tests.
+
 ## [1.91.0] — 2026-08-15
 
 ### Added

@@ -91,6 +91,7 @@ export default function DgCompliancePanel({ entries, profiles }: Props) {
 
   const adr = result?.adr_points;
   const tankAdmission = result?.adr_tank_admission;
+  const bulkAdmission = result?.adr_bulk_admission;
   const tankFit = result?.adr_tank_fit;
   const filling = result?.adr_filling_degree;
   const adnAdmission = result?.adn_carriage_admission;
@@ -291,6 +292,46 @@ export default function DgCompliancePanel({ entries, profiles }: Props) {
           </ul>
           {tankAdmission.source && (
             <p className="text-[11px] text-slate-500 dark:text-slate-400">{tankAdmission.source}</p>
+          )}
+        </CollapsibleSection>
+      )}
+
+      {/* ADR 7.3.1.1 — the same admission question for bulk, on its own two
+          columns: a BK code opens bulk containers, a VC code opens sheeted or
+          closed vehicles, and neither means no. */}
+      {bulkAdmission && bulkAdmission.status !== "not_checked" && (
+        <CollapsibleSection
+          title={t("compliance.bulkAdmissionTitle")}
+          defaultOpen={bulkAdmission.status === "not_permitted"}
+          chips={
+            <SummaryChip
+              className={
+                bulkAdmission.status === "not_permitted"
+                  ? "bg-red-100 text-red-800 dark:bg-red-900/40 dark:text-red-300"
+                  : "bg-emerald-100 text-emerald-800 dark:bg-emerald-900/40 dark:text-emerald-300"
+              }
+            >
+              {t(`compliance.bulkAdmission.${bulkAdmission.status}`)}
+            </SummaryChip>
+          }
+        >
+          <ul className="space-y-2">
+            {bulkAdmission.items.map((item, i) => (
+              <li key={i} className="text-xs">
+                <p
+                  className={
+                    item.permitted
+                      ? "text-slate-700 dark:text-slate-300"
+                      : "text-red-600 dark:text-red-400"
+                  }
+                >
+                  {item.message}
+                </p>
+              </li>
+            ))}
+          </ul>
+          {bulkAdmission.source && (
+            <p className="text-[11px] text-slate-500 dark:text-slate-400">{bulkAdmission.source}</p>
           )}
         </CollapsibleSection>
       )}

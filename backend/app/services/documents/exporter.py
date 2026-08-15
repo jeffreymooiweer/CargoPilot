@@ -618,6 +618,14 @@ def validate_document(
                         warnings.append(f"ADR {item.get('provision', '3.2.1')}: "
                                         f"{item['message']}")
 
+                # Bulk gets the same treatment (7.3.1.1): a refusal reaches the
+                # paper, and a permission travels too — the BK/VC codes and the
+                # AP conditions are exactly what the loader at the ramp needs
+                # to check against the container that turned up.
+                for item in (outcome.get("adr_bulk_admission") or {}).get("items", []):
+                    warnings.append(f"ADR {item.get('provision', '7.3.1.1')}: "
+                                    f"{item['message']}")
+
                 # And whether *this* tank may carry it (4.3), which since
                 # v1.82.0 was answered on screen only — the same failure the
                 # admission check had before it. A tank that does not fit, a

@@ -1135,6 +1135,8 @@ export interface DgComplianceResult {
   adr_points?: AdrPointsResult;
   /** With the ADN profile only: its own exemption of 1.1.3.6.1. */
   adr_tank_admission?: AdrTankAdmissionResult;
+  /** ADR 7.3.1.1: may the goods travel in bulk, and in what. Same shape. */
+  adr_bulk_admission?: AdrTankAdmissionResult;
   adr_tank_fit?: AdrTankFitResult;
   adr_filling_degree?: AdrFillingDegreeResult;
   adn_carriage_admission?: AdnCarriageAdmissionResult;

@@ -466,6 +466,11 @@
     "adnAdmission": {
       "ok": "permitted",
       "not_permitted": "not permitted"
+    },
+    "bulkAdmissionTitle": "Admission to carriage in bulk (ADR 7.3.1.1)",
+    "bulkAdmission": {
+      "ok": "permitted",
+      "not_permitted": "not permitted"
     }
   },
   "dgauto": {

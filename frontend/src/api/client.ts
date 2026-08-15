@@ -489,6 +489,10 @@ export interface DgProduct {
   molten?: string;
   residue_classes?: string;
   classified_2_1_2_8?: string;
+  /** 3.1.2.2: the most applicable of several proper shipping names, and its
+   *  English counterpart where the document pairs them. */
+  chosen_name?: string;
+  chosen_name_en?: string;
   /** What ADR 4.3.2.2 needs and table A does not carry. */
   filling_temperature?: string;
   density_15?: string;
@@ -584,6 +588,9 @@ export interface DgOpenQuestion {
   field: string;
   required: boolean;
   reason: string;
+  /** Closed answer set for this question (the 3.1.2.2 name alternatives);
+   *  rendered as a select. Absent for free-text questions. */
+  options?: string[];
 }
 
 export interface DgOpenQuestionBlock {

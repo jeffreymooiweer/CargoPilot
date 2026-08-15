@@ -773,6 +773,36 @@
           }
         }
       ]
+    },
+    "chosen_name": {
+      "type": "select_dynamic",
+      "label": {
+        "nl": "Juiste vervoersnaam (keuze)",
+        "en": "Proper shipping name (choice)",
+        "de": "Richtige Benennung (Auswahl)",
+        "fr": "Désignation officielle de transport (choix)"
+      },
+      "help": {
+        "nl": "Dit UN-nummer combineert meerdere vervoersnamen. Volgens 3.1.2.2 komt alleen de meest toepasselijke naam op het vervoerdocument; kies de naam die uw product beschrijft.",
+        "en": "This UN number combines several proper shipping names. Under 3.1.2.2 only the most applicable name goes on the transport document; choose the one that describes your product.",
+        "de": "Diese UN-Nummer vereint mehrere Benennungen. Nach 3.1.2.2 kommt nur die zutreffendste Benennung ins Beförderungsdokument; wählen Sie die, die Ihr Produkt beschreibt.",
+        "fr": "Ce numéro ONU combine plusieurs désignations. Selon le 3.1.2.2, seul le nom le plus approprié figure sur le document de transport ; choisissez celui qui décrit votre produit."
+      }
+    },
+    "chosen_name_en": {
+      "type": "select_dynamic",
+      "label": {
+        "nl": "Engelse vervoersnaam (keuze)",
+        "en": "English shipping name (choice)",
+        "de": "Englische Benennung (Auswahl)",
+        "fr": "Nom de transport anglais (choix)"
+      },
+      "help": {
+        "nl": "Een Nederlands document draagt de naam ook in het Engels (5.4.1.4.1). Kies het Engelse alternatief dat bij uw product hoort.",
+        "en": "A Dutch document carries the name in English as well (5.4.1.4.1). Choose the English alternative that matches your product.",
+        "de": "Ein niederländisches Dokument trägt die Benennung auch auf Englisch (5.4.1.4.1). Wählen Sie die passende englische Alternative.",
+        "fr": "Un document néerlandais porte aussi le nom en anglais (5.4.1.4.1). Choisissez l'alternative anglaise correspondant à votre produit."
+      }
     }
   }
 }

@@ -43,6 +43,12 @@ vi.mock("../api/client", () => ({
           un_number: "1203",
           questions: [
             { field: "carriage_mode", required: true, reason: "carriage_mode_decides" },
+            {
+              field: "chosen_name",
+              required: true,
+              reason: "sp3122",
+              options: ["BENZINE", "MOTORBRANDSTOF"],
+            },
           ],
         },
       ],
@@ -98,6 +104,15 @@ describe("the DG step with a UN number", () => {
     // Closed by default: the waste select is behind it, not on the screen.
     expect(door?.open).toBe(false);
     expect(door?.textContent).toContain("is_waste");
+  });
+
+  it("a question with a closed answer set renders as a select, nothing pre-chosen", async () => {
+    renderStep();
+    await screen.findByText("dgstep.openTitle");
+    expect(screen.getByText(/dgopen\.sp3122/)).toBeTruthy();
+    const option = screen.getByRole("option", { name: "MOTORBRANDSTOF" }) as HTMLOptionElement;
+    expect(option).toBeTruthy();
+    expect((option.closest("select") as HTMLSelectElement).value).toBe("");
   });
 
   it("the full form is still there, as a choice", async () => {

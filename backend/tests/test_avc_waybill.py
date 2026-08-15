@@ -88,11 +88,19 @@ def test_cmr_carries_the_adr_description_and_category_totals(prepared):
     # official language of the forwarding country and, since Dutch is not
     # English, French or German, one of those three in addition. "BENZINE" on
     # its own would be short of a requirement.
-    assert fields["VakRood06Regel01Kolom06"] == (
-        "UN 1203, BENZINE OF MOTORBRANDSTOF (MOTOR SPIRIT OR GASOLINE OR PETROL), 3, II, (D/E), 10 jerrycan, 200 L"
+    # Since v1.102.0 a description longer than the goods box wraps onto the
+    # following rows instead of being clipped (5.4.1.1.2: the information
+    # must be legible). The whole line is on the paper, spread over rows.
+    description_rows = " ".join(
+        fields[f"VakRood06Regel{n:02d}Kolom06"]
+        for n in range(1, 5)
+        if f"VakRood06Regel{n:02d}Kolom06" in fields
     )
+    full_line = ("UN 1203, BENZINE OF MOTORBRANDSTOF (MOTOR SPIRIT OR GASOLINE "
+                 "OR PETROL), 3, II, (D/E), 10 jerrycan, 200 L")
+    assert full_line == " ".join(description_rows.split())[:len(full_line)]
     # Lines without dangerous goods keep their ordinary description.
-    assert fields["VakRood06Regel02Kolom06"] == "4 × pallets kalkzandsteen"
+    assert "4 × pallets kalkzandsteen" in description_rows
     # The mass is not counted twice over the DG lines.
     assert fields["VakRood06Regel01Kolom11"] == "165"
 

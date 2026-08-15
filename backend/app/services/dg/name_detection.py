@@ -130,6 +130,33 @@ def _lexicon() -> dict[str, list[tuple[tuple[str, ...], tuple[str, ...]]]]:
     return index
 
 
+def name_choices(un_number: str, language: str) -> list[str]:
+    """The distinct capital-printed names of one UN number, in printed order.
+
+    These are the choices 3.1.2.2 speaks of: where a position combines several
+    proper shipping names separated by "of"/"or", only the most applicable one
+    goes on the transport document — and choosing it is the consignor's, so
+    the list is offered, never decided. One name comes back as a single-item
+    list; the caller treats that as "no choice to make".
+    """
+    columns = {"nl": dutch_names, "en": english_names,
+               "de": german_names, "fr": french_names}
+    choices: list[str] = []
+    for name in columns.get(language, english_names)(un_number):
+        for alternative in _SEPARATORS.get(language, _SEPARATORS["en"]).split(name):
+            caps = _caps_name(alternative)
+            if caps and caps not in choices:
+                choices.append(caps)
+    return choices
+
+
+#: The shortest typed word the fallback match may act on, and the most extra
+#: characters a single-word name may have beyond it. "diesel" (6) reaches
+#: "dieselolie" (+4); "steen" must not reach a 20-character compound.
+_PREFIX_MIN = 5
+_PREFIX_SLACK = 6
+
+
 def detect_name_candidates(
     description: str, language: str = "nl"
 ) -> list[dict[str, Any]]:
@@ -165,6 +192,34 @@ def detect_name_candidates(
         for un in uns:
             if un not in ordered:
                 ordered.append(un)
+
+    if not ordered:
+        # Fallback for the word at the pump: "diesel" is not a name the book
+        # prints ("DIESELOLIE", "DIESEL FUEL"), but it is the exact first word
+        # of one and a near-complete single-word name of the other. Weaker
+        # evidence than a whole-name match, so it runs only when the exact
+        # pass found nothing and it tolerates fewer candidates. A compound in
+        # the *description* still matches nothing: "benzinemotor" is no
+        # prefix of "benzine".
+        for token in tokens:
+            if len(token) < _PREFIX_MIN:
+                continue
+            for first, bucket in index.items():
+                if not first.startswith(token):
+                    continue
+                for key, uns in bucket:
+                    incomplete_phrase = len(key) > 1 and key[0] == token
+                    near_complete_word = (
+                        len(key) == 1
+                        and len(key[0]) - len(token) <= _PREFIX_SLACK
+                    )
+                    if incomplete_phrase or near_complete_word:
+                        for un in uns:
+                            if un not in ordered:
+                                ordered.append(un)
+        if len(ordered) > 3:
+            return []
+
     if not ordered or len(ordered) > _MAX_CANDIDATES:
         return []
 

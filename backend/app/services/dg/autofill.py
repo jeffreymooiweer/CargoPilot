@@ -23,13 +23,15 @@ from __future__ import annotations
 import re
 from typing import Any
 
-from app.core.languages import pick
+from app.core.languages import normalise, pick
 from app.services.dg.naming import (
     ENGLISH_ONLY_PROFILES,
+    is_derived_name,
     proper_shipping_name,
+    requires_english_name,
     resolve_for_profile,
 )
-from app.services.dg.database import get_un_entries
+from app.services.dg.database import get_un_entries, search_packagings
 from app.services.dg.enrichment import (
     CLASS_DOCUMENT_NOTES,
     PROFILE_DOCUMENT_NOTES,
@@ -461,7 +463,7 @@ def table_c_density(un_number: str) -> dict[str, Any] | None:
 
 
 def open_questions_for(
-    product: dict[str, Any], profiles: list[str]
+    product: dict[str, Any], profiles: list[str], language: str = "nl"
 ) -> list[dict[str, Any]]:
     """The questions that remain genuinely open after everything derivable is in.
 
@@ -496,6 +498,35 @@ def open_questions_for(
         # The mode decides what every other answer means: admission, tunnel,
         # placarding and the tank checks all branch on it.
         ask("carriage_mode", True, "carriage_mode_decides")
+
+    # 3.1.2.2: where the position combines several proper shipping names,
+    # only the most applicable one goes on the document — and which one that
+    # is, only the consignor knows. The choice is asked in the language(s)
+    # the document will carry: the document language itself, and English
+    # beside it where a Dutch document pairs the names (5.4.1.4.1) or a
+    # profile forces English outright.
+    from app.services.dg.name_detection import name_choices
+
+    def ask_choice(field: str, choice_language: str) -> None:
+        if not empty(field):
+            return
+        choices = name_choices(un, choice_language)
+        if len(choices) > 1 and not any(q["field"] == field for q in questions):
+            questions.append({"field": field, "required": True,
+                              "reason": "sp3122", "options": choices})
+
+    if requires_english_name(profiles):
+        ask_choice("chosen_name_en", "en")
+    else:
+        lang = normalise(language)
+        if lang == "en":
+            ask_choice("chosen_name_en", "en")
+        else:
+            ask_choice("chosen_name", lang)
+            if lang not in ("de", "fr"):
+                # The German and French names stand alone on a document; any
+                # other language pairs the name with English (5.4.1.4.1).
+                ask_choice("chosen_name_en", "en")
 
     rows = get_un_entries(un)
     provisions = str((rows[0] if rows else {}).get("special_provisions") or "")
@@ -827,9 +858,9 @@ def description_line(product: dict[str, Any], profile: str, language: str = "",
             line = (f"{line}, "
                     f"{_document_word(_ENVIRONMENTALLY_HAZARDOUS, profile, language)}")
 
-    # Number and type of packages + total quantity (ADR 5.4.1.1.1 f/g).
+    # Number and type of packages + total quantity (ADR 5.4.1.1.1 e/f).
     count = str(product.get("quantity_packages") or "").strip()
-    package = str(product.get("type_of_package") or "").strip()
+    package = _package_description(str(product.get("type_of_package") or "").strip())
     packages = " ".join(p for p in [count, package] if p)
     total, unit = total_quantity(product)
     tail = []
@@ -853,6 +884,52 @@ def description_line(product: dict[str, Any], profile: str, language: str = "",
     if profile in ("ADR", "RID", "ADN") and product.get("classified_2_1_2_8"):
         line = f"{line}, {_document_word(_CLASSIFIED_2_1_2_8, profile, language)}"
     return line
+
+
+def _name_was_ours(current: Any, entry: dict[str, Any]) -> bool:
+    """Did this application write the current shipping name itself?
+
+    True for a derived full-column name and for a previously chosen 3.1.2.2
+    alternative (alone or as a "NAME (ENGLISH NAME)" pair) — those may be
+    replaced when the consignor picks differently. Anything else is the
+    user's own wording and is never overwritten.
+    """
+    current = str(current or "").strip()
+    if not current:
+        return True
+    if is_derived_name(entry, current):
+        return True
+    from app.services.dg.name_detection import name_choices
+
+    un = str(entry.get("un") or "")
+    choices = {c for lang in ("nl", "en", "de", "fr")
+               for c in name_choices(un, lang)}
+    if current in choices:
+        return True
+    match = re.fullmatch(r"(.+?) \((.+)\)", current)
+    return bool(match and match.group(1) in choices and match.group(2) in choices)
+
+
+_PACKAGING_CODE = re.compile(r"^(\d{1,2}[A-Z]{1,2}\d?)\s+(.+)$")
+
+
+def _package_description(package: str) -> str:
+    """The package on the document as 5.4.1.1.1 (e) words it.
+
+    "UN packaging codes may only be used as a supplement to the description of
+    the kind of package [e.g. one box (4G)]" — so a field that starts with the
+    code the packaging picker wrote ("3H1 Kunststof jerrycan…") is turned
+    around into "Kunststof jerrycan… (3H1)". Only a code the packagings
+    catalogue actually knows is treated as one: "25 L" also matches the shape
+    of a code, and is not one.
+    """
+    match = _PACKAGING_CODE.match(package)
+    if not match:
+        return package
+    code, description = match.group(1), match.group(2)
+    if any(p["code"] == code for p in search_packagings(code, limit=20)):
+        return f"{description} ({code})"
+    return package
 
 
 def adr_category_totals(entries: list[dict[str, Any]], language: str = "nl") -> dict[str, Any]:
@@ -916,6 +993,24 @@ def prepare_entries(
                         **derived["hints"],
                     })
             merged.update(derive_from_line(merged, lines_by_id.get(entry.get("line_id"))))
+            # 3.1.2.2: a chosen name replaces the whole column — but only a
+            # name this application derived itself. Wording of the user's own
+            # in the shipping-name field is never overwritten.
+            chosen = str(merged.get("chosen_name") or "").strip()
+            chosen_en = str(merged.get("chosen_name_en") or "").strip()
+            if chosen or chosen_en:
+                rows_for_name = get_un_entries(str(merged.get("un_number") or ""))
+                current_name = merged.get("proper_shipping_name")
+                if rows_for_name and _name_was_ours(current_name, rows_for_name[0]):
+                    if requires_english_name(profiles):
+                        if chosen_en:
+                            merged["proper_shipping_name"] = chosen_en
+                    elif chosen and chosen_en:
+                        # A Dutch document pairs the chosen Dutch name with the
+                        # chosen English one, the way 5.4.1.4.1 is served.
+                        merged["proper_shipping_name"] = f"{chosen} ({chosen_en})"
+                    elif chosen:
+                        merged["proper_shipping_name"] = chosen
             # The density the tank questions need, pulled from where it is
             # already known: table C of the read ADN edition. One clean number
             # fills d15 (visible in the summary, editable); a printed range is
@@ -968,7 +1063,7 @@ def prepare_entries(
     open_questions: list[dict[str, Any]] = []
     for entry in prepared:
         for index, product in enumerate(entry["products"]):
-            questions = open_questions_for(product, profiles)
+            questions = open_questions_for(product, profiles, language)
             if questions:
                 open_questions.append({
                     "line_id": entry.get("line_id"),

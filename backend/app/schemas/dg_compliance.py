@@ -100,6 +100,11 @@ class DangerousGoodsProduct(BaseModel):
     molten: str | bool | None = None
     residue_classes: str | None = None
     classified_2_1_2_8: str | bool | None = None
+    # 3.1.2.2: the most applicable of several proper shipping names, chosen by
+    # the consignor — in the document language and, where a Dutch document
+    # pairs the names, in English beside it.
+    chosen_name: str | None = None
+    chosen_name_en: str | None = None
 
     @field_validator("salvage_packaging")
     @classmethod

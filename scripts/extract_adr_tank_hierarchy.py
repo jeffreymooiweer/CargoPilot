@@ -554,6 +554,38 @@ def words(doc, language: str) -> int:
     return 0
 
 
+def why(doc, language: str) -> int:
+    """Why the table was or was not found, page by page.
+
+    A reader that comes back with nothing has said only that: nothing. This
+    says which of the two headings a page carries, how many tank codes are on
+    it and how many of its lines read as rows — which is the whole of what
+    ``rationalised_pages`` decides on, so whatever it rejected is visible here
+    rather than guessed at.
+    """
+    words = LANGUAGES[language]
+    print(f"looking for {words['code_column']!r} and {words['group_column']!r}")
+    shown = 0
+    for index in range(doc.page_count):
+        text = doc[index].get_text()
+        low = text.lower()
+        here = [name for name in ("code_column", "group_column")
+                if words[name] in low]
+        if not here:
+            continue
+        rows = _rows_of_the_table(doc[index])
+        codes = len(TANK_CODE.findall(text))
+        print(f"  p{index + 1}: {'+'.join(here)} codes={codes} rows={rows}"
+              f"{' CONTENTS' if _is_contents(text) else ''}")
+        shown += 1
+        if shown >= 40:
+            print("  ... stopping at 40 pages")
+            break
+    if not shown:
+        print("  no page carries either heading")
+    return 0
+
+
 def probe_page(doc, number: int) -> int:
     """One page, line by line, with the x of every word.
 
@@ -794,6 +826,8 @@ def main() -> int:
     parser.add_argument("--language", default="en", choices=sorted(LANGUAGES))
     parser.add_argument("--probe", action="store_true",
                         help="report the layout of the pages found and stop")
+    parser.add_argument("--why", action="store_true",
+                        help="say which pages carry the table's headings, and stop")
     parser.add_argument("--words", action="store_true",
                         help="print the geometry of the pages found and stop")
     parser.add_argument("--probe-page", type=int, default=0,
@@ -827,6 +861,8 @@ def main() -> int:
     import pymupdf
 
     with pymupdf.open(args.pdf) as doc:
+        if args.why:
+            return why(doc, args.language)
         if args.probe_page:
             return probe_page(doc, args.probe_page)
         if args.words:

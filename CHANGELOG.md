@@ -2,6 +2,39 @@
 
 All notable changes are documented here, following [Semantic Versioning](https://semver.org/).
 
+## [1.86.0] — 2026-08-15
+
+### Changed
+
+- **The tank hierarchy is read from three books, and now answers.** The German
+  volume II joined the English and the printed Dutch edition, and a third
+  reading did exactly what it is for: **seventeen cells** that no two readings
+  had agreed on were settled by the two that agree, and the codes settled on
+  every cell went from **seven of eighteen to fifteen**. Three are left —
+  L10BH's group, L10DH's inheritance and S10AH's group — and those still make
+  the check decline rather than guess.
+- What that means at the desk: a tank the check could only shrug at now gets an
+  answer. **SGAN, a tank for solids, refuses petrol** where before its group
+  held a cell no two readings settled. And **petrol in an L1,5BN tank is a
+  condition, not a refusal**: the plan for this check expected "does not fit",
+  and the book says L1,5BN's group holds class 3 F1 packing group II *where the
+  vapour pressure at 50 °C is at most 1.1 bar*. Whether this petrol meets that
+  is not in table A, so the answer is the condition, named.
+
+### Fixed
+
+- **The German reading of 4.3.4.1.2 was empty, and the cause was a heading.**
+  That edition heads the columns of *table A* with "Tankcodierung" and
+  "Klassifizierungscode" too, so a reader looking for those started three
+  hundred pages early and read table A instead. English and Dutch were saved
+  only by the accident that their headings are unique to 4.3.4.1.2. The table
+  is found by the provision's own number now — the one anchor that is not a
+  phrase — with the headings kept as the fallback.
+- A reader that comes back with nothing used to say only that. It can now
+  report, per page carrying either heading, how many tank codes are on it and
+  how many of its lines read as rows, which is the whole of what the page
+  selection decides on.
+
 ## [1.85.0] — 2026-08-15
 
 ### Added

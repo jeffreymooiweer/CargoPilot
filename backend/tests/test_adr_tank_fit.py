@@ -165,3 +165,39 @@ def test_a_disputed_cell_carries_every_value_read():
         for field, sides in (row.get("disputed") or {}).items():
             assert set(sides) <= languages, (row["tank_code"], field)
             assert field not in row, (row["tank_code"], field)
+
+
+# --- what the third reading changed ---------------------------------------
+
+
+def test_three_books_settle_what_two_could_not():
+    """The German volume II joined the English and the printed Dutch in
+    v1.86.0, and the difference is what a third reading is for: where one
+    edition's reading stands alone against the other two, the other two settle
+    the cell. Seven of eighteen codes were settled on every cell before; the
+    bookkeeping below is what the seed must keep carrying."""
+    check = json.loads(SEED.read_text(encoding="utf-8"))["cross_check"]
+    assert check["readings"] == ["en", "nl", "de"]
+    assert check["tank_codes"] == 18
+    assert check["codes_settled_on_every_cell"] >= 15
+    assert check["cells_a_third_reading_settled"] >= 15
+    assert check["cells_no_two_readings_agree_on"] <= 3
+
+
+def test_petrol_in_an_l15bn_tank_is_a_condition_and_not_a_refusal():
+    """The plan for this check expected "does not fit" here. The book says
+    otherwise: L1.5BN's group holds class 3 F1 packing group II *where the
+    vapour pressure at 50 °C is at most 1.1 bar*, and whether this petrol meets
+    that is not in table A. So the answer is the condition, named — which is
+    the whole difference between a check that reads and one that remembers."""
+    item = only(check_adr_tank_fit(line(tank("1203", "L1.5BN"))))
+    assert item["fit"] == "fits_under_condition"
+    assert item["condition"]
+    assert "1,1" in item["condition"] or "1.1" in item["condition"]
+
+
+def test_a_solids_tank_now_refuses_a_liquid():
+    """SGAN is a tank for solids. Before the third reading its group carried a
+    cell no two readings agreed on, so the check could only decline; now it can
+    say no, which is the answer that protects someone."""
+    assert only(check_adr_tank_fit(line(tank("1203", "SGAN"))))["fit"] == "does_not_fit"

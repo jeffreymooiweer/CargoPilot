@@ -3292,5 +3292,61 @@
       "de": "{product}: welche Formel des 4.3.2.2.1 gilt, hängt von der Ausrüstung des Tanks ab. Tragen Sie die Tankcodierung ein, dann wählt CargoPilot die Formel.",
       "fr": "{product} : la formule applicable du 4.3.2.2.1 dépend de l'équipement de la citerne. Indiquez le code-citerne et CargoPilot choisit la formule."
     }
+  },
+  "rid_transport_document": {
+    "_source": "RID 2025 (Appendix C to COTIF, Annex), 5.4.1.1.1 (j) on printed page 846 and 5.3.2.1.1 on 5-27, quoted by scripts/read_land_regulations.py --doc rid --section 5.4.1.1.1 --section 5.3.2.1.1; the German edition of both was read as well.",
+    "_what_it_says": "Where a marking in accordance with 5.3.2.1 is prescribed, the hazard identification number is inscribed before the letters \"UN\" preceding the UN number, and (a), (b), (c), (d) and (j) are shown in the sequence (j), (a), (b), (c), (d) with no information interspersed. The RID's own example is \"663, UN 1098 ALLYL ALCOHOL, 6.1(3), I\". The number shall also be shown where full loads made up of packages containing one and the same substance or article are marked in accordance with 5.3.2.1.",
+    "_when_the_marking_is_prescribed": "5.3.2.1.1 lists the vehicles: tank-wagons, battery-wagons, wagons with demountable tanks, tank-containers, MEGCs, portable tanks, wagons for carriage in bulk, small or large containers for carriage in bulk, and a wagon or container carrying packaged radioactive material under exclusive use with a single UN number. For a wagon holding a full load of packages of one and the same substance the plate *may* be affixed — a permission, not a requirement — and that is the case this application has to ask about rather than decide.",
+    "_not_the_adr": "ADR 5.4.1.1.1 has no such paragraph; its (k) is the tunnel restriction code. A hazard identification number in front of the description on a CMR would be an entry the ADR does not ask for.",
+    "rules": {
+      "prescribed": {
+        "nl": "RID 5.4.1.1.1 (j): omdat de kenmerking van 5.3.2.1 is voorgeschreven, staat het gevaarsidentificatienummer vóór de letters \"UN\", in de volgorde (j), (a), (b), (c), (d) zonder tussengevoegde gegevens. CargoPilot heeft het nummer in de omschrijvingsregel gezet; het ADR kent deze bepaling niet, dus op een CMR staat het er niet.",
+        "en": "RID 5.4.1.1.1 (j): because marking in accordance with 5.3.2.1 is prescribed, the hazard identification number goes before the letters \"UN\", in the sequence (j), (a), (b), (c), (d) with no information interspersed. CargoPilot has placed it in the description line; the ADR has no such provision, so it does not appear on a CMR.",
+        "de": "RID 5.4.1.1.1 j): Da eine Kennzeichnung nach 5.3.2.1 vorgeschrieben ist, steht die Nummer zur Kennzeichnung der Gefahr vor den Buchstaben «UN», in der Reihenfolge j), a), b), c), d) ohne eingefügte Angaben. CargoPilot hat sie in die Beschreibung aufgenommen; das ADR kennt diese Vorschrift nicht, auf einem CMR erscheint sie daher nicht.",
+        "fr": "RID 5.4.1.1.1 j) : la signalisation selon 5.3.2.1 étant prescrite, le numéro d'identification du danger précède les lettres « UN », dans l'ordre j), a), b), c), d) sans information intercalée. CargoPilot l'a placé dans la ligne de description ; l'ADR ne comporte pas cette disposition, il ne figure donc pas sur une CMR."
+      },
+      "no_hazard_number": {
+        "nl": "RID 5.4.1.1.1 (j): de kenmerking van 5.3.2.1 is voorgeschreven, maar tabel A geeft voor deze stof geen gevaarsidentificatienummer. Er staat dus niets vóór \"UN\" op het document. Controleer kolom (20) van de RID-tabel A: die is niet in CargoPilot opgenomen, alleen de ADR-kolom.",
+        "en": "RID 5.4.1.1.1 (j): marking in accordance with 5.3.2.1 is prescribed, but table A gives no hazard identification number for this substance, so nothing precedes \"UN\" on the document. Check column (20) of the RID's table A: CargoPilot holds the ADR column and not that one.",
+        "de": "RID 5.4.1.1.1 j): Eine Kennzeichnung nach 5.3.2.1 ist vorgeschrieben, die Tabelle A nennt für diesen Stoff aber keine Nummer zur Kennzeichnung der Gefahr; vor «UN» steht daher nichts. Prüfen Sie Spalte (20) der RID-Tabelle A: CargoPilot führt die ADR-Spalte, nicht diese.",
+        "fr": "RID 5.4.1.1.1 j) : la signalisation selon 5.3.2.1 est prescrite, mais le tableau A ne donne pas de numéro d'identification du danger pour cette matière ; rien ne précède donc « UN » sur le document. Vérifiez la colonne (20) du tableau A du RID : CargoPilot détient la colonne de l'ADR, pas celle-là."
+      },
+      "full_load_of_packages": {
+        "nl": "RID 5.3.2.1.1 laat toe dat een wagen met een volle lading colli van één en dezelfde stof aan beide zijkanten een oranje bord krijgt. Gebeurt dat, dan schrijft 5.4.1.1.1 (j) voor dat het gevaarsidentificatienummer vóór het UN-nummer op het vervoerdocument staat. CargoPilot ziet niet of de wagen zo is gekenmerkt en zet het nummer er daarom niet uit zichzelf voor.",
+        "en": "RID 5.3.2.1.1 permits an orange-coloured plate on both sides of a wagon holding a full load of packages of one and the same substance. Where it is affixed, 5.4.1.1.1 (j) puts the hazard identification number before the UN number on the transport document. CargoPilot cannot see whether the wagon was plated and therefore does not place the number there of its own accord.",
+        "de": "RID 5.3.2.1.1 erlaubt eine orangefarbene Tafel an beiden Längsseiten eines Wagens mit einer geschlossenen Ladung Versandstücke ein und desselben Gutes. Wird sie angebracht, verlangt 5.4.1.1.1 j) die Nummer zur Kennzeichnung der Gefahr vor der UN-Nummer im Beförderungspapier. CargoPilot sieht nicht, ob der Wagen so gekennzeichnet ist, und setzt die Nummer daher nicht von sich aus davor.",
+        "fr": "Le RID 5.3.2.1.1 permet d'apposer un panneau orange sur les deux côtés d'un wagon contenant un chargement complet de colis d'une seule et même matière. S'il est apposé, le 5.4.1.1.1 j) impose le numéro d'identification du danger avant le numéro ONU sur le document de transport. CargoPilot ne peut pas voir si le wagon a été signalisé et ne place donc pas le numéro de lui-même."
+      }
+    }
+  },
+  "rid_limited_quantities_with_explosives": {
+    "_source": "RID 2025 (Appendix C to COTIF, Annex), 7.5.2.4, printed page 1103 in the English edition and 1187 in the German, quoted by scripts/read_land_regulations.py --doc rid --doc rid_de --section 7.5.2.4. The two readings agree.",
+    "_what_it_says": "Mixed loading of dangerous goods packed in limited quantities with any type of explosive substances and articles, except those of Division 1.4 and UN Nos. 0161 and 0499, is prohibited.",
+    "_no_road_equivalent": "ADR 7.5.2 has no such paragraph. This is a rail rule and is cited to the RID alone.",
+    "excepted_un_numbers": [
+      "0161",
+      "0499"
+    ],
+    "rules": {
+      "forbidden": {
+        "nl": "RID 7.5.2.4: in beperkte hoeveelheden verpakte gevaarlijke goederen mogen niet samen worden geladen met explosieve stoffen en voorwerpen, behalve die van subklasse 1.4 en UN 0161 en 0499. Deze zending bevat beide.",
+        "en": "RID 7.5.2.4: dangerous goods packed in limited quantities may not be loaded together with explosive substances and articles, except those of Division 1.4 and UN Nos. 0161 and 0499. This consignment holds both.",
+        "de": "RID 7.5.2.4: In begrenzten Mengen verpackte gefährliche Güter dürfen nicht mit explosiven Stoffen und Gegenständen mit Explosivstoff zusammengeladen werden, ausgenommen solche der Unterklasse 1.4 und der UN-Nummern 0161 und 0499. Diese Sendung enthält beides.",
+        "fr": "RID 7.5.2.4 : les marchandises dangereuses emballées en quantités limitées ne peuvent pas être chargées en commun avec des matières et objets explosibles, à l'exception de ceux de la division 1.4 et des Nos ONU 0161 et 0499. Cet envoi contient les deux."
+      }
+    }
+  },
+  "adn_stabilisation": {
+    "_source": "ADN 2025 (UNECE, English edition), 5.4.1.1.1 (j) on printed page 324 and 7.1.6.11 on 388, quoted by scripts/read_land_regulations.py --doc adn --section 5.4.1.1.1 --section 7.1.6.11.",
+    "_what_it_says": "5.4.1.1.1 (j): if column (11) of table A of chapter 3.2 contains the additional requirement ST01, the transport document carries a confirmation of stabilization (see 7.1.6.11). 7.1.6.11 is headed \"Carriage in bulk\" and ST01 requires the substances to have been stabilized in accordance with the requirements applicable to ammonium nitrate fertilizers set out in the IMSBC Code, certified by the consignor in the transport document; in those States where this is required they may be carried in bulk only with the approval of the competent authority.",
+    "_which_substances": "Two UN numbers carry ST01 in the ADN table A this application holds: 1942 and 2067, both ammonium nitrate. UN 2071 carries ST02, which is a condition on the carriage — a trough test — and not on the document, and is deliberately not raised.",
+    "rules": {
+      "st01": {
+        "nl": "ADN 5.4.1.1.1 (j): kolom (11) van tabel A vermeldt ST01 voor deze stof. Het vervoerdocument moet daarom een bevestiging van stabilisatie bevatten: de afzender verklaart dat de stof is gestabiliseerd volgens de eisen die de IMSBC-code aan ammoniumnitraathoudende meststoffen stelt (7.1.6.11). In staten die dat eisen is losgestort vervoer alleen toegestaan met goedkeuring van de bevoegde autoriteit.",
+        "en": "ADN 5.4.1.1.1 (j): column (11) of table A shows ST01 for this substance. The transport document therefore needs a confirmation of stabilization: the consignor certifies that the substance has been stabilized as the IMSBC Code requires for ammonium nitrate fertilizers (7.1.6.11). In those States where this is required, carriage in bulk is permitted only with the approval of the competent authority.",
+        "de": "ADN 5.4.1.1.1 j): Spalte (11) der Tabelle A nennt für diesen Stoff ST01. Das Beförderungspapier muss daher eine Bestätigung der Stabilisierung enthalten: der Absender bescheinigt, dass der Stoff nach den Anforderungen des IMSBC-Codes für ammoniumnitrathaltige Düngemittel stabilisiert wurde (7.1.6.11). In Staaten, die dies verlangen, ist die Beförderung in loser Schüttung nur mit Zustimmung der zuständigen Behörde zulässig.",
+        "fr": "ADN 5.4.1.1.1 j) : la colonne (11) du tableau A porte ST01 pour cette matière. Le document de transport doit donc comporter une confirmation de stabilisation : l'expéditeur certifie que la matière a été stabilisée conformément aux prescriptions du Code IMSBC pour les engrais au nitrate d'ammonium (7.1.6.11). Dans les États qui l'exigent, le transport en vrac n'est autorisé qu'avec l'accord de l'autorité compétente."
+      }
+    }
   }
 }

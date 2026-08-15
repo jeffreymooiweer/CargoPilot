@@ -394,7 +394,7 @@ def offline_lookup(
         "un_number": entry["un"],
         "proper_shipping_name": proper_shipping_name(entry, language, profiles),
         "class": hazards["division"],
-        "subsidiary_risks": "+".join(hazards["subsidiary_risks"]),
+        "subsidiary_risks": ", ".join(hazards["subsidiary_risks"]),
         "classification_code": hazards["classification_code"],
         "packing_group": clean_value(entry.get("packing_group")),
         # The first instruction, which is the P code. Table A separates them
@@ -527,6 +527,26 @@ def adn_blue_cones(un_number: str) -> dict[str, Any] | None:
         "certain": bool(row.get("certain")),
         "carriage_permitted": row.get("carriage_permitted", ""),
     }
+
+
+def adn_loading_measures(un_number: str) -> list[str]:
+    """Column (11) of the ADN's table A: the additional requirements of 7.1.6.11.
+
+    The codes are read there and nowhere else — CO01 to CO03 for the holds,
+    ST01 and ST02 for stabilisation, RA01 and the rest for radioactive material.
+    Only one of them reaches the transport document: 5.4.1.1.1 (j) asks for a
+    confirmation of stabilisation where the column carries **ST01**.
+
+    Empty where the ADN does not list the substance, which is not the same as a
+    substance whose column (11) is blank; a caller that has to tell those apart
+    reads ``adn_blue_cones`` first, which returns None for the former.
+    """
+    row = _adn_table_a().get(str(un_number or "").strip())
+    if row is None:
+        return []
+    return [code.strip().upper()
+            for code in str(row.get("loading_measures") or "").split(",")
+            if code.strip()]
 
 
 @lru_cache(maxsize=1)

@@ -215,11 +215,21 @@ def test_the_rail_check_is_recorded_too():
     assert "RID 2025" in rail and "7.5.2.1" in rail
 
 
-def test_rail_gets_the_same_answer_as_road():
+def test_rail_gets_the_same_answer_as_road_under_its_own_name():
+    """The same answer, cited to the regulation governing the document.
+
+    The footnote is word for word the same in both texts, so the finding is the
+    same finding. Its name is not: "ADR 7.5.2.1" printed on a CIM is the same
+    kind of inaccuracy as the CV28 that used to appear there where the RID says
+    CW 28 — a code name the regulation governing that document does not have.
+    """
     from app.services.dg.compliance import check_compliance
 
     entries = [{"line_id": "L1", "products": [BLASTING, AMMONIUM_NITRATE]}]
+    messages = set()
     for profile in ("ADR", "RID"):
         out = check_compliance(entries, [profile], "en")["adr_mixed_loading"]
-        assert [w["rule"] for w in out if w["rule"].startswith("ADR 7.5.2.1")] \
-            == ["ADR 7.5.2.1 (d)"], profile
+        cited = [w for w in out if w["rule"].endswith("7.5.2.1 (d)")]
+        assert [w["rule"] for w in cited] == [f"{profile} 7.5.2.1 (d)"], profile
+        messages.add(cited[0]["message"])
+    assert len(messages) == 1, messages

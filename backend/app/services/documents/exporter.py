@@ -10,7 +10,7 @@ from openpyxl.styles import Alignment, Border, Font, PatternFill, Side
 from openpyxl.utils import get_column_letter
 
 from app.core.languages import normalise, pick
-from app.services.dg.autofill import adr_quantity
+from app.services.dg.autofill import adr_quantity, description_line
 from app.services.dg.database import get_un_entries, is_transport_forbidden
 from app.services.dg.naming import english_name_is_usable, resolve_for_profile
 from app.services.documents.registry import condition_met, get_document, resolve_sections
@@ -502,9 +502,17 @@ def validate_document(
             # screen — a document outlives the session it was made in.
             for finding in outcome.get("rule_set_warnings", []) or []:
                 warnings.append(f"{finding['rule']}: {finding['message']}")
+            # RID 5.4.1.1.1 (j) and ADN 5.4.1.1.1 (j) are provisions *about the
+            # transport document*, so the one place they must never stop at is
+            # the screen. Both answer with a list; the informational half — the
+            # number this application has already put in the description line —
+            # deliberately does not travel, or every CIM would grow a line
+            # saying that nothing is outstanding.
             for finding in outcome.get("imdg_segregation", []) + outcome.get(
                 "adr_mixed_loading", []
-            ) + outcome.get("iata_segregation", []):
+            ) + outcome.get("iata_segregation", []) + outcome.get(
+                "rid_transport_document", []
+            ) + outcome.get("adn_stabilisation", []):
                 text = f"{finding.get('rule')}: {finding.get('message')}"
                 if finding.get("severity") == "error":
                     errors.append(text)
@@ -699,24 +707,23 @@ def _un_prefixed(value: Any) -> str:
 
 def _dg_description(product: dict[str, Any], profile: str, values: dict[str, Any],
                     lang: str = "") -> str:
-    """Officiële omschrijvingsregel per ADR/RID/ADN 5.4.1.1.1, bijv. 'UN 1203, BENZINE, 3, II, (D/E)'."""
-    psn = resolve_for_profile(product, profile, lang)[0].upper()
-    technical = str(product.get("technical_name") or "").strip()
-    if technical:
-        psn = f"{psn} ({technical})"
-    hazard = str(product.get("class") or "").strip()
-    subsidiary = str(product.get("subsidiary_risks") or "").strip()
-    if subsidiary:
-        hazard = f"{hazard} ({subsidiary})"
-    parts = [_un_prefixed(product.get("un_number")), psn, hazard, str(product.get("packing_group") or "").strip()]
-    # ADR only: the tunnel restriction code is a road construct (Table A column
-    # 15, 8.6, 5.4.1.1.1 (k)). It does not belong on a CIM or an ADN document.
-    if profile == "ADR":
-        # Tunnel code from the UN entry; a manual value takes precedence.
-        tunnel = str(values.get("tunnel_restriction") or product.get("tunnel_code") or "").strip()
-        if tunnel:
-            parts.append(f"({tunnel.strip('()')})")
-    return ", ".join(p for p in parts if p)
+    """The official description line of ADR/RID/ADN 5.4.1.1.1, for the form.
+
+    This used to be a second rendering of the same provision, and it drifted
+    exactly as a second rendering does: the subsidiary label models of (c) and
+    the hazard identification number of RID (j) would have reached the wizard
+    and the stowage plan while the CMR and the CIM went on without them. The
+    one builder does the composing; what is left here is the part that is
+    genuinely the form's — the manually entered tunnel code, and the fact that
+    a form column holds the description alone, without the package counts the
+    form has columns of its own for.
+    """
+    return description_line(
+        {k: v for k, v in product.items()
+         if k not in ("quantity_packages", "type_of_package",
+                      "net_mass_liters_per_package", "adr_total_quantity",
+                      "net_explosive_mass")},
+        profile, lang, values)
 
 
 def _dg_rows(profile: str, entry: dict[str, Any], product: dict[str, Any], values: dict[str, Any], lang: str):

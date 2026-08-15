@@ -400,6 +400,29 @@ def _norm_label(token: str) -> str:
     return match.group(1) if match else token
 
 
+#: A label model number and nothing else. The labels cell is not always one:
+#: two rows of the Dutch edition spell out the word for "none" and twelve read
+#: "See 5.2.2.1.12". Neither is a number to put in brackets after the class, and
+#: 5.4.1.1.1 (c) says what to do instead — where column (5) gives no label
+#: model, the class of column (3a) is given.
+_LABEL_MODEL = re.compile(r"^\d(?:\.\d)?$")
+
+#: The label models of class 1 that 5.4.1.1.1 (c) does *not* repeat in brackets
+#: after the classification code. RID adds the shunting label model 13 and
+#: model 15 to that list; the table this application holds is the ADR's, whose
+#: column (5) carries neither, so those two are a guard and not a conversion.
+_CLASS1_OWN_LABELS = {"1", "1.4", "1.5", "1.6"}
+
+
+#: Table A separates the label models of one row with a plus in the 2023 export
+#: and with a comma in the Dutch 2025 edition. Splitting on the plus alone left
+#: "6.1, 3" as a single token, so every subsidiary label model was lost on its
+#: way to the transport document — 718 of the 3,158 rows of the 2025 table carry
+#: more than one, UN 1098 ALLYL ALCOHOL among them, which is the very substance
+#: RID 5.4.1.1.1 uses for its own example: "6.1 (3), I".
+_LABEL_SEPARATOR = re.compile(r"[+,]")
+
+
 def parse_hazards(entry: dict[str, Any]) -> dict[str, Any]:
     """Derive primary hazard (division included) and subsidiary risks from ADR Table A.
 
@@ -407,11 +430,15 @@ def parse_hazards(entry: dict[str, Any]) -> dict[str, Any]:
     actual division is in the labels column and the classification code
     respectively ('1.4S' for instance). Subsidiary risks are the labels *after*
     the first — the classification code (F1, M4, C1) is not a subsidiary risk.
+
+    For class 1 "after the first" is not the rule the text states: 5.4.1.1.1 (c)
+    puts the label models *other than 1, 1.4, 1.5 and 1.6* in brackets behind
+    the classification code, which is a set and not a position.
     """
     hazard_class = str(entry.get("class") or "").strip()
     classification = str(entry.get("classification_code") or "").strip().upper()
     raw_labels = clean_value(entry.get("labels"))
-    tokens = [_norm_label(t) for t in raw_labels.split("+") if t.strip()]
+    tokens = [_norm_label(t) for t in _LABEL_SEPARATOR.split(raw_labels) if t.strip()]
 
     division = hazard_class
     if hazard_class == "1" and re.match(r"^1\.\d[A-S]$", classification):
@@ -421,7 +448,12 @@ def parse_hazards(entry: dict[str, Any]) -> dict[str, Any]:
     elif not hazard_class and tokens:
         division = tokens[0]
 
-    subsidiary = [t for t in tokens[1:] if t and t != division]
+    if hazard_class == "1":
+        rest = [t for t in tokens if t not in _CLASS1_OWN_LABELS]
+    else:
+        rest = tokens[1:]
+    subsidiary = [t for t in rest
+                  if t and t != division and _LABEL_MODEL.match(t)]
     return {
         "division": division,
         "subsidiary_risks": subsidiary,

@@ -16,6 +16,8 @@ from typing import Any
 from app.core.config import get_settings
 from app.core.languages import normalise, pick
 from app.services.dg import amendment_42_24, dangerous_goods_list, database
+from app.services.dg.autofill import rid_marking_prescribed
+from app.services.dg.database import adn_loading_measures
 from app.services.regulatory_manifest import stale_rule_sets, summary
 from app.services.dg.enrichment import (
     EXCEPTED_QUANTITY_LIMITS,
@@ -655,9 +657,15 @@ def check_adr_mixed_loading(
                     if label not in bucket:
                         bucket.append(label)
 
+        # The table is the same in both regimes — v1.38.0 read RID's 7.5.2.1
+        # and found it identical to the ADR's, footnotes included — but the
+        # citation is not. "ADR 7.5.2.1" printed on a CIM is the same category
+        # of inaccuracy as the CV28 that used to appear there in place of CW 28:
+        # a code name the regulation governing that document does not have.
+        _table, regime = _compatibility_table(profiles)
         if forbidden:
             warnings.append({
-                "rule": "ADR 7.5.2.1",
+                "rule": f"{regime} 7.5.2.1",
                 "severity": "error",
                 "message": pick(rules["rules"]["class1_with_others"], lang),
                 "products": ", ".join(forbidden),
@@ -666,7 +674,7 @@ def check_adr_mixed_loading(
             # Permitted, but not without conditions: footnote (d) moves the
             # placarding and the maximum permitted quantity to class 1.
             warnings.append({
-                "rule": f"ADR 7.5.2.1 ({note})",
+                "rule": f"{regime} 7.5.2.1 ({note})",
                 "severity": "warning",
                 "message": pick(rules["rules"][f"class1_footnote_{note}"], lang),
                 "products": ", ".join(permitted[note]),
@@ -765,6 +773,172 @@ def check_rid_protective_distance(
         "severity": "warning",
         "message": pick(rules["rules"]["train_formation"], lang),
         "products": ", ".join(class1_positions),
+    }]
+
+
+def check_rid_transport_document(
+    entries: list[dict[str, Any]], language: str = "nl",
+) -> list[dict[str, str]]:
+    """RID 5.4.1.1.1 (j): the hazard identification number on the CIM.
+
+    Rail is the only one of the three land regimes that puts that number on the
+    document. ADR's own (k) is the tunnel restriction code and ADN has neither,
+    so this is not a shared provision under three names.
+
+    Where a marking under 5.3.2.1 is prescribed the number goes *before* the
+    letters "UN", and the composed line does that itself. What is left here is
+    the two cases the line cannot settle on its own:
+
+    - the marking is prescribed and table A has **no** hazard identification
+      number for the substance, so there is nothing to put in front. Composing
+      the line silently without it would hide a description the RID says is
+      incomplete;
+    - the goods travel in packages as a **full load of one and the same
+      substance**, where 5.3.2.1.1 says the plate *may* be affixed. If it is,
+      (j) applies and the number belongs on the document — and whether a wagon
+      was plated is not something this application can see. So it is asked.
+    """
+    rules = get_compliance_rules()["rid_transport_document"]
+    lang = _lang(language)
+    findings: list[dict[str, str]] = []
+
+    marked: list[str] = []
+    without_number: list[str] = []
+    substances: set[str] = set()
+    packaged: list[str] = []
+    for entry, index, product in _iter_products(entries):
+        if product.get("transport_forbidden"):
+            continue
+        un = str(product.get("un_number") or "").strip()
+        if not un:
+            continue
+        substances.add(un)
+        label = _product_label(entry, product, index)
+        number = str(product.get("hazard_number") or "").strip()
+        if rid_marking_prescribed(product):
+            (marked if number else without_number).append(
+                f"{label} ({number})" if number else label)
+        else:
+            packaged.append(label)
+
+    if marked:
+        findings.append({
+            "rule": "RID 5.4.1.1.1 (j)",
+            "severity": "info",
+            "message": pick(rules["rules"]["prescribed"], lang),
+            "products": ", ".join(marked),
+        })
+    if without_number:
+        findings.append({
+            "rule": "RID 5.4.1.1.1 (j)",
+            "severity": "warning",
+            "message": pick(rules["rules"]["no_hazard_number"], lang),
+            "products": ", ".join(without_number),
+        })
+    # One substance and nothing else: the wagon may be plated, and then the
+    # number belongs in front. More than one substance and the permission of
+    # 5.3.2.1.1 does not arise, so neither does the question.
+    if packaged and not marked and not without_number and len(substances) == 1:
+        findings.append({
+            "rule": "RID 5.4.1.1.1 (j) / 5.3.2.1.1",
+            "severity": "warning",
+            "message": pick(rules["rules"]["full_load_of_packages"], lang),
+            "products": ", ".join(packaged),
+        })
+    return findings
+
+
+def check_rid_limited_quantities_with_explosives(
+    entries: list[dict[str, Any]], language: str = "nl",
+    lq_rows: list[dict[str, Any]] | None = None,
+) -> list[dict[str, str]]:
+    """RID 7.5.2.4: limited quantities may not be loaded with explosives.
+
+    Read in the English edition on printed page 1103 and in the German on 1187,
+    which agree: *mixed loading of dangerous goods packed in limited quantities
+    with any type of explosive substances and articles, except those of Division
+    1.4 and UN Nos. 0161 and 0499, is prohibited.* There is no ADR equivalent,
+    and nothing here is new data — the LQ assessment of 3.4 and the class of
+    each package are both already computed.
+
+    Which lines count as "packed in limited quantities" is taken from the 3.4
+    assessment rather than recomputed, so the two cannot disagree about the same
+    package. Without that assessment nothing is claimed.
+    """
+    rules = get_compliance_rules()["rid_limited_quantities_with_explosives"]
+    lang = _lang(language)
+    excepted = set(rules["excepted_un_numbers"])
+
+    within_lq = {row["product"] for row in (lq_rows or [])
+                 if (row.get("lq") or {}).get("status") == "within_limits"}
+    if not within_lq:
+        return []
+
+    explosives: list[str] = []
+    limited: list[str] = []
+    for entry, index, product in _iter_products(entries):
+        label = _product_label(entry, product, index)
+        if label in within_lq:
+            limited.append(label)
+            continue
+        if not _primary_class(product).startswith("1"):
+            continue
+        un = str(product.get("un_number") or "").strip()
+        division = _primary_class(product)
+        if un in excepted:
+            continue
+        # Division 1.4 is out, and a class 1 entry whose division is not known
+        # is not: not knowing whether the exception applies must not read as
+        # knowing that it does.
+        code = str(product.get("classification_code") or "").strip().upper()
+        if division.startswith("1.4") or code.startswith("1.4"):
+            continue
+        explosives.append(label)
+
+    if not (limited and explosives):
+        return []
+    return [{
+        "rule": "RID 7.5.2.4",
+        "severity": "error",
+        "message": pick(rules["rules"]["forbidden"], lang),
+        "products": ", ".join(limited + explosives),
+    }]
+
+
+def check_adn_stabilisation(
+    entries: list[dict[str, Any]], language: str = "nl",
+) -> list[dict[str, str]]:
+    """ADN 5.4.1.1.1 (j): the confirmation of stabilisation on the document.
+
+    Column (11) of the ADN's own table A carries the additional requirements of
+    7.1.6.11, and one of them reaches the paper. ST01 — read in the English
+    edition on printed page 388 — requires the substance to have been stabilized
+    as the IMSBC Code requires for ammonium nitrate fertilizers, and says in as
+    many words that *stabilizing shall be certified by the consignor in the
+    transport document*.
+
+    7.1.6.11 is headed "Carriage in bulk" and applies where column (11) says so,
+    so this speaks for a bulk load and not for the same substance in packages.
+    Two UN numbers carry ST01 in the table this application holds: 1942 and
+    2067. ST02, which UN 2071 carries, is a condition on the carriage and not on
+    the document, and is deliberately not raised here.
+    """
+    rules = get_compliance_rules()["adn_stabilisation"]
+    lang = _lang(language)
+    affected: list[str] = []
+    for entry, index, product in _iter_products(entries):
+        if str(product.get("carriage_mode") or "").strip() != "bulk":
+            continue
+        un = str(product.get("un_number") or "").strip()
+        if "ST01" in adn_loading_measures(un):
+            affected.append(_product_label(entry, product, index))
+    if not affected:
+        return []
+    return [{
+        "rule": "ADN 5.4.1.1.1 (j) / 7.1.6.11 ST01",
+        "severity": "warning",
+        "message": pick(rules["rules"]["st01"], lang),
+        "products": ", ".join(affected),
     }]
 
 
@@ -4394,6 +4568,9 @@ def check_compliance(
             # reaches both the panel and the export, and a rail provision that
             # only appears on screen is not on the document.
             result["adr_mixed_loading"] += check_rid_protective_distance(entries, language)
+            # 5.4.1.1.1 (j): what belongs on the CIM and on no other document.
+            result["rid_transport_document"] = check_rid_transport_document(
+                entries, language)
         # ADN answers the exemption question with its own rule, so it gets its
         # own result rather than borrowing the points total.
         if "ADN" in normalized:
@@ -4413,6 +4590,11 @@ def check_compliance(
             # And what the vessel must show while it carries them. Column (12)
             # answers both, and this half had no answer at all before v1.61.0.
             result["adn_signals"] = check_adn_signals(entries, language)
+            # Column (11), ST01: the one additional requirement of 7.1.6.11
+            # that ends up on the transport document rather than in the hold,
+            # and therefore its own result and not a separation finding.
+            result["adn_stabilisation"] = check_adn_stabilisation(
+                entries, language)
         note = basis_note(land, "7.5.2", language)
         if note:
             result["adr_mixed_loading_basis_note"] = note
@@ -4421,6 +4603,11 @@ def check_compliance(
     # system in the Y packing instructions, which is not claimed here.
     if {"ADR", "RID", "ADN", "IMDG"} & normalized:
         result["lq_eq"] = check_lq_eq(entries, language, sorted(normalized))
+        # 7.5.2.4 needs the 3.4 assessment above it: which lines are packed in
+        # limited quantities is that check's answer, not a second opinion.
+        if "RID" in normalized:
+            result["adr_mixed_loading"] += check_rid_limited_quantities_with_explosives(
+                entries, language, (result["lq_eq"] or {}).get("rows"))
 
     # The tunnel code is a road provision and only a road one: RID table A has
     # no column (15) and the ADN document does not carry the code either. It

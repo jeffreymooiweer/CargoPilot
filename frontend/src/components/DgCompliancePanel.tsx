@@ -108,6 +108,12 @@ export default function DgCompliancePanel({ entries, profiles }: Props) {
     ...(result?.adr_mixed_loading ?? []),
     ...(result?.imdg_segregation ?? []),
     ...(result?.iata_segregation ?? []),
+    // What 5.4.1.1.1 adds per regime: the hazard identification number for
+    // rail, the confirmation of stabilisation for inland waterway. Both are
+    // provisions about the document, so they belong with the findings that
+    // travel to it rather than in a card of their own.
+    ...(result?.rid_transport_document ?? []),
+    ...(result?.adn_stabilisation ?? []),
   ];
 
   // The headings carry the outcome in figures, so that a collapsed section
@@ -915,7 +921,8 @@ export default function DgCompliancePanel({ entries, profiles }: Props) {
         </CollapsibleSection>
       )}
       {result && warnings.length === 0 &&
-        (result.adr_mixed_loading || result.imdg_segregation || result.iata_segregation) && (
+        (result.adr_mixed_loading || result.imdg_segregation || result.iata_segregation ||
+          result.rid_transport_document || result.adn_stabilisation) && (
           <p className="text-xs text-emerald-700 dark:text-emerald-300">{t("compliance.noSegregationIssues")}</p>
         )}
       {result?.regulatory_manifest && (

@@ -33,7 +33,7 @@
     "setup": "Kein Administrator eingerichtet. Setzen Sie ADMIN_USERNAME, ADMIN_EMAIL und ADMIN_PASSWORD."
   },
   "wizard": {
-    "step2": "Versandstücke",
+    "step2": "Güter",
     "step3dg": "Gefahrgut",
     "step4": "Export",
     "continue": "Weiter",
@@ -49,13 +49,13 @@
     "back": "Zurück",
     "toExport": "Zum Export",
     "toDg": "Zum Gefahrgut",
-    "dgIntro": "Erfassen Sie die Gefahrgutangaben für alle Versandstücke, die als Gefahrgut markiert sind oder in denen eine UN-Nummer erkannt wurde.",
+    "dgIntro": "Erfassen Sie die Gefahrgutangaben für alle Güter, die als Gefahrgut markiert sind oder in denen eine UN-Nummer erkannt wurde.",
     "dgSource": "Die Klassifizierung stammt aus der mitgelieferten Offline-ADR-Datenbank (Tabelle A); wo Internet verfügbar ist, wird sie live aus der ADR-2025-Quelle ergänzt.",
     "dgLine": "Zeile",
     "dgVehicle": "Fahrzeug / Ladung",
     "dgVehicleHelp": "Beschreibung des Fahrzeugs oder der Ladung dieser Gefahrgutposition.",
     "dgLookup": "UN-Nummer nachschlagen",
-    "dgIncluded": "Gefahrgut für {{count}} Versandstück(e) erfasst; die Angaben werden in die ausgewählten Gefahrgutdokumente übernommen.",
+    "dgIncluded": "Gefahrgut für {{count}} Güterzeile(n) erfasst; die Angaben werden in die ausgewählten Gefahrgutdokumente übernommen.",
     "dgPositionOf": "Position {{current}} von {{total}}",
     "progressStep": "Schritt {{current}} von {{total}}",
     "stepForms": "Formulare",
@@ -68,8 +68,8 @@
     "paste": "Fügen Sie hier Ihre Zeilen ein: Bezeichnung | Menge | Einheit"
   },
   "review": {
-    "linesTitle": "Versandstücke",
-    "intro": "Geben Sie je Versandstück eine Bezeichnung ein: wählen Sie Material aus dem Katalog oder tippen Sie eine eigene Bezeichnung mit Abmessungen. Aus Excel einfügen geht über Importieren.",
+    "linesTitle": "Güter",
+    "intro": "Geben Sie je Güterzeile eine Bezeichnung ein: wählen Sie Material aus dem Katalog oder tippen Sie eine eigene Bezeichnung mit Abmessungen. Aus Excel einfügen geht über Importieren.",
     "description": "Bezeichnung",
     "descriptionPlaceholder": "Material wählen oder z. B. Stahl Winkelprofil 80x80x8x6000 eingeben",
     "customDescription": "Als freie Bezeichnung verwenden (automatisch zuordnen)",
@@ -91,7 +91,7 @@
     "addLine": "Zeile hinzufügen",
     "duplicateLine": "Zeile kopieren",
     "removeLine": "Entfernen",
-    "noLines": "Fügen Sie mindestens ein Versandstück mit Bezeichnung hinzu.",
+    "noLines": "Fügen Sie mindestens eine Güterzeile mit Bezeichnung hinzu.",
     "importExcel": "Importieren",
     "importTitle": "Aus Datei oder Text importieren",
     "importHint": "Fügen Sie kopierte Spalten aus Excel ein (Bezeichnung | Menge | Einheit) oder laden Sie die Vorlage herunter und eine Datei hoch.",
@@ -101,7 +101,7 @@
     "importAppend": "An aktuelle Zeilen anhängen",
     "importConfirm": "Importieren",
     "cancel": "Abbrechen",
-    "dangerousGoods": "Gefahrgut-Versandstück",
+    "dangerousGoods": "Gefahrgut",
     "dgDetected": "UN-Nummer erkannt",
     "dgSuggestedOne": "Erkannt: UN {{un}} (Klasse {{class}})",
     "dgSuggestedMany": "Mehrere Stoffe erkannt — UN-Nummer wählen:",
@@ -133,7 +133,7 @@
     }
   },
   "messages": {
-    "dg_un_detected": "UN-Nummer erkannt — Versandstück als Gefahrgut markiert",
+    "dg_un_detected": "UN-Nummer erkannt — Zeile als Gefahrgut markiert",
     "wall_thickness_missing": "Wandstärke fehlt — ohne dieses Maß lässt sich das Gewicht eines Profils nicht bestimmen"
   },
   "status": {
@@ -232,7 +232,7 @@
   },
   "modality": {
     "title": "Wählen Sie Ihren Verkehrsträger",
-    "intro": "Starten Sie eine neue Sendung mit der Wahl des Verkehrsträgers. Anschließend wählen Sie die zu erstellenden Formulare und erfassen Ihre Artikel, Produkte oder Materialien.",
+    "intro": "Starten Sie eine neue Sendung, indem Sie einen Verkehrsträger wählen. Als Absender erfassen Sie die Güter; die App leitet ab, was dazugehört, und stellt das Dokumentenpaket zusammen.",
     "road": "Straßentransport",
     "roadDesc": "CMR- und AVC-Frachtbrief, Packliste und Lieferschein",
     "rail": "Schienentransport",

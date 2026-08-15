@@ -489,10 +489,10 @@
         "fr": "Masse volumique à 15 °C (d15)"
       },
       "help": {
-        "nl": "De relatieve dichtheid bij 15 °C. Samen met d50 bepaalt die de uitzettingscoëfficiënt α = (d15 − d50) / (35 × d50) van 4.3.2.2.2. Tabel A draagt deze waarden niet.",
-        "en": "The relative density at 15 °C. With d50 it gives the coefficient of expansion α = (d15 − d50) / (35 × d50) of 4.3.2.2.2. Table A does not carry these values.",
-        "de": "Die relative Dichte bei 15 °C. Zusammen mit d50 ergibt sie den Ausdehnungskoeffizienten α = (d15 − d50) / (35 × d50) nach 4.3.2.2.2.",
-        "fr": "La masse volumique relative à 15 °C. Avec d50 elle donne le coefficient de dilatation α = (d15 − d50) / (35 × d50) du 4.3.2.2.2."
+        "nl": "De relatieve dichtheid bij 15 °C. Samen met d50 bepaalt die de uitzettingscoëfficiënt α = (d15 − d50) / (35 × d50) van 4.3.2.2.2. Tabel A draagt deze waarden niet. Voor veel stoffen vult de app dit zelf uit tabel C van het ADN; anders staat de waarde op het veiligheidsinformatieblad van uw product (rubriek 9).",
+        "en": "The relative density at 15 °C. With d50 it gives the coefficient of expansion α = (d15 − d50) / (35 × d50) of 4.3.2.2.2. Table A does not carry these values. For many substances the app fills this in from Table C of the ADN; otherwise the value is on your product's safety data sheet (section 9).",
+        "de": "Die relative Dichte bei 15 °C. Zusammen mit d50 ergibt sie den Ausdehnungskoeffizienten α = (d15 − d50) / (35 × d50) nach 4.3.2.2.2. Für viele Stoffe füllt die App dies selbst aus Tabelle C des ADN aus; andernfalls steht der Wert im Sicherheitsdatenblatt Ihres Produkts (Abschnitt 9).",
+        "fr": "La masse volumique relative à 15 °C. Avec d50 elle donne le coefficient de dilatation α = (d15 − d50) / (35 × d50) du 4.3.2.2.2. Pour de nombreuses matières, l'application le remplit elle-même à partir du tableau C de l'ADN ; sinon la valeur figure sur la fiche de données de sécurité de votre produit (rubrique 9)."
       },
       "type": "text"
     },
@@ -504,10 +504,10 @@
         "fr": "Masse volumique à 50 °C (d50)"
       },
       "help": {
-        "nl": "De relatieve dichtheid bij 50 °C, de tweede helft van α in 4.3.2.2.2.",
-        "en": "The relative density at 50 °C, the other half of α in 4.3.2.2.2.",
-        "de": "Die relative Dichte bei 50 °C, die andere Hälfte von α in 4.3.2.2.2.",
-        "fr": "La masse volumique relative à 50 °C, l'autre moitié de α au 4.3.2.2.2."
+        "nl": "De relatieve dichtheid bij 50 °C, de tweede helft van α in 4.3.2.2.2. De waarde staat op het veiligheidsinformatieblad van uw product (rubriek 9).",
+        "en": "The relative density at 50 °C, the other half of α in 4.3.2.2.2. The value is on your product's safety data sheet (section 9).",
+        "de": "Die relative Dichte bei 50 °C, die andere Hälfte von α in 4.3.2.2.2. Der Wert steht im Sicherheitsdatenblatt Ihres Produkts (Abschnitt 9).",
+        "fr": "La masse volumique relative à 50 °C, l'autre moitié de α au 4.3.2.2.2. La valeur figure sur la fiche de données de sécurité de votre produit (rubrique 9)."
       },
       "type": "text"
     },

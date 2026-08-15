@@ -33,7 +33,7 @@
     "setup": "Aucun administrateur configuré. Définissez ADMIN_USERNAME, ADMIN_EMAIL et ADMIN_PASSWORD."
   },
   "wizard": {
-    "step2": "Colis",
+    "step2": "Marchandises",
     "step3dg": "Marchandises dangereuses",
     "step4": "Export",
     "continue": "Continuer",
@@ -49,13 +49,13 @@
     "back": "Retour",
     "toExport": "Continuer vers l'export",
     "toDg": "Continuer vers les marchandises dangereuses",
-    "dgIntro": "Complétez les données relatives aux marchandises dangereuses pour tous les colis marqués comme tels ou dans lesquels un numéro ONU a été détecté.",
+    "dgIntro": "Complétez les données relatives aux marchandises dangereuses pour toutes les marchandises marquées comme telles ou dans lesquelles un numéro ONU a été détecté.",
     "dgSource": "La classification provient de la base ADR hors ligne intégrée (tableau A) ; lorsqu'un accès internet est disponible, elle est enrichie en direct depuis la source ADR 2025.",
     "dgLine": "Ligne",
     "dgVehicle": "Véhicule / chargement",
     "dgVehicleHelp": "Description du véhicule ou du chargement pour cette position.",
     "dgLookup": "Rechercher un numéro ONU",
-    "dgIncluded": "Marchandises dangereuses complétées pour {{count}} colis ; les données sont reprises dans les documents sélectionnés.",
+    "dgIncluded": "Marchandises dangereuses complétées pour {{count}} ligne(s) de marchandises ; les données sont reprises dans les documents sélectionnés.",
     "dgPositionOf": "Position {{current}} sur {{total}}",
     "progressStep": "Étape {{current}} sur {{total}}",
     "stepForms": "Formulaires",
@@ -68,8 +68,8 @@
     "paste": "Collez vos lignes ici : désignation | quantité | unité"
   },
   "review": {
-    "linesTitle": "Colis",
-    "intro": "Indiquez une désignation par colis : choisissez du matériel dans le catalogue ou saisissez votre propre description avec les dimensions. Collez depuis Excel via Importer.",
+    "linesTitle": "Marchandises",
+    "intro": "Saisissez une désignation par ligne de marchandises : choisissez du matériel dans le catalogue ou saisissez votre propre description avec les dimensions. Collez depuis Excel via Importer.",
     "description": "Désignation",
     "descriptionPlaceholder": "Choisissez du matériel ou saisissez p. ex. cornière acier 80x80x8x6000",
     "customDescription": "Utiliser comme description libre (correspondance automatique)",
@@ -91,7 +91,7 @@
     "addLine": "Ajouter une ligne",
     "duplicateLine": "Dupliquer la ligne",
     "removeLine": "Supprimer",
-    "noLines": "Ajoutez au moins un colis avec une désignation.",
+    "noLines": "Ajoutez au moins une ligne de marchandises avec une désignation.",
     "importExcel": "Importer",
     "importTitle": "Importer depuis un fichier ou un texte",
     "importHint": "Collez des colonnes copiées depuis Excel (désignation | quantité | unité), ou téléchargez le modèle et téléversez un fichier.",
@@ -101,7 +101,7 @@
     "importAppend": "Ajouter aux lignes actuelles",
     "importConfirm": "Importer",
     "cancel": "Annuler",
-    "dangerousGoods": "Colis de marchandises dangereuses",
+    "dangerousGoods": "Marchandises dangereuses",
     "dgDetected": "Numéro ONU détecté",
     "dgSuggestedOne": "Reconnu : UN {{un}} (classe {{class}})",
     "dgSuggestedMany": "Plusieurs matières reconnues — choisissez le numéro ONU :",
@@ -133,7 +133,7 @@
     }
   },
   "messages": {
-    "dg_un_detected": "Numéro ONU détecté — colis marqué comme marchandise dangereuse",
+    "dg_un_detected": "Numéro ONU détecté — ligne marquée comme marchandises dangereuses",
     "wall_thickness_missing": "Épaisseur de paroi manquante — sans elle, le poids d'un profilé ne peut pas être déterminé"
   },
   "status": {
@@ -232,7 +232,7 @@
   },
   "modality": {
     "title": "Choisissez votre mode de transport",
-    "intro": "Commencez un nouvel envoi en choisissant un mode de transport. Sélectionnez ensuite les formulaires à préparer et saisissez vos articles, produits ou matériels.",
+    "intro": "Commencez un nouvel envoi en choisissant un mode de transport. En tant qu'expéditeur, vous saisissez les marchandises ; l'application déduit ce qui s'y rattache et compose le dossier de documents.",
     "road": "Transport routier",
     "roadDesc": "Lettre de voiture CMR et AVC, liste de colisage et bon de livraison",
     "rail": "Transport ferroviaire",

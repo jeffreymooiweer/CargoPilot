@@ -75,7 +75,35 @@ Before any software helps, the work divides into three:
 
 CargoPilot is built for the third question, does a great deal of the first, and answers
 part of the second. It does not attempt the parts of the second that depend on the
-vehicle, the vessel, the aircraft or the route — and those are not marginal.
+vessel, the aircraft or the route — and those are not marginal. The *vehicle* half moved
+inside in v1.82.0: which tank may carry which goods is now answered from ADR 4.3.
+
+## What the driver and the boatmaster actually get
+
+The third question ends in paper, so this is the honest list of what comes out — and of
+what has to be carried anyway and cannot come from here.
+
+| Document | Provision | Road (ADR) | Inland waterway (ADN) |
+|---|---|---|---|
+| Transport document | 5.4.1 | CMR with the dangerous goods particulars | ADN transport document |
+| Instructions in writing | 5.4.3 | the model out of the store, per language | the model out of the store, per language |
+| Placarding and marking sheet | 5.3 | generated (v1.83.0) | — |
+| Checklist for loading and unloading | ADN 8.6.3 | — | the model out of the store (v1.83.0) |
+| Stowage plan | ADN 7.1.4.11.1 | — | generated (v1.84.0) |
+| Packing list, delivery note, AVC, VGM | trade / SOLAS | generated | generated |
+
+Two rules run through that table. **A model the regulation prints is never rebuilt**:
+5.4.3.4 requires the instructions to correspond in form and content to a four-page model,
+and 8.6.3 prints its checklist the same way, so both are served as the edition sets them —
+cut from the operator's own copy in the document store, page ranges measured on the
+edition, and reported as missing rather than approximated where the store lacks a language.
+**And nothing prescribed is filled in for you**: every answer on the 8.6.3 checklist is
+agreed between vessel and shore at the moment of loading, and a form this application had
+already ticked would be a claim about a conversation that has not happened.
+
+What still has to be on board and cannot come from here: the driver's ADR certificate and
+the ADN expert, the vehicle's certificate of approval (9.1.3) and the tank's, the vessel's
+certificate of approval (ADN 8.1.2), and the insurance papers.
 
 ## What is held, per substance
 
@@ -240,8 +268,10 @@ dataset it was built on.
   everything but 3.5.2 and 3.5.3 — including the 3.5.5 cap, so those packages no longer
   count towards the 1,000. The two fail in opposite directions: the first let a package
   through that the text caps, the second refused a load the text permits.
-- **The vehicle, except its equipment.** Placarding and marking (5.3), driver training
-  (8.2), the ADR certificate of approval, tank codes: all outside the application. The
+- **The vehicle, except its equipment and its tank.** Driver training (8.2) and the ADR
+  certificate of approval are outside the application. The tank is not, since v1.82.0:
+  column (12) says which tank code a substance *requires*, and **4.3.3.1.2 and 4.3.4.1.2
+  now answer whether the tank that actually turned up may carry it** — see below. The
   equipment of **8.1.4 and 8.1.5 is derived** since v1.53.0, because 8.1.5.1 chooses it by
   the hazard label numbers of the goods loaded and points at the transport document to
   identify them — which is what CargoPilot holds. It is a checklist and not a finding; the
@@ -258,6 +288,31 @@ dataset it was built on.
   class 9 marine pollutant marks the package and not the truck. Tanks and bulk have their
   own subsections and are not answered; the elevated temperature mark of 5.3.3 turns on a
   carriage temperature nobody tells the application.
+- **Since v1.83.0 the answer is also a sheet.** 5.3 was derived and shown on screen only,
+  and the person who needs it is standing at the back of a trailer with plates in his hand.
+  The placarding sheet lists the placards and the orange plates with the provision that
+  asked for each and the numbers already worked out. It says out loud that it is not itself
+  a placard: 5.3.1.7 and 5.3.2.2 govern the real ones. Putting it on paper found two errors
+  in the answer, both a tank load being answered as if it were packages — `placards_required`
+  counted only the placards 5.3.1.5 picks by class, so a tank of petrol reported "no
+  placards required" underneath the finding that required them, and 5.3.6.1 inherited that
+  miscount for the environmentally hazardous mark.
+- **The tank hierarchy of 4.3 is applied since v1.82.0.** Two provisions that share nothing
+  but their purpose: **4.3.3.1.2** is a hierarchy of *codes* for gases, and **4.3.4.1.2** is
+  the rationalized approach for classes 3 to 9, where the offered code names the group of
+  substances it may carry and the required code is never compared with it. Both were read
+  from three books — the English volume II, the printed Dutch edition and the German volume
+  II. Fifteen of the sixteen gas rows are settled by more than one reading; of the eighteen
+  tank codes of the rationalized approach seven are settled on every cell and eleven carry a
+  cell no two readings agree on, and **every one of those eleven makes the check decline
+  rather than answer**. Three measured details shape it: the regulation's own note that the
+  hierarchy takes no account of the special provisions of 4.3.5 and 6.8.4 (column 13), which
+  travel with every answer; a condition inside the packing group cell (LGBF admits packing
+  group II of class 3 F1 only where the vapour pressure at 50 °C is at most 1.1 bar); and the
+  test pressure printed as **x** in column (12) for most gases, which comes from the table of
+  4.3.3.2.5 and is not in this application, so the answer says so instead of comparing a
+  figure that is not there. The filling degree of 4.3.2.2 is not computed: table A does not
+  carry the density or α.
 - **High consequence dangerous goods are derived since v1.58.0.** Table 1.10.3.1.2 turns
   out to be easier than it looks once it has been read: for carriage in packages its column
   holds two values and no others — **0**, meaning any quantity at all, and footnote **b)**,
@@ -470,8 +525,26 @@ exempt" since v1.32.0 while the arithmetic granted the exemption anyway — with
   D/B cell lost its footnote marker). The English edition mirrors across its diagonal in all
   144 cells, which is a property of a compatibility table and not of a typesetting, and that
   check is kept as a test.
+- **The stowage plan of 7.1.4.11.1 since v1.84.0**, and with it the one thing chapter 7.1
+  could not do before. The provision — read in the printed Dutch and the English edition,
+  which agree — asks the boatmaster to set down which goods are in which hold or on deck,
+  described as 5.4.1.1.1 (a) to (d) describes them in the transport document; so the plan
+  uses the transport document's own descriptions rather than a second rendering of them,
+  and 7.1.4.11.2's container annex comes with it. What it is not is a drawing: the geometry
+  of a vessel's holds is not something this application knows. **7.1.4.3.2 is applied now
+  rather than stated**: the prohibition on two-blue-cone goods sharing a hold with one-cone
+  flammable goods needed a hold to compare, and where the holds are written down the finding
+  names the hold it is breached in — and claims nothing where they are not.
+- **The checklist of 8.6.3 since v1.83.0.** 7.2.4.10 requires it to be filled in and signed
+  by the boatmaster and the shore facility before a tank vessel is loaded or unloaded, and
+  the regulation prints the model rather than describing it. So it is served as the edition
+  sets it, in the language asked for, or reported missing with the edition that would
+  produce it — and CargoPilot fills in nothing on it: every answer there is agreed between
+  vessel and shore at the moment of loading.
 - **Anything else vessel-specific** for dry cargo: requirements following from the vessel
-  type, degassing and venting.
+  type, degassing and venting. The degassing checklist of 8.6.4 is the same kind of model
+  and is not registered yet, because there is no degassing operation in the application to
+  hang it on.
 - **ADN 5.4.1.1.1 (j)**: where column (11) of Table A carries `ST01`, the document needs a
   confirmation of stabilisation. Read from the text; not implemented.
 - **No ADN certificate and no expert on board.**
@@ -566,12 +639,13 @@ Ordered by how much harm someone could take before noticing, not by effort.
 | # | Gap | Why it ranks here |
 |---|---|---|
 | 1 | **IATA quantity limits absent; Q depends on user-entered M** | CargoPilot warns when the Q check did not run — since v1.33.0 on the document as well as the screen — but it cannot derive the applicable passenger/cargo-aircraft limit or verify the entered M against Table 4.2. **[verify]** |
-| 2 | **The ADN tank vessel regime is entirely absent** | Table C, vessel types, degassing. A tank vessel shipment gets nothing, and nothing says the mode is only half covered. |
+| 2 | **The ADN tank vessel regime: the substance is answered, the vessel is not** | Closed for the substance side. Table C is read from three books since v1.80.0 — the UNECE English and French editions and the printed Dutch one — and 677 of its 678 rows are settled on every cell. The application answers the vessel *type* of column (6) and the signals of column (19), admits or refuses the carriage on column (8), and since v1.83.0 hands over the checklist of 8.6.3. What is still absent is the vessel itself: design, tank type, equipment, opening pressure and filling degree are shown as conditions to verify, and the 7.2 operational regime and chapter 9.3 construction are a different discipline. |
 | 3 | **Route data absent: which tunnels, and in which category** | Closed for the part that is CargoPilot's since v1.50.0 — 8.6.3.2, 8.6.3.3 and the table of 8.6.4 are applied and the load's code reaches the export. What is left is the route itself, which 1.9.5 puts with the carrier, and the tanks/bulk branch of five codes. |
 | 4 | **Mixed loading for ADN answered with ADR's 7.5.2** | Closed. v1.38.0 read RID's 7.5.2.1 and found it identical to ADR's, footnotes included; v1.41.0 gave rail its own table and its own protective distance. v1.59.0 gave inland waterway ADN 7.1.4.3, which asks a different question again — how many metres, not whether — and v1.61.0 read column (12) of the ADN's own table A so the two cone provisions are answered as well. v1.64.0 closed the last of it: 7.1.4.3.4, the class 1 compatibility table, is applied — and getting it exposed that the Dutch HTML edition of that table is damaged, which the two-reading rule caught. |
 | 5 | **LQ/EQ conditions not checked** | The arithmetic of 3.4/3.5 is verified correct and 3.5.1.3/3.5.1.4 are applied since v1.50.0, but the mark, the packagings and the 3.5.3 tests are declarations the application cannot see. A line "within the limits" is a candidate, not an exemption — and the panel says so. |
 | 6 | **IMDG stowage category shown, not enforced** | Lower because on-deck/under-deck is usually the carrier's call, not the consignor's. **[verify]** |
-| 7 | **No marking or placarding checks outside the road mode** | Closed for ADR in v1.57.0: 5.3.1.5, 5.3.2.1 and 5.3.6.1 are derived for carriage in packages, and the answer is mostly that no placard is required — the provision names only class 1 and class 7. The equipment half closed in v1.53.0. Rail, inland waterway, sea and air still have nothing. |
+| 7 | **No marking or placarding checks outside the road mode** | Closed for ADR in v1.57.0 (5.3.1.5, 5.3.2.1 and 5.3.6.1 for packages; the equipment half in v1.53.0), extended to tanks and put on paper in v1.83.0. Rail, inland waterway, sea and air still have nothing. |
+| 8 | **The tank hierarchy declines on eleven of eighteen codes** | New with v1.82.0, and the honest cost of the two-reading rule. Eleven tank codes of 4.3.4.1.2 carry a cell no two readings agreed on, so the fit check says "cannot be assessed" for them rather than guessing. They are shortfalls of the readers, not disagreements between the books; a working third reading of the German edition would settle most of them. Ranked here because a check that declines is safe but not useful. |
 
 Two of the top gaps from earlier versions of this table are gone, and it is worth being
 precise about why. "RID and ADN answered with ADR tables" ranked second for three releases;

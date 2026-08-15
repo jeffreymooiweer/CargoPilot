@@ -55,7 +55,10 @@ MODELS: dict[str, dict[str, object]] = {
         "span": 20,
     },
     "8.6.4": {
-        "next": "8.6.5|9.1",
+        # What follows 8.6.4 is not another provision but a whole part, and
+        # asking for "9.1" found the contents pages instead: the run reported a
+        # twenty-page model. The part's own heading is what ends this one.
+        "next": r"(?:PART|PARTIE|TEIL|DEEL)\s+9\b",
         "title": re.compile(
             r"CHECK ?LIST DEGASSING|LISTE DE CONTRÔLE DÉGAZAGE"
             r"|CONTROLELIJST ONTGASSING|PRÜFLISTE ENTGASUNG", re.IGNORECASE),

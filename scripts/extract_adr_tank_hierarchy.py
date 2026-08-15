@@ -53,6 +53,10 @@ CLASS = re.compile(r"[1-9](?:\.\d)?")
 PACKING_GROUP = re.compile(r"I{1,3}")
 #: A classification code of table A column (3b): F1, FT2, ST3, M11, C1, I3, W1.
 CLASSIFICATION = re.compile(r"[A-Z]{1,3}\d{0,2}([a-z])?")
+#: The provision that prints the rationalized approach, as it is set at the
+#: table's own head. Not a phrase, so not a language: the number is the same in
+#: every edition.
+PROVISION = re.compile(r"^\s*4\.3\.4\.1\.2\b", re.MULTILINE)
 #: What a condition inside the packing group cell looks like in every edition:
 #: a comparison. Nothing else in the table carries one, so it is what tells a
 #: condition apart from a stray line of running text.
@@ -223,16 +227,41 @@ def rationalised_pages(doc, language: str) -> list[int]:
     where it ends — the section runs on until a page stops looking like it.
     """
     words = LANGUAGES[language]
-    start = None
+    # The provision's own number first, because it is the one anchor that is
+    # not a phrase. The German edition heads the columns of *table A* with
+    # "Tankcodierung" and "Klassifizierungscode" too, so a reader that looked
+    # for those started three hundred pages early and read table A instead:
+    # the German reading of this table was empty for that reason alone.
+    # English and Dutch were saved only by the accident that their headings
+    # ("group of permitted substances") are unique to 4.3.4.1.2.
+    #
+    # The number appears in the contents and in cross-references as well, so
+    # the page also has to look like the table: tank codes on it, and lines
+    # that read as rows.
+    candidates = []
     for index in range(doc.page_count):
         text = doc[index].get_text()
         if _is_contents(text):
             continue
-        low = text.lower()
-        if (words["group_column"] in low and words["code_column"] in low
-                and len(TANK_CODE.findall(text)) >= 3):
-            start = index
-            break
+        if not PROVISION.search(text):
+            continue
+        if len(TANK_CODE.findall(text)) >= 3 and _rows_of_the_table(doc[index]) >= 5:
+            candidates.append(index)
+    start = candidates[-1] if candidates else None
+
+    if start is None:
+        # An edition that does not set the number on the table's own page still
+        # names its columns; that is how this reader began, and it stays as the
+        # way round.
+        for index in range(doc.page_count):
+            text = doc[index].get_text()
+            if _is_contents(text):
+                continue
+            low = text.lower()
+            if (words["group_column"] in low and words["code_column"] in low
+                    and len(TANK_CODE.findall(text)) >= 3):
+                start = index
+                break
     if start is None:
         return []
 

@@ -22,6 +22,7 @@ from app.services.documents import (
 from app.services import regulations
 from app.services.documents.avc_form import fill_avc_waybill, has_avc_template
 from app.services.documents.placarding_sheet import render_placarding_sheet
+from app.services.documents.stowage_plan import render_stowage_plan
 from app.services.documents.signature import decode_signature_image
 from app.services.settings_store import instance_settings
 
@@ -95,6 +96,16 @@ def export(
         # typed by the user, so it is built from the goods rather than from
         # the document's fields.
         out_path = render_placarding_sheet(
+            payload.values,
+            payload.lines,
+            payload.dangerous_goods,
+            payload.output_language,
+        )
+    elif exporter == "stowage":
+        # The stowage plan is drawn from where the goods are, not from typed
+        # document fields: 7.1.4.11.1 asks which goods are in which hold, and
+        # the description is the transport document's own.
+        out_path = render_stowage_plan(
             payload.values,
             payload.lines,
             payload.dangerous_goods,

@@ -70,7 +70,10 @@ const DG_EXTRA_FIELDS: Record<string, string[]> = {
   // once the mode says a tank is involved.
   ADR: ["carriage_mode", "tank_code", "transport_category", "adr_total_quantity"],
   RID: ["carriage_mode", "transport_category", "adr_total_quantity"],
-  ADN: ["carriage_mode", "transport_category", "adr_total_quantity"],
+  // Where it goes on the vessel: 7.1.4.11.1 asks the boatmaster to say which
+  // goods are in which hold or on deck, and no table can answer that.
+  ADN: ["carriage_mode", "hold", "container_number", "transport_category",
+        "adr_total_quantity"],
   IMDG: ["technical_name", "marine_pollutant", "ems_code", "emergency_contact"],
   IATA_DGR: [
     "technical_name",

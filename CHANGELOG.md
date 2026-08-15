@@ -2,6 +2,43 @@
 
 All notable changes are documented here, following [Semantic Versioning](https://semver.org/).
 
+## [1.84.0] — 2026-08-15
+
+### Added
+
+- **The stowage plan (ADN 7.1.4.11.1).** Two readings of the provision, the
+  printed Dutch edition and the English one, say the same short thing: the
+  boatmaster sets down in a stowage plan which goods are placed in the
+  individual holds or on deck, described there as 5.4.1.1.1 (a) to (d)
+  describes them in the transport document. So the plan lists each hold and the
+  deck with what is in it, and the descriptions come from the same function the
+  transport document uses — "as in the transport document" is a requirement
+  about sameness, and two renderings of one consignment that drift apart are
+  worse than one rendering used twice.
+- **7.1.4.11.2 for containers**: the container number stands in the plan, and
+  the annex the provision requires — every container with its number and the
+  description of what is in it — is drawn up with it.
+- A position with no hold yet is not silently left out. It is listed last,
+  where it cannot be missed, with the provision that asks for one.
+- The plan says it is **not a drawing**. A vessel's holds have a geometry this
+  application knows nothing about, and a picture of a ship that does not exist
+  would be believed.
+- Two fields on the dangerous goods step carry it: the hold (or deck) and the
+  container number, shown for ADN and not for a cargo tank — 7.1.4.11 is a
+  chapter 7.1 provision, and a tank vessel has no hold to be in.
+
+### Changed
+
+- **7.1.4.3.2 is applied now, not merely stated.** The prohibition on
+  two-blue-cone goods sharing a hold with one-cone flammable goods needs a hold
+  to compare, and until this release there was none: the finding could only say
+  both kinds were on board. Where the holds are written down the provision is
+  applied to what the boatmaster wrote, and the hold it is breached in is
+  named. Where they are in different holds the finding says that too — and
+  where nothing was typed it claims nothing.
+- "dek" and "deck" are one deck, in all four languages the field might be
+  filled in. A prohibition that a keystroke defeats is not a check.
+
 ## [1.83.0] — 2026-08-15
 
 ### Added

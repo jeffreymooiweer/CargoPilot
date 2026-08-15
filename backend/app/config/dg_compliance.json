@@ -2853,6 +2853,18 @@
         "de": "Die Verträglichkeitsgruppen {a} und {b} dürfen nach 7.1.4.3.4 nur unter einer Bedingung denselben Laderaum teilen. An Bord betrifft das {products}.",
         "fr": "Les groupes de compatibilité {a} et {b} ne peuvent partager une cale selon le 7.1.4.3.4 que sous condition. À bord, cela concerne {products}."
       }
+    },
+    "shared_hold": {
+      "nl": "Volgens het stuwplan staan deze goederen samen in {holds}; dat is precies wat deze bepaling verbiedt.",
+      "en": "According to the stowage plan these goods share {holds}, which is precisely what this provision forbids.",
+      "de": "Nach dem Stauplan stehen diese Güter zusammen in {holds}; genau das verbietet diese Vorschrift.",
+      "fr": "Selon le plan d'arrimage, ces marchandises partagent {holds}, ce que cette disposition interdit précisément."
+    },
+    "separate_holds": {
+      "nl": "Volgens het stuwplan staan ze niet in hetzelfde laadruim; controleer dat de indeling zo blijft.",
+      "en": "According to the stowage plan they are not in the same hold; check that the arrangement stays that way.",
+      "de": "Nach dem Stauplan stehen sie nicht im selben Laderaum; prüfen Sie, dass die Aufteilung so bleibt.",
+      "fr": "Selon le plan d'arrimage, elles ne sont pas dans la même cale ; vérifiez que la répartition le reste."
     }
   },
   "adn_signals": {

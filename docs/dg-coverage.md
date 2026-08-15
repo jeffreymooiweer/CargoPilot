@@ -375,21 +375,27 @@ list of particulars — (a) UN number, (b) proper shipping name, (c) labels or c
 (h) consignee, (i) any special agreement declaration, (j) the hazard identification number
 where 5.3.2.1 marking is prescribed — contains no tunnel restriction code.
 
-**What a rail specialist would additionally expect,** none of which is present:
+**What a rail specialist would additionally expect:**
 
-- **The hazard identification number before the UN number.** RID 5.4.1.1.1 (j) requires it
-  on the document when 5.3.2.1 marking is prescribed, in the order (j), (a), (b), (c), (d) —
-  e.g. `663, UN 1098 ALLYL ALCOHOL, 6.1(3), I`. CargoPilot holds the Kemler number per
-  substance but never places it in the description line for rail.
-- **Shunting and marshalling.** Provisions with no road equivalent, including the shunting
-  label of model 13 which RID 5.4.1.1.1 (c) explicitly excludes from the description.
+- ~~**The hazard identification number before the UN number.**~~ On the document since
+  v1.88.0. RID 5.4.1.1.1 (j) requires it when 5.3.2.1 marking is prescribed, in the order
+  (j), (a), (b), (c), (d) with no information interspersed — the RID's own example is
+  `663, UN 1098 ALLYL ALCOHOL, 6.1(3), I`, and that is now the line CargoPilot composes. What
+  decides it is 5.3.2.1.1, read in the English edition and the German: the plate is
+  prescribed for tank-wagons, battery-wagons, wagons with demountable tanks, tank-containers,
+  MEGCs, portable tanks and wagons or containers for carriage in bulk. For a full load of
+  packages of one and the same substance it *may* be affixed, and whether a wagon was plated
+  is not visible from here — so that case is asked rather than decided, and a prescribed
+  marking with no number in table A is reported as the incomplete description it makes.
+- ~~**7.5.2.4**~~ — applied since v1.88.0: mixed loading of dangerous goods packed in limited
+  quantities with any explosive substance or article is prohibited for rail, except division
+  1.4 and UN 0161 and 0499. Read on page 1103 in the English edition and 1187 in the German.
+  It needed no new data; which lines fall within the LQ limits is the 3.4 check's answer,
+  taken from it rather than computed again. There is no ADR equivalent.
 - **Shunting and marshalling** beyond 7.5.3, including the shunting label of model 13 which
-  RID 5.4.1.1.1 (c) explicitly excludes from the description.
-- **7.5.2.4**, read in passing on page 1103 and not implemented: mixed loading of dangerous
-  goods packed in limited quantities with any explosive substance or article is prohibited
-  for rail, except division 1.4 and UN 0161 and 0499. CargoPilot already knows which lines
-  fall within the LQ limits and which packages are class 1, so this is a small rule sitting
-  on data the application holds. There is no ADR equivalent.
+  RID 5.4.1.1.1 (c) explicitly excludes from the description. The table this application
+  holds is the ADR's, whose column (5) carries neither model 13 nor model 15, so the
+  exclusion is a guard here and not a transformation.
 - **The CIM's own dangerous goods fields.** Box 24 (NHM) is a free-text field with a format
   check; the entries in boxes 21/23 come from the shared DG data without rail-specific
   validation.
@@ -418,9 +424,11 @@ and both came from OTIF's own pages rather than from ADR on loan:
 
 **Assessment:** rail is no longer the weakest of the five, and since v1.41.0 it is no longer
 mostly road on loan either. The quantity calculation, the mixed-loading table, the
-compatibility groups and the protective distance are all cited to RID. What is left is
-genuinely rail-specific: the hazard identification number on the document, 7.5.2.4, and
-shunting.
+compatibility groups and the protective distance are all cited to RID — and since v1.88.0
+so is 7.5.2.1, whose table is identical in both texts and whose *name* was not: "ADR
+7.5.2.1" on a CIM is the same category of inaccuracy as the CV28 that used to appear there
+in place of CW 28. With (j) and 7.5.2.4 on the document, what is left that is genuinely
+rail-specific is shunting.
 
 ## Inland waterway — ADN
 
@@ -560,8 +568,17 @@ exempt" since v1.32.0 while the arithmetic granted the exemption anyway — with
   type, degassing and venting. The degassing checklist of 8.6.4 is the same kind of model
   and is not registered yet, because there is no degassing operation in the application to
   hang it on.
-- **ADN 5.4.1.1.1 (j)**: where column (11) of Table A carries `ST01`, the document needs a
-  confirmation of stabilisation. Read from the text; not implemented.
+- ~~**ADN 5.4.1.1.1 (j)**~~ — applied since v1.88.0. Where column (11) of its table A carries
+  `ST01`, the consignor certifies in the transport document that the substance was stabilized
+  as the IMSBC Code requires for ammonium nitrate fertilizers, and in some States the bulk
+  carriage additionally needs the competent authority's approval; both come from 7.1.6.11,
+  read on printed page 388. Two UN numbers carry it, 1942 and 2067. UN 2071's `ST02` is a
+  condition on the carriage — a trough test — and not on the paper, and is not raised.
+- **The tank vessel document of 5.4.1.1.2.** Its (c) is not the ADR's: the description takes
+  the data of **column (5) of table C** — `"UN 1203 MOTOR SPIRIT, 3 (N2, CMR, F), II"` is the
+  ADN's own example — and its (h) points at column (20) remarks 3, 17, 22, 39 (b), 42 and 47.
+  A cargo tank consignment is currently given the packages line of 5.4.1.1.1. Table C is in
+  the repository since v1.73.0, so this is a rule sitting on data the application holds.
 - **No ADN certificate and no expert on board.**
 
 **Assessment:** for packaged goods on a dry cargo vessel the exemption, the separation and
@@ -732,20 +749,34 @@ verification.
   holding two or more substances with no Q input is reported as not checked instead of
   being skipped.
 
+**Shipped in v1.88.0 — 5.4.1.1.1 read in three books at once:**
+
+- **The label models of (c), all of them.** The provision asks for the numbers of column (5)
+  with the ones after the first in brackets, and the application printed only the first: a
+  separator, `6.1+3` in the 2023 export against `6.1, 3` in the Dutch 2025 edition, left the
+  whole cell as one token. 718 of the 3,158 rows carry more than one label model and every
+  one of them reached the paper a label short.
+- **RID (j)**, the hazard identification number, with 5.3.2.1.1 deciding when.
+- **ADN (j)**, the confirmation of stabilisation ST01 asks for.
+- **RID 7.5.2.4**, limited quantities beside explosives.
+- **One description-line builder** where there were two, and `RID 7.5.2.1` under its own name.
+
 **Worth building next, in this order:**
 
-1. **The hazard identification number in the rail description line**, per RID 5.4.1.1.1 (j),
-   and the `ST01` stabilisation confirmation for ADN per its 5.4.1.1.1 (j). Both read from
-   the text; both small.
-2. **RID 7.5.2.4** — limited quantities may not be loaded with explosives, except division
-   1.4 and UN 0161/0499. Read from page 1103 in v1.41.0 but not implemented. It needs
-   nothing the application does not already compute: the LQ assessment of 3.4 and the class
-   of each package.
-3. **ADN's own stowage regime**, the part of 7.5.2 still borrowed. Rail is done: 7.5.2.1,
-   7.5.2.2 and 7.5.3 are now cited to RID.
-4. **ADR 5.4.1.1.1 (c) for batteries.** ADR 2025 names UN 3551 and 3552 alongside 3090,
-   3091, 3480 and 3481 as entries whose description carries class "9". The application does
-   not hold those two as ADR entries at all yet — see the note on the edition below.
+1. **The ADN tank vessel description line (5.4.1.1.2).** Its (c) takes the data of column (5)
+   of table C rather than the labels of table A, and table C has been in the repository since
+   v1.73.0. A cargo tank consignment currently gets the packages line.
+2. **ADN's own stowage regime**, the part of 7.5.2 still borrowed. Rail is done: 7.5.2.1,
+   7.5.2.2, 7.5.2.4 and 7.5.3 are now cited to RID.
+3. **The rail shunting provisions**, the last thing on this list that is genuinely
+   rail-specific and has no counterpart anywhere else in the application.
+
+**Off the list, checked rather than assumed:** ADR/RID/ADN 5.4.1.1.1 (c) for batteries. The
+three texts name UN 3090, 3091, 3480, 3481, 3551 and 3552 and the battery-powered vehicles
+3556 to 3558 as entries whose description carries the class number "9" rather than the label
+model. All nine are in the 2025 table with class 9 and label model 9A, and the composed line
+gives the class — so the provision was already satisfied, which is worth recording as a
+reading and not as a coincidence.
 
 **Not worth building, or not buildable here:**
 
@@ -762,7 +793,8 @@ verification.
 
 ---
 
-*This assessment covers CargoPilot v1.53.0. v1.42.0 to v1.48.0 touched the goods
+*This assessment is maintained up to CargoPilot v1.88.0; the sections above name the release
+each finding shipped in. v1.42.0 to v1.48.0 touched the goods
 catalogue, the interface language, the settings, the documentation and the error messages,
 not a single regulatory check; v1.49.0 and v1.50.0 changed the ADR side, from the Dutch
 edition of the book. It is guidance for development, not a compliance statement. Every document the application produces is a draft; see

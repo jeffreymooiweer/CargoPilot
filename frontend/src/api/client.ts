@@ -1140,6 +1140,11 @@ export interface DgComplianceResult {
   adr_mixed_loading?: ComplianceWarning[];
   /** The same caveat as `basis_note`, for the mixed loading of 7.5.2. */
   adr_mixed_loading_basis_note?: string;
+  /** RID 5.4.1.1.1 (j): the hazard identification number on the CIM. Rail only —
+   *  the ADR's own addition to the description line is the tunnel code. */
+  rid_transport_document?: ComplianceWarning[];
+  /** ADN 5.4.1.1.1 (j): the confirmation of stabilisation ST01 asks for. */
+  adn_stabilisation?: ComplianceWarning[];
   /** Rule sets that have run out without anything taking their place. */
   rule_set_warnings?: ComplianceWarning[];
   /** What this result was computed with. */

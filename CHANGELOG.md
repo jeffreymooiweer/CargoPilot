@@ -2,6 +2,65 @@
 
 All notable changes are documented here, following [Semantic Versioning](https://semver.org/).
 
+## [1.88.0] — 2026-08-15
+
+### Fixed
+
+- **Every subsidiary label model was missing from the transport document.**
+  5.4.1.1.1 (c) asks for the label model numbers of column (5), with the ones
+  after the first in brackets; the RID's own example is
+  `663, UN 1098 ALLYL ALCOHOL, 6.1(3), I`. CargoPilot printed `6.1` and dropped
+  the `(3)`. The cause was a separator: the 2023 export writes `6.1+3` and the
+  Dutch 2025 edition writes `6.1, 3`, and the reader split on the plus alone, so
+  the whole cell stayed one token. **718 of the 3,158 rows of that table carry
+  more than one label model**, and each of them reached the paper a label short —
+  UN 1005 anhydrous ammonia as `2.3` without its corrosive label, UN 0018 as
+  `1.2G` without `6.1` and `8`. For class 1 the brackets now follow the text
+  rather than the position: the models *other than* 1, 1.4, 1.5 and 1.6 go in
+  them, which is a set and not an index. A labels cell that is not a model
+  number — twelve rows read "See 5.2.2.1.12" and two spell out the word for
+  "none" — falls back to the class of column (3a), as the last indent of (c)
+  says.
+- **The exporter composed its own description line.** Two renderings of one
+  provision drift the moment either is corrected, and this release is the proof:
+  the label models and the hazard identification number below would have reached
+  the wizard and the stowage plan while the CMR and the CIM went on without them.
+  There is one builder now; what stayed with the form is the part that is
+  genuinely the form's — a tunnel code typed over the table's, and a description
+  column that does not repeat the counts the form has columns for.
+- **`ADR 7.5.2.1` was cited on a rail consignment.** The table is the same in
+  both regimes — v1.38.0 read RID's 7.5.2.1 and found it identical, footnotes
+  included — but the name is not. A code the RID does not have, printed on a
+  CIM, is the same category of inaccuracy as the CV28 that used to appear there
+  in place of CW 28.
+
+### Added
+
+- **RID 5.4.1.1.1 (j): the hazard identification number on the CIM.** Where a
+  marking under 5.3.2.1 is prescribed, the number goes *before* the letters
+  "UN", in the sequence (j), (a), (b), (c), (d) with no information interspersed.
+  5.3.2.1.1 says when that is — tank-wagons, battery-wagons, wagons with
+  demountable tanks, tank-containers, MEGCs, portable tanks and wagons or
+  containers for carriage in bulk — read in the English edition and the German.
+  For a full load of packages of one and the same substance the plate *may* be
+  affixed, and whether a wagon was plated is not something this application can
+  see: that case is asked rather than decided. Where the marking is prescribed
+  and table A holds no number, the description is incomplete and says so. Rail
+  alone: the ADR has no such paragraph — its (k) is the tunnel restriction code.
+- **ADN 5.4.1.1.1 (j): the confirmation of stabilisation.** Where column (11) of
+  the ADN's own table A carries ST01, the consignor certifies in the transport
+  document that the substance was stabilized as the IMSBC Code requires for
+  ammonium nitrate fertilizers (7.1.6.11), and in some States the bulk carriage
+  needs the competent authority's approval as well. Two UN numbers carry it:
+  1942 and 2067. UN 2071's ST02 is a condition on the carriage — a trough test —
+  and not on the paper, and is deliberately not raised.
+- **RID 7.5.2.4: limited quantities may not be loaded with explosives**, except
+  division 1.4 and UN 0161 and 0499. Read on printed page 1103 in the English
+  edition and 1187 in the German, which agree; there is no ADR equivalent. It
+  needs no new data — which lines are packed in limited quantities is the 3.4
+  check's own answer, taken from it rather than computed a second time, so the
+  two cannot disagree about the same package.
+
 ## [1.87.0] — 2026-08-15
 
 ### Added

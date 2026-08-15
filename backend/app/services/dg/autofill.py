@@ -293,7 +293,7 @@ def derive_product(
     derived: dict[str, Any] = {
         "proper_shipping_name": proper_shipping_name(entry, language, profiles),
         "class": hazards["division"],
-        "subsidiary_risks": "+".join(hazards["subsidiary_risks"]),
+        "subsidiary_risks": ", ".join(hazards["subsidiary_risks"]),
         "classification_code": hazards["classification_code"],
         "packing_group": clean_value(entry.get("packing_group")),
         "packing_instruction": clean_value(entry.get("packing_instructions")).split(" ")[0],
@@ -421,12 +421,37 @@ def adr_quantity(product: dict[str, Any]) -> tuple[float | None, str]:
     return total_quantity(product)
 
 
-def description_line(product: dict[str, Any], profile: str) -> str:
-    """Official description line for the transport document."""
+#: The modes of carriage for which RID 5.3.2.1.1 prescribes the orange plate,
+#: and therefore the modes in which RID 5.4.1.1.1 (j) puts the hazard
+#: identification number on the transport document. Read twice — the English
+#: edition on printed page 5-27 and the German on 5-27 of its own numbering —
+#: which list tank-wagons, battery-wagons, wagons with demountable tanks,
+#: tank-containers, MEGCs, portable tanks and wagons or containers for carriage
+#: in bulk. For a full load of packages of one and the same substance the plate
+#: *may* be affixed rather than shall, and whether it was is not something this
+#: application can see; that case is reported instead (see check_rid_hazard_id).
+_RID_MARKED_MODES = {"tank", "portable_tank", "bulk"}
+
+
+def rid_marking_prescribed(product: dict[str, Any]) -> bool:
+    """Whether RID 5.3.2.1 marking is prescribed for how these goods travel."""
+    return str(product.get("carriage_mode") or "").strip() in _RID_MARKED_MODES
+
+
+def description_line(product: dict[str, Any], profile: str, language: str = "",
+                     values: dict[str, Any] | None = None) -> str:
+    """Official description line for the transport document.
+
+    One builder for every caller. The exporter used to compose its own, and two
+    renderings of one provision drift the moment either is corrected: the
+    subsidiary label models and the hazard identification number below would
+    have reached the wizard and not the CMR.
+    """
+    values = values or {}
     # The name follows the document: on an IMDG or IATA line it should be
     # English, even when the consignment was drawn up in German (IMDG 5.4.1.4.1,
     # IATA DGR 8.1.2.1).
-    psn = resolve_for_profile(product, profile)[0].upper()
+    psn = resolve_for_profile(product, profile, language)[0].upper()
     technical = str(product.get("technical_name") or "").strip()
     if technical:
         psn = f"{psn} ({technical})"
@@ -446,7 +471,8 @@ def description_line(product: dict[str, Any], profile: str) -> str:
     # "(D/E)" on a CIM or an ADN document is an invented entry on an official
     # piece of paper.
     if profile == "ADR":
-        tunnel = str(product.get("tunnel_code") or "").strip().strip("()")
+        tunnel = str(values.get("tunnel_restriction")
+                     or product.get("tunnel_code") or "").strip().strip("()")
         if tunnel:
             parts.append(f"({tunnel})")
     if profile == "IATA_DGR":
@@ -468,6 +494,18 @@ def description_line(product: dict[str, Any], profile: str) -> str:
             parts.append(f"EmS {ems}")
 
     line = ", ".join(p for p in parts if p)
+
+    # RID 5.4.1.1.1 (j), and rail alone. Where a marking under 5.3.2.1 is
+    # prescribed, the hazard identification number goes *before* the letters
+    # "UN", and the text is explicit about the order: (j), (a), (b), (c), (d)
+    # with no information interspersed. Its own example is
+    # "663, UN 1098 ALLYL ALCOHOL, 6.1(3), I". The ADR has no such paragraph —
+    # its (k) is the tunnel restriction code — so a number in front of a CMR
+    # would be an entry nobody asked for.
+    if profile == "RID" and rid_marking_prescribed(product):
+        hazard_number = str(product.get("hazard_number") or "").strip()
+        if hazard_number:
+            line = f"{hazard_number}, {line}"
 
     # Number and type of packages + total quantity (ADR 5.4.1.1.1 f/g).
     count = str(product.get("quantity_packages") or "").strip()

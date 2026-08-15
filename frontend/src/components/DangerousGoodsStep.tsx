@@ -431,6 +431,13 @@ export default function DangerousGoodsStep({
                 // Holds belong to a dry cargo vessel. A cargo tank has no hold
                 // to be in, and 7.1.4.11 is a chapter 7.1 provision — asking
                 // for one on a tank vessel would be asking the wrong question.
+                // The residues field belongs to UN 3509 alone (5.4.1.1.19);
+                // for every other substance it is noise.
+                .filter(
+                  (field) =>
+                    field !== "residue_classes" ||
+                    (product.un_number ?? "").includes("3509"),
+                )
                 .filter(
                   (field) =>
                     !["hold", "container_number"].includes(field) ||

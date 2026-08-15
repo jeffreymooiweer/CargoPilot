@@ -475,6 +475,10 @@ export interface DgProduct {
   salvage_packaging?: string;
   /** ADN 7.1.5.0.2: the goods travel exclusively in containers. */
   containers_only?: string;
+  /** 5.4.1.1.23 / 5.4.1.1.19 / 5.4.1.1.20. */
+  molten?: string;
+  residue_classes?: string;
+  classified_2_1_2_8?: string;
   /** What ADR 4.3.2.2 needs and table A does not carry. */
   filling_temperature?: string;
   density_15?: string;
@@ -1153,6 +1157,8 @@ export interface DgComplianceResult {
   rid_transport_document?: ComplianceWarning[];
   /** ADN 5.4.1.1.1 (j): the confirmation of stabilisation ST01 asks for. */
   adn_stabilisation?: ComplianceWarning[];
+  /** Special provision 274: N.O.S. entries missing their technical name. */
+  technical_name_findings?: ComplianceWarning[];
   /** Rule sets that have run out without anything taking their place. */
   rule_set_warnings?: ComplianceWarning[];
   /** What this result was computed with. */

@@ -533,7 +533,8 @@ def validate_document(
                 "adr_mixed_loading", []
             ) + outcome.get("iata_segregation", []) + outcome.get(
                 "rid_transport_document", []
-            ) + outcome.get("adn_stabilisation", []):
+            ) + outcome.get("adn_stabilisation", []) + outcome.get(
+                "technical_name_findings", []):
                 text = f"{finding.get('rule')}: {finding.get('message')}"
                 if finding.get("severity") == "error":
                     errors.append(text)

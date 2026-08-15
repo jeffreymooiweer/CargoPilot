@@ -471,6 +471,31 @@ _ENVIRONMENTALLY_HAZARDOUS = {
 #: and the additional entry is expressly not required for them.
 _ENV_SELF_EVIDENT = {"3077", "3082"}
 
+#: 5.4.1.1.23: a substance solid by the definition of 1.2.1, offered molten,
+#: carries the qualifying word as part of the proper shipping name — unless the
+#: name already says it (3.1.2.5). Read in the UNECE English and French volumes
+#: II, the RID German edition and the Dutch edition (page 996).
+_MOLTEN = {"nl": "GESMOLTEN", "en": "MOLTEN",
+           "de": "GESCHMOLZEN", "fr": "FONDU"}
+
+#: 5.4.1.1.19, UN 3509 alone: the name is complemented with the residues'
+#: classes and subsidiary hazards, in class-numbering order — and 5.4.1.1.1 (f)
+#: then does not apply. The book's own example is
+#: "UN 3509 PACKAGINGS, DISCARDED, EMPTY, UNCLEANED (WITH RESIDUES OF 3, 4.1,
+#: 6.1), 9".
+_RESIDUES_OF = {"nl": "BEVAT RESTEN VAN", "en": "WITH RESIDUES OF",
+                "de": "MIT RÜCKSTÄNDEN VON", "fr": "AVEC DES RÉSIDUS DE"}
+
+#: 5.4.1.1.20: carriage under 2.1.2.8 puts a statement in the transport
+#: document, and the provision prescribes its wording — the German edition
+#: even sets it in capitals, which is kept as that edition prints it.
+_CLASSIFIED_2_1_2_8 = {
+    "nl": "Ingedeeld overeenkomstig 2.1.2.8",
+    "en": "Classified in accordance with 2.1.2.8",
+    "de": "GEMÄSS UNTERABSCHNITT 2.1.2.8 KLASSIFIZIERT",
+    "fr": "Classé conformément au 2.1.2.8",
+}
+
 
 def _document_word(words: dict[str, str], profile: str, language: str) -> str:
     """The regulation's word in the language of *this* document."""
@@ -584,6 +609,21 @@ def description_line(product: dict[str, Any], profile: str, language: str = "",
         word = _document_word(_WASTE_WORD, profile, language)
         if word not in psn:
             psn = f"{word} {psn}"
+    # 5.4.1.1.23: offered molten, the qualifying word joins the name — unless
+    # the name already says it, as SULPHUR, MOLTEN does.
+    if product.get("molten"):
+        word = _document_word(_MOLTEN, profile, language)
+        if word not in psn:
+            psn = f"{psn}, {word}"
+    # 5.4.1.1.19, UN 3509 alone: the residues' classes complement the name.
+    un_digits = "".join(
+        c for c in str(product.get("un_number") or "") if c.isdigit()).zfill(4)
+    discarded = un_digits == "3509"
+    if discarded:
+        residues = str(product.get("residue_classes") or "").strip()
+        if residues:
+            word = _document_word(_RESIDUES_OF, profile, language)
+            psn = f"{psn} ({word} {residues})"
     technical = str(product.get("technical_name") or "").strip()
     if technical:
         psn = f"{psn} ({technical})"
@@ -664,8 +704,6 @@ def description_line(product: dict[str, Any], profile: str, language: str = "",
             and (product.get("environmentally_hazardous")
                  or str(product.get("marine_pollutant") or "").strip().upper()
                  in {"P", "Y", "YES", "JA", "TRUE", "1"})):
-        un_digits = "".join(
-            c for c in str(product.get("un_number") or "") if c.isdigit()).zfill(4)
         if un_digits not in _ENV_SELF_EVIDENT:
             line = (f"{line}, "
                     f"{_document_word(_ENVIRONMENTALLY_HAZARDOUS, profile, language)}")
@@ -678,7 +716,9 @@ def description_line(product: dict[str, Any], profile: str, language: str = "",
     tail = []
     if packages:
         tail.append(packages)
-    if total is not None and not empty_uncleaned:
+    # (f) does not apply to empty uncleaned containment (5.4.1.1.6.1) nor to
+    # UN 3509 (5.4.1.1.19): both carry residues nobody has weighed.
+    if total is not None and not empty_uncleaned and not discarded:
         tail.append(_amount(total, unit))
     # Class 1 on a land document: the total net explosive mass belongs in the
     # transport document (ADR 5.4.1.2.1 (a)).
@@ -688,6 +728,11 @@ def description_line(product: dict[str, Any], profile: str, language: str = "",
             tail.append(f"NEM {_fmt(nem)} kg")
     if tail:
         line = f"{line}, {', '.join(tail)}"
+
+    # 5.4.1.1.20: carriage under 2.1.2.8 adds the prescribed statement, worded
+    # as the provision sets it in the language of the document.
+    if profile in ("ADR", "RID", "ADN") and product.get("classified_2_1_2_8"):
+        line = f"{line}, {_document_word(_CLASSIFIED_2_1_2_8, profile, language)}"
     return line
 
 

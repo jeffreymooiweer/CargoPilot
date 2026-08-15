@@ -80,8 +80,9 @@ const DG_EXTRA_FIELDS: Record<string, string[]> = {
         "is_waste", "empty_uncleaned", "salvage_packaging"],
   // Where it goes on the vessel: 7.1.4.11.1 asks the boatmaster to say which
   // goods are in which hold or on deck, and no table can answer that.
-  ADN: ["carriage_mode", "hold", "container_number", "transport_category",
-        "adr_total_quantity", "is_waste", "empty_uncleaned", "salvage_packaging"],
+  ADN: ["carriage_mode", "hold", "container_number", "containers_only",
+        "transport_category", "adr_total_quantity", "is_waste",
+        "empty_uncleaned", "salvage_packaging"],
   IMDG: ["technical_name", "marine_pollutant", "ems_code", "emergency_contact"],
   IATA_DGR: [
     "technical_name",

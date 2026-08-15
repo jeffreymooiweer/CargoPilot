@@ -2,6 +2,37 @@
 
 All notable changes are documented here, following [Semantic Versioning](https://semver.org/).
 
+## [1.94.0] — 2026-08-15
+
+### Added
+
+- **The fourth reading settles the last three cells of the tank hierarchy.**
+  The French volume II — the treaty's other authentic language — was read
+  verbatim on the three cells no two of the first three readings agreed on
+  (printed pages 220–223). It sided with the Dutch on **L10BH's** group: 18
+  codes, CF2, CW1 and CW2 included, CT1 with its footnote. It sided with the
+  German on **L10DH's** inheritance: the chain runs through L10CH. And on
+  **S10AH** it confirmed the nine codes both other editions carried — the
+  strays of those readings spell the inheritance sentence (S, G, A, V is SGAV
+  leaking into the cell). **All eighteen codes of 4.3.4.1.2 are settled on
+  every cell**, and the fit check no longer declines anywhere.
+- **ADN 7.1.5.0.2 is applied.** The thresholds were read in v1.64.0 and sat
+  recorded until the input the provision itself requires existed: the
+  consignor's statement that the goods travel exclusively in containers (the
+  new `containers_only` field), never inferred from a packaging type. Chlorine
+  below 30,000 kg gross drops from two cones to none; above it keeps both;
+  declared without the gross mass the threshold compares against, the full
+  signals stand and the answer says why — over-signalling is the safe
+  direction.
+
+### Unchanged, on purpose
+
+- **ADN 8.6.4**, the degassing checklist, stays unregistered: it is the same
+  kind of printed model as 8.6.3, and there is no degassing operation in the
+  application to hang it on. Registering the model without the operation would
+  be a document in search of a consignment; the coverage document records the
+  reason.
+
 ## [1.93.0] — 2026-08-15
 
 ### Added

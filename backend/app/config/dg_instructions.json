@@ -654,6 +654,41 @@
           }
         }
       ]
+    },
+    "containers_only": {
+      "label": {
+        "nl": "Uitsluitend in containers",
+        "en": "Exclusively in containers",
+        "de": "Ausschließlich in Containern",
+        "fr": "Exclusivement en conteneurs"
+      },
+      "help": {
+        "nl": "ADN 7.1.5.0.2: reizen deze goederen uitsluitend in containers, dan verlaagt de seinvoering aan de hand van de totale brutomassa. De verklaring is de voorwaarde van de bepaling zelf en wordt nooit uit een verpakkingstype afgeleid.",
+        "en": "ADN 7.1.5.0.2: where these goods travel exclusively in containers, the signals reduce against the total gross mass. The statement is the provision's own condition and is never inferred from a packaging type.",
+        "de": "ADN 7.1.5.0.2: Werden diese Güter ausschließlich in Containern befördert, verringert sich die Signalführung anhand der Bruttogesamtmasse. Die Erklärung ist die Bedingung der Vorschrift selbst und wird nie aus einer Verpackungsart abgeleitet.",
+        "fr": "ADN 7.1.5.0.2 : lorsque ces marchandises voyagent exclusivement en conteneurs, la signalisation diminue selon la masse brute totale. La déclaration est la condition de la disposition elle-même et n'est jamais déduite d'un type d'emballage."
+      },
+      "type": "select",
+      "options": [
+        {
+          "value": "",
+          "label": {
+            "nl": "Nee / onbekend",
+            "en": "No / unknown",
+            "de": "Nein / unbekannt",
+            "fr": "Non / inconnu"
+          }
+        },
+        {
+          "value": "yes",
+          "label": {
+            "nl": "Ja — uitsluitend containers",
+            "en": "Yes — containers only",
+            "de": "Ja — nur Container",
+            "fr": "Oui — conteneurs uniquement"
+          }
+        }
+      ]
     }
   }
 }

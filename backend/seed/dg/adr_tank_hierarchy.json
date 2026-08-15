@@ -7,20 +7,23 @@
  "editions": {
   "en": "ADR 2025 Volume II (ECE/TRANS/352 Vol. II), UNECE",
   "nl": "ADR 2025, Dutch edition, printed text (adr_nl_2025 in the store)",
-  "de": "ADR 2025, German edition (Bundesamt für Strassen), volume II"
+  "de": "ADR 2025, German edition (Bundesamt für Strassen), volume II",
+  "fr": "ADR 2025 Volume II, French (ECE/TRANS/352 Vol. II), UNECE — the three cells no two of the first three readings agreed on, read verbatim from printed pages 220-223 via scripts/read_land_regulations.py --doc adr2_fr --page 232-234; the treaty is authentic in French"
  },
  "note_of_the_regulation": "The hierarchy takes no special provision into account; see 4.3.5 and 6.8.4, which are column (13) of table A.",
  "cross_check": {
   "readings": [
    "en",
    "nl",
-   "de"
+   "de",
+   "fr"
   ],
   "gas_rows": 16,
   "tank_codes": 18,
-  "codes_settled_on_every_cell": 15,
+  "codes_settled_on_every_cell": 18,
   "cells_a_third_reading_settled": 17,
-  "cells_no_two_readings_agree_on": 3
+  "cells_the_fourth_reading_settled": 3,
+  "cells_no_two_readings_agree_on": 0
  },
  "gases": [
   {
@@ -200,259 +203,7 @@
   },
   {
    "tank_code": "L10BH",
-   "readings": 3,
-   "disputed": {
-    "permitted": {
-     "en": [
-      {
-       "class": "8",
-       "classification_code": "C1",
-       "packing_group": "I"
-      },
-      {
-       "class": "8",
-       "classification_code": "C3",
-       "packing_group": "I"
-      },
-      {
-       "class": "8",
-       "classification_code": "C4",
-       "packing_group": "I"
-      },
-      {
-       "class": "8",
-       "classification_code": "C5",
-       "packing_group": "I"
-      },
-      {
-       "class": "8",
-       "classification_code": "C7",
-       "packing_group": "I"
-      },
-      {
-       "class": "8",
-       "classification_code": "C8",
-       "packing_group": "I"
-      },
-      {
-       "class": "8",
-       "classification_code": "C9",
-       "packing_group": "I"
-      },
-      {
-       "class": "8",
-       "classification_code": "C10",
-       "packing_group": "I"
-      },
-      {
-       "class": "8",
-       "classification_code": "CF1",
-       "packing_group": "I"
-      },
-      {
-       "class": "8",
-       "classification_code": "CS1",
-       "packing_group": "I"
-      },
-      {
-       "class": "8",
-       "classification_code": "CO1",
-       "packing_group": "I"
-      },
-      {
-       "class": "8",
-       "classification_code": "CO2",
-       "packing_group": "I"
-      },
-      {
-       "class": "8",
-       "classification_code": "CT1",
-       "packing_group": "I",
-       "footnote": "c"
-      },
-      {
-       "class": "8",
-       "classification_code": "CT2",
-       "packing_group": "I"
-      },
-      {
-       "class": "8",
-       "classification_code": "COT",
-       "packing_group": "I"
-      }
-     ],
-     "nl": [
-      {
-       "class": "8",
-       "classification_code": "C1",
-       "packing_group": "I"
-      },
-      {
-       "class": "8",
-       "classification_code": "C3",
-       "packing_group": "I"
-      },
-      {
-       "class": "8",
-       "classification_code": "C4",
-       "packing_group": "I"
-      },
-      {
-       "class": "8",
-       "classification_code": "C5",
-       "packing_group": "I"
-      },
-      {
-       "class": "8",
-       "classification_code": "C7",
-       "packing_group": "I"
-      },
-      {
-       "class": "8",
-       "classification_code": "C8",
-       "packing_group": "I"
-      },
-      {
-       "class": "8",
-       "classification_code": "C9",
-       "packing_group": "I"
-      },
-      {
-       "class": "8",
-       "classification_code": "C10",
-       "packing_group": "I"
-      },
-      {
-       "class": "8",
-       "classification_code": "CF1",
-       "packing_group": "I"
-      },
-      {
-       "class": "8",
-       "classification_code": "CF2",
-       "packing_group": "I"
-      },
-      {
-       "class": "8",
-       "classification_code": "CS1",
-       "packing_group": "I"
-      },
-      {
-       "class": "8",
-       "classification_code": "CW1",
-       "packing_group": "I"
-      },
-      {
-       "class": "8",
-       "classification_code": "CW2",
-       "packing_group": "I"
-      },
-      {
-       "class": "8",
-       "classification_code": "CO1",
-       "packing_group": "I"
-      },
-      {
-       "class": "8",
-       "classification_code": "CO2",
-       "packing_group": "I"
-      },
-      {
-       "class": "8",
-       "classification_code": "CT1",
-       "packing_group": "I",
-       "footnote": "c"
-      },
-      {
-       "class": "8",
-       "classification_code": "CT2",
-       "packing_group": "I"
-      },
-      {
-       "class": "8",
-       "classification_code": "COT",
-       "packing_group": "I"
-      }
-     ],
-     "de": [
-      {
-       "class": "8",
-       "classification_code": "C1",
-       "packing_group": "I"
-      },
-      {
-       "class": "8",
-       "classification_code": "C3",
-       "packing_group": "I"
-      },
-      {
-       "class": "8",
-       "classification_code": "C4",
-       "packing_group": "I"
-      },
-      {
-       "class": "8",
-       "classification_code": "C5",
-       "packing_group": "I"
-      },
-      {
-       "class": "8",
-       "classification_code": "C7",
-       "packing_group": "I"
-      },
-      {
-       "class": "8",
-       "classification_code": "C8",
-       "packing_group": "I"
-      },
-      {
-       "class": "8",
-       "classification_code": "C9",
-       "packing_group": "I"
-      },
-      {
-       "class": "8",
-       "classification_code": "C10",
-       "packing_group": "I"
-      },
-      {
-       "class": "8",
-       "classification_code": "CF1",
-       "packing_group": "I"
-      },
-      {
-       "class": "8",
-       "classification_code": "CF2",
-       "packing_group": "I"
-      },
-      {
-       "class": "8",
-       "classification_code": "CS1",
-       "packing_group": "I"
-      },
-      {
-       "class": "8",
-       "classification_code": "CW1",
-       "packing_group": "I"
-      },
-      {
-       "class": "8",
-       "classification_code": "CW2",
-       "packing_group": "I"
-      },
-      {
-       "class": "8",
-       "classification_code": "CO1",
-       "packing_group": "I"
-      },
-      {
-       "class": "8",
-       "classification_code": "CO2",
-       "packing_group": "I"
-      }
-     ]
-    }
-   },
+   "readings": 4,
    "only_in": {
     "permitted": {
      "en": [],
@@ -472,8 +223,106 @@
     "inherits": [
      "en",
      "nl"
+    ],
+    "permitted": [
+     "nl",
+     "fr"
     ]
-   }
+   },
+   "permitted": [
+    {
+     "class": "8",
+     "classification_code": "C1",
+     "packing_group": "I"
+    },
+    {
+     "class": "8",
+     "classification_code": "C3",
+     "packing_group": "I"
+    },
+    {
+     "class": "8",
+     "classification_code": "C4",
+     "packing_group": "I"
+    },
+    {
+     "class": "8",
+     "classification_code": "C5",
+     "packing_group": "I"
+    },
+    {
+     "class": "8",
+     "classification_code": "C7",
+     "packing_group": "I"
+    },
+    {
+     "class": "8",
+     "classification_code": "C8",
+     "packing_group": "I"
+    },
+    {
+     "class": "8",
+     "classification_code": "C9",
+     "packing_group": "I"
+    },
+    {
+     "class": "8",
+     "classification_code": "C10",
+     "packing_group": "I"
+    },
+    {
+     "class": "8",
+     "classification_code": "CF1",
+     "packing_group": "I"
+    },
+    {
+     "class": "8",
+     "classification_code": "CF2",
+     "packing_group": "I"
+    },
+    {
+     "class": "8",
+     "classification_code": "CS1",
+     "packing_group": "I"
+    },
+    {
+     "class": "8",
+     "classification_code": "CW1",
+     "packing_group": "I"
+    },
+    {
+     "class": "8",
+     "classification_code": "CW2",
+     "packing_group": "I"
+    },
+    {
+     "class": "8",
+     "classification_code": "CO1",
+     "packing_group": "I"
+    },
+    {
+     "class": "8",
+     "classification_code": "CO2",
+     "packing_group": "I"
+    },
+    {
+     "class": "8",
+     "classification_code": "CT1",
+     "packing_group": "I",
+     "footnote": "c"
+    },
+    {
+     "class": "8",
+     "classification_code": "CT2",
+     "packing_group": "I"
+    },
+    {
+     "class": "8",
+     "classification_code": "COT",
+     "packing_group": "I"
+    }
+   ],
+   "sentences_fr": "L10BH 8: C1 I, C3 I, C4 I, C5 I, C7 I, C8 I, C9 I, C10 I, CF1 I, CF2 I, CS1 I, CW1 I, CW2 I, CO1 I, CO2 I, CT1c I, CT2 I, COT I — ainsi que les groupes de matieres autorisees pour les codes-citerne LGAV, LGBV, LGBF, L1.5BN, L4BN, et L4BH"
   },
   {
    "tank_code": "L10CH",
@@ -608,7 +457,7 @@
   },
   {
    "tank_code": "L10DH",
-   "readings": 3,
+   "readings": 4,
    "permitted": [
     {
      "class": "4.3",
@@ -651,52 +500,29 @@
     "permitted": [
      "en",
      "nl"
+    ],
+    "inherits": [
+     "de",
+     "fr"
     ]
-   },
-   "disputed": {
-    "inherits": {
-     "en": [
-      "LGAV",
-      "LGBV",
-      "LGBF",
-      "L1.5BN",
-      "L4BN",
-      "L4BH",
-      "L4DH",
-      "L10BH"
-     ],
-     "nl": [
-      "LGAV",
-      "LGBV",
-      "LGBF"
-     ],
-     "de": [
-      "LGAV",
-      "LGBV",
-      "LGBF",
-      "L1,5BN",
-      "L4BN",
-      "L4BH",
-      "L4DH",
-      "L10BH",
-      "L10CH"
-     ]
-    }
-   },
-   "only_in": {
-    "inherits": {
-     "en": [],
-     "nl": [],
-     "de": [
-      "L10CH"
-     ]
-    }
    },
    "sentences": {
     "en": "8 CT1e I and groups of permitted substances for tank codes LGAV, LGBV, LGBF, L1.5BN, L4BN, L4BH, L4DH, L10BH",
     "nl": "8 CT1e I en de groepen van de voor de tankcodes LGAV, LGBV, LGBF, L1,5BN, L4BN, L4BH, L4DH, L10BH en L10CH toegestane",
     "de": "8e) CT1 I sowie die für die Tankcodierungen LGAV, LGBV, LGBF, L1,5BN, L4BN, L4BH, L4DH, L10BH und L10CH zugelassenen Stoffgruppen"
-   }
+   },
+   "inherits": [
+    "LGAV",
+    "LGBV",
+    "LGBF",
+    "L1.5BN",
+    "L4BN",
+    "L4BH",
+    "L4DH",
+    "L10BH",
+    "L10CH"
+   ],
+   "sentences_fr": "ainsi que les groupes de matieres autorisees pour les codes-citerne LGAV, LGBV, LGBF, L1.5BN, L4BN, L4BH, L4DH, L10BH et L10CH"
   },
   {
    "tank_code": "L15CH",
@@ -1433,207 +1259,68 @@
   },
   {
    "tank_code": "S10AH",
-   "readings": 3,
-   "disputed": {
-    "permitted": {
-     "en": [
-      {
-       "class": "6.1",
-       "classification_code": "T2",
-       "packing_group": "I"
-      },
-      {
-       "class": "6.1",
-       "classification_code": "T3",
-       "packing_group": "I"
-      },
-      {
-       "class": "6.1",
-       "classification_code": "T5",
-       "packing_group": "I"
-      },
-      {
-       "class": "6.1",
-       "classification_code": "T7",
-       "packing_group": "I"
-      },
-      {
-       "class": "6.1",
-       "classification_code": "TS",
-       "packing_group": "I"
-      },
-      {
-       "class": "6.1",
-       "classification_code": "TW2",
-       "packing_group": "I"
-      },
-      {
-       "class": "6.1",
-       "classification_code": "TO2",
-       "packing_group": "I"
-      },
-      {
-       "class": "6.1",
-       "classification_code": "TC2",
-       "packing_group": "I"
-      },
-      {
-       "class": "6.1",
-       "classification_code": "TC4",
-       "packing_group": "I"
-      },
-      {
-       "class": "6.1",
-       "classification_code": "G",
-       "packing_group": null,
-       "condition": "→ 1.5 → 2.65 → 4 → 10 → 15 → 21 bar"
-      }
-     ],
-     "nl": [
-      {
-       "class": "6.1",
-       "classification_code": "T2",
-       "packing_group": "I"
-      },
-      {
-       "class": "6.1",
-       "classification_code": "T3",
-       "packing_group": "I"
-      },
-      {
-       "class": "6.1",
-       "classification_code": "T5",
-       "packing_group": "I"
-      },
-      {
-       "class": "6.1",
-       "classification_code": "T7",
-       "packing_group": "I"
-      },
-      {
-       "class": "6.1",
-       "classification_code": "TS",
-       "packing_group": "I"
-      },
-      {
-       "class": "6.1",
-       "classification_code": "TW2",
-       "packing_group": "I"
-      },
-      {
-       "class": "6.1",
-       "classification_code": "TO2",
-       "packing_group": "I"
-      },
-      {
-       "class": "6.1",
-       "classification_code": "TC2",
-       "packing_group": "I"
-      },
-      {
-       "class": "6.1",
-       "classification_code": "TC4",
-       "packing_group": "I"
-      },
-      {
-       "class": "6.1",
-       "classification_code": "S",
-       "packing_group": null,
-       "condition": "─> L"
-      },
-      {
-       "class": "6.1",
-       "classification_code": "G",
-       "packing_group": null,
-       "condition": "----> 1,5 ----> 2,65 ----> 4 ----> 10 ----> 15 ----> 21 bar"
-      },
-      {
-       "class": "6.1",
-       "classification_code": "A",
-       "packing_group": null,
-       "condition": "----> B ----> C ----> D"
-      },
-      {
-       "class": "6.1",
-       "classification_code": "V",
-       "packing_group": null,
-       "condition": "----> F ----> N ----> H"
-      }
-     ],
-     "de": [
-      {
-       "class": "6.1",
-       "classification_code": "T2",
-       "packing_group": "I"
-      },
-      {
-       "class": "6.1",
-       "classification_code": "T3",
-       "packing_group": "I"
-      },
-      {
-       "class": "6.1",
-       "classification_code": "T5",
-       "packing_group": "I"
-      },
-      {
-       "class": "6.1",
-       "classification_code": "T7",
-       "packing_group": "I"
-      },
-      {
-       "class": "6.1",
-       "classification_code": "TS",
-       "packing_group": "I"
-      },
-      {
-       "class": "6.1",
-       "classification_code": "TW2",
-       "packing_group": "I"
-      },
-      {
-       "class": "6.1",
-       "classification_code": "TO2",
-       "packing_group": "I"
-      },
-      {
-       "class": "6.1",
-       "classification_code": "TC2",
-       "packing_group": "I"
-      },
-      {
-       "class": "6.1",
-       "classification_code": "TC4",
-       "packing_group": "I"
-      },
-      {
-       "class": "1",
-       "classification_code": "G",
-       "packing_group": null,
-       "condition": "→ 1,5 → 2,65 → 4 → 10 → 15 → 21 bar"
-      }
-     ]
-    }
-   },
-   "only_in": {
-    "permitted": {
-     "en": [],
-     "nl": [
-      "6.1/A/-/",
-      "6.1/S/-/",
-      "6.1/V/-/"
-     ],
-     "de": [
-      "1/G/-/1.5,2.65,4,10,15,21"
-     ]
-    }
-   },
+   "readings": 4,
    "inherits": [
     "SGAV",
     "SGAN",
     "SGAH",
     "S10AN"
-   ]
+   ],
+   "permitted": [
+    {
+     "class": "6.1",
+     "classification_code": "T2",
+     "packing_group": "I"
+    },
+    {
+     "class": "6.1",
+     "classification_code": "T3",
+     "packing_group": "I"
+    },
+    {
+     "class": "6.1",
+     "classification_code": "T5",
+     "packing_group": "I"
+    },
+    {
+     "class": "6.1",
+     "classification_code": "T7",
+     "packing_group": "I"
+    },
+    {
+     "class": "6.1",
+     "classification_code": "TS",
+     "packing_group": "I"
+    },
+    {
+     "class": "6.1",
+     "classification_code": "TW2",
+     "packing_group": "I"
+    },
+    {
+     "class": "6.1",
+     "classification_code": "TO2",
+     "packing_group": "I"
+    },
+    {
+     "class": "6.1",
+     "classification_code": "TC2",
+     "packing_group": "I"
+    },
+    {
+     "class": "6.1",
+     "classification_code": "TC4",
+     "packing_group": "I"
+    }
+   ],
+   "settled_by": {
+    "permitted": [
+     "en",
+     "nl",
+     "fr"
+    ]
+   },
+   "sentences_fr": "S10AH 6.1: T2 I, T3 I, T5 I, T7 I, TS I, TW2 I, TO2 I, TC2 I, TC4 I — ainsi que les groupes de matieres autorisees pour les codes-citerne SGAV, SGAN, SGAH et S10AN"
   },
   {
    "tank_code": "S10AN",

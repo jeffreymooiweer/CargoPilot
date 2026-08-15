@@ -2910,16 +2910,16 @@
       "fr": "Pour {products}, la colonne (12) comporte plusieurs lignes divergentes ; les signaux de ces matières ne sont pas établis et peuvent être plus élevés qu'indiqué ici."
     },
     "containers_note": {
-      "nl": "Worden de goederen uitsluitend in containers vervoerd, dan verlaagt 7.1.5.0.2 de seinvoering aan de hand van de totale brutomassa: bij één kegel houdt klasse 2 of VG I boven 130.000 kg één kegel en daaronder geen, bij twee kegels houdt klasse 2 of VG I boven 30.000 kg twee kegels en daaronder geen, andere klassen en VG II of III voeren geen kegel, en drie kegels blijven drie. CargoPilot past die verlaging niet toe — daarvoor moet u verklaren dat de lading uitsluitend in containers gaat — dus de hier getoonde seinvoering is nooit te laag.",
-      "en": "Where the goods travel exclusively in containers, 7.1.5.0.2 lowers the signals against the total gross mass: at one cone, class 2 or packing group I keeps one cone above 130,000 kg and shows none at or below it; at two cones, class 2 or packing group I keeps two above 30,000 kg and none at or below; other classes and packing groups II and III show none at any mass; three cones stay three. CargoPilot does not apply the reduction — that needs you to state that the load travels only in containers — so the signals shown here are never too few.",
-      "de": "Werden die Güter ausschließlich in Containern befördert, verringert 7.1.5.0.2 die Signalführung anhand der Bruttogesamtmasse: bei einem Kegel behält Klasse 2 oder Verpackungsgruppe I über 130.000 kg einen Kegel und darunter keinen, bei zwei Kegeln über 30.000 kg zwei und darunter keinen, andere Klassen sowie Verpackungsgruppen II und III führen keinen Kegel, und drei Kegel bleiben drei. CargoPilot wendet die Verringerung nicht an — dafür müssten Sie erklären, dass die Ladung ausschließlich in Containern fährt — die gezeigte Signalführung ist daher nie zu gering.",
-      "fr": "Lorsque les marchandises voyagent exclusivement en conteneurs, le 7.1.5.0.2 abaisse la signalisation selon la masse brute totale : à un cône, la classe 2 ou le groupe d'emballage I conserve un cône au-dessus de 130 000 kg et n'en porte aucun en deçà ; à deux cônes, au-dessus de 30 000 kg deux cônes et aucun en deçà ; les autres classes et les groupes II et III n'en portent aucun ; trois cônes restent trois. CargoPilot n'applique pas cette réduction — il faudrait déclarer que le chargement voyage uniquement en conteneurs — les signaux affichés ne sont donc jamais insuffisants."
+      "nl": "7.1.5.0.2: voor goederen die uitsluitend in containers reizen verlaagt de seinvoering aan de hand van de totale brutomassa. CargoPilot past die verlaging alleen toe waar u dat per stof hebt verklaard; zonder die verklaring blijft de volle seinvoering staan, wat nooit te laag is.",
+      "en": "7.1.5.0.2: for goods travelling exclusively in containers the signals reduce against the total gross mass. CargoPilot applies that reduction only where you have declared it per substance; without the declaration the full signals stand, which is never too few.",
+      "de": "7.1.5.0.2: Für Güter, die ausschließlich in Containern befördert werden, verringert sich die Signalführung anhand der Bruttogesamtmasse. CargoPilot wendet die Verringerung nur an, wo Sie das je Stoff erklärt haben; ohne diese Erklärung bleibt die volle Signalführung stehen, die nie zu gering ist.",
+      "fr": "7.1.5.0.2 : pour les marchandises voyageant exclusivement en conteneurs, la signalisation diminue selon la masse brute totale. CargoPilot n'applique cette réduction que là où vous l'avez déclarée par matière ; sans cette déclaration, la signalisation complète demeure, ce qui n'est jamais insuffisant."
     },
     "containers_reduction": {
       "provision": "7.1.5.0.2",
       "source": "ADN 2025, UNECE English edition, table of 7.1.5.0.2, read with scripts/read_land_regulations.py",
-      "applied": false,
-      "_why_not_applied": "Needs an explicit statement that the goods travel only in containers; there is no such input yet. Recorded so the thresholds are not read a second time when there is.",
+      "applied": true,
+      "_why_not_applied": "Applied since v1.94.0, where the consignor states per product that the goods travel exclusively in containers (the containers_only field). The statement is the provision's own condition and is never inferred from a packaging type.",
       "rows": [
         {
           "column_12": 1,
@@ -2977,6 +2977,18 @@
       "en": "For {products} the cone count in table C is not settled (variants differ or the two readings disagree); the signals are not assessed here.",
       "de": "Für {products} steht die Kegelzahl in Tabelle C nicht fest (Varianten unterscheiden sich oder die zwei Lesungen widersprechen sich); die Signalführung ist hier nicht beurteilt.",
       "fr": "Pour {products}, le nombre de cônes du tableau C n'est pas arrêté (les variantes diffèrent ou les deux lectures divergent) ; la signalisation n'est pas évaluée ici."
+    },
+    "reduction_applied": {
+      "nl": "7.1.5.0.2 toegepast voor {products}: uitsluitend containervervoer verklaard, seinvoering verlaagd volgens de gelezen tabel.",
+      "en": "7.1.5.0.2 applied for {products}: exclusive container carriage declared, signals reduced per the read table.",
+      "de": "7.1.5.0.2 angewendet für {products}: ausschließliche Containerbeförderung erklärt, Signalführung nach der gelesenen Tabelle verringert.",
+      "fr": "7.1.5.0.2 appliqué pour {products} : transport exclusif en conteneurs déclaré, signalisation réduite selon le tableau lu."
+    },
+    "reduction_needs_mass": {
+      "nl": "7.1.5.0.2 is voor {products} verklaard maar niet toegepast: de drempel vergelijkt met de totale brutomassa en die ontbreekt. De volle seinvoering blijft staan.",
+      "en": "7.1.5.0.2 was declared for {products} but not applied: the threshold compares against the total gross mass, which is missing. The full signals stand.",
+      "de": "7.1.5.0.2 wurde für {products} erklärt, aber nicht angewendet: der Schwellenwert vergleicht mit der Bruttogesamtmasse, die fehlt. Die volle Signalführung bleibt stehen.",
+      "fr": "Le 7.1.5.0.2 a été déclaré pour {products} mais non appliqué : le seuil compare à la masse brute totale, qui manque. La signalisation complète demeure."
     }
   },
   "adn_carriage_admission": {

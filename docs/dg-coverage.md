@@ -535,13 +535,12 @@ exempt" since v1.32.0 while the arithmetic granted the exemption anyway — with
   number and the book prints several for 452 of the 2,352 substances. Where those rows
   differ in the vessel's columns — UN 1203 petrol is the clear case — no cone count is
   offered and the substance is named. 1,913 substances are settled; 439 are not.
-- **ADN 7.1.5.0.2**, the reduction for goods carried exclusively in containers. Its
-  thresholds are **read** since v1.64.0 — above 130,000 kg keeps one cone, at or below shows
-  none; above 30,000 kg keeps two, at or below none; three cones stay three — but the
-  reduction is not applied. Doing so needs the consignor to state that the load travels only
-  in containers, and there is nowhere to say that yet; inferring it from a packaging type
-  would be guessing at the fact the provision turns on. Its absence can only overstate the
-  signals, and the panel says so.
+- ~~**ADN 7.1.5.0.2**~~ — applied since v1.94.0. The thresholds were read in v1.64.0 and
+  sat recorded until the input the provision itself requires existed: the consignor's
+  statement that the goods travel exclusively in containers (the `containers_only` field),
+  never inferred from a packaging type. Declared without the gross mass the threshold
+  compares against, the full signals stand and the answer says why — over-signalling is
+  the safe direction.
 - ~~**7.1.4.3.4**, the class 1 compatibility table~~ — applied since v1.64.0. Twelve groups,
   four numbered conditions, and the two readings the rule demands were not a formality: the
   Dutch HTML edition is damaged there (row N has thirteen cells where twelve belong, and the
@@ -677,7 +676,7 @@ Ordered by how much harm someone could take before noticing, not by effort.
 | 5 | **LQ/EQ conditions not checked** | The arithmetic of 3.4/3.5 is verified correct and 3.5.1.3/3.5.1.4 are applied since v1.50.0, but the mark, the packagings and the 3.5.3 tests are declarations the application cannot see. A line "within the limits" is a candidate, not an exemption — and the panel says so. |
 | 6 | **IMDG stowage category shown, not enforced** | Lower because on-deck/under-deck is usually the carrier's call, not the consignor's. **[verify]** |
 | 7 | **No marking or placarding checks outside the road mode** | Closed for ADR in v1.57.0 (5.3.1.5, 5.3.2.1 and 5.3.6.1 for packages; the equipment half in v1.53.0), extended to tanks and put on paper in v1.83.0. Rail, inland waterway, sea and air still have nothing. |
-| 8 | **The tank hierarchy declines on three of eighteen codes** | Was eleven when the check shipped in v1.82.0. The German volume II joined the two readings in v1.86.0 and settled seventeen cells: fifteen codes are now settled on every cell, and the three that are left — L10BH's group, L10DH's inheritance and S10AH's group — still make the check decline rather than guess. |
+| 8 | ~~The tank hierarchy declines on three of eighteen codes~~ | Closed in v1.94.0. The French volume II — the treaty's other authentic language — was read verbatim on the three cells no two of the first three readings agreed on: it sided with the Dutch on L10BH's group (18 codes), with the German on L10DH's inheritance (the chain runs through L10CH), and with everyone on S10AH's nine codes — the strays of the other readings spell the inheritance sentence (S, G, A, V is SGAV leaking into the cell). **All eighteen codes are settled on every cell.** |
 
 Two of the top gaps from earlier versions of this table are gone, and it is worth being
 precise about why. "RID and ADN answered with ADR tables" ranked second for three releases;

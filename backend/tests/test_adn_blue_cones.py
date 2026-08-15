@@ -457,17 +457,18 @@ def test_three_cones_are_never_reduced():
     assert three[0]["cones"] == 3 and three[0]["selector"] == "all"
 
 
-def test_the_reduction_is_recorded_and_not_applied():
-    """Applying it needs the consignor to say the load travels only in
-    containers, and there is nowhere to say that yet. Inferring it from a
-    packaging type would be guessing at the fact the provision turns on."""
-    assert reduction()["applied"] is False
+def test_the_reduction_is_recorded_and_applied_on_the_statement():
+    """It sat recorded and unapplied from v1.64.0 to v1.94.0, waiting for the
+    input the provision itself requires: the consignor's statement that the
+    goods travel exclusively in containers. The statement exists now
+    (containers_only) and is still never inferred from a packaging type."""
+    assert reduction()["applied"] is True
+    assert "containers_only" in reduction()["_why_not_applied"]
 
 
-def test_the_note_states_both_thresholds_in_every_language():
+def test_the_note_names_the_provision_in_every_language():
     from app.services.dg.compliance import get_compliance_rules
     note = get_compliance_rules()["adn_signals"]["containers_note"]
     for language in ("nl", "en", "de", "fr"):
         text = note[language]
         assert "7.1.5.0.2" in text
-        assert "130" in text and "30" in text

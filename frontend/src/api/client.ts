@@ -473,6 +473,8 @@ export interface DgProduct {
   is_waste?: string;
   empty_uncleaned?: string;
   salvage_packaging?: string;
+  /** ADN 7.1.5.0.2: the goods travel exclusively in containers. */
+  containers_only?: string;
   /** What ADR 4.3.2.2 needs and table A does not carry. */
   filling_temperature?: string;
   density_15?: string;

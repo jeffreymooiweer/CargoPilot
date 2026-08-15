@@ -254,7 +254,7 @@ def name_column(page, top: float, centres: dict[str, float]):
     # is that a break sits against the column's right edge and a real hyphen
     # does not. The German edition breaks constantly — CHLORWASSERSTOFF-SÄURE,
     # DIETHYLENGLYCOLDINI-TRAT — and a name is the identity of the goods.
-    lines: list[tuple[float, str, float]] = []
+    placed: list[tuple[float, float, str, float]] = []
     for block in page.get_text("rawdict")["blocks"]:
         if block["type"] != 0:
             continue
@@ -269,10 +269,34 @@ def name_column(page, top: float, centres: dict[str, float]):
                         edge = max(edge, x1)
             if kept:
                 kept.sort()
-                lines.append((round(line["bbox"][1], 1),
-                              "".join(c for _x, c in kept), edge))
-    lines.sort()
-    return lines, right
+                placed.append((round(line["bbox"][1], 1), kept[0][0],
+                               "".join(c for _x, c in kept), edge))
+    return order_lines(placed), right
+
+
+def order_lines(placed: list[tuple[float, float, str, float]]):
+    """Left to right within a printed line, and never by what it says.
+
+    The UN number and the name are two fragments of one printed line, and the
+    number is the left one. Sorting `(y, text, edge)` tuples orders the two by
+    their *text* whenever they share a y — which is right by accident for most
+    of table A, because a four-digit number sorts before a capital letter, and
+    wrong for every name that opens with a locant. "1-PENTENE (n-AMYLENE)"
+    sorts before "1108": the hyphen is 0x2D and the digit is 0x31.
+
+    The row splitter starts a new row at a line beginning with four digits, so
+    a name that arrives before its own number is attached to the row above it.
+    Two entries are damaged by one such name: the one that loses its name
+    entirely and disappears, and the one above it that carries the stray name
+    for ever after. In the French reading that was UN 1125, printed as
+    "n-BUTYLAMINE 1-BROMOBUTANE" — and 1126, 1702, 3023 and 3371 were exactly
+    the four UN numbers that reading was missing.
+
+    Ordering on the left edge is what the typesetting actually means, and it
+    cannot be fooled by a name.
+    """
+    placed.sort(key=lambda item: (item[0], item[1]))
+    return [(y, text, edge) for y, _x, text, edge in placed]
 
 
 def split_bands(lines, method: str, cut: float) -> list[tuple[list[str], float]]:

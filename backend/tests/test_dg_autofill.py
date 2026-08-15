@@ -186,7 +186,7 @@ def test_prepare_fills_classification_and_quantities_from_lines():
 
     # Dutch screen, road profile: the Dutch name with the English beside it,
     # which is what ADR 5.4.1.4.1 asks of a Dutch consignor.
-    assert product["proper_shipping_name"] == "BENZINE OF MOTORBRANDSTOF (GASOLINE)"
+    assert product["proper_shipping_name"] == "BENZINE OF MOTORBRANDSTOF (MOTOR SPIRIT OR GASOLINE OR PETROL)"
     assert product["class"] == "3"
     assert product["packing_group"] == "II"
     assert product["transport_category"] == "2"

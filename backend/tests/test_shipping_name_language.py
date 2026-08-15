@@ -29,6 +29,11 @@ from app.services.dg.naming import (
 # makes it suitable for reading the difference off.
 BENZINE = "1203"
 
+#: What column (2) of the 2025 volume prints for it. The 2023 export kept
+#: only the middle alternative — "Gasoline" — and since v1.89.0 the English
+#: column is read from the book, which sets all three.
+PETROL = "MOTOR SPIRIT OR GASOLINE OR PETROL"
+
 
 def entry(un: str) -> dict:
     entries = get_un_entries(un)
@@ -38,7 +43,12 @@ def entry(un: str) -> dict:
 
 def test_the_adr_table_actually_carries_german_names():
     """Without this column the rest of this file has no ground to stand on."""
+    from app.services.dg.naming import english_name_of
+
     assert entry(BENZINE)["name_de"].upper().startswith("BENZIN")
+    assert english_name_of(entry(BENZINE)) == PETROL
+    # The row itself still carries the export's single alternative; the column
+    # the document uses is the one read from the 2025 volume.
     assert entry(BENZINE)["name_en"].upper() == "GASOLINE"
 
 
@@ -51,11 +61,11 @@ def test_a_land_document_in_german_gets_the_german_name(profiles):
 def test_sea_and_air_keep_english_whatever_the_screen_says(profiles):
     """For a multimodal consignment English satisfies all three regimes; German
     only one of them."""
-    assert proper_shipping_name(entry(BENZINE), "de", profiles) == "GASOLINE"
+    assert proper_shipping_name(entry(BENZINE), "de", profiles) == PETROL
 
 
 def test_an_english_reader_keeps_the_english_name():
-    assert proper_shipping_name(entry(BENZINE), "en", ["ADR"]) == "GASOLINE"
+    assert proper_shipping_name(entry(BENZINE), "en", ["ADR"]) == PETROL
 
 
 def test_a_french_road_document_carries_the_french_name_alone():
@@ -66,7 +76,7 @@ def test_a_french_road_document_carries_the_french_name_alone():
 
 
 def test_sea_and_air_take_the_french_name_off_again():
-    assert proper_shipping_name(entry(BENZINE), "fr", ["IMDG"]) == "GASOLINE"
+    assert proper_shipping_name(entry(BENZINE), "fr", ["IMDG"]) == PETROL
 
 
 # --- Dutch: not one of the three ------------------------------------------
@@ -82,7 +92,7 @@ def test_a_dutch_road_document_carries_the_dutch_name_and_the_english_beside_it(
     """An unset or unknown language is Dutch — that is the app's default — and so
     it lands on the same rule rather than quietly on the English one."""
     assert (proper_shipping_name(entry(BENZINE), language, ["ADR"])
-            == "BENZINE OF MOTORBRANDSTOF (GASOLINE)")
+            == "BENZINE OF MOTORBRANDSTOF (" + PETROL + ")")
 
 
 @pytest.mark.parametrize("un,expected", [
@@ -100,7 +110,7 @@ def test_the_dutch_name_comes_from_the_adr_and_not_from_a_translation(un, expect
 def test_sea_and_air_get_the_english_name_alone_from_a_dutch_screen_too(profiles):
     """Two names in one field is what the road document wants; IMDG 5.4.1.4.1
     and IATA DGR 8.1.2.1 want one, in English."""
-    assert proper_shipping_name(entry(BENZINE), "nl", profiles) == "GASOLINE"
+    assert proper_shipping_name(entry(BENZINE), "nl", profiles) == PETROL
 
 
 def test_a_un_number_without_a_dutch_name_keeps_the_english_one_alone():
@@ -123,11 +133,11 @@ def test_the_dutch_document_name_is_corrected_for_a_sea_leg():
     """Same trap as with German: a road document drawn up first keeps its name in
     the field, and on the IMO DGF only the English belongs."""
     product = {"un_number": "1203",
-               "proper_shipping_name": "BENZINE OF MOTORBRANDSTOF (GASOLINE)"}
+               "proper_shipping_name": "BENZINE OF MOTORBRANDSTOF (" + PETROL + ")"}
     assert resolve_for_profile(product, "IMDG") == (
-        "GASOLINE", "BENZINE OF MOTORBRANDSTOF (GASOLINE)")
+        PETROL, "BENZINE OF MOTORBRANDSTOF (" + PETROL + ")")
     assert resolve_for_profile(dict(product), "ADR")[0] == (
-        "BENZINE OF MOTORBRANDSTOF (GASOLINE)")
+        "BENZINE OF MOTORBRANDSTOF (" + PETROL + ")")
 
 
 def test_an_entry_without_a_german_name_falls_back_instead_of_going_blank():
@@ -169,8 +179,8 @@ def german_goods():
     ("ADR", "BENZIN ODER OTTOKRAFTSTOFF"),
     ("RID", "BENZIN ODER OTTOKRAFTSTOFF"),
     ("ADN", "BENZIN ODER OTTOKRAFTSTOFF"),
-    ("IMDG", "GASOLINE"),
-    ("IATA_DGR", "GASOLINE"),
+    ("IMDG", PETROL),
+    ("IATA_DGR", PETROL),
 ])
 def test_the_document_gets_the_name_its_own_rulebook_wants(profile, expected):
     name, _ = resolve_for_profile(german_goods()[0]["products"][0], profile)
@@ -189,7 +199,7 @@ def test_a_sea_document_is_not_refused_but_corrected():
     said = [w for w in warnings if "5.4.1.4.1" in w]
     assert said, warnings
     # The message says what happened, not what the user still has to do.
-    assert "BENZIN ODER OTTOKRAFTSTOFF" in said[0] and "GASOLINE" in said[0]
+    assert "BENZIN ODER OTTOKRAFTSTOFF" in said[0] and PETROL in said[0]
 
 
 def test_the_road_document_keeps_the_german_name_and_says_nothing():
@@ -220,7 +230,7 @@ def test_the_exported_sea_document_actually_carries_the_english_name():
         for cell in row
         if cell
     )
-    assert "GASOLINE" in text
+    assert PETROL in text
     assert "BENZIN ODER OTTOKRAFTSTOFF" not in text
 
 
@@ -246,7 +256,7 @@ def test_the_description_line_follows_the_document_too():
 
     product = german_goods()[0]["products"][0]
     assert "BENZIN ODER OTTOKRAFTSTOFF" in description_line(product, "ADR")
-    assert "GASOLINE" in description_line(product, "IMDG")
+    assert PETROL in description_line(product, "IMDG")
     assert "BENZIN" not in description_line(product, "IMDG")
 
 
@@ -261,9 +271,9 @@ def test_wording_the_user_wrote_themselves_is_left_alone():
 
 def test_an_english_name_is_not_touched_and_not_reported():
     name, replaced = resolve_for_profile(
-        {"un_number": "1203", "proper_shipping_name": "GASOLINE"}, "IMDG"
+        {"un_number": "1203", "proper_shipping_name": PETROL}, "IMDG"
     )
-    assert (name, replaced) == ("GASOLINE", "")
+    assert (name, replaced) == (PETROL, "")
 
 
 def test_an_empty_name_stays_empty_rather_than_being_invented():
@@ -273,7 +283,7 @@ def test_an_empty_name_stays_empty_rather_than_being_invented():
 
 
 def test_an_english_name_never_trips_the_check():
-    assert not is_german_name(entry(BENZINE), "GASOLINE")
+    assert not is_german_name(entry(BENZINE), PETROL)
 
 
 def test_a_name_that_reads_the_same_in_both_languages_is_not_flagged():
@@ -294,7 +304,7 @@ def test_a_technical_name_in_brackets_is_not_flagged():
 
 @pytest.mark.parametrize("profiles,expected", [
     (["ADR"], "BENZIN ODER OTTOKRAFTSTOFF"),
-    (["IMDG"], "GASOLINE"),
+    (["IMDG"], PETROL),
 ])
 def test_the_lookup_suggests_the_name_that_the_document_will_carry(profiles, expected):
     """The suggestion the user clicks *is* the text that ends up on the document;
@@ -305,28 +315,48 @@ def test_the_lookup_suggests_the_name_that_the_document_will_carry(profiles, exp
 
 # --- Entries the table has no English name for ----------------------------
 #
-# Fourteen of them, plus one truncated. `english_name` falls back on the German
-# so a field is never blank, and that fallback is right — but on a document it
-# is a German name where the rulebook wants English, and it must not pass
-# unremarked.
+# Fourteen of them, plus one truncated — in the 2023 export. Reading column (2)
+# out of the 2025 volume names every one of them, which is the whole argument
+# for reading the book. The check stays: it is what makes a future edition's
+# gap visible, and one entry still needs it.
 
 
 @pytest.mark.parametrize("un", ["3245", "3374", "2807", "1327"])
-def test_the_table_holds_no_english_name_for_these(un):
-    """The premise, measured rather than assumed. If a later edition of the
-    export fills these in, this test says so and the warning can go."""
-    from app.services.dg.naming import english_name_is_usable
+def test_the_book_names_what_the_export_left_empty(un):
+    """Fourteen entries carried an empty English name in the export — UN 3245
+    genetically modified organisms, UN 3374 acetylene solvent free, UN 2807
+    magnetized material among them — and a German name went on the document in
+    place of an English one. The 2025 volume names them all."""
+    from app.services.dg.naming import english_name_is_usable, english_name_of
 
-    assert not english_name_is_usable(entry(un))
+    assert not str(entry(un).get("name_en") or "").strip()
+    assert english_name_of(entry(un))
+    assert english_name_is_usable(entry(un))
 
 
-def test_a_truncated_english_name_counts_as_missing():
+def test_the_book_names_the_entry_the_export_cut_off():
     """UN 1139 reads "Coating solution (" in the export — cut off mid-bracket.
-    A name that ends on an opening bracket is not a name."""
-    from app.services.dg.naming import english_name_is_usable
+    A name that ends on an opening bracket is not a name, and the volume has
+    the whole of it."""
+    from app.services.dg.naming import english_name_is_usable, english_name_of
 
     assert entry("1139")["name_en"] == "Coating solution ("
-    assert not english_name_is_usable(entry("1139"))
+    assert english_name_of(entry("1139")).startswith("COATING SOLUTION (")
+    assert english_name_is_usable(entry("1139"))
+
+
+def test_a_reading_cut_off_by_the_column_falls_back_on_the_export():
+    """It goes the other way for exactly one entry. UN 2857's name runs past
+    the edge of the column and the 2025 reading comes back as "... (UN", where
+    the export has "(UN2672)". Preferring the newer edition is not a reason to
+    put half a name on a consignment note."""
+    from app.services.dg.naming import english_name_is_usable, english_name_of
+
+    from app.services.dg.names_en import english_name as in_the_volume
+
+    assert in_the_volume("2857").endswith("(UN")
+    assert english_name_of(entry("2857")).endswith("(UN2672)")
+    assert english_name_is_usable(entry("2857"))
 
 
 def test_an_ordinary_entry_is_not_flagged():
@@ -337,29 +367,33 @@ def test_an_ordinary_entry_is_not_flagged():
     assert english_name_is_usable(entry("3082"))
 
 
-def test_the_export_says_when_it_had_to_fall_back_on_the_german_name():
-    """Silence here is the failure: the field is filled, the document looks
-    complete, and the name on it is in a language the rulebook does not allow."""
-    from app.services.documents.exporter import validate_document
-    from app.services.documents.registry import get_document
-    from tests.test_documents import BASE_VALUES, LINES
+def test_the_check_that_says_so_still_refuses_a_name_that_is_not_one():
+    """Silence would be the failure: the field is filled, the document looks
+    complete, and the name on it is in a language the rulebook does not allow.
 
-    goods = [{
-        "line_id": "L1",
-        "products": [{
-            "un_number": "3245",
-            "proper_shipping_name": "GENETISCH VERÄNDERTE MIKROORGANISMEN",
-            "class": "9",
-            "quantity_packages": "1",
-            "type_of_package": "kist",
-            "net_mass_liters_per_package": "1",
-        }],
-    }]
-    _errors, warnings = validate_document(
-        get_document("cmr"), dict(BASE_VALUES), LINES, goods, "nl"
-    )
-    said = [w for w in warnings if "3245" in w and "Engelse vervoersnaam" in w]
-    assert said, warnings
+    Since v1.89.0 no entry of the table reaches that state — the volume names
+    the fourteen the export left empty and the one it cut off — so the check
+    is exercised here on what it is for rather than on a UN number that no
+    longer needs it. It stays because a later edition can open the gap again."""
+    from app.services.dg.naming import english_name_is_usable
+
+    assert not english_name_is_usable({"un": "9999", "name_en": ""})
+    assert not english_name_is_usable({"un": "9999", "name_en": "Coating solution ("})
+    assert english_name_is_usable({"un": "9999", "name_en": "ACETONE"})
+
+
+def test_no_entry_of_the_table_needs_that_warning_any_more():
+    """The measurement behind the previous test, and the point of reading the
+    book: a warning that used to fire on fifteen entries now fires on none."""
+    from app.services.dg import database
+    from app.services.dg.naming import english_name_is_usable
+
+    unusable = sorted({
+        row["un"] for row in database._table_a()
+        if (found := database.get_un_entries(row["un"]))
+        and not english_name_is_usable(found[0])
+    })
+    assert unusable == [], unusable
 
 
 def test_an_entry_with_a_proper_english_name_is_not_reported():
@@ -384,7 +418,7 @@ def test_an_entry_with_a_proper_english_name_is_not_reported():
 
 def test_de_documenttaal_herschrijft_een_afgeleide_naam():
     product = {"un_number": BENZINE,
-               "proper_shipping_name": "BENZINE OF MOTORBRANDSTOF (GASOLINE)"}
+               "proper_shipping_name": "BENZINE OF MOTORBRANDSTOF (" + PETROL + ")"}
     assert resolve_for_profile(product, "ADR", "fr")[0] == "ESSENCE"
     assert resolve_for_profile(product, "ADR", "de")[0] == "BENZIN ODER OTTOKRAFTSTOFF"
     assert resolve_for_profile(product, "ADR", "fr")[1] == product["proper_shipping_name"]
@@ -404,7 +438,7 @@ def test_eigen_bewoordingen_blijven_staan():
 
 def test_zee_en_lucht_winnen_van_de_taalkeuze():
     product = {"un_number": BENZINE, "proper_shipping_name": "ESSENCE"}
-    assert resolve_for_profile(product, "IMDG", "fr")[0] == "GASOLINE"
+    assert resolve_for_profile(product, "IMDG", "fr")[0] == PETROL
 
 
 # --- German from the 2025 edition, not the 2023 export ---------------------

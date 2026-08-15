@@ -2,6 +2,66 @@
 
 All notable changes are documented here, following [Semantic Versioning](https://semver.org/).
 
+## [1.89.0] — 2026-08-15
+
+### Added
+
+- **The English proper shipping names are read from ADR 2025.** English was the
+  last of the four languages still coming from an export of ADR **2023** — Dutch,
+  German and French had all moved to the 2025 editions — and it is the one that
+  goes *beside* the Dutch name on almost every document this application
+  produces, and the only one permitted at sea and in the air (IMDG 5.4.1.4.1,
+  IATA DGR 8.1.2.1). 2,344 UN numbers, 0.9987 agreement against the Dutch table.
+- What the export cost, now measured rather than remembered. **Fourteen entries
+  had no English name at all** — UN 3245 genetically modified organisms, UN 3374
+  acetylene solvent free, UN 2807 magnetized material among them — and a German
+  name went on the document in their place, which satisfies neither 5.4.1.4.1
+  nor 8.1.2.1. **UN 1139 was cut off mid-bracket** at "Coating solution (". And
+  the export **flattened the alternatives the ADR prints**: UN 1203 was
+  "Gasoline" where the book sets "MOTOR SPIRIT or GASOLINE or PETROL". All of
+  that is whole now, and the warning that used to fire on fifteen entries fires
+  on none.
+- One entry goes the other way and is handled rather than shipped: **UN 2857**'s
+  name runs past the edge of the column and the 2025 reading comes back as
+  "... (UN". A truncated name is not a name, so that one keeps the export's
+  complete spelling — preferring the newer edition is not a reason to put half a
+  name on a consignment note.
+
+### Fixed
+
+- **The name column was ordered by what a line said, not by where it sat.** Two
+  fragments of one printed line — the UN number on the left, the name beside it —
+  were sorted as `(y, text)` tuples, so whenever they shared a y they were
+  ordered by their text. That is right by accident for most of table A, because a
+  four-digit number sorts before a capital letter, and wrong for **every name
+  that opens with a locant**: "1-PENTENE (n-AMYLENE)" sorts before "1108"
+  because the hyphen is 0x2D and the digit 0x31. The row splitter opens a row at
+  a line of four digits, so a name arriving before its own number was attached to
+  the row above — **two entries damaged per occurrence**, the one that lost its
+  name and disappeared and the one above it that kept the stray.
+  The English reading went from 0.9817 to **0.9987** agreement, 2,304 to 2,344
+  UN numbers.
+- **And it had already shipped in French.** UN 1125 read "n-BUTYLAMINE
+  1-BROMOBUTANE" in `adr_names_fr.json`, and 1126, 1702, 3023 and 3371 — exactly
+  the four UN numbers that reading was missing — were the four names glued onto
+  their predecessors. French is now 0.9996; German, which the defect never
+  reached, is unchanged at 0.9996.
+- **Hyphens the volume breaks are settled by two other readings.** Where a break
+  falls inside one extracted line the end-of-line rule cannot see it: UN 1328
+  came back as "HEXAMETHYLENETE-TRAMINE", UN 1239 as "METHYL CHLORO-METHYL
+  ETHER". It goes the other way too — "TEAR-PRODUCING" landed on a break and lost
+  a hyphen the name owns. Two readings that disagree are not an answer, and there
+  is a third English reading in this repository: the IMDG Dangerous Goods List
+  sides with the 2023 export on 54 of the 62 names in dispute and with the new
+  reading on 3. So where those two agree with each other and the volume differs
+  from them in nothing but hyphens, their hyphenation is taken and everything
+  else stays as the book sets it. **49 names settle**; the 13 the two do not
+  agree on are left as the volume reads them.
+- `--explain` printed the first eight lines of the page an entry sits on, which
+  is a picture of the table's top and almost never of the entry asked about —
+  UN 1108 sits at y 308 and the trace stopped at 206. It now follows the number's
+  own y.
+
 ## [1.88.0] — 2026-08-15
 
 ### Fixed

@@ -254,7 +254,7 @@ def name_column(page, top: float, centres: dict[str, float]):
     # is that a break sits against the column's right edge and a real hyphen
     # does not. The German edition breaks constantly — CHLORWASSERSTOFF-SÄURE,
     # DIETHYLENGLYCOLDINI-TRAT — and a name is the identity of the goods.
-    lines: list[tuple[float, str, float]] = []
+    placed: list[tuple[float, float, str, float]] = []
     for block in page.get_text("rawdict")["blocks"]:
         if block["type"] != 0:
             continue
@@ -269,10 +269,34 @@ def name_column(page, top: float, centres: dict[str, float]):
                         edge = max(edge, x1)
             if kept:
                 kept.sort()
-                lines.append((round(line["bbox"][1], 1),
-                              "".join(c for _x, c in kept), edge))
-    lines.sort()
-    return lines, right
+                placed.append((round(line["bbox"][1], 1), kept[0][0],
+                               "".join(c for _x, c in kept), edge))
+    return order_lines(placed), right
+
+
+def order_lines(placed: list[tuple[float, float, str, float]]):
+    """Left to right within a printed line, and never by what it says.
+
+    The UN number and the name are two fragments of one printed line, and the
+    number is the left one. Sorting `(y, text, edge)` tuples orders the two by
+    their *text* whenever they share a y — which is right by accident for most
+    of table A, because a four-digit number sorts before a capital letter, and
+    wrong for every name that opens with a locant. "1-PENTENE (n-AMYLENE)"
+    sorts before "1108": the hyphen is 0x2D and the digit is 0x31.
+
+    The row splitter starts a new row at a line beginning with four digits, so
+    a name that arrives before its own number is attached to the row above it.
+    Two entries are damaged by one such name: the one that loses its name
+    entirely and disappears, and the one above it that carries the stray name
+    for ever after. In the French reading that was UN 1125, printed as
+    "n-BUTYLAMINE 1-BROMOBUTANE" — and 1126, 1702, 3023 and 3371 were exactly
+    the four UN numbers that reading was missing.
+
+    Ordering on the left edge is what the typesetting actually means, and it
+    cannot be fooled by a name.
+    """
+    placed.sort(key=lambda item: (item[0], item[1]))
+    return [(y, text, edge) for y, _x, text, edge in placed]
 
 
 def split_bands(lines, method: str, cut: float) -> list[tuple[list[str], float]]:
@@ -393,11 +417,144 @@ def explain(path: Path, targets: list[str]) -> int:
                               " the body")
                 lines, _right = name_column(page, top, centres)
                 marks = {round(y, 1) for _band, y in split_bands(lines, method, cut)}
-                for y, text, _edge in lines[:8]:
+                # Around the row, not at the head of the page. Printing the
+                # first eight lines shows the top of the table and almost never
+                # the entry asked about — UN 1108 sits at y 308 and the trace
+                # stopped at 206, which is a picture of a page and not of a
+                # loss. The window follows the number's own y, and falls back
+                # to the head only where the number was not found in the body.
+                anchor = next(
+                    (y0 for _x0, y0, _x1, _y1, word, *_ in page.get_text("words")
+                     if word.strip().startswith(un)
+                     and top <= y0 <= body_bottom(page)), None)
+                if anchor is None:
+                    window = lines[:8]
+                else:
+                    window = [line for line in lines
+                              if anchor - 30 <= line[0] <= anchor + 45]
+                    print(f"    lines within 30 points above and 45 below "
+                          f"y {anchor:.1f}:")
+                for y, text, _edge in window:
                     head = "ROW " if round(y, 1) in marks else "    "
                     flat = re.sub(r"\s+", " ", text)[:80]
                     print(f"    {head}{y:7.1f} {flat!r}")
+                if anchor is not None and not window:
+                    print("    no line of the name column lies beside the "
+                          "number: the name is outside the column this page "
+                          "measured, which is why the row yields nothing")
     return 0
+
+
+def _without_hyphens(text: str) -> str:
+    """The name with its hyphens taken out, for comparing two spellings of it."""
+    return text.replace("-", "").upper()
+
+
+#: A name reduced to its letters, digits and hyphens. Two readings that produce
+#: the same skeleton have said the same thing about where the hyphens fall,
+#: whatever they do with commas, spaces and capitals.
+_SKELETON = re.compile(r"[^0-9A-Za-zÄÖÜäöüÉÈéèß-]")
+
+
+def _skeleton(text: str) -> str:
+    return _SKELETON.sub("", text).upper()
+
+
+def take_hyphens_from(name: str, settled: str) -> str:
+    """The book's name with the hyphens of a reading that settled them.
+
+    The volume breaks long names across the width of the column, and where the
+    break falls inside one extracted line the end-of-line rule cannot see it:
+    UN 1328 comes back as "HEXAMETHYLENETE-TRAMINE" and UN 1239 as "METHYL
+    CHLORO-METHYL ETHER". The opposite happens too — a hyphen the name owns,
+    landing at a break, is glued away: "TEAR-PRODUCING" became "TEARPRODUCING".
+
+    Two readings that disagree are not an answer, and there is a third English
+    reading in this repository: the IMDG Dangerous Goods List. Against the 2023
+    export it sides with the export on 54 of the 62 names in dispute and with
+    this reading on 3. So where the other two agree with each other and this
+    reading differs from them **only in where the hyphens fall**, their
+    hyphenation is taken and everything else — the ADR's own casing, its
+    qualifying lower-case text, the alternatives — stays as the book sets it.
+
+    The guard is deliberately narrow: the two spellings must be the same
+    string once the hyphens are removed, case aside. Anything else — a comma
+    the export added, a word it dropped — is a disagreement about the name and
+    not about its typesetting, and is left alone for someone to look at.
+    """
+    if _without_hyphens(name) != _without_hyphens(settled):
+        return name
+    out: list[str] = []
+    position = 0
+    for char in settled:
+        if char == "-":
+            out.append("-")
+            continue
+        while position < len(name) and name[position] == "-":
+            position += 1  # a hyphen of this reading is not carried over
+        if position < len(name):
+            out.append(name[position])
+            position += 1
+    out.append(name[position:].replace("-", ""))
+    return "".join(out)
+
+
+def _english_readings() -> dict[str, tuple[str, str]]:
+    """The two other English readings of column (2) held in this repository.
+
+    The 2023 table A export, which is what the English name came from until the
+    volume was read, and the IMDG Dangerous Goods List of Amendment 42-24 —
+    a different publisher reading a different table of the same UN numbers.
+    Neither is the ADR of 2025, and neither is used for the name: they are
+    consulted about hyphens and nothing else.
+    """
+    def named(path: Path, *fields: str) -> dict[str, str]:
+        try:
+            payload = json.loads(path.read_text(encoding="utf-8"))
+        except (OSError, ValueError):  # pragma: no cover - seed missing
+            return {}
+        rows = payload if isinstance(payload, list) else payload.get("entries", [])
+        out: dict[str, str] = {}
+        for row in rows:
+            un = "".join(c for c in str(row.get("un") or row.get("un_number") or "")
+                         if c.isdigit()).zfill(4)
+            name = next((str(row.get(f)) for f in fields if row.get(f)), "")
+            if un != "0000" and name and un not in out:
+                out[un] = name
+        return out
+
+    export = named(SEED / "un_numbers.json", "name_en")
+    imdg = named(SEED / "imdg_dgl.json", "name_en", "proper_shipping_name")
+    return {un: (export[un], imdg[un]) for un in export.keys() & imdg.keys()}
+
+
+def settle_hyphens(names: dict[str, list[str]]) -> int:
+    """Let the other two English readings decide where the hyphens fall.
+
+    Only where they agree with each other, and only where this reading differs
+    from them in nothing but hyphens. Everything else stays as the volume sets
+    it; a disagreement about the name itself is not settled here and is not
+    silently averaged away.
+    """
+    settled = 0
+    others = _english_readings()
+    for un, variants in names.items():
+        pair = others.get(un)
+        if not pair:
+            continue
+        export, imdg = pair
+        # They have to agree about the hyphens themselves, not merely about the
+        # letters: two readings that spell the name the same way apart from a
+        # hyphen have settled nothing about that hyphen.
+        if _skeleton(export) != _skeleton(imdg):
+            continue
+        for index, name in enumerate(variants):
+            if "-" in name or "-" in export:
+                fresh = take_hyphens_from(name, export)
+                if fresh != name:
+                    variants[index] = fresh
+                    settled += 1
+    return settled
 
 
 def read(path: Path) -> tuple[dict[str, list[str]], list[str], dict[str, int]]:
@@ -601,6 +758,14 @@ def main(argv: list[str] | None = None) -> int:
         print("No names read.")
         return 1
 
+    # English alone: the two other English readings this repository holds settle
+    # where the hyphens fall, and nothing else about the name. French and German
+    # have no second reading here, so nothing is taken for them.
+    hyphens = settle_hyphens(names) if args.language == "en" else 0
+    if hyphens:
+        print(f"  hyphens settled by the 2023 export and the IMDG list, "
+              f"which agree: {hyphens}")
+
     check = against_the_dutch(names)
     print(f"\n--- against the Dutch table A already in the repository ---")
     print(f"  {check.get('same')} UN numbers in both, "
@@ -633,7 +798,8 @@ def main(argv: list[str] | None = None) -> int:
         "source": (f"{args.edition}, official UNECE edition — table A of chapter "
                    f"3.2, column (2)"),
         "summary": {"un_numbers": len(names), "rows": counts["rows"],
-                    "table_pages": counts["table_pages"]},
+                    "table_pages": counts["table_pages"],
+                    "hyphens_settled_by_two_other_readings": hyphens},
         "cross_check": check,
         "names": {un: names[un] for un in sorted(names)},
     }

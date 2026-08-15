@@ -51,6 +51,10 @@ from typing import Any
 
 from app.core.languages import normalise
 from app.services.dg.names_de import german_name
+# Aliased: this module has had its own ``english_name(entry)`` since before the
+# column was read, and it answers a different question — the name for a
+# document, German fallback included. The import is the table's own column.
+from app.services.dg.names_en import english_name as english_name_in_table_a
 from app.services.dg.names_fr import french_name
 from app.services.dg.names_nl import dutch_name
 
@@ -64,29 +68,59 @@ def requires_english_name(profiles: list[str] | set[str] | None) -> bool:
     return bool(chosen & ENGLISH_ONLY_PROFILES)
 
 
+def _whole(name: str) -> bool:
+    """A name that was not cut off where the column ran out."""
+    return bool(name) and name.count("(") == name.count(")")
+
+
+def english_name_of(entry: dict[str, Any]) -> str:
+    """The English name of an entry, from the 2025 edition where it has one.
+
+    Same shape as the German and the French: the reading of the book comes
+    first and the 2023 export is what is left underneath it, for the entries
+    the book does not have — the IMDG-only additions have no ADR row at all.
+
+    With one addition the other two languages do not need. A name can run past
+    the edge of the column and come back cut off, and one does: UN 2857 reads
+    "REFRIGERATING MACHINES ... or ammonia solutions (UN" in the 2025 volume,
+    where the export has the whole of it. A truncated name is not a name, and
+    preferring the newer edition is not a reason to put half a name on a
+    consignment note — so the export carries that one, and where both are cut
+    off ``english_name_is_usable`` still says so.
+    """
+    fresh = english_name_in_table_a(
+        str(entry.get("un") or entry.get("un_number") or "")).upper()
+    export = str(entry.get("name_en") or "").strip().upper()
+    if fresh and not _whole(fresh) and _whole(export):
+        return export
+    return fresh or export
+
+
 def english_name(entry: dict[str, Any]) -> str:
     """The English name, falling back on the German rather than on nothing."""
-    return str(entry.get("name_en") or entry.get("name_de") or "").strip().upper()
+    return (english_name_of(entry)
+            or str(entry.get("name_de") or "").strip().upper())
 
 
 def english_name_is_usable(entry: dict[str, Any]) -> bool:
     """Is there an English proper shipping name, and is it whole?
 
-    Fourteen entries in the Table A export carry an empty ``name_en`` — UN 3245
-    genetically modified organisms, UN 3374 acetylene solvent free, UN 2807
+    Fourteen entries in the Table A **export** carry an empty ``name_en`` — UN
+    3245 genetically modified organisms, UN 3374 acetylene solvent free, UN 2807
     magnetized material and eleven more — and UN 1139 carries the truncated
     "Coating solution (". ``english_name`` falls back on the German so a field
     is never blank, but on an IMDG or IATA document a German name is not a
     fallback: 5.4.1.4.1 and 8.1.2.1 require English, and a Dutch road document
     reading "BESCHERMLAK, OPLOSSING (SCHUTZANSTRICHLÖSUNG)" satisfies nothing
     either. So it has to be visible rather than papered over.
+
+    Since the English column is read from the 2025 volume this asks the book
+    first, and the check has almost nothing left to refuse — which is the point
+    of reading it. What it still refuses is an entry neither source names, and
+    the bracket test stays for the same reason it was written: a name cut off
+    mid-parenthesis is not an English name, wherever it came from.
     """
-    name = str(entry.get("name_en") or "").strip()
-    if not name:
-        return False
-    # A name that ends on an opening bracket was cut off in the export; the rest
-    # of the entry may be right but this field is not.
-    return name.count("(") == name.count(")")
+    return _whole(english_name_of(entry))
 
 
 def german_name_of(entry: dict[str, Any]) -> str:

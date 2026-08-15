@@ -33,7 +33,7 @@
     "setup": "Geen admin geconfigureerd. Stel ADMIN_USERNAME, ADMIN_EMAIL en ADMIN_PASSWORD in."
   },
   "wizard": {
-    "step2": "Colli",
+    "step2": "Goederen",
     "step3dg": "Gevaarlijke stoffen",
     "step4": "Export",
     "continue": "Doorgaan",
@@ -49,13 +49,13 @@
     "back": "Terug",
     "toExport": "Naar export",
     "toDg": "Naar gevaarlijke stoffen",
-    "dgIntro": "Vul de gevaarlijke-stoffengegevens in voor alle colli die als DG zijn gemarkeerd of waarin een UN-nummer is herkend.",
+    "dgIntro": "Vul de gevaarlijke-stoffengegevens in voor alle goederen die als DG zijn gemarkeerd of waarin een UN-nummer is herkend.",
     "dgSource": "Classificatie komt uit de meegeleverde offline ADR-database (Tabel A); waar internet beschikbaar is wordt die live aangevuld met de ADR 2025-bron.",
     "dgLine": "Regel",
     "dgVehicle": "Voertuig / lading",
     "dgVehicleHelp": "Omschrijving van het voertuig of de lading van deze DG-positie.",
     "dgLookup": "UN-nummer opzoeken",
-    "dgIncluded": "Gevaarlijke stoffen ingevuld voor {{count}} collo('s); de gegevens worden opgenomen in de geselecteerde DG-documenten.",
+    "dgIncluded": "Gevaarlijke stoffen ingevuld voor {{count}} goederenregel(s); de gegevens worden opgenomen in de geselecteerde DG-documenten.",
     "dgPositionOf": "Positie {{current}} van {{total}}",
     "progressStep": "Stap {{current}} van {{total}}",
     "stepForms": "Formulieren",
@@ -68,8 +68,8 @@
     "paste": "Plak hier uw regels: omschrijving | aantal | eenheid"
   },
   "review": {
-    "linesTitle": "Colli",
-    "intro": "Voer per collo een omschrijving in: kies materieel uit de catalogus of typ een eigen omschrijving met afmetingen. Excel-plakken kan via Importeren.",
+    "linesTitle": "Goederen",
+    "intro": "Voer per goederenregel een omschrijving in: kies materieel uit de catalogus of typ een eigen omschrijving met afmetingen. Excel-plakken kan via Importeren.",
     "description": "Omschrijving",
     "descriptionPlaceholder": "Kies materieel of typ bijv. staal hoekprofiel 80x80x8x6000",
     "customDescription": "Gebruik als vrije omschrijving (automatisch matchen)",
@@ -91,7 +91,7 @@
     "addLine": "Regel toevoegen",
     "duplicateLine": "Regel kopiëren",
     "removeLine": "Verwijderen",
-    "noLines": "Voeg minstens één collo met omschrijving toe.",
+    "noLines": "Voeg minstens één goederenregel met omschrijving toe.",
     "importExcel": "Importeren",
     "importTitle": "Importeren uit bestand of tekst",
     "importHint": "Plak gekopieerde kolommen uit Excel (omschrijving | aantal | eenheid), of download de template en upload een bestand.",
@@ -101,7 +101,7 @@
     "importAppend": "Toevoegen aan huidige regels",
     "importConfirm": "Importeren",
     "cancel": "Annuleren",
-    "dangerousGoods": "Gevaarlijke stoffen-collo",
+    "dangerousGoods": "Gevaarlijke stoffen",
     "dgDetected": "UN-nummer herkend",
     "dgSuggestedOne": "Herkend: UN {{un}} (klasse {{class}})",
     "dgSuggestedMany": "Meerdere stoffen herkend — kies het UN-nummer:",
@@ -133,7 +133,7 @@
     }
   },
   "messages": {
-    "dg_un_detected": "UN-nummer gedetecteerd — collo gemarkeerd als gevaarlijke stoffen",
+    "dg_un_detected": "UN-nummer gedetecteerd — regel gemarkeerd als gevaarlijke stoffen",
     "wall_thickness_missing": "Wanddikte ontbreekt — zonder die maat is het gewicht van een profiel niet te bepalen"
   },
   "status": {
@@ -232,7 +232,7 @@
   },
   "modality": {
     "title": "Kies uw transportmodaliteit",
-    "intro": "Start een nieuwe zending door een modaliteit te kiezen. Daarna selecteert u welke formulieren opgemaakt moeten worden en voert u de artikelen, producten of materieel in.",
+    "intro": "Start een nieuwe zending door een modaliteit te kiezen. U voert als afzender de goederen in; de app leidt af wat erbij hoort en stelt het documentenpakket samen.",
     "road": "Wegtransport",
     "roadDesc": "CMR- en AVC-vrachtbrief, paklijst en afleverbon",
     "rail": "Spoortransport",

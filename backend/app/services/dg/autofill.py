@@ -413,6 +413,52 @@ def _is_class1(product: dict[str, Any]) -> bool:
 
 _LAND_PROFILES = {"ADR", "RID", "ADN"}
 
+#: A footnote marker at the end of a table C density cell ("0,68 - 0,72 10)").
+_DENSITY_FOOTNOTE = re.compile(r"\s*\d+\)\s*$")
+
+#: What the density note says, per document language. The value is the book's,
+#: the caveat is the consignor's: table C prints the relative density of the
+#: substance as listed, and the actual product may differ.
+_DENSITY_NOTE = {
+    "nl": ("ADN 3.2 tabel C geeft als relatieve dichtheid: {values}. "
+           "Controleer de waarde voor uw eigen product "
+           "(veiligheidsinformatieblad, rubriek 9); daar staat ook d50."),
+    "en": ("ADN 3.2 Table C gives the relative density as: {values}. "
+           "Check the value against your own product "
+           "(safety data sheet, section 9), which also gives d50."),
+    "de": ("ADN 3.2 Tabelle C nennt als relative Dichte: {values}. "
+           "Prüfen Sie den Wert für Ihr eigenes Produkt "
+           "(Sicherheitsdatenblatt, Abschnitt 9); dort steht auch d50."),
+    "fr": ("Le tableau C du 3.2 de l'ADN donne comme densité relative : "
+           "{values}. Vérifiez la valeur pour votre propre produit "
+           "(fiche de données de sécurité, rubrique 9), qui donne aussi d50."),
+}
+
+
+def table_c_density(un_number: str) -> dict[str, Any] | None:
+    """The relative density column of ADN table C, as printed.
+
+    The consignor was being asked for the density of petrol at 15 °C as if
+    everyone knows it, while a read edition of the ADN prints a density for
+    329 of the 678 table C rows. What the book prints is returned verbatim
+    (footnote markers stripped); only where the column gives one single clean
+    number is a machine-readable value offered alongside — a range or a bound
+    ("0,68 - 0,72", "< 0,85") is shown, never averaged into an answer.
+    """
+    from app.services.dg.database import adn_table_c_rows
+
+    printed: list[str] = []
+    for row in adn_table_c_rows(un_number):
+        cell = _DENSITY_FOOTNOTE.sub("", str(row.get("density") or "").strip())
+        if cell and cell not in printed:
+            printed.append(cell)
+    if not printed:
+        return None
+    single = None
+    if len(printed) == 1 and re.fullmatch(r"\d+(?:[.,]\d+)?", printed[0]):
+        single = printed[0].replace(",", ".")
+    return {"printed": printed, "single": single}
+
 
 def open_questions_for(
     product: dict[str, Any], profiles: list[str]
@@ -870,6 +916,23 @@ def prepare_entries(
                         **derived["hints"],
                     })
             merged.update(derive_from_line(merged, lines_by_id.get(entry.get("line_id"))))
+            # The density the tank questions need, pulled from where it is
+            # already known: table C of the read ADN edition. One clean number
+            # fills d15 (visible in the summary, editable); a printed range is
+            # shown and never averaged into an answer.
+            if (str(merged.get("carriage_mode") or "") == "tank"
+                    and _LAND_PROFILES & set(profiles)):
+                density = table_c_density(str(merged.get("un_number") or ""))
+                if density:
+                    if density["single"] and not str(merged.get("density_15") or "").strip():
+                        merged["density_15"] = density["single"]
+                    note = _DENSITY_NOTE.get(language, _DENSITY_NOTE["nl"])
+                    hints.append({
+                        "line_id": entry.get("line_id"),
+                        "product_index": index,
+                        "un_number": merged.get("un_number"),
+                        "density_note": note.format(values="; ".join(density["printed"])),
+                    })
             # A transport prohibition belongs on the product itself: the points
             # count, document lines and totals then skip such a line instead of
             # computing with it.

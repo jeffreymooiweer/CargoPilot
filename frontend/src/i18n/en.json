@@ -33,7 +33,7 @@
     "setup": "No admin configured. Set ADMIN_USERNAME, ADMIN_EMAIL and ADMIN_PASSWORD."
   },
   "wizard": {
-    "step2": "Packages",
+    "step2": "Goods",
     "step3dg": "Dangerous goods",
     "step4": "Export",
     "continue": "Continue",
@@ -49,13 +49,13 @@
     "back": "Back",
     "toExport": "Continue to export",
     "toDg": "Continue to dangerous goods",
-    "dgIntro": "Complete the dangerous goods details for all packages marked as DG or in which a UN number was detected.",
+    "dgIntro": "Complete the dangerous goods details for all goods marked as DG or in which a UN number was detected.",
     "dgSource": "Classification comes from the bundled offline ADR database (Table A); where internet access is available it is enriched live from the ADR 2025 source.",
     "dgLine": "Line",
     "dgVehicle": "Vehicle / load",
     "dgVehicleHelp": "Description of the vehicle or load for this DG position.",
     "dgLookup": "Look up UN number",
-    "dgIncluded": "Dangerous goods completed for {{count}} package(s); the data is included in the selected DG documents.",
+    "dgIncluded": "Dangerous goods completed for {{count}} goods line(s); the data is included in the selected DG documents.",
     "dgPositionOf": "Position {{current}} of {{total}}",
     "progressStep": "Step {{current}} of {{total}}",
     "stepForms": "Forms",
@@ -68,8 +68,8 @@
     "paste": "Paste your lines here: description | quantity | unit"
   },
   "review": {
-    "linesTitle": "Packages",
-    "intro": "Enter a description per package: pick equipment from the catalogue or type your own description with dimensions. Paste from Excel via Import.",
+    "linesTitle": "Goods",
+    "intro": "Enter a description per goods line: pick equipment from the catalogue or type your own description with dimensions. Paste from Excel via Import.",
     "description": "Description",
     "descriptionPlaceholder": "Pick equipment or type e.g. steel angle 80x80x8x6000",
     "customDescription": "Use as free description (auto-match)",
@@ -91,7 +91,7 @@
     "addLine": "Add line",
     "duplicateLine": "Duplicate line",
     "removeLine": "Remove",
-    "noLines": "Add at least one package with a description.",
+    "noLines": "Add at least one goods line with a description.",
     "importExcel": "Import",
     "importTitle": "Import from file or text",
     "importHint": "Paste copied columns from Excel (description | quantity | unit), or download the template and upload a file.",
@@ -101,7 +101,7 @@
     "importAppend": "Append to current lines",
     "importConfirm": "Import",
     "cancel": "Cancel",
-    "dangerousGoods": "Dangerous goods package",
+    "dangerousGoods": "Dangerous goods",
     "dgDetected": "UN number detected",
     "dgSuggestedOne": "Recognised: UN {{un}} (class {{class}})",
     "dgSuggestedMany": "Several substances recognised — choose the UN number:",
@@ -133,7 +133,7 @@
     }
   },
   "messages": {
-    "dg_un_detected": "UN number detected — package marked as dangerous goods",
+    "dg_un_detected": "UN number detected — line marked as dangerous goods",
     "wall_thickness_missing": "Wall thickness missing — without it a profile's weight cannot be determined"
   },
   "status": {
@@ -232,7 +232,7 @@
   },
   "modality": {
     "title": "Choose your transport modality",
-    "intro": "Start a new shipment by choosing a modality. Then select which forms to prepare and enter your articles, products or equipment.",
+    "intro": "Start a new shipment by choosing a modality. As the consignor you enter the goods; the app derives what belongs to them and assembles the document pack.",
     "road": "Road transport",
     "roadDesc": "CMR and AVC waybill, packing list and delivery note",
     "rail": "Rail transport",

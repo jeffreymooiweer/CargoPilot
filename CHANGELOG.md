@@ -2,6 +2,34 @@
 
 All notable changes are documented here, following [Semantic Versioning](https://semver.org/).
 
+## [1.101.0] — 2026-08-15
+
+### Added
+
+- **The tank density comes from where it is already known.** The consignor
+  was being asked for the relative density of petrol at 15 °C as if everyone
+  knows it — while table C of the read ADN edition prints a density for 329
+  of its 678 rows. For a tank consignment the app now pulls that column:
+  one clean printed number fills d15 (visible in the summary, editable), a
+  printed range or bound ("0,68 - 0,72", "< 0,85") is shown as the book
+  gives it and never averaged into an answer. The note names the source and
+  the caveat in one breath: the value is the book's, the product is yours —
+  check the safety data sheet (section 9), which also gives d50. The density
+  field helps now say where to find the figure instead of assuming it is
+  known.
+
+### Changed
+
+- **The app speaks of goods, and to the consignor.** The first wizard step
+  was called "Colli"; it is now "Goods" in all four languages, and the
+  general entry texts follow ("add at least one goods line"). The word
+  *package* stays where the regulation itself uses it — the DG quantity
+  fields of 5.4.1.1.1 keep their regulatory names. The modality page and the
+  coverage documentation now say the role out loud: the person at the
+  keyboard is the consignor; the driver and the boatmaster never draw these
+  documents up — they receive them, carry them and, where a provision says
+  so, sign them on the spot.
+
 ## [1.100.0] — 2026-08-15
 
 ### Changed

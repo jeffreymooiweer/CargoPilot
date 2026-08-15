@@ -541,6 +541,9 @@ export interface DgPrepareHint {
    *  number. Kept under the old name as well, because it is the key the
    *  interface, the export and the tests already read. */
   packing_group_note?: string;
+  /** The relative density as ADN table C prints it, with the caveat that the
+   *  consignor's own product may differ. */
+  density_note?: string;
   table_a_variant_note?: string;
   air_note?: string;
   air_forbidden?: boolean;

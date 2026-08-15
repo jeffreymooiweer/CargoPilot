@@ -687,6 +687,7 @@ function AutoDerivedPanel({ prepared }: { prepared: DgPrepareResult }) {
       hint.imdg_document_requirement &&
         `IMDG ${hint.imdg_document_requirement.section} — ${hint.imdg_document_requirement.text}`,
       hint.packing_group_note,
+      hint.density_note,
       hint.air_note,
       hint.label_reference_note,
       hint.limited_quantity_text,

@@ -78,10 +78,15 @@ part of the second. It does not attempt the parts of the second that depend on t
 vessel, the aircraft or the route — and those are not marginal. The *vehicle* half moved
 inside in v1.82.0: which tank may carry which goods is now answered from ADR 4.3.
 
-## What the driver and the boatmaster actually get
+## What the consignor can hand the driver and the boatmaster
 
 The third question ends in paper, so this is the honest list of what comes out — and of
-what has to be carried anyway and cannot come from here.
+what has to be carried anyway and cannot come from here. One role note that governs the
+whole table: **the person at the keyboard is the consignor.** The driver and the
+boatmaster never draw these documents up — they receive them, carry them and, where a
+provision says so (the 8.6.3 checklist), sign them on the spot. Every screen of the
+wizard is therefore written to the consignor, and nothing in the application asks the
+crew to prepare paperwork that is the consignor's to prepare.
 
 | Document | Provision | Road (ADR) | Inland waterway (ADN) |
 |---|---|---|---|

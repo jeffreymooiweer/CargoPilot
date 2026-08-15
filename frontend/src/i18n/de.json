@@ -466,6 +466,11 @@
     "adnAdmission": {
       "ok": "zugelassen",
       "not_permitted": "nicht zugelassen"
+    },
+    "bulkAdmissionTitle": "Zulassung zur Beförderung in loser Schüttung (ADR 7.3.1.1)",
+    "bulkAdmission": {
+      "ok": "zugelassen",
+      "not_permitted": "nicht zugelassen"
     }
   },
   "dgauto": {

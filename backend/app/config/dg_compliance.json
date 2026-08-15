@@ -3348,5 +3348,75 @@
         "fr": "ADN 5.4.1.1.1 j) : la colonne (11) du tableau A porte ST01 pour cette matière. Le document de transport doit donc comporter une confirmation de stabilisation : l'expéditeur certifie que la matière a été stabilisée conformément aux prescriptions du Code IMSBC pour les engrais au nitrate d'ammonium (7.1.6.11). Dans les États qui l'exigent, le transport en vrac n'est autorisé qu'avec l'accord de l'autorité compétente."
       }
     }
+  },
+  "adr_bulk_admission": {
+    "source": "ADR 2025 — 7.3.1.1, 7.3.2.1 and 7.3.3.1, read in the official Dutch edition (printed pages 1398-1403) and the UNECE English and French volumes II (pages 589-592 / 621-625), which agree.",
+    "_what_7_3_1_1_says": "Goods may not be carried in bulk unless column (10) of table A carries a BK code (bulk containers, conditions of 7.3.2) or column (17) carries a VC code (vehicles and containers, conditions of that provision plus any AP provisions of 7.3.3). Nevertheless, empty uncleaned packagings may be carried in bulk if the goods they contained are allowed for this mode. Both columns are in adr_table_a.json since v1.65.0; nothing computed with them until this check.",
+    "bk_meanings": {
+      "BK1": {
+        "nl": "vervoer als losgestort goed in bulkcontainers met dekzeil is toegestaan",
+        "en": "carriage in bulk in sheeted bulk containers is permitted",
+        "de": "Beförderung in loser Schüttung in bedeckten Schüttgut-Containern ist zugelassen",
+        "fr": "le transport en vrac en conteneurs pour vrac bâchés est autorisé"
+      },
+      "BK2": {
+        "nl": "vervoer als losgestort goed in gesloten bulkcontainers is toegestaan",
+        "en": "carriage in bulk in closed bulk containers is permitted",
+        "de": "Beförderung in loser Schüttung in geschlossenen Schüttgut-Containern ist zugelassen",
+        "fr": "le transport en vrac en conteneurs pour vrac fermés est autorisé"
+      },
+      "BK3": {
+        "nl": "vervoer in flexibele bulkcontainers is toegestaan",
+        "en": "carriage in flexible bulk containers is permitted",
+        "de": "Beförderung in flexiblen Schüttgut-Containern ist zugelassen",
+        "fr": "le transport en conteneurs pour vrac souples est autorisé"
+      }
+    },
+    "vc_meanings": {
+      "VC1": {
+        "nl": "vervoer als losgestort goed in voertuigen, containers of bulkcontainers met dekzeil is toegestaan",
+        "en": "carriage in bulk in sheeted vehicles, sheeted containers or sheeted bulk containers is permitted",
+        "de": "Beförderung in loser Schüttung in bedeckten Fahrzeugen, bedeckten Containern oder bedeckten Schüttgut-Containern ist zugelassen",
+        "fr": "le transport en vrac dans des véhicules bâchés, des conteneurs bâchés ou des conteneurs pour vrac bâchés est autorisé"
+      },
+      "VC2": {
+        "nl": "vervoer als losgestort goed in gesloten voertuigen, gesloten containers of gesloten bulkcontainers is toegestaan",
+        "en": "carriage in bulk in closed vehicles, closed containers or closed bulk containers is permitted",
+        "de": "Beförderung in loser Schüttung in geschlossenen Fahrzeugen, geschlossenen Containern oder geschlossenen Schüttgut-Containern ist zugelassen",
+        "fr": "le transport en vrac dans des véhicules couverts, des conteneurs fermés ou des conteneurs pour vrac fermés est autorisé"
+      },
+      "VC3": {
+        "nl": "vervoer als losgestort goed is toegestaan in speciaal uitgeruste voertuigen of containers volgens de normen van de bevoegde autoriteit van het land van herkomst",
+        "en": "carriage in bulk is permitted in specially equipped vehicles or containers in accordance with standards specified by the competent authority of the country of origin",
+        "de": "Beförderung in loser Schüttung ist in besonders ausgerüsteten Fahrzeugen oder Containern nach den von der zuständigen Behörde des Ursprungslandes festgelegten Normen zugelassen",
+        "fr": "le transport en vrac est autorisé dans des véhicules ou conteneurs spécialement équipés conformes aux normes spécifiées par l'autorité compétente du pays d'origine"
+      }
+    },
+    "rules": {
+      "permitted": {
+        "nl": "{product} mag losgestort worden vervoerd. {codes} — {meanings}. De voorwaarden van {conditions} gelden daarnaast en gaan over de uitrusting; die kan deze applicatie niet zien.",
+        "en": "{product} may be carried in bulk. {codes} — {meanings}. The conditions of {conditions} apply in addition and concern the equipment, which this application cannot see.",
+        "de": "{product} darf in loser Schüttung befördert werden. {codes} — {meanings}. Die Bedingungen von {conditions} gelten zusätzlich und betreffen die Ausrüstung, die diese Anwendung nicht sehen kann.",
+        "fr": "{product} peut être transporté en vrac. {codes} — {meanings}. Les conditions de {conditions} s'appliquent en outre et concernent l'équipement, que cette application ne peut pas voir."
+      },
+      "ap_conditions": {
+        "nl": "Aanvullende bepalingen {codes} (7.3.3.2) zijn van toepassing; hun tekst stelt eisen aan bak, ventilatie of vorm van de stof en gaat mee als voorwaarde.",
+        "en": "Additional provisions {codes} (7.3.3.2) apply; their text sets requirements on the body, ventilation or the form of the substance and travels as a condition.",
+        "de": "Zusätzliche Bestimmungen {codes} (7.3.3.2) gelten; ihr Wortlaut stellt Anforderungen an Aufbau, Belüftung oder die Form des Stoffes und gilt als Bedingung.",
+        "fr": "Les dispositions supplémentaires {codes} (7.3.3.2) s'appliquent ; leur texte impose des exigences sur la caisse, la ventilation ou la forme de la matière et accompagne l'envoi comme condition."
+      },
+      "not_permitted": {
+        "nl": "{product} mag niet losgestort worden vervoerd: kolom (10) draagt geen BK-code en kolom (17) geen VC-code (7.3.1.1). Kies colli of tank.",
+        "en": "{product} may not be carried in bulk: column (10) carries no BK code and column (17) no VC code (7.3.1.1). Choose packages or a tank.",
+        "de": "{product} darf nicht in loser Schüttung befördert werden: Spalte (10) trägt keinen BK-Code und Spalte (17) keinen VC-Code (7.3.1.1). Wählen Sie Versandstücke oder einen Tank.",
+        "fr": "{product} ne peut pas être transporté en vrac : la colonne (10) ne porte aucun code BK et la colonne (17) aucun code VC (7.3.1.1). Choisissez des colis ou une citerne."
+      },
+      "empty_uncleaned": {
+        "nl": "Lege, ongereinigde verpakkingen mogen losgestort worden vervoerd wanneer de goederen die zij bevatten voor deze vervoerswijze zijn toegestaan (7.3.1.1); dit oordeel betreft de stof zelf.",
+        "en": "Empty uncleaned packagings may be carried in bulk where the goods they contained are allowed for this mode (7.3.1.1); this finding concerns the substance itself.",
+        "de": "Leere, ungereinigte Verpackungen dürfen in loser Schüttung befördert werden, wenn die enthaltenen Güter für diese Beförderungsart zugelassen sind (7.3.1.1); dieser Befund betrifft den Stoff selbst.",
+        "fr": "Les emballages vides, non nettoyés peuvent être transportés en vrac lorsque les marchandises qu'ils contenaient sont autorisées pour ce mode (7.3.1.1) ; cette conclusion concerne la matière elle-même."
+      }
+    }
   }
 }

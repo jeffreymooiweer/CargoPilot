@@ -466,6 +466,11 @@
     "adnAdmission": {
       "ok": "autorisé",
       "not_permitted": "non autorisé"
+    },
+    "bulkAdmissionTitle": "Admission au transport en vrac (ADR 7.3.1.1)",
+    "bulkAdmission": {
+      "ok": "autorisé",
+      "not_permitted": "non autorisé"
     }
   },
   "dgauto": {

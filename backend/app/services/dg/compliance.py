@@ -1955,6 +1955,106 @@ def check_adr_tank_admission(
     }
 
 
+#: The three codes each bulk column can carry, and nothing else counts as one:
+#: a stray word in the cell must not read as a permission.
+_BK_CODE = re.compile(r"\bBK[123]\b")
+_VC_CODE = re.compile(r"\bVC[123]\b")
+_AP_CODE = re.compile(r"\bAP\d+\b")
+
+
+def check_adr_bulk_admission(
+    entries: list[dict[str, Any]], language: str = "nl",
+) -> dict[str, Any]:
+    """ADR 7.3.1.1: may these goods travel in bulk at all, and in what?
+
+    The columns have been in the seed since v1.65.0 — the BK codes inside
+    column (10) and the VC and AP codes of column (17) — and nothing computed
+    with them: a bulk consignment got no admission answer where a tank load has
+    had one since v1.66.0. The rule is the same shape as the tank rule, read in
+    the Dutch edition (printed 1398-1403) and the UNECE English and French
+    volumes II, which agree:
+
+    - a **BK code in column (10)** admits the goods to bulk containers, under
+      the conditions of 7.3.2 (equipment conditions this application cannot
+      see, so they travel as conditions);
+    - a **VC code in column (17)** admits them to sheeted or closed vehicles
+      and containers, with any **AP provisions** of 7.3.3.2 alongside;
+    - **neither** means bulk carriage is not permitted, full stop — with the
+      one exception 7.3.1.1 itself makes for empty uncleaned packagings whose
+      former contents are admitted.
+    """
+    rules = get_compliance_rules()["adr_bulk_admission"]
+    lang = _lang(language)
+
+    def text(key: str, **values: Any) -> str:
+        block = rules["rules"][key]
+        return (block.get(lang) or block["en"]).format(**values)
+
+    items: list[dict[str, Any]] = []
+    blocked = False
+    for entry, index, product in _iter_products(entries):
+        if product.get("transport_forbidden"):
+            continue
+        if str(product.get("carriage_mode") or "").strip() != "bulk":
+            continue
+        label = _product_label(entry, product, index)
+        rows = database.get_un_entries(str(product.get("un_number") or "").strip())
+        row = rows[0] if rows else {}
+        bk = _BK_CODE.findall(str(row.get("portable_tank_instructions") or ""))
+        vc = _VC_CODE.findall(str(row.get("carriage_bulk") or ""))
+        ap = _AP_CODE.findall(str(row.get("carriage_bulk") or ""))
+
+        if not bk and not vc:
+            if product.get("empty_uncleaned"):
+                # 7.3.1.1's own exception — but it turns on what the packagings
+                # *contained*, and an empty-uncleaned line still names its
+                # substance, so the finding stays on the substance's answer and
+                # the exception is said next to it rather than granted.
+                items.append({
+                    "position": label, "permitted": False,
+                    "provision": "7.3.1.1",
+                    "message": text("not_permitted", product=label)
+                               + " " + text("empty_uncleaned"),
+                })
+            else:
+                items.append({
+                    "position": label, "permitted": False,
+                    "provision": "7.3.1.1",
+                    "message": text("not_permitted", product=label),
+                })
+            blocked = True
+            continue
+
+        codes = bk + vc
+        meanings = "; ".join(
+            (rules["bk_meanings"] if code.startswith("BK")
+             else rules["vc_meanings"])[code].get(lang)
+            or (rules["bk_meanings"] if code.startswith("BK")
+                else rules["vc_meanings"])[code]["en"]
+            for code in codes)
+        conditions = " + ".join(p for p, present in
+                                (("7.3.2", bool(bk)), ("7.3.3", bool(vc)))
+                                if present)
+        message = text("permitted", product=label, codes=", ".join(codes),
+                       meanings=meanings, conditions=conditions)
+        if ap:
+            message += " " + text("ap_conditions", codes=", ".join(ap))
+        items.append({
+            "position": label, "permitted": True,
+            "bk_codes": bk, "vc_codes": vc, "ap_codes": ap,
+            "provision": "7.3.1.1",
+            "message": message,
+        })
+
+    if not items:
+        return {"status": "not_checked", "items": []}
+    return {
+        "status": "not_permitted" if blocked else "ok",
+        "items": items,
+        "source": rules["source"],
+    }
+
+
 def check_adr_tank_fit(
     entries: list[dict[str, Any]], language: str = "nl",
 ) -> dict[str, Any]:
@@ -4550,6 +4650,11 @@ def check_compliance(
         admission = check_adr_tank_admission(entries, language)
         if admission.get("status") != "not_checked":
             result["adr_tank_admission"] = admission
+        # And in bulk — the same question with its own columns (7.3.1.1). Only
+        # speaks when a carriage mode says the goods travel that way.
+        bulk = check_adr_bulk_admission(entries, language)
+        if bulk.get("status") != "not_checked":
+            result["adr_bulk_admission"] = bulk
         # And once admitted: may *this* tank carry it? Only speaks when the
         # consignor has said which tank is standing there.
         fit = check_adr_tank_fit(entries, language)

@@ -466,6 +466,11 @@
     "adnAdmission": {
       "ok": "toegelaten",
       "not_permitted": "niet toegelaten"
+    },
+    "bulkAdmissionTitle": "Toelating tot losgestort vervoer (ADR 7.3.1.1)",
+    "bulkAdmission": {
+      "ok": "toegestaan",
+      "not_permitted": "niet toegestaan"
     }
   },
   "dgauto": {

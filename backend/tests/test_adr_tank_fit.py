@@ -133,17 +133,21 @@ def test_the_inheritance_is_followed_down_the_chain():
     assert any(row["classification_code"] == "F1" for row in answer["permitted"])
 
 
-def test_an_unsettled_link_is_said_out_loud():
+def test_no_cell_is_left_unsettled():
     """Where a cell of the chain is not confirmed by two readings, the answer
-    is neither yes nor no. Saying "does not fit" there would be a claim the
-    books have not made, and saying "fits" would be worse."""
+    is neither yes nor no — that rule stands, and since the fourth reading it
+    has nothing left to fire on. The French volume II, the treaty's other
+    authentic language, sided with the Dutch on L10BH's group, with the German
+    on L10DH's inheritance, and with everyone on S10AH's nine codes — the
+    strays of the other readings spell the inheritance sentence (S, G, A, V is
+    SGAV leaking into the cell). Every code answers now."""
     seed = json.loads(SEED.read_text(encoding="utf-8"))
     unsettled = [row["tank_code"] for row in seed["rationalised"]
                  if row.get("disputed")]
-    assert unsettled, "this test is about the unsettled cells; there are none"
-
-    answer = database.adr_tank_permissions(unsettled[0])
-    assert answer["unsettled"]
+    assert unsettled == []
+    for code in ("L10BH", "L10DH", "S10AH"):
+        answer = database.adr_tank_permissions(code)
+        assert not answer.get("unsettled"), code
 
 
 def test_the_seed_says_which_books_it_was_read_from():
@@ -177,11 +181,12 @@ def test_three_books_settle_what_two_could_not():
     the cell. Seven of eighteen codes were settled on every cell before; the
     bookkeeping below is what the seed must keep carrying."""
     check = json.loads(SEED.read_text(encoding="utf-8"))["cross_check"]
-    assert check["readings"] == ["en", "nl", "de"]
+    assert check["readings"] == ["en", "nl", "de", "fr"]
     assert check["tank_codes"] == 18
-    assert check["codes_settled_on_every_cell"] >= 15
+    assert check["codes_settled_on_every_cell"] == 18
     assert check["cells_a_third_reading_settled"] >= 15
-    assert check["cells_no_two_readings_agree_on"] <= 3
+    assert check["cells_the_fourth_reading_settled"] == 3
+    assert check["cells_no_two_readings_agree_on"] == 0
 
 
 def test_petrol_in_an_l15bn_tank_is_a_condition_and_not_a_refusal():

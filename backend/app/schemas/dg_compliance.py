@@ -93,6 +93,9 @@ class DangerousGoodsProduct(BaseModel):
     is_waste: str | bool | None = None
     empty_uncleaned: str | bool | None = None
     salvage_packaging: str | None = None
+    # ADN 7.1.5.0.2: the consignor's statement that the goods travel
+    # exclusively in containers — the reduction's own condition.
+    containers_only: str | bool | None = None
 
     @field_validator("salvage_packaging")
     @classmethod

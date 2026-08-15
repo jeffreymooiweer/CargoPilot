@@ -1757,6 +1757,55 @@ def _tank_vessel_signals(products, rules, lang: str) -> dict[str, Any]:
 
 
 
+def _containers_reduction(count: int, product: dict[str, Any],
+                          rules: dict[str, Any]) -> int | None:
+    """7.1.5.0.2 for one substance, from the table read in v1.64.0.
+
+    None where the statement was made but the gross mass the threshold compares
+    against is missing — the caller then keeps the full count and says why,
+    because a reduction granted without its mass would understate the signals.
+    """
+    from app.services.dg.autofill import total_quantity
+
+    pg = str(product.get("packing_group") or "").strip().upper()
+    hazard = _primary_class(product)
+    if not hazard or not pg:
+        # A caller that sends only the UN number still deserves the right
+        # selector: the class and packing group are table A's to give, and
+        # defaulting to "other" would reduce a chlorine load to no cones.
+        rows = database.get_un_entries(
+            str(product.get("un_number") or product.get("un") or "").strip())
+        if rows:
+            hazard = hazard or str(rows[0].get("class") or "").strip()
+            pg = pg or str(rows[0].get("packing_group") or "").strip().upper()
+    is_class2_or_pgi = hazard.startswith("2") or pg == "I"
+    selector = "class_2_or_pg_i" if is_class2_or_pgi else "other"
+    mass_kg: float | None = None
+    gross = _num(product.get("gross_mass_per_package"))
+    packages = _num(product.get("quantity_packages"))
+    if gross is not None and packages is not None:
+        mass_kg = gross * packages
+    else:
+        total, unit = total_quantity(product)
+        if total is not None and unit == "kg":
+            mass_kg = total
+
+    for row in rules["containers_reduction"]["rows"]:
+        if row["column_12"] != count:
+            continue
+        if row["selector"] not in (selector, "all"):
+            continue
+        if row.get("any_mass"):
+            return row["cones"]
+        if mass_kg is None:
+            return None
+        if "above_kg" in row and mass_kg > row["above_kg"]:
+            return row["cones"]
+        if "at_or_below_kg" in row and mass_kg <= row["at_or_below_kg"]:
+            return row["cones"]
+    return count
+
+
 def check_adn_signals(
     entries: list[dict[str, Any]], language: str = "nl",
 ) -> dict[str, Any]:
@@ -1777,12 +1826,15 @@ def check_adn_signals(
       single package of a two-cone substance sets the signals for everything
       else on board.
 
-    What is not applied is **7.1.5.0.2**, which lowers the count for goods
-    carried exclusively in containers against a gross mass of 130,000 kg or
-    30,000 kg. The comparison on the second row of that table is not legible in
-    the text available here, and a threshold read wrong is worse than one not
-    read. Its absence can only overstate the signals, which is the safe
-    direction; `containers_note` says so rather than leaving it to be found out.
+    **7.1.5.0.2** — the reduction for goods carried exclusively in containers —
+    is applied since v1.94.0, and only where the consignor has *stated* the
+    exclusive container carriage per substance: that statement is the
+    provision's own condition, and inferring it from a packaging type would be
+    guessing at the very fact it turns on. The thresholds were read in v1.64.0
+    and have sat in the configuration since, recorded so they would not be read
+    a second time when the input arrived. Where the statement is made but the
+    gross mass the threshold compares against is missing, the full signals
+    stand and the answer says why — over-signalling is the safe direction.
     """
     rules = get_compliance_rules()["adn_signals"]
     lang = _lang(language)
@@ -1806,6 +1858,8 @@ def check_adn_signals(
     highest: int | None = None
     setters: list[str] = []
     unsettled: list[str] = []
+    reduced: list[str] = []
+    reduction_blocked: list[str] = []
     for entry, index, product in products:
         un_number = str(product.get("un_number") or product.get("un") or "").strip()
         signal = database.adn_blue_cones(un_number)
@@ -1818,6 +1872,13 @@ def check_adn_signals(
         count = signal["cones"]
         if count is None:
             continue
+        if product.get("containers_only") and count:
+            lowered = _containers_reduction(count, product, rules)
+            if lowered is None:
+                reduction_blocked.append(label)
+            elif lowered != count:
+                count = lowered
+                reduced.append(label)
         if highest is None or count > highest:
             highest, setters = count, [label]
         elif count == highest:
@@ -1854,6 +1915,16 @@ def check_adn_signals(
                                   or rules["not_settled"]["en"]).format(
             products=", ".join(sorted(unsettled)))
         result["cones_not_settled"] = sorted(unsettled)
+    if reduced:
+        result["containers_reduction_applied"] = (
+            rules["reduction_applied"].get(lang)
+            or rules["reduction_applied"]["en"]).format(
+            products=", ".join(sorted(reduced)))
+    if reduction_blocked:
+        result["containers_reduction_incomplete"] = (
+            rules["reduction_needs_mass"].get(lang)
+            or rules["reduction_needs_mass"]["en"]).format(
+            products=", ".join(sorted(reduction_blocked)))
     return result
 
 

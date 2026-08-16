@@ -140,7 +140,13 @@ recognised, and answer only the questions the app itself has open. Two modes:
   content: every value still passes the same validators, every question still
   comes from the app's own open-questions list, and everything stays on your
   server (the one-time download is the assistant's only external traffic).
-  Footprint: about 2 GB of disk and 2.5 GB of RAM while in use.
+
+Measured on a standard 4-vCPU runner with the exact pinned runtime (the
+`measure-assistant-latency` workflow, so the figures can be reproduced):
+model loaded in 2 s, a free-prose sentence split into goods lines in 5.9 s, a
+paraphrased answer mapped onto an option in 2.1 s, ~2.4 GB RSS while running,
+~1.9 GB disk. Without the model installed the assistant answers instantly and
+needs nothing.
 
 ## Good to know
 

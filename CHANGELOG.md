@@ -2,6 +2,30 @@
 
 All notable changes are documented here, following [Semantic Versioning](https://semver.org/).
 
+## [1.105.0] — 2026-08-16
+
+### Added
+
+- **Chat-first.** The modality page gains a describe-your-shipment box:
+  type "1000 jerrycans of diesel from Rotterdam to Duisburg", pick the
+  transport mode, and the wizard opens with the assistant already working
+  on that sentence. Typing nothing changes nothing.
+- **The latency figures are measured, not guessed.** The
+  `measure-assistant-latency` workflow installs the exact pinned runtime on
+  a standard 4-vCPU runner and times the assistant's two real extraction
+  shapes. First run, with Qwen3's default thinking mode: 31–36 seconds per
+  turn, and one paraphrase mapped onto the wrong option. Two fixes came out
+  of that measurement: the runtime now starts the server with reasoning
+  off, and a deterministic reverse match answers a paraphrase that contains
+  an option's own word before the model is consulted at all. Second run, as
+  the runtime really starts: model loaded in 2 s, free prose split into two
+  correct goods lines in 5.9 s, a paraphrase mapped — correctly — in 2.1 s,
+  ~2.4 GB RSS. The README carries the figures and the workflow that
+  reproduces them.
+- **The assistant's archetypes run over the real API**: the diesel ride and
+  a plain steel consignment, end to end through `POST /api/assistant/step`
+  in deterministic mode — the mode every installation has.
+
 ## [1.104.0] — 2026-08-16
 
 ### Added

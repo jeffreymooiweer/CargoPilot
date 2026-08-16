@@ -121,6 +121,33 @@ an issue. [CONTRIBUTING.md](CONTRIBUTING.md) explains why and what a useful repo
 like. Security problems go through
 [private reporting](SECURITY.md) rather than a public issue.
 
+## The AI assistant (optional)
+
+The wizard can be driven in natural language: describe the shipment ("1000
+jerrycans of diesel from Rotterdam to Duisburg"), confirm what the app
+recognised, and answer only the questions the app itself has open. Two modes:
+
+- **Guided input (default, nothing to install).** The chat works without any
+  language model: the parser, the name recognition and the wizard's own open
+  questions carry the whole conversation. This is what every installation has
+  out of the box, at no extra footprint.
+- **With the local model (opt-in).** An admin can install a small local
+  language model in *Settings*: the official Qwen3-1.7B (Apache-2.0) served
+  by llama.cpp, downloaded once into `/data/assistant` and verified against
+  SHA-256 pins recorded in this repository. It only makes the *reading*
+  more flexible — free prose is split into goods lines, paraphrased answers
+  are mapped onto the question's own options. It never decides regulatory
+  content: every value still passes the same validators, every question still
+  comes from the app's own open-questions list, and everything stays on your
+  server (the one-time download is the assistant's only external traffic).
+
+Measured on a standard 4-vCPU runner with the exact pinned runtime (the
+`measure-assistant-latency` workflow, so the figures can be reproduced):
+model loaded in 2 s, a free-prose sentence split into goods lines in 5.9 s, a
+paraphrased answer mapped onto an option in 2.1 s, ~2.4 GB RSS while running,
+~1.9 GB disk. Without the model installed the assistant answers instantly and
+needs nothing.
+
 ## Good to know
 
 CargoPilot is a **civilian** tool. It prepares paperwork; it does not give legal,

@@ -255,7 +255,10 @@
     "multimodal": "Multimodal",
     "multimodalDesc": "Combinaison de modes — tous les formulaires",
     "locked": "en développement",
-    "lockedReason": "Ce mode n'est pas encore disponible. Ses vérifications réglementaires sont incomplètes, et un document à moitié juste est pire que pas de document. Le transport routier est disponible."
+    "lockedReason": "Ce mode n'est pas encore disponible. Ses vérifications réglementaires sont incomplètes, et un document à moitié juste est pire que pas de document. Le transport routier est disponible.",
+    "describeLabel": "Ou décrivez votre envoi directement",
+    "describePlaceholder": "p. ex. 1000 jerricanes de diesel de Rotterdam à Duisbourg",
+    "describeHint": "Choisissez ensuite le mode de transport ; l'assistant IA traite aussitôt votre description."
   },
   "forms": {
     "title": "Quels formulaires souhaitez-vous préparer ?",

@@ -255,7 +255,10 @@
     "multimodal": "Multimodal",
     "multimodalDesc": "Kombination von Verkehrsträgern — alle Formulare",
     "locked": "in Entwicklung",
-    "lockedReason": "Diese Verkehrsträger ist noch nicht freigegeben. Die Prüfungen sind unvollständig, und ein halb richtiges Dokument ist schlimmer als keines. Der Straßenverkehr steht zur Verfügung."
+    "lockedReason": "Diese Verkehrsträger ist noch nicht freigegeben. Die Prüfungen sind unvollständig, und ein halb richtiges Dokument ist schlimmer als keines. Der Straßenverkehr steht zur Verfügung.",
+    "describeLabel": "Oder beschreiben Sie Ihre Sendung direkt",
+    "describePlaceholder": "z. B. 1000 Kanister Diesel von Rotterdam nach Duisburg",
+    "describeHint": "Wählen Sie danach den Verkehrsträger; der Assistent verarbeitet Ihre Beschreibung sofort."
   },
   "forms": {
     "title": "Welche Formulare möchten Sie erstellen?",

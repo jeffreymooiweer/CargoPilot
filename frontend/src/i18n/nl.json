@@ -255,7 +255,10 @@
     "multimodal": "Multimodaal",
     "multimodalDesc": "Combinatie van modaliteiten — alle formulieren",
     "locked": "in ontwikkeling",
-    "lockedReason": "Deze modaliteit is nog niet vrijgegeven. De regelgevingscontroles zijn nog niet compleet en een half kloppend document is erger dan geen document. Wegvervoer is wel beschikbaar."
+    "lockedReason": "Deze modaliteit is nog niet vrijgegeven. De regelgevingscontroles zijn nog niet compleet en een half kloppend document is erger dan geen document. Wegvervoer is wel beschikbaar.",
+    "describeLabel": "Of beschrijf uw zending direct",
+    "describePlaceholder": "bijv. 1000 jerrycans diesel van Rotterdam naar Duisburg",
+    "describeHint": "Kies daarna de vervoerswijze; de wizard opent met de AI-assistent die uw beschrijving meteen verwerkt."
   },
   "forms": {
     "title": "Welke formulieren wilt u opmaken?",

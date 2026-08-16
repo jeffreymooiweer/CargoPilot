@@ -38,23 +38,33 @@ jobs:
         run: |
           set -euo pipefail
           model=$(python3 -c "import json;print(json.load(open('backend/app/config/assistant_runtime.json'))['model']['filename'])")
-          LD_LIBRARY_PATH=bin ./bin/llama-server -m "$model" --host 127.0.0.1 --port 8012 -c 4096 --no-webui &
+          LD_LIBRARY_PATH=bin ./bin/llama-server -m "$model" --host 127.0.0.1 --port 8012 -c 4096 --no-webui --reasoning-budget 0 &
           for i in $(seq 1 120); do
             curl -sf http://127.0.0.1:8012/health >/dev/null && break; sleep 1
           done
           echo "MEASURE server ready after ${i}s"
           run_case () {
             local label="$1" system="$2" user="$3" schema="$4"
-            local start end
-            start=$(date +%s.%N)
-            curl -sf http://127.0.0.1:8012/v1/chat/completions -H 'Content-Type: application/json' -d "{
-              \"messages\": [{\"role\": \"system\", \"content\": $system},
-                             {\"role\": \"user\", \"content\": $user}],
-              \"temperature\": 0.1,
-              \"response_format\": {\"type\": \"json_schema\", \"json_schema\": {\"name\": \"extraction\", \"schema\": $schema}}
-            }" | python3 -c "import json,sys; print('  ->', json.load(sys.stdin)['choices'][0]['message']['content'])"
-            end=$(date +%s.%N)
-            echo "MEASURE ${label} seconds=$(echo "$end $start" | awk '{printf \"%.1f\", $1-$2}')"
+            python3 - "$label" "$system" "$user" "$schema" <<'PYEOF'
+          import json, sys, time, urllib.request
+          label, system, user, schema = sys.argv[1:5]
+          payload = json.dumps({
+              "messages": [{"role": "system", "content": json.loads(system)},
+                           {"role": "user", "content": json.loads(user)}],
+              "temperature": 0.1,
+              "response_format": {"type": "json_schema",
+                                  "json_schema": {"name": "extraction",
+                                                  "schema": json.loads(schema)}},
+          }).encode()
+          start = time.monotonic()
+          request = urllib.request.Request("http://127.0.0.1:8012/v1/chat/completions",
+                                           payload, {"Content-Type": "application/json"})
+          with urllib.request.urlopen(request, timeout=300) as response:
+              content = json.load(response)["choices"][0]["message"]["content"]
+          seconds = time.monotonic() - start
+          print("  ->", content)
+          print(f"MEASURE {label} seconds={seconds:.1f}")
+          PYEOF
           }
           run_case goods_nl \
             '"You convert a shipper'"'"'s free-text message into structured goods lines. Extract every distinct goods item with its quantity and unit where stated. Copy the wording as given; do not translate, classify or guess."' \

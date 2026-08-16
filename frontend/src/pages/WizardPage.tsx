@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { Link, Navigate, useParams } from "react-router";
+import { Link, Navigate, useLocation, useParams } from "react-router";
 import { useTranslation } from "react-i18next";
 import {
   api,
@@ -169,7 +169,12 @@ export default function WizardPage() {
   const [unCardsBusy, setUnCardsBusy] = useState(false);
   const [error, setError] = useState("");
   const [importOpen, setImportOpen] = useState(false);
-  const [assistantOpen, setAssistantOpen] = useState(false);
+  // Chat-first: a description typed on the modality page arrives as router
+  // state and opens the panel with that sentence as the first message.
+  const location = useLocation();
+  const chatFirstMessage =
+    (location.state as { assistantMessage?: string } | null)?.assistantMessage ?? null;
+  const [assistantOpen, setAssistantOpen] = useState(Boolean(chatFirstMessage));
 
   useEffect(() => {
     api
@@ -850,7 +855,11 @@ export default function WizardPage() {
       <WizardProgress steps={stepPills} currentStep={currentIndex + 1} />
 
       {assistantOpen && (
-        <AssistantPanel buildState={buildAssistantState} onApplyState={applyAssistantState} />
+        <AssistantPanel
+          buildState={buildAssistantState}
+          onApplyState={applyAssistantState}
+          initialMessage={chatFirstMessage}
+        />
       )}
 
       {stepKey === "lines" && (

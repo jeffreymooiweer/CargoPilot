@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { api, AssistantEvent, AssistantPending, AssistantState } from "../api/client";
 import { documentLanguage, localised } from "../i18n/language";
@@ -20,6 +20,8 @@ interface Props {
   buildState: () => AssistantState;
   /** The patched state coming back; the wizard page maps it onto its own. */
   onApplyState: (state: AssistantState) => void;
+  /** Chat-first: a description typed before the wizard opened; sent once. */
+  initialMessage?: string | null;
 }
 
 /** The chat beside the wizard.
@@ -30,7 +32,7 @@ interface Props {
  * The texts come from the same four-language sources the wizard itself uses —
  * so the chat can never promise anything the form does not show.
  */
-export default function AssistantPanel({ buildState, onApplyState }: Props) {
+export default function AssistantPanel({ buildState, onApplyState, initialMessage }: Props) {
   const { t, i18n } = useTranslation();
   const lang = documentLanguage(i18n.language);
   const [messages, setMessages] = useState<ChatMessage[]>([
@@ -41,6 +43,14 @@ export default function AssistantPanel({ buildState, onApplyState }: Props) {
   const [busy, setBusy] = useState(false);
   const pendingRef = useRef<AssistantPending | null>(null);
   const logRef = useRef<HTMLDivElement | null>(null);
+  // The chat-first sentence is sent exactly once, when the panel mounts.
+  const initialSent = useRef(false);
+  useEffect(() => {
+    if (initialSent.current || !initialMessage?.trim()) return;
+    initialSent.current = true;
+    void send(initialMessage.trim());
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [initialMessage]);
 
   const push = (message: ChatMessage) =>
     setMessages((current) => [...current, message]);

@@ -199,9 +199,14 @@ def ensure_server(timeout: float = 60.0) -> bool:
             return True
         _port = _free_port()
         binary = _server_binary()
+        # --reasoning-budget 0 turns the model's thinking mode off. Measured
+        # with it on (the Qwen3 default): 31-36 s per turn on 4 vCPUs, most of
+        # it spent thinking about a one-word answer — and the schema already
+        # does the disciplining that thinking is meant to buy.
         _process = subprocess.Popen(
             [str(binary), "-m", str(_model_path()), "--host", "127.0.0.1",
-             "--port", str(_port), "-c", "4096", "--no-webui"],
+             "--port", str(_port), "-c", "4096", "--no-webui",
+             "--reasoning-budget", "0"],
             stdout=subprocess.DEVNULL,
             stderr=subprocess.DEVNULL,
             env={"LD_LIBRARY_PATH": str(binary.parent)},

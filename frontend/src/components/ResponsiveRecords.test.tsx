@@ -11,6 +11,7 @@ import {
   render,
   screen,
   fireEvent,
+  waitFor,
   waitForElementToBeRemoved,
   within,
 } from "@testing-library/react";
@@ -341,7 +342,10 @@ describe("het detailpaneel", () => {
     expect(document.body.style.overflow).toBe("hidden");
     await userEvent.keyboard("{Escape}");
     await waitForElementToBeRemoved(() => screen.queryByRole("dialog"));
-    expect(document.body.style.overflow).not.toBe("hidden");
+    // The effect that releases the body runs on cleanup, which on a slow
+    // runner lands a tick after the dialog left the tree — seen once as a
+    // red main build. Awaiting it is the assertion the code actually makes.
+    await waitFor(() => expect(document.body.style.overflow).not.toBe("hidden"));
   });
 
   it("verdwijnt als de regel eronder verdwijnt", async () => {

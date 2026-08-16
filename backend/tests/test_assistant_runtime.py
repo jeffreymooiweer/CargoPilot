@@ -24,9 +24,25 @@ def db():
     session.close()
 
 
-def test_nothing_downloads_while_the_sources_are_unpinned():
-    """The config ships with null hashes until the pin workflow has hashed
-    the artifacts on a runner; until then the download refuses to run."""
+def test_the_shipped_sources_are_pinned_for_both_architectures():
+    """The pin workflow hashed the artifacts on a runner; the config must
+    carry those digests, or the download button would be dead on arrival."""
+    config = runtime.sources()
+    for arch in ("x86_64", "aarch64"):
+        assert len(config["server"][arch]["sha256"]) == 64, arch
+    assert len(config["model"]["sha256"]) == 64
+    assert config["model"]["size"] > 10**9
+
+
+def test_nothing_downloads_while_the_sources_are_unpinned(monkeypatch):
+    """A future edition bump starts with null hashes again; until the pin
+    workflow has hashed the new artifacts, the download refuses to run."""
+    unpinned = runtime.sources()
+    unpinned = {**unpinned,
+                "server": {runtime._arch(): {"url": "https://example.invalid/x",
+                                             "sha256": None}},
+                "model": {**unpinned.get("model", {}), "sha256": None}}
+    monkeypatch.setattr(runtime, "sources", lambda: unpinned)
     result = runtime.start_download()
     assert result == {"error": "sources_not_pinned"}
 

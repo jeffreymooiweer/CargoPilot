@@ -3,22 +3,22 @@
   "llama_tag": "b10452",
   "server": {
     "x86_64": {
-      "url": "https://github.com/ggml-org/llama.cpp/releases/download/b10452/llama-b10452-bin-ubuntu-x64.zip",
-      "sha256": null,
-      "size": null
+      "url": "https://github.com/ggml-org/llama.cpp/releases/download/b10452/llama-b10452-bin-ubuntu-x64.tar.gz",
+      "sha256": "31c81f76888bdb35db9b5b6bc880f8f9dc82ab9fdd6621fa6cd40d61f78cd82b",
+      "size": 16645886
     },
     "aarch64": {
-      "url": "https://github.com/ggml-org/llama.cpp/releases/download/b10452/llama-b10452-bin-ubuntu-arm64.zip",
-      "sha256": null,
-      "size": null
+      "url": "https://github.com/ggml-org/llama.cpp/releases/download/b10452/llama-b10452-bin-ubuntu-arm64.tar.gz",
+      "sha256": "0b7a7a40a2b89b77b93793c10db3807f0b467befe5c49466cf7b4bdc20042c03",
+      "size": 13508719
     }
   },
   "model": {
-    "name": "Qwen3-1.7B Q4_K_M",
-    "filename": "Qwen3-1.7B-Q4_K_M.gguf",
-    "url": "https://huggingface.co/Qwen/Qwen3-1.7B-GGUF/resolve/main/Qwen3-1.7B-Q4_K_M.gguf",
+    "name": "Qwen3-1.7B Q8_0",
+    "filename": "Qwen3-1.7B-Q8_0.gguf",
+    "url": "https://huggingface.co/Qwen/Qwen3-1.7B-GGUF/resolve/main/Qwen3-1.7B-Q8_0.gguf",
     "license": "Apache-2.0 (Qwen3, Alibaba Cloud)",
-    "sha256": null,
-    "size": null
+    "sha256": "061b54daade076b5d3362dac252678d17da8c68f07560be70818cace6590cb1a",
+    "size": 1834426016
   }
 }

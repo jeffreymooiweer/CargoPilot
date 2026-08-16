@@ -244,3 +244,21 @@ The filled-in official forms live in `templates/forms/`:
 | `avc.pdf` | AVC waybill, sVa / Stichting Vervoeradres |
 
 If you fork this repository publicly, check the redistribution terms of each form first.
+
+## Assistant runtime (optional, phase 23)
+
+The AI assistant's model runtime ships nothing in the image. When an admin
+enables it, two artifacts download once into `/data/assistant`, each verified
+against the SHA-256 pinned in `backend/app/config/assistant_runtime.json`:
+
+| Artifact | Source | License |
+|---|---|---|
+| `llama-server` (llama.cpp release binary, per architecture) | github.com/ggml-org/llama.cpp releases | MIT |
+| `Qwen3-1.7B-Q8_0.gguf` | huggingface.co/Qwen/Qwen3-1.7B-GGUF (official publisher) | Apache-2.0 |
+
+The pins are produced by the `pin-assistant-sources` workflow, which downloads
+and hashes the artifacts on a runner and prints the digests to its log — the
+same read-then-pin pattern the document store uses. A `null` pin means nobody
+has hashed that artifact yet, and the in-app download refuses to run. The model
+reads free text into structured fields only; every regulatory answer continues
+to come from the sources above.

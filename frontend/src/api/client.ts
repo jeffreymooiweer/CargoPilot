@@ -183,6 +183,12 @@ export const api = {
     request<UserPreferences>("/settings/me", { method: "PUT", body: JSON.stringify(payload) }),
   publicSettings: () => request<PublicSettings>("/settings/public"),
   settingsOptions: () => request<SettingsOptions>("/settings/options"),
+  assistantStatus: () => request<AssistantStatus>("/assistant/status"),
+  assistantModel: (action: "download" | "remove" | "stop") =>
+    request<Record<string, unknown>>("/assistant/model", {
+      method: "POST",
+      body: JSON.stringify({ action }),
+    }),
   instanceSettings: () => request<InstanceSettings>("/settings/instance"),
   saveInstanceSettings: (payload: InstanceSettings) =>
     request<InstanceSettings>("/settings/instance", { method: "PUT", body: JSON.stringify(payload) }),
@@ -385,6 +391,19 @@ export interface UserPreferences {
   loading_point: string;
   emergency_contact: string;
   signature_image: string;
+}
+
+/** The assistant runtime's condition: which mode it runs in, whether the
+ *  model is installed, and how an install in progress is doing. */
+export interface AssistantStatus {
+  available: boolean;
+  mode: "model" | "deterministic";
+  model: string | null;
+  installed: boolean;
+  installable: boolean;
+  architecture: string;
+  download: { state: string; detail: string };
+  running: boolean;
 }
 
 /** What the whole installation is set to. Administrators only. */

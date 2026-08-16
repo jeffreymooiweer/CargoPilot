@@ -1,0 +1,24 @@
+{
+  "_what_this_is": "The assistant's model runtime is not shipped in the image: the llama.cpp server binary and the GGUF model are downloaded to /data/assistant when an admin enables the assistant, and every download is verified against the SHA-256 pinned here. The pins are facts about files the pin-assistant-sources workflow fetched and hashed on a runner; a null sha256 means the artifact has not been pinned yet and the download refuses to run.",
+  "llama_tag": "b10452",
+  "server": {
+    "x86_64": {
+      "url": "https://github.com/ggml-org/llama.cpp/releases/download/b10452/llama-b10452-bin-ubuntu-x64.zip",
+      "sha256": null,
+      "size": null
+    },
+    "aarch64": {
+      "url": "https://github.com/ggml-org/llama.cpp/releases/download/b10452/llama-b10452-bin-ubuntu-arm64.zip",
+      "sha256": null,
+      "size": null
+    }
+  },
+  "model": {
+    "name": "Qwen3-1.7B Q4_K_M",
+    "filename": "Qwen3-1.7B-Q4_K_M.gguf",
+    "url": "https://huggingface.co/Qwen/Qwen3-1.7B-GGUF/resolve/main/Qwen3-1.7B-Q4_K_M.gguf",
+    "license": "Apache-2.0 (Qwen3, Alibaba Cloud)",
+    "sha256": null,
+    "size": null
+  }
+}

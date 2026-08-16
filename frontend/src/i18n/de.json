@@ -228,7 +228,16 @@
     "unCardsEnabled": "UN-Karten anbieten",
     "unCardsEnabledHint": "Der Download der UN-Karten bei einer Sendung mit gefährlichen Gütern.",
     "sessionTimeout": "Sitzungsdauer (Minuten)",
-    "sessionTimeoutHint": "Wie lange jemand angemeldet bleibt. 480 ist ein Arbeitstag."
+    "sessionTimeoutHint": "Wie lange jemand angemeldet bleibt. 480 ist ein Arbeitstag.",
+    "assistantTitle": "KI-Assistent (lokales Modell)",
+    "assistantIntro": "Der Assistent funktioniert immer — ohne Modell als geführte Eingabe. Hier wird nur die Flexibilität installiert: ein kleines lokales Sprachmodell, das freien Text liest. Alles bleibt auf Ihrem eigenen Server.",
+    "assistantMode": "Aktueller Modus",
+    "assistantDeterministic": "geführte Eingabe (ohne Modell)",
+    "assistantInstall": "Modell herunterladen und aktivieren",
+    "assistantRemove": "Modell entfernen",
+    "assistantDownloading": "Wird heruntergeladen und verifiziert…",
+    "assistantUnpinned": "Die Quellen sind in dieser Ausgabe noch nicht per Hash festgelegt; der Download bleibt deaktiviert, bis das geschehen ist.",
+    "assistantFootprint": "Mit Modell erforderlich: ± 2 GB zusätzlicher RAM und ± 1,2 GB Speicher in /data/assistant. Der Download wird gegen eine festgelegte SHA-256 geprüft und ist der einzige externe Verkehr des Assistenten."
   },
   "modality": {
     "title": "Wählen Sie Ihren Verkehrsträger",

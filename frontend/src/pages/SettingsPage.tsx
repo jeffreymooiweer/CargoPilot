@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
+  AssistantStatus,
   InstanceSettings,
   SettingsOptions,
   ThemeChoice,
@@ -248,6 +249,7 @@ export default function SettingsPage({ user }: Props) {
       {error && <p className="text-sm text-red-600 dark:text-red-400">{error}</p>}
 
       {user.role === "admin" && <AdminSettings />}
+      {user.role === "admin" && <AssistantAdmin />}
 
       {version && (
         <p className="text-xs text-slate-500 dark:text-slate-400">
@@ -511,5 +513,100 @@ function Toggle({
         {hint && <span className="block text-xs text-slate-500 dark:text-slate-400 mt-0.5">{hint}</span>}
       </span>
     </label>
+  );
+}
+
+/**
+ * The local AI model: an opt-in download, never part of the image.
+ *
+ * The assistant always works — without a model it runs its deterministic
+ * chain. What this block installs is flexibility only: a small local model
+ * that reads free text. The download is the assistant's single external
+ * fetch, verified against the SHA-256 pinned in the repository, into
+ * /data/assistant; while the sources are unpinned the button stays off.
+ */
+function AssistantAdmin() {
+  const { t } = useTranslation();
+  const [status, setStatus] = useState<AssistantStatus | null>(null);
+  const [error, setError] = useState("");
+
+  const refresh = () =>
+    api.assistantStatus().then(setStatus).catch((e) => setError(String(e)));
+
+  useEffect(() => {
+    void refresh();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    if (status?.download.state !== "downloading") return;
+    const timer = window.setInterval(() => void refresh(), 3000);
+    return () => window.clearInterval(timer);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [status?.download.state]);
+
+  if (!status) {
+    return error ? <p className="text-sm text-red-600 dark:text-red-400">{error}</p> : null;
+  }
+
+  const act = async (action: "download" | "remove") => {
+    setError("");
+    try {
+      await api.assistantModel(action);
+      await refresh();
+    } catch (e) {
+      setError(String(e));
+    }
+  };
+
+  return (
+    <section className={`${panelClass} p-5 space-y-4`}>
+      <h4 className="text-sm font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">
+        {t("settings.assistantTitle")}
+      </h4>
+      <p className="text-sm text-slate-600 dark:text-slate-400">{t("settings.assistantIntro")}</p>
+      <ul className="space-y-1 text-sm text-slate-700 dark:text-slate-300">
+        <li>
+          {t("settings.assistantMode")}:{" "}
+          <span className="font-medium">
+            {status.mode === "model" ? status.model : t("settings.assistantDeterministic")}
+          </span>
+        </li>
+        {status.download.state === "downloading" && (
+          <li className="text-amber-700 dark:text-amber-300">
+            {t("settings.assistantDownloading")} ({status.download.detail})
+          </li>
+        )}
+        {status.download.state === "error" && (
+          <li className="text-red-600 dark:text-red-400">{status.download.detail}</li>
+        )}
+      </ul>
+      <div className="flex flex-wrap gap-2">
+        {!status.installed && (
+          <button
+            type="button"
+            disabled={!status.installable || status.download.state === "downloading"}
+            onClick={() => void act("download")}
+            className="rounded-lg bg-brand-600 px-4 py-2 text-sm font-medium text-white hover:bg-brand-700 disabled:opacity-50"
+          >
+            {t("settings.assistantInstall")}
+          </button>
+        )}
+        {status.installed && (
+          <button
+            type="button"
+            onClick={() => void act("remove")}
+            className="rounded-lg border border-slate-200 px-4 py-2 text-sm text-slate-700 hover:bg-slate-50 dark:border-slate-700 dark:text-slate-200 dark:hover:bg-slate-800"
+          >
+            {t("settings.assistantRemove")}
+          </button>
+        )}
+      </div>
+      {!status.installable && !status.installed && (
+        <p className="text-xs text-slate-500 dark:text-slate-400">{t("settings.assistantUnpinned")}</p>
+      )}
+      <p className="text-xs text-slate-500 dark:text-slate-400">{t("settings.assistantFootprint")}</p>
+      {error && <p className="text-sm text-red-600 dark:text-red-400">{error}</p>}
+    </section>
   );
 }

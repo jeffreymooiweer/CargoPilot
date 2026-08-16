@@ -11,8 +11,9 @@ from pydantic import BaseModel, Field
 from sqlalchemy.orm import Session
 
 from app.core.database import get_db
-from app.core.deps import get_current_user
+from app.core.deps import get_current_user, require_admin
 from app.models.user import User
+from app.services.assistant import runtime
 from app.services.assistant.orchestrator import step
 
 router = APIRouter(prefix="/assistant", tags=["assistant"])
@@ -38,9 +39,29 @@ def assistant_step(
 def assistant_status(user: User = Depends(get_current_user)):
     """Whether the assistant can run, and in which mode.
 
-    Phase 22 always answers with the deterministic mode: the guided chain of
-    parser, name recognition and open questions. A language model (phase 23)
-    only changes how flexibly free text is read, never what may be asked or
-    answered.
+    The deterministic chain is always available; "model" mode only changes
+    how flexibly free text is read, never what may be asked or answered. The
+    status also carries the download state, so the settings page can show an
+    install in progress.
     """
-    return {"available": True, "mode": "deterministic", "model": None}
+    return runtime.status()
+
+
+class AssistantModelRequest(BaseModel):
+    action: str = Field(pattern="^(download|remove|stop)$")
+
+
+@router.post("/model")
+def assistant_model(
+    payload: AssistantModelRequest,
+    user: User = Depends(require_admin),
+):
+    """Install or remove the local model runtime. Admin only: the download
+    is the assistant's single external fetch, verified against the pinned
+    SHA-256 in assistant_runtime.json, into /data/assistant."""
+    if payload.action == "download":
+        return runtime.start_download()
+    if payload.action == "stop":
+        runtime.stop()
+        return {"stopped": True}
+    return runtime.remove()

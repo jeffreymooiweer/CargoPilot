@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { Link, Navigate, useLocation, useParams } from "react-router";
+import { Link, Navigate, useParams } from "react-router";
 import { useTranslation } from "react-i18next";
 import {
   api,
@@ -17,7 +17,8 @@ import { documentLanguage, localised, LANGUAGE_NAMES, SUPPORTED_LANGUAGES, Langu
 import DangerousGoodsStep, { buildDgEntries } from "../components/DangerousGoodsStep";
 import DgCompliancePanel from "../components/DgCompliancePanel";
 import DocumentWarnings, { useDocumentValidation } from "../components/DocumentWarnings";
-import AssistantPanel from "../components/AssistantPanel";
+import AiIcon from "../components/AiIcon";
+import AssistantModal from "../components/AssistantModal";
 import DocumentFieldsStep, { resolveSections } from "../components/DocumentFieldsStep";
 import DocumentAdvicePanel, { buildAdvice } from "../components/DocumentAdvicePanel";
 import ImportDialog from "../components/ImportDialog";
@@ -169,12 +170,7 @@ export default function WizardPage() {
   const [unCardsBusy, setUnCardsBusy] = useState(false);
   const [error, setError] = useState("");
   const [importOpen, setImportOpen] = useState(false);
-  // Chat-first: a description typed on the modality page arrives as router
-  // state and opens the panel with that sentence as the first message.
-  const location = useLocation();
-  const chatFirstMessage =
-    (location.state as { assistantMessage?: string } | null)?.assistantMessage ?? null;
-  const [assistantOpen, setAssistantOpen] = useState(Boolean(chatFirstMessage));
+  const [assistantOpen, setAssistantOpen] = useState(false);
 
   useEffect(() => {
     api
@@ -846,21 +842,26 @@ export default function WizardPage() {
         <button
           type="button"
           onClick={() => setAssistantOpen((open) => !open)}
-          className="ml-auto rounded-full border border-slate-200 px-3 py-1 text-xs font-medium text-slate-600 hover:bg-slate-50 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-800"
+          aria-label={assistantOpen ? t("assistant.close") : t("assistant.open")}
+          title={assistantOpen ? t("assistant.close") : t("assistant.open")}
+          className={`ml-auto inline-flex h-9 w-9 items-center justify-center rounded-lg border transition ${
+            assistantOpen
+              ? "border-brand-500 bg-brand-50 text-brand-700 dark:bg-brand-950/50 dark:text-brand-200"
+              : "border-slate-200 text-slate-600 hover:bg-slate-50 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-800"
+          }`}
         >
-          {assistantOpen ? t("assistant.close") : t("assistant.open")}
+          <AiIcon className="h-5 w-5" />
         </button>
       </div>
 
       <WizardProgress steps={stepPills} currentStep={currentIndex + 1} />
 
-      {assistantOpen && (
-        <AssistantPanel
-          buildState={buildAssistantState}
-          onApplyState={applyAssistantState}
-          initialMessage={chatFirstMessage}
-        />
-      )}
+      <AssistantModal
+        open={assistantOpen}
+        onClose={() => setAssistantOpen(false)}
+        buildState={buildAssistantState}
+        onApplyState={applyAssistantState}
+      />
 
       {stepKey === "lines" && (
         <div className="space-y-4">

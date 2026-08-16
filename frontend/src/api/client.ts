@@ -144,6 +144,16 @@ export const api = {
   calculate: (payload: Record<string, unknown>) =>
     request<CalcResult>("/calculate", { method: "POST", body: JSON.stringify(payload) }),
   dgInstructions: () => request<DgInstructions>("/dg/instructions"),
+  assistantStep: (payload: {
+    message: string;
+    state: AssistantState;
+    pending: AssistantPending | null;
+    language: string;
+  }) =>
+    request<AssistantStepResult>("/assistant/step", {
+      method: "POST",
+      body: JSON.stringify(payload),
+    }),
   unitCatalogue: () => request<UnitCatalogue>("/units"),
   convertUnit: (payload: {
     quantity?: number | null;
@@ -445,6 +455,38 @@ export interface DgNameCandidate {
   name: string;
   class: string;
   packing_group?: string;
+}
+
+/** The wizard state as the assistant exchanges it: the same data the wizard
+ *  holds, in the shape the stateless /assistant/step endpoint takes and
+ *  returns. Nothing of the conversation is stored on the server. */
+export interface AssistantState {
+  modality?: string;
+  draft_lines?: Record<string, unknown>[];
+  dg_entries?: DgEntry[];
+  doc_values?: Record<string, string>;
+  selected_docs?: string[] | null;
+  skipped_questions?: string[];
+}
+
+export interface AssistantPending {
+  scope: string;
+  field?: string;
+  required?: boolean;
+  options?: string[];
+  option_labels?: Record<string, unknown>;
+  [key: string]: unknown;
+}
+
+export interface AssistantEvent {
+  kind: string;
+  [key: string]: unknown;
+}
+
+export interface AssistantStepResult {
+  state: AssistantState;
+  events: AssistantEvent[];
+  pending: AssistantPending | null;
 }
 
 export interface CalcResult {

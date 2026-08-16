@@ -2,6 +2,31 @@
 
 All notable changes are documented here, following [Semantic Versioning](https://semver.org/).
 
+## [1.103.0] — 2026-08-16
+
+### Added
+
+- **An assistant on the wizard — deterministic first.** A chat panel
+  (toggle in the wizard) that handles the whole consignment in natural
+  language: "1000 jerrycans diesel" becomes a goods line through the same
+  pipeline the lines step uses, the name recognition's candidates come back
+  as a question to confirm, and from there the conversation asks exactly
+  what the backend itself has open — the open questions of `dg/prepare`
+  (options included, answer chips attached) and the required document
+  fields of the registry, one per turn. Answers match the stored value and
+  its labels in every language ("colli" answers "packages"), "today"
+  answers a drawn-up date, optional questions can be skipped, required ones
+  cannot. Everything lands in the same wizard state, so switching between
+  chat and form can never lose data.
+- **No model, by design — yet.** This phase is the deterministic floor of
+  the assistant: parser, name recognition, open questions and four-language
+  texts carry a complete conversation from first sentence to "ready to
+  download" without any language model. A local model (next phase) will
+  only read free text more flexibly; it can never change what is asked or
+  answered, because the orchestrator owns both lists. The server stores
+  nothing of the conversation: the wizard state travels with each request
+  and returns patched.
+
 ## [1.102.0] — 2026-08-15
 
 ### Added

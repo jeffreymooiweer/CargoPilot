@@ -17,6 +17,7 @@ import { documentLanguage, localised, LANGUAGE_NAMES, SUPPORTED_LANGUAGES, Langu
 import DangerousGoodsStep, { buildDgEntries } from "../components/DangerousGoodsStep";
 import DgCompliancePanel from "../components/DgCompliancePanel";
 import DocumentWarnings, { useDocumentValidation } from "../components/DocumentWarnings";
+import AssistantPanel from "../components/AssistantPanel";
 import DocumentFieldsStep, { resolveSections } from "../components/DocumentFieldsStep";
 import DocumentAdvicePanel, { buildAdvice } from "../components/DocumentAdvicePanel";
 import ImportDialog from "../components/ImportDialog";
@@ -168,6 +169,7 @@ export default function WizardPage() {
   const [unCardsBusy, setUnCardsBusy] = useState(false);
   const [error, setError] = useState("");
   const [importOpen, setImportOpen] = useState(false);
+  const [assistantOpen, setAssistantOpen] = useState(false);
 
   useEffect(() => {
     api
@@ -760,6 +762,57 @@ export default function WizardPage() {
     }
   };
 
+  /** The wizard state, in the shape the assistant exchanges. Result-derived
+   *  facts (recognised candidates) ride along so the assistant asks about
+   *  what the user already sees on the lines step. */
+  const buildAssistantState = () => ({
+    modality,
+    draft_lines: draftLines
+      .filter((line) => line.description.trim())
+      .map((line) => {
+        const resultLine = result?.lines.find((r) => r.line_id === line.id);
+        return {
+          id: line.id,
+          description: line.description,
+          quantity: line.quantity || 1,
+          unit: line.unit,
+          dangerous_goods: Boolean(line.dangerous_goods),
+          confirmed_un: line.confirmed_un,
+          dg_dismissed: line.dg_dismissed,
+          detected_un_numbers: resultLine?.detected_un_numbers ?? [],
+          dg_name_candidates: resultLine?.dg_name_candidates ?? [],
+          weight_each_kg: resultLine?.weight_each_kg ?? undefined,
+        };
+      }),
+    dg_entries: dgEntries,
+    doc_values: docValues,
+    selected_docs: selectedDocs,
+  });
+
+  /** What the assistant changed lands in the same state the classic wizard
+   *  uses — switching between the two can therefore never lose data. */
+  const applyAssistantState = (state: import("../api/client").AssistantState) => {
+    if (Array.isArray(state.draft_lines)) {
+      const mapped: DraftLine[] = state.draft_lines.map((line) => ({
+        id: Number(line.id),
+        description: String(line.description ?? ""),
+        quantity: (line.quantity as number) ?? 1,
+        unit: String(line.unit ?? "pcs"),
+        dangerous_goods: Boolean(line.dangerous_goods),
+        confirmed_un: (line.confirmed_un as string) || undefined,
+        dg_dismissed: Boolean(line.dg_dismissed) || undefined,
+      }));
+      if (mapped.length > 0) {
+        setDraftLines((current) => {
+          const byId = new Map(current.map((line) => [line.id, line]));
+          return mapped.map((line) => ({ ...(byId.get(line.id) ?? {}), ...line }));
+        });
+      }
+    }
+    if (Array.isArray(state.dg_entries)) setDgEntries(state.dg_entries);
+    if (state.doc_values) setDocValues((current) => ({ ...current, ...state.doc_values }));
+  };
+
   const translateMessage = (msg: string) => {
     const key = `messages.${msg}`;
     const translated = t(key as "messages.dg_un_detected");
@@ -785,9 +838,20 @@ export default function WizardPage() {
         <Link to="/?choose=1" className="text-xs text-slate-500 hover:underline dark:text-slate-400">
           {t("wizard.changeModality")}
         </Link>
+        <button
+          type="button"
+          onClick={() => setAssistantOpen((open) => !open)}
+          className="ml-auto rounded-full border border-slate-200 px-3 py-1 text-xs font-medium text-slate-600 hover:bg-slate-50 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-800"
+        >
+          {assistantOpen ? t("assistant.close") : t("assistant.open")}
+        </button>
       </div>
 
       <WizardProgress steps={stepPills} currentStep={currentIndex + 1} />
+
+      {assistantOpen && (
+        <AssistantPanel buildState={buildAssistantState} onApplyState={applyAssistantState} />
+      )}
 
       {stepKey === "lines" && (
         <div className="space-y-4">

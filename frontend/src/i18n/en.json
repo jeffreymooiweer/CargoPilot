@@ -595,5 +595,23 @@
     "requiredNote": "With dangerous goods, 5.4.1 requires a transport document with the prescribed particulars.",
     "recommended": "Recommended",
     "possible": "Possible"
+  },
+  "assistant": {
+    "title": "AI assistant",
+    "subtitle": "Describe your shipment; the assistant fills the wizard and only asks the questions the app itself has open.",
+    "intro": "Describe what you want to ship — for example \"1000 jerrycans of diesel\". I fill in the wizard and only ask what is still missing.",
+    "placeholder": "Type your shipment or answer…",
+    "send": "Send",
+    "open": "AI assistant",
+    "close": "Close assistant",
+    "skip": "Skip",
+    "linesAdded": "{{count}} goods line(s) added.",
+    "unConfirmOne": "I recognised UN {{un}} {{name}} (class {{class}}). Is that right?",
+    "unConfirmMany": "I recognised several substances: {{list}}. Which UN number is it?",
+    "unConfirmed": "UN {{un}} recorded.",
+    "unDismissed": "Noted: not dangerous goods.",
+    "question": "{{label}}?",
+    "ready": "All complete. Your documents are ready to download on the export step.",
+    "notUnderstood": "I did not understand that — pick one of the options or phrase it differently."
   }
 }

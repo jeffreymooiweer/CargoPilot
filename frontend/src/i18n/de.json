@@ -595,5 +595,23 @@
     "requiredNote": "Bei Gefahrgut verlangt 5.4.1 ein Beförderungsdokument mit den vorgeschriebenen Angaben.",
     "recommended": "Empfohlen",
     "possible": "Möglich"
+  },
+  "assistant": {
+    "title": "KI-Assistent",
+    "subtitle": "Beschreiben Sie Ihre Sendung; der Assistent füllt den Assistenten aus und stellt nur die Fragen, die die App selbst offen hat.",
+    "intro": "Beschreiben Sie, was Sie befördern möchten — zum Beispiel \"1000 Kanister Diesel\". Ich fülle den Assistenten aus und frage nur, was noch fehlt.",
+    "placeholder": "Sendung oder Antwort eingeben…",
+    "send": "Senden",
+    "open": "KI-Assistent",
+    "close": "Assistent schließen",
+    "skip": "Überspringen",
+    "linesAdded": "{{count}} Güterzeile(n) hinzugefügt.",
+    "unConfirmOne": "Ich habe UN {{un}} {{name}} (Klasse {{class}}) erkannt. Stimmt das?",
+    "unConfirmMany": "Ich habe mehrere Stoffe erkannt: {{list}}. Welche UN-Nummer ist es?",
+    "unConfirmed": "UN {{un}} übernommen.",
+    "unDismissed": "Notiert: kein Gefahrgut.",
+    "question": "{{label}}?",
+    "ready": "Alles vollständig. Ihre Dokumente stehen im Export-Schritt zum Download bereit.",
+    "notUnderstood": "Das habe ich nicht verstanden — wählen Sie eine Option oder formulieren Sie es anders."
   }
 }

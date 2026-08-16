@@ -595,7 +595,8 @@
     "imdg_document": "IMDG 5.4.1 — requis sur le document de transport",
     "iata_declaration": "Requis sur la déclaration de l'expéditeur",
     "totals_11136": "Pour le total et le calcul des points du 1.1.3.6",
-    "sp3122": "Plusieurs noms sous ce numéro ONU — 3.1.2.2 : seul le nom le plus approprié figure sur le document"
+    "sp3122": "Plusieurs noms sous ce numéro ONU — 3.1.2.2 : seul le nom le plus approprié figure sur le document",
+    "packaging_spec": "Un code d'agrément ONU figure souvent sur l'emballage ; ce code peut compléter la description dans le document de transport (5.4.1.1.1 e)."
   },
   "advice": {
     "title": "Dossier de documents",
@@ -628,6 +629,9 @@
     "unConfirmed": "UN {{un}} enregistré.",
     "unDismissed": "Noté : pas de marchandises dangereuses.",
     "ready": "Tout est complet. Vos documents sont prêts à télécharger à l'étape d'export.",
-    "notUnderstood": "Je n'ai pas compris — choisissez une option ou reformulez."
+    "notUnderstood": "Je n'ai pas compris — choisissez une option ou reformulez.",
+    "clarify": "J'ai besoin d'une réponse plus précise, par exemple : {{example}}",
+    "corrected": "« {{attempt}} » ne fait pas partie des réponses possibles — choisissez une option ou reformulez.",
+    "info": "À propos de cette question"
   }
 }

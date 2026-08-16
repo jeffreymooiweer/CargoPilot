@@ -198,7 +198,7 @@ def test_the_model_maps_a_paraphrase_onto_an_allowed_option_only(db, monkeypatch
     # "unclear" — the enum's only way out — re-asks and changes nothing.
     fake_model(monkeypatch, lambda system, user, schema, **_: {"choice": "unclear"})
     result = step(state, "hoe bedoel je", pending, db, "nl")
-    assert any(e["kind"] == "not_understood" for e in result["events"])
+    assert any(e["kind"] == "clarify" for e in result["events"])
     assert not result["state"]["dg_entries"][0]["products"][0].get("carriage_mode")
 
 
@@ -214,4 +214,4 @@ def test_the_model_cannot_widen_the_event_vocabulary(db, monkeypatch):
     kinds = {e["kind"] for e in result["events"]}
     assert kinds <= {"lines_added", "un_question", "un_confirmed", "answered",
                      "dg_question", "doc_question", "ready", "skipped",
-                     "not_understood", "un_dismissed"}
+                     "not_understood", "un_dismissed", "clarify"}

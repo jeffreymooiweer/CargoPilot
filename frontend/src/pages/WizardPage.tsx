@@ -783,6 +783,7 @@ export default function WizardPage() {
           detected_un_numbers: resultLine?.detected_un_numbers ?? [],
           dg_name_candidates: resultLine?.dg_name_candidates ?? [],
           weight_each_kg: resultLine?.weight_each_kg ?? undefined,
+          package_content: line.package_content ?? resultLine?.package_content ?? undefined,
         };
       }),
     dg_entries: dgEntries,
@@ -802,6 +803,7 @@ export default function WizardPage() {
         dangerous_goods: Boolean(line.dangerous_goods),
         confirmed_un: (line.confirmed_un as string) || undefined,
         dg_dismissed: Boolean(line.dg_dismissed) || undefined,
+        package_content: (line.package_content as string) || undefined,
       }));
       if (mapped.length > 0) {
         setDraftLines((current) => {

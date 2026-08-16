@@ -2,6 +2,38 @@
 
 All notable changes are documented here, following [Semantic Versioning](https://semver.org/).
 
+## [1.107.0] — 2026-08-16
+
+### Added
+
+- **The content per package is read from the sentence.** "1000 jerricans of
+  25 l with petrol" already says what one jerrican holds: the pipeline now
+  detects that phrase on any line counted in packages — jerricans, drums,
+  IBCs, bags alike — fills the net quantity per package from it, computes
+  the 1.1.3.6 total, and keeps the goods description clean ("petrol", not
+  "of 25 l with petrol"). The question the assistant used to ask for that
+  number is no longer raised, because it is no longer open.
+- **The packaging kind becomes a question.** A jerrican is a shape, not a
+  specification: where the package is still a bare word, the catalogue's
+  kinds of that word (steel 3A1 against plastic 3H1, and so on) are offered
+  as an optional choice, and the chosen code supplements the description on
+  the document per 5.4.1.1.1 (e).
+- **Questions in lay language.** Every question the assistant asks now
+  carries a plain-language phrasing a first-time consignor understands
+  ("How much is in one package? For example: 25 L"); the formal field name
+  and the help text with its article references sit behind an info mark on
+  the question screen.
+- **Corrections and follow-ups.** A wrong answer is corrected with the
+  attempt named ("'by submarine' is not one of the possible answers"); a
+  vague amount gets a follow-up with an example of a computable answer
+  ("25 L"), a bare number where the unit matters is not accepted, and a
+  typed date is understood day-first (16-08-2026) or asked again. Nothing
+  is written to the consignment on any of these paths.
+- **The survey pursues complete documents.** After the required fields the
+  assistant now offers every optional field the selected documents can
+  carry — each one skippable — so a consignment can reach "ready" with the
+  papers genuinely filled in, not merely valid.
+
 ## [1.106.0] — 2026-08-16
 
 ### Changed

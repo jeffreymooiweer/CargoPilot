@@ -15,13 +15,17 @@ from app.services.calculator.engine import (
     calc_solid_block,
     transport_volume_outer,
 )
-from app.services.dg.detector import detect_dangerous_goods, detect_un_numbers
+from app.services.dg.detector import (
+    detect_dangerous_goods,
+    detect_package_content,
+    detect_un_numbers,
+)
 from app.services.dg.name_detection import detect_name_candidates
 from app.services.parser.dimension_extractor import Dimensions, extract_dimensions, meters_to_cm
 from app.core.languages import pick
 from app.services.parser.language_detector import detect_language
 from app.services.parser.paste_parser import ParsedRow, parse_paste
-from app.services.units import convert as convert_units
+from app.services.units import Dimension, convert as convert_units, get_unit as units_get_unit
 from app.services.parser.product_detector import detect_product_type
 
 PRODUCT_LABELS = {
@@ -92,6 +96,10 @@ class LineResult:
     # interface proposes them and the user confirms — a DG classification is
     # never set silently on the strength of a word in free text.
     dg_name_candidates: list[dict[str, Any]] = field(default_factory=list)
+    # "1000 jerrycans van 25l": what one package holds, read from the
+    # description of a line counted in packages. Feeds the DG derivation so
+    # the net-per-package question never has to be asked.
+    package_content: str | None = None
 
 
 def _load_aliases_json(raw: str) -> list[str]:
@@ -475,6 +483,14 @@ def process_line(
         [] if detected_un_numbers
         else detect_name_candidates(row.description, output_language)
     )
+    # A per-package content only exists on a line counted in packages: on a
+    # line measured in litres the litre figure is the quantity itself.
+    row_unit = units_get_unit(row.unit)
+    package_content = (
+        detect_package_content(row.description)
+        if row_unit is not None and row_unit.dimension == Dimension.COUNT
+        else None
+    )
 
     if overrides.get("weight_each_kg") is not None:
         weight_each = float(overrides["weight_each_kg"])
@@ -519,6 +535,7 @@ def process_line(
         dangerous_goods=dangerous_goods,
         detected_un_numbers=detected_un_numbers,
         dg_name_candidates=dg_name_candidates,
+        package_content=package_content,
     )
 
 

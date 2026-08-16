@@ -111,6 +111,50 @@ describe("AssistantModal", () => {
     expect(screen.getByText(/Vervoerswijze/)).toBeTruthy();
   });
 
+  it("shows the lay phrasing and keeps label and help behind the info mark", async () => {
+    stepMock.mockResolvedValueOnce({
+      ...QUESTION,
+      pending: {
+        ...QUESTION.pending,
+        simple: { nl: "Hoe gaat dit vervoerd worden?" },
+        help: { nl: "De regels verschillen per vervoerswijze." },
+      },
+    });
+    renderModal();
+    await userEvent.type(screen.getByLabelText("assistant.describeLabel"), "diesel");
+    await userEvent.click(screen.getByRole("button", { name: "assistant.start" }));
+    expect(await screen.findByText("Hoe gaat dit vervoerd worden?")).toBeTruthy();
+    // The formal wording only appears after opening the info mark.
+    expect(screen.queryByText(/De regels verschillen/)).toBeNull();
+    await userEvent.click(screen.getByRole("button", { name: "assistant.info" }));
+    expect(screen.getByText(/Vervoerswijze — De regels verschillen/)).toBeTruthy();
+  });
+
+  it("a follow-up question shows the example and grows no history", async () => {
+    await reachQuestion();
+    await userEvent.click(screen.getByRole("radio", { name: "Tank" }));
+    stepMock.mockResolvedValueOnce({
+      state: {},
+      events: [{ kind: "clarify", field: "carriage_mode", example: "25 L" }],
+      pending: QUESTION.pending,
+    });
+    await userEvent.click(screen.getByRole("button", { name: "assistant.next" }));
+    expect(await screen.findByText(/assistant.clarify.*25 L/)).toBeTruthy();
+    expect(screen.getByText(/Vervoerswijze/)).toBeTruthy();
+  });
+
+  it("a corrected answer names what was tried", async () => {
+    await reachQuestion();
+    await userEvent.click(screen.getByRole("radio", { name: "Tank" }));
+    stepMock.mockResolvedValueOnce({
+      state: {},
+      events: [{ kind: "clarify", field: "carriage_mode", attempt: "per onderzeeboot" }],
+      pending: QUESTION.pending,
+    });
+    await userEvent.click(screen.getByRole("button", { name: "assistant.next" }));
+    expect(await screen.findByText(/assistant.corrected.*per onderzeeboot/)).toBeTruthy();
+  });
+
   it("no pending question means the survey is done", async () => {
     stepMock.mockResolvedValueOnce({ state: {}, events: [{ kind: "ready", documents: [] }], pending: null });
     const { onClose } = renderModal();

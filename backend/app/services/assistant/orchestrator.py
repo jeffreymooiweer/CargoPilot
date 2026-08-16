@@ -50,6 +50,35 @@ _YES_WORDS = {"ja", "yes", "ok", "oké", "okay", "klopt", "oui", "jawohl", "yep"
 _NO_WORDS = {"nee", "no", "non", "nein", "geen", "niet"}
 _SKIP_WORDS = {"overslaan", "skip", "sla over", "passer", "überspringen"}
 
+#: Fields whose answer must carry a number the derivation can compute with,
+#: and the example the follow-up question shows when it does not. A vague
+#: answer written into these fields would poison every total computed from
+#: them; asking once more with an example is cheaper than a wrong document.
+_NUMERIC_EXAMPLES = {
+    "quantity_packages": "1000",
+    "net_mass_liters_per_package": "25 L",
+    "net_explosive_mass": "10 kg",
+    "adr_total_quantity": "25000 L",
+    "density_15": "0.84",
+    "density_50": "0.80",
+    "filling_temperature": "15",
+}
+
+#: The subset where the bare number answers nothing: "25" per package could be
+#: litres or kilograms, and 1.1.3.6 computes differently with each.
+_NEEDS_UNIT = {"net_mass_liters_per_package", "net_explosive_mass",
+               "adr_total_quantity"}
+
+_AMOUNT_WITH_UNIT = re.compile(
+    r"\d(?:[.,]\d+)?\s*(?:l|ltr|liter|liters|litre|litres|ml|kg|kilo|"
+    r"kilogram|g|gram|t|ton|tonne[sn]?)\b",
+    re.IGNORECASE,
+)
+
+#: Dates the way people type them: 16-08-2026, 16/08/2026, 16.08.2026.
+_DAY_FIRST_DATE = re.compile(r"^(\d{1,2})[-/.](\d{1,2})[-/.](\d{4})$")
+_ISO_DATE = re.compile(r"^\d{4}-\d{2}-\d{2}$")
+
 
 @lru_cache(maxsize=1)
 def _dg_fields() -> dict[str, Any]:
@@ -176,18 +205,27 @@ def _apply_goods_message(
     lines = state.setdefault("draft_lines", [])
     next_id = max([int(l.get("id") or 0) for l in lines] + [0]) + 1
     added = 0
+    from app.services.dg.detector import strip_package_content
+
     for line in result.get("lines", []):
         if not _clean(line.get("description")):
             continue
+        # A line the assistant composes is the assistant's to keep readable:
+        # "van 25l met benzine" reads as damage once the content has been
+        # taken out, "benzine" reads as the goods.
+        description = (strip_package_content(str(line.get("description")))
+                       if line.get("package_content")
+                       else str(line.get("description")))
         lines.append({
             "id": next_id,
-            "description": line.get("description"),
+            "description": description or line.get("description"),
             "quantity": line.get("quantity") or 1,
             "unit": line.get("unit") or "pcs",
             "dangerous_goods": bool(line.get("dangerous_goods")),
             "detected_un_numbers": line.get("detected_un_numbers") or [],
             "dg_name_candidates": line.get("dg_name_candidates") or [],
             "weight_total_kg": line.get("weight_total_kg"),
+            "package_content": line.get("package_content"),
         })
         next_id += 1
         added += 1
@@ -226,7 +264,8 @@ def _sync_dg_entries(state: dict[str, Any], db: Session, language: str) -> None:
         return
     prepare_lines = [
         {"line_id": line.get("id"), "quantity": line.get("quantity"),
-         "unit": line.get("unit"), "weight_each_kg": line.get("weight_each_kg")}
+         "unit": line.get("unit"), "weight_each_kg": line.get("weight_each_kg"),
+         "package_content": line.get("package_content")}
         for line in state.get("draft_lines", [])
     ]
     prepared = prepare_entries(entries, prepare_lines, _profiles_for(state), language)
@@ -276,6 +315,9 @@ def _next_pending(state: dict[str, Any]) -> tuple[dict[str, Any] | None, list[di
                 "reason": question.get("reason"),
                 "options": options or [],
                 "label": meta.get("label"),
+                # The lay phrasing the survey shows; the formal label and the
+                # help with its article references sit behind the info mark.
+                "simple": meta.get("simple"),
                 "help": meta.get("help"),
                 "option_labels": ({o.get("value"): o.get("label") for o in meta.get("options", [])}
                                   if meta.get("type") == "select" else {}),
@@ -350,9 +392,17 @@ def _missing_document_fields(state: dict[str, Any]) -> list[dict[str, Any]]:
             if not resolved:
                 continue
             for field in resolved.get("fields", []) or []:
-                if field.get("status") != "USER_REQUIRED":
+                status = field.get("status")
+                # The survey pursues *complete* documents: the required
+                # fields first, then every optional field the user can still
+                # answer — each of those skippable. What the app fills by
+                # itself (auto_from), what the carrier supplies later, and
+                # the signature confirmations stay out.
+                if status not in ("USER_REQUIRED", "USER_OPTIONAL", "CONDITIONAL"):
                     continue
                 if field.get("condition") and not _condition_met(field["condition"], values):
+                    continue
+                if field.get("auto_from") or field.get("type") == "checkbox":
                     continue
                 name = field.get("key")
                 if name in seen or _clean(values.get(name)):
@@ -361,12 +411,15 @@ def _missing_document_fields(state: dict[str, Any]) -> list[dict[str, Any]]:
                 missing.append({
                     "field": name,
                     "label": field.get("label"),
+                    "help": field.get("help"),
                     "type": field.get("type") or "text",
                     "document": key,
+                    "required": status == "USER_REQUIRED",
                     "options": [o.get("value") for o in field.get("options", []) or []],
                     "option_labels": {o.get("value"): o.get("label")
                                       for o in field.get("options", []) or []},
                 })
+    missing.sort(key=lambda item: not item["required"])
     return missing
 
 
@@ -493,9 +546,22 @@ def _apply_answer(
         if options and value is None:
             value = _model_choice(pending, text)
         if options and value is None:
-            return [{"kind": "not_understood"}]
+            # A wrong answer gets a correction, not a shrug: the reply names
+            # what was tried so the person sees why it did not land.
+            return [{"kind": "clarify", "field": pending.get("field"),
+                     "attempt": text}]
         if not _clean(value):
             return [{"kind": "not_understood"}]
+        field = str(pending.get("field") or "")
+        if not options and field in _NUMERIC_EXAMPLES:
+            # "vijfentwintig liter ofzo" cannot be computed with; ask again
+            # with an example of what can. Nothing is written on this path.
+            has_digit = any(ch.isdigit() for ch in text)
+            unit_ok = (field not in _NEEDS_UNIT
+                       or bool(_AMOUNT_WITH_UNIT.search(text)))
+            if not has_digit or not unit_ok:
+                return [{"kind": "clarify", "field": field,
+                         "example": _NUMERIC_EXAMPLES[field]}]
         entry = next((e for e in state.get("dg_entries", [])
                       if e.get("line_id") == pending.get("line_id")), None)
         if entry is None:
@@ -506,15 +572,29 @@ def _apply_answer(
 
     if scope == "doc_question":
         value = text
-        if pending.get("type") == "date" and lowered in _TODAY_WORDS:
-            value = _dt.date.today().isoformat()
+        if pending.get("type") == "date":
+            if lowered in _TODAY_WORDS:
+                value = _dt.date.today().isoformat()
+            elif not _ISO_DATE.match(text):
+                day_first = _DAY_FIRST_DATE.match(text)
+                try:
+                    value = _dt.date(int(day_first.group(3)),
+                                     int(day_first.group(2)),
+                                     int(day_first.group(1))).isoformat() \
+                        if day_first else None
+                except ValueError:
+                    value = None
+                if value is None:
+                    return [{"kind": "clarify", "field": pending.get("field"),
+                             "example": _dt.date.today().strftime("%d-%m-%Y")}]
         options = pending.get("options") or []
         if options:
             matched = _match_option(text, options, pending.get("option_labels"))
             if matched is None:
                 matched = _model_choice(pending, text)
             if matched is None:
-                return [{"kind": "not_understood"}]
+                return [{"kind": "clarify", "field": pending.get("field"),
+                         "attempt": text}]
             value = matched
         if not _clean(value):
             return [{"kind": "not_understood"}]
@@ -541,7 +621,7 @@ def step(
 
     if pending:
         events.extend(_apply_answer(state, pending, message, language))
-        if events and events[-1]["kind"] == "not_understood":
+        if events and events[-1]["kind"] in ("not_understood", "clarify"):
             # The same question again, with its options; nothing was changed.
             _sync_dg_entries(state, db, language)
             next_pending, ask_events = _next_pending(state)

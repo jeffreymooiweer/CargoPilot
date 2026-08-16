@@ -88,6 +88,12 @@
         "en": "Packing instruction reference.",
         "de": "Angabe der Verpackungsanweisung.",
         "fr": "Référence de l'instruction d'emballage."
+      },
+      "simple": {
+        "nl": "Volgens welke verpakkingsinstructie is dit verpakt? Bijvoorbeeld: P001. Uw verpakker of expediteur weet dit.",
+        "en": "Which packing instruction was this packed under? For example: P001. Your packer or forwarder knows this.",
+        "de": "Nach welcher Verpackungsanweisung wurde das verpackt? Zum Beispiel: P001. Ihr Verpacker oder Spediteur weiß das.",
+        "fr": "Selon quelle instruction d'emballage cela a-t-il été emballé ? Par exemple : P001. Votre emballeur ou transitaire le sait."
       }
     },
     "flashpoint": {
@@ -116,6 +122,12 @@
         "en": "E.g. box, drum, jerrycan. For UN packages include code (4A, 1A2, …).",
         "de": "Z. B. Kiste, Schachtel, Fass, Kanister. Bei UN-Verpackungen auch den Baumustercode (4A, 1A2, …).",
         "fr": "P. ex. caisse, fût, jerricane. Pour les emballages ONU, indiquez le code (4A, 1A2, …)."
+      },
+      "simple": {
+        "nl": "Wat voor verpakking is het precies? Op de verpakking staat vaak een code, bijvoorbeeld 3A1 (stalen jerrycan) of 3H1 (kunststof jerrycan).",
+        "en": "What kind of package is it exactly? The package often carries a code, for example 3A1 (steel jerrican) or 3H1 (plastic jerrican).",
+        "de": "Was für eine Verpackung ist es genau? Auf der Verpackung steht oft ein Code, zum Beispiel 3A1 (Stahlkanister) oder 3H1 (Kunststoffkanister).",
+        "fr": "De quel emballage s'agit-il exactement ? Un code figure souvent sur l'emballage, par exemple 3A1 (jerricane en acier) ou 3H1 (jerricane en plastique)."
       }
     },
     "quantity_packages": {
@@ -130,6 +142,12 @@
         "en": "Number of packages.",
         "de": "Anzahl der Verpackungen.",
         "fr": "Nombre de colis."
+      },
+      "simple": {
+        "nl": "Hoeveel verpakkingen (dozen, vaten, jerrycans …) gaan er in totaal mee? Bijvoorbeeld: 1000.",
+        "en": "How many packages (boxes, drums, jerricans …) are going in total? For example: 1000.",
+        "de": "Wie viele Verpackungen (Kartons, Fässer, Kanister …) gehen insgesamt mit? Zum Beispiel: 1000.",
+        "fr": "Combien d'emballages (cartons, fûts, jerricanes …) partent au total ? Par exemple : 1000."
       }
     },
     "quantity_items_per_package": {
@@ -158,6 +176,12 @@
         "en": "Class 1 only: the total net explosive mass of this line, in kg. ADR 1.1.3.6.3 computes the class 1 points from the NEM, not the product mass; also required on the transport document (5.4.1.2.1).",
         "de": "Nur Klasse 1: die gesamte Nettoexplosivstoffmasse dieser Zeile in kg. ADR 1.1.3.6.3 berechnet die Punkte für Klasse 1 aus der NEM, nicht aus der Produktmasse; zudem Pflichtangabe im Beförderungspapier (5.4.1.2.1).",
         "fr": "Classe 1 uniquement : la masse nette explosive totale de cette ligne, en kg. Le 1.1.3.6.3 de l'ADR calcule les points de la classe 1 sur la MNE et non sur la masse du produit ; elle est également exigée sur le document de transport (5.4.1.2.1)."
+      },
+      "simple": {
+        "nl": "Hoeveel kilo explosieve stof zit erin, zonder de verpakking mee te tellen? Bijvoorbeeld: 10 kg.",
+        "en": "How many kilograms of explosive substance are in it, not counting the packaging? For example: 10 kg.",
+        "de": "Wie viel Kilogramm explosiver Stoff ist enthalten, ohne die Verpackung mitzuzählen? Zum Beispiel: 10 kg.",
+        "fr": "Combien de kilogrammes de matière explosive contient-il, sans compter l'emballage ? Par exemple : 10 kg."
       }
     },
     "net_per_inner_packaging": {
@@ -186,6 +210,12 @@
         "en": "Content weight per package excluding packaging.",
         "de": "Gewicht des Inhalts je Verpackung ohne Verpackungsmaterial.",
         "fr": "Poids du contenu par colis, emballage non compris."
+      },
+      "simple": {
+        "nl": "Hoeveel zit er in één verpakking? Bijvoorbeeld: 25 L of 10 kg.",
+        "en": "How much is in one package? For example: 25 L or 10 kg.",
+        "de": "Wie viel ist in einer Verpackung? Zum Beispiel: 25 L oder 10 kg.",
+        "fr": "Quelle quantité contient un emballage ? Par exemple : 25 L ou 10 kg."
       }
     },
     "gross_mass_per_package": {
@@ -270,6 +300,12 @@
         "en": "Technical name in brackets when required by the Proper Shipping Name (N.O.S. entries).",
         "de": "Technische Benennung in Klammern, wenn die offizielle Benennung sie verlangt (N.A.G.-Eintragungen).",
         "fr": "Nom technique entre parenthèses lorsque la désignation officielle de transport l'exige (rubriques N.S.A.)."
+      },
+      "simple": {
+        "nl": "Wat is de technische of chemische naam van de stof? Die staat op het veiligheidsinformatieblad (rubriek 1 of 3).",
+        "en": "What is the technical or chemical name of the substance? It is on the safety data sheet (section 1 or 3).",
+        "de": "Wie lautet der technische oder chemische Name des Stoffes? Er steht im Sicherheitsdatenblatt (Abschnitt 1 oder 3).",
+        "fr": "Quel est le nom technique ou chimique de la matière ? Il figure sur la fiche de données de sécurité (rubrique 1 ou 3)."
       }
     },
     "marine_pollutant": {
@@ -326,6 +362,12 @@
         "en": "24-hour emergency number where required by transport regulations.",
         "de": "24-Stunden-Notrufnummer, soweit von den Beförderungsvorschriften verlangt.",
         "fr": "Numéro d'urgence joignable 24 heures sur 24, lorsque la réglementation du transport l'exige."
+      },
+      "simple": {
+        "nl": "Welk telefoonnummer is dag en nacht bereikbaar als er onderweg iets misgaat met deze stof?",
+        "en": "Which phone number can be reached day and night if something goes wrong with this substance en route?",
+        "de": "Welche Telefonnummer ist Tag und Nacht erreichbar, falls unterwegs etwas mit diesem Stoff passiert?",
+        "fr": "Quel numéro de téléphone est joignable jour et nuit si quelque chose tourne mal en route avec cette matière ?"
       }
     },
     "ems_code": {
@@ -449,7 +491,13 @@
             "fr": "En vrac"
           }
         }
-      ]
+      ],
+      "simple": {
+        "nl": "Hoe gaat dit vervoerd worden: in losse verpakkingen (dozen, vaten, jerrycans), in een vaste tank, in een losse tank of los gestort?",
+        "en": "How will this be carried: in separate packages (boxes, drums, jerricans), in a fixed tank, in a portable tank, or loose in bulk?",
+        "de": "Wie wird das befördert: in einzelnen Verpackungen (Kartons, Fässern, Kanistern), in einem festen Tank, in einem absetzbaren Tank oder lose geschüttet?",
+        "fr": "Comment cela sera-t-il transporté : en emballages séparés (cartons, fûts, jerricanes), en citerne fixe, en citerne mobile ou en vrac ?"
+      }
     },
     "tank_code": {
       "label": {
@@ -494,7 +542,13 @@
         "de": "Die relative Dichte bei 15 °C. Zusammen mit d50 ergibt sie den Ausdehnungskoeffizienten α = (d15 − d50) / (35 × d50) nach 4.3.2.2.2. Für viele Stoffe füllt die App dies selbst aus Tabelle C des ADN aus; andernfalls steht der Wert im Sicherheitsdatenblatt Ihres Produkts (Abschnitt 9).",
         "fr": "La masse volumique relative à 15 °C. Avec d50 elle donne le coefficient de dilatation α = (d15 − d50) / (35 × d50) du 4.3.2.2.2. Pour de nombreuses matières, l'application le remplit elle-même à partir du tableau C de l'ADN ; sinon la valeur figure sur la fiche de données de sécurité de votre produit (rubrique 9)."
       },
-      "type": "text"
+      "type": "text",
+      "simple": {
+        "nl": "Hoe zwaar is de vloeistof per liter bij 15 °C (de dichtheid)? Bijvoorbeeld: 0,84. Dit staat op het veiligheidsinformatieblad (rubriek 9).",
+        "en": "How heavy is the liquid per litre at 15 °C (the density)? For example: 0.84. It is on the safety data sheet (section 9).",
+        "de": "Wie schwer ist die Flüssigkeit je Liter bei 15 °C (die Dichte)? Zum Beispiel: 0,84. Das steht im Sicherheitsdatenblatt (Abschnitt 9).",
+        "fr": "Quel est le poids du liquide par litre à 15 °C (la densité) ? Par exemple : 0,84. Cela figure sur la fiche de données de sécurité (rubrique 9)."
+      }
     },
     "density_50": {
       "label": {
@@ -524,7 +578,13 @@
         "de": "In welchem Laderaum dieser Stoff steht, oder „Deck“. ADN 7.1.4.11.1 verlangt vom Schiffsführer einen Stauplan darüber, welche Güter in den einzelnen Laderäumen oder an Deck stehen.",
         "fr": "Dans quelle cale se trouve cette matière, ou « pont ». Le 7.1.4.11.1 de l'ADN demande au conducteur d'indiquer dans un plan d'arrimage quelles marchandises sont placées dans les différentes cales ou sur le pont."
       },
-      "type": "text"
+      "type": "text",
+      "simple": {
+        "nl": "In welk ruim van het schip komt dit te liggen? U mag dit overslaan als u een containernummer heeft.",
+        "en": "In which hold of the vessel will this be stowed? You may skip this if you have a container number.",
+        "de": "In welchem Laderaum des Schiffes wird das gestaut? Sie können dies überspringen, wenn Sie eine Containernummer haben.",
+        "fr": "Dans quelle cale du bateau cela sera-t-il arrimé ? Vous pouvez passer si vous avez un numéro de conteneur."
+      }
     },
     "container_number": {
       "label": {
@@ -787,6 +847,12 @@
         "en": "This UN number combines several proper shipping names. Under 3.1.2.2 only the most applicable name goes on the transport document; choose the one that describes your product.",
         "de": "Diese UN-Nummer vereint mehrere Benennungen. Nach 3.1.2.2 kommt nur die zutreffendste Benennung ins Beförderungsdokument; wählen Sie die, die Ihr Produkt beschreibt.",
         "fr": "Ce numéro ONU combine plusieurs désignations. Selon le 3.1.2.2, seul le nom le plus approprié figure sur le document de transport ; choisissez celui qui décrit votre produit."
+      },
+      "simple": {
+        "nl": "Deze stof kan onder meerdere officiële namen vervoerd worden. Welke naam past het best bij uw product?",
+        "en": "This substance can travel under several official names. Which name fits your product best?",
+        "de": "Dieser Stoff kann unter mehreren offiziellen Benennungen befördert werden. Welche passt am besten zu Ihrem Produkt?",
+        "fr": "Cette matière peut voyager sous plusieurs désignations officielles. Laquelle correspond le mieux à votre produit ?"
       }
     },
     "chosen_name_en": {
@@ -802,6 +868,12 @@
         "en": "A Dutch document carries the name in English as well (5.4.1.4.1). Choose the English alternative that matches your product.",
         "de": "Ein niederländisches Dokument trägt die Benennung auch auf Englisch (5.4.1.4.1). Wählen Sie die passende englische Alternative.",
         "fr": "Un document néerlandais porte aussi le nom en anglais (5.4.1.4.1). Choisissez l'alternative anglaise correspondant à votre produit."
+      },
+      "simple": {
+        "nl": "Deze stof kan onder meerdere officiële Engelse namen vervoerd worden. Welke naam past het best bij uw product?",
+        "en": "This substance can travel under several official English names. Which name fits your product best?",
+        "de": "Dieser Stoff kann unter mehreren offiziellen englischen Benennungen befördert werden. Welche passt am besten zu Ihrem Produkt?",
+        "fr": "Cette matière peut voyager sous plusieurs désignations officielles en anglais. Laquelle correspond le mieux à votre produit ?"
       }
     }
   }

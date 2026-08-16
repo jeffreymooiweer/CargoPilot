@@ -28,6 +28,9 @@ export interface DraftLine {
   confirmed_un?: string;
   /** The suggestion was rejected for this line; it must not come back. */
   dg_dismissed?: boolean;
+  /** Net content of one package as the description said it ("25 L"); the DG
+   *  derivation fills the per-package quantity from it. */
+  package_content?: string;
 }
 
 const inputClass =

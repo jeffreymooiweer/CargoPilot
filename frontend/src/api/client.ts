@@ -465,6 +465,9 @@ export interface LineItem {
   dangerous_goods?: boolean;
   detected_un_numbers?: string[];
   dg_name_candidates?: DgNameCandidate[];
+  /** Net content of one package as the description said it ("25 L"), when
+   *  the line counts packages and the sentence named what each one holds. */
+  package_content?: string | null;
 }
 
 /** A substance recognised by name in the line's description. A suggestion for
@@ -494,6 +497,11 @@ export interface AssistantPending {
   required?: boolean;
   options?: string[];
   option_labels?: Record<string, unknown>;
+  /** Lay phrasing of the question per language; the formal label and the
+   *  help with its article references sit behind the info mark. */
+  simple?: Record<string, string>;
+  label?: Record<string, string> | string;
+  help?: Record<string, string> | string;
   [key: string]: unknown;
 }
 

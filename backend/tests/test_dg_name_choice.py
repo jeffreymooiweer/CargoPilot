@@ -50,7 +50,11 @@ def test_the_chosen_names_become_the_shipping_name_and_the_line_is_short():
     (line,) = res["document_lines"]["ADR"]
     assert line.startswith("UN 1202, DIESELOLIE (DIESEL FUEL), 3, III, (D/E)")
     assert len(line) < 120
-    assert questions_by_field(res) == {}
+    # The only question left open is the optional kind-of-jerrican one —
+    # 5.4.1.1.1 (e) lets the UN code supplement the description.
+    remaining = questions_by_field(res)
+    assert set(remaining) == {"type_of_package"}
+    assert remaining["type_of_package"]["required"] is False
 
 
 def test_a_changed_choice_replaces_the_previous_one():

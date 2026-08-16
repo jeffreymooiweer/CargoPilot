@@ -40,6 +40,7 @@ export default function AssistantModal({ open, onClose, buildState, onApplyState
   const [notice, setNotice] = useState("");
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
+  const [showInfo, setShowInfo] = useState(false);
 
   useEffect(() => {
     if (!open) return;
@@ -78,8 +79,17 @@ export default function AssistantModal({ open, onClose, buildState, onApplyState
         pending,
         language: lang,
       });
+      const clarify = result.events.find((event) => event.kind === "clarify");
       const misunderstood = result.events.some((event) => event.kind === "not_understood");
-      if (misunderstood) {
+      if (clarify) {
+        // A correction or a follow-up: nothing was written, the question
+        // stays — with either what was tried or an example of a full answer.
+        setError(
+          clarify.example
+            ? t("assistant.clarify", { example: String(clarify.example) })
+            : t("assistant.corrected", { attempt: String(clarify.attempt ?? "") }),
+        );
+      } else if (misunderstood) {
         setError(t("assistant.notUnderstood"));
       } else {
         setHistory((stack) => [...stack, snapshot]);
@@ -90,6 +100,7 @@ export default function AssistantModal({ open, onClose, buildState, onApplyState
       setScreen(result.pending ? "question" : "ready");
       setChoice("");
       setFreeText("");
+      setShowInfo(false);
     } catch (e) {
       setError(String(e));
     } finally {
@@ -108,6 +119,7 @@ export default function AssistantModal({ open, onClose, buildState, onApplyState
     setError("");
     setChoice("");
     setFreeText("");
+    setShowInfo(false);
   };
 
   const questionTitle = (): string => {
@@ -122,10 +134,29 @@ export default function AssistantModal({ open, onClose, buildState, onApplyState
       }
       return t("assistant.unConfirmMany");
     }
+    // The lay phrasing first — a question a first-time consignor understands.
+    // The formal label stays behind the info mark, next to the help text.
+    const simple = localised(pending.simple as Record<string, string> | undefined, lang);
+    if (simple) return simple;
     const label =
       localised(pending.label as Record<string, string> | undefined, lang) ||
       String(pending.field ?? "");
     return t("assistant.question", { label });
+  };
+
+  /** The formal label and the help with its article references, shown when
+   *  the info mark is open. */
+  const infoText = (): string => {
+    if (!pending || pending.scope === "un_confirm") return "";
+    const label =
+      typeof pending.label === "string"
+        ? pending.label
+        : localised(pending.label as Record<string, string> | undefined, lang);
+    const help =
+      typeof pending.help === "string"
+        ? pending.help
+        : localised(pending.help as Record<string, string> | undefined, lang);
+    return [label, help].filter(Boolean).join(" — ");
   };
 
   const questionReason = (): string => {
@@ -236,7 +267,25 @@ export default function AssistantModal({ open, onClose, buildState, onApplyState
 
         {screen === "question" && pending && (
           <div className="mt-4 space-y-3">
-            <p className="text-sm font-medium text-slate-900 dark:text-slate-100">{questionTitle()}</p>
+            <div className="flex items-start gap-2">
+              <p className="text-sm font-medium text-slate-900 dark:text-slate-100">{questionTitle()}</p>
+              {infoText() && (
+                <button
+                  type="button"
+                  onClick={() => setShowInfo((value) => !value)}
+                  aria-label={t("assistant.info")}
+                  aria-expanded={showInfo}
+                  className="mt-0.5 inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full border border-slate-300 text-[11px] font-semibold text-slate-500 hover:border-slate-400 hover:text-slate-700 dark:border-slate-600 dark:text-slate-400 dark:hover:text-slate-200"
+                >
+                  i
+                </button>
+              )}
+            </div>
+            {showInfo && infoText() && (
+              <p className="rounded-lg bg-slate-50 px-3 py-2 text-xs text-slate-600 dark:bg-slate-800 dark:text-slate-300">
+                {infoText()}
+              </p>
+            )}
             {questionReason() && (
               <p className="text-xs text-slate-500 dark:text-slate-400">{questionReason()}</p>
             )}

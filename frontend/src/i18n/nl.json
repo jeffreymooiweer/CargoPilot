@@ -595,7 +595,8 @@
     "imdg_document": "IMDG 5.4.1 — vereist op het vervoersdocument",
     "iata_declaration": "Vereist op de shipper's declaration",
     "totals_11136": "Voor het totaal en de 1.1.3.6-puntentelling",
-    "sp3122": "Meerdere namen onder dit UN-nummer — 3.1.2.2: alleen de meest toepasselijke naam komt op het document"
+    "sp3122": "Meerdere namen onder dit UN-nummer — 3.1.2.2: alleen de meest toepasselijke naam komt op het document",
+    "packaging_spec": "Op de verpakking staat vaak een UN-keuringscode; die code mag de omschrijving op het vervoerdocument aanvullen (5.4.1.1.1 e)."
   },
   "advice": {
     "title": "Documentenpakket",
@@ -628,6 +629,9 @@
     "unConfirmed": "UN {{un}} vastgelegd.",
     "unDismissed": "Genoteerd: geen gevaarlijke stof.",
     "ready": "Alles compleet. Op de exportstap staan uw documenten klaar om te downloaden.",
-    "notUnderstood": "Dat begreep ik niet — kies een van de opties of formuleer het anders."
+    "notUnderstood": "Dat begreep ik niet — kies een van de opties of formuleer het anders.",
+    "clarify": "Ik heb een preciezer antwoord nodig, bijvoorbeeld: {{example}}",
+    "corrected": "“{{attempt}}” is geen van de mogelijke antwoorden — kies een optie of formuleer het anders.",
+    "info": "Uitleg bij deze vraag"
   }
 }

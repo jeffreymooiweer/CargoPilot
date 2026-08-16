@@ -374,13 +374,20 @@ def derive_from_line(product: dict[str, Any], line: dict[str, Any] | None) -> di
     patch: dict[str, Any] = {}
     quantity = line.get("quantity")
     if quantity not in (None, "") and not str(product.get("quantity_packages") or "").strip():
-        patch["quantity_packages"] = str(quantity)
+        number = _num(quantity)
+        patch["quantity_packages"] = (
+            _fmt(number) if number is not None else str(quantity))
     unit = str(line.get("unit") or "").strip()
     if unit and not str(product.get("type_of_package") or "").strip():
         patch["type_of_package"] = unit
     per_package = _num(line.get("weight_each_kg"))
     if per_package and not str(product.get("gross_mass_per_package") or "").strip():
         patch["gross_mass_per_package"] = f"{_fmt(per_package)} kg"
+    # "1000 jerrycans van 25l": the content of one package was in the
+    # description all along; the pipeline read it, so it is never asked.
+    content = str(line.get("package_content") or "").strip()
+    if content and not str(product.get("net_mass_liters_per_package") or "").strip():
+        patch["net_mass_liters_per_package"] = content
     return patch
 
 
@@ -414,6 +421,40 @@ def _is_class1(product: dict[str, Any]) -> bool:
 
 
 _LAND_PROFILES = {"ADR", "RID", "ADN"}
+
+
+def _clean_str(value: Any) -> str:
+    return str(value or "").strip()
+
+
+#: The plural a cargo line speaks in, against the singular the packagings
+#: catalogue labels carry.
+_PACKAGE_PLURALS = {
+    "vaten": "vat", "drums": "vat", "jerrycans": "jerrycan",
+    "flessen": "fles", "dozen": "doos", "zakken": "zak", "kisten": "kist",
+    "cans": "jerrycan", "bags": "zak", "boxes": "doos",
+}
+
+
+def _packaging_kind_options(word: str, language: str = "nl") -> list[str]:
+    """The catalogue's kinds of one packaging word, as choosable values.
+
+    "jerrycan" finds 3A1/3A2/3B1/3B2/3H1/3H2 with their labels; a word the
+    catalogue does not know finds nothing and no question is asked. The value
+    carries code plus label, exactly the shape the wizard's packaging picker
+    writes — the document then renders it as "label (code)" per 5.4.1.1.1 (e).
+    """
+    label_language = "nl" if normalise(language) == "nl" else "en"
+    for query in (word, _PACKAGE_PLURALS.get(word.lower()), word.rstrip("s")):
+        if not query:
+            continue
+        hits = search_packagings(query, limit=10)
+        if hits:
+            return [
+                f"{p['code']} {(p.get('label') or {}).get(label_language) or (p.get('label') or {}).get('en', '')}".strip()
+                for p in hits
+            ]
+    return []
 
 #: A footnote marker at the end of a table C density cell ("0,68 - 0,72 10)").
 _DENSITY_FOOTNOTE = re.compile(r"\s*\d+\)\s*$")
@@ -498,6 +539,18 @@ def open_questions_for(
         # The mode decides what every other answer means: admission, tunnel,
         # placarding and the tank checks all branch on it.
         ask("carriage_mode", True, "carriage_mode_decides")
+
+    # "jerrycan" says what kind of thing the package is; 5.4.1.1.1 (e) lets
+    # the UN packaging code supplement that description. Where the package is
+    # still a bare word, the catalogue's kinds of that word become an
+    # optional choice — 3A1 steel against 3H1 plastic is a fact of the
+    # consignment the consignor knows by looking at the yard.
+    package = _clean_str(product.get("type_of_package"))
+    if package and not _PACKAGING_CODE.match(package):
+        kinds = _packaging_kind_options(package, language)
+        if kinds and not any(q["field"] == "type_of_package" for q in questions):
+            questions.append({"field": "type_of_package", "required": False,
+                              "reason": "packaging_spec", "options": kinds})
 
     # 3.1.2.2: where the position combines several proper shipping names,
     # only the most applicable one goes on the document — and which one that

@@ -36,14 +36,26 @@ def drive(api, turns, modality="road"):
         payload = response.json()
         state, pending = payload["state"], payload["pending"]
         events.extend(payload["events"])
+    # The survey pursues complete documents: every optional field left after
+    # the listed answers is offered, and skipping each must reach "ready".
+    for _ in range(80):
+        if pending is None:
+            break
+        assert pending.get("required") is False, pending
+        response = api.post("/api/assistant/step", json={
+            "message": "overslaan", "state": state, "pending": pending,
+            "language": "nl"})
+        payload = response.json()
+        state, pending = payload["state"], payload["pending"]
+        events.extend(payload["events"])
     return state, pending, events
 
 
 def test_the_diesel_archetype_through_the_api(api):
-    turns = ["1000 jerrycans diesel", "ja", "colli", "DIESELOLIE", "DIESEL FUEL",
-             "25 L", "Mooiweer BV", "Kade 1, Rotterdam", "Afnemer GmbH",
-             "Hafenstr. 2, Duisburg", "Rotterdam", "Duisburg", "Franco",
-             "Rotterdam", "vandaag"]
+    turns = ["1000 jerrycans diesel", "ja", "colli", "3A1", "DIESELOLIE",
+             "DIESEL FUEL", "25 L", "Mooiweer BV", "Kade 1, Rotterdam",
+             "Afnemer GmbH", "Hafenstr. 2, Duisburg", "Rotterdam", "Duisburg",
+             "Franco", "Rotterdam", "vandaag"]
     state, pending, events = drive(api, turns)
     assert pending is None
     ready = [e for e in events if e["kind"] == "ready"][-1]

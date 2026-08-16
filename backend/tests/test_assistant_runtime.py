@@ -156,6 +156,30 @@ def test_a_model_failure_falls_back_to_the_deterministic_route(db, monkeypatch):
     assert line["quantity"] == 1000 and line["unit"] == "jerrycan"
 
 
+def test_a_paraphrase_containing_the_option_word_never_needs_the_model(db, monkeypatch):
+    """A Dutch answer naming a tank lorry contains exactly one option's word.
+    Measured against the real model, which read that very sentence as "bulk" —
+    the deterministic reverse match now answers it first, and the model is
+    not even asked."""
+    def explode(*_args, **_kwargs):
+        raise AssertionError("the model must not be consulted")
+    fake_model(monkeypatch, explode)
+    pending = {"scope": "dg_question", "line_id": 1, "product_index": 0,
+               "field": "carriage_mode", "required": True,
+               "options": ["packages", "tank", "bulk"],
+               "option_labels": {"packages": {"nl": "Colli"},
+                                 "tank": {"nl": "Tank"},
+                                 "bulk": {"nl": "Losgestort"}}}
+    state = {"modality": "road",
+             "draft_lines": [{"id": 1, "description": "diesel", "quantity": 1,
+                              "unit": "pcs", "dangerous_goods": True,
+                              "confirmed_un": "1202"}],
+             "dg_entries": [{"line_id": 1, "vehicle": "diesel",
+                             "products": [{"un_number": "1202"}]}]}
+    result = step(state, "het gaat in een tankwagen", pending, db, "nl")
+    assert result["state"]["dg_entries"][0]["products"][0]["carriage_mode"] == "tank"
+
+
 def test_the_model_maps_a_paraphrase_onto_an_allowed_option_only(db, monkeypatch):
     pending = {"scope": "dg_question", "line_id": 1, "product_index": 0,
                "field": "carriage_mode", "required": True,

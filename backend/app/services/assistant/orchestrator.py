@@ -403,6 +403,15 @@ def _match_option(
                if any(lowered in name for name in names)]
     if len(partial) == 1:
         return partial[0]
+    # The reverse direction: the option's word inside the sentence. A Dutch
+    # answer naming a tank lorry names no option verbatim, but exactly one
+    # option's name occurs inside its compound word — measured first against
+    # the model, which read that very sentence as "bulk". Only an unambiguous
+    # containment counts.
+    contained = [option for option, names in aliases.items()
+                 if any(len(name) >= 4 and name in lowered for name in names)]
+    if len(contained) == 1:
+        return contained[0]
     return None
 
 

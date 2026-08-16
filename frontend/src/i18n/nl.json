@@ -595,5 +595,23 @@
     "requiredNote": "Bij gevaarlijke stoffen vraagt 5.4.1 een vervoersdocument met de voorgeschreven vermeldingen.",
     "recommended": "Aanbevolen",
     "possible": "Mogelijk"
+  },
+  "assistant": {
+    "title": "AI-assistent",
+    "subtitle": "Beschrijf uw zending; de assistent vult de wizard in en stelt alleen de vragen die de app zelf open heeft staan.",
+    "intro": "Beschrijf wat u wilt vervoeren — bijvoorbeeld \"1000 jerrycans diesel\". Ik vul de wizard in en vraag alleen wat nog ontbreekt.",
+    "placeholder": "Typ uw zending of antwoord…",
+    "send": "Versturen",
+    "open": "AI-assistent",
+    "close": "Assistent sluiten",
+    "skip": "Overslaan",
+    "linesAdded": "{{count}} goederenregel(s) toegevoegd.",
+    "unConfirmOne": "Ik herkende UN {{un}} {{name}} (klasse {{class}}). Klopt dit?",
+    "unConfirmMany": "Ik herkende meerdere stoffen: {{list}}. Welk UN-nummer is het?",
+    "unConfirmed": "UN {{un}} vastgelegd.",
+    "unDismissed": "Genoteerd: geen gevaarlijke stof.",
+    "question": "{{label}}?",
+    "ready": "Alles compleet. Op de exportstap staan uw documenten klaar om te downloaden.",
+    "notUnderstood": "Dat begreep ik niet — kies een van de opties of formuleer het anders."
   }
 }

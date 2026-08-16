@@ -595,5 +595,23 @@
     "requiredNote": "Avec des marchandises dangereuses, le 5.4.1 exige un document de transport portant les mentions prescrites.",
     "recommended": "Recommandé",
     "possible": "Possible"
+  },
+  "assistant": {
+    "title": "Assistant IA",
+    "subtitle": "Décrivez votre envoi ; l'assistant remplit l'assistant et ne pose que les questions que l'application a elle-même ouvertes.",
+    "intro": "Décrivez ce que vous voulez transporter — par exemple \"1000 jerricanes de diesel\". Je remplis l'assistant et ne demande que ce qui manque encore.",
+    "placeholder": "Saisissez votre envoi ou votre réponse…",
+    "send": "Envoyer",
+    "open": "Assistant IA",
+    "close": "Fermer l'assistant",
+    "skip": "Passer",
+    "linesAdded": "{{count}} ligne(s) de marchandises ajoutée(s).",
+    "unConfirmOne": "J'ai reconnu UN {{un}} {{name}} (classe {{class}}). Est-ce exact ?",
+    "unConfirmMany": "J'ai reconnu plusieurs matières : {{list}}. Quel est le numéro ONU ?",
+    "unConfirmed": "UN {{un}} enregistré.",
+    "unDismissed": "Noté : pas de marchandises dangereuses.",
+    "question": "{{label}}?",
+    "ready": "Tout est complet. Vos documents sont prêts à télécharger à l'étape d'export.",
+    "notUnderstood": "Je n'ai pas compris — choisissez une option ou reformulez."
   }
 }

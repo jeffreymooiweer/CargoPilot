@@ -8,6 +8,7 @@ from slowapi import Limiter, _rate_limit_exceeded_handler
 from slowapi.errors import RateLimitExceeded
 from slowapi.util import get_remote_address
 
+from app.api.routes.assistant import router as assistant_router
 from app.api.routes.auth import router as auth_router
 from app.api.routes.catalog import reference_router
 from app.api.routes.catalog_search import router as catalog_search_router
@@ -81,6 +82,7 @@ def create_app() -> FastAPI:
     def setup_status():
         return {"has_admin": getattr(app.state, "has_admin", False)}
 
+    app.include_router(assistant_router, prefix="/api")
     app.include_router(auth_router, prefix="/api")
     app.include_router(users_router, prefix="/api")
     app.include_router(jobs_router, prefix="/api")

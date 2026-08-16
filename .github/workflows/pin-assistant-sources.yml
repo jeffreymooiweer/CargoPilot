@@ -1,0 +1,64 @@
+name: Pin assistant runtime sources
+
+# The assistant's model runtime is not shipped in the image: the llama.cpp
+# server binary and the GGUF model are downloaded to /data when an admin
+# enables the assistant, and every download is verified against a pinned
+# SHA-256. The development container cannot reach the artifact hosts (the
+# proxy blocks them); a runner can. This workflow downloads the exact
+# artifacts the config names, prints their sizes and SHA-256 digests to the
+# log, and lists which Linux assets the pinned llama.cpp release actually
+# publishes — so the pins in backend/app/config/assistant_runtime.json are
+# facts about files somebody fetched, never guesses. Nothing is committed
+# and nothing is stored: the log is the deliverable.
+
+on:
+  workflow_dispatch:
+    inputs:
+      llama_tag:
+        description: "llama.cpp release tag to inspect and hash"
+        default: "b10452"
+        required: true
+      model_url:
+        description: "GGUF model URL to hash"
+        default: "https://huggingface.co/Qwen/Qwen3-1.7B-GGUF/resolve/main/Qwen3-1.7B-Q4_K_M.gguf"
+        required: true
+
+jobs:
+  pin:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: List the release's Linux assets
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ inputs.llama_tag }}
+        run: |
+          echo "== assets of ggml-org/llama.cpp ${TAG} (linux/ubuntu only) =="
+          gh api "repos/ggml-org/llama.cpp/releases/tags/${TAG}" \
+            --jq '.assets[] | select(.name | test("ubuntu|linux")) | "\(.name)  \(.size) bytes"'
+
+      - name: Hash the server binary archives
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ inputs.llama_tag }}
+        run: |
+          set -euo pipefail
+          for arch in x64 arm64; do
+            name="llama-${TAG}-bin-ubuntu-${arch}.zip"
+            url="https://github.com/ggml-org/llama.cpp/releases/download/${TAG}/${name}"
+            if curl -fsSL -o "${name}" "${url}"; then
+              echo "PIN ${name} sha256=$(sha256sum "${name}" | cut -d' ' -f1) size=$(stat -c%s "${name}")"
+              unzip -l "${name}" | grep -E "llama-server|\.so" | head -20
+            else
+              echo "PIN ${name} ABSENT (no such asset for ${TAG})"
+            fi
+          done
+
+      - name: Hash the model
+        env:
+          MODEL_URL: ${{ inputs.model_url }}
+        run: |
+          set -euo pipefail
+          curl -fsSL -o model.gguf "${MODEL_URL}"
+          echo "PIN model url=${MODEL_URL}"
+          echo "PIN model sha256=$(sha256sum model.gguf | cut -d' ' -f1) size=$(stat -c%s model.gguf)"

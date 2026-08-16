@@ -44,11 +44,11 @@ jobs:
         run: |
           set -euo pipefail
           for arch in x64 arm64; do
-            name="llama-${TAG}-bin-ubuntu-${arch}.zip"
+            name="llama-${TAG}-bin-ubuntu-${arch}.tar.gz"
             url="https://github.com/ggml-org/llama.cpp/releases/download/${TAG}/${name}"
             if curl -fsSL -o "${name}" "${url}"; then
               echo "PIN ${name} sha256=$(sha256sum "${name}" | cut -d' ' -f1) size=$(stat -c%s "${name}")"
-              unzip -l "${name}" | grep -E "llama-server|\.so" | head -20
+              tar -tzf "${name}" | grep -E "llama-server|\.so" | head -20
             else
               echo "PIN ${name} ABSENT (no such asset for ${TAG})"
             fi
@@ -59,6 +59,13 @@ jobs:
           MODEL_URL: ${{ inputs.model_url }}
         run: |
           set -euo pipefail
-          curl -fsSL -o model.gguf "${MODEL_URL}"
-          echo "PIN model url=${MODEL_URL}"
-          echo "PIN model sha256=$(sha256sum model.gguf | cut -d' ' -f1) size=$(stat -c%s model.gguf)"
+          repo=$(echo "${MODEL_URL}" | sed -E 's|https://huggingface.co/([^/]+/[^/]+)/.*|\1|')
+          echo "== files of ${repo} =="
+          curl -fsSL "https://huggingface.co/api/models/${repo}" \
+            | python3 -c "import json,sys; [print(' ', s['rfilename']) for s in json.load(sys.stdin).get('siblings', [])]" || true
+          if curl -fsSL -o model.gguf "${MODEL_URL}"; then
+            echo "PIN model url=${MODEL_URL}"
+            echo "PIN model sha256=$(sha256sum model.gguf | cut -d' ' -f1) size=$(stat -c%s model.gguf)"
+          else
+            echo "PIN model ABSENT at ${MODEL_URL} — pick the right filename from the listing above"
+          fi

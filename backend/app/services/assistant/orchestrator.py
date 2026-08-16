@@ -23,6 +23,7 @@ from typing import Any
 
 from sqlalchemy.orm import Session
 
+from app.services.assistant import runtime
 from app.services.dg.autofill import prepare_entries
 from app.services.documents.registry import get_registry
 from app.services.pipeline import parse_and_calculate
@@ -94,6 +95,64 @@ def _to_parser_row(segment: str) -> str:
     return segment
 
 
+#: What the model may say about goods, and nothing else: a list of lines with
+#: a description, a count and a unit. No classification, no UN numbers, no
+#: judgement — the pipeline does the recognising, exactly as without a model.
+_LINES_SCHEMA = {
+    "type": "object",
+    "properties": {
+        "lines": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "description": {"type": "string"},
+                    "quantity": {"type": "number"},
+                    "unit": {"type": "string"},
+                },
+                "required": ["description"],
+            },
+        },
+    },
+    "required": ["lines"],
+}
+
+_LINES_PROMPT = (
+    "You convert a shipper's free-text message into structured goods lines. "
+    "Extract every distinct goods item with its quantity and unit where "
+    "stated. Copy the substance or goods wording as the user gave it — do "
+    "not translate, classify, complete or guess anything. The message may "
+    "be in Dutch, English, German or French."
+)
+
+
+def _model_rows(message: str) -> list[str] | None:
+    """Free text through the model, into the parser's own row format.
+
+    The model splits and structures; the pipeline still does everything
+    else. Any failure returns None and the deterministic route runs."""
+    if not runtime.installed():
+        return None
+    result = runtime.extract_json(_LINES_PROMPT, message, _LINES_SCHEMA)
+    if not result or not isinstance(result.get("lines"), list):
+        return None
+    rows: list[str] = []
+    for line in result["lines"]:
+        description = _clean(line.get("description"))
+        if not description:
+            continue
+        quantity = line.get("quantity")
+        unit = _clean(line.get("unit"))
+        if quantity:
+            from app.services.units import get_unit
+
+            known = get_unit(unit)
+            rows.append(f"{description} | {quantity:g} | {known.code if known else (unit or 'pcs')}")
+        else:
+            rows.append(description)
+    return rows or None
+
+
 def _apply_goods_message(
     state: dict[str, Any], message: str, db: Session, language: str,
 ) -> list[dict[str, Any]]:
@@ -101,10 +160,15 @@ def _apply_goods_message(
 
     Every sentence or line becomes one goods line, exactly as if it had been
     typed on the lines step; recognition (UN numbers by name included) is the
-    pipeline's, not ours.
+    pipeline's, not ours. With a model installed, the model only does the
+    splitting of free prose into rows; without one, the deterministic split
+    does.
     """
-    text = "\n".join(_to_parser_row(part.strip())
-                     for part in re.split(r"[\n;]+", message) if part.strip())
+    rows = _model_rows(message)
+    if rows is None:
+        rows = [_to_parser_row(part.strip())
+                for part in re.split(r"[\n;]+", message) if part.strip()]
+    text = "\n".join(rows)
     if not text:
         return []
     result = parse_and_calculate(text, db, output_language=language)
@@ -342,6 +406,39 @@ def _match_option(
     return None
 
 
+def _model_choice(pending: dict[str, Any], message: str) -> str | None:
+    """Let the model map a paraphrased answer onto one of the allowed options.
+
+    The schema's enum is the option list plus "unclear" — the model cannot
+    answer outside it, and "unclear" simply re-asks. Runs only after the
+    deterministic match found nothing."""
+    if not runtime.installed():
+        return None
+    options = [str(o) for o in pending.get("options") or []]
+    if not options:
+        return None
+    labels = pending.get("option_labels") or {}
+    described = []
+    for option in options:
+        label = labels.get(option)
+        names = ([str(v) for v in label.values()] if isinstance(label, dict)
+                 else [str(label)] if label else [])
+        described.append(f"- {option}" + (f" (also called: {', '.join(names)})" if names else ""))
+    schema = {
+        "type": "object",
+        "properties": {"choice": {"type": "string", "enum": options + ["unclear"]}},
+        "required": ["choice"],
+    }
+    system = (
+        "The user answers a form question. Decide which of the allowed "
+        "options their answer means. If it does not clearly mean one of "
+        "them, answer 'unclear'. Allowed options:\n" + "\n".join(described)
+    )
+    result = runtime.extract_json(system, message, schema)
+    choice = (result or {}).get("choice")
+    return choice if choice in options else None
+
+
 def _apply_answer(
     state: dict[str, Any], pending: dict[str, Any], message: str, language: str,
 ) -> list[dict[str, Any]]:
@@ -385,6 +482,8 @@ def _apply_answer(
             if options else text
         )
         if options and value is None:
+            value = _model_choice(pending, text)
+        if options and value is None:
             return [{"kind": "not_understood"}]
         if not _clean(value):
             return [{"kind": "not_understood"}]
@@ -403,6 +502,8 @@ def _apply_answer(
         options = pending.get("options") or []
         if options:
             matched = _match_option(text, options, pending.get("option_labels"))
+            if matched is None:
+                matched = _model_choice(pending, text)
             if matched is None:
                 return [{"kind": "not_understood"}]
             value = matched

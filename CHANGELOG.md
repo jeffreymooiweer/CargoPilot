@@ -2,6 +2,33 @@
 
 All notable changes are documented here, following [Semantic Versioning](https://semver.org/).
 
+## [1.104.0] — 2026-08-16
+
+### Added
+
+- **The local model, as an opt-in download.** Nothing ships in the image:
+  when an admin enables the assistant in Settings, the llama.cpp server
+  binary for this machine's architecture and the Qwen3-1.7B model (official
+  publisher, Apache-2.0) download once into `/data/assistant` — each
+  verified against a SHA-256 pinned in the repository, and the pins are
+  facts: the `pin-assistant-sources` workflow downloaded and hashed the
+  artifacts on a runner, both architectures (amd64 and arm64) included. A
+  mismatch removes the file; an unpinned source refuses to download at all.
+  The server runs as a managed child process on localhost; the download is
+  the assistant's only external traffic, and removing the model is one
+  button.
+- **What the model may do is grammar-bound.** Every model call is
+  constrained to a JSON schema by llama.cpp's grammar support — output
+  outside the schema cannot exist. The model does exactly two things: split
+  free prose into goods rows for the same pipeline the wizard uses, and map
+  a paraphrased answer ("it goes in a tank vehicle") onto one of the
+  question's own options through an enum whose only escape is "unclear",
+  which re-asks. Any model failure falls back to the deterministic chain;
+  the assistant can never be taken down by its model, and the model can
+  never widen what is asked or answered.
+- Footprint with the model installed: ± 2.5 GB extra RAM, ± 2 GB disk. The
+  sources and their pins are documented in `docs/data-sources.md`.
+
 ## [1.103.0] — 2026-08-16
 
 ### Added

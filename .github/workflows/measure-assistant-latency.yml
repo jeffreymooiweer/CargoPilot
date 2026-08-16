@@ -1,0 +1,68 @@
+name: Measure assistant latency
+
+# The hardware requirements the documentation states should be measured, not
+# guessed. This workflow installs the exact pinned runtime a user would get —
+# the llama.cpp server build and the Qwen3-1.7B Q8_0 model from
+# backend/app/config/assistant_runtime.json — on a standard 4-vCPU runner,
+# runs the assistant's two real extraction shapes against it, and prints the
+# timings and memory to the log. The log is the deliverable; nothing is
+# committed or stored.
+
+on:
+  workflow_dispatch: {}
+
+jobs:
+  measure:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install the pinned runtime, exactly as the app would
+        run: |
+          set -euo pipefail
+          python3 - <<'EOF'
+          import hashlib, json, pathlib, urllib.request
+          config = json.loads(pathlib.Path("backend/app/config/assistant_runtime.json").read_text())
+          for label, pin in (("server", config["server"]["x86_64"]), ("model", config["model"])):
+              name = "server.tar.gz" if label == "server" else config["model"]["filename"]
+              urllib.request.urlretrieve(pin["url"], name)
+              digest = hashlib.sha256(pathlib.Path(name).read_bytes()).hexdigest()
+              assert digest == pin["sha256"], f"{label}: {digest} != {pin['sha256']}"
+              print(f"{label}: verified {name}")
+          EOF
+          mkdir -p bin && tar -xzf server.tar.gz --strip-components=1 -C bin
+          nproc; free -m | head -2
+
+      - name: Start the server and time the two extraction shapes
+        run: |
+          set -euo pipefail
+          model=$(python3 -c "import json;print(json.load(open('backend/app/config/assistant_runtime.json'))['model']['filename'])")
+          LD_LIBRARY_PATH=bin ./bin/llama-server -m "$model" --host 127.0.0.1 --port 8012 -c 4096 --no-webui &
+          for i in $(seq 1 120); do
+            curl -sf http://127.0.0.1:8012/health >/dev/null && break; sleep 1
+          done
+          echo "MEASURE server ready after ${i}s"
+          run_case () {
+            local label="$1" system="$2" user="$3" schema="$4"
+            local start end
+            start=$(date +%s.%N)
+            curl -sf http://127.0.0.1:8012/v1/chat/completions -H 'Content-Type: application/json' -d "{
+              \"messages\": [{\"role\": \"system\", \"content\": $system},
+                             {\"role\": \"user\", \"content\": $user}],
+              \"temperature\": 0.1,
+              \"response_format\": {\"type\": \"json_schema\", \"json_schema\": {\"name\": \"extraction\", \"schema\": $schema}}
+            }" | python3 -c "import json,sys; print('  ->', json.load(sys.stdin)['choices'][0]['message']['content'])"
+            end=$(date +%s.%N)
+            echo "MEASURE ${label} seconds=$(echo "$end $start" | awk '{printf \"%.1f\", $1-$2}')"
+          }
+          run_case goods_nl \
+            '"You convert a shipper'"'"'s free-text message into structured goods lines. Extract every distinct goods item with its quantity and unit where stated. Copy the wording as given; do not translate, classify or guess."' \
+            '"ik wil 1000 jerrycans diesel en 4 pallets kalkzandsteen laten vervoeren"' \
+            '{"type":"object","properties":{"lines":{"type":"array","items":{"type":"object","properties":{"description":{"type":"string"},"quantity":{"type":"number"},"unit":{"type":"string"}},"required":["description"]}}},"required":["lines"]}'
+          run_case choice_nl \
+            '"The user answers a form question. Decide which of the allowed options their answer means. If unclear, answer unclear. Allowed options: packages (Colli), tank (Tank), bulk (Losgestort)."' \
+            '"het gaat in een tankwagen"' \
+            '{"type":"object","properties":{"choice":{"type":"string","enum":["packages","tank","bulk","unclear"]}},"required":["choice"]}'
+          free -m | head -2
+          echo "MEASURE rss_kb=$(ps -o rss= -C llama-server | awk '{s+=$1} END {print s}')"

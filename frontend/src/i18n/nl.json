@@ -228,7 +228,16 @@
     "unCardsEnabled": "UN-kaarten aanbieden",
     "unCardsEnabledHint": "De download van de UN-kaarten bij een zending met gevaarlijke stoffen.",
     "sessionTimeout": "Sessieduur (minuten)",
-    "sessionTimeoutHint": "Hoe lang iemand ingelogd blijft. 480 is één werkdag."
+    "sessionTimeoutHint": "Hoe lang iemand ingelogd blijft. 480 is één werkdag.",
+    "assistantTitle": "AI-assistent (lokaal model)",
+    "assistantIntro": "De assistent werkt altijd — zonder model als geleide invoer. Dit installeert alleen de flexibiliteit: een klein lokaal taalmodel dat vrije tekst leest. Alles blijft op uw eigen server.",
+    "assistantMode": "Huidige modus",
+    "assistantDeterministic": "geleide invoer (zonder model)",
+    "assistantInstall": "Model downloaden en aanzetten",
+    "assistantRemove": "Model verwijderen",
+    "assistantDownloading": "Bezig met downloaden en verifiëren…",
+    "assistantUnpinned": "De bronnen zijn nog niet met een hash vastgepind in deze uitgave; de download blijft uit tot dat gebeurd is.",
+    "assistantFootprint": "Benodigd met model: ± 2,5 GB extra RAM en ± 2 GB schijf in /data/assistant. De download wordt geverifieerd tegen een vastgepinde SHA-256 en is het enige externe verkeer van de assistent."
   },
   "modality": {
     "title": "Kies uw transportmodaliteit",

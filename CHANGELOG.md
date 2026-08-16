@@ -2,6 +2,24 @@
 
 All notable changes are documented here, following [Semantic Versioning](https://semver.org/).
 
+## [1.106.0] — 2026-08-16
+
+### Changed
+
+- **The assistant is a survey now, not a chat.** Owner feedback on v1.105.0:
+  no chat transcript, no box on the modality page. The assistant lives in a
+  modal, opened and closed with its own AI mark in the wizard header, and
+  asks one question per screen — the answers as selectable options, free
+  fields as a single input, optional questions with a skip. A *previous*
+  button really goes back: the server is stateless, so the modal keeps a
+  stack of snapshots and going back restores the wizard state taken before
+  that answer was applied — re-answering a question is replaying from an
+  earlier state, not editing history. The describe-your-shipment box left
+  the modality page with the chat; describing the shipment is now the
+  modal's first screen. Everything underneath is unchanged: the same
+  stateless `/assistant/step`, the same three question sources, the same
+  four locks on the model.
+
 ## [1.105.0] — 2026-08-16
 
 ### Added

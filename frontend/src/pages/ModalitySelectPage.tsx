@@ -48,7 +48,6 @@ export default function ModalitySelectPage() {
   // "change transport mode" would land here and bounce straight back.
   const skipDefault = params.get("choose") === "1";
   const preferred = preferences.default_modality;
-  const [describe, setDescribe] = useState("");
   useEffect(() => {
     if (!loaded || skipDefault) return;
     // A preference set while a modality was open must not keep opening it after
@@ -68,27 +67,6 @@ export default function ModalitySelectPage() {
         <p className="mt-2 text-xs sm:text-sm text-slate-500 dark:text-slate-400 max-w-2xl">
           {t("dashboard.privacy")}
         </p>
-        {/* Chat-first: describe the shipment here, pick the mode below, and the
-            wizard opens with the assistant already working on that sentence.
-            Typing nothing keeps the tiles exactly as they were. */}
-        <div className="mt-4 max-w-2xl">
-          <label
-            htmlFor="describe-shipment"
-            className="text-sm font-medium text-slate-800 dark:text-slate-200"
-          >
-            {t("modality.describeLabel")}
-          </label>
-          <input
-            id="describe-shipment"
-            className="mt-1 w-full rounded-lg border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-900 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
-            placeholder={t("modality.describePlaceholder")}
-            value={describe}
-            onChange={(event) => setDescribe(event.target.value)}
-          />
-          <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
-            {t("modality.describeHint")}
-          </p>
-        </div>
       </div>
 
       <div className="grid gap-3 sm:gap-4 sm:grid-cols-2 xl:grid-cols-3">
@@ -100,11 +78,7 @@ export default function ModalitySelectPage() {
             type="button"
             disabled={!available}
             aria-disabled={!available}
-            onClick={() =>
-              available &&
-              navigate(`/wizard/${key}`,
-                describe.trim() ? { state: { assistantMessage: describe.trim() } } : undefined)
-            }
+            onClick={() => available && navigate(`/wizard/${key}`)}
             title={available ? undefined : t("modality.lockedReason")}
             className={`group relative overflow-hidden rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-left shadow-sm transition focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 ${
               available

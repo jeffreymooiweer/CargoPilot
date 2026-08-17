@@ -21,6 +21,24 @@ const buttonPrimary =
 
 const THEMES: ThemeChoice[] = ["light", "dark", "system"];
 
+/** The settings, grouped the way someone looks for them: how it looks, what a
+ *  new shipment starts with, who I am — and, for an administrator, what
+ *  applies to the whole installation and the assistant's model. One long
+ *  scroll made the personal fields and the instance-wide ones look like one
+ *  list, which they are emphatically not. */
+const TABS = [
+  { key: "appearance", label: "settings.tabAppearance", admin: false },
+  { key: "shipment", label: "settings.tabShipment", admin: false },
+  { key: "details", label: "settings.tabDetails", admin: false },
+  { key: "admin", label: "settings.tabAdmin", admin: true },
+  { key: "assistant", label: "settings.tabAssistant", admin: true },
+] as const;
+
+type TabKey = (typeof TABS)[number]["key"];
+
+/** The personal tabs share one draft and therefore one save button. */
+const PERSONAL_TABS: TabKey[] = ["appearance", "shipment", "details"];
+
 interface Props {
   user: User;
 }
@@ -34,6 +52,7 @@ export default function SettingsPage({ user }: Props) {
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
   const [error, setError] = useState("");
+  const [tab_, setTab] = useState<TabKey>("appearance");
 
   useEffect(() => setDraft(preferences), [preferences]);
 
@@ -79,6 +98,9 @@ export default function SettingsPage({ user }: Props) {
     }
   };
 
+  const tabs = TABS.filter((tab) => !tab.admin || user.role === "admin");
+  const active = tabs.some((tab) => tab.key === tab_) ? tab_ : "appearance";
+
   return (
     <div className="space-y-6 max-w-2xl pb-4">
       <div>
@@ -86,6 +108,51 @@ export default function SettingsPage({ user }: Props) {
         <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">{t("settings.intro")}</p>
       </div>
 
+      {/* On a phone a row of tabs would either wrap or scroll out of sight;
+          a dropdown says which group you are in and holds the rest one tap
+          away. From the medium breakpoint the tabs themselves fit. */}
+      <div className="md:hidden">
+        <label htmlFor="settings-tab" className="sr-only">
+          {t("settings.tabPick")}
+        </label>
+        <select
+          id="settings-tab"
+          className={inputClass}
+          value={active}
+          onChange={(event) => setTab(event.target.value as TabKey)}
+        >
+          {tabs.map((tab) => (
+            <option key={tab.key} value={tab.key}>
+              {t(tab.label as "settings.tabAppearance")}
+            </option>
+          ))}
+        </select>
+      </div>
+
+      <div
+        role="tablist"
+        aria-label={t("settings.title")}
+        className="hidden md:flex flex-wrap gap-1 border-b border-slate-200 dark:border-slate-800"
+      >
+        {tabs.map((tab) => (
+          <button
+            key={tab.key}
+            type="button"
+            role="tab"
+            aria-selected={active === tab.key}
+            onClick={() => setTab(tab.key)}
+            className={`-mb-px rounded-t-lg border-b-2 px-4 py-2.5 text-sm font-medium transition ${
+              active === tab.key
+                ? "border-brand-600 text-brand-700 dark:border-brand-400 dark:text-brand-300"
+                : "border-transparent text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200"
+            }`}
+          >
+            {t(tab.label as "settings.tabAppearance")}
+          </button>
+        ))}
+      </div>
+
+      {active === "appearance" && (
       <section className={`${panelClass} p-5 space-y-5`}>
         <h3 className="text-sm font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">
           {t("settings.appearance")}
@@ -132,7 +199,9 @@ export default function SettingsPage({ user }: Props) {
           {t("settings.autoDetectNote")}
         </p>
       </section>
+      )}
 
+      {active === "shipment" && (
       <section className={`${panelClass} p-5 space-y-5`}>
         <div>
           <h3 className="text-sm font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">
@@ -181,7 +250,9 @@ export default function SettingsPage({ user }: Props) {
           onChange={(value) => set("prefill_documents", value)}
         />
       </section>
+      )}
 
+      {active === "details" && (
       <section className={`${panelClass} p-5 space-y-4`}>
         <div>
           <h3 className="text-sm font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">
@@ -227,29 +298,38 @@ export default function SettingsPage({ user }: Props) {
           onChange={(value) => set("emergency_contact", value)}
         />
       </section>
+      )}
 
-      <div className="space-y-2">
-        <p className="text-xs text-slate-500 dark:text-slate-400">{t("settings.signatureHint")}</p>
-        <SignaturePad
-          value={draft.signature_image || null}
-          onChange={(dataUrl) => set("signature_image", dataUrl ?? "")}
-        />
-      </div>
+      {active === "details" && (
+        <div className="space-y-2">
+          <p className="text-xs text-slate-500 dark:text-slate-400">{t("settings.signatureHint")}</p>
+          <SignaturePad
+            value={draft.signature_image || null}
+            onChange={(dataUrl) => set("signature_image", dataUrl ?? "")}
+          />
+        </div>
+      )}
 
-      <div className="flex flex-wrap items-center gap-3">
-        <button type="button" onClick={submit} disabled={saving || !dirty} className={buttonPrimary}>
-          {saving ? t("settings.saving") : t("settings.save")}
-        </button>
-        {saved && !dirty && (
-          <span className="text-sm text-emerald-600 dark:text-emerald-400">{t("settings.saved")}</span>
-        )}
-        {!loaded && <span className="text-sm text-slate-500 dark:text-slate-400">{t("wizard.loading")}</span>}
-      </div>
+      {/* One draft across the personal tabs, so one save button — switching
+          tabs never loses what was typed on another. */}
+      {PERSONAL_TABS.includes(active) && (
+        <>
+          <div className="flex flex-wrap items-center gap-3">
+            <button type="button" onClick={submit} disabled={saving || !dirty} className={buttonPrimary}>
+              {saving ? t("settings.saving") : t("settings.save")}
+            </button>
+            {saved && !dirty && (
+              <span className="text-sm text-emerald-600 dark:text-emerald-400">{t("settings.saved")}</span>
+            )}
+            {!loaded && <span className="text-sm text-slate-500 dark:text-slate-400">{t("wizard.loading")}</span>}
+          </div>
 
-      {error && <p className="text-sm text-red-600 dark:text-red-400">{error}</p>}
+          {error && <p className="text-sm text-red-600 dark:text-red-400">{error}</p>}
+        </>
+      )}
 
-      {user.role === "admin" && <AdminSettings />}
-      {user.role === "admin" && <AssistantAdmin />}
+      {active === "admin" && user.role === "admin" && <AdminSettings />}
+      {active === "assistant" && user.role === "admin" && <AssistantAdmin />}
 
       {version && (
         <p className="text-xs text-slate-500 dark:text-slate-400">

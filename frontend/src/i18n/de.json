@@ -237,7 +237,13 @@
     "assistantRemove": "Modell entfernen",
     "assistantDownloading": "Wird heruntergeladen und verifiziert…",
     "assistantUnpinned": "Die Quellen sind in dieser Ausgabe noch nicht per Hash festgelegt; der Download bleibt deaktiviert, bis das geschehen ist.",
-    "assistantFootprint": "Mit Modell erforderlich: ± 2,5 GB zusätzlicher RAM und ± 2 GB Speicher in /data/assistant. Der Download wird gegen eine festgelegte SHA-256 geprüft und ist der einzige externe Verkehr des Assistenten."
+    "assistantFootprint": "Mit Modell erforderlich: ± 2,5 GB zusätzlicher RAM und ± 2 GB Speicher in /data/assistant. Der Download wird gegen eine festgelegte SHA-256 geprüft und ist der einzige externe Verkehr des Assistenten.",
+    "tabAppearance": "Darstellung",
+    "tabShipment": "Sendung",
+    "tabDetails": "Meine Angaben",
+    "tabAdmin": "Verwaltung",
+    "tabAssistant": "KI-Assistent",
+    "tabPick": "Bereich wählen"
   },
   "modality": {
     "title": "Wählen Sie Ihren Verkehrsträger",

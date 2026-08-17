@@ -14,8 +14,9 @@ PRODUCT_PATTERNS = {
         r"quadratrohr", r"rechteckrohr", r"vierkantrohr", r"hohlprofil",
     ],
     "round_tube": [
-        r"\bbuis\b", r"\bpipe\b", r"\btube\b", r"ronde\s*buis", r"ronde\s*pijp",
-        r"stalen\s*buis", r"steel\s*pipe", r"steel\s*tube", r"\bchs\b",
+        r"\bbuis\b", r"\bbuizen\b", r"\bpipe\b", r"\bpipes\b", r"\btube\b",
+        r"\btubes\b", r"ronde\s*bui(?:s|zen)", r"ronde\s*pijp",
+        r"stalen\s*bui(?:s|zen)", r"steel\s*pipes?", r"steel\s*tubes?", r"\bchs\b",
         # Not a bare r"\brohr\b": that would swallow a PVC pipe as well.
         r"rundrohr", r"stahlrohr",
     ],
@@ -25,13 +26,18 @@ PRODUCT_PATTERNS = {
         r"rundstab", r"rundstahl", r"rundeisen",
     ],
     "plate": [
-        r"\bplaat\b", r"\bplate\b", r"\bstrip\b", r"plaatstaal", r"vlakstaal",
-        r"flat\s*bar", r"stalen\s*plaat", r"steel\s*plate", r"stripstaal",
-        r"stahlblech", r"\bblech\b", r"flachstahl", r"flacheisen",
+        # Plural forms carry their own word boundaries: a hundred "platen"
+        # never contains the singular "plaat", and went unrecognised for it.
+        r"\bplaat\b", r"\bplaten\b", r"\bplate\b", r"\bplates\b",
+        r"\bstrip\b", r"plaatstaal", r"vlakstaal",
+        r"flat\s*bar", r"stalen\s*pla(?:at|ten)", r"steel\s*plates?", r"stripstaal",
+        r"stahlblech", r"\bblech\b", r"\bbleche\b", r"flachstahl", r"flacheisen",
     ],
     "beam": [
-        r"\bbalk\b", r"\bbeam\b", r"\bplank\b", r"\bboard\b", r"i[\s-]?balk", r"dwarsbalk",
-        r"\bträger\b", r"\bbalken\b", r"\bbohle\b", r"\bbrett\b",
+        r"\bbalk\b", r"\bbeam\b", r"\bbeams\b", r"\bplank\b", r"\bplanken\b",
+        r"\bboard\b", r"\bboards\b", r"i[\s-]?balk", r"dwarsbalk",
+        r"\bträger\b", r"\bbalken\b", r"\bbohle\b", r"\bbohlen\b",
+        r"\bbrett\b", r"\bbretter\b",
     ],
     "standard_profile": [
         r"\bunp\b", r"\bupn\b", r"\bupe\b", r"\bipe\b", r"\bhea\b", r"\bheb\b", r"\bhem\b",

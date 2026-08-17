@@ -59,8 +59,8 @@ def test_rows_to_pipe_text_skips_header():
 def test_import_equipment_from_xlsx(db: Session):
     wb = Workbook()
     ws = wb.active
-    ws.append(["sap_code", "specifications", "length_cm", "width_cm", "height_cm", "weight_kg", "aliases", "active"])
-    ws.append(["TEST-001", "TEST VEHICLE", "400", "180", "170", "1500", "test vehicle", "yes"])
+    ws.append(["specifications", "length_cm", "width_cm", "height_cm", "wall_thickness_mm", "weight_kg", "aliases", "active"])
+    ws.append(["TEST VEHICLE", "400", "180", "170", "6", "1500", "test vehicle", "yes"])
     buf = io.BytesIO()
     wb.save(buf)
 
@@ -69,7 +69,7 @@ def test_import_equipment_from_xlsx(db: Session):
     assert result.created == 1
     assert result.errors == []
 
-    ws.cell(row=2, column=6, value="1600")
+    ws.cell(row=2, column=6, value="1600")  # the weight column
     buf2 = io.BytesIO()
     wb.save(buf2)
     rows2 = read_tabular_file(buf2.getvalue(), "import.xlsx")

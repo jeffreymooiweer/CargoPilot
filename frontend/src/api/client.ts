@@ -746,7 +746,8 @@ export interface GeoAddress {
 
 export interface EquipmentItem {
   id?: number;
-  sap_code?: string | null;
+  /** Millimetres, as a wall is written down. */
+  wall_thickness_mm?: number | null;
   specifications: string;
   length_cm?: number | null;
   width_cm?: number | null;

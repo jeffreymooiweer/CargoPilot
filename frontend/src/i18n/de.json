@@ -155,7 +155,6 @@
     "dimensions": "Abmessungen (L×B×H)",
     "search": "Suche nach Bezeichnung, SAP-Code oder Alias…",
     "count": "{{count}} von {{total}} Positionen",
-    "sapCode": "SAP-Code (MATNR)",
     "specifications": "Specifications (Bezeichnung)",
     "length": "Länge (cm)",
     "width": "Breite (cm)",
@@ -170,7 +169,8 @@
     "importCreated": "{{count}} hinzugefügt",
     "importUpdated": "{{count}} aktualisiert",
     "importSkipped": "{{count}} übersprungen",
-    "inactive": "Inaktiv"
+    "inactive": "Inaktiv",
+    "wallThickness": "Wandstärke (mm)"
   },
   "settings": {
     "title": "Einstellungen",

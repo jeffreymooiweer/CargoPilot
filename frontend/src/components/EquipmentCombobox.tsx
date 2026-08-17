@@ -192,8 +192,8 @@ export default function EquipmentCombobox({ value, onChange, placeholder }: Prop
 
           {!showCatalog &&
             browseEquipment.map((item) => {
-              const label = item.sap_code || item.specifications;
-              const sub = item.sap_code ? item.specifications : null;
+              const label = item.specifications;
+              const sub = null;
               return (
                 <li key={item.id}>
                   <button

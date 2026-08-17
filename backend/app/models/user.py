@@ -88,16 +88,24 @@ class ReferenceItem(Base):
 
 
 class Equipment(Base):
-    """Overzicht Materieel (SAP-materieellijst)."""
+    """The equipment library: the items an organisation ships regularly.
+
+    The SAP material number the list once carried is gone (v1.116.0): it came
+    from one organisation's old system, meant nothing anywhere else, and yet
+    it was the column an item was named by. The wall thickness took its
+    place — a measurement that actually describes the thing, and without
+    which the weight of a hollow section cannot be worked out.
+    """
 
     __tablename__ = "equipment_items"
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
-    sap_code: Mapped[str | None] = mapped_column(String(128), nullable=True, index=True)
     specifications: Mapped[str] = mapped_column(String(255))
     length_cm: Mapped[float | None] = mapped_column(nullable=True)
     width_cm: Mapped[float | None] = mapped_column(nullable=True)
     height_cm: Mapped[float | None] = mapped_column(nullable=True)
+    #: Millimetres on the screen and in the file, as people write down a wall.
+    wall_thickness_mm: Mapped[float | None] = mapped_column(nullable=True)
     weight_kg: Mapped[float] = mapped_column()
     aliases_json: Mapped[str] = mapped_column(Text, default="[]")
     language_labels_json: Mapped[str] = mapped_column(Text, default="{}")

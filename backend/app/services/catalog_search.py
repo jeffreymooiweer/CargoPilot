@@ -183,7 +183,7 @@ def _db_synonyms(db: Session) -> dict[str, str]:
         )
 
     for equip in db.query(Equipment).filter(Equipment.active.is_(True)).all():
-        target = (equip.sap_code or equip.specifications or "").strip().lower()
+        target = (equip.specifications or "").strip().lower()
         if not target:
             continue
         for alias in _load_aliases(equip.aliases_json):
@@ -327,7 +327,6 @@ def _search_equipment(db: Session, query: str, normalized: str, query_tokens: se
     for item in db.query(Equipment).filter(Equipment.active.is_(True)).all():
         labels = json.loads(item.language_labels_json or "{}")
         alias_list = [
-            item.sap_code or "",
             item.specifications,
             *_load_aliases(item.aliases_json),
             *labels.values(),
@@ -346,13 +345,13 @@ def _search_equipment(db: Session, query: str, normalized: str, query_tokens: se
                 continue
         if score <= 0:
             continue
-        label = item.sap_code or item.specifications
+        label = item.specifications
         hits.append(
             SearchHit(
                 id=f"equipment:{item.id}",
                 source="equipment",
                 label=label,
-                sublabel=item.specifications if item.sap_code else f"{item.weight_kg} kg",
+                sublabel=f"{item.weight_kg} kg",
                 value=_merge_label(label, query),
                 score=score,
             )

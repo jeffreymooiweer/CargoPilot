@@ -159,8 +159,6 @@ def match_equipment(text: str, db: Session) -> Equipment | None:
     best_len = 0
     for item in db.query(Equipment).filter(Equipment.active.is_(True)).all():
         aliases = [item.specifications.lower()]
-        if item.sap_code:
-            aliases.append(item.sap_code.lower())
         aliases.extend(a.lower() for a in _load_aliases_json(item.aliases_json))
         labels = json.loads(item.language_labels_json or "{}")
         aliases.extend(v.lower() for v in labels.values())

@@ -126,11 +126,11 @@ function CardRow({ label, children }: { label: string; children: React.ReactNode
 }
 
 const emptyForm = (): EquipmentItem => ({
-  sap_code: "",
   specifications: "",
   length_cm: null,
   width_cm: null,
   height_cm: null,
+  wall_thickness_mm: null,
   weight_kg: 0,
   aliases: [],
   language_labels: {},
@@ -154,7 +154,6 @@ export default function MaterieelPage() {
     if (!q) return items;
     return items.filter((item) => {
       const hay = [
-        item.sap_code,
         item.specifications,
         ...(item.aliases || []),
         ...Object.values(item.language_labels || {}),
@@ -176,13 +175,13 @@ export default function MaterieelPage() {
     setError("");
     const payload = {
       ...form,
-      sap_code: form.sap_code || null,
       aliases: (form.aliases as string[] | undefined) || [],
       language_labels: form.language_labels || {},
       weight_kg: Number(form.weight_kg),
       length_cm: form.length_cm ? Number(form.length_cm) : null,
       width_cm: form.width_cm ? Number(form.width_cm) : null,
       height_cm: form.height_cm ? Number(form.height_cm) : null,
+      wall_thickness_mm: form.wall_thickness_mm ? Number(form.wall_thickness_mm) : null,
     };
     try {
       if (editingId) {
@@ -234,11 +233,11 @@ export default function MaterieelPage() {
         <h3 className="md:col-span-2 font-semibold text-slate-900 dark:text-slate-100">
           {editingId ? t("materieel.edit") : t("materieel.add")}
         </h3>
-        <input className={inputClass} placeholder={t("materieel.sapCode")} value={form.sap_code ?? ""} onChange={(e) => setForm({ ...form, sap_code: e.target.value })} />
-        <input className={inputClass} required placeholder={t("materieel.specifications")} value={form.specifications} onChange={(e) => setForm({ ...form, specifications: e.target.value })} />
+        <input className={`${inputClass} md:col-span-2`} required placeholder={t("materieel.specifications")} value={form.specifications} onChange={(e) => setForm({ ...form, specifications: e.target.value })} />
         <input className={inputClass} type="number" step="0.1" placeholder={t("materieel.length")} value={form.length_cm ?? ""} onChange={(e) => setForm({ ...form, length_cm: e.target.value ? Number(e.target.value) : null })} />
         <input className={inputClass} type="number" step="0.1" placeholder={t("materieel.width")} value={form.width_cm ?? ""} onChange={(e) => setForm({ ...form, width_cm: e.target.value ? Number(e.target.value) : null })} />
         <input className={inputClass} type="number" step="0.1" placeholder={t("materieel.height")} value={form.height_cm ?? ""} onChange={(e) => setForm({ ...form, height_cm: e.target.value ? Number(e.target.value) : null })} />
+        <input className={inputClass} type="number" step="0.1" placeholder={t("materieel.wallThickness")} value={form.wall_thickness_mm ?? ""} onChange={(e) => setForm({ ...form, wall_thickness_mm: e.target.value ? Number(e.target.value) : null })} />
         <input className={inputClass} type="number" step="0.1" required placeholder={t("materieel.weight")} value={form.weight_kg || ""} onChange={(e) => setForm({ ...form, weight_kg: Number(e.target.value) })} />
         <input
           className={`${inputClass} md:col-span-2`}
@@ -280,7 +279,7 @@ export default function MaterieelPage() {
           <div key={item.id} className={`${panelClass} shadow-sm`}>
             <div className="flex items-center gap-2 border-b border-slate-100 px-4 py-3 dark:border-slate-800">
               <span className="min-w-0 truncate font-semibold text-slate-900 dark:text-slate-100">
-                {item.sap_code || item.specifications}
+                {item.specifications}
               </span>
               {item.active === false && (
                 <span className="rounded-full bg-slate-100 px-2 py-0.5 text-xs text-slate-500 dark:bg-slate-800 dark:text-slate-400">
@@ -294,11 +293,12 @@ export default function MaterieelPage() {
               </div>
             </div>
             <div>
-              <CardRow label={t("materieel.specifications")}>{item.specifications}</CardRow>
-              {item.sap_code && <CardRow label={t("materieel.sapCode")}>{item.sap_code}</CardRow>}
               <CardRow label={t("materieel.dimensions")}>
                 {[item.length_cm, item.width_cm, item.height_cm].filter((v) => v != null).join(" × ") || "—"}
               </CardRow>
+              {item.wall_thickness_mm != null && (
+                <CardRow label={t("materieel.wallThickness")}>{item.wall_thickness_mm} mm</CardRow>
+              )}
               <CardRow label={t("materieel.weight")}>{item.weight_kg} kg</CardRow>
               {item.aliases && item.aliases.length > 0 && (
                 <CardRow label={t("materieel.aliases")}>{item.aliases.join(", ")}</CardRow>
@@ -313,9 +313,9 @@ export default function MaterieelPage() {
         <table className="w-full text-sm text-slate-800 dark:text-slate-200">
           <thead className="bg-slate-50 dark:bg-slate-800/80 sticky top-0">
             <tr>
-              <th className="px-3 py-2 text-left">{t("materieel.sapCode")}</th>
               <th className="px-3 py-2 text-left">{t("materieel.specifications")}</th>
               <th className="px-3 py-2 text-left">L×B×H</th>
+              <th className="px-3 py-2 text-left">{t("materieel.wallThickness")}</th>
               <th className="px-3 py-2 text-left">{t("materieel.weight")}</th>
               <th className="px-3 py-2 text-left"></th>
             </tr>
@@ -323,10 +323,12 @@ export default function MaterieelPage() {
           <tbody>
             {filtered.map((item) => (
               <tr key={item.id} className="border-t border-slate-100 dark:border-slate-800">
-                <td className="px-3 py-2 whitespace-nowrap">{item.sap_code || "—"}</td>
                 <td className="px-3 py-2">{item.specifications}</td>
                 <td className="px-3 py-2 whitespace-nowrap">
                   {[item.length_cm, item.width_cm, item.height_cm].filter((v) => v != null).join(" × ") || "—"}
+                </td>
+                <td className="px-3 py-2 whitespace-nowrap">
+                  {item.wall_thickness_mm != null ? `${item.wall_thickness_mm} mm` : "—"}
                 </td>
                 <td className="px-3 py-2 whitespace-nowrap">{item.weight_kg} kg</td>
                 <td className="px-3 py-2 whitespace-nowrap">

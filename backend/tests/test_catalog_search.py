@@ -14,7 +14,6 @@ from app.services.catalog_search import normalize_synonyms, search_catalog
 def _seed_demo_equipment(db) -> None:
     db.add(
         Equipment(
-            sap_code="DEMO-FL",
             specifications="DEMO FORKLIFT",
             weight_kg=3500,
             aliases_json=json.dumps(["forklift", "heftruck", "demo forklift"]),

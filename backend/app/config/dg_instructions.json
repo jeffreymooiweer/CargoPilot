@@ -138,10 +138,10 @@
         "fr": "Nombre de colis"
       },
       "help": {
-        "nl": "Aantal verpakkingen.",
-        "en": "Number of packages.",
-        "de": "Anzahl der Verpackungen.",
-        "fr": "Nombre de colis."
+        "nl": "Aantal colli dat de vervoerder in ontvangst neemt en moet controleren (CMR/AVC vak 7). Let op: pallets, rolcontainers en dergelijke tellen niet als colli — tel de verpakkingen erop.",
+        "en": "Number of packages the carrier takes over and must check (CMR/AVC box 7). Note: pallets, roll containers and the like do not count as packages — count the packages on them.",
+        "de": "Anzahl der Packstücke, die der Frachtführer übernimmt und prüfen muss (CMR/AVC Feld 7). Achtung: Paletten, Rollbehälter und dergleichen zählen nicht als Packstücke — zählen Sie die Verpackungen darauf.",
+        "fr": "Nombre de colis que le transporteur prend en charge et doit contrôler (CMR/AVC case 7). Attention : les palettes, rolls et similaires ne comptent pas comme colis — comptez les emballages qu'ils portent."
       },
       "simple": {
         "nl": "Hoeveel verpakkingen (dozen, vaten, jerrycans …) gaan er in totaal mee? Bijvoorbeeld: 1000.",

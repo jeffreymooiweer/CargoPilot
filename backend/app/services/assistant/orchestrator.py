@@ -347,7 +347,26 @@ def _details_not_goods(description: str, fields: dict[str, str]) -> bool:
     return hits * 2 >= len(words)
 
 
-def _intake_rows(raw_lines: list[dict[str, Any]], fields: dict[str, str]) -> list[str]:
+#: A "goods line" that opens with a detail word is a consignment detail the
+#: model failed to put in its field — measured in a run where the fields
+#: came back empty and the details all arrived as goods lines. The fragment
+#: is recovered into the field it names and never becomes a package.
+_DETAIL_LINE = (
+    (re.compile(r"^(?:van|from|von|depuis)\s+(?!\d)(.+)$", re.IGNORECASE),
+     "loading_point"),
+    (re.compile(r"^(?:naar|to|nach|vers|à)\s+(?!\d)(.+)$", re.IGNORECASE),
+     "discharge_point"),
+    (re.compile(r"^(?:vervoerder|voerder|carrier|transporteur|frachtführer)\s+(.+)$",
+                re.IGNORECASE), "carrier_name"),
+    (re.compile(r"^(?:order|opdracht)\s+(.+)$", re.IGNORECASE), "purchase_order"),
+    (re.compile(r"^(?:ref|referentie|reference|boeking|booking)\s*:?\s*(.+)$",
+                re.IGNORECASE), "shipment_reference"),
+)
+
+
+def _intake_rows(
+    raw_lines: list[dict[str, Any]], fields: dict[str, str], message: str,
+) -> list[str]:
     """The model's goods lines as parser rows, with the deterministic floor
     still underneath.
 
@@ -368,7 +387,16 @@ def _intake_rows(raw_lines: list[dict[str, Any]], fields: dict[str, str]) -> lis
         if origin and destination:
             fields.setdefault("loading_point", origin)
             fields.setdefault("discharge_point", destination)
-        if not description or _details_not_goods(description, fields):
+        if not description:
+            continue
+        detail = next(((pattern, field) for pattern, field in _DETAIL_LINE
+                       if pattern.match(description)), None)
+        if detail is not None:
+            value = detail[0].match(description).group(1).strip(" ,.")
+            if value and _stated_in(message, value):
+                fields.setdefault(detail[1], value)
+            continue
+        if _details_not_goods(description, fields):
             continue
         quantity = line.get("quantity")
         unit = _clean(line.get("unit"))
@@ -437,7 +465,7 @@ def _apply_goods_message(
     intake = _model_intake(message)
     if intake is not None:
         raw_lines, fields = intake
-        rows = _intake_rows(raw_lines, fields)
+        rows = _intake_rows(raw_lines, fields, message)
         fill(fields)
         if not rows and not fields:
             rows = None  # the model read nothing at all; the floor takes over

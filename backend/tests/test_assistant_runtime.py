@@ -379,6 +379,33 @@ def test_details_re_listed_as_goods_lines_never_become_packages(db, monkeypatch)
     assert result["state"]["doc_values"]["carrier_name"] == "Trans Janssen"
 
 
+def test_details_dropped_from_the_fields_are_recovered_from_the_lines(db, monkeypatch):
+    """The third measured failure shape, verbatim: the fields came back
+    empty and every consignment detail arrived as a goods line instead. A
+    line that opens with a route, carrier or order word is a detail — it is
+    recovered into the field it names and never becomes a package."""
+    fake_model(monkeypatch, lambda system, user, schema, **_: {
+        "lines": [
+            {"description": "1000 jerrycans diesel", "quantity": 1000, "unit": "jerrycans"},
+            {"description": "van Mooiweer BV, Kade 1 Rotterdam", "quantity": 1, "unit": "van"},
+            {"description": "naar Afnemer GmbH in Duisburg", "quantity": 1, "unit": "naar"},
+            {"description": "voerder Trans Janssen", "quantity": 1, "unit": "voerder"},
+            {"description": "order 4711", "quantity": 1, "unit": "order"},
+        ],
+    })
+    result = step({"modality": "road"},
+                  "1000 jerrycans diesel van Mooiweer BV, Kade 1 Rotterdam naar "
+                  "Afnemer GmbH in Duisburg, vervoerder Trans Janssen, order 4711",
+                  None, db, "nl")
+    lines = result["state"]["draft_lines"]
+    assert [l["description"] for l in lines] == ["diesel"]
+    values = result["state"]["doc_values"]
+    assert values["loading_point"] == "Mooiweer BV, Kade 1 Rotterdam"
+    assert values["discharge_point"] == "Afnemer GmbH in Duisburg"
+    assert values["carrier_name"] == "Trans Janssen"
+    assert values["purchase_order"] == "4711"
+
+
 def test_the_intake_never_overwrites_what_was_already_answered(db, monkeypatch):
     fake_model(monkeypatch, lambda system, user, schema, **_: {
         "lines": [{"description": "kalkzandsteen", "quantity": 4, "unit": "pallets"}],

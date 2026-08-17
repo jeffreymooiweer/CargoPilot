@@ -39,19 +39,26 @@ This is a deliberate choice. If a job is finished, there is nothing left to leak
 
 ## What leaves your server
 
-Two things, and only if you let them:
+Three things, and only if you let them:
 
 **Address autocomplete** sends what you type in an address field to a Photon geocoder
 (`photon.komoot.io` by default). An administrator can switch it off entirely on the
 settings screen, point `GEO_ADDRESS_API_URL` at their own instance, or you can simply not
-use the suggestions — typing by hand always works.
+use the suggestions — typing by hand always works. The assistant's address questions go
+through the very same switch.
 
 **Catalogue sync** fetches public reference data (steel profiles, material densities) at
 startup. Switch it off on the settings screen or with `CATALOG_AUTO_SYNC=false`.
 
-Both switches sit next to each other under **Outbound connections** in the administrator
-section of the settings screen, so an air-gapped installation can be made silent from one
-place.
+**The assistant's model download** happens once, only when an administrator clicks
+*install* on the settings screen: the pinned llama.cpp build and the Qwen3 model file
+are fetched into `/data/assistant` and verified against SHA-256 digests recorded in the
+repository. Nothing about your shipments is ever sent — the download is the only
+traffic, and after it the assistant runs entirely locally. Never installing it is the
+default, and the assistant works without it.
+
+The switches sit together under **Outbound connections** in the administrator section of
+the settings screen, so an air-gapped installation can be made silent from one place.
 
 Airport, port, station, UN number and packaging lookups are all local. Nothing about
 your shipment ever goes anywhere.

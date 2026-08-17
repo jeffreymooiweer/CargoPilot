@@ -245,27 +245,52 @@ _LINES_SCHEMA = {
     "required": ["lines"],
 }
 
-_LINES_PROMPT = (
-    "You convert a shipper's free-text message into structured goods lines. "
-    "Extract every distinct goods item with its quantity and unit where "
-    "stated. Copy the substance or goods wording as the user gave it — do "
-    "not translate, classify, complete or guess anything. The message may "
-    "be in Dutch, English, German or French."
+#: The document fields the intake may fill from the first message, and
+#: nothing else: parties, route and references — facts of the consignment
+#: the sentence can state. Never a regulatory value; UN numbers and
+#: classifications go through the pipeline's own recognition, exactly as
+#: without a model.
+_INTAKE_FIELDS = (
+    "consignor_name", "consignor_address", "consignee_name",
+    "consignee_address", "carrier_name", "loading_point", "discharge_point",
+    "loading_date", "shipment_reference", "booking_number", "purchase_order",
+)
+
+_INTAKE_SCHEMA = {
+    "type": "object",
+    "properties": {
+        "lines": _LINES_SCHEMA["properties"]["lines"],
+        **{field: {"type": "string"} for field in _INTAKE_FIELDS},
+    },
+    "required": ["lines"],
+}
+
+_INTAKE_PROMPT = (
+    "You convert a shipper's free-text message into structured consignment "
+    "data. Extract every distinct goods item with its quantity and unit "
+    "where stated, and any consignment details the message explicitly "
+    "states: consignor (the sender), consignee (the receiver), carrier, "
+    "loading point, discharge point, loading date, references. Copy the "
+    "wording as the user gave it — do not translate, classify, complete or "
+    "guess anything, and omit every field the message does not state. The "
+    "message may be in Dutch, English, German or French."
 )
 
 
-def _model_rows(message: str) -> list[str] | None:
-    """Free text through the model, into the parser's own row format.
+def _stated_in(message: str, value: str) -> bool:
+    """Whether the message itself can have said this value.
 
-    The model splits and structures; the pipeline still does everything
-    else. Any failure returns None and the deterministic route runs."""
-    if not runtime.installed():
-        return None
-    result = runtime.extract_json(_LINES_PROMPT, message, _LINES_SCHEMA)
-    if not result or not isinstance(result.get("lines"), list):
-        return None
+    The model reads, it never writes fiction: a value is only accepted when
+    at least one substantial word of it occurs in the message. Reformatting
+    survives this check; an invented consignee does not."""
+    haystack = message.casefold()
+    words = [w for w in re.findall(r"\w{3,}", value.casefold())]
+    return bool(words) and any(w in haystack for w in words)
+
+
+def _rows_from_lines(lines: list[dict[str, Any]]) -> list[str]:
     rows: list[str] = []
-    for line in result["lines"]:
+    for line in lines:
         description = _clean(line.get("description"))
         if not description:
             continue
@@ -278,7 +303,50 @@ def _model_rows(message: str) -> list[str] | None:
             rows.append(f"{description} | {quantity:g} | {known.code if known else (unit or 'pcs')}")
         else:
             rows.append(description)
-    return rows or None
+    return rows
+
+
+def _model_intake(message: str) -> tuple[list[str], dict[str, str]] | None:
+    """The whole first message through the model: goods rows plus every
+    consignment detail the sentence explicitly stated.
+
+    The model structures; it decides nothing. Fields come from a fixed
+    whitelist, every value must be traceable to the message itself, a date
+    must parse, and everything still runs through the same pipeline and
+    validators as typed input. Any failure returns None and the
+    deterministic route runs."""
+    if not runtime.installed():
+        return None
+    result = runtime.extract_json(_INTAKE_PROMPT, message, _INTAKE_SCHEMA)
+    if not result or not isinstance(result.get("lines"), list):
+        return None
+    fields: dict[str, str] = {}
+    for field in _INTAKE_FIELDS:
+        value = str(result.get(field) or "").strip()[:200]
+        if not value or not _stated_in(message, value):
+            continue
+        if field == "loading_date":
+            iso = _read_date(value)
+            if iso is None:
+                continue
+            value = iso
+        fields[field] = value
+    return _rows_from_lines(result["lines"]) or None, fields
+
+
+def _read_date(text: str) -> str | None:
+    """A date as people type it, to ISO — or nothing."""
+    text = text.strip()
+    if _ISO_DATE.match(text):
+        return text
+    day_first = _DAY_FIRST_DATE.match(text)
+    if day_first:
+        try:
+            return _dt.date(int(day_first.group(3)), int(day_first.group(2)),
+                            int(day_first.group(1))).isoformat()
+        except ValueError:
+            return None
+    return None
 
 
 def _apply_goods_message(
@@ -293,20 +361,35 @@ def _apply_goods_message(
     does.
     """
     events: list[dict[str, Any]] = []
-    # The route travels in the same sentence as the goods — "100 plates from
-    # Wezep to the port of Rotterdam" answers two document questions before
-    # they are asked. Only fields still empty are filled; the phrase leaves
-    # the goods description either way.
-    message, origin, destination = _split_route(message)
-    if origin and destination:
+
+    def fill(fields: dict[str, str]) -> None:
+        # Everything the sentence already answered is never asked again —
+        # and only fields still empty are filled, so nothing typed earlier
+        # is ever overwritten.
         values = state.setdefault("doc_values", {})
-        for field, value in (("loading_point", origin), ("discharge_point", destination)):
-            if not _clean(values.get(field)):
+        for field, value in fields.items():
+            if value and not _clean(values.get(field)):
                 values[field] = value
                 events.append({"kind": "answered", "field": field, "value": value})
 
-    rows = _model_rows(message)
-    if rows is None:
+    # With a model installed the whole message is read as an intake: goods
+    # rows plus every consignment detail the sentence explicitly stated —
+    # parties, route, references. What the sentence did not state stays
+    # empty and is asked, exactly as without a model. The intake sees the
+    # message whole; the cruder deterministic route cut runs only when no
+    # model answers, or it would carve the consignor out of the sentence
+    # before the intake could read it.
+    intake = _model_intake(message)
+    if intake is not None:
+        rows, fields = intake
+        fill(fields)
+    else:
+        # The deterministic floor: "100 plates from Wezep to the port of
+        # Rotterdam" answers two document questions before they are asked.
+        # The phrase leaves the goods description either way.
+        message, origin, destination = _split_route(message)
+        if origin and destination:
+            fill({"loading_point": origin, "discharge_point": destination})
         rows = [_to_parser_row(segment) for segment in _split_segments(message)]
     text = "\n".join(rows)
     if not text:
@@ -814,15 +897,8 @@ def _apply_answer(
         if pending.get("type") == "date":
             if lowered in _TODAY_WORDS:
                 value = _dt.date.today().isoformat()
-            elif not _ISO_DATE.match(text):
-                day_first = _DAY_FIRST_DATE.match(text)
-                try:
-                    value = _dt.date(int(day_first.group(3)),
-                                     int(day_first.group(2)),
-                                     int(day_first.group(1))).isoformat() \
-                        if day_first else None
-                except ValueError:
-                    value = None
+            else:
+                value = _read_date(text)
                 if value is None:
                     return [{"kind": "clarify", "field": pending.get("field"),
                              "example": _dt.date.today().strftime("%d-%m-%Y")}]

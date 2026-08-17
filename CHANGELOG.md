@@ -2,6 +2,34 @@
 
 All notable changes are documented here, following [Semantic Versioning](https://semver.org/).
 
+## [1.112.0] — 2026-08-17
+
+### Added
+
+- **The intake reads everything the sentence states.** Owner expectation,
+  verbatim in spirit: a language model should be smart enough that whatever
+  the first message already says — addresses, parties, counts, dates,
+  references — is never asked again, while whatever it does not say still
+  is. With the local model installed, the first message now goes through
+  one intake extraction: goods lines plus every consignment detail the
+  sentence explicitly states — consignor, consignee, carrier, loading and
+  discharge point, loading date, order and booking references. Each lands
+  in the same document fields the wizard writes, only where still empty,
+  and the question for it never comes; everything unstated is asked exactly
+  as before.
+- **The locks hold, extended.** The intake may fill a fixed whitelist of
+  party, route and reference fields and nothing else — never a regulatory
+  value; UN numbers and classifications still go through the pipeline's own
+  recognition. Every value must be traceable to the message itself (at
+  least one substantial word of it occurs in the sentence), so an invented
+  consignee is refused; a date must parse or it is dropped; nothing typed
+  earlier is ever overwritten. All of it pinned by tests with a fake model
+  that tries to smuggle in a consignee, a UN number and a non-date.
+- **Without a model everything works as before**: the deterministic route
+  reading ("from X to Y"), the count and content reading, and the survey
+  asking what is open. The `measure-assistant-latency` workflow gained the
+  intake shape so its cost on the pinned runtime is measured, not guessed.
+
 ## [1.111.0] — 2026-08-17
 
 ### Added

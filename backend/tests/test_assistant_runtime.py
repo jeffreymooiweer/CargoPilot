@@ -246,6 +246,96 @@ def test_a_typed_measurement_never_reaches_the_model(db, monkeypatch):
     assert result["state"]["draft_lines"][0]["length_cm"] == 120.0
 
 
+def test_the_intake_reads_everything_the_sentence_states(db, monkeypatch):
+    """One message carrying goods, parties, route and a reference: all of it
+    lands in the state, and none of it is asked again. What the sentence did
+    not state — the consignee's address, the payment — is still asked."""
+    message = ("1000 jerrycans diesel van Mooiweer BV, Kade 1 Rotterdam naar "
+               "Afnemer GmbH in Duisburg, vervoerder Trans Janssen, "
+               "order 4711, laden op 18-08-2026")
+    fake_model(monkeypatch, lambda system, user, schema, **_: {
+        "lines": [{"description": "diesel", "quantity": 1000, "unit": "jerrycans"}],
+        "consignor_name": "Mooiweer BV",
+        "consignor_address": "Kade 1, Rotterdam",
+        "consignee_name": "Afnemer GmbH",
+        "carrier_name": "Trans Janssen",
+        "loading_point": "Kade 1 Rotterdam",
+        "discharge_point": "Duisburg",
+        "purchase_order": "4711",
+        "loading_date": "18-08-2026",
+    })
+    result = step({"modality": "road"}, message, None, db, "nl")
+    values = result["state"]["doc_values"]
+    assert values["consignor_name"] == "Mooiweer BV"
+    assert values["consignee_name"] == "Afnemer GmbH"
+    assert values["carrier_name"] == "Trans Janssen"
+    assert values["discharge_point"] == "Duisburg"
+    assert values["purchase_order"] == "4711"
+    assert values["loading_date"] == "2026-08-18"
+    answered = {e["field"] for e in result["events"] if e["kind"] == "answered"}
+    assert "consignor_name" in answered
+    # The goods still run through the pipeline: recognised, not decided.
+    assert result["pending"]["scope"] == "un_confirm"
+
+
+def test_what_the_intake_filled_is_not_asked_and_the_rest_still_is(db, monkeypatch):
+    fake_model(monkeypatch, lambda system, user, schema, **_: {
+        "lines": [{"description": "kalkzandsteen", "quantity": 4, "unit": "pallets"}],
+        "consignor_name": "Mooiweer BV",
+        "consignor_address": "Kade 1, Rotterdam",
+        "loading_point": "Rotterdam",
+        "discharge_point": "Duisburg",
+    })
+    result = step({"modality": "road"},
+                  "4 pallets kalkzandsteen van Mooiweer BV, Kade 1 Rotterdam naar Duisburg",
+                  None, db, "nl")
+    state, pending = result["state"], result["pending"]
+    asked: list[str] = []
+    for _ in range(50):
+        if pending is None:
+            break
+        asked.append(str(pending.get("field")))
+        answer = "overslaan" if pending.get("required") is False else "antwoord"
+        if pending.get("field") == "established_date":
+            answer = "vandaag"
+        result = step(state, answer, pending, db, "nl")
+        state, pending = result["state"], result["pending"]
+    # Filled by the sentence: never asked. Not stated: asked.
+    for field in ("consignor_name", "consignor_address", "loading_point", "discharge_point"):
+        assert field not in asked, field
+    assert "consignee_name" in asked
+
+
+def test_the_intake_never_writes_what_the_message_did_not_say(db, monkeypatch):
+    """The model reads, it never writes fiction: a value without a single
+    substantial word in the message is refused, and fields outside the
+    whitelist — regulatory ones included — are ignored entirely."""
+    fake_model(monkeypatch, lambda system, user, schema, **_: {
+        "lines": [{"description": "kalkzandsteen", "quantity": 4, "unit": "pallets"}],
+        "consignee_name": "Piet de Boer",       # nowhere in the message
+        "un_number": "1203",                     # not an intake field
+        "proper_shipping_name": "BENZINE",       # not an intake field
+        "loading_date": "morgen",                # not a date that parses
+    })
+    result = step({"modality": "road"}, "4 pallets kalkzandsteen", None, db, "nl")
+    values = result["state"]["doc_values"]
+    assert "consignee_name" not in values
+    assert "un_number" not in values and "proper_shipping_name" not in values
+    assert "loading_date" not in values
+    # And no dangerous goods route was opened by the ignored fields.
+    assert not result["state"]["draft_lines"][0].get("dangerous_goods")
+
+
+def test_the_intake_never_overwrites_what_was_already_answered(db, monkeypatch):
+    fake_model(monkeypatch, lambda system, user, schema, **_: {
+        "lines": [{"description": "kalkzandsteen", "quantity": 4, "unit": "pallets"}],
+        "consignor_name": "Mooiweer BV",
+    })
+    state = {"modality": "road", "doc_values": {"consignor_name": "Eerder Ingevuld BV"}}
+    result = step(state, "4 pallets kalkzandsteen van Mooiweer BV", None, db, "nl")
+    assert result["state"]["doc_values"]["consignor_name"] == "Eerder Ingevuld BV"
+
+
 def test_the_model_cannot_widen_the_event_vocabulary(db, monkeypatch):
     """Even a model that returns nonsense produces only the closed set of
     events the orchestrator owns."""

@@ -116,6 +116,48 @@ def test_the_contents_of_a_package_are_never_read_as_a_route(db):
     assert line["package_content"] == "25 L"
 
 
+def test_the_owner_s_full_sentence_is_read_completely(db):
+    """The owner's own test sentence, verbatim: intent words, a relative
+    date, a count with contents per package, and a route opened with a word
+    the route reader did not know. Everything it states lands; the only
+    question left about the substance is the UN confirmation."""
+    import datetime
+
+    state, pending, events = drive(
+        db, ["ik wil morgen 1800 jerrycans benzine van 25l laten vervoeren "
+             "vanaf de haven in rotterdam naar schiphol"])
+    line = state["draft_lines"][0]
+    assert line["description"] == "benzine"
+    assert line["quantity"] == 1800.0 and line["unit"] == "jerrycan"
+    assert line["package_content"] == "25 L"
+    assert line["weight_total_kg"] == 33525.0
+    values = state["doc_values"]
+    assert values["loading_point"] == "de haven in rotterdam"
+    assert values["discharge_point"] == "schiphol"
+    tomorrow = (datetime.date.today() + datetime.timedelta(days=1)).isoformat()
+    assert values["loading_date"] == tomorrow
+    assert pending["scope"] == "un_confirm"
+
+
+def test_an_explicit_date_in_the_sentence_answers_the_loading_date(db):
+    state, _pending, _events = drive(
+        db, ["4 pallets kalkzandsteen versturen van wezep naar rotterdam op 20-12-2026"])
+    values = state["doc_values"]
+    assert values["loading_date"] == "2026-12-20"
+    assert values["loading_point"] == "wezep"
+    assert values["discharge_point"] == "rotterdam"
+    assert state["draft_lines"][0]["description"] == "kalkzandsteen"
+
+
+def test_a_goods_name_containing_a_date_word_stays_goods(db):
+    """Whole words only: "morgenster" contains the letters of tomorrow and
+    is still a plant."""
+    state, _pending, _events = drive(db, ["10 zakken morgenster zaden"])
+    line = state["draft_lines"][0]
+    assert "morgenster" in line["description"]
+    assert "loading_date" not in (state["doc_values"] or {})
+
+
 # --- what the goods leave open ---------------------------------------------
 
 def test_a_pallet_of_bricks_is_asked_for_its_dimensions(db):

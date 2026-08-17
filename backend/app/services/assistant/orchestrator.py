@@ -200,10 +200,62 @@ def _to_parser_row(segment: str) -> str:
 #: goods. Both halves must be present and neither may start with a digit —
 #: "van 25l" introduces the contents of a package, never a place.
 _ROUTE = re.compile(
-    r"\s+(?:van|from|von|depuis)\s+(?!\d)(?P<origin>.+?)"
+    r"\s+(?:vanaf|vanuit|van|from|von|ab|depuis)\s+(?!\d)(?P<origin>.+?)"
     r"\s+(?:naar|to|nach|vers|à)\s+(?!\d)(?P<destination>.+)$",
     re.IGNORECASE,
 )
+
+#: How people open the request ("ik wil ... laten vervoeren"): intent words
+#: around the facts. They carry no data, and left in place they glue
+#: themselves to the goods description — measured with the owner's own
+#: sentence, which came out as one piece of everything.
+_INTENT_HEAD = re.compile(
+    r"^(?:ik wil(?: graag)?|ik zou graag|wij willen(?: graag)?|graag|"
+    r"i want to|i would like to|we want to|please)\s+",
+    re.IGNORECASE,
+)
+_INTENT_TAIL = re.compile(
+    r"\s+(?:laten vervoeren|laten transporteren|laten verschepen|"
+    r"vervoeren|versturen|verzenden|transporteren|"
+    r"transported|shipped)\b",
+    re.IGNORECASE,
+)
+
+#: "today" and its neighbours in the four languages, as a loading date the
+#: sentence states without a number.
+_RELATIVE_DATES: dict[str, int] = {
+    "vandaag": 0, "today": 0, "heute": 0, "aujourd'hui": 0,
+    "morgen": 1, "tomorrow": 1, "demain": 1,
+    "overmorgen": 2, "übermorgen": 2,
+}
+_RELATIVE_DATE = re.compile(
+    r"\b(" + "|".join(re.escape(w) for w in _RELATIVE_DATES) + r")\b",
+    re.IGNORECASE,
+)
+_EXPLICIT_DATE = re.compile(
+    r"(?:\b(?:op|on|am|le)\s+)?\b(\d{1,2}[-/.]\d{1,2}[-/.]\d{4})\b",
+    re.IGNORECASE,
+)
+
+
+def _take_date(message: str) -> tuple[str, str | None]:
+    """The loading date the sentence states, taken out of the sentence.
+
+    An explicit date wins over a word; "morgen" is tomorrow, whole-word
+    only, so a goods name that merely contains those letters stays goods."""
+    match = _EXPLICIT_DATE.search(message)
+    if match:
+        iso = _read_date(match.group(1))
+        if iso is not None:
+            cleaned = (message[:match.start()] + " " + message[match.end():]).strip(" ,")
+            return re.sub(r"\s{2,}", " ", cleaned), iso
+    match = _RELATIVE_DATE.search(message)
+    if match:
+        days = _RELATIVE_DATES[match.group(1).casefold()]
+        cleaned = (message[:match.start()] + " " + message[match.end():]).strip(" ,")
+        iso = (_dt.date.today() + _dt.timedelta(days=days)).isoformat()
+        return re.sub(r"\s{2,}", " ", cleaned), iso
+    return message, None
 
 
 def _split_route(message: str) -> tuple[str, str | None, str | None]:
@@ -453,6 +505,15 @@ def _apply_goods_message(
             if value and not _clean(values.get(field)):
                 values[field] = value
                 events.append({"kind": "answered", "field": field, "value": value})
+
+    # The intent words around the facts leave first, and a date the
+    # sentence states — a word or a figure — answers the loading date. Both
+    # are deterministic and exact, so they run before any model.
+    message = _INTENT_HEAD.sub("", _clean(message))
+    message = re.sub(r"\s{2,}", " ", _INTENT_TAIL.sub(" ", message)).strip()
+    message, stated_date = _take_date(message)
+    if stated_date:
+        fill({"loading_date": stated_date})
 
     # With a model installed the whole message is read as an intake: goods
     # rows plus every consignment detail the sentence explicitly stated —

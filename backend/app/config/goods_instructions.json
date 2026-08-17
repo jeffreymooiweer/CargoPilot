@@ -1,0 +1,44 @@
+{
+  "goods_fields": {
+    "goods_dimensions": {
+      "label": {
+        "nl": "Afmetingen per stuk of verpakking",
+        "en": "Dimensions per item or package",
+        "de": "Abmessungen je Stück oder Verpackung",
+        "fr": "Dimensions par pièce ou colis"
+      },
+      "simple": {
+        "nl": "Hoe groot is één stuk of één verpakking? Geef lengte × breedte × hoogte, bijvoorbeeld: 120 x 80 x 100 cm.",
+        "en": "How big is one item or one package? Give length × width × height, for example: 120 x 80 x 100 cm.",
+        "de": "Wie groß ist ein Stück oder eine Verpackung? Geben Sie Länge × Breite × Höhe an, zum Beispiel: 120 x 80 x 100 cm.",
+        "fr": "Quelle est la taille d'une pièce ou d'un colis ? Indiquez longueur × largeur × hauteur, par exemple : 120 x 80 x 100 cm."
+      },
+      "help": {
+        "nl": "Met de afmetingen en de dichtheid uit de goederencatalogus rekent CargoPilot zelf het gewicht en het laadvolume uit. U mag deze vraag overslaan; het gewicht blijft dan leeg.",
+        "en": "With the dimensions and the density from the goods catalogue CargoPilot works out the weight and the loading volume itself. You may skip this question; the weight then stays empty.",
+        "de": "Mit den Abmessungen und der Dichte aus dem Warenkatalog berechnet CargoPilot Gewicht und Ladevolumen selbst. Sie können diese Frage überspringen; das Gewicht bleibt dann leer.",
+        "fr": "Avec les dimensions et la densité du catalogue de marchandises, CargoPilot calcule lui-même le poids et le volume de chargement. Vous pouvez passer cette question ; le poids restera alors vide."
+      }
+    },
+    "goods_weight_each": {
+      "label": {
+        "nl": "Gewicht per stuk of verpakking",
+        "en": "Weight per item or package",
+        "de": "Gewicht je Stück oder Verpackung",
+        "fr": "Poids par pièce ou colis"
+      },
+      "simple": {
+        "nl": "Hoeveel weegt één stuk of één verpakking? Bijvoorbeeld: 900 kg.",
+        "en": "How much does one item or one package weigh? For example: 900 kg.",
+        "de": "Wie viel wiegt ein Stück oder eine Verpackung? Zum Beispiel: 900 kg.",
+        "fr": "Combien pèse une pièce ou un colis ? Par exemple : 900 kg."
+      },
+      "help": {
+        "nl": "Deze goederen staan niet in de catalogus, dus het gewicht kan niet uit de afmetingen worden berekend. Op de vrachtbrief hoort het totale gewicht van de zending te staan.",
+        "en": "These goods are not in the catalogue, so the weight cannot be computed from the dimensions. The consignment note is meant to carry the total weight of the consignment.",
+        "de": "Diese Güter stehen nicht im Katalog, das Gewicht lässt sich daher nicht aus den Abmessungen berechnen. Auf dem Frachtbrief gehört das Gesamtgewicht der Sendung.",
+        "fr": "Ces marchandises ne figurent pas au catalogue ; le poids ne peut donc pas être calculé à partir des dimensions. La lettre de voiture doit porter le poids total de l'envoi."
+      }
+    }
+  }
+}

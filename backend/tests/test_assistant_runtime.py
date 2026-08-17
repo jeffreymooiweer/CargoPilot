@@ -202,6 +202,50 @@ def test_the_model_maps_a_paraphrase_onto_an_allowed_option_only(db, monkeypatch
     assert not result["state"]["dg_entries"][0]["products"][0].get("carriage_mode")
 
 
+def goods_state():
+    return ({"modality": "road",
+             "draft_lines": [{"id": 1, "description": "kalkzandstenen",
+                              "quantity": 4, "unit": "pallet"}],
+             "dg_entries": [], "doc_values": {}},
+            {"scope": "goods_question", "line_id": 1,
+             "field": "goods_dimensions", "required": False})
+
+
+def test_the_model_reads_a_spoken_measurement_the_patterns_cannot(db, monkeypatch):
+    """A measurement nobody writes as numbers — "a euro pallet, chest high" —
+    is exactly what a language model is for. What it returns is three numbers
+    and nothing else, and those go through the same validation as typed ones."""
+    state, pending = goods_state()
+    fake_model(monkeypatch, lambda system, user, schema, **_: {
+        "length_cm": 120, "width_cm": 80, "height_cm": 140})
+    result = step(state, "een europallet, borsthoog gestapeld", pending, db, "nl")
+    line = result["state"]["draft_lines"][0]
+    assert (line["length_cm"], line["width_cm"], line["height_cm"]) == (120.0, 80.0, 140.0)
+    assert line["weight_total_kg"] == 8601.6
+
+
+def test_a_measurement_the_model_invents_out_of_range_is_refused(db, monkeypatch):
+    """The model may read, never decide: a negative or absurd measurement is
+    rejected here and the question is asked again, unanswered."""
+    state, pending = goods_state()
+    fake_model(monkeypatch, lambda system, user, schema, **_: {
+        "length_cm": -5, "width_cm": 80, "height_cm": 100})
+    result = step(state, "zo groot als een huis", pending, db, "nl")
+    assert any(e["kind"] == "clarify" for e in result["events"])
+    assert "length_cm" not in result["state"]["draft_lines"][0]
+
+
+def test_a_typed_measurement_never_reaches_the_model(db, monkeypatch):
+    """"120 x 80 x 100 cm" is read by the deterministic patterns; the model is
+    not consulted at all — the floor every installation runs on."""
+    def explode(*_args, **_kwargs):
+        raise AssertionError("the model must not be consulted")
+    state, pending = goods_state()
+    fake_model(monkeypatch, explode)
+    result = step(state, "120 x 80 x 100 cm", pending, db, "nl")
+    assert result["state"]["draft_lines"][0]["length_cm"] == 120.0
+
+
 def test_the_model_cannot_widen_the_event_vocabulary(db, monkeypatch):
     """Even a model that returns nonsense produces only the closed set of
     events the orchestrator owns."""
@@ -214,4 +258,5 @@ def test_the_model_cannot_widen_the_event_vocabulary(db, monkeypatch):
     kinds = {e["kind"] for e in result["events"]}
     assert kinds <= {"lines_added", "un_question", "un_confirmed", "answered",
                      "dg_question", "doc_question", "ready", "skipped",
-                     "not_understood", "un_dismissed", "clarify"}
+                     "not_understood", "un_dismissed", "clarify",
+                     "goods_question"}

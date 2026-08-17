@@ -2,6 +2,56 @@
 
 All notable changes are documented here, following [Semantic Versioning](https://semver.org/).
 
+## [1.108.0] — 2026-08-17
+
+### Fixed
+
+- **Two kinds of goods in one sentence are two lines.** "1000 jerricans of
+  petrol and a pallet of sand-lime brick" became a single line — description
+  "petrol and a pallet of sand-lime brick", 1000 jerricans — and the second
+  consignment simply disappeared. A sentence is now cut wherever a separating
+  word (and, plus, a comma) is followed by a count, a unit the catalogue
+  knows and a description of its own, so "of 25 l with petrol" and "at 200
+  litres each" still stay part of the item they belong to. An article counts
+  as one: "a pallet of sand-lime brick" is a line of one pallet.
+
+### Added
+
+- **The assistant asks about the goods, not only about the regulations.**
+  Four pallets of sand-lime brick used to travel from the first sentence to
+  the consignor's name without a single question, while the pipeline had
+  already reported "dimensions_missing" and the catalogue already held the
+  density. The measurements the calculation itself named as missing are now
+  a question source of their own — one optional question, in lay language,
+  naming which goods it is about — and the answer turns that line into
+  6144 kg and 3.84 m³ on the spot. For goods the catalogue does not know,
+  the weight per item is asked instead, because no measurement can produce a
+  weight without a density.
+- **A count of packages with a known content is a weight.** Since v1.107.0
+  the contents of one package are read from the sentence; a thousand
+  jerricans of 25 litres is 25000 litres, and with the density from the
+  catalogue that is 18625 kg of petrol. The same answer given to the
+  dangerous goods step ("25 L" per package) now feeds the goods line too, so
+  the same fact is never asked twice. The packaging around the contents is
+  not known, so the loading volume stays open rather than claiming the
+  volume of the liquid — and that is exactly what the optional measurement
+  question then completes.
+- **The model reads what patterns cannot.** A measurement written as prose
+  goes to the language model when one is installed, under a schema of three
+  numbers; every number it returns is validated here before it reaches a
+  line, and an answer the patterns can read never reaches the model at all.
+  As always the model only reads — it decides nothing, and without a model
+  every step above works exactly the same.
+
+### Changed
+
+- Derived values never travel back in as answers. A weight per package
+  rounded to 18.62 kg, fed in again as an override, turned 18625 kg of
+  petrol into 18620; computed weights are now kept apart from the ones the
+  consignor stated, and only the latter count as input. Measurements
+  answered through the assistant land in the same columns the lines table
+  writes, so the classic wizard computes with them too.
+
 ## [1.107.0] — 2026-08-16
 
 ### Added

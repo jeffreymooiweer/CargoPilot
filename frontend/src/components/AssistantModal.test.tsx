@@ -155,6 +155,29 @@ describe("AssistantModal", () => {
     expect(await screen.findByText(/assistant.corrected.*per onderzeeboot/)).toBeTruthy();
   });
 
+  it("names which goods a question is about", async () => {
+    stepMock.mockResolvedValueOnce({
+      state: { modality: "road", draft_lines: [{ id: 1 }] },
+      events: [{ kind: "lines_added", count: 2 }],
+      pending: {
+        scope: "goods_question",
+        field: "goods_dimensions",
+        required: false,
+        goods: "kalkzandsteen",
+        simple: { nl: "Hoe groot is één pallet?" },
+        reason: "dimensions_complete_the_picture",
+        options: [],
+      },
+    });
+    renderModal();
+    await userEvent.type(screen.getByLabelText("assistant.describeLabel"), "4 pallets");
+    await userEvent.click(screen.getByRole("button", { name: "assistant.start" }));
+    expect(await screen.findByText("Hoe groot is één pallet?")).toBeTruthy();
+    expect(screen.getByText("kalkzandsteen")).toBeTruthy();
+    // Optional, so it can be skipped — a measurement is never a blocker.
+    expect(screen.getByRole("button", { name: "assistant.skip" })).toBeTruthy();
+  });
+
   it("no pending question means the survey is done", async () => {
     stepMock.mockResolvedValueOnce({ state: {}, events: [{ kind: "ready", documents: [] }], pending: null });
     const { onClose } = renderModal();

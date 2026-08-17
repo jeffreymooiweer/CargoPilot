@@ -53,9 +53,9 @@ def drive(api, turns, modality="road"):
 
 def test_the_diesel_archetype_through_the_api(api):
     turns = ["1000 jerrycans diesel", "ja", "colli", "3A1", "DIESELOLIE",
-             "DIESEL FUEL", "25 L", "Mooiweer BV", "Kade 1, Rotterdam",
-             "Afnemer GmbH", "Hafenstr. 2, Duisburg", "Rotterdam", "Duisburg",
-             "Franco", "Rotterdam", "vandaag"]
+             "DIESEL FUEL", "25 L", "30 x 25 x 35 cm", "Mooiweer BV",
+             "Kade 1, Rotterdam", "Afnemer GmbH", "Hafenstr. 2, Duisburg",
+             "Rotterdam", "Duisburg", "Franco", "Rotterdam", "vandaag"]
     state, pending, events = drive(api, turns)
     assert pending is None
     ready = [e for e in events if e["kind"] == "ready"][-1]

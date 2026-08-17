@@ -596,7 +596,10 @@
     "iata_declaration": "Vereist op de shipper's declaration",
     "totals_11136": "Voor het totaal en de 1.1.3.6-puntentelling",
     "sp3122": "Meerdere namen onder dit UN-nummer — 3.1.2.2: alleen de meest toepasselijke naam komt op het document",
-    "packaging_spec": "Op de verpakking staat vaak een UN-keuringscode; die code mag de omschrijving op het vervoerdocument aanvullen (5.4.1.1.1 e)."
+    "packaging_spec": "Op de verpakking staat vaak een UN-keuringscode; die code mag de omschrijving op het vervoerdocument aanvullen (5.4.1.1.1 e).",
+    "dimensions_complete_the_picture": "Met de afmetingen en de dichtheid uit de catalogus rekent CargoPilot het gewicht en het laadvolume zelf uit.",
+    "dimensions_complete_the_volume": "Het gewicht is al bekend; met de afmetingen van de verpakking komt ook het laadvolume erbij.",
+    "weight_unknown_material": "Deze goederen staan niet in de catalogus, dus het gewicht kan niet berekend worden."
   },
   "advice": {
     "title": "Documentenpakket",

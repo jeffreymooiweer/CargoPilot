@@ -24,6 +24,13 @@ from typing import Any
 from sqlalchemy.orm import Session
 
 from app.services.assistant import runtime
+from app.services.assistant.goods import (
+    dimensions_from_model,
+    goods_fields,
+    open_questions_for_line as goods_open_questions,
+    parse_dimensions,
+    parse_weight_kg,
+)
 from app.services.dg.autofill import prepare_entries
 from app.services.documents.registry import get_registry
 from app.services.pipeline import parse_and_calculate
@@ -103,7 +110,64 @@ def _clean(value: Any) -> str:
 
 # --- goods lines -----------------------------------------------------------
 
-_LEADING_COUNT = re.compile(r"^(\d+(?:[.,]\d+)?)\s+(\S+)\s+(.+)$")
+#: "one pallet" is a count of one, in the four languages people describe a
+#: consignment in. Without these the article swallows the count and the goods
+#: end up on the line before them.
+_ARTICLE_COUNTS = {"een", "één", "eén", "a", "an", "one",
+                   "ein", "eine", "einen", "un", "une"}
+
+_COUNT_WORD = r"(?:\d+(?:[.,]\d+)?|een|één|eén|a|an|one|ein|eine|einen|un|une)"
+_LEADING_COUNT = re.compile(rf"^({_COUNT_WORD})\s+(\S+)\s+(.+)$", re.IGNORECASE)
+
+#: Where one item of goods ends and the next begins in a spoken sentence.
+#: Only these words separate goods; "of 25 l" and "at 200 litres each" are
+#: parts of the same item and must never become a line of their own.
+_SEGMENT_BOUNDARY = re.compile(
+    rf"(?:\b(?:en|and|und|et|plus)\b|,|;|&)\s+(?={_COUNT_WORD}\s+\S+\s+\S)",
+    re.IGNORECASE,
+)
+
+
+def _count_of(word: str) -> float | None:
+    lowered = word.casefold()
+    if lowered in _ARTICLE_COUNTS:
+        return 1.0
+    try:
+        return float(lowered.replace(",", "."))
+    except ValueError:
+        return None
+
+
+def _split_segments(message: str) -> list[str]:
+    """A spoken sentence as the separate goods it names.
+
+    "1000 jerricans of petrol and a pallet of sand-lime brick" is two items,
+    and putting them on one line loses the second one entirely. A cut is only
+    made where a separating word is followed by a count, a unit the catalogue
+    knows, and a description after it — so "of 25 l with petrol" and "at 200
+    litres each" stay part of the item they belong to.
+    """
+    from app.services.units import get_unit
+
+    segments: list[str] = []
+    for part in re.split(r"[\n;]+", message):
+        part = part.strip()
+        if not part:
+            continue
+        pieces = [part]
+        while True:
+            match = _SEGMENT_BOUNDARY.search(pieces[-1])
+            if not match:
+                break
+            head, tail = pieces[-1][:match.start()].strip(), pieces[-1][match.end():].strip()
+            unit_word = tail.split()[1] if len(tail.split()) > 1 else ""
+            if not head or get_unit(unit_word) is None:
+                # Not a new item: leave the sentence as it stands.
+                break
+            pieces[-1] = head
+            pieces.append(tail)
+        segments.extend(piece for piece in pieces if piece)
+    return segments
 
 
 def _to_parser_row(segment: str) -> str:
@@ -118,9 +182,9 @@ def _to_parser_row(segment: str) -> str:
         from app.services.units import get_unit
 
         unit = get_unit(match.group(2))
-        if unit is not None:
-            quantity = match.group(1).replace(",", ".")
-            return f"{match.group(3).strip()} | {quantity} | {unit.code}"
+        count = _count_of(match.group(1))
+        if unit is not None and count is not None:
+            return f"{match.group(3).strip()} | {count:g} | {unit.code}"
     return segment
 
 
@@ -195,8 +259,7 @@ def _apply_goods_message(
     """
     rows = _model_rows(message)
     if rows is None:
-        rows = [_to_parser_row(part.strip())
-                for part in re.split(r"[\n;]+", message) if part.strip()]
+        rows = [_to_parser_row(segment) for segment in _split_segments(message)]
     text = "\n".join(rows)
     if not text:
         return []
@@ -234,6 +297,84 @@ def _apply_goods_message(
     return events
 
 
+# --- the goods themselves --------------------------------------------------
+
+#: What a dimension answer writes on the draft line, in the same fields the
+#: wizard's own columns write — so the classic wizard computes with it too.
+_GOODS_FIELDS = ("length_cm", "width_cm", "height_cm", "weight_each_kg")
+
+
+def _dg_content(state: dict[str, Any], line: dict[str, Any]) -> str:
+    """The contents per package the dangerous goods step already knows.
+
+    Someone who answered "25 L" to the net quantity per package has said what
+    one jerrican holds; asking the same thing again as a measurement would be
+    the second time. The answer is one and the same fact, so the goods line
+    computes its weight from it.
+    """
+    entry = next((e for e in state.get("dg_entries", [])
+                  if e.get("line_id") == line.get("id")), None)
+    products = (entry or {}).get("products") or []
+    return _clean(products[0].get("net_mass_liters_per_package")) if products else ""
+
+
+def _goods_rows(state: dict[str, Any]) -> tuple[str, list[dict[str, Any]]]:
+    """The draft lines as the paste parser and the calculation take them."""
+    rows: list[str] = []
+    overrides: list[dict[str, Any]] = []
+    for index, line in enumerate(state.get("draft_lines", []), start=1):
+        description = _clean(line.get("description"))
+        if not description:
+            continue
+        content = _clean(line.get("package_content")) or _dg_content(state, line)
+        # The content was taken out of the description when the line was made;
+        # the calculation needs it back to turn a count into a mass.
+        text = f"{description} van {content}" if content else description
+        rows.append(f"{text} | {line.get('quantity') or 1} | {line.get('unit') or 'pcs'}")
+        override: dict[str, Any] = {"line_id": index}
+        for field, factor in (("length_cm", 0.01), ("width_cm", 0.01), ("height_cm", 0.01)):
+            value = line.get(field)
+            if value not in (None, ""):
+                override[field.replace("_cm", "_m")] = float(value) * factor
+        if line.get("weight_each_kg") not in (None, ""):
+            override["weight_each_kg"] = float(line["weight_each_kg"])
+        if len(override) > 1:
+            overrides.append(override)
+    return "\n".join(rows), overrides
+
+
+def _sync_goods(state: dict[str, Any], db: Session, language: str) -> None:
+    """Recalculate the goods lines and collect what they leave open.
+
+    The same pipeline the lines step runs, with the measurements answered so
+    far as its overrides: an answer therefore takes effect immediately — the
+    weight appears, and the question that asked for it is gone the next turn
+    because the calculation no longer reports it as missing.
+    """
+    text, overrides = _goods_rows(state)
+    if not text:
+        state["_goods_questions"] = []
+        return
+    result = parse_and_calculate(text, db, output_language=language,
+                                 line_overrides=overrides or None)
+    calculated = result.get("lines", [])
+    questions: list[dict[str, Any]] = []
+    drafts = [line for line in state.get("draft_lines", []) if _clean(line.get("description"))]
+    for draft, line in zip(drafts, calculated):
+        # Derived values are stored under their own names and never travel
+        # back in as overrides: a weight per package rounded to 18.62 kg,
+        # fed in again, turns 18625 kg of petrol into 18620.
+        draft["computed_weight_each_kg"] = line.get("weight_each_kg")
+        for field in ("weight_total_kg", "material_volume_m3",
+                      "transport_volume_m3", "material", "material_category",
+                      "status", "messages"):
+            draft[field] = line.get(field)
+        for question in goods_open_questions(line):
+            questions.append({"line_id": draft.get("id"),
+                              "description": draft.get("description"), **question})
+    state["_goods_questions"] = questions
+
+
 # --- dangerous goods -------------------------------------------------------
 
 def _dg_lines(state: dict[str, Any]) -> list[dict[str, Any]]:
@@ -264,7 +405,9 @@ def _sync_dg_entries(state: dict[str, Any], db: Session, language: str) -> None:
         return
     prepare_lines = [
         {"line_id": line.get("id"), "quantity": line.get("quantity"),
-         "unit": line.get("unit"), "weight_each_kg": line.get("weight_each_kg"),
+         "unit": line.get("unit"),
+         "weight_each_kg": (line.get("weight_each_kg")
+                            or line.get("computed_weight_each_kg")),
          "package_content": line.get("package_content")}
         for line in state.get("draft_lines", [])
     ]
@@ -324,7 +467,28 @@ def _next_pending(state: dict[str, Any]) -> tuple[dict[str, Any] | None, list[di
             }
             return pending, [{"kind": "dg_question", **pending}]
 
-    # 3. Required document fields still empty.
+    # 3. What the goods themselves leave open: the measurements that turn a
+    #    catalogue density into a weight and a loading volume.
+    for question in state.get("_goods_questions") or []:
+        key = f"goods:{question.get('line_id')}:{question['field']}"
+        if key in skipped:
+            continue
+        meta = goods_fields().get(question["field"], {})
+        pending = {
+            "scope": "goods_question",
+            "line_id": question.get("line_id"),
+            "field": question["field"],
+            "goods": question.get("description"),
+            "required": False,
+            "reason": question.get("reason"),
+            "options": [],
+            "label": meta.get("label"),
+            "simple": meta.get("simple"),
+            "help": meta.get("help"),
+        }
+        return pending, [{"kind": "goods_question", **pending}]
+
+    # 4. Required document fields still empty.
     for field in _missing_document_fields(state):
         key = f"doc:{field['field']}"
         if key in skipped:
@@ -509,8 +673,13 @@ def _apply_answer(
     scope = pending.get("scope")
 
     if lowered in _SKIP_WORDS and not pending.get("required"):
-        key = (f"dg:{pending.get('line_id')}:{pending.get('product_index')}:{pending.get('field')}"
-               if scope == "dg_question" else f"doc:{pending.get('field')}")
+        if scope == "dg_question":
+            key = (f"dg:{pending.get('line_id')}:{pending.get('product_index')}"
+                   f":{pending.get('field')}")
+        elif scope == "goods_question":
+            key = f"goods:{pending.get('line_id')}:{pending.get('field')}"
+        else:
+            key = f"doc:{pending.get('field')}"
         state.setdefault("skipped_questions", []).append(key)
         return [{"kind": "skipped", "field": pending.get("field")}]
 
@@ -570,6 +739,29 @@ def _apply_answer(
         product[pending["field"]] = value
         return [{"kind": "answered", "field": pending["field"], "value": value}]
 
+    if scope == "goods_question":
+        line = next((l for l in state.get("draft_lines", [])
+                     if l.get("id") == pending.get("line_id")), None)
+        if line is None:
+            return [{"kind": "not_understood"}]
+        field = str(pending.get("field") or "")
+        if field == "goods_dimensions":
+            # Deterministic reading first; the model only gets the answers the
+            # regular expressions could not read, and every number it returns
+            # is validated before it reaches the line.
+            measurements = parse_dimensions(text) or dimensions_from_model(text)
+            if not measurements:
+                return [{"kind": "clarify", "field": field, "example": "120 x 80 x 100 cm"}]
+            line.update(measurements)
+            return [{"kind": "answered", "field": field,
+                     "value": (f"{measurements['length_cm']:g} x {measurements['width_cm']:g}"
+                               f" x {measurements['height_cm']:g} cm")}]
+        weight = parse_weight_kg(text)
+        if weight is None:
+            return [{"kind": "clarify", "field": field, "example": "900 kg"}]
+        line["weight_each_kg"] = weight
+        return [{"kind": "answered", "field": field, "value": f"{weight:g} kg"}]
+
     if scope == "doc_question":
         value = text
         if pending.get("type") == "date":
@@ -619,20 +811,22 @@ def step(
     state = json.loads(json.dumps(state or {}))  # work on a copy; stateless contract
     events: list[dict[str, Any]] = []
 
+    def ask() -> dict[str, Any]:
+        _sync_goods(state, db, language)
+        _sync_dg_entries(state, db, language)
+        next_pending, ask_events = _next_pending(state)
+        state.pop("_open_questions", None)
+        state.pop("_goods_questions", None)
+        return {"state": state, "events": events + ask_events, "pending": next_pending}
+
     if pending:
         events.extend(_apply_answer(state, pending, message, language))
         if events and events[-1]["kind"] in ("not_understood", "clarify"):
             # The same question again, with its options; nothing was changed.
-            _sync_dg_entries(state, db, language)
-            next_pending, ask_events = _next_pending(state)
-            state.pop("_open_questions", None)
-            return {"state": state, "events": events + ask_events, "pending": next_pending}
+            return ask()
     elif _clean(message):
         events.extend(_apply_goods_message(state, message, db, language))
         if not events:
             events.append({"kind": "not_understood"})
 
-    _sync_dg_entries(state, db, language)
-    next_pending, ask_events = _next_pending(state)
-    state.pop("_open_questions", None)
-    return {"state": state, "events": events + ask_events, "pending": next_pending}
+    return ask()

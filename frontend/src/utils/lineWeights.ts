@@ -102,6 +102,7 @@ export function dimensionOverridesFromDrafts(
     length_cm?: number | "";
     width_cm?: number | "";
     height_cm?: number | "";
+    weight_each_kg?: number | "";
   }[],
 ) {
   const overrides: Record<string, number | string>[] = [];
@@ -112,6 +113,13 @@ export function dimensionOverridesFromDrafts(
       let any = false;
       if (draft.cargo_form) {
         entry.cargo_form = draft.cargo_form;
+        any = true;
+      }
+      // A weight the consignor stated themselves — through the assistant, for
+      // goods the catalogue does not know. It counts towards the first
+      // calculation like any other thing they filled in.
+      if (typeof draft.weight_each_kg === "number" && draft.weight_each_kg > 0) {
+        entry.weight_each_kg = draft.weight_each_kg;
         any = true;
       }
       // Millimetres on the screen for the wall thickness — nobody writes down a

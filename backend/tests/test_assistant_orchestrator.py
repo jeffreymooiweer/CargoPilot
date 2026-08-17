@@ -93,9 +93,9 @@ def test_a_wrong_option_answer_is_corrected_with_the_attempt_named(db):
 
 def test_the_whole_diesel_ride_reaches_ready_without_a_model(db):
     turns = ["1000 jerrycans diesel", "ja", "colli", "3A1", "DIESELOLIE",
-             "DIESEL FUEL", "25 L", "Mooiweer BV", "Kade 1, Rotterdam",
-             "Afnemer GmbH", "Hafenstr. 2, Duisburg", "Rotterdam", "Duisburg",
-             "Franco", "Rotterdam", "vandaag"]
+             "DIESEL FUEL", "25 L", "30 x 25 x 35 cm", "Mooiweer BV",
+             "Kade 1, Rotterdam", "Afnemer GmbH", "Hafenstr. 2, Duisburg",
+             "Rotterdam", "Duisburg", "Franco", "Rotterdam", "vandaag"]
     state, pending, events = drive(db, turns)
     state, pending, events = skip_rest(db, state, pending, events)
     assert pending is None
@@ -113,8 +113,9 @@ def test_rejecting_the_recognition_clears_the_dg_route(db):
     state, pending, events = drive(db, ["1000 jerrycans diesel", "nee"])
     assert any(e["kind"] == "un_dismissed" for e in events)
     assert state["draft_lines"][0]["dg_dismissed"] is True
-    # No DG questions follow; the documents' own fields are next.
-    assert pending is None or pending["scope"] == "doc_question"
+    # No DG questions follow; what is left is about the goods themselves
+    # and about the document, never about a regulation.
+    assert pending is None or pending["scope"] in ("goods_question", "doc_question")
 
 
 def test_optional_questions_can_be_skipped_required_ones_cannot(db):
@@ -134,7 +135,8 @@ def test_the_assistant_never_asks_a_question_of_its_own(db):
     kinds = {e["kind"] for e in events}
     assert kinds <= {"lines_added", "un_question", "un_confirmed", "answered",
                      "dg_question", "doc_question", "ready", "skipped",
-                     "not_understood", "un_dismissed", "clarify"}
+                     "not_understood", "un_dismissed", "clarify",
+                     "goods_question"}
 
 
 def test_the_content_per_package_is_read_from_the_sentence(db):
@@ -193,9 +195,9 @@ def test_a_bare_number_where_the_unit_matters_gets_the_same_follow_up(db):
 
 def test_a_typed_date_is_understood_day_first_and_nonsense_is_asked_again(db):
     turns = ["1000 jerrycans diesel", "ja", "colli", "3A1", "DIESELOLIE",
-             "DIESEL FUEL", "25 L", "Mooiweer BV", "Kade 1, Rotterdam",
-             "Afnemer GmbH", "Hafenstr. 2, Duisburg", "Rotterdam", "Duisburg",
-             "Franco", "Rotterdam"]
+             "DIESEL FUEL", "25 L", "overslaan", "Mooiweer BV",
+             "Kade 1, Rotterdam", "Afnemer GmbH", "Hafenstr. 2, Duisburg",
+             "Rotterdam", "Duisburg", "Franco", "Rotterdam"]
     state, pending, _ = drive(db, turns)
     assert pending["field"] == "established_date"
     state, pending, events = drive(db, ["binnenkort ofzo"], state, pending)
@@ -209,9 +211,9 @@ def test_the_survey_pursues_the_optional_fields_and_each_is_skippable(db):
     """Complete documents are the goal: after the required fields the optional
     ones follow, every one of them skippable — the ride ends on ready."""
     turns = ["1000 jerrycans diesel", "ja", "colli", "3A1", "DIESELOLIE",
-             "DIESEL FUEL", "25 L", "Mooiweer BV", "Kade 1, Rotterdam",
-             "Afnemer GmbH", "Hafenstr. 2, Duisburg", "Rotterdam", "Duisburg",
-             "Franco", "Rotterdam", "vandaag"]
+             "DIESEL FUEL", "25 L", "overslaan", "Mooiweer BV",
+             "Kade 1, Rotterdam", "Afnemer GmbH", "Hafenstr. 2, Duisburg",
+             "Rotterdam", "Duisburg", "Franco", "Rotterdam", "vandaag"]
     state, pending, events = drive(db, turns)
     assert pending is not None and pending["required"] is False
     state, pending, events = skip_rest(db, state, pending, events)

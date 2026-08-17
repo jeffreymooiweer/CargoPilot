@@ -195,10 +195,10 @@ def _to_parser_row(segment: str) -> str:
     return segment
 
 
-#: "van Wezep naar de haven in Rotterdam" at the end of a goods sentence: the
-#: route, said in the same breath as the goods. Both halves must be present
-#: and neither may start with a digit — "van 25l" introduces the contents of
-#: a package, never a place.
+#: "from Wezep to the port of Rotterdam" at the end of a goods sentence, in
+#: any of the four languages: the route, said in the same breath as the
+#: goods. Both halves must be present and neither may start with a digit —
+#: "van 25l" introduces the contents of a package, never a place.
 _ROUTE = re.compile(
     r"\s+(?:van|from|von|depuis)\s+(?!\d)(?P<origin>.+?)"
     r"\s+(?:naar|to|nach|vers|à)\s+(?!\d)(?P<destination>.+)$",
@@ -211,8 +211,8 @@ def _split_route(message: str) -> tuple[str, str | None, str | None]:
 
     Returns the message without the route phrase, plus origin and
     destination when the sentence named them. Requiring both halves keeps
-    every content phrase ("van 25l met benzine") and every partial "naar"
-    untouched — those stay with the goods."""
+    every content phrase ("van 25l", the contents of a package) and every
+    lone destination word untouched — those stay with the goods."""
     match = _ROUTE.search(message or "")
     if not match:
         return message, None, None

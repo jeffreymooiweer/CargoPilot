@@ -6,18 +6,19 @@ All notable changes are documented here, following [Semantic Versioning](https:/
 
 ### Fixed
 
-- **A hundred plates weighed 78.5 kg.** Owner ride: "100 stalen gebundelde
-  platen 2000x1000x5mm van Kolonel D.J. Teesweg 1 Wezep naar de haven in
-  Rotterdam", judged on the CMR it produced. Three defects, all repaired at
-  the level where they showed:
-  - A count with no unit word ("100 stalen platen") was swallowed whole — the
+- **A hundred plates weighed 78.5 kg.** Owner ride: a hundred bundled steel
+  plates of 2000x1000x5 mm, from an address in Wezep to the port of
+  Rotterdam, described to the assistant in one Dutch sentence and judged on
+  the CMR it produced. Three defects, all repaired at the level where they
+  showed:
+  - A count with no unit word ("100 steel plates") was swallowed whole — the
     sentence became one piece. A leading count followed by an ordinary word
     now counts pieces, and the word stays with the goods: 100 pcs, 7850 kg.
-  - The route stayed glued to the goods description. "van X naar Y" (and its
-    English, German and French forms) at the end of the sentence now answers
-    the loading-point and discharge-point questions before they are asked —
-    both halves must be present, so "van 25l met benzine" keeps meaning the
-    contents of a package.
+  - The route stayed glued to the goods description. "from X to Y" at the
+    end of the sentence — in any of the four languages — now answers the
+    loading-point and discharge-point questions before they are asked. Both
+    halves must be present, so a phrase naming the contents of a package
+    ("of 25 l") is never read as a route.
   - The nature of goods read **"Onbekend 2000x1000x5 mm"**. Twice wrong: the
     plural "platen" was not recognised where "plaat" was (plurals in all
     forms are now), and an unrecognised shape substituted the word "Unknown"

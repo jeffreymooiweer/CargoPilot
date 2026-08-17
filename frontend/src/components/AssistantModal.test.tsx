@@ -8,7 +8,7 @@
  * value/label split of the answers, and that a misunderstood answer neither
  * advances the survey nor grows the history.
  */
-import { render, screen } from "@testing-library/react";
+import { fireEvent, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
@@ -253,6 +253,33 @@ describe("AssistantModal", () => {
       (el) => el.tagName === "TEXTAREA",
     ) as HTMLTextAreaElement[];
     expect(boxes.some((el) => el.value === "Kade 1\n3011 AA Rotterdam\nNetherlands")).toBe(true);
+  });
+
+  it("a date question is answered through a date picker", async () => {
+    stepMock.mockResolvedValueOnce({
+      state: {},
+      events: [],
+      pending: {
+        scope: "doc_question",
+        field: "established_date",
+        type: "date",
+        required: true,
+        label: { nl: "Datum van opmaak" },
+        options: [],
+      },
+    });
+    renderModal();
+    await userEvent.type(screen.getByLabelText("assistant.describeLabel"), "staal");
+    await userEvent.click(screen.getByRole("button", { name: "assistant.start" }));
+    await screen.findByText(/Datum van opmaak/);
+    const picker = document.querySelector('input[type="date"]') as HTMLInputElement;
+    expect(picker).toBeTruthy();
+    fireEvent.change(picker, { target: { value: "2026-08-20" } });
+    stepMock.mockResolvedValueOnce({ state: {}, events: [], pending: null });
+    await userEvent.click(screen.getByRole("button", { name: "assistant.next" }));
+    expect(stepMock).toHaveBeenLastCalledWith(
+      expect.objectContaining({ message: "2026-08-20" }),
+    );
   });
 
   it("no pending question means the survey is done", async () => {

@@ -343,6 +343,13 @@ export default function AssistantModal({ open, onClose, buildState, onApplyState
                 types={locationTypes}
                 includeAddresses={modality === "road" || modality === "multimodal"}
               />
+            ) : pending.type === "date" ? (
+              <input
+                type="date"
+                className="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
+                value={freeText}
+                onChange={(event) => setFreeText(event.target.value)}
+              />
             ) : (
               <input
                 className="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"

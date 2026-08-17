@@ -2,6 +2,27 @@
 
 All notable changes are documented here, following [Semantic Versioning](https://semver.org/).
 
+## [1.114.0] — 2026-08-17
+
+### Added
+
+- **Route endpoints from the sentence land as catalogue entries.** "The
+  port of Rotterdam" used to be stored as those words, while a manual pick
+  in the wizard stores the entry from the offline location catalogue. The
+  assistant now resolves the route endpoints it reads against that same
+  catalogue: a kind word narrows the search (port, airport, station, in
+  the four languages), an exact and unambiguous match resolves —
+  "Duisburg" to the one entry of that name, a spoken port to Rotterdam
+  (NLRTM), Schiphol to AMS — and a bare city that exists in several
+  countries only resolves to the language's own country. An address or a
+  plain town stays the consignor's words, because a city is not a port.
+  What the assistant stores is byte-for-byte what the wizard's picker
+  would have stored.
+- **A date picker for the assistant's date questions.** A date question in
+  the survey now shows the same native date picker the wizard's date
+  fields already have, and sends the picked date as the ISO value the
+  backend expects. Typing today-words in the classic wizard keeps working.
+
 ## [1.113.0] — 2026-08-17
 
 ### Added

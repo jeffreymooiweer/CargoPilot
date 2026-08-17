@@ -272,7 +272,8 @@ _INTAKE_PROMPT = (
     "states: consignor (the sender), consignee (the receiver), carrier, "
     "loading point, discharge point, loading date, references. A goods "
     "description names the goods only — never the addresses, parties, "
-    "dates or references, which belong in their own fields. Copy the "
+    "dates or references, which belong in their own fields and must not be "
+    "repeated as goods items. Copy the "
     "wording as the user gave it — do not translate, classify, complete or "
     "guess anything, and omit every field the message does not state. The "
     "message may be in Dutch, English, German or French."
@@ -318,6 +319,34 @@ def _model_intake(message: str) -> tuple[list[dict[str, Any]], dict[str, str]] |
     return result["lines"], fields
 
 
+#: Connector words that carry no meaning of their own when judging whether a
+#: "goods line" is really a re-listed consignment detail.
+_CONNECTOR_WORDS = {
+    "van", "naar", "from", "the", "der", "die", "das", "het", "een",
+    "und", "mit", "bij", "met", "voor", "für", "pour", "les", "des", "aan",
+    "nach", "von", "vers", "depuis",
+}
+
+
+def _details_not_goods(description: str, fields: dict[str, str]) -> bool:
+    """A goods line that merely re-lists the extracted consignment details.
+
+    Measured on the pinned runtime: asked to keep the details out of the
+    descriptions, the model emitted them as *extra goods lines* instead —
+    "van Mooiweer BV...", "order 4711", each with quantity one. A line the
+    majority of whose substantial words already sit in the extracted field
+    values is details, not goods, and never becomes a package."""
+    if not fields:
+        return False
+    concat = " ".join(fields.values()).casefold()
+    words = [w for w in re.findall(r"\w{3,}", description.casefold())
+             if w not in _CONNECTOR_WORDS]
+    if not words:
+        return True
+    hits = sum(1 for w in words if w in concat)
+    return hits * 2 >= len(words)
+
+
 def _intake_rows(raw_lines: list[dict[str, Any]], fields: dict[str, str]) -> list[str]:
     """The model's goods lines as parser rows, with the deterministic floor
     still underneath.
@@ -339,11 +368,19 @@ def _intake_rows(raw_lines: list[dict[str, Any]], fields: dict[str, str]) -> lis
         if origin and destination:
             fields.setdefault("loading_point", origin)
             fields.setdefault("discharge_point", destination)
-        if not description:
+        if not description or _details_not_goods(description, fields):
             continue
         quantity = line.get("quantity")
         unit = _clean(line.get("unit"))
         if quantity:
+            # The model tends to keep the count inside the description as
+            # well ("1000 jerrycans diesel", quantity 1000): the duplicate
+            # leaves, the goods stay.
+            match = _LEADING_COUNT.match(description)
+            if match and _count_of(match.group(1)) == float(quantity):
+                description = (match.group(3).strip()
+                               if get_unit(match.group(2)) is not None
+                               else f"{match.group(2)} {match.group(3)}".strip())
             known = get_unit(unit)
             rows.append(f"{description} | {quantity:g} | {known.code if known else (unit or 'pcs')}")
         else:

@@ -2,6 +2,28 @@
 
 All notable changes are documented here, following [Semantic Versioning](https://semver.org/).
 
+## [1.109.1] — 2026-08-17
+
+### Changed
+
+- **Documentation pass against the current release.** The roadmap and the README
+  claimed all six transport modes were released while the application releases two:
+  both now say plainly that road and inland waterway are out and that rail, sea, air
+  and multimodal stay locked until their checks are complete — and the roadmap names
+  that unlocking as planned work, mode by mode. The user guide caught up with the
+  wizard it describes: documents are advised on the export step rather than chosen up
+  front, the name-recognition chips, the contents-per-package reading and the
+  open-questions principle are described, and the AI assistant has a section of its
+  own. The documents page lists the ADR/ADN sheets and lists the registry actually
+  offers; the privacy page names the assistant's one-time model download as the third
+  outbound connection, admin-triggered and SHA-256-verified.
+- **The roadmap looks further ahead.** Planned: a "what's new" dialog on the first
+  start after an update, an automatic update check with an unobtrusive notification
+  (behind the outbound-connections switch), and updating from inside the application
+  where the installation allows it. And companion modules, each in its own repository,
+  talking to CargoPilot over its API: a route planner, container handling in 3D, and a
+  military transport module kept strictly outside the civilian core.
+
 ## [1.109.0] — 2026-08-17
 
 ### Added

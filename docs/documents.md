@@ -15,14 +15,17 @@ with the correct fixed legal wording.
 
 | Mode | Documents offered |
 |---|---|
-| **Road** | CMR, AVC waybill, packing list, delivery note |
+| **Road** | CMR, AVC waybill, packing list, delivery note — and for dangerous goods: placarding and marking sheet (ADR 5.3), container/vehicle packing certificate (5.4.2), on-board documents list (ADR 8.1.2), equipment sheet (ADR 8.1.4/8.1.5) |
 | **Rail** | CIM, packing list, delivery note |
 | **Sea** | B/L or Sea Waybill shipping instructions, VGM declaration, IMO Multimodal DG Form, packing list, delivery note |
-| **Inland waterway** | ADN transport document, VGM declaration, packing list, delivery note |
+| **Inland waterway** | ADN transport document, VGM declaration, stowage plan (ADN 7.1.4.11.1), on-board documents list (ADN 8.1.2), packing list, delivery note |
 | **Air** | AWB shipping instructions, IATA Shipper's Declaration, packing list, delivery note |
 | **Multimodal** | All of the above |
 
-Dangerous goods declarations only appear once a package is marked as dangerous goods.
+Documents that exist for dangerous goods only — the declarations and the ADR/ADN
+sheets and lists above — appear once a package is marked as dangerous goods. Road and
+inland waterway are the released modes today; the other tiles stay locked until their
+checks are complete (see the [roadmap](../ROADMAP.md)).
 
 ## Official forms, filled in
 

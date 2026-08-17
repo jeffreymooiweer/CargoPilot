@@ -38,7 +38,9 @@ stops at the gate.
 
 CargoPilot does that part for you. You enter your shipment once. It recognises what you
 are shipping, calculates the weights and volumes, and fills in the paperwork for the
-transport mode you picked — road, rail, sea, inland waterway, air, or a combination.
+transport mode you picked. **Road and inland waterway are released today**; rail, sea,
+air and multimodal are built in but stay locked until their remaining regulatory checks
+are complete — see the [roadmap](ROADMAP.md).
 
 It runs on your own machine or server. Nothing is sent to a cloud service, and no
 shipment history is kept.
@@ -123,14 +125,20 @@ like. Security problems go through
 
 ## The AI assistant (optional)
 
-The wizard can be driven in natural language: describe the shipment ("1000
-jerrycans of diesel from Rotterdam to Duisburg"), confirm what the app
-recognised, and answer only the questions the app itself has open. Two modes:
+The wizard can be driven in natural language: open the assistant with the AI
+mark in the wizard header, describe the shipment ("1000 jerricans of 25 l of
+petrol"), confirm what the app recognised, and answer only the questions the
+app itself has open — one per screen, phrased in plain language, with the
+formal field and its article references behind an info mark, a previous
+button that really goes back, and the same address and location suggestions
+the wizard's own fields have. What the sentence already said is never asked
+again: the count, the contents per package and the totals compute by
+themselves. Two modes:
 
-- **Guided input (default, nothing to install).** The chat works without any
-  language model: the parser, the name recognition and the wizard's own open
-  questions carry the whole conversation. This is what every installation has
-  out of the box, at no extra footprint.
+- **Guided input (default, nothing to install).** The assistant works without
+  any language model: the parser, the name recognition and the wizard's own
+  open questions carry the whole conversation. This is what every
+  installation has out of the box, at no extra footprint.
 - **With the local model (opt-in).** An admin can install a small local
   language model in *Settings*: the official Qwen3-1.7B (Apache-2.0) served
   by llama.cpp, downloaded once into `/data/assistant` and verified against

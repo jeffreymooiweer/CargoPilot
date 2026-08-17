@@ -4,11 +4,11 @@ A walk through CargoPilot, from opening the app to downloading your paperwork. T
 flow is one wizard; you can go back to any earlier step at any time.
 
 - [1. Pick a transport mode](#1-pick-a-transport-mode)
-- [2. Choose your forms](#2-choose-your-forms)
-- [3. Enter your packages](#3-enter-your-packages)
-- [4. Dangerous goods](#4-dangerous-goods-only-if-needed)
-- [5. Shipment details](#5-shipment-details)
-- [6. Export](#6-export)
+- [2. Enter your packages](#2-enter-your-packages)
+- [3. Dangerous goods](#3-dangerous-goods-only-if-needed)
+- [4. Shipment details](#4-shipment-details)
+- [5. Export and your documents](#5-export-and-your-documents)
+- [The AI assistant](#the-ai-assistant)
 - [The equipment library](#the-equipment-library)
 - [Settings](#settings)
 - [Language](#language)
@@ -16,28 +16,24 @@ flow is one wizard; you can go back to any earlier step at any time.
 
 ## 1. Pick a transport mode
 
-Click **New shipment** and choose how the goods travel: road, rail, sea, inland
-waterway, air, or multimodal.
+Click **New shipment** and choose how the goods travel. **Road and inland waterway are
+released**; the rail, sea, air and multimodal tiles are visible but locked — their
+regulatory checks are not complete yet, and a half-right document is worse than none.
+The [roadmap](../ROADMAP.md) tracks when each one unlocks.
 
-This choice decides which forms are offered, which rulebook applies to any dangerous
+This choice decides which documents are offered, which rulebook applies to any dangerous
 goods (ADR for road, RID for rail, IMDG for sea, ADN for inland waterway, IATA DGR for
-air), and which kind of locations the route fields suggest. Pick **multimodal** if the
-shipment changes mode along the way, or if you simply want every form available.
+air), and which kind of locations the route fields suggest.
 
 Always ship the same way? Set a fixed transport mode under [Settings](#settings) and
 CargoPilot opens straight into it; *change transport mode* at the top of the wizard brings
 the tiles back.
 
-## 2. Choose your forms
+You do not choose forms here. CargoPilot assembles the document set from the shipment
+itself and shows the advice on the [export step](#5-export-and-your-documents), where you
+can still adjust it.
 
-You get the documents that make sense for the mode you picked, with the main transport
-document already ticked — CMR for road, CIM for rail, and so on. Tick anything else you
-need and untick what you don't.
-
-Forms marked **Official form** are the genuine documents, filled in. The rest are
-produced as clean PDFs. See [Documents](documents.md) for the full list.
-
-## 3. Enter your packages
+## 2. Enter your packages
 
 Three ways to get your load in:
 
@@ -84,13 +80,20 @@ if you know the real weighbridge figure.
 ### Dangerous goods on a line
 
 Tick **Dangerous goods** on any package that contains them. CargoPilot also spots UN
-numbers written in a description (`UN 1203`) and ticks the box for you. Either way, a
-dangerous goods step appears after this one.
+numbers written in a description (`UN 1203`) and ticks the box for you. And it
+recognises substances by name: type `petrol` or `benzine` and a small chip offers the
+matching UN number — confirm it and the number travels to the dangerous goods step, or
+dismiss it and it stays away for that line. Either way, a dangerous goods step appears
+after this one.
 
-## 4. Dangerous goods (only if needed)
+The contents of one package are read from the sentence too: `1000 jerricans of 25 l of
+petrol` fills the net quantity per package and computes the totals, for jerricans,
+drums, IBCs and any other counted package alike.
 
-Enter the **UN number**, or search by substance name. That is usually all you need to
-type.
+## 3. Dangerous goods (only if needed)
+
+Enter the **UN number**, confirm the chip from the previous step, or search by
+substance name. That is usually all you need to type.
 
 From that one number CargoPilot works out the proper shipping name, the class and
 division, subsidiary risks, packing group, packing instruction, transport category,
@@ -100,6 +103,12 @@ masses come from the packages you already entered.
 
 **Only empty fields are filled.** Anything you typed yourself stays exactly as you left
 it.
+
+**Only the genuinely open questions are asked.** Everything the tables can supply is
+shown as an answer, not a question; what remains is the short list of facts only you
+know — how it travels (packages, tank, bulk), which of several official names fits your
+product, the kind of packaging (steel 3A1 against plastic 3H1) — each with the reason
+it is asked.
 
 Below the form, the **compliance panel** shows live warnings: the ADR 1,000-point
 calculation, loading incompatibilities, sea segregation conflicts, the IATA Q value.
@@ -139,7 +148,7 @@ count. Anything recognised in the description still fills in as a placeholder; w
 type wins. On a phone the three fields sit behind **view more**, with quantity and unit on
 the collapsed card.
 
-## 5. Shipment details
+## 4. Shipment details
 
 This is where you enter the shipment **once**:
 
@@ -159,9 +168,17 @@ with only the fields that form still needs. A green dot means that form is compl
 orange dot means something required is still missing. Forms that need nothing extra are
 listed as *covered by the shipment details*.
 
-## 6. Export
+Dates that mean "drawn up today" start as today; operational dates (loading, requested
+departure) are facts of the trip and are never guessed. The details of your previous
+shipment can be brought back with one click, so a regular route is not retyped.
 
-The final screen lists every selected document with its status:
+## 5. Export and your documents
+
+The final screen assembles your document set and lists every document with its status.
+The **advice** does the choosing for you: the documents the rules require come first
+(the dangerous goods transport document for your mode, for instance), the customary
+ones are recommended, and everything else the mode offers is there to add. Tick and
+untick as you like — the advice is a starting point, not a lock.
 
 | Status | Meaning |
 |---|---|
@@ -170,8 +187,8 @@ The final screen lists every selected document with its status:
 | **Waiting for carrier data** | Fields only the carrier can supply are missing |
 | **Blocked** | A safety check failed — see the compliance panel |
 
-Click **Download document** for each one. Every document downloads as a PDF and carries
-a draft notice.
+Click **Download document** for each one, or **Download all** for every document that
+is ready. Every document downloads as a PDF and carries a draft notice.
 
 > Documents are generated on the spot and deleted from the server the moment your
 > download finishes. Nothing is archived.
@@ -182,6 +199,31 @@ If your shipment contains dangerous goods, you can also download the **UN cards*
 substances you declared — a zip with one reference card per UN number, for your own
 records. Only your substances are included, not the whole library. They are not part of
 the transport documentation.
+
+## The AI assistant
+
+The AI mark in the wizard header opens the assistant: a small survey that fills the
+same wizard through natural language. Describe the shipment — `1000 jerricans of 25 l
+of petrol and a pallet of sand-lime brick` — and it becomes goods lines through the
+same recognition the lines step uses, one line per item.
+
+From there the assistant asks **one question per screen**, and only questions the app
+itself has open: a substance to confirm, an open dangerous goods question, a
+measurement the calculation still misses, a document field. Each question is phrased in
+plain language; the formal field name and the help with its article references sit
+behind the **info mark**. Address questions search real addresses and route questions
+suggest airports, ports and stations, exactly like the wizard's own fields. **Previous**
+really goes back, optional questions have a **skip**, and a vague answer gets a
+follow-up with an example instead of a shrug.
+
+Everything lands in the same wizard state, so you can close the assistant at any point
+and continue by hand — or the other way round — without losing anything.
+
+The assistant works without any model installed. An administrator can add a small local
+language model under **Settings** which only makes the *reading* more flexible (free
+prose, paraphrased answers, measurements written as words); it never decides regulatory
+content. See the [README](../README.md#the-ai-assistant-optional) for what it is and
+what it costs.
 
 ## The equipment library
 
@@ -242,8 +284,8 @@ See [Dangerous goods](dangerous-goods.md#what-one-un-number-gives-you).
   in the description and ends up on the document, so notes stay visible.
 - **Free text always wins.** Every suggestion box also accepts text you type yourself.
   Nothing forces you into a list.
-- **Multimodal for one-offs.** If you need a form that is not offered for your mode,
-  start again as multimodal — everything is available there.
+- **Missing a document?** The advice on the export step preselects what the shipment
+  needs, but everything the mode offers can be ticked there as well.
 - **Working offline?** Packages, weights, UN numbers, ports and airports all work
   without internet. Only address autocomplete needs a connection.
 - **Check before you sign.** Every document is a draft. The app is a typing assistant,

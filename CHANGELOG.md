@@ -2,6 +2,21 @@
 
 All notable changes are documented here, following [Semantic Versioning](https://semver.org/).
 
+## [1.112.3] — 2026-08-17
+
+### Fixed
+
+- **Details dropped from the fields are recovered from the lines.** The
+  third measured intake shape: the same sentence, and this run the model
+  returned no fields at all — every consignment detail arrived as a goods
+  line instead. A line that opens with a route word, a carrier word or an
+  order word is a detail: it is recovered into the field it names (still
+  guarded by the traceable-to-the-message check) and never becomes a
+  package. With that, all three measured shapes of the small model land on
+  the same result: one goods line "diesel × 1000 jerricans" and the
+  parties, route and reference in their fields — the deterministic floor
+  decides, whichever way the model bends.
+
 ## [1.112.2] — 2026-08-17
 
 ### Fixed

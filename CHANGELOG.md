@@ -2,6 +2,22 @@
 
 All notable changes are documented here, following [Semantic Versioning](https://semver.org/).
 
+## [1.112.1] — 2026-08-17
+
+### Fixed
+
+- **The intake measured, and repaired where it bent.** The
+  `measure-assistant-latency` run on the pinned runtime timed the new
+  intake shape at 12.8 s and read the parties, carrier, route and
+  reference correctly — but returned the *whole* sentence as one goods
+  description with no quantity. The deterministic readers now stand under
+  the model's output exactly as they stand under typed input: the route
+  phrase is cut from a returned description (and kept when the fields are
+  still open), and a leading count without a unit word still counts
+  pieces. The measured degradation is pinned as a regression test, and the
+  intake prompt now says outright that a goods description names the goods
+  only.
+
 ## [1.112.0] — 2026-08-17
 
 ### Added

@@ -270,7 +270,9 @@ _INTAKE_PROMPT = (
     "data. Extract every distinct goods item with its quantity and unit "
     "where stated, and any consignment details the message explicitly "
     "states: consignor (the sender), consignee (the receiver), carrier, "
-    "loading point, discharge point, loading date, references. Copy the "
+    "loading point, discharge point, loading date, references. A goods "
+    "description names the goods only — never the addresses, parties, "
+    "dates or references, which belong in their own fields. Copy the "
     "wording as the user gave it — do not translate, classify, complete or "
     "guess anything, and omit every field the message does not state. The "
     "message may be in Dutch, English, German or French."
@@ -288,25 +290,7 @@ def _stated_in(message: str, value: str) -> bool:
     return bool(words) and any(w in haystack for w in words)
 
 
-def _rows_from_lines(lines: list[dict[str, Any]]) -> list[str]:
-    rows: list[str] = []
-    for line in lines:
-        description = _clean(line.get("description"))
-        if not description:
-            continue
-        quantity = line.get("quantity")
-        unit = _clean(line.get("unit"))
-        if quantity:
-            from app.services.units import get_unit
-
-            known = get_unit(unit)
-            rows.append(f"{description} | {quantity:g} | {known.code if known else (unit or 'pcs')}")
-        else:
-            rows.append(description)
-    return rows
-
-
-def _model_intake(message: str) -> tuple[list[str], dict[str, str]] | None:
+def _model_intake(message: str) -> tuple[list[dict[str, Any]], dict[str, str]] | None:
     """The whole first message through the model: goods rows plus every
     consignment detail the sentence explicitly stated.
 
@@ -331,7 +315,40 @@ def _model_intake(message: str) -> tuple[list[str], dict[str, str]] | None:
                 continue
             value = iso
         fields[field] = value
-    return _rows_from_lines(result["lines"]) or None, fields
+    return result["lines"], fields
+
+
+def _intake_rows(raw_lines: list[dict[str, Any]], fields: dict[str, str]) -> list[str]:
+    """The model's goods lines as parser rows, with the deterministic floor
+    still underneath.
+
+    Measured on the pinned runtime: given a full intake sentence, the small
+    model once returned the *whole* sentence as one goods description with
+    no quantity. The same readers that guard the deterministic route guard
+    the model's output too — the route phrase is cut from a description (and
+    kept, when the fields are still open), and a leading count without a
+    unit word still counts pieces."""
+    from app.services.units import get_unit
+
+    rows: list[str] = []
+    for line in raw_lines:
+        description = _clean(line.get("description"))
+        if not description:
+            continue
+        description, origin, destination = _split_route(description)
+        if origin and destination:
+            fields.setdefault("loading_point", origin)
+            fields.setdefault("discharge_point", destination)
+        if not description:
+            continue
+        quantity = line.get("quantity")
+        unit = _clean(line.get("unit"))
+        if quantity:
+            known = get_unit(unit)
+            rows.append(f"{description} | {quantity:g} | {known.code if known else (unit or 'pcs')}")
+        else:
+            rows.append(_to_parser_row(description))
+    return rows
 
 
 def _read_date(text: str) -> str | None:
@@ -379,11 +396,15 @@ def _apply_goods_message(
     # message whole; the cruder deterministic route cut runs only when no
     # model answers, or it would carve the consignor out of the sentence
     # before the intake could read it.
+    rows: list[str] | None = None
     intake = _model_intake(message)
     if intake is not None:
-        rows, fields = intake
+        raw_lines, fields = intake
+        rows = _intake_rows(raw_lines, fields)
         fill(fields)
-    else:
+        if not rows and not fields:
+            rows = None  # the model read nothing at all; the floor takes over
+    if rows is None:
         # The deterministic floor: "100 plates from Wezep to the port of
         # Rotterdam" answers two document questions before they are asked.
         # The phrase leaves the goods description either way.

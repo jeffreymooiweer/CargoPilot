@@ -326,6 +326,29 @@ def test_the_intake_never_writes_what_the_message_did_not_say(db, monkeypatch):
     assert not result["state"]["draft_lines"][0].get("dangerous_goods")
 
 
+def test_a_degraded_intake_line_is_repaired_by_the_deterministic_floor(db, monkeypatch):
+    """Measured on the pinned runtime: given a full intake sentence, the
+    small model once returned the whole sentence as one goods description
+    with no quantity. The deterministic readers repair exactly that — the
+    route is cut from the description, and the leading count counts."""
+    fake_model(monkeypatch, lambda system, user, schema, **_: {
+        "lines": [{"description": ("1000 jerrycans diesel van Mooiweer BV, "
+                                   "Kade 1 Rotterdam naar Afnemer GmbH in Duisburg")}],
+        "carrier_name": "Trans Janssen",
+    })
+    result = step({"modality": "road"},
+                  "1000 jerrycans diesel van Mooiweer BV, Kade 1 Rotterdam naar "
+                  "Afnemer GmbH in Duisburg, vervoerder Trans Janssen",
+                  None, db, "nl")
+    line = result["state"]["draft_lines"][0]
+    assert line["quantity"] == 1000.0 and line["unit"] == "jerrycan"
+    assert line["description"] == "diesel"
+    values = result["state"]["doc_values"]
+    assert values["loading_point"] == "Mooiweer BV, Kade 1 Rotterdam"
+    assert values["discharge_point"] == "Afnemer GmbH in Duisburg"
+    assert values["carrier_name"] == "Trans Janssen"
+
+
 def test_the_intake_never_overwrites_what_was_already_answered(db, monkeypatch):
     fake_model(monkeypatch, lambda system, user, schema, **_: {
         "lines": [{"description": "kalkzandsteen", "quantity": 4, "unit": "pallets"}],

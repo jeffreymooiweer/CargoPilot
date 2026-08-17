@@ -24,10 +24,12 @@ vi.mock("react-i18next", () => ({
 }));
 
 vi.mock("../api/client", () => ({
-  api: { assistantStep: vi.fn() },
+  api: { assistantStep: vi.fn(), geoLocations: vi.fn(), geoAddress: vi.fn() },
 }));
 
 const stepMock = api.assistantStep as ReturnType<typeof vi.fn>;
+const geoLocationsMock = api.geoLocations as ReturnType<typeof vi.fn>;
+const geoAddressMock = api.geoAddress as ReturnType<typeof vi.fn>;
 
 const QUESTION = {
   state: { modality: "road", draft_lines: [{ id: 1 }] },
@@ -43,13 +45,14 @@ const QUESTION = {
   },
 };
 
-function renderModal(onApplyState = vi.fn(), onClose = vi.fn()) {
+function renderModal(onApplyState = vi.fn(), onClose = vi.fn(), modality = "road") {
   render(
     <AssistantModal
       open
       onClose={onClose}
       buildState={() => ({ modality: "road", draft_lines: [] })}
       onApplyState={onApplyState}
+      modality={modality}
     />,
   );
   return { onApplyState, onClose };
@@ -67,7 +70,11 @@ async function reachQuestion(onApplyState = vi.fn()) {
   return onApplyState;
 }
 
-beforeEach(() => stepMock.mockReset());
+beforeEach(() => {
+  stepMock.mockReset();
+  geoLocationsMock.mockReset().mockResolvedValue({ results: [] });
+  geoAddressMock.mockReset().mockResolvedValue({ results: [], available: true });
+});
 
 describe("AssistantModal", () => {
   it("starts as a describe screen and turns the reply into a survey question", async () => {
@@ -176,6 +183,76 @@ describe("AssistantModal", () => {
     expect(screen.getByText("kalkzandsteen")).toBeTruthy();
     // Optional, so it can be skipped — a measurement is never a blocker.
     expect(screen.getByRole("button", { name: "assistant.skip" })).toBeTruthy();
+  });
+
+  it("a location question suggests airports, ports and stations like the wizard", async () => {
+    stepMock.mockResolvedValueOnce({
+      state: {},
+      events: [],
+      pending: {
+        scope: "doc_question",
+        field: "loading_point",
+        type: "text",
+        required: true,
+        label: { nl: "Plaats van inontvangstneming" },
+        options: [],
+      },
+    });
+    geoLocationsMock.mockResolvedValue({
+      results: [{
+        type: "port", code: "NLRTM", name: "Rotterdam",
+        city: "Rotterdam", country: "Netherlands",
+      }],
+    });
+    renderModal();
+    await userEvent.type(screen.getByLabelText("assistant.describeLabel"), "staal");
+    await userEvent.click(screen.getByRole("button", { name: "assistant.start" }));
+    const input = await screen.findByPlaceholderText("geo.locationPlaceholder");
+    await userEvent.type(input, "rott");
+    const suggestion = await screen.findByText("Rotterdam (NLRTM)");
+    await userEvent.click(suggestion);
+    expect((input as HTMLInputElement).value).toBe("Rotterdam (NLRTM), Netherlands");
+    // The picked location is the answer the next button sends.
+    stepMock.mockResolvedValueOnce({ state: {}, events: [], pending: null });
+    await userEvent.click(screen.getByRole("button", { name: "assistant.next" }));
+    expect(stepMock).toHaveBeenLastCalledWith(
+      expect.objectContaining({ message: "Rotterdam (NLRTM), Netherlands" }),
+    );
+  });
+
+  it("an address question suggests addresses like the wizard", async () => {
+    stepMock.mockResolvedValueOnce({
+      state: {},
+      events: [],
+      pending: {
+        scope: "doc_question",
+        field: "consignor_address",
+        type: "textarea",
+        required: true,
+        label: { nl: "Adres afzender" },
+        options: [],
+      },
+    });
+    geoAddressMock.mockResolvedValue({
+      results: [{
+        label: "Kade 1, 3011 AA Rotterdam, Netherlands",
+        name: "", street: "Kade", housenumber: "1",
+        postcode: "3011 AA", city: "Rotterdam", country: "Netherlands",
+      }],
+      available: true,
+    });
+    renderModal();
+    await userEvent.type(screen.getByLabelText("assistant.describeLabel"), "staal");
+    await userEvent.click(screen.getByRole("button", { name: "assistant.start" }));
+    const search = await screen.findByPlaceholderText("geo.addressPlaceholder");
+    await userEvent.type(search, "kade 1");
+    const suggestion = await screen.findByText("Kade 1, 3011 AA Rotterdam, Netherlands");
+    await userEvent.click(suggestion);
+    // The picked address lands multi-line in the editable answer box.
+    const boxes = screen.getAllByRole("textbox").filter(
+      (el) => el.tagName === "TEXTAREA",
+    ) as HTMLTextAreaElement[];
+    expect(boxes.some((el) => el.value === "Kade 1\n3011 AA Rotterdam\nNetherlands")).toBe(true);
   });
 
   it("no pending question means the survey is done", async () => {

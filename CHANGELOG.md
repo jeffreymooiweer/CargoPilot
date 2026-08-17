@@ -7,9 +7,10 @@ All notable changes are documented here, following [Semantic Versioning](https:/
 ### Added
 
 - **The owner's own sentence, read completely — with or without a model.**
-  "ik wil morgen 1800 jerrycans benzine van 25l laten vervoeren vanaf de
-  haven in rotterdam naar schiphol" used to become a single piece whose
-  description was the entire sentence. Three deterministic readers close
+  A request phrased the way people speak — "tomorrow I want 1800 jerricans
+  of petrol of 25 l carried from the port of Rotterdam to Schiphol", said
+  in Dutch — used to become a single piece whose description was the
+  entire sentence. Three deterministic readers close
   the gap, so the guided mode every installation has out of the box reads
   it too: the intent words around the facts leave first ("ik wil … laten
   vervoeren", and their English forms); a date the sentence states — a

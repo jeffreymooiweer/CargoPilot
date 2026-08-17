@@ -65,6 +65,39 @@ def purge_legacy_equipment(db: Session) -> None:
         logger.info("Removed legacy seeded equipment (%s items)", deleted)
 
 
+def migrate_equipment_columns(db: Session) -> None:
+    """Bring an existing equipment table in line with the model.
+
+    ``create_all`` creates missing *tables* and never touches the columns of
+    one that already exists, so a library filled before v1.116.0 would keep
+    its SAP material number and miss the wall thickness that replaced it.
+    Both steps are done here, and both are safe to run on every start: the
+    column is only added when absent, and the old one only dropped when
+    present. A SQLite too old for DROP COLUMN keeps the dead column — it is
+    nullable, so nothing breaks; it is simply no longer read or written.
+    """
+    from sqlalchemy import inspect, text
+
+    inspector = inspect(db.get_bind())
+    if "equipment_items" not in inspector.get_table_names():
+        return
+    columns = {column["name"] for column in inspector.get_columns("equipment_items")}
+
+    if "wall_thickness_mm" not in columns:
+        db.execute(text("ALTER TABLE equipment_items ADD COLUMN wall_thickness_mm FLOAT"))
+        db.commit()
+        logger.info("Equipment library: added the wall thickness column")
+
+    if "sap_code" in columns:
+        try:
+            db.execute(text("ALTER TABLE equipment_items DROP COLUMN sap_code"))
+            db.commit()
+            logger.info("Equipment library: dropped the retired SAP code column")
+        except Exception as exc:  # pragma: no cover - old SQLite without DROP COLUMN
+            db.rollback()
+            logger.warning("Could not drop the retired SAP code column: %s", exc)
+
+
 def seed_catalogs(db: Session) -> None:
     settings = get_settings()
     if db.query(Material).count() == 0:
@@ -155,6 +188,9 @@ def init_app() -> bool:
     Base.metadata.create_all(bind=engine)
     db = SessionLocal()
     try:
+        # Before anything reads the equipment table: an existing one predates
+        # the model it is queried with.
+        migrate_equipment_columns(db)
         seed_catalogs(db)
         purge_legacy_equipment(db)
         sync_catalogs_on_startup(db)

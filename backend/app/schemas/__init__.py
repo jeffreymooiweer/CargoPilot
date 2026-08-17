@@ -88,11 +88,12 @@ class ReferenceItemOut(ReferenceItemBase):
 
 
 class EquipmentBase(BaseModel):
-    sap_code: str | None = None
     specifications: str = Field(min_length=1, max_length=255)
     length_cm: float | None = None
     width_cm: float | None = None
     height_cm: float | None = None
+    #: Millimetres, as a wall is written down.
+    wall_thickness_mm: float | None = None
     weight_kg: float = Field(gt=0)
     aliases: list[str] = Field(default_factory=list)
     language_labels: dict = Field(default_factory=dict)
@@ -102,11 +103,11 @@ class EquipmentBase(BaseModel):
 
 
 class EquipmentUpdate(BaseModel):
-    sap_code: str | None = None
     specifications: str | None = Field(default=None, min_length=1, max_length=255)
     length_cm: float | None = None
     width_cm: float | None = None
     height_cm: float | None = None
+    wall_thickness_mm: float | None = None
     weight_kg: float | None = Field(default=None, gt=0)
     aliases: list[str] | None = None
     language_labels: dict | None = None

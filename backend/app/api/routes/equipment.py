@@ -45,11 +45,11 @@ class EquipmentImportResultOut(BaseModel):
 def _equipment_out(item: Equipment) -> EquipmentOut:
     return EquipmentOut(
         id=item.id,
-        sap_code=item.sap_code,
         specifications=item.specifications,
         length_cm=item.length_cm,
         width_cm=item.width_cm,
         height_cm=item.height_cm,
+        wall_thickness_mm=item.wall_thickness_mm,
         weight_kg=item.weight_kg,
         aliases=json.loads(item.aliases_json or "[]"),
         language_labels=json.loads(item.language_labels_json or "{}"),
@@ -72,11 +72,11 @@ def create_equipment(
     db: Session = Depends(get_db),
 ):
     item = Equipment(
-        sap_code=payload.sap_code,
         specifications=payload.specifications,
         length_cm=payload.length_cm,
         width_cm=payload.width_cm,
         height_cm=payload.height_cm,
+        wall_thickness_mm=payload.wall_thickness_mm,
         weight_kg=payload.weight_kg,
         aliases_json=json.dumps(payload.aliases),
         language_labels_json=json.dumps(payload.language_labels),

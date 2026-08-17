@@ -155,7 +155,6 @@
     "dimensions": "Dimensions (L×l×h)",
     "search": "Rechercher par nom, code SAP ou alias…",
     "count": "{{count}} sur {{total}} éléments",
-    "sapCode": "Code SAP (MATNR)",
     "specifications": "Spécifications (désignation)",
     "length": "Longueur (cm)",
     "width": "Largeur (cm)",
@@ -170,7 +169,8 @@
     "importCreated": "{{count}} ajoutés",
     "importUpdated": "{{count}} mis à jour",
     "importSkipped": "{{count}} ignorés",
-    "inactive": "Inactif"
+    "inactive": "Inactif",
+    "wallThickness": "Épaisseur de paroi (mm)"
   },
   "settings": {
     "title": "Paramètres",

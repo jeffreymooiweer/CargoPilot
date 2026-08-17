@@ -11,34 +11,41 @@ from app.core.messages import detail as message_detail
 from app.models.user import Equipment
 from app.services.spreadsheet_io import normalize_header
 
+#: The columns of the template, in order. The SAP material number left in
+#: v1.116.0 — it belonged to one organisation's old system — and the wall
+#: thickness took its place, without which the weight of a hollow section
+#: cannot be worked out.
 EQUIPMENT_HEADERS = [
-    "sap_code",
     "specifications",
     "length_cm",
     "width_cm",
     "height_cm",
+    "wall_thickness_mm",
     "weight_kg",
     "aliases",
     "active",
 ]
 
 EQUIPMENT_EXAMPLE = [
-    "DEMO-001",
     "DEMO LIGHT VEHICLE",
     "400",
     "180",
     "170",
+    "",
     "1200",
     "demo vehicle, demo light vehicle",
     "yes",
 ]
 
 COLUMN_ALIASES: dict[str, set[str]] = {
-    "sap_code": {"sap_code", "sap", "matnr", "material", "code"},
     "specifications": {"specifications", "specification", "specs", "omschrijving", "description", "naam"},
     "length_cm": {"length_cm", "length", "lengte", "l"},
     "width_cm": {"width_cm", "width", "breedte", "b"},
     "height_cm": {"height_cm", "height", "hoogte", "h"},
+    "wall_thickness_mm": {
+        "wall_thickness_mm", "wall_thickness", "wall", "wanddikte", "dikte",
+        "wandstarke", "wandstärke", "epaisseur", "épaisseur",
+    },
     "weight_kg": {"weight_kg", "weight", "gewicht", "kg"},
     "aliases": {"aliases", "alias", "synoniemen", "synonyms"},
     "active": {"active", "actief", "enabled"},
@@ -67,7 +74,7 @@ def _detect_column_map(header: list[str]) -> dict[str, int | None]:
 
 
 def _infer_column_map(row: list[str]) -> dict[str, int | None]:
-    if len(row) >= 8:
+    if len(row) >= len(EQUIPMENT_HEADERS):
         return {key: idx for idx, key in enumerate(EQUIPMENT_HEADERS)}
     mapping: dict[str, int | None] = {key: None for key in EQUIPMENT_HEADERS}
     mapping["specifications"] = 0
@@ -122,11 +129,11 @@ def _row_to_record(row: list[str], mapping: dict[str, int | None]) -> dict:
         return row[idx].strip()
 
     return {
-        "sap_code": cell("sap_code") or None,
         "specifications": cell("specifications"),
         "length_cm": _parse_float(cell("length_cm")),
         "width_cm": _parse_float(cell("width_cm")),
         "height_cm": _parse_float(cell("height_cm")),
+        "wall_thickness_mm": _parse_float(cell("wall_thickness_mm")),
         "weight_kg": _parse_float(cell("weight_kg")),
         "aliases": _parse_aliases(cell("aliases")),
         "active": _parse_bool(cell("active")) if cell("active") else True,
@@ -142,7 +149,7 @@ def import_equipment_rows(db: Session, rows: list[list[str]]) -> EquipmentImport
     has_header = _has_header_row(rows)
     mapping = _detect_column_map(rows[0]) if has_header else _infer_column_map(rows[0])
     if has_header and mapping["specifications"] is None:
-        mapping["specifications"] = 1 if mapping["sap_code"] == 0 else 0
+        mapping["specifications"] = 0
 
     start = 1 if has_header else 0
     for line_no, row in enumerate(rows[start:], start=start + 1):
@@ -157,22 +164,20 @@ def import_equipment_rows(db: Session, rows: list[list[str]]) -> EquipmentImport
             result.skipped += 1
             continue
 
-        existing = None
-        if record["sap_code"]:
-            existing = db.query(Equipment).filter(Equipment.sap_code == record["sap_code"]).first()
-        if existing is None:
-            existing = (
-                db.query(Equipment)
-                .filter(Equipment.specifications.ilike(specs))
-                .first()
-            )
+        # The description identifies the item now that the material number
+        # is gone: it is what people read on the screen and in the file.
+        existing = (
+            db.query(Equipment)
+            .filter(Equipment.specifications.ilike(specs))
+            .first()
+        )
 
         if existing:
-            existing.sap_code = record["sap_code"] or existing.sap_code
             existing.specifications = specs
             existing.length_cm = record["length_cm"]
             existing.width_cm = record["width_cm"]
             existing.height_cm = record["height_cm"]
+            existing.wall_thickness_mm = record["wall_thickness_mm"]
             existing.weight_kg = weight
             if record["aliases"]:
                 existing.aliases_json = json.dumps(record["aliases"])
@@ -181,11 +186,11 @@ def import_equipment_rows(db: Session, rows: list[list[str]]) -> EquipmentImport
         else:
             db.add(
                 Equipment(
-                    sap_code=record["sap_code"],
                     specifications=specs,
                     length_cm=record["length_cm"],
                     width_cm=record["width_cm"],
                     height_cm=record["height_cm"],
+                    wall_thickness_mm=record["wall_thickness_mm"],
                     weight_kg=weight,
                     aliases_json=json.dumps(record["aliases"]),
                     language_labels_json="{}",

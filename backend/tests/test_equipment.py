@@ -29,7 +29,6 @@ def db(tmp_path, monkeypatch):
 def _seed_demo_vehicle(db: Session) -> None:
     db.add(
         Equipment(
-            sap_code="DEMO-001",
             specifications="DEMO LIGHT VEHICLE",
             length_cm=400,
             width_cm=180,
@@ -48,7 +47,6 @@ def test_match_equipment_demo_vehicle(db: Session):
     _seed_demo_vehicle(db)
     item = match_equipment("Demo vehicle | 1 | stuks", db)
     assert item is not None
-    assert item.sap_code == "DEMO-001"
     assert item.weight_kg == 1200
 
 

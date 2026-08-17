@@ -2,6 +2,35 @@
 
 All notable changes are documented here, following [Semantic Versioning](https://semver.org/).
 
+## [1.116.0] — 2026-08-18
+
+### Removed
+
+- **The SAP material number (MATNR) left the equipment library.** It came
+  from one organisation's old system, meant nothing anywhere else, and yet
+  it was the column an item was named by — in the overview, in the search
+  results and in the import template. Gone from all of them: the item is
+  now named by its description, which is what people actually read. An
+  existing library keeps every item; only the column disappears, at the
+  first start after the update.
+
+### Added
+
+- **The wall thickness took its place.** A measurement that genuinely
+  describes the thing — and without which the weight of an angle or a
+  hollow section cannot be worked out at all. It sits in the form, in the
+  overview (table and phone cards) and as a column in the import template,
+  which reads it under any of its names in the four languages (wanddikte,
+  wall thickness, Wandstärke, épaisseur). The template column order changed
+  with it, so download the fresh template before the next bulk import.
+
+### Changed
+
+- An equipment table created before this version is brought in line at
+  startup: the wall thickness column is added and the retired SAP column
+  dropped, both only when needed and safe to repeat on every start. A test
+  builds an old table, migrates it, and checks the items survive.
+
 ## [1.115.0] — 2026-08-17
 
 ### Changed

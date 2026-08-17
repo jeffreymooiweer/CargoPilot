@@ -155,7 +155,6 @@
     "dimensions": "Afmetingen (L×B×H)",
     "search": "Zoeken op naam, SAP-code of alias…",
     "count": "{{count}} van {{total}} items",
-    "sapCode": "SAP-code (MATNR)",
     "specifications": "Specifications (omschrijving)",
     "length": "Lengte (cm)",
     "width": "Breedte (cm)",
@@ -170,7 +169,8 @@
     "importCreated": "{{count}} toegevoegd",
     "importUpdated": "{{count}} bijgewerkt",
     "importSkipped": "{{count}} overgeslagen",
-    "inactive": "Inactief"
+    "inactive": "Inactief",
+    "wallThickness": "Wanddikte (mm)"
   },
   "settings": {
     "title": "Instellingen",

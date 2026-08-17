@@ -596,7 +596,10 @@
     "iata_declaration": "Required on the shipper's declaration",
     "totals_11136": "For the total and the 1.1.3.6 points count",
     "sp3122": "Several names under this UN number — 3.1.2.2: only the most applicable name goes on the document",
-    "packaging_spec": "The package often carries a UN certification code; that code may supplement the description on the transport document (5.4.1.1.1 (e))."
+    "packaging_spec": "The package often carries a UN certification code; that code may supplement the description on the transport document (5.4.1.1.1 (e)).",
+    "dimensions_complete_the_picture": "With the dimensions and the density from the catalogue CargoPilot works out the weight and the loading volume itself.",
+    "dimensions_complete_the_volume": "The weight is already known; the dimensions of the package add the loading volume to it.",
+    "weight_unknown_material": "These goods are not in the catalogue, so the weight cannot be computed."
   },
   "advice": {
     "title": "Document pack",

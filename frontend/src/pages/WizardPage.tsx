@@ -782,7 +782,13 @@ export default function WizardPage() {
           dg_dismissed: line.dg_dismissed,
           detected_un_numbers: resultLine?.detected_un_numbers ?? [],
           dg_name_candidates: resultLine?.dg_name_candidates ?? [],
-          weight_each_kg: resultLine?.weight_each_kg ?? undefined,
+          // What the consignor stated themselves travels as their answer; the
+          // computed weight travels beside it, never as an override.
+          weight_each_kg: line.weight_each_kg === "" ? undefined : line.weight_each_kg,
+          computed_weight_each_kg: resultLine?.weight_each_kg ?? undefined,
+          length_cm: line.length_cm === "" ? undefined : line.length_cm,
+          width_cm: line.width_cm === "" ? undefined : line.width_cm,
+          height_cm: line.height_cm === "" ? undefined : line.height_cm,
           package_content: line.package_content ?? resultLine?.package_content ?? undefined,
         };
       }),
@@ -804,6 +810,12 @@ export default function WizardPage() {
         confirmed_un: (line.confirmed_un as string) || undefined,
         dg_dismissed: Boolean(line.dg_dismissed) || undefined,
         package_content: (line.package_content as string) || undefined,
+        // Measurements the assistant asked for land in the same columns the
+        // lines table writes, so the classic wizard computes with them too.
+        length_cm: (line.length_cm as number) ?? undefined,
+        width_cm: (line.width_cm as number) ?? undefined,
+        height_cm: (line.height_cm as number) ?? undefined,
+        weight_each_kg: (line.weight_each_kg as number) ?? undefined,
       }));
       if (mapped.length > 0) {
         setDraftLines((current) => {

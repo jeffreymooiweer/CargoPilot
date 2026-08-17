@@ -31,6 +31,9 @@ export interface DraftLine {
   /** Net content of one package as the description said it ("25 L"); the DG
    *  derivation fills the per-package quantity from it. */
   package_content?: string;
+  /** Weight of one item or package the consignor stated themselves, for goods
+   *  the catalogue cannot weigh. Never a computed value. */
+  weight_each_kg?: number | "";
 }
 
 const inputClass =

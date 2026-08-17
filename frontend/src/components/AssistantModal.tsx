@@ -267,6 +267,11 @@ export default function AssistantModal({ open, onClose, buildState, onApplyState
 
         {screen === "question" && pending && (
           <div className="mt-4 space-y-3">
+            {typeof pending.goods === "string" && pending.goods && (
+              <p className="text-xs font-medium uppercase tracking-wide text-slate-400 dark:text-slate-500">
+                {pending.goods}
+              </p>
+            )}
             <div className="flex items-start gap-2">
               <p className="text-sm font-medium text-slate-900 dark:text-slate-100">{questionTitle()}</p>
               {infoText() && (

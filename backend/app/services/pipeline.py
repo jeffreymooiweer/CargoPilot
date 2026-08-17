@@ -203,6 +203,17 @@ def _positive(value: Any) -> float | None:
     return number if number > 0 else None
 
 
+def _split_package_content(content: str | None) -> tuple[float, Any]:
+    """"25 L" as the number and the unit the catalogue knows it by."""
+    amount, _, symbol = str(content or "").partition(" ")
+    try:
+        number = float(amount)
+    except ValueError:
+        return 0.0, None
+    unit = units_get_unit(symbol) if number > 0 else None
+    return number, unit
+
+
 def process_line(
     line_id: int,
     row: ParsedRow,
@@ -232,6 +243,17 @@ def process_line(
     length_cm = meters_to_cm(overrides.get("length_m") or dims.length_m)
     width_cm = meters_to_cm(overrides.get("width_m") or dims.width_m)
     height_cm = meters_to_cm(overrides.get("height_m") or dims.height_m)
+
+    # A per-package content only exists on a line counted in packages: on a
+    # line measured in litres the litre figure is the quantity itself. Read
+    # before the calculation, because a known content is what turns a count of
+    # packages into a mass.
+    row_unit = units_get_unit(row.unit)
+    package_content = (
+        detect_package_content(row.description)
+        if row_unit is not None and row_unit.dimension == Dimension.COUNT
+        else None
+    )
 
     # Dimensions the user fills in themselves in the table count towards the
     # calculation and not only towards the display. Until v1.35.0 they were taken
@@ -444,8 +466,20 @@ def process_line(
         # density of steel, and 1500 litres times 7850 would look just as
         # confident as the answer that is right.
         if material_obj and qty:
+            # A count of packages converts to nothing by itself — until the
+            # description said what one package holds. "1000 jerricans of 25 l
+            # of petrol" is 25000 litres, and with the catalogue's density that
+            # is 18625 kg: everything needed was already on the screen. The
+            # packaging around the contents is not, so the material volume
+            # follows from the contents while the transport volume stays open
+            # for the dimensions to answer.
+            convert_qty, convert_unit, packed = qty, row.unit, False
+            content_amount, content_unit = _split_package_content(package_content)
+            if content_unit is not None and row_unit is not None \
+                    and row_unit.dimension == Dimension.COUNT:
+                convert_qty, convert_unit, packed = qty * content_amount, content_unit.code, True
             converted = convert_units(
-                qty, row.unit, density, material_obj.category,
+                convert_qty, convert_unit, density, material_obj.category,
                 canonical_name=material_obj.canonical_name,
                 form=overrides.get("cargo_form"),
             )
@@ -454,10 +488,12 @@ def process_line(
                 material_vol = converted.volume_m3
                 # For a liquid or bulk the entered volume is also the volume
                 # carried; there is no packaging around it that the app knows of.
-                transport_vol = converted.volume_m3
+                transport_vol = None if packed else converted.volume_m3
                 method = f"unit_{converted.basis.value}"
                 density = converted.density_used_kg_m3 or density
                 cargo_form = converted.form
+                if packed and weight_total is not None:
+                    weight_each = weight_total / qty
 
         if not dims.length_m and not weight_each and weight_total is None:
             messages.append("dimensions_missing")
@@ -483,15 +519,6 @@ def process_line(
         [] if detected_un_numbers
         else detect_name_candidates(row.description, output_language)
     )
-    # A per-package content only exists on a line counted in packages: on a
-    # line measured in litres the litre figure is the quantity itself.
-    row_unit = units_get_unit(row.unit)
-    package_content = (
-        detect_package_content(row.description)
-        if row_unit is not None and row_unit.dimension == Dimension.COUNT
-        else None
-    )
-
     if overrides.get("weight_each_kg") is not None:
         weight_each = float(overrides["weight_each_kg"])
         if qty:

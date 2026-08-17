@@ -2,6 +2,23 @@
 
 All notable changes are documented here, following [Semantic Versioning](https://semver.org/).
 
+## [1.115.0] — 2026-08-17
+
+### Changed
+
+- **The settings page is grouped into tabs.** It had grown into one long
+  scroll where a theme choice sat a few centimetres above the switch that
+  decides whether this installation talks to the internet at all — personal
+  preferences and instance-wide policy reading as one list. They are now
+  separate groups: appearance, shipment defaults, my details (with the
+  signature), and, for an administrator only, administration and the AI
+  assistant's model. The personal groups keep sharing one draft and
+  therefore one save button, so switching between them never loses what was
+  typed. On a phone, where a row of tabs would wrap or scroll out of sight,
+  the same groups sit in a dropdown at the top; from the medium breakpoint
+  the tabs themselves appear. Tab labels in all four languages, and a test
+  pins that the administrator's groups exist only for an administrator.
+
 ## [1.114.0] — 2026-08-17
 
 ### Added

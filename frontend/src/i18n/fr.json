@@ -237,7 +237,13 @@
     "assistantRemove": "Supprimer le modèle",
     "assistantDownloading": "Téléchargement et vérification…",
     "assistantUnpinned": "Les sources ne sont pas encore épinglées par hachage dans cette version ; le téléchargement reste désactivé jusque-là.",
-    "assistantFootprint": "Nécessaire avec le modèle : ± 2,5 Go de RAM en plus et ± 2 Go de disque dans /data/assistant. Le téléchargement est vérifié contre un SHA-256 épinglé et constitue le seul trafic externe de l'assistant."
+    "assistantFootprint": "Nécessaire avec le modèle : ± 2,5 Go de RAM en plus et ± 2 Go de disque dans /data/assistant. Le téléchargement est vérifié contre un SHA-256 épinglé et constitue le seul trafic externe de l'assistant.",
+    "tabAppearance": "Affichage",
+    "tabShipment": "Envoi",
+    "tabDetails": "Mes coordonnées",
+    "tabAdmin": "Administration",
+    "tabAssistant": "Assistant IA",
+    "tabPick": "Choisir une section"
   },
   "modality": {
     "title": "Choisissez votre mode de transport",

@@ -237,7 +237,13 @@
     "assistantRemove": "Model verwijderen",
     "assistantDownloading": "Bezig met downloaden en verifiëren…",
     "assistantUnpinned": "De bronnen zijn nog niet met een hash vastgepind in deze uitgave; de download blijft uit tot dat gebeurd is.",
-    "assistantFootprint": "Benodigd met model: ± 2,5 GB extra RAM en ± 2 GB schijf in /data/assistant. De download wordt geverifieerd tegen een vastgepinde SHA-256 en is het enige externe verkeer van de assistent."
+    "assistantFootprint": "Benodigd met model: ± 2,5 GB extra RAM en ± 2 GB schijf in /data/assistant. De download wordt geverifieerd tegen een vastgepinde SHA-256 en is het enige externe verkeer van de assistent.",
+    "tabAppearance": "Weergave",
+    "tabShipment": "Zending",
+    "tabDetails": "Mijn gegevens",
+    "tabAdmin": "Beheer",
+    "tabAssistant": "AI-assistent",
+    "tabPick": "Kies een onderdeel"
   },
   "modality": {
     "title": "Kies uw transportmodaliteit",

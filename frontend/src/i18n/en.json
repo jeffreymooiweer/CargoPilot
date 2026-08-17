@@ -237,7 +237,13 @@
     "assistantRemove": "Remove model",
     "assistantDownloading": "Downloading and verifying…",
     "assistantUnpinned": "The sources are not yet pinned by hash in this release; the download stays off until they are.",
-    "assistantFootprint": "Needed with the model: ± 2.5 GB extra RAM and ± 2 GB disk in /data/assistant. The download is verified against a pinned SHA-256 and is the assistant's only external traffic."
+    "assistantFootprint": "Needed with the model: ± 2.5 GB extra RAM and ± 2 GB disk in /data/assistant. The download is verified against a pinned SHA-256 and is the assistant's only external traffic.",
+    "tabAppearance": "Appearance",
+    "tabShipment": "Shipment",
+    "tabDetails": "My details",
+    "tabAdmin": "Administration",
+    "tabAssistant": "AI assistant",
+    "tabPick": "Choose a section"
   },
   "modality": {
     "title": "Choose your transport modality",

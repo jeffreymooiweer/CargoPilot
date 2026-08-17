@@ -2,6 +2,25 @@
 
 All notable changes are documented here, following [Semantic Versioning](https://semver.org/).
 
+## [1.113.0] — 2026-08-17
+
+### Added
+
+- **The owner's own sentence, read completely — with or without a model.**
+  "ik wil morgen 1800 jerrycans benzine van 25l laten vervoeren vanaf de
+  haven in rotterdam naar schiphol" used to become a single piece whose
+  description was the entire sentence. Three deterministic readers close
+  the gap, so the guided mode every installation has out of the box reads
+  it too: the intent words around the facts leave first ("ik wil … laten
+  vervoeren", and their English forms); a date the sentence states — a
+  word like tomorrow, whole-word only, or an explicit figure like
+  20-12-2026 — answers the loading date; and the route reader learned the
+  remaining openings (vanaf, vanuit, ab). The sentence now yields petrol
+  × 1800 jerricans of 25 l (33,525 kg computed), loading date tomorrow,
+  route port of Rotterdam → Schiphol, and one question: confirming UN
+  1203. Pinned verbatim as a test, together with an explicit-date variant
+  and the plant called morgenster staying goods.
+
 ## [1.112.3] — 2026-08-17
 
 ### Fixed

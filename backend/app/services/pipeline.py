@@ -172,7 +172,14 @@ def match_equipment(text: str, db: Session) -> Equipment | None:
 
 
 def build_output_description(description: str, product_type: str | None, dims: Dimensions, lang: str) -> str:
-    label = pick(PRODUCT_LABELS.get(product_type or "unknown", PRODUCT_LABELS["unknown"]), lang)
+    # Without a recognised shape the consignor's own words are the
+    # description. "Onbekend 2000x1000x5 mm" on the goods box of a waybill
+    # tells the carrier strictly less than what was typed — the normalised
+    # form is only an improvement when there is a name to normalise to.
+    labels = PRODUCT_LABELS.get(product_type or "")
+    if labels is None:
+        return description
+    label = pick(labels, lang)
     if dims.profile_size:
         size = dims.profile_size
         length_mm = int(round((dims.length_m or 0) * 1000))

@@ -2,6 +2,33 @@
 
 All notable changes are documented here, following [Semantic Versioning](https://semver.org/).
 
+## [1.110.0] — 2026-08-17
+
+### Fixed
+
+- **A hundred plates weighed 78.5 kg.** Owner ride: a hundred bundled steel
+  plates of 2000x1000x5 mm, from an address in Wezep to the port of
+  Rotterdam, described to the assistant in one Dutch sentence and judged on
+  the CMR it produced. Three defects, all repaired at the level where they
+  showed:
+  - A count with no unit word ("100 steel plates") was swallowed whole — the
+    sentence became one piece. A leading count followed by an ordinary word
+    now counts pieces, and the word stays with the goods: 100 pcs, 7850 kg.
+  - The route stayed glued to the goods description. "from X to Y" at the
+    end of the sentence — in any of the four languages — now answers the
+    loading-point and discharge-point questions before they are asked. Both
+    halves must be present, so a phrase naming the contents of a package
+    ("of 25 l") is never read as a route.
+  - The nature of goods read **"Onbekend 2000x1000x5 mm"**. Twice wrong: the
+    plural "platen" was not recognised where "plaat" was (plurals in all
+    forms are now), and an unrecognised shape substituted the word "Unknown"
+    for the consignor's own words — it now keeps what was typed, which
+    always says more than "Onbekend".
+- **Numbers on the forms print as numbers.** The goods row read "100.0 ×"
+  and the weight "7850.0"; the artificial decimal from the calculation no
+  longer reaches the CMR or the CIM. The ride now puts
+  "100 × Plaat 2000x1000x5 mm", 7850 kg and 1 m³ on the paper.
+
 ## [1.109.1] — 2026-08-17
 
 ### Changed

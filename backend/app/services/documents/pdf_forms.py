@@ -98,6 +98,21 @@ def _wrap_goods_rows(
     return wrapped
 
 
+def _amount(value: Any) -> str:
+    """A number the way it goes on paper: 100 plates, not 100.0.
+
+    The counts and weights arrive as floats from the calculation, and
+    ``str()`` printed them with their decimal point — "100.0 ×" on the goods
+    row of a waybill. A genuine decimal keeps its digits; the artificial one
+    goes."""
+    if value in (None, ""):
+        return ""
+    try:
+        return f"{float(value):g}"
+    except (TypeError, ValueError):
+        return str(value)
+
+
 def _cmr_goods_rows(
     lines: list[dict[str, Any]],
     dangerous_goods: list[dict[str, Any]] | None = None,
@@ -127,24 +142,16 @@ def _cmr_goods_rows(
             weight = line.get("weight_total_kg")
             volume = line.get("transport_volume_m3")
             for description in dg_descriptions:
-                rows.append((
-                    description,
-                    "" if weight in (None, "") else str(weight),
-                    "" if volume in (None, "") else str(volume),
-                ))
+                rows.append((description, _amount(weight), _amount(volume)))
                 weight = volume = ""  # count the mass only once
             continue
         desc = line.get("output_description") or line.get("description") or ""
-        prefix = f"{qty} × " if qty not in (None, "") else ""
-        weight = line.get("weight_total_kg")
-        volume = line.get("transport_volume_m3")
-        rows.append(
-            (
-                f"{prefix}{desc}".strip(),
-                "" if weight in (None, "") else str(weight),
-                "" if volume in (None, "") else str(volume),
-            )
-        )
+        prefix = f"{_amount(qty)} × " if qty not in (None, "") else ""
+        rows.append((
+            f"{prefix}{desc}".strip(),
+            _amount(line.get("weight_total_kg")),
+            _amount(line.get("transport_volume_m3")),
+        ))
     return rows
 
 
@@ -368,10 +375,10 @@ def fill_cim(
         if not line.get("include", True):
             continue
         qty = line.get("quantity")
-        prefix = f"{qty} × " if qty not in (None, "") else ""
+        prefix = f"{_amount(qty)} × " if qty not in (None, "") else ""
         desc = line.get("output_description") or line.get("description") or ""
         weight = line.get("weight_total_kg")
-        suffix = f"  ({weight} kg)" if weight not in (None, "") else ""
+        suffix = f"  ({_amount(weight)} kg)" if weight not in (None, "") else ""
         desc_lines.append(f"{prefix}{desc}{suffix}".strip())
     fields["Description21"] = "\n".join(desc_lines)
 

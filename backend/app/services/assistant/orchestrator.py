@@ -185,7 +185,42 @@ def _to_parser_row(segment: str) -> str:
         count = _count_of(match.group(1))
         if unit is not None and count is not None:
             return f"{match.group(3).strip()} | {count:g} | {unit.code}"
+        if count is not None and match.group(2).isalpha() and len(match.group(2)) >= 2:
+            # "100 stalen platen": a count with no unit word at all. The
+            # count is a count of pieces and the rest — second word included,
+            # it is part of the goods — is the description. Measured first:
+            # the whole sentence became one piece, and 100 plates of steel
+            # weighed 78.5 kg.
+            return f"{match.group(2)} {match.group(3).strip()} | {count:g} | pcs"
     return segment
+
+
+#: "from Wezep to the port of Rotterdam" at the end of a goods sentence, in
+#: any of the four languages: the route, said in the same breath as the
+#: goods. Both halves must be present and neither may start with a digit —
+#: "van 25l" introduces the contents of a package, never a place.
+_ROUTE = re.compile(
+    r"\s+(?:van|from|von|depuis)\s+(?!\d)(?P<origin>.+?)"
+    r"\s+(?:naar|to|nach|vers|à)\s+(?!\d)(?P<destination>.+)$",
+    re.IGNORECASE,
+)
+
+
+def _split_route(message: str) -> tuple[str, str | None, str | None]:
+    """The goods and the route, separated.
+
+    Returns the message without the route phrase, plus origin and
+    destination when the sentence named them. Requiring both halves keeps
+    every content phrase ("van 25l", the contents of a package) and every
+    lone destination word untouched — those stay with the goods."""
+    match = _ROUTE.search(message or "")
+    if not match:
+        return message, None, None
+    origin = match.group("origin").strip(" ,.")
+    destination = match.group("destination").strip(" ,.")
+    if not origin or not destination:
+        return message, None, None
+    return message[:match.start()].strip(), origin, destination
 
 
 #: What the model may say about goods, and nothing else: a list of lines with
@@ -257,14 +292,26 @@ def _apply_goods_message(
     splitting of free prose into rows; without one, the deterministic split
     does.
     """
+    events: list[dict[str, Any]] = []
+    # The route travels in the same sentence as the goods — "100 plates from
+    # Wezep to the port of Rotterdam" answers two document questions before
+    # they are asked. Only fields still empty are filled; the phrase leaves
+    # the goods description either way.
+    message, origin, destination = _split_route(message)
+    if origin and destination:
+        values = state.setdefault("doc_values", {})
+        for field, value in (("loading_point", origin), ("discharge_point", destination)):
+            if not _clean(values.get(field)):
+                values[field] = value
+                events.append({"kind": "answered", "field": field, "value": value})
+
     rows = _model_rows(message)
     if rows is None:
         rows = [_to_parser_row(segment) for segment in _split_segments(message)]
     text = "\n".join(rows)
     if not text:
-        return []
+        return events
     result = parse_and_calculate(text, db, output_language=language)
-    events: list[dict[str, Any]] = []
     lines = state.setdefault("draft_lines", [])
     next_id = max([int(l.get("id") or 0) for l in lines] + [0]) + 1
     added = 0

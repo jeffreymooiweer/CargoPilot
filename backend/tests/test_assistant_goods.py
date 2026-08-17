@@ -75,6 +75,47 @@ def test_the_content_of_a_package_is_never_mistaken_for_a_second_item():
     assert _split_segments("benzine en diesel") == ["benzine en diesel"]
 
 
+def test_a_count_without_a_unit_word_is_a_count_of_pieces(db):
+    """"100 stalen platen" names no unit the catalogue knows; the count must
+    still count. Measured first: the whole sentence became one piece, and a
+    hundred plates of steel weighed 78.5 kg."""
+    state, _pending, _events = drive(
+        db, ["100 stalen gebundelde platen 2000x1000x5mm"])
+    line = state["draft_lines"][0]
+    assert line["quantity"] == 100.0 and line["unit"] == "pcs"
+    assert line["description"] == "stalen gebundelde platen 2000x1000x5mm"
+    assert line["weight_total_kg"] == 7850.0
+
+
+def test_the_route_in_the_sentence_answers_the_route_questions(db):
+    state, _pending, events = drive(
+        db, ["100 stalen platen 2000x1000x5mm van Kolonel D.J. Teesweg 1 "
+             "Wezep naar de haven in Rotterdam"])
+    values = state["doc_values"]
+    assert values["loading_point"] == "Kolonel D.J. Teesweg 1 Wezep"
+    assert values["discharge_point"] == "de haven in Rotterdam"
+    # The route left the goods line; the plates kept their measurements.
+    assert state["draft_lines"][0]["description"] == "stalen platen 2000x1000x5mm"
+    answered = [e["field"] for e in events if e["kind"] == "answered"]
+    assert {"loading_point", "discharge_point"} <= set(answered)
+
+
+def test_the_contents_of_a_package_are_never_read_as_a_route(db):
+    """"van 25l met benzine" has no destination half and stays with the
+    goods; with a real route behind it, both are read correctly."""
+    state, _pending, _events = drive(db, ["1000 jerrycans van 25l met benzine"])
+    assert not (state["doc_values"] or {}).get("loading_point")
+    assert state["draft_lines"][0]["package_content"] == "25 L"
+
+    state, _pending, _events = drive(
+        db, ["1000 jerrycans van 25l met benzine van Rotterdam naar Duisburg"])
+    assert state["doc_values"]["loading_point"] == "Rotterdam"
+    assert state["doc_values"]["discharge_point"] == "Duisburg"
+    line = state["draft_lines"][0]
+    assert line["description"] == "benzine"
+    assert line["package_content"] == "25 L"
+
+
 # --- what the goods leave open ---------------------------------------------
 
 def test_a_pallet_of_bricks_is_asked_for_its_dimensions(db):

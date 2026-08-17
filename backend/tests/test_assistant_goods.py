@@ -92,8 +92,10 @@ def test_the_route_in_the_sentence_answers_the_route_questions(db):
         db, ["100 stalen platen 2000x1000x5mm van Kolonel D.J. Teesweg 1 "
              "Wezep naar de haven in Rotterdam"])
     values = state["doc_values"]
+    # An address stays the consignor's words; a named port resolves to
+    # the catalogue entry a manual pick would store.
     assert values["loading_point"] == "Kolonel D.J. Teesweg 1 Wezep"
-    assert values["discharge_point"] == "de haven in Rotterdam"
+    assert values["discharge_point"] == "Rotterdam (NLRTM), NL"
     # The route left the goods line; the plates kept their measurements.
     assert state["draft_lines"][0]["description"] == "stalen platen 2000x1000x5mm"
     answered = [e["field"] for e in events if e["kind"] == "answered"]
@@ -109,8 +111,10 @@ def test_the_contents_of_a_package_are_never_read_as_a_route(db):
 
     state, _pending, _events = drive(
         db, ["1000 jerrycans van 25l met benzine van Rotterdam naar Duisburg"])
+    # A bare city with entries in several countries stays the word; a
+    # city with one catalogue entry resolves to it.
     assert state["doc_values"]["loading_point"] == "Rotterdam"
-    assert state["doc_values"]["discharge_point"] == "Duisburg"
+    assert state["doc_values"]["discharge_point"] == "Duisburg (DEDUI), DE"
     line = state["draft_lines"][0]
     assert line["description"] == "benzine"
     assert line["package_content"] == "25 L"
@@ -132,8 +136,9 @@ def test_the_owner_s_full_sentence_is_read_completely(db):
     assert line["package_content"] == "25 L"
     assert line["weight_total_kg"] == 33525.0
     values = state["doc_values"]
-    assert values["loading_point"] == "de haven in rotterdam"
-    assert values["discharge_point"] == "schiphol"
+    # Resolved against the same location catalogue the wizard searches.
+    assert values["loading_point"] == "Rotterdam (NLRTM), NL"
+    assert values["discharge_point"] == "Amsterdam Airport Schiphol (AMS), Amsterdam, NL"
     tomorrow = (datetime.date.today() + datetime.timedelta(days=1)).isoformat()
     assert values["loading_date"] == tomorrow
     assert pending["scope"] == "un_confirm"

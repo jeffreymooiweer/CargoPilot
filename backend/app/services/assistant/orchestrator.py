@@ -23,6 +23,7 @@ from typing import Any
 
 from sqlalchemy.orm import Session
 
+from app.core.languages import normalise
 from app.services.assistant import runtime
 from app.services.assistant.goods import (
     dimensions_from_model,
@@ -236,6 +237,79 @@ _EXPLICIT_DATE = re.compile(
     r"(?:\b(?:op|on|am|le)\s+)?\b(\d{1,2}[-/.]\d{1,2}[-/.]\d{4})\b",
     re.IGNORECASE,
 )
+
+
+#: Which location types the route endpoints of a mode can name — the same
+#: map the wizard's location fields use for their suggestions.
+_MODALITY_LOCATION_TYPES: dict[str, list[str]] = {
+    "air": ["airport"], "sea": ["port"], "inland": ["port"],
+    "rail": ["station"], "road": ["airport", "port", "station"],
+    "multimodal": ["airport", "port", "station"],
+}
+
+#: The kind of place, said in words: "de haven in Rotterdam" names a port.
+_LOCATION_KIND = (
+    (re.compile(r"\b(?:haven|havens|port|hafen)\b", re.IGNORECASE), "port"),
+    (re.compile(r"\b(?:luchthaven|airport|flughafen|aéroport)\b", re.IGNORECASE), "airport"),
+    (re.compile(r"\b(?:station|bahnhof|gare)\b", re.IGNORECASE), "station"),
+)
+_LOCATION_FILLER = re.compile(
+    r"\b(?:de|het|een|the|der|die|das|la|le|les|l|in|van|of|von|bij|te|at|to|du|d)\b",
+    re.IGNORECASE,
+)
+
+#: A Dutch-language request naming a bare city picks the Dutch entry when
+#: several countries share the name; likewise for German and French.
+_LANGUAGE_COUNTRY = {"nl": "NL", "de": "DE", "fr": "FR"}
+
+
+def _format_location(entry: dict[str, Any]) -> str:
+    """The very format the wizard's picker stores: name (code), region."""
+    name = str(entry.get("name") or "")
+    city = str(entry.get("city") or "")
+    country = str(entry.get("country") or "")
+    region = f"{city}, {country}" if city and city != name else country
+    return f"{name} ({entry.get('code')}), {region}".strip(" ,")
+
+
+def _resolve_location(text: str, modality: str, language: str) -> str | None:
+    """A route endpoint against the same location catalogue the wizard's
+    fields search — so the assistant stores exactly what a manual pick
+    would have stored.
+
+    Deliberately conservative: a kind word ("haven") narrows the search, an
+    exact name or city match is required unless the query is one word with
+    one candidate, and a bare city with matches in several countries only
+    resolves with the language's own country. An address or a plain town
+    resolves to nothing and stays the user's words."""
+    from app.services.geo.locations import search_locations
+
+    kinds = [kind for pattern, kind in _LOCATION_KIND if pattern.search(text)]
+    query = _LOCATION_FILLER.sub(" ", text)
+    for pattern, _kind in _LOCATION_KIND:
+        query = pattern.sub(" ", query)
+    query = re.sub(r"\s{2,}", " ", query).strip(" ,.")
+    if len(query) < 2:
+        return None
+    types = kinds or _MODALITY_LOCATION_TYPES.get(modality, ["airport", "port", "station"])
+    candidates = search_locations(query, types=types, limit=5)
+    if not candidates:
+        return None
+    folded = query.casefold()
+    exact = [c for c in candidates
+             if str(c.get("name") or "").casefold() == folded
+             or str(c.get("city") or "").casefold() == folded]
+    if len(exact) == 1:
+        return _format_location(exact[0])
+    if len(exact) > 1:
+        home = _LANGUAGE_COUNTRY.get(normalise(language))
+        biased = [c for c in exact if c.get("country") == home]
+        if len(biased) == 1:
+            return _format_location(biased[0])
+        return None
+    if len(candidates) == 1 and " " not in query:
+        return _format_location(candidates[0])
+    return None
 
 
 def _take_date(message: str) -> tuple[str, str | None]:
@@ -499,12 +573,19 @@ def _apply_goods_message(
     def fill(fields: dict[str, str]) -> None:
         # Everything the sentence already answered is never asked again —
         # and only fields still empty are filled, so nothing typed earlier
-        # is ever overwritten.
+        # is ever overwritten. A route endpoint is resolved against the
+        # same location catalogue the wizard's fields search, so "the port
+        # of Rotterdam" lands as the very entry a manual pick would store.
         values = state.setdefault("doc_values", {})
+        modality = str(state.get("modality") or "")
         for field, value in fields.items():
-            if value and not _clean(values.get(field)):
-                values[field] = value
-                events.append({"kind": "answered", "field": field, "value": value})
+            if not value or _clean(values.get(field)):
+                continue
+            if field in ("loading_point", "discharge_point", "place_of_receipt",
+                         "place_of_delivery", "final_destination"):
+                value = _resolve_location(value, modality, language) or value
+            values[field] = value
+            events.append({"kind": "answered", "field": field, "value": value})
 
     # The intent words around the facts leave first, and a date the
     # sentence states — a word or a figure — answers the loading date. Both

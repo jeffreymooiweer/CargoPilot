@@ -58,7 +58,7 @@ def test_the_whole_plates_ride_produces_a_correct_cmr(db):
     # The route questions were answered by the first sentence and must not
     # have been asked again on the way here.
     assert state["doc_values"]["loading_point"] == "Kolonel D.J. Teesweg 1 Wezep"
-    assert state["doc_values"]["discharge_point"] == "de haven in Rotterdam"
+    assert state["doc_values"]["discharge_point"] == "Rotterdam (NLRTM), NL"
 
     lines = parse_and_calculate(
         "stalen gebundelde platen 2000x1000x5mm | 100 | pcs", db,
@@ -72,6 +72,6 @@ def test_the_whole_plates_ride_produces_a_correct_cmr(db):
         assert "100.0" not in text
         assert "Onbekend" not in text
         assert "Kolonel D.J. Teesweg 1 Wezep" in text
-        assert "de haven in Rotterdam" in text
+        assert "Rotterdam (NLRTM), NL" in text
     finally:
         path.unlink(missing_ok=True)

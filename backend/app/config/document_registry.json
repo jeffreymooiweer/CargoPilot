@@ -216,7 +216,13 @@
             "fr": "Expéditeur — nom"
           },
           "status": "USER_REQUIRED",
-          "type": "text"
+          "type": "text",
+          "help": {
+            "nl": "De afzender is de opdrachtgever van de vervoerder — niet het laadadres (de aflader). Hij moet de vrachtbrief volledig en naar waarheid invullen en kan aansprakelijk zijn voor schade door onjuiste of onvolledige gegevens (CMR/AVC vak 1).",
+            "en": "The consignor is the carrier's contractual counterparty — not the loading address (the shipper's warehouse). The consignor must complete the consignment note fully and truthfully and can be liable for damage caused by wrong or incomplete entries (CMR/AVC box 1).",
+            "de": "Der Absender ist der Auftraggeber des Frachtführers — nicht die Ladestelle. Er muss den Frachtbrief vollständig und wahrheitsgemäß ausfüllen und kann für Schäden durch falsche oder unvollständige Angaben haften (CMR/AVC Feld 1).",
+            "fr": "L'expéditeur est le cocontractant du transporteur — pas l'adresse de chargement. Il doit remplir la lettre de voiture complètement et sincèrement et peut être responsable des dommages causés par des mentions inexactes ou incomplètes (CMR/AVC case 1)."
+          }
         },
         {
           "key": "consignor_address",
@@ -227,7 +233,13 @@
             "fr": "Expéditeur — adresse et pays"
           },
           "status": "USER_REQUIRED",
-          "type": "textarea"
+          "type": "textarea",
+          "help": {
+            "nl": "Volledig adres en land van de afzender (vak 1). Het laadadres mag afwijken: dat hoort in 'plaats van inontvangstneming' (vak 4).",
+            "en": "Full address and country of the consignor (box 1). The loading address may differ: that belongs in 'place of taking over' (box 4).",
+            "de": "Vollständige Anschrift und Land des Absenders (Feld 1). Die Ladestelle darf abweichen: sie gehört in 'Ort der Übernahme' (Feld 4).",
+            "fr": "Adresse complète et pays de l'expéditeur (case 1). L'adresse de chargement peut différer : elle figure dans « lieu de prise en charge » (case 4)."
+          }
         },
         {
           "key": "consignor_contact",
@@ -238,7 +250,13 @@
             "fr": "Expéditeur — contact (téléphone/courriel)"
           },
           "status": "USER_OPTIONAL",
-          "type": "text"
+          "type": "text",
+          "help": {
+            "nl": "Contactpersoon en telefoonnummer bij de afzender, voor instructies onderweg — de vervoerder moet zich tot de afzender wenden, niet tot de geadresseerde.",
+            "en": "Contact person and phone number at the consignor, for instructions en route — the carrier must turn to the consignor, not to the consignee.",
+            "de": "Ansprechpartner und Telefonnummer beim Absender, für Weisungen unterwegs — der Frachtführer muss sich an den Absender wenden, nicht an den Empfänger.",
+            "fr": "Personne de contact et numéro de téléphone chez l'expéditeur, pour les instructions en cours de route — le transporteur doit s'adresser à l'expéditeur, pas au destinataire."
+          }
         },
         {
           "key": "consignee_name",
@@ -249,7 +267,13 @@
             "fr": "Destinataire — nom"
           },
           "status": "USER_REQUIRED",
-          "type": "text"
+          "type": "text",
+          "help": {
+            "nl": "Degene voor wie de goederen bestemd zijn (vak 2). Bij aflevering wordt de geadresseerde partij bij de vervoerovereenkomst; vanaf dan vraagt de vervoerder instructies aan hem, niet meer aan de afzender.",
+            "en": "The party the goods are destined for (box 2). On delivery the consignee becomes a party to the contract of carriage; from then on the carrier takes instructions from the consignee, no longer from the consignor.",
+            "de": "Derjenige, für den die Güter bestimmt sind (Feld 2). Mit der Ablieferung wird der Empfänger Partei des Beförderungsvertrags; ab dann holt der Frachtführer Weisungen bei ihm ein, nicht mehr beim Absender.",
+            "fr": "Celui à qui les marchandises sont destinées (case 2). À la livraison, le destinataire devient partie au contrat de transport ; dès lors le transporteur prend ses instructions auprès de lui, plus auprès de l'expéditeur."
+          }
         },
         {
           "key": "consignee_address",
@@ -260,7 +284,13 @@
             "fr": "Destinataire — adresse et pays"
           },
           "status": "USER_REQUIRED",
-          "type": "textarea"
+          "type": "textarea",
+          "help": {
+            "nl": "Volledig adres en land van de geadresseerde (vak 2). Het losadres mag afwijken: dat hoort in 'plaats bestemd voor aflevering' (vak 3).",
+            "en": "Full address and country of the consignee (box 2). The unloading address may differ: that belongs in 'place of delivery' (box 3).",
+            "de": "Vollständige Anschrift und Land des Empfängers (Feld 2). Die Entladestelle darf abweichen: sie gehört in 'Ort der Ablieferung' (Feld 3).",
+            "fr": "Adresse complète et pays du destinataire (case 2). L'adresse de déchargement peut différer : elle figure dans « lieu prévu pour la livraison » (case 3)."
+          }
         },
         {
           "key": "consignee_contact",
@@ -271,7 +301,13 @@
             "fr": "Destinataire — contact (téléphone/courriel)"
           },
           "status": "USER_OPTIONAL",
-          "type": "text"
+          "type": "text",
+          "help": {
+            "nl": "Contactpersoon en telefoonnummer bij de geadresseerde, zodat de chauffeur bij aankomst iemand kan bereiken.",
+            "en": "Contact person and phone number at the consignee, so the driver can reach someone on arrival.",
+            "de": "Ansprechpartner und Telefonnummer beim Empfänger, damit der Fahrer bei Ankunft jemanden erreicht.",
+            "fr": "Personne de contact et numéro de téléphone chez le destinataire, afin que le chauffeur puisse joindre quelqu'un à l'arrivée."
+          }
         },
         {
           "key": "carrier_name",
@@ -284,22 +320,11 @@
           "status": "USER_OPTIONAL",
           "type": "textarea",
           "help": {
-            "nl": "Voor CMR en CIM invullen zodra de vervoerder bekend is.",
-            "en": "For CMR and CIM, fill in once the carrier is known.",
-            "de": "Für CMR und CIM ausfüllen, sobald der Frachtführer bekannt ist.",
-            "fr": "Pour la CMR et la CIM, à compléter dès que le transporteur est connu."
+            "nl": "De contractuele (hoofd)vervoerder — niet de expediteur, die dóét vervoeren. Wie hier staat en in vak 23 tekent, geldt als vervoerder met de bijbehorende aansprakelijkheid (vak 16). Voor CMR en CIM invullen zodra de vervoerder bekend is.",
+            "en": "The contractual (principal) carrier — not the forwarder, who arranges carriage. Whoever is named here and signs in box 23 counts as the carrier, with the liability that carries (box 16). For CMR and CIM, fill in once the carrier is known.",
+            "de": "Der vertragliche (Haupt-)Frachtführer — nicht der Spediteur, der die Beförderung besorgt. Wer hier steht und in Feld 23 unterschreibt, gilt als Frachtführer mit der zugehörigen Haftung (Feld 16). Für CMR und CIM ausfüllen, sobald der Frachtführer bekannt ist.",
+            "fr": "Le transporteur (principal) contractuel — pas le commissionnaire, qui fait transporter. Celui qui figure ici et signe en case 23 vaut transporteur, avec la responsabilité correspondante (case 16). Pour la CMR et la CIM, à compléter dès que le transporteur est connu."
           }
-        },
-        {
-          "key": "notify_party",
-          "label": {
-            "nl": "Notify party",
-            "en": "Notify party",
-            "de": "Notify Party",
-            "fr": "Partie à notifier"
-          },
-          "status": "CONDITIONAL",
-          "type": "textarea"
         },
         {
           "key": "freight_forwarder",
@@ -310,7 +335,13 @@
             "fr": "Commissionnaire de transport"
           },
           "status": "USER_OPTIONAL",
-          "type": "text"
+          "type": "text",
+          "help": {
+            "nl": "Een expediteur doet vervoeren en is geen vervoerder; hij contracteert op andere voorwaarden. Wie op de vrachtbrief als vervoerder staat of tekent, kan zich achteraf moeilijk expediteur noemen.",
+            "en": "A forwarder arranges carriage and is not a carrier; forwarders contract on different conditions. Whoever appears or signs on the consignment note as carrier will struggle to claim afterwards to be a forwarder.",
+            "de": "Ein Spediteur besorgt die Beförderung und ist kein Frachtführer; er kontrahiert zu anderen Bedingungen. Wer auf dem Frachtbrief als Frachtführer steht oder unterschreibt, kann sich später schwer Spediteur nennen.",
+            "fr": "Un commissionnaire fait transporter et n'est pas transporteur ; il contracte à d'autres conditions. Celui qui figure ou signe comme transporteur sur la lettre de voiture pourra difficilement se dire commissionnaire ensuite."
+          }
         }
       ]
     },
@@ -332,7 +363,13 @@
             "fr": "Lieu de prise en charge (pré-acheminement)"
           },
           "status": "USER_OPTIONAL",
-          "type": "text"
+          "type": "text",
+          "help": {
+            "nl": "Waar de zending in ontvangst wordt genomen als dat afwijkt van het laadadres — bijvoorbeeld een terminal vóór het hoofdvervoer.",
+            "en": "Where the shipment is received when that differs from the loading address — a terminal before the main carriage, for instance.",
+            "de": "Wo die Sendung übernommen wird, wenn das von der Ladestelle abweicht — etwa ein Terminal vor dem Hauptlauf.",
+            "fr": "Là où l'envoi est pris en charge lorsque cela diffère de l'adresse de chargement — par exemple un terminal avant le transport principal."
+          }
         },
         {
           "key": "loading_point",
@@ -343,7 +380,13 @@
             "fr": "Lieu de chargement / port ou aéroport de départ"
           },
           "status": "USER_REQUIRED",
-          "type": "text"
+          "type": "text",
+          "help": {
+            "nl": "Waar de vervoerder de goederen in ontvangst neemt — het laadadres (vak 4). Vanaf dát moment loopt zijn aansprakelijkheid, en een schadevergoeding wordt berekend naar de waarde op deze plaats en dit tijdstip.",
+            "en": "Where the carrier takes the goods over — the loading address (box 4). The carrier's liability starts at that moment, and compensation is computed on the value at this place and time.",
+            "de": "Wo der Frachtführer die Güter übernimmt — die Ladestelle (Feld 4). Ab diesem Moment läuft seine Haftung, und ein Schadenersatz wird nach dem Wert an diesem Ort und Zeitpunkt berechnet.",
+            "fr": "Là où le transporteur prend les marchandises en charge — l'adresse de chargement (case 4). Sa responsabilité court à partir de ce moment, et une indemnité se calcule sur la valeur en ce lieu et à cet instant."
+          }
         },
         {
           "key": "loading_date",
@@ -354,7 +397,13 @@
             "fr": "Date de prise en charge / de chargement"
           },
           "status": "USER_OPTIONAL",
-          "type": "date"
+          "type": "date",
+          "help": {
+            "nl": "De datum van inontvangstneming (vak 4): het begin van de aansprakelijkheid van de vervoerder en van belang voor de verjaringstermijnen.",
+            "en": "The date of taking over (box 4): the start of the carrier's liability, and relevant for the limitation periods.",
+            "de": "Das Datum der Übernahme (Feld 4): der Beginn der Haftung des Frachtführers und maßgeblich für die Verjährungsfristen.",
+            "fr": "La date de prise en charge (case 4) : le début de la responsabilité du transporteur, et déterminante pour les délais de prescription."
+          }
         },
         {
           "key": "discharge_point",
@@ -365,7 +414,13 @@
             "fr": "Lieu de déchargement / port ou aéroport de destination"
           },
           "status": "USER_REQUIRED",
-          "type": "text"
+          "type": "text",
+          "help": {
+            "nl": "Het adres waar de goederen fysiek worden afgeleverd (vak 3). Hoe nauwkeuriger de omschrijving, hoe preciezer de vervoerder moet afleveren; het hoeft niet het adres van de geadresseerde te zijn.",
+            "en": "The address where the goods are physically delivered (box 3). The more precise the description, the more precisely the carrier must deliver; it need not be the consignee's own address.",
+            "de": "Die Anschrift, an der die Güter tatsächlich abgeliefert werden (Feld 3). Je genauer die Angabe, desto genauer muss der Frachtführer abliefern; es muss nicht die Anschrift des Empfängers sein.",
+            "fr": "L'adresse où les marchandises sont effectivement livrées (case 3). Plus la description est précise, plus le transporteur doit livrer précisément ; ce n'est pas forcément l'adresse du destinataire."
+          }
         },
         {
           "key": "place_of_delivery",
@@ -376,7 +431,13 @@
             "fr": "Lieu de livraison"
           },
           "status": "USER_OPTIONAL",
-          "type": "text"
+          "type": "text",
+          "help": {
+            "nl": "Het afleveradres als dat afwijkt van de losplaats — bijvoorbeeld een gehuurde opslagloods van de koper (vak 3).",
+            "en": "The delivery address where it differs from the discharge point — a rented warehouse of the buyer, for instance (box 3).",
+            "de": "Die Ablieferungsanschrift, wenn sie von der Entladestelle abweicht — etwa ein gemietetes Lager des Käufers (Feld 3).",
+            "fr": "L'adresse de livraison lorsqu'elle diffère du lieu de déchargement — par exemple un entrepôt loué par l'acheteur (case 3)."
+          }
         },
         {
           "key": "final_destination",
@@ -387,7 +448,13 @@
             "fr": "Destination finale"
           },
           "status": "USER_OPTIONAL",
-          "type": "text"
+          "type": "text",
+          "help": {
+            "nl": "De eindbestemming voorbij de losplaats, als het vervoer daar nog verder gaat — bijvoorbeeld bij doorvervoer na de haven.",
+            "en": "The final destination beyond the discharge point, where carriage continues — onward carriage after the port, for instance.",
+            "de": "Das Endziel jenseits der Entladestelle, wenn die Beförderung dort weitergeht — etwa Nachlauf nach dem Hafen.",
+            "fr": "La destination finale au-delà du lieu de déchargement, lorsque le transport s'y poursuit — par exemple le post-acheminement après le port."
+          }
         }
       ]
     },
@@ -409,7 +476,13 @@
             "fr": "Référence de l'envoi"
           },
           "status": "USER_OPTIONAL",
-          "type": "text"
+          "type": "text",
+          "help": {
+            "nl": "Uw eigen zendingnummer. Komt op de documenten terug zodat zending en administratie aan elkaar te koppelen zijn.",
+            "en": "Your own shipment number. It returns on the documents so shipment and records can be tied together.",
+            "de": "Ihre eigene Sendungsnummer. Erscheint auf den Dokumenten, damit Sendung und Verwaltung zueinander finden.",
+            "fr": "Votre propre numéro d'envoi. Il figure sur les documents afin de relier l'envoi et votre administration."
+          }
         },
         {
           "key": "booking_number",
@@ -420,7 +493,13 @@
             "fr": "Numéro de réservation"
           },
           "status": "USER_OPTIONAL",
-          "type": "text"
+          "type": "text",
+          "help": {
+            "nl": "Het boekingsnummer van de vervoerder of rederij, als dat al bekend is.",
+            "en": "The carrier's or line's booking number, where already known.",
+            "de": "Die Buchungsnummer des Frachtführers oder der Reederei, sofern schon bekannt.",
+            "fr": "Le numéro de réservation du transporteur ou de la compagnie, s'il est déjà connu."
+          }
         },
         {
           "key": "purchase_order",
@@ -431,7 +510,13 @@
             "fr": "Bon de commande"
           },
           "status": "USER_OPTIONAL",
-          "type": "text"
+          "type": "text",
+          "help": {
+            "nl": "Het inkoop- of ordernummer van de ontvanger, zodat de zending bij aankomst herkend wordt.",
+            "en": "The receiver's purchase or order number, so the shipment is recognised on arrival.",
+            "de": "Die Bestell- oder Auftragsnummer des Empfängers, damit die Sendung bei Ankunft erkannt wird.",
+            "fr": "Le numéro de commande du destinataire, afin que l'envoi soit reconnu à l'arrivée."
+          }
         },
         {
           "key": "customs_mrn",
@@ -442,7 +527,13 @@
             "fr": "MRN d'exportation / référence douanière"
           },
           "status": "CONDITIONAL",
-          "type": "text"
+          "type": "text",
+          "help": {
+            "nl": "Het MRN (Movement Reference Number) van de douaneaangifte. De afzender is aansprakelijk voor ontbrekende of onjuiste douanedocumenten (vak 5).",
+            "en": "The MRN (Movement Reference Number) of the customs declaration. The consignor is liable for missing or incorrect customs documents (box 5).",
+            "de": "Die MRN (Movement Reference Number) der Zollanmeldung. Der Absender haftet für fehlende oder falsche Zolldokumente (Feld 5).",
+            "fr": "Le MRN (Movement Reference Number) de la déclaration en douane. L'expéditeur répond des documents douaniers manquants ou inexacts (case 5)."
+          }
         },
         {
           "key": "attached_documents",
@@ -455,10 +546,10 @@
           "status": "USER_OPTIONAL",
           "type": "textarea",
           "help": {
-            "nl": "Bijvoorbeeld facturen, douanedocumenten en certificaten.",
-            "en": "For example invoices, customs documents and certificates.",
-            "de": "Zum Beispiel Rechnungen, Zollpapiere und Bescheinigungen.",
-            "fr": "Par exemple factures, documents douaniers et certificats."
+            "nl": "De met de vrachtbrief meegegeven documenten: douanepapieren, certificaten, paklijst (vak 5). De afzender is aansprakelijk voor ontbrekende of onjuiste documenten; de vervoerder voor verlies of verkeerde behandeling. Paklijst en vrachtbrief moeten naar elkaars nummer verwijzen.",
+            "en": "The documents handed over with the consignment note: customs papers, certificates, packing list (box 5). The consignor is liable for missing or incorrect documents; the carrier for their loss or mishandling. Packing list and consignment note must reference each other's number.",
+            "de": "Die mit dem Frachtbrief übergebenen Dokumente: Zollpapiere, Zertifikate, Packliste (Feld 5). Der Absender haftet für fehlende oder falsche Dokumente; der Frachtführer für deren Verlust oder falsche Behandlung. Packliste und Frachtbrief müssen aufeinander verweisen.",
+            "fr": "Les documents remis avec la lettre de voiture : documents douaniers, certificats, liste de colisage (case 5). L'expéditeur répond des documents manquants ou inexacts ; le transporteur de leur perte ou mauvais traitement. Liste de colisage et lettre de voiture doivent se référencer mutuellement."
           }
         }
       ]
@@ -518,10 +609,10 @@
               "status": "CONDITIONAL",
               "type": "textarea",
               "help": {
-                "nl": "Bijvoorbeeld douane-instructies, verbod op overlading of verzekeringsinstructies.",
-                "en": "For example customs instructions, prohibition of transhipment or insurance instructions.",
-                "de": "Zum Beispiel Zollanweisungen, Umladeverbot oder Versicherungsanweisungen.",
-                "fr": "Par exemple instructions douanières, interdiction de transbordement ou instructions d'assurance."
+                "nl": "Tijdige, duidelijke instructies voor de vervoerder — 'temperatuur −18 °C continu', 'vóór aflevering afzender bellen', douane-instructies (vak 13). De vervoerder moet ze strikt opvolgen.",
+                "en": "Timely, clear instructions for the carrier — 'temperature −18 °C continuous', 'call the consignor before delivery', customs instructions (box 13). The carrier must follow them strictly.",
+                "de": "Rechtzeitige, klare Weisungen für den Frachtführer — 'Temperatur −18 °C durchgehend', 'vor Ablieferung den Absender anrufen', Zollweisungen (Feld 13). Der Frachtführer muss sie strikt befolgen.",
+                "fr": "Des instructions claires et données à temps au transporteur — « température −18 °C en continu », « appeler l'expéditeur avant livraison », instructions douanières (case 13). Le transporteur doit les suivre strictement."
               }
             },
             {
@@ -533,7 +624,13 @@
                 "fr": "Transporteurs successifs (case 17)"
               },
               "status": "CONDITIONAL",
-              "type": "textarea"
+              "type": "textarea",
+              "help": {
+                "nl": "Een opvolgend vervoerder neemt zending én vrachtbrief over en wordt daarmee partij bij de vervoerovereenkomst: naast de hoofdvervoerder aansprakelijk voor het hele transport (vak 17). Vermelding voorkomt kostbare discussies achteraf.",
+                "en": "A successive carrier takes over the consignment and the consignment note and thereby becomes a party to the contract of carriage: liable, beside the principal carrier, for the whole transport (box 17). Naming them prevents costly disputes afterwards.",
+                "de": "Ein aufeinanderfolgender Frachtführer übernimmt Sendung und Frachtbrief und wird damit Partei des Beförderungsvertrags: neben dem Hauptfrachtführer für die gesamte Beförderung haftbar (Feld 17). Die Eintragung verhindert teure Streitigkeiten im Nachhinein.",
+                "fr": "Un transporteur successif reprend l'envoi et la lettre de voiture et devient ainsi partie au contrat de transport : responsable, aux côtés du transporteur principal, de tout le transport (case 17). Le mentionner évite des litiges coûteux."
+              }
             },
             {
               "key": "special_agreements",
@@ -544,7 +641,13 @@
                 "fr": "Conventions particulières (case 19)"
               },
               "status": "CONDITIONAL",
-              "type": "textarea"
+              "type": "textarea",
+              "help": {
+                "nl": "Bijzondere afspraken, zoals een overeengekomen aflevertermijn ('uiterlijk 5 december') (vak 19). Binnenlands geldt bij een schriftelijk afgesproken termijn een hogere limiet voor vertragingsschade: tweemaal in plaats van eenmaal de vrachtprijs.",
+                "en": "Special agreements, such as an agreed delivery term ('by 5 December at the latest') (box 19). Domestically, a term agreed in writing raises the limit for delay damage: twice instead of once the freight charge.",
+                "de": "Besondere Vereinbarungen, etwa eine vereinbarte Lieferfrist ('spätestens 5. Dezember') (Feld 19). Im Binnenverkehr erhöht eine schriftlich vereinbarte Frist die Grenze für Verspätungsschäden: zweimal statt einmal die Fracht.",
+                "fr": "Conventions particulières, comme un délai de livraison convenu (« au plus tard le 5 décembre ») (case 19). En national, un délai convenu par écrit relève la limite pour le préjudice de retard : deux fois le prix du transport au lieu d'une."
+              }
             },
             {
               "key": "freight_payment",
@@ -584,7 +687,13 @@
                     "fr": "Selon convention"
                   }
                 }
-              ]
+              ],
+              "help": {
+                "nl": "Franco: de afzender betaalt de vracht. Niet-franco: de geadresseerde betaalt — maar alleen als dat duidelijk op de vrachtbrief staat, en bij wanbetaling blijft de afzender debiteur (vak 14).",
+                "en": "Prepaid (franco): the consignor pays the freight. Collect (non-franco): the consignee pays — but only if the consignment note says so clearly, and on default the consignor remains the debtor (box 14).",
+                "de": "Franko: der Absender zahlt die Fracht. Unfrei: der Empfänger zahlt — aber nur, wenn das klar aus dem Frachtbrief hervorgeht, und bei Nichtzahlung bleibt der Absender Schuldner (Feld 14).",
+                "fr": "Franco : l'expéditeur paie le transport. Non franco : le destinataire paie — mais seulement si la lettre de voiture l'indique clairement, et en cas de défaut l'expéditeur reste débiteur (case 14)."
+              }
             },
             {
               "key": "cod_amount",
@@ -595,7 +704,13 @@
                 "fr": "Remboursement (case 15)"
               },
               "status": "CONDITIONAL",
-              "type": "text"
+              "type": "text",
+              "help": {
+                "nl": "Remboursbedrag: duidelijk invullen, in cijfers én letters (vak 15). Binnenlands (AVC) mag het niet hoger zijn dan de factuurwaarde. Levert de vervoerder af zonder te innen, dan is hij tot dit bedrag aansprakelijk.",
+                "en": "Cash-on-delivery amount: state it clearly, in figures and in words (box 15). Domestically (AVC) it may not exceed the invoice value. If the carrier delivers without collecting, the carrier is liable up to this amount.",
+                "de": "Nachnahmebetrag: deutlich angeben, in Ziffern und Worten (Feld 15). Im Binnenverkehr (AVC) darf er den Rechnungswert nicht übersteigen. Liefert der Frachtführer ohne Einziehung ab, haftet er bis zu diesem Betrag.",
+                "fr": "Montant du remboursement : à indiquer clairement, en chiffres et en lettres (case 15). En national (AVC), il ne peut dépasser la valeur facturée. Si le transporteur livre sans encaisser, il en répond jusqu'à ce montant."
+              }
             },
             {
               "key": "other_useful_info",
@@ -634,7 +749,13 @@
                 "fr": "Établie à (case 21)"
               },
               "status": "USER_REQUIRED",
-              "type": "text"
+              "type": "text",
+              "help": {
+                "nl": "Plaats van opmaken van de vrachtbrief (vak 21). Geldt met de datum veelal als plaats en moment van het sluiten van de vervoerovereenkomst.",
+                "en": "Place where the consignment note is drawn up (box 21). Together with the date it usually counts as the place and moment the contract of carriage was concluded.",
+                "de": "Ort der Ausstellung des Frachtbriefs (Feld 21). Gilt mit dem Datum meist als Ort und Zeitpunkt des Abschlusses des Beförderungsvertrags.",
+                "fr": "Lieu d'établissement de la lettre de voiture (case 21). Avec la date, il vaut le plus souvent lieu et moment de la conclusion du contrat de transport."
+              }
             },
             {
               "key": "established_date",
@@ -645,7 +766,13 @@
                 "fr": "Date d'établissement (case 21)"
               },
               "status": "USER_REQUIRED",
-              "type": "date"
+              "type": "date",
+              "help": {
+                "nl": "Datum van opmaken (vak 21). Kan de aanvang van de verjaringstermijn bepalen; bewaar vrachtbrieven tot die termijn — en de fiscale zeven jaar — verstreken is.",
+                "en": "Date the note is drawn up (box 21). It can determine when the limitation period starts; keep consignment notes until that period — and the fiscal seven years — has passed.",
+                "de": "Datum der Ausstellung (Feld 21). Es kann den Beginn der Verjährungsfrist bestimmen; Frachtbriefe bis zum Ablauf dieser Frist — und der steuerlichen sieben Jahre — aufbewahren.",
+                "fr": "Date d'établissement (case 21). Elle peut déterminer le début du délai de prescription ; conservez les lettres de voiture jusqu'à l'expiration de ce délai — et des sept ans fiscaux."
+              }
             }
           ]
         }
@@ -2007,6 +2134,23 @@
           },
           "fields": [
             {
+              "key": "notify_party",
+              "label": {
+                "nl": "Notify party",
+                "en": "Notify party",
+                "de": "Notify Party",
+                "fr": "Partie à notifier"
+              },
+              "status": "USER_OPTIONAL",
+              "type": "textarea",
+              "help": {
+                "nl": "De partij die de rederij informeert zodra de lading in de loshaven aankomt — vaak de agent of douane-expediteur van de ontvanger. Een begrip uit het zeevervoer (B/L); een CMR-vrachtbrief kent geen notify party.",
+                "en": "The party the shipping line notifies when the cargo arrives at the discharge port — often the receiver's agent or customs broker. A sea-carriage concept (B/L); a CMR consignment note has no notify party.",
+                "de": "Die Partei, die die Reederei bei Ankunft der Ladung im Löschhafen benachrichtigt — oft der Agent oder Zollagent des Empfängers. Ein Begriff der Seefracht (B/L); ein CMR-Frachtbrief kennt keine Notify Party.",
+                "fr": "La partie que la compagnie maritime avise à l'arrivée de la cargaison au port de déchargement — souvent l'agent ou le commissionnaire en douane du destinataire. Une notion du transport maritime (B/L) ; la lettre de voiture CMR ne connaît pas de notify party."
+              }
+            },
+            {
               "key": "document_form",
               "label": {
                 "nl": "Gewenste documentvorm",
@@ -2383,7 +2527,13 @@
                     "fr": "Non franco (port dû)"
                   }
                 }
-              ]
+              ],
+              "help": {
+                "nl": "Franco: de afzender betaalt de vracht. Niet-franco: de geadresseerde betaalt — maar alleen als dat duidelijk op de vrachtbrief staat, en bij wanbetaling blijft de afzender debiteur (vak 14).",
+                "en": "Prepaid (franco): the consignor pays the freight. Collect (non-franco): the consignee pays — but only if the consignment note says so clearly, and on default the consignor remains the debtor (box 14).",
+                "de": "Franko: der Absender zahlt die Fracht. Unfrei: der Empfänger zahlt — aber nur, wenn das klar aus dem Frachtbrief hervorgeht, und bei Nichtzahlung bleibt der Absender Schuldner (Feld 14).",
+                "fr": "Franco : l'expéditeur paie le transport. Non franco : le destinataire paie — mais seulement si la lettre de voiture l'indique clairement, et en cas de défaut l'expéditeur reste débiteur (case 14)."
+              }
             },
             {
               "key": "vehicle_registration",
@@ -2405,7 +2555,13 @@
                 "fr": "Date d'expédition"
               },
               "status": "USER_REQUIRED",
-              "type": "date"
+              "type": "date",
+              "help": {
+                "nl": "De datum van inontvangstneming (vak 4): het begin van de aansprakelijkheid van de vervoerder en van belang voor de verjaringstermijnen.",
+                "en": "The date of taking over (box 4): the start of the carrier's liability, and relevant for the limitation periods.",
+                "de": "Das Datum der Übernahme (Feld 4): der Beginn der Haftung des Frachtführers und maßgeblich für die Verjährungsfristen.",
+                "fr": "La date de prise en charge (case 4) : le début de la responsabilité du transporteur, et déterminante pour les délais de prescription."
+              }
             },
             {
               "key": "emergency_contact",

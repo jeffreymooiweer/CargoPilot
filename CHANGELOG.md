@@ -2,6 +2,40 @@
 
 All notable changes are documented here, following [Semantic Versioning](https://semver.org/).
 
+## [1.111.0] — 2026-08-17
+
+### Added
+
+- **The consignment note explained at the field.** The owner supplied the sVa
+  booklet "De vrachtbrief; goed geregeld" (Stichting Vervoeradres, 2004), the
+  box-by-box explanation of the CMR/AVC consignment note. Its teachings now
+  sit as short digests behind the info marks of the matching questions, in
+  all four languages — in the wizard and in the assistant alike: the
+  consignor is the carrier's counterparty and not the loading address, and
+  answers for a truthfully completed note; the consignee becomes party to
+  the contract on delivery; the carrier's liability starts at the place and
+  date of taking over (box 4) and compensation is computed on the value
+  there; delivery is as precise as box 3 is; documents handed over travel at
+  the consignor's risk when missing and the carrier's when lost (box 5);
+  instructions must be timely and are binding (box 13); prepaid against
+  collect and who stays debtor (box 14); the COD amount in figures and words
+  with its domestic cap (box 15); a successive carrier becomes liable for
+  the whole transport (box 17); a written delivery term doubles the
+  domestic delay limit (box 19); and the place and date of drawing up can
+  start the limitation clock (box 21). Pallets and roll containers are not
+  packages — that note now sits on the package-count question too (box 7).
+  A test holds the bar: every question the CMR can raise carries help in
+  all four languages.
+
+### Fixed
+
+- **The notify party left the CMR.** A notify party is a sea-carriage
+  concept: the party the shipping line informs when the cargo reaches the
+  discharge port. The field sat in the shared parties section without a
+  condition, so every shipment was asked for it — road included — while no
+  document printed it. It now lives on the B/L shipping instructions alone,
+  with a help text saying what it is and that a CMR has no such box.
+
 ## [1.110.0] — 2026-08-17
 
 ### Fixed

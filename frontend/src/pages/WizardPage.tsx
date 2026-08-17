@@ -34,6 +34,7 @@ import {
   dimensionOverridesFromDrafts,
   mergeOverrides,
 } from "../utils/lineWeights";
+import { buildAssistantState, draftLinesFromAssistant } from "../utils/assistantState";
 
 const weightInputClass =
   "w-full border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-950 text-slate-900 dark:text-slate-100 rounded-lg px-3 py-2 text-sm";
@@ -157,6 +158,9 @@ export default function WizardPage() {
   // the user touches it, and from that moment it is theirs.
   const [selectedDocs, setSelectedDocs] = useState<string[] | null>(null);
   const [docValues, setDocValues] = useState<Record<string, string>>({});
+  // Questions skipped in the assistant. Part of the travelling state: the
+  // server is stateless, so forgetting these here re-asks them every turn.
+  const [skippedQuestions, setSkippedQuestions] = useState<string[]>([]);
   const [draftLines, setDraftLines] = useState<DraftLine[]>([{ id: 1, description: "", quantity: 1, unit: "pcs" }]);
   const [nextId, setNextId] = useState(2);
   const [result, setResult] = useState<CalcResult | null>(null);
@@ -766,66 +770,26 @@ export default function WizardPage() {
   /** The wizard state, in the shape the assistant exchanges. Result-derived
    *  facts (recognised candidates) ride along so the assistant asks about
    *  what the user already sees on the lines step. */
-  const buildAssistantState = () => ({
-    modality,
-    draft_lines: draftLines
-      .filter((line) => line.description.trim())
-      .map((line) => {
-        const resultLine = result?.lines.find((r) => r.line_id === line.id);
-        return {
-          id: line.id,
-          description: line.description,
-          quantity: line.quantity || 1,
-          unit: line.unit,
-          dangerous_goods: Boolean(line.dangerous_goods),
-          confirmed_un: line.confirmed_un,
-          dg_dismissed: line.dg_dismissed,
-          detected_un_numbers: resultLine?.detected_un_numbers ?? [],
-          dg_name_candidates: resultLine?.dg_name_candidates ?? [],
-          // What the consignor stated themselves travels as their answer; the
-          // computed weight travels beside it, never as an override.
-          weight_each_kg: line.weight_each_kg === "" ? undefined : line.weight_each_kg,
-          computed_weight_each_kg: resultLine?.weight_each_kg ?? undefined,
-          length_cm: line.length_cm === "" ? undefined : line.length_cm,
-          width_cm: line.width_cm === "" ? undefined : line.width_cm,
-          height_cm: line.height_cm === "" ? undefined : line.height_cm,
-          package_content: line.package_content ?? resultLine?.package_content ?? undefined,
-        };
-      }),
-    dg_entries: dgEntries,
-    doc_values: docValues,
-    selected_docs: selectedDocs,
-  });
+  const buildStateForAssistant = () =>
+    buildAssistantState({
+      modality,
+      draftLines,
+      resultLines: result?.lines,
+      dgEntries,
+      docValues,
+      selectedDocs,
+      skippedQuestions,
+    });
 
   /** What the assistant changed lands in the same state the classic wizard
    *  uses — switching between the two can therefore never lose data. */
   const applyAssistantState = (state: import("../api/client").AssistantState) => {
-    if (Array.isArray(state.draft_lines)) {
-      const mapped: DraftLine[] = state.draft_lines.map((line) => ({
-        id: Number(line.id),
-        description: String(line.description ?? ""),
-        quantity: (line.quantity as number) ?? 1,
-        unit: String(line.unit ?? "pcs"),
-        dangerous_goods: Boolean(line.dangerous_goods),
-        confirmed_un: (line.confirmed_un as string) || undefined,
-        dg_dismissed: Boolean(line.dg_dismissed) || undefined,
-        package_content: (line.package_content as string) || undefined,
-        // Measurements the assistant asked for land in the same columns the
-        // lines table writes, so the classic wizard computes with them too.
-        length_cm: (line.length_cm as number) ?? undefined,
-        width_cm: (line.width_cm as number) ?? undefined,
-        height_cm: (line.height_cm as number) ?? undefined,
-        weight_each_kg: (line.weight_each_kg as number) ?? undefined,
-      }));
-      if (mapped.length > 0) {
-        setDraftLines((current) => {
-          const byId = new Map(current.map((line) => [line.id, line]));
-          return mapped.map((line) => ({ ...(byId.get(line.id) ?? {}), ...line }));
-        });
-      }
-    }
+    setDraftLines((current) => draftLinesFromAssistant(state, current) ?? current);
     if (Array.isArray(state.dg_entries)) setDgEntries(state.dg_entries);
     if (state.doc_values) setDocValues((current) => ({ ...current, ...state.doc_values }));
+    if (Array.isArray(state.skipped_questions)) {
+      setSkippedQuestions(state.skipped_questions.map(String));
+    }
   };
 
   const translateMessage = (msg: string) => {
@@ -873,7 +837,7 @@ export default function WizardPage() {
       <AssistantModal
         open={assistantOpen}
         onClose={() => setAssistantOpen(false)}
-        buildState={buildAssistantState}
+        buildState={buildStateForAssistant}
         onApplyState={applyAssistantState}
       />
 

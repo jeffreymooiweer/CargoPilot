@@ -2,6 +2,22 @@
 
 All notable changes are documented here, following [Semantic Versioning](https://semver.org/).
 
+## [1.108.1] — 2026-08-17
+
+### Fixed
+
+- **A skipped question stayed skipped for exactly one turn.** Owner report:
+  "steel plate" asked for its dimensions, then for the consignor — and then
+  for the dimensions again, after every following answer, swallowing
+  whatever was typed as an answer to a question it re-raised. The server is
+  stateless and the modal rebuilds the state from the wizard on every turn;
+  the wizard carried everything of that state *except* the skipped
+  questions, so every skip was forgotten the moment the next answer was
+  sent. The skips now travel with the rest of the state, both ways. The two
+  mapping functions moved to their own module (`utils/assistantState.ts`)
+  with a round-trip test, so the next field added to the state has one
+  obvious place to be carried — and a test that fails when it is not.
+
 ## [1.108.0] — 2026-08-17
 
 ### Fixed

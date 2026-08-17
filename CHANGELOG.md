@@ -2,6 +2,23 @@
 
 All notable changes are documented here, following [Semantic Versioning](https://semver.org/).
 
+## [1.109.0] — 2026-08-17
+
+### Added
+
+- **The assistant suggests addresses and locations, like the wizard does.**
+  An address question in the survey now carries the same address search the
+  wizard's own address fields have (the Photon-compatible API an
+  administrator configures, off means off), and a location question
+  (loading point, discharge point, place of receipt or delivery, final
+  destination) suggests airports ✈, ports ⚓ and stations 🚆 from the
+  built-in catalogue — filtered by the transport mode, with street
+  addresses offered alongside for road and multimodal. The very same
+  components the wizard renders, so the suggestions, their look and the
+  administrator's settings are one and the same in both places. Free text
+  always remains possible; a picked address lands multi-line in an editable
+  box before it is sent.
+
 ## [1.108.1] — 2026-08-17
 
 ### Fixed

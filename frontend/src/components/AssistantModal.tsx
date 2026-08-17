@@ -3,6 +3,12 @@ import { useTranslation } from "react-i18next";
 import { api, AssistantEvent, AssistantPending, AssistantState } from "../api/client";
 import { documentLanguage, localised } from "../i18n/language";
 import AiIcon from "./AiIcon";
+import {
+  AddressTextarea,
+  LOCATION_FIELD_KEYS,
+  LocationInput,
+  MODALITY_LOCATION_TYPES,
+} from "./GeoInputs";
 
 interface Snapshot {
   state: AssistantState;
@@ -16,6 +22,8 @@ interface Props {
   buildState: () => AssistantState;
   /** The patched state coming back; the wizard page maps it onto its own. */
   onApplyState: (state: AssistantState) => void;
+  /** Transport mode, deciding which locations are suggested (✈/⚓/🚆). */
+  modality?: string;
 }
 
 /** The assistant as a survey in a modal: one question per screen, a previous
@@ -28,7 +36,7 @@ interface Props {
  *  so the history is the client's to keep, and re-answering a question is
  *  simply replaying from an earlier state.
  */
-export default function AssistantModal({ open, onClose, buildState, onApplyState }: Props) {
+export default function AssistantModal({ open, onClose, buildState, onApplyState, modality }: Props) {
   const { t, i18n } = useTranslation();
   const lang = documentLanguage(i18n.language);
   const [pending, setPending] = useState<AssistantPending | null>(null);
@@ -204,6 +212,15 @@ export default function AssistantModal({ open, onClose, buildState, onApplyState
   const answer = options.length > 0 ? choice : freeText.trim();
   const skippable = pending?.scope !== "un_confirm" && pending?.required === false;
 
+  // Address and location questions get the same suggestions the wizard's own
+  // fields have: addresses from the address API, and airports, ports and
+  // stations from the location catalogue — filtered by the transport mode.
+  const docField = String(pending?.field ?? "");
+  const isAddressField =
+    pending?.scope === "doc_question" && pending?.type === "textarea" && docField.endsWith("_address");
+  const isLocationField = pending?.scope === "doc_question" && LOCATION_FIELD_KEYS.has(docField);
+  const locationTypes = MODALITY_LOCATION_TYPES[modality ?? ""] ?? ["airport", "port", "station"];
+
   const submit = () => {
     if (screen === "describe") {
       if (describe.trim()) void send(describe.trim());
@@ -313,6 +330,19 @@ export default function AssistantModal({ open, onClose, buildState, onApplyState
                   </button>
                 ))}
               </div>
+            ) : isAddressField ? (
+              <AddressTextarea
+                value={freeText}
+                onChange={setFreeText}
+                textareaClassName="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100 min-h-[64px]"
+              />
+            ) : isLocationField ? (
+              <LocationInput
+                value={freeText}
+                onChange={setFreeText}
+                types={locationTypes}
+                includeAddresses={modality === "road" || modality === "multimodal"}
+              />
             ) : (
               <input
                 className="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"

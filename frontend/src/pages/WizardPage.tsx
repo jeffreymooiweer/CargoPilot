@@ -837,6 +837,7 @@ export default function WizardPage() {
       <AssistantModal
         open={assistantOpen}
         onClose={() => setAssistantOpen(false)}
+        modality={modality}
         buildState={buildStateForAssistant}
         onApplyState={applyAssistantState}
       />

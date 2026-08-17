@@ -6,11 +6,15 @@ import {
   DocumentRegistry,
   DocumentSection,
   FieldStatus,
-  GeoLocationType,
   LocalizedText,
 } from "../api/client";
 import { documentLanguage, localised } from "../i18n/language";
-import { AddressTextarea, LocationInput } from "./GeoInputs";
+import {
+  AddressTextarea,
+  LOCATION_FIELD_KEYS,
+  LocationInput,
+  MODALITY_LOCATION_TYPES,
+} from "./GeoInputs";
 import InfoTooltip from "./InfoTooltip";
 import SignaturePad from "./SignaturePad";
 
@@ -35,25 +39,6 @@ const STATUS_BADGES: Partial<Record<FieldStatus, { key: string; className: strin
     key: "docfields.signatureRequired",
     className: "bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-300",
   },
-};
-
-// Fields from the shared "locations" block get location autocomplete.
-const LOCATION_FIELD_KEYS = new Set([
-  "place_of_receipt",
-  "loading_point",
-  "discharge_point",
-  "place_of_delivery",
-  "final_destination",
-]);
-
-// Which location types are suggested per transport mode.
-const MODALITY_LOCATION_TYPES: Record<string, GeoLocationType[]> = {
-  air: ["airport"],
-  sea: ["port"],
-  inland: ["port"],
-  rail: ["station"],
-  road: ["airport", "port", "station"],
-  multimodal: ["airport", "port", "station"],
 };
 
 export function conditionMet(condition: string | undefined, values: Record<string, string>): boolean {

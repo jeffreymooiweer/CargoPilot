@@ -7,6 +7,26 @@ const inputClass =
 
 const TYPE_ICONS: Record<GeoLocationType, string> = { airport: "✈", port: "⚓", station: "🚆" };
 
+/** Fields from the shared "locations" block get location autocomplete —
+ *  the same set wherever a location is asked, wizard and assistant alike. */
+export const LOCATION_FIELD_KEYS = new Set([
+  "place_of_receipt",
+  "loading_point",
+  "discharge_point",
+  "place_of_delivery",
+  "final_destination",
+]);
+
+/** Which location types are suggested per transport mode. */
+export const MODALITY_LOCATION_TYPES: Record<string, GeoLocationType[]> = {
+  air: ["airport"],
+  sea: ["port"],
+  inland: ["port"],
+  rail: ["station"],
+  road: ["airport", "port", "station"],
+  multimodal: ["airport", "port", "station"],
+};
+
 interface PickItem {
   label: string;
   sublabel?: string;

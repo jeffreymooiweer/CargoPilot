@@ -2,6 +2,22 @@
 
 All notable changes are documented here, following [Semantic Versioning](https://semver.org/).
 
+## [1.112.2] — 2026-08-17
+
+### Fixed
+
+- **Details re-listed as goods never become packages.** The re-measurement
+  after v1.112.1 showed the next failure shape: asked to keep the
+  consignment details out of the goods descriptions, the model emitted them
+  as *extra goods lines* instead — the consignor, the destination, the
+  carrier and the reference, each as a "package" of one. A goods line the
+  majority of whose substantial words already sit in the extracted field
+  values is details, not goods, and is dropped; a count the model repeats
+  inside the description ("1000 jerricans diesel", quantity 1000) leaves
+  the description too. Both measured shapes are pinned as regression
+  tests; the intake prompt now also says the details must not be repeated
+  as goods items.
+
 ## [1.112.1] — 2026-08-17
 
 ### Fixed

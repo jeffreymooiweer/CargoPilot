@@ -349,6 +349,36 @@ def test_a_degraded_intake_line_is_repaired_by_the_deterministic_floor(db, monke
     assert values["carrier_name"] == "Trans Janssen"
 
 
+def test_details_re_listed_as_goods_lines_never_become_packages(db, monkeypatch):
+    """The second measured failure shape, verbatim: asked to keep the
+    details out of the descriptions, the model emitted them as extra goods
+    lines instead — the consignor, the destination, the carrier and the
+    reference, each as a "package" of one. Only the diesel survives."""
+    fake_model(monkeypatch, lambda system, user, schema, **_: {
+        "lines": [
+            {"description": "1000 jerrycans diesel", "quantity": 1000, "unit": "jerrycans"},
+            {"description": "van Mooiweer BV, Kade 1 Rotterdam", "quantity": 1, "unit": "van"},
+            {"description": "naar Afnemer GmbH in Duisburg", "quantity": 1, "unit": "naar"},
+            {"description": "voerder Trans Janssen", "quantity": 1, "unit": "voerder"},
+            {"description": "order 4711", "quantity": 1, "unit": "order"},
+        ],
+        "consignor_name": "Mooiweer BV, Kade 1 Rotterdam",
+        "consignee_name": "Afnemer GmbH in Duisburg",
+        "carrier_name": "Trans Janssen",
+        "loading_point": "Rotterdam",
+        "discharge_point": "Duisburg",
+        "shipment_reference": "order 4711",
+    })
+    result = step({"modality": "road"},
+                  "1000 jerrycans diesel van Mooiweer BV, Kade 1 Rotterdam naar "
+                  "Afnemer GmbH in Duisburg, vervoerder Trans Janssen, order 4711",
+                  None, db, "nl")
+    lines = result["state"]["draft_lines"]
+    assert [l["description"] for l in lines] == ["diesel"]
+    assert lines[0]["quantity"] == 1000.0
+    assert result["state"]["doc_values"]["carrier_name"] == "Trans Janssen"
+
+
 def test_the_intake_never_overwrites_what_was_already_answered(db, monkeypatch):
     fake_model(monkeypatch, lambda system, user, schema, **_: {
         "lines": [{"description": "kalkzandsteen", "quantity": 4, "unit": "pallets"}],

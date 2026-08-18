@@ -493,7 +493,9 @@
     "bulkAdmission": {
       "ok": "zugelassen",
       "not_permitted": "nicht zugelassen"
-    }
+    },
+    "adnPlacardingTitle": "Großzettel und Kennzeichnung an Bord (ADN 5.3)",
+    "adnPlacardingCtu": "Je Beförderungseinheit"
   },
   "dgauto": {
     "title": "Automatisch abgeleitet",

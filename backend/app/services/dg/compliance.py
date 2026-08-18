@@ -1776,6 +1776,236 @@ def check_adn_mixed_loading(
     return findings
 
 
+#: 5.3.1.1.2 orders class 1 divisions by danger for the placard choice; 1.1
+#: first. The provision spells the order out rather than leaving it to the
+#: numeric sort, which would put 1.5 last instead of second.
+_ADN_CLASS1_ORDER = ("1.1", "1.5", "1.2", "1.3", "1.6", "1.4")
+
+
+def check_adn_placarding(
+    entries: list[dict[str, Any]], language: str = "nl",
+    exemption_status: str | None = None,
+) -> dict[str, Any]:
+    """ADN 5.3: what the cargo transport units on board must show.
+
+    The road got this answer in v1.57.0 for its own vehicle; the water leg had
+    nothing, while its chapter 5.3 addresses the containers, road vehicles and
+    wagons that come on board a dry cargo vessel. Read in the English edition
+    (printed pages 309–321) and sections 5.3.1–5.3.6 of the official Dutch
+    edition, which agree.
+
+    What shapes the answer is that **the application cannot see which kind of
+    cargo transport unit the packages travel in** — and the kind decides
+    everything. A container is placarded for any class, both sides and each
+    end (5.3.1.2); a wagon carrying packages likewise, both sides (5.3.1.5.3);
+    a road vehicle carrying packages placards only for class 1 and class 7
+    (5.3.1.5.1/5.3.1.5.2) — *except* that the note to 5.3.1.5.2 placards it
+    for every class when the ADN journey precedes a voyage by sea. So the
+    label models are computed once from columns (5) and (6), and the placement
+    rules are given per kind, each under its own provision, instead of one
+    kind's answer standing in for the others.
+
+    Two things are deliberately not derived: the elevated temperature mark of
+    5.3.3 (it turns on a carriage temperature nobody tells the application)
+    and the exclusive-use plates of 5.3.2.1.4 (exclusive use is not a field).
+    A cargo tank consignment is chapter 7.2: the vessel shows the signals of
+    7.2.5.0, which `check_adn_signals` answers, and 5.3's units are not its
+    question — so that case is named rather than answered here.
+    """
+    rules = get_compliance_rules()["adn_placarding"]
+    lang = _lang(language)
+    products = [(entry, index, product)
+                for entry, index, product in _iter_products(entries)
+                if not product.get("transport_forbidden")]
+    if not products:
+        return {"status": "not_checked", "placards": [], "marks": []}
+
+    in_cargo_tanks = _adn_cargo_tank_positions(products)
+    if in_cargo_tanks:
+        return {"status": "not_available_for_mode", "placards": [], "marks": [],
+                "mode_note": _adn_mode_note(in_cargo_tanks, lang)}
+
+    named = {id(product): _product_label(entry, product, index)
+             for entry, index, product in products}
+    goods = [product for _entry, _index, product in products]
+
+    def text(key: str) -> str:
+        block = rules[key]
+        return block.get(lang) or block["en"]
+
+    placards: list[dict[str, Any]] = []
+
+    # The label models of columns (5) and (6), 9A folded into 9 (5.3.1.1.4)
+    # and class 1 aggregated per 5.3.1.1.2 below.
+    labels = sorted({
+        "9" if part.strip().upper() == "9A" else part.strip()
+        for p in goods
+        for part in str(p.get("labels") or "").replace("+", ",").split(",")
+        if part.strip() and not part.strip().startswith("1")})
+    class1 = [p for p in goods
+              if str(p.get("class") or "").strip().startswith("1")
+              and str(p.get("classification_code") or "").strip().upper() != "1.4S"]
+    def _division(product: dict[str, Any]) -> str:
+        match = re.match(r"1\.\d",
+                         str(product.get("classification_code") or "").strip())
+        return match.group(0) if match else "1"
+
+    divisions = sorted({_division(p) for p in class1})
+    class1_aggregated = None
+    if class1:
+        known = [d for d in _ADN_CLASS1_ORDER if d in divisions]
+        chosen = known[0] if known else "1"
+        # 1.5 D beside Division 1.2 is placarded as 1.1 — the provision's own
+        # escalation, not an ordering artefact.
+        if "1.5" in divisions and "1.2" in divisions:
+            chosen = "1.1"
+        groups = {re.sub(r"^1(\.\d)?", "",
+                         str(p.get("classification_code") or "").strip().upper())
+                  for p in class1}
+        groups.discard("")
+        display = chosen if len(divisions) > 1 or len(groups) != 1 \
+            else f"{chosen}{next(iter(groups))}"
+        labels.append(display)
+        if len(divisions) > 1:
+            class1_aggregated = chosen
+    labels = sorted(set(labels))
+
+    if labels:
+        placards.append({
+            "class": None,
+            "provision": "5.3.1.1.1",
+            "message": text("label_models").format(labels=", ".join(labels)),
+            "products": sorted(named.values()),
+            "label_models": labels,
+            "required": True,
+        })
+    if class1_aggregated:
+        placards.append({
+            "class": "1",
+            "provision": "5.3.1.1.2",
+            "message": text("class1_aggregated").format(division=class1_aggregated),
+            "products": sorted({named[id(p)] for p in class1}),
+        })
+    subsidiary = any("," in str(p.get("labels") or "")
+                     or "+" in str(p.get("labels") or "") for p in goods)
+    if subsidiary and labels:
+        placards.append({
+            "class": None,
+            "provision": "5.3.1.1.5",
+            "message": text("no_subsidiary_duplicate"),
+            "products": [],
+        })
+
+    # Where the placards go, per kind of cargo transport unit — the kind the
+    # application cannot see, so every kind gets its rule.
+    in_tanks_or_bulk = any(
+        str(p.get("carriage_mode") or "").strip() in ("portable_tank", "bulk")
+        for p in goods)
+    has_class7 = any(str(p.get("class") or "").strip().startswith("7")
+                     for p in goods)
+    if in_tanks_or_bulk:
+        placards.append({"class": None, "provision": "5.3.1.4.1",
+                         "message": text("tank_bulk"), "products": [],
+                         "required": True})
+    placards.append({"class": None, "provision": "5.3.1.2",
+                     "message": text("ctu_container"), "products": []})
+    class1_ids = {id(p) for p in class1}
+    if class1 or has_class7:
+        placards.append({
+            "class": None, "provision": "5.3.1.5.1/5.3.1.5.2",
+            "message": text("ctu_vehicle_class17"),
+            "products": sorted({named[id(p)] for p in goods
+                                if id(p) in class1_ids
+                                or str(p.get("class") or "").strip().startswith("7")}),
+            "required": True,
+        })
+    elif not in_tanks_or_bulk:
+        placards.append({"class": None, "provision": "5.3.1.5.2",
+                         "message": text("ctu_vehicle_none"), "products": []})
+    placards.append({"class": None, "provision": "5.3.1.5.3",
+                     "message": text("ctu_wagon"), "products": []})
+
+    empty = sorted({named[id(p)] for p in goods if p.get("empty_uncleaned")})
+    if empty:
+        placards.append({
+            "class": None, "provision": "5.3.1.6.1",
+            "message": text("empty_uncleaned").format(products=", ".join(empty)),
+            "products": empty,
+        })
+
+    marks: list[dict[str, Any]] = []
+    plates = rules["orange_plates"]
+    marks.append({"provision": plates["provision"],
+                  "message": plates.get(lang) or plates["en"],
+                  "kind": "orange_plates"})
+
+    if any(str(p.get("carriage_mode") or "").strip() == "portable_tank"
+           for p in goods):
+        numbers = sorted({
+            (str(p.get("hazard_number") or "").strip(),
+             str(p.get("un_number") or p.get("un") or "").strip())
+            for p in goods
+            if str(p.get("carriage_mode") or "").strip() == "portable_tank"
+            and str(p.get("hazard_number") or "").strip()
+            and str(p.get("un_number") or p.get("un") or "").strip()})
+        without = sorted({
+            named[id(p)] for p in goods
+            if str(p.get("carriage_mode") or "").strip() == "portable_tank"
+            and not str(p.get("hazard_number") or "").strip()})
+        if numbers:
+            tank = rules["tank_plates"]
+            marks.append({
+                "provision": tank["provision"],
+                "message": (tank.get(lang) or tank["en"]).format(
+                    numbers=", ".join(
+                        f"{hazard} / UN {un}" for hazard, un in numbers)),
+                "kind": "tank_plates",
+                "required": True,
+            })
+        if without:
+            marks.append({
+                "provision": "5.3.2.1.2",
+                "message": text("tank_plates_no_number").format(
+                    products=", ".join(without)),
+                "kind": "tank_plates",
+                "required": None,
+            })
+
+    sea = rules["sea_chain"]
+    marks.append({"provision": sea["provision"],
+                  "message": sea.get(lang) or sea["en"], "kind": "sea_chain"})
+
+    green = [p for p in goods if p.get("environmentally_hazardous")]
+    if green:
+        mark = rules["environmental_mark"]
+        marks.append({
+            "provision": mark["provision"],
+            "message": (mark.get(lang) or mark["en"]).format(
+                products=", ".join(sorted({named[id(p)] for p in green}))),
+            "kind": "environmental_mark",
+        })
+
+    # The ADN exemption is reported as possible, never granted — and section
+    # 5.3 is not among the conditions 1.1.3.6.2 keeps alive under it. The full
+    # answer stands (over-signalling is the safe direction to be wrong in) and
+    # the note says what carrying under the exemption would change.
+    if exemption_status == "exempt_possible":
+        note = rules["exempt_note"]
+        marks.append({"provision": note["provision"],
+                      "message": note.get(lang) or note["en"],
+                      "kind": "exempt_note"})
+
+    required = [p for p in placards if p.get("required") is True]
+    return {
+        "status": "ok",
+        "scope": "tanks_or_bulk" if in_tanks_or_bulk else "packages",
+        "placards": placards,
+        "placards_required": bool(required),
+        "marks": marks,
+        "source": rules["source"],
+    }
+
+
 def check_adn_carriage_admission(
     entries: list[dict[str, Any]], language: str = "nl",
 ) -> dict[str, Any]:
@@ -4989,6 +5219,14 @@ def check_compliance(
             # And what the vessel must show while it carries them. Column (12)
             # answers both, and this half had no answer at all before v1.61.0.
             result["adn_signals"] = check_adn_signals(entries, language)
+            # What the cargo transport units on board must show — ADN 5.3,
+            # the water's own chapter, per kind of unit because the kind is
+            # not a thing this application can see.
+            adn_placarding = check_adn_placarding(
+                entries, language,
+                exemption_status=result["adn_exemption"].get("status"))
+            if adn_placarding.get("status") != "not_checked":
+                result["adn_placarding"] = adn_placarding
             # Column (11), ST01: the one additional requirement of 7.1.6.11
             # that ends up on the transport document rather than in the hold,
             # and therefore its own result and not a separation finding.

@@ -134,6 +134,7 @@
       },
       "documents": [
         "adn_transport_doc",
+        "placarding_sheet_adn",
         "vgm",
         "stowage_plan",
         "packing_list",
@@ -187,6 +188,7 @@
         "avc_waybill",
         "adn_transport_doc",
         "placarding_sheet",
+        "placarding_sheet_adn",
         "stowage_plan",
         "packing_list",
         "delivery_note",
@@ -2917,6 +2919,42 @@
       },
       "exporter": "placarding",
       "dg_profile": "ADR",
+      "dg_only": true,
+      "sections": [
+        {
+          "ref": "parties"
+        }
+      ],
+      "signature_note": {
+        "nl": "Dit blad is een werkinstructie en geen etiket: de grote etiketten en oranje borden zelf moeten voldoen aan 5.3.1.7 en 5.3.2.2.",
+        "en": "This sheet is a working instruction and not a label: the placards and orange plates themselves must meet 5.3.1.7 and 5.3.2.2.",
+        "de": "Dieses Blatt ist eine Arbeitsanweisung und kein Zettel: die Großzettel und orangefarbenen Tafeln selbst müssen 5.3.1.7 und 5.3.2.2 entsprechen.",
+        "fr": "Cette feuille est une instruction de travail et non une étiquette : les plaques-étiquettes et les panneaux orange doivent eux-mêmes respecter les 5.3.1.7 et 5.3.2.2."
+      }
+    },
+    {
+      "key": "placarding_sheet_adn",
+      "label": {
+        "nl": "Bebordings- en etiketteringsblad (ADN 5.3)",
+        "en": "Placarding and marking sheet (ADN 5.3)",
+        "de": "Bezettelungs- und Kennzeichnungsblatt (ADN 5.3)",
+        "fr": "Feuille de placardage et de signalisation (ADN 5.3)"
+      },
+      "short_label": {
+        "nl": "Bebording",
+        "en": "Placarding",
+        "de": "Bezettelung",
+        "fr": "Placardage"
+      },
+      "category": "generated",
+      "issue_status": {
+        "nl": "Hulpdocument — wat de vervoerseenheden aan boord (containers, voertuigen, wagens) moeten tonen, afgeleid uit ADN 5.3. Geen voorgeschreven model.",
+        "en": "Working document — what the cargo transport units on board (containers, vehicles, wagons) must show, derived from ADN 5.3. No prescribed model.",
+        "de": "Hilfsdokument — was die Beförderungseinheiten an Bord (Container, Fahrzeuge, Wagen) zeigen müssen, abgeleitet aus ADN 5.3. Kein vorgeschriebenes Muster.",
+        "fr": "Document d'appui — ce que les engins de transport à bord (conteneurs, véhicules, wagons) doivent porter, dérivé de l'ADN 5.3. Aucun modèle prescrit."
+      },
+      "exporter": "placarding_adn",
+      "dg_profile": "ADN",
       "dg_only": true,
       "sections": [
         {

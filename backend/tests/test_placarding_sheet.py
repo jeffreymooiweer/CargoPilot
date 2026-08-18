@@ -127,3 +127,46 @@ def test_the_document_is_registered_for_adr_with_dangerous_goods():
     for language in ("nl", "en", "de", "fr"):
         assert document["label"][language]
         assert document["issue_status"][language]
+
+
+# --- the same sheet, with the water's chapter answering (v1.120.0) ---------
+
+
+def test_the_adn_sheet_answers_per_cargo_transport_unit():
+    """ADN 5.3 addresses the containers, vehicles and wagons that come on
+    board, and the kind decides everything — so every kind gets its rule."""
+    path = render_placarding_sheet({}, [], goods(product("1203")), "en",
+                                   regime="ADN")
+    body = text_of(path)
+    assert TEXT["title_adn"]["en"] in body
+    assert "5.3.1.2" in body       # containers: any class
+    assert "5.3.1.5.3" in body     # wagons: any class
+    assert "5.3.1.5.2" in body     # vehicles: only 1 and 7 — except before sea
+
+
+def test_the_adn_sheet_names_a_cargo_tank_consignment():
+    """A cargo tank load is chapter 7.2; the sheet says whose question it is
+    instead of printing an empty answer."""
+    path = render_placarding_sheet(
+        {}, [], goods(product("1203", carriage_mode="tank")), "en",
+        regime="ADN")
+    body = text_of(path)
+    assert TEXT["title_adn"]["en"] in body
+
+
+@pytest.mark.parametrize("language", ["nl", "en", "de", "fr"])
+def test_the_adn_sheet_speaks_all_four_languages(language):
+    path = render_placarding_sheet({}, [], goods(product("1547")), language,
+                                   regime="ADN")
+    assert TEXT["title_adn"][language] in text_of(path)
+
+
+def test_the_adn_document_is_registered_for_inland():
+    document = get_document("placarding_sheet_adn")
+    assert document is not None
+    assert document["dg_profile"] == "ADN"
+    assert document["dg_only"] is True
+    assert document["exporter"] == "placarding_adn"
+    for language in ("nl", "en", "de", "fr"):
+        assert document["label"][language]
+        assert document["issue_status"][language]

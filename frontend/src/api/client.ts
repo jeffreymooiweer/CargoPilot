@@ -1209,6 +1209,32 @@ export interface AdrPlacardingResult {
   source?: string;
 }
 
+/** ADN 5.3 — what the cargo transport units on board a dry cargo vessel must
+ *  show. The kind of unit (container, road vehicle, wagon) is not visible to
+ *  the application, so the placement rules come per kind, each under its own
+ *  provision. A cargo tank consignment gets a mode note instead of an answer. */
+export interface AdnPlacardingResult {
+  status: "ok" | "not_available_for_mode" | "not_checked";
+  scope?: "packages" | "tanks_or_bulk";
+  mode_note?: string;
+  placards: {
+    class: string | null;
+    provision: string;
+    message: string;
+    products: string[];
+    label_models?: string[];
+    required?: boolean | null;
+  }[];
+  placards_required?: boolean;
+  marks: {
+    kind: "orange_plates" | "tank_plates" | "sea_chain" | "environmental_mark" | "exempt_note";
+    provision: string;
+    message: string;
+    required?: boolean | null;
+  }[];
+  source?: string;
+}
+
 /** ADR 1.10.3 — high consequence dangerous goods. For carriage in packages the
  *  table has no thresholds to compare against: a line either qualifies at any
  *  quantity or is outside 1.10.3 at every quantity. */
@@ -1292,6 +1318,7 @@ export interface DgComplianceResult {
   adr_equipment?: AdrEquipmentResult;
   /** Placarding and marking per ADR 5.3 — road only. */
   adr_placarding?: AdrPlacardingResult;
+  adn_placarding?: AdnPlacardingResult;
   /** High consequence dangerous goods per ADR 1.10.3 — road only. */
   adr_security?: AdrSecurityResult;
   q_values?: QValueResult[];

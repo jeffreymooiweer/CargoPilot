@@ -493,7 +493,9 @@
     "bulkAdmission": {
       "ok": "autorisé",
       "not_permitted": "non autorisé"
-    }
+    },
+    "adnPlacardingTitle": "Plaques-étiquettes et marquage à bord (ADN 5.3)",
+    "adnPlacardingCtu": "Par engin de transport"
   },
   "dgauto": {
     "title": "Déduit automatiquement",

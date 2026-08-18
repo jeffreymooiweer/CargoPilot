@@ -106,6 +106,16 @@ def export(
             payload.dangerous_goods,
             payload.output_language,
         )
+    elif exporter == "placarding_adn":
+        # The same sheet with the water's own chapter 5.3 answering: what the
+        # cargo transport units on board must show, per kind of unit.
+        out_path = render_placarding_sheet(
+            payload.values,
+            payload.lines,
+            payload.dangerous_goods,
+            payload.output_language,
+            regime="ADN",
+        )
     elif exporter == "stowage":
         # The stowage plan is drawn from where the goods are, not from typed
         # document fields: 7.1.4.11.1 asks which goods are in which hold, and

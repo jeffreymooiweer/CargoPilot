@@ -493,7 +493,9 @@
     "bulkAdmission": {
       "ok": "toegestaan",
       "not_permitted": "niet toegestaan"
-    }
+    },
+    "adnPlacardingTitle": "Bestikkering en kenmerking aan boord (ADN 5.3)",
+    "adnPlacardingCtu": "Per vervoerseenheid"
   },
   "dgauto": {
     "title": "Automatisch afgeleid",

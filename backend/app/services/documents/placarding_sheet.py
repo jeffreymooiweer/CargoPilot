@@ -28,7 +28,11 @@ from reportlab.lib.pagesizes import A4
 from reportlab.lib.units import mm
 from reportlab.platypus import KeepTogether, SimpleDocTemplate, Spacer
 
-from app.services.dg.compliance import check_adr_placarding
+from app.services.dg.compliance import (
+    check_adn_exemption,
+    check_adn_placarding,
+    check_adr_placarding,
+)
 from app.services.documents.pdf_render import (
     _fields_table,
     _grid_table,
@@ -47,6 +51,18 @@ TEXT: dict[str, dict[str, str]] = {
         "en": "Placarding and marking sheet (ADR 5.3)",
         "de": "Bezettelungs- und Kennzeichnungsblatt (ADR 5.3)",
         "fr": "Feuille de placardage et de signalisation (ADR 5.3)",
+    },
+    "title_adn": {
+        "nl": "Bebordings- en etiketteringsblad (ADN 5.3)",
+        "en": "Placarding and marking sheet (ADN 5.3)",
+        "de": "Bezettelungs- und Kennzeichnungsblatt (ADN 5.3)",
+        "fr": "Feuille de placardage et de signalisation (ADN 5.3)",
+    },
+    "ctu": {
+        "nl": "Vervoerseenheid aan boord (container, voertuig of wagen)",
+        "en": "Cargo transport unit on board (container, vehicle or wagon)",
+        "de": "Beförderungseinheit an Bord (Container, Fahrzeug oder Wagen)",
+        "fr": "Engin de transport à bord (conteneur, véhicule ou wagon)",
     },
     "generated": {
         "nl": "Opgesteld met CargoPilot op", "en": "Drawn up with CargoPilot on",
@@ -136,30 +152,49 @@ def render_placarding_sheet(
     lines: list[dict[str, Any]],
     dangerous_goods: list[dict[str, Any]] | None,
     language: str = "nl",
+    regime: str = "ADR",
 ) -> Path:
-    """The sheet, from the answer the compliance layer already computes."""
+    """The sheet, from the answer the compliance layer already computes.
+
+    ``regime`` picks whose chapter 5.3 answers: the road's (`check_adr_placarding`,
+    about the vehicle) or the water's (`check_adn_placarding`, about the cargo
+    transport units that come on board). The registry offers each under its own
+    document key, so an inland consignment is never handed the road's answer.
+    """
     lang = _lang_of(language)
     entries = list(dangerous_goods or [])
-    result = check_adr_placarding(entries, lang)
+    if regime == "ADN":
+        exemption = check_adn_exemption(entries, lang)
+        result = check_adn_placarding(
+            entries, lang, exemption_status=exemption.get("status"))
+        title = _t("title_adn", lang)
+    else:
+        result = check_adr_placarding(entries, lang)
+        title = _t("title", lang)
     styles = _styles()
     out_path = _output_path()
     doc = SimpleDocTemplate(
         str(out_path), pagesize=A4,
         leftMargin=15 * mm, rightMargin=15 * mm, topMargin=14 * mm, bottomMargin=14 * mm,
-        title=_t("title", lang),
+        title=title,
     )
     width = doc.width
     story: list[Any] = [
-        _p(_t("title", lang), styles["title"]),
+        _p(title, styles["title"]),
         _p(f"{_t('generated', lang)} {datetime.now().strftime('%Y-%m-%d %H:%M')}",
            styles["meta"]),
         _p(_t("scope_tanks" if result.get("scope") == "tanks_or_bulk"
               else "scope_packages", lang), styles["meta"]),
         Spacer(1, 6),
     ]
+    if result.get("mode_note"):
+        # A cargo tank consignment: 5.3's units are not its question, and the
+        # sheet says whose question it is instead of printing an empty answer.
+        story.append(_p(result["mode_note"], styles["fixed"]))
 
     header = [(_t("consignment", lang), values.get("reference") or values.get("order_reference") or ""),
-              (_t("vehicle", lang), values.get("vehicle_registration")
+              (_t("ctu" if regime == "ADN" else "vehicle", lang),
+               values.get("vehicle_registration")
                or values.get("licence_plate") or values.get("vehicle") or "")]
     story.append(_fields_table([(label, value) for label, value in header], styles, width))
     story.append(Spacer(1, 6))

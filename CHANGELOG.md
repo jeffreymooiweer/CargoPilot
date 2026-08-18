@@ -2,6 +2,44 @@
 
 All notable changes are documented here, following [Semantic Versioning](https://semver.org/).
 
+## [1.120.0] — 2026-08-18
+
+### Added
+
+- **Placarding for the water leg: ADN 5.3, derived and on paper.** The road
+  vehicle has had its 5.3 answer since v1.57.0; the units that come on board
+  a dry cargo vessel had nothing. ADN 5.3 is read now — the English edition
+  (printed pages 309–321) and sections 5.3.1–5.3.6 of the official Dutch
+  edition, which agree — and what shapes the answer is that the application
+  cannot see which kind of cargo transport unit the packages travel in,
+  while the kind decides everything: a **container** is placarded for any
+  class, both sides and each end (5.3.1.2); a **wagon** carrying packages
+  likewise, both sides (5.3.1.5.3); a **road vehicle** carrying packages
+  only for classes 1 and 7 (5.3.1.5.1/5.3.1.5.2) — except that the note to
+  5.3.1.5.2 placards it for every class when the ADN journey precedes a
+  voyage by sea. So the label models of columns (5) and (6) are computed
+  once — with the class 1 aggregation of 5.3.1.1.2 (most dangerous division
+  in the order 1.1, 1.5, 1.2, 1.3, 1.6, 1.4; 1.5 D beside 1.2 escalates to
+  1.1; no group letter across groups) and model 9 in place of 9A
+  (5.3.1.1.4) — and the placement rules are given per kind, each under its
+  own provision. The orange plates of 5.3.2.1.1, the numbered plates of
+  5.3.2.1.2 for portable tanks, the sea-chain alternative of 5.3.4.1, the
+  environmentally hazardous mark of 5.3.6 and the empty-uncleaned rule of
+  5.3.1.6.1 come with it; under a possible 1.1.3.6.1 exemption the note
+  says 5.3 is not among the surviving conditions — reported, never granted.
+- **The ADN placarding sheet.** The same sheet the road has had since
+  v1.83.0, with the water's chapter answering, registered for the inland
+  waterway modality under its own document key so an inland consignment is
+  never handed the road's answer. A cargo tank consignment is named as
+  chapter 7.2's — its vessel shows the cones of 7.2.5.0 — instead of being
+  given an empty page.
+
+### Not derived, with the reason recorded
+
+- The elevated temperature mark of 5.3.3 (the application is not told a
+  carriage temperature) and the exclusive-use plates of 5.3.2.1.4
+  (exclusive use is not a field).
+
 ## [1.119.0] — 2026-08-18
 
 ### Added

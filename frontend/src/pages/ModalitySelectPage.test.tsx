@@ -52,10 +52,9 @@ function renderAt(path = "/") {
 }
 
 describe("de modaliteitkeuze", () => {
-  it("laat wegvervoer en binnenvaart toe, plus lucht voor de demonstratie", () => {
-    // Road and inland are released; air is unlocked temporarily (v1.117.0)
-    // and its entry in ModalitySelectPage says how to take it out again.
-    expect([...AVAILABLE_MODALITIES]).toEqual(["road", "inland", "air"]);
+  it("laat wegvervoer en binnenvaart toe", () => {
+    // Air was unlocked for one demonstration (v1.117.0) and is locked again.
+    expect([...AVAILABLE_MODALITIES]).toEqual(["road", "inland"]);
     for (const key of AVAILABLE_MODALITIES) {
       expect(isModalityAvailable(key)).toBe(true);
     }

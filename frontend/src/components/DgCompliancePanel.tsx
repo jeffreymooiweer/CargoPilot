@@ -962,6 +962,11 @@ export default function DgCompliancePanel({ entries, profiles }: Props) {
               <p className="mt-0.5 opacity-80">{w.products}</p>
             </div>
           ))}
+          {result?.adr_mixed_loading_basis_note && (
+            <p className="text-[11px] text-slate-500 dark:text-slate-400">
+              {result.adr_mixed_loading_basis_note}
+            </p>
+          )}
         </CollapsibleSection>
       )}
       {result && warnings.length === 0 &&

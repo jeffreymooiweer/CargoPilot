@@ -8,7 +8,7 @@ export type ModalityKey = (typeof MODALITIES)[number];
 
 /** The modalities a user may actually draw up documents for.
  *
- *  Rail, sea and air are built and reachable and *wrong* in ways that do not
+ *  Sea and air are built and reachable and *wrong* in ways that do not
  *  announce themselves, and they carry known gaps listed in
  *  `docs/dg-coverage.md`. A half-right document is worse than no document,
  *  because it is signed and handed over — the consignor has no way to see which
@@ -19,12 +19,19 @@ export type ModalityKey = (typeof MODALITIES)[number];
  *  cone data at all. Both are now answered out of the ADN itself: the exemption
  *  from 1.1.3.6.1, the separation in the holds from 7.1.4.3, and the signals the
  *  vessel must show from 7.1.5.0 — each visible in the panel and on the
- *  document. What is still missing is the tank vessel regime, and a tank vessel
- *  consignment cannot be entered here at all: this wizard models packages. So
- *  what a user can draw up is exactly the part that is covered.
+ *  document.
+ *
+ *  **Rail was unlocked in v1.122.0**, over the same bar. Its checks are cited
+ *  to RID rather than borrowed: the 1.1.3.6 count per wagon or large
+ *  container, its own 7.5.2 tables and the 7.5.3 protective distance, CW 28,
+ *  the hazard identification number of 5.4.1.1.1 (j) on the CIM, bulk
+ *  admission under RID 7.3, and since v1.121.0 the placarding of chapter 5.3
+ *  — package wagons for every class, orange plates only via column (20), the
+ *  shunting labels of 5.3.4 as the named condition they are. The CIM flow is
+ *  verified end to end in the rail archetypes.
  *
  *  This remains a lock and not a hint. It is checked in three places, because
- *  the tile is not the only way in: a bookmark reaches /wizard/rail directly,
+ *  the tile is not the only way in: a bookmark reaches /wizard/sea directly,
  *  and the default-modality preference navigates there without anyone touching
  *  a tile. Guarding only the tiles would guard only the honest route. */
 /** Air was unlocked for one demonstration in v1.117.0 and locked again in
@@ -33,7 +40,7 @@ export type ModalityKey = (typeof MODALITIES)[number];
  *  depends on the M a user enters. That is fine to show while someone is
  *  standing next to the screen explaining it, and not fine on a document
  *  someone signs unattended. */
-export const AVAILABLE_MODALITIES: readonly ModalityKey[] = ["road", "inland"];
+export const AVAILABLE_MODALITIES: readonly ModalityKey[] = ["road", "rail", "inland"];
 
 export function isModalityKey(value: string | undefined): value is ModalityKey {
   return !!value && (MODALITIES as readonly string[]).includes(value);

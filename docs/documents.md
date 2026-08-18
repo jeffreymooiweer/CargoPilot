@@ -22,9 +22,9 @@ with the correct fixed legal wording.
 | **Air** | AWB shipping instructions, IATA Shipper's Declaration, packing list, delivery note |
 | **Multimodal** | All of the above |
 
-Documents that exist for dangerous goods only — the declarations and the ADR/ADN
-sheets and lists above — appear once a package is marked as dangerous goods. Road and
-inland waterway are the released modes today; the other tiles stay locked until their
+Documents that exist for dangerous goods only — the declarations and the ADR/RID/ADN
+sheets and lists above — appear once a package is marked as dangerous goods. Road, rail
+and inland waterway are the released modes today; the other tiles stay locked until their
 checks are complete (see the [roadmap](../ROADMAP.md)).
 
 ## Official forms, filled in

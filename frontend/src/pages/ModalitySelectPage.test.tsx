@@ -52,9 +52,10 @@ function renderAt(path = "/") {
 }
 
 describe("de modaliteitkeuze", () => {
-  it("laat wegvervoer en binnenvaart toe", () => {
-    // Air was unlocked for one demonstration (v1.117.0) and is locked again.
-    expect([...AVAILABLE_MODALITIES]).toEqual(["road", "inland"]);
+  it("laat wegvervoer, spoorvervoer en binnenvaart toe", () => {
+    // Rail came off the lock in v1.122.0; sea and air stay locked, and air's
+    // one demonstration (v1.117.0) is over.
+    expect([...AVAILABLE_MODALITIES]).toEqual(["road", "rail", "inland"]);
     for (const key of AVAILABLE_MODALITIES) {
       expect(isModalityAvailable(key)).toBe(true);
     }
@@ -96,11 +97,18 @@ describe("de modaliteitkeuze", () => {
 
   it("volgt een voorkeur voor een vergrendelde modaliteit niet meer", async () => {
     // The route that skips every tile: a preference set while a modality was
-    // open would otherwise keep opening it after the lock went on.
-    preferences.default_modality = "rail";
+    // open would otherwise keep opening it after the lock went on. Air is the
+    // locked case now — it was open for one demonstration in v1.117.0.
+    preferences.default_modality = "air";
     renderAt("/");
     await waitFor(() => expect(screen.getAllByRole("button").length).toBeGreaterThan(0));
     expect(screen.queryByText("wizard")).not.toBeInTheDocument();
+  });
+
+  it("volgt een voorkeur voor spoorvervoer sinds de vrijgave", async () => {
+    preferences.default_modality = "rail";
+    renderAt("/");
+    await waitFor(() => expect(screen.getByText("wizard")).toBeInTheDocument());
   });
 
   it("volgt een voorkeur voor wegvervoer wel", async () => {

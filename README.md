@@ -38,7 +38,7 @@ stops at the gate.
 
 CargoPilot does that part for you. You enter your shipment once. It recognises what you
 are shipping, calculates the weights and volumes, and fills in the paperwork for the
-transport mode you picked. **Road and inland waterway are released today**; rail, sea,
+transport mode you picked. **Road, rail and inland waterway are released today**; sea,
 air and multimodal are built in but stay locked until their remaining regulatory checks
 are complete — see the [roadmap](ROADMAP.md).
 

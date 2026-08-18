@@ -301,3 +301,53 @@ def test_the_document_pack_renders_in_two_languages(language):
         assert export(key, product, language=language).status_code == 200, key
     assert export("onboard_documents_adn", goods("1263", hold="1"),
                   language=language).status_code == 200
+
+
+# --- 6. the rail leg, end to end (v1.122.0) --------------------------------
+
+
+def test_rail_packages():
+    """Aniline in drums on a wagon. The rail answer is its own: the package
+    wagon is placarded for every class (5.3.1.5) where a road vehicle with the
+    same drums placards nothing, the points count per wagon or large container
+    (RID 1.1.3.6), and the foodstuffs provision is cited CW 28 — a CIM that
+    quotes CV28 names a code the RID does not have."""
+    answer = compliance(["RID"], goods("1547"))
+
+    assert "1.1.3.6.3" in answer["adr_points"]["basis_note"]
+    assert answer["rid_placarding"]["placards_required"] is True
+    rules = [w["rule"] for w in answer["adr_mixed_loading"]]
+    assert any("CW28" in r for r in rules)
+    assert all("CV28" not in r for r in rules)
+    # Not a tank: no numbered plates, no orange band.
+    kinds = [m["kind"] for m in answer["rid_placarding"]["marks"]]
+    assert "orange_band" not in kinds
+
+    assert "placarding_sheet_rid" in documents_for("rail")
+    rail_values = dict(CONSIGNMENT, payment_instruction="Franco vracht",
+                       nhm_code="292142")
+    assert export("cim", goods("1547"), values=rail_values).status_code == 200
+    assert export("placarding_sheet_rid", goods("1547")).status_code == 200
+
+
+def test_rail_tank_wagon():
+    """Chlorine in a tank-wagon: the numbered plates of 5.3.2.1.1/5.3.2.1.2
+    carry 265 / UN 1017 on each side — the number read out of table A, not
+    assumed — the orange band of 5.3.5 follows the liquefied state out of the
+    classification code, and the shunting labels of 5.3.4 are raised as the
+    condition they are."""
+    tank = goods("1017", carriage_mode="tank", adr_total_quantity="5000 kg")
+    answer = compliance(["RID"], tank)
+
+    marks = answer["rid_placarding"]["marks"]
+    kinds = [m["kind"] for m in marks]
+    assert "orange_band" in kinds
+    assert "shunting_labels" in kinds
+    plates = next(m for m in marks
+                  if m["kind"] == "orange_plates" and m.get("required") is True)
+    assert "265 / UN 1017" in plates["message"]
+
+    rail_values = dict(CONSIGNMENT, payment_instruction="Franco vracht",
+                       nhm_code="280110")
+    assert export("cim", tank, values=rail_values).status_code == 200
+    assert export("placarding_sheet_rid", tank, language="de").status_code == 200

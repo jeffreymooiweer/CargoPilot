@@ -16,8 +16,8 @@ flow is one wizard; you can go back to any earlier step at any time.
 
 ## 1. Pick a transport mode
 
-Click **New shipment** and choose how the goods travel. **Road and inland waterway are
-released**; the rail, sea, air and multimodal tiles are visible but locked — their
+Click **New shipment** and choose how the goods travel. **Road, rail and inland
+waterway are released**; the sea, air and multimodal tiles are visible but locked — their
 regulatory checks are not complete yet, and a half-right document is worse than none.
 The [roadmap](../ROADMAP.md) tracks when each one unlocks.
 

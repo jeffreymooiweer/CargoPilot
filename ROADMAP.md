@@ -8,8 +8,8 @@ Versioning follows [Semantic Versioning](https://semver.org/) — see
 ## Status
 
 CargoPilot is **under active development**. It is usable today: the current release
-covers the full flow from package entry to finished documents for **road and inland
-waterway** transport. Rail, sea, air and multimodal are built in and reachable in the
+covers the full flow from package entry to finished documents for **road, rail and
+inland waterway** transport. Sea, air and multimodal are built in and reachable in the
 code, but their tiles are locked until their remaining regulatory checks are complete —
 a half-right document is worse than none, because it gets signed and handed over. The
 gaps that keep them locked are listed per mode in [DG coverage](docs/dg-coverage.md).
@@ -20,7 +20,7 @@ Expect additions rather than upheaval — the wizard and the document registry a
 
 | Area | State |
 |---|---|
-| Transport modes | Road and inland waterway released; rail, sea, air and multimodal built but locked pending their remaining checks |
+| Transport modes | Road, rail and inland waterway released; sea, air and multimodal built but locked pending their remaining checks |
 | Official forms filled in | CMR, CIM, IATA Shipper's Declaration, AVC waybill |
 | Generated documents | IMO DG Form, VGM, AWB and B/L instructions, ADN document, stowage plan, placarding sheet, packing certificate, on-board document lists, equipment sheet, packing list, delivery note |
 | AI assistant | Optional survey-style assistant over the whole wizard; works without any model, and an admin can install a pinned local model (Qwen3-1.7B via llama.cpp) that only reads — it never decides regulatory content |
@@ -36,11 +36,12 @@ Expect additions rather than upheaval — the wizard and the document registry a
 
 ### Releasing the locked transport modes
 
-Rail, sea, air and multimodal each leave the lock when their known gaps are closed and
+Sea, air and multimodal each leave the lock when their known gaps are closed and
 their document flows have been verified end to end — the same bar inland waterway
-cleared in v1.63.0. The work per mode is what [DG coverage](docs/dg-coverage.md) names:
+cleared in v1.63.0 and rail cleared in v1.122.0 (its checks cited to RID, the placarding
+of chapter 5.3 derived, and the CIM flow verified end to end in the rail archetypes).
+The work per mode is what [DG coverage](docs/dg-coverage.md) names:
 
-- **Rail (RID)** — the remaining RID-specific checks and the CIM flow verified end to end.
 - **Sea (IMDG)** — the remaining IMDG document checks around the IMO form, VGM and
   shipping instructions.
 - **Air (IATA DGR)** — the IATA quantity tables, so the Q value no longer depends on a

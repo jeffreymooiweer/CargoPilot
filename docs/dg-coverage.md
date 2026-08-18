@@ -457,6 +457,14 @@ four languages — the OTIF English, the German, the French, and the operator's 
 edition, registered in the v1.121.0 intake — should a reading of that column ever be
 extracted.
 
+**The mode came off the lock in v1.122.0**, over the same bar inland waterway cleared in
+v1.63.0: the checks a rail consignment gets are cited to RID rather than borrowed, the
+placarding of chapter 5.3 is derived and on paper, and the CIM flow is verified end to
+end in the rail archetypes — a package wagon and a chlorine tank-wagon, through the real
+API, compliance and documents alike. What stays open stays named: the per-substance
+bracketed models of column (5), the CIM's free-text NHM box, and everything that is the
+wagon or the train itself.
+
 ## Inland waterway — ADN
 
 **Checked:** ADN 1.1.3.6.1 — its own exemption, with its own table. Since v1.33.0 this is
@@ -852,7 +860,7 @@ reading and not as a coincidence.
 
 ---
 
-*This assessment is maintained up to CargoPilot v1.121.0; the sections above name the release
+*This assessment is maintained up to CargoPilot v1.122.0; the sections above name the release
 each finding shipped in. v1.42.0 to v1.48.0 touched the goods
 catalogue, the interface language, the settings, the documentation and the error messages,
 not a single regulatory check; v1.49.0 and v1.50.0 changed the ADR side, from the Dutch

@@ -2,6 +2,38 @@
 
 All notable changes are documented here, following [Semantic Versioning](https://semver.org/).
 
+## [1.122.0] — 2026-08-18
+
+### Added
+
+- **Rail transport is released.** The rail tile comes off the lock over the
+  same bar inland waterway cleared in v1.63.0: every check a rail
+  consignment gets is cited to RID rather than borrowed — the 1.1.3.6 count
+  per wagon or large container, RID's own 7.5.2 tables and the 7.5.3
+  protective distance, CW 28 in place of CV28, the hazard identification
+  number of 5.4.1.1.1 (j) on the CIM, bulk admission under RID 7.3, and
+  since v1.121.0 the placarding of chapter 5.3. What the application cannot
+  see is named rather than silent: whether a wagon comprises a full load,
+  and which substances carry the bracketed shunting models in RID's own
+  column (5).
+- **The rail archetypes: the CIM flow verified end to end.** Two
+  consignments through the real API on every commit — aniline in drums on a
+  wagon (the package wagon placarded for every class, CW 28 cited, no
+  CV28, no orange band) and chlorine in a tank-wagon (the numbered plates
+  carrying 265 / UN 1017, the number read out of table A rather than
+  assumed; the orange band from the liquefied state; the shunting labels as
+  the condition they are), each ending in a rendered CIM and RID placarding
+  sheet, the sheet in German as well.
+- **The Dutch RID is in the document store.** The adoption run mapped the
+  operator's "RID 2025.pdf" onto the registered `rid_nl_2025`, hash
+  verified — the rail provisions can now be read in four editions.
+
+### Changed
+
+- README, roadmap, user guide, documents page and the coverage assessment
+  say the released modes are road, rail and inland waterway; the lock keeps
+  guarding sea, air and multimodal in the same three places as before.
+
 ## [1.121.0] — 2026-08-18
 
 ### Added

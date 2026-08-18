@@ -605,6 +605,21 @@ exempt" since v1.32.0 while the arithmetic granted the exemption anyway — with
   segregation requirements — which this application holds, on the sea side). A combined
   selection gets both answers, each under its own regime's name, and RID+ADN now evaluates
   the rail leg against RID's own table rather than the road's.
+- **Placarding of the cargo transport units on board since v1.120.0.** ADN 5.3 addresses
+  the containers, road vehicles and wagons that come on board a dry cargo vessel, and the
+  kind of unit — which the application cannot see — decides everything: a container is
+  placarded for any class, both sides and each end (5.3.1.2); a wagon carrying packages
+  likewise, both sides (5.3.1.5.3); a road vehicle carrying packages only for classes 1
+  and 7 (5.3.1.5.1/5.3.1.5.2) — except that the note to 5.3.1.5.2 placards it for every
+  class when the ADN journey precedes a voyage by sea. So the label models of columns (5)
+  and (6) are computed once — with the class 1 aggregation of 5.3.1.1.2 and model 9 in
+  place of 9A (5.3.1.1.4) — and the placement rules are given per kind, each under its own
+  provision, on the panel and on the ADN placarding sheet. The orange plates of 5.3.2.1.1,
+  the numbered plates of 5.3.2.1.2 for portable tanks, the sea-chain alternative of
+  5.3.4.1 and the environmentally hazardous mark of 5.3.6 come with it. Not derived, with
+  the reason recorded: the elevated temperature mark of 5.3.3 (no carriage temperature is
+  told) and the exclusive-use plates of 5.3.2.1.4 (exclusive use is not a field). A cargo
+  tank consignment is named as chapter 7.2's — its vessel shows the cones of 7.2.5.0.
 - **No ADN certificate and no expert on board.**
 
 **Assessment:** for packaged goods on a dry cargo vessel the exemption, the separation and
@@ -702,7 +717,7 @@ Ordered by how much harm someone could take before noticing, not by effort.
 | 4 | **Mixed loading for ADN answered with ADR's 7.5.2** | Closed, and since v1.119.0 closed completely. v1.38.0 read RID's 7.5.2.1 and found it identical to ADR's, footnotes included; v1.41.0 gave rail its own table and its own protective distance. v1.59.0 gave inland waterway ADN 7.1.4.3 — how many metres, not whether — v1.61.0 read column (12) for the cone provisions, v1.64.0 applied the class 1 hold table of 7.1.4.3.4. v1.119.0 read the rest of the chapter: 7.1.4.2 (bulk class 5.1 excludes everything else), 7.1.4.10 (the foodstuffs precaution on special provision 802, in place of the borrowed CV28) and the container exceptions of 7.1.4.4/7.1.4.5 — and the ADR table no longer runs for an inland-only selection at all. |
 | 5 | **LQ/EQ conditions not checked** | The arithmetic of 3.4/3.5 is verified correct and 3.5.1.3/3.5.1.4 are applied since v1.50.0, but the mark, the packagings and the 3.5.3 tests are declarations the application cannot see. A line "within the limits" is a candidate, not an exemption — and the panel says so. |
 | 6 | **IMDG stowage category shown, not enforced** | Lower because on-deck/under-deck is usually the carrier's call, not the consignor's. **[verify]** |
-| 7 | **No marking or placarding checks outside the road mode** | Closed for ADR in v1.57.0 (5.3.1.5, 5.3.2.1 and 5.3.6.1 for packages; the equipment half in v1.53.0), extended to tanks and put on paper in v1.83.0. Rail, inland waterway, sea and air still have nothing. |
+| 7 | **No marking or placarding checks outside the road mode** | Closed for ADR in v1.57.0 (5.3.1.5, 5.3.2.1 and 5.3.6.1 for packages; the equipment half in v1.53.0), extended to tanks and put on paper in v1.83.0. Closed for inland waterway in v1.120.0: ADN 5.3 is derived per kind of cargo transport unit — the kind the application cannot see, and the kind decides everything (a container placards for any class, a road vehicle only for 1 and 7 except before a sea voyage, a wagon for the goods carried) — and reaches paper as the ADN placarding sheet. Rail, sea and air still have nothing. |
 | 8 | ~~The tank hierarchy declines on three of eighteen codes~~ | Closed in v1.94.0. The French volume II — the treaty's other authentic language — was read verbatim on the three cells no two of the first three readings agreed on: it sided with the Dutch on L10BH's group (18 codes), with the German on L10DH's inheritance (the chain runs through L10CH), and with everyone on S10AH's nine codes — the strays of the other readings spell the inheritance sentence (S, G, A, V is SGAV leaking into the cell). **All eighteen codes are settled on every cell.** |
 
 Two of the top gaps from earlier versions of this table are gone, and it is worth being
@@ -821,7 +836,7 @@ reading and not as a coincidence.
 
 ---
 
-*This assessment is maintained up to CargoPilot v1.119.0; the sections above name the release
+*This assessment is maintained up to CargoPilot v1.120.0; the sections above name the release
 each finding shipped in. v1.42.0 to v1.48.0 touched the goods
 catalogue, the interface language, the settings, the documentation and the error messages,
 not a single regulatory check; v1.49.0 and v1.50.0 changed the ADR side, from the Dutch

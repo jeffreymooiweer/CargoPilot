@@ -3378,6 +3378,105 @@
       }
     }
   },
+  "adn_placarding": {
+    "source": "ADN 2025 (UNECE, English edition) 5.3.1, 5.3.2.1, 5.3.4 and 5.3.6 on printed pages 309-321, quoted by scripts/read_land_regulations.py --doc adn; corroborated against sections 5.3.1 to 5.3.6 of the official Dutch edition, which agree on every provision cited here.",
+    "_scope": "What the cargo transport units on board a dry cargo vessel must show. The application cannot see which kind of unit the packages travel in — container, road vehicle or wagon — so the answer is given per kind, each with its own provision, and the one thing every kind shares: the label models of columns (5) and (6). A cargo tank consignment is chapter 7.2 and gets the vessel's signals instead (7.2.5.0); the elevated temperature mark of 5.3.3 turns on a carriage temperature nobody tells the application and is deliberately not derived.",
+    "label_models": {
+      "nl": "De grote etiketten komen overeen met de etiketten van kolom (5) en, waar van toepassing, kolom (6) van tabel A (5.3.1.1.1). Voor deze lading: {labels}. Voor klasse 9 geldt model nr. 9, nooit 9A (5.3.1.1.4).",
+      "en": "Placards correspond to the labels of column (5) and, where appropriate, column (6) of table A (5.3.1.1.1). For this load: {labels}. For Class 9 the placard is model No. 9, never 9A (5.3.1.1.4).",
+      "de": "Die Großzettel entsprechen den Gefahrzetteln der Spalte (5) und gegebenenfalls der Spalte (6) der Tabelle A (5.3.1.1.1). Für diese Ladung: {labels}. Für Klasse 9 gilt Muster Nr. 9, niemals 9A (5.3.1.1.4).",
+      "fr": "Les plaques-étiquettes correspondent aux étiquettes de la colonne (5) et, le cas échéant, de la colonne (6) du tableau A (5.3.1.1.1). Pour ce chargement : {labels}. Pour la classe 9, le modèle est le no 9, jamais 9A (5.3.1.1.4)."
+    },
+    "class1_aggregated": {
+      "nl": "Klasse 1, meerdere subklassen aan boord: alleen het grote etiket van de gevaarlijkste subklasse in de volgorde 1.1, 1.5, 1.2, 1.3, 1.6, 1.4 — hier {division} (5.3.1.1.2). Stoffen 1.5 D samen met subklasse 1.2 worden als 1.1 beborden. Bij verschillende compatibiliteitsgroepen wordt geen groepsletter vermeld.",
+      "en": "Class 1, several divisions on board: only the placard of the most dangerous division in the order 1.1, 1.5, 1.2, 1.3, 1.6, 1.4 — here {division} (5.3.1.1.2). 1.5 D substances carried with Division 1.2 are placarded as 1.1. With different compatibility groups no group letter is shown.",
+      "de": "Klasse 1, mehrere Unterklassen an Bord: nur der Großzettel der gefährlichsten Unterklasse in der Reihenfolge 1.1, 1.5, 1.2, 1.3, 1.6, 1.4 — hier {division} (5.3.1.1.2). Stoffe 1.5 D zusammen mit Unterklasse 1.2 werden als 1.1 bezettelt. Bei verschiedenen Verträglichkeitsgruppen wird kein Gruppenbuchstabe angegeben.",
+      "fr": "Classe 1, plusieurs divisions à bord : uniquement la plaque-étiquette de la division la plus dangereuse dans l'ordre 1.1, 1.5, 1.2, 1.3, 1.6, 1.4 — ici {division} (5.3.1.1.2). Les matières 1.5 D transportées avec la division 1.2 sont placardées 1.1. En cas de groupes de compatibilité différents, aucune lettre de groupe n'est indiquée."
+    },
+    "no_subsidiary_duplicate": {
+      "nl": "Een groot etiket voor een bijkomend gevaar vervalt indien dat gevaar al door een ander groot etiket wordt aangegeven (5.3.1.1.5).",
+      "en": "A subsidiary hazard placard is not needed if that hazard is already indicated by another placard (5.3.1.1.5).",
+      "de": "Ein Großzettel für eine Zusatzgefahr entfällt, wenn diese Gefahr bereits durch einen anderen Großzettel angezeigt wird (5.3.1.1.5).",
+      "fr": "La plaque-étiquette d'un danger subsidiaire n'est pas requise si ce danger est déjà indiqué par une autre plaque-étiquette (5.3.1.1.5)."
+    },
+    "ctu_container": {
+      "nl": "Containers, bulkcontainers, MEGC's, tankcontainers en transporttanks: aan beide zijden en aan beide uiteinden (5.3.1.2). Op het dragende voertuig of de dragende wagen alleen wanneer de etiketten van buitenaf niet zichtbaar zijn (5.3.1.3).",
+      "en": "Containers, bulk containers, MEGCs, tank-containers and portable tanks: on both sides and at each end (5.3.1.2). On the carrying vehicle or wagon only where the placards are not visible from outside it (5.3.1.3).",
+      "de": "Container, Schüttgut-Container, MEGC, Tankcontainer und ortsbewegliche Tanks: an beiden Seiten und an beiden Enden (5.3.1.2). Am tragenden Fahrzeug oder Wagen nur, wenn die Großzettel von außen nicht sichtbar sind (5.3.1.3).",
+      "fr": "Conteneurs, conteneurs pour vrac, CGEM, conteneurs-citernes et citernes mobiles : sur les deux côtés et à chaque extrémité (5.3.1.2). Sur le véhicule ou wagon porteur uniquement si les plaques ne sont pas visibles de l'extérieur (5.3.1.3)."
+    },
+    "ctu_vehicle_class17": {
+      "nl": "Voertuigen met colli van klasse 1 (behalve 1.4 S) of klasse 7 (behalve vrijgestelde colli): grote etiketten aan beide zijden en aan de achterzijde (5.3.1.5.1/5.3.1.5.2).",
+      "en": "Vehicles carrying packages of Class 1 (other than 1.4 S) or Class 7 (other than excepted packages): placards on both sides and at the rear (5.3.1.5.1/5.3.1.5.2).",
+      "de": "Fahrzeuge mit Versandstücken der Klasse 1 (außer 1.4 S) oder der Klasse 7 (außer freigestellten Versandstücken): Großzettel an beiden Seiten und hinten (5.3.1.5.1/5.3.1.5.2).",
+      "fr": "Véhicules transportant des colis de la classe 1 (sauf 1.4 S) ou de la classe 7 (sauf colis exceptés) : plaques-étiquettes sur les deux côtés et à l'arrière (5.3.1.5.1/5.3.1.5.2)."
+    },
+    "ctu_vehicle_none": {
+      "nl": "Een voertuig met uitsluitend colli van andere klassen dan 1 en 7 behoeft op het watertraject geen grote etiketten — behalve wanneer het ADN-traject aan een zeereis voorafgaat: dan aan beide zijden en aan de achterzijde, en ze mogen er na de zeereis op blijven (opmerking bij 5.3.1.5.2).",
+      "en": "A vehicle carrying only packages of classes other than 1 and 7 needs no placards on the water leg — except where the ADN journey precedes a voyage by sea: then on both sides and at the rear, and they may remain affixed for the ADN journey after the sea voyage (note to 5.3.1.5.2).",
+      "de": "Ein Fahrzeug mit ausschließlich Versandstücken anderer Klassen als 1 und 7 braucht auf der Wasserstrecke keine Großzettel — außer wenn die ADN-Reise einer Seereise vorausgeht: dann an beiden Seiten und hinten, und sie dürfen für die ADN-Reise nach der Seereise angebracht bleiben (Bemerkung zu 5.3.1.5.2).",
+      "fr": "Un véhicule ne transportant que des colis d'autres classes que 1 et 7 n'a pas besoin de plaques-étiquettes sur le trajet fluvial — sauf si le trajet ADN précède un voyage par mer : alors sur les deux côtés et à l'arrière, et elles peuvent rester apposées pour le trajet ADN qui suit le voyage par mer (note du 5.3.1.5.2)."
+    },
+    "ctu_wagon": {
+      "nl": "Wagens met colli: grote etiketten overeenkomstig de vervoerde goederen aan beide zijden — voor elke klasse, niet alleen 1 en 7 (5.3.1.5.3).",
+      "en": "Wagons carrying packages: placards corresponding to the goods carried on both sides — for every class, not only 1 and 7 (5.3.1.5.3).",
+      "de": "Wagen mit Versandstücken: Großzettel entsprechend den beförderten Gütern an beiden Seiten — für jede Klasse, nicht nur 1 und 7 (5.3.1.5.3).",
+      "fr": "Wagons transportant des colis : plaques-étiquettes correspondant aux marchandises transportées sur les deux côtés — pour chaque classe, pas seulement 1 et 7 (5.3.1.5.3)."
+    },
+    "tank_bulk": {
+      "nl": "Bij vervoer los gestort of in een tank op het vervoermiddel: elk voorgeschreven groot etiket aan beide zijden en (bij voertuigen) aan de achterzijde (5.3.1.4.1); voor tankcontainers en transporttanks geldt 5.3.1.2.",
+      "en": "For carriage in bulk or in a tank on the conveyance: every prescribed placard on both sides and (for vehicles) at the rear (5.3.1.4.1); tank-containers and portable tanks follow 5.3.1.2.",
+      "de": "Bei Beförderung in loser Schüttung oder in einem Tank auf dem Beförderungsmittel: jeder vorgeschriebene Großzettel an beiden Seiten und (bei Fahrzeugen) hinten (5.3.1.4.1); für Tankcontainer und ortsbewegliche Tanks gilt 5.3.1.2.",
+      "fr": "Pour le transport en vrac ou en citerne sur l'engin : chaque plaque-étiquette prescrite sur les deux côtés et (pour les véhicules) à l'arrière (5.3.1.4.1) ; les conteneurs-citernes et citernes mobiles suivent le 5.3.1.2."
+    },
+    "empty_uncleaned": {
+      "nl": "Lege, ongereinigde tanks en lege voertuigen, wagens en containers voor losgestort vervoer behouden de grote etiketten van de vorige lading (5.3.1.6.1): {products}.",
+      "en": "Empty uncleaned tanks and empty vehicles, wagons and containers for carriage in bulk continue to display the placards of the previous load (5.3.1.6.1): {products}.",
+      "de": "Leere, ungereinigte Tanks und leere Fahrzeuge, Wagen und Container für die Beförderung in loser Schüttung behalten die Großzettel der vorherigen Ladung (5.3.1.6.1): {products}.",
+      "fr": "Les citernes vides non nettoyées et les véhicules, wagons et conteneurs vides pour le transport en vrac conservent les plaques-étiquettes du chargement précédent (5.3.1.6.1) : {products}."
+    },
+    "orange_plates": {
+      "provision": "5.3.2.1.1",
+      "nl": "Transporteenheden (wegvoertuigen) die gevaarlijke goederen vervoeren, ook aan boord: twee rechthoekige oranje borden, één aan de voorzijde en één aan de achterzijde (5.3.2.1.1).",
+      "en": "Transport units (road vehicles) carrying dangerous goods, on board as well: two rectangular orange-coloured plates, one at the front and one at the rear (5.3.2.1.1).",
+      "de": "Beförderungseinheiten (Straßenfahrzeuge) mit gefährlichen Gütern, auch an Bord: zwei rechteckige orangefarbene Tafeln, eine vorn und eine hinten (5.3.2.1.1).",
+      "fr": "Unités de transport (véhicules routiers) transportant des marchandises dangereuses, à bord également : deux panneaux rectangulaires de couleur orange, un à l'avant et un à l'arrière (5.3.2.1.1)."
+    },
+    "tank_plates": {
+      "provision": "5.3.2.1.2",
+      "nl": "Tanks aan boord met een gevaarsidentificatienummer in kolom (20): oranje borden met gevaarsnummer boven UN-nummer aan beide zijden van elke tank of elk compartiment — voor wegvoertuigen het nummer uit tabel A van het ADR, voor wagens dat van het RID (5.3.2.1.2). Voor deze lading: {numbers}.",
+      "en": "Tanks on board with a hazard identification number in column (20): orange plates bearing the hazard number above the UN number on both sides of each tank or compartment — for road vehicles the number of ADR's table A, for wagons that of RID (5.3.2.1.2). For this load: {numbers}.",
+      "de": "Tanks an Bord mit einer Nummer zur Kennzeichnung der Gefahr in Spalte (20): orangefarbene Tafeln mit Gefahrnummer über UN-Nummer an beiden Seiten jedes Tanks oder Abteils — für Straßenfahrzeuge die Nummer der Tabelle A des ADR, für Wagen die des RID (5.3.2.1.2). Für diese Ladung: {numbers}.",
+      "fr": "Citernes à bord avec un numéro d'identification du danger en colonne (20) : panneaux orange portant le numéro de danger au-dessus du numéro ONU sur les deux côtés de chaque citerne ou compartiment — pour les véhicules routiers le numéro du tableau A de l'ADR, pour les wagons celui du RID (5.3.2.1.2). Pour ce chargement : {numbers}."
+    },
+    "tank_plates_no_number": {
+      "nl": "Tabel A geeft voor {products} geen gevaarsidentificatienummer; of de genummerde borden van 5.3.2.1.2 gelden kan hier niet worden bepaald.",
+      "en": "Table A gives no hazard identification number for {products}; whether the numbered plates of 5.3.2.1.2 apply cannot be settled here.",
+      "de": "Tabelle A nennt für {products} keine Nummer zur Kennzeichnung der Gefahr; ob die nummerierten Tafeln nach 5.3.2.1.2 gelten, kann hier nicht entschieden werden.",
+      "fr": "Le tableau A ne donne pas de numéro d'identification du danger pour {products} ; il est impossible de déterminer ici si les panneaux numérotés du 5.3.2.1.2 s'appliquent."
+    },
+    "sea_chain": {
+      "provision": "5.3.4.1",
+      "nl": "In een transportketen die vervoer over zee omvat behoeven containers, transporttanks en MEGC's geen oranje borden indien zij de kenmerking van sectie 5.3.2 van de IMDG-code dragen (juiste vervoersnaam op ten minste twee zijden en het UN-nummer in zwarte cijfers van ten minste 65 mm) (5.3.4.1).",
+      "en": "In a transport chain including maritime transport, containers, portable tanks and MEGCs need not carry the orange plates if they carry the marking of section 5.3.2 of the IMDG Code (proper shipping name on at least two sides and the UN number in black digits at least 65 mm high) (5.3.4.1).",
+      "de": "In einer Transportkette, die eine Seebeförderung einschließt, brauchen Container, ortsbewegliche Tanks und MEGC keine orangefarbenen Tafeln, wenn sie die Kennzeichnung des Abschnitts 5.3.2 des IMDG-Codes tragen (richtiger technischer Name auf mindestens zwei Seiten und UN-Nummer in schwarzen Ziffern von mindestens 65 mm) (5.3.4.1).",
+      "fr": "Dans une chaîne de transport comportant un parcours maritime, les conteneurs, citernes mobiles et CGEM peuvent ne pas porter les panneaux orange s'ils portent le marquage de la section 5.3.2 du Code IMDG (désignation officielle de transport sur au moins deux côtés et numéro ONU en chiffres noirs d'au moins 65 mm) (5.3.4.1)."
+    },
+    "environmental_mark": {
+      "provision": "5.3.6.1",
+      "nl": "Milieugevaarlijke stoffen aan boord ({products}): waar volgens 5.3.1 een groot etiket op de vervoerseenheid is voorgeschreven, draagt die eenheid ook het kenmerk voor milieugevaarlijke stoffen, ten minste 250 mm × 250 mm (5.3.6.1/5.3.6.2). Het kenmerk op het collo zelf (5.2.1.8.3) staat hier los van.",
+      "en": "Environmentally hazardous substances on board ({products}): where section 5.3.1 requires a placard on the cargo transport unit, that unit also bears the environmentally hazardous substance mark, at least 250 mm × 250 mm (5.3.6.1/5.3.6.2). The mark on the package itself (5.2.1.8.3) is a separate question.",
+      "de": "Umweltgefährdende Stoffe an Bord ({products}): wo Abschnitt 5.3.1 einen Großzettel an der Beförderungseinheit vorschreibt, trägt diese Einheit auch das Kennzeichen für umweltgefährdende Stoffe, mindestens 250 mm × 250 mm (5.3.6.1/5.3.6.2). Das Kennzeichen auf dem Versandstück selbst (5.2.1.8.3) ist eine eigene Frage.",
+      "fr": "Matières dangereuses pour l'environnement à bord ({products}) : là où la section 5.3.1 prescrit une plaque-étiquette sur l'engin de transport, celui-ci porte aussi la marque de matière dangereuse pour l'environnement, d'au moins 250 mm × 250 mm (5.3.6.1/5.3.6.2). La marque sur le colis lui-même (5.2.1.8.3) est une question distincte."
+    },
+    "exempt_note": {
+      "provision": "1.1.3.6.2",
+      "nl": "Deze zending komt mogelijk in aanmerking voor de vrijstelling van ADN 1.1.3.6.1 (zie het vrijstellingspaneel — de applicatie meldt dat, zij verleent het niet). Sectie 5.3 staat niet in de voorwaarden die 1.1.3.6.2 onder de vrijstelling laat doorlopen; wordt onder de vrijstelling vervoerd, dan vervalt de bebording hierboven.",
+      "en": "This consignment may qualify for the exemption of ADN 1.1.3.6.1 (see the exemption panel — the application reports that, it does not grant it). Section 5.3 is not among the conditions 1.1.3.6.2 keeps alive under the exemption; carried under it, the placarding above does not apply.",
+      "de": "Diese Sendung kommt möglicherweise für die Freistellung nach ADN 1.1.3.6.1 in Betracht (siehe das Freistellungs-Panel — die Anwendung meldet das, sie gewährt es nicht). Abschnitt 5.3 gehört nicht zu den Bedingungen, die 1.1.3.6.2 unter der Freistellung fortgelten lässt; wird unter der Freistellung befördert, entfällt die obige Bezettelung.",
+      "fr": "Cet envoi peut prétendre à l'exemption du 1.1.3.6.1 de l'ADN (voir le panneau d'exemption — l'application le signale, elle ne l'accorde pas). La section 5.3 ne figure pas parmi les conditions que le 1.1.3.6.2 maintient sous l'exemption ; transporté sous celle-ci, le placardage ci-dessus ne s'applique pas."
+    }
+  },
   "adn_stabilisation": {
     "_source": "ADN 2025 (UNECE, English edition), 5.4.1.1.1 (j) on printed page 324 and 7.1.6.11 on 388, quoted by scripts/read_land_regulations.py --doc adn --section 5.4.1.1.1 --section 7.1.6.11.",
     "_what_it_says": "5.4.1.1.1 (j): if column (11) of table A of chapter 3.2 contains the additional requirement ST01, the transport document carries a confirmation of stabilization (see 7.1.6.11). 7.1.6.11 is headed \"Carriage in bulk\" and ST01 requires the substances to have been stabilized in accordance with the requirements applicable to ammonium nitrate fertilizers set out in the IMSBC Code, certified by the consignor in the transport document; in those States where this is required they may be carried in bulk only with the approval of the competent authority.",

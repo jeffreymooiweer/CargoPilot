@@ -493,7 +493,9 @@
     "bulkAdmission": {
       "ok": "permitted",
       "not_permitted": "not permitted"
-    }
+    },
+    "adnPlacardingTitle": "Placarding and marking on board (ADN 5.3)",
+    "adnPlacardingCtu": "Per cargo transport unit"
   },
   "dgauto": {
     "title": "Derived automatically",

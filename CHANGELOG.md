@@ -2,6 +2,21 @@
 
 All notable changes are documented here, following [Semantic Versioning](https://semver.org/).
 
+## [1.118.0] — 2026-08-18
+
+### Changed
+
+- **Air transport is locked again, the demonstration over.** As agreed when
+  it was unlocked in v1.117.0: the demo constant is gone and the released
+  modes are road and inland waterway once more. Nothing about the coverage
+  changed in between — the IATA quantity tables are still not held, so the
+  Q value depends on the M a user enters. That is fine to show while
+  somebody stands next to the screen explaining it, and not fine on a
+  document somebody signs unattended. README, roadmap, user guide and the
+  documents page carry the plain wording again, and the roadmap keeps the
+  note that air's declaration and segregation checks are already sound —
+  which is why it was the one that could be demonstrated at all.
+
 ## [1.117.0] — 2026-08-18
 
 ### Changed

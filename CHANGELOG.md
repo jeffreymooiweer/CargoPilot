@@ -2,6 +2,23 @@
 
 All notable changes are documented here, following [Semantic Versioning](https://semver.org/).
 
+## [1.117.0] — 2026-08-18
+
+### Changed
+
+- **Air transport is temporarily unlocked, for a demonstration.** On the
+  owner's request, and meant to be taken out again. Of the three locked
+  modes it is the defensible one to show: the IATA declaration and the
+  segregation checks are sound, and where the remaining gap sits — the IATA
+  quantity tables are not held, so the Q value depends on the M the user
+  enters and the passenger/cargo-aircraft limit is never derived — the
+  application already says so on the screen *and* on the document itself.
+  Rail, sea and multimodal stay locked. The unlock is one named constant,
+  `DEMO_UNLOCKED_MODALITIES` in `ModalitySelectPage.tsx`; removing it locks
+  air again, and the roadmap says so beside the air entry. README, roadmap,
+  user guide and the documents page state the temporary unlock rather than
+  claiming air is released.
+
 ## [1.116.0] — 2026-08-18
 
 ### Removed

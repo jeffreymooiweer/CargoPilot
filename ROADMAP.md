@@ -10,7 +10,8 @@ Versioning follows [Semantic Versioning](https://semver.org/) — see
 CargoPilot is **under active development**. It is usable today: the current release
 covers the full flow from package entry to finished documents for **road and inland
 waterway** transport. Rail, sea, air and multimodal are built in and reachable in the
-code, but their tiles are locked until their remaining regulatory checks are complete —
+code, but their tiles are locked until their remaining regulatory checks are complete
+(air is temporarily unlocked for demonstration; see below) —
 a half-right document is worse than none, because it gets signed and handed over. The
 gaps that keep them locked are listed per mode in [DG coverage](docs/dg-coverage.md).
 
@@ -20,7 +21,7 @@ Expect additions rather than upheaval — the wizard and the document registry a
 
 | Area | State |
 |---|---|
-| Transport modes | Road and inland waterway released; rail, sea, air and multimodal built but locked pending their remaining checks |
+| Transport modes | Road and inland waterway released; air temporarily unlocked for demonstration with its quantity gap open; rail, sea and multimodal built but locked pending their remaining checks |
 | Official forms filled in | CMR, CIM, IATA Shipper's Declaration, AVC waybill |
 | Generated documents | IMO DG Form, VGM, AWB and B/L instructions, ADN document, stowage plan, placarding sheet, packing certificate, on-board document lists, equipment sheet, packing list, delivery note |
 | AI assistant | Optional survey-style assistant over the whole wizard; works without any model, and an admin can install a pinned local model (Qwen3-1.7B via llama.cpp) that only reads — it never decides regulatory content |
@@ -43,7 +44,12 @@ cleared in v1.63.0. The work per mode is what [DG coverage](docs/dg-coverage.md)
 - **Rail (RID)** — the remaining RID-specific checks and the CIM flow verified end to end.
 - **Sea (IMDG)** — the remaining IMDG document checks around the IMO form, VGM and
   shipping instructions.
-- **Air (IATA DGR)** — the declaration checks that still lean on the road rulebook.
+- **Air (IATA DGR)** — the IATA quantity tables, so the Q value no longer depends on a
+  user-entered M and the passenger/cargo-aircraft limit can be derived. *Temporarily
+  unlocked for demonstration:* the declaration and segregation are sound and the
+  application states on screen and on the document when the Q check could not run, but
+  the quantity side is not verified. To lock it again, remove `DEMO_UNLOCKED_MODALITIES`
+  in `frontend/src/pages/ModalitySelectPage.tsx`.
 - **Multimodal** — unlocks last, since it is the union of the other modes' documents.
 
 ### Update experience

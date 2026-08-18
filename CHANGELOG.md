@@ -2,6 +2,39 @@
 
 All notable changes are documented here, following [Semantic Versioning](https://semver.org/).
 
+## [1.121.0] — 2026-08-18
+
+### Added
+
+- **Placarding for the rail leg: RID 5.3, derived and on paper.** Read in
+  the English edition (printed pages 837–845, plus the column (5)
+  explanation of 3.2.1 on page 258) and the German edition, which agree.
+  Three things make the rail answer its own rather than the road's on loan:
+  a **wagon carrying packages is placarded for every class** (5.3.1.5),
+  where a road vehicle placards only for classes 1 and 7, both sides and no
+  rear; the **orange plates attach only where column (20) gives a hazard
+  identification number** (5.3.2.1.1), and then carry the two numbers on
+  each side of the tank or bulk wagon — there are no plain front-and-rear
+  plates on rail, and printing the road's plate rule on a rail answer would
+  prescribe equipment RID does not ask for; and the **shunting labels of
+  5.3.4** (model 13, shunt with care; model 15, loose or hump shunting
+  forbidden) are only ever affixed in two cases — class 1 on both sides of
+  full-load wagons, class 2 on both sides of tank-type wagons. Both cases
+  are named as conditions: whether a wagon is a full load is not visible
+  from here, and which substances carry the bracketed model sits in RID's
+  own column (5), which this application does not hold. The orange band of
+  5.3.5 is derived from the state of the gas in the classification code
+  (2 liquefied, 3 refrigerated liquefied, 4 dissolved), the environmentally
+  hazardous mark of 5.3.6 and the empty-uncleaned rule of 5.3.1.6 come
+  with it, and the answer reaches paper as the RID placarding sheet,
+  registered for the rail modality under its own document key.
+- **The RID in four languages sits in the store.** The operator's Drive
+  folder was taken in on a runner: every already-registered book verified
+  against its pinned hash, and one new file recognised — the Dutch RID
+  edition, now registered as `rid_nl_2025` with the hash the runner
+  computed. The rail provisions can be read in the OTIF English, the
+  German, the French and the Dutch editions from here on.
+
 ## [1.120.0] — 2026-08-18
 
 ### Added

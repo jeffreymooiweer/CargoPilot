@@ -352,6 +352,22 @@
       "note": "Supplied as a file; OTIF publishes the same edition, but this copy is the one pinned."
     },
     {
+      "id": "rid_nl_2025",
+      "title": "RID 2025, Dutch edition",
+      "publisher": "supplied by the operator; the edition names itself on its title page",
+      "edition": "RID 2025, in force 1 January 2025",
+      "language": "nl",
+      "profiles": [
+        "RID"
+      ],
+      "role": "The Dutch reading of the rail provisions, beside the OTIF English and the German and French editions. Supplied through the operator's Drive folder in the v1.121.0 intake; the language and edition are to be confirmed from the title page on first reading.",
+      "filename": "RID-2025-NL.pdf",
+      "urls": [],
+      "obtained": "supplied by the operator (Drive folder, adopted as RID 2025.pdf)",
+      "sha256": "7b151bdea4aeab0dfb2417489e073e9a8d23c60c8a96d558fdd7616d4cd45a35",
+      "note": "The hash was computed on the runner from the file as supplied; adoption maps 'RID 2025.pdf' onto this id."
+    },
+    {
       "id": "adn_nl_2025",
       "title": "ADN 2025, Dutch edition",
       "publisher": "supplied by the operator; the edition names itself on its title page",

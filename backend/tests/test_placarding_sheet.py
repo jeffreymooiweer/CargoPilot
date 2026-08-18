@@ -170,3 +170,42 @@ def test_the_adn_document_is_registered_for_inland():
     for language in ("nl", "en", "de", "fr"):
         assert document["label"][language]
         assert document["issue_status"][language]
+
+
+# --- and with the rail's chapter answering (v1.121.0) ----------------------
+
+
+def test_the_rid_sheet_placards_the_package_wagon():
+    """5.3.1.5: a wagon carrying packages is placarded for every class —
+    the rule the road does not have."""
+    path = render_placarding_sheet({}, [], goods(product("1203")), "en",
+                                   regime="RID")
+    body = text_of(path)
+    assert TEXT["title_rid"]["en"] in body
+    assert "5.3.1.5" in body
+
+
+def test_the_rid_sheet_carries_the_numbered_plates_for_a_tank_wagon():
+    path = render_placarding_sheet(
+        {}, [], goods(product("1203", carriage_mode="tank")), "en",
+        regime="RID")
+    body = " ".join(text_of(path).split())
+    assert "33 / UN 1203" in body
+
+
+@pytest.mark.parametrize("language", ["nl", "en", "de", "fr"])
+def test_the_rid_sheet_speaks_all_four_languages(language):
+    path = render_placarding_sheet({}, [], goods(product("1203")), language,
+                                   regime="RID")
+    assert TEXT["title_rid"][language] in text_of(path)
+
+
+def test_the_rid_document_is_registered_for_rail():
+    document = get_document("placarding_sheet_rid")
+    assert document is not None
+    assert document["dg_profile"] == "RID"
+    assert document["dg_only"] is True
+    assert document["exporter"] == "placarding_rid"
+    for language in ("nl", "en", "de", "fr"):
+        assert document["label"][language]
+        assert document["issue_status"][language]

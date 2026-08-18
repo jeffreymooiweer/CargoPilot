@@ -495,7 +495,9 @@
       "not_permitted": "nicht zugelassen"
     },
     "adnPlacardingTitle": "Großzettel und Kennzeichnung an Bord (ADN 5.3)",
-    "adnPlacardingCtu": "Je Beförderungseinheit"
+    "adnPlacardingCtu": "Je Beförderungseinheit",
+    "ridPlacardingTitle": "Großzettel und Kennzeichnung auf der Schiene (RID 5.3)",
+    "ridPlacardingWagon": "Je Wagen oder Großcontainer"
   },
   "dgauto": {
     "title": "Automatisch abgeleitet",

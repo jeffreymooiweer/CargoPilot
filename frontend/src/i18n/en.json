@@ -495,7 +495,9 @@
       "not_permitted": "not permitted"
     },
     "adnPlacardingTitle": "Placarding and marking on board (ADN 5.3)",
-    "adnPlacardingCtu": "Per cargo transport unit"
+    "adnPlacardingCtu": "Per cargo transport unit",
+    "ridPlacardingTitle": "Placarding and marking on rail (RID 5.3)",
+    "ridPlacardingWagon": "Per wagon or large container"
   },
   "dgauto": {
     "title": "Derived automatically",

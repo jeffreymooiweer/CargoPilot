@@ -116,6 +116,16 @@ def export(
             payload.output_language,
             regime="ADN",
         )
+    elif exporter == "placarding_rid":
+        # And with the rail's chapter answering: package wagons placard for
+        # every class, the orange plates attach only via column (20).
+        out_path = render_placarding_sheet(
+            payload.values,
+            payload.lines,
+            payload.dangerous_goods,
+            payload.output_language,
+            regime="RID",
+        )
     elif exporter == "stowage":
         # The stowage plan is drawn from where the goods are, not from typed
         # document fields: 7.1.4.11.1 asks which goods are in which hold, and

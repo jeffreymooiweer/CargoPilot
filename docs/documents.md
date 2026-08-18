@@ -16,7 +16,7 @@ with the correct fixed legal wording.
 | Mode | Documents offered |
 |---|---|
 | **Road** | CMR, AVC waybill, packing list, delivery note — and for dangerous goods: placarding and marking sheet (ADR 5.3), container/vehicle packing certificate (5.4.2), on-board documents list (ADR 8.1.2), equipment sheet (ADR 8.1.4/8.1.5) |
-| **Rail** | CIM, packing list, delivery note |
+| **Rail** | CIM, packing list, delivery note — and for dangerous goods: placarding and marking sheet (RID 5.3) |
 | **Sea** | B/L or Sea Waybill shipping instructions, VGM declaration, IMO Multimodal DG Form, packing list, delivery note |
 | **Inland waterway** | ADN transport document, VGM declaration, stowage plan (ADN 7.1.4.11.1), placarding and marking sheet (ADN 5.3), on-board documents list (ADN 8.1.2), packing list, delivery note |
 | **Air** | AWB shipping instructions, IATA Shipper's Declaration, packing list, delivery note |

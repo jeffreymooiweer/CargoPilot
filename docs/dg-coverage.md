@@ -403,10 +403,16 @@ where 5.3.2.1 marking is prescribed — contains no tunnel restriction code.
   1.4 and UN 0161 and 0499. Read on page 1103 in the English edition and 1187 in the German.
   It needed no new data; which lines fall within the LQ limits is the 3.4 check's answer,
   taken from it rather than computed again. There is no ADR equivalent.
-- **Shunting and marshalling** beyond 7.5.3, including the shunting label of model 13 which
-  RID 5.4.1.1.1 (c) explicitly excludes from the description. The table this application
-  holds is the ADR's, whose column (5) carries neither model 13 nor model 15, so the
-  exclusion is a guard here and not a transformation.
+- ~~**Shunting and marshalling** beyond 7.5.3~~ — the shunting marking is derived since
+  v1.121.0, and reading it showed the question is smaller than it looked. The column (5)
+  explanation of 3.2.1 (page 258 of the English edition) says the bracketed models 13 and 15
+  are only ever affixed in two cases: **class 1, on both sides of wagons comprising a full
+  load; class 2, on both sides of tank-wagons, battery-wagons, wagons with demountable tanks
+  and wagons carrying tank-containers, MEGCs or portable tanks**. Both cases are named as
+  conditions when the load raises them — whether a wagon is a full load is not visible from
+  here, and *which* substances carry the bracketed model sits in RID's own column (5), which
+  this application does not hold (its table is the ADR's, which carries neither model). The
+  exclusion of model 13 from the description line (5.4.1.1.1 (c)) stays a guard.
 - **The CIM's own dangerous goods fields.** Box 24 (NHM) is a free-text field with a format
   check; the entries in boxes 21/23 come from the shared DG data without rail-specific
   validation.
@@ -438,8 +444,18 @@ mostly road on loan either. The quantity calculation, the mixed-loading table, t
 compatibility groups and the protective distance are all cited to RID — and since v1.88.0
 so is 7.5.2.1, whose table is identical in both texts and whose *name* was not: "ADR
 7.5.2.1" on a CIM is the same category of inaccuracy as the CV28 that used to appear there
-in place of CW 28. With (j) and 7.5.2.4 on the document, what is left that is genuinely
-rail-specific is shunting.
+in place of CW 28. **Since v1.121.0 rail has its own chapter 5.3 as well** — read in the
+English edition (printed pages 837–845) and the German, which agree: a wagon carrying
+packages is placarded for every class (5.3.1.5), where a road vehicle placards only for 1
+and 7; the orange plates attach only where column (20) gives a hazard identification number
+(5.3.2.1.1), each side of the tank or bulk wagon, with no plain front-and-rear plates at
+all; the orange band of 5.3.5 follows the state of the gas out of the classification code
+(2 liquefied, 3 refrigerated liquefied, 4 dissolved); and the shunting marking of 5.3.4 is
+a named condition (see above). What is left that is genuinely rail-specific: the
+per-substance bracketed models of RID's own column (5), and the store now holds the RID in
+four languages — the OTIF English, the German, the French, and the operator's Dutch
+edition, registered in the v1.121.0 intake — should a reading of that column ever be
+extracted.
 
 ## Inland waterway — ADN
 
@@ -717,7 +733,7 @@ Ordered by how much harm someone could take before noticing, not by effort.
 | 4 | **Mixed loading for ADN answered with ADR's 7.5.2** | Closed, and since v1.119.0 closed completely. v1.38.0 read RID's 7.5.2.1 and found it identical to ADR's, footnotes included; v1.41.0 gave rail its own table and its own protective distance. v1.59.0 gave inland waterway ADN 7.1.4.3 — how many metres, not whether — v1.61.0 read column (12) for the cone provisions, v1.64.0 applied the class 1 hold table of 7.1.4.3.4. v1.119.0 read the rest of the chapter: 7.1.4.2 (bulk class 5.1 excludes everything else), 7.1.4.10 (the foodstuffs precaution on special provision 802, in place of the borrowed CV28) and the container exceptions of 7.1.4.4/7.1.4.5 — and the ADR table no longer runs for an inland-only selection at all. |
 | 5 | **LQ/EQ conditions not checked** | The arithmetic of 3.4/3.5 is verified correct and 3.5.1.3/3.5.1.4 are applied since v1.50.0, but the mark, the packagings and the 3.5.3 tests are declarations the application cannot see. A line "within the limits" is a candidate, not an exemption — and the panel says so. |
 | 6 | **IMDG stowage category shown, not enforced** | Lower because on-deck/under-deck is usually the carrier's call, not the consignor's. **[verify]** |
-| 7 | **No marking or placarding checks outside the road mode** | Closed for ADR in v1.57.0 (5.3.1.5, 5.3.2.1 and 5.3.6.1 for packages; the equipment half in v1.53.0), extended to tanks and put on paper in v1.83.0. Closed for inland waterway in v1.120.0: ADN 5.3 is derived per kind of cargo transport unit — the kind the application cannot see, and the kind decides everything (a container placards for any class, a road vehicle only for 1 and 7 except before a sea voyage, a wagon for the goods carried) — and reaches paper as the ADN placarding sheet. Rail, sea and air still have nothing. |
+| 7 | **No marking or placarding checks outside the road mode** | Closed for ADR in v1.57.0 (5.3.1.5, 5.3.2.1 and 5.3.6.1 for packages; the equipment half in v1.53.0), extended to tanks and put on paper in v1.83.0. Closed for inland waterway in v1.120.0: ADN 5.3 is derived per kind of cargo transport unit — the kind the application cannot see, and the kind decides everything (a container placards for any class, a road vehicle only for 1 and 7 except before a sea voyage, a wagon for the goods carried) — and reaches paper as the ADN placarding sheet. Closed for rail in v1.121.0: RID 5.3 is derived under its own rules — package wagons placard for every class, orange plates only via column (20), the orange band of 5.3.5 from the classification code, the shunting marking of 5.3.4 as a named condition — and reaches paper as the RID placarding sheet. Sea and air still have nothing. |
 | 8 | ~~The tank hierarchy declines on three of eighteen codes~~ | Closed in v1.94.0. The French volume II — the treaty's other authentic language — was read verbatim on the three cells no two of the first three readings agreed on: it sided with the Dutch on L10BH's group (18 codes), with the German on L10DH's inheritance (the chain runs through L10CH), and with everyone on S10AH's nine codes — the strays of the other readings spell the inheritance sentence (S, G, A, V is SGAV leaking into the cell). **All eighteen codes are settled on every cell.** |
 
 Two of the top gaps from earlier versions of this table are gone, and it is worth being
@@ -836,7 +852,7 @@ reading and not as a coincidence.
 
 ---
 
-*This assessment is maintained up to CargoPilot v1.120.0; the sections above name the release
+*This assessment is maintained up to CargoPilot v1.121.0; the sections above name the release
 each finding shipped in. v1.42.0 to v1.48.0 touched the goods
 catalogue, the interface language, the settings, the documentation and the error messages,
 not a single regulatory check; v1.49.0 and v1.50.0 changed the ADR side, from the Dutch

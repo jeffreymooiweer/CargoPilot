@@ -495,7 +495,9 @@
       "not_permitted": "non autorisé"
     },
     "adnPlacardingTitle": "Plaques-étiquettes et marquage à bord (ADN 5.3)",
-    "adnPlacardingCtu": "Par engin de transport"
+    "adnPlacardingCtu": "Par engin de transport",
+    "ridPlacardingTitle": "Plaques-étiquettes et marquage sur rail (RID 5.3)",
+    "ridPlacardingWagon": "Par wagon ou grand conteneur"
   },
   "dgauto": {
     "title": "Déduit automatiquement",

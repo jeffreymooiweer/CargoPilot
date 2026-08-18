@@ -2006,6 +2006,227 @@ def check_adn_placarding(
     }
 
 
+def check_rid_placarding(
+    entries: list[dict[str, Any]], language: str = "nl",
+) -> dict[str, Any]:
+    """RID 5.3: what the wagons and large containers on the rail leg must show.
+
+    Read in the English edition (printed pages 837–845, plus the column (5)
+    explanation of 3.2.1 on page 258) and the German edition, which agree.
+    Three things make the rail answer its own rather than the road's on loan:
+
+    - **A wagon carrying packages is placarded for every class** (5.3.1.5),
+      where a road vehicle carrying packages placards only for classes 1 and 7.
+      Both sides, no rear.
+    - **The orange plates attach only where column (20) gives a hazard
+      identification number** (5.3.2.1.1), and then they carry the two numbers
+      on each side of the tank, bulk wagon or container. There are no plain
+      front-and-rear plates on rail — printing the road's plate rule on a rail
+      answer would prescribe equipment RID does not ask for.
+    - **The shunting labels of 5.3.4** are only ever affixed in two cases —
+      class 1 on both sides of full-load wagons, class 2 on both sides of
+      tank-type wagons (column (5) explanation, page 258). Which substances
+      carry the bracketed model in RID's own column (5) this application
+      cannot see: its table is the ADR's, which carries neither model 13 nor
+      model 15. So the case is named as a condition, and 5.4.1.1.1 (c) keeps
+      model 13 off the document either way.
+
+    Also derived: the orange band of 5.3.5, because the state of the gas is
+    the first digit of the classification code (2 liquefied, 3 refrigerated
+    liquefied, 4 dissolved), and the environmentally hazardous mark of 5.3.6.
+    What the RID exemption of 1.1.3.6 would relieve of chapter 5.3 has not
+    been read, so no exemption branch is offered — the full answer stands,
+    which is the safe direction.
+    """
+    rules = get_compliance_rules()["rid_placarding"]
+    lang = _lang(language)
+    products = [(entry, index, product)
+                for entry, index, product in _iter_products(entries)
+                if not product.get("transport_forbidden")]
+    if not products:
+        return {"status": "not_checked", "placards": [], "marks": []}
+
+    named = {id(product): _product_label(entry, product, index)
+             for entry, index, product in products}
+    goods = [product for _entry, _index, product in products]
+
+    def text(key: str) -> str:
+        block = rules[key]
+        return block.get(lang) or block["en"]
+
+    placards: list[dict[str, Any]] = []
+    labels = sorted({
+        "9" if part.strip().upper() == "9A" else part.strip()
+        for p in goods
+        for part in str(p.get("labels") or "").replace("+", ",").split(",")
+        if part.strip() and not part.strip().startswith("1")})
+    class1 = [p for p in goods
+              if str(p.get("class") or "").strip().startswith("1")
+              and str(p.get("classification_code") or "").strip().upper() != "1.4S"]
+
+    def _division(product: dict[str, Any]) -> str:
+        match = re.match(r"1\.\d",
+                         str(product.get("classification_code") or "").strip())
+        return match.group(0) if match else "1"
+
+    divisions = sorted({_division(p) for p in class1})
+    class1_aggregated = None
+    if class1:
+        known = [d for d in _ADN_CLASS1_ORDER if d in divisions]
+        chosen = known[0] if known else "1"
+        if "1.5" in divisions and "1.2" in divisions:
+            chosen = "1.1"
+        groups = {re.sub(r"^1(\.\d)?", "",
+                         str(p.get("classification_code") or "").strip().upper())
+                  for p in class1}
+        groups.discard("")
+        display = chosen if len(divisions) > 1 or len(groups) != 1 \
+            else f"{chosen}{next(iter(groups))}"
+        labels.append(display)
+        if len(divisions) > 1:
+            class1_aggregated = chosen
+    labels = sorted(set(labels))
+
+    if labels:
+        placards.append({
+            "class": None,
+            "provision": "5.3.1.1.1",
+            "message": text("label_models").format(labels=", ".join(labels)),
+            "products": sorted(named.values()),
+            "label_models": labels,
+            "required": True,
+        })
+    if class1_aggregated:
+        placards.append({
+            "class": "1",
+            "provision": "5.3.1.1.2",
+            "message": text("class1_aggregated").format(division=class1_aggregated),
+            "products": sorted({named[id(p)] for p in class1}),
+        })
+    if any("," in str(p.get("labels") or "") or "+" in str(p.get("labels") or "")
+           for p in goods) and labels:
+        placards.append({
+            "class": None, "provision": "5.3.1.1.5",
+            "message": text("no_subsidiary_duplicate"), "products": [],
+        })
+
+    in_tanks_or_bulk = any(
+        str(p.get("carriage_mode") or "").strip()
+        in ("tank", "portable_tank", "bulk") for p in goods)
+    if in_tanks_or_bulk:
+        placards.append({"class": None, "provision": "5.3.1.4.1",
+                         "message": text("tank_bulk"), "products": [],
+                         "required": True})
+    placards.append({"class": None, "provision": "5.3.1.2",
+                     "message": text("ctu_container"), "products": []})
+    if not in_tanks_or_bulk:
+        placards.append({"class": None, "provision": "5.3.1.5",
+                         "message": text("ctu_wagon_packages"), "products": [],
+                         "required": True})
+
+    empty = sorted({named[id(p)] for p in goods if p.get("empty_uncleaned")})
+    if empty:
+        placards.append({
+            "class": None, "provision": "5.3.1.6",
+            "message": text("empty_uncleaned").format(products=", ".join(empty)),
+            "products": empty,
+        })
+
+    marks: list[dict[str, Any]] = []
+    tank_bulk_goods = [
+        p for p in goods
+        if str(p.get("carriage_mode") or "").strip()
+        in ("tank", "portable_tank", "bulk")]
+    if tank_bulk_goods:
+        numbers = sorted({
+            (str(p.get("hazard_number") or "").strip(),
+             str(p.get("un_number") or p.get("un") or "").strip())
+            for p in tank_bulk_goods
+            if str(p.get("hazard_number") or "").strip()
+            and str(p.get("un_number") or p.get("un") or "").strip()})
+        without = sorted({
+            named[id(p)] for p in tank_bulk_goods
+            if not str(p.get("hazard_number") or "").strip()})
+        plates = rules["orange_plates_hin"]
+        if numbers:
+            marks.append({
+                "provision": plates["provision"],
+                "message": (plates.get(lang) or plates["en"]).format(
+                    numbers=", ".join(
+                        f"{hazard} / UN {un}" for hazard, un in numbers)),
+                "kind": "orange_plates",
+                "required": True,
+            })
+        if without:
+            marks.append({
+                "provision": "5.3.2.1.1",
+                "message": text("orange_plates_no_number").format(
+                    products=", ".join(without)),
+                "kind": "orange_plates",
+                "required": None,
+            })
+    else:
+        single = {str(p.get("un_number") or p.get("un") or "").strip()
+                  for p in goods}
+        if len(single) == 1:
+            full = rules["orange_plates_full_load"]
+            marks.append({"provision": full["provision"],
+                          "message": full.get(lang) or full["en"],
+                          "kind": "orange_plates", "required": None})
+
+    # 5.3.4 — only two cases exist, and both are conditions here: whether a
+    # wagon comprises a full load is not visible, and which substances carry
+    # the bracketed model sits in RID's own column (5).
+    has_class2_tank = any(
+        str(p.get("class") or "").strip() == "2"
+        and str(p.get("carriage_mode") or "").strip()
+        in ("tank", "portable_tank") for p in goods)
+    if class1 or has_class2_tank:
+        shunt = rules["shunting_labels"]
+        marks.append({
+            "provision": shunt["provision"],
+            "message": shunt.get(lang) or shunt["en"],
+            "kind": "shunting_labels",
+            "required": None,
+        })
+
+    band = sorted({
+        named[id(p)] for p in goods
+        if str(p.get("class") or "").strip() == "2"
+        and str(p.get("carriage_mode") or "").strip()
+        in ("tank", "portable_tank")
+        and str(p.get("classification_code") or "").strip()[:1] in ("2", "3", "4")})
+    if band:
+        mark = rules["orange_band"]
+        marks.append({
+            "provision": mark["provision"],
+            "message": (mark.get(lang) or mark["en"]).format(
+                products=", ".join(band)),
+            "kind": "orange_band",
+            "required": True,
+        })
+
+    green = [p for p in goods if p.get("environmentally_hazardous")]
+    if green:
+        mark = rules["environmental_mark"]
+        marks.append({
+            "provision": mark["provision"],
+            "message": (mark.get(lang) or mark["en"]).format(
+                products=", ".join(sorted({named[id(p)] for p in green}))),
+            "kind": "environmental_mark",
+        })
+
+    required = [p for p in placards if p.get("required") is True]
+    return {
+        "status": "ok",
+        "scope": "tanks_or_bulk" if in_tanks_or_bulk else "packages",
+        "placards": placards,
+        "placards_required": bool(required),
+        "marks": marks,
+        "source": rules["source"],
+    }
+
+
 def check_adn_carriage_admission(
     entries: list[dict[str, Any]], language: str = "nl",
 ) -> dict[str, Any]:
@@ -5195,6 +5416,12 @@ def check_compliance(
             # 5.4.1.1.1 (j): what belongs on the CIM and on no other document.
             result["rid_transport_document"] = check_rid_transport_document(
                 entries, language)
+            # RID 5.3 — the wagons and large containers on the rail leg. Its
+            # own chapter, not the road's: package wagons placard for every
+            # class, and the orange plates attach only via column (20).
+            rid_placarding = check_rid_placarding(entries, language)
+            if rid_placarding.get("status") != "not_checked":
+                result["rid_placarding"] = rid_placarding
         # ADN answers the exemption question with its own rule, so it gets its
         # own result rather than borrowing the points total.
         if "ADN" in normalized:

@@ -495,7 +495,9 @@
       "not_permitted": "niet toegestaan"
     },
     "adnPlacardingTitle": "Bestikkering en kenmerking aan boord (ADN 5.3)",
-    "adnPlacardingCtu": "Per vervoerseenheid"
+    "adnPlacardingCtu": "Per vervoerseenheid",
+    "ridPlacardingTitle": "Bestikkering en kenmerking op het spoor (RID 5.3)",
+    "ridPlacardingWagon": "Per wagen of grote container"
   },
   "dgauto": {
     "title": "Automatisch afgeleid",

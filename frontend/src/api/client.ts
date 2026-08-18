@@ -1235,6 +1235,30 @@ export interface AdnPlacardingResult {
   source?: string;
 }
 
+/** RID 5.3 — what the wagons and large containers on the rail leg must show.
+ *  Package wagons placard for every class; the orange plates attach only via
+ *  column (20); the shunting labels of 5.3.4 are a named condition. */
+export interface RidPlacardingResult {
+  status: "ok" | "not_checked";
+  scope?: "packages" | "tanks_or_bulk";
+  placards: {
+    class: string | null;
+    provision: string;
+    message: string;
+    products: string[];
+    label_models?: string[];
+    required?: boolean | null;
+  }[];
+  placards_required?: boolean;
+  marks: {
+    kind: "orange_plates" | "shunting_labels" | "orange_band" | "environmental_mark";
+    provision: string;
+    message: string;
+    required?: boolean | null;
+  }[];
+  source?: string;
+}
+
 /** ADR 1.10.3 — high consequence dangerous goods. For carriage in packages the
  *  table has no thresholds to compare against: a line either qualifies at any
  *  quantity or is outside 1.10.3 at every quantity. */
@@ -1319,6 +1343,7 @@ export interface DgComplianceResult {
   /** Placarding and marking per ADR 5.3 — road only. */
   adr_placarding?: AdrPlacardingResult;
   adn_placarding?: AdnPlacardingResult;
+  rid_placarding?: RidPlacardingResult;
   /** High consequence dangerous goods per ADR 1.10.3 — road only. */
   adr_security?: AdrSecurityResult;
   q_values?: QValueResult[];

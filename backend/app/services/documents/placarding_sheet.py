@@ -32,6 +32,7 @@ from app.services.dg.compliance import (
     check_adn_exemption,
     check_adn_placarding,
     check_adr_placarding,
+    check_rid_placarding,
 )
 from app.services.documents.pdf_render import (
     _fields_table,
@@ -57,6 +58,16 @@ TEXT: dict[str, dict[str, str]] = {
         "en": "Placarding and marking sheet (ADN 5.3)",
         "de": "Bezettelungs- und Kennzeichnungsblatt (ADN 5.3)",
         "fr": "Feuille de placardage et de signalisation (ADN 5.3)",
+    },
+    "title_rid": {
+        "nl": "Bebordings- en etiketteringsblad (RID 5.3)",
+        "en": "Placarding and marking sheet (RID 5.3)",
+        "de": "Bezettelungs- und Kennzeichnungsblatt (RID 5.3)",
+        "fr": "Feuille de placardage et de signalisation (RID 5.3)",
+    },
+    "wagon": {
+        "nl": "Wagen of grote container", "en": "Wagon or large container",
+        "de": "Wagen oder Großcontainer", "fr": "Wagon ou grand conteneur",
     },
     "ctu": {
         "nl": "Vervoerseenheid aan boord (container, voertuig of wagen)",
@@ -168,6 +179,9 @@ def render_placarding_sheet(
         result = check_adn_placarding(
             entries, lang, exemption_status=exemption.get("status"))
         title = _t("title_adn", lang)
+    elif regime == "RID":
+        result = check_rid_placarding(entries, lang)
+        title = _t("title_rid", lang)
     else:
         result = check_adr_placarding(entries, lang)
         title = _t("title", lang)
@@ -192,8 +206,9 @@ def render_placarding_sheet(
         # sheet says whose question it is instead of printing an empty answer.
         story.append(_p(result["mode_note"], styles["fixed"]))
 
+    unit_key = {"ADN": "ctu", "RID": "wagon"}.get(regime, "vehicle")
     header = [(_t("consignment", lang), values.get("reference") or values.get("order_reference") or ""),
-              (_t("ctu" if regime == "ADN" else "vehicle", lang),
+              (_t(unit_key, lang),
                values.get("vehicle_registration")
                or values.get("licence_plate") or values.get("vehicle") or "")]
     story.append(_fields_table([(label, value) for label, value in header], styles, width))

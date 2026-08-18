@@ -92,6 +92,7 @@
       },
       "documents": [
         "cim",
+        "placarding_sheet_rid",
         "packing_list",
         "delivery_note"
       ]
@@ -189,6 +190,7 @@
         "adn_transport_doc",
         "placarding_sheet",
         "placarding_sheet_adn",
+        "placarding_sheet_rid",
         "stowage_plan",
         "packing_list",
         "delivery_note",
@@ -2955,6 +2957,42 @@
       },
       "exporter": "placarding_adn",
       "dg_profile": "ADN",
+      "dg_only": true,
+      "sections": [
+        {
+          "ref": "parties"
+        }
+      ],
+      "signature_note": {
+        "nl": "Dit blad is een werkinstructie en geen etiket: de grote etiketten en oranje borden zelf moeten voldoen aan 5.3.1.7 en 5.3.2.2.",
+        "en": "This sheet is a working instruction and not a label: the placards and orange plates themselves must meet 5.3.1.7 and 5.3.2.2.",
+        "de": "Dieses Blatt ist eine Arbeitsanweisung und kein Zettel: die Großzettel und orangefarbenen Tafeln selbst müssen 5.3.1.7 und 5.3.2.2 entsprechen.",
+        "fr": "Cette feuille est une instruction de travail et non une étiquette : les plaques-étiquettes et les panneaux orange doivent eux-mêmes respecter les 5.3.1.7 et 5.3.2.2."
+      }
+    },
+    {
+      "key": "placarding_sheet_rid",
+      "label": {
+        "nl": "Bebordings- en etiketteringsblad (RID 5.3)",
+        "en": "Placarding and marking sheet (RID 5.3)",
+        "de": "Bezettelungs- und Kennzeichnungsblatt (RID 5.3)",
+        "fr": "Feuille de placardage et de signalisation (RID 5.3)"
+      },
+      "short_label": {
+        "nl": "Bebording",
+        "en": "Placarding",
+        "de": "Bezettelung",
+        "fr": "Placardage"
+      },
+      "category": "generated",
+      "issue_status": {
+        "nl": "Hulpdocument — wat de wagens en grote containers moeten tonen, afgeleid uit RID 5.3. Geen voorgeschreven model.",
+        "en": "Working document — what the wagons and large containers must show, derived from RID 5.3. No prescribed model.",
+        "de": "Hilfsdokument — was die Wagen und Großcontainer zeigen müssen, abgeleitet aus RID 5.3. Kein vorgeschriebenes Muster.",
+        "fr": "Document d'appui — ce que les wagons et grands conteneurs doivent porter, dérivé du RID 5.3. Aucun modèle prescrit."
+      },
+      "exporter": "placarding_rid",
+      "dg_profile": "RID",
       "dg_only": true,
       "sections": [
         {

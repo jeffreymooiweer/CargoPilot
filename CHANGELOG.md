@@ -2,6 +2,43 @@
 
 All notable changes are documented here, following [Semantic Versioning](https://semver.org/).
 
+## [1.119.0] — 2026-08-18
+
+### Added
+
+- **The water's own mixed loading prohibitions, complete.** An inland-only
+  consignment used to be measured against ADR 7.5.2 — a road chapter the ADN
+  does not prescribe — under a note claiming the ADN's own regime was not
+  held, while the distances of 7.1.4.3 had been applied since v1.59.0. The
+  rest of chapter 7.1.4 is read now, in the English edition (printed pages
+  394–399) and the official Dutch edition, which agree: **7.1.4.2** — a
+  vessel carrying class 5.1 in bulk carries nothing else; within the
+  consignment that is an error, for the rest of the vessel a condition this
+  application cannot see. **7.1.4.10** — the foodstuffs precaution, gated by
+  special provision 802 in column (6) of the ADN's own table A (652 rows
+  carry it) instead of the borrowed CV28, with the ADN's own separation
+  measures: full-height partitions, unmarked packages in between, or 0.8 m.
+  **7.1.4.4/7.1.4.5** — the container exceptions, on the consignor's own
+  containers-only statement and never a packaging type: closed containers
+  are outside 7.1.4.3, other containers reduce the 3.00 m to 2.40 m, and a
+  vessel carrying only containers may answer the whole prohibition with the
+  IMDG Code's stowage and segregation requirements.
+
+### Changed
+
+- **7.5.2 no longer runs for a selection it does not govern.** Inland-only
+  gets the ADN findings above under their own numbers; rail-only was already
+  evaluated against RID's own table; and a rail-plus-inland selection now
+  uses the rail table for the rail leg where it used to be handed the road
+  one. Combined selections keep both answers, and the basis note — produced
+  since v1.33.0 but never shown — now appears under the findings it
+  qualifies, saying which leg the 7.5.2 outcome belongs to and that RID's
+  7.5.2.2 carries no compatibility group A.
+- **The coverage document tells the truth about the tank vessel document
+  again.** It still listed ADN 5.4.1.1.2 as unbuilt and first on the list,
+  while v1.91.0 shipped it; the assessment now records that, closes the
+  "part of 7.5.2 still borrowed" item, and is maintained up to this release.
+
 ## [1.118.0] — 2026-08-18
 
 ### Changed

@@ -117,9 +117,20 @@ def test_rail_and_inland_waterway_say_which_tables_were_used(profile):
     else:
         assert "geen puntentelling" in note
         assert out["adn_exemption"]["basis"] == "ADN 1.1.3.6.1"
-    # The mixed loading of 7.5.2 has not been checked yet and keeps the old,
-    # cautious note.
-    assert profile in out["adr_mixed_loading_basis_note"]
+    # 7.5.2 is answered under the regime's own name — the rail table since
+    # v1.41.0, the ADN's own 7.1.4 prohibitions since v1.119.0 — so a
+    # single-regime selection needs no caveat about a table that was not used.
+    assert "adr_mixed_loading_basis_note" not in out
+
+
+def test_a_combined_selection_says_which_leg_the_7522_table_answers():
+    """Road plus rail shows the road table, which additionally carries
+    compatibility group A; road plus inland waterway shows the road outcome
+    beside the ADN's own findings. Both differences are named."""
+    out = check_compliance(entries(), ["ADR", "RID"], "nl")
+    assert "groep A" in out["adr_mixed_loading_basis_note"]
+    out = check_compliance(entries(), ["ADR", "ADN"], "nl")
+    assert "7.1.4" in out["adr_mixed_loading_basis_note"]
 
 
 def test_the_caveat_names_both_when_both_are_selected():

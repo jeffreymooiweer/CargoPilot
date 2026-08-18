@@ -584,11 +584,27 @@ exempt" since v1.32.0 while the arithmetic granted the exemption anyway — with
   carriage additionally needs the competent authority's approval; both come from 7.1.6.11,
   read on printed page 388. Two UN numbers carry it, 1942 and 2067. UN 2071's `ST02` is a
   condition on the carriage — a trough test — and not on the paper, and is not raised.
-- **The tank vessel document of 5.4.1.1.2.** Its (c) is not the ADR's: the description takes
-  the data of **column (5) of table C** — `"UN 1203 MOTOR SPIRIT, 3 (N2, CMR, F), II"` is the
-  ADN's own example — and its (h) points at column (20) remarks 3, 17, 22, 39 (b), 42 and 47.
-  A cargo tank consignment is currently given the packages line of 5.4.1.1.1. Table C is in
-  the repository since v1.73.0, so this is a rule sitting on data the application holds.
+- ~~**The tank vessel document of 5.4.1.1.2**~~ — applied since v1.91.0. Its (c) is not the
+  ADR's: the description takes the data of **column (5) of table C** —
+  `"UN 1203 MOTOR SPIRIT OR GASOLINE OR PETROL, 3 (N2, CMR, F), II, 250 t"` is the composed
+  line, after the ADN's own example — and its (h) names the column (20) remarks 3, 17, 22,
+  39 (b), 42 and 47, whose text lives in 3.2.3.1 and is not held, so the export says which
+  remark asks rather than guessing at what it asks for. Where rows disagree on column (5) or
+  table C does not list the substance, nothing is invented.
+- **The mixed loading answer is the ADN's own since v1.119.0.** An inland-only consignment
+  used to be measured against ADR 7.5.2 — with a note claiming the ADN's own chapter was not
+  held, while the distances of 7.1.4.3 had been applied since v1.59.0. The rest of the
+  chapter is read now, in the English edition (printed pages 394–399) and the Dutch, which
+  agree: **7.1.4.2** (a vessel with class 5.1 in bulk carries nothing else — a finding within
+  the consignment, a condition for the rest of the vessel), **7.1.4.10** (the foodstuffs
+  precaution, gated by special provision 802 in column (6) of the ADN's own table A — 652
+  rows carry it — with the ADN's own separation measures instead of the road's CV28), and
+  **7.1.4.4/7.1.4.5** (the container exceptions, on the consignor's `containers_only`
+  statement: closed containers outside 7.1.4.3, 2.40 m for other containers, and a
+  containers-only vessel may answer the whole prohibition with the IMDG Code's stowage and
+  segregation requirements — which this application holds, on the sea side). A combined
+  selection gets both answers, each under its own regime's name, and RID+ADN now evaluates
+  the rail leg against RID's own table rather than the road's.
 - **No ADN certificate and no expert on board.**
 
 **Assessment:** for packaged goods on a dry cargo vessel the exemption, the separation and
@@ -683,7 +699,7 @@ Ordered by how much harm someone could take before noticing, not by effort.
 | 1 | **IATA quantity limits absent; Q depends on user-entered M** | CargoPilot warns when the Q check did not run — since v1.33.0 on the document as well as the screen — but it cannot derive the applicable passenger/cargo-aircraft limit or verify the entered M against Table 4.2. **[verify]** |
 | 2 | **The ADN tank vessel regime: the substance is answered, the vessel is not** | Closed for the substance side. Table C is read from three books since v1.80.0 — the UNECE English and French editions and the printed Dutch one — and 677 of its 678 rows are settled on every cell. The application answers the vessel *type* of column (6) and the signals of column (19), admits or refuses the carriage on column (8), and since v1.83.0 hands over the checklist of 8.6.3. What is still absent is the vessel itself: design, tank type, equipment, opening pressure and filling degree are shown as conditions to verify, and the 7.2 operational regime and chapter 9.3 construction are a different discipline. |
 | 3 | **Route data absent: which tunnels, and in which category** | Closed for the part that is CargoPilot's since v1.50.0 — 8.6.3.2, 8.6.3.3 and the table of 8.6.4 are applied and the load's code reaches the export. What is left is the route itself, which 1.9.5 puts with the carrier, and the tanks/bulk branch of five codes. |
-| 4 | **Mixed loading for ADN answered with ADR's 7.5.2** | Closed. v1.38.0 read RID's 7.5.2.1 and found it identical to ADR's, footnotes included; v1.41.0 gave rail its own table and its own protective distance. v1.59.0 gave inland waterway ADN 7.1.4.3, which asks a different question again — how many metres, not whether — and v1.61.0 read column (12) of the ADN's own table A so the two cone provisions are answered as well. v1.64.0 closed the last of it: 7.1.4.3.4, the class 1 compatibility table, is applied — and getting it exposed that the Dutch HTML edition of that table is damaged, which the two-reading rule caught. |
+| 4 | **Mixed loading for ADN answered with ADR's 7.5.2** | Closed, and since v1.119.0 closed completely. v1.38.0 read RID's 7.5.2.1 and found it identical to ADR's, footnotes included; v1.41.0 gave rail its own table and its own protective distance. v1.59.0 gave inland waterway ADN 7.1.4.3 — how many metres, not whether — v1.61.0 read column (12) for the cone provisions, v1.64.0 applied the class 1 hold table of 7.1.4.3.4. v1.119.0 read the rest of the chapter: 7.1.4.2 (bulk class 5.1 excludes everything else), 7.1.4.10 (the foodstuffs precaution on special provision 802, in place of the borrowed CV28) and the container exceptions of 7.1.4.4/7.1.4.5 — and the ADR table no longer runs for an inland-only selection at all. |
 | 5 | **LQ/EQ conditions not checked** | The arithmetic of 3.4/3.5 is verified correct and 3.5.1.3/3.5.1.4 are applied since v1.50.0, but the mark, the packagings and the 3.5.3 tests are declarations the application cannot see. A line "within the limits" is a candidate, not an exemption — and the panel says so. |
 | 6 | **IMDG stowage category shown, not enforced** | Lower because on-deck/under-deck is usually the carrier's call, not the consignor's. **[verify]** |
 | 7 | **No marking or placarding checks outside the road mode** | Closed for ADR in v1.57.0 (5.3.1.5, 5.3.2.1 and 5.3.6.1 for packages; the equipment half in v1.53.0), extended to tanks and put on paper in v1.83.0. Rail, inland waterway, sea and air still have nothing. |
@@ -773,13 +789,15 @@ verification.
 
 **Worth building next, in this order:**
 
-1. **The ADN tank vessel description line (5.4.1.1.2).** Its (c) takes the data of column (5)
-   of table C rather than the labels of table A, and table C has been in the repository since
-   v1.73.0. A cargo tank consignment currently gets the packages line.
-2. **ADN's own stowage regime**, the part of 7.5.2 still borrowed. Rail is done: 7.5.2.1,
-   7.5.2.2, 7.5.2.4 and 7.5.3 are now cited to RID.
+1. ~~The ADN tank vessel description line (5.4.1.1.2)~~ — shipped in v1.91.0, with the
+   column (20) remarks of (h) named beside it.
+2. ~~ADN's own stowage regime, the part of 7.5.2 still borrowed~~ — shipped in v1.119.0:
+   7.1.4.2, 7.1.4.4/7.1.4.5 and 7.1.4.10 join the 7.1.4.3 that was already applied, and the
+   borrowed ADR table no longer runs for an inland-only selection. Rail was already done:
+   7.5.2.1, 7.5.2.2, 7.5.2.4 and 7.5.3 are cited to RID.
 3. **The rail shunting provisions**, the last thing on this list that is genuinely
-   rail-specific and has no counterpart anywhere else in the application.
+   rail-specific and has no counterpart anywhere else in the application. RID 5.3 (wagon
+   placarding and the shunting marking of 5.3.4) belongs with it — gap 7's rail half.
 
 **Off the list, checked rather than assumed:** ADR/RID/ADN 5.4.1.1.1 (c) for batteries. The
 three texts name UN 3090, 3091, 3480, 3481, 3551 and 3552 and the battery-powered vehicles
@@ -803,7 +821,7 @@ reading and not as a coincidence.
 
 ---
 
-*This assessment is maintained up to CargoPilot v1.97.0; the sections above name the release
+*This assessment is maintained up to CargoPilot v1.119.0; the sections above name the release
 each finding shipped in. v1.42.0 to v1.48.0 touched the goods
 catalogue, the interface language, the settings, the documentation and the error messages,
 not a single regulatory check; v1.49.0 and v1.50.0 changed the ADR side, from the Dutch

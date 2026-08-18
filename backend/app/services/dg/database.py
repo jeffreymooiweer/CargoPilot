@@ -529,6 +529,22 @@ def adn_blue_cones(un_number: str) -> dict[str, Any] | None:
     }
 
 
+def adn_special_provisions(un_number: str) -> list[str]:
+    """Column (6) of the ADN's table A: the special provisions, by number.
+
+    The one the application acts on today is **802**, which gates the
+    foodstuffs precaution of 7.1.4.10 — the inland waterway's own counterpart
+    of the road's CV28, with its own separation measures. Empty where the ADN
+    does not list the substance, which a caller that needs the difference
+    tells apart via ``adn_blue_cones`` returning None.
+    """
+    row = _adn_table_a().get(str(un_number or "").strip())
+    if row is None:
+        return []
+    return [code.strip() for code in
+            str(row.get("special_provisions") or "").split(",") if code.strip()]
+
+
 def adn_loading_measures(un_number: str) -> list[str]:
     """Column (11) of the ADN's table A: the additional requirements of 7.1.6.11.
 

@@ -129,6 +129,62 @@ BASIS_NOTE = {
           "{section}, den CargoPilot nicht enthält. Nehmen Sie das Ergebnis als "
           "Anhaltspunkt und prüfen Sie es an dem für Ihre Strecke geltenden Text.", "fr": "Calculé avec les tableaux de l'ADR. Le {other} possède son propre {section}, dont CargoPilot ne dispose pas. Prenez ce résultat à titre indicatif et vérifiez-le dans le texte applicable à votre trajet."}
 
+# 7.5.2 no longer needs the blanket hedge above. RID's 7.5.2.1 was read in
+# v1.38.0 and is word-identical to the ADR's, footnotes included; a rail-only
+# selection is evaluated against RID's own 7.5.2.2 table (v1.41.0) under its
+# own name. What is left to say when road and rail are combined is the one
+# difference: 7.5.2.2 is then shown from the road table, which additionally
+# carries compatibility group A — the rail table does not.
+RID_MIXED_NOTE = {
+    "nl": "Voor het spoortraject: 7.5.2.1 is in ADR en RID woordelijk gelijk "
+          "(gelezen, v1.38.0). De 7.5.2.2-tabel hierboven is die van het ADR, "
+          "die ook compatibiliteitsgroep A kent; het RID-eigen 7.5.2.2 kent "
+          "groep A niet — een lading met groep A valt op het spoor buiten de "
+          "tabel.",
+    "en": "For the rail leg: 7.5.2.1 is word-identical in ADR and RID (read, "
+          "v1.38.0). The 7.5.2.2 table above is the ADR's, which additionally "
+          "carries compatibility group A; RID's own 7.5.2.2 does not — a load "
+          "with group A falls outside the table on rail.",
+    "de": "Für die Schienenstrecke: 7.5.2.1 ist in ADR und RID wortgleich "
+          "(gelesen, v1.38.0). Die obige 7.5.2.2-Tabelle ist die des ADR, die "
+          "auch die Verträglichkeitsgruppe A kennt; das RID-eigene 7.5.2.2 "
+          "kennt Gruppe A nicht — eine Ladung mit Gruppe A fällt auf der "
+          "Schiene aus der Tabelle.",
+    "fr": "Pour le trajet ferroviaire : le 7.5.2.1 est mot pour mot identique "
+          "dans l'ADR et le RID (lu, v1.38.0). Le tableau 7.5.2.2 ci-dessus "
+          "est celui de l'ADR, qui connaît aussi le groupe de compatibilité A ; "
+          "le 7.5.2.2 propre au RID ne le connaît pas — un chargement du "
+          "groupe A sort du tableau sur le rail."}
+
+# And ADN is not hedged either: its mixed loading prohibitions are its own
+# chapter — 7.1.4.2 (bulk), 7.1.4.3 (packages in holds, applied since v1.59.0),
+# 7.1.4.4/7.1.4.5 (containers) and 7.1.4.10 (foodstuffs, special provision
+# 802) — read in the English and Dutch editions, which agree, and reported as
+# their own findings. The note only has to say the 7.5.2 outcome is not the
+# water's answer.
+ADN_MIXED_NOTE = {
+    "nl": "De 7.5.2-uitkomst geldt niet voor het watertraject: het ADN kent "
+          "eigen samenladingsverboden — 7.1.4.2 (losgestort), 7.1.4.3 (colli "
+          "in laadruimen), 7.1.4.4/7.1.4.5 (containers) en 7.1.4.10 "
+          "(levensmiddelen, BV 802) — en die staan als eigen bevindingen, "
+          "onder ADN-nummer, in dit paneel.",
+    "en": "The 7.5.2 outcome does not apply to the water leg: ADN has its own "
+          "mixed loading prohibitions — 7.1.4.2 (bulk), 7.1.4.3 (packages in "
+          "holds), 7.1.4.4/7.1.4.5 (containers) and 7.1.4.10 (foodstuffs, "
+          "special provision 802) — reported as their own findings, under "
+          "their ADN numbers, in this panel.",
+    "de": "Das 7.5.2-Ergebnis gilt nicht für die Wasserstrecke: das ADN hat "
+          "eigene Zusammenladeverbote — 7.1.4.2 (lose Schüttung), 7.1.4.3 "
+          "(Versandstücke in Laderäumen), 7.1.4.4/7.1.4.5 (Container) und "
+          "7.1.4.10 (Lebensmittel, Sondervorschrift 802) — die als eigene "
+          "Befunde unter ihren ADN-Nummern in diesem Panel stehen.",
+    "fr": "Le résultat du 7.5.2 ne vaut pas pour le trajet fluvial : l'ADN a "
+          "ses propres interdictions de chargement en commun — 7.1.4.2 (vrac), "
+          "7.1.4.3 (colis dans les cales), 7.1.4.4/7.1.4.5 (conteneurs) et "
+          "7.1.4.10 (denrées alimentaires, disposition spéciale 802) — "
+          "présentées comme constatations propres, sous leurs numéros ADN, "
+          "dans ce panneau."}
+
 # For 1.1.3.6 the hedge above is no longer the truth, and saying less than we
 # know is its own kind of wrong. RID 1.1.3.6.3 sets out the same five transport
 # categories with the same figures (0, 20, 333, 1000, unlimited) and RID
@@ -189,6 +245,17 @@ def basis_note(profiles: list[str] | None, section: str, language: str) -> str |
         if "ADN" in other:
             parts.append(pick(ADN_POINTS_NOTE, language))
         return " ".join(parts)
+    if section == "7.5.2":
+        # A rail-only selection is evaluated against RID's own tables and an
+        # inland-only selection against ADN's own chapter — neither needs a
+        # caveat about a table that was not used. The note is for combined
+        # selections, where the outcome above belongs to one leg only.
+        parts = []
+        if "RID" in other and "ADR" in selected:
+            parts.append(pick(RID_MIXED_NOTE, language))
+        if "ADN" in other and (selected & {"ADR", "RID"}):
+            parts.append(pick(ADN_MIXED_NOTE, language))
+        return " ".join(parts) or None
     return pick(BASIS_NOTE, language).format(other=" en ".join(other), section=section)
 
 
@@ -1621,6 +1688,92 @@ def _adn_mode_note(positions: list[str], lang: str) -> str:
     text = get_compliance_rules()["adn_carriage_admission"][
         "chapter_7_1_not_for_tank_vessels"]
     return (text.get(lang) or text["en"]).format(products=", ".join(positions))
+
+
+def check_adn_mixed_loading(
+    entries: list[dict[str, Any]], language: str = "nl",
+) -> list[dict[str, str]]:
+    """ADN 7.1.4.2, 7.1.4.4/7.1.4.5 and 7.1.4.10: the water's own prohibitions.
+
+    Until this check an inland-only consignment was measured against ADR 7.5.2 —
+    a road chapter the ADN does not prescribe — with a note claiming the ADN's
+    own regime was not held. The distances of 7.1.4.3 have in fact been applied
+    since v1.59.0 (`check_adn_hold_separation`); what was missing is the rest of
+    the chapter, read now in the English edition (printed pages 394-399) and
+    the Dutch edition, which agree:
+
+    - **7.1.4.2** — a vessel carrying Class 5.1 in bulk carries nothing else.
+      Within the consignment that is a finding; for the rest of the vessel it
+      is a condition, because this application cannot see the other holds.
+    - **7.1.4.10** — the foodstuffs precaution, gated by **special provision
+      802** in column (6) of the ADN's own table A rather than assumed for
+      every 6.1 label the way the road's CV28 was borrowed here before. Its
+      separation measures are the ADN's own: full-height partitions, unmarked
+      packages in between, or 0.8 m.
+    - **7.1.4.4/7.1.4.5** — the container exceptions. 7.1.4.3 does not apply
+      inside closed containers and closed vehicles or wagons; other containers
+      reduce the 3.00 m to 2.40 m; and a vessel carrying only containers may
+      answer the whole prohibition with the IMDG Code's stowage and
+      segregation requirements. The trigger is the consignor's own statement
+      (the `containers_only` field of 7.1.5.0.2), never a packaging type.
+    """
+    rules = get_compliance_rules()["adn_mixed_loading"]["rules"]
+    lang = _lang(language)
+    products = [(entry, index, product)
+                for entry, index, product in _iter_products(entries)
+                if not product.get("transport_forbidden")]
+    findings: list[dict[str, str]] = []
+    if not products:
+        return findings
+
+    bulk_51 = [
+        _product_label(entry, product, index)
+        for entry, index, product in products
+        if _primary_class(product).startswith("5.1")
+        and str(product.get("carriage_mode") or "").strip() == "bulk"]
+    if bulk_51:
+        others = [
+            label for entry, index, product in products
+            if (label := _product_label(entry, product, index)) not in bulk_51]
+        if others:
+            findings.append({
+                "rule": "ADN 7.1.4.2",
+                "severity": "error",
+                "message": pick(rules["bulk_51_with_others"], lang),
+                "products": ", ".join(dict.fromkeys(bulk_51 + others)),
+            })
+        else:
+            findings.append({
+                "rule": "ADN 7.1.4.2",
+                "severity": "warning",
+                "message": pick(rules["bulk_51_alone"], lang),
+                "products": ", ".join(bulk_51),
+            })
+
+    food = [
+        _product_label(entry, product, index)
+        for entry, index, product in products
+        if "802" in database.adn_special_provisions(
+            str(product.get("un_number") or "").strip())]
+    if food:
+        findings.append({
+            "rule": "ADN 7.1.4.10 (802)",
+            "severity": "warning",
+            "message": pick(rules["foodstuffs_802"], lang),
+            "products": ", ".join(food),
+        })
+
+    declared = [
+        _product_label(entry, product, index)
+        for entry, index, product in products if product.get("containers_only")]
+    if declared and len(declared) == len(products):
+        findings.append({
+            "rule": "ADN 7.1.4.4 / 7.1.4.5",
+            "severity": "info",
+            "message": pick(rules["containers_exception"], lang),
+            "products": ", ".join(declared),
+        })
+    return findings
 
 
 def check_adn_carriage_admission(
@@ -4794,7 +4947,15 @@ def check_compliance(
         bulk = check_adr_bulk_admission(entries, language, land)
         if bulk.get("status") != "not_checked":
             result["adr_bulk_admission"] = bulk
-        result["adr_mixed_loading"] = check_adr_mixed_loading(entries, language, land)
+        # 7.5.2 is a road and rail chapter. ADN's mixed loading prohibitions
+        # are its own — 7.1.4.2 to 7.1.4.5 and 7.1.4.10, read in the English
+        # and Dutch editions — so an inland-only consignment is no longer
+        # measured against a table it is not subject to, and a combined
+        # selection gets both answers, each under its own regime's name.
+        road_rail = sorted({"ADR", "RID"} & normalized)
+        result["adr_mixed_loading"] = (
+            check_adr_mixed_loading(entries, language, road_rail)
+            if road_rail else [])
         if "RID" in normalized:
             # 7.5.3 has no road equivalent and therefore does not belong with
             # the borrowed tables, but it does belong in the same list: that one
@@ -4807,6 +4968,11 @@ def check_compliance(
         # ADN answers the exemption question with its own rule, so it gets its
         # own result rather than borrowing the points total.
         if "ADN" in normalized:
+            # The water's own mixed loading prohibitions, in the same list the
+            # road's and rail's reach so they travel to the panel and the
+            # export together — each finding cited to its own ADN provision.
+            result["adr_mixed_loading"] += check_adn_mixed_loading(
+                entries, language)
             # Whether the goods may travel that way on the water at all. Like
             # its road counterpart it only speaks once a carriage mode says the
             # goods are not in packages, and it runs first because the answers

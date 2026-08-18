@@ -17,8 +17,11 @@ flow is one wizard; you can go back to any earlier step at any time.
 ## 1. Pick a transport mode
 
 Click **New shipment** and choose how the goods travel. **Road and inland waterway are
-released**; the rail, sea, air and multimodal tiles are visible but locked — their
-regulatory checks are not complete yet, and a half-right document is worse than none.
+released**, and **air is temporarily unlocked for demonstration** — its declaration is
+sound, but the IATA quantity limits are not held, so the app tells you on screen and on
+the document when that check could not run. The rail, sea and multimodal tiles are
+visible but locked — their regulatory checks are not complete yet, and a half-right
+document is worse than none.
 The [roadmap](../ROADMAP.md) tracks when each one unlocks.
 
 This choice decides which documents are offered, which rulebook applies to any dangerous

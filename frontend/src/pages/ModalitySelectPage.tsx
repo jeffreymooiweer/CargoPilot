@@ -27,7 +27,24 @@ export type ModalityKey = (typeof MODALITIES)[number];
  *  the tile is not the only way in: a bookmark reaches /wizard/rail directly,
  *  and the default-modality preference navigates there without anyone touching
  *  a tile. Guarding only the tiles would guard only the honest route. */
-export const AVAILABLE_MODALITIES: readonly ModalityKey[] = ["road", "inland"];
+const RELEASED_MODALITIES: readonly ModalityKey[] = ["road", "inland"];
+
+/** Unlocked for a demonstration, on the owner's request (v1.117.0), and
+ *  meant to be taken out again.
+ *
+ *  Air is the one mode whose remaining gap is about *quantities*, not about
+ *  the declaration: the IATA quantity tables are not held, so the Q value
+ *  depends on the M the user enters and the passenger/cargo-aircraft limit
+ *  is never derived (`docs/dg-coverage.md`, gap 1). The application says so
+ *  on the screen and on the document itself when the check could not run,
+ *  which is why showing it is defensible where showing rail or sea is not.
+ *  Reverting is deleting this constant and its use below. */
+const DEMO_UNLOCKED_MODALITIES: readonly ModalityKey[] = ["air"];
+
+export const AVAILABLE_MODALITIES: readonly ModalityKey[] = [
+  ...RELEASED_MODALITIES,
+  ...DEMO_UNLOCKED_MODALITIES,
+];
 
 export function isModalityKey(value: string | undefined): value is ModalityKey {
   return !!value && (MODALITIES as readonly string[]).includes(value);

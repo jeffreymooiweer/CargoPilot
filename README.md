@@ -38,9 +38,10 @@ stops at the gate.
 
 CargoPilot does that part for you. You enter your shipment once. It recognises what you
 are shipping, calculates the weights and volumes, and fills in the paperwork for the
-transport mode you picked. **Road and inland waterway are released today**; rail, sea,
-air and multimodal are built in but stay locked until their remaining regulatory checks
-are complete — see the [roadmap](ROADMAP.md).
+transport mode you picked. **Road and inland waterway are released today**, and **air is
+temporarily unlocked for demonstration** while its quantity checks are still incomplete;
+rail, sea and multimodal stay locked until their remaining regulatory checks are complete
+— see the [roadmap](ROADMAP.md).
 
 It runs on your own machine or server. Nothing is sent to a cloud service, and no
 shipment history is kept.

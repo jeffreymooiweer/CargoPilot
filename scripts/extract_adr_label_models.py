@@ -34,6 +34,31 @@ MODEL_CODES = [
 RENDER_DPI = 300
 
 
+def display_rect(page: fitz.Page, rect: fitz.Rect) -> fitz.Rect:
+    """A rect in the reader's view. The UNECE print rotates the model-table
+    pages 90 degrees; text coordinates come unrotated, renders come rotated,
+    and every mismatch between the two cost this script a blind round."""
+    r = fitz.Rect(rect) * page.rotation_matrix
+    r.normalize()
+    return r
+
+
+def page_rect(page: fitz.Page, rect: fitz.Rect) -> fitz.Rect:
+    """Back from the reader's view to the unrotated space get_pixmap clips in."""
+    r = fitz.Rect(rect) * page.derotation_matrix
+    r.normalize()
+    return r
+
+
+def display_words(page: fitz.Page) -> list[tuple[fitz.Rect, str]]:
+    return [(display_rect(page, fitz.Rect(w[:4])), w[4]) for w in page.get_text("words")]
+
+
+def display_size(page: fitz.Page) -> tuple[float, float]:
+    r = display_rect(page, page.rect)
+    return r.width, r.height
+
+
 def find_section_pages(doc: fitz.Document) -> list[int]:
     """The pages that *are* the model table, not pages that merely cite it.
 
@@ -70,12 +95,12 @@ def find_section_pages(doc: fitz.Document) -> list[int]:
 
 
 def row_anchors(page: fitz.Page, x_max: float | None = None) -> list[tuple[str, float]]:
-    """(model code, y) for every model number printed in the first column."""
-    limit = x_max if x_max is not None else page.rect.width * 0.25
+    """(model code, display y) for every model number in the first column."""
+    limit = x_max if x_max is not None else display_size(page)[0] * 0.25
     anchors = []
-    for x0, y0, x1, y1, word, *_ in page.get_text("words"):
-        if word.rstrip(".,:") in MODEL_CODES and x0 < limit:
-            anchors.append((word.rstrip(".,:"), y0))
+    for rect, word in display_words(page):
+        if word.rstrip(".,:") in MODEL_CODES and rect.x0 < limit:
+            anchors.append((word.rstrip(".,:"), rect.y0))
     # A code can repeat within its own row (other columns quote it); keep the
     # first occurrence per y-band.
     anchors.sort(key=lambda a: a[1])
@@ -180,21 +205,21 @@ def _columns(page: fitz.Page, previous: dict | None) -> dict | None:
     over. The UNECE print rotates the whole table on the page; the word
     boxes still land where the reader sees them, so nothing here cares.
     """
+    width, _height = display_size(page)
     found: dict[str, float] = {}
-    for x0, y0, x1, y1, word, *_ in page.get_text("words"):
+    for rect, word in display_words(page):
         lowered = word.lower().rstrip(".:")
         if lowered in {"specimen"} and "specimen" not in found:
-            found["specimen"] = x0
-        if lowered in {"note", "opmerking"} and x0 > found.get("specimen", 0):
-            found.setdefault("note", x0)
+            found["specimen"] = rect.x0
+        if lowered in {"note", "opmerking"} and rect.x0 > found.get("specimen", 0):
+            found.setdefault("note", rect.x0)
         if lowered in {"division", "subklasse"} and "division" not in found:
-            found["division"] = x0
+            found["division"] = rect.x0
     if "specimen" not in found:
         return previous
     return {
-        "anchor_max": found.get("division", page.rect.width * 0.25) - 4,
-        "strip": (found["specimen"] - 12,
-                  found.get("note", page.rect.width - 6) - 6),
+        "anchor_max": found.get("division", width * 0.25) - 4,
+        "strip": (found["specimen"] - 12, found.get("note", width - 6) - 6),
     }
 
 
@@ -229,12 +254,13 @@ def extract(vol1: Path, out_dir: Path) -> dict:
 
         # One band per model: consecutive repeats of the same code extend
         # the band rather than splitting it.
+        _width, height = display_size(page)
         bands: list[tuple[str, float, float]] = []
         for code, y in anchors:
             if bands and bands[-1][0] == code:
                 continue
-            bands.append((code, y, page.rect.height))
-        bands = [(code, y, bands[i + 1][1] - 4 if i + 1 < len(bands) else page.rect.height - 30)
+            bands.append((code, y, height))
+        bands = [(code, y, bands[i + 1][1] - 4 if i + 1 < len(bands) else height - 30)
                  for i, (code, y, _) in enumerate(bands)]
         strip = columns["strip"]
         print(f"DIAGNOSTIC page {number + 1}: bands="
@@ -244,7 +270,7 @@ def extract(vol1: Path, out_dir: Path) -> dict:
         for code, y0, y1 in bands:
             if code in report["models"] or y1 - y0 < 40:
                 continue
-            clip = fitz.Rect(strip[0], y0 - 4, strip[1], y1)
+            clip = page_rect(page, fitz.Rect(strip[0], y0 - 4, strip[1], y1))
             pix = page.get_pixmap(clip=clip, dpi=RENDER_DPI)
             pix = trim_white(pix)
             if pix.width < 60 or pix.height < 60:

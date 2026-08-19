@@ -2,6 +2,24 @@
 
 All notable changes are documented here, following [Semantic Versioning](https://semver.org/).
 
+## [1.127.0] — 2026-08-19
+
+### Added
+
+- **The equipment library exports itself, on request.** *Export library* on
+  the equipment screen hands back the whole list — active and inactive
+  items alike — as a spreadsheet in the import's very own columns
+  (`specifications`, `length_cm`, `width_cm`, `height_cm`,
+  `wall_thickness_mm`, `weight_kg`, `aliases`, `active`). The file round
+  trips: importing it into an empty installation recreates the library,
+  which makes it the backup, the hand-over to a colleague who maintains the
+  list in Excel, and the seed for a second installation, all in one — and a
+  test walks that round trip whole. Numbers print as numbers a person can
+  check against reality (never scientific notation), aliases join on the
+  comma the import splits on, and an empty library exports its headers,
+  which is exactly the template. Nothing is exported unless someone clicks:
+  no schedule, no copy kept anywhere.
+
 ## [1.126.0] — 2026-08-19
 
 ### Added

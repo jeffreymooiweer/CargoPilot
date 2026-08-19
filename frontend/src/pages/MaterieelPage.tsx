@@ -225,6 +225,11 @@ export default function MaterieelPage() {
             onClick={() => api.downloadEquipmentTemplate().catch((e) => setError(String(e)))}
             icon={<DownloadIcon />}
           />
+          <CardAction
+            label={t("materieel.exportLibrary")}
+            onClick={() => api.exportEquipmentLibrary().catch((e) => setError(String(e)))}
+            icon={<DownloadIcon />}
+          />
           <CardAction label={t("materieel.import")} onClick={() => setImportOpen(true)} icon={<ImportIcon />} />
         </div>
       </div>

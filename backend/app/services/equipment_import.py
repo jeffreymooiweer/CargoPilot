@@ -140,6 +140,44 @@ def _row_to_record(row: list[str], mapping: dict[str, int | None]) -> dict:
     }
 
 
+def _number_cell(value: float | None) -> str:
+    """A number the import reads back to the same value, or the empty cell.
+
+    Not ``:g`` formatting — that turns a large value into scientific notation,
+    which ``_parse_float`` would still read but no person checking the file
+    against reality could.
+    """
+    if value is None:
+        return ""
+    if float(value).is_integer():
+        return str(int(value))
+    return str(value)
+
+
+def equipment_to_rows(items: list[Equipment]) -> list[list[str]]:
+    """The library in the import's own columns, so what comes out goes back in.
+
+    That round trip is the point of the export: the file is the backup, the
+    template for the next installation, and the thing to hand a colleague who
+    maintains the list in a spreadsheet. Aliases join with a comma because
+    that is what ``_parse_aliases`` splits on; active prints the ``yes``/``no``
+    that ``_parse_bool`` reads.
+    """
+    return [
+        [
+            item.specifications,
+            _number_cell(item.length_cm),
+            _number_cell(item.width_cm),
+            _number_cell(item.height_cm),
+            _number_cell(item.wall_thickness_mm),
+            _number_cell(item.weight_kg),
+            ", ".join(json.loads(item.aliases_json or "[]")),
+            "yes" if item.active else "no",
+        ]
+        for item in items
+    ]
+
+
 def import_equipment_rows(db: Session, rows: list[list[str]]) -> EquipmentImportResult:
     result = EquipmentImportResult()
     if not rows:

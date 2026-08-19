@@ -205,6 +205,9 @@ export const api = {
     request<EquipmentItem>(`/equipment/${id}`, { method: "PATCH", body: JSON.stringify(payload) }),
   deleteEquipment: (id: number) => request<{ ok: boolean }>(`/equipment/${id}`, { method: "DELETE" }),
   downloadEquipmentTemplate: () => downloadBlob("/equipment/import-template", "materieel_import_template.xlsx"),
+  // The whole library in the import's own columns — the file round-trips, so
+  // it doubles as backup and hand-over. Fetched only when someone clicks.
+  exportEquipmentLibrary: () => downloadBlob("/equipment/export", "materieel_export.xlsx"),
   importEquipmentFile: (file: File) => uploadFile<EquipmentImportResult>("/equipment/import", file),
   downloadWizardTemplate: () => downloadBlob("/import/wizard-template", "wizard_import_template.xlsx"),
   parseWizardImportFile: (file: File) => uploadFile<WizardFileParseResult>("/import/wizard-file", file),

@@ -11,12 +11,18 @@ from app.core.database import get_db
 from app.core.deps import get_current_user, require_admin
 from app.models.user import Equipment, User
 from app.schemas import EquipmentBase, EquipmentOut, EquipmentUpdate
-from app.services.equipment_import import EQUIPMENT_EXAMPLE, EQUIPMENT_HEADERS, import_equipment_rows
+from app.services.equipment_import import (
+    EQUIPMENT_EXAMPLE,
+    EQUIPMENT_HEADERS,
+    equipment_to_rows,
+    import_equipment_rows,
+)
 from app.services.spreadsheet_io import (
     ImportLimitError,
     MAX_IMPORT_CELL_CHARS,
     MAX_IMPORT_COLUMNS,
     MAX_IMPORT_ROWS,
+    build_xlsx,
     build_xlsx_template,
     read_limited_upload,
     read_tabular_file,
@@ -97,6 +103,24 @@ def download_equipment_template(user: User = Depends(get_current_user)):
         content=content,
         media_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
         headers={"Content-Disposition": 'attachment; filename="materieel_import_template.xlsx"'},
+    )
+
+
+@equipment_router.get("/export")
+def export_equipment_library(user: User = Depends(get_current_user), db: Session = Depends(get_db)):
+    """The whole library, in the import's own columns, when someone asks.
+
+    On request only — no scheduled dumps, nothing written anywhere. The file
+    round-trips: importing it into an empty installation recreates the
+    library, which makes it the backup and the hand-over format in one. An
+    empty library exports its headers, which doubles as a template.
+    """
+    items = db.query(Equipment).order_by(Equipment.specifications).all()
+    content = build_xlsx(EQUIPMENT_HEADERS, equipment_to_rows(items), sheet_name="Materieel export")
+    return Response(
+        content=content,
+        media_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        headers={"Content-Disposition": 'attachment; filename="materieel_export.xlsx"'},
     )
 
 

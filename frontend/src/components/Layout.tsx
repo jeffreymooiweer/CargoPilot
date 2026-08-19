@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { NavLink, Outlet, useLocation, useNavigate } from "react-router";
 import { useTranslation } from "react-i18next";
 import { api, User } from "../api/client";
+import UpdateToast from "./UpdateToast";
 import WhatsNewModal from "./WhatsNewModal";
 
 interface Props {
@@ -177,9 +178,11 @@ export default function Layout({ user, onLogout }: Props) {
         <main className="min-w-0"><Outlet /></main>
       </div>
 
-      {/* Only signed-in chrome mounts this, which is exactly who release
-          notes are for; the login page stays free of it. */}
+      {/* Only signed-in chrome mounts these, which is exactly who release
+          notes are for; the login page stays free of them. The toast asks the
+          server only for administrators — the one role that can pull an image. */}
       <WhatsNewModal />
+      <UpdateToast user={user} />
 
       {menuOpen && (
         <div className="md:hidden fixed inset-0 z-50">

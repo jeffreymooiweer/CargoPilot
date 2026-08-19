@@ -270,8 +270,12 @@ shows no card at all.
 Administrators see one more section, applying to the whole installation: the language and
 theme new users start with, the organisation name and address offered as a consignor to
 anyone who has not filled in their own, whether the UN card download is offered, how long a
-session lasts, and — under **Outbound connections** — whether address lookup and catalogue
-sync are allowed to reach the internet at all. See
+session lasts, and — under **Outbound connections** — whether address lookup, catalogue
+sync and the update check are allowed to reach the internet at all. When the update check
+is on and a newer release exists, administrators get a small dismissible note in the
+corner; the settings screen's **Updating** section explains what updating actually is —
+pulling the newer image and restarting the container, by hand, with Docker Compose, via
+Watchtower or from Unraid's Docker tab — because the application cannot do it for you. See
 [Configuration](configuration.md#two-places-and-which-one-wins) for how these relate to the
 environment variables.
 

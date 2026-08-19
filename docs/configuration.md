@@ -25,6 +25,7 @@ because those are read while the application is starting and there is no screen 
 | `GEO_ADDRESS_TIMEOUT_SECONDS` | Timeout | immediately |
 | — | Address lookup on/off | immediately |
 | `CATALOG_AUTO_SYNC` | Update the catalogue at startup | next restart |
+| `UPDATE_CHECK_ENABLED` | Check for updates | immediately |
 | `ACCESS_TOKEN_EXPIRE_MINUTES` | Session lifetime | at the next login |
 | — | Offer UN cards | immediately |
 | — | Default language and theme for new users | at their next sign-in |
@@ -122,6 +123,18 @@ Set `CATALOG_AUTO_SYNC=false` for a faster or fully offline startup. The data bu
 the image is used instead, and weight calculations are unaffected. The same switch sits on
 the settings screen; because it is only read while the application starts, a change there
 takes effect on the next restart.
+
+## Update check
+
+| Variable | What it does | Default |
+|---|---|---|
+| `UPDATE_CHECK_ENABLED` | Ask GitHub whether a newer release exists, when an administrator is signed in | `true` |
+| `UPDATE_CHECK_TIMEOUT_SECONDS` | HTTP timeout for that one request | `8` |
+
+The check only tells the administrator there is something to pull — the container never
+updates itself. Off means CargoPilot never contacts GitHub; the switch also sits on the
+settings screen under **Outbound connections** and is read per request, so flipping it
+needs no restart.
 
 ## Address lookup
 

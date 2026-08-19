@@ -1,0 +1,72 @@
+name: Extract RID shunting models
+
+# Reads which substances carry the bracketed shunting models 13 and 15 in
+# column (5) of RID table A — the per-substance half of RID 5.3.4 that
+# CargoPilot has named as a condition since v1.121.0 because its table is the
+# ADR's, which carries neither model. The RID PDFs live in the Actions cache
+# where the fetch workflow put them; the development container cannot reach
+# the publisher, so the reading happens here and is printed to the log.
+#
+# Nothing is committed. Two editions are read in separate runs and compared in
+# the development container; only a comparison with every disagreement
+# accounted for becomes a seed — the rule for regulatory tables here.
+
+on:
+  workflow_dispatch:
+    inputs:
+      pdf:
+        description: "Which edition to read"
+        type: choice
+        options:
+          - rid.pdf
+          - rid_de.pdf
+          - rid_fr.pdf
+          - RID-2025-NL.pdf
+        default: rid.pdf
+      probe:
+        description: "Print every hit with its coordinates"
+        type: boolean
+        default: false
+      probe_page:
+        description: "Dump every word of this PDF page with coordinates and stop"
+        default: ""
+        required: false
+      un_max_x:
+        description: "Right edge of the UN column, in PDF points"
+        default: "120"
+        required: false
+
+permissions:
+  contents: read
+
+jobs:
+  extract:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install --quiet pymupdf
+
+      - name: Volumes already fetched
+        uses: actions/cache/restore@v4
+        with:
+          path: /tmp/cargopilot-regulations
+          key: regulations-${{ github.run_id }}
+          restore-keys: |
+            regulations-
+
+      - name: Read the models out of the table
+        env:
+          PDF: ${{ inputs.pdf }}
+          PROBE: ${{ inputs.probe }}
+          PROBE_PAGE: ${{ inputs.probe_page }}
+          UN_MAX_X: ${{ inputs.un_max_x }}
+        run: |
+          set -euo pipefail
+          ARGS=(--pdf "$PDF" --un-max-x "$UN_MAX_X")
+          if [ "$PROBE" = "true" ]; then ARGS+=(--probe); fi
+          if [ -n "$PROBE_PAGE" ]; then ARGS+=(--probe-page "$PROBE_PAGE"); fi
+          python scripts/extract_rid_shunting_labels.py "${ARGS[@]}"

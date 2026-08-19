@@ -41,10 +41,14 @@ jobs:
         run: pip install pymupdf
 
       - name: Download and verify the UNECE English edition
+        # unece.org answers 403 to clients without a browser user agent; the
+        # same UA the fetch-regulations workflow already uses gets through.
         run: |
           python - <<'EOF'
           import hashlib, json, sys, urllib.request
 
+          UA = ("Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 "
+                "(KHTML, like Gecko) Chrome/124.0 Safari/537.36")
           register = json.load(open("backend/seed/dg/sources.json"))
           documents = {d["id"]: d for d in register["documents"]}
           for doc_id, target in (("adr1", "adr1.pdf"), ("adr2", "adr2.pdf")):
@@ -53,9 +57,13 @@ jobs:
               for url in doc["urls"]:
                   try:
                       print(f"downloading {doc_id} from {url}")
-                      urllib.request.urlretrieve(url, target)
+                      request = urllib.request.Request(
+                          url, headers={"User-Agent": UA,
+                                        "Accept": "application/pdf,*/*"})
+                      with urllib.request.urlopen(request) as response:
+                          open(target, "wb").write(response.read())
                       break
-                  except Exception as exc:  # noqa: BLE001 - report and try the mirror
+                  except Exception as exc:  # noqa: BLE001 - try the mirror
                       last_error = exc
               else:
                   sys.exit(f"could not download {doc_id}: {last_error}")

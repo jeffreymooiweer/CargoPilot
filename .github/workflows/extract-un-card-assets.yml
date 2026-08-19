@@ -73,11 +73,13 @@ jobs:
             --source "ADR 2025, UNECE English edition (ECE/TRANS/352 Vol. II), sections 7.2.4, 7.5.11 and 8.5" \
             --lenient
 
-      - name: Extract hazard label models (Volume I, 5.2.2.2.2)
+      # Chapter 5.2 lives in Volume II (parts 4-9); Volume I carries parts
+      # 1-3. The first run searched the wrong book and found nothing.
+      - name: Extract hazard label models (Volume II, 5.2.2.2.2)
         if: always()
         run: |
           python scripts/extract_adr_label_models.py \
-            --vol1 /tmp/cargopilot-regulations/adr1.pdf \
+            --vol1 /tmp/cargopilot-regulations/adr2.pdf \
             --out scripts/un_cards/assets/labels \
             --allow-missing
 

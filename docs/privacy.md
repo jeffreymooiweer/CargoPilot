@@ -39,7 +39,7 @@ This is a deliberate choice. If a job is finished, there is nothing left to leak
 
 ## What leaves your server
 
-Three things, and only if you let them:
+Four things, and only if you let them:
 
 **Address autocomplete** sends what you type in an address field to a Photon geocoder
 (`photon.komoot.io` by default). An administrator can switch it off entirely on the
@@ -49,6 +49,12 @@ through the very same switch.
 
 **Catalogue sync** fetches public reference data (steel profiles, material densities) at
 startup. Switch it off on the settings screen or with `CATALOG_AUTO_SYNC=false`.
+
+**The update check** asks GitHub's public release listing whether a newer CargoPilot
+exists, only while an administrator is signed in, and sends nothing but the request
+itself. Switch it off on the settings screen or with `UPDATE_CHECK_ENABLED=false`;
+off means CargoPilot never asks. Either way the application cannot update itself —
+the answer only tells the administrator there is something to pull.
 
 **The assistant's model download** happens once, only when an administrator clicks
 *install* on the settings screen: the pinned llama.cpp build and the Qwen3 model file

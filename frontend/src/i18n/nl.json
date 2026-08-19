@@ -243,7 +243,13 @@
     "tabDetails": "Mijn gegevens",
     "tabAdmin": "Beheer",
     "tabAssistant": "AI-assistent",
-    "tabPick": "Kies een onderdeel"
+    "tabPick": "Kies een onderdeel",
+    "updateCheck": "Controleren op updates",
+    "updateCheckHint": "Vraagt GitHub of er een nieuwere versie bestaat wanneer een beheerder is aangemeld. Dit is een uitgaand verzoek; uitschakelen betekent dat CargoPilot het nooit vraagt.",
+    "adminUpdates": "Bijwerken",
+    "updateExplain": "CargoPilot draait als één container en kan zichzelf niet bijwerken. Bijwerken is altijd: het nieuwere image ophalen en de container opnieuw starten. Uw gegevens staan in het datavolume en blijven staan.",
+    "updateCompose": "Met Docker Compose zijn dat twee opdrachten op de server:",
+    "updateAuto": "Draait u Watchtower, dan gebeurt dit vanzelf. Op Unraid verschijnt de update in het Docker-tabblad; één klik op 'update' volstaat. De controle hierboven verandert daar niets aan — die vertelt alleen dát er iets op te halen valt."
   },
   "modality": {
     "title": "Kies uw transportmodaliteit",
@@ -652,5 +658,11 @@
     "intro": "CargoPilot is bijgewerkt naar versie {{version}}. Dit is er sinds uw vorige bezoek veranderd:",
     "truncated": "Niet alle tussenliggende versies worden getoond; het volledige overzicht staat in het changelog-bestand van het project.",
     "close": "Sluiten"
+  },
+  "update": {
+    "available": "CargoPilot {{version}} is beschikbaar",
+    "hint": "Deze installatie werkt zichzelf niet bij; haal het nieuwere image op zoals u dat gewend bent.",
+    "releaseNotes": "Bekijk de release-opmerkingen",
+    "dismiss": "Melding sluiten"
   }
 }

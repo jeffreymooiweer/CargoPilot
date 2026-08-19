@@ -504,6 +504,25 @@ function AdminSettings() {
           checked={draft.catalog_auto_sync}
           onChange={(value) => set("catalog_auto_sync", value)}
         />
+
+        <Toggle
+          label={t("settings.updateCheck")}
+          hint={t("settings.updateCheckHint")}
+          checked={draft.update_check_enabled}
+          onChange={(value) => set("update_check_enabled", value)}
+        />
+      </section>
+
+      <section className={`${panelClass} p-5 space-y-3`}>
+        <h4 className="text-sm font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">
+          {t("settings.adminUpdates")}
+        </h4>
+        <p className="text-sm text-slate-700 dark:text-slate-300">{t("settings.updateExplain")}</p>
+        <p className="text-sm text-slate-700 dark:text-slate-300">{t("settings.updateCompose")}</p>
+        <pre className="overflow-x-auto rounded-lg bg-slate-100 px-3 py-2 text-xs text-slate-800 dark:bg-slate-800 dark:text-slate-200">
+          docker compose pull && docker compose up -d
+        </pre>
+        <p className="text-sm text-slate-700 dark:text-slate-300">{t("settings.updateAuto")}</p>
       </section>
 
       <section className={`${panelClass} p-5 space-y-5`}>

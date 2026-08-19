@@ -243,7 +243,13 @@
     "tabDetails": "Meine Angaben",
     "tabAdmin": "Verwaltung",
     "tabAssistant": "KI-Assistent",
-    "tabPick": "Bereich wählen"
+    "tabPick": "Bereich wählen",
+    "updateCheck": "Auf Updates prüfen",
+    "updateCheckHint": "Fragt GitHub, ob eine neuere Version existiert, wenn ein Administrator angemeldet ist. Dies ist eine ausgehende Anfrage; ausgeschaltet fragt CargoPilot nie.",
+    "adminUpdates": "Aktualisieren",
+    "updateExplain": "CargoPilot läuft als ein einzelner Container und kann sich nicht selbst aktualisieren. Aktualisieren heißt immer: das neuere Image holen und den Container neu starten. Ihre Daten liegen im Datenvolume und bleiben erhalten.",
+    "updateCompose": "Mit Docker Compose sind das zwei Befehle auf dem Server:",
+    "updateAuto": "Wenn Sie Watchtower betreiben, geschieht das von selbst. Auf Unraid erscheint das Update im Docker-Tab; ein Klick auf 'update' genügt. Die Prüfung oben ändert daran nichts — sie sagt nur, dass es etwas zu holen gibt."
   },
   "modality": {
     "title": "Wählen Sie Ihren Verkehrsträger",
@@ -652,5 +658,11 @@
     "intro": "CargoPilot wurde auf Version {{version}} aktualisiert. Das hat sich seit Ihrem letzten Besuch geändert:",
     "truncated": "Nicht alle Zwischenversionen werden angezeigt; die vollständige Historie steht in der Changelog-Datei des Projekts.",
     "close": "Schließen"
+  },
+  "update": {
+    "available": "CargoPilot {{version}} ist verfügbar",
+    "hint": "Diese Installation aktualisiert sich nicht selbst; holen Sie das neuere Image wie gewohnt.",
+    "releaseNotes": "Versionshinweise ansehen",
+    "dismiss": "Meldung schließen"
   }
 }

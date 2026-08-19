@@ -2,6 +2,37 @@
 
 All notable changes are documented here, following [Semantic Versioning](https://semver.org/).
 
+## [1.126.0] — 2026-08-19
+
+### Added
+
+- **The update check, behind the administrator's switch.** A container
+  cannot update itself, so all this feature may do is tell the one person
+  who operates it that there is something to pull. `GET /api/update-status`
+  asks GitHub's public release listing — the fourth and last outbound
+  request the application can make — and answers in three deliberately
+  distinct shapes: the check is off, GitHub could not say (which is *not*
+  "you are up to date"), or a real comparison against the running version.
+  Admin-only on both grounds: nobody else can act on the answer, and a
+  signed-in user must not be able to make an installation call GitHub when
+  its administrator switched that off. The switch (`UPDATE_CHECK_ENABLED`,
+  and on the settings screen under Outbound connections) is read per
+  request, so flipping it needs no restart; answers are cached six hours
+  when they worked and fifteen minutes when they did not, so an outage
+  never turns a settings visit into a timeout wait.
+- **A quiet corner note, not a modal.** When a newer release exists an
+  administrator gets a small dismissible toast with the version and a link
+  to its release notes. Dismissing remembers that release in the browser —
+  the same version never nags again, a newer one shows up again. Regular
+  users see nothing and trigger nothing.
+- **The settings screen says what updating actually is.** A new *Updating*
+  section explains, honestly: pull the newer image and restart the
+  container — two commands with Docker Compose, automatic under Watchtower,
+  one click in Unraid's Docker tab — and that the data volume stays put.
+  The check above changes none of it; it only tells you there is something
+  to pull. Documented in all four interface languages, with the outbound
+  request named in `docs/privacy.md` next to the other three.
+
 ## [1.125.0] — 2026-08-19
 
 ### Added

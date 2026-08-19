@@ -243,7 +243,13 @@
     "tabDetails": "My details",
     "tabAdmin": "Administration",
     "tabAssistant": "AI assistant",
-    "tabPick": "Choose a section"
+    "tabPick": "Choose a section",
+    "updateCheck": "Check for updates",
+    "updateCheckHint": "Asks GitHub whether a newer release exists when an administrator is signed in. This is an outbound request; switching it off means CargoPilot never asks.",
+    "adminUpdates": "Updating",
+    "updateExplain": "CargoPilot runs as a single container and cannot update itself. Updating is always: pull the newer image and restart the container. Your data lives in the data volume and stays put.",
+    "updateCompose": "With Docker Compose that is two commands on the server:",
+    "updateAuto": "If you run Watchtower, this happens by itself. On Unraid the update appears in the Docker tab; one click on 'update' is enough. The check above changes none of this — it only tells you there is something to pull."
   },
   "modality": {
     "title": "Choose your transport modality",
@@ -652,5 +658,11 @@
     "intro": "CargoPilot has been updated to version {{version}}. Here is what changed since your last visit:",
     "truncated": "Not every intermediate release is shown; the full history lives in the project's changelog file.",
     "close": "Close"
+  },
+  "update": {
+    "available": "CargoPilot {{version}} is available",
+    "hint": "This installation does not update itself; pull the newer image the way you usually do.",
+    "releaseNotes": "View the release notes",
+    "dismiss": "Dismiss notification"
   }
 }

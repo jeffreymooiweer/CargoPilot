@@ -22,6 +22,8 @@ class Settings(BaseSettings):
     cookie_secure: bool | None = None
     catalog_auto_sync: bool = True
     catalog_sync_timeout_seconds: float = 20.0
+    update_check_enabled: bool = True
+    update_check_timeout_seconds: float = 8.0
     geo_address_api_url: str = "https://photon.komoot.io/api"
     geo_address_timeout_seconds: float = 8.0
 

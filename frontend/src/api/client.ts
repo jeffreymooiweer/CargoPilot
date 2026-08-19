@@ -184,6 +184,7 @@ export const api = {
   publicSettings: () => request<PublicSettings>("/settings/public"),
   changelog: (since: string) =>
     request<ChangelogResponse>(`/changelog?since=${encodeURIComponent(since)}`),
+  updateStatus: () => request<UpdateStatus>("/update-status"),
   settingsOptions: () => request<SettingsOptions>("/settings/options"),
   assistantStatus: () => request<AssistantStatus>("/assistant/status"),
   assistantModel: (action: "download" | "remove" | "stop") =>
@@ -411,6 +412,17 @@ export interface ChangelogResponse {
   truncated: boolean;
 }
 
+/** Whether a newer release exists. Three shapes, kept distinct: the check is
+ *  off, GitHub could not say (which is not "up to date"), or a comparison. */
+export interface UpdateStatus {
+  enabled: boolean;
+  current: string;
+  reachable?: boolean;
+  latest?: string;
+  url?: string;
+  update_available?: boolean;
+}
+
 /** The assistant runtime's condition: which mode it runs in, whether the
  *  model is installed, and how an install in progress is doing. */
 export interface AssistantStatus {
@@ -432,6 +444,7 @@ export interface InstanceSettings {
   address_api_url: string;
   address_timeout_seconds: number;
   catalog_auto_sync: boolean;
+  update_check_enabled: boolean;
   un_cards_enabled: boolean;
   session_timeout_minutes: number;
   organisation_name: string;

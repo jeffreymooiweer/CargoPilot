@@ -50,6 +50,7 @@ def environment_defaults() -> InstanceSettings:
         address_api_url=settings.geo_address_api_url,
         address_timeout_seconds=settings.geo_address_timeout_seconds,
         catalog_auto_sync=settings.catalog_auto_sync,
+        update_check_enabled=settings.update_check_enabled,
         session_timeout_minutes=settings.access_token_expire_minutes,
     )
 

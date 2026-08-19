@@ -155,6 +155,12 @@ class InstanceSettings(BaseModel):
     #: effect the next time the container starts.
     catalog_auto_sync: bool = True
 
+    #: The third and last outbound request: asking GitHub whether a newer
+    #: release exists, when an administrator opens the screen that could act
+    #: on the answer. The container cannot update itself either way — this
+    #: only decides whether CargoPilot may *ask*.
+    update_check_enabled: bool = True
+
     #: The UN card download. Some installations would rather hand out their own
     #: instruction cards than these.
     un_cards_enabled: bool = True

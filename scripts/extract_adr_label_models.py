@@ -169,6 +169,28 @@ def trim_white(pix: fitz.Pixmap) -> fitz.Pixmap:
     return trimmed
 
 
+def _figure_column(page: fitz.Page, previous: tuple[float, float] | None
+                   ) -> tuple[float, float] | None:
+    """The x-range of the table's figure column, from its own header words.
+
+    The header repeats on every table page ("Figure in bottom corner", Dutch
+    "Figuur in benedenhoek"); the column runs from there to the next header
+    ("Note") or the right margin. When a continuation page omits the header,
+    the previous page's answer carries over.
+    """
+    figure_x = note_x = None
+    for x0, y0, x1, y1, word, *_ in page.get_text("words"):
+        lowered = word.lower().rstrip(".:")
+        if lowered in {"figure", "figuur"} and figure_x is None:
+            figure_x = x0
+        if lowered in {"note", "opmerking"} and note_x is None and x0 > (figure_x or 0):
+            note_x = x0
+    if figure_x is None:
+        return previous
+    right = note_x - 4 if note_x else page.rect.width - 18
+    return (figure_x - 10, right)
+
+
 def extract(vol1: Path, out_dir: Path) -> dict:
     doc = fitz.open(str(vol1))
     pages = find_section_pages(doc)
@@ -177,43 +199,57 @@ def extract(vol1: Path, out_dir: Path) -> dict:
     out_dir.mkdir(parents=True, exist_ok=True)
     report: dict = {"pages": [p + 1 for p in pages], "models": {}}
 
-    # Collect anchors and figures page by page; a figure belongs to the row
-    # band of the anchor it vertically overlaps.
+    # The figure prints however the edition's typesetter drew it — embedded
+    # image, vector art, or a form object — so nothing is detected: the
+    # figure *column* of each row band is rendered as a page region and the
+    # white margin trimmed off. What the page shows is what the crop holds.
+    # Low-resolution page renders ride along under _debug/ so a mismatch can
+    # be *seen* instead of re-derived from counters; the directory is removed
+    # once the crop set is accepted.
+    debug_dir = out_dir / "_debug"
+    debug_dir.mkdir(parents=True, exist_ok=True)
+
+    column: tuple[float, float] | None = None
     for number in pages:
         page = doc[number]
+        doc[number].get_pixmap(dpi=70).save(str(debug_dir / f"page_{number + 1}.png"))
         anchors = row_anchors(page)
-        if not anchors:
+        column = _figure_column(page, column)
+        if not anchors or column is None:
+            print(f"DIAGNOSTIC page {number + 1}: anchors="
+                  f"{[a[0] for a in anchors]} column={column} — skipped")
             continue
-        figures: list[tuple[str, object]] = [("image", ir) for ir in image_rects(page)]
-        figures += [("vector", r) for r in drawing_clusters(page)]
-        print(f"DIAGNOSTIC page {number + 1}: anchors="
-              f"{[a[0] for a in anchors]} images={len(image_rects(page))} "
-              f"clusters={[tuple(round(v) for v in r) for r in drawing_clusters(page)][:8]}")
-        bands = []
-        for i, (code, y) in enumerate(anchors):
-            y_end = anchors[i + 1][1] if i + 1 < len(anchors) else page.rect.height
-            bands.append((code, y - 6, y_end - 6))
-        for kind, item in figures:
-            rect = item[1] if kind == "image" else item
-            centre = (rect.y0 + rect.y1) / 2
-            for code, y0, y1 in bands:
-                if y0 <= centre < y1 and code not in report["models"]:
-                    target = out_dir / f"{code.replace('.', '_')}.png"
-                    if kind == "image":
-                        xref = item[0]
-                        pix = fitz.Pixmap(doc, xref)
-                        if pix.n > 4:
-                            pix = fitz.Pixmap(fitz.csRGB, pix)
-                    else:
-                        clip = fitz.Rect(rect.x0 - 2, rect.y0 - 2, rect.x1 + 2, rect.y1 + 2)
-                        pix = page.get_pixmap(clip=clip, dpi=RENDER_DPI)
-                    pix = trim_white(pix)
-                    pix.save(str(target))
-                    report["models"][code] = {
-                        "file": target.name, "page": number + 1, "kind": kind,
-                        "px": [pix.width, pix.height],
-                    }
-                    break
+
+        # One band per model: consecutive repeats of the same code (the
+        # figure column prints the class digit too) extend the band rather
+        # than splitting it.
+        bands: list[tuple[str, float, float]] = []
+        for code, y in anchors:
+            if bands and bands[-1][0] == code:
+                continue
+            bands.append((code, y, page.rect.height))
+        bands = [(code, y, bands[i + 1][1] - 4 if i + 1 < len(bands) else page.rect.height - 30)
+                 for i, (code, y, _) in enumerate(bands)]
+        print(f"DIAGNOSTIC page {number + 1}: bands="
+              f"{[(c, round(a), round(b)) for c, a, b in bands]} column="
+              f"{tuple(round(v) for v in column)}")
+
+        for code, y0, y1 in bands:
+            if code in report["models"] or y1 - y0 < 40:
+                continue
+            clip = fitz.Rect(column[0], y0 - 4, column[1], y1)
+            pix = page.get_pixmap(clip=clip, dpi=RENDER_DPI)
+            pix = trim_white(pix)
+            if pix.width < 60 or pix.height < 60:
+                print(f"DIAGNOSTIC {code}: crop trimmed to nothing "
+                      f"({pix.width}x{pix.height}) on page {number + 1}")
+                continue
+            target = out_dir / f"{code.replace('.', '_')}.png"
+            pix.save(str(target))
+            report["models"][code] = {
+                "file": target.name, "page": number + 1, "kind": "region",
+                "px": [pix.width, pix.height],
+            }
 
     missing = [c for c in MODEL_CODES if c not in report["models"]]
     report["missing"] = missing

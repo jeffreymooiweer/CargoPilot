@@ -1,5 +1,5 @@
 {
- "_comment": "Crop boxes for the hazard label models of ADR 5.2.2.2.2, measured from 70 dpi renders of the UNECE English edition Volume II (adr2.pdf, sha256-pinned in backend/seed/dg/sources.json) by scripts/extract_adr_label_models.py's measurement pass. Pages are 1-based; rects are points in page space. Where a model prints two specimen variants, the box holds the first (topmost). Valid for this one edition file only - a new edition is re-measured, never reused.",
+ "_comment": "Crop boxes for the hazard label models of ADR 5.2.2.2.2, measured from 70 dpi renders of the UNECE English edition Volume II (adr2.pdf, sha256-pinned in backend/seed/dg/sources.json) by scripts/extract_adr_label_models.py's measurement pass. Pages are 1-based; rects are points in page space. Where a model prints two specimen variants, the box holds the first (topmost). Valid for this one edition file only - a new edition is re-measured, never reused. The print rotates the table content 90 degrees on the page; rotate_clockwise_degrees restores the labels upright after cropping.",
  "document": "adr2",
  "crops": {
   "1": {
@@ -200,5 +200,6 @@
     347.7
    ]
   }
- }
+ },
+ "rotate_clockwise_degrees": 90
 }

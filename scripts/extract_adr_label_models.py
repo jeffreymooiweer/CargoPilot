@@ -73,6 +73,19 @@ def trim_white(pix: fitz.Pixmap) -> fitz.Pixmap:
     return fitz.Pixmap(pix.colorspace, new_w, new_h, b"".join(rows), pix.alpha)
 
 
+def rotate_clockwise(pix: fitz.Pixmap) -> fitz.Pixmap:
+    """The print rotates the table content 90 degrees; this restores it."""
+    w, h, n = pix.width, pix.height, pix.n
+    s = pix.samples
+    out = bytearray(w * h * n)
+    for ys in range(h):
+        for xs in range(w):
+            di = (xs * h + (h - 1 - ys)) * n
+            si = (ys * w + xs) * n
+            out[di:di + n] = s[si:si + n]
+    return fitz.Pixmap(pix.colorspace, h, w, bytes(out), pix.alpha)
+
+
 def extract(vol: Path, out_dir: Path) -> dict:
     spec = json.loads(CROPS.read_text(encoding="utf-8"))
     doc = fitz.open(str(vol))
@@ -82,6 +95,8 @@ def extract(vol: Path, out_dir: Path) -> dict:
         page = doc[entry["page"] - 1]
         clip = fitz.Rect(entry["rect"])
         pix = trim_white(page.get_pixmap(clip=clip, dpi=RENDER_DPI))
+        if spec.get("rotate_clockwise_degrees") == 90:
+            pix = rotate_clockwise(pix)
         if pix.width < 100 or pix.height < 100:
             report["failed"].append(
                 {"model": code, "reason": f"crop trimmed to {pix.width}x{pix.height}"})

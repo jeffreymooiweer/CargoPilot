@@ -665,5 +665,18 @@
     "hint": "Deze installatie werkt zichzelf niet bij; haal het nieuwere image op zoals u dat gewend bent.",
     "releaseNotes": "Bekijk de release-opmerkingen",
     "dismiss": "Melding sluiten"
+  },
+  "carrier": {
+    "title": "Boekingsbevestiging plakken",
+    "intro": "Plak de bevestiging van de vervoerder; de herkenbare referenties (AWB-nummer, boekingsnummer, ENS-MRN, AES ITN) worden gelezen en alleen in nog lege velden gezet. Er wordt niets opgeslagen.",
+    "placeholder": "Plak hier de tekst van de bevestigingsmail…",
+    "read": "Bevestiging lezen",
+    "foundNone": "Geen herkenbare referenties gevonden.",
+    "filled": "Ingevuld: {{fields}}.",
+    "kept": "Al ingevuld gelaten: {{fields}}.",
+    "awb": "AWB-nummer",
+    "booking": "Boekingsnummer",
+    "ens": "ENS-referentie (ICS2)",
+    "itn": "AES ITN"
   }
 }

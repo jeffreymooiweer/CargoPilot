@@ -540,6 +540,54 @@
           }
         },
         {
+          "key": "ens_mrn",
+          "label": {
+            "nl": "ENS-referentie (ICS2)",
+            "en": "ENS reference (ICS2)",
+            "de": "ENS-Referenz (ICS2)",
+            "fr": "Référence ENS (ICS2)"
+          },
+          "status": "CONDITIONAL",
+          "type": "text",
+          "pattern": "\\d{2}[A-Z]{2}[A-Z0-9]{13}\\d",
+          "format_hint": {
+            "nl": "18 tekens: jaar, landcode, dan 14 tekens — bijv. 26NLA2345678901234",
+            "en": "18 characters: year, country code, then 14 characters — e.g. 26NLA2345678901234",
+            "de": "18 Zeichen: Jahr, Ländercode, dann 14 Zeichen — z. B. 26NLA2345678901234",
+            "fr": "18 caractères : année, code pays, puis 14 caractères — p. ex. 26NLA2345678901234"
+          },
+          "help": {
+            "nl": "Goederen die het douanegebied van de EU binnenkomen vereisen vooraf een summiere aangifte bij binnenbrengen (ENS) in ICS2 — normaal ingediend door de vervoerder, op uw gegevens. Is het MRN van die aangifte bekend, dan reist het hier mee op de papieren.",
+            "en": "Goods entering the EU customs territory require an entry summary declaration (ENS) lodged in ICS2 before arrival — normally filed by the carrier, on your data. Where the MRN of that declaration is known, it travels here on the papers.",
+            "de": "Waren, die in das Zollgebiet der EU verbracht werden, erfordern vorab eine summarische Eingangsanmeldung (ENS) in ICS2 — üblicherweise vom Beförderer abgegeben, auf Ihren Daten. Ist die MRN dieser Anmeldung bekannt, reist sie hier auf den Papieren mit.",
+            "fr": "Les marchandises entrant sur le territoire douanier de l'UE exigent une déclaration sommaire d'entrée (ENS) déposée dans ICS2 avant l'arrivée — normalement par le transporteur, sur la base de vos données. Lorsque le MRN de cette déclaration est connu, il voyage ici sur les documents."
+          }
+        },
+        {
+          "key": "aes_itn",
+          "label": {
+            "nl": "AES ITN (VS-uitvoer)",
+            "en": "AES ITN (US export)",
+            "de": "AES ITN (US-Ausfuhr)",
+            "fr": "ITN AES (exportation US)"
+          },
+          "status": "CONDITIONAL",
+          "type": "text",
+          "pattern": "X\\d{14}",
+          "format_hint": {
+            "nl": "X gevolgd door 14 cijfers — bijv. X20260819123456; de eerste acht zijn de aangiftedatum",
+            "en": "X followed by 14 digits — e.g. X20260819123456; the first eight are the filing date",
+            "de": "X gefolgt von 14 Ziffern — z. B. X20260819123456; die ersten acht sind das Anmeldedatum",
+            "fr": "X suivi de 14 chiffres — p. ex. X20260819123456 ; les huit premiers sont la date de dépôt"
+          },
+          "help": {
+            "nl": "Uitvoer uit de Verenigde Staten vereist een Electronic Export Information-aangifte in AES. Het Internal Transaction Number is het bewijs daarvan en hoort op het vervoersdocument dat aan de vervoerder wordt meegegeven.",
+            "en": "Exports from the United States require Electronic Export Information filed in AES. The Internal Transaction Number is the proof of that filing and belongs on the transport document handed to the carrier.",
+            "de": "Ausfuhren aus den Vereinigten Staaten erfordern eine Electronic-Export-Information-Anmeldung in AES. Die Internal Transaction Number ist der Nachweis dieser Anmeldung und gehört auf das dem Beförderer übergebene Beförderungsdokument.",
+            "fr": "Les exportations depuis les États-Unis exigent une déclaration Electronic Export Information dans AES. L'Internal Transaction Number en est la preuve et doit figurer sur le document de transport remis au transporteur."
+          }
+        },
+        {
           "key": "attached_documents",
           "label": {
             "nl": "Bijgevoegde documenten",

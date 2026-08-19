@@ -21,6 +21,7 @@ from app.services.documents import (
 )
 from app.services import regulations
 from app.services.documents.avc_form import fill_avc_waybill, has_avc_template
+from app.services.documents.carrier_confirmation import parse_carrier_confirmation
 from app.services.documents.onboard_pack import (
     render_onboard_documents,
     render_packing_certificate,
@@ -37,6 +38,24 @@ router = APIRouter(prefix="/documents", tags=["documents"])
 @router.get("/registry")
 def document_registry(user: User = Depends(get_current_user)):
     return get_registry()
+
+
+@router.post("/carrier-confirmation")
+def read_carrier_confirmation(
+    payload: dict,
+    user: User = Depends(get_current_user),
+):
+    """The carrier-assigned references found in a pasted booking confirmation.
+
+    Reading only — nothing is stored and no field is written here. The
+    interface decides what to do with the findings, and it fills only fields
+    that are still empty, so nothing a user typed is ever overwritten. Keys
+    the text does not support are absent, never defaulted.
+    """
+    text = str(payload.get("text") or "")
+    if len(text) > 100_000:
+        raise HTTPException(status_code=413, detail="confirmation text too large")
+    return {"found": parse_carrier_confirmation(text)}
 
 
 @router.post("/validate")

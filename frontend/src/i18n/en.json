@@ -665,5 +665,18 @@
     "hint": "This installation does not update itself; pull the newer image the way you usually do.",
     "releaseNotes": "View the release notes",
     "dismiss": "Dismiss notification"
+  },
+  "carrier": {
+    "title": "Paste booking confirmation",
+    "intro": "Paste the carrier's confirmation; the recognisable references (AWB number, booking number, ENS MRN, AES ITN) are read and put only into fields that are still empty. Nothing is stored.",
+    "placeholder": "Paste the confirmation e-mail text here…",
+    "read": "Read confirmation",
+    "foundNone": "No recognisable references found.",
+    "filled": "Filled in: {{fields}}.",
+    "kept": "Left as already filled: {{fields}}.",
+    "awb": "AWB number",
+    "booking": "Booking number",
+    "ens": "ENS reference (ICS2)",
+    "itn": "AES ITN"
   }
 }

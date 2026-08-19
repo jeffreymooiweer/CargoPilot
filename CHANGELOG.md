@@ -2,6 +2,35 @@
 
 All notable changes are documented here, following [Semantic Versioning](https://semver.org/).
 
+## [1.128.0] — 2026-08-19
+
+### Added
+
+- **The customs references that come back from a filing get fields of their
+  own.** The references section gains the **ENS reference (ICS2)** — goods
+  entering the EU customs territory require an entry summary declaration
+  lodged in ICS2 before arrival, normally by the carrier on the consignor's
+  data; where its MRN is known it travels on the papers — and the **AES
+  ITN** — exports from the United States require Electronic Export
+  Information filed in AES, and the Internal Transaction Number is the
+  proof that belongs on the transport document. Both are conditional
+  fields with the rule named in the help text in all four languages, and
+  both enforce their format on export (18-character MRN shape; X plus
+  fourteen digits), so a mistyped reference is caught before it reaches an
+  official form.
+- **Paste the booking confirmation; the references find their fields.**
+  The carrier's numbers arrive in a confirmation e-mail *after* the
+  booking — exactly when the wizard's carrier-provided fields are still
+  empty. A paste box at the top of the shipment-details step reads that
+  e-mail for the references it can verify by format: the AWB number
+  (three-digit prefix plus serial, checked against IATA's mod-7 check
+  digit, so a phone number is refused six times out of seven), a booking
+  reference (only where the text itself names it one — a bare code could
+  be anything), the ENS MRN and the AES ITN. What the text does not carry
+  is absent, never invented; only still-empty fields are filled, so
+  nothing a user typed is ever overwritten; and the pasted text is read
+  once and stored nowhere.
+
 ## [1.127.0] — 2026-08-19
 
 ### Added

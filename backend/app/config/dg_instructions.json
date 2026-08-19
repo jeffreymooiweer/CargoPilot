@@ -715,6 +715,41 @@
         }
       ]
     },
+    "full_load": {
+      "label": {
+        "nl": "Volledige wagenlading",
+        "en": "Full wagon load",
+        "de": "Geschlossene Ladung",
+        "fr": "Chargement complet"
+      },
+      "help": {
+        "nl": "RID: vormen deze colli samen een volledige lading van één wagen of grote container, dan beslist dat twee dingen die anders open blijven — de rangeeretiketten van 5.3.4 worden bij klasse 1 alleen op wagens met een volledige lading aangebracht, en 5.3.2.1.1 staat voor volledige ladingen van één en dezelfde stof de oranje borden toe. De verklaring is die van de afzender en wordt nooit uit hoeveelheden afgeleid.",
+        "en": "RID: where these packages together make up a full load of one wagon or large container, that decides two things otherwise left open — the shunting labels of 5.3.4 are, for Class 1, only affixed to wagons comprising a full load, and 5.3.2.1.1 permits the orange plates for full loads of one and the same substance. The statement is the consignor's and is never inferred from quantities.",
+        "de": "RID: Bilden diese Versandstücke zusammen eine geschlossene Ladung eines Wagens oder Großcontainers, entscheidet das zwei sonst offene Fragen — die Rangierzettel nach 5.3.4 werden bei Klasse 1 nur an Wagen mit geschlossener Ladung angebracht, und 5.3.2.1.1 erlaubt die orangefarbenen Tafeln für geschlossene Ladungen ein und desselben Stoffes. Die Erklärung ist die des Absenders und wird nie aus Mengen abgeleitet.",
+        "fr": "RID : lorsque ces colis constituent ensemble un chargement complet d'un wagon ou d'un grand conteneur, cela tranche deux questions sinon ouvertes — les étiquettes de manœuvre du 5.3.4 ne sont, pour la classe 1, apposées que sur les wagons constituant un chargement complet, et le 5.3.2.1.1 permet les panneaux orange pour les chargements complets d'une seule et même matière. La déclaration est celle de l'expéditeur et n'est jamais déduite des quantités."
+      },
+      "type": "select",
+      "options": [
+        {
+          "value": "",
+          "label": {
+            "nl": "Nee / onbekend",
+            "en": "No / unknown",
+            "de": "Nein / unbekannt",
+            "fr": "Non / inconnu"
+          }
+        },
+        {
+          "value": "yes",
+          "label": {
+            "nl": "Ja — volledige lading van deze goederen",
+            "en": "Yes — a full load of these goods",
+            "de": "Ja — geschlossene Ladung dieser Güter",
+            "fr": "Oui — chargement complet de ces marchandises"
+          }
+        }
+      ]
+    },
     "containers_only": {
       "label": {
         "nl": "Uitsluitend in containers",

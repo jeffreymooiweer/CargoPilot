@@ -92,6 +92,7 @@ const SPECIAL_FIELDS = [
   "residue_classes",
   "classified_2_1_2_8",
   "containers_only",
+  "full_load",
 ] as const;
 
 /** What the derived summary shows, in reading order: identification first,

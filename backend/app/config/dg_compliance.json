@@ -3542,6 +3542,13 @@
       "de": "Bei geschlossenen Ladungen aus Versandstücken mit ein und demselben Stoff dürfen die Tafeln an beiden Seiten angebracht werden — eine Erlaubnis, keine Pflicht (5.3.2.1.1, letzter Absatz).",
       "fr": "Pour les chargements complets de colis contenant une seule et même matière, les panneaux peuvent être apposés sur les deux côtés — une permission, pas une obligation (5.3.2.1.1, dernier alinéa)."
     },
+    "shunting_required": {
+      "provision": "5.3.4",
+      "nl": "Rangeeretiketten vereist, aan beide zijden: {items}. Model 13 is één rode driehoek met zwart uitroepteken (voorzichtig rangeren), model 15 drie (niet heuvelen of los laten lopen; door een krachtvoertuig begeleiden; mag niet op- of aangelopen worden). Formaat ten minste A7; onuitwisbare kenmerken met dezelfde driehoek(en) zijn toegestaan (5.3.4.1/5.3.4.2).",
+      "en": "Shunting labels required, on both sides: {items}. Model 13 is one red triangle with a black exclamation mark (shunt with care), model 15 three (loose or hump shunting forbidden; to be accompanied by a motive power unit; shall not bump or be bumped). Format at least A7; indelible marks showing the same triangle(s) are permitted (5.3.4.1/5.3.4.2).",
+      "de": "Rangierzettel erforderlich, an beiden Seiten: {items}. Muster 13 ist ein rotes Dreieck mit schwarzem Ausrufezeichen (vorsichtig verschieben), Muster 15 drei (Abstoß- und Ablaufverbot; muss von einem Triebfahrzeug beigestellt werden; darf nicht auflaufen). Format mindestens A7; unauslöschbare Kennzeichen mit denselben Dreieck(en) sind zulässig (5.3.4.1/5.3.4.2).",
+      "fr": "Étiquettes de manœuvre requises, sur les deux côtés : {items}. Le modèle 13 est un triangle rouge à point d'exclamation noir (manœuvrer avec précaution), le modèle 15 trois (interdiction de lancer ou de laisser dériver ; doit être accompagné d'un engin moteur ; ne doit pas tamponner ni être tamponné). Format au moins A7 ; des marques indélébiles reproduisant le(s) triangle(s) sont admises (5.3.4.1/5.3.4.2)."
+    },
     "shunting_models_read": {
       "provision": "5.3.4",
       "nl": "Kolom (5) van het RID zet bij deze lading een rangeermodel tussen haakjes: {items}. Model 13 (voorzichtig rangeren, één rode driehoek) en model 15 (niet heuvelen of los laten lopen, drie rode driehoeken) worden alleen aangebracht: klasse 1 — aan beide zijden van wagens met een volledige lading; klasse 2 — aan beide zijden van ketelwagens, batterijwagens, wagens met afneembare tanks en wagens met tankcontainers, MEGC's of transporttanks (toelichting bij kolom (5), 3.2.1). Of een wagen een volledige lading vormt kan deze applicatie niet zien. Formaat ten minste A7; onuitwisbare kenmerken met dezelfde driehoek(en) zijn toegestaan (5.3.4.1/5.3.4.2).",

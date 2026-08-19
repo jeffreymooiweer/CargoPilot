@@ -92,8 +92,11 @@ const DG_EXTRA_FIELDS: Record<string, string[]> = {
         "density_50", "transport_category", "adr_total_quantity",
         "is_waste", "empty_uncleaned", "salvage_packaging",
         "molten", "residue_classes", "classified_2_1_2_8"],
+  // Full load is the consignor's own statement (a wagon-level fact no table
+  // supplies) and it decides the shunting labels of 5.3.4 for class 1 and the
+  // orange-plate permission of 5.3.2.1.1.
   RID: ["carriage_mode", "transport_category", "adr_total_quantity",
-        "is_waste", "empty_uncleaned", "salvage_packaging",
+        "full_load", "is_waste", "empty_uncleaned", "salvage_packaging",
         "molten", "residue_classes", "classified_2_1_2_8"],
   // Where it goes on the vessel: 7.1.4.11.1 asks the boatmaster to say which
   // goods are in which hold or on deck, and no table can answer that.
@@ -701,7 +704,7 @@ export default function WizardPage() {
   }, [stepKey, dgEntries]);
 
   const instructionRegimes = useMemo(
-    () => ["adr", "adn"].filter((regime) => dgProfiles.includes(regime.toUpperCase())),
+    () => ["adr", "rid", "adn"].filter((regime) => dgProfiles.includes(regime.toUpperCase())),
     [dgProfiles],
   );
 

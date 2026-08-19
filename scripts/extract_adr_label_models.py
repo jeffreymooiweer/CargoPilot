@@ -87,25 +87,46 @@ def row_anchors(page: fitz.Page) -> list[tuple[str, float]]:
 
 
 def drawing_clusters(page: fitz.Page) -> list[fitz.Rect]:
-    """Bounding boxes of vector figure clusters big enough to be a label."""
-    rects: list[fitz.Rect] = []
+    """Bounding boxes of vector figure clusters big enough to be a label.
+
+    A label model prints as dozens of small vector pieces; they are merged by
+    proximity (union-find on rects grown by a few points) rather than by
+    strict overlap, because the pieces of one diamond touch only loosely.
+    """
+    pieces = []
     for drawing in page.get_drawings():
-        r = drawing["rect"]
-        if r.width < 8 or r.height < 8:
+        r = fitz.Rect(drawing["rect"])
+        if r.width < 2 and r.height < 2:
             continue
-        if r.width > page.rect.width * 0.95:
+        if r.width > page.rect.width * 0.95 and r.height > page.rect.height * 0.9:
             continue  # the page frame
-        placed = False
-        for i, existing in enumerate(rects):
-            if fitz.Rect(existing).intersects(r) or (
-                    abs(existing.x0 - r.x0) < 30 and abs(existing.y0 - r.y0) < 30):
-                rects[i] = fitz.Rect(min(existing.x0, r.x0), min(existing.y0, r.y0),
-                                     max(existing.x1, r.x1), max(existing.y1, r.y1))
-                placed = True
-                break
-        if not placed:
-            rects.append(fitz.Rect(r))
-    return [r for r in rects if 40 <= r.width <= 400 and 40 <= r.height <= 400]
+        pieces.append(r)
+
+    parent = list(range(len(pieces)))
+
+    def find(i: int) -> int:
+        while parent[i] != i:
+            parent[i] = parent[parent[i]]
+            i = parent[i]
+        return i
+
+    grown = [fitz.Rect(r.x0 - 6, r.y0 - 6, r.x1 + 6, r.y1 + 6) for r in pieces]
+    for i in range(len(pieces)):
+        for j in range(i + 1, len(pieces)):
+            if grown[i].intersects(grown[j]) and find(i) != find(j):
+                parent[find(i)] = find(j)
+
+    clusters: dict[int, fitz.Rect] = {}
+    for i, r in enumerate(pieces):
+        root = find(i)
+        if root in clusters:
+            c = clusters[root]
+            clusters[root] = fitz.Rect(min(c.x0, r.x0), min(c.y0, r.y0),
+                                       max(c.x1, r.x1), max(c.y1, r.y1))
+        else:
+            clusters[root] = fitz.Rect(r)
+    return [r for r in clusters.values()
+            if 30 <= r.width <= 380 and 30 <= r.height <= 380]
 
 
 def image_rects(page: fitz.Page) -> list[tuple[int, fitz.Rect]]:
@@ -165,6 +186,9 @@ def extract(vol1: Path, out_dir: Path) -> dict:
             continue
         figures: list[tuple[str, object]] = [("image", ir) for ir in image_rects(page)]
         figures += [("vector", r) for r in drawing_clusters(page)]
+        print(f"DIAGNOSTIC page {number + 1}: anchors="
+              f"{[a[0] for a in anchors]} images={len(image_rects(page))} "
+              f"clusters={[tuple(round(v) for v in r) for r in drawing_clusters(page)][:8]}")
         bands = []
         for i, (code, y) in enumerate(anchors):
             y_end = anchors[i + 1][1] if i + 1 < len(anchors) else page.rect.height

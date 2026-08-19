@@ -883,7 +883,8 @@ reading and not as a coincidence.
 
 ---
 
-*This assessment is maintained up to CargoPilot v1.124.0; the sections above name the release
+*This assessment is maintained up to CargoPilot v1.125.0 (which changed the update
+experience only, no regulatory check); the sections above name the release
 each finding shipped in. v1.42.0 to v1.48.0 touched the goods
 catalogue, the interface language, the settings, the documentation and the error messages,
 not a single regulatory check; v1.49.0 and v1.50.0 changed the ADR side, from the Dutch

@@ -29,6 +29,9 @@ RUN pip install -r requirements-runtime.txt && pip check
 
 COPY backend/ ./backend/
 COPY templates/ ./templates/
+# The changelog the what's-new card serves after an update. Next to /app/backend
+# so app/services/changelog.py finds it where a checkout keeps it: one level up.
+COPY CHANGELOG.md ./CHANGELOG.md
 # The UN card library that the card export serves. This is by far the largest
 # thing in the image: 2,849 PDFs, 575 MB, committed to the repository rather
 # than fetched at build time. Removing it would shrink the image by roughly

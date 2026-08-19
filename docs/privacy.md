@@ -13,7 +13,7 @@ Everything persistent lives in the `/data` volume:
 | Catalogue reference data | Materials, profiles, locations, UN numbers |
 | Catalogue sync status | So startup knows what is current |
 | Equipment **you** imported | Your own library |
-| Your settings | Language, theme, and the details you asked to have filled in for you |
+| Your settings | Language, theme, the details you asked to have filled in for you, and which version's release notes you have already seen |
 | The installation's settings | What an administrator set for everyone |
 
 That is the whole list.

@@ -256,6 +256,15 @@ the field is still empty, so nothing you typed yourself is ever overwritten. Swi
 replace or remove it per shipment. It is stored on your own server and nowhere else — see
 [Privacy](privacy.md#what-is-stored).
 
+### After an update
+
+When your administrator pulls a newer CargoPilot image, the first sign-in afterwards shows
+a **what's new** card with the release notes between the version you last used and the one
+now running. Close it and it will not return until the next update; the card follows your
+account, so a second device does not show the same notes twice. The notes themselves are
+the project's own changelog entries and are in English; a first sign-in on a fresh account
+shows no card at all.
+
 ### For administrators
 
 Administrators see one more section, applying to the whole installation: the language and

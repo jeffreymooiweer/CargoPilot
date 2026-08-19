@@ -646,5 +646,11 @@
     "clarify": "Ik heb een preciezer antwoord nodig, bijvoorbeeld: {{example}}",
     "corrected": "“{{attempt}}” is geen van de mogelijke antwoorden — kies een optie of formuleer het anders.",
     "info": "Uitleg bij deze vraag"
+  },
+  "whatsNew": {
+    "title": "Wat is er nieuw",
+    "intro": "CargoPilot is bijgewerkt naar versie {{version}}. Dit is er sinds uw vorige bezoek veranderd:",
+    "truncated": "Niet alle tussenliggende versies worden getoond; het volledige overzicht staat in het changelog-bestand van het project.",
+    "close": "Sluiten"
   }
 }

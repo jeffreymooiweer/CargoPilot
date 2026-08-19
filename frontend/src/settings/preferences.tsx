@@ -35,6 +35,7 @@ export const EMPTY_PREFERENCES: UserPreferences = {
   loading_point: "",
   emergency_contact: "",
   signature_image: "",
+  last_seen_version: "",
 };
 
 interface PreferencesValue {

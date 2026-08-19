@@ -2,6 +2,35 @@
 
 All notable changes are documented here, following [Semantic Versioning](https://semver.org/).
 
+## [1.125.0] — 2026-08-19
+
+### Added
+
+- **A what's-new card after an update.** A self-hosted container updates
+  silently — the operator pulls a newer image and the next sign-in is a
+  different program with nothing said. The first sign-in after an update now
+  shows the changelog entries between the version last seen and the version
+  running, once: dismissing the card writes the running version into the
+  account's preferences, so a second device does not show the same notes
+  twice, and an unread card returns next login rather than being lost. A
+  fresh account, or one from before the marker existed, sees no card at all —
+  a first login is not an update, and 159 releases of history would teach
+  everyone to dismiss unread.
+- **The changelog serves itself.** `GET /api/changelog?since=<version>`
+  parses `CHANGELOG.md` — the same file a release is written into, now
+  shipped in the Docker image next to `VERSION` — so the card can never
+  disagree with the record. The endpoint reports the *running* version, not
+  the newest heading, so a changelog ahead of or behind the binary cannot
+  wedge the card open; the response is capped at twenty releases and says so
+  when it was cut short. A new test fails the pull request if the newest
+  heading and the `VERSION` files disagree, which makes forgetting a release
+  note a red build instead of a silent gap.
+- **`last_seen_version` in the user preferences.** Stored in the same
+  upgrade-proof JSON payload as the rest, validated as a version number or
+  empty, absent in payloads written by older versions and therefore
+  default-empty. The card's chrome speaks all four interface languages; the
+  entries themselves stay in English, the repository's language.
+
 ## [1.124.0] — 2026-08-19
 
 ### Added

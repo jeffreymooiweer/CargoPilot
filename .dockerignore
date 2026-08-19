@@ -42,10 +42,12 @@ coverage
 htmlcov
 *.log
 
-# Documentation and repository furniture. The application does not read these.
+# Documentation and repository furniture. The application does not read these —
+# except the changelog, which the what's-new card serves after an update.
 docs
 *.md
 !backend/**/*.md
+!CHANGELOG.md
 scripts
 unraid
 assets

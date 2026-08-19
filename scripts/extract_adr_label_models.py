@@ -69,14 +69,15 @@ def find_section_pages(doc: fitz.Document) -> list[int]:
     return list(range(best[0], best[-1] + 1))
 
 
-def row_anchors(page: fitz.Page) -> list[tuple[str, float]]:
+def row_anchors(page: fitz.Page, x_max: float | None = None) -> list[tuple[str, float]]:
     """(model code, y) for every model number printed in the first column."""
+    limit = x_max if x_max is not None else page.rect.width * 0.25
     anchors = []
     for x0, y0, x1, y1, word, *_ in page.get_text("words"):
-        if word in MODEL_CODES and x0 < page.rect.width * 0.25:
-            anchors.append((word, y0))
-    # The first column can repeat a code (division column prints it again at
-    # a similar x on narrow layouts); keep the first occurrence per y-band.
+        if word.rstrip(".,:") in MODEL_CODES and x0 < limit:
+            anchors.append((word.rstrip(".,:"), y0))
+    # A code can repeat within its own row (other columns quote it); keep the
+    # first occurrence per y-band.
     anchors.sort(key=lambda a: a[1])
     kept: list[tuple[str, float]] = []
     for code, y in anchors:
@@ -169,26 +170,32 @@ def trim_white(pix: fitz.Pixmap) -> fitz.Pixmap:
     return trimmed
 
 
-def _figure_column(page: fitz.Page, previous: tuple[float, float] | None
-                   ) -> tuple[float, float] | None:
-    """The x-range of the table's figure column, from its own header words.
+def _columns(page: fitz.Page, previous: dict | None) -> dict | None:
+    """The x-positions of the table's column headers, by their own words.
 
-    The header repeats on every table page ("Figure in bottom corner", Dutch
-    "Figuur in benedenhoek"); the column runs from there to the next header
-    ("Note") or the right margin. When a continuation page omits the header,
-    the previous page's answer carries over.
+    What the card needs is the **Specimen labels** column — the printed label
+    artwork — bounded by the "Note" header (or the margin). The model-number
+    anchors live left of the "Division or Category" header. When a
+    continuation page omits the headers, the previous page's answer carries
+    over. The UNECE print rotates the whole table on the page; the word
+    boxes still land where the reader sees them, so nothing here cares.
     """
-    figure_x = note_x = None
+    found: dict[str, float] = {}
     for x0, y0, x1, y1, word, *_ in page.get_text("words"):
         lowered = word.lower().rstrip(".:")
-        if lowered in {"figure", "figuur"} and figure_x is None:
-            figure_x = x0
-        if lowered in {"note", "opmerking"} and note_x is None and x0 > (figure_x or 0):
-            note_x = x0
-    if figure_x is None:
+        if lowered in {"specimen"} and "specimen" not in found:
+            found["specimen"] = x0
+        if lowered in {"note", "opmerking"} and x0 > found.get("specimen", 0):
+            found.setdefault("note", x0)
+        if lowered in {"division", "subklasse"} and "division" not in found:
+            found["division"] = x0
+    if "specimen" not in found:
         return previous
-    right = note_x - 4 if note_x else page.rect.width - 18
-    return (figure_x - 10, right)
+    return {
+        "anchor_max": found.get("division", page.rect.width * 0.25) - 4,
+        "strip": (found["specimen"] - 12,
+                  found.get("note", page.rect.width - 6) - 6),
+    }
 
 
 def extract(vol1: Path, out_dir: Path) -> dict:
@@ -209,20 +216,19 @@ def extract(vol1: Path, out_dir: Path) -> dict:
     debug_dir = out_dir / "_debug"
     debug_dir.mkdir(parents=True, exist_ok=True)
 
-    column: tuple[float, float] | None = None
+    columns: dict | None = None
     for number in pages:
         page = doc[number]
         doc[number].get_pixmap(dpi=70).save(str(debug_dir / f"page_{number + 1}.png"))
-        anchors = row_anchors(page)
-        column = _figure_column(page, column)
-        if not anchors or column is None:
+        columns = _columns(page, columns)
+        anchors = row_anchors(page, columns["anchor_max"] if columns else None)
+        if not anchors or columns is None:
             print(f"DIAGNOSTIC page {number + 1}: anchors="
-                  f"{[a[0] for a in anchors]} column={column} — skipped")
+                  f"{[a[0] for a in anchors]} columns={columns} — skipped")
             continue
 
-        # One band per model: consecutive repeats of the same code (the
-        # figure column prints the class digit too) extend the band rather
-        # than splitting it.
+        # One band per model: consecutive repeats of the same code extend
+        # the band rather than splitting it.
         bands: list[tuple[str, float, float]] = []
         for code, y in anchors:
             if bands and bands[-1][0] == code:
@@ -230,14 +236,15 @@ def extract(vol1: Path, out_dir: Path) -> dict:
             bands.append((code, y, page.rect.height))
         bands = [(code, y, bands[i + 1][1] - 4 if i + 1 < len(bands) else page.rect.height - 30)
                  for i, (code, y, _) in enumerate(bands)]
+        strip = columns["strip"]
         print(f"DIAGNOSTIC page {number + 1}: bands="
-              f"{[(c, round(a), round(b)) for c, a, b in bands]} column="
-              f"{tuple(round(v) for v in column)}")
+              f"{[(c, round(a), round(b)) for c, a, b in bands]} strip="
+              f"{tuple(round(v) for v in strip)}")
 
         for code, y0, y1 in bands:
             if code in report["models"] or y1 - y0 < 40:
                 continue
-            clip = fitz.Rect(column[0], y0 - 4, column[1], y1)
+            clip = fitz.Rect(strip[0], y0 - 4, strip[1], y1)
             pix = page.get_pixmap(clip=clip, dpi=RENDER_DPI)
             pix = trim_white(pix)
             if pix.width < 60 or pix.height < 60:

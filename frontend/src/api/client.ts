@@ -182,6 +182,8 @@ export const api = {
   saveMySettings: (payload: UserPreferences) =>
     request<UserPreferences>("/settings/me", { method: "PUT", body: JSON.stringify(payload) }),
   publicSettings: () => request<PublicSettings>("/settings/public"),
+  changelog: (since: string) =>
+    request<ChangelogResponse>(`/changelog?since=${encodeURIComponent(since)}`),
   settingsOptions: () => request<SettingsOptions>("/settings/options"),
   assistantStatus: () => request<AssistantStatus>("/assistant/status"),
   assistantModel: (action: "download" | "remove" | "stop") =>
@@ -391,6 +393,22 @@ export interface UserPreferences {
   loading_point: string;
   emergency_contact: string;
   signature_image: string;
+  last_seen_version: string;
+}
+
+/** One release as the changelog records it. The body is markdown and stays in
+ *  English — the repository's language — while the card's chrome is translated. */
+export interface ChangelogEntry {
+  version: string;
+  date: string;
+  body: string;
+}
+
+export interface ChangelogResponse {
+  /** The version actually running, which is what gets stored as seen. */
+  version: string;
+  entries: ChangelogEntry[];
+  truncated: boolean;
 }
 
 /** The assistant runtime's condition: which mode it runs in, whether the

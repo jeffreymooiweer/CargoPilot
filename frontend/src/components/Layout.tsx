@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { NavLink, Outlet, useLocation, useNavigate } from "react-router";
 import { useTranslation } from "react-i18next";
 import { api, User } from "../api/client";
+import WhatsNewModal from "./WhatsNewModal";
 
 interface Props {
   user: User;
@@ -175,6 +176,10 @@ export default function Layout({ user, onLogout }: Props) {
         </nav>
         <main className="min-w-0"><Outlet /></main>
       </div>
+
+      {/* Only signed-in chrome mounts this, which is exactly who release
+          notes are for; the login page stays free of it. */}
+      <WhatsNewModal />
 
       {menuOpen && (
         <div className="md:hidden fixed inset-0 z-50">

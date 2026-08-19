@@ -208,6 +208,10 @@ python scripts/bump_version.py 1.37.0
 ## Releasing
 
 1. Run `python scripts/bump_version.py <version>` and write the `CHANGELOG.md` entry.
+   The changelog is not only the record: since v1.125.0 it ships in the Docker image and
+   the what's-new card serves its entries to users after an update, and a test fails the
+   pull request if the newest heading and the `VERSION` files disagree — a release note
+   cannot be forgotten.
 2. Merge to `main`.
 3. Run the **Tag release** workflow from GitHub Actions with the version number. It
    verifies the version files, then creates the tag and the GitHub Release from the

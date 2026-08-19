@@ -12,6 +12,7 @@ existed simply lacks the key, and the default fills in.
 """
 from __future__ import annotations
 
+import re
 from typing import Literal
 
 from pydantic import BaseModel, Field, field_validator
@@ -76,6 +77,13 @@ class UserPreferences(BaseModel):
     #: user saves one, and described in ``docs/privacy.md``.
     signature_image: str = Field(default="", max_length=MAX_SIGNATURE_CHARS)
 
+    #: The version whose release notes this user has already seen. The
+    #: what's-new card shows the entries between this and the running version,
+    #: then writes the running version here. Empty means no marker yet — a new
+    #: account, or one from before v1.125.0 — and shows nothing rather than
+    #: the whole history.
+    last_seen_version: str = ""
+
     @field_validator("language")
     @classmethod
     def _known_language(cls, value: str) -> str:
@@ -90,6 +98,14 @@ class UserPreferences(BaseModel):
         value = (value or "").strip().lower()
         if value and value not in MODALITIES:
             raise ValueError(f"unknown transport mode: {value}")
+        return value
+
+    @field_validator("last_seen_version")
+    @classmethod
+    def _version_like(cls, value: str) -> str:
+        value = (value or "").strip()
+        if value and not re.fullmatch(r"\d+\.\d+\.\d+", value):
+            raise ValueError("not a version number")
         return value
 
     @field_validator("signature_image")

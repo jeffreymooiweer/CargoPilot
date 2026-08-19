@@ -646,5 +646,11 @@
     "clarify": "Ich brauche eine genauere Antwort, zum Beispiel: {{example}}",
     "corrected": "„{{attempt}}“ ist keine der möglichen Antworten — wählen Sie eine Option oder formulieren Sie es anders.",
     "info": "Erläuterung zu dieser Frage"
+  },
+  "whatsNew": {
+    "title": "Was ist neu",
+    "intro": "CargoPilot wurde auf Version {{version}} aktualisiert. Das hat sich seit Ihrem letzten Besuch geändert:",
+    "truncated": "Nicht alle Zwischenversionen werden angezeigt; die vollständige Historie steht in der Changelog-Datei des Projekts.",
+    "close": "Schließen"
   }
 }

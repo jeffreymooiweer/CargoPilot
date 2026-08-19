@@ -2174,21 +2174,54 @@ def check_rid_placarding(
                           "message": full.get(lang) or full["en"],
                           "kind": "orange_plates", "required": None})
 
-    # 5.3.4 — only two cases exist, and both are conditions here: whether a
-    # wagon comprises a full load is not visible, and which substances carry
-    # the bracketed model sits in RID's own column (5).
+    # 5.3.4 — since v1.123.0 the per-substance half is read: column (5) of
+    # RID's own table A, extracted from the English and German editions,
+    # which agree on all 351 rows that bracket a model. A substance the seed
+    # does not list prints no model in either edition — a real absence — so
+    # the trigger classes without a model are told so instead of hedged at.
+    # What stays a condition is what stays invisible: whether a wagon
+    # comprises a full load.
     has_class2_tank = any(
         str(p.get("class") or "").strip() == "2"
         and str(p.get("carriage_mode") or "").strip()
         in ("tank", "portable_tank") for p in goods)
     if class1 or has_class2_tank:
-        shunt = rules["shunting_labels"]
-        marks.append({
-            "provision": shunt["provision"],
-            "message": shunt.get(lang) or shunt["en"],
-            "kind": "shunting_labels",
-            "required": None,
-        })
+        marked: dict[str, list[str]] = {}
+        seed_read = True
+        for p in goods:
+            models = database.rid_shunting_models(
+                str(p.get("un_number") or p.get("un") or "").strip())
+            if models is None:
+                seed_read = False
+                break
+            if models:
+                marked[named[id(p)]] = models
+        if not seed_read:
+            shunt = rules["shunting_labels"]
+            marks.append({
+                "provision": shunt["provision"],
+                "message": shunt.get(lang) or shunt["en"],
+                "kind": "shunting_labels",
+                "required": None,
+            })
+        elif marked:
+            shunt = rules["shunting_models_read"]
+            items = "; ".join(
+                f"{label} — {', '.join(models)}"
+                for label, models in sorted(marked.items()))
+            marks.append({
+                "provision": shunt["provision"],
+                "message": (shunt.get(lang) or shunt["en"]).format(items=items),
+                "kind": "shunting_labels",
+                "required": None,
+            })
+        else:
+            marks.append({
+                "provision": "5.3.4",
+                "message": text("shunting_none_read"),
+                "kind": "shunting_labels",
+                "required": False,
+            })
 
     band = sorted({
         named[id(p)] for p in goods

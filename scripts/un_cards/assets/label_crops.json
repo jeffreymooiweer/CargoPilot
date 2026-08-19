@@ -1,0 +1,204 @@
+{
+ "_comment": "Crop boxes for the hazard label models of ADR 5.2.2.2.2, measured from 70 dpi renders of the UNECE English edition Volume II (adr2.pdf, sha256-pinned in backend/seed/dg/sources.json) by scripts/extract_adr_label_models.py's measurement pass. Pages are 1-based; rects are points in page space. Where a model prints two specimen variants, the box holds the first (topmost). Valid for this one edition file only - a new edition is re-measured, never reused.",
+ "document": "adr2",
+ "crops": {
+  "1": {
+   "page": 254,
+   "rect": [
+    117.3,
+    277.7,
+    187.2,
+    348.7
+   ]
+  },
+  "1.4": {
+   "page": 254,
+   "rect": [
+    195.4,
+    277.7,
+    266.4,
+    348.7
+   ]
+  },
+  "1.5": {
+   "page": 254,
+   "rect": [
+    272.6,
+    277.7,
+    343.5,
+    348.7
+   ]
+  },
+  "1.6": {
+   "page": 254,
+   "rect": [
+    350.7,
+    277.7,
+    420.7,
+    347.7
+   ]
+  },
+  "2.1": {
+   "page": 255,
+   "rect": [
+    116.2,
+    245.8,
+    186.2,
+    314.7
+   ]
+  },
+  "2.2": {
+   "page": 255,
+   "rect": [
+    198.5,
+    243.8,
+    268.5,
+    313.7
+   ]
+  },
+  "2.3": {
+   "page": 255,
+   "rect": [
+    284.9,
+    283.9,
+    345.6,
+    344.6
+   ]
+  },
+  "3": {
+   "page": 255,
+   "rect": [
+    383.7,
+    243.8,
+    453.6,
+    313.7
+   ]
+  },
+  "4.1": {
+   "page": 256,
+   "rect": [
+    116.2,
+    276.7,
+    186.2,
+    346.6
+   ]
+  },
+  "4.2": {
+   "page": 256,
+   "rect": [
+    227.3,
+    276.7,
+    294.2,
+    346.6
+   ]
+  },
+  "4.3": {
+   "page": 256,
+   "rect": [
+    327.1,
+    239.7,
+    398.1,
+    309.6
+   ]
+  },
+  "5.1": {
+   "page": 257,
+   "rect": [
+    118.3,
+    276.7,
+    188.2,
+    346.6
+   ]
+  },
+  "5.2": {
+   "page": 257,
+   "rect": [
+    220.1,
+    241.7,
+    290.1,
+    311.7
+   ]
+  },
+  "6.1": {
+   "page": 257,
+   "rect": [
+    325.0,
+    281.8,
+    384.7,
+    342.5
+   ]
+  },
+  "6.2": {
+   "page": 257,
+   "rect": [
+    424.8,
+    281.8,
+    484.5,
+    342.5
+   ]
+  },
+  "7A": {
+   "page": 258,
+   "rect": [
+    119.3,
+    281.8,
+    181.0,
+    343.5
+   ]
+  },
+  "7B": {
+   "page": 258,
+   "rect": [
+    204.7,
+    281.8,
+    266.4,
+    343.5
+   ]
+  },
+  "7C": {
+   "page": 258,
+   "rect": [
+    299.3,
+    281.8,
+    361.0,
+    343.5
+   ]
+  },
+  "7E": {
+   "page": 258,
+   "rect": [
+    380.6,
+    277.7,
+    451.5,
+    347.7
+   ]
+  },
+  "8": {
+   "page": 259,
+   "rect": [
+    117.3,
+    281.8,
+    179.0,
+    343.5
+   ]
+  },
+  "9": {
+   "page": 259,
+   "rect": [
+    211.9,
+    276.7,
+    279.8,
+    347.7
+   ]
+  },
+  "9A": {
+   "page": 259,
+   "rect": [
+    290.1,
+    276.7,
+    357.9,
+    347.7
+   ]
+  }
+ }
+}

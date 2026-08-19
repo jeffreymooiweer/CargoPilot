@@ -49,10 +49,12 @@ STORE = Path(
     or ("/data/regulations" if Path("/data").is_dir()
         else "/tmp/cargopilot-regulations"))
 
-#: The bracketed shunting models as table A prints them. The brackets are the
-#: whole point: an unbracketed 13 is a special provision or a page number, and
-#: the column (5) explanation speaks only of models "indicated in brackets".
-TOKEN = re.compile(r"^\((1[35])\)$")
+#: The bracketed shunting models as table A prints them in the cells: with a
+#: plus sign — ``(+13)`` after label model 1 on UN 0027's row. The plus is the
+#: discriminator the first probe run found: the plain ``(13)`` and ``(15)``
+#: are the table's own column numbers, printed in the header of every page,
+#: and part 2 prints plain ``(13)`` in running text as well.
+TOKEN = re.compile(r"^\(\+(1[35])\)$")
 
 #: A UN number is a bare four-digit word in the leftmost column. The x
 #: threshold is generous; the probe mode exists to check it against the book.

@@ -1,0 +1,94 @@
+# Extracts the UN-card assets from the official UNECE English ADR 2025:
+# the hazard label models of 5.2.2.2.2 (Volume I) as cropped PNGs, and the
+# V/CV/S provision texts of 7.2.4, 7.5.11 and 8.5 (Volume II) as a seed
+# file. Runs on a runner because the development container cannot reach
+# unece.org; both downloads are verified against the SHA-256 the register
+# (backend/seed/dg/sources.json) already records for these documents.
+name: Extract UN card assets
+
+on:
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: Branch to run against and commit to
+        required: true
+        default: claude/volg-de-prompt-l58to6
+      commit:
+        description: Commit the extracted assets to the branch
+        type: boolean
+        default: true
+
+permissions:
+  contents: write
+
+concurrency:
+  group: extract-un-card-assets
+  cancel-in-progress: false
+
+jobs:
+  extract:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.branch }}
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install extractor dependency
+        run: pip install pymupdf
+
+      - name: Download and verify the UNECE English edition
+        run: |
+          python - <<'EOF'
+          import hashlib, json, sys, urllib.request
+
+          register = json.load(open("backend/seed/dg/sources.json"))
+          documents = {d["id"]: d for d in register["documents"]}
+          for doc_id, target in (("adr1", "adr1.pdf"), ("adr2", "adr2.pdf")):
+              doc = documents[doc_id]
+              last_error = None
+              for url in doc["urls"]:
+                  try:
+                      print(f"downloading {doc_id} from {url}")
+                      urllib.request.urlretrieve(url, target)
+                      break
+                  except Exception as exc:  # noqa: BLE001 - report and try the mirror
+                      last_error = exc
+              else:
+                  sys.exit(f"could not download {doc_id}: {last_error}")
+              digest = hashlib.sha256(open(target, "rb").read()).hexdigest()
+              if digest != doc["sha256"]:
+                  sys.exit(f"{doc_id}: sha256 {digest} does not match the register")
+              print(f"{doc_id}: sha256 verified")
+          EOF
+
+      - name: Extract hazard label models (Volume I, 5.2.2.2.2)
+        run: |
+          python scripts/extract_adr_label_models.py \
+            --vol1 adr1.pdf \
+            --out scripts/un_cards/assets/labels \
+            --allow-missing
+
+      - name: Extract V/CV/S provision texts (Volume II)
+        run: |
+          python scripts/extract_adr_provision_texts.py \
+            --pdf adr2.pdf \
+            --out backend/seed/dg/adr_provision_texts.json \
+            --source "ADR 2025, UNECE English edition (ECE/TRANS/352 Vol. II), sections 7.2.4, 7.5.11 and 8.5" \
+            --lenient
+
+      - name: Commit extracted assets
+        if: ${{ inputs.commit }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add scripts/un_cards/assets backend/seed/dg/adr_provision_texts.json
+          if git diff --cached --quiet; then
+            echo "nothing changed"
+          else
+            git commit -m "Extract UN card assets from the UNECE English ADR 2025"
+            git push origin HEAD:${{ inputs.branch }}
+          fi

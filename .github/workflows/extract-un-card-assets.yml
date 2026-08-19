@@ -40,50 +40,40 @@ jobs:
       - name: Install extractor dependency
         run: pip install pymupdf
 
-      - name: Download and verify the UNECE English edition
-        # unece.org answers 403 to clients without a browser user agent; the
-        # same UA the fetch-regulations workflow already uses gets through.
-        run: |
-          python - <<'EOF'
-          import hashlib, json, sys, urllib.request
+      # The regulations volumes fetched by earlier fetch-regulations runs
+      # live in this cache; restoring it usually spares unece.org a request.
+      - uses: actions/cache/restore@v4
+        with:
+          path: /tmp/cargopilot-regulations
+          key: regulations-${{ github.run_id }}
+          restore-keys: |
+            regulations-
 
-          UA = ("Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 "
-                "(KHTML, like Gecko) Chrome/124.0 Safari/537.36")
-          register = json.load(open("backend/seed/dg/sources.json"))
-          documents = {d["id"]: d for d in register["documents"]}
-          for doc_id, target in (("adr1", "adr1.pdf"), ("adr2", "adr2.pdf")):
-              doc = documents[doc_id]
-              last_error = None
-              for url in doc["urls"]:
-                  try:
-                      print(f"downloading {doc_id} from {url}")
-                      request = urllib.request.Request(
-                          url, headers={"User-Agent": UA,
-                                        "Accept": "application/pdf,*/*"})
-                      with urllib.request.urlopen(request) as response:
-                          open(target, "wb").write(response.read())
-                      break
-                  except Exception as exc:  # noqa: BLE001 - try the mirror
-                      last_error = exc
-              else:
-                  sys.exit(f"could not download {doc_id}: {last_error}")
-              digest = hashlib.sha256(open(target, "rb").read()).hexdigest()
-              if digest != doc["sha256"]:
-                  sys.exit(f"{doc_id}: sha256 {digest} does not match the register")
-              print(f"{doc_id}: sha256 verified")
-          EOF
+      - name: Fetch and verify the UNECE English edition
+        # regulations_store.py owns the download ladder (browser headers,
+        # web-archive fallback) and refuses a file that contradicts the
+        # SHA-256 pinned in the register.
+        run: |
+          python scripts/regulations_store.py fetch adr1 adr2
+          python scripts/regulations_store.py verify
+
+      - uses: actions/cache/save@v4
+        if: always()
+        with:
+          path: /tmp/cargopilot-regulations
+          key: regulations-${{ github.run_id }}
 
       - name: Extract hazard label models (Volume I, 5.2.2.2.2)
         run: |
           python scripts/extract_adr_label_models.py \
-            --vol1 adr1.pdf \
+            --vol1 /tmp/cargopilot-regulations/adr1.pdf \
             --out scripts/un_cards/assets/labels \
             --allow-missing
 
       - name: Extract V/CV/S provision texts (Volume II)
         run: |
           python scripts/extract_adr_provision_texts.py \
-            --pdf adr2.pdf \
+            --pdf /tmp/cargopilot-regulations/adr2.pdf \
             --out backend/seed/dg/adr_provision_texts.json \
             --source "ADR 2025, UNECE English edition (ECE/TRANS/352 Vol. II), sections 7.2.4, 7.5.11 and 8.5" \
             --lenient

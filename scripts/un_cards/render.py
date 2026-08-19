@@ -153,10 +153,8 @@ def _cell(c: Canvas, x: float, y: float, w: float, h: float,
         c.drawCentredString(x + w / 2, start - i * (size + 1.4), line)
 
 
-def _text_row(cur: _Cursor, label: str, text: str,
-              label_width: float = 108.0, fill: bool = False) -> None:
-    lines = simpleSplit(text, TEXT_FONT[0], TEXT_FONT[1], FRAME_W - label_width - 10)
-    label_lines = simpleSplit(label, "Helvetica-Bold", 7.6, label_width - 8)[:3]
+def _draw_text_box(cur: _Cursor, label_lines: list[str], lines: list[str],
+                   label_width: float, fill: bool) -> None:
     height = max(16.0, 6 + len(lines) * TEXT_LEADING, 8 + len(label_lines) * 9)
     cur.ensure(height)
     c = cur.c
@@ -173,8 +171,36 @@ def _text_row(cur: _Cursor, label: str, text: str,
         c.drawString(MARGIN + 4, y - 11 - i * 9, label_line)
     c.setFont(*TEXT_FONT)
     for i, line in enumerate(lines):
-        c.drawString(MARGIN + label_width, y - 11 - i * TEXT_LEADING, line)
+        if line:
+            c.drawString(MARGIN + label_width, y - 11 - i * TEXT_LEADING, line)
     cur.y -= height
+
+
+def _text_row(cur: _Cursor, label: str, text: str,
+              label_width: float = 108.0, fill: bool = False) -> None:
+    # Paragraph breaks survive: each "\n" separates provisions or list items.
+    lines: list[str] = []
+    for index, paragraph in enumerate(text.split("\n")):
+        if index > 0:
+            lines.append("")
+        lines += simpleSplit(paragraph, TEXT_FONT[0], TEXT_FONT[1],
+                             FRAME_W - label_width - 10)
+    label_lines = simpleSplit(label, "Helvetica-Bold", 7.6, label_width - 8)[:3]
+
+    # A provision longer than a whole page (S1 for class 1 runs to that)
+    # continues in follow-up boxes on the next page rather than clipping —
+    # the text is never shrunk and never truncated.
+    usable = PAGE_H - 2 * MARGIN - HEADER_H - FOOTER_H - 20
+    per_box = max(4, int((usable - 6) / TEXT_LEADING))
+    first = True
+    while lines:
+        chunk, lines = lines[:per_box], lines[per_box:]
+        _draw_text_box(
+            cur,
+            label_lines if first else
+            simpleSplit(f"{label} (continued)", "Helvetica-Bold", 7.6, label_width - 8)[:3],
+            chunk, label_width, fill)
+        first = False
 
 
 def _heading(cur: _Cursor, text: str) -> None:

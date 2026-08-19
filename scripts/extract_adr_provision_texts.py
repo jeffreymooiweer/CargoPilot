@@ -30,7 +30,7 @@ import fitz
 
 FAMILIES = {
     "V": {"pattern": r"V(\d{1,2}):?", "expected": 15, "section": "7.2.4"},
-    "CV": {"pattern": r"CV(\d{1,2}):?", "expected": 37, "section": "7.5.11"},
+    "CV": {"pattern": r"CV(\d{1,2}):?", "expected": 38, "section": "7.5.11"},
     "S": {"pattern": r"S(\d{1,2}):?", "expected": 24, "section": "8.5"},
 }
 

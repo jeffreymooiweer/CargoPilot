@@ -129,8 +129,7 @@ frontend/
   src/settings/         the user's own settings, loaded once and shared
   src/i18n/             nl.json, en.json, de.json, fr.json
 templates/forms/        official PDF forms that get filled in
-un_cards/               UN reference cards, one per UN number
-scripts/                one-off maintenance scripts
+scripts/                one-off maintenance scripts (incl. un_cards/, the card generator)
 docs/                   this documentation
 unraid/                 Unraid Community Applications template
 ```
@@ -273,32 +272,19 @@ a publication hangs off those.
 
 ## The UN cards
 
-`un_cards/` was filled once and is not expected to change until a new edition of the
-IMDG Code appears. The workflow that did it has been retired; the two scripts behind it
-stay, so a future edition is a matter of running them again:
+Since v1.129.0 CargoPilot generates its own UN cards from the measured seed tables in
+`backend/seed/dg/` — the generator lives in `scripts/un_cards/`, the **Generate UN
+cards** workflow publishes the set as a GitHub Release, and an administrator imports it
+under **Settings → UN Cards**. The cards are in neither the repository nor the Docker
+image; they live on the data volume. The whole pipeline — sources, label artwork,
+provision texts, validation, atomic import — is described in
+[un-cards.md](un-cards.md), and `backend/tests/test_un_card_generator.py` plus
+`backend/tests/test_un_card_store.py` guard both ends of it.
 
-```bash
-# Fetch and rename. ~2,900 downloads, roughly 80 minutes.
-python scripts/fetch_un_cards.py --base-url ".../part{n}.pdf" --first 1 --last 2900 \
-    --limit 20 --dry-run          # check the identification first
-python scripts/fetch_un_cards.py --base-url ".../part{n}.pdf" --first 1 --last 2900
-
-# Re-read the per-substance data out of the cards.
-python scripts/extract_un_card_data.py --out backend/seed/dg/card_data.json
-```
-
-The identification is deliberately cautious. Each card states its UN number under a
-`UN number` label and repeats it in the footer; both are read and must agree, and the
-number must be a real entry in `backend/seed/dg/un_numbers.json`. A card is marked
-`confirmed` only when the shipping name on it matches the name we hold. Anything weaker
-goes to `un_cards/_unidentified/`. Filing a card under the wrong UN number would hand
-someone the emergency information for a different substance, so the script would rather
-skip than guess.
-
-`extract_un_card_data.py` cross-checks its own EmS readings against `ems.json`, which
-comes from the official EmS Guide and remains the authority. On the run that produced the
-current data, 2,282 agreed and none disagreed — a useful signal that both datasets are
-sound.
-
-`backend/tests/test_un_card_identification.py` covers the ways identification can go
-wrong; `backend/tests/test_dg_card_data.py` guards the extracted values.
+One historical dataset remains: `backend/seed/dg/card_data.json` was extracted with
+`scripts/extract_un_card_data.py` from the third-party card set that shipped before
+v1.129.0 (IMDG 41-22 per-substance data: marine pollutant, bulk). The extraction
+cross-checked its EmS readings against `ems.json` — 2,282 agreed, none disagreed — and
+`backend/tests/test_dg_card_data.py` still guards the values. The source PDFs are no
+longer bundled, so re-running that extraction needs the original set; replacing the
+dataset with values read from the official IMDG Code is the intended way forward.

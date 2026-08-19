@@ -54,9 +54,15 @@ class CalculateRequest(BaseModel):
 
 
 class UnCardsRequest(BaseModel):
-    """Only the declared dangerous goods; the cards follow from the UN numbers."""
+    """The declared dangerous goods, and which regimes the journey touches.
+
+    Cards exist per UN number *and* regime; the profiles decide which
+    regimes' cards belong to this shipment. Empty means every regime the
+    installed set holds.
+    """
 
     dangerous_goods: list[dict] | None = None
+    profiles: list[str] = []
     output_language: str = "nl"
 
 

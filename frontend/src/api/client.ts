@@ -201,6 +201,17 @@ export const api = {
       body: JSON.stringify({ action }),
     }),
   instanceSettings: () => request<InstanceSettings>("/settings/instance"),
+  // The UN card store: admin-only management of the imported card set. The
+  // remote check runs only when asked — nothing phones home on its own.
+  unCardStoreStatus: (remote = false) =>
+    request<UnCardStoreStatus>(`/un-cards/status${remote ? "?remote=true" : ""}`),
+  unCardStoreDownloadLatest: () =>
+    request<{ ok: boolean; tag?: string; imported: number }>(
+      "/un-cards/download-latest", { method: "POST" }),
+  unCardStoreImport: (file: File) =>
+    uploadFile<{ ok: boolean; imported: number }>("/un-cards/import", file),
+  unCardStoreRemove: () =>
+    request<{ ok: boolean; removed: boolean }>("/un-cards/remove", { method: "POST" }),
   saveInstanceSettings: (payload: InstanceSettings) =>
     request<InstanceSettings>("/settings/instance", { method: "PUT", body: JSON.stringify(payload) }),
   listUsers: () => request<User[]>("/users"),
@@ -366,16 +377,50 @@ export interface WrittenInstruction {
   needs?: string;
 }
 
+/** What the administrator sees of the imported UN card set. */
+export interface UnCardStoreLocal {
+  installed: boolean;
+  location: string;
+  generated_at?: string;
+  imported_at?: string | null;
+  generator_version?: string;
+  editions?: Record<string, string | null>;
+  counts?: Record<string, number>;
+  total_cards?: number;
+  total_size?: number;
+  unavailable_modalities?: Record<string, string>;
+}
+
+export interface UnCardStoreRemote {
+  available: boolean;
+  reachable?: boolean;
+  tag?: string;
+  published_at?: string;
+  package_size?: number;
+  update_available?: boolean;
+  error?: string;
+}
+
+export interface UnCardStoreStatus {
+  local: UnCardStoreLocal;
+  remote?: UnCardStoreRemote;
+}
+
 export interface UnCardsPayload {
   dangerous_goods?: unknown[] | null;
+  /** DG profiles of the journey (ADR/RID/ADN/IMDG/IATA): cards exist per
+   *  UN number and regime, so the selection follows the modality. */
+  profiles?: string[];
   output_language?: string;
 }
 
 export interface UnCardsAvailability {
   enabled: boolean;
   requested: string[];
+  modalities: string[];
   available: string[];
   missing: string[];
+  cards: { un_number: string; modality: string; file: string }[];
   count: number;
   library_size: number;
 }

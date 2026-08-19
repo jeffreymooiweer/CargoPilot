@@ -21,6 +21,7 @@ from app.api.routes.geo import router as geo_router
 from app.api.routes.jobs import router as jobs_router
 from app.api.routes.meta import router as meta_router
 from app.api.routes.settings import router as settings_router
+from app.api.routes.un_cards_admin import router as un_cards_admin_router
 from app.api.routes.users import router as users_router
 from app.core.config import get_settings
 from app.core.security_checks import apply_security_configuration
@@ -96,6 +97,7 @@ def create_app() -> FastAPI:
     app.include_router(catalog_search_router, prefix="/api")
     app.include_router(units_router, prefix="/api")
     app.include_router(settings_router, prefix="/api")
+    app.include_router(un_cards_admin_router, prefix="/api")
     app.include_router(meta_router, prefix="/api")
 
     static_dir = settings.static_dir

@@ -5,6 +5,7 @@ import {
   InstanceSettings,
   SettingsOptions,
   ThemeChoice,
+  UnCardStoreStatus,
   User,
   UserPreferences,
   api,
@@ -18,6 +19,8 @@ const inputClass =
   "w-full border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-950 text-slate-900 dark:text-slate-100 rounded-lg px-3 py-2.5 text-sm min-h-[44px]";
 const buttonPrimary =
   "bg-brand-600 text-white px-5 py-2.5 rounded-lg font-medium hover:bg-brand-700 disabled:opacity-50 min-h-[44px] text-sm";
+const buttonSecondary =
+  "px-4 py-2.5 rounded-lg border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800 disabled:opacity-50 min-h-[44px] text-sm inline-flex items-center";
 
 const THEMES: ThemeChoice[] = ["light", "dark", "system"];
 
@@ -525,6 +528,8 @@ function AdminSettings() {
         <p className="text-sm text-slate-700 dark:text-slate-300">{t("settings.updateAuto")}</p>
       </section>
 
+      <UnCardsAdminPanel />
+
       <section className={`${panelClass} p-5 space-y-5`}>
         <h4 className="text-sm font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">
           {t("settings.adminFeatures")}
@@ -705,6 +710,176 @@ function AssistantAdmin() {
         <p className="text-xs text-slate-500 dark:text-slate-400">{t("settings.assistantUnpinned")}</p>
       )}
       <p className="text-xs text-slate-500 dark:text-slate-400">{t("settings.assistantFootprint")}</p>
+      {error && <p className="text-sm text-red-600 dark:text-red-400">{error}</p>}
+    </section>
+  );
+}
+
+/** The UN card store: what is installed, and the two ways to fill it.
+ *
+ *  The cards left the Docker image in v1.129.0 — thousands of generated PDFs
+ *  live in a GitHub Release instead, and this panel is where an administrator
+ *  pulls them in. Checking the remote feed happens only on the button, never
+ *  on page load: an admin opening settings is not consent for an outbound
+ *  request. The upload path exists for installations that cannot reach
+ *  GitHub; both run the same server-side verification.
+ */
+function UnCardsAdminPanel() {
+  const { t } = useTranslation();
+  const [status, setStatus] = useState<UnCardStoreStatus | null>(null);
+  const [busy, setBusy] = useState<"" | "check" | "download" | "import" | "remove">("");
+  const [message, setMessage] = useState("");
+  const [error, setError] = useState("");
+
+  const refresh = (remote = false) =>
+    api
+      .unCardStoreStatus(remote)
+      .then(setStatus)
+      .catch((e) => setError(String(e)));
+
+  useEffect(() => {
+    void refresh(false);
+  }, []);
+
+  const run = async (
+    kind: "check" | "download" | "import" | "remove",
+    action: () => Promise<unknown>,
+    done: string,
+  ) => {
+    setBusy(kind);
+    setMessage("");
+    setError("");
+    try {
+      await action();
+      if (done) setMessage(done);
+    } catch (e) {
+      setError(String(e));
+    } finally {
+      setBusy("");
+    }
+  };
+
+  const local = status?.local;
+  const remote = status?.remote;
+  const sizeMb = local?.total_size ? (local.total_size / 1e6).toFixed(0) : null;
+
+  return (
+    <section className={`${panelClass} p-5 space-y-4`}>
+      <div>
+        <h4 className="text-sm font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">
+          {t("settings.unCardsStoreTitle")}
+        </h4>
+        <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">{t("settings.unCardsStoreIntro")}</p>
+      </div>
+
+      {local && !local.installed && (
+        <p className="text-sm text-slate-700 dark:text-slate-300">{t("settings.unCardsNone")}</p>
+      )}
+      {local && local.installed && (
+        <div className="space-y-1 text-sm text-slate-700 dark:text-slate-300">
+          <p>
+            {t("settings.unCardsInstalled", {
+              count: local.total_cards ?? 0,
+              generated: local.generated_at ?? "?",
+            })}
+            {sizeMb ? ` (${sizeMb} MB)` : ""}
+          </p>
+          {local.imported_at && (
+            <p className="text-xs text-slate-500 dark:text-slate-400">
+              {t("settings.unCardsImportedAt", { date: local.imported_at })} · {local.location}
+            </p>
+          )}
+          <p className="text-xs text-slate-500 dark:text-slate-400">
+            {Object.entries(local.counts ?? {})
+              .map(([modality, count]) => `${modality}: ${count} (${local.editions?.[modality] ?? "?"})`)
+              .join(" · ")}
+          </p>
+        </div>
+      )}
+
+      {remote && (
+        <p className="text-sm text-slate-700 dark:text-slate-300">
+          {remote.reachable === false
+            ? t("settings.unCardsRemoteUnreachable")
+            : !remote.available
+              ? t("settings.unCardsNoRelease")
+              : remote.update_available
+                ? t("settings.unCardsUpdateAvailable", { tag: remote.tag ?? "" })
+                : t("settings.unCardsUpToDate", { tag: remote.tag ?? "" })}
+        </p>
+      )}
+
+      <div className="flex flex-wrap items-center gap-2">
+        <button
+          type="button"
+          className={buttonSecondary}
+          disabled={busy !== ""}
+          onClick={() => run("check", () => refresh(true), "")}
+        >
+          {busy === "check" ? t("settings.unCardsChecking") : t("settings.unCardsCheck")}
+        </button>
+        <button
+          type="button"
+          className={buttonPrimary}
+          disabled={busy !== ""}
+          onClick={() =>
+            run(
+              "download",
+              async () => {
+                await api.unCardStoreDownloadLatest();
+                await refresh(false);
+              },
+              t("settings.unCardsImportDone"),
+            )
+          }
+        >
+          {busy === "download" ? t("settings.unCardsDownloading") : t("settings.unCardsDownload")}
+        </button>
+        <label className={`${buttonSecondary} cursor-pointer`}>
+          {busy === "import" ? t("settings.unCardsImporting") : t("settings.unCardsImportZip")}
+          <input
+            type="file"
+            accept=".zip"
+            className="hidden"
+            disabled={busy !== ""}
+            onChange={(e) => {
+              const file = e.target.files?.[0];
+              e.target.value = "";
+              if (!file) return;
+              void run(
+                "import",
+                async () => {
+                  await api.unCardStoreImport(file);
+                  await refresh(false);
+                },
+                t("settings.unCardsImportDone"),
+              );
+            }}
+          />
+        </label>
+        {local?.installed && (
+          <button
+            type="button"
+            className={buttonSecondary}
+            disabled={busy !== ""}
+            onClick={() => {
+              if (!confirm(t("settings.unCardsRemoveConfirm"))) return;
+              void run(
+                "remove",
+                async () => {
+                  await api.unCardStoreRemove();
+                  await refresh(false);
+                },
+                t("settings.unCardsRemoved"),
+              );
+            }}
+          >
+            {t("settings.unCardsRemove")}
+          </button>
+        )}
+      </div>
+
+      {message && <p className="text-sm text-emerald-700 dark:text-emerald-400">{message}</p>}
       {error && <p className="text-sm text-red-600 dark:text-red-400">{error}</p>}
     </section>
   );

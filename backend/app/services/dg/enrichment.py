@@ -136,8 +136,9 @@ def imdg_segregation_codes_for(un_number: str, packing_group: str = "") -> list[
     return list(card_data_for(digits).get("segregation_codes") or [])
 
 
-# Substance-specific IMDG data from the UN cards (un_cards/), summarised by
-# scripts/extract_un_card_data.py: marine pollutant (column 4), stowage codes SW
+# Substance-specific IMDG data extracted from the third-party UN card set
+# (removed from the repository in v1.129.0; provenance in card_data.json and
+# the regulatory manifest): marine pollutant (column 4), stowage codes SW
 # (16a), segregation codes SG (16b) and bulk carriage. The segregation groups
 # above say which group a substance belongs to; these codes say what that means.
 _SEED_CARDS = Path(__file__).resolve().parents[3] / "seed" / "dg" / "card_data.json"

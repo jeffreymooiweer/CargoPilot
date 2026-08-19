@@ -1,0 +1,38 @@
+{
+ "_comment": [
+  "Which measured seed backs each modality's UN cards, and the generator's",
+  "own version. The regulation editions are NOT repeated here: each seed",
+  "records the edition it was read from, and the manifest reports that",
+  "value, so the two can never disagree. Bringing a new edition in means",
+  "re-running the extraction workflow that produces the seed (see",
+  "docs/dg-coverage.md), after which this generator picks it up unchanged.",
+  "A modality without a seed is listed with the reason; its cards fail",
+  "honestly instead of being invented."
+ ],
+ "generator_version": "1.0.0",
+ "modalities": {
+  "ADR": {
+   "seed": "backend/seed/dg/adr_table_a.json",
+   "extra_seeds": [
+    "backend/seed/dg/adr_2025_additions.json",
+    "backend/seed/dg/adr_names_en.json",
+    "backend/seed/dg/adr_names_nl.json",
+    "backend/seed/dg/adr_provision_texts.json"
+   ]
+  },
+  "RID": {
+   "seed": null,
+   "reason": "RID table A not column-read yet; only column (5) is extracted (v1.123.0)."
+  },
+  "ADN": {
+   "seed": "backend/seed/dg/adn_table_a.json"
+  },
+  "IMDG": {
+   "seed": "backend/seed/dg/imdg_dgl.json"
+  },
+  "ICAO": {
+   "seed": null,
+   "reason": "No freely licensable air table exists; ICAO TI and IATA DGR are commercial."
+  }
+ }
+}

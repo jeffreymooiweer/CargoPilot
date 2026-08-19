@@ -5,13 +5,11 @@
 # context is transferred before the first instruction runs, so it is paid on
 # every build, including the ones that hit the layer cache and produce nothing.
 #
-# Measured: 637 MB of context before, 586 MB after — 52 MB saved, almost all of
-# it the .git directory.
-#
-# The remaining 575 MB is `un_cards/`, and that is not excluded here because
-# the Dockerfile genuinely copies it: the UN card export serves those PDFs.
-# It is by far the largest thing in the image and worth a decision rather than
-# a default; docs/data-sources.md states what it costs and what it buys.
+# The UN card set left the repository and the image entirely: the "Generate
+# UN cards" workflow publishes it as a GitHub Release, and an administrator
+# imports it into the persistent data volume. Nothing card-shaped may creep
+# back into the build context — a generated set on a developer machine is
+# excluded below.
 
 .git
 .github
@@ -57,3 +55,7 @@ assets
 .idea
 .DS_Store
 Thumbs.db
+
+# Locally generated UN card sets must never enter the image.
+un-cards*/
+cargopilot-un-cards.zip

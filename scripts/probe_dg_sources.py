@@ -156,8 +156,9 @@ def probe_cantell() -> int:
     else:
         parts = count_parts("imdg", newest_imdg)
         print(f"Size: roughly {parts} parts.")
-        print("This is a newer edition — the existing pipeline in")
-        print("scripts/fetch_un_cards.py can process it directly.")
+        print("This is a newer edition. CargoPilot no longer bundles these cards")
+        print("(it generates its own, see docs/un-cards.md), but a newer set could")
+        print("refresh backend/seed/dg/card_data.json via extract_un_card_data.py.")
 
     print(f"\n-- first card of imdg_{newest_imdg} --")
     print(read_pdf_text(card_url("imdg", newest_imdg, 1), Path("/tmp/card.pdf"))[:2000])

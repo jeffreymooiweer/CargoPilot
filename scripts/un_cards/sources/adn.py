@@ -119,3 +119,8 @@ def cards(un: str) -> list[CardPage]:
             source=_table().get("source", ""),
         ))
     return pages
+
+
+def available_un_numbers() -> list[str]:
+    """Every UN number the measured ADN table assigns at least one row."""
+    return sorted({e["un"] for e in _table()["entries"] if e.get("un")})

@@ -17,3 +17,8 @@ def cards(un: str) -> list[CardPage]:
         "Technical Instructions and the IATA DGR are not freely licensable "
         "sources. An air card requires adopting a licensed or official open "
         "source first; nothing is generated rather than something invented.")
+
+
+def available_un_numbers() -> list[str]:
+    """No air table exists in this repository, so no UN number is offered."""
+    return []

@@ -2,6 +2,71 @@
 
 All notable changes are documented here, following [Semantic Versioning](https://semver.org/).
 
+## [1.129.0] — 2026-08-19
+
+CargoPilot now generates its own UN cards. The third-party card set that filled
+`un_cards/` since v1.66.0 is gone — from the repository and from the Docker image — and
+in its place stands a pipeline whose every value is measured: one A4 datasheet per UN
+number **per regime** (`UN1203_ADR.pdf`, `UN1203_ADN.pdf`, `UN1203_IMDG.pdf`), rendered
+from the same seed tables the compliance checks run on, published as a GitHub Release
+and imported by an administrator. See the new [docs/un-cards.md](docs/un-cards.md).
+
+### Added
+
+- **The card generator** (`scripts/un_cards/`). Per-modality adapters read only the
+  measured seeds — ADR 2025 table A (plus the additions file and the 1.1.3.6 points),
+  ADN 2025 table A, IMDG 42-24 Dangerous Goods List — and a modality without a measured
+  table **fails honestly**: RID until its table A is column-read beyond column (5), air
+  for want of a freely licensable source. No language model and no hand fills in a
+  regulatory value; a UN number with several entries becomes several pages of one PDF,
+  and printed name variants that share every regulatory value collapse into one page.
+- **Official hazard label artwork.** The 22 label models on the cards are cut from the
+  UNECE English ADR 2025 Volume II, 5.2.2.2.2, along measured crop boxes pinned in
+  `scripts/un_cards/assets/label_crops.json` — the figures there are rotated drawn
+  content that neither the image extractor nor the vector reader could see, so the
+  boxes were measured from rendered pages and are re-cut deterministically by
+  `scripts/extract_adr_label_models.py` (workflow: **Extract UN card assets**).
+- **Provisions printed in full.** The V (7.2.4), CV (7.5.11) and S (8.5) provisions
+  are extracted verbatim from the same official edition into
+  `backend/seed/dg/adr_provision_texts.json` and printed on the ADR cards under their
+  codes — the reader gets the obligation itself, not a bare article number. A code
+  whose text is not in the seed falls back to the article reference; nothing is ever
+  summarised by a model.
+- **Generate UN cards workflow.** `workflow_dispatch` with `scope` (single UN for a
+  quick look, or all), `modalities` and `publish`. It validates before it publishes —
+  filename ↔ UN ↔ modality agreement, `%PDF` header, SHA-256 against the manifest, the
+  UN number present in the text, no third-party branding — and a set that fails does
+  not ship. Published sets are GitHub Releases tagged `un-cards-YYYY.MM.DD-N` carrying
+  `cargopilot-un-cards.zip`, `manifest.json` and `generation-report.json`.
+- **Settings → UN Cards** (administrators). Shows the installed set — generation date,
+  per-regime counts, editions, size — and offers **Check for a new set** (reads the
+  pinned CargoPilot release feed, only when clicked), **Download & import latest**,
+  **Import from ZIP** for installations without outbound access, and **Remove**. Every
+  import is atomic: member names must match exactly the shapes the generator produces
+  (which rules out Zip Slip outright), sizes are capped, every card is hashed against
+  the packaged manifest, and the verified set replaces the old one in a single rename —
+  a failed import leaves the working set untouched. New API routes under
+  `/api/settings/un-cards/…`, admin-only.
+- **Per-regime card selection in the wizard.** The UN card download now sends the
+  journey's dangerous goods profiles and receives exactly the cards for those regimes;
+  a UN number without a card on a requested regime is named as missing, and no other
+  regime's card is substituted — the regimes print different obligations.
+
+### Changed
+
+- The Docker image no longer carries a card library (~575 MB smaller); cards live on
+  the data volume under `un-cards/` and installations without a set simply say so.
+- `docs/un-cards.md` documents the whole pipeline; `docs/development.md`,
+  `docs/user-guide.md`, `docs/dangerous-goods.md`, `docs/data-sources.md` and
+  `docs/privacy.md` (outbound connections: four things became five) follow suit.
+
+### Removed
+
+- `un_cards/` (2,849 third-party PDFs) and `scripts/fetch_un_cards.py`. The
+  per-substance IMDG data once read from those cards stays in
+  `backend/seed/dg/card_data.json` with its provenance recorded, until it is re-read
+  from the official IMDG Code.
+
 ## [1.128.0] — 2026-08-19
 
 ### Added

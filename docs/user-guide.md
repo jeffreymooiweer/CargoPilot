@@ -208,9 +208,16 @@ is ready. Every document downloads as a PDF and carries a draft notice.
 ### UN cards
 
 If your shipment contains dangerous goods, you can also download the **UN cards** for the
-substances you declared — a zip with one reference card per UN number, for your own
-records. Only your substances are included, not the whole library. They are not part of
-the transport documentation.
+substances you declared — a zip with one datasheet per UN number **per regime** your
+journey touches (ADR for road, ADN for inland waterways, IMDG for sea), for your own
+records. Only your substances are included, not the whole library, and a regime for
+which no card exists is named as missing rather than papered over with another regime's
+card. They are not part of the transport documentation.
+
+The card set itself is not bundled with the application: an administrator installs it
+once under **Settings → UN Cards**, either straight from the CargoPilot releases or from
+an uploaded ZIP (see [un-cards.md](un-cards.md)). Until then the wizard simply says no
+cards are available.
 
 ## The AI assistant
 
@@ -287,7 +294,9 @@ shows no card at all.
 
 Administrators see one more section, applying to the whole installation: the language and
 theme new users start with, the organisation name and address offered as a consignor to
-anyone who has not filled in their own, whether the UN card download is offered, how long a
+anyone who has not filled in their own, whether the UN card download is offered, the **UN
+Cards** section where the card set itself is installed, checked for updates or removed
+(see [un-cards.md](un-cards.md)), how long a
 session lasts, and — under **Outbound connections** — whether address lookup, catalogue
 sync and the update check are allowed to reach the internet at all. When the update check
 is on and a newer release exists, administrators get a small dismissible note in the

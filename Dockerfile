@@ -32,11 +32,10 @@ COPY templates/ ./templates/
 # The changelog the what's-new card serves after an update. Next to /app/backend
 # so app/services/changelog.py finds it where a checkout keeps it: one level up.
 COPY CHANGELOG.md ./CHANGELOG.md
-# The UN card library that the card export serves. This is by far the largest
-# thing in the image: 2,849 PDFs, 575 MB, committed to the repository rather
-# than fetched at build time. Removing it would shrink the image by roughly
-# nine tenths and take the UN card export with it.
-COPY un_cards/ ./un_cards/
+# The UN cards are deliberately NOT in the image any more. The set (thousands
+# of generated PDFs) is published as a GitHub Release by the "Generate UN
+# cards" workflow and imported by an administrator into <data-dir>/un-cards/,
+# where it survives restarts and updates. That took ~575 MB out of the image.
 
 COPY --from=frontend-build /build/dist ./backend/static/
 

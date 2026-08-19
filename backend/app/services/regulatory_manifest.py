@@ -160,7 +160,10 @@ RULE_SETS: list[dict[str, Any]] = [
         "superseded_by": "imdg",
         "name": "IMDG UN cards — supplementary substance data",
         "edition": "41-22 (2023)",
-        "source": "Cantell IMDG UN cards, 2023 edition",
+        # The card PDFs themselves left the repository in v1.129.0 (the
+        # application now generates its own cards); the data extracted from
+        # them lives on in card_data.json with this provenance.
+        "source": "Cantell IMDG UN cards, 2023 edition (source PDFs no longer bundled)",
         "valid_from": "2024-01-01",
         "valid_until": "2025-12-31",
         "errata": [

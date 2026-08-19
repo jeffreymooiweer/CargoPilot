@@ -15,7 +15,22 @@ carries a label; it only knows what each label looks like.
 """
 from __future__ import annotations
 
+from pathlib import Path
+
 from reportlab.lib.colors import Color, black, white
+from reportlab.lib.utils import ImageReader
+
+#: Official label model artwork, cropped from the UNECE English ADR 2025
+#: Volume I (5.2.2.2.2) by scripts/extract_adr_label_models.py and committed
+#: by the "Extract UN card assets" workflow. When a model's crop exists it is
+#: used as-is; the vector drawings below remain the fallback for codes the
+#: crop set does not cover (and for the marks that live outside 5.2.2.2.2).
+ASSETS = Path(__file__).resolve().parent / "assets" / "labels"
+
+
+def _asset(code: str) -> Path | None:
+    path = ASSETS / f"{code.replace('.', '_')}.png"
+    return path if path.exists() else None
 
 ORANGE = Color(0.93, 0.48, 0.05)
 RED = Color(0.79, 0.08, 0.10)
@@ -222,6 +237,12 @@ def draw_label(c, code: str, x: float, y: float, size: float) -> None:
     cx, cy = x + half, y + half
     sym = size  # symbol scale unit
     code = code.strip()
+
+    asset = _asset(code)
+    if asset is not None:
+        c.drawImage(ImageReader(str(asset)), x, y, width=size, height=size,
+                    preserveAspectRatio=True, anchor="c", mask="auto")
+        return
 
     background = white
     number_color = black

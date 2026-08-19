@@ -14,6 +14,7 @@ not permitted, 7.3.1.1).
 from __future__ import annotations
 
 import json
+import re
 from functools import lru_cache
 
 from .base import REPO, SEED, CardPage, SourceUnavailable, dash
@@ -33,6 +34,69 @@ def _additions() -> dict:
 def _names(language: str) -> dict:
     data = json.loads((SEED / f"adr_names_{language}.json").read_text(encoding="utf-8"))
     return data.get("names") or data.get("entries") or {}
+
+
+@lru_cache(maxsize=1)
+def _provision_texts() -> dict:
+    """The verbatim V/CV/S texts of 7.2.4, 7.5.11 and 8.5, where extracted.
+
+    Absent until the "Extract UN card assets" workflow has committed the
+    seed; the card then falls back to code-plus-reference rows rather than
+    inventing a summary.
+    """
+    path = SEED / "adr_provision_texts.json"
+    if not path.exists():
+        return {}
+    return json.loads(path.read_text(encoding="utf-8")).get("sections", {})
+
+
+def _reflow(raw: str) -> str:
+    """Turn the column's printed lines back into flowing paragraphs.
+
+    The extraction keeps one line per printed line of a narrow table column;
+    joined naively that reads fine, except that list markers ("1)", "a)")
+    were printed on their own line and deserve to start a new paragraph.
+    """
+    paragraphs: list[str] = []
+    current: list[str] = []
+    for line in raw.split("\n"):
+        line = line.strip()
+        if not line:
+            continue
+        if re.fullmatch(r"(\d+\)|[a-z]\)|[A-Z]\)|[–-])", line):
+            if current:
+                paragraphs.append(" ".join(current))
+            current = [line]
+        else:
+            current.append(line)
+    if current:
+        paragraphs.append(" ".join(current))
+    return "\n".join(paragraphs)
+
+
+def _family(code: str) -> str | None:
+    if code.startswith("CV"):
+        return "CV"
+    if code.startswith("V"):
+        return "V"
+    if code.startswith("S"):
+        return "S"
+    return None
+
+
+def _codes_with_texts(value: str, reference: str) -> str:
+    """One paragraph per code: its verbatim provision text where the seed
+    has it, the article reference where it does not."""
+    sections = _provision_texts()
+    parts: list[str] = []
+    for code in [c.strip() for c in (value or "").split(",") if c.strip()]:
+        family = _family(code)
+        text = (sections.get(family) or {}).get(code) if family else None
+        if text:
+            parts.append(f"{code} — {_reflow(text)}")
+        else:
+            parts.append(f"{code} — see ADR {reference}")
+    return "\n".join(parts)
 
 
 @lru_cache(maxsize=1)
@@ -142,15 +206,17 @@ def cards(un: str) -> list[CardPage]:
                 ("Special provisions", f"{row['special_provisions']} — see ADR 3.3"))
         if (row.get("carriage_packages") or "").strip():
             provision_rows.append(
-                ("Carriage of packages", f"{row['carriage_packages']} — see ADR 7.2.4"))
+                ("Carriage of packages",
+                 _codes_with_texts(row["carriage_packages"], "7.2.4")))
         if bulk:
             provision_rows.append(("Carriage in bulk", f"{bulk} — see ADR 7.3.3"))
         if (row.get("carriage_loading") or "").strip():
             provision_rows.append(
                 ("Loading, unloading and handling",
-                 f"{row['carriage_loading']} — see ADR 7.5.11"))
+                 _codes_with_texts(row["carriage_loading"], "7.5.11")))
         if (row.get("carriage_operation") or "").strip():
-            provision_rows.append(("Operation", f"{row['carriage_operation']} — see ADR 8.5"))
+            provision_rows.append(
+                ("Operation", _codes_with_texts(row["carriage_operation"], "8.5")))
         if not provision_rows:
             provision_rows.append(
                 ("Special provisions",

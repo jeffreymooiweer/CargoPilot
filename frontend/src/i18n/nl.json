@@ -170,7 +170,8 @@
     "importUpdated": "{{count}} bijgewerkt",
     "importSkipped": "{{count}} overgeslagen",
     "inactive": "Inactief",
-    "wallThickness": "Wanddikte (mm)"
+    "wallThickness": "Wanddikte (mm)",
+    "exportLibrary": "Bibliotheek exporteren"
   },
   "settings": {
     "title": "Instellingen",

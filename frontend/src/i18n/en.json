@@ -170,7 +170,8 @@
     "importUpdated": "{{count}} updated",
     "importSkipped": "{{count}} skipped",
     "inactive": "Inactive",
-    "wallThickness": "Wall thickness (mm)"
+    "wallThickness": "Wall thickness (mm)",
+    "exportLibrary": "Export library"
   },
   "settings": {
     "title": "Settings",

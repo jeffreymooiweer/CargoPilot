@@ -170,7 +170,8 @@
     "importUpdated": "{{count}} aktualisiert",
     "importSkipped": "{{count}} übersprungen",
     "inactive": "Inaktiv",
-    "wallThickness": "Wandstärke (mm)"
+    "wallThickness": "Wandstärke (mm)",
+    "exportLibrary": "Bibliothek exportieren"
   },
   "settings": {
     "title": "Einstellungen",

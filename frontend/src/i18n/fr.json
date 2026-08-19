@@ -170,7 +170,8 @@
     "importUpdated": "{{count}} mis à jour",
     "importSkipped": "{{count}} ignorés",
     "inactive": "Inactif",
-    "wallThickness": "Épaisseur de paroi (mm)"
+    "wallThickness": "Épaisseur de paroi (mm)",
+    "exportLibrary": "Exporter la bibliothèque"
   },
   "settings": {
     "title": "Paramètres",

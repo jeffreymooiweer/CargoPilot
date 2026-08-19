@@ -233,6 +233,12 @@ picked from the catalogue while entering packages.
 It starts **empty on purpose** — no operational data ships with the app. An
 administrator fills it by downloading the template, filling it in and importing it.
 
+**Export library** hands the whole list back as a spreadsheet in the very same columns
+the import reads, so the file round-trips: it is your backup, the hand-over to a
+colleague who maintains the list in Excel, and the seed for a second installation, all
+in one. Nothing is exported unless you click — there is no schedule and no copy kept
+anywhere.
+
 ## Settings
 
 Everything under **Settings** belongs to your account, not to the browser you happen to be

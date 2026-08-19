@@ -41,18 +41,24 @@ async def read_limited_upload(file: Any, max_bytes: int = MAX_IMPORT_BYTES) -> b
     return content
 
 
-def build_xlsx_template(headers: list[str], example_row: list[str], sheet_name: str = "Template") -> bytes:
+def build_xlsx(headers: list[str], rows: list[list[str]], sheet_name: str = "Export") -> bytes:
+    """A workbook of one sheet: bold headers, then the rows as given."""
     wb = Workbook()
     ws = wb.active
     ws.title = sheet_name
     ws.append(headers)
-    ws.append(example_row)
+    for row in rows:
+        ws.append(row)
     for col in ws.iter_cols(min_row=1, max_row=1):
         for cell in col:
             cell.font = openpyxl.styles.Font(bold=True)
     buf = io.BytesIO()
     wb.save(buf)
     return buf.getvalue()
+
+
+def build_xlsx_template(headers: list[str], example_row: list[str], sheet_name: str = "Template") -> bytes:
+    return build_xlsx(headers, [example_row], sheet_name=sheet_name)
 
 
 def _decode_text(content: bytes) -> str:

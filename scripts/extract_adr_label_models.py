@@ -43,18 +43,30 @@ def find_section_pages(doc: fitz.Document) -> list[int]:
     least one model code anchored in the first column. The table is one
     contiguous run of such pages; the longest run wins.
     """
+    def normalised(number: int) -> str:
+        return " ".join(doc[number].get_text().split()).lower()
+
     table_pages = [
         number for number in range(doc.page_count)
-        if ("Model N" in doc[number].get_text() or "Model n" in doc[number].get_text())
+        if ("model no" in normalised(number) or "model nr" in normalised(number))
         and row_anchors(doc[number])
     ]
     runs: list[list[int]] = []
     for number in table_pages:
-        if runs and number == runs[-1][-1] + 1:
+        if runs and number - runs[-1][-1] <= 2:
             runs[-1].append(number)
         else:
             runs.append([number])
-    return max(runs, key=len) if runs else []
+    if not runs:
+        # Say what was seen, so a layout change is diagnosable from the log.
+        with_header = [n + 1 for n in range(doc.page_count)
+                       if "model no" in normalised(n) or "model nr" in normalised(n)]
+        with_anchors = [n + 1 for n in range(doc.page_count) if len(row_anchors(doc[n])) >= 3]
+        print(f"DIAGNOSTIC pages with a Model header: {with_header[:20]}")
+        print(f"DIAGNOSTIC pages with >=3 model-code anchors: {with_anchors[:20]}")
+        return []
+    best = max(runs, key=len)
+    return list(range(best[0], best[-1] + 1))
 
 
 def row_anchors(page: fitz.Page) -> list[tuple[str, float]]:

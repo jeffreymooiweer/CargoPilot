@@ -59,12 +59,18 @@ def trim_white(pix: fitz.Pixmap) -> fitz.Pixmap:
     right = width - 1
     while right > left and col_blank(right):
         right -= 1
-    clip = fitz.IRect(left, top, right + 1, bottom + 1)
-    if clip.width < 10 or clip.height < 10:
+    new_w = right - left + 1
+    new_h = bottom - top + 1
+    if new_w < 10 or new_h < 10:
         return pix
-    trimmed = fitz.Pixmap(pix.colorspace, clip, pix.alpha)
-    trimmed.copy(pix, clip)
-    return trimmed
+    # Slice the sample bytes directly: a clipped render carries a non-zero
+    # origin, and Pixmap.copy interprets rectangles in that shifted space —
+    # the mismatch shredded every crop into stride garbage once already.
+    rows = []
+    for y in range(top, bottom + 1):
+        start = (y * width + left) * n
+        rows.append(samples[start:start + new_w * n])
+    return fitz.Pixmap(pix.colorspace, new_w, new_h, b"".join(rows), pix.alpha)
 
 
 def extract(vol: Path, out_dir: Path) -> dict:

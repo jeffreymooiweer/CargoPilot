@@ -365,10 +365,14 @@ The cards are for your own records. They are not transport documents, they are n
 attached to anything CargoPilot generates, and they do not replace the current edition of
 the regulations.
 
-The library lives in `un_cards/` and is filled once by the **Fetch UN cards** workflow,
-which reads the UN number out of every document rather than trusting its original
-filename. In a checkout where that has not been run, the download option simply does not
-appear. See [`un_cards/README.md`](../un_cards/README.md).
+Since v1.129.0 the cards are **CargoPilot's own**: one datasheet per UN number *and*
+regime (`UN1203_ADR.pdf`, `UN1203_IMDG.pdf`, …), generated from the same measured
+regulatory tables the compliance checks run on, with the official label artwork cut from
+the UNECE English ADR 2025 and the V/CV/S provision texts printed verbatim. The set is
+published as a GitHub Release by the **Generate UN cards** workflow and imported by an
+administrator under **Settings → UN Cards**; it lives on the data volume, not in the
+image. On an installation without an imported set, the download option simply does not
+appear. See [un-cards.md](un-cards.md) for the whole pipeline.
 
 ## Rule set editions
 

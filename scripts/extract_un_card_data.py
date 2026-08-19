@@ -1,8 +1,12 @@
 #!/usr/bin/env python3
 """Read the per-substance data out of the UN cards into a seed file.
 
-The cards in `un_cards/` are laid out as label/value pairs, which makes them a
-usable source for the fields CargoPilot has been missing per substance:
+This produced `backend/seed/dg/card_data.json` from the third-party card set
+that shipped with CargoPilot before v1.129.0. Those source PDFs are no longer
+in the repository (CargoPilot generates its own cards now, see
+docs/un-cards.md), so running this again needs a local `un_cards/` directory
+with that set. The cards are laid out as label/value pairs, which made them a
+usable source for the fields CargoPilot had been missing per substance:
 
   marine pollutant   column 4 of the Dangerous Goods List
   stowage codes      SW…, column 16a

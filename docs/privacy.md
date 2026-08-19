@@ -39,7 +39,7 @@ This is a deliberate choice. If a job is finished, there is nothing left to leak
 
 ## What leaves your server
 
-Four things, and only if you let them:
+Five things, and only if you let them:
 
 **Address autocomplete** sends what you type in an address field to a Photon geocoder
 (`photon.komoot.io` by default). An administrator can switch it off entirely on the
@@ -62,6 +62,14 @@ are fetched into `/data/assistant` and verified against SHA-256 digests recorded
 repository. Nothing about your shipments is ever sent — the download is the only
 traffic, and after it the assistant runs entirely locally. Never installing it is the
 default, and the assistant works without it.
+
+**The UN card download** happens only when an administrator clicks *check* or
+*download* under **Settings → UN Cards**: the server asks GitHub's public release
+listing for the newest `un-cards-` release of this repository and, on download, fetches
+the card package from it — never from a caller-supplied address. Every file is verified
+against the SHA-256 digests in the packaged manifest before it is installed. An
+installation without outbound access imports the same package as an uploaded ZIP
+instead, with identical verification, so this connection is never required.
 
 The switches sit together under **Outbound connections** in the administrator section of
 the settings screen, so an air-gapped installation can be made silent from one place.

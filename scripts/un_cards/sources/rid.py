@@ -22,3 +22,8 @@ def cards(un: str) -> list[CardPage]:
         "geometric extraction of RID 3.2.1 from the RID 2025 editions in the "
         "regulations store, like scripts/extract_rid_shunting_labels.py did "
         "for column (5).")
+
+
+def available_un_numbers() -> list[str]:
+    """No RID card can be generated yet, so no UN number is offered."""
+    return []

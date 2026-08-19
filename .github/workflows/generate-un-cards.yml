@@ -1,0 +1,101 @@
+# Generates the CargoPilot UN card set from the measured seed tables in this
+# repository — no network sources at generation time; the seeds carry their
+# own provenance. Test mode (publish=false) uploads the result as a workflow
+# artifact for inspection; publish=true creates a GitHub Release tagged
+# un-cards-YYYY.MM.DD-N whose assets the application downloads and imports.
+# The thousands of PDFs deliberately never enter git: the release is the
+# store, the repository holds the generator.
+name: Generate UN cards
+
+on:
+  workflow_dispatch:
+    inputs:
+      scope:
+        description: all = every UN number per modality; single = un_number only
+        type: choice
+        options: [all, single]
+        default: single
+      un_number:
+        description: UN number for scope=single, e.g. 1203
+        default: "1203"
+      modalities:
+        description: Comma-separated subset of ADR,RID,ADN,IMDG,ICAO
+        default: ADR,RID,ADN,IMDG,ICAO
+      publish:
+        description: Publish the set as a GitHub Release (scope=all only)
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+
+concurrency:
+  group: generate-un-cards
+  cancel-in-progress: false
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install generator dependencies
+        run: pip install reportlab pymupdf
+
+      - name: Generate
+        run: |
+          if [ "${{ inputs.scope }}" = "all" ]; then
+            python scripts/un_cards/generate.py --scope all \
+              --modalities "${{ inputs.modalities }}" \
+              --out /tmp/cards --zip /tmp/cargopilot-un-cards.zip
+          else
+            python scripts/un_cards/generate.py --scope single \
+              --un "${{ inputs.un_number }}" \
+              --modalities "${{ inputs.modalities }}" \
+              --out /tmp/cards --manifest
+          fi
+
+      - name: Validate
+        run: python scripts/un_cards/validate.py --dir /tmp/cards
+
+      - name: Upload as artifact (test mode)
+        if: ${{ !inputs.publish || inputs.scope != 'all' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: un-cards-${{ inputs.scope }}
+          path: |
+            /tmp/cards
+          retention-days: 14
+
+      - name: Publish as release
+        if: ${{ inputs.publish && inputs.scope == 'all' }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          DATE=$(date -u +%Y.%m.%d)
+          N=1
+          while gh release view "un-cards-$DATE-$N" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; do
+            N=$((N+1))
+          done
+          TAG="un-cards-$DATE-$N"
+          python - <<'EOF' > /tmp/release-notes.txt
+          import json
+          m = json.load(open("/tmp/cards/manifest.json"))
+          lines = [f"{k}: {v} cards ({m['editions'].get(k)})" for k, v in m["counts"].items()]
+          lines += [f"not generated: {k}: {v}" for k, v in m["unavailable_modalities"].items()]
+          lines += [f"total: {m['total_cards']} cards, {m['total_size'] / 1e6:.0f} MB unpacked",
+                    f"generator {m['generator_version']}, commit {m['git_commit'][:12]}"]
+          print("\n".join(lines))
+          EOF
+          gh release create "$TAG" \
+            --repo "$GITHUB_REPOSITORY" \
+            --title "UN cards $DATE ($N)" \
+            --notes-file /tmp/release-notes.txt \
+            /tmp/cargopilot-un-cards.zip \
+            /tmp/cards/manifest.json \
+            /tmp/cards/generation-report.json
+          echo "published $TAG"

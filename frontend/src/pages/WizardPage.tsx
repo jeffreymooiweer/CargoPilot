@@ -668,7 +668,7 @@ export default function WizardPage() {
     }
     let cancelled = false;
     api
-      .unCardsAvailability({ dangerous_goods: dgEntries, output_language: docLang })
+      .unCardsAvailability({ dangerous_goods: dgEntries, profiles: dgProfiles, output_language: docLang })
       .then((status) => {
         if (!cancelled) setUnCards(status);
       })
@@ -762,7 +762,7 @@ export default function WizardPage() {
     setUnCardsBusy(true);
     setError("");
     try {
-      await api.downloadUnCards({ dangerous_goods: dgEntries, output_language: docLang });
+      await api.downloadUnCards({ dangerous_goods: dgEntries, profiles: dgProfiles, output_language: docLang });
     } catch (e) {
       setError(String(e));
     } finally {

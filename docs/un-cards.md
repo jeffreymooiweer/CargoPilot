@@ -1,0 +1,87 @@
+# The UN card pipeline
+
+CargoPilot generates its own UN cards: one A4 datasheet per UN number **and**
+regime, named `UN1203_ADR.pdf`, `UN1203_ADN.pdf`, `UN1203_IMDG.pdf` and so
+on. Every value on a card comes from the measured regulatory tables in
+`backend/seed/dg/` — the same tables the compliance checks run on — the
+hazard label artwork is cut from the official UNECE English ADR 2025, and
+the V/CV/S provisions of 7.2.4, 7.5.11 and 8.5 are printed verbatim from
+that edition. No language model, and no hand, ever fills in a regulatory
+value: a modality without a measured table (RID until its table A is
+column-read; ICAO/air for want of a freely licensable source) **fails
+honestly** instead of borrowing another regime's data.
+
+## Where things live
+
+| Piece | Place |
+|---|---|
+| Generator | `scripts/un_cards/` (`generate.py`, `render.py`, `labels.py`, `validate.py`, per-modality adapters under `sources/`) |
+| Source configuration | `scripts/un_cards/generator_config.json` — which seed backs which modality, plus the generator version |
+| Label artwork | `scripts/un_cards/assets/labels/` — cut from ADR 5.2.2.2.2 along the measured boxes in `label_crops.json` by `scripts/extract_adr_label_models.py` |
+| Provision texts | `backend/seed/dg/adr_provision_texts.json` — extracted by `scripts/extract_adr_provision_texts.py` |
+| Generated cards | **Not in the repository and not in the image.** A GitHub Release tagged `un-cards-YYYY.MM.DD-N`, assets `cargopilot-un-cards.zip`, `manifest.json`, `generation-report.json` |
+| Runtime store | `<data-dir>/un-cards/` on the persistent volume, filled by an administrator |
+
+## Setting a new regulation edition
+
+The editions are **not** typed anywhere in the generator: each seed records
+the edition it was read from, and the manifest repeats that value, so the
+two cannot disagree. Bringing in a new edition means re-running the
+extraction workflow that produces the seed (see `docs/dg-coverage.md` for
+which workflow reads which table), letting its two-reading checks pass, and
+then regenerating the cards. Only one modality changed? Regenerate all the
+same — the release always carries one coherent complete set, so the
+application never has to stitch partial packages together.
+
+## Running the generator
+
+Manually, from a checkout (test mode, nothing published):
+
+```bash
+python scripts/un_cards/generate.py --scope single --un 1203 --out /tmp/cards
+python scripts/un_cards/validate.py --dir /tmp/cards
+```
+
+Through GitHub Actions: **Generate UN cards** (`workflow_dispatch`), inputs
+
+- `scope`: `single` (with `un_number`, for a quick look) or `all`;
+- `modalities`: comma-separated subset, default all five;
+- `publish`: off = the result is uploaded as a workflow artifact for
+  inspection; on (with `scope=all`) = a GitHub Release is created.
+
+The workflow validates before it publishes, and validation is strict:
+filename ↔ UN ↔ modality agreement, `%PDF` header, SHA-256 against the
+manifest, the UN number and the CargoPilot footer present in the text, no
+third-party branding anywhere. A set that fails does not ship.
+
+## How an installation gets the cards
+
+**Settings → UN Cards** (administrators only) shows what is installed —
+generation date, per-regime counts and editions, total size, storage
+location — and offers:
+
+- **Check for a new set**: reads the release feed, only when clicked;
+- **Download & import latest**: the server fetches
+  `cargopilot-un-cards.zip` from the pinned CargoPilot release feed (never
+  a caller-supplied URL), verifies and installs it;
+- **Import from ZIP**: the same package uploaded by hand, for
+  installations without outbound access — identical verification;
+- **Remove local cards**: deletes the set; the wizard then says no cards
+  are available instead of guessing.
+
+Every import is atomic: the archive's member names must match exactly the
+shapes the generator produces (which rules out Zip Slip outright), sizes
+are capped, every card is hashed against the packaged manifest, and the
+verified set replaces the old one in a single rename. A failed import — a
+tampered file, a truncated download, a full disk — leaves the previously
+working set untouched.
+
+## How the app serves them
+
+The wizard's UN card download bundles exactly the cards for the declared
+substances on the regimes the journey touches (`profiles` in the request);
+a UN number that has no card on a requested regime is named as missing, and
+no other regime's card is substituted — the regimes print different
+obligations. The whole feature stays out of the way when no set is
+imported, and the **Offer UN cards** switch in the instance settings turns
+it off entirely.

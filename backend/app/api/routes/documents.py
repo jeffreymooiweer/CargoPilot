@@ -275,7 +275,7 @@ def un_cards_status(
     db: Session = Depends(get_db),
 ):
     """Which UN cards this shipment can be given, before offering the download."""
-    status = un_cards_availability(payload.dangerous_goods)
+    status = un_cards_availability(payload.dangerous_goods, payload.profiles)
     if not instance_settings(db).un_cards_enabled:
         # Switched off for this installation. Reported the same way as a missing
         # card library, so the wizard simply does not offer the download.
@@ -294,7 +294,7 @@ def export_un_cards(
     if not instance_settings(db).un_cards_enabled:
         raise HTTPException(status_code=404, detail="UN cards are disabled for this installation")
     try:
-        out_path, status = build_un_cards_zip(payload.dangerous_goods)
+        out_path, status = build_un_cards_zip(payload.dangerous_goods, payload.profiles)
     except FileNotFoundError as exc:
         raise HTTPException(status_code=404, detail=str(exc)) from exc
 

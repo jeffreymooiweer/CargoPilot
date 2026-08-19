@@ -408,11 +408,18 @@ where 5.3.2.1 marking is prescribed — contains no tunnel restriction code.
   explanation of 3.2.1 (page 258 of the English edition) says the bracketed models 13 and 15
   are only ever affixed in two cases: **class 1, on both sides of wagons comprising a full
   load; class 2, on both sides of tank-wagons, battery-wagons, wagons with demountable tanks
-  and wagons carrying tank-containers, MEGCs or portable tanks**. Both cases are named as
-  conditions when the load raises them — whether a wagon is a full load is not visible from
-  here, and *which* substances carry the bracketed model sits in RID's own column (5), which
-  this application does not hold (its table is the ADR's, which carries neither model). The
-  exclusion of model 13 from the description line (5.4.1.1.1 (c)) stays a guard.
+  and wagons carrying tank-containers, MEGCs or portable tanks**. Since v1.123.0 the
+  per-substance half is read as well: column (5) of RID's own table A, extracted
+  geometrically from the OTIF English and German editions, which agree on every one of the
+  **351 rows** that bracket a model — 335 carry (+13), 16 carry (+15), all of them class 1
+  (181) or class 2 (170), exactly the two cases the explanation names. The first probe run
+  is worth recording: the plain (13) and (15) it matched were the table's own column
+  headers, printed on every page — the cells print (+13) and (+15), and the plus sign is
+  the discriminator. So a chlorine tank-wagon is told its model by name, UN 0331 — class 1,
+  no bracketed model in either edition — is told the absence is real, and the one thing
+  still named as a condition is the one thing still invisible: whether a wagon comprises a
+  full load. The exclusion of model 13 from the description line (5.4.1.1.1 (c)) stays a
+  guard.
 - **The CIM's own dangerous goods fields.** Box 24 (NHM) is a free-text field with a format
   check; the entries in boxes 21/23 come from the shared DG data without rail-specific
   validation.
@@ -451,19 +458,18 @@ and 7; the orange plates attach only where column (20) gives a hazard identifica
 (5.3.2.1.1), each side of the tank or bulk wagon, with no plain front-and-rear plates at
 all; the orange band of 5.3.5 follows the state of the gas out of the classification code
 (2 liquefied, 3 refrigerated liquefied, 4 dissolved); and the shunting marking of 5.3.4 is
-a named condition (see above). What is left that is genuinely rail-specific: the
-per-substance bracketed models of RID's own column (5), and the store now holds the RID in
-four languages — the OTIF English, the German, the French, and the operator's Dutch
-edition, registered in the v1.121.0 intake — should a reading of that column ever be
-extracted.
+a named condition (see above). The per-substance bracketed models of
+RID's own column (5) were extracted in v1.123.0 from two of the four editions the store
+holds — the OTIF English and the German, which agree on all 351 rows — so nothing
+genuinely rail-specific is left unread; what stays with the carrier stays named.
 
 **The mode came off the lock in v1.122.0**, over the same bar inland waterway cleared in
 v1.63.0: the checks a rail consignment gets are cited to RID rather than borrowed, the
 placarding of chapter 5.3 is derived and on paper, and the CIM flow is verified end to
 end in the rail archetypes — a package wagon and a chlorine tank-wagon, through the real
-API, compliance and documents alike. What stays open stays named: the per-substance
-bracketed models of column (5), the CIM's free-text NHM box, and everything that is the
-wagon or the train itself.
+API, compliance and documents alike. What stays open stays named: the CIM's
+free-text NHM box, and everything that is the wagon or the train itself — full-load
+status included, which is what keeps 5.3.4 a condition even now that its column is read.
 
 ## Inland waterway — ADN
 
@@ -860,7 +866,7 @@ reading and not as a coincidence.
 
 ---
 
-*This assessment is maintained up to CargoPilot v1.122.0; the sections above name the release
+*This assessment is maintained up to CargoPilot v1.123.0; the sections above name the release
 each finding shipped in. v1.42.0 to v1.48.0 touched the goods
 catalogue, the interface language, the settings, the documentation and the error messages,
 not a single regulatory check; v1.49.0 and v1.50.0 changed the ADR side, from the Dutch

@@ -2,6 +2,32 @@
 
 All notable changes are documented here, following [Semantic Versioning](https://semver.org/).
 
+## [1.123.0] — 2026-08-19
+
+### Added
+
+- **The shunting models of RID column (5), read per substance.** Since
+  v1.121.0 the shunting labels of 5.3.4 were a class-level condition,
+  because which substances carry the bracketed model sits in RID's own
+  table A — a column the application's ADR table does not have. It is
+  extracted now: `scripts/extract_rid_shunting_labels.py` reads the cells
+  geometrically from the OTIF English edition and the German edition,
+  which agree on every one of the **351 rows** that bracket a model — 335
+  carry (+13), 16 carry (+15), all of them class 1 (181 rows) or class 2
+  (170 rows), exactly the two cases the column (5) explanation names, and
+  the 16 model-15 rows are all division 1.1 explosives. The first probe
+  run earned its keep: the plain (13) and (15) it matched were the table's
+  own column headers, printed on every page — the cells print (+13) and
+  (+15), and the plus sign is the discriminator.
+- **The answer is per substance now, in both directions.** A chlorine
+  tank-wagon is told its model by name; UN 0331 — class 1, which used to
+  get the hedge — is told the absence is real, because neither edition
+  brackets a model for it. What stays a condition is the one thing still
+  invisible from here: whether a wagon comprises a full load. The seed
+  (`rid_shunting_labels.json`) records both workflow runs and the
+  cross-check, and the class-level wording remains only as the fallback
+  for an installation whose seed is missing.
+
 ## [1.122.0] — 2026-08-18
 
 ### Added

@@ -76,19 +76,34 @@ def test_a_tank_without_a_hazard_number_is_said_not_guessed():
     assert mark["required"] is None
 
 
-def test_class_2_in_a_tank_raises_the_shunting_condition():
+def test_a_substance_with_the_bracketed_model_is_named():
+    """Chlorine's column (5) brackets (+13) — read in the English and German
+    editions, which agree — so the finding names the substance and its model
+    instead of hedging at the whole class."""
     tank = dict(CHLORINE, carriage_mode="tank")
     result = check_rid_placarding([line("L1", **tank)])
     shunt = next(m for m in result["marks"] if m["kind"] == "shunting_labels")
     assert shunt["required"] is None
-    assert "13" in shunt["message"] and "15" in shunt["message"]
+    assert "1017" in shunt["message"] and "13" in shunt["message"]
 
 
-def test_class_1_raises_the_shunting_condition_too():
+def test_a_trigger_class_without_the_model_is_told_so():
+    """UN 0331 is class 1 and used to get the hedge; its column (5) brackets
+    no model in either edition, and a real absence is an answer."""
     explosive = {"un_number": "0331", "proper_shipping_name": "EXPLOSIVE",
                  "class": "1", "classification_code": "1.5D", "labels": "1.5"}
     result = check_rid_placarding([line("L1", **explosive)])
-    assert any(m["kind"] == "shunting_labels" for m in result["marks"])
+    shunt = next(m for m in result["marks"] if m["kind"] == "shunting_labels")
+    assert shunt["required"] is False
+
+
+def test_black_powder_carries_model_13():
+    powder = {"un_number": "0027", "proper_shipping_name": "BLACK POWDER",
+              "class": "1", "classification_code": "1.1D", "labels": "1"}
+    result = check_rid_placarding([line("L1", **powder)])
+    shunt = next(m for m in result["marks"] if m["kind"] == "shunting_labels")
+    assert shunt["required"] is None
+    assert "0027" in shunt["message"]
 
 
 def test_packaged_class_3_raises_no_shunting_condition():

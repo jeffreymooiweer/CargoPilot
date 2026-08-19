@@ -529,6 +529,36 @@ def adn_blue_cones(un_number: str) -> dict[str, Any] | None:
     }
 
 
+@lru_cache(maxsize=1)
+def _rid_shunting() -> dict[str, list[str]] | None:
+    """The shunting-model rows of RID table A column (5), or None unread.
+
+    None and the empty list mean different things and the caller needs both:
+    None says the seed is not there at all, so nothing per-substance can be
+    claimed; an empty list says the seed was read and this substance prints
+    no bracketed model in either edition — a real absence.
+    """
+    try:
+        payload = json.loads(
+            (_SEED_DIR / "rid_shunting_labels.json").read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        return None
+    return {un: list(models) for un, models in payload.get("rows", {}).items()}
+
+
+def rid_shunting_models(un_number: str) -> list[str] | None:
+    """Which shunting models (13, 15) RID's column (5) brackets for one UN.
+
+    Read out of the OTIF English and German editions, which agree on all 351
+    rows. ``None`` when the seed is absent; ``[]`` when the substance prints
+    no bracketed model — the answer most substances get.
+    """
+    rows = _rid_shunting()
+    if rows is None:
+        return None
+    return list(rows.get(str(un_number or "").strip(), []))
+
+
 def adn_special_provisions(un_number: str) -> list[str]:
     """Column (6) of the ADN's table A: the special provisions, by number.
 

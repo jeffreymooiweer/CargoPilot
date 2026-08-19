@@ -82,10 +82,11 @@ core stays what it is — a civilian documentation tool:
 - NHM code search and selection as a master data field (CIM box 24). Blocked on finding a
   source that carries six-digit codes *with* descriptions; `scripts/probe_nhm_sources.py`
   measures a candidate. Until then box 24 is a free-text field with a format check.
-- Configurable country and carrier rules for customs references (ENS/ICS2, AES/ITN).
-- Import of carrier data (AWB number, booking reference) after confirmation.
-- Optional bulk export of the equipment library — on request only, never a default
-  export of sensitive data.
+- Customs reference fields (ENS/ICS2, AES/ITN) shipped in v1.128.0 with their conditions
+  in the help text and their formats enforced on export; carrier data intake (AWB number,
+  booking reference) from a pasted booking confirmation shipped alongside. What remains
+  open here is deriving the conditions from the route automatically — today the help
+  text names the rule and the user decides whether it applies.
 
 ### Ideas, not committed
 

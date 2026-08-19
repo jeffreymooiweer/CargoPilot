@@ -185,6 +185,14 @@ export const api = {
   changelog: (since: string) =>
     request<ChangelogResponse>(`/changelog?since=${encodeURIComponent(since)}`),
   updateStatus: () => request<UpdateStatus>("/update-status"),
+  // Reads carrier-assigned references (AWB, booking, ENS MRN, AES ITN) out of
+  // a pasted booking confirmation. Reading only; the caller decides what to
+  // fill, and fills only fields that are still empty.
+  parseCarrierConfirmation: (text: string) =>
+    request<{ found: Record<string, string> }>("/documents/carrier-confirmation", {
+      method: "POST",
+      body: JSON.stringify({ text }),
+    }),
   settingsOptions: () => request<SettingsOptions>("/settings/options"),
   assistantStatus: () => request<AssistantStatus>("/assistant/status"),
   assistantModel: (action: "download" | "remove" | "stop") =>

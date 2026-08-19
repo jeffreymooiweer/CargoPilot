@@ -665,5 +665,18 @@
     "hint": "Diese Installation aktualisiert sich nicht selbst; holen Sie das neuere Image wie gewohnt.",
     "releaseNotes": "Versionshinweise ansehen",
     "dismiss": "Meldung schließen"
+  },
+  "carrier": {
+    "title": "Buchungsbestätigung einfügen",
+    "intro": "Fügen Sie die Bestätigung des Frachtführers ein; die erkennbaren Referenzen (AWB-Nummer, Buchungsnummer, ENS-MRN, AES ITN) werden gelesen und nur in noch leere Felder gesetzt. Nichts wird gespeichert.",
+    "placeholder": "Fügen Sie hier den Text der Bestätigungsmail ein…",
+    "read": "Bestätigung lesen",
+    "foundNone": "Keine erkennbaren Referenzen gefunden.",
+    "filled": "Ausgefüllt: {{fields}}.",
+    "kept": "Bereits ausgefüllt gelassen: {{fields}}.",
+    "awb": "AWB-Nummer",
+    "booking": "Buchungsnummer",
+    "ens": "ENS-Referenz (ICS2)",
+    "itn": "AES ITN"
   }
 }

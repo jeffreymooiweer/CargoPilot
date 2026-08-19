@@ -9,6 +9,7 @@ import {
   LocalizedText,
 } from "../api/client";
 import { documentLanguage, localised } from "../i18n/language";
+import CarrierConfirmationBox from "./CarrierConfirmationBox";
 import {
   AddressTextarea,
   LOCATION_FIELD_KEYS,
@@ -267,6 +268,11 @@ export default function DocumentFieldsStep({
 
       {current.kind === "shared" && (
         <>
+          {/* Offered where the references live: pasting the carrier's booking
+              confirmation fills the still-empty reference fields. */}
+          {sharedSections.some((section) => section.key === "references") && (
+            <CarrierConfirmationBox values={values} onChange={onChange} />
+          )}
           {sharedSections.map((section) => (
             <section key={section.key} className={`${panelClass} p-4 sm:p-6`}>
               <h4 className="font-semibold text-slate-900 dark:text-slate-100">{L(section.label)}</h4>

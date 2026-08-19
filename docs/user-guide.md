@@ -154,7 +154,19 @@ This is where you enter the shipment **once**:
 
 - **Parties** — sender, consignee, carrier
 - **Route** — place of loading, place of delivery, terminals
-- **References** — order numbers, booking references, customs references
+- **References** — order numbers, booking references, customs references. Two of them
+  come with their conditions in the help text: the **ENS reference (ICS2)** for goods
+  entering the EU customs territory (the entry summary declaration is normally lodged by
+  the carrier; when its MRN is known, it travels on the papers) and the **AES ITN** for
+  exports from the United States (the proof of the Electronic Export Information filing,
+  which belongs on the transport document). Both check their format on export, so a
+  mistyped reference is caught before it reaches an official form.
+
+The carrier's numbers usually arrive **after** you book — in the confirmation e-mail.
+**Paste booking confirmation** at the top of this step reads that e-mail for the
+recognisable references (AWB number with its own check digit, booking number, ENS MRN,
+AES ITN) and puts them only into fields that are still empty. Nothing you typed is ever
+overwritten, and the pasted text is read once and stored nowhere.
 
 Address fields search real addresses as you type. Route fields suggest airports, ports
 or railway stations, filtered to your transport mode. You can always type your own text.

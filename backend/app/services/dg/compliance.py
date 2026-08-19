@@ -190,21 +190,57 @@ ADN_MIXED_NOTE = {
 # categories with the same figures (0, 20, 333, 1000, unlimited) and RID
 # 1.1.3.6.4 the same multipliers — 50, 3 and 1 — against the same calculated
 # value of 1000. What differs is the unit of account: RID counts per wagon or
-# large container, ADR per transport unit. Read from RID 2025 p. 29.
+# large container, ADR per transport unit. Read from RID 2025 p. 29 — and read
+# further in v1.124.0: what the number *governs* differs too. RID 1.1.3.6.3
+# opens "Where, in accordance with 1.1.3.1 (c), dangerous goods ... are
+# carried", and 1.1.3.1 (c) (p. 27, confirmed in the German edition) is the
+# exemption for carriage ancillary to an enterprise's main activity, at most
+# 450 litres per packaging and never class 7. RID has no general small-load
+# relief the way ADR 1.1.3.6 grants one; staying under 1000 relieves a rail
+# consignment of nothing unless the carriage itself is that ancillary case.
 RID_POINTS_NOTE = {
     "nl": "RID 1.1.3.6.3 en 1.1.3.6.4 schrijven dezelfde vervoerscategorieën, "
           "dezelfde factoren (50, 3 en 1) en dezelfde waarde van 1000 voor als "
-          "het ADR. Het verschil zit in de eenheid: het RID rekent per wagen of "
-          "grote container, het ADR per vervoerseenheid.",
+          "het ADR; het RID rekent per wagen of grote container, het ADR per "
+          "vervoerseenheid. Wat de uitkomst betekent verschilt wél: RID "
+          "1.1.3.6 begrenst uitsluitend de vrijstelling van 1.1.3.1 (c) — "
+          "vervoer door ondernemingen als nevenactiviteit van hun "
+          "hoofdbedrijvigheid, ten hoogste 450 liter per verpakking, nooit "
+          "klasse 7. Een algemene kleine-hoeveelhedenvrijstelling zoals ADR "
+          "1.1.3.6 kent het RID niet: onder de 1000 blijven ontheft een "
+          "spoorzending nergens van, tenzij het vervoer zelf dat nevengeval is.",
     "en": "RID 1.1.3.6.3 and 1.1.3.6.4 prescribe the same transport categories, "
           "the same factors (50, 3 and 1) and the same calculated value of 1000 "
-          "as ADR. The difference is the unit: RID counts per wagon or large "
-          "container, ADR per transport unit.",
+          "as ADR; RID counts per wagon or large container, ADR per transport "
+          "unit. What the outcome means differs: RID 1.1.3.6 only bounds the "
+          "exemption of 1.1.3.1 (c) — carriage by enterprises ancillary to "
+          "their main activity, at most 450 litres per packaging, never "
+          "class 7. RID has no general small-load relief the way ADR 1.1.3.6 "
+          "grants one: staying under 1000 relieves a rail consignment of "
+          "nothing unless the carriage itself is that ancillary case.",
     "de": "RID 1.1.3.6.3 und 1.1.3.6.4 schreiben dieselben "
           "Beförderungskategorien, dieselben Faktoren (50, 3 und 1) und "
-          "denselben berechneten Wert von 1000 vor wie das ADR. Der Unterschied "
-          "liegt in der Einheit: das RID rechnet je Wagen oder Großcontainer, "
-          "das ADR je Beförderungseinheit.", "fr": "Les 1.1.3.6.3 et 1.1.3.6.4 du RID prescrivent les mêmes catégories de transport, les mêmes facteurs (50, 3 et 1) et la même valeur calculée de 1000 que l'ADR. La différence tient à l'unité : le RID compte par wagon ou grand conteneur, l'ADR par unité de transport."}
+          "denselben berechneten Wert von 1000 vor wie das ADR; das RID "
+          "rechnet je Wagen oder Großcontainer, das ADR je "
+          "Beförderungseinheit. Was das Ergebnis bedeutet, unterscheidet "
+          "sich: RID 1.1.3.6 begrenzt ausschließlich die Freistellung nach "
+          "1.1.3.1 (c) — Beförderungen von Unternehmen in Verbindung mit "
+          "ihrer Haupttätigkeit, höchstens 450 Liter je Verpackung, nie "
+          "Klasse 7. Eine allgemeine Kleinmengen-Freistellung wie ADR 1.1.3.6 "
+          "kennt das RID nicht: unter 1000 zu bleiben stellt eine "
+          "Eisenbahnsendung von nichts frei, es sei denn, die Beförderung "
+          "selbst ist dieser Nebenfall.",
+    "fr": "Les 1.1.3.6.3 et 1.1.3.6.4 du RID prescrivent les mêmes catégories "
+          "de transport, les mêmes facteurs (50, 3 et 1) et la même valeur "
+          "calculée de 1000 que l'ADR ; le RID compte par wagon ou grand "
+          "conteneur, l'ADR par unité de transport. Ce que le résultat "
+          "signifie diffère : le 1.1.3.6 du RID borne uniquement l'exemption "
+          "du 1.1.3.1 (c) — transports effectués par des entreprises en "
+          "marge de leur activité principale, au plus 450 litres par "
+          "emballage, jamais la classe 7. Le RID ne connaît pas d'exemption "
+          "générale de petites quantités comme l'ADR 1.1.3.6 : rester sous "
+          "1000 n'exempte un envoi ferroviaire de rien, sauf si le transport "
+          "est lui-même ce cas accessoire."}
 
 # ADN does not have a points system at all. Its 1.1.3.6.1 exempts a consignment
 # in packages when the gross mass of everything stays under 3000 kg and no class
@@ -2034,9 +2070,10 @@ def check_rid_placarding(
     Also derived: the orange band of 5.3.5, because the state of the gas is
     the first digit of the classification code (2 liquefied, 3 refrigerated
     liquefied, 4 dissolved), and the environmentally hazardous mark of 5.3.6.
-    What the RID exemption of 1.1.3.6 would relieve of chapter 5.3 has not
-    been read, so no exemption branch is offered — the full answer stands,
-    which is the safe direction.
+    There is no exemption branch, and since v1.124.0 that is a reading rather
+    than caution: RID 1.1.3.6 only bounds the ancillary-carriage exemption of
+    1.1.3.1 (c) — RID has no general small-load relief — so chapter 5.3 stands
+    for every ordinary rail consignment whatever its points total.
     """
     rules = get_compliance_rules()["rid_placarding"]
     lang = _lang(language)
@@ -2186,7 +2223,12 @@ def check_rid_placarding(
         and str(p.get("carriage_mode") or "").strip()
         in ("tank", "portable_tank") for p in goods)
     if class1 or has_class2_tank:
-        marked: dict[str, list[str]] = {}
+        # Whether a substance carries a bracketed model is read (v1.123.0);
+        # whether its case is met is decidable per line since v1.124.0 — the
+        # class 2 case by the declared mode of carriage, the class 1 case by
+        # the consignor's own full-load statement.
+        decided: dict[str, list[str]] = {}
+        conditional: dict[str, list[str]] = {}
         seed_read = True
         for p in goods:
             models = database.rid_shunting_models(
@@ -2194,8 +2236,17 @@ def check_rid_placarding(
             if models is None:
                 seed_read = False
                 break
-            if models:
-                marked[named[id(p)]] = models
+            if not models:
+                continue
+            label = named[id(p)]
+            cls = str(p.get("class") or "").strip()
+            in_tank = str(p.get("carriage_mode") or "").strip() \
+                in ("tank", "portable_tank")
+            if (cls == "2" and in_tank) or (
+                    cls.startswith("1") and p.get("full_load")):
+                decided[label] = models
+            else:
+                conditional[label] = models
         if not seed_read:
             shunt = rules["shunting_labels"]
             marks.append({
@@ -2204,24 +2255,38 @@ def check_rid_placarding(
                 "kind": "shunting_labels",
                 "required": None,
             })
-        elif marked:
-            shunt = rules["shunting_models_read"]
-            items = "; ".join(
-                f"{label} — {', '.join(models)}"
-                for label, models in sorted(marked.items()))
-            marks.append({
-                "provision": shunt["provision"],
-                "message": (shunt.get(lang) or shunt["en"]).format(items=items),
-                "kind": "shunting_labels",
-                "required": None,
-            })
         else:
-            marks.append({
-                "provision": "5.3.4",
-                "message": text("shunting_none_read"),
-                "kind": "shunting_labels",
-                "required": False,
-            })
+            if decided:
+                shunt = rules["shunting_required"]
+                items = "; ".join(
+                    f"{label} — {', '.join(models)}"
+                    for label, models in sorted(decided.items()))
+                marks.append({
+                    "provision": shunt["provision"],
+                    "message": (shunt.get(lang) or shunt["en"]).format(
+                        items=items),
+                    "kind": "shunting_labels",
+                    "required": True,
+                })
+            if conditional:
+                shunt = rules["shunting_models_read"]
+                items = "; ".join(
+                    f"{label} — {', '.join(models)}"
+                    for label, models in sorted(conditional.items()))
+                marks.append({
+                    "provision": shunt["provision"],
+                    "message": (shunt.get(lang) or shunt["en"]).format(
+                        items=items),
+                    "kind": "shunting_labels",
+                    "required": None,
+                })
+            if not decided and not conditional:
+                marks.append({
+                    "provision": "5.3.4",
+                    "message": text("shunting_none_read"),
+                    "kind": "shunting_labels",
+                    "required": False,
+                })
 
     band = sorted({
         named[id(p)] for p in goods

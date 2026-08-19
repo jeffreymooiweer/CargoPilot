@@ -41,7 +41,7 @@ MANIFEST = _SEED_DIR / "sources.json"
 #: the answer for a language the store cannot serve is "not here", never a
 #: neighbouring language's model.
 LANGUAGES = ("nl", "en", "de", "fr")
-REGIMES = ("adr", "adn")
+REGIMES = ("adr", "rid", "adn")
 
 
 @lru_cache(maxsize=1)

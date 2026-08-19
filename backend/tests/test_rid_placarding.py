@@ -78,12 +78,13 @@ def test_a_tank_without_a_hazard_number_is_said_not_guessed():
 
 def test_a_substance_with_the_bracketed_model_is_named():
     """Chlorine's column (5) brackets (+13) — read in the English and German
-    editions, which agree — so the finding names the substance and its model
-    instead of hedging at the whole class."""
+    editions, which agree — and a declared tank-wagon satisfies the class 2
+    case on its own, so the finding is a requirement naming the substance and
+    its model, not a hedge at the whole class."""
     tank = dict(CHLORINE, carriage_mode="tank")
     result = check_rid_placarding([line("L1", **tank)])
     shunt = next(m for m in result["marks"] if m["kind"] == "shunting_labels")
-    assert shunt["required"] is None
+    assert shunt["required"] is True
     assert "1017" in shunt["message"] and "13" in shunt["message"]
 
 
@@ -151,3 +152,25 @@ def test_every_language_speaks():
             [line("L1", **dict(CHLORINE, carriage_mode="tank"))], language)
         assert all(p["message"] for p in result["placards"])
         assert all(m["message"] for m in result["marks"])
+
+
+def test_the_full_load_statement_decides_the_class_1_case():
+    """5.3.4's class 1 case is 'both sides of wagons comprising a full load'.
+    Whether the wagon is one is the consignor's own statement (v1.124.0), and
+    with it the condition becomes a requirement."""
+    powder = {"un_number": "0027", "proper_shipping_name": "BLACK POWDER",
+              "class": "1", "classification_code": "1.1D", "labels": "1",
+              "full_load": "yes"}
+    result = check_rid_placarding([line("L1", **powder)])
+    shunt = next(m for m in result["marks"] if m["kind"] == "shunting_labels")
+    assert shunt["required"] is True
+    assert "0027" in shunt["message"]
+
+
+def test_a_class_2_tank_wagon_needs_no_statement():
+    """The class 2 case is decided by the declared mode of carriage alone:
+    a tank-wagon is a tank-wagon."""
+    tank = dict(CHLORINE, carriage_mode="tank")
+    result = check_rid_placarding([line("L1", **tank)])
+    shunt = next(m for m in result["marks"] if m["kind"] == "shunting_labels")
+    assert shunt["required"] is True

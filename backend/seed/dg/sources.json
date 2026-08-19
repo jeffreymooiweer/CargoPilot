@@ -634,6 +634,122 @@
       }
     },
     {
+      "id": "rid_instructions_nl",
+      "title": "Instructions in writing according to the RID, Dutch",
+      "publisher": "OTIF",
+      "edition": "RID 2025, in force 1 January 2025",
+      "language": "nl",
+      "profiles": [
+        "RID"
+      ],
+      "role": "The four-page model of RID 5.4.3.4 - INSTRUCTIONS IN WRITING ACCORDING TO RID, addressed to the train driver. RID 5.4.3.1 requires it in the driver's cab and 5.4.3.2 makes providing it the carrier's duty, in a language the driver can read; the application serves the model so the consignor can hand it over, the duty stays the carrier's. Read on printed page 855 of the English edition.",
+      "filename": "rid-2025-instructions-nl.pdf",
+      "urls": [],
+      "obtained": "cut from the edition named in cut_from, or supplied by the operator",
+      "sha256": null,
+      "model_of": {
+        "regime": "rid",
+        "language": "nl",
+        "provision": "5.4.3"
+      },
+      "note": "Not a file of its own: cut from rid_nl_2025, pages 981-984, measured with scripts/find_instructions_pages.py (fetch-regulations run 32275442072).",
+      "cut_from": {
+        "document": "rid_nl_2025",
+        "pages": [
+          981,
+          984
+        ],
+        "measured_with": "scripts/find_instructions_pages.py"
+      }
+    },
+    {
+      "id": "rid_instructions_en",
+      "title": "Instructions in writing according to the RID, English",
+      "publisher": "OTIF",
+      "edition": "RID 2025, in force 1 January 2025",
+      "language": "en",
+      "profiles": [
+        "RID"
+      ],
+      "role": "The four-page model of RID 5.4.3.4 - INSTRUCTIONS IN WRITING ACCORDING TO RID, addressed to the train driver. RID 5.4.3.1 requires it in the driver's cab and 5.4.3.2 makes providing it the carrier's duty, in a language the driver can read; the application serves the model so the consignor can hand it over, the duty stays the carrier's. Read on printed page 855 of the English edition.",
+      "filename": "rid-2025-instructions-en.pdf",
+      "urls": [],
+      "obtained": "cut from the edition named in cut_from, or supplied by the operator",
+      "sha256": null,
+      "model_of": {
+        "regime": "rid",
+        "language": "en",
+        "provision": "5.4.3"
+      },
+      "note": "Not a file of its own: cut from rid, pages 856-859, measured with scripts/find_instructions_pages.py (fetch-regulations run 32275442072).",
+      "cut_from": {
+        "document": "rid",
+        "pages": [
+          856,
+          859
+        ],
+        "measured_with": "scripts/find_instructions_pages.py"
+      }
+    },
+    {
+      "id": "rid_instructions_de",
+      "title": "Instructions in writing according to the RID, German",
+      "publisher": "OTIF",
+      "edition": "RID 2025, in force 1 January 2025",
+      "language": "de",
+      "profiles": [
+        "RID"
+      ],
+      "role": "The four-page model of RID 5.4.3.4 - INSTRUCTIONS IN WRITING ACCORDING TO RID, addressed to the train driver. RID 5.4.3.1 requires it in the driver's cab and 5.4.3.2 makes providing it the carrier's duty, in a language the driver can read; the application serves the model so the consignor can hand it over, the duty stays the carrier's. Read on printed page 855 of the English edition.",
+      "filename": "rid-2025-instructions-de.pdf",
+      "urls": [],
+      "obtained": "cut from the edition named in cut_from, or supplied by the operator",
+      "sha256": null,
+      "model_of": {
+        "regime": "rid",
+        "language": "de",
+        "provision": "5.4.3"
+      },
+      "note": "Not a file of its own: cut from rid_de, pages 916-919, measured with scripts/find_instructions_pages.py (fetch-regulations run 32275442072).",
+      "cut_from": {
+        "document": "rid_de",
+        "pages": [
+          916,
+          919
+        ],
+        "measured_with": "scripts/find_instructions_pages.py"
+      }
+    },
+    {
+      "id": "rid_instructions_fr",
+      "title": "Instructions in writing according to the RID, French",
+      "publisher": "OTIF",
+      "edition": "RID 2025, in force 1 January 2025",
+      "language": "fr",
+      "profiles": [
+        "RID"
+      ],
+      "role": "The four-page model of RID 5.4.3.4 - INSTRUCTIONS IN WRITING ACCORDING TO RID, addressed to the train driver. RID 5.4.3.1 requires it in the driver's cab and 5.4.3.2 makes providing it the carrier's duty, in a language the driver can read; the application serves the model so the consignor can hand it over, the duty stays the carrier's. Read on printed page 855 of the English edition.",
+      "filename": "rid-2025-instructions-fr.pdf",
+      "urls": [],
+      "obtained": "cut from the edition named in cut_from, or supplied by the operator",
+      "sha256": null,
+      "model_of": {
+        "regime": "rid",
+        "language": "fr",
+        "provision": "5.4.3"
+      },
+      "note": "Not a file of its own: cut from rid_fr, pages 910-913, measured with scripts/find_instructions_pages.py (fetch-regulations run 32275442072).",
+      "cut_from": {
+        "document": "rid_fr",
+        "pages": [
+          910,
+          913
+        ],
+        "measured_with": "scripts/find_instructions_pages.py"
+      }
+    },
+    {
       "id": "adn_checklist_en",
       "title": "ADN checklist for loading and unloading (8.6.3), English",
       "publisher": "UNECE",

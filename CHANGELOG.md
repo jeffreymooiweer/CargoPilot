@@ -2,6 +2,43 @@
 
 All notable changes are documented here, following [Semantic Versioning](https://semver.org/).
 
+## [1.124.0] — 2026-08-19
+
+### Added
+
+- **The full-load statement, and with it both shunting cases decided.** The
+  shunting labels of RID 5.3.4 attach in exactly two cases; since v1.123.0
+  the per-substance half is read, and now the per-wagon half is a field.
+  Whether the packages make up a **full load of one wagon or large
+  container** is a wagon-level fact no table supplies, so it is the
+  consignor's own statement — like the containers-only statement of ADN
+  7.1.5.0.2 before it, never inferred from quantities. With it: chlorine in
+  a declared tank-wagon gets *required* shunting labels by name (the class 2
+  case needs no statement — a tank-wagon is a tank-wagon), black powder with
+  the full-load statement gets them too, and without the statement the
+  class 1 case stays the condition it is.
+- **The RID's own instructions in writing, served from the store.** RID
+  5.4.3.4 prints a four-page model of its own — INSTRUCTIONS IN WRITING
+  ACCORDING TO RID, addressed to the train driver — and 5.4.3.1 requires it
+  in the driver's cab. The model is registered in all four languages, page
+  ranges measured per edition on a runner (English 856–859, German 916–919,
+  French 910–913, Dutch 981–984), and the export step offers it for a rail
+  consignment the way it offers the ADR's. 5.4.3.2 keeps providing it the
+  carrier's duty, and the register says so.
+
+### Changed
+
+- **What the RID points total governs, read and said.** RID 1.1.3.6.3 opens
+  "Where, in accordance with 1.1.3.1 (c), dangerous goods … are carried" —
+  and 1.1.3.1 (c), read on page 27 of the English edition and confirmed in
+  the German, is the exemption for carriage by enterprises ancillary to
+  their main activity, at most 450 litres per packaging, never class 7. RID
+  has no general small-load relief the way ADR 1.1.3.6 grants one, so
+  staying under 1000 relieves an ordinary rail consignment of nothing. The
+  points card's basis note now says exactly that, and the absence of an
+  exemption branch in the rail placarding check is a reading rather than
+  caution.
+
 ## [1.123.0] — 2026-08-19
 
 ### Added

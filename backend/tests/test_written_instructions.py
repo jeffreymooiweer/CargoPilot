@@ -118,7 +118,13 @@ def test_een_ontbrekend_model_weigert_met_de_reden():
 
 
 def test_een_onbekende_regeling_bestaat_niet():
-    assert _client().get("/api/documents/instructions/rid/nl").status_code == 404
+    """The RID joined the known regimes in v1.124.0, so the unknown example
+    is the sea code — its instructions are the IMDG's own affair. A known
+    regime whose edition this store lacks answers 409 with the status, not
+    404: registered-but-missing and unknown are different answers."""
+    assert _client().get("/api/documents/instructions/imdg/nl").status_code == 404
+    response = _client().get("/api/documents/instructions/rid/nl")
+    assert response.status_code in (200, 409)
 
 
 def test_het_model_komt_als_pdf_binnen():

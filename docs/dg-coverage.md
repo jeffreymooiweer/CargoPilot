@@ -371,6 +371,16 @@ which CargoPilot does not hold" was true but unhelpfully vague — it invited th
 distrust a number that is in fact the number RID prescribes. The panel now cites
 1.1.3.6.3/1.1.3.6.4 and names the difference in unit instead of hedging.
 
+**And v1.124.0 read what the number *governs*, which differs more than the unit does.**
+RID 1.1.3.6.3 opens "Where, in accordance with 1.1.3.1 (c), dangerous goods … are
+carried" — and 1.1.3.1 (c), read on page 27 of the English edition and confirmed in the
+German, is the exemption for **carriage by enterprises ancillary to their main activity**,
+at most 450 litres per packaging and never class 7. RID has no general small-load relief
+the way ADR 1.1.3.6 grants one: staying under 1000 relieves an ordinary rail consignment
+of nothing. The points card says so now, and the absence of an exemption branch in the
+rail placarding check is a reading rather than caution — chapter 5.3 stands whatever the
+points total.
+
 **And reading it found a bug that affects road as much as rail.** Note (a) to the table in
 1.1.3.6.3 reads, in both ADR and RID: *"For UN Nos. 0081, 0082, 0084, 0241, 0331, 0332,
 0482, 1005 and 1017, the total maximum quantity per transport unit shall be 50 kg."* RID
@@ -461,7 +471,14 @@ all; the orange band of 5.3.5 follows the state of the gas out of the classifica
 a named condition (see above). The per-substance bracketed models of
 RID's own column (5) were extracted in v1.123.0 from two of the four editions the store
 holds — the OTIF English and the German, which agree on all 351 rows — so nothing
-genuinely rail-specific is left unread; what stays with the carrier stays named.
+genuinely rail-specific is left unread; what stays with the carrier stays named. Since
+v1.124.0 both 5.3.4 cases are decidable per consignment: the class 2 case by the declared
+mode of carriage, the class 1 case by the consignor's own **full-load statement** — a
+wagon-level fact no table supplies, so it is a field, like the containers-only statement
+of ADN 7.1.5.0.2 before it. And the RID's own **instructions in writing** (5.4.3.4, the
+four-page model addressed to the train driver) are served from the store in all four
+languages, page ranges measured per edition; 5.4.3.2 keeps providing them the carrier's
+duty, and the application says so.
 
 **The mode came off the lock in v1.122.0**, over the same bar inland waterway cleared in
 v1.63.0: the checks a rail consignment gets are cited to RID rather than borrowed, the
@@ -866,7 +883,7 @@ reading and not as a coincidence.
 
 ---
 
-*This assessment is maintained up to CargoPilot v1.123.0; the sections above name the release
+*This assessment is maintained up to CargoPilot v1.124.0; the sections above name the release
 each finding shipped in. v1.42.0 to v1.48.0 touched the goods
 catalogue, the interface language, the settings, the documentation and the error messages,
 not a single regulatory check; v1.49.0 and v1.50.0 changed the ADR side, from the Dutch

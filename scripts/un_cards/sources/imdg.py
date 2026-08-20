@@ -21,6 +21,46 @@ def _table() -> dict:
     return json.loads((SEED / "imdg_dgl.json").read_text(encoding="utf-8"))
 
 
+@lru_cache(maxsize=1)
+def _code_texts() -> dict[str, str]:
+    """The verbatim SW/H/SG descriptions of IMDG 7.1.5, 7.1.6 and 7.2.8.
+
+    Measured into ``imdg_codes.json`` by ``scripts/extract_imdg_codes.py``;
+    a code the seed does not carry falls back to its chapter reference on
+    the card rather than being paraphrased here.
+    """
+    path = SEED / "imdg_codes.json"
+    if not path.exists():
+        return {}
+    data = json.loads(path.read_text(encoding="utf-8"))
+    texts: dict[str, str] = {}
+    for family in ("stowage_codes", "handling_codes", "segregation_codes"):
+        texts.update((data.get(family) or {}).get("codes") or {})
+    return texts
+
+
+def _cell_with_texts(value: str, reference: str) -> str:
+    """One paragraph per token of a 16a/16b cell: the verbatim description
+    where the seed holds the code, the chapter reference where it does not.
+    The stowage category itself ("Category E") has no code text and keeps
+    its reference to 7.1.3.2, where the categories are defined."""
+    tokens = [t for t in (value or "").replace(",", " ").split() if t]
+    parts: list[str] = []
+    skip = False
+    for index, token in enumerate(tokens):
+        if skip:
+            skip = False
+            continue
+        if token.lower() == "category" and index + 1 < len(tokens):
+            parts.append(f"Category {tokens[index + 1]} — see IMDG 7.1.3.2")
+            skip = True
+            continue
+        text = _code_texts().get(token)
+        parts.append(f"{token} — {text}" if text
+                     else f"{token} — see IMDG {reference}")
+    return "\n".join(parts)
+
+
 def _clean(value: str | None) -> str:
     """The DGL prints an en dash for an empty cell; keep one dash style."""
     value = (value or "").strip()
@@ -88,10 +128,12 @@ def cards(un: str) -> list[CardPage]:
             provision_rows.append(("Special provisions", f"{special} — see IMDG 3.3"))
         stowage = _clean(row.get("stowage_and_handling"))
         if stowage:
-            provision_rows.append(("Stowage and handling", f"{stowage} — see IMDG 7.1"))
+            provision_rows.append(
+                ("Stowage and handling", _cell_with_texts(stowage, "7.1.5/7.1.6")))
         segregation = _clean(row.get("segregation"))
         if segregation:
-            provision_rows.append(("Segregation", f"{segregation} — see IMDG 7.2"))
+            provision_rows.append(
+                ("Segregation", _cell_with_texts(segregation, "7.2.8")))
         if not provision_rows:
             provision_rows.append(
                 ("Special provisions",

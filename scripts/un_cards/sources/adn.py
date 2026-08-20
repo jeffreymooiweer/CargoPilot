@@ -12,15 +12,46 @@ proper shipping names.
 from __future__ import annotations
 
 import json
+import re
 from functools import lru_cache
 
 from .base import SEED, CardPage, SourceUnavailable, dash
-from .adr import _names
+from .adr import _names, _reflow
 
 
 @lru_cache(maxsize=1)
 def _table() -> dict:
     return json.loads((SEED / "adn_table_a.json").read_text(encoding="utf-8"))
+
+
+@lru_cache(maxsize=1)
+def _provision_texts() -> dict:
+    """The verbatim 7.1.6 requirement texts (VE, LO, HA, CO, ST, RA, IN).
+
+    Absent until the "Extract UN card assets" workflow has committed the
+    seed; the card then falls back to code-plus-reference rows rather than
+    inventing a summary.
+    """
+    path = SEED / "adn_provision_texts.json"
+    if not path.exists():
+        return {}
+    return json.loads(path.read_text(encoding="utf-8")).get("sections", {})
+
+
+def _codes_with_texts(value: str, reference: str) -> str:
+    """One paragraph per assigned code: its verbatim 7.1.6 text where the
+    seed has it, the article reference where it does not. Footnote marks
+    ("VE03*") stay on the printed code; the text is looked up without them."""
+    parts: list[str] = []
+    for code in re.split(r"[,;\s]+", value or ""):
+        code = code.strip()
+        if not code:
+            continue
+        norm = code.rstrip("*").upper()
+        text = (_provision_texts().get(norm[:2]) or {}).get(norm)
+        parts.append(f"{code} — {_reflow(text)}" if text
+                     else f"{code} — see ADN {reference}")
+    return "\n".join(parts)
 
 
 #: See ``adr.unique_rows``: the printed table repeats rows per alternative
@@ -75,10 +106,14 @@ def cards(un: str) -> list[CardPage]:
         if (row.get("special_provisions") or "").strip():
             provision_rows.append(
                 ("Special provisions", f"{row['special_provisions']} — see ADN 3.3"))
+        if (row.get("ventilation") or "").strip():
+            provision_rows.append(
+                ("Ventilation",
+                 _codes_with_texts(row["ventilation"], "7.1.6.12")))
         if (row.get("loading_measures") or "").strip():
             provision_rows.append(
                 ("Loading, unloading and carriage",
-                 f"{row['loading_measures']} — see ADN 7.1.6"))
+                 _codes_with_texts(row["loading_measures"], "7.1.6")))
         if (row.get("remarks") or "").strip():
             provision_rows.append(("Remarks", row["remarks"]))
         if not provision_rows:

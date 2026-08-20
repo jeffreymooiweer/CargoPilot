@@ -49,12 +49,13 @@ jobs:
           restore-keys: |
             regulations-
 
-      - name: Fetch and verify the UNECE English edition
+      - name: Fetch and verify the UNECE English editions
         # regulations_store.py owns the download ladder (browser headers,
         # web-archive fallback) and refuses a file that contradicts the
-        # SHA-256 pinned in the register.
+        # SHA-256 pinned in the register. The ADN volume feeds the 7.1.6
+        # provision texts.
         run: |
-          python scripts/regulations_store.py fetch adr1 adr2
+          python scripts/regulations_store.py fetch adr1 adr2 adn
           python scripts/regulations_store.py verify
 
       - uses: actions/cache/save@v4
@@ -73,6 +74,15 @@ jobs:
             --source "ADR 2025, UNECE English edition (ECE/TRANS/352 Vol. II), sections 7.2.4, 7.5.11 and 8.5" \
             --lenient
 
+      - name: Extract ADN 7.1.6 provision texts
+        if: always()
+        run: |
+          python scripts/extract_adn_provision_texts.py \
+            --pdf /tmp/cargopilot-regulations/adn.pdf \
+            --out backend/seed/dg/adn_provision_texts.json \
+            --source "ADN 2025, UNECE English edition, section 7.1.6" \
+            --lenient
+
       # Chapter 5.2 lives in Volume II (parts 4-9); Volume I carries parts
       # 1-3. The first run searched the wrong book and found nothing.
       - name: Extract hazard label models (Volume II, 5.2.2.2.2)
@@ -83,12 +93,24 @@ jobs:
             --out scripts/un_cards/assets/labels \
             --allow-missing
 
+      # Measurement pass for the environmentally hazardous mark (5.2.1.8.3):
+      # committed once so its crop box can be measured and pinned, then
+      # retired again like the label-table renders were.
+      - name: Render the 5.2.1.8.3 pages for the mark measurement
+        if: always()
+        run: |
+          python scripts/extract_adr_label_models.py \
+            --vol1 /tmp/cargopilot-regulations/adr2.pdf \
+            --out scripts/un_cards/assets/debug_mark \
+            --debug-find "5.2.1.8.3" || true
+
       - name: Commit extracted assets
         if: ${{ inputs.commit }}
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add scripts/un_cards/assets backend/seed/dg/adr_provision_texts.json
+          git add scripts/un_cards/assets backend/seed/dg/adr_provision_texts.json \
+                  backend/seed/dg/adn_provision_texts.json
           if git diff --cached --quiet; then
             echo "nothing changed"
           else

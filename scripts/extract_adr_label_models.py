@@ -95,7 +95,12 @@ def extract(vol: Path, out_dir: Path) -> dict:
         page = doc[entry["page"] - 1]
         clip = fitz.Rect(entry["rect"])
         pix = trim_white(page.get_pixmap(clip=clip, dpi=RENDER_DPI))
-        if spec.get("rotate_clockwise_degrees") == 90:
+        # The label table pages are printed rotated; a crop from an upright
+        # page (the environmentally hazardous mark of 5.2.1.8.3) overrides
+        # the document-level rotation with its own.
+        rotation = entry.get("rotate_clockwise_degrees",
+                             spec.get("rotate_clockwise_degrees"))
+        if rotation == 90:
             pix = rotate_clockwise(pix)
         if pix.width < 100 or pix.height < 100:
             report["failed"].append(
@@ -108,6 +113,31 @@ def extract(vol: Path, out_dir: Path) -> dict:
     return report
 
 
+def debug_render(vol: Path, needle: str, out_dir: Path) -> int:
+    """Render every page that mentions ``needle`` at 70 dpi.
+
+    The measurement pass for a new crop box works off these renders: they
+    are committed once, the box is measured on them by hand and pinned in
+    label_crops.json, and the renders are retired again. Nothing about a
+    crop is ever inferred from text geometry — that road failed for the
+    label table and is not walked twice.
+    """
+    doc = fitz.open(str(vol))
+    out_dir.mkdir(parents=True, exist_ok=True)
+    hits = 0
+    for number in range(doc.page_count):
+        page = doc[number]
+        if needle not in " ".join(page.get_text().split()):
+            continue
+        target = out_dir / f"page-{number + 1}.png"
+        page.get_pixmap(dpi=70).save(str(target))
+        print(f"{needle} on printed page {number + 1} -> {target}")
+        hits += 1
+    if hits == 0:
+        print(f"'{needle}' appears on no page of {vol}", file=sys.stderr)
+    return 0 if hits else 1
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--vol1", required=True, type=Path,
@@ -115,7 +145,12 @@ def main() -> int:
     parser.add_argument("--out", required=True, type=Path)
     parser.add_argument("--allow-missing", action="store_true",
                         help="report failures without failing the run")
+    parser.add_argument("--debug-find", metavar="TEXT",
+                        help="render the pages mentioning TEXT at 70 dpi into "
+                             "--out for a measurement pass, instead of cutting")
     args = parser.parse_args()
+    if args.debug_find:
+        return debug_render(args.vol1, args.debug_find, args.out)
     report = extract(args.vol1, args.out)
     print(json.dumps(report, indent=2))
     if report["failed"] and not args.allow_missing:

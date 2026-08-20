@@ -116,18 +116,21 @@ def test_start_update_pulls_and_hands_over(data_dir, tmp_path, monkeypatch):
         if path == "/_ping":
             return httpx.Response(200, text="OK")
         if path == "/images/create":
+            # The published tag carries no "v": pulling :v1.133.0 is a 404.
+            assert request.url.params["fromImage"] == updater.IMAGE_REPOSITORY
+            assert request.url.params["tag"] == "1.133.0"
             return httpx.Response(200, text=json.dumps({"status": "ok"}) + "\n")
         if path.startswith("/images/") and path.endswith("/json"):
             return httpx.Response(200, json={"Id": "sha256:new"})
         if path == f"/containers/{own_id}/json":
             return httpx.Response(200, json={
                 "Id": own_id,
-                "Config": {"Image": updater.IMAGE_REPOSITORY + ":v1.132.0"},
+                "Config": {"Image": updater.IMAGE_REPOSITORY + ":1.132.0"},
                 "HostConfig": {"Binds": ["/srv/data:/data"]},
             })
         if path == "/containers/create":
             body = json.loads(request.read())
-            assert body["Image"] == updater.IMAGE_REPOSITORY + ":v1.133.0"
+            assert body["Image"] == updater.IMAGE_REPOSITORY + ":1.133.0"
             assert body["Entrypoint"] == ["python", "-m", "app.update_helper"]
             assert body["Cmd"] == [own_id, body["Image"]]
             assert "/srv/data:/data" in body["HostConfig"]["Binds"]

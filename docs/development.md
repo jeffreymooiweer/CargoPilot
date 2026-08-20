@@ -216,7 +216,10 @@ python scripts/bump_version.py 1.37.0
    verifies the version files, then creates the tag and the GitHub Release from the
    changelog entry. It does not commit anything.
 4. **CI** already built and pushed `jeffersonmouze/cargopilot:latest` and `:<short-sha>` on
-   the merge in step 2. Step 3 adds `:<version>` to that same image; nothing is rebuilt.
+   the merge in step 2. Step 3 adds `:<version>` and `:v<version>` to that same image;
+   nothing is rebuilt. Both spellings are published because the in-app updater asked for
+   the `v` form up to v1.136.0 and for the bare form from v1.137.0 on — an installation of
+   either generation finds the image it looks for.
 
 Required secrets: `DOCKER_USERNAME`, `DOCKER_TOKEN`.
 

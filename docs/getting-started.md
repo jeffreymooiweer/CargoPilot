@@ -48,7 +48,7 @@ Every other setting has a sensible default. If you want to change one, see
    manually.
 2. Map the volume `/mnt/user/appdata/cargopilot` → `/data`.
 3. Use the image `jeffersonmouze/cargopilot:latest`, or pin a specific version such as
-   `jeffersonmouze/cargopilot:v1.46.0`.
+   `jeffersonmouze/cargopilot:1.46.0` (version tags carry no `v`).
 4. Fill in the `ADMIN_*` variables. `APP_SECRET_KEY` may stay empty — it is generated on
    first start and kept in `/data/secret_key`.
 5. Pick a WebUI port, for example `http://<server-ip>:9935`.

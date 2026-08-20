@@ -2,6 +2,27 @@
 
 All notable changes are documented here, following [Semantic Versioning](https://semver.org/).
 
+## [1.137.0] — 2026-08-20
+
+The update button reached the registry and asked for an image that was never
+published under that name. One character — a `v` — stood between a working
+in-app update and an honest 404.
+
+### Fixed
+
+- **The updater pulls the tag that actually exists.** Release images are
+  published as `cargopilot:1.136.0`; the updater asked for
+  `cargopilot:v1.136.0` and got HTTP 404 from Docker Hub, reported faithfully
+  in the panel. It now asks for the bare version, and a test pins the exact
+  tag the pull requests so the prefix cannot creep back.
+- **Both tag spellings are published.** Every release image now carries
+  `:<version>` and `:v<version>`. Installations running v1.135.0 or v1.136.0
+  ask for the `v` form and would otherwise be unable to update themselves out
+  of the broken versions — they can now update in-app to this release and
+  onwards.
+- **The documentation names the real tag.** The Unraid pinning example used a
+  `v`-prefixed tag that was never published.
+
 ## [1.136.0] — 2026-08-20
 
 The users page grows up. It was a day-one leftover — a create form and a

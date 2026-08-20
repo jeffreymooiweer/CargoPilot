@@ -9,7 +9,7 @@
   "A modality without a seed is listed with the reason; its cards fail",
   "honestly instead of being invented."
  ],
- "generator_version": "1.0.0",
+ "generator_version": "1.1.0",
  "modalities": {
   "ADR": {
    "seed": "backend/seed/dg/adr_table_a.json",
@@ -21,8 +21,7 @@
    ]
   },
   "RID": {
-   "seed": null,
-   "reason": "RID table A not column-read yet; only column (5) is extracted (v1.123.0)."
+   "seed": "backend/seed/dg/rid_table_a.json"
   },
   "ADN": {
    "seed": "backend/seed/dg/adn_table_a.json"

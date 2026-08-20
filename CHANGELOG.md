@@ -2,6 +2,30 @@
 
 All notable changes are documented here, following [Semantic Versioning](https://semver.org/).
 
+## [1.140.0] — 2026-08-20
+
+Enter "petrol", confirm UN 1203, and the kind of package could only be
+"6PC glass receptacle in wooden box". One nonsensical choice, where the
+field is supposed to search the whole catalogue.
+
+### Fixed
+
+- **A piece count is no longer mistaken for a packaging.** A cargo line
+  without a stated packaging carries `pcs`, the bare piece count the parser
+  falls back to. That unit was taken over as the kind of package, and
+  because a value was then present the searchable packaging field turned
+  into a closed dropdown — filled by a catalogue search that matched "pcs"
+  through "pc" to the code 6PC. Piece counts stay out of the package field,
+  which is once again a free search over the catalogue.
+- **A mass or volume unit never becomes the kind of package either.** "1000
+  kg petrol" counts mass, and "kg" was ending up on the transport document
+  as the kind of package. Only a unit that names a receptacle is taken
+  over — as are words the table does not know, which are the consignor's
+  own ("fust", "octabin").
+
+Counted packagings are unaffected: "1000 jerrycans" still offers the six
+jerrycan kinds of 5.4.1.1.1 (e), from 3A1 steel to 3H2 plastic.
+
 ## [1.139.0] — 2026-08-20
 
 With the image finally pullable, the update got one step further and

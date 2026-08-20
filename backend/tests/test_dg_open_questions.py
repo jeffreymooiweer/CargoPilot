@@ -96,3 +96,49 @@ def test_a_complete_packages_product_has_nothing_left_to_ask():
         "chosen_name": "BENZINE", "chosen_name_en": "PETROL",
     })
     assert q == {}
+
+
+def test_a_bare_piece_count_is_not_a_packaging():
+    """A line without a stated packaging carries the parser's fallback unit
+    "pcs". Taking that over as the kind of package made the catalogue match
+    it through "pc" to the code 6PC, and the searchable packaging field
+    became a dropdown offering "6PC glass receptacle in wooden box" and
+    nothing else. A piece count says nothing about the packaging, so it is
+    not taken over and the field stays open to search."""
+    q = questions(
+        {"un_number": "1203"},
+        lines=[{"line_id": 1, "quantity": 1, "unit": "pcs"}],
+    )
+    assert "type_of_package" not in q
+
+
+def test_a_mass_or_volume_unit_never_becomes_the_kind_of_package():
+    """"1000 kg petrol" counts mass. It used to end up on the document as
+    the kind of package."""
+    from app.services.dg.autofill import derive_from_line
+
+    for unit in ("kg", "ton", "l", "m3", "m", "pcs"):
+        patch = derive_from_line({}, {"line_id": 1, "quantity": 1000, "unit": unit})
+        assert "type_of_package" not in patch, unit
+
+
+def test_a_counted_packaging_still_comes_over_from_the_line():
+    """The other half of the rule: units that do name a receptacle — and a
+    word the table does not know, which is the consignor's own — are taken
+    over as before."""
+    from app.services.dg.autofill import derive_from_line
+
+    for unit in ("jerrycan", "drum", "ibc", "pallet", "bag", "fust"):
+        patch = derive_from_line({}, {"line_id": 1, "quantity": 10, "unit": unit})
+        assert patch["type_of_package"] == unit
+
+
+def test_the_jerrycan_choice_survives_the_rule():
+    """The 5.4.1.1.1 (e) question is exactly what must keep working."""
+    q = questions(
+        {"un_number": "1203"},
+        lines=[{"line_id": 1, "quantity": 1000, "unit": "jerrycan"}],
+    )
+    assert q["type_of_package"]["reason"] == "packaging_spec"
+    assert [o.split()[0] for o in q["type_of_package"]["options"]] == [
+        "3A1", "3A2", "3B1", "3B2", "3H1", "3H2"]

@@ -199,8 +199,7 @@ jobs:
           # pulled or pushed — so both spellings are published.
           for attempt in $(seq 1 60); do
             if docker buildx imagetools inspect "$IMAGE:$SHORT" >/dev/null 2>&1; then
-              docker buildx imagetools create \
-                -t "$IMAGE:$VERSION" -t "$IMAGE:v$VERSION" "$IMAGE:$SHORT"
+              docker buildx imagetools create -t "$IMAGE:$VERSION" -t "$IMAGE:v$VERSION" "$IMAGE:$SHORT"
               echo "$IMAGE:$VERSION and $IMAGE:v$VERSION now point at the same manifest as $IMAGE:$SHORT."
               docker buildx imagetools inspect "$IMAGE:$VERSION"
               exit 0

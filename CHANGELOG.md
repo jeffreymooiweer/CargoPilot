@@ -2,6 +2,28 @@
 
 All notable changes are documented here, following [Semantic Versioning](https://semver.org/).
 
+## [1.135.0] — 2026-08-20
+
+The first real-world installation to enable in-app updating did everything
+right — socket mounted, switch on — and saw no button and no reason. Both
+halves of that are fixed.
+
+### Fixed
+
+- **The Docker socket is now usable by the application.** CargoPilot runs as
+  uid 1000, while the socket the operator mounts belongs to root (Unraid) or
+  the docker group (most distributions) — every call was denied and the
+  capability silently reported unavailable. The start script now joins the
+  app user to the socket's own group id before dropping privileges: exactly
+  the access the operator chose to grant this container, and nothing changes
+  on the host. No re-mounting needed — pull this version once by hand and
+  the button appears.
+- **The Updating section names why the button is missing.** A permission
+  problem gets its own diagnosis (it used to masquerade as "container not
+  found"), and the reasons that existed but were never shown — own container
+  not found, socket unusable, a foreign image — are now printed right in the
+  panel whenever the switch is on and a socket is mounted. Four languages.
+
 ## [1.134.0] — 2026-08-20
 
 The settings screen, tidied. The administrator area had grown into one long

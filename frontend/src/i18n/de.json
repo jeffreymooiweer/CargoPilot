@@ -286,7 +286,11 @@
     "updateSocketWarning": "Achtung: Wer den Docker-Socket einbindet, gibt diesem Container faktisch Administratorrechte über den ganzen Server.",
     "updateReasonNoSocket": "Der Schalter ist an, aber es ist kein Docker-Socket in den Container gemountet — fügen Sie die Volume-Zeile oben hinzu und starten Sie den Container neu.",
     "updateReasonSwitchOff": "Ein Docker-Socket wurde gefunden, aber UPDATE_APPLY_ENABLED ist nicht gesetzt — fügen Sie die Umgebungsvariable hinzu und starten Sie den Container neu.",
-    "tabMaintenance": "Wartung"
+    "tabMaintenance": "Wartung",
+    "updateReasonPermission": "Der Socket ist eingebunden, aber die App darf ihn nicht öffnen. Seit v1.135.0 behoben — den Container einmal manuell aktualisieren und neu starten.",
+    "updateReasonContainerNotFound": "Der Socket funktioniert, aber die App findet ihren eigenen Container beim Docker-Daemon nicht.",
+    "updateReasonForeignImage": "Dieser Container läuft nicht mit dem offiziellen CargoPilot-Image; das Aktualisieren aus der App bleibt aus.",
+    "updateReasonSocketUnusable": "Der Docker-Socket ist eingebunden, antwortet aber nicht brauchbar; Einbindung prüfen und den Container neu starten."
   },
   "modality": {
     "title": "Wählen Sie Ihren Verkehrsträger",

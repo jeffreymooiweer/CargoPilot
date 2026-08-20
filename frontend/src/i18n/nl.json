@@ -286,7 +286,11 @@
     "updateSocketWarning": "Let op: wie de Docker-socket mount, geeft deze container feitelijk beheerdersrechten op de hele server.",
     "updateReasonNoSocket": "De schakelaar staat aan, maar er is geen Docker-socket in de container gemount — voeg de volume-regel hierboven toe en herstart de container.",
     "updateReasonSwitchOff": "Er is wel een Docker-socket gevonden, maar UPDATE_APPLY_ENABLED staat niet aan — voeg de omgevingsvariabele toe en herstart de container.",
-    "tabMaintenance": "Onderhoud"
+    "tabMaintenance": "Onderhoud",
+    "updateReasonPermission": "De socket is gemount, maar de app mag hem niet openen. Dit is opgelost sinds v1.135.0 — werk de container nog één keer handmatig bij en herstart.",
+    "updateReasonContainerNotFound": "De socket werkt, maar de app kan de eigen container niet terugvinden bij de Docker-daemon.",
+    "updateReasonForeignImage": "Deze container draait niet op het officiële CargoPilot-image; bijwerken vanuit de app blijft dan uit.",
+    "updateReasonSocketUnusable": "De Docker-socket is gemount maar reageert niet bruikbaar; controleer de mount en herstart de container."
   },
   "modality": {
     "title": "Kies uw transportmodaliteit",

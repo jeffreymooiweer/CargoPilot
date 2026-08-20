@@ -523,7 +523,14 @@ export interface UpdateCapability {
   container: string | null;
   image: string | null;
   available: boolean;
-  reason: "switch_off" | "no_socket" | "container_not_found" | "socket_unusable" | "foreign_image" | null;
+  reason:
+    | "switch_off"
+    | "no_socket"
+    | "socket_permission"
+    | "container_not_found"
+    | "socket_unusable"
+    | "foreign_image"
+    | null;
 }
 
 export interface UpdateStateAnswer {

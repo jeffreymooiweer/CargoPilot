@@ -286,7 +286,11 @@
     "updateSocketWarning": "Attention : monter le socket Docker donne de fait à ce conteneur les droits d'administrateur sur tout le serveur.",
     "updateReasonNoSocket": "L'interrupteur est activé, mais aucun socket Docker n'est monté dans le conteneur — ajoutez la ligne de volume ci-dessus et redémarrez le conteneur.",
     "updateReasonSwitchOff": "Un socket Docker a été trouvé, mais UPDATE_APPLY_ENABLED n'est pas défini — ajoutez la variable d'environnement et redémarrez le conteneur.",
-    "tabMaintenance": "Maintenance"
+    "tabMaintenance": "Maintenance",
+    "updateReasonPermission": "Le socket est monté, mais l'application n'a pas le droit de l'ouvrir. Corrigé depuis la v1.135.0 — mettez à jour le conteneur manuellement une dernière fois et redémarrez.",
+    "updateReasonContainerNotFound": "Le socket fonctionne, mais l'application ne retrouve pas son propre conteneur auprès du démon Docker.",
+    "updateReasonForeignImage": "Ce conteneur n'utilise pas l'image officielle CargoPilot ; la mise à jour depuis l'application reste désactivée.",
+    "updateReasonSocketUnusable": "Le socket Docker est monté mais ne répond pas utilement ; vérifiez le montage et redémarrez le conteneur."
   },
   "modality": {
     "title": "Choisissez votre mode de transport",

@@ -286,7 +286,11 @@
     "updateSocketWarning": "Careful: mounting the Docker socket effectively gives this container administrator rights over the whole server.",
     "updateReasonNoSocket": "The switch is on, but no Docker socket is mounted into the container — add the volume line above and restart the container.",
     "updateReasonSwitchOff": "A Docker socket was found, but UPDATE_APPLY_ENABLED is not set — add the environment variable and restart the container.",
-    "tabMaintenance": "Maintenance"
+    "tabMaintenance": "Maintenance",
+    "updateReasonPermission": "The socket is mounted, but the app is not permitted to open it. Fixed since v1.135.0 — update the container manually once more and restart.",
+    "updateReasonContainerNotFound": "The socket works, but the app cannot find its own container at the Docker daemon.",
+    "updateReasonForeignImage": "This container does not run the official CargoPilot image; in-app updating stays off.",
+    "updateReasonSocketUnusable": "The Docker socket is mounted but does not respond usably; check the mount and restart the container."
   },
   "modality": {
     "title": "Choose your transport modality",

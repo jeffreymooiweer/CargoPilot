@@ -125,6 +125,17 @@ def capability() -> dict[str, Any]:
         return result
     try:
         with docker_client() as client:
+            # A ping first, so a socket the process may not open gets its
+            # own name: the app runs as uid 1000 and a root-owned socket
+            # denies it, which used to surface as "container not found".
+            try:
+                client.get("/_ping").raise_for_status()
+            except httpx.ConnectError as exc:
+                if "permission" in str(exc).lower():
+                    logger.info("Docker socket present but not permitted: %s", exc)
+                    result["reason"] = "socket_permission"
+                    return result
+                raise
             container_id = own_container_id(client)
             if container_id is None:
                 result["reason"] = "container_not_found"

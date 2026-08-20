@@ -227,7 +227,10 @@ def start_update(target_version: str) -> dict[str, Any]:
     if not re.fullmatch(r"\d+\.\d+\.\d+", target_version or ""):
         raise UpdateError(f"Not a release version: {target_version!r}")
 
-    reference = f"{IMAGE_REPOSITORY}:v{target_version}"
+    # The publish workflow tags images with the bare version — docker/metadata
+    # -action's semver pattern strips the "v" from the git tag — so the image
+    # for release v1.136.0 lives at ...cargopilot:1.136.0, not :v1.136.0.
+    reference = f"{IMAGE_REPOSITORY}:{target_version}"
     with docker_client() as client:
         write_state({"phase": "pulling", "to": target_version})
         _pull(client, reference)

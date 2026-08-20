@@ -32,6 +32,7 @@ from app.services.dg.naming import (
     resolve_for_profile,
 )
 from app.services.dg.database import get_un_entries, search_packagings
+from app.services.units import UNITS, Dimension
 from app.services.dg.enrichment import (
     CLASS_DOCUMENT_NOTES,
     PROFILE_DOCUMENT_NOTES,
@@ -367,6 +368,27 @@ def derive_product(
     return {"patch": patch, "hints": hints}
 
 
+def _unit_names_a_packaging(unit: str) -> bool:
+    """Whether the line's unit says what the goods are packed in.
+
+    "1000 jerrycans" counts packagings and answers 5.4.1.1.1 (e); "1000 kg"
+    counts mass and answers nothing about the package. The unit was taken
+    over regardless, which put "kg" on the document as the kind of package —
+    and for a line without any stated unit it took over ``pcs``, the bare
+    piece count the parser falls back to. That is not a packaging either:
+    the catalogue then matched "pcs" through "pc" to the code 6PC and the
+    searchable packaging field turned into a dropdown with that one
+    nonsensical choice.
+
+    A unit the table does not know is the consignor's own word ("fust",
+    "octabin") and is taken over as before.
+    """
+    known = UNITS.get(unit.strip().lower())
+    if known is None:
+        return True
+    return known.dimension is Dimension.COUNT and known.code != "pcs"
+
+
 def derive_from_line(product: dict[str, Any], line: dict[str, Any] | None) -> dict[str, Any]:
     """Take counts and masses over from the package line already entered."""
     if not line:
@@ -378,7 +400,8 @@ def derive_from_line(product: dict[str, Any], line: dict[str, Any] | None) -> di
         patch["quantity_packages"] = (
             _fmt(number) if number is not None else str(quantity))
     unit = str(line.get("unit") or "").strip()
-    if unit and not str(product.get("type_of_package") or "").strip():
+    if (unit and _unit_names_a_packaging(unit)
+            and not str(product.get("type_of_package") or "").strip()):
         patch["type_of_package"] = unit
     per_package = _num(line.get("weight_each_kg"))
     if per_package and not str(product.get("gross_mass_per_package") or "").strip():

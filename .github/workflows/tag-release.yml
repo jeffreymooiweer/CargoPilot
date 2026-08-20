@@ -192,10 +192,15 @@ jobs:
           # build on main takes a few minutes, so some waiting is part of it.
           # Twenty minutes is generous; after that something is wrong and stopping
           # is better than a version tag on an image from yesterday.
+          # Two names for one manifest. The in-app updater asked for the
+          # v-prefixed form up to v1.136.0 and for the bare form from v1.137.0
+          # on; an installation of the first generation can only update itself
+          # if the tag it asks for exists. Naming costs nothing — no layer is
+          # pulled or pushed — so both spellings are published.
           for attempt in $(seq 1 60); do
             if docker buildx imagetools inspect "$IMAGE:$SHORT" >/dev/null 2>&1; then
-              docker buildx imagetools create -t "$IMAGE:$VERSION" "$IMAGE:$SHORT"
-              echo "$IMAGE:$VERSION now points at the same manifest as $IMAGE:$SHORT."
+              docker buildx imagetools create -t "$IMAGE:$VERSION" -t "$IMAGE:v$VERSION" "$IMAGE:$SHORT"
+              echo "$IMAGE:$VERSION and $IMAGE:v$VERSION now point at the same manifest as $IMAGE:$SHORT."
               docker buildx imagetools inspect "$IMAGE:$VERSION"
               exit 0
             fi

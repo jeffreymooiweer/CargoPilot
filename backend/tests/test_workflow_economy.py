@@ -166,7 +166,20 @@ def test_the_released_image_is_the_one_that_was_tested():
     source can come out slightly different; the same manifest cannot."""
     tag_release = steps_only("tag-release.yml")
     assert "rev-parse --short=7 HEAD" in tag_release
-    assert 'imagetools create -t "$IMAGE:$VERSION" "$IMAGE:$SHORT"' in tag_release
+    assert (
+        'imagetools create -t "$IMAGE:$VERSION" -t "$IMAGE:v$VERSION" "$IMAGE:$SHORT"'
+        in tag_release
+    )
+
+
+def test_the_release_publishes_both_tag_spellings():
+    """Up to v1.136.0 the in-app updater built its pull reference as
+    ``repo:v<version>``; from v1.137.0 on it asks for the bare version. An
+    installation of the first generation cannot update itself out of that
+    generation unless the name it asks for exists, so the release names the
+    one manifest twice. It costs nothing: no layer is pulled or pushed."""
+    tag_release = steps_only("tag-release.yml")
+    assert '"$IMAGE:v$VERSION"' in tag_release
 
 
 def test_it_gives_up_rather_than_release_an_older_image():

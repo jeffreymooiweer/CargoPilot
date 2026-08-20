@@ -2,6 +2,23 @@
 
 All notable changes are documented here, following [Semantic Versioning](https://semver.org/).
 
+## [1.138.0] — 2026-08-20
+
+v1.137.0 promised two tag spellings and delivered one. The alias was added
+to the wrong workflow — the release proved it, so this release fixes it
+where the naming actually happens.
+
+### Fixed
+
+- **The v-prefixed image tag is published after all.** v1.137.0 added the
+  alias to the metadata action in `ci.yml`, but CI does not run on a tag:
+  the version tag is put on the existing manifest by `tag-release.yml` with
+  `imagetools create`. The added line was inert and `:v1.137.0` was never
+  published. The release step now names both `:<version>` and `:v<version>`
+  on the same manifest, and the dead line in `ci.yml` is gone. Installations
+  running v1.135.0 or v1.136.0 ask for the v-form, cannot update themselves
+  out of those versions without it, and can update in-app to this release.
+
 ## [1.137.0] — 2026-08-20
 
 The update button reached the registry and asked for an image that was never

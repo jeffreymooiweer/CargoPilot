@@ -93,7 +93,7 @@ FOOTER = re.compile(
 #: positions that land inside the table's right-hand columns. They are
 #: artefacts of the file, not content of the book, and are dropped as
 #: chunks wherever they stand.
-NOISE_CHUNK = re.compile(r"^(Page|Pagina)( \d+)?$")
+NOISE_CHUNK = re.compile(r"^((Page|Pagina)( \d+)?|[.,;:·|-])$")
 
 #: Both editions replace a whole row's cells with a banner where carriage
 #: is prohibited by rail.
@@ -174,11 +174,20 @@ def full_header(page) -> tuple[float, dict[str, float]] | None:
 
 
 def chunks_of(line_words: list[tuple[float, float, float, str]],
-              gap: float = 6.0) -> list[tuple[float, float, str]]:
-    """Adjacent words merged into cell chunks: (x0, x1, text)."""
+              xs: dict[str, float], gap: float = 6.0) -> list[tuple[float, float, str]]:
+    """Adjacent words merged into cell chunks: (x0, x1, text).
+
+    A word that starts on a column's own x begins a new chunk even when the
+    gap is small: the narrow columns — (9a)/(9b), (3a) beside a long name —
+    print neighbouring cells closer together than the words inside one
+    cell, and a gap rule alone glued "PP54 MP20" into column (9a) and a
+    class 1 into the end of a name.
+    """
+    boundaries = [xs[code] for code in COLS[2:]]
     out: list[tuple[float, float, str]] = []
     for x0, x1, _y, text in sorted(line_words):
-        if out and x0 - out[-1][1] <= gap:
+        on_boundary = any(abs(x0 - mx) <= 3 for mx in boundaries)
+        if out and x0 - out[-1][1] <= gap and not on_boundary:
             prev = out[-1]
             out[-1] = (prev[0], x1, f"{prev[2]} {text}")
         else:
@@ -254,7 +263,7 @@ def parse(pdf_path: Path) -> list[dict]:
                 continue
             for anchor in anchors:
                 target["cells"].setdefault("1", []).append(anchor[3])
-            for chunk in chunks_of(others):
+            for chunk in chunks_of(others, xs):
                 if NOISE_CHUNK.match(chunk[2]):
                     continue
                 code = assign(chunk, xs)
@@ -268,13 +277,16 @@ def parse(pdf_path: Path) -> list[dict]:
                   for code in COLS}
         fields["_page"] = row["page"]
         # A prohibited row prints a banner across the cell area instead of
-        # values; whichever column caught it, the row's meaning is the
-        # banner, and the misassigned fragments are not data.
+        # values; whichever column caught it — the centred banner can land
+        # in the name as easily as in a code column — the row's meaning is
+        # the banner, and the misassigned fragments are not data.
         joined = " ".join(fields[FIELDS[code]] for code in COLS
-                          if code not in ("1", "2", "3a", "3b", "4", "5"))
+                          if code != "1")
         if any(banner in joined for banner in PROHIBITED):
             for code in COLS[5:]:
                 fields[FIELDS[code]] = ""
+            for banner in PROHIBITED:
+                fields["name"] = fields["name"].replace(banner, "").strip()
             fields["carriage_prohibited"] = True
         else:
             fields["carriage_prohibited"] = False

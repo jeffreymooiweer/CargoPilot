@@ -1,0 +1,82 @@
+# Cuts the prescribed model documents — the instructions in writing of
+# 5.4.3 (ADR/RID/ADN, four languages) and the ADN 8.6.3 checklist — out of
+# the pinned editions and commits them to backend/seed/models/, so every
+# installation can hand them over without first filling a regulations
+# store. Runs on a runner because the editions live in the shared
+# regulations cache there (several have no public URL: the Dutch and
+# German books were supplied by the operator in earlier sessions); every
+# source is verified against the SHA-256 the register pins before a page
+# is cut.
+name: Extract model documents
+
+on:
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: Branch to run against and commit to
+        required: true
+        default: claude/volg-de-prompt-l58to6
+      commit:
+        description: Commit the cut models to the branch
+        type: boolean
+        default: true
+
+permissions:
+  contents: write
+
+concurrency:
+  group: extract-model-documents
+  cancel-in-progress: false
+
+jobs:
+  cut:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.branch }}
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install cutter dependency
+        run: pip install pymupdf
+
+      # The books fetched and supplied in earlier runs live in this cache;
+      # the operator-supplied volumes (NL, DE, rid_fr) exist nowhere else
+      # a runner can reach.
+      - uses: actions/cache/restore@v4
+        with:
+          path: /tmp/cargopilot-regulations
+          key: regulations-${{ github.run_id }}
+          restore-keys: |
+            regulations-
+
+      - name: Fetch the publicly downloadable editions
+        # Fills any gap the cache has for the five books with URLs; the
+        # store script refuses a file that contradicts its pinned SHA-256.
+        run: |
+          python scripts/regulations_store.py fetch adr2 adr2_fr adn adn_fr rid || true
+
+      - uses: actions/cache/save@v4
+        if: always()
+        with:
+          path: /tmp/cargopilot-regulations
+          key: regulations-${{ github.run_id }}
+
+      - name: Cut the models along the pinned page ranges
+        run: python scripts/cut_model_documents.py
+
+      - name: Commit the cut models
+        if: ${{ inputs.commit }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add backend/seed/models
+          if git diff --cached --quiet; then
+            echo "nothing changed"
+          else
+            git commit -m "Cut the prescribed model documents from the pinned editions"
+            git push origin HEAD:${{ inputs.branch }}
+          fi

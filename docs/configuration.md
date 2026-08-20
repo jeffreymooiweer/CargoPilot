@@ -130,11 +130,40 @@ takes effect on the next restart.
 |---|---|---|
 | `UPDATE_CHECK_ENABLED` | Ask GitHub whether a newer release exists, when an administrator is signed in | `true` |
 | `UPDATE_CHECK_TIMEOUT_SECONDS` | HTTP timeout for that one request | `8` |
+| `UPDATE_APPLY_ENABLED` | Allow the administrator to update and restart from the settings screen (needs the Docker socket, below) | `false` |
+| `UPDATE_APPLY_PULL_TIMEOUT_SECONDS` | How long the image pull may take before the update is abandoned | `600` |
 
-The check only tells the administrator there is something to pull — the container never
-updates itself. Off means CargoPilot never contacts GitHub; the switch also sits on the
-settings screen under **Outbound connections** and is read per request, so flipping it
-needs no restart.
+The check only tells the administrator there is something to pull. Off means CargoPilot
+never contacts GitHub; the switch also sits on the settings screen under **Outbound
+connections** and is read per request, so flipping it needs no restart.
+
+### Updating from inside the application
+
+A container cannot swap its own image — unless the operator hands it the Docker API.
+With both of these in the compose file (or as extra parameters on Unraid):
+
+```yaml
+environment:
+  - UPDATE_APPLY_ENABLED=true
+volumes:
+  - /var/run/docker.sock:/var/run/docker.sock
+```
+
+the settings screen's **Updating** section grows an **Update and restart** button
+whenever a newer release exists. Pressing it pulls `jeffersonmouze/cargopilot` at the
+release's own tag (never `latest`, never a caller-supplied name), then hands the swap to
+a short-lived helper container started from that new image: it stops the application,
+renames it aside, recreates it with the identical configuration on the new image, starts
+it, and only then removes the old one. If the new container will not start, the old one
+is put back and the failure is reported on the settings screen — a failed update leaves
+a working installation.
+
+> [!WARNING]
+> Mounting the Docker socket into a container gives that container administrator rights
+> over the whole host — that is what makes the swap possible at all. It is a deliberate
+> operator decision, off by default; without it, CargoPilot only ever *reports* updates
+> and the manual `docker compose pull && docker compose up -d` (or Unraid's update
+> button, or Watchtower) remains the way.
 
 ## Address lookup
 

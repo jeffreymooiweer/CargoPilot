@@ -304,9 +304,15 @@ Cards** section where the card set itself is installed, checked for updates or r
 session lasts, and — under **Outbound connections** — whether address lookup, catalogue
 sync and the update check are allowed to reach the internet at all. When the update check
 is on and a newer release exists, administrators get a small dismissible note in the
-corner; the settings screen's **Updating** section explains what updating actually is —
-pulling the newer image and restarting the container, by hand, with Docker Compose, via
-Watchtower or from Unraid's Docker tab — because the application cannot do it for you. See
+corner. The settings screen's **Updating** section carries a **check now** button and,
+where the operator has deliberately enabled it (Docker socket plus
+`UPDATE_APPLY_ENABLED`, see
+[Configuration](configuration.md#updating-from-inside-the-application)), an **update
+and restart** button that pulls the new release and swaps the container — the brief
+restart is the update happening, and a failed attempt puts the previous version back.
+Without that opt-in the section explains the manual route: pulling the newer image and
+restarting the container, by hand, with Docker Compose, via Watchtower or from Unraid's
+Docker tab. See
 [Configuration](configuration.md#two-places-and-which-one-wins) for how these relate to the
 environment variables.
 

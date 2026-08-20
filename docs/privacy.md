@@ -39,7 +39,7 @@ This is a deliberate choice. If a job is finished, there is nothing left to leak
 
 ## What leaves your server
 
-Five things, and only if you let them:
+Six things, and only if you let them:
 
 **Address autocomplete** sends what you type in an address field to a Photon geocoder
 (`photon.komoot.io` by default). An administrator can switch it off entirely on the
@@ -62,6 +62,12 @@ are fetched into `/data/assistant` and verified against SHA-256 digests recorded
 repository. Nothing about your shipments is ever sent — the download is the only
 traffic, and after it the assistant runs entirely locally. Never installing it is the
 default, and the assistant works without it.
+
+**The in-app update** pulls the newer CargoPilot image from Docker Hub, and only
+when an administrator presses the update button — which only exists where the
+operator explicitly enabled applying updates (`UPDATE_APPLY_ENABLED` plus a mounted
+Docker socket, see [Configuration](configuration.md#updating-from-inside-the-application)).
+Off by default; nothing about your shipments travels with the pull.
 
 **The UN card download** happens only when an administrator clicks *check* or
 *download* under **Settings → UN Cards**: the server asks GitHub's public release

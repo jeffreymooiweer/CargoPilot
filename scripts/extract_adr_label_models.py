@@ -73,6 +73,27 @@ def trim_white(pix: fitz.Pixmap) -> fitz.Pixmap:
     return fitz.Pixmap(pix.colorspace, new_w, new_h, b"".join(rows), pix.alpha)
 
 
+def mask_diamond(pix: fitz.Pixmap) -> fitz.Pixmap:
+    """White out everything outside the diamond inscribed in the crop box.
+
+    The mark of Figure 5.2.1.8.3 is printed with dimension annotations along
+    its lower edges; the mark itself is the diamond, whose vertices sit at
+    the crop box's edge midpoints (the box is the measured bounding box plus
+    a two-pixel pad). A small tolerance keeps the 2 mm outline intact.
+    """
+    w, h, n = pix.width, pix.height, pix.n
+    s = bytearray(pix.samples)
+    cx, cy = (w - 1) / 2, (h - 1) / 2
+    for y in range(h):
+        dy = abs(y - cy) / cy
+        for x in range(w):
+            if abs(x - cx) / cx + dy > 1.02:
+                i = (y * w + x) * n
+                for k in range(n):
+                    s[i + k] = 255
+    return fitz.Pixmap(pix.colorspace, w, h, bytes(s), pix.alpha)
+
+
 def rotate_clockwise(pix: fitz.Pixmap) -> fitz.Pixmap:
     """The print rotates the table content 90 degrees; this restores it."""
     w, h, n = pix.width, pix.height, pix.n
@@ -94,7 +115,10 @@ def extract(vol: Path, out_dir: Path) -> dict:
     for code, entry in spec["crops"].items():
         page = doc[entry["page"] - 1]
         clip = fitz.Rect(entry["rect"])
-        pix = trim_white(page.get_pixmap(clip=clip, dpi=RENDER_DPI))
+        pix = page.get_pixmap(clip=clip, dpi=RENDER_DPI)
+        if entry.get("mask") == "diamond":
+            pix = mask_diamond(pix)
+        pix = trim_white(pix)
         # The label table pages are printed rotated; a crop from an upright
         # page (the environmentally hazardous mark of 5.2.1.8.3) overrides
         # the document-level rotation with its own.

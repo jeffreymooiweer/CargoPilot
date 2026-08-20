@@ -100,6 +100,39 @@ def test_the_store_accepts_what_the_generator_packages(generated, generator,
         get_settings.cache_clear()
 
 
+def test_the_imdg_card_prints_the_code_descriptions(generator):
+    """Column 16a/16b codes appear with the verbatim descriptions of IMDG
+    7.1.5/7.1.6/7.2.8 from the measured imdg_codes.json seed — a code the
+    seed lacks keeps its chapter reference, and nothing is paraphrased."""
+    from un_cards.sources import imdg
+    page = imdg.cards("1017")[0]
+    rows = dict(page.provision_rows)
+    assert "Clear of living quarters." in rows["Stowage and handling"]
+    assert "Category D — see IMDG 7.1.3.2" in rows["Stowage and handling"]
+    assert "Segregation as for class 5.1." in rows["Segregation"]
+
+
+def test_the_adn_card_is_honest_without_its_texts_seed(generator, monkeypatch):
+    """Until the extraction workflow commits adn_provision_texts.json, the
+    7.1.6 codes stay code-plus-reference — never a written summary."""
+    from un_cards.sources import adn
+    monkeypatch.setattr(adn, "_provision_texts", lambda: {})
+    page = adn.cards("1203")[0]
+    rows = dict(page.provision_rows)
+    assert rows["Ventilation"].startswith("VE01 — ")
+    assert "see ADN 7.1.6" in rows["Ventilation"]
+
+
+def test_the_adn_card_prints_texts_once_the_seed_exists(generator, monkeypatch):
+    from un_cards.sources import adn
+    monkeypatch.setattr(
+        adn, "_provision_texts",
+        lambda: {"VE": {"VE01": "Holds shall be ventilated."}})
+    page = adn.cards("1203")[0]
+    assert dict(page.provision_rows)["Ventilation"] == (
+        "VE01 — Holds shall be ventilated.")
+
+
 def test_the_cards_carry_no_third_party_branding(generated):
     fitz = pytest.importorskip("fitz")
     out, _, manifest = generated

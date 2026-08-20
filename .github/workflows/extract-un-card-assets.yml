@@ -93,17 +93,6 @@ jobs:
             --out scripts/un_cards/assets/labels \
             --allow-missing
 
-      # Measurement pass for the environmentally hazardous mark (5.2.1.8.3):
-      # committed once so its crop box can be measured and pinned, then
-      # retired again like the label-table renders were.
-      - name: Render the 5.2.1.8.3 pages for the mark measurement
-        if: always()
-        run: |
-          python scripts/extract_adr_label_models.py \
-            --vol1 /tmp/cargopilot-regulations/adr2.pdf \
-            --out scripts/un_cards/assets/debug_mark \
-            --debug-find "5.2.1.8.3" || true
-
       - name: Commit extracted assets
         if: ${{ inputs.commit }}
         run: |

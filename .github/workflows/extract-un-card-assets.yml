@@ -93,6 +93,17 @@ jobs:
             --out scripts/un_cards/assets/labels \
             --allow-missing
 
+      # Measurement pass for the RID table A parser: reports which pages
+      # carry the table's column-number band and where the columns stand,
+      # in both editions. Log-only; retired once the parser is built on
+      # these measurements (the development container holds no RID book).
+      - name: Probe the RID table A layout
+        if: always()
+        run: |
+          python scripts/regulations_store.py fetch rid || true
+          python scripts/extract_rid_table_a.py --pdf rid.pdf --probe || true
+          python scripts/extract_rid_table_a.py --pdf RID-2025-NL.pdf --probe || true
+
       - name: Commit extracted assets
         if: ${{ inputs.commit }}
         run: |

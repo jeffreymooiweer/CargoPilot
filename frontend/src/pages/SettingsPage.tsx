@@ -1020,6 +1020,21 @@ function UpdatePanel() {
         <p className="text-sm text-slate-700 dark:text-slate-200">{phase}</p>
       )}
 
+      {/* The operator did their part (switch on, socket mounted) and the
+          capability is still off: say why, right here — this state used to
+          be silent and looked like the feature simply not existing. */}
+      {capability && capability.apply_enabled && capability.socket && !capability.available && (
+        <p className="text-sm text-amber-700 dark:text-amber-300">
+          {capability.reason === "socket_permission"
+            ? t("settings.updateReasonPermission")
+            : capability.reason === "container_not_found"
+              ? t("settings.updateReasonContainerNotFound")
+              : capability.reason === "foreign_image"
+                ? t("settings.updateReasonForeignImage")
+                : t("settings.updateReasonSocketUnusable")}
+        </p>
+      )}
+
       {!canApply && (
         <div className="space-y-3">
           <p className="text-sm text-slate-700 dark:text-slate-300">{t("settings.updateExplain")}</p>

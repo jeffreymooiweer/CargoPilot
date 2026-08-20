@@ -150,7 +150,12 @@ volumes:
 ```
 
 the settings screen's **Updating** section grows an **Update and restart** button
-whenever a newer release exists. Pressing it pulls `jeffersonmouze/cargopilot` at the
+whenever a newer release exists. The application runs as uid 1000 while the socket
+belongs to root (Unraid) or the docker group (most distributions); the container's
+start script joins the app user to the socket's own group id before dropping
+privileges, so no permission fiddling is needed on the host — this works since
+v1.135.0, and when something else still blocks the capability, the Updating section
+now names the exact reason instead of staying silent. Pressing it pulls `jeffersonmouze/cargopilot` at the
 release's own tag (never `latest`, never a caller-supplied name), then hands the swap to
 a short-lived helper container started from that new image: it stops the application,
 renames it aside, recreates it with the identical configuration on the new image, starts

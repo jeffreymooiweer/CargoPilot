@@ -69,6 +69,24 @@ def test_capability_refuses_a_foreign_image(data_dir, tmp_path, monkeypatch):
     assert ability["reason"] == "foreign_image"
 
 
+def test_capability_names_a_socket_it_may_not_open(data_dir, tmp_path, monkeypatch):
+    """The Unraid case: socket mounted, switch on, but the socket is owned
+    by root and the app runs as uid 1000. That must come back as its own
+    reason — it used to surface as container_not_found, which sent the
+    operator looking in the wrong place."""
+    monkeypatch.setenv("UPDATE_APPLY_ENABLED", "true")
+    get_settings.cache_clear()
+    _socket(tmp_path, monkeypatch)
+
+    def handler(request: httpx.Request) -> httpx.Response:
+        raise httpx.ConnectError("Permission denied")
+
+    monkeypatch.setattr(updater, "docker_client", lambda: make_client(handler))
+    ability = updater.capability()
+    assert ability["available"] is False
+    assert ability["reason"] == "socket_permission"
+
+
 def test_own_container_id_verifies_against_the_daemon(monkeypatch):
     known = "b" * 64
 
@@ -95,6 +113,8 @@ def test_start_update_pulls_and_hands_over(data_dir, tmp_path, monkeypatch):
     def handler(request: httpx.Request) -> httpx.Response:
         path = request.url.path
         calls.append(f"{request.method} {path}")
+        if path == "/_ping":
+            return httpx.Response(200, text="OK")
         if path == "/images/create":
             return httpx.Response(200, text=json.dumps({"status": "ok"}) + "\n")
         if path.startswith("/images/") and path.endswith("/json"):

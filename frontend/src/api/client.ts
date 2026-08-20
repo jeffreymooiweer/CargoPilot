@@ -223,6 +223,9 @@ export const api = {
   listUsers: () => request<User[]>("/users"),
   createUser: (payload: Record<string, unknown>) =>
     request<User>("/users", { method: "POST", body: JSON.stringify(payload) }),
+  updateUser: (id: number, payload: Record<string, unknown>) =>
+    request<User>(`/users/${id}`, { method: "PATCH", body: JSON.stringify(payload) }),
+  deleteUser: (id: number) => request<{ ok: boolean }>(`/users/${id}`, { method: "DELETE" }),
   listEquipment: () => request<EquipmentItem[]>("/equipment"),
   createEquipment: (payload: Partial<EquipmentItem>) =>
     request<EquipmentItem>("/equipment", { method: "POST", body: JSON.stringify(payload) }),

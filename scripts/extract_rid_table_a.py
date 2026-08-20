@@ -338,7 +338,16 @@ def parse(pdf_path: Path) -> tuple[list[dict], dict]:
                 for word in others:
                     lines.setdefault(round(word[2] / 3), []).append(word)
                 for key in sorted(lines):
-                    for chunk in chunks_of(lines[key], xs):
+                    line = lines[key]
+                    # The last band of a page runs to the page edge and can
+                    # swallow the running foot ("3.2-A-262", a bare page
+                    # number) — a footer line inside a band is still a
+                    # footer.
+                    line_text = " ".join(w[3] for w in sorted(line))
+                    if (min(w[2] for w in line) > page.rect.height - 40
+                            and FOOTER.match(line_text.strip())):
+                        continue
+                    for chunk in chunks_of(line, xs):
                         if NOISE_CHUNK.match(chunk[2]):
                             continue
                         code = assign(chunk, xs)
@@ -393,9 +402,39 @@ def _norm_tokens(code: str, value: str) -> list[str]:
         token = token.replace("+(", "(+")             # +(13) -> (+13)
         if code == "8" and re.fullmatch(r"\d{1,2}", token):
             continue  # a printed footnote index, not a packing instruction
+        # Cross-reference cells are printed in each edition's own language
+        # ("see 1.7" / "zie 1.7" / "siehe 1.7", "SP" / "SV"): the reference
+        # is the content, the language is not.
+        prefix = token[:len(token) - len(token.lstrip("("))]
+        suffix = token[len(token.rstrip(")")):]
+        core = token.strip("()")
+        if core.lower() in _LANGUAGE:
+            token = prefix + _LANGUAGE[core.lower()] + suffix
+        match = re.fullmatch(r"(SP|SV)(\d+)", token)
+        if match:                                     # SP340 -> SP 340
+            tokens.extend(["SP", match.group(2)])
+            continue
+        if token == "SV":
+            token = "SP"
         if token:
+            # A section number the typesetting broke apart ("5.2.2.1. 12",
+            # "1.7.1.5 .1") is glued back to its start.
+            if (tokens and re.search(r"\d\.?$", tokens[-1])
+                    and re.fullmatch(r"\.?\d[\d.]*\)?", token)):
+                tokens[-1] = tokens[-1] + token
+                continue
             tokens.append(token)
     return tokens
+
+
+#: Language-bound words of the cross-reference cells, mapped to one form
+#: for the comparison only — the seed keeps the English edition's text.
+_LANGUAGE = {
+    "see": "see", "zie": "see", "siehe": "see",
+    "and": "and", "en": "and", "und": "and",
+    "or": "or", "of": "or", "oder": "or",
+    "none": "NONE", "geen": "NONE", "keine": "NONE",
+}
 
 
 def _norm(code: str, value: str) -> str:

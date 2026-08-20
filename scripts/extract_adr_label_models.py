@@ -73,29 +73,60 @@ def trim_white(pix: fitz.Pixmap) -> fitz.Pixmap:
     return fitz.Pixmap(pix.colorspace, new_w, new_h, b"".join(rows), pix.alpha)
 
 
-def mask_outside_diamond(pix: fitz.Pixmap, clip: fitz.Rect,
-                         center: tuple[float, float], half: float) -> fitz.Pixmap:
-    """White out everything outside a measured diamond.
+def mask_outside_diamond(pix: fitz.Pixmap) -> fitz.Pixmap:
+    """White out everything outside the mark's own diamond.
 
     The mark of Figure 5.2.1.8.3 is printed with dimension annotations
-    hugging its lower edges, so neither the crop box nor the crop's own ink
-    extent can stand in for the mark's boundary — both earlier attempts let
-    annotation text survive. The diamond itself was measured (center and
-    half-diagonal, page points, pinned in label_crops.json next to the crop
-    box), and this masks against that exact geometry; a sub-pixel band of
-    tolerance keeps the outline's antialiasing.
+    hugging its lower edges. Neither the crop box, nor the crop's ink
+    extent, nor a diamond pinned in page coordinates drew the boundary in
+    the right place — every indirect frame left annotation text standing.
+    So the boundary is fitted to what the render itself shows: the upper
+    two edges are annotation-free, and with the diamond's 45-degree slope
+    each upper row's ink half-width grows by exactly one pixel per row.
+    The apex row and the horizontal extremes fix center and half-diagonal,
+    and everything outside the fitted diamond — shaved one pixel into the
+    outline, so the vertex-hugging arrowheads fall outside too — is
+    blanked.
     """
     w, h, n = pix.width, pix.height, pix.n
-    scale = RENDER_DPI / 72.0
-    cx = (center[0] - clip.x0) * scale
-    cy = (center[1] - clip.y0) * scale
-    half_px = half * scale
-    tolerance = 1.5
     s = bytearray(pix.samples)
+
+    def row_extent(y: int) -> tuple[int, int] | None:
+        row = s[y * w * n:(y + 1) * w * n:n]
+        xs = [x for x in range(w) if row[x] < 200]
+        return (xs[0], xs[-1]) if xs else None
+
+    extents = {y: e for y in range(h) if (e := row_extent(y))}
+    if not extents:
+        return pix
+    apex = min(extents)
+    # Upper edges only: each row's ink half-width grows by one pixel per
+    # row while both 45-degree edges are the row's extremes. The last row
+    # where that linear growth still holds is the vertex height — the
+    # dimension arrowheads that flank the vertices break the pattern there,
+    # so they cannot inflate the fit the way they inflate the horizontal
+    # extremes.
+    centers: list[float] = []
+    half = 0.0
+    for y in range(apex + 4, h):
+        extent = extents.get(y)
+        if extent is None:
+            break
+        reach = (extent[1] - extent[0]) / 2.0
+        if abs(reach - (y - apex)) > 4:
+            break
+        centers.append((extent[0] + extent[1]) / 2.0)
+        half = float(y - apex)
+    if half < 20 or not centers:
+        return pix
+    centers.sort()
+    cx = centers[len(centers) // 2]
+    cy = apex + half
+    shave = 1.0
     for y in range(h):
         dy = abs(y - cy)
         for x in range(w):
-            if (abs(x - cx) + dy) > half_px + tolerance:
+            if abs(x - cx) + dy > half - shave:
                 i = (y * w + x) * n
                 for k in range(n):
                     s[i + k] = 255
@@ -125,9 +156,7 @@ def extract(vol: Path, out_dir: Path) -> dict:
         clip = fitz.Rect(entry["rect"])
         pix = page.get_pixmap(clip=clip, dpi=RENDER_DPI)
         if entry.get("diamond"):
-            pix = mask_outside_diamond(
-                pix, clip, tuple(entry["diamond"]["center"]),
-                float(entry["diamond"]["half"]))
+            pix = mask_outside_diamond(pix)
         pix = trim_white(pix)
         # The label table pages are printed rotated; a crop from an upright
         # page (the environmentally hazardous mark of 5.2.1.8.3) overrides

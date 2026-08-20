@@ -4,9 +4,12 @@ CargoPilot generates its own UN cards: one A4 datasheet per UN number **and**
 regime, named `UN1203_ADR.pdf`, `UN1203_ADN.pdf`, `UN1203_IMDG.pdf` and so
 on. Every value on a card comes from the measured regulatory tables in
 `backend/seed/dg/` — the same tables the compliance checks run on — the
-hazard label artwork is cut from the official UNECE English ADR 2025, and
-the V/CV/S provisions of 7.2.4, 7.5.11 and 8.5 are printed verbatim from
-that edition. No language model, and no hand, ever fills in a regulatory
+hazard label artwork — the environmentally hazardous mark of 5.2.1.8.3
+included — is cut from the official UNECE English ADR 2025, and the
+provisions behind the coded columns are printed verbatim from the official
+editions: ADR's V/CV/S (7.2.4, 7.5.11, 8.5), ADN's additional requirements
+of 7.1.6 (VE, LO, HA, CO, ST, RA, IN) and the IMDG stowage, handling and
+segregation code descriptions (7.1.5, 7.1.6, 7.2.8). No language model, and no hand, ever fills in a regulatory
 value: a modality without a measured table (RID until its table A is
 column-read; ICAO/air for want of a freely licensable source) **fails
 honestly** instead of borrowing another regime's data.
@@ -17,8 +20,8 @@ honestly** instead of borrowing another regime's data.
 |---|---|
 | Generator | `scripts/un_cards/` (`generate.py`, `render.py`, `labels.py`, `validate.py`, per-modality adapters under `sources/`) |
 | Source configuration | `scripts/un_cards/generator_config.json` — which seed backs which modality, plus the generator version |
-| Label artwork | `scripts/un_cards/assets/labels/` — cut from ADR 5.2.2.2.2 along the measured boxes in `label_crops.json` by `scripts/extract_adr_label_models.py` |
-| Provision texts | `backend/seed/dg/adr_provision_texts.json` — extracted by `scripts/extract_adr_provision_texts.py` |
+| Label artwork | `scripts/un_cards/assets/labels/` — cut from ADR 5.2.2.2.2 (and the 5.2.1.8.3 mark, masked to its own diamond) along the measured boxes in `label_crops.json` by `scripts/extract_adr_label_models.py` |
+| Provision texts | `backend/seed/dg/adr_provision_texts.json` and `adn_provision_texts.json` (extracted by their `scripts/extract_*_provision_texts.py`), plus the IMDG code descriptions already measured in `imdg_codes.json` |
 | Generated cards | **Not in the repository and not in the image.** A GitHub Release tagged `un-cards-YYYY.MM.DD-N`, assets `cargopilot-un-cards.zip`, `manifest.json`, `generation-report.json` |
 | Runtime store | `<data-dir>/un-cards/` on the persistent volume, filled by an administrator |
 

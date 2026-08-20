@@ -36,7 +36,11 @@ const TABS = [
   { key: "shipment", label: "settings.tabShipment", admin: false },
   { key: "details", label: "settings.tabDetails", admin: false },
   { key: "admin", label: "settings.tabAdmin", admin: true },
-  { key: "assistant", label: "settings.tabAssistant", admin: true },
+  // Maintenance holds the action panels (updating, the UN card set, the
+  // assistant's model): things an administrator does now, as opposed to
+  // settings an administrator saves. Mixing the two put buttons that act
+  // immediately above a save button that does not govern them.
+  { key: "maintenance", label: "settings.tabMaintenance", admin: true },
 ] as const;
 
 type TabKey = (typeof TABS)[number]["key"];
@@ -334,7 +338,13 @@ export default function SettingsPage({ user }: Props) {
       )}
 
       {active === "admin" && user.role === "admin" && <AdminSettings />}
-      {active === "assistant" && user.role === "admin" && <AssistantAdmin />}
+      {active === "maintenance" && user.role === "admin" && (
+        <div className="space-y-4">
+          <UpdatePanel />
+          <UnCardsAdminPanel />
+          <AssistantAdmin />
+        </div>
+      )}
 
       {version && (
         <p className="text-xs text-slate-500 dark:text-slate-400">
@@ -399,10 +409,7 @@ function AdminSettings() {
 
   return (
     <div className="space-y-4">
-      <div className="rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 dark:border-amber-900/50 dark:bg-amber-900/20">
-        <h3 className="text-sm font-semibold text-amber-900 dark:text-amber-200">{t("settings.adminTitle")}</h3>
-        <p className="text-xs text-amber-800 dark:text-amber-300 mt-1">{t("settings.adminIntro")}</p>
-      </div>
+      <p className="text-xs text-slate-500 dark:text-slate-400">{t("settings.adminIntro")}</p>
 
       <section className={`${panelClass} p-5 space-y-5`}>
         <h4 className="text-sm font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">
@@ -517,10 +524,6 @@ function AdminSettings() {
           onChange={(value) => set("update_check_enabled", value)}
         />
       </section>
-
-      <UpdatePanel />
-
-      <UnCardsAdminPanel />
 
       <section className={`${panelClass} p-5 space-y-5`}>
         <h4 className="text-sm font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">
@@ -701,7 +704,9 @@ function AssistantAdmin() {
       {!status.installable && !status.installed && (
         <p className="text-xs text-slate-500 dark:text-slate-400">{t("settings.assistantUnpinned")}</p>
       )}
-      <p className="text-xs text-slate-500 dark:text-slate-400">{t("settings.assistantFootprint")}</p>
+      {!status.installed && (
+        <p className="text-xs text-slate-500 dark:text-slate-400">{t("settings.assistantFootprint")}</p>
+      )}
       {error && <p className="text-sm text-red-600 dark:text-red-400">{error}</p>}
     </section>
   );
@@ -1018,14 +1023,13 @@ function UpdatePanel() {
       {!canApply && (
         <div className="space-y-3">
           <p className="text-sm text-slate-700 dark:text-slate-300">{t("settings.updateExplain")}</p>
-          <p className="text-sm text-slate-700 dark:text-slate-300">{t("settings.updateCompose")}</p>
           <pre className="overflow-x-auto rounded-lg bg-slate-100 px-3 py-2 text-xs text-slate-800 dark:bg-slate-800 dark:text-slate-200">
             docker compose pull && docker compose up -d
           </pre>
-          <p className="text-sm text-slate-700 dark:text-slate-300">{t("settings.updateAuto")}</p>
           <details className="text-sm text-slate-700 dark:text-slate-300">
             <summary className="cursor-pointer font-medium">{t("settings.updateEnableApply")}</summary>
             <div className="mt-2 space-y-2">
+              <p>{t("settings.updateAuto")}</p>
               <p>{t("settings.updateEnableApplyHow")}</p>
               <pre className="overflow-x-auto rounded-lg bg-slate-100 px-3 py-2 text-xs text-slate-800 dark:bg-slate-800 dark:text-slate-200">
 {`environment:

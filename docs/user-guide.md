@@ -296,15 +296,17 @@ shows no card at all.
 
 ### For administrators
 
-Administrators see one more section, applying to the whole installation: the language and
-theme new users start with, the organisation name and address offered as a consignor to
-anyone who has not filled in their own, whether the UN card download is offered, the **UN
-Cards** section where the card set itself is installed, checked for updates or removed
-(see [un-cards.md](un-cards.md)), how long a
-session lasts, and — under **Outbound connections** — whether address lookup, catalogue
-sync and the update check are allowed to reach the internet at all. When the update check
-is on and a newer release exists, administrators get a small dismissible note in the
-corner. The settings screen's **Updating** section carries a **check now** button and,
+Administrators see two more tabs. **Administration** holds the settings that apply to
+the whole installation and are saved together: the language and theme new users start
+with, the organisation name and address offered as a consignor to anyone who has not
+filled in their own, whether the UN card download is offered, how long a session lasts,
+and — under **Outbound connections** — whether address lookup, catalogue sync and the
+update check are allowed to reach the internet at all. **Maintenance** holds the things
+an administrator *does* rather than saves: updating, the **UN Cards** section where the
+card set is installed, checked for updates or removed (see [un-cards.md](un-cards.md)),
+and the assistant's optional local model. When the update check is on and a newer
+release exists, administrators get a small dismissible note in the
+corner. The **Updating** panel carries a **check now** button and,
 where the operator has deliberately enabled it (Docker socket plus
 `UPDATE_APPLY_ENABLED`, see
 [Configuration](configuration.md#updating-from-inside-the-application)), an **update

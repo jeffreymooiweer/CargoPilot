@@ -32,6 +32,12 @@ vi.mock("../api/client", () => ({
       mode: "deterministic", installed: false, available: true, installable: true,
       download: { state: "idle" },
     }),
+    // The maintenance tab's panels ask for their state on mount.
+    updateCapability: vi.fn().mockResolvedValue({ available: false }),
+    updateState: vi.fn().mockResolvedValue({ current: "1.115.0", state: null }),
+    unCardStoreStatus: vi.fn().mockResolvedValue({
+      local: { installed: false }, remote: null,
+    }),
   },
 }));
 
@@ -78,12 +84,17 @@ describe("SettingsPage tabs", () => {
     const { unmount } = render(<SettingsPage user={userOf("user")} />);
     await screen.findByText("settings.appearance");
     expect(screen.queryByRole("tab", { name: "settings.tabAdmin" })).toBeNull();
-    expect(screen.queryByRole("tab", { name: "settings.tabAssistant" })).toBeNull();
+    expect(screen.queryByRole("tab", { name: "settings.tabMaintenance" })).toBeNull();
     unmount();
 
     render(<SettingsPage user={userOf("admin")} />);
     expect(await screen.findByRole("tab", { name: "settings.tabAdmin" })).toBeTruthy();
-    await userEvent.click(screen.getByRole("tab", { name: "settings.tabAssistant" }));
+    // Maintenance holds the action panels: updating, the UN card set and
+    // the assistant's model live here, away from the saved settings.
+    await userEvent.click(screen.getByRole("tab", { name: "settings.tabMaintenance" }));
+    await waitFor(() => expect(screen.getByText("settings.adminUpdates")).toBeTruthy());
+    expect(screen.getByText("settings.unCardsStoreTitle")).toBeTruthy();
     await waitFor(() => expect(screen.getByText("settings.assistantTitle")).toBeTruthy());
+    expect(screen.queryByRole("button", { name: "settings.saveAdmin" })).toBeNull();
   });
 });

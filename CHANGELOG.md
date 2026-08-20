@@ -2,6 +2,28 @@
 
 All notable changes are documented here, following [Semantic Versioning](https://semver.org/).
 
+## [1.134.0] — 2026-08-20
+
+The settings screen, tidied. The administrator area had grown into one long
+column where action panels sat between form fields, under a save button that
+did not govern them — and half the screen was explanatory text.
+
+### Changed
+
+- **Administration and Maintenance are now separate tabs.** Administration
+  holds what an administrator *saves*: new-user defaults, the organisation,
+  the feature switches, the session length and the outbound connections — one
+  form, one save button. Maintenance holds what an administrator *does*:
+  updating, the UN card set and the assistant's local model, each panel
+  acting immediately. The separate Assistant tab folds into Maintenance.
+- **The notes went on a diet.** Long explanations are shortened to the one
+  sentence that helps a decision, or moved behind the fold: the
+  Watchtower/Unraid guidance and the in-app-update instructions live inside
+  the existing "enable updating from here" disclosure, the assistant's
+  disk/RAM footprint shows only while the model is not yet installed, and
+  the amber administrator banner is replaced by a single line. The Docker
+  socket warning stays visible — that one is load-bearing.
+
 ## [1.133.0] — 2026-08-20
 
 Updating from inside the application — where the operator allows it. The v1.126.0

@@ -96,8 +96,11 @@ FOOTER = re.compile(
 NOISE_CHUNK = re.compile(r"^((Page|Pagina)( \d+)?|[.,;:·|-])$")
 
 #: Both editions replace a whole row's cells with a banner where carriage
-#: is prohibited by rail.
+#: is prohibited by rail, and with another where the entry is not subject
+#: to the RID at all. The Dutch banner is set wide enough that its halves
+#: land in different columns, so the fragments are matched separately.
 PROHIBITED = ("CARRIAGE PROHIBITED", "VERVOER VERBODEN")
+NOT_SUBJECT = (("NOT SUBJECT TO RID",), ("NIET ONDERWORPEN", "AAN HET RID"))
 
 
 def probe(pdf_path: Path, sample_pages: int) -> int:
@@ -307,52 +310,73 @@ def parse(pdf_path: Path) -> tuple[list[dict], dict]:
             band_text = " ".join(w[3] for w in sorted(band, key=lambda w: w[0]))
             if FOOTER.match(band_text.strip()):
                 continue
-            anchors = [w for w in band
-                       if UN_WORD.match(w[3]) and w[0] <= xs["1"] + 10]
-            if anchors:
-                if len(anchors) > 1:
-                    stats["bands_with_extra_anchors"].append(
-                        (number + 1, [a[3] for a in anchors]))
-                target = {"page": number + 1, "cells": {}}
-                rows.append(target)
+            anchors = sorted((w for w in band
+                              if UN_WORD.match(w[3]) and w[0] <= xs["1"] + 10),
+                             key=lambda w: w[2])
+            # A band holding two anchors is a missing rule between two rows
+            # (the English edition drops one now and then): split it on the
+            # second anchor's line, the way anchor banding always did.
+            if len(anchors) > 1:
+                stats["bands_with_extra_anchors"].append(
+                    (number + 1, [a[3] for a in anchors]))
+                sub_bands = []
+                cuts = [a[2] - 2 for a in anchors[1:]]
+                edges = [min(w[2] for w in band) - 1] + cuts + [
+                    max(w[2] for w in band) + 1]
+                for index in range(len(edges) - 1):
+                    sub_bands.append([w for w in band
+                                      if edges[index] <= w[2] < edges[index + 1]])
             else:
-                stats["bands_without_anchor"] += 1
-                if not rows:
+                sub_bands = [band]
+
+            for sub in sub_bands:
+                if not sub:
                     continue
-                target = rows[-1]
-            for anchor in anchors[:1]:
-                target["cells"].setdefault("1", []).append(anchor[3])
-            others = [w for w in band if w not in anchors]
-            # Line by line inside the band, so cell text keeps its order.
-            lines: dict[int, list] = {}
-            for word in others:
-                lines.setdefault(round(word[2] / 3), []).append(word)
-            for key in sorted(lines):
-                for chunk in chunks_of(lines[key], xs):
-                    if NOISE_CHUNK.match(chunk[2]):
+                sub_anchors = [w for w in sub
+                               if UN_WORD.match(w[3]) and w[0] <= xs["1"] + 10]
+                if sub_anchors:
+                    target = {"page": number + 1, "cells": {}}
+                    rows.append(target)
+                else:
+                    stats["bands_without_anchor"] += 1
+                    if not rows:
                         continue
-                    code = assign(chunk, xs)
-                    target["cells"].setdefault(code, []).append(chunk[2])
+                    target = rows[-1]
+                for anchor in sub_anchors[:1]:
+                    target["cells"].setdefault("1", []).append(anchor[3])
+                others = [w for w in sub if w not in sub_anchors]
+                # Line by line inside the band, so cell text keeps order.
+                lines: dict[int, list] = {}
+                for word in others:
+                    lines.setdefault(round(word[2] / 3), []).append(word)
+                for key in sorted(lines):
+                    for chunk in chunks_of(lines[key], xs):
+                        if NOISE_CHUNK.match(chunk[2]):
+                            continue
+                        code = assign(chunk, xs)
+                        target["cells"].setdefault(code, []).append(chunk[2])
 
     out: list[dict] = []
     for row in rows:
         fields = {FIELDS[code]: " ".join(row["cells"].get(code, [])).strip()
                   for code in COLS}
         fields["_page"] = row["page"]
-        # A prohibited row prints a banner across the cell area instead of
-        # values; whichever column caught it — the centred banner can land
-        # in the name as easily as in a code column — the row's meaning is
-        # the banner, and the misassigned fragments are not data.
+        # A banner row prints its message across the cell area instead of
+        # values; whichever columns caught the fragments — the centred
+        # banner can land in the name as easily as in a code column — the
+        # row's meaning is the banner, and the fragments are not data.
         joined = " ".join(fields[FIELDS[code]] for code in COLS
                           if code != "1")
-        if any(banner in joined for banner in PROHIBITED):
+        fields["carriage_prohibited"] = any(b in joined for b in PROHIBITED)
+        fields["not_subject"] = any(
+            all(fragment in joined for fragment in variant)
+            for variant in NOT_SUBJECT)
+        if fields["carriage_prohibited"] or fields["not_subject"]:
             for code in COLS[5:]:
                 fields[FIELDS[code]] = ""
-            for banner in PROHIBITED:
-                fields["name"] = fields["name"].replace(banner, "").strip()
-            fields["carriage_prohibited"] = True
-        else:
-            fields["carriage_prohibited"] = False
+            for fragment in PROHIBITED + tuple(
+                    f for variant in NOT_SUBJECT for f in variant):
+                fields["name"] = fields["name"].replace(fragment, "").strip()
         out.append(fields)
     return out, stats
 
@@ -360,27 +384,35 @@ def parse(pdf_path: Path) -> tuple[list[dict], dict]:
 #: The columns whose value is an unordered list of codes. Their cells wrap
 #: over several printed lines, and the two editions break the lines in
 #: different places, so the tokens are compared as sets.
-LIST_COLS = {"6", "8", "9a", "9b", "11", "13", "16", "17", "18", "19"}
+LIST_COLS = {"6", "8", "9a", "9b", "10", "11", "13", "16", "17", "18", "19"}
 
 
-def _norm(code: str, value: str) -> str:
+def _norm_tokens(code: str, value: str) -> list[str]:
     """What must agree between the editions: the content, not the comma or
-    footnote style. The Dutch book writes "P114(b)", "L1,5BN" and appends
-    printed footnote digits where the OTIF book writes "P114b" and
-    "L1.5BN" plain; column (7a) writes decimals with a comma."""
+    footnote style. The Dutch book writes "P114(b)", "L1,5BN", "P22DH(M )"
+    and appends printed footnote digits where the OTIF book writes
+    "P114b", "L1.5BN" and "P22DH(M)" plain; column (7a) writes decimals
+    with a comma."""
     if code in ("7a", "12"):
         value = value.replace(",", ".")
-    value = value.replace(",", " ")
+    value = value.replace(",", " ").replace("( ", "(").replace(" )", ")")
     tokens = []
     for token in value.split():
-        token = re.sub(r"\((\w+)\)$", r"\1", token)   # P114(b) -> P114b
+        match = re.fullmatch(r"(P\d+)\(([a-z])\)", token)
+        if match:                                     # P114(b) -> P114b
+            token = match.group(1) + match.group(2)
         token = token.replace("+(", "(+")             # +(13) -> (+13)
         if code == "8" and re.fullmatch(r"\d{1,2}", token):
             continue  # a printed footnote index, not a packing instruction
         tokens.append(token)
+    return tokens
+
+
+def _norm(code: str, value: str) -> str:
+    tokens = _norm_tokens(code, value)
     if code in LIST_COLS:
         tokens = sorted(tokens)
-    return "".join(tokens)
+    return " ".join(tokens)
 
 
 def _dump(label: str, row: dict) -> None:
@@ -398,45 +430,80 @@ def build(out_path: Path | None, lenient: bool) -> int:
     print(f"banding: en {en_stats}, nl {nl_stats}")
 
     problems: list[str] = []
-    matcher = difflib.SequenceMatcher(
-        a=[r["un"] for r in en], b=[r["un"] for r in nl], autojunk=False)
-    pairs: list[tuple[dict, dict]] = []
-    for tag, a0, a1, b0, b1 in matcher.get_opcodes():
-        if tag == "equal":
-            pairs.extend(zip(en[a0:a1], nl[b0:b1]))
-            continue
-        problems.append(
-            f"UN sequences differ: en[{a0}:{a1}]={[r['un'] for r in en[a0:a1]][:6]} "
-            f"nl[{b0}:{b1}]={[r['un'] for r in nl[b0:b1]][:6]}")
-        print(f"  UN sequence {tag}:")
-        for row in en[a0:a1][:4]:
-            _dump("en", row)
-        for row in nl[b0:b1][:4]:
-            _dump("nl", row)
+
+    def groups(rows: list[dict]) -> dict[str, list[dict]]:
+        grouped: dict[str, list[dict]] = {}
+        for row in rows:
+            grouped.setdefault(row["un"], []).append(row)
+        return grouped
+
+    en_groups, nl_groups = groups(en), groups(nl)
+    if list(en_groups) != list(nl_groups):
+        matcher = difflib.SequenceMatcher(
+            a=list(en_groups), b=list(nl_groups), autojunk=False)
+        for tag, a0, a1, b0, b1 in matcher.get_opcodes():
+            if tag == "equal":
+                continue
+            problems.append(
+                f"UN order differs: en {list(en_groups)[a0:a1][:6]} "
+                f"nl {list(nl_groups)[b0:b1][:6]}")
+        for un in list(en_groups.keys() - nl_groups.keys())[:4]:
+            for row in en_groups[un]:
+                _dump("en only", row)
+        for un in list(nl_groups.keys() - en_groups.keys())[:4]:
+            for row in nl_groups[un]:
+                _dump("nl only", row)
 
     mismatches: Counter = Counter()
     samples: list[str] = []
-    for row_en, row_nl in pairs:
-        if row_en["carriage_prohibited"] != row_nl["carriage_prohibited"]:
-            mismatches["prohibited"] += 1
-            samples.append(f"UN {row_en['un']}: prohibited flag differs "
-                           f"(en {row_en['carriage_prohibited']}, "
-                           f"nl {row_nl['carriage_prohibited']})")
-            _dump("en", row_en)
-            _dump("nl", row_nl)
+    union_compared: list[str] = []
+    for un in en_groups:
+        rows_en = en_groups[un]
+        rows_nl = nl_groups.get(un, [])
+        if not rows_nl:
             continue
-        if row_en["carriage_prohibited"]:
+        flags_en = {(r["carriage_prohibited"], r["not_subject"]) for r in rows_en}
+        flags_nl = {(r["carriage_prohibited"], r["not_subject"]) for r in rows_nl}
+        if flags_en != flags_nl:
+            mismatches["banner"] += 1
+            samples.append(f"UN {un}: banner flags differ")
+            for row in rows_en:
+                _dump("en", row)
+            for row in rows_nl:
+                _dump("nl", row)
             continue
-        for code in COMPARED:
-            field = FIELDS[code]
-            a, b = _norm(code, row_en[field]), _norm(code, row_nl[field])
-            if a != b:
-                mismatches[code] += 1
-                if len(samples) < 60:
-                    samples.append(
-                        f"UN {row_en['un']} col ({code}): "
-                        f"en {row_en[field]!r} != nl {row_nl[field]!r} "
-                        f"(pages {row_en['_page']}/{row_nl['_page']})")
+        if any(flag for pair in flags_en for flag in pair):
+            continue
+        if len(rows_en) == len(rows_nl):
+            candidates = zip(rows_en, rows_nl)
+            for row_en, row_nl in candidates:
+                for code in COMPARED:
+                    field = FIELDS[code]
+                    a, b = _norm(code, row_en[field]), _norm(code, row_nl[field])
+                    if a != b:
+                        mismatches[code] += 1
+                        if len(samples) < 60:
+                            samples.append(
+                                f"UN {un} col ({code}): "
+                                f"en {row_en[field]!r} != nl {row_nl[field]!r} "
+                                f"(pages {row_en['_page']}/{row_nl['_page']})")
+        else:
+            # One edition prints this UN number's variants as one row where
+            # the other prints several (the 3381-3390 inhalation entries).
+            # What must then agree is the union of every coded column over
+            # the group; the seed carries the English edition's row shape.
+            union_compared.append(f"{un} (en {len(rows_en)}, nl {len(rows_nl)})")
+            for code in COMPARED:
+                field = FIELDS[code]
+                a = sorted({t for r in rows_en for t in _norm_tokens(code, r[field])})
+                b = sorted({t for r in rows_nl for t in _norm_tokens(code, r[field])})
+                if a != b:
+                    mismatches[code] += 1
+                    if len(samples) < 60:
+                        samples.append(
+                            f"UN {un} col ({code}) as union: en {a} != nl {b}")
+    if union_compared:
+        print(f"  union-compared UN groups: {', '.join(union_compared)}")
     if mismatches:
         problems.append("column mismatches between the editions: "
                         + ", ".join(f"({c})x{n}" for c, n in mismatches.most_common()))
@@ -483,12 +550,18 @@ def build(out_path: Path | None, lenient: bool) -> int:
 
     if out_path:
         entries = []
-        for row_en, row_nl in pairs:
+        seen: Counter = Counter()
+        for row_en in en:
+            un = row_en["un"]
+            variants = nl_groups.get(un, [])
+            index = min(seen[un], len(variants) - 1) if variants else -1
+            seen[un] += 1
             entry = {FIELDS[code]: row_en[FIELDS[code]] for code in COLS
                      if code != "2"}
             entry["name_en"] = row_en["name"]
-            entry["name_nl"] = row_nl["name"]
+            entry["name_nl"] = variants[index]["name"] if variants else ""
             entry["carriage_prohibited"] = row_en["carriage_prohibited"]
+            entry["not_subject"] = row_en["not_subject"]
             entries.append(entry)
         payload = {
             "_comment": (

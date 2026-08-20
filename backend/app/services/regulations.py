@@ -37,6 +37,14 @@ from pathlib import Path
 _SEED_DIR = Path(__file__).resolve().parents[2] / "seed" / "dg"
 MANIFEST = _SEED_DIR / "sources.json"
 
+#: The prescribed models cut from the pinned editions in CI
+#: (scripts/cut_model_documents.py) and bundled with the application, so a
+#: fresh installation can hand over the instructions in writing without
+#: first collecting the books they are cut from. A book or cut the
+#: operator placed in the store still wins: the bundled copy is looked at
+#: after the store, never instead of it.
+BUNDLED_MODELS = _SEED_DIR.parent / "models"
+
 #: The languages the application speaks. A model is offered per language, and
 #: the answer for a language the store cannot serve is "not here", never a
 #: neighbouring language's model.
@@ -72,8 +80,9 @@ def locate(doc_id: str) -> Path | None:
     doc = documents().get(doc_id)
     if doc is None:
         return None
-    bases = [store_dir(), Path(manifest().get("store", {})
-                               .get("fallback_path", "/tmp/cargopilot-regulations"))]
+    bases = [store_dir(), BUNDLED_MODELS,
+             Path(manifest().get("store", {})
+                  .get("fallback_path", "/tmp/cargopilot-regulations"))]
     for base in bases:
         candidate = base / doc["filename"]
         if candidate.is_file() and candidate.stat().st_size > 0:
@@ -116,8 +125,11 @@ def instruction_status(regime: str, language: str,
     state = {"regime": regime, "language": language,
              "document_id": doc["id"], "edition": doc.get("edition", ""),
              "provision": doc["model_of"].get("provision", "5.4.3")}
-    if locate(doc["id"]) is not None:
-        return {**state, "available": True, "source": "stored"}
+    found = locate(doc["id"])
+    if found is not None:
+        bundled = BUNDLED_MODELS in found.parents
+        return {**state, "available": True,
+                "source": "bundled" if bundled else "stored"}
     cut = doc.get("cut_from")
     if cut and locate(cut["document"]) is not None:
         return {**state, "available": True, "source": "cut",

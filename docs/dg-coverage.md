@@ -103,8 +103,10 @@ crew to prepare paperwork that is the consignor's to prepare.
 Two rules run through that table. **A model the regulation prints is never rebuilt**:
 5.4.3.4 requires the instructions to correspond in form and content to a four-page model,
 and 8.6.3 prints its checklist the same way, so both are served as the edition sets them —
-cut from the operator's own copy in the document store, page ranges measured on the
-edition, and reported as missing rather than approximated where the store lacks a language.
+page ranges measured on the edition, cut in CI from the pinned books and bundled since
+v1.130.0 (`backend/seed/models/`), with the operator's own copy in the document store
+taking precedence, and reported as missing rather than approximated where neither holds
+a language.
 **And nothing prescribed is filled in for you**: every answer on the 8.6.3 checklist is
 agreed between vessel and shore at the moment of loading, and a form this application had
 already ticked would be a claim about a conversation that has not happened.

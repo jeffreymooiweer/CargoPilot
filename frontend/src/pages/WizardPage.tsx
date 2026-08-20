@@ -644,16 +644,30 @@ export default function WizardPage() {
   };
 
   // One click for the whole pack: every selected document that is ready,
-  // in order. Drafts and blocked documents stay behind — downloading an
-  // incomplete paper on a bulk action would hide that it is incomplete.
+  // plus the UN cards and the instructions in writing for this journey's
+  // regimes, in one archive. Drafts and blocked documents stay behind —
+  // bundling an incomplete paper would hide that it is incomplete, and the
+  // server writes anything it must leave out into the archive's README.
   const readyDocs = selectedDefinitions.filter((doc) => docStatus(doc).status === "ready");
   const [downloadingAll, setDownloadingAll] = useState(false);
   const downloadAll = async () => {
     setDownloadingAll(true);
+    setError("");
     try {
-      for (const doc of readyDocs) {
-        await exportGenericDoc(doc);
+      await api.exportBundle({
+        documents: readyDocs.map(payloadFor),
+        dangerous_goods: dgEntries.length > 0 ? dgEntries : undefined,
+        profiles: dgProfiles,
+        output_language: docLang,
+        signature_image: signature ?? undefined,
+      });
+      try {
+        localStorage.setItem(LAST_SHIPMENT_KEY, JSON.stringify(docValues));
+      } catch {
+        // Storage full or blocked: the export succeeded, the memory is a bonus.
       }
+    } catch (e) {
+      setError(String(e));
     } finally {
       setDownloadingAll(false);
     }
@@ -1032,6 +1046,11 @@ export default function WizardPage() {
               )}
             </div>
             <p className="text-sm text-slate-600 dark:text-slate-400">{t("wizardDocs.intro")}</p>
+            {readyDocs.length > 1 && dgEntries.length > 0 && (
+              <p className="text-xs text-slate-500 dark:text-slate-400">
+                {t("wizardDocs.downloadAllHint")}
+              </p>
+            )}
             <p className="rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-800 dark:border-amber-900/50 dark:bg-amber-900/20 dark:text-amber-300">
               {t("wizardDocs.exportNotice")}{" "}
               <Link to="/legal" className="font-medium underline">

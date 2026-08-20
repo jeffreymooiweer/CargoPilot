@@ -1,4 +1,8 @@
+import os
+import tempfile
+import zipfile
 from datetime import datetime
+from pathlib import Path
 
 from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException
 from fastapi.responses import FileResponse
@@ -7,7 +11,7 @@ from sqlalchemy.orm import Session
 from app.core.database import get_db
 from app.core.deps import get_current_user
 from app.models.user import User
-from app.schemas import DocumentExportRequest, UnCardsRequest
+from app.schemas import DocumentBundleRequest, DocumentExportRequest, UnCardsRequest
 from app.services.documents import (
     build_un_cards_zip,
     fill_pdf_document,
@@ -20,6 +24,7 @@ from app.services.documents import (
     validate_document,
 )
 from app.services import regulations
+from app.services.documents.un_card_store import card_path as un_card_path
 from app.services.documents.avc_form import fill_avc_waybill, has_avc_template
 from app.services.documents.carrier_confirmation import parse_carrier_confirmation
 from app.services.documents.onboard_pack import (
@@ -69,30 +74,15 @@ def validate(payload: DocumentExportRequest, user: User = Depends(get_current_us
     return {"document_key": payload.document_key, "errors": errors, "warnings": warnings}
 
 
-@router.post("/export")
-def export(
-    payload: DocumentExportRequest,
-    background_tasks: BackgroundTasks,
-    user: User = Depends(get_current_user),
-):
-    document = get_document(payload.document_key)
-    if document is None:
-        raise HTTPException(status_code=404, detail="Unknown document")
+def _render_export(document: dict, payload: DocumentExportRequest,
+                   signature_png: bytes | None) -> "Path":
+    """One document as a file, by its registered exporter.
+
+    The single export and the bundle both come through here, so the archive
+    can never contain a different rendering than the per-document button
+    hands out.
+    """
     exporter = document.get("exporter")
-    errors, _warnings = validate_document(
-        document, payload.values, payload.lines, payload.dangerous_goods, payload.output_language
-    )
-    if errors:
-        raise HTTPException(status_code=422, detail={"errors": errors})
-
-    signature_png = None
-    if payload.signature_image:
-        try:
-            signature_png = decode_signature_image(payload.signature_image)
-        except ValueError as exc:
-            raise HTTPException(status_code=400, detail=str(exc)) from exc
-
-    ref = datetime.now().strftime("%Y%m%d%H%M%S")
     if exporter == "pdf_template" and has_pdf_template(payload.document_key):
         # Officieel, invulbaar formulier: template invullen.
         out_path = fill_pdf_document(
@@ -193,12 +183,153 @@ def export(
             payload.output_language,
             signature_png=signature_png,
         )
+    return out_path
+
+
+def _decoded_signature(signature_image: str | None) -> bytes | None:
+    if not signature_image:
+        return None
+    try:
+        return decode_signature_image(signature_image)
+    except ValueError as exc:
+        raise HTTPException(status_code=400, detail=str(exc)) from exc
+
+
+@router.post("/export")
+def export(
+    payload: DocumentExportRequest,
+    background_tasks: BackgroundTasks,
+    user: User = Depends(get_current_user),
+):
+    document = get_document(payload.document_key)
+    if document is None:
+        raise HTTPException(status_code=404, detail="Unknown document")
+    errors, _warnings = validate_document(
+        document, payload.values, payload.lines, payload.dangerous_goods, payload.output_language
+    )
+    if errors:
+        raise HTTPException(status_code=422, detail={"errors": errors})
+
+    signature_png = _decoded_signature(payload.signature_image)
+    ref = datetime.now().strftime("%Y%m%d%H%M%S")
+    out_path = _render_export(document, payload, signature_png)
     background_tasks.add_task(_delete_file, out_path)
     return FileResponse(
         path=out_path,
         filename=f"{payload.document_key}_{ref}.pdf",
         media_type="application/pdf",
     )
+
+
+@router.post("/export/bundle")
+def export_bundle(
+    payload: DocumentBundleRequest,
+    background_tasks: BackgroundTasks,
+    user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    """Every ready paper of the export step in one archive.
+
+    The documents are rendered by the same code path as the per-document
+    buttons; the UN cards and the instructions in writing for the journey's
+    regimes ride along. What cannot be included is written down in the
+    archive's README rather than silently dropped — a bundle that looks
+    complete and is not would be worse than no bundle.
+    """
+    if not payload.documents:
+        raise HTTPException(status_code=422, detail="Nothing to bundle")
+
+    signature_png = _decoded_signature(payload.signature_image)
+    ref = datetime.now().strftime("%Y%m%d%H%M%S")
+    notes: list[str] = []
+    produced: list[tuple[Path, str]] = []
+
+    try:
+        for item in payload.documents:
+            document = get_document(item.document_key)
+            if document is None:
+                notes.append(f"{item.document_key}: unknown document, not included")
+                continue
+            errors, _warnings = validate_document(
+                document, item.values, item.lines,
+                item.dangerous_goods, item.output_language,
+            )
+            if errors:
+                notes.append(f"{item.document_key}: not included, still incomplete: "
+                             + "; ".join(str(e) for e in errors[:3]))
+                continue
+            out_path = _render_export(document, item, signature_png)
+            produced.append((out_path, f"{item.document_key}_{ref}.pdf"))
+
+        if not produced:
+            raise HTTPException(
+                status_code=422,
+                detail={"errors": notes or ["No document could be produced"]})
+
+        fd, name = tempfile.mkstemp(suffix=".zip")
+        os.close(fd)
+        bundle_path = Path(name)
+        try:
+            _fill_bundle(bundle_path, produced, payload, notes, db)
+        except BaseException:
+            _delete_file(bundle_path)
+            raise
+    finally:
+        for path, _ in produced:
+            _delete_file(path)
+
+    background_tasks.add_task(_delete_file, bundle_path)
+    return FileResponse(
+        path=bundle_path,
+        filename=f"cargopilot-documents-{ref}.zip",
+        media_type="application/zip",
+    )
+
+
+def _fill_bundle(bundle_path: Path, produced: list[tuple[Path, str]],
+                 payload: DocumentBundleRequest, notes: list[str],
+                 db: Session) -> None:
+    with zipfile.ZipFile(bundle_path, "w", zipfile.ZIP_DEFLATED) as archive:
+        for path, arcname in produced:
+            archive.write(path, arcname=arcname)
+
+        if payload.include_un_cards and payload.dangerous_goods:
+            cards = un_cards_availability(payload.dangerous_goods,
+                                          payload.profiles)
+            if instance_settings(db).un_cards_enabled and cards["cards"]:
+                for card in cards["cards"]:
+                    path = un_card_path(card["un_number"], card["modality"])
+                    if path is not None:
+                        archive.write(path, arcname=f"un-cards/{path.name}")
+                for un in cards["missing"]:
+                    notes.append(f"UN {un}: no card held for the selected regimes")
+            elif cards["requested"]:
+                notes.append("UN cards: no card set is installed on this server")
+
+        if payload.include_instructions and payload.dangerous_goods:
+            language = (payload.output_language or "nl").lower()
+            for profile in payload.profiles:
+                regime = str(profile).strip().lower()
+                if regime not in regulations.REGIMES:
+                    continue
+                status = regulations.instruction_status(regime, language)
+                if status.get("available"):
+                    pdf = regulations.instructions_pdf(regime, language)
+                    if pdf is not None:
+                        archive.write(
+                            pdf,
+                            arcname=f"instructions/{regime}-instructions-{language}.pdf")
+                        continue
+                notes.append(
+                    f"instructions in writing ({regime.upper()}, {language}): "
+                    "not on this server — the model is served only as the "
+                    "edition prints it")
+
+        if notes:
+            archive.writestr(
+                "README.txt",
+                "Not everything could be included:\n\n"
+                + "".join(f"  - {note}\n" for note in notes))
 
 
 @router.get("/instructions")

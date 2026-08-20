@@ -199,8 +199,12 @@ untick as you like — the advice is a starting point, not a lock.
 | **Waiting for carrier data** | Fields only the carrier can supply are missing |
 | **Blocked** | A safety check failed — see the compliance panel |
 
-Click **Download document** for each one, or **Download all** for every document that
-is ready. Every document downloads as a PDF and carries a draft notice.
+Click **Download document** for each one, or **Download all as ZIP** for one archive
+holding every document that is ready — and, when the shipment carries dangerous goods,
+the UN cards and the instructions in writing for the journey's regimes as well.
+Anything the server has to leave out (an incomplete document, a UN card it does not
+hold) is named in a README inside the archive rather than silently missing. Every
+document downloads as a PDF and carries a draft notice.
 
 > Documents are generated on the spot and deleted from the server the moment your
 > download finishes. Nothing is archived.

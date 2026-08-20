@@ -48,24 +48,54 @@ def test_een_paginabereik_is_gemeten_en_niet_geraden():
         assert cut["document"] in {d["id"] for d in register()["documents"]}
 
 
-def test_wat_de_opslag_niet_heeft_wordt_niet_verzonnen():
-    """The German model is in no edition this project can read. The status must
-    say it is missing — not fall back to the English one."""
-    status = regulations.instruction_status("adr", "de")
-    assert status["available"] is False
-    assert status["reason"] == "missing_in_store"
-    assert regulations.instructions_pdf("adr", "de") is None
+def test_alle_twaalf_instructies_zijn_meegeleverd():
+    """Since v1.130.0 the models are cut in CI from the pinned editions and
+    bundled (backend/seed/models), so a fresh installation with an empty
+    store can still hand the crew the paper — in all four languages, for
+    all three regimes. The manifest beside them records what each file was
+    cut from."""
+    for regime in regulations.REGIMES:
+        for language in regulations.LANGUAGES:
+            status = regulations.instruction_status(regime, language)
+            assert status["available"] is True, (regime, language)
+            assert status["source"] in ("bundled", "stored")
+    manifest = json.loads(
+        (regulations.BUNDLED_MODELS / "manifest.json").read_text(encoding="utf-8"))
+    by_id = {entry["id"]: entry for entry in manifest["models"]}
+    for doc in regulations.instruction_documents():
+        entry = by_id[doc["id"]]
+        assert entry["source_document"] == doc["cut_from"]["document"]
+        assert entry["source_pages"] == doc["cut_from"]["pages"]
 
 
-def test_de_nederlandse_adr_instructie_komt_uit_de_editie(tmp_path, monkeypatch):
-    """With the Dutch ADR in the store the model is cut from it. Without a
-    store there is nothing to cut, and the answer is that, not an error."""
-    monkeypatch.setenv("CARGOPILOT_REGULATIONS_DIR", str(tmp_path))
-    regulations.manifest.cache_clear()
+def test_wat_nergens_is_wordt_niet_verzonnen(tmp_path, monkeypatch):
+    """Take away the store, the bundled models *and* the CI cache fallback,
+    and the status says the model is missing and names the document that
+    would produce it — it never falls back to a neighbouring language."""
+    data = json.loads(REGISTER.read_text(encoding="utf-8"))
+    data["store"]["fallback_path"] = str(tmp_path / "fallback")
+    monkeypatch.setenv("CARGOPILOT_REGULATIONS_DIR", str(tmp_path / "store"))
+    monkeypatch.setattr(regulations, "BUNDLED_MODELS", tmp_path / "models")
+    monkeypatch.setattr(regulations, "manifest", lambda: data)
     status = regulations.instruction_status("adr", "nl")
     assert status["available"] is False
+    assert status["reason"] == "missing_in_store"
     assert status["needs"] == "adr_nl_2025"
     assert regulations.instructions_pdf("adr", "nl") is None
+
+
+def test_de_opslag_van_de_beheerder_wint_van_de_meegeleverde_snede(tmp_path, monkeypatch):
+    """An operator who places a file under the registered name in the store
+    is served that file: the bundled copy is a floor, not an override."""
+    doc = next(d for d in regulations.instruction_documents()
+               if d["model_of"]["regime"] == "adr"
+               and d["model_of"]["language"] == "nl")
+    own = tmp_path / doc["filename"]
+    own.write_bytes(b"%PDF-operator")
+    monkeypatch.setenv("CARGOPILOT_REGULATIONS_DIR", str(tmp_path))
+    regulations.manifest.cache_clear()
+    assert regulations.locate(doc["id"]) == own
+    assert regulations.instruction_status("adr", "nl")["source"] == "stored"
 
 
 @pytest.mark.parametrize("regime,language", [("adr", "nl"), ("adn", "en")])
@@ -111,7 +141,25 @@ def test_de_lijst_zegt_per_regeling_en_taal_wat_er_is():
             assert item["needs"], item
 
 
-def test_een_ontbrekend_model_weigert_met_de_reden():
+def test_elke_taal_is_nu_te_downloaden():
+    """The complaint that started v1.130.0: a language could be selected but
+    not downloaded, because the models lived only in a store nobody had
+    filled. With the cuts bundled, every language button must actually
+    deliver a PDF."""
+    client = _client()
+    for regime in regulations.REGIMES:
+        for language in regulations.LANGUAGES:
+            response = client.get(f"/api/documents/instructions/{regime}/{language}")
+            assert response.status_code == 200, (regime, language)
+            assert response.content[:5] == b"%PDF-", (regime, language)
+
+
+def test_een_ontbrekend_model_weigert_met_de_reden(tmp_path, monkeypatch):
+    data = json.loads(REGISTER.read_text(encoding="utf-8"))
+    data["store"]["fallback_path"] = str(tmp_path / "fallback")
+    monkeypatch.setenv("CARGOPILOT_REGULATIONS_DIR", str(tmp_path / "store"))
+    monkeypatch.setattr(regulations, "BUNDLED_MODELS", tmp_path / "models")
+    monkeypatch.setattr(regulations, "manifest", lambda: data)
     response = _client().get("/api/documents/instructions/adr/de")
     assert response.status_code == 409
     assert response.json()["detail"]["reason"] == "missing_in_store"

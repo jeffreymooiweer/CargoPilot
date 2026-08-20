@@ -2,6 +2,40 @@
 
 All notable changes are documented here, following [Semantic Versioning](https://semver.org/).
 
+## [1.130.0] — 2026-08-20
+
+Two complaints from use, both fixed at the root. **Download all** fired one download
+per document; it now hands over a single ZIP that also carries the UN cards and the
+instructions in writing for the journey. And the instructions in writing offered a
+language that could not be downloaded — because the models lived only in a regulations
+store nobody's installation had filled. The models now ship with the application.
+
+### Added
+
+- **Download all as ZIP.** A new `/api/documents/export/bundle` endpoint renders every
+  ready document through the same code path as the per-document buttons and returns
+  one archive, with the shipment's UN cards under `un-cards/` and the instructions in
+  writing for the journey's regimes (in the chosen document language) under
+  `instructions/`. Anything that cannot be included — a document still incomplete, a
+  UN card the server does not hold, an instruction language neither bundled nor in the
+  store — is named in a `README.txt` inside the archive rather than silently missing.
+- **The prescribed models are bundled.** The **Extract model documents** workflow runs
+  `scripts/cut_model_documents.py` on a runner: every source edition is verified
+  against the SHA-256 the register pins, the measured page ranges are cut with the
+  same library that measured them, and the sixteen models — instructions in writing
+  for ADR/RID/ADN in Dutch, English, German and French, plus the ADN 8.6.3 checklist
+  in four languages — land in `backend/seed/models/` with their provenance in a
+  manifest. Every language button on the export step now delivers a PDF out of the
+  box.
+
+### Changed
+
+- The lookup order for a model is now: the operator's regulations store first, the
+  bundled cut second, the CI cache last — an installation that collects its own
+  editions is served from those, and `instruction_status` reports `bundled` or
+  `stored` accordingly. A model in none of those places is still reported missing by
+  name, never borrowed from a neighbouring language (5.4.3.2).
+
 ## [1.129.0] — 2026-08-19
 
 CargoPilot now generates its own UN cards. The third-party card set that filled

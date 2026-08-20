@@ -78,7 +78,8 @@ working set untouched.
 
 ## How the app serves them
 
-The wizard's UN card download bundles exactly the cards for the declared
+The wizard's UN card download — and, since v1.130.0, the export step's
+**Download all as ZIP** archive — bundles exactly the cards for the declared
 substances on the regimes the journey touches (`profiles` in the request);
 a UN number that has no card on a requested regime is named as missing, and
 no other regime's card is substituted — the regimes print different

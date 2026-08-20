@@ -386,13 +386,15 @@ def _norm_tokens(code: str, value: str) -> list[str]:
     value = value.replace(",", " ").replace("( ", "(").replace(" )", ")")
     tokens = []
     for token in value.split():
+        token = token.strip("'’")
         match = re.fullmatch(r"(P\d+)\(([a-z])\)", token)
         if match:                                     # P114(b) -> P114b
             token = match.group(1) + match.group(2)
         token = token.replace("+(", "(+")             # +(13) -> (+13)
         if code == "8" and re.fullmatch(r"\d{1,2}", token):
             continue  # a printed footnote index, not a packing instruction
-        tokens.append(token)
+        if token:
+            tokens.append(token)
     return tokens
 
 
@@ -449,6 +451,7 @@ def build(out_path: Path | None, lenient: bool) -> int:
     mismatches: Counter = Counter()
     samples: list[str] = []
     union_compared: list[str] = []
+    conflicts: list[tuple[str, int, str, dict, dict]] = []
     for un in en_groups:
         rows_en = en_groups[un]
         rows_nl = nl_groups.get(un, [])
@@ -467,18 +470,12 @@ def build(out_path: Path | None, lenient: bool) -> int:
         if any(flag for pair in flags_en for flag in pair):
             continue
         if len(rows_en) == len(rows_nl):
-            candidates = zip(rows_en, rows_nl)
-            for row_en, row_nl in candidates:
+            for index, (row_en, row_nl) in enumerate(zip(rows_en, rows_nl)):
                 for code in COMPARED:
                     field = FIELDS[code]
                     a, b = _norm(code, row_en[field]), _norm(code, row_nl[field])
                     if a != b:
-                        mismatches[code] += 1
-                        if len(samples) < 60:
-                            samples.append(
-                                f"UN {un} col ({code}): "
-                                f"en {row_en[field]!r} != nl {row_nl[field]!r} "
-                                f"(pages {row_en['_page']}/{row_nl['_page']})")
+                        conflicts.append((un, index, code, row_en, row_nl))
         else:
             # One edition prints this UN number's variants as one row where
             # the other prints several (the 3381-3390 inhalation entries).
@@ -496,8 +493,38 @@ def build(out_path: Path | None, lenient: bool) -> int:
                             f"UN {un} col ({code}) as union: en {a} != nl {b}")
     if union_compared:
         print(f"  union-compared UN groups: {', '.join(union_compared)}")
+
+    # Where the two editions genuinely print different values — the Dutch
+    # book drops special provision 386 across the gas entries, prints MP7
+    # where the OTIF book prints MP8 — a third independently typeset
+    # edition arbitrates: the OTIF German book, read by the same parser.
+    overrides: dict[tuple[str, int, str], str] = {}
+    if conflicts:
+        de, de_stats = parse(STORE / "rid_de.pdf")
+        print(f"arbitration: German edition parsed, {len(de)} rows, {de_stats}")
+        de_groups = groups(de)
+        for un, index, code, row_en, row_nl in conflicts:
+            field = FIELDS[code]
+            rows_de = de_groups.get(un, [])
+            row_de = rows_de[min(index, len(rows_de) - 1)] if rows_de else None
+            a, b = _norm(code, row_en[field]), _norm(code, row_nl[field])
+            d = _norm(code, row_de[field]) if row_de else None
+            if d == a:
+                verdict = "en (German agrees)"
+            elif d == b:
+                verdict = "nl (German agrees)"
+                overrides[(un, index, field)] = row_nl[field]
+            else:
+                verdict = "unresolved"
+                mismatches[code] += 1
+            if verdict == "unresolved" or len(samples) < 80:
+                samples.append(
+                    f"UN {un} col ({code}): en {row_en[field]!r} nl "
+                    f"{row_nl[field]!r} de "
+                    f"{(row_de[field] if row_de else None)!r} -> {verdict}")
+
     if mismatches:
-        problems.append("column mismatches between the editions: "
+        problems.append("unresolved mismatches after arbitration: "
                         + ", ".join(f"({c})x{n}" for c, n in mismatches.most_common()))
     for line in samples:
         print("  " + line)
@@ -546,10 +573,15 @@ def build(out_path: Path | None, lenient: bool) -> int:
         for row_en in en:
             un = row_en["un"]
             variants = nl_groups.get(un, [])
-            index = min(seen[un], len(variants) - 1) if variants else -1
+            group_index = seen[un]
+            index = min(group_index, len(variants) - 1) if variants else -1
             seen[un] += 1
             entry = {FIELDS[code]: row_en[FIELDS[code]] for code in COLS
                      if code != "2"}
+            for code in COLS:
+                key = (un, group_index, FIELDS[code])
+                if key in overrides:
+                    entry[FIELDS[code]] = overrides[key]
             entry["name_en"] = row_en["name"]
             entry["name_nl"] = variants[index]["name"] if variants else ""
             entry["carriage_prohibited"] = row_en["carriage_prohibited"]
@@ -566,8 +598,12 @@ def build(out_path: Path | None, lenient: bool) -> int:
             "edition": "RID 2025",
             "source": ("RID 2025 — the OTIF English edition and the Dutch "
                        "edition, table A of chapter 3.2, each read as an "
-                       "independent typesetting of the same table"),
-            "readings": 2,
+                       "independent typesetting of the same table, with the "
+                       "OTIF German edition arbitrating the cells where the "
+                       "two disagreed"),
+            "readings": 3 if conflicts else 2,
+            "arbitrated_cells": len(conflicts),
+            "arbitrated_to_nl": len(overrides),
             "row_count": len(entries),
             "problems": problems,
             "cross_checks": {

@@ -6,6 +6,8 @@ import {
   SettingsOptions,
   ThemeChoice,
   UnCardStoreStatus,
+  UpdateCapability,
+  UpdateStatus,
   User,
   UserPreferences,
   api,
@@ -516,17 +518,7 @@ function AdminSettings() {
         />
       </section>
 
-      <section className={`${panelClass} p-5 space-y-3`}>
-        <h4 className="text-sm font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">
-          {t("settings.adminUpdates")}
-        </h4>
-        <p className="text-sm text-slate-700 dark:text-slate-300">{t("settings.updateExplain")}</p>
-        <p className="text-sm text-slate-700 dark:text-slate-300">{t("settings.updateCompose")}</p>
-        <pre className="overflow-x-auto rounded-lg bg-slate-100 px-3 py-2 text-xs text-slate-800 dark:bg-slate-800 dark:text-slate-200">
-          docker compose pull && docker compose up -d
-        </pre>
-        <p className="text-sm text-slate-700 dark:text-slate-300">{t("settings.updateAuto")}</p>
-      </section>
+      <UpdatePanel />
 
       <UnCardsAdminPanel />
 
@@ -878,6 +870,180 @@ function UnCardsAdminPanel() {
           </button>
         )}
       </div>
+
+      {message && <p className="text-sm text-emerald-700 dark:text-emerald-400">{message}</p>}
+      {error && <p className="text-sm text-red-600 dark:text-red-400">{error}</p>}
+    </section>
+  );
+}
+
+/** The Updating section: check on click, and — where the operator mounted
+ *  the Docker socket and set the switch — update and restart from here.
+ *  Without that capability the panel explains the manual route and how to
+ *  enable the in-app one, including what handing over the socket means. */
+function UpdatePanel() {
+  const { t } = useTranslation();
+  const [capability, setCapability] = useState<UpdateCapability | null>(null);
+  const [status, setStatus] = useState<UpdateStatus | null>(null);
+  const [checking, setChecking] = useState(false);
+  const [applying, setApplying] = useState(false);
+  const [phase, setPhase] = useState<string>("");
+  const [message, setMessage] = useState("");
+  const [error, setError] = useState("");
+
+  useEffect(() => {
+    api.updateCapability().then(setCapability).catch(() => setCapability(null));
+    // How the previous in-app update went, surviving its own restart.
+    api
+      .updateState()
+      .then((answer) => {
+        if (answer.state?.phase === "done") {
+          setMessage(t("settings.updateDone", { version: answer.current }));
+        } else if (answer.state?.phase === "failed") {
+          setError(
+            t("settings.updateFailed", { error: answer.state.error ?? "" }),
+          );
+        }
+      })
+      .catch(() => undefined);
+  }, [t]);
+
+  const checkNow = async () => {
+    setChecking(true);
+    setError("");
+    setMessage("");
+    try {
+      setStatus(await api.updateCheckNow());
+    } catch (e) {
+      setError(String(e));
+    } finally {
+      setChecking(false);
+    }
+  };
+
+  const apply = async () => {
+    if (!status?.latest) return;
+    if (!window.confirm(t("settings.updateApplyConfirm", { version: status.latest }))) {
+      return;
+    }
+    setApplying(true);
+    setError("");
+    setPhase(t("settings.updatePhasePulling"));
+    try {
+      await api.updateApply();
+    } catch (e) {
+      setError(String(e));
+      setApplying(false);
+      setPhase("");
+      return;
+    }
+    // Follow the state until the restart cuts the connection, then wait for
+    // the new instance and reload into it.
+    const started = Date.now();
+    const poll = async () => {
+      try {
+        const answer = await api.updateState();
+        if (answer.state?.phase === "failed") {
+          setError(t("settings.updateFailed", { error: answer.state.error ?? "" }));
+          setApplying(false);
+          setPhase("");
+          return;
+        }
+        if (answer.current !== status.current || answer.state?.phase === "done") {
+          window.location.reload();
+          return;
+        }
+        setPhase(
+          answer.state?.phase === "handed_over" || answer.state?.phase === "stopping"
+            ? t("settings.updatePhaseRestarting")
+            : t("settings.updatePhasePulling"),
+        );
+      } catch {
+        // The application is restarting; keep knocking until it answers.
+        setPhase(t("settings.updatePhaseRestarting"));
+      }
+      if (Date.now() - started < 10 * 60 * 1000) {
+        window.setTimeout(poll, 2500);
+      } else {
+        setError(t("settings.updateTimeout"));
+        setApplying(false);
+        setPhase("");
+      }
+    };
+    window.setTimeout(poll, 2500);
+  };
+
+  const canApply = capability?.available === true;
+  const updateAvailable = status?.update_available === true;
+
+  return (
+    <section className={`${panelClass} p-5 space-y-3`}>
+      <h4 className="text-sm font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">
+        {t("settings.adminUpdates")}
+      </h4>
+
+      <div className="flex flex-wrap items-center gap-3">
+        <button type="button" className={buttonSecondary} onClick={checkNow} disabled={checking || applying}>
+          {checking ? t("settings.updateChecking") : t("settings.updateCheckNow")}
+        </button>
+        {status && status.enabled && status.reachable === false && (
+          <span className="text-sm text-amber-700 dark:text-amber-300">{t("settings.updateUnreachable")}</span>
+        )}
+        {status && status.reachable && !updateAvailable && (
+          <span className="text-sm text-emerald-700 dark:text-emerald-400">
+            {t("settings.updateUpToDate", { version: status.current })}
+          </span>
+        )}
+        {status && updateAvailable && (
+          <span className="text-sm text-slate-700 dark:text-slate-200">
+            {t("settings.updateFound", { current: status.current, latest: status.latest })}
+          </span>
+        )}
+      </div>
+
+      {updateAvailable && canApply && (
+        <div className="space-y-2">
+          <button type="button" className={buttonPrimary} onClick={apply} disabled={applying}>
+            {applying
+              ? phase || t("settings.updateApplying")
+              : t("settings.updateApplyNow", { version: status?.latest })}
+          </button>
+          <p className="text-xs text-slate-500 dark:text-slate-400">{t("settings.updateApplyHint")}</p>
+        </div>
+      )}
+      {applying && phase && (
+        <p className="text-sm text-slate-700 dark:text-slate-200">{phase}</p>
+      )}
+
+      {!canApply && (
+        <div className="space-y-3">
+          <p className="text-sm text-slate-700 dark:text-slate-300">{t("settings.updateExplain")}</p>
+          <p className="text-sm text-slate-700 dark:text-slate-300">{t("settings.updateCompose")}</p>
+          <pre className="overflow-x-auto rounded-lg bg-slate-100 px-3 py-2 text-xs text-slate-800 dark:bg-slate-800 dark:text-slate-200">
+            docker compose pull && docker compose up -d
+          </pre>
+          <p className="text-sm text-slate-700 dark:text-slate-300">{t("settings.updateAuto")}</p>
+          <details className="text-sm text-slate-700 dark:text-slate-300">
+            <summary className="cursor-pointer font-medium">{t("settings.updateEnableApply")}</summary>
+            <div className="mt-2 space-y-2">
+              <p>{t("settings.updateEnableApplyHow")}</p>
+              <pre className="overflow-x-auto rounded-lg bg-slate-100 px-3 py-2 text-xs text-slate-800 dark:bg-slate-800 dark:text-slate-200">
+{`environment:
+  - UPDATE_APPLY_ENABLED=true
+volumes:
+  - /var/run/docker.sock:/var/run/docker.sock`}
+              </pre>
+              <p className="text-amber-700 dark:text-amber-300">{t("settings.updateSocketWarning")}</p>
+              {capability && capability.apply_enabled && capability.reason === "no_socket" && (
+                <p>{t("settings.updateReasonNoSocket")}</p>
+              )}
+              {capability && !capability.apply_enabled && capability.socket && (
+                <p>{t("settings.updateReasonSwitchOff")}</p>
+              )}
+            </div>
+          </details>
+        </div>
+      )}
 
       {message && <p className="text-sm text-emerald-700 dark:text-emerald-400">{message}</p>}
       {error && <p className="text-sm text-red-600 dark:text-red-400">{error}</p>}

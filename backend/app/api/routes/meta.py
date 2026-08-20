@@ -5,14 +5,19 @@ a Docker HEALTHCHECK has no session; the changelog is behind the same login as
 everything else — not because release notes are secret, but because nothing
 that is not needed for monitoring should be readable from outside.
 """
-from fastapi import APIRouter, Depends, Query
+import logging
+import threading
+
+from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
 
 from app.core.database import get_db
 from app.core.deps import get_current_user, require_admin
 from app.models.user import User
-from app.services import changelog, settings_store, updates
+from app.services import changelog, settings_store, updater, updates
 from app.version import get_version
+
+logger = logging.getLogger(__name__)
 
 router = APIRouter(tags=["meta"])
 
@@ -61,3 +66,77 @@ def update_status(admin: User = Depends(require_admin), db: Session = Depends(ge
         "url": release["url"],
         "update_available": ours is not None and theirs is not None and theirs > ours,
     }
+
+
+@router.post("/update-check")
+def update_check_now(admin: User = Depends(require_admin),
+                     db: Session = Depends(get_db)):
+    """A fresh look at the release feed, on the administrator's click.
+
+    The passive status call lives off a six-hour cache so settings visits
+    stay cheap; this one empties that cache first, because a person who
+    presses "check now" is asking GitHub, not the cache.
+    """
+    if not settings_store.instance_settings(db).update_check_enabled:
+        raise HTTPException(status_code=409, detail="The update check is switched off")
+    updates.clear_cache()
+    return update_status(admin=admin, db=db)
+
+
+@router.get("/update-capability")
+def update_capability(admin: User = Depends(require_admin)):
+    """Whether this installation can update itself, and if not, why not.
+
+    "No, because the switch is off" and "no, because no Docker socket is
+    mounted" are different answers with different fixes, and the settings
+    screen shows the right instructions for each.
+    """
+    return updater.capability()
+
+
+@router.get("/update-state")
+def update_state(admin: User = Depends(require_admin)):
+    """How the last in-app update went, surviving the restart it caused.
+
+    A ``done`` state whose work is visible (the running version) is
+    cleared on read, so the message shows once; a ``failed`` state stays
+    until the next attempt overwrites it — an error that vanishes on
+    refresh was never reported.
+    """
+    state = updater.read_state()
+    if state and state.get("phase") == "done":
+        updater.clear_state()
+    return {"state": state, "current": get_version()}
+
+
+@router.post("/update-apply")
+def update_apply(admin: User = Depends(require_admin),
+                 db: Session = Depends(get_db)):
+    """Update to the newest release and restart, where the operator allows.
+
+    The version is never caller input: it is whatever the check found,
+    compared against what runs. The pull and the swap happen in the
+    background — the response returns before the restart, and the client
+    follows progress through the state endpoint until the connection
+    drops and the new instance answers.
+    """
+    ability = updater.capability()
+    if not ability["available"]:
+        raise HTTPException(status_code=409, detail={
+            "error": "apply_unavailable", "reason": ability["reason"]})
+    status = update_status(admin=admin, db=db)
+    if not status.get("update_available"):
+        raise HTTPException(status_code=409, detail={
+            "error": "no_update", "current": status.get("current")})
+    target = status["latest"]
+
+    def run() -> None:
+        try:
+            updater.start_update(target)
+        except updater.UpdateError as exc:
+            logger.warning("In-app update to %s failed: %s", target, exc)
+            updater.write_state({"phase": "failed", "to": target,
+                                 "error": str(exc)})
+
+    threading.Thread(target=run, name="update-apply", daemon=True).start()
+    return {"started": True, "to": target}

@@ -185,6 +185,12 @@ export const api = {
   changelog: (since: string) =>
     request<ChangelogResponse>(`/changelog?since=${encodeURIComponent(since)}`),
   updateStatus: () => request<UpdateStatus>("/update-status"),
+  /** A fresh look at the release feed, bypassing the six-hour cache. */
+  updateCheckNow: () => request<UpdateStatus>("/update-check", { method: "POST" }),
+  updateCapability: () => request<UpdateCapability>("/update-capability"),
+  updateState: () => request<UpdateStateAnswer>("/update-state"),
+  updateApply: () => request<{ started: boolean; to: string }>(
+    "/update-apply", { method: "POST" }),
   // Reads carrier-assigned references (AWB, booking, ENS MRN, AES ITN) out of
   // a pasted booking confirmation. Reading only; the caller decides what to
   // fill, and fills only fields that are still empty.
@@ -507,6 +513,28 @@ export interface UpdateStatus {
   latest?: string;
   url?: string;
   update_available?: boolean;
+}
+
+/** Whether this installation can replace its own container, and if not,
+ *  which of the operator's prerequisites is missing. */
+export interface UpdateCapability {
+  apply_enabled: boolean;
+  socket: boolean;
+  container: string | null;
+  image: string | null;
+  available: boolean;
+  reason: "switch_off" | "no_socket" | "container_not_found" | "socket_unusable" | "foreign_image" | null;
+}
+
+export interface UpdateStateAnswer {
+  state: {
+    phase: "pulling" | "handed_over" | "stopping" | "done" | "failed";
+    to?: string;
+    to_image?: string;
+    error?: string;
+    at?: string;
+  } | null;
+  current: string;
 }
 
 /** The assistant runtime's condition: which mode it runs in, whether the

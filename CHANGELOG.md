@@ -2,6 +2,45 @@
 
 All notable changes are documented here, following [Semantic Versioning](https://semver.org/).
 
+## [1.133.0] — 2026-08-20
+
+Updating from inside the application — where the operator allows it. The v1.126.0
+stance ("a container cannot update itself") stays true and is now worked around the
+only honest way there is: by the operator deliberately handing the container the
+Docker API.
+
+### Added
+
+- **Check for updates, on a button.** The settings screen's Updating section asks
+  GitHub afresh when clicked, bypassing the six-hour cache the passive check lives
+  off, and says plainly: up to date, newer version found, or GitHub unreachable
+  (which is not "up to date").
+- **Update and restart, opt-in.** With `UPDATE_APPLY_ENABLED=true` **and** the Docker
+  socket mounted into the container, an update button appears whenever a newer
+  release exists. Pressing it pulls `jeffersonmouze/cargopilot` at the release's own
+  tag — the version is never caller input, the repository is pinned in code and
+  verified against the running container's own image — and hands the swap to a
+  short-lived helper container started **from the new image**: stop, rename aside,
+  recreate with the identical configuration (binds, ports, networks, restart policy),
+  start, and only then remove the old container. If the successor will not start, the
+  old container is renamed back and restarted: a failed update leaves a working
+  installation, and says why on the settings screen.
+- **The restart is part of the process.** The page follows the update through
+  `<data-dir>/update-state.json` — pulling, restarting — keeps knocking while the
+  container is being replaced, and reloads into the new version when it answers; the
+  what's-new card then shows what changed. Capability is reported honestly per
+  missing prerequisite: switch off, no socket, socket unusable, or a container
+  running a foreign image (which is refused).
+
+### Changed
+
+- `docs/configuration.md` documents the two prerequisites and states the trade-off in
+  plain words: mounting the Docker socket gives the container administrator rights
+  over the host — a deliberate operator decision, off by default, and the manual
+  `docker compose pull` route keeps working without it. The outbound-connections list
+  in `docs/privacy.md` grows to six: the image pull from Docker Hub, admin-initiated
+  and opt-in only.
+
 ## [1.132.0] — 2026-08-20
 
 The rail gets its own UN cards. RID table A was the largest measured table this

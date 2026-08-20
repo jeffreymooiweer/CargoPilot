@@ -2,6 +2,43 @@
 
 All notable changes are documented here, following [Semantic Versioning](https://semver.org/).
 
+## [1.131.0] — 2026-08-20
+
+The UN cards grow more official artwork and more printed law. All three
+follow-ups from the v1.129.0 pipeline that could be done without new sources
+are done.
+
+### Added
+
+- **The environmentally hazardous substance mark, from the book.** The mark on
+  the cards (marine pollutants at sea, environmentally hazardous by road and
+  water) is now the artwork of ADR Figure 5.2.1.8.3, cut from the UNECE
+  English ADR 2025 like the 22 hazard labels before it. The printed figure
+  carries dimension annotations hugging its edges, so the extractor fits the
+  mark's own diamond to the render — the upper edges are annotation-free and
+  grow one pixel per row, which fixes the geometry — and blanks everything
+  outside it. The vector-drawn stand-in is retired.
+- **ADN cards print the 7.1.6 requirements in full.** A new extractor
+  (`scripts/extract_adn_provision_texts.py`, run by the **Extract UN card
+  assets** workflow) reads the VE/LO/HA/CO/ST/RA/IN texts verbatim from the
+  UNECE English ADN 2025 into `backend/seed/dg/adn_provision_texts.json`.
+  There is no hand-kept expected count: the extraction is validated against
+  the codes ADN table A actually assigns — all 25 assigned codes came out
+  with their text. The cards print them per code; a code without an extracted
+  text keeps its honest article reference.
+- **IMDG cards print the code descriptions in full.** The SW/H/SG codes of
+  columns 16a and 16b now carry their verbatim descriptions from IMDG 7.1.5,
+  7.1.6 and 7.2.8 — already measured into `imdg_codes.json` since v1.22.0 —
+  instead of a bare chapter reference. The stowage category keeps its
+  reference to 7.1.3.2, whose definitions are not yet extracted.
+
+### Changed
+
+- The label extractor supports per-crop rotation (the mark's page is upright
+  where the label table is rotated) and a `--debug-find` measurement mode
+  that renders the pages naming a section, so the next crop box can be
+  measured the same way this one was.
+
 ## [1.130.0] — 2026-08-20
 
 Two complaints from use, both fixed at the root. **Download all** fired one download

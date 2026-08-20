@@ -73,21 +73,29 @@ def trim_white(pix: fitz.Pixmap) -> fitz.Pixmap:
     return fitz.Pixmap(pix.colorspace, new_w, new_h, b"".join(rows), pix.alpha)
 
 
-def mask_diamond(pix: fitz.Pixmap) -> fitz.Pixmap:
-    """White out everything outside the diamond inscribed in the crop box.
+def mask_outside_diamond(pix: fitz.Pixmap, clip: fitz.Rect,
+                         center: tuple[float, float], half: float) -> fitz.Pixmap:
+    """White out everything outside a measured diamond.
 
-    The mark of Figure 5.2.1.8.3 is printed with dimension annotations along
-    its lower edges; the mark itself is the diamond, whose vertices sit at
-    the crop box's edge midpoints (the box is the measured bounding box plus
-    a two-pixel pad). A small tolerance keeps the 2 mm outline intact.
+    The mark of Figure 5.2.1.8.3 is printed with dimension annotations
+    hugging its lower edges, so neither the crop box nor the crop's own ink
+    extent can stand in for the mark's boundary — both earlier attempts let
+    annotation text survive. The diamond itself was measured (center and
+    half-diagonal, page points, pinned in label_crops.json next to the crop
+    box), and this masks against that exact geometry; a sub-pixel band of
+    tolerance keeps the outline's antialiasing.
     """
     w, h, n = pix.width, pix.height, pix.n
+    scale = RENDER_DPI / 72.0
+    cx = (center[0] - clip.x0) * scale
+    cy = (center[1] - clip.y0) * scale
+    half_px = half * scale
+    tolerance = 1.5
     s = bytearray(pix.samples)
-    cx, cy = (w - 1) / 2, (h - 1) / 2
     for y in range(h):
-        dy = abs(y - cy) / cy
+        dy = abs(y - cy)
         for x in range(w):
-            if abs(x - cx) / cx + dy > 1.02:
+            if (abs(x - cx) + dy) > half_px + tolerance:
                 i = (y * w + x) * n
                 for k in range(n):
                     s[i + k] = 255
@@ -116,8 +124,10 @@ def extract(vol: Path, out_dir: Path) -> dict:
         page = doc[entry["page"] - 1]
         clip = fitz.Rect(entry["rect"])
         pix = page.get_pixmap(clip=clip, dpi=RENDER_DPI)
-        if entry.get("mask") == "diamond":
-            pix = mask_diamond(pix)
+        if entry.get("diamond"):
+            pix = mask_outside_diamond(
+                pix, clip, tuple(entry["diamond"]["center"]),
+                float(entry["diamond"]["half"]))
         pix = trim_white(pix)
         # The label table pages are printed rotated; a crop from an upright
         # page (the environmentally hazardous mark of 5.2.1.8.3) overrides

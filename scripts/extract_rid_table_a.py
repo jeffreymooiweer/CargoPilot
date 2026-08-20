@@ -271,7 +271,11 @@ def parse(pdf_path: Path) -> tuple[list[dict], dict]:
         rules = rules_of(page, band_y + 4)
         if len(rules) >= 3:
             stats["ruled_pages"] += 1
-            boundaries = rules
+            # The zone above the first rule is a band of its own: on most
+            # pages it continues the previous page's last row, but on the
+            # table's first page it holds the first row outright — UN 0004
+            # was silently dropped when this zone was treated as carry-only.
+            boundaries = [band_y + 4] + rules + [page.rect.height]
         else:
             # No printed rules on this page: fall back to the UN lines.
             stats["anchor_banded_pages"] += 1
@@ -279,30 +283,14 @@ def parse(pdf_path: Path) -> tuple[list[dict], dict]:
                                if UN_WORD.match(text) and x0 <= xs["1"] + 10)
             boundaries = [y - 2 for y in anchor_ys] + [page.rect.height]
 
-        # A row can wrap across the page break: what stands between the
-        # header band and the first rule continues the previous page's
-        # last row.
-        carry: list[tuple[float, float, float, str]] = []
         bands: list[list[tuple[float, float, float, str]]] = [
             [] for _ in range(max(len(boundaries) - 1, 0))]
         for word in body:
             _x0, _x1, y0, text = word
-            if boundaries and y0 + 1 < boundaries[0]:
-                carry.append(word)
-                continue
             for index in range(len(boundaries) - 1):
                 if boundaries[index] <= y0 + 1 < boundaries[index + 1]:
                     bands[index].append(word)
                     break
-        if carry and rows:
-            lines: dict[int, list] = {}
-            for word in carry:
-                lines.setdefault(round(word[2] / 3), []).append(word)
-            for key in sorted(lines):
-                for chunk in chunks_of(lines[key], xs):
-                    if NOISE_CHUNK.match(chunk[2]):
-                        continue
-                    rows[-1]["cells"].setdefault(assign(chunk, xs), []).append(chunk[2])
 
         for band in bands:
             if not band:
@@ -365,8 +353,8 @@ def parse(pdf_path: Path) -> tuple[list[dict], dict]:
         # values; whichever columns caught the fragments — the centred
         # banner can land in the name as easily as in a code column — the
         # row's meaning is the banner, and the fragments are not data.
-        joined = " ".join(fields[FIELDS[code]] for code in COLS
-                          if code != "1")
+        joined = " ".join(" ".join(
+            fields[FIELDS[code]] for code in COLS if code != "1").split())
         fields["carriage_prohibited"] = any(b in joined for b in PROHIBITED)
         fields["not_subject"] = any(
             all(fragment in joined for fragment in variant)
@@ -412,6 +400,10 @@ def _norm(code: str, value: str) -> str:
     tokens = _norm_tokens(code, value)
     if code in LIST_COLS:
         tokens = sorted(tokens)
+    if code in ("3a", "3b", "4", "5", "12", "15", "20"):
+        # Single-value columns whose token the Dutch edition sometimes
+        # breaks with a space: "1.2 G", "2TO C", "5.1+6.1 +8", "S2.65AN (+)".
+        return "".join(tokens)
     return " ".join(tokens)
 
 
@@ -597,6 +589,10 @@ def main() -> int:
     parser.add_argument("--pdf", help="filename in the regulations store, or a path")
     parser.add_argument("--probe", action="store_true",
                         help="report the table's printed structure and exit")
+    parser.add_argument("--probe-page", type=int,
+                        help="dump one page's words at the left margin, its "
+                             "rules and its anchors — the mode to look at "
+                             "when a page parses strangely")
     parser.add_argument("--sample-pages", type=int, default=2)
     parser.add_argument("--build", action="store_true",
                         help="parse both editions, cross-check, write the seed")
@@ -617,6 +613,19 @@ def main() -> int:
     if not pdf_path.is_file():
         print(f"not in the store: {args.pdf}", file=sys.stderr)
         return 1
+    if args.probe_page:
+        doc = fitz.open(str(pdf_path))
+        page = doc[args.probe_page - 1]
+        header = full_header(page)
+        print(f"== {pdf_path.name} page {args.probe_page} ==")
+        print(f"header: {header[0] if header else None}")
+        rules = rules_of(page, (header[0] + 4) if header else 0)
+        print(f"rules at y: {[round(y, 1) for y in rules]}")
+        for x0, y0, x1, y1, text, *_ in sorted(page.get_text("words"),
+                                               key=lambda w: (w[1], w[0])):
+            if x0 <= 60:
+                print(f"  x{x0:6.1f} y{y0:6.1f} {text!r}")
+        return 0
     if args.probe:
         return probe(pdf_path, args.sample_pages)
     print("nothing to do: pass --probe or --build", file=sys.stderr)

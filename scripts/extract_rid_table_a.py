@@ -83,7 +83,21 @@ FIELDS = {
 COMPARED = [c for c in COLS if c not in ("2",)]
 
 #: A footer line: the running page number or edition line at the bottom.
-FOOTER = re.compile(r"^(RID\s*\d{4}.*|-?\s*\d+\s*-?|\d+\s*/\s*\d+|.*OTIF.*)$")
+#: The OTIF edition numbers its pages "3.2-A-12"; the Dutch edition adds
+#: page lines of its own.
+FOOTER = re.compile(
+    r"^(RID\s*\d{4}.*|-?\s*\d+\s*-?|\d+\s*/\s*\d+|.*OTIF.*|3\.2-[A-C]-\d+.*"
+    r"|(Page|Pagina)\s*\d*)$")
+
+#: The Dutch PDF carries stray "Page N" words in its text layer, at
+#: positions that land inside the table's right-hand columns. They are
+#: artefacts of the file, not content of the book, and are dropped as
+#: chunks wherever they stand.
+NOISE_CHUNK = re.compile(r"^(Page|Pagina)( \d+)?$")
+
+#: Both editions replace a whole row's cells with a banner where carriage
+#: is prohibited by rail.
+PROHIBITED = ("CARRIAGE PROHIBITED", "VERVOER VERBODEN")
 
 
 def probe(pdf_path: Path, sample_pages: int) -> int:
@@ -226,14 +240,23 @@ def parse(pdf_path: Path) -> list[dict]:
             text = " ".join(w[3] for w in sorted(line))
             if (not anchor_ys or line_y > max(anchor_ys) + 30) and FOOTER.match(text):
                 continue
-            starts_row = any(
-                UN_WORD.match(w[3]) and w[0] <= xs["1"] + 10 for w in line)
-            if starts_row:
+            # The English text layer runs the UN number and the name's
+            # first words together; the anchor word is therefore split off
+            # before chunking, so column (1) is the four digits and nothing
+            # else in both editions.
+            anchors = [w for w in line
+                       if UN_WORD.match(w[3]) and w[0] <= xs["1"] + 10]
+            others = [w for w in line if w not in anchors]
+            if anchors:
                 page_rows.append({"page": number + 1, "cells": {}, "y": line_y})
             target = page_rows[-1] if page_rows else (rows[-1] if rows else None)
             if target is None:
                 continue
-            for chunk in chunks_of(line):
+            for anchor in anchors:
+                target["cells"].setdefault("1", []).append(anchor[3])
+            for chunk in chunks_of(others):
+                if NOISE_CHUNK.match(chunk[2]):
+                    continue
                 code = assign(chunk, xs)
                 cell = target["cells"].setdefault(code, [])
                 cell.append(chunk[2])
@@ -244,8 +267,29 @@ def parse(pdf_path: Path) -> list[dict]:
         fields = {FIELDS[code]: " ".join(row["cells"].get(code, [])).strip()
                   for code in COLS}
         fields["_page"] = row["page"]
+        # A prohibited row prints a banner across the cell area instead of
+        # values; whichever column caught it, the row's meaning is the
+        # banner, and the misassigned fragments are not data.
+        joined = " ".join(fields[FIELDS[code]] for code in COLS
+                          if code not in ("1", "2", "3a", "3b", "4", "5"))
+        if any(banner in joined for banner in PROHIBITED):
+            for code in COLS[5:]:
+                fields[FIELDS[code]] = ""
+            fields["carriage_prohibited"] = True
+        else:
+            fields["carriage_prohibited"] = False
         out.append(fields)
     return out
+
+
+def _norm(code: str, value: str) -> str:
+    """What must agree between the editions: the content, not the comma
+    style. The Dutch book writes "P130, LP101" and "1.2 G" where the OTIF
+    book writes "P130 LP101" and "1.2G"; column (7a) writes its decimals
+    with a comma."""
+    if code == "7a":
+        value = value.replace(",", ".")
+    return value.replace(",", " ").replace(" ", "")
 
 
 def build(out_path: Path | None, lenient: bool) -> int:
@@ -256,23 +300,38 @@ def build(out_path: Path | None, lenient: bool) -> int:
     problems: list[str] = []
     if len(en) != len(nl):
         problems.append(f"row counts differ: en {len(en)}, nl {len(nl)}")
+        # Show where the two UN sequences part company, so the next run
+        # knows which pages to look at.
+        import difflib
+        matcher = difflib.SequenceMatcher(
+            a=[r["un"] for r in en], b=[r["un"] for r in nl], autojunk=False)
+        for tag, a0, a1, b0, b1 in matcher.get_opcodes():
+            if tag == "equal":
+                continue
+            print(f"  UN sequence {tag}: en[{a0}:{a1}]="
+                  f"{[r['un'] for r in en[a0:a1]][:6]} "
+                  f"(pages {[r['_page'] for r in en[a0:a1]][:3]}) "
+                  f"nl[{b0}:{b1}]={[r['un'] for r in nl[b0:b1]][:6]} "
+                  f"(pages {[r['_page'] for r in nl[b0:b1]][:3]})")
 
     mismatches: Counter = Counter()
     samples: list[str] = []
     for index, (row_en, row_nl) in enumerate(zip(en, nl)):
+        if row_en["carriage_prohibited"] != row_nl["carriage_prohibited"]:
+            mismatches["prohibited"] += 1
+            samples.append(f"row {index} UN {row_en['un']}: prohibited flag differs")
+            continue
+        if row_en["carriage_prohibited"]:
+            continue
         for code in COMPARED:
             field = FIELDS[code]
-            a, b = row_en[field], row_nl[field]
-            if code == "7a":
-                # The editions write the unit in their own language's
-                # convention; the quantity is what must agree.
-                a, b = a.replace(",", "."), b.replace(",", ".")
+            a, b = _norm(code, row_en[field]), _norm(code, row_nl[field])
             if a != b:
                 mismatches[code] += 1
                 if len(samples) < 40:
                     samples.append(
                         f"row {index} UN {row_en['un']}/{row_nl['un']} "
-                        f"col ({code}): en {a!r} != nl {b!r} "
+                        f"col ({code}): en {row_en[field]!r} != nl {row_nl[field]!r} "
                         f"(pages {row_en['_page']}/{row_nl['_page']})")
     if mismatches:
         problems.append("column mismatches between the editions: "
@@ -325,6 +384,7 @@ def build(out_path: Path | None, lenient: bool) -> int:
                      if code != "2"}
             entry["name_en"] = row_en["name"]
             entry["name_nl"] = row_nl["name"]
+            entry["carriage_prohibited"] = row_en["carriage_prohibited"]
             entries.append(entry)
         payload = {
             "_comment": (
@@ -340,6 +400,7 @@ def build(out_path: Path | None, lenient: bool) -> int:
                        "independent typesetting of the same table"),
             "readings": 2,
             "row_count": len(entries),
+            "problems": problems,
             "cross_checks": {
                 "shunting_labels": "agreed" if found == expected else "disagreed",
                 "adr_identity_shared": len(shared),

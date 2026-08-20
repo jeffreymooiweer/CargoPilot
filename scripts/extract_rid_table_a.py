@@ -93,7 +93,7 @@ FOOTER = re.compile(
 #: positions that land inside the table's right-hand columns. They are
 #: artefacts of the file, not content of the book, and are dropped as
 #: chunks wherever they stand.
-NOISE_CHUNK = re.compile(r"^((Page|Pagina)( \d+)?|[.,;:·|-])$")
+NOISE_CHUNK = re.compile(r"^((Page|Pagina)( \d+)?|[.,;:·|-]|3\.2-[A-C]-\d+)$")
 
 #: Both editions replace a whole row's cells with a banner where carriage
 #: is prohibited by rail, and with another where the entry is not subject

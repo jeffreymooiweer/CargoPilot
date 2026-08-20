@@ -1,5 +1,5 @@
 {
- "_comment": "Crop boxes for the hazard label models of ADR 5.2.2.2.2, measured from 70 dpi renders of the UNECE English edition Volume II (adr2.pdf, sha256-pinned in backend/seed/dg/sources.json) by scripts/extract_adr_label_models.py's measurement pass. Pages are 1-based; rects are points in page space. Where a model prints two specimen variants, the box holds the first (topmost). Valid for this one edition file only - a new edition is re-measured, never reused. The print rotates the table content 90 degrees on the page; rotate_clockwise_degrees restores the labels upright after cropping.",
+ "_comment": "Crop boxes for the hazard label models of ADR 5.2.2.2.2, measured from 70 dpi renders of the UNECE English edition Volume II (adr2.pdf, sha256-pinned in backend/seed/dg/sources.json) by scripts/extract_adr_label_models.py's measurement pass. Pages are 1-based; rects are points in page space. Where a model prints two specimen variants, the box holds the first (topmost). Valid for this one edition file only - a new edition is re-measured, never reused. The print rotates the table content 90 degrees on the page; rotate_clockwise_degrees restores the labels upright after cropping. The MP entry is the environmentally hazardous substance mark of Figure 5.2.1.8.3 (an upright page, so it overrides the rotation with 0); its printed figure carries dimension annotations along the lower edges, and the pinned 'diamond' geometry (center and half-diagonal, page points, measured like the crop box) masks everything outside the mark's own boundary.",
  "document": "adr2",
  "crops": {
   "1": {
@@ -199,6 +199,23 @@
     357.9,
     347.7
    ]
+  },
+  "MP": {
+   "page": 248,
+   "rect": [
+    222.2,
+    77.1,
+    370.3,
+    225.3
+   ],
+   "rotate_clockwise_degrees": 0,
+   "diamond": {
+    "center": [
+     296.23,
+     151.2
+    ],
+    "half": 72.0
+   }
   }
  },
  "rotate_clockwise_degrees": 90

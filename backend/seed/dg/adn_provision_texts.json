@@ -1,0 +1,150 @@
+{
+ "_comment": "Additional requirements of ADN 7.1.6 (VE, LO, HA, CO, ST, RA, IN), read verbatim by machine with scripts/extract_adn_provision_texts.py for the UN cards. A compilation offered as an aid; the published text of the ADN remains authoritative.",
+ "source": "ADN 2025, UNECE English edition, section 7.1.6",
+ "sections": {
+  "VE": {
+   "VE01": "Holds containing these substances shall be ventilated with the ventilators operating\nat full power, where after measurement it has been established that the concentration\nof flammable gases and vapours given off by the cargo exceeds 10% of the LEL.\nThe measurement shall be carried out immediately after loading. A control\nmeasurement shall be repeated after one hour. The results of the measurement shall\nbe recorded in writing.",
+   "VE02": "Holds containing these substances shall be ventilated with the ventilators operating\nat full power, where after measurement it has been established that the holds are not\nfree from toxic gases and vapours given off by the cargo. The measurement shall be\ncarried out immediately after loading. A control measurement shall be repeated after\none hour. The results of the measurement shall be recorded in writing. Alternatively,\non vessels only containing these substances in containers in open holds, the holds\ncontaining such containers may be ventilated with the ventilation operating at full\npower only when it is suspected that the holds are not free of toxic gases and vapours\ngiven off by the cargo. Prior to unloading, the unloader shall be informed about this\nsuspicion.",
+   "VE03": "Spaces such as holds, accommodation and engine rooms, adjacent to holds\ncontaining these substances shall be ventilated.\nAfter unloading, holds having contained these substances shall undergo forced\nventilation.\nAfter ventilation, the concentration of flammable or toxic gases and vapours given\noff by the cargo in these holds shall be measured.\nThe results of the measurement shall be recorded in writing.",
+   "VE04": "When aerosols are carried for the purposes of reprocessing or disposal under special\nprovision 327 of Chapter 3.3, provisions of VE01 and VE02 are applied.\nto be taken before loading\nfollowing additional requirements shall be met when they are indicated in column (11) of\nA of Chapter 3.2:\nBefore these substances or articles are loaded, it shall be ensured that there are no\nmetal objects in the hold which are not an integral part of the vessel.\nThese substances may be loaded in bulk only if their temperature is not above 55 °C.\nBefore loading these substances in bulk or unpackaged, holds should be made as dry\nas possible.\nAny loose organic material shall be removed from holds before loading these\nsubstances in bulk.\nPrior to carriage of pressure receptacles it shall be ensured that the pressure has not\nrisen due to potential hydrogen generation.\nand stowage of cargo\nfollowing additional requirements shall be met when they are indicated in column (11) of\nA of Chapter 3.2:\nThese substances or articles shall be stowed at a distance of not less than 3.00 m from\nthe accommodation, engine rooms, the wheelhouse and from any sources of heat.\nThese substances or articles shall be stowed at a distance of not less than 2.00 m\nfrom the vertical planes defined by the sides of the vessel.\nAny friction, impact, jolting, overturning or dropping shall be prevented during\nhandling of these substances or articles.\nAll packages loaded in the same hold shall be stowed and wedged as to prevent any\njolting or friction during carriage.\nStacking of non-dangerous goods on top of packages containing these substances or\narticles is prohibited.\nWhere these substances or articles are loaded together with other goods in the same\nhold, these substances or articles shall be loaded after, and unloaded before, all the\nother goods."
+  },
+  "LO": {
+   "LO01": "Before these substances or articles are loaded, it shall be ensured that there are no\nmetal objects in the hold which are not an integral part of the vessel.",
+   "LO02": "These substances may be loaded in bulk only if their temperature is not above 55 °C.",
+   "LO03": "Before loading these substances in bulk or unpackaged, holds should be made as dry\nas possible.",
+   "LO04": "Any loose organic material shall be removed from holds before loading these\nsubstances in bulk.",
+   "LO05": "Prior to carriage of pressure receptacles it shall be ensured that the pressure has not\nrisen due to potential hydrogen generation.\nand stowage of cargo\nfollowing additional requirements shall be met when they are indicated in column (11) of\nA of Chapter 3.2:\nThese substances or articles shall be stowed at a distance of not less than 3.00 m from\nthe accommodation, engine rooms, the wheelhouse and from any sources of heat.\nThese substances or articles shall be stowed at a distance of not less than 2.00 m\nfrom the vertical planes defined by the sides of the vessel.\nAny friction, impact, jolting, overturning or dropping shall be prevented during\nhandling of these substances or articles.\nAll packages loaded in the same hold shall be stowed and wedged as to prevent any\njolting or friction during carriage.\nStacking of non-dangerous goods on top of packages containing these substances or\narticles is prohibited.\nWhere these substances or articles are loaded together with other goods in the same\nhold, these substances or articles shall be loaded after, and unloaded before, all the\nother goods."
+  },
+  "HA": {
+   "HA01": "These substances or articles shall be stowed at a distance of not less than 3.00 m from\nthe accommodation, engine rooms, the wheelhouse and from any sources of heat.",
+   "HA02": "These substances or articles shall be stowed at a distance of not less than 2.00 m\nfrom the vertical planes defined by the sides of the vessel.",
+   "HA03": "Any friction, impact, jolting, overturning or dropping shall be prevented during\nhandling of these substances or articles.\nAll packages loaded in the same hold shall be stowed and wedged as to prevent any\njolting or friction during carriage.\nStacking of non-dangerous goods on top of packages containing these substances or\narticles is prohibited.\nWhere these substances or articles are loaded together with other goods in the same\nhold, these substances or articles shall be loaded after, and unloaded before, all the\nother goods.\nThere is no need for these substances or articles to be loaded after, and unloaded\nbefore, all others if these substances or articles are contained in containers.\nWhile these substances or articles are being loaded or unloaded, no loading or\nunloading operations shall take place in the other holds and no filling or emptying of\nfuel tanks shall be allowed. The competent authority may, however, permit\nexceptions to this provision.",
+   "HA04": "Merged with HA03.",
+   "HA05": "Merged with HA03.",
+   "HA06": "Merged with HA03.",
+   "HA07": "It is prohibited to load or unload these substances in bulk or unpackaged if there is a\ndanger that they may get wet because of the prevailing weather conditions.",
+   "HA08": "If the packages with these substances are not contained in a container, they shall be\nplaced on gratings and covered with waterproof tarpaulins arranged in such a way\nthat the water drains off to the outside and the air circulation is not hindered.",
+   "HA09": "If these substances are carried in bulk they shall not be loaded in the same hold\ntogether with flammable substances.",
+   "HA10": "These substances shall be stowed on deck in the protected area. For seagoing vessels,\nthe stowage requirements are deemed to be met if the provisions of the IMDG Code\nare complied with.\nto be taken during loading, carriage, unloading and handling of cargo\nfollowing additional requirements shall be met when they are indicated in column (11) of\nA of Chapter 3.2:\nAfter loading and unloading of these substances in bulk or unpackaged and before\nleaving the cargo transfer site, the concentration of flammable gases and vapours\ngiven off by the cargo in the accommodation, engine rooms and adjacent holds shall\nbe measured by the loader or unloader or by an expert according to 8.2.1.2 using a\ngas detector. The results of the measurement shall be recorded in writing.\nBefore any person enters a hold and prior to unloading, the concentration of\nflammable gases and vapours given off by the cargo shall be measured by the\nunloader of the cargo or by an expert according to 8.2.1.2. The results of the\nmeasurement shall be recorded in writing.\nThe hold shall not be entered or unloading started until the concentration of\nflammable gases and vapours given off by the cargo in the airspace above the cargo\nis below 50% of the LEL.\nIf the concentrations of flammable gases and vapours given off by the cargo is not\nbelow 50% of the LEL safety measures shall be taken immediately by the loader, the\nunloader or the responsible master.\nIf a hold contains these substances in bulk or unpackaged, the concentration of toxic\ngases and vapours given off by the cargo shall be measured in all other spaces of the\nvessel which are used by the crew at least once every eight hours with a toximeter.\nThe results of the measurements shall be recorded in writing."
+  },
+  "CO": {
+   "CO01": "The surfaces of holds shall be coated or lined such that they are not readily\nflammable and not liable to impregnation by the cargo.",
+   "CO02": "Any part of the holds and of the hatchway covers which may come into contact with\nthis substance shall consist of metal or of wood having a specific density of not less\nthan 750 kg/m3 (seasoned wood).",
+   "CO03": "The inner surfaces of holds shall be lined or coated so as to prevent corrosion.\nThe substances shall have been stabilized in accordance with the requirements\napplicable to ammonium nitrate fertilizers set out in the IMSBC Code. Stabilizing\nshall be certified by the consignor in the transport document.\nIn those States where this is required, these substances may be carried in bulk only\nwith the approval of the competent authority.\nThese substances may be carried in bulk if the results of the trough test according to\nsubsection 38.2 of the Manual of Tests and Criteria show that the self-sustaining\ndecomposition rate is not greater than 25 cm/h."
+  },
+  "ST": {
+   "ST01": "The substances shall have been stabilized in accordance with the requirements\napplicable to ammonium nitrate fertilizers set out in the IMSBC Code. Stabilizing\nshall be certified by the consignor in the transport document.\nIn those States where this is required, these substances may be carried in bulk only\nwith the approval of the competent authority.",
+   "ST02": "These substances may be carried in bulk if the results of the trough test according to\nsubsection 38.2 of the Manual of Tests and Criteria show that the self-sustaining\ndecomposition rate is not greater than 25 cm/h."
+  },
+  "RA": {
+   "RA01": "The materials may be carried in bulk provided that:\n(a) for materials other than natural ores, carriage is under exclusive use and there\nis no escape of contents out of the vessel and no loss of shielding under normal\nconditions of transport; or\n(b) for natural ores, carriage is under exclusive use.",
+   "RA02": "The materials may be carried in bulk provided that:\n(a) they are carried in a vessel so that, under normal conditions of transport, there\nis no escape of contents or loss of shielding;\n(b) they are carried under exclusive use if the contamination on the accessible and\ninaccessible surfaces is greater than 4 Bq/cm2 (10-4 Ci/cm2) for beta and\ngamma emitters and low toxicity alpha emitters or 0.4 Bq/cm2\n(10-5 Ci/cm2) for all other alpha emitters;\n(c) measures are taken to ensure that radioactive material is not released into the\nvessel, if it is suspected that non-fixed contamination exists on inaccessible\nsurfaces of more than 4 Bq/cm2 (10-4 Ci/cm2) for beta and gamma emitters\nand low toxicity alpha emitters or 0.4 Bq/cm2 (10-5 Ci/cm2) for all other alpha\nemitters.\nSurface contaminated objects group (SCO-II) shall not be carried in bulk.",
+   "RA03": "Merged with RA02.\nfollowing additional requirements shall be met when they are indicated in column (10) of\nA of Chapter 3.2:\nHolds containing these substances shall be ventilated with the ventilators operating\nat full power, where after measurement it has been established that the concentration\nof flammable gases and vapours given off by the cargo exceeds 10% of the LEL.\nThe measurement shall be carried out immediately after loading. A control\nmeasurement shall be repeated after one hour. The results of the measurement shall\nbe recorded in writing.\nHolds containing these substances shall be ventilated with the ventilators operating\nat full power, where after measurement it has been established that the holds are not\nfree from toxic gases and vapours given off by the cargo. The measurement shall be\ncarried out immediately after loading. A control measurement shall be repeated after\none hour. The results of the measurement shall be recorded in writing. Alternatively,\non vessels only containing these substances in containers in open holds, the holds\ncontaining such containers may be ventilated with the ventilation operating at full\npower only when it is suspected that the holds are not free of toxic gases and vapours\ngiven off by the cargo. Prior to unloading, the unloader shall be informed about this\nsuspicion."
+  },
+  "IN": {
+   "IN01": "After loading and unloading of these substances in bulk or unpackaged and before\nleaving the cargo transfer site, the concentration of flammable gases and vapours\ngiven off by the cargo in the accommodation, engine rooms and adjacent holds shall\nbe measured by the loader or unloader or by an expert according to 8.2.1.2 using a\ngas detector. The results of the measurement shall be recorded in writing.\nBefore any person enters a hold and prior to unloading, the concentration of\nflammable gases and vapours given off by the cargo shall be measured by the\nunloader of the cargo or by an expert according to 8.2.1.2. The results of the\nmeasurement shall be recorded in writing.\nThe hold shall not be entered or unloading started until the concentration of\nflammable gases and vapours given off by the cargo in the airspace above the cargo\nis below 50% of the LEL.\nIf the concentrations of flammable gases and vapours given off by the cargo is not\nbelow 50% of the LEL safety measures shall be taken immediately by the loader, the\nunloader or the responsible master.",
+   "IN02": "If a hold contains these substances in bulk or unpackaged, the concentration of toxic\ngases and vapours given off by the cargo shall be measured in all other spaces of the\nvessel which are used by the crew at least once every eight hours with a toximeter.\nThe results of the measurements shall be recorded in writing.",
+   "IN03": "If a hold contains these substances in bulk or unpackaged, the master shall make sure\nevery day by checking the hold bilge wells or pump ducts that no water has entered\nthe hold bilges.\nWater which has entered the hold bilges shall be removed immediately.\n(Reserved)\nprovisions applicable to the carriage of self-reactive substances of Class 4.1,\nperoxides of Class 5.2 and substances stabilized by temperature control (other\nself-reactive substances and organic peroxides)\nself-reactive substances, organic peroxides and polymerizing substances shall be protected\ndirect sunlight and all sources of heat, and placed in adequately ventilated areas.\na number of packages are assembled in a container or closed vehicle, the total quantity\nsubstance, the type and number of packages and the stacking arrangement shall not create\nexplosion hazard.\ncontrol provisions\nprovisions apply to certain self-reactive substances when required by 2.2.41.1.17, and\norganic peroxides when required by 2.2.52.1.15 and certain polymerizing substances\nrequired by 2.2.41.1.21 or special provision 386 of Chapter 3.3 which may only be\nunder conditions where the temperature is controlled.\nprovisions also apply to the carriage of substances for which:\nThe proper shipping name as indicated in column (2) of Table A of Chapter 3.2 or\naccording to 3.1.2.6 contains the word \"TEMPERATURE CONTROLLED\"; and\nThe SADT or SAPT determined for the substance (with or without chemical\nstabilization) as offered for carriage is:\n(i) 50 °C or less for single packagings and IBCs; or\n(ii) 45 °C or less for tanks.\nchemical inhibition is not used to stabilize a reactive substance which may generate\namounts of heat and gas, or vapour, under normal carriage conditions, this\nneeds to be carried under temperature control. These provisions do not apply to\nwhich are stabilized by the addition of chemical inhibitors such that the SADT or\nSAPT is greater than that prescribed in (b) (i) or (ii), above.\naddition, if a self-reactive substance or organic peroxide or a substance the proper shipping\nof which contains the word “STABILIZED” and which is not normally required to be\nunder temperature control is carried under conditions where the temperature may\n55 °C, it may require temperature control.\n“control temperature” is the maximum temperature at which the substance can be safely\nIt is assumed that during carriage the temperature of the immediate surroundings of\npackage does not exceed 55 °C and attains this value for a relatively short time only during\nperiod of 24 hours. In the event of loss of temperature control, it may be necessary to\nemergency procedures. The “emergency temperature” is the temperature at which\nprocedures shall be implemented."
+  }
+ },
+ "diagnostics": {
+  "VE": {
+   "pages": [
+    413,
+    414
+   ],
+   "codes_found": 4,
+   "empty": [],
+   "lengths": {
+    "VE01": 429,
+    "VE02": 775,
+    "VE03": 406,
+    "VE04": 1826
+   }
+  },
+  "LO": {
+   "pages": [
+    414
+   ],
+   "codes_found": 5,
+   "empty": [],
+   "lengths": {
+    "LO01": 157,
+    "LO02": 84,
+    "LO03": 95,
+    "LO04": 95,
+    "LO05": 1101
+   }
+  },
+  "HA": {
+   "pages": [
+    414,
+    415
+   ],
+   "codes_found": 10,
+   "empty": [],
+   "lengths": {
+    "HA01": 165,
+    "HA02": 143,
+    "HA03": 964,
+    "HA04": 17,
+    "HA05": 17,
+    "HA06": 17,
+    "HA07": 162,
+    "HA08": 248,
+    "HA09": 117,
+    "HA10": 1746
+   }
+  },
+  "CO": {
+   "pages": [
+    412
+   ],
+   "codes_found": 3,
+   "empty": [],
+   "lengths": {
+    "CO01": 132,
+    "CO02": 200,
+    "CO03": 651
+   }
+  },
+  "ST": {
+   "pages": [
+    412
+   ],
+   "codes_found": 2,
+   "empty": [],
+   "lengths": {
+    "ST01": 353,
+    "ST02": 216
+   }
+  },
+  "RA": {
+   "pages": [
+    413
+   ],
+   "codes_found": 3,
+   "empty": [],
+   "lengths": {
+    "RA01": 300,
+    "RA02": 847,
+    "RA03": 1330
+   }
+  },
+  "IN": {
+   "pages": [
+    415,
+    416
+   ],
+   "codes_found": 3,
+   "empty": [],
+   "lengths": {
+    "IN01": 1065,
+    "IN02": 317,
+    "IN03": 2725
+   }
+  },
+  "assigned_by_table_a": 25,
+  "assigned_but_missing": []
+ }
+}

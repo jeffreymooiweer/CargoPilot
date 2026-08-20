@@ -73,6 +73,66 @@ def trim_white(pix: fitz.Pixmap) -> fitz.Pixmap:
     return fitz.Pixmap(pix.colorspace, new_w, new_h, b"".join(rows), pix.alpha)
 
 
+def mask_outside_diamond(pix: fitz.Pixmap) -> fitz.Pixmap:
+    """White out everything outside the mark's own diamond.
+
+    The mark of Figure 5.2.1.8.3 is printed with dimension annotations
+    hugging its lower edges. Neither the crop box, nor the crop's ink
+    extent, nor a diamond pinned in page coordinates drew the boundary in
+    the right place — every indirect frame left annotation text standing.
+    So the boundary is fitted to what the render itself shows: the upper
+    two edges are annotation-free, and with the diamond's 45-degree slope
+    each upper row's ink half-width grows by exactly one pixel per row.
+    The apex row and the horizontal extremes fix center and half-diagonal,
+    and everything outside the fitted diamond — shaved one pixel into the
+    outline, so the vertex-hugging arrowheads fall outside too — is
+    blanked.
+    """
+    w, h, n = pix.width, pix.height, pix.n
+    s = bytearray(pix.samples)
+
+    def row_extent(y: int) -> tuple[int, int] | None:
+        row = s[y * w * n:(y + 1) * w * n:n]
+        xs = [x for x in range(w) if row[x] < 200]
+        return (xs[0], xs[-1]) if xs else None
+
+    extents = {y: e for y in range(h) if (e := row_extent(y))}
+    if not extents:
+        return pix
+    apex = min(extents)
+    # Upper edges only: each row's ink half-width grows by one pixel per
+    # row while both 45-degree edges are the row's extremes. The last row
+    # where that linear growth still holds is the vertex height — the
+    # dimension arrowheads that flank the vertices break the pattern there,
+    # so they cannot inflate the fit the way they inflate the horizontal
+    # extremes.
+    centers: list[float] = []
+    half = 0.0
+    for y in range(apex + 4, h):
+        extent = extents.get(y)
+        if extent is None:
+            break
+        reach = (extent[1] - extent[0]) / 2.0
+        if abs(reach - (y - apex)) > 4:
+            break
+        centers.append((extent[0] + extent[1]) / 2.0)
+        half = float(y - apex)
+    if half < 20 or not centers:
+        return pix
+    centers.sort()
+    cx = centers[len(centers) // 2]
+    cy = apex + half
+    shave = 1.0
+    for y in range(h):
+        dy = abs(y - cy)
+        for x in range(w):
+            if abs(x - cx) + dy > half - shave:
+                i = (y * w + x) * n
+                for k in range(n):
+                    s[i + k] = 255
+    return fitz.Pixmap(pix.colorspace, w, h, bytes(s), pix.alpha)
+
+
 def rotate_clockwise(pix: fitz.Pixmap) -> fitz.Pixmap:
     """The print rotates the table content 90 degrees; this restores it."""
     w, h, n = pix.width, pix.height, pix.n
@@ -94,8 +154,16 @@ def extract(vol: Path, out_dir: Path) -> dict:
     for code, entry in spec["crops"].items():
         page = doc[entry["page"] - 1]
         clip = fitz.Rect(entry["rect"])
-        pix = trim_white(page.get_pixmap(clip=clip, dpi=RENDER_DPI))
-        if spec.get("rotate_clockwise_degrees") == 90:
+        pix = page.get_pixmap(clip=clip, dpi=RENDER_DPI)
+        if entry.get("diamond"):
+            pix = mask_outside_diamond(pix)
+        pix = trim_white(pix)
+        # The label table pages are printed rotated; a crop from an upright
+        # page (the environmentally hazardous mark of 5.2.1.8.3) overrides
+        # the document-level rotation with its own.
+        rotation = entry.get("rotate_clockwise_degrees",
+                             spec.get("rotate_clockwise_degrees"))
+        if rotation == 90:
             pix = rotate_clockwise(pix)
         if pix.width < 100 or pix.height < 100:
             report["failed"].append(
@@ -108,6 +176,31 @@ def extract(vol: Path, out_dir: Path) -> dict:
     return report
 
 
+def debug_render(vol: Path, needle: str, out_dir: Path) -> int:
+    """Render every page that mentions ``needle`` at 70 dpi.
+
+    The measurement pass for a new crop box works off these renders: they
+    are committed once, the box is measured on them by hand and pinned in
+    label_crops.json, and the renders are retired again. Nothing about a
+    crop is ever inferred from text geometry — that road failed for the
+    label table and is not walked twice.
+    """
+    doc = fitz.open(str(vol))
+    out_dir.mkdir(parents=True, exist_ok=True)
+    hits = 0
+    for number in range(doc.page_count):
+        page = doc[number]
+        if needle not in " ".join(page.get_text().split()):
+            continue
+        target = out_dir / f"page-{number + 1}.png"
+        page.get_pixmap(dpi=70).save(str(target))
+        print(f"{needle} on printed page {number + 1} -> {target}")
+        hits += 1
+    if hits == 0:
+        print(f"'{needle}' appears on no page of {vol}", file=sys.stderr)
+    return 0 if hits else 1
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--vol1", required=True, type=Path,
@@ -115,7 +208,12 @@ def main() -> int:
     parser.add_argument("--out", required=True, type=Path)
     parser.add_argument("--allow-missing", action="store_true",
                         help="report failures without failing the run")
+    parser.add_argument("--debug-find", metavar="TEXT",
+                        help="render the pages mentioning TEXT at 70 dpi into "
+                             "--out for a measurement pass, instead of cutting")
     args = parser.parse_args()
+    if args.debug_find:
+        return debug_render(args.vol1, args.debug_find, args.out)
     report = extract(args.vol1, args.out)
     print(json.dumps(report, indent=2))
     if report["failed"] and not args.allow_missing:

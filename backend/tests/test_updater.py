@@ -151,6 +151,62 @@ def test_start_update_pulls_and_hands_over(data_dir, tmp_path, monkeypatch):
     assert state["phase"] == "handed_over"
 
 
+def test_the_socket_is_not_mounted_twice(data_dir, tmp_path, monkeypatch):
+    """The operator already mounted the socket, and Unraid records it with a
+    mode: ``/var/run/docker.sock:/var/run/docker.sock:rw``. Adding the plain
+    form next to it gives two mounts on one destination, and the daemon
+    refuses that with 400 "Duplicate mount point"."""
+    monkeypatch.setenv("UPDATE_APPLY_ENABLED", "true")
+    get_settings.cache_clear()
+    _socket(tmp_path, monkeypatch)
+    own_id = "d" * 64
+    seen: list[str] = []
+    # The fixture puts the socket in a temporary directory; what matters here
+    # is the mode Unraid appends, not the path it lives at.
+    sock = str(updater.DOCKER_SOCKET)
+    mounted = f"{sock}:{sock}:rw"
+
+    def handler(request: httpx.Request) -> httpx.Response:
+        path = request.url.path
+        if path == "/_ping":
+            return httpx.Response(200, text="OK")
+        if path == "/images/create":
+            return httpx.Response(200, text=json.dumps({"status": "ok"}) + "\n")
+        if path.startswith("/images/") and path.endswith("/json"):
+            return httpx.Response(200, json={"Id": "sha256:new"})
+        if path == f"/containers/{own_id}/json":
+            return httpx.Response(200, json={
+                "Id": own_id,
+                "Config": {"Image": updater.IMAGE_REPOSITORY + ":1.135.0"},
+                "HostConfig": {"Binds": [
+                    "/mnt/user/appdata/cargopilot:/data:rw",
+                    mounted,
+                ]},
+            })
+        if path == "/containers/create":
+            seen.extend(json.loads(request.read())["HostConfig"]["Binds"])
+            return httpx.Response(201, json={"Id": "helper456"})
+        if path == "/containers/helper456/start":
+            return httpx.Response(204)
+        return httpx.Response(404)
+
+    monkeypatch.setattr(updater, "docker_client", lambda: make_client(handler))
+    monkeypatch.setattr(updater, "own_container_id", lambda client: own_id)
+    updater.start_update("1.138.0")
+
+    sockets = [b for b in seen if updater._bind_destination(b) == sock]
+    assert sockets == [mounted]
+    assert "/mnt/user/appdata/cargopilot:/data:rw" in seen
+
+
+def test_bind_destination_reads_every_shape_docker_writes():
+    assert updater._bind_destination("/srv/data:/data") == "/data"
+    assert updater._bind_destination("/srv/data:/data:rw") == "/data"
+    assert updater._bind_destination("/srv/data:/data:ro,z") == "/data"
+    assert updater._bind_destination("named-volume:/data") == "/data"
+    assert updater._bind_destination("/data") == "/data"
+
+
 def test_start_update_refuses_a_non_version(data_dir, tmp_path, monkeypatch):
     monkeypatch.setenv("UPDATE_APPLY_ENABLED", "true")
     get_settings.cache_clear()

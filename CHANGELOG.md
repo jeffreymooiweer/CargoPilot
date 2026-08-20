@@ -2,6 +2,30 @@
 
 All notable changes are documented here, following [Semantic Versioning](https://semver.org/).
 
+## [1.139.0] — 2026-08-20
+
+With the image finally pullable, the update got one step further and
+stopped at the next one: the daemon refused the updater container with
+`400 Duplicate mount point: /var/run/docker.sock`.
+
+### Fixed
+
+- **The Docker socket is no longer mounted twice.** The updater copies the
+  application's own bind mounts to the helper container and adds the socket
+  if it is not among them — but it compared whole bind strings, and Docker
+  writes a bind with its access mode: Unraid records the socket as
+  `/var/run/docker.sock:/var/run/docker.sock:rw`. The plain form never
+  matched, so the socket was added a second time and the daemon refused two
+  mounts on one destination. Binds are now compared by the container path
+  they target, in every shape Docker writes them.
+
+### Note for existing installations
+
+This fix lives in the code that *starts* an update, so it only takes effect
+once it is running. An installation on v1.135.0 or v1.136.0 still hits the
+duplicate mount and needs one more update by hand; from this version on the
+button does the work.
+
 ## [1.138.0] — 2026-08-20
 
 v1.137.0 promised two tag spellings and delivered one. The alias was added

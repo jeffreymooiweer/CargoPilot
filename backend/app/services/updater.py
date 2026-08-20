@@ -214,6 +214,19 @@ def _pull(client: httpx.Client, reference: str) -> None:
             f"The daemon reports no image {reference} after the pull.")
 
 
+def _bind_destination(bind: str) -> str:
+    """The container path a bind mount targets.
+
+    A bind reads ``source:destination`` with optional modes appended —
+    Unraid writes the socket as ``/var/run/docker.sock:/var/run/docker.sock:rw``.
+    Comparing whole bind strings therefore misses a socket that is already
+    mounted, and mounting it a second time makes the daemon refuse the
+    container with "Duplicate mount point".
+    """
+    parts = bind.split(":")
+    return parts[1] if len(parts) > 1 else parts[0]
+
+
 def start_update(target_version: str) -> dict[str, Any]:
     """Pull the release image and hand the swap to the helper container.
 
@@ -240,7 +253,8 @@ def start_update(target_version: str) -> dict[str, Any]:
         own = inspect.json()
         binds = list((own.get("HostConfig") or {}).get("Binds") or [])
         socket_bind = f"{DOCKER_SOCKET}:{DOCKER_SOCKET}"
-        if socket_bind not in binds:
+        if not any(_bind_destination(bind) == str(DOCKER_SOCKET)
+                   for bind in binds):
             binds.append(socket_bind)
 
         helper_name = f"{HELPER_NAME_PREFIX}-{int(time.time())}"

@@ -10,9 +10,13 @@ provisions behind the coded columns are printed verbatim from the official
 editions: ADR's V/CV/S (7.2.4, 7.5.11, 8.5), ADN's additional requirements
 of 7.1.6 (VE, LO, HA, CO, ST, RA, IN) and the IMDG stowage, handling and
 segregation code descriptions (7.1.5, 7.1.6, 7.2.8). No language model, and no hand, ever fills in a regulatory
-value: a modality without a measured table (RID until its table A is
-column-read; ICAO/air for want of a freely licensable source) **fails
-honestly** instead of borrowing another regime's data.
+value: a modality without a measured table (ICAO/air, for want of a
+freely licensable source) **fails honestly** instead of borrowing another
+regime's data. The RID joined the measured modalities in v1.132.0: its
+table A is read from three independently typeset editions — the Dutch and
+the OTIF English as the two readings, the OTIF German arbitrating every
+cell where the two disagreed (`backend/seed/dg/rid_table_a.json` records
+how many, and which way).
 
 ## Where things live
 

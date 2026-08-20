@@ -187,6 +187,7 @@ Where the data lives:
 | `backend/seed/dg/imdg_42_24.json` | The IMDG Amendment 42-24 difference layer over the 41-22 data |
 | `backend/seed/dg/imdg_codes.json` | 110 stowage, handling and segregation code descriptions |
 | `backend/seed/dg/imdg_dgl.json` | The Dangerous Goods List: 2,860 rows over 2,347 UN numbers |
+| `backend/seed/dg/rid_table_a.json` | RID 3.2.1 table A: 2,939 rows over 2,347 UN numbers, read from three independently typeset editions (Dutch and OTIF English as the readings, OTIF German arbitrating) |
 | `backend/app/config/dg_compliance.json` | Segregation tables and compliance rules |
 | `backend/app/config/dg_instructions.json` | Field help text |
 

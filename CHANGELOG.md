@@ -2,6 +2,39 @@
 
 All notable changes are documented here, following [Semantic Versioning](https://semver.org/).
 
+## [1.132.0] — 2026-08-20
+
+The rail gets its own UN cards. RID table A was the largest measured table this
+application still lacked — the cards for rail failed honestly rather than relabel
+road data — and it is now read in full, from three editions at once.
+
+### Added
+
+- **RID 3.2.1 table A as a seed** (`backend/seed/dg/rid_table_a.json`): 2,939 rows
+  over 2,347 UN numbers, twenty-two columns including the rail's own — the RID tank
+  code and its TU/TE provisions, the transport category, the W/VC/CW/CE provisions
+  of 7.2.4, 7.3, 7.5.11 and 7.6, the hazard identification number, and the bracketed
+  shunting models of column (5). Read geometrically by
+  `scripts/extract_rid_table_a.py` (run by **Extract UN card assets**): the Dutch
+  and OTIF English editions are parsed as two independent typesettings of the same
+  table and compared on every coded column, and the 212 cells where the two
+  genuinely disagreed were arbitrated by the OTIF German edition — which sided with
+  the English on every one (the Dutch print drops special provision 386 across the
+  gas entries, prints MP7 for MP8 four times, and shifts a whole row at UN 2215).
+  The reading is cross-checked against the v1.123.0 shunting-label seed (exact
+  agreement) and the ADR identity columns (2,345 shared UN numbers).
+- **RID UN cards.** The RID adapter now generates from that table: 2,347 UN numbers,
+  official label artwork, shunting models named per 5.3.4, and the rail columns on
+  the card. An entry the RID prints as CARRIAGE PROHIBITED or NOT SUBJECT TO RID
+  becomes a card saying exactly that. Air remains the one modality that fails
+  honestly, for want of a freely licensable source.
+
+### Changed
+
+- The full card set grows from three regimes to four (~9,400 cards); the generator
+  version moves to 1.1.0. Publishing a new set is the same **Generate UN cards**
+  dispatch as before.
+
 ## [1.131.0] — 2026-08-20
 
 The UN cards grow more official artwork and more printed law. All three

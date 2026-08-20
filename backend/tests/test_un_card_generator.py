@@ -50,12 +50,48 @@ def test_filenames_follow_the_contract(generated):
 
 
 def test_unavailable_modalities_fail_aloud(generated):
+    """Air is the one modality without a measured table since the RID's
+    joined in v1.132.0; it still fails by name, never by silence."""
     _, report, _ = generated
     failed = {(r["un_number"], r["modality"])
               for r in report["results"] if r["status"] == "failed"}
-    assert ("1203", "RID") in failed and ("1203", "ICAO") in failed
+    assert ("1203", "ICAO") in failed
+    assert ("1203", "RID") not in failed
     reasons = [r["reason"] for r in report["results"] if r["status"] == "failed"]
     assert all(reason for reason in reasons)
+
+
+def test_the_rid_card_carries_the_rails_own_columns(generator):
+    """UN 1547 (aniline, the rail test substance since v1.122.0): transport
+    category, hazard number, RID tank code and the CW/CE provisions come
+    from the three-reading table, and no shunting model is claimed where
+    column (5) brackets none."""
+    from un_cards.sources import rid
+    page = rid.cards("1547")[0]
+    identity = dict(page.identity_extra)
+    assert identity["Transport category"] == "2"
+    assert identity["Hazard identification number"] == "60"
+    rows = dict(page.provision_rows)
+    assert rows["Loading, unloading and handling"].startswith("CW13 CW28 CW31")
+    assert rows["Express parcels"].startswith("CE5")
+    assert dict(page.tank_rows)["RID tank code (4.3)"] == "L4BH"
+    assert "None assigned" in dict(page.label_extra)["Shunting labels (5.3.4)"]
+
+
+def test_the_rid_card_prints_the_shunting_model(generator):
+    from un_cards.sources import rid
+    page = rid.cards("0004")[0]
+    shunting = dict(page.label_extra)["Shunting labels (5.3.4)"]
+    assert "13" in shunting and "5.3.4" in shunting
+
+
+def test_a_released_entry_says_so_instead_of_borrowing(generator):
+    """UN 1845 (dry ice) is NOT SUBJECT TO RID: its card says exactly that
+    and carries no coded columns pretending otherwise."""
+    from un_cards.sources import rid
+    page = rid.cards("1845")[0]
+    assert "NOT SUBJECT TO RID" in dict(page.identity_extra)["Rail status"]
+    assert page.labels == []
 
 
 def test_multiple_entries_become_pages_of_one_pdf(generated):
@@ -95,7 +131,8 @@ def test_the_store_accepts_what_the_generator_packages(generated, generator,
         result = un_card_store.import_package(package)
         assert result["imported"] == manifest["total_cards"]
         assert un_card_store.card_path("1203", "ADR") is not None
-        assert un_card_store.card_path("1203", "RID") is None
+        assert un_card_store.card_path("1203", "RID") is not None
+        assert un_card_store.card_path("1203", "ICAO") is None
     finally:
         get_settings.cache_clear()
 

@@ -93,13 +93,24 @@ jobs:
             --out scripts/un_cards/assets/labels \
             --allow-missing
 
+      # RID table A: the Dutch and OTIF English editions parsed as
+      # independent readings of the same table, compared column by column
+      # with the OTIF German edition arbitrating genuine print differences,
+      # cross-checked against the shunting-label seed and the ADR identity
+      # columns. Strict: a problem fails the run and nothing is committed.
+      - name: Read RID table A from three editions
+        run: |
+          python scripts/regulations_store.py fetch rid || true
+          python scripts/extract_rid_table_a.py --build \
+            --out backend/seed/dg/rid_table_a.json
+
       - name: Commit extracted assets
         if: ${{ inputs.commit }}
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add scripts/un_cards/assets backend/seed/dg/adr_provision_texts.json \
-                  backend/seed/dg/adn_provision_texts.json
+                  backend/seed/dg/adn_provision_texts.json backend/seed/dg/rid_table_a.json
           if git diff --cached --quiet; then
             echo "nothing changed"
           else

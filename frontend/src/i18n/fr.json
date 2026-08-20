@@ -370,7 +370,8 @@
     "exportNotice": "Attention : les documents générés sont des projets. À vérifier, à compléter et à faire signer par une personne habilitée avant utilisation. Voir la clause de non-responsabilité.",
     "documentLanguage": "Langue des documents",
     "documentLanguageRule": "5.4.1.4.1 : une langue officielle du pays d'expédition et, si ce n'est pas l'allemand, l'anglais ou le français, en outre dans l'une de ces trois. Pour le néerlandais, l'application inscrit les deux noms dans le champ.",
-    "downloadAll": "Tout télécharger ({{count}})"
+    "downloadAll": "Tout télécharger en ZIP ({{count}})",
+    "downloadAllHint": "Le ZIP contient aussi les cartes UN et les consignes écrites pour ce transport, dans la mesure où ce serveur les détient."
   },
   "unCards": {
     "title": "Fiches ONU pour votre dossier",

@@ -75,6 +75,25 @@ class DocumentExportRequest(BaseModel):
     signature_image: str | None = None
 
 
+class DocumentBundleRequest(BaseModel):
+    """Everything the export step can hand over, in one archive.
+
+    The documents ride along with their full payloads — the same shape the
+    single export takes, so what the bundle produces is what the buttons
+    produce. The UN cards and the instructions in writing are included for
+    the declared goods on the journey's regimes; both are skipped without
+    complaint when the shipment has no dangerous goods.
+    """
+
+    documents: list[DocumentExportRequest] = Field(default_factory=list)
+    dangerous_goods: list[dict] | None = None
+    profiles: list[str] = []
+    output_language: str = "nl"
+    include_un_cards: bool = True
+    include_instructions: bool = True
+    signature_image: str | None = None
+
+
 class ReferenceItemBase(BaseModel):
     canonical_name: str
     category: str = "electrical"

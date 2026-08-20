@@ -291,6 +291,36 @@ export const api = {
     a.click();
     URL.revokeObjectURL(url);
   },
+  /** One archive with every ready document, plus the UN cards and the
+   *  instructions in writing for the journey's regimes. What the server
+   *  cannot include it writes into the archive's README instead of
+   *  leaving out silently. */
+  exportBundle: async (payload: DocumentBundlePayload) => {
+    const res = await fetch(`${API_BASE}/documents/export/bundle`, {
+      method: "POST",
+      credentials: "include",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    });
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({ detail: res.statusText }));
+      const detail = err.detail;
+      if (detail && typeof detail === "object" && Array.isArray(detail.errors)) {
+        throw new Error(detail.errors.join("\n"));
+      }
+      throw new Error(typeof detail === "string" ? detail : "Export failed");
+    }
+    const blob = await res.blob();
+    const disposition = res.headers.get("content-disposition") || "";
+    const match = disposition.match(/filename="?([^";]+)"?/i);
+    const filename = match ? match[1] : `cargopilot-documents-${Date.now()}.zip`;
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = filename;
+    a.click();
+    URL.revokeObjectURL(url);
+  },
   writtenInstructions: () =>
     request<{ documents: WrittenInstruction[] }>("/documents/instructions"),
   /** Any model the regulation prints rather than describes, by provision:
@@ -989,6 +1019,16 @@ export interface DocumentExportPayload extends Record<string, unknown> {
   lines: LineItem[];
   dangerous_goods?: DgEntry[];
   output_language: string;
+  signature_image?: string;
+}
+
+export interface DocumentBundlePayload extends Record<string, unknown> {
+  documents: DocumentExportPayload[];
+  dangerous_goods?: DgEntry[];
+  profiles?: string[];
+  output_language: string;
+  include_un_cards?: boolean;
+  include_instructions?: boolean;
   signature_image?: string;
 }
 

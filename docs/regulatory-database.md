@@ -97,8 +97,9 @@ German, a printed Dutch ADR 2025, the RID in German and French — the IMDG 42-2
 amendment resolution and three ADN session documents. `status` is the live answer; the register file is the
 durable one.
 
-Beside them stand eight entries of a second kind — the **models of 5.4.3**, the
-instructions in writing, one per regime and language. They are not sources: they
+Beside them stand entries of a second kind — the **models of 5.4.3**, the
+instructions in writing, one per regime and language (twelve since the RID
+joined in v1.124.0), plus the ADN 8.6.3 checklist in four. They are not sources: they
 are pages the application serves back out of a source, because ADR and ADN
 5.4.3.4 require the document the crew carries to correspond in form and content
 to a four-page model the book prints. Such an entry carries `model_of` (regime,
@@ -121,9 +122,16 @@ sheet. Whether a cut is the model and nothing else is checked, not assumed —
 cuts every registered model and prints, page by page, whether it carries the
 model's title and whether a neighbouring section leaked in. It runs on a runner
 (`fetch-regulations`, input `verify_instructions`), where the store holds the
-editions. All eight are registered with a measured range and all eight come out of the
-store. Should a range ever point at an edition an installation lacks, the
-application reports that model as missing and names the document that would
-produce it; it is never filled in from a neighbouring language, because
-instructions in a language the crew cannot read are what 5.4.3.2 exists to
-prevent.
+editions.
+
+Since v1.130.0 the cuts themselves ship with the application: the **Extract
+model documents** workflow runs `scripts/cut_model_documents.py` on a runner,
+which verifies every source book against the register's SHA-256, cuts the
+pinned ranges, and commits the results with their provenance to
+`backend/seed/models/`. The lookup order is deliberate — the operator's store
+first, the bundled cut second — so an installation that collects its own
+editions is served from those, and a fresh installation still hands the crew
+the paper. Should a model be in neither place, the application reports it as
+missing and names the document that would produce it; it is never filled in
+from a neighbouring language, because instructions in a language the crew
+cannot read are what 5.4.3.2 exists to prevent.

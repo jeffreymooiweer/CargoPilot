@@ -370,7 +370,8 @@
     "exportNotice": "Note: generated documents are drafts. Verify, complete and sign by an authorised person before use. See the disclaimer.",
     "documentLanguage": "Language of the documents",
     "documentLanguageRule": "5.4.1.4.1: an official language of the forwarding country, and where that is not German, English or French, additionally in one of those three. For Dutch the application puts both names in the field.",
-    "downloadAll": "Download all ({{count}})"
+    "downloadAll": "Download all as ZIP ({{count}})",
+    "downloadAllHint": "The ZIP also carries the UN cards and the instructions in writing for this journey, as far as this server holds them."
   },
   "unCards": {
     "title": "UN cards for your records",

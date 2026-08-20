@@ -370,7 +370,8 @@
     "exportNotice": "Let op: gegenereerde documenten zijn concepten. Controleer, vul aan en onderteken door een bevoegde persoon vóór gebruik. Zie de disclaimer.",
     "documentLanguage": "Taal van de documenten",
     "documentLanguageRule": "5.4.1.4.1: een officiële taal van het land van verzending, en is dat geen Duits, Engels of Frans, dan bovendien in een van die drie. Bij Nederlands zet de app beide namen in het veld.",
-    "downloadAll": "Alles downloaden ({{count}})"
+    "downloadAll": "Alles downloaden als ZIP ({{count}})",
+    "downloadAllHint": "Het ZIP-bestand bevat ook de UN-kaarten en de schriftelijke instructies voor dit vervoer, voor zover die op deze server aanwezig zijn."
   },
   "unCards": {
     "title": "UN-kaarten voor uw administratie",

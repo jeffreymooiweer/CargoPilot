@@ -523,8 +523,13 @@ def build(out_path: Path | None, lenient: bool) -> int:
             union_compared.append(f"{un} (en {len(rows_en)}, nl {len(rows_nl)})")
             for code in COMPARED:
                 field = FIELDS[code]
-                a = sorted({t for r in rows_en for t in _norm_tokens(code, r[field])})
-                b = sorted({t for r in rows_nl for t in _norm_tokens(code, r[field])})
+                # "T1 or T4" on the one edition's single row IS the union
+                # {T1, T4} of the other's two rows: the connective carries
+                # no content once the values are a set.
+                a = sorted({t for r in rows_en for t in _norm_tokens(code, r[field])}
+                           - {"or", "and"})
+                b = sorted({t for r in rows_nl for t in _norm_tokens(code, r[field])}
+                           - {"or", "and"})
                 if a != b:
                     mismatches[code] += 1
                     if len(samples) < 60:

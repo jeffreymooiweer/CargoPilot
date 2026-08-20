@@ -210,7 +210,34 @@ def assign(chunk: tuple[float, float, str], xs: dict[str, float]) -> str:
     return best
 
 
-def parse(pdf_path: Path) -> list[dict]:
+def rules_of(page, below_y: float) -> list[float]:
+    """The y positions of the table's printed horizontal rules.
+
+    Both editions draw a rule between every two rows. Banding on the rules
+    instead of on the UN-number lines matters because a tall row prints its
+    UN number vertically centred: banding on the anchor line handed the
+    row's first printed line to the previous row (1002's TA4 TT9 landed one
+    row up, 1012's held its neighbour's copy too).
+    """
+    ys: set[float] = set()
+    for drawing in page.get_drawings():
+        for item in drawing["items"]:
+            if item[0] == "l":
+                p1, p2 = item[1], item[2]
+                if abs(p1.y - p2.y) < 0.6 and abs(p2.x - p1.x) > 250:
+                    ys.add(round((p1.y + p2.y) / 2, 1))
+            elif item[0] == "re":
+                rect = item[1]
+                if rect.height < 1.6 and rect.width > 250:
+                    ys.add(round(rect.y0, 1))
+    merged: list[float] = []
+    for y in sorted(y for y in ys if y > below_y):
+        if not merged or y - merged[-1] > 2.5:
+            merged.append(y)
+    return merged
+
+
+def parse(pdf_path: Path) -> tuple[list[dict], dict]:
     """Every row of the main table run, page by page, top to bottom."""
     doc = fitz.open(str(pdf_path))
     headers: dict[int, tuple[float, dict[str, float]]] = {}
@@ -227,6 +254,8 @@ def parse(pdf_path: Path) -> list[dict]:
     main_run = max(runs, key=len)
 
     rows: list[dict] = []
+    stats = {"ruled_pages": 0, "anchor_banded_pages": 0,
+             "bands_without_anchor": 0, "bands_with_extra_anchors": []}
     for number in main_run:
         page = doc[number]
         band_y, xs = headers[number]
@@ -235,41 +264,75 @@ def parse(pdf_path: Path) -> list[dict]:
             if y0 <= band_y + 4:
                 continue
             body.append((x0, x1, y0, text))
-        # Visual lines, top to bottom.
-        lines: dict[int, list[tuple[float, float, float, str]]] = {}
-        for x0, x1, y0, text in body:
-            lines.setdefault(round(y0 / 3), []).append((x0, x1, y0, text))
-        # Drop footer lines: below every row anchor and matching the pattern.
-        anchor_ys = [y0 for x0, _x1, y0, text in body
-                     if UN_WORD.match(text) and x0 <= xs["1"] + 10]
-        page_rows: list[dict] = []
-        for key in sorted(lines):
-            line = lines[key]
-            line_y = min(w[2] for w in line)
-            text = " ".join(w[3] for w in sorted(line))
-            if (not anchor_ys or line_y > max(anchor_ys) + 30) and FOOTER.match(text):
+
+        rules = rules_of(page, band_y + 4)
+        if len(rules) >= 3:
+            stats["ruled_pages"] += 1
+            boundaries = rules
+        else:
+            # No printed rules on this page: fall back to the UN lines.
+            stats["anchor_banded_pages"] += 1
+            anchor_ys = sorted(y0 for x0, _x1, y0, text in body
+                               if UN_WORD.match(text) and x0 <= xs["1"] + 10)
+            boundaries = [y - 2 for y in anchor_ys] + [page.rect.height]
+
+        # A row can wrap across the page break: what stands between the
+        # header band and the first rule continues the previous page's
+        # last row.
+        carry: list[tuple[float, float, float, str]] = []
+        bands: list[list[tuple[float, float, float, str]]] = [
+            [] for _ in range(max(len(boundaries) - 1, 0))]
+        for word in body:
+            _x0, _x1, y0, text = word
+            if boundaries and y0 + 1 < boundaries[0]:
+                carry.append(word)
                 continue
-            # The English text layer runs the UN number and the name's
-            # first words together; the anchor word is therefore split off
-            # before chunking, so column (1) is the four digits and nothing
-            # else in both editions.
-            anchors = [w for w in line
+            for index in range(len(boundaries) - 1):
+                if boundaries[index] <= y0 + 1 < boundaries[index + 1]:
+                    bands[index].append(word)
+                    break
+        if carry and rows:
+            lines: dict[int, list] = {}
+            for word in carry:
+                lines.setdefault(round(word[2] / 3), []).append(word)
+            for key in sorted(lines):
+                for chunk in chunks_of(lines[key], xs):
+                    if NOISE_CHUNK.match(chunk[2]):
+                        continue
+                    rows[-1]["cells"].setdefault(assign(chunk, xs), []).append(chunk[2])
+
+        for band in bands:
+            if not band:
+                continue
+            band_text = " ".join(w[3] for w in sorted(band, key=lambda w: w[0]))
+            if FOOTER.match(band_text.strip()):
+                continue
+            anchors = [w for w in band
                        if UN_WORD.match(w[3]) and w[0] <= xs["1"] + 10]
-            others = [w for w in line if w not in anchors]
             if anchors:
-                page_rows.append({"page": number + 1, "cells": {}, "y": line_y})
-            target = page_rows[-1] if page_rows else (rows[-1] if rows else None)
-            if target is None:
-                continue
-            for anchor in anchors:
-                target["cells"].setdefault("1", []).append(anchor[3])
-            for chunk in chunks_of(others, xs):
-                if NOISE_CHUNK.match(chunk[2]):
+                if len(anchors) > 1:
+                    stats["bands_with_extra_anchors"].append(
+                        (number + 1, [a[3] for a in anchors]))
+                target = {"page": number + 1, "cells": {}}
+                rows.append(target)
+            else:
+                stats["bands_without_anchor"] += 1
+                if not rows:
                     continue
-                code = assign(chunk, xs)
-                cell = target["cells"].setdefault(code, [])
-                cell.append(chunk[2])
-        rows.extend(page_rows)
+                target = rows[-1]
+            for anchor in anchors[:1]:
+                target["cells"].setdefault("1", []).append(anchor[3])
+            others = [w for w in band if w not in anchors]
+            # Line by line inside the band, so cell text keeps its order.
+            lines: dict[int, list] = {}
+            for word in others:
+                lines.setdefault(round(word[2] / 3), []).append(word)
+            for key in sorted(lines):
+                for chunk in chunks_of(lines[key], xs):
+                    if NOISE_CHUNK.match(chunk[2]):
+                        continue
+                    code = assign(chunk, xs)
+                    target["cells"].setdefault(code, []).append(chunk[2])
 
     out: list[dict] = []
     for row in rows:
@@ -291,47 +354,76 @@ def parse(pdf_path: Path) -> list[dict]:
         else:
             fields["carriage_prohibited"] = False
         out.append(fields)
-    return out
+    return out, stats
+
+
+#: The columns whose value is an unordered list of codes. Their cells wrap
+#: over several printed lines, and the two editions break the lines in
+#: different places, so the tokens are compared as sets.
+LIST_COLS = {"6", "8", "9a", "9b", "11", "13", "16", "17", "18", "19"}
 
 
 def _norm(code: str, value: str) -> str:
-    """What must agree between the editions: the content, not the comma
-    style. The Dutch book writes "P130, LP101" and "1.2 G" where the OTIF
-    book writes "P130 LP101" and "1.2G"; column (7a) writes its decimals
-    with a comma."""
-    if code == "7a":
+    """What must agree between the editions: the content, not the comma or
+    footnote style. The Dutch book writes "P114(b)", "L1,5BN" and appends
+    printed footnote digits where the OTIF book writes "P114b" and
+    "L1.5BN" plain; column (7a) writes decimals with a comma."""
+    if code in ("7a", "12"):
         value = value.replace(",", ".")
-    return value.replace(",", " ").replace(" ", "")
+    value = value.replace(",", " ")
+    tokens = []
+    for token in value.split():
+        token = re.sub(r"\((\w+)\)$", r"\1", token)   # P114(b) -> P114b
+        token = token.replace("+(", "(+")             # +(13) -> (+13)
+        if code == "8" and re.fullmatch(r"\d{1,2}", token):
+            continue  # a printed footnote index, not a packing instruction
+        tokens.append(token)
+    if code in LIST_COLS:
+        tokens = sorted(tokens)
+    return "".join(tokens)
+
+
+def _dump(label: str, row: dict) -> None:
+    print(f"    {label} page {row['_page']}: " + " | ".join(
+        f"({code}){row[FIELDS[code]]}" for code in COLS
+        if row[FIELDS[code]]) + (" [PROHIBITED]" if row["carriage_prohibited"] else ""))
 
 
 def build(out_path: Path | None, lenient: bool) -> int:
-    en = parse(STORE / "rid.pdf")
-    nl = parse(STORE / "RID-2025-NL.pdf")
+    import difflib
+
+    en, en_stats = parse(STORE / "rid.pdf")
+    nl, nl_stats = parse(STORE / "RID-2025-NL.pdf")
     print(f"rows: en {len(en)}, nl {len(nl)}")
+    print(f"banding: en {en_stats}, nl {nl_stats}")
 
     problems: list[str] = []
-    if len(en) != len(nl):
-        problems.append(f"row counts differ: en {len(en)}, nl {len(nl)}")
-        # Show where the two UN sequences part company, so the next run
-        # knows which pages to look at.
-        import difflib
-        matcher = difflib.SequenceMatcher(
-            a=[r["un"] for r in en], b=[r["un"] for r in nl], autojunk=False)
-        for tag, a0, a1, b0, b1 in matcher.get_opcodes():
-            if tag == "equal":
-                continue
-            print(f"  UN sequence {tag}: en[{a0}:{a1}]="
-                  f"{[r['un'] for r in en[a0:a1]][:6]} "
-                  f"(pages {[r['_page'] for r in en[a0:a1]][:3]}) "
-                  f"nl[{b0}:{b1}]={[r['un'] for r in nl[b0:b1]][:6]} "
-                  f"(pages {[r['_page'] for r in nl[b0:b1]][:3]})")
+    matcher = difflib.SequenceMatcher(
+        a=[r["un"] for r in en], b=[r["un"] for r in nl], autojunk=False)
+    pairs: list[tuple[dict, dict]] = []
+    for tag, a0, a1, b0, b1 in matcher.get_opcodes():
+        if tag == "equal":
+            pairs.extend(zip(en[a0:a1], nl[b0:b1]))
+            continue
+        problems.append(
+            f"UN sequences differ: en[{a0}:{a1}]={[r['un'] for r in en[a0:a1]][:6]} "
+            f"nl[{b0}:{b1}]={[r['un'] for r in nl[b0:b1]][:6]}")
+        print(f"  UN sequence {tag}:")
+        for row in en[a0:a1][:4]:
+            _dump("en", row)
+        for row in nl[b0:b1][:4]:
+            _dump("nl", row)
 
     mismatches: Counter = Counter()
     samples: list[str] = []
-    for index, (row_en, row_nl) in enumerate(zip(en, nl)):
+    for row_en, row_nl in pairs:
         if row_en["carriage_prohibited"] != row_nl["carriage_prohibited"]:
             mismatches["prohibited"] += 1
-            samples.append(f"row {index} UN {row_en['un']}: prohibited flag differs")
+            samples.append(f"UN {row_en['un']}: prohibited flag differs "
+                           f"(en {row_en['carriage_prohibited']}, "
+                           f"nl {row_nl['carriage_prohibited']})")
+            _dump("en", row_en)
+            _dump("nl", row_nl)
             continue
         if row_en["carriage_prohibited"]:
             continue
@@ -340,10 +432,10 @@ def build(out_path: Path | None, lenient: bool) -> int:
             a, b = _norm(code, row_en[field]), _norm(code, row_nl[field])
             if a != b:
                 mismatches[code] += 1
-                if len(samples) < 40:
+                if len(samples) < 60:
                     samples.append(
-                        f"row {index} UN {row_en['un']}/{row_nl['un']} "
-                        f"col ({code}): en {row_en[field]!r} != nl {row_nl[field]!r} "
+                        f"UN {row_en['un']} col ({code}): "
+                        f"en {row_en[field]!r} != nl {row_nl[field]!r} "
                         f"(pages {row_en['_page']}/{row_nl['_page']})")
     if mismatches:
         problems.append("column mismatches between the editions: "
@@ -391,7 +483,7 @@ def build(out_path: Path | None, lenient: bool) -> int:
 
     if out_path:
         entries = []
-        for row_en, row_nl in zip(en, nl):
+        for row_en, row_nl in pairs:
             entry = {FIELDS[code]: row_en[FIELDS[code]] for code in COLS
                      if code != "2"}
             entry["name_en"] = row_en["name"]

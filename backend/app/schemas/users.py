@@ -24,6 +24,10 @@ class UserUpdate(BaseModel):
     email: EmailStr | None = None
     role: UserRole | None = None
     active: bool | None = None
+    # An administrator setting a new password for someone who lost theirs.
+    # Unlike PasswordChange there is no current_password: the admin does
+    # not know it, which is the whole reason for the reset.
+    password: str | None = Field(default=None, min_length=8)
 
 
 class PasswordChange(BaseModel):

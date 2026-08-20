@@ -103,3 +103,19 @@ def test_an_administrator_cannot_delete_itself():
     with pytest.raises(HTTPException) as error:
         _ensure_delete_is_safe(admin, admin, active_admin_count=2)
     assert error.value.detail == "Cannot delete yourself"
+
+
+def test_an_admin_password_reset_hashes_and_verifies():
+    """UserUpdate grew a password field in v1.136.0 so an administrator can
+    reset a lost password without knowing the old one. The schema holds the
+    same floor as account creation, and what lands in the database is a
+    hash the login check accepts — never the plain text."""
+    from app.core.security import hash_password, verify_password
+
+    with pytest.raises(ValidationError):
+        UserUpdate(password="short")
+    payload = UserUpdate(password="brand-new-secret")
+    stored = hash_password(payload.password)
+    assert stored != payload.password
+    assert verify_password("brand-new-secret", stored)
+    assert not verify_password("something-else", stored)

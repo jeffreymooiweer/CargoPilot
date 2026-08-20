@@ -2,6 +2,34 @@
 
 All notable changes are documented here, following [Semantic Versioning](https://semver.org/).
 
+## [1.136.0] — 2026-08-20
+
+The users page grows up. It was a day-one leftover — a create form and a
+list, hardcoded strings, no way to change anything after the fact — while
+the backend already knew how to update and delete users safely. Now the
+page speaks for the whole feature.
+
+### Added
+
+- **Administrators can reset a user's password.** An inline form per user
+  sets a new password (minimum eight characters) without knowing the old
+  one — the whole point of a reset. The backend hashes it exactly like any
+  other password.
+- **Roles and activation are managed from the page.** Each user card has a
+  role selector, an activate/deactivate button, and a delete button with a
+  confirmation that names the account. Deactivated accounts are visibly
+  dimmed and badged.
+- **The safety rules explain themselves.** You cannot demote, deactivate
+  or delete yourself, nor the last active administrator — the server
+  already refused, and now the controls are disabled up front with a
+  tooltip saying why. Your own account carries a "you" badge.
+
+### Changed
+
+- **The users page is translated.** Every label, hint, confirmation and
+  error lives in all four interface languages; the create form gained
+  proper labels, validation and a password hint.
+
 ## [1.135.0] — 2026-08-20
 
 The first real-world installation to enable in-app updating did everything

@@ -719,5 +719,33 @@
     "booking": "Buchungsnummer",
     "ens": "ENS-Referenz (ICS2)",
     "itn": "AES ITN"
+  },
+  "users": {
+    "title": "Benutzer",
+    "intro": "Konten dieser Installation. Nur Administratoren sehen diese Seite.",
+    "newUser": "Neuer Benutzer",
+    "username": "Benutzername",
+    "email": "E-Mail-Adresse",
+    "password": "Passwort",
+    "passwordHint": "Mindestens 8 Zeichen.",
+    "role": "Rolle",
+    "roleUser": "Benutzer",
+    "roleAdmin": "Administrator",
+    "create": "Benutzer anlegen",
+    "created": "Benutzer angelegt.",
+    "saved": "Gespeichert.",
+    "you": "Sie",
+    "inactive": "deaktiviert",
+    "activate": "Aktivieren",
+    "deactivate": "Deaktivieren",
+    "resetPassword": "Passwort zurücksetzen",
+    "resetPasswordDo": "Festlegen",
+    "newPasswordFor": "Neues Passwort für {{name}}",
+    "passwordReset": "Passwort festgelegt.",
+    "delete": "Löschen",
+    "deleteConfirm": "Benutzer {{name}} endgültig löschen?",
+    "deleted": "Benutzer gelöscht.",
+    "guardSelf": "Beim eigenen Konto nicht möglich — bitten Sie einen anderen Administrator.",
+    "guardLastAdmin": "Dies ist der letzte aktive Administrator; er kann nicht entfernt oder zurückgestuft werden."
   }
 }

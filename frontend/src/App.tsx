@@ -46,7 +46,7 @@ export default function App() {
           <Route path="/materieel" element={<MaterieelPage />} />
           <Route path="/settings" element={<SettingsPage user={user} />} />
           <Route path="/legal" element={<LegalPage />} />
-          <Route path="/users" element={<UsersPage />} />
+          <Route path="/users" element={<UsersPage user={user} />} />
         </Route>
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>

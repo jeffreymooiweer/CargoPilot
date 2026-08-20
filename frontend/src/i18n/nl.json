@@ -719,5 +719,33 @@
     "booking": "Boekingsnummer",
     "ens": "ENS-referentie (ICS2)",
     "itn": "AES ITN"
+  },
+  "users": {
+    "title": "Gebruikers",
+    "intro": "Accounts voor deze installatie. Alleen beheerders zien deze pagina.",
+    "newUser": "Nieuwe gebruiker",
+    "username": "Gebruikersnaam",
+    "email": "E-mailadres",
+    "password": "Wachtwoord",
+    "passwordHint": "Minimaal 8 tekens.",
+    "role": "Rol",
+    "roleUser": "Gebruiker",
+    "roleAdmin": "Beheerder",
+    "create": "Gebruiker aanmaken",
+    "created": "Gebruiker aangemaakt.",
+    "saved": "Opgeslagen.",
+    "you": "jij",
+    "inactive": "gedeactiveerd",
+    "activate": "Activeren",
+    "deactivate": "Deactiveren",
+    "resetPassword": "Wachtwoord resetten",
+    "resetPasswordDo": "Instellen",
+    "newPasswordFor": "Nieuw wachtwoord voor {{name}}",
+    "passwordReset": "Wachtwoord ingesteld.",
+    "delete": "Verwijderen",
+    "deleteConfirm": "Gebruiker {{name}} definitief verwijderen?",
+    "deleted": "Gebruiker verwijderd.",
+    "guardSelf": "Op je eigen account kan dit niet — vraag een andere beheerder.",
+    "guardLastAdmin": "Dit is de laatste actieve beheerder; die kan niet worden verwijderd of teruggezet."
   }
 }

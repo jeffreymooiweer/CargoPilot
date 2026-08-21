@@ -2,6 +2,38 @@
 
 All notable changes are documented here, following [Semantic Versioning](https://semver.org/).
 
+## [1.143.0] — 2026-08-21
+
+Forgetting a password no longer means asking an administrator.
+
+### Added
+
+- **"Forgot your password?"** on the sign-in screen, with a mail server
+  configured. A user name or an address gets a link to choose a new
+  password; the link opens a page that asks for it twice.
+- **The address of this installation** is now a setting. The links in
+  outgoing mail need it; left empty, it is read from the request and from
+  the proxy headers when those are trusted, which is right unless a reverse
+  proxy hides its own host.
+
+### Security
+
+- **The form tells nobody who has an account.** Whether the account exists,
+  is active, has an address, or the relay accepted the message: every
+  request gets the same answer. A form that distinguishes them is a way to
+  find out who works here, one guess at a time. What went wrong is written
+  to the log, where the administrator can see it and an outsider cannot.
+- **A reset token is treated as the password it effectively is.** Only its
+  hash is stored, so a leaked database hands out no working links; it works
+  once, expires after an hour, and asking again invalidates the previous
+  link. Spending a token also drops every other outstanding one for that
+  account.
+- **Resetting ends the old sessions.** The session token carries a
+  fingerprint of the password hash, so every sign-in from before the reset
+  stops being accepted — which is the point of resetting when someone else
+  may know the old password.
+- The request form is rate-limited to five attempts a minute.
+
 ## [1.142.0] — 2026-08-21
 
 The documents of a consignment can be mailed straight from the export step.

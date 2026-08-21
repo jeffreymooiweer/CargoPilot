@@ -43,3 +43,15 @@ class UserOut(BaseModel):
     email: str
     role: UserRole
     active: bool
+
+
+class PasswordResetRequest(BaseModel):
+    """Who forgot their password. A user name or an address — both are what
+    people remember, and the answer is the same either way."""
+
+    identifier: str = Field(default="", max_length=254)
+
+
+class PasswordResetConfirm(BaseModel):
+    token: str = Field(min_length=16, max_length=256)
+    new_password: str = Field(min_length=8)

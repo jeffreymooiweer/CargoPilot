@@ -30,7 +30,13 @@
     "username": "Username",
     "password": "Password",
     "submit": "Sign in",
-    "setup": "No admin configured. Set ADMIN_USERNAME, ADMIN_EMAIL and ADMIN_PASSWORD."
+    "setup": "No admin configured. Set ADMIN_USERNAME, ADMIN_EMAIL and ADMIN_PASSWORD.",
+    "forgot": "Forgot your password?",
+    "forgotLabel": "User name or e-mail address",
+    "forgotHint": "You will get a link to choose a new password. The link works for one hour.",
+    "forgotSubmit": "Send link",
+    "forgotSending": "Sending…",
+    "forgotSent": "If that account exists, a link has been sent to its e-mail address. Check your junk mail too."
   },
   "wizard": {
     "step2": "Goods",
@@ -316,7 +322,9 @@
     "mailTestPlaceholder": "Your own e-mail address",
     "mailTestSend": "Send test",
     "mailTesting": "Sending…",
-    "mailTestSent": "Test message sent to {{to}}."
+    "mailTestSent": "Test message sent to {{to}}.",
+    "publicUrl": "Address of this installation",
+    "publicUrlHint": "Used for the links in outgoing mail, for example https://cargopilot.example.com. Leave empty when the browser reaches CargoPilot directly."
   },
   "modality": {
     "title": "Choose your transport modality",
@@ -783,5 +791,18 @@
     "deleted": "User deleted.",
     "guardSelf": "Not possible on your own account — ask another administrator.",
     "guardLastAdmin": "This is the last active administrator; it cannot be removed or demoted."
+  },
+  "reset": {
+    "title": "New password",
+    "intro": "Choose a new password for your account.",
+    "password": "New password",
+    "passwordHint": "At least 8 characters.",
+    "repeat": "Repeat password",
+    "mismatch": "The two passwords are not the same.",
+    "submit": "Set password",
+    "saving": "Saving…",
+    "done": "Your password is set. You can sign in now.",
+    "toLogin": "Go to the sign-in screen",
+    "noToken": "This page belongs to a link from an e-mail. Ask for a new link on the sign-in screen."
   }
 }

@@ -30,7 +30,13 @@
     "username": "Nom d'utilisateur",
     "password": "Mot de passe",
     "submit": "Se connecter",
-    "setup": "Aucun administrateur configuré. Définissez ADMIN_USERNAME, ADMIN_EMAIL et ADMIN_PASSWORD."
+    "setup": "Aucun administrateur configuré. Définissez ADMIN_USERNAME, ADMIN_EMAIL et ADMIN_PASSWORD.",
+    "forgot": "Mot de passe oublié ?",
+    "forgotLabel": "Nom d'utilisateur ou adresse e-mail",
+    "forgotHint": "Vous recevrez un lien pour choisir un nouveau mot de passe. Le lien est valable une heure.",
+    "forgotSubmit": "Envoyer le lien",
+    "forgotSending": "Envoi en cours…",
+    "forgotSent": "Si ce compte existe, un lien a été envoyé à son adresse e-mail. Vérifiez aussi vos indésirables."
   },
   "wizard": {
     "step2": "Marchandises",
@@ -316,7 +322,9 @@
     "mailTestPlaceholder": "Votre propre adresse e-mail",
     "mailTestSend": "Envoyer un test",
     "mailTesting": "Envoi en cours…",
-    "mailTestSent": "Message de test envoyé à {{to}}."
+    "mailTestSent": "Message de test envoyé à {{to}}.",
+    "publicUrl": "Adresse de cette installation",
+    "publicUrlHint": "Utilisée pour les liens dans les messages sortants, par exemple https://cargopilot.example.fr. Laisser vide si le navigateur atteint CargoPilot directement."
   },
   "modality": {
     "title": "Choisissez votre mode de transport",
@@ -783,5 +791,18 @@
     "deleted": "Utilisateur supprimé.",
     "guardSelf": "Impossible sur votre propre compte — demandez à un autre administrateur.",
     "guardLastAdmin": "C'est le dernier administrateur actif ; il ne peut être ni supprimé ni rétrogradé."
+  },
+  "reset": {
+    "title": "Nouveau mot de passe",
+    "intro": "Choisissez un nouveau mot de passe pour votre compte.",
+    "password": "Nouveau mot de passe",
+    "passwordHint": "Au moins 8 caractères.",
+    "repeat": "Répéter le mot de passe",
+    "mismatch": "Les deux mots de passe ne sont pas identiques.",
+    "submit": "Définir le mot de passe",
+    "saving": "Enregistrement…",
+    "done": "Votre mot de passe est défini. Vous pouvez vous connecter.",
+    "toLogin": "Aller à la page de connexion",
+    "noToken": "Cette page correspond à un lien reçu par e-mail. Demandez un nouveau lien sur la page de connexion."
   }
 }

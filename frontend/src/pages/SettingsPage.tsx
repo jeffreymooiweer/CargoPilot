@@ -581,6 +581,13 @@ function AdminSettings() {
           <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">{t("settings.mailHint")}</p>
         </div>
 
+        <Field
+          label={t("settings.publicUrl")}
+          hint={t("settings.publicUrlHint")}
+          value={draft.public_url}
+          onChange={(value) => set("public_url", value)}
+        />
+
         <Toggle
           label={t("settings.mailEnabled")}
           hint={t("settings.mailEnabledHint")}

@@ -30,7 +30,13 @@
     "username": "Benutzername",
     "password": "Passwort",
     "submit": "Anmelden",
-    "setup": "Kein Administrator eingerichtet. Setzen Sie ADMIN_USERNAME, ADMIN_EMAIL und ADMIN_PASSWORD."
+    "setup": "Kein Administrator eingerichtet. Setzen Sie ADMIN_USERNAME, ADMIN_EMAIL und ADMIN_PASSWORD.",
+    "forgot": "Passwort vergessen?",
+    "forgotLabel": "Benutzername oder E-Mail-Adresse",
+    "forgotHint": "Sie erhalten einen Link, um ein neues Passwort zu wählen. Der Link gilt eine Stunde.",
+    "forgotSubmit": "Link senden",
+    "forgotSending": "Wird gesendet…",
+    "forgotSent": "Falls dieses Konto besteht, wurde ein Link an die zugehörige E-Mail-Adresse gesendet. Sehen Sie auch im Spam-Ordner nach."
   },
   "wizard": {
     "step2": "Güter",
@@ -316,7 +322,9 @@
     "mailTestPlaceholder": "Ihre eigene E-Mail-Adresse",
     "mailTestSend": "Test senden",
     "mailTesting": "Wird gesendet…",
-    "mailTestSent": "Testnachricht an {{to}} gesendet."
+    "mailTestSent": "Testnachricht an {{to}} gesendet.",
+    "publicUrl": "Adresse dieser Installation",
+    "publicUrlHint": "Wird für Links in ausgehender Mail verwendet, z. B. https://cargopilot.example.de. Leer lassen, wenn der Browser CargoPilot direkt erreicht."
   },
   "modality": {
     "title": "Wählen Sie Ihren Verkehrsträger",
@@ -783,5 +791,18 @@
     "deleted": "Benutzer gelöscht.",
     "guardSelf": "Beim eigenen Konto nicht möglich — bitten Sie einen anderen Administrator.",
     "guardLastAdmin": "Dies ist der letzte aktive Administrator; er kann nicht entfernt oder zurückgestuft werden."
+  },
+  "reset": {
+    "title": "Neues Passwort",
+    "intro": "Wählen Sie ein neues Passwort für Ihr Konto.",
+    "password": "Neues Passwort",
+    "passwordHint": "Mindestens 8 Zeichen.",
+    "repeat": "Passwort wiederholen",
+    "mismatch": "Die beiden Passwörter stimmen nicht überein.",
+    "submit": "Passwort setzen",
+    "saving": "Wird gespeichert…",
+    "done": "Ihr Passwort ist gesetzt. Sie können sich jetzt anmelden.",
+    "toLogin": "Zur Anmeldung",
+    "noToken": "Diese Seite gehört zu einem Link aus einer E-Mail. Fordern Sie auf der Anmeldeseite einen neuen Link an."
   }
 }

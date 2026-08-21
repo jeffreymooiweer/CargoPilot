@@ -30,7 +30,13 @@
     "username": "Gebruikersnaam",
     "password": "Wachtwoord",
     "submit": "Inloggen",
-    "setup": "Geen admin geconfigureerd. Stel ADMIN_USERNAME, ADMIN_EMAIL en ADMIN_PASSWORD in."
+    "setup": "Geen admin geconfigureerd. Stel ADMIN_USERNAME, ADMIN_EMAIL en ADMIN_PASSWORD in.",
+    "forgot": "Wachtwoord vergeten?",
+    "forgotLabel": "Gebruikersnaam of e-mailadres",
+    "forgotHint": "U krijgt een link om een nieuw wachtwoord te kiezen. De link werkt één uur.",
+    "forgotSubmit": "Link versturen",
+    "forgotSending": "Bezig met versturen…",
+    "forgotSent": "Als dit account bestaat, is er een link verstuurd naar het bijbehorende e-mailadres. Kijk ook in de ongewenste post."
   },
   "wizard": {
     "step2": "Goederen",
@@ -316,7 +322,9 @@
     "mailTestPlaceholder": "Uw eigen e-mailadres",
     "mailTestSend": "Test versturen",
     "mailTesting": "Bezig met versturen…",
-    "mailTestSent": "Testbericht verstuurd naar {{to}}."
+    "mailTestSent": "Testbericht verstuurd naar {{to}}.",
+    "publicUrl": "Adres van deze installatie",
+    "publicUrlHint": "Wordt gebruikt voor links in uitgaande mail, bijvoorbeeld https://cargopilot.example.nl. Leeg laten als de browser CargoPilot rechtstreeks bereikt."
   },
   "modality": {
     "title": "Kies uw transportmodaliteit",
@@ -783,5 +791,18 @@
     "deleted": "Gebruiker verwijderd.",
     "guardSelf": "Op je eigen account kan dit niet — vraag een andere beheerder.",
     "guardLastAdmin": "Dit is de laatste actieve beheerder; die kan niet worden verwijderd of teruggezet."
+  },
+  "reset": {
+    "title": "Nieuw wachtwoord",
+    "intro": "Kies een nieuw wachtwoord voor uw account.",
+    "password": "Nieuw wachtwoord",
+    "passwordHint": "Minimaal 8 tekens.",
+    "repeat": "Herhaal wachtwoord",
+    "mismatch": "De twee wachtwoorden zijn niet gelijk.",
+    "submit": "Wachtwoord instellen",
+    "saving": "Bezig met opslaan…",
+    "done": "Uw wachtwoord is ingesteld. U kunt nu inloggen.",
+    "toLogin": "Naar het inlogscherm",
+    "noToken": "Deze pagina hoort bij een link uit een e-mail. Vraag op het inlogscherm een nieuwe link aan."
   }
 }

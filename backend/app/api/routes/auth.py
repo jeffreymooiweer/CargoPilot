@@ -108,33 +108,39 @@ def login(request: Request, payload: LoginRequest, response: Response, db: Sessi
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="User inactive")
 
     if two_factor.is_active(db, user.id):
-        # The password was right; that is now half the answer. The challenge
-        # says so and nothing more — it is refused everywhere a session is
-        # expected, so it cannot be used as a way in by itself.
-        enrolment = two_factor.enrolment_for(db, user.id)
-        current = instance_settings(db)
-        mailed = False
-        if enrolment.method == "email" and mail.is_configured(current):
-            code = two_factor.issue_email_code(db, user.id)
-            message = mail_templates.sign_in_code_message(
-                language_for(db, user), code, two_factor.EMAIL_CODE_TTL_MINUTES)
-            try:
-                mail.send(current, user.email, message.subject, message.text,
-                          html=message.html)
-                mailed = True
-            except mail.MailError as exc:
-                # Say so: somebody standing at a sign-in screen waiting for a
-                # message that will never arrive is worse than an error.
-                logger.warning("Could not send the sign-in code for %s: %s",
-                               user.username, exc)
-        return {
-            "two_factor_required": True,
-            "method": enrolment.method,
-            "code_sent": mailed,
-            "challenge": create_challenge_token(user.username, user.password_hash),
-        }
+        return _challenge_for(db, user)
 
     return _sign_in(request, response, db, user)
+
+
+def _challenge_for(db: Session, user: User) -> dict:
+    """The half-finished sign-in: password accepted, factor still to come.
+
+    The challenge says that and nothing more — it is refused everywhere a
+    session is expected, so it cannot be used as a way in by itself.
+    """
+    enrolment = two_factor.enrolment_for(db, user.id)
+    current = instance_settings(db)
+    mailed = False
+    if enrolment.method == "email" and mail.is_configured(current):
+        code = two_factor.issue_email_code(db, user.id)
+        message = mail_templates.sign_in_code_message(
+            language_for(db, user), code, two_factor.EMAIL_CODE_TTL_MINUTES)
+        try:
+            mail.send(current, user.email, message.subject, message.text,
+                      html=message.html)
+            mailed = True
+        except mail.MailError as exc:
+            # Say so: somebody standing at a sign-in screen waiting for a
+            # message that will never arrive is worse than an error.
+            logger.warning("Could not send the sign-in code for %s: %s",
+                           user.username, exc)
+    return {
+        "two_factor_required": True,
+        "method": enrolment.method,
+        "code_sent": mailed,
+        "challenge": create_challenge_token(user.username, user.password_hash),
+    }
 
 
 @router.post("/login/two-factor")
@@ -253,6 +259,24 @@ def forgot_password(
     return {"ok": True}
 
 
+@router.get("/reset-password/check")
+@limiter.limit("30/minute")
+def reset_password_check(request: Request, token: str = "",
+                         db: Session = Depends(get_db)):
+    """Whether this link can still be used.
+
+    Asked before the form is drawn. A link that has already been spent used
+    to look exactly like a fresh one until somebody had chosen a password,
+    typed it twice and pressed the button — and only then learnt it was too
+    late. Saying so up front costs one request and saves that.
+
+    It says no more than yes or no: which account the token belongs to, and
+    whether it is unknown, expired or spent, are all differences that only
+    help somebody guessing.
+    """
+    return {"valid": password_reset.redeem(db, token) is not None}
+
+
 @router.post("/reset-password")
 @limiter.limit("10/minute")
 def reset_password(
@@ -274,11 +298,17 @@ def reset_password(
     user.password_hash = hash_password(payload.new_password)
     db.commit()
     password_reset.spend(db, payload.token)
-    # Every session signed in with the old password stops working: the token
-    # fingerprint follows the password hash. Clearing the cookie here means
-    # the browser that just reset does not carry a dead session either.
-    _clear_access_cookie(response, get_settings(), request=request)
-    return {"ok": True}
+
+    # Signed in straight away. Holding the link is proof of the mailbox, and
+    # the password was just chosen on this screen: sending somebody back to a
+    # sign-in form to retype what they typed a second ago proves nothing to
+    # anybody. Every *other* session signed in with the old password still
+    # stops working — the token fingerprint follows the password hash.
+    if two_factor.is_active(db, user.id):
+        # A second factor is not waived by a mailbox. The password half is
+        # done; the other half is still owed.
+        return _challenge_for(db, user)
+    return _sign_in(request, response, db, user)
 
 
 @router.post("/change-password")
@@ -376,6 +406,39 @@ def two_factor_new_recovery_codes(
     if not two_factor.is_active(db, user.id):
         raise HTTPException(status_code=400, detail="Two-factor is not switched on.")
     return {"recovery_codes": two_factor.replace_recovery_codes(db, user)}
+
+
+@router.post("/two-factor/send-code")
+@limiter.limit("5/minute")
+def two_factor_send_code(
+    request: Request,
+    user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    """Mail a fresh code to somebody who is already signed in.
+
+    Needed to switch the mail method *off*: turning it off asks for a code,
+    and with this method a code only exists once one has been sent. Without
+    this the setting could be switched on and never off again.
+    """
+    row = two_factor.enrolment_for(db, user.id)
+    if row is None or not row.confirmed or row.method != "email":
+        raise HTTPException(
+            status_code=400,
+            detail="This account does not use codes by e-mail.")
+    current = instance_settings(db)
+    if not mail.is_configured(current):
+        raise HTTPException(status_code=400,
+                            detail="No mail server is configured.")
+    code = two_factor.issue_email_code(db, user.id)
+    message = mail_templates.sign_in_code_message(
+        language_for(db, user), code, two_factor.EMAIL_CODE_TTL_MINUTES)
+    try:
+        mail.send(current, user.email, message.subject, message.text,
+                  html=message.html)
+    except mail.MailError as exc:
+        raise HTTPException(status_code=400, detail=str(exc)) from exc
+    return {"ok": True}
 
 
 @router.delete("/two-factor")

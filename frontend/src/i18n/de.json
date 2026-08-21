@@ -828,7 +828,10 @@
     "saving": "Wird gespeichert…",
     "done": "Ihr Passwort ist gesetzt. Sie können sich jetzt anmelden.",
     "toLogin": "Zur Anmeldung",
-    "noToken": "Diese Seite gehört zu einem Link aus einer E-Mail. Fordern Sie auf der Anmeldeseite einen neuen Link an."
+    "noToken": "Diese Seite gehört zu einem Link aus einer E-Mail. Fordern Sie auf der Anmeldeseite einen neuen Link an.",
+    "checking": "Der Link wird geprüft…",
+    "spent": "Dieser Link wurde bereits verwendet oder ist abgelaufen. Fordern Sie auf der Anmeldeseite mit „Passwort vergessen?“ einen neuen an.",
+    "submitAndSignIn": "Passwort setzen und anmelden"
   },
   "twoFactor": {
     "title": "Zwei-Faktor-Bestätigung",
@@ -851,6 +854,9 @@
     "confirm": "Bestätigen",
     "cancel": "Abbrechen",
     "recoveryTitle": "Bewahren Sie diese Wiederherstellungscodes auf",
-    "recoveryHint": "Sie sehen sie einmal. Jeder gilt einmal, falls Ihr Telefon weg ist. Ohne sie und ohne Telefon brauchen Sie einen Administrator."
+    "recoveryHint": "Sie sehen sie einmal. Jeder gilt einmal, falls Ihr Telefon weg ist. Ohne sie und ohne Telefon brauchen Sie einen Administrator.",
+    "sendCode": "Code senden",
+    "codeSent": "Ein Code wurde an Ihre E-Mail-Adresse gesendet.",
+    "turnOffHintMail": "Fordern Sie zuerst einen Code an und geben Sie ihn unten ein. Ein Wiederherstellungscode geht auch."
   }
 }

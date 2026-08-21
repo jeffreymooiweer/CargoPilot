@@ -262,11 +262,20 @@ export const api = {
       method: "POST",
       body: JSON.stringify({ identifier }),
     }),
+  /** Whether a reset link can still be used, asked before the form is
+   *  drawn — a spent link should look spent, not fresh. */
+  resetLinkValid: (token: string) =>
+    request<{ valid: boolean }>(
+      `/auth/reset-password/check?token=${encodeURIComponent(token)}`),
+  /** Sets the password and signs the person in, unless they owe a second
+   *  factor — then the answer is a challenge, exactly as at sign-in. */
   resetPassword: (token: string, newPassword: string) =>
-    request<{ ok: boolean }>("/auth/reset-password", {
+    request<LoginAnswer>("/auth/reset-password", {
       method: "POST",
       body: JSON.stringify({ token, new_password: newPassword }),
     }),
+  twoFactorSendCode: () =>
+    request<{ ok: boolean }>("/auth/two-factor/send-code", { method: "POST" }),
   sendTestMail: (to: string) =>
     request<{ ok: boolean; to: string }>("/settings/instance/mail-test", {
       method: "POST",

@@ -170,3 +170,150 @@ def test_without_dangerous_goods_no_cards_and_no_instructions(data_dir):
     assert response.status_code == 200, response.text
     names = names_in(response)
     assert not any(n.startswith(("un-cards/", "instructions/")) for n in names)
+
+
+# --- the same bundle, mailed ------------------------------------------------
+#
+# Mailing must never become a second way of producing documents. These pin
+# that the attachment is the bundle the download produces, that a consignment's
+# papers are not kept on the server afterwards, and that a shipment without a
+# mail server is told so rather than left wondering.
+
+
+def mail_bundle(payload, db=None):
+    with client() as api:
+        response = api.post("/api/documents/export/bundle/mail", json=payload)
+    release()
+    return response
+
+
+@pytest.fixture
+def mail_server(monkeypatch):
+    """A configured mail server, and a record of what was handed to it."""
+    from app.api.routes import documents as documents_route
+    from app.schemas.settings import InstanceSettings
+
+    sent = {}
+    settings = InstanceSettings(
+        mail_enabled=True, mail_host="smtp.example.com",
+        mail_from="cargopilot@example.com")
+    monkeypatch.setattr(documents_route, "instance_settings", lambda db: settings)
+
+    def fake_send(config, to, subject, body, attachments=None):
+        sent.update(to=to, subject=subject, body=body,
+                    attachments=attachments or [])
+
+    monkeypatch.setattr(documents_route.mail, "send", fake_send)
+    return sent
+
+
+def test_the_mailed_attachment_is_the_bundle_itself(data_dir, mail_server):
+    payload = {
+        "bundle": {
+            "documents": [doc("cmr"), doc("placarding_sheet")],
+            "dangerous_goods": DG, "profiles": ["ADR"], "output_language": "nl",
+        },
+        "to": ["planning@vervoerder.nl"],
+        "subject": "",
+        "message": "",
+    }
+    response = mail_bundle(payload)
+    assert response.status_code == 200, response.text
+    assert response.json()["to"] == ["planning@vervoerder.nl"]
+
+    filename, content, mimetype = mail_server["attachments"][0]
+    assert filename.endswith(".zip") and mimetype == "application/zip"
+    with zipfile.ZipFile(io.BytesIO(content)) as archive:
+        names = archive.namelist()
+    assert sum(1 for n in names if n.startswith("cmr_")) == 1
+    assert sum(1 for n in names if n.startswith("placarding_sheet_")) == 1
+
+
+def test_several_recipients_travel_on_one_message(data_dir, mail_server):
+    response = mail_bundle({
+        "bundle": {"documents": [doc("cmr")], "dangerous_goods": DG,
+                   "profiles": ["ADR"], "output_language": "nl"},
+        "to": ["vervoerder@example.com", "ontvanger@example.com"],
+        "subject": "Zending CP-2026-100", "message": "Bijgaand de papieren.",
+    })
+    assert response.status_code == 200, response.text
+    assert mail_server["to"] == ["vervoerder@example.com", "ontvanger@example.com"]
+    assert mail_server["subject"] == "Zending CP-2026-100"
+    assert mail_server["body"] == "Bijgaand de papieren."
+
+
+def test_without_a_subject_or_message_both_are_written_for_you(data_dir, mail_server):
+    mail_bundle({
+        "bundle": {"documents": [doc("cmr")], "dangerous_goods": DG,
+                   "profiles": ["ADR"], "output_language": "nl"},
+        "to": ["vervoerder@example.com"], "subject": "", "message": "",
+    })
+    assert mail_server["subject"].startswith("CargoPilot documents")
+    # Named, not anonymous: the recipient has to know who sent them papers.
+    assert "test" in mail_server["body"]
+
+
+def test_the_archive_is_not_left_behind_on_the_server(data_dir, mail_server,
+                                                      tmp_path, monkeypatch):
+    """A download hands the file to the browser and deletes it afterwards; a
+    mailed bundle has no such moment, so it has to be deleted on the way out.
+    Consignment papers are not CargoPilot's to keep."""
+    import tempfile
+
+    scratch = tmp_path / "scratch"
+    scratch.mkdir()
+    monkeypatch.setattr(tempfile, "tempdir", str(scratch))
+    mail_bundle({
+        "bundle": {"documents": [doc("cmr")], "dangerous_goods": DG,
+                   "profiles": ["ADR"], "output_language": "nl"},
+        "to": ["vervoerder@example.com"], "subject": "", "message": "",
+    })
+    assert mail_server["attachments"], "nothing was sent, so nothing is proven"
+    assert list(scratch.iterdir()) == []
+
+
+def test_a_bad_address_is_refused_before_anything_is_rendered(data_dir, mail_server):
+    response = mail_bundle({
+        "bundle": {"documents": [doc("cmr")], "dangerous_goods": DG,
+                   "profiles": ["ADR"], "output_language": "nl"},
+        "to": ["smtp.example.com"], "subject": "", "message": "",
+    })
+    assert response.status_code == 422
+    assert not mail_server
+
+
+def test_without_a_mail_server_the_answer_says_where_to_set_one(data_dir, monkeypatch):
+    from app.api.routes import documents as documents_route
+    from app.schemas.settings import InstanceSettings
+
+    monkeypatch.setattr(documents_route, "instance_settings",
+                        lambda db: InstanceSettings())
+    response = mail_bundle({
+        "bundle": {"documents": [doc("cmr")], "dangerous_goods": DG,
+                   "profiles": ["ADR"], "output_language": "nl"},
+        "to": ["vervoerder@example.com"], "subject": "", "message": "",
+    })
+    assert response.status_code == 400
+    assert "Mail server" in response.json()["detail"]
+
+
+def test_a_refusal_from_the_mail_server_is_passed_on(data_dir, monkeypatch):
+    from app.api.routes import documents as documents_route
+    from app.schemas.settings import InstanceSettings
+
+    monkeypatch.setattr(
+        documents_route, "instance_settings",
+        lambda db: InstanceSettings(mail_enabled=True, mail_host="smtp.example.com",
+                                    mail_from="cargopilot@example.com"))
+
+    def refusing(*args, **kwargs):
+        raise documents_route.mail.MailError("Could not reach smtp.example.com:587")
+
+    monkeypatch.setattr(documents_route.mail, "send", refusing)
+    response = mail_bundle({
+        "bundle": {"documents": [doc("cmr")], "dangerous_goods": DG,
+                   "profiles": ["ADR"], "output_language": "nl"},
+        "to": ["vervoerder@example.com"], "subject": "", "message": "",
+    })
+    assert response.status_code == 400
+    assert "smtp.example.com:587" in response.json()["detail"]

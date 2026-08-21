@@ -147,6 +147,8 @@ def public_settings(db: Session) -> PublicSettings:
         un_cards_enabled=current.un_cards_enabled,
         organisation_name=current.organisation_name,
         organisation_address=current.organisation_address,
+        mail_enabled=bool(current.mail_enabled and current.mail_host
+                          and current.mail_from),
     )
 
 

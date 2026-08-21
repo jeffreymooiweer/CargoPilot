@@ -418,7 +418,17 @@
     "documentLanguage": "Language of the documents",
     "documentLanguageRule": "5.4.1.4.1: an official language of the forwarding country, and where that is not German, English or French, additionally in one of those three. For Dutch the application puts both names in the field.",
     "downloadAll": "Download all as ZIP ({{count}})",
-    "downloadAllHint": "The ZIP also carries the UN cards and the instructions in writing for this journey, as far as this server holds them."
+    "downloadAllHint": "The ZIP also carries the UN cards and the instructions in writing for this journey, as far as this server holds them.",
+    "mail": "Send by mail ({{count}})",
+    "mailHint": "Sends the same zip file the download button produces, as an attachment.",
+    "mailTo": "To",
+    "mailToPlaceholder": "address@carrier.com, planning@consignee.com",
+    "mailSubject": "Subject",
+    "mailSubjectPlaceholder": "Leave empty for a standard subject",
+    "mailMessage": "Message",
+    "mailSend": "Send",
+    "mailSending": "Sending…",
+    "mailSent": "Sent to {{to}}."
   },
   "unCards": {
     "title": "UN cards for your records",

@@ -44,12 +44,23 @@ def _sender(settings: InstanceSettings) -> str:
     return settings.mail_from
 
 
+#: What one message may carry. Mail servers cap attachments — 25 MB at
+#: Google, 10 at many corporate relays — and they cap the *encoded* size,
+#: which base64 inflates by a third. Refusing here names the size and the
+#: limit; letting it through returns whatever cryptic code the relay picks.
+MAX_ATTACHMENT_BYTES = 15 * 1024 * 1024
+
+
 def build_message(
-    settings: InstanceSettings, to: str, subject: str, body: str
+    settings: InstanceSettings,
+    to: str | list[str],
+    subject: str,
+    body: str,
+    attachments: list[tuple[str, bytes, str]] | None = None,
 ) -> EmailMessage:
     message = EmailMessage()
     message["From"] = _sender(settings)
-    message["To"] = to
+    message["To"] = ", ".join(to) if isinstance(to, list) else to
     message["Subject"] = subject
     message["Date"] = formatdate(localtime=True)
     # Without a Message-ID some relays add their own and others reject the
@@ -57,6 +68,10 @@ def build_message(
     domain = settings.mail_from.rsplit("@", 1)[-1] or None
     message["Message-ID"] = make_msgid(domain=domain)
     message.set_content(body)
+    for filename, content, mimetype in attachments or []:
+        main, _, sub = mimetype.partition("/")
+        message.add_attachment(content, maintype=main or "application",
+                               subtype=sub or "octet-stream", filename=filename)
     return message
 
 
@@ -75,14 +90,31 @@ def _connect(settings: InstanceSettings) -> smtplib.SMTP:
     return client
 
 
-def send(settings: InstanceSettings, to: str, subject: str, body: str) -> None:
+def send(
+    settings: InstanceSettings,
+    to: str | list[str],
+    subject: str,
+    body: str,
+    attachments: list[tuple[str, bytes, str]] | None = None,
+) -> None:
     """Send one message, or raise :class:`MailError` saying why not."""
     if not is_configured(settings):
         raise MailError("No mail server is configured.")
-    if not to.strip():
+    recipients = [to] if isinstance(to, str) else list(to)
+    recipients = [address.strip() for address in recipients if address.strip()]
+    if not recipients:
         raise MailError("No recipient given.")
 
-    message = build_message(settings, to.strip(), subject, body)
+    total = sum(len(content) for _, content, _ in attachments or [])
+    if total > MAX_ATTACHMENT_BYTES:
+        raise MailError(
+            f"The attachments are {total / 1024 / 1024:.1f} MB, more than the "
+            f"{MAX_ATTACHMENT_BYTES // 1024 // 1024} MB one message may carry. "
+            "Send fewer documents, or download them and share them another way."
+        )
+
+    message = build_message(settings, recipients, subject, body, attachments)
+    to = ", ".join(recipients)
     try:
         with _connect(settings) as client:
             if settings.mail_username:

@@ -309,6 +309,19 @@ export const api = {
    *  instructions in writing for the journey's regimes. What the server
    *  cannot include it writes into the archive's README instead of
    *  leaving out silently. */
+  /** The same archive, sent instead of downloaded. The server builds it
+   *  with the same code the download uses, so the mail carries what the
+   *  download would have. */
+  mailBundle: (payload: {
+    bundle: DocumentBundlePayload;
+    to: string[];
+    subject: string;
+    message: string;
+  }) =>
+    request<{ ok: boolean; to: string[]; filename: string }>(
+      "/documents/export/bundle/mail",
+      { method: "POST", body: JSON.stringify(payload) },
+    ),
   exportBundle: async (payload: DocumentBundlePayload) => {
     const res = await fetch(`${API_BASE}/documents/export/bundle`, {
       method: "POST",
@@ -601,6 +614,8 @@ export interface PublicSettings {
   un_cards_enabled: boolean;
   organisation_name: string;
   organisation_address: string;
+  /** Whether a mail server exists, so the export step may offer to mail. */
+  mail_enabled: boolean;
 }
 
 /** The lists the settings screen offers, from the backend that owns them. */

@@ -185,7 +185,39 @@
       ],
       "obtained": "download",
       "sha256": "01c23711f04b8649fd0cdb66362b272748903ca738d4ba9196e4badeb6a8a797",
-      "note": "The IMDG Code itself is paywalled; this amendment resolution is publicly hosted. The consolidated code remains unavailable, which is why the sea seeds name the amendment as their source."
+      "note": "The IMDG Code itself is paywalled; this amendment resolution is publicly hosted and replaces the complete text of the code, so it carries the full Dangerous Goods List. The operator later supplied the same file (byte-identical) through the shared Drive folder, which confirmed the pin."
+    },
+    {
+      "id": "imdg_corr_dec2025",
+      "title": "IMDG Code 2024 Edition (Amendment 42-24) — Errata and corrigenda, December 2025",
+      "publisher": "IMO, December 2025",
+      "edition": "corrigenda to Amendment 42-24",
+      "language": "en",
+      "profiles": [
+        "IMDG"
+      ],
+      "role": "Checked in full against the extracted sea seeds (imdg_dgl.json, imdg_codes.json, imdg_42_24.json). Of its eleven corrections, none touches a value the extraction carries: they correct prose, cross-references, an alphabetical order in IBC520, an entry name in T50 and three special-provision texts, all outside the columns that were read.",
+      "filename": "imdg_corr_dec2025.pdf",
+      "urls": [],
+      "obtained": "operator-supplied via the shared Drive folder (incoming/Imdg)",
+      "sha256": "cd26cfa84567957f9f09b03ffae5d423bf2c4e35edced7f235d47678d28d99b4",
+      "note": "Three pages. The full text was read aloud in the fetch-regulations dump step; the delivery watermark on each page belongs to the download service, not to the content."
+    },
+    {
+      "id": "ctu_circ_1498",
+      "title": "MSC.1/Circ.1498 — Informative material related to the IMO/ILO/UNECE Code of Practice for Packing of Cargo Transport Units (CTU Code)",
+      "publisher": "IMO, 16 December 2014",
+      "edition": "MSC.1/Circ.1498",
+      "language": "en",
+      "profiles": [
+        "IMDG"
+      ],
+      "role": "Not yet used by an extractor. Informative (non-mandatory) guidance on packing cargo transport units; a candidate source for container-packing guidance, not for any regulatory value.",
+      "filename": "ctu_circ_1498.pdf",
+      "urls": [],
+      "obtained": "operator-supplied via the shared Drive folder (incoming/Imdg)",
+      "sha256": "f5d642ded54708b1c92b58afa5932a23113327f0504cbb674de9b57ea9a49e65",
+      "note": "181 pages with a full text layer. Explicitly informative material: nothing in it may decide a document, which is why registering it records provenance and nothing else."
     },
     {
       "id": "adr2_fr",

@@ -190,7 +190,9 @@ def cmd_adopt(manifest: dict, incoming: Path, mapping: dict[str, str]) -> int:
     docs = {doc["id"]: doc for doc in manifest["documents"]}
     by_pin = {doc["sha256"]: doc for doc in manifest["documents"] if doc["sha256"]}
     failures = 0
-    for path in sorted(incoming.iterdir()):
+    # Recursive, because a Drive folder arrives as a tree: the operator's
+    # subfolders are organisation, not a boundary for recognition.
+    for path in sorted(incoming.rglob("*")):
         if not path.is_file():
             continue
         digest = sha256(path)

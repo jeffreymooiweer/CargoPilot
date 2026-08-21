@@ -61,6 +61,26 @@ def layout(language: str, heading: str, paragraphs: list[str],
     Tables and inline styles, deliberately: Outlook renders with Word, which
     has no flexbox, no grid and no external stylesheet. This is 2003 markup
     on purpose, because it is what arrives intact.
+
+    **The viewport meta is the load-bearing line.** Without it a mail client
+    lays the message out in a desktop-width container — Gmail on Android
+    assumes about 980 pixels — and then shows the phone a slice of that.
+    Measured in a 980-pixel container, this card is centred starting at
+    x=210: a wide empty margin on the left and the card running off the
+    right, which is exactly what the first reader of an invitation saw on
+    their phone. Declaring ``width=device-width`` is what makes the client
+    lay it out at the width it actually has.
+
+    The rest is not what caused that, and is here because it is what makes
+    a message render the same everywhere:
+
+    * **no padding on ``<body>``**: Gmail lifts the content into its own
+      container and drops body styles, so the gutter is a cell of a wrapper
+      table instead;
+    * **centring by ``align="center"``** as well as ``max-width``, because
+      Word (which renders Outlook) ignores ``margin:0 auto``;
+    * **a long URL that may break anywhere**, so a 60-character token cannot
+      set a minimum width for the whole table.
     """
     body: list[str] = []
     for text in paragraphs:
@@ -83,9 +103,12 @@ def layout(language: str, heading: str, paragraphs: list[str],
             'color:#ffffff;text-decoration:none;border-radius:10px;'
             f'font-size:15px;font-weight:600;">{label}</a></p>'
             # The same address in full, because a button is unclickable in
-            # some clients and unreadable when it is forwarded as text.
-            f'<p style="margin:0 0 16px;font-size:12px;color:#64748b;'
-            f'word-break:break-all;">{escape(href)}</p>'
+            # some clients and unreadable when the message is forwarded as
+            # text. Three wrapping rules because no single one is honoured
+            # everywhere, and a link that cannot wrap widens the message.
+            f'<p style="margin:0 0 16px;font-size:12px;line-height:1.5;'
+            'color:#64748b;word-break:break-all;overflow-wrap:anywhere;'
+            f'word-wrap:break-word;">{escape(href)}</p>'
         )
     if footer:
         body.append(
@@ -94,26 +117,41 @@ def layout(language: str, heading: str, paragraphs: list[str],
             f'{footer}</p>'
         )
 
-    logo = (f'<img src="cid:{LOGO_CID}" width="48" height="48" alt="CargoPilot" '
-            'style="display:block;border:0;" />') if logo_bytes() else ""
+    logo = (f'<img src="cid:{LOGO_CID}" width="40" height="40" alt="CargoPilot" '
+            'style="display:block;border:0;width:40px;height:40px;" />'
+            ) if logo_bytes() else ""
 
     return (
-        f'<!doctype html><html lang="{escape(language)}"><body style="margin:0;'
-        'padding:24px;background:#f1f5f9;'
+        '<!doctype html>'
+        f'<html lang="{escape(language)}">'
+        '<head>'
+        '<meta charset="utf-8" />'
+        '<meta name="viewport" content="width=device-width,initial-scale=1" />'
+        '<meta name="color-scheme" content="light dark" />'
+        '</head>'
+        '<body style="margin:0;padding:0;background:#f1f5f9;'
         'font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;">'
+        # The wrapper holds the background and the gutter, in a cell rather
+        # than on the body, so it survives the clients that drop body styles.
         '<table role="presentation" cellpadding="0" cellspacing="0" border="0" '
-        'width="100%" style="max-width:560px;margin:0 auto;background:#ffffff;'
-        'border-radius:16px;border:1px solid #e2e8f0;">'
-        '<tr><td style="padding:28px 32px 8px;">'
-        f'<table role="presentation" cellpadding="0" cellspacing="0" border="0">'
-        f'<tr><td style="padding-right:12px;">{logo}</td>'
-        '<td style="font-size:19px;font-weight:600;color:#0f172a;">CargoPilot</td>'
+        'width="100%" style="width:100%;background:#f1f5f9;">'
+        '<tr><td align="center" style="padding:16px;">'
+        '<table role="presentation" cellpadding="0" cellspacing="0" border="0" '
+        'align="center" width="100%" style="width:100%;max-width:560px;'
+        'background:#ffffff;border-radius:16px;border:1px solid #e2e8f0;">'
+        '<tr><td style="padding:24px 24px 8px;">'
+        '<table role="presentation" cellpadding="0" cellspacing="0" border="0">'
+        f'<tr><td style="padding-right:10px;">{logo}</td>'
+        '<td style="font-size:18px;font-weight:600;color:#0f172a;">CargoPilot</td>'
         '</tr></table>'
         '</td></tr>'
-        '<tr><td style="padding:12px 32px 32px;">'
-        f'<h1 style="margin:0 0 16px;font-size:20px;color:#0f172a;">{heading}</h1>'
+        '<tr><td style="padding:8px 24px 24px;">'
+        f'<h1 style="margin:0 0 16px;font-size:20px;line-height:1.3;'
+        f'color:#0f172a;">{heading}</h1>'
         + "".join(body) +
-        '</td></tr></table></body></html>'
+        '</td></tr></table>'
+        '</td></tr></table>'
+        '</body></html>'
     )
 
 

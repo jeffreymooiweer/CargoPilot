@@ -151,3 +151,69 @@ def test_the_senders_own_words_replace_the_standard_sentence():
 def test_the_document_subject_carries_the_reference():
     message = mail_templates.documents_message("nl", "ada", "CP-2026-100")
     assert "CP-2026-100" in message.subject
+
+
+# --- what makes it fit on a phone -------------------------------------------
+#
+# The invitation arrived on an Android phone hanging off the right of the
+# screen. None of these four is visible in a desktop preview, which is why
+# they are pinned here rather than looked at.
+
+
+@pytest.mark.parametrize("build", ALL_BUILDERS)
+def test_every_message_tells_the_phone_how_wide_it_is(build):
+    """The one that actually mattered.
+
+    Without this line a client lays the message out in a desktop-width
+    container and shows the phone a slice. Measured in a 980-pixel
+    container, the card is centred starting at x=210 — a wide margin on the
+    left, the card running off the right — which is what an invitation
+    looked like on the phone that reported it.
+    """
+    html = build("nl").html
+    assert '<meta name="viewport" content="width=device-width,initial-scale=1" />' in html
+
+
+def test_the_gutter_is_a_table_cell_rather_than_body_padding():
+    """Gmail lifts the content into its own container and drops body styles.
+    Padding on <body> is therefore honoured in some clients and not in
+    others — the same message, two different layouts."""
+    html = mail_templates.test_message("nl").html
+    assert "<body style=\"margin:0;padding:0;" in html
+    assert 'align="center" style="padding:16px;"' in html
+
+
+def test_the_card_is_centred_the_way_word_understands():
+    """Outlook renders with Word, which ignores margin:0 auto."""
+    html = mail_templates.test_message("nl").html
+    assert "margin:0 auto" not in html
+    assert html.count('align="center"') >= 2
+    assert "max-width:560px" in html
+
+
+def test_a_long_link_may_break_anywhere():
+    """An unbroken 60-character token sets a minimum width for the whole
+    table, and a table wider than the screen is exactly what pushed the
+    message off to the right. No single wrapping rule is honoured by every
+    client, so all three are given."""
+    long_link = ("https://cargopilot.example.nl/reset-password?token="
+                 "lTQayKEQt0IqTAxhxtSbKPaK4gB87E2_mHj_HlT29Jg")
+    html = mail_templates.invite_message("nl", "berry", long_link, 7).html
+    assert long_link in html
+    for rule in ("word-break:break-all", "overflow-wrap:anywhere",
+                 "word-wrap:break-word"):
+        assert rule in html
+
+
+@pytest.mark.parametrize("build", ALL_BUILDERS)
+def test_nothing_is_wider_than_a_narrow_phone(build):
+    """A fixed pixel width beyond a small screen is the other way a message
+    ends up sideways. 320 is the narrowest phone still in use."""
+    import re
+
+    html = build("nl").html
+    # Percentages and max-width are the safe forms and are meant to be here;
+    # a *fixed* width beyond a small screen is the one that hurts.
+    fixed = [int(w) for w in re.findall(r"(?<!max-)width:(\d+)px", html)]
+    fixed += [int(w) for w in re.findall(r'width="(\d+)"(?!%)', html)]
+    assert all(width <= 320 for width in fixed), fixed

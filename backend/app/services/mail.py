@@ -23,6 +23,7 @@ from email.message import EmailMessage
 from email.utils import formataddr, formatdate, make_msgid
 
 from app.schemas.settings import InstanceSettings
+from app.services import mail_templates
 
 logger = logging.getLogger(__name__)
 
@@ -57,6 +58,7 @@ def build_message(
     subject: str,
     body: str,
     attachments: list[tuple[str, bytes, str]] | None = None,
+    html: str | None = None,
 ) -> EmailMessage:
     message = EmailMessage()
     message["From"] = _sender(settings)
@@ -68,6 +70,20 @@ def build_message(
     domain = settings.mail_from.rsplit("@", 1)[-1] or None
     message["Message-ID"] = make_msgid(domain=domain)
     message.set_content(body)
+    if html:
+        # Both forms in one message: the reader's client picks. The plain
+        # text is not a fallback nobody thought about — it says the same
+        # thing, for clients that refuse HTML and for screen readers.
+        message.add_alternative(html, subtype="html")
+        logo = mail_templates.logo_bytes()
+        if logo and f"cid:{mail_templates.LOGO_CID}" in html:
+            # Carried along rather than linked: a linked image makes the
+            # reader's client call this server, which is a tracking pixel by
+            # accident and a broken image on an installation the internet
+            # cannot reach.
+            message.get_payload()[-1].add_related(
+                logo, maintype="image", subtype="png",
+                cid=f"<{mail_templates.LOGO_CID}>", filename="cargopilot.png")
     for filename, content, mimetype in attachments or []:
         main, _, sub = mimetype.partition("/")
         message.add_attachment(content, maintype=main or "application",
@@ -96,6 +112,7 @@ def send(
     subject: str,
     body: str,
     attachments: list[tuple[str, bytes, str]] | None = None,
+    html: str | None = None,
 ) -> None:
     """Send one message, or raise :class:`MailError` saying why not."""
     if not is_configured(settings):
@@ -113,7 +130,7 @@ def send(
             "Send fewer documents, or download them and share them another way."
         )
 
-    message = build_message(settings, recipients, subject, body, attachments)
+    message = build_message(settings, recipients, subject, body, attachments, html)
     to = ", ".join(recipients)
     try:
         with _connect(settings) as client:
@@ -150,15 +167,7 @@ def _reason(exc: smtplib.SMTPException) -> str:
     return str(message or exc).strip()
 
 
-#: The test message. Short on purpose: it is read by the person who just
-#: pressed the button, and its only job is to prove the path works.
-TEST_SUBJECT = "CargoPilot test message"
-TEST_BODY = (
-    "This is a test message from CargoPilot.\n\n"
-    "If you are reading it, the mail server settings work: CargoPilot "
-    "reached the server, was accepted, and the message was delivered.\n"
-)
-
-
-def send_test(settings: InstanceSettings, to: str) -> None:
-    send(settings, to, TEST_SUBJECT, TEST_BODY)
+def send_test(settings: InstanceSettings, to: str, language: str = "nl") -> None:
+    """Prove the path works, in the language of whoever pressed the button."""
+    message = mail_templates.test_message(language)
+    send(settings, to, message.subject, message.text, html=message.html)

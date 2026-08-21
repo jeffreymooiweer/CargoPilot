@@ -29,8 +29,8 @@ from app.schemas.users import (
     TwoFactorStatus,
     UserOut,
 )
-from app.services import mail, password_reset, two_factor
-from app.services.settings_store import instance_settings
+from app.services import mail, mail_templates, password_reset, two_factor
+from app.services.settings_store import instance_settings, language_for
 
 logger = logging.getLogger(__name__)
 
@@ -116,9 +116,11 @@ def login(request: Request, payload: LoginRequest, response: Response, db: Sessi
         mailed = False
         if enrolment.method == "email" and mail.is_configured(current):
             code = two_factor.issue_email_code(db, user.id)
+            message = mail_templates.sign_in_code_message(
+                language_for(db, user), code, two_factor.EMAIL_CODE_TTL_MINUTES)
             try:
-                mail.send(current, user.email, two_factor.CODE_SUBJECT,
-                          two_factor.code_message(code))
+                mail.send(current, user.email, message.subject, message.text,
+                          html=message.html)
                 mailed = True
             except mail.MailError as exc:
                 # Say so: somebody standing at a sign-in screen waiting for a
@@ -235,9 +237,12 @@ def forgot_password(
     if user is not None and mail.is_configured(current):
         token = password_reset.issue(db, user)
         link = password_reset.link_for(_public_base_url(request, current), token)
+        message = mail_templates.reset_message(
+            language_for(db, user), user.username, link,
+            password_reset.TOKEN_TTL_MINUTES)
         try:
-            mail.send(current, user.email, password_reset.SUBJECT,
-                      password_reset.message_for(user, link))
+            mail.send(current, user.email, message.subject, message.text,
+                      html=message.html)
         except mail.MailError as exc:
             logger.warning("Could not send the reset mail for %s: %s",
                            user.username, exc)
@@ -329,9 +334,11 @@ def two_factor_start(
                               qr_svg=two_factor.qr_svg(uri))
 
     code = two_factor.issue_email_code(db, user.id)
+    message = mail_templates.sign_in_code_message(
+        language_for(db, user), code, two_factor.EMAIL_CODE_TTL_MINUTES)
     try:
-        mail.send(current, user.email, two_factor.CODE_SUBJECT,
-                  two_factor.code_message(code))
+        mail.send(current, user.email, message.subject, message.text,
+                  html=message.html)
     except mail.MailError as exc:
         raise HTTPException(status_code=400, detail=str(exc)) from exc
     return TwoFactorSetup(method="email", code_sent=True)

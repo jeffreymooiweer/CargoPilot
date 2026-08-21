@@ -68,7 +68,7 @@ def sent(db, monkeypatch):
     monkeypatch.setattr(auth_route, "instance_settings", lambda db: settings)
     monkeypatch.setattr(
         auth_route.mail, "send",
-        lambda config, to, subject, body, attachments=None: messages.append(
+        lambda config, to, subject, body, attachments=None, html=None: messages.append(
             {"to": to, "subject": subject, "body": body}))
     return messages
 
@@ -250,7 +250,7 @@ def test_a_configured_address_wins_over_the_request(client, monkeypatch, db):
     monkeypatch.setattr(auth_route, "instance_settings", lambda db: settings)
     monkeypatch.setattr(
         auth_route.mail, "send",
-        lambda config, to, subject, body, attachments=None: messages.append(
+        lambda config, to, subject, body, attachments=None, html=None: messages.append(
             {"to": to, "subject": subject, "body": body}))
 
     client.post("/api/auth/forgot-password", json={"identifier": "ada"},
@@ -262,10 +262,12 @@ def test_a_configured_address_wins_over_the_request(client, monkeypatch, db):
 def test_the_message_says_what_to_do_and_what_not_doing_it_means(client, sent):
     client.post("/api/auth/forgot-password", json={"identifier": "ada"})
     body = sent[0]["body"]
+    # Whose account it is, how long the link lives, and that it works once —
+    # in the reader's language, which on this installation is Dutch.
     assert "ada" in body
-    assert "once" in body and "60 minutes" in body
+    assert "één keer" in body and "60 minuten" in body
     # Somebody who did not ask for this needs to know they can ignore it.
-    assert "ignore" in body and "still works" in body
+    assert "negeren" in body and "blijft werken" in body
 
 
 def test_without_a_mail_server_nothing_is_sent_and_nothing_is_said(client, db, monkeypatch):
@@ -335,7 +337,11 @@ def test_an_invited_account_needs_no_password_from_the_administrator(db, sent, m
     assert response.status_code == 200, response.text
     assert response.json()["welcome_mail"] == "sent"
     assert sent[-1]["to"] == "nieuw@example.com"
-    assert "nieuw" in sent[-1]["body"] and "ada" in sent[-1]["body"]
+    assert "nieuw" in sent[-1]["body"]
+    # And not who made it: naming the administrator hands their user name to
+    # whoever opens the invitation.
+    assert "ada" not in sent[-1]["body"]
+    assert "beheerder" in sent[-1]["body"].lower()
 
 
 def test_the_invited_account_cannot_be_signed_in_to_until_the_link_is_used(
@@ -429,4 +435,5 @@ def test_the_invitation_lasts_longer_than_a_reset(db, sent, monkeypatch):
     if expires.tzinfo is None:
         expires = expires.replace(tzinfo=timezone.utc)
     assert expires > datetime.now(timezone.utc) + timedelta(days=6)
-    assert "7 days" in sent[-1]["body"]
+    # The instance speaks Dutch by default, and so does its invitation.
+    assert "7 dagen" in sent[-1]["body"]

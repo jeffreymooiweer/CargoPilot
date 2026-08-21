@@ -199,7 +199,7 @@ def mail_server(monkeypatch):
         mail_from="cargopilot@example.com")
     monkeypatch.setattr(documents_route, "instance_settings", lambda db: settings)
 
-    def fake_send(config, to, subject, body, attachments=None):
+    def fake_send(config, to, subject, body, attachments=None, html=None):
         sent.update(to=to, subject=subject, body=body,
                     attachments=attachments or [])
 
@@ -239,7 +239,11 @@ def test_several_recipients_travel_on_one_message(data_dir, mail_server):
     assert response.status_code == 200, response.text
     assert mail_server["to"] == ["vervoerder@example.com", "ontvanger@example.com"]
     assert mail_server["subject"] == "Zending CP-2026-100"
-    assert mail_server["body"] == "Bijgaand de papieren."
+    # What the sender wrote is the message; the standard sentence steps
+    # aside. Their name is added below it, because the reader — a carrier or
+    # a consignee — has to know who sent them a consignment's papers.
+    assert "Bijgaand de papieren." in mail_server["body"]
+    assert "test" in mail_server["body"]
 
 
 def test_without_a_subject_or_message_both_are_written_for_you(data_dir, mail_server):
@@ -248,7 +252,8 @@ def test_without_a_subject_or_message_both_are_written_for_you(data_dir, mail_se
                    "profiles": ["ADR"], "output_language": "nl"},
         "to": ["vervoerder@example.com"], "subject": "", "message": "",
     })
-    assert mail_server["subject"].startswith("CargoPilot documents")
+    # Written for them, in the language the documents themselves carry.
+    assert mail_server["subject"].startswith("Vervoerdocumenten")
     # Named, not anonymous: the recipient has to know who sent them papers.
     assert "test" in mail_server["body"]
 

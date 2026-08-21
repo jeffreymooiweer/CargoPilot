@@ -18,7 +18,7 @@ from app.schemas import (
     DocumentExportRequest,
     UnCardsRequest,
 )
-from app.services import mail
+from app.services import mail, mail_templates
 from app.services.documents import (
     build_un_cards_zip,
     fill_pdf_document,
@@ -330,28 +330,24 @@ def mail_bundle(
     try:
         content = bundle_path.read_bytes()
         filename = f"cargopilot-documents-{ref}.zip"
-        body = payload.message.strip() or _default_mail_body(user)
+        # The reader is a carrier or a consignee, not a user of this
+        # installation: the language the papers themselves are drawn up in
+        # is the one they can read.
+        message = mail_templates.documents_message(
+            payload.bundle.output_language, user.username,
+            payload.bundle.documents[0].values.get("reference", "") if
+            payload.bundle.documents else "",
+            payload.message)
         try:
-            mail.send(settings, payload.to, payload.subject.strip() or
-                      f"CargoPilot documents {ref}", body,
-                      [(filename, content, "application/zip")])
+            mail.send(settings, payload.to,
+                      payload.subject.strip() or message.subject,
+                      message.text, [(filename, content, "application/zip")],
+                      html=message.html)
         except mail.MailError as exc:
             raise HTTPException(status_code=400, detail=str(exc)) from exc
     finally:
         _delete_file(bundle_path)
     return BundleMailResult(ok=True, to=payload.to, filename=filename)
-
-
-def _default_mail_body(user: User) -> str:
-    """What to write when the sender wrote nothing.
-
-    Named rather than anonymous: the recipient is a carrier or a consignee
-    who has to know who sent them a consignment's papers.
-    """
-    return (
-        f"The transport documents for this consignment are attached, "
-        f"sent from CargoPilot by {user.username}.\n"
-    )
 
 
 def _fill_bundle(bundle_path: Path, produced: list[tuple[Path, str]],

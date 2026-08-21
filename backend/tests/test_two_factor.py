@@ -69,7 +69,7 @@ def sent(db, monkeypatch):
     monkeypatch.setattr(auth_route, "instance_settings", lambda db: settings)
     monkeypatch.setattr(
         auth_route.mail, "send",
-        lambda config, to, subject, body, attachments=None: messages.append(
+        lambda config, to, subject, body, attachments=None, html=None: messages.append(
             {"to": to, "subject": subject, "body": body}))
     return messages
 

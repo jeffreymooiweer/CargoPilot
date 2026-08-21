@@ -2,7 +2,35 @@
 
 All notable changes are documented here, following [Semantic Versioning](https://semver.org/).
 
-## [1.145.0] — 2026-08-21
+## [1.146.0] — 2026-08-21
+
+Outgoing mail, rewritten as letters.
+
+### Changed
+
+- **Messages are written in the reader's language.** All four of them, and
+  the reader's own choice decides — a colleague whose CargoPilot is in
+  German gets a German invitation, whoever made the account. A brand-new
+  account has no preference yet and gets the installation's default; the
+  covering letter with a consignment's documents follows the language the
+  papers themselves are drawn up in, because its reader is a carrier rather
+  than a user of this installation.
+- **Every message is a letter now**: the CargoPilot logo, a heading, a
+  button where there is something to open. Plain text goes along in the same
+  message, saying exactly the same things — it is what a client that refuses
+  HTML, a screen reader, or a forwarded copy falls back to.
+- The logo travels **inside** the message. A linked image would make the
+  reader's mail client call this server: a tracking pixel by accident, and a
+  broken image on an installation the internet cannot reach.
+
+### Security
+
+- **The invitation no longer names the administrator who sent it.** "admin
+  has made an account for you" told every reader which account is an
+  administrator's, including readers who should never have learnt it. It
+  says "an administrator" now, in each of the four languages.
+- User names are escaped where they appear in HTML: a name is not markup,
+  and a mail client is a renderer.
 
 Two-factor verification, with a way back in.
 

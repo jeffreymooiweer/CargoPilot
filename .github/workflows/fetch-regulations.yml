@@ -99,8 +99,12 @@ jobs:
           pip install --quiet gdown
           mkdir -p /tmp/cargopilot-regulations/incoming
           gdown --folder "$FOLDER" -O /tmp/cargopilot-regulations/incoming
-          echo "=== incoming ==="
-          ls -la /tmp/cargopilot-regulations/incoming
+          echo "=== incoming (recursive: a Drive folder arrives as a tree) ==="
+          find /tmp/cargopilot-regulations/incoming -type f -printf '%10s  %p\n' | sort -k2
+          # Reconnaissance before anything is registered: what each PDF is,
+          # whether it has a text layer, and where its readable parts sit.
+          pip install --quiet pymupdf
+          python scripts/survey_incoming.py /tmp/cargopilot-regulations/incoming
           # One mapping per line, not per word: the files an operator uploads
           # are named "ADR 2025 French.pdf" as often as not, and splitting the
           # input on spaces would cut such a name in three.

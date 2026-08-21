@@ -218,7 +218,22 @@ the saved ones would be worse than no test. Whatever the mail server answers is 
 unchanged: a refused password, an unreachable host and a rejected sender are different
 problems with different fixes.
 
-**What uses it.** The test message, and the export step: with a mail server configured, the
+**The address of this installation.** The links in outgoing mail need to say where
+CargoPilot lives. Left empty, the address is read from the request, including the
+`X-Forwarded-*` headers when `TRUSTED_PROXY_HEADERS` is on — right whenever the browser
+reaches CargoPilot directly or through a proxy that passes its own host on. Fill it in
+(`https://cargopilot.example.com`) when it does not, or the mail carries a link to an
+internal container name.
+
+**Forgotten passwords.** With a mail server configured, the sign-in screen offers "Forgot
+your password?". The answer is the same whatever is typed — whether the account exists,
+is active, has an address, or the relay accepted the message is never revealed, because a
+form that tells them apart is a way to find out who has an account here. What went wrong
+is written to the log instead. The link works once, expires after an hour, and using it
+ends every session that was signed in with the old password. Only a hash of the token is
+stored, so a leaked database hands out no working links.
+
+**What uses it.** The test message, the forgotten-password link, and the export step: with a mail server configured, the
 documents step offers to mail the same archive the download button produces — to the
 carrier, the consignee, or several addresses at once. The archive is deleted the moment the
 message is out; CargoPilot keeps no copy of a consignment's papers. One message may carry

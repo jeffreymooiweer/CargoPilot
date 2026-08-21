@@ -3,6 +3,7 @@ import { Navigate, Route, Routes, useNavigate } from "react-router";
 import { api, User } from "./api/client";
 import Layout from "./components/Layout";
 import LoginPage from "./pages/LoginPage";
+import ResetPasswordPage from "./pages/ResetPasswordPage";
 import ModalitySelectPage from "./pages/ModalitySelectPage";
 import WizardPage from "./pages/WizardPage";
 import UsersPage from "./pages/UsersPage";
@@ -31,6 +32,9 @@ export default function App() {
     return (
       <Routes>
         <Route path="/login" element={<LoginPage onLogin={() => api.me().then((r) => { setUser(r.user); navigate("/"); })} />} />
+        {/* A reset link is opened by somebody who cannot sign in; sending
+            them to /login would swallow the token in the address. */}
+        <Route path="/reset-password" element={<ResetPasswordPage />} />
         <Route path="*" element={<Navigate to="/login" replace />} />
       </Routes>
     );
@@ -48,6 +52,7 @@ export default function App() {
           <Route path="/legal" element={<LegalPage />} />
           <Route path="/users" element={<UsersPage user={user} />} />
         </Route>
+        <Route path="/reset-password" element={<ResetPasswordPage />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </PreferencesProvider>

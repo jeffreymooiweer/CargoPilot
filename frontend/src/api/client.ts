@@ -220,6 +220,18 @@ export const api = {
     request<{ ok: boolean; removed: boolean }>("/un-cards/remove", { method: "POST" }),
   saveInstanceSettings: (payload: InstanceSettings) =>
     request<InstanceSettings>("/settings/instance", { method: "PUT", body: JSON.stringify(payload) }),
+  /** Ask for a reset link. The answer is the same whether or not the
+   *  account exists — deliberately, see the endpoint. */
+  forgotPassword: (identifier: string) =>
+    request<{ ok: boolean }>("/auth/forgot-password", {
+      method: "POST",
+      body: JSON.stringify({ identifier }),
+    }),
+  resetPassword: (token: string, newPassword: string) =>
+    request<{ ok: boolean }>("/auth/reset-password", {
+      method: "POST",
+      body: JSON.stringify({ token, new_password: newPassword }),
+    }),
   sendTestMail: (to: string) =>
     request<{ ok: boolean; to: string }>("/settings/instance/mail-test", {
       method: "POST",
@@ -591,6 +603,7 @@ export interface InstanceSettings {
   session_timeout_minutes: number;
   organisation_name: string;
   organisation_address: string;
+  public_url: string;
   mail_enabled: boolean;
   mail_host: string;
   mail_port: number;

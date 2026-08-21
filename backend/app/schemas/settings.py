@@ -183,6 +183,12 @@ class InstanceSettings(BaseModel):
     organisation_name: str = ""
     organisation_address: str = ""
 
+    #: The address people reach this installation on, used to build the links
+    #: in outgoing mail. Empty means: read it from the request, which is right
+    #: whenever the browser talks to CargoPilot directly and wrong behind a
+    #: reverse proxy that does not pass its own host on.
+    public_url: str = ""
+
     #: The mail server. Off until an administrator fills it in: an application
     #: that silently knows how to send mail is a surprise nobody asked for.
     mail_enabled: bool = False
@@ -203,6 +209,14 @@ class InstanceSettings(BaseModel):
     mail_from: str = ""
     mail_from_name: str = ""
     mail_timeout_seconds: float = Field(default=15.0, ge=1.0, le=120.0)
+
+    @field_validator("public_url")
+    @classmethod
+    def _public_http_url(cls, value: str) -> str:
+        value = (value or "").strip().rstrip("/")
+        if value and not value.startswith(("http://", "https://")):
+            raise ValueError("the address must start with http:// or https://")
+        return value
 
     @field_validator("mail_host", "mail_username", "mail_from_name")
     @classmethod

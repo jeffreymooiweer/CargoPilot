@@ -2042,6 +2042,339 @@ def check_adn_placarding(
     }
 
 
+#: 5.3.1.1.2.2 asks for "the highest hazard" among several divisions of class 1
+#: without printing an order, where ADN prints one. The order below is the
+#: ordinary reading of hazard within class 1 and is used only to *choose which
+#: placard to name*; every division present is still listed to the user, so a
+#: wrong choice here cannot hide a division.
+_IMDG_CLASS1_ORDER = ("1.1", "1.2", "1.3", "1.5", "1.6", "1.4")
+
+
+def check_imdg_placarding(
+    entries: list[dict[str, Any]], language: str = "nl",
+) -> dict[str, Any]:
+    """IMDG 5.3: what a cargo transport unit going to sea must show.
+
+    Road, rail and inland waterway have had their chapter 5.3 derived since
+    v1.57.0, v1.121.0 and v1.120.0; sea had nothing, because the Code was
+    believed to be unavailable. It is not: resolution MSC.556(108) replaces
+    the complete text of the Code, and chapter 5.3 was read out of it
+    verbatim (``--quote sea_placarding``) before a line of this was written.
+
+    The sea rule is emphatically not the road rule renumbered:
+
+    * a freight container is placarded **on all four sides** (5.3.1.1.4.1.1),
+      where a road vehicle carrying packages is often not placarded at all;
+    * the UN number rides **inside the placard or on an orange panel beside
+      it** (5.3.2.1.2), not on an orange plate of its own, and it is required
+      only in the five cases of 5.3.2.1.1 — never for class 1;
+    * the **proper shipping name itself** is marked on the unit (5.3.2.0.1),
+      which no land regime asks for;
+    * the **marine pollutant mark** (5.3.2.3) has no land counterpart;
+    * **class 9 is placarded as model No. 9, never 9A** (5.3.1.1.2) — and 9A
+      is exactly what table A gives for the lithium and sodium battery
+      entries, so taking the label model across unchanged would put the wrong
+      placard on a container of batteries.
+
+    As with ADN, the application cannot see which kind of cargo transport unit
+    the goods travel in, and the kind decides the placement. So the placement
+    rules are given per kind, each under its own provision, rather than one
+    kind's answer standing in for the others.
+
+    One thing is derived here that ADN's 5.3.3 still reports as unassessed:
+    the elevated temperature mark. It turns on the carriage temperature, which
+    is now a field — absent, this says so rather than implying no mark is
+    needed.
+    """
+    from app.services.dg.autofill import total_quantity
+
+    rules = get_compliance_rules()["imdg_placarding"]
+    lang = _lang(language)
+    products = [(entry, index, product)
+                for entry, index, product in _iter_products(entries)
+                if not product.get("transport_forbidden")]
+    if not products:
+        return {"status": "not_checked", "placards": [], "marks": []}
+
+    named = {id(product): _product_label(entry, product, index)
+             for entry, index, product in products}
+    goods = [product for _entry, _index, product in products]
+
+    def text(key: str) -> str:
+        block = rules[key]
+        return block.get(lang) or block["en"]
+
+    def names(items: list[dict[str, Any]]) -> str:
+        return ", ".join(sorted({named[id(p)] for p in items}))
+
+    placards: list[dict[str, Any]] = []
+
+    # --- 5.3.1.1.2, the primary hazard ---------------------------------------
+    #
+    # The primary hazard, not the label models: 5.3.1.1.2 says "the primary
+    # hazard of the goods contained", and 5.3.1.1.3 adds the subsidiary ones
+    # separately. Class 9 is placarded as 9 even where table A gives 9A.
+    def _placard_class(product: dict[str, Any]) -> str:
+        value = _primary_class(product) or str(product.get("class") or "").strip()
+        return "9" if value.upper() in {"9A", "9"} else value
+
+    # 1.4S carries no placard at any quantity, so it is taken out before the
+    # primary hazards are collected rather than filtered out of the result.
+    class1_4s = [p for p in goods
+                 if str(p.get("classification_code") or "").strip().upper() == "1.4S"]
+    placardable = [p for p in goods if p not in class1_4s]
+
+    class1 = [p for p in placardable if _placard_class(p).startswith("1")]
+    others = [p for p in placardable if not _placard_class(p).startswith("1")]
+
+    primary = sorted({_placard_class(p) for p in others if _placard_class(p)})
+
+    def _division(product: dict[str, Any]) -> str:
+        """1.1 through 1.6, from the classification code or the class itself.
+
+        The classification code ("1.4S") carries the division and the
+        compatibility group; the class column ("1.4") carries the division
+        alone. Either will do, and a class 1 entry that gives neither is
+        reported as plain "1" rather than guessed at.
+        """
+        for value in (product.get("classification_code"), product.get("class")):
+            match = re.match(r"1\.\d", str(value or "").strip())
+            if match:
+                return match.group(0)
+        return "1"
+
+    class1_highest = None
+    if class1:
+        divisions = sorted({_division(p) for p in class1})
+        known = [d for d in _IMDG_CLASS1_ORDER if d in divisions]
+        chosen = known[0] if known else "1"
+        primary.append(chosen)
+        if len(divisions) > 1:
+            class1_highest = chosen
+        primary = sorted(set(primary))
+
+    if primary:
+        placards.append({
+            "class": None,
+            "provision": "5.3.1.1.2",
+            "message": text("label_models").format(labels=", ".join(primary)),
+            "products": sorted(named.values()),
+            "label_models": primary,
+            "required": True,
+        })
+    if class1_highest:
+        placards.append({
+            "class": "1",
+            "provision": "5.3.1.1.2.2",
+            "message": text("class1_highest").format(division=class1_highest),
+            "products": sorted({named[id(p)] for p in class1}),
+        })
+    if class1_4s:
+        placards.append({
+            "class": "1.4S",
+            "provision": "5.3.1.1.2.1",
+            "message": text("class1_4s").format(products=names(class1_4s)),
+            "products": sorted({named[id(p)] for p in class1_4s}),
+            "required": False,
+        })
+
+    # --- 5.3.1.1.3, the subsidiary hazards -----------------------------------
+    subsidiary_labels = sorted({
+        part.strip()
+        for p in placardable
+        for part in str(p.get("subsidiary_risks") or "").replace(
+            "+", ",").split(",")
+        if part.strip() and part.strip() not in {"-", "–"}})
+    if subsidiary_labels:
+        placards.append({
+            "class": None,
+            "provision": "5.3.1.1.3",
+            "message": text("subsidiary").format(
+                labels=", ".join(subsidiary_labels)),
+            "products": [],
+            "required": True,
+        })
+        if len(primary) > 1:
+            placards.append({
+                "class": None, "provision": "5.3.1.1.3",
+                "message": text("no_subsidiary_duplicate"), "products": [],
+            })
+
+    if primary or subsidiary_labels:
+        placards.append({"class": None, "provision": "5.3.1.2.1",
+                         "message": text("contrast"), "products": []})
+
+    # --- 5.3.1.1.4.1, where they go, per kind of unit -------------------------
+    placards.append({"class": None, "provision": "5.3.1.1.4.1.1",
+                     "message": text("where_container"), "products": []})
+    placards.append({"class": None, "provision": "5.3.1.1.4.1.2",
+                     "message": text("where_wagon"), "products": []})
+    placards.append({"class": None, "provision": "5.3.1.1.4.1.3",
+                     "message": text("where_multi_compartment"), "products": []})
+    placards.append({"class": None, "provision": "5.3.1.1.4.1.4",
+                     "message": text("where_flexible_bulk"), "products": []})
+    placards.append({"class": None, "provision": "5.3.1.1.4.1.5",
+                     "message": text("where_other"), "products": []})
+
+    if any(_placard_class(p).startswith("7") for p in placardable):
+        placards.append({
+            "class": "7", "provision": "5.3.1.1.5.1",
+            "message": text("class7"),
+            "products": sorted({named[id(p)] for p in placardable
+                                if _placard_class(p).startswith("7")}),
+            "required": True,
+        })
+
+    placards.append({"class": None, "provision": "5.3.1.1.1.1",
+                     "message": text("visible_labels"), "products": []})
+
+    # --- 5.3.2, the marking half ---------------------------------------------
+    marks: list[dict[str, Any]] = []
+    marks.append({"provision": "5.3.2.0.1", "message": text("psn_marking"),
+                  "kind": "proper_shipping_name"})
+
+    in_tank = [p for p in goods
+               if str(p.get("carriage_mode") or "").strip() == "portable_tank"]
+    in_bulk = [p for p in goods
+               if str(p.get("carriage_mode") or "").strip() == "bulk"]
+    packaged = [p for p in goods
+                if str(p.get("carriage_mode") or "packages").strip()
+                not in ("portable_tank", "bulk")]
+
+    if in_tank:
+        marks.append({"provision": "5.3.2.1.1.1", "message": text("un_number_tank"),
+                      "kind": "un_number", "required": True})
+    if in_bulk:
+        marks.append({"provision": "5.3.2.1.1.5", "message": text("un_number_bulk"),
+                      "kind": "un_number", "required": True})
+
+    # 5.3.2.1.1.2 is arithmetic the application can do: more than 4,000 kg
+    # gross of a single UN number that is the only dangerous goods aboard.
+    # Both halves of the condition have to hold, and the mass has to be known —
+    # an unentered mass is reported as unassessed, never as "under 4,000 kg".
+    non_class1 = [p for p in packaged if not _placard_class(p).startswith("1")]
+    un_numbers = {str(p.get("un_number") or p.get("un") or "").strip()
+                  for p in goods}
+    single_un = len({u for u in un_numbers if u}) == 1 and len(goods) == len(non_class1)
+    if single_un and non_class1:
+        heavy: list[dict[str, Any]] = []
+        unknown: list[dict[str, Any]] = []
+        total_gross = 0.0
+        measured = False
+        for product in non_class1:
+            gross = _num(product.get("gross_mass_per_package"))
+            packages = _num(product.get("quantity_packages"))
+            if gross is not None and packages is not None:
+                total_gross += gross * packages
+                measured = True
+            else:
+                amount, unit = total_quantity(product)
+                if amount is not None and unit == "kg":
+                    total_gross += amount
+                    measured = True
+                else:
+                    unknown.append(product)
+        if measured and not unknown and total_gross > 4000:
+            heavy = non_class1
+        if heavy:
+            marks.append({
+                "provision": "5.3.2.1.1.2",
+                "message": text("un_number_4000kg").format(products=names(heavy)),
+                "kind": "un_number", "required": True,
+            })
+        elif unknown:
+            marks.append({
+                "provision": "5.3.2.1.1.2",
+                "message": text("un_number_4000kg_unknown").format(
+                    products=names(unknown)),
+                "kind": "un_number", "required": None,
+            })
+
+    if any(_placard_class(p).startswith("7") for p in goods):
+        marks.append({"provision": "5.3.2.1.1.3/5.3.2.1.1.4",
+                      "message": text("un_number_class7"),
+                      "kind": "un_number", "required": None})
+    if class1 or class1_4s:
+        marks.append({"provision": "5.3.2.1.1",
+                      "message": text("un_number_not_class1"), "kind": "un_number"})
+
+    marks.append({"provision": "5.3.2.1.2", "message": text("un_number_how"),
+                  "kind": "un_number"})
+
+    # 5.3.2.3, the mark no land regime has. The sea layer sets marine_pollutant
+    # from column (4) of the Dangerous Goods List; the environmentally
+    # hazardous flag is the land mark of 5.2.1.6 and is not the same thing, so
+    # only the sea value decides here.
+    polluting = [p for p in goods
+                 if str(p.get("marine_pollutant") or "").strip().upper()
+                 in {"P", "Y", "YES", "JA", "TRUE", "1"}]
+    if polluting:
+        marks.append({
+            "provision": "5.3.2.3.1",
+            "message": text("marine_pollutant").format(products=names(polluting)),
+            "kind": "marine_pollutant", "required": True,
+        })
+
+    # 5.3.2.2, the elevated temperature mark — liquid at 100 °C or above, solid
+    # at 240 °C or above. The threshold depends on the state, and the state is
+    # not a field either; the liquid threshold is the lower of the two, so
+    # using it is the safe direction to be wrong in, and the message names both.
+    hot: list[dict[str, Any]] = []
+    unknown_temperature: list[dict[str, Any]] = []
+    temperatures: set[float] = set()
+    for product in goods:
+        value = _num(product.get("carriage_temperature"))
+        if value is None:
+            if product.get("molten"):
+                unknown_temperature.append(product)
+            continue
+        if value >= 100:
+            hot.append(product)
+            temperatures.add(value)
+    if hot:
+        marks.append({
+            "provision": "5.3.2.2.1",
+            "message": text("elevated_temperature").format(
+                products=names(hot),
+                temperature=", ".join(f"{t:g} °C" for t in sorted(temperatures))),
+            "kind": "elevated_temperature", "required": True,
+        })
+    elif unknown_temperature:
+        marks.append({
+            "provision": "5.3.2.2.1",
+            "message": text("elevated_temperature_unknown"),
+            "kind": "elevated_temperature", "required": None,
+        })
+
+    # 5.3.2.4 hands the answer to 3.4.5.5, and whether a consignment travels as
+    # a limited quantity is the LQ check's answer, not this chapter's. So the
+    # substances with a non-zero column 7a value are named as the ones it can
+    # apply to — which is what the provision lets this check honestly say.
+    limited = [p for p in goods
+               if str(p.get("limited_quantity") or "").strip() not in ("", "0", "-", "–")]
+    if limited:
+        marks.append({
+            "provision": "5.3.2.4",
+            "message": text("limited_quantities").format(products=names(limited)),
+            "kind": "limited_quantities",
+        })
+
+    marks.append({"provision": "5.3.1.1.1.2", "message": text("seawater"),
+                  "kind": "seawater"})
+    marks.append({"provision": "5.3.1.1.1.3",
+                  "message": text("remove_after_discharge"), "kind": "removal"})
+
+    required = [p for p in placards if p.get("required") is True]
+    return {
+        "status": "ok",
+        "scope": "tanks_or_bulk" if (in_tank or in_bulk) else "packages",
+        "placards": placards,
+        "placards_required": bool(required),
+        "marks": marks,
+        "source": rules["source"],
+    }
+
+
 def check_rid_placarding(
     entries: list[dict[str, Any]], language: str = "nl",
 ) -> dict[str, Any]:
@@ -5609,6 +5942,14 @@ def check_compliance(
             language,
         ) + check_imdg_amendment_42_24(entries, language)
         result["imdg_note"] = pick(rules["imdg_segregation"]["note"], language)
+        # IMDG 5.3 — what the cargo transport unit shows on the outside. The
+        # last mode without its own chapter 5.3, and the one where borrowing
+        # the road's answer would have been most wrong: four sides rather than
+        # two, the proper shipping name on the unit, the marine pollutant mark,
+        # and class 9 placarded as 9 where table A says 9A.
+        imdg_placarding = check_imdg_placarding(entries, language)
+        if imdg_placarding.get("status") != "not_checked":
+            result["imdg_placarding"] = imdg_placarding
         groups = rules.get("imdg_segregation_groups")
         if groups:
             lang = _lang(language)

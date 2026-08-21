@@ -715,6 +715,16 @@ Subsidiary risks count throughout, and a subsidiary class 1 risk is treated as d
 - **Nothing about the ship.** Stowage plans, the special list or manifest, and every
   provision that depends on the vessel.
 
+**Placarding, since v1.150.0:** chapter 5.3 is derived and reaches paper. The placards
+follow the primary hazard with 1.4S excepted and class 1 aggregated to the highest
+division; the subsidiary placards of 5.3.1.1.3; the placement rules of 5.3.1.1.4.1 per
+kind of unit, because the kind is not something the application can see; the proper
+shipping name marking of 5.3.2.0; the UN number in the five cases of 5.3.2.1.1,
+including the 4,000 kg arithmetic of 5.3.2.1.1.2, which reports itself as unassessed
+rather than as "under the limit" when the mass was not entered; the marine pollutant
+mark; and the elevated temperature mark of 5.3.2.2, which turns on a new carriage
+temperature field.
+
 **Assessment:** for the segregation of packaged dangerous goods this is solid, tested and
 pinned against edits. Everything downstream of "may these two travel together" is out of
 scope.
@@ -766,7 +776,7 @@ Ordered by how much harm someone could take before noticing, not by effort.
 | 4 | **Mixed loading for ADN answered with ADR's 7.5.2** | Closed, and since v1.119.0 closed completely. v1.38.0 read RID's 7.5.2.1 and found it identical to ADR's, footnotes included; v1.41.0 gave rail its own table and its own protective distance. v1.59.0 gave inland waterway ADN 7.1.4.3 — how many metres, not whether — v1.61.0 read column (12) for the cone provisions, v1.64.0 applied the class 1 hold table of 7.1.4.3.4. v1.119.0 read the rest of the chapter: 7.1.4.2 (bulk class 5.1 excludes everything else), 7.1.4.10 (the foodstuffs precaution on special provision 802, in place of the borrowed CV28) and the container exceptions of 7.1.4.4/7.1.4.5 — and the ADR table no longer runs for an inland-only selection at all. |
 | 5 | **LQ/EQ conditions not checked** | The arithmetic of 3.4/3.5 is verified correct and 3.5.1.3/3.5.1.4 are applied since v1.50.0, but the mark, the packagings and the 3.5.3 tests are declarations the application cannot see. A line "within the limits" is a candidate, not an exemption — and the panel says so. |
 | 6 | **IMDG stowage category shown, not enforced** | Lower because on-deck/under-deck is usually the carrier's call, not the consignor's. **[verify]** |
-| 7 | **No marking or placarding checks outside the road mode** | Closed for ADR in v1.57.0 (5.3.1.5, 5.3.2.1 and 5.3.6.1 for packages; the equipment half in v1.53.0), extended to tanks and put on paper in v1.83.0. Closed for inland waterway in v1.120.0: ADN 5.3 is derived per kind of cargo transport unit — the kind the application cannot see, and the kind decides everything (a container placards for any class, a road vehicle only for 1 and 7 except before a sea voyage, a wagon for the goods carried) — and reaches paper as the ADN placarding sheet. Closed for rail in v1.121.0: RID 5.3 is derived under its own rules — package wagons placard for every class, orange plates only via column (20), the orange band of 5.3.5 from the classification code, the shunting marking of 5.3.4 as a named condition — and reaches paper as the RID placarding sheet. Sea and air still have nothing. |
+| 7 | **No marking or placarding checks outside the road mode** | Closed for ADR in v1.57.0 (5.3.1.5, 5.3.2.1 and 5.3.6.1 for packages; the equipment half in v1.53.0), extended to tanks and put on paper in v1.83.0. Closed for inland waterway in v1.120.0: ADN 5.3 is derived per kind of cargo transport unit — the kind the application cannot see, and the kind decides everything (a container placards for any class, a road vehicle only for 1 and 7 except before a sea voyage, a wagon for the goods carried) — and reaches paper as the ADN placarding sheet. Closed for rail in v1.121.0: RID 5.3 is derived under its own rules — package wagons placard for every class, orange plates only via column (20), the orange band of 5.3.5 from the classification code, the shunting marking of 5.3.4 as a named condition — and reaches paper as the RID placarding sheet. Closed for sea in v1.150.0: IMDG 5.3 was read out of the amendment resolution — which replaces the complete text of the Code — and is derived under its own rules, which are not the road's renumbered: a container is placarded on all four sides, the proper shipping name is marked on the unit itself, the UN number rides in the placard or on a panel beside it in the five cases of 5.3.2.1.1 and never for class 1, class 9 is placarded as model 9 where table A gives 9A, and the marine pollutant mark has no land counterpart. It reaches paper as the IMDG placarding sheet. **Air alone still has nothing**, and its chapter is IATA's rather than a UN model's. |
 | 8 | ~~The tank hierarchy declines on three of eighteen codes~~ | Closed in v1.94.0. The French volume II — the treaty's other authentic language — was read verbatim on the three cells no two of the first three readings agreed on: it sided with the Dutch on L10BH's group (18 codes), with the German on L10DH's inheritance (the chain runs through L10CH), and with everyone on S10AH's nine codes — the strays of the other readings spell the inheritance sentence (S, G, A, V is SGAV leaking into the cell). **All eighteen codes are settled on every cell.** |
 
 Two of the top gaps from earlier versions of this table are gone, and it is worth being
@@ -875,9 +885,13 @@ reading and not as a coincidence.
 - **IATA quantity tables.** Table 4.2 is copyrighted and is not available as open data.
   CargoPilot can accept n and M, do the arithmetic and state clearly when input is missing;
   it cannot safely manufacture the source limits.
-- **The IMDG Code's own text.** Sold by the IMO. The segregation data already in the
-  repository came from IMO circulars and resolutions that are freely distributable; the
-  Code itself is not.
+- ~~**The IMDG Code's own text.**~~ This entry was wrong, and it is worth saying how.
+  The consolidated Code is indeed sold by the IMO — but resolution MSC.556(108), which
+  is freely distributed, states that "the complete text of the IMDG Code is replaced by
+  the following" and then prints it. So the Code *is* readable, through the instrument
+  that adopts it, and has been all along: the Dangerous Goods List was extracted from it
+  in v1.48.0 and chapter 5.3 in v1.150.0. What remains unavailable is the consolidated
+  publication as a book, which is a different thing from the text.
 - **State and operator variations.** These change per airline and per country and would be
   stale within months of shipping.
 - **Anything about the vehicle, vessel or aircraft.** Outside what a document preparation
@@ -885,9 +899,13 @@ reading and not as a coincidence.
 
 ---
 
-*This assessment is maintained up to CargoPilot v1.128.0 (v1.125.0 through v1.128.0
-changed the update experience, the equipment export and the reference fields — no
-regulatory check); the sections above name the release
+*This assessment is maintained up to CargoPilot v1.150.0. Between v1.129.0 and
+v1.149.0 the work was outside the regulatory checks — the UN-card pipeline, the ZIP
+export, in-app updating, user administration, the mail server, password reset,
+two-factor authentication and the four-language mail templates — with two exceptions
+that are recorded above: v1.149.0 registered the December 2025 corrigenda to IMDG
+Amendment 42-24 and verified that none of its eleven corrections touches an extracted
+value, and v1.150.0 closed the sea half of gap 7. The sections above name the release
 each finding shipped in. v1.42.0 to v1.48.0 touched the goods
 catalogue, the interface language, the settings, the documentation and the error messages,
 not a single regulatory check; v1.49.0 and v1.50.0 changed the ADR side, from the Dutch

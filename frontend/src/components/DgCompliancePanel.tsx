@@ -103,6 +103,7 @@ export default function DgCompliancePanel({ entries, profiles }: Props) {
   const placarding = result?.adr_placarding;
   const adnPlacarding = result?.adn_placarding;
   const ridPlacarding = result?.rid_placarding;
+  const imdgPlacarding = result?.imdg_placarding;
   const security = result?.adr_security;
   // An expired rule set comes before all substantive findings: those findings
   // were computed with it.
@@ -950,6 +951,47 @@ export default function DgCompliancePanel({ entries, profiles }: Props) {
           }
         >
           {[...(ridPlacarding.placards ?? []), ...(ridPlacarding.marks ?? [])].map((item, i) => (
+            <div
+              key={i}
+              className="flex items-start gap-2 rounded-lg border border-slate-200 px-3 py-2 text-xs dark:border-slate-700"
+            >
+              <span className="shrink-0 rounded-full bg-slate-100 px-2 py-0.5 text-[11px] font-medium text-slate-700 dark:bg-slate-800 dark:text-slate-200">
+                {item.provision}
+              </span>
+              <span className="text-slate-700 dark:text-slate-200">{item.message}</span>
+            </div>
+          ))}
+        </CollapsibleSection>
+      )}
+
+      {imdgPlacarding && imdgPlacarding.status !== "not_checked" && (
+        <CollapsibleSection
+          title={t("compliance.imdgPlacardingTitle")}
+          chips={
+            <>
+              <SummaryChip
+                className={
+                  imdgPlacarding.placards_required
+                    ? "bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-200"
+                    : "bg-emerald-100 text-emerald-800 dark:bg-emerald-900/40 dark:text-emerald-200"
+                }
+              >
+                {imdgPlacarding.placards_required
+                  ? t("compliance.placardingRequired")
+                  : t("compliance.placardingNone")}
+              </SummaryChip>
+              <SummaryChip className="bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-300">
+                {t("compliance.imdgPlacardingUnit")}
+              </SummaryChip>
+              {imdgPlacarding.marks?.some((m) => m.kind === "marine_pollutant") && (
+                <SummaryChip className="bg-sky-100 text-sky-800 dark:bg-sky-900/40 dark:text-sky-200">
+                  {t("compliance.imdgPlacardingPollutant")}
+                </SummaryChip>
+              )}
+            </>
+          }
+        >
+          {[...(imdgPlacarding.placards ?? []), ...(imdgPlacarding.marks ?? [])].map((item, i) => (
             <div
               key={i}
               className="flex items-start gap-2 rounded-lg border border-slate-200 px-3 py-2 text-xs dark:border-slate-700"

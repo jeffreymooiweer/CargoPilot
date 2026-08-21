@@ -3698,5 +3698,171 @@
         "fr": "La disposition spéciale 274 s'applique à {products} : la désignation officielle de transport doit être complétée par le nom technique (3.1.2.8). Renseignez le champ nom technique — sans lui, la description sur le document est incomplète."
       }
     }
+  },
+  "imdg_placarding": {
+    "source": "IMDG Code Amendment 42-24 (IMO resolution MSC.556(108)), chapter 5.3 on printed pages 289-292 (annex 8 pages 299-302), quoted verbatim by scripts/read_land_regulations.py --quote sea_placarding --doc imdg_42_24. The resolution replaces the complete text of the Code, so this is the chapter itself and not a summary of it.",
+    "_scope": "What a cargo transport unit going to sea must show. The sea rule is not the road rule with another number: a unit is placarded on all four sides where a road vehicle is not, the UN number rides in the placard or on an orange panel beside it rather than on an orange plate of its own, the proper shipping name itself is marked on the unit, and the marine pollutant mark has no land counterpart at all. Which kind of unit the packages travel in decides the placement, and the application cannot see that, so every kind is given its own line under its own provision.",
+    "label_models": {
+      "nl": "De grote etiketten komen overeen met het primaire gevaar van de goederen in de laadeenheid (5.3.1.1.2). Voor deze lading: {labels}. Voor klasse 9 is dat model nr. 9; model 9A mag niet voor bebording worden gebruikt.",
+      "en": "Placards correspond to the primary hazard of the goods in the cargo transport unit (5.3.1.1.2). For this load: {labels}. For class 9 that is label model No. 9; model 9A may not be used for placarding.",
+      "de": "Die Großzettel entsprechen der Hauptgefahr der Güter in der Beförderungseinheit (5.3.1.1.2). Für diese Ladung: {labels}. Für Klasse 9 gilt Muster Nr. 9; Muster 9A darf nicht zur Bezettelung verwendet werden.",
+      "fr": "Les plaques-étiquettes correspondent au danger principal des marchandises dans l'engin de transport (5.3.1.1.2). Pour ce chargement : {labels}. Pour la classe 9, il s'agit du modèle no 9 ; le modèle 9A ne peut pas être utilisé pour le placardage."
+    },
+    "subsidiary": {
+      "nl": "Ook voor bijkomende gevaren waarvoor 5.2.2.1.2 een etiket voorschrijft, wordt een groot etiket aangebracht (5.3.1.1.3): {labels}.",
+      "en": "Placards are also displayed for the subsidiary hazards for which 5.2.2.1.2 requires a label (5.3.1.1.3): {labels}.",
+      "de": "Großzettel werden auch für Zusatzgefahren angebracht, für die 5.2.2.1.2 einen Gefahrzettel vorschreibt (5.3.1.1.3): {labels}.",
+      "fr": "Des plaques-étiquettes sont également apposées pour les dangers subsidiaires pour lesquels le 5.2.2.1.2 exige une étiquette (5.3.1.1.3) : {labels}."
+    },
+    "no_subsidiary_duplicate": {
+      "nl": "Bij goederen van meer dan één klasse vervalt het grote etiket voor een bijkomend gevaar wanneer dat gevaar al door een groot etiket voor een primair gevaar wordt aangegeven (5.3.1.1.3).",
+      "en": "With goods of more than one class, a subsidiary hazard placard is not needed where that hazard is already indicated by a primary hazard placard (5.3.1.1.3).",
+      "de": "Bei Gütern mehrerer Klassen entfällt der Großzettel für eine Zusatzgefahr, wenn diese Gefahr bereits durch einen Großzettel für eine Hauptgefahr angezeigt wird (5.3.1.1.3).",
+      "fr": "Pour des marchandises de plus d'une classe, la plaque-étiquette d'un danger subsidiaire n'est pas requise lorsque ce danger est déjà indiqué par une plaque-étiquette de danger principal (5.3.1.1.3)."
+    },
+    "class1_highest": {
+      "nl": "Klasse 1, meerdere subklassen in één laadeenheid: alleen het grote etiket van het hoogste gevaar wordt aangebracht — hier {division} (5.3.1.1.2.2).",
+      "en": "Class 1, several divisions in one cargo transport unit: only the placard indicating the highest hazard need be affixed — here {division} (5.3.1.1.2.2).",
+      "de": "Klasse 1, mehrere Unterklassen in einer Beförderungseinheit: nur der Großzettel der höchsten Gefahr ist anzubringen — hier {division} (5.3.1.1.2.2).",
+      "fr": "Classe 1, plusieurs divisions dans un même engin de transport : seule la plaque-étiquette indiquant le danger le plus élevé doit être apposée — ici {division} (5.3.1.1.2.2)."
+    },
+    "class1_4s": {
+      "nl": "Voor explosieven van subklasse 1.4, compatibiliteitsgroep S zijn geen grote etiketten vereist, ongeacht de hoeveelheid (5.3.1.1.2.1): {products}.",
+      "en": "No placards are required for explosives of division 1.4, compatibility group S, in any quantity (5.3.1.1.2.1): {products}.",
+      "de": "Für explosive Stoffe der Unterklasse 1.4, Verträglichkeitsgruppe S sind unabhängig von der Menge keine Großzettel erforderlich (5.3.1.1.2.1): {products}.",
+      "fr": "Aucune plaque-étiquette n'est requise pour les explosifs de la division 1.4, groupe de compatibilité S, quelle que soit la quantité (5.3.1.1.2.1) : {products}."
+    },
+    "contrast": {
+      "nl": "Grote etiketten worden op een contrasterende achtergrond aangebracht of krijgen een onderbroken of doorlopende buitenrand (5.3.1.1.2). Ze meten ten minste 250 × 250 mm, met een lijn 12,5 mm binnen de rand en het klassecijfer ten minste 25 mm hoog (5.3.1.2.1).",
+      "en": "Placards are displayed on a background of contrasting colour, or have a dotted or solid outer boundary line (5.3.1.1.2). They measure at least 250 × 250 mm, with a line 12.5 mm inside the edge and the class digit at least 25 mm high (5.3.1.2.1).",
+      "de": "Großzettel werden auf einem kontrastierenden Untergrund angebracht oder erhalten eine gestrichelte oder durchgehende Außenlinie (5.3.1.1.2). Sie messen mindestens 250 × 250 mm, mit einer Linie 12,5 mm innerhalb des Randes und der Klassenziffer mindestens 25 mm hoch (5.3.1.2.1).",
+      "fr": "Les plaques-étiquettes sont apposées sur un fond de couleur contrastée ou comportent une ligne extérieure en pointillé ou continue (5.3.1.1.2). Elles mesurent au moins 250 × 250 mm, avec une ligne à 12,5 mm du bord et le chiffre de classe d'au moins 25 mm de haut (5.3.1.2.1)."
+    },
+    "where_container": {
+      "nl": "Vrachtcontainer, oplegger, gesloten of met zeil bedekte bulkcontainer of transporttank: één groot etiket aan elke zijde en één aan elk uiteinde (5.3.1.1.4.1.1). Transporttanks tot 3.000 l mogen in plaats daarvan aan twee tegenoverliggende zijden worden beborden of geëtiketteerd.",
+      "en": "Freight container, semi-trailer, closed or sheeted bulk container or portable tank: one placard on each side and one on each end (5.3.1.1.4.1.1). Portable tanks of not more than 3,000 L may instead be placarded or labelled on only two opposite sides.",
+      "de": "Frachtcontainer, Sattelanhänger, geschlossener oder mit Plane bedeckter Schüttgut-Container oder ortsbeweglicher Tank: je ein Großzettel an jeder Seite und an jedem Ende (5.3.1.1.4.1.1). Ortsbewegliche Tanks bis 3.000 l dürfen stattdessen nur an zwei gegenüberliegenden Seiten bezettelt werden.",
+      "fr": "Conteneur, semi-remorque, conteneur pour vrac fermé ou bâché ou citerne mobile : une plaque-étiquette sur chaque côté et une à chaque extrémité (5.3.1.1.4.1.1). Les citernes mobiles d'une capacité maximale de 3 000 l peuvent n'être placardées ou étiquetées que sur deux côtés opposés."
+    },
+    "where_wagon": {
+      "nl": "Spoorwagen: ten minste aan elke zijde (5.3.1.1.4.1.2).",
+      "en": "Railway wagon: at least on each side (5.3.1.1.4.1.2).",
+      "de": "Eisenbahnwagen: mindestens an jeder Seite (5.3.1.1.4.1.2).",
+      "fr": "Wagon: au moins sur chaque côté (5.3.1.1.4.1.2)."
+    },
+    "where_multi_compartment": {
+      "nl": "Tank met meerdere compartimenten die meer dan één stof of hun residuen bevat: langs elke zijde ter hoogte van de betrokken compartimenten (5.3.1.1.4.1.3). Vragen alle compartimenten dezelfde grote etiketten, dan volstaat één keer per zijde.",
+      "en": "Multiple-compartment tank containing more than one substance or their residues: along each side at the positions of the relevant compartments (5.3.1.1.4.1.3). If all compartments require the same placards, once along each side suffices.",
+      "de": "Tank mit mehreren Abteilen, der mehr als einen Stoff oder deren Rückstände enthält: an jeder Seite in Höhe der betreffenden Abteile (5.3.1.1.4.1.3). Verlangen alle Abteile dieselben Großzettel, genügt einmal je Seite.",
+      "fr": "Citerne à compartiments multiples contenant plus d'une matière ou leurs résidus : le long de chaque côté à l'emplacement des compartiments concernés (5.3.1.1.4.1.3). Si tous les compartiments exigent les mêmes plaques-étiquettes, une fois par côté suffit."
+    },
+    "where_flexible_bulk": {
+      "nl": "Flexibele bulkcontainer: op ten minste twee tegenoverliggende posities (5.3.1.1.4.1.4).",
+      "en": "Flexible bulk container: in at least two opposing positions (5.3.1.1.4.1.4).",
+      "de": "Flexibler Schüttgut-Container: an mindestens zwei gegenüberliegenden Stellen (5.3.1.1.4.1.4).",
+      "fr": "Conteneur pour vrac souple : à au moins deux emplacements opposés (5.3.1.1.4.1.4)."
+    },
+    "where_other": {
+      "nl": "Elke andere laadeenheid: ten minste aan beide zijden en aan de achterzijde (5.3.1.1.4.1.5).",
+      "en": "Any other cargo transport unit: at least on both sides and on the back of the unit (5.3.1.1.4.1.5).",
+      "de": "Jede andere Beförderungseinheit: mindestens an beiden Seiten und an der Rückseite (5.3.1.1.4.1.5).",
+      "fr": "Tout autre engin de transport : au moins sur les deux côtés et à l'arrière de l'engin (5.3.1.1.4.1.5)."
+    },
+    "class7": {
+      "nl": "Klasse 7: grote vrachtcontainers en tanks dragen vier grote etiketten volgens model nr. 7D, verticaal aan elke zijwand en elke eindwand (5.3.1.1.5.1). Grote etiketten die niet op de inhoud slaan, worden verwijderd.",
+      "en": "Class 7: large freight containers and tanks bear four placards conforming to model No. 7D, affixed vertically to each side wall and each end wall (5.3.1.1.5.1). Placards which do not relate to the contents are removed.",
+      "de": "Klasse 7: Große Frachtcontainer und Tanks tragen vier Großzettel nach Muster Nr. 7D, senkrecht an jeder Seitenwand und jeder Stirnwand (5.3.1.1.5.1). Nicht zum Inhalt gehörende Großzettel werden entfernt.",
+      "fr": "Classe 7 : les grands conteneurs et les citernes portent quatre plaques-étiquettes conformes au modèle no 7D, apposées verticalement sur chaque paroi latérale et chaque paroi d'extrémité (5.3.1.1.5.1). Les plaques-étiquettes sans rapport avec le contenu sont enlevées."
+    },
+    "visible_labels": {
+      "nl": "Grote etiketten en merktekens zijn niet vereist wanneer de etiketten en merktekens op de colli duidelijk zichtbaar zijn vanaf de buitenzijde van de laadeenheid (5.3.1.1.1.1).",
+      "en": "Placards and marks are not required where the labels and marks affixed to the packages are clearly visible from the exterior of the cargo transport unit (5.3.1.1.1.1).",
+      "de": "Großzettel und Kennzeichen sind nicht erforderlich, wenn die Gefahrzettel und Kennzeichen auf den Versandstücken von außen deutlich sichtbar sind (5.3.1.1.1.1).",
+      "fr": "Les plaques-étiquettes et marques ne sont pas requises lorsque les étiquettes et marques apposées sur les colis sont clairement visibles de l'extérieur de l'engin de transport (5.3.1.1.1.1)."
+    },
+    "seawater": {
+      "nl": "De bebording en kenmerking zijn zo aangebracht dat zij na ten minste drie maanden onderdompeling in zee nog herkenbaar zijn (5.3.1.1.1.2).",
+      "en": "Placarding and marking are applied such that the information remains identifiable after at least three months' immersion in the sea (5.3.1.1.1.2).",
+      "de": "Bezettelung und Kennzeichnung sind so anzubringen, dass die Angaben nach mindestens drei Monaten Eintauchen im Meer noch erkennbar sind (5.3.1.1.1.2).",
+      "fr": "Le placardage et le marquage sont apposés de telle sorte que l'information reste identifiable après au moins trois mois d'immersion dans la mer (5.3.1.1.1.2)."
+    },
+    "remove_after_discharge": {
+      "nl": "Alle grote etiketten, oranje panelen en merktekens worden verwijderd of afgedekt zodra de gevaarlijke goederen én hun residuen zijn gelost (5.3.1.1.1.3).",
+      "en": "All placards, orange panels and marks are removed or masked as soon as both the dangerous goods and their residues are discharged (5.3.1.1.1.3).",
+      "de": "Alle Großzettel, orangefarbenen Tafeln und Kennzeichen werden entfernt oder abgedeckt, sobald sowohl die gefährlichen Güter als auch deren Rückstände entladen sind (5.3.1.1.1.3).",
+      "fr": "Toutes les plaques-étiquettes, panneaux orange et marques sont enlevés ou masqués dès que les marchandises dangereuses et leurs résidus sont déchargés (5.3.1.1.1.3)."
+    },
+    "psn_marking": {
+      "nl": "De juiste vervoersnaam wordt duurzaam aangebracht op ten minste beide zijden van tanklaadeenheden en bulkcontainers, en van elke andere laadeenheid met verpakte gevaarlijke goederen van één enkel product waarvoor geen groot etiket, UN-nummer of merkteken mariene verontreiniging vereist is (5.3.2.0.1). Tekens ten minste 65 mm hoog en contrasterend met de achtergrond; bij transporttanks tot 3.000 l mag dat 12 mm zijn (5.3.2.0.2).",
+      "en": "The proper shipping name is durably marked on at least both sides of tank cargo transport units and bulk containers, and of any other cargo transport unit containing packaged dangerous goods of a single commodity for which no placard, UN number or marine pollutant mark is required (5.3.2.0.1). Characters at least 65 mm high and of contrasting colour with the background; for portable tank containers of not more than 3,000 L this may be reduced to 12 mm (5.3.2.0.2).",
+      "de": "Die richtige technische Benennung wird dauerhaft an mindestens beiden Seiten von Tank-Beförderungseinheiten und Schüttgut-Containern angebracht sowie an jeder anderen Beförderungseinheit mit verpackten gefährlichen Gütern eines einzigen Gutes, für die kein Großzettel, keine UN-Nummer und kein Kennzeichen für meeresschadstoffe erforderlich ist (5.3.2.0.1). Zeichen mindestens 65 mm hoch und kontrastierend zum Untergrund; bei ortsbeweglichen Tankcontainern bis 3.000 l dürfen es 12 mm sein (5.3.2.0.2).",
+      "fr": "La désignation officielle de transport est marquée de manière durable sur au moins les deux côtés des engins-citernes et des conteneurs pour vrac, ainsi que de tout autre engin de transport contenant des marchandises dangereuses emballées d'une seule marchandise pour lesquelles aucune plaque-étiquette, aucun numéro ONU ni aucune marque de polluant marin n'est exigé (5.3.2.0.1). Caractères d'au moins 65 mm de haut et contrastant avec le fond ; pour les citernes mobiles d'une capacité maximale de 3 000 l, cette hauteur peut être réduite à 12 mm (5.3.2.0.2)."
+    },
+    "un_number_tank": {
+      "nl": "Het UN-nummer wordt getoond op tanklaadeenheden, en op elk compartiment van een tank met meerdere compartimenten (5.3.2.1.1.1).",
+      "en": "The UN number is displayed on tank cargo transport units, including on each compartment of a multi-compartment tank cargo transport unit (5.3.2.1.1.1).",
+      "de": "Die UN-Nummer wird an Tank-Beförderungseinheiten angezeigt, einschließlich an jedem Abteil einer Beförderungseinheit mit mehreren Tankabteilen (5.3.2.1.1.1).",
+      "fr": "Le numéro ONU est affiché sur les engins-citernes, y compris sur chaque compartiment d'un engin-citerne à compartiments multiples (5.3.2.1.1.1)."
+    },
+    "un_number_4000kg": {
+      "nl": "Het UN-nummer wordt getoond op verpakte gevaarlijke goederen die met meer dan 4.000 kg brutomassa zijn geladen, waaraan slechts één UN-nummer is toegekend en die de enige gevaarlijke goederen in de laadeenheid zijn (5.3.2.1.1.2). Hier: {products}.",
+      "en": "The UN number is displayed on packaged dangerous goods loaded in excess of 4,000 kg gross mass, to which only one UN number has been assigned and which are the only dangerous goods in the cargo transport unit (5.3.2.1.1.2). Here: {products}.",
+      "de": "Die UN-Nummer wird bei verpackten gefährlichen Gütern angezeigt, die mit mehr als 4.000 kg Bruttomasse geladen sind, denen nur eine UN-Nummer zugeordnet ist und die die einzigen gefährlichen Güter in der Beförderungseinheit sind (5.3.2.1.1.2). Hier: {products}.",
+      "fr": "Le numéro ONU est affiché pour les marchandises dangereuses emballées chargées à plus de 4 000 kg de masse brute, auxquelles un seul numéro ONU est affecté et qui sont les seules marchandises dangereuses dans l'engin de transport (5.3.2.1.1.2). Ici : {products}."
+    },
+    "un_number_4000kg_unknown": {
+      "nl": "Of het UN-nummer op de laadeenheid moet: 5.3.2.1.1.2 vraagt het zodra meer dan 4.000 kg brutomassa van één enkel UN-nummer is geladen en dat de enige gevaarlijke goederen zijn. De brutomassa van {products} is niet ingevuld, dus dit is niet uitgerekend — controleer het zelf.",
+      "en": "Whether the UN number must appear on the unit: 5.3.2.1.1.2 asks for it once more than 4,000 kg gross mass of a single UN number is loaded and those are the only dangerous goods. The gross mass of {products} was not entered, so this was not computed — check it yourself.",
+      "de": "Ob die UN-Nummer an der Einheit erscheinen muss: 5.3.2.1.1.2 verlangt sie, sobald mehr als 4.000 kg Bruttomasse einer einzigen UN-Nummer geladen sind und dies die einzigen gefährlichen Güter sind. Die Bruttomasse von {products} wurde nicht angegeben, daher wurde dies nicht berechnet — prüfen Sie es selbst.",
+      "fr": "Si le numéro ONU doit figurer sur l'engin : le 5.3.2.1.1.2 l'exige dès que plus de 4 000 kg de masse brute d'un seul numéro ONU sont chargés et qu'il s'agit des seules marchandises dangereuses. La masse brute de {products} n'a pas été renseignée, ce calcul n'a donc pas été fait — vérifiez-le vous-même."
+    },
+    "un_number_bulk": {
+      "nl": "Het UN-nummer wordt getoond op vaste gevaarlijke goederen in bulkcontainers (5.3.2.1.1.5).",
+      "en": "The UN number is displayed on solid dangerous goods in bulk containers (5.3.2.1.1.5).",
+      "de": "Die UN-Nummer wird bei festen gefährlichen Gütern in Schüttgut-Containern angezeigt (5.3.2.1.1.5).",
+      "fr": "Le numéro ONU est affiché pour les marchandises dangereuses solides en conteneurs pour vrac (5.3.2.1.1.5)."
+    },
+    "un_number_class7": {
+      "nl": "Klasse 7: het UN-nummer wordt getoond bij onverpakt LSA-I-, SCO-I- of SCO-III-materiaal en bij verpakt radioactief materiaal met één UN-nummer dat onder uitsluitend gebruik moet worden vervoerd (5.3.2.1.1.3 en 5.3.2.1.1.4). Of uitsluitend gebruik geldt, is een gegeven van de zending dat de toepassing niet kent.",
+      "en": "Class 7: the UN number is displayed for unpackaged LSA-I, SCO-I or SCO-III material and for packaged radioactive material with a single UN number required to be transported under exclusive use (5.3.2.1.1.3 and 5.3.2.1.1.4). Whether exclusive use applies is a fact about the consignment the application does not hold.",
+      "de": "Klasse 7: Die UN-Nummer wird bei unverpacktem LSA-I-, SCO-I- oder SCO-III-Material und bei verpacktem radioaktivem Material mit einer einzigen UN-Nummer angezeigt, das unter ausschließlicher Verwendung befördert werden muss (5.3.2.1.1.3 und 5.3.2.1.1.4). Ob ausschließliche Verwendung vorliegt, ist eine Angabe zur Sendung, die die Anwendung nicht kennt.",
+      "fr": "Classe 7 : le numéro ONU est affiché pour les matières LSA-I, SCO-I ou SCO-III non emballées et pour les matières radioactives emballées portant un seul numéro ONU devant être transportées sous utilisation exclusive (5.3.2.1.1.3 et 5.3.2.1.1.4). Le caractère exclusif de l'utilisation est une donnée de l'envoi que l'application ne connaît pas."
+    },
+    "un_number_not_class1": {
+      "nl": "Voor goederen van klasse 1 wordt geen UN-nummer op de laadeenheid getoond (5.3.2.1.1).",
+      "en": "For goods of class 1 no UN number is displayed on the cargo transport unit (5.3.2.1.1).",
+      "de": "Für Güter der Klasse 1 wird keine UN-Nummer an der Beförderungseinheit angezeigt (5.3.2.1.1).",
+      "fr": "Pour les marchandises de la classe 1, aucun numéro ONU n'est affiché sur l'engin de transport (5.3.2.1.1)."
+    },
+    "un_number_how": {
+      "nl": "Het UN-nummer staat in zwarte cijfers van ten minste 65 mm hoog, ofwel tegen een witte achtergrond in het onderste deel van het grote etiket, ofwel op een oranje rechthoekig paneel van ten minste 120 mm hoog en 300 mm breed met een zwarte rand van 10 mm, direct naast elk groot etiket of merkteken mariene verontreiniging (5.3.2.1.2). Is geen groot etiket of merkteken vereist, dan staat het UN-nummer direct naast de juiste vervoersnaam.",
+      "en": "The UN number is in black digits at least 65 mm high, either against a white background in the lower area of the placard, or on an orange rectangular panel at least 120 mm high and 300 mm wide with a 10 mm black border, placed immediately adjacent to each placard or marine pollutant mark (5.3.2.1.2). Where no placard or mark is required, the UN number is displayed immediately adjacent to the proper shipping name.",
+      "de": "Die UN-Nummer erscheint in schwarzen Ziffern von mindestens 65 mm Höhe, entweder auf weißem Untergrund im unteren Bereich des Großzettels oder auf einer orangefarbenen rechteckigen Tafel von mindestens 120 mm Höhe und 300 mm Breite mit 10 mm schwarzem Rand, unmittelbar neben jedem Großzettel oder Meeresschadstoff-Kennzeichen (5.3.2.1.2). Ist kein Großzettel oder Kennzeichen erforderlich, steht die UN-Nummer unmittelbar neben der richtigen technischen Benennung.",
+      "fr": "Le numéro ONU figure en chiffres noirs d'au moins 65 mm de haut, soit sur fond blanc dans la partie inférieure de la plaque-étiquette, soit sur un panneau rectangulaire orange d'au moins 120 mm de haut et 300 mm de large avec une bordure noire de 10 mm, placé immédiatement à côté de chaque plaque-étiquette ou marque de polluant marin (5.3.2.1.2). Si aucune plaque-étiquette ni marque n'est exigée, le numéro ONU est affiché immédiatement à côté de la désignation officielle de transport."
+    },
+    "marine_pollutant": {
+      "nl": "Mariene verontreiniging: de laadeenheid of bulkcontainer draagt het merkteken mariene verontreiniging op dezelfde plaatsen als de grote etiketten (5.3.2.3.1, dat verwijst naar 5.3.1.1.4.1). Het meet ten minste 250 × 250 mm; bij transporttanks tot 3.000 l mag dat 100 × 100 mm zijn (5.3.2.3.2). Betreft: {products}.",
+      "en": "Marine pollutant: the cargo transport unit or bulk container displays the marine pollutant mark in the same locations as the placards (5.3.2.3.1, referring to 5.3.1.1.4.1). It measures at least 250 × 250 mm; for portable tanks of not more than 3,000 L this may be 100 × 100 mm (5.3.2.3.2). Concerns: {products}.",
+      "de": "Meeresschadstoff: Die Beförderungseinheit oder der Schüttgut-Container trägt das Meeresschadstoff-Kennzeichen an denselben Stellen wie die Großzettel (5.3.2.3.1, der auf 5.3.1.1.4.1 verweist). Es misst mindestens 250 × 250 mm; bei ortsbeweglichen Tanks bis 3.000 l dürfen es 100 × 100 mm sein (5.3.2.3.2). Betrifft: {products}.",
+      "fr": "Polluant marin : l'engin de transport ou le conteneur pour vrac affiche la marque de polluant marin aux mêmes emplacements que les plaques-étiquettes (5.3.2.3.1, renvoyant au 5.3.1.1.4.1). Elle mesure au moins 250 × 250 mm ; pour les citernes mobiles d'une capacité maximale de 3 000 l, 100 × 100 mm sont admis (5.3.2.3.2). Concerne : {products}."
+    },
+    "elevated_temperature": {
+      "nl": "Verhoogde temperatuur: bij vervoer in vloeibare toestand vanaf 100 °C of in vaste toestand vanaf 240 °C draagt de laadeenheid aan elke zijde en elk uiteinde het merkteken voor verhoogde temperatuur (5.3.2.2.1) — een rode gelijkzijdige driehoek met zijden van ten minste 250 mm, bij transporttanks tot 3.000 l ten minste 100 mm. Bovendien wordt de hoogste te verwachten temperatuur duurzaam naast dat merkteken aangebracht op beide zijden van de tank of de isolatiemantel, in tekens van ten minste 100 mm hoog (5.3.2.2.2). Hier: {products} bij {temperature}.",
+      "en": "Elevated temperature: carried in a liquid state at 100 °C or above, or in a solid state at 240 °C or above, the cargo transport unit bears the elevated temperature mark on each side and each end (5.3.2.2.1) — a red equilateral triangle with sides of at least 250 mm, or at least 100 mm for portable tanks of not more than 3,000 L. In addition, the maximum temperature expected during transport is durably marked immediately adjacent to that mark on both sides of the tank or insulation jacket, in characters at least 100 mm high (5.3.2.2.2). Here: {products} at {temperature}.",
+      "de": "Erhöhte Temperatur: Bei Beförderung in flüssigem Zustand ab 100 °C oder in festem Zustand ab 240 °C trägt die Beförderungseinheit an jeder Seite und jedem Ende das Kennzeichen für erhöhte Temperatur (5.3.2.2.1) — ein rotes gleichseitiges Dreieck mit Seiten von mindestens 250 mm, bei ortsbeweglichen Tanks bis 3.000 l mindestens 100 mm. Zusätzlich wird die höchste zu erwartende Temperatur dauerhaft unmittelbar neben diesem Kennzeichen an beiden Seiten des Tanks oder des Isoliermantels angebracht, in Zeichen von mindestens 100 mm Höhe (5.3.2.2.2). Hier: {products} bei {temperature}.",
+      "fr": "Température élevée : transportées à l'état liquide à 100 °C ou plus, ou à l'état solide à 240 °C ou plus, l'engin de transport porte la marque pour température élevée sur chaque côté et à chaque extrémité (5.3.2.2.1) — un triangle équilatéral rouge dont les côtés mesurent au moins 250 mm, ou au moins 100 mm pour les citernes mobiles d'une capacité maximale de 3 000 l. En outre, la température maximale attendue pendant le transport est marquée de manière durable immédiatement à côté de cette marque sur les deux côtés de la citerne ou de l'enveloppe isolante, en caractères d'au moins 100 mm de haut (5.3.2.2.2). Ici : {products} à {temperature}."
+    },
+    "elevated_temperature_unknown": {
+      "nl": "Verhoogde temperatuur: 5.3.2.2.1 vraagt het driehoekige merkteken zodra de stof vloeibaar vanaf 100 °C of vast vanaf 240 °C wordt aangeboden. De vervoerstemperatuur is niet ingevuld, dus dit is niet beoordeeld — vul die in wanneer warm wordt geladen.",
+      "en": "Elevated temperature: 5.3.2.2.1 asks for the triangular mark once the substance is offered in a liquid state at 100 °C or above, or in a solid state at 240 °C or above. The carriage temperature was not entered, so this was not assessed — enter it when loading hot.",
+      "de": "Erhöhte Temperatur: 5.3.2.2.1 verlangt das dreieckige Kennzeichen, sobald der Stoff flüssig ab 100 °C oder fest ab 240 °C aufgegeben wird. Die Beförderungstemperatur wurde nicht angegeben, daher wurde dies nicht beurteilt — geben Sie sie an, wenn heiß verladen wird.",
+      "fr": "Température élevée : le 5.3.2.2.1 exige la marque triangulaire dès que la matière est présentée à l'état liquide à 100 °C ou plus, ou à l'état solide à 240 °C ou plus. La température de transport n'a pas été renseignée, cette évaluation n'a donc pas été faite — indiquez-la en cas de chargement à chaud."
+    },
+    "limited_quantities": {
+      "nl": "Reizen de goederen in beperkte hoeveelheden verpakt, dan wordt de laadeenheid beborden en gemerkt volgens 3.4.5.5 (5.3.2.4). Of een zending daadwerkelijk onder LQ valt, blijkt uit de LQ-toets van hoofdstuk 3.4 en niet uit dit hoofdstuk. Kan spelen bij: {products}.",
+      "en": "Where the goods travel packed in limited quantities, the cargo transport unit is placarded and marked according to 3.4.5.5 (5.3.2.4). Whether a consignment actually qualifies follows from the LQ check of chapter 3.4, not from this chapter. May apply to: {products}.",
+      "de": "Reisen die Güter in begrenzten Mengen verpackt, wird die Beförderungseinheit nach 3.4.5.5 bezettelt und gekennzeichnet (5.3.2.4). Ob eine Sendung tatsächlich unter LQ fällt, ergibt sich aus der LQ-Prüfung des Kapitels 3.4 und nicht aus diesem Kapitel. Kann zutreffen auf: {products}.",
+      "fr": "Si les marchandises voyagent emballées en quantités limitées, l'engin de transport est placardé et marqué conformément au 3.4.5.5 (5.3.2.4). Le fait qu'un envoi relève effectivement des QL découle de la vérification du chapitre 3.4 et non du présent chapitre. Peut s'appliquer à : {products}."
+    }
   }
 }

@@ -32,6 +32,7 @@ from app.services.dg.compliance import (
     check_adn_exemption,
     check_adn_placarding,
     check_adr_placarding,
+    check_imdg_placarding,
     check_rid_placarding,
 )
 from app.services.documents.pdf_render import (
@@ -65,9 +66,21 @@ TEXT: dict[str, dict[str, str]] = {
         "de": "Bezettelungs- und Kennzeichnungsblatt (RID 5.3)",
         "fr": "Feuille de placardage et de signalisation (RID 5.3)",
     },
+    "title_imdg": {
+        "nl": "Bebordings- en kenmerkingsblad (IMDG 5.3)",
+        "en": "Placarding and marking sheet (IMDG 5.3)",
+        "de": "Bezettelungs- und Kennzeichnungsblatt (IMDG 5.3)",
+        "fr": "Feuille de placardage et de marquage (IMDG 5.3)",
+    },
     "wagon": {
         "nl": "Wagen of grote container", "en": "Wagon or large container",
         "de": "Wagen oder Großcontainer", "fr": "Wagon ou grand conteneur",
+    },
+    "container": {
+        "nl": "Laadeenheid (container, oplegger of transporttank)",
+        "en": "Cargo transport unit (container, semi-trailer or portable tank)",
+        "de": "Beförderungseinheit (Container, Sattelanhänger oder Tank)",
+        "fr": "Engin de transport (conteneur, semi-remorque ou citerne mobile)",
     },
     "ctu": {
         "nl": "Vervoerseenheid aan boord (container, voertuig of wagen)",
@@ -167,10 +180,13 @@ def render_placarding_sheet(
 ) -> Path:
     """The sheet, from the answer the compliance layer already computes.
 
-    ``regime`` picks whose chapter 5.3 answers: the road's (`check_adr_placarding`,
-    about the vehicle) or the water's (`check_adn_placarding`, about the cargo
-    transport units that come on board). The registry offers each under its own
-    document key, so an inland consignment is never handed the road's answer.
+    ``regime`` picks whose chapter 5.3 answers: the road's
+    (`check_adr_placarding`, about the vehicle), the rail's, the inland
+    waterway's (`check_adn_placarding`, about the cargo transport units that
+    come on board) or the sea's (`check_imdg_placarding`, about the unit that
+    goes on the ship). The registry offers each under its own document key, so
+    a consignment is never handed another mode's answer — which for sea would
+    be a container placarded on two sides instead of four.
     """
     lang = _lang_of(language)
     entries = list(dangerous_goods or [])
@@ -182,6 +198,9 @@ def render_placarding_sheet(
     elif regime == "RID":
         result = check_rid_placarding(entries, lang)
         title = _t("title_rid", lang)
+    elif regime == "IMDG":
+        result = check_imdg_placarding(entries, lang)
+        title = _t("title_imdg", lang)
     else:
         result = check_adr_placarding(entries, lang)
         title = _t("title", lang)
@@ -206,7 +225,8 @@ def render_placarding_sheet(
         # sheet says whose question it is instead of printing an empty answer.
         story.append(_p(result["mode_note"], styles["fixed"]))
 
-    unit_key = {"ADN": "ctu", "RID": "wagon"}.get(regime, "vehicle")
+    unit_key = {"ADN": "ctu", "RID": "wagon",
+                "IMDG": "container"}.get(regime, "vehicle")
     header = [(_t("consignment", lang), values.get("reference") or values.get("order_reference") or ""),
               (_t(unit_key, lang),
                values.get("vehicle_registration")

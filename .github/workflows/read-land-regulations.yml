@@ -28,8 +28,10 @@ on:
           - exemptions
           - mixed_loading
           - document
+          - document_cases
           - tunnels
           - placarding
+          - sea_placarding
           - security
           - all
           # A run that only wants a section, a phrase or a page should not

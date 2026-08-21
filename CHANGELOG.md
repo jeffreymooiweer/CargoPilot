@@ -2,6 +2,50 @@
 
 All notable changes are documented here, following [Semantic Versioning](https://semver.org/).
 
+## [1.150.0] — 2026-08-21
+
+### Added
+
+- **Sea placarding: what the container shows on the outside (IMDG 5.3).** Road,
+  rail and inland waterway have had their chapter 5.3 derived for several
+  releases; sea had none, on the belief that the Code was unavailable. It is
+  not — resolution MSC.556(108) replaces the complete text of the Code — so
+  chapter 5.3 was quoted verbatim from it and derived under its own rules.
+
+  Those rules are not the road's renumbered, and reusing the road answer would
+  have been wrong in five separate ways. A freight container is placarded on
+  **each side and each end**, not two sides. The **proper shipping name** is
+  marked on the unit itself, which no land regime asks for. The **UN number**
+  rides inside the placard or on an orange panel beside it — never on an
+  orange plate of its own — and only in the five cases of 5.3.2.1.1, never for
+  class 1. **Class 9 is placarded as model No. 9**, while table A gives 9A for
+  exactly the lithium and sodium battery entries most likely to travel in a
+  container. And the **marine pollutant mark** has no land counterpart at all.
+
+  Also derived: 1.4S carrying no placard at any quantity, class 1 aggregated to
+  the highest division, the subsidiary placards of 5.3.1.1.3, the placement
+  rule per kind of unit (the kind being something the application cannot see),
+  the 4,000 kg arithmetic of 5.3.2.1.1.2, and the removal of everything once
+  the goods and their residues are discharged. It reaches paper as the IMDG
+  placarding sheet, beside the ADR, ADN and RID ones.
+
+- **Carriage temperature as a field.** The elevated temperature mark turns on
+  the temperature the goods are offered at — 100 °C liquid, 240 °C solid — and
+  nothing else in a consignment implies it: MOLTEN says the substance travels
+  liquid, not how hot, and a substance that is not molten can still be loaded
+  hot. Left empty, the check reports the mark as unassessed rather than as not
+  required, because a missing triangle on a hot tank is not a detail.
+
+### Changed
+
+- **The coverage assessment is true again**, and one of its entries was simply
+  wrong. It listed the IMDG Code's own text under "not worth building, or not
+  buildable here" because the consolidated Code is sold by the IMO. But the
+  freely distributed resolution that adopts Amendment 42-24 prints the complete
+  text, so the Code has been readable all along — which is how the Dangerous
+  Goods List was extracted in v1.48.0 and chapter 5.3 now. The entry says so,
+  and the document is maintained up to this release rather than to v1.128.0.
+
 ## [1.149.0] — 2026-08-21
 
 ### Added

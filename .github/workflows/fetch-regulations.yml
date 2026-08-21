@@ -42,6 +42,10 @@ on:
         description: "Cut every registered model of 5.4.3 out of the store and print what came out"
         type: boolean
         default: false
+      dump_text:
+        description: "Print the full text of short stored PDFs matching this pattern (relative to the store root, e.g. incoming/Imdg/*Corrigenda*)"
+        default: ""
+        required: false
 
 permissions:
   contents: read
@@ -99,8 +103,12 @@ jobs:
           pip install --quiet gdown
           mkdir -p /tmp/cargopilot-regulations/incoming
           gdown --folder "$FOLDER" -O /tmp/cargopilot-regulations/incoming
-          echo "=== incoming ==="
-          ls -la /tmp/cargopilot-regulations/incoming
+          echo "=== incoming (recursive: a Drive folder arrives as a tree) ==="
+          find /tmp/cargopilot-regulations/incoming -type f -printf '%10s  %p\n' | sort -k2
+          # Reconnaissance before anything is registered: what each PDF is,
+          # whether it has a text layer, and where its readable parts sit.
+          pip install --quiet pymupdf
+          python scripts/survey_incoming.py /tmp/cargopilot-regulations/incoming
           # One mapping per line, not per word: the files an operator uploads
           # are named "ADR 2025 French.pdf" as often as not, and splitting the
           # input on spaces would cut such a name in three.
@@ -130,14 +138,23 @@ jobs:
           pip install --quiet pymupdf
           python scripts/check_instruction_models.py "${PROVISION:-5.4.3}"
 
+      - name: Read a short document aloud
+        if: ${{ inputs.dump_text != '' }}
+        env:
+          PATTERN: ${{ inputs.dump_text }}
+        run: |
+          set -euo pipefail
+          pip install --quiet pymupdf
+          python scripts/dump_pdf_text.py /tmp/cargopilot-regulations "$PATTERN"
+
       - name: Fetch what is missing
-        if: ${{ inputs.probe_url == '' && inputs.drive_folder == '' && inputs.find_instructions == '' && !inputs.verify_instructions }}
+        if: ${{ inputs.probe_url == '' && inputs.drive_folder == '' && inputs.find_instructions == '' && !inputs.verify_instructions && inputs.dump_text == '' }}
         run: python scripts/regulations_store.py fetch ${{ inputs.ids }}
 
       # Not after a page-range measurement: that report is what the run is for,
       # and a store listing under it only pushes it out of reach of a log tail.
       - name: Report the store
-        if: ${{ always() && inputs.probe_url == '' && inputs.find_instructions == '' && !inputs.verify_instructions }}
+        if: ${{ always() && inputs.probe_url == '' && inputs.find_instructions == '' && !inputs.verify_instructions && inputs.dump_text == '' }}
         env:
           IGNORED: report runs after fetch and after adopt alike
         run: python scripts/regulations_store.py status || true

@@ -2,6 +2,36 @@
 
 All notable changes are documented here, following [Semantic Versioning](https://semver.org/).
 
+## [1.149.0] — 2026-08-21
+
+### Added
+
+- **The December 2025 IMDG corrigenda are registered and verified.** The
+  operator's shared Drive folder gained an `Imdg` subfolder with three PDFs.
+  One turned out to be byte-identical to the already-pinned resolution
+  MSC.556(108) (Amendment 42-24), which independently confirms that pin.
+  The second is the IMO's errata and corrigenda of December 2025 to that
+  amendment: its full text was read and checked against every extracted sea
+  seed, and none of its eleven corrections touches a value the extraction
+  carries — they correct prose, cross-references, an alphabetical order in
+  IBC520, an entry name in T50 and three special-provision texts, all
+  outside the columns that were read. The third, MSC.1/Circ.1498
+  (informative CTU-packing material), is registered for provenance and
+  marked as deciding nothing. Both new documents are pinned by hash in the
+  source register.
+- **The fetch workflow can survey and read incoming documents.** A Drive
+  take-in now reports what every incoming PDF *is* — identity hash, page
+  count, text layer, and where its readable parts sit — before anything is
+  registered, and a `dump_text` input prints short documents (such as a
+  three-page corrigenda) in full, with a page cap so a book cannot be
+  poured into a log by accident.
+
+### Fixed
+
+- **Files in Drive subfolders are recognised again.** Adoption walked only
+  the top of the incoming directory, so a Drive folder containing
+  subfolders left those files invisible; it now walks the whole tree.
+
 ## [1.148.0] — 2026-08-21
 
 ### Fixed

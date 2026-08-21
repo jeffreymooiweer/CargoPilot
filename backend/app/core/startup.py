@@ -8,6 +8,11 @@ from app.core.config import get_settings
 from app.core.database import Base, SessionLocal, engine
 from app.core.security import hash_password
 from app.models.auth import PasswordResetToken
+from app.models.two_factor import (
+    TwoFactorCode,
+    TwoFactorEnrolment,
+    TwoFactorRecoveryCode,
+)
 from app.models.settings import InstanceSetting, UserPreference
 from app.models.user import Equipment, Job, Material, Profile, ReferenceItem, User
 from app.services.catalog_sync import sync_catalogs
@@ -25,7 +30,8 @@ TEMPORARY_EXPORT_SUFFIXES = {".pdf", ".zip", ".xlsx", ".tmp"}
 #: The reset tokens are here for the same reason: nothing else in the
 #: start-up path imports them, and a missing table would only show up when
 #: somebody actually forgets their password.
-SETTINGS_TABLES = (InstanceSetting, UserPreference, PasswordResetToken)
+SETTINGS_TABLES = (InstanceSetting, UserPreference, PasswordResetToken,
+                   TwoFactorEnrolment, TwoFactorRecoveryCode, TwoFactorCode)
 
 
 def ensure_directories() -> None:

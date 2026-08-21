@@ -28,6 +28,12 @@ MODALITIES = ("road", "rail", "sea", "inland", "air", "multimodal")
 
 ThemeChoice = Literal["light", "dark", "system"]
 
+#: Who has to sign in with a second factor. "off" leaves it to each person,
+#: "admins" covers the accounts that can change other accounts, "everyone"
+#: covers the lot. Off by default: switching a security requirement on for
+#: an installation is an administrator's decision, not an upgrade's.
+TwoFactorPolicy = Literal["off", "admins", "everyone"]
+
 #: How the connection to the mail server is encrypted. "starttls" is the
 #: usual port 587, "ssl" the implicit TLS of port 465, and "none" exists for
 #: a relay on the local network that expects no encryption at all.
@@ -182,6 +188,11 @@ class InstanceSettings(BaseModel):
     #: new colleague starts with the company already on the form.
     organisation_name: str = ""
     organisation_address: str = ""
+
+    #: Who must have a second factor. Someone who does not yet have one is
+    #: sent to set one up after signing in, rather than being locked out at
+    #: the door of an account they can still reach today.
+    two_factor_policy: TwoFactorPolicy = "off"
 
     #: The address people reach this installation on, used to build the links
     #: in outgoing mail. Empty means: read it from the request, which is right

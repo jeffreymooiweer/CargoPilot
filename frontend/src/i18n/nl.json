@@ -36,7 +36,16 @@
     "forgotHint": "U krijgt een link om een nieuw wachtwoord te kiezen. De link werkt één uur.",
     "forgotSubmit": "Link versturen",
     "forgotSending": "Bezig met versturen…",
-    "forgotSent": "Als dit account bestaat, is er een link verstuurd naar het bijbehorende e-mailadres. Kijk ook in de ongewenste post."
+    "forgotSent": "Als dit account bestaat, is er een link verstuurd naar het bijbehorende e-mailadres. Kijk ook in de ongewenste post.",
+    "twoFactorTitle": "Tweede stap",
+    "twoFactorApp": "Vul de code uit uw authenticator-app in.",
+    "twoFactorMailSent": "We hebben een code naar uw e-mailadres gestuurd.",
+    "twoFactorMailFailed": "De code kon niet worden verstuurd. Gebruik een herstelcode of vraag een beheerder om hulp.",
+    "twoFactorCode": "Code",
+    "twoFactorRecoveryHint": "Telefoon kwijt? Vul hier een van uw herstelcodes in.",
+    "twoFactorSubmit": "Inloggen",
+    "twoFactorChecking": "Bezig met controleren…",
+    "twoFactorBack": "Terug"
   },
   "wizard": {
     "step2": "Goederen",
@@ -324,7 +333,12 @@
     "mailTesting": "Bezig met versturen…",
     "mailTestSent": "Testbericht verstuurd naar {{to}}.",
     "publicUrl": "Adres van deze installatie",
-    "publicUrlHint": "Wordt gebruikt voor links in uitgaande mail, bijvoorbeeld https://cargopilot.example.nl. Leeg laten als de browser CargoPilot rechtstreeks bereikt."
+    "publicUrlHint": "Wordt gebruikt voor links in uitgaande mail, bijvoorbeeld https://cargopilot.example.nl. Leeg laten als de browser CargoPilot rechtstreeks bereikt.",
+    "twoFactorPolicy": "Tweestapsverificatie",
+    "twoFactorPolicyHint": "Wie een tweede stap bij het inloggen moet gebruiken. Wie er nog geen heeft, wordt na het inloggen gevraagd het in te stellen.",
+    "twoFactorOff": "Vrijwillig, iedereen kiest zelf",
+    "twoFactorAdmins": "Verplicht voor beheerders",
+    "twoFactorEveryone": "Verplicht voor iedereen"
   },
   "modality": {
     "title": "Kies uw transportmodaliteit",
@@ -797,7 +811,11 @@
     "passwordByInvite": "Niet nodig: de gebruiker kiest zelf een wachtwoord via de uitnodiging.",
     "invited": "Account aangemaakt. Uitnodiging verstuurd naar {{email}}.",
     "inviteNoMailServer": "Account aangemaakt, maar er is geen mailserver ingesteld; de uitnodiging is niet verstuurd.",
-    "inviteFailed": "Account aangemaakt, maar de uitnodiging kon niet worden verstuurd: {{reason}}"
+    "inviteFailed": "Account aangemaakt, maar de uitnodiging kon niet worden verstuurd: {{reason}}",
+    "clearTwoFactor": "2FA wissen",
+    "clearTwoFactorHint": "Verwijdert de tweede stap van deze gebruiker, bijvoorbeeld bij een verloren telefoon.",
+    "clearTwoFactorConfirm": "Tweestapsverificatie van {{name}} verwijderen? Deze gebruiker logt daarna weer met alleen een wachtwoord in.",
+    "twoFactorCleared": "Tweestapsverificatie verwijderd."
   },
   "reset": {
     "title": "Nieuw wachtwoord",
@@ -811,5 +829,28 @@
     "done": "Uw wachtwoord is ingesteld. U kunt nu inloggen.",
     "toLogin": "Naar het inlogscherm",
     "noToken": "Deze pagina hoort bij een link uit een e-mail. Vraag op het inlogscherm een nieuwe link aan."
+  },
+  "twoFactor": {
+    "title": "Tweestapsverificatie",
+    "intro": "Een tweede stap bij het inloggen: een code uit een app, of een code per e-mail.",
+    "requiredHere": "Deze installatie vraagt tweestapsverificatie voor uw account. Stel het hieronder in.",
+    "onByApp": "Aan, met een authenticator-app.",
+    "onByMail": "Aan, met een code per e-mail.",
+    "codesLeft": "Nog {{count}} herstelcodes over.",
+    "newCodes": "Nieuwe herstelcodes",
+    "turnOff": "Uitzetten",
+    "turnOffHint": "Vul een geldige code in; anders is een geleende sessie genoeg om de beveiliging weg te halen.",
+    "turnOffDo": "Uitzetten",
+    "disabled": "Tweestapsverificatie staat uit.",
+    "setUpApp": "Instellen met een app",
+    "setUpMail": "Instellen met e-mail",
+    "scan": "Scan deze code met uw authenticator-app.",
+    "orType": "Of typ deze sleutel over:",
+    "mailSent": "We hebben een code naar uw e-mailadres gestuurd.",
+    "enterCode": "Code uit de app of de mail",
+    "confirm": "Bevestigen",
+    "cancel": "Annuleren",
+    "recoveryTitle": "Bewaar deze herstelcodes",
+    "recoveryHint": "Deze codes ziet u één keer. Elk werkt eenmalig, als uw telefoon weg is. Zonder deze codes én zonder telefoon heeft u een beheerder nodig."
   }
 }

@@ -16,7 +16,7 @@ from app.schemas.users import (
     UserRole,
     UserUpdate,
 )
-from app.services import mail, password_reset
+from app.services import mail, password_reset, two_factor
 from app.services.settings_store import instance_settings
 
 logger = logging.getLogger(__name__)
@@ -146,6 +146,27 @@ def update_user(
     db.commit()
     db.refresh(user)
     return user
+
+
+@router.delete("/{user_id}/two-factor")
+def clear_two_factor(
+    user_id: int,
+    admin: User = Depends(require_admin),
+    db: Session = Depends(get_db),
+):
+    """Remove somebody's second factor: the phone is gone and the recovery
+    codes with it.
+
+    Deliberately available to any administrator rather than only to the
+    account's owner — that is the whole point of a way back in. It is also
+    why an installation should have more than one administrator.
+    """
+    user = db.query(User).filter(User.id == user_id).first()
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    two_factor.disable(db, user.id)
+    logger.info("%s cleared the second factor of %s", admin.username, user.username)
+    return {"ok": True}
 
 
 @router.delete("/{user_id}")

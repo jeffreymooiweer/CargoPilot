@@ -130,13 +130,48 @@ async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
 }
 
 export const api = {
+  /** Signing in is one step or two. With a second factor the answer carries
+   *  a challenge instead of a session; the code goes to `loginTwoFactor`. */
   login: (username: string, password: string) =>
-    request<{ user: User }>("/auth/login", {
+    request<LoginAnswer>("/auth/login", {
       method: "POST",
       body: JSON.stringify({ username, password }),
     }),
+  loginTwoFactor: (challenge: string, code: string) =>
+    request<{ user: User }>("/auth/login/two-factor", {
+      method: "POST",
+      body: JSON.stringify({ challenge, code }),
+    }),
+  twoFactorStatus: () => request<TwoFactorStatus>("/auth/two-factor"),
+  twoFactorStart: (method: "totp" | "email") =>
+    request<TwoFactorSetup>("/auth/two-factor/start", {
+      method: "POST",
+      body: JSON.stringify({ method }),
+    }),
+  twoFactorConfirm: (code: string) =>
+    request<{ ok: boolean; recovery_codes: string[] }>("/auth/two-factor/confirm", {
+      method: "POST",
+      body: JSON.stringify({ code }),
+    }),
+  twoFactorNewRecoveryCodes: () =>
+    request<{ recovery_codes: string[] }>("/auth/two-factor/recovery-codes", {
+      method: "POST",
+    }),
+  twoFactorDisable: (code: string) =>
+    request<{ ok: boolean }>("/auth/two-factor", {
+      method: "DELETE",
+      body: JSON.stringify({ code }),
+    }),
+  clearTwoFactorFor: (id: number) =>
+    request<{ ok: boolean }>(`/users/${id}/two-factor`, { method: "DELETE" }),
   logout: () => request("/auth/logout", { method: "POST" }),
-  me: () => request<{ user: User; admin_ready: boolean }>("/auth/me"),
+  me: () =>
+    request<{
+      user: User;
+      admin_ready: boolean;
+      two_factor_active: boolean;
+      two_factor_required: boolean;
+    }>("/auth/me"),
   health: () => request<{ status: string; app: string; version: string }>("/health"),
   setupStatus: () => request<{ has_admin: boolean }>("/setup-status"),
   parse: (payload: Record<string, unknown>) =>
@@ -596,6 +631,30 @@ export interface AssistantStatus {
   running: boolean;
 }
 
+/** Signing in: either a session, or a challenge asking for the second step. */
+export type LoginAnswer =
+  | { user: User; two_factor_required?: undefined }
+  | {
+      two_factor_required: true;
+      method: "totp" | "email";
+      code_sent: boolean;
+      challenge: string;
+    };
+
+export interface TwoFactorStatus {
+  active: boolean;
+  method: string;
+  required: boolean;
+  recovery_codes_left: number;
+}
+
+export interface TwoFactorSetup {
+  method: string;
+  secret: string;
+  qr_svg: string;
+  code_sent: boolean;
+}
+
 /** What the whole installation is set to. Administrators only. */
 export interface InstanceSettings {
   default_language: string;
@@ -609,6 +668,7 @@ export interface InstanceSettings {
   session_timeout_minutes: number;
   organisation_name: string;
   organisation_address: string;
+  two_factor_policy: "off" | "admins" | "everyone";
   public_url: string;
   mail_enabled: boolean;
   mail_host: string;

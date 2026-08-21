@@ -13,6 +13,7 @@ import {
   api,
 } from "../api/client";
 import SignaturePad from "../components/SignaturePad";
+import TwoFactorPanel from "../components/TwoFactorPanel";
 import { LANGUAGE_NAMES, SUPPORTED_LANGUAGES } from "../i18n/language";
 import { usePreferences } from "../settings/preferences";
 
@@ -337,6 +338,7 @@ export default function SettingsPage({ user }: Props) {
         </>
       )}
 
+      {active === "details" && <TwoFactorPanel />}
       {active === "admin" && user.role === "admin" && <AdminSettings />}
       {active === "maintenance" && user.role === "admin" && (
         <div className="space-y-4">
@@ -579,6 +581,26 @@ function AdminSettings() {
             {t("settings.mailTitle")}
           </h4>
           <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">{t("settings.mailHint")}</p>
+        </div>
+
+        <div>
+          <label className="text-sm font-medium text-slate-800 dark:text-slate-200">
+            {t("settings.twoFactorPolicy")}
+          </label>
+          <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+            {t("settings.twoFactorPolicyHint")}
+          </p>
+          <select
+            className={`${inputClass} mt-2`}
+            value={draft.two_factor_policy}
+            onChange={(e) =>
+              set("two_factor_policy", e.target.value as InstanceSettings["two_factor_policy"])
+            }
+          >
+            <option value="off">{t("settings.twoFactorOff")}</option>
+            <option value="admins">{t("settings.twoFactorAdmins")}</option>
+            <option value="everyone">{t("settings.twoFactorEveryone")}</option>
+          </select>
         </div>
 
         <Field

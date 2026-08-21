@@ -8,16 +8,28 @@ from sqlalchemy.orm import Session
 from app.core.config import Settings, get_settings
 from app.core.database import get_db
 from app.core.deps import get_current_user
-from app.core.security import create_access_token, hash_password, verify_password
+from app.core.security import (
+    create_access_token,
+    create_challenge_token,
+    decode_challenge_token,
+    hash_password,
+    token_matches_password,
+    verify_password,
+)
 from app.models.user import User
 from app.schemas.users import (
     LoginRequest,
     PasswordChange,
     PasswordResetConfirm,
     PasswordResetRequest,
+    TwoFactorConfirm,
+    TwoFactorLogin,
+    TwoFactorSetup,
+    TwoFactorStart,
+    TwoFactorStatus,
     UserOut,
 )
-from app.services import mail, password_reset
+from app.services import mail, password_reset, two_factor
 from app.services.settings_store import instance_settings
 
 logger = logging.getLogger(__name__)
@@ -75,6 +87,17 @@ def _clear_access_cookie(
     )
 
 
+def _sign_in(request: Request, response: Response, db: Session, user: User) -> dict:
+    """Hand out the session cookie. The last step of every way in."""
+    expire_minutes = instance_settings(db).session_timeout_minutes
+    token = create_access_token(
+        user.username, password_hash=user.password_hash, expires_minutes=expire_minutes
+    )
+    _set_access_cookie(response, token, get_settings(), request=request,
+                       expire_minutes=expire_minutes)
+    return {"user": UserOut.model_validate(user)}
+
+
 @router.post("/login")
 @limiter.limit("10/minute")
 def login(request: Request, payload: LoginRequest, response: Response, db: Session = Depends(get_db)):
@@ -83,12 +106,61 @@ def login(request: Request, payload: LoginRequest, response: Response, db: Sessi
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid credentials")
     if not user.active:
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="User inactive")
-    expire_minutes = instance_settings(db).session_timeout_minutes
-    token = create_access_token(
-        user.username, password_hash=user.password_hash, expires_minutes=expire_minutes
-    )
-    _set_access_cookie(response, token, get_settings(), request=request, expire_minutes=expire_minutes)
-    return {"user": UserOut.model_validate(user)}
+
+    if two_factor.is_active(db, user.id):
+        # The password was right; that is now half the answer. The challenge
+        # says so and nothing more — it is refused everywhere a session is
+        # expected, so it cannot be used as a way in by itself.
+        enrolment = two_factor.enrolment_for(db, user.id)
+        current = instance_settings(db)
+        mailed = False
+        if enrolment.method == "email" and mail.is_configured(current):
+            code = two_factor.issue_email_code(db, user.id)
+            try:
+                mail.send(current, user.email, two_factor.CODE_SUBJECT,
+                          two_factor.code_message(code))
+                mailed = True
+            except mail.MailError as exc:
+                # Say so: somebody standing at a sign-in screen waiting for a
+                # message that will never arrive is worse than an error.
+                logger.warning("Could not send the sign-in code for %s: %s",
+                               user.username, exc)
+        return {
+            "two_factor_required": True,
+            "method": enrolment.method,
+            "code_sent": mailed,
+            "challenge": create_challenge_token(user.username, user.password_hash),
+        }
+
+    return _sign_in(request, response, db, user)
+
+
+@router.post("/login/two-factor")
+@limiter.limit("10/minute")
+def login_two_factor(
+    request: Request,
+    payload: TwoFactorLogin,
+    response: Response,
+    db: Session = Depends(get_db),
+):
+    """The second half of a sign-in: the code, or a recovery code."""
+    claims = decode_challenge_token(payload.challenge)
+    if claims is None:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED,
+                            detail="Start signing in again.")
+    user = db.query(User).filter(User.username == claims["sub"]).first()
+    if not user or not user.active:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED,
+                            detail="User inactive")
+    # The password may have changed since the challenge was handed out — a
+    # reset in another window, say. The fingerprint says so.
+    if not token_matches_password(claims, user.password_hash):
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED,
+                            detail="Start signing in again.")
+    if not two_factor.verify(db, user, payload.code):
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED,
+                            detail="That code is not right.")
+    return _sign_in(request, response, db, user)
 
 
 @router.post("/logout")
@@ -98,8 +170,18 @@ def logout(request: Request, response: Response):
 
 
 @router.get("/me")
-def me(user: User = Depends(get_current_user)):
-    return {"user": UserOut.model_validate(user), "admin_ready": True}
+def me(user: User = Depends(get_current_user), db: Session = Depends(get_db)):
+    """Who is signed in, and whether they still owe this installation a
+    second factor. The screen sends them to set one up rather than letting
+    them find out at the next sign-in."""
+    policy = instance_settings(db).two_factor_policy
+    active = two_factor.is_active(db, user.id)
+    return {
+        "user": UserOut.model_validate(user),
+        "admin_ready": True,
+        "two_factor_active": active,
+        "two_factor_required": two_factor.required_for(user, policy) and not active,
+    }
 
 
 @router.get("/setup-status")
@@ -208,3 +290,102 @@ def change_password(
     db.commit()
     _clear_access_cookie(response, get_settings(), request=request)
     return {"ok": True, "reauthenticate": True}
+
+
+# --- the second factor, for the person who owns the account -----------------
+
+
+@router.get("/two-factor", response_model=TwoFactorStatus)
+def two_factor_status(user: User = Depends(get_current_user), db: Session = Depends(get_db)):
+    row = two_factor.enrolment_for(db, user.id)
+    policy = instance_settings(db).two_factor_policy
+    return TwoFactorStatus(
+        active=bool(row and row.confirmed),
+        method=row.method if row and row.confirmed else "",
+        required=two_factor.required_for(user, policy),
+        recovery_codes_left=two_factor.unused_recovery_codes(db, user.id),
+    )
+
+
+@router.post("/two-factor/start", response_model=TwoFactorSetup)
+def two_factor_start(
+    payload: TwoFactorStart,
+    user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    """Begin setting up a second factor. Nothing changes about signing in
+    until the first code has been checked."""
+    current = instance_settings(db)
+    if payload.method == "email" and not mail.is_configured(current):
+        raise HTTPException(
+            status_code=400,
+            detail="Codes by e-mail need a mail server. An administrator sets "
+                   "one under Settings, Administration, Mail server.")
+
+    row = two_factor.start_enrolment(db, user, payload.method)
+    if payload.method == "totp":
+        uri = two_factor.provisioning_uri(user, row.secret)
+        return TwoFactorSetup(method="totp", secret=row.secret,
+                              qr_svg=two_factor.qr_svg(uri))
+
+    code = two_factor.issue_email_code(db, user.id)
+    try:
+        mail.send(current, user.email, two_factor.CODE_SUBJECT,
+                  two_factor.code_message(code))
+    except mail.MailError as exc:
+        raise HTTPException(status_code=400, detail=str(exc)) from exc
+    return TwoFactorSetup(method="email", code_sent=True)
+
+
+@router.post("/two-factor/confirm")
+def two_factor_confirm(
+    payload: TwoFactorConfirm,
+    user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    """Prove the factor works, and get the recovery codes.
+
+    The codes are returned once and never again — only their hashes stay
+    behind. Somebody who loses both their phone and these codes needs an
+    administrator, which is the honest trade for not keeping a back door.
+    """
+    row = two_factor.enrolment_for(db, user.id)
+    if row is None:
+        raise HTTPException(status_code=400, detail="Nothing is being set up.")
+    ok = (two_factor.verify_totp(row.secret, payload.code) if row.method == "totp"
+          else two_factor.verify_email_code(db, user.id, payload.code))
+    if not ok:
+        raise HTTPException(status_code=400, detail="That code is not right.")
+    codes = two_factor.confirm_enrolment(db, user)
+    return {"ok": True, "recovery_codes": codes}
+
+
+@router.post("/two-factor/recovery-codes")
+def two_factor_new_recovery_codes(
+    user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    """Fresh codes, replacing whatever is left of the old ones."""
+    if not two_factor.is_active(db, user.id):
+        raise HTTPException(status_code=400, detail="Two-factor is not switched on.")
+    return {"recovery_codes": two_factor.replace_recovery_codes(db, user)}
+
+
+@router.delete("/two-factor")
+def two_factor_disable(
+    payload: TwoFactorConfirm,
+    user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    """Switch it off, which needs a working code — otherwise a borrowed
+    session is enough to strip the very protection it should be facing."""
+    policy = instance_settings(db).two_factor_policy
+    if two_factor.required_for(user, policy):
+        raise HTTPException(
+            status_code=400,
+            detail="This installation requires two-factor verification for "
+                   "your account. An administrator can change that.")
+    if not two_factor.verify(db, user, payload.code):
+        raise HTTPException(status_code=400, detail="That code is not right.")
+    two_factor.disable(db, user.id)
+    return {"ok": True}

@@ -438,3 +438,39 @@ def test_someone_who_owes_a_factor_is_told_so_rather_than_locked_out(
 
 def test_the_policy_is_off_until_an_administrator_says_otherwise():
     assert InstanceSettings().two_factor_policy == "off"
+
+
+# --- switching the mail method off ------------------------------------------
+
+
+def test_the_mail_method_can_ask_for_a_code_to_switch_itself_off(signed_in, db, sent):
+    """Turning it off needs a code, and with this method a code exists only
+    once one has been sent. Without this the setting could be switched on
+    and never off again."""
+    user = db.get(User, 1)
+    two_factor.start_enrolment(db, user, "email")
+    two_factor.confirm_enrolment(db, user)
+    sent.clear()
+
+    asked = signed_in.post("/api/auth/two-factor/send-code")
+    assert asked.status_code == 200
+    code = code_in(sent[-1])
+
+    off = signed_in.request("DELETE", "/api/auth/two-factor", json={"code": code})
+    assert off.status_code == 200
+    assert two_factor.is_active(db, 1) is False
+
+
+def test_an_authenticator_account_is_not_offered_a_mailed_code(signed_in, db, sent):
+    """It has one on the phone; mailing another would be a second way in
+    that the owner never asked for."""
+    enable_totp(db)
+    response = signed_in.post("/api/auth/two-factor/send-code")
+    assert response.status_code == 400
+    assert sent == []
+
+
+def test_an_account_without_a_second_factor_gets_no_code_either(signed_in, db, sent):
+    response = signed_in.post("/api/auth/two-factor/send-code")
+    assert response.status_code == 400
+    assert sent == []

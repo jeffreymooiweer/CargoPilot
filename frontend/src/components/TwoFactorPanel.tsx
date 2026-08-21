@@ -68,6 +68,14 @@ export default function TwoFactorPanel() {
       await load();
     });
 
+  // With the mail method there is no code to type until one has been sent:
+  // without this button the setting could be switched on and never off.
+  const sendCode = () =>
+    run(async () => {
+      await api.twoFactorSendCode();
+      setMessage(t("twoFactor.codeSent"));
+    });
+
   const newCodes = () =>
     run(async () => {
       const result = await api.twoFactorNewRecoveryCodes();
@@ -112,8 +120,15 @@ export default function TwoFactorPanel() {
               <label className="text-sm font-medium text-slate-800 dark:text-slate-200" htmlFor="off-code">
                 {t("twoFactor.turnOff")}
               </label>
-              <p className="text-xs text-slate-500 dark:text-slate-400">{t("twoFactor.turnOffHint")}</p>
+              <p className="text-xs text-slate-500 dark:text-slate-400">
+                {status.method === "email" ? t("twoFactor.turnOffHintMail") : t("twoFactor.turnOffHint")}
+              </p>
               <div className="mt-2 flex flex-wrap gap-2">
+                {status.method === "email" && (
+                  <button type="button" className={buttonSecondary} disabled={busy} onClick={sendCode}>
+                    {t("twoFactor.sendCode")}
+                  </button>
+                )}
                 <input
                   id="off-code"
                   className={`${inputClass} max-w-[12rem]`}

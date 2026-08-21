@@ -828,7 +828,10 @@
     "saving": "Saving…",
     "done": "Your password is set. You can sign in now.",
     "toLogin": "Go to the sign-in screen",
-    "noToken": "This page belongs to a link from an e-mail. Ask for a new link on the sign-in screen."
+    "noToken": "This page belongs to a link from an e-mail. Ask for a new link on the sign-in screen.",
+    "checking": "Checking the link…",
+    "spent": "This link has already been used or has expired. Ask for a new one on the sign-in screen with 'Forgot your password?'.",
+    "submitAndSignIn": "Set password and sign in"
   },
   "twoFactor": {
     "title": "Two-factor verification",
@@ -851,6 +854,9 @@
     "confirm": "Confirm",
     "cancel": "Cancel",
     "recoveryTitle": "Keep these recovery codes",
-    "recoveryHint": "You see these once. Each works one time, for when your phone is gone. Without them and without your phone you need an administrator."
+    "recoveryHint": "You see these once. Each works one time, for when your phone is gone. Without them and without your phone you need an administrator.",
+    "sendCode": "Send a code",
+    "codeSent": "A code has been sent to your e-mail address.",
+    "turnOffHintMail": "Ask for a code first and type it below. A recovery code works too."
   }
 }

@@ -437,3 +437,66 @@ def test_the_invitation_lasts_longer_than_a_reset(db, sent, monkeypatch):
     assert expires > datetime.now(timezone.utc) + timedelta(days=6)
     # The instance speaks Dutch by default, and so does its invitation.
     assert "7 dagen" in sent[-1]["body"]
+
+
+# --- what the link says before it is used -----------------------------------
+
+
+def test_a_fresh_link_reports_itself_usable(client, sent):
+    client.post("/api/auth/forgot-password", json={"identifier": "ada"})
+    token = token_from(sent[0])
+    response = client.get(f"/api/auth/reset-password/check?token={token}")
+    assert response.json() == {"valid": True}
+
+
+def test_a_spent_link_says_so_before_anybody_types_a_password(client, sent):
+    """It used to look exactly like a fresh one: somebody thought up a
+    password, typed it twice, and only then learnt they were too late."""
+    client.post("/api/auth/forgot-password", json={"identifier": "ada"})
+    token = token_from(sent[0])
+    client.post("/api/auth/reset-password", json={
+        "token": token, "new_password": "a-brand-new-one"})
+    assert client.get(
+        f"/api/auth/reset-password/check?token={token}").json() == {"valid": False}
+
+
+def test_the_check_tells_unknown_expired_and_spent_apart_for_nobody(client):
+    """All three answer the same: the difference only helps a guesser."""
+    assert client.get("/api/auth/reset-password/check?token=nope").json() == {
+        "valid": False}
+    assert client.get("/api/auth/reset-password/check?token=").json() == {
+        "valid": False}
+
+
+# --- what happens the moment the password is set ----------------------------
+
+
+def test_setting_the_password_signs_you_in(client, sent):
+    """Holding the link proved the mailbox and the password was chosen on
+    that very screen; a sign-in form asking for both again proves nothing."""
+    client.post("/api/auth/forgot-password", json={"identifier": "ada"})
+    response = client.post("/api/auth/reset-password", json={
+        "token": token_from(sent[0]), "new_password": "a-brand-new-one"})
+    assert response.status_code == 200
+    assert response.json()["user"]["username"] == "ada"
+    # The session works straight away.
+    assert client.get("/api/auth/me").json()["user"]["username"] == "ada"
+
+
+def test_a_second_factor_is_not_waived_by_a_mailbox(client, sent, db):
+    """The password half is done; the other half is still owed."""
+    from app.services import two_factor
+
+    ada = db.get(User, 1)
+    two_factor.start_enrolment(db, ada, "totp")
+    two_factor.confirm_enrolment(db, ada)
+
+    client.post("/api/auth/forgot-password", json={"identifier": "ada"})
+    response = client.post("/api/auth/reset-password", json={
+        "token": token_from(sent[-1]), "new_password": "a-brand-new-one"})
+    assert response.status_code == 200
+    body = response.json()
+    assert body["two_factor_required"] is True and body["challenge"]
+    assert "user" not in body
+    # And no session was handed out on the way.
+    assert client.get("/api/auth/me").status_code == 401

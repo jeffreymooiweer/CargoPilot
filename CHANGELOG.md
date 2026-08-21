@@ -2,6 +2,31 @@
 
 All notable changes are documented here, following [Semantic Versioning](https://semver.org/).
 
+## [1.147.0] — 2026-08-21
+
+Three things a real installation ran into.
+
+### Fixed
+
+- **A used link says so on arrival.** An invitation or reset link that had
+  already been spent looked exactly like a fresh one: you thought up a
+  password, typed it twice, pressed the button, and only then learnt you
+  were too late. The page now checks the link before drawing the form. It
+  still says no more than yes or no — which account, and whether the link is
+  unknown, expired or spent, are differences that only help a guesser.
+
+### Changed
+
+- **Setting a password signs you in.** Holding the link proved the mailbox
+  and the password was chosen on that very screen; a sign-in form asking for
+  both again proves nothing to anybody. A second factor is not waived by
+  this: where one is active, the same second step follows as at any sign-in.
+- **Codes by e-mail can be switched off again.** Turning the second factor
+  off asks for a working code — and with the mail method a code exists only
+  once one has been sent. The panel now has a button that mails one, so the
+  setting cannot be switched on and never off. A recovery code still works
+  there too.
+
 ## [1.146.0] — 2026-08-21
 
 Outgoing mail, rewritten as letters.

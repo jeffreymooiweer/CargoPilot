@@ -828,7 +828,10 @@
     "saving": "Enregistrement…",
     "done": "Votre mot de passe est défini. Vous pouvez vous connecter.",
     "toLogin": "Aller à la page de connexion",
-    "noToken": "Cette page correspond à un lien reçu par e-mail. Demandez un nouveau lien sur la page de connexion."
+    "noToken": "Cette page correspond à un lien reçu par e-mail. Demandez un nouveau lien sur la page de connexion.",
+    "checking": "Vérification du lien…",
+    "spent": "Ce lien a déjà été utilisé ou a expiré. Demandez-en un nouveau sur la page de connexion avec « Mot de passe oublié ? ».",
+    "submitAndSignIn": "Définir le mot de passe et se connecter"
   },
   "twoFactor": {
     "title": "Vérification en deux étapes",
@@ -851,6 +854,9 @@
     "confirm": "Confirmer",
     "cancel": "Annuler",
     "recoveryTitle": "Conservez ces codes de secours",
-    "recoveryHint": "Vous ne les voyez qu'une fois. Chacun sert une seule fois, si votre téléphone disparaît. Sans eux et sans téléphone, il vous faut un administrateur."
+    "recoveryHint": "Vous ne les voyez qu'une fois. Chacun sert une seule fois, si votre téléphone disparaît. Sans eux et sans téléphone, il vous faut un administrateur.",
+    "sendCode": "Envoyer un code",
+    "codeSent": "Un code a été envoyé à votre adresse e-mail.",
+    "turnOffHintMail": "Demandez d'abord un code et saisissez-le ci-dessous. Un code de secours fonctionne aussi."
   }
 }

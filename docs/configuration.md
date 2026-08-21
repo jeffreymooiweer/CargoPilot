@@ -226,7 +226,11 @@ reaches CargoPilot directly or through a proxy that passes its own host on. Fill
 internal container name.
 
 **Forgotten passwords.** With a mail server configured, the sign-in screen offers "Forgot
-your password?". The answer is the same whatever is typed — whether the account exists,
+your password?". The link checks itself before it draws the form, so a link that has already
+been used says so straight away instead of after somebody has typed a new password twice.
+Setting the password signs the person in: holding the link proved the mailbox and the
+password was chosen on that very screen. A second factor is not waived by that — the same
+second step follows as at any sign-in. The answer is the same whatever is typed — whether the account exists,
 is active, has an address, or the relay accepted the message is never revealed, because a
 form that tells them apart is a way to find out who has an account here. What went wrong
 is written to the log instead. The link works once, expires after an hour, and using it
@@ -264,6 +268,11 @@ Each person picks their own method under **Settings → My details**:
   else's server. Works offline and does not depend on the mail server.
 - **A code by e-mail.** Nothing to install, and it needs a mail server. It is the weaker of
   the two: whoever can read the mailbox can sign in.
+
+**Switching it off.** Turning the second factor off asks for a working code, so a borrowed
+session cannot strip the protection it is facing. With the mail method a code only exists
+once one has been sent, so the panel has a button that mails one; a recovery code works
+there too.
 
 **Losing the second factor.** Switching it on hands out eight recovery codes, shown once.
 Each works one time and is accepted wherever a code is asked for, so a phone in a canal

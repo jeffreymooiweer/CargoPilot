@@ -828,7 +828,10 @@
     "saving": "Bezig met opslaan…",
     "done": "Uw wachtwoord is ingesteld. U kunt nu inloggen.",
     "toLogin": "Naar het inlogscherm",
-    "noToken": "Deze pagina hoort bij een link uit een e-mail. Vraag op het inlogscherm een nieuwe link aan."
+    "noToken": "Deze pagina hoort bij een link uit een e-mail. Vraag op het inlogscherm een nieuwe link aan.",
+    "checking": "De link wordt gecontroleerd…",
+    "spent": "Deze link is al gebruikt of verlopen. Vraag op het inlogscherm een nieuwe aan met 'Wachtwoord vergeten?'.",
+    "submitAndSignIn": "Wachtwoord instellen en inloggen"
   },
   "twoFactor": {
     "title": "Tweestapsverificatie",
@@ -851,6 +854,9 @@
     "confirm": "Bevestigen",
     "cancel": "Annuleren",
     "recoveryTitle": "Bewaar deze herstelcodes",
-    "recoveryHint": "Deze codes ziet u één keer. Elk werkt eenmalig, als uw telefoon weg is. Zonder deze codes én zonder telefoon heeft u een beheerder nodig."
+    "recoveryHint": "Deze codes ziet u één keer. Elk werkt eenmalig, als uw telefoon weg is. Zonder deze codes én zonder telefoon heeft u een beheerder nodig.",
+    "sendCode": "Code mailen",
+    "codeSent": "Er is een code naar uw e-mailadres gestuurd.",
+    "turnOffHintMail": "Vraag eerst een code aan en vul die hieronder in. Een herstelcode werkt ook."
   }
 }

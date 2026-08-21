@@ -818,6 +818,17 @@ export interface DgProduct {
   gross_mass_per_package?: string;
   /** Class 1 only: total net explosive mass in kg (ADR 1.1.3.6.3). */
   net_explosive_mass?: string;
+  /** 5.4.1.2, what certain classes add to the transport document. Each is a
+   * statement the consignor owes the carrier that no table can supply. */
+  control_temperature?: string;
+  emergency_temperature?: string;
+  end_of_holding_time?: string;
+  specific_gas_name?: string;
+  responsible_person?: string;
+  firework_classification?: string;
+  /** The temperature the goods are offered at — it decides the elevated
+   * temperature mark of IMDG 5.3.2.2 and ADR/RID/ADN 5.3.3. */
+  carriage_temperature?: string;
   /** Set by /dg/prepare for substances that may not be carried. */
   transport_forbidden?: boolean;
   /** How these goods travel; absent means packages. */

@@ -443,6 +443,50 @@ def _is_class1(product: dict[str, Any]) -> bool:
     return str(product.get("class") or "").strip().startswith("1")
 
 
+#: UN 0333 to 0337, the fireworks entries of 5.4.1.2.1 (g).
+_FIREWORK_UN_NUMBERS = {"0333", "0334", "0335", "0336", "0337"}
+
+
+def _entry_name(product: dict[str, Any]) -> str:
+    """The list's own name for this entry, upper-cased.
+
+    Read from table A rather than from whatever the consignor typed: the
+    two conditions below are properties of the *entry*, and a shipper who
+    writes "waterstofperoxide" must still get the right answer.
+    """
+    un = "".join(c for c in str(product.get("un_number")
+                                or product.get("un") or "") if c.isdigit())
+    rows = get_un_entries(un.zfill(4)) if un else []
+    name = str((rows[0] if rows else {}).get("name_en")
+               or product.get("proper_shipping_name") or "")
+    return name.upper()
+
+
+def _needs_temperature_control(product: dict[str, Any]) -> bool:
+    """Does 5.4.1.2.3.1 apply to this entry?
+
+    The provision points at 2.2.41.1.17, 2.2.41.1.21 and 2.2.52.1.15 for
+    *which* substances need control. Those criteria turn on the SADT and the
+    formulation, which no table holds — but the Dangerous Goods List names the
+    outcome: the entries that require it say "TEMPERATURE CONTROLLED" in the
+    proper shipping name itself. That is the measured signal, and it is the
+    same one the label and the packing instruction key off.
+
+    A consignment the consignor has already marked as temperature controlled
+    counts too, because a substance can require control under a formulation
+    the entry name does not carry.
+    """
+    if product.get("temperature_controlled"):
+        return True
+    return "TEMPERATURE CONTROLLED" in _entry_name(product)
+
+
+def _is_refrigerated_liquefied(product: dict[str, Any]) -> bool:
+    """5.4.1.2.2 (d) speaks of refrigerated liquefied gases, and the list
+    names them: the entries read "REFRIGERATED LIQUID"."""
+    return "REFRIGERATED LIQUID" in _entry_name(product)
+
+
 _LAND_PROFILES = {"ADR", "RID", "ADN"}
 
 
@@ -609,6 +653,44 @@ def open_questions_for(
     if "274" in provisions.replace(",", " ").split():
         ask("technical_name", True, "sp274")
 
+    # 5.4.1.2, what certain classes add to the transport document. Each of
+    # these was named in the guidance panel as something to remember, which is
+    # not the same as a field that reaches the paper — a consignor who reads
+    # "state the control temperature" and has nowhere to state it has been
+    # told about a gap rather than helped across it. Asked only in the
+    # situation the provision describes, so an ordinary load sees none of them.
+    hazard_class = str(product.get("class") or "").strip()
+    if land:
+        # 5.4.1.2.3.1: self-reactive substances and polymerizing substances of
+        # class 4.1 and organic peroxides of class 5.2 that need temperature
+        # control. Which entries those are is table A's to say through the
+        # temperature-control special provisions; what the temperatures are is
+        # the consignor's. Both are asked together because the provision
+        # prints them together and one without the other says nothing.
+        if hazard_class in ("4.1", "5.2") and _needs_temperature_control(product):
+            ask("control_temperature", True, "temperature_control_541231")
+            ask("emergency_temperature", True, "temperature_control_541231")
+        # 5.4.1.2.2 (d): a refrigerated liquefied gas in a tank carries the
+        # date its actual holding time ends. Only in a tank — a cylinder has
+        # no holding time to end.
+        if (hazard_class.startswith("2")
+                and str(product.get("carriage_mode") or "").strip()
+                in ("tank", "portable_tank")
+                and _is_refrigerated_liquefied(product)):
+            ask("end_of_holding_time", True, "holding_time_541222d")
+        # 5.4.1.2.2 (e): UN 1012 is four different gases under one number, and
+        # special provision 398 asks which one, in brackets after the name.
+        if un.zfill(4) == "1012":
+            ask("specific_gas_name", True, "gas_name_541222e")
+        # 5.4.1.2.4: class 6.2 names a responsible person with a telephone
+        # number, over and above the consignee's own details.
+        if hazard_class.startswith("6.2"):
+            ask("responsible_person", True, "responsible_541224")
+        # 5.4.1.2.1 (g): fireworks carry the classification reference the
+        # competent authority issued, in the form XX/YYZZZZ.
+        if un.zfill(4) in _FIREWORK_UN_NUMBERS:
+            ask("firework_classification", True, "fireworks_541219")
+
     if _is_class1(product):
         ask("net_explosive_mass", True, "nem_class1")
     elif land and empty("adr_total_quantity"):
@@ -720,6 +802,39 @@ _CLASSIFIED_2_1_2_8 = {
     "en": "Classified in accordance with 2.1.2.8",
     "de": "GEMÄSS UNTERABSCHNITT 2.1.2.8 KLASSIFIZIERT",
     "fr": "Classé conformément au 2.1.2.8",
+}
+
+#: 5.4.1.2.3.1 prints its own sentence, and the words are the provision's
+#: rather than ours: "Control temperature: ... °C Emergency temperature: ... °C".
+_TEMPERATURE_CONTROL = {
+    "nl": "Controletemperatuur: {control} °C Noodtemperatuur: {emergency} °C",
+    "en": "Control temperature: {control} °C Emergency temperature: {emergency} °C",
+    "de": "Kontrolltemperatur: {control} °C Notfalltemperatur: {emergency} °C",
+    "fr": "Température de régulation : {control} °C Température critique : {emergency} °C",
+}
+
+#: 5.4.1.2.2 (d) prints the format as well as the words.
+_END_OF_HOLDING_TIME = {
+    "nl": "Einde holdingtijd: {date}",
+    "en": "End of holding time: {date}",
+    "de": "Ende der Haltezeit: {date}",
+    "fr": "Fin du temps de retenue : {date}",
+}
+
+#: 5.4.1.2.4: the person, beside the consignee of (h).
+_RESPONSIBLE_PERSON = {
+    "nl": "Verantwoordelijke persoon: {person}",
+    "en": "Responsible person: {person}",
+    "de": "Verantwortliche Person: {person}",
+    "fr": "Personne responsable : {person}",
+}
+
+#: 5.4.1.2.1 (g), with the reference the authority issued.
+_FIREWORK_CLASSIFICATION = {
+    "nl": "Classificatie van vuurwerk door de bevoegde autoriteit met vuurwerkreferentie {reference}",
+    "en": "Classification of fireworks by the competent authority with the firework reference {reference}",
+    "de": "Klassifizierung der Feuerwerkskörper durch die zuständige Behörde mit der Feuerwerksreferenz {reference}",
+    "fr": "Classification des artifices par l'autorité compétente avec la référence d'artifice {reference}",
 }
 
 
@@ -959,7 +1074,46 @@ def description_line(product: dict[str, Any], profile: str, language: str = "",
     # as the provision sets it in the language of the document.
     if profile in ("ADR", "RID", "ADN") and product.get("classified_2_1_2_8"):
         line = f"{line}, {_document_word(_CLASSIFIED_2_1_2_8, profile, language)}"
+
+    # 5.4.1.2, what certain classes add. Each is printed in the provision's own
+    # words, and each appears only when its field was filled in: an empty
+    # control temperature must leave no half-sentence like "Control
+    # temperature:  °C" on a signed document.
+    if profile in ("ADR", "RID", "ADN"):
+        control = str(product.get("control_temperature") or "").strip()
+        emergency = str(product.get("emergency_temperature") or "").strip()
+        # Both or neither: 5.4.1.2.3.1 prints one sentence carrying the pair,
+        # and half of it is not the statement the provision asks for.
+        if control and emergency:
+            line = (f"{line}, "
+                    + _document_word(_TEMPERATURE_CONTROL, profile, language).format(
+                        control=_degrees(control), emergency=_degrees(emergency)))
+        holding = str(product.get("end_of_holding_time") or "").strip()
+        if holding:
+            line = (f"{line}, "
+                    + _document_word(_END_OF_HOLDING_TIME, profile, language).format(
+                        date=holding))
+        person = str(product.get("responsible_person") or "").strip()
+        if person:
+            line = (f"{line}, "
+                    + _document_word(_RESPONSIBLE_PERSON, profile, language).format(
+                        person=person))
+        reference = str(product.get("firework_classification") or "").strip()
+        if reference:
+            line = (f"{line}, "
+                    + _document_word(
+                        _FIREWORK_CLASSIFICATION, profile, language).format(
+                            reference=reference))
     return line
+
+
+def _degrees(value: str) -> str:
+    """A temperature as the document wants it: the number, sign kept, without
+    a unit — the provision's sentence supplies the "°C" itself, and "−20 °C °C"
+    is how that goes wrong."""
+    text = str(value).strip()
+    match = re.search(r"-?\d+(?:[.,]\d+)?", text)
+    return match.group(0) if match else text
 
 
 def _name_was_ours(current: Any, entry: dict[str, Any]) -> bool:

@@ -100,6 +100,32 @@ class DangerousGoodsProduct(BaseModel):
     molten: str | bool | None = None
     residue_classes: str | None = None
     classified_2_1_2_8: str | bool | None = None
+    # --- 5.4.1.2, what certain classes add to the transport document ---------
+    #
+    # Every one of these is a *statement the consignor owes the carrier* that
+    # cannot be derived from the UN number: table A says which substances may
+    # need temperature control, not what the control temperature of this
+    # consignment is. Until now they were named in the guidance panel as
+    # things to remember, which is not the same as a field that reaches the
+    # paper. Each is asked only in the situation its provision describes.
+    #
+    # 5.4.1.2.3.1, self-reactive substances and organic peroxides under
+    # temperature control: "Control temperature: ... °C Emergency temperature:
+    # ... °C", both or neither.
+    control_temperature: str | float | int | None = None
+    emergency_temperature: str | float | int | None = None
+    # 5.4.1.2.2 (d), refrigerated liquefied gases in tanks: the date the actual
+    # holding time ends. The provision prints its own format.
+    end_of_holding_time: str | None = None
+    # 5.4.1.2.2 (e), UN 1012 only: which of the butylenes is carried, in
+    # brackets after the proper shipping name (special provision 398).
+    specific_gas_name: str | None = None
+    # 5.4.1.2.4, class 6.2: the name and telephone number of a responsible
+    # person, beside the consignee's own details.
+    responsible_person: str | None = None
+    # 5.4.1.2.1 (g), fireworks of UN 0333 to 0337: the classification
+    # reference in the form XX/YYZZZZ that the competent authority issued.
+    firework_classification: str | None = None
     # The temperature the goods are offered at, in degrees Celsius. It decides
     # the elevated temperature mark — IMDG 5.3.2.2.1 at 100 °C liquid or 240 °C
     # solid, ADR/ADN/RID 5.3.3 on the same thresholds — and nothing else in the

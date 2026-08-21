@@ -2,6 +2,56 @@
 
 All notable changes are documented here, following [Semantic Versioning](https://semver.org/).
 
+## [1.151.0] — 2026-08-21
+
+### Added
+
+- **The statements chapter 5.4.1.2 asks for are fields now, not advice.**
+  Before a real consignment was ever put through the application, chapter
+  5.4.1 was audited as a whole against the fields it holds — the result is
+  [docs/document-fields-audit.md](docs/document-fields-audit.md), which marks
+  every provision as held, guidance only, or absent.
+
+  "Guidance only" was the category worth finding. The compliance panel told a
+  consignor to state the control and emergency temperature, to name a
+  responsible person for class 6.2, to give the end of the holding time for a
+  refrigerated gas — and then printed a document without any of it, because
+  there was nowhere to answer. Being told about a gap by a program that
+  produces a document looking complete is worse than silence.
+
+  Six fields close it: `control_temperature` and `emergency_temperature`
+  (5.4.1.2.3.1), `end_of_holding_time` (5.4.1.2.2 (d)), `specific_gas_name`
+  for UN 1012 (5.4.1.2.2 (e)), `responsible_person` (5.4.1.2.4) and
+  `firework_classification` (5.4.1.2.1 (g)). Each is asked **only in the
+  situation its provision describes** — an ordinary drum of petrol gains no
+  questions at all — and which situation that is comes from the Dangerous
+  Goods List rather than a guess: the entries needing temperature control say
+  "TEMPERATURE CONTROLLED" in the proper shipping name, refrigerated
+  liquefied gases say "REFRIGERATED LIQUID". Each prints in the provision's
+  own words, in the document's language.
+
+  An unanswered field leaves nothing behind. 5.4.1.2.3.1 prints one sentence
+  carrying both temperatures, so one without the other is suppressed entirely
+  rather than rendered as "Control temperature: -10 °C Emergency temperature:
+  °C" — which looks answered.
+
+- **The elevated temperature mark on the inland waterway (ADN 5.3.3).** It was
+  the one part of ADN chapter 5.3 left underived, because it turns on a
+  temperature nothing in the consignment implied. The carriage temperature
+  added in v1.150.0 is that temperature, so 5.3.3 is answered from it, read
+  in the English edition on printed page 319: the same 100 °C and 240 °C
+  thresholds as at sea, but ADN's own placement — wagons on both sides,
+  vehicles on both sides and at the rear, containers and tanks on both sides
+  and at each end.
+
+### Fixed
+
+- **A claim in the ADN placarding check is no longer true and no longer made.**
+  It said the elevated temperature mark was deliberately not derived because
+  the carriage temperature was something "nobody tells the application". That
+  was accurate when written and stopped being accurate the moment the field
+  existed.
+
 ## [1.150.0] — 2026-08-21
 
 ### Added

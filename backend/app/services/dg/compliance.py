@@ -1841,9 +1841,12 @@ def check_adn_placarding(
     rules are given per kind, each under its own provision, instead of one
     kind's answer standing in for the others.
 
-    Two things are deliberately not derived: the elevated temperature mark of
-    5.3.3 (it turns on a carriage temperature nobody tells the application)
-    and the exclusive-use plates of 5.3.2.1.4 (exclusive use is not a field).
+    The elevated temperature mark of 5.3.3 was not derived until v1.151.0,
+    because it turns on a carriage temperature nothing in the consignment
+    implied. That is now a field, and 5.3.3 is answered from it — an absent
+    temperature reports the mark as unassessed rather than as not required.
+    Still not derived: the exclusive-use plates of 5.3.2.1.4, exclusive use
+    not being a field.
     A cargo tank consignment is chapter 7.2: the vessel shows the signals of
     7.2.5.0, which `check_adn_signals` answers, and 5.3's units are not its
     question — so that case is named rather than answered here.
@@ -2006,6 +2009,32 @@ def check_adn_placarding(
                 "kind": "tank_plates",
                 "required": None,
             })
+
+    # 5.3.3, read on printed page 319 of the English edition: liquid at 100 °C
+    # or above, solid at 240 °C or above. The thresholds match IMDG's; the
+    # placement does not, and it is ADN's own wording that is given.
+    hot = [p for p in goods
+           if (_num(p.get("carriage_temperature")) or -273) >= 100]
+    unknown_hot = [p for p in goods
+                   if p.get("molten") and _num(p.get("carriage_temperature")) is None]
+    if hot:
+        block = rules["elevated_temperature"]
+        marks.append({
+            "provision": block["provision"],
+            "message": (block.get(lang) or block["en"]).format(
+                products=", ".join(sorted({named[id(p)] for p in hot})),
+                temperature=", ".join(
+                    f"{_num(p.get('carriage_temperature')):g} °C"
+                    for p in sorted(hot, key=lambda x: _num(
+                        x.get("carriage_temperature")) or 0))),
+            "kind": "elevated_temperature",
+            "required": True,
+        })
+    elif unknown_hot:
+        block = rules["elevated_temperature_unknown"]
+        marks.append({"provision": block["provision"],
+                      "message": block.get(lang) or block["en"],
+                      "kind": "elevated_temperature", "required": None})
 
     sea = rules["sea_chain"]
     marks.append({"provision": sea["provision"],

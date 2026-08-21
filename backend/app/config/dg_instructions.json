@@ -910,6 +910,104 @@
         "de": "Dieser Stoff kann unter mehreren offiziellen englischen Benennungen befördert werden. Welche passt am besten zu Ihrem Produkt?",
         "fr": "Cette matière peut voyager sous plusieurs désignations officielles en anglais. Laquelle correspond le mieux à votre produit ?"
       }
+    },
+    "control_temperature": {
+      "label": {
+        "nl": "Controletemperatuur (°C)",
+        "en": "Control temperature (°C)",
+        "de": "Kontrolltemperatur (°C)",
+        "fr": "Température de régulation (°C)"
+      },
+      "help": {
+        "nl": "De temperatuur waarbij de stof onder normale omstandigheden vervoerd mag worden. Verplicht op het vervoersdocument voor zelfontledende stoffen en organische peroxiden met temperatuurbeheersing (ADR 5.4.1.2.3.1). Wordt samen met de noodtemperatuur op het document gezet; één van beide alleen levert geen geldige vermelding.",
+        "en": "The temperature at or below which the substance may be carried under normal conditions. Required on the transport document for temperature-controlled self-reactive substances and organic peroxides (ADR 5.4.1.2.3.1). It reaches the document together with the emergency temperature; one without the other is not the statement the provision asks for.",
+        "de": "Die Temperatur, bei der der Stoff unter normalen Bedingungen befördert werden darf. Im Beförderungspapier vorgeschrieben für temperaturkontrollierte selbstzersetzliche Stoffe und organische Peroxide (ADR 5.4.1.2.3.1). Sie erscheint zusammen mit der Notfalltemperatur; eine allein ist keine gültige Angabe.",
+        "fr": "La température à laquelle la matière peut être transportée dans des conditions normales. Exigée au document de transport pour les matières autoréactives et peroxydes organiques à régulation de température (ADR 5.4.1.2.3.1). Elle figure avec la température critique ; l'une sans l'autre ne constitue pas la mention exigée."
+      }
+    },
+    "emergency_temperature": {
+      "label": {
+        "nl": "Noodtemperatuur (°C)",
+        "en": "Emergency temperature (°C)",
+        "de": "Notfalltemperatur (°C)",
+        "fr": "Température critique (°C)"
+      },
+      "help": {
+        "nl": "De temperatuur waarbij noodmaatregelen moeten worden genomen. Hoort samen met de controletemperatuur op het vervoersdocument (ADR 5.4.1.2.3.1).",
+        "en": "The temperature at which emergency measures must be taken. Belongs on the transport document together with the control temperature (ADR 5.4.1.2.3.1).",
+        "de": "Die Temperatur, bei der Notfallmaßnahmen zu ergreifen sind. Gehört zusammen mit der Kontrolltemperatur ins Beförderungspapier (ADR 5.4.1.2.3.1).",
+        "fr": "La température à laquelle des mesures d'urgence doivent être prises. Figure au document de transport avec la température de régulation (ADR 5.4.1.2.3.1)."
+      }
+    },
+    "end_of_holding_time": {
+      "label": {
+        "nl": "Einde holdingtijd (DD/MM/JJJJ)",
+        "en": "End of holding time (DD/MM/YYYY)",
+        "de": "Ende der Haltezeit (TT/MM/JJJJ)",
+        "fr": "Fin du temps de retenue (JJ/MM/AAAA)"
+      },
+      "help": {
+        "nl": "Bij gekoeld vloeibaar gas in een tankcontainer of transporttank: de datum waarop de werkelijke holdingtijd afloopt (ADR 5.4.1.2.2 d). Vervalt wanneer de berekening op grond van 4.2.3.7.1 of 4.3.3.5 achterwege blijft.",
+        "en": "For a refrigerated liquefied gas in a tank-container or portable tank: the date at which the actual holding time ends (ADR 5.4.1.2.2 (d)). It does not apply where the calculation is waived under 4.2.3.7.1 or 4.3.3.5.",
+        "de": "Bei tiefgekühlt verflüssigtem Gas im Tankcontainer oder ortsbeweglichen Tank: das Datum, an dem die tatsächliche Haltezeit endet (ADR 5.4.1.2.2 d). Entfällt, wenn die Berechnung nach 4.2.3.7.1 oder 4.3.3.5 unterbleibt.",
+        "fr": "Pour un gaz liquéfié réfrigéré en conteneur-citerne ou citerne mobile : la date à laquelle le temps de retenue effectif prend fin (ADR 5.4.1.2.2 d). Ne s'applique pas lorsque le calcul est dispensé au titre du 4.2.3.7.1 ou du 4.3.3.5."
+      }
+    },
+    "specific_gas_name": {
+      "label": {
+        "nl": "Naam van het gas (UN 1012)",
+        "en": "Name of the gas (UN 1012)",
+        "de": "Name des Gases (UN 1012)",
+        "fr": "Nom du gaz (ONU 1012)"
+      },
+      "help": {
+        "nl": "UN 1012 dekt butadeen-1,2, butadeen-1,3, butyleen en isobutyleen. Bijzondere bepaling 398 vraagt de naam van het werkelijk vervoerde gas tussen haakjes achter de juiste vervoersnaam (ADR 5.4.1.2.2 e).",
+        "en": "UN 1012 covers butadiene-1,2, butadiene-1,3, butylene and isobutylene. Special provision 398 asks for the name of the gas actually carried, in brackets after the proper shipping name (ADR 5.4.1.2.2 (e)).",
+        "de": "UN 1012 umfasst Butadien-1,2, Butadien-1,3, Butylen und Isobutylen. Sondervorschrift 398 verlangt den Namen des tatsächlich beförderten Gases in Klammern hinter der richtigen technischen Benennung (ADR 5.4.1.2.2 e).",
+        "fr": "L'ONU 1012 couvre le butadiène-1,2, le butadiène-1,3, le butylène et l'isobutylène. La disposition spéciale 398 exige le nom du gaz réellement transporté, entre parenthèses après la désignation officielle (ADR 5.4.1.2.2 e)."
+      }
+    },
+    "responsible_person": {
+      "label": {
+        "nl": "Verantwoordelijke persoon (naam en telefoon)",
+        "en": "Responsible person (name and telephone)",
+        "de": "Verantwortliche Person (Name und Telefon)",
+        "fr": "Personne responsable (nom et téléphone)"
+      },
+      "help": {
+        "nl": "Klasse 6.2 vraagt naast de gegevens van de geadresseerde de naam en het telefoonnummer van een verantwoordelijke persoon in het vervoersdocument (ADR 5.4.1.2.4).",
+        "en": "Class 6.2 asks for the name and telephone number of a responsible person in the transport document, in addition to the consignee's details (ADR 5.4.1.2.4).",
+        "de": "Klasse 6.2 verlangt neben den Angaben zum Empfänger Namen und Telefonnummer einer verantwortlichen Person im Beförderungspapier (ADR 5.4.1.2.4).",
+        "fr": "La classe 6.2 exige, outre les données du destinataire, le nom et le numéro de téléphone d'une personne responsable au document de transport (ADR 5.4.1.2.4)."
+      }
+    },
+    "firework_classification": {
+      "label": {
+        "nl": "Classificatiereferentie vuurwerk",
+        "en": "Firework classification reference",
+        "de": "Klassifizierungsreferenz Feuerwerk",
+        "fr": "Référence de classification des artifices"
+      },
+      "help": {
+        "nl": "Voor UN 0333 tot en met 0337: de referentie in de vorm XX/YYZZZZ — landcode, identificatie van de bevoegde autoriteit en een uniek volgnummer, bijvoorbeeld NL/BAM1234 (ADR 5.4.1.2.1 g). Het classificatiecertificaat zelf hoeft niet mee, maar de afzender moet het op verzoek kunnen tonen.",
+        "en": "For UN 0333 to 0337: the reference in the form XX/YYZZZZ — country code, competent authority identification and a unique serial reference, for example NL/BAM1234 (ADR 5.4.1.2.1 (g)). The classification certificate itself need not travel with the consignment, but the consignor must be able to produce it on request.",
+        "de": "Für UN 0333 bis 0337: die Referenz in der Form XX/YYZZZZ — Länderkennzeichen, Kennung der zuständigen Behörde und eine eindeutige laufende Nummer, zum Beispiel NL/BAM1234 (ADR 5.4.1.2.1 g). Das Klassifizierungszertifikat selbst muss nicht mitgeführt werden, der Absender muss es aber auf Verlangen vorlegen können.",
+        "fr": "Pour les ONU 0333 à 0337 : la référence sous la forme XX/YYZZZZ — code pays, identification de l'autorité compétente et référence sérielle unique, par exemple NL/BAM1234 (ADR 5.4.1.2.1 g). Le certificat de classification lui-même n'a pas à accompagner l'envoi, mais l'expéditeur doit pouvoir le produire sur demande."
+      }
+    },
+    "carriage_temperature": {
+      "label": {
+        "nl": "Vervoerstemperatuur (°C)",
+        "en": "Carriage temperature (°C)",
+        "de": "Beförderungstemperatur (°C)",
+        "fr": "Température de transport (°C)"
+      },
+      "help": {
+        "nl": "De temperatuur waarbij de goederen worden aangeboden. Vanaf 100 °C vloeibaar of 240 °C vast moet de laadeenheid het merkteken voor verhoogde temperatuur dragen (IMDG 5.3.2.2, ADR/RID/ADN 5.3.3). Laat leeg wanneer niet warm wordt geladen; de toets meldt dan dat zij niet is uitgevoerd in plaats van dat er geen merkteken nodig is.",
+        "en": "The temperature at which the goods are offered. From 100 °C liquid or 240 °C solid the cargo transport unit must carry the elevated temperature mark (IMDG 5.3.2.2, ADR/RID/ADN 5.3.3). Leave empty when not loading hot; the check then reports that it did not run, rather than that no mark is required.",
+        "de": "Die Temperatur, bei der die Güter aufgegeben werden. Ab 100 °C flüssig oder 240 °C fest muss die Beförderungseinheit das Kennzeichen für erhöhte Temperatur tragen (IMDG 5.3.2.2, ADR/RID/ADN 5.3.3). Leer lassen, wenn nicht heiß verladen wird; die Prüfung meldet dann, dass sie nicht durchgeführt wurde, statt dass kein Kennzeichen erforderlich ist.",
+        "fr": "La température à laquelle les marchandises sont présentées. À partir de 100 °C à l'état liquide ou 240 °C à l'état solide, l'engin de transport doit porter la marque pour température élevée (IMDG 5.3.2.2, ADR/RID/ADN 5.3.3). Laissez vide si le chargement n'est pas à chaud ; la vérification indique alors qu'elle n'a pas été effectuée, et non qu'aucune marque n'est requise."
+      }
     }
   }
 }

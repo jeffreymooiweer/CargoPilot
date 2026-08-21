@@ -88,23 +88,30 @@ const DG_EXTRA_FIELDS: Record<string, string[]> = {
   // The three special cases of 5.4.1.1.3/.5/.6 change what the description
   // line must say, and none of them is derivable from the UN number: whether
   // the goods are waste is a fact about the consignment.
+  // The temperature the goods are offered at. It is on every mode that has a
+  // chapter 5.3, because the elevated temperature mark turns on it and nothing
+  // else in the consignment implies it — MOLTEN says the substance travels
+  // liquid, not how hot, and a substance that is not molten can be loaded hot.
   ADR: ["carriage_mode", "tank_code", "filling_temperature", "density_15",
         "density_50", "transport_category", "adr_total_quantity",
         "is_waste", "empty_uncleaned", "salvage_packaging",
-        "molten", "residue_classes", "classified_2_1_2_8"],
+        "molten", "residue_classes", "classified_2_1_2_8",
+        "carriage_temperature"],
   // Full load is the consignor's own statement (a wagon-level fact no table
   // supplies) and it decides the shunting labels of 5.3.4 for class 1 and the
   // orange-plate permission of 5.3.2.1.1.
   RID: ["carriage_mode", "transport_category", "adr_total_quantity",
         "full_load", "is_waste", "empty_uncleaned", "salvage_packaging",
-        "molten", "residue_classes", "classified_2_1_2_8"],
+        "molten", "residue_classes", "classified_2_1_2_8",
+        "carriage_temperature"],
   // Where it goes on the vessel: 7.1.4.11.1 asks the boatmaster to say which
   // goods are in which hold or on deck, and no table can answer that.
   ADN: ["carriage_mode", "hold", "container_number", "containers_only",
         "transport_category", "adr_total_quantity", "is_waste",
         "empty_uncleaned", "salvage_packaging", "molten", "residue_classes",
-        "classified_2_1_2_8"],
-  IMDG: ["technical_name", "marine_pollutant", "ems_code", "emergency_contact"],
+        "classified_2_1_2_8", "carriage_temperature"],
+  IMDG: ["technical_name", "marine_pollutant", "ems_code", "emergency_contact",
+         "carriage_temperature"],
   IATA_DGR: [
     "technical_name",
     "cargo_aircraft_only",

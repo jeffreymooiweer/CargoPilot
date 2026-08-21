@@ -1,0 +1,413 @@
+"""What outgoing mail says, in the reader's language and in two forms.
+
+Three rules hold this module together.
+
+**The language belongs to the reader, not to the sender.** A colleague whose
+CargoPilot is in German gets a German invitation, even when the
+administrator who made the account works in Dutch. Where the reader has no
+preference yet — a brand-new account — the installation's default language
+is the honest guess.
+
+**Every message is both plain text and HTML.** The HTML carries the logo and
+reads like a letter; the plain text is what a mail client that refuses HTML,
+a screen reader, or a phone on a bad connection falls back to. Neither is a
+degraded version of the other: both say the same thing.
+
+**Nothing is said that the reader does not need to know.** The invitation
+used to name the administrator who sent it, which handed an administrator's
+user name to anybody who received an invitation — including anyone who
+should not have one. It says "an administrator" now.
+"""
+from __future__ import annotations
+
+from functools import lru_cache
+from html import escape
+from pathlib import Path
+
+from app.core.languages import normalise
+
+#: The logo, beside the backend rather than in the frontend's build output:
+#: mail is sent by the server, and a server that reads from a directory only
+#: the frontend build fills would send logo-less mail the day that changes.
+LOGO_PATH = Path(__file__).resolve().parent.parent / "assets" / "logo.png"
+
+#: The Content-ID the HTML refers to. A related part rather than a data: URI
+#: or a link: Gmail and Outlook both drop data: images, and a linked one
+#: means the reader's mail client calls this server — which is a tracking
+#: pixel by accident, and a broken image on an installation that is not
+#: reachable from the internet.
+LOGO_CID = "cargopilot-logo"
+
+
+@lru_cache(maxsize=1)
+def logo_bytes() -> bytes | None:
+    """The logo, or nothing when it is missing.
+
+    Missing is survivable: the message still says everything it needs to.
+    A crash while somebody is resetting their password is not.
+    """
+    try:
+        return LOGO_PATH.read_bytes()
+    except OSError:
+        return None
+
+
+def layout(language: str, heading: str, paragraphs: list[str],
+           button: tuple[str, str] | None = None,
+           block: str | None = None,
+           footer: str = "") -> str:
+    """One letter, as HTML that survives the mail clients people use.
+
+    Tables and inline styles, deliberately: Outlook renders with Word, which
+    has no flexbox, no grid and no external stylesheet. This is 2003 markup
+    on purpose, because it is what arrives intact.
+    """
+    body: list[str] = []
+    for text in paragraphs:
+        body.append(
+            f'<p style="margin:0 0 16px;font-size:15px;line-height:1.55;'
+            f'color:#0f172a;">{text}</p>'
+        )
+    if block:
+        body.append(
+            '<p style="margin:0 0 16px;padding:14px 18px;background:#f1f5f9;'
+            'border-radius:10px;font-family:ui-monospace,Menlo,Consolas,monospace;'
+            'font-size:22px;letter-spacing:3px;color:#0f172a;text-align:center;">'
+            f'{block}</p>'
+        )
+    if button:
+        label, href = button
+        body.append(
+            f'<p style="margin:0 0 16px;"><a href="{escape(href, quote=True)}" '
+            'style="display:inline-block;padding:12px 22px;background:#2563eb;'
+            'color:#ffffff;text-decoration:none;border-radius:10px;'
+            f'font-size:15px;font-weight:600;">{label}</a></p>'
+            # The same address in full, because a button is unclickable in
+            # some clients and unreadable when it is forwarded as text.
+            f'<p style="margin:0 0 16px;font-size:12px;color:#64748b;'
+            f'word-break:break-all;">{escape(href)}</p>'
+        )
+    if footer:
+        body.append(
+            f'<p style="margin:24px 0 0;padding-top:16px;'
+            'border-top:1px solid #e2e8f0;font-size:12px;color:#64748b;">'
+            f'{footer}</p>'
+        )
+
+    logo = (f'<img src="cid:{LOGO_CID}" width="48" height="48" alt="CargoPilot" '
+            'style="display:block;border:0;" />') if logo_bytes() else ""
+
+    return (
+        f'<!doctype html><html lang="{escape(language)}"><body style="margin:0;'
+        'padding:24px;background:#f1f5f9;'
+        'font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;">'
+        '<table role="presentation" cellpadding="0" cellspacing="0" border="0" '
+        'width="100%" style="max-width:560px;margin:0 auto;background:#ffffff;'
+        'border-radius:16px;border:1px solid #e2e8f0;">'
+        '<tr><td style="padding:28px 32px 8px;">'
+        f'<table role="presentation" cellpadding="0" cellspacing="0" border="0">'
+        f'<tr><td style="padding-right:12px;">{logo}</td>'
+        '<td style="font-size:19px;font-weight:600;color:#0f172a;">CargoPilot</td>'
+        '</tr></table>'
+        '</td></tr>'
+        '<tr><td style="padding:12px 32px 32px;">'
+        f'<h1 style="margin:0 0 16px;font-size:20px;color:#0f172a;">{heading}</h1>'
+        + "".join(body) +
+        '</td></tr></table></body></html>'
+    )
+
+
+def _text(paragraphs: list[str], link: str = "", block: str = "",
+          footer: str = "") -> str:
+    """The same letter as plain text, for whatever cannot show the HTML."""
+    parts = list(paragraphs)
+    if block:
+        parts.append(f"    {block}")
+    if link:
+        parts.append(link)
+    if footer:
+        parts.append(footer)
+    return "\n\n".join(parts) + "\n"
+
+
+# --- the messages -----------------------------------------------------------
+#
+# Written out per language rather than assembled from fragments. A sentence
+# translates; half a sentence plus a variable does not, and the four
+# languages here put their nouns, verbs and politeness in different places.
+
+RESET = {
+    "nl": {
+        "subject": "Wachtwoord opnieuw instellen",
+        "heading": "Nieuw wachtwoord instellen",
+        "intro": "Er is gevraagd om het wachtwoord van het CargoPilot-account "
+                 "'{username}' opnieuw in te stellen.",
+        "action": "Kies een nieuw wachtwoord",
+        "validity": "De link werkt één keer en vervalt na {minutes} minuten.",
+        "ignore": "Heeft u dit niet aangevraagd? Dan is er niets gebeurd en "
+                  "kunt u dit bericht negeren. Uw huidige wachtwoord blijft werken.",
+    },
+    "en": {
+        "subject": "Reset your password",
+        "heading": "Set a new password",
+        "intro": "Somebody asked to reset the password of the CargoPilot "
+                 "account '{username}'.",
+        "action": "Choose a new password",
+        "validity": "The link works once and expires in {minutes} minutes.",
+        "ignore": "If this was not you, nothing has happened and you can "
+                  "ignore this message. Your current password still works.",
+    },
+    "de": {
+        "subject": "Passwort zurücksetzen",
+        "heading": "Neues Passwort festlegen",
+        "intro": "Es wurde angefragt, das Passwort des CargoPilot-Kontos "
+                 "'{username}' zurückzusetzen.",
+        "action": "Neues Passwort wählen",
+        "validity": "Der Link gilt einmal und verfällt in {minutes} Minuten.",
+        "ignore": "Waren Sie das nicht? Dann ist nichts geschehen und Sie "
+                  "können diese Nachricht ignorieren. Ihr aktuelles Passwort "
+                  "gilt weiterhin.",
+    },
+    "fr": {
+        "subject": "Réinitialiser votre mot de passe",
+        "heading": "Définir un nouveau mot de passe",
+        "intro": "Quelqu'un a demandé la réinitialisation du mot de passe du "
+                 "compte CargoPilot « {username} ».",
+        "action": "Choisir un nouveau mot de passe",
+        "validity": "Le lien fonctionne une fois et expire dans {minutes} minutes.",
+        "ignore": "Si ce n'était pas vous, rien ne s'est produit et vous "
+                  "pouvez ignorer ce message. Votre mot de passe actuel reste "
+                  "valable.",
+    },
+}
+
+INVITE = {
+    "nl": {
+        "subject": "Uw CargoPilot-account",
+        "heading": "Welkom bij CargoPilot",
+        # No name: an invitation should not tell its reader which account is
+        # an administrator's.
+        "intro": "Een beheerder heeft een CargoPilot-account voor u aangemaakt.",
+        "username": "Uw gebruikersnaam is <strong>{username}</strong>.",
+        "username_text": "Uw gebruikersnaam is {username}.",
+        "action": "Kies uw wachtwoord",
+        "validity": "De link werkt één keer en vervalt na {days} dagen.",
+        "expired": "Daarna vraagt u op het inlogscherm met "
+                   "'Wachtwoord vergeten?' een nieuwe link aan.",
+    },
+    "en": {
+        "subject": "Your CargoPilot account",
+        "heading": "Welcome to CargoPilot",
+        "intro": "An administrator has made a CargoPilot account for you.",
+        "username": "Your user name is <strong>{username}</strong>.",
+        "username_text": "Your user name is {username}.",
+        "action": "Choose your password",
+        "validity": "The link works once and expires in {days} days.",
+        "expired": "After that, use 'Forgot your password?' on the sign-in "
+                   "screen to get a new one.",
+    },
+    "de": {
+        "subject": "Ihr CargoPilot-Konto",
+        "heading": "Willkommen bei CargoPilot",
+        "intro": "Ein Administrator hat ein CargoPilot-Konto für Sie angelegt.",
+        "username": "Ihr Benutzername lautet <strong>{username}</strong>.",
+        "username_text": "Ihr Benutzername lautet {username}.",
+        "action": "Passwort wählen",
+        "validity": "Der Link gilt einmal und verfällt in {days} Tagen.",
+        "expired": "Danach fordern Sie über „Passwort vergessen?“ auf der "
+                   "Anmeldeseite einen neuen Link an.",
+    },
+    "fr": {
+        "subject": "Votre compte CargoPilot",
+        "heading": "Bienvenue dans CargoPilot",
+        "intro": "Un administrateur a créé un compte CargoPilot pour vous.",
+        "username": "Votre nom d'utilisateur est <strong>{username}</strong>.",
+        "username_text": "Votre nom d'utilisateur est {username}.",
+        "action": "Choisir votre mot de passe",
+        "validity": "Le lien fonctionne une fois et expire dans {days} jours.",
+        "expired": "Ensuite, utilisez « Mot de passe oublié ? » sur la page "
+                   "de connexion pour en obtenir un nouveau.",
+    },
+}
+
+SIGN_IN_CODE = {
+    "nl": {
+        "subject": "Uw inlogcode",
+        "heading": "Uw inlogcode",
+        "intro": "Gebruik deze code om in te loggen bij CargoPilot:",
+        "validity": "De code vervalt na {minutes} minuten.",
+        "warning": "Logt u nu niet in? Dan kent iemand anders uw wachtwoord. "
+                   "Wijzig het en waarschuw de beheerder van CargoPilot.",
+    },
+    "en": {
+        "subject": "Your sign-in code",
+        "heading": "Your sign-in code",
+        "intro": "Use this code to sign in to CargoPilot:",
+        "validity": "The code expires in {minutes} minutes.",
+        "warning": "If you are not signing in right now, somebody knows your "
+                   "password. Change it, and tell whoever looks after CargoPilot.",
+    },
+    "de": {
+        "subject": "Ihr Anmeldecode",
+        "heading": "Ihr Anmeldecode",
+        "intro": "Verwenden Sie diesen Code, um sich bei CargoPilot anzumelden:",
+        "validity": "Der Code verfällt in {minutes} Minuten.",
+        "warning": "Melden Sie sich gerade nicht an? Dann kennt jemand Ihr "
+                   "Passwort. Ändern Sie es und informieren Sie den "
+                   "Administrator von CargoPilot.",
+    },
+    "fr": {
+        "subject": "Votre code de connexion",
+        "heading": "Votre code de connexion",
+        "intro": "Utilisez ce code pour vous connecter à CargoPilot :",
+        "validity": "Le code expire dans {minutes} minutes.",
+        "warning": "Si vous n'êtes pas en train de vous connecter, quelqu'un "
+                   "connaît votre mot de passe. Changez-le et prévenez "
+                   "l'administrateur de CargoPilot.",
+    },
+}
+
+TEST = {
+    "nl": {
+        "subject": "CargoPilot testbericht",
+        "heading": "Het werkt",
+        "intro": "Dit is een testbericht van CargoPilot.",
+        "explain": "Leest u dit, dan kloppen de instellingen van de "
+                   "mailserver: CargoPilot bereikte de server, werd "
+                   "geaccepteerd en het bericht is bezorgd.",
+    },
+    "en": {
+        "subject": "CargoPilot test message",
+        "heading": "It works",
+        "intro": "This is a test message from CargoPilot.",
+        "explain": "If you are reading it, the mail server settings work: "
+                   "CargoPilot reached the server, was accepted, and the "
+                   "message was delivered.",
+    },
+    "de": {
+        "subject": "CargoPilot-Testnachricht",
+        "heading": "Es funktioniert",
+        "intro": "Dies ist eine Testnachricht von CargoPilot.",
+        "explain": "Wenn Sie sie lesen, stimmen die Einstellungen des "
+                   "Mailservers: CargoPilot hat den Server erreicht, wurde "
+                   "akzeptiert, und die Nachricht wurde zugestellt.",
+    },
+    "fr": {
+        "subject": "Message de test CargoPilot",
+        "heading": "Cela fonctionne",
+        "intro": "Ceci est un message de test de CargoPilot.",
+        "explain": "Si vous le lisez, les paramètres du serveur de messagerie "
+                   "sont corrects : CargoPilot a joint le serveur, a été "
+                   "accepté, et le message a été distribué.",
+    },
+}
+
+DOCUMENTS = {
+    "nl": {
+        "subject": "Vervoerdocumenten {reference}",
+        "heading": "Vervoerdocumenten",
+        "intro": "In de bijlage vindt u de vervoerdocumenten van deze zending.",
+        "sender": "Verstuurd vanuit CargoPilot door {sender}.",
+    },
+    "en": {
+        "subject": "Transport documents {reference}",
+        "heading": "Transport documents",
+        "intro": "The transport documents for this consignment are attached.",
+        "sender": "Sent from CargoPilot by {sender}.",
+    },
+    "de": {
+        "subject": "Beförderungspapiere {reference}",
+        "heading": "Beförderungspapiere",
+        "intro": "Im Anhang finden Sie die Beförderungspapiere dieser Sendung.",
+        "sender": "Gesendet aus CargoPilot von {sender}.",
+    },
+    "fr": {
+        "subject": "Documents de transport {reference}",
+        "heading": "Documents de transport",
+        "intro": "Les documents de transport de cet envoi sont en pièce jointe.",
+        "sender": "Envoyé depuis CargoPilot par {sender}.",
+    },
+}
+
+
+class Message:
+    """One message in both forms, ready to hand to the mail service."""
+
+    __slots__ = ("subject", "text", "html")
+
+    def __init__(self, subject: str, text: str, html: str):
+        self.subject, self.text, self.html = subject, text, html
+
+
+def reset_message(language: str, username: str, link: str, minutes: int) -> Message:
+    lang = normalise(language)
+    t = RESET[lang]
+    intro = t["intro"].format(username=username)
+    validity = t["validity"].format(minutes=minutes)
+    return Message(
+        subject=t["subject"],
+        text=_text([intro, validity], link=link, footer=t["ignore"]),
+        html=layout(lang, t["heading"], [escape(intro), escape(validity)],
+                    button=(escape(t["action"]), link),
+                    footer=escape(t["ignore"])),
+    )
+
+
+def invite_message(language: str, username: str, link: str, days: int) -> Message:
+    lang = normalise(language)
+    t = INVITE[lang]
+    validity = t["validity"].format(days=days)
+    return Message(
+        subject=t["subject"],
+        text=_text([t["intro"], t["username_text"].format(username=username),
+                    validity], link=link, footer=t["expired"]),
+        html=layout(lang, t["heading"],
+                    [escape(t["intro"]),
+                     t["username"].format(username=escape(username)),
+                     escape(validity)],
+                    button=(escape(t["action"]), link),
+                    footer=escape(t["expired"])),
+    )
+
+
+def sign_in_code_message(language: str, code: str, minutes: int) -> Message:
+    lang = normalise(language)
+    t = SIGN_IN_CODE[lang]
+    validity = t["validity"].format(minutes=minutes)
+    return Message(
+        subject=t["subject"],
+        text=_text([t["intro"], validity], block=code, footer=t["warning"]),
+        html=layout(lang, t["heading"], [escape(t["intro"]), escape(validity)],
+                    block=escape(code), footer=escape(t["warning"])),
+    )
+
+
+def test_message(language: str) -> Message:
+    lang = normalise(language)
+    t = TEST[lang]
+    return Message(
+        subject=t["subject"],
+        text=_text([t["intro"], t["explain"]]),
+        html=layout(lang, t["heading"], [escape(t["intro"]), escape(t["explain"])]),
+    )
+
+
+def documents_message(language: str, sender: str, reference: str,
+                      note: str = "") -> Message:
+    """The covering letter for a consignment's papers.
+
+    ``note`` is what the sender typed. It replaces the standard sentence
+    rather than joining it: somebody who writes their own message means it
+    to be the message.
+    """
+    lang = normalise(language)
+    t = DOCUMENTS[lang]
+    body = note.strip() or t["intro"]
+    signature = t["sender"].format(sender=sender)
+    return Message(
+        subject=t["subject"].format(reference=reference).strip(),
+        text=_text([body], footer=signature),
+        html=layout(lang, t["heading"],
+                    [escape(line) for line in body.split("\n") if line.strip()],
+                    footer=escape(signature)),
+    )

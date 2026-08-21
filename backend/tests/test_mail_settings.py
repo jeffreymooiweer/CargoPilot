@@ -35,7 +35,7 @@ from app.core.deps import get_current_user, require_admin
 from app.main import app
 from app.models.user import User
 from app.schemas.settings import InstanceSettings
-from app.services import mail, settings_store
+from app.services import mail, mail_templates, settings_store
 
 
 @pytest.fixture
@@ -250,7 +250,8 @@ def test_the_test_message_goes_to_the_administrator_by_default(db, client, monke
     response = client.post("/api/settings/instance/mail-test", json={"to": ""})
     assert response.status_code == 200
     assert response.json() == {"ok": True, "to": "ada@example.com"}
-    assert FakeSMTP.instances[-1].sent[0]["Subject"] == mail.TEST_SUBJECT
+    assert FakeSMTP.instances[-1].sent[0]["Subject"] == \
+        mail_templates.test_message("nl").subject
 
 
 def test_the_test_uses_the_stored_password_the_screen_never_saw(db, client, monkeypatch):

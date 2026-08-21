@@ -16,8 +16,8 @@ from app.schemas.users import (
     UserRole,
     UserUpdate,
 )
-from app.services import mail, password_reset, two_factor
-from app.services.settings_store import instance_settings
+from app.services import mail, mail_templates, password_reset, two_factor
+from app.services.settings_store import instance_settings, language_for
 
 logger = logging.getLogger(__name__)
 
@@ -107,9 +107,15 @@ def create_user(
     token = password_reset.issue(db, user,
                                  ttl_minutes=password_reset.INVITE_TTL_MINUTES)
     link = password_reset.link_for(_public_base_url(request, current), token)
+    # A brand-new account has no language of its own yet, so the
+    # installation's default is what it gets. Deliberately not the
+    # administrator's: they are not the reader.
+    message = mail_templates.invite_message(
+        language_for(db, user), user.username, link,
+        password_reset.INVITE_TTL_MINUTES // (24 * 60))
     try:
-        mail.send(current, user.email, password_reset.WELCOME_SUBJECT,
-                  password_reset.welcome_message(user, admin.username, link))
+        mail.send(current, user.email, message.subject, message.text,
+                  html=message.html)
         result.welcome_mail = "sent"
     except mail.MailError as exc:
         # The account exists either way — deleting it again would be worse

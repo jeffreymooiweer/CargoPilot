@@ -292,19 +292,3 @@ def required_for(user: User, policy: str) -> bool:
     if policy == "admins":
         return user.role == "admin"
     return False
-
-
-#: What the sign-in code says. Short: it is read on a phone, in a hurry.
-CODE_SUBJECT = "Your CargoPilot sign-in code"
-
-CODE_BODY = (
-    "Your sign-in code for CargoPilot is:\n\n"
-    "    {code}\n\n"
-    "It expires in {minutes} minutes.\n\n"
-    "If you are not signing in right now, somebody knows your password. "
-    "Change it, and tell whoever looks after CargoPilot.\n"
-)
-
-
-def code_message(code: str) -> str:
-    return CODE_BODY.format(code=code, minutes=EMAIL_CODE_TTL_MINUTES)

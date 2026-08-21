@@ -185,3 +185,20 @@ def save_user_preferences(db: Session, user_id: int, values: UserPreferences) ->
     row.data_json = values.model_dump_json()
     db.commit()
     return user_preferences(db, user_id)
+
+
+def language_for(db: Session, user) -> str:
+    """The language to write to this person in.
+
+    Their own choice first — a colleague whose CargoPilot is in German gets
+    a German invitation, whoever made the account. A brand-new account has
+    no preference yet, and then the installation's default is the honest
+    guess rather than the sender's language.
+    """
+    from app.core.languages import normalise
+
+    try:
+        chosen = user_preferences(db, user.id).language
+    except Exception:  # pragma: no cover - a preferences row that will not read
+        chosen = ""
+    return normalise(chosen or instance_settings(db).default_language)

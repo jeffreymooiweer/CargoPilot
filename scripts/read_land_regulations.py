@@ -256,6 +256,52 @@ GROUPS: dict[str, list[Provision]] = {
         Provision("8.6.1", ("adr2",), chars=2000, note="tunnel categories"),
         Provision("8.6.3", ("adr2",), chars=2400, note="tunnel restriction codes"),
     ],
+    # Sea placarding. The one chapter the application names for IMDG without
+    # deriving anything from it. The amendment resolution replaces the complete
+    # text of the Code, so chapter 5.3 is readable there like any other.
+    #
+    # What has to be settled from the text, because the road rule is *not* a
+    # safe guide: a cargo transport unit is placarded on all four sides where a
+    # vehicle is not, the UN number accompanies the placard rather than sitting
+    # on an orange plate, and the marine pollutant mark has no road counterpart
+    # at all.
+    "sea_placarding": [
+        Provision("5.3.1", ("imdg_42_24",), chars=9000,
+                  anchors=("Placarding of cargo transport units",),
+                  note="which units, how many sides, which placards, and the "
+                       "size the Code prescribes"),
+        Provision("5.3.2", ("imdg_42_24",), chars=9000,
+                  anchors=("Marking of cargo transport units",),
+                  note="UN numbers, the marine pollutant mark and the elevated "
+                       "temperature mark, each with the condition that triggers it"),
+        Provision("5.3.3", ("imdg_42_24",), chars=2500,
+                  anchors=("Elevated temperature",),
+                  note="if the elevated temperature mark is its own section here"),
+    ],
+    # Every case in which 5.4.1 asks for something *beyond* the description
+    # line. The application composes the line of 5.4.1.1.1 and handles waste,
+    # empty uncleaned packagings, salvage and the environmentally hazardous
+    # mention; the rest of this chapter has never been read as a whole, and a
+    # missing mention is invisible until an inspector finds it.
+    #
+    # Read as one block rather than provision by provision: the numbering
+    # differs between the three regimes, and asking for a number that does not
+    # exist in a book returns nothing rather than saying so.
+    "document_cases": [
+        Provision("5.4.1.1", ("adr1", "rid", "adn"), chars=30000,
+                  anchors=("General information required in the transport document",),
+                  note="the whole of 5.4.1.1: every sub-provision that adds a "
+                       "mention, in the order the book gives them"),
+        Provision("5.4.1.2", ("adr1", "rid", "adn"), chars=20000,
+                  anchors=("Additional or special information",),
+                  note="the class-specific additions: 1, 2, 4.1/5.2 temperature "
+                       "control, 6.2 and 7"),
+        Provision("5.4.1.5", ("imdg_42_24",), chars=20000,
+                  anchors=("General information required in the transport document",
+                           "Additional information"),
+                  note="the sea equivalent, which has mentions the land regimes "
+                       "do not (limited quantity, marine pollutant, segregation)"),
+    ],
 }
 
 

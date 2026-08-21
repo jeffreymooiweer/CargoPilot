@@ -790,7 +790,14 @@
     "deleteConfirm": "Supprimer définitivement l'utilisateur {{name}} ?",
     "deleted": "Utilisateur supprimé.",
     "guardSelf": "Impossible sur votre propre compte — demandez à un autre administrateur.",
-    "guardLastAdmin": "C'est le dernier administrateur actif ; il ne peut être ni supprimé ni rétrogradé."
+    "guardLastAdmin": "C'est le dernier administrateur actif ; il ne peut être ni supprimé ni rétrogradé.",
+    "invite": "Envoyer une invitation",
+    "inviteHint": "Le nouvel utilisateur choisit lui-même son mot de passe via un lien. Le lien est valable sept jours.",
+    "createAndInvite": "Créer et inviter",
+    "passwordByInvite": "Inutile : l'utilisateur choisit son mot de passe via l'invitation.",
+    "invited": "Compte créé. Invitation envoyée à {{email}}.",
+    "inviteNoMailServer": "Compte créé, mais aucun serveur de messagerie n'est configuré ; l'invitation n'a pas été envoyée.",
+    "inviteFailed": "Compte créé, mais l'invitation n'a pas pu être envoyée : {{reason}}"
   },
   "reset": {
     "title": "Nouveau mot de passe",

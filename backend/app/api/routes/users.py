@@ -1,11 +1,25 @@
-from fastapi import APIRouter, Depends, HTTPException
+import logging
+import secrets
+
+from fastapi import APIRouter, Depends, HTTPException, Request
 from sqlalchemy.orm import Session
 
+from app.api.routes.auth import _public_base_url
 from app.core.database import get_db
 from app.core.deps import require_admin
 from app.core.security import hash_password
 from app.models.user import User
-from app.schemas.users import UserCreate, UserOut, UserRole, UserUpdate
+from app.schemas.users import (
+    UserCreate,
+    UserCreateResult,
+    UserOut,
+    UserRole,
+    UserUpdate,
+)
+from app.services import mail, password_reset
+from app.services.settings_store import instance_settings
+
+logger = logging.getLogger(__name__)
 
 router = APIRouter(prefix="/users", tags=["users"])
 
@@ -46,21 +60,64 @@ def list_users(admin: User = Depends(require_admin), db: Session = Depends(get_d
     return db.query(User).order_by(User.id).all()
 
 
-@router.post("", response_model=UserOut)
-def create_user(payload: UserCreate, admin: User = Depends(require_admin), db: Session = Depends(get_db)):
+@router.post("", response_model=UserCreateResult)
+def create_user(
+    request: Request,
+    payload: UserCreate,
+    admin: User = Depends(require_admin),
+    db: Session = Depends(get_db),
+):
+    """Make an account, optionally inviting its owner to set a password.
+
+    With an invitation there is no password to type here at all: the new
+    colleague chooses their own through the link, so it never travels by
+    chat or note and the administrator never knows it. Until they do, the
+    account carries an unguessable random hash — an account nobody can sign
+    in to, rather than one with a password somebody might guess.
+    """
     if db.query(User).filter(User.username == payload.username).first():
         raise HTTPException(status_code=400, detail="Username exists")
+
+    current = instance_settings(db)
+    invite = payload.send_welcome and mail.is_configured(current)
+    if payload.password is None and not invite:
+        raise HTTPException(
+            status_code=400,
+            detail="Give a password, or send an invitation so the account's "
+                   "owner can choose one. That needs a mail server.")
+
     user = User(
         username=payload.username,
         email=payload.email,
-        password_hash=hash_password(payload.password),
+        password_hash=hash_password(payload.password or secrets.token_urlsafe(32)),
         role=payload.role.value,
         active=True,
     )
     db.add(user)
     db.commit()
     db.refresh(user)
-    return user
+
+    result = UserCreateResult.model_validate(user, from_attributes=True)
+    if not payload.send_welcome:
+        return result
+    if not invite:
+        result.welcome_mail = "no_mail_server"
+        return result
+
+    token = password_reset.issue(db, user,
+                                 ttl_minutes=password_reset.INVITE_TTL_MINUTES)
+    link = password_reset.link_for(_public_base_url(request, current), token)
+    try:
+        mail.send(current, user.email, password_reset.WELCOME_SUBJECT,
+                  password_reset.welcome_message(user, admin.username, link))
+        result.welcome_mail = "sent"
+    except mail.MailError as exc:
+        # The account exists either way — deleting it again would be worse
+        # than an administrator who now knows to pass the link on by hand.
+        logger.warning("Could not send the invitation for %s: %s",
+                       user.username, exc)
+        result.welcome_mail = str(exc)
+    return result
 
 
 @router.patch("/{user_id}", response_model=UserOut)

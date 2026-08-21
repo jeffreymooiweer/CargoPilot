@@ -238,8 +238,14 @@ export const api = {
       body: JSON.stringify({ to }),
     }),
   listUsers: () => request<User[]>("/users"),
+  /** Make an account. With `send_welcome` the new colleague gets a link to
+   *  choose their own password, and `password` may be left out entirely;
+   *  `welcome_mail` in the answer says what became of that invitation. */
   createUser: (payload: Record<string, unknown>) =>
-    request<User>("/users", { method: "POST", body: JSON.stringify(payload) }),
+    request<User & { welcome_mail: string }>("/users", {
+      method: "POST",
+      body: JSON.stringify(payload),
+    }),
   updateUser: (id: number, payload: Record<string, unknown>) =>
     request<User>(`/users/${id}`, { method: "PATCH", body: JSON.stringify(payload) }),
   deleteUser: (id: number) => request<{ ok: boolean }>(`/users/${id}`, { method: "DELETE" }),

@@ -2,6 +2,30 @@
 
 All notable changes are documented here, following [Semantic Versioning](https://semver.org/).
 
+## [1.144.0] — 2026-08-21
+
+A new colleague can be invited instead of handed a password.
+
+### Added
+
+- **Send an invitation** when creating a user, with a mail server
+  configured. No password is typed by the administrator at all: the new
+  colleague gets a link and chooses their own, so it never travels by chat,
+  note or a second message — and the administrator never knows it either.
+  The link is valid for seven days, because someone may be on holiday the
+  week their account is made.
+- Until the link is used the account carries a random hash: an account
+  nobody can sign in to, rather than one with a password somebody might
+  guess.
+
+### Changed
+
+- **Whether the invitation went out is reported back**, in the same
+  sentence as the account being made — sent, no mail server, or the mail
+  server's own refusal. An administrator who believes a message was sent
+  that never was is worse off than one who knows to pass the link on by
+  hand. The account is kept either way; unmaking it would help nobody.
+
 ## [1.143.0] — 2026-08-21
 
 Forgetting a password no longer means asking an administrator.

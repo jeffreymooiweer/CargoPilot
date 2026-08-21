@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { api, User } from "../api/client";
+import { usePreferences } from "../settings/preferences";
 
 const inputClass =
   "border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-950 text-slate-900 dark:text-slate-100 rounded-lg px-3 py-2 w-full";
@@ -28,7 +29,12 @@ function guarded(target: User, self: User | null, users: User[]): string | null 
 export default function UsersPage({ user: self }: { user: User | null }) {
   const { t } = useTranslation();
   const [users, setUsers] = useState<User[]>([]);
+  const { publicSettings } = usePreferences();
+  const canInvite = !!publicSettings?.mail_enabled;
   const [form, setForm] = useState({ username: "", email: "", password: "", role: "user" });
+  // With a mail server the invitation is the better default: the new
+  // colleague picks their own password, so it never travels by chat or note.
+  const [invite, setInvite] = useState(true);
   const [busy, setBusy] = useState(false);
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
@@ -61,10 +67,26 @@ export default function UsersPage({ user: self }: { user: User | null }) {
 
   const create = (e: React.FormEvent) => {
     e.preventDefault();
+    const sendWelcome = canInvite && invite;
     void run(async () => {
-      await api.createUser(form);
+      const created = await api.createUser({
+        ...form,
+        // An empty box means "no password typed": with an invitation the
+        // colleague chooses one, without it the server refuses and says so.
+        password: form.password.trim() ? form.password : undefined,
+        send_welcome: sendWelcome,
+      });
       setForm({ username: "", email: "", password: "", role: "user" });
-    }, t("users.created"));
+      if (created.welcome_mail && created.welcome_mail !== "not_requested") {
+        setMessage(
+          created.welcome_mail === "sent"
+            ? t("users.invited", { email: created.email })
+            : created.welcome_mail === "no_mail_server"
+              ? t("users.inviteNoMailServer")
+              : t("users.inviteFailed", { reason: created.welcome_mail }),
+        );
+      }
+    }, sendWelcome ? "" : t("users.created"));
   };
 
   const patch = (id: number, payload: Record<string, unknown>, done = "") =>
@@ -126,10 +148,13 @@ export default function UsersPage({ user: self }: { user: User | null }) {
               className={`${inputClass} mt-1`}
               value={form.password}
               minLength={8}
-              required
+              required={!canInvite || !invite}
+              disabled={canInvite && invite}
               onChange={(e) => setForm({ ...form, password: e.target.value })}
             />
-            <p className="mt-0.5 text-xs text-slate-500 dark:text-slate-400">{t("users.passwordHint")}</p>
+            <p className="mt-0.5 text-xs text-slate-500 dark:text-slate-400">
+              {canInvite && invite ? t("users.passwordByInvite") : t("users.passwordHint")}
+            </p>
           </div>
           <div>
             <label className="text-sm font-medium text-slate-800 dark:text-slate-200" htmlFor="new-role">
@@ -146,8 +171,24 @@ export default function UsersPage({ user: self }: { user: User | null }) {
             </select>
           </div>
         </div>
+        {canInvite && (
+          <label className="flex items-start gap-2 text-sm text-slate-700 dark:text-slate-200">
+            <input
+              type="checkbox"
+              className="mt-0.5"
+              checked={invite}
+              onChange={(e) => setInvite(e.target.checked)}
+            />
+            <span>
+              {t("users.invite")}
+              <span className="block text-xs text-slate-500 dark:text-slate-400">
+                {t("users.inviteHint")}
+              </span>
+            </span>
+          </label>
+        )}
         <button className={buttonPrimary} disabled={busy}>
-          {t("users.create")}
+          {canInvite && invite ? t("users.createAndInvite") : t("users.create")}
         </button>
       </form>
 

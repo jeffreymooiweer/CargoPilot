@@ -790,7 +790,14 @@
     "deleteConfirm": "Permanently delete user {{name}}?",
     "deleted": "User deleted.",
     "guardSelf": "Not possible on your own account — ask another administrator.",
-    "guardLastAdmin": "This is the last active administrator; it cannot be removed or demoted."
+    "guardLastAdmin": "This is the last active administrator; it cannot be removed or demoted.",
+    "invite": "Send an invitation",
+    "inviteHint": "The new user chooses their own password through a link. The link works for seven days.",
+    "createAndInvite": "Create and invite",
+    "passwordByInvite": "Not needed: the user chooses a password through the invitation.",
+    "invited": "Account created. Invitation sent to {{email}}.",
+    "inviteNoMailServer": "Account created, but no mail server is configured, so the invitation was not sent.",
+    "inviteFailed": "Account created, but the invitation could not be sent: {{reason}}"
   },
   "reset": {
     "title": "New password",

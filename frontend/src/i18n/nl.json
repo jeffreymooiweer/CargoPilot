@@ -790,7 +790,14 @@
     "deleteConfirm": "Gebruiker {{name}} definitief verwijderen?",
     "deleted": "Gebruiker verwijderd.",
     "guardSelf": "Op je eigen account kan dit niet — vraag een andere beheerder.",
-    "guardLastAdmin": "Dit is de laatste actieve beheerder; die kan niet worden verwijderd of teruggezet."
+    "guardLastAdmin": "Dit is de laatste actieve beheerder; die kan niet worden verwijderd of teruggezet.",
+    "invite": "Uitnodiging sturen",
+    "inviteHint": "De nieuwe gebruiker kiest zelf een wachtwoord via een link. De link werkt zeven dagen.",
+    "createAndInvite": "Aanmaken en uitnodigen",
+    "passwordByInvite": "Niet nodig: de gebruiker kiest zelf een wachtwoord via de uitnodiging.",
+    "invited": "Account aangemaakt. Uitnodiging verstuurd naar {{email}}.",
+    "inviteNoMailServer": "Account aangemaakt, maar er is geen mailserver ingesteld; de uitnodiging is niet verstuurd.",
+    "inviteFailed": "Account aangemaakt, maar de uitnodiging kon niet worden verstuurd: {{reason}}"
   },
   "reset": {
     "title": "Nieuw wachtwoord",

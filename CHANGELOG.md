@@ -2,6 +2,26 @@
 
 All notable changes are documented here, following [Semantic Versioning](https://semver.org/).
 
+## [1.148.0] — 2026-08-21
+
+### Fixed
+
+- **Mail now fits a phone.** The messages carried no viewport line, so a
+  mail client laid them out in a desktop-width container — Gmail on Android
+  assumes about 980 pixels — and showed the phone a slice of that. Measured
+  in a 980-pixel container the card sits centred starting at x=210: a wide
+  empty margin on the left and the card running off the right, which is
+  exactly what an invitation looked like on the phone that reported it.
+  Every message now declares `width=device-width`.
+
+  Three other things were brought to the way mail is normally built, and are
+  named for what they are: not the cause, but what keeps a message looking
+  the same in Outlook, Apple Mail and Gmail alike. The gutter is a table
+  cell rather than padding on `<body>`, which Gmail drops; the card is
+  centred by `align="center"` as well as `max-width`, because Word ignores
+  `margin:0 auto`; and a long reset link may break anywhere, so a
+  60-character token cannot set a minimum width for the whole message.
+
 ## [1.147.0] — 2026-08-21
 
 Three things a real installation ran into.

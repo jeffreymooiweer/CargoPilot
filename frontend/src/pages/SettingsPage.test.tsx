@@ -38,6 +38,10 @@ vi.mock("../api/client", () => ({
     unCardStoreStatus: vi.fn().mockResolvedValue({
       local: { installed: false }, remote: null,
     }),
+    // My details carries the second factor, which asks for its own state.
+    twoFactorStatus: vi.fn().mockResolvedValue({
+      active: false, method: "", required: false, recovery_codes_left: 0,
+    }),
   },
 }));
 

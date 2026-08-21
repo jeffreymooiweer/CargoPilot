@@ -36,7 +36,16 @@
     "forgotHint": "Sie erhalten einen Link, um ein neues Passwort zu wählen. Der Link gilt eine Stunde.",
     "forgotSubmit": "Link senden",
     "forgotSending": "Wird gesendet…",
-    "forgotSent": "Falls dieses Konto besteht, wurde ein Link an die zugehörige E-Mail-Adresse gesendet. Sehen Sie auch im Spam-Ordner nach."
+    "forgotSent": "Falls dieses Konto besteht, wurde ein Link an die zugehörige E-Mail-Adresse gesendet. Sehen Sie auch im Spam-Ordner nach.",
+    "twoFactorTitle": "Zweiter Schritt",
+    "twoFactorApp": "Geben Sie den Code aus Ihrer Authenticator-App ein.",
+    "twoFactorMailSent": "Wir haben einen Code an Ihre E-Mail-Adresse gesendet.",
+    "twoFactorMailFailed": "Der Code konnte nicht gesendet werden. Verwenden Sie einen Wiederherstellungscode oder fragen Sie einen Administrator.",
+    "twoFactorCode": "Code",
+    "twoFactorRecoveryHint": "Telefon weg? Geben Sie hier einen Wiederherstellungscode ein.",
+    "twoFactorSubmit": "Anmelden",
+    "twoFactorChecking": "Wird geprüft…",
+    "twoFactorBack": "Zurück"
   },
   "wizard": {
     "step2": "Güter",
@@ -324,7 +333,12 @@
     "mailTesting": "Wird gesendet…",
     "mailTestSent": "Testnachricht an {{to}} gesendet.",
     "publicUrl": "Adresse dieser Installation",
-    "publicUrlHint": "Wird für Links in ausgehender Mail verwendet, z. B. https://cargopilot.example.de. Leer lassen, wenn der Browser CargoPilot direkt erreicht."
+    "publicUrlHint": "Wird für Links in ausgehender Mail verwendet, z. B. https://cargopilot.example.de. Leer lassen, wenn der Browser CargoPilot direkt erreicht.",
+    "twoFactorPolicy": "Zwei-Faktor-Bestätigung",
+    "twoFactorPolicyHint": "Wer einen zweiten Schritt bei der Anmeldung verwenden muss. Wer noch keinen hat, wird nach der Anmeldung zum Einrichten aufgefordert.",
+    "twoFactorOff": "Freiwillig, jeder entscheidet selbst",
+    "twoFactorAdmins": "Pflicht für Administratoren",
+    "twoFactorEveryone": "Pflicht für alle"
   },
   "modality": {
     "title": "Wählen Sie Ihren Verkehrsträger",
@@ -797,7 +811,11 @@
     "passwordByInvite": "Nicht nötig: der Benutzer wählt sein Passwort über die Einladung.",
     "invited": "Konto angelegt. Einladung an {{email}} gesendet.",
     "inviteNoMailServer": "Konto angelegt, aber es ist kein Mailserver eingerichtet; die Einladung wurde nicht gesendet.",
-    "inviteFailed": "Konto angelegt, aber die Einladung konnte nicht gesendet werden: {{reason}}"
+    "inviteFailed": "Konto angelegt, aber die Einladung konnte nicht gesendet werden: {{reason}}",
+    "clearTwoFactor": "2FA löschen",
+    "clearTwoFactorHint": "Entfernt den zweiten Schritt dieses Benutzers, etwa bei verlorenem Telefon.",
+    "clearTwoFactorConfirm": "Zwei-Faktor-Bestätigung für {{name}} entfernen? Danach genügt wieder das Passwort allein.",
+    "twoFactorCleared": "Zwei-Faktor-Bestätigung entfernt."
   },
   "reset": {
     "title": "Neues Passwort",
@@ -811,5 +829,28 @@
     "done": "Ihr Passwort ist gesetzt. Sie können sich jetzt anmelden.",
     "toLogin": "Zur Anmeldung",
     "noToken": "Diese Seite gehört zu einem Link aus einer E-Mail. Fordern Sie auf der Anmeldeseite einen neuen Link an."
+  },
+  "twoFactor": {
+    "title": "Zwei-Faktor-Bestätigung",
+    "intro": "Ein zweiter Schritt bei der Anmeldung: ein Code aus einer App oder per E-Mail.",
+    "requiredHere": "Diese Installation verlangt eine Zwei-Faktor-Bestätigung für Ihr Konto. Richten Sie sie unten ein.",
+    "onByApp": "An, mit einer Authenticator-App.",
+    "onByMail": "An, mit einem Code per E-Mail.",
+    "codesLeft": "Noch {{count}} Wiederherstellungscodes.",
+    "newCodes": "Neue Wiederherstellungscodes",
+    "turnOff": "Ausschalten",
+    "turnOffHint": "Geben Sie einen gültigen Code ein; sonst genügt eine geliehene Sitzung, um den Schutz zu entfernen.",
+    "turnOffDo": "Ausschalten",
+    "disabled": "Die Zwei-Faktor-Bestätigung ist aus.",
+    "setUpApp": "Mit einer App einrichten",
+    "setUpMail": "Mit E-Mail einrichten",
+    "scan": "Scannen Sie diesen Code mit Ihrer Authenticator-App.",
+    "orType": "Oder geben Sie diesen Schlüssel ein:",
+    "mailSent": "Wir haben einen Code an Ihre E-Mail-Adresse gesendet.",
+    "enterCode": "Code aus der App oder der Nachricht",
+    "confirm": "Bestätigen",
+    "cancel": "Abbrechen",
+    "recoveryTitle": "Bewahren Sie diese Wiederherstellungscodes auf",
+    "recoveryHint": "Sie sehen sie einmal. Jeder gilt einmal, falls Ihr Telefon weg ist. Ohne sie und ohne Telefon brauchen Sie einen Administrator."
   }
 }

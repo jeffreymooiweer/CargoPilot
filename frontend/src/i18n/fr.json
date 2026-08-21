@@ -36,7 +36,16 @@
     "forgotHint": "Vous recevrez un lien pour choisir un nouveau mot de passe. Le lien est valable une heure.",
     "forgotSubmit": "Envoyer le lien",
     "forgotSending": "Envoi en cours…",
-    "forgotSent": "Si ce compte existe, un lien a été envoyé à son adresse e-mail. Vérifiez aussi vos indésirables."
+    "forgotSent": "Si ce compte existe, un lien a été envoyé à son adresse e-mail. Vérifiez aussi vos indésirables.",
+    "twoFactorTitle": "Deuxième étape",
+    "twoFactorApp": "Saisissez le code de votre application d'authentification.",
+    "twoFactorMailSent": "Nous avons envoyé un code à votre adresse e-mail.",
+    "twoFactorMailFailed": "Le code n'a pas pu être envoyé. Utilisez un code de secours ou demandez à un administrateur.",
+    "twoFactorCode": "Code",
+    "twoFactorRecoveryHint": "Téléphone perdu ? Saisissez ici un de vos codes de secours.",
+    "twoFactorSubmit": "Se connecter",
+    "twoFactorChecking": "Vérification…",
+    "twoFactorBack": "Retour"
   },
   "wizard": {
     "step2": "Marchandises",
@@ -324,7 +333,12 @@
     "mailTesting": "Envoi en cours…",
     "mailTestSent": "Message de test envoyé à {{to}}.",
     "publicUrl": "Adresse de cette installation",
-    "publicUrlHint": "Utilisée pour les liens dans les messages sortants, par exemple https://cargopilot.example.fr. Laisser vide si le navigateur atteint CargoPilot directement."
+    "publicUrlHint": "Utilisée pour les liens dans les messages sortants, par exemple https://cargopilot.example.fr. Laisser vide si le navigateur atteint CargoPilot directement.",
+    "twoFactorPolicy": "Vérification en deux étapes",
+    "twoFactorPolicyHint": "Qui doit utiliser une deuxième étape à la connexion. Ceux qui n'en ont pas sont invités à la configurer après connexion.",
+    "twoFactorOff": "Facultative, chacun choisit",
+    "twoFactorAdmins": "Obligatoire pour les administrateurs",
+    "twoFactorEveryone": "Obligatoire pour tous"
   },
   "modality": {
     "title": "Choisissez votre mode de transport",
@@ -797,7 +811,11 @@
     "passwordByInvite": "Inutile : l'utilisateur choisit son mot de passe via l'invitation.",
     "invited": "Compte créé. Invitation envoyée à {{email}}.",
     "inviteNoMailServer": "Compte créé, mais aucun serveur de messagerie n'est configuré ; l'invitation n'a pas été envoyée.",
-    "inviteFailed": "Compte créé, mais l'invitation n'a pas pu être envoyée : {{reason}}"
+    "inviteFailed": "Compte créé, mais l'invitation n'a pas pu être envoyée : {{reason}}",
+    "clearTwoFactor": "Effacer la 2FA",
+    "clearTwoFactorHint": "Supprime la deuxième étape de cet utilisateur, en cas de téléphone perdu.",
+    "clearTwoFactorConfirm": "Supprimer la vérification en deux étapes de {{name}} ? Il se connectera ensuite avec le mot de passe seul.",
+    "twoFactorCleared": "Vérification en deux étapes supprimée."
   },
   "reset": {
     "title": "Nouveau mot de passe",
@@ -811,5 +829,28 @@
     "done": "Votre mot de passe est défini. Vous pouvez vous connecter.",
     "toLogin": "Aller à la page de connexion",
     "noToken": "Cette page correspond à un lien reçu par e-mail. Demandez un nouveau lien sur la page de connexion."
+  },
+  "twoFactor": {
+    "title": "Vérification en deux étapes",
+    "intro": "Une deuxième étape à la connexion : un code d'une application ou par e-mail.",
+    "requiredHere": "Cette installation exige la vérification en deux étapes pour votre compte. Configurez-la ci-dessous.",
+    "onByApp": "Activée, avec une application d'authentification.",
+    "onByMail": "Activée, avec un code par e-mail.",
+    "codesLeft": "Il reste {{count}} codes de secours.",
+    "newCodes": "Nouveaux codes de secours",
+    "turnOff": "Désactiver",
+    "turnOffHint": "Saisissez un code valide ; sinon une session empruntée suffirait à retirer la protection.",
+    "turnOffDo": "Désactiver",
+    "disabled": "La vérification en deux étapes est désactivée.",
+    "setUpApp": "Configurer avec une application",
+    "setUpMail": "Configurer avec l'e-mail",
+    "scan": "Scannez ce code avec votre application d'authentification.",
+    "orType": "Ou saisissez cette clé :",
+    "mailSent": "Nous avons envoyé un code à votre adresse e-mail.",
+    "enterCode": "Code de l'application ou du message",
+    "confirm": "Confirmer",
+    "cancel": "Annuler",
+    "recoveryTitle": "Conservez ces codes de secours",
+    "recoveryHint": "Vous ne les voyez qu'une fois. Chacun sert une seule fois, si votre téléphone disparaît. Sans eux et sans téléphone, il vous faut un administrateur."
   }
 }

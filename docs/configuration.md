@@ -250,6 +250,31 @@ relay to refuse.
 Without a mail server the export step shows no mail button at all: a button that can only
 fail is not a feature.
 
+## Two-factor verification
+
+**Settings → Administration → Two-factor verification** decides who needs a second step:
+voluntary (the default), required for administrators, or required for everyone. Nobody is
+locked out when it is switched on — someone without a second factor signs in as before and
+is asked to set one up.
+
+Each person picks their own method under **Settings → My details**:
+
+- **An authenticator app.** The usual six digits, scanned from a QR code this server draws
+  itself — a QR fetched from an image service would send the shared secret to somebody
+  else's server. Works offline and does not depend on the mail server.
+- **A code by e-mail.** Nothing to install, and it needs a mail server. It is the weaker of
+  the two: whoever can read the mailbox can sign in.
+
+**Losing the second factor.** Switching it on hands out eight recovery codes, shown once.
+Each works one time and is accepted wherever a code is asked for, so a phone in a canal
+does not mean a different form. If those are gone too, any administrator can clear the
+second factor from the users page — which is one more reason for an installation to have
+more than one administrator.
+
+**What the codes are worth.** Recovery and mailed codes are stored as hashes; a mailed code
+expires in five minutes and dies after five wrong guesses; an authenticator code is accepted
+one 30-second step either side of now, which is what an unsynced phone looks like.
+
 ## Application and security
 
 | Variable | What it does | Default |

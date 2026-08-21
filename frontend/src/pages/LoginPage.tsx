@@ -13,6 +13,28 @@ export default function LoginPage({ onLogin }: { onLogin: () => void }) {
   const [setupWarning, setSetupWarning] = useState("");
   // Forgetting a password happens on this screen or nowhere: somebody who
   // cannot get in cannot reach a page behind the sign-in.
+  // The second step, when the account has a second factor.
+  const [challenge, setChallenge] = useState("");
+  const [method, setMethod] = useState<"totp" | "email">("totp");
+  const [codeSent, setCodeSent] = useState(false);
+  const [code, setCode] = useState("");
+  const [verifying, setVerifying] = useState(false);
+
+  const submitCode = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setVerifying(true);
+    setError("");
+    try {
+      await api.loginTwoFactor(challenge, code);
+      onLogin();
+    } catch (err) {
+      setError(String(err));
+      setCode("");
+    } finally {
+      setVerifying(false);
+    }
+  };
+
   const [forgotOpen, setForgotOpen] = useState(false);
   const [identifier, setIdentifier] = useState("");
   const [forgotBusy, setForgotBusy] = useState(false);
@@ -37,7 +59,15 @@ export default function LoginPage({ onLogin }: { onLogin: () => void }) {
     e.preventDefault();
     setError("");
     try {
-      await api.login(username, password);
+      const answer = await api.login(username, password);
+      if (answer.two_factor_required) {
+        // The password was right; the account has a second factor. Nothing
+        // is signed in yet — the challenge is not a session.
+        setChallenge(answer.challenge);
+        setMethod(answer.method);
+        setCodeSent(answer.code_sent);
+        return;
+      }
       onLogin();
     } catch (err) {
       setError(String(err));
@@ -45,6 +75,71 @@ export default function LoginPage({ onLogin }: { onLogin: () => void }) {
       if (status && !status.has_admin) setSetupWarning(t("login.setup"));
     }
   };
+
+  if (challenge) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-slate-100 dark:bg-slate-950 px-4">
+        <form
+          onSubmit={submitCode}
+          className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 p-8 w-full max-w-md space-y-4"
+        >
+          <div className="text-center">
+            <img
+              src="/shipping.png"
+              alt=""
+              aria-hidden="true"
+              className="mx-auto h-16 w-16 dark:brightness-0 dark:invert"
+            />
+            <h1 className="text-2xl font-semibold text-slate-900 dark:text-slate-100 mt-3">
+              {t("login.twoFactorTitle")}
+            </h1>
+            <p className="text-slate-500 dark:text-slate-400 text-sm mt-1">
+              {method === "email"
+                ? codeSent
+                  ? t("login.twoFactorMailSent")
+                  : t("login.twoFactorMailFailed")
+                : t("login.twoFactorApp")}
+            </p>
+          </div>
+          <div>
+            <label className="block text-sm font-medium mb-1 text-slate-800 dark:text-slate-200" htmlFor="code">
+              {t("login.twoFactorCode")}
+            </label>
+            <input
+              id="code"
+              className={fieldClass}
+              autoComplete="one-time-code"
+              autoFocus
+              value={code}
+              onChange={(e) => setCode(e.target.value)}
+            />
+            <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
+              {t("login.twoFactorRecoveryHint")}
+            </p>
+          </div>
+          {error && <p className="text-red-600 dark:text-red-400 text-sm">{error}</p>}
+          <button
+            type="submit"
+            disabled={verifying || !code.trim()}
+            className="w-full bg-brand-600 hover:bg-brand-700 text-white rounded-lg py-2.5 font-medium disabled:opacity-50"
+          >
+            {verifying ? t("login.twoFactorChecking") : t("login.twoFactorSubmit")}
+          </button>
+          <button
+            type="button"
+            onClick={() => {
+              setChallenge("");
+              setCode("");
+              setError("");
+            }}
+            className="w-full text-sm text-slate-500 hover:underline dark:text-slate-400"
+          >
+            {t("login.twoFactorBack")}
+          </button>
+        </form>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-slate-100 dark:bg-slate-950 px-4">

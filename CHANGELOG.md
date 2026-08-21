@@ -2,7 +2,42 @@
 
 All notable changes are documented here, following [Semantic Versioning](https://semver.org/).
 
-## [1.144.0] — 2026-08-21
+## [1.145.0] — 2026-08-21
+
+Two-factor verification, with a way back in.
+
+### Added
+
+- **A second step when signing in**, chosen per person under Settings → My
+  details: a code from an authenticator app, or a code by e-mail. The app is
+  the stronger of the two — it works offline and does not depend on the mail
+  server — and the QR code is drawn by this server, because a QR fetched
+  from an image service would hand the shared secret to somebody else.
+- **Who needs one is the administrator's choice**: voluntary, required for
+  administrators, or required for everyone. Switching it on locks nobody
+  out — someone without a second factor signs in as before and is asked to
+  set one up.
+- **Eight recovery codes**, shown once when it is switched on. Each works
+  one time and is accepted wherever a code is asked for, so a phone in a
+  canal does not mean hunting for a different form.
+- **An administrator can clear a lost second factor** from the users page —
+  one more reason for an installation to have more than one administrator.
+
+### Security
+
+- **The challenge is not a session.** A right password now answers with a
+  short-lived challenge that says only that: it is refused everywhere a
+  session is expected, so the second step cannot be skipped by keeping the
+  challenge. A password changed in the meantime invalidates it.
+- **Codes are stored as hashes and cost something to guess.** A mailed code
+  expires in five minutes and dies after five wrong attempts; asking for a
+  new one kills the old. An authenticator code is accepted one 30-second
+  step either side of now, which is what an unsynced phone looks like, and
+  no further.
+- **Switching it off needs a working code**, or a borrowed session would be
+  enough to strip the protection it is facing.
+- TOTP is implemented against RFC 6238 rather than pulled in, and pinned to
+  the specification's own test vector.
 
 A new colleague can be invited instead of handed a password.
 

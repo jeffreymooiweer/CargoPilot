@@ -251,6 +251,18 @@ export default function UsersPage({ user: self }: { user: User | null }) {
                   </button>
                   <button
                     type="button"
+                    className={buttonSecondary}
+                    disabled={busy}
+                    title={t("users.clearTwoFactorHint")}
+                    onClick={() => {
+                      if (!confirm(t("users.clearTwoFactorConfirm", { name: u.username }))) return;
+                      void run(() => api.clearTwoFactorFor(u.id), t("users.twoFactorCleared"));
+                    }}
+                  >
+                    {t("users.clearTwoFactor")}
+                  </button>
+                  <button
+                    type="button"
                     className={buttonDanger}
                     disabled={busy || guard !== null}
                     title={guardText(guard)}

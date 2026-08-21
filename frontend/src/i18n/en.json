@@ -36,7 +36,16 @@
     "forgotHint": "You will get a link to choose a new password. The link works for one hour.",
     "forgotSubmit": "Send link",
     "forgotSending": "Sending…",
-    "forgotSent": "If that account exists, a link has been sent to its e-mail address. Check your junk mail too."
+    "forgotSent": "If that account exists, a link has been sent to its e-mail address. Check your junk mail too.",
+    "twoFactorTitle": "Second step",
+    "twoFactorApp": "Enter the code from your authenticator app.",
+    "twoFactorMailSent": "We sent a code to your e-mail address.",
+    "twoFactorMailFailed": "The code could not be sent. Use a recovery code, or ask an administrator.",
+    "twoFactorCode": "Code",
+    "twoFactorRecoveryHint": "Phone gone? Enter one of your recovery codes here.",
+    "twoFactorSubmit": "Sign in",
+    "twoFactorChecking": "Checking…",
+    "twoFactorBack": "Back"
   },
   "wizard": {
     "step2": "Goods",
@@ -324,7 +333,12 @@
     "mailTesting": "Sending…",
     "mailTestSent": "Test message sent to {{to}}.",
     "publicUrl": "Address of this installation",
-    "publicUrlHint": "Used for the links in outgoing mail, for example https://cargopilot.example.com. Leave empty when the browser reaches CargoPilot directly."
+    "publicUrlHint": "Used for the links in outgoing mail, for example https://cargopilot.example.com. Leave empty when the browser reaches CargoPilot directly.",
+    "twoFactorPolicy": "Two-factor verification",
+    "twoFactorPolicyHint": "Who must use a second step when signing in. Anyone without one is asked to set it up after signing in.",
+    "twoFactorOff": "Voluntary, everyone chooses",
+    "twoFactorAdmins": "Required for administrators",
+    "twoFactorEveryone": "Required for everyone"
   },
   "modality": {
     "title": "Choose your transport modality",
@@ -797,7 +811,11 @@
     "passwordByInvite": "Not needed: the user chooses a password through the invitation.",
     "invited": "Account created. Invitation sent to {{email}}.",
     "inviteNoMailServer": "Account created, but no mail server is configured, so the invitation was not sent.",
-    "inviteFailed": "Account created, but the invitation could not be sent: {{reason}}"
+    "inviteFailed": "Account created, but the invitation could not be sent: {{reason}}",
+    "clearTwoFactor": "Clear 2FA",
+    "clearTwoFactorHint": "Removes this user's second step, for a lost phone.",
+    "clearTwoFactorConfirm": "Remove two-factor verification for {{name}}? They will sign in with a password alone afterwards.",
+    "twoFactorCleared": "Two-factor verification removed."
   },
   "reset": {
     "title": "New password",
@@ -811,5 +829,28 @@
     "done": "Your password is set. You can sign in now.",
     "toLogin": "Go to the sign-in screen",
     "noToken": "This page belongs to a link from an e-mail. Ask for a new link on the sign-in screen."
+  },
+  "twoFactor": {
+    "title": "Two-factor verification",
+    "intro": "A second step when signing in: a code from an app, or a code by e-mail.",
+    "requiredHere": "This installation requires two-factor verification for your account. Set it up below.",
+    "onByApp": "On, with an authenticator app.",
+    "onByMail": "On, with a code by e-mail.",
+    "codesLeft": "{{count}} recovery codes left.",
+    "newCodes": "New recovery codes",
+    "turnOff": "Turn off",
+    "turnOffHint": "Type a working code; otherwise a borrowed session is enough to strip the protection.",
+    "turnOffDo": "Turn off",
+    "disabled": "Two-factor verification is off.",
+    "setUpApp": "Set up with an app",
+    "setUpMail": "Set up with e-mail",
+    "scan": "Scan this code with your authenticator app.",
+    "orType": "Or type this key:",
+    "mailSent": "We sent a code to your e-mail address.",
+    "enterCode": "Code from the app or the message",
+    "confirm": "Confirm",
+    "cancel": "Cancel",
+    "recoveryTitle": "Keep these recovery codes",
+    "recoveryHint": "You see these once. Each works one time, for when your phone is gone. Without them and without your phone you need an administrator."
   }
 }

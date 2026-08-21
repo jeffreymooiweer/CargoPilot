@@ -72,3 +72,37 @@ class PasswordResetRequest(BaseModel):
 class PasswordResetConfirm(BaseModel):
     token: str = Field(min_length=16, max_length=256)
     new_password: str = Field(min_length=8)
+
+
+class TwoFactorLogin(BaseModel):
+    """The second half of a sign-in. ``code`` is a six-digit code or one of
+    the recovery codes; the same field takes both, because somebody whose
+    phone is in a canal should not have to find a different form."""
+
+    challenge: str = Field(min_length=16, max_length=2048)
+    code: str = Field(min_length=4, max_length=32)
+
+
+class TwoFactorStart(BaseModel):
+    method: str = Field(pattern="^(totp|email)$")
+
+
+class TwoFactorConfirm(BaseModel):
+    code: str = Field(min_length=4, max_length=32)
+
+
+class TwoFactorStatus(BaseModel):
+    active: bool
+    method: str = ""
+    required: bool = False
+    recovery_codes_left: int = 0
+
+
+class TwoFactorSetup(BaseModel):
+    """What the setup screen needs. The secret is shown once, here, and the
+    QR carries the same thing in a form a phone camera can read."""
+
+    method: str
+    secret: str = ""
+    qr_svg: str = ""
+    code_sent: bool = False

@@ -34,6 +34,20 @@ class Settings(BaseSettings):
     update_apply_pull_timeout_seconds: float = 600.0
     geo_address_api_url: str = "https://photon.komoot.io/api"
     geo_address_timeout_seconds: float = 8.0
+    #: The mail server, for installations that would rather configure it in
+    #: the environment than in the screen. Empty host means no mail server is
+    #: configured, which is the default: CargoPilot sends nothing until an
+    #: administrator says where to send it.
+    smtp_host: str = ""
+    smtp_port: int = 587
+    #: "starttls" (the usual port 587), "ssl" (the implicit TLS of port 465),
+    #: or "none" for a relay on the local network that expects no encryption.
+    smtp_security: str = "starttls"
+    smtp_username: str = ""
+    smtp_password: str = ""
+    smtp_from: str = ""
+    smtp_from_name: str = ""
+    smtp_timeout_seconds: float = 15.0
 
     @property
     def templates_dir(self) -> Path:

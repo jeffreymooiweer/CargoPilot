@@ -2,6 +2,37 @@
 
 All notable changes are documented here, following [Semantic Versioning](https://semver.org/).
 
+## [1.141.0] — 2026-08-21
+
+An administrator can point CargoPilot at a mail server.
+
+### Added
+
+- **Mail server settings.** Settings → Administration → Mail server asks for
+  the server, the port, how the connection is encrypted (STARTTLS, direct
+  TLS, or none for a relay on your own network), the sign-in if the server
+  wants one, and the sender address and name. Four languages.
+- **A test message.** One button sends a short message using the settings as
+  saved — to the address you give it, or to your own account when you leave
+  it empty. Whatever the server answers is shown unchanged: a refused
+  password, an unreachable host and a rejected sender are different problems
+  with different fixes, and guessing between them helps nobody.
+- **`SMTP_HOST` and friends** configure the same thing from the environment,
+  for installations that prefer their compose file. A host and a sender there
+  switch sending on; what is saved on the screen takes precedence from then
+  on, without a restart.
+
+### Security
+
+- **The mail password never reaches a browser.** It is stored on the server
+  and redacted out of every response; the screen shows an empty field and
+  says whether a password exists. Saving with that field empty keeps the
+  stored password, so the port can be corrected without retyping it.
+
+Sending is off until it is configured, and nothing is sent through it yet
+beyond the test message — what CargoPilot mails is a decision per feature,
+not something a mail server setting quietly grants itself.
+
 ## [1.140.0] — 2026-08-20
 
 Enter "petrol", confirm UN 1203, and the kind of package could only be

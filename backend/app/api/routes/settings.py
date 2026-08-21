@@ -6,7 +6,7 @@ instance facts the interface needs to draw itself correctly for any user.
 ``/settings/instance`` is the full picture, and is behind ``require_admin``
 because it decides whether this installation talks to the internet at all.
 """
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
 from app.core.database import get_db
@@ -15,10 +15,12 @@ from app.models.user import User
 from app.schemas.settings import (
     MODALITIES,
     InstanceSettings,
+    MailTestRequest,
+    MailTestResult,
     PublicSettings,
     UserPreferences,
 )
-from app.services import settings_store
+from app.services import mail, settings_store
 from app.services.units import UNITS
 from app.core.languages import SUPPORTED as SUPPORTED_LANGUAGES
 
@@ -61,7 +63,7 @@ def settings_options(user: User = Depends(get_current_user)):
 
 @router.get("/instance", response_model=InstanceSettings)
 def instance_settings(admin: User = Depends(require_admin), db: Session = Depends(get_db)):
-    return settings_store.instance_settings(db)
+    return settings_store.redacted(settings_store.instance_settings(db))
 
 
 @router.put("/instance", response_model=InstanceSettings)
@@ -70,4 +72,30 @@ def save_instance_settings(
     admin: User = Depends(require_admin),
     db: Session = Depends(get_db),
 ):
-    return settings_store.save_instance_settings(db, payload)
+    return settings_store.redacted(settings_store.save_instance_settings(db, payload))
+
+
+@router.post("/instance/mail-test", response_model=MailTestResult)
+def send_test_mail(
+    payload: MailTestRequest,
+    admin: User = Depends(require_admin),
+    db: Session = Depends(get_db),
+):
+    """Prove the mail settings work, using the settings as they are stored.
+
+    Deliberately not "test these values I am about to save": a test that
+    passes on unsaved values and then fails on the saved ones would be worse
+    than no test. Save first, then send.
+
+    The recipient defaults to the administrator asking — the person who will
+    know within seconds whether it arrived.
+    """
+    to = (payload.to or "").strip() or (admin.email or "")
+    current = settings_store.instance_settings(db)
+    try:
+        mail.send_test(current, to)
+    except mail.MailError as exc:
+        # A refused password or an unreachable host is a fact about the
+        # configuration, not a server fault: 400, with what the server said.
+        raise HTTPException(status_code=400, detail=str(exc)) from exc
+    return MailTestResult(ok=True, to=to)

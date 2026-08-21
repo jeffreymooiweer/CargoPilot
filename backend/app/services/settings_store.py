@@ -52,19 +52,52 @@ def environment_defaults() -> InstanceSettings:
         catalog_auto_sync=settings.catalog_auto_sync,
         update_check_enabled=settings.update_check_enabled,
         session_timeout_minutes=settings.access_token_expire_minutes,
+        # A host in the environment is a deliberate act, so it switches
+        # sending on; without one the mail settings stay off and empty.
+        mail_enabled=bool(settings.smtp_host and settings.smtp_from),
+        mail_host=settings.smtp_host,
+        mail_port=settings.smtp_port,
+        mail_security=_known_security(settings.smtp_security),
+        mail_username=settings.smtp_username,
+        mail_password=settings.smtp_password,
+        mail_from=settings.smtp_from,
+        mail_from_name=settings.smtp_from_name,
+        mail_timeout_seconds=settings.smtp_timeout_seconds,
     )
 
 
+def _known_security(value: str) -> str:
+    """An unreadable SMTP_SECURITY must not make the whole settings screen
+    fail to load; STARTTLS is both the common case and the safe one."""
+    value = (value or "").strip().lower()
+    return value if value in ("starttls", "ssl", "none") else "starttls"
+
+
+def redacted(settings: InstanceSettings) -> InstanceSettings:
+    """The instance settings as they may leave the server.
+
+    The mail password is the one value here that is a secret rather than a
+    configuration choice. It is stored, it is used when sending, and it is
+    never sent to a browser — ``mail_password_set`` says whether one exists,
+    which is all the screen needs to draw itself honestly.
+    """
+    return settings.model_copy(update={"mail_password": ""})
+
+
 def instance_settings(db: Session) -> InstanceSettings:
-    """The effective instance settings: environment first, saved values on top."""
+    """The effective instance settings: environment first, saved values on top.
+
+    The mail password comes back in full — this is what the mail service
+    reads. The API redacts it on the way out; see :func:`redacted`.
+    """
     row = db.query(InstanceSetting).order_by(InstanceSetting.id).first()
     stored = _load_json(row.data_json if row else None)
     if not stored:
-        return environment_defaults()
+        return _with_password_flag(environment_defaults())
     merged = environment_defaults().model_dump()
     merged.update({key: value for key, value in stored.items() if key in merged})
     try:
-        return InstanceSettings(**merged)
+        return _with_password_flag(InstanceSettings(**merged))
     except ValueError:
         # A value that was valid when it was written but no longer passes
         # validation (a language that was dropped, say) must not lock everyone
@@ -78,7 +111,14 @@ def instance_settings(db: Session) -> InstanceSettings:
                 safe = InstanceSettings(**{**safe.model_dump(), key: value})
             except ValueError:
                 continue
-        return safe
+        return _with_password_flag(safe)
+
+
+def _with_password_flag(settings: InstanceSettings) -> InstanceSettings:
+    """``mail_password_set`` is derived, never stored and never trusted from
+    input: it says whether the password field holds anything at all."""
+    return settings.model_copy(
+        update={"mail_password_set": bool(settings.mail_password)})
 
 
 def save_instance_settings(db: Session, values: InstanceSettings) -> InstanceSettings:
@@ -86,6 +126,12 @@ def save_instance_settings(db: Session, values: InstanceSettings) -> InstanceSet
     if row is None:
         row = InstanceSetting(id=1)
         db.add(row)
+    if not values.mail_password:
+        # The screen never receives the stored password, so it cannot send it
+        # back. An empty field means "leave it alone" — otherwise changing the
+        # port would silently clear the password and break sending.
+        values = values.model_copy(
+            update={"mail_password": instance_settings(db).mail_password})
     row.data_json = values.model_dump_json()
     db.commit()
     return instance_settings(db)

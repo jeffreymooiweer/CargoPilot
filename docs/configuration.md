@@ -30,6 +30,7 @@ because those are read while the application is starting and there is no screen 
 | — | Offer UN cards | immediately |
 | — | Default language and theme for new users | at their next sign-in |
 | — | Organisation name and address | immediately |
+| `SMTP_HOST` and friends | Mail server | immediately |
 
 The screen also carries per-user preferences — language, theme, the consignor details that
 are retyped on every shipment, a saved signature. Those belong to the account rather than
@@ -184,6 +185,42 @@ hand always works, and airport, port and station search runs entirely offline.
 This is the only request CargoPilot makes to the outside world while somebody is using it,
 so the settings screen carries a switch that stops it being made at all. Turning it off is
 not the same as pointing it at an unreachable address: no request leaves the server.
+
+## Mail server
+
+CargoPilot sends nothing until an administrator says where to send it. **Settings →
+Administration → Mail server** asks for the server, the port, how the connection is
+encrypted, the sign-in if the server wants one, and the sender address.
+
+| Variable | What it does | Default |
+|---|---|---|
+| `SMTP_HOST` | The mail server. Empty means no mail server | empty |
+| `SMTP_PORT` | Port | `587` |
+| `SMTP_SECURITY` | `starttls` (port 587), `ssl` (implicit TLS, port 465) or `none` | `starttls` |
+| `SMTP_USERNAME` | Sign-in, if the server asks for one | empty |
+| `SMTP_PASSWORD` | The password for that sign-in | empty |
+| `SMTP_FROM` | The sender address. Most relays refuse a sender they do not own | empty |
+| `SMTP_FROM_NAME` | The name shown beside the sender address | empty |
+| `SMTP_TIMEOUT_SECONDS` | How long to wait on the server | `15` |
+
+A host **and** a sender in the environment switch sending on; the screen can then change
+anything about it without a restart, and what is saved there takes precedence.
+
+**The password.** It is stored on the server and never sent back to a browser: the screen
+shows an empty password field and, when one is stored, says so. Leaving that field empty
+when saving keeps the stored password — so the port can be corrected without retyping it.
+Replacing it means typing a new one.
+
+**Test message.** The button beside the settings sends a short message to the address you
+give it, or to your own account when you leave it empty. It uses the settings **as saved**,
+not the ones on screen, so save first — a test that passes on unsaved values and fails on
+the saved ones would be worse than no test. Whatever the mail server answers is shown
+unchanged: a refused password, an unreachable host and a rejected sender are different
+problems with different fixes.
+
+**What uses it.** Today: the test message. Mail is configuration that has to exist before
+anything can be sent with it; what CargoPilot sends through it is a separate decision, made
+per feature rather than assumed here.
 
 ## Application and security
 

@@ -220,6 +220,11 @@ export const api = {
     request<{ ok: boolean; removed: boolean }>("/un-cards/remove", { method: "POST" }),
   saveInstanceSettings: (payload: InstanceSettings) =>
     request<InstanceSettings>("/settings/instance", { method: "PUT", body: JSON.stringify(payload) }),
+  sendTestMail: (to: string) =>
+    request<{ ok: boolean; to: string }>("/settings/instance/mail-test", {
+      method: "POST",
+      body: JSON.stringify({ to }),
+    }),
   listUsers: () => request<User[]>("/users"),
   createUser: (payload: Record<string, unknown>) =>
     request<User>("/users", { method: "POST", body: JSON.stringify(payload) }),
@@ -573,6 +578,19 @@ export interface InstanceSettings {
   session_timeout_minutes: number;
   organisation_name: string;
   organisation_address: string;
+  mail_enabled: boolean;
+  mail_host: string;
+  mail_port: number;
+  mail_security: "starttls" | "ssl" | "none";
+  mail_username: string;
+  /** Write-only: the server never sends the stored password back, and an
+   *  empty value on save means "keep the one you have". */
+  mail_password: string;
+  /** Whether a password is stored at all — the field itself stays empty. */
+  mail_password_set: boolean;
+  mail_from: string;
+  mail_from_name: string;
+  mail_timeout_seconds: number;
 }
 
 /** The part of the instance settings every signed-in user may read. */

@@ -370,6 +370,9 @@ function AdminSettings() {
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
   const [error, setError] = useState("");
+  const [testTo, setTestTo] = useState("");
+  const [testing, setTesting] = useState(false);
+  const [testResult, setTestResult] = useState<{ ok: boolean; text: string } | null>(null);
 
   useEffect(() => {
     api
@@ -392,6 +395,21 @@ function AdminSettings() {
     setSaved(false);
   };
 
+  const runTest = async () => {
+    setTesting(true);
+    setTestResult(null);
+    try {
+      const result = await api.sendTestMail(testTo.trim());
+      setTestResult({ ok: true, text: t("settings.mailTestSent", { to: result.to }) });
+    } catch (e) {
+      // Whatever the mail server said, said plainly: that sentence is the
+      // whole diagnosis for a wrong port, a refused password or a firewall.
+      setTestResult({ ok: false, text: String(e) });
+    } finally {
+      setTesting(false);
+    }
+  };
+
   const submit = async () => {
     setSaving(true);
     setError("");
@@ -400,6 +418,7 @@ function AdminSettings() {
       setSettings(stored);
       setDraft(stored);
       setSaved(true);
+      setTestResult(null);
     } catch (e) {
       setError(String(e));
     } finally {
@@ -552,6 +571,133 @@ function AdminSettings() {
             onChange={(e) => set("session_timeout_minutes", Number(e.target.value))}
           />
         </div>
+      </section>
+
+      <section className={`${panelClass} p-5 space-y-5`}>
+        <div>
+          <h4 className="text-sm font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">
+            {t("settings.mailTitle")}
+          </h4>
+          <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">{t("settings.mailHint")}</p>
+        </div>
+
+        <Toggle
+          label={t("settings.mailEnabled")}
+          hint={t("settings.mailEnabledHint")}
+          checked={draft.mail_enabled}
+          onChange={(value) => set("mail_enabled", value)}
+        />
+
+        {draft.mail_enabled && (
+          <>
+            <div className="grid gap-4 md:grid-cols-2">
+              <Field
+                label={t("settings.mailHost")}
+                hint={t("settings.mailHostHint")}
+                value={draft.mail_host}
+                onChange={(value) => set("mail_host", value)}
+              />
+              <div>
+                <label className="text-sm font-medium text-slate-800 dark:text-slate-200">
+                  {t("settings.mailPort")}
+                </label>
+                <input
+                  type="number"
+                  min={1}
+                  max={65535}
+                  className={`${inputClass} mt-1`}
+                  value={draft.mail_port}
+                  onChange={(e) => set("mail_port", Number(e.target.value))}
+                />
+              </div>
+              <div>
+                <label className="text-sm font-medium text-slate-800 dark:text-slate-200">
+                  {t("settings.mailSecurity")}
+                </label>
+                <select
+                  className={`${inputClass} mt-1`}
+                  value={draft.mail_security}
+                  onChange={(e) =>
+                    set("mail_security", e.target.value as InstanceSettings["mail_security"])
+                  }
+                >
+                  <option value="starttls">{t("settings.mailSecurityStarttls")}</option>
+                  <option value="ssl">{t("settings.mailSecuritySsl")}</option>
+                  <option value="none">{t("settings.mailSecurityNone")}</option>
+                </select>
+              </div>
+              <Field
+                label={t("settings.mailUsername")}
+                hint={t("settings.mailUsernameHint")}
+                value={draft.mail_username}
+                onChange={(value) => set("mail_username", value)}
+              />
+              <div>
+                <label className="text-sm font-medium text-slate-800 dark:text-slate-200">
+                  {t("settings.mailPassword")}
+                </label>
+                <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+                  {settings.mail_password_set ? t("settings.mailPasswordStored") : t("settings.mailPasswordHint")}
+                </p>
+                <input
+                  type="password"
+                  autoComplete="new-password"
+                  className={`${inputClass} mt-1`}
+                  value={draft.mail_password}
+                  onChange={(e) => set("mail_password", e.target.value)}
+                />
+              </div>
+              <Field
+                label={t("settings.mailFrom")}
+                hint={t("settings.mailFromHint")}
+                value={draft.mail_from}
+                onChange={(value) => set("mail_from", value)}
+              />
+              <Field
+                label={t("settings.mailFromName")}
+                value={draft.mail_from_name}
+                onChange={(value) => set("mail_from_name", value)}
+              />
+            </div>
+
+            <div className="border-t border-slate-100 dark:border-slate-800 pt-4 space-y-2">
+              <label className="text-sm font-medium text-slate-800 dark:text-slate-200">
+                {t("settings.mailTest")}
+              </label>
+              <p className="text-xs text-slate-500 dark:text-slate-400">
+                {dirty ? t("settings.mailTestSaveFirst") : t("settings.mailTestHint")}
+              </p>
+              <div className="flex flex-wrap items-center gap-2">
+                <input
+                  type="email"
+                  className={`${inputClass} max-w-xs`}
+                  placeholder={t("settings.mailTestPlaceholder")}
+                  value={testTo}
+                  onChange={(e) => setTestTo(e.target.value)}
+                />
+                <button
+                  type="button"
+                  className={buttonSecondary}
+                  disabled={testing || dirty}
+                  onClick={runTest}
+                >
+                  {testing ? t("settings.mailTesting") : t("settings.mailTestSend")}
+                </button>
+              </div>
+              {testResult && (
+                <p
+                  className={`text-sm ${
+                    testResult.ok
+                      ? "text-emerald-600 dark:text-emerald-400"
+                      : "text-red-600 dark:text-red-400"
+                  }`}
+                >
+                  {testResult.text}
+                </p>
+              )}
+            </div>
+          </>
+        )}
       </section>
 
       <div className="flex flex-wrap items-center gap-3">

@@ -15,7 +15,7 @@ from __future__ import annotations
 import re
 from typing import Literal
 
-from pydantic import BaseModel, Field, field_validator
+from pydantic import BaseModel, Field, field_validator, model_validator
 
 from app.core.languages import DEFAULT as DEFAULT_LANGUAGE
 from app.core.languages import SUPPORTED as SUPPORTED_LANGUAGES
@@ -27,6 +27,16 @@ from app.core.languages import SUPPORTED as SUPPORTED_LANGUAGES
 MODALITIES = ("road", "rail", "sea", "inland", "air", "multimodal")
 
 ThemeChoice = Literal["light", "dark", "system"]
+
+#: How the connection to the mail server is encrypted. "starttls" is the
+#: usual port 587, "ssl" the implicit TLS of port 465, and "none" exists for
+#: a relay on the local network that expects no encryption at all.
+MailSecurity = Literal["starttls", "ssl", "none"]
+
+#: Deliberately not RFC 5322. The purpose is to catch a hostname or a name
+#: typed into an address field, not to arbitrate what a mail server accepts —
+#: the server itself does that, and its answer is shown as it comes.
+EMAIL_ADDRESS = re.compile(r"[^@\s]+@[^@\s]+\.[^@\s]+")
 
 #: A drawn signature is a PNG data URL. The cap is deliberate — the pad produces
 #: roughly 10-30 kB, so anything past a quarter of a megabyte is not a signature.
@@ -173,6 +183,52 @@ class InstanceSettings(BaseModel):
     organisation_name: str = ""
     organisation_address: str = ""
 
+    #: The mail server. Off until an administrator fills it in: an application
+    #: that silently knows how to send mail is a surprise nobody asked for.
+    mail_enabled: bool = False
+    mail_host: str = ""
+    mail_port: int = Field(default=587, ge=1, le=65535)
+    mail_security: MailSecurity = "starttls"
+    mail_username: str = ""
+    #: Write-only in practice. The API redacts it on the way out and keeps the
+    #: stored one when an empty value is saved, so an administrator can change
+    #: the host without retyping the password — and so the password does not
+    #: travel to a browser on every visit to the settings screen.
+    mail_password: str = ""
+    #: Derived on read, never trusted from input: whether a password is stored.
+    #: Without it a redacted field is indistinguishable from an empty one.
+    mail_password_set: bool = False
+    #: The envelope sender. Most relays refuse a sender they do not own, so
+    #: this is asked rather than invented from the hostname.
+    mail_from: str = ""
+    mail_from_name: str = ""
+    mail_timeout_seconds: float = Field(default=15.0, ge=1.0, le=120.0)
+
+    @field_validator("mail_host", "mail_username", "mail_from_name")
+    @classmethod
+    def _trimmed_mail(cls, value: str) -> str:
+        return (value or "").strip()
+
+    @field_validator("mail_from")
+    @classmethod
+    def _address_like(cls, value: str) -> str:
+        value = (value or "").strip()
+        if value and not EMAIL_ADDRESS.fullmatch(value):
+            raise ValueError("sender must be an e-mail address")
+        return value
+
+    @model_validator(mode="after")
+    def _sending_needs_a_server(self) -> "InstanceSettings":
+        """Switching mail on without a server or sender would fail at the
+        first message, at a moment nobody is watching. It fails here instead,
+        where the administrator can see the field that is empty."""
+        if self.mail_enabled:
+            if not self.mail_host:
+                raise ValueError("a mail server needs a host")
+            if not self.mail_from:
+                raise ValueError("a mail server needs a sender address")
+        return self
+
     @field_validator("default_language")
     @classmethod
     def _known_language(cls, value: str) -> str:
@@ -193,6 +249,26 @@ class InstanceSettings(BaseModel):
     @classmethod
     def _trimmed(cls, value: str) -> str:
         return (value or "").strip()
+
+
+class MailTestRequest(BaseModel):
+    """Where the test message goes. Empty means: to the administrator who
+    pressed the button, which is the address they can check fastest."""
+
+    to: str = ""
+
+    @field_validator("to")
+    @classmethod
+    def _address_like(cls, value: str) -> str:
+        value = (value or "").strip()
+        if value and not EMAIL_ADDRESS.fullmatch(value):
+            raise ValueError("recipient must be an e-mail address")
+        return value
+
+
+class MailTestResult(BaseModel):
+    ok: bool
+    to: str
 
 
 class PublicSettings(BaseModel):

@@ -59,7 +59,14 @@ def find_account(db: Session, identifier: str) -> User | None:
     return user
 
 
-def issue(db: Session, user: User) -> str:
+#: A new colleague may be on holiday when their account is made, and an
+#: invitation that expires before they read it costs an administrator a
+#: second round. A week is long enough to be useful and short enough that a
+#: forgotten mailbox is not a standing door.
+INVITE_TTL_MINUTES = 7 * 24 * 60
+
+
+def issue(db: Session, user: User, ttl_minutes: int = TOKEN_TTL_MINUTES) -> str:
     """Create a token for this account and return it, once.
 
     Any earlier token is dropped first: a reset that was requested and never
@@ -74,7 +81,7 @@ def issue(db: Session, user: User) -> str:
     db.add(PasswordResetToken(
         user_id=user.id,
         token_hash=hash_token(token),
-        expires_at=_now() + timedelta(minutes=TOKEN_TTL_MINUTES),
+        expires_at=_now() + timedelta(minutes=ttl_minutes),
     ))
     db.commit()
     return token
@@ -143,3 +150,24 @@ BODY = (
 def message_for(user: User, link: str) -> str:
     return BODY.format(username=user.username, link=link,
                        minutes=TOKEN_TTL_MINUTES)
+
+
+#: The invitation. It carries no password: the colleague chooses one through
+#: the same link a reset uses, so a password never travels by chat, note or
+#: second mail — and the administrator never knows it either.
+WELCOME_SUBJECT = "Your CargoPilot account"
+
+WELCOME_BODY = (
+    "{inviter} has made a CargoPilot account for you.\n\n"
+    "Your user name is '{username}'.\n\n"
+    "Choose your password here:\n\n"
+    "{link}\n\n"
+    "The link works once and expires in {days} days. After that, use "
+    "'Forgot your password?' on the sign-in screen to get a new one.\n"
+)
+
+
+def welcome_message(user: User, inviter: str, link: str) -> str:
+    return WELCOME_BODY.format(
+        inviter=inviter, username=user.username, link=link,
+        days=INVITE_TTL_MINUTES // (24 * 60))

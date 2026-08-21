@@ -16,8 +16,12 @@ class LoginRequest(BaseModel):
 class UserCreate(BaseModel):
     username: str = Field(min_length=3, max_length=64)
     email: EmailStr
-    password: str = Field(min_length=8)
+    #: Optional when an invitation is sent: the colleague then chooses their
+    #: own password through the link, so it never travels by chat or note —
+    #: and the administrator never knows it either.
+    password: str | None = Field(default=None, min_length=8)
     role: UserRole = UserRole.USER
+    send_welcome: bool = False
 
 
 class UserUpdate(BaseModel):
@@ -43,6 +47,19 @@ class UserOut(BaseModel):
     email: str
     role: UserRole
     active: bool
+
+
+class UserCreateResult(UserOut):
+    """The account, plus what became of the invitation.
+
+    Named rather than silent: an administrator who ticked "send an
+    invitation" has to know whether it went out — if it did not, the new
+    colleague is waiting for a message that will never arrive.
+    """
+
+    #: "sent", "not_requested", "no_mail_server", or the mail server's own
+    #: refusal, passed through as it came.
+    welcome_mail: str = "not_requested"
 
 
 class PasswordResetRequest(BaseModel):

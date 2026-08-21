@@ -302,3 +302,131 @@ def test_the_request_form_is_rate_limited(limited_client, sent):
     ]
     assert codes.count(200) == 5
     assert codes[-1] == 429
+
+
+# --- the invitation ---------------------------------------------------------
+#
+# A new account used to need a password typed by the administrator and passed
+# on by chat, note or a second mail. The invitation removes that step: the
+# colleague chooses their own through the same link a reset uses.
+
+
+def admin_client(db, monkeypatch):
+    from app.core.deps import require_admin
+
+    monkeypatch.setattr(auth_route.limiter, "enabled", False)
+    app.dependency_overrides[get_db] = lambda: db
+    app.dependency_overrides[require_admin] = lambda: db.get(User, 1)
+    return TestClient(app)
+
+
+def test_an_invited_account_needs_no_password_from_the_administrator(db, sent, monkeypatch):
+    from app.api.routes import users as users_route
+
+    monkeypatch.setattr(users_route, "instance_settings",
+                        auth_route.instance_settings)
+    monkeypatch.setattr(users_route.mail, "send", auth_route.mail.send)
+    with admin_client(db, monkeypatch) as client:
+        response = client.post("/api/users", json={
+            "username": "nieuw", "email": "nieuw@example.com",
+            "role": "user", "send_welcome": True})
+    app.dependency_overrides.clear()
+
+    assert response.status_code == 200, response.text
+    assert response.json()["welcome_mail"] == "sent"
+    assert sent[-1]["to"] == "nieuw@example.com"
+    assert "nieuw" in sent[-1]["body"] and "ada" in sent[-1]["body"]
+
+
+def test_the_invited_account_cannot_be_signed_in_to_until_the_link_is_used(
+        db, sent, monkeypatch):
+    from app.api.routes import users as users_route
+
+    monkeypatch.setattr(users_route, "instance_settings",
+                        auth_route.instance_settings)
+    monkeypatch.setattr(users_route.mail, "send", auth_route.mail.send)
+    with admin_client(db, monkeypatch) as client:
+        client.post("/api/users", json={
+            "username": "nieuw", "email": "nieuw@example.com",
+            "role": "user", "send_welcome": True})
+        # Nobody knows the password, because there is not one to know.
+        assert client.post("/api/auth/login", json={
+            "username": "nieuw", "password": "welkom123"}).status_code == 401
+
+        token = token_from(sent[-1])
+        assert client.post("/api/auth/reset-password", json={
+            "token": token, "new_password": "my-own-password"}).status_code == 200
+        assert client.post("/api/auth/login", json={
+            "username": "nieuw", "password": "my-own-password"}).status_code == 200
+    app.dependency_overrides.clear()
+
+
+def test_without_an_invitation_a_password_is_still_required(db, monkeypatch):
+    with admin_client(db, monkeypatch) as client:
+        response = client.post("/api/users", json={
+            "username": "nieuw", "email": "nieuw@example.com", "role": "user"})
+    app.dependency_overrides.clear()
+    assert response.status_code == 400
+    assert "Give a password" in response.json()["detail"]
+
+
+def test_an_invitation_without_a_mail_server_is_named_not_assumed(db, monkeypatch):
+    """The account is made either way; what must not happen is an
+    administrator believing a message went out that never did."""
+    from app.api.routes import users as users_route
+
+    monkeypatch.setattr(users_route, "instance_settings",
+                        lambda db: InstanceSettings())
+    with admin_client(db, monkeypatch) as client:
+        response = client.post("/api/users", json={
+            "username": "nieuw", "email": "nieuw@example.com",
+            "password": "typed-by-the-admin", "role": "user",
+            "send_welcome": True})
+    app.dependency_overrides.clear()
+    assert response.status_code == 200
+    assert response.json()["welcome_mail"] == "no_mail_server"
+
+
+def test_a_refused_invitation_reports_the_reason_and_keeps_the_account(db, monkeypatch):
+    from app.api.routes import users as users_route
+
+    monkeypatch.setattr(
+        users_route, "instance_settings",
+        lambda db: InstanceSettings(mail_enabled=True, mail_host="smtp.example.com",
+                                    mail_from="cargopilot@example.com"))
+
+    def refusing(*args, **kwargs):
+        raise users_route.mail.MailError("Could not reach smtp.example.com:587")
+
+    monkeypatch.setattr(users_route.mail, "send", refusing)
+    with admin_client(db, monkeypatch) as client:
+        response = client.post("/api/users", json={
+            "username": "nieuw", "email": "nieuw@example.com",
+            "role": "user", "send_welcome": True})
+    app.dependency_overrides.clear()
+
+    assert response.status_code == 200
+    assert "smtp.example.com:587" in response.json()["welcome_mail"]
+    assert db.query(User).filter(User.username == "nieuw").first() is not None
+
+
+def test_the_invitation_lasts_longer_than_a_reset(db, sent, monkeypatch):
+    """A new colleague may be on holiday; an hour would cost a second round."""
+    from app.api.routes import users as users_route
+
+    monkeypatch.setattr(users_route, "instance_settings",
+                        auth_route.instance_settings)
+    monkeypatch.setattr(users_route.mail, "send", auth_route.mail.send)
+    with admin_client(db, monkeypatch) as client:
+        client.post("/api/users", json={
+            "username": "nieuw", "email": "nieuw@example.com",
+            "role": "user", "send_welcome": True})
+    app.dependency_overrides.clear()
+
+    row = (db.query(PasswordResetToken)
+             .order_by(PasswordResetToken.id.desc()).first())
+    expires = row.expires_at
+    if expires.tzinfo is None:
+        expires = expires.replace(tzinfo=timezone.utc)
+    assert expires > datetime.now(timezone.utc) + timedelta(days=6)
+    assert "7 days" in sent[-1]["body"]

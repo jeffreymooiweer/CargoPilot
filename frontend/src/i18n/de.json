@@ -790,7 +790,14 @@
     "deleteConfirm": "Benutzer {{name}} endgültig löschen?",
     "deleted": "Benutzer gelöscht.",
     "guardSelf": "Beim eigenen Konto nicht möglich — bitten Sie einen anderen Administrator.",
-    "guardLastAdmin": "Dies ist der letzte aktive Administrator; er kann nicht entfernt oder zurückgestuft werden."
+    "guardLastAdmin": "Dies ist der letzte aktive Administrator; er kann nicht entfernt oder zurückgestuft werden.",
+    "invite": "Einladung senden",
+    "inviteHint": "Der neue Benutzer wählt sein Passwort selbst über einen Link. Der Link gilt sieben Tage.",
+    "createAndInvite": "Anlegen und einladen",
+    "passwordByInvite": "Nicht nötig: der Benutzer wählt sein Passwort über die Einladung.",
+    "invited": "Konto angelegt. Einladung an {{email}} gesendet.",
+    "inviteNoMailServer": "Konto angelegt, aber es ist kein Mailserver eingerichtet; die Einladung wurde nicht gesendet.",
+    "inviteFailed": "Konto angelegt, aber die Einladung konnte nicht gesendet werden: {{reason}}"
   },
   "reset": {
     "title": "Neues Passwort",

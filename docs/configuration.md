@@ -233,7 +233,14 @@ is written to the log instead. The link works once, expires after an hour, and u
 ends every session that was signed in with the old password. Only a hash of the token is
 stored, so a leaked database hands out no working links.
 
-**What uses it.** The test message, the forgotten-password link, and the export step: with a mail server configured, the
+**Inviting a new colleague.** With a mail server, creating a user offers "Send an
+invitation": no password is typed by the administrator at all. The new user gets a link to
+choose their own, valid for seven days, and until they use it the account carries a random
+hash nobody can sign in with. Whether the invitation actually went out is reported back —
+an administrator who believes a message was sent that never was is worse off than one who
+knows to pass the link on by hand.
+
+**What uses it.** The test message, the forgotten-password link, the invitation, and the export step: with a mail server configured, the
 documents step offers to mail the same archive the download button produces — to the
 carrier, the consignee, or several addresses at once. The archive is deleted the moment the
 message is out; CargoPilot keeps no copy of a consignment's papers. One message may carry

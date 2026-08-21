@@ -418,7 +418,17 @@
     "documentLanguage": "Langue des documents",
     "documentLanguageRule": "5.4.1.4.1 : une langue officielle du pays d'expédition et, si ce n'est pas l'allemand, l'anglais ou le français, en outre dans l'une de ces trois. Pour le néerlandais, l'application inscrit les deux noms dans le champ.",
     "downloadAll": "Tout télécharger en ZIP ({{count}})",
-    "downloadAllHint": "Le ZIP contient aussi les cartes UN et les consignes écrites pour ce transport, dans la mesure où ce serveur les détient."
+    "downloadAllHint": "Le ZIP contient aussi les cartes UN et les consignes écrites pour ce transport, dans la mesure où ce serveur les détient.",
+    "mail": "Envoyer par e-mail ({{count}})",
+    "mailHint": "Envoie le même fichier zip que le bouton de téléchargement, en pièce jointe.",
+    "mailTo": "À",
+    "mailToPlaceholder": "adresse@transporteur.fr, planning@destinataire.fr",
+    "mailSubject": "Objet",
+    "mailSubjectPlaceholder": "Laisser vide pour un objet standard",
+    "mailMessage": "Message",
+    "mailSend": "Envoyer",
+    "mailSending": "Envoi en cours…",
+    "mailSent": "Envoyé à {{to}}."
   },
   "unCards": {
     "title": "Fiches ONU pour votre dossier",

@@ -11,7 +11,14 @@ from sqlalchemy.orm import Session
 from app.core.database import get_db
 from app.core.deps import get_current_user
 from app.models.user import User
-from app.schemas import DocumentBundleRequest, DocumentExportRequest, UnCardsRequest
+from app.schemas import (
+    BundleMailResult,
+    DocumentBundleMailRequest,
+    DocumentBundleRequest,
+    DocumentExportRequest,
+    UnCardsRequest,
+)
+from app.services import mail
 from app.services.documents import (
     build_un_cards_zip,
     fill_pdf_document,
@@ -221,20 +228,14 @@ def export(
     )
 
 
-@router.post("/export/bundle")
-def export_bundle(
-    payload: DocumentBundleRequest,
-    background_tasks: BackgroundTasks,
-    user: User = Depends(get_current_user),
-    db: Session = Depends(get_db),
-):
-    """Every ready paper of the export step in one archive.
+def _build_bundle(payload: DocumentBundleRequest, db: Session) -> tuple[Path, str]:
+    """The archive itself, for whoever wants to do something with it.
 
-    The documents are rendered by the same code path as the per-document
-    buttons; the UN cards and the instructions in writing for the journey's
-    regimes ride along. What cannot be included is written down in the
-    archive's README rather than silently dropped — a bundle that looks
-    complete and is not would be worse than no bundle.
+    Downloading and mailing must produce the same bundle — one built by the
+    endpoint and one assembled beside it would drift, and the difference
+    would show up as a document that is in the download and not in the mail.
+    Returns the path and the timestamp reference used in the file names; the
+    caller owns the file from then on.
     """
     if not payload.documents:
         raise HTTPException(status_code=422, detail="Nothing to bundle")
@@ -278,11 +279,78 @@ def export_bundle(
         for path, _ in produced:
             _delete_file(path)
 
+    return bundle_path, ref
+
+
+@router.post("/export/bundle")
+def export_bundle(
+    payload: DocumentBundleRequest,
+    background_tasks: BackgroundTasks,
+    user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    """Every ready paper of the export step in one archive.
+
+    The documents are rendered by the same code path as the per-document
+    buttons; the UN cards and the instructions in writing for the journey's
+    regimes ride along. What cannot be included is written down in the
+    archive's README rather than silently dropped — a bundle that looks
+    complete and is not would be worse than no bundle.
+    """
+    bundle_path, ref = _build_bundle(payload, db)
     background_tasks.add_task(_delete_file, bundle_path)
     return FileResponse(
         path=bundle_path,
         filename=f"cargopilot-documents-{ref}.zip",
         media_type="application/zip",
+    )
+
+
+@router.post("/export/bundle/mail", response_model=BundleMailResult)
+def mail_bundle(
+    payload: DocumentBundleMailRequest,
+    user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    """The same archive, sent instead of downloaded.
+
+    Same bundle, same rules: it is built by :func:`_build_bundle`, so what
+    arrives in the mail is what the download button produces, README and all.
+    The archive is deleted as soon as the message is out — CargoPilot keeps
+    no copy of a consignment's papers.
+    """
+    settings = instance_settings(db)
+    if not mail.is_configured(settings):
+        raise HTTPException(
+            status_code=400,
+            detail="No mail server is configured. An administrator sets one "
+                   "under Settings, Administration, Mail server.")
+
+    bundle_path, ref = _build_bundle(payload.bundle, db)
+    try:
+        content = bundle_path.read_bytes()
+        filename = f"cargopilot-documents-{ref}.zip"
+        body = payload.message.strip() or _default_mail_body(user)
+        try:
+            mail.send(settings, payload.to, payload.subject.strip() or
+                      f"CargoPilot documents {ref}", body,
+                      [(filename, content, "application/zip")])
+        except mail.MailError as exc:
+            raise HTTPException(status_code=400, detail=str(exc)) from exc
+    finally:
+        _delete_file(bundle_path)
+    return BundleMailResult(ok=True, to=payload.to, filename=filename)
+
+
+def _default_mail_body(user: User) -> str:
+    """What to write when the sender wrote nothing.
+
+    Named rather than anonymous: the recipient is a carrier or a consignee
+    who has to know who sent them a consignment's papers.
+    """
+    return (
+        f"The transport documents for this consignment are attached, "
+        f"sent from CargoPilot by {user.username}.\n"
     )
 
 

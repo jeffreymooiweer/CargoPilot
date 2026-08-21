@@ -418,7 +418,17 @@
     "documentLanguage": "Taal van de documenten",
     "documentLanguageRule": "5.4.1.4.1: een officiële taal van het land van verzending, en is dat geen Duits, Engels of Frans, dan bovendien in een van die drie. Bij Nederlands zet de app beide namen in het veld.",
     "downloadAll": "Alles downloaden als ZIP ({{count}})",
-    "downloadAllHint": "Het ZIP-bestand bevat ook de UN-kaarten en de schriftelijke instructies voor dit vervoer, voor zover die op deze server aanwezig zijn."
+    "downloadAllHint": "Het ZIP-bestand bevat ook de UN-kaarten en de schriftelijke instructies voor dit vervoer, voor zover die op deze server aanwezig zijn.",
+    "mail": "Mailen ({{count}})",
+    "mailHint": "Verstuurt hetzelfde zipbestand als de downloadknop, als bijlage.",
+    "mailTo": "Aan",
+    "mailToPlaceholder": "adres@vervoerder.nl, planning@ontvanger.nl",
+    "mailSubject": "Onderwerp",
+    "mailSubjectPlaceholder": "Leeg laten voor een standaardonderwerp",
+    "mailMessage": "Bericht",
+    "mailSend": "Versturen",
+    "mailSending": "Bezig met versturen…",
+    "mailSent": "Verstuurd naar {{to}}."
   },
   "unCards": {
     "title": "UN-kaarten voor uw administratie",

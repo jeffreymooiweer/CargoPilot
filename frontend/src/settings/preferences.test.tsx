@@ -106,6 +106,7 @@ describe("de voorkeurenprovider", () => {
       un_cards_enabled: true,
       organisation_name: "",
       organisation_address: "",
+      mail_enabled: false,
     });
 
     render(

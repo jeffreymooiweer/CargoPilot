@@ -418,7 +418,17 @@
     "documentLanguage": "Sprache der Dokumente",
     "documentLanguageRule": "5.4.1.4.1: eine Amtssprache des Versandlandes und, wenn das nicht Deutsch, Englisch oder Französisch ist, zusätzlich in einer dieser drei. Bei Niederländisch setzt die Anwendung beide Namen in das Feld.",
     "downloadAll": "Alles als ZIP herunterladen ({{count}})",
-    "downloadAllHint": "Das ZIP enthält auch die UN-Karten und die schriftlichen Weisungen für diese Beförderung, soweit dieser Server sie vorhält."
+    "downloadAllHint": "Das ZIP enthält auch die UN-Karten und die schriftlichen Weisungen für diese Beförderung, soweit dieser Server sie vorhält.",
+    "mail": "Per Mail senden ({{count}})",
+    "mailHint": "Sendet dieselbe ZIP-Datei wie die Schaltfläche zum Herunterladen, als Anhang.",
+    "mailTo": "An",
+    "mailToPlaceholder": "adresse@spediteur.de, planung@empfaenger.de",
+    "mailSubject": "Betreff",
+    "mailSubjectPlaceholder": "Leer lassen für einen Standardbetreff",
+    "mailMessage": "Nachricht",
+    "mailSend": "Senden",
+    "mailSending": "Wird gesendet…",
+    "mailSent": "An {{to}} gesendet."
   },
   "unCards": {
     "title": "UN-Karten für Ihre Unterlagen",

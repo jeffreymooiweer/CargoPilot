@@ -1,4 +1,6 @@
-from pydantic import BaseModel, EmailStr, Field
+from pydantic import BaseModel, EmailStr, Field, field_validator
+
+from app.schemas.settings import EMAIL_ADDRESS
 
 
 class LoginRequest(BaseModel):
@@ -92,6 +94,38 @@ class DocumentBundleRequest(BaseModel):
     include_un_cards: bool = True
     include_instructions: bool = True
     signature_image: str | None = None
+
+
+class DocumentBundleMailRequest(BaseModel):
+    """The bundle, and where to send it.
+
+    The archive itself is described by the same model the download uses, so
+    mailing cannot drift into producing a different set of papers.
+    """
+
+    bundle: DocumentBundleRequest
+    #: A consignment's papers go to a carrier, a consignee, a planner —
+    #: rarely to only one of them. Ten is a shipment, not a mailing list.
+    to: list[str] = Field(min_length=1, max_length=10)
+    subject: str = Field(default="", max_length=200)
+    message: str = Field(default="", max_length=5000)
+
+    @field_validator("to")
+    @classmethod
+    def _addresses(cls, value: list[str]) -> list[str]:
+        cleaned = [address.strip() for address in value if address.strip()]
+        if not cleaned:
+            raise ValueError("give at least one recipient")
+        for address in cleaned:
+            if not EMAIL_ADDRESS.fullmatch(address):
+                raise ValueError(f"not an e-mail address: {address}")
+        return cleaned
+
+
+class BundleMailResult(BaseModel):
+    ok: bool
+    to: list[str]
+    filename: str
 
 
 class ReferenceItemBase(BaseModel):

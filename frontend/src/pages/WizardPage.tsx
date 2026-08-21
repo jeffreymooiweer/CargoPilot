@@ -151,7 +151,7 @@ export default function WizardPage() {
   // screen's language because that is right more often than not.
   const [chosenDocLang, setChosenDocLang] = useState<Language | null>(null);
   const docLang = chosenDocLang ?? lang;
-  const { preferences, loaded: preferencesLoaded } = usePreferences();
+  const { preferences, publicSettings, loaded: preferencesLoaded } = usePreferences();
   const prefill = preferencesLoaded && preferences.prefill_documents;
 
   const [registry, setRegistry] = useState<DocumentRegistry | null>(null);
@@ -673,6 +673,47 @@ export default function WizardPage() {
     }
   };
 
+  // Mailing the same bundle. Offered only when an administrator configured a
+  // mail server, because a button that can only fail is not a feature.
+  const [mailOpen, setMailOpen] = useState(false);
+  const [mailTo, setMailTo] = useState("");
+  const [mailSubject, setMailSubject] = useState("");
+  const [mailMessage, setMailMessage] = useState("");
+  const [mailing, setMailing] = useState(false);
+  const [mailSent, setMailSent] = useState("");
+
+  const mailAll = async () => {
+    setMailing(true);
+    setError("");
+    setMailSent("");
+    try {
+      // One field, several addresses: a consignment's papers go to the
+      // carrier and the consignee in the same breath.
+      const recipients = mailTo
+        .split(/[,;]/)
+        .map((address) => address.trim())
+        .filter(Boolean);
+      const result = await api.mailBundle({
+        bundle: {
+          documents: readyDocs.map(payloadFor),
+          dangerous_goods: dgEntries.length > 0 ? dgEntries : undefined,
+          profiles: dgProfiles,
+          output_language: docLang,
+          signature_image: signature ?? undefined,
+        },
+        to: recipients,
+        subject: mailSubject,
+        message: mailMessage,
+      });
+      setMailSent(t("wizardDocs.mailSent", { to: result.to.join(", ") }));
+      setMailOpen(false);
+    } catch (e) {
+      setError(String(e));
+    } finally {
+      setMailing(false);
+    }
+  };
+
   // Which UN cards this shipment can be given. Asked only on the export step,
   // and only when dangerous goods were actually declared.
   useEffect(() => {
@@ -1032,19 +1073,85 @@ export default function WizardPage() {
           <div className={`${panelClass} space-y-3 p-4 sm:p-6`}>
             <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
               <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-100">{t("wizardDocs.title")}</h3>
-              {readyDocs.length > 1 && (
+              <div className="flex flex-wrap gap-2">
+                {readyDocs.length > 0 && publicSettings?.mail_enabled && (
+                  <button
+                    type="button"
+                    onClick={() => setMailOpen((open) => !open)}
+                    disabled={mailing}
+                    className={buttonSecondary}
+                  >
+                    {t("wizardDocs.mail", { count: readyDocs.length })}
+                  </button>
+                )}
+                {readyDocs.length > 1 && (
+                  <button
+                    type="button"
+                    onClick={downloadAll}
+                    disabled={downloadingAll}
+                    className={buttonPrimary}
+                  >
+                    {downloadingAll
+                      ? t("wizardDocs.exporting")
+                      : t("wizardDocs.downloadAll", { count: readyDocs.length })}
+                  </button>
+                )}
+              </div>
+            </div>
+
+            {mailOpen && (
+              <div className="space-y-3 rounded-lg border border-slate-200 p-3 dark:border-slate-700">
+                <p className="text-xs text-slate-500 dark:text-slate-400">{t("wizardDocs.mailHint")}</p>
+                <div>
+                  <label className="text-sm font-medium text-slate-800 dark:text-slate-200" htmlFor="mail-to">
+                    {t("wizardDocs.mailTo")}
+                  </label>
+                  <input
+                    id="mail-to"
+                    type="text"
+                    className={`${weightInputClass} mt-1`}
+                    placeholder={t("wizardDocs.mailToPlaceholder")}
+                    value={mailTo}
+                    onChange={(e) => setMailTo(e.target.value)}
+                  />
+                </div>
+                <div>
+                  <label className="text-sm font-medium text-slate-800 dark:text-slate-200" htmlFor="mail-subject">
+                    {t("wizardDocs.mailSubject")}
+                  </label>
+                  <input
+                    id="mail-subject"
+                    type="text"
+                    className={`${weightInputClass} mt-1`}
+                    placeholder={t("wizardDocs.mailSubjectPlaceholder")}
+                    value={mailSubject}
+                    onChange={(e) => setMailSubject(e.target.value)}
+                  />
+                </div>
+                <div>
+                  <label className="text-sm font-medium text-slate-800 dark:text-slate-200" htmlFor="mail-message">
+                    {t("wizardDocs.mailMessage")}
+                  </label>
+                  <textarea
+                    id="mail-message"
+                    className={`${weightInputClass} mt-1 min-h-[80px]`}
+                    value={mailMessage}
+                    onChange={(e) => setMailMessage(e.target.value)}
+                  />
+                </div>
                 <button
                   type="button"
-                  onClick={downloadAll}
-                  disabled={downloadingAll}
+                  onClick={mailAll}
+                  disabled={mailing || !mailTo.trim()}
                   className={buttonPrimary}
                 >
-                  {downloadingAll
-                    ? t("wizardDocs.exporting")
-                    : t("wizardDocs.downloadAll", { count: readyDocs.length })}
+                  {mailing ? t("wizardDocs.mailSending") : t("wizardDocs.mailSend")}
                 </button>
-              )}
-            </div>
+              </div>
+            )}
+            {mailSent && (
+              <p className="text-sm text-emerald-700 dark:text-emerald-400">{mailSent}</p>
+            )}
             <p className="text-sm text-slate-600 dark:text-slate-400">{t("wizardDocs.intro")}</p>
             {readyDocs.length > 1 && dgEntries.length > 0 && (
               <p className="text-xs text-slate-500 dark:text-slate-400">

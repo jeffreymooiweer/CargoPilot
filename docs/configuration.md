@@ -218,9 +218,15 @@ the saved ones would be worse than no test. Whatever the mail server answers is 
 unchanged: a refused password, an unreachable host and a rejected sender are different
 problems with different fixes.
 
-**What uses it.** Today: the test message. Mail is configuration that has to exist before
-anything can be sent with it; what CargoPilot sends through it is a separate decision, made
-per feature rather than assumed here.
+**What uses it.** The test message, and the export step: with a mail server configured, the
+documents step offers to mail the same archive the download button produces — to the
+carrier, the consignee, or several addresses at once. The archive is deleted the moment the
+message is out; CargoPilot keeps no copy of a consignment's papers. One message may carry
+15 MB of attachments; beyond that the size and the limit are named rather than left to the
+relay to refuse.
+
+Without a mail server the export step shows no mail button at all: a button that can only
+fail is not a feature.
 
 ## Application and security
 

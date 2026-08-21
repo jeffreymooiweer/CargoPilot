@@ -2,6 +2,30 @@
 
 All notable changes are documented here, following [Semantic Versioning](https://semver.org/).
 
+## [1.142.0] — 2026-08-21
+
+The documents of a consignment can be mailed straight from the export step.
+
+### Added
+
+- **Send by mail.** Beside "Download all", a button that sends the same
+  archive as an attachment — to the carrier, the consignee, or several
+  addresses at once (separate them with a comma). Subject and message are
+  yours to write, or are written for you: the default message names the
+  colleague who sent it, because the recipient has to know who mailed them a
+  consignment's papers.
+- The archive is built by the same code as the download, so the mail cannot
+  quietly carry a different set of papers — README of omissions included.
+
+### Notes
+
+- The archive is deleted the moment the message is out. CargoPilot keeps no
+  copy of a consignment's documents.
+- One message may carry 15 MB of attachments. Beyond that the size and the
+  limit are named, rather than leaving the relay to answer with a code.
+- Without a mail server the button does not appear: a button that can only
+  fail is not a feature. Configure one under Settings → Administration.
+
 ## [1.141.0] — 2026-08-21
 
 An administrator can point CargoPilot at a mail server.

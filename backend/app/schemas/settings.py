@@ -285,3 +285,6 @@ class PublicSettings(BaseModel):
     un_cards_enabled: bool
     organisation_name: str
     organisation_address: str
+    #: Whether the export step may offer to mail the documents. Only that a
+    #: mail server exists, never which one or under whose name.
+    mail_enabled: bool

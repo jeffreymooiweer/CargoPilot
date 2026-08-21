@@ -603,7 +603,10 @@
     "adnPlacardingTitle": "Bestikkering en kenmerking aan boord (ADN 5.3)",
     "adnPlacardingCtu": "Per vervoerseenheid",
     "ridPlacardingTitle": "Bestikkering en kenmerking op het spoor (RID 5.3)",
-    "ridPlacardingWagon": "Per wagen of grote container"
+    "ridPlacardingWagon": "Per wagen of grote container",
+    "imdgPlacardingTitle": "Bebording en kenmerking op zee (IMDG 5.3)",
+    "imdgPlacardingUnit": "Per laadeenheid, vier zijden",
+    "imdgPlacardingPollutant": "Mariene verontreiniging"
   },
   "dgauto": {
     "title": "Automatisch afgeleid",

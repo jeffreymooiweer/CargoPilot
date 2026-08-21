@@ -114,6 +114,7 @@
       "documents": [
         "bl_si",
         "vgm",
+        "placarding_sheet_imdg",
         "imo_dgd",
         "packing_list",
         "delivery_note"
@@ -191,6 +192,7 @@
         "placarding_sheet",
         "placarding_sheet_adn",
         "placarding_sheet_rid",
+        "placarding_sheet_imdg",
         "stowage_plan",
         "packing_list",
         "delivery_note",
@@ -3052,6 +3054,42 @@
         "en": "This sheet is a working instruction and not a label: the placards and orange plates themselves must meet 5.3.1.7 and 5.3.2.2.",
         "de": "Dieses Blatt ist eine Arbeitsanweisung und kein Zettel: die Großzettel und orangefarbenen Tafeln selbst müssen 5.3.1.7 und 5.3.2.2 entsprechen.",
         "fr": "Cette feuille est une instruction de travail et non une étiquette : les plaques-étiquettes et les panneaux orange doivent eux-mêmes respecter les 5.3.1.7 et 5.3.2.2."
+      }
+    },
+    {
+      "key": "placarding_sheet_imdg",
+      "label": {
+        "nl": "Bebordings- en kenmerkingsblad (IMDG 5.3)",
+        "en": "Placarding and marking sheet (IMDG 5.3)",
+        "de": "Bezettelungs- und Kennzeichnungsblatt (IMDG 5.3)",
+        "fr": "Feuille de placardage et de marquage (IMDG 5.3)"
+      },
+      "short_label": {
+        "nl": "Bebording",
+        "en": "Placarding",
+        "de": "Bezettelung",
+        "fr": "Placardage"
+      },
+      "category": "generated",
+      "issue_status": {
+        "nl": "Hulpdocument — wat de laadeenheid moet tonen die aan boord gaat: grote etiketten op vier zijden, de juiste vervoersnaam, het UN-nummer en waar van toepassing het merkteken mariene verontreiniging. Afgeleid uit IMDG 5.3. Geen voorgeschreven model.",
+        "en": "Working document — what the cargo transport unit going on board must show: placards on four sides, the proper shipping name, the UN number and, where applicable, the marine pollutant mark. Derived from IMDG 5.3. No prescribed model.",
+        "de": "Hilfsdokument — was die an Bord gehende Beförderungseinheit zeigen muss: Großzettel an vier Seiten, die richtige technische Benennung, die UN-Nummer und gegebenenfalls das Meeresschadstoff-Kennzeichen. Abgeleitet aus IMDG 5.3. Kein vorgeschriebenes Muster.",
+        "fr": "Document d'appui — ce que l'engin de transport embarqué doit porter : plaques-étiquettes sur quatre côtés, désignation officielle de transport, numéro ONU et, le cas échéant, marque de polluant marin. Dérivé de l'IMDG 5.3. Aucun modèle prescrit."
+      },
+      "exporter": "placarding_imdg",
+      "dg_profile": "IMDG",
+      "dg_only": true,
+      "sections": [
+        {
+          "ref": "parties"
+        }
+      ],
+      "signature_note": {
+        "nl": "Dit blad is een werkinstructie en geen etiket: de grote etiketten en merktekens zelf moeten voldoen aan de afmetingen van 5.3.1.2 en 5.3.2, en moeten drie maanden onderdompeling in zee doorstaan (5.3.1.1.1.2).",
+        "en": "This sheet is a working instruction and not a label: the placards and marks themselves must meet the dimensions of 5.3.1.2 and 5.3.2, and must survive three months' immersion in the sea (5.3.1.1.1.2).",
+        "de": "Dieses Blatt ist eine Arbeitsanweisung und kein Zettel: die Großzettel und Kennzeichen selbst müssen den Abmessungen von 5.3.1.2 und 5.3.2 entsprechen und drei Monate Eintauchen im Meer überstehen (5.3.1.1.1.2).",
+        "fr": "Cette feuille est une instruction de travail et non une étiquette : les plaques-étiquettes et marques doivent elles-mêmes respecter les dimensions des 5.3.1.2 et 5.3.2 et résister à trois mois d'immersion dans la mer (5.3.1.1.1.2)."
       }
     },
     {

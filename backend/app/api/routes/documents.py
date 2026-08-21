@@ -142,6 +142,17 @@ def _render_export(document: dict, payload: DocumentExportRequest,
             payload.output_language,
             regime="RID",
         )
+    elif exporter == "placarding_imdg":
+        # And with the sea's, which is the one that differs most from the
+        # road's: four sides rather than two, the proper shipping name marked
+        # on the unit itself, and the marine pollutant mark no land regime has.
+        out_path = render_placarding_sheet(
+            payload.values,
+            payload.lines,
+            payload.dangerous_goods,
+            payload.output_language,
+            regime="IMDG",
+        )
     elif exporter == "stowage":
         # The stowage plan is drawn from where the goods are, not from typed
         # document fields: 7.1.4.11.1 asks which goods are in which hold, and

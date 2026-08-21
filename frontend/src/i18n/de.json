@@ -603,7 +603,10 @@
     "adnPlacardingTitle": "Großzettel und Kennzeichnung an Bord (ADN 5.3)",
     "adnPlacardingCtu": "Je Beförderungseinheit",
     "ridPlacardingTitle": "Großzettel und Kennzeichnung auf der Schiene (RID 5.3)",
-    "ridPlacardingWagon": "Je Wagen oder Großcontainer"
+    "ridPlacardingWagon": "Je Wagen oder Großcontainer",
+    "imdgPlacardingTitle": "Bezettelung und Kennzeichnung auf See (IMDG 5.3)",
+    "imdgPlacardingUnit": "Je Beförderungseinheit, vier Seiten",
+    "imdgPlacardingPollutant": "Meeresschadstoff"
   },
   "dgauto": {
     "title": "Automatisch abgeleitet",

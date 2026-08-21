@@ -100,6 +100,14 @@ class DangerousGoodsProduct(BaseModel):
     molten: str | bool | None = None
     residue_classes: str | None = None
     classified_2_1_2_8: str | bool | None = None
+    # The temperature the goods are offered at, in degrees Celsius. It decides
+    # the elevated temperature mark — IMDG 5.3.2.2.1 at 100 °C liquid or 240 °C
+    # solid, ADR/ADN/RID 5.3.3 on the same thresholds — and nothing else in the
+    # consignment implies it: MOLTEN says the substance travels liquid, not how
+    # hot, and a substance that is not molten can still be loaded hot. Absent
+    # means unknown, which the checks report as unassessed rather than as "no
+    # mark required": a bare triangle missing from a tank is not a detail.
+    carriage_temperature: str | float | int | None = None
     # 3.1.2.2: the most applicable of several proper shipping names, chosen by
     # the consignor — in the document language and, where a Dutch document
     # pairs the names, in English beside it.

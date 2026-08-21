@@ -603,7 +603,10 @@
     "adnPlacardingTitle": "Placarding and marking on board (ADN 5.3)",
     "adnPlacardingCtu": "Per cargo transport unit",
     "ridPlacardingTitle": "Placarding and marking on rail (RID 5.3)",
-    "ridPlacardingWagon": "Per wagon or large container"
+    "ridPlacardingWagon": "Per wagon or large container",
+    "imdgPlacardingTitle": "Placarding and marking at sea (IMDG 5.3)",
+    "imdgPlacardingUnit": "Per cargo transport unit, four sides",
+    "imdgPlacardingPollutant": "Marine pollutant"
   },
   "dgauto": {
     "title": "Derived automatically",

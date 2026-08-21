@@ -603,7 +603,10 @@
     "adnPlacardingTitle": "Plaques-étiquettes et marquage à bord (ADN 5.3)",
     "adnPlacardingCtu": "Par engin de transport",
     "ridPlacardingTitle": "Plaques-étiquettes et marquage sur rail (RID 5.3)",
-    "ridPlacardingWagon": "Par wagon ou grand conteneur"
+    "ridPlacardingWagon": "Par wagon ou grand conteneur",
+    "imdgPlacardingTitle": "Placardage et marquage en mer (IMDG 5.3)",
+    "imdgPlacardingUnit": "Par engin de transport, quatre côtés",
+    "imdgPlacardingPollutant": "Polluant marin"
   },
   "dgauto": {
     "title": "Déduit automatiquement",

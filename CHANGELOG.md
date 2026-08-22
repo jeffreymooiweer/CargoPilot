@@ -2,6 +2,46 @@
 
 All notable changes are documented here, following [Semantic Versioning](https://semver.org/).
 
+## [1.152.0] — 2026-08-22
+
+### Added
+
+- **Sea transport is off the modality lock.** It joins road, rail and inland
+  waterway over the same bar: the checks come out of the IMDG Code itself, and
+  the flow is verified end to end rather than by hand once. What was missing
+  was never the substance data — the Dangerous Goods List has been read since
+  v1.48.0 — but chapter 5.3, which arrived in v1.150.0, and the end-to-end
+  verification that unlocked rail in v1.122.0.
+
+  Writing those sea archetypes found two things a live test would otherwise
+  have found, at the cost of a real consignment each:
+
+  - **The 24-hour emergency number went nowhere.** IMDG 5.4.1.5.11 asks for
+    it, and the application asked the user for it — and then had no field for
+    it on the IMO form or the B/L instruction, so it was collected and
+    silently dropped. It is now on both.
+  - **The container number had two names.** The IMO form called it
+    `container_identification` while the VGM and the B/L instruction called it
+    `container_number`: the same box, typed twice, on one consignment. They
+    agree now, and a test pins it, because the next sea document added is the
+    one that would drift again.
+
+  What sea still cannot do is on the screen rather than hidden: the stowage
+  category is shown and not enforced, segregation from foodstuffs is raised to
+  verify because the application cannot see what else is in the container, and
+  nothing about the ship is claimed. Air stays locked — the IATA quantity
+  tables are still not held.
+
+- **A container can be named on every mode that carries one.** A container of
+  dangerous goods rarely travels one leg: it is packed inland, trucked to the
+  terminal, put on a barge or a wagon and then on a ship, and the box number
+  identifies the load throughout while the vehicle under it changes at every
+  handover. Only rail and sea had anywhere to write it. A CMR for a container
+  had no box number and no seal, and neither did the ADN transport document —
+  so the number lived in the operator's head, which is where a consignment
+  note exists to take it out of. Both now carry a container number and seal
+  numbers, and a test holds all four modes to it.
+
 ## [1.151.0] — 2026-08-21
 
 ### Added

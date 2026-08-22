@@ -351,3 +351,127 @@ def test_rail_tank_wagon():
                        nhm_code="280110")
     assert export("cim", tank, values=rail_values).status_code == 200
     assert export("placarding_sheet_rid", tank, language="de").status_code == 200
+
+
+# --- 7. the sea leg, end to end (v1.152.0) ---------------------------------
+
+
+def test_sea_packages_in_a_container():
+    """Petrol in drums and a marine pollutant in an IBC, in one container.
+
+    The sea answer is its own, and every line below is a place where taking
+    the road's would be wrong: the container is placarded on four sides where
+    a road vehicle carrying the same drums is placarded on two, the proper
+    shipping name is marked on the unit itself, and the marine pollutant mark
+    has no land counterpart at all.
+    """
+    answer = compliance(["IMDG"], goods("1203"),
+                        goods("3082", marine_pollutant="P"))
+
+    placarding = answer["imdg_placarding"]
+    assert placarding["placards_required"] is True
+    # Four sides, and each kind of unit given its own rule because the kind is
+    # not something the application can see.
+    provisions = [p["provision"] for p in placarding["placards"]]
+    assert "5.3.1.1.4.1.1" in provisions
+    kinds = [m["kind"] for m in placarding["marks"]]
+    assert "marine_pollutant" in kinds
+    assert "proper_shipping_name" in kinds
+
+    # The segregation question sea is entitled to, and the land answers it is
+    # not: no tunnel code, no ADR points, no orange plates.
+    assert "imdg_segregation" in answer
+    assert "adr_tunnel" not in answer
+    assert "adr_points" not in answer
+
+    # Every document the sea modality offers renders.
+    offered = documents_for("sea")
+    assert "placarding_sheet_imdg" in offered
+    sea_values = dict(CONSIGNMENT, container_number="MSKU 123456-7",
+                      declarant_name="J. Jansen", declaration_place="Rotterdam",
+                      declaration_date="2026-08-21", vgm_kg="12000",
+                      vgm_method="method1", responsible_name="J. JANSEN",
+                      determination_place="Rotterdam",
+                      determination_date="2026-08-21",
+                      # The B/L asks which form of bill the shipper wants; it
+                      # is a commercial choice, not something derivable.
+                      document_form="Seaway bill")
+    for key in ("imo_dgd", "bl_si", "vgm", "packing_certificate",
+                "placarding_sheet_imdg"):
+        assert export(key, goods("1203"), values=sea_values).status_code == 200, key
+
+
+def test_the_sea_documents_carry_the_emergency_number():
+    """5.4.1.5.11 asks for a 24-hour number, and the application asks the user
+    for one. Until v1.152.0 it then had nowhere to put it: the field was
+    collected and silently dropped, which is the failure mode this application
+    is built against — a document that looks complete."""
+    from app.services.documents.registry import get_document, resolve_sections
+
+    for key in ("imo_dgd", "bl_si"):
+        fields = [field["key"] for section in resolve_sections(get_document(key))
+                  for field in section.get("fields", [])]
+        assert "emergency_contact" in fields, key
+
+
+def test_the_sea_documents_agree_on_what_a_container_number_is_called():
+    """The IMO form asked for `container_identification` while the VGM and the
+    B/L instruction asked for `container_number` — the same number, twice
+    typed, on one consignment. Harmonised in v1.152.0; pinned here because the
+    next document added is the one that would drift again."""
+    from app.services.documents.registry import get_document, resolve_sections
+
+    for key in ("imo_dgd", "vgm", "bl_si"):
+        fields = [field["key"] for section in resolve_sections(get_document(key))
+                  for field in section.get("fields", [])]
+        assert "container_number" in fields, key
+        assert "container_identification" not in fields, key
+
+
+def test_a_hot_container_bound_for_sea_is_told_about_the_mark():
+    """The elevated temperature mark of 5.3.2.2, from the carriage temperature
+    field — the one thing at sea that no table can imply."""
+    answer = compliance(["IMDG"], goods("2448", carriage_temperature="130"))
+    mark = next(m for m in answer["imdg_placarding"]["marks"]
+                if m["kind"] == "elevated_temperature")
+    assert mark["required"] is True
+
+
+def test_sea_says_what_it_cannot_answer():
+    """The archetype's own limit, as every archetype ends. The stowage
+    category is shown and not enforced, and segregation from foodstuffs is
+    raised as a thing to verify rather than answered — the application cannot
+    see what else is in the container."""
+    answer = compliance(["IMDG"], goods("1203"))
+    # The unit is stripped after discharge and the marking must survive the
+    # sea: both are stated rather than assumed to be known.
+    kinds = [m["kind"] for m in answer["imdg_placarding"]["marks"]]
+    assert "removal" in kinds
+    assert "seawater" in kinds
+
+
+# --- 8. a container, whichever mode carries it (v1.152.0) -------------------
+
+
+def test_every_unlocked_mode_can_carry_a_container():
+    """A container of dangerous goods rarely travels one leg. It is packed
+    inland, trucked to the terminal, put on a barge or a wagon and then on a
+    ship — and the box number identifies the load throughout, while the
+    vehicle under it changes at every handover.
+
+    Until v1.152.0 only rail and sea had anywhere to write it: a CMR for a
+    container had no box number and no seal, and neither did the ADN transport
+    document. The number then lived only in the operator's head, which is
+    exactly where a consignment note is supposed to take it out of.
+    """
+    from app.services.documents.registry import get_document, resolve_sections
+
+    main_document = {"road": "cmr", "rail": "cim", "sea": "imo_dgd",
+                     "inland": "adn_transport_doc"}
+    for mode, key in main_document.items():
+        fields = [field["key"] for section in resolve_sections(get_document(key))
+                  for field in section.get("fields", [])]
+        # Rail calls it the UTI number, which is the term RID and the CIM use;
+        # the others call it the container number. Both are the same box.
+        assert ("container_number" in fields
+                or "container_uti_number" in fields), f"{mode} ({key})"

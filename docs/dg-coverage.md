@@ -726,8 +726,11 @@ mark; and the elevated temperature mark of 5.3.2.2, which turns on a new carriag
 temperature field.
 
 **Assessment:** for the segregation of packaged dangerous goods this is solid, tested and
-pinned against edits. Everything downstream of "may these two travel together" is out of
-scope.
+pinned against edits, and since v1.150.0 chapter 5.3 is derived as well. **Sea came off
+the modality lock in v1.152.0**, over the same bar as rail and inland waterway: its checks
+come out of the IMDG Code itself and the flow is verified end to end in the sea archetypes.
+Everything downstream of "may these two travel together" — the stowage the carrier decides,
+and the ship — remains out of scope and is said so on the screen.
 
 ## Air — IATA DGR
 

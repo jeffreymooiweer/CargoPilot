@@ -1,10 +1,9 @@
 /**
  * Which modalities may draw up documents, and the lock that has three ways in.
  *
- * Rail, sea and air are built and reachable and *wrong* in ways that do not
- * announce themselves. A half-right document is worse than no document: it is
- * signed and handed over, and the consignor has no way to see which half was
- * right.
+ * Air is built and reachable and *wrong* in ways that do not announce
+ * themselves. A half-right document is worse than no document: it is signed
+ * and handed over, and the consignor has no way to see which half was right.
  *
  * Inland waterway came off the lock in v1.63.0. It went on in v1.60.0 because
  * it answered its separation question with the road table and held no cone
@@ -52,10 +51,12 @@ function renderAt(path = "/") {
 }
 
 describe("de modaliteitkeuze", () => {
-  it("laat wegvervoer, spoorvervoer en binnenvaart toe", () => {
-    // Rail came off the lock in v1.122.0; sea and air stay locked, and air's
-    // one demonstration (v1.117.0) is over.
-    expect([...AVAILABLE_MODALITIES]).toEqual(["road", "rail", "inland"]);
+  it("laat wegvervoer, spoorvervoer, zeevervoer en binnenvaart toe", () => {
+    // Rail came off the lock in v1.122.0 and sea in v1.152.0, once chapter
+    // 5.3 was derived (v1.150.0) and the flow was verified end to end. Air
+    // stays locked: its one demonstration (v1.117.0) is over and the IATA
+    // quantity tables are still not held.
+    expect([...AVAILABLE_MODALITIES]).toEqual(["road", "rail", "sea", "inland"]);
     for (const key of AVAILABLE_MODALITIES) {
       expect(isModalityAvailable(key)).toBe(true);
     }

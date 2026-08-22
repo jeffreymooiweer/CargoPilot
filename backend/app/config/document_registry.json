@@ -653,6 +653,28 @@
           },
           "fields": [
             {
+              "key": "container_number",
+              "label": {
+                "nl": "Containernummer",
+                "en": "Container number",
+                "de": "Containernummer",
+                "fr": "Numéro de conteneur"
+              },
+              "status": "OPTIONAL",
+              "type": "text"
+            },
+            {
+              "key": "seal_numbers",
+              "label": {
+                "nl": "Zegelnummer(s)",
+                "en": "Seal number(s)",
+                "de": "Plombennummer(n)",
+                "fr": "Numéro(s) de plomb"
+              },
+              "status": "OPTIONAL",
+              "type": "text"
+            },
+            {
               "key": "sender_instructions",
               "label": {
                 "nl": "Instructies van de afzender (vak 13)",
@@ -1208,6 +1230,17 @@
           },
           "fields": [
             {
+              "key": "emergency_contact",
+              "label": {
+                "nl": "24-uurs noodnummer (5.4.1.5.11)",
+                "en": "24-hour emergency contact (5.4.1.5.11)",
+                "de": "24-Stunden-Notrufnummer (5.4.1.5.11)",
+                "fr": "Numéro d'urgence 24 h/24 (5.4.1.5.11)"
+              },
+              "status": "USER_REQUIRED",
+              "type": "text"
+            },
+            {
               "key": "transport_document_number",
               "label": {
                 "nl": "Transportdocumentnummer (vak 2)",
@@ -1230,7 +1263,7 @@
               "type": "text"
             },
             {
-              "key": "container_identification",
+              "key": "container_number",
               "label": {
                 "nl": "Containeridentificatie / voertuigregistratie (vak 15)",
                 "en": "Container identification / vehicle registration (box 15)",
@@ -2188,6 +2221,17 @@
           },
           "fields": [
             {
+              "key": "emergency_contact",
+              "label": {
+                "nl": "24-uurs noodnummer (5.4.1.5.11)",
+                "en": "24-hour emergency contact (5.4.1.5.11)",
+                "de": "24-Stunden-Notrufnummer (5.4.1.5.11)",
+                "fr": "Numéro d'urgence 24 h/24 (5.4.1.5.11)"
+              },
+              "status": "USER_REQUIRED",
+              "type": "text"
+            },
+            {
               "key": "notify_party",
               "label": {
                 "nl": "Notify party",
@@ -2703,6 +2747,28 @@
             "fr": "Détails ADN"
           },
           "fields": [
+            {
+              "key": "container_number",
+              "label": {
+                "nl": "Containernummer",
+                "en": "Container number",
+                "de": "Containernummer",
+                "fr": "Numéro de conteneur"
+              },
+              "status": "OPTIONAL",
+              "type": "text"
+            },
+            {
+              "key": "seal_numbers",
+              "label": {
+                "nl": "Zegelnummer(s)",
+                "en": "Seal number(s)",
+                "de": "Plombennummer(n)",
+                "fr": "Numéro(s) de plomb"
+              },
+              "status": "OPTIONAL",
+              "type": "text"
+            },
             {
               "key": "vessel_name",
               "label": {

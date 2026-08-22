@@ -866,5 +866,13 @@
     "sendCode": "Send a code",
     "codeSent": "A code has been sent to your e-mail address.",
     "turnOffHintMail": "Ask for a code first and type it below. A recovery code works too."
+  },
+  "toast": {
+    "undo": "Undo",
+    "dismiss": "Dismiss",
+    "cancel": "Cancel",
+    "deletedUser": "User {{name}} deleted",
+    "deletedItem": "{{name}} deleted",
+    "removedUnCards": "UN card set removed"
   }
 }

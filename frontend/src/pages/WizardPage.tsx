@@ -35,6 +35,7 @@ import {
   mergeOverrides,
 } from "../utils/lineWeights";
 import { buildAssistantState, draftLinesFromAssistant } from "../utils/assistantState";
+import { useToast } from "../toast/ToastProvider";
 
 const weightInputClass =
   "w-full border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-950 text-slate-900 dark:text-slate-100 rounded-lg px-3 py-2 text-sm";
@@ -182,9 +183,9 @@ export default function WizardPage() {
   const [instructions, setInstructions] = useState<WrittenInstruction[]>([]);
   const [checklist, setChecklist] = useState<WrittenInstruction[]>([]);
   const [unCardsBusy, setUnCardsBusy] = useState(false);
-  const [error, setError] = useState("");
   const [importOpen, setImportOpen] = useState(false);
   const [assistantOpen, setAssistantOpen] = useState(false);
+  const toast = useToast();
 
   useEffect(() => {
     api
@@ -391,11 +392,10 @@ export default function WizardPage() {
   const calculateFromDraft = async (): Promise<CalcResult | null> => {
     const text = draftToText(draftLines);
     if (!text.trim()) {
-      setError(t("review.noLines"));
+      toast.error(t("review.noLines"));
       return null;
     }
     setLoading(true);
-    setError("");
     setDgEntries([]);
     try {
       const res = await api.calculate({
@@ -430,7 +430,7 @@ export default function WizardPage() {
       setResult(withDg);
       return withDg;
     } catch (e) {
-      setError(String(e));
+      toast.error(String(e));
       return null;
     } finally {
       setLoading(false);
@@ -631,7 +631,6 @@ export default function WizardPage() {
   const exportGenericDoc = async (doc: DocumentDefinition) => {
     if (!result) return;
     setExportingDoc(doc.key);
-    setError("");
     try {
       await api.exportDocument({
         ...payloadFor(doc),
@@ -644,7 +643,7 @@ export default function WizardPage() {
         // Storage full or blocked: the export succeeded, the memory is a bonus.
       }
     } catch (e) {
-      setError(String(e));
+      toast.error(String(e));
     } finally {
       setExportingDoc(null);
     }
@@ -659,7 +658,6 @@ export default function WizardPage() {
   const [downloadingAll, setDownloadingAll] = useState(false);
   const downloadAll = async () => {
     setDownloadingAll(true);
-    setError("");
     try {
       await api.exportBundle({
         documents: readyDocs.map(payloadFor),
@@ -674,7 +672,7 @@ export default function WizardPage() {
         // Storage full or blocked: the export succeeded, the memory is a bonus.
       }
     } catch (e) {
-      setError(String(e));
+      toast.error(String(e));
     } finally {
       setDownloadingAll(false);
     }
@@ -687,12 +685,12 @@ export default function WizardPage() {
   const [mailSubject, setMailSubject] = useState("");
   const [mailMessage, setMailMessage] = useState("");
   const [mailing, setMailing] = useState(false);
-  const [mailSent, setMailSent] = useState("");
 
   const mailAll = async () => {
     setMailing(true);
-    setError("");
-    setMailSent("");
+    // Mailing takes as long as the mail server takes: the loading toast holds
+    // the user's place until the send has actually succeeded or failed.
+    const pending = toast.loading(t("wizardDocs.mailSending"));
     try {
       // One field, several addresses: a consignment's papers go to the
       // carrier and the consignee in the same breath.
@@ -712,10 +710,10 @@ export default function WizardPage() {
         subject: mailSubject,
         message: mailMessage,
       });
-      setMailSent(t("wizardDocs.mailSent", { to: result.to.join(", ") }));
+      pending.success(t("wizardDocs.mailSent", { to: result.to.join(", ") }));
       setMailOpen(false);
     } catch (e) {
-      setError(String(e));
+      pending.error(String(e));
     } finally {
       setMailing(false);
     }
@@ -803,30 +801,27 @@ export default function WizardPage() {
   }, [stepKey, inCargoTanks]);
 
   const downloadChecklist = async (regime: string, language: string) => {
-    setError("");
     try {
       await api.downloadModel("8.6.3", regime, language);
     } catch (e) {
-      setError(String(e));
+      toast.error(String(e));
     }
   };
 
   const downloadInstructions = async (regime: string, language: string) => {
-    setError("");
     try {
       await api.downloadInstructions(regime, language);
     } catch (e) {
-      setError(String(e));
+      toast.error(String(e));
     }
   };
 
   const downloadUnCards = async () => {
     setUnCardsBusy(true);
-    setError("");
     try {
       await api.downloadUnCards({ dangerous_goods: dgEntries, profiles: dgProfiles, output_language: docLang });
     } catch (e) {
-      setError(String(e));
+      toast.error(String(e));
     } finally {
       setUnCardsBusy(false);
     }
@@ -1156,9 +1151,6 @@ export default function WizardPage() {
                 </button>
               </div>
             )}
-            {mailSent && (
-              <p className="text-sm text-emerald-700 dark:text-emerald-400">{mailSent}</p>
-            )}
             <p className="text-sm text-slate-600 dark:text-slate-400">{t("wizardDocs.intro")}</p>
             {readyDocs.length > 1 && dgEntries.length > 0 && (
               <p className="text-xs text-slate-500 dark:text-slate-400">
@@ -1359,8 +1351,6 @@ export default function WizardPage() {
       )}
 
       <ImportDialog open={importOpen} onClose={() => setImportOpen(false)} onImport={handleImport} />
-
-      {error && <p className="whitespace-pre-line text-sm text-red-600 dark:text-red-400">{error}</p>}
     </div>
   );
 }

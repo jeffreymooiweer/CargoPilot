@@ -866,5 +866,13 @@
     "sendCode": "Code senden",
     "codeSent": "Ein Code wurde an Ihre E-Mail-Adresse gesendet.",
     "turnOffHintMail": "Fordern Sie zuerst einen Code an und geben Sie ihn unten ein. Ein Wiederherstellungscode geht auch."
+  },
+  "toast": {
+    "undo": "Rückgängig",
+    "dismiss": "Schließen",
+    "cancel": "Abbrechen",
+    "deletedUser": "Benutzer {{name}} gelöscht",
+    "deletedItem": "{{name}} gelöscht",
+    "removedUnCards": "UN-Kartensatz entfernt"
   }
 }

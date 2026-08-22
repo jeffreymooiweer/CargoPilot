@@ -13,6 +13,7 @@ import userEvent from "@testing-library/user-event";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import AssistantModal from "./AssistantModal";
+import { ToastProvider } from "../toast/ToastProvider";
 import { api } from "../api/client";
 
 vi.mock("react-i18next", () => ({
@@ -47,13 +48,15 @@ const QUESTION = {
 
 function renderModal(onApplyState = vi.fn(), onClose = vi.fn(), modality = "road") {
   render(
-    <AssistantModal
-      open
-      onClose={onClose}
-      buildState={() => ({ modality: "road", draft_lines: [] })}
-      onApplyState={onApplyState}
-      modality={modality}
-    />,
+    <ToastProvider>
+      <AssistantModal
+        open
+        onClose={onClose}
+        buildState={() => ({ modality: "road", draft_lines: [] })}
+        onApplyState={onApplyState}
+        modality={modality}
+      />
+    </ToastProvider>,
   );
   return { onApplyState, onClose };
 }

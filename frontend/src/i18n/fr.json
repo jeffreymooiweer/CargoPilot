@@ -866,5 +866,13 @@
     "sendCode": "Envoyer un code",
     "codeSent": "Un code a été envoyé à votre adresse e-mail.",
     "turnOffHintMail": "Demandez d'abord un code et saisissez-le ci-dessous. Un code de secours fonctionne aussi."
+  },
+  "toast": {
+    "undo": "Annuler l'action",
+    "dismiss": "Fermer",
+    "cancel": "Annuler",
+    "deletedUser": "Utilisateur {{name}} supprimé",
+    "deletedItem": "{{name}} supprimé",
+    "removedUnCards": "Jeu de fiches ONU supprimé"
   }
 }

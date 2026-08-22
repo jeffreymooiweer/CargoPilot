@@ -1,6 +1,7 @@
 import { useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { api, EquipmentImportResult, translateMessage } from "../api/client";
+import { useToast } from "../toast/ToastProvider";
 
 const panelClass = "bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-xl";
 const iconActionClass =
@@ -32,7 +33,7 @@ interface Props {
 
 export default function EquipmentImportDialog({ open, onClose, onComplete }: Props) {
   const { t } = useTranslation();
-  const [error, setError] = useState("");
+  const toast = useToast();
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<EquipmentImportResult | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -40,7 +41,6 @@ export default function EquipmentImportDialog({ open, onClose, onComplete }: Pro
   if (!open) return null;
 
   const reset = () => {
-    setError("");
     setResult(null);
     if (fileInputRef.current) fileInputRef.current.value = "";
   };
@@ -51,25 +51,26 @@ export default function EquipmentImportDialog({ open, onClose, onComplete }: Pro
   };
 
   const handleDownloadTemplate = async () => {
-    setError("");
     try {
       await api.downloadEquipmentTemplate();
     } catch (e) {
-      setError(String(e));
+      toast.error(String(e));
     }
   };
 
   const handleFile = async (file: File | null) => {
     if (!file) return;
-    setError("");
     setLoading(true);
     setResult(null);
     try {
+      // The result report stays in the dialog rather than becoming a toast:
+      // created/updated/skipped counts and per-row errors are something to
+      // read through, not a passing confirmation.
       const importResult = await api.importEquipmentFile(file);
       setResult(importResult);
       onComplete();
     } catch (e) {
-      setError(String(e));
+      toast.error(String(e));
     } finally {
       setLoading(false);
       if (fileInputRef.current) fileInputRef.current.value = "";
@@ -142,8 +143,6 @@ export default function EquipmentImportDialog({ open, onClose, onComplete }: Pro
               )}
             </div>
           )}
-
-          {error && <p className="text-sm text-red-600 dark:text-red-400">{error}</p>}
         </div>
       </div>
     </div>

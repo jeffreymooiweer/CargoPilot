@@ -1,5 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { useToast } from "../toast/ToastProvider";
+import ConfirmDialog from "../toast/ConfirmDialog";
 import {
   AssistantStatus,
   InstanceSettings,
@@ -60,9 +62,8 @@ export default function SettingsPage({ user }: Props) {
   const [options, setOptions] = useState<SettingsOptions | null>(null);
   const [version, setVersion] = useState("");
   const [saving, setSaving] = useState(false);
-  const [saved, setSaved] = useState(false);
-  const [error, setError] = useState("");
   const [tab_, setTab] = useState<TabKey>("appearance");
+  const toast = useToast();
 
   useEffect(() => setDraft(preferences), [preferences]);
 
@@ -78,7 +79,6 @@ export default function SettingsPage({ user }: Props) {
 
   const set = <K extends keyof UserPreferences>(key: K, value: UserPreferences[K]) => {
     setDraft((current) => ({ ...current, [key]: value }));
-    setSaved(false);
   };
 
   /** The theme and the language take effect the moment they are picked — they
@@ -87,22 +87,20 @@ export default function SettingsPage({ user }: Props) {
   const setAndApply = async (values: Partial<UserPreferences>) => {
     const next = { ...draft, ...values };
     setDraft(next);
-    setError("");
     try {
       await save(next);
     } catch (e) {
-      setError(String(e));
+      toast.error(String(e));
     }
   };
 
   const submit = async () => {
     setSaving(true);
-    setError("");
     try {
       await save(draft);
-      setSaved(true);
+      toast.success(t("settings.saved"));
     } catch (e) {
-      setError(String(e));
+      toast.error(String(e));
     } finally {
       setSaving(false);
     }
@@ -328,13 +326,8 @@ export default function SettingsPage({ user }: Props) {
             <button type="button" onClick={submit} disabled={saving || !dirty} className={buttonPrimary}>
               {saving ? t("settings.saving") : t("settings.save")}
             </button>
-            {saved && !dirty && (
-              <span className="text-sm text-emerald-600 dark:text-emerald-400">{t("settings.saved")}</span>
-            )}
             {!loaded && <span className="text-sm text-slate-500 dark:text-slate-400">{t("wizard.loading")}</span>}
           </div>
-
-          {error && <p className="text-sm text-red-600 dark:text-red-400">{error}</p>}
         </>
       )}
 
@@ -367,14 +360,12 @@ export default function SettingsPage({ user }: Props) {
  */
 function AdminSettings() {
   const { t } = useTranslation();
+  const toast = useToast();
   const [settings, setSettings] = useState<InstanceSettings | null>(null);
   const [draft, setDraft] = useState<InstanceSettings | null>(null);
   const [saving, setSaving] = useState(false);
-  const [saved, setSaved] = useState(false);
-  const [error, setError] = useState("");
   const [testTo, setTestTo] = useState("");
   const [testing, setTesting] = useState(false);
-  const [testResult, setTestResult] = useState<{ ok: boolean; text: string } | null>(null);
 
   useEffect(() => {
     api
@@ -383,30 +374,31 @@ function AdminSettings() {
         setSettings(values);
         setDraft(values);
       })
-      .catch((e) => setError(String(e)));
+      .catch((e) => toast.error(String(e)));
+    // toast is stable for the provider's lifetime; this effect runs once.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  if (!draft || !settings) {
-    return error ? <p className="text-sm text-red-600 dark:text-red-400">{error}</p> : null;
-  }
+  if (!draft || !settings) return null;
 
   const dirty = JSON.stringify(draft) !== JSON.stringify(settings);
 
   const set = <K extends keyof InstanceSettings>(key: K, value: InstanceSettings[K]) => {
     setDraft((current) => (current ? { ...current, [key]: value } : current));
-    setSaved(false);
   };
 
   const runTest = async () => {
     setTesting(true);
-    setTestResult(null);
+    // A test mail takes as long as the SMTP conversation takes — the loading
+    // toast holds the user's place until the server has actually answered.
+    const pending = toast.loading(t("settings.mailTesting"));
     try {
       const result = await api.sendTestMail(testTo.trim());
-      setTestResult({ ok: true, text: t("settings.mailTestSent", { to: result.to }) });
+      pending.success(t("settings.mailTestSent", { to: result.to }));
     } catch (e) {
       // Whatever the mail server said, said plainly: that sentence is the
       // whole diagnosis for a wrong port, a refused password or a firewall.
-      setTestResult({ ok: false, text: String(e) });
+      pending.error(String(e));
     } finally {
       setTesting(false);
     }
@@ -414,15 +406,13 @@ function AdminSettings() {
 
   const submit = async () => {
     setSaving(true);
-    setError("");
     try {
       const stored = await api.saveInstanceSettings(draft);
       setSettings(stored);
       setDraft(stored);
-      setSaved(true);
-      setTestResult(null);
+      toast.success(t("settings.saved"));
     } catch (e) {
-      setError(String(e));
+      toast.error(String(e));
     } finally {
       setSaving(false);
     }
@@ -713,17 +703,6 @@ function AdminSettings() {
                   {testing ? t("settings.mailTesting") : t("settings.mailTestSend")}
                 </button>
               </div>
-              {testResult && (
-                <p
-                  className={`text-sm ${
-                    testResult.ok
-                      ? "text-emerald-600 dark:text-emerald-400"
-                      : "text-red-600 dark:text-red-400"
-                  }`}
-                >
-                  {testResult.text}
-                </p>
-              )}
             </div>
           </>
         )}
@@ -733,12 +712,7 @@ function AdminSettings() {
         <button type="button" onClick={submit} disabled={saving || !dirty} className={buttonPrimary}>
           {saving ? t("settings.saving") : t("settings.saveAdmin")}
         </button>
-        {saved && !dirty && (
-          <span className="text-sm text-emerald-600 dark:text-emerald-400">{t("settings.saved")}</span>
-        )}
       </div>
-
-      {error && <p className="text-sm text-red-600 dark:text-red-400">{error}</p>}
     </div>
   );
 }
@@ -801,11 +775,11 @@ function Toggle({
  */
 function AssistantAdmin() {
   const { t } = useTranslation();
+  const toast = useToast();
   const [status, setStatus] = useState<AssistantStatus | null>(null);
-  const [error, setError] = useState("");
 
   const refresh = () =>
-    api.assistantStatus().then(setStatus).catch((e) => setError(String(e)));
+    api.assistantStatus().then(setStatus).catch((e) => toast.error(String(e)));
 
   useEffect(() => {
     void refresh();
@@ -819,17 +793,14 @@ function AssistantAdmin() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [status?.download.state]);
 
-  if (!status) {
-    return error ? <p className="text-sm text-red-600 dark:text-red-400">{error}</p> : null;
-  }
+  if (!status) return null;
 
   const act = async (action: "download" | "remove") => {
-    setError("");
     try {
       await api.assistantModel(action);
       await refresh();
     } catch (e) {
-      setError(String(e));
+      toast.error(String(e));
     }
   };
 
@@ -882,7 +853,6 @@ function AssistantAdmin() {
       {!status.installed && (
         <p className="text-xs text-slate-500 dark:text-slate-400">{t("settings.assistantFootprint")}</p>
       )}
-      {error && <p className="text-sm text-red-600 dark:text-red-400">{error}</p>}
     </section>
   );
 }
@@ -898,16 +868,15 @@ function AssistantAdmin() {
  */
 function UnCardsAdminPanel() {
   const { t } = useTranslation();
+  const toast = useToast();
   const [status, setStatus] = useState<UnCardStoreStatus | null>(null);
   const [busy, setBusy] = useState<"" | "check" | "download" | "import" | "remove">("");
-  const [message, setMessage] = useState("");
-  const [error, setError] = useState("");
 
   const refresh = (remote = false) =>
     api
       .unCardStoreStatus(remote)
       .then(setStatus)
-      .catch((e) => setError(String(e)));
+      .catch((e) => toast.error(String(e)));
 
   useEffect(() => {
     void refresh(false);
@@ -919,13 +888,11 @@ function UnCardsAdminPanel() {
     done: string,
   ) => {
     setBusy(kind);
-    setMessage("");
-    setError("");
     try {
       await action();
-      if (done) setMessage(done);
+      if (done) toast.success(done);
     } catch (e) {
-      setError(String(e));
+      toast.error(String(e));
     } finally {
       setBusy("");
     }
@@ -1035,15 +1002,21 @@ function UnCardsAdminPanel() {
             className={buttonSecondary}
             disabled={busy !== ""}
             onClick={() => {
-              if (!confirm(t("settings.unCardsRemoveConfirm"))) return;
-              void run(
-                "remove",
-                async () => {
-                  await api.unCardStoreRemove();
-                  await refresh(false);
+              // Deferred removal with undo: the panel flips to "not installed"
+              // now; the store is only cleared when the window closes. Undo
+              // restores the view — nothing was removed yet.
+              const before = status;
+              setStatus((current) =>
+                current ? { ...current, local: { ...current.local, installed: false } } : current);
+              toast.undoable(t("toast.removedUnCards"), {
+                execute: () => {
+                  api.unCardStoreRemove().then(() => refresh(false)).catch((e) => {
+                    toast.error(String(e));
+                    void refresh(false);
+                  });
                 },
-                t("settings.unCardsRemoved"),
-              );
+                restore: () => setStatus(before),
+              });
             }}
           >
             {t("settings.unCardsRemove")}
@@ -1051,8 +1024,6 @@ function UnCardsAdminPanel() {
         )}
       </div>
 
-      {message && <p className="text-sm text-emerald-700 dark:text-emerald-400">{message}</p>}
-      {error && <p className="text-sm text-red-600 dark:text-red-400">{error}</p>}
     </section>
   );
 }
@@ -1063,13 +1034,12 @@ function UnCardsAdminPanel() {
  *  enable the in-app one, including what handing over the socket means. */
 function UpdatePanel() {
   const { t } = useTranslation();
+  const toast = useToast();
   const [capability, setCapability] = useState<UpdateCapability | null>(null);
   const [status, setStatus] = useState<UpdateStatus | null>(null);
   const [checking, setChecking] = useState(false);
   const [applying, setApplying] = useState(false);
-  const [phase, setPhase] = useState<string>("");
-  const [message, setMessage] = useState("");
-  const [error, setError] = useState("");
+  const [confirmApply, setConfirmApply] = useState(false);
 
   useEffect(() => {
     api.updateCapability().then(setCapability).catch(() => setCapability(null));
@@ -1078,24 +1048,22 @@ function UpdatePanel() {
       .updateState()
       .then((answer) => {
         if (answer.state?.phase === "done") {
-          setMessage(t("settings.updateDone", { version: answer.current }));
+          toast.success(t("settings.updateDone", { version: answer.current }));
         } else if (answer.state?.phase === "failed") {
-          setError(
-            t("settings.updateFailed", { error: answer.state.error ?? "" }),
-          );
+          toast.error(t("settings.updateFailed", { error: answer.state.error ?? "" }));
         }
       })
       .catch(() => undefined);
-  }, [t]);
+    // Runs once: t or toast retriggering it would repeat the outcome toast.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const checkNow = async () => {
     setChecking(true);
-    setError("");
-    setMessage("");
     try {
       setStatus(await api.updateCheckNow());
     } catch (e) {
-      setError(String(e));
+      toast.error(String(e));
     } finally {
       setChecking(false);
     }
@@ -1103,18 +1071,15 @@ function UpdatePanel() {
 
   const apply = async () => {
     if (!status?.latest) return;
-    if (!window.confirm(t("settings.updateApplyConfirm", { version: status.latest }))) {
-      return;
-    }
     setApplying(true);
-    setError("");
-    setPhase(t("settings.updatePhasePulling"));
+    // One loading toast follows the whole update: pulling, restarting, and —
+    // on success — the page reloads into the new version underneath it.
+    const pending = toast.loading(t("settings.updatePhasePulling"));
     try {
       await api.updateApply();
     } catch (e) {
-      setError(String(e));
+      pending.error(String(e));
       setApplying(false);
-      setPhase("");
       return;
     }
     // Follow the state until the restart cuts the connection, then wait for
@@ -1124,30 +1089,28 @@ function UpdatePanel() {
       try {
         const answer = await api.updateState();
         if (answer.state?.phase === "failed") {
-          setError(t("settings.updateFailed", { error: answer.state.error ?? "" }));
+          pending.error(t("settings.updateFailed", { error: answer.state.error ?? "" }));
           setApplying(false);
-          setPhase("");
           return;
         }
         if (answer.current !== status.current || answer.state?.phase === "done") {
           window.location.reload();
           return;
         }
-        setPhase(
+        pending.progress(
           answer.state?.phase === "handed_over" || answer.state?.phase === "stopping"
             ? t("settings.updatePhaseRestarting")
             : t("settings.updatePhasePulling"),
         );
       } catch {
         // The application is restarting; keep knocking until it answers.
-        setPhase(t("settings.updatePhaseRestarting"));
+        pending.progress(t("settings.updatePhaseRestarting"));
       }
       if (Date.now() - started < 10 * 60 * 1000) {
         window.setTimeout(poll, 2500);
       } else {
-        setError(t("settings.updateTimeout"));
+        pending.error(t("settings.updateTimeout"));
         setApplying(false);
-        setPhase("");
       }
     };
     window.setTimeout(poll, 2500);
@@ -1183,17 +1146,32 @@ function UpdatePanel() {
 
       {updateAvailable && canApply && (
         <div className="space-y-2">
-          <button type="button" className={buttonPrimary} onClick={apply} disabled={applying}>
+          <button
+            type="button"
+            className={buttonPrimary}
+            onClick={() => setConfirmApply(true)}
+            disabled={applying}
+          >
             {applying
-              ? phase || t("settings.updateApplying")
+              ? t("settings.updateApplying")
               : t("settings.updateApplyNow", { version: status?.latest })}
           </button>
           <p className="text-xs text-slate-500 dark:text-slate-400">{t("settings.updateApplyHint")}</p>
         </div>
       )}
-      {applying && phase && (
-        <p className="text-sm text-slate-700 dark:text-slate-200">{phase}</p>
-      )}
+      {/* Updating restarts the application for everyone using it — that asks
+          for a deliberate step before, not an undo window after. */}
+      <ConfirmDialog
+        open={confirmApply}
+        title={t("settings.adminUpdates")}
+        body={t("settings.updateApplyConfirm", { version: status?.latest ?? "" })}
+        confirmLabel={t("settings.updateApplyNow", { version: status?.latest ?? "" })}
+        onConfirm={() => {
+          setConfirmApply(false);
+          void apply();
+        }}
+        onCancel={() => setConfirmApply(false)}
+      />
 
       {/* The operator did their part (switch on, socket mounted) and the
           capability is still off: say why, right here — this state used to
@@ -1239,8 +1217,6 @@ volumes:
         </div>
       )}
 
-      {message && <p className="text-sm text-emerald-700 dark:text-emerald-400">{message}</p>}
-      {error && <p className="text-sm text-red-600 dark:text-red-400">{error}</p>}
     </section>
   );
 }

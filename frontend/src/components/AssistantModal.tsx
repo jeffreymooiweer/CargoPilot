@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { api, AssistantEvent, AssistantPending, AssistantState } from "../api/client";
 import { documentLanguage, localised } from "../i18n/language";
+import { useToast } from "../toast/ToastProvider";
 import AiIcon from "./AiIcon";
 import {
   AddressTextarea,
@@ -49,6 +50,7 @@ export default function AssistantModal({ open, onClose, buildState, onApplyState
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
   const [showInfo, setShowInfo] = useState(false);
+  const toast = useToast();
 
   useEffect(() => {
     if (!open) return;
@@ -110,7 +112,9 @@ export default function AssistantModal({ open, onClose, buildState, onApplyState
       setFreeText("");
       setShowInfo(false);
     } catch (e) {
-      setError(String(e));
+      // Unlike a clarification — which is part of the conversation and stays
+      // at the question — a failed request is a system event: toast.
+      toast.error(String(e));
     } finally {
       setBusy(false);
     }

@@ -1,5 +1,6 @@
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { useToast } from "../toast/ToastProvider";
 import { api, EquipmentItem } from "../api/client";
 import EquipmentImportDialog from "../components/EquipmentImportDialog";
 
@@ -144,9 +145,10 @@ export default function MaterieelPage() {
   const [form, setForm] = useState<EquipmentItem>(emptyForm());
   const [editingId, setEditingId] = useState<number | null>(null);
   const [error, setError] = useState("");
+  const toast = useToast();
   const [importOpen, setImportOpen] = useState(false);
 
-  const load = () => api.listEquipment().then(setItems).catch((e) => setError(String(e)));
+  const load = () => api.listEquipment().then(setItems).catch((e) => toast.error(String(e)));
   useEffect(() => { load(); }, []);
 
   const filtered = useMemo(() => {
@@ -208,11 +210,22 @@ export default function MaterieelPage() {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
-  const remove = async (id: number) => {
-    if (!confirm(t("materieel.confirmDelete"))) return;
-    await api.deleteEquipment(id);
+  const remove = (item: EquipmentItem) => {
+    // Deferred delete with undo: the card disappears now, the DELETE fires
+    // when the six-second window closes. Undo means no call was ever made.
+    const id = item.id!;
     if (editingId === id) resetForm();
-    load();
+    setItems((current) => current.filter((candidate) => candidate.id !== id));
+    toast.undoable(t("toast.deletedItem", { name: item.specifications }), {
+      execute: () => {
+        api.deleteEquipment(id).then(load).catch((e) => {
+          toast.error(String(e));
+          void load();
+        });
+      },
+      restore: () => setItems((current) =>
+        current.some((candidate) => candidate.id === id) ? current : [...current, item]),
+    });
   };
 
   return (
@@ -222,12 +235,12 @@ export default function MaterieelPage() {
         <div className="flex shrink-0 items-center gap-0.5">
           <CardAction
             label={t("import.downloadTemplate")}
-            onClick={() => api.downloadEquipmentTemplate().catch((e) => setError(String(e)))}
+            onClick={() => api.downloadEquipmentTemplate().catch((e) => toast.error(String(e)))}
             icon={<DownloadIcon />}
           />
           <CardAction
             label={t("materieel.exportLibrary")}
-            onClick={() => api.exportEquipmentLibrary().catch((e) => setError(String(e)))}
+            onClick={() => api.exportEquipmentLibrary().catch((e) => toast.error(String(e)))}
             icon={<DownloadIcon />}
           />
           <CardAction label={t("materieel.import")} onClick={() => setImportOpen(true)} icon={<ImportIcon />} />
@@ -294,7 +307,7 @@ export default function MaterieelPage() {
               <div className="ml-auto flex items-center gap-0.5">
                 <CardAction label={t("materieel.edit")} onClick={() => startEdit(item)} icon={<PencilIcon />} />
                 <CardAction label={t("materieel.duplicate")} onClick={() => duplicate(item)} icon={<CopyIcon />} />
-                <CardAction label={t("materieel.delete")} onClick={() => remove(item.id!)} icon={<TrashIcon />} danger />
+                <CardAction label={t("materieel.delete")} onClick={() => remove(item)} icon={<TrashIcon />} danger />
               </div>
             </div>
             <div>
@@ -340,7 +353,7 @@ export default function MaterieelPage() {
                   <div className="flex items-center gap-0.5">
                     <CardAction label={t("materieel.edit")} onClick={() => startEdit(item)} icon={<PencilIcon />} />
                     <CardAction label={t("materieel.duplicate")} onClick={() => duplicate(item)} icon={<CopyIcon />} />
-                    <CardAction label={t("materieel.delete")} onClick={() => remove(item.id!)} icon={<TrashIcon />} danger />
+                    <CardAction label={t("materieel.delete")} onClick={() => remove(item)} icon={<TrashIcon />} danger />
                   </div>
                 </td>
               </tr>

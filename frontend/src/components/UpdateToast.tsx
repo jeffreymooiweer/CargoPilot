@@ -39,11 +39,13 @@ export default function UpdateToast({ user }: { user: User }) {
         pushed.current = true;
         toast.info(`${t("update.available", { version: latest })} ${t("update.hint")}`, {
           sticky: true,
-          action: answer.url
-            ? {
-                label: t("update.releaseNotes"),
-                run: () => window.open(answer.url, "_blank", "noopener,noreferrer"),
-              }
+          actions: answer.url
+            ? [
+                {
+                  label: t("update.releaseNotes"),
+                  run: () => window.open(answer.url, "_blank", "noopener,noreferrer"),
+                },
+              ]
             : undefined,
           onDismiss: () => localStorage.setItem(DISMISSED_KEY, latest),
         });

@@ -50,15 +50,6 @@ interface Props<T> {
   cardTitle: (row: T, index: number) => ReactNode;
   /** Icons at the top right of the card heading. */
   actions?: (row: T, index: number) => ReactNode;
-  /**
-   * Shown under the primary fields whatever the card's state.
-   *
-   * For something the record needs an *answer* to rather than something it
-   * merely holds — the dangerous-goods recognition asking whether it got the
-   * substance right. Behind "show more" it would go unanswered by exactly the
-   * people who never open the card.
-   */
-  banner?: (row: T, index: number) => ReactNode;
   empty?: ReactNode;
   /** Below the last card, for example a button to add a record. */
   footer?: ReactNode;
@@ -73,7 +64,6 @@ export default function RecordCards<T>({
   rowKey,
   cardTitle,
   actions,
-  banner,
   empty,
   footer,
 }: Props<T>) {
@@ -109,7 +99,6 @@ export default function RecordCards<T>({
       {rows.map((row, index) => {
         const key = String(rowKey(row, index));
         const isOpen = expanded.has(key);
-        const note = banner?.(row, index);
         return (
           <article
             key={key}
@@ -139,8 +128,6 @@ export default function RecordCards<T>({
                   </Row>
                 ))}
             </div>
-
-            {note && <div className="border-t border-slate-100 px-3 py-2 dark:border-slate-800">{note}</div>}
 
             {secondary.length > 0 && (
               <button

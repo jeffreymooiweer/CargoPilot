@@ -118,8 +118,6 @@
     "cancel": "Annuler",
     "dangerousGoods": "Marchandises dangereuses",
     "dgDetected": "Numéro ONU détecté",
-    "dgSuggestedOne": "Reconnu : UN {{un}} (classe {{class}})",
-    "dgSuggestedMany": "Plusieurs matières reconnues — choisissez le numéro ONU :",
     "dgApply": "Appliquer",
     "dgDismiss": "Pas de marchandises dangereuses",
     "quantityAndUnit": "Quantité",
@@ -137,7 +135,9 @@
     "doneEditing": "Terminé",
     "dimensions": "Dimensions",
     "dgYes": "Oui",
-    "dgNo": "Non"
+    "dgNo": "Non",
+    "dgToastOne": "Ligne {{number}} : UN {{un}} ({{name}}, classe {{class}}) reconnu. L'appliquer ?",
+    "dgToastMany": "Ligne {{number}} : plusieurs matières possibles. Laquelle est-ce ?"
   },
   "import": {
     "downloadTemplate": "Télécharger le modèle",

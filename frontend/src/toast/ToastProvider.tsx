@@ -41,14 +41,25 @@ import {
 } from "react";
 import { useTranslation } from "react-i18next";
 
-export type ToastKind = "success" | "info" | "error" | "loading";
+export type ToastKind = "success" | "info" | "error" | "loading" | "question";
+
+export interface ToastAction {
+  label: string;
+  run: () => void;
+}
 
 export interface Toast {
   id: number;
   kind: ToastKind;
   message: string;
-  /** Optional action button (the undo). */
-  action?: { label: string; run: () => void };
+  /**
+   * Buttons in the toast: the undo, or an answer to a question.
+   *
+   * Several of them because a question can have several right answers — two
+   * sulphuric acids differing only in their qualifier are one recognition
+   * with two UN numbers, and picking between them is the whole point.
+   */
+  actions?: ToastAction[];
   /** For undoable toasts: what to do when the window closes unused. */
   onExpire?: () => void;
   /** Fires only on the explicit × — not on timeout or eviction. The update
@@ -72,9 +83,17 @@ export interface ToastApi {
   success: (message: string) => number;
   info: (
     message: string,
-    options?: { sticky?: boolean; action?: Toast["action"]; onDismiss?: () => void },
+    options?: { sticky?: boolean; actions?: ToastAction[]; onDismiss?: () => void },
   ) => number;
   error: (message: string) => number;
+  /**
+   * A question the user has to answer, with the answers as buttons.
+   *
+   * Always stays: a question that slides away after four seconds has not been
+   * asked. Closing it with the × is itself an answer — "no" — which is what
+   * `onDismiss` is for.
+   */
+  ask: (message: string, options: { actions: ToastAction[]; onDismiss?: () => void }) => number;
   /** Returns a handle that resolves the loading toast into its outcome.
    * `progress` rewrites the message while still loading — one toast follows
    * a multi-phase action (pulling the image, restarting) instead of a new
@@ -132,9 +151,15 @@ export function ToastProvider({ children }: { children: ReactNode }) {
       setToasts((current) => {
         const next = [...current, { ...toast, id }];
         if (next.length > MAX_VISIBLE) {
-          // Expire the oldest non-loading toast; a loading toast is a promise
-          // to the user and only its own outcome may close it.
-          const oldest = next.find((candidate) => candidate.kind !== "loading");
+          // A loading toast is a promise to the user and only its own outcome
+          // may close it, so it is never the one that gives way.
+          const evictable = next.filter((candidate) => candidate.kind !== "loading");
+          // Transient confirmations give way before anything that stays on
+          // purpose. A sticky toast is either a question waiting for an answer
+          // or a notice meant to be read; pushing one of those out to make
+          // room for "saved" loses the more important of the two.
+          const oldest =
+            evictable.find((candidate) => !candidate.sticky) ?? evictable[0];
           if (oldest) {
             // Deferred actions still fire — being pushed out of view must not
             // cancel a delete the user asked for.
@@ -174,12 +199,14 @@ export function ToastProvider({ children }: { children: ReactNode }) {
             kind: "info",
             message,
             sticky: options?.sticky,
-            action: options?.action,
+            actions: options?.actions,
             onDismiss: options?.onDismiss,
           },
           options?.sticky ? null : AUTO_DISMISS_MS,
         ),
       error: (message) => push({ kind: "error", message }, null),
+      ask: (message, { actions, onDismiss }) =>
+        push({ kind: "question", message, sticky: true, actions, onDismiss }, null),
       loading: (message) => {
         const id = push({ kind: "loading", message }, null);
         return {
@@ -202,13 +229,15 @@ export function ToastProvider({ children }: { children: ReactNode }) {
             kind: "info",
             message,
             onExpire: once(execute),
-            action: {
-              label: label ?? t("toast.undo"),
-              run: once(() => {
-                restore();
-                remove(id, "undo");
-              }),
-            },
+            actions: [
+              {
+                label: label ?? t("toast.undo"),
+                run: once(() => {
+                  restore();
+                  remove(id, "undo");
+                }),
+              },
+            ],
           },
           UNDO_WINDOW_MS,
         );
@@ -234,6 +263,10 @@ const KIND_STYLE: Record<ToastKind, string> = {
     "border-red-300 bg-red-50 text-red-900 dark:border-red-700 dark:bg-red-950 dark:text-red-100",
   loading:
     "border-sky-300 bg-sky-50 text-sky-900 dark:border-sky-700 dark:bg-sky-950 dark:text-sky-100",
+  // Amber, like the recognition chip it replaces: this one is not telling the
+  // user something, it is waiting for them.
+  question:
+    "border-amber-300 bg-amber-50 text-amber-900 dark:border-amber-700 dark:bg-amber-950 dark:text-amber-100",
 };
 
 const KIND_ICON: Record<ToastKind, string> = {
@@ -241,6 +274,7 @@ const KIND_ICON: Record<ToastKind, string> = {
   info: "ℹ",
   error: "!",
   loading: "…",
+  question: "?",
 };
 
 function ToastHost({ toasts, onDismiss }: { toasts: Toast[]; onDismiss: (id: number) => void }) {
@@ -261,14 +295,34 @@ function ToastHost({ toasts, onDismiss }: { toasts: Toast[]; onDismiss: (id: num
           <span aria-hidden className={`mt-0.5 shrink-0 font-semibold ${toast.kind === "loading" ? "animate-pulse" : ""}`}>
             {KIND_ICON[toast.kind]}
           </span>
-          <span className="min-w-0 flex-1 break-words">{toast.message}</span>
-          {toast.action && (
+          {/* A question puts its answers under the text rather than beside it:
+              two or three UN numbers on one line squeeze the sentence that
+              says what is being asked. One answer still sits alongside, where
+              "Undo" has always been. */}
+          <div className={`min-w-0 flex-1 ${(toast.actions?.length ?? 0) > 1 ? "space-y-1.5" : ""}`}>
+            <span className="block break-words">{toast.message}</span>
+            {(toast.actions?.length ?? 0) > 1 && (
+              <div className="flex flex-wrap gap-1.5">
+                {toast.actions!.map((action) => (
+                  <button
+                    key={action.label}
+                    type="button"
+                    onClick={action.run}
+                    className="rounded-md border border-current px-2 py-0.5 text-[11px] font-semibold hover:opacity-75"
+                  >
+                    {action.label}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+          {toast.actions?.length === 1 && (
             <button
               type="button"
-              onClick={toast.action.run}
+              onClick={toast.actions[0].run}
               className="shrink-0 rounded-md px-2 py-0.5 font-semibold underline decoration-2 underline-offset-2 hover:opacity-75"
             >
-              {toast.action.label}
+              {toast.actions[0].label}
             </button>
           )}
           {toast.kind !== "loading" && (

@@ -76,15 +76,6 @@ describe("RecordCards", () => {
     );
   });
 
-  it("shows a banner whether the card is open or closed", async () => {
-    renderCards({ banner: (row) => (row.id === 2 ? <p>confirm the substance</p> : null) });
-    // Closed.
-    expect(screen.getByText("confirm the substance")).toBeInTheDocument();
-    await userEvent.click(screen.getAllByRole("button", { name: /records.viewMore/ })[1]);
-    // And still open.
-    expect(screen.getByText("confirm the substance")).toBeInTheDocument();
-  });
-
   it("renders the actions per record", () => {
     renderCards({ actions: (row) => <button type="button">edit {row.id}</button> });
     expect(screen.getByRole("button", { name: "edit 1" })).toBeInTheDocument();

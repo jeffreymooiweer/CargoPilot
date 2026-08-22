@@ -1,15 +1,14 @@
 /**
- * The lines step: cards that show, a dialog that edits.
+ * The lines step: cards that show, a dialog that edits, a snackbar that asks.
  *
- * Two things are pinned here. The first is the shape: the card carries no
- * input fields at all — that is what lets one layout work on a phone and on a
- * monitor — and everything changeable lives behind the edit icon. The second
- * is the name suggestion, which is the exception that proves it: typing
- * "benzine" used to produce nothing, and now the backend's candidates are
- * offered on the card itself, because a substance recognised but never
- * confirmed is what this step exists to catch. Confirming sets the tick *and*
- * the UN number, rejecting puts it away for good, and nothing happens without
- * a click.
+ * Three things are pinned here. The shape: the card carries no input fields at
+ * all — that is what lets one layout work on a phone and on a monitor — and
+ * everything changeable lives behind the edit icon. The dialog: it opens on
+ * that icon and what is changed in it reaches the line. And the name
+ * recognition, which is the one thing on a line that asks the user a
+ * *question*, and therefore asks it where the application asks things: a
+ * snackbar that stays until answered. Accepting sets the tick *and* the UN
+ * number, closing it is a final no, and nothing happens without a click.
  */
 import { render, screen } from "@testing-library/react";
 import { useState } from "react";
@@ -17,6 +16,7 @@ import userEvent from "@testing-library/user-event";
 import { describe, expect, it, vi } from "vitest";
 
 import ReviewLinesPanel, { DraftLine } from "./ReviewLinesPanel";
+import { ToastProvider } from "../toast/ToastProvider";
 import { LineItem } from "../api/client";
 
 vi.mock("react-i18next", () => ({
@@ -55,15 +55,17 @@ function resultLine(candidates: LineItem["dg_name_candidates"]): LineItem {
 
 function renderPanel(lines: DraftLine[], result: LineItem[], onDraftChange = vi.fn()) {
   render(
-    <ReviewLinesPanel
-      draftLines={lines}
-      resultLines={result}
-      onDraftChange={onDraftChange}
-      onRemoveLine={vi.fn()}
-      onDuplicateLine={vi.fn()}
-      onAddLine={vi.fn()}
-      translateMessage={(m) => m}
-    />,
+    <ToastProvider>
+      <ReviewLinesPanel
+        draftLines={lines}
+        resultLines={result}
+        onDraftChange={onDraftChange}
+        onRemoveLine={vi.fn()}
+        onDuplicateLine={vi.fn()}
+        onAddLine={vi.fn()}
+        translateMessage={(m) => m}
+      />
+    </ToastProvider>,
   );
   return onDraftChange;
 }
@@ -78,42 +80,56 @@ function StatefulPanel({ lines, result, onChange }: {
 }) {
   const [current, setCurrent] = useState(lines);
   return (
-    <ReviewLinesPanel
-      draftLines={current}
-      resultLines={result}
-      onDraftChange={(next) => {
-        setCurrent(next);
-        onChange(next);
-      }}
-      onRemoveLine={vi.fn()}
-      onDuplicateLine={vi.fn()}
-      onAddLine={vi.fn()}
-      translateMessage={(m) => m}
-    />
+    <ToastProvider>
+      <ReviewLinesPanel
+        draftLines={current}
+        resultLines={result}
+        onDraftChange={(next) => {
+          setCurrent(next);
+          onChange(next);
+        }}
+        onRemoveLine={vi.fn()}
+        onDuplicateLine={vi.fn()}
+        onAddLine={vi.fn()}
+        translateMessage={(m) => m}
+      />
+    </ToastProvider>
   );
 }
 
 const petrol = [{ un: "1203", name: "BENZINE (MOTOR SPIRIT)", class: "3" }];
 
-describe("DG name suggestion", () => {
-  it("confirming sets the tick and carries the UN number", async () => {
+describe("the DG name recognition, asked in a snackbar", () => {
+  it("accepting sets the tick and carries the UN number", async () => {
     const onDraftChange = renderPanel([draft], [resultLine(petrol)]);
-    await userEvent.click(screen.getAllByRole("button", { name: "review.dgApply" })[0]);
+    await userEvent.click(await screen.findByRole("button", { name: "review.dgApply" }));
     const updated = onDraftChange.mock.calls[onDraftChange.mock.calls.length - 1][0] as DraftLine[];
     expect(updated[0].dangerous_goods).toBe(true);
     expect(updated[0].confirmed_un).toBe("1203");
   });
 
-  it("rejecting puts the suggestion away for this line", async () => {
+  it("accepting closes the snackbar", async () => {
+    render(<StatefulPanel lines={[draft]} result={[resultLine(petrol)]} onChange={vi.fn()} />);
+    await userEvent.click(await screen.findByRole("button", { name: "review.dgApply" }));
+    expect(screen.queryByText("review.dgToastOne")).toBeNull();
+  });
+
+  it("closing the snackbar is a no, and a final one", async () => {
     const onDraftChange = renderPanel([draft], [resultLine(petrol)]);
-    await userEvent.click(screen.getAllByRole("button", { name: "review.dgDismiss" })[0]);
+    await screen.findByText("review.dgToastOne");
+    await userEvent.click(screen.getByRole("button", { name: "toast.dismiss" }));
     const updated = onDraftChange.mock.calls[onDraftChange.mock.calls.length - 1][0] as DraftLine[];
     expect(updated[0].dg_dismissed).toBe(true);
   });
 
-  it("a dismissed suggestion does not come back", () => {
+  it("a rejected recognition is not asked again", () => {
     renderPanel([{ ...draft, dg_dismissed: true }], [resultLine(petrol)]);
-    expect(screen.queryByText("review.dgSuggestedOne")).toBeNull();
+    expect(screen.queryByText("review.dgToastOne")).toBeNull();
+  });
+
+  it("an already confirmed line is not asked again either", () => {
+    renderPanel([{ ...draft, confirmed_un: "1203" }], [resultLine(petrol)]);
+    expect(screen.queryByText("review.dgToastOne")).toBeNull();
   });
 
   it("several candidates become a button per UN number, none pre-chosen", async () => {
@@ -122,17 +138,25 @@ describe("DG name suggestion", () => {
       { un: "2796", name: "ZWAVELZUUR met ten hoogste 51% zuur", class: "8" },
     ];
     const onDraftChange = renderPanel([draft], [resultLine(acids)]);
-    expect(screen.getAllByText("review.dgSuggestedMany").length).toBeGreaterThan(0);
-    await userEvent.click(screen.getAllByRole("button", { name: "UN 2796" })[0]);
+    expect(await screen.findByText("review.dgToastMany")).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "UN 1830" })).toBeInTheDocument();
+    await userEvent.click(screen.getByRole("button", { name: "UN 2796" }));
     const updated = onDraftChange.mock.calls[onDraftChange.mock.calls.length - 1][0] as DraftLine[];
     expect(updated[0].confirmed_un).toBe("2796");
     expect(updated[0].dangerous_goods).toBe(true);
   });
 
-  it("without candidates there is no chip", () => {
+  it("without candidates nothing is asked", () => {
     renderPanel([draft], [resultLine([])]);
-    expect(screen.queryByText("review.dgSuggestedOne")).toBeNull();
-    expect(screen.queryByText("review.dgSuggestedMany")).toBeNull();
+    expect(screen.queryByText("review.dgToastOne")).toBeNull();
+    expect(screen.queryByText("review.dgToastMany")).toBeNull();
+  });
+
+  it("the recognition is off the card entirely", async () => {
+    renderPanel([draft], [resultLine(petrol)]);
+    await screen.findByText("review.dgToastOne");
+    // One place asks it, and it is not the card: the card stays a summary.
+    expect(screen.getAllByText("review.dgToastOne")).toHaveLength(1);
   });
 });
 

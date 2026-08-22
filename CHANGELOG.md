@@ -2,6 +2,34 @@
 
 All notable changes are documented here, following [Semantic Versioning](https://semver.org/).
 
+## [1.155.0] — 2026-08-22
+
+### Changed
+
+- **The dangerous-goods name recognition is now a snackbar with an accept
+  button.** Typing "benzine" still recognises UN 1203, but the question is no
+  longer a block on the goods card — it is asked where the application asks
+  everything else. The snackbar names the line and the substance and offers
+  the answer as a button; where the name matches several UN numbers (two
+  sulphuric acids differing only in their qualifier) it offers a button per
+  number, up to three. It never dismisses itself, because four seconds is not
+  an answer, and closing it with the × *is* an answer — the same final "not
+  this line" the reject chip used to mean. The goods card is now purely a
+  summary.
+- **An import that went cleanly is a toast, not a report.** Importing an
+  equipment file with nothing skipped and no row errors now confirms with
+  "3 created, 2 updated" and closes the dialog. The report stays in the dialog
+  exactly when it earns the space: a skipped row or a row error is something
+  to read through rather than something to notice in passing.
+- Toasts can carry more than one action button, and a question puts its
+  answers under its text so several UN numbers do not squeeze the sentence
+  asking about them.
+- **A crowded stack now drops the passing notes first.** With more than five
+  toasts on screen, transient confirmations give way before anything that
+  stays on purpose — a question waiting for an answer, or a notice meant to be
+  read. Previously the oldest went regardless, so "settings saved" could push
+  out a substance recognition nobody had answered yet.
+
 ## [1.154.0] — 2026-08-22
 
 ### Changed

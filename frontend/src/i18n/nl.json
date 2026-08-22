@@ -866,5 +866,13 @@
     "sendCode": "Code mailen",
     "codeSent": "Er is een code naar uw e-mailadres gestuurd.",
     "turnOffHintMail": "Vraag eerst een code aan en vul die hieronder in. Een herstelcode werkt ook."
+  },
+  "toast": {
+    "undo": "Ongedaan maken",
+    "dismiss": "Sluiten",
+    "cancel": "Annuleren",
+    "deletedUser": "Gebruiker {{name}} verwijderd",
+    "deletedItem": "{{name}} verwijderd",
+    "removedUnCards": "UN-kaartenset verwijderd"
   }
 }

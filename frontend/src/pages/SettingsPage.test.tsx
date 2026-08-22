@@ -13,6 +13,7 @@ import userEvent from "@testing-library/user-event";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import SettingsPage from "./SettingsPage";
+import { ToastProvider } from "../toast/ToastProvider";
 import { User } from "../api/client";
 
 vi.mock("react-i18next", () => ({
@@ -62,14 +63,14 @@ beforeEach(() => vi.clearAllMocks());
 
 describe("SettingsPage tabs", () => {
   it("opens on appearance and shows only that group", async () => {
-    render(<SettingsPage user={userOf("user")} />);
+    render(<ToastProvider><SettingsPage user={userOf("user")} /></ToastProvider>);
     expect(await screen.findByText("settings.appearance")).toBeTruthy();
     expect(screen.queryByText("settings.myDetails")).toBeNull();
     expect(screen.queryByText("settings.shipmentDefaults")).toBeNull();
   });
 
   it("switching tabs shows the other group", async () => {
-    render(<SettingsPage user={userOf("user")} />);
+    render(<ToastProvider><SettingsPage user={userOf("user")} /></ToastProvider>);
     await userEvent.click(await screen.findByRole("tab", { name: "settings.tabDetails" }));
     expect(screen.getByText("settings.myDetails")).toBeTruthy();
     expect(screen.queryByText("settings.appearance")).toBeNull();
@@ -78,20 +79,20 @@ describe("SettingsPage tabs", () => {
   });
 
   it("the phone dropdown selects the same groups", async () => {
-    render(<SettingsPage user={userOf("user")} />);
+    render(<ToastProvider><SettingsPage user={userOf("user")} /></ToastProvider>);
     const picker = await screen.findByLabelText("settings.tabPick");
     await userEvent.selectOptions(picker, "shipment");
     expect(screen.getByText("settings.shipmentDefaults")).toBeTruthy();
   });
 
   it("the administrator groups exist only for an administrator", async () => {
-    const { unmount } = render(<SettingsPage user={userOf("user")} />);
+    const { unmount } = render(<ToastProvider><SettingsPage user={userOf("user")} /></ToastProvider>);
     await screen.findByText("settings.appearance");
     expect(screen.queryByRole("tab", { name: "settings.tabAdmin" })).toBeNull();
     expect(screen.queryByRole("tab", { name: "settings.tabMaintenance" })).toBeNull();
     unmount();
 
-    render(<SettingsPage user={userOf("admin")} />);
+    render(<ToastProvider><SettingsPage user={userOf("admin")} /></ToastProvider>);
     expect(await screen.findByRole("tab", { name: "settings.tabAdmin" })).toBeTruthy();
     // Maintenance holds the action panels: updating, the UN card set and
     // the assistant's model live here, away from the saved settings.

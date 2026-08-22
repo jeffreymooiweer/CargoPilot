@@ -11,6 +11,7 @@ import MaterieelPage from "./pages/MaterieelPage";
 import SettingsPage from "./pages/SettingsPage";
 import LegalPage from "./pages/LegalPage";
 import { PreferencesProvider } from "./settings/preferences";
+import { ToastProvider } from "./toast/ToastProvider";
 
 export default function App() {
   const [user, setUser] = useState<User | null>(null);
@@ -30,6 +31,7 @@ export default function App() {
 
   if (!user) {
     return (
+      <ToastProvider>
       <Routes>
         <Route path="/login" element={<LoginPage onLogin={() => api.me().then((r) => { setUser(r.user); navigate("/"); })} />} />
         {/* A reset link is opened by somebody who cannot sign in; sending
@@ -37,11 +39,13 @@ export default function App() {
         <Route path="/reset-password" element={<ResetPasswordPage />} />
         <Route path="*" element={<Navigate to="/login" replace />} />
       </Routes>
+      </ToastProvider>
     );
   }
 
   return (
     <PreferencesProvider>
+      <ToastProvider>
       <Routes>
         <Route element={<Layout user={user} onLogout={() => setUser(null)} />}>
           <Route path="/" element={<ModalitySelectPage />} />
@@ -55,6 +59,7 @@ export default function App() {
         <Route path="/reset-password" element={<ResetPasswordPage />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
+      </ToastProvider>
     </PreferencesProvider>
   );
 }

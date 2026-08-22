@@ -96,11 +96,14 @@ Everything below is gated on it:
 
 ### Interface
 
-- **Toasts and snackbars instead of inline notices.** One notification mechanism across
-  the application rather than the current mix of messages, notes and banners — fewer
-  things competing for the same space, and a calmer screen.
 - **Branding.** An admin sets the organisation's own name and logo, and can replace the
   transport-mode images, so the application looks like the company using it.
+
+(Toasts and snackbars as the one notification mechanism shipped in v1.153.0 —
+transient messages became toasts, deletes gained a six-second undo, and the two
+confirmations that remained deliberate — clearing someone's second factor,
+applying an update — became the application's own dialogs. Field validation,
+sign-in errors and regulatory findings stay inline by design.)
 
 ### Plugins and an open ecosystem
 

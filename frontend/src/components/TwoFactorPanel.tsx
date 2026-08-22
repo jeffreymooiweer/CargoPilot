@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { api, TwoFactorSetup, TwoFactorStatus } from "../api/client";
+import { useToast } from "../toast/ToastProvider";
 
 const panelClass = "bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800";
 const inputClass =
@@ -23,22 +24,21 @@ export default function TwoFactorPanel() {
   const [code, setCode] = useState("");
   const [codes, setCodes] = useState<string[] | null>(null);
   const [busy, setBusy] = useState(false);
-  const [error, setError] = useState("");
-  const [message, setMessage] = useState("");
+  const toast = useToast();
 
-  const load = () => api.twoFactorStatus().then(setStatus).catch((e) => setError(String(e)));
+  const load = () => api.twoFactorStatus().then(setStatus).catch((e) => toast.error(String(e)));
   useEffect(() => {
     void load();
+    // toast is stable for the provider's lifetime; this effect runs once.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const run = async (action: () => Promise<unknown>) => {
     setBusy(true);
-    setError("");
-    setMessage("");
     try {
       await action();
     } catch (e) {
-      setError(String(e));
+      toast.error(String(e));
     } finally {
       setBusy(false);
     }
@@ -64,7 +64,7 @@ export default function TwoFactorPanel() {
     run(async () => {
       await api.twoFactorDisable(code);
       setCode("");
-      setMessage(t("twoFactor.disabled"));
+      toast.success(t("twoFactor.disabled"));
       await load();
     });
 
@@ -73,7 +73,7 @@ export default function TwoFactorPanel() {
   const sendCode = () =>
     run(async () => {
       await api.twoFactorSendCode();
-      setMessage(t("twoFactor.codeSent"));
+      toast.success(t("twoFactor.codeSent"));
     });
 
   const newCodes = () =>
@@ -83,9 +83,7 @@ export default function TwoFactorPanel() {
       await load();
     });
 
-  if (!status) {
-    return error ? <p className="text-sm text-red-600 dark:text-red-400">{error}</p> : null;
-  }
+  if (!status) return null;
 
   return (
     <section className={`${panelClass} p-5 space-y-4`}>
@@ -206,8 +204,6 @@ export default function TwoFactorPanel() {
         </div>
       )}
 
-      {message && <p className="text-sm text-emerald-700 dark:text-emerald-400">{message}</p>}
-      {error && <p className="text-sm text-red-600 dark:text-red-400">{error}</p>}
     </section>
   );
 }

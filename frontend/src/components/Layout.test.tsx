@@ -27,6 +27,7 @@ import { MemoryRouter, Route, Routes } from "react-router";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import Layout from "./Layout";
+import { ToastProvider } from "../toast/ToastProvider";
 import { api, User } from "../api/client";
 
 vi.mock("react-i18next", () => ({
@@ -40,15 +41,17 @@ const user: User = { id: 1, username: "jeffrey", role: "user", active: true } as
 
 function renderAt(path: string) {
   return render(
-    <MemoryRouter initialEntries={[path]}>
-      <Routes>
-        <Route element={<Layout user={user} onLogout={() => {}} />}>
-          <Route path="/" element={<p>home</p>} />
-          <Route path="/wizard/:modality" element={<p>wizard</p>} />
-          <Route path="/settings" element={<p>settings</p>} />
-        </Route>
-      </Routes>
-    </MemoryRouter>,
+    <ToastProvider>
+      <MemoryRouter initialEntries={[path]}>
+        <Routes>
+          <Route element={<Layout user={user} onLogout={() => {}} />}>
+            <Route path="/" element={<p>home</p>} />
+            <Route path="/wizard/:modality" element={<p>wizard</p>} />
+            <Route path="/settings" element={<p>settings</p>} />
+          </Route>
+        </Routes>
+      </MemoryRouter>
+    </ToastProvider>,
   );
 }
 

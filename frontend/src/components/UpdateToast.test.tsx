@@ -1,5 +1,5 @@
 /**
- * The update toast speaks only to the administrator, and only once per release.
+ * The update notice speaks only to the administrator, and only once per release.
  *
  * A regular user never triggers the request at all — the endpoint would
  * refuse them anyway, but not asking is the point: a user must not be able to
@@ -11,6 +11,7 @@ import userEvent from "@testing-library/user-event";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
 import UpdateToast, { DISMISSED_KEY } from "./UpdateToast";
+import { ToastProvider } from "../toast/ToastProvider";
 import { api, User } from "../api/client";
 
 vi.mock("react-i18next", () => ({
@@ -33,23 +34,33 @@ const AVAILABLE = {
   update_available: true,
 };
 
+function renderNotice(user: User) {
+  return render(
+    <ToastProvider>
+      <UpdateToast user={user} />
+    </ToastProvider>,
+  );
+}
+
 afterEach(() => {
   vi.restoreAllMocks();
   localStorage.clear();
 });
 
 describe("UpdateToast", () => {
-  it("tells an administrator a newer release exists, with the link", async () => {
+  it("tells an administrator a newer release exists, with the release notes", async () => {
     vi.spyOn(api, "updateStatus").mockResolvedValue(AVAILABLE);
-    render(<UpdateToast user={admin} />);
+    const open = vi.spyOn(window, "open").mockReturnValue(null);
+    renderNotice(admin);
     expect(await screen.findByRole("status")).toBeInTheDocument();
-    expect(screen.getByText("update.available 1.126.0")).toBeInTheDocument();
-    expect(screen.getByRole("link")).toHaveAttribute("href", AVAILABLE.url);
+    expect(screen.getByText(/update\.available 1\.126\.0/)).toBeInTheDocument();
+    await userEvent.click(screen.getByRole("button", { name: "update.releaseNotes" }));
+    expect(open).toHaveBeenCalledWith(AVAILABLE.url, "_blank", "noopener,noreferrer");
   });
 
   it("never even asks for a regular user", async () => {
     const status = vi.spyOn(api, "updateStatus").mockResolvedValue(AVAILABLE);
-    render(<UpdateToast user={regular} />);
+    renderNotice(regular);
     await new Promise((resolve) => setTimeout(resolve, 10));
     expect(status).not.toHaveBeenCalled();
     expect(screen.queryByRole("status")).not.toBeInTheDocument();
@@ -61,7 +72,7 @@ describe("UpdateToast", () => {
       latest: "1.125.0",
       update_available: false,
     });
-    render(<UpdateToast user={admin} />);
+    renderNotice(admin);
     await waitFor(() => expect(api.updateStatus).toHaveBeenCalled());
     expect(screen.queryByRole("status")).not.toBeInTheDocument();
   });
@@ -72,30 +83,30 @@ describe("UpdateToast", () => {
       reachable: false,
       current: "1.125.0",
     });
-    render(<UpdateToast user={admin} />);
+    renderNotice(admin);
     await waitFor(() => expect(api.updateStatus).toHaveBeenCalled());
     expect(screen.queryByRole("status")).not.toBeInTheDocument();
   });
 
   it("a dismissed release stays dismissed, a newer one shows again", async () => {
     vi.spyOn(api, "updateStatus").mockResolvedValue(AVAILABLE);
-    render(<UpdateToast user={admin} />);
+    renderNotice(admin);
     await screen.findByRole("status");
-    await userEvent.click(screen.getByRole("button", { name: "update.dismiss" }));
+    await userEvent.click(screen.getByRole("button", { name: "toast.dismiss" }));
     expect(screen.queryByRole("status")).not.toBeInTheDocument();
     expect(localStorage.getItem(DISMISSED_KEY)).toBe("1.126.0");
 
     // The same release again: nothing.
-    render(<UpdateToast user={admin} />);
+    renderNotice(admin);
     await waitFor(() => expect(api.updateStatus).toHaveBeenCalledTimes(2));
     expect(screen.queryByRole("status")).not.toBeInTheDocument();
 
-    // A newer one: the toast returns.
+    // A newer one: the notice returns.
     vi.spyOn(api, "updateStatus").mockResolvedValue({
       ...AVAILABLE,
       latest: "1.127.0",
     });
-    render(<UpdateToast user={admin} />);
+    renderNotice(admin);
     expect(await screen.findByRole("status")).toBeInTheDocument();
   });
 });

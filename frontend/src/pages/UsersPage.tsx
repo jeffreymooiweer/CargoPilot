@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { api, User } from "../api/client";
 import { usePreferences } from "../settings/preferences";
+import { useToast } from "../toast/ToastProvider";
+import ConfirmDialog from "../toast/ConfirmDialog";
 
 const inputClass =
   "border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-950 text-slate-900 dark:text-slate-100 rounded-lg px-3 py-2 w-full";
@@ -36,30 +38,30 @@ export default function UsersPage({ user: self }: { user: User | null }) {
   // colleague picks their own password, so it never travels by chat or note.
   const [invite, setInvite] = useState(true);
   const [busy, setBusy] = useState(false);
-  const [message, setMessage] = useState("");
-  const [error, setError] = useState("");
   const [resetFor, setResetFor] = useState<number | null>(null);
   const [resetPassword, setResetPassword] = useState("");
+  // The one action that keeps a confirmation step: clearing two-factor is a
+  // security action, so it gets a deliberate dialog rather than an undo.
+  const [clearTwoFactorTarget, setClearTwoFactorTarget] = useState<User | null>(null);
+  const toast = useToast();
 
   const load = () =>
     api
       .listUsers()
       .then(setUsers)
-      .catch((e) => setError(String(e)));
+      .catch((e) => toast.error(String(e)));
   useEffect(() => {
     void load();
   }, []);
 
   const run = async (action: () => Promise<unknown>, done = "") => {
     setBusy(true);
-    setMessage("");
-    setError("");
     try {
       await action();
       await load();
-      if (done) setMessage(done);
+      if (done) toast.success(done);
     } catch (e) {
-      setError(String(e));
+      toast.error(String(e));
     } finally {
       setBusy(false);
     }
@@ -78,7 +80,7 @@ export default function UsersPage({ user: self }: { user: User | null }) {
       });
       setForm({ username: "", email: "", password: "", role: "user" });
       if (created.welcome_mail && created.welcome_mail !== "not_requested") {
-        setMessage(
+        (created.welcome_mail === "sent" ? toast.success : toast.error)(
           created.welcome_mail === "sent"
             ? t("users.invited", { email: created.email })
             : created.welcome_mail === "no_mail_server"
@@ -93,8 +95,20 @@ export default function UsersPage({ user: self }: { user: User | null }) {
     run(() => api.updateUser(id, payload), done);
 
   const remove = (target: User) => {
-    if (!confirm(t("users.deleteConfirm", { name: target.username }))) return;
-    void run(() => api.deleteUser(target.id), t("users.deleted"));
+    // Deferred delete: the row disappears now, the DELETE fires when the undo
+    // window closes. Undo means the call never happened — which is why the
+    // restored user keeps their password.
+    setUsers((current) => current.filter((u) => u.id !== target.id));
+    toast.undoable(t("toast.deletedUser", { name: target.username }), {
+      execute: () => {
+        api.deleteUser(target.id).then(load).catch((e) => {
+          toast.error(String(e));
+          void load();
+        });
+      },
+      restore: () => setUsers((current) =>
+        current.some((u) => u.id === target.id) ? current : [...current, target]),
+    });
   };
 
   const guardText = (kind: string | null) =>
@@ -254,10 +268,7 @@ export default function UsersPage({ user: self }: { user: User | null }) {
                     className={buttonSecondary}
                     disabled={busy}
                     title={t("users.clearTwoFactorHint")}
-                    onClick={() => {
-                      if (!confirm(t("users.clearTwoFactorConfirm", { name: u.username }))) return;
-                      void run(() => api.clearTwoFactorFor(u.id), t("users.twoFactorCleared"));
-                    }}
+                    onClick={() => setClearTwoFactorTarget(u)}
                   >
                     {t("users.clearTwoFactor")}
                   </button>
@@ -307,8 +318,18 @@ export default function UsersPage({ user: self }: { user: User | null }) {
         })}
       </div>
 
-      {message && <p className="text-sm text-emerald-700 dark:text-emerald-400">{message}</p>}
-      {error && <p className="text-sm text-red-600 dark:text-red-400">{error}</p>}
+      <ConfirmDialog
+        open={clearTwoFactorTarget !== null}
+        title={t("users.clearTwoFactor")}
+        body={clearTwoFactorTarget ? t("users.clearTwoFactorConfirm", { name: clearTwoFactorTarget.username }) : ""}
+        confirmLabel={t("users.clearTwoFactor")}
+        onConfirm={() => {
+          const target = clearTwoFactorTarget;
+          setClearTwoFactorTarget(null);
+          if (target) void run(() => api.clearTwoFactorFor(target.id), t("users.twoFactorCleared"));
+        }}
+        onCancel={() => setClearTwoFactorTarget(null)}
+      />
     </div>
   );
 }

@@ -2,6 +2,49 @@
 
 All notable changes are documented here, following [Semantic Versioning](https://semver.org/).
 
+## [1.153.0] — 2026-08-22
+
+### Added
+
+- **One notification mechanism: toasts.** A self-built toast system (no new
+  dependency) replaces the transient half of the application's 87 inline
+  notices, its four native `confirm()` popups and the hand-built update
+  notice. Success and info toasts dismiss themselves after four seconds;
+  errors stay until closed, because a missed network error is a document that
+  silently never went out; a loading toast follows a slow action — mailing
+  the documents, sending a test mail, applying an update — from "working" to
+  its outcome in a single toast. On desktop the toasts stack bottom-right; on
+  a phone they land as a full-width snackbar at the bottom. Errors announce
+  assertively to screen readers, everything else politely.
+- **Undo instead of "are you sure?".** Deleting a user, deleting a piece of
+  equipment and removing the installed UN card set no longer ask first — they
+  act immediately in the interface and hold the real API call for six
+  seconds behind an Undo button. Undo within the window means the call never
+  happens, which is why an undone user keeps their password: nothing was
+  deleted yet. Closing the toast, its timer running out, or being pushed out
+  by newer toasts all let the deferred call fire — a delete the user asked
+  for must not be cancelled silently.
+- **The application's own confirmation dialog** for the two actions that stay
+  deliberate: clearing somebody's two-factor verification (a security action
+  deserves a step before, not a regret window after) and applying an update
+  (it restarts the application under everyone using it). Translated, themed,
+  focus on the safe choice, Escape cancels — where the browser's native
+  `confirm()` was none of those.
+
+### Changed
+
+- "Settings saved", the mail-server test result, the invite outcome and the
+  other transient confirmations moved from inline paragraphs into toasts.
+  What deliberately stays inline: field validation at the field, sign-in and
+  password-reset errors on their forms, the assistant's clarification
+  questions in its conversation, the equipment import report (counts and
+  per-row errors are something to read, not a passing note), and every
+  regulatory compliance finding — a safety warning must not slide away.
+- The update-available notice for administrators now rides the toast system
+  as a sticky info toast, keeping its behaviour: shown once per release,
+  dismissing it remembers that version, and only an explicit dismissal
+  counts — being pushed out by other toasts does not mark it as seen.
+
 ## [1.152.4] — 2026-08-22
 
 ### Added

@@ -118,8 +118,6 @@
     "cancel": "Annuleren",
     "dangerousGoods": "Gevaarlijke stoffen",
     "dgDetected": "UN-nummer herkend",
-    "dgSuggestedOne": "Herkend: UN {{un}} (klasse {{class}})",
-    "dgSuggestedMany": "Meerdere stoffen herkend — kies het UN-nummer:",
     "dgApply": "Overnemen",
     "dgDismiss": "Geen gevaarlijke stof",
     "quantityAndUnit": "Aantal",
@@ -137,7 +135,9 @@
     "doneEditing": "Klaar",
     "dimensions": "Afmetingen",
     "dgYes": "Ja",
-    "dgNo": "Nee"
+    "dgNo": "Nee",
+    "dgToastOne": "Regel {{number}}: UN {{un}} ({{name}}, klasse {{class}}) herkend. Overnemen?",
+    "dgToastMany": "Regel {{number}}: meerdere stoffen mogelijk. Welke is het?"
   },
   "import": {
     "downloadTemplate": "Template downloaden",

@@ -118,8 +118,6 @@
     "cancel": "Abbrechen",
     "dangerousGoods": "Gefahrgut",
     "dgDetected": "UN-Nummer erkannt",
-    "dgSuggestedOne": "Erkannt: UN {{un}} (Klasse {{class}})",
-    "dgSuggestedMany": "Mehrere Stoffe erkannt — UN-Nummer wählen:",
     "dgApply": "Übernehmen",
     "dgDismiss": "Kein Gefahrgut",
     "quantityAndUnit": "Menge",
@@ -137,7 +135,9 @@
     "doneEditing": "Fertig",
     "dimensions": "Abmessungen",
     "dgYes": "Ja",
-    "dgNo": "Nein"
+    "dgNo": "Nein",
+    "dgToastOne": "Position {{number}}: UN {{un}} ({{name}}, Klasse {{class}}) erkannt. Übernehmen?",
+    "dgToastMany": "Position {{number}}: mehrere Stoffe möglich. Welcher ist es?"
   },
   "import": {
     "downloadTemplate": "Vorlage herunterladen",

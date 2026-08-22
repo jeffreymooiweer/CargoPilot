@@ -63,12 +63,22 @@ export default function EquipmentImportDialog({ open, onClose, onComplete }: Pro
     setLoading(true);
     setResult(null);
     try {
-      // The result report stays in the dialog rather than becoming a toast:
-      // created/updated/skipped counts and per-row errors are something to
-      // read through, not a passing confirmation.
       const importResult = await api.importEquipmentFile(file);
-      setResult(importResult);
       onComplete();
+      // An import with nothing wrong has nothing to read: the counts are a
+      // confirmation, so they are a toast and the dialog closes. The report
+      // stays in the dialog exactly when it earns the space — a skipped row or
+      // a row error is something to look at rather than something to notice.
+      const clean = importResult.errors.length === 0 && importResult.skipped === 0;
+      if (clean) {
+        toast.success(
+          `${t("materieel.importCreated", { count: importResult.created })}, ` +
+            `${t("materieel.importUpdated", { count: importResult.updated })}`,
+        );
+        handleClose();
+        return;
+      }
+      setResult(importResult);
     } catch (e) {
       toast.error(String(e));
     } finally {

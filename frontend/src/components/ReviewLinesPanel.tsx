@@ -1,6 +1,7 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { DgNameCandidate, LineItem, UnitCatalogue, api } from "../api/client";
+import { LineItem, UnitCatalogue, api } from "../api/client";
+import { useToast } from "../toast/ToastProvider";
 import LineEditDialog, { ROUND_TYPES, WALL_PROFILE_TYPES } from "./LineEditDialog";
 import RecordCards, { NoValue, QuantityWithUnit, RecordField } from "./RecordCards";
 
@@ -128,75 +129,6 @@ function CardAction({
   );
 }
 
-/** A substance recognised by name, offered for confirmation.
- *
- *  The recognition is a suggestion and looks like one: it names the UN number,
- *  the shipping name and the class, and it asks. One candidate gets a yes/no;
- *  several (two sulphuric acids, differing in the qualifier) get a button per
- *  UN number. Rejecting it puts it away for this line — a suggestion that
- *  keeps coming back is nagging, not helping.
- *
- *  It sits on the card rather than in the edit dialog, and stays visible
- *  whether the card is open or closed: it is the one thing on a line that asks
- *  the user a question, and a dangerous substance recognised but never
- *  confirmed is exactly what this step exists to catch. */
-function DgSuggestion({
-  candidates,
-  onConfirm,
-  onDismiss,
-}: {
-  candidates: DgNameCandidate[];
-  onConfirm: (un: string) => void;
-  onDismiss: () => void;
-}) {
-  const { t } = useTranslation();
-  const chipButton =
-    "rounded-md border border-amber-300 bg-white px-2 py-0.5 text-[11px] font-medium text-amber-900 hover:bg-amber-100 dark:border-amber-700 dark:bg-slate-900 dark:text-amber-200 dark:hover:bg-amber-900/40";
-  return (
-    <div className="rounded-lg border border-amber-200 bg-amber-50 px-2 py-1.5 text-[11px] text-amber-800 dark:border-amber-900/50 dark:bg-amber-900/20 dark:text-amber-200">
-      {candidates.length === 1 ? (
-        <>
-          <p className="truncate" title={candidates[0].name}>
-            {t("review.dgSuggestedOne", {
-              un: candidates[0].un,
-              class: candidates[0].class,
-            })}{" "}
-            <span className="font-medium">{candidates[0].name}</span>
-          </p>
-          <div className="mt-1 flex flex-wrap gap-1.5">
-            <button type="button" className={chipButton} onClick={() => onConfirm(candidates[0].un)}>
-              {t("review.dgApply")}
-            </button>
-            <button type="button" className={chipButton} onClick={onDismiss}>
-              {t("review.dgDismiss")}
-            </button>
-          </div>
-        </>
-      ) : (
-        <>
-          <p>{t("review.dgSuggestedMany")}</p>
-          <div className="mt-1 flex flex-wrap gap-1.5">
-            {candidates.slice(0, 3).map((candidate) => (
-              <button
-                key={candidate.un}
-                type="button"
-                className={chipButton}
-                title={candidate.name}
-                onClick={() => onConfirm(candidate.un)}
-              >
-                UN {candidate.un}
-              </button>
-            ))}
-            <button type="button" className={chipButton} onClick={onDismiss}>
-              {t("review.dgDismiss")}
-            </button>
-          </div>
-        </>
-      )}
-    </div>
-  );
-}
-
 export default function ReviewLinesPanel({
   draftLines,
   resultLines,
@@ -209,6 +141,7 @@ export default function ReviewLinesPanel({
   translateMessage,
 }: Props) {
   const { t } = useTranslation();
+  const toast = useToast();
   const computed = resultLines && resultLines.length > 0;
   const canRemove = draftLines.length > 1;
 
@@ -219,6 +152,77 @@ export default function ReviewLinesPanel({
   const updateDraft = (id: number, patch: Partial<DraftLine>) => {
     onDraftChange(draftLines.map((line) => (line.id === id ? { ...line, ...patch } : line)));
   };
+
+  // A toast button is pressed long after the render that created it, so it
+  // must not patch the lines as they were then. This ref is what "the lines"
+  // means at the moment the user answers.
+  const latest = useRef({ draftLines, onDraftChange });
+  latest.current = { draftLines, onDraftChange };
+
+  const patchLine = (id: number, patch: Partial<DraftLine>) => {
+    const { draftLines: lines, onDraftChange: change } = latest.current;
+    change(lines.map((line) => (line.id === id ? { ...line, ...patch } : line)));
+  };
+
+  /**
+   * The name recognition, asked as a snackbar rather than shown on the card.
+   *
+   * It is the one thing on a line that asks the user a *question* — "this
+   * looks like UN 1203, shall I take it?" — and a question belongs in the one
+   * place the application asks things. It is a `question` toast, so it never
+   * dismisses itself: four seconds is not an answer. Closing it with the × is
+   * an answer, and a final one — the same "no, not this line" the reject chip
+   * used to mean.
+   *
+   * Offered once per recognition, keyed by line *and* candidates: re-running
+   * the calculation must not ask again, but changing the description into a
+   * different substance is a new question and gets asked.
+   */
+  const offered = useRef(new Set<string>());
+  useEffect(() => {
+    if (!resultLines) return;
+    draftLines.forEach((draft, index) => {
+      const candidates = resultLines[index]?.dg_name_candidates ?? [];
+      if (candidates.length === 0 || draft.confirmed_un || draft.dg_dismissed) return;
+      const key = `${draft.id}:${candidates.map((one) => one.un).join(",")}`;
+      if (offered.current.has(key)) return;
+      offered.current.add(key);
+
+      // Accepting and rejecting are the same slot: whichever comes first is
+      // the answer, and closing the toast afterwards must not overrule it.
+      let answered = false;
+      const once = (fn: () => void) => () => {
+        if (answered) return;
+        answered = true;
+        fn();
+      };
+      const single = candidates.length === 1;
+      const id: number = toast.ask(
+        single
+          ? t("review.dgToastOne", {
+              number: index + 1,
+              un: candidates[0].un,
+              class: candidates[0].class,
+              name: candidates[0].name,
+            })
+          : t("review.dgToastMany", { number: index + 1 }),
+        {
+          actions: (single ? candidates : candidates.slice(0, 3)).map((candidate) => ({
+            label: single ? t("review.dgApply") : `UN ${candidate.un}`,
+            run: once(() => {
+              patchLine(draft.id, { dangerous_goods: true, confirmed_un: candidate.un });
+              toast.dismiss(id);
+            }),
+          })),
+          onDismiss: once(() => patchLine(draft.id, { dg_dismissed: true })),
+        },
+      );
+    });
+    // patchLine and toast are stable enough to leave out: what decides whether
+    // to ask is the lines and their recognition, and the guard above makes a
+    // repeat run harmless.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [draftLines, resultLines, t]);
 
   // The unit catalogue comes from the backend, so the list is maintained in one
   // place. If that fails, UnitSelect falls back to a text field and the step
@@ -408,17 +412,6 @@ export default function ReviewLinesPanel({
               </span>
             </div>
           )}
-          banner={(draft, index) => {
-            const candidates = resultFor(index)?.dg_name_candidates ?? [];
-            if (candidates.length === 0 || draft.confirmed_un || draft.dg_dismissed) return null;
-            return (
-              <DgSuggestion
-                candidates={candidates}
-                onConfirm={(un) => updateDraft(draft.id, { dangerous_goods: true, confirmed_un: un })}
-                onDismiss={() => updateDraft(draft.id, { dg_dismissed: true })}
-              />
-            );
-          }}
           actions={(draft) => (
             <>
               <CardAction label={t("review.editLine")} onClick={() => setEditingId(draft.id)} icon={<PencilIcon />} />

@@ -143,15 +143,62 @@ describe("ToastProvider", () => {
     expect(onDismiss).toHaveBeenCalledTimes(1);
   });
 
+  it("a stack under pressure drops the passing notes, not the ones that stay", () => {
+    const api = setup();
+    act(() => void api().info("update available", { sticky: true }));
+    act(() => {
+      for (let i = 0; i < 5; i += 1) api().success(`saved ${i}`);
+    });
+    // The sticky notice is the whole reason anything is on screen; "saved" is
+    // gone in four seconds anyway, so it is what gives way.
+    expect(screen.getByText("update available")).toBeInTheDocument();
+    expect(screen.queryByText("saved 0")).not.toBeInTheDocument();
+  });
+
   it("eviction does not count as the user dismissing a sticky notice", () => {
     const api = setup();
     const onDismiss = vi.fn();
     act(() => void api().info("update available", { sticky: true, onDismiss }));
+    // Only sticky toasts competing: now the oldest does have to give way, and
+    // that still is not the user saying they read it.
     act(() => {
-      for (let i = 0; i < 5; i += 1) api().info(`note ${i}`);
+      for (let i = 0; i < 5; i += 1) api().info(`note ${i}`, { sticky: true });
     });
     expect(screen.queryByText("update available")).not.toBeInTheDocument();
     expect(onDismiss).not.toHaveBeenCalled();
+  });
+
+  it("a question stays put and carries its answers", async () => {
+    const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime });
+    const api = setup();
+    const first = vi.fn();
+    const second = vi.fn();
+    const onDismiss = vi.fn();
+    act(() =>
+      void api().ask("which substance?", {
+        actions: [
+          { label: "UN 1830", run: first },
+          { label: "UN 2796", run: second },
+        ],
+        onDismiss,
+      }),
+    );
+    // Four seconds is not an answer.
+    act(() => void vi.advanceTimersByTime(60000));
+    expect(screen.getByText("which substance?")).toBeInTheDocument();
+    await user.click(screen.getByRole("button", { name: "UN 2796" }));
+    expect(second).toHaveBeenCalledTimes(1);
+    expect(first).not.toHaveBeenCalled();
+    expect(onDismiss).not.toHaveBeenCalled();
+  });
+
+  it("closing a question is itself an answer", async () => {
+    const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime });
+    const api = setup();
+    const onDismiss = vi.fn();
+    act(() => void api().ask("take UN 1203?", { actions: [{ label: "yes", run: vi.fn() }], onDismiss }));
+    await user.click(screen.getByRole("button", { name: "toast.dismiss" }));
+    expect(onDismiss).toHaveBeenCalledTimes(1);
   });
 
   it("errors announce assertively, the rest politely", () => {

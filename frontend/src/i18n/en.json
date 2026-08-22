@@ -118,8 +118,6 @@
     "cancel": "Cancel",
     "dangerousGoods": "Dangerous goods",
     "dgDetected": "UN number detected",
-    "dgSuggestedOne": "Recognised: UN {{un}} (class {{class}})",
-    "dgSuggestedMany": "Several substances recognised — choose the UN number:",
     "dgApply": "Apply",
     "dgDismiss": "Not dangerous goods",
     "quantityAndUnit": "Quantity",
@@ -137,7 +135,9 @@
     "doneEditing": "Done",
     "dimensions": "Dimensions",
     "dgYes": "Yes",
-    "dgNo": "No"
+    "dgNo": "No",
+    "dgToastOne": "Line {{number}}: recognised UN {{un}} ({{name}}, class {{class}}). Take it?",
+    "dgToastMany": "Line {{number}}: several substances possible. Which one is it?"
   },
   "import": {
     "downloadTemplate": "Download template",

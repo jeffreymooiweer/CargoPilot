@@ -1,6 +1,7 @@
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useToast } from "../toast/ToastProvider";
+import NumberInput from "../components/NumberInput";
 import { api, EquipmentItem } from "../api/client";
 import EquipmentImportDialog from "../components/EquipmentImportDialog";
 
@@ -252,11 +253,11 @@ export default function MaterieelPage() {
           {editingId ? t("materieel.edit") : t("materieel.add")}
         </h3>
         <input className={`${inputClass} md:col-span-2`} required placeholder={t("materieel.specifications")} value={form.specifications} onChange={(e) => setForm({ ...form, specifications: e.target.value })} />
-        <input className={inputClass} type="number" step="0.1" placeholder={t("materieel.length")} value={form.length_cm ?? ""} onChange={(e) => setForm({ ...form, length_cm: e.target.value ? Number(e.target.value) : null })} />
-        <input className={inputClass} type="number" step="0.1" placeholder={t("materieel.width")} value={form.width_cm ?? ""} onChange={(e) => setForm({ ...form, width_cm: e.target.value ? Number(e.target.value) : null })} />
-        <input className={inputClass} type="number" step="0.1" placeholder={t("materieel.height")} value={form.height_cm ?? ""} onChange={(e) => setForm({ ...form, height_cm: e.target.value ? Number(e.target.value) : null })} />
-        <input className={inputClass} type="number" step="0.1" placeholder={t("materieel.wallThickness")} value={form.wall_thickness_mm ?? ""} onChange={(e) => setForm({ ...form, wall_thickness_mm: e.target.value ? Number(e.target.value) : null })} />
-        <input className={inputClass} type="number" step="0.1" required placeholder={t("materieel.weight")} value={form.weight_kg || ""} onChange={(e) => setForm({ ...form, weight_kg: Number(e.target.value) })} />
+        <NumberInput className={inputClass} step="0.1" placeholder={t("materieel.length")} value={form.length_cm ?? ""} onChange={(e) => setForm({ ...form, length_cm: e.target.value ? Number(e.target.value) : null })} />
+        <NumberInput className={inputClass} step="0.1" placeholder={t("materieel.width")} value={form.width_cm ?? ""} onChange={(e) => setForm({ ...form, width_cm: e.target.value ? Number(e.target.value) : null })} />
+        <NumberInput className={inputClass} step="0.1" placeholder={t("materieel.height")} value={form.height_cm ?? ""} onChange={(e) => setForm({ ...form, height_cm: e.target.value ? Number(e.target.value) : null })} />
+        <NumberInput className={inputClass} step="0.1" placeholder={t("materieel.wallThickness")} value={form.wall_thickness_mm ?? ""} onChange={(e) => setForm({ ...form, wall_thickness_mm: e.target.value ? Number(e.target.value) : null })} />
+        <NumberInput className={inputClass} step="0.1" required placeholder={t("materieel.weight")} value={form.weight_kg || ""} onChange={(e) => setForm({ ...form, weight_kg: Number(e.target.value) })} />
         <input
           className={`${inputClass} md:col-span-2`}
           placeholder={t("materieel.aliases")}

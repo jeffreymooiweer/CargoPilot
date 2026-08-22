@@ -130,7 +130,14 @@
     "height_cm": "Height (cm)",
     "cargoForm": "Form",
     "wallThickness": "Wall thickness (mm)",
-    "diameter": "Diameter (cm)"
+    "diameter": "Diameter (cm)",
+    "editLine": "Edit",
+    "editTitle": "Line {{number}}",
+    "closeEdit": "Close editing",
+    "doneEditing": "Done",
+    "dimensions": "Dimensions",
+    "dgYes": "Yes",
+    "dgNo": "No"
   },
   "import": {
     "downloadTemplate": "Download template",
@@ -625,14 +632,8 @@
     "amendedIn4224": "42-24 changed this entry — compare against the previous edition"
   },
   "records": {
-    "actions": "Actions",
     "viewMore": "View more",
-    "viewLess": "View less",
-    "showDetail": "Show details",
-    "closeDetail": "Close details",
-    "detailTitle": "Line details",
-    "hiddenColumns_one": "{{count}} more column is in the line's details.",
-    "hiddenColumns_other": "{{count}} more columns are in the line's details."
+    "viewLess": "View less"
   },
   "units": {
     "suggested": "Usual for these goods",

@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useToast } from "../toast/ToastProvider";
 import ConfirmDialog from "../toast/ConfirmDialog";
+import NumberInput from "../components/NumberInput";
 import {
   AssistantStatus,
   InstanceSettings,
@@ -508,8 +509,7 @@ function AdminSettings() {
               <label className="text-sm font-medium text-slate-800 dark:text-slate-200">
                 {t("settings.addressTimeout")}
               </label>
-              <input
-                type="number"
+              <NumberInput
                 min={1}
                 max={60}
                 step={0.5}
@@ -553,8 +553,7 @@ function AdminSettings() {
             {t("settings.sessionTimeout")}
           </label>
           <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">{t("settings.sessionTimeoutHint")}</p>
-          <input
-            type="number"
+          <NumberInput
             min={15}
             max={10080}
             step={15}
@@ -620,8 +619,7 @@ function AdminSettings() {
                 <label className="text-sm font-medium text-slate-800 dark:text-slate-200">
                   {t("settings.mailPort")}
                 </label>
-                <input
-                  type="number"
+                <NumberInput
                   min={1}
                   max={65535}
                   className={`${inputClass} mt-1`}

@@ -36,6 +36,7 @@ import {
 } from "../utils/lineWeights";
 import { buildAssistantState, draftLinesFromAssistant } from "../utils/assistantState";
 import { useToast } from "../toast/ToastProvider";
+import NumberInput from "../components/NumberInput";
 
 const weightInputClass =
   "w-full border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-950 text-slate-900 dark:text-slate-100 rounded-lg px-3 py-2 text-sm";
@@ -1000,8 +1001,7 @@ export default function WizardPage() {
                 <h4 className="text-sm font-semibold text-slate-900 dark:text-slate-100">{t("wizard.products")}</h4>
                 <div className="sm:w-48">
                   <label className="text-xs font-medium text-slate-600 dark:text-slate-400">{t("wizard.adjustTotalWeight")}</label>
-                  <input
-                    type="number"
+                  <NumberInput
                     step="0.01"
                     className={`${weightInputClass} mt-1`}
                     value={result.totals.total_weight_kg ?? ""}
@@ -1026,8 +1026,7 @@ export default function WizardPage() {
                       <div className="grid grid-cols-2 gap-2 sm:w-56">
                         <div>
                           <label className="text-[11px] text-slate-500 dark:text-slate-400">{t("review.weightEach")}</label>
-                          <input
-                            type="number"
+                          <NumberInput
                             step="0.01"
                             className={`${weightInputClass} mt-0.5`}
                             value={line.weight_each_kg ?? ""}
@@ -1038,8 +1037,7 @@ export default function WizardPage() {
                         </div>
                         <div>
                           <label className="text-[11px] text-slate-500 dark:text-slate-400">{t("review.weightTotal")}</label>
-                          <input
-                            type="number"
+                          <NumberInput
                             step="0.01"
                             className={`${weightInputClass} mt-0.5`}
                             value={line.weight_total_kg ?? ""}

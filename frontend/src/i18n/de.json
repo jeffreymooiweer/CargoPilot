@@ -130,7 +130,14 @@
     "height_cm": "Höhe (cm)",
     "cargoForm": "Form",
     "wallThickness": "Wandstärke (mm)",
-    "diameter": "Durchmesser (cm)"
+    "diameter": "Durchmesser (cm)",
+    "editLine": "Bearbeiten",
+    "editTitle": "Position {{number}}",
+    "closeEdit": "Bearbeiten schließen",
+    "doneEditing": "Fertig",
+    "dimensions": "Abmessungen",
+    "dgYes": "Ja",
+    "dgNo": "Nein"
   },
   "import": {
     "downloadTemplate": "Vorlage herunterladen",
@@ -625,14 +632,8 @@
     "amendedIn4224": "42-24 hat diesen Eintrag geändert — mit der vorherigen Ausgabe vergleichen"
   },
   "records": {
-    "actions": "Aktionen",
     "viewMore": "Mehr anzeigen",
-    "viewLess": "Weniger anzeigen",
-    "showDetail": "Details anzeigen",
-    "closeDetail": "Details schließen",
-    "detailTitle": "Zeilendetails",
-    "hiddenColumns_one": "Noch {{count}} Spalte steht in den Details der Zeile.",
-    "hiddenColumns_other": "Noch {{count}} Spalten stehen in den Details der Zeile."
+    "viewLess": "Weniger anzeigen"
   },
   "units": {
     "suggested": "Üblich für dieses Gut",

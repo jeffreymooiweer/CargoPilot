@@ -2,6 +2,26 @@
 
 All notable changes are documented here, following [Semantic Versioning](https://semver.org/).
 
+## [1.152.1] — 2026-08-22
+
+### Changed
+
+- **The roadmap says where the project is going, and where it now is.** Sea is
+  released, so it no longer appears under the locked modes; the update
+  experience section described three things that shipped in v1.125.0, v1.126.0
+  and v1.133.0 and is gone. The status table gained the users-and-mail work and
+  the sea placarding sheet.
+
+  Added from the maintainer's own notes: two more companion modules (container
+  fleet management, vessel design) beside the route planner, 3D container
+  handling and the military module; privacy levels per installation and what
+  they unlock (a shipments page with filters and an edit route back into the
+  wizard, departments, turning the login page off on a closed network, an
+  address book and templates); one notification mechanism — toasts and
+  snackbars — instead of the current mix; admin-set branding including the
+  transport-mode images; and a plugin page, a licence change and a community
+  hub where plugins are shared and install straight into the application.
+
 ## [1.152.0] — 2026-08-22
 
 ### Added

@@ -2,6 +2,20 @@
 
 All notable changes are documented here, following [Semantic Versioning](https://semver.org/).
 
+## [1.152.2] — 2026-08-22
+
+### Changed
+
+- **The roadmap plans installing CargoPilot without Docker.** It ships as a
+  container and assumes one; that stays the default and the tested path, but it
+  is currently also the only way in. Planned: a native installation on common
+  Linux distributions with a systemd unit, and Helm charts or manifests for
+  Kubernetes. The entry names the consequence up front — the in-app updater
+  replaces the running container over the Docker socket, a mechanism a native
+  install does not have, so each installation method needs its own update route
+  and the settings screen should explain the one that applies rather than offer
+  a button that cannot work.
+
 ## [1.152.1] — 2026-08-22
 
 ### Changed

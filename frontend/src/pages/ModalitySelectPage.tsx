@@ -8,11 +8,10 @@ export type ModalityKey = (typeof MODALITIES)[number];
 
 /** The modalities a user may actually draw up documents for.
  *
- *  Sea and air are built and reachable and *wrong* in ways that do not
- *  announce themselves, and they carry known gaps listed in
- *  `docs/dg-coverage.md`. A half-right document is worse than no document,
- *  because it is signed and handed over — the consignor has no way to see which
- *  half was right.
+ *  Air is built and reachable and *wrong* in ways that do not announce
+ *  themselves, and it carries known gaps listed in `docs/dg-coverage.md`. A
+ *  half-right document is worse than no document, because it is signed and
+ *  handed over — the consignor has no way to see which half was right.
  *
  *  **Inland waterway was unlocked in v1.63.0.** It went on the lock in v1.60.0
  *  because it answered its separation question with the *road* table and had no
@@ -34,13 +33,39 @@ export type ModalityKey = (typeof MODALITIES)[number];
  *  the tile is not the only way in: a bookmark reaches /wizard/sea directly,
  *  and the default-modality preference navigates there without anyone touching
  *  a tile. Guarding only the tiles would guard only the honest route. */
+/** **Sea was unlocked in v1.152.0**, over the same bar as rail and inland
+ *  waterway. What was missing was never the substance data — the Dangerous
+ *  Goods List of Amendment 42-24 has been read since v1.48.0 — but the two
+ *  things that turn data into a document somebody can sign:
+ *
+ *  - **chapter 5.3, added in v1.150.0.** Sea was the last mode carrying goods
+ *    without its own placarding, and reusing the road's would have been wrong
+ *    five ways over: four sides rather than two, the proper shipping name
+ *    marked on the unit, the UN number in the placard rather than on an
+ *    orange plate, class 9 placarded as 9 where table A says 9A, and the
+ *    marine pollutant mark, which no land regime has.
+ *  - **the flow verified end to end**, which is what unlocked rail in
+ *    v1.122.0 and what sea did not have. Writing those archetypes found two
+ *    things a live test would have found instead: the 24-hour emergency
+ *    number of 5.4.1.5.11 was asked of the user and then had nowhere to go on
+ *    any sea document, and the IMO form called the container number
+ *    `container_identification` while the VGM and the B/L instruction called
+ *    it `container_number` — the same number, typed twice, on one
+ *    consignment. Both are fixed.
+ *
+ *  What sea still cannot do is stated rather than hidden: the stowage
+ *  category is shown and not enforced (on-deck or under-deck is the carrier's
+ *  call), segregation from foodstuffs is raised to verify because the
+ *  application cannot see what else is in the container, and nothing about
+ *  the ship is claimed at all. That is the same shape of limit inland
+ *  waterway was unlocked with, and it is visible on the screen. */
 /** Air was unlocked for one demonstration in v1.117.0 and locked again in
  *  v1.118.0, the demonstration over. Nothing about its coverage changed in
  *  between: the IATA quantity tables are still not held, so the Q value
  *  depends on the M a user enters. That is fine to show while someone is
  *  standing next to the screen explaining it, and not fine on a document
  *  someone signs unattended. */
-export const AVAILABLE_MODALITIES: readonly ModalityKey[] = ["road", "rail", "inland"];
+export const AVAILABLE_MODALITIES: readonly ModalityKey[] = ["road", "rail", "sea", "inland"];
 
 export function isModalityKey(value: string | undefined): value is ModalityKey {
   return !!value && (MODALITIES as readonly string[]).includes(value);

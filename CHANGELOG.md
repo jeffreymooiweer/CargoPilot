@@ -2,6 +2,41 @@
 
 All notable changes are documented here, following [Semantic Versioning](https://semver.org/).
 
+## [1.152.4] — 2026-08-22
+
+### Added
+
+- **Groundwork for every roadmap item, written down before any plan.** A new
+  [Roadmap research](docs/roadmap-research.md) document records, per subject,
+  what the market does, what the regulation says — measured where it could be —
+  what already exists in this repository, and which questions a future plan has
+  to answer. Highlights of what the research turned up:
+
+  - the package-mark sizes of chapter 5.2 were read from ADR 2025 itself
+    (labels 100 × 100 mm, the LQ diamond reducible to 50 × 50, orientation
+    arrows with their measured exemption list), so the label-sheet idea starts
+    from the text and not from memory;
+  - the EU eFTI regulation applies in full on 9 July 2027 and builds on the
+    UN/CEFACT multimodal data model — the anchor a structured shipment export
+    should map to;
+  - self-hostable route engines (openrouteservice, GraphHopper) already
+    evaluate ADR tunnel categories from OpenStreetMap, with the honest caveat
+    that hazmat tagging is sparse and coverage must be measured first;
+  - open-source truck-loading solvers exist with axle-load support (xflp),
+    and no commercial load planner does segregation — which is exactly what
+    CargoPilot could add to the 3D module;
+  - HACS (Home Assistant Community Store) is the model for the community hub:
+    an index of authors' own repositories, not a file host, with admin-only
+    install;
+  - IATA's DG AutoCheck Connect API is a second, legitimate route to the air
+    unlock — validation by IATA's own service instead of unobtainable tables;
+  - Apache 2.0 already permits everything the plugin ecosystem needs, and
+    carries a patent grant MIT lacks — worth knowing before switching.
+
+  The roadmap gained a "Documents and data" section for the newly researched
+  items (package marks, structured export, DGSA annual report, own articles,
+  EDI, groupage, returns, QR codes), each pointing at its research brief.
+
 ## [1.152.3] — 2026-08-22
 
 ### Fixed

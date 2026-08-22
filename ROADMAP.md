@@ -1,6 +1,8 @@
 # Roadmap
 
-Where CargoPilot is going. For what has already shipped, see the [changelog](CHANGELOG.md).
+Where CargoPilot is going. For what has already shipped, see the [changelog](CHANGELOG.md);
+for the groundwork behind the items below — market findings, measured regulation, open
+questions — see [Roadmap research](docs/roadmap-research.md).
 
 Versioning follows [Semantic Versioning](https://semver.org/) — see
 [Development](docs/development.md#versioning) for how bumps are decided.
@@ -47,7 +49,10 @@ defects before a real consignment did). The work per mode is what
 - **Air (IATA DGR)** — the IATA quantity tables, so the Q value no longer depends on a
   user-entered M and the passenger/cargo-aircraft limit can be derived. The declaration
   and the segregation checks are already sound, which is why air could be unlocked for a
-  single demonstration in v1.117.0 and locked again in v1.118.0.
+  single demonstration in v1.117.0 and locked again in v1.118.0. A second route now
+  exists and is worth investigating: IATA's own DG AutoCheck service exposes a Connect
+  API that validates a declaration against the DGR — the measured-source principle kept,
+  with IATA itself as the source (see [Roadmap research](docs/roadmap-research.md)).
 - **Multimodal** — unlocks last, since it is the union of the other modes' documents.
 
 ### Companion modules, each in its own repository
@@ -132,6 +137,34 @@ not have. Each installation method needs its own update route — the package
 manager for a native install, the usual rollout for Kubernetes — and the
 settings screen should explain the one that applies rather than offering a
 button that cannot work.
+
+### Documents and data (researched)
+
+Each of these has a groundwork section in [Roadmap research](docs/roadmap-research.md);
+none is committed until it is planned against that brief.
+
+- **Package marks and labels (chapter 5.2).** Printable, true-size marks for the
+  package — class labels, the LQ diamond, the environmentally hazardous mark, the
+  battery mark, orientation arrows — on A4 sticker sheets, printed only where the
+  checks say they apply. The sizes were measured from ADR 2025 already; placards stay
+  refused, because a laser print is not a placard.
+- **Structured shipment export, on the road to eCMR/eFTI.** Every shipment exportable
+  as versioned JSON, later mapped to the UN/CEFACT multimodal model the EU eFTI
+  regulation builds on (in full force 9 July 2027). CargoPilot does not become a
+  certified platform; it becomes trivially connectable to one.
+- **DGSA annual report.** The statistical half of the ADR 1.8.3 adviser's report,
+  generated from stored shipments — hard-gated on the privacy levels and shipments
+  page above, because without stored shipments there is nothing to report.
+- **Own articles library.** The company's article codes linked to UN number,
+  technical name and default packaging — entered once, reused every shipment; designed
+  together with the address book.
+- **EDI (IFTDGN) and the port call.** The freely specified UN/EDIFACT dangerous goods
+  notification as a far-off target the structured export quietly prepares for.
+- **Groupage.** Several consignments on one vehicle with the 1.1.3.6 count and mixed
+  loading checked over the whole.
+- **Return shipments in one click.** Empty uncleaned packagings back to the filler —
+  parties swapped, the 5.4.1.1.6 description applied.
+- **A QR code on documents** linking to the shipment's UN cards on the own server.
 
 ### Wizard and library
 

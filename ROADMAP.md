@@ -108,6 +108,31 @@ Everything below is gated on it:
   be published there, the military one excepted. Visible to every user; only admins
   can install.
 
+### Installing it without Docker
+
+CargoPilot ships as a container and assumes one: a single image, a Docker
+Compose file and an Unraid template, with the in-app updater pulling a newer
+image over the Docker socket. That is the right default and it stays — but it
+is currently also the *only* way in, which rules out anyone who runs services
+natively on a Linux host.
+
+Planned, in rough order of usefulness:
+
+- **A native installation on common Linux distributions** — a package or an
+  install script that sets up the service, its data directory and a systemd
+  unit, so CargoPilot runs like any other service on the box.
+- **Kubernetes** — a Helm chart or plain manifests for installations that
+  already run a cluster.
+- **Docker stays first-class.** It is what the image is built and tested for on
+  every release, and nothing below changes that.
+
+One consequence worth naming up front: the in-app updater replaces the running
+container through the Docker socket, which is a mechanism a native install does
+not have. Each installation method needs its own update route — the package
+manager for a native install, the usual rollout for Kubernetes — and the
+settings screen should explain the one that applies rather than offering a
+button that cannot work.
+
 ### Wizard and library
 
 - NHM code search and selection as a master data field (CIM box 24). Blocked on finding a

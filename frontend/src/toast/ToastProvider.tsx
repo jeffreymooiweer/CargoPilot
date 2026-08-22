@@ -9,13 +9,15 @@
  * warning that slides away after four seconds is exactly the failure this
  * application is built against.
  *
- * Four kinds, each with its own lifetime:
+ * Five kinds, each with its own lifetime:
  *
  * - `success` / `info` dismiss themselves after four seconds;
  * - `error` stays until the user closes it — a missed network error is a
  *   document that silently never went out;
  * - `loading` stays until the caller resolves it into success or error, so a
- *   slow action holds exactly one toast from "working…" to its outcome.
+ *   slow action holds exactly one toast from "working…" to its outcome;
+ * - `question` stays until it is answered, because four seconds is not an
+ *   answer, and closing it counts as one.
  *
  * `undoable` is the deferred-action pattern the delete flows use: the UI
  * updates immediately, the real API call fires only when the undo window
@@ -37,9 +39,18 @@ import {
   useMemo,
   useRef,
   useState,
+  type ReactElement,
   type ReactNode,
 } from "react";
 import { useTranslation } from "react-i18next";
+import {
+  CheckIcon,
+  CircleXmarkIcon,
+  ExclamationIcon,
+  InfoIcon,
+  QuestionIcon,
+  SpinnerIcon,
+} from "./icons";
 
 export type ToastKind = "success" | "info" | "error" | "loading" | "question";
 
@@ -269,12 +280,12 @@ const KIND_STYLE: Record<ToastKind, string> = {
     "border-amber-300 bg-amber-50 text-amber-900 dark:border-amber-700 dark:bg-amber-950 dark:text-amber-100",
 };
 
-const KIND_ICON: Record<ToastKind, string> = {
-  success: "✓",
-  info: "ℹ",
-  error: "!",
-  loading: "…",
-  question: "?",
+const KIND_ICON: Record<ToastKind, (props: { className?: string }) => ReactElement> = {
+  success: CheckIcon,
+  info: InfoIcon,
+  error: ExclamationIcon,
+  loading: SpinnerIcon,
+  question: QuestionIcon,
 };
 
 function ToastHost({ toasts, onDismiss }: { toasts: Toast[]; onDismiss: (id: number) => void }) {
@@ -285,16 +296,18 @@ function ToastHost({ toasts, onDismiss }: { toasts: Toast[]; onDismiss: (id: num
     // assertively; the rest waits its turn — a screen reader user saving a
     // form should not be interrupted mid-sentence for "saved".
     <div className="fixed inset-x-0 bottom-0 z-50 flex flex-col gap-2 p-3 sm:inset-x-auto sm:right-4 sm:bottom-4 sm:w-96">
-      {toasts.map((toast) => (
+      {toasts.map((toast) => {
+        const Icon = KIND_ICON[toast.kind];
+        return (
         <div
           key={toast.id}
           role={toast.kind === "error" ? "alert" : "status"}
           aria-live={toast.kind === "error" ? "assertive" : "polite"}
           className={`flex items-start gap-2 rounded-xl border px-3 py-2.5 text-sm shadow-lg ${KIND_STYLE[toast.kind]}`}
         >
-          <span aria-hidden className={`mt-0.5 shrink-0 font-semibold ${toast.kind === "loading" ? "animate-pulse" : ""}`}>
-            {KIND_ICON[toast.kind]}
-          </span>
+          <Icon
+            className={`mt-0.5 h-5 w-5 shrink-0 ${toast.kind === "loading" ? "animate-spin" : ""}`}
+          />
           {/* A question puts its answers under the text rather than beside it:
               two or three UN numbers on one line squeeze the sentence that
               says what is being asked. One answer still sits alongside, where
@@ -330,13 +343,14 @@ function ToastHost({ toasts, onDismiss }: { toasts: Toast[]; onDismiss: (id: num
               type="button"
               onClick={() => onDismiss(toast.id)}
               aria-label={t("toast.dismiss")}
-              className="shrink-0 rounded-md px-1.5 text-lg leading-none opacity-60 hover:opacity-100"
+              className="shrink-0 rounded-md p-0.5 opacity-60 hover:opacity-100"
             >
-              ×
+              <CircleXmarkIcon className="h-4 w-4" />
             </button>
           )}
         </div>
-      ))}
+        );
+      })}
     </div>
   );
 }

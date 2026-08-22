@@ -2,6 +2,21 @@
 
 All notable changes are documented here, following [Semantic Versioning](https://semver.org/).
 
+## [1.155.1] — 2026-08-22
+
+### Changed
+
+- **The notifications have proper icons.** The five kinds of toast and the
+  close button drew plain text characters — a ✓, an ℹ, a bare `!` and `?` and
+  an ellipsis — which read as punctuation rather than as signs and sat at
+  whatever weight the font felt like. They are now drawn SVGs: a check, an
+  exclamation and an i in a circle, a question in a speech bubble, an open arc
+  that actually spins while something is loading, and a cross in a circle to
+  close. Each inherits the toast's own colour, so they stay legible in both
+  themes, and their size comes from the interface rather than from the file.
+  Recorded in [Data sources](docs/data-sources.md), where their licence terms
+  are noted as an open item.
+
 ## [1.155.0] — 2026-08-22
 
 ### Changed

@@ -201,6 +201,36 @@ describe("ToastProvider", () => {
     expect(onDismiss).toHaveBeenCalledTimes(1);
   });
 
+  it("every kind draws an icon that takes the toast's own colour", () => {
+    const api = setup();
+    act(() => {
+      api().success("saved");
+      api().error("boom");
+      api().info("note");
+      api().loading("working");
+      api().ask("which one?", { actions: [{ label: "this one", run: vi.fn() }] });
+    });
+    const icons = document.querySelectorAll("svg");
+    // Five toasts, each with its icon, plus a close button on the four that
+    // carry one (a loading toast may only be closed by its own outcome).
+    expect(icons.length).toBe(9);
+    icons.forEach((icon) => {
+      // The invisible regression: an icon with a colour of its own is a black
+      // shape on a dark red card, and nothing catches it until the theme
+      // flips. Size comes from the class, never from the file.
+      expect(icon.getAttribute("fill")).toBe("currentColor");
+      expect(icon.hasAttribute("width")).toBe(false);
+      expect(icon.hasAttribute("height")).toBe(false);
+      expect(icon).toHaveAttribute("aria-hidden");
+    });
+  });
+
+  it("the loading icon is the one that spins", () => {
+    const api = setup();
+    act(() => void api().loading("working"));
+    expect(document.querySelector("svg.animate-spin")).not.toBeNull();
+  });
+
   it("errors announce assertively, the rest politely", () => {
     const api = setup();
     act(() => {

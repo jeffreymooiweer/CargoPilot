@@ -256,3 +256,31 @@ same read-then-pin pattern the document store uses. A `null` pin means nobody
 has hashed that artifact yet, and the in-app download refuses to run. The model
 reads free text into structured fields only; every regulatory answer continues
 to come from the sources above.
+
+## Interface icons
+
+Almost every icon in the interface is drawn in this repository — the copy,
+delete, pencil, import and chevron glyphs are a handful of hand-written SVG
+paths in the component that uses them, which is why they share one line weight
+and one viewBox.
+
+The six notification icons in `frontend/src/toast/icons.tsx` are the exception:
+they are third-party SVGs, supplied by the project owner, for the five kinds of
+toast and the close button. They are embedded as paths rather than fetched, so
+the application makes no outbound request for them and they inherit the toast's
+own colour.
+
+| Icon | Used for |
+|---|---|
+| check | a success |
+| exclamation in a circle | an error |
+| i in a circle | information |
+| question in a speech bubble | a question waiting for an answer |
+| open arc | working on it (rotated in the toast) |
+| cross in a circle | the close button |
+
+**Their licence is not yet recorded.** The set has to be traced back to its
+publisher and its terms noted here, with an attribution line added if the terms
+ask for one — several of the common icon libraries are free to use but not free
+of conditions. Until that is done, treat this section as an open item rather
+than as a licence claim.

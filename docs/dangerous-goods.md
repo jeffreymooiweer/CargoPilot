@@ -328,6 +328,31 @@ Most findings are warnings. Two things actually stop you:
    recognised, shown in red, and refused for export. Carriage is only possible with an
    exemption from the competent authority.
 
+## What certain classes add to the document
+
+Chapter 5.4.1.2 asks for statements no table can supply: table A says which substances
+*may* need temperature control, never what the control temperature of this consignment
+is. Since v1.151.0 each is a field, asked only in the situation its provision describes —
+an ordinary drum of petrol is asked for none of them — and printed in the provision's own
+words, in the document's language.
+
+| Field | Provision | Asked when |
+|---|---|---|
+| Control and emergency temperature | 5.4.1.2.3.1 | the entry's name says TEMPERATURE CONTROLLED |
+| End of holding time | 5.4.1.2.2 (d) | a REFRIGERATED LIQUID in a tank |
+| Name of the gas | 5.4.1.2.2 (e) | UN 1012, which covers four gases |
+| Responsible person and telephone | 5.4.1.2.4 | class 6.2 |
+| Firework classification reference | 5.4.1.2.1 (g) | UN 0333 to 0337 |
+| Carriage temperature | 5.3.2.2 (sea), 5.3.3 (land) | offered on every mode — it decides the elevated temperature mark, and nothing else in a consignment implies it |
+
+Leave one empty and **nothing** appears on the paper. 5.4.1.2.3.1 prints one sentence
+carrying both temperatures, so one without the other is suppressed rather than rendered
+as a half-sentence that looks answered.
+
+Which provisions are held, which are guidance only and which are absent — with reasons
+for the absences — is audited in
+[Document fields audit](document-fields-audit.md).
+
 ## Per transport mode
 
 The mode you chose selects the rulebook: **ADR** for road, **RID** for rail, **ADN** for

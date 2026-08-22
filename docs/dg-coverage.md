@@ -27,27 +27,34 @@ Every claim in that column was read out of `backend/app/services/dg/`,
 **What the regime requires** now splits in two, and the split matters more than anything
 else in this document.
 
-**For road, rail and inland waterway it has been read.** Earlier versions of this
+**For road, rail, inland waterway and sea it has been read.** Earlier versions of this
 assessment said the regulatory texts were out of reach. That was wrong, and the error was
 costly enough to be worth naming: **ADR and ADN are published free of charge by UNECE and
 RID by OTIF.** All four PDFs are the official legal texts and cost nothing. What was
 actually missing was a network route from the development container — not the documents.
 `scripts/read_land_regulations.py` fetches them on a runner and quotes the provisions the
 application implements, so a claim about ADR, RID or ADN can be checked against the text
-rather than against someone's memory of it. Where this document now names a figure for
-those three regimes, it was read from:
+rather than against someone's memory of it.
+
+The same turned out to be true of the IMDG Code, and later than it should have been. The
+consolidated volumes are sold by the IMO, so this document long recorded sea as unread —
+but resolution MSC.556(108), which is freely distributed, states that "the complete text
+of the IMDG Code is replaced by the following" and then prints it. The Dangerous Goods
+List was extracted from it in v1.48.0 and chapter 5.3 in v1.150.0. Where this document
+names a figure for these four regimes, it was read from:
 
 | Text | Publisher | Edition |
 |---|---|---|
 | ADR 2025, Volumes I and II (ECE/TRANS/352) | UNECE | in force 1 January 2025 |
 | RID 2025 (Appendix C to COTIF, Annex) | OTIF | in force 1 January 2025 |
 | ADN 2025 | UNECE | in force 1 January 2025 |
+| IMDG Code, Amendment 42-24, via IMO resolution MSC.556(108) | IMO | in force 1 January 2026 |
 
-**For sea and air it has not.** The IMDG Code is sold by the IMO and the DGR by IATA;
-there is no free official text to read. Those two sections are still written from knowledge
-of how the regimes are structured, and are reliable at the level of *which chapter governs
-what*, not at the level of an exact limit or table value. The standing policy in
-[Data sources](data-sources.md) is unchanged either way: no regulatory text is
+**For air it has not.** The IATA DGR is sold by IATA and there is no free official text to
+read. That section is still written from knowledge of how the regime is structured, and is
+reliable at the level of *which chapter governs what*, not at the level of an exact limit
+or table value — which is exactly why air stays behind the modality lock. The standing
+policy in [Data sources](data-sources.md) is unchanged either way: no regulatory text is
 redistributed here, only the factual values read out of one.
 
 The practical consequence:
@@ -902,13 +909,13 @@ reading and not as a coincidence.
 
 ---
 
-*This assessment is maintained up to CargoPilot v1.150.0. Between v1.129.0 and
+*This assessment is maintained up to CargoPilot v1.152.0. Between v1.129.0 and
 v1.149.0 the work was outside the regulatory checks — the UN-card pipeline, the ZIP
 export, in-app updating, user administration, the mail server, password reset,
 two-factor authentication and the four-language mail templates — with two exceptions
 that are recorded above: v1.149.0 registered the December 2025 corrigenda to IMDG
 Amendment 42-24 and verified that none of its eleven corrections touches an extracted
-value, and v1.150.0 closed the sea half of gap 7. The sections above name the release
+value, v1.150.0 closed the sea half of gap 7, and v1.152.0 took sea off the modality lock. The sections above name the release
 each finding shipped in. v1.42.0 to v1.48.0 touched the goods
 catalogue, the interface language, the settings, the documentation and the error messages,
 not a single regulatory check; v1.49.0 and v1.50.0 changed the ADR side, from the Dutch

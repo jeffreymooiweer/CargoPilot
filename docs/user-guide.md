@@ -16,8 +16,8 @@ flow is one wizard; you can go back to any earlier step at any time.
 
 ## 1. Pick a transport mode
 
-Click **New shipment** and choose how the goods travel. **Road, rail and inland
-waterway are released**; the sea, air and multimodal tiles are visible but locked — their
+Click **New shipment** and choose how the goods travel. **Road, rail, sea and inland
+waterway are released**; the air and multimodal tiles are visible but locked — their
 regulatory checks are not complete yet, and a half-right document is worse than none.
 The [roadmap](../ROADMAP.md) tracks when each one unlocks.
 
@@ -206,6 +206,11 @@ Anything the server has to leave out (an incomplete document, a UN card it does 
 hold) is named in a README inside the archive rather than silently missing. Every
 document downloads as a PDF and carries a draft notice.
 
+**Mail them instead of downloading.** Where your administrator has set up a mail
+server, the same set can be sent straight from this screen: fill in the address, add a
+covering note if you want one, and the documents travel as attachments. The message is
+written in the language the papers are drawn up in, so a German consignee reads German.
+
 > Documents are generated on the spot and deleted from the server the moment your
 > download finishes. Nothing is archived.
 
@@ -285,6 +290,19 @@ the field is still empty, so nothing you typed yourself is ever overwritten. Swi
 replace or remove it per shipment. It is stored on your own server and nowhere else — see
 [Privacy](privacy.md#what-is-stored).
 
+**Two-step verification.** Under *Details* you can protect your account with a second
+factor: an authenticator app, which scans a QR code, or a code sent to your e-mail
+address — whichever suits you, unless your administrator requires one. Setting it up
+gives you eight recovery codes; write them down, because they are shown once and each
+works only once. They are what gets you back in when the phone is gone. Switching it off
+asks for a code first, and if you chose the e-mail method you can have one sent to you
+at that moment.
+
+**Forgotten your password?** The sign-in screen has a link. You get a mail with a link
+that works once and expires after an hour, and after choosing a new password you are
+signed in straight away rather than sent back to the sign-in screen. Both need a mail
+server; without one, ask your administrator to set a new password for you.
+
 ### After an update
 
 When your administrator pulls a newer CargoPilot image, the first sign-in afterwards shows
@@ -301,7 +319,18 @@ the whole installation and are saved together: the language and theme new users 
 with, the organisation name and address offered as a consignor to anyone who has not
 filled in their own, whether the UN card download is offered, how long a session lasts,
 and — under **Outbound connections** — whether address lookup, catalogue sync and the
-update check are allowed to reach the internet at all. **Maintenance** holds the things
+update check are allowed to reach the internet at all. It also holds the **mail server**,
+with a test message to prove it works before anyone depends on it, the **web address**
+the application is reached on (which the links in those mails use), and the **two-step
+verification policy**: off, required for administrators, or required for everyone. See
+[Configuration](configuration.md#mail-server) for the settings themselves.
+
+**Users.** A separate page lists the accounts, where an administrator adds one, changes
+a role, deactivates or removes an account, sets a new password, and clears somebody's
+two-step verification when they have lost both their phone and their recovery codes. A
+new account can be invited by mail instead of being handed a password: the colleague
+gets a link, valid for seven days and usable once, and chooses their own password. The
+invitation says an administrator made the account without naming which one. **Maintenance** holds the things
 an administrator *does* rather than saves: updating, the **UN Cards** section where the
 card set is installed, checked for updates or removed (see [un-cards.md](un-cards.md)),
 and the assistant's optional local model. When the update check is on and a newer

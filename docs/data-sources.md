@@ -8,8 +8,12 @@ density. Regulatory texts themselves are not in this repository.
 
 That policy is unchanged, but one assumption behind it was wrong and worth correcting.
 **ADR and ADN are published free of charge by UNECE, and RID by OTIF** — those three are
-not paywalled, only the IMDG Code and the IATA DGR are. What kept them out of reach was a
-network policy in the development container, not their price.
+not paywalled. Neither, it turned out, is the IMDG Code: the consolidated volumes are
+sold by the IMO, but resolution MSC.556(108) — freely distributed — states that "the
+complete text of the IMDG Code is replaced by the following" and then prints it, which
+is how the Dangerous Goods List was read in v1.48.0 and chapter 5.3 in v1.150.0. The
+IATA DGR remains the one text this project cannot read. What kept the others out of
+reach was a network policy in the development container, not their price.
 `scripts/read_land_regulations.py` therefore reads them on a CI runner and prints the
 provisions the application implements to the run log, so a rule can be checked against the
 text. It commits nothing: the quoted text stays in the log, and only the values read out of
@@ -156,6 +160,9 @@ goes quiet; typing an address by hand always works.
 | ADN 1.1.3.6.1 per-class exempted quantities and the 3,000 kg ceiling, 1.1.3.6.2 conditions | Read from **ADN 2025** (UNECE) by the same script |
 | Stowage codes SW1–SW31, handling codes H1–H5, segregation codes SG1–SG78 with their descriptions | IMDG Code chapters 7.1.5, 7.1.6 and 7.2.8, via IMO resolution **MSC.556(108)** (adopted 23 May 2024), read by `scripts/extract_imdg_codes.py` |
 | Dangerous Goods List per UN number — class, subsidiary hazards, packing group, special provisions, LQ/EQ, packing/IBC/tank instructions, EmS, stowage and handling (16a), segregation (16b), properties | IMDG Code chapter 3.2, Amendment 42-24, via IMO resolution **MSC.556(108)**, read by `scripts/extract_imdg_dgl.py` |
+| Placarding and marking of cargo transport units at sea | IMDG Code chapter 5.3, Amendment 42-24, via IMO resolution **MSC.556(108)**, quoted by `scripts/read_land_regulations.py --quote sea_placarding` |
+| Errata and corrigenda to Amendment 42-24, December 2025 | IMO, operator-supplied and pinned by hash as `imdg_corr_dec2025`. Read in full and checked against every extracted sea value in v1.149.0: none of its eleven corrections touches one |
+| MSC.1/Circ.1498, informative material on the CTU Code | IMO, 16 December 2014, operator-supplied and pinned as `ctu_circ_1498`. Registered for provenance; explicitly informative, so nothing in it decides a document |
 | IMDG Amendment 42-24 changes over 41-22 | NCB Hazcheck, *IMDG Code Amendment 42-24 changes detailed summary*, October 2024 v1.0, and IMO **E&T 38/3/9** for the UN 1361 provisions |
 
 ## Which edition is running

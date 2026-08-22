@@ -2,6 +2,40 @@
 
 All notable changes are documented here, following [Semantic Versioning](https://semver.org/).
 
+## [1.152.3] — 2026-08-22
+
+### Fixed
+
+- **The documentation says what the application does.** Every markdown file was
+  checked against the running version. Three of them still told the reader that
+  sea was locked, which stopped being true in v1.152.0 — the README, the
+  documents guide and the user guide. The sea row in the per-mode document
+  table gained the IMDG placarding sheet it has offered since v1.150.0.
+
+- **Two documents still called the IMDG Code unreadable.** The coverage
+  assessment listed sea among the modes whose text had not been read, and the
+  data sources page named the Code alongside the IATA DGR as paywalled. The
+  consolidated volumes are indeed sold, but the freely distributed resolution
+  that adopts Amendment 42-24 prints the complete text — which is how the
+  Dangerous Goods List was extracted in v1.48.0 and chapter 5.3 in v1.150.0.
+  Both now say so, and air is named as the one regime that genuinely cannot be
+  read. The December 2025 corrigenda and MSC.1/Circ.1498 were added to the
+  source table.
+
+### Added
+
+- **The user guide covers the account and mail features.** Two-step
+  verification, recovery codes, forgotten passwords, mailing the documents from
+  the export screen, and — for administrators — the mail server, the two-step
+  policy and the users page. All of it has shipped since v1.141.0 and none of it
+  was in the guide; only `configuration.md` described it, which is the wrong
+  place for someone trying to switch on two-step verification.
+
+- **The dangerous goods guide explains what certain classes add to the
+  document**, with the table of which field is asked in which situation, and a
+  link to the fields audit — which until now was reachable only from a
+  changelog entry. The audit is listed in the README's documentation table too.
+
 ## [1.152.2] — 2026-08-22
 
 ### Changed

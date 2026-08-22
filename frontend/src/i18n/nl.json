@@ -130,7 +130,14 @@
     "height_cm": "Hoogte (cm)",
     "cargoForm": "Vorm",
     "wallThickness": "Wanddikte (mm)",
-    "diameter": "Diameter (cm)"
+    "diameter": "Diameter (cm)",
+    "editLine": "Bewerken",
+    "editTitle": "Regel {{number}}",
+    "closeEdit": "Bewerken sluiten",
+    "doneEditing": "Klaar",
+    "dimensions": "Afmetingen",
+    "dgYes": "Ja",
+    "dgNo": "Nee"
   },
   "import": {
     "downloadTemplate": "Template downloaden",
@@ -625,14 +632,8 @@
     "amendedIn4224": "42-24 heeft deze vermelding gewijzigd — vergelijk met de vorige editie"
   },
   "records": {
-    "actions": "Acties",
     "viewMore": "Toon meer",
-    "viewLess": "Toon minder",
-    "showDetail": "Details tonen",
-    "closeDetail": "Details sluiten",
-    "detailTitle": "Regeldetails",
-    "hiddenColumns_one": "Nog {{count}} kolom staat in de details van de regel.",
-    "hiddenColumns_other": "Nog {{count}} kolommen staan in de details van de regel."
+    "viewLess": "Toon minder"
   },
   "units": {
     "suggested": "Gebruikelijk voor dit goed",

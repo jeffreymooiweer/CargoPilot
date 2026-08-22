@@ -130,7 +130,14 @@
     "height_cm": "Hauteur (cm)",
     "cargoForm": "Forme",
     "wallThickness": "Épaisseur de paroi (mm)",
-    "diameter": "Diamètre (cm)"
+    "diameter": "Diamètre (cm)",
+    "editLine": "Modifier",
+    "editTitle": "Ligne {{number}}",
+    "closeEdit": "Fermer la modification",
+    "doneEditing": "Terminé",
+    "dimensions": "Dimensions",
+    "dgYes": "Oui",
+    "dgNo": "Non"
   },
   "import": {
     "downloadTemplate": "Télécharger le modèle",
@@ -625,14 +632,8 @@
     "amendedIn4224": "L'amendement 42-24 a modifié cette rubrique — comparez avec l'édition précédente"
   },
   "records": {
-    "actions": "Actions",
     "viewMore": "Afficher plus",
-    "viewLess": "Afficher moins",
-    "showDetail": "Afficher les détails",
-    "closeDetail": "Fermer les détails",
-    "detailTitle": "Détail de la ligne",
-    "hiddenColumns_one": "Encore {{count}} colonne se trouve dans le détail de la ligne.",
-    "hiddenColumns_other": "Encore {{count}} colonnes se trouvent dans le détail de la ligne."
+    "viewLess": "Afficher moins"
   },
   "units": {
     "suggested": "Habituel pour ces marchandises",

@@ -2,6 +2,43 @@
 
 All notable changes are documented here, following [Semantic Versioning](https://semver.org/).
 
+## [1.154.0] — 2026-08-22
+
+### Changed
+
+- **The goods step is one shape now: cards, on every screen.** The desktop
+  table is gone. It was a table you *typed* in — thirteen columns of input
+  fields — and everything built around it existed to fight its width: columns
+  weighed against the available space and dropped when they did not fit, a
+  minimum width so the fields would not be squeezed to thirty pixels, a
+  detail panel to reach what had been dropped. All of that machinery is
+  removed with the table.
+- **A line is shown, not typed, on the card.** The card carries read-only
+  values — what you scan by stays visible, the rest opens with "show more",
+  exactly as it already did on a phone. That is what makes one layout work at
+  every width: text reflows, a row of input fields cannot.
+- **Editing happens in a dialog**, opened with a new pencil icon beside the
+  duplicate and delete icons. Every field of the line sits in it, one per row,
+  at the same width on a phone and on a monitor. Changes apply as you make
+  them, as they did in the table, so the dialog closes rather than saves.
+- Length, width and height now read as one measurement — "200 × 80 × 40 cm",
+  or "200 × ⌀ 80 cm" for a round cross-section — instead of three cells that a
+  table needed but a reader does not.
+- The dangerous-goods name suggestion stays on the card itself, visible
+  whether the card is open or closed. It is the one thing on a line that asks
+  the user a question, and a substance recognised but never confirmed is what
+  this step exists to catch.
+
+### Fixed
+
+- **A number field now hands you its number when you click it.** Every field
+  with a figure in it — quantities, dimensions, weights, session lifetime,
+  port numbers — put the caret next to the existing value and left it there,
+  so replacing a 1 with a 12 meant typing the new number and then going back
+  to delete the old one. Clicking a number field now selects what is in it, so
+  the first keystroke replaces it. Clicking a second time still places the
+  caret, for changing a single digit, and drag-selecting still works.
+
 ## [1.153.0] — 2026-08-22
 
 ### Added

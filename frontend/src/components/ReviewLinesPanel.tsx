@@ -1,9 +1,8 @@
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { DgNameCandidate, LineItem, UnitCatalogue, api } from "../api/client";
-import EquipmentCombobox from "./EquipmentCombobox";
-import ResponsiveRecords, { QuantityWithUnit, RecordColumn } from "./ResponsiveRecords";
-import UnitSelect from "./UnitSelect";
+import LineEditDialog, { ROUND_TYPES, WALL_PROFILE_TYPES } from "./LineEditDialog";
+import RecordCards, { NoValue, QuantityWithUnit, RecordField } from "./RecordCards";
 
 export interface DraftLine {
   id: number;
@@ -36,28 +35,7 @@ export interface DraftLine {
   weight_each_kg?: number | "";
 }
 
-const inputClass =
-  "w-full border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-950 text-slate-900 dark:text-slate-100 rounded-lg px-3 py-2.5 text-sm min-h-[44px]";
-const weightInputClass =
-  "w-full border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-950 text-slate-900 dark:text-slate-100 rounded-lg px-3 py-2 text-sm";
 const panelClass = "bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800";
-
-/**
- * Cross-sections with a wall, where length-width-height does not determine the weight.
- *
- * An 80x80 angle is two legs a few millimetres thick, not a solid bar of 80x80 —
- * a factor of five. For a plate, beam or plank that does not come into play and
- * the field therefore should not be there either.
- */
-const WALL_PROFILE_TYPES = new Set(["angle_profile", "square_tube", "round_tube"]);
-
-/**
- * Round cross-sections. There the width *is* the diameter and there is no
- * height: with a diameter, a length and — for a tube — a wall thickness, the
- * weight is fixed. Asking for a height that adds nothing is only an opportunity
- * to fill in something wrong.
- */
-const ROUND_TYPES = new Set(["round_tube", "round_bar"]);
 
 interface Props {
   draftLines: DraftLine[];
@@ -91,6 +69,14 @@ function PlusIcon() {
   return (
     <svg className="h-4 w-4" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth={1.8} aria-hidden>
       <path d="M10 4v12M4 10h12" strokeLinecap="round" />
+    </svg>
+  );
+}
+
+function PencilIcon() {
+  return (
+    <svg className="h-4 w-4" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth={1.6} aria-hidden>
+      <path d="M13.5 3.5a1.77 1.77 0 0 1 2.5 2.5L7 15l-3.5 1L4.5 12.5Z" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
   );
 }
@@ -148,7 +134,12 @@ function CardAction({
  *  the shipping name and the class, and it asks. One candidate gets a yes/no;
  *  several (two sulphuric acids, differing in the qualifier) get a button per
  *  UN number. Rejecting it puts it away for this line — a suggestion that
- *  keeps coming back is nagging, not helping. */
+ *  keeps coming back is nagging, not helping.
+ *
+ *  It sits on the card rather than in the edit dialog, and stays visible
+ *  whether the card is open or closed: it is the one thing on a line that asks
+ *  the user a question, and a dangerous substance recognised but never
+ *  confirmed is exactly what this step exists to catch. */
 function DgSuggestion({
   candidates,
   onConfirm,
@@ -221,6 +212,10 @@ export default function ReviewLinesPanel({
   const computed = resultLines && resultLines.length > 0;
   const canRemove = draftLines.length > 1;
 
+  // Held by id rather than by index: a line can be removed or duplicated while
+  // the dialog is open, and an index would then quietly point at another line.
+  const [editingId, setEditingId] = useState<number | null>(null);
+
   const updateDraft = (id: number, patch: Partial<DraftLine>) => {
     onDraftChange(draftLines.map((line) => (line.id === id ? { ...line, ...patch } : line)));
   };
@@ -239,293 +234,44 @@ export default function ReviewLinesPanel({
     };
   }, []);
 
-  const numberInput = `${weightInputClass} text-right`;
-
   function resultFor(index: number): LineItem | null {
     return computed ? resultLines![index] : null;
   }
 
-  // Columns are input fields here as well: this is a table you type in, not a
-  // table you read. What belongs on a collapsed card is in the user's answer:
-  // the description as the heading, quantity and unit as the only line. The rest
-  // sits behind "show more".
-  const columns: RecordColumn<DraftLine>[] = [
-    {
-      key: "description",
-      header: t("review.description"),
-      width: "w-[28%]",
-      // What the line *is*. Without it the table says nothing, so it is never
-      // the column that falls away.
-      priority: 0,
-      minPx: 240,
-      render: (draft) => (
-        <EquipmentCombobox
-          value={draft.description}
-          onChange={(v) => updateDraft(draft.id, { description: v })}
-        />
-      ),
-    },
+  /** What the user filled in beats what was read out of the description. */
+  function measure(draft: DraftLine, result: LineItem | null, field: "length_cm" | "width_cm" | "height_cm") {
+    const own = draft[field];
+    if (own !== undefined && own !== "") return own;
+    return result?.[field] ?? null;
+  }
+
+  // Read-only, all of them: the card says what the line holds and the dialog is
+  // where it changes. That is what lets one shape work at every width — text
+  // reflows, a row of input fields does not.
+  const fields: RecordField<DraftLine>[] = [
     {
       key: "quantity",
-      header: t("review.quantity"),
-      cardLabel: t("review.quantityAndUnit"),
+      label: t("review.quantityAndUnit"),
       primary: true,
-      numeric: true,
-      width: "w-40",
-      priority: 1,
-      minPx: 220,
-      render: (draft, index) => (
-        // Two controls in one cell, and the cell has to reserve room for both.
-        // Without the floor the table's auto layout sized this column on the
-        // *text* in it — nothing, since both are inputs — and handed the number
-        // field 30px and the unit select 28px, which is a field you cannot type
-        // in. Note that the `w-20` and `w-24` below do nothing: weightInputClass
-        // already carries `w-full`, and that wins whatever order they are
-        // written in. The width is the cell's to give.
-        <div className="flex min-w-[13rem] items-center justify-end gap-1.5">
-          <input
-            type="number"
-            inputMode="decimal"
-            aria-label={t("review.quantity")}
-            className={`${numberInput} w-20`}
-            value={draft.quantity}
-            onChange={(e) =>
-              updateDraft(draft.id, { quantity: e.target.value === "" ? "" : Number(e.target.value) })
-            }
-          />
-          <UnitSelect
-            value={draft.unit}
-            onChange={(unit) => updateDraft(draft.id, { unit })}
-            category={resultFor(index)?.material_category}
-            catalogue={catalogue}
-            aria-label={t("review.unit")}
-            className={`${weightInputClass} w-24`}
-          />
-        </div>
-      ),
-    },
-    {
-      key: "cargoForm",
-      header: t("review.cargoForm"),
-      width: "w-40",
-      // Only offered for goods whose stored density describes the material
-      // itself, so on many lines it is a dash. Late.
-      priority: 9,
-      minPx: 130,
-      render: (draft, index) => {
-        const category = resultFor(index)?.material_category;
-        const forms = (category && catalogue?.forms_by_category[category]) || [];
-        // No form for gravel, grain or liquids: there the stored density already
-        // describes the substance as it is carried.
-        if (forms.length === 0) return <span className="text-slate-400">—</span>;
-        return (
-          <select
-            aria-label={t("review.cargoForm")}
-            className={`${weightInputClass} w-36`}
-            value={draft.cargo_form ?? resultFor(index)?.cargo_form ?? ""}
-            onChange={(e) => updateDraft(draft.id, { cargo_form: e.target.value })}
-          >
-            {forms.map((form) => (
-              <option key={form} value={form}>
-                {t(`forms.${form}`, form)}
-              </option>
-            ))}
-          </select>
-        );
-      },
-    },
-    ...(["length_cm", "width_cm", "height_cm"] as const).map((field) => ({
-      key: field,
-      // One measurement in three cells: they come and go together.
-      group: "dimensions",
-      priority: 5,
-      minPx: 82,
-      header: t(`review.${field}`),
-      numeric: true,
-      width: "w-24",
-      render: (draft: DraftLine, index: number) => {
-        const round = ROUND_TYPES.has(resultFor(index)?.product_type ?? "");
-        // No height with a round cross-section; the diameter is in the width.
-        if (round && field === "height_cm") return <span className="text-slate-400">—</span>;
-        // The column heading is the same for every line, so the label "diameter"
-        // belongs with the field itself.
-        const label = round && field === "width_cm" ? t("review.diameter") : t(`review.${field}`);
-        // What the user fills in beats what was read out of the description; if
-        // there is nothing, the measurement read is the default value.
-        const parsed = resultFor(index)?.[field];
-        return (
-          <input
-            type="number"
-            step="0.1"
-            inputMode="decimal"
-            aria-label={label}
-            title={label}
-            placeholder={parsed != null ? String(parsed) : ""}
-            className={`${numberInput} w-20`}
-            value={draft[field] ?? ""}
-            onChange={(e) =>
-              updateDraft(draft.id, { [field]: e.target.value === "" ? "" : Number(e.target.value) })
-            }
-          />
-        );
-      },
-    })),
-    {
-      key: "wall_thickness_mm",
-      // Only meaningful for hollow profiles. Last.
-      priority: 11,
-      minPx: 100,
-      header: t("review.wallThickness"),
-      numeric: true,
-      width: "w-28",
-      render: (draft, index) => {
-        // Only show it where it means something. A plate or a beam has no wall,
-        // and an empty field that never applies is only a distraction.
-        const type = resultFor(index)?.product_type;
-        if (!type || !WALL_PROFILE_TYPES.has(type)) {
-          return <span className="text-slate-400">—</span>;
-        }
-        const missing = resultFor(index)?.messages.includes("wall_thickness_missing");
-        return (
-          <input
-            type="number"
-            step="0.1"
-            inputMode="decimal"
-            aria-label={t("review.wallThickness")}
-            className={`${numberInput} w-20 ${
-              missing ? "border-amber-400 dark:border-amber-600" : ""
-            }`}
-            value={draft.wall_thickness_mm ?? ""}
-            onChange={(e) =>
-              updateDraft(draft.id, {
-                wall_thickness_mm: e.target.value === "" ? "" : Number(e.target.value),
-              })
-            }
-          />
-        );
-      },
-    },
-    {
-      key: "weightEach",
-      priority: 8,
-      minPx: 110,
-      header: t("review.weightEach"),
-      numeric: true,
-      width: "w-28",
-      render: (_draft, index) => {
-        const result = resultFor(index);
-        if (!result || !onLineWeightChange) return <span className="text-slate-400">—</span>;
-        return (
-          <input
-            type="number"
-            step="0.01"
-            aria-label={t("review.weightEach")}
-            className={`${numberInput} w-24`}
-            value={result.weight_each_kg ?? ""}
-            onChange={(e) =>
-              onLineWeightChange(result.line_id, "weight_each_kg", e.target.value === "" ? null : Number(e.target.value))
-            }
-          />
-        );
-      },
+      render: (draft) =>
+        draft.quantity === "" ? <NoValue /> : <QuantityWithUnit value={draft.quantity} unit={draft.unit} />,
     },
     {
       key: "weightTotal",
-      // The figure the whole step is for.
-      priority: 2,
-      minPx: 115,
-      header: t("review.weightTotal"),
-      numeric: true,
-      width: "w-28",
+      label: t("review.weightTotal"),
+      primary: true,
       render: (_draft, index) => {
-        const result = resultFor(index);
-        if (!result || !onLineWeightChange) return <span className="text-slate-400">—</span>;
-        return (
-          <input
-            type="number"
-            step="0.01"
-            aria-label={t("review.weightTotal")}
-            className={`${numberInput} w-24`}
-            value={result.weight_total_kg ?? ""}
-            onChange={(e) =>
-              onLineWeightChange(result.line_id, "weight_total_kg", e.target.value === "" ? null : Number(e.target.value))
-            }
-          />
-        );
-      },
-    },
-    {
-      key: "volume",
-      priority: 10,
-      minPx: 95,
-      header: t("review.volume"),
-      numeric: true,
-      width: "w-24",
-      render: (_draft, index) => {
-        const volume = resultFor(index)?.transport_volume_m3;
-        return volume != null ? (
-          <QuantityWithUnit value={volume.toFixed(3)} unit="m³" />
-        ) : (
-          <span className="text-slate-400">—</span>
-        );
-      },
-    },
-    {
-      key: "dg",
-      // A tick that changes the rest of the wizard; worth keeping in view.
-      priority: 4,
-      minPx: 120,
-      header: t("review.dangerousGoods"),
-      width: "w-32",
-      render: (draft, index) => {
-        const result = resultFor(index);
-        const candidates = result?.dg_name_candidates ?? [];
-        const showSuggestion =
-          candidates.length > 0 && !draft.confirmed_un && !draft.dg_dismissed;
-        return (
-          <div className="space-y-1.5">
-            <div className="flex items-center justify-end gap-2 md:justify-start">
-              <input
-                type="checkbox"
-                aria-label={t("review.dangerousGoods")}
-                checked={draft.dangerous_goods ?? false}
-                onChange={(e) => updateDraft(draft.id, { dangerous_goods: e.target.checked })}
-                className="h-4 w-4 rounded border-slate-300 text-amber-600 focus:ring-amber-500"
-              />
-              {result?.dangerous_goods && !draft.dangerous_goods && (
-                <span className="rounded-full bg-amber-100 px-2 py-0.5 text-[11px] font-medium text-amber-800 dark:bg-amber-900/40 dark:text-amber-300">
-                  {t("review.dgDetected")}
-                </span>
-              )}
-              {draft.confirmed_un && (
-                <span className="rounded-full bg-emerald-100 px-2 py-0.5 text-[11px] font-medium text-emerald-800 dark:bg-emerald-900/40 dark:text-emerald-300">
-                  UN {draft.confirmed_un}
-                </span>
-              )}
-            </div>
-            {showSuggestion && (
-              <DgSuggestion
-                candidates={candidates}
-                onConfirm={(un) =>
-                  updateDraft(draft.id, { dangerous_goods: true, confirmed_un: un })
-                }
-                onDismiss={() => updateDraft(draft.id, { dg_dismissed: true })}
-              />
-            )}
-          </div>
-        );
+        const weight = resultFor(index)?.weight_total_kg;
+        return weight != null ? <QuantityWithUnit value={weight} unit="kg" /> : <NoValue />;
       },
     },
     {
       key: "status",
-      // Says whether the line is usable at all.
-      priority: 3,
-      minPx: 130,
-      header: t("review.status"),
-      width: "w-36",
+      label: t("review.status"),
+      primary: true,
       render: (_draft, index) => {
         const result = resultFor(index);
-        if (!result) return <span className="text-slate-400">—</span>;
+        if (!result) return <NoValue />;
         return (
           <div className="space-y-1">
             <span className={`inline-block rounded-full px-2 py-0.5 text-xs ${statusColor(result.status)}`}>
@@ -540,7 +286,98 @@ export default function ReviewLinesPanel({
         );
       },
     },
+    {
+      key: "dangerousGoods",
+      label: t("review.dangerousGoods"),
+      render: (draft, index) => {
+        const result = resultFor(index);
+        return (
+          <div className="flex flex-wrap items-center justify-end gap-1.5">
+            <span>{draft.dangerous_goods ? t("review.dgYes") : t("review.dgNo")}</span>
+            {result?.dangerous_goods && !draft.dangerous_goods && (
+              <span className="rounded-full bg-amber-100 px-2 py-0.5 text-[11px] font-medium text-amber-800 dark:bg-amber-900/40 dark:text-amber-300">
+                {t("review.dgDetected")}
+              </span>
+            )}
+            {draft.confirmed_un && (
+              <span className="rounded-full bg-emerald-100 px-2 py-0.5 text-[11px] font-medium text-emerald-800 dark:bg-emerald-900/40 dark:text-emerald-300">
+                UN {draft.confirmed_un}
+              </span>
+            )}
+          </div>
+        );
+      },
+    },
+    {
+      key: "dimensions",
+      // One measurement, one line: three cells for length, width and height was
+      // a table's way of putting it, not a reader's.
+      label: t("review.dimensions"),
+      render: (draft, index) => {
+        const result = resultFor(index);
+        const round = ROUND_TYPES.has(result?.product_type ?? "");
+        const length = measure(draft, result, "length_cm");
+        const width = measure(draft, result, "width_cm");
+        const height = round ? null : measure(draft, result, "height_cm");
+        if (length == null && width == null && height == null) return <NoValue />;
+        const show = (value: number | null) => (value == null ? "?" : String(value));
+        const text = round
+          ? `${show(length)} × ⌀ ${show(width)}`
+          : [length, width, height].map(show).join(" × ");
+        return <QuantityWithUnit value={text} unit="cm" />;
+      },
+    },
+    {
+      key: "weightEach",
+      label: t("review.weightEach"),
+      render: (_draft, index) => {
+        const weight = resultFor(index)?.weight_each_kg;
+        return weight != null ? <QuantityWithUnit value={weight} unit="kg" /> : <NoValue />;
+      },
+    },
+    {
+      key: "volume",
+      label: t("review.volume"),
+      render: (_draft, index) => {
+        const volume = resultFor(index)?.transport_volume_m3;
+        return volume != null ? <QuantityWithUnit value={volume.toFixed(3)} unit="m³" /> : <NoValue />;
+      },
+    },
+    {
+      key: "cargoForm",
+      label: t("review.cargoForm"),
+      render: (draft, index) => {
+        const result = resultFor(index);
+        const form = draft.cargo_form ?? result?.cargo_form;
+        // No form for gravel, grain or liquids: there the stored density
+        // already describes the substance as it is carried.
+        if (!form) return <NoValue />;
+        return <>{t(`forms.${form}`, form)}</>;
+      },
+    },
+    {
+      key: "wallThickness",
+      label: t("review.wallThickness"),
+      render: (draft, index) => {
+        const result = resultFor(index);
+        const type = result?.product_type;
+        // Only where it means something: a plate or a beam has no wall.
+        if (!type || !WALL_PROFILE_TYPES.has(type)) return <NoValue />;
+        const value = draft.wall_thickness_mm;
+        if (value === undefined || value === "") {
+          return result.messages.includes("wall_thickness_missing") ? (
+            <span className="text-amber-700 dark:text-amber-300">{translateMessage("wall_thickness_missing")}</span>
+          ) : (
+            <NoValue />
+          );
+        }
+        return <QuantityWithUnit value={value} unit="mm" />;
+      },
+    },
   ];
+
+  const editingIndex = draftLines.findIndex((line) => line.id === editingId);
+  const editing = editingIndex >= 0 ? draftLines[editingIndex] : null;
 
   return (
     <div className={`${panelClass} overflow-hidden`}>
@@ -557,18 +394,9 @@ export default function ReviewLinesPanel({
       </div>
 
       <div className="p-4">
-        <ResponsiveRecords
+        <RecordCards
           rows={draftLines}
-          columns={columns}
-          // Since v1.55.0 the table drops what does not fit instead of
-          // scrolling: the columns are ranked, the ones that fall off are in
-          // the detail panel, and the fields keep their width. The floor stays
-          // as the last line of defence for the case where even the columns
-          // that *are* shown do not fit — a very narrow window with the side
-          // menu folded open.
-          minWidth="min-w-[720px]"
-          fit
-          detail
+          fields={fields}
           rowKey={(draft) => draft.id}
           cardTitle={(draft, index) => (
             <div className="flex items-center gap-2">
@@ -580,8 +408,20 @@ export default function ReviewLinesPanel({
               </span>
             </div>
           )}
+          banner={(draft, index) => {
+            const candidates = resultFor(index)?.dg_name_candidates ?? [];
+            if (candidates.length === 0 || draft.confirmed_un || draft.dg_dismissed) return null;
+            return (
+              <DgSuggestion
+                candidates={candidates}
+                onConfirm={(un) => updateDraft(draft.id, { dangerous_goods: true, confirmed_un: un })}
+                onDismiss={() => updateDraft(draft.id, { dg_dismissed: true })}
+              />
+            );
+          }}
           actions={(draft) => (
             <>
+              <CardAction label={t("review.editLine")} onClick={() => setEditingId(draft.id)} icon={<PencilIcon />} />
               <CardAction label={t("review.duplicateLine")} onClick={() => onDuplicateLine(draft.id)} icon={<CopyIcon />} />
               <CardAction
                 label={t("review.removeLine")}
@@ -604,6 +444,22 @@ export default function ReviewLinesPanel({
           }
         />
       </div>
+
+      {editing && (
+        <LineEditDialog
+          line={editing}
+          result={resultFor(editingIndex)}
+          position={editingIndex + 1}
+          catalogue={catalogue}
+          onChange={(patch) => updateDraft(editing.id, patch)}
+          onWeightChange={
+            onLineWeightChange && resultFor(editingIndex)
+              ? (field, value) => onLineWeightChange(resultFor(editingIndex)!.line_id, field, value)
+              : undefined
+          }
+          onClose={() => setEditingId(null)}
+        />
+      )}
     </div>
   );
 }

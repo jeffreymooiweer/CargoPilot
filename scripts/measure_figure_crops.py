@@ -43,9 +43,12 @@ from read_land_regulations import SOURCES, fetch  # noqa: E402
 #: pinned. Changing it would silently move every future crop relative to them.
 DPI = 70
 
-#: A pixel counts as ink below this. The editions print black on white with
-#: anti-aliased edges; a mid-grey threshold keeps the edge of a thin line
-#: without picking up the paper.
+#: A pixel counts as ink below this, measured on the *darkest* channel rather
+#: than on any single one. The first version of this read channel 0, which is
+#: red — and red ink has a high red value, so it read as paper. That made the
+#: battery mark of 5.2.1.9.2, whose edging is hatched in red, invisible to a
+#: detector looking straight at it. Anything printed in colour would have gone
+#: the same way, which for a chapter about coloured labels is the whole subject.
 INK = 200
 
 #: Blobs smaller than this in points are furniture: rule lines, page numbers,
@@ -140,7 +143,7 @@ def main() -> int:
             continue
         page = document[index]
         pixmap = page.get_pixmap(dpi=DPI)
-        mask = [[pixmap.pixel(x, y)[0] < INK for x in range(pixmap.width)]
+        mask = [[min(pixmap.pixel(x, y)[:3]) < INK for x in range(pixmap.width)]
                 for y in range(pixmap.height)]
         candidates: list[dict[str, Any]] = []
         for box in _blobs(mask):

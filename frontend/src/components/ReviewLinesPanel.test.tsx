@@ -73,14 +73,21 @@ function renderPanel(lines: DraftLine[], result: LineItem[], onDraftChange = vi.
 /** The panel is controlled, so typing only behaves like typing when something
  *  actually holds the lines. The wizard does; a bare spy does not, and the
  *  field would keep re-rendering its old value under the keystrokes. */
-function StatefulPanel({ lines, result, onChange }: {
+function StatefulPanel({ lines, result, onChange, replaceWith }: {
   lines: DraftLine[];
   result: LineItem[];
   onChange: (lines: DraftLine[]) => void;
+  /** Swapped in without remounting, the way an import replaces the lines. */
+  replaceWith?: DraftLine[];
 }) {
   const [current, setCurrent] = useState(lines);
   return (
     <ToastProvider>
+      {replaceWith && (
+        <button type="button" onClick={() => setCurrent(replaceWith)}>
+          simulate import
+        </button>
+      )}
       <ReviewLinesPanel
         draftLines={current}
         resultLines={result}
@@ -150,6 +157,30 @@ describe("the DG name recognition, asked in a snackbar", () => {
     renderPanel([draft], [resultLine([])]);
     expect(screen.queryByText("review.dgToastOne")).toBeNull();
     expect(screen.queryByText("review.dgToastMany")).toBeNull();
+  });
+
+  it("asks again about a line number that a replacing import reused", async () => {
+    // An import with "replace" numbers from 1 again. The guard against a
+    // second toast used to remember the line-and-substance key forever, so a
+    // new consignment whose first line held the same substance as the one
+    // already answered was never asked about at all.
+    const onChange = vi.fn();
+    render(
+      <StatefulPanel
+        lines={[draft]}
+        result={[resultLine(petrol)]}
+        onChange={onChange}
+        replaceWith={[{ id: 1, description: "10 vaten benzine", quantity: 10, unit: "vaten" }]}
+      />,
+    );
+    await screen.findByText("review.dgToastOne");
+    await userEvent.click(screen.getByRole("button", { name: "review.dgApply" }));
+    expect(screen.queryByText("review.dgToastOne")).toBeNull();
+
+    // The panel stays mounted, as it does in the wizard: the same line number
+    // and the same substance, but a fresh line nobody has answered for.
+    await userEvent.click(screen.getByRole("button", { name: "simulate import" }));
+    expect(await screen.findByText("review.dgToastOne")).toBeInTheDocument();
   });
 
   it("the recognition is off the card entirely", async () => {

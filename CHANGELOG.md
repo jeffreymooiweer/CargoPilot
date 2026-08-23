@@ -2,6 +2,38 @@
 
 All notable changes are documented here, following [Semantic Versioning](https://semver.org/).
 
+## [1.157.0] — 2026-08-22
+
+### Fixed
+
+- **The import button no longer costs a band of screen on a phone.** It sat
+  below the heading and its description, pushed to the right on its own row,
+  which left an empty strip above the first goods line — on the screen where
+  space is scarcest. It now sits on the heading's own line at every width, and
+  carries its name rather than only an icon: the sentence underneath points at
+  it by that name, and a phone has no hover to reveal a title.
+- **A recognised substance is asked about again after a replacing import.**
+  Importing with "replace" numbers the lines from 1 again, and the guard that
+  stops a second snackbar for the same question remembered the line number and
+  substance for good. A new consignment whose first line held the same
+  substance as one already answered was therefore never asked about — the
+  quiet kind of failure this step exists to prevent. The guard now remembers
+  only questions that are still open.
+- **Errors from the goods import now surface as toasts**, like every other
+  transient failure since v1.153.0. They were still inline paragraphs inside
+  the dialog: the sweep matched on the name of the state it replaced and this
+  one was called something else, so a failing template download or an
+  unreadable spreadsheet reported itself in the old visual language.
+
+### Changed
+
+- The import and assistant icons are drawn glyphs from the same set as the
+  notification icons, replacing two hand-drawn ones. The goods step and the
+  equipment library had each drawn their own import icon; they now share one.
+  The close buttons of both import dialogs use the set's cross as well.
+- The credit on the Legal page now names what it covers — notifications,
+  importing and the assistant — since the set is no longer only in toasts.
+
 ## [1.156.1] — 2026-08-22
 
 ### Added

@@ -259,16 +259,17 @@ to come from the sources above.
 
 ## Interface icons
 
-Almost every icon in the interface is drawn in this repository — the copy,
-delete, pencil, import and chevron glyphs are a handful of hand-written SVG
-paths in the component that uses them, which is why they share one line weight
-and one viewBox.
+Most icons in the interface are drawn in this repository — the copy, delete,
+pencil and chevron glyphs are a handful of hand-written SVG paths in the
+component that uses them, which is why they share one line weight and one
+viewBox.
 
-The six notification icons in `frontend/src/toast/icons.tsx` are the exception:
-they are third-party SVGs, supplied by the project owner, for the five kinds of
-toast and the close button. They are embedded as paths rather than fetched, so
-the application makes no outbound request for them and they inherit the toast's
-own colour.
+Eight are the exception: the six in `frontend/src/toast/icons.tsx` for the five
+kinds of toast and the close button, plus the import glyph in
+`frontend/src/components/icons.tsx` and the assistant's mark in
+`AiIcon.tsx`. They are third-party SVGs, supplied by the project owner, and
+embedded as paths rather than fetched — so the application makes no outbound
+request for them and they inherit the colour of whatever they sit in.
 
 | Icon | Used for |
 |---|---|
@@ -278,6 +279,8 @@ own colour.
 | question in a speech bubble | a question waiting for an answer |
 | open arc | working on it (rotated in the toast) |
 | cross in a circle | the close button |
+| document with an arrow | importing a spreadsheet |
+| framed "AI" with a spark | the assistant |
 
 They come from **Uicons by [Flaticon](https://www.flaticon.com/uicons)**, which
 is free to use on the condition that the maker is credited. That credit is on
@@ -285,8 +288,8 @@ the application's own Legal page, where the people using it can see it — a
 licence condition met only in a repository file is not met, since nobody
 running the application ever reads that file.
 
-All six carry the same credit, confirmed by the owner against the set they
-came from, so the one line on the Legal page covers them. Their exported
-markup falls into three groups — two carry an Adobe Illustrator header and a
-`Capa_1` layer, two an `id="Layer_1"`, two an `id="Outline"` — which is the
+All eight carry the same credit, confirmed by the owner against the set they
+came from, so the one line on the Legal page covers them. Their exported markup
+falls into several groups — some carry an Adobe Illustrator header and a
+`Capa_1` layer, others an `id="Layer_1"` or an `id="Outline"` — which is the
 set's different styles showing through, not different origins.

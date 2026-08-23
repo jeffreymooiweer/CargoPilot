@@ -56,8 +56,21 @@ SEED = pathlib.Path(__file__).resolve().parents[1] / "backend" / "seed" / "dg"
 
 #: The heading that opens the chapter, and the one that closes it. Chapter 3.3
 #: is a single run of numbered provisions between the two.
+#
+#: Neither is unique. The heading appears in the table of contents hundreds of
+#: pages earlier, and the first run of this script found *that* — coming back
+#: with six provisions cut out of the front matter and reporting it as a
+#: success, which is the failure mode a reading tool must not have. So the
+#: opening heading is not trusted on sight: the page that carries it only counts
+#: as the start of the chapter if the pages after it actually look like a run of
+#: numbered provisions.
 START = "Special provisions applicable to certain substances, materials or articles"
-END = "Limited quantities"
+END = "Chapter 3.4"
+
+#: How many bare provision numbers have to appear in the pages after a candidate
+#: heading before it is believed. A contents line is followed by more contents;
+#: the chapter is followed by provisions.
+PROOF = 5
 
 #: What counts as a provision that touches labelling. Deliberately wider than
 #: "label": a provision that says a package is *marked* instead of labelled
@@ -86,18 +99,45 @@ def _column_six_numbers() -> set[str]:
     return found
 
 
-def _chapter_text(document) -> tuple[str, int, int]:
-    """The text of chapter 3.3, with the printed page numbers it spans."""
-    first = last = None
-    for number in range(document.page_count):
-        text = " ".join(document[number].get_text().split())
-        if first is None and START in text:
-            first = number
-        elif first is not None and END in text and number > first + 2:
-            last = number
-            break
-    if first is None:
+def _looks_like_provisions(document, start: int, known: set[str]) -> int:
+    """How many bare provision numbers stand in the three pages after ``start``."""
+    found = 0
+    for number in range(start, min(start + 3, document.page_count)):
+        for line in document[number].get_text().splitlines():
+            token = line.strip()
+            if token.isdigit() and token in known:
+                found += 1
+    return found
+
+
+def _chapter_text(document, known: set[str]) -> tuple[str, int, int]:
+    """The text of chapter 3.3, with the printed page numbers it spans.
+
+    The heading is checked against what follows it rather than taken at its
+    word, because the table of contents carries the same sentence and sits
+    hundreds of pages earlier.
+    """
+    candidates = [n for n in range(document.page_count)
+                  if START in " ".join(document[n].get_text().split())]
+    if not candidates:
         raise SystemExit("chapter 3.3 was not found in this document")
+    scored = [(n, _looks_like_provisions(document, n, known)) for n in candidates]
+    first, proof = max(scored, key=lambda item: item[1])
+    if proof < PROOF:
+        raise SystemExit(
+            "no page carrying the chapter 3.3 heading is followed by provisions "
+            f"(best was printed page {first + 1} with {proof} of them); "
+            "the chapter was not read rather than read wrongly")
+    rejected = [n + 1 for n, score in scored if n != first]
+    if rejected:
+        print(f"heading also appears on printed page(s) "
+              f"{', '.join(str(n) for n in rejected)}, not followed by provisions")
+
+    last = None
+    for number in range(first + 1, document.page_count):
+        if END in " ".join(document[number].get_text().split()):
+            last = number - 1
+            break
     last = last if last is not None else min(first + 60, document.page_count - 1)
     body = "\n".join(document[n].get_text() for n in range(first, last + 1))
     return body, first + 1, last + 1
@@ -152,7 +192,7 @@ def main() -> int:
 
     known = _column_six_numbers()
     document = pymupdf.open(fetch(args.doc))
-    body, first, last = _chapter_text(document)
+    body, first, last = _chapter_text(document, known)
     provisions, complaints = _split(body, known)
 
     print(SOURCES[args.doc]["title"])
@@ -186,6 +226,15 @@ def main() -> int:
     print("\nDecide per provision what the fact is, and put that in")
     print("backend/seed/dg/package_marking.json through a reviewed change.")
     print("Nothing is committed here, and no regulatory text enters the repo.")
+
+    # A partial read is the dangerous outcome, not an empty one: it looks like
+    # an answer. Chapter 3.3 defines nearly everything column 6 cites, so a
+    # thin harvest means the split went wrong, and the run says so by failing.
+    coverage = len(provisions) / len(known) if known else 0.0
+    if coverage < 0.9:
+        print(f"\nONLY {coverage:.0%} of the numbers column 6 cites were found. "
+              "This is a bad read, not a short chapter.", file=sys.stderr)
+        return 1
     return 0
 
 

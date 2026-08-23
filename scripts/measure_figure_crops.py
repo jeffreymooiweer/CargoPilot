@@ -202,6 +202,11 @@ def main() -> int:
     first, _, last = args.pages.partition("-")
     start, end = int(first), int(last or first)
 
+    # Everything the run found, repeated compactly at the end. The sketches
+    # are the point of this script and they are also long, and a run log is
+    # read from its tail — a page that sketches thirty blobs pushes its own
+    # candidate list out of reach of the only view there is.
+    recap: list[str] = []
     scale = DPI / 72.0
     print(SOURCES[args.doc]["title"])
     print(f"rendered at {DPI} dpi — the resolution label_crops.json was measured at")
@@ -240,6 +245,12 @@ def main() -> int:
         ]
         for top, text in sorted(captions):
             print(f"    caption at y={top}: {text}")
+            recap.append(f"  [page {number}] caption at y={top}: {text}")
+        for entry in candidates[:args.max_blobs]:
+            rect = entry["rect"]
+            recap.append(f'  [page {number}] "rect": [{rect[0]}, {rect[1]}, '
+                         f'{rect[2]}, {rect[3]}]   '
+                         f'({rect[2] - rect[0]:.0f} x {rect[3] - rect[1]:.0f} pt)')
         for entry in candidates[:args.max_blobs]:
             rect = entry["rect"]
             print(f'\n  "page": {number}, "rect": [{rect[0]}, {rect[1]}, '
@@ -247,6 +258,11 @@ def main() -> int:
                   f'({rect[2] - rect[0]:.0f} x {rect[3] - rect[1]:.0f} pt)')
             for line in _sketch(mask, entry["box"]):
                 print(f"    {line}")
+
+    print("\n" + "=" * 78)
+    print("Everything found, in one place — captions in page order, then boxes:")
+    for line in recap:
+        print(line)
 
     print("\n" + "-" * 78)
     print("Read the sketches, decide which blob is the figure, and put its box")

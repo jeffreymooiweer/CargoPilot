@@ -170,7 +170,10 @@ def main() -> int:
                         help="look closely at one box: page,x0,y0,x1,y1")
     parser.add_argument("--max-blobs", type=int, default=8,
                         help="how many of the largest blobs to sketch per page")
+    parser.add_argument("--min-side", type=float, default=MIN_SIDE_PT,
+                        help="ignore blobs narrower or shorter than this, in points")
     args = parser.parse_args()
+    min_side = args.min_side
 
     if args.doc not in SOURCES:
         print(f"{args.doc}: not a known document id", file=sys.stderr)
@@ -217,14 +220,26 @@ def main() -> int:
             x0, y0, x1, y1 = box
             rect = [round(x0 / scale, 1), round(y0 / scale, 1),
                     round((x1 + 1) / scale, 1), round((y1 + 1) / scale, 1)]
-            if (rect[2] - rect[0]) < MIN_SIDE_PT or (rect[3] - rect[1]) < MIN_SIDE_PT:
+            if (rect[2] - rect[0]) < min_side or (rect[3] - rect[1]) < min_side:
                 continue
             candidates.append({"box": box, "rect": rect,
                                "area": (rect[2] - rect[0]) * (rect[3] - rect[1])})
         candidates.sort(key=lambda item: -item["area"])
 
         print(f"\n[page {number}] {len(candidates)} candidate(s) over "
-              f"{MIN_SIDE_PT:.0f} pt")
+              f"{min_side:.0f} pt")
+        # A blob without its caption is an unattributed picture, and a page
+        # that prints two figures of the same thing — the orientation arrows
+        # are drawn twice, framed and unframed — cannot be told apart by shape
+        # at all. So the captions go in the log with their own vertical
+        # position, and a blob is attributed by where it sits between them.
+        captions = [
+            (round(block[1], 1), " ".join(block[4].split()))
+            for block in page.get_text("blocks")
+            if block[4].strip().startswith("Figure")
+        ]
+        for top, text in sorted(captions):
+            print(f"    caption at y={top}: {text}")
         for entry in candidates[:args.max_blobs]:
             rect = entry["rect"]
             print(f'\n  "page": {number}, "rect": [{rect[0]}, {rect[1]}, '

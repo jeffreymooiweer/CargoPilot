@@ -41,12 +41,13 @@ Both are valid on both. There is no SQLite-only SQL in the application. A
 
 ## SQLite is not the throughput problem
 
-An office of the size this application is aimed at does not come close to SQLite's
+A company of the size this application is aimed at does not come close to SQLite's
 write ceiling. Two hundred shipments a day at roughly fifty writes each is ten thousand
-writes a day — about 0.35 writes per second across an eight-hour working day. The
+writes a day — about 0.35 writes per second across an eight-hour working day. Two hundred
+employees do not all draw up consignments at once, so the real figure is lower still. The
 signal that is generally given for outgrowing SQLite is *sustained* write traffic orders
-of magnitude above that, or more than one instance writing to the same file. The first
-is not in sight; the second is discussed below.
+of magnitude above that, or several machines writing the same file over a shared volume.
+Neither is in sight; both are picked apart below.
 
 What *is* worth fixing about SQLite today is cheaper than a migration. Under
 `journal_mode=delete` a writer blocks every reader for the duration of the write. With
@@ -75,7 +76,7 @@ Per roadmap item:
 | Address book, templates, own articles library | More tables, more schema changes. Same answer. |
 | DGSA annual report (ADR 1.8.3) | Aggregation across the history. Fine on either engine — it needs the history to exist, and a retention period. |
 | Audit log | The only item that writes continuously and grows without a natural bound. Still within SQLite; the first to need pruning. |
-| **Kubernetes with more than one replica** | The one item SQLite cannot serve. See below. |
+| Kubernetes, one pod | Nothing. A chart, a pod and a persistent volume; SQLite underneath is fine. Only high availability across replicas would force the engine, and that is not a goal — see below. |
 | Native installation without Docker | Argues *for* SQLite: no second service to install and keep running. |
 | Plugins and a community hub | Once third parties touch schemas, a documented migration path becomes a compatibility contract rather than a convenience. |
 | eFTI/JSON export, EDI, QR code, branding | Read-side or JSON. No pressure on the database. |
@@ -114,26 +115,36 @@ was computed against, which the compliance response already names. That is a dec
 for the privacy-levels plan, not for this one — but it is the decision that sets the
 size.
 
-### Multiple replicas
+### Concurrent users are not what SQLite struggles with
 
-Running more than one replica is a stated goal, and it is the one case where SQLite is
-not an option: several processes writing one file over a shared volume corrupts it, and
-no pragma changes that.
+This is worth stating plainly, because it is the usual reason people reach for a
+client/server database and it does not apply here. What matters to SQLite is not how many
+people are using the application but **how many processes write the file**. Today that is
+exactly one: the single uvicorn server. Whether three or two hundred people are on it,
+one process serialises the writes internally, which is the case SQLite is good at.
 
-It is important to be honest that the database is **not the only thing** standing in the
-way. Three pieces of process-local mutable state would each serve a different answer per
-replica:
+The load ceiling for a company of fifty to two hundred employees is not the database
+either. The 28.6 kB compliance answer measured above is **computed**, not fetched, and so
+are the PDFs. Twenty people pressing "check" at the same time spend CPU in the compliance
+engine and the document exporters. No database engine changes that.
+
+### What breaks first when you scale up
+
+Not the database. The likely first step towards more capacity is more worker processes in
+the same container (`--workers`), and three pieces of process-local mutable state break
+there before SQLite does — each worker would serve a different answer:
 
 - `app/api/routes/updates.py` — `_cache`, the update-check result
 - `app/services/catalog_sync/service.py` — `_status`, the sync progress
 - `app/services/assistant/runtime.py` — `_download`, the model download progress
 
-And shared files under `/data` (templates, exports, the downloaded assistant model) would
-need a shared volume with the right access semantics. Sessions are the one thing that is
-already fine: they are stateless JWTs.
+A user starting a model download on worker 1 and asking for its progress on worker 3 is
+told nothing is running. Sessions are the one thing already fine: they are stateless JWTs.
 
-So "PostgreSQL" is a necessary part of the multi-replica answer and nowhere near a
-sufficient one. It belongs in its own stage.
+SQLite itself survives that step, provided the file is on a **local** filesystem — that is
+what its locking is for. Where it genuinely cannot go is a *network* filesystem shared
+between machines, because the locking there is not reliable. So the rule is: several
+processes on one host is fine, several hosts sharing one volume is not.
 
 ## Decisions taken
 
@@ -141,14 +152,23 @@ Four questions were put and answered before this plan was written:
 
 | Question | Answer |
 |---|---|
-| Kubernetes with multiple replicas — real goal, or does one replica suffice? | **Multiple replicas, a real goal** |
+| Kubernetes with multiple replicas, or does one pod suffice? | **One pod. Runnable on Kubernetes, not highly available** |
 | PostgreSQL as an option beside SQLite, or a replacement? | **An option beside SQLite** |
-| Largest realistic installation | **Several sites, 25–200 users** |
+| Largest realistic installation | **A company of 50–200 employees** |
 | Retention for stored shipments | **Five years**, matching DGSA practice |
 
-SQLite therefore stays the default: the Unraid, home-server and native-installation
-audiences should not gain a second service for a problem they do not have. PostgreSQL
-becomes a supported choice, and the recommended one for a cluster.
+The goal behind those answers is that CargoPilot should install easily on the common
+platforms and be **manageable** by a company of that size. That is the honest argument for
+PostgreSQL here, and it is worth separating from the one usually given: not that SQLite
+cannot keep up — it can, by three orders of magnitude — but that an IT department already
+running PostgreSQL has backup, monitoring, restore and retention in place, `pg_dump` is a
+known quantity, and eight gigabytes in a single file is one thing that lives or dies
+whole. Capacity is not the reason. Operability is.
+
+Which is why PostgreSQL becomes the **recommended** choice at that size, and SQLite stays
+the default: the Unraid, home-server and native-installation audiences should not gain a
+second service for a problem they do not have — and a database that has to be installed
+first is the opposite of installing easily on the common platforms.
 
 ## The plan
 
@@ -184,8 +204,9 @@ visible rather than inferred.
 
 Add `psycopg`, run the test suite in CI against a PostgreSQL service *as well as*
 SQLite, ship a compose profile and document the switch. The value is not that anyone has
-to move: it is that every schema change from here on is proven on both, so stage D is
-never a rebuild. Two things to watch as the matrix goes green:
+to move: it is that every schema change from here on is proven on both, so moving is
+never a rebuild. This is the stage that makes PostgreSQL the recommended engine for a
+company-sized installation. Two things to watch as the matrix goes green:
 
 - `DateTime(timezone=True)` is a genuine behavioural difference — SQLite stores what it
   is given, PostgreSQL stores `timestamptz`. Anything comparing timestamps needs a test
@@ -194,19 +215,25 @@ never a rebuild. Two things to watch as the matrix goes green:
   fields ever need to be filtered rather than read whole. Decide that when a filter
   actually needs it, not in advance.
 
-### Stage D — the multi-replica deployment
+### Stage D — moving between engines, and scaling within one pod
 
-A separate track, planned once stages A–C stand, covering all four of:
+Not a cluster track. High availability across several replicas is explicitly **not** a
+goal: one pod on Kubernetes is the target, and a rolling update taking the service away
+for a few seconds is acceptable for a documentation tool. Two things remain:
 
-1. PostgreSQL as the documented requirement for more than one replica.
-2. The three process-local caches moved to somewhere shared, or made per-request.
-3. `/data` split into what must be shared and what may be per-pod.
-4. A migration path from an existing SQLite installation — export and import, verified
-   by round-tripping a real database, not by asserting that it should work.
+1. **A migration path between engines** — export and import, verified by round-tripping a
+   real database rather than by asserting that it should work. Worth building even for
+   installations that never move: an export that is exercised on every release is also the
+   honest answer to "how do I get my data out", which a self-hosted application owes its
+   users.
+2. **The three process-local caches**, moved to shared state or made per-request. This is
+   the prerequisite for running more than one worker process in the pod, which is the
+   realistic next step for capacity — and it is needed before anyone reaches for
+   `--workers`, because those caches break there while SQLite does not.
 
-Item 4 is worth building even for installations that never move to a cluster: an
-export/import that is exercised on every release is also the honest answer to "how do I
-get my data out", which a self-hosted application owes its users.
+If high availability ever does become a goal, it needs PostgreSQL, item 2 above, `/data`
+split into what must be shared and what may be per-pod, and an update route that is not
+the Docker socket. That is a different plan, and this one does not assume it.
 
 ## Still open
 

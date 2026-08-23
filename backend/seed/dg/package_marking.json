@@ -208,7 +208,7 @@
           "49 CFR 172.407(c)(1), Label specifications — https://www.ecfr.gov/current/title-49/subtitle-B/chapter-I/subchapter-C/part-172/subpart-E/section-172.407",
           "UN Recommendations on the Transport of Dangerous Goods, Model Regulations — https://unece.org/transport/dangerous-goods/un-model-regulations-rev-24"
         ],
-        "consequence": "One full-size label fits on an A4 sheet. Two side by side need 283 mm across a 210 mm page, and two stacked need 283 mm down a 297 mm page before margins and cut marks."
+        "consequence": "One full-size label to an A4 sheet. Two side by side need 283 mm across a 210 mm page, which is impossible; two stacked need 283 mm of a 297 mm page, which leaves 14 mm for margins, caption and cut marks together."
       },
       "inner_line_mm": 5,
       "inner_line_colour": "Upper half the same colour as the symbol; lower half the same colour as the class or division number in the bottom corner.",

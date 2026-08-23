@@ -179,8 +179,15 @@ def _number_column(items, known: set[str]) -> float:
             tally[round(x)] = tally.get(round(x), 0) + 1
     if not tally:
         raise SystemExit("no provision numbers found in the chapter text")
-    column, crowd = max(tally.items(), key=lambda item: item[1])
-    print(f"the provision numbers stand at x={column} ({crowd} of them); "
+    ranked = sorted(tally.items(), key=lambda item: -item[1])
+    print("where words that are nothing but a cited number stand, by x:")
+    for x, crowd in ranked[:12]:
+        print(f"    x={x:>5}  {crowd:>4}")
+    if len(ranked) > 12:
+        print(f"    … and {len(ranked) - 12} further positions, "
+              f"{sum(c for _x, c in ranked[12:])} words in all")
+    column, crowd = ranked[0]
+    print(f"taking x={column} as the number column ({crowd} of them); "
           f"anything further right is text")
     return float(column)
 
@@ -244,6 +251,10 @@ def main() -> int:
     document = pymupdf.open(fetch(args.doc))
     first, last = _chapter_pages(document, known)
     items = _words(document, first, last)
+    page = document[first - 1].rect
+    print(f"chapter pages measure {page.width:.0f} x {page.height:.0f} points; "
+          f"words run from x={min(i[2] for i in items):.0f} to "
+          f"x={max(i[2] for i in items):.0f}")
     provisions, complaints = _split(items, known, _number_column(items, known))
 
     print(SOURCES[args.doc]["title"])

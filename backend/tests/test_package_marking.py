@@ -1,0 +1,272 @@
+"""Chapter 5.2: what the person packing the drum has to put on it.
+
+Every number asserted here was read out of an official edition on a runner
+before the code was written, and the assertion names the provision it came
+from. A test that pins a value nobody measured pins a guess.
+"""
+import json
+from pathlib import Path
+
+import pytest
+
+from app.services.dg.package_marking import (
+    _imdg_label_models,
+    _label_models,
+    check_package_marking,
+    rules,
+)
+
+SEED = Path(__file__).resolve().parents[1] / "seed" / "dg" / "package_marking.json"
+
+
+def product(un, **extra):
+    from app.services.dg import database
+    rows = database.get_un_entries(un)
+    row = rows[0] if rows else {}
+    item = {
+        "un_number": un,
+        "proper_shipping_name": row.get("name_nl") or "",
+        "class": row.get("class") or "",
+        "labels": row.get("labels") or "",
+        "packing_group": row.get("packing_group") or "",
+        "subsidiary_risks": row.get("subsidiary_risks") or "",
+    }
+    item.update(extra)
+    return item
+
+
+def answer(*products, profiles=("ADR",)):
+    return check_package_marking(
+        [{"line_id": "1", "products": list(products)}], list(profiles), "nl")
+
+
+def regime(result, profile):
+    return next(block for block in result["regimes"] if block["profile"] == profile)
+
+
+def marks(result, profile, un):
+    item = next(row for row in regime(result, profile)["items"]
+                if row["un_number"] == un)
+    return {mark["kind"]: mark for mark in item["marks"]}
+
+
+def labels(result, profile, un):
+    item = next(row for row in regime(result, profile)["items"]
+                if row["un_number"] == un)
+    return item["labels"]
+
+
+# --- the measured values, pinned where a future edition would break them ---
+
+
+def test_the_seed_carries_the_values_that_were_measured():
+    """ADR 2025 Volume II, pages 245-252. Each of these was quoted verbatim."""
+    data = json.loads(SEED.read_text(encoding="utf-8"))
+
+    # 5.2.1.1 — three tiers, and the smallest gives no figure at all. That the
+    # third is null is a fact about the provision, not a hole in the file.
+    heights = data["marks"]["un_number"]["character_height_mm"]
+    assert [tier["min_mm"] for tier in heights] == [12, 6, None]
+
+    # 5.2.2.2.1.1.2
+    shape = data["labels"]["shape"]
+    assert shape["size"] == {"min_width_mm": 100, "min_height_mm": 100}
+    assert shape["inner_line_mm"] == 5
+
+    # 5.2.1.9.2 — the only mark with a hard floor rather than "clearly visible".
+    battery = data["marks"]["battery"]
+    assert battery["reduction"]["floor_width_mm"] == 100
+    assert battery["reduction"]["floor_height_mm"] == 70
+    assert battery["hatching"] == {"min_mm": 5, "colour": "red"}
+
+    # 5.2.1.8.1 — the exemption is per inner or single packaging, and it is the
+    # reason the mark can never be settled from the substance alone.
+    exemptions = data["marks"]["environmentally_hazardous"]["exempt_when"]
+    assert any("5 l or less" in text for text in exemptions)
+    assert any("5 kg or less" in text for text in exemptions)
+
+
+def test_the_three_reduction_rules_stay_three_rules():
+    """Each mark reduces on its own terms; one slider for all three is wrong.
+
+    The class label reduces *proportionally* with no floor (5.2.2.2.1.1.3), the
+    battery mark has a floor of 100 x 70 mm (5.2.1.9.2), and the
+    environmentally hazardous mark reduces only so far as it stays clearly
+    visible, with no figure at all (5.2.1.8.3).
+    """
+    data = json.loads(SEED.read_text(encoding="utf-8"))
+    assert data["labels"]["shape"]["reduction"]["floor_mm"] is None
+    assert data["marks"]["battery"]["reduction"]["floor_height_mm"] == 70
+    assert data["marks"]["environmentally_hazardous"]["reduction"]["floor_mm"] is None
+
+
+# --- the land regimes ---
+
+
+def test_the_un_number_is_offered_at_the_height_that_is_always_enough():
+    """5.2.1.1: 12 mm unless the package is small, and the package is unknown."""
+    mark = marks(answer(product("1263")), "ADR", "1263")["un_number"]
+    assert mark["text"] == "UN 1263"
+    assert mark["height_mm"] == 12
+    assert mark["provision"] == "5.2.1.1"
+
+
+def test_only_class_1_and_class_7_carry_the_name_on_land():
+    """5.2.1.5 and 5.2.1.7.2 name two classes. Paint is neither."""
+    assert "proper_shipping_name" in marks(answer(product("0004")), "ADR", "0004")
+    assert "proper_shipping_name" not in marks(answer(product("1263")), "ADR", "1263")
+
+
+def test_the_class_1_name_carries_its_language_rule():
+    """5.2.1.5 asks for French, German or English; no other mark says that."""
+    mark = marks(answer(product("0004")), "ADR", "0004")["proper_shipping_name"]
+    assert mark["language_rule"] is True
+    assert mark["provision"] == "5.2.1.5"
+
+
+def test_the_battery_mark_needs_both_the_number_and_the_provision():
+    """5.2.1.9.1 marks cells "prepared in accordance with" SP 188 or 400."""
+    assert "battery" in marks(answer(product("3480")), "ADR", "3480")
+    # A class 9 entry that is not a battery entry gets no battery mark.
+    assert "battery" not in marks(answer(product("1263")), "ADR", "1263")
+
+
+def test_a_salvage_packaging_says_so():
+    """5.2.1.3, and the 12 mm lettering that goes with it."""
+    mark = marks(answer(product("1263", salvage_packaging="yes")), "ADR", "1263")
+    assert mark["salvage"]["text"] == "SALVAGE"
+    assert mark["salvage"]["height_mm"] == 12
+
+
+def test_the_environmental_mark_admits_it_could_not_settle_the_threshold():
+    """The substance decides whether the mark applies; the packing decides
+    whether it falls away, and the packing is not something this can see."""
+    result = answer(product("1263", environmentally_hazardous=True))
+    mark = marks(result, "ADR", "1263")["environmentally_hazardous"]
+    assert mark["certain"] is False
+    assert "environmentally_hazardous_threshold" in result["open"]
+
+
+# --- the sea regime, which is not the land one renumbered ---
+
+
+def test_every_package_carries_the_name_at_sea():
+    """IMDG 5.2.1.1 — the difference that reaches every single package.
+
+    On land the name goes on Class 1 and Class 7 only. Borrowing the road
+    answer for a sea leg would leave the name off every other package.
+    """
+    result = answer(product("1263"), product("1830"), profiles=("IMDG",))
+    for un in ("1263", "1830"):
+        mark = marks(result, "IMDG", un)["proper_shipping_name"]
+        assert mark["provision"] == "5.2.1.1"
+
+
+def test_the_sea_label_comes_from_the_code_and_not_from_table_a():
+    """UN 0004 is "1" in Table A and "1.1D" in the Dangerous Goods List.
+
+    IMDG 5.2.2.1.2 takes the primary label from column 3 of the List. Reading
+    the product's own class — which the wizard filled in from Table A — would
+    print the class where the Code asks for the division and compatibility
+    group.
+    """
+    both = answer(product("0004"), profiles=("ADR", "IMDG"))
+    assert [row["model"] for row in labels(both, "ADR", "0004")] == ["1"]
+    assert [row["model"] for row in labels(both, "IMDG", "0004")] == ["1.1D"]
+
+
+def test_the_battery_label_at_sea_is_left_open_rather_than_guessed():
+    """Column 3 says "9"; IMDG 5.2.2.2.1.3 describes a model 9A with its own
+    layout. Nothing read so far settles which belongs on the package, and a 9
+    printed over a 9A is a wrong label, not a missing one."""
+    result = answer(product("3480"), profiles=("IMDG",))
+    assert "imdg_battery_label_9_or_9a" in result["open"]
+
+
+def test_the_sea_answer_never_claims_column_6_was_read():
+    """IMDG 5.2.2.1.2 lets column 6 add and remove subsidiary labels."""
+    result = answer(product("1263"), profiles=("IMDG",))
+    assert "imdg_column_6_not_read" in result["open"]
+
+
+def test_the_two_durability_rules_are_kept_apart():
+    """ADR 5.2.1.2 asks a mark to survive the weather; IMDG 5.2.1.2 asks it to
+    survive three months in the sea. That difference is what stops a sheet of
+    office stickers being presented as sufficient for a sea consignment."""
+    result = answer(product("1263"), profiles=("ADR", "IMDG"))
+    assert "open weather" in result["durability"]["land"]
+    assert "three months" in result["durability"]["sea"]
+
+
+def test_division_1_4_s_is_marked_at_sea():
+    """IMDG 5.2.1.1 asks for the division and compatibility group unless the
+    1.4S label is displayed. No land regime asks for it."""
+    result = answer(product("0012", **{"class": "1.4S"}), profiles=("IMDG",))
+    kinds = marks(result, "IMDG", "0012")
+    assert "division_and_compatibility_group" in kinds
+    assert kinds["division_and_compatibility_group"]["unless"] == "label_1_4s_displayed"
+
+
+# --- what it refuses to answer ---
+
+
+def test_the_orientation_arrows_are_never_derived():
+    """5.2.1.10 turns on the kind of packaging — combination with liquid inners,
+    single with vents, cryogenic, machinery under SP 301 — none of which this
+    application can see. Saying "no arrows" would be a claim; this is not."""
+    result = answer(product("1263"))
+    assert "orientation_arrows" in result["not_assessed"]
+
+
+@pytest.mark.parametrize("profiles", [("IATA_DGR",), ()])
+def test_a_regime_that_was_not_read_gets_no_answer(profiles):
+    """The IATA marking rules have not been read, so air gets nothing rather
+    than the land answer wearing an aeroplane."""
+    assert answer(product("1263"), profiles=profiles)["status"] == "not_checked"
+
+
+def test_a_consignment_without_dangerous_goods_is_answered_not_asked():
+    assert check_package_marking([], ["ADR"], "nl")["status"] == "not_checked"
+
+
+# --- the parsing, where a space would have moved the primary hazard ---
+
+
+def test_a_leading_separator_does_not_demote_the_primary_label():
+    """Counting split tokens rather than kept models loses the primary hazard.
+
+    The separator has to be one ``strip()`` does not remove. A leading *space*
+    proves nothing here — the value is stripped before it is split, so the
+    empty first element never appears and the token index is still right. A
+    leading comma survives that strip, splits to an empty first element, and
+    made column (5) report two subsidiary hazards and no primary one.
+    """
+    assert [(row["model"], row["role"]) for row in _label_models({"labels": ", 3, 6.1"})] == [
+        ("3", "primary"), ("6.1", "subsidiary")]
+    assert [(row["model"], row["role"]) for row in _label_models({"labels": "3, 6.1"})] == [
+        ("3", "primary"), ("6.1", "subsidiary")]
+
+
+def test_the_model_letter_survives_on_land():
+    """9A is a different piece of artwork from 9; ``_label_numbers`` drops the
+    letter because 8.1.5.1 wants the bare number, and this must not."""
+    assert _label_models({"labels": "9A"})[0]["model"] == "9A"
+
+
+def test_an_entry_the_code_does_not_carry_says_which_book_answered():
+    models = _imdg_label_models({"un_number": "9999", "class": "3"})
+    assert models[0]["model"] == "3"
+    assert "Table A" in models[0]["source"]
+
+
+def test_the_source_of_every_regime_names_its_edition():
+    result = answer(product("1263"), profiles=("ADR", "RID", "ADN", "IMDG"))
+    editions = {block["profile"]: block["source"] for block in result["regimes"]}
+    assert "ADR 2025" in editions["ADR"]
+    assert "RID 2025" in editions["RID"]
+    assert "ADN 2025" in editions["ADN"]
+    assert "42-24" in editions["IMDG"]
+
+
+def test_the_rules_are_read_once():
+    assert rules() is rules()

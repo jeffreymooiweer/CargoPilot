@@ -3,11 +3,37 @@
  * Before this existed the application spoke through 87 inline notices in
  * eleven files, four native `confirm()` popups and one hand-built update
  * toast — three visual languages for one sentence: "that worked" (or it did
- * not). This provider replaces the transient half of that. What it does NOT
- * replace is deliberate: field validation stays at the field, sign-in errors
- * stay on the form, and regulatory findings stay inline forever — a safety
- * warning that slides away after four seconds is exactly the failure this
- * application is built against.
+ * not). This provider replaces the transient half of that.
+ *
+ * What it does NOT replace is deliberate, and the list is complete as of the
+ * audit in v1.159.0, so the next sweep does not have to rediscover it:
+ *
+ * - **Validation of what the user just supplied**, at the control they used:
+ *   a field's own error, and the signature upload refusing a file that is the
+ *   wrong type or too large. Told anywhere else, it is detached from which of
+ *   several fields it is about.
+ * - **Sign-in and password-reset errors**, on their form. The screen is
+ *   nearly empty and the eye is already there.
+ * - **Regulatory findings**, forever — a carriage prohibition, a compliance
+ *   check's outcome, a document warning. A safety warning that slides away
+ *   after four seconds is exactly the failure this application is built
+ *   against.
+ * - **The failure of the compliance check itself**, in the panel rather than
+ *   in a toast: it says the findings below are absent rather than clear, and
+ *   a notice the user can close would leave an empty panel reading as "all
+ *   good". (What makes that safe is elsewhere: changing the input clears the
+ *   previous result *before* re-checking, so a failed check never leaves the
+ *   old substance's findings standing.)
+ * - **The assistant's clarifications**, in its conversation. They are part of
+ *   the exchange, not a system event; only a failed request is a toast.
+ * - **A load failure that leaves a page unable to render**, in place of the
+ *   page.
+ *
+ * One warning for whoever sweeps next: v1.153.0 matched on the *names* of the
+ * state it replaced (`setError`, `setMessage`) and so walked straight past a
+ * dialog whose state was called `setFileError` — its failures kept the old
+ * visual language for four releases. Search for what renders, not for what it
+ * is called.
  *
  * Six kinds, each with its own lifetime:
  *

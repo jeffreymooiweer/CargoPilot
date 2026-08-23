@@ -2,6 +2,19 @@
 
 All notable changes are documented here, following [Semantic Versioning](https://semver.org/).
 
+## [1.158.0] — 2026-08-22
+
+### Added
+
+- **The two-factor reminder is firmer where the installation requires it.**
+  Where an administrator has set the policy to demand a second factor and the
+  account does not have one, the snackbar now says so — that the installation
+  requires it, and to set it up while signing in is still possible — instead
+  of the general recommendation. A policy an account does not meet is a
+  different thing to be told than advice not taken. Everything else about the
+  reminder is unchanged: it stays until closed, never blocks the screen, and
+  returns at the next sign-in.
+
 ## [1.157.1] — 2026-08-22
 
 ### Changed

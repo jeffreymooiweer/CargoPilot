@@ -68,7 +68,12 @@ export default function TwoFactorNudge({ user }: { user: User }) {
         } catch {
           // See above: showing it again later is the harmless failure.
         }
-        toast.info(t("twoFactor.nudge"), {
+        // Two situations, two sentences. `required` says the installation's
+        // policy demands a second factor for this account — independent of
+        // whether one is set up, and this only runs when none is. So the two
+        // together are a policy the account does not meet, which is a firmer
+        // thing to be told than a recommendation not taken.
+        toast.info(t(status.required ? "twoFactor.nudgeRequired" : "twoFactor.nudge"), {
           sticky: true,
           actions: [
             {

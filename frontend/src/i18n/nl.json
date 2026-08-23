@@ -870,7 +870,8 @@
     "codeSent": "Er is een code naar uw e-mailadres gestuurd.",
     "turnOffHintMail": "Vraag eerst een code aan en vul die hieronder in. Een herstelcode werkt ook.",
     "nudge": "Je account heeft nog geen tweestapsverificatie. Alleen een wachtwoord is één gelekt hergebruik verwijderd van iemand anders in jouw naam.",
-    "nudgeAction": "Nu instellen"
+    "nudgeAction": "Nu instellen",
+    "nudgeRequired": "Deze installatie vereist tweestapsverificatie en jouw account heeft die nog niet. Stel hem in zolang je nog kunt inloggen."
   },
   "toast": {
     "undo": "Ongedaan maken",

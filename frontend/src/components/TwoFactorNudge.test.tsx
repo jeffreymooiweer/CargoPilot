@@ -62,6 +62,22 @@ describe("TwoFactorNudge", () => {
     expect(await screen.findByText("twoFactor.nudge")).toBeInTheDocument();
   });
 
+  it("is firmer when the installation's policy demands one", async () => {
+    vi.spyOn(api, "twoFactorStatus").mockResolvedValue({ ...OFF, required: true });
+    renderNudge();
+    // A policy the account does not meet is a different thing to be told than
+    // a recommendation not taken, so it does not get the same sentence.
+    expect(await screen.findByText("twoFactor.nudgeRequired")).toBeInTheDocument();
+    expect(screen.queryByText("twoFactor.nudge")).not.toBeInTheDocument();
+  });
+
+  it("keeps the mild wording where a second factor is only advisable", async () => {
+    vi.spyOn(api, "twoFactorStatus").mockResolvedValue(OFF);
+    renderNudge();
+    expect(await screen.findByText("twoFactor.nudge")).toBeInTheDocument();
+    expect(screen.queryByText("twoFactor.nudgeRequired")).not.toBeInTheDocument();
+  });
+
   it("says nothing to an account that already has one", async () => {
     vi.spyOn(api, "twoFactorStatus").mockResolvedValue(ON);
     renderNudge();

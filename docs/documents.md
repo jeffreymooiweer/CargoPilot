@@ -66,6 +66,7 @@ each document requires:
 | **ADN transport document** | Inland waterway — there is no waybill for this mode in the app |
 | **Packing list** | |
 | **Delivery note** | Receipt block left blank for signing on delivery |
+| **[Structured shipment export (JSON)](shipment-export.md)** | Not paper but data: the whole shipment, including what CargoPilot derived and against which editions. Offered on every transport mode. CargoPilot's own format with its own version number — not an eFTI message and not an eCMR |
 | **Package label and marking sheet (5.2)** | Which labels and marks each package carries, per regime, and the class labels themselves at full size — 100 mm on each side, one per A4 page. The artwork is the official one, cut from the ADR; nothing is redrawn. The battery mark and the orientation arrows are named and not printed, because their artwork was never cut. Air is absent: the IATA marking rules have not been read |
 
 ## What is never filled in for you

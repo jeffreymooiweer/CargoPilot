@@ -625,6 +625,7 @@ export default function WizardPage() {
     // it from the one payload builder means validation and export cannot
     // disagree about which rules were applied.
     profiles: dgProfiles,
+    modality: modality ?? undefined,
   });
 
   // Warnings per document, shown on the card before the download button — a

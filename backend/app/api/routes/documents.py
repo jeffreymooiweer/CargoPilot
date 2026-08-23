@@ -40,6 +40,7 @@ from app.services.documents.onboard_pack import (
 )
 from app.services.documents.equipment_sheet import render_equipment_sheet
 from app.services.documents.package_label_sheet import render_package_label_sheet
+from app.services.documents.shipment_export import render_shipment_export
 from app.services.documents.placarding_sheet import render_placarding_sheet
 from app.services.documents.stowage_plan import render_stowage_plan
 from app.services.documents.signature import decode_signature_image
@@ -80,6 +81,22 @@ def validate(payload: DocumentExportRequest, user: User = Depends(get_current_us
         document, payload.values, payload.lines, payload.dangerous_goods, payload.output_language
     )
     return {"document_key": payload.document_key, "errors": errors, "warnings": warnings}
+
+
+#: What a produced file is, by its suffix. Every exporter until v1.161.0
+#: produced a PDF, so the route named one; the structured export produces
+#: JSON, and a route that calls it a PDF hands the browser a file it will not
+#: open. Anything unrecognised is served as a download rather than guessed at.
+MEDIA_TYPES = {
+    ".pdf": "application/pdf",
+    ".json": "application/json",
+    ".xlsx": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    ".zip": "application/zip",
+}
+
+
+def _served_as(path: "Path") -> str:
+    return MEDIA_TYPES.get(path.suffix.lower(), "application/octet-stream")
 
 
 def _render_export(document: dict, payload: DocumentExportRequest,
@@ -167,6 +184,20 @@ def _render_export(document: dict, payload: DocumentExportRequest,
             payload.output_language,
             profiles=payload.profiles or None,
         )
+    elif exporter == "shipment_json":
+        # Not paper: the shipment itself, so a certified eFTI platform or a
+        # plugin talking to one can take it from here. It carries the derived
+        # findings as well as the typed fields, because a reader that gets only
+        # the declaration has to compute its own assessment, and that is where
+        # two systems start to disagree about one consignment.
+        out_path = render_shipment_export(
+            payload.values,
+            payload.lines,
+            payload.dangerous_goods,
+            payload.output_language,
+            profiles=payload.profiles or None,
+            modality=payload.modality or None,
+        )
     elif exporter == "stowage":
         # The stowage plan is drawn from where the goods are, not from typed
         # document fields: 7.1.4.11.1 asks which goods are in which hold, and
@@ -248,8 +279,8 @@ def export(
     background_tasks.add_task(_delete_file, out_path)
     return FileResponse(
         path=out_path,
-        filename=f"{payload.document_key}_{ref}.pdf",
-        media_type="application/pdf",
+        filename=f"{payload.document_key}_{ref}{out_path.suffix}",
+        media_type=_served_as(out_path),
     )
 
 
@@ -285,7 +316,8 @@ def _build_bundle(payload: DocumentBundleRequest, db: Session) -> tuple[Path, st
                              + "; ".join(str(e) for e in errors[:3]))
                 continue
             out_path = _render_export(document, item, signature_png)
-            produced.append((out_path, f"{item.document_key}_{ref}.pdf"))
+            produced.append(
+                (out_path, f"{item.document_key}_{ref}{out_path.suffix}"))
 
         if not produced:
             raise HTTPException(

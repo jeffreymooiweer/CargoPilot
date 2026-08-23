@@ -4,6 +4,7 @@ import { LineItem, UnitCatalogue, api } from "../api/client";
 import { useToast } from "../toast/ToastProvider";
 import LineEditDialog, { ROUND_TYPES, WALL_PROFILE_TYPES } from "./LineEditDialog";
 import RecordCards, { NoValue, QuantityWithUnit, RecordField } from "./RecordCards";
+import { ImportIcon } from "./icons";
 
 export interface DraftLine {
   id: number;
@@ -55,15 +56,6 @@ function statusColor(status: string) {
   if (status === "error") return "bg-red-100 text-red-800 dark:bg-red-900/40 dark:text-red-300";
   if (status === "needs_review") return "bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-300";
   return "bg-yellow-100 text-yellow-800 dark:bg-yellow-900/40 dark:text-yellow-300";
-}
-
-function ImportIcon() {
-  return (
-    <svg className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor" aria-hidden>
-      <path d="M10 3a.75.75 0 0 1 .75.75v7.19l2.22-2.22a.75.75 0 1 1 1.06 1.06l-3.5 3.5a.75.75 0 0 1-1.06 0l-3.5-3.5a.75.75 0 1 1 1.06-1.06l2.22 2.22V3.75A.75.75 0 0 1 10 3Z" />
-      <path d="M4 14.25a.75.75 0 0 0-1.5 0v1A2.75 2.75 0 0 0 5.25 18h9.5A2.75 2.75 0 0 0 17.5 15.25v-1a.75.75 0 0 0-1.5 0v1c0 .69-.56 1.25-1.25 1.25h-9.5c-.69 0-1.25-.56-1.25-1.25v-1Z" />
-    </svg>
-  );
 }
 
 function PlusIcon() {
@@ -177,14 +169,25 @@ export default function ReviewLinesPanel({
    * Offered once per recognition, keyed by line *and* candidates: re-running
    * the calculation must not ask again, but changing the description into a
    * different substance is a new question and gets asked.
+   *
+   * The set only remembers questions that are still open, and is pruned to
+   * those on every run. Remembering them forever looked equivalent and was
+   * not: an import that replaces the lines starts numbering at 1 again, so
+   * line 1 with the same substance produced the same key as the line the user
+   * had already answered — and the new consignment's first line was never
+   * asked about at all. What marks a line as answered is the answer on the
+   * line itself; this set exists only to stop a second toast while one is
+   * still standing.
    */
   const offered = useRef(new Set<string>());
   useEffect(() => {
     if (!resultLines) return;
+    const open = new Set<string>();
     draftLines.forEach((draft, index) => {
       const candidates = resultLines[index]?.dg_name_candidates ?? [];
       if (candidates.length === 0 || draft.confirmed_un || draft.dg_dismissed) return;
       const key = `${draft.id}:${candidates.map((one) => one.un).join(",")}`;
+      open.add(key);
       if (offered.current.has(key)) return;
       offered.current.add(key);
 
@@ -218,6 +221,7 @@ export default function ReviewLinesPanel({
         },
       );
     });
+    offered.current = open;
     // patchLine and toast are stable enough to leave out: what decides whether
     // to ask is the lines and their recognition, and the guard above makes a
     // repeat run harmless.
@@ -385,16 +389,27 @@ export default function ReviewLinesPanel({
 
   return (
     <div className={`${panelClass} overflow-hidden`}>
-      <div className="flex flex-col gap-3 border-b border-slate-100 px-4 py-4 dark:border-slate-800 sm:flex-row sm:items-center sm:justify-between sm:px-5">
-        <div>
+      {/* The action sits on the heading's own line, at every width. It used to
+          drop below the text on a phone — a column layout with the button
+          pushed to the right — which cost a whole empty band of screen above
+          the first line, on the screen where space is scarcest. And it carries
+          its name rather than only an icon: the sentence underneath points at
+          it by that name, and a phone has no hover to reveal a title. */}
+      <div className="border-b border-slate-100 px-4 py-4 dark:border-slate-800 sm:px-5">
+        <div className="flex items-center justify-between gap-3">
           <h3 className="text-sm font-semibold text-slate-900 dark:text-slate-100">{t("review.linesTitle")}</h3>
-          <p className="mt-0.5 text-xs text-slate-500 dark:text-slate-400">{t("review.intro")}</p>
+          {onImportClick && (
+            <button
+              type="button"
+              onClick={onImportClick}
+              className="inline-flex h-9 shrink-0 items-center gap-1.5 rounded-lg border border-slate-200 px-2.5 text-xs font-medium text-slate-700 transition-colors hover:bg-slate-50 dark:border-slate-700 dark:text-slate-200 dark:hover:bg-slate-800"
+            >
+              <ImportIcon />
+              {t("review.importExcel")}
+            </button>
+          )}
         </div>
-        {onImportClick && (
-          <div className="flex items-center gap-1 self-end sm:self-auto">
-            <CardAction label={t("review.importExcel")} onClick={onImportClick} icon={<ImportIcon />} />
-          </div>
-        )}
+        <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">{t("review.intro")}</p>
       </div>
 
       <div className="p-4">

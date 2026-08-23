@@ -1,27 +1,13 @@
-/** The assistant's icon: a rounded frame reading "AI", its border giving way
- *  at the corner where the spark sits. Drawn inline so it follows
- *  `currentColor` in both themes and needs no asset. */
+/** The assistant's icon: a framed "AI" with a spark at the corner.
+ *
+ *  Uicons by Flaticon, like the notification icons, and filled rather than
+ *  stroked — so `fill="currentColor"` is what makes it follow the theme in
+ *  both directions. It replaced a hand-drawn version of the same idea; the
+ *  shape is the same, the drawing is better. */
 export default function AiIcon({ className = "h-5 w-5" }: { className?: string }) {
   return (
-    <svg viewBox="0 0 24 24" fill="none" aria-hidden className={className}>
-      <path
-        d="M13.2 20.25 H7.5 A3.75 3.75 0 0 1 3.75 16.5 V7.5 A3.75 3.75 0 0 1 7.5 3.75 H16.5 A3.75 3.75 0 0 1 20.25 7.5 V13.2"
-        stroke="currentColor"
-        strokeWidth="2.4"
-        strokeLinecap="round"
-      />
-      <path
-        d="M6.9 15.6 L9.7 7.6 L12.5 15.6 M7.9 12.9 H11.5"
-        stroke="currentColor"
-        strokeWidth="2"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-      <path d="M15.1 7.6 V15.6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-      <path
-        d="M18.6 13.9 Q19.15 17.45 22.7 18 Q19.15 18.55 18.6 22.1 Q18.05 18.55 14.5 18 Q18.05 17.45 18.6 13.9 Z"
-        fill="currentColor"
-      />
+    <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden className={className}>
+      <path d="m19.026,12v6c0,.552-.448,1-1,1s-1-.448-1-1v-6c0-.552.448-1,1-1s1,.448,1,1Zm-7.42-5.283l3.071,11.029c.175.63-.298,1.254-.953,1.254-.443,0-.831-.294-.952-.72l-.643-2.28h-5.206l-.643,2.28c-.12.426-.509.72-.952.72h0c-.654,0-1.128-.624-.953-1.254l3.091-11.108c.141-.608.541-1.12,1.098-1.405.568-.292,1.22-.31,1.839-.05.587.246,1.037.817,1.204,1.535Zm-.041,7.283l-1.929-6.835c-.029-.114-.191-.114-.219,0l-1.929,6.835h4.077Zm11.462-4c-.552,0-1,.448-1,1v8c0,1.654-1.346,3-3,3H5.026c-1.654,0-3-1.346-3-3V5c0-1.654,1.346-3,3-3h8c.552,0,1-.448,1-1S13.578,0,13.026,0H5.026C2.269,0,.026,2.243.026,5v14c0,2.757,2.243,5,5,5h14c2.757,0,5-2.243,5-5v-8c0-.552-.448-1-1-1Zm-6.85-4.82l1.868.787.745,1.865c.161.404.552.668.987.668s.825-.265.987-.668l.741-1.854,1.854-.741c.404-.161.668-.552.668-.987s-.265-.825-.668-.987l-1.854-.741-.741-1.854C20.601.265,20.21,0,19.776,0s-.825.265-.987.668l-.737,1.843-1.84.697c-.406.154-.678.54-.686.974-.008.435.25.83.65.999Z" />
     </svg>
   );
 }

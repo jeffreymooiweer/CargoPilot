@@ -1,6 +1,8 @@
 import { useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { api, ImportAnalysis, ImportMapping } from "../api/client";
+import { useToast } from "../toast/ToastProvider";
+import { CircleXmarkIcon } from "../toast/icons";
 import ImportColumnMapping from "./ImportColumnMapping";
 
 const inputClass =
@@ -35,9 +37,9 @@ interface Props {
 
 export default function ImportDialog({ open, onClose, onImport }: Props) {
   const { t } = useTranslation();
+  const toast = useToast();
   const [text, setText] = useState("");
   const [mode, setMode] = useState<"append" | "replace">("replace");
-  const [fileError, setFileError] = useState("");
   const [loadingFile, setLoadingFile] = useState(false);
   // What the import made of the file, and the rows to be able to remap it
   // without sending the file again.
@@ -49,7 +51,6 @@ export default function ImportDialog({ open, onClose, onImport }: Props) {
 
   const handleFile = async (file: File | null) => {
     if (!file) return;
-    setFileError("");
     setLoadingFile(true);
     try {
       const result = await api.parseWizardImportFile(file);
@@ -57,7 +58,7 @@ export default function ImportDialog({ open, onClose, onImport }: Props) {
       setAnalysis(result.analysis);
       setRows(result.rows);
     } catch (e) {
-      setFileError(String(e));
+      toast.error(String(e));
     } finally {
       setLoadingFile(false);
       if (fileInputRef.current) fileInputRef.current.value = "";
@@ -69,25 +70,23 @@ export default function ImportDialog({ open, onClose, onImport }: Props) {
   // consignment never stays behind on the server.
   const handleRemap = async (mapping: ImportMapping, hasHeader: boolean) => {
     if (rows.length === 0) return;
-    setFileError("");
     setLoadingFile(true);
     try {
       const result = await api.remapWizardImport(rows, mapping, hasHeader);
       setText(result.text);
       setAnalysis(result.analysis);
     } catch (e) {
-      setFileError(e instanceof Error ? e.message : String(e));
+      toast.error(e instanceof Error ? e.message : String(e));
     } finally {
       setLoadingFile(false);
     }
   };
 
   const handleDownloadTemplate = async () => {
-    setFileError("");
     try {
       await api.downloadWizardTemplate();
     } catch (e) {
-      setFileError(String(e));
+      toast.error(String(e));
     }
   };
 
@@ -130,7 +129,7 @@ export default function ImportDialog({ open, onClose, onImport }: Props) {
                 className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-slate-400 transition-colors hover:bg-slate-100 hover:text-slate-700 dark:hover:bg-slate-800 dark:hover:text-slate-200"
                 aria-label={t("review.cancel")}
               >
-                <span className="text-xl leading-none">×</span>
+                <CircleXmarkIcon className="h-5 w-5" />
               </button>
             </div>
           </div>
@@ -138,7 +137,6 @@ export default function ImportDialog({ open, onClose, onImport }: Props) {
             <p className="text-[11px] font-medium uppercase tracking-wide text-slate-500 dark:text-slate-400">{t("review.importExampleTitle")}</p>
             <p className="mt-1 font-mono text-xs text-slate-700 dark:text-slate-300">{t("review.importExample")}</p>
           </div>
-          {fileError && <p className="mt-2 text-sm text-red-600 dark:text-red-400">{fileError}</p>}
         </div>
 
         <div className="space-y-3 px-4 py-4 sm:space-y-4 sm:px-6 sm:py-5">

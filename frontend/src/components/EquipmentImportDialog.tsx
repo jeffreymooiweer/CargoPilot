@@ -2,6 +2,7 @@ import { useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { api, EquipmentImportResult, translateMessage } from "../api/client";
 import { useToast } from "../toast/ToastProvider";
+import { CircleXmarkIcon } from "../toast/icons";
 
 const panelClass = "bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-xl";
 const iconActionClass =
@@ -127,7 +128,7 @@ export default function EquipmentImportDialog({ open, onClose, onComplete }: Pro
                 className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-slate-400 transition-colors hover:bg-slate-100 hover:text-slate-700 dark:hover:bg-slate-800 dark:hover:text-slate-200"
                 aria-label={t("materieel.cancel")}
               >
-                <span className="text-xl leading-none">×</span>
+                <CircleXmarkIcon className="h-5 w-5" />
               </button>
             </div>
           </div>

@@ -2,6 +2,7 @@ import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useToast } from "../toast/ToastProvider";
 import NumberInput from "../components/NumberInput";
+import { ImportIcon } from "../components/icons";
 import { api, EquipmentItem } from "../api/client";
 import EquipmentImportDialog from "../components/EquipmentImportDialog";
 
@@ -38,15 +39,6 @@ function DownloadIcon() {
   return (
     <svg className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor" aria-hidden>
       <path d="M10 3a.75.75 0 0 1 .75.75v7.19l2.22-2.22a.75.75 0 1 1 1.06 1.06l-3.5 3.5a.75.75 0 0 1-1.06 0l-3.5-3.5a.75.75 0 1 1 1.06-1.06l2.22 2.22V3.75A.75.75 0 0 1 10 3Z" />
-      <path d="M4 14.25a.75.75 0 0 0-1.5 0v1A2.75 2.75 0 0 0 5.25 18h9.5A2.75 2.75 0 0 0 17.5 15.25v-1a.75.75 0 0 0-1.5 0v1c0 .69-.56 1.25-1.25 1.25h-9.5c-.69 0-1.25-.56-1.25-1.25v-1Z" />
-    </svg>
-  );
-}
-
-function ImportIcon() {
-  return (
-    <svg className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor" aria-hidden>
-      <path d="M10 17a.75.75 0 0 1-.75-.75v-7.19l-2.22 2.22a.75.75 0 1 1-1.06-1.06l3.5-3.5a.75.75 0 0 1 1.06 0l3.5 3.5a.75.75 0 1 1-1.06 1.06l-2.22-2.22v7.19A.75.75 0 0 1 10 17Z" />
       <path d="M4 14.25a.75.75 0 0 0-1.5 0v1A2.75 2.75 0 0 0 5.25 18h9.5A2.75 2.75 0 0 0 17.5 15.25v-1a.75.75 0 0 0-1.5 0v1c0 .69-.56 1.25-1.25 1.25h-9.5c-.69 0-1.25-.56-1.25-1.25v-1Z" />
     </svg>
   );

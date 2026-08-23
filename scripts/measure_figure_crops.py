@@ -131,6 +131,25 @@ def _sketch(mask: list[list[bool]], box: tuple[int, int, int, int],
 SHADES = "@%#*+=-:. "
 
 
+def _captions(page: Any) -> list[tuple[float, float, str]]:
+    """The figure captions on a page, with where each one sits.
+
+    Both coordinates matter. Vertical position pairs a caption with the figure
+    under it; horizontal position tells two captions apart when the print sets
+    them side by side, which is how the orientation arrows appear — the same
+    pair of arrows drawn twice, framed and unframed, under two numbers on one
+    line. Without the x there is no way to say which number belongs to which
+    drawing, and the sheet would cite one of them at random.
+    """
+    found: list[tuple[float, float, str]] = []
+    for block in page.get_text("blocks"):
+        text = " ".join(block[4].split())
+        if not text.startswith("Figure"):
+            continue
+        found.append((round(block[1], 1), round(block[0], 1), text))
+    return sorted(found)
+
+
 def _closeup(page: Any, rect: list[float], width: int = 104) -> list[str]:
     """One box in grey levels, at whatever resolution fills ``width``.
 
@@ -156,7 +175,11 @@ def _closeup(page: Any, rect: list[float], width: int = 104) -> list[str]:
             samples = [min(pixmap.pixel(x, y)[:3])
                        for y in range(y0, min(y1, pixmap.height))
                        for x in range(x0, min(x1, pixmap.width))]
-            value = min(samples) if samples else 255
+            # The cell's average, not its darkest pixel. Taking the darkest
+            # renders a hatched band and a solid block identically black,
+            # which loses the one distinction this look exists to make: the
+            # battery mark is a hatched border around a solid symbol.
+            value = sum(samples) // len(samples) if samples else 255
             line.append(SHADES[min(len(SHADES) - 1, value * len(SHADES) // 256)])
         rows.append("".join(line))
     return rows
@@ -194,8 +217,11 @@ def main() -> int:
                 return 1
             number = int(parts[0])
             rect = [float(part) for part in parts[1:]]
+            page = document[number - 1]
             print(f'\n  "page": {number}, "rect": {rect}')
-            for line in _closeup(document[number - 1], rect):
+            for top, left, text in _captions(page):
+                print(f"    caption at x={left} y={top}: {text}")
+            for line in _closeup(page, rect):
                 print(f"    {line}")
         return 0
 
@@ -238,14 +264,9 @@ def main() -> int:
         # are drawn twice, framed and unframed — cannot be told apart by shape
         # at all. So the captions go in the log with their own vertical
         # position, and a blob is attributed by where it sits between them.
-        captions = [
-            (round(block[1], 1), " ".join(block[4].split()))
-            for block in page.get_text("blocks")
-            if block[4].strip().startswith("Figure")
-        ]
-        for top, text in sorted(captions):
-            print(f"    caption at y={top}: {text}")
-            recap.append(f"  [page {number}] caption at y={top}: {text}")
+        for top, left, text in _captions(page):
+            print(f"    caption at x={left} y={top}: {text}")
+            recap.append(f"  [page {number}] caption at x={left} y={top}: {text}")
         for entry in candidates[:args.max_blobs]:
             rect = entry["rect"]
             recap.append(f'  [page {number}] "rect": [{rect[0]}, {rect[1]}, '

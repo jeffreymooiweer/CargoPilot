@@ -2,6 +2,16 @@
 
 All notable changes are documented here, following [Semantic Versioning](https://semver.org/).
 
+## [1.157.1] — 2026-08-22
+
+### Changed
+
+- **A notification's icon is centred against its message.** It sat against the
+  first line, which showed as soon as a message wrapped to two — an error
+  hanging its exclamation mark up in the corner. The close button and a
+  single action button follow it, since one of the three sitting high while
+  the others centre reads as a fault rather than a choice.
+
 ## [1.157.0] — 2026-08-22
 
 ### Fixed

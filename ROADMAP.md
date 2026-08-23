@@ -2,7 +2,9 @@
 
 Where CargoPilot is going. For what has already shipped, see the [changelog](CHANGELOG.md);
 for the groundwork behind the items below — market findings, measured regulation, open
-questions — see [Roadmap research](docs/roadmap-research.md).
+questions — see [Roadmap research](docs/roadmap-research.md). What several of these
+items ask of the database, and what would have to be built before they can land, is set
+out in [The database](docs/database-plan.md).
 
 Versioning follows [Semantic Versioning](https://semver.org/) — see
 [Development](docs/development.md#versioning) for how bumps are decided.

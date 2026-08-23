@@ -150,6 +150,11 @@ Adding a **table** is fine — import its model somewhere `startup` reaches, or
 `create_all` will not know about it. `startup.SETTINGS_TABLES` exists purely so that
 import cannot look removable.
 
+This holds today and stops holding the moment shipments are stored: a page that filters
+wants real columns, not a key inside a JSON document. What it would take to replace this
+section with a real migration runner — and whether the engine underneath it should change
+at all — is worked out in [The database](database-plan.md). Nothing there is built yet.
+
 ## How documents are produced
 
 Three paths, chosen by the `exporter` field in `document_registry.json`:

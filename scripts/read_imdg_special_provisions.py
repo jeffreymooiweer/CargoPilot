@@ -25,15 +25,21 @@ Runs on a runner, where the Code can be reached::
 
 It commits nothing.
 
-The one thing worth distrusting here is the split. Chapter 3.3 sets the
-provision number in a narrow left column and its text beside it, which the text
-layer returns as a bare number on its own line followed by the prose. Bare
-numbers appear inside provisions too — quantities, cross-references, page
-furniture — so a naive split invents provisions and swallows real ones. Two
-invariants keep it honest: a number only starts a provision if column 6 uses it
-or the Code's own index lists it, and the numbers must ascend. A break in the
-ascent is reported rather than smoothed over, because a parser that quietly
-reorders a regulation is worse than one that stops.
+The one thing worth distrusting here is the split, and the first two attempts
+at it were both wrong in ways that still produced output.
+
+Chapter 3.3 sets the provision number in a narrow column down the left edge and
+its text beside it. Read as a stream of lines, that comes back as a *block* of
+numbers followed by a block of prose — so provision 199 swallowed forty of its
+neighbours and the run reported two hundred and ten provisions as though it had
+them. Reading order cannot fix this, because the same numbers appear inside the
+prose all over the chapter and nothing in the sequence distinguishes them.
+
+So the number is found by *where it stands*. The column's x is measured from the
+page — the most crowded position among words that are nothing but a number
+column 6 cites — and printed, because a calibration nobody sees is a constant in
+disguise. Ascending order is then no longer a rule but a report: if the split is
+right the sequence rises by itself, so a break in it is news about the parser.
 """
 from __future__ import annotations
 
@@ -110,8 +116,8 @@ def _looks_like_provisions(document, start: int, known: set[str]) -> int:
     return found
 
 
-def _chapter_text(document, known: set[str]) -> tuple[str, int, int]:
-    """The text of chapter 3.3, with the printed page numbers it spans.
+def _chapter_pages(document, known: set[str]) -> tuple[int, int]:
+    """The printed pages chapter 3.3 spans.
 
     The heading is checked against what follows it rather than taken at its
     word, because the table of contents carries the same sentence and sits
@@ -139,39 +145,83 @@ def _chapter_text(document, known: set[str]) -> tuple[str, int, int]:
             last = number - 1
             break
     last = last if last is not None else min(first + 60, document.page_count - 1)
-    body = "\n".join(document[n].get_text() for n in range(first, last + 1))
-    return body, first + 1, last + 1
+    return first + 1, last + 1
 
 
-def _split(body: str, known: set[str]) -> tuple[dict[str, str], list[str]]:
+def _words(document, first: int, last: int) -> list[tuple[int, float, float, str]]:
+    """Every word of the chapter as (page, y, x, text), in reading order.
+
+    Sorted explicitly rather than trusting the order the text layer hands
+    back. That order is by *block*, and chapter 3.3 sets its provision numbers
+    in a block of their own down the left edge — so reading it as it comes
+    yields a page of numbers followed by a page of prose, which is exactly the
+    shape that made a single provision swallow forty of its neighbours.
+    """
+    items: list[tuple[int, float, float, str]] = []
+    for page in range(first - 1, last):
+        for x0, y0, _x1, _y1, word, *_rest in document[page].get_text("words"):
+            items.append((page, round(y0, 1), round(x0, 1), word))
+    items.sort(key=lambda item: (item[0], item[1], item[2]))
+    return items
+
+
+def _number_column(items, known: set[str]) -> float:
+    """Where the provision numbers stand, measured rather than assumed.
+
+    Every provision number sits at the same left edge; the numbers that appear
+    inside prose are scattered across the width. So the most crowded x, among
+    words that are nothing but a number column 6 cites, is the column — and it
+    is reported, because a calibration nobody sees is a constant in disguise.
+    """
+    tally: dict[int, int] = {}
+    for _page, _y, x, word in items:
+        if word.isdigit() and word in known:
+            tally[round(x)] = tally.get(round(x), 0) + 1
+    if not tally:
+        raise SystemExit("no provision numbers found in the chapter text")
+    column, crowd = max(tally.items(), key=lambda item: item[1])
+    print(f"the provision numbers stand at x={column} ({crowd} of them); "
+          f"anything further right is text")
+    return float(column)
+
+
+#: How far a word may sit from the measured column and still count as a
+#: provision number. A point either way covers rounding in the text layer
+#: without reaching the prose, which starts tens of points to the right.
+COLUMN_TOLERANCE = 2.0
+
+
+def _split(items, known: set[str], column: float) -> tuple[dict[str, str], list[str]]:
     """Chapter 3.3 as {number: text}, plus whatever looked wrong.
 
-    A line that is nothing but a number opens a provision, but only if column 6
-    cites that number and it is larger than the one before it. Both conditions
-    are needed: the first keeps quantities and cross-references out, the second
-    keeps a stray page number from resetting the sequence.
+    A word opens a provision when it is nothing but a number column 6 cites
+    *and* it stands in the number column. Position is what makes this reliable:
+    the same numbers appear inside prose all over the chapter, and no amount of
+    reading order tells them apart.
+
+    The ascending order of the numbers is no longer used to decide anything —
+    only to report. If the split is right the sequence rises on its own, so a
+    break in it is news about the parser rather than a rule for it.
     """
     provisions: dict[str, str] = {}
     complaints: list[str] = []
     current: str | None = None
-    lines: list[str] = []
+    words: list[str] = []
     highest = 0
-    for line in body.splitlines():
-        token = line.strip()
-        if token.isdigit() and token in known:
-            value = int(token)
-            if value > highest:
-                if current is not None:
-                    provisions[current] = " ".join(" ".join(lines).split())
-                current, lines, highest = token, [], value
-                continue
-            complaints.append(
-                f"{token} appears after {highest} and was left inside the text "
-                f"of provision {current}")
-        if current is not None:
-            lines.append(token)
+    for _page, _y, x, word in items:
+        if word.isdigit() and word in known and abs(x - column) <= COLUMN_TOLERANCE:
+            if current is not None:
+                provisions[current] = " ".join(" ".join(words).split())
+            if int(word) <= highest:
+                complaints.append(
+                    f"{word} stands in the number column but does not follow "
+                    f"{highest}")
+            current, words, highest = word, [], max(highest, int(word))
+            continue
+        if current is not None and x > column + COLUMN_TOLERANCE:
+            words.append(word)
     if current is not None:
-        provisions[current] = " ".join(" ".join(lines).split())
+        provisions[current] = " ".join(" ".join(words).split())
     return provisions, complaints
 
 
@@ -192,8 +242,9 @@ def main() -> int:
 
     known = _column_six_numbers()
     document = pymupdf.open(fetch(args.doc))
-    body, first, last = _chapter_text(document, known)
-    provisions, complaints = _split(body, known)
+    first, last = _chapter_pages(document, known)
+    items = _words(document, first, last)
+    provisions, complaints = _split(items, known, _number_column(items, known))
 
     print(SOURCES[args.doc]["title"])
     print(f"chapter 3.3 on printed pages {first}-{last}")

@@ -166,6 +166,38 @@ only to test that exemption, is answering a question that does not arise. This a
 the tunnel: 8.6.3.3 drops goods carried under 1.1.3 out of the determination, and a tank
 load is no longer dropped on the strength of a points total.
 
+**Chapter 5.2 answers per regime, since v1.160.0.** What goes on the *package* was the
+half nobody asked for: the labels of column (5) were read for eight other purposes and
+never turned into an answer for the person taping the drum shut. Four editions were read
+before it was built, and the sea turned out not to be the land renumbered. The IMDG Code
+marks the **proper shipping name on every package** (5.2.1.1) where ADR, RID and ADN ask
+for it on Class 1 (5.2.1.5) and radioactive material (5.2.1.7.2) only. It calls the
+environmentally hazardous substance mark the **marine pollutant mark** and puts it at
+5.2.1.6, not 5.2.1.8, and its numbering diverges from 5.2.1.5 onwards, so no IMDG rule may
+be cited by an ADR number. Its labels come from **two columns** — the primary from column 3
+of the Dangerous Goods List, each subsidiary from column 4 — where Table A has one. And its
+durability rule is three months' immersion in the sea against ADR's open weather exposure.
+RID and ADN were quoted beside the ADR and are identical word for word.
+
+Four things the answer refuses to state. The **orientation arrows** (5.2.1.10) turn on the
+kind of packaging, which the application cannot see, so they are reported as not assessed
+with the provision's own four cases named. The **marine pollutant exemption** routes out to
+IMDG 2.10.2.7, which has not been read, so nothing is exempted. **Column 6** of the
+Dangerous Goods List can add a subsidiary label where column 4 shows none and remove one
+where it does; it has not been read per substance, and the answer says so. And the **sea
+battery label** is left open: column 3 gives plain `9` for UN 3480 while IMDG 5.2.2.2.1.3
+describes a model 9A with a layout of its own, and a 9 printed over a 9A is a wrong label
+rather than a missing one.
+
+One value had to be settled outside the regulation. "100 mm x 100 mm" for a square set at
+45 degrees leaves two readings — the side, or the bounding box — that differ by root two.
+Measuring the official figure did not settle it: the ADR draws the prescribed 5 mm inner
+line at a spacing of 0.51 pt on a 96.89 pt side, which is the stroke width of the outline
+and not the border, so the drawing is schematic on this point. 49 CFR 172.407(c)(1)
+prescribes the identical shape, the identical 100 mm and the identical 5 mm border measured
+from the outside edge, and says "on each side". The side is the 100 mm; a full-size label
+is 141.4 mm from point to point.
+
 **The placards invert, since v1.70.0.** For packages 5.3.1.5 puts a placard on the vehicle
 only for class 1 and class 7 — which is why the packages answer is mostly that none is
 needed. For a tank or a bulk load 5.3.1.4.1 requires a placard of *every label model of the

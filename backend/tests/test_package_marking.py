@@ -86,6 +86,29 @@ def test_the_seed_carries_the_values_that_were_measured():
     assert any("5 kg or less" in text for text in exemptions)
 
 
+def test_the_100_mm_is_the_side_and_not_the_bounding_box():
+    """The provision leaves two readings; they differ by the square root of two.
+
+    ADR 5.2.2.2.1.1.2 says only that a label is a square set at 45 degrees whose
+    minimum dimensions are 100 mm x 100 mm. Measuring the official figure did
+    not settle which distance that is — the drawing puts the "5 mm" inner line
+    0.51 pt from an outline whose side is 96.89 pt, which is the stroke width
+    and not the border. What settles it is the same label written out in full
+    in 49 CFR 172.407(c)(1): the identical shape, the identical 100 mm, the
+    identical 5 mm border measured from the outside edge, and the words "on
+    each side".
+
+    This is pinned because everything printable rests on it. A label built to
+    the other reading is 71 mm on a side where the regulation asks for 100, on
+    every package, while looking entirely correct.
+    """
+    which = json.loads(SEED.read_text(encoding="utf-8"))["labels"]["shape"]["_which_distance"]
+    assert which["answer"] == "side"
+    assert which["side_mm"] == 100
+    assert round(which["point_to_point_mm"]) == 141
+    assert any("172.407" in source for source in which["sources"])
+
+
 def test_the_three_reduction_rules_stay_three_rules():
     """Each mark reduces on its own terms; one slider for all three is wrong.
 

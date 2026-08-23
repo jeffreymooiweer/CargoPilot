@@ -69,6 +69,7 @@
         "cmr",
         "avc_waybill",
         "placarding_sheet",
+        "package_label_sheet",
         "packing_list",
         "delivery_note",
         "packing_certificate",
@@ -94,7 +95,8 @@
         "cim",
         "placarding_sheet_rid",
         "packing_list",
-        "delivery_note"
+        "delivery_note",
+        "package_label_sheet"
       ]
     },
     {
@@ -117,7 +119,8 @@
         "placarding_sheet_imdg",
         "imo_dgd",
         "packing_list",
-        "delivery_note"
+        "delivery_note",
+        "package_label_sheet"
       ]
     },
     {
@@ -141,7 +144,8 @@
         "stowage_plan",
         "packing_list",
         "delivery_note",
-        "onboard_documents_adn"
+        "onboard_documents_adn",
+        "package_label_sheet"
       ]
     },
     {
@@ -193,6 +197,7 @@
         "placarding_sheet_adn",
         "placarding_sheet_rid",
         "placarding_sheet_imdg",
+        "package_label_sheet",
         "stowage_plan",
         "packing_list",
         "delivery_note",
@@ -3048,6 +3053,37 @@
         "en": "This sheet is a working instruction and not a label: the placards and orange plates themselves must meet 5.3.1.7 and 5.3.2.2.",
         "de": "Dieses Blatt ist eine Arbeitsanweisung und kein Zettel: die Großzettel und orangefarbenen Tafeln selbst müssen 5.3.1.7 und 5.3.2.2 entsprechen.",
         "fr": "Cette feuille est une instruction de travail et non une étiquette : les plaques-étiquettes et les panneaux orange doivent eux-mêmes respecter les 5.3.1.7 et 5.3.2.2."
+      }
+    },
+    {
+      "key": "package_label_sheet",
+      "label": {
+        "nl": "Etiketten- en merkenblad voor colli (5.2)",
+        "en": "Package label and marking sheet (5.2)",
+        "de": "Zettel- und Kennzeichnungsblatt für Versandstücke (5.2)",
+        "fr": "Feuille d'étiquetage et de marquage des colis (5.2)"
+      },
+      "short_label": {
+        "nl": "Colli-etiketten",
+        "en": "Package labels",
+        "de": "Versandstückzettel",
+        "fr": "Étiquettes colis"
+      },
+      "category": "generated",
+      "issue_status": {
+        "nl": "Hulpdocument — wat er op het collo zelf moet, afgeleid uit hoofdstuk 5.2, met de klasse-etiketten op ware grootte. Geen voorgeschreven model.",
+        "en": "Working document — what goes on the package itself, derived from chapter 5.2, with the class labels at full size. No prescribed model.",
+        "de": "Hilfsdokument — was am Versandstück selbst anzubringen ist, abgeleitet aus Kapitel 5.2, mit den Gefahrzetteln in Originalgröße. Kein vorgeschriebenes Muster.",
+        "fr": "Document d'appui — ce qui doit figurer sur le colis lui-même, dérivé du chapitre 5.2, avec les étiquettes de classe en taille réelle. Aucun modèle prescrit."
+      },
+      "exporter": "package_labels",
+      "dg_only": true,
+      "sections": [],
+      "signature_note": {
+        "nl": "De etiketten zijn op ware grootte afgedrukt (100 mm per zijde, 5.2.2.2.1.1.2), maar papier voldoet niet aan 5.2.1.2: een merk moet tegen weersinvloeden bestand zijn, en op zee leesbaar blijven na drie maanden onderdompeling. Het materiaal blijft de verantwoordelijkheid van degene die het aanbrengt.",
+        "en": "The labels are printed at full size (100 mm on each side, 5.2.2.2.1.1.2), but paper does not meet 5.2.1.2: a mark must withstand open weather exposure, and at sea stay identifiable after three months' immersion. The material remains the responsibility of whoever applies it.",
+        "de": "Die Zettel sind in Originalgröße gedruckt (100 mm je Seite, 5.2.2.2.1.1.2), doch Papier erfüllt 5.2.1.2 nicht: ein Kennzeichen muss der Witterung standhalten und auf See nach drei Monaten Eintauchen noch erkennbar sein. Das Material bleibt Sache dessen, der es anbringt.",
+        "fr": "Les étiquettes sont imprimées en taille réelle (100 mm par côté, 5.2.2.2.1.1.2), mais le papier ne satisfait pas au 5.2.1.2 : une marque doit résister aux intempéries et, en mer, rester identifiable après trois mois d'immersion. Le matériau reste la responsabilité de celui qui l'appose."
       }
     },
     {

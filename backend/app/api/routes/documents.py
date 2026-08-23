@@ -39,6 +39,7 @@ from app.services.documents.onboard_pack import (
     render_packing_certificate,
 )
 from app.services.documents.equipment_sheet import render_equipment_sheet
+from app.services.documents.package_label_sheet import render_package_label_sheet
 from app.services.documents.placarding_sheet import render_placarding_sheet
 from app.services.documents.stowage_plan import render_stowage_plan
 from app.services.documents.signature import decode_signature_image
@@ -152,6 +153,19 @@ def _render_export(document: dict, payload: DocumentExportRequest,
             payload.dangerous_goods,
             payload.output_language,
             regime="IMDG",
+        )
+    elif exporter == "package_labels":
+        # Chapter 5.2 rather than 5.3: the package itself, not the outside of
+        # the unit. It gets the profiles because the regimes disagree here —
+        # the IMDG Code marks the proper shipping name on every package where
+        # the land regimes ask for it on Class 1 and Class 7 only, so a sea leg
+        # answered with the road rule leaves that mark off every box.
+        out_path = render_package_label_sheet(
+            payload.values,
+            payload.lines,
+            payload.dangerous_goods,
+            payload.output_language,
+            profiles=payload.profiles or None,
         )
     elif exporter == "stowage":
         # The stowage plan is drawn from where the goods are, not from typed

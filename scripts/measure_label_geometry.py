@@ -142,6 +142,47 @@ def _bbox(shape) -> tuple[float, float, float, float]:
     return min(xs), min(ys), max(xs), max(ys)
 
 
+def _distance_to_line(point, segment) -> float:
+    """Perpendicular distance from a point to the infinite line of a segment."""
+    (x0, y0), (x1, y1) = segment
+    dx, dy = x1 - x0, y1 - y0
+    length = math.hypot(dx, dy)
+    if length == 0:
+        return 0.0
+    return abs(dy * (point[0] - x0) - dx * (point[1] - y0)) / length
+
+
+def _rings(diagonals, centre) -> list[dict[str, float]]:
+    """The concentric outlines in one cluster, as centre-to-edge distances.
+
+    This is what actually settles the question. A label is drawn as two nested
+    diamonds: the outer edge, and the line 5 mm inside it that 5.2.2.2.1.1.2
+    prescribes. Each outline sits at its own perpendicular distance from the
+    figure's centre, so grouping the segments by that distance separates the
+    two rings without needing to know which segment belongs to which.
+
+    For a square of side ``s`` set at 45 degrees, the centre-to-edge distance
+    is ``s / 2``. So the side follows from the outer ring, and the gap between
+    the rings is the inner line's offset measured the way the provision
+    measures it — perpendicular to the edge, not across the page.
+
+    The grouping compares each distance with the *first* member of its group
+    rather than the last. Chaining off the last member merges two outlines that
+    are 5 mm apart whenever a few stray segments fall between them, which is
+    exactly what happened on the first run: a label and the line inside it came
+    back as one ring of ten segments, and a single ring answers nothing.
+    """
+    distances = sorted(_distance_to_line(centre, segment) for segment in diagonals)
+    grouped: list[list[float]] = []
+    for distance in distances:
+        if grouped and abs(distance - grouped[-1][0]) <= 0.4:
+            grouped[-1].append(distance)
+        else:
+            grouped.append([distance])
+    return [{"radius_pt": sum(group) / len(group), "segments": len(group)}
+            for group in grouped if len(group) >= 2]
+
+
 def describe(shape) -> dict[str, Any] | None:
     """What a shape is and how big, in points, if it is one we care about."""
     if len(shape) < 4:
@@ -169,6 +210,7 @@ def describe(shape) -> dict[str, Any] | None:
             # cluster caught something else.
             "bbox_over_side": width / side if side else 0.0,
             "segments": len(shape),
+            "rings": _rings(diagonals, ((x0 + x1) / 2, (y0 + y1) / 2)),
         }
     if len(axis_aligned) >= 4 and not diagonals:
         return {
@@ -213,15 +255,32 @@ def main() -> int:
             continue
         text = page.get_text()
         annotated = "Minimum dimension" in text
+        figures = [line.strip() for line in text.splitlines()
+                   if line.strip().startswith("Figure ")]
         print(f"[page {number}] {len(shapes)} shape(s); "
               f"'Minimum dimension' on the page: {annotated}")
+        if figures:
+            print(f"    figures named here: {'; '.join(figures)}")
         for shape in sorted(shapes, key=lambda s: -s["bbox_width_pt"])[:6]:
             if shape["kind"] == "diamond":
                 print(f"    diamond  bbox {shape['bbox_width_pt']:.1f} x "
-                      f"{shape['bbox_height_pt']:.1f} pt, mean side "
-                      f"{shape['mean_side_pt']:.1f} pt, bbox/side "
-                      f"{shape['bbox_over_side']:.3f} "
+                      f"{shape['bbox_height_pt']:.1f} pt "
                       f"({shape['segments']} segments)")
+                rings = shape.get("rings") or []
+                for ring in rings:
+                    print(f"        ring at {ring['radius_pt']:.2f} pt from the "
+                          f"centre ({ring['segments']} segments) -> "
+                          f"side {2 * ring['radius_pt']:.2f} pt")
+                if len(rings) >= 2:
+                    outer, inner = rings[-1], rings[-2]
+                    side = 2 * outer["radius_pt"]
+                    offset = outer["radius_pt"] - inner["radius_pt"]
+                    ratio = offset / side if side else 0.0
+                    print(f"        inner line offset {offset:.2f} pt over a "
+                          f"side of {side:.2f} pt -> ratio {ratio:.4f}")
+                    print(f"        5 mm at this ratio means a side of "
+                          f"{5 / ratio:.1f} mm"
+                          if ratio else "")
             else:
                 print(f"    rectangle bbox {shape['bbox_width_pt']:.1f} x "
                       f"{shape['bbox_height_pt']:.1f} pt "

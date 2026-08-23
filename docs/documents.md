@@ -15,10 +15,10 @@ with the correct fixed legal wording.
 
 | Mode | Documents offered |
 |---|---|
-| **Road** | CMR, AVC waybill, packing list, delivery note — and for dangerous goods: placarding and marking sheet (ADR 5.3), container/vehicle packing certificate (5.4.2), on-board documents list (ADR 8.1.2), equipment sheet (ADR 8.1.4/8.1.5) |
-| **Rail** | CIM, packing list, delivery note — and for dangerous goods: placarding and marking sheet (RID 5.3) |
-| **Sea** | B/L or Sea Waybill shipping instructions, VGM declaration, IMO Multimodal DG Form, packing list, delivery note — and for dangerous goods: placarding and marking sheet (IMDG 5.3) |
-| **Inland waterway** | ADN transport document, VGM declaration, stowage plan (ADN 7.1.4.11.1), placarding and marking sheet (ADN 5.3), on-board documents list (ADN 8.1.2), packing list, delivery note |
+| **Road** | CMR, AVC waybill, packing list, delivery note — and for dangerous goods: placarding and marking sheet (ADR 5.3), package label and marking sheet (5.2), container/vehicle packing certificate (5.4.2), on-board documents list (ADR 8.1.2), equipment sheet (ADR 8.1.4/8.1.5) |
+| **Rail** | CIM, packing list, delivery note — and for dangerous goods: placarding and marking sheet (RID 5.3), package label and marking sheet (5.2) |
+| **Sea** | B/L or Sea Waybill shipping instructions, VGM declaration, IMO Multimodal DG Form, packing list, delivery note — and for dangerous goods: placarding and marking sheet (IMDG 5.3), package label and marking sheet (5.2) |
+| **Inland waterway** | ADN transport document, VGM declaration, stowage plan (ADN 7.1.4.11.1), placarding and marking sheet (ADN 5.3), package label and marking sheet (5.2), on-board documents list (ADN 8.1.2), packing list, delivery note |
 | **Air** | AWB shipping instructions, IATA Shipper's Declaration, packing list, delivery note |
 | **Multimodal** | All of the above |
 
@@ -66,6 +66,7 @@ each document requires:
 | **ADN transport document** | Inland waterway — there is no waybill for this mode in the app |
 | **Packing list** | |
 | **Delivery note** | Receipt block left blank for signing on delivery |
+| **Package label and marking sheet (5.2)** | Which labels and marks each package carries, per regime, and the class labels themselves at full size — 100 mm on each side, one per A4 page. The artwork is the official one, cut from the ADR; nothing is redrawn. The battery mark and the orientation arrows are named and not printed, because their artwork was never cut. Air is absent: the IATA marking rules have not been read |
 
 ## What is never filled in for you
 

@@ -75,6 +75,14 @@ class DocumentExportRequest(BaseModel):
     dangerous_goods: list[dict] | None = None
     output_language: str = "nl"
     signature_image: str | None = None
+    #: Which regulations the consignment travels under. Only the documents that
+    #: genuinely answer differently per regime read it — the package label sheet
+    #: is the first, because the IMDG Code marks the proper shipping name on
+    #: every package where the land regimes ask for it on Class 1 and Class 7
+    #: only. An empty list is not "all of them": it means nothing was said, and
+    #: a document that needs the answer says which regime it fell back on rather
+    #: than presenting one mode's rule as every mode's.
+    profiles: list[str] = Field(default_factory=list)
 
 
 class DocumentBundleRequest(BaseModel):

@@ -2,6 +2,61 @@
 
 All notable changes are documented here, following [Semantic Versioning](https://semver.org/).
 
+## [1.160.0] — 2026-08-23
+
+### Chapter 5.2: what goes on the package
+
+Chapter 5.3 — what goes on the outside of the vehicle, wagon, vessel or container — has
+been derived per mode since v1.53.0. Chapter 5.2 is the other half and had nothing: the
+application knew which labels a substance carries, because column (5) of Table A is read
+for eight other purposes, but nobody had asked it what the person taping the drum shut has
+to stick on it.
+
+Four editions were read on a runner before a line was written, and the sea turned out not
+to be the land renumbered:
+
+- the **IMDG Code marks the proper shipping name on every package** (5.2.1.1), where ADR,
+  RID and ADN ask for it on Class 1 (5.2.1.5) and radioactive material (5.2.1.7.2) only;
+- it calls the environmentally hazardous substance mark the **marine pollutant mark** and
+  places it at 5.2.1.6, not 5.2.1.8, and its numbering diverges from 5.2.1.5 onwards, so
+  no IMDG rule may be cited by an ADR number;
+- its labels come from **two columns** — the primary from column 3 of the Dangerous Goods
+  List, each subsidiary from column 4 — where Table A has one;
+- its durability rule is **three months' immersion in the sea**, against ADR's open
+  weather exposure.
+
+RID and ADN were quoted beside the ADR in the same run and are identical word for word.
+
+**The sheet.** A working page listing what each package carries per regime and under which
+provision, then the class labels themselves at full size: 100 mm on each side, 141.4 mm
+from point to point, one per A4 page with corner cut marks and a caption naming the model
+and the goods line. The artwork is the official one, cut from the ADR; nothing is redrawn.
+Divisions 1.1 to 1.3 print as model 1, which is what the regulation prints for all three,
+with the division and compatibility group in the caption. It requires no typed field, so
+it can be printed at the packing bench before the paperwork is complete.
+
+**What it refuses to say.** The orientation arrows (5.2.1.10) turn on the kind of
+packaging, which the application cannot see, so they are reported as not assessed with the
+provision's own four cases named. The marine pollutant exemption routes out to IMDG
+2.10.2.7, which has not been read, so nothing is exempted. Column 6 of the Dangerous Goods
+List can add and remove subsidiary labels and has not been read per substance. The sea
+battery label is left open, because column 3 gives plain 9 for UN 3480 while IMDG
+5.2.2.2.1.3 describes a model 9A with a layout of its own, and a 9 printed over a 9A is a
+wrong label rather than a missing one. The battery mark and the orientation arrows are
+named and not drawn, their artwork never having been cut from the edition. Air is absent:
+the IATA marking rules have not been read.
+
+**And what paper cannot promise**, on every copy: 5.2.1.2 wants a mark that withstands the
+weather, and the IMDG Code one still identifiable after three months in the sea. The sheet
+gives the right content at the right size; the material stays the user's responsibility.
+
+One value had to be settled outside the regulation. "100 mm x 100 mm" for a square set at
+45 degrees leaves two readings that differ by root two, and measuring the official figure
+did not decide it — the ADR draws the prescribed 5 mm inner line at 0.51 pt on a 96.89 pt
+side, which is the stroke width of the outline, so the drawing is schematic there. 49 CFR
+172.407(c)(1) prescribes the identical shape, the identical 100 mm and the identical 5 mm
+border measured from the outside edge, and says "on each side".
+
 ## [1.159.0] — 2026-08-22
 
 ### Fixed

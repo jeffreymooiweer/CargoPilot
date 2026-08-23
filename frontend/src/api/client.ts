@@ -1190,6 +1190,13 @@ export interface DocumentExportPayload extends Record<string, unknown> {
   dangerous_goods?: DgEntry[];
   output_language: string;
   signature_image?: string;
+  /** Which regulations the consignment travels under. Only the documents that
+   *  answer differently per regime read it — the package label sheet is the
+   *  first, because the IMDG Code marks the proper shipping name on every
+   *  package where the land regimes ask for it on Class 1 and Class 7 only.
+   *  Left off, that sheet would quietly hand a sea consignment the road
+   *  answer. */
+  profiles?: string[];
 }
 
 export interface DocumentBundlePayload extends Record<string, unknown> {

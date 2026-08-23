@@ -285,12 +285,8 @@ the application's own Legal page, where the people using it can see it — a
 licence condition met only in a repository file is not met, since nobody
 running the application ever reads that file.
 
-One honest qualification. The owner confirmed the source of the **spinner**;
-the other five arrived in the same delivery and are recorded here under the
-same set. Their exported markup falls into three groups rather than one — two
-carry an Adobe Illustrator header and a `Capa_1` layer, two an `id="Layer_1"`,
-two an `id="Outline"` — which is consistent with different styles of one set
-but does not prove it. Flaticon credits name the pack's author, so if any of
-the five turn out to come from a different pack, this section and the Legal
-page need that author's line added beside the one already there. Crediting one
-maker too few is the failure worth avoiding; crediting one too many is not.
+All six carry the same credit, confirmed by the owner against the set they
+came from, so the one line on the Legal page covers them. Their exported
+markup falls into three groups — two carry an Adobe Illustrator header and a
+`Capa_1` layer, two an `id="Layer_1"`, two an `id="Outline"` — which is the
+set's different styles showing through, not different origins.

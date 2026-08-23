@@ -32,10 +32,13 @@ What it refuses to print, and why:
 
 And one thing it says out loud on every copy: paper is not the material the
 regulation asks for. ADR 5.2.1.2 wants a mark that withstands open weather
-exposure, and the IMDG Code (5.2.1.2) wants one still identifiable after three
-months in the sea. An office printer and plain adhesive stock meet neither. The
-sheet gives the right content at the right size; the material stays the
-responsibility of the person applying it.
+exposure, and the IMDG Code wants marks (5.2.1.2) and labels (5.2.2.2.1.7) alike
+still identifiable after three months in the sea. An office printer and plain
+adhesive stock meet neither — and the sheet names **BS 5609**, the standard the
+labelling trade uses to show a material does, because telling someone their
+paper will not do without saying what will is half an answer. The sheet gives
+the right content at the right size; the material stays the responsibility of
+the person applying it.
 """
 from __future__ import annotations
 
@@ -134,24 +137,32 @@ TEXT: dict[str, dict[str, str]] = {
     "material_note": {
         "nl": "Papier is niet het materiaal dat de regelgeving vraagt. 5.2.1.2 eist een "
               "merk dat tegen weersinvloeden bestand is; de IMDG Code eist bovendien dat "
-              "het leesbaar blijft op een collo dat ten minste drie maanden in zee heeft "
-              "gelegen. Dit blad levert de juiste inhoud op de juiste maat; het materiaal "
-              "blijft de verantwoordelijkheid van degene die het aanbrengt.",
+              "merken (5.2.1.2) én etiketten (5.2.2.2.1.7) leesbaar blijven op een collo "
+              "dat ten minste drie maanden in zee heeft gelegen. De norm waarmee de "
+              "branche aantoont dat een materiaal daaraan voldoet is BS 5609. Dit blad "
+              "levert de juiste inhoud op de juiste maat; het materiaal blijft de "
+              "verantwoordelijkheid van degene die het aanbrengt.",
         "en": "Paper is not the material the regulation asks for. 5.2.1.2 requires a mark "
               "that withstands open weather exposure; the IMDG Code additionally requires "
-              "it to stay identifiable on a package surviving at least three months' "
-              "immersion in the sea. This sheet gives the right content at the right "
-              "size; the material remains the responsibility of whoever applies it.",
+              "both marks (5.2.1.2) and labels (5.2.2.2.1.7) to stay identifiable on a "
+              "package surviving at least three months' immersion in the sea. BS 5609 is "
+              "the standard the labelling trade uses to show a material meets that. This "
+              "sheet gives the right content at the right size; the material remains the "
+              "responsibility of whoever applies it.",
         "de": "Papier ist nicht das Material, das die Vorschrift verlangt. 5.2.1.2 fordert "
               "ein Kennzeichen, das der Witterung standhält; der IMDG-Code fordert "
-              "zusätzlich, dass es auf einem Versandstück nach mindestens drei Monaten im "
-              "Meer noch erkennbar ist. Dieses Blatt liefert den richtigen Inhalt in der "
-              "richtigen Größe; das Material bleibt Sache dessen, der es anbringt.",
+              "zusätzlich, dass Kennzeichen (5.2.1.2) und Zettel (5.2.2.2.1.7) auf einem "
+              "Versandstück nach mindestens drei Monaten im Meer noch erkennbar sind. Die "
+              "Norm, mit der die Etikettenbranche das nachweist, ist BS 5609. Dieses Blatt "
+              "liefert den richtigen Inhalt in der richtigen Größe; das Material bleibt "
+              "Sache dessen, der es anbringt.",
         "fr": "Le papier n'est pas le matériau exigé par la réglementation. Le 5.2.1.2 "
               "exige une marque résistant aux intempéries ; le code IMDG exige en outre "
-              "qu'elle reste identifiable sur un colis ayant séjourné au moins trois mois "
-              "dans la mer. Cette feuille fournit le bon contenu à la bonne taille ; le "
-              "matériau reste la responsabilité de celui qui l'appose.",
+              "que marques (5.2.1.2) et étiquettes (5.2.2.2.1.7) restent identifiables sur "
+              "un colis ayant séjourné au moins trois mois dans la mer. La norme employée "
+              "par la profession pour le démontrer est BS 5609. Cette feuille fournit le "
+              "bon contenu à la bonne taille ; le matériau reste la responsabilité de "
+              "celui qui l'appose.",
     },
     "not_printed": {
         "nl": "Niet op dit blad afgedrukt",

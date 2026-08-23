@@ -2,6 +2,36 @@
 
 All notable changes are documented here, following [Semantic Versioning](https://semver.org/).
 
+## [1.161.1] — 2026-08-23
+
+### Three of the four open points were a read away
+
+v1.160.0 recorded four things about chapter 5.2 as unanswered. Three of them did not need
+anybody to supply anything: the IMDG Code is in the regulatory store and had been read
+from all session. Asking instead of looking was the mistake, and this corrects it.
+
+- **The IMDG Code places the lithium battery mark at 5.2.1.10** — where the land
+  regulations put the orientation arrows. The sharpest illustration yet of why an IMDG
+  rule may never be cited by an ADR number.
+- **It asks for the three months' immersion twice**: at 5.2.1.2 for marks, and at
+  **5.2.2.2.1.7** for labels. The sheet's note now cites both.
+- **Special provision 188** names model No. 9A alongside that mark, and carries
+  exemptions of its own — button cells installed in equipment, and no more than four
+  cells or two batteries in equipment where the consignment holds at most two packages —
+  plus an overpack rule keeping the mark visible or reproduced, with "OVERPACK" in
+  lettering of at least 12 mm.
+
+**And the sheet now says what a compliant label is made of.** Every copy names **BS
+5609**, the British Standard for pressure-sensitive labels for marine use, by which the
+labelling trade demonstrates a material survives the IMDG Code's three months in the sea.
+Telling a packer that paper will not do, without saying what will, is half an answer.
+
+What stays open is genuinely open: IMDG 2.10.2.7, which three read runs have not
+surfaced; which of model 9 and model 9A the Dangerous Goods List intends per class 9
+entry, since the specimen table row that assigns them has not been read; the remaining
+column 6 provisions; and the artwork for the battery mark and the orientation arrows,
+which has to be cut from the edition rather than drawn.
+
 ## [1.161.0] — 2026-08-23
 
 ### A shipment can leave as data

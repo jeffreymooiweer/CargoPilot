@@ -269,6 +269,11 @@ def main() -> int:
                         help="print every provision, not only the ones about labels")
     parser.add_argument("--number", action="append", default=[],
                         help="print this provision in full, whatever it says")
+    parser.add_argument("--only", action="store_true",
+                        help="print only the provisions --number asks for. The "
+                             "full sweep is forty-odd provisions long and the "
+                             "run log is read from its tail, so coming back for "
+                             "three of them should not mean fetching all of it")
     parser.add_argument("--chars", type=int, default=900,
                         help="how much of each provision to print")
     args = parser.parse_args()
@@ -301,9 +306,12 @@ def main() -> int:
     wanted = set(args.number)
     about_labels = [n for n in sorted(provisions, key=int)
                     if LABELLING.search(provisions[n])]
-    shown = sorted(
-        set(about_labels) | wanted if not args.all else set(provisions),
-        key=int)
+    if args.only:
+        shown = sorted(wanted, key=int)
+    elif args.all:
+        shown = sorted(provisions, key=int)
+    else:
+        shown = sorted(set(about_labels) | wanted, key=int)
     for number in shown:
         text = provisions.get(number, "(not found)")
         flag = "" if number in about_labels else "   [not matched — asked for]"

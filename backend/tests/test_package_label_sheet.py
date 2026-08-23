@@ -161,13 +161,83 @@ def test_the_orientation_arrows_are_named_as_not_assessed():
     assert "5.2.1.10" in text
 
 
-def test_the_battery_mark_is_named_but_not_drawn():
-    """Its official artwork was never cut from the edition the way the class
-    labels were, so it is listed and not redrawn."""
+# --- the marks, now that their figures are measured ---
+
+
+def test_the_battery_mark_is_drawn_and_carries_the_un_number():
+    """The figure prints an asterisk where the number goes. An asterisk is a
+    footnote in a book; on a package it is a mark that says nothing, and which
+    cells are inside is the only thing this mark exists to say."""
+    body = pages(sheet(goods("3480")))
+    page = next(text for text in body if "5.2.1.9.2" in text)
+    assert "UN 3480" in page.replace("\n", " ")
+
+
+def test_the_battery_mark_is_a_hundred_millimetre_square():
+    """5.2.1.9.2 in as many words: 100 mm by 100 mm, hatched edging at least
+    5 mm. Measured off the page, because the frame is built from those numbers
+    and a typo in them would look like a mark."""
     path = sheet(goods("3480"))
-    text = pages(path)[0].replace("\n", " ")
-    assert "5.2.1.9" in text
-    assert "battery" in text.lower()
+    with pymupdf.open(str(path)) as document:
+        page = next(page for page in document if "5.2.1.9.2" in page.get_text())
+        squares = [item[1] for drawing in page.get_drawings()
+                   for item in drawing["items"] if item[0] == "re"]
+        widths = sorted({round(rect.width / 72 * 25.4) for rect in squares})
+    assert 100 in widths, "the mark itself is not 100 mm across"
+    assert 90 in widths, "5 mm of hatching on each side leaves 90 mm inside"
+
+
+def test_the_battery_mark_needs_its_symbol_and_will_not_fake_one(monkeypatch):
+    """A frame with a number in it and an empty middle is not a smaller version
+    of this mark. It is a different one, and what makes it recognised across a
+    warehouse is the picture."""
+    from app.services.documents import package_label_sheet as module
+
+    monkeypatch.setattr(module, "LABELS", module.LABELS.parent / "absent")
+    assert not any("5.2.1.9.2" in text for text in pages(sheet(goods("3480"))))
+
+
+def test_the_orientation_arrows_are_printed_with_their_conditions():
+    """5.2.1.10.1 gives them no size, so the caption has to say that the size
+    on the page is this sheet's choice — and 5.2.1.10.3 forbids arrows put
+    there for any other reason, which a packer holding the page should read
+    before cutting."""
+    page = next(text for text in pages(sheet(goods("1263")))
+                if "5.2.1.10.1" in text)
+    flat = page.replace("\n", " ")
+    assert "5.2.1.10.2" in flat and "5.2.1.10.3" in flat
+
+
+def test_the_environmentally_hazardous_mark_is_printed_at_label_size():
+    """5.2.1.8.3 words its minimum exactly as 5.2.2.2.1.1.2 words a label's, and
+    the two figures are drawn at the same scale in the edition. So the mark
+    takes the same reading: 100 mm on a side, 141 mm from point to point."""
+    path = sheet(goods("3082", environmentally_hazardous="P"))
+    with pymupdf.open(str(path)) as document:
+        # The working page names 5.2.1.8 in its marks column too, so the page
+        # wanted here is the one that both names the provision and draws it.
+        page = next(page for page in document
+                    if "5.2.1.8" in page.get_text() and page.get_images(full=True))
+        rects = [rect for image in page.get_images(full=True)
+                 for rect in page.get_image_rects(image[0])]
+    assert rects
+    assert round(min(rects[0].width, rects[0].height) / 72 * 25.4, 1) \
+        >= round(FULL_SIZE_MM, 1)
+
+
+def test_no_artwork_is_ever_printed_below_its_own_minimum():
+    """The files are trimmed to their ink and are not all exactly square. Fitting
+    such an image inside a 141.42 mm box puts the other direction under it, and
+    "minimum dimensions" is the one thing this number means."""
+    path = sheet(goods("3082", environmentally_hazardous="P"), goods("1263"))
+    with pymupdf.open(str(path)) as document:
+        for page in document:
+            for image in page.get_images(full=True):
+                for rect in page.get_image_rects(image[0]):
+                    if round(rect.width / 72 * 25.4) < 100:
+                        continue  # the battery symbol lives inside its frame
+                    assert round(min(rect.width, rect.height) / 72 * 25.4, 1) \
+                        >= round(FULL_SIZE_MM, 1)
 
 
 def test_a_consignment_without_dangerous_goods_says_so_on_one_page():
@@ -179,8 +249,8 @@ def test_a_consignment_without_dangerous_goods_says_so_on_one_page():
 
 def test_the_same_label_is_not_printed_twice_for_one_line():
     """Two products on one line that carry the same model get one page."""
-    path = sheet(goods("1263"), goods("1263"))
-    assert len(pages(path)) == 2
+    body = pages(sheet(goods("1263"), goods("1263")))
+    assert sum(1 for text in body if "Model 3" in text) == 1
 
 
 def test_every_language_renders():

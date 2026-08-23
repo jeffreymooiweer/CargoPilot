@@ -2,6 +2,51 @@
 
 All notable changes are documented here, following [Semantic Versioning](https://semver.org/).
 
+## [1.162.0] — 2026-08-23
+
+### The two figures nobody had measured
+
+The package label sheet named the battery mark and the orientation arrows instead of
+printing them, because their artwork had never been cut from the official edition the way
+the twenty-three class label models were. Both are now measured, and the sheet prints
+them.
+
+- **The orientation arrows** are cut whole. The page prints them twice, identical apart
+  from a rectangular border 5.2.1.10.1 calls optional, under two captions set side by side
+  on one line — so shape cannot tell them apart, and the captions were matched to the
+  drawings by their own horizontal position. The framed one is Figure 5.2.1.10.1.2, and
+  that is what is cut. The provision gives them **no size at all**, only "clearly visible
+  commensurate with the size of the package", so the size on the page is named there as
+  this sheet's choice and not as a requirement — together with the four cases of
+  5.2.1.10.1 that call for them, the six exceptions of 5.2.1.10.2 and the prohibition of
+  5.2.1.10.3.
+- **The battery mark** is cut down to its symbol. Its printed figure is wrapped in
+  dimension annotations that abut the hatched edging, and everything except the symbol is
+  stated in 5.2.1.9.2 in words: a rectangle 100 mm by 100 mm, red hatched edging at least
+  5 mm wide, the symbol above the UN number or numbers. So the frame is built from those
+  numbers and the symbol is the edition's own — which also fixes what printing the figure
+  verbatim would have got wrong. The figure carries an asterisk where the number goes, and
+  an asterisk on a package says nothing; the sheet prints the number of the cells inside.
+- **The environmentally hazardous substance mark and the marine pollutant mark** are now
+  printed as well. The sheet could already tell you a line needed one; it kept the figure
+  it holds to itself.
+
+**One bug found on the way, and it was the interesting one.** The detector that finds a
+figure on a rendered page thresholded the **red** channel and called anything above it
+paper. Red ink has a high red value, so the battery mark — whose edging is hatched in red
+— was invisible to a detector pointed straight at it, and so would have been anything else
+printed in colour. For a chapter about coloured labels that is the whole subject.
+
+**And a size that was quietly a fraction short.** The artwork files are trimmed to their
+ink and are not all exactly square. Fitting one inside a 141.42 mm box puts the other
+direction under it, and the environmentally hazardous mark was printing at 99.8 mm on a
+side where the minimum is 100. The scale now comes from the smaller side, so no direction
+ends up under the minimum.
+
+One open point remains on this chapter: **column 6** of the Dangerous Goods List, which
+can add a subsidiary label where column 4 shows none and remove one where it does. It
+deserves its own phase.
+
 ## [1.161.1] — 2026-08-23
 
 ### Three of the four open points were a read away

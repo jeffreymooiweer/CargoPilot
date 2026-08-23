@@ -8,7 +8,7 @@ stock in practice; the regulation prescribes the artwork, the size and the
 colours; and the artwork itself was cut from the official edition rather than
 redrawn. What is left to get wrong is the size, and that is now measured.
 
-So this sheet prints two things.
+So this sheet prints three things.
 
 **A working page**, per goods line and per regime, listing which labels and
 which marks that package carries and under which provision. This is the half
@@ -360,29 +360,43 @@ class _FullSizeLabel(Flowable):
     Drawn as a flowable rather than through a page callback so that the cut
     marks cannot drift away from the artwork: both are placed in the same
     coordinate system, in one place, at the moment the label is laid down.
+
+    The artwork is not always exactly square. It was cut from the edition and
+    then trimmed to its ink, and a stroke that ends a fraction of a pixel short
+    on one side leaves a file a few tenths of a percent off. Fitting such an
+    image *inside* a 141.42 mm box — which is what preserving the aspect ratio
+    normally means — shrinks the other direction below the box, and the whole
+    point of this number is that the side underneath it is 100 mm. So the scale
+    is taken from the *smaller* side: no direction ends up under the minimum,
+    and the excess in the other is the trim noise it came from.
     """
 
     def __init__(self, image: Path, side_mm: float = FULL_SIZE_MM):
         super().__init__()
         self.image = image
         self.size = side_mm * mm
-        self.width = self.size
-        self.height = self.size
+        pixel_width, pixel_height = ImageReader(str(image)).getSize()
+        scale = self.size / min(pixel_width, pixel_height)
+        self.drawn_width = pixel_width * scale
+        self.drawn_height = pixel_height * scale
+        self.width = self.drawn_width
+        self.height = self.drawn_height
 
     def wrap(self, available_width, available_height):
         return self.width, self.height
 
     def draw(self) -> None:
         canvas = self.canv
-        canvas.drawImage(str(self.image), 0, 0, width=self.size, height=self.size,
+        canvas.drawImage(str(self.image), 0, 0,
+                         width=self.drawn_width, height=self.drawn_height,
                          preserveAspectRatio=True, anchor="c", mask="auto")
         offset = CUT_MARK_OFFSET_MM * mm
         length = CUT_MARK_LENGTH_MM * mm
         canvas.saveState()
         canvas.setStrokeColor(colors.HexColor("#9ca3af"))
         canvas.setLineWidth(0.4)
-        for x in (0, self.size):
-            for y in (0, self.size):
+        for x in (0, self.drawn_width):
+            for y in (0, self.drawn_height):
                 horizontal = -offset - length if x == 0 else offset + length
                 vertical = -offset - length if y == 0 else offset + length
                 canvas.line(x + (horizontal if x == 0 else offset),
@@ -407,7 +421,7 @@ class _BatteryMark(Flowable):
     are inside.
     """
 
-    def __init__(self, symbol: Path | None, un_numbers: list[str],
+    def __init__(self, symbol: Path, un_numbers: list[str],
                  side_mm: float = BATTERY_SIZE_MM):
         super().__init__()
         self.symbol = symbol
@@ -453,11 +467,10 @@ class _BatteryMark(Flowable):
 
         inner = self.size - 2 * band
         text_height = 9 * mm if self.un_numbers else 0.0
-        if self.symbol is not None:
-            canvas.drawImage(
-                str(self.symbol), band, band + text_height,
-                width=inner, height=inner - text_height,
-                preserveAspectRatio=True, anchor="c", mask="auto")
+        canvas.drawImage(
+            str(self.symbol), band, band + text_height,
+            width=inner, height=inner - text_height,
+            preserveAspectRatio=True, anchor="c", mask="auto")
         canvas.setFillColor(colors.black)
         canvas.setFont("Helvetica-Bold", 16)
         if self.un_numbers:
@@ -530,7 +543,10 @@ def _mark_pages(result: dict[str, Any], styles: dict[str, Any],
                 if kind in DIAMOND_MARKS:
                     diamonds.setdefault(DIAMOND_MARKS[kind], mark.get("provision", ""))
                 elif kind in BUILT_MARKS:
-                    number = str(mark.get("text") or "").replace("UN ", "").strip()
+                    # Kept with its "UN" prefix. 5.2.1.1 asks for the number
+                    # "preceded by the letters UN", and the four digits alone
+                    # are a number a reader has to already know how to read.
+                    number = str(mark.get("text") or "").strip()
                     if number:
                         batteries.setdefault(item["product"], []).append(number)
 
@@ -556,8 +572,7 @@ def _mark_pages(result: dict[str, Any], styles: dict[str, Any],
         story.append(_p(_t("battery_built", lang), styles["fixed"]))
         story.append(_p(_t("battery_reduction", lang), styles["fixed"]))
         story.append(Spacer(1, 6))
-        story.append(_BatteryMark(symbol if symbol.exists() else None,
-                                  sorted(dict.fromkeys(numbers))))
+        story.append(_BatteryMark(symbol, sorted(dict.fromkeys(numbers))))
 
     # The arrows are printed whenever the check could not settle them, which is
     # every consignment: the four cases of 5.2.1.10.1 turn on the kind of

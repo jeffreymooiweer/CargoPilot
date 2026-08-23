@@ -31,6 +31,10 @@ on:
           - geometry
           - crops
         default: geometry
+      box:
+        description: "crops only: look closely at one box instead of searching pages, as page,x0,y0,x1,y1"
+        default: ""
+        required: false
 
 permissions:
   contents: read
@@ -63,12 +67,22 @@ jobs:
           DOC: ${{ inputs.doc }}
           PAGES: ${{ inputs.pages }}
           WHAT: ${{ inputs.what || 'geometry' }}
+          BOX: ${{ inputs.box }}
         run: |
           set -euo pipefail
+          ARGS=(--doc "$(echo "$DOC" | tr -d '[:space:]')")
           SCRIPT=scripts/measure_label_geometry.py
           if [ "$WHAT" = "crops" ]; then
             SCRIPT=scripts/measure_figure_crops.py
           fi
-          python "$SCRIPT" \
-            --doc "$(echo "$DOC" | tr -d '[:space:]')" \
-            --pages "$(echo "$PAGES" | tr -d '[:space:]')"
+          # A close look at one box replaces the page search; asking for both
+          # would print a search nobody read to get to the picture they wanted.
+          if [ "$WHAT" = "crops" ] && [ -n "$BOX" ]; then
+            IFS=';' read -ra WANTED <<< "$BOX"
+            for b in "${WANTED[@]}"; do
+              ARGS+=(--box "$(echo "$b" | tr -d '[:space:]')")
+            done
+          else
+            ARGS+=(--pages "$(echo "$PAGES" | tr -d '[:space:]')")
+          fi
+          python "$SCRIPT" "${ARGS[@]}"

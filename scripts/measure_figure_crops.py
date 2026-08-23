@@ -18,6 +18,14 @@ edging from a plain border.
 
     python scripts/measure_figure_crops.py --doc adr2 --pages 248-249
 
+A blob sketch at forty-six characters tells a diamond from a rectangle and no
+more, which is enough to pick a candidate and not enough to be sure of it. So a
+second mode looks at one chosen box closely, in grey levels rather than ink or
+paper:
+
+    python scripts/measure_figure_crops.py --doc adr2 \
+        --box "248,222.2,547.2,369.3,660.3"
+
 Nothing is committed. A human reads the sketches, decides which blob is the
 figure, and the chosen box goes into label_crops.json through a reviewed change
 — the same route the twenty-three existing models took.
@@ -117,10 +125,49 @@ def _sketch(mask: list[list[bool]], box: tuple[int, int, int, int],
     return rows
 
 
+#: Darkest to lightest, for the close look. Ink or paper is enough to find a
+#: blob; it is not enough to tell a battery from a flame, and picking the wrong
+#: figure is exactly the mistake a crop box carries forward silently.
+SHADES = "@%#*+=-:. "
+
+
+def _closeup(page: Any, rect: list[float], width: int = 104) -> list[str]:
+    """One box in grey levels, at whatever resolution fills ``width``.
+
+    Rendered from the page rather than from the 70 dpi mask, so the detail that
+    decides which figure this is survives: hatching, a flame's taper, the gap
+    between a battery's terminals.
+    """
+    span_x = max(rect[2] - rect[0], 1.0)
+    span_y = max(rect[3] - rect[1], 1.0)
+    # Two rendered pixels per character across, and four down, because a
+    # terminal cell is about twice as tall as it is wide.
+    dpi = max(36, min(300, round(72.0 * width * 2 / span_x)))
+    pixmap = page.get_pixmap(dpi=dpi, clip=pymupdf.Rect(rect))
+    height = max(1, round(width * span_y / span_x / 2))
+    rows: list[str] = []
+    for row in range(height):
+        line = []
+        for col in range(width):
+            x0 = col * pixmap.width // width
+            x1 = max((col + 1) * pixmap.width // width, x0 + 1)
+            y0 = row * pixmap.height // height
+            y1 = max((row + 1) * pixmap.height // height, y0 + 1)
+            samples = [min(pixmap.pixel(x, y)[:3])
+                       for y in range(y0, min(y1, pixmap.height))
+                       for x in range(x0, min(x1, pixmap.width))]
+            value = min(samples) if samples else 255
+            line.append(SHADES[min(len(SHADES) - 1, value * len(SHADES) // 256)])
+        rows.append("".join(line))
+    return rows
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--doc", default="adr2")
-    parser.add_argument("--pages", required=True, help="printed page or range")
+    parser.add_argument("--pages", help="printed page or range")
+    parser.add_argument("--box", action="append", default=[],
+                        help="look closely at one box: page,x0,y0,x1,y1")
     parser.add_argument("--max-blobs", type=int, default=8,
                         help="how many of the largest blobs to sketch per page")
     args = parser.parse_args()
@@ -128,10 +175,30 @@ def main() -> int:
     if args.doc not in SOURCES:
         print(f"{args.doc}: not a known document id", file=sys.stderr)
         return 1
+    if not args.pages and not args.box:
+        print("give --pages to find boxes, or --box to look at one", file=sys.stderr)
+        return 1
+
+    document = pymupdf.open(fetch(args.doc))
+
+    if args.box:
+        print(SOURCES[args.doc]["title"])
+        print("=" * 78)
+        for spec in args.box:
+            parts = [part.strip() for part in spec.split(",")]
+            if len(parts) != 5:
+                print(f"{spec}: expected page,x0,y0,x1,y1", file=sys.stderr)
+                return 1
+            number = int(parts[0])
+            rect = [float(part) for part in parts[1:]]
+            print(f'\n  "page": {number}, "rect": {rect}')
+            for line in _closeup(document[number - 1], rect):
+                print(f"    {line}")
+        return 0
+
     first, _, last = args.pages.partition("-")
     start, end = int(first), int(last or first)
 
-    document = pymupdf.open(fetch(args.doc))
     scale = DPI / 72.0
     print(SOURCES[args.doc]["title"])
     print(f"rendered at {DPI} dpi — the resolution label_crops.json was measured at")

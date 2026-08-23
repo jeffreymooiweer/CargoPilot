@@ -191,6 +191,69 @@ TEXT: dict[str, dict[str, str]] = {
               "celui qui l'appose.",
     },
     "mark": {"nl": "Merk", "en": "Mark", "de": "Kennzeichen", "fr": "Marque"},
+    "column_6": {
+        "nl": "Kolom 6 van de Dangerous Goods List",
+        "en": "Column 6 of the Dangerous Goods List",
+        "de": "Spalte 6 der Dangerous Goods List",
+        "fr": "Colonne 6 de la liste des marchandises dangereuses",
+    },
+    "column_6_intro": {
+        "nl": "Een bijzondere bepaling uit kolom 6 kan een nevengevaaretiket toevoegen "
+              "waar kolom 4 er geen toont, er een weghalen waar dat wel zo is "
+              "(5.2.2.1.2), of de etikettering helemaal laten vervallen (5.2.2.1.2.1). "
+              "Hieronder staat wat de bepalingen bij deze goederen zeggen. Wat van het "
+              "collo afhangt en niet van de stof is niet toegepast maar benoemd: "
+              "beoordeel het zelf.",
+        "en": "A special provision in column 6 can add a subsidiary hazard label where "
+              "column 4 shows none, remove one where it does (5.2.2.1.2), or drop the "
+              "labelling altogether (5.2.2.1.2.1). Below is what the provisions cited "
+              "for these goods say. Anything that turns on the package rather than on "
+              "the substance is named and not applied: judge it yourself.",
+        "de": "Eine Sondervorschrift aus Spalte 6 kann einen Nebengefahrzettel "
+              "hinzufügen, wo Spalte 4 keinen zeigt, einen entfernen, wo sie einen "
+              "zeigt (5.2.2.1.2), oder die Kennzeichnung ganz entfallen lassen "
+              "(5.2.2.1.2.1). Unten steht, was die für diese Güter genannten "
+              "Vorschriften sagen. Was vom Versandstück abhängt und nicht vom Stoff, "
+              "ist benannt und nicht angewandt: beurteilen Sie es selbst.",
+        "fr": "Une disposition spéciale de la colonne 6 peut ajouter une étiquette de "
+              "risque subsidiaire là où la colonne 4 n'en montre aucune, en retirer une "
+              "là où elle en montre (5.2.2.1.2), ou supprimer entièrement l'étiquetage "
+              "(5.2.2.1.2.1). Ci-dessous, ce que disent les dispositions citées pour ces "
+              "marchandises. Ce qui dépend du colis et non de la matière est nommé et "
+              "non appliqué : jugez-en vous-même.",
+    },
+    "effect_header": {
+        "nl": "Werking", "en": "Effect", "de": "Wirkung", "fr": "Effet",
+    },
+    "column_6_applied": {
+        "nl": "toegepast", "en": "applied", "de": "angewandt", "fr": "appliqué",
+    },
+    "column_6_named": {
+        "nl": "te beoordelen", "en": "to be judged",
+        "de": "zu beurteilen", "fr": "à juger",
+    },
+    "effect": {
+        "nl": {
+            "adds": "voegt etiket toe", "removes": "haalt etiket weg",
+            "model": "bepaalt het model", "no_labels": "geen etikettering",
+            "elsewhere": "etiket op de pallet", "marking_only": "alleen merken",
+        },
+        "en": {
+            "adds": "adds a label", "removes": "removes a label",
+            "model": "fixes the model", "no_labels": "no labelling",
+            "elsewhere": "label on the pallet", "marking_only": "marking only",
+        },
+        "de": {
+            "adds": "fügt einen Zettel hinzu", "removes": "entfernt einen Zettel",
+            "model": "legt das Muster fest", "no_labels": "keine Kennzeichnung",
+            "elsewhere": "Zettel auf der Palette", "marking_only": "nur Kennzeichnung",
+        },
+        "fr": {
+            "adds": "ajoute une étiquette", "removes": "retire une étiquette",
+            "model": "fixe le modèle", "no_labels": "pas d'étiquetage",
+            "elsewhere": "étiquette sur la palette", "marking_only": "marquage seul",
+        },
+    },
     "battery_mark": {
         "nl": "Batterijmerk", "en": "Battery mark",
         "de": "Batteriekennzeichen", "fr": "Marque pour piles et batteries",
@@ -522,6 +585,51 @@ def _label_rows(result: dict[str, Any], lang: str) -> list[list[str]]:
     return rows
 
 
+def _column_6_block(result: dict[str, Any], styles: dict[str, Any],
+                    width: float, lang: str) -> list[Any]:
+    """What column 6 says about these goods, per line and per provision.
+
+    Only the sea regime has one — Table A keeps its special provisions in a
+    column of the same number and they are a different set, which is why the
+    check reads each book's own. A consignment whose entries cite nothing that
+    touches labelling gets no block at all rather than an empty heading.
+
+    What each provision *turns on* is not printed, and that is deliberate. The
+    conditions are recorded in the seed as facts, and facts in this repository
+    are written in English; this sheet is issued in four languages. Printing an
+    English sentence on a Dutch sheet would be worse than printing none, so the
+    sheet gives the provision number, which is the thing a packer looks up, and
+    the effect it would have if it applies.
+    """
+    rows: list[list[str]] = []
+    for block in result.get("regimes", []):
+        for item in block.get("items", []):
+            for entry in item.get("column_6", []):
+                effect = _t("effect", lang).get(entry.get("effect", ""), "")
+                models = ", ".join(entry.get("models") or [])
+                status = _t("column_6_applied" if entry.get("certain")
+                            and entry.get("effect") == "model"
+                            else "column_6_named", lang)
+                rows.append([
+                    item["product"],
+                    entry["provision"],
+                    f"{effect} {models}".strip(),
+                    status,
+                ])
+    if not rows:
+        return []
+    header = [_t("line", lang), _t("provision", lang), _t("effect_header", lang), ""]
+    return [
+        KeepTogether([
+            _section_header(_t("column_6", lang), styles, width),
+            _p(_t("column_6_intro", lang), styles["fixed"]),
+            Spacer(1, 4),
+            _grid_table(header, rows, styles, width),
+        ]),
+        Spacer(1, 8),
+    ]
+
+
 def _mark_pages(result: dict[str, Any], styles: dict[str, Any],
                 lang: str) -> list[Any]:
     """The marks, after the labels, one to a page.
@@ -650,6 +758,8 @@ def render_package_label_sheet(
         story.append(_p(f"<b>{_t('not_assessed', lang)}.</b> "
                         f"{_t('orientation_arrows', lang)}", styles["fixed"]))
         story.append(Spacer(1, 6))
+
+    story.extend(_column_6_block(result, styles, width, lang))
 
     story.append(_p(_t("size_note", lang), styles["fixed"]))
     story.append(Spacer(1, 4))

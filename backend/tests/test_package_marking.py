@@ -56,6 +56,12 @@ def labels(result, profile, un):
     return item["labels"]
 
 
+def column_6(result, profile, un):
+    item = next(row for row in regime(result, profile)["items"]
+                if row["un_number"] == un)
+    return {entry["provision"]: entry for entry in item["column_6"]}
+
+
 # --- the measured values, pinned where a future edition would break them ---
 
 
@@ -206,10 +212,61 @@ def test_the_battery_label_at_sea_is_no_longer_open():
     assert "imdg_battery_label_9_or_9a" not in result["open"]
 
 
-def test_the_sea_answer_never_claims_column_6_was_read():
-    """IMDG 5.2.2.1.2 lets column 6 add and remove subsidiary labels."""
+def test_column_6_is_read_and_the_flag_is_gone():
+    """It was the last thing chapter 5.2 said it had not done. Leaving the flag
+    up once the reading is finished is the same fault as leaving it down before
+    — it is just the flattering direction."""
     result = answer(product("1263"), profiles=("IMDG",))
-    assert "imdg_column_6_not_read" in result["open"]
+    assert "imdg_column_6_not_read" not in result["open"]
+
+
+def test_the_battery_label_comes_from_the_provision_that_assigns_it():
+    """Special provision 384 says the label is model No. 9A and that only the
+    placard on the unit is model No. 9. v1.161.1 reached 9A by inference from
+    three other provisions; this reads it from the column that assigns it."""
+    result = answer(product("3480"), profiles=("IMDG",))
+    rows = labels(result, "IMDG", "3480")
+    assert rows[0]["model"] == "9A"
+    assert "384" in rows[0]["source"]
+    effects = column_6(result, "IMDG", "3480")
+    assert effects["384"]["effect"] == "model"
+    assert effects["384"]["unit_model"] == "9"
+
+
+def test_a_conditional_provision_is_named_and_not_applied():
+    """UN 0143 cites special provision 271: no "TOXIC" subsidiary label if the
+    mixture holds at least 90% phlegmatizer. That is a property of the mixture,
+    not of the entry, so the label stays and the provision is named beside it.
+    Removing a label on a condition nobody checked is the failure this whole
+    module is arranged against."""
+    result = answer(product("0143"), profiles=("IMDG",))
+    effects = column_6(result, "IMDG", "0143")
+    assert effects["271"]["effect"] == "removes"
+    assert effects["271"]["certain"] is False
+    assert effects["271"]["condition"]
+
+
+def test_the_sea_reads_the_sea_s_column_six():
+    """Both books have a column 6 and they are different sets of numbers. UN
+    3480 carries 384 in the Code and does not in Table A; reading the wrong
+    book here would leave no trace, because the numbers look plausible either
+    way."""
+    from app.services.dg import package_marking as module
+
+    assert "384" in module._imdg_special_provisions("3480", "")
+    assert "384" not in module._adr_special_provisions("3480")
+
+
+def test_every_provision_that_mentions_a_label_was_judged():
+    """Forty-two of the 262 numbers column 6 cites mention a label, a mark or an
+    exemption. Each is either an effect or explicitly recorded as bearing on
+    something else. A number in neither list is one nobody looked at."""
+    from app.services.dg.package_marking import rules
+
+    block = rules()["column_6"]
+    judged = set(block["effects"]) | set(block["read_no_effect"])
+    assert judged == set(block["source"]["mention_a_label_or_mark"])
+    assert block["source"]["found_in_chapter"] == block["source"]["cited_by_column_6"]
 
 
 def test_the_two_durability_rules_are_kept_apart():

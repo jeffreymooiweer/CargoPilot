@@ -870,7 +870,8 @@
     "codeSent": "Un code a été envoyé à votre adresse e-mail.",
     "turnOffHintMail": "Demandez d'abord un code et saisissez-le ci-dessous. Un code de secours fonctionne aussi.",
     "nudge": "Votre compte n'a pas encore de vérification en deux étapes. Un mot de passe seul n'est qu'à une réutilisation divulguée d'une usurpation de votre identité.",
-    "nudgeAction": "Configurer"
+    "nudgeAction": "Configurer",
+    "nudgeRequired": "Cette installation exige une vérification en deux étapes et votre compte n'en a pas encore. Configurez-la tant que vous pouvez encore vous connecter."
   },
   "toast": {
     "undo": "Annuler l'action",

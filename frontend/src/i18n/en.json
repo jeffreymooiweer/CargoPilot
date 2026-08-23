@@ -870,7 +870,8 @@
     "codeSent": "A code has been sent to your e-mail address.",
     "turnOffHintMail": "Ask for a code first and type it below. A recovery code works too.",
     "nudge": "Your account has no two-factor authentication yet. A password alone is one leaked reuse away from somebody else acting in your name.",
-    "nudgeAction": "Set it up"
+    "nudgeAction": "Set it up",
+    "nudgeRequired": "This installation requires two-factor authentication and your account does not have it yet. Set it up while you can still sign in."
   },
   "toast": {
     "undo": "Undo",

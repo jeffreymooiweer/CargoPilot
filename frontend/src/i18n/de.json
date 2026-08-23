@@ -870,7 +870,8 @@
     "codeSent": "Ein Code wurde an Ihre E-Mail-Adresse gesendet.",
     "turnOffHintMail": "Fordern Sie zuerst einen Code an und geben Sie ihn unten ein. Ein Wiederherstellungscode geht auch.",
     "nudge": "Ihr Konto hat noch keine Zwei-Faktor-Authentifizierung. Ein Passwort allein ist nur eine geleakte Wiederverwendung davon entfernt, dass jemand anderes in Ihrem Namen handelt.",
-    "nudgeAction": "Jetzt einrichten"
+    "nudgeAction": "Jetzt einrichten",
+    "nudgeRequired": "Diese Installation verlangt eine Zwei-Faktor-Authentifizierung, und Ihr Konto hat noch keine. Richten Sie sie ein, solange Sie sich noch anmelden können."
   },
   "toast": {
     "undo": "Rückgängig",

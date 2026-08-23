@@ -223,17 +223,33 @@ def main() -> int:
     print(f"{len(about_labels)} of {len(provisions)} provisions mention a label, "
           f"a mark or an exemption:")
     print("  " + " ".join(about_labels))
+    # Everything a reader needs to judge the read, repeated at the end. A run
+    # log reaches this container tail-first, and the provisions themselves are
+    # long enough to push the header — including the list of numbers that were
+    # never found — out of the only view there is.
+    coverage = len(provisions) / len(known) if known else 0.0
+    print("\n" + "=" * 78)
+    print(f"chapter 3.3 on printed pages {first}-{last}")
+    print(f"column 6 cites {len(known)} numbers; {len(provisions)} were found "
+          f"here ({coverage:.0%})")
+    if missing:
+        print(f"NOT FOUND: {' '.join(missing)}")
+    for complaint in complaints:
+        print(f"  ordering: {complaint}")
+
     print("\nDecide per provision what the fact is, and put that in")
     print("backend/seed/dg/package_marking.json through a reviewed change.")
     print("Nothing is committed here, and no regulatory text enters the repo.")
 
     # A partial read is the dangerous outcome, not an empty one: it looks like
-    # an answer. Chapter 3.3 defines nearly everything column 6 cites, so a
-    # thin harvest means the split went wrong, and the run says so by failing.
-    coverage = len(provisions) / len(known) if known else 0.0
-    if coverage < 0.9:
-        print(f"\nONLY {coverage:.0%} of the numbers column 6 cites were found. "
-              "This is a bad read, not a short chapter.", file=sys.stderr)
+    # an answer. Every number column 6 cites should be defined in chapter 3.3,
+    # and one that is missing has not vanished — its text has been swallowed by
+    # the provision before it, which is how a label rule ends up filed under the
+    # wrong number. So anything short of complete fails the run.
+    if missing:
+        print(f"\n{len(missing)} cited provisions were not found. Their text is "
+              "not missing, it is attributed to whichever provision precedes "
+              "them — which is worse.", file=sys.stderr)
         return 1
     return 0
 

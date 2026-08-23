@@ -279,8 +279,18 @@ own colour.
 | open arc | working on it (rotated in the toast) |
 | cross in a circle | the close button |
 
-**Their licence is not yet recorded.** The set has to be traced back to its
-publisher and its terms noted here, with an attribution line added if the terms
-ask for one — several of the common icon libraries are free to use but not free
-of conditions. Until that is done, treat this section as an open item rather
-than as a licence claim.
+They come from **Uicons by [Flaticon](https://www.flaticon.com/uicons)**, which
+is free to use on the condition that the maker is credited. That credit is on
+the application's own Legal page, where the people using it can see it — a
+licence condition met only in a repository file is not met, since nobody
+running the application ever reads that file.
+
+One honest qualification. The owner confirmed the source of the **spinner**;
+the other five arrived in the same delivery and are recorded here under the
+same set. Their exported markup falls into three groups rather than one — two
+carry an Adobe Illustrator header and a `Capa_1` layer, two an `id="Layer_1"`,
+two an `id="Outline"` — which is consistent with different styles of one set
+but does not prove it. Flaticon credits name the pack's author, so if any of
+the five turn out to come from a different pack, this section and the Legal
+page need that author's line added beside the one already there. Crediting one
+maker too few is the failure worth avoiding; crediting one too many is not.

@@ -2,6 +2,21 @@
 
 All notable changes are documented here, following [Semantic Versioning](https://semver.org/).
 
+## [1.156.1] — 2026-08-22
+
+### Added
+
+- **The icon set is credited on the Legal page.** The notification icons are
+  Uicons by Flaticon, free to use on the condition that the maker is named.
+  The credit is now in the application itself, with the required link, rather
+  than only in a repository file — a condition met where nobody using the
+  application will ever read it is not met. [Data
+  sources](docs/data-sources.md) records the same, with the one qualification
+  worth stating: the spinner's origin is confirmed, the other five arrived in
+  the same delivery and are recorded under the same set, and if any turns out
+  to come from a different pack its author's line has to be added beside this
+  one.
+
 ## [1.156.0] — 2026-08-22
 
 ### Added

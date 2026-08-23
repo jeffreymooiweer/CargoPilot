@@ -105,6 +105,7 @@ Running Unraid, or want the full set of options? See **[Getting started](docs/ge
 | **[Dangerous goods](docs/dangerous-goods.md)** | What CargoPilot fills in automatically, and which checks it runs |
 | **[DG coverage](docs/dg-coverage.md)** | Per mode: what is checked, what is not, and which gaps matter most |
 | **[Document fields audit](docs/document-fields-audit.md)** | Chapter 5.4.1 provision by provision: which fields exist, which are guidance only, which are absent and why |
+| **[Shipment export](docs/shipment-export.md)** | The whole shipment as versioned JSON, findings included — the step towards eCMR and eFTI |
 | **[Configuration](docs/configuration.md)** | Environment variables and settings |
 | **[Data sources](docs/data-sources.md)** | Where the goods, location and regulatory data comes from |
 | **[Privacy](docs/privacy.md)** | What is stored, and what is deliberately not |

@@ -2,6 +2,49 @@
 
 All notable changes are documented here, following [Semantic Versioning](https://semver.org/).
 
+## [1.161.0] — 2026-08-23
+
+### A shipment can leave as data
+
+Every exporter in this application produced paper. This one produces the shipment: what
+was filled in, what is carried, and — the part that makes it more than a form dump —
+**what CargoPilot worked out**. Offered on every transport mode as *Structured shipment
+export (JSON)*, documented in [Shipment export](docs/shipment-export.md).
+
+The EU eFTI Regulation applies in full from **9 July 2027**, from when authorities must
+accept freight information electronically through certified platforms. CargoPilot is not
+going to become one — that is a certification regime for platform providers, and this is
+a documentation tool. What it can be is trivially connectable to one, and that starts
+with a shipment being able to leave at all.
+
+**The derived findings travel with the declaration**, and that is the point. A reader
+that receives only the typed fields has to compute its own regulatory assessment, and
+that is where two systems begin to disagree about one consignment. So the file carries
+the whole compliance answer — the 1.1.3.6 points, the mixed loading, the placarding, the
+package marking of chapter 5.2, the segregation — **including the editions each was
+computed against**. A shipment exported under ADR 2025 can therefore be told apart from
+the same shipment re-derived under a later edition, because the file says which book
+answered.
+
+**It invents nothing.** A field the user never touched is absent rather than an empty
+string: the wizard writes one into every field it renders, so exporting them would fill
+the file with keys that mean "untouched" while reading as answers. A zero and a `false`
+stay, because somebody chose those. No regulatory profile means no assessment rather than
+a guessed regime. And the file carries no user and no installation — it describes a
+consignment, not who typed it.
+
+**And it says what it is not**, in its own first key. Not an eFTI message, not an eCMR,
+and not a mapping onto UN/CEFACT: naming a field as though it were the standard's while
+it carries something subtly different is the failure that makes an integration silently
+wrong. The four things that mapping needs first are written down rather than guessed at.
+
+### Fixed
+
+- The document export route named every produced file a PDF, in both the filename and
+  the media type. A JSON file served as `application/pdf` is one the browser will not
+  open, so the type now follows the file — with a test that the documents which do
+  produce a PDF still do.
+
 ## [1.160.0] — 2026-08-23
 
 ### Chapter 5.2: what goes on the package

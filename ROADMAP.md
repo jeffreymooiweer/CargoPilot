@@ -26,7 +26,7 @@ Expect additions rather than upheaval — the wizard and the document registry a
 |---|---|
 | Transport modes | Road, rail, sea and inland waterway released; air and multimodal built but locked pending their remaining checks |
 | Official forms filled in | CMR, CIM, IATA Shipper's Declaration, AVC waybill |
-| Generated documents | IMO DG Form, VGM, AWB and B/L instructions, ADN document, stowage plan, placarding sheets for ADR, RID, ADN and IMDG, package label sheet with the class labels at full size, packing certificate, on-board document lists, equipment sheet, packing list, delivery note |
+| Generated documents | IMO DG Form, VGM, AWB and B/L instructions, ADN document, stowage plan, placarding sheets for ADR, RID, ADN and IMDG, package label sheet with the class labels at full size, packing certificate, on-board document lists, equipment sheet, packing list, delivery note, and the whole shipment as versioned JSON |
 | AI assistant | Optional survey-style assistant over the whole wizard; works without any model, and an admin can install a pinned local model (Qwen3-1.7B via llama.cpp) that only reads — it never decides regulatory content |
 | Goods database | 1,093 goods with densities and NL/EN/DE/FR names |
 | Dangerous goods | 2,336 UN numbers over 2,928 Table A rows, 2,338 EmS schedules, full IMDG segregation, ADR/RID/ADN and IATA compliance checks |
@@ -154,10 +154,14 @@ none is committed until it is planned against that brief.
   orientation arrows**, whose official artwork has not been cut from the edition the way
   the class labels were, and the **LQ diamond** of 3.4.7. Placards stay refused, because a
   laser print is not a placard.
-- **Structured shipment export, on the road to eCMR/eFTI.** Every shipment exportable
-  as versioned JSON, later mapped to the UN/CEFACT multimodal model the EU eFTI
-  regulation builds on (in full force 9 July 2027). CargoPilot does not become a
-  certified platform; it becomes trivially connectable to one.
+- **Structured shipment export, on the road to eCMR/eFTI.** The versioned JSON export
+  ships in v1.161.0 — the whole shipment with its derived findings and the editions
+  they were computed against, on every transport mode (see
+  [Shipment export](docs/shipment-export.md)). What remains is the mapping onto the
+  UN/CEFACT multimodal model the EU eFTI regulation builds on (in full force 9 July
+  2027), which needs the published model read first, and the per-party signature flow.
+  CargoPilot does not become a certified platform; it becomes trivially connectable
+  to one.
 - **DGSA annual report.** The statistical half of the ADR 1.8.3 adviser's report,
   generated from stored shipments — hard-gated on the privacy levels and shipments
   page above, because without stored shipments there is nothing to report.

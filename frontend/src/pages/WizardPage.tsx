@@ -618,6 +618,13 @@ export default function WizardPage() {
     lines: result?.lines ?? [],
     dangerous_goods: dgEntries.length > 0 ? dgEntries : undefined,
     output_language: docLang,
+    // The regimes this consignment travels under. Only the documents that
+    // answer differently per regime read it, and the package label sheet is
+    // the first: the IMDG Code marks the proper shipping name on every package
+    // where the land regimes ask for it on Class 1 and Class 7 only. Sending
+    // it from the one payload builder means validation and export cannot
+    // disagree about which rules were applied.
+    profiles: dgProfiles,
   });
 
   // Warnings per document, shown on the card before the download button — a

@@ -26,7 +26,7 @@ Expect additions rather than upheaval — the wizard and the document registry a
 |---|---|
 | Transport modes | Road, rail, sea and inland waterway released; air and multimodal built but locked pending their remaining checks |
 | Official forms filled in | CMR, CIM, IATA Shipper's Declaration, AVC waybill |
-| Generated documents | IMO DG Form, VGM, AWB and B/L instructions, ADN document, stowage plan, placarding sheets for ADR, RID, ADN and IMDG, packing certificate, on-board document lists, equipment sheet, packing list, delivery note |
+| Generated documents | IMO DG Form, VGM, AWB and B/L instructions, ADN document, stowage plan, placarding sheets for ADR, RID, ADN and IMDG, package label sheet with the class labels at full size, packing certificate, on-board document lists, equipment sheet, packing list, delivery note |
 | AI assistant | Optional survey-style assistant over the whole wizard; works without any model, and an admin can install a pinned local model (Qwen3-1.7B via llama.cpp) that only reads — it never decides regulatory content |
 | Goods database | 1,093 goods with densities and NL/EN/DE/FR names |
 | Dangerous goods | 2,336 UN numbers over 2,928 Table A rows, 2,338 EmS schedules, full IMDG segregation, ADR/RID/ADN and IATA compliance checks |
@@ -148,11 +148,12 @@ button that cannot work.
 Each of these has a groundwork section in [Roadmap research](docs/roadmap-research.md);
 none is committed until it is planned against that brief.
 
-- **Package marks and labels (chapter 5.2).** Printable, true-size marks for the
-  package — class labels, the LQ diamond, the environmentally hazardous mark, the
-  battery mark, orientation arrows — on A4 sticker sheets, printed only where the
-  checks say they apply. The sizes were measured from ADR 2025 already; placards stay
-  refused, because a laser print is not a placard.
+- **Package marks and labels (chapter 5.2).** The class labels and the environmentally
+  hazardous mark ship in v1.160.0: what each package carries per regime, and the labels
+  themselves at full size, one per A4 page. What remains is the **battery mark and the
+  orientation arrows**, whose official artwork has not been cut from the edition the way
+  the class labels were, and the **LQ diamond** of 3.4.7. Placards stay refused, because a
+  laser print is not a placard.
 - **Structured shipment export, on the road to eCMR/eFTI.** Every shipment exportable
   as versioned JSON, later mapped to the UN/CEFACT multimodal model the EU eFTI
   regulation builds on (in full force 9 July 2027). CargoPilot does not become a

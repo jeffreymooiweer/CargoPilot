@@ -9,7 +9,7 @@
  * warning that slides away after four seconds is exactly the failure this
  * application is built against.
  *
- * Five kinds, each with its own lifetime:
+ * Six kinds, each with its own lifetime:
  *
  * - `success` / `info` dismiss themselves after four seconds;
  * - `error` stays until the user closes it — a missed network error is a
@@ -17,7 +17,9 @@
  * - `loading` stays until the caller resolves it into success or error, so a
  *   slow action holds exactly one toast from "working…" to its outcome;
  * - `question` stays until it is answered, because four seconds is not an
- *   answer, and closing it counts as one.
+ *   answer, and closing it counts as one;
+ * - `warning` stays as well: something is wrong and stays wrong until
+ *   somebody acts, which is not the same as something having failed.
  *
  * `undoable` is the deferred-action pattern the delete flows use: the UI
  * updates immediately, the real API call fires only when the undo window
@@ -52,7 +54,7 @@ import {
   SpinnerIcon,
 } from "./icons";
 
-export type ToastKind = "success" | "info" | "error" | "loading" | "question";
+export type ToastKind = "success" | "info" | "error" | "loading" | "question" | "warning";
 
 export interface ToastAction {
   label: string;
@@ -105,6 +107,16 @@ export interface ToastApi {
    * `onDismiss` is for.
    */
   ask: (message: string, options: { actions: ToastAction[]; onDismiss?: () => void }) => number;
+  /**
+   * Something is wrong and stays wrong until someone acts — a policy this
+   * account does not meet, say. Amber rather than red: nothing failed, and
+   * nothing is broken. Sticky, because a warning that leaves on its own has
+   * not warned anybody.
+   */
+  warn: (
+    message: string,
+    options?: { actions?: ToastAction[]; onDismiss?: () => void },
+  ) => number;
   /** Returns a handle that resolves the loading toast into its outcome.
    * `progress` rewrites the message while still loading — one toast follows
    * a multi-phase action (pulling the image, restarting) instead of a new
@@ -218,6 +230,17 @@ export function ToastProvider({ children }: { children: ReactNode }) {
       error: (message) => push({ kind: "error", message }, null),
       ask: (message, { actions, onDismiss }) =>
         push({ kind: "question", message, sticky: true, actions, onDismiss }, null),
+      warn: (message, options) =>
+        push(
+          {
+            kind: "warning",
+            message,
+            sticky: true,
+            actions: options?.actions,
+            onDismiss: options?.onDismiss,
+          },
+          null,
+        ),
       loading: (message) => {
         const id = push({ kind: "loading", message }, null);
         return {
@@ -278,6 +301,11 @@ const KIND_STYLE: Record<ToastKind, string> = {
   // user something, it is waiting for them.
   question:
     "border-amber-300 bg-amber-50 text-amber-900 dark:border-amber-700 dark:bg-amber-950 dark:text-amber-100",
+  // The same amber as a question — both are the application waiting on the
+  // user — but marked with the exclamation rather than the query, because
+  // this one is not asking which of several answers is right.
+  warning:
+    "border-amber-300 bg-amber-50 text-amber-900 dark:border-amber-700 dark:bg-amber-950 dark:text-amber-100",
 };
 
 const KIND_ICON: Record<ToastKind, (props: { className?: string }) => ReactElement> = {
@@ -286,6 +314,7 @@ const KIND_ICON: Record<ToastKind, (props: { className?: string }) => ReactEleme
   error: ExclamationIcon,
   loading: SpinnerIcon,
   question: QuestionIcon,
+  warning: ExclamationIcon,
 };
 
 function ToastHost({ toasts, onDismiss }: { toasts: Toast[]; onDismiss: (id: number) => void }) {

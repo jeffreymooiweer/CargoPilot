@@ -73,15 +73,17 @@ export default function TwoFactorNudge({ user }: { user: User }) {
         // whether one is set up, and this only runs when none is. So the two
         // together are a policy the account does not meet, which is a firmer
         // thing to be told than a recommendation not taken.
-        toast.info(t(status.required ? "twoFactor.nudgeRequired" : "twoFactor.nudge"), {
-          sticky: true,
-          actions: [
-            {
-              label: t("twoFactor.nudgeAction"),
-              run: () => navigate("/settings?tab=details"),
-            },
-          ],
-        });
+        const open = [
+          { label: t("twoFactor.nudgeAction"), run: () => navigate("/settings?tab=details") },
+        ];
+        if (status.required) {
+          // Amber, because this is not advice the account has not taken: the
+          // installation's policy demands a second factor and this account
+          // does not have one, which stays wrong until somebody acts.
+          toast.warn(t("twoFactor.nudgeRequired"), { actions: open });
+        } else {
+          toast.info(t("twoFactor.nudge"), { sticky: true, actions: open });
+        }
       })
       .catch(() => {
         // Not an answer about this account, so not a claim about it either.

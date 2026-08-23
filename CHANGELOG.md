@@ -2,6 +2,37 @@
 
 All notable changes are documented here, following [Semantic Versioning](https://semver.org/).
 
+## [1.159.0] — 2026-08-22
+
+### Fixed
+
+- **A selected option is readable again in the dark theme.** Choosing "replace
+  the current lines" in the import dialog, a theme in the settings, or an
+  answer in the assistant turned the option near-white with near-white text on
+  it — the one option you had picked was the one you could not read.
+
+  The cause was not in any of those screens. The brand colour defined five
+  shades and the interface used eleven, and Tailwind generates nothing at all
+  for a shade that does not exist. Twenty-nine classes across ten files were
+  therefore doing nothing, and the ones that mattered most were the dark-theme
+  backgrounds: a selected option carried a light background for the light
+  theme and a dark one to override it in the dark theme, and the override
+  never existed. The palette is now complete, so selected options take the
+  deep blue they were always meant to have. The five original shades are
+  untouched, so nothing that already rendered changes colour.
+
+### Added
+
+- **A warning kind of notification**, amber and staying until it is closed —
+  for something that is wrong and stays wrong until somebody acts, as opposed
+  to something that failed. The reminder for an account that does not meet
+  the installation's two-factor policy now uses it.
+
+### Changed
+
+- The goods cards keep their measured width on a wide screen, now confirmed
+  rather than provisional.
+
 ## [1.158.1] — 2026-08-22
 
 ### Changed

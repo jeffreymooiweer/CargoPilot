@@ -37,6 +37,19 @@ function setup() {
   };
 }
 
+/** Every icon on screen must take its colour from the toast around it and its
+ *  size from the interface — both fail invisibly until the theme flips. */
+function expectIconsInherit() {
+  const icons = document.querySelectorAll("svg");
+  expect(icons.length).toBeGreaterThan(0);
+  icons.forEach((icon) => {
+    expect(icon.getAttribute("fill")).toBe("currentColor");
+    expect(icon.hasAttribute("width")).toBe(false);
+    expect(icon.hasAttribute("height")).toBe(false);
+    expect(icon).toHaveAttribute("aria-hidden");
+  });
+}
+
 beforeEach(() => {
   vi.useFakeTimers({ shouldAdvanceTime: true });
 });
@@ -202,33 +215,43 @@ describe("ToastProvider", () => {
   });
 
   it("every kind draws an icon that takes the toast's own colour", () => {
+    // In two batches, because the stack holds five: pushing all six at once
+    // would quietly be testing eviction instead of icons.
     const api = setup();
+    const first: number[] = [];
     act(() => {
-      api().success("saved");
-      api().error("boom");
-      api().info("note");
+      first.push(api().success("saved"), api().error("boom"), api().info("note"));
+    });
+    expectIconsInherit();
+    // Cleared by the ids they were given, not by guessed ones: the counter is
+    // module-level and keeps running across tests.
+    act(() => {
+      first.forEach((id) => api().dismiss(id));
       api().loading("working");
       api().ask("which one?", { actions: [{ label: "this one", run: vi.fn() }] });
+      api().warn("watch out");
     });
-    const icons = document.querySelectorAll("svg");
-    // Five toasts, each with its icon, plus a close button on the four that
-    // carry one (a loading toast may only be closed by its own outcome).
-    expect(icons.length).toBe(9);
-    icons.forEach((icon) => {
-      // The invisible regression: an icon with a colour of its own is a black
-      // shape on a dark red card, and nothing catches it until the theme
-      // flips. Size comes from the class, never from the file.
-      expect(icon.getAttribute("fill")).toBe("currentColor");
-      expect(icon.hasAttribute("width")).toBe(false);
-      expect(icon.hasAttribute("height")).toBe(false);
-      expect(icon).toHaveAttribute("aria-hidden");
-    });
+    expectIconsInherit();
   });
 
   it("the loading icon is the one that spins", () => {
     const api = setup();
     act(() => void api().loading("working"));
     expect(document.querySelector("svg.animate-spin")).not.toBeNull();
+  });
+
+  it("a warning stays until it is closed, and carries its action", async () => {
+    const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime });
+    const api = setup();
+    const run = vi.fn();
+    const onDismiss = vi.fn();
+    act(() => void api().warn("policy not met", { actions: [{ label: "fix it", run }], onDismiss }));
+    // Nothing wrong stays wrong quietly for four seconds and then vanishes.
+    act(() => void vi.advanceTimersByTime(60000));
+    expect(screen.getByText("policy not met")).toBeInTheDocument();
+    await user.click(screen.getByRole("button", { name: "fix it" }));
+    expect(run).toHaveBeenCalledTimes(1);
+    expect(onDismiss).not.toHaveBeenCalled();
   });
 
   it("errors announce assertively, the rest politely", () => {

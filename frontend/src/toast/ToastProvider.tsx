@@ -298,57 +298,61 @@ function ToastHost({ toasts, onDismiss }: { toasts: Toast[]; onDismiss: (id: num
     <div className="fixed inset-x-0 bottom-0 z-50 flex flex-col gap-2 p-3 sm:inset-x-auto sm:right-4 sm:bottom-4 sm:w-96">
       {toasts.map((toast) => {
         const Icon = KIND_ICON[toast.kind];
+        // Everything on the row is centred rather than pinned to the top. The
+        // icon marks what kind of notice this is, so it belongs against the
+        // whole message rather than against its first line — on a message that
+        // wraps to two lines that is the difference you see. The close button
+        // and a single action follow it: one of the three sitting high while
+        // the others centre reads as a fault rather than a choice.
         return (
-        <div
-          key={toast.id}
-          role={toast.kind === "error" ? "alert" : "status"}
-          aria-live={toast.kind === "error" ? "assertive" : "polite"}
-          className={`flex items-start gap-2 rounded-xl border px-3 py-2.5 text-sm shadow-lg ${KIND_STYLE[toast.kind]}`}
-        >
-          <Icon
-            className={`mt-0.5 h-5 w-5 shrink-0 ${toast.kind === "loading" ? "animate-spin" : ""}`}
-          />
-          {/* A question puts its answers under the text rather than beside it:
-              two or three UN numbers on one line squeeze the sentence that
-              says what is being asked. One answer still sits alongside, where
-              "Undo" has always been. */}
-          <div className={`min-w-0 flex-1 ${(toast.actions?.length ?? 0) > 1 ? "space-y-1.5" : ""}`}>
-            <span className="block break-words">{toast.message}</span>
-            {(toast.actions?.length ?? 0) > 1 && (
-              <div className="flex flex-wrap gap-1.5">
-                {toast.actions!.map((action) => (
-                  <button
-                    key={action.label}
-                    type="button"
-                    onClick={action.run}
-                    className="rounded-md border border-current px-2 py-0.5 text-[11px] font-semibold hover:opacity-75"
-                  >
-                    {action.label}
-                  </button>
-                ))}
-              </div>
+          <div
+            key={toast.id}
+            role={toast.kind === "error" ? "alert" : "status"}
+            aria-live={toast.kind === "error" ? "assertive" : "polite"}
+            className={`flex items-center gap-2 rounded-xl border px-3 py-2.5 text-sm shadow-lg ${KIND_STYLE[toast.kind]}`}
+          >
+            <Icon className={`h-5 w-5 shrink-0 ${toast.kind === "loading" ? "animate-spin" : ""}`} />
+            {/* A question puts its answers under the text rather than beside
+                it: two or three UN numbers on one line squeeze the sentence
+                that says what is being asked. One answer still sits alongside,
+                where "Undo" has always been. */}
+            <div className={`min-w-0 flex-1 ${(toast.actions?.length ?? 0) > 1 ? "space-y-1.5" : ""}`}>
+              <span className="block break-words">{toast.message}</span>
+              {(toast.actions?.length ?? 0) > 1 && (
+                <div className="flex flex-wrap gap-1.5">
+                  {toast.actions!.map((action) => (
+                    <button
+                      key={action.label}
+                      type="button"
+                      onClick={action.run}
+                      className="rounded-md border border-current px-2 py-0.5 text-[11px] font-semibold hover:opacity-75"
+                    >
+                      {action.label}
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+            {toast.actions?.length === 1 && (
+              <button
+                type="button"
+                onClick={toast.actions[0].run}
+                className="shrink-0 rounded-md px-2 py-0.5 font-semibold underline decoration-2 underline-offset-2 hover:opacity-75"
+              >
+                {toast.actions[0].label}
+              </button>
+            )}
+            {toast.kind !== "loading" && (
+              <button
+                type="button"
+                onClick={() => onDismiss(toast.id)}
+                aria-label={t("toast.dismiss")}
+                className="shrink-0 rounded-md p-0.5 opacity-60 hover:opacity-100"
+              >
+                <CircleXmarkIcon className="h-4 w-4" />
+              </button>
             )}
           </div>
-          {toast.actions?.length === 1 && (
-            <button
-              type="button"
-              onClick={toast.actions[0].run}
-              className="shrink-0 rounded-md px-2 py-0.5 font-semibold underline decoration-2 underline-offset-2 hover:opacity-75"
-            >
-              {toast.actions[0].label}
-            </button>
-          )}
-          {toast.kind !== "loading" && (
-            <button
-              type="button"
-              onClick={() => onDismiss(toast.id)}
-              aria-label={t("toast.dismiss")}
-              className="shrink-0 rounded-md p-0.5 opacity-60 hover:opacity-100"
-            >
-              <CircleXmarkIcon className="h-4 w-4" />
-            </button>
-          )}
-        </div>
         );
       })}
     </div>

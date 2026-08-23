@@ -58,6 +58,20 @@ on:
         description: "Print a page verbatim, e.g. 594 or 600-606, when the number will not resolve"
         default: ""
         required: false
+      # Chapter 3.3 is not quotable by section number: it is one run of a few
+      # hundred numbered provisions, and the question asked of it — which of
+      # them touch labelling — is a search, not a quote. So it gets its own
+      # reader, run from here rather than from a workflow of its own, because a
+      # workflow file only becomes dispatchable once it is on the default
+      # branch and a reading tool should be usable on the branch that writes it.
+      imdg_column_6:
+        description: "Instead of quoting: find which IMDG 3.3 provisions cited by column 6 speak about labels"
+        type: boolean
+        default: false
+      provisions:
+        description: "imdg_column_6 only: extra provision numbers to print in full, comma separated"
+        default: ""
+        required: false
 
 permissions:
   contents: read
@@ -102,8 +116,24 @@ jobs:
           CHARS: ${{ inputs.chars }}
           FIND: ${{ inputs.find }}
           PAGE: ${{ inputs.page }}
+          COLUMN_SIX: ${{ inputs.imdg_column_6 }}
+          PROVISIONS: ${{ inputs.provisions }}
         run: |
           set -euo pipefail
+          if [ "${COLUMN_SIX:-false}" = "true" ]; then
+            ARGS=()
+            if [ -n "$CHARS" ]; then
+              ARGS+=(--chars "$(echo "$CHARS" | tr -d '[:space:]')")
+            fi
+            if [ -n "$PROVISIONS" ]; then
+              IFS=',' read -ra WANTED <<< "$PROVISIONS"
+              for n in "${WANTED[@]}"; do
+                ARGS+=(--number "$(echo "$n" | tr -d '[:space:]')")
+              done
+            fi
+            python scripts/read_imdg_special_provisions.py "${ARGS[@]}"
+            exit 0
+          fi
           ARGS=()
           if [ "$GROUPS" = "all" ]; then
             for g in lq_eq lq_marking exemptions mixed_loading document tunnels; do

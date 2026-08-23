@@ -883,10 +883,10 @@ export default function WizardPage() {
           onClick={() => setAssistantOpen((open) => !open)}
           aria-label={assistantOpen ? t("assistant.close") : t("assistant.open")}
           title={assistantOpen ? t("assistant.close") : t("assistant.open")}
-          className={`ml-auto inline-flex h-9 w-9 items-center justify-center rounded-lg border transition ${
+          className={`ml-auto inline-flex h-9 w-9 items-center justify-center rounded-lg transition ${
             assistantOpen
-              ? "border-brand-500 bg-brand-50 text-brand-700 dark:bg-brand-950/50 dark:text-brand-200"
-              : "border-slate-200 text-slate-600 hover:bg-slate-50 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-800"
+              ? "bg-brand-50 text-brand-700 dark:bg-brand-950/50 dark:text-brand-200"
+              : "text-slate-600 hover:bg-slate-50 dark:text-slate-300 dark:hover:bg-slate-800"
           }`}
         >
           <AiIcon className="h-5 w-5" />

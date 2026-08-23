@@ -1,0 +1,62 @@
+name: Measure label geometry
+
+# What "100 mm x 100 mm" means for a diamond-shaped label is not settled by the
+# sentence that says it: the square's side and the bounding box are both
+# readings that survive it, and they differ by a factor of the square root of
+# two. Getting it wrong prints every label at the wrong size.
+#
+# The figures in the official editions are vector art, so the shapes can be
+# measured instead of interpreted. This runs that measurement here, because the
+# development container cannot reach the publishers.
+#
+# It commits nothing. Only the conclusion a human draws from the run log enters
+# the repository, through a reviewed change, in the manner
+# docs/data-sources.md promises.
+
+on:
+  workflow_dispatch:
+    inputs:
+      doc:
+        description: "Document id from seed/dg/sources.json (adr2, imdg_42_24, rid, adn)"
+        default: "adr2"
+        required: false
+      pages:
+        description: "Printed page or range, at most 12 pages (e.g. 247-252)"
+        default: "247-252"
+        required: false
+
+permissions:
+  contents: read
+
+jobs:
+  measure:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - run: pip install --quiet pymupdf
+
+      # The same cache the reader uses: a run that measures one figure should
+      # not re-fetch 19 MB that another run already has.
+      - name: Volumes already fetched
+        uses: actions/cache/restore@v4
+        with:
+          path: /tmp/cargopilot-regulations
+          key: regulations-${{ github.run_id }}
+          restore-keys: |
+            regulations-
+
+      - name: Measure the figures
+        env:
+          DOC: ${{ inputs.doc }}
+          PAGES: ${{ inputs.pages }}
+        run: |
+          set -euo pipefail
+          python scripts/measure_label_geometry.py \
+            --doc "$(echo "$DOC" | tr -d '[:space:]')" \
+            --pages "$(echo "$PAGES" | tr -d '[:space:]')"

@@ -17,6 +17,7 @@ from app.core.config import get_settings
 from app.core.languages import normalise, pick
 from app.services.dg import amendment_42_24, dangerous_goods_list, database
 from app.services.dg.autofill import rid_marking_prescribed
+from app.services.dg.package_marking import check_package_marking
 from app.services.dg.database import adn_loading_measures
 from app.services.regulatory_manifest import stale_rule_sets, summary
 from app.services.dg.enrichment import (
@@ -6009,5 +6010,18 @@ def check_compliance(
             if str(product.get("cargo_aircraft_only") or "").strip().upper() in {"Y", "YES", "JA", "TRUE", "1"}
         ]
         result["cargo_aircraft_only_products"] = cao
+
+    # Chapter 5.2 — the package itself, as against chapter 5.3 above, which is
+    # the outside of the vehicle, wagon, vessel or unit. It runs last and over
+    # every profile at once rather than inside a per-profile block, because the
+    # regimes disagree about this chapter and the answer has to show that side
+    # by side: a consignment going by road and then by sea carries the proper
+    # shipping name on its packages for the second leg and not for the first,
+    # and a packer who sees only one of those answers packs the wrong box.
+    # Air is left out on purpose: the IATA marking rules have not been read,
+    # and the land answer is not the air answer.
+    marking = check_package_marking(entries, sorted(normalized), language)
+    if marking.get("status") != "not_checked":
+        result["package_marking"] = marking
 
     return result

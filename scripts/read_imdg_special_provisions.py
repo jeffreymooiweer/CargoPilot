@@ -35,11 +35,17 @@ neighbours and the run reported two hundred and ten provisions as though it had
 them. Reading order cannot fix this, because the same numbers appear inside the
 prose all over the chapter and nothing in the sequence distinguishes them.
 
-So the number is found by *where it stands*. The column's x is measured from the
-page — the most crowded position among words that are nothing but a number
-column 6 cites — and printed, because a calibration nobody sees is a constant in
-disguise. Ascending order is then no longer a rule but a report: if the split is
-right the sequence rises by itself, so a break in it is news about the parser.
+So the number is found by *where it stands*, and the where is measured per page.
+There is no single column: the chapter is printed with mirrored margins, so the
+numbers sit at one x on the recto and another on the verso, and taking the most
+crowded position across the whole chapter found 140 of the 262 numbers the list
+cites while reporting the other 122 as absent. That the two positions account
+for exactly 262 between them is what gave the layout away.
+
+Measuring per page needs no theory about why the margin moves. What is measured
+is printed, because a calibration nobody sees is a constant in disguise, and
+ascending order stops being a rule and becomes a report: if the split is right
+the sequence rises by itself, so a break in it is news about the parser.
 """
 from __future__ import annotations
 
@@ -165,31 +171,51 @@ def _words(document, first: int, last: int) -> list[tuple[int, float, float, str
     return items
 
 
-def _number_column(items, known: set[str]) -> float:
-    """Where the provision numbers stand, measured rather than assumed.
+def _number_columns(items, known: set[str]) -> dict[int, float]:
+    """Where the provision numbers stand on each page, measured per page.
 
-    Every provision number sits at the same left edge; the numbers that appear
-    inside prose are scattered across the width. So the most crowded x, among
-    words that are nothing but a number column 6 cites, is the column — and it
-    is reported, because a calibration nobody sees is a constant in disguise.
+    There is not one column. The chapter is printed with mirrored margins, so
+    the numbers sit at x=125 on one side of the spread and x=96 on the other —
+    and taking the single most crowded position, as the first version did,
+    found 140 of the 262 numbers the list cites and reported the other 122 as
+    absent. That the two positions account for exactly 262 between them is what
+    gave the layout away.
+
+    Measuring per page needs no theory about why the margin moves: whatever the
+    page does, the column is the most crowded x on that page among words that
+    are nothing but a cited number. A page too sparse to calibrate borrows the
+    document's own most common column rather than guessing.
     """
-    tally: dict[int, int] = {}
-    for _page, _y, x, word in items:
+    per_page: dict[int, dict[int, int]] = {}
+    overall: dict[int, int] = {}
+    for page, _y, x, word in items:
         if word.isdigit() and word in known:
-            tally[round(x)] = tally.get(round(x), 0) + 1
-    if not tally:
+            per_page.setdefault(page, {})
+            per_page[page][round(x)] = per_page[page].get(round(x), 0) + 1
+            overall[round(x)] = overall.get(round(x), 0) + 1
+    if not overall:
         raise SystemExit("no provision numbers found in the chapter text")
-    ranked = sorted(tally.items(), key=lambda item: -item[1])
+
+    ranked = sorted(overall.items(), key=lambda item: -item[1])
     print("where words that are nothing but a cited number stand, by x:")
-    for x, crowd in ranked[:12]:
+    for x, crowd in ranked[:6]:
         print(f"    x={x:>5}  {crowd:>4}")
-    if len(ranked) > 12:
-        print(f"    … and {len(ranked) - 12} further positions, "
-              f"{sum(c for _x, c in ranked[12:])} words in all")
-    column, crowd = ranked[0]
-    print(f"taking x={column} as the number column ({crowd} of them); "
-          f"anything further right is text")
-    return float(column)
+    if len(ranked) > 6:
+        print(f"    … and {len(ranked) - 6} further positions, "
+              f"{sum(c for _x, c in ranked[6:])} words in all")
+
+    fallback = float(ranked[0][0])
+    columns: dict[int, float] = {}
+    for page, tally in per_page.items():
+        x, crowd = max(tally.items(), key=lambda item: item[1])
+        columns[page] = float(x) if crowd >= 2 else fallback
+    seen: dict[float, int] = {}
+    for value in columns.values():
+        seen[value] = seen.get(value, 0) + 1
+    print("the number column measured per page: "
+          + ", ".join(f"x={x:.0f} on {n} page(s)"
+                      for x, n in sorted(seen.items())))
+    return columns
 
 
 #: How far a word may sit from the measured column and still count as a
@@ -198,7 +224,8 @@ def _number_column(items, known: set[str]) -> float:
 COLUMN_TOLERANCE = 2.0
 
 
-def _split(items, known: set[str], column: float) -> tuple[dict[str, str], list[str]]:
+def _split(items, known: set[str],
+           columns: dict[int, float]) -> tuple[dict[str, str], list[str]]:
     """Chapter 3.3 as {number: text}, plus whatever looked wrong.
 
     A word opens a provision when it is nothing but a number column 6 cites
@@ -215,7 +242,10 @@ def _split(items, known: set[str], column: float) -> tuple[dict[str, str], list[
     current: str | None = None
     words: list[str] = []
     highest = 0
-    for _page, _y, x, word in items:
+    for page, _y, x, word in items:
+        column = columns.get(page)
+        if column is None:
+            continue
         if word.isdigit() and word in known and abs(x - column) <= COLUMN_TOLERANCE:
             if current is not None:
                 provisions[current] = " ".join(" ".join(words).split())
@@ -255,7 +285,7 @@ def main() -> int:
     print(f"chapter pages measure {page.width:.0f} x {page.height:.0f} points; "
           f"words run from x={min(i[2] for i in items):.0f} to "
           f"x={max(i[2] for i in items):.0f}")
-    provisions, complaints = _split(items, known, _number_column(items, known))
+    provisions, complaints = _split(items, known, _number_columns(items, known))
 
     print(SOURCES[args.doc]["title"])
     print(f"chapter 3.3 on printed pages {first}-{last}")

@@ -124,6 +124,13 @@
         "floor_width_mm": 100,
         "floor_height_mm": 70,
         "condition": "if the size of the package so requires"
+      },
+      "figure": {
+        "provision": "5.2.1.9.2",
+        "cut": "symbol only",
+        "why": "The printed figure is wrapped in dimension annotations that abut its hatched edging, so a crop box around the whole mark takes the annotations with it. Everything except the symbol is stated in words - a rectangle 100 mm by 100 mm, red hatched edging at least 5 mm wide, the symbol above the UN number(s) - so the frame is built from those values and the symbol is the edition's own.",
+        "asterisk": "The figure prints an asterisk where the UN number goes. An asterisk is a footnote in a book; on a package it says nothing, so the sheet prints the number of the cells actually inside.",
+        "artwork": "scripts/un_cards/assets/labels/BATTERY_SYMBOL.png"
       }
     },
     "orientation_arrows": {
@@ -151,11 +158,19 @@
       "size": {
         "min_width_mm": null,
         "min_height_mm": null,
-        "requirement": "of a size clearly visible commensurate with the size of the package"
+        "requirement": "of a size clearly visible commensurate with the size of the package",
+        "_no_prescribed_size": "5.2.1.10.1 gives no dimension at all: the arrows must be 'of a size that is clearly visible commensurate with the size of the package', which is a judgement about the package. Any size a sheet prints them at is that sheet's choice and must be named as one."
       },
       "prohibition": {
         "provision": "5.2.1.10.3",
         "text": "Arrows for purposes other than indicating proper package orientation shall not be displayed on a package marked under this sub-section."
+      },
+      "figures": {
+        "5.2.1.10.1.1": "the arrows without a rectangular border (printed on the left)",
+        "5.2.1.10.1.2": "the same arrows inside a rectangular border (printed on the right)",
+        "_how_told_apart": "The two figures are identical apart from the border, and the print sets both captions on one line, so they were matched to the drawings by the captions' own x position measured off the page.",
+        "cut": "5.2.1.10.1.2",
+        "artwork": "scripts/un_cards/assets/labels/ORIENTATION.png"
       }
     },
     "all_marks": {
@@ -338,8 +353,9 @@
       "provision": "5.2.1.6",
       "name": "marine pollutant mark, not the environmentally hazardous substance mark",
       "required_when": "packages containing marine pollutants meeting the criteria of 2.9.3, except as provided in 2.10.2.7",
-      "exempt_when": null,
-      "_exempt_when_open": "The land regulations name the exemption in the mark's own provision (5 l or 5 kg). The IMDG Code refers out to 2.10.2.7 instead, which has not been read yet, so no threshold is recorded here. Nothing may be exempted on the sea sheet until it is.",
+      "exempt_when": [
+        "the substance also meets the criteria for inclusion in a hazard class from 1 to 9, except class 7, AND is packaged in single or combination packagings containing a net quantity per single or inner packaging of 5 l or less for liquids, or a net mass per single or inner packaging of 5 kg or less for solids"
+      ],
       "placement": "Adjacent to the marks required by 5.2.1.1; the provisions of 5.2.1.2 and 5.2.1.4 shall be met.",
       "shape": "square set at 45 degrees (diamond)",
       "symbol": "fish and tree, black on white or a suitable contrasting background",
@@ -353,7 +369,21 @@
         "floor_mm": null,
         "condition": "if the size of the package so requires, provided the mark remains clearly visible"
       },
-      "note": "The labelling provisions of 5.2.2 apply in addition to the marine pollutant mark."
+      "note": "The labelling provisions of 5.2.2 apply in addition to the marine pollutant mark.",
+      "never_exempt": [
+        "UN 3077",
+        "UN 3082"
+      ],
+      "exemption": {
+        "provision": "2.10.2.7",
+        "text": "Marine pollutants also meeting the criteria for inclusion in a hazard class from 1 to 9 (except class 7), and packaged in single or combination packagings containing a net quantity per single or inner packaging of 5 l or less for liquids or having a net mass per single or inner packaging of 5 kg or less for solids, are not subject to 5.2.1.6, 5.3.2.3, 5.4.1.4.3.6 and 7.1.4.2. These provisions do not apply to substances transported under UN 3077 or UN 3082 (see special provision 375).",
+        "difference_from_land": "The threshold is the same 5 l and 5 kg the land regulations use, but it is fenced twice over. It reaches only substances that also fall in a hazard class from 1 to 9 other than 7, and it is expressly withheld from UN 3077 and UN 3082 — the two generic environmentally hazardous entries, which are exactly the ones a reader would expect it to cover. Those two therefore always carry the mark, whatever the packaging holds.",
+        "also_relieves": [
+          "5.3.2.3 (the mark on the cargo transport unit)",
+          "5.4.1.4.3.6 (the statement on the transport document)",
+          "7.1.4.2 (stowage)"
+        ]
+      }
     },
     "orientation_arrows": {
       "provision": "5.2.1.7",
@@ -406,13 +436,20 @@
       "provision": "5.2.2.2.1.7",
       "text": "The method of affixing the labels, or applying stencils of labels, is such that they will still be identifiable on packages surviving at least three months' immersion in the sea. Account is taken of the durability of the packaging materials used and the surface of the package.",
       "note": "5.2.1.2 says the same for marks. The Code therefore asks it twice, once for marks and once for labels, which is why the sheet's note names both."
+    },
+    "class_9_label_model": {
+      "answer": "9A on the package, 9 on the unit",
+      "why": "The Dangerous Goods List's column 3 gives the class, not the label model, so it says plain 9 for the lithium and sodium battery entries and cannot by itself choose between models 9 and 9A. Three provisions settle it together. 5.2.2.2.1.3 gives model 9A a layout of its own — the seven stripes alone in the upper half, the batteries and the class number in the lower. Special provision 188 names model No. 9A beside the lithium battery mark. And 5.3.1.1.2 says that for class 9 the placard corresponds to model No. 9 and that model No. 9A shall not be used for placarding purposes, which is a prohibition that only means anything if 9A is a package label. So the Code separates the two on the package/unit axis, and Table A column (5) already names 9A per entry for the same substances.",
+      "provisions": [
+        "5.2.2.2.1.3",
+        "special provision 188",
+        "5.3.1.1.2"
+      ],
+      "consequence": "For the sea regime the package label follows Table A column (5) where that gives 9A, and the class from column 3 otherwise. The placarding check was already right to refuse 9A on a unit since v1.150.0."
     }
   },
   "open": [
-    "IMDG 2.10.2.7: the exemption the marine pollutant mark refers out to. Three read runs have not surfaced it; until it is read, a sea consignment gets the mark whenever 2.9.3 is met, with no threshold applied - the safe direction to be wrong in.",
-    "Which of model 9 and model 9A the Dangerous Goods List intends per class 9 entry. Both exist in the IMDG Code: 5.2.2.2.1.3 gives 9A its own layout and special provision 188 names it, but the specimen label table row that assigns them per entry has not been read. The answer therefore still says the question is open rather than printing one over the other.",
-    "The figures of the orientation arrows and the battery mark symbol have not been cut from the official edition the way the class labels were, so neither is printed. No artwork is drawn from memory.",
-    "Column 6 of the Dangerous Goods List can both add and remove a subsidiary label (IMDG 5.2.2.1.2) and can remove labelling altogether for a substance of low degree of danger (5.2.2.1.2.1). Special provision 188 is now read; the rest are not, and the answer says so."
+    "Column 6 of the Dangerous Goods List can add a subsidiary label where column 4 shows none and remove one where it does (IMDG 5.2.2.1.2), and can remove labelling altogether for a substance of low degree of danger (5.2.2.1.2.1). Special provisions 188 and 375 are read; the rest are not, and the answer says so."
   ],
   "_material_standard": {
     "standard": "BS 5609",

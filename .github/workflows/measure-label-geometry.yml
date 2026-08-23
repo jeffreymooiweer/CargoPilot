@@ -1,4 +1,4 @@
-name: Measure label geometry
+name: Measure figures
 
 # What "100 mm x 100 mm" means for a diamond-shaped label is not settled by the
 # sentence that says it: the square's side and the bounding box are both
@@ -23,6 +23,21 @@ on:
       pages:
         description: "Printed page or range, at most 12 pages (e.g. 247-252)"
         default: "247-252"
+        required: false
+      what:
+        description: "geometry = measure the drawn shapes; crops = find figure crop boxes with ASCII sketches"
+        type: choice
+        options:
+          - geometry
+          - crops
+        default: geometry
+      box:
+        description: "crops only: look closely at one box instead of searching pages, as page,x0,y0,x1,y1 (several separated by ;)"
+        default: ""
+        required: false
+      min_side:
+        description: "crops only: ignore blobs narrower or shorter than this many points"
+        default: "30"
         required: false
 
 permissions:
@@ -55,8 +70,27 @@ jobs:
         env:
           DOC: ${{ inputs.doc }}
           PAGES: ${{ inputs.pages }}
+          WHAT: ${{ inputs.what || 'geometry' }}
+          BOX: ${{ inputs.box }}
+          MIN_SIDE: ${{ inputs.min_side }}
         run: |
           set -euo pipefail
-          python scripts/measure_label_geometry.py \
-            --doc "$(echo "$DOC" | tr -d '[:space:]')" \
-            --pages "$(echo "$PAGES" | tr -d '[:space:]')"
+          ARGS=(--doc "$(echo "$DOC" | tr -d '[:space:]')")
+          SCRIPT=scripts/measure_label_geometry.py
+          if [ "$WHAT" = "crops" ]; then
+            SCRIPT=scripts/measure_figure_crops.py
+          fi
+          # A close look at one box replaces the page search; asking for both
+          # would print a search nobody read to get to the picture they wanted.
+          if [ "$WHAT" = "crops" ] && [ -n "$BOX" ]; then
+            IFS=';' read -ra WANTED <<< "$BOX"
+            for b in "${WANTED[@]}"; do
+              ARGS+=(--box "$(echo "$b" | tr -d '[:space:]')")
+            done
+          else
+            ARGS+=(--pages "$(echo "$PAGES" | tr -d '[:space:]')")
+            if [ "$WHAT" = "crops" ] && [ -n "${MIN_SIDE:-}" ]; then
+              ARGS+=(--min-side "$(echo "$MIN_SIDE" | tr -d '[:space:]')")
+            fi
+          fi
+          python "$SCRIPT" "${ARGS[@]}"

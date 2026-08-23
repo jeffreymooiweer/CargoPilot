@@ -166,6 +166,35 @@ only to test that exemption, is answering a question that does not arise. This a
 the tunnel: 8.6.3.3 drops goods carried under 1.1.3 out of the determination, and a tank
 load is no longer dropped on the strength of a points total.
 
+**The two remaining figures measured, since v1.162.0.** The battery mark and the
+orientation arrows were named on the sheet instead of printed, because their artwork had
+never been cut from the edition the way the twenty-three class label models were. Both are
+now measured, and each answered a different question.
+
+The **orientation arrows** are printed twice on the page, identical apart from a
+rectangular border 5.2.1.10.1 calls optional, under two captions set side by side on one
+line. Shape cannot tell them apart, so the captions were matched to the drawings by their
+own horizontal position: the unframed pair is Figure 5.2.1.10.1.1 and the framed one is
+Figure 5.2.1.10.1.2, and the framed one is what the sheet cuts. The provision gives them
+**no size at all** — "clearly visible commensurate with the size of the package" — so the
+size the sheet prints them at is named on the page as the sheet's own choice.
+
+The **battery mark** is cut down to its symbol alone. Its printed figure is wrapped in
+dimension annotations that abut the hatched edging, so a box around the whole mark takes
+the annotations with it; and everything except the symbol is stated in 5.2.1.9.2 in words —
+a rectangle 100 mm by 100 mm, red hatched edging at least 5 mm wide, the symbol above the
+UN number or numbers. So the frame is built from those values and the symbol is the
+edition's own. That also fixes something printing the figure verbatim would have got
+wrong: the figure carries an asterisk where the number goes, and an asterisk on a package
+says nothing.
+
+One measurement fault was found on the way and is worth recording, because it would have
+recurred. The blob detector that finds a figure on a rendered page thresholded the **red**
+channel and called anything above it paper. Red ink has a high red value, so the battery
+mark — whose edging is hatched in red — was invisible to a detector pointed straight at it,
+and so would have been anything else printed in colour. For a chapter about coloured
+labels that is the whole subject. It now thresholds the darkest of the three channels.
+
 **Four of the open points closed by reading, since v1.161.1.** The IMDG Code was in the
 store all along, so three of the four gaps v1.160.0 recorded needed a read rather than a
 request. It places the **lithium battery mark at 5.2.1.10** — where the land regulations
@@ -194,15 +223,16 @@ of the Dangerous Goods List, each subsidiary from column 4 — where Table A has
 durability rule is three months' immersion in the sea against ADR's open weather exposure.
 RID and ADN were quoted beside the ADR and are identical word for word.
 
-Four things the answer refuses to state. The **orientation arrows** (5.2.1.10) turn on the
-kind of packaging, which the application cannot see, so they are reported as not assessed
-with the provision's own four cases named. The **marine pollutant exemption** routes out to
-IMDG 2.10.2.7, which has not been read, so nothing is exempted. **Column 6** of the
-Dangerous Goods List can add a subsidiary label where column 4 shows none and remove one
-where it does; it has not been read per substance, and the answer says so. And the **sea
-battery label** is left open: column 3 gives plain `9` for UN 3480 while IMDG 5.2.2.2.1.3
-describes a model 9A with a layout of its own, and a 9 printed over a 9A is a wrong label
-rather than a missing one.
+Four things the answer refused to state when it shipped, of which one still stands. The
+**orientation arrows** (5.2.1.10) turn on the kind of packaging, which the application
+cannot see, so they are reported as not assessed with the provision's own four cases
+named — and since v1.162.0 the figure is printed anyway, behind a caption that names the
+four cases of 5.2.1.10.1, the six exceptions of 5.2.1.10.2 and the prohibition of
+5.2.1.10.3. A packer who does need them would otherwise have nothing. The **marine
+pollutant exemption** and the **sea battery label** were both closed by reading in
+v1.161.1. What is left is **column 6** of the Dangerous Goods List, which can add a
+subsidiary label where column 4 shows none and remove one where it does; it has not been
+read per substance, and the answer says so.
 
 One value had to be settled outside the regulation. "100 mm x 100 mm" for a square set at
 45 degrees leaves two readings — the side, or the bounding box — that differ by root two.

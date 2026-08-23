@@ -37,12 +37,20 @@ answer.
 **It does not claim column 6 was read.** IMDG 5.2.2.1.2 lets a special
 provision add a subsidiary label where column 4 shows none and remove one where
 it does, and 5.2.2.1.2.1 can drop the labelling altogether for a substance of a
-low degree of danger. Those provisions are not read per substance yet, so the
-sea answer says so. The same restraint governs the marine pollutant mark: the
-Code exempts through 2.10.2.7, which has not been read, so nothing is exempted
-and the mark is given whenever the substance is a marine pollutant. Erring
-towards a mark the packer removes is the safe direction; erring towards a
-missing one is not.
+low degree of danger. Special provisions 188 and 375 are read; the rest are not,
+and the sea answer says so.
+
+The marine pollutant mark shows how far that restraint goes and where it stops.
+IMDG 2.10.2.7 relieves the mark at 5 l or 5 kg per inner or single packaging —
+the same figures the land regulations use — but only for substances that *also*
+fall in a hazard class from 1 to 9 other than 7, and expressly **not** for
+UN 3077 and UN 3082. Those two are the generic environmentally hazardous
+entries, which is to say exactly the ones a reader would expect the relief to
+cover, so for them the answer is certain: the mark applies whatever the packing
+holds. For everything else the threshold turns on the quantity per inner
+packaging, which is a property of the packing rather than of the goods, so it is
+named and not applied. Erring towards a mark the packer removes is the safe
+direction; erring towards a missing one is not.
 """
 from __future__ import annotations
 
@@ -72,6 +80,15 @@ LAND_PROFILES = ("ADR", "RID", "ADN")
 #: those provisions is not marked under this one.
 BATTERY_UN_NUMBERS = {"3090", "3480", "3551", "3091", "3481", "3552"}
 BATTERY_PROVISIONS = {"188", "400"}
+
+#: The two entries IMDG 2.10.2.7 refuses its own relief to. Its threshold — the
+#: same 5 l and 5 kg the land regulations use — reaches only substances that
+#: also fall in a hazard class from 1 to 9 other than 7, and it says in as many
+#: words that it does not apply to these two. They are the generic
+#: environmentally hazardous entries, which is to say exactly the ones a reader
+#: would expect it to cover, so the answer states it rather than leaving it to
+#: be inferred.
+ALWAYS_MARKED_POLLUTANTS = {"3077", "3082"}
 
 
 @lru_cache
@@ -159,6 +176,23 @@ def _imdg_label_models(product: dict[str, Any]) -> list[dict[str, str]]:
             "role": "primary",
             "source": origin,
         })
+
+    # Class 9 needs one more step. Column 3 gives the class, not the label
+    # model, so it says plain "9" for the lithium and sodium battery entries and
+    # cannot choose between models 9 and 9A. Three provisions settle it: 5.2.2.2.1.3
+    # gives 9A a layout of its own, special provision 188 names it beside the
+    # lithium battery mark, and 5.3.1.1.2 forbids 9A *for placarding purposes* —
+    # a prohibition that only means something if 9A is a package label. Table A
+    # column (5) already names 9A per entry for the same substances, so where it
+    # does, the package takes 9A and the unit keeps 9.
+    if primary == "9":
+        land = str(product.get("labels") or "").upper()
+        if "9A" in re.split(r"[,;+/\s]+", land):
+            models[0]["model"] = "9A"
+            models[0]["source"] = (
+                "Dangerous Goods List, column 3 (class 9), refined to model 9A "
+                "by Table A column (5); 5.3.1.1.2 keeps 9A off the unit")
+            seen.add("9A")
 
     subsidiary = str(row.get("subsidiary_hazards") or "").strip()
     if not subsidiary or subsidiary in {"-", "–"}:
@@ -292,18 +326,33 @@ def _marks_for_sea(product: dict[str, Any], un: str) -> tuple[list[dict[str, Any
             "certain": True,
         })
 
-    # IMDG 5.2.1.6 — the marine pollutant mark, exempted through 2.10.2.7,
-    # which has not been read. So it is given whenever the substance is a
-    # marine pollutant and the answer says the exemption was not applied.
+    # IMDG 5.2.1.6 — the marine pollutant mark, and 2.10.2.7's exemption from
+    # it. The threshold is the same 5 l and 5 kg the land regulations use, but
+    # it is fenced twice: it reaches only substances that *also* fall in a
+    # hazard class from 1 to 9 other than 7, and it is expressly withheld from
+    # UN 3077 and UN 3082 — the two generic environmentally hazardous entries,
+    # which are exactly the ones a reader would expect it to cover. Those two
+    # therefore always carry the mark, and for them the answer is certain
+    # rather than conditional.
     if _truthy(product.get("marine_pollutant")) or _truthy(product.get("environmentally_hazardous")):
-        marks.append({
+        never_exempt = un in ALWAYS_MARKED_POLLUTANTS
+        mark: dict[str, Any] = {
             "kind": "marine_pollutant",
             "provision": "5.2.1.6",
             "size": {"min_width_mm": 100, "min_height_mm": 100, "min_line_mm": 2},
-            "certain": False,
-            "exempt_unless": "imdg_2_10_2_7_not_read",
-        })
-        open_points.append("marine_pollutant_exemption")
+            "certain": never_exempt,
+        }
+        if never_exempt:
+            mark["no_exemption"] = "2.10.2.7 withholds its relief from UN 3077 and UN 3082"
+        else:
+            # The exemption turns on the quantity per inner or single packaging,
+            # which is a property of the packing rather than of the goods, so it
+            # is named and not applied — the same restraint the land answer uses
+            # for 5.2.1.8.
+            mark["exempt_unless"] = "inner_or_single_packaging_over_5l_or_5kg"
+            mark["exemption_provision"] = "2.10.2.7"
+            open_points.append("marine_pollutant_threshold")
+        marks.append(mark)
 
     return marks, open_points
 

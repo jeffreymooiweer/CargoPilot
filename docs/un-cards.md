@@ -24,7 +24,7 @@ how many, and which way).
 |---|---|
 | Generator | `scripts/un_cards/` (`generate.py`, `render.py`, `labels.py`, `validate.py`, per-modality adapters under `sources/`) |
 | Source configuration | `scripts/un_cards/generator_config.json` — which seed backs which modality, plus the generator version |
-| Label artwork | `scripts/un_cards/assets/labels/` — cut from ADR 5.2.2.2.2 (and the 5.2.1.8.3 mark, masked to its own diamond) along the measured boxes in `label_crops.json` by `scripts/extract_adr_label_models.py` |
+| Label artwork | `scripts/un_cards/assets/labels/` — cut from ADR 5.2.2.2.2 (and the 5.2.1.8.3 mark, masked to its own diamond) along the measured boxes in `label_crops.json` by `scripts/extract_adr_label_models.py`. Two figures of chapter 5.2 sit beside the label models there for the package label sheet: `BATTERY_SYMBOL.png`, the symbol alone of Figure 5.2.1.9.2, and `ORIENTATION.png`, the framed arrows of Figure 5.2.1.10.1.2. Their boxes were found by `scripts/measure_figure_crops.py`, which sketches candidates as text so a run log can show what it found |
 | Provision texts | `backend/seed/dg/adr_provision_texts.json` and `adn_provision_texts.json` (extracted by their `scripts/extract_*_provision_texts.py`), plus the IMDG code descriptions already measured in `imdg_codes.json` |
 | Generated cards | **Not in the repository and not in the image.** A GitHub Release tagged `un-cards-YYYY.MM.DD-N`, assets `cargopilot-un-cards.zip`, `manifest.json`, `generation-report.json` |
 | Runtime store | `<data-dir>/un-cards/` on the persistent volume, filled by an administrator |

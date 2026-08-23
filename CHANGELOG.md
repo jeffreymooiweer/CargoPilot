@@ -2,6 +2,54 @@
 
 All notable changes are documented here, following [Semantic Versioning](https://semver.org/).
 
+## [1.163.0] — 2026-08-23
+
+### Column 6, read
+
+The last thing chapter 5.2 said it had not done. IMDG 5.2.2.1.2 lets a special provision
+in column 6 of the Dangerous Goods List add a subsidiary hazard label where column 4 shows
+none and remove one where it does; 5.2.2.1.2.1 lets one drop the labelling altogether for
+a substance of a low degree of danger. Until now the sea answer carried a flag saying the
+column had not been read.
+
+- **All 262 provision numbers the column cites were found in chapter 3.3.** Forty-two of
+  them mention a label, a mark or an exemption, and every one was judged: eighteen bear on
+  the labels a package carries, twenty-four name a mark or an exemption while doing
+  something else. Both lists are in the seed by number, and a test asserts they account
+  for all forty-two — because the difference between a provision that was judged and one
+  that was never opened is the whole of what a coverage claim means.
+- **One provision is applied, not merely named.** Special provision **384** says in as
+  many words that the label is model No. 9A and that only the placard on the cargo
+  transport unit is model No. 9. The battery label now comes from the column that assigns
+  it, per substance, rather than from the inference across three other provisions that
+  v1.161.1 had to make.
+- **The other seventeen are named against the entry that cites them**, with the effect
+  they would have and whether it applies — because they turn on a competent authority's
+  permission, on how much phlegmatizer a mixture holds, on whether an article is
+  water-activated, on which packing instruction was used. A packer who can see the drum
+  can finish those sentences. This application cannot, and removing a label on a condition
+  nobody checked is the failure the whole module is arranged against.
+- **The package label sheet says it too**, in four languages, for every sea consignment
+  whose entries cite something that touches labelling.
+
+**The reading took three wrong parsers.** The first found the chapter heading in the table
+of contents and cut six "provisions" out of the front matter. The second read the page as
+a stream of lines, which returns the number column as one block, so provision 199 swallowed
+forty of its neighbours. The third measured the numbers' position — and found 140 of 262,
+with no complaint about ordering, because the half it read was internally perfect. The
+chapter is printed with **mirrored margins**: the numbers sit at x=125 on one side of the
+spread and x=96 on the other. That the two positions account for exactly 262 between them
+is what gave it away.
+
+**And one fault in this repository, not in the Code.** Both books have a column 6 and they
+are different sets of numbers — UN 3480 carries special provision 384 in the Code and does
+not in Table A. The first version of the check read Table A to answer the sea question:
+the exact mistake this module was built to avoid, and one that would have left no trace,
+because the numbers look plausible either way. The two readers are now named for the book
+they come from.
+
+Nothing on chapter 5.2 is left open.
+
 ## [1.162.0] — 2026-08-23
 
 ### The two figures nobody had measured

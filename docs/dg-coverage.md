@@ -166,6 +166,42 @@ only to test that exemption, is answering a question that does not arise. This a
 the tunnel: 8.6.3.3 drops goods carried under 1.1.3 out of the determination, and a tank
 load is no longer dropped on the strength of a points total.
 
+**Column 6 read, since v1.163.0.** The last thing chapter 5.2 said it had not done.
+IMDG 5.2.2.1.2 lets a special provision add a subsidiary label where column 4 shows none
+and remove one where it does; 5.2.2.1.2.1 lets one drop the labelling altogether. The
+column cites **262 distinct provision numbers** across the list, and all 262 were found in
+chapter 3.3. **Forty-two** of them mention a label, a mark or an exemption, and each was
+judged: eighteen bear on the labels a package carries, twenty-four name a mark or an
+exemption while doing something else — classification, the watt-hour marking of a battery,
+the technical name that supplements the proper shipping name. Both lists are in the seed by
+number, because the difference between a provision that was judged and one that was never
+opened is exactly what a coverage claim is about.
+
+**Only one of the eighteen is applied.** Special provision **384** says in as many words
+that the label is model No. 9A and that only the placard on the cargo transport unit is
+model No. 9 — so the battery label now comes from the column that assigns it, per
+substance, instead of from the inference across three provisions that v1.161.1 had to
+make. The other seventeen condition rather than decide: on a competent authority's
+permission (133, 181), on how much phlegmatizer a mixture holds (271), on whether an
+article is water-activated (942), on which packing instruction was used (219, 294, 319),
+on whether a vehicle is enclosed (405). Those are **named against the entry that cites
+them**, with the effect they would have, and left to the packer who can see the drum.
+
+Reading it took three wrong parsers, and the third is the one worth recording. The
+provision numbers stand in a narrow column, and the chapter is printed with **mirrored
+margins** — x=125 on one side of the spread, x=96 on the other. Calibrating on the single
+most crowded position found 140 of the 262 and reported the other 122 as absent, with no
+complaint about ordering, because the half it read was internally perfect. That the two
+positions account for exactly 262 between them is what gave the layout away. The column is
+now measured per page.
+
+One more thing the reading turned up, in this repository rather than in the Code. Both
+books have a column 6 and they are **different sets of numbers**: UN 3480 carries special
+provision 384 in the Code and does not in Table A. The first version of the check read
+Table A to answer the sea question, which is the exact mistake this module was built to
+avoid and would have left no trace — the numbers look plausible either way. The two
+readers are now named for the book they come from.
+
 **The two remaining figures measured, since v1.162.0.** The battery mark and the
 orientation arrows were named on the sheet instead of printed, because their artwork had
 never been cut from the edition the way the twenty-three class label models were. Both are
@@ -230,9 +266,7 @@ named — and since v1.162.0 the figure is printed anyway, behind a caption that
 four cases of 5.2.1.10.1, the six exceptions of 5.2.1.10.2 and the prohibition of
 5.2.1.10.3. A packer who does need them would otherwise have nothing. The **marine
 pollutant exemption** and the **sea battery label** were both closed by reading in
-v1.161.1. What is left is **column 6** of the Dangerous Goods List, which can add a
-subsidiary label where column 4 shows none and remove one where it does; it has not been
-read per substance, and the answer says so.
+v1.161.1, and **column 6** by reading in v1.163.0. Nothing on this chapter is left open.
 
 One value had to be settled outside the regulation. "100 mm x 100 mm" for a square set at
 45 degrees leaves two readings — the side, or the bounding box — that differ by root two.

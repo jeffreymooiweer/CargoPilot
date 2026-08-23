@@ -151,10 +151,9 @@ none is committed until it is planned against that brief.
 - **Package marks and labels (chapter 5.2).** The class labels and the environmentally
   hazardous mark ship in v1.160.0: what each package carries per regime, and the labels
   themselves at full size, one per A4 page; the **battery mark and the orientation
-  arrows** follow in v1.162.0, both measured out of the edition. What remains is the
-  **LQ diamond** of 3.4.7 and the **column 6 special provisions** of the Dangerous Goods
-  List per substance, which deserves its own phase rather than being bolted onto this
-  one. Placards stay refused, because a laser print is not a placard.
+  arrows** follow in v1.162.0, both measured out of the edition. Column 6 of the Dangerous
+  Goods List follows in v1.163.0, which closes the chapter. What remains is the **LQ
+  diamond** of 3.4.7. Placards stay refused, because a laser print is not a placard.
 - **Structured shipment export, on the road to eCMR/eFTI.** The versioned JSON export
   ships in v1.161.0 — the whole shipment with its derived findings and the editions
   they were computed against, on every transport mode (see

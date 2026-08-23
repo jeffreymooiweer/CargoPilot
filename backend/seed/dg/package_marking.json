@@ -448,9 +448,7 @@
       "consequence": "For the sea regime the package label follows Table A column (5) where that gives 9A, and the class from column 3 otherwise. The placarding check was already right to refuse 9A on a unit since v1.150.0."
     }
   },
-  "open": [
-    "Column 6 of the Dangerous Goods List can add a subsidiary label where column 4 shows none and remove one where it does (IMDG 5.2.2.1.2), and can remove labelling altogether for a substance of low degree of danger (5.2.2.1.2.1). Special provisions 188 and 375 are read; the rest are not, and the answer says so."
-  ],
+  "open": [],
   "_material_standard": {
     "standard": "BS 5609",
     "edition": "BS 5609:2024, revising BS 5609:1986",
@@ -461,5 +459,215 @@
       "https://www.ul.com/services/marine-use-label-services",
       "https://standardsdevelopment.bsigroup.com/projects/9021-05830"
     ]
+  },
+  "column_6": {
+    "_comment": "What column 6 of the IMDG Dangerous Goods List does to the labels on a package. 5.2.2.1.2 lets a special provision add a subsidiary label where column 4 shows none and remove one where it does; 5.2.2.1.2.1 lets one drop the labelling altogether. Read by scripts/read_imdg_special_provisions.py, which splits chapter 3.3 by the measured position of its provision numbers and found all 262 numbers the column cites. Forty-two of them mention a label, a mark or an exemption; the effects below are what those forty-two say, judged one by one. The rest are listed under 'read_no_effect' so the record shows they were read and not skipped.",
+    "provision": {
+      "adds_and_removes": "5.2.2.1.2",
+      "low_degree_of_danger": "5.2.2.1.2.1"
+    },
+    "source": {
+      "document": "imdg_42_24",
+      "chapter": "3.3",
+      "printed_pages": "765-796",
+      "cited_by_column_6": 262,
+      "found_in_chapter": 262,
+      "mention_a_label_or_mark": [
+        "29",
+        "63",
+        "122",
+        "133",
+        "172",
+        "181",
+        "188",
+        "204",
+        "219",
+        "225",
+        "271",
+        "274",
+        "290",
+        "294",
+        "295",
+        "296",
+        "303",
+        "319",
+        "339",
+        "348",
+        "361",
+        "362",
+        "363",
+        "367",
+        "369",
+        "372",
+        "376",
+        "377",
+        "384",
+        "389",
+        "390",
+        "392",
+        "396",
+        "397",
+        "400",
+        "405",
+        "942",
+        "955",
+        "959",
+        "962",
+        "965",
+        "973"
+      ]
+    },
+    "effects": {
+      "29": {
+        "effect": "no_labels",
+        "certain": true,
+        "instead": "the package, bale included, is marked with the appropriate class",
+        "note": "Exempt from labelling outright, not on a condition this application cannot see."
+      },
+      "63": {
+        "effect": "adds",
+        "models": [
+          "6.1",
+          "8"
+        ],
+        "certain": false,
+        "condition": "the aerosol's contents other than the propellant meet class 6.1 or class 8, packing group II or III"
+      },
+      "133": {
+        "effect": "adds",
+        "models": [
+          "1"
+        ],
+        "certain": false,
+        "condition": "a packaging other than packing instruction P409 was authorised, and the competent authority of the country of origin has not dispensed with the label"
+      },
+      "172": {
+        "effect": "adds",
+        "models": [],
+        "certain": false,
+        "condition": "one subsidiary hazard label for each subsidiary hazard the radioactive material exhibits; which ones follow from the material, not from this provision"
+      },
+      "181": {
+        "effect": "adds",
+        "models": [
+          "1"
+        ],
+        "certain": false,
+        "condition": "unless the competent authority of the country of origin has permitted the label to be dispensed with for the packaging employed"
+      },
+      "204": {
+        "effect": "adds",
+        "models": [
+          "8",
+          "6.1"
+        ],
+        "certain": false,
+        "condition": "model 8 if the smoke-producing substance is corrosive by the class 8 criteria, model 6.1 if it is toxic by inhalation by the class 6.1 criteria"
+      },
+      "271": {
+        "effect": "removes",
+        "models": [
+          "6.1"
+        ],
+        "certain": false,
+        "condition": "the mixture contains not less than 90% phlegmatizer by mass"
+      },
+      "295": {
+        "effect": "elsewhere",
+        "certain": false,
+        "condition": "batteries need not be individually marked and labelled if the pallet bears the mark and the label"
+      },
+      "369": {
+        "effect": "adds",
+        "models": [
+          "7",
+          "8"
+        ],
+        "certain": true,
+        "condition": "uranium hexafluoride in an excepted package is class 6.1 with radioactivity and corrosivity subsidiary hazards"
+      },
+      "384": {
+        "effect": "model",
+        "models": [
+          "9A"
+        ],
+        "certain": true,
+        "unit_model": "9",
+        "note": "The provision that settles 9 against 9A per substance, in as many words: the label is model No. 9A, and only the placard on the cargo transport unit is model No. 9."
+      },
+      "397": {
+        "effect": "removes",
+        "models": [
+          "5.1"
+        ],
+        "certain": false,
+        "condition": "the mixture holds not less than 19.5% and not more than 23.5% oxygen by volume and no other oxidizing gas"
+      },
+      "405": {
+        "effect": "no_labels",
+        "certain": false,
+        "condition": "the vehicle is not fully enclosed by packagings, crates or other means preventing ready identification"
+      },
+      "942": {
+        "effect": "adds",
+        "models": [
+          "4.3"
+        ],
+        "certain": false,
+        "condition": "the article is water-activated"
+      },
+      "955": {
+        "effect": "no_labels",
+        "certain": false,
+        "condition": "the viscous substance and its packaging meet 2.3.2.5"
+      },
+      "219": {
+        "effect": "no_labels",
+        "certain": false,
+        "condition": "packed and marked in accordance with packing instruction P904, and not meeting the class 6.1 or 6.2 criteria"
+      },
+      "294": {
+        "effect": "no_labels",
+        "certain": false,
+        "condition": "safety and wax matches in an outer packaging of at most 25 kg net, packed per packing instruction P407; marking still applies"
+      },
+      "319": {
+        "effect": "no_labels",
+        "certain": false,
+        "condition": "packed and marked in accordance with packing instruction P650"
+      },
+      "973": {
+        "effect": "marking_only",
+        "certain": false,
+        "condition": "exempt from class marking when loaded in a cargo transport unit holding one UN number; the proper shipping name and UN number stay on every package except a bale"
+      }
+    },
+    "read_no_effect": [
+      "122",
+      "188",
+      "225",
+      "274",
+      "290",
+      "296",
+      "303",
+      "339",
+      "348",
+      "361",
+      "362",
+      "363",
+      "367",
+      "372",
+      "376",
+      "377",
+      "389",
+      "390",
+      "392",
+      "396",
+      "400",
+      "959",
+      "962",
+      "965"
+    ],
+    "_read_no_effect_why": "These forty-two were all read. The twenty-four listed here name a mark, an exemption or a subsidiary hazard while doing something other than changing which labels go on the package: classification rules, the watt-hour marking of a battery, the technical name that supplements the proper shipping name, conditions for carriage. Recording them by number is what makes the difference between a provision that was judged and one that was never opened."
   }
 }

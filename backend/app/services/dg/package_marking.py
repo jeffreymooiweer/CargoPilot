@@ -34,11 +34,17 @@ from column 4, where Table A has one column for both. Each regime is therefore
 built from its own provisions, and a sea consignment never inherits a road
 answer.
 
-**It does not claim column 6 was read.** IMDG 5.2.2.1.2 lets a special
-provision add a subsidiary label where column 4 shows none and remove one where
-it does, and 5.2.2.1.2.1 can drop the labelling altogether for a substance of a
-low degree of danger. Special provisions 188 and 375 are read; the rest are not,
-and the sea answer says so.
+**It reads column 6, and applies only what column 6 decides.** IMDG 5.2.2.1.2
+lets a special provision add a subsidiary label where column 4 shows none and
+remove one where it does, and 5.2.2.1.2.1 can drop the labelling altogether for a
+substance of a low degree of danger. All 262 numbers the column cites were found
+in chapter 3.3 and the forty-two that mention a label, a mark or an exemption
+were judged one by one. Most of them condition rather than decide — on a
+competent authority's permission, on how much phlegmatizer a mixture holds, on
+which packing instruction was used — and those are named against the entry that
+cites them instead of being applied. One decides: special provision **384** says
+the label is model No. 9A and that only the placard on the unit is model No. 9,
+which is where the battery label now comes from.
 
 The marine pollutant mark shows how far that restraint goes and where it stops.
 IMDG 2.10.2.7 relieves the mark at 5 l or 5 kg per inner or single packaging —
@@ -102,7 +108,15 @@ def _truthy(value: Any) -> bool:
     return str(value or "").strip().upper() in {"P", "Y", "YES", "JA", "TRUE", "1"}
 
 
-def _special_provisions(un: str) -> set[str]:
+def _adr_special_provisions(un: str) -> set[str]:
+    """Column (6) of ADR Table A — the land's own.
+
+    Named for the book it comes from, because there is a second column 6 in
+    this module and the two are different sets of numbers. Reading one to
+    answer the other's question is a mistake that leaves no trace: the numbers
+    look plausible either way. It happened once here, between writing
+    ``_apply_column_6`` and testing it.
+    """
     rows = database.get_un_entries(un)
     raw = str((rows[0] if rows else {}).get("special_provisions") or "")
     return {token for token in re.split(r"[,;\s]+", raw) if token}
@@ -210,6 +224,72 @@ def _imdg_label_models(product: dict[str, Any]) -> list[dict[str, str]]:
     return models
 
 
+def _imdg_special_provisions(un: str, packing_group: str) -> list[str]:
+    """Column 6 of the Dangerous Goods List — the sea's own, not Table A's.
+
+    Both books have a column of special provisions and both number them, and
+    the numbers are not the same set: the Code carries a 900 series the ADR has
+    no counterpart for, and where a number exists in both it need not say the
+    same thing. Reading Table A here to answer a sea question would be the exact
+    mistake this module was built to avoid, and it would be invisible — the
+    numbers would look plausible either way.
+    """
+    row = dangerous_goods_list.entry_for(un, packing_group) if un else {}
+    return dangerous_goods_list.special_provisions(row) if row else []
+
+
+def _apply_column_6(un: str, packing_group: str,
+                    labels: list[dict[str, str]]) -> tuple[list[dict[str, str]],
+                                                           list[dict[str, Any]]]:
+    """What column 6 does to this entry's labels, and what it might do.
+
+    IMDG 5.2.2.1.2 gives a special provision the power to add a subsidiary
+    label where column 4 shows none and to take one away where it does, and
+    5.2.2.1.2.1 lets one drop the labelling altogether. Until now the answer
+    said only that the column had not been read. It has been read: all 262
+    numbers it cites were found in chapter 3.3 and the forty-two that mention a
+    label, a mark or an exemption were judged one by one.
+
+    Judging them does not make them all applicable. Most turn on something no
+    consignment record holds — whether the competent authority of the country of
+    origin dispensed with a label, how much phlegmatizer the mixture contains,
+    whether the article is water-activated, which packing instruction was used.
+    Those are **named**, against the entry that cites them, with what they would
+    do and what it depends on. A packer who can see the drum can finish the
+    sentence; the application cannot, and saying so beats guessing either way.
+
+    One is applied, because it decides rather than conditions: **384** says in
+    as many words that the label is model No. 9A and that only the placard on
+    the cargo transport unit is model No. 9. That is the provision v1.161.1 had
+    to reach by inference from three others, and it is now read from the column
+    that assigns it, per substance.
+    """
+    rules_for = rules().get("column_6", {}).get("effects", {})
+    cited = [number for number in _imdg_special_provisions(un, packing_group)
+             if number in rules_for]
+    if not cited:
+        return labels, []
+
+    found: list[dict[str, Any]] = []
+    for number in sorted(cited, key=int):
+        effect = dict(rules_for[number])
+        effect["provision"] = number
+        effect["source"] = "Dangerous Goods List, column 6"
+        found.append(effect)
+        # Applied, not merely named: the model this provision fixes replaces the
+        # one the class column implies. Everything else in the block is
+        # conditional on the packing, and a conditional applied blindly is a
+        # wrong label rather than a missing one.
+        if effect.get("effect") == "model" and effect.get("certain"):
+            model = (effect.get("models") or [None])[0]
+            if model and labels:
+                labels = [dict(entry) for entry in labels]
+                labels[0]["model"] = model
+                labels[0]["source"] = (
+                    f"Dangerous Goods List, column 6, special provision {number}")
+    return labels, found
+
+
 def _un_mark(un: str) -> dict[str, Any]:
     """The UN number mark, offered at the tier that is always enough.
 
@@ -279,7 +359,7 @@ def _marks_for_land(product: dict[str, Any], un: str) -> tuple[list[dict[str, An
         })
         open_points.append("environmentally_hazardous_threshold")
 
-    if un in BATTERY_UN_NUMBERS and (_special_provisions(un) & BATTERY_PROVISIONS):
+    if un in BATTERY_UN_NUMBERS and (_adr_special_provisions(un) & BATTERY_PROVISIONS):
         marks.append({
             "kind": "battery",
             "text": f"UN {un}",
@@ -394,23 +474,12 @@ def check_package_marking(
                 if not un or product.get("transport_forbidden"):
                     continue
                 seen_any = True
+                provisions: list[dict[str, Any]] = []
                 if profile == "IMDG":
                     marks, opened = _marks_for_sea(product, un)
                     labels = _imdg_label_models(product)
-                    open_points.add("imdg_column_6_not_read")
-                    # Column 3 of the Dangerous Goods List gives plain "9" for
-                    # the lithium and sodium battery entries, but IMDG
-                    # 5.2.2.2.1.3 describes a label model 9A with a layout of
-                    # its own — the seven stripes alone in the upper half, the
-                    # batteries and the class number in the lower. So the Code
-                    # knows 9A as a package label even though the column does
-                    # not say so, and which of the two belongs on the package
-                    # is not settled by anything read so far. Printing a 9 over
-                    # a 9A would be a wrong label rather than a missing one, so
-                    # the answer says the question is open instead.
-                    if un in BATTERY_UN_NUMBERS and any(
-                            model["model"] == "9" for model in labels):
-                        open_points.add("imdg_battery_label_9_or_9a")
+                    labels, provisions = _apply_column_6(
+                        un, str(product.get("packing_group") or ""), labels)
                 else:
                     marks, opened = _marks_for_land(product, un)
                     labels = _label_models(product)
@@ -420,6 +489,7 @@ def check_package_marking(
                     "un_number": un,
                     "labels": labels,
                     "marks": marks,
+                    "column_6": provisions,
                 })
         if not items:
             continue

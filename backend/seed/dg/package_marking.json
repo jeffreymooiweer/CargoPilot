@@ -10,45 +10,95 @@
   "_imdg_numbering_differs": "The IMDG Code does not follow the ADR sub-numbering of chapter 5.2. Its marking provisions for radioactive material sit at 5.2.1.5.x where the ADR has 5.2.1.7.x, so an IMDG rule must never be cited by its ADR number. Only the label provisions of 5.2.2.2 were found to share their numbering, and those are marked as verified where they appear below.",
   "marks": {
     "un_number": {
-      "provision": {"adr": "5.2.1.1", "rid": "5.2.1.1", "adn": "5.2.1.1"},
+      "provision": {
+        "adr": "5.2.1.1",
+        "rid": "5.2.1.1",
+        "adn": "5.2.1.1"
+      },
       "text": "The UN number of the goods contained, preceded by the letters \"UN\", clearly and durably marked on each package.",
       "character_height_mm": [
-        {"min_mm": 12, "when": "default"},
-        {"min_mm": 6, "when": "packages of 30 l capacity or less, or 30 kg maximum net mass or less, and cylinders of 60 l water capacity or less"},
-        {"min_mm": null, "when": "packages of 5 l capacity or less, or 5 kg maximum net mass or less", "requirement": "an appropriate size"}
+        {
+          "min_mm": 12,
+          "when": "default"
+        },
+        {
+          "min_mm": 6,
+          "when": "packages of 30 l capacity or less, or 30 kg maximum net mass or less, and cylinders of 60 l water capacity or less"
+        },
+        {
+          "min_mm": null,
+          "when": "packages of 5 l capacity or less, or 5 kg maximum net mass or less",
+          "requirement": "an appropriate size"
+        }
       ],
       "unpackaged_articles": "The mark is displayed on the article, on its cradle, or on its handling, storage or launching device."
     },
     "proper_shipping_name": {
-      "provision": {"adr": "5.2.1.5", "rid": "5.2.1.5", "adn": "5.2.1.5"},
-      "required_for": ["class 1"],
+      "provision": {
+        "adr": "5.2.1.5",
+        "rid": "5.2.1.5",
+        "adn": "5.2.1.5"
+      },
+      "required_for": [
+        "class 1"
+      ],
       "text": "For goods of Class 1 the package additionally bears the proper shipping name determined under 3.1.2, clearly legible and indelible, in one or more languages of which one shall be French, German or English unless the countries concerned have agreed otherwise.",
       "also_required_for_radioactive": {
-        "provision": {"adr": "5.2.1.7.2", "rid": "5.2.1.7.2", "adn": "5.2.1.7.2", "imdg": "5.2.1.5.2"},
+        "provision": {
+          "adr": "5.2.1.7.2",
+          "rid": "5.2.1.7.2",
+          "adn": "5.2.1.7.2",
+          "imdg": "5.2.1.5.2"
+        },
         "text": "For each package other than an excepted package, the UN number preceded by \"UN\" and the proper shipping name, legibly and durably marked on the outside."
       }
     },
     "salvage": {
-      "provision": {"adr": "5.2.1.3", "rid": "5.2.1.3", "adn": "5.2.1.3"},
+      "provision": {
+        "adr": "5.2.1.3",
+        "rid": "5.2.1.3",
+        "adn": "5.2.1.3"
+      },
       "text": "Salvage packagings, large salvage packagings and salvage pressure receptacles additionally bear the word \"SALVAGE\".",
-      "character_height_mm": {"min_mm": 12}
+      "character_height_mm": {
+        "min_mm": 12
+      }
     },
     "environmentally_hazardous": {
-      "provision": {"adr": "5.2.1.8", "rid": "5.2.1.8", "adn": "5.2.1.8"},
+      "provision": {
+        "adr": "5.2.1.8",
+        "rid": "5.2.1.8",
+        "adn": "5.2.1.8"
+      },
       "required_when": "the substance meets the criteria of 2.2.9.1.10",
       "exempt_when": [
         "single packagings, and inner packagings of combination packagings, containing 5 l or less for liquids",
         "single packagings, and inner packagings of combination packagings, containing a net mass of 5 kg or less for solids"
       ],
-      "placement": {"provision": "5.2.1.8.2", "text": "Adjacent to the marks required by 5.2.1.1; the requirements of 5.2.1.2 and 5.2.1.4 apply."},
+      "placement": {
+        "provision": "5.2.1.8.2",
+        "text": "Adjacent to the marks required by 5.2.1.1; the requirements of 5.2.1.2 and 5.2.1.4 apply."
+      },
       "shape": "square set at 45 degrees (diamond)",
       "symbol": "fish and tree, black on white or a suitable contrasting background",
-      "size": {"min_width_mm": 100, "min_height_mm": 100, "min_line_mm": 2},
-      "reduction": {"allowed": true, "floor_mm": null, "condition": "if the size of the package so requires, provided the mark remains clearly visible"},
+      "size": {
+        "min_width_mm": 100,
+        "min_height_mm": 100,
+        "min_line_mm": 2
+      },
+      "reduction": {
+        "allowed": true,
+        "floor_mm": null,
+        "condition": "if the size of the package so requires, provided the mark remains clearly visible"
+      },
       "note": "The labelling provisions of 5.2.2 apply in addition to this mark."
     },
     "battery": {
-      "provision": {"adr": "5.2.1.9", "rid": "5.2.1.9", "adn": "5.2.1.9"},
+      "provision": {
+        "adr": "5.2.1.9",
+        "rid": "5.2.1.9",
+        "adn": "5.2.1.9"
+      },
       "required_when": "packages containing lithium cells or batteries, or sodium ion cells or batteries, prepared in accordance with special provision 188 or 400 of Chapter 3.3",
       "un_numbers": {
         "lithium_metal": "3090",
@@ -61,12 +111,27 @@
       "several_un_numbers": "Where a package contains cells or batteries assigned to different UN numbers, all applicable UN numbers are indicated on one or more marks.",
       "shape": "rectangle or square with hatched edging",
       "symbol": "group of batteries, one damaged and emitting flame, above the UN number(s); black on white or a suitable contrasting background",
-      "hatching": {"min_mm": 5, "colour": "red"},
-      "size": {"min_width_mm": 100, "min_height_mm": 100},
-      "reduction": {"allowed": true, "floor_width_mm": 100, "floor_height_mm": 70, "condition": "if the size of the package so requires"}
+      "hatching": {
+        "min_mm": 5,
+        "colour": "red"
+      },
+      "size": {
+        "min_width_mm": 100,
+        "min_height_mm": 100
+      },
+      "reduction": {
+        "allowed": true,
+        "floor_width_mm": 100,
+        "floor_height_mm": 70,
+        "condition": "if the size of the package so requires"
+      }
     },
     "orientation_arrows": {
-      "provision": {"adr": "5.2.1.10", "rid": "5.2.1.10", "adn": "5.2.1.10"},
+      "provision": {
+        "adr": "5.2.1.10",
+        "rid": "5.2.1.10",
+        "adn": "5.2.1.10"
+      },
       "required_for": [
         "combination packagings having inner packagings containing liquids",
         "single packagings fitted with vents",
@@ -83,46 +148,95 @@
       ],
       "placement": "On two opposite vertical sides of the package, arrows pointing in the correct upright direction.",
       "appearance": "Two black or red arrows on white or a suitable contrasting background, rectangular; the rectangular border is optional. Either the figure of 5.2.1.10.1 or arrows meeting ISO 780:1997.",
-      "size": {"min_width_mm": null, "min_height_mm": null, "requirement": "of a size clearly visible commensurate with the size of the package"},
-      "prohibition": {"provision": "5.2.1.10.3", "text": "Arrows for purposes other than indicating proper package orientation shall not be displayed on a package marked under this sub-section."}
+      "size": {
+        "min_width_mm": null,
+        "min_height_mm": null,
+        "requirement": "of a size clearly visible commensurate with the size of the package"
+      },
+      "prohibition": {
+        "provision": "5.2.1.10.3",
+        "text": "Arrows for purposes other than indicating proper package orientation shall not be displayed on a package marked under this sub-section."
+      }
     },
     "all_marks": {
-      "provision": {"adr": "5.2.1.2", "rid": "5.2.1.2", "adn": "5.2.1.2"},
+      "provision": {
+        "adr": "5.2.1.2",
+        "rid": "5.2.1.2",
+        "adn": "5.2.1.2"
+      },
       "requirements": [
         "readily visible and legible",
         "able to withstand open weather exposure without a substantial reduction in effectiveness"
       ]
     },
     "large_receptacles": {
-      "provision": {"adr": "5.2.1.4", "rid": "5.2.1.4", "adn": "5.2.1.4"},
+      "provision": {
+        "adr": "5.2.1.4",
+        "rid": "5.2.1.4",
+        "adn": "5.2.1.4"
+      },
       "text": "Intermediate bulk containers of more than 450 litres capacity and large packagings are marked on two opposite sides."
     }
   },
   "labels": {
     "which": {
-      "provision": {"adr": "5.2.2.1.1", "rid": "5.2.2.1.1", "adn": "5.2.2.1.1"},
+      "provision": {
+        "adr": "5.2.2.1.1",
+        "rid": "5.2.2.1.1",
+        "adn": "5.2.2.1.1"
+      },
       "text": "For each article or substance listed in Table A of Chapter 3.2, the labels shown in Column (5) are affixed unless a special provision in Column (6) provides otherwise."
     },
     "shape": {
-      "provision": {"adr": "5.2.2.2.1.1.2", "rid": "5.2.2.2.1.1.2", "adn": "5.2.2.2.1.1.2", "imdg": "5.2.2.2.1.1.2"},
+      "provision": {
+        "adr": "5.2.2.2.1.1.2",
+        "rid": "5.2.2.2.1.1.2",
+        "adn": "5.2.2.2.1.1.2",
+        "imdg": "5.2.2.2.1.1.2"
+      },
       "form": "square set at an angle of 45 degrees (diamond)",
-      "size": {"min_width_mm": 100, "min_height_mm": 100},
+      "size": {
+        "min_width_mm": 100,
+        "min_height_mm": 100
+      },
+      "_which_distance": {
+        "answer": "side",
+        "side_mm": 100,
+        "point_to_point_mm": 141.4,
+        "why": "The land and sea provisions say only that a label is a square set at 45 degrees whose minimum dimensions are 100 mm x 100 mm, which leaves two readings: the square's side, or the diamond's bounding box. The two differ by the square root of two, and printing the wrong one makes every label the wrong size while looking right. Measuring the figures in the official editions did not settle it — the ADR draws the 5 mm inner line at a spacing of 0.51 pt on a 96.89 pt side, which is the stroke width of the outline rather than the inner line, so the drawing is schematic on this point. What settles it is the same label written out in full elsewhere: 49 CFR 172.407(c)(1) prescribes the identical shape, the identical 100 mm and the identical 5 mm border measured from the outside edge, and says 'at least 100 mm (3.9 inches) on each side'. The side is therefore the 100 mm, and a full-size label is about 141.4 mm from point to point.",
+        "sources": [
+          "49 CFR 172.407(c)(1), Label specifications — https://www.ecfr.gov/current/title-49/subtitle-B/chapter-I/subchapter-C/part-172/subpart-E/section-172.407",
+          "UN Recommendations on the Transport of Dangerous Goods, Model Regulations — https://unece.org/transport/dangerous-goods/un-model-regulations-rev-24"
+        ],
+        "consequence": "One full-size label fits on an A4 sheet. Two side by side need 283 mm across a 210 mm page, and two stacked need 283 mm down a 297 mm page before margins and cut marks."
+      },
       "inner_line_mm": 5,
       "inner_line_colour": "Upper half the same colour as the symbol; lower half the same colour as the class or division number in the bottom corner.",
-      "reduction": {"allowed": true, "floor_mm": null, "condition": "proportionally, if the size of the package so requires, provided the symbols and other elements remain clearly visible", "provision": "5.2.2.2.1.1.3"}
+      "reduction": {
+        "allowed": true,
+        "floor_mm": null,
+        "condition": "proportionally, if the size of the package so requires, provided the symbols and other elements remain clearly visible",
+        "provision": "5.2.2.2.1.1.3"
+      }
     },
     "layout": {
-      "provision": {"adr": "5.2.2.2.1.1"},
+      "provision": {
+        "adr": "5.2.2.2.1.1"
+      },
       "bottom_corner": "The class, or for Classes 4.1, 4.2 and 4.3 the figure \"4\", or for Classes 6.1 and 6.2 the figure \"6\".",
       "top_half": "The class symbol, or for divisions 1.4, 1.5 and 1.6 the division number, or for model No. 7E the word \"FISSILE\".",
       "bottom_half": "Additional text, numbers, symbols or letters, mandatory where the model requires them and optional otherwise."
     },
     "boundary": {
-      "provision": {"adr": "5.2.2.2.1.1.1"},
+      "provision": {
+        "adr": "5.2.2.2.1.1.1"
+      },
       "text": "Labels are displayed on a background of contrasting colour, or have either a dotted or a solid outer boundary line."
     },
     "placement": {
-      "provision": {"adr": "5.2.2.1.6"},
+      "provision": {
+        "adr": "5.2.2.1.6"
+      },
       "rules": [
         "affixed to the same surface of the package, if the dimensions of the package allow; for packages of Class 1 and Class 7, near the mark indicating the proper shipping name",
         "so placed that the label is not covered or obscured by any part or attachment to the packaging, or by any other label or mark",
@@ -135,12 +249,17 @@
       }
     },
     "cylinders": {
-      "provision": {"adr": "5.2.2.2.1.2", "imdg": "5.2.2.2.1.2"},
+      "provision": {
+        "adr": "5.2.2.2.1.2",
+        "imdg": "5.2.2.2.1.2"
+      },
       "text": "Cylinders for Class 2 may bear labels, and the environmentally hazardous substance mark where appropriate, reduced according to ISO 7225:2005 for display on the non-cylindrical part (shoulder). Labels may overlap to the extent ISO 7225:2005 provides for, but the primary hazard label and the figures on any label remain fully visible and the symbols recognizable. Where the diameter is too small, the reduced labels may be displayed on the cylindrical part.",
       "standard": "ISO 7225:2005"
     },
     "self_reactive_and_organic_peroxides": {
-      "provision": {"adr": "5.2.2.1.9"},
+      "provision": {
+        "adr": "5.2.2.1.9"
+      },
       "rules": [
         "The label conforming to model No. 4.1 implies the product may be flammable, so no label conforming to model No. 3 is required.",
         "For self-reactive substances of Type B a label conforming to model No. 1 is applied as well, unless the competent authority has permitted it to be dispensed with for a specific packaging on test data.",
@@ -151,11 +270,15 @@
       "named_substances": "For self-reactive substances and organic peroxides mentioned by name, the labels to be affixed are listed in 2.2.41.4 and 2.2.52.4 respectively."
     },
     "infectious_substances": {
-      "provision": {"adr": "5.2.2.1.10"},
+      "provision": {
+        "adr": "5.2.2.1.10"
+      },
       "text": "In addition to the label conforming to model No. 6.2, packages of infectious substances bear any other label required by the nature of the contents."
     },
     "radioactive_material": {
-      "provision": {"adr": "5.2.2.1.11.1"},
+      "provision": {
+        "adr": "5.2.2.1.11.1"
+      },
       "text": "Each package, overpack and container bears the labels conforming to models Nos. 7A, 7B or 7C according to the category, affixed to two opposite sides. Packages containing fissile material other than that excepted under 2.2.7.2.3.5 bear labels conforming to model No. 7E in addition.",
       "enlarged_labels_exception": "5.3.1.1.3"
     }
@@ -181,9 +304,19 @@
       "example_given_in_the_code": "CORROSIVE LIQUID, ACIDIC, ORGANIC, N.O.S. (caprylyl chloride) UN 3265"
     },
     "un_number_character_height_mm": [
-      {"min_mm": 12, "when": "default"},
-      {"min_mm": 6, "when": "packages of 30 L capacity or less, or 30 kg maximum net mass or less, and cylinders of 60 L water capacity or less"},
-      {"min_mm": null, "when": "packages of 5 L capacity or less, or 5 kg maximum net mass or less", "requirement": "an appropriate size"}
+      {
+        "min_mm": 12,
+        "when": "default"
+      },
+      {
+        "min_mm": 6,
+        "when": "packages of 30 L capacity or less, or 30 kg maximum net mass or less, and cylinders of 60 L water capacity or less"
+      },
+      {
+        "min_mm": null,
+        "when": "packages of 5 L capacity or less, or 5 kg maximum net mass or less",
+        "requirement": "an appropriate size"
+      }
     ],
     "division_1_4_s": {
       "provision": "5.2.1.1",
@@ -208,8 +341,16 @@
       "placement": "Adjacent to the marks required by 5.2.1.1; the provisions of 5.2.1.2 and 5.2.1.4 shall be met.",
       "shape": "square set at 45 degrees (diamond)",
       "symbol": "fish and tree, black on white or a suitable contrasting background",
-      "size": {"min_width_mm": 100, "min_height_mm": 100, "min_line_mm": 2},
-      "reduction": {"allowed": true, "floor_mm": null, "condition": "if the size of the package so requires, provided the mark remains clearly visible"},
+      "size": {
+        "min_width_mm": 100,
+        "min_height_mm": 100,
+        "min_line_mm": 2
+      },
+      "reduction": {
+        "allowed": true,
+        "floor_mm": null,
+        "condition": "if the size of the package so requires, provided the mark remains clearly visible"
+      },
       "note": "The labelling provisions of 5.2.2 apply in addition to the marine pollutant mark."
     },
     "orientation_arrows": {

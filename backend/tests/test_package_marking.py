@@ -198,12 +198,12 @@ def test_the_sea_label_comes_from_the_code_and_not_from_table_a():
     assert [row["model"] for row in labels(both, "IMDG", "0004")] == ["1.1D"]
 
 
-def test_the_battery_label_at_sea_is_left_open_rather_than_guessed():
-    """Column 3 says "9"; IMDG 5.2.2.2.1.3 describes a model 9A with its own
-    layout. Nothing read so far settles which belongs on the package, and a 9
-    printed over a 9A is a wrong label, not a missing one."""
+def test_the_battery_label_at_sea_is_no_longer_open():
+    """v1.160.0 left this open because column 3 says plain "9". Reading settled
+    it, so the answer must stop hedging: leaving the flag up after the question
+    is answered is its own kind of wrong."""
     result = answer(product("3480"), profiles=("IMDG",))
-    assert "imdg_battery_label_9_or_9a" in result["open"]
+    assert "imdg_battery_label_9_or_9a" not in result["open"]
 
 
 def test_the_sea_answer_never_claims_column_6_was_read():
@@ -293,3 +293,54 @@ def test_the_source_of_every_regime_names_its_edition():
 
 def test_the_rules_are_read_once():
     assert rules() is rules()
+
+
+# --- what a read run settled after v1.160.0 shipped with it open ---
+
+
+def test_the_marine_pollutant_relief_never_reaches_un_3077_and_3082():
+    """IMDG 2.10.2.7 relieves the mark at 5 l or 5 kg per inner packaging — the
+    same figures the land regulations use — but says in as many words that it
+    does not apply to UN 3077 or UN 3082. Those two are the generic
+    environmentally hazardous entries, which is to say exactly the ones a reader
+    would expect the relief to cover. So for them the answer is certain."""
+    for un in ("3077", "3082"):
+        mark = marks(answer(product(un, marine_pollutant="P"), profiles=("IMDG",)),
+                     "IMDG", un)["marine_pollutant"]
+        assert mark["certain"] is True
+        assert "2.10.2.7" in mark["no_exemption"]
+
+
+def test_any_other_pollutant_keeps_the_threshold_named_and_unapplied():
+    """The relief turns on the quantity per inner or single packaging, which is
+    a property of the packing and not of the goods."""
+    result = answer(product("1263", marine_pollutant="P"), profiles=("IMDG",))
+    mark = marks(result, "IMDG", "1263")["marine_pollutant"]
+    assert mark["certain"] is False
+    assert mark["exemption_provision"] == "2.10.2.7"
+    assert "marine_pollutant_threshold" in result["open"]
+
+
+def test_the_sea_package_label_for_batteries_is_9a_and_not_9():
+    """Column 3 of the Dangerous Goods List gives the class, not the model, so
+    it says plain 9. Three provisions choose 9A for the package: 5.2.2.2.1.3
+    gives it a layout of its own, special provision 188 names it, and 5.3.1.1.2
+    forbids 9A *for placarding purposes* — a prohibition that means nothing
+    unless 9A is a package label."""
+    result = answer(product("3480"), profiles=("ADR", "IMDG"))
+    assert [row["model"] for row in labels(result, "IMDG", "3480")] == ["9A"]
+    assert [row["model"] for row in labels(result, "ADR", "3480")] == ["9A"]
+
+
+def test_a_class_9_entry_that_is_not_a_battery_keeps_model_9():
+    """The refinement must not sweep in every class 9 entry."""
+    result = answer(product("3077", marine_pollutant="P"), profiles=("IMDG",))
+    assert [row["model"] for row in labels(result, "IMDG", "3077")] == ["9"]
+
+
+def test_the_seed_records_why_9a_belongs_on_the_package():
+    """Pinned because the reasoning is the answer: no single provision says it,
+    and a future reader who cannot see the three together would undo it."""
+    data = json.loads(SEED.read_text(encoding="utf-8"))["imdg"]["class_9_label_model"]
+    assert data["answer"].startswith("9A on the package")
+    assert set(data["provisions"]) == {"5.2.2.2.1.3", "special provision 188", "5.3.1.1.2"}

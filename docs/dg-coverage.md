@@ -166,6 +166,21 @@ only to test that exemption, is answering a question that does not arise. This a
 the tunnel: 8.6.3.3 drops goods carried under 1.1.3 out of the determination, and a tank
 load is no longer dropped on the strength of a points total.
 
+**Four of the open points closed by reading, since v1.161.1.** The IMDG Code was in the
+store all along, so three of the four gaps v1.160.0 recorded needed a read rather than a
+request. It places the **lithium battery mark at 5.2.1.10** — where the land regulations
+put the orientation arrows, which is the sharpest illustration of why an IMDG rule may
+never be cited by an ADR number. It asks for the three months' immersion **twice**, at
+5.2.1.2 for marks and at **5.2.2.2.1.7** for labels. And **special provision 188** names
+model No. 9A alongside that mark, and carries exemptions of its own: button cells
+installed in equipment, and no more than four cells or two batteries in equipment where
+the consignment holds at most two packages, plus an overpack rule requiring the mark to
+stay visible or be reproduced with "OVERPACK" in lettering of at least 12 mm.
+
+The sheet also now names **BS 5609**, the standard by which the labelling trade shows a
+material survives those three months. Telling a packer that paper will not do, without
+saying what will, is half an answer.
+
 **Chapter 5.2 answers per regime, since v1.160.0.** What goes on the *package* was the
 half nobody asked for: the labels of column (5) were read for eight other purposes and
 never turned into an answer for the person taping the drum shut. Four editions were read

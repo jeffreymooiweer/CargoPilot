@@ -1197,6 +1197,10 @@ export interface DocumentExportPayload extends Record<string, unknown> {
    *  Left off, that sheet would quietly hand a sea consignment the road
    *  answer. */
   profiles?: string[];
+  /** The transport mode the wizard was in. Recorded by the structured export
+   *  so a reader knows which regime's documents the consignment was drawn up
+   *  for; no document derives anything from it. */
+  modality?: string;
 }
 
 export interface DocumentBundlePayload extends Record<string, unknown> {

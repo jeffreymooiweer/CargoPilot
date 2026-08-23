@@ -83,6 +83,10 @@ class DocumentExportRequest(BaseModel):
     #: a document that needs the answer says which regime it fell back on rather
     #: than presenting one mode's rule as every mode's.
     profiles: list[str] = Field(default_factory=list)
+    #: The transport mode the wizard was in. Recorded by the structured export
+    #: so a reader knows which regime's documents the consignment was drawn up
+    #: for; no document derives anything from it.
+    modality: str | None = None
 
 
 class DocumentBundleRequest(BaseModel):

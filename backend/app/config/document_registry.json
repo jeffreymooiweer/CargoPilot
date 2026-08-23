@@ -74,7 +74,8 @@
         "delivery_note",
         "packing_certificate",
         "onboard_documents_adr",
-        "equipment_sheet"
+        "equipment_sheet",
+        "shipment_export"
       ]
     },
     {
@@ -96,7 +97,8 @@
         "placarding_sheet_rid",
         "packing_list",
         "delivery_note",
-        "package_label_sheet"
+        "package_label_sheet",
+        "shipment_export"
       ]
     },
     {
@@ -120,7 +122,8 @@
         "imo_dgd",
         "packing_list",
         "delivery_note",
-        "package_label_sheet"
+        "package_label_sheet",
+        "shipment_export"
       ]
     },
     {
@@ -145,7 +148,8 @@
         "packing_list",
         "delivery_note",
         "onboard_documents_adn",
-        "package_label_sheet"
+        "package_label_sheet",
+        "shipment_export"
       ]
     },
     {
@@ -166,7 +170,8 @@
         "awb_si",
         "iata_dgd",
         "packing_list",
-        "delivery_note"
+        "delivery_note",
+        "shipment_export"
       ]
     },
     {
@@ -204,7 +209,8 @@
         "packing_certificate",
         "onboard_documents_adr",
         "onboard_documents_adn",
-        "equipment_sheet"
+        "equipment_sheet",
+        "shipment_export"
       ]
     }
   ],
@@ -3373,6 +3379,30 @@
         "de": "Abgehakt wird am Fahrzeug; dieses Blatt hakt nichts für Sie ab.",
         "fr": "Le pointage se fait au véhicule ; cette feuille ne coche rien pour vous."
       }
+    },
+    {
+      "key": "shipment_export",
+      "label": {
+        "nl": "Gestructureerde zendingsexport (JSON)",
+        "en": "Structured shipment export (JSON)",
+        "de": "Strukturierter Sendungsexport (JSON)",
+        "fr": "Export structuré de l'envoi (JSON)"
+      },
+      "short_label": {
+        "nl": "JSON-export",
+        "en": "JSON export",
+        "de": "JSON-Export",
+        "fr": "Export JSON"
+      },
+      "category": "generated",
+      "issue_status": {
+        "nl": "Geen document maar data: de hele zending als JSON, inclusief wat CargoPilot heeft afgeleid en tegen welke edities. Eigen formaat met een eigen versienummer — geen eFTI-bericht en geen eCMR.",
+        "en": "Not a document but data: the whole shipment as JSON, including what CargoPilot derived and against which editions. CargoPilot's own format with its own version number — not an eFTI message and not an eCMR.",
+        "de": "Kein Dokument, sondern Daten: die gesamte Sendung als JSON, einschließlich dessen, was CargoPilot abgeleitet hat und gegen welche Ausgaben. Eigenes Format mit eigener Versionsnummer — keine eFTI-Nachricht und kein eCMR.",
+        "fr": "Non pas un document mais des données : tout l'envoi en JSON, y compris ce que CargoPilot a déduit et sur quelles éditions. Format propre à CargoPilot avec son propre numéro de version — ni message eFTI ni eCMR."
+      },
+      "exporter": "shipment_json",
+      "sections": []
     }
   ],
   "modality_defaults": {

@@ -866,7 +866,9 @@
     "recoveryHint": "Sie sehen sie einmal. Jeder gilt einmal, falls Ihr Telefon weg ist. Ohne sie und ohne Telefon brauchen Sie einen Administrator.",
     "sendCode": "Code senden",
     "codeSent": "Ein Code wurde an Ihre E-Mail-Adresse gesendet.",
-    "turnOffHintMail": "Fordern Sie zuerst einen Code an und geben Sie ihn unten ein. Ein Wiederherstellungscode geht auch."
+    "turnOffHintMail": "Fordern Sie zuerst einen Code an und geben Sie ihn unten ein. Ein Wiederherstellungscode geht auch.",
+    "nudge": "Ihr Konto hat noch keine Zwei-Faktor-Authentifizierung. Ein Passwort allein ist nur eine geleakte Wiederverwendung davon entfernt, dass jemand anderes in Ihrem Namen handelt.",
+    "nudgeAction": "Jetzt einrichten"
   },
   "toast": {
     "undo": "Rückgängig",

@@ -2,6 +2,35 @@
 
 All notable changes are documented here, following [Semantic Versioning](https://semver.org/).
 
+## [1.156.0] — 2026-08-22
+
+### Added
+
+- **A reminder to switch on two-factor authentication.** Signing in to an
+  account that has no second factor now raises a snackbar saying so, with a
+  button that opens the setting. A password on its own is one leaked reuse
+  away from somebody else drawing up consignment papers in your name, and
+  until now nothing in the application ever said that to the person it
+  concerns.
+
+  It is deliberately mild: it stays until it is closed rather than sliding
+  away — an action that disappears after four seconds is a button nobody
+  clicks — but it never blocks the screen, and "not now" costs one click. It
+  returns at the next sign-in rather than on every page load, so refreshing
+  mid-work does not renew it and nobody is trained to dismiss it unread.
+  Nothing is shown when the status cannot be fetched: a backend that will not
+  answer is not evidence that an account is unprotected.
+
+### Changed
+
+- **The settings remember which tab you are on, in the address.**
+  `/settings?tab=details` opens that group directly, which is what lets the
+  reminder above land on the two-factor panel instead of on the theme
+  settings with the panel three tabs away. Switching tabs updates the address
+  without filling the back button, an unknown tab falls back to the first one,
+  and an administrator tab reached by hand-typing still does not open for a
+  plain user.
+
 ## [1.155.1] — 2026-08-22
 
 ### Changed

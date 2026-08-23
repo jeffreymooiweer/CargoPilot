@@ -866,7 +866,9 @@
     "recoveryHint": "Vous ne les voyez qu'une fois. Chacun sert une seule fois, si votre téléphone disparaît. Sans eux et sans téléphone, il vous faut un administrateur.",
     "sendCode": "Envoyer un code",
     "codeSent": "Un code a été envoyé à votre adresse e-mail.",
-    "turnOffHintMail": "Demandez d'abord un code et saisissez-le ci-dessous. Un code de secours fonctionne aussi."
+    "turnOffHintMail": "Demandez d'abord un code et saisissez-le ci-dessous. Un code de secours fonctionne aussi.",
+    "nudge": "Votre compte n'a pas encore de vérification en deux étapes. Un mot de passe seul n'est qu'à une réutilisation divulguée d'une usurpation de votre identité.",
+    "nudgeAction": "Configurer"
   },
   "toast": {
     "undo": "Annuler l'action",

@@ -866,7 +866,9 @@
     "recoveryHint": "You see these once. Each works one time, for when your phone is gone. Without them and without your phone you need an administrator.",
     "sendCode": "Send a code",
     "codeSent": "A code has been sent to your e-mail address.",
-    "turnOffHintMail": "Ask for a code first and type it below. A recovery code works too."
+    "turnOffHintMail": "Ask for a code first and type it below. A recovery code works too.",
+    "nudge": "Your account has no two-factor authentication yet. A password alone is one leaked reuse away from somebody else acting in your name.",
+    "nudgeAction": "Set it up"
   },
   "toast": {
     "undo": "Undo",

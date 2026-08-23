@@ -3,6 +3,7 @@ import { NavLink, Outlet, useLocation, useNavigate } from "react-router";
 import { useTranslation } from "react-i18next";
 import { api, User } from "../api/client";
 import UpdateToast from "./UpdateToast";
+import TwoFactorNudge, { clearTwoFactorNudge } from "./TwoFactorNudge";
 import WhatsNewModal from "./WhatsNewModal";
 
 interface Props {
@@ -54,6 +55,9 @@ export default function Layout({ user, onLogout }: Props) {
   const handleLogout = async () => {
     closeMenu();
     await api.logout();
+    // So the next sign-in is reminded again, rather than inheriting this
+    // session's "already asked".
+    clearTwoFactorNudge();
     onLogout();
     navigate("/login");
   };
@@ -183,6 +187,7 @@ export default function Layout({ user, onLogout }: Props) {
           server only for administrators — the one role that can pull an image. */}
       <WhatsNewModal />
       <UpdateToast user={user} />
+      <TwoFactorNudge user={user} />
 
       {menuOpen && (
         <div className="md:hidden fixed inset-0 z-50">

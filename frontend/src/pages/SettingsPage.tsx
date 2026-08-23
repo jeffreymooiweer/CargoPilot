@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { useSearchParams } from "react-router";
 import { useToast } from "../toast/ToastProvider";
 import ConfirmDialog from "../toast/ConfirmDialog";
 import NumberInput from "../components/NumberInput";
@@ -63,8 +64,14 @@ export default function SettingsPage({ user }: Props) {
   const [options, setOptions] = useState<SettingsOptions | null>(null);
   const [version, setVersion] = useState("");
   const [saving, setSaving] = useState(false);
-  const [tab_, setTab] = useState<TabKey>("appearance");
   const toast = useToast();
+  // The open tab lives in the address, so a link can point at one. The
+  // two-factor nudge needs that: "set it up now" landing on the theme
+  // settings, with the panel it meant three tabs away, is not an answer to
+  // the notice the user just clicked.
+  const [params, setParams] = useSearchParams();
+  const tab_ = (params.get("tab") ?? "appearance") as TabKey;
+  const setTab = (key: TabKey) => setParams({ tab: key }, { replace: true });
 
   useEffect(() => setDraft(preferences), [preferences]);
 

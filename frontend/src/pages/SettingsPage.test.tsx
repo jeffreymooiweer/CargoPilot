@@ -14,6 +14,7 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import SettingsPage from "./SettingsPage";
 import { ToastProvider } from "../toast/ToastProvider";
+import { MemoryRouter } from "react-router";
 import { User } from "../api/client";
 
 vi.mock("react-i18next", () => ({
@@ -57,20 +58,32 @@ vi.mock("../settings/preferences", () => ({
   usePreferences: () => ({ preferences, save: vi.fn(), loaded: true }),
 }));
 
+/** The open tab lives in the address now, so the page needs a router — and a
+ *  test can point at a tab the way the two-factor notice does. */
+function renderAt(user: User, path = "/settings") {
+  return render(
+    <MemoryRouter initialEntries={[path]}>
+      <ToastProvider>
+        <SettingsPage user={user} />
+      </ToastProvider>
+    </MemoryRouter>,
+  );
+}
+
 const userOf = (role: string) => ({ id: 1, username: "u", role, active: true }) as unknown as User;
 
 beforeEach(() => vi.clearAllMocks());
 
 describe("SettingsPage tabs", () => {
   it("opens on appearance and shows only that group", async () => {
-    render(<ToastProvider><SettingsPage user={userOf("user")} /></ToastProvider>);
+    renderAt(userOf("user"));
     expect(await screen.findByText("settings.appearance")).toBeTruthy();
     expect(screen.queryByText("settings.myDetails")).toBeNull();
     expect(screen.queryByText("settings.shipmentDefaults")).toBeNull();
   });
 
   it("switching tabs shows the other group", async () => {
-    render(<ToastProvider><SettingsPage user={userOf("user")} /></ToastProvider>);
+    renderAt(userOf("user"));
     await userEvent.click(await screen.findByRole("tab", { name: "settings.tabDetails" }));
     expect(screen.getByText("settings.myDetails")).toBeTruthy();
     expect(screen.queryByText("settings.appearance")).toBeNull();
@@ -79,20 +92,20 @@ describe("SettingsPage tabs", () => {
   });
 
   it("the phone dropdown selects the same groups", async () => {
-    render(<ToastProvider><SettingsPage user={userOf("user")} /></ToastProvider>);
+    renderAt(userOf("user"));
     const picker = await screen.findByLabelText("settings.tabPick");
     await userEvent.selectOptions(picker, "shipment");
     expect(screen.getByText("settings.shipmentDefaults")).toBeTruthy();
   });
 
   it("the administrator groups exist only for an administrator", async () => {
-    const { unmount } = render(<ToastProvider><SettingsPage user={userOf("user")} /></ToastProvider>);
+    const { unmount } = renderAt(userOf("user"));
     await screen.findByText("settings.appearance");
     expect(screen.queryByRole("tab", { name: "settings.tabAdmin" })).toBeNull();
     expect(screen.queryByRole("tab", { name: "settings.tabMaintenance" })).toBeNull();
     unmount();
 
-    render(<ToastProvider><SettingsPage user={userOf("admin")} /></ToastProvider>);
+    renderAt(userOf("admin"));
     expect(await screen.findByRole("tab", { name: "settings.tabAdmin" })).toBeTruthy();
     // Maintenance holds the action panels: updating, the UN card set and
     // the assistant's model live here, away from the saved settings.
@@ -101,5 +114,24 @@ describe("SettingsPage tabs", () => {
     expect(screen.getByText("settings.unCardsStoreTitle")).toBeTruthy();
     await waitFor(() => expect(screen.getByText("settings.assistantTitle")).toBeTruthy());
     expect(screen.queryByRole("button", { name: "settings.saveAdmin" })).toBeNull();
+  });
+
+  it("a link can point straight at a tab", async () => {
+    // What the two-factor notice relies on: its button lands on the panel it
+    // is about, not on the theme settings with the panel three tabs away.
+    renderAt(userOf("user"), "/settings?tab=details");
+    expect(await screen.findByText("settings.myDetails")).toBeTruthy();
+    expect(screen.queryByText("settings.appearance")).toBeNull();
+  });
+
+  it("an unknown tab in the address falls back rather than showing nothing", async () => {
+    renderAt(userOf("user"), "/settings?tab=nonsense");
+    expect(await screen.findByText("settings.appearance")).toBeTruthy();
+  });
+
+  it("a plain user cannot reach an administrator tab through the address", async () => {
+    renderAt(userOf("user"), "/settings?tab=admin");
+    // The server refuses their writes anyway; this keeps the screen honest.
+    expect(await screen.findByText("settings.appearance")).toBeTruthy();
   });
 });

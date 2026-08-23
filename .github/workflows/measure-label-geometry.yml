@@ -1,4 +1,4 @@
-name: Measure label geometry
+name: Measure figures
 
 # What "100 mm x 100 mm" means for a diamond-shaped label is not settled by the
 # sentence that says it: the square's side and the bounding box are both
@@ -24,6 +24,13 @@ on:
         description: "Printed page or range, at most 12 pages (e.g. 247-252)"
         default: "247-252"
         required: false
+      what:
+        description: "geometry = measure the drawn shapes; crops = find figure crop boxes with ASCII sketches"
+        type: choice
+        options:
+          - geometry
+          - crops
+        default: geometry
 
 permissions:
   contents: read
@@ -55,8 +62,13 @@ jobs:
         env:
           DOC: ${{ inputs.doc }}
           PAGES: ${{ inputs.pages }}
+          WHAT: ${{ inputs.what || 'geometry' }}
         run: |
           set -euo pipefail
-          python scripts/measure_label_geometry.py \
+          SCRIPT=scripts/measure_label_geometry.py
+          if [ "$WHAT" = "crops" ]; then
+            SCRIPT=scripts/measure_figure_crops.py
+          fi
+          python "$SCRIPT" \
             --doc "$(echo "$DOC" | tr -d '[:space:]')" \
             --pages "$(echo "$PAGES" | tr -d '[:space:]')"

@@ -165,16 +165,22 @@ def _rings(diagonals, centre) -> list[dict[str, float]]:
     is ``s / 2``. So the side follows from the outer ring, and the gap between
     the rings is the inner line's offset measured the way the provision
     measures it — perpendicular to the edge, not across the page.
+
+    The grouping compares each distance with the *first* member of its group
+    rather than the last. Chaining off the last member merges two outlines that
+    are 5 mm apart whenever a few stray segments fall between them, which is
+    exactly what happened on the first run: a label and the line inside it came
+    back as one ring of ten segments, and a single ring answers nothing.
     """
     distances = sorted(_distance_to_line(centre, segment) for segment in diagonals)
     grouped: list[list[float]] = []
     for distance in distances:
-        if grouped and abs(distance - grouped[-1][-1]) <= 1.5:
+        if grouped and abs(distance - grouped[-1][0]) <= 0.4:
             grouped[-1].append(distance)
         else:
             grouped.append([distance])
     return [{"radius_pt": sum(group) / len(group), "segments": len(group)}
-            for group in grouped if len(group) >= 3]
+            for group in grouped if len(group) >= 2]
 
 
 def describe(shape) -> dict[str, Any] | None:
@@ -249,8 +255,12 @@ def main() -> int:
             continue
         text = page.get_text()
         annotated = "Minimum dimension" in text
+        figures = [line.strip() for line in text.splitlines()
+                   if line.strip().startswith("Figure ")]
         print(f"[page {number}] {len(shapes)} shape(s); "
               f"'Minimum dimension' on the page: {annotated}")
+        if figures:
+            print(f"    figures named here: {'; '.join(figures)}")
         for shape in sorted(shapes, key=lambda s: -s["bbox_width_pt"])[:6]:
             if shape["kind"] == "diamond":
                 print(f"    diamond  bbox {shape['bbox_width_pt']:.1f} x "

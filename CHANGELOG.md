@@ -2,6 +2,19 @@
 
 All notable changes are documented here, following [Semantic Versioning](https://semver.org/).
 
+## [1.158.1] — 2026-08-22
+
+### Changed
+
+- **The close button of a notification is back in its corner.** v1.157.1
+  centred it along with the icon; only the icon needed it. The kind icon still
+  sits against the whole message, and the close button stays top right however
+  tall the toast grows.
+- **The import and assistant buttons lost their frames.** Two boxes drawn
+  around single icons where hover and, for the assistant, its own fill already
+  say what they are. The assistant's open state keeps its brand colour and
+  background, which is what carried that signal.
+
 ## [1.158.0] — 2026-08-22
 
 ### Added

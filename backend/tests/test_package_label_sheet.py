@@ -47,6 +47,16 @@ def pages(path):
         return [page.get_text() for page in document]
 
 
+def artwork_pages(path):
+    """The pages carrying a figure someone is meant to cut out and apply.
+
+    Detected by the figure rather than by position, so the test does not quietly
+    stop covering a page when the working page grows onto a second sheet.
+    """
+    with pymupdf.open(str(path)) as document:
+        return [page.get_text() for page in document if page.get_images()]
+
+
 # --- the size, measured off the page ---
 
 
@@ -154,6 +164,28 @@ def test_the_sheet_says_paper_is_not_the_material():
     sheet that stays quiet about that invites exactly that mistake."""
     text = pages(sheet(goods("1263")))[0].replace("\n", " ")
     assert "drie maanden" in text or "three months" in text
+
+
+def test_the_material_warning_is_on_every_page_that_gets_cut_up():
+    """The material is chosen at the printer, not on the working page.
+
+    The full note lives on the working page, which may never be printed at all;
+    the page in hand when the stock is loaded is the artwork page. Until
+    v1.163.1 that page said nothing about the material.
+
+    Asserted on the name of the standard, which is the same in all four
+    languages, and on the figure rather than the page number, so a working page
+    that grows onto a second sheet cannot silently narrow what is covered.
+    """
+    for language in ("nl", "en", "de", "fr"):
+        body = artwork_pages(sheet(
+            goods("1263"), goods("3480"),
+            profiles=("ADR", "IMDG"), language=language))
+        assert body, f"no artwork pages in {language}"
+        for number, text in enumerate(body, start=1):
+            assert "BS 5609" in text.replace("\n", " "), (
+                f"artwork page {number} in {language} carries a figure "
+                f"without the material warning")
 
 
 def test_the_orientation_arrows_are_named_as_not_assessed():

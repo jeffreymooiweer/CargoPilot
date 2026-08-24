@@ -2,6 +2,38 @@
 
 All notable changes are documented here, following [Semantic Versioning](https://semver.org/).
 
+## [1.163.1] — 2026-08-24
+
+### The material warning was not on the page you print from
+
+The package label sheet prints labels at full size, on the reasoning that a package
+label really is printed on adhesive stock in practice — where a placard on a laser
+printer is not a placard, which is why chapter 5.3 is deliberately not drawn. That
+reasoning holds only as long as the sheet says what the material has to be, and it did
+say so: in full, in four languages, naming BS 5609 as the standard the labelling trade
+uses to show a material survives ADR 5.2.1.2's open weather and the IMDG Code's three
+months in the sea.
+
+It said so on the working page only. The material is not chosen there. It is chosen at
+the printer, and the page in hand at that moment is the artwork page — so the one
+statement of what the stock has to be sat on a sheet that may never be printed, or that
+is set aside before the labels come out.
+
+- **Every page carrying a figure now repeats it in one line** — the label pages, the
+  marine pollutant and environmentally hazardous mark, the battery mark and the
+  orientation arrows alike. It keeps the two provisions and the standard, which are the
+  parts that are of any use, and leaves the full sentence about whose responsibility the
+  material is on the working page.
+- **It sits above the cut marks, and that is the right place rather than a compromise.**
+  The label itself cannot carry it: a label with a sentence printed on it is not the
+  label the regulation prescribes. So the warning does its work before the cut — at the
+  moment it can still change something — and comes off with the offcut.
+- **A test asserts no artwork page is without it**, in all four languages, finding those
+  pages by the figure on them rather than by page number, so a working page that one day
+  grows onto a second sheet cannot silently narrow what is covered.
+- The module docstring claimed the sheet said this "on every copy". It said it once.
+  That sentence now says what the code does.
+
 ## [1.163.0] — 2026-08-23
 
 ### Column 6, read

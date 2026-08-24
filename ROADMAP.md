@@ -81,20 +81,95 @@ Today the application writes nothing down while you work: there is no job databa
 a finished job leaves nothing to leak (see [Privacy](docs/privacy.md)). That is right
 for a shipper handling sensitive material lists and wrong for an office where five
 colleagues serve the same customers every day. So it becomes a **choice per
-installation** rather than a fixed answer, set as a restriction level by the admin.
-Everything below is gated on it:
+installation** rather than a fixed answer.
 
-- **A shipments page.** A table of the shipments made in the organisation, with filters
-  (cards on mobile), a detail view that offers the documents for download again, and an
-  edit action that reopens the shipment in the wizard. Only exists above the strictest
-  level, because it means storing what a shipment contained.
-- **Departments.** Group users so a shipments page shows the department's work rather
-  than the whole organisation's.
-- **Turning the login page off.** Only at the highest restriction level — an
-  installation on a closed network where the network is the boundary.
+Three levels, ordered by what the server knows about you. Each step up relaxes exactly
+one thing:
+
+| | Who gets in | What the server keeps |
+|---|---|---|
+| **1 — Open** | Anyone, no account | Nothing about anyone |
+| **2 — Closed** | The organisation's people, signed in | Accounts and their settings |
+| **3 — Kept** | The organisation's people, signed in | Accounts, settings, and the shipments made |
+
+Level 1 to 2 changes who gets in; level 2 to 3 changes what is kept. **Level 2 is what
+CargoPilot does today**, which makes it the default and the one level that needs no
+migration to reach.
+
+**The level is set at deploy, not in the application.** It is an environment variable
+the application reads and cannot write. A privacy promise an administrator can click
+away is not a promise — and level 1 has no administrator interface to click it in.
+
+#### Level 1 — Open
+
+A public installation anyone may use to draw up their transport documents without
+leaving anything behind. It follows that there are **no accounts at all**: no login
+screen, no user table, no password reset, no second factor. What an administrator would
+otherwise set is set in the environment at deploy time, and changing it means restarting
+the container.
+
+Three things fall away with the accounts, each a consequence rather than an oversight:
+
+- **What would normally be filled in for you lives in your browser**, never on the
+  server: consignor address, contact, carrier, loading point, emergency number,
+  language — and your signature, which is the only image CargoPilot ever holds. The
+  screen has to say this plainly, because "stored in your browser" is a promise about
+  where it is *not*, and it goes when the visitor's browser data goes.
+- **No equipment library.** It is the one place operational data lives and it is filled
+  by an administrator importing a template. With nobody signed in there is no one to own
+  it and no one it belongs to.
+- **No mailing documents.** An endpoint that sends mail on anonymous request is an open
+  relay. Documents download; they do not send.
+
+And one thing to solve rather than declare: a public installation that generates PDFs is
+a compute resource anyone can point a script at. Rate limiting at the edge belongs to
+this level, not after it.
+
+#### Level 2 — Closed
+
+Today's behaviour, named. An organisation hosts it, everyone signs in, and the server
+keeps accounts, their settings and the equipment library — and nothing about the
+shipments themselves. Everything already built assumes this.
+
+#### Level 3 — Kept
+
+Signing in as at level 2, plus the shipments the organisation made. This is what the
+storage unlocks:
+
+- **A shipments page.** A table of the shipments made, with filters (cards on mobile), a
+  detail view that offers the documents for download again, and an edit action that
+  reopens the shipment in the wizard.
+- **Departments.** Group users so the page shows the department's work rather than the
+  whole organisation's.
 - **An address book and templates.** The same five customers, entered once. A product
   decision, not a technical one: it earns its place when the same consignment is drawn
   up repeatedly.
+
+#### Going down a level destroys data, and says so first
+
+Moving from 3 to 2 means the stored shipments have to go. Keeping the table while the
+interface claims it does not exist is the one outcome worse than either level. But the
+level is a deploy-time variable, so there is no screen to confirm it on — so the
+application **refuses to start**: it reports how many shipments it found and names the
+second variable the operator must set to discard them. Refusing to start is loud, and it
+destroys nothing by default.
+
+#### One combination is deliberately not offered
+
+No login *with* a shipment history. This roadmap used to describe turning the login page
+off as the **strictest** setting — an installation on a closed network, where the network
+is the boundary. That is a different argument altogether: safe because nobody untrusted
+can reach it, rather than safe because nothing is kept. Putting both on one ladder would
+produce an installation that records who shipped what while having no idea who typed it.
+
+#### Order of operations, fixed by principle
+
+Levels first, storage second, page third. There must never be a version that stores
+without the control. And the levels are enforced in code with tests, the way
+`purge_sensitive_data` already enforces today's promise rather than merely describing
+it: at level 1 the authentication endpoints do not exist, at levels 1 and 2 the shipment
+endpoints do not exist. [Privacy](docs/privacy.md) becomes a document with three answers
+instead of one.
 
 ### Interface
 
@@ -163,8 +238,8 @@ none is committed until it is planned against that brief.
   CargoPilot does not become a certified platform; it becomes trivially connectable
   to one.
 - **DGSA annual report.** The statistical half of the ADR 1.8.3 adviser's report,
-  generated from stored shipments — hard-gated on the privacy levels and shipments
-  page above, because without stored shipments there is nothing to report.
+  generated from stored shipments — so it exists only at privacy level 3, because
+  without stored shipments there is nothing to report.
 - **Own articles library.** The company's article codes linked to UN number,
   technical name and default packaging — entered once, reused every shipment; designed
   together with the address book.

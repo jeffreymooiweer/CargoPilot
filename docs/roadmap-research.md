@@ -190,6 +190,39 @@ storage second, page third — there must never exist a version that stores with
 control. Departments imply a user–department relation and per-department visibility
 filters; both belong in the same design round.
 
+**The three levels are settled** (see [the roadmap](../ROADMAP.md)); what follows is what
+each one costs to build.
+
+*Two axes, not one.* Authentication (none / required) and retention (nothing /
+shipments) give four combinations, of which three are offered as an ordered ladder and
+the fourth — anonymous with a history — is refused, because it records what was shipped
+without recording who entered it.
+
+*Level 1 removes rather than adds.* No accounts means the auth router, the user page, the
+password-reset flow, the second factor and the welcome mail are not merely hidden but
+absent, and the tests must assert their absence rather than a redirect. Three further
+consequences, each traceable to a file already in the tree:
+
+- Per-user settings move to `localStorage`, including the signature — today the only
+  image the server holds (`docs/privacy.md`). The settings screen needs a second copy
+  that says where the data is, in four languages.
+- The equipment library goes: it is imported by an administrator, and there is none.
+- Mailing documents from the export step (v1.141.0) goes: an anonymous send endpoint is
+  an open relay. `mail_templates.py` and the export route both key off this.
+- The update check already runs only for a signed-in administrator, and the assistant's
+  model download is already an administrator's click — so both become environment
+  variables at this level rather than losing a feature.
+
+*Rate limiting becomes load-bearing at level 1* and nowhere else. A public PDF generator
+is a compute resource; this is the one level where an unauthenticated caller can spend
+the host's CPU. It belongs in the same round, not after it.
+
+*The downgrade tension is real and has one honest answer.* The level is a deploy-time
+variable, so 3 → 2 cannot ask for confirmation on a screen. Startup refusal is the
+resolution: report the count of stored shipments, name the second variable that
+authorises discarding them, and exit non-zero. Loud, non-destructive by default, and it
+cannot be reached by accident.
+
 ## Toasts and snackbars (existing item, options)
 
 Current mix: inline notices, banners and cards. The React ecosystem's mature options

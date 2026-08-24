@@ -83,6 +83,15 @@ the settings screen, so an air-gapped installation can be made silent from one p
 Airport, port, station, UN number and packaging lookups are all local. Nothing about
 your shipment ever goes anywhere.
 
+## What this page will become
+
+Everything above describes the one answer CargoPilot has today: sign in, and the server
+keeps your account, your settings and your equipment library — never your shipments. The
+[roadmap](../ROADMAP.md) turns that into a choice of three levels per installation, set
+at deploy time rather than in the interface. Today's behaviour is level 2 of those three,
+which is why nothing here changes for an existing installation. Until the levels ship,
+this page has one answer and it is the one printed above.
+
 ## Older Docker images
 
 > [!WARNING]

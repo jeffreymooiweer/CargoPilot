@@ -228,14 +228,22 @@ routes level 1 deletes. The endpoints that cost real money at level 1 are unprot
 today precisely because a login stands in front of them: document generation, the
 assistant's inference, the Photon proxy, and mail.
 
-*And one live defect underneath it.* `slowapi.util.get_remote_address` returns
-`request.client.host` and never consults `X-Forwarded-For`. Behind any reverse proxy —
-which every TLS-terminating deployment has — all callers collapse into one bucket. This
-is **not only a level 1 concern**: today an organisation of fifteen people behind one
-proxy shares the 10/minute sign-in budget and the 5/minute reset budget, so they can
-lock each other out. `trusted_proxy_headers` already exists in `config.py` for the
-scheme and host and is the switch the key function should read; trusting the header
-unconditionally would instead hand every caller a free bypass.
+*The live defect underneath it was fixed in v1.163.4* and no longer waits on the levels.
+`slowapi.util.get_remote_address` returned `request.client.host` and never consulted
+`X-Forwarded-For`, so behind any reverse proxy all callers collapsed into one bucket —
+an organisation of fifteen people sharing ten sign-in attempts a minute. `client_address`
+in `app/core/ratelimit.py` now counts one entry from the right per proxy in
+`TRUSTED_PROXY_COUNT`, because a proxy appends and everything further left is the
+caller's own writing.
+
+*And the trap that fix walked into is worth keeping in mind for the rest of this work.*
+There were **two** `Limiter` instances: one in `main.py` on `app.state`, and one in
+`api/routes/auth.py` carrying all six decorators. Only the second enforced anything, so
+re-keying the first was a no-op — and a unit test of the key function passes either way.
+It was caught by driving a real request through the stack and reading the key back out
+of slowapi's own warning line. There is one limiter now, in `app/core/ratelimit.py`, and
+a test that sweeps the source for a second one. When the limits are extended to document
+generation, the assistant and the Photon proxy, they go on that limiter.
 
 *The downgrade tension is real and has one honest answer.* The level is a deploy-time
 variable, so 3 → 2 cannot ask for confirmation on a screen. Startup refusal is the

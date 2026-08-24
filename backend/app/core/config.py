@@ -18,6 +18,13 @@ class Settings(BaseSettings):
     log_level: str = "INFO"
     cors_allowed_origins: str = "*"
     trusted_proxy_headers: bool = True
+    #: How many reverse proxies stand in front of the application. It decides
+    #: which entry of ``X-Forwarded-For`` a rate limit is counted against: one
+    #: position from the right per proxy, because a proxy appends what it saw
+    #: and everything further left was put there by the caller. One nginx or
+    #: Traefik in front is 1, which is the common case; a CDN in front of that
+    #: is 2. Too low a number keys the limit on a value the caller chooses.
+    trusted_proxy_count: int = 1
     access_token_expire_minutes: int = 480
     cookie_secure: bool | None = None
     catalog_auto_sync: bool = True

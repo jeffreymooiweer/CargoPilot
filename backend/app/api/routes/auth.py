@@ -1,13 +1,12 @@
 import logging
 
 from fastapi import APIRouter, Depends, HTTPException, Request, Response, status
-from slowapi import Limiter
-from slowapi.util import get_remote_address
 from sqlalchemy.orm import Session
 
 from app.core.config import Settings, get_settings
 from app.core.database import get_db
 from app.core.deps import get_current_user
+from app.core.ratelimit import limiter
 from app.core.security import (
     create_access_token,
     create_challenge_token,
@@ -35,7 +34,6 @@ from app.services.settings_store import instance_settings, language_for
 logger = logging.getLogger(__name__)
 
 router = APIRouter(prefix="/auth", tags=["auth"])
-limiter = Limiter(key_func=get_remote_address)
 
 
 def cookie_is_secure(request: Request, settings: Settings | None = None) -> bool:

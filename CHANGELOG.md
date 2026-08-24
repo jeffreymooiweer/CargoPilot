@@ -2,6 +2,48 @@
 
 All notable changes are documented here, following [Semantic Versioning](https://semver.org/).
 
+## [1.163.2] — 2026-08-24
+
+### The privacy levels, decided
+
+Documentation only; no behaviour changes. The roadmap had "privacy levels" as a single
+paragraph with a list of things gated on them, and no statement of what the levels
+actually were. They are now three, ordered by what the server knows about you:
+
+| | Who gets in | What the server keeps |
+|---|---|---|
+| **1 — Open** | Anyone, no account | Nothing about anyone |
+| **2 — Closed** | The organisation's people, signed in | Accounts and their settings |
+| **3 — Kept** | The organisation's people, signed in | Accounts, settings, and the shipments made |
+
+Level 1 to 2 changes who gets in; level 2 to 3 changes what is kept. **Level 2 is what
+CargoPilot does today**, so it is the default and the only level reachable without a
+migration.
+
+- **The level is an environment variable the application can read and not write.** A
+  privacy promise an administrator can click away is not a promise — and level 1, having
+  no accounts, has no administrator interface to click it in.
+- **Level 1 has no accounts at all**, and three things follow that are consequences
+  rather than omissions: what would be filled in for you lives in the visitor's browser
+  (the signature included, which is the only image the server ever holds); there is no
+  equipment library, because an administrator fills it and there is none; and documents
+  cannot be mailed, because an anonymous send endpoint is an open relay. Rate limiting
+  becomes load-bearing at this level and nowhere else.
+- **Going down a level destroys data, so the application refuses to start.** Moving from
+  3 to 2 means the stored shipments have to go — leaving the table while the interface
+  denies it exists is worse than either level. There is no screen to confirm on, so
+  startup reports how many shipments it found and names the second variable that
+  authorises discarding them. Loud, and destroys nothing by default.
+- **One combination is refused:** no login *with* a shipment history. The roadmap used to
+  describe turning the login page off as the *strictest* setting, for a closed network
+  where the network is the boundary. That is the opposite argument — safe because nobody
+  untrusted can reach it, rather than safe because nothing is kept — and putting the two
+  on one ladder would produce an installation that records what was shipped with no idea
+  who typed it. That sentence is gone.
+
+`docs/roadmap-research.md` carries what each level costs to build, traced to the files
+already in the tree, and `docs/privacy.md` now says which of the three it is describing.
+
 ## [1.163.1] — 2026-08-24
 
 ### The material warning was not on the page you print from

@@ -367,6 +367,18 @@
       "en": "ADR 1.1.3.6.2 grants this exemption for goods carried **in packages** in one transport unit. This consignment travels in a tank or in bulk ({products}), so the exemption is not available here, whatever the quantity. The points calculation exists only to test that exemption and therefore does not apply.",
       "de": "ADR 1.1.3.6.2 gewährt diese Freistellung für Güter, die **in Versandstücken** in einer Beförderungseinheit befördert werden. Diese Sendung fährt in einem Tank oder in loser Schüttung ({products}); die Freistellung steht hier daher unabhängig von der Menge nicht zur Verfügung. Die Punkteberechnung dient allein der Prüfung dieser Freistellung und ist somit nicht anwendbar.",
       "fr": "Le 1.1.3.6.2 de l'ADR accorde cette exemption aux marchandises transportées **en colis** dans une unité de transport. Cet envoi voyage en citerne ou en vrac ({products}) ; l'exemption n'est donc pas disponible ici, quelle que soit la quantité. Le calcul de points ne sert qu'à vérifier cette exemption et ne s'applique donc pas."
+    },
+    "empty_uncleaned": {
+      "source": "ADR 1.1.3.6.1, and the two closing lines of the 1.1.3.6.3 table",
+      "_text": "Empty uncleaned packagings having contained substances assigned to transport category \"0\" are also assigned to transport category \"0\". Empty uncleaned packagings having contained substances assigned to a transport category other than \"0\" are assigned to transport category \"4\".",
+      "category_0_stays": "0",
+      "otherwise_becomes": "4",
+      "except_un": [
+        "2908"
+      ],
+      "_except_un": "The category 0 line of the table reads \"and empty uncleaned packagings, except those classified under UN No. 2908, having contained substances classified in this transport category\". UN 2908 is itself an empty packaging entry and the table lists it under category 4.",
+      "_why_it_matters": "Category 4 carries factor 0, so a returned drum counts nothing at all towards the thousand. Reading the substance's own category instead put a single empty drum of a packing group II liquid at 900 of the 1000 points — which denies an exemption the regulation grants. Wrong in the safe direction, and still wrong: a relief that exists and is withheld sends a load out under rules it did not have to follow.",
+      "_no_quantity_needed": "A reassigned line needs no quantity: 5.4.1.1.1 (f) composes none for residues nobody has weighed, and factor 0 makes the arithmetic the same whatever it would have been. Asking for a number that changes nothing is how a form teaches people to invent numbers."
     }
   },
   "adr_mixed_loading": {

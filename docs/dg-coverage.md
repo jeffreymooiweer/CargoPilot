@@ -260,6 +260,26 @@ do, and enough, because the argument for printing labels at all (a package label
 is printed on adhesive stock, where a placard on a laser printer is not a placard) rests
 on the material being stated where the material is chosen.
 
+**What an empty uncleaned packaging counts for, since v1.166.0.** ADR 1.1.3.6.1
+reassigns it: one that contained a transport category 0 substance stays in category 0,
+and one that contained anything else becomes **category 4** — whose factor is 0, so it
+counts nothing at all towards the thousand. The two closing lines of the 1.1.3.6.3 table
+say the same from the other side, with UN 2908 named as the exception because that entry
+is itself an empty packaging and the table lists it under category 4.
+
+The check used to read the substance's own category, so one empty drum of a packing
+group II liquid came to **900 of the 1000 points**. That is wrong in the safe direction
+and still wrong: a relief the regulation grants was withheld, and a load went out under
+rules it did not have to follow.
+
+Two things the fix had to keep apart. Category 0's factor is **null**, not zero, and the
+two mean opposite things — zero is "counts nothing", null is "no exemption exists at
+all". The first version treated them alike and reported a possible exemption for a drum
+that had contained a category 0 substance, which is the one direction this arithmetic
+must never be wrong in. And a reassigned line needs **no quantity**: 5.4.1.1.1 (f)
+composes none for residues nobody has weighed, and factor 0 makes the arithmetic the same
+whatever it would have been.
+
 **The limited quantities mark, since v1.165.0.** It belongs to chapter 3.4 rather than
 5.2, which is why 5.2 could be closed without it and why it was still owed. ADR 3.4.7.1
 states nearly all of it — a square set at 45 degrees, top and bottom portions and the

@@ -11,11 +11,12 @@ from __future__ import annotations
 import logging
 
 import httpx
-from fastapi import APIRouter, Depends, Query
+from fastapi import APIRouter, Depends, Query, Request
 from sqlalchemy.orm import Session
 
 from app.core.database import get_db
 from app.core.deps import get_current_user
+from app.core.ratelimit import ADDRESS_LOOKUP, limiter
 from app.models.user import User
 from app.services.geo.locations import LOCATION_TYPES, search_locations
 from app.services.settings_store import instance_settings
@@ -40,7 +41,9 @@ def geo_locations(
 
 
 @router.get("/address")
+@limiter.limit(ADDRESS_LOOKUP)
 def geo_address(
+    request: Request,
     q: str = Query(..., min_length=3, max_length=200),
     lang: str = Query(default="en", min_length=2, max_length=2),
     limit: int = Query(default=6, ge=1, le=15),

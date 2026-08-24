@@ -2,6 +2,47 @@
 
 All notable changes are documented here, following [Semantic Versioning](https://semver.org/).
 
+## [1.164.0] — 2026-08-24
+
+### The limits reach the endpoints that cost something
+
+v1.163.4 fixed *how* rate limits are counted. This extends *what* they cover. Until now
+six limits guarded signing in and its neighbours, and everything expensive was
+unprotected — guarded, in effect, by the login page in front of it. Eight more:
+
+| Endpoint | A minute | Why |
+|---|---|---|
+| Render one document | 60 | A consignment carries a dozen papers, and correcting a field means going round again |
+| The whole bundle | 10 | Every document, the UN cards and the instructions in one archive |
+| Mail the bundle | 5 | Lower than building it on purpose — this cost lands on somebody else |
+| UN cards | 10 | Generation per set |
+| Read a carrier confirmation | 20 | File parsing, and the size of the work is the caller's choice |
+| A turn of the assistant | 120 | Inference where a model is installed |
+| Ask for the model download | 3 | An administrator's button with a multi-gigabyte fetch behind it |
+| Address autocomplete | 60 | Proxies to a Photon instance — the cost falls on somebody else's free service |
+
+- **Every limit in the application is now in one table**, asserted by
+  `test_ratelimit_key.py`. Half of them live on their routes in `auth.py` and half are
+  named in `core/ratelimit.py`; the test is the one place both halves are visible at
+  once, so changing any limit means changing that list.
+- **Mailing the bundle is asserted to stay tighter than building it**, as a relation
+  rather than two numbers, because the reason outlives any retune.
+
+**The first number for the assistant was wrong, and the test suite said so within the
+minute.** It was set at 20 on the reasoning that a conversation goes at the speed
+somebody types. But the assistant is a *survey*: it offers every optional field it could
+still fill in, and "skip" is one turn each. The archetype test walks eighty of them — and
+so does a person who wants none of the optional fields, because clicking skip is far
+faster than typing. A limit a real user reaches is a bug report, not a defence, so it is
+now 120: beyond any person, still a hard ceiling on a script.
+
+**And the tests needed a `conftest.py`, which this repository did not have.** Under a
+`TestClient` every test in the session is the same caller, `testclient`, so the counters
+accumulated across the whole run and a test posting one message failed because eleven
+earlier tests in other files had posted theirs. The budget is now reset before each test.
+Switching the limits off in tests would have been the other way, and would have left the
+end-to-end limit tests measuring nothing.
+
 ## [1.163.4] — 2026-08-24
 
 ### Behind a proxy, everyone was the same caller

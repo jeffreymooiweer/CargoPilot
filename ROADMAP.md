@@ -152,19 +152,17 @@ below the general limit, one recipient per send, and no way to reach it by accid
 sign-in, password reset, the second factor. Level 1 removes exactly those routes.
 **Today's limiter protects nothing that level 1 exposes.**
 
-What it has to cover instead is everything expensive an anonymous caller can reach:
-document generation (the CPU cost of the whole product), the assistant where a model is
-installed (inference, the most expensive thing here by a wide margin), address
-autocomplete (which proxies to a Photon instance — an open proxy in front of someone
-else's free service is abuse of *their* infrastructure, not only of this one), and mail
-if the switch above is on.
+**Both halves are now done, ahead of the levels themselves.** v1.163.4 fixed how the
+limits are counted — the limiter was keyed on `request.client.host`, so behind a reverse
+proxy every caller shared one bucket; it now reads `X-Forwarded-For` from the right, one
+entry per proxy in `TRUSTED_PROXY_COUNT`. v1.164.0 extended them from the six
+authentication routes to the eight endpoints that cost something: document rendering, the
+bundle, mailing the bundle, UN cards, reading a carrier confirmation, the assistant's
+turn and its model download, and address autocomplete. Every limit in the application is
+listed in one table in `test_ratelimit_key.py`, so changing one is changing that list.
 
-The defect underneath all of it is **fixed in v1.163.4** and no longer waits on the
-levels: the limiter was keyed on `request.client.host`, so behind a reverse proxy every
-caller shared one bucket. It now reads `X-Forwarded-For` from the right, one entry per
-proxy in `TRUSTED_PROXY_COUNT`, and ignores the header when `TRUSTED_PROXY_HEADERS` is
-off. What is left for this level is extending the limits to the endpoints above, not
-repairing how they are counted.
+Nothing about rate limiting is left waiting on level 1. What that level still needs is
+everything else on this page.
 
 The in-app limiter is the floor, because it is what actually ships in a one-container
 deployment. An edge limiter in front of it stays a recommendation, not an assumption.

@@ -312,6 +312,16 @@ If you put CargoPilot behind a reverse proxy, keep `TRUSTED_PROXY_HEADERS=true` 
 marked `Secure` when the proxy sends `X-Forwarded-Proto=https`. Set `COOKIE_SECURE=true`
 when you want to force that behaviour, or `false` only for a deliberate HTTP-only setup.
 
+**Rate limits.** Signing in, resetting a password and the second factor have been
+limited since long before; since v1.164.0 so are the endpoints that cost something:
+rendering a document (60 a minute), the bundle (10), mailing the bundle (5), UN cards
+(10), reading a carrier confirmation (20), a turn of the assistant (120), asking for its
+model to be downloaded (3), and address autocomplete (60). None of them is configurable,
+and none is set where somebody doing the work would meet it — they exist so a script
+cannot spend the host's CPU, somebody else's free geocoder, or the sending domain's
+reputation. The full list lives in `backend/app/core/ratelimit.py`, with what each one is
+for.
+
 **And set `TRUSTED_PROXY_COUNT` to the number of proxies you actually have.** It decides
 which entry of `X-Forwarded-For` the sign-in rate limit is counted against, and the
 default of `1` is right for one nginx, Caddy or Traefik in front. Put a CDN in front of

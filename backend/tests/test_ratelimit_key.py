@@ -173,6 +173,57 @@ def test_the_limiter_carrying_the_decorators_is_keyed_on_this():
     assert limiter._key_func is client_address
 
 
+def test_every_rate_limit_in_the_application_in_one_table():
+    """The whole set, so a change to any of them is a change to this list.
+
+    Half the limits sit in ``api/routes/auth.py`` and half are named in
+    ``core/ratelimit.py``; this is the one place both halves are visible at
+    once. Adding an endpoint to the limiter means adding a line here, which is
+    the point — a limit nobody wrote down is a limit nobody can weigh.
+    """
+    import app.main  # noqa: F401  (importing registers the routes)
+
+    from app.core.ratelimit import limiter
+
+    actual = {
+        name.split(".")[-1]: str(limits[0].limit)
+        for name, limits in limiter._route_limits.items()
+    }
+    assert actual == {
+        # Signing in and the ways around it.
+        "login": "10 per 1 minute",
+        "login_two_factor": "10 per 1 minute",
+        "two_factor_send_code": "5 per 1 minute",
+        "forgot_password": "5 per 1 minute",
+        "reset_password_check": "30 per 1 minute",
+        "reset_password": "10 per 1 minute",
+        # What costs CPU, or somebody else's service, or somebody else's inbox.
+        "export": "60 per 1 minute",
+        "export_bundle": "10 per 1 minute",
+        "mail_bundle": "5 per 1 minute",
+        "export_un_cards": "10 per 1 minute",
+        "read_carrier_confirmation": "20 per 1 minute",
+        "assistant_step": "120 per 1 minute",
+        "assistant_model": "3 per 1 minute",
+        "geo_address": "60 per 1 minute",
+    }
+
+
+def test_mailing_is_held_tighter_than_the_bundle_it_sends():
+    """The bundle costs this installation CPU; mailing it costs somebody else.
+
+    Kept as a relation rather than two numbers, because the reason survives a
+    retune and the numbers may not.
+    """
+    from app.core import ratelimit
+
+    def per_minute(limit):
+        return int(limit.split("/")[0])
+
+    assert per_minute(ratelimit.DOCUMENT_BUNDLE_MAIL) \
+        < per_minute(ratelimit.DOCUMENT_BUNDLE)
+
+
 def test_two_callers_behind_one_proxy_get_their_own_budget_end_to_end():
     """The whole fix, measured where it matters: through a real request.
 

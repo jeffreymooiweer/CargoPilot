@@ -4,12 +4,20 @@ import zipfile
 from datetime import datetime
 from pathlib import Path
 
-from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException
+from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException, Request
 from fastapi.responses import FileResponse
 from sqlalchemy.orm import Session
 
 from app.core.database import get_db
 from app.core.deps import get_current_user
+from app.core.ratelimit import (
+    CARRIER_CONFIRMATION,
+    DOCUMENT_BUNDLE,
+    DOCUMENT_BUNDLE_MAIL,
+    DOCUMENT_EXPORT,
+    UN_CARDS,
+    limiter,
+)
 from app.models.user import User
 from app.schemas import (
     BundleMailResult,
@@ -55,7 +63,9 @@ def document_registry(user: User = Depends(get_current_user)):
 
 
 @router.post("/carrier-confirmation")
+@limiter.limit(CARRIER_CONFIRMATION)
 def read_carrier_confirmation(
+    request: Request,
     payload: dict,
     user: User = Depends(get_current_user),
 ):
@@ -259,7 +269,9 @@ def _decoded_signature(signature_image: str | None) -> bytes | None:
 
 
 @router.post("/export")
+@limiter.limit(DOCUMENT_EXPORT)
 def export(
+    request: Request,
     payload: DocumentExportRequest,
     background_tasks: BackgroundTasks,
     user: User = Depends(get_current_user),
@@ -340,7 +352,9 @@ def _build_bundle(payload: DocumentBundleRequest, db: Session) -> tuple[Path, st
 
 
 @router.post("/export/bundle")
+@limiter.limit(DOCUMENT_BUNDLE)
 def export_bundle(
+    request: Request,
     payload: DocumentBundleRequest,
     background_tasks: BackgroundTasks,
     user: User = Depends(get_current_user),
@@ -364,7 +378,9 @@ def export_bundle(
 
 
 @router.post("/export/bundle/mail", response_model=BundleMailResult)
+@limiter.limit(DOCUMENT_BUNDLE_MAIL)
 def mail_bundle(
+    request: Request,
     payload: DocumentBundleMailRequest,
     user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
@@ -536,7 +552,9 @@ def un_cards_status(
 
 
 @router.post("/un-cards")
+@limiter.limit(UN_CARDS)
 def export_un_cards(
+    request: Request,
     payload: UnCardsRequest,
     background_tasks: BackgroundTasks,
     user: User = Depends(get_current_user),

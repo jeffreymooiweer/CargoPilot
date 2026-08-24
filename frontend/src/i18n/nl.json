@@ -80,7 +80,11 @@
     "changeModality": "Andere modaliteit kiezen",
     "loading": "Laden…",
     "next": "Volgende",
-    "paste": "Plak hier uw regels: omschrijving | aantal | eenheid"
+    "paste": "Plak hier uw regels: omschrijving | aantal | eenheid",
+    "returnShipment": "Retourzending voorbereiden",
+    "returnPreparing": "Bezig…",
+    "returnPrepared": "Retour klaargezet: partijen omgewisseld, elke regel op leeg ongereinigd. Alle hoeveelheden zijn leeggemaakt — vul in wat er werkelijk terugkomt.",
+    "returnShipmentHint": "Dezelfde verpakkingen leeg en ongereinigd terug naar de afzender, met de omschrijving van 5.4.1.1.6.1. De hoeveelheden van de heenrit worden niet overgenomen."
   },
   "review": {
     "linesTitle": "Goederen",

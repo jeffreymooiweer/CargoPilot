@@ -110,9 +110,14 @@ the IFTDGN spec is free, so nothing blocks reading it early.
   mixed-loading checks over the whole. Everything exists per consignment; the missing
   thing is the level above. The open design question is whether a "trip" becomes an
   entity (which touches the privacy stance) or a transient calculation.
-- **Return shipments:** empty uncleaned packagings back to the filler is a one-click
-  scenario — swap parties, set `empty_uncleaned`, description per 5.4.1.1.6. No
-  research needed; noted so it is not forgotten.
+- **Return shipments** (shipped v1.167.0). This note said "no research needed", which
+  was true of the description — `empty_uncleaned` and 5.4.1.1.6.1 have been built since
+  v1.90.0 — and was not true of the points. ADR **1.1.3.6.1** reassigns an empty
+  uncleaned packaging to transport category 4, whose factor is 0, and the check was
+  reading the substance's own category: one empty drum of a packing group II liquid came
+  to 900 of the 1000. Fixed in v1.166.0 before the button was built on top of it. The
+  lesson worth keeping: "no research needed" is a claim about one half of a feature, and
+  the half it is not about is where the regulation hides.
 - **QR code on documents:** linking to the shipment's UN cards on the own server.
   Self-contained, no third party. The open question is link lifetime on an
   installation that deliberately stores nothing.

@@ -292,8 +292,12 @@ none is committed until it is planned against that brief.
   notification as a far-off target the structured export quietly prepares for.
 - **Groupage.** Several consignments on one vehicle with the 1.1.3.6 count and mixed
   loading checked over the whole.
-- **Return shipments in one click.** Empty uncleaned packagings back to the filler —
-  parties swapped, the 5.4.1.1.6 description applied.
+- **Return shipments in one click** shipped in v1.167.0: the export step turns the
+  consignment round — parties swapped, every line set to empty uncleaned, and every
+  quantity the outward journey stated cleared, because on an empty drum each of them is a
+  number that is not true. The 5.4.1.1.6.1 description was already built; what the item
+  turned out to need first was ADR **1.1.3.6.1**, whose reassignment of an empty uncleaned
+  packaging to transport category 4 the points check was not making (v1.166.0).
 - **A QR code on documents** linking to the shipment's UN cards on the own server.
 
 ### Wizard and library

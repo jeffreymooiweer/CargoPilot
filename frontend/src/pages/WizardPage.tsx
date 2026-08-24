@@ -687,6 +687,34 @@ export default function WizardPage() {
     }
   };
 
+  // The way back. The drums that just went out come home empty and uncleaned,
+  // and the return is the outward consignment read backwards — same drums,
+  // same substance, the two parties the other way round.
+  //
+  // The turn itself is the server's, because what may *not* come back is a
+  // regulatory judgement rather than a copying convenience: every quantity the
+  // outward consignment stated would be false on an empty drum, and a form
+  // that carries the number over invites somebody to sign for it.
+  //
+  // It lands the user back on the goods step rather than leaving them on the
+  // export step looking at documents for a shipment that no longer matches
+  // what is loaded.
+  const [turningRound, setTurningRound] = useState(false);
+  const returnShipment = async () => {
+    setTurningRound(true);
+    try {
+      const back = await api.dgReturn(docValues, result?.lines ?? [], dgEntries);
+      setDocValues(back.values);
+      setDgEntries(back.dangerous_goods);
+      setStepKey(needsDg ? "dg" : "lines");
+      toast.success(t("wizard.returnPrepared"));
+    } catch (e) {
+      toast.error(String(e));
+    } finally {
+      setTurningRound(false);
+    }
+  };
+
   // Mailing the same bundle. Offered only when an administrator configured a
   // mail server, because a button that can only fail is not a feature.
   const [mailOpen, setMailOpen] = useState(false);
@@ -1352,6 +1380,17 @@ export default function WizardPage() {
             <button type="button" onClick={() => goBackFrom("export")} className={buttonSecondary}>
               {t("wizard.back")}
             </button>
+            {needsDg && (
+              <button
+                type="button"
+                onClick={returnShipment}
+                disabled={turningRound}
+                className={buttonSecondary}
+                title={t("wizard.returnShipmentHint")}
+              >
+                {turningRound ? t("wizard.returnPreparing") : t("wizard.returnShipment")}
+              </button>
+            )}
           </div>
         </div>
       )}

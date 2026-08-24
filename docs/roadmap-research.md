@@ -207,15 +207,35 @@ consequences, each traceable to a file already in the tree:
   image the server holds (`docs/privacy.md`). The settings screen needs a second copy
   that says where the data is, in four languages.
 - The equipment library goes: it is imported by an administrator, and there is none.
-- Mailing documents from the export step (v1.141.0) goes: an anonymous send endpoint is
-  an open relay. `mail_templates.py` and the export route both key off this.
 - The update check already runs only for a signed-in administrator, and the assistant's
   model download is already an administrator's click — so both become environment
   variables at this level rather than losing a feature.
 
-*Rate limiting becomes load-bearing at level 1* and nowhere else. A public PDF generator
-is a compute resource; this is the one level where an unauthenticated caller can spend
-the host's CPU. It belongs in the same round, not after it.
+*Mail is already environment-configurable and needs no new plumbing.* `smtp_host` and
+the seven values beside it in `backend/app/core/config.py` were added in v1.141.0 for
+exactly this case. What level 1 adds is a **second** setting, independent of them:
+whether the export step's send action exists for a caller who never signed in. Off by
+default. Keeping the two apart is the whole design — `SMTP_*` answers "can this
+installation send", the new one answers "may a stranger make it send", and an
+installation that answers the second with the first is a spam relay with good
+amplification. When it is on it needs a per-recipient and per-caller cap well below the
+general limit, and a single recipient per send.
+
+*Rate limiting is half-built, and the existing half is the wrong half.* `slowapi` is a
+dependency and `app.state.limiter` is wired up in `main.py`, but all six
+`@limiter.limit` decorators are on authentication routes (`api/routes/auth.py`) — the
+routes level 1 deletes. The endpoints that cost real money at level 1 are unprotected
+today precisely because a login stands in front of them: document generation, the
+assistant's inference, the Photon proxy, and mail.
+
+*And one live defect underneath it.* `slowapi.util.get_remote_address` returns
+`request.client.host` and never consults `X-Forwarded-For`. Behind any reverse proxy —
+which every TLS-terminating deployment has — all callers collapse into one bucket. This
+is **not only a level 1 concern**: today an organisation of fifteen people behind one
+proxy shares the 10/minute sign-in budget and the 5/minute reset budget, so they can
+lock each other out. `trusted_proxy_headers` already exists in `config.py` for the
+scheme and host and is the switch the key function should read; trusting the header
+unconditionally would instead hand every caller a free bypass.
 
 *The downgrade tension is real and has one honest answer.* The level is a deploy-time
 variable, so 3 → 2 cannot ask for confirmation on a screen. Startup refusal is the

@@ -108,7 +108,7 @@ screen, no user table, no password reset, no second factor. What an administrato
 otherwise set is set in the environment at deploy time, and changing it means restarting
 the container.
 
-Three things fall away with the accounts, each a consequence rather than an oversight:
+Two things fall away with the accounts, each a consequence rather than an oversight:
 
 - **What would normally be filled in for you lives in your browser**, never on the
   server: consignor address, contact, carrier, loading point, emergency number,
@@ -118,12 +118,58 @@ Three things fall away with the accounts, each a consequence rather than an over
 - **No equipment library.** It is the one place operational data lives and it is filled
   by an administrator importing a template. With nobody signed in there is no one to own
   it and no one it belongs to.
-- **No mailing documents.** An endpoint that sends mail on anonymous request is an open
-  relay. Documents download; they do not send.
 
-And one thing to solve rather than declare: a public installation that generates PDFs is
-a compute resource anyone can point a script at. Rate limiting at the edge belongs to
-this level, not after it.
+Two more have to be built rather than declared, and both are about what an anonymous
+caller can make the server do.
+
+##### Mail: two switches, not one
+
+Configuring a mail server needs nothing new. `SMTP_HOST` and the seven values beside it
+in `backend/app/core/config.py` have been environment settings since v1.141.0, added in
+so many words "for installations that would rather configure it in the environment than
+in the screen". At level 1 that stops being an alternative and becomes the only way,
+because there is no settings screen to configure it in.
+
+What needs deciding is a different question — **may someone who never signed in make the
+server send?** — and merging the two is how an installation becomes a spam relay:
+
+- `SMTP_*` says whether the installation can send at all. Wanted at level 1, for the
+  operator's own purposes.
+- A **separate** switch says whether the export step offers "mail these documents to…"
+  to an anonymous visitor. Off by default at every level; at level 1 it is the one that
+  carries the risk.
+
+Stated once, so an operator weighs it rather than discovers it: with that second switch
+on, anyone can make the installation send mail from its domain, carrying an attachment
+whose text they typed, to an address they chose. The cost lands on the sending domain's
+reputation. Turning it on therefore comes with a per-recipient and per-caller cap far
+below the general limit, one recipient per send, and no way to reach it by accident.
+
+##### Rate limiting: half-built, and the wrong half
+
+`slowapi` is already a dependency and `app.state.limiter` is already wired up in
+`main.py` — but all six `@limiter.limit` decorators sit on authentication routes:
+sign-in, password reset, the second factor. Level 1 removes exactly those routes.
+**Today's limiter protects nothing that level 1 exposes.**
+
+What it has to cover instead is everything expensive an anonymous caller can reach:
+document generation (the CPU cost of the whole product), the assistant where a model is
+installed (inference, the most expensive thing here by a wide margin), address
+autocomplete (which proxies to a Photon instance — an open proxy in front of someone
+else's free service is abuse of *their* infrastructure, not only of this one), and mail
+if the switch above is on.
+
+One defect has to be fixed before any of that means anything. The limiter is keyed on
+`slowapi.util.get_remote_address`, which returns `request.client.host` and never reads
+`X-Forwarded-For`. A public installation terminates TLS behind a reverse proxy, so every
+visitor arrives wearing the proxy's address and shares one bucket — the limiter then
+locks out all visitors at once, or, tuned not to, protects nobody. The repository already
+has `trusted_proxy_headers` for the scheme and host; the key function has to consult it
+as well, and must ignore the header when it is off, because a header trusted
+unconditionally is a limiter with the bypass built in.
+
+The in-app limiter is the floor, because it is what actually ships in a one-container
+deployment. An edge limiter in front of it stays a recommendation, not an assumption.
 
 #### Level 2 — Closed
 

@@ -146,12 +146,29 @@ def rotate_clockwise(pix: fitz.Pixmap) -> fitz.Pixmap:
     return fitz.Pixmap(pix.colorspace, h, w, bytes(out), pix.alpha)
 
 
-def extract(vol: Path, out_dir: Path) -> dict:
+def extract(volumes: dict[str, Path], out_dir: Path) -> dict:
+    """Cut every crop, each from the volume it was measured in.
+
+    The file names one document and nearly every crop comes from it — the
+    label models and the marks of chapter 5.2 are all in ADR Volume II. The
+    limited quantities marks of 3.4.7 and 3.4.8 are in Volume I, because
+    chapter 3.4 is, so a crop may name its own document and the ones that do
+    not keep the file's.
+    """
     spec = json.loads(CROPS.read_text(encoding="utf-8"))
-    doc = fitz.open(str(vol))
+    default = spec.get("document")
+    opened: dict[str, "fitz.Document"] = {}
     out_dir.mkdir(parents=True, exist_ok=True)
-    report: dict = {"document": spec.get("document"), "models": {}, "failed": []}
+    report: dict = {"document": default, "models": {}, "failed": []}
     for code, entry in spec["crops"].items():
+        source = entry.get("document", default)
+        if source not in volumes:
+            report["failed"].append(
+                {"model": code, "reason": f"no volume given for {source}"})
+            continue
+        if source not in opened:
+            opened[source] = fitz.open(str(volumes[source]))
+        doc = opened[source]
         page = doc[entry["page"] - 1]
         clip = fitz.Rect(entry["rect"])
         pix = page.get_pixmap(clip=clip, dpi=RENDER_DPI)
@@ -172,7 +189,8 @@ def extract(vol: Path, out_dir: Path) -> dict:
         target = out_dir / f"{code.replace('.', '_')}.png"
         pix.save(str(target))
         report["models"][code] = {
-            "file": target.name, "page": entry["page"], "px": [pix.width, pix.height]}
+            "file": target.name, "document": source, "page": entry["page"],
+            "px": [pix.width, pix.height]}
     return report
 
 
@@ -205,6 +223,9 @@ def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--vol1", required=True, type=Path,
                         help="the UNECE English volume that holds chapter 5.2")
+    parser.add_argument("--vol-adr1", type=Path,
+                        help="ADR Volume I, for the crops that name it — chapter "
+                             "3.4's limited quantities marks live there")
     parser.add_argument("--out", required=True, type=Path)
     parser.add_argument("--allow-missing", action="store_true",
                         help="report failures without failing the run")
@@ -214,7 +235,10 @@ def main() -> int:
     args = parser.parse_args()
     if args.debug_find:
         return debug_render(args.vol1, args.debug_find, args.out)
-    report = extract(args.vol1, args.out)
+    volumes = {"adr2": args.vol1}
+    if args.vol_adr1:
+        volumes["adr1"] = args.vol_adr1
+    report = extract(volumes, args.out)
     print(json.dumps(report, indent=2))
     if report["failed"] and not args.allow_missing:
         print(f"FAILED MODELS: {[f['model'] for f in report['failed']]}", file=sys.stderr)

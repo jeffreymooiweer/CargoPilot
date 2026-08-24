@@ -236,6 +236,28 @@
         454.6
       ],
       "rotate_clockwise_degrees": 0
+    },
+    "LQ": {
+      "document": "adr1",
+      "page": 664,
+      "rect": [
+        254.2,
+        126.6,
+        363.1,
+        235.5
+      ],
+      "rotate_clockwise_degrees": 0
+    },
+    "LQ_Y": {
+      "document": "adr1",
+      "page": 664,
+      "rect": [
+        254.2,
+        521.6,
+        363.1,
+        630.5
+      ],
+      "rotate_clockwise_degrees": 0
     }
   },
   "rotate_clockwise_degrees": 90

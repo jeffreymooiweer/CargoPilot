@@ -2,6 +2,43 @@
 
 All notable changes are documented here, following [Semantic Versioning](https://semver.org/).
 
+## [1.163.4] — 2026-08-24
+
+### Behind a proxy, everyone was the same caller
+
+The rate limit that guards signing in was keyed on `request.client.host`. Behind a
+reverse proxy — which every installation that terminates TLS has — that is the proxy, so
+every person arriving through it counted against one budget. **Fifteen colleagues behind
+one nginx shared ten sign-in attempts a minute and could lock each other out**, and one
+person getting their password wrong spent everybody's allowance.
+
+- **The key is now read from `X-Forwarded-For`**, one entry from the right per proxy in
+  the new `TRUSTED_PROXY_COUNT` (default `1`, which is one nginx, Caddy or Traefik in
+  front; a CDN above that is `2`). When `TRUSTED_PROXY_HEADERS` is off, the header is
+  ignored entirely.
+- **From the right, and that is the whole of it.** A proxy *appends* what it saw, so the
+  header the application receives is `<what the caller claimed>, <what the proxy saw>`.
+  Reading the left of that list is not a smaller version of this fix but a rate limiter
+  with a bypass in it: a caller who invents a new value per request gets a new budget per
+  request, and one who copies a colleague's address spends theirs. Both directions are
+  tested.
+- **Misconfiguration degrades to useless, never to open.** Ask for two proxies where only
+  one hop is present and the key falls back to the peer address — everyone in one bucket
+  again, which is the bug this fixes, but never a key the caller chooses.
+
+**And the fix nearly shipped as a no-op.** There were two `Limiter` instances: one built
+in `main.py` and placed on `app.state`, and a second built in `api/routes/auth.py` that
+carried all six `@limiter.limit` decorators. Only the second enforced anything. Re-keying
+the first changed nothing whatsoever, and a unit test of the key function passes either
+way — it was caught by driving a real request through the stack and reading back the key
+slowapi puts in its own warning line. There is one limiter now, in
+`app/core/ratelimit.py`, imported by both, and a test that sweeps the source so a third
+cannot appear quietly. The end-to-end test was run against the old code first, where it
+fails exactly as described.
+
+Also documented: `TRUSTED_PROXY_COUNT` in `docs/configuration.md` and `.env.example`,
+with what setting it too high and too low each cost.
+
 ## [1.163.3] — 2026-08-24
 
 ### Mail and rate limiting at the open level

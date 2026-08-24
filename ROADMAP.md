@@ -159,14 +159,12 @@ autocomplete (which proxies to a Photon instance — an open proxy in front of s
 else's free service is abuse of *their* infrastructure, not only of this one), and mail
 if the switch above is on.
 
-One defect has to be fixed before any of that means anything. The limiter is keyed on
-`slowapi.util.get_remote_address`, which returns `request.client.host` and never reads
-`X-Forwarded-For`. A public installation terminates TLS behind a reverse proxy, so every
-visitor arrives wearing the proxy's address and shares one bucket — the limiter then
-locks out all visitors at once, or, tuned not to, protects nobody. The repository already
-has `trusted_proxy_headers` for the scheme and host; the key function has to consult it
-as well, and must ignore the header when it is off, because a header trusted
-unconditionally is a limiter with the bypass built in.
+The defect underneath all of it is **fixed in v1.163.4** and no longer waits on the
+levels: the limiter was keyed on `request.client.host`, so behind a reverse proxy every
+caller shared one bucket. It now reads `X-Forwarded-For` from the right, one entry per
+proxy in `TRUSTED_PROXY_COUNT`, and ignores the header when `TRUSTED_PROXY_HEADERS` is
+off. What is left for this level is extending the limits to the endpoints above, not
+repairing how they are counted.
 
 The in-app limiter is the floor, because it is what actually ships in a one-container
 deployment. An edge limiter in front of it stays a recommendation, not an assumption.

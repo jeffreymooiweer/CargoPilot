@@ -294,6 +294,7 @@ one 30-second step either side of now, which is what an unsynced phone looks lik
 | `COOKIE_SECURE` | Override the login-cookie `Secure` flag. Empty means automatic: enabled for HTTPS or trusted `X-Forwarded-Proto=https`. | automatic |
 | `CORS_ALLOWED_ORIGINS` | Comma-separated list, or `*` | `*` |
 | `TRUSTED_PROXY_HEADERS` | Honour `X-Forwarded-*` headers behind a reverse proxy | `true` |
+| `TRUSTED_PROXY_COUNT` | How many reverse proxies stand in front. Decides which `X-Forwarded-For` entry a rate limit counts against | `1` |
 | `LOG_LEVEL` | `DEBUG`, `INFO`, `WARNING`, `ERROR` | `INFO` |
 
 Upload limits are not configurable. An imported file is capped at 10 MB, 20,000 rows and
@@ -310,6 +311,19 @@ If you put CargoPilot behind a reverse proxy, keep `TRUSTED_PROXY_HEADERS=true` 
 `CORS_ALLOWED_ORIGINS` to your actual hostname instead of `*`. The login cookie is then
 marked `Secure` when the proxy sends `X-Forwarded-Proto=https`. Set `COOKIE_SECURE=true`
 when you want to force that behaviour, or `false` only for a deliberate HTTP-only setup.
+
+**And set `TRUSTED_PROXY_COUNT` to the number of proxies you actually have.** It decides
+which entry of `X-Forwarded-For` the sign-in rate limit is counted against, and the
+default of `1` is right for one nginx, Caddy or Traefik in front. Put a CDN in front of
+that and it is `2`.
+
+The number matters in both directions. Too high and CargoPilot cannot find the entry it
+was told to trust, falls back to the proxy's own address, and everyone shares one budget
+again — which is the bug fixed in v1.163.4, where fifteen colleagues behind one proxy
+shared ten sign-in attempts a minute and could lock each other out. Too low and it reads
+an entry the caller wrote themselves, which hands every caller a fresh budget per request
+and is a rate limit that does not limit. A proxy *appends* what it saw, so the rightmost
+entries are the trustworthy ones and each proxy in the chain accounts for one of them.
 
 User roles are restricted to `admin` and `user`. CargoPilot prevents an administrator from
 disabling or demoting their own account and refuses to remove the last active administrator.

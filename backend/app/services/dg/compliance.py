@@ -320,7 +320,44 @@ def check_adr_points(
             forbidden.append(label)
             continue
         category = str(product.get("transport_category") or "").strip()
+        # 1.1.3.6.1 reassigns an empty uncleaned packaging: it keeps category 0
+        # if that is what it contained, and otherwise becomes category 4
+        # whatever it contained. Category 4 has factor 0, so a returned drum
+        # counts nothing at all — where reading the substance's own category
+        # put one empty drum of a packing group II liquid at 900 of the 1000
+        # and denied an exemption the regulation grants.
+        reassigned = False
+        if product.get("empty_uncleaned"):
+            rule = rules.get("empty_uncleaned") or {}
+            un = re.sub(r"\D", "", str(product.get("un_number") or ""))
+            if category == rule.get("category_0_stays", "0") \
+                    and un not in set(rule.get("except_un") or ()):
+                pass
+            else:
+                category = rule.get("otherwise_becomes", "4")
+            reassigned = True
         quantity = _num(product.get("adr_total_quantity"))
+        # A reassigned line needs no quantity. 5.4.1.1.1 (f) composes none for
+        # residues nobody has weighed, and factor 0 makes the arithmetic the
+        # same whatever it would have been — asking for a number that changes
+        # nothing is how a form teaches people to invent numbers.
+        # Only where the reassignment lands on a factor of zero. Category 0's
+        # factor is null, not zero, and the two mean opposite things: zero is
+        # "counts nothing", null is "no exemption exists". Treating them alike
+        # let an empty drum of a category 0 substance report a possible
+        # exemption, which is the one direction that must never be wrong.
+        if reassigned and category in categories \
+                and categories[category].get("factor") == 0:
+            quantity = quantity if quantity and quantity > 0 else 0.0
+            rows.append({
+                "product": label,
+                "transport_category": category,
+                "quantity": quantity or None,
+                "points": 0.0,
+                "empty_uncleaned": True,
+                "basis": "1.1.3.6.1",
+            })
+            continue
         if category not in categories or quantity is None or quantity <= 0:
             # Zero or negative is unusable too: -5 L would lower the points
             # total and suggest an exemption that does not exist.

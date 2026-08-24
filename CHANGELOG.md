@@ -2,6 +2,40 @@
 
 All notable changes are documented here, following [Semantic Versioning](https://semver.org/).
 
+## [1.166.0] — 2026-08-24
+
+### An empty drum counted for 900 of the 1000 points
+
+ADR **1.1.3.6.1** reassigns an empty uncleaned packaging: one that contained a transport
+category 0 substance stays in category 0, and one that contained anything else becomes
+**category 4** — whose factor is 0, so it counts nothing at all towards the thousand. The
+two closing lines of the 1.1.3.6.3 table say the same from the other side, and name
+UN 2908 as the exception, because that entry is itself an empty packaging and the table
+lists it under category 4.
+
+The points check read the substance's own category instead. **One empty drum of a
+packing group II liquid came to 900 of the 1000 points** — nearly the whole exemption
+budget spent on a drum the regulation counts for nothing. Wrong in the safe direction,
+and still wrong: a relief the regulation grants was withheld, and a load went out under
+rules it did not have to follow.
+
+- **The reassignment is applied, and named** — a reassigned line reports its category, 0
+  points and `1.1.3.6.1` as its basis, so the arithmetic can be checked against the book.
+- **A reassigned line needs no quantity.** 5.4.1.1.1 (f) composes none for residues
+  nobody has weighed, and factor 0 makes the arithmetic the same whatever it would have
+  been. Asking for a number that changes nothing is how a form teaches people to invent
+  one.
+
+**And one trap inside the fix.** Category 0's factor is **null**, not zero, and the two
+mean opposite things: zero is "counts nothing", null is "no exemption exists at all". The
+first version treated them alike, and a drum that had contained a category 0 substance
+came back as a possible exemption — the one direction this arithmetic must never be wrong
+in. Both cases are now tested, along with UN 2908.
+
+This was found while scoping the roadmap's return-shipment item, whose research note says
+"no research needed". That is true of the description — `empty_uncleaned` and the wording
+of 5.4.1.1.6.1 have been built since v1.90.0 — and was not true of the points.
+
 ## [1.165.0] — 2026-08-24
 
 ### The limited quantities diamond

@@ -155,3 +155,66 @@ def test_check_compliance_profiles():
 
     adr_only = check_compliance(entries, ["ADR"])
     assert "iata_segregation" not in adr_only
+
+
+# --- ADR 1.1.3.6.1: what an empty uncleaned packaging counts for ---
+
+
+def _empty(**over):
+    product = {"un_number": "1263", "proper_shipping_name": "VERF", "class": "3",
+               "transport_category": "2", "adr_total_quantity": "300",
+               "empty_uncleaned": True}
+    product.update(over)
+    return check_adr_points([_entry([product])])
+
+
+def test_an_empty_uncleaned_packaging_counts_for_nothing():
+    """1.1.3.6.1 reassigns it to transport category 4, whose factor is 0.
+
+    Before this, the substance's own category was read and one empty drum of a
+    packing group II liquid came to 900 of the 1000 points. That is wrong in
+    the safe direction and still wrong: a relief the regulation grants was
+    withheld, and a load went out under rules it did not have to follow.
+    """
+    result = _empty()
+    assert result["rows"][0]["transport_category"] == "4"
+    assert result["rows"][0]["points"] == 0.0
+    assert result["total_points"] == 0.0
+
+
+def test_the_same_drum_full_still_counts_nine_hundred():
+    """The reassignment must turn on the empty flag and nothing else."""
+    full = check_adr_points([_entry([
+        {"un_number": "1263", "class": "3", "transport_category": "2",
+         "adr_total_quantity": "300"}])])
+    assert full["total_points"] == 900.0
+
+
+def test_an_empty_uncleaned_packaging_needs_no_quantity():
+    """5.4.1.1.1 (f) composes none for residues nobody has weighed, and factor
+    0 makes the arithmetic the same whatever it would have been. Asking for a
+    number that changes nothing is how a form teaches people to invent one."""
+    result = _empty(adr_total_quantity="")
+    assert result["rows"][0]["points"] == 0.0
+    assert not result.get("incomplete")
+
+
+def test_an_empty_uncleaned_packaging_of_category_zero_stays_category_zero():
+    """1.1.3.6.1 keeps it there, and category 0's factor is null rather than
+    zero — null meaning no exemption exists at all, not "counts nothing".
+
+    The first version of this fix treated the two alike, and a drum that had
+    contained a category 0 substance came back as a possible exemption. That
+    is the one direction this arithmetic must never be wrong in.
+    """
+    result = _empty(transport_category="0")
+    assert result["rows"][0]["transport_category"] == "0"
+    assert result["status"] == "not_exempt"
+
+
+def test_un_2908_is_the_exception_the_table_names():
+    """The category 0 line reads "and empty uncleaned packagings, except those
+    classified under UN No. 2908"; the table lists 2908 under category 4."""
+    result = _empty(transport_category="0", un_number="2908")
+    assert result["rows"][0]["transport_category"] == "4"
+    assert result["rows"][0]["points"] == 0.0

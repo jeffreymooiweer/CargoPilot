@@ -191,6 +191,85 @@
         "adn": "5.2.1.4"
       },
       "text": "Intermediate bulk containers of more than 450 litres capacity and large packagings are marked on two opposite sides."
+    },
+    "limited_quantities": {
+      "provision": "3.4.7",
+      "chapter": "3.4",
+      "_comment": "The mark a package of limited quantities carries. It is chapter 3.4's, not 5.2's, which is why chapter 5.2 could be closed without it.",
+      "not_for": "air",
+      "_not_for_air": "3.4.7.1 opens 'Except for air transport'. Air has its own mark in 3.4.8, and air is locked in this application anyway.",
+      "shape": "a square set at an angle of 45 degrees (diamond-shaped)",
+      "colours": {
+        "top_and_bottom_portions": "black",
+        "surrounding_line": "black",
+        "centre_area": "white or a suitable contrasting background"
+      },
+      "size": {
+        "min_width_mm": 100,
+        "min_height_mm": 100,
+        "min_line_width_mm": 2
+      },
+      "reduction": {
+        "provision": "3.4.7.2",
+        "condition": "if the size of the package so requires",
+        "floor_width_mm": 50,
+        "floor_height_mm": 50,
+        "floor_line_width_mm": 1,
+        "proviso": "provided the mark remains clearly visible"
+      },
+      "proportion": {
+        "_comment": "3.4.7.1 ends 'Where dimensions are not specified, all features shall be in approximate proportion to those shown', and how deep the black portions run is one of those. It is the only number here that the words do not give, so it was measured off the edition's own figure rather than chosen.",
+        "black_portion_of_height": 0.231,
+        "measured_from": {
+          "document": "adr1",
+          "page": 664,
+          "figure": "3.4.7.1",
+          "rendered_px_height": 353,
+          "top_black_px": 81,
+          "bottom_black_px": 82,
+          "_agreement": "The two portions were measured independently and came out one pixel apart in three hundred and fifty-three. The figure is symmetric, so that agreement is the check on the measurement."
+        }
+      },
+      "air_variant": {
+        "provision": "3.4.8",
+        "figure": "3.4.8.1",
+        "symbol": "Y",
+        "placement": "in the centre of the mark, clearly visible",
+        "optional": true,
+        "_optional": "3.4.8.1 says a package packed to Part 3 Chapter 4 of the ICAO Technical Instructions 'may bear' it, to certify conformity. May, not shall — so it is offered and never required.",
+        "otherwise_identical_to": "3.4.7.1"
+      },
+      "transport_unit": {
+        "_comment": "The same mark, larger, on the vehicle or container rather than the package. Recorded because it is what the sheet must not claim to have decided: both conditions are about the load as a whole, and this check sees one consignment.",
+        "provision": "3.4.13",
+        "size": {
+          "min_width_mm": 250,
+          "min_height_mm": 250,
+          "provision": "3.4.15"
+        },
+        "required_above_tonnes": 12,
+        "dispensed_at_or_below_tonnes": 8,
+        "dispensation_provision": "3.4.14",
+        "placement": {
+          "transport_unit": "front and rear",
+          "container": "all four sides"
+        },
+        "gives_way_to": {
+          "orange_plates": "5.3.2",
+          "placards": "5.3.1",
+          "_rule": "Where the load also carries goods needing orange plates or placards, the unit may show those alone, or those and this mark both. Never this mark alone."
+        },
+        "removal": "removed or covered when no limited quantities are carried"
+      },
+      "source": {
+        "document": "adr1",
+        "printed_pages": "644-645",
+        "read_on": "2026-08-24",
+        "mirrored_by": [
+          "rid",
+          "adn"
+        ]
+      }
     }
   },
   "labels": {

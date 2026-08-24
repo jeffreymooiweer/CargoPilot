@@ -188,7 +188,12 @@ def _closeup(page: Any, rect: list[float], width: int = 104) -> list[str]:
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--doc", default="adr2")
-    parser.add_argument("--pages", help="printed page or range")
+    # The page as the PDF counts it, not as the page prints it. ``index =
+    # number - 1`` below is what this actually does, and the two differ by
+    # the front matter — twenty pages in ADR Volume I, where printed 644 is
+    # PDF 664. The reader prints "[page 664]" for the same page, so the two
+    # tools agree; only this help text disagreed with both.
+    parser.add_argument("--pages", help="PDF page or range, 1-based")
     parser.add_argument("--box", action="append", default=[],
                         help="look closely at one box: page,x0,y0,x1,y1")
     parser.add_argument("--max-blobs", type=int, default=8,

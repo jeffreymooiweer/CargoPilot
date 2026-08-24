@@ -21,7 +21,7 @@ on:
         default: "adr2"
         required: false
       pages:
-        description: "Printed page or range, at most 12 pages (e.g. 247-252)"
+        description: "PDF page or range, 1-based, at most 12 pages (e.g. 247-252)"
         default: "247-252"
         required: false
       what:

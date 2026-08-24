@@ -401,3 +401,80 @@ def test_the_seed_records_why_9a_belongs_on_the_package():
     data = json.loads(SEED.read_text(encoding="utf-8"))["imdg"]["class_9_label_model"]
     assert data["answer"].startswith("9A on the package")
     assert set(data["provisions"]) == {"5.2.2.2.1.3", "special provision 188", "5.3.1.1.2"}
+
+
+# --- the limited quantities mark of chapter 3.4 ---
+
+
+def lq_product(**extra):
+    product = {
+        "un_number": "1263", "proper_shipping_name": "VERF", "class": "3",
+        "labels": "3", "packing_group": "II", "limited_quantity": "5 L",
+        "net_per_inner_packaging": "1 L", "gross_mass_per_package": "10 kg",
+    }
+    product.update(extra)
+    return product
+
+
+def kinds(result, profile, un="1263"):
+    item = next(row for row in regime(result, profile)["items"]
+                if row["un_number"] == un)
+    return [mark["kind"] for mark in item["marks"]]
+
+
+def test_a_line_within_the_limits_of_three_four_carries_the_diamond():
+    result = check_package_marking(
+        [{"line_id": "1", "products": [lq_product()]}], ["ADR"], "nl")
+    assert "limited_quantities" in kinds(result, "ADR")
+
+
+def test_a_line_over_the_inner_packaging_limit_does_not():
+    """Column 7a gives 5 L; a 6 L inner packaging is outside chapter 3.4, and
+    a mark on that package would be a claim the goods do not support."""
+    result = check_package_marking(
+        [{"line_id": "1", "products": [lq_product(net_per_inner_packaging="6 L")]}],
+        ["ADR"], "nl")
+    assert "limited_quantities" not in kinds(result, "ADR")
+
+
+def test_a_line_whose_column_7a_forbids_it_does_not():
+    """'0' in column 7a means carriage as a limited quantity is not permitted."""
+    result = check_package_marking(
+        [{"line_id": "1", "products": [lq_product(limited_quantity="0")]}],
+        ["ADR"], "nl")
+    assert "limited_quantities" not in kinds(result, "ADR")
+
+
+def test_the_same_function_decides_this_as_decides_the_lq_check():
+    """Two readings of one question drift apart, and here that would mean a
+    package that carries the mark on one screen and not on the other. The
+    marking check calls ``_assess_lq`` rather than testing the limits again."""
+    import inspect
+
+    from app.services.dg import package_marking
+
+    source = inspect.getsource(package_marking._limited_quantities_mark)
+    assert "_assess_lq" in source
+
+
+def test_the_sea_does_not_borrow_the_land_s_chapter_three_four():
+    """The Code has a chapter 3.4 of its own, with its own numbering, and it
+    has not been read. Answering the sea out of ADR 3.4.7 is the mistake
+    column 6 already made once; the open point says so instead."""
+    result = check_package_marking(
+        [{"line_id": "1", "products": [lq_product()]}], ["IMDG"], "nl")
+    assert "limited_quantities" not in kinds(result, "IMDG")
+    assert "imdg_chapter_3_4_not_read" in result["open"]
+
+
+def test_the_mark_carries_the_size_and_the_reduction_the_provision_gives():
+    result = check_package_marking(
+        [{"line_id": "1", "products": [lq_product()]}], ["ADR"], "nl")
+    item = next(row for row in regime(result, "ADR")["items"])
+    mark = next(m for m in item["marks"] if m["kind"] == "limited_quantities")
+    assert mark["provision"] == "3.4.7"
+    assert mark["size"]["min_width_mm"] == 100
+    assert mark["size"]["min_line_width_mm"] == 2
+    assert mark["reduction"]["floor_width_mm"] == 50
+    assert mark["air_variant"]["symbol"] == "Y"
+    assert mark["air_variant"]["optional"] is True

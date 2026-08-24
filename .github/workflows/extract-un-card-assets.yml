@@ -90,6 +90,7 @@ jobs:
         run: |
           python scripts/extract_adr_label_models.py \
             --vol1 /tmp/cargopilot-regulations/adr2.pdf \
+            --vol-adr1 /tmp/cargopilot-regulations/adr1.pdf \
             --out scripts/un_cards/assets/labels \
             --allow-missing
 

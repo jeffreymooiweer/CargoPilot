@@ -187,12 +187,34 @@ GROUPS: dict[str, list[Provision]] = {
     # The LQ marking above a certain load. CargoPilot fires on 8 tonnes of LQ
     # alone; the text is believed to add a condition on the transport unit.
     "lq_marking": [
+        # The package first. 3.4.13 to 3.4.15 mark the transport unit, and
+        # reading only those answers the carrier's question while leaving the
+        # packer's — which is the one this application is arranged around —
+        # unread. The two marks are different sizes and neither implies the
+        # other.
+        Provision("3.4.7", ("adr1", "rid", "adn"), chars=2600,
+                  anchors=("Marking of packages containing limited quantities",),
+                  note="the package mark: the diamond, its dimensions and its colours"),
+        Provision("3.4.8", ("adr1", "rid", "adn"), chars=2000,
+                  note="the same mark with 'Y', for a package packed to the air rules"),
+        Provision("3.4.9", ("adr1", "rid", "adn"), chars=1200,
+                  note="overpacks — whether the mark has to be reproduced on the outside"),
+        Provision("3.4.10", ("adr1", "rid", "adn"), chars=1200),
+        Provision("3.4.11", ("adr1", "rid", "adn"), chars=1200),
+        Provision("3.4.12", ("adr1", "rid", "adn"), chars=1200),
         Provision("3.4.13", ("adr1", "rid", "adn"), chars=2000,
                   note="when the large LQ mark is required — check for a 12 t condition"),
         Provision("3.4.14", ("adr1", "rid", "adn"), chars=1200,
                   note="when the 3.4.13 marking may be omitted"),
         Provision("3.4.15", ("adr1", "rid", "adn"), chars=1200,
                   note="the mark itself, and its dimensions"),
+        # And the sea, which numbers its own chapter 3.4 differently and has
+        # never yet agreed with the land where it was assumed to. Read whole
+        # rather than quoted per number, because the numbering is what is in
+        # question.
+        Provision("3.4", ("imdg_42_24",), chars=22000,
+                  anchors=("Limited quantities",),
+                  note="the Code's own chapter 3.4 — its numbering is not ADR's"),
     ],
     # The 1000-point rule. RID and ADN are believed to have their own version;
     # CargoPilot answers all three with ADR's table.

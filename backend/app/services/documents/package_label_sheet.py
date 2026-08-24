@@ -125,6 +125,19 @@ BATTERY_RED = colors.HexColor("#d0021b")
 #: prescribed one would be the same lie as printing a label at the wrong size.
 ARROWS_HEIGHT_MM = 100.0
 
+#: The limited quantities mark of 3.4.7.1. The side, the line and the colours
+#: are the provision's; the black portion is the one feature it leaves to
+#: "approximate proportion to those shown", measured off Figure 3.4.7.1 in ADR
+#: Volume I at 81 and 82 pixels of 353 — the two agree because the figure is
+#: symmetric, which is what makes the number a measurement and not a guess.
+#: 3.4.7.2 allows 50 mm where the package requires it; that is the packer's
+#: judgement about their own drum, so the sheet prints the full size and says
+#: the smaller one is available.
+LQ_SIDE_MM = 100.0
+LQ_LINE_MM = 2.0
+LQ_BLACK_PORTION = 0.231
+SQRT_TWO = 2.0 ** 0.5
+
 TEXT: dict[str, dict[str, str]] = {
     "title": {
         "nl": "Etiketten- en merkenblad voor colli (5.2)",
@@ -222,6 +235,94 @@ TEXT: dict[str, dict[str, str]] = {
         "fr": "Matériau : le papier ne convient pas. Le 5.2.1.2 exige une résistance aux "
               "intempéries ; le code IMDG exige la lisibilité après trois mois dans la "
               "mer (marques 5.2.1.2, étiquettes 5.2.2.2.1.7). Norme : BS 5609.",
+    },
+    "lq_mark": {
+        "nl": "Merk gelimiteerde hoeveelheden",
+        "en": "Limited quantities mark",
+        "de": "Kennzeichen für begrenzte Mengen",
+        "fr": "Marque pour quantités limitées",
+    },
+    "lq_built": {
+        "nl": "Getekend naar de woorden van 3.4.7.1: een vierkant op de punt, boven- en "
+              "ondervlak en de omlijning zwart, het middenvlak wit, 100 mm per zijde en "
+              "de lijn 2 mm. Hoe diep de zwarte vlakken lopen staat er niet bij — de "
+              "bepaling zegt \"in ongeveer dezelfde verhouding als afgebeeld\" — en is "
+              "gemeten aan figuur 3.4.7.1 zelf.",
+        "en": "Drawn to the words of 3.4.7.1: a square set on its point, the top and "
+              "bottom portions and the surrounding line black, the centre white, 100 mm "
+              "a side and the line 2 mm. How deep the black portions run is not stated — "
+              "the provision says \"in approximate proportion to those shown\" — and was "
+              "measured off Figure 3.4.7.1 itself.",
+        "de": "Nach dem Wortlaut von 3.4.7.1 gezeichnet: ein auf die Spitze gestelltes "
+              "Quadrat, oberer und unterer Teil und die Umrandung schwarz, die Mitte "
+              "weiß, 100 mm je Seite und die Linie 2 mm. Wie tief die schwarzen Felder "
+              "reichen, steht nicht dabei — die Vorschrift sagt \"in ungefähr gleichem "
+              "Verhältnis wie abgebildet\" — und wurde an Abbildung 3.4.7.1 gemessen.",
+        "fr": "Tracée selon les mots du 3.4.7.1 : un carré posé sur la pointe, les "
+              "parties supérieure et inférieure et le pourtour en noir, le centre en "
+              "blanc, 100 mm de côté et le trait de 2 mm. La profondeur des parties "
+              "noires n'est pas indiquée — la disposition dit « approximativement dans "
+              "les proportions représentées » — et a été mesurée sur la figure 3.4.7.1.",
+    },
+    "lq_smaller": {
+        "nl": "Mag naar 50 × 50 mm met een lijn van 1 mm als de grootte van het collo "
+              "daarom vraagt en het merk duidelijk zichtbaar blijft (3.4.7.2). Dat is "
+              "een oordeel over het collo dat u voor zich heeft; dit blad drukt de volle "
+              "maat af.",
+        "en": "May go to 50 × 50 mm with a 1 mm line if the size of the package so "
+              "requires and the mark stays clearly visible (3.4.7.2). That is a "
+              "judgement about the package in front of you; this sheet prints the full "
+              "size.",
+        "de": "Darf auf 50 × 50 mm mit 1 mm Linie verkleinert werden, wenn die Größe des "
+              "Versandstücks es erfordert und das Kennzeichen deutlich sichtbar bleibt "
+              "(3.4.7.2). Das ist eine Beurteilung des Versandstücks vor Ihnen; dieses "
+              "Blatt druckt die volle Größe.",
+        "fr": "Peut être réduite à 50 × 50 mm avec un trait de 1 mm si la taille du "
+              "colis l'exige et que la marque reste bien visible (3.4.7.2). C'est un "
+              "jugement sur le colis devant vous ; cette feuille imprime la taille "
+              "complète.",
+    },
+    "lq_unit": {
+        "nl": "Op de transporteenheid gaat hetzelfde merk mee in 250 × 250 mm (3.4.15), "
+              "boven 12 ton voor en achter en op een container op alle vier de zijden "
+              "(3.4.13) — maar niet als de lading al oranje borden of plakkaten voert, "
+              "en het mag vervallen onder 8 ton (3.4.14). Beide voorwaarden gaan over de "
+              "hele lading; dit blad ziet één zending en beslist er niets over.",
+        "en": "On the transport unit the same mark rides at 250 × 250 mm (3.4.15), front "
+              "and rear above 12 tonnes and on all four sides of a container (3.4.13) — "
+              "but not where the load already carries orange plates or placards, and it "
+              "may be dispensed with below 8 tonnes (3.4.14). Both conditions are about "
+              "the whole load; this sheet sees one consignment and decides nothing about "
+              "them.",
+        "de": "Auf der Beförderungseinheit fährt dasselbe Kennzeichen in 250 × 250 mm mit "
+              "(3.4.15), über 12 Tonnen vorn und hinten und an einem Container auf allen "
+              "vier Seiten (3.4.13) — aber nicht, wenn die Ladung bereits orangefarbene "
+              "Tafeln oder Großzettel führt, und es darf unter 8 Tonnen entfallen "
+              "(3.4.14). Beide Bedingungen betreffen die ganze Ladung; dieses Blatt sieht "
+              "eine Sendung und entscheidet darüber nichts.",
+        "fr": "Sur l'unité de transport la même marque voyage en 250 × 250 mm (3.4.15), à "
+              "l'avant et à l'arrière au-dessus de 12 tonnes et sur les quatre faces d'un "
+              "conteneur (3.4.13) — mais pas lorsque le chargement porte déjà des "
+              "panneaux orange ou des plaques-étiquettes, et elle peut être omise en "
+              "dessous de 8 tonnes (3.4.14). Les deux conditions portent sur le "
+              "chargement entier ; cette feuille voit un envoi et n'en décide rien.",
+    },
+    "lq_air": {
+        "nl": "Voor een collo verpakt volgens ICAO TI deel 3 hoofdstuk 4 mag hetzelfde "
+              "merk met een \"Y\" in het midden (3.4.8). Mag — het is een bevestiging, "
+              "geen eis, en de luchtregels zijn hier niet gelezen.",
+        "en": "For a package packed to Part 3, Chapter 4 of the ICAO Technical "
+              "Instructions the same mark may carry a \"Y\" in the centre (3.4.8). May — "
+              "it certifies conformity rather than being required, and the air rules are "
+              "not read here.",
+        "de": "Für ein nach Teil 3 Kapitel 4 der ICAO-Technischen Anweisungen verpacktes "
+              "Versandstück darf dasselbe Kennzeichen ein \"Y\" in der Mitte tragen "
+              "(3.4.8). Darf — es bestätigt die Übereinstimmung, es ist keine Pflicht, "
+              "und die Luftvorschriften sind hier nicht gelesen.",
+        "fr": "Pour un colis emballé selon la partie 3, chapitre 4 des Instructions "
+              "techniques de l'OACI, la même marque peut porter un « Y » au centre "
+              "(3.4.8). Peut — elle atteste la conformité sans être exigée, et les règles "
+              "aériennes ne sont pas lues ici.",
     },
     "mark": {"nl": "Merk", "en": "Mark", "de": "Kennzeichen", "fr": "Marque"},
     "column_6": {
@@ -502,6 +603,84 @@ class _FullSizeLabel(Flowable):
         canvas.restoreState()
 
 
+class _LimitedQuantitiesMark(Flowable):
+    """The diamond of 3.4.7.1, built from the provision's own words.
+
+    Almost all of it is stated: a square set at 45 degrees, the top and bottom
+    portions and the surrounding line black, the centre white, minimum 100 mm
+    by 100 mm, the line at least 2 mm. One thing is not — how deep the black
+    portions run — because 3.4.7.1 ends "Where dimensions are not specified,
+    all features shall be in approximate proportion to those shown", and that
+    is one of them.
+
+    So it was measured off the edition's figure rather than chosen, and the
+    measurement checks itself: the two portions came back 81 and 82 pixels of
+    a 353-pixel height, one pixel apart on a figure that is symmetric.
+
+    The figure is not cut and printed the way the class labels are, for the
+    same reason the battery mark is not: the edition wraps it in dimension
+    annotations — "Minimum dimension 100 mm" on two sides, with leader
+    arrows — and they abut the diamond. A mark carrying a caption about its
+    own minimum size is not the mark the regulation prescribes.
+    """
+
+    def __init__(self, side_mm: float = LQ_SIDE_MM, symbol: str = ""):
+        super().__init__()
+        # A square of this side, set on its point, needs its diagonal across.
+        self.span = side_mm * SQRT_TWO * mm
+        self.line = LQ_LINE_MM * mm
+        self.symbol = symbol
+        self.width = self.span
+        self.height = self.span
+
+    def wrap(self, available_width, available_height):
+        return self.width, self.height
+
+    def draw(self):
+        canvas = self.canv
+        span = self.span
+        cx = cy = span / 2.0
+        half = span / 2.0
+
+        # The diamond itself: white centre, black surrounding line.
+        canvas.setLineJoin(0)
+        canvas.setStrokeColor(colors.black)
+        canvas.setFillColor(colors.white)
+        canvas.setLineWidth(self.line)
+        path = canvas.beginPath()
+        path.moveTo(cx, cy + half)
+        path.lineTo(cx + half, cy)
+        path.lineTo(cx, cy - half)
+        path.lineTo(cx - half, cy)
+        path.close()
+        canvas.drawPath(path, stroke=1, fill=1)
+
+        # The top and bottom portions. At a depth d below the top vertex the
+        # diamond is d wide either side of the centre, because its width and
+        # its height are equal — so each portion is a triangle on the same
+        # slope as the edge it sits inside.
+        depth = span * LQ_BLACK_PORTION
+        canvas.setFillColor(colors.black)
+        for sign in (1, -1):
+            apex_y = cy + sign * half
+            base_y = apex_y - sign * depth
+            portion = canvas.beginPath()
+            portion.moveTo(cx, apex_y)
+            portion.lineTo(cx + depth, base_y)
+            portion.lineTo(cx - depth, base_y)
+            portion.close()
+            canvas.drawPath(portion, stroke=0, fill=1)
+
+        # 3.4.8.1's "Y", when this is that variant: in the centre, clearly
+        # visible. A letter is a letter — it is set in type rather than cut
+        # out of the page, which is the whole of what the provision asks.
+        if self.symbol:
+            size = span * 0.30
+            canvas.setFillColor(colors.black)
+            canvas.setFont("Helvetica", size)
+            canvas.drawCentredString(cx, cy - size * 0.35, self.symbol)
+
+
 class _BatteryMark(Flowable):
     """The mark of 5.2.1.9.2: the edition's symbol inside a frame of words.
 
@@ -714,6 +893,25 @@ def _mark_pages(result: dict[str, Any], styles: dict[str, Any],
         story.append(_material_line(styles, lang))
         story.append(Spacer(1, 6))
         story.append(_FullSizeLabel(image))
+
+    # The limited quantities diamond, once per sheet rather than once per line.
+    # It carries nothing about the substance — no number, no name, no class —
+    # so a stack of them per goods line would be a stack of identical pages.
+    if any(mark.get("kind") == "limited_quantities"
+           for block in result.get("regimes", [])
+           for item in block.get("items", [])
+           for mark in item.get("marks", [])):
+        story.append(PageBreak())
+        story.append(_p(f"{_t('lq_mark', lang)} "
+                        f"({_t('provision', lang)} 3.4.7.1)", styles["meta"]))
+        story.append(Spacer(1, 4))
+        story.append(_p(_t("lq_built", lang), styles["fixed"]))
+        story.append(_p(_t("lq_smaller", lang), styles["fixed"]))
+        story.append(_p(_t("lq_unit", lang), styles["fixed"]))
+        story.append(_p(_t("lq_air", lang), styles["fixed"]))
+        story.append(_material_line(styles, lang))
+        story.append(Spacer(1, 6))
+        story.append(_LimitedQuantitiesMark())
 
     # No symbol, no page. A frame with the UN number in it and an empty middle
     # is not a lesser version of this mark; it is a different one, and the whole

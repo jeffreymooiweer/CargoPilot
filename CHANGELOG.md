@@ -2,6 +2,41 @@
 
 All notable changes are documented here, following [Semantic Versioning](https://semver.org/).
 
+## [1.163.3] — 2026-08-24
+
+### Mail and rate limiting at the open level
+
+Documentation only; no behaviour changes. Level 1 of the privacy levels decided in
+v1.163.2 said "no mailing documents" and left rate limiting as one line. Both were too
+short, and reading the code for them turned up something that is not a roadmap item at
+all.
+
+- **Configuring a mail server at level 1 needs nothing new.** `SMTP_HOST` and the seven
+  values beside it have been environment settings since v1.141.0, added in so many words
+  "for installations that would rather configure it in the environment than in the
+  screen". At level 1 that stops being an alternative and becomes the only way, because
+  there is no settings screen.
+- **What does need building is a second switch**, kept deliberately apart from the
+  first: `SMTP_*` says whether the installation can send at all, and a separate setting
+  says whether someone who never signed in may make it send. Off by default at every
+  level. Answering the second question with the first is how an installation becomes a
+  spam relay with a good amplification ratio, spending its own domain's reputation.
+- **The rate limiter is half-built, and the existing half is the wrong half.** `slowapi`
+  is already a dependency and the limiter is already wired up, but all six
+  `@limiter.limit` decorators sit on authentication routes — the routes level 1 deletes.
+  What costs real money there is unprotected today precisely because a login stands in
+  front of it: document generation, the assistant's inference, the Photon proxy, mail.
+
+**And one live defect, found while writing the above.** The limiter is keyed on
+`slowapi.util.get_remote_address`, which returns `request.client.host` and never reads
+`X-Forwarded-For`. Behind a reverse proxy — which every TLS-terminating deployment has —
+every caller collapses into one bucket. That is not only a level 1 concern: **today** an
+organisation of fifteen people behind one proxy shares the 10/minute sign-in budget and
+the 5/minute password-reset budget, and can lock each other out. `trusted_proxy_headers`
+already exists for the scheme and host and is the switch the key function should read.
+Recorded here rather than fixed in the same breath, because changing how a security
+limit is keyed deserves its own release and its own tests.
+
 ## [1.163.2] — 2026-08-24
 
 ### The privacy levels, decided

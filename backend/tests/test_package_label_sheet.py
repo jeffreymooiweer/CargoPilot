@@ -324,3 +324,96 @@ def test_the_registry_offers_it_on_every_mode_that_carries_packages():
     for mode in ("road", "rail", "sea", "inland"):
         assert "package_label_sheet" in per_mode[mode]
     assert "package_label_sheet" not in per_mode["air"]
+
+
+# --- the limited quantities mark, which is drawn rather than cut ---
+
+
+def limited_quantities_sheet(language="nl"):
+    product = {
+        "un_number": "1263", "proper_shipping_name": "VERF", "class": "3",
+        "labels": "3", "packing_group": "II", "limited_quantity": "5 L",
+        "net_per_inner_packaging": "1 L", "gross_mass_per_package": "10 kg",
+    }
+    return render_package_label_sheet(
+        CONSIGNMENT, [], [{"line_id": "1", "products": [product]}],
+        language, ["ADR"])
+
+
+def lq_shapes(path):
+    """The drawn paths on the page carrying the diamond of 3.4.7.1.
+
+    Measured from the drawings rather than from pixels. The first version of
+    this test thresholded the page and took the extent of everything dark,
+    which swept the caption in with the figure and reported the mark as 176 mm
+    across — a failure of the ruler, not of the mark.
+    """
+    with pymupdf.open(str(path)) as document:
+        for page in document:
+            if "3.4.7.1" in page.get_text():
+                return [item["rect"] for item in page.get_drawings()]
+    return []
+
+
+def test_the_limited_quantities_mark_is_a_hundred_millimetres_a_side():
+    """3.4.7.1: minimum 100 mm x 100 mm, for a square set at 45 degrees.
+
+    Which puts it at 141.4 mm point to point, the same reading as the class
+    labels — measured off the page rather than trusted, because the other
+    reading of "100 mm x 100 mm" gives a 71 mm side and looks entirely right.
+    """
+    shapes = lq_shapes(limited_quantities_sheet())
+    assert shapes, "the mark page carries no drawing"
+    diamond = max(shapes, key=lambda r: r.width * r.height)
+    width_mm = diamond.width / 72 * 25.4
+    height_mm = diamond.height / 72 * 25.4
+    assert round(width_mm, 1) == round(FULL_SIZE_MM, 1), width_mm
+    assert round(height_mm, 1) == round(FULL_SIZE_MM, 1), height_mm
+    assert round(width_mm / 2 ** 0.5) == 100
+
+
+def test_the_black_portions_are_the_proportion_that_was_measured():
+    """The one feature 3.4.7.1 leaves to "approximate proportion to those
+    shown", measured off the edition's figure at 81 and 82 pixels of 353.
+
+    Both portions are checked, because the figure is symmetric and an
+    asymmetric drawing would mean the proportion was applied to one end only.
+    """
+    from app.services.documents.package_label_sheet import LQ_BLACK_PORTION
+
+    shapes = sorted(lq_shapes(limited_quantities_sheet()),
+                    key=lambda r: r.width * r.height, reverse=True)
+    diamond, portions = shapes[0], shapes[1:3]
+    assert len(portions) == 2, shapes
+    for portion in portions:
+        assert abs(portion.height / diamond.height - LQ_BLACK_PORTION) < 0.005, (
+            portion.height / diamond.height)
+
+
+def test_the_mark_appears_once_however_many_lines_carry_it():
+    """It says nothing about the substance — no number, no name, no class —
+    so one page serves every line that needs it."""
+    product = {
+        "un_number": "1263", "proper_shipping_name": "VERF", "class": "3",
+        "labels": "3", "packing_group": "II", "limited_quantity": "5 L",
+        "net_per_inner_packaging": "1 L", "gross_mass_per_package": "10 kg",
+    }
+    path = render_package_label_sheet(
+        CONSIGNMENT, [], [{"line_id": "1", "products": [product, dict(product)]}],
+        "nl", ["ADR"])
+    assert sum(1 for text in pages(path) if "3.4.7.1" in text) == 1
+
+
+def test_the_mark_page_names_the_unit_marking_without_deciding_it():
+    """3.4.13 and 3.4.14 turn on the mass of the whole load. This check sees
+    one consignment, so both are named and neither is applied."""
+    text = next(t for t in pages(limited_quantities_sheet()) if "3.4.7.1" in t)
+    flat = text.replace("\n", " ")
+    for provision in ("3.4.15", "3.4.13", "3.4.14", "3.4.8"):
+        assert provision in flat, provision
+
+
+def test_the_mark_page_renders_in_every_language():
+    for language in ("nl", "en", "de", "fr"):
+        assert any("3.4.7.1" in t
+                   for t in pages(limited_quantities_sheet(language))), language

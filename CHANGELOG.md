@@ -2,6 +2,49 @@
 
 All notable changes are documented here, following [Semantic Versioning](https://semver.org/).
 
+## [1.165.0] — 2026-08-24
+
+### The limited quantities diamond
+
+The last mark the package label sheet owed. It belongs to **chapter 3.4**, not 5.2, which
+is why chapter 5.2 could be closed in v1.163.0 with this still outstanding.
+
+ADR 3.4.7.1 states nearly all of it: a square set at 45 degrees, the top and bottom
+portions and the surrounding line black, the centre white or a suitable contrasting
+background, minimum 100 mm by 100 mm, the line at least 2 mm. It leaves exactly one thing
+to the drawing — how deep the black portions run — under "where dimensions are not
+specified, all features shall be in approximate proportion to those shown".
+
+- **That one number was measured, not chosen.** Figure 3.4.7.1 was cut out of the edition
+  and the two black portions came back at 81 and 82 pixels of a 353-pixel height. The
+  figure is symmetric, so the two measurements agreeing to a pixel is the check on the
+  measurement; the mark is drawn at 0.231 of its height.
+- **Drawn, not cut**, for the same reason the battery mark is: the edition wraps the
+  figure in "Minimum dimension 100 mm" annotations with leader arrows, and they abut the
+  diamond. A mark carrying a caption about its own minimum size is not the mark the
+  regulation prescribes.
+- **Whether a line travels under chapter 3.4 is not decided twice.** The LQ check already
+  tests the line against column 7a and the 30 kg limit of 3.4.2; the marking check calls
+  that same function rather than testing the limits again, and a test asserts it does.
+  Two readings of one question is how a package comes to carry the mark on one screen and
+  not on the other.
+- **Named and not applied:** the 250 mm mark of 3.4.15 on the transport unit, because
+  3.4.13 turns on 12 tonnes and 3.4.14 on 8 tonnes and both are about the whole load,
+  which this check does not see; the 50 mm reduction of 3.4.7.2, a judgement about the
+  package in front of the packer; and the "Y" of 3.4.8, which a package *may* bear rather
+  than shall. All four are on the sheet, in four languages.
+
+**The sea does not get it.** The IMDG Code has a chapter 3.4 of its own with its own
+numbering, and the attempt to read it landed in the Dangerous Goods List instead — the
+phrase "Limited quantities" matches in the wrong half of that book. Answering the sea out
+of ADR 3.4.7 is exactly the mistake column 6 already made once, so the sea answer carries
+`imdg_chapter_3_4_not_read` and claims nothing.
+
+Also here: a crop may now name the volume it was measured in, because chapter 3.4 is in
+ADR Volume I while everything cut before it was in Volume II; and the crop finder's
+`--pages` said "printed page" while the code has always meant the PDF page, which in
+Volume I differ by twenty.
+
 ## [1.164.0] — 2026-08-24
 
 ### The limits reach the endpoints that cost something

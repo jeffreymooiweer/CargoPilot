@@ -369,7 +369,52 @@ def _marks_for_land(product: dict[str, Any], un: str) -> tuple[list[dict[str, An
             "certain": True,
         })
 
+    lq = _limited_quantities_mark(product)
+    if lq is not None:
+        marks.append(lq)
+
     return marks, open_points
+
+
+def _limited_quantities_mark(product: dict[str, Any]) -> dict[str, Any] | None:
+    """The diamond of 3.4.7, when the line actually travels under chapter 3.4.
+
+    Whether it does is not decided here. ``check_lq_eq`` already tests the line
+    against column 7a and the 30 kg limit of 3.4.2, and a second reading of the
+    same question is how two answers begin to disagree — which for this mark
+    would mean a package that carries it on one screen and not on the other.
+    So the same function answers both, and this one only asks.
+    """
+    from app.services.dg.compliance import _assess_lq, _parse_measures
+
+    raw = str(product.get("limited_quantity") or "").strip()
+    if not raw:
+        return None
+    if product.get("transport_forbidden"):
+        return None
+
+    inner = _parse_measures(product.get("net_per_inner_packaging"))
+    gross = _parse_measures(product.get("gross_mass_per_package"))
+    gross_kg = gross[0][0] / 1000.0 if gross and gross[0][1] == "mass" else None
+    verdict = _assess_lq(raw, inner, gross_kg, "en")
+    if verdict.get("status") != "within_limits":
+        return None
+
+    mark = rules()["marks"]["limited_quantities"]
+    return {
+        "kind": "limited_quantities",
+        "provision": mark["provision"],
+        "size": dict(mark["size"]),
+        "reduction": dict(mark["reduction"]),
+        "certain": True,
+        # 3.4.8 is offered, never required: the Code says a package packed to
+        # the ICAO instructions "may bear" the Y. Air is locked here besides.
+        "air_variant": {
+            "provision": mark["air_variant"]["provision"],
+            "symbol": mark["air_variant"]["symbol"],
+            "optional": True,
+        },
+    }
 
 
 def _marks_for_sea(product: dict[str, Any], un: str) -> tuple[list[dict[str, Any]], list[str]]:
@@ -433,6 +478,15 @@ def _marks_for_sea(product: dict[str, Any], un: str) -> tuple[list[dict[str, Any
             mark["exemption_provision"] = "2.10.2.7"
             open_points.append("marine_pollutant_threshold")
         marks.append(mark)
+
+    # The limited quantities mark is deliberately absent here. The land answer
+    # carries it from ADR 3.4.7, and the Code has a chapter 3.4 of its own with
+    # its own numbering — which is exactly the shape of mistake this module has
+    # already made once, in column 6, where the sea was answered out of the
+    # land's book because the numbers looked plausible either way. The Code's
+    # chapter has not been read, so nothing is claimed from it.
+    if str(product.get("limited_quantity") or "").strip():
+        open_points.append("imdg_chapter_3_4_not_read")
 
     return marks, open_points
 

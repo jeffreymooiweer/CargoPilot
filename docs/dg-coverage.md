@@ -260,6 +260,37 @@ do, and enough, because the argument for printing labels at all (a package label
 is printed on adhesive stock, where a placard on a laser printer is not a placard) rests
 on the material being stated where the material is chosen.
 
+**The limited quantities mark, since v1.165.0.** It belongs to chapter 3.4 rather than
+5.2, which is why 5.2 could be closed without it and why it was still owed. ADR 3.4.7.1
+states nearly all of it — a square set at 45 degrees, top and bottom portions and the
+surrounding line black, the centre white, minimum 100 mm a side, the line at least 2 mm —
+and leaves exactly one thing to the drawing: how deep the black portions run, under
+"where dimensions are not specified, all features shall be in approximate proportion to
+those shown". That one number was measured off Figure 3.4.7.1 itself, at 81 and 82 pixels
+of a 353-pixel height; the two agree to a pixel because the figure is symmetric, and that
+agreement is the check on the measurement.
+
+The mark is **drawn, not cut**, for the same reason the battery mark is: the edition
+wraps the figure in dimension annotations that abut the diamond, and a mark carrying a
+caption about its own minimum size is not the mark the regulation prescribes.
+
+Whether a line travels under chapter 3.4 is **not decided twice**. The LQ check already
+tests the line against column 7a and the 30 kg limit of 3.4.2, and the marking check
+calls that same function rather than testing the limits again — two readings of one
+question is how a package comes to carry the mark on one screen and not on the other.
+
+What is named and not applied: the 250 mm mark of 3.4.15 on the transport unit, because
+3.4.13 turns on 12 tonnes and 3.4.14 on 8 tonnes and both are about the whole load, which
+this check does not see; the 50 mm reduction of 3.4.7.2, which is a judgement about the
+package in front of the packer; and the "Y" of 3.4.8, which the Code says a package
+*may* bear rather than shall.
+
+**And the sea does not get it.** The IMDG Code has a chapter 3.4 of its own with its own
+numbering, and the attempt to read it landed in the Dangerous Goods List instead —
+"Limited quantities" matches in the wrong half of that book. Answering the sea out of
+ADR 3.4.7 would be exactly the mistake column 6 already made once, so the sea answer
+carries `imdg_chapter_3_4_not_read` and claims nothing.
+
 **Chapter 5.2 answers per regime, since v1.160.0.** What goes on the *package* was the
 half nobody asked for: the labels of column (5) were read for eight other purposes and
 never turned into an answer for the person taping the drum shut. Four editions were read

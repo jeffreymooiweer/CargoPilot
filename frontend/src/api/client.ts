@@ -329,6 +329,18 @@ export const api = {
       method: "POST",
       body: JSON.stringify({ entries, lines, profiles, language }),
     }),
+  /** The outward consignment turned round: empty uncleaned, back to the filler.
+   *
+   *  The transformation is the server's, not this file's, because what may
+   *  *not* be carried over is a regulatory judgement — every quantity the
+   *  outward consignment stated is false on the way back — and that belongs
+   *  where it is tested with the rest of the regulatory code. Nothing is
+   *  stored: the answer is the same shape the wizard already holds. */
+  dgReturn: (values: Record<string, string>, lines: LineItem[], dangerous_goods: DgEntry[]) =>
+    request<{ values: Record<string, string>; lines: LineItem[]; dangerous_goods: DgEntry[] }>(
+      "/dg/return",
+      { method: "POST", body: JSON.stringify({ values, lines, dangerous_goods }) },
+    ),
   dgCompliance: (entries: DgEntry[], profiles: string[], language: string) =>
     request<DgComplianceResult>("/dg/compliance", {
       method: "POST",

@@ -80,7 +80,11 @@
     "changeModality": "Choisir un autre mode de transport",
     "loading": "Chargement…",
     "next": "Suivant",
-    "paste": "Collez vos lignes ici : désignation | quantité | unité"
+    "paste": "Collez vos lignes ici : désignation | quantité | unité",
+    "returnShipment": "Préparer le retour",
+    "returnPreparing": "En cours…",
+    "returnPrepared": "Retour préparé : parties inversées, chaque ligne mise en vide non nettoyé. Toutes les quantités ont été effacées — indiquez ce qui revient réellement.",
+    "returnShipmentHint": "Les mêmes emballages vides et non nettoyés vers l'expéditeur, avec la mention du 5.4.1.1.6.1. Les quantités de l'aller ne sont pas reprises."
   },
   "review": {
     "linesTitle": "Marchandises",

@@ -14,8 +14,15 @@ from app.services.dg.database import get_un_entries, offline_lookup, search_pack
 from app.services.dg.enrichment import enrich_un_entry
 from app.services.dg.lookup import lookup_un_number
 from app.services.dg.naming import proper_shipping_name
+from app.services.dg.return_shipment import return_shipment
 
 router = APIRouter(prefix="/dg", tags=["dangerous-goods"])
+
+
+class ReturnRequest(BaseModel):
+    values: dict = Field(default_factory=dict)
+    lines: list[dict] = Field(default_factory=list)
+    dangerous_goods: list[dict] = Field(default_factory=list)
 
 
 class PrepareRequest(BaseModel):
@@ -77,6 +84,21 @@ def dg_packagings(
 def dg_prepare(payload: PrepareRequest, user: User = Depends(get_current_user)):
     """Complete DG positions automatically and compose the official document lines."""
     return prepare_entries(payload.entries, payload.lines, payload.profiles, payload.language)
+
+
+@router.post("/return")
+def dg_return(payload: ReturnRequest, user: User = Depends(get_current_user)):
+    """The outward consignment turned round: empty uncleaned, back to the filler.
+
+    The transformation lives in the service rather than in the browser because
+    what may *not* be carried over is a regulatory judgement — every quantity
+    the outward consignment stated is false on the way back — and that belongs
+    where it is tested with the rest of the regulatory code.
+
+    Nothing is stored. The answer is the same shape the wizard already holds,
+    and every check then runs on it exactly as on a shipment somebody typed.
+    """
+    return return_shipment(payload.values, payload.lines, payload.dangerous_goods)
 
 
 def _surface_q_status(outcome: dict, q_status: dict) -> None:

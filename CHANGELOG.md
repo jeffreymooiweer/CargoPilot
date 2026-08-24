@@ -2,6 +2,42 @@
 
 All notable changes are documented here, following [Semantic Versioning](https://semver.org/).
 
+## [1.167.0] — 2026-08-24
+
+### Return shipments in one click
+
+The drums that just went out come home empty and uncleaned, and the return is the
+outward consignment read backwards — the same drums, the same substance, the two parties
+the other way round. The export step now turns it round in one button.
+
+- **The parties swap**, with their addresses and contacts. The filler receives what they
+  sent.
+- **Every line becomes empty uncleaned**, which the document line already understood:
+  5.4.1.1.6.1 puts the words after the description, and 5.4.1.1.1 (f) then composes no
+  total quantity because these are residues nobody has weighed.
+- **Every quantity is cleared** — the ADR total, the net per package and per inner
+  packaging, the gross mass, the net explosive mass, the Q values. Not because they are
+  stale but because they are *false*: an empty drum does not contain 200 litres, and a
+  form that carries the number over invites somebody to sign for it. Copying is the easy
+  part of a one-click return; knowing what may not be copied is the work.
+- **The number of packages stays.** The same drums come back — that one is not a lie.
+- **The declaration and the signature do not come along.** Both were given for the
+  outward goods, and carrying them onto a different consignment would put somebody's name
+  under something they never saw.
+
+**The turn is the server's, not the browser's**, because what may not be carried over is
+a regulatory judgement rather than a copying convenience, and it belongs where it is
+tested with the rest of the regulatory code. Nothing is stored: the answer is the same
+shape the wizard already holds, and every check then runs on it exactly as on a shipment
+somebody typed — including the one this needed first. The same drums are 900 points
+outward and **0 on the way back**, and a test asserts that end to end.
+
+Also corrected: the roadmap research note that said this item needed no research. True of
+the description, which has been built since v1.90.0; not true of the points, which
+v1.166.0 had to fix before the button could stand on them. "No research needed" is a
+claim about one half of a feature, and the half it is not about is where the regulation
+hides.
+
 ## [1.166.0] — 2026-08-24
 
 ### An empty drum counted for 900 of the 1000 points

@@ -80,7 +80,11 @@
     "changeModality": "Anderen Verkehrsträger wählen",
     "loading": "Wird geladen…",
     "next": "Weiter",
-    "paste": "Fügen Sie hier Ihre Zeilen ein: Bezeichnung | Menge | Einheit"
+    "paste": "Fügen Sie hier Ihre Zeilen ein: Bezeichnung | Menge | Einheit",
+    "returnShipment": "Rücksendung vorbereiten",
+    "returnPreparing": "Läuft…",
+    "returnPrepared": "Rücksendung vorbereitet: Parteien getauscht, jede Position auf leer ungereinigt gesetzt. Alle Mengen wurden geleert — tragen Sie ein, was tatsächlich zurückkommt.",
+    "returnShipmentHint": "Dieselben Verpackungen leer und ungereinigt zurück zum Absender, mit der Angabe nach 5.4.1.1.6.1. Die Mengen der Hinfahrt werden nicht übernommen."
   },
   "review": {
     "linesTitle": "Güter",

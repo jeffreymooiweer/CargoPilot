@@ -80,7 +80,11 @@
     "changeModality": "Choose another modality",
     "loading": "Loading…",
     "next": "Next",
-    "paste": "Paste your lines here: description | quantity | unit"
+    "paste": "Paste your lines here: description | quantity | unit",
+    "returnShipment": "Prepare return shipment",
+    "returnPreparing": "Working…",
+    "returnPrepared": "Return prepared: parties swapped, every line set to empty uncleaned. All quantities were cleared — fill in what actually comes back.",
+    "returnShipmentHint": "The same packagings empty and uncleaned back to the consignor, with the description of 5.4.1.1.6.1. The outward quantities are not carried over."
   },
   "review": {
     "linesTitle": "Goods",

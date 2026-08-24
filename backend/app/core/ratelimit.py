@@ -75,3 +75,68 @@ def client_address(request: Request) -> str:
 
 #: The application's one rate limiter. Import it; do not build another.
 limiter = Limiter(key_func=client_address)
+
+
+# What the expensive endpoints cost, and therefore what they are allowed.
+#
+# Each of these guards work an unauthenticated caller can ask for once the
+# privacy levels open the application to one. Until then they guard against a
+# signed-in caller with a script, which is a smaller problem but the same shape.
+# The numbers are set from what a person doing the work actually does: a limit
+# that a real user reaches is a bug report, not a defence.
+#
+# The sign-in limits are not here. They sit on their routes in
+# ``api/routes/auth.py`` where they have always been, and
+# ``test_ratelimit_key`` prints every limit in the application in one table so
+# neither half can drift out of sight.
+
+#: Rendering one document. The export step offers each paper separately and a
+#: consignment can carry a dozen, so somebody working through them and then
+#: correcting a field and going round again reaches a few dozen without doing
+#: anything unusual. Rendering costs a fraction of a second, so the ceiling is
+#: set to stay out of that person's way rather than to ration the work.
+DOCUMENT_EXPORT = "60/minute"
+
+#: The whole bundle: every document, the UN cards and the written instructions
+#: in one archive. The most expensive thing a signed-in caller can ask for, and
+#: nobody assembles more than a few.
+DOCUMENT_BUNDLE = "10/minute"
+
+#: The bundle, mailed. Lower than the bundle itself on purpose: this is the one
+#: endpoint whose cost lands on somebody else — the recipient, and the sending
+#: domain's reputation.
+DOCUMENT_BUNDLE_MAIL = "5/minute"
+
+#: UN card generation, per set.
+UN_CARDS = "10/minute"
+
+#: Reading an uploaded carrier confirmation. File parsing, so the size of the
+#: work is the caller's choice.
+CARRIER_CONFIRMATION = "20/minute"
+
+#: One turn of the assistant. With a model installed this is inference, which is
+#: by a wide margin the most expensive thing in the application.
+#:
+#: The first number here was 20, on the reasoning that a conversation goes at
+#: the speed somebody types. That was wrong, and the test suite said so within
+#: the minute: the assistant is a *survey*, it offers every optional field it
+#: could still fill in, and "skip" is one turn each. The archetype test walks
+#: eighty of them, and so does a person who wants none of the optional fields —
+#: clicking skip is far faster than typing. A limit a real user reaches is a bug
+#: report, not a defence.
+#:
+#: So it is set where no person can arrive but a script is still capped: two a
+#: second. With a model installed, inference is slower than that anyway, which
+#: means this bounds the case that has no model and is merely cheap.
+ASSISTANT_STEP = "120/minute"
+
+#: Asking for the model to be downloaded. An administrator's button, and a
+#: multi-gigabyte fetch behind it.
+ASSISTANT_MODEL = "3/minute"
+
+#: Address autocomplete, which proxies to a Photon instance. The generous one,
+#: and deliberately: the field debounces at 250 ms, so a person typing four
+#: addresses into a consignment legitimately produces dozens of these. It is
+#: here because the cost falls on somebody else's free service, not because a
+#: person could plausibly exhaust it.
+ADDRESS_LOOKUP = "60/minute"

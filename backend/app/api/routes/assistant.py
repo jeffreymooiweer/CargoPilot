@@ -6,12 +6,13 @@ the rest of the application takes with pasted data and documents.
 """
 from typing import Any
 
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Request
 from pydantic import BaseModel, Field
 from sqlalchemy.orm import Session
 
 from app.core.database import get_db
 from app.core.deps import get_current_user, require_admin
+from app.core.ratelimit import ASSISTANT_MODEL, ASSISTANT_STEP, limiter
 from app.models.user import User
 from app.services.assistant import runtime
 from app.services.assistant.orchestrator import step
@@ -27,7 +28,9 @@ class AssistantStepRequest(BaseModel):
 
 
 @router.post("/step")
+@limiter.limit(ASSISTANT_STEP)
 def assistant_step(
+    request: Request,
     payload: AssistantStepRequest,
     db: Session = Depends(get_db),
     user: User = Depends(get_current_user),
@@ -52,7 +55,9 @@ class AssistantModelRequest(BaseModel):
 
 
 @router.post("/model")
+@limiter.limit(ASSISTANT_MODEL)
 def assistant_model(
+    request: Request,
     payload: AssistantModelRequest,
     user: User = Depends(require_admin),
 ):

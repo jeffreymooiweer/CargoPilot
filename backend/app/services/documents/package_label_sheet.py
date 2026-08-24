@@ -39,7 +39,7 @@ it names as its own choice rather than as a requirement.
 What it still refuses to print, and why: **anything at all for air.** The IATA
 marking rules have not been read.
 
-And one thing it says out loud on every copy: paper is not the material the
+And one thing it says out loud on **every page**: paper is not the material the
 regulation asks for. ADR 5.2.1.2 wants a mark that withstands open weather
 exposure, and the IMDG Code wants marks (5.2.1.2) and labels (5.2.2.2.1.7) alike
 still identifiable after three months in the sea. An office printer and plain
@@ -48,6 +48,20 @@ labelling trade uses to show a material does, because telling someone their
 paper will not do without saying what will is half an answer. The sheet gives
 the right content at the right size; the material stays the responsibility of
 the person applying it.
+
+*Every page* is the correction v1.163.1 had to make. Until then the warning was
+printed once, in full, on the working page — and the working page is not the
+page anyone is holding when the material is chosen. The stock is chosen when
+the printer is loaded and the artwork page is the one in hand; a front sheet
+that may never be printed, or that is set aside first, is the wrong place for
+the only statement of what the material has to be.
+
+It goes above the cut marks, and that is deliberate rather than a compromise:
+the label itself cannot carry it. A label with a sentence printed on it is not
+the label the regulation prescribes. So the warning reaches the person at the
+moment they choose the stock, which is the moment it can still change anything,
+and comes off with the offcut. A test asserts that no page carrying artwork is
+without it.
 """
 from __future__ import annotations
 
@@ -189,6 +203,25 @@ TEXT: dict[str, dict[str, str]] = {
               "par la profession pour le démontrer est BS 5609. Cette feuille fournit le "
               "bon contenu à la bonne taille ; le matériau reste la responsabilité de "
               "celui qui l'appose.",
+    },
+    #: The same warning as ``material_note``, short enough to sit above the
+    #: artwork on a page that is going to be cut up. It keeps the provisions and
+    #: the standard, because those are the parts that are of any use; what it
+    #: drops is the sentence about whose responsibility the material is, which
+    #: the working page states in full.
+    "material_short": {
+        "nl": "Materiaal: papier voldoet niet. 5.2.1.2 vraagt bestand tegen "
+              "weersinvloeden; de IMDG Code vraagt leesbaar na drie maanden in zee "
+              "(merken 5.2.1.2, etiketten 5.2.2.2.1.7). Norm: BS 5609.",
+        "en": "Material: paper does not meet this. 5.2.1.2 requires resistance to open "
+              "weather; the IMDG Code requires legibility after three months' immersion "
+              "in the sea (marks 5.2.1.2, labels 5.2.2.2.1.7). Standard: BS 5609.",
+        "de": "Material: Papier genügt nicht. 5.2.1.2 verlangt Witterungsbeständigkeit; "
+              "der IMDG-Code verlangt Lesbarkeit nach drei Monaten im Meer "
+              "(Kennzeichen 5.2.1.2, Zettel 5.2.2.2.1.7). Norm: BS 5609.",
+        "fr": "Matériau : le papier ne convient pas. Le 5.2.1.2 exige une résistance aux "
+              "intempéries ; le code IMDG exige la lisibilité après trois mois dans la "
+              "mer (marques 5.2.1.2, étiquettes 5.2.2.2.1.7). Norme : BS 5609.",
     },
     "mark": {"nl": "Merk", "en": "Mark", "de": "Kennzeichen", "fr": "Marque"},
     "column_6": {
@@ -630,6 +663,19 @@ def _column_6_block(result: dict[str, Any], styles: dict[str, Any],
     ]
 
 
+def _material_line(styles: dict[str, Any], lang: str) -> Any:
+    """The material warning, repeated on every page that carries a figure.
+
+    The full note is on the working page, which is not the page anyone holds
+    when the material is decided: the stock is chosen at the printer, and the
+    page in hand then is this one. Above the cut marks, because the label itself
+    cannot carry it — a label with a sentence printed on it is not the label the
+    regulation prescribes — so it does its work before the cut and comes off
+    with the offcut.
+    """
+    return _p(_t("material_short", lang), styles["disclaimer"])
+
+
 def _mark_pages(result: dict[str, Any], styles: dict[str, Any],
                 lang: str) -> list[Any]:
     """The marks, after the labels, one to a page.
@@ -665,6 +711,7 @@ def _mark_pages(result: dict[str, Any], styles: dict[str, Any],
         story.append(PageBreak())
         story.append(_p(f"{_t('mark', lang)} — {_t('provision', lang)} {provision}",
                         styles["meta"]))
+        story.append(_material_line(styles, lang))
         story.append(Spacer(1, 6))
         story.append(_FullSizeLabel(image))
 
@@ -679,6 +726,7 @@ def _mark_pages(result: dict[str, Any], styles: dict[str, Any],
         story.append(Spacer(1, 4))
         story.append(_p(_t("battery_built", lang), styles["fixed"]))
         story.append(_p(_t("battery_reduction", lang), styles["fixed"]))
+        story.append(_material_line(styles, lang))
         story.append(Spacer(1, 6))
         story.append(_BatteryMark(symbol, sorted(dict.fromkeys(numbers))))
 
@@ -696,6 +744,7 @@ def _mark_pages(result: dict[str, Any], styles: dict[str, Any],
         story.append(Spacer(1, 4))
         story.append(_p(_t("arrows_only_if", lang), styles["fixed"]))
         story.append(_p(_t("arrows_size", lang), styles["fixed"]))
+        story.append(_material_line(styles, lang))
         story.append(Spacer(1, 6))
         story.append(_Figure(arrows, ARROWS_HEIGHT_MM))
     return story
@@ -783,6 +832,7 @@ def render_package_label_sheet(
                 story.append(_p(
                     f"{_t('model', lang)} {entry['model']} — {item['product']} "
                     f"({_t('provision', lang)} {provision})", styles["meta"]))
+                story.append(_material_line(styles, lang))
                 story.append(Spacer(1, 6))
                 story.append(_FullSizeLabel(image))
 

@@ -246,6 +246,20 @@ The sheet also now names **BS 5609**, the standard by which the labelling trade 
 material survives those three months. Telling a packer that paper will not do, without
 saying what will, is half an answer.
 
+**Where that warning is printed, since v1.163.1.** It used to be printed once, in full,
+on the working page. The material is not chosen there — it is chosen at the printer, and
+the page in hand at that moment is the artwork page, so the only statement of what the
+stock has to be sat on a sheet that may never be printed at all. Every page carrying a
+figure now repeats it in one line, and a test asserts that none is without it, in all
+four languages, finding those pages by the figure on them rather than by page number.
+
+It sits above the cut marks by design. The label itself cannot carry it: a label with a
+sentence printed on it is not the label the regulation prescribes. So the line does its
+work before the cut and comes off with the offcut — which is the whole of what it can
+do, and enough, because the argument for printing labels at all (a package label really
+is printed on adhesive stock, where a placard on a laser printer is not a placard) rests
+on the material being stated where the material is chosen.
+
 **Chapter 5.2 answers per regime, since v1.160.0.** What goes on the *package* was the
 half nobody asked for: the labels of column (5) were read for eight other purposes and
 never turned into an answer for the person taping the drum shut. Four editions were read

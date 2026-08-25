@@ -15,7 +15,8 @@
     "closeMenu": "Menü schließen",
     "legal": "Haftungsausschluss",
     "collapseMenu": "Menü einklappen",
-    "expandMenu": "Menü ausklappen"
+    "expandMenu": "Menü ausklappen",
+    "groupage": "Sammelgut"
   },
   "theme": {
     "dark": "Dunkel",
@@ -896,5 +897,35 @@
     "none": "Keine UN-Nummern in diesem Link.",
     "unavailable": "Diese Installation teilt keine Karten per Link.",
     "note": "Diese Seite zeigt nur Referenzmaterial je UN-Nummer. Sie sagt nichts über die Sendung, die Parteien oder die Mengen."
+  },
+  "groupage": {
+    "title": "Sammelgut",
+    "intro": "Mehrere Sendungen auf einer Beförderungseinheit, gemeinsam beurteilt. Drei Regeln gelten je Beförderungseinheit und nicht je Sendung: die Punkteberechnung nach 1.1.3.6, die Zusammenladung nach 7.5.2 und die LQ-Kennzeichnung nach 3.4.13.",
+    "addConsignments": "Sendungen hinzufügen",
+    "addHint": "Wählen Sie die JSON-Exporte, die der Exportschritt je Sendung schreibt. CargoPilot führt keine Sendungshistorie, es gibt also keine Liste zur Auswahl — die Datei, die Sie bereits haben, ist die Eingabe.",
+    "onTheVehicle": "Auf dem Fahrzeug ({{count}})",
+    "consignmentName": "Name der Sendung",
+    "positions": "{{count}} Positionen",
+    "unitMass": "Zulässige Höchstmasse der Beförderungseinheit (Tonnen)",
+    "unitMassHint": "3.4.13 gilt erst über 12 Tonnen. Dies ist die einzige Angabe zur Ladung, die die Anwendung nicht ableiten kann; bleibt sie leer, wird die LQ-Kennzeichnung als unentschieden gemeldet und nicht geraten.",
+    "assess": "Fahrt beurteilen",
+    "assessing": "Läuft…",
+    "needTwo": "Fügen Sie mindestens zwei Sendungen hinzu: bei einer sagt diese Prüfung nichts, was die Sendung nicht schon sagte.",
+    "exemptionLost": "Das Zusammenladen kostet die Freistellung",
+    "apartAndTogether": "Einzeln und zusammen",
+    "together": "Zusammen auf einer Einheit",
+    "threshold": "Grenze {{value}}",
+    "exempt": "freigestellt",
+    "notExempt": "nicht freigestellt",
+    "incomplete": "unvollständig",
+    "mixedLoading": "Zusammenladung (7.5.2)",
+    "notStored": "Diese Fahrt wird nicht gespeichert. Sie besteht nur auf diesem Bildschirm; Neuladen löscht sie.",
+    "notAnExport": "{{file}} ist kein CargoPilot-Sendungsexport und wurde übersprungen.",
+    "noDangerousGoods": "{{file}} enthält keine gefährlichen Güter und wurde übersprungen.",
+    "unreadable": "{{file}} konnte nicht gelesen werden.",
+    "failed": "Die Beurteilung ist nicht gelungen."
+  },
+  "common": {
+    "remove": "Entfernen"
   }
 }

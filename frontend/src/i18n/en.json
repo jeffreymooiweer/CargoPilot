@@ -15,7 +15,8 @@
     "closeMenu": "Close menu",
     "legal": "Disclaimer",
     "collapseMenu": "Collapse menu",
-    "expandMenu": "Expand menu"
+    "expandMenu": "Expand menu",
+    "groupage": "Groupage"
   },
   "theme": {
     "dark": "Dark",
@@ -896,5 +897,35 @@
     "none": "No UN numbers in this link.",
     "unavailable": "This installation does not share cards by link.",
     "note": "This page shows reference material per UN number only. It says nothing about the consignment, the parties or the quantities."
+  },
+  "groupage": {
+    "title": "Groupage",
+    "intro": "Several consignments on one vehicle, judged together. Three rules apply per transport unit rather than per consignment: the 1.1.3.6 points, the mixed loading of 7.5.2 and the limited-quantities marking of 3.4.13.",
+    "addConsignments": "Add consignments",
+    "addHint": "Choose the JSON exports the export step writes for each consignment. CargoPilot keeps no shipment history, so there is no list to pick from — the file you already have is the input.",
+    "onTheVehicle": "On the vehicle ({{count}})",
+    "consignmentName": "Consignment name",
+    "positions": "{{count}} positions",
+    "unitMass": "Permitted maximum mass of the transport unit (tonnes)",
+    "unitMassHint": "3.4.13 applies only above 12 tonnes. This is the one fact about the load the application cannot derive; leave it empty and the limited-quantities marking is reported as undecided rather than guessed.",
+    "assess": "Assess the trip",
+    "assessing": "Working…",
+    "needTwo": "Add at least two consignments: with one, this check says nothing the consignment did not already say.",
+    "exemptionLost": "Combining costs the exemption",
+    "apartAndTogether": "Apart and together",
+    "together": "Together on one unit",
+    "threshold": "threshold {{value}}",
+    "exempt": "exempt",
+    "notExempt": "not exempt",
+    "incomplete": "incomplete",
+    "mixedLoading": "Mixed loading (7.5.2)",
+    "notStored": "This trip is not stored. It exists only on this screen; reloading clears it.",
+    "notAnExport": "{{file}} is not a CargoPilot shipment export and was skipped.",
+    "noDangerousGoods": "{{file}} holds no dangerous goods and was skipped.",
+    "unreadable": "{{file}} could not be read.",
+    "failed": "The assessment did not succeed."
+  },
+  "common": {
+    "remove": "Remove"
   }
 }

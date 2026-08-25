@@ -3,6 +3,7 @@ import { Navigate, Route, Routes, useNavigate } from "react-router";
 import { api, User } from "./api/client";
 import Layout from "./components/Layout";
 import CardsPage from "./pages/CardsPage";
+import GroupagePage from "./pages/GroupagePage";
 import LoginPage from "./pages/LoginPage";
 import ResetPasswordPage from "./pages/ResetPasswordPage";
 import ModalitySelectPage from "./pages/ModalitySelectPage";
@@ -56,6 +57,7 @@ export default function App() {
           <Route path="/" element={<ModalitySelectPage />} />
           <Route path="/wizard" element={<Navigate to="/" replace />} />
           <Route path="/wizard/:modality" element={<WizardPage />} />
+          <Route path="/groupage" element={<GroupagePage />} />
           <Route path="/materieel" element={<MaterieelPage />} />
           <Route path="/settings" element={<SettingsPage user={user} />} />
           <Route path="/legal" element={<LegalPage />} />

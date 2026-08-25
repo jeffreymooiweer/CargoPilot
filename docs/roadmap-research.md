@@ -106,10 +106,28 @@ the IFTDGN spec is free, so nothing blocks reading it early.
 
 ## Groupage, returns, QR (new, smaller)
 
-- **Groupage:** several consignments on one vehicle, with the 1.1.3.6 count and the
-  mixed-loading checks over the whole. Everything exists per consignment; the missing
-  thing is the level above. The open design question is whether a "trip" becomes an
-  entity (which touches the privacy stance) or a transient calculation.
+- **Groupage** (shipped v1.169.0). Everything did exist per consignment; the missing
+  thing was the level above, and building it needed no new regulatory logic — the three
+  provisions were always measuring "what is on the transport unit", so they are handed
+  the union of the entries and answer correctly. The open design question (trip as
+  entity or transient calculation) was not a matter of taste: privacy levels 1 and 2
+  store nothing about shipments, so a stored trip would break that promise for the sake
+  of a screen. It is transient, and a test asserts the service touches no database.
+
+  **What the research missed, and the reading found.** ADR 3.4.13/3.4.14 carry *three*
+  quantities and the consignment-level check had run two of them together:
+
+  | value | what it is | what it does |
+  |---|---|---|
+  | 12 t | maximum mass of the **transport unit** | triggers the requirement (3.4.13) |
+  | 8 t | gross mass of the **LQ packages** | allows it to be dispensed with (3.4.14) |
+  | orange plates (5.3.2) | a property of the **whole load** | an exception in its own right |
+
+  The check compared the LQ mass to 8 t and called that the 3.4.13 requirement, which
+  attributes the dispensation's threshold to the requirement and drops the orange-plate
+  exception entirely. In groupage that exception is the common case: add one full-ADR
+  consignment and the unit carries plates anyway, and then the LQ mark is not required.
+  Read from ADR 2025 Volume I page 665 (workflow run 32826513665) rather than assumed.
 - **Return shipments** (shipped v1.167.0). This note said "no research needed", which
   was true of the description — `empty_uncleaned` and 5.4.1.1.6.1 have been built since
   v1.90.0 — and was not true of the points. ADR **1.1.3.6.1** reassigns an empty

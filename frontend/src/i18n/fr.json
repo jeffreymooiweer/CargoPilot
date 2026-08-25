@@ -15,7 +15,8 @@
     "closeMenu": "Fermer le menu",
     "legal": "Clause de non-responsabilité",
     "collapseMenu": "Replier le menu",
-    "expandMenu": "Déplier le menu"
+    "expandMenu": "Déplier le menu",
+    "groupage": "Groupage"
   },
   "theme": {
     "dark": "Sombre",
@@ -896,5 +897,35 @@
     "none": "Aucun numéro UN dans ce lien.",
     "unavailable": "Cette installation ne partage pas de fiches par lien.",
     "note": "Cette page ne montre que du matériel de référence par numéro UN. Elle ne dit rien de l'envoi, des parties ni des quantités."
+  },
+  "groupage": {
+    "title": "Groupage",
+    "intro": "Plusieurs envois sur un même véhicule, appréciés ensemble. Trois règles s'appliquent par unité de transport et non par envoi : le calcul des points du 1.1.3.6, le chargement en commun du 7.5.2 et la marque QL du 3.4.13.",
+    "addConsignments": "Ajouter des envois",
+    "addHint": "Choisissez les exports JSON que l'étape d'export écrit pour chaque envoi. CargoPilot ne conserve pas d'historique d'envois : il n'y a donc pas de liste où puiser — le fichier que vous avez déjà est l'entrée.",
+    "onTheVehicle": "Sur le véhicule ({{count}})",
+    "consignmentName": "Nom de l'envoi",
+    "positions": "{{count}} positions",
+    "unitMass": "Masse maximale admissible de l'unité de transport (tonnes)",
+    "unitMassHint": "Le 3.4.13 ne s'applique qu'au-dessus de 12 tonnes. C'est la seule donnée du chargement que l'application ne peut pas déduire ; laissée vide, la marque QL est signalée comme indécise plutôt que devinée.",
+    "assess": "Apprécier le trajet",
+    "assessing": "En cours…",
+    "needTwo": "Ajoutez au moins deux envois : avec un seul, ce contrôle ne dit rien que l'envoi ne disait déjà.",
+    "exemptionLost": "Le groupage fait perdre l'exemption",
+    "apartAndTogether": "Séparément et ensemble",
+    "together": "Ensemble sur une unité",
+    "threshold": "seuil {{value}}",
+    "exempt": "exempté",
+    "notExempt": "non exempté",
+    "incomplete": "incomplet",
+    "mixedLoading": "Chargement en commun (7.5.2)",
+    "notStored": "Ce trajet n'est pas enregistré. Il n'existe que sur cet écran ; un rechargement l'efface.",
+    "notAnExport": "{{file}} n'est pas un export d'envoi CargoPilot et a été ignoré.",
+    "noDangerousGoods": "{{file}} ne contient pas de marchandises dangereuses et a été ignoré.",
+    "unreadable": "{{file}} n'a pas pu être lu.",
+    "failed": "L'appréciation n'a pas abouti."
+  },
+  "common": {
+    "remove": "Retirer"
   }
 }

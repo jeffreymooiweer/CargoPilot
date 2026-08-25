@@ -103,7 +103,13 @@ def _product_label(entry: dict[str, Any], product: dict[str, Any], index: int) -
     un = str(product.get("un_number") or "").strip()
     name = str(product.get("proper_shipping_name") or "").strip()
     base = " ".join(x for x in [f"UN {un}" if un else "", name] if x)
-    return base or f"{entry.get('vehicle') or entry.get('line_id') or '?'} #{index + 1}"
+    label = base or f"{entry.get('vehicle') or entry.get('line_id') or '?'} #{index + 1}"
+    # Only a trip sets this, and only a trip needs it: on one vehicle two
+    # customers may both ship UN 1263, and "these two may not travel together"
+    # is unusable if the reader cannot tell which pallet to take off. A single
+    # consignment carries no such key and reads exactly as it always did.
+    consignment = str(entry.get("consignment") or "").strip()
+    return f"{consignment} — {label}" if consignment else label
 
 
 def _iter_products(entries: list[dict[str, Any]]):
@@ -5729,19 +5735,41 @@ def check_lq_eq(
             "message": pick(
                 {
                     "nl": "De colli die binnen de LQ-grenzen vallen tellen samen "
-                          "{tonnes} kg bruto. Boven 8 ton per transporteenheid is de "
-                          "LQ-kenmerking van 3.4.15 (250 × 250 mm) op de voor- en "
-                          "achterzijde vereist (3.4.13); de vrijstelling van 3.4.14 "
-                          "geldt dan niet meer.",
-                    "en": "The packages within the LQ limits total {tonnes} kg gross. "
-                          "Above 8 tonnes per transport unit the LQ mark of 3.4.15 "
-                          "(250 × 250 mm) is required at the front and rear (3.4.13); "
-                          "the waiver of 3.4.14 no longer applies.",
+                          "{tonnes} kg bruto, boven de 8 ton per transporteenheid: de "
+                          "vrijstelling van 3.4.14 vervalt daarmee. Of de "
+                          "LQ-kenmerking van 3.4.15 (250 × 250 mm) dan werkelijk "
+                          "verplicht is, hangt af van twee dingen die deze zending "
+                          "niet kent: 3.4.13 geldt pas boven 12 ton toegestane "
+                          "maximummassa van de transporteenheid, en niet als de "
+                          "eenheid al oranje borden voert voor andere gevaarlijke "
+                          "goederen. Beoordeel dat op de rit.",
+                    "en": "The packages within the LQ limits total {tonnes} kg gross, "
+                          "above the 8 tonnes per transport unit, so the dispensation "
+                          "of 3.4.14 falls away. Whether the mark of 3.4.15 "
+                          "(250 × 250 mm) is then actually required depends on two "
+                          "things this consignment does not know: 3.4.13 applies only "
+                          "above 12 tonnes permitted maximum mass of the transport "
+                          "unit, and not where the unit already carries orange plates "
+                          "for other dangerous goods. Assess that on the trip.",
                     "de": "Die Versandstücke innerhalb der LQ-Grenzen wiegen zusammen "
-                          "{tonnes} kg brutto. Über 8 Tonnen je Beförderungseinheit ist "
-                          "die LQ-Kennzeichnung nach 3.4.15 (250 × 250 mm) vorn und "
-                          "hinten vorgeschrieben (3.4.13); die Erleichterung nach "
-                          "3.4.14 gilt dann nicht mehr.", "fr": "Les colis situés dans les limites QL totalisent {tonnes} kg bruts. Au-delà de 8 tonnes par unité de transport, la marque QL du 3.4.15 (250 × 250 mm) est exigée à l'avant et à l'arrière (3.4.13) ; la dispense du 3.4.14 ne s'applique plus."},
+                          "{tonnes} kg brutto, über den 8 Tonnen je "
+                          "Beförderungseinheit; die Erleichterung nach 3.4.14 "
+                          "entfällt damit. Ob die Kennzeichnung nach 3.4.15 "
+                          "(250 × 250 mm) dann tatsächlich vorgeschrieben ist, hängt "
+                          "von zwei Dingen ab, die diese Sendung nicht kennt: 3.4.13 "
+                          "gilt erst über 12 Tonnen zulässiger Höchstmasse der "
+                          "Beförderungseinheit, und nicht, wenn die Einheit bereits "
+                          "orangefarbene Tafeln für andere gefährliche Güter führt. "
+                          "Beurteilen Sie das auf der Fahrt.",
+                    "fr": "Les colis situés dans les limites QL totalisent {tonnes} kg "
+                          "bruts, au-delà des 8 tonnes par unité de transport : la "
+                          "dispense du 3.4.14 disparaît donc. Que la marque du 3.4.15 "
+                          "(250 × 250 mm) soit alors réellement exigée dépend de deux "
+                          "éléments que cet envoi ignore : le 3.4.13 ne s'applique "
+                          "qu'au-dessus de 12 tonnes de masse maximale admissible de "
+                          "l'unité de transport, et pas lorsque l'unité porte déjà "
+                          "des panneaux orange pour d'autres marchandises "
+                          "dangereuses. Appréciez cela sur le trajet."},
                 lang,
             ).format(tonnes=_fmt_kg(lq_gross_total_kg)),
             "products": ", ".join(lq_gross_products),
@@ -5764,6 +5792,10 @@ def check_lq_eq(
         # Read by the tunnel check: 8.6.3.3 leaves 1.1.3 goods out of the
         # determination *except* where this marking is required.
         "lq_marking_required": lq_marking_required,
+        # The measured quantity behind that boolean. A consignment cannot
+        # settle 3.4.13 on its own — the trigger is the *vehicle's* maximum
+        # mass — so the trip check takes this number and finishes the job.
+        "lq_gross_total_kg": round(lq_gross_total_kg, 3),
         "basis": basis,
         "basis_note": basis_note(normalized, "3.4/3.5", language),
         "note": pick(

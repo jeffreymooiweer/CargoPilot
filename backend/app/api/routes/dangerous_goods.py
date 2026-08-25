@@ -1,11 +1,12 @@
 import json
 from pathlib import Path
 
-from fastapi import APIRouter, Depends, HTTPException, Query
+from fastapi import APIRouter, Depends, HTTPException, Query, Request
 from pydantic import BaseModel, Field
 
 from app.core.messages import error as api_error
 from app.core.deps import get_current_user
+from app.core.ratelimit import TRIP_CHECK, limiter
 from app.models.user import User
 from app.schemas.dg_compliance import ComplianceRequest
 from app.services.dg.autofill import prepare_entries
@@ -15,6 +16,7 @@ from app.services.dg.enrichment import enrich_un_entry
 from app.services.dg.lookup import lookup_un_number
 from app.services.dg.naming import proper_shipping_name
 from app.services.dg.return_shipment import return_shipment
+from app.services.dg.trip import check_trip
 
 router = APIRouter(prefix="/dg", tags=["dangerous-goods"])
 
@@ -30,6 +32,28 @@ class PrepareRequest(BaseModel):
     lines: list[dict] = Field(default_factory=list)
     profiles: list[str] = Field(default_factory=list)
     language: str = "nl"
+
+
+class TripConsignment(BaseModel):
+    """One consignment as it sits on the vehicle, named so a warning can point.
+
+    The name is the planner's own — a customer, a reference, a pallet number.
+    It is never stored: it lives only in the request and in the answer.
+    """
+
+    name: str = Field(default="", max_length=120)
+    entries: list[dict] = Field(default_factory=list)
+
+
+class TripRequest(BaseModel):
+    consignments: list[TripConsignment] = Field(default_factory=list)
+    profiles: list[str] = Field(default_factory=list)
+    language: str = "nl"
+    #: ADR 3.4.13 turns on the permitted maximum mass of the transport unit,
+    #: which is a property of the vehicle and the one thing about the load the
+    #: application cannot derive. Optional: without it the limited-quantities
+    #: marking is reported as undecided rather than guessed.
+    unit_max_mass_tonnes: float | None = Field(default=None, ge=0, le=200)
 
 
 _INSTRUCTIONS_PATH = Path(__file__).resolve().parents[2] / "config" / "dg_instructions.json"
@@ -99,6 +123,30 @@ def dg_return(payload: ReturnRequest, user: User = Depends(get_current_user)):
     and every check then runs on it exactly as on a shipment somebody typed.
     """
     return return_shipment(payload.values, payload.lines, payload.dangerous_goods)
+
+
+@router.post("/trip")
+@limiter.limit(TRIP_CHECK)
+def dg_trip(request: Request, payload: TripRequest,
+            user: User = Depends(get_current_user)):
+    """Several consignments on one vehicle, judged as one load.
+
+    The three rules that cannot be decided per consignment — the 1.1.3.6 points,
+    the mixed loading of 7.5.2 and the limited-quantities marking of 3.4.13 —
+    run over the union of the entries, because that is what those provisions
+    were always measuring.
+
+    Nothing is stored. A trip is a calculation, not an entity: privacy levels 1
+    and 2 keep nothing about shipments, and a trip that landed in the database
+    would break that promise for the sake of a screen. It is assembled from the
+    request, judged, and forgotten.
+    """
+    return check_trip(
+        [c.model_dump() for c in payload.consignments],
+        payload.profiles,
+        payload.language,
+        payload.unit_max_mass_tonnes,
+    )
 
 
 def _surface_q_status(outcome: dict, q_status: dict) -> None:

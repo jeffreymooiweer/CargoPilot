@@ -27,12 +27,19 @@ from .un_card_store import MODALITIES, card_path, installed_manifest, status as 
 #: The wizard speaks in DG profiles; the card set speaks in modalities.
 #: The only mismatch is air, where the profile is named after the IATA DGR
 #: while the card set (if a source is ever licensed) follows the ICAO TI.
+#:
+#: ``IATA_DGR`` is the spelling the wizard actually sends — it is the value in
+#: the document registry and in the frontend's modality table. It was missing
+#: here, and a profile that is not in this map is not simply ignored: it makes
+#: :func:`_modalities_for` fall through to *every* modality, so an air-only
+#: shipment asked for road, rail, inland and sea cards as well.
 PROFILE_TO_MODALITY = {
     "ADR": "ADR",
     "RID": "RID",
     "ADN": "ADN",
     "IMDG": "IMDG",
     "IATA": "ICAO",
+    "IATA_DGR": "ICAO",
     "ICAO": "ICAO",
 }
 

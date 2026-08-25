@@ -284,6 +284,48 @@ more than one administrator.
 expires in five minutes and dies after five wrong guesses; an authenticator code is accepted
 one 30-second step either side of now, which is what an unsynced phone looks like.
 
+## QR code with UN cards on documents
+
+**Settings → Administration → QR code with UN cards on documents** prints a QR code on
+every transport document CargoPilot renders. Scanning it opens a page listing the UN
+numbers on that document and, per number, the UN card this installation holds for it.
+
+That page is the only one in CargoPilot that does not ask for a sign-in. That is the
+point: the driver at the roadside, the warehouse taking the pallet in and the responder
+who arrived because something went wrong have no account here, and a code that asks them
+to log in is a code that does nothing.
+
+It is off until you turn it on, and it needs two things, not one:
+
+1. the switch, and
+2. **Address of this installation** filled in, the same field the mail links use.
+
+Without the address no code is printed at all. The address cannot be taken from the
+request the way a mail link's can — nobody is making a request when the driver scans the
+sheet three days later — and a code on paper that leads nowhere is worse than no code,
+because whoever is holding the paper cannot tell that from a code that failed to scan.
+The screen says so beside the switch rather than letting you find out on a printout.
+
+**What the code carries** is the UN numbers and the regime, and nothing else: no
+consignor, no consignee, no quantity, no reference, no shipment identifier. The document
+it is printed on already carries those same UN numbers in plain text and larger. See
+[Privacy](privacy.md#what-a-stranger-can-reach) for the whole of what a stranger can
+reach.
+
+**What the page answers** is the number and whether a card exists — a missing card is
+reported missing rather than quietly left out of the list, and a card is never
+substituted from another regime, because ADR and IMDG print different obligations. It
+serves the card set an administrator imported under **Settings → UN Cards**; with no set
+imported every number reads *no card*.
+
+**What holds it down.** At most thirty UN numbers per link, thirty requests a minute per
+caller, and files served only from the imported card store. With the switch off the route
+answers `404` rather than `403`: an installation that has not opened this door does not
+owe a stranger the information that the door exists.
+
+Nothing here expires. The link addresses a UN number rather than a consignment, so a code
+scanned in a year answers what it answered on the day it was printed.
+
 ## Application and security
 
 | Variable | What it does | Default |

@@ -205,6 +205,7 @@ def render_document_pdf(
     dangerous_goods: list[dict[str, Any]] | None,
     language: str = "nl",
     signature_png: bytes | None = None,
+    card_link_base: str | None = None,
 ) -> Path:
     lang = _lang(language)
     styles = _styles()
@@ -289,7 +290,110 @@ def render_document_pdf(
         story.append(KeepTogether(_signature_block(signature_png, styles, lang)))
 
     story.append(Spacer(1, 8))
+    block = _card_qr_block(card_link_base, dangerous_goods, styles, lang,
+                           document.get("dg_profile"))
+    if block:
+        story.append(KeepTogether(block))
+        story.append(Spacer(1, 6))
     story.append(_p(_text("disclaimer", lang), styles["disclaimer"]))
 
     doc.build(story)
     return out_path
+
+
+# How large the code is printed, which is not a decision about the page — it is
+# a decision about whether a phone reads it.
+#
+# A QR is read by its *module*, the single square, and what a scanner needs is a
+# module wide enough to survive the print, the paper and the light. So the
+# module size is what is fixed here, and the printed size follows from it.
+#
+# It has to, because the amount of data is not fixed. One UN number encodes to a
+# version 4 symbol, 33 modules across; a document carrying a dozen substances
+# needs a bigger symbol for the same 24 mm, and every extra number makes the
+# squares smaller. A fixed printed size therefore means the code stops working
+# on exactly the documents that carry the most — which is the wrong way round.
+#
+#: The module size the printed code is built to hold. This is a chosen number
+#: and not a measured one: the published minimums for printed symbols sit
+#: behind paywalled or unreachable specifications, so rather than cite a figure
+#: from memory this is set where a 600 dpi laser puts roughly fifteen dots
+#: across a module and a phone camera has something to work with in a badly lit
+#: cab. If a real specification is ever read, this is the one line to correct.
+CARD_QR_MODULE_MM = 0.62
+
+#: The smallest the code is printed even when the data would allow less, and
+#: the largest it may grow to before it starts competing with the document it
+#: sits under. At the ceiling the modules fall below the size above; the
+#: alternative is a code that takes a quarter of the page.
+CARD_QR_MIN_MM = 24.0
+CARD_QR_MAX_MM = 40.0
+
+
+def _card_qr_block(base: str | None, dangerous_goods, styles, lang,
+                   profile: str | None = None) -> list:
+    """A code that opens this installation's cards for these UN numbers.
+
+    Absent unless the caller passed a base address, which the export route only
+    does when an administrator turned the public card links on. The renderer
+    itself reads no settings and touches no database: it is handed the address
+    or it is not, and a document rendered anywhere else is unchanged.
+
+    What the code carries is the UN numbers and nothing else — no consignment,
+    no party, no quantity, no reference. The document already prints those
+    numbers in plain text and larger, so the code discloses nothing the paper
+    does not. It is also why there is no link to expire: it addresses the
+    regulation, not a stored job.
+
+    The regime travels with them. A card is per UN number *and* modality
+    because the regimes print different obligations, so a code on a sea
+    document that opened the road card would be answering the wrong question
+    quietly — which is the one failure mode worse than answering none.
+
+    Drawn as vector with reportlab's own widget rather than through the SVG
+    library the second factor uses. A QR that goes through an image loses the
+    crispness that decides whether a phone reads it at the roadside.
+
+    Error correction is at level M, not the library's default L. A code on a
+    transport document spends its life in a cab and a warehouse, and M recovers
+    a symbol that is fifteen per cent damaged where L manages seven.
+    """
+    from reportlab.graphics.barcode import qr
+    from reportlab.graphics.shapes import Drawing
+
+    from app.services.documents.un_cards import PROFILE_TO_MODALITY, un_numbers_in
+
+    if not base:
+        return []
+    numbers = un_numbers_in(dangerous_goods)
+    if not numbers:
+        return []
+
+    modality = PROFILE_TO_MODALITY.get(str(profile or "").strip().upper())
+    url = f"{base.rstrip('/')}/cards?un={','.join(numbers)}"
+    if modality:
+        url += f"&m={modality}"
+    widget = qr.QrCodeWidget(url, barLevel="M")
+    bounds = widget.getBounds()
+
+    # The bounds cover the symbol *and* the four-module quiet zone the widget
+    # draws inside them, so this is the full count the printed square holds.
+    across = widget.qr.getModuleCount() + 2 * widget.barBorder
+    side = min(max(across * CARD_QR_MODULE_MM, CARD_QR_MIN_MM),
+               CARD_QR_MAX_MM) * mm
+
+    drawing = Drawing(side, side, transform=[
+        side / (bounds[2] - bounds[0]), 0, 0,
+        side / (bounds[3] - bounds[1]), 0, 0])
+    drawing.add(widget)
+    return [
+        Table(
+            [[drawing, _p(_text("card_qr", lang), styles["disclaimer"])]],
+            colWidths=[side + 4 * mm, None],
+            style=TableStyle([
+                ("VALIGN", (0, 0), (-1, -1), "TOP"),
+                ("LEFTPADDING", (0, 0), (-1, -1), 0),
+                ("BOTTOMPADDING", (0, 0), (-1, -1), 0),
+            ]),
+        )
+    ]

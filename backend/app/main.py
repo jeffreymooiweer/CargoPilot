@@ -9,6 +9,7 @@ from slowapi.errors import RateLimitExceeded
 
 from app.api.routes.assistant import router as assistant_router
 from app.api.routes.auth import router as auth_router
+from app.api.routes.cards import router as cards_router
 from app.api.routes.catalog import reference_router
 from app.api.routes.catalog_search import router as catalog_search_router
 from app.api.routes.units import router as units_router
@@ -98,6 +99,9 @@ def create_app() -> FastAPI:
     app.include_router(settings_router, prefix="/api")
     app.include_router(un_cards_admin_router, prefix="/api")
     app.include_router(meta_router, prefix="/api")
+    # Public by design — see app/api/routes/cards.py. It is off
+    # unless an administrator turns it on.
+    app.include_router(cards_router, prefix="/api")
 
     static_dir = settings.static_dir
     if static_dir.exists():

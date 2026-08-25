@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Navigate, Route, Routes, useNavigate } from "react-router";
 import { api, User } from "./api/client";
 import Layout from "./components/Layout";
+import CardsPage from "./pages/CardsPage";
 import LoginPage from "./pages/LoginPage";
 import ResetPasswordPage from "./pages/ResetPasswordPage";
 import ModalitySelectPage from "./pages/ModalitySelectPage";
@@ -37,6 +38,10 @@ export default function App() {
         {/* A reset link is opened by somebody who cannot sign in; sending
             them to /login would swallow the token in the address. */}
         <Route path="/reset-password" element={<ResetPasswordPage />} />
+        {/* The QR code on a transport document is scanned by somebody who has
+            no account here. Sending them to /login would make the code
+            useless, which is the whole point of it being public. */}
+        <Route path="/cards" element={<CardsPage />} />
         <Route path="*" element={<Navigate to="/login" replace />} />
       </Routes>
       </ToastProvider>
@@ -57,6 +62,7 @@ export default function App() {
           <Route path="/users" element={<UsersPage user={user} />} />
         </Route>
         <Route path="/reset-password" element={<ResetPasswordPage />} />
+        <Route path="/cards" element={<CardsPage />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
       </ToastProvider>

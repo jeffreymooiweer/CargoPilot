@@ -109,8 +109,32 @@ def _served_as(path: "Path") -> str:
     return MEDIA_TYPES.get(path.suffix.lower(), "application/octet-stream")
 
 
+def _card_link_base(db: Session | None) -> str | None:
+    """Where a QR code on a document should point, or nothing at all.
+
+    Nothing at all is the normal answer. The public card links are off unless
+    an administrator turned them on, and a code printed on paper that leads
+    nowhere is worse than no code — the paper outlives the setting, and the
+    driver holding it has no way to tell which it was.
+
+    So it needs both: the switch on, and an address configured. The address
+    cannot be read from the request the way a mail link's can, because nobody
+    is making a request when the driver scans the paper three days later —
+    only an administrator knows what the outside world calls this
+    installation.
+    """
+    if db is None:
+        return None
+    current = instance_settings(db)
+    if not getattr(current, "card_links_enabled", False):
+        return None
+    configured = str(getattr(current, "public_url", "") or "").strip()
+    return configured.rstrip("/") or None
+
+
 def _render_export(document: dict, payload: DocumentExportRequest,
-                   signature_png: bytes | None) -> "Path":
+                   signature_png: bytes | None,
+                   card_link_base: str | None = None) -> "Path":
     """One document as a file, by its registered exporter.
 
     The single export and the bundle both come through here, so the archive
@@ -255,6 +279,7 @@ def _render_export(document: dict, payload: DocumentExportRequest,
             payload.dangerous_goods,
             payload.output_language,
             signature_png=signature_png,
+            card_link_base=card_link_base,
         )
     return out_path
 
@@ -275,6 +300,7 @@ def export(
     payload: DocumentExportRequest,
     background_tasks: BackgroundTasks,
     user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
 ):
     document = get_document(payload.document_key)
     if document is None:
@@ -287,7 +313,8 @@ def export(
 
     signature_png = _decoded_signature(payload.signature_image)
     ref = datetime.now().strftime("%Y%m%d%H%M%S")
-    out_path = _render_export(document, payload, signature_png)
+    out_path = _render_export(document, payload, signature_png,
+                              _card_link_base(db))
     background_tasks.add_task(_delete_file, out_path)
     return FileResponse(
         path=out_path,
@@ -327,7 +354,8 @@ def _build_bundle(payload: DocumentBundleRequest, db: Session) -> tuple[Path, st
                 notes.append(f"{item.document_key}: not included, still incomplete: "
                              + "; ".join(str(e) for e in errors[:3]))
                 continue
-            out_path = _render_export(document, item, signature_png)
+            out_path = _render_export(document, item, signature_png,
+                                      _card_link_base(db))
             produced.append(
                 (out_path, f"{item.document_key}_{ref}{out_path.suffix}"))
 

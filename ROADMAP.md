@@ -298,7 +298,16 @@ none is committed until it is planned against that brief.
   number that is not true. The 5.4.1.1.6.1 description was already built; what the item
   turned out to need first was ADR **1.1.3.6.1**, whose reassignment of an empty uncleaned
   packaging to transport category 4 the points check was not making (v1.166.0).
-- **A QR code on documents** linking to the shipment's UN cards on the own server.
+- **A QR code on documents** shipped in v1.168.0: every rendered transport document can
+  carry a code that opens this installation's UN cards for the UN numbers on that
+  document. It is the first and only route in CargoPilot that answers without a sign-in,
+  which is the whole point — the driver at the roadside and the responder on the scene
+  have no account here. Off until an administrator turns it on, and it needs the
+  installation's public address configured before a single code is printed: a code on
+  paper that leads nowhere is worse than no code, because whoever holds the paper cannot
+  tell the difference. The research item's open question — link lifetime on an
+  installation that stores nothing — turned out not to arise: the link addresses UN
+  numbers, not a consignment, so there is nothing to expire.
 
 ### Wizard and library
 

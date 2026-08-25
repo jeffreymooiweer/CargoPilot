@@ -118,9 +118,28 @@ the IFTDGN spec is free, so nothing blocks reading it early.
   to 900 of the 1000. Fixed in v1.166.0 before the button was built on top of it. The
   lesson worth keeping: "no research needed" is a claim about one half of a feature, and
   the half it is not about is where the regulation hides.
-- **QR code on documents:** linking to the shipment's UN cards on the own server.
-  Self-contained, no third party. The open question is link lifetime on an
-  installation that deliberately stores nothing.
+- **QR code on documents** (shipped v1.168.0). Self-contained, no third party, as
+  expected. The open question — link lifetime on an installation that deliberately
+  stores nothing — dissolved rather than being answered: it assumed the link would
+  address a *shipment*. It addresses UN numbers, which is what makes the page safe to
+  serve without a sign-in and is also why nothing about it expires. The regulation does
+  not go stale the way a stored job would.
+
+  What did need deciding was smaller and more physical. A QR is read by its module, the
+  single square, and one UN number encodes to a 33-module symbol while thirty need 57 —
+  so a fixed printed size makes the squares shrink exactly on the documents that carry
+  the most substances, which are the ones somebody most needs to scan. The module size
+  is fixed instead (0.62 mm) and the printed size follows from the encoded module count,
+  measured across the full range one link can carry: 25 mm for one UN number, 40 mm for
+  thirty, with the modules holding at 0.62 mm throughout. Error correction sits at level
+  M rather than the library's default L: a code that lives in a cab and a warehouse
+  should survive being smudged.
+
+  **Not assessed:** the published minimum module size for a printed symbol. GS1's
+  General Specifications are the obvious source and every GS1 domain is unreachable from
+  the build environment, so 0.62 mm is a chosen number — roughly fifteen dots across a
+  module on a 600 dpi laser — and not a measured one. It is one constant
+  (`CARD_QR_MODULE_MM`) if a real specification is ever read.
 
 ## Route planner (existing item, deepened)
 

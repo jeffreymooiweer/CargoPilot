@@ -345,6 +345,9 @@
     "mailTestSent": "Testnachricht an {{to}} gesendet.",
     "publicUrl": "Adresse dieser Installation",
     "publicUrlHint": "Wird für Links in ausgehender Mail verwendet, z. B. https://cargopilot.example.de. Leer lassen, wenn der Browser CargoPilot direkt erreicht.",
+    "cardLinks": "QR-Code mit UN-Karten auf Dokumenten",
+    "cardLinksHint": "Setzt auf jedes Beförderungspapier einen QR-Code, der die UN-Karten dieser Sendung öffnet. Die dahinterliegende Seite verlangt keine Anmeldung — bewusst: der Fahrer am Straßenrand und die Einsatzkraft vor Ort haben hier kein Konto. Sie zeigt nur die UN-Nummern und ob dazu eine Karte vorliegt; nichts über die Sendung, die Beteiligten oder die Mengen. Aus, sofern Sie es nicht einschalten.",
+    "cardLinksNeedsUrl": "Tragen Sie zuerst die öffentliche Adresse oben ein. Ohne sie wird kein QR-Code gedruckt: ein Code auf Papier, der nirgendwohin führt, ist schlimmer als gar keiner, denn wer das Papier in der Hand hält, kann das nicht erkennen.",
     "twoFactorPolicy": "Zwei-Faktor-Bestätigung",
     "twoFactorPolicyHint": "Wer einen zweiten Schritt bei der Anmeldung verwenden muss. Wer noch keinen hat, wird nach der Anmeldung zum Einrichten aufgefordert.",
     "twoFactorOff": "Freiwillig, jeder entscheidet selbst",
@@ -884,5 +887,14 @@
     "deletedUser": "Benutzer {{name}} gelöscht",
     "deletedItem": "{{name}} gelöscht",
     "removedUnCards": "UN-Kartensatz entfernt"
+  },
+  "cards": {
+    "title": "UN-Karten",
+    "subtitle": "Referenzkarten für {{modality}}",
+    "open": "Öffnen",
+    "missing": "Keine Karte",
+    "none": "Keine UN-Nummern in diesem Link.",
+    "unavailable": "Diese Installation teilt keine Karten per Link.",
+    "note": "Diese Seite zeigt nur Referenzmaterial je UN-Nummer. Sie sagt nichts über die Sendung, die Parteien oder die Mengen."
   }
 }

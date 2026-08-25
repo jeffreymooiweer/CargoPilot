@@ -134,6 +134,12 @@ ASSISTANT_STEP = "120/minute"
 #: multi-gigabyte fetch behind it.
 ASSISTANT_MODEL = "3/minute"
 
+#: The public card links a QR code opens. The only route in the application
+#: that answers without a sign-in, so its limit is the one that guards a
+#: stranger rather than a colleague: generous enough for a driver whose phone
+#: retries, far below what a script would want from a route that reads files.
+CARD_LINKS = "30/minute"
+
 #: Address autocomplete, which proxies to a Photon instance. The generous one,
 #: and deliberately: the field debounces at 250 ms, so a person typing four
 #: addresses into a consignment legitimately produces dozens of these. It is

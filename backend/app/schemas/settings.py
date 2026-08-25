@@ -181,6 +181,20 @@ class InstanceSettings(BaseModel):
     #: instruction cards than these.
     un_cards_enabled: bool = True
 
+    #: Whether documents may carry a QR code that opens this installation's UN
+    #: cards for the substances on them.
+    #:
+    #: Off by default, and deliberately: turning it on opens **one route that
+    #: needs no sign-in**, because the people a QR on a transport document is
+    #: for — the driver, the warehouse, the responder at the roadside — do not
+    #: have accounts, and a code that asks them to log in is a code that does
+    #: nothing. What it serves is the regulation's own reference material for
+    #: the UN numbers in the link, which the document already prints in plain
+    #: text and larger; it never reaches a consignment, a party or a quantity.
+    #: Still, a new door is a new door, so the administrator opens it rather
+    #: than finding it open.
+    card_links_enabled: bool = False
+
     #: How long a session stays valid. Eight hours is one working day.
     session_timeout_minutes: int = Field(default=480, ge=15, le=10_080)
 
@@ -308,6 +322,7 @@ class PublicSettings(BaseModel):
     default_theme: ThemeChoice
     address_lookup_enabled: bool
     un_cards_enabled: bool
+    card_links_enabled: bool
     organisation_name: str
     organisation_address: str
     #: Whether the export step may offer to mail the documents. Only that a

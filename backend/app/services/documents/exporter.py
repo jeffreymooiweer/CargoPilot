@@ -232,6 +232,20 @@ TEXTS = {
         "nl": "Omschrijving vervoersdocument",
         "en": "Transport document description",
         "de": "Angabe im Beförderungspapier", "fr": 'Description du document de transport'},
+    "card_qr": {
+        "nl": "Scan voor de UN-kaarten van de stoffen op dit document, op de server "
+              "van deze installatie. De code bevat alleen de UN-nummers — niets over "
+              "de zending, de partijen of de hoeveelheden.",
+        "en": "Scan for the UN cards of the substances on this document, on this "
+              "installation's own server. The code carries the UN numbers only — "
+              "nothing about the consignment, the parties or the quantities.",
+        "de": "Scannen Sie für die UN-Karten der Stoffe auf diesem Dokument, auf dem "
+              "Server dieser Installation. Der Code enthält nur die UN-Nummern — "
+              "nichts über die Sendung, die Parteien oder die Mengen.",
+        "fr": "Scannez pour les fiches UN des matières figurant sur ce document, sur "
+              "le serveur de cette installation. Le code ne contient que les numéros "
+              "UN — rien sur l'envoi, les parties ni les quantités.",
+    },
     "disclaimer": {
         "nl": (
             "Dit document is automatisch gegenereerd met CargoPilot en is een concept: het moet vóór gebruik "

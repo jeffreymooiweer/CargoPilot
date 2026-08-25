@@ -2,6 +2,77 @@
 
 All notable changes are documented here, following [Semantic Versioning](https://semver.org/).
 
+## [1.168.0] — 2026-08-25
+
+### A QR code on documents, and the first door that opens without a key
+
+Every transport document CargoPilot renders can now carry a QR code that opens this
+installation's UN cards for the UN numbers on that document. It is off until an
+administrator turns it on, under **Settings → QR code with UN cards on documents**.
+
+The page behind that code is the only one in the application that does not ask for a
+sign-in, and that is the whole point. The people a code on a transport document is for —
+the driver at the roadside, the warehouse taking the pallet in, the responder who arrived
+because something went wrong — have no account here. A code that asks them to log in is a
+code that does nothing.
+
+Because it is public it is the narrowest thing in the application.
+
+- **What the code carries** is the UN numbers and the regime, and nothing else. No
+  consignor, no consignee, no quantity, no reference, no shipment identifier — there is no
+  shipment to look up, because none is stored. The document the code is printed on already
+  carries those same UN numbers in plain text and larger, so the code discloses nothing the
+  paper in the reader's hand does not already say.
+- **The regime travels with the numbers.** A card is per UN number *and* modality, because
+  ADR and IMDG print different obligations. A code on a sea document that opened the road
+  card would be answering the wrong question quietly, which is the one failure worse than
+  answering none.
+- **A missing card is reported missing**, never left out. Somebody standing at a vehicle
+  counting cards against the document needs to be told one is absent; a shorter list looks
+  exactly like a document with fewer substances on it.
+- **It needs an address as well as a switch.** Nothing is printed until the installation's
+  public address is configured, and the settings screen says so beside the toggle. The
+  address cannot be taken from the request the way a mail link's can — nobody is making a
+  request when the driver scans the sheet three days later — and a code on paper that leads
+  nowhere is worse than no code, because whoever holds the paper cannot tell the difference.
+- **With the switch off the route answers 404, not 403.** An installation that has not
+  opened this door does not owe a stranger the information that the door exists.
+- **Bounded:** at most thirty UN numbers per link, thirty requests a minute per caller, and
+  files served only from the card set an administrator imported.
+
+Nothing here expires. The link addresses a UN number rather than a consignment, so a code
+scanned in a year answers what it answered on the day it was printed. That dissolved the
+roadmap's open question about link lifetime rather than answering it.
+
+### The printed code is sized from its data, not from the page
+
+A QR is read by its *module*, the single square, and the amount of data is not fixed: one
+UN number encodes to a 33-module symbol, thirty need 57. At a fixed printed size the
+squares therefore shrink on exactly the documents that carry the most substances — the ones
+somebody most needs to scan. The module size is fixed instead and the printed size follows
+from it: 25 mm for one UN number, 40 mm for thirty, with the modules holding at 0.62 mm
+throughout. Error correction is at level M rather than the library's default L, because a
+code that lives in a cab and a warehouse should survive being smudged.
+
+The 0.62 mm is a chosen number and is recorded as one. The published minimums for printed
+symbols sit behind specifications this build environment cannot reach, so rather than cite a
+figure from memory it is set where a 600 dpi laser puts roughly fifteen dots across a module
+— and `docs/roadmap-research.md` lists it as not assessed, with the one constant to correct.
+
+### Fixed
+
+- **An air consignment asked for every regime's cards.** `IATA_DGR` is the profile name the
+  wizard actually sends, and it was missing from the profile-to-modality map. An unmapped
+  profile does not fall through to nothing there — it falls through to *all five*
+  modalities, so an air-only shipment requested road, rail, inland and sea cards as well.
+
+### Also
+
+- A sweep test now lists every route the application serves that answers without a signed-in
+  user, so a second public router cannot appear without somebody deciding it should.
+- `backend/tests/test_ratelimit_key.py` prints the two new public limits in the same one
+  table as all the others.
+
 ## [1.167.0] — 2026-08-24
 
 ### Return shipments in one click

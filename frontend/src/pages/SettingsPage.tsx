@@ -607,6 +607,22 @@ function AdminSettings() {
         />
 
         <Toggle
+          label={t("settings.cardLinks")}
+          hint={t("settings.cardLinksHint")}
+          checked={draft.card_links_enabled}
+          onChange={(value) => set("card_links_enabled", value)}
+        />
+
+        {/* A code printed without an address leads nowhere, and the driver
+            holding the paper three days later cannot tell that from a code
+            that simply failed to scan. */}
+        {draft.card_links_enabled && !draft.public_url.trim() && (
+          <p className="rounded-lg bg-amber-50 p-3 text-xs text-amber-800 dark:bg-amber-900/30 dark:text-amber-200">
+            {t("settings.cardLinksNeedsUrl")}
+          </p>
+        )}
+
+        <Toggle
           label={t("settings.mailEnabled")}
           hint={t("settings.mailEnabledHint")}
           checked={draft.mail_enabled}

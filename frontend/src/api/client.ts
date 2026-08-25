@@ -336,6 +336,13 @@ export const api = {
    *  outward consignment stated is false on the way back — and that belongs
    *  where it is tested with the rest of the regulatory code. Nothing is
    *  stored: the answer is the same shape the wizard already holds. */
+  /** The public card lookup a QR code opens. No sign-in, and nothing about a
+   *  consignment: which UN numbers the link named, and whether this
+   *  installation holds a card for each. */
+  cardLookup: (un: string, modality: string) =>
+    request<{ modality: string; cards: { un_number: string; available: boolean }[] }>(
+      `/cards/lookup?un=${encodeURIComponent(un)}&modality=${encodeURIComponent(modality)}`,
+    ),
   dgReturn: (values: Record<string, string>, lines: LineItem[], dangerous_goods: DgEntry[]) =>
     request<{ values: Record<string, string>; lines: LineItem[]; dangerous_goods: DgEntry[] }>(
       "/dg/return",
@@ -691,6 +698,10 @@ export interface InstanceSettings {
   organisation_address: string;
   two_factor_policy: "off" | "admins" | "everyone";
   public_url: string;
+  /** Whether the QR code on a document opens a public page of UN cards.
+   *  Off unless an administrator turns it on: it is the only route in the
+   *  application that answers without a sign-in. */
+  card_links_enabled: boolean;
   mail_enabled: boolean;
   mail_host: string;
   mail_port: number;
@@ -712,6 +723,8 @@ export interface PublicSettings {
   default_theme: ThemeChoice;
   address_lookup_enabled: boolean;
   un_cards_enabled: boolean;
+  /** Whether documents will carry a QR code to the public card page. */
+  card_links_enabled: boolean;
   organisation_name: string;
   organisation_address: string;
   /** Whether a mail server exists, so the export step may offer to mail. */

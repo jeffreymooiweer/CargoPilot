@@ -145,6 +145,7 @@ def public_settings(db: Session) -> PublicSettings:
         default_theme=current.default_theme,
         address_lookup_enabled=current.address_lookup_enabled,
         un_cards_enabled=current.un_cards_enabled,
+        card_links_enabled=current.card_links_enabled,
         organisation_name=current.organisation_name,
         organisation_address=current.organisation_address,
         mail_enabled=bool(current.mail_enabled and current.mail_host

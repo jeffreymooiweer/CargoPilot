@@ -104,6 +104,7 @@ describe("de voorkeurenprovider", () => {
       default_theme: "system",
       address_lookup_enabled: true,
       un_cards_enabled: true,
+      card_links_enabled: false,
       organisation_name: "",
       organisation_address: "",
       mail_enabled: false,

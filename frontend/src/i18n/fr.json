@@ -345,6 +345,9 @@
     "mailTestSent": "Message de test envoyé à {{to}}.",
     "publicUrl": "Adresse de cette installation",
     "publicUrlHint": "Utilisée pour les liens dans les messages sortants, par exemple https://cargopilot.example.fr. Laisser vide si le navigateur atteint CargoPilot directement.",
+    "cardLinks": "Code QR avec les fiches UN sur les documents",
+    "cardLinksHint": "Ajoute sur chaque document de transport un code QR qui ouvre les fiches UN de cet envoi. La page ainsi atteinte ne demande pas de connexion — c'est voulu : le conducteur au bord de la route et l'intervenant sur place n'ont pas de compte ici. Elle n'affiche que les numéros ONU et l'existence d'une fiche pour chacun ; rien sur l'envoi, les parties ou les quantités. Désactivé tant que vous ne l'activez pas.",
+    "cardLinksNeedsUrl": "Renseignez d'abord l'adresse publique ci-dessus. Sans elle, aucun code QR n'est imprimé : un code sur papier qui ne mène nulle part est pire que pas de code, car celui qui tient le papier ne peut pas faire la différence.",
     "twoFactorPolicy": "Vérification en deux étapes",
     "twoFactorPolicyHint": "Qui doit utiliser une deuxième étape à la connexion. Ceux qui n'en ont pas sont invités à la configurer après connexion.",
     "twoFactorOff": "Facultative, chacun choisit",
@@ -884,5 +887,14 @@
     "deletedUser": "Utilisateur {{name}} supprimé",
     "deletedItem": "{{name}} supprimé",
     "removedUnCards": "Jeu de fiches ONU supprimé"
+  },
+  "cards": {
+    "title": "Fiches UN",
+    "subtitle": "Fiches de référence pour {{modality}}",
+    "open": "Ouvrir",
+    "missing": "Pas de fiche",
+    "none": "Aucun numéro UN dans ce lien.",
+    "unavailable": "Cette installation ne partage pas de fiches par lien.",
+    "note": "Cette page ne montre que du matériel de référence par numéro UN. Elle ne dit rien de l'envoi, des parties ni des quantités."
   }
 }

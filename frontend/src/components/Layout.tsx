@@ -85,6 +85,7 @@ export default function Layout({ user, onLogout }: Props) {
     return (
       <>
         <NavLink to="/" className={linkClass} end onClick={closeMenu} tabIndex={tabIndex}>{t("nav.new")}</NavLink>
+        <NavLink to="/groupage" className={linkClass} onClick={closeMenu} tabIndex={tabIndex}>{t("nav.groupage")}</NavLink>
         {user.role === "admin" && <NavLink to="/materieel" className={linkClass} onClick={closeMenu} tabIndex={tabIndex}>{t("nav.materieel")}</NavLink>}
         {user.role === "admin" && <NavLink to="/users" className={linkClass} onClick={closeMenu} tabIndex={tabIndex}>{t("nav.users")}</NavLink>}
         <NavLink to="/settings" className={linkClass} onClick={closeMenu} tabIndex={tabIndex}>{t("nav.settings")}</NavLink>

@@ -2,6 +2,81 @@
 
 All notable changes are documented here, following [Semantic Versioning](https://semver.org/).
 
+## [1.169.0] — 2026-08-25
+
+### Groupage: several consignments on one vehicle, judged as one load
+
+Every other screen in CargoPilot reasons about a consignment, because a consignment is
+what somebody fills in. The ADR does not look at anybody's administration — it looks at
+what is physically on the vehicle. Three of its rules are decided per transport unit and
+cannot be decided per consignment however carefully each one is completed.
+
+**Open Groupage in the menu**, add the consignments, and the load is judged as a whole.
+
+- **The 1.1.3.6 points.** The finding this exists for, and the one no per-consignment
+  screen can produce: two consignments that each stay under the 1000 points can pass it
+  together. Each customer is told "exempt", truthfully, and the vehicle is not — and the
+  whole load then needs orange plates, an ADR-certified driver and the equipment of
+  8.1.5. The screen shows what each consignment said alone beside what they say
+  together, because a total without that comparison does not explain what combining
+  cost.
+- **Mixed loading (7.5.2).** Checked within one consignment since long ago; between two
+  consignments from different customers it was checked by nobody. Warnings name the
+  consignment as well as the substance, since two customers shipping the same UN number
+  otherwise produce two identical labels and "these may not travel together" does not
+  say which pallet to take off.
+- **The limited-quantities marking (3.4.13/3.4.14).** Both of its conditions are about
+  the unit rather than the consignment. See below.
+
+**Consignments come in as the shipment exports** of v1.161.0. That is deliberate: this
+application keeps no shipment history, so there is no list to pick from, and inventing
+one to make this screen convenient would break the privacy stance the rest of it keeps.
+The file the planner already has is the honest input.
+
+**The trip is never stored.** Privacy levels 1 and 2 keep nothing about shipments, so a
+trip in the database would break that promise for the sake of a screen. It is assembled
+from the request, judged and forgotten: no trip id, no history, nothing to retrieve, and
+reloading the page clears it. A test asserts the service touches no database at all, and
+another asserts the answer carries no identifier. The roadmap's open design question —
+trip as entity or as transient calculation — was settled by the privacy levels rather
+than by preference.
+
+### Fixed: three thresholds of 3.4.13/3.4.14 that had been run together
+
+The limited-quantities marking carries *three* separate quantities, and the
+consignment-level check had collapsed two of them into one.
+
+| value | what it is | what it does |
+|---|---|---|
+| 12 t | maximum mass of the **transport unit** | triggers the requirement (3.4.13) |
+| 8 t | gross mass of the **LQ packages** | allows it to be dispensed with (3.4.14) |
+| orange plates (5.3.2) | a property of the **whole load** | an exception in its own right |
+
+The check compared the LQ gross mass to 8 tonnes and reported that as the 3.4.13
+requirement. That attributes the dispensation's threshold to the requirement, and it
+dropped the orange-plate exception entirely — which in groupage is the common case: add
+one full-ADR consignment and the unit carries plates anyway, and 3.4.13 then does not
+ask for the LQ mark at all.
+
+The consignment-level message now states the rule as it reads and says which two
+conditions a single consignment cannot settle. The trip check evaluates all three,
+because there the application can see the whole load — and asks for the vehicle's
+permitted maximum mass, the one fact about the load it cannot derive. Without it the
+marking is reported as undecided rather than guessed.
+
+Read from ADR 2025 Volume I, page 665, through the repository's own reading workflow —
+not from memory.
+
+### Also
+
+- **A total past the threshold is past it whatever is missing.** The points check reports
+  `incomplete` when a line has no quantity, and the trip check used to read that as
+  "undecided". Unstated quantities can only add points, so a load already over 1000 is
+  over it: a 1500-point load with one blank field no longer comes back undecided.
+- `dg_trip` is rate limited at 30 a minute and appears in `test_ratelimit_key`'s one
+  table with all the others; it runs one points check per consignment plus one over the
+  load, so its cost grows with the vehicle rather than being fixed.
+
 ## [1.168.0] — 2026-08-25
 
 ### A QR code on documents, and the first door that opens without a key

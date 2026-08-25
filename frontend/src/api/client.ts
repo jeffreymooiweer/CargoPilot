@@ -343,6 +343,13 @@ export const api = {
     request<{ modality: string; cards: { un_number: string; available: boolean }[] }>(
       `/cards/lookup?un=${encodeURIComponent(un)}&modality=${encodeURIComponent(modality)}`,
     ),
+  /** Groupage: several consignments judged as one load. Stores nothing. */
+  dgTrip: (payload: {
+    consignments: { name: string; entries: unknown[] }[];
+    profiles: string[];
+    language: string;
+    unit_max_mass_tonnes: number | null;
+  }) => request<TripResult>("/dg/trip", { method: "POST", body: JSON.stringify(payload) }),
   dgReturn: (values: Record<string, string>, lines: LineItem[], dangerous_goods: DgEntry[]) =>
     request<{ values: Record<string, string>; lines: LineItem[]; dangerous_goods: DgEntry[] }>(
       "/dg/return",
@@ -681,6 +688,23 @@ export interface TwoFactorSetup {
   secret: string;
   qr_svg: string;
   code_sent: boolean;
+}
+
+/** A groupage assessment: what each consignment said alone, and what they say
+ *  together. Carries no identifier, because a trip is never stored. */
+export interface TripResult {
+  consignments: { name: string; points: number | null; exempt: boolean | null; status: string }[];
+  adr_points: { total_points: number; threshold: number; status: string };
+  mixed_loading: { message: string; products?: string; rule?: string }[];
+  lq_marking: {
+    rule: string;
+    message: string;
+    lq_gross_kg: number;
+    required: boolean | null;
+    reason: string;
+    orange_plates_required: boolean | null;
+  };
+  exemption_lost: { message: string; consignments: string[] } | null;
 }
 
 /** What the whole installation is set to. Administrators only. */

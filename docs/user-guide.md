@@ -253,6 +253,36 @@ prose, paraphrased answers, measurements written as words); it never decides reg
 content. See the [README](../README.md#the-ai-assistant-optional) for what it is and
 what it costs.
 
+## Groupage: several consignments on one vehicle
+
+Every other screen asks about *one* consignment. The ADR does not look at your
+administration, though — it looks at what is physically on the vehicle, and three of its
+rules are decided per transport unit no matter how carefully each consignment was filled
+in:
+
+- **The 1.1.3.6 points.** Two consignments that each stay under the 1000 can pass it
+  together, and the moment they do the whole load needs orange plates, a driver with an
+  ADR certificate and the equipment of 8.1.5. This is the case the screen exists for:
+  each customer is told "exempt", truthfully, and the vehicle is not.
+- **Mixed loading (7.5.2).** Within one consignment this was always checked. Between two
+  consignments from different customers, nobody was checking it.
+- **The limited-quantities mark (3.4.13/3.4.14).** Both of its conditions are about the
+  unit rather than the consignment.
+
+Open **Groupage** in the menu and add the consignments. They come in as the **JSON
+exports** the export step writes for each shipment — CargoPilot keeps no shipment
+history, so there is no list to pick from, and the file you already have is the input.
+Rename them to whatever you call them on the floor: those names appear in the warnings,
+so "these two may not travel together" tells you which pallet to take off.
+
+One optional field: the **permitted maximum mass of the transport unit** in tonnes.
+Provision 3.4.13 only applies above 12 tonnes, and that is the one fact about the load
+the app cannot work out for itself. Leave it empty and the limited-quantities marking is
+reported as undecided rather than guessed.
+
+**The trip is not stored.** It exists on the screen and in the request, and reloading
+clears it — the same promise the rest of the application keeps about your shipments.
+
 ## The equipment library
 
 Under **Equipment overview** you can keep a library of your own items so they can be

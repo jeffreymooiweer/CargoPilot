@@ -290,8 +290,16 @@ none is committed until it is planned against that brief.
   together with the address book.
 - **EDI (IFTDGN) and the port call.** The freely specified UN/EDIFACT dangerous goods
   notification as a far-off target the structured export quietly prepares for.
-- **Groupage.** Several consignments on one vehicle with the 1.1.3.6 count and mixed
-  loading checked over the whole.
+- **Groupage** shipped in v1.169.0: several consignments on one vehicle, judged as one
+  load. Three provisions are decided per transport unit and could not be decided per
+  consignment however carefully each was filled in — the 1.1.3.6 points, the mixed
+  loading of 7.5.2, and the limited-quantities marking of 3.4.13/3.4.14. The headline
+  finding is the one no per-consignment screen can produce: every consignment exempt,
+  the vehicle not. Consignments come in as the shipment exports of v1.161.0, because
+  there is no stored history to pick from and inventing one would break the privacy
+  stance; the trip itself is a calculation and is never stored. The design question the
+  research recorded — trip as entity or as transient calculation — was settled by the
+  privacy levels rather than by preference.
 - **Return shipments in one click** shipped in v1.167.0: the export step turns the
   consignment round — parties swapped, every line set to empty uncleaned, and every
   quantity the outward journey stated cleared, because on an empty drum each of them is a

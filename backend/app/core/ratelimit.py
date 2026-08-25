@@ -140,6 +140,12 @@ ASSISTANT_MODEL = "3/minute"
 #: retries, far below what a script would want from a route that reads files.
 CARD_LINKS = "30/minute"
 
+#: One groupage assessment. It runs the points check once per consignment and
+#: once more over the whole load, so its cost grows with the number of
+#: consignments rather than being fixed like the other checks. A planner
+#: assembling a vehicle does this a handful of times; nobody does it hundreds.
+TRIP_CHECK = "30/minute"
+
 #: Address autocomplete, which proxies to a Photon instance. The generous one,
 #: and deliberately: the field debounces at 250 ms, so a person typing four
 #: addresses into a consignment legitimately produces dozens of these. It is

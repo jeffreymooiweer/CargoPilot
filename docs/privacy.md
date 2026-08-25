@@ -34,6 +34,9 @@ leave that section on "skip" and sign the printed documents with a pen.
   browser and deleted immediately afterwards.
 - **No operational equipment data in the repository or the Docker image.** The equipment
   library starts empty; an administrator fills it by importing a template.
+- **No trips.** The groupage screen assembles several consignments into one load, judges
+  them together and forgets them. There is no trip id, no history and nothing to
+  retrieve; reloading the page clears it. A trip is a calculation, not a record.
 
 This is a deliberate choice. If a job is finished, there is nothing left to leak.
 

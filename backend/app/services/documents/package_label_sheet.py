@@ -307,6 +307,29 @@ TEXT: dict[str, dict[str, str]] = {
               "dessous de 8 tonnes (3.4.14). Les deux conditions portent sur le "
               "chargement entier ; cette feuille voit un envoi et n'en décide rien.",
     },
+    "lq_sea": {
+        "nl": "Op zee schrijft IMDG 3.4.5.1 hetzelfde merk voor, in dezelfde maten en "
+              "met dezelfde verkleining — vastgesteld door beide teksten te lezen, niet "
+              "aangenomen. Twee verschillen: het merk moet tegen open weer bestand zijn, "
+              "en het eenheidsmerk van 3.4.5.5 kent geen tonnagegrens — een laadeenheid "
+              "met uitsluitend LQ draagt het altijd, drie maanden zeewater bestendig.",
+        "en": "At sea IMDG 3.4.5.1 prescribes the same mark, at the same sizes and with "
+              "the same reduction — established by reading both texts, not assumed. Two "
+              "differences: the mark must withstand open weather exposure, and the unit "
+              "mark of 3.4.5.5 turns on no tonnage — a cargo transport unit carrying "
+              "only LQ always bears it, durable through three months' immersion.",
+        "de": "Auf See schreibt IMDG 3.4.5.1 dasselbe Kennzeichen vor, in denselben "
+              "Maßen und mit derselben Verkleinerung — festgestellt durch Lesen beider "
+              "Texte, nicht angenommen. Zwei Unterschiede: das Kennzeichen muss offener "
+              "Witterung standhalten, und die Einheitskennzeichnung nach 3.4.5.5 kennt "
+              "keine Tonnagegrenze — eine Beförderungseinheit mit ausschließlich LQ "
+              "trägt sie immer, drei Monate Seewasser beständig.",
+        "fr": "En mer, l'IMDG 3.4.5.1 prescrit la même marque, aux mêmes dimensions et "
+              "avec la même réduction — établi en lisant les deux textes, non supposé. "
+              "Deux différences : la marque doit résister aux intempéries, et la marque "
+              "d'engin du 3.4.5.5 ne dépend d'aucun tonnage — un engin ne contenant que "
+              "des QL la porte toujours, résistante à trois mois d'immersion.",
+    },
     "lq_air": {
         "nl": "Voor een collo verpakt volgens ICAO TI deel 3 hoofdstuk 4 mag hetzelfde "
               "merk met een \"Y\" in het midden (3.4.8). Mag — het is een bevestiging, "
@@ -908,6 +931,7 @@ def _mark_pages(result: dict[str, Any], styles: dict[str, Any],
         story.append(_p(_t("lq_built", lang), styles["fixed"]))
         story.append(_p(_t("lq_smaller", lang), styles["fixed"]))
         story.append(_p(_t("lq_unit", lang), styles["fixed"]))
+        story.append(_p(_t("lq_sea", lang), styles["fixed"]))
         story.append(_p(_t("lq_air", lang), styles["fixed"]))
         story.append(_material_line(styles, lang))
         story.append(Spacer(1, 6))

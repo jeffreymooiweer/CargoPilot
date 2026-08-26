@@ -185,7 +185,23 @@
       ],
       "obtained": "download",
       "sha256": "01c23711f04b8649fd0cdb66362b272748903ca738d4ba9196e4badeb6a8a797",
-      "note": "The IMDG Code itself is paywalled; this amendment resolution is publicly hosted and replaces the complete text of the code, so it carries the full Dangerous Goods List. The operator later supplied the same file (byte-identical) through the shared Drive folder, which confirmed the pin."
+      "note": "The IMDG Code itself is paywalled; this amendment resolution is publicly hosted and replaces the complete text of the code, so it carries the full Dangerous Goods List. The operator later supplied the same file (byte-identical) through the shared Drive folder, which confirmed the pin. Verified on 2026-08-26 to carry the complete typeset 2024 edition, not the amendment instructions alone: Parts 1-7, chapters 3.1-3.5 (chapter 3.4 at PDF page 797), Appendix A (generic and N.O.S. proper shipping names, PDF 805), Appendix B (PDF 821) and the index. The operator supplied the same byte-identical file once more through the session upload of 2026-08-26."
+    },
+    {
+      "id": "imdg_supplement_2020",
+      "title": "IMDG Code Supplement, 2020 edition",
+      "publisher": "IMO",
+      "edition": "2020",
+      "language": "en",
+      "profiles": [
+        "IMDG"
+      ],
+      "role": "Registered for future reading (EmS Guide, MFAG, reporting procedures). No value in the repository is read from it yet; the EmS entries currently come from MSC.1/Circ.1588/Rev.3 and the 42-24 difference layer.",
+      "filename": "imdg_supplement_2020.pdf",
+      "urls": [],
+      "obtained": "operator upload (session zip, 2026-08-26)",
+      "sha256": "bd297b429c592433d3de4082958dbeb105c323a4ee699114f32d85cb25a1a65a",
+      "note": "Honest about what this file is: a text-preserving reconstruction of the 2020 Supplement (678 pages) built from an HTML source, in which 138 of the 184 source images could not be recovered. Its text is searchable and usable; anything figure-based must not be read from it. The 2020 edition pairs with Amendment 40-20 — the EmS Guide as amended by MSC.1/Circ.1588/Rev.3 is newer and stays the EmS source of record."
     },
     {
       "id": "imdg_corr_dec2025",

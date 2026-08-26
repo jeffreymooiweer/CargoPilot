@@ -457,14 +457,41 @@ def test_the_same_function_decides_this_as_decides_the_lq_check():
     assert "_assess_lq" in source
 
 
-def test_the_sea_does_not_borrow_the_land_s_chapter_three_four():
-    """The Code has a chapter 3.4 of its own, with its own numbering, and it
-    has not been read. Answering the sea out of ADR 3.4.7 is the mistake
-    column 6 already made once; the open point says so instead."""
+def test_the_sea_carries_the_mark_under_its_own_provision_numbers():
+    """IMDG chapter 3.4, read on 2026-08-26 from the registered edition.
+
+    Until that reading this test asserted the opposite: an open point instead
+    of a mark, because answering the sea out of ADR 3.4.7 is the mistake
+    column 6 already made once. The reading found the identical diamond stated
+    in the Code's own words — so the sea now carries the mark, cited as
+    3.4.5.1 and never as the land's number, with the Y variant at 3.4.5.2 and
+    the durability clause the land does not state.
+    """
     result = check_package_marking(
         [{"line_id": "1", "products": [lq_product()]}], ["IMDG"], "nl")
+    assert "limited_quantities" in kinds(result, "IMDG")
+    assert "imdg_chapter_3_4_not_read" not in result["open"]
+
+    item = next(row for row in regime(result, "IMDG")["items"])
+    mark = next(m for m in item["marks"] if m["kind"] == "limited_quantities")
+    assert mark["provision"] == "3.4.5.1"
+    assert mark["air_variant"]["provision"] == "3.4.5.2"
+    assert "open weather" in mark["durability"]
+    # The geometry is the land's — a finding from reading both texts, so the
+    # drawn artwork serves both regimes and this equality is asserted rather
+    # than assumed.
+    assert mark["size"]["min_width_mm"] == 100
+    assert mark["size"]["min_line_width_mm"] == 2
+    assert mark["reduction"]["floor_width_mm"] == 50
+
+
+def test_a_sea_line_outside_the_limits_carries_no_lq_mark():
+    """The same single reading of chapter 3.4's limits guards the sea mark."""
+    result = check_package_marking(
+        [{"line_id": "1",
+          "products": [lq_product(net_per_inner_packaging="8 L")]}],
+        ["IMDG"], "nl")
     assert "limited_quantities" not in kinds(result, "IMDG")
-    assert "imdg_chapter_3_4_not_read" in result["open"]
 
 
 def test_the_mark_carries_the_size_and_the_reduction_the_provision_gives():

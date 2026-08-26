@@ -163,6 +163,8 @@ goes quiet; typing an address by hand always works.
 | Placarding and marking of cargo transport units at sea | IMDG Code chapter 5.3, Amendment 42-24, via IMO resolution **MSC.556(108)**, quoted by `scripts/read_land_regulations.py --quote sea_placarding` |
 | Errata and corrigenda to Amendment 42-24, December 2025 | IMO, operator-supplied and pinned by hash as `imdg_corr_dec2025`. Read in full and checked against every extracted sea value in v1.149.0: none of its eleven corrections touches one |
 | MSC.1/Circ.1498, informative material on the CTU Code | IMO, 16 December 2014, operator-supplied and pinned as `ctu_circ_1498`. Registered for provenance; explicitly informative, so nothing in it decides a document |
+| Limited quantities at sea — package mark, unit mark, "LTD QTY" on the document | IMDG Code chapter 3.4, Amendment 42-24, read directly from the pinned `imdg_42_24` file (PDF pages 797–799) on 2026-08-26; values in `backend/seed/dg/package_marking.json` under `imdg.limited_quantities` |
+| IMDG Code Supplement, 2020 edition | IMO, operator-supplied and pinned as `imdg_supplement_2020`. A text-preserving reconstruction (138 of 184 source images missing), so usable for text only. Registered for future reading; **no value is read from it yet** — the EmS source of record remains MSC.1/Circ.1588/Rev.3 |
 | IMDG Amendment 42-24 changes over 41-22 | NCB Hazcheck, *IMDG Code Amendment 42-24 changes detailed summary*, October 2024 v1.0, and IMO **E&T 38/3/9** for the UN 1361 provisions |
 
 ## Which edition is running

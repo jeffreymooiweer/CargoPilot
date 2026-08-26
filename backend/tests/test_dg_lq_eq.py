@@ -444,3 +444,38 @@ def test_relieved_packages_do_not_count_towards_the_1000_of_3_5_5():
                    quantity_packages="1500")
     result = check_lq_eq(_entry([ordinary]), "nl", ["ADR"])
     assert [w for w in result["warnings"] if w["rule"] == "ADR/IMDG 3.5.5"]
+
+
+# --- what the sea asks that the land does not (IMDG 3.4, read 2026-08-26) ---
+
+
+def test_a_sea_lq_line_is_told_about_ltd_qty_and_the_unit_mark():
+    """IMDG 3.4.6.1 and 3.4.5.5, the two duties ADR's chapter 3.4 does not have.
+
+    On land chapter 3.4 lifts the transport document altogether; at sea
+    chapter 5.4 stays applicable (3.4.1.2.5) and "LTD QTY" joins the
+    description. And the sea's unit mark turns on no tonnage at all — no 12 t
+    trigger, no 8 t dispensation — which is exactly why the sea was never
+    answered out of the land's book while its own chapter was unread.
+    """
+    result = check_lq_eq(
+        _entry([_product(net_per_inner_packaging="0,5 L",
+                         gross_mass_per_package="20 kg")]),
+        language="en", profiles=["IMDG"],
+    )
+    message = _single(result)["lq"]["message"]
+    assert "LTD QTY" in message
+    assert "3.4.6.1" in message
+    assert "3.4.5.5" in message
+
+
+def test_a_land_only_line_is_not_told_about_the_sea():
+    """The sea's duties must not leak onto a road consignment."""
+    result = check_lq_eq(
+        _entry([_product(net_per_inner_packaging="0,5 L",
+                         gross_mass_per_package="20 kg")]),
+        language="en", profiles=["ADR"],
+    )
+    message = _single(result)["lq"]["message"]
+    assert "LTD QTY" not in message
+    assert "3.4.5.5" not in message

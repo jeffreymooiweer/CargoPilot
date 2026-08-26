@@ -376,14 +376,23 @@ def _marks_for_land(product: dict[str, Any], un: str) -> tuple[list[dict[str, An
     return marks, open_points
 
 
-def _limited_quantities_mark(product: dict[str, Any]) -> dict[str, Any] | None:
-    """The diamond of 3.4.7, when the line actually travels under chapter 3.4.
+def _limited_quantities_mark(product: dict[str, Any],
+                             regime: str = "land") -> dict[str, Any] | None:
+    """The diamond of 3.4.7 — and, since the Code's own chapter 3.4 was read,
+    of IMDG 3.4.5.1 — when the line actually travels under chapter 3.4.
 
     Whether it does is not decided here. ``check_lq_eq`` already tests the line
     against column 7a and the 30 kg limit of 3.4.2, and a second reading of the
     same question is how two answers begin to disagree — which for this mark
     would mean a package that carries it on one screen and not on the other.
     So the same function answers both, and this one only asks.
+
+    The sea cites its own provisions rather than borrowing the land's numbers.
+    IMDG 3.4.5.1 states the identical geometry — the same square at 45 degrees,
+    the same 100 mm and 2 mm, the same reduction to 50 mm and 1 mm — but that
+    identity is a *finding from reading both texts*, recorded in the seed with
+    the pages it was read from, not an assumption. Until that reading the sea
+    claimed nothing here at all.
     """
     from app.services.dg.compliance import _assess_lq, _parse_measures
 
@@ -401,7 +410,7 @@ def _limited_quantities_mark(product: dict[str, Any]) -> dict[str, Any] | None:
         return None
 
     mark = rules()["marks"]["limited_quantities"]
-    return {
+    result = {
         "kind": "limited_quantities",
         "provision": mark["provision"],
         "size": dict(mark["size"]),
@@ -415,6 +424,13 @@ def _limited_quantities_mark(product: dict[str, Any]) -> dict[str, Any] | None:
             "optional": True,
         },
     }
+    if regime == "sea":
+        sea = rules()["imdg"]["limited_quantities"]
+        result["provision"] = sea["provision"]
+        result["air_variant"]["provision"] = sea["air_variant"]["provision"]
+        # 3.4.5.1's own durability clause; the land states none for this mark.
+        result["durability"] = sea["durability"]
+    return result
 
 
 def _marks_for_sea(product: dict[str, Any], un: str) -> tuple[list[dict[str, Any]], list[str]]:
@@ -479,14 +495,16 @@ def _marks_for_sea(product: dict[str, Any], un: str) -> tuple[list[dict[str, Any
             open_points.append("marine_pollutant_threshold")
         marks.append(mark)
 
-    # The limited quantities mark is deliberately absent here. The land answer
-    # carries it from ADR 3.4.7, and the Code has a chapter 3.4 of its own with
-    # its own numbering — which is exactly the shape of mistake this module has
-    # already made once, in column 6, where the sea was answered out of the
-    # land's book because the numbers looked plausible either way. The Code's
-    # chapter has not been read, so nothing is claimed from it.
-    if str(product.get("limited_quantity") or "").strip():
-        open_points.append("imdg_chapter_3_4_not_read")
+    # The limited quantities mark, from the Code's own chapter 3.4 — read on
+    # 2026-08-26 from the registered edition, PDF pages 797-799. Until that
+    # reading this block carried an open point instead of a claim, because
+    # answering the sea out of ADR's chapter 3.4 is the shape of mistake this
+    # module already made once, in column 6. The reading found the identical
+    # diamond stated in the Code's own words at 3.4.5.1, so the sea now
+    # carries the mark under its own provision numbers.
+    lq = _limited_quantities_mark(product, regime="sea")
+    if lq is not None:
+        marks.append(lq)
 
     return marks, open_points
 

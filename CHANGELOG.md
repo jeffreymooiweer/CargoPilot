@@ -2,6 +2,59 @@
 
 All notable changes are documented here, following [Semantic Versioning](https://semver.org/).
 
+## [1.170.0] — 2026-08-26
+
+### The sea's own chapter 3.4, finally read — and the restraint paid out
+
+Since the LQ diamond shipped in v1.165.0, the sea deliberately claimed nothing about it.
+The IMDG Code has a chapter 3.4 of its own with its own numbering, the CI reader's
+anchor for it landed in the Dangerous Goods List, and answering the sea out of ADR's
+book is the mistake column 6 already made once. So the sea answer carried an open point,
+`imdg_chapter_3_4_not_read`, and nothing else.
+
+The operator's upload made the chapter readable directly — and it turned out the file
+was already in the store: byte-identical to the pinned `imdg_42_24`, which was
+thereby verified to carry the complete typeset 2024 edition (Parts 1–7, chapters
+3.1–3.5, Appendix A, Appendix B and the index), not the amendment instructions alone.
+Chapter 3.4 was read from PDF pages 797–799 on 2026-08-26.
+
+**What the reading found, in both directions:**
+
+- **The package mark is the identical diamond.** IMDG 3.4.5.1 states the same square at
+  45°, the same 100 mm minimum and 2 mm line, the same reduction to 50 mm and 1 mm. The
+  artwork drawn for the land serves the sea unchanged — but that identity is now a
+  finding from reading both texts, recorded in the seed with the pages it came from,
+  not an assumption. The sea cites 3.4.5.1 and never the land's number, carries the "Y"
+  variant at 3.4.5.2 with the multimodal recognition of 3.4.5.3.1, and adds the
+  durability clause the land does not state: readable after open weather exposure.
+- **Everything around the mark differs, which is why the waiting was right.** The unit
+  mark of 3.4.5.5 turns on **no tonnage at all** — no 12-tonne trigger, no 8-tonne
+  dispensation: a cargo transport unit carrying only limited quantities always bears
+  the 250 mm mark, durable through three months' immersion in the sea. And where ADR's
+  chapter 3.4 lifts the transport document altogether, the sea keeps chapter 5.4
+  applicable (3.4.1.2.5) and 3.4.6.1 puts **"LIMITED QUANTITY" or "LTD QTY"** beside
+  the description.
+
+**What changed in the application:**
+
+- A sea line within the LQ limits now carries the mark in the package-marking answer,
+  under the sea's provision numbers; the open point is gone.
+- The LQ check names the sea's two extra duties on every within-limits IMDG line — the
+  document words of 3.4.6.1 and the threshold-free unit mark of 3.4.5.5. Named, never
+  inserted: whether the consignment actually travels under chapter 3.4 remains the
+  consignor's declaration.
+- The package label sheet says the sea prescribes the same mark, and names the two
+  differences.
+
+### Registered: the IMDG Code Supplement, 2020 edition
+
+Operator-supplied and pinned as `imdg_supplement_2020`. The register is honest about
+what the file is: a text-preserving reconstruction in which 138 of the 184 source
+images are missing, so it is usable for text and never for figures. **No value in the
+repository is read from it yet** — the EmS source of record remains
+MSC.1/Circ.1588/Rev.3. The third file in the upload, MSC.1/Circ.1498, was already
+pinned as `ctu_circ_1498`.
+
 ## [1.169.0] — 2026-08-25
 
 ### Groupage: several consignments on one vehicle, judged as one load

@@ -525,6 +525,52 @@
         "5.3.1.1.2"
       ],
       "consequence": "For the sea regime the package label follows Table A column (5) where that gives 9A, and the class from column 3 otherwise. The placarding check was already right to refuse 9A on a unit since v1.150.0."
+    },
+    "limited_quantities": {
+      "_comment": "Chapter 3.4 of the Code, read from the registered edition itself on 2026-08-26 — until then the sea deliberately claimed nothing here, because answering it out of ADR's chapter 3.4 is the mistake column 6 already made once. The mark turned out to be the same diamond, stated in nearly the same words; what differs is everything around it.",
+      "provision": "3.4.5.1",
+      "same_mark_as_adr_3_4_7": true,
+      "_same_mark": "3.4.5.1 states the identical geometry: a square set at an angle of 45 degrees, top and bottom portions and the surrounding line black, the centre white or a suitable contrasting background, minimum 100 mm x 100 mm, the line at least 2 mm, reducible to 50 mm x 50 mm with a 1 mm line if the size of the package so requires and the mark remains clearly visible. The drawn artwork of the land mark therefore serves the sea unchanged.",
+      "durability": "readily visible, legible and able to withstand open weather exposure without a substantial reduction in effectiveness (3.4.5.1)",
+      "air_variant": {
+        "provision": "3.4.5.2",
+        "symbol": "Y",
+        "optional": true,
+        "multimodal_recognition": "3.4.5.3.1: a package bearing the 3.4.5.2 mark need not bear the 3.4.5.1 mark"
+      },
+      "overpack": {
+        "provision": "3.4.5.4",
+        "word": "OVERPACK",
+        "min_lettering_mm": 12,
+        "unless": "marks representative of all dangerous goods in the overpack are visible"
+      },
+      "cargo_transport_unit": {
+        "_comment": "The sharpest difference from the land. ADR 3.4.13 turns on the unit's 12 tonnes and 3.4.14 waives below 8 tonnes of LQ gross; the sea has neither number. A CTU with only limited quantities aboard carries the mark, full stop.",
+        "provision": "3.4.5.5",
+        "only_lq_aboard": "not placarded nor marked per 5.3.2.0/5.3.2.1, but marked with the 3.4.5.5.4 mark (3.4.5.5.1)",
+        "with_other_dangerous_goods": "placarded and marked per the goods not packed in limited quantities; the 3.4.5.5.4 mark only where those need no placard or mark (3.4.5.5.2)",
+        "no_tonnage_condition": true,
+        "size": {
+          "min_width_mm": 250,
+          "min_height_mm": 250,
+          "provision": "3.4.5.5.4"
+        },
+        "placement": "locations indicated in 5.3.1.1.4.1",
+        "durability": "identifiable on cargo transport units surviving at least three months' immersion in the sea"
+      },
+      "documentation": {
+        "provision": "3.4.6.1",
+        "statement": "\"limited quantity\" or \"LTD QTY\" on the dangerous goods transport document together with the description of the shipment",
+        "_differs_from_land": "ADR asks for no such words: on land chapter 3.4 lifts the transport document altogether, at sea chapter 5.4 stays applicable (3.4.1.2.5) and these words join it."
+      },
+      "stowage": "category A allocated; the other stowage provisions of column 16a do not apply (3.4.3)",
+      "source": {
+        "document": "imdg_42_24",
+        "pdf_pages": "797-799",
+        "printed_pages": "231-233",
+        "read_on": "2026-08-26",
+        "_how": "Read directly from the registered file (sha256-pinned in sources.json), locally rather than through the CI reader whose anchor once matched in the Dangerous Goods List."
+      }
     }
   },
   "open": [],

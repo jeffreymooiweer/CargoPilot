@@ -5285,6 +5285,45 @@ _LQ_POINTS_NOTE = {
           "Punkten nach 1.1.3.6; die Punktetabelle führt sie der Vollständigkeit "
           "halber dennoch auf.", "fr": " Si cette ligne voyage en quantité limitée, elle ne compte pas dans les points du 1.1.3.6 en vertu du 1.1.3.6.5 ; le tableau des points la reprend néanmoins par souci d'exhaustivité."}
 
+#: What the sea asks of an LQ line that the land does not. IMDG 3.4.1.2.5
+#: keeps chapter 5.4 applicable where ADR's chapter 3.4 lifts the transport
+#: document altogether, and 3.4.6.1 then adds its own words to it. The CTU
+#: sentence is here because it is the sharpest difference from the land: the
+#: sea's unit mark of 3.4.5.5 turns on no tonnage at all — no 12 t trigger,
+#: no 8 t dispensation — only on whether the unit also carries other
+#: dangerous goods that placard it. Read from the registered 42-24 edition,
+#: PDF pages 797-799, on 2026-08-26.
+_LQ_SEA_NOTE = {
+    "nl": " Voor het zeetraject: reist deze regel als LQ, dan hoort volgens "
+          "IMDG 3.4.6.1 \"LIMITED QUANTITY\" of \"LTD QTY\" bij de omschrijving "
+          "op het vervoersdocument. En anders dan op de weg kent het "
+          "LQ-kenmerk op de laadeenheid (3.4.5.5, 250 × 250 mm) geen "
+          "tonnagegrens: een eenheid met uitsluitend LQ draagt het altijd; "
+          "voert zij plakkaten voor andere gevaarlijke goederen, dan gelden "
+          "die.",
+    "en": " For the sea leg: if this line travels as LQ, IMDG 3.4.6.1 puts "
+          "\"LIMITED QUANTITY\" or \"LTD QTY\" beside the description on the "
+          "transport document. And unlike the road, the LQ mark on the cargo "
+          "transport unit (3.4.5.5, 250 × 250 mm) turns on no tonnage: a unit "
+          "carrying only LQ always bears it; where it carries placards for "
+          "other dangerous goods, those apply.",
+    "de": " Für die Seestrecke: Wird diese Zeile als LQ befördert, gehört "
+          "nach IMDG 3.4.6.1 \"LIMITED QUANTITY\" oder \"LTD QTY\" zur "
+          "Beschreibung im Beförderungsdokument. Und anders als auf der "
+          "Straße kennt die LQ-Kennzeichnung an der Beförderungseinheit "
+          "(3.4.5.5, 250 × 250 mm) keine Tonnagegrenze: eine Einheit mit "
+          "ausschließlich LQ trägt sie immer; führt sie Großzettel für "
+          "andere gefährliche Güter, gelten diese.",
+    "fr": " Pour le trajet maritime : si cette ligne voyage en quantités "
+          "limitées, l'IMDG 3.4.6.1 ajoute « LIMITED QUANTITY » ou « LTD "
+          "QTY » à la description sur le document de transport. Et "
+          "contrairement à la route, la marque QL sur l'engin de transport "
+          "(3.4.5.5, 250 × 250 mm) ne dépend d'aucun tonnage : un engin ne "
+          "contenant que des QL la porte toujours ; s'il porte des "
+          "plaques-étiquettes pour d'autres marchandises dangereuses, "
+          "celles-ci s'appliquent.",
+}
+
 _EQ_MESSAGES = {
     "no_data": {
         "nl": "Geen E-code (kolom 7b) beschikbaar voor deze stof; niet getoetst.",
@@ -5651,6 +5690,8 @@ def check_lq_eq(
             eq = _assess_eq(eq_raw, inner, outer, lang)
             if lq["status"] == "within_limits" and {"ADR", "RID", "ADN"} & set(normalized):
                 lq["message"] += pick(_LQ_POINTS_NOTE, lang)
+            if lq["status"] == "within_limits" and use_imdg:
+                lq["message"] += pick(_LQ_SEA_NOTE, lang)
             lq["message"] += dgl_notes["limited_quantity"]
             eq["message"] += dgl_notes["excepted_quantity"]
             statuses.add(lq["status"])

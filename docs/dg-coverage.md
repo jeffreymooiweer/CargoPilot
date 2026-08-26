@@ -305,11 +305,29 @@ this check does not see; the 50 mm reduction of 3.4.7.2, which is a judgement ab
 package in front of the packer; and the "Y" of 3.4.8, which the Code says a package
 *may* bear rather than shall.
 
-**And the sea does not get it.** The IMDG Code has a chapter 3.4 of its own with its own
-numbering, and the attempt to read it landed in the Dangerous Goods List instead —
-"Limited quantities" matches in the wrong half of that book. Answering the sea out of
-ADR 3.4.7 would be exactly the mistake column 6 already made once, so the sea answer
-carries `imdg_chapter_3_4_not_read` and claims nothing.
+**And the sea gets it too, since v1.170.0 — under its own numbers.** The IMDG Code has a
+chapter 3.4 of its own, and for five releases the sea answer carried
+`imdg_chapter_3_4_not_read` and claimed nothing, because the CI reader's anchor for it
+landed in the Dangerous Goods List and answering the sea out of ADR 3.4.7 would be
+exactly the mistake column 6 already made once. On 2026-08-26 the chapter was read
+directly from the registered 42-24 edition (PDF pages 797–799), and the restraint paid
+out in both directions:
+
+- **The package mark is the identical diamond** — IMDG 3.4.5.1 states the same square at
+  45°, the same 100 mm and 2 mm line, the same reduction to 50 mm and 1 mm. The drawn
+  artwork serves both regimes; the sea cites 3.4.5.1 and never the land's number, and
+  adds the durability clause the land does not state: readable after open weather
+  exposure. The "Y" variant sits at 3.4.5.2, with the multimodal recognition of
+  3.4.5.3.1.
+- **Everything around the mark differs.** The unit mark of 3.4.5.5 turns on **no tonnage
+  at all** — no 12 t trigger, no 8 t dispensation: a cargo transport unit carrying only
+  LQ always bears the 250 mm mark, durable through three months' immersion, at the
+  locations of 5.3.1.1.4.1; where the unit is placarded for other goods, the placards
+  apply. And where ADR's chapter 3.4 lifts the transport document altogether, the sea
+  keeps chapter 5.4 applicable (3.4.1.2.5) and 3.4.6.1 puts **"LIMITED QUANTITY" or
+  "LTD QTY"** beside the description. The LQ check names both duties on every
+  within-limits sea line; whether the consignment actually travels under chapter 3.4
+  remains the consignor's declaration, so the words are named and never inserted.
 
 **Chapter 5.2 answers per regime, since v1.160.0.** What goes on the *package* was the
 half nobody asked for: the labels of column (5) were read for eight other purposes and

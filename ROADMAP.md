@@ -271,9 +271,11 @@ none is committed until it is planned against that brief.
   arrows** follow in v1.162.0, both measured out of the edition. Column 6 of the Dangerous
   Goods List follows in v1.163.0, which closes the chapter. The **LQ diamond** of 3.4.7
   follows in v1.165.0 — chapter 3.4's mark rather than 5.2's, drawn from the provision's
-  words with the one proportion it leaves to the figure measured off the figure. What
-  remains there is the Code's own chapter 3.4, whose numbering is not ADR's and which has
-  not been read. Placards stay refused, because a laser print is not a placard.
+  words with the one proportion it leaves to the figure measured off the figure. The
+  Code's own chapter 3.4 was read in v1.170.0 from the registered edition: the same
+  diamond under the sea's own numbers (3.4.5.1), with the two duties the land does not
+  have — "LTD QTY" on the transport document (3.4.6.1) and a unit mark with no tonnage
+  condition (3.4.5.5). Placards stay refused, because a laser print is not a placard.
 - **Structured shipment export, on the road to eCMR/eFTI.** The versioned JSON export
   ships in v1.161.0 — the whole shipment with its derived findings and the editions
   they were computed against, on every transport mode (see

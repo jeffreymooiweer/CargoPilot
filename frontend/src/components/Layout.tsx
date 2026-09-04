@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { NavLink, Outlet, useLocation, useNavigate } from "react-router";
 import { useTranslation } from "react-i18next";
 import { api, User } from "../api/client";
+import { usePreferences } from "../settings/preferences";
 import UpdateToast from "./UpdateToast";
 import TwoFactorNudge, { clearTwoFactorNudge } from "./TwoFactorNudge";
 import WhatsNewModal from "./WhatsNewModal";
@@ -27,6 +28,10 @@ export default function Layout({ user, onLogout }: Props) {
   const [menuOpen, setMenuOpen] = useState(false);
   const [railOpen, setRailOpen] = useState(true);
   const [version, setVersion] = useState<string | null>(null);
+  // The open application has nobody to sign out, no library to link to and
+  // no release notes to show — and it says what it is where the account
+  // name would otherwise stand, so a visitor can see it without asking.
+  const open = usePreferences().mode === "open";
 
   const inWizard = WIZARD_PATH.test(location.pathname);
   // The rail follows the route once, on the way in and on the way out. Doing it
@@ -73,9 +78,18 @@ export default function Layout({ user, onLogout }: Props) {
 
   const versionBadge = versionLabel ? (
     <p className="px-4 py-2 text-[10px] tracking-wide text-slate-400 dark:text-slate-500 select-none" aria-label={`${t("settings.version")} ${versionLabel}`}>
-      {versionLabel}
+      {open ? `${t("nav.openMode")} · ${versionLabel}` : versionLabel}
     </p>
   ) : null;
+
+  // What stands where the account name would: which application this is.
+  // The health line says the same thing to a script; this says it to a
+  // person, in every language the screen speaks.
+  const whoami = open ? (
+    <span title={t("nav.openModeHint")}>{t("nav.openMode")}</span>
+  ) : (
+    <span>{user.username}</span>
+  );
 
   // A collapsed rail is still in the DOM, so its links stay in the tab order
   // unless they are taken out of it. A menu you cannot see but can tab into is
@@ -86,8 +100,8 @@ export default function Layout({ user, onLogout }: Props) {
       <>
         <NavLink to="/" className={linkClass} end onClick={closeMenu} tabIndex={tabIndex}>{t("nav.new")}</NavLink>
         <NavLink to="/groupage" className={linkClass} onClick={closeMenu} tabIndex={tabIndex}>{t("nav.groupage")}</NavLink>
-        {user.role === "admin" && <NavLink to="/materieel" className={linkClass} onClick={closeMenu} tabIndex={tabIndex}>{t("nav.materieel")}</NavLink>}
-        {user.role === "admin" && <NavLink to="/users" className={linkClass} onClick={closeMenu} tabIndex={tabIndex}>{t("nav.users")}</NavLink>}
+        {!open && user.role === "admin" && <NavLink to="/materieel" className={linkClass} onClick={closeMenu} tabIndex={tabIndex}>{t("nav.materieel")}</NavLink>}
+        {!open && user.role === "admin" && <NavLink to="/users" className={linkClass} onClick={closeMenu} tabIndex={tabIndex}>{t("nav.users")}</NavLink>}
         <NavLink to="/settings" className={linkClass} onClick={closeMenu} tabIndex={tabIndex}>{t("nav.settings")}</NavLink>
         <NavLink to="/legal" className={linkClass} onClick={closeMenu} tabIndex={tabIndex}>{t("nav.legal")}</NavLink>
       </>
@@ -152,10 +166,12 @@ export default function Layout({ user, onLogout }: Props) {
             </div>
           </div>
           <div className="hidden md:flex items-center gap-3 text-sm text-slate-500 dark:text-slate-400">
-            <span>{user.username}</span>
-            <button type="button" onClick={handleLogout} className="text-slate-600 dark:text-slate-300 hover:underline">
-              {t("nav.logout")}
-            </button>
+            {whoami}
+            {!open && (
+              <button type="button" onClick={handleLogout} className="text-slate-600 dark:text-slate-300 hover:underline">
+                {t("nav.logout")}
+              </button>
+            )}
           </div>
         </div>
       </header>
@@ -185,10 +201,12 @@ export default function Layout({ user, onLogout }: Props) {
 
       {/* Only signed-in chrome mounts these, which is exactly who release
           notes are for; the login page stays free of them. The toast asks the
-          server only for administrators — the one role that can pull an image. */}
-      <WhatsNewModal />
-      <UpdateToast user={user} />
-      <TwoFactorNudge user={user} />
+          server only for administrators — the one role that can pull an image.
+          The open application has none of the three: no account to remember
+          what was seen, no administrator to update, no second factor. */}
+      {!open && <WhatsNewModal />}
+      {!open && <UpdateToast user={user} />}
+      {!open && <TwoFactorNudge user={user} />}
 
       {menuOpen && (
         <div className="md:hidden fixed inset-0 z-50">
@@ -203,14 +221,18 @@ export default function Layout({ user, onLogout }: Props) {
             <nav className="flex-1 overflow-y-auto p-3 space-y-1">{navLinks()}</nav>
             <div className="p-3 border-t border-slate-200 dark:border-slate-800">
               {versionBadge}
-              <p className="px-4 py-1 text-xs text-slate-500 dark:text-slate-400">{user.username}</p>
-              <button
-                type="button"
-                onClick={handleLogout}
-                className="w-full text-left px-4 py-3 rounded-lg text-sm text-red-600 dark:text-red-400 min-h-[44px]"
-              >
-                {t("nav.logout")}
-              </button>
+              <p className="px-4 py-1 text-xs text-slate-500 dark:text-slate-400">
+                {open ? t("nav.openModeHint") : user.username}
+              </p>
+              {!open && (
+                <button
+                  type="button"
+                  onClick={handleLogout}
+                  className="w-full text-left px-4 py-3 rounded-lg text-sm text-red-600 dark:text-red-400 min-h-[44px]"
+                >
+                  {t("nav.logout")}
+                </button>
+              )}
             </div>
           </aside>
         </div>

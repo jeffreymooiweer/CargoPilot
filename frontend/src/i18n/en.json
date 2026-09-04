@@ -16,7 +16,9 @@
     "legal": "Disclaimer",
     "collapseMenu": "Collapse menu",
     "expandMenu": "Expand menu",
-    "groupage": "Groupage"
+    "groupage": "Groupage",
+    "openMode": "Open installation",
+    "openModeHint": "No account, nothing is kept"
   },
   "theme": {
     "dark": "Dark",
@@ -353,7 +355,9 @@
     "twoFactorPolicyHint": "Who must use a second step when signing in. Anyone without one is asked to set it up after signing in.",
     "twoFactorOff": "Voluntary, everyone chooses",
     "twoFactorAdmins": "Required for administrators",
-    "twoFactorEveryone": "Required for everyone"
+    "twoFactorEveryone": "Required for everyone",
+    "introOpen": "Set the app up the way you use it. What you save here stays in this browser and never reaches the server; it goes when you clear your browser data.",
+    "myDetailsHintOpen": "Details that are the same on nearly every shipment. They stay in this browser."
   },
   "modality": {
     "title": "Choose your transport modality",

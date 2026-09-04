@@ -16,7 +16,9 @@
     "legal": "Haftungsausschluss",
     "collapseMenu": "Menü einklappen",
     "expandMenu": "Menü ausklappen",
-    "groupage": "Sammelgut"
+    "groupage": "Sammelgut",
+    "openMode": "Offene Installation",
+    "openModeHint": "Kein Konto, nichts wird gespeichert"
   },
   "theme": {
     "dark": "Dunkel",
@@ -353,7 +355,9 @@
     "twoFactorPolicyHint": "Wer einen zweiten Schritt bei der Anmeldung verwenden muss. Wer noch keinen hat, wird nach der Anmeldung zum Einrichten aufgefordert.",
     "twoFactorOff": "Freiwillig, jeder entscheidet selbst",
     "twoFactorAdmins": "Pflicht für Administratoren",
-    "twoFactorEveryone": "Pflicht für alle"
+    "twoFactorEveryone": "Pflicht für alle",
+    "introOpen": "Richten Sie die App so ein, wie Sie sie nutzen. Was Sie hier speichern, bleibt in diesem Browser und gelangt nie auf den Server; es verschwindet, wenn Sie Ihre Browserdaten löschen.",
+    "myDetailsHintOpen": "Angaben, die auf fast jeder Sendung gleich sind. Sie bleiben in diesem Browser."
   },
   "modality": {
     "title": "Wählen Sie Ihren Verkehrsträger",

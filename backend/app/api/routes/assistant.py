@@ -18,6 +18,10 @@ from app.services.assistant import runtime
 from app.services.assistant.orchestrator import step
 
 router = APIRouter(prefix="/assistant", tags=["assistant"])
+#: Installing the model is an administrator's click, on a router of its own
+#: so the open application — which has no administrator — leaves it out. The
+#: operator of an open installation puts the model in place at deploy time.
+admin_router = APIRouter(prefix="/assistant", tags=["assistant"])
 
 
 class AssistantStepRequest(BaseModel):
@@ -54,7 +58,7 @@ class AssistantModelRequest(BaseModel):
     action: str = Field(pattern="^(download|remove|stop)$")
 
 
-@router.post("/model")
+@admin_router.post("/model")
 @limiter.limit(ASSISTANT_MODEL)
 def assistant_model(
     request: Request,

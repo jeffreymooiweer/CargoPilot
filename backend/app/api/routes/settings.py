@@ -5,6 +5,12 @@ and cannot reach another account. ``/settings/public`` is the handful of
 instance facts the interface needs to draw itself correctly for any user.
 ``/settings/instance`` is the full picture, and is behind ``require_admin``
 because it decides whether this installation talks to the internet at all.
+
+Two routers, because the open application mounts only one of them. What the
+interface needs to draw itself — the public facts and the option lists — is
+on ``public_router`` and answers a visitor; the account's own settings and the
+administrator's live on ``router`` and do not exist where there are no
+accounts.
 """
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
@@ -25,6 +31,7 @@ from app.services.units import UNITS
 from app.core.languages import SUPPORTED as SUPPORTED_LANGUAGES
 
 router = APIRouter(prefix="/settings", tags=["settings"])
+public_router = APIRouter(prefix="/settings", tags=["settings"])
 
 
 @router.get("/me", response_model=UserPreferences)
@@ -41,12 +48,12 @@ def save_my_settings(
     return settings_store.save_user_preferences(db, user.id, payload)
 
 
-@router.get("/public", response_model=PublicSettings)
+@public_router.get("/public", response_model=PublicSettings)
 def public_settings(user: User = Depends(get_current_user), db: Session = Depends(get_db)):
     return settings_store.public_settings(db)
 
 
-@router.get("/options")
+@public_router.get("/options")
 def settings_options(user: User = Depends(get_current_user)):
     """What the settings screen may offer, from the backend that owns the lists.
 

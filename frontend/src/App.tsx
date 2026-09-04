@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Navigate, Route, Routes, useNavigate } from "react-router";
-import { api, User } from "./api/client";
+import { api, InstallationMode, User, VISITOR } from "./api/client";
 import Layout from "./components/Layout";
 import CardsPage from "./pages/CardsPage";
 import GroupagePage from "./pages/GroupagePage";
@@ -17,14 +17,38 @@ import { ToastProvider } from "./toast/ToastProvider";
 
 export default function App() {
   const [user, setUser] = useState<User | null>(null);
+  const [mode, setMode] = useState<InstallationMode>("organisation");
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
   useEffect(() => {
-    api.me()
-      .then((res) => setUser(res.user))
-      .catch(() => setUser(null))
-      .finally(() => setLoading(false));
+    // Which application is this? The health line says, and it needs no
+    // cookie — the one question that can be asked before knowing whether
+    // there is anybody to ask on behalf of. The open application has no
+    // `/auth/me` to call, so its caller is the visitor, straight away. An
+    // unreachable server is treated as the organisation application: the
+    // sign-in page is the one that can show the error.
+    let cancelled = false;
+    void (async () => {
+      const health = await api.health().catch(() => null);
+      if (cancelled) return;
+      if (health?.mode === "open") {
+        setMode("open");
+        setUser(VISITOR);
+        setLoading(false);
+        return;
+      }
+      try {
+        setUser((await api.me()).user);
+      } catch {
+        setUser(null);
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
   if (loading) {
@@ -49,8 +73,10 @@ export default function App() {
     );
   }
 
+  const open = mode === "open";
+
   return (
-    <PreferencesProvider>
+    <PreferencesProvider mode={mode}>
       <ToastProvider>
       <Routes>
         <Route element={<Layout user={user} onLogout={() => setUser(null)} />}>
@@ -58,12 +84,15 @@ export default function App() {
           <Route path="/wizard" element={<Navigate to="/" replace />} />
           <Route path="/wizard/:modality" element={<WizardPage />} />
           <Route path="/groupage" element={<GroupagePage />} />
-          <Route path="/materieel" element={<MaterieelPage />} />
+          {/* The library and the users page presume an account. In the open
+              application their addresses are not on the server either, so
+              a page that called them would only draw an error. */}
+          {!open && <Route path="/materieel" element={<MaterieelPage />} />}
+          {!open && <Route path="/users" element={<UsersPage user={user} />} />}
           <Route path="/settings" element={<SettingsPage user={user} />} />
           <Route path="/legal" element={<LegalPage />} />
-          <Route path="/users" element={<UsersPage user={user} />} />
         </Route>
-        <Route path="/reset-password" element={<ResetPasswordPage />} />
+        {!open && <Route path="/reset-password" element={<ResetPasswordPage />} />}
         <Route path="/cards" element={<CardsPage />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>

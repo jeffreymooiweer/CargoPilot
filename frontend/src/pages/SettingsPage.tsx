@@ -59,7 +59,12 @@ interface Props {
 
 export default function SettingsPage({ user }: Props) {
   const { t } = useTranslation();
-  const { preferences, save, loaded } = usePreferences();
+  const { preferences, save, loaded, mode } = usePreferences();
+  // In the open application what is saved here stays in the browser, and
+  // the screen has to say so: "stored in your browser" is a promise about
+  // where the data is *not*, and a warning that it goes with the browser
+  // data. There is also no account to put a second factor on.
+  const open = mode === "open";
   const [draft, setDraft] = useState<UserPreferences>(preferences);
   const [options, setOptions] = useState<SettingsOptions | null>(null);
   const [version, setVersion] = useState("");
@@ -121,7 +126,9 @@ export default function SettingsPage({ user }: Props) {
     <div className="space-y-6 max-w-2xl pb-4">
       <div>
         <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">{t("settings.title")}</h2>
-        <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">{t("settings.intro")}</p>
+        <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
+          {open ? t("settings.introOpen") : t("settings.intro")}
+        </p>
       </div>
 
       {/* On a phone a row of tabs would either wrap or scroll out of sight;
@@ -274,7 +281,9 @@ export default function SettingsPage({ user }: Props) {
           <h3 className="text-sm font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">
             {t("settings.myDetails")}
           </h3>
-          <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">{t("settings.myDetailsHint")}</p>
+          <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
+            {open ? t("settings.myDetailsHintOpen") : t("settings.myDetailsHint")}
+          </p>
         </div>
 
         <Field
@@ -339,7 +348,7 @@ export default function SettingsPage({ user }: Props) {
         </>
       )}
 
-      {active === "details" && <TwoFactorPanel />}
+      {active === "details" && !open && <TwoFactorPanel />}
       {active === "admin" && user.role === "admin" && <AdminSettings />}
       {active === "maintenance" && user.role === "admin" && (
         <div className="space-y-4">

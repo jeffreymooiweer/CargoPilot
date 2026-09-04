@@ -114,47 +114,19 @@ the one combination this page does not offer.
 CargoPilot does now. Open is *removing* from it; history is *adding* to it. Neither
 waits on the other, and Open can ship with history never built.
 
-#### Open
+#### Open — shipped in v1.171.0
 
-A public installation anyone may use to draw up their transport documents without
-leaving anything behind. Three things follow from "no accounts", each a consequence
-rather than an oversight:
-
-- **What would normally be filled in for you lives in your browser**, never on the
-  server: consignor address, contact, carrier, loading point, emergency number,
-  language — and your signature, which is the only image CargoPilot ever holds. The
-  screen has to say this plainly, because "stored in your browser" is a promise about
-  where it is *not*, and it goes when the visitor's browser data goes.
-- **No equipment library.** It is the one place operational data lives and it is filled
-  by an administrator importing a template. With nobody signed in there is no one to own
-  it and no one it belongs to.
-- **No mail.** The export step's "mail these documents to…" does not exist for a visitor
-  who never signed in, and so no mail server is configured at all. An earlier version of
-  this page kept mail at Open and guarded it with a second switch, per-recipient caps
-  and a warning about becoming a spam relay. All of that existed to make one feature
-  safe for strangers — and a visitor who can download the documents does not need the
-  installation to send them. Removing the feature removes the switch, the caps and the
-  warning with it.
-
-What an administrator would otherwise set — the public address the QR links point at,
-the assistant's model, the update check — is set in the environment at deploy time, and
-changing it means restarting the container.
-
-**The promise has to be checkable, not merely true.** A visitor cannot see an
-environment variable. What they can see is that the source is public, that the
-application says in its footer and in its version endpoint which mode it runs in, and
-that [Privacy](docs/privacy.md) says in one paragraph what Open means. Without those
-three the mode is a fact about the server; with them it is something a stranger can
-verify before typing a customer's name.
-
-Rate limiting is already done, ahead of the mode. v1.163.4 made the limits count per
-caller behind a reverse proxy, and v1.164.0 extended them from the sign-in routes — the
-routes Open deletes — to the endpoints that cost something: document rendering, the
-bundle, UN cards, reading a carrier confirmation, the assistant's turn and its model
-download, and address autocomplete. Every limit in the application is listed in one
-table in `test_ratelimit_key.py`, so changing one is changing that list. The in-app
-limiter is the floor, because it is what actually ships in a one-container deployment;
-an edge limiter in front of it stays a recommendation, not an assumption.
+`CARGOPILOT_MODE=open`, built as this section promised. The account routes are not
+mounted — sign-in, users, the settings screen, the equipment library, mail, the
+administrator's maintenance — and the test suite asserts their absence route by route.
+The defaults live in the visitor's browser and the settings screen says so in four
+languages. There is no mail whatever `SMTP_*` says, and no saved settings row is read:
+the environment is the whole configuration, so the switches an administrator would
+otherwise flip on the screen gained environment names (`ADDRESS_LOOKUP_ENABLED`,
+`UN_CARDS_ENABLED`, `CARD_LINKS_ENABLED`, `PUBLIC_URL`, `DEFAULT_LANGUAGE`,
+`DEFAULT_THEME`). And the promise is checkable rather than merely true: `/api/health`
+and the footer both say which application answers, and [Privacy](docs/privacy.md) has
+the section a visitor reads. Rate limiting was already in place (v1.163.4, v1.164.0).
 
 #### Organisation
 

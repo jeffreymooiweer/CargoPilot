@@ -7,6 +7,7 @@ from fastapi.staticfiles import StaticFiles
 from slowapi import _rate_limit_exceeded_handler
 from slowapi.errors import RateLimitExceeded
 
+from app.api.routes.assistant import admin_router as assistant_admin_router
 from app.api.routes.assistant import router as assistant_router
 from app.api.routes.auth import router as auth_router
 from app.api.routes.cards import router as cards_router
@@ -16,10 +17,12 @@ from app.api.routes.units import router as units_router
 from app.api.routes.equipment import equipment_router
 from app.api.routes.import_files import router as import_files_router
 from app.api.routes.dangerous_goods import router as dangerous_goods_router
+from app.api.routes.documents import mail_router as documents_mail_router
 from app.api.routes.documents import router as documents_router
 from app.api.routes.geo import router as geo_router
 from app.api.routes.jobs import router as jobs_router
 from app.api.routes.meta import router as meta_router
+from app.api.routes.settings import public_router as settings_public_router
 from app.api.routes.settings import router as settings_router
 from app.api.routes.un_cards_admin import router as un_cards_admin_router
 from app.api.routes.users import router as users_router
@@ -31,6 +34,38 @@ from app.services.regulatory_manifest import build_manifest, summary
 from app.version import get_version
 
 logger = logging.getLogger(__name__)
+
+#: The work: what both applications serve. Parsing, judging, rendering, the
+#: reference data, and the public facts the interface draws itself from.
+WORK_ROUTERS = (
+    assistant_router,
+    jobs_router,
+    dangerous_goods_router,
+    documents_router,
+    geo_router,
+    reference_router,
+    import_files_router,
+    catalog_search_router,
+    units_router,
+    settings_public_router,
+)
+
+#: The accounts: what only the organisation application serves. Signing in
+#: and everything that presumes somebody did — their settings, the users
+#: page, the equipment library, mail, the administrator's maintenance. In
+#: the open application these are not hidden behind a refusal; they are not
+#: mounted, so they answer 404 like any address that does not exist. The
+#: test suite asserts their absence route by route.
+ACCOUNT_ROUTERS = (
+    auth_router,
+    users_router,
+    settings_router,
+    equipment_router,
+    documents_mail_router,
+    un_cards_admin_router,
+    assistant_admin_router,
+    meta_router,
+)
 
 
 def create_app() -> FastAPI:
@@ -70,6 +105,11 @@ def create_app() -> FastAPI:
             "status": "ok",
             "app": settings.app_name,
             "version": get_version(),
+            # Which application this is. A visitor cannot see an environment
+            # variable; this line, the footer that repeats it and the public
+            # source are what make "nothing is kept about you" checkable
+            # rather than merely true.
+            "mode": settings.mode,
             # Which editions this installation uses, compactly. Whoever reports a
             # bug passes on straight away what their app computes with.
             "regulatory": summary(),
@@ -82,25 +122,16 @@ def create_app() -> FastAPI:
 
     @app.get("/api/setup-status")
     def setup_status():
-        return {"has_admin": getattr(app.state, "has_admin", False)}
+        return {"has_admin": getattr(app.state, "has_admin", False),
+                "mode": settings.mode}
 
-    app.include_router(assistant_router, prefix="/api")
-    app.include_router(auth_router, prefix="/api")
-    app.include_router(users_router, prefix="/api")
-    app.include_router(jobs_router, prefix="/api")
-    app.include_router(dangerous_goods_router, prefix="/api")
-    app.include_router(documents_router, prefix="/api")
-    app.include_router(geo_router, prefix="/api")
-    app.include_router(reference_router, prefix="/api")
-    app.include_router(equipment_router, prefix="/api")
-    app.include_router(import_files_router, prefix="/api")
-    app.include_router(catalog_search_router, prefix="/api")
-    app.include_router(units_router, prefix="/api")
-    app.include_router(settings_router, prefix="/api")
-    app.include_router(un_cards_admin_router, prefix="/api")
-    app.include_router(meta_router, prefix="/api")
-    # Public by design — see app/api/routes/cards.py. It is off
-    # unless an administrator turns it on.
+    for router in WORK_ROUTERS:
+        app.include_router(router, prefix="/api")
+    if not settings.is_open:
+        for router in ACCOUNT_ROUTERS:
+            app.include_router(router, prefix="/api")
+    # Public by design in both applications — see app/api/routes/cards.py.
+    # It is off unless an administrator, or the environment, turns it on.
     app.include_router(cards_router, prefix="/api")
 
     static_dir = settings.static_dir

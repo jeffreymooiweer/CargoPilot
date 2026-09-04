@@ -23,18 +23,51 @@ because those are read while the application is starting and there is no screen 
 |---|---|---|
 | `GEO_ADDRESS_API_URL` | Address API | immediately |
 | `GEO_ADDRESS_TIMEOUT_SECONDS` | Timeout | immediately |
-| — | Address lookup on/off | immediately |
+| `ADDRESS_LOOKUP_ENABLED` | Address lookup on/off | immediately |
 | `CATALOG_AUTO_SYNC` | Update the catalogue at startup | next restart |
 | `UPDATE_CHECK_ENABLED` | Check for updates | immediately |
 | `ACCESS_TOKEN_EXPIRE_MINUTES` | Session lifetime | at the next login |
-| — | Offer UN cards | immediately |
-| — | Default language and theme for new users | at their next sign-in |
+| `UN_CARDS_ENABLED` | Offer UN cards | immediately |
+| `CARD_LINKS_ENABLED` | QR code with UN cards on documents | immediately |
+| `PUBLIC_URL` | The address this installation is reached on | immediately |
+| `DEFAULT_LANGUAGE`, `DEFAULT_THEME` | Default language and theme for new users | at their next sign-in |
 | — | Organisation name and address | immediately |
 | `SMTP_HOST` and friends | Mail server | immediately |
 
 The screen also carries per-user preferences — language, theme, the consignor details that
 are retyped on every shipment, a saved signature. Those belong to the account rather than
 to the installation, and are described in the [user guide](user-guide.md#settings).
+
+## Which application: open or organisation
+
+| Variable | What it does | Default |
+|---|---|---|
+| `CARGOPILOT_MODE` | `organisation` (accounts; people sign in) or `open` (no accounts; anyone may use it, nothing is kept about anyone) | `organisation` |
+
+The image holds two applications, and this variable picks one at start-up. It is read
+once and has no screen counterpart on purpose: a privacy promise an administrator could
+click away is not a promise, and the open application has no administrator to click it.
+
+**`organisation`** is what every installation is unless told otherwise, and what every
+page of this documentation describes: sign in, and the server keeps accounts, settings and
+the equipment library — never shipments.
+
+**`open`** is for an installation anyone may use. The routes that presume an account —
+sign-in, the users page, the settings screen, the equipment library, mailing documents,
+updating from inside the application — are not mounted and answer 404. What the screen
+would fill in for a signed-in user lives in the visitor's browser instead. There is no
+mail in the open application whatever `SMTP_*` says, and no saved settings row is read,
+so the environment is its whole configuration: the switches in the table above that an
+administrator would otherwise flip on the screen (`ADDRESS_LOOKUP_ENABLED`,
+`UN_CARDS_ENABLED`, `CARD_LINKS_ENABLED`, `PUBLIC_URL`, `DEFAULT_LANGUAGE`,
+`DEFAULT_THEME`) are set here. The `ADMIN_*` variables are ignored, and the assistant's
+model, if wanted, is placed in `DATA_DIR/assistant` by the operator rather than
+downloaded from the screen.
+
+A value that is neither word runs the organisation application — the closed one is where
+a typo may safely land — and says so in the log. `/api/health` reports `"mode"` on every
+installation, so what an operator got is a line away, and [Privacy](privacy.md) says in
+one section what the open application means for its visitors.
 
 ## Essentials
 

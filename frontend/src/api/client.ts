@@ -260,6 +260,14 @@ export const api = {
     request<{ ok: boolean; removed: boolean }>("/un-cards/remove", { method: "POST" }),
   saveInstanceSettings: (payload: InstanceSettings) =>
     request<InstanceSettings>("/settings/instance", { method: "PUT", body: JSON.stringify(payload) }),
+  /** Readable without a sign-in: the sign-in page shows it. */
+  branding: () => request<Branding>("/branding"),
+  uploadBrandLogo: (file: File) => uploadFile<Branding>("/branding/logo", file),
+  removeBrandLogo: () => request<Branding>("/branding/logo", { method: "DELETE" }),
+  uploadBrandModality: (key: string, file: File) =>
+    uploadFile<Branding>(`/branding/modality/${key}`, file),
+  removeBrandModality: (key: string) =>
+    request<Branding>(`/branding/modality/${key}`, { method: "DELETE" }),
   /** Ask for a reset link. The answer is the same whether or not the
    *  account exists — deliberately, see the endpoint. */
   forgotPassword: (identifier: string) =>
@@ -586,6 +594,16 @@ export interface User {
 /** Which application this installation runs as. See docs/privacy.md. */
 export type InstallationMode = "open" | "organisation";
 
+/** What is on the door: the installation's name and the addresses of its
+ *  own pictures, `null` where the default applies. The addresses carry a
+ *  version, so a changed picture is a new address and the old one may be
+ *  cached for as long as the browser likes. */
+export interface Branding {
+  name: string;
+  logo: string | null;
+  modalities: Record<string, string | null>;
+}
+
 /** The open application's caller: nobody. The pages take a `User`, and this
  *  is the one they get when there are no accounts — a plain role, so nothing
  *  administrative ever draws for it, and an empty name, so nothing prints
@@ -734,6 +752,9 @@ export interface InstanceSettings {
   session_timeout_minutes: number;
   organisation_name: string;
   organisation_address: string;
+  /** What the screen calls itself; empty means CargoPilot. The logo and the
+   *  tile pictures beside it are uploads, not settings — see `Branding`. */
+  brand_name: string;
   two_factor_policy: "off" | "admins" | "everyone";
   public_url: string;
   /** Whether the QR code on a document opens a public page of UN cards.

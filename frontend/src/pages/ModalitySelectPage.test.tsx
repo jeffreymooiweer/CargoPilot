@@ -39,6 +39,11 @@ vi.mock("../settings/preferences", () => ({
   usePreferences: () => ({ preferences, loaded: true }),
 }));
 
+const branding = { name: "", logo: null as string | null, modalities: {} as Record<string, string | null> };
+vi.mock("../branding", () => ({
+  useBranding: () => ({ branding, refresh: async () => {} }),
+}));
+
 function renderAt(path = "/") {
   return render(
     <MemoryRouter initialEntries={[path]}>
@@ -122,5 +127,23 @@ describe("de modaliteitkeuze", () => {
     preferences.default_modality = "inland";
     renderAt("/");
     await waitFor(() => expect(screen.getByText("wizard")).toBeInTheDocument());
+  });
+});
+
+describe("de eigen tegelafbeeldingen", () => {
+  it("toont een geüploade afbeelding in beide thema's en de standaard waar er geen is", () => {
+    // One uploaded picture replaces both the light and the dark default:
+    // nobody uploads a company photo twice. The other tiles keep their pair.
+    preferences.default_modality = undefined;
+    branding.modalities = { road: "/api/branding/modality/road?v=42" };
+    renderAt("/?choose=1");
+    const images = document.querySelectorAll("img");
+    const sources = Array.from(images).map((img) => img.getAttribute("src"));
+    expect(sources).toContain("/api/branding/modality/road?v=42");
+    expect(sources).not.toContain("/modalities/road-light.webp");
+    expect(sources).not.toContain("/modalities/road-dark.webp");
+    expect(sources).toContain("/modalities/rail-light.webp");
+    expect(sources).toContain("/modalities/rail-dark.webp");
+    branding.modalities = {};
   });
 });

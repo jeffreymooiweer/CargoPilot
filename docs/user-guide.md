@@ -353,7 +353,13 @@ update check are allowed to reach the internet at all. It also holds the **mail 
 with a test message to prove it works before anyone depends on it, the **web address**
 the application is reached on (which the links in those mails use), and the **two-step
 verification policy**: off, required for administrators, or required for everyone. See
-[Configuration](configuration.md#mail-server) for the settings themselves.
+[Configuration](configuration.md#mail-server) for the settings themselves. Under
+**Branding** the installation gets its own face: a name for the header, the sign-in page
+and the browser tab, a logo shown in its own colours in both themes and carried in
+outgoing mail, and a picture per transport mode for the tiles on the first screen. The
+pictures apply the moment they are uploaded and each has a way back to the default; the
+name is saved with the button. See [Configuration](configuration.md#branding) for the
+formats and sizes accepted.
 
 **Users.** A separate page lists the accounts, where an administrator adds one, changes
 a role, deactivates or removes an account, sets a new password, and clears somebody's

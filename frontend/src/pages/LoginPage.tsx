@@ -1,12 +1,14 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { api } from "../api/client";
+import { useBranding } from "../branding";
 
 const fieldClass =
   "w-full border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-950 text-slate-900 dark:text-slate-100 rounded-lg px-3 py-2";
 
 export default function LoginPage({ onLogin }: { onLogin: () => void }) {
   const { t } = useTranslation();
+  const { branding } = useBranding();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -85,10 +87,10 @@ export default function LoginPage({ onLogin }: { onLogin: () => void }) {
         >
           <div className="text-center">
             <img
-              src="/shipping.png"
+              src={branding.logo ?? "/shipping.png"}
               alt=""
               aria-hidden="true"
-              className="mx-auto h-16 w-16 dark:brightness-0 dark:invert"
+              className={`mx-auto h-16 w-16 object-contain ${branding.logo ? "" : "dark:brightness-0 dark:invert"}`}
             />
             <h1 className="text-2xl font-semibold text-slate-900 dark:text-slate-100 mt-3">
               {t("login.twoFactorTitle")}
@@ -146,12 +148,14 @@ export default function LoginPage({ onLogin }: { onLogin: () => void }) {
       <form onSubmit={submit} className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 p-8 w-full max-w-md space-y-4">
         <div className="text-center">
           <img
-            src="/shipping.png"
+            src={branding.logo ?? "/shipping.png"}
             alt=""
             aria-hidden="true"
-            className="mx-auto h-16 w-16 dark:brightness-0 dark:invert"
+            className={`mx-auto h-16 w-16 object-contain ${branding.logo ? "" : "dark:brightness-0 dark:invert"}`}
           />
-          <h1 className="text-2xl font-semibold text-slate-900 dark:text-slate-100 mt-3">{t("app.name")}</h1>
+          <h1 className="text-2xl font-semibold text-slate-900 dark:text-slate-100 mt-3">
+            {branding.name || t("app.name")}
+          </h1>
           <p className="text-slate-500 dark:text-slate-400 text-sm mt-1">{t("app.tagline")}</p>
         </div>
         {setupWarning && <p className="text-amber-700 dark:text-amber-300 bg-amber-50 dark:bg-amber-900/30 border border-amber-200 dark:border-amber-800 rounded-lg p-3 text-sm">{setupWarning}</p>}

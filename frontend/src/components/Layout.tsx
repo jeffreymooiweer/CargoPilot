@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { NavLink, Outlet, useLocation, useNavigate } from "react-router";
 import { useTranslation } from "react-i18next";
 import { api, User } from "../api/client";
+import { useBranding } from "../branding";
 import { usePreferences } from "../settings/preferences";
 import UpdateToast from "./UpdateToast";
 import TwoFactorNudge, { clearTwoFactorNudge } from "./TwoFactorNudge";
@@ -32,6 +33,7 @@ export default function Layout({ user, onLogout }: Props) {
   // no release notes to show — and it says what it is where the account
   // name would otherwise stand, so a visitor can see it without asking.
   const open = usePreferences().mode === "open";
+  const { branding } = useBranding();
 
   const inWizard = WIZARD_PATH.test(location.pathname);
   // The rail follows the route once, on the way in and on the way out. Doing it
@@ -154,14 +156,19 @@ export default function Layout({ user, onLogout }: Props) {
             </svg>
           </button>
           <div className="min-w-0 flex-1 md:flex-none flex items-center gap-2 sm:gap-3">
+            {/* The default glyph is black and is inverted for the dark theme.
+                An uploaded logo is a picture in its own colours and must not
+                be — inverting a company's logo is not a theme, it is damage. */}
             <img
-              src="/shipping.png"
+              src={branding.logo ?? "/shipping.png"}
               alt=""
               aria-hidden="true"
-              className="h-8 w-8 sm:h-9 sm:w-9 shrink-0 dark:brightness-0 dark:invert"
+              className={`h-8 w-8 sm:h-9 sm:w-9 shrink-0 object-contain ${branding.logo ? "" : "dark:brightness-0 dark:invert"}`}
             />
             <div className="min-w-0">
-              <h1 className="text-lg sm:text-xl font-semibold text-slate-900 dark:text-slate-100 truncate">{t("app.name")}</h1>
+              <h1 className="text-lg sm:text-xl font-semibold text-slate-900 dark:text-slate-100 truncate">
+                {branding.name || t("app.name")}
+              </h1>
               <p className="text-xs text-slate-500 dark:text-slate-400 truncate hidden sm:block">{t("app.tagline")}</p>
             </div>
           </div>

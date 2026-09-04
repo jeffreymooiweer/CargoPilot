@@ -87,6 +87,10 @@ class Settings(BaseSettings):
     #: The address the installation is reached on, for the links in those QR
     #: codes and in outgoing mail. Empty means: read it from the request.
     public_url: str = ""
+    #: What the screen calls itself. Empty means CargoPilot. The logo and the
+    #: tile images beside it are files in ``DATA_DIR/branding``, uploaded from
+    #: the settings screen or placed there by the operator.
+    brand_name: str = ""
 
     @property
     def is_open(self) -> bool:

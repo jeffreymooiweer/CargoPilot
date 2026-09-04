@@ -203,6 +203,14 @@ class InstanceSettings(BaseModel):
     organisation_name: str = ""
     organisation_address: str = ""
 
+    #: What the screen calls itself: in the header, on the sign-in page and in
+    #: the browser tab. Empty means CargoPilot. Separate from the organisation
+    #: name above on purpose — that one goes on a document as the consignor,
+    #: this one goes on the door, and a shipper's legal name is not always
+    #: what it wants over its tools. The logo and the tile images beside it
+    #: are files rather than settings; see ``services/branding.py``.
+    brand_name: str = Field(default="", max_length=80)
+
     #: Who must have a second factor. Someone who does not yet have one is
     #: sent to set one up after signing in, rather than being locked out at
     #: the door of an account they can still reach today.
@@ -284,7 +292,7 @@ class InstanceSettings(BaseModel):
             raise ValueError("address API must be an http(s) URL")
         return value
 
-    @field_validator("organisation_name", "organisation_address")
+    @field_validator("organisation_name", "organisation_address", "brand_name")
     @classmethod
     def _trimmed(cls, value: str) -> str:
         return (value or "").strip()

@@ -29,6 +29,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import Layout from "./Layout";
 import { ToastProvider } from "../toast/ToastProvider";
 import { PreferencesProvider } from "../settings/preferences";
+import { BrandingContext } from "../branding";
 import { api, User, VISITOR } from "../api/client";
 
 vi.mock("react-i18next", () => ({
@@ -207,5 +208,42 @@ describe("de open installatie", () => {
     await waitFor(() =>
       expect(screen.getByLabelText("settings.version v1.53.0")).toHaveTextContent("nav.openMode · v1.53.0"),
     );
+  });
+});
+
+describe("de huisstijl", () => {
+  it("zet de eigen naam en het eigen logo in de kop, zonder het logo om te keren", async () => {
+    render(
+      <BrandingContext.Provider
+        value={{
+          branding: { name: "Mooiweer Logistiek", logo: "/api/branding/logo?v=7", modalities: {} },
+          refresh: async () => {},
+        }}
+      >
+        <ToastProvider>
+          <MemoryRouter initialEntries={["/"]}>
+            <Routes>
+              <Route element={<Layout user={user} onLogout={() => {}} />}>
+                <Route path="/" element={<p>home</p>} />
+              </Route>
+            </Routes>
+          </MemoryRouter>
+        </ToastProvider>
+      </BrandingContext.Provider>,
+    );
+    expect(await screen.findByRole("heading", { level: 1 })).toHaveTextContent("Mooiweer Logistiek");
+    const logo = screen.getByRole("banner").querySelector("img") as HTMLImageElement;
+    expect(logo.getAttribute("src")).toBe("/api/branding/logo?v=7");
+    // The default glyph is inverted for the dark theme; a company's logo is
+    // shown in its own colours, or it is not the company's logo.
+    expect(logo.className).not.toContain("invert");
+  });
+
+  it("valt terug op de productnaam en het eigen glyph", async () => {
+    renderAt("/");
+    expect(await screen.findByRole("heading", { level: 1 })).toHaveTextContent("app.name");
+    const logo = screen.getByRole("banner").querySelector("img") as HTMLImageElement;
+    expect(logo.getAttribute("src")).toBe("/shipping.png");
+    expect(logo.className).toContain("dark:invert");
   });
 });

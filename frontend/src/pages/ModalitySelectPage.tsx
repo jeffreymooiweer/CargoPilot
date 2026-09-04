@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router";
 import { useTranslation } from "react-i18next";
+import { useBranding } from "../branding";
 import { usePreferences } from "../settings/preferences";
 
 export const MODALITIES = ["road", "rail", "sea", "inland", "air", "multimodal"] as const;
@@ -80,6 +81,7 @@ export default function ModalitySelectPage() {
   const navigate = useNavigate();
   const [params] = useSearchParams();
   const { preferences, loaded } = usePreferences();
+  const custom = useBranding().branding.modalities;
 
   // Someone who only ever ships by road should not tap the same tile every
   // morning. `?choose=1` switches the tiles back on for one visit — without it,
@@ -125,20 +127,34 @@ export default function ModalitySelectPage() {
             }`}
           >
             <div className="aspect-[3/1] w-full overflow-hidden">
-              <img
-                src={`/modalities/${key}-light.webp`}
-                alt=""
-                aria-hidden="true"
-                loading="lazy"
-                className="h-full w-full object-cover transition duration-300 group-hover:scale-105 dark:hidden"
-              />
-              <img
-                src={`/modalities/${key}-dark.webp`}
-                alt=""
-                aria-hidden="true"
-                loading="lazy"
-                className="hidden h-full w-full object-cover transition duration-300 group-hover:scale-105 dark:block"
-              />
+              {custom[key] ? (
+                // An uploaded picture is one picture: it is shown in both
+                // themes, because nobody uploads a company photo twice.
+                <img
+                  src={custom[key] ?? undefined}
+                  alt=""
+                  aria-hidden="true"
+                  loading="lazy"
+                  className="h-full w-full object-cover transition duration-300 group-hover:scale-105"
+                />
+              ) : (
+                <>
+                  <img
+                    src={`/modalities/${key}-light.webp`}
+                    alt=""
+                    aria-hidden="true"
+                    loading="lazy"
+                    className="h-full w-full object-cover transition duration-300 group-hover:scale-105 dark:hidden"
+                  />
+                  <img
+                    src={`/modalities/${key}-dark.webp`}
+                    alt=""
+                    aria-hidden="true"
+                    loading="lazy"
+                    className="hidden h-full w-full object-cover transition duration-300 group-hover:scale-105 dark:block"
+                  />
+                </>
+              )}
             </div>
             <div className="flex items-center justify-between gap-3 px-4 py-3 sm:px-5 sm:py-4">
               <div className="min-w-0">

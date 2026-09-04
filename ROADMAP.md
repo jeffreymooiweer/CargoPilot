@@ -174,8 +174,10 @@ instead of one.
 
 ### Interface
 
-- **Branding.** An admin sets the organisation's own name and logo, and can replace the
-  transport-mode images, so the application looks like the company using it.
+- **Branding** shipped in v1.172.0: an administrator sets the installation's own name,
+  uploads a logo and a picture per transport mode, and the header, the sign-in page, the
+  browser tab, the tiles and outgoing mail follow. The open application takes the same
+  files from `DATA_DIR/branding` and the name from `BRAND_NAME`.
 
 (Toasts and snackbars as the one notification mechanism shipped in v1.153.0 —
 transient messages became toasts, deletes gained a six-second undo, and the two

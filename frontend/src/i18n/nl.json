@@ -357,7 +357,22 @@
     "twoFactorAdmins": "Verplicht voor beheerders",
     "twoFactorEveryone": "Verplicht voor iedereen",
     "introOpen": "Stel de app in zoals jij hem gebruikt. Wat je hier opslaat blijft in deze browser en komt nooit op de server; het verdwijnt als je je browsergegevens wist.",
-    "myDetailsHintOpen": "Gegevens die op bijna elke zending hetzelfde zijn. Ze blijven in deze browser."
+    "myDetailsHintOpen": "Gegevens die op bijna elke zending hetzelfde zijn. Ze blijven in deze browser.",
+    "adminBranding": "Huisstijl",
+    "adminBrandingHint": "De eigen naam en afbeeldingen van deze installatie: in de kop, op het inlogscherm en op de tegels. De afbeeldingen gelden zodra ze zijn geüpload; de naam wordt opgeslagen met de knop onderaan.",
+    "brandName": "Naam",
+    "brandNameHint": "Staat in de kop, op het inlogscherm en in het browsertabblad. Leeg betekent CargoPilot.",
+    "brandLogo": "Logo",
+    "brandLogoHint": "PNG, JPEG of WebP, tot 1 MB. Wordt in beide thema's in eigen kleuren getoond en gaat mee in uitgaande mail.",
+    "brandModalities": "Tegelafbeeldingen",
+    "brandModalitiesHint": "Eén afbeelding per transportmodaliteit, PNG, JPEG of WebP tot 3 MB, getoond in beide thema's. Brede afbeeldingen passen het best: de tegel is drie keer zo breed als hoog.",
+    "brandUpload": "Uploaden",
+    "brandReplace": "Vervangen",
+    "brandRemove": "Terug naar standaard",
+    "brandUploaded": "Afbeelding opgeslagen.",
+    "brandRemoved": "Terug naar de standaardafbeelding.",
+    "brandDefault": "Standaard",
+    "brandCustom": "Eigen afbeelding"
   },
   "modality": {
     "title": "Kies uw transportmodaliteit",

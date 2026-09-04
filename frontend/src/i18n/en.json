@@ -357,7 +357,22 @@
     "twoFactorAdmins": "Required for administrators",
     "twoFactorEveryone": "Required for everyone",
     "introOpen": "Set the app up the way you use it. What you save here stays in this browser and never reaches the server; it goes when you clear your browser data.",
-    "myDetailsHintOpen": "Details that are the same on nearly every shipment. They stay in this browser."
+    "myDetailsHintOpen": "Details that are the same on nearly every shipment. They stay in this browser.",
+    "adminBranding": "Branding",
+    "adminBrandingHint": "The installation's own name and pictures: in the header, on the sign-in page and on the tiles. The pictures apply the moment they are uploaded; the name is saved with the button below.",
+    "brandName": "Name",
+    "brandNameHint": "Shown in the header, on the sign-in page and in the browser tab. Empty means CargoPilot.",
+    "brandLogo": "Logo",
+    "brandLogoHint": "PNG, JPEG or WebP, up to 1 MB. Shown at its own colours in both themes, and carried in outgoing mail.",
+    "brandModalities": "Tile pictures",
+    "brandModalitiesHint": "One picture per transport mode, PNG, JPEG or WebP up to 3 MB, shown in both themes. Wide pictures fit best: the tile is three times as wide as it is tall.",
+    "brandUpload": "Upload",
+    "brandReplace": "Replace",
+    "brandRemove": "Back to default",
+    "brandUploaded": "Picture saved.",
+    "brandRemoved": "Back to the default picture.",
+    "brandDefault": "Default",
+    "brandCustom": "Own picture"
   },
   "modality": {
     "title": "Choose your transport modality",

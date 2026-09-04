@@ -375,5 +375,11 @@ def test_the_route_is_the_only_public_one(client):
         if not guards & {d.call for d in dependant.dependencies}:
             open_routes.append(path)
 
-    assert set(open_routes) <= {"/api/cards/lookup", "/api/cards/{un}/{modality}.pdf"}, \
+    # Since v1.172.0 the door itself is public too: the installation's name
+    # and its pictures are what the sign-in page shows, so they cannot sit
+    # behind the sign-in. They are read-only here; changing them is on the
+    # admin router, which test_branding.py checks is guarded and absent from
+    # the open application.
+    the_door = {"/api/branding", "/api/branding/logo", "/api/branding/modality/{key}"}
+    assert set(open_routes) <= {"/api/cards/lookup", "/api/cards/{un}/{modality}.pdf"} | the_door, \
         sorted(open_routes)

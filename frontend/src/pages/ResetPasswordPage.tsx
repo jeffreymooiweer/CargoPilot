@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Link, useSearchParams } from "react-router";
 import { api } from "../api/client";
+import { useBranding } from "../branding";
 
 const fieldClass =
   "w-full border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-950 text-slate-900 dark:text-slate-100 rounded-lg px-3 py-2";
@@ -16,6 +17,7 @@ const fieldClass =
  *  on a sign-in form proves nothing to anybody. */
 export default function ResetPasswordPage() {
   const { t } = useTranslation();
+  const { branding } = useBranding();
   const [params] = useSearchParams();
   const token = params.get("token") ?? "";
   const [password, setPassword] = useState("");
@@ -85,10 +87,10 @@ export default function ResetPasswordPage() {
       <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 p-8 w-full max-w-md space-y-4">
         <div className="text-center">
           <img
-            src="/shipping.png"
+            src={branding.logo ?? "/shipping.png"}
             alt=""
             aria-hidden="true"
-            className="mx-auto h-16 w-16 dark:brightness-0 dark:invert"
+            className={`mx-auto h-16 w-16 object-contain ${branding.logo ? "" : "dark:brightness-0 dark:invert"}`}
           />
           <h1 className="text-2xl font-semibold text-slate-900 dark:text-slate-100 mt-3">
             {t("reset.title")}

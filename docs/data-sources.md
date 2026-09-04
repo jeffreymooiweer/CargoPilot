@@ -266,6 +266,13 @@ pencil and chevron glyphs are a handful of hand-written SVG paths in the
 component that uses them, which is why they share one line weight and one
 viewBox.
 
+One of them also travels outside the interface. Gmail strips inline `<svg>`
+from mail, so the copy glyph beside a sign-in code is attached to the message
+as a PNG, rendered by `scripts/render_mail_icons.py` from the same paths as
+`ReviewLinesPanel.tsx` — a test asserts the two stay identical. Because the
+drawing is the application's own, nothing about the credit below changes: the
+eight remain eight.
+
 Eight are the exception: the six in `frontend/src/toast/icons.tsx` for the five
 kinds of toast and the close button, plus the import glyph in
 `frontend/src/components/icons.tsx` and the assistant's mark in

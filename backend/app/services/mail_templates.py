@@ -39,6 +39,14 @@ LOGO_PATH = Path(__file__).resolve().parent.parent / "assets" / "logo.png"
 LOGO_CID = "cargopilot-logo"
 
 
+#: The copy glyph beside a sign-in code. A PNG rather than the inline SVG the
+#: interface uses, because Gmail strips ``<svg>`` from mail outright; it is the
+#: application's own drawing, rendered by scripts/render_mail_icons.py from the
+#: same paths as ReviewLinesPanel.tsx, so no third-party licence travels here.
+COPY_ICON_PATH = Path(__file__).resolve().parent.parent / "assets" / "copy.png"
+COPY_ICON_CID = "cargopilot-copy"
+
+
 @lru_cache(maxsize=1)
 def logo_bytes() -> bytes | None:
     """The logo, or nothing when it is missing.
@@ -52,9 +60,24 @@ def logo_bytes() -> bytes | None:
         return None
 
 
+@lru_cache(maxsize=1)
+def copy_icon_bytes() -> bytes | None:
+    """The copy glyph, or nothing when it is missing.
+
+    Survivable in the same way, and more so: the glyph is a hint about how to
+    reach the code, never the code itself. Without it the message still shows
+    six digits and still says to hold them.
+    """
+    try:
+        return COPY_ICON_PATH.read_bytes()
+    except OSError:
+        return None
+
+
 def layout(language: str, heading: str, paragraphs: list[str],
            button: tuple[str, str] | None = None,
            block: str | None = None,
+           block_hint: str = "",
            footer: str = "") -> str:
     """One letter, as HTML that survives the mail clients people use.
 
@@ -89,11 +112,30 @@ def layout(language: str, heading: str, paragraphs: list[str],
             f'color:#0f172a;">{text}</p>'
         )
     if block:
+        # The code sits in a cell of its own, with the glyph in the next one
+        # rather than inside it. That is not decoration: a mail client cannot
+        # copy anything — there is no JavaScript and no clipboard API in
+        # e-mail — so what actually puts this code on the clipboard is the
+        # reader holding their finger on it. Keeping the image out of the
+        # code's own cell keeps that press selecting six digits and nothing
+        # else, and the glyph beside it says which six digits to press.
+        icon = (f'<td valign="middle" style="padding:14px 18px 14px 0;">'
+                f'<img src="cid:{COPY_ICON_CID}" width="18" height="18" alt="" '
+                'style="display:block;border:0;width:18px;height:18px;" />'
+                '</td>') if copy_icon_bytes() else ""
         body.append(
-            '<p style="margin:0 0 16px;padding:14px 18px;background:#f1f5f9;'
-            'border-radius:10px;font-family:ui-monospace,Menlo,Consolas,monospace;'
-            'font-size:22px;letter-spacing:3px;color:#0f172a;text-align:center;">'
-            f'{block}</p>'
+            '<table role="presentation" cellpadding="0" cellspacing="0" '
+            'border="0" align="center" style="margin:0 auto 8px;'
+            'background:#f1f5f9;border-radius:10px;"><tr>'
+            f'<td style="padding:14px {"6px" if icon else "18px"} 14px 18px;'
+            'font-family:ui-monospace,Menlo,Consolas,monospace;font-size:22px;'
+            f'letter-spacing:3px;color:#0f172a;">{block}</td>'
+            f'{icon}</tr></table>'
+        )
+    if block_hint:
+        body.append(
+            '<p style="margin:0 0 16px;font-size:12px;line-height:1.5;'
+            f'color:#64748b;text-align:center;">{block_hint}</p>'
         )
     if button:
         label, href = button
@@ -273,6 +315,7 @@ SIGN_IN_CODE = {
         "subject": "Uw inlogcode",
         "heading": "Uw inlogcode",
         "intro": "Gebruik deze code om in te loggen bij CargoPilot:",
+        "hint": "Houd de code even ingedrukt om hem te kopiëren.",
         "validity": "De code vervalt na {minutes} minuten.",
         "warning": "Logt u nu niet in? Dan kent iemand anders uw wachtwoord. "
                    "Wijzig het en waarschuw de beheerder van CargoPilot.",
@@ -281,6 +324,7 @@ SIGN_IN_CODE = {
         "subject": "Your sign-in code",
         "heading": "Your sign-in code",
         "intro": "Use this code to sign in to CargoPilot:",
+        "hint": "Press and hold the code to copy it.",
         "validity": "The code expires in {minutes} minutes.",
         "warning": "If you are not signing in right now, somebody knows your "
                    "password. Change it, and tell whoever looks after CargoPilot.",
@@ -289,6 +333,7 @@ SIGN_IN_CODE = {
         "subject": "Ihr Anmeldecode",
         "heading": "Ihr Anmeldecode",
         "intro": "Verwenden Sie diesen Code, um sich bei CargoPilot anzumelden:",
+        "hint": "Halten Sie den Code gedrückt, um ihn zu kopieren.",
         "validity": "Der Code verfällt in {minutes} Minuten.",
         "warning": "Melden Sie sich gerade nicht an? Dann kennt jemand Ihr "
                    "Passwort. Ändern Sie es und informieren Sie den "
@@ -298,6 +343,7 @@ SIGN_IN_CODE = {
         "subject": "Votre code de connexion",
         "heading": "Votre code de connexion",
         "intro": "Utilisez ce code pour vous connecter à CargoPilot :",
+        "hint": "Maintenez le code appuyé pour le copier.",
         "validity": "Le code expire dans {minutes} minutes.",
         "warning": "Si vous n'êtes pas en train de vous connecter, quelqu'un "
                    "connaît votre mot de passe. Changez-le et prévenez "
@@ -414,9 +460,13 @@ def sign_in_code_message(language: str, code: str, minutes: int) -> Message:
     validity = t["validity"].format(minutes=minutes)
     return Message(
         subject=t["subject"],
+        # The hint is HTML only. It describes holding a finger on a rendered
+        # block; in the plain-text fallback there is no block to hold, and an
+        # instruction that does not apply is worse than none.
         text=_text([t["intro"], validity], block=code, footer=t["warning"]),
         html=layout(lang, t["heading"], [escape(t["intro"]), escape(validity)],
-                    block=escape(code), footer=escape(t["warning"])),
+                    block=escape(code), block_hint=escape(t["hint"]),
+                    footer=escape(t["warning"])),
     )
 
 

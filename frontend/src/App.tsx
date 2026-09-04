@@ -12,6 +12,7 @@ import UsersPage from "./pages/UsersPage";
 import MaterieelPage from "./pages/MaterieelPage";
 import SettingsPage from "./pages/SettingsPage";
 import LegalPage from "./pages/LegalPage";
+import { BrandingProvider } from "./branding";
 import { PreferencesProvider } from "./settings/preferences";
 import { ToastProvider } from "./toast/ToastProvider";
 
@@ -57,6 +58,7 @@ export default function App() {
 
   if (!user) {
     return (
+      <BrandingProvider>
       <ToastProvider>
       <Routes>
         <Route path="/login" element={<LoginPage onLogin={() => api.me().then((r) => { setUser(r.user); navigate("/"); })} />} />
@@ -70,12 +72,14 @@ export default function App() {
         <Route path="*" element={<Navigate to="/login" replace />} />
       </Routes>
       </ToastProvider>
+      </BrandingProvider>
     );
   }
 
   const open = mode === "open";
 
   return (
+    <BrandingProvider>
     <PreferencesProvider mode={mode}>
       <ToastProvider>
       <Routes>
@@ -98,5 +102,6 @@ export default function App() {
       </Routes>
       </ToastProvider>
     </PreferencesProvider>
+    </BrandingProvider>
   );
 }

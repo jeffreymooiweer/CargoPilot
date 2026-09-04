@@ -75,15 +75,18 @@ def build_message(
         # text is not a fallback nobody thought about — it says the same
         # thing, for clients that refuse HTML and for screen readers.
         message.add_alternative(html, subtype="html")
-        logo = mail_templates.logo_bytes()
+        logo = mail_templates.logo_image()
         if logo and f"cid:{mail_templates.LOGO_CID}" in html:
             # Carried along rather than linked: a linked image makes the
             # reader's client call this server, which is a tracking pixel by
             # accident and a broken image on an installation the internet
-            # cannot reach.
+            # cannot reach. The subtype follows the file: an uploaded logo
+            # may be a JPEG, and a JPEG labelled PNG is a broken image too.
+            data, subtype = logo
             message.get_payload()[-1].add_related(
-                logo, maintype="image", subtype="png",
-                cid=f"<{mail_templates.LOGO_CID}>", filename="cargopilot.png")
+                data, maintype="image", subtype=subtype,
+                cid=f"<{mail_templates.LOGO_CID}>",
+                filename=f"logo.{'jpg' if subtype == 'jpeg' else subtype}")
         # The copy glyph beside a sign-in code, on the same terms and with the
         # same guard: only the messages whose HTML actually refers to it carry
         # the bytes, so an invitation does not haul an icon it never shows.

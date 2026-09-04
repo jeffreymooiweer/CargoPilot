@@ -19,6 +19,8 @@ import {
 import SignaturePad from "../components/SignaturePad";
 import TwoFactorPanel from "../components/TwoFactorPanel";
 import { LANGUAGE_NAMES, SUPPORTED_LANGUAGES } from "../i18n/language";
+import { useBranding } from "../branding";
+import { MODALITIES } from "./ModalitySelectPage";
 import { usePreferences } from "../settings/preferences";
 
 const panelClass = "bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800";
@@ -497,6 +499,22 @@ function AdminSettings() {
             onChange={(e) => set("organisation_address", e.target.value)}
           />
         </div>
+      </section>
+
+      <section className={`${panelClass} p-5 space-y-5`}>
+        <div>
+          <h4 className="text-sm font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">
+            {t("settings.adminBranding")}
+          </h4>
+          <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">{t("settings.adminBrandingHint")}</p>
+        </div>
+        <Field
+          label={t("settings.brandName")}
+          hint={t("settings.brandNameHint")}
+          value={draft.brand_name ?? ""}
+          onChange={(value) => set("brand_name", value)}
+        />
+        <BrandingPictures />
       </section>
 
       <section className={`${panelClass} p-5 space-y-5`}>
@@ -1248,5 +1266,107 @@ volumes:
       )}
 
     </section>
+  );
+}
+
+/**
+ * The logo and the six tile pictures.
+ *
+ * These act the moment a file is chosen, unlike the name above them, which
+ * waits for the save button: a picture is a file on the server, not a value
+ * in a form, and "choose a file, then also press save" is the step everyone
+ * forgets. The hint says so. The server decides what a file is from its
+ * bytes and refuses anything that is not a PNG, JPEG or WebP; the message it
+ * answers with is shown as it comes.
+ */
+function BrandingPictures() {
+  const { t } = useTranslation();
+  const toast = useToast();
+  const { branding, refresh } = useBranding();
+  const [busy, setBusy] = useState<string | null>(null);
+
+  const act = async (key: string, work: () => Promise<unknown>, done: string) => {
+    setBusy(key);
+    try {
+      await work();
+      await refresh();
+      toast.success(t(done));
+    } catch (e) {
+      toast.error(String(e));
+    } finally {
+      setBusy(null);
+    }
+  };
+
+  const pick = (key: string, upload: (file: File) => Promise<unknown>) => {
+    const input = document.createElement("input");
+    input.type = "file";
+    input.accept = "image/png,image/jpeg,image/webp";
+    input.onchange = () => {
+      const file = input.files?.[0];
+      if (file) void act(key, () => upload(file), "settings.brandUploaded");
+    };
+    input.click();
+  };
+
+  const slot = (key: string, label: string, current: string | null,
+                upload: (file: File) => Promise<unknown>, remove: () => Promise<unknown>,
+                fallback: string, fallbackClass = "") => (
+    <div key={key} className="flex items-center gap-3 rounded-xl border border-slate-200 dark:border-slate-800 p-3">
+      <img
+        src={current ?? fallback}
+        alt=""
+        aria-hidden="true"
+        className={`h-12 w-20 shrink-0 rounded-lg object-contain bg-slate-50 dark:bg-slate-950 ${current ? "" : fallbackClass}`}
+      />
+      <div className="min-w-0 flex-1">
+        <p className="text-sm font-medium text-slate-800 dark:text-slate-200 truncate">{label}</p>
+        <p className="text-xs text-slate-500 dark:text-slate-400">
+          {current ? t("settings.brandCustom") : t("settings.brandDefault")}
+        </p>
+      </div>
+      <div className="flex shrink-0 flex-wrap gap-2">
+        <button
+          type="button"
+          className={buttonSecondary}
+          disabled={busy !== null}
+          onClick={() => pick(key, upload)}
+        >
+          {current ? t("settings.brandReplace") : t("settings.brandUpload")}
+        </button>
+        {current && (
+          <button
+            type="button"
+            className={buttonSecondary}
+            disabled={busy !== null}
+            onClick={() => void act(key, remove, "settings.brandRemoved")}
+          >
+            {t("settings.brandRemove")}
+          </button>
+        )}
+      </div>
+    </div>
+  );
+
+  return (
+    <div className="space-y-4">
+      <div>
+        <label className="text-sm font-medium text-slate-800 dark:text-slate-200">{t("settings.brandLogo")}</label>
+        <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5 mb-2">{t("settings.brandLogoHint")}</p>
+        {slot("logo", t("settings.brandLogo"), branding.logo, api.uploadBrandLogo, api.removeBrandLogo,
+              "/shipping.png", "dark:brightness-0 dark:invert")}
+      </div>
+      <div>
+        <label className="text-sm font-medium text-slate-800 dark:text-slate-200">{t("settings.brandModalities")}</label>
+        <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5 mb-2">{t("settings.brandModalitiesHint")}</p>
+        <div className="grid gap-2 md:grid-cols-2">
+          {MODALITIES.map((key) =>
+            slot(key, t(`modality.${key}`), branding.modalities[key] ?? null,
+                 (file) => api.uploadBrandModality(key, file), () => api.removeBrandModality(key),
+                 `/modalities/${key}-light.webp`),
+          )}
+        </div>
+      </div>
+    </div>
   );
 }

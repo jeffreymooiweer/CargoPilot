@@ -10,6 +10,8 @@ from slowapi.errors import RateLimitExceeded
 from app.api.routes.assistant import admin_router as assistant_admin_router
 from app.api.routes.assistant import router as assistant_router
 from app.api.routes.auth import router as auth_router
+from app.api.routes.branding import admin_router as branding_admin_router
+from app.api.routes.branding import public_router as branding_public_router
 from app.api.routes.cards import router as cards_router
 from app.api.routes.catalog import reference_router
 from app.api.routes.catalog_search import router as catalog_search_router
@@ -48,6 +50,9 @@ WORK_ROUTERS = (
     catalog_search_router,
     units_router,
     settings_public_router,
+    # What is on the door: the name and the pictures, read by the sign-in
+    # page before anybody has signed in and by the open application.
+    branding_public_router,
 )
 
 #: The accounts: what only the organisation application serves. Signing in
@@ -64,6 +69,7 @@ ACCOUNT_ROUTERS = (
     documents_mail_router,
     un_cards_admin_router,
     assistant_admin_router,
+    branding_admin_router,
     meta_router,
 )
 

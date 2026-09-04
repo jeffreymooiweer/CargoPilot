@@ -15,6 +15,7 @@ Everything persistent lives in the `/data` volume:
 | Equipment **you** imported | Your own library |
 | Your settings | Language, theme, the details you asked to have filled in for you, and which version's release notes you have already seen |
 | The installation's settings | What an administrator set for everyone |
+| The installation's branding | A name, a logo and tile pictures an administrator uploaded, in `/data/branding` |
 
 That is the whole list.
 
@@ -88,7 +89,11 @@ your shipment ever goes anywhere.
 
 ## What a stranger can reach
 
-One thing, and only if you switch it on.
+What is on the door, and one thing more if you switch it on.
+
+**The name and the pictures.** The installation's name, its logo and its tile pictures
+are readable without a sign-in, because the sign-in page shows them — a door has its
+sign on the outside. They are what an administrator chose to put there and nothing else.
 
 **The QR code on transport documents** (**Settings → QR code with UN cards on
 documents**, off by default) prints a code on every document that opens a page of UN

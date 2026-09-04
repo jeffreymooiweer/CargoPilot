@@ -2,6 +2,46 @@
 
 All notable changes are documented here, following [Semantic Versioning](https://semver.org/).
 
+## [1.172.0] — 2026-09-04
+
+### Branding: the installation's own name, logo and tile pictures
+
+An organisation that hosts CargoPilot for its own people would rather see its
+own name on the door and its own pictures on the tiles. **Settings →
+Administration → Branding** now holds three things: a name, a logo, and a
+picture per transport mode. The header, the sign-in page, the browser tab, the
+modality tiles and outgoing mail follow.
+
+**The name is a setting, the pictures are files.** `brand_name` joins the
+instance settings, with `BRAND_NAME` in the environment as its starting value
+like every other one, and is saved with the administrator's save button. The
+pictures act the moment a file is chosen — a picture is a file on the server,
+not a value in a form, and "choose a file, then also press save" is the step
+everyone forgets. Each has a way back to the default.
+
+**The bytes decide what a file is.** An upload is recognised as PNG, JPEG or
+WebP by its first bytes, never by its name or its declared type, and is stored
+under the extension the bytes earn. SVG is refused: it is a document that can
+carry script, and an image route that serves one is a page that runs it. A
+logo may be 1 MB, a tile 3 MB, checked while reading so an oversized upload is
+refused before it is held whole. A file planted in `DATA_DIR/branding` with
+another extension is not served.
+
+**The door is readable before anybody signs in.** `/api/branding` and the
+image routes ask for no session, because the sign-in page shows them — a door
+has its sign on the outside. Changing them is an administrator's act on routes
+the open application does not mount; its operator places the same files in
+`DATA_DIR/branding` by hand and sets `BRAND_NAME`, and the door reads the same.
+
+**An uploaded logo is not inverted.** The default glyph is black and is
+inverted for the dark theme; a company's logo is shown in its own colours in
+both, because inverting it is not a theme, it is damage. One uploaded tile
+picture replaces both the light and the dark default: nobody uploads a company
+photo twice.
+
+**The mail carries the same logo as the screen**, with the subtype the file
+actually has — a JPEG labelled PNG is a broken image too.
+
 ## [1.171.0] — 2026-09-04
 
 ### The open application

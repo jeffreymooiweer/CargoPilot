@@ -357,7 +357,22 @@
     "twoFactorAdmins": "Obligatoire pour les administrateurs",
     "twoFactorEveryone": "Obligatoire pour tous",
     "introOpen": "Configurez l'application comme vous l'utilisez. Ce que vous enregistrez ici reste dans ce navigateur et n'atteint jamais le serveur ; cela disparaît si vous effacez vos données de navigation.",
-    "myDetailsHintOpen": "Les informations identiques sur presque chaque expédition. Elles restent dans ce navigateur."
+    "myDetailsHintOpen": "Les informations identiques sur presque chaque expédition. Elles restent dans ce navigateur.",
+    "adminBranding": "Identité visuelle",
+    "adminBrandingHint": "Le nom et les images propres à cette installation : dans l'en-tête, sur la page de connexion et sur les tuiles. Les images s'appliquent dès leur envoi ; le nom est enregistré avec le bouton ci-dessous.",
+    "brandName": "Nom",
+    "brandNameHint": "Affiché dans l'en-tête, sur la page de connexion et dans l'onglet du navigateur. Vide signifie CargoPilot.",
+    "brandLogo": "Logo",
+    "brandLogoHint": "PNG, JPEG ou WebP, jusqu'à 1 Mo. Affiché dans ses propres couleurs dans les deux thèmes et joint aux courriels sortants.",
+    "brandModalities": "Images des tuiles",
+    "brandModalitiesHint": "Une image par mode de transport, PNG, JPEG ou WebP jusqu'à 3 Mo, affichée dans les deux thèmes. Les images larges conviennent le mieux : la tuile est trois fois plus large que haute.",
+    "brandUpload": "Envoyer",
+    "brandReplace": "Remplacer",
+    "brandRemove": "Revenir au défaut",
+    "brandUploaded": "Image enregistrée.",
+    "brandRemoved": "Retour à l'image par défaut.",
+    "brandDefault": "Par défaut",
+    "brandCustom": "Image propre"
   },
   "modality": {
     "title": "Choisissez votre mode de transport",

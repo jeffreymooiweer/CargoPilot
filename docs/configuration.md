@@ -32,6 +32,7 @@ because those are read while the application is starting and there is no screen 
 | `PUBLIC_URL` | The address this installation is reached on | immediately |
 | `DEFAULT_LANGUAGE`, `DEFAULT_THEME` | Default language and theme for new users | at their next sign-in |
 | — | Organisation name and address | immediately |
+| `BRAND_NAME` | The name on the door (header, sign-in page, browser tab) | immediately |
 | `SMTP_HOST` and friends | Mail server | immediately |
 
 The screen also carries per-user preferences — language, theme, the consignor details that
@@ -65,7 +66,26 @@ model, if wanted, is placed in `DATA_DIR/assistant` by the operator rather than
 downloaded from the screen.
 
 A value that is neither word runs the organisation application — the closed one is where
-a typo may safely land — and says so in the log. `/api/health` reports `"mode"` on every
+a typo may safely land — and says so in the log.
+
+## Branding
+
+An administrator gives the installation its own face under **Settings → Administration →
+Branding**: a name, a logo, and a picture per transport mode for the tiles on the first
+screen. The name is a setting like the others; the pictures are files.
+
+| Variable | What it does | Default |
+|---|---|---|
+| `BRAND_NAME` | The name in the header, on the sign-in page and in the browser tab | empty, meaning CargoPilot |
+
+The pictures live in `DATA_DIR/branding`, one file per asset, named by what it is and
+by what it *is* rather than what it was called: `logo.png`, `logo.jpg` or `logo.webp`,
+and `modality-road.png` and so on for `road`, `rail`, `sea`, `inland`, `air` and
+`multimodal`. PNG, JPEG and WebP are accepted, recognised by their bytes; SVG is not,
+because an SVG can carry script and an image route that serves one is a page that runs
+it. A logo may be 1 MB, a tile 3 MB. The open application has no screen to upload from:
+its operator places the same files in that folder and sets `BRAND_NAME`, and the door
+reads the same. The uploaded logo also travels in outgoing mail in place of CargoPilot's. `/api/health` reports `"mode"` on every
 installation, so what an operator got is a line away, and [Privacy](privacy.md) says in
 one section what the open application means for its visitors.
 

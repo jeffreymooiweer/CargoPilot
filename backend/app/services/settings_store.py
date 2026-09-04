@@ -68,6 +68,7 @@ def environment_defaults() -> InstanceSettings:
         card_links_enabled=settings.card_links_enabled,
         session_timeout_minutes=settings.access_token_expire_minutes,
         public_url=_public_url(settings.public_url),
+        brand_name=settings.brand_name.strip()[:80],
         # A host in the environment is a deliberate act, so it switches
         # sending on; without one the mail settings stay off and empty.
         mail_enabled=bool(mail and settings.smtp_host and settings.smtp_from),

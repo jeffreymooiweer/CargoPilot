@@ -357,7 +357,22 @@
     "twoFactorAdmins": "Pflicht für Administratoren",
     "twoFactorEveryone": "Pflicht für alle",
     "introOpen": "Richten Sie die App so ein, wie Sie sie nutzen. Was Sie hier speichern, bleibt in diesem Browser und gelangt nie auf den Server; es verschwindet, wenn Sie Ihre Browserdaten löschen.",
-    "myDetailsHintOpen": "Angaben, die auf fast jeder Sendung gleich sind. Sie bleiben in diesem Browser."
+    "myDetailsHintOpen": "Angaben, die auf fast jeder Sendung gleich sind. Sie bleiben in diesem Browser.",
+    "adminBranding": "Erscheinungsbild",
+    "adminBrandingHint": "Eigener Name und eigene Bilder dieser Installation: in der Kopfzeile, auf der Anmeldeseite und auf den Kacheln. Die Bilder gelten sofort nach dem Hochladen; der Name wird mit der Schaltfläche unten gespeichert.",
+    "brandName": "Name",
+    "brandNameHint": "Erscheint in der Kopfzeile, auf der Anmeldeseite und im Browser-Tab. Leer bedeutet CargoPilot.",
+    "brandLogo": "Logo",
+    "brandLogoHint": "PNG, JPEG oder WebP, bis 1 MB. Wird in beiden Designs in eigenen Farben gezeigt und in ausgehenden E-Mails mitgeführt.",
+    "brandModalities": "Kachelbilder",
+    "brandModalitiesHint": "Ein Bild je Verkehrsträger, PNG, JPEG oder WebP bis 3 MB, in beiden Designs gezeigt. Breite Bilder passen am besten: die Kachel ist dreimal so breit wie hoch.",
+    "brandUpload": "Hochladen",
+    "brandReplace": "Ersetzen",
+    "brandRemove": "Zurück zum Standard",
+    "brandUploaded": "Bild gespeichert.",
+    "brandRemoved": "Zurück zum Standardbild.",
+    "brandDefault": "Standard",
+    "brandCustom": "Eigenes Bild"
   },
   "modality": {
     "title": "Wählen Sie Ihren Verkehrsträger",

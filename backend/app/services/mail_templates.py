@@ -48,8 +48,8 @@ COPY_ICON_CID = "cargopilot-copy"
 
 
 @lru_cache(maxsize=1)
-def logo_bytes() -> bytes | None:
-    """The logo, or nothing when it is missing.
+def _default_logo() -> bytes | None:
+    """CargoPilot's own logo, or nothing when it is missing.
 
     Missing is survivable: the message still says everything it needs to.
     A crash while somebody is resetting their password is not.
@@ -58,6 +58,28 @@ def logo_bytes() -> bytes | None:
         return LOGO_PATH.read_bytes()
     except OSError:
         return None
+
+
+def logo_image() -> tuple[bytes, str] | None:
+    """The logo the mail carries, as ``(bytes, MIME subtype)``.
+
+    The installation's own when an administrator uploaded one — the mail
+    should look like the screen it came from — and CargoPilot's otherwise.
+    Read fresh rather than cached, because the uploaded one can change while
+    the process runs and a mail with last month's logo is a small lie.
+    """
+    from app.services import branding
+
+    custom = branding.logo_image()
+    if custom:
+        return custom
+    default = _default_logo()
+    return (default, "png") if default else None
+
+
+def logo_bytes() -> bytes | None:
+    image = logo_image()
+    return image[0] if image else None
 
 
 @lru_cache(maxsize=1)

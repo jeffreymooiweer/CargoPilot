@@ -84,6 +84,14 @@ def build_message(
             message.get_payload()[-1].add_related(
                 logo, maintype="image", subtype="png",
                 cid=f"<{mail_templates.LOGO_CID}>", filename="cargopilot.png")
+        # The copy glyph beside a sign-in code, on the same terms and with the
+        # same guard: only the messages whose HTML actually refers to it carry
+        # the bytes, so an invitation does not haul an icon it never shows.
+        copy_icon = mail_templates.copy_icon_bytes()
+        if copy_icon and f"cid:{mail_templates.COPY_ICON_CID}" in html:
+            message.get_payload()[-1].add_related(
+                copy_icon, maintype="image", subtype="png",
+                cid=f"<{mail_templates.COPY_ICON_CID}>", filename="copy.png")
     for filename, content, mimetype in attachments or []:
         main, _, sub = mimetype.partition("/")
         message.add_attachment(content, maintype=main or "application",

@@ -2,6 +2,43 @@
 
 All notable changes are documented here, following [Semantic Versioning](https://semver.org/).
 
+## [1.170.1] — 2026-09-04
+
+### A copy glyph beside the sign-in code
+
+The two-factor mail now shows the copy glyph next to the six digits, with one
+line underneath saying what to do with it.
+
+**It is a cue, not a button, and that distinction is the whole design.** A mail
+client runs no JavaScript and has no clipboard API — Gmail, Outlook and Apple
+Mail all strip both — so nothing in an e-mail can copy on a tap. What does put
+the code on the clipboard is the reader holding a finger on it, which every
+phone mail app supports. So the glyph marks *which* six characters are worth
+pressing, and the sentence beside it says to press them: "Houd de code even
+ingedrukt om hem te kopiëren", in all four languages. A glyph on its own would
+have promised a button that cannot exist.
+
+Three details that are not decoration:
+
+- **The glyph sits in its own table cell**, never inside the code's. Inside it,
+  a long press would sweep the image into the selection and the reader would
+  paste six digits and a picture.
+- **It is a PNG, attached to the message**, because Gmail strips inline `<svg>`
+  from mail outright — and attached rather than linked, on the same terms as
+  the logo: a linked image makes the reader's client call this server, which is
+  a tracking pixel by accident and a broken image on an installation the
+  internet cannot reach. A message with no code carries no glyph.
+- **The colour is slate 500, deliberately.** Gmail's dark mode inverts the card
+  behind the icon but never the icon itself, so a glyph drawn in the text colour
+  disappears on exactly the phone this was asked for. Slate 500 holds roughly
+  4:1 against the light card and 3:1 against Gmail's dark one — legible on both,
+  which for a glyph that only has to be recognised is the right trade.
+
+**The drawing is the application's own**, rendered by
+`scripts/render_mail_icons.py` from the same paths as the interface's copy
+button, so no third-party licence travels into the mail and the eight credited
+Uicons icons stay eight. A test asserts the two drawings cannot drift apart.
+
 ## [1.170.0] — 2026-08-26
 
 ### The sea's own chapter 3.4, finally read — and the restraint paid out

@@ -217,3 +217,81 @@ def test_nothing_is_wider_than_a_narrow_phone(build):
     fixed = [int(w) for w in re.findall(r"(?<!max-)width:(\d+)px", html)]
     fixed += [int(w) for w in re.findall(r'width="(\d+)"(?!%)', html)]
     assert all(width <= 320 for width in fixed), fixed
+
+
+# --- the copy glyph beside a sign-in code -----------------------------------
+
+
+def test_the_code_carries_the_copy_glyph_and_says_what_to_do_with_it():
+    """A mail client has no clipboard API and no JavaScript, so nothing here
+    can copy on a tap. What does put the code on the clipboard is the reader
+    holding a finger on it, so the glyph is a cue and the sentence beside it
+    is the instruction — a glyph on its own would promise a button."""
+    message = mail_templates.sign_in_code_message("nl", "472302", 5)
+    assert f'src="cid:{mail_templates.COPY_ICON_CID}"' in message.html
+    assert "ingedrukt" in message.html
+
+
+@pytest.mark.parametrize("language", ["nl", "en", "de", "fr"])
+def test_the_instruction_speaks_every_language(language):
+    message = mail_templates.sign_in_code_message(language, "472302", 5)
+    assert mail_templates.SIGN_IN_CODE[language]["hint"] in message.html
+
+
+def test_the_glyph_travels_with_the_message_like_the_logo():
+    message = mail_templates.sign_in_code_message("nl", "472302", 5)
+    built = mail.build_message(configured(), "ada@example.com",
+                               message.subject, message.text, html=message.html)
+    cids = {p.get("Content-ID") for p in built.walk()
+            if p.get_content_type() == "image/png"}
+    assert f"<{mail_templates.LOGO_CID}>" in cids
+    assert f"<{mail_templates.COPY_ICON_CID}>" in cids
+
+
+def test_a_message_without_a_code_does_not_haul_the_glyph():
+    """The guard that keeps an invitation from carrying an icon it never
+    shows — the same one the logo has, for the same reason."""
+    message = mail_templates.invite_message("nl", "ada", "https://cp/i?t=1", 7)
+    assert mail_templates.COPY_ICON_CID not in message.html
+
+    built = mail.build_message(configured(), "ada@example.com",
+                               message.subject, message.text, html=message.html)
+    cids = {p.get("Content-ID") for p in built.walk()
+            if p.get_content_type() == "image/png"}
+    assert f"<{mail_templates.COPY_ICON_CID}>" not in cids
+
+
+def test_the_press_selects_the_code_and_not_the_glyph():
+    """The glyph sits in its own table cell, never inside the code's.
+
+    Inside it, a long press would sweep the image into the selection and the
+    reader would paste six digits and a picture. This is the whole reason the
+    block is a table rather than one padded paragraph.
+    """
+    html = mail_templates.sign_in_code_message("nl", "472302", 5).html
+    code_cell = html.split("472302")[0].rsplit("<td", 1)[-1]
+    assert "<img" not in code_cell
+
+
+def test_the_glyph_is_the_applications_own_drawing():
+    """No third-party licence travels into the mail.
+
+    docs/data-sources.md records that the copy, delete, pencil and chevron
+    glyphs are hand-written paths in this repository, and the mail renders
+    from those same paths — so the eight credited Uicons icons stay eight.
+    """
+    import pathlib
+    import re
+
+    # Read as text rather than imported: scripts/ is beside the backend, not
+    # inside it, and this assertion is about two files agreeing — which is a
+    # question about their contents, not about importability.
+    repo = pathlib.Path(__file__).resolve().parents[2]
+    script = (repo / "scripts" / "render_mail_icons.py").read_text(encoding="utf-8")
+    component = (repo / "frontend" / "src" / "components"
+                 / "ReviewLinesPanel.tsx").read_text(encoding="utf-8")
+
+    paths = re.findall(r'd="(M[^"]+)"', script)
+    assert paths, "the script no longer carries the glyph's paths"
+    for path in paths:
+        assert path in component, path

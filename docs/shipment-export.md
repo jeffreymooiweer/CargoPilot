@@ -112,5 +112,5 @@ Recorded here so the next person does not start from nothing:
 
 There is no import yet. The file is a one-way export, and a reader that wants to
 reconstruct a shipment from it is doing something this application does not
-promise. If an import is ever built, it belongs with the privacy levels: reading
+promise. If an import is ever built, it belongs with the shipment history: reading
 a shipment back means having somewhere to put it.

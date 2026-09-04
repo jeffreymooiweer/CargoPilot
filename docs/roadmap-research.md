@@ -110,9 +110,11 @@ the IFTDGN spec is free, so nothing blocks reading it early.
   thing was the level above, and building it needed no new regulatory logic — the three
   provisions were always measuring "what is on the transport unit", so they are handed
   the union of the entries and answer correctly. The open design question (trip as
-  entity or transient calculation) was not a matter of taste: privacy levels 1 and 2
-  store nothing about shipments, so a stored trip would break that promise for the sake
-  of a screen. It is transient, and a test asserts the service touches no database.
+  entity or transient calculation) was not a matter of taste: an installation without a
+  shipment history stores nothing about shipments, so a stored trip would break that
+  promise for the sake of a screen. It is transient today, and a test asserts the
+  service touches no database. An installation *with* a history reopens the question,
+  and the roadmap records it as open for that phase rather than settled.
 
   **What the research missed, and the reading found.** ADR 3.4.13/3.4.14 carry *three*
   quantities and the consignment-level check had run two of them together:
@@ -221,26 +223,29 @@ that are themselves standardised (e.g. the EU/NATO customs **Form 302**), so the
 module's shape — official forms, filled — matches the civilian core's. Anything beyond
 that is not for this repository.
 
-## Privacy levels and the shipments page (existing item, internal groundwork)
+## Two modes, the shipment history and the shipments page (existing item, internal groundwork)
 
 No web research applies; the groundwork is in this repository. A `Job` table already
 exists in the schema and is **deliberately purged at startup** (`purge_sensitive_data`
 in `backend/app/core/startup.py`) — the stateless promise of
-[Privacy](privacy.md) is enforced in code, not just described. That is the switch a
-restriction level would flip. Order of operations is fixed by principle: levels first,
+[Privacy](privacy.md) is enforced in code, not just described. That is the switch the
+history feature would flip. Order of operations is fixed by principle: mode first,
 storage second, page third — there must never exist a version that stores without the
 control. Departments imply a user–department relation and per-department visibility
 filters; both belong in the same design round.
 
-**The three levels are settled** (see [the roadmap](../ROADMAP.md)); what follows is what
-each one costs to build.
+**The shape is settled** (see [the roadmap](../ROADMAP.md)): two modes, Open and
+Organisation, and within Organisation one feature, the shipment history. It was first
+written as three "privacy levels" on one ladder and restated in v1.170.2, because the
+ladder made a history sound like a step down in privacy when it is a function an
+organisation switches on for itself. What follows is what each piece costs to build.
 
 *Two axes, not one.* Authentication (none / required) and retention (nothing /
-shipments) give four combinations, of which three are offered as an ordered ladder and
-the fourth — anonymous with a history — is refused, because it records what was shipped
-without recording who entered it.
+shipments) give four combinations, of which three are offered and the fourth —
+anonymous with a history — is refused, because it records what was shipped without
+recording who entered it.
 
-*Level 1 removes rather than adds.* No accounts means the auth router, the user page, the
+*Open removes rather than adds.* No accounts means the auth router, the user page, the
 password-reset flow, the second factor and the welcome mail are not merely hidden but
 absent, and the tests must assert their absence rather than a redirect. Three further
 consequences, each traceable to a file already in the tree:
@@ -251,26 +256,25 @@ consequences, each traceable to a file already in the tree:
 - The equipment library goes: it is imported by an administrator, and there is none.
 - The update check already runs only for a signed-in administrator, and the assistant's
   model download is already an administrator's click — so both become environment
-  variables at this level rather than losing a feature.
+  variables at Open rather than losing a feature.
 
-*Mail is already environment-configurable and needs no new plumbing.* `smtp_host` and
-the seven values beside it in `backend/app/core/config.py` were added in v1.141.0 for
-exactly this case. What level 1 adds is a **second** setting, independent of them:
-whether the export step's send action exists for a caller who never signed in. Off by
-default. Keeping the two apart is the whole design — `SMTP_*` answers "can this
-installation send", the new one answers "may a stranger make it send", and an
-installation that answers the second with the first is a spam relay with good
-amplification. When it is on it needs a per-recipient and per-caller cap well below the
-general limit, and a single recipient per send.
+*Mail does not exist at Open.* An earlier version of this note kept mail at Open behind
+a second setting — "may a stranger make this installation send" — with per-recipient
+caps and a single recipient per send, all of it to keep a public installation from
+becoming a spam relay. v1.170.2 removed the feature instead of guarding it: a visitor
+who can download the documents does not need the installation to send them, and
+without the send action there is no mail server to configure and nothing to cap. The
+`SMTP_*` environment settings of v1.141.0 stay what they are, for Organisation
+installations that would rather configure mail in the environment than in the screen.
 
 *Rate limiting is half-built, and the existing half is the wrong half.* `slowapi` is a
 dependency and `app.state.limiter` is wired up in `main.py`, but all six
 `@limiter.limit` decorators are on authentication routes (`api/routes/auth.py`) — the
-routes level 1 deletes. The endpoints that cost real money at level 1 are unprotected
+routes Open deletes. The endpoints that cost real money at Open are unprotected
 today precisely because a login stands in front of them: document generation, the
-assistant's inference, the Photon proxy, and mail.
+assistant's inference, and the Photon proxy.
 
-*The live defect underneath it was fixed in v1.163.4* and no longer waits on the levels.
+*The live defect underneath it was fixed in v1.163.4* and no longer waits on the modes.
 `slowapi.util.get_remote_address` returned `request.client.host` and never consulted
 `X-Forwarded-For`, so behind any reverse proxy all callers collapsed into one bucket —
 an organisation of fifteen people sharing ten sign-in attempts a minute. `client_address`

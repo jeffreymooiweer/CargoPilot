@@ -22,11 +22,13 @@ the checks that already exist, because that is what those checks were always
 measuring. What it adds is the comparison: what each consignment said alone,
 beside what they say together.
 
-**A trip is never stored.** Privacy levels 1 and 2 keep nothing about
-shipments, so a trip that landed in the database would break the promise the
-rest of the application keeps. It is assembled from what the caller sends,
-judged, and forgotten. That is also why there is no trip id, no history and
-nothing to retrieve: this module is a calculation, not an entity.
+**A trip is not stored.** An installation without a shipment history keeps
+nothing about shipments, so a trip that landed in the database would break the
+promise the rest of the application keeps. It is assembled from what the caller
+sends, judged, and forgotten. That is also why there is no trip id, no history
+and nothing to retrieve: this module is a calculation, not an entity. Whether
+an installation that does keep its shipments keeps the trip as well is that
+phase's question, not this module's.
 """
 from __future__ import annotations
 

@@ -136,10 +136,10 @@ def dg_trip(request: Request, payload: TripRequest,
     run over the union of the entries, because that is what those provisions
     were always measuring.
 
-    Nothing is stored. A trip is a calculation, not an entity: privacy levels 1
-    and 2 keep nothing about shipments, and a trip that landed in the database
-    would break that promise for the sake of a screen. It is assembled from the
-    request, judged, and forgotten.
+    Nothing is stored. A trip is a calculation, not an entity: an installation
+    without a shipment history keeps nothing about shipments, and a trip that
+    landed in the database would break that promise for the sake of a screen.
+    It is assembled from the request, judged, and forgotten.
     """
     return check_trip(
         [c.model_dump() for c in payload.consignments],

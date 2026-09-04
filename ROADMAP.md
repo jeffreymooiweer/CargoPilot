@@ -75,7 +75,7 @@ core stays what it is — a civilian documentation tool:
   precisely because the core ships publicly and starts empty of any operational data.
   It is the one module that will not be listed publicly.
 
-### Privacy levels, and what they unlock
+### Two modes, and one feature only the second has
 
 Today the application writes nothing down while you work: there is no job database, and
 a finished job leaves nothing to leak (see [Privacy](docs/privacy.md)). That is right
@@ -83,32 +83,42 @@ for a shipper handling sensitive material lists and wrong for an office where fi
 colleagues serve the same customers every day. So it becomes a **choice per
 installation** rather than a fixed answer.
 
-Three levels, ordered by what the server knows about you. Each step up relaxes exactly
-one thing:
+This section used to describe three "privacy levels" on one ladder. The ladder encoded
+two questions that are not the same kind of question — *who gets in* and *what is
+kept* — and it made a stored shipment history sound like a step *down* in privacy, when
+it is a function an organisation switches on for itself. Restated:
 
-| | Who gets in | What the server keeps |
-|---|---|---|
-| **1 — Open** | Anyone, no account | Nothing about anyone |
-| **2 — Closed** | The organisation's people, signed in | Accounts and their settings |
-| **3 — Kept** | The organisation's people, signed in | Accounts, settings, and the shipments made |
+| | **Open** | **Organisation** | **Organisation, with history** |
+|---|---|---|---|
+| Who gets in | Anyone, no account | The organisation's people, signed in | The same |
+| Accounts, roles, second factor | — | yes | yes |
+| Your defaults: consignor, signature, language… | in your browser | on the server | on the server |
+| Equipment library, mail, branding, in-app update | — | yes | yes |
+| Shipments page, reopen, return from history | — | — | yes |
+| Groupage from kept shipments, departments, address book, DGSA report | — | — | yes |
 
-Level 1 to 2 changes who gets in; level 2 to 3 changes what is kept. **Level 2 is what
-CargoPilot does today**, which makes it the default and the one level that needs no
-migration to reach.
+**The mode is a deployment, not a setting.** Open and Organisation are two applications
+in one image: the first has no login routes, no user table, no password reset and no
+second factor, and the tests assert their absence rather than a redirect. An environment
+variable the application reads and cannot write selects the mode. Unset means
+Organisation, because that is what every existing installation is.
 
-**The level is set at deploy, not in the application.** It is an environment variable
-the application reads and cannot write. A privacy promise an administrator can click
-away is not a promise — and level 1 has no administrator interface to click it in.
+**History is a feature of Organisation, not a third mode.** It is set in the environment
+too — not because an administrator cannot be trusted with it, but because turning it
+*off* destroys data, and a deploy-time variable is the one place the application can
+refuse to start instead of asking on a screen (below). It never exists without an
+account in front of it: a record of what was shipped with no record of who typed it is
+the one combination this page does not offer.
 
-#### Level 1 — Open
+**Two independent pieces of work, on either side of today.** Organisation is what
+CargoPilot does now. Open is *removing* from it; history is *adding* to it. Neither
+waits on the other, and Open can ship with history never built.
+
+#### Open
 
 A public installation anyone may use to draw up their transport documents without
-leaving anything behind. It follows that there are **no accounts at all**: no login
-screen, no user table, no password reset, no second factor. What an administrator would
-otherwise set is set in the environment at deploy time, and changing it means restarting
-the container.
-
-Two things fall away with the accounts, each a consequence rather than an oversight:
+leaving anything behind. Three things follow from "no accounts", each a consequence
+rather than an oversight:
 
 - **What would normally be filled in for you lives in your browser**, never on the
   server: consignor address, contact, carrier, loading point, emergency number,
@@ -118,65 +128,44 @@ Two things fall away with the accounts, each a consequence rather than an oversi
 - **No equipment library.** It is the one place operational data lives and it is filled
   by an administrator importing a template. With nobody signed in there is no one to own
   it and no one it belongs to.
+- **No mail.** The export step's "mail these documents to…" does not exist for a visitor
+  who never signed in, and so no mail server is configured at all. An earlier version of
+  this page kept mail at Open and guarded it with a second switch, per-recipient caps
+  and a warning about becoming a spam relay. All of that existed to make one feature
+  safe for strangers — and a visitor who can download the documents does not need the
+  installation to send them. Removing the feature removes the switch, the caps and the
+  warning with it.
 
-Two more have to be built rather than declared, and both are about what an anonymous
-caller can make the server do.
+What an administrator would otherwise set — the public address the QR links point at,
+the assistant's model, the update check — is set in the environment at deploy time, and
+changing it means restarting the container.
 
-##### Mail: two switches, not one
+**The promise has to be checkable, not merely true.** A visitor cannot see an
+environment variable. What they can see is that the source is public, that the
+application says in its footer and in its version endpoint which mode it runs in, and
+that [Privacy](docs/privacy.md) says in one paragraph what Open means. Without those
+three the mode is a fact about the server; with them it is something a stranger can
+verify before typing a customer's name.
 
-Configuring a mail server needs nothing new. `SMTP_HOST` and the seven values beside it
-in `backend/app/core/config.py` have been environment settings since v1.141.0, added in
-so many words "for installations that would rather configure it in the environment than
-in the screen". At level 1 that stops being an alternative and becomes the only way,
-because there is no settings screen to configure it in.
+Rate limiting is already done, ahead of the mode. v1.163.4 made the limits count per
+caller behind a reverse proxy, and v1.164.0 extended them from the sign-in routes — the
+routes Open deletes — to the endpoints that cost something: document rendering, the
+bundle, UN cards, reading a carrier confirmation, the assistant's turn and its model
+download, and address autocomplete. Every limit in the application is listed in one
+table in `test_ratelimit_key.py`, so changing one is changing that list. The in-app
+limiter is the floor, because it is what actually ships in a one-container deployment;
+an edge limiter in front of it stays a recommendation, not an assumption.
 
-What needs deciding is a different question — **may someone who never signed in make the
-server send?** — and merging the two is how an installation becomes a spam relay:
-
-- `SMTP_*` says whether the installation can send at all. Wanted at level 1, for the
-  operator's own purposes.
-- A **separate** switch says whether the export step offers "mail these documents to…"
-  to an anonymous visitor. Off by default at every level; at level 1 it is the one that
-  carries the risk.
-
-Stated once, so an operator weighs it rather than discovers it: with that second switch
-on, anyone can make the installation send mail from its domain, carrying an attachment
-whose text they typed, to an address they chose. The cost lands on the sending domain's
-reputation. Turning it on therefore comes with a per-recipient and per-caller cap far
-below the general limit, one recipient per send, and no way to reach it by accident.
-
-##### Rate limiting: half-built, and the wrong half
-
-`slowapi` is already a dependency and `app.state.limiter` is already wired up in
-`main.py` — but all six `@limiter.limit` decorators sit on authentication routes:
-sign-in, password reset, the second factor. Level 1 removes exactly those routes.
-**Today's limiter protects nothing that level 1 exposes.**
-
-**Both halves are now done, ahead of the levels themselves.** v1.163.4 fixed how the
-limits are counted — the limiter was keyed on `request.client.host`, so behind a reverse
-proxy every caller shared one bucket; it now reads `X-Forwarded-For` from the right, one
-entry per proxy in `TRUSTED_PROXY_COUNT`. v1.164.0 extended them from the six
-authentication routes to the eight endpoints that cost something: document rendering, the
-bundle, mailing the bundle, UN cards, reading a carrier confirmation, the assistant's
-turn and its model download, and address autocomplete. Every limit in the application is
-listed in one table in `test_ratelimit_key.py`, so changing one is changing that list.
-
-Nothing about rate limiting is left waiting on level 1. What that level still needs is
-everything else on this page.
-
-The in-app limiter is the floor, because it is what actually ships in a one-container
-deployment. An edge limiter in front of it stays a recommendation, not an assumption.
-
-#### Level 2 — Closed
+#### Organisation
 
 Today's behaviour, named. An organisation hosts it, everyone signs in, and the server
 keeps accounts, their settings and the equipment library — and nothing about the
-shipments themselves. Everything already built assumes this.
+shipments themselves. Everything already built assumes this, which is why it is the
+default and the one mode that needs no migration to reach.
 
-#### Level 3 — Kept
+#### History
 
-Signing in as at level 2, plus the shipments the organisation made. This is what the
-storage unlocks:
+The shipments the organisation made, kept. This is what the storage unlocks:
 
 - **A shipments page.** A table of the shipments made, with filters (cards on mobile), a
   detail view that offers the documents for download again, and an edit action that
@@ -186,30 +175,28 @@ storage unlocks:
 - **An address book and templates.** The same five customers, entered once. A product
   decision, not a technical one: it earns its place when the same consignment is drawn
   up repeatedly.
+- **Groupage from the history.** Today the consignments of a trip come in as export
+  files, because there is nothing to pick from. With a history, a trip is assembled from
+  kept shipments instead. Whether the trip itself — the judgement over the whole load —
+  is kept as well is an open question for this phase, not a decision already taken.
+- **The DGSA annual report**, which is a statistic over the history and needs it to
+  exist.
 
-#### Going down a level destroys data, and says so first
+#### Turning history off destroys data, and says so first
 
-Moving from 3 to 2 means the stored shipments have to go. Keeping the table while the
-interface claims it does not exist is the one outcome worse than either level. But the
-level is a deploy-time variable, so there is no screen to confirm it on — so the
+Switching history off means the stored shipments have to go. Keeping the table while the
+interface claims it does not exist is the one outcome worse than either choice. But the
+switch is a deploy-time variable, so there is no screen to confirm it on — so the
 application **refuses to start**: it reports how many shipments it found and names the
 second variable the operator must set to discard them. Refusing to start is loud, and it
 destroys nothing by default.
 
-#### One combination is deliberately not offered
-
-No login *with* a shipment history. This roadmap used to describe turning the login page
-off as the **strictest** setting — an installation on a closed network, where the network
-is the boundary. That is a different argument altogether: safe because nobody untrusted
-can reach it, rather than safe because nothing is kept. Putting both on one ladder would
-produce an installation that records who shipped what while having no idea who typed it.
-
 #### Order of operations, fixed by principle
 
-Levels first, storage second, page third. There must never be a version that stores
-without the control. And the levels are enforced in code with tests, the way
+Mode first, storage second, page third. There must never be a version that stores
+without the control. And both are enforced in code with tests, the way
 `purge_sensitive_data` already enforces today's promise rather than merely describing
-it: at level 1 the authentication endpoints do not exist, at levels 1 and 2 the shipment
+it: at Open the authentication endpoints do not exist, and without history the shipment
 endpoints do not exist. [Privacy](docs/privacy.md) becomes a document with three answers
 instead of one.
 
@@ -285,8 +272,8 @@ none is committed until it is planned against that brief.
   CargoPilot does not become a certified platform; it becomes trivially connectable
   to one.
 - **DGSA annual report.** The statistical half of the ADR 1.8.3 adviser's report,
-  generated from stored shipments — so it exists only at privacy level 3, because
-  without stored shipments there is nothing to report.
+  generated from stored shipments — so it exists only with the history switched on,
+  because without stored shipments there is nothing to report.
 - **Own articles library.** The company's article codes linked to UN number,
   technical name and default packaging — entered once, reused every shipment; designed
   together with the address book.
@@ -299,9 +286,11 @@ none is committed until it is planned against that brief.
   finding is the one no per-consignment screen can produce: every consignment exempt,
   the vehicle not. Consignments come in as the shipment exports of v1.161.0, because
   there is no stored history to pick from and inventing one would break the privacy
-  stance; the trip itself is a calculation and is never stored. The design question the
-  research recorded — trip as entity or as transient calculation — was settled by the
-  privacy levels rather than by preference.
+  stance; the trip itself is a calculation and is not stored today. The design question
+  the research recorded — trip as entity or as transient calculation — was answered for
+  today by the fact that nothing is kept. An installation with a history reopens it:
+  whether that installation keeps the trip as well is that phase's question (see
+  *History* above).
 - **Return shipments in one click** shipped in v1.167.0: the export step turns the
   consignment round — parties swapped, every line set to empty uncleaned, and every
   quantity the outward journey stated cleared, because on an empty drum each of them is a

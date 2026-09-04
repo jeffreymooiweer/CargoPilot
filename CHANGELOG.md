@@ -2,6 +2,45 @@
 
 All notable changes are documented here, following [Semantic Versioning](https://semver.org/).
 
+## [1.170.2] — 2026-09-04
+
+### Two modes instead of three privacy levels
+
+Documentation only; no behaviour changes. The roadmap's "privacy levels" are
+restated as **two modes and one feature**, because the three-step ladder encoded
+two questions that are not the same kind of question — who gets in, and what is
+kept — and made a stored shipment history sound like a step *down* in privacy
+when it is a function an organisation switches on for itself.
+
+- **Open**: anyone, no account, nothing kept about anyone. Defaults live in the
+  visitor's browser; no equipment library; **no mail**. An earlier version kept
+  mail at Open behind a second switch, per-recipient caps and a spam-relay
+  warning. All of it existed to make one feature safe for strangers, and a
+  visitor who can download the documents does not need the installation to send
+  them — so the feature goes, and the switch, the caps and the warning go with
+  it.
+- **Organisation**: today's behaviour, named. Signed in; accounts, settings and
+  the equipment library kept; nothing about shipments. Unset means Organisation,
+  so no existing installation changes.
+- **History**, a feature of Organisation: the shipments kept, which unlocks the
+  shipments page, departments, the address book, groupage from kept shipments
+  and the DGSA report. Still deploy-time, because switching it off destroys data
+  and refusing to start is the one honest place to say so.
+
+Two things the ladder did not say and this version does. **The promise has to be
+checkable**: a visitor cannot see an environment variable, so an Open
+installation says in its footer and its version endpoint which mode it runs in,
+and the source is public. And **the two pieces of work are independent**: Open is
+removing from today, history is adding to it, and Open can ship with history
+never built.
+
+**The groupage line no longer pre-empts the history.** The roadmap, the research
+note and three docstrings said a trip "is never stored", settled "by the privacy
+levels". What is true is that nothing is stored *today*; whether an installation
+that keeps its shipments keeps the judgement over a load as well is recorded as
+an open question for that phase. `docs/privacy.md`, `docs/database-plan.md` and
+`docs/shipment-export.md` follow the same wording.
+
 ## [1.170.1] — 2026-09-04
 
 ### A copy glyph beside the sign-in code

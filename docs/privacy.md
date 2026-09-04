@@ -123,10 +123,13 @@ code scanned in a year answers exactly what it answered on the day it was printe
 
 Everything above describes the one answer CargoPilot has today: sign in, and the server
 keeps your account, your settings and your equipment library — never your shipments. The
-[roadmap](../ROADMAP.md) turns that into a choice of three levels per installation, set
-at deploy time rather than in the interface. Today's behaviour is level 2 of those three,
-which is why nothing here changes for an existing installation. Until the levels ship,
-this page has one answer and it is the one printed above.
+[roadmap](../ROADMAP.md) turns that into a choice per installation, set at deploy time
+rather than in the interface: two modes, **Open** (anyone, no account, nothing kept
+about anyone) and **Organisation** (signed in, accounts and settings kept), and within
+Organisation one feature, the **shipment history**, that keeps the shipments as well.
+Today's behaviour is Organisation without history, which is why nothing here changes
+for an existing installation. Until the modes ship, this page has one answer and it is
+the one printed above.
 
 ## Older Docker images
 

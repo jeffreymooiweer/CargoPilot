@@ -80,7 +80,7 @@ limiter = Limiter(key_func=client_address)
 # What the expensive endpoints cost, and therefore what they are allowed.
 #
 # Each of these guards work an unauthenticated caller can ask for once the
-# privacy levels open the application to one. Until then they guard against a
+# Open mode opens the application to one. Until then they guard against a
 # signed-in caller with a script, which is a smaller problem but the same shape.
 # The numbers are set from what a person doing the work actually does: a limit
 # that a real user reaches is a bug report, not a defence.

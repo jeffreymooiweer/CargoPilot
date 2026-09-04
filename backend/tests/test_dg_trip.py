@@ -266,7 +266,8 @@ def test_a_total_past_the_threshold_is_past_it_whatever_is_missing():
 def test_the_result_carries_no_identifier_to_retrieve_it_by():
     """A trip is a calculation, not an entity.
 
-    Privacy levels 1 and 2 store nothing about shipments. An id in this answer
+    An installation without a shipment history stores nothing about shipments,
+    which is every installation today. An id in this answer
     would be the first sign that something had been kept, so its absence is
     asserted rather than assumed.
     """

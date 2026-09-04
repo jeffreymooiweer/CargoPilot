@@ -65,14 +65,14 @@ The constraint is not the engine. It is this, from `docs/development.md`:
 The escape route documented there — settings as a single JSON document, so the schema
 never changes — works for preferences. It does not work for a shipments page with
 filters, an address book, an articles library or a DGSA report: those want real columns,
-indexes and `GROUP BY` over date ranges. The moment privacy levels land, "there is no
-migration runner" stops being deliberate simplicity and becomes a blockage.
+indexes and `GROUP BY` over date ranges. The moment the shipment history lands, "there
+is no migration runner" stops being deliberate simplicity and becomes a blockage.
 
 Per roadmap item:
 
 | Roadmap item | What it asks of the database |
 |---|---|
-| Privacy levels, shipments page, departments | The first genuine persistent write load, and the first that filters. Needs migrations and indexes. Does not need a different engine. |
+| Shipment history, shipments page, departments | The first genuine persistent write load, and the first that filters. Needs migrations and indexes. Does not need a different engine. |
 | Address book, templates, own articles library | More tables, more schema changes. Same answer. |
 | DGSA annual report (ADR 1.8.3) | Aggregation across the history. Fine on either engine — it needs the history to exist, and a retention period. |
 | Audit log | The only item that writes continuously and grows without a natural bound. Still within SQLite; the first to need pruning. |

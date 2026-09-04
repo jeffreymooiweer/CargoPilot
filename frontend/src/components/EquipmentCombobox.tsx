@@ -3,6 +3,7 @@ import { createPortal } from "react-dom";
 import { useTranslation } from "react-i18next";
 import { api, CatalogSearchHit, EquipmentItem } from "../api/client";
 import { documentLanguage } from "../i18n/language";
+import { usePreferences } from "../settings/preferences";
 
 const inputClass =
   "w-full border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-950 text-slate-900 dark:text-slate-100 rounded-lg px-3 py-2.5 text-sm min-h-[44px]";
@@ -28,10 +29,14 @@ export default function EquipmentCombobox({ value, onChange, placeholder }: Prop
   const inputRef = useRef<HTMLInputElement>(null);
   const menuRef = useRef<HTMLUListElement>(null);
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  // The open application has no library: the route is not on the server,
+  // so asking would only be a 404 in the console on every line dialog.
+  const hasLibrary = usePreferences().mode !== "open";
 
   useEffect(() => {
+    if (!hasLibrary) return;
     api.listEquipment().then(setEquipment).catch(() => setEquipment([]));
-  }, []);
+  }, [hasLibrary]);
 
   useEffect(() => {
     setQuery(value);

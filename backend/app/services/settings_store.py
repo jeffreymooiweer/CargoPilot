@@ -20,6 +20,8 @@ from typing import Any
 from sqlalchemy.orm import Session
 
 from app.core.config import get_settings
+from app.core.languages import DEFAULT as DEFAULT_LANGUAGE
+from app.core.languages import SUPPORTED as SUPPORTED_LANGUAGES
 from app.models.settings import InstanceSetting, UserPreference
 from app.schemas.settings import InstanceSettings, PublicSettings, UserPreferences
 
@@ -44,24 +46,38 @@ def _load_json(raw: str | None) -> dict[str, Any]:
 
 
 def environment_defaults() -> InstanceSettings:
-    """The instance settings as the environment variables describe them."""
+    """The instance settings as the environment variables describe them.
+
+    In the open application this is not the starting point but the whole
+    configuration: there is no administrator to save anything on top of it.
+    And that application sends no mail, whatever ``SMTP_*`` says — the send
+    action does not exist there, so a configured server would only be a
+    surprise waiting in the settings for an administrator who cannot exist.
+    """
     settings = get_settings()
+    mail = not settings.is_open
     return InstanceSettings(
+        default_language=_known_language(settings.default_language),
+        default_theme=_known_theme(settings.default_theme),
+        address_lookup_enabled=settings.address_lookup_enabled,
         address_api_url=settings.geo_address_api_url,
         address_timeout_seconds=settings.geo_address_timeout_seconds,
         catalog_auto_sync=settings.catalog_auto_sync,
         update_check_enabled=settings.update_check_enabled,
+        un_cards_enabled=settings.un_cards_enabled,
+        card_links_enabled=settings.card_links_enabled,
         session_timeout_minutes=settings.access_token_expire_minutes,
+        public_url=_public_url(settings.public_url),
         # A host in the environment is a deliberate act, so it switches
         # sending on; without one the mail settings stay off and empty.
-        mail_enabled=bool(settings.smtp_host and settings.smtp_from),
-        mail_host=settings.smtp_host,
+        mail_enabled=bool(mail and settings.smtp_host and settings.smtp_from),
+        mail_host=settings.smtp_host if mail else "",
         mail_port=settings.smtp_port,
         mail_security=_known_security(settings.smtp_security),
-        mail_username=settings.smtp_username,
-        mail_password=settings.smtp_password,
-        mail_from=settings.smtp_from,
-        mail_from_name=settings.smtp_from_name,
+        mail_username=settings.smtp_username if mail else "",
+        mail_password=settings.smtp_password if mail else "",
+        mail_from=settings.smtp_from if mail else "",
+        mail_from_name=settings.smtp_from_name if mail else "",
         mail_timeout_seconds=settings.smtp_timeout_seconds,
     )
 
@@ -71,6 +87,27 @@ def _known_security(value: str) -> str:
     fail to load; STARTTLS is both the common case and the safe one."""
     value = (value or "").strip().lower()
     return value if value in ("starttls", "ssl", "none") else "starttls"
+
+
+def _known_language(value: str) -> str:
+    """Same rule for DEFAULT_LANGUAGE: a typo falls back rather than failing,
+    because these defaults are read on every request and a raise here would
+    take the whole application down over one letter."""
+    value = (value or "").strip().lower()
+    return value if value in SUPPORTED_LANGUAGES else DEFAULT_LANGUAGE
+
+
+def _known_theme(value: str) -> str:
+    value = (value or "").strip().lower()
+    return value if value in ("light", "dark", "system") else "system"
+
+
+def _public_url(value: str) -> str:
+    """A PUBLIC_URL that is not an http(s) address is treated as unset — the
+    field's own validator would refuse it, and refusing means no settings at
+    all rather than no QR links."""
+    value = (value or "").strip().rstrip("/")
+    return value if value.startswith(("http://", "https://")) else ""
 
 
 def redacted(settings: InstanceSettings) -> InstanceSettings:
@@ -89,7 +126,14 @@ def instance_settings(db: Session) -> InstanceSettings:
 
     The mail password comes back in full — this is what the mail service
     reads. The API redacts it on the way out; see :func:`redacted`.
+
+    The open application never reads a saved overlay. It has no screen to
+    save one from, so any row present was written by the organisation
+    application this database used to serve — and honouring it would let a
+    setting nobody can see or change govern a public installation.
     """
+    if get_settings().is_open:
+        return _with_password_flag(environment_defaults())
     row = db.query(InstanceSetting).order_by(InstanceSetting.id).first()
     stored = _load_json(row.data_json if row else None)
     if not stored:

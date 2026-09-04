@@ -172,8 +172,13 @@ export const api = {
       two_factor_active: boolean;
       two_factor_required: boolean;
     }>("/auth/me"),
-  health: () => request<{ status: string; app: string; version: string }>("/health"),
-  setupStatus: () => request<{ has_admin: boolean }>("/setup-status"),
+  /** `mode` says which of the two applications answers: `open` has no
+   *  accounts and keeps nothing about anyone; `organisation` is the one with
+   *  a sign-in. Optional only so a mocked health answer from before the mode
+   *  existed still type-checks; the server always sends it. */
+  health: () =>
+    request<{ status: string; app: string; version: string; mode?: InstallationMode }>("/health"),
+  setupStatus: () => request<{ has_admin: boolean; mode?: InstallationMode }>("/setup-status"),
   parse: (payload: Record<string, unknown>) =>
     request<CalcResult>("/parse", { method: "POST", body: JSON.stringify(payload) }),
   calculate: (payload: Record<string, unknown>) =>
@@ -577,6 +582,15 @@ export interface User {
   role: string;
   active: boolean;
 }
+
+/** Which application this installation runs as. See docs/privacy.md. */
+export type InstallationMode = "open" | "organisation";
+
+/** The open application's caller: nobody. The pages take a `User`, and this
+ *  is the one they get when there are no accounts — a plain role, so nothing
+ *  administrative ever draws for it, and an empty name, so nothing prints
+ *  "anonymous" on a document. */
+export const VISITOR: User = { id: 0, username: "", email: "", role: "user", active: true };
 
 export type ThemeChoice = "light" | "dark" | "system";
 

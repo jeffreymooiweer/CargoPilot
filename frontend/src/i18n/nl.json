@@ -16,7 +16,9 @@
     "legal": "Disclaimer",
     "collapseMenu": "Menu inklappen",
     "expandMenu": "Menu uitklappen",
-    "groupage": "Groepage"
+    "groupage": "Groepage",
+    "openMode": "Open installatie",
+    "openModeHint": "Geen account, niets wordt bewaard"
   },
   "theme": {
     "dark": "Donker",
@@ -353,7 +355,9 @@
     "twoFactorPolicyHint": "Wie een tweede stap bij het inloggen moet gebruiken. Wie er nog geen heeft, wordt na het inloggen gevraagd het in te stellen.",
     "twoFactorOff": "Vrijwillig, iedereen kiest zelf",
     "twoFactorAdmins": "Verplicht voor beheerders",
-    "twoFactorEveryone": "Verplicht voor iedereen"
+    "twoFactorEveryone": "Verplicht voor iedereen",
+    "introOpen": "Stel de app in zoals jij hem gebruikt. Wat je hier opslaat blijft in deze browser en komt nooit op de server; het verdwijnt als je je browsergegevens wist.",
+    "myDetailsHintOpen": "Gegevens die op bijna elke zending hetzelfde zijn. Ze blijven in deze browser."
   },
   "modality": {
     "title": "Kies uw transportmodaliteit",

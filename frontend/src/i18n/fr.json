@@ -16,7 +16,9 @@
     "legal": "Clause de non-responsabilité",
     "collapseMenu": "Replier le menu",
     "expandMenu": "Déplier le menu",
-    "groupage": "Groupage"
+    "groupage": "Groupage",
+    "openMode": "Installation ouverte",
+    "openModeHint": "Sans compte, rien n'est conservé"
   },
   "theme": {
     "dark": "Sombre",
@@ -353,7 +355,9 @@
     "twoFactorPolicyHint": "Qui doit utiliser une deuxième étape à la connexion. Ceux qui n'en ont pas sont invités à la configurer après connexion.",
     "twoFactorOff": "Facultative, chacun choisit",
     "twoFactorAdmins": "Obligatoire pour les administrateurs",
-    "twoFactorEveryone": "Obligatoire pour tous"
+    "twoFactorEveryone": "Obligatoire pour tous",
+    "introOpen": "Configurez l'application comme vous l'utilisez. Ce que vous enregistrez ici reste dans ce navigateur et n'atteint jamais le serveur ; cela disparaît si vous effacez vos données de navigation.",
+    "myDetailsHintOpen": "Les informations identiques sur presque chaque expédition. Elles restent dans ce navigateur."
   },
   "modality": {
     "title": "Choisissez votre mode de transport",

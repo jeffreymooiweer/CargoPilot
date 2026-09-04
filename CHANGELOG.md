@@ -2,6 +2,60 @@
 
 All notable changes are documented here, following [Semantic Versioning](https://semver.org/).
 
+## [1.171.0] — 2026-09-04
+
+### The open application
+
+`CARGOPILOT_MODE=open` runs CargoPilot as a public installation anyone may use
+without an account and without leaving anything behind. It is the first half of
+the roadmap's two modes; the organisation application — what every installation
+was until now — is unchanged and remains the default.
+
+**Not switched off: not mounted.** The routes that presume an account — sign-in,
+users, the settings screen, the equipment library, mailing documents, the
+administrator's maintenance — are not registered in the open application and
+answer 404 like any address that never existed. `backend/app/main.py` now names
+the two groups in so many words, `WORK_ROUTERS` and `ACCOUNT_ROUTERS`, and a
+test walks the account routes one by one asserting their absence, then the same
+list against the organisation application asserting their presence. Two routers
+were split for it: the public half of the settings endpoints, and mailing the
+bundle, which now lives on its own router beside the download.
+
+**The caller is a visitor.** `get_current_user` returns a transient user with no
+name and the plain role, so every route that judges or renders works unchanged,
+and `require_admin` refuses it as it refuses anybody — a belt for the braces of
+the admin routes not being there.
+
+**The environment is the whole configuration.** No administrator, no screen, and
+no saved settings row is read — a row left by an earlier organisation life of the
+same database must not govern a public site. The switches an administrator would
+otherwise flip on the screen gained environment names: `ADDRESS_LOOKUP_ENABLED`,
+`UN_CARDS_ENABLED`, `CARD_LINKS_ENABLED`, `PUBLIC_URL`, `DEFAULT_LANGUAGE` and
+`DEFAULT_THEME`. They work in the organisation application too, as the starting
+value a saved setting overrides, which is the rule every other variable follows.
+A typo in any of them falls back rather than failing.
+
+**No mail, whatever `SMTP_*` says.** A visitor who can download the papers does
+not need the installation to send them, and an installation that sends what
+strangers type to addresses strangers choose is a spam relay. Removing the
+action removed the guards the roadmap had drafted for it.
+
+**The browser keeps what the account would have.** Consignor, contact, carrier,
+loading point, emergency number, language, theme and signature live under one
+`localStorage` key and travel only with the shipment being drawn up. The
+settings screen says so in four languages, and says that clearing the browser
+data clears them.
+
+**The promise is checkable.** `/api/health` reports `"mode"`, the chrome says
+"Open installation" where the account name would stand and beside the version,
+and [Privacy](docs/privacy.md) gained the section a visitor reads.
+`/api/setup-status` reports the mode as well.
+
+Also: `ADMIN_*` is ignored in the open application, with no warning about a
+missing administrator; accounts left in the database by an earlier organisation
+life are reported at start-up and left alone. `CARGOPILOT_MODE` set to anything
+but the two words runs the organisation application and says so in the log.
+
 ## [1.170.2] — 2026-09-04
 
 ### Two modes instead of three privacy levels

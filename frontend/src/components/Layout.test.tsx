@@ -28,7 +28,8 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import Layout from "./Layout";
 import { ToastProvider } from "../toast/ToastProvider";
-import { api, User } from "../api/client";
+import { PreferencesProvider } from "../settings/preferences";
+import { api, User, VISITOR } from "../api/client";
 
 vi.mock("react-i18next", () => ({
   useTranslation: () => ({
@@ -159,6 +160,52 @@ describe("de zijbalk", () => {
     expect(screen.getByRole("button", { name: "nav.expandMenu" })).toHaveAttribute(
       "aria-expanded",
       "false",
+    );
+  });
+});
+
+describe("de open installatie", () => {
+  // Nobody is signed in, so there is nobody to sign out — and where the
+  // account name would stand, the chrome says which application this is,
+  // so a visitor can see it without asking the server.
+  function renderOpen() {
+    vi.spyOn(api, "publicSettings").mockRejectedValue(new Error("offline"));
+    // The provider applies the browser's theme on load, and jsdom has no
+    // matchMedia; the preferences tests stub it the same way.
+    Object.defineProperty(window, "matchMedia", {
+      writable: true,
+      value: (query: string) => ({
+        matches: false,
+        media: query,
+        addEventListener: () => {},
+        removeEventListener: () => {},
+      }),
+    });
+    return render(
+      <PreferencesProvider mode="open">
+        <ToastProvider>
+          <MemoryRouter initialEntries={["/"]}>
+            <Routes>
+              <Route element={<Layout user={VISITOR} onLogout={() => {}} />}>
+                <Route path="/" element={<p>home</p>} />
+              </Route>
+            </Routes>
+          </MemoryRouter>
+        </ToastProvider>
+      </PreferencesProvider>,
+    );
+  }
+
+  it("heeft geen uitlogknop en zegt in plaats van een naam wat het is", async () => {
+    renderOpen();
+    expect(await screen.findByText("nav.openMode")).toBeInTheDocument();
+    expect(screen.queryByText("nav.logout")).toBeNull();
+  });
+
+  it("zet de installatie ook bij het versienummer", async () => {
+    renderOpen();
+    await waitFor(() =>
+      expect(screen.getByLabelText("settings.version v1.53.0")).toHaveTextContent("nav.openMode · v1.53.0"),
     );
   });
 });

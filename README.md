@@ -93,6 +93,10 @@ docker compose up -d --build
 
 Open <http://localhost:8080> and log in with the admin account from your `.env`.
 
+Want an installation anyone may use without an account, that keeps nothing about
+anyone? Set `CARGOPILOT_MODE=open` — see [Privacy](docs/privacy.md#two-applications)
+for exactly what that promises and [Configuration](docs/configuration.md) for how.
+
 Running Unraid, or want the full set of options? See **[Getting started](docs/getting-started.md)**.
 
 ## Documentation

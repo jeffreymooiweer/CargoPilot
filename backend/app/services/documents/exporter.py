@@ -15,6 +15,7 @@ from app.services.dg.autofill import adr_quantity, description_line
 from app.services.dg.database import get_un_entries, is_transport_forbidden
 from app.services.dg.naming import english_name_is_usable, resolve_for_profile
 from app.services.documents.registry import condition_met, get_document, resolve_sections
+from app.services.edifact import iftdgn
 
 TEXTS = {
     "generated_with": {
@@ -805,6 +806,11 @@ def validate_document(
                 )
         except (TypeError, ValueError):
             pass
+
+    # The EDI notification has needs no section lists: a UN number and a
+    # class per product, at least one mass, and dangerous goods at all.
+    if document.get("exporter") == "iftdgn":
+        errors.extend(iftdgn.problems(values, dangerous_goods, lang))
 
     return errors, warnings
 

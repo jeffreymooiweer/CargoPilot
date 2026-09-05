@@ -279,8 +279,13 @@ none is committed until it is planned against that brief.
   picked onto a goods line so the dangerous goods step is seeded from the library; a
   spreadsheet in and out in the same columns. Kept beside the history, like the address
   book.
-- **EDI (IFTDGN) and the port call.** The freely specified UN/EDIFACT dangerous goods
-  notification as a far-off target the structured export quietly prepares for.
+- ~~**EDI (IFTDGN) and the port call.**~~ Shipped in v1.189.0: the UN/EDIFACT dangerous
+  goods notification, directory D.16A, written from the same parts as the structured
+  export and offered beside it on every transport mode — parsed back and checked against
+  the segment table before it leaves. What a particular port's implementation guide adds
+  on top of the standard (qualifiers, code lists, the gateway's identifiers) is the
+  question to answer against a real counterparty; see [The IFTDGN
+  notification](docs/iftdgn.md).
 - **Groupage** shipped in v1.169.0: several consignments on one vehicle, judged as one
   load. Three provisions are decided per transport unit and could not be decided per
   consignment however carefully each was filled in — the 1.1.3.6 points, the mixed

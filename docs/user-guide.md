@@ -238,7 +238,12 @@ holding every document that is ready — and, when the shipment carries dangerou
 the UN cards and the instructions in writing for the journey's regimes as well.
 Anything the server has to leave out (an incomplete document, a UN card it does not
 hold) is named in a README inside the archive rather than silently missing. Every
-document downloads as a PDF and carries a draft notice.
+document downloads as a PDF and carries a draft notice. Two entries in the list are not
+paper: the **Structured export (JSON)**, the whole shipment as data with what CargoPilot
+derived (see [The structured shipment export](shipment-export.md)), and — for a shipment
+with dangerous goods — the **Dangerous goods notification (UN/EDIFACT IFTDGN)**, the EDI
+message a port community system or a forwarder's gateway reads, as an `.edi` file (see
+[The IFTDGN notification](iftdgn.md)). Both go into the ZIP with the rest.
 
 **Mail them instead of downloading.** Where your administrator has set up a mail
 server, the same set can be sent straight from this screen: fill in the address, add a

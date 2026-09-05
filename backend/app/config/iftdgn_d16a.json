@@ -1,0 +1,134 @@
+{
+  "message": "IFTDGN",
+  "directory": "D.16A",
+  "controlling_agency": "UN",
+  "revision": "8",
+  "directory_date": "2016-06-08",
+  "source": {
+    "title": "UN/EDIFACT D.16A directory, message IFTDGN (Dangerous goods notification message), UN/CEFACT TBG3 Transport",
+    "note": "The directory is licensed by the United Nations and is not redistributed in this repository; this file holds only the message structure and the elements and code values CargoPilot uses, verified against the directory files whose checksums are recorded here.",
+    "verified_against": {
+      "edmd/IFTDGN_D.16A": "491fb3b209c95f5a",
+      "edsd/EDSD.16A": "2fc30cb8b9e1235d",
+      "edcd/EDCD.16A": "85ba3ab14b537491",
+      "eded/EDED.16A": "f7a7dc0c7545adff",
+      "uncl/UNCL.16A": "ccd8ce241e5f29aa"
+    }
+  },
+  "structure": [
+    {"pos": "00010", "tag": "UNH", "status": "M", "max": 1},
+    {"pos": "00020", "tag": "BGM", "status": "M", "max": 1},
+    {"pos": "00030", "tag": "DTM", "status": "C", "max": 9},
+    {"pos": "00040", "tag": "FTX", "status": "C", "max": 9},
+    {"pos": "00050", "tag": "HAN", "status": "C", "max": 1},
+    {"pos": "00060", "group": 1, "status": "C", "max": 9, "children": [
+      {"pos": "00070", "tag": "RFF", "status": "M", "max": 1},
+      {"pos": "00080", "tag": "DTM", "status": "C", "max": 9}
+    ]},
+    {"pos": "00090", "group": 2, "status": "C", "max": 1, "children": [
+      {"pos": "00100", "tag": "TDT", "status": "M", "max": 1},
+      {"pos": "00110", "tag": "DTM", "status": "C", "max": 9},
+      {"pos": "00120", "tag": "RFF", "status": "C", "max": 9},
+      {"pos": "00130", "group": 3, "status": "C", "max": 99, "children": [
+        {"pos": "00140", "tag": "LOC", "status": "M", "max": 1},
+        {"pos": "00150", "tag": "DTM", "status": "C", "max": 9}
+      ]}
+    ]},
+    {"pos": "00160", "group": 4, "status": "C", "max": 9, "children": [
+      {"pos": "00170", "tag": "NAD", "status": "M", "max": 1},
+      {"pos": "00180", "group": 5, "status": "C", "max": 9, "children": [
+        {"pos": "00190", "tag": "CTA", "status": "M", "max": 1},
+        {"pos": "00200", "tag": "COM", "status": "C", "max": 9}
+      ]}
+    ]},
+    {"pos": "00210", "group": 6, "status": "C", "max": 999, "children": [
+      {"pos": "00220", "tag": "EQD", "status": "M", "max": 1},
+      {"pos": "00230", "tag": "MEA", "status": "C", "max": 9},
+      {"pos": "00240", "tag": "SEL", "status": "C", "max": 99}
+    ]},
+    {"pos": "00250", "group": 7, "status": "M", "max": 999, "children": [
+      {"pos": "00260", "tag": "CNI", "status": "M", "max": 1},
+      {"pos": "00270", "tag": "HAN", "status": "C", "max": 1},
+      {"pos": "00280", "tag": "DTM", "status": "C", "max": 4},
+      {"pos": "00290", "tag": "LOC", "status": "C", "max": 4},
+      {"pos": "00300", "group": 8, "status": "C", "max": 1, "children": [
+        {"pos": "00310", "tag": "TDT", "status": "M", "max": 1},
+        {"pos": "00320", "tag": "RFF", "status": "C", "max": 9},
+        {"pos": "00330", "group": 9, "status": "C", "max": 9, "children": [
+          {"pos": "00340", "tag": "LOC", "status": "M", "max": 1},
+          {"pos": "00350", "tag": "DTM", "status": "C", "max": 9}
+        ]}
+      ]},
+      {"pos": "00360", "group": 10, "status": "C", "max": 2, "children": [
+        {"pos": "00370", "tag": "NAD", "status": "M", "max": 1},
+        {"pos": "00380", "group": 11, "status": "C", "max": 1, "children": [
+          {"pos": "00390", "tag": "CTA", "status": "M", "max": 1},
+          {"pos": "00400", "tag": "COM", "status": "C", "max": 1}
+        ]},
+        {"pos": "00410", "tag": "RFF", "status": "C", "max": 1}
+      ]},
+      {"pos": "00420", "group": 12, "status": "M", "max": 99, "children": [
+        {"pos": "00430", "tag": "GID", "status": "M", "max": 1},
+        {"pos": "00440", "tag": "FTX", "status": "C", "max": 2},
+        {"pos": "00450", "tag": "PCI", "status": "C", "max": 1},
+        {"pos": "00460", "group": 13, "status": "C", "max": 99, "children": [
+          {"pos": "00470", "tag": "SGP", "status": "M", "max": 1},
+          {"pos": "00480", "tag": "MEA", "status": "C", "max": 9}
+        ]},
+        {"pos": "00490", "group": 14, "status": "M", "max": 1, "children": [
+          {"pos": "00500", "tag": "DGS", "status": "M", "max": 1},
+          {"pos": "00510", "tag": "FTX", "status": "M", "max": 9},
+          {"pos": "00520", "tag": "MEA", "status": "M", "max": 9},
+          {"pos": "00530", "tag": "LOC", "status": "C", "max": 99},
+          {"pos": "00540", "tag": "RFF", "status": "C", "max": 9},
+          {"pos": "00550", "group": 15, "status": "C", "max": 99, "children": [
+            {"pos": "00560", "tag": "SGP", "status": "M", "max": 1},
+            {"pos": "00570", "tag": "LOC", "status": "C", "max": 1},
+            {"pos": "00580", "tag": "MEA", "status": "C", "max": 9}
+          ]}
+        ]}
+      ]}
+    ]},
+    {"pos": "00590", "tag": "UNT", "status": "M", "max": 1}
+  ],
+  "segments": {
+    "UNH": {"elements": ["0062 message reference number an..14", "S009 message identifier: 0065 type, 0052 version, 0054 release, 0051 agency"]},
+    "BGM": {"elements": ["C002 document name: 1001 document name code an..3", "C106 document identification: 1004 document identifier an..70", "1225 message function code an..3"]},
+    "DTM": {"elements": ["C507: 2005 function code, 2380 text an..35, 2379 format code"]},
+    "TDT": {"elements": ["8051 transport stage code qualifier", "8028 journey identifier", "C220: 8067 transport mode name code", "C001 transport means", "C040 carrier", "8101", "C401", "C222: 8213 identifier, 1131, 3055, 8212 transport means identification name an..70, 8453 nationality"]},
+    "NAD": {"elements": ["3035 party function code qualifier", "C082 party identification", "C058 name and address: 5 x 3124 an..35", "C080 party name: 5 x 3036 an..70", "C059 street", "3164 city", "C819", "3251 postal code", "3207 country"]},
+    "EQD": {"elements": ["8053 equipment type code qualifier", "C237: 8260 equipment identifier an..17"]},
+    "CNI": {"elements": ["1490 consolidation item number n..5", "C503: 1004 document identifier an..70"]},
+    "LOC": {"elements": ["3227 location function code qualifier", "C517: 3225 identifier, 1131, 3055, 3224 location name an..256"]},
+    "GID": {"elements": ["1496 goods item number an..6", "C213: 7224 package quantity n..8, 7065 package type description code, 1131, 3055, 7064 type of packages an..35"]},
+    "FTX": {"elements": ["4451 text subject code qualifier", "4453 free text function code", "C107 text reference", "C108: 5 x 4440 free text an..512"]},
+    "DGS": {"elements": ["8273 dangerous goods regulations code an..3", "C205: 8351 hazard identification code an..7, 8078 additional hazard classification identifier an..7, 8092 version", "C234: 7124 UNDG identifier n4, 7088 flashpoint description an..8", "C223: 7106 shipment flashpoint degree n3, 6411 unit", "8339 packaging danger level code an..3", "8364 emergency procedure for ships identifier an..8", "8410 MFAG identifier an..4", "8126 TREM card identifier an..10", "C235: 8158 orange placard upper part an..4, 8186 orange placard lower part an4", "C236: 4 x 8246 dangerous goods marking identifier an..4", "8255 packing instruction type code an..3", "8179 transport means description code", "8211 hazardous cargo transport authorisation code", "C289: 8461 tunnel restriction code an..6"]},
+    "MEA": {"elements": ["6311 measurement purpose code qualifier", "C502: 6313 measured attribute code", "C174: 6411 measurement unit code, 6314 measure an..18"]},
+    "SGP": {"elements": ["C237: 8260 equipment identifier an..17", "7224 package quantity n..8"]},
+    "UNT": {"elements": ["0074 number of segments in the message", "0062 message reference number"]}
+  },
+  "codes": {
+    "1001": {"890": "Dangerous goods declaration"},
+    "1225": {"9": "Original"},
+    "2005": {"137": "Document issue date time"},
+    "2379": {"102": "CCYYMMDD", "203": "CCYYMMDDHHMM"},
+    "3035": {"CZ": "Consignor", "CA": "Carrier", "FW": "Freight forwarder"},
+    "3227": {"9": "Place of loading", "11": "Place of discharge"},
+    "4451": {"AAA": "Goods item description", "AAD": "Dangerous goods technical name", "AAC": "Dangerous goods additional information"},
+    "6311": {"AAE": "Measurement"},
+    "6313": {"AAB": "Goods item gross weight", "AAF": "Net net weight"},
+    "8051": {"20": "Main-carriage transport"},
+    "8053": {"CN": "Container"},
+    "8273": {"ADR": "European agreement on the international carriage of dangerous goods by road", "RID": "Railroad dangerous goods book (RID)", "IMD": "IMO IMDG code", "ICA": "IATA ICAO", "ZZZ": "Mutually defined"},
+    "8339": {"1": "Great danger", "2": "Medium danger", "3": "Minor danger"}
+  },
+  "external_codes": {
+    "8067": {"source": "UN/ECE Recommendation No. 19 (named by the data element's note; not part of the D.16A code list)", "values": {"1": "Maritime transport", "2": "Rail transport", "3": "Road transport", "4": "Air transport", "8": "Inland water transport"}},
+    "6411": {"source": "UN/ECE Recommendation No. 20 (named by the data element's note; not part of the D.16A code list)", "values": {"KGM": "kilogram", "LTR": "litre", "CEL": "degree Celsius"}},
+    "7065": {"source": "UN/ECE Recommendation No. 21 (named by the data element's note; not part of the D.16A code list). Not coded by CargoPilot: the package type travels as text in 7064 until the Recommendation has been read.", "values": {}}
+  },
+  "syntax": {
+    "interchange": "ISO 9735 service segments UNA, UNB and UNZ; character set UNOC (ISO 8859-1) so names keep their case and accents",
+    "separators": "UNA:+.? ' — component ':', data element '+', decimal '.', release '?', segment terminator \"'\""
+  }
+}

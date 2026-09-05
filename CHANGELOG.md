@@ -2,6 +2,43 @@
 
 All notable changes are documented here, following [Semantic Versioning](https://semver.org/).
 
+## [1.189.0] — 2026-09-05
+
+### The IFTDGN notification, written from the D.16A directory
+
+The UN/EDIFACT dangerous goods notification — the message port
+authorities and port community systems read — as an export beside the
+JSON, built from the same parts.
+
+- **The message.** IFTDGN, directory D.16A, revision 8: BGM 890 with the
+  shipment reference, DTM 137, TDT with the Recommendation 19 mode and the
+  vehicle, NAD for the carrier, the forwarder and the consignor, EQD for the
+  container, one CNI consignment with its places of loading and discharge,
+  and per dangerous product a GID goods item with DGS (the regulation, the
+  class and a subsidiary risk, the UN number, the flashpoint, the packing
+  group as danger level, the EmS, the hazard identification number as the
+  orange placard, the labels, the tunnel code), FTX AAD with the technical
+  name, FTX AAC with what the codes cannot say, MEA with gross and net, and
+  SGP with the container. ADN travels as `ZZZ` and says so: the D.16A code
+  list has no code for it.
+- **The syntax and the check.** A segment writer that releases every service
+  character and drops trailing empties, a parser, and a validator that walks
+  the segment table — every message is parsed back and checked before it is
+  written. The export refuses a shipment without dangerous goods, a product
+  without UN number or class, and a product without any mass, each with a
+  sentence in the four languages.
+- **Where.** *Dangerous goods notification (UN/EDIFACT IFTDGN)* on every
+  transport mode in the export step and the bundle, as an `.edi` file with
+  the media type `application/EDIFACT`. *The IFTDGN notification* in the
+  documentation gives the segment-by-segment account, the worked example
+  and what is deliberately left out (the consignee, coded package types,
+  the gateway's own identifiers).
+- **The directory stays out of the repository.** Its licence allows use but
+  not modified redistribution; `backend/app/config/iftdgn_d16a.json` holds
+  the segment table and the code values CargoPilot uses with their
+  checksums, and the test suite verifies them against the directory
+  whenever it is at hand.
+
 ## [1.188.0] — 2026-09-05
 
 ### The history switch is the administrator's

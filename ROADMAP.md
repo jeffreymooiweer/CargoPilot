@@ -135,13 +135,22 @@ keeps accounts, their settings and the equipment library — and nothing about t
 shipments themselves. Everything already built assumes this, which is why it is the
 default and the one mode that needs no migration to reach.
 
-#### History
+#### History — the switch, the storage and the page shipped in v1.173.0
 
-The shipments the organisation made, kept. This is what the storage unlocks:
+`CARGOPILOT_HISTORY=true`. The export step keeps each shipment when its documents are
+downloaded, a shipments page lists them with filters and cards, a kept shipment reopens
+in the wizard and hands out its documents again, and switching the history off with
+shipments in the table refuses to start until `CARGOPILOT_HISTORY_DISCARD=true` says
+they may go. Underneath it is the schema runner the database plan asked for: numbered
+steps, a version table, a fresh database stamped rather than migrated. What a kept
+shipment holds — the wizard's own state, the bundle request, and the structured export
+with its derived findings and editions — settles the size question the database plan
+left open in favour of keeping the answer, so a page never silently answers differently
+than the paper that was signed.
 
-- **A shipments page.** A table of the shipments made, with filters (cards on mobile), a
-  detail view that offers the documents for download again, and an edit action that
-  reopens the shipment in the wizard.
+What the storage still has to unlock:
+
+- ~~**A shipments page.**~~ Shipped, above.
 - **Departments.** Group users so the page shows the department's work rather than the
   whole organisation's.
 - **An address book and templates.** The same five customers, entered once. A product

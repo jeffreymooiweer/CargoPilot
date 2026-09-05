@@ -320,7 +320,7 @@ def export(
     ref = datetime.now().strftime("%Y%m%d%H%M%S")
     out_path = _render_export(document, payload, signature_png,
                               _card_link_base(db))
-    background_tasks.add_task(_delete_file, out_path)
+    background_tasks.add_task(delete_file, out_path)
     return FileResponse(
         path=out_path,
         filename=f"{payload.document_key}_{ref}{out_path.suffix}",
@@ -328,7 +328,7 @@ def export(
     )
 
 
-def _build_bundle(payload: DocumentBundleRequest, db: Session) -> tuple[Path, str]:
+def build_bundle(payload: DocumentBundleRequest, db: Session) -> tuple[Path, str]:
     """The archive itself, for whoever wants to do something with it.
 
     Downloading and mailing must produce the same bundle — one built by the
@@ -375,11 +375,11 @@ def _build_bundle(payload: DocumentBundleRequest, db: Session) -> tuple[Path, st
         try:
             _fill_bundle(bundle_path, produced, payload, notes, db)
         except BaseException:
-            _delete_file(bundle_path)
+            delete_file(bundle_path)
             raise
     finally:
         for path, _ in produced:
-            _delete_file(path)
+            delete_file(path)
 
     return bundle_path, ref
 
@@ -401,8 +401,8 @@ def export_bundle(
     archive's README rather than silently dropped — a bundle that looks
     complete and is not would be worse than no bundle.
     """
-    bundle_path, ref = _build_bundle(payload, db)
-    background_tasks.add_task(_delete_file, bundle_path)
+    bundle_path, ref = build_bundle(payload, db)
+    background_tasks.add_task(delete_file, bundle_path)
     return FileResponse(
         path=bundle_path,
         filename=f"cargopilot-documents-{ref}.zip",
@@ -432,7 +432,7 @@ def mail_bundle(
             detail="No mail server is configured. An administrator sets one "
                    "under Settings, Administration, Mail server.")
 
-    bundle_path, ref = _build_bundle(payload.bundle, db)
+    bundle_path, ref = build_bundle(payload.bundle, db)
     try:
         content = bundle_path.read_bytes()
         filename = f"cargopilot-documents-{ref}.zip"
@@ -452,7 +452,7 @@ def mail_bundle(
         except mail.MailError as exc:
             raise HTTPException(status_code=400, detail=str(exc)) from exc
     finally:
-        _delete_file(bundle_path)
+        delete_file(bundle_path)
     return BundleMailResult(ok=True, to=payload.to, filename=filename)
 
 
@@ -601,7 +601,7 @@ def export_un_cards(
     except FileNotFoundError as exc:
         raise HTTPException(status_code=404, detail=str(exc)) from exc
 
-    background_tasks.add_task(_delete_file, out_path)
+    background_tasks.add_task(delete_file, out_path)
     ref = datetime.now().strftime("%Y%m%d%H%M%S")
     return FileResponse(
         path=out_path,
@@ -611,7 +611,7 @@ def export_un_cards(
     )
 
 
-def _delete_file(path) -> None:
+def delete_file(path) -> None:
     try:
         path.unlink(missing_ok=True)
     except OSError:

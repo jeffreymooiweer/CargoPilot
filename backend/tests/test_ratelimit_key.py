@@ -200,6 +200,9 @@ def test_every_rate_limit_in_the_application_in_one_table():
         # What costs CPU, or somebody else's service, or somebody else's inbox.
         "export": "60 per 1 minute",
         "export_bundle": "10 per 1 minute",
+        # The kept bundle rendered again from the history: the same work as
+        # the bundle, so the same allowance.
+        "shipment_documents": "10 per 1 minute",
         "mail_bundle": "5 per 1 minute",
         "export_un_cards": "10 per 1 minute",
         "read_carrier_confirmation": "20 per 1 minute",

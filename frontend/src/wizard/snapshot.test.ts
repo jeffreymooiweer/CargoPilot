@@ -1,0 +1,61 @@
+import { describe, expect, it } from "vitest";
+
+import { SNAPSHOT_VERSION, readSnapshot } from "./snapshot";
+
+describe("een bewaarde wizardtoestand teruglezen", () => {
+  it("geeft de brontoestand terug zoals hij was", () => {
+    const stored = {
+      version: SNAPSHOT_VERSION,
+      modality: "road",
+      stepKey: "export",
+      docLang: "de",
+      selectedDocs: ["cmr"],
+      docValues: { reference: "CP-1", consignor_name: "Afzender BV" },
+      skippedQuestions: ["q1"],
+      draftLines: [{ id: 3, description: "Vaten", quantity: 4, unit: "pcs" }],
+      nextId: 4,
+      result: { success: true, column_map: {}, lines: [{ id: 3 }], totals: {}, errors: [] },
+      dgEntries: [{ line_id: "3", products: [] }],
+      signature: "data:image/png;base64,AAAA",
+    };
+    const read = readSnapshot(stored)!;
+    expect(read.stepKey).toBe("export");
+    expect(read.docLang).toBe("de");
+    expect(read.selectedDocs).toEqual(["cmr"]);
+    expect(read.docValues.reference).toBe("CP-1");
+    expect(read.draftLines[0].description).toBe("Vaten");
+    expect(read.nextId).toBe(4);
+    expect(read.result?.lines).toHaveLength(1);
+    expect(read.dgEntries).toHaveLength(1);
+    expect(read.signature).toBe("data:image/png;base64,AAAA");
+  });
+
+  it("weigert wat geen snapshot is, en een versie die deze code niet kent", () => {
+    // A row somebody edited by hand, or one written by a later version with
+    // a shape this one cannot read, must not crash the wizard.
+    expect(readSnapshot(null)).toBeNull();
+    expect(readSnapshot("{}")).toBeNull();
+    expect(readSnapshot({})).toBeNull();
+    expect(readSnapshot({ version: SNAPSHOT_VERSION + 1 })).toBeNull();
+  });
+
+  it("vult wat ontbreekt met veilige waarden in plaats van te breken", () => {
+    const read = readSnapshot({ version: 1, stepKey: "somewhere", docValues: { a: 1, b: "two" } })!;
+    expect(read.stepKey).toBe("lines");
+    expect(read.docValues).toEqual({ b: "two" });
+    expect(read.draftLines).toHaveLength(1);
+    expect(read.nextId).toBe(2);
+    expect(read.result).toBeNull();
+    expect(read.dgEntries).toEqual([]);
+    expect(read.selectedDocs).toBeNull();
+    expect(read.signature).toBeNull();
+  });
+
+  it("leidt het volgende regelnummer af uit de regels als het ontbreekt", () => {
+    const read = readSnapshot({
+      version: 1,
+      draftLines: [{ id: 7, description: "x", quantity: 1, unit: "pcs" }, { id: 2, description: "y", quantity: 1, unit: "pcs" }],
+    })!;
+    expect(read.nextId).toBe(8);
+  });
+});

@@ -16,6 +16,7 @@ Everything persistent lives in the `/data` volume:
 | Your settings | Language, theme, the details you asked to have filled in for you, and which version's release notes you have already seen |
 | The installation's settings | What an administrator set for everyone |
 | The installation's branding | A name, a logo and tile pictures an administrator uploaded, in `/data/branding` |
+| Kept shipments — **only** with `CARGOPILOT_HISTORY=true` | The shipments the organisation chose to keep; see [The shipment history](#the-shipment-history) |
 
 That is the whole list.
 
@@ -29,7 +30,10 @@ leave that section on "skip" and sign the printed documents with a pen.
 
 ## What is deliberately not stored
 
-- **No shipment history.** Once you close a shipment, its package lines are gone.
+- **No shipment history**, unless the operator switched one on. Once you close a
+  shipment, its package lines are gone. An organisation application with
+  `CARGOPILOT_HISTORY=true` keeps them instead — see [The shipment
+  history](#the-shipment-history) for exactly what, and how it is switched off again.
 - **No job database with material lists.** Nothing is written down while you work.
 - **No document archive.** Exports are written to a temporary file, streamed to your
   browser and deleted immediately afterwards.
@@ -164,9 +168,35 @@ One thing the operator of an open installation can still switch on is the QR cod
 documents described above, with `CARD_LINKS_ENABLED` and `PUBLIC_URL` in the
 environment. It discloses what it always disclosed: UN numbers the paper already prints.
 
-The [roadmap](../ROADMAP.md) adds, for the organisation application only, a **shipment
-history** an organisation may switch on for itself. It is not built yet, and this page
-will say so plainly when it is.
+The organisation application has one more choice, below.
+
+## The shipment history
+
+Off by default. An organisation that would rather not retype the same five customers,
+or that wants to hand out last month's papers again, switches it on at deploy time with
+`CARGOPILOT_HISTORY=true`. This is what that changes, and only this:
+
+**What is kept.** Each shipment whose documents were downloaded, or that a user chose to
+keep from the export step: the wizard's state as it stood (the goods lines, the declared
+dangerous goods, the document fields, the signature if one was drawn for it), the request
+that produced its documents, and the structured export with the derived findings and the
+editions they were computed against. The documents themselves are **not** archived; they
+are rendered again from the kept request when asked for.
+
+**Who sees it.** Every signed-in user of the organisation sees every kept shipment. The
+roadmap's departments will narrow that; until then the organisation is the unit.
+
+**How it goes away.** A user removes a shipment from the shipments page, after a
+confirmation. An operator switches the whole history off by setting the variable back —
+and an installation that still holds kept shipments then **refuses to start**, naming
+the count and the second variable, `CARGOPILOT_HISTORY_DISCARD`, that lets the next start
+delete them. Refusing is loud and deletes nothing by default; a table kept while the
+interface claims it does not exist would be the one outcome worse than either choice.
+
+**What does not change.** The open application ignores the switch. Nothing is written
+while you work: a shipment is kept only when its documents are downloaded or you press
+the button. And without the switch, the addresses the shipments page uses do not exist
+on the server — the promise is enforced by what is mounted, not described in a setting.
 
 ## Older Docker images
 

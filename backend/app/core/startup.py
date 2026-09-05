@@ -2,8 +2,10 @@ import json
 import logging
 from pathlib import Path
 
+from sqlalchemy import inspect
 from sqlalchemy.orm import Session
 
+from app.core import migrations
 from app.core.config import get_settings
 from app.core.database import Base, SessionLocal, engine
 from app.core.security import hash_password
@@ -14,7 +16,9 @@ from app.models.two_factor import (
     TwoFactorRecoveryCode,
 )
 from app.models.settings import InstanceSetting, UserPreference
+from app.models.shipment import Shipment
 from app.models.user import Equipment, Job, Material, Profile, ReferenceItem, User
+from app.services import history
 from app.services.catalog_sync import sync_catalogs
 from app.services.settings_store import instance_settings
 
@@ -32,6 +36,9 @@ TEMPORARY_EXPORT_SUFFIXES = {".pdf", ".zip", ".xlsx", ".tmp"}
 #: somebody actually forgets their password.
 SETTINGS_TABLES = (InstanceSetting, UserPreference, PasswordResetToken,
                    TwoFactorEnrolment, TwoFactorRecoveryCode, TwoFactorCode)
+#: Same reason: the history's table is created by ``create_all`` on a fresh
+#: database only because its model was imported here.
+HISTORY_TABLES = (Shipment,)
 
 
 def ensure_directories() -> None:
@@ -216,12 +223,19 @@ def init_app() -> bool:
             "application (the closed one). Use 'open' or 'organisation'.",
             settings.cargopilot_mode)
     ensure_directories()
+    # A database with no tables at all is fresh: create_all makes every table
+    # in its current shape and the schema steps are stamped rather than run.
+    # Anything else is an upgrade, and the steps bring it up to date.
+    fresh = not inspect(engine).has_table(User.__tablename__)
     Base.metadata.create_all(bind=engine)
+    migrations.run(engine, fresh=fresh)
     db = SessionLocal()
     try:
         # Before anything reads the equipment table: an existing one predates
         # the model it is queried with.
         migrate_equipment_columns(db)
+        # Shipments the switch no longer covers: refuse, or discard on request.
+        history.enforce_switch(db)
         seed_catalogs(db)
         purge_legacy_equipment(db)
         sync_catalogs_on_startup(db)

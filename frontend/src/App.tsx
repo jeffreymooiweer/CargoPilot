@@ -11,6 +11,7 @@ import WizardPage from "./pages/WizardPage";
 import UsersPage from "./pages/UsersPage";
 import MaterieelPage from "./pages/MaterieelPage";
 import SettingsPage from "./pages/SettingsPage";
+import ShipmentsPage from "./pages/ShipmentsPage";
 import LegalPage from "./pages/LegalPage";
 import { BrandingProvider } from "./branding";
 import { PreferencesProvider } from "./settings/preferences";
@@ -91,6 +92,11 @@ export default function App() {
           {/* The library and the users page presume an account. In the open
               application their addresses are not on the server either, so
               a page that called them would only draw an error. */}
+          {/* The history exists only where the switch is on; the page says
+              so itself when it is not, and the open application never
+              keeps anything. */}
+          {!open && <Route path="/shipments" element={<ShipmentsPage />} />}
+          {!open && <Route path="/shipments/:id" element={<ShipmentsPage />} />}
           {!open && <Route path="/materieel" element={<MaterieelPage />} />}
           {!open && <Route path="/users" element={<UsersPage user={user} />} />}
           <Route path="/settings" element={<SettingsPage user={user} />} />

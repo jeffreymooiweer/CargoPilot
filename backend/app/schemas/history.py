@@ -1,0 +1,63 @@
+"""What the shipments page and the export step exchange with the server."""
+from __future__ import annotations
+
+from datetime import datetime
+from typing import Any
+
+from pydantic import BaseModel, Field
+
+from app.schemas import DocumentBundleRequest
+
+
+class ShipmentIn(BaseModel):
+    """A shipment as the export step hands it over to be kept.
+
+    The server builds the structured export itself from the parts, so the
+    kept record is produced by the same code as the downloadable one and the
+    two cannot disagree. The snapshot is the wizard's own state and is not
+    read here; the bundle is kept for "the documents again".
+    """
+
+    modality: str = Field(default="", max_length=16)
+    language: str = Field(default="nl", max_length=8)
+    profiles: list[str] = Field(default_factory=list)
+    #: The document fields as filled in.
+    values: dict[str, Any] = Field(default_factory=dict)
+    #: The calculated goods lines.
+    lines: list[dict[str, Any]] = Field(default_factory=list)
+    dangerous_goods: list[dict[str, Any]] | None = None
+    #: The document keys that were selected.
+    documents: list[str] = Field(default_factory=list)
+    #: The bundle as the export step would send it; ``None`` when nothing was
+    #: ready to bundle, in which case "the documents again" is not offered.
+    bundle: DocumentBundleRequest | None = None
+    #: The wizard's own state, opaque to the server.
+    snapshot: dict[str, Any] = Field(default_factory=dict)
+
+
+class ShipmentSummary(BaseModel):
+    id: int
+    reference: str
+    modality: str
+    language: str
+    regulations: list[str]
+    consignor_name: str
+    consignee_name: str
+    goods_count: int
+    has_dangerous_goods: bool
+    has_documents: bool
+    created_by: str
+    created_at: datetime
+    updated_at: datetime
+
+
+class ShipmentDetail(ShipmentSummary):
+    snapshot: dict[str, Any]
+    export: dict[str, Any]
+
+
+class ShipmentPage(BaseModel):
+    items: list[ShipmentSummary]
+    total: int
+    page: int
+    per_page: int

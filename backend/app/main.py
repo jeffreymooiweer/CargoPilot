@@ -22,6 +22,7 @@ from app.api.routes.dangerous_goods import router as dangerous_goods_router
 from app.api.routes.documents import mail_router as documents_mail_router
 from app.api.routes.documents import router as documents_router
 from app.api.routes.geo import router as geo_router
+from app.api.routes.history import router as history_router
 from app.api.routes.jobs import router as jobs_router
 from app.api.routes.meta import router as meta_router
 from app.api.routes.settings import public_router as settings_public_router
@@ -73,6 +74,11 @@ ACCOUNT_ROUTERS = (
     meta_router,
 )
 
+#: The history: what only an organisation application that keeps its
+#: shipments serves. Not mounted without CARGOPILOT_HISTORY=true, so on every
+#: other installation "nothing is kept" is a matter of which addresses exist.
+HISTORY_ROUTERS = (history_router,)
+
 
 def create_app() -> FastAPI:
     settings = get_settings()
@@ -116,6 +122,9 @@ def create_app() -> FastAPI:
             # source are what make "nothing is kept about you" checkable
             # rather than merely true.
             "mode": settings.mode,
+            # And whether it keeps its shipments — the other half of what a
+            # visitor may want to know before typing a customer's name.
+            "history": settings.history_enabled,
             # Which editions this installation uses, compactly. Whoever reports a
             # bug passes on straight away what their app computes with.
             "regulatory": summary(),
@@ -135,6 +144,9 @@ def create_app() -> FastAPI:
         app.include_router(router, prefix="/api")
     if not settings.is_open:
         for router in ACCOUNT_ROUTERS:
+            app.include_router(router, prefix="/api")
+    if settings.history_enabled:
+        for router in HISTORY_ROUTERS:
             app.include_router(router, prefix="/api")
     # Public by design in both applications — see app/api/routes/cards.py.
     # It is off unless an administrator, or the environment, turns it on.

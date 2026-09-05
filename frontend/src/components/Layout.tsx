@@ -32,7 +32,10 @@ export default function Layout({ user, onLogout }: Props) {
   // The open application has nobody to sign out, no library to link to and
   // no release notes to show — and it says what it is where the account
   // name would otherwise stand, so a visitor can see it without asking.
-  const open = usePreferences().mode === "open";
+  const { mode, publicSettings } = usePreferences();
+  const open = mode === "open";
+  // The shipments page exists only where the installation keeps them.
+  const history = !open && !!publicSettings?.history_enabled;
   const { branding } = useBranding();
 
   const inWizard = WIZARD_PATH.test(location.pathname);
@@ -101,6 +104,7 @@ export default function Layout({ user, onLogout }: Props) {
     return (
       <>
         <NavLink to="/" className={linkClass} end onClick={closeMenu} tabIndex={tabIndex}>{t("nav.new")}</NavLink>
+        {history && <NavLink to="/shipments" className={linkClass} onClick={closeMenu} tabIndex={tabIndex}>{t("nav.shipments")}</NavLink>}
         <NavLink to="/groupage" className={linkClass} onClick={closeMenu} tabIndex={tabIndex}>{t("nav.groupage")}</NavLink>
         {!open && user.role === "admin" && <NavLink to="/materieel" className={linkClass} onClick={closeMenu} tabIndex={tabIndex}>{t("nav.materieel")}</NavLink>}
         {!open && user.role === "admin" && <NavLink to="/users" className={linkClass} onClick={closeMenu} tabIndex={tabIndex}>{t("nav.users")}</NavLink>}

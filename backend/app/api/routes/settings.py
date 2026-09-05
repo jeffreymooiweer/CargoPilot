@@ -12,7 +12,7 @@ on ``public_router`` and answers a visitor; the account's own settings and the
 administrator's live on ``router`` and do not exist where there are no
 accounts.
 """
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Request
 from sqlalchemy.orm import Session
 
 from app.core.database import get_db
@@ -26,7 +26,7 @@ from app.schemas.settings import (
     PublicSettings,
     UserPreferences,
 )
-from app.services import mail, settings_store
+from app.services import audit, mail, settings_store
 from app.services.units import UNITS
 from app.core.languages import SUPPORTED as SUPPORTED_LANGUAGES
 
@@ -75,11 +75,21 @@ def instance_settings(admin: User = Depends(require_admin), db: Session = Depend
 
 @router.put("/instance", response_model=InstanceSettings)
 def save_instance_settings(
+    request: Request,
     payload: InstanceSettings,
     admin: User = Depends(require_admin),
     db: Session = Depends(get_db),
 ):
-    return settings_store.redacted(settings_store.save_instance_settings(db, payload))
+    before = settings_store.instance_settings(db).model_dump()
+    stored = settings_store.save_instance_settings(db, payload)
+    # The keys that changed and nothing of what they changed to: the mail
+    # password is in here, and so is everything an outsider would like.
+    changed = sorted(key for key, value in stored.model_dump().items()
+                     if before.get(key) != value)
+    if changed:
+        audit.record(db, "settings.changed", actor=admin, target=("settings", "instance"),
+                     summary=", ".join(changed), request=request)
+    return settings_store.redacted(stored)
 
 
 @router.post("/instance/mail-test", response_model=MailTestResult)

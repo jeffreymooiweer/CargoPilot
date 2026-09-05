@@ -24,7 +24,7 @@ from app.models.shipment import Shipment
 from app.models.user import User
 from app.schemas import DocumentBundleRequest
 from app.schemas.history import ShipmentDetail, ShipmentIn, ShipmentPage, ShipmentSummary
-from app.services import departments, dgsa_form, dgsa_report, history
+from app.services import audit, departments, dgsa_form, dgsa_report, history
 from app.services.documents import brand
 from app.services.documents.dgsa_report_pdf import render_dgsa_report
 from app.services.documents.signature import decode_signature_image
@@ -159,6 +159,8 @@ def shipment_report_pdf(request: Request,
     path = render_dgsa_report(report, dgsa_form.definition(language), answers,
                               signature_png=signature_png, brand_name=current_brand.name)
     background_tasks.add_task(delete_file, path)
+    audit.record(db, "report.rendered", actor=user, target=("report", str(year)),
+                 summary=f"{year} pdf", request=request)
     return FileResponse(path=path, filename=f"cargopilot-dgsa-report-{year}.pdf",
                         media_type="application/pdf")
 
@@ -175,30 +177,42 @@ def shipment_report_workbook(request: Request,
     duties last with an empty column for the finding."""
     report = dgsa_report.build_report(db, user, year, department, language)
     content = dgsa_report.build_workbook(report)
+    audit.record(db, "report.rendered", actor=user, target=("report", str(year)),
+                 summary=f"{year} xlsx", request=request)
     return Response(
         content=content,
         media_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
         headers={"Content-Disposition": f'attachment; filename="cargopilot-dgsa-report-{year}.xlsx"'})
 
 
+def _kept(request: Request, db: Session, user: User, record: Shipment, action: str) -> Shipment:
+    """The audit line for a kept shipment: its reference, never its contents."""
+    audit.record(db, action, actor=user, target=("shipment", record.id),
+                 summary=record.reference or "", request=request)
+    return record
+
+
 @router.post("", response_model=ShipmentSummary)
-def keep_shipment(payload: ShipmentIn, user: User = Depends(get_current_user),
+def keep_shipment(request: Request, payload: ShipmentIn,
+                  user: User = Depends(get_current_user),
                   db: Session = Depends(get_db)):
     try:
-        return history.summary(history.keep(db, user, payload))
+        record = history.keep(db, user, payload)
     except history.RecordTooLarge as exc:
         raise HTTPException(status_code=413, detail=str(exc)) from exc
+    return history.summary(_kept(request, db, user, record, "shipment.kept"))
 
 
 @router.put("/{shipment_id}", response_model=ShipmentSummary)
-def update_shipment(shipment_id: int, payload: ShipmentIn,
+def update_shipment(request: Request, shipment_id: int, payload: ShipmentIn,
                     user: User = Depends(get_current_user),
                     db: Session = Depends(get_db)):
     record = _record(shipment_id, db, user)
     try:
-        return history.summary(history.keep(db, user, payload, existing=record))
+        record = history.keep(db, user, payload, existing=record)
     except history.RecordTooLarge as exc:
         raise HTTPException(status_code=413, detail=str(exc)) from exc
+    return history.summary(_kept(request, db, user, record, "shipment.updated"))
 
 
 @router.get("/{shipment_id}", response_model=ShipmentDetail)
@@ -208,10 +222,11 @@ def get_shipment(shipment_id: int, user: User = Depends(get_current_user),
 
 
 @router.get("/{shipment_id}/export.json")
-def shipment_export(shipment_id: int, user: User = Depends(get_current_user),
+def shipment_export(request: Request, shipment_id: int,
+                    user: User = Depends(get_current_user),
                     db: Session = Depends(get_db)):
     """The structured export as it was kept — the record, not a re-render."""
-    record = _record(shipment_id, db, user)
+    record = _kept(request, db, user, _record(shipment_id, db, user), "shipment.export")
     name = f"cargopilot-shipment-{record.reference or record.id}.json"
     return JSONResponse(content=history.detail(record).export,
                         headers={"Content-Disposition": f'attachment; filename="{name}"'})
@@ -237,13 +252,19 @@ def shipment_documents(request: Request, shipment_id: int,
                             detail="This shipment was kept without ready documents.")
     bundle_path, ref = build_bundle(DocumentBundleRequest(**bundle), db)
     background_tasks.add_task(delete_file, bundle_path)
+    _kept(request, db, user, record, "shipment.documents")
     return FileResponse(path=bundle_path,
                         filename=f"cargopilot-documents-{record.reference or ref}.zip",
                         media_type="application/zip")
 
 
 @router.delete("/{shipment_id}")
-def forget_shipment(shipment_id: int, user: User = Depends(get_current_user),
+def forget_shipment(request: Request, shipment_id: int,
+                    user: User = Depends(get_current_user),
                     db: Session = Depends(get_db)):
-    history.forget(db, _record(shipment_id, db, user))
+    record = _record(shipment_id, db, user)
+    gone_id, reference = record.id, record.reference or ""
+    history.forget(db, record)
+    audit.record(db, "shipment.forgotten", actor=user, target=("shipment", gone_id),
+                 summary=reference, request=request)
     return {"ok": True}

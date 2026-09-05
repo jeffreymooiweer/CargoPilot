@@ -596,6 +596,21 @@ function AdminSettings() {
             onChange={(e) => set("session_timeout_minutes", Number(e.target.value))}
           />
         </div>
+
+        <div>
+          <label className="text-sm font-medium text-slate-800 dark:text-slate-200">
+            {t("settings.auditRetention")}
+          </label>
+          <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">{t("settings.auditRetentionHint")}</p>
+          <NumberInput
+            min={1}
+            max={3650}
+            step={1}
+            className={`${inputClass} mt-1`}
+            value={draft.audit_retention_days}
+            onChange={(e) => set("audit_retention_days", Number(e.target.value))}
+          />
+        </div>
       </section>
 
       <section className={`${panelClass} p-5 space-y-5`}>

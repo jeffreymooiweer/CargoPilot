@@ -20,6 +20,7 @@ Everything persistent lives in the `/data` volume:
 | The address book — **only** with `CARGOPILOT_HISTORY=true` | Parties (name, address, contact) somebody pressed **Save** on in the details step, shared by everyone on the installation |
 | The articles library — **only** with `CARGOPILOT_HISTORY=true` | Your own article codes with the UN number, names, packing group and packaging you gave them, shared by everyone on the installation |
 | The safety adviser's annual reports — **only** with `CARGOPILOT_HISTORY=true` | The answers an adviser saved on the DGSA report form, one record per year and scope; the figures are recounted from the kept shipments each time |
+| The audit log — organisation application only | Who did what and when, as metadata: the action, the account, a reference or a document key, the address the request came from. Never the contents of a shipment; see [The audit log](#the-audit-log) |
 
 That is the whole list.
 
@@ -205,6 +206,34 @@ interface claims it does not exist would be the one outcome worse than either ch
 while you work: a shipment is kept only when its documents are downloaded or you press
 the button. And without the switch, the addresses the shipments page uses do not exist
 on the server — the promise is enforced by what is mounted, not described in a setting.
+
+## The audit log
+
+The organisation application keeps a log of who did what, for its administrators. It
+is written by the routes that do something worth an administrator's attention and read
+on a page of its own; the open application has no accounts, no administrators and no
+log.
+
+**What a line holds.** The moment; the account (its name is kept beside its identifier,
+so a line outlives the account it describes); the action, as a code from a fixed list —
+signing in, a refused sign-in, signing out, a password change or reset, a second factor
+switched on or off, an account made, changed, cleared or removed, the settings changed,
+a shipment kept, updated, reopened for its documents, exported or removed, a document or
+bundle downloaded, a bundle mailed, an annual report drawn; a short summary in the
+application's own words; and the address the request came from, as the rate limiter
+sees it.
+
+**What a line never holds.** The contents of a shipment. The summary of a kept shipment
+is its reference; of a document download, the document key; of a settings change, the
+*names* of the settings that changed — the mail password among them, never its value;
+of a mailed bundle, the document keys and how many recipients, never who. A refused
+sign-in records the name that was tried and why it was refused, never the password. The
+test suite searches the whole table for the consignment's parties and goods after a full
+round of keeping, exporting and mailing, and finds none of them.
+
+**How long.** As many days as an administrator set under Administration — 365 unless
+changed — and whatever is older is deleted when the application starts. The same
+selection the page shows can be exported as CSV for whoever keeps records elsewhere.
 
 ## Older Docker images
 

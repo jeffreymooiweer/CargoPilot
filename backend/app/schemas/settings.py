@@ -197,6 +197,9 @@ class InstanceSettings(BaseModel):
 
     #: How long a session stays valid. Eight hours is one working day.
     session_timeout_minutes: int = Field(default=480, ge=15, le=10_080)
+    #: How long the administrator's audit log keeps a line, in days. Applied
+    #: at start-up and whenever the log is read; a year by default.
+    audit_retention_days: int = Field(default=365, ge=1, le=3650)
 
     #: Used as the consignor for users who filled in nothing of their own, so a
     #: new colleague starts with the company already on the form.

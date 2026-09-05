@@ -26,7 +26,7 @@ from app.schemas import (
     DocumentExportRequest,
     UnCardsRequest,
 )
-from app.services import mail, mail_templates
+from app.services import audit, mail, mail_templates
 from app.services.documents import (
     build_un_cards_zip,
     fill_pdf_document,
@@ -340,6 +340,9 @@ def export(
     out_path = _render_export(document, payload, signature_png,
                               _card_link_base(db))
     background_tasks.add_task(delete_file, out_path)
+    audit.record(db, "documents.exported", actor=user,
+                 target=("document", payload.document_key),
+                 summary=payload.document_key, request=request)
     return FileResponse(
         path=out_path,
         filename=f"{payload.document_key}_{ref}{out_path.suffix}",
@@ -423,11 +426,18 @@ def export_bundle(
     """
     bundle_path, ref = build_bundle(payload, db)
     background_tasks.add_task(delete_file, bundle_path)
+    audit.record(db, "documents.bundle", actor=user, target=("bundle", ref),
+                 summary=bundle_summary(payload), request=request)
     return FileResponse(
         path=bundle_path,
         filename=f"cargopilot-documents-{ref}.zip",
         media_type="application/zip",
     )
+
+
+def bundle_summary(payload: DocumentBundleRequest) -> str:
+    """Which document keys went out — the keys, never a field of them."""
+    return ", ".join(item.document_key for item in payload.documents)
 
 
 @mail_router.post("/export/bundle/mail", response_model=BundleMailResult)
@@ -473,6 +483,10 @@ def mail_bundle(
             raise HTTPException(status_code=400, detail=str(exc)) from exc
     finally:
         delete_file(bundle_path)
+    # How many recipients, not who: the addresses belong to the consignment.
+    audit.record(db, "documents.mailed", actor=user, target=("bundle", ref),
+                 summary=f"{bundle_summary(payload.bundle)} to {len(payload.to)} recipient(s)",
+                 request=request)
     return BundleMailResult(ok=True, to=payload.to, filename=filename)
 
 

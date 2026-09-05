@@ -20,7 +20,8 @@
     "openMode": "Installation ouverte",
     "openModeHint": "Sans compte, rien n'est conservé",
     "shipments": "Expéditions",
-    "articles": "Articles"
+    "articles": "Articles",
+    "audit": "Journal d'audit"
   },
   "theme": {
     "dark": "Sombre",
@@ -376,7 +377,9 @@
     "brandDefault": "Par défaut",
     "brandCustom": "Image propre",
     "updateNative": "Cette installation tourne comme service propre sur le serveur, sans Docker. La mise à jour passe par le script de mise à jour de l'installation : il récupère la nouvelle version, la place à côté de l'ancienne et redémarre le service. Les données restent en place.",
-    "updateKubernetes": "Cette installation tourne dans Kubernetes. La mise à jour est un déploiement vers l'image plus récente ; le pod est recréé et le volume reste."
+    "updateKubernetes": "Cette installation tourne dans Kubernetes. La mise à jour est un déploiement vers l'image plus récente ; le pod est recréé et le volume reste.",
+    "auditRetention": "Conservation du journal d'audit (jours)",
+    "auditRetentionHint": "Combien de temps une ligne reste dans le journal d'audit. Ce qui est plus ancien est supprimé au démarrage. 365 correspond à un an."
   },
   "modality": {
     "title": "Choisissez votre mode de transport",
@@ -1149,5 +1152,58 @@
     "none": "Aucun service",
     "all": "Tous les services",
     "unassigned": "Sans service"
+  },
+  "audit": {
+    "title": "Journal d'audit",
+    "intro": "Qui a fait quoi, et quand. Uniquement des métadonnées : l'action, qui, un bref résumé dans les mots de l'application et l'adresse d'où venait la requête. Jamais le contenu d'une expédition.",
+    "export": "Exporter en CSV",
+    "retention": "Conservation",
+    "retentionHint": "La durée de conservation se règle sous Paramètres, Administration.",
+    "actor": "Utilisateur",
+    "allActors": "Tous les utilisateurs",
+    "action": "Action",
+    "allActions": "Toutes les actions",
+    "wholeGroup": "Tout sous {{group}}",
+    "from": "À partir du",
+    "to": "Jusqu'au",
+    "count": "{{count}} lignes sur {{total}}",
+    "empty": "Aucune ligne dans cette sélection.",
+    "when": "Quand",
+    "summary": "Résumé",
+    "client": "Adresse",
+    "previous": "Précédent",
+    "next": "Suivant",
+    "page": "Page {{page}} sur {{pages}}",
+    "groups": {
+      "auth": "Connexion",
+      "user": "Comptes",
+      "settings": "Paramètres",
+      "shipment": "Expéditions",
+      "documents": "Documents",
+      "report": "Rapports"
+    },
+    "actions": {
+      "auth.login": "Connexion",
+      "auth.login_failed": "Connexion refusée",
+      "auth.logout": "Déconnexion",
+      "auth.password_changed": "Mot de passe modifié par l'utilisateur",
+      "auth.password_reset": "Mot de passe défini via un lien de réinitialisation",
+      "auth.two_factor_enabled": "Vérification en deux étapes activée",
+      "auth.two_factor_disabled": "Vérification en deux étapes désactivée",
+      "user.created": "Compte créé",
+      "user.updated": "Compte modifié",
+      "user.deleted": "Compte supprimé",
+      "user.two_factor_cleared": "Vérification en deux étapes d'un compte effacée",
+      "settings.changed": "Paramètres modifiés",
+      "shipment.kept": "Expédition conservée",
+      "shipment.updated": "Expédition conservée mise à jour",
+      "shipment.forgotten": "Expédition conservée supprimée",
+      "shipment.documents": "Documents d'une expédition conservée téléchargés à nouveau",
+      "shipment.export": "Export d'une expédition conservée téléchargé",
+      "documents.exported": "Document téléchargé",
+      "documents.bundle": "Lot de documents téléchargé",
+      "documents.mailed": "Lot de documents envoyé par e-mail",
+      "report.rendered": "Rapport annuel du conseiller à la sécurité téléchargé"
+    }
   }
 }

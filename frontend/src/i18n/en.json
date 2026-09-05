@@ -20,7 +20,8 @@
     "openMode": "Open installation",
     "openModeHint": "No account, nothing is kept",
     "shipments": "Shipments",
-    "articles": "Articles"
+    "articles": "Articles",
+    "audit": "Audit log"
   },
   "theme": {
     "dark": "Dark",
@@ -376,7 +377,9 @@
     "brandDefault": "Default",
     "brandCustom": "Own picture",
     "updateNative": "This installation runs as its own service on the server, without Docker. Updating is the installation's update script: it fetches the new release, puts it beside the old one and restarts the service. The data stays where it is.",
-    "updateKubernetes": "This installation runs in Kubernetes. Updating is a rollout to the newer image; the pod is recreated and the volume stays."
+    "updateKubernetes": "This installation runs in Kubernetes. Updating is a rollout to the newer image; the pod is recreated and the volume stays.",
+    "auditRetention": "Audit log retention (days)",
+    "auditRetentionHint": "How long a line stays in the audit log. Whatever is older is removed at start-up. 365 is one year."
   },
   "modality": {
     "title": "Choose your transport modality",
@@ -1149,5 +1152,58 @@
     "none": "No department",
     "all": "All departments",
     "unassigned": "Without department"
+  },
+  "audit": {
+    "title": "Audit log",
+    "intro": "Who did what, and when. Metadata only: the action, who, a short summary in the application's own words and the address the request came from. Never the contents of a shipment.",
+    "export": "Export as CSV",
+    "retention": "Retention",
+    "retentionHint": "The retention is set under Settings, Administration.",
+    "actor": "User",
+    "allActors": "All users",
+    "action": "Action",
+    "allActions": "All actions",
+    "wholeGroup": "Everything under {{group}}",
+    "from": "From",
+    "to": "Up to and including",
+    "count": "{{count}} of {{total}} lines",
+    "empty": "No lines in this selection.",
+    "when": "When",
+    "summary": "Summary",
+    "client": "Address",
+    "previous": "Previous",
+    "next": "Next",
+    "page": "Page {{page}} of {{pages}}",
+    "groups": {
+      "auth": "Sign-in",
+      "user": "Accounts",
+      "settings": "Settings",
+      "shipment": "Shipments",
+      "documents": "Documents",
+      "report": "Reports"
+    },
+    "actions": {
+      "auth.login": "Signed in",
+      "auth.login_failed": "Sign-in refused",
+      "auth.logout": "Signed out",
+      "auth.password_changed": "Changed own password",
+      "auth.password_reset": "Set a password through a reset link",
+      "auth.two_factor_enabled": "Two-factor verification enabled",
+      "auth.two_factor_disabled": "Two-factor verification disabled",
+      "user.created": "Account created",
+      "user.updated": "Account changed",
+      "user.deleted": "Account deleted",
+      "user.two_factor_cleared": "Two-factor verification of an account cleared",
+      "settings.changed": "Settings changed",
+      "shipment.kept": "Shipment kept",
+      "shipment.updated": "Kept shipment updated",
+      "shipment.forgotten": "Kept shipment removed",
+      "shipment.documents": "Documents of a kept shipment downloaded again",
+      "shipment.export": "Export of a kept shipment downloaded",
+      "documents.exported": "Document downloaded",
+      "documents.bundle": "Document bundle downloaded",
+      "documents.mailed": "Document bundle mailed",
+      "report.rendered": "Safety adviser's annual report downloaded"
+    }
   }
 }

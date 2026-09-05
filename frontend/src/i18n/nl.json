@@ -20,7 +20,8 @@
     "openMode": "Open installatie",
     "openModeHint": "Geen account, niets wordt bewaard",
     "shipments": "Zendingen",
-    "articles": "Artikelen"
+    "articles": "Artikelen",
+    "audit": "Auditlog"
   },
   "theme": {
     "dark": "Donker",
@@ -376,7 +377,9 @@
     "brandDefault": "Standaard",
     "brandCustom": "Eigen afbeelding",
     "updateNative": "Deze installatie draait als eigen service op de server, zonder Docker. Bijwerken gaat met het updatescript van de installatie; het haalt de nieuwe release op, zet hem naast de oude en herstart de service. De gegevens blijven staan.",
-    "updateKubernetes": "Deze installatie draait in Kubernetes. Bijwerken is een rollout naar het nieuwere image; de pod wordt opnieuw gemaakt en het volume blijft staan."
+    "updateKubernetes": "Deze installatie draait in Kubernetes. Bijwerken is een rollout naar het nieuwere image; de pod wordt opnieuw gemaakt en het volume blijft staan.",
+    "auditRetention": "Bewaartermijn auditlog (dagen)",
+    "auditRetentionHint": "Hoe lang een regel in het auditlog blijft staan. Bij het opstarten wordt wat ouder is verwijderd. 365 is één jaar."
   },
   "modality": {
     "title": "Kies uw transportmodaliteit",
@@ -1149,5 +1152,58 @@
     "none": "Geen afdeling",
     "all": "Alle afdelingen",
     "unassigned": "Zonder afdeling"
+  },
+  "audit": {
+    "title": "Auditlog",
+    "intro": "Wie deed wat, en wanneer. Alleen metadata: de handeling, wie, een korte samenvatting in de woorden van de applicatie en het adres waar het verzoek vandaan kwam. Nooit de inhoud van een zending.",
+    "export": "Exporteren als CSV",
+    "retention": "Bewaartermijn",
+    "retentionHint": "De bewaartermijn staat bij Instellingen, Beheer.",
+    "actor": "Gebruiker",
+    "allActors": "Alle gebruikers",
+    "action": "Handeling",
+    "allActions": "Alle handelingen",
+    "wholeGroup": "Alles onder {{group}}",
+    "from": "Vanaf",
+    "to": "Tot en met",
+    "count": "{{count}} van {{total}} regels",
+    "empty": "Geen regels in deze selectie.",
+    "when": "Wanneer",
+    "summary": "Samenvatting",
+    "client": "Adres",
+    "previous": "Vorige",
+    "next": "Volgende",
+    "page": "Pagina {{page}} van {{pages}}",
+    "groups": {
+      "auth": "Inloggen",
+      "user": "Accounts",
+      "settings": "Instellingen",
+      "shipment": "Zendingen",
+      "documents": "Documenten",
+      "report": "Rapporten"
+    },
+    "actions": {
+      "auth.login": "Ingelogd",
+      "auth.login_failed": "Inloggen geweigerd",
+      "auth.logout": "Uitgelogd",
+      "auth.password_changed": "Eigen wachtwoord gewijzigd",
+      "auth.password_reset": "Wachtwoord ingesteld via resetlink",
+      "auth.two_factor_enabled": "Tweestapsverificatie aangezet",
+      "auth.two_factor_disabled": "Tweestapsverificatie uitgezet",
+      "user.created": "Account aangemaakt",
+      "user.updated": "Account gewijzigd",
+      "user.deleted": "Account verwijderd",
+      "user.two_factor_cleared": "Tweestapsverificatie van een account gewist",
+      "settings.changed": "Instellingen gewijzigd",
+      "shipment.kept": "Zending bewaard",
+      "shipment.updated": "Bewaarde zending bijgewerkt",
+      "shipment.forgotten": "Bewaarde zending verwijderd",
+      "shipment.documents": "Documenten van een bewaarde zending opnieuw gedownload",
+      "shipment.export": "Export van een bewaarde zending gedownload",
+      "documents.exported": "Document gedownload",
+      "documents.bundle": "Documentenbundel gedownload",
+      "documents.mailed": "Documentenbundel gemaild",
+      "report.rendered": "Jaarrapport veiligheidsadviseur gedownload"
+    }
   }
 }

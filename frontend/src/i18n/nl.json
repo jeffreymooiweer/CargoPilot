@@ -435,6 +435,22 @@
     "locationPlaceholder": "Zoek luchthaven, haven of station — of typ vrij…",
     "addressPlaceholder": "Zoek adres en vul automatisch in…"
   },
+  "customsRoute": {
+    "applies": "Geldt op deze route",
+    "notOnThisRoute": "Niet op deze route",
+    "exempt": "Vrijgesteld op deze route",
+    "ens_entering": "Goederen uit {{from}} komen in {{to}} het ICS2-gebied binnen (douanegebied van de EU, Noord-Ierland, Noorwegen, Zwitserland): de vervoerder dient een summiere aangifte bij binnenbrengen in ICS2 in. Vul het MRN in zodra het bekend is.",
+    "ens_within_area": "{{from}} en {{to}} liggen beide in het ICS2-gebied: geen summiere aangifte bij binnenbrengen voor dit vervoer.",
+    "ens_leaving": "De goederen verlaten het ICS2-gebied ({{from}} naar {{to}}): de summiere aangifte bij binnenbrengen is voor inkomende goederen; de uitvoer heeft haar eigen aangifte (export-MRN).",
+    "ens_outside": "Noch {{from}} noch {{to}} ligt in het ICS2-gebied. Alleen als de goederen er onderweg doorheen gaan, dient de vervoerder een summiere aangifte bij binnenbrengen in.",
+    "aes_export": "Uitvoer uit {{from}} naar {{to}}: de Electronic Export Information wordt in AES aangegeven (15 CFR 30.2). Het ITN hoort op het vervoersdocument — tenzij elke goederenregel USD 2.500 of minder is (§ 30.37(a)) of een andere vrijstelling geldt.",
+    "aes_puerto_rico": "Tussen de Verenigde Staten en Puerto Rico ({{from}} naar {{to}}) wordt de Electronic Export Information ook aangegeven (15 CFR 30.2(a)(1)).",
+    "aes_virgin_islands": "Naar de Amerikaanse Maagdeneilanden vanuit {{from}} wordt de Electronic Export Information aangegeven (15 CFR 30.2(a)(1)).",
+    "aes_canada": "Zendingen uit de Verenigde Staten met Canada als land van eindbestemming zijn vrijgesteld van aangifte (15 CFR 30.36) — niet als de goederen in Canada worden opgeslagen voor een derde land, door Canada heen gaan of een vergunning nodig hebben.",
+    "aes_not_named": "Van de Amerikaanse Maagdeneilanden naar {{to}} staat niet bij de bewegingen die 15 CFR 30.2(a)(1) noemt.",
+    "aes_not_us": "De goederen vertrekken niet uit de Verenigde Staten ({{from}}): geen AES-aangifte.",
+    "aes_domestic": "{{from}} naar {{to}} is binnenlands vervoer: geen AES-aangifte."
+  },
   "signature": {
     "title": "Handtekening afzender (optioneel)",
     "intro": "Teken uw handtekening of upload er een afbeelding van; deze wordt in het afzendervak van de geselecteerde documenten geplaatst (bijv. CMR vak 22). U kunt dit ook overslaan en de documenten na het printen met pen ondertekenen.",

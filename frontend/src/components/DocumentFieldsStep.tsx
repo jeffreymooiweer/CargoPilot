@@ -11,6 +11,7 @@ import {
 import { documentLanguage, localised } from "../i18n/language";
 import AddressBookBar, { PARTIES } from "./AddressBookBar";
 import CarrierConfirmationBox from "./CarrierConfirmationBox";
+import CustomsRouteHint, { CUSTOMS_FIELD_KEYS, useCustomsRoute } from "./CustomsRouteHint";
 import {
   AddressTextarea,
   LOCATION_FIELD_KEYS,
@@ -91,6 +92,8 @@ export default function DocumentFieldsStep({
   const lang = documentLanguage(i18n.language);
   const L = (text?: LocalizedText) => localised(text, lang);
   const [subIndex, setSubIndex] = useState(0);
+  // Whether the customs references apply, read off the route as it is typed.
+  const customsVerdicts = useCustomsRoute(values);
 
   const setValue = (key: string, value: string) => onChange({ ...values, [key]: value });
 
@@ -232,6 +235,7 @@ export default function DocumentFieldsStep({
             onChange={(e) => setValue(field.key, e.target.value)}
           />
         )}
+        {CUSTOMS_FIELD_KEYS.has(field.key) && <CustomsRouteHint verdict={customsVerdicts[field.key]} />}
       </div>
     );
   };

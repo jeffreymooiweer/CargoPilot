@@ -165,12 +165,19 @@ This is where you enter the shipment **once**:
 - **Parties** — sender, consignee, carrier
 - **Route** — place of loading, place of delivery, terminals
 - **References** — order numbers, booking references, customs references. Two of them
-  come with their conditions in the help text: the **ENS reference (ICS2)** for goods
-  entering the EU customs territory (the entry summary declaration is normally lodged by
-  the carrier; when its MRN is known, it travels on the papers) and the **AES ITN** for
-  exports from the United States (the proof of the Electronic Export Information filing,
-  which belongs on the transport document). Both check their format on export, so a
-  mistyped reference is caught before it reaches an official form.
+  carry a condition rather than a rule, and the route decides it: the **ENS reference
+  (ICS2)** for goods entering the EU customs territory (the entry summary declaration is
+  normally lodged by the carrier; when its MRN is known, it travels on the papers) and
+  the **AES ITN** for exports from the United States (the proof of the Electronic Export
+  Information filing, which belongs on the transport document). Once the route is filled
+  in, each field says whether it **applies on this route**, does not, or is exempt — and
+  on what ground: goods from China discharged in Rotterdam enter the ICS2 area (the EU
+  customs territory with Northern Ireland, Norway and Switzerland); a load from Detroit to
+  Toronto is exempt under 15 CFR 30.36; a movement within the area needs neither. A route
+  the application cannot place — free text without a country in it — gets no verdict, and
+  the condition stays in the help text as before. An applicable reference left empty is
+  a warning on the export, never a refusal. Both fields check their format on export, so
+  a mistyped reference is caught before it reaches an official form.
 
 The carrier's numbers usually arrive **after** you book — in the confirmation e-mail.
 **Paste booking confirmation** at the top of this step reads that e-mail for the

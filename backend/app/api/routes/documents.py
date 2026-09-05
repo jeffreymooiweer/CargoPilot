@@ -39,7 +39,7 @@ from app.services.documents import (
     validate_document,
 )
 from app.services import regulations
-from app.services.documents import brand
+from app.services.documents import brand, customs_route
 from app.services.documents.un_card_store import card_path as un_card_path
 from app.services.documents.avc_form import fill_avc_waybill, has_avc_template
 from app.services.documents.carrier_confirmation import parse_carrier_confirmation
@@ -86,6 +86,23 @@ def read_carrier_confirmation(
     if len(text) > 100_000:
         raise HTTPException(status_code=413, detail="confirmation text too large")
     return {"found": parse_carrier_confirmation(text)}
+
+
+@router.post("/customs-route")
+def customs_route_verdicts(payload: dict, user: User = Depends(get_current_user)):
+    """Whether the ENS reference and the AES ITN apply on the route filled in.
+
+    Read off the route fields alone — the loading point, the discharge point
+    and what lies beyond them — and answered with the ground each time, so the
+    details step can say "applies on this route" beside the field instead of
+    leaving the condition in a tooltip. A route the reader cannot place gets
+    "unknown", which the interface shows as nothing at all.
+    """
+    values = payload.get("values") if isinstance(payload, dict) else None
+    if not isinstance(values, dict):
+        raise HTTPException(status_code=422, detail="values must be an object")
+    verdicts = customs_route.assess({k: v for k, v in values.items() if isinstance(v, str)})
+    return {"verdicts": {key: verdict.as_dict() for key, verdict in verdicts.items()}}
 
 
 @router.post("/validate")

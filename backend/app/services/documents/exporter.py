@@ -10,7 +10,7 @@ from openpyxl.styles import Alignment, Border, Font, PatternFill, Side
 from openpyxl.utils import get_column_letter
 
 from app.core.languages import normalise, pick
-from app.services.documents import brand
+from app.services.documents import brand, customs_route
 from app.services.dg.autofill import adr_quantity, description_line
 from app.services.dg.database import get_un_entries, is_transport_forbidden
 from app.services.dg.naming import english_name_is_usable, resolve_for_profile
@@ -133,6 +133,36 @@ TEXTS = {
         "nl": "Verplicht veld ontbreekt",
         "en": "Required field missing",
         "de": "Pflichtfeld fehlt", "fr": 'Champ obligatoire manquant'},
+    # The two customs references whose condition the route decides
+    # (customs_route.py). Empty while the route says the reference applies
+    # is worth a word, never a refusal: the ENS is the carrier's to lodge and
+    # its MRN often arrives after the papers are drawn up.
+    "customs_ens_mrn_applies": {
+        "nl": "ENS-referentie: op deze route komen de goederen het douanegebied van de EU "
+              "(ICS2-gebied) binnen — de summiere aangifte bij binnenbrengen wordt door de "
+              "vervoerder ingediend; vul het MRN in zodra het bekend is",
+        "en": "ENS reference: on this route the goods enter the EU customs territory "
+              "(ICS2 area) — the entry summary declaration is lodged by the carrier; "
+              "fill in its MRN once known",
+        "de": "ENS-Referenz: Auf dieser Route gelangen die Waren in das Zollgebiet der EU "
+              "(ICS2-Gebiet) — die summarische Eingangsanmeldung gibt der Beförderer ab; "
+              "tragen Sie die MRN ein, sobald sie bekannt ist",
+        "fr": "Référence ENS : sur cet itinéraire, les marchandises entrent sur le territoire "
+              "douanier de l'UE (zone ICS2) — la déclaration sommaire d'entrée est déposée par "
+              "le transporteur ; indiquez son MRN dès qu'il est connu"},
+    "customs_aes_itn_applies": {
+        "nl": "AES ITN: dit is uitvoer uit de Verenigde Staten — de Electronic Export "
+              "Information wordt in AES aangegeven (15 CFR 30.2); het ITN hoort op het "
+              "vervoersdocument",
+        "en": "AES ITN: this is an export from the United States — Electronic Export "
+              "Information is filed in AES (15 CFR 30.2); the ITN belongs on the transport "
+              "document",
+        "de": "AES ITN: Dies ist eine Ausfuhr aus den Vereinigten Staaten — die Electronic "
+              "Export Information wird in AES angemeldet (15 CFR 30.2); die ITN gehört auf "
+              "das Beförderungsdokument",
+        "fr": "ITN AES : il s'agit d'une exportation depuis les États-Unis — l'Electronic "
+              "Export Information est déposée dans AES (15 CFR 30.2) ; l'ITN doit figurer "
+              "sur le document de transport"},
     "dg_name_language": {
         "nl": "Vervoersnaam op dit document in het Engels gezet, zoals "
               "IMDG 5.4.1.4.1 / IATA DGR 8.1.2.1 voorschrijven",
@@ -458,6 +488,7 @@ def validate_document(
     lang = _lang(language)
     errors: list[str] = []
     warnings: list[str] = []
+    customs_verdicts: dict[str, customs_route.Verdict] | None = None
 
     for section in resolve_sections(document):
         for field in section.get("fields", []):
@@ -465,6 +496,15 @@ def validate_document(
             empty = value is None or str(value).strip() == ""
             if field.get("status") == "USER_REQUIRED" and empty:
                 errors.append(f"{_text('field_required', lang)}: {_label(field, lang)}")
+                continue
+            # A customs reference the route says applies, still empty: said
+            # once, on the documents that carry the field, and never a
+            # refusal — see the note on the texts.
+            if field["key"] in customs_route.FIELDS and empty:
+                if customs_verdicts is None:
+                    customs_verdicts = customs_route.assess(values)
+                if customs_verdicts[field["key"]].applies == "yes":
+                    warnings.append(_text(f"customs_{field['key']}_applies", lang))
                 continue
             # A field that promises a shape has to have that shape. Until now
             # only emptiness was checked, so "72" or "7208 51" simply ended up on

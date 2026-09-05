@@ -97,6 +97,24 @@ def search_locations(
     return [entry for _, entry in scored[:limit]]
 
 
+def location_by_code(code: str, types: list[str] | None = None) -> dict | None:
+    """The one location a code names, or nothing.
+
+    A UN/LOCODE, an IATA code or a station number is the only part of a
+    formatted location — ``Rotterdam (NLRTM), NL`` — that survives editing,
+    so it is what the route reader looks up. An exact match only: a prefix
+    is a search, not a name.
+    """
+    wanted = _normalize(code.strip())
+    if not wanted:
+        return None
+    for location_type in (t for t in (types or LOCATION_TYPES) if t in LOCATION_TYPES):
+        for entry in _load(location_type):
+            if _normalize(str(entry.get("code") or "")) == wanted:
+                return {**{k: v for k, v in entry.items() if k != "_search"}, "type": location_type}
+    return None
+
+
 @lru_cache
 def location_counts() -> dict[str, int]:
     return {location_type: len(_load(location_type)) for location_type in LOCATION_TYPES}

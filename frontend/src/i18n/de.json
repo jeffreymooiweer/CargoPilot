@@ -20,7 +20,8 @@
     "openMode": "Offene Installation",
     "openModeHint": "Kein Konto, nichts wird gespeichert",
     "shipments": "Sendungen",
-    "articles": "Artikel"
+    "articles": "Artikel",
+    "audit": "Audit-Protokoll"
   },
   "theme": {
     "dark": "Dunkel",
@@ -376,7 +377,9 @@
     "brandDefault": "Standard",
     "brandCustom": "Eigenes Bild",
     "updateNative": "Diese Installation läuft als eigener Dienst auf dem Server, ohne Docker. Aktualisiert wird mit dem Update-Skript der Installation: Es holt die neue Version, legt sie neben die alte und startet den Dienst neu. Die Daten bleiben erhalten.",
-    "updateKubernetes": "Diese Installation läuft in Kubernetes. Aktualisieren ist ein Rollout auf das neuere Image; der Pod wird neu erstellt und das Volume bleibt."
+    "updateKubernetes": "Diese Installation läuft in Kubernetes. Aktualisieren ist ein Rollout auf das neuere Image; der Pod wird neu erstellt und das Volume bleibt.",
+    "auditRetention": "Aufbewahrung Audit-Protokoll (Tage)",
+    "auditRetentionHint": "Wie lange eine Zeile im Audit-Protokoll bleibt. Älteres wird beim Start entfernt. 365 ist ein Jahr."
   },
   "modality": {
     "title": "Wählen Sie Ihren Verkehrsträger",
@@ -1149,5 +1152,58 @@
     "none": "Keine Abteilung",
     "all": "Alle Abteilungen",
     "unassigned": "Ohne Abteilung"
+  },
+  "audit": {
+    "title": "Audit-Protokoll",
+    "intro": "Wer hat was getan, und wann. Nur Metadaten: die Handlung, wer, eine kurze Zusammenfassung in den Worten der Anwendung und die Adresse, von der die Anfrage kam. Nie der Inhalt einer Sendung.",
+    "export": "Als CSV exportieren",
+    "retention": "Aufbewahrung",
+    "retentionHint": "Die Aufbewahrung steht unter Einstellungen, Verwaltung.",
+    "actor": "Benutzer",
+    "allActors": "Alle Benutzer",
+    "action": "Handlung",
+    "allActions": "Alle Handlungen",
+    "wholeGroup": "Alles unter {{group}}",
+    "from": "Ab",
+    "to": "Bis einschließlich",
+    "count": "{{count}} von {{total}} Zeilen",
+    "empty": "Keine Zeilen in dieser Auswahl.",
+    "when": "Wann",
+    "summary": "Zusammenfassung",
+    "client": "Adresse",
+    "previous": "Zurück",
+    "next": "Weiter",
+    "page": "Seite {{page}} von {{pages}}",
+    "groups": {
+      "auth": "Anmeldung",
+      "user": "Konten",
+      "settings": "Einstellungen",
+      "shipment": "Sendungen",
+      "documents": "Dokumente",
+      "report": "Berichte"
+    },
+    "actions": {
+      "auth.login": "Angemeldet",
+      "auth.login_failed": "Anmeldung abgelehnt",
+      "auth.logout": "Abgemeldet",
+      "auth.password_changed": "Eigenes Passwort geändert",
+      "auth.password_reset": "Passwort über Zurücksetzlink gesetzt",
+      "auth.two_factor_enabled": "Zwei-Faktor-Verifizierung eingeschaltet",
+      "auth.two_factor_disabled": "Zwei-Faktor-Verifizierung ausgeschaltet",
+      "user.created": "Konto angelegt",
+      "user.updated": "Konto geändert",
+      "user.deleted": "Konto gelöscht",
+      "user.two_factor_cleared": "Zwei-Faktor-Verifizierung eines Kontos gelöscht",
+      "settings.changed": "Einstellungen geändert",
+      "shipment.kept": "Sendung gespeichert",
+      "shipment.updated": "Gespeicherte Sendung aktualisiert",
+      "shipment.forgotten": "Gespeicherte Sendung entfernt",
+      "shipment.documents": "Dokumente einer gespeicherten Sendung erneut heruntergeladen",
+      "shipment.export": "Export einer gespeicherten Sendung heruntergeladen",
+      "documents.exported": "Dokument heruntergeladen",
+      "documents.bundle": "Dokumentenpaket heruntergeladen",
+      "documents.mailed": "Dokumentenpaket per E-Mail gesendet",
+      "report.rendered": "Jahresbericht des Gefahrgutbeauftragten heruntergeladen"
+    }
   }
 }

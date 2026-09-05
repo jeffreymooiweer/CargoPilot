@@ -2,6 +2,36 @@
 
 All notable changes are documented here, following [Semantic Versioning](https://semver.org/).
 
+## [1.186.0] — 2026-09-05
+
+### The administrator's audit log
+
+Who did what, and when — for the administrator of an organisation
+application, and never what a material list said.
+
+- **What is written.** Signing in and a refused sign-in (the name tried and
+  why: unknown, wrong password, inactive, wrong code — never the password),
+  signing out, a password changed or reset, a second factor switched on or
+  off; an account made, changed (which fields), cleared of its second factor
+  or removed; the installation's settings changed (which keys, never a
+  value — the mail password among them); a shipment kept, updated, reopened
+  for its documents, exported or removed (its reference); a document or the
+  bundle downloaded (the document keys), the bundle mailed (the keys and how
+  many recipients, never who); the safety adviser's report drawn. Each line
+  carries the account, the moment and the address the request came from.
+- **What is never written.** The contents of a shipment. The test suite
+  keeps, exports, re-renders and removes a shipment with named parties and
+  dangerous goods and then searches the whole table for them.
+- **The page.** *Audit log* in the menu, administrators only: filter by
+  account, by action or its group, by date; page through; export the same
+  selection as CSV. The action codes are shown as sentences in the four
+  languages; a code the interface does not know yet is shown as itself.
+- **Retention.** *Audit log retention (days)* under Administration, 365 by
+  default; whatever is older is deleted at start-up.
+- **Where it does not exist.** The open application has no accounts, writes
+  no line and does not have the addresses; the schema runner adds the table
+  to an existing database as step six.
+
 ## [1.185.0] — 2026-09-05
 
 ### The export placed against the eFTI common data set

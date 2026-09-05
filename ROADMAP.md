@@ -330,9 +330,10 @@ none is committed until it is planned against that brief.
 ### Ideas, not committed
 
 - ~~An audit log that records metadata only, never the contents of material lists.~~
-  Decided in September 2026: to be built, for the administrator — who signed in and
-  when, what was kept, reopened, downloaded, mailed or changed, by whom — and never
-  what a material list said. Organisation mode only.
+  Shipped in v1.186.0, for the administrator: who signed in and when, and who was
+  refused; what was kept, reopened, downloaded, mailed or changed, by whom — and never
+  what a material list said. Organisation mode only, with a retention the administrator
+  sets; see [Privacy](docs/privacy.md#the-audit-log).
 
 ## Not planned
 

@@ -16,7 +16,7 @@ from app.schemas.users import (
     UserRole,
     UserUpdate,
 )
-from app.services import mail, mail_templates, password_reset, two_factor
+from app.services import audit, mail, mail_templates, password_reset, two_factor
 from app.services.settings_store import instance_settings, language_for
 
 logger = logging.getLogger(__name__)
@@ -96,6 +96,8 @@ def create_user(
     db.add(user)
     db.commit()
     db.refresh(user)
+    audit.record(db, "user.created", actor=admin, target=("user", user.id),
+                 summary=f"{user.username} ({user.role})", request=request)
 
     result = UserCreateResult.model_validate(user, from_attributes=True)
     if not payload.send_welcome:
@@ -128,6 +130,7 @@ def create_user(
 
 @router.patch("/{user_id}", response_model=UserOut)
 def update_user(
+    request: Request,
     user_id: int,
     payload: UserUpdate,
     admin: User = Depends(require_admin),
@@ -156,11 +159,16 @@ def update_user(
         user.department_id = payload.department_id
     db.commit()
     db.refresh(user)
+    # Which fields, never their values: a new password is "password".
+    changed = ", ".join(sorted(payload.model_fields_set)) or "nothing"
+    audit.record(db, "user.updated", actor=admin, target=("user", user.id),
+                 summary=f"{user.username}: {changed}", request=request)
     return user
 
 
 @router.delete("/{user_id}/two-factor")
 def clear_two_factor(
+    request: Request,
     user_id: int,
     admin: User = Depends(require_admin),
     db: Session = Depends(get_db),
@@ -177,16 +185,22 @@ def clear_two_factor(
         raise HTTPException(status_code=404, detail="User not found")
     two_factor.disable(db, user.id)
     logger.info("%s cleared the second factor of %s", admin.username, user.username)
+    audit.record(db, "user.two_factor_cleared", actor=admin, target=("user", user.id),
+                 summary=user.username, request=request)
     return {"ok": True}
 
 
 @router.delete("/{user_id}")
-def delete_user(user_id: int, admin: User = Depends(require_admin), db: Session = Depends(get_db)):
+def delete_user(request: Request, user_id: int, admin: User = Depends(require_admin),
+                db: Session = Depends(get_db)):
     user = db.query(User).filter(User.id == user_id).first()
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
 
     _ensure_delete_is_safe(user, admin, _active_admin_count(db))
+    name, gone_id = user.username, user.id
     db.delete(user)
     db.commit()
+    audit.record(db, "user.deleted", actor=admin, target=("user", gone_id),
+                 summary=name, request=request)
     return {"ok": True}

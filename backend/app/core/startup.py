@@ -18,10 +18,11 @@ from app.models.two_factor import (
 from app.models.settings import InstanceSetting, UserPreference
 from app.models.address import Address
 from app.models.article import Article
+from app.models.audit import AuditEvent
 from app.models.dgsa_report import DgsaReport
 from app.models.shipment import Shipment
 from app.models.user import Equipment, Job, Material, Profile, ReferenceItem, User
-from app.services import history
+from app.services import audit, history
 from app.services.catalog_sync import sync_catalogs
 from app.services.settings_store import instance_settings
 
@@ -38,7 +39,8 @@ TEMPORARY_EXPORT_SUFFIXES = {".pdf", ".zip", ".xlsx", ".tmp"}
 #: start-up path imports them, and a missing table would only show up when
 #: somebody actually forgets their password.
 SETTINGS_TABLES = (InstanceSetting, UserPreference, PasswordResetToken,
-                   TwoFactorEnrolment, TwoFactorRecoveryCode, TwoFactorCode)
+                   TwoFactorEnrolment, TwoFactorRecoveryCode, TwoFactorCode,
+                   AuditEvent)
 #: Same reason: the history's table is created by ``create_all`` on a fresh
 #: database only because its model was imported here.
 HISTORY_TABLES = (Shipment, Address, DgsaReport, Article)
@@ -241,6 +243,8 @@ def init_app() -> bool:
         history.enforce_switch(db)
         seed_catalogs(db)
         purge_legacy_equipment(db)
+        # The audit log keeps as long as an administrator said, and no longer.
+        audit.prune(db, instance_settings(db).audit_retention_days)
         sync_catalogs_on_startup(db)
         purge_sensitive_data(db)
         return bootstrap_admin(db)

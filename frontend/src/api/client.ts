@@ -272,6 +272,11 @@ export const api = {
     request<{ ok: boolean; removed: boolean }>("/un-cards/remove", { method: "POST" }),
   saveInstanceSettings: (payload: InstanceSettings) =>
     request<InstanceSettings>("/settings/instance", { method: "PUT", body: JSON.stringify(payload) }),
+  /** The audit log: who did what, metadata only. Administrators only, and
+   *  absent from the open application along with the accounts. */
+  audit: (query: AuditQuery = {}) => request<AuditPage>(`/audit${auditSuffix(query)}`),
+  auditActions: () => request<{ actions: string[]; actors: string[] }>("/audit/actions"),
+  auditExportUrl: (query: AuditQuery = {}) => `${API_BASE}/audit/export.csv${auditSuffix(query)}`,
   /** The shipment history. These addresses exist only on an installation
    *  that keeps its shipments (`publicSettings.history_enabled`). */
   shipments: (query: ShipmentQuery = {}) => {
@@ -1049,6 +1054,47 @@ export interface TripResult {
   exemption_lost: { message: string; consignments: string[] } | null;
 }
 
+/** One line of the audit log. The summary is the application's own words —
+ *  a reference, a document key, the settings keys that changed — and never a
+ *  value from a form. */
+export interface AuditEvent {
+  id: number;
+  at: string;
+  actor_id: number | null;
+  actor_username: string;
+  action: string;
+  target_type: string;
+  target_id: string;
+  summary: string;
+  client: string;
+}
+
+export interface AuditPage {
+  items: AuditEvent[];
+  total: number;
+  page: number;
+  per_page: number;
+}
+
+export interface AuditQuery {
+  actor?: string;
+  /** A full code (`shipment.kept`) or a group (`shipment`). */
+  action?: string;
+  since?: string;
+  until?: string;
+  page?: number;
+  per_page?: number;
+}
+
+function auditSuffix(query: AuditQuery): string {
+  const params = new URLSearchParams();
+  for (const [key, value] of Object.entries(query)) {
+    if (value !== undefined && value !== "" && value !== null) params.set(key, String(value));
+  }
+  const suffix = params.toString();
+  return suffix ? `?${suffix}` : "";
+}
+
 /** What the whole installation is set to. Administrators only. */
 export interface InstanceSettings {
   default_language: string;
@@ -1060,6 +1106,8 @@ export interface InstanceSettings {
   update_check_enabled: boolean;
   un_cards_enabled: boolean;
   session_timeout_minutes: number;
+  /** How many days the audit log keeps a line before start-up prunes it. */
+  audit_retention_days: number;
   organisation_name: string;
   organisation_address: string;
   /** What the screen calls itself; empty means CargoPilot. The logo and the

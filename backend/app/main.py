@@ -11,6 +11,7 @@ from app.api.routes.addresses import router as addresses_router
 from app.api.routes.articles import router as articles_router
 from app.api.routes.assistant import admin_router as assistant_admin_router
 from app.api.routes.assistant import router as assistant_router
+from app.api.routes.audit import router as audit_router
 from app.api.routes.auth import router as auth_router
 from app.api.routes.branding import admin_router as branding_admin_router
 from app.api.routes.branding import public_router as branding_public_router
@@ -77,6 +78,8 @@ ACCOUNT_ROUTERS = (
     assistant_admin_router,
     branding_admin_router,
     meta_router,
+    # Who did what: written by the account routes, read by an administrator.
+    audit_router,
 )
 
 #: The history: what only an organisation application that keeps its

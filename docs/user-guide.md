@@ -481,6 +481,21 @@ Docker tab. See
 [Configuration](configuration.md#two-places-and-which-one-wins) for how these relate to the
 environment variables.
 
+**Audit log.** A page of its own, for administrators, that says who did what and when:
+who signed in and who was refused, who signed out or changed a password, which accounts
+were made, changed or removed, which settings changed (the names of the settings, never
+their values — the mail password is among them), which shipments were kept, updated,
+reopened for their documents or removed, which documents were downloaded or mailed (the
+document keys and how many recipients, never the addresses), and which annual reports
+were drawn. Each line carries the account, the moment and the address the request came
+from. Filter it by account, by action or by date, page through it, or export the same
+selection as CSV for whoever keeps records elsewhere. What a shipment contained — the
+parties, the goods, the UN numbers — is never in this log, so it can be kept longer than
+the shipments themselves: the **retention** under Administration says how many days a
+line stays (365 by default), and whatever is older is removed when the application
+starts. The open application has no accounts and writes no log. See
+[Privacy](privacy.md#the-audit-log).
+
 ## Language
 
 Under **Settings** you pick Dutch, English, German or French. That choice runs all the way

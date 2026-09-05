@@ -1,6 +1,6 @@
 import logging
 
-from fastapi import APIRouter, Depends, HTTPException, Request, Response, status
+from fastapi import APIRouter, Cookie, Depends, HTTPException, Request, Response, status
 from sqlalchemy.orm import Session
 
 from app.core.config import Settings, get_settings
@@ -10,6 +10,7 @@ from app.core.ratelimit import limiter
 from app.core.security import (
     create_access_token,
     create_challenge_token,
+    decode_access_token_claims,
     decode_challenge_token,
     hash_password,
     token_matches_password,
@@ -28,7 +29,7 @@ from app.schemas.users import (
     TwoFactorStatus,
     UserOut,
 )
-from app.services import mail, mail_templates, password_reset, two_factor
+from app.services import audit, mail, mail_templates, password_reset, two_factor
 from app.services.settings_store import instance_settings, language_for
 
 logger = logging.getLogger(__name__)
@@ -85,7 +86,8 @@ def _clear_access_cookie(
     )
 
 
-def _sign_in(request: Request, response: Response, db: Session, user: User) -> dict:
+def _sign_in(request: Request, response: Response, db: Session, user: User,
+             how: str = "password") -> dict:
     """Hand out the session cookie. The last step of every way in."""
     expire_minutes = instance_settings(db).session_timeout_minutes
     token = create_access_token(
@@ -93,7 +95,15 @@ def _sign_in(request: Request, response: Response, db: Session, user: User) -> d
     )
     _set_access_cookie(response, token, get_settings(), request=request,
                        expire_minutes=expire_minutes)
+    audit.record(db, "auth.login", actor=user, summary=how, request=request)
     return {"user": UserOut.model_validate(user)}
+
+
+def _refused(db: Session, request: Request, username: str, why: str) -> None:
+    """A sign-in that did not happen, and why — the one line an
+    administrator wants when somebody is guessing at a name."""
+    audit.record(db, "auth.login_failed", actor_username=username, summary=why,
+                 request=request)
 
 
 @router.post("/login")
@@ -101,8 +111,11 @@ def _sign_in(request: Request, response: Response, db: Session, user: User) -> d
 def login(request: Request, payload: LoginRequest, response: Response, db: Session = Depends(get_db)):
     user = db.query(User).filter(User.username == payload.username).first()
     if not user or not verify_password(payload.password, user.password_hash):
+        _refused(db, request, payload.username,
+                 "unknown name" if not user else "wrong password")
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid credentials")
     if not user.active:
+        _refused(db, request, user.username, "inactive account")
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="User inactive")
 
     if two_factor.is_active(db, user.id):
@@ -156,6 +169,7 @@ def login_two_factor(
                             detail="Start signing in again.")
     user = db.query(User).filter(User.username == claims["sub"]).first()
     if not user or not user.active:
+        _refused(db, request, claims["sub"], "inactive account")
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED,
                             detail="User inactive")
     # The password may have changed since the challenge was handed out — a
@@ -164,13 +178,23 @@ def login_two_factor(
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED,
                             detail="Start signing in again.")
     if not two_factor.verify(db, user, payload.code):
+        _refused(db, request, user.username, "wrong code")
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED,
                             detail="That code is not right.")
-    return _sign_in(request, response, db, user)
+    return _sign_in(request, response, db, user,
+                    how=two_factor.enrolment_for(db, user.id).method)
 
 
 @router.post("/logout")
-def logout(request: Request, response: Response):
+def logout(request: Request, response: Response, db: Session = Depends(get_db),
+           access_token: str | None = Cookie(default=None, alias="access_token")):
+    # Whoever the cookie says, if it still says anybody: signing out with an
+    # expired session is allowed and simply goes unattributed.
+    if access_token:
+        claims = decode_access_token_claims(access_token)
+        name = (claims or {}).get("sub") or ""
+        if name:
+            audit.record(db, "auth.logout", actor_username=name, request=request)
     _clear_access_cookie(response, get_settings(), request=request)
     return {"ok": True}
 
@@ -296,6 +320,7 @@ def reset_password(
     user.password_hash = hash_password(payload.new_password)
     db.commit()
     password_reset.spend(db, payload.token)
+    audit.record(db, "auth.password_reset", actor=user, request=request)
 
     # Signed in straight away. Holding the link is proof of the mailbox, and
     # the password was just chosen on this screen: sending somebody back to a
@@ -321,6 +346,7 @@ def change_password(
         raise HTTPException(status_code=400, detail="Current password incorrect")
     user.password_hash = hash_password(payload.new_password)
     db.commit()
+    audit.record(db, "auth.password_changed", actor=user, request=request)
     _clear_access_cookie(response, get_settings(), request=request)
     return {"ok": True, "reauthenticate": True}
 
@@ -374,6 +400,7 @@ def two_factor_start(
 
 @router.post("/two-factor/confirm")
 def two_factor_confirm(
+    request: Request,
     payload: TwoFactorConfirm,
     user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
@@ -392,6 +419,8 @@ def two_factor_confirm(
     if not ok:
         raise HTTPException(status_code=400, detail="That code is not right.")
     codes = two_factor.confirm_enrolment(db, user)
+    audit.record(db, "auth.two_factor_enabled", actor=user, summary=row.method,
+                 request=request)
     return {"ok": True, "recovery_codes": codes}
 
 
@@ -441,6 +470,7 @@ def two_factor_send_code(
 
 @router.delete("/two-factor")
 def two_factor_disable(
+    request: Request,
     payload: TwoFactorConfirm,
     user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
@@ -456,4 +486,5 @@ def two_factor_disable(
     if not two_factor.verify(db, user, payload.code):
         raise HTTPException(status_code=400, detail="That code is not right.")
     two_factor.disable(db, user.id)
+    audit.record(db, "auth.two_factor_disabled", actor=user, request=request)
     return {"ok": True}

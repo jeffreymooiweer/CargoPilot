@@ -47,6 +47,9 @@ class ShipmentSummary(BaseModel):
     has_dangerous_goods: bool
     has_documents: bool
     created_by: str
+    #: Whose work this is: the keeper's department when it was kept.
+    department_id: int | None = None
+    department: str = ""
     created_at: datetime
     updated_at: datetime
 

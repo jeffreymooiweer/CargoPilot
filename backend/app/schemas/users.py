@@ -32,6 +32,9 @@ class UserUpdate(BaseModel):
     # Unlike PasswordChange there is no current_password: the admin does
     # not know it, which is the whole reason for the reset.
     password: str | None = Field(default=None, min_length=8)
+    #: The department, or ``null`` to take somebody out of theirs. Read via
+    #: ``model_fields_set``: absent means "leave it", null means "none".
+    department_id: int | None = None
 
 
 class PasswordChange(BaseModel):
@@ -47,6 +50,7 @@ class UserOut(BaseModel):
     email: str
     role: UserRole
     active: bool
+    department_id: int | None = None
 
 
 class UserCreateResult(UserOut):

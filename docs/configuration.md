@@ -79,8 +79,10 @@ Off, a shipment drawn up is a shipment forgotten — the promise every installat
 until v1.173.0 and still makes by default. On, the export step keeps each shipment when
 its documents are downloaded (or when the user presses **Keep in history**), and a
 **Shipments** page lists them with filters, offers the documents again, opens a shipment
-back in the wizard, and removes one. Every signed-in user of the organisation sees every
-kept shipment; departments, which narrow that, are a later phase.
+back in the wizard, and removes one. Who sees which is decided by **departments**
+(v1.174.0), managed on the users page: a user sees their own department's shipments, a
+user without a department sees the unassigned ones, an administrator sees all. An
+organisation that never makes a department keeps the plain rule: everybody sees everything.
 
 It is a deploy-time variable rather than a screen setting for one reason: **switching it
 off destroys data**, and a deploy-time variable is the one place the application can

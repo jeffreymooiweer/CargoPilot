@@ -301,8 +301,11 @@ bundle the export step handed out, on the current version; **Remove** takes it o
 history after a confirmation. The **Structured export (JSON)** is the same file the
 export step offers, and it is what the groupage page accepts.
 
-Everyone who signs in sees every kept shipment. Departments, which narrow that, are on
-the roadmap.
+Who sees which is a matter of **departments**. An administrator sees every kept shipment
+and gets a department filter on the page; everyone else sees their own department's
+shipments, and someone without a department sees the ones that belong to none. An
+installation that never makes a department keeps the plain rule: everyone sees
+everything. Administrators make departments and assign people on the **Users** page.
 
 ## The equipment library
 
@@ -387,7 +390,10 @@ a role, deactivates or removes an account, sets a new password, and clears someb
 two-step verification when they have lost both their phone and their recovery codes. A
 new account can be invited by mail instead of being handed a password: the colleague
 gets a link, valid for seven days and usable once, and chooses their own password. The
-invitation says an administrator made the account without naming which one. **Maintenance** holds the things
+invitation says an administrator made the account without naming which one. On an
+installation that keeps its shipments the same page holds **Departments**: make one,
+rename it, remove it — its people and shipments then belong to none rather than
+disappearing — and pick a department per user beside their role. **Maintenance** holds the things
 an administrator *does* rather than saves: updating, the **UN Cards** section where the
 card set is installed, checked for updates or removed (see [un-cards.md](un-cards.md)),
 and the assistant's optional local model. When the update check is on and a newer

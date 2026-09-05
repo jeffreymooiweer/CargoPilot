@@ -990,5 +990,24 @@
     "previous": "Vorige",
     "next": "Volgende",
     "page": "Pagina {{page}} van {{pages}}"
+  },
+  "departments": {
+    "title": "Afdelingen",
+    "intro": "Een afdeling bepaalt wie wiens bewaarde zendingen ziet: een gebruiker ziet die van de eigen afdeling, een gebruiker zonder afdeling ziet de niet-toegewezen, een beheerder ziet alles. Zonder afdelingen ziet iedereen alles.",
+    "name": "Naam van de afdeling",
+    "add": "Afdeling toevoegen",
+    "rename": "Hernoemen",
+    "save": "Opslaan",
+    "cancel": "Annuleren",
+    "remove": "Verwijderen",
+    "counts": "{{users}} gebruikers · {{shipments}} zendingen",
+    "empty": "Nog geen afdelingen.",
+    "confirmRemove": "{{name}} verwijderen? De gebruikers en zendingen blijven bestaan; ze horen alleen bij geen afdeling meer.",
+    "removed": "Afdeling verwijderd.",
+    "saved": "Afdeling opgeslagen.",
+    "userDepartment": "Afdeling",
+    "none": "Geen afdeling",
+    "all": "Alle afdelingen",
+    "unassigned": "Zonder afdeling"
   }
 }

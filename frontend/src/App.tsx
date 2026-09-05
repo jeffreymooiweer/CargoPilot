@@ -95,8 +95,8 @@ export default function App() {
           {/* The history exists only where the switch is on; the page says
               so itself when it is not, and the open application never
               keeps anything. */}
-          {!open && <Route path="/shipments" element={<ShipmentsPage />} />}
-          {!open && <Route path="/shipments/:id" element={<ShipmentsPage />} />}
+          {!open && <Route path="/shipments" element={<ShipmentsPage user={user} />} />}
+          {!open && <Route path="/shipments/:id" element={<ShipmentsPage user={user} />} />}
           {!open && <Route path="/materieel" element={<MaterieelPage />} />}
           {!open && <Route path="/users" element={<UsersPage user={user} />} />}
           <Route path="/settings" element={<SettingsPage user={user} />} />

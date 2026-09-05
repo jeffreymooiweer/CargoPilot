@@ -183,8 +183,13 @@ that produced its documents, and the structured export with the derived findings
 editions they were computed against. The documents themselves are **not** archived; they
 are rendered again from the kept request when asked for.
 
-**Who sees it.** Every signed-in user of the organisation sees every kept shipment. The
-roadmap's departments will narrow that; until then the organisation is the unit.
+**Who sees it.** An administrator sees every kept shipment. Anybody else sees the
+shipments of their own **department**, and a user without a department sees the ones
+nobody's department claims — so an organisation that never makes a department has
+everybody seeing everything, and one that does has each department seeing its own. A
+shipment carries the department of whoever kept it, at the moment it was kept; somebody
+moving departments does not take last year's shipments along. A shipment another
+department kept is, for you, not there: the server answers as if it did not exist.
 
 **How it goes away.** A user removes a shipment from the shipments page, after a
 confirmation. An operator switches the whole history off by setting the variable back —

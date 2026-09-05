@@ -28,6 +28,7 @@ from app.core.config import get_settings
 from app.models.shipment import Shipment
 from app.models.user import User
 from app.schemas.history import ShipmentDetail, ShipmentIn, ShipmentSummary
+from app.services import departments
 from app.services.documents.shipment_export import build_shipment_export
 
 logger = logging.getLogger(__name__)
@@ -108,7 +109,10 @@ def keep(db: Session, user: User, payload: ShipmentIn,
             f"The shipment is {size / 1024 / 1024:.1f} MB, more than the "
             f"{MAX_RECORD_BYTES // 1024 // 1024} MB one kept shipment may be.")
 
-    record = existing or Shipment(created_by_id=user.id if user.id else None)
+    # The keeper's department is copied at the moment of keeping and never
+    # moved afterwards: whose work it was, not whose it would be today.
+    record = existing or Shipment(created_by_id=user.id if user.id else None,
+                                  department_id=getattr(user, "department_id", None))
     _index(record, export, payload)
     record.snapshot_json = snapshot_json
     record.bundle_json = bundle_json
@@ -149,6 +153,8 @@ def summary(record: Shipment) -> ShipmentSummary:
         has_dangerous_goods=record.has_dangerous_goods,
         has_documents=bool(record.bundle_json),
         created_by=record.creator.username if record.creator else "",
+        department_id=record.department_id,
+        department=record.department.name if record.department else "",
         created_at=record.created_at,
         updated_at=record.updated_at,
     )
@@ -166,12 +172,13 @@ def bundle_of(record: Shipment) -> dict[str, Any] | None:
     return _loads(record.bundle_json) if record.bundle_json else None
 
 
-def search(db: Session, q: str = "", modality: str = "",
+def search(db: Session, viewer: User, q: str = "", modality: str = "",
            date_from: datetime | None = None, date_to: datetime | None = None,
-           page: int = 1, per_page: int = 25) -> tuple[list[Shipment], int]:
-    """The page of shipments matching the filters, newest first, and the
-    total across all pages."""
-    query = db.query(Shipment)
+           page: int = 1, per_page: int = 25,
+           department: str = "") -> tuple[list[Shipment], int]:
+    """The page of shipments ``viewer`` may see that match the filters,
+    newest first, and the total across all pages."""
+    query = departments.visible_to(db.query(Shipment), viewer, department)
     needle = (q or "").strip()
     if needle:
         like = f"%{needle}%"

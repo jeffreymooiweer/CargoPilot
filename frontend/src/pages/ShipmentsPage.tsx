@@ -13,7 +13,7 @@ import { useCallback, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Link, useNavigate, useParams } from "react-router";
 
-import { api, ShipmentDetail, ShipmentSummary } from "../api/client";
+import { api, Department, ShipmentDetail, ShipmentSummary, User } from "../api/client";
 import { usePreferences } from "../settings/preferences";
 import ConfirmDialog from "../toast/ConfirmDialog";
 import { useToast } from "../toast/ToastProvider";
@@ -44,10 +44,14 @@ export function wizardLinkFor(shipment: ShipmentSummary): string {
   return `/wizard/${shipment.modality || "road"}?shipment=${shipment.id}`;
 }
 
-export default function ShipmentsPage() {
+export default function ShipmentsPage({ user }: { user?: User | null }) {
   const { t, i18n } = useTranslation();
   const { publicSettings } = usePreferences();
   const { id } = useParams();
+  // Only an administrator sees more than one department, so only an
+  // administrator gets the filter; for anybody else the server answers
+  // with their own department whatever is asked.
+  const admin = user?.role === "admin";
 
   if (publicSettings && !publicSettings.history_enabled) {
     return (
@@ -59,10 +63,10 @@ export default function ShipmentsPage() {
   }
 
   if (id) return <ShipmentView id={Number(id)} language={i18n.language} />;
-  return <ShipmentList language={i18n.language} />;
+  return <ShipmentList language={i18n.language} admin={admin} />;
 }
 
-function ShipmentList({ language }: { language: string }) {
+function ShipmentList({ language, admin }: { language: string; admin: boolean }) {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const toast = useToast();
@@ -74,6 +78,13 @@ function ShipmentList({ language }: { language: string }) {
   const [from, setFrom] = useState("");
   const [to, setTo] = useState("");
   const [loading, setLoading] = useState(true);
+  const [department, setDepartment] = useState("");
+  const [departments, setDepartments] = useState<Department[]>([]);
+
+  useEffect(() => {
+    if (!admin) return;
+    api.departments().then(setDepartments).catch(() => setDepartments([]));
+  }, [admin]);
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -85,6 +96,7 @@ function ShipmentList({ language }: { language: string }) {
         date_to: to ? `${to}T23:59:59` : undefined,
         page,
         per_page: PER_PAGE,
+        department: admin ? department : undefined,
       });
       setItems(answer.items);
       setTotal(answer.total);
@@ -95,7 +107,7 @@ function ShipmentList({ language }: { language: string }) {
     }
     // toast is stable for the provider's lifetime.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [q, modality, from, to, page]);
+  }, [q, modality, from, to, page, department, admin]);
 
   // The search waits for the typing to stop; the other filters act at once.
   useEffect(() => {
@@ -150,6 +162,25 @@ function ShipmentList({ language }: { language: string }) {
           {t("history.to")}
           <input type="date" className={`${inputClass} mt-1`} value={to} onChange={(e) => { setTo(e.target.value); setPage(1); }} />
         </label>
+        {admin && departments.length > 0 && (
+          <select
+            className={inputClass}
+            value={department}
+            onChange={(e) => {
+              setDepartment(e.target.value);
+              setPage(1);
+            }}
+            aria-label={t("departments.userDepartment")}
+          >
+            <option value="">{t("departments.all")}</option>
+            <option value="none">{t("departments.unassigned")}</option>
+            {departments.map((d) => (
+              <option key={d.id} value={String(d.id)}>
+                {d.name}
+              </option>
+            ))}
+          </select>
+        )}
         <p className="text-xs text-slate-500 dark:text-slate-400 md:col-span-4">
           {t("history.count", { count: items.length, total })}
         </p>
@@ -176,6 +207,7 @@ function ShipmentList({ language }: { language: string }) {
             <p className="text-xs text-slate-500 dark:text-slate-400">
               {t(`modality.${s.modality}`)} · {when(s.created_at, language)}
               {s.created_by ? ` · ${s.created_by}` : ""}
+              {s.department ? ` · ${s.department}` : ""}
             </p>
           </button>
         ))}
@@ -192,6 +224,9 @@ function ShipmentList({ language }: { language: string }) {
                 <th className="px-3 py-2 text-left">{t("history.modality")}</th>
                 <th className="px-3 py-2 text-left">{t("history.kept")}</th>
                 <th className="px-3 py-2 text-left">{t("history.by")}</th>
+                {admin && departments.length > 0 && (
+                  <th className="px-3 py-2 text-left">{t("departments.userDepartment")}</th>
+                )}
                 <th className="px-3 py-2 text-right">{t("history.goods")}</th>
               </tr>
             </thead>
@@ -214,6 +249,7 @@ function ShipmentList({ language }: { language: string }) {
                   <td className="px-3 py-2 whitespace-nowrap">{t(`modality.${s.modality}`)}</td>
                   <td className="px-3 py-2 whitespace-nowrap">{when(s.created_at, language)}</td>
                   <td className="px-3 py-2">{s.created_by || "—"}</td>
+                  {admin && departments.length > 0 && <td className="px-3 py-2">{s.department || "—"}</td>}
                   <td className="px-3 py-2 text-right">{s.goods_count}</td>
                 </tr>
               ))}
@@ -338,6 +374,7 @@ function ShipmentView({ id, language }: { id: number; language: string }) {
           {row(t("history.regulations"), shipment.regulations.join(", ") || "—")}
           {documents.length > 0 && row(t("history.documentsOf"), documents.join(", "))}
           {row(t("history.kept"), `${when(shipment.created_at, language)}${shipment.created_by ? ` · ${shipment.created_by}` : ""}`)}
+          {shipment.department && row(t("departments.userDepartment"), shipment.department)}
           {shipment.updated_at !== shipment.created_at && row(t("history.updated"), when(shipment.updated_at, language))}
         </div>
 

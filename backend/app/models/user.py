@@ -6,6 +6,21 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 from app.core.database import Base
 
 
+class Department(Base):
+    """A group of users whose kept shipments are theirs to see.
+
+    Only meaningful with the shipment history: it decides who sees whose
+    shipments on the shipments page. An organisation that never makes one
+    keeps today's behaviour, in which everybody sees everything.
+    """
+
+    __tablename__ = "departments"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    name: Mapped[str] = mapped_column(String(80), unique=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
+
+
 class User(Base):
     __tablename__ = "users"
 
@@ -16,8 +31,13 @@ class User(Base):
     role: Mapped[str] = mapped_column(String(16), default="user")
     active: Mapped[bool] = mapped_column(Boolean, default=True)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
+    #: Added in v1.174.0 by schema step 2; nullable, because a user without a
+    #: department is the ordinary case and the one every older database has.
+    department_id: Mapped[int | None] = mapped_column(
+        ForeignKey("departments.id", ondelete="SET NULL"), nullable=True)
 
     jobs: Mapped[list["Job"]] = relationship(back_populates="creator")
+    department: Mapped[Department | None] = relationship()
 
 
 class Job(Base):

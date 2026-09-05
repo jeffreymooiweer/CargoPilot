@@ -78,9 +78,23 @@ def _001_shipments(conn: Connection) -> None:
     Shipment.__table__.create(conn, checkfirst=True)
 
 
+def _002_departments(conn: Connection) -> None:
+    """Departments (v1.174.0): the table, and the column on users and on
+    shipments that says whose work is whose. Both nullable — a user or a
+    shipment without a department is the ordinary case."""
+    from app.models.user import Department
+
+    Department.__table__.create(conn, checkfirst=True)
+    add_column(conn, "users", "department_id INTEGER REFERENCES departments(id) ON DELETE SET NULL")
+    add_column(conn, "shipments", "department_id INTEGER REFERENCES departments(id) ON DELETE SET NULL")
+    conn.execute(text(
+        "CREATE INDEX IF NOT EXISTS ix_shipments_department_id ON shipments (department_id)"))
+
+
 #: In order. Append; never renumber, never remove.
 MIGRATIONS: list[tuple[int, str, Callable[[Connection], None]]] = [
     (1, "shipments", _001_shipments),
+    (2, "departments", _002_departments),
 ]
 
 

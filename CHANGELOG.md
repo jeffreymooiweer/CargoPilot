@@ -2,6 +2,37 @@
 
 All notable changes are documented here, following [Semantic Versioning](https://semver.org/).
 
+## [1.183.0] — 2026-09-05
+
+### The customs conditions, read in the texts themselves
+
+v1.182.0 derived the ENS and AES conditions from the route on excerpts of
+the official pages, because the pages themselves were out of reach. The
+texts have now been read in full — the consolidated Union Customs Code,
+the eCFR print of 15 CFR Part 30 as of 3 September 2026, DG TAXUD's ICS2
+page and HMRC's guidance of 9 July 2026 — and three things changed:
+
+- **Great Britain asks for its own entry summary declaration.** HMRC:
+  goods brought into Great Britain from anywhere — the EU included — need
+  an ENS in the Safety and Security GB service, lodged by the carrier. A
+  route into England, Scotland or Wales now says so; from Northern Ireland
+  it names HMRC's waiver for qualifying Northern Ireland goods. Into
+  Northern Ireland the earlier reading stands: from Great Britain and from
+  outside the EU, in ICS2; from the Union, none.
+- **Puerto Rico and the Virgin Islands are not "the United States" for the
+  Canada exemption.** § 30.2(a)(1) reads the United States as the 50 states
+  and the District of Columbia and names the two beside it, so a shipment
+  from San Juan to Toronto is filed like any other export; v1.182.0 had
+  left that open. The other territories — Guam, American Samoa, the
+  Northern Marianas — are excluded from filing altogether (§ 30.2(d)(2)),
+  from them and between the United States and them.
+- **A domestic route outside the area** is said to be domestic rather than
+  "neither end is in the ICS2 area", and the transit sentence now follows
+  Article 127(2)(a): a stop brings goods in, a passage through waters or
+  airspace does not.
+
+The module's account of its sources quotes the provisions it rests on.
+
 ## [1.182.0] — 2026-09-05
 
 ### The route decides the customs conditions

@@ -188,6 +188,45 @@ def test_a_route_that_never_touches_the_area_gets_no_ens():
     assert (verdict.applies, verdict.reason) == ("no", "ens_outside")
 
 
+def test_a_domestic_route_outside_the_area_is_said_to_be_domestic():
+    for origin, destination in [("Chicago, United States", "Dallas, United States"),
+                                ("Manchester, United Kingdom", "London, United Kingdom"),
+                                ("Shanghai, China", "Beijing, China")]:
+        verdict = assess(route(origin, destination))["ens_mrn"]
+        assert (verdict.applies, verdict.reason) == ("no", "ens_domestic"), (origin, destination)
+
+
+# --- Great Britain: HMRC's own entry summary declaration ---------------------
+
+
+def test_into_great_britain_asks_for_an_ens_from_anywhere_the_union_included():
+    """HMRC: "You need to make an entry summary declaration if you're
+    transporting goods into: Great Britain" — in the S&S GB service."""
+    for origin in ("Rotterdam, NL", "New York, United States", "Oslo, Norway", "Basel, Switzerland"):
+        verdict = assess(route(origin, picked("Felixstowe", "GBFXT", "SFK, GB")))["ens_mrn"]
+        assert (verdict.applies, verdict.reason) == ("yes", "ens_uk_entering"), origin
+        assert verdict.destination == "GB"
+
+
+def test_from_northern_ireland_into_great_britain_is_the_waiver_case():
+    verdict = assess(route(picked("Belfast", "GBBEL", "BFS, GB"), picked("Liverpool", "GBLIV", "LIV, GB")))["ens_mrn"]
+    assert (verdict.applies, verdict.reason) == ("exempt", "ens_uk_qualifying_ni")
+
+
+def test_from_the_union_into_northern_ireland_needs_none():
+    """HMRC names Great Britain and countries outside the EU as the origins
+    that need one into Northern Ireland; the Union is not among them."""
+    verdict = assess(route("Dublin, Ireland", picked("Belfast", "GBBEL", "BFS, GB")))["ens_mrn"]
+    assert (verdict.applies, verdict.reason) == ("no", "ens_within_area")
+
+
+def test_great_britain_to_the_union_is_leaving_not_entering():
+    verdict = assess(route(picked("Felixstowe", "GBFXT", "SFK, GB"), "Rotterdam, NL"))["ens_mrn"]
+    assert (verdict.applies, verdict.reason) == ("yes", "ens_entering")
+    verdict = assess(route("Rotterdam, NL", "New York, United States"))["ens_mrn"]
+    assert verdict.reason == "ens_leaving"
+
+
 def test_a_delivery_in_ceuta_is_not_entering_the_customs_territory():
     verdict = assess(route("Tangier, Morocco", picked("Ceuta", "ESCEU", "ES")))["ens_mrn"]
     assert verdict.reason == "ens_outside"
@@ -198,11 +237,12 @@ def test_the_final_destination_outranks_the_discharge_point():
     values = route("Shanghai, China", picked("Rotterdam", "NLRTM", "ZH, NL"),
                    final_destination="Basel, Switzerland")
     assert assess(values)["ens_mrn"].destination == "CH"
-    # Discharged in Rotterdam, delivered in Manchester: they leave it again,
-    # and "entering" is still the verdict for the leg that enters.
+    # Discharged in Rotterdam, delivered in Manchester: the goods end up in
+    # Great Britain, and that is the verdict given — the module speaks for
+    # the end of the route, not for every stop on the way.
     values = route("Shanghai, China", picked("Rotterdam", "NLRTM", "ZH, NL"),
                    final_destination="Manchester, United Kingdom")
-    assert assess(values)["ens_mrn"].reason == "ens_outside"
+    assert assess(values)["ens_mrn"].reason == "ens_uk_entering"
 
 
 def test_an_unreadable_route_end_is_unknown_not_guessed():
@@ -224,9 +264,21 @@ def test_canada_is_exempt_under_30_36():
     assert (verdict.applies, verdict.reason) == ("exempt", "aes_canada")
 
 
-def test_whether_30_36_reaches_puerto_rico_is_not_claimed():
-    verdict = assess(route(picked("San Juan", "PRSJU", "PR"), "Toronto, Canada"))["aes_itn"]
-    assert (verdict.applies, verdict.reason) == ("unknown", "aes_unresolved")
+def test_from_puerto_rico_canada_is_an_export_like_any_other():
+    """§ 30.2(a)(1)(i)(A) reads the United States as the 50 states and the
+    District of Columbia and names Puerto Rico beside it, so § 30.36's
+    "originating in the United States" does not reach San Juan."""
+    for origin in (picked("San Juan", "PRSJU", "PR"), picked("Saint Thomas", "VISTT", "VI")):
+        verdict = assess(route(origin, "Toronto, Canada"))["aes_itn"]
+        assert (verdict.applies, verdict.reason) == ("yes", "aes_export")
+
+
+def test_the_other_territories_are_outside_the_filing_altogether():
+    """§ 30.2(d)(2): from Guam, American Samoa or the Northern Marianas, and
+    between the United States and them, nothing is filed."""
+    assert assess(route("Hagåtña, Guam", "Tokyo, Japan"))["aes_itn"].reason == "aes_territory"
+    assert assess(route("Honolulu, United States", "Hagåtña, Guam"))["aes_itn"].reason == "aes_territory"
+    assert assess(route("Pago Pago, American Samoa", "Auckland, Australia"))["aes_itn"].reason == "aes_territory"
 
 
 def test_between_the_mainland_and_puerto_rico_is_filed_both_ways():
@@ -247,6 +299,19 @@ def test_from_the_virgin_islands_to_the_mainland_is_not_among_the_named_movement
 def test_a_domestic_movement_and_a_foreign_origin_are_no_export():
     assert assess(route("Chicago, United States", "Dallas, United States"))["aes_itn"].reason == "aes_domestic"
     assert assess(route("Rotterdam, NL", "New York, United States"))["aes_itn"].reason == "aes_not_us"
+
+
+def test_no_verdict_is_ever_left_unresolved():
+    """Every ground the module can give has a sentence in the interface; an
+    "unknown" is the one verdict shown as nothing, and it has two grounds."""
+    import json
+    from pathlib import Path
+    texts = json.loads((Path(__file__).resolve().parents[2] / "frontend" / "src" / "i18n" / "en.json").read_text(encoding="utf-8"))["customsRoute"]
+    from app.services.documents import customs_route as module
+    source = Path(module.__file__).read_text(encoding="utf-8")
+    import re
+    reasons = set(re.findall(r'"((?:ens|aes)_[a-z_]+)"', source)) - {"ens_mrn", "aes_itn"}
+    assert reasons - {"ens_unknown", "aes_unknown"} <= set(texts), reasons - set(texts)
 
 
 def test_the_itn_verdict_is_unknown_on_an_unreadable_route_too():

@@ -442,14 +442,18 @@
     "ens_entering": "Waren aus {{from}} gelangen in {{to}} in das ICS2-Gebiet (Zollgebiet der EU, Nordirland, Norwegen, Schweiz): der Beförderer gibt eine summarische Eingangsanmeldung in ICS2 ab. Tragen Sie die MRN ein, sobald sie bekannt ist.",
     "ens_within_area": "{{from}} und {{to}} liegen beide im ICS2-Gebiet: keine summarische Eingangsanmeldung für diese Beförderung.",
     "ens_leaving": "Die Waren verlassen das ICS2-Gebiet ({{from}} nach {{to}}): die summarische Eingangsanmeldung gilt für eingehende Waren; die Ausfuhr hat ihre eigene Anmeldung (Ausfuhr-MRN).",
-    "ens_outside": "Weder {{from}} noch {{to}} liegt im ICS2-Gebiet. Nur wenn die Waren unterwegs hindurchgeführt werden, gibt der Beförderer eine summarische Eingangsanmeldung ab.",
+    "ens_outside": "Weder {{from}} noch {{to}} liegt im ICS2-Gebiet. Nur wenn die Waren unterwegs dorthin verbracht werden — ein Halt, nicht die bloße Durchfahrt oder der Überflug (Art. 127 Abs. 2 Buchst. a UZK) — gibt der Beförderer eine summarische Eingangsanmeldung ab.",
     "aes_export": "Ausfuhr aus {{from}} nach {{to}}: die Electronic Export Information wird in AES angemeldet (15 CFR 30.2). Die ITN gehört auf das Beförderungsdokument — es sei denn, jede Warenposition liegt bei USD 2.500 oder darunter (§ 30.37(a)) oder eine andere Befreiung greift.",
     "aes_puerto_rico": "Zwischen den Vereinigten Staaten und Puerto Rico ({{from}} nach {{to}}) wird die Electronic Export Information ebenfalls angemeldet (15 CFR 30.2(a)(1)).",
     "aes_virgin_islands": "In die Amerikanischen Jungferninseln aus {{from}} wird die Electronic Export Information angemeldet (15 CFR 30.2(a)(1)).",
-    "aes_canada": "Sendungen aus den Vereinigten Staaten mit Kanada als endgültigem Bestimmungsland sind von der Anmeldung befreit (15 CFR 30.36) — nicht, wenn die Waren in Kanada für ein Drittland gelagert werden, durch Kanada geführt werden oder eine Genehmigung brauchen.",
+    "aes_canada": "Sendungen mit Ursprung in den Vereinigten Staaten (den 50 Bundesstaaten und dem District of Columbia) mit Kanada als endgültigem Bestimmungsland sind von der Anmeldung befreit (15 CFR 30.36) — nicht, wenn die Waren in Kanada für ein Drittland gelagert werden, durch Kanada zu einem dritten Ziel geführt werden oder eine Genehmigung brauchen (§ 30.2(a)(1)(iv)).",
     "aes_not_named": "Von den Amerikanischen Jungferninseln nach {{to}} gehört nicht zu den Beförderungen, die 15 CFR 30.2(a)(1) nennt.",
     "aes_not_us": "Die Waren gehen nicht aus den Vereinigten Staaten ab ({{from}}): keine AES-Anmeldung.",
-    "aes_domestic": "{{from}} nach {{to}} ist eine Inlandsbeförderung: keine AES-Anmeldung."
+    "aes_domestic": "{{from}} nach {{to}} ist eine Inlandsbeförderung: keine AES-Anmeldung.",
+    "ens_uk_entering": "Waren aus {{from}} gelangen nach Großbritannien: HMRC verlangt vom Beförderer eine summarische Eingangsanmeldung im Dienst Safety and Security GB, auch aus der EU. Tragen Sie die Referenz ein, sobald sie bekannt ist.",
+    "ens_uk_qualifying_ni": "Von Nordirland nach Großbritannien: für qualifizierende nordirische Waren gilt eine Befreiung von der summarischen Eingangsanmeldung (HMRC); andere Waren brauchen eine im Dienst Safety and Security GB.",
+    "ens_domestic": "{{from}} nach {{to}} ist eine Inlandsbeförderung: keine summarische Eingangsanmeldung.",
+    "aes_territory": "Waren aus den US-Außengebieten oder zwischen den Vereinigten Staaten und diesen Gebieten ({{from}} nach {{to}}) sind von der Anmeldung ausgenommen (15 CFR 30.2(d)(2)); nur Waren, die sie zu einem ausländischen Ziel durchqueren, werden angemeldet."
   },
   "signature": {
     "title": "Unterschrift des Absenders (optional)",

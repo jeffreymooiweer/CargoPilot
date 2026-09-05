@@ -311,9 +311,11 @@ none is committed until it is planned against that brief.
   destination each field says whether it applies, does not, or is exempt, and names the
   ground — Article 4 of the Union Customs Code for what the EU customs territory is, the
   ICS2 area of the EU with Northern Ireland, Norway and Switzerland for the entry summary
-  declaration, 15 CFR 30.2(a)(1), 30.36 and 30.37(a) for the AES filing and its
-  exemptions. A route the application cannot place gets no verdict rather than a guess,
-  and an applicable reference left empty is a warning on the export, never a refusal.
+  declaration, HMRC's Safety and Security GB for goods into Great Britain, 15 CFR
+  30.2(a)(1), 30.2(d), 30.36 and 30.37(a) for the AES filing and its exemptions — all
+  read in the texts themselves in v1.183.0. A route the application cannot place gets no
+  verdict rather than a guess, and an applicable reference left empty is a warning on the
+  export, never a refusal.
 
 ### Ideas, not committed
 

@@ -442,14 +442,18 @@
     "ens_entering": "Goods from {{from}} enter the ICS2 area (EU customs territory, Northern Ireland, Norway, Switzerland) in {{to}}: the carrier lodges an entry summary declaration in ICS2. Fill in its MRN once known.",
     "ens_within_area": "{{from}} and {{to}} are both inside the ICS2 area: no entry summary declaration for this movement.",
     "ens_leaving": "The goods leave the ICS2 area ({{from}} to {{to}}): the entry summary declaration is for goods coming in; the export side has its own declaration (export MRN).",
-    "ens_outside": "Neither {{from}} nor {{to}} is in the ICS2 area. Only if the goods pass through it on the way would the carrier lodge an entry summary declaration.",
+    "ens_outside": "Neither {{from}} nor {{to}} is in the ICS2 area. Only if the goods are brought into it on the way — a stop, not a mere passage through its waters or airspace (Art. 127(2)(a) UCC) — would the carrier lodge an entry summary declaration.",
     "aes_export": "Export from {{from}} to {{to}}: Electronic Export Information is filed in AES (15 CFR 30.2). The ITN belongs on the transport document — unless every commodity line is USD 2,500 or less (§ 30.37(a)) or another exemption applies.",
     "aes_puerto_rico": "Between the United States and Puerto Rico ({{from}} to {{to}}) Electronic Export Information is filed too (15 CFR 30.2(a)(1)).",
     "aes_virgin_islands": "To the U.S. Virgin Islands from {{from}} Electronic Export Information is filed (15 CFR 30.2(a)(1)).",
-    "aes_canada": "Shipments from the United States with Canada as country of ultimate destination are exempt from filing (15 CFR 30.36) — not when the goods are stored in Canada for a third country, move through Canada, or need a licence.",
+    "aes_canada": "Shipments originating in the United States (the 50 states and the District of Columbia) with Canada as country of ultimate destination are exempt from filing (15 CFR 30.36) — not when the goods are stored in Canada for a third country, move through Canada to a third destination, or need a licence (§ 30.2(a)(1)(iv)).",
     "aes_not_named": "From the U.S. Virgin Islands to {{to}} is not among the movements 15 CFR 30.2(a)(1) names.",
     "aes_not_us": "The goods do not leave from the United States ({{from}}): no AES filing.",
-    "aes_domestic": "{{from}} to {{to}} is a domestic movement: no AES filing."
+    "aes_domestic": "{{from}} to {{to}} is a domestic movement: no AES filing.",
+    "ens_uk_entering": "Goods from {{from}} enter Great Britain: HMRC asks the carrier for an entry summary declaration in the Safety and Security GB service, from the EU included. Fill in its reference once known.",
+    "ens_uk_qualifying_ni": "From Northern Ireland into Great Britain: qualifying Northern Ireland goods have a waiver from the entry summary declaration (HMRC); other goods need one in the Safety and Security GB service.",
+    "ens_domestic": "{{from}} to {{to}} is a domestic movement: no entry summary declaration.",
+    "aes_territory": "Goods shipped from the U.S. territories, or between the United States and them ({{from}} to {{to}}), are excluded from filing (15 CFR 30.2(d)(2)); only goods transiting them to a foreign destination are filed."
   },
   "signature": {
     "title": "Consignor signature (optional)",

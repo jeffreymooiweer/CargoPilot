@@ -442,14 +442,18 @@
     "ens_entering": "Les marchandises de {{from}} entrent dans la zone ICS2 (territoire douanier de l'UE, Irlande du Nord, Norvège, Suisse) en {{to}} : le transporteur dépose une déclaration sommaire d'entrée dans ICS2. Indiquez son MRN dès qu'il est connu.",
     "ens_within_area": "{{from}} et {{to}} sont tous deux dans la zone ICS2 : pas de déclaration sommaire d'entrée pour ce transport.",
     "ens_leaving": "Les marchandises quittent la zone ICS2 ({{from}} vers {{to}}) : la déclaration sommaire d'entrée concerne les marchandises entrantes ; l'exportation a sa propre déclaration (MRN d'exportation).",
-    "ens_outside": "Ni {{from}} ni {{to}} n'est dans la zone ICS2. Ce n'est que si les marchandises la traversent en route que le transporteur dépose une déclaration sommaire d'entrée.",
+    "ens_outside": "Ni {{from}} ni {{to}} n'est dans la zone ICS2. Ce n'est que si les marchandises y sont introduites en route — un arrêt, et non un simple passage dans ses eaux ou son espace aérien (art. 127, par. 2, point a), CDU) — que le transporteur dépose une déclaration sommaire d'entrée.",
     "aes_export": "Exportation de {{from}} vers {{to}} : l'Electronic Export Information est déposée dans AES (15 CFR 30.2). L'ITN doit figurer sur le document de transport — sauf si chaque ligne de marchandises est de 2 500 USD ou moins (§ 30.37(a)) ou si une autre exemption s'applique.",
     "aes_puerto_rico": "Entre les États-Unis et Porto Rico ({{from}} vers {{to}}), l'Electronic Export Information est également déposée (15 CFR 30.2(a)(1)).",
     "aes_virgin_islands": "Vers les Îles Vierges américaines depuis {{from}}, l'Electronic Export Information est déposée (15 CFR 30.2(a)(1)).",
-    "aes_canada": "Les envois des États-Unis dont le Canada est le pays de destination finale sont dispensés de déclaration (15 CFR 30.36) — sauf si les marchandises sont entreposées au Canada pour un pays tiers, transitent par le Canada ou nécessitent une licence.",
+    "aes_canada": "Les envois originaires des États-Unis (les 50 États et le district de Columbia) dont le Canada est le pays de destination finale sont dispensés de déclaration (15 CFR 30.36) — sauf si les marchandises sont entreposées au Canada pour un pays tiers, transitent par le Canada vers une destination tierce ou nécessitent une licence (§ 30.2(a)(1)(iv)).",
     "aes_not_named": "Des Îles Vierges américaines vers {{to}} ne figure pas parmi les mouvements que nomme 15 CFR 30.2(a)(1).",
     "aes_not_us": "Les marchandises ne partent pas des États-Unis ({{from}}) : pas de déclaration AES.",
-    "aes_domestic": "{{from}} vers {{to}} est un transport intérieur : pas de déclaration AES."
+    "aes_domestic": "{{from}} vers {{to}} est un transport intérieur : pas de déclaration AES.",
+    "ens_uk_entering": "Les marchandises de {{from}} entrent en Grande-Bretagne : le HMRC demande au transporteur une déclaration sommaire d'entrée dans le service Safety and Security GB, y compris depuis l'UE. Indiquez la référence dès qu'elle est connue.",
+    "ens_uk_qualifying_ni": "D'Irlande du Nord vers la Grande-Bretagne : les marchandises nord-irlandaises qualifiées sont dispensées de déclaration sommaire d'entrée (HMRC) ; les autres en ont besoin dans le service Safety and Security GB.",
+    "ens_domestic": "{{from}} vers {{to}} est un transport intérieur : pas de déclaration sommaire d'entrée.",
+    "aes_territory": "Les marchandises expédiées depuis les territoires américains, ou entre les États-Unis et ces territoires ({{from}} vers {{to}}), sont exclues de la déclaration (15 CFR 30.2(d)(2)) ; seules celles qui les traversent vers une destination étrangère sont déclarées."
   },
   "signature": {
     "title": "Signature de l'expéditeur (facultative)",

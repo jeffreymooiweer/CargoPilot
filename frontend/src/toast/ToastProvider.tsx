@@ -343,6 +343,15 @@ const KIND_ICON: Record<ToastKind, (props: { className?: string }) => ReactEleme
   warning: ExclamationIcon,
 };
 
+/** Up to this many characters a single action sits beside the message, the
+ *  way "Undo" always has. Past it the message wraps into a column, and a
+ *  button floating top-right beside five lines of text — squeezing them
+ *  narrower still — looks like a layout accident; the action goes under the
+ *  text instead, where a question's answers already are. A character count
+ *  rather than measuring the wrap, because it must render the same on the
+ *  first paint and in a test. */
+export const INLINE_ACTION_MAX_CHARS = 60;
+
 function ToastHost({ toasts, onDismiss }: { toasts: Toast[]; onDismiss: (id: number) => void }) {
   const { t } = useTranslation();
   if (toasts.length === 0) return null;
@@ -353,6 +362,9 @@ function ToastHost({ toasts, onDismiss }: { toasts: Toast[]; onDismiss: (id: num
     <div className="fixed inset-x-0 bottom-0 z-50 flex flex-col gap-2 p-3 sm:inset-x-auto sm:right-4 sm:bottom-4 sm:w-96">
       {toasts.map((toast) => {
         const Icon = KIND_ICON[toast.kind];
+        const actions = toast.actions ?? [];
+        const inline = actions.length === 1 && toast.message.length <= INLINE_ACTION_MAX_CHARS;
+        const below = actions.length > 0 && !inline;
         // The row is top-aligned, and the kind icon is the one thing that is
         // not: it marks what sort of notice this is, so it belongs against the
         // whole message rather than against its first line, which shows as
@@ -370,18 +382,19 @@ function ToastHost({ toasts, onDismiss }: { toasts: Toast[]; onDismiss: (id: num
             />
             {/* A question puts its answers under the text rather than beside
                 it: two or three UN numbers on one line squeeze the sentence
-                that says what is being asked. One answer still sits alongside,
-                where "Undo" has always been. */}
-            <div className={`min-w-0 flex-1 ${(toast.actions?.length ?? 0) > 1 ? "space-y-1.5" : ""}`}>
+                that says what is being asked. One short answer still sits
+                alongside, where "Undo" has always been; one answer to a long
+                message goes under it too, see INLINE_ACTION_MAX_CHARS. */}
+            <div className={`min-w-0 flex-1 ${below ? "space-y-2" : ""}`}>
               <span className="block break-words">{toast.message}</span>
-              {(toast.actions?.length ?? 0) > 1 && (
-                <div className="flex flex-wrap gap-1.5">
-                  {toast.actions!.map((action) => (
+              {below && (
+                <div className="flex flex-wrap gap-1.5" data-testid="toast-actions">
+                  {actions.map((action) => (
                     <button
                       key={action.label}
                       type="button"
                       onClick={action.run}
-                      className="rounded-md border border-current px-2 py-0.5 text-[11px] font-semibold hover:opacity-75"
+                      className="rounded-md border border-current px-2.5 py-1 text-xs font-semibold hover:opacity-75"
                     >
                       {action.label}
                     </button>
@@ -389,13 +402,13 @@ function ToastHost({ toasts, onDismiss }: { toasts: Toast[]; onDismiss: (id: num
                 </div>
               )}
             </div>
-            {toast.actions?.length === 1 && (
+            {inline && (
               <button
                 type="button"
-                onClick={toast.actions[0].run}
+                onClick={actions[0].run}
                 className="shrink-0 rounded-md px-2 py-0.5 font-semibold underline decoration-2 underline-offset-2 hover:opacity-75"
               >
-                {toast.actions[0].label}
+                {actions[0].label}
               </button>
             )}
             {toast.kind !== "loading" && (

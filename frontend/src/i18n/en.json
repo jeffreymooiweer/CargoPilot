@@ -455,6 +455,10 @@
     "ens_domestic": "{{from}} to {{to}} is a domestic movement: no entry summary declaration.",
     "aes_territory": "Goods shipped from the U.S. territories, or between the United States and them ({{from}} to {{to}}), are excluded from filing (15 CFR 30.2(d)(2)); only goods transiting them to a foreign destination are filed."
   },
+  "nhm": {
+    "placeholder": "Six digits, or search by code prefix or a word of the description…",
+    "source": "NHM 2025 (UIC), 5,640 six-digit codes with English and French labels"
+  },
   "signature": {
     "title": "Consignor signature (optional)",
     "intro": "Draw your signature or upload an image of it; it is placed in the consignor box of the selected documents (e.g. CMR box 22). You can also skip this and sign the printed documents with a pen.",

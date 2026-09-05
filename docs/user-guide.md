@@ -191,6 +191,13 @@ overwritten, and the pasted text is read once and stored nowhere.
 Address fields search real addresses as you type. Route fields suggest airports, ports
 or railway stations, filtered to your transport mode. You can always type your own text.
 
+**Rail: the NHM code (CIM box 24).** The UIC's goods nomenclature is behind the box: type
+the start of a code (`7208 5`) or a word of the English or French description
+(`flat-rolled`, `pétrole`) and pick from the list, or type the six digits you know — the
+description is read back under the box either way. The list is the NHM 2025 with 5,640
+six-digit codes; labels exist in English and French because that is what the UIC
+publishes.
+
 You can also **draw or upload your signature** here, or skip it and sign on paper. Your
 signature goes in the sender's box only — carrier and consignee signatures are always
 left blank.

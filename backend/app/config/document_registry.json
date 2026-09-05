@@ -1072,10 +1072,10 @@
               "status": "USER_REQUIRED",
               "type": "text",
               "help": {
-                "nl": "De NHM-code kan niet betrouwbaar uit een vrije omschrijving worden afgeleid; zoek deze op in de NHM-lijst.",
-                "en": "The NHM code cannot be reliably derived from a free-text description; look it up in the NHM list.",
-                "de": "Die NHM-Nummer lässt sich aus einer freien Bezeichnung nicht zuverlässig ableiten; schlagen Sie sie im NHM-Verzeichnis nach.",
-                "fr": "Le code NHM ne peut pas être déduit de façon fiable d'une description en texte libre ; recherchez-le dans la nomenclature NHM."
+                "nl": "De NHM-code (UIC-goederennomenclatuur) is niet uit een vrije omschrijving af te leiden; kies hem uit de lijst — typ het begin van de code of een woord uit de Engelse of Franse omschrijving. De eerste zes cijfers zijn de GS-onderverdeling.",
+                "en": "The NHM code (the UIC goods nomenclature) cannot be derived from a free-text description; pick it from the list — type the start of the code or a word of the English or French label. The six digits are the Harmonized System subheading.",
+                "de": "Die NHM-Nummer (UIC-Güternomenklatur) lässt sich aus einer freien Bezeichnung nicht ableiten; wählen Sie sie aus der Liste — Codeanfang oder ein Wort der englischen oder französischen Bezeichnung eingeben. Die sechs Ziffern sind die HS-Unterposition.",
+                "fr": "Le code NHM (nomenclature marchandises de l'UIC) ne peut pas être déduit d'une description en texte libre ; choisissez-le dans la liste — saisissez le début du code ou un mot de la désignation anglaise ou française. Les six chiffres sont la sous-position du SH."
               },
               "pattern": "\\d{6}",
               "format_hint": {

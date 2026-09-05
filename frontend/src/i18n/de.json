@@ -455,6 +455,10 @@
     "ens_domestic": "{{from}} nach {{to}} ist eine Inlandsbeförderung: keine summarische Eingangsanmeldung.",
     "aes_territory": "Waren aus den US-Außengebieten oder zwischen den Vereinigten Staaten und diesen Gebieten ({{from}} nach {{to}}) sind von der Anmeldung ausgenommen (15 CFR 30.2(d)(2)); nur Waren, die sie zu einem ausländischen Ziel durchqueren, werden angemeldet."
   },
+  "nhm": {
+    "placeholder": "Sechs Ziffern, oder Suche nach Codeanfang oder einem Wort der Bezeichnung…",
+    "source": "NHM 2025 (UIC), 5.640 sechsstellige Codes mit englischer und französischer Bezeichnung"
+  },
   "signature": {
     "title": "Unterschrift des Absenders (optional)",
     "intro": "Zeichnen Sie Ihre Unterschrift oder laden Sie ein Bild davon hoch; sie wird im Absenderfeld der ausgewählten Dokumente platziert (z. B. CMR Feld 22). Sie können diesen Schritt auch überspringen und die ausgedruckten Dokumente mit dem Stift unterschreiben.",

@@ -455,6 +455,10 @@
     "ens_domestic": "{{from}} naar {{to}} is binnenlands vervoer: geen summiere aangifte bij binnenbrengen.",
     "aes_territory": "Goederen verzonden vanuit de Amerikaanse territoria, of tussen de Verenigde Staten en die territoria ({{from}} naar {{to}}), zijn uitgesloten van aangifte (15 CFR 30.2(d)(2)); alleen goederen die er doorheen gaan naar een buitenlandse bestemming worden aangegeven."
   },
+  "nhm": {
+    "placeholder": "Zes cijfers, of zoek op codebegin of een woord uit de omschrijving…",
+    "source": "NHM 2025 (UIC), 5.640 zescijferige codes met Engelse en Franse omschrijving"
+  },
   "signature": {
     "title": "Handtekening afzender (optioneel)",
     "intro": "Teken uw handtekening of upload er een afbeelding van; deze wordt in het afzendervak van de geselecteerde documenten geplaatst (bijv. CMR vak 22). U kunt dit ook overslaan en de documenten na het printen met pen ondertekenen.",

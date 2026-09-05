@@ -16,10 +16,10 @@ Everything persistent lives in the `/data` volume:
 | Your settings | Language, theme, the details you asked to have filled in for you, and which version's release notes you have already seen |
 | The installation's settings | What an administrator set for everyone |
 | The installation's branding | A name, a logo and tile pictures an administrator uploaded, in `/data/branding` |
-| Kept shipments — **only** with `CARGOPILOT_HISTORY=true` | The shipments the organisation chose to keep; see [The shipment history](#the-shipment-history) |
-| The address book — **only** with `CARGOPILOT_HISTORY=true` | Parties (name, address, contact) somebody pressed **Save** on in the details step, shared by everyone on the installation |
-| The articles library — **only** with `CARGOPILOT_HISTORY=true` | Your own article codes with the UN number, names, packing group and packaging you gave them, shared by everyone on the installation |
-| The safety adviser's annual reports — **only** with `CARGOPILOT_HISTORY=true` | The answers an adviser saved on the DGSA report form, one record per year and scope; the figures are recounted from the kept shipments each time |
+| Kept shipments — **only** with the history switched on | The shipments the organisation chose to keep; see [The shipment history](#the-shipment-history) |
+| The address book — **only** with the history switched on | Parties (name, address, contact) somebody pressed **Save** on in the details step, shared by everyone on the installation |
+| The articles library — **only** with the history switched on | Your own article codes with the UN number, names, packing group and packaging you gave them, shared by everyone on the installation |
+| The safety adviser's annual reports — **only** with the history switched on | The answers an adviser saved on the DGSA report form, one record per year and scope; the figures are recounted from the kept shipments each time |
 | The audit log — organisation application only | Who did what and when, as metadata: the action, the account, a reference or a document key, the address the request came from. Never the contents of a shipment; see [The audit log](#the-audit-log) |
 
 That is the whole list.
@@ -34,19 +34,19 @@ leave that section on "skip" and sign the printed documents with a pen.
 
 ## What is deliberately not stored
 
-- **No shipment history**, unless the operator switched one on. Once you close a
-  shipment, its package lines are gone. An organisation application with
-  `CARGOPILOT_HISTORY=true` keeps them instead — see [The shipment
+- **No shipment history**, unless an administrator switched one on. Once you close a
+  shipment, its package lines are gone. An organisation application whose administrator
+  switched **Keep shipments** on keeps them instead — see [The shipment
   history](#the-shipment-history) for exactly what, and how it is switched off again.
 - **No job database with material lists.** Nothing is written down while you work.
 - **No document archive.** Exports are written to a temporary file, streamed to your
   browser and deleted immediately afterwards.
 - **No operational equipment data in the repository or the Docker image.** The equipment
   library starts empty; an administrator fills it by importing a template.
-- **No trips**, unless the operator switched the history on. The groupage screen
+- **No trips**, unless an administrator switched the history on. The groupage screen
   assembles several consignments into one load, judges them together and forgets them;
-  reloading the page clears it. An organisation application with
-  `CARGOPILOT_HISTORY=true` offers to keep the assessed trip beside its shipments — see
+  reloading the page clears it. An organisation application with the history on offers
+  to keep the assessed trip beside its shipments — see
   [The shipment history](#the-shipment-history) — and only when somebody presses the
   button.
 
@@ -181,8 +181,9 @@ The organisation application has one more choice, below.
 ## The shipment history
 
 Off by default. An organisation that would rather not retype the same five customers,
-or that wants to hand out last month's papers again, switches it on at deploy time with
-`CARGOPILOT_HISTORY=true`. This is what that changes, and only this:
+or that wants to hand out last month's papers again, has an administrator switch it on
+under **Settings → Administration → Keep shipments**. This is what that changes, and only
+this:
 
 **What is kept.** Each shipment whose documents were downloaded, or that a user chose to
 keep from the export step: the wizard's state as it stood (the goods lines, the declared
@@ -200,11 +201,14 @@ moving departments does not take last year's shipments along. A shipment another
 department kept is, for you, not there: the server answers as if it did not exist.
 
 **How it goes away.** A user removes a shipment from the shipments page, after a
-confirmation. An operator switches the whole history off by setting the variable back —
-and an installation that still holds kept shipments then **refuses to start**, naming
-the count and the second variable, `CARGOPILOT_HISTORY_DISCARD`, that lets the next start
-delete them. Refusing is loud and deletes nothing by default; a table kept while the
-interface claims it does not exist would be the one outcome worse than either choice.
+confirmation. An administrator switches the whole history off on the same screen that
+switched it on — and while kept shipments or trips are still in the table the server
+**refuses** the switch: the screen names the counts and, on confirmation, deletes them
+first, then saves the switch. A switch alone never deletes anything, and a table is never
+kept while the interface claims it does not exist — that would be the one outcome worse
+than either choice. Should a database hold kept shipments while the setting says off (an
+installation that dropped the old deploy-time variable after upgrading), start-up switches
+the setting back on and says so in the log rather than hiding them.
 
 **Trips.** With the switch on, the groupage page offers to keep an assessed trip: the
 consignments as they sat on the vehicle (their names, their dangerous goods entries, and
@@ -213,14 +217,14 @@ transport unit, and the check's answer as it was given, with the editions it was
 against. Nothing is kept until somebody presses **Keep trip**. Trips follow the same
 department rule as shipments, are listed on their own page, reopen on the groupage page,
 and are removed there or from their record. Switching the history off counts them along
-with the shipments, refuses to start while they are there, and deletes them with the
-same discard variable.
+with the shipments and deletes them in the same confirmed step.
 
 **What does not change.** The open application ignores the switch. Nothing is written
 while you work: a shipment is kept only when its documents are downloaded or you press
-the button, and a trip only when you press the button. And without the switch, the
-addresses the shipments and trips pages use do not exist on the server — the promise is
-enforced by what is mounted, not described in a setting.
+the button, and a trip only when you press the button. And with the switch off, the
+addresses the shipments and trips pages use answer 404 on the server, exactly as an
+address that does not exist — the promise is enforced by what answers, not merely
+described in a setting.
 
 ## The audit log
 

@@ -2,15 +2,15 @@
 
 What is pinned here:
 
-1. **Only with the switch.** Without ``CARGOPILOT_HISTORY=true`` the trips
-   routes do not exist — 404, like the shipments'.
+1. **Only with the switch.** With *Keep shipments* off the trips routes
+   answer 404, like the shipments'.
 2. **The server judges.** A kept trip carries the check's answer as the
    server computed it from the consignments sent, with the editions, and
    the index columns (points, the lost exemption) come out of that answer.
 3. **Reopening returns what was kept**, consignments and result alike.
 4. **Who sees it** follows the departments rule the shipments use.
-5. **Switching the history off** with trips in the table refuses to start
-   and counts them; the discard variable deletes them.
+5. **Switching the history off** counts the trips with the shipments, and
+   deleting the history deletes them too.
 6. **The audit log** gets a line per keep, update and forget.
 7. **The schema step** exists for an old database.
 """
@@ -45,7 +45,6 @@ def db(tmp_path, monkeypatch):
     monkeypatch.setenv("CATALOG_AUTO_SYNC", "false")
     monkeypatch.delenv("CARGOPILOT_MODE", raising=False)
     monkeypatch.delenv("CARGOPILOT_HISTORY", raising=False)
-    monkeypatch.delenv("CARGOPILOT_HISTORY_DISCARD", raising=False)
     get_settings.cache_clear()
     engine = create_engine(f"sqlite:///{data_dir / 'test.db'}",
                            connect_args={"check_same_thread": False})
@@ -197,28 +196,24 @@ def test_forgetting_removes_the_row(db, monkeypatch):
 # --- 5. the switch ----------------------------------------------------------------------
 
 
-def test_trips_left_behind_refuse_to_start_and_are_counted(db, monkeypatch):
+def test_trips_are_counted_when_the_history_is_switched_off(db, monkeypatch):
     monkeypatch.setenv("CARGOPILOT_HISTORY", "true")
     get_settings.cache_clear()
     trips.keep(db, ADA, TripIn(**trip()))
+    assert history.kept_counts(db) == {"shipments": 0, "trips": 1}
+    # Start-up with the setting off and a trip in the table switches it on.
     monkeypatch.setenv("CARGOPILOT_HISTORY", "false")
     get_settings.cache_clear()
-    with pytest.raises(SystemExit) as refused:
-        history.enforce_switch(db)
-    message = str(refused.value)
-    assert "0 kept shipment(s)" in message and "1 kept trip(s)" in message
+    assert history.adopt_kept_data(db) is True
     assert trips.count(db) == 1
 
 
-def test_the_discard_variable_deletes_trips_too(db, monkeypatch, caplog):
+def test_discarding_the_history_deletes_trips_too(db, monkeypatch, caplog):
     monkeypatch.setenv("CARGOPILOT_HISTORY", "true")
     get_settings.cache_clear()
     trips.keep(db, ADA, TripIn(**trip()))
-    monkeypatch.setenv("CARGOPILOT_HISTORY", "false")
-    monkeypatch.setenv("CARGOPILOT_HISTORY_DISCARD", "true")
-    get_settings.cache_clear()
     with caplog.at_level(logging.WARNING):
-        history.enforce_switch(db)
+        assert history.discard_kept(db) == {"shipments": 0, "trips": 1}
     assert trips.count(db) == 0
     assert "1 kept trip(s)" in caplog.text
 

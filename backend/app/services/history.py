@@ -2,17 +2,17 @@
 
 Everything else in CargoPilot forgets a shipment the moment its papers are
 downloaded. This module is the one place that remembers, and it does so only
-when ``CARGOPILOT_HISTORY=true`` in the organisation application — the routes
-that call it are not mounted otherwise, and :func:`enforce_switch` at start-up
-makes sure a database cannot hold shipments the running application refuses
-to acknowledge.
+while an administrator of the organisation application has *Keep shipments*
+switched on — the routes that call it answer 404 otherwise, and
+:func:`adopt_kept_data` at start-up makes sure a database cannot hold
+shipments the running application refuses to acknowledge.
 
-**Switching the history off destroys data, and says so first.** An
-installation with shipments in its table and the switch off refuses to start:
-it names the count and the second variable, ``CARGOPILOT_HISTORY_DISCARD``,
-that discards them. Refusing is loud and destroys nothing by default; a table
-kept while the interface claims it does not exist would be the one outcome
-worse than either choice.
+**Switching the history off destroys data, and says so first.** The settings
+route refuses to switch it off while shipments or trips are in the table; the
+administrator has them deleted first, on the screen, after a confirmation
+that names the counts. Nothing is deleted by a switch alone; a table kept
+while the interface claims it does not exist would be the one outcome worse
+than either choice.
 """
 from __future__ import annotations
 
@@ -41,46 +41,67 @@ MAX_RECORD_BYTES = 4 * 1024 * 1024
 PER_PAGE_MAX = 100
 
 
-class HistoryLeftBehind(SystemExit):
-    """Shipments in the database and no switch to serve them."""
-
-
 class RecordTooLarge(ValueError):
     """More than :data:`MAX_RECORD_BYTES` of snapshot, bundle and export."""
 
 
-# --- start-up ----------------------------------------------------------------
+# --- the switch --------------------------------------------------------------
 
 
 def count(db: Session) -> int:
     return int(db.query(func.count(Shipment.id)).scalar() or 0)
 
 
-def enforce_switch(db: Session) -> None:
-    """Refuse to run with shipments, or trips, the switch no longer covers."""
+def kept_counts(db: Session) -> dict[str, int]:
+    """What switching the history off would destroy: the shipments and the
+    trips. The address book, the articles and the adviser's reports stay
+    where they are — they are not a record of any consignment."""
     from app.services import trips
 
+    return {"shipments": count(db), "trips": trips.count(db)}
+
+
+def discard_kept(db: Session) -> dict[str, int]:
+    """Delete every kept shipment and trip. The administrator's deliberate
+    act, after a confirmation that named these counts."""
+    from app.services import trips
+
+    counts = kept_counts(db)
+    db.query(Shipment).delete()
+    db.commit()
+    trips.discard_all(db)
+    logger.warning("Shipment history emptied on the administrator's request: "
+                   "%s kept shipment(s) and %s kept trip(s) deleted",
+                   counts["shipments"], counts["trips"])
+    return counts
+
+
+def adopt_kept_data(db: Session) -> bool:
+    """At start-up: a database that holds kept shipments or trips while the
+    setting says off gets the setting switched on, never the data hidden.
+
+    That is what an upgrade from the deploy-time variable looks like — the
+    variable was the starting value and is still read as one, but an
+    installation that dropped it from its environment must not wake up with
+    a table the interface claims does not exist. Returns whether it acted.
+    """
+    from app.services.settings_store import instance_settings, save_instance_settings
+
     settings = get_settings()
-    if settings.history_enabled:
-        return
-    left = count(db)
-    left_trips = trips.count(db)
-    if not left and not left_trips:
-        return
-    if settings.cargopilot_history_discard:
-        db.query(Shipment).delete()
-        db.commit()
-        trips.discard_all(db)
-        logger.warning("Shipment history switched off: discarded %s kept shipment(s) "
-                       "and %s kept trip(s) as CARGOPILOT_HISTORY_DISCARD=true asked",
-                       left, left_trips)
-        return
-    raise HistoryLeftBehind(
-        f"Refusing to start: the database holds {left} kept shipment(s) and "
-        f"{left_trips} kept trip(s) but CARGOPILOT_HISTORY is off. Either set "
-        "CARGOPILOT_HISTORY=true to keep serving them, or set "
-        "CARGOPILOT_HISTORY_DISCARD=true as well to delete them on the next "
-        "start. Nothing has been deleted.")
+    if settings.is_open:
+        return False
+    current = instance_settings(db)
+    if current.history_enabled:
+        return False
+    counts = kept_counts(db)
+    if not counts["shipments"] and not counts["trips"]:
+        return False
+    save_instance_settings(db, current.model_copy(update={"history_enabled": True}))
+    logger.warning("Shipment history switched on: the database holds %s kept "
+                   "shipment(s) and %s kept trip(s) that the setting did not cover. "
+                   "An administrator switches it off under Settings, Administration, "
+                   "after deleting them there.", counts["shipments"], counts["trips"])
+    return True
 
 
 # --- keeping -----------------------------------------------------------------

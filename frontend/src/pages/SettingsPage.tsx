@@ -380,11 +380,16 @@ export default function SettingsPage({ user }: Props) {
 function AdminSettings() {
   const { t } = useTranslation();
   const toast = useToast();
+  const { reload } = usePreferences();
   const [settings, setSettings] = useState<InstanceSettings | null>(null);
   const [draft, setDraft] = useState<InstanceSettings | null>(null);
   const [saving, setSaving] = useState(false);
   const [testTo, setTestTo] = useState("");
   const [testing, setTesting] = useState(false);
+  // Switching the history off destroys what it kept. The server refuses
+  // while anything is kept; the screen asks first, with the counts, and
+  // deletes on confirmation before saving the switch.
+  const [discard, setDiscard] = useState<{ shipments: number; trips: number } | null>(null);
 
   useEffect(() => {
     api
@@ -423,13 +428,40 @@ function AdminSettings() {
     }
   };
 
+  const store = async () => {
+    const stored = await api.saveInstanceSettings(draft);
+    setSettings(stored);
+    setDraft(stored);
+    toast.success(t("settings.saved"));
+    // The menu and the export step read the public settings; a switch
+    // saved here must show there without a page reload.
+    if (stored.history_enabled !== settings.history_enabled) void reload();
+  };
+
   const submit = async () => {
     setSaving(true);
     try {
-      const stored = await api.saveInstanceSettings(draft);
-      setSettings(stored);
-      setDraft(stored);
-      toast.success(t("settings.saved"));
+      if (settings.history_enabled && !draft.history_enabled) {
+        const counts = await api.historyCounts();
+        if (counts.shipments || counts.trips) {
+          setDiscard(counts);
+          return;
+        }
+      }
+      await store();
+    } catch (e) {
+      toast.error(String(e));
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const discardAndSwitchOff = async () => {
+    setDiscard(null);
+    setSaving(true);
+    try {
+      await api.discardHistory();
+      await store();
     } catch (e) {
       toast.error(String(e));
     } finally {
@@ -580,6 +612,24 @@ function AdminSettings() {
           hint={t("settings.unCardsEnabledHint")}
           checked={draft.un_cards_enabled}
           onChange={(value) => set("un_cards_enabled", value)}
+        />
+
+        <Toggle
+          label={t("settings.historyEnabled")}
+          hint={t("settings.historyEnabledHint")}
+          checked={draft.history_enabled}
+          onChange={(value) => set("history_enabled", value)}
+        />
+        <ConfirmDialog
+          open={discard !== null}
+          title={t("settings.historyDiscardTitle")}
+          body={t("settings.historyDiscardBody", {
+            shipments: discard?.shipments ?? 0,
+            trips: discard?.trips ?? 0,
+          })}
+          confirmLabel={t("settings.historyDiscardConfirm")}
+          onConfirm={() => void discardAndSwitchOff()}
+          onCancel={() => setDiscard(null)}
         />
 
         <div>

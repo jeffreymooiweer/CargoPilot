@@ -26,7 +26,7 @@ from app.schemas.settings import (
     PublicSettings,
     UserPreferences,
 )
-from app.services import audit, mail, settings_store
+from app.services import audit, history, mail, settings_store
 from app.services.units import UNITS
 from app.core.languages import SUPPORTED as SUPPORTED_LANGUAGES
 
@@ -81,6 +81,17 @@ def save_instance_settings(
     db: Session = Depends(get_db),
 ):
     before = settings_store.instance_settings(db).model_dump()
+    if before.get("history_enabled") and not payload.history_enabled:
+        # Off destroys data, and a switch must not do that on its own: the
+        # administrator deletes the kept shipments first, after seeing the
+        # counts, and only then may the setting go off.
+        counts = history.kept_counts(db)
+        if counts["shipments"] or counts["trips"]:
+            raise HTTPException(
+                status_code=409,
+                detail=f"The history still holds {counts['shipments']} kept shipment(s) "
+                       f"and {counts['trips']} kept trip(s). Delete them first under "
+                       "Settings, Administration, Keep shipments.")
     stored = settings_store.save_instance_settings(db, payload)
     # The keys that changed and nothing of what they changed to: the mail
     # password is in here, and so is everything an outsider would like.
@@ -90,6 +101,28 @@ def save_instance_settings(
         audit.record(db, "settings.changed", actor=admin, target=("settings", "instance"),
                      summary=", ".join(changed), request=request)
     return settings_store.redacted(stored)
+
+
+@router.get("/instance/history")
+def history_counts(admin: User = Depends(require_admin), db: Session = Depends(get_db)):
+    """What switching the history off would destroy, for the confirmation."""
+    return history.kept_counts(db)
+
+
+@router.post("/instance/history/discard")
+def discard_history(
+    request: Request,
+    admin: User = Depends(require_admin),
+    db: Session = Depends(get_db),
+):
+    """Delete every kept shipment and trip, so the history may be switched
+    off. The screen asks first and names the counts; this is the answer."""
+    counts = history.discard_kept(db)
+    audit.record(db, "settings.history_discarded", actor=admin,
+                 target=("settings", "history"),
+                 summary=f"{counts['shipments']} shipment(s), {counts['trips']} trip(s)",
+                 request=request)
+    return {"ok": True, **counts}
 
 
 @router.post("/instance/mail-test", response_model=MailTestResult)

@@ -272,6 +272,11 @@ export const api = {
     request<{ ok: boolean; removed: boolean }>("/un-cards/remove", { method: "POST" }),
   saveInstanceSettings: (payload: InstanceSettings) =>
     request<InstanceSettings>("/settings/instance", { method: "PUT", body: JSON.stringify(payload) }),
+  historyCounts: () => request<{ shipments: number; trips: number }>("/settings/instance/history"),
+  discardHistory: () =>
+    request<{ ok: boolean; shipments: number; trips: number }>("/settings/instance/history/discard", {
+      method: "POST",
+    }),
   /** Kept groupage trips. These addresses exist only beside the shipment
    *  history; the check itself (`dgTrip`) exists everywhere. */
   trips: (query: TripQuery = {}) => request<TripPage>(`/trips${auditSuffix(query)}`),
@@ -1175,6 +1180,10 @@ export interface InstanceSettings {
   session_timeout_minutes: number;
   /** How many days the audit log keeps a line before start-up prunes it. */
   audit_retention_days: number;
+  /** Whether this installation keeps its shipments. Off destroys data, so
+   *  the server refuses to switch it off while kept shipments or trips
+   *  exist; `historyCounts` says how many and `discardHistory` deletes them. */
+  history_enabled: boolean;
   organisation_name: string;
   organisation_address: string;
   /** What the screen calls itself; empty means CargoPilot. The logo and the

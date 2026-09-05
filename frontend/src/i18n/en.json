@@ -380,7 +380,12 @@
     "updateNative": "This installation runs as its own service on the server, without Docker. Updating is the installation's update script: it fetches the new release, puts it beside the old one and restarts the service. The data stays where it is.",
     "updateKubernetes": "This installation runs in Kubernetes. Updating is a rollout to the newer image; the pod is recreated and the volume stays.",
     "auditRetention": "Audit log retention (days)",
-    "auditRetentionHint": "How long a line stays in the audit log. Whatever is older is removed at start-up. 365 is one year."
+    "auditRetentionHint": "How long a line stays in the audit log. Whatever is older is removed at start-up. 365 is one year.",
+    "historyEnabled": "Keep shipments (history)",
+    "historyEnabledHint": "On: the export step keeps every shipment when its documents are downloaded, and the Shipments, Trips and Articles pages, the address book and the safety adviser's annual report appear. Off: nothing is kept, and switching off is only possible once the kept shipments and trips are deleted — this screen asks first.",
+    "historyDiscardTitle": "Switch the history off and delete what it kept?",
+    "historyDiscardBody": "The history still holds {{shipments}} kept shipment(s) and {{trips}} kept trip(s). Switching off deletes them for good; the address book, the articles and the annual reports stay. This cannot be undone.",
+    "historyDiscardConfirm": "Delete and switch off"
   },
   "modality": {
     "title": "Choose your transport modality",
@@ -1002,7 +1007,7 @@
   "history": {
     "title": "Shipments",
     "intro": "The shipments this installation kept. Open one in the wizard, download its documents again, or remove it.",
-    "off": "This installation does not keep shipments. Its operator switches the history on with CARGOPILOT_HISTORY=true; see the configuration guide.",
+    "off": "This installation does not keep shipments. An administrator switches the history on under Settings, Administration, Keep shipments.",
     "search": "Search by reference, consignor or consignee…",
     "allModalities": "All transport modes",
     "from": "From",
@@ -1218,7 +1223,8 @@
       "report.rendered": "Safety adviser's annual report downloaded",
       "trip.kept": "Trip kept",
       "trip.updated": "Kept trip updated",
-      "trip.forgotten": "Kept trip removed"
+      "trip.forgotten": "Kept trip removed",
+      "settings.history_discarded": "History emptied before switching off"
     }
   },
   "trips": {

@@ -201,6 +201,16 @@ class InstanceSettings(BaseModel):
     #: at start-up and whenever the log is read; a year by default.
     audit_retention_days: int = Field(default=365, ge=1, le=3650)
 
+    #: Whether this installation keeps the shipments it makes — the shipment
+    #: history, with the shipments page, the trips, the address book, the
+    #: articles library and the safety adviser's report beside it. Off by
+    #: default: a shipment drawn up is a shipment forgotten. Switching it
+    #: *off* with kept shipments in the table is refused until the
+    #: administrator has them deleted first, so a table is never kept while
+    #: the interface claims it does not exist. The open application has no
+    #: administrator and never keeps anything, whatever this says.
+    history_enabled: bool = False
+
     #: Used as the consignor for users who filled in nothing of their own, so a
     #: new colleague starts with the company already on the form.
     organisation_name: str = ""

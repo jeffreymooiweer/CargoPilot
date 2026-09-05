@@ -380,7 +380,12 @@
     "updateNative": "Cette installation tourne comme service propre sur le serveur, sans Docker. La mise à jour passe par le script de mise à jour de l'installation : il récupère la nouvelle version, la place à côté de l'ancienne et redémarre le service. Les données restent en place.",
     "updateKubernetes": "Cette installation tourne dans Kubernetes. La mise à jour est un déploiement vers l'image plus récente ; le pod est recréé et le volume reste.",
     "auditRetention": "Conservation du journal d'audit (jours)",
-    "auditRetentionHint": "Combien de temps une ligne reste dans le journal d'audit. Ce qui est plus ancien est supprimé au démarrage. 365 correspond à un an."
+    "auditRetentionHint": "Combien de temps une ligne reste dans le journal d'audit. Ce qui est plus ancien est supprimé au démarrage. 365 correspond à un an.",
+    "historyEnabled": "Conserver les expéditions (historique)",
+    "historyEnabledHint": "Activé : l'étape d'export conserve chaque expédition dès que ses documents sont téléchargés, et les pages Expéditions, Trajets et Articles, le carnet d'adresses et le rapport annuel du conseiller à la sécurité apparaissent. Désactivé : rien n'est conservé, et la désactivation n'est possible qu'une fois les expéditions et trajets conservés supprimés — cet écran le demande d'abord.",
+    "historyDiscardTitle": "Désactiver l'historique et supprimer ce qu'il a conservé ?",
+    "historyDiscardBody": "L'historique contient encore {{shipments}} expédition(s) conservée(s) et {{trips}} trajet(s) conservé(s). La désactivation les supprime définitivement ; le carnet d'adresses, les articles et les rapports annuels restent. Cette action est irréversible.",
+    "historyDiscardConfirm": "Supprimer et désactiver"
   },
   "modality": {
     "title": "Choisissez votre mode de transport",
@@ -1002,7 +1007,7 @@
   "history": {
     "title": "Expéditions",
     "intro": "Les expéditions que cette installation a conservées. Ouvrez-en une dans l'assistant, téléchargez à nouveau ses documents ou supprimez-la.",
-    "off": "Cette installation ne conserve pas les expéditions. Son exploitant active l'historique avec CARGOPILOT_HISTORY=true ; voir le guide de configuration.",
+    "off": "Cette installation ne conserve pas les expéditions. Un administrateur active l'historique sous Paramètres, Administration, Conserver les expéditions.",
     "search": "Rechercher par référence, expéditeur ou destinataire…",
     "allModalities": "Tous les modes de transport",
     "from": "Du",
@@ -1218,7 +1223,8 @@
       "report.rendered": "Rapport annuel du conseiller à la sécurité téléchargé",
       "trip.kept": "Trajet conservé",
       "trip.updated": "Trajet conservé mis à jour",
-      "trip.forgotten": "Trajet conservé supprimé"
+      "trip.forgotten": "Trajet conservé supprimé",
+      "settings.history_discarded": "Historique vidé avant la désactivation"
     }
   },
   "trips": {

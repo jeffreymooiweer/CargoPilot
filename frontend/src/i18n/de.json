@@ -380,7 +380,12 @@
     "updateNative": "Diese Installation läuft als eigener Dienst auf dem Server, ohne Docker. Aktualisiert wird mit dem Update-Skript der Installation: Es holt die neue Version, legt sie neben die alte und startet den Dienst neu. Die Daten bleiben erhalten.",
     "updateKubernetes": "Diese Installation läuft in Kubernetes. Aktualisieren ist ein Rollout auf das neuere Image; der Pod wird neu erstellt und das Volume bleibt.",
     "auditRetention": "Aufbewahrung Audit-Protokoll (Tage)",
-    "auditRetentionHint": "Wie lange eine Zeile im Audit-Protokoll bleibt. Älteres wird beim Start entfernt. 365 ist ein Jahr."
+    "auditRetentionHint": "Wie lange eine Zeile im Audit-Protokoll bleibt. Älteres wird beim Start entfernt. 365 ist ein Jahr.",
+    "historyEnabled": "Sendungen speichern (Verlauf)",
+    "historyEnabledHint": "Ein: der Exportschritt speichert jede Sendung, sobald ihre Dokumente heruntergeladen werden, und die Seiten Sendungen, Fahrten und Artikel, das Adressbuch und der Jahresbericht des Gefahrgutbeauftragten kommen hinzu. Aus: nichts wird gespeichert, und Ausschalten geht erst, wenn die gespeicherten Sendungen und Fahrten gelöscht sind — dieser Bildschirm fragt zuerst.",
+    "historyDiscardTitle": "Verlauf ausschalten und das Gespeicherte löschen?",
+    "historyDiscardBody": "Der Verlauf enthält noch {{shipments}} gespeicherte Sendung(en) und {{trips}} gespeicherte Fahrt(en). Ausschalten löscht sie endgültig; das Adressbuch, die Artikel und die Jahresberichte bleiben erhalten. Das lässt sich nicht rückgängig machen.",
+    "historyDiscardConfirm": "Löschen und ausschalten"
   },
   "modality": {
     "title": "Wählen Sie Ihren Verkehrsträger",
@@ -1002,7 +1007,7 @@
   "history": {
     "title": "Sendungen",
     "intro": "Die Sendungen, die diese Installation aufbewahrt hat. Öffnen Sie eine im Assistenten, laden Sie die Dokumente erneut herunter oder entfernen Sie sie.",
-    "off": "Diese Installation bewahrt keine Sendungen auf. Der Betreiber schaltet den Verlauf mit CARGOPILOT_HISTORY=true ein; siehe die Konfigurationsanleitung.",
+    "off": "Diese Installation speichert keine Sendungen. Ein Administrator schaltet den Verlauf unter Einstellungen, Verwaltung, Sendungen speichern ein.",
     "search": "Suche nach Referenz, Absender oder Empfänger…",
     "allModalities": "Alle Verkehrsträger",
     "from": "Von",
@@ -1218,7 +1223,8 @@
       "report.rendered": "Jahresbericht des Gefahrgutbeauftragten heruntergeladen",
       "trip.kept": "Fahrt gespeichert",
       "trip.updated": "Gespeicherte Fahrt aktualisiert",
-      "trip.forgotten": "Gespeicherte Fahrt entfernt"
+      "trip.forgotten": "Gespeicherte Fahrt entfernt",
+      "settings.history_discarded": "Verlauf vor dem Ausschalten geleert"
     }
   },
   "trips": {

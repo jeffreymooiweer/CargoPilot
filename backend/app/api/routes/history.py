@@ -1,8 +1,9 @@
 """The shipments page's routes.
 
-Mounted only when ``CARGOPILOT_HISTORY=true`` in the organisation
-application — see ``main.py``. Everywhere else these addresses do not exist,
-which is how the promise "nothing is kept" is enforced rather than described.
+Mounted in the organisation application behind ``require_history`` — see
+``main.py`` — so these addresses answer 404 while the administrator's *Keep
+shipments* setting is off, and do not exist at all in the open application.
+That is how the promise "nothing is kept" is enforced rather than described.
 
 Every signed-in user of the organisation sees every kept shipment. The
 roadmap's departments — who sees whose — are the next phase and will narrow

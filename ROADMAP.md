@@ -137,11 +137,14 @@ default and the one mode that needs no migration to reach.
 
 #### History — the switch, the storage and the page shipped in v1.173.0
 
-`CARGOPILOT_HISTORY=true`. The export step keeps each shipment when its documents are
-downloaded, a shipments page lists them with filters and cards, a kept shipment reopens
-in the wizard and hands out its documents again, and switching the history off with
-shipments in the table refuses to start until `CARGOPILOT_HISTORY_DISCARD=true` says
-they may go. Underneath it is the schema runner the database plan asked for: numbered
+`CARGOPILOT_HISTORY=true` at the time; since v1.188.0 the switch is the administrator's
+own, *Keep shipments* under Administration, and the variable is only its starting value.
+The export step keeps each shipment when its documents are downloaded, a shipments page
+lists them with filters and cards, a kept shipment reopens in the wizard and hands out
+its documents again, and switching the history off with shipments in the table is
+refused until the administrator has them deleted on the screen (until v1.188.0 the
+application refused to start instead, until `CARGOPILOT_HISTORY_DISCARD=true` said they
+may go). Underneath it is the schema runner the database plan asked for: numbered
 steps, a version table, a fresh database stamped rather than migrated. What a kept
 shipment holds — the wizard's own state, the bundle request, and the structured export
 with its derived findings and editions — settles the size question the database plan

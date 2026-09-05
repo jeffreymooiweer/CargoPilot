@@ -2,6 +2,41 @@
 
 All notable changes are documented here, following [Semantic Versioning](https://semver.org/).
 
+## [1.179.0] — 2026-09-05
+
+### The annual report in the shape the competent authority gives it
+
+The DVSA — the UK's Driver & Vehicle Standards Agency — publishes a *DGSA
+Annual Report for the Carriage of Dangerous Goods* (December 2025), a
+competent authority's rendering of ADR 1.8.3.3 with a fixed structure:
+company and adviser details, a risk rating, an executive summary,
+activities, incidents, training, high consequence dangerous goods, a
+transport table per class with the operations and the quantity band,
+practices and procedures, a class 7 block, additional points, comments, who
+prepared it, and a checklist DGSA1 to DGSA21. This release gives the
+report that shape.
+
+**Fill in the report**, the second tab of the DGSA annual report page,
+draws the form from a definition in four languages — the English wording is
+the template's own, reused under the Open Government Licence with the
+UK-specific bodies written as "the competent authority". What the history
+can propose — the classes and quantities in tonnage bands, the method of
+carriage, the high consequence goods the 1.10.3 check found, the annual
+tonnage, the company name from the branding — sits under a **Take over**
+button and is never written into an answer by itself; a class carried by
+both mass and volume gets its figures shown and no band chosen. The
+answers are kept per year and scope (schema step 4), so a report is filled
+in over weeks and found again in five years.
+
+**Report as PDF** draws it on the installation's paper in the template's
+order: the answers, the adviser's saved signature from the settings, the
+counted figures as an appendix, and the checklist last with each line
+naming the section of the report that answers it. Unanswered stays visibly
+unanswered.
+
+The thirteen duties on the figures tab now carry the DVSA's English wording
+and their checklist codes.
+
 ## [1.178.0] — 2026-09-05
 
 ### The installation's name and logo on every document

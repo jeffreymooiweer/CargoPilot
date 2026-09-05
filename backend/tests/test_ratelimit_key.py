@@ -206,6 +206,8 @@ def test_every_rate_limit_in_the_application_in_one_table():
         # The adviser's annual report reads every kept shipment of a year.
         "shipment_report": "20 per 1 minute",
         "shipment_report_workbook": "20 per 1 minute",
+        "shipment_report_form": "20 per 1 minute",
+        "shipment_report_pdf": "20 per 1 minute",
         "mail_bundle": "5 per 1 minute",
         "export_un_cards": "10 per 1 minute",
         "read_carrier_confirmation": "20 per 1 minute",

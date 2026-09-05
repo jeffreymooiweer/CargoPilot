@@ -9,9 +9,11 @@ roadmap's departments — who sees whose — are the next phase and will narrow
 this; until then the organisation is the unit.
 """
 from datetime import datetime
+from typing import Any
 
 from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException, Query, Request
 from fastapi.responses import FileResponse, JSONResponse, Response
+from pydantic import BaseModel, Field
 from sqlalchemy.orm import Session
 
 from app.api.routes.documents import build_bundle, delete_file
@@ -22,7 +24,11 @@ from app.models.shipment import Shipment
 from app.models.user import User
 from app.schemas import DocumentBundleRequest
 from app.schemas.history import ShipmentDetail, ShipmentIn, ShipmentPage, ShipmentSummary
-from app.services import departments, dgsa_report, history
+from app.services import departments, dgsa_form, dgsa_report, history
+from app.services.documents import brand
+from app.services.documents.dgsa_report_pdf import render_dgsa_report
+from app.services.documents.signature import decode_signature_image
+from app.services.settings_store import user_preferences
 
 router = APIRouter(prefix="/shipments", tags=["shipments"])
 
@@ -80,6 +86,81 @@ def shipment_report(request: Request,
     figures — see ``services/dgsa_report.py`` for what is counted and what is
     deliberately left to the adviser."""
     return dgsa_report.build_report(db, user, year, department, language)
+
+
+class ReportAnswers(BaseModel):
+    answers: dict[str, Any] = Field(default_factory=dict)
+
+
+@router.get("/report/form")
+@limiter.limit(DGSA_REPORT)
+def shipment_report_form(request: Request,
+                         year: int = Query(ge=2000, le=2100),
+                         department: str = Query(default="", max_length=16),
+                         language: str = Query(default="nl", max_length=8),
+                         user: User = Depends(get_current_user),
+                         db: Session = Depends(get_db)):
+    """The report in the DVSA's shape: the figures, the form's definition in
+    one language, what the history can pre-fill, and the answers kept so
+    far for this year and scope."""
+    scope = dgsa_form.scope_for(user, department)
+    report = dgsa_report.build_report(db, user, year, scope, language)
+    record = dgsa_form.load(db, year, scope)
+    return {
+        "report": report,
+        "scope": scope,
+        "definition": dgsa_form.definition(language),
+        "prefill": dgsa_form.prefill(report, brand.resolve(db).name),
+        "answers": dgsa_form.answers_of(record),
+        "saved_at": record.updated_at.isoformat() if record else None,
+        "has_signature": bool(user_preferences(db, user.id).signature_image) if user.id else False,
+    }
+
+
+@router.put("/report/answers")
+def shipment_report_answers(payload: ReportAnswers,
+                            year: int = Query(ge=2000, le=2100),
+                            department: str = Query(default="", max_length=16),
+                            user: User = Depends(get_current_user),
+                            db: Session = Depends(get_db)):
+    """Keep the adviser's answers for this year and scope. Only the keys the
+    form knows survive, in the shape the form gives them."""
+    scope = dgsa_form.scope_for(user, department)
+    try:
+        record = dgsa_form.save(db, user, year, scope, payload.answers)
+    except ValueError as exc:
+        raise HTTPException(status_code=413, detail=str(exc)) from exc
+    return {"ok": True, "saved_at": record.updated_at.isoformat(), "answers": dgsa_form.answers_of(record)}
+
+
+@router.get("/report.pdf")
+@limiter.limit(DGSA_REPORT)
+def shipment_report_pdf(request: Request,
+                        background_tasks: BackgroundTasks,
+                        year: int = Query(ge=2000, le=2100),
+                        department: str = Query(default="", max_length=16),
+                        language: str = Query(default="nl", max_length=8),
+                        user: User = Depends(get_current_user),
+                        db: Session = Depends(get_db)):
+    """The report as paper, in the installation's style, in the DVSA's
+    order, with the adviser's saved signature where they kept one."""
+    scope = dgsa_form.scope_for(user, department)
+    current_brand = brand.use(db)
+    report = dgsa_report.build_report(db, user, year, scope, language)
+    answers = dgsa_form.answers_of(dgsa_form.load(db, year, scope))
+    signature_png = None
+    if user.id:
+        data_url = user_preferences(db, user.id).signature_image
+        if data_url:
+            try:
+                signature_png = decode_signature_image(data_url)
+            except ValueError:
+                signature_png = None
+    path = render_dgsa_report(report, dgsa_form.definition(language), answers,
+                              signature_png=signature_png, brand_name=current_brand.name)
+    background_tasks.add_task(delete_file, path)
+    return FileResponse(path=path, filename=f"cargopilot-dgsa-report-{year}.pdf",
+                        media_type="application/pdf")
 
 
 @router.get("/report.xlsx")

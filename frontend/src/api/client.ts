@@ -290,6 +290,19 @@ export const api = {
     downloadBlob(
       `/shipments/report.xlsx?year=${year}&department=${encodeURIComponent(department)}&language=${encodeURIComponent(language)}`,
       `cargopilot-dgsa-report-${year}.xlsx`),
+  /** The report in the DVSA's shape: the form's definition, what the
+   *  history can pre-fill, and the answers kept for this year and scope. */
+  dgsaReportForm: (year: number, department = "", language = "nl") =>
+    request<DgsaFormResponse>(
+      `/shipments/report/form?year=${year}&department=${encodeURIComponent(department)}&language=${encodeURIComponent(language)}`),
+  saveDgsaAnswers: (year: number, department: string, answers: DgsaAnswers) =>
+    request<{ ok: boolean; saved_at: string; answers: DgsaAnswers }>(
+      `/shipments/report/answers?year=${year}&department=${encodeURIComponent(department)}`,
+      { method: "PUT", body: JSON.stringify({ answers }) }),
+  downloadDgsaReportPdf: (year: number, department = "", language = "nl") =>
+    downloadBlob(
+      `/shipments/report.pdf?year=${year}&department=${encodeURIComponent(department)}&language=${encodeURIComponent(language)}`,
+      `cargopilot-dgsa-report-${year}.pdf`),
   /** The address book: parties for the details step, shared by everybody,
    *  kept only beside the history. Saving a name that exists brings that
    *  one entry up to date rather than adding a second. */
@@ -715,8 +728,86 @@ export interface DgsaReport {
   by_un_number: ({ un_number: string; name: string; class: string; packing_group: string } & DgsaQuantityRow)[];
   adr_points: { status: string; label: string; shipments: number }[];
   documents: { document: string; label: string; shipments: number }[];
+  carriage_modes?: string[];
+  high_consequence?: { un_number: string; reason: string; carriage_mode: string; shipments: number }[];
+  class7_packages?: number;
   duties_heading: string;
   duties: { key: string; text: string }[];
+}
+
+/** One question of the DVSA-shaped form, localised by the server. */
+export interface DgsaQuestion {
+  key: string;
+  section: string;
+  kind: "text" | "textarea" | "date" | "yesno" | "yesnona" | "choice" | "multi" | "incidents" | "transport_table";
+  text: string;
+  checklist?: string;
+  prefill?: string;
+  options?: string[];
+  option_labels?: Record<string, string>;
+  columns?: Record<string, string>;
+  operations?: string[];
+  operation_labels?: Record<string, string>;
+  bands?: string[];
+  band_note?: string;
+  classes?: string[];
+  package_designs?: string[];
+  package_design_labels?: Record<string, string>;
+}
+
+export interface DgsaSection {
+  key: string;
+  title: string;
+  intro?: string;
+  only_with_class?: string;
+}
+
+export interface DgsaYesNo {
+  answer: "yes" | "no" | "na" | "";
+  details: string;
+}
+
+export interface DgsaIncident {
+  date: string;
+  place: string;
+  description: string;
+}
+
+export interface DgsaTransportRow {
+  operations: string[];
+  band: string;
+  designs?: string[];
+  other?: string;
+  quantity_kg?: number;
+  quantity_l?: number;
+  packages?: number;
+  shipments?: number;
+}
+
+export type DgsaAnswerValue = string | string[] | DgsaYesNo | DgsaIncident[] | Record<string, DgsaTransportRow>;
+export type DgsaAnswers = Record<string, DgsaAnswerValue>;
+
+export interface DgsaFormDefinition {
+  source: string;
+  answer_labels: Record<string, string>;
+  sections: DgsaSection[];
+  questions: DgsaQuestion[];
+  checklist: {
+    title: string;
+    columns: Record<string, string>;
+    additional_heading: string;
+    items: { code: string; text: string; question?: string; kind?: string; additional?: boolean }[];
+  };
+}
+
+export interface DgsaFormResponse {
+  report: DgsaReport;
+  scope: string;
+  definition: DgsaFormDefinition;
+  prefill: DgsaAnswers & { _labels?: Record<string, string> };
+  answers: DgsaAnswers;
+  saved_at: string | null;
+  has_signature: boolean;
 }
 
 /** Which application this installation runs as. See docs/privacy.md. */

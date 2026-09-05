@@ -46,7 +46,9 @@ const report: DgsaReport = {
 const api = vi.hoisted(() => ({
   reportYears: vi.fn(),
   dgsaReport: vi.fn(),
+  dgsaReportForm: vi.fn(),
   downloadDgsaReport: vi.fn(),
+  downloadDgsaReportPdf: vi.fn(),
   departments: vi.fn(),
 }));
 vi.mock("../api/client", () => ({ api }));
@@ -67,6 +69,13 @@ beforeEach(() => {
   api.reportYears.mockResolvedValue({ years: [2026, 2025] });
   api.dgsaReport.mockResolvedValue(report);
   api.downloadDgsaReport.mockResolvedValue(undefined);
+  api.downloadDgsaReportPdf.mockResolvedValue(undefined);
+  api.dgsaReportForm.mockResolvedValue({
+    report, scope: "", answers: {}, prefill: {}, saved_at: "2026-09-05T10:00:00Z", has_signature: true,
+    definition: { source: "DVSA", answer_labels: {}, sections: [{ key: "company", title: "Bedrijfsgegevens" }],
+                  questions: [{ key: "company_name", section: "company", kind: "text", text: "Bedrijfsnaam" }],
+                  checklist: { title: "", columns: {}, additional_heading: "", items: [] } },
+  });
   api.departments.mockResolvedValue([{ id: 1, name: "Sales", users: 1, shipments: 2 }]);
 });
 
@@ -104,6 +113,18 @@ describe("het DGSA-jaarrapport", () => {
     await screen.findByText("Benzine");
     expect(screen.queryByLabelText("departments.userDepartment")).toBeNull();
     expect(api.departments).not.toHaveBeenCalled();
+  });
+
+  it("opent het formulier op het tabblad en downloadt het rapport als PDF", async () => {
+    renderPage();
+    await screen.findByText("Benzine");
+    expect(api.dgsaReportForm).not.toHaveBeenCalled();
+    await userEvent.click(screen.getByRole("tab", { name: "dgsa.viewForm" }));
+    expect(await screen.findByText("Bedrijfsgegevens")).toBeInTheDocument();
+    expect(api.dgsaReportForm).toHaveBeenCalledWith(2026, "", "nl");
+    expect(screen.queryByText("Benzine")).toBeNull();
+    await userEvent.click(screen.getByRole("button", { name: "dgsa.downloadPdf" }));
+    await waitFor(() => expect(api.downloadDgsaReportPdf).toHaveBeenCalledWith(2026, "", "nl"));
   });
 
   it("downloadt de werkmap voor het gekozen jaar", async () => {

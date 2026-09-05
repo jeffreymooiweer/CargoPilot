@@ -1,6 +1,6 @@
 {
-  "_comment": "The DGSA annual report of ADR 1.8.3.3: what the adviser owes management once a year. The provision prescribes the report and not its contents, so the statistical half is what the shipment history can count and the judgement half is the adviser's own list of duties from the same paragraph, offered as headings to fill in. The Dutch texts are read from the official Dutch edition (ADR 2025 NL, printed page 148, 1.8.3.3); the English, German and French wordings are translations of that reading made for this file, not the authentic texts of those editions, which were not at hand when it was written.",
-  "source": "ADR 2025, 1.8.3.3 — read in the official Dutch edition (ADR-2025-NL-Compleet.pdf, printed page 148 of 2102)",
+  "_comment": "The DGSA annual report of ADR 1.8.3.3: what the adviser owes management once a year. The provision prescribes the report and not its contents, so the statistical half is what the shipment history can count and the judgement half is the adviser's own list of duties from the same paragraph, offered as headings to fill in. The Dutch texts are read from the official Dutch edition (ADR 2025 NL, printed page 148, 1.8.3.3). The English wording of the duties is the DVSA's (DGSA Annual Report for the Carriage of Dangerous Goods, December 2025, checklist DGSA3 to DGSA15), a competent authority's rendering of the same paragraph; the German and French are translations of the Dutch reading made for this file. Each duty names its checklist code.",
+  "source": "ADR 2025, 1.8.3.3 — read in the official Dutch edition (ADR-2025-NL-Compleet.pdf, printed page 148 of 2102); English wording from the DVSA annual report template (December 2025), Open Government Licence v3.0",
   "basis": {
     "nl": "ADR 1.8.3.3: de veiligheidsadviseur stelt een voor de bedrijfsleiding bestemd jaarverslag op over de activiteiten van de onderneming met betrekking tot het vervoer van gevaarlijke goederen. Deze jaarverslagen worden vijf jaar bewaard en desgewenst ter beschikking gesteld van de nationale autoriteiten.",
     "en": "ADR 1.8.3.3: the safety adviser prepares an annual report to the management of the undertaking on the undertaking's activities in the carriage of dangerous goods. These annual reports are kept for five years and made available to the national authorities at their request.",
@@ -23,139 +23,372 @@
     {
       "key": "identification",
       "nl": "De werkwijzen die de naleving van de voorschriften betreffende het identificeren van de vervoerde gevaarlijke goederen ten doel hebben.",
-      "en": "The procedures for compliance with the requirements governing the identification of dangerous goods being carried.",
+      "en": "The procedures for compliance with the requirements governing the identification of dangerous goods being transported.",
       "de": "Die Verfahren zur Einhaltung der Vorschriften für die Identifizierung der beförderten gefährlichen Güter.",
-      "fr": "Les procédés visant au respect des règles relatives à l'identification des marchandises dangereuses transportées."
+      "fr": "Les procédés visant au respect des règles relatives à l'identification des marchandises dangereuses transportées.",
+      "checklist": "DGSA3"
     },
     {
       "key": "vehicle_purchase",
       "nl": "De praktijk van de onderneming betreffende het in aanmerking nemen, bij de aankoop van vervoermiddelen, van eventuele bijzondere vereisten met betrekking tot de vervoerde gevaarlijke goederen.",
-      "en": "The undertaking's practice of taking account, when purchasing means of transport, of any special requirements in connection with the dangerous goods being carried.",
+      "en": "The undertakings practice in taking account, when purchasing means of transport, of any special requirements in connection with the dangerous goods being transported.",
       "de": "Die Praxis des Unternehmens, beim Erwerb von Beförderungsmitteln etwaige besondere Anforderungen im Zusammenhang mit den beförderten gefährlichen Gütern zu berücksichtigen.",
-      "fr": "La pratique de l'entreprise concernant la prise en compte, lors de l'achat de moyens de transport, de toute exigence particulière liée aux marchandises dangereuses transportées."
+      "fr": "La pratique de l'entreprise concernant la prise en compte, lors de l'achat de moyens de transport, de toute exigence particulière liée aux marchandises dangereuses transportées.",
+      "checklist": "DGSA4"
     },
     {
       "key": "equipment_checks",
       "nl": "De werkwijzen om het voor het vervoer van gevaarlijke goederen of voor het verpakken, vullen, laden en lossen gebruikte materieel te controleren.",
-      "en": "The procedures for checking the equipment used in the carriage of dangerous goods or in packing, filling, loading and unloading.",
+      "en": "The procedures for checking the equipment used in connection with the carriage, packing, filling, loading or unloading of dangerous goods.",
       "de": "Die Verfahren zur Überprüfung der Ausrüstung, die für die Beförderung gefährlicher Güter oder für das Verpacken, Befüllen, Beladen und Entladen verwendet wird.",
-      "fr": "Les procédés de vérification du matériel utilisé pour le transport de marchandises dangereuses ou pour l'emballage, le remplissage, le chargement et le déchargement."
+      "fr": "Les procédés de vérification du matériel utilisé pour le transport de marchandises dangereuses ou pour l'emballage, le remplissage, le chargement et le déchargement.",
+      "checklist": "DGSA8"
     },
     {
       "key": "training",
       "nl": "Het feit dat de betrokken werknemers van de onderneming een passende opleiding hebben ontvangen, onder meer over de wijzigingen van de voorschriften, en dat deze opleiding in hun dossier is gedocumenteerd.",
-      "en": "That the employees of the undertaking concerned have received appropriate training, including on changes to the regulations, and that this training is documented in their files.",
+      "en": "The proper training of the undertakings employees, including on the changes to the regulations, and the maintenance of records of such training.",
       "de": "Dass die betroffenen Mitarbeiter des Unternehmens eine angemessene Schulung erhalten haben, auch über Änderungen der Vorschriften, und dass diese Schulung in ihren Akten dokumentiert ist.",
-      "fr": "Le fait que les employés concernés de l'entreprise ont reçu une formation appropriée, y compris sur les modifications de la réglementation, et que cette formation est consignée dans leur dossier."
+      "fr": "Le fait que les employés concernés de l'entreprise ont reçu une formation appropriée, y compris sur les modifications de la réglementation, et que cette formation est consignée dans leur dossier.",
+      "checklist": "DGSA12"
     },
     {
       "key": "emergency_procedures",
       "nl": "Het opzetten van passende noodprocedures bij eventuele ongevallen of voorvallen die de veiligheid tijdens het vervoer van gevaarlijke goederen of tijdens het verpakken, vullen, laden en het lossen in gevaar kunnen brengen.",
-      "en": "The implementation of proper emergency procedures in the event of any accident or incident that may affect safety during the carriage of dangerous goods or during packing, filling, loading or unloading.",
+      "en": "The implementation of proper emergency procedures in the event of any accident or incident that may affect safety during the carriage, packing, filling, loading or unloading of dangerous goods.",
       "de": "Die Einführung geeigneter Notfallverfahren bei Unfällen oder Zwischenfällen, die die Sicherheit während der Beförderung gefährlicher Güter oder während des Verpackens, Befüllens, Beladens oder Entladens beeinträchtigen können.",
-      "fr": "La mise en place de procédures d'urgence appropriées en cas d'accident ou d'incident pouvant porter atteinte à la sécurité pendant le transport de marchandises dangereuses ou pendant l'emballage, le remplissage, le chargement ou le déchargement."
+      "fr": "La mise en place de procédures d'urgence appropriées en cas d'accident ou d'incident pouvant porter atteinte à la sécurité pendant le transport de marchandises dangereuses ou pendant l'emballage, le remplissage, le chargement ou le déchargement.",
+      "checklist": "DGSA7"
     },
     {
       "key": "incident_analysis",
       "nl": "Het verrichten van analyses en zo nodig het opstellen van rapporten over de ongevallen, voorvallen of tijdens het vervoer van gevaarlijke goederen of tijdens het verpakken, vullen, laden en het lossen geconstateerde ernstige inbreuken.",
-      "en": "Analysing and, where necessary, preparing reports on accidents, incidents or serious infringements recorded during the carriage of dangerous goods or during packing, filling, loading or unloading.",
+      "en": "Investigating and, where appropriate, preparing reports on serious accidents, incidents or serious infringements recorded during the carriage, packing, filling, loading or unloading of dangerous goods.",
       "de": "Die Durchführung von Analysen und erforderlichenfalls die Erstellung von Berichten über Unfälle, Zwischenfälle oder schwere Verstöße, die während der Beförderung gefährlicher Güter oder während des Verpackens, Befüllens, Beladens oder Entladens festgestellt wurden.",
-      "fr": "L'analyse et, au besoin, la rédaction de rapports sur les accidents, incidents ou infractions graves constatés pendant le transport de marchandises dangereuses ou pendant l'emballage, le remplissage, le chargement ou le déchargement."
+      "fr": "L'analyse et, au besoin, la rédaction de rapports sur les accidents, incidents ou infractions graves constatés pendant le transport de marchandises dangereuses ou pendant l'emballage, le remplissage, le chargement ou le déchargement.",
+      "checklist": "DGSA5"
     },
     {
       "key": "recurrence",
       "nl": "Het invoeren van passende maatregelen om herhaling van ongevallen, voorvallen of ernstige inbreuken te voorkomen.",
       "en": "The implementation of appropriate measures to avoid the recurrence of accidents, incidents or serious infringements.",
       "de": "Die Einführung geeigneter Maßnahmen, um die Wiederholung von Unfällen, Zwischenfällen oder schweren Verstößen zu vermeiden.",
-      "fr": "La mise en place de mesures appropriées pour éviter la répétition d'accidents, d'incidents ou d'infractions graves."
+      "fr": "La mise en place de mesures appropriées pour éviter la répétition d'accidents, d'incidents ou d'infractions graves.",
+      "checklist": "DGSA6"
     },
     {
       "key": "subcontractors",
       "nl": "Het in aanmerking nemen van de wettelijke voorschriften en de bijzondere behoeften met betrekking tot het vervoer van gevaarlijke goederen, voor wat betreft de keuze en het gebruik van onderaannemers of andere tussenpersonen.",
-      "en": "The account taken of the legal requirements and the special needs of the carriage of dangerous goods in the choice and use of subcontractors or other third parties.",
+      "en": "The account taken of the legal prescriptions and special requirements associated with the carriage of dangerous goods in the choice and use of subcontractors or third parties.",
       "de": "Die Berücksichtigung der Rechtsvorschriften und der besonderen Erfordernisse der Beförderung gefährlicher Güter bei der Auswahl und dem Einsatz von Subunternehmern oder anderen Dritten.",
-      "fr": "La prise en compte des prescriptions légales et des besoins particuliers du transport de marchandises dangereuses dans le choix et l'utilisation de sous-traitants ou d'autres intermédiaires."
+      "fr": "La prise en compte des prescriptions légales et des besoins particuliers du transport de marchandises dangereuses dans le choix et l'utilisation de sous-traitants ou d'autres intermédiaires.",
+      "checklist": "DGSA15"
     },
     {
       "key": "procedures",
       "nl": "Het controleren of het personeel dat aangewezen is voor de verzending of het vervoer of het verpakken, vullen, laden en lossen van gevaarlijke goederen, beschikt over gedetailleerde uitvoeringsprocedures en instructies.",
-      "en": "Checking that the staff assigned to the consigning, carriage or packing, filling, loading or unloading of dangerous goods have detailed operating procedures and instructions.",
+      "en": "Verification that employees involved in the consigning, carriage, packing, filling, loading or unloading of dangerous goods have detailed operational procedures and instructions.",
       "de": "Die Überprüfung, ob das mit dem Versand, der Beförderung oder dem Verpacken, Befüllen, Beladen oder Entladen gefährlicher Güter betraute Personal über ausführliche Arbeitsverfahren und Anweisungen verfügt.",
-      "fr": "La vérification que le personnel affecté à l'expédition, au transport ou à l'emballage, au remplissage, au chargement ou au déchargement de marchandises dangereuses dispose de procédures d'exécution et d'instructions détaillées."
+      "fr": "La vérification que le personnel affecté à l'expédition, au transport ou à l'emballage, au remplissage, au chargement ou au déchargement de marchandises dangereuses dispose de procédures d'exécution et d'instructions détaillées.",
+      "checklist": "DGSA13"
     },
     {
       "key": "awareness",
       "nl": "Het invoeren van maatregelen voor de bewustmaking voor de gevaren die verbonden zijn aan het vervoer en aan het verpakken, vullen, laden en lossen van gevaarlijke goederen.",
-      "en": "The introduction of measures to increase awareness of the risks inherent in the carriage and in the packing, filling, loading and unloading of dangerous goods.",
+      "en": "The introduction of measures to increase awareness of the risks inherent in the carriage, packing, filling, loading and unloading of dangerous goods.",
       "de": "Die Einführung von Maßnahmen zur Sensibilisierung für die Gefahren, die mit der Beförderung und dem Verpacken, Befüllen, Beladen und Entladen gefährlicher Güter verbunden sind.",
-      "fr": "La mise en place de mesures de sensibilisation aux risques liés au transport et à l'emballage, au remplissage, au chargement et au déchargement de marchandises dangereuses."
+      "fr": "La mise en place de mesures de sensibilisation aux risques liés au transport et à l'emballage, au remplissage, au chargement et au déchargement de marchandises dangereuses.",
+      "checklist": "DGSA14"
     },
     {
       "key": "documents_on_board",
       "nl": "Het invoeren van controlemethoden om ervoor te zorgen dat de documenten en veiligheidsuitrusting die het vervoer moeten begeleiden, zich aan boord van de vervoermiddelen bevinden en conform de voorschriften zijn.",
-      "en": "The implementation of verification methods to ensure that the documents and safety equipment that must accompany the carriage are on board the means of transport and comply with the regulations.",
+      "en": "The implementation of verification procedures to ensure the presence on board the means of transport of the documents and safety equipment which must accompany transport and the compliance of such documents and equipment with the regulations.",
       "de": "Die Einführung von Prüfverfahren, mit denen sichergestellt wird, dass die Dokumente und die Sicherheitsausrüstung, die die Beförderung begleiten müssen, sich an Bord der Beförderungsmittel befinden und den Vorschriften entsprechen.",
-      "fr": "La mise en place de méthodes de contrôle garantissant que les documents et les équipements de sécurité devant accompagner le transport se trouvent à bord des moyens de transport et sont conformes à la réglementation."
+      "fr": "La mise en place de méthodes de contrôle garantissant que les documents et les équipements de sécurité devant accompagner le transport se trouvent à bord des moyens de transport et sont conformes à la réglementation.",
+      "checklist": "DGSA9"
     },
     {
       "key": "packing_loading",
       "nl": "Het invoeren van controlemethoden om ervoor te zorgen dat de voorschriften met betrekking tot het verpakken, vullen, laden en lossen worden nageleefd.",
-      "en": "The implementation of verification methods to ensure compliance with the requirements governing packing, filling, loading and unloading.",
+      "en": "The implementation of verification procedures to ensure compliance with the requirements governing packing, filling, loading and unloading.",
       "de": "Die Einführung von Prüfverfahren, mit denen die Einhaltung der Vorschriften für das Verpacken, Befüllen, Beladen und Entladen sichergestellt wird.",
-      "fr": "La mise en place de méthodes de contrôle garantissant le respect des règles relatives à l'emballage, au remplissage, au chargement et au déchargement."
+      "fr": "La mise en place de méthodes de contrôle garantissant le respect des règles relatives à l'emballage, au remplissage, au chargement et au déchargement.",
+      "checklist": "DGSA10"
     },
     {
       "key": "security_plan",
       "nl": "De aanwezigheid van een beveiligingsplan overeenkomstig 1.10.3.2.",
       "en": "The existence of the security plan indicated in 1.10.3.2.",
       "de": "Das Vorhandensein des in Abschnitt 1.10.3.2 genannten Sicherungsplans.",
-      "fr": "L'existence du plan de sûreté prévu au 1.10.3.2."
+      "fr": "L'existence du plan de sûreté prévu au 1.10.3.2.",
+      "checklist": "DGSA11"
     }
   ],
   "labels": {
-    "title": {"nl": "Jaarverslag veiligheidsadviseur", "en": "Safety adviser's annual report", "de": "Jahresbericht des Gefahrgutbeauftragten", "fr": "Rapport annuel du conseiller à la sécurité"},
-    "year": {"nl": "Jaar", "en": "Year", "de": "Jahr", "fr": "Année"},
-    "scope": {"nl": "Bereik", "en": "Scope", "de": "Umfang", "fr": "Portée"},
-    "scope_all": {"nl": "Alle afdelingen", "en": "All departments", "de": "Alle Abteilungen", "fr": "Tous les services"},
-    "scope_none": {"nl": "Zonder afdeling", "en": "Without a department", "de": "Ohne Abteilung", "fr": "Sans service"},
-    "generated_at": {"nl": "Opgesteld op", "en": "Drawn up on", "de": "Erstellt am", "fr": "Établi le"},
-    "generated_by": {"nl": "Opgesteld door", "en": "Drawn up by", "de": "Erstellt von", "fr": "Établi par"},
-    "summary": {"nl": "Samenvatting", "en": "Summary", "de": "Zusammenfassung", "fr": "Résumé"},
-    "shipments": {"nl": "Zendingen", "en": "Shipments", "de": "Sendungen", "fr": "Expéditions"},
-    "with_dangerous_goods": {"nl": "Met gevaarlijke goederen", "en": "With dangerous goods", "de": "Mit gefährlichen Gütern", "fr": "Avec marchandises dangereuses"},
-    "without_dangerous_goods": {"nl": "Zonder gevaarlijke goederen", "en": "Without dangerous goods", "de": "Ohne gefährliche Güter", "fr": "Sans marchandises dangereuses"},
-    "products": {"nl": "Stoffen (regels)", "en": "Substances (lines)", "de": "Stoffe (Zeilen)", "fr": "Matières (lignes)"},
-    "quantity_kg": {"nl": "Hoeveelheid (kg)", "en": "Quantity (kg)", "de": "Menge (kg)", "fr": "Quantité (kg)"},
-    "quantity_l": {"nl": "Hoeveelheid (L)", "en": "Quantity (L)", "de": "Menge (L)", "fr": "Quantité (L)"},
-    "quantity_unknown": {"nl": "Zonder bruikbare hoeveelheid", "en": "Without a usable quantity", "de": "Ohne verwertbare Menge", "fr": "Sans quantité exploitable"},
-    "by_month": {"nl": "Per maand", "en": "By month", "de": "Je Monat", "fr": "Par mois"},
-    "month": {"nl": "Maand", "en": "Month", "de": "Monat", "fr": "Mois"},
-    "by_modality": {"nl": "Per modaliteit", "en": "By mode of transport", "de": "Je Verkehrsträger", "fr": "Par mode de transport"},
-    "modality": {"nl": "Modaliteit", "en": "Mode of transport", "de": "Verkehrsträger", "fr": "Mode de transport"},
-    "by_regulation": {"nl": "Per regelgeving", "en": "By regulation", "de": "Je Regelwerk", "fr": "Par réglementation"},
-    "regulation": {"nl": "Regelgeving", "en": "Regulation", "de": "Regelwerk", "fr": "Réglementation"},
-    "by_class": {"nl": "Per klasse", "en": "By class", "de": "Je Klasse", "fr": "Par classe"},
-    "class": {"nl": "Klasse", "en": "Class", "de": "Klasse", "fr": "Classe"},
-    "by_un_number": {"nl": "Per UN-nummer", "en": "By UN number", "de": "Je UN-Nummer", "fr": "Par numéro ONU"},
-    "un_number": {"nl": "UN-nummer", "en": "UN number", "de": "UN-Nummer", "fr": "Numéro ONU"},
-    "name": {"nl": "Juiste vervoersnaam", "en": "Proper shipping name", "de": "Offizielle Benennung", "fr": "Désignation officielle de transport"},
-    "packing_group": {"nl": "Verpakkingsgroep", "en": "Packing group", "de": "Verpackungsgruppe", "fr": "Groupe d'emballage"},
-    "by_department": {"nl": "Per afdeling", "en": "By department", "de": "Je Abteilung", "fr": "Par service"},
-    "department": {"nl": "Afdeling", "en": "Department", "de": "Abteilung", "fr": "Service"},
-    "adr_points": {"nl": "ADR 1.1.3.6 per zending", "en": "ADR 1.1.3.6 per shipment", "de": "ADR 1.1.3.6 je Sendung", "fr": "ADR 1.1.3.6 par expédition"},
-    "adr_points_note": {"nl": "Zoals de applicatie het bij het bewaren beoordeelde: de puntentelling van 1.1.3.6 over de opgegeven hoeveelheden.", "en": "As the application judged it when the shipment was kept: the 1.1.3.6 points count over the declared quantities.", "de": "Wie die Anwendung es beim Aufbewahren beurteilt hat: die Punkteberechnung nach 1.1.3.6 über die angegebenen Mengen.", "fr": "Tel que l'application l'a jugé lors de la conservation : le calcul des points du 1.1.3.6 sur les quantités déclarées."},
-    "status": {"nl": "Uitkomst", "en": "Outcome", "de": "Ergebnis", "fr": "Résultat"},
-    "status_exempt_possible": {"nl": "Vrijstelling 1.1.3.6 mogelijk (≤ 1000 punten)", "en": "1.1.3.6 exemption possible (≤ 1000 points)", "de": "Freistellung nach 1.1.3.6 möglich (≤ 1000 Punkte)", "fr": "Exemption 1.1.3.6 possible (≤ 1000 points)"},
-    "status_above_threshold": {"nl": "Boven de drempel (> 1000 punten)", "en": "Above the threshold (> 1000 points)", "de": "Über dem Schwellenwert (> 1000 Punkte)", "fr": "Au-dessus du seuil (> 1000 points)"},
-    "status_not_exempt": {"nl": "Geen vrijstelling (vervoerscategorie 0)", "en": "No exemption (transport category 0)", "de": "Keine Freistellung (Beförderungskategorie 0)", "fr": "Pas d'exemption (catégorie de transport 0)"},
-    "status_incomplete": {"nl": "Onvolledig opgegeven", "en": "Incompletely declared", "de": "Unvollständig angegeben", "fr": "Déclaration incomplète"},
-    "status_not_available_for_mode": {"nl": "Niet in colli (tank of los gestort)", "en": "Not in packages (tank or bulk)", "de": "Nicht in Versandstücken (Tank oder lose Schüttung)", "fr": "Pas en colis (citerne ou vrac)"},
-    "status_not_assessed": {"nl": "Niet beoordeeld", "en": "Not assessed", "de": "Nicht beurteilt", "fr": "Non évalué"},
-    "documents": {"nl": "Documenten", "en": "Documents", "de": "Dokumente", "fr": "Documents"},
-    "document": {"nl": "Document", "en": "Document", "de": "Dokument", "fr": "Document"},
-    "duties": {"nl": "Taken van de adviseur", "en": "The adviser's duties", "de": "Aufgaben des Beauftragten", "fr": "Tâches du conseiller"},
-    "duty": {"nl": "Taak", "en": "Duty", "de": "Aufgabe", "fr": "Tâche"},
-    "finding": {"nl": "Bevinding van de adviseur", "en": "The adviser's finding", "de": "Feststellung des Beauftragten", "fr": "Constat du conseiller"},
-    "unknown": {"nl": "(onbekend)", "en": "(unknown)", "de": "(unbekannt)", "fr": "(inconnu)"}
+    "title": {
+      "nl": "Jaarverslag veiligheidsadviseur",
+      "en": "Safety adviser's annual report",
+      "de": "Jahresbericht des Gefahrgutbeauftragten",
+      "fr": "Rapport annuel du conseiller à la sécurité"
+    },
+    "year": {
+      "nl": "Jaar",
+      "en": "Year",
+      "de": "Jahr",
+      "fr": "Année"
+    },
+    "scope": {
+      "nl": "Bereik",
+      "en": "Scope",
+      "de": "Umfang",
+      "fr": "Portée"
+    },
+    "scope_all": {
+      "nl": "Alle afdelingen",
+      "en": "All departments",
+      "de": "Alle Abteilungen",
+      "fr": "Tous les services"
+    },
+    "scope_none": {
+      "nl": "Zonder afdeling",
+      "en": "Without a department",
+      "de": "Ohne Abteilung",
+      "fr": "Sans service"
+    },
+    "generated_at": {
+      "nl": "Opgesteld op",
+      "en": "Drawn up on",
+      "de": "Erstellt am",
+      "fr": "Établi le"
+    },
+    "generated_by": {
+      "nl": "Opgesteld door",
+      "en": "Drawn up by",
+      "de": "Erstellt von",
+      "fr": "Établi par"
+    },
+    "summary": {
+      "nl": "Samenvatting",
+      "en": "Summary",
+      "de": "Zusammenfassung",
+      "fr": "Résumé"
+    },
+    "shipments": {
+      "nl": "Zendingen",
+      "en": "Shipments",
+      "de": "Sendungen",
+      "fr": "Expéditions"
+    },
+    "with_dangerous_goods": {
+      "nl": "Met gevaarlijke goederen",
+      "en": "With dangerous goods",
+      "de": "Mit gefährlichen Gütern",
+      "fr": "Avec marchandises dangereuses"
+    },
+    "without_dangerous_goods": {
+      "nl": "Zonder gevaarlijke goederen",
+      "en": "Without dangerous goods",
+      "de": "Ohne gefährliche Güter",
+      "fr": "Sans marchandises dangereuses"
+    },
+    "products": {
+      "nl": "Stoffen (regels)",
+      "en": "Substances (lines)",
+      "de": "Stoffe (Zeilen)",
+      "fr": "Matières (lignes)"
+    },
+    "quantity_kg": {
+      "nl": "Hoeveelheid (kg)",
+      "en": "Quantity (kg)",
+      "de": "Menge (kg)",
+      "fr": "Quantité (kg)"
+    },
+    "quantity_l": {
+      "nl": "Hoeveelheid (L)",
+      "en": "Quantity (L)",
+      "de": "Menge (L)",
+      "fr": "Quantité (L)"
+    },
+    "quantity_unknown": {
+      "nl": "Zonder bruikbare hoeveelheid",
+      "en": "Without a usable quantity",
+      "de": "Ohne verwertbare Menge",
+      "fr": "Sans quantité exploitable"
+    },
+    "by_month": {
+      "nl": "Per maand",
+      "en": "By month",
+      "de": "Je Monat",
+      "fr": "Par mois"
+    },
+    "month": {
+      "nl": "Maand",
+      "en": "Month",
+      "de": "Monat",
+      "fr": "Mois"
+    },
+    "by_modality": {
+      "nl": "Per modaliteit",
+      "en": "By mode of transport",
+      "de": "Je Verkehrsträger",
+      "fr": "Par mode de transport"
+    },
+    "modality": {
+      "nl": "Modaliteit",
+      "en": "Mode of transport",
+      "de": "Verkehrsträger",
+      "fr": "Mode de transport"
+    },
+    "by_regulation": {
+      "nl": "Per regelgeving",
+      "en": "By regulation",
+      "de": "Je Regelwerk",
+      "fr": "Par réglementation"
+    },
+    "regulation": {
+      "nl": "Regelgeving",
+      "en": "Regulation",
+      "de": "Regelwerk",
+      "fr": "Réglementation"
+    },
+    "by_class": {
+      "nl": "Per klasse",
+      "en": "By class",
+      "de": "Je Klasse",
+      "fr": "Par classe"
+    },
+    "class": {
+      "nl": "Klasse",
+      "en": "Class",
+      "de": "Klasse",
+      "fr": "Classe"
+    },
+    "by_un_number": {
+      "nl": "Per UN-nummer",
+      "en": "By UN number",
+      "de": "Je UN-Nummer",
+      "fr": "Par numéro ONU"
+    },
+    "un_number": {
+      "nl": "UN-nummer",
+      "en": "UN number",
+      "de": "UN-Nummer",
+      "fr": "Numéro ONU"
+    },
+    "name": {
+      "nl": "Juiste vervoersnaam",
+      "en": "Proper shipping name",
+      "de": "Offizielle Benennung",
+      "fr": "Désignation officielle de transport"
+    },
+    "packing_group": {
+      "nl": "Verpakkingsgroep",
+      "en": "Packing group",
+      "de": "Verpackungsgruppe",
+      "fr": "Groupe d'emballage"
+    },
+    "by_department": {
+      "nl": "Per afdeling",
+      "en": "By department",
+      "de": "Je Abteilung",
+      "fr": "Par service"
+    },
+    "department": {
+      "nl": "Afdeling",
+      "en": "Department",
+      "de": "Abteilung",
+      "fr": "Service"
+    },
+    "adr_points": {
+      "nl": "ADR 1.1.3.6 per zending",
+      "en": "ADR 1.1.3.6 per shipment",
+      "de": "ADR 1.1.3.6 je Sendung",
+      "fr": "ADR 1.1.3.6 par expédition"
+    },
+    "adr_points_note": {
+      "nl": "Zoals de applicatie het bij het bewaren beoordeelde: de puntentelling van 1.1.3.6 over de opgegeven hoeveelheden.",
+      "en": "As the application judged it when the shipment was kept: the 1.1.3.6 points count over the declared quantities.",
+      "de": "Wie die Anwendung es beim Aufbewahren beurteilt hat: die Punkteberechnung nach 1.1.3.6 über die angegebenen Mengen.",
+      "fr": "Tel que l'application l'a jugé lors de la conservation : le calcul des points du 1.1.3.6 sur les quantités déclarées."
+    },
+    "status": {
+      "nl": "Uitkomst",
+      "en": "Outcome",
+      "de": "Ergebnis",
+      "fr": "Résultat"
+    },
+    "status_exempt_possible": {
+      "nl": "Vrijstelling 1.1.3.6 mogelijk (≤ 1000 punten)",
+      "en": "1.1.3.6 exemption possible (≤ 1000 points)",
+      "de": "Freistellung nach 1.1.3.6 möglich (≤ 1000 Punkte)",
+      "fr": "Exemption 1.1.3.6 possible (≤ 1000 points)"
+    },
+    "status_above_threshold": {
+      "nl": "Boven de drempel (> 1000 punten)",
+      "en": "Above the threshold (> 1000 points)",
+      "de": "Über dem Schwellenwert (> 1000 Punkte)",
+      "fr": "Au-dessus du seuil (> 1000 points)"
+    },
+    "status_not_exempt": {
+      "nl": "Geen vrijstelling (vervoerscategorie 0)",
+      "en": "No exemption (transport category 0)",
+      "de": "Keine Freistellung (Beförderungskategorie 0)",
+      "fr": "Pas d'exemption (catégorie de transport 0)"
+    },
+    "status_incomplete": {
+      "nl": "Onvolledig opgegeven",
+      "en": "Incompletely declared",
+      "de": "Unvollständig angegeben",
+      "fr": "Déclaration incomplète"
+    },
+    "status_not_available_for_mode": {
+      "nl": "Niet in colli (tank of los gestort)",
+      "en": "Not in packages (tank or bulk)",
+      "de": "Nicht in Versandstücken (Tank oder lose Schüttung)",
+      "fr": "Pas en colis (citerne ou vrac)"
+    },
+    "status_not_assessed": {
+      "nl": "Niet beoordeeld",
+      "en": "Not assessed",
+      "de": "Nicht beurteilt",
+      "fr": "Non évalué"
+    },
+    "documents": {
+      "nl": "Documenten",
+      "en": "Documents",
+      "de": "Dokumente",
+      "fr": "Documents"
+    },
+    "document": {
+      "nl": "Document",
+      "en": "Document",
+      "de": "Dokument",
+      "fr": "Document"
+    },
+    "duties": {
+      "nl": "Taken van de adviseur",
+      "en": "The adviser's duties",
+      "de": "Aufgaben des Beauftragten",
+      "fr": "Tâches du conseiller"
+    },
+    "duty": {
+      "nl": "Taak",
+      "en": "Duty",
+      "de": "Aufgabe",
+      "fr": "Tâche"
+    },
+    "finding": {
+      "nl": "Bevinding van de adviseur",
+      "en": "The adviser's finding",
+      "de": "Feststellung des Beauftragten",
+      "fr": "Constat du conseiller"
+    },
+    "unknown": {
+      "nl": "(onbekend)",
+      "en": "(unknown)",
+      "de": "(unbekannt)",
+      "fr": "(inconnu)"
+    }
   }
 }

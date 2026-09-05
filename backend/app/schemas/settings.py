@@ -333,6 +333,9 @@ class PublicSettings(BaseModel):
     card_links_enabled: bool
     organisation_name: str
     organisation_address: str
+    #: Whether this installation keeps its shipments. The export step offers
+    #: to keep one and the menu shows the shipments page only when it does.
+    history_enabled: bool = False
     #: Whether the export step may offer to mail the documents. Only that a
     #: mail server exists, never which one or under whose name.
     mail_enabled: bool

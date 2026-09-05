@@ -2,6 +2,61 @@
 
 All notable changes are documented here, following [Semantic Versioning](https://semver.org/).
 
+## [1.173.0] — 2026-09-05
+
+### The shipment history
+
+`CARGOPILOT_HISTORY=true` makes the organisation application keep the
+shipments it makes. Off — the default, and what every installation was until
+now — nothing changes: a shipment drawn up is a shipment forgotten.
+
+**The switch, the storage and the page, in that order.** The roadmap fixed
+the order by principle: there must never be a version that stores without
+the control. So the shipments routes are not mounted without the switch, and
+answer 404 like any address the installation does not have; the open
+application ignores the switch altogether; and an installation whose
+database still holds kept shipments while the switch is off **refuses to
+start**, naming the count and `CARGOPILOT_HISTORY_DISCARD`, the second
+variable that lets the next start delete them. Nothing is deleted by
+default.
+
+**What a kept shipment holds.** Three documents per row, each for a
+different reader: the wizard's own state, which is what "open in the wizard"
+restores; the document bundle request as the export step sent it, which is
+what "the documents again" re-renders through the same code path as the
+download button; and the structured shipment export of v1.161.0 with its
+derived findings and the editions they were computed against, which is what
+a later reader — a report, a groupage picked from the history — reads. The
+server builds the export itself from the parts, so the kept record and the
+downloadable one cannot disagree. The index columns a list filters on are
+copied out of it at save time.
+
+**When a shipment is kept.** Downloading its documents keeps it, because
+"the shipments made" is what the page lists and a download is what makes
+one; a **Keep in history** card on the export step keeps it before that. A
+reopened shipment carries its id, so keeping it again brings the same row up
+to date rather than adding a second.
+
+**The shipments page.** A table on a wide screen, cards on a phone, with a
+search over reference and parties, a transport-mode filter and a date range.
+Opening a row shows the record and the three things one does with a kept
+shipment: open it in the wizard, download its documents again, or remove it
+after a confirmation. Every signed-in user of the organisation sees every
+kept shipment; departments, which narrow that, are the next phase.
+
+**The schema runner.** `create_all` never adds a column to an existing
+table, which is why the settings tables held one JSON document each. The
+history is the first thing that wants real columns, so `app/core/migrations.py`
+now runs numbered steps recorded in a `schema_version` table: a fresh
+database is stamped rather than migrated, an old one has the pending steps
+applied in order, each in its own transaction, and every step is written to
+be safe to run twice. The development guide's "there is no migration runner"
+section is replaced by how to add a step.
+
+Also: `/api/health` reports `"history"` beside `"mode"`; the groupage page's
+hint no longer says there is no list to pick from, because on an installation
+that keeps its shipments there is one.
+
 ## [1.172.0] — 2026-09-04
 
 ### Branding: the installation's own name, logo and tile pictures

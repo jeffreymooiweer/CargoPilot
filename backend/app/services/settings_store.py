@@ -195,6 +195,7 @@ def public_settings(db: Session) -> PublicSettings:
         organisation_address=current.organisation_address,
         mail_enabled=bool(current.mail_enabled and current.mail_host
                           and current.mail_from),
+        history_enabled=get_settings().history_enabled,
     )
 
 

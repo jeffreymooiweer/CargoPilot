@@ -260,6 +260,44 @@ export const api = {
     request<{ ok: boolean; removed: boolean }>("/un-cards/remove", { method: "POST" }),
   saveInstanceSettings: (payload: InstanceSettings) =>
     request<InstanceSettings>("/settings/instance", { method: "PUT", body: JSON.stringify(payload) }),
+  /** The shipment history. These addresses exist only on an installation
+   *  that keeps its shipments (`publicSettings.history_enabled`). */
+  shipments: (query: ShipmentQuery = {}) => {
+    const params = new URLSearchParams();
+    for (const [key, value] of Object.entries(query)) {
+      if (value !== undefined && value !== "" && value !== null) params.set(key, String(value));
+    }
+    const suffix = params.toString();
+    return request<ShipmentPage>(`/shipments${suffix ? `?${suffix}` : ""}`);
+  },
+  shipment: (id: number) => request<ShipmentDetail>(`/shipments/${id}`),
+  keepShipment: (payload: ShipmentIn) =>
+    request<ShipmentSummary>("/shipments", { method: "POST", body: JSON.stringify(payload) }),
+  updateShipment: (id: number, payload: ShipmentIn) =>
+    request<ShipmentSummary>(`/shipments/${id}`, { method: "PUT", body: JSON.stringify(payload) }),
+  forgetShipment: (id: number) => request<{ ok: boolean }>(`/shipments/${id}`, { method: "DELETE" }),
+  shipmentExportUrl: (id: number) => `${API_BASE}/shipments/${id}/export.json`,
+  /** The documents again: the kept bundle re-rendered by the same code as
+   *  the export step's download, handed to the browser as a file. */
+  shipmentDocuments: async (id: number) => {
+    const res = await fetch(`${API_BASE}/shipments/${id}/documents`, {
+      method: "POST",
+      credentials: "include",
+    });
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({ detail: res.statusText }));
+      throw new Error(describeDetail(err.detail));
+    }
+    const blob = await res.blob();
+    const disposition = res.headers.get("content-disposition") || "";
+    const match = disposition.match(/filename="?([^";]+)"?/i);
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = match ? match[1] : `cargopilot-documents-${id}.zip`;
+    a.click();
+    URL.revokeObjectURL(url);
+  },
   /** Readable without a sign-in: the sign-in page shows it. */
   branding: () => request<Branding>("/branding"),
   uploadBrandLogo: (file: File) => uploadFile<Branding>("/branding/logo", file),
@@ -594,6 +632,63 @@ export interface User {
 /** Which application this installation runs as. See docs/privacy.md. */
 export type InstallationMode = "open" | "organisation";
 
+/** A kept shipment as the shipments page lists it: the index columns copied
+ *  out of the structured export at save time. */
+export interface ShipmentSummary {
+  id: number;
+  reference: string;
+  modality: string;
+  language: string;
+  regulations: string[];
+  consignor_name: string;
+  consignee_name: string;
+  goods_count: number;
+  has_dangerous_goods: boolean;
+  /** Whether a bundle was kept, so the documents can be handed out again. */
+  has_documents: boolean;
+  created_by: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface ShipmentDetail extends ShipmentSummary {
+  /** The wizard's own state, opaque to the server; see wizard/snapshot.ts. */
+  snapshot: Record<string, unknown>;
+  /** The structured export as it was kept (format cargopilot.shipment). */
+  export: Record<string, unknown>;
+}
+
+export interface ShipmentPage {
+  items: ShipmentSummary[];
+  total: number;
+  page: number;
+  per_page: number;
+}
+
+/** What the export step hands over to be kept. The server builds the
+ *  structured export from the parts itself, so the kept record is produced
+ *  by the same code as the downloadable one. */
+export interface ShipmentIn {
+  modality: string;
+  language: string;
+  profiles: string[];
+  values: Record<string, string>;
+  lines: LineItem[];
+  dangerous_goods?: DgEntry[];
+  documents: string[];
+  bundle: DocumentBundlePayload | null;
+  snapshot: Record<string, unknown>;
+}
+
+export interface ShipmentQuery {
+  q?: string;
+  modality?: string;
+  date_from?: string;
+  date_to?: string;
+  page?: number;
+  per_page?: number;
+}
+
 /** What is on the door: the installation's name and the addresses of its
  *  own pictures, `null` where the default applies. The addresses carry a
  *  version, so a changed picture is a new address and the old one may be
@@ -788,6 +883,9 @@ export interface PublicSettings {
   organisation_address: string;
   /** Whether a mail server exists, so the export step may offer to mail. */
   mail_enabled: boolean;
+  /** Whether this installation keeps its shipments. Optional so an older
+   *  mocked answer still type-checks; the server always sends it. */
+  history_enabled?: boolean;
 }
 
 /** The lists the settings screen offers, from the backend that owns them. */

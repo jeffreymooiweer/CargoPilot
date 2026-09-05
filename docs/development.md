@@ -7,7 +7,7 @@ database; there is no separate database service.
 - [Running from source](#running-from-source)
 - [Tests](#tests)
 - [Project layout](#project-layout)
-- [There is no migration runner](#there-is-no-migration-runner)
+- [The schema runner](#the-schema-runner)
 - [How documents are produced](#how-documents-are-produced)
 - [Versioning](#versioning)
 - [Releasing](#releasing)
@@ -134,26 +134,40 @@ docs/                   this documentation
 unraid/                 Unraid Community Applications template
 ```
 
-## There is no migration runner
+## The schema runner
 
-`init_app` calls `Base.metadata.create_all`. That creates **missing tables** and never
-adds a column to a table that already exists — so a new column on an existing model works
-on a fresh install and breaks every upgrade with "no such column".
+`init_app` calls `Base.metadata.create_all`, which creates **missing tables** and never
+adds a column to a table that already exists. For a long time that was enough: the
+settings tables (`user_preferences`, `instance_settings`) hold a single JSON document
+each, so adding a preference is a field on a Pydantic model in `app/schemas/settings.py`
+and a database written by an older version simply lacks the key and falls back to its
+default. That rule still holds for settings, and `test_settings.py` pins it.
 
-That is why the settings tables (`user_preferences`, `instance_settings`) hold a single
-JSON document each rather than a column per setting: adding a preference is a field on a
-Pydantic model in `app/schemas/settings.py`, and a database written by an older version
-simply lacks the key and falls back to its default. `test_settings.py` pins that in both
-directions.
+The shipment history (v1.173.0) is the first thing that wants real columns, so there is
+now a runner beside `create_all`: `app/core/migrations.py`. It keeps a numbered list of
+steps and a `schema_version` table recording which have been applied.
 
-Adding a **table** is fine — import its model somewhere `startup` reaches, or
-`create_all` will not know about it. `startup.SETTINGS_TABLES` exists purely so that
-import cannot look removable.
+- **A fresh database is stamped, not migrated.** If no `users` table existed before
+  start-up, `create_all` has just made every table in its current shape, and every step
+  is recorded as applied without running — a step that adds a column would otherwise
+  find it there and fail.
+- **An old database has the pending steps run in order**, each in its own transaction,
+  recorded as it succeeds. A step that fails leaves the version where it was and the
+  next start tries again.
+- **Every step is written to be safe to run twice.** `add_column` checks the column is
+  absent first; table creation uses `checkfirst`. That is what makes a backup restored
+  between two steps recoverable.
 
-This holds today and stops holding the moment shipments are stored: a page that filters
-wants real columns, not a key inside a JSON document. What it would take to replace this
-section with a real migration runner — and whether the engine underneath it should change
-at all — is worked out in [The database](database-plan.md). Nothing there is built yet.
+To change the schema: change the model, append a step to `MIGRATIONS` with the next
+number and a short name, and write the step with the helpers so it is idempotent. Never
+renumber or remove a step. Adding a **table** still needs only its model imported
+somewhere `startup` reaches (`startup.HISTORY_TABLES` and `SETTINGS_TABLES` exist purely
+so those imports cannot look removable), but a step that creates it with `checkfirst` is
+the honest way to bring an older database along. `test_history.py` exercises the runner
+in both directions.
+
+What the database is asked to carry beyond this, and whether the engine underneath it
+should ever change, is worked out in [The database](database-plan.md).
 
 ## How documents are produced
 

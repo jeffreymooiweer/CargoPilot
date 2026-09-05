@@ -283,6 +283,27 @@ reported as undecided rather than guessed.
 **The trip is not stored.** It exists on the screen and in the request, and reloading
 clears it — the same promise the rest of the application keeps about your shipments.
 
+## Shipments: the history, where the installation keeps one
+
+By default CargoPilot keeps no shipments: once the papers are downloaded, the shipment is
+gone. An organisation can switch a history on at deploy time (`CARGOPILOT_HISTORY=true`,
+see [Configuration](configuration.md#shipment-history)), and then two things appear.
+
+On the export step, a **History** card. Downloading the documents keeps the shipment; the
+card's button keeps it before that, and says when it was last kept. A shipment that was
+opened from the history keeps its identity, so keeping it again updates the same entry.
+
+In the menu, **Shipments**: the kept shipments with a search over reference and parties,
+a transport-mode filter and a date range — a table on a wide screen, cards on a phone.
+Opening one shows the record and offers three things: **Open in wizard** puts the whole
+shipment back where it was, on the step it was on; **Documents again** renders the same
+bundle the export step handed out, on the current version; **Remove** takes it out of the
+history after a confirmation. The **Structured export (JSON)** is the same file the
+export step offers, and it is what the groupage page accepts.
+
+Everyone who signs in sees every kept shipment. Departments, which narrow that, are on
+the roadmap.
+
 ## The equipment library
 
 Under **Equipment overview** you can keep a library of your own items so they can be

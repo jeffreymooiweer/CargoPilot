@@ -110,7 +110,9 @@ Recorded here so the next person does not start from nothing:
 
 ## Reading it back
 
-There is no import yet. The file is a one-way export, and a reader that wants to
+There is no import of this file. It is a one-way export, and a reader that wants to
 reconstruct a shipment from it is doing something this application does not
-promise. If an import is ever built, it belongs with the shipment history: reading
-a shipment back means having somewhere to put it.
+promise. The shipment history (v1.173.0) reopens a kept shipment from the wizard's
+own saved state, not from this file; the file is what the history keeps *beside*
+that state as the documented record, and what the shipments page hands out as
+**Structured export (JSON)**.

@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { Link, Navigate, useParams } from "react-router";
+import { Link, Navigate, useParams, useSearchParams } from "react-router";
 import { useTranslation } from "react-i18next";
 import {
   api,
@@ -26,6 +26,7 @@ import ReviewLinesPanel, { DraftLine, draftToText, textToDraftLines } from "../c
 import WizardProgress from "../components/WizardProgress";
 import { isModalityAvailable } from "./ModalitySelectPage";
 import { usePreferences } from "../settings/preferences";
+import { SNAPSHOT_VERSION, WizardSnapshot, readSnapshot } from "../wizard/snapshot";
 import {
   applyLineWeightChange,
   recalcTotals,
@@ -188,12 +189,65 @@ export default function WizardPage() {
   const [assistantOpen, setAssistantOpen] = useState(false);
   const toast = useToast();
 
+  // The history, where the installation keeps its shipments. `?shipment=`
+  // in the address reopens a kept one; the id then travels with the wizard
+  // so that keeping it again brings the same row up to date rather than
+  // adding a second. Downloading the documents keeps the shipment as well —
+  // "the shipments made" is what the page lists, and a download is what
+  // makes one.
+  const [searchParams] = useSearchParams();
+  const reopenId = searchParams.get("shipment");
+  const historyOn = !!publicSettings?.history_enabled;
+  const [historyId, setHistoryId] = useState<number | null>(null);
+  const [keeping, setKeeping] = useState(false);
+  const [keptAt, setKeptAt] = useState<Date | null>(null);
+  const reopened = useRef<string | null>(null);
+
   useEffect(() => {
     api
       .documentsRegistry()
       .then(setRegistry)
       .catch((e) => setRegistryError(String(e)));
   }, []);
+
+  // Reopening a kept shipment: the snapshot is the wizard's own state, so it
+  // goes straight back into the same pieces of state it came from. Once per
+  // id — the effect must not restore over what the user has since typed.
+  useEffect(() => {
+    if (!reopenId || reopened.current === reopenId) return;
+    reopened.current = reopenId;
+    let cancelled = false;
+    api
+      .shipment(Number(reopenId))
+      .then((detail) => {
+        if (cancelled) return;
+        const snap = readSnapshot(detail.snapshot);
+        if (!snap) {
+          toast.error(t("history.loadFailed"));
+          return;
+        }
+        setDraftLines(snap.draftLines);
+        setNextId(snap.nextId);
+        setResult(snap.result);
+        setDgEntries(snap.dgEntries);
+        setDocValues(snap.docValues);
+        setSelectedDocs(snap.selectedDocs);
+        setSkippedQuestions(snap.skippedQuestions);
+        setSignature(snap.signature);
+        setChosenDocLang(snap.docLang as Language | null);
+        setStepKey(snap.stepKey);
+        setHistoryId(detail.id);
+        setKeptAt(new Date(detail.updated_at));
+      })
+      .catch(() => {
+        if (!cancelled) toast.error(t("history.loadFailed"));
+      });
+    return () => {
+      cancelled = true;
+    };
+    // toast and t are stable for the page's lifetime.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [reopenId]);
 
   // The saved details land in the form as soon as they arrive, and only in
   // fields that are still empty — the preferences come back over the network,
@@ -651,6 +705,7 @@ export default function WizardPage() {
       } catch {
         // Storage full or blocked: the export succeeded, the memory is a bonus.
       }
+      if (historyOn) void keepInHistory(true);
     } catch (e) {
       toast.error(String(e));
     } finally {
@@ -680,10 +735,68 @@ export default function WizardPage() {
       } catch {
         // Storage full or blocked: the export succeeded, the memory is a bonus.
       }
+      // A download is what makes a shipment "made": it goes into the history
+      // without a second press, where the installation keeps one.
+      if (historyOn) void keepInHistory(true);
     } catch (e) {
       toast.error(String(e));
     } finally {
       setDownloadingAll(false);
+    }
+  };
+
+  // Keeping the shipment in the history. The server builds the structured
+  // export from the same parts the download uses and keeps the bundle for
+  // "the documents again"; the snapshot is this page's own state and comes
+  // back untouched when the shipment is reopened.
+  const keepInHistory = async (quietly = false) => {
+    if (!historyOn || !result) return;
+    setKeeping(true);
+    try {
+      const snapshot: WizardSnapshot = {
+        version: SNAPSHOT_VERSION,
+        modality: modality ?? "",
+        stepKey,
+        docLang: chosenDocLang,
+        selectedDocs,
+        docValues,
+        skippedQuestions,
+        draftLines,
+        nextId,
+        result,
+        dgEntries,
+        signature,
+      };
+      const payload = {
+        modality: modality ?? "",
+        language: docLang,
+        profiles: dgProfiles,
+        values: docValues,
+        lines: result.lines,
+        dangerous_goods: dgEntries.length > 0 ? dgEntries : undefined,
+        documents: selected,
+        bundle:
+          readyDocs.length > 0
+            ? {
+                documents: readyDocs.map(payloadFor),
+                dangerous_goods: dgEntries.length > 0 ? dgEntries : undefined,
+                profiles: dgProfiles,
+                output_language: docLang,
+                signature_image: signature ?? undefined,
+              }
+            : null,
+        snapshot: snapshot as unknown as Record<string, unknown>,
+      };
+      const kept = historyId
+        ? await api.updateShipment(historyId, payload)
+        : await api.keepShipment(payload);
+      setHistoryId(kept.id);
+      setKeptAt(new Date(kept.updated_at));
+      if (!quietly) toast.success(t("history.keptToast"));
+    } catch (e) {
+      toast.error(String(e));
+    } finally {
+      setKeeping(false);
     }
   };
 
@@ -1105,6 +1218,28 @@ export default function WizardPage() {
             selected={selected}
             onChange={setSelectedDocs}
           />
+
+          {historyOn && (
+            <div className={`${panelClass} p-4 sm:p-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between`}>
+              <div className="min-w-0">
+                <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-100">{t("history.keepTitle")}</h3>
+                <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">{t("history.keepHint")}</p>
+                <p className="text-sm text-slate-700 dark:text-slate-200 mt-2" data-testid="history-status">
+                  {keptAt
+                    ? t("history.keptAt", { time: keptAt.toLocaleTimeString(i18n.language, { timeStyle: "short" }) })
+                    : t("history.notKept")}
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={() => void keepInHistory()}
+                disabled={keeping}
+                className={buttonSecondary}
+              >
+                {keeping ? t("history.keeping") : historyId ? t("history.update") : t("history.keep")}
+              </button>
+            </div>
+          )}
 
           <div className={`${panelClass} space-y-3 p-4 sm:p-6`}>
             <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">

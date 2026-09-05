@@ -68,6 +68,30 @@ downloaded from the screen.
 A value that is neither word runs the organisation application — the closed one is where
 a typo may safely land — and says so in the log.
 
+## Shipment history
+
+| Variable | What it does | Default |
+|---|---|---|
+| `CARGOPILOT_HISTORY` | Keep the shipments the organisation makes, and show the shipments page | `false` |
+| `CARGOPILOT_HISTORY_DISCARD` | With the history switched off: delete the kept shipments on the next start instead of refusing to start | `false` |
+
+Off, a shipment drawn up is a shipment forgotten — the promise every installation made
+until v1.173.0 and still makes by default. On, the export step keeps each shipment when
+its documents are downloaded (or when the user presses **Keep in history**), and a
+**Shipments** page lists them with filters, offers the documents again, opens a shipment
+back in the wizard, and removes one. Every signed-in user of the organisation sees every
+kept shipment; departments, which narrow that, are a later phase.
+
+It is a deploy-time variable rather than a screen setting for one reason: **switching it
+off destroys data**, and a deploy-time variable is the one place the application can
+refuse to start instead of asking on a screen. An installation whose database still holds
+kept shipments while `CARGOPILOT_HISTORY` is off does not start; the log names the count
+and this second variable. Set `CARGOPILOT_HISTORY_DISCARD=true` as well and the next start
+deletes them and says so. Nothing is deleted by default, ever.
+
+The open application ignores both variables: nothing is kept about anyone there. What is
+kept per shipment, and what is not, is in [Privacy](privacy.md#the-shipment-history).
+
 ## Branding
 
 An administrator gives the installation its own face under **Settings → Administration →

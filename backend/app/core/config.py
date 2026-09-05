@@ -24,6 +24,19 @@ class Settings(BaseSettings):
     #: closed application is the one a typo may safely land in, and the mode
     #: is printed by ``/api/health`` so the operator can see what they got.
     cargopilot_mode: str = "organisation"
+    #: Whether the organisation application keeps the shipments it makes.
+    #: Off by default: a shipment drawn up is a shipment forgotten, which is
+    #: the promise every installation made until now. On, the export step
+    #: records each shipment and a shipments page lists them. Deploy-time
+    #: rather than a screen setting because switching it *off* destroys
+    #: data, and a deploy-time variable is the one place the application
+    #: can refuse to start instead of asking on a screen. The open
+    #: application ignores it: nothing is kept about anyone there.
+    cargopilot_history: bool = False
+    #: The second variable the operator sets to discard the stored shipments
+    #: when the history is switched off. Without it, an installation that
+    #: still holds shipments refuses to start and says how many.
+    cargopilot_history_discard: bool = False
     app_secret_key: str = "change-me"
     database_url: str = "sqlite:////data/cargopilot.db"
     data_dir: Path = Path("/data")
@@ -96,6 +109,12 @@ class Settings(BaseSettings):
     def is_open(self) -> bool:
         """Whether this is the open application: no accounts, nothing kept."""
         return self.mode == "open"
+
+    @property
+    def history_enabled(self) -> bool:
+        """Whether shipments are kept: the switch is on and this is the
+        organisation application. Never in the open one."""
+        return bool(self.cargopilot_history) and not self.is_open
 
     @property
     def mode(self) -> str:

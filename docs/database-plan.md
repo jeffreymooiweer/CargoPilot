@@ -183,7 +183,7 @@ else on this page should start before it.
    first start; new ones run `upgrade head`. `create_all` and `migrate_equipment_columns`
    are only removed once the baseline demonstrably produces the same schema, tested in
    both directions.
-2. **Replace `docs/development.md#there-is-no-migration-runner`** with how to write a
+2. **Replace `docs/development.md#the-schema-runner` (done in v1.173.0)** with how to write a
    migration. The JSON-document trick for settings stays — it is still right for
    preferences — but it stops being the only answer.
 3. **One `conftest.py` with a single database fixture.** As long as 24 test files

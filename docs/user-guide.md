@@ -90,6 +90,16 @@ The contents of one package are read from the sentence too: `1000 jerricans of 2
 petrol` fills the net quantity per package and computes the totals, for jerricans,
 drums, IBCs and any other counted package alike.
 
+### Articles from your own library
+
+On an installation that keeps its shipments, the line dialog carries an **Article from the
+library** field: pick one of your own article codes and the line takes its name, is
+flagged as dangerous goods when the article carries a UN number, and hands the dangerous
+goods step what the library knows — the UN number, the proper shipping name, the packing
+group, the type of package and the content per package — so nothing is typed twice. The
+**Articles** page in the menu is where the library is kept: one article per code, with a
+spreadsheet template, an export and an import in the same columns.
+
 ## 3. Dangerous goods (only if needed)
 
 Enter the **UN number**, confirm the chip from the previous step, or search by

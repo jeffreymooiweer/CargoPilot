@@ -19,7 +19,8 @@
     "groupage": "Sammelgut",
     "openMode": "Offene Installation",
     "openModeHint": "Kein Konto, nichts wird gespeichert",
-    "shipments": "Sendungen"
+    "shipments": "Sendungen",
+    "articles": "Artikel"
   },
   "theme": {
     "dark": "Dunkel",
@@ -712,6 +713,9 @@
       "un_number_not_found": "UN-Nummer nicht in der ADR-Datenbank gefunden",
       "quantity_not_a_number": "Menge {{value}} enthält keine Zahl",
       "quantity_not_positive": "Menge {{value}} muss größer als null sein"
+    },
+    "articles": {
+      "row_refused": "Zeile {{row}}: {{reason}}"
     }
   },
   "instructions": {
@@ -1009,6 +1013,40 @@
     "save": "Speichern",
     "saveTitle": "{{party}} im Adressbuch speichern",
     "saved": "{{name}} im Adressbuch gespeichert."
+  },
+  "articles": {
+    "title": "Artikel",
+    "intro": "Ihre eigenen Artikelnummern, verknüpft mit dem, was die Bibliothek über den Stoff und die Verpackung weiß: UN-Nummer, offizielle Benennung, Verpackungsgruppe, Verpackungsart und Inhalt je Verpackung. Einmal erfasst; auf einer Güterzeile wählen Sie die Nummer und der Gefahrgutschritt erhält den Rest. Eine Tabelle geht in denselben Spalten hinein und heraus.",
+    "template": "Vorlage herunterladen",
+    "export": "Bibliothek exportieren",
+    "import": "Importieren",
+    "add": "Artikel hinzufügen",
+    "edit": "Bearbeiten",
+    "create": "Hinzufügen",
+    "save": "Speichern",
+    "cancel": "Abbrechen",
+    "remove": "Entfernen",
+    "confirmRemove": "Artikel {{code}} entfernen?",
+    "saved": "Artikel gespeichert.",
+    "imported": "Import abgeschlossen: {{created}} hinzugefügt, {{updated}} aktualisiert, {{skipped}} übersprungen.",
+    "search": "Suche nach Nummer, Name oder UN-Nummer…",
+    "empty": "Noch keine Artikel. Fügen Sie einen hinzu oder importieren Sie eine Tabelle.",
+    "pick": "Artikelnummer oder Name…",
+    "onLine": "Artikel aus der Bibliothek",
+    "clearFromLine": "Lösen",
+    "fields": {
+      "code": "Artikelnummer",
+      "name": "Name",
+      "un_number": "UN-Nummer",
+      "proper_shipping_name": "Offizielle Benennung",
+      "technical_name": "Technische Benennung",
+      "class": "Klasse",
+      "packing_group": "Verpackungsgruppe",
+      "type_of_package": "Verpackungsart",
+      "net_per_package": "Inhalt je Verpackung",
+      "notes": "Anmerkungen",
+      "active": "Aktiv"
+    }
   },
   "dgsa": {
     "title": "Jahresbericht Gefahrgutbeauftragter",

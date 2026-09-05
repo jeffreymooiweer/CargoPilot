@@ -67,6 +67,8 @@ MESSAGES: dict[str, str] = {
     "import.unpacked_too_large": "The unpacked spreadsheet is larger than {limit_mb} MB",
     # Equipment import, reported per row rather than as an HTTP error
     "equipment.row_weight_missing": "Row {row}: the weight is missing or unusable",
+    # Articles import, reported per row
+    "articles.row_refused": "Row {row}: {reason}",
     # Dangerous goods
     "dg.un_number_not_found": "UN number not found in the ADR database",
     # Quantities, raised by the schema validators

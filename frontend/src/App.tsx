@@ -13,6 +13,7 @@ import MaterieelPage from "./pages/MaterieelPage";
 import SettingsPage from "./pages/SettingsPage";
 import ShipmentsPage from "./pages/ShipmentsPage";
 import DgsaReportPage from "./pages/DgsaReportPage";
+import ArticlesPage from "./pages/ArticlesPage";
 import LegalPage from "./pages/LegalPage";
 import { BrandingProvider } from "./branding";
 import { PreferencesProvider } from "./settings/preferences";
@@ -99,6 +100,7 @@ export default function App() {
           {!open && <Route path="/shipments" element={<ShipmentsPage user={user} />} />}
           {!open && <Route path="/shipments/report" element={<DgsaReportPage user={user} />} />}
           {!open && <Route path="/shipments/:id" element={<ShipmentsPage user={user} />} />}
+          {!open && <Route path="/articles" element={<ArticlesPage />} />}
           {!open && <Route path="/materieel" element={<MaterieelPage />} />}
           {!open && <Route path="/users" element={<UsersPage user={user} />} />}
           <Route path="/settings" element={<SettingsPage user={user} />} />

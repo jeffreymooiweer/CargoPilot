@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { LineItem, UnitCatalogue, api } from "../api/client";
+import { LineItem, UnitCatalogue, api, ArticleRef } from "../api/client";
 import { useToast } from "../toast/ToastProvider";
 import LineEditDialog, { ROUND_TYPES, WALL_PROFILE_TYPES } from "./LineEditDialog";
 import RecordCards, { NoValue, QuantityWithUnit, RecordField } from "./RecordCards";
@@ -32,6 +32,9 @@ export interface DraftLine {
   /** Net content of one package as the description said it ("25 L"); the DG
    *  derivation fills the per-package quantity from it. */
   package_content?: string;
+  /** The library article this line was picked from, if any. Its UN number
+   *  travels as `confirmed_un`; the rest seeds the DG product. */
+  article?: ArticleRef;
   /** Weight of one item or package the consignor stated themselves, for goods
    *  the catalogue cannot weigh. Never a computed value. */
   weight_each_kg?: number | "";
@@ -310,6 +313,14 @@ export default function ReviewLinesPanel({
             {draft.confirmed_un && (
               <span className="rounded-full bg-emerald-100 px-2 py-0.5 text-[11px] font-medium text-emerald-800 dark:bg-emerald-900/40 dark:text-emerald-300">
                 UN {draft.confirmed_un}
+              </span>
+            )}
+            {draft.article?.code && (
+              <span
+                className="rounded-full bg-sky-100 px-2 py-0.5 text-[11px] font-medium text-sky-800 dark:bg-sky-900/40 dark:text-sky-300"
+                title={t("articles.onLine")}
+              >
+                {draft.article.code}
               </span>
             )}
           </div>

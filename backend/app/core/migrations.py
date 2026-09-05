@@ -105,12 +105,20 @@ def _004_dgsa_reports(conn: Connection) -> None:
     DgsaReport.__table__.create(conn, checkfirst=True)
 
 
+def _005_articles(conn: Connection) -> None:
+    """The articles library (v1.180.0)."""
+    from app.models.article import Article
+
+    Article.__table__.create(conn, checkfirst=True)
+
+
 #: In order. Append; never renumber, never remove.
 MIGRATIONS: list[tuple[int, str, Callable[[Connection], None]]] = [
     (1, "shipments", _001_shipments),
     (2, "departments", _002_departments),
     (3, "addresses", _003_addresses),
     (4, "dgsa_reports", _004_dgsa_reports),
+    (5, "articles", _005_articles),
 ]
 
 

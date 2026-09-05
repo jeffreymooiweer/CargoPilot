@@ -19,7 +19,8 @@
     "groupage": "Groupage",
     "openMode": "Installation ouverte",
     "openModeHint": "Sans compte, rien n'est conservé",
-    "shipments": "Expéditions"
+    "shipments": "Expéditions",
+    "articles": "Articles"
   },
   "theme": {
     "dark": "Sombre",
@@ -712,6 +713,9 @@
       "un_number_not_found": "Numéro ONU introuvable dans la base ADR",
       "quantity_not_a_number": "la quantité {{value}} ne contient aucun nombre",
       "quantity_not_positive": "la quantité {{value}} doit être supérieure à zéro"
+    },
+    "articles": {
+      "row_refused": "Ligne {{row}} : {{reason}}"
     }
   },
   "instructions": {
@@ -1009,6 +1013,40 @@
     "save": "Enregistrer",
     "saveTitle": "Enregistrer {{party}} dans le carnet d’adresses",
     "saved": "{{name}} enregistré dans le carnet d’adresses."
+  },
+  "articles": {
+    "title": "Articles",
+    "intro": "Vos propres codes article, liés à ce que la bibliothèque sait de la matière et de son emballage : numéro ONU, désignation officielle de transport, groupe d'emballage, type d'emballage et contenu par emballage. Saisis une fois ; sur une ligne de marchandises vous choisissez le code et l'étape marchandises dangereuses reçoit le reste. Un tableur entre et sort dans les mêmes colonnes.",
+    "template": "Télécharger le modèle",
+    "export": "Exporter la bibliothèque",
+    "import": "Importer",
+    "add": "Ajouter un article",
+    "edit": "Modifier",
+    "create": "Ajouter",
+    "save": "Enregistrer",
+    "cancel": "Annuler",
+    "remove": "Supprimer",
+    "confirmRemove": "Supprimer l'article {{code}} ?",
+    "saved": "Article enregistré.",
+    "imported": "Import terminé : {{created}} ajoutés, {{updated}} mis à jour, {{skipped}} ignorés.",
+    "search": "Rechercher par code, nom ou numéro ONU…",
+    "empty": "Aucun article pour l'instant. Ajoutez-en un ou importez un tableur.",
+    "pick": "Code article ou nom…",
+    "onLine": "Article de la bibliothèque",
+    "clearFromLine": "Détacher",
+    "fields": {
+      "code": "Code article",
+      "name": "Nom",
+      "un_number": "Numéro ONU",
+      "proper_shipping_name": "Désignation officielle de transport",
+      "technical_name": "Nom technique",
+      "class": "Classe",
+      "packing_group": "Groupe d'emballage",
+      "type_of_package": "Type d'emballage",
+      "net_per_package": "Contenu par emballage",
+      "notes": "Remarques",
+      "active": "Actif"
+    }
   },
   "dgsa": {
     "title": "Rapport annuel du conseiller",

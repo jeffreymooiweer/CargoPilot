@@ -95,7 +95,7 @@ it is a function an organisation switches on for itself. Restated:
 | Your defaults: consignor, signature, language… | in your browser | on the server | on the server |
 | Equipment library, mail, branding, in-app update | — | yes | yes |
 | Shipments page, reopen, return from history | — | — | yes |
-| Groupage from kept shipments, departments, address book, DGSA report | — | — | yes |
+| Groupage from kept shipments, departments, address book, articles, DGSA report | — | — | yes |
 
 **The mode is a deployment, not a setting.** Open and Organisation are two applications
 in one image: the first has no login routes, no user table, no password reset and no
@@ -261,9 +261,11 @@ none is committed until it is planned against that brief.
   to one.
 - ~~**DGSA annual report.**~~ Shipped in v1.177.0, see above; it exists only with the
   history switched on, because without stored shipments there is nothing to report.
-- **Own articles library.** The company's article codes linked to UN number,
-  technical name and default packaging — entered once, reused every shipment; designed
-  together with the address book.
+- ~~**Own articles library.**~~ Shipped in v1.180.0: the company's article codes linked
+  to UN number, proper shipping name, technical name, packing group and default packaging,
+  picked onto a goods line so the dangerous goods step is seeded from the library; a
+  spreadsheet in and out in the same columns. Kept beside the history, like the address
+  book.
 - **EDI (IFTDGN) and the port call.** The freely specified UN/EDIFACT dangerous goods
   notification as a far-off target the structured export quietly prepares for.
 - **Groupage** shipped in v1.169.0: several consignments on one vehicle, judged as one

@@ -167,6 +167,19 @@ export function buildDgEntries(lines: LineItem[]): DgEntry[] {
         {
           ...emptyProduct(),
           un_number: line.detected_un_numbers?.[0] || "",
+          // What the library knows about the article the line was picked
+          // from. Only what it holds; the tables fill the rest as usual.
+          ...(line.article?.un_number
+            ? {
+                ...(line.article.proper_shipping_name ? { proper_shipping_name: line.article.proper_shipping_name } : {}),
+                ...(line.article.technical_name ? { technical_name: line.article.technical_name } : {}),
+                ...(line.article.class ? { class: line.article.class } : {}),
+                ...(line.article.packing_group ? { packing_group: line.article.packing_group } : {}),
+                ...(line.article.type_of_package ? { type_of_package: line.article.type_of_package } : {}),
+                ...(line.article.net_per_package ? { net_mass_liters_per_package: line.article.net_per_package } : {}),
+                ...(line.quantity ? { quantity_packages: String(line.quantity) } : {}),
+              }
+            : {}),
         },
       ],
     }));

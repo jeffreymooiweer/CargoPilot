@@ -2,6 +2,36 @@
 
 All notable changes are documented here, following [Semantic Versioning](https://semver.org/).
 
+## [1.187.0] — 2026-09-05
+
+### Groupage trips kept in the history
+
+The judgement over a whole load used to live only on the screen that asked
+for it. An installation that keeps its shipments may now keep the trip too.
+
+- **What is kept.** The consignments as they sat on the vehicle — their
+  names, their dangerous goods entries and, when picked from the history,
+  which kept shipment each came from — the permitted maximum mass of the
+  transport unit, and the check's answer as it was given: what each
+  consignment said alone, what they said together under 1.1.3.6, the
+  mixed-loading findings of 7.5.2 and the limited-quantities marking of
+  3.4.13/3.4.14, with the editions all of it was computed against. The
+  server runs the check itself on what is sent, so the kept judgement is
+  produced by the same code as the one on the screen.
+- **Where.** A box under the assessment on the groupage page: name the trip
+  and press *Keep trip*; a reopened trip is brought up to date with *Update
+  trip*. *Trips* in the menu lists them with the points together and a mark
+  where the exemption fell away; the record shows the judgement as it stood,
+  reopens the load on the groupage page through `?trip=<id>`, or removes it.
+  Who sees which trips follows the departments rule the shipments use.
+- **Only with the switch.** Without `CARGOPILOT_HISTORY=true` the trips
+  addresses do not exist and the groupage page says, as before, that the
+  trip is not stored. Switching the history off counts the kept trips with
+  the shipments, refuses to start while either is there, and deletes both
+  with `CARGOPILOT_HISTORY_DISCARD`. Schema step seven adds the table to an
+  existing database; the audit log gets `trip.kept`, `trip.updated` and
+  `trip.forgotten`.
+
 ## [1.186.0] — 2026-09-05
 
 ### The administrator's audit log

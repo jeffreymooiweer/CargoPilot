@@ -16,6 +16,8 @@ its people without one rather than deleting either.
 """
 from __future__ import annotations
 
+from typing import Any
+
 from sqlalchemy import func
 from sqlalchemy.orm import Query, Session
 
@@ -27,28 +29,31 @@ class DepartmentError(ValueError):
     """A name that is empty or already taken."""
 
 
-def visible_to(query: Query, viewer: User, department: str = "") -> Query:
-    """Narrow a shipments query to what ``viewer`` may see.
+def visible_to(query: Query, viewer: User, department: str = "",
+               model: type = Shipment) -> Query:
+    """Narrow a query over kept records to what ``viewer`` may see.
 
     ``department`` is the administrator's filter: ``""`` for everything,
     ``"none"`` for the unassigned, or an id. Anybody else's filter is their
-    own department, whatever they ask for.
+    own department, whatever they ask for. ``model`` is the table — the
+    shipments by default, the kept trips carry the same column.
     """
+    column = model.department_id
     if viewer.role == "admin":
         if department == "none":
-            return query.filter(Shipment.department_id.is_(None))
+            return query.filter(column.is_(None))
         if department:
             try:
-                return query.filter(Shipment.department_id == int(department))
+                return query.filter(column == int(department))
             except ValueError:
-                return query.filter(Shipment.department_id.is_(None))
+                return query.filter(column.is_(None))
         return query
     if viewer.department_id is None:
-        return query.filter(Shipment.department_id.is_(None))
-    return query.filter(Shipment.department_id == viewer.department_id)
+        return query.filter(column.is_(None))
+    return query.filter(column == viewer.department_id)
 
 
-def may_see(record: Shipment, viewer: User) -> bool:
+def may_see(record: Any, viewer: User) -> bool:
     if viewer.role == "admin":
         return True
     return record.department_id == viewer.department_id

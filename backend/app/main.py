@@ -32,6 +32,7 @@ from app.api.routes.meta import router as meta_router
 from app.api.routes.nhm import router as nhm_router
 from app.api.routes.settings import public_router as settings_public_router
 from app.api.routes.settings import router as settings_router
+from app.api.routes.trips import router as trips_router
 from app.api.routes.un_cards_admin import router as un_cards_admin_router
 from app.api.routes.users import router as users_router
 from app.core.config import get_settings
@@ -85,7 +86,8 @@ ACCOUNT_ROUTERS = (
 #: The history: what only an organisation application that keeps its
 #: shipments serves. Not mounted without CARGOPILOT_HISTORY=true, so on every
 #: other installation "nothing is kept" is a matter of which addresses exist.
-HISTORY_ROUTERS = (history_router, departments_router, addresses_router, articles_router)
+HISTORY_ROUTERS = (history_router, departments_router, addresses_router, articles_router,
+                   trips_router)
 
 
 def create_app() -> FastAPI:

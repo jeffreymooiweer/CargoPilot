@@ -119,6 +119,13 @@ def _006_audit_events(conn: Connection) -> None:
     AuditEvent.__table__.create(conn, checkfirst=True)
 
 
+def _007_trips(conn: Connection) -> None:
+    """The kept groupage trips (v1.187.0)."""
+    from app.models.trip import Trip
+
+    Trip.__table__.create(conn, checkfirst=True)
+
+
 #: In order. Append; never renumber, never remove.
 MIGRATIONS: list[tuple[int, str, Callable[[Connection], None]]] = [
     (1, "shipments", _001_shipments),
@@ -127,6 +134,7 @@ MIGRATIONS: list[tuple[int, str, Callable[[Connection], None]]] = [
     (4, "dgsa_reports", _004_dgsa_reports),
     (5, "articles", _005_articles),
     (6, "audit_events", _006_audit_events),
+    (7, "trips", _007_trips),
 ]
 
 

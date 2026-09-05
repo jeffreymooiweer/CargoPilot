@@ -14,13 +14,15 @@
  *  export underneath, so a consignment picked and a consignment uploaded are
  *  the same thing to the check.
  *
- *  Nothing here is saved. The trip lives in this page and in the request, and
- *  reloading loses it. Whether an installation with a history should keep the
- *  judgement over a load as well is an open question the roadmap records;
- *  until it is answered, a trip is a calculation and not a record.
+ *  On an installation that keeps nothing, nothing here is saved: the trip
+ *  lives in this page and in the request, and reloading loses it. On an
+ *  installation that keeps its shipments the assessed trip can be kept as
+ *  well — named, with what was on the vehicle and the judgement as it was
+ *  given — and reopened from the trips page through `?trip=<id>`.
  */
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { Link, useSearchParams } from "react-router";
 
 import { api } from "../api/client";
 import type { ShipmentSummary, TripResult } from "../api/client";
@@ -62,6 +64,44 @@ export default function GroupagePage() {
   const [unitMass, setUnitMass] = useState("");
   const [result, setResult] = useState<TripResult | null>(null);
   const [busy, setBusy] = useState(false);
+  // The kept trip this page is showing, when it was opened from the trips
+  // page; keeping again then brings that row up to date rather than adding.
+  const [searchParams] = useSearchParams();
+  const reopenId = searchParams.get("trip");
+  const [tripId, setTripId] = useState<number | null>(null);
+  const [tripName, setTripName] = useState("");
+  const [keeping, setKeeping] = useState(false);
+
+  useEffect(() => {
+    if (!historyOn || !reopenId) return;
+    let cancelled = false;
+    api
+      .trip(Number(reopenId))
+      .then((detail) => {
+        if (cancelled) return;
+        setLoaded(
+          detail.consignments.map((c, index) => ({
+            name: c.name,
+            entries: c.entries,
+            profiles: detail.regulations,
+            fileName: c.shipment_id ? `shipment-${c.shipment_id}` : `kept-${index}`,
+            shipmentId: c.shipment_id ?? undefined,
+          })),
+        );
+        setUnitMass(detail.unit_max_mass_tonnes === null ? "" : String(detail.unit_max_mass_tonnes));
+        setResult(detail.result);
+        setTripId(detail.id);
+        setTripName(detail.name);
+      })
+      .catch(() => {
+        if (!cancelled) toast.error(t("trips.notFound"));
+      });
+    return () => {
+      cancelled = true;
+    };
+    // toast and t are stable for the provider's lifetime.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [historyOn, reopenId]);
 
   // The history's side: the kept shipments the viewer may see, by reference
   // or party. Only ones with dangerous goods are worth a place on the vehicle
@@ -167,6 +207,27 @@ export default function GroupagePage() {
       toast.error(t("groupage.failed"));
     } finally {
       setBusy(false);
+    }
+  }
+
+  async function keep() {
+    setKeeping(true);
+    try {
+      const mass = unitMass.trim() === "" ? null : Number(unitMass);
+      const payload = {
+        name: tripName.trim(),
+        consignments: loaded.map((c) => ({ name: c.name, entries: c.entries, shipment_id: c.shipmentId ?? null })),
+        profiles,
+        language: i18n.language,
+        unit_max_mass_tonnes: Number.isFinite(mass as number) ? (mass as number) : null,
+      };
+      const kept = tripId ? await api.updateTrip(tripId, payload) : await api.keepTrip(payload);
+      setTripId(kept.id);
+      toast.success(t(tripId ? "groupage.updated" : "groupage.kept"));
+    } catch {
+      toast.error(t("groupage.keepFailed"));
+    } finally {
+      setKeeping(false);
     }
   }
 
@@ -385,7 +446,38 @@ export default function GroupagePage() {
             </p>
           </div>
 
-          <p className="text-xs text-slate-500 dark:text-slate-400">{t("groupage.notStored")}</p>
+          {historyOn ? (
+            <div className={`${card} space-y-2`} data-testid="groupage-keep">
+              <label className="text-sm font-medium text-slate-800 dark:text-slate-200" htmlFor="groupage-trip-name">
+                {t("groupage.tripName")}
+              </label>
+              <p className="mt-0.5 text-xs text-slate-500 dark:text-slate-400">{t("groupage.keepHint")}</p>
+              <div className="flex flex-wrap items-center gap-2">
+                <input
+                  id="groupage-trip-name"
+                  className={`${input} flex-1`}
+                  value={tripName}
+                  placeholder={t("groupage.tripNamePlaceholder")}
+                  onChange={(e) => setTripName(e.target.value)}
+                />
+                <button
+                  type="button"
+                  disabled={keeping}
+                  className="rounded-lg bg-brand-600 px-4 py-2 text-sm font-medium text-white disabled:opacity-50"
+                  onClick={() => void keep()}
+                >
+                  {keeping ? t("groupage.keeping") : tripId ? t("groupage.update") : t("groupage.keep")}
+                </button>
+                {tripId && (
+                  <Link to={`/trips/${tripId}`} className="text-sm text-brand-700 hover:underline dark:text-brand-300">
+                    {t("groupage.openKept")}
+                  </Link>
+                )}
+              </div>
+            </div>
+          ) : (
+            <p className="text-xs text-slate-500 dark:text-slate-400">{t("groupage.notStored")}</p>
+          )}
         </section>
       )}
     </div>

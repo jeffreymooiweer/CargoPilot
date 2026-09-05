@@ -2,6 +2,21 @@
 
 All notable changes are documented here, following [Semantic Versioning](https://semver.org/).
 
+## [1.173.1] — 2026-09-05
+
+### A long toast puts its action underneath
+
+A toast with one action put it beside the text, where "Undo" has always
+been. That is right for "Deleted. Undo" and wrong for the two-factor
+reminder: five lines of text with a button floating top-right beside them,
+squeezing them narrower still, read as a layout accident on a phone.
+
+Past sixty characters the single action now goes under the message, in the
+same row a question's answers already use, and the text takes the full
+width. Short messages are unchanged. The threshold is a character count
+rather than a measured wrap, so the first paint and the test see the same
+thing.
+
 ## [1.173.0] — 2026-09-05
 
 ### The shipment history

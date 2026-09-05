@@ -9,7 +9,7 @@ import { act, render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
-import { ToastProvider, useToast, type ToastApi } from "./ToastProvider";
+import { INLINE_ACTION_MAX_CHARS, ToastProvider, useToast, type ToastApi } from "./ToastProvider";
 
 vi.mock("react-i18next", () => ({
   useTranslation: () => ({
@@ -203,6 +203,25 @@ describe("ToastProvider", () => {
     expect(second).toHaveBeenCalledTimes(1);
     expect(first).not.toHaveBeenCalled();
     expect(onDismiss).not.toHaveBeenCalled();
+  });
+
+  it("one short action sits beside the message, one long message puts it underneath", () => {
+    // "Deleted. Undo" is a row; five lines of text with a button floating
+    // top-right beside them, squeezing them narrower still, is a layout
+    // accident. The threshold is a character count so the first paint and
+    // this test see the same thing.
+    const api = setup();
+    act(() => void api().info("Deleted.", { actions: [{ label: "Undo", run: vi.fn() }] }));
+    expect(screen.queryByTestId("toast-actions")).toBeNull();
+    expect(screen.getByRole("button", { name: "Undo" })).toBeInTheDocument();
+
+    const long = "Your account has no second factor yet. A password alone is one leaked reuse away from somebody else acting in your name.";
+    expect(long.length).toBeGreaterThan(INLINE_ACTION_MAX_CHARS);
+    act(() => void api().info(long, { sticky: true, actions: [{ label: "Set it up", run: vi.fn() }] }));
+    const row = screen.getByTestId("toast-actions");
+    expect(row).toContainElement(screen.getByRole("button", { name: "Set it up" }));
+    // And underneath means inside the message column, not beside it.
+    expect(row.previousElementSibling).toHaveTextContent(long);
   });
 
   it("closing a question is itself an answer", async () => {

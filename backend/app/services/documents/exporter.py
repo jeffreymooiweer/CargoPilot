@@ -10,6 +10,7 @@ from openpyxl.styles import Alignment, Border, Font, PatternFill, Side
 from openpyxl.utils import get_column_letter
 
 from app.core.languages import normalise, pick
+from app.services.documents import brand
 from app.services.dg.autofill import adr_quantity, description_line
 from app.services.dg.database import get_un_entries, is_transport_forbidden
 from app.services.dg.naming import english_name_is_usable, resolve_for_profile
@@ -17,9 +18,9 @@ from app.services.documents.registry import condition_met, get_document, resolve
 
 TEXTS = {
     "generated_with": {
-        "nl": "Gegenereerd met CargoPilot op",
-        "en": "Generated with CargoPilot on",
-        "de": "Erstellt mit CargoPilot am", "fr": 'Généré avec CargoPilot le'},
+        "nl": "Gegenereerd met {brand} op",
+        "en": "Generated with {brand} on",
+        "de": "Erstellt mit {brand} am", "fr": 'Généré avec {brand} le'},
     "status": {"nl": "Documentstatus", "en": "Document status", "de": "Dokumentstatus", "fr": 'Statut du document'},
     "goods": {"nl": "Goederenregels", "en": "Cargo lines", "de": "Güterzeilen", "fr": 'Lignes de marchandises'},
     "dg_table": {"nl": "Gevaarlijke stoffen", "en": "Dangerous goods", "de": "Gefahrgut", "fr": 'Marchandises dangereuses'},
@@ -36,9 +37,9 @@ TEXTS = {
         "en": "to be filled in during execution",
         "de": "während der Durchführung auszufüllen", "fr": "à compléter lors de l'exécution"},
     "confirmed": {
-        "nl": "Bevestigd in CargoPilot; ondertekening op het document blijft vereist",
-        "en": "Confirmed in CargoPilot; signature on the document is still required",
-        "de": "In CargoPilot bestätigt; die Unterschrift auf dem Dokument bleibt erforderlich", "fr": 'Confirmé dans CargoPilot ; la signature sur le document reste requise'},
+        "nl": "Bevestigd in {brand}; ondertekening op het document blijft vereist",
+        "en": "Confirmed in {brand}; signature on the document is still required",
+        "de": "In {brand} bestätigt; die Unterschrift auf dem Dokument bleibt erforderlich", "fr": 'Confirmé dans {brand} ; la signature sur le document reste requise'},
     "not_confirmed": {
         "nl": "NIET bevestigd",
         "en": "NOT confirmed",
@@ -435,8 +436,8 @@ def _localised(value: Any, lang: str) -> str:
 
 def _text(key: str, lang: str) -> Any:
     # A fallback rather than a KeyError: a language still missing a single line
-    # must not bring an export down.
-    return pick(TEXTS[key], lang)
+    # must not bring an export down. "{brand}" is the installation's name.
+    return brand.fill(pick(TEXTS[key], lang))
 
 
 def _option_label(field: dict[str, Any], value: Any, lang: str) -> Any:

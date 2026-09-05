@@ -42,6 +42,19 @@ def sheet(*products, profiles=("ADR",), language="nl"):
         CONSIGNMENT, [], entries, language, list(profiles))
 
 
+#: The brand's logo sits in every page header since v1.178.0, never wider
+#: than 46 mm. Artwork is what is printed at label size, so anything narrower
+#: than this is not artwork.
+ARTWORK_MIN_MM = 50
+
+
+def artwork_rects(page):
+    """Where the labels and marks are on a page, the header logo left out."""
+    return [rect for image in page.get_images(full=True)
+            for rect in page.get_image_rects(image[0])
+            if rect.width / 72 * 25.4 >= ARTWORK_MIN_MM]
+
+
 def pages(path):
     with pymupdf.open(str(path)) as document:
         return [page.get_text() for page in document]
@@ -54,7 +67,7 @@ def artwork_pages(path):
     stop covering a page when the working page grows onto a second sheet.
     """
     with pymupdf.open(str(path)) as document:
-        return [page.get_text() for page in document if page.get_images()]
+        return [page.get_text() for page in document if artwork_rects(page)]
 
 
 # --- the size, measured off the page ---
@@ -71,8 +84,7 @@ def test_a_label_is_printed_at_one_hundred_millimetres_on_each_side():
     path = sheet(goods("1263"))
     with pymupdf.open(str(path)) as document:
         page = document[1]
-        rects = [rect for image in page.get_images(full=True)
-                 for rect in page.get_image_rects(image[0])]
+        rects = artwork_rects(page)
     assert rects, "the label page carries no artwork"
     width_mm = rects[0].width / 72 * 25.4
     assert round(width_mm, 1) == round(FULL_SIZE_MM, 1)
@@ -249,9 +261,8 @@ def test_the_environmentally_hazardous_mark_is_printed_at_label_size():
         # The working page names 5.2.1.8 in its marks column too, so the page
         # wanted here is the one that both names the provision and draws it.
         page = next(page for page in document
-                    if "5.2.1.8" in page.get_text() and page.get_images(full=True))
-        rects = [rect for image in page.get_images(full=True)
-                 for rect in page.get_image_rects(image[0])]
+                    if "5.2.1.8" in page.get_text() and artwork_rects(page))
+        rects = artwork_rects(page)
     assert rects
     assert round(min(rects[0].width, rects[0].height) / 72 * 25.4, 1) \
         >= round(FULL_SIZE_MM, 1)
@@ -264,12 +275,11 @@ def test_no_artwork_is_ever_printed_below_its_own_minimum():
     path = sheet(goods("3082", environmentally_hazardous="P"), goods("1263"))
     with pymupdf.open(str(path)) as document:
         for page in document:
-            for image in page.get_images(full=True):
-                for rect in page.get_image_rects(image[0]):
-                    if round(rect.width / 72 * 25.4) < 100:
-                        continue  # the battery symbol lives inside its frame
-                    assert round(min(rect.width, rect.height) / 72 * 25.4, 1) \
-                        >= round(FULL_SIZE_MM, 1)
+            for rect in artwork_rects(page):
+                if round(rect.width / 72 * 25.4) < 100:
+                    continue  # the battery symbol lives inside its frame
+                assert round(min(rect.width, rect.height) / 72 * 25.4, 1) \
+                    >= round(FULL_SIZE_MM, 1)
 
 
 def test_a_consignment_without_dangerous_goods_says_so_on_one_page():

@@ -404,7 +404,11 @@ verification policy**: off, required for administrators, or required for everyon
 [Configuration](configuration.md#mail-server) for the settings themselves. Under
 **Branding** the installation gets its own face: a name for the header, the sign-in page
 and the browser tab, a logo shown in its own colours in both themes and carried in
-outgoing mail, and a picture per transport mode for the tiles on the first screen. The
+outgoing mail, and a picture per transport mode for the tiles on the first screen. Both
+the name and the logo are printed on every document CargoPilot draws itself, in the
+header and the foot of every page, and the "generated with" line names the installation
+rather than the software; where nothing is set, the documents carry CargoPilot's own
+name and logo. The official forms (CMR, CIM, AVC) are filled in and not rebranded. The
 pictures apply the moment they are uploaded and each has a way back to the default; the
 name is saved with the button. See [Configuration](configuration.md#branding) for the
 formats and sizes accepted.

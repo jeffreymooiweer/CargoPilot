@@ -19,11 +19,11 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any
 
-from reportlab.lib.pagesizes import A4
-from reportlab.lib.units import mm
-from reportlab.platypus import SimpleDocTemplate, Spacer
+from reportlab.platypus import Spacer
 
 from app.core.languages import normalise, pick
+from app.services.documents import brand
+from app.services.documents.frame import branded_document
 from app.services.dg.compliance import check_adr_equipment
 from app.services.documents.pdf_render import (
     _fields_table,
@@ -42,8 +42,8 @@ TEXT: dict[str, dict[str, str]] = {
         "fr": "Feuille d'équipement (ADR 8.1.4 / 8.1.5)",
     },
     "generated": {
-        "nl": "Opgesteld met CargoPilot op", "en": "Drawn up with CargoPilot on",
-        "de": "Erstellt mit CargoPilot am", "fr": "Établi avec CargoPilot le",
+        "nl": "Opgesteld met {brand} op", "en": "Drawn up with {brand} on",
+        "de": "Erstellt mit {brand} am", "fr": "Établi avec {brand} le",
     },
     "consignment": {"nl": "Zending", "en": "Consignment", "de": "Sendung",
                     "fr": "Envoi"},
@@ -84,7 +84,7 @@ def _lang_of(language: str) -> str:
 
 
 def _t(key: str, lang: str) -> str:
-    return pick(TEXT[key], lang)
+    return brand.fill(pick(TEXT[key], lang))
 
 
 def render_equipment_sheet(
@@ -98,12 +98,7 @@ def render_equipment_sheet(
     result = check_adr_equipment(list(dangerous_goods or []), lang)
     styles = _styles()
     out_path = _output_path()
-    doc = SimpleDocTemplate(
-        str(out_path), pagesize=A4,
-        leftMargin=15 * mm, rightMargin=15 * mm,
-        topMargin=14 * mm, bottomMargin=14 * mm,
-        title=_t("title", lang),
-    )
+    doc = branded_document(out_path, _t("title", lang), lang)
     width = doc.width
     story: list[Any] = [
         _p(_t("title", lang), styles["title"]),

@@ -70,18 +70,17 @@ from pathlib import Path
 from typing import Any
 
 from reportlab.lib import colors
-from reportlab.lib.pagesizes import A4
 from reportlab.lib.units import mm
 from reportlab.lib.utils import ImageReader
 from reportlab.platypus import (
     Flowable,
     KeepTogether,
     PageBreak,
-    SimpleDocTemplate,
     Spacer,
 )
 
 from app.core.languages import normalise
+from app.services.documents.frame import branded_document
 from app.services.dg.package_marking import check_package_marking, rules
 from app.services.documents.pdf_render import (
     _grid_table,
@@ -992,12 +991,7 @@ def render_package_label_sheet(
 
     styles = _styles()
     out_path = _output_path()
-    doc = SimpleDocTemplate(
-        str(out_path), pagesize=A4,
-        leftMargin=15 * mm, rightMargin=15 * mm,
-        topMargin=14 * mm, bottomMargin=14 * mm,
-        title=_t("title", lang),
-    )
+    doc = branded_document(out_path, _t("title", lang), lang)
     width = doc.width
     story: list[Any] = [
         _p(_t("title", lang), styles["title"]),

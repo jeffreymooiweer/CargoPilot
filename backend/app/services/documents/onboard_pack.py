@@ -29,11 +29,11 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any
 
-from reportlab.lib.pagesizes import A4
-from reportlab.lib.units import mm
-from reportlab.platypus import SimpleDocTemplate, Spacer
+from reportlab.platypus import Spacer
 
 from app.core.languages import normalise, pick
+from app.services.documents import brand
+from app.services.documents.frame import branded_document
 from app.services.documents.pdf_render import (
     _fields_table,
     _grid_table,
@@ -85,15 +85,15 @@ TEXT: dict[str, dict[str, str]] = {
               "(IMDG 5.4.2.1) — ne cocher chaque point qu'après constat :",
     },
     "pc_nothing_prefilled": {
-        "nl": "Door CargoPilot niet vooraf ingevuld: elke verklaring gaat over wat "
+        "nl": "Door {brand} niet vooraf ingevuld: elke verklaring gaat over wat "
               "bij de belading is vastgesteld, en dat kan deze applicatie niet "
               "zien.",
-        "en": "Not pre-filled by CargoPilot: every declaration concerns what was "
+        "en": "Not pre-filled by {brand}: every declaration concerns what was "
               "established at packing, which this application cannot see.",
-        "de": "Von CargoPilot nicht vorausgefüllt: jede Erklärung betrifft, was "
+        "de": "Von {brand} nicht vorausgefüllt: jede Erklärung betrifft, was "
               "bei der Beladung festgestellt wurde, und das kann diese Anwendung "
               "nicht sehen.",
-        "fr": "Non prérempli par CargoPilot : chaque déclaration porte sur ce qui "
+        "fr": "Non prérempli par {brand} : chaque déclaration porte sur ce qui "
               "a été constaté à l'empotage, ce que cette application ne peut pas "
               "voir.",
     },
@@ -131,10 +131,10 @@ TEXT: dict[str, dict[str, str]] = {
         "fr": "Documents de bord — bateau (ADN 8.1.2)",
     },
     "ob_from_app": {
-        "nl": "Door CargoPilot voor deze zending opgesteld",
-        "en": "Drawn up by CargoPilot for this consignment",
-        "de": "Von CargoPilot für diese Sendung erstellt",
-        "fr": "Établis par CargoPilot pour cet envoi",
+        "nl": "Door {brand} voor deze zending opgesteld",
+        "en": "Drawn up by {brand} for this consignment",
+        "de": "Von {brand} für diese Sendung erstellt",
+        "fr": "Établis par {brand} pour cet envoi",
     },
     "ob_bring": {
         "nl": "Wettelijk vereist en niet uit deze applicatie te verkrijgen — zelf "
@@ -217,7 +217,7 @@ def _lang_of(language: str) -> str:
 
 
 def _t(key: str, lang: str) -> str:
-    return pick(TEXT[key], lang)
+    return brand.fill(pick(TEXT[key], lang))
 
 
 def render_packing_certificate(
@@ -230,16 +230,11 @@ def render_packing_certificate(
     lang = _lang_of(language)
     styles = _styles()
     out_path = _output_path()
-    doc = SimpleDocTemplate(
-        str(out_path), pagesize=A4,
-        leftMargin=15 * mm, rightMargin=15 * mm,
-        topMargin=14 * mm, bottomMargin=14 * mm,
-        title=_t("pc_title", lang),
-    )
+    doc = branded_document(out_path, _t("pc_title", lang), lang)
     width = doc.width
     story: list[Any] = [
         _p(_t("pc_title", lang), styles["title"]),
-        _p(f"{pick(TEXT['ob_from_app'], lang)} — "
+        _p(f"{_t('ob_from_app', lang)} — "
            f"{datetime.now().strftime('%Y-%m-%d %H:%M')}", styles["meta"]),
         _p(_t("pc_when", lang), styles["meta"]),
         Spacer(1, 6),
@@ -372,11 +367,7 @@ def render_onboard_documents(
     title = _t("ob_title_adn" if regime.upper() == "ADN" else "ob_title_adr", lang)
     styles = _styles()
     out_path = _output_path()
-    doc = SimpleDocTemplate(
-        str(out_path), pagesize=A4,
-        leftMargin=15 * mm, rightMargin=15 * mm,
-        topMargin=14 * mm, bottomMargin=14 * mm, title=title,
-    )
+    doc = branded_document(out_path, title, lang)
     width = doc.width
     header = [_t("ob_present", lang), _t("ob_document", lang),
               _t("ob_basis", lang)]

@@ -25,11 +25,10 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any
 
-from reportlab.lib.pagesizes import A4
-from reportlab.lib.units import mm
-from reportlab.platypus import KeepTogether, SimpleDocTemplate, Spacer
+from reportlab.platypus import KeepTogether, Spacer
 
 from app.services.dg.autofill import description_line
+from app.services.documents.frame import branded_document
 from app.services.documents.pdf_render import (
     _fields_table,
     _grid_table,
@@ -158,11 +157,7 @@ def render_stowage_plan(
     lang = _lang_of(language)
     styles = _styles()
     out_path = _output_path()
-    doc = SimpleDocTemplate(
-        str(out_path), pagesize=A4,
-        leftMargin=15 * mm, rightMargin=15 * mm, topMargin=14 * mm, bottomMargin=14 * mm,
-        title=_t("title", lang),
-    )
+    doc = branded_document(out_path, _t("title", lang), lang)
     width = doc.width
 
     places: dict[tuple[int, str], list[list[str]]] = {}

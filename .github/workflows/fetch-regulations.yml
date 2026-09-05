@@ -30,6 +30,10 @@ on:
         description: "Mappings for unrecognised incoming files, one per line: filename.pdf=document-id"
         default: ""
         required: false
+      artifact_path:
+        description: "Hand a part of the store back as a run artifact (path relative to the store root, e.g. incoming/Reference), kept one day. This is how reference material the development container cannot fetch itself reaches it."
+        default: ""
+        required: false
       find_provision:
         description: "Which model to look for: 5.4.3 (instructions), 8.6.3 (ADN checklist), 8.6.4 (degassing checklist)"
         default: "5.4.3"
@@ -102,7 +106,13 @@ jobs:
           set -euo pipefail
           pip install --quiet gdown
           mkdir -p /tmp/cargopilot-regulations/incoming
-          gdown --folder "$FOLDER" -O /tmp/cargopilot-regulations/incoming
+          # Drive rations the public links: after some tens of files in one
+          # go it refuses the next with "many accesses". Measured on a folder
+          # of forty files, which failed on the last one. What did arrive is
+          # still worth listing, surveying and adopting, so the failure is
+          # reported and the step goes on.
+          gdown --folder "$FOLDER" -O /tmp/cargopilot-regulations/incoming \
+            || echo "::warning::gdown ended with an error (Drive's access ration, most likely); what did arrive is listed below"
           echo "=== incoming (recursive: a Drive folder arrives as a tree) ==="
           find /tmp/cargopilot-regulations/incoming -type f -printf '%10s  %p\n' | sort -k2
           # Reconnaissance before anything is registered: what each PDF is,
@@ -147,8 +157,29 @@ jobs:
           pip install --quiet pymupdf
           python scripts/dump_pdf_text.py /tmp/cargopilot-regulations "$PATTERN"
 
+      # The way back. The cache is repository-internal storage the container
+      # cannot read; an artifact is repository-internal storage it can, for a
+      # day. Nothing is published: an artifact is visible to the repository's
+      # collaborators only, like the cache it comes from.
+      - name: Hand a part of the store back
+        if: ${{ inputs.artifact_path != '' }}
+        env:
+          ARTIFACT_PATH: ${{ inputs.artifact_path }}
+        run: |
+          set -euo pipefail
+          test -e "/tmp/cargopilot-regulations/$ARTIFACT_PATH"
+          echo "=== $ARTIFACT_PATH ==="
+          find "/tmp/cargopilot-regulations/$ARTIFACT_PATH" -type f -printf '%10s  %p\n' | sort -k2
+      - uses: actions/upload-artifact@v4
+        if: ${{ inputs.artifact_path != '' }}
+        with:
+          name: store-part
+          path: /tmp/cargopilot-regulations/${{ inputs.artifact_path }}
+          retention-days: 1
+          if-no-files-found: error
+
       - name: Fetch what is missing
-        if: ${{ inputs.probe_url == '' && inputs.drive_folder == '' && inputs.find_instructions == '' && !inputs.verify_instructions && inputs.dump_text == '' }}
+        if: ${{ inputs.probe_url == '' && inputs.drive_folder == '' && inputs.artifact_path == '' && inputs.find_instructions == '' && !inputs.verify_instructions && inputs.dump_text == '' }}
         run: python scripts/regulations_store.py fetch ${{ inputs.ids }}
 
       # Not after a page-range measurement: that report is what the run is for,

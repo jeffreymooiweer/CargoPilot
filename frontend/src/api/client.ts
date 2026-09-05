@@ -239,6 +239,11 @@ export const api = {
       method: "POST",
       body: JSON.stringify({ text }),
     }),
+  // The NHM goods nomenclature for box 24 of the CIM: by code prefix or by a
+  // word of the English or French label; and the words behind one code.
+  nhmSearch: (q: string, limit = 10) =>
+    request<{ results: NhmEntry[]; count: number }>(`/nhm?q=${encodeURIComponent(q)}&limit=${limit}`),
+  nhmLookup: (code: string) => request<NhmEntry>(`/nhm/${encodeURIComponent(code)}`),
   // Whether the ENS reference and the AES ITN apply on the route in the
   // values: read off the route fields, answered per field with the ground.
   customsRoute: (values: Record<string, string>) =>
@@ -1635,6 +1640,15 @@ export interface DocumentBundlePayload extends Record<string, unknown> {
   include_un_cards?: boolean;
   include_instructions?: boolean;
   signature_image?: string;
+}
+
+/** One six-digit NHM code with its labels (English and French, as the UIC
+ *  publishes them) and the NST 2007 group it maps to. */
+export interface NhmEntry {
+  code: string;
+  en: string;
+  fr: string;
+  nst: string;
 }
 
 /** One customs reference field's condition, decided by the route. `unknown`

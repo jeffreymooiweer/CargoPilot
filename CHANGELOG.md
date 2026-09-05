@@ -2,6 +2,29 @@
 
 All notable changes are documented here, following [Semantic Versioning](https://semver.org/).
 
+## [1.184.0] — 2026-09-05
+
+### Box 24 of the CIM picks its NHM code from the nomenclature
+
+The NHM code on the rail consignment note was a free-text field with a
+format check and a note that the code had to be looked up elsewhere. The
+UIC's own correspondence table between the NHM 2025 and Eurostat's NST
+2007, supplied by the project owner, carries every position with its
+English and French label — and is now behind the box.
+
+- **5,640 six-digit codes**: 5,612 Harmonized System subheadings and 28
+  railway-specific positions of chapter 99 (groupage freight, empty wagons,
+  loaded intermodal units), each with both labels and the NST 2007 group it
+  maps to, in `backend/seed/nhm.json`; `scripts/build_nhm_seed.py` rebuilds
+  it from a next edition of the table.
+- **Pick by code or by word.** Typing the start of a code lists the
+  subheadings under it; typing a word searches both labels, accents or not,
+  a word start ranking above a word middle and the shorter heading above the
+  longer one. A code typed in full is read back in words under the box.
+  `GET /api/nhm?q=` and `GET /api/nhm/{code}` behind the login.
+- Labels stay in the two languages the UIC publishes; the box says so
+  rather than translating them.
+
 ## [1.183.0] — 2026-09-05
 
 ### The customs conditions, read in the texts themselves

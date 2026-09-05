@@ -300,9 +300,12 @@ none is committed until it is planned against that brief.
 
 ### Wizard and library
 
-- NHM code search and selection as a master data field (CIM box 24). Blocked on finding a
-  source that carries six-digit codes *with* descriptions; `scripts/probe_nhm_sources.py`
-  measures a candidate. Until then box 24 is a free-text field with a format check.
+- ~~NHM code search and selection as a master data field (CIM box 24).~~ Shipped in
+  v1.184.0: the UIC's own NST 2007 – NHM 2025 correspondence table, supplied by the project
+  owner, carries every position with its English and French label, and box 24 is picked
+  from it — 5,640 six-digit codes, by code prefix or by a word of either label, with the
+  words behind a typed code read back under the box. `scripts/build_nhm_seed.py` rebuilds
+  the seed from a next edition of the table.
 - Customs reference fields (ENS/ICS2, AES/ITN) shipped in v1.128.0 with their conditions
   in the help text and their formats enforced on export; carrier data intake (AWB number,
   booking reference) from a pasted booking confirmation shipped alongside. ~~What remains

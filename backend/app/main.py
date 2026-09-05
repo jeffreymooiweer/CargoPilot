@@ -28,6 +28,7 @@ from app.api.routes.geo import router as geo_router
 from app.api.routes.history import router as history_router
 from app.api.routes.jobs import router as jobs_router
 from app.api.routes.meta import router as meta_router
+from app.api.routes.nhm import router as nhm_router
 from app.api.routes.settings import public_router as settings_public_router
 from app.api.routes.settings import router as settings_router
 from app.api.routes.un_cards_admin import router as un_cards_admin_router
@@ -49,6 +50,7 @@ WORK_ROUTERS = (
     dangerous_goods_router,
     documents_router,
     geo_router,
+    nhm_router,
     reference_router,
     import_files_router,
     catalog_search_router,

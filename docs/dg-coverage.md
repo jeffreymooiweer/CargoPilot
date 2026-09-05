@@ -633,9 +633,10 @@ where 5.3.2.1 marking is prescribed — contains no tunnel restriction code.
   still named as a condition is the one thing still invisible: whether a wagon comprises a
   full load. The exclusion of model 13 from the description line (5.4.1.1.1 (c)) stays a
   guard.
-- **The CIM's own dangerous goods fields.** Box 24 (NHM) is a free-text field with a format
-  check; the entries in boxes 21/23 come from the shared DG data without rail-specific
-  validation.
+- **The CIM's own dangerous goods fields.** Box 24 (NHM) is picked from the UIC's NHM 2025
+  nomenclature since v1.184.0 (5,640 six-digit codes, English and French labels), with the
+  six-digit format still enforced; the entries in boxes 21/23 come from the shared DG data
+  without rail-specific validation.
 
 **What rail did get, from its own text.** Two provisions moved out of this list in v1.41.0
 and both came from OTIF's own pages rather than from ADR on loan:
@@ -687,9 +688,10 @@ duty, and the application says so.
 v1.63.0: the checks a rail consignment gets are cited to RID rather than borrowed, the
 placarding of chapter 5.3 is derived and on paper, and the CIM flow is verified end to
 end in the rail archetypes — a package wagon and a chlorine tank-wagon, through the real
-API, compliance and documents alike. What stays open stays named: the CIM's
-free-text NHM box, and everything that is the wagon or the train itself — full-load
-status included, which is what keeps 5.3.4 a condition even now that its column is read.
+API, compliance and documents alike. What stays open stays named: everything that is the
+wagon or the train itself — full-load status included, which is what keeps 5.3.4 a
+condition even now that its column is read. (The CIM's NHM box, long on this list, came
+off it in v1.184.0 with the UIC's own nomenclature behind it.)
 
 ## Inland waterway — ADN
 

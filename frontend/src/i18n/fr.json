@@ -455,6 +455,10 @@
     "ens_domestic": "{{from}} vers {{to}} est un transport intérieur : pas de déclaration sommaire d'entrée.",
     "aes_territory": "Les marchandises expédiées depuis les territoires américains, ou entre les États-Unis et ces territoires ({{from}} vers {{to}}), sont exclues de la déclaration (15 CFR 30.2(d)(2)) ; seules celles qui les traversent vers une destination étrangère sont déclarées."
   },
+  "nhm": {
+    "placeholder": "Six chiffres, ou recherche par début de code ou par un mot de la désignation…",
+    "source": "NHM 2025 (UIC), 5 640 codes à six chiffres avec désignation en anglais et en français"
+  },
   "signature": {
     "title": "Signature de l'expéditeur (facultative)",
     "intro": "Tracez votre signature ou téléversez-en une image ; elle est apposée dans la case de l'expéditeur des documents sélectionnés (p. ex. case 22 de la CMR). Vous pouvez aussi passer cette étape et signer les documents imprimés au stylo.",

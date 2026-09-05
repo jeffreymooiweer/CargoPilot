@@ -370,10 +370,16 @@ because the source is IATA itself. To investigate when air is planned: licensing
 terms, cost, offline behaviour (an air-gapped installation cannot call out — the
 existing outbound-connections switch already models this).
 
-## NHM codes (existing blocker, unchanged)
+## NHM codes (unblocked, shipped in v1.184.0)
 
-Still blocked on a source that carries the six-digit codes *with* descriptions;
-`scripts/probe_nhm_sources.py` measures any candidate. Nothing new found this round.
+The source turned out to be the UIC's own correspondence table between the NHM 2025 and
+Eurostat's NST 2007, supplied by the project owner as a workbook: every NHM 2025 position
+with its English and French label and the NST group it maps to. `scripts/build_nhm_seed.py`
+cuts it to one entry per six-digit code — 5,612 Harmonized System subheadings and 28
+railway-specific positions of chapter 99 — and box 24 of the CIM is picked from that list
+by code prefix or by a word of either label. Labels exist in the two languages the UIC
+publishes; the interface says so rather than translating them. `scripts/probe_nhm_sources.py`
+stays as the measuring tool for a next edition.
 
 ---
 

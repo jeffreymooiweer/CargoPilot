@@ -19,6 +19,7 @@ import {
   MODALITY_LOCATION_TYPES,
 } from "./GeoInputs";
 import InfoTooltip from "./InfoTooltip";
+import NhmCombobox from "./NhmCombobox";
 import SignaturePad from "./SignaturePad";
 
 const inputClass =
@@ -206,6 +207,10 @@ export default function DocumentFieldsStep({
               types={locationTypes}
               includeAddresses={modality === "road" || modality === "multimodal"}
             />
+          </div>
+        ) : field.key === "nhm_code" ? (
+          <div className="mt-1">
+            <NhmCombobox value={value} onChange={(v) => setValue(field.key, v)} />
           </div>
         ) : field.type === "select" ? (
           <select className={`${inputClass} mt-1`} value={value} onChange={(e) => setValue(field.key, e.target.value)}>

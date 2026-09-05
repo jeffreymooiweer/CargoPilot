@@ -321,9 +321,25 @@ regulation and department, per class and per UN number with kilograms and litres
 apart, what the 1.1.3.6 points count said about each shipment, and which documents were
 issued. The duties the ADR gives the adviser are listed as headings with nothing filled
 in: that judgement is the adviser's, not the application's. **Download workbook** hands
-over the same report as an `.xlsx` with an empty column beside the duties, which is the
-thing to keep — for five years, the ADR says. A shipment that was never kept is not in
-the count, and the report says so.
+over the same figures as an `.xlsx` with an empty column beside the duties. A shipment
+that was never kept is not in the count, and the report says so.
+
+**Fill in the report** is the second tab: the report in the shape of the DVSA template
+(the UK competent authority's *DGSA Annual Report for the Carriage of Dangerous Goods*,
+December 2025) — company and adviser details, a risk rating, the executive summary,
+activities, incidents, training, high consequence dangerous goods, the transport table
+per class with the operations and the quantity band, practices and procedures (the
+thirteen duties of 1.8.3.3 as yes/no questions with a details column, plus accident
+reports to management and 1.8.5 notifications), a class 7 block that appears only when
+class 7 was carried, the DVSA's additional points, and who prepared it. What the history
+can propose — the classes and quantities, the method of carriage, the high consequence
+goods the 1.10.3 check found, the annual tonnage, the company name from the branding —
+sits under a **Take over** button and is never written into an answer by itself. The
+answers are kept per year (and per department scope for an administrator), so the report
+can be filled in over weeks and found again in five years. **Report as PDF** draws it on
+the installation's paper in the template's order, with the adviser's saved signature from
+the settings, the counted figures as an appendix and the DGSA1 to DGSA21 checklist last,
+each line naming the section of the report that answers it.
 
 Who sees which is a matter of **departments**. An administrator sees every kept shipment
 and gets a department filter on the page; everyone else sees their own department's

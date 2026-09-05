@@ -98,11 +98,19 @@ def _003_addresses(conn: Connection) -> None:
     Address.__table__.create(conn, checkfirst=True)
 
 
+def _004_dgsa_reports(conn: Connection) -> None:
+    """The safety adviser's kept annual reports (v1.179.0)."""
+    from app.models.dgsa_report import DgsaReport
+
+    DgsaReport.__table__.create(conn, checkfirst=True)
+
+
 #: In order. Append; never renumber, never remove.
 MIGRATIONS: list[tuple[int, str, Callable[[Connection], None]]] = [
     (1, "shipments", _001_shipments),
     (2, "departments", _002_departments),
     (3, "addresses", _003_addresses),
+    (4, "dgsa_reports", _004_dgsa_reports),
 ]
 
 

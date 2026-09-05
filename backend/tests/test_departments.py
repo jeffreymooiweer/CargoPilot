@@ -25,6 +25,11 @@ from app.services import departments, history
 from tests.test_history import shipment
 
 
+#: The real schema steps, so adding one does not renumber every assertion.
+STEPS = [version for version, _name, _step in migrations.MIGRATIONS]
+NEXT = STEPS[-1] + 1
+
+
 @pytest.fixture
 def db(tmp_path, monkeypatch):
     data_dir = tmp_path / "data"
@@ -199,7 +204,7 @@ def test_step_two_brings_a_v1_173_database_along(tmp_path):
         conn.exec_driver_sql(
             "CREATE TABLE users (id INTEGER PRIMARY KEY, username VARCHAR(64), email VARCHAR(255), "
             "password_hash VARCHAR(255), role VARCHAR(16), active BOOLEAN, created_at DATETIME)")
-    assert migrations.run(engine, fresh=False) == [1, 2, 3]
+    assert migrations.run(engine, fresh=False) == STEPS
     inspector = inspect(engine)
     assert inspector.has_table("departments")
     assert "department_id" in {c["name"] for c in inspector.get_columns("users")}

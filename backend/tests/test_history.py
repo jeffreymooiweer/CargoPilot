@@ -39,6 +39,11 @@ from app.services import history, settings_store
 from tests.test_export_bundle import CONSIGNMENT, DG, doc
 
 
+#: The real schema steps, so adding one does not renumber every assertion.
+STEPS = [version for version, _name, _step in migrations.MIGRATIONS]
+NEXT = STEPS[-1] + 1
+
+
 @pytest.fixture
 def db(tmp_path, monkeypatch):
     data_dir = tmp_path / "data"
@@ -276,35 +281,35 @@ def test_the_documents_again_are_the_kept_bundle_rerendered(db, monkeypatch):
 def test_a_fresh_database_is_stamped_and_an_old_one_migrated(tmp_path):
     fresh_engine = create_engine(f"sqlite:///{tmp_path / 'fresh.db'}")
     Base.metadata.create_all(bind=fresh_engine)
-    assert migrations.run(fresh_engine, fresh=True) == [1, 2, 3]
-    assert migrations.current(fresh_engine) == 3
+    assert migrations.run(fresh_engine, fresh=True) == STEPS
+    assert migrations.current(fresh_engine) == STEPS[-1]
     assert inspect(fresh_engine).has_table("shipments")
 
     # A database from before v1.173.0: the users table exists, shipments does not.
     old_engine = create_engine(f"sqlite:///{tmp_path / 'old.db'}")
     User.__table__.create(old_engine)
     assert not inspect(old_engine).has_table("shipments")
-    assert migrations.run(old_engine, fresh=False) == [1, 2, 3]
+    assert migrations.run(old_engine, fresh=False) == STEPS
     assert inspect(old_engine).has_table("shipments")
     # Twice does nothing the second time.
     assert migrations.run(old_engine, fresh=False) == []
-    assert migrations.current(old_engine) == 3
+    assert migrations.current(old_engine) == STEPS[-1]
 
 
 def test_a_later_step_runs_on_an_old_database_and_is_stamped_on_a_fresh_one(tmp_path, monkeypatch):
     ran: list[str] = []
 
     def _004_colour(conn):
-        ran.append("004")
+        ran.append(f"{NEXT:03d}")
         migrations.add_column(conn, "shipments", "colour VARCHAR(16)")
 
     monkeypatch.setattr(migrations, "MIGRATIONS",
-                        migrations.MIGRATIONS + [(4, "colour", _004_colour)])
+                        migrations.MIGRATIONS + [(NEXT, "colour", _004_colour)])
 
     old_engine = create_engine(f"sqlite:///{tmp_path / 'old.db'}")
     User.__table__.create(old_engine)
-    assert migrations.run(old_engine, fresh=False) == [1, 2, 3, 4]
-    assert ran == ["004"]
+    assert migrations.run(old_engine, fresh=False) == STEPS + [NEXT]
+    assert ran == [f"{NEXT:03d}"]
     with old_engine.connect() as conn:
         assert migrations.column_exists(conn, "shipments", "colour")
         # And adding it again is a no-op, so a restored backup recovers.
@@ -312,8 +317,8 @@ def test_a_later_step_runs_on_an_old_database_and_is_stamped_on_a_fresh_one(tmp_
 
     fresh_engine = create_engine(f"sqlite:///{tmp_path / 'fresh.db'}")
     Base.metadata.create_all(bind=fresh_engine)
-    assert migrations.run(fresh_engine, fresh=True) == [1, 2, 3, 4]
-    assert ran == ["004"], "a fresh database is stamped, the step must not run"
+    assert migrations.run(fresh_engine, fresh=True) == STEPS + [NEXT]
+    assert ran == [f"{NEXT:03d}"], "a fresh database is stamped, the step must not run"
 
 
 def test_a_failed_step_leaves_the_version_where_it_was(tmp_path, monkeypatch):
@@ -321,12 +326,12 @@ def test_a_failed_step_leaves_the_version_where_it_was(tmp_path, monkeypatch):
         conn.execute(text("SELECT * FROM no_such_table"))
 
     monkeypatch.setattr(migrations, "MIGRATIONS",
-                        migrations.MIGRATIONS + [(4, "explodes", _004_explodes)])
+                        migrations.MIGRATIONS + [(NEXT, "explodes", _004_explodes)])
     old_engine = create_engine(f"sqlite:///{tmp_path / 'old.db'}")
     User.__table__.create(old_engine)
     with pytest.raises(Exception):
         migrations.run(old_engine, fresh=False)
-    assert migrations.current(old_engine) == 3
+    assert migrations.current(old_engine) == STEPS[-1]
 
 
 # --- the settings answer -------------------------------------------------------

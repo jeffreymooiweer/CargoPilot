@@ -11,7 +11,8 @@ import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router";
 
-import { api, Department, DgsaReport, User } from "../api/client";
+import { api, Department, DgsaFormResponse, DgsaReport, User } from "../api/client";
+import DgsaReportForm from "../components/DgsaReportForm";
 import { documentLanguage } from "../i18n/language";
 import { usePreferences } from "../settings/preferences";
 import { useToast } from "../toast/ToastProvider";
@@ -21,6 +22,8 @@ const inputClass =
   "w-full border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-950 text-slate-900 dark:text-slate-100 rounded-lg px-3 py-2.5 text-sm min-h-[44px]";
 const buttonPrimary =
   "bg-brand-600 text-white px-4 py-2.5 rounded-lg font-medium hover:bg-brand-700 disabled:opacity-50 min-h-[44px] text-sm";
+const buttonSecondary =
+  "px-4 py-2.5 rounded-lg border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800 disabled:opacity-50 min-h-[44px] text-sm";
 const th = "px-3 py-2 text-left text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400";
 const td = "px-3 py-2 text-sm text-slate-800 dark:text-slate-200";
 const num = `${td} text-right tabular-nums`;
@@ -79,6 +82,12 @@ export default function DgsaReportPage({ user }: { user?: User | null }) {
   const [report, setReport] = useState<DgsaReport | null>(null);
   const [loading, setLoading] = useState(false);
   const [downloading, setDownloading] = useState(false);
+  // The two faces of the report: the figures, and the form in the DVSA's
+  // shape that the adviser fills in and keeps.
+  const [view, setView] = useState<"figures" | "form">("figures");
+  const [form, setForm] = useState<DgsaFormResponse | null>(null);
+  const [savedAt, setSavedAt] = useState<string | null>(null);
+  const [downloadingPdf, setDownloadingPdf] = useState(false);
 
   useEffect(() => {
     if (!historyOn) return;
@@ -115,6 +124,36 @@ export default function DgsaReportPage({ user }: { user?: User | null }) {
     // toast is stable for the page's lifetime.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [historyOn, year, department, language]);
+
+  useEffect(() => {
+    if (!historyOn || view !== "form") return;
+    let cancelled = false;
+    api
+      .dgsaReportForm(year, department, language)
+      .then((f) => {
+        if (cancelled) return;
+        setForm(f);
+        setSavedAt(f.saved_at);
+      })
+      .catch((e) => {
+        if (!cancelled) toast.error(String(e));
+      });
+    return () => {
+      cancelled = true;
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [historyOn, view, year, department, language]);
+
+  const downloadPdf = async () => {
+    setDownloadingPdf(true);
+    try {
+      await api.downloadDgsaReportPdf(year, department, language);
+    } catch (e) {
+      toast.error(String(e));
+    } finally {
+      setDownloadingPdf(false);
+    }
+  };
 
   const download = async () => {
     setDownloading(true);
@@ -170,15 +209,54 @@ export default function DgsaReportPage({ user }: { user?: User | null }) {
           ) : (
             <span />
           )}
-          <button type="button" className={buttonPrimary} disabled={downloading || !report} onClick={() => void download()}>
-            {downloading ? t("dgsa.downloading") : t("dgsa.download")}
-          </button>
+          <div className="flex flex-wrap gap-2">
+            <button type="button" className={buttonPrimary} disabled={downloadingPdf} onClick={() => void downloadPdf()}>
+              {downloadingPdf ? t("dgsa.downloading") : t("dgsa.downloadPdf")}
+            </button>
+            <button type="button" className={buttonSecondary} disabled={downloading || !report} onClick={() => void download()}>
+              {downloading ? t("dgsa.downloading") : t("dgsa.download")}
+            </button>
+          </div>
+        </div>
+        <div className="mt-4 flex flex-wrap items-center gap-2" role="tablist">
+          {(["figures", "form"] as const).map((key) => (
+            <button
+              key={key}
+              type="button"
+              role="tab"
+              aria-selected={view === key}
+              onClick={() => setView(key)}
+              className={`rounded-full border px-4 py-1.5 text-sm font-medium transition ${
+                view === key
+                  ? "border-brand-600 bg-brand-600 text-white"
+                  : "border-slate-200 bg-white text-slate-600 hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-300"
+              }`}
+            >
+              {t(key === "figures" ? "dgsa.viewFigures" : "dgsa.viewForm")}
+            </button>
+          ))}
+          {view === "form" && savedAt && (
+            <span className="text-xs text-slate-500 dark:text-slate-400">
+              {t("dgsa.savedAt", { time: new Date(savedAt).toLocaleString(i18n.language) })}
+            </span>
+          )}
         </div>
       </div>
 
-      {loading && !report && <p className="text-sm text-slate-500 dark:text-slate-400">{t("dgsa.loading")}</p>}
+      {view === "form" && (
+        <>
+          <p className="text-sm text-slate-600 dark:text-slate-300 max-w-3xl">{t("dgsa.formIntro")}</p>
+          {form ? (
+            <DgsaReportForm year={year} department={department} language={language} form={form} onSaved={setSavedAt} />
+          ) : (
+            <p className="text-sm text-slate-500 dark:text-slate-400">{t("dgsa.loading")}</p>
+          )}
+        </>
+      )}
 
-      {report && (
+      {view === "figures" && loading && !report && <p className="text-sm text-slate-500 dark:text-slate-400">{t("dgsa.loading")}</p>}
+
+      {view === "figures" && report && (
         <>
           <div className={`${panelClass} p-4 sm:p-6 space-y-2`}>
             <p className="text-sm text-slate-700 dark:text-slate-300">{report.basis}</p>

@@ -40,7 +40,7 @@ from app.core.languages import normalise, pick
 from app.models.shipment import Shipment
 from app.models.user import Department, User
 from app.services import departments
-from app.services.dg.autofill import adr_quantity
+from app.services.dg.autofill import _num, adr_quantity
 from app.services.documents.registry import get_registry
 from app.version import get_version
 
@@ -111,6 +111,9 @@ def build_report(db: Session, viewer: User, year: int, department: str = "",
                  "quantity_kg": 0.0, "quantity_l": 0.0, "quantity_unknown": 0})
     points: Counter[str] = Counter()
     documents: Counter[str] = Counter()
+    carriage_modes: Counter[str] = Counter()
+    hcdg: dict[str, dict[str, Any]] = {}
+    class7_packages = 0
     with_dg = 0
     products_total = 0
     kg_total = l_total = 0.0
@@ -137,14 +140,33 @@ def build_report(db: Session, viewer: User, year: int, department: str = "",
         for key in export.get("documents") or []:
             documents[str(key)] += 1
         if has_dg:
-            status = str(((export.get("compliance") or {}).get("adr_points") or {}).get("status") or "")
+            compliance = export.get("compliance") or {}
+            status = str((compliance.get("adr_points") or {}).get("status") or "")
             points[status or "not_assessed"] += 1
+            # 1.10.3: which high consequence dangerous goods were consigned,
+            # as the check found them when the shipment was kept. One line
+            # per UN number, the first reason kept.
+            for item in (compliance.get("adr_security") or {}).get("items") or []:
+                if not isinstance(item, dict) or item.get("not_answered") or not item.get("un_number"):
+                    continue
+                un = str(item["un_number"]).strip()
+                entry = hcdg.setdefault(un, {"un_number": un, "reason": str(item.get("reason") or ""),
+                                             "carriage_mode": str(item.get("carriage_mode") or ""),
+                                             "shipments": set()})
+                entry["shipments"].add(record.id)
         for entry in entries:
             for product in entry.get("products") or []:
                 if not isinstance(product, dict):
                     continue
                 products_total += 1
                 cls = _class(product) or "?"
+                # The wizard says "packages", "tank", "portable_tank" or "bulk";
+                # the form asks package / tank / bulk.
+                mode = str(product.get("carriage_mode") or "").strip() or "packages"
+                carriage_modes[{"packages": "package", "portable_tank": "tank"}.get(mode, mode)] += 1
+                if cls.split(".")[0] == "7":
+                    packages = _num(product.get("quantity_packages"))
+                    class7_packages += int(packages) if packages else 0
                 value, unit = adr_quantity(product)
                 bucket = by_class[cls]
                 key = (_un(product), cls, str(product.get("packing_group") or "").strip())
@@ -224,6 +246,10 @@ def build_report(db: Session, viewer: User, year: int, department: str = "",
             {"un_number": un, "class": cls, "packing_group": pg, **_finish(v)}
             for (un, cls, pg), v in sorted(by_un.items(), key=lambda kv: (-len(kv[1]["shipments"]), kv[0]))],
         "adr_points": status_rows,
+        "carriage_modes": [mode for mode, _n in sorted(carriage_modes.items())],
+        "high_consequence": [{**v, "shipments": len(v["shipments"])}
+                             for _un, v in sorted(hcdg.items())],
+        "class7_packages": class7_packages,
         "documents": [{"document": key, "label": pick(document_labels.get(key), lang, key), "shipments": n}
                       for key, n in sorted(documents.items(), key=lambda kv: (-kv[1], kv[0]))],
         "duties_heading": pick(texts()["duties_heading"], lang),

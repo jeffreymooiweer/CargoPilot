@@ -85,8 +85,14 @@ department, class and UN number, kilograms and litres apart, the 1.1.3.6 outcome
 shipment, the documents issued) as a page and a workbook, and the adviser's duties of
 1.8.3.3 — read in the official Dutch edition — as headings with nothing filled in. The
 BADGP and UNECE sites were not reachable from the build environment when it was made,
-so the outline follows the paragraph itself rather than the EASA template; a generated
-opinion would be worse than a blank, and the blank is the deliberate part.
+so v1.177.0 followed the paragraph itself. **v1.179.0** then took the DVSA's own
+template (*DGSA Annual Report for the Carriage of Dangerous Goods*, December 2025,
+supplied by the project owner) as the outline: its sections and question wording are
+reused under the Open Government Licence, the UK-specific bodies are written as "the
+competent authority", the counted parts (transport table in tonnage bands, method of
+carriage, high consequence goods, tonnage) are proposed from the history and never
+asserted, and the adviser's answers are kept per year. A generated opinion would still
+be worse than a blank, and the blank is still the deliberate part.
 
 ## Own articles library (new)
 

@@ -87,3 +87,38 @@ export function readSnapshot(raw: unknown): WizardSnapshot | null {
     signature: typeof raw.signature === "string" && raw.signature ? raw.signature : null,
   };
 }
+
+/** The reference fields a new shipment must not inherit from the one it is
+ *  made from: the wizard's own reference, and the carrier's numbers that
+ *  belong to one booking. Everything else — parties, route, remarks — is
+ *  exactly what a template is for. */
+export const TEMPLATE_CLEARED_KEYS = new Set([
+  "shipment_reference",
+  "reference",
+  "booking_number",
+  "awb_number",
+  "transport_document_number",
+  "ens_mrn",
+  "ens_ics2_reference",
+  "aes_itn",
+  "customs_mrn",
+  "container_number",
+  "container_uti_number",
+  "seal_numbers",
+  "vgm_reference",
+  "vehicle_registration",
+  "wagon_number",
+]);
+
+/** The details of a kept shipment as a new shipment starts with them: the
+ *  identifying references and every date cleared, the rest kept. Dates are
+ *  recognised by their key — they all end in `_date` — because the values
+ *  are the only thing here, not the registry. */
+export function templateValues(values: Record<string, string>): Record<string, string> {
+  const fresh: Record<string, string> = {};
+  for (const [key, value] of Object.entries(values)) {
+    if (TEMPLATE_CLEARED_KEYS.has(key) || key.endsWith("_date")) continue;
+    fresh[key] = value;
+  }
+  return fresh;
+}

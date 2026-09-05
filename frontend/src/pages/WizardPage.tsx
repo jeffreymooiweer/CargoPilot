@@ -26,7 +26,7 @@ import ReviewLinesPanel, { DraftLine, draftToText, textToDraftLines } from "../c
 import WizardProgress from "../components/WizardProgress";
 import { isModalityAvailable } from "./ModalitySelectPage";
 import { usePreferences } from "../settings/preferences";
-import { SNAPSHOT_VERSION, WizardSnapshot, readSnapshot } from "../wizard/snapshot";
+import { SNAPSHOT_VERSION, WizardSnapshot, readSnapshot, templateValues } from "../wizard/snapshot";
 import {
   applyLineWeightChange,
   recalcTotals,
@@ -196,7 +196,12 @@ export default function WizardPage() {
   // "the shipments made" is what the page lists, and a download is what
   // makes one.
   const [searchParams] = useSearchParams();
-  const reopenId = searchParams.get("shipment");
+  // `?shipment=` reopens a kept shipment as itself; `?template=` starts a
+  // new shipment from one, so it is restored without its identity, its
+  // reference, or its dates.
+  const templateId = searchParams.get("template");
+  const reopenId = searchParams.get("shipment") ?? templateId;
+  const asTemplate = !searchParams.get("shipment") && !!templateId;
   const historyOn = !!publicSettings?.history_enabled;
   const [historyId, setHistoryId] = useState<number | null>(null);
   const [keeping, setKeeping] = useState(false);
@@ -230,14 +235,23 @@ export default function WizardPage() {
         setNextId(snap.nextId);
         setResult(snap.result);
         setDgEntries(snap.dgEntries);
-        setDocValues(snap.docValues);
+        setDocValues(asTemplate ? templateValues(snap.docValues) : snap.docValues);
         setSelectedDocs(snap.selectedDocs);
         setSkippedQuestions(snap.skippedQuestions);
         setSignature(snap.signature);
         setChosenDocLang(snap.docLang as Language | null);
-        setStepKey(snap.stepKey);
-        setHistoryId(detail.id);
-        setKeptAt(new Date(detail.updated_at));
+        if (asTemplate) {
+          // A new shipment: the goods and parties are its own, the record
+          // and the export are not. Start at the goods, keep nothing yet.
+          setStepKey("lines");
+          setHistoryId(null);
+          setKeptAt(null);
+          toast.info(t("history.templateOpened", { reference: detail.reference || detail.consignee_name || "" }));
+        } else {
+          setStepKey(snap.stepKey);
+          setHistoryId(detail.id);
+          setKeptAt(new Date(detail.updated_at));
+        }
       })
       .catch(() => {
         if (!cancelled) toast.error(t("history.loadFailed"));
@@ -1132,6 +1146,7 @@ export default function WizardPage() {
             onDone={completeDetails}
             signature={signature}
             onSignatureChange={setSignature}
+            addressBook={historyOn}
           />
         </div>
       )}

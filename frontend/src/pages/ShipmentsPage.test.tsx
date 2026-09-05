@@ -111,6 +111,8 @@ describe("de zendingenpagina", () => {
     renderAt("/shipments/7");
     expect(await screen.findByRole("heading", { name: "CP-2026-100" })).toBeInTheDocument();
     expect(screen.getByRole("link", { name: "history.open" })).toHaveAttribute("href", "/wizard/road?shipment=7");
+    // A template is the same shipment opened as a new one: its own address.
+    expect(screen.getByRole("link", { name: "history.useTemplate" })).toHaveAttribute("href", "/wizard/road?template=7");
     expect(screen.getByRole("button", { name: "history.documents" })).toBeInTheDocument();
 
     await userEvent.click(screen.getByRole("button", { name: "history.remove" }));

@@ -184,6 +184,13 @@ Dates that mean "drawn up today" start as today; operational dates (loading, req
 departure) are facts of the trip and are never guessed. The details of your previous
 shipment can be brought back with one click, so a regular route is not retyped.
 
+On an installation that keeps its shipments (see [Shipments](#shipments-the-history-where-the-installation-keeps-one)),
+the parties section carries an **address book** shared by everyone: pick a consignor,
+consignee or carrier from it and their name, address and contact are filled in; **Save**
+next to a party puts what you typed into the book under that name. Saving a name that is
+already there brings the entry up to date rather than adding a second one. The carrier's
+one "name and address" field is saved with its first line as the name.
+
 ## 5. Export and your documents
 
 The final screen assembles your document set and lists every document with its status.
@@ -298,11 +305,14 @@ opened from the history keeps its identity, so keeping it again updates the same
 
 In the menu, **Shipments**: the kept shipments with a search over reference and parties,
 a transport-mode filter and a date range — a table on a wide screen, cards on a phone.
-Opening one shows the record and offers three things: **Open in wizard** puts the whole
-shipment back where it was, on the step it was on; **Documents again** renders the same
-bundle the export step handed out, on the current version; **Remove** takes it out of the
-history after a confirmation. The **Structured export (JSON)** is the same file the
-export step offers, and it is what the groupage page accepts.
+Opening one shows the record and offers four things: **Open in wizard** puts the whole
+shipment back where it was, on the step it was on; **Use as template** starts a *new*
+shipment with the same goods, parties and route, its reference, the carrier's numbers
+and every date left empty, so keeping it makes a new entry rather than changing the old
+one; **Documents again** renders the same bundle the export step handed out, on the
+current version; **Remove** takes it out of the history after a confirmation. The
+**Structured export (JSON)** is the same file the export step offers, and it is what the
+groupage page accepts.
 
 Who sees which is a matter of **departments**. An administrator sees every kept shipment
 and gets a department filter on the page; everyone else sees their own department's

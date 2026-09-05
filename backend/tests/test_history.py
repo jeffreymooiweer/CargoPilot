@@ -173,6 +173,10 @@ def test_keeping_builds_the_export_and_the_index_from_the_same_parts(db, monkeyp
         summary = created.json()
         assert summary["reference"] == "CP-2026-100"
         assert summary["consignor_name"] == "Afzender BV"
+        # The wizard's own field name wins over the fallback.
+        wizard_named = client.post("/api/shipments", json=shipment(
+            values={**CONSIGNMENT, "shipment_reference": "WZ-1"})).json()
+        assert wizard_named["reference"] == "WZ-1"
         assert summary["consignee_name"] == "Ontvanger GmbH"
         assert summary["modality"] == "road"
         assert summary["regulations"] == ["ADR"]
@@ -272,35 +276,35 @@ def test_the_documents_again_are_the_kept_bundle_rerendered(db, monkeypatch):
 def test_a_fresh_database_is_stamped_and_an_old_one_migrated(tmp_path):
     fresh_engine = create_engine(f"sqlite:///{tmp_path / 'fresh.db'}")
     Base.metadata.create_all(bind=fresh_engine)
-    assert migrations.run(fresh_engine, fresh=True) == [1, 2]
-    assert migrations.current(fresh_engine) == 2
+    assert migrations.run(fresh_engine, fresh=True) == [1, 2, 3]
+    assert migrations.current(fresh_engine) == 3
     assert inspect(fresh_engine).has_table("shipments")
 
     # A database from before v1.173.0: the users table exists, shipments does not.
     old_engine = create_engine(f"sqlite:///{tmp_path / 'old.db'}")
     User.__table__.create(old_engine)
     assert not inspect(old_engine).has_table("shipments")
-    assert migrations.run(old_engine, fresh=False) == [1, 2]
+    assert migrations.run(old_engine, fresh=False) == [1, 2, 3]
     assert inspect(old_engine).has_table("shipments")
     # Twice does nothing the second time.
     assert migrations.run(old_engine, fresh=False) == []
-    assert migrations.current(old_engine) == 2
+    assert migrations.current(old_engine) == 3
 
 
 def test_a_later_step_runs_on_an_old_database_and_is_stamped_on_a_fresh_one(tmp_path, monkeypatch):
     ran: list[str] = []
 
-    def _003_colour(conn):
-        ran.append("003")
+    def _004_colour(conn):
+        ran.append("004")
         migrations.add_column(conn, "shipments", "colour VARCHAR(16)")
 
     monkeypatch.setattr(migrations, "MIGRATIONS",
-                        migrations.MIGRATIONS + [(3, "colour", _003_colour)])
+                        migrations.MIGRATIONS + [(4, "colour", _004_colour)])
 
     old_engine = create_engine(f"sqlite:///{tmp_path / 'old.db'}")
     User.__table__.create(old_engine)
-    assert migrations.run(old_engine, fresh=False) == [1, 2, 3]
-    assert ran == ["003"]
+    assert migrations.run(old_engine, fresh=False) == [1, 2, 3, 4]
+    assert ran == ["004"]
     with old_engine.connect() as conn:
         assert migrations.column_exists(conn, "shipments", "colour")
         # And adding it again is a no-op, so a restored backup recovers.
@@ -308,21 +312,21 @@ def test_a_later_step_runs_on_an_old_database_and_is_stamped_on_a_fresh_one(tmp_
 
     fresh_engine = create_engine(f"sqlite:///{tmp_path / 'fresh.db'}")
     Base.metadata.create_all(bind=fresh_engine)
-    assert migrations.run(fresh_engine, fresh=True) == [1, 2, 3]
-    assert ran == ["003"], "a fresh database is stamped, the step must not run"
+    assert migrations.run(fresh_engine, fresh=True) == [1, 2, 3, 4]
+    assert ran == ["004"], "a fresh database is stamped, the step must not run"
 
 
 def test_a_failed_step_leaves_the_version_where_it_was(tmp_path, monkeypatch):
-    def _003_explodes(conn):
+    def _004_explodes(conn):
         conn.execute(text("SELECT * FROM no_such_table"))
 
     monkeypatch.setattr(migrations, "MIGRATIONS",
-                        migrations.MIGRATIONS + [(3, "explodes", _003_explodes)])
+                        migrations.MIGRATIONS + [(4, "explodes", _004_explodes)])
     old_engine = create_engine(f"sqlite:///{tmp_path / 'old.db'}")
     User.__table__.create(old_engine)
     with pytest.raises(Exception):
         migrations.run(old_engine, fresh=False)
-    assert migrations.current(old_engine) == 2
+    assert migrations.current(old_engine) == 3
 
 
 # --- the settings answer -------------------------------------------------------

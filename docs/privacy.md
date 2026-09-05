@@ -17,6 +17,7 @@ Everything persistent lives in the `/data` volume:
 | The installation's settings | What an administrator set for everyone |
 | The installation's branding | A name, a logo and tile pictures an administrator uploaded, in `/data/branding` |
 | Kept shipments — **only** with `CARGOPILOT_HISTORY=true` | The shipments the organisation chose to keep; see [The shipment history](#the-shipment-history) |
+| The address book — **only** with `CARGOPILOT_HISTORY=true` | Parties (name, address, contact) somebody pressed **Save** on in the details step, shared by everyone on the installation |
 
 That is the whole list.
 

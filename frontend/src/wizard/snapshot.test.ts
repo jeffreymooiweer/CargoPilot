@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { SNAPSHOT_VERSION, readSnapshot } from "./snapshot";
+import { SNAPSHOT_VERSION, readSnapshot, templateValues } from "./snapshot";
 
 describe("een bewaarde wizardtoestand teruglezen", () => {
   it("geeft de brontoestand terug zoals hij was", () => {
@@ -57,5 +57,27 @@ describe("een bewaarde wizardtoestand teruglezen", () => {
       draftLines: [{ id: 7, description: "x", quantity: 1, unit: "pcs" }, { id: 2, description: "y", quantity: 1, unit: "pcs" }],
     })!;
     expect(read.nextId).toBe(8);
+  });
+});
+
+describe("een bewaarde zending als sjabloon", () => {
+  it("laat de referenties en datums los en houdt de rest", () => {
+    const fresh = templateValues({
+      shipment_reference: "CP-1",
+      booking_number: "BK-9",
+      awb_number: "057-12345675",
+      loading_date: "2026-09-01",
+      declaration_date: "2026-09-01",
+      consignor_name: "Afzender BV",
+      consignor_address: "Havenweg 1",
+      place_of_delivery: "Duisburg",
+      contract_number: "C-2024-7",
+    });
+    expect(fresh).toEqual({
+      consignor_name: "Afzender BV",
+      consignor_address: "Havenweg 1",
+      place_of_delivery: "Duisburg",
+      contract_number: "C-2024-7",
+    });
   });
 });

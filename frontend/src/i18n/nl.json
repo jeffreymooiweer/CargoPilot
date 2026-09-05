@@ -996,7 +996,19 @@
     "loadFailed": "Deze zending kon niet worden geopend.",
     "previous": "Vorige",
     "next": "Volgende",
-    "page": "Pagina {{page}} van {{pages}}"
+    "page": "Pagina {{page}} van {{pages}}",
+    "useTemplate": "Als sjabloon gebruiken",
+    "useTemplateHint": "Een nieuwe zending met dezelfde goederen, partijen en route; referentie en datums leeg.",
+    "templateOpened": "Nieuwe zending op basis van {{reference}}: referentie en datums zijn leeg, de rest is overgenomen."
+  },
+  "addressBook": {
+    "title": "Adresboek",
+    "hint": "Kies een partij, of bewaar wat hier staat onder zijn naam.",
+    "empty": "Nog leeg — vul een partij in en druk op Bewaren.",
+    "pick": "{{party}} uit het adresboek…",
+    "save": "Bewaren",
+    "saveTitle": "{{party}} bewaren in het adresboek",
+    "saved": "{{name}} bewaard in het adresboek."
   },
   "departments": {
     "title": "Afdelingen",

@@ -2,6 +2,38 @@
 
 All notable changes are documented here, following [Semantic Versioning](https://semver.org/).
 
+## [1.176.0] — 2026-09-05
+
+### The address book, and a kept shipment as a template
+
+The same five customers, entered once. On an installation that keeps its
+shipments, the parties section of the details step carries an **address
+book** shared by everyone: pick a consignor, consignee or carrier and their
+name, address and contact are filled in; **Save** beside a party puts what
+was typed into the book under that name. Saving a name that is already there
+brings the one entry up to date rather than adding a second — the button is
+pressed on every shipment, and the book must not grow by one entry each time.
+The carrier's single "name and address" field is saved with its first line
+as the name and joined back the same way.
+
+On the shipments page, **Use as template** starts a *new* shipment from a
+kept one: the same goods, dangerous goods, parties and route, with the
+shipment reference, the carrier's numbers (booking, AWB, transport document,
+ENS, AES, customs MRN, container, seals, VGM, registration, wagon) and every
+date left empty. It opens on the goods step without the record's identity,
+so keeping it makes a new entry instead of overwriting the old one.
+
+Both live beside the history, and like everything the history brings, exist
+only with `CARGOPILOT_HISTORY=true`; the open application has neither. The
+address book is schema step 3, applied on an older database at start-up.
+
+### Fixed
+
+- Every kept shipment listed as "(no reference)": the index read a field
+  named `reference` while the wizard writes `shipment_reference`. The index
+  now reads the wizard's field first, and shipments kept before this
+  release show their reference again the next time they are kept.
+
 ## [1.175.0] — 2026-09-05
 
 ### Groupage picked from the history

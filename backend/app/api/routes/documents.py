@@ -49,6 +49,7 @@ from app.services.documents.onboard_pack import (
 )
 from app.services.documents.equipment_sheet import render_equipment_sheet
 from app.services.documents.package_label_sheet import render_package_label_sheet
+from app.services.documents.iftdgn import render_iftdgn
 from app.services.documents.shipment_export import render_shipment_export
 from app.services.documents.placarding_sheet import render_placarding_sheet
 from app.services.documents.stowage_plan import render_stowage_plan
@@ -125,6 +126,8 @@ MEDIA_TYPES = {
     ".json": "application/json",
     ".xlsx": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
     ".zip": "application/zip",
+    # RFC 1767: the media type for a UN/EDIFACT interchange.
+    ".edi": "application/EDIFACT",
 }
 
 
@@ -248,6 +251,17 @@ def _render_export(document: dict, payload: DocumentExportRequest,
         # the declaration has to compute its own assessment, and that is where
         # two systems start to disagree about one consignment.
         out_path = render_shipment_export(
+            payload.values,
+            payload.lines,
+            payload.dangerous_goods,
+            payload.output_language,
+            profiles=payload.profiles or None,
+            modality=payload.modality or None,
+        )
+    elif exporter == "iftdgn":
+        # Not paper either: the UN/EDIFACT dangerous goods notification, from
+        # the same parts, for a port community system or a forwarder's gateway.
+        out_path = render_iftdgn(
             payload.values,
             payload.lines,
             payload.dangerous_goods,

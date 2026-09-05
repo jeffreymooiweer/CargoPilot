@@ -75,7 +75,8 @@
         "packing_certificate",
         "onboard_documents_adr",
         "equipment_sheet",
-        "shipment_export"
+        "shipment_export",
+        "iftdgn"
       ]
     },
     {
@@ -98,7 +99,8 @@
         "packing_list",
         "delivery_note",
         "package_label_sheet",
-        "shipment_export"
+        "shipment_export",
+        "iftdgn"
       ]
     },
     {
@@ -123,7 +125,8 @@
         "packing_list",
         "delivery_note",
         "package_label_sheet",
-        "shipment_export"
+        "shipment_export",
+        "iftdgn"
       ]
     },
     {
@@ -149,7 +152,8 @@
         "delivery_note",
         "onboard_documents_adn",
         "package_label_sheet",
-        "shipment_export"
+        "shipment_export",
+        "iftdgn"
       ]
     },
     {
@@ -171,7 +175,8 @@
         "iata_dgd",
         "packing_list",
         "delivery_note",
-        "shipment_export"
+        "shipment_export",
+        "iftdgn"
       ]
     },
     {
@@ -210,7 +215,8 @@
         "onboard_documents_adr",
         "onboard_documents_adn",
         "equipment_sheet",
-        "shipment_export"
+        "shipment_export",
+        "iftdgn"
       ]
     }
   ],
@@ -3402,6 +3408,30 @@
         "fr": "Non pas un document mais des données : tout l'envoi en JSON, y compris ce que CargoPilot a déduit et sur quelles éditions. Format propre à CargoPilot avec son propre numéro de version — ni message eFTI ni eCMR."
       },
       "exporter": "shipment_json",
+      "sections": []
+    },
+    {
+      "key": "iftdgn",
+      "label": {
+        "nl": "Melding gevaarlijke stoffen (UN/EDIFACT IFTDGN)",
+        "en": "Dangerous goods notification (UN/EDIFACT IFTDGN)",
+        "de": "Gefahrgutmeldung (UN/EDIFACT IFTDGN)",
+        "fr": "Notification de marchandises dangereuses (UN/EDIFACT IFTDGN)"
+      },
+      "short_label": {
+        "nl": "IFTDGN",
+        "en": "IFTDGN",
+        "de": "IFTDGN",
+        "fr": "IFTDGN"
+      },
+      "category": "generated",
+      "issue_status": {
+        "nl": "Geen document maar een EDI-bericht: de UN/EDIFACT-melding van gevaarlijke stoffen (IFTDGN, directory D.16A) zoals havenbedrijven en port community systems die lezen. Alleen bij een zending met gevaarlijke stoffen. De envelop (UNB) draagt de afzender als verzender en de vervoerder of expediteur als ontvanger; de EDI-gateway die verzendt vult zijn eigen identificaties in.",
+        "en": "Not a document but an EDI message: the UN/EDIFACT dangerous goods notification (IFTDGN, directory D.16A) as port authorities and port community systems read it. Only for a shipment with dangerous goods. The envelope (UNB) carries the consignor as sender and the carrier or forwarder as recipient; the EDI gateway that sends it fills in its own identifiers.",
+        "de": "Kein Dokument, sondern eine EDI-Nachricht: die UN/EDIFACT-Gefahrgutmeldung (IFTDGN, Verzeichnis D.16A), wie Hafenbehörden und Port-Community-Systeme sie lesen. Nur bei einer Sendung mit gefährlichen Gütern. Der Umschlag (UNB) trägt den Absender als Sender und den Beförderer oder Spediteur als Empfänger; das sendende EDI-Gateway trägt seine eigenen Kennungen ein.",
+        "fr": "Non pas un document mais un message EDI : la notification UN/EDIFACT de marchandises dangereuses (IFTDGN, répertoire D.16A) telle que la lisent les autorités portuaires et les port community systems. Uniquement pour une expédition contenant des marchandises dangereuses. L'enveloppe (UNB) porte l'expéditeur comme émetteur et le transporteur ou le commissionnaire comme destinataire ; la passerelle EDI qui envoie y met ses propres identifiants."
+      },
+      "exporter": "iftdgn",
       "sections": []
     }
   ],

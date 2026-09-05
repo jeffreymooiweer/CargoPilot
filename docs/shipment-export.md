@@ -115,6 +115,13 @@ person does not start from nothing:
    carrier, consignee) is the second half of an eCMR, and qualified electronic
    signatures are a legal-weight question, not a technical one.
 
+## The EDI sibling
+
+Since v1.189.0 the same parts are also written as the UN/EDIFACT dangerous goods
+notification, IFTDGN, offered beside this export for a shipment with dangerous goods —
+see [The IFTDGN notification](iftdgn.md). The JSON stays the complete record with the
+derived findings; the IFTDGN is what a port community system reads.
+
 ## Reading it back
 
 There is no import of this file. It is a one-way export, and a reader that wants to

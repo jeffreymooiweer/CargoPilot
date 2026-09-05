@@ -1,0 +1,34 @@
+# CargoPilot as a systemd service on a Linux host without Docker.
+# Installed by deploy/native/install.sh; see docs/installation-native.md.
+[Unit]
+Description=CargoPilot
+Documentation=https://github.com/jeffreymooiweer/CargoPilot/blob/main/docs/installation-native.md
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=cargopilot
+Group=cargopilot
+WorkingDirectory=/opt/cargopilot/current/backend
+EnvironmentFile=/etc/cargopilot/cargopilot.env
+# INSTALL_METHOD tells the settings screen which update route applies: the
+# in-app updater needs a Docker socket and does not exist here.
+Environment=INSTALL_METHOD=native
+ExecStart=/opt/cargopilot/venv/bin/uvicorn app.main:app --host 127.0.0.1 --port 8080
+Restart=on-failure
+RestartSec=5
+
+# Hardening: the service needs its data directory and nothing else of the host.
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/var/lib/cargopilot
+ProtectKernelTunables=true
+ProtectControlGroups=true
+RestrictSUIDSGID=true
+LockPersonality=true
+
+[Install]
+WantedBy=multi-user.target

@@ -964,7 +964,12 @@ export interface UpdateCapability {
     | "container_not_found"
     | "socket_unusable"
     | "foreign_image"
+    | "native"
+    | "kubernetes"
     | null;
+  /** How the installation runs: the image, a native service, or a pod. The
+   *  two that are not Docker have no in-app updater and name their own route. */
+  install_method?: "docker" | "native" | "kubernetes";
 }
 
 export interface UpdateStateAnswer {

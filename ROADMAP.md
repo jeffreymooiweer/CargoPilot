@@ -218,22 +218,23 @@ image over the Docker socket. That is the right default and it stays — but it
 is currently also the *only* way in, which rules out anyone who runs services
 natively on a Linux host.
 
-Planned, in rough order of usefulness:
+Shipped in v1.181.0, see [Installing without Docker](docs/installation-native.md):
 
-- **A native installation on common Linux distributions** — a package or an
-  install script that sets up the service, its data directory and a systemd
-  unit, so CargoPilot runs like any other service on the box.
-- **Kubernetes** — a Helm chart or plain manifests for installations that
-  already run a cluster.
+- ~~**A native installation on common Linux distributions**~~ — every release
+  carries a native bundle; `deploy/native/install.sh` sets up the service user,
+  the data directory, a virtual environment, the environment file and a
+  systemd unit, and run again it is the update, with the previous release kept
+  for a rollback.
+- ~~**Kubernetes**~~ — plain manifests in `deploy/kubernetes/`, one replica by
+  design (SQLite on one volume), updated by a rollout.
 - **Docker stays first-class.** It is what the image is built and tested for on
-  every release, and nothing below changes that.
+  every release, and nothing above changes that.
 
-One consequence worth naming up front: the in-app updater replaces the running
-container through the Docker socket, which is a mechanism a native install does
-not have. Each installation method needs its own update route — the package
-manager for a native install, the usual rollout for Kubernetes — and the
-settings screen should explain the one that applies rather than offering a
-button that cannot work.
+The consequence named up front was met the way it was named: the in-app
+updater replaces a container through the Docker socket, and a native service
+or a pod has neither, so `INSTALL_METHOD` tells the settings screen which
+route applies and the screen names it instead of offering a button that
+cannot work.
 
 ### Documents and data (researched)
 

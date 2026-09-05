@@ -109,6 +109,7 @@ def capability() -> dict[str, Any]:
     because X" is the product, not an error.
     """
     settings = get_settings()
+    method = (settings.install_method or "docker").strip().lower()
     result: dict[str, Any] = {
         "apply_enabled": bool(settings.update_apply_enabled),
         "socket": DOCKER_SOCKET.exists(),
@@ -116,7 +117,13 @@ def capability() -> dict[str, Any]:
         "image": None,
         "available": False,
         "reason": None,
+        "install_method": method if method in ("docker", "native", "kubernetes") else "docker",
     }
+    # A native service or a pod has no container of its own to replace and
+    # no socket to do it with; the screen names the route that applies.
+    if result["install_method"] != "docker":
+        result["reason"] = result["install_method"]
+        return result
     if not result["apply_enabled"]:
         result["reason"] = "switch_off"
         return result

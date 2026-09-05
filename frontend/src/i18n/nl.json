@@ -374,7 +374,9 @@
     "brandUploaded": "Afbeelding opgeslagen.",
     "brandRemoved": "Terug naar de standaardafbeelding.",
     "brandDefault": "Standaard",
-    "brandCustom": "Eigen afbeelding"
+    "brandCustom": "Eigen afbeelding",
+    "updateNative": "Deze installatie draait als eigen service op de server, zonder Docker. Bijwerken gaat met het updatescript van de installatie; het haalt de nieuwe release op, zet hem naast de oude en herstart de service. De gegevens blijven staan.",
+    "updateKubernetes": "Deze installatie draait in Kubernetes. Bijwerken is een rollout naar het nieuwere image; de pod wordt opnieuw gemaakt en het volume blijft staan."
   },
   "modality": {
     "title": "Kies uw transportmodaliteit",

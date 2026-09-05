@@ -222,6 +222,7 @@ takes effect on the next restart.
 | `UPDATE_CHECK_ENABLED` | Ask GitHub whether a newer release exists, when an administrator is signed in | `true` |
 | `UPDATE_CHECK_TIMEOUT_SECONDS` | HTTP timeout for that one request | `8` |
 | `UPDATE_APPLY_ENABLED` | Allow the administrator to update and restart from the settings screen (needs the Docker socket, below) | `false` |
+| `INSTALL_METHOD` | How this installation runs: `docker` (the image), `native` (the systemd service of `deploy/native`) or `kubernetes` (`deploy/kubernetes`). Decides only what the settings screen says about updating: the routes that are not Docker have no in-app updater and the screen names theirs instead | `docker` |
 | `UPDATE_APPLY_PULL_TIMEOUT_SECONDS` | How long the image pull may take before the update is abandoned | `600` |
 
 The check only tells the administrator there is something to pull. Off means CargoPilot

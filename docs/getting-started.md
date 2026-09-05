@@ -1,10 +1,13 @@
 # Getting started
 
 CargoPilot ships as a single Docker image containing both the backend and the web
-interface. There is no separate database to install — it uses a SQLite file on disk.
+interface. There is no separate database to install — it uses a SQLite file on disk. A
+host without Docker installs it as a native systemd service, and a cluster runs it from
+plain manifests: both in [Installing without Docker](installation-native.md).
 
 - [Docker Compose](#docker-compose)
 - [Unraid](#unraid)
+- [Without Docker: native service or Kubernetes](installation-native.md)
 - [The first admin account](#the-first-admin-account)
 - [Updating](#updating)
 - [Troubleshooting](#troubleshooting)
@@ -81,7 +84,9 @@ docker compose pull
 docker compose up -d
 ```
 
-On Unraid, click **Check for updates** or use the Docker tab as usual.
+On Unraid, click **Check for updates** or use the Docker tab as usual. A native install
+updates with its update script and a Kubernetes install with a rollout; see
+[Installing without Docker](installation-native.md#native-service).
 
 Your data lives in the `/data` volume and survives updates. New reference data (goods,
 locations, UN numbers) is picked up automatically the next time the catalogue syncs,

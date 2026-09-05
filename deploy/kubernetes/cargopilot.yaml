@@ -1,0 +1,152 @@
+# CargoPilot on Kubernetes: plain manifests, one file.
+#
+# What is here: a namespace, a persistent volume claim for /data, a secret
+# for the first administrator's password, a config map for the rest of the
+# environment, one replica of the image, a service, and an ingress you fill
+# in. One replica on purpose: the application keeps a SQLite database in
+# /data and takes a file lock on it; two pods on one volume would corrupt
+# it. Updating is a rollout of a new image tag (`kubectl set image`), not the
+# in-app updater, which needs a Docker socket a pod does not have.
+#
+#   kubectl apply -f cargopilot.yaml
+#   kubectl -n cargopilot set image deployment/cargopilot cargopilot=jeffersonmouze/cargopilot:1.181.0
+#
+# See docs/installation-native.md for the walk-through.
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: cargopilot
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: cargopilot-data
+  namespace: cargopilot
+spec:
+  accessModes: ["ReadWriteOnce"]
+  resources:
+    requests:
+      storage: 5Gi
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: cargopilot-admin
+  namespace: cargopilot
+type: Opaque
+stringData:
+  # The first administrator, created on the first start. Change it before applying.
+  ADMIN_PASSWORD: "change-me-before-applying"
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: cargopilot-config
+  namespace: cargopilot
+data:
+  APP_ENV: "production"
+  CARGOPILOT_MODE: "organisation"
+  DATA_DIR: "/data"
+  DATABASE_URL: "sqlite:////data/cargopilot.db"
+  ADMIN_USERNAME: "admin"
+  ADMIN_EMAIL: "admin@example.local"
+  CORS_ALLOWED_ORIGINS: "https://cargopilot.example.com"
+  PUBLIC_URL: "https://cargopilot.example.com"
+  TRUSTED_PROXY_HEADERS: "true"
+  TRUSTED_PROXY_COUNT: "1"
+  # Tells the settings screen which update route applies here.
+  INSTALL_METHOD: "kubernetes"
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cargopilot
+  namespace: cargopilot
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: cargopilot
+  template:
+    metadata:
+      labels:
+        app: cargopilot
+    spec:
+      securityContext:
+        fsGroup: 1000
+      containers:
+        - name: cargopilot
+          image: jeffersonmouze/cargopilot:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8080
+              name: http
+          envFrom:
+            - configMapRef:
+                name: cargopilot-config
+            - secretRef:
+                name: cargopilot-admin
+          volumeMounts:
+            - name: data
+              mountPath: /data
+          readinessProbe:
+            httpGet:
+              path: /api/health
+              port: http
+            initialDelaySeconds: 10
+            periodSeconds: 15
+          livenessProbe:
+            httpGet:
+              path: /api/health
+              port: http
+            initialDelaySeconds: 30
+            periodSeconds: 30
+          resources:
+            requests:
+              cpu: "250m"
+              memory: "512Mi"
+            limits:
+              memory: "2Gi"
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: cargopilot-data
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: cargopilot
+  namespace: cargopilot
+spec:
+  selector:
+    app: cargopilot
+  ports:
+    - port: 80
+      targetPort: http
+      name: http
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: cargopilot
+  namespace: cargopilot
+  annotations:
+    # Your ingress controller's TLS annotations go here (cert-manager, for example).
+    nginx.ingress.kubernetes.io/proxy-body-size: "64m"
+spec:
+  rules:
+    - host: cargopilot.example.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: cargopilot
+                port:
+                  name: http
+  tls:
+    - hosts: ["cargopilot.example.com"]
+      secretName: cargopilot-tls

@@ -374,7 +374,9 @@
     "brandUploaded": "Picture saved.",
     "brandRemoved": "Back to the default picture.",
     "brandDefault": "Default",
-    "brandCustom": "Own picture"
+    "brandCustom": "Own picture",
+    "updateNative": "This installation runs as its own service on the server, without Docker. Updating is the installation's update script: it fetches the new release, puts it beside the old one and restarts the service. The data stays where it is.",
+    "updateKubernetes": "This installation runs in Kubernetes. Updating is a rollout to the newer image; the pod is recreated and the volume stays."
   },
   "modality": {
     "title": "Choose your transport modality",

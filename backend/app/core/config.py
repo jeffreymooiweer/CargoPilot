@@ -67,6 +67,14 @@ class Settings(BaseSettings):
     #: file or Unraid template — never something the application assumes.
     update_apply_enabled: bool = False
     update_apply_pull_timeout_seconds: float = 600.0
+    #: How this installation was put on its host: ``docker`` (the image, the
+    #: default), ``native`` (the systemd service of deploy/native) or
+    #: ``kubernetes`` (deploy/kubernetes). It decides nothing but what the
+    #: settings screen says about updating: the in-app updater replaces a
+    #: container through the Docker socket, and the other two routes have
+    #: their own — the update script, the rollout — which the screen names
+    #: instead of offering a button that cannot work.
+    install_method: str = "docker"
     geo_address_api_url: str = "https://photon.komoot.io/api"
     geo_address_timeout_seconds: float = 8.0
     #: The mail server, for installations that would rather configure it in

@@ -374,7 +374,9 @@
     "brandUploaded": "Bild gespeichert.",
     "brandRemoved": "Zurück zum Standardbild.",
     "brandDefault": "Standard",
-    "brandCustom": "Eigenes Bild"
+    "brandCustom": "Eigenes Bild",
+    "updateNative": "Diese Installation läuft als eigener Dienst auf dem Server, ohne Docker. Aktualisiert wird mit dem Update-Skript der Installation: Es holt die neue Version, legt sie neben die alte und startet den Dienst neu. Die Daten bleiben erhalten.",
+    "updateKubernetes": "Diese Installation läuft in Kubernetes. Aktualisieren ist ein Rollout auf das neuere Image; der Pod wird neu erstellt und das Volume bleibt."
   },
   "modality": {
     "title": "Wählen Sie Ihren Verkehrsträger",

@@ -91,7 +91,20 @@ def test_nothing_still_points_at_the_deleted_workflow():
 def test_the_test_suites_run_exactly_once_per_push():
     everything = "\n".join(steps_only(name) for name in automatic())
     assert everything.count("pytest -q") == 1
-    assert everything.count("npm ci") == 1
+    assert everything.count("npm test") == 1
+    assert steps_only("ci.yml").count("npm ci") == 1
+
+
+def test_the_release_builds_the_interface_once_for_the_bundle_and_tests_nothing():
+    """The native bundle carries the built interface, so the release installs
+    the frontend's dependencies once more to build it. That is a build, not a
+    test: the suites ran on the pull request and on main, and the release
+    reruns none of them."""
+    tag_release = steps_only("tag-release.yml")
+    assert tag_release.count("npm ci") == 1
+    assert "npm run build" in tag_release
+    assert "npm test" not in tag_release
+    assert "pytest" not in tag_release
 
 
 @pytest.mark.parametrize("step", ["npm test", "npm run build", "npm audit"])

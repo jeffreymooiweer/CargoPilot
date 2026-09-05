@@ -374,7 +374,9 @@
     "brandUploaded": "Image enregistrée.",
     "brandRemoved": "Retour à l'image par défaut.",
     "brandDefault": "Par défaut",
-    "brandCustom": "Image propre"
+    "brandCustom": "Image propre",
+    "updateNative": "Cette installation tourne comme service propre sur le serveur, sans Docker. La mise à jour passe par le script de mise à jour de l'installation : il récupère la nouvelle version, la place à côté de l'ancienne et redémarre le service. Les données restent en place.",
+    "updateKubernetes": "Cette installation tourne dans Kubernetes. La mise à jour est un déploiement vers l'image plus récente ; le pod est recréé et le volume reste."
   },
   "modality": {
     "title": "Choisissez votre mode de transport",

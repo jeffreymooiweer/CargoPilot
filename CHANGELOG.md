@@ -2,6 +2,38 @@
 
 All notable changes are documented here, following [Semantic Versioning](https://semver.org/).
 
+## [1.181.0] — 2026-09-05
+
+### Installing without Docker
+
+Docker stays the first-class route in, and now it is not the only one.
+Every release from this one carries a **native bundle**,
+`cargopilot-<version>-native.tar.gz`, beside its notes on the GitHub
+release: the backend, the built web interface, the templates, the changelog
+and the deploy files — the tree the image carries, as a tarball.
+
+- **A native service** under systemd on Debian, Ubuntu and the like.
+  `deploy/native/install.sh` downloads a release, unpacks it under
+  `/opt/cargopilot/releases/<version>`, makes a virtual environment, writes
+  the environment file from the example if there is none, installs the unit
+  and starts it. `update.sh` does the same for a newer release and moves the
+  `current` link; rolling back is moving it back. The data lives in
+  `/var/lib/cargopilot` and is never touched by an update.
+- **Kubernetes** manifests in `deploy/kubernetes/cargopilot.yaml`: a
+  namespace, a persistent volume claim, a secret for the first
+  administrator's password, a config map, a deployment of one replica with
+  the `Recreate` strategy (SQLite on one volume), a service and an ingress.
+- **`INSTALL_METHOD`** — `docker`, `native` or `kubernetes` — tells the
+  application which route it came in by. The settings screen names the
+  update route that applies instead of offering an update button that needs
+  a Docker socket: the update command for a native install, the rollout
+  command for Kubernetes.
+- A new page, *Installing without Docker*, in the documentation, and a test
+  that keeps the scripts parsing, the unit and the script agreeing on the
+  paths, the environment example and the manifests naming only variables
+  the application reads, and the release workflow attaching the bundle the
+  install script downloads.
+
 ## [1.180.0] — 2026-09-05
 
 ### Your own articles library

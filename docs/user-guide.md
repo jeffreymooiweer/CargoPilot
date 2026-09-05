@@ -317,8 +317,16 @@ Provision 3.4.13 only applies above 12 tonnes, and that is the one fact about th
 the app cannot work out for itself. Leave it empty and the limited-quantities marking is
 reported as undecided rather than guessed.
 
-**The trip is not stored.** It exists on the screen and in the request, and reloading
-clears it — the same promise the rest of the application keeps about your shipments.
+**The trip is not stored** on an installation that keeps no shipments. It exists on the
+screen and in the request, and reloading clears it — the same promise the rest of the
+application keeps about your shipments. On an installation that keeps its shipments, a
+box under the assessment offers to **keep the trip**: give it a name — the vehicle, the
+route, the date — and press the button. What is kept is what was on the vehicle, the
+permitted maximum mass and the judgement as it was given, with the editions it was
+computed against. **Trips** in the menu lists them, with the points together and a mark
+where the exemption fell away; open one for the judgement as it stood, reopen it on the
+groupage page to change the load or assess it again under today's rules, or remove it.
+Who sees which trips follows the same department rule as the shipments.
 
 ## Shipments: the history, where the installation keeps one
 

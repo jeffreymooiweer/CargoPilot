@@ -21,6 +21,7 @@ from app.models.article import Article
 from app.models.audit import AuditEvent
 from app.models.dgsa_report import DgsaReport
 from app.models.shipment import Shipment
+from app.models.trip import Trip
 from app.models.user import Equipment, Job, Material, Profile, ReferenceItem, User
 from app.services import audit, history
 from app.services.catalog_sync import sync_catalogs
@@ -43,7 +44,7 @@ SETTINGS_TABLES = (InstanceSetting, UserPreference, PasswordResetToken,
                    AuditEvent)
 #: Same reason: the history's table is created by ``create_all`` on a fresh
 #: database only because its model was imported here.
-HISTORY_TABLES = (Shipment, Address, DgsaReport, Article)
+HISTORY_TABLES = (Shipment, Address, DgsaReport, Article, Trip)
 
 
 def ensure_directories() -> None:

@@ -160,10 +160,12 @@ What the storage still has to unlock:
   references or dates.
 - ~~**Groupage from the history.**~~ Shipped in v1.175.0: the groupage page picks the
   kept shipments the viewer may see straight from the history, beside the file route.
-  The trip itself — the judgement over the whole load — will be kept as well: decided
-  in September 2026, planned as a phase of its own (the kept consignments, the vehicle,
-  the 1.1.3.6, mixed-loading and LQ findings with their editions; a trips list beside
-  the shipments page; reopen).
+  ~~The trip itself — the judgement over the whole load — will be kept as well.~~
+  Shipped in v1.187.0: on an installation that keeps its shipments the assessed trip
+  can be kept — the consignments as they sat on the vehicle, the permitted maximum
+  mass, and the 1.1.3.6, mixed-loading and LQ findings as they were given, with the
+  editions — listed on a trips page beside the shipments, reopened on the groupage
+  page, and counted with the shipments when the history is switched off.
 - ~~**The DGSA annual report.**~~ Shipped in v1.177.0: the statistical half of ADR
   1.8.3.3 counted over the kept shipments of a year — per month, mode, regulation,
   department, class and UN number, with the 1.1.3.6 outcome per shipment — as a page
@@ -283,11 +285,10 @@ none is committed until it is planned against that brief.
   finding is the one no per-consignment screen can produce: every consignment exempt,
   the vehicle not. Consignments come in as the shipment exports of v1.161.0, because
   there is no stored history to pick from and inventing one would break the privacy
-  stance; the trip itself is a calculation and is not stored today. The design question
-  the research recorded — trip as entity or as transient calculation — was answered for
-  today by the fact that nothing is kept. An installation with a history reopens it:
-  whether that installation keeps the trip as well is that phase's question (see
-  *History* above).
+  stance; on those installations the trip is a calculation and is not stored. The design
+  question the research recorded — trip as entity or as transient calculation — was
+  answered both ways: a calculation where nothing is kept, and since v1.187.0 an entity
+  of its own beside the kept shipments where the history is on (see *History* above).
 - **Return shipments in one click** shipped in v1.167.0: the export step turns the
   consignment round — parties swapped, every line set to empty uncleaned, and every
   quantity the outward journey stated cleared, because on an empty drum each of them is a

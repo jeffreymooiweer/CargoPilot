@@ -21,7 +21,8 @@
     "openModeHint": "No account, nothing is kept",
     "shipments": "Shipments",
     "articles": "Articles",
-    "audit": "Audit log"
+    "audit": "Audit log",
+    "trips": "Trips"
   },
   "theme": {
     "dark": "Dark",
@@ -983,7 +984,17 @@
     "addFromHistory": "Add",
     "alreadyAdded": "On the vehicle",
     "noDgShort": "no dangerous goods",
-    "historyEmpty": "No kept shipments match."
+    "historyEmpty": "No kept shipments match.",
+    "tripName": "Keep the trip",
+    "tripNamePlaceholder": "Name of the trip: vehicle, route, date…",
+    "keepHint": "This installation keeps its shipments; the assessed trip can be kept beside them. What is kept is what was on the vehicle, the permitted maximum mass and the judgement as it is given now, with the editions it was computed against.",
+    "keep": "Keep trip",
+    "update": "Update trip",
+    "keeping": "Keeping…",
+    "kept": "Trip kept. You will find it under Trips.",
+    "updated": "Trip updated.",
+    "keepFailed": "The trip could not be kept.",
+    "openKept": "Open the kept trip"
   },
   "common": {
     "remove": "Remove"
@@ -1180,7 +1191,8 @@
       "settings": "Settings",
       "shipment": "Shipments",
       "documents": "Documents",
-      "report": "Reports"
+      "report": "Reports",
+      "trip": "Trips"
     },
     "actions": {
       "auth.login": "Signed in",
@@ -1203,7 +1215,34 @@
       "documents.exported": "Document downloaded",
       "documents.bundle": "Document bundle downloaded",
       "documents.mailed": "Document bundle mailed",
-      "report.rendered": "Safety adviser's annual report downloaded"
+      "report.rendered": "Safety adviser's annual report downloaded",
+      "trip.kept": "Trip kept",
+      "trip.updated": "Kept trip updated",
+      "trip.forgotten": "Kept trip removed"
     }
+  },
+  "trips": {
+    "title": "Trips",
+    "intro": "The groupage trips this installation kept: what was on the vehicle and the judgement as it was given at the time. Reopen one on the groupage page, or remove it.",
+    "newTrip": "New trip",
+    "search": "Search by name…",
+    "count": "{{count}} of {{total}} trips",
+    "empty": "No trips kept yet. The groupage page keeps a trip when you press Keep trip after the assessment.",
+    "name": "Name",
+    "noName": "(no name)",
+    "consignmentsHeader": "Consignments",
+    "consignments": "{{count}} consignments",
+    "pointsHeader": "Points together",
+    "points": "{{value}} points",
+    "exemptionLostShort": "exemption lost",
+    "notFound": "This trip does not exist, or you may not see it.",
+    "back": "Back to the trips",
+    "loading": "Loading…",
+    "reopen": "Open on the groupage page",
+    "remove": "Remove",
+    "confirmRemove": "Remove this trip from the history? The kept shipments on it stay.",
+    "removed": "Trip removed.",
+    "keptAsJudged": "The judgement below is as it was given when the trip was kept, under the editions the Editions line names. Reopening and assessing again gives today's judgement.",
+    "editions": "Editions"
   }
 }

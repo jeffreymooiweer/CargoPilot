@@ -21,7 +21,8 @@
     "openModeHint": "Kein Konto, nichts wird gespeichert",
     "shipments": "Sendungen",
     "articles": "Artikel",
-    "audit": "Audit-Protokoll"
+    "audit": "Audit-Protokoll",
+    "trips": "Fahrten"
   },
   "theme": {
     "dark": "Dunkel",
@@ -983,7 +984,17 @@
     "addFromHistory": "Hinzufügen",
     "alreadyAdded": "Auf dem Fahrzeug",
     "noDgShort": "kein Gefahrgut",
-    "historyEmpty": "Keine aufbewahrten Sendungen gefunden."
+    "historyEmpty": "Keine aufbewahrten Sendungen gefunden.",
+    "tripName": "Fahrt speichern",
+    "tripNamePlaceholder": "Name der Fahrt: Fahrzeug, Route, Datum…",
+    "keepHint": "Diese Installation speichert ihre Sendungen; die beurteilte Fahrt kann dazu gespeichert werden. Gespeichert wird, was auf dem Fahrzeug war, die zulässige Höchstmasse und das Urteil, wie es jetzt gegeben wird, mit den Ausgaben, gegen die es berechnet wurde.",
+    "keep": "Fahrt speichern",
+    "update": "Fahrt aktualisieren",
+    "keeping": "Wird gespeichert…",
+    "kept": "Fahrt gespeichert. Sie finden sie unter Fahrten.",
+    "updated": "Fahrt aktualisiert.",
+    "keepFailed": "Die Fahrt konnte nicht gespeichert werden.",
+    "openKept": "Gespeicherte Fahrt öffnen"
   },
   "common": {
     "remove": "Entfernen"
@@ -1180,7 +1191,8 @@
       "settings": "Einstellungen",
       "shipment": "Sendungen",
       "documents": "Dokumente",
-      "report": "Berichte"
+      "report": "Berichte",
+      "trip": "Fahrten"
     },
     "actions": {
       "auth.login": "Angemeldet",
@@ -1203,7 +1215,34 @@
       "documents.exported": "Dokument heruntergeladen",
       "documents.bundle": "Dokumentenpaket heruntergeladen",
       "documents.mailed": "Dokumentenpaket per E-Mail gesendet",
-      "report.rendered": "Jahresbericht des Gefahrgutbeauftragten heruntergeladen"
+      "report.rendered": "Jahresbericht des Gefahrgutbeauftragten heruntergeladen",
+      "trip.kept": "Fahrt gespeichert",
+      "trip.updated": "Gespeicherte Fahrt aktualisiert",
+      "trip.forgotten": "Gespeicherte Fahrt entfernt"
     }
+  },
+  "trips": {
+    "title": "Fahrten",
+    "intro": "Die Sammelgut-Fahrten, die diese Installation gespeichert hat: was auf dem Fahrzeug war und das Urteil, wie es damals gegeben wurde. Öffnen Sie eine erneut auf der Sammelgut-Seite, oder entfernen Sie sie.",
+    "newTrip": "Neue Fahrt",
+    "search": "Nach Name suchen…",
+    "count": "{{count}} von {{total}} Fahrten",
+    "empty": "Noch keine Fahrten gespeichert. Die Sammelgut-Seite speichert eine Fahrt, wenn Sie nach der Beurteilung auf Fahrt speichern drücken.",
+    "name": "Name",
+    "noName": "(ohne Namen)",
+    "consignmentsHeader": "Sendungen",
+    "consignments": "{{count}} Sendungen",
+    "pointsHeader": "Punkte zusammen",
+    "points": "{{value}} Punkte",
+    "exemptionLostShort": "Freistellung entfällt",
+    "notFound": "Diese Fahrt gibt es nicht, oder Sie dürfen sie nicht sehen.",
+    "back": "Zurück zu den Fahrten",
+    "loading": "Wird geladen…",
+    "reopen": "Auf der Sammelgut-Seite öffnen",
+    "remove": "Entfernen",
+    "confirmRemove": "Diese Fahrt aus dem Verlauf entfernen? Die gespeicherten Sendungen darauf bleiben erhalten.",
+    "removed": "Fahrt entfernt.",
+    "keptAsJudged": "Das Urteil unten ist so, wie es beim Speichern gegeben wurde, unter den Ausgaben, die die Zeile Ausgaben nennt. Erneut öffnen und beurteilen ergibt das Urteil von heute.",
+    "editions": "Ausgaben"
   }
 }

@@ -43,9 +43,12 @@ leave that section on "skip" and sign the printed documents with a pen.
   browser and deleted immediately afterwards.
 - **No operational equipment data in the repository or the Docker image.** The equipment
   library starts empty; an administrator fills it by importing a template.
-- **No trips.** The groupage screen assembles several consignments into one load, judges
-  them together and forgets them. There is no trip id, no history and nothing to
-  retrieve; reloading the page clears it. A trip is a calculation, not a record.
+- **No trips**, unless the operator switched the history on. The groupage screen
+  assembles several consignments into one load, judges them together and forgets them;
+  reloading the page clears it. An organisation application with
+  `CARGOPILOT_HISTORY=true` offers to keep the assessed trip beside its shipments — see
+  [The shipment history](#the-shipment-history) — and only when somebody presses the
+  button.
 
 This is a deliberate choice. If a job is finished, there is nothing left to leak.
 
@@ -156,7 +159,8 @@ shipment you are drawing up at that moment. Clearing your browser data clears th
 server never held them.
 
 **Nothing you type is kept.** The same rule as above — no shipment history, no material
-lists, no document archive, no trips — holds in both applications. In the open one it is
+lists, no document archive, no trips, unless an organisation switched its history on —
+holds in both applications. In the open one it is
 the whole of what the server knows about you, because there is no account to know either.
 
 **Nothing is sent on your behalf.** The open application has no mail server and no
@@ -202,10 +206,21 @@ the count and the second variable, `CARGOPILOT_HISTORY_DISCARD`, that lets the n
 delete them. Refusing is loud and deletes nothing by default; a table kept while the
 interface claims it does not exist would be the one outcome worse than either choice.
 
+**Trips.** With the switch on, the groupage page offers to keep an assessed trip: the
+consignments as they sat on the vehicle (their names, their dangerous goods entries, and
+which kept shipment each came from when it did), the permitted maximum mass of the
+transport unit, and the check's answer as it was given, with the editions it was computed
+against. Nothing is kept until somebody presses **Keep trip**. Trips follow the same
+department rule as shipments, are listed on their own page, reopen on the groupage page,
+and are removed there or from their record. Switching the history off counts them along
+with the shipments, refuses to start while they are there, and deletes them with the
+same discard variable.
+
 **What does not change.** The open application ignores the switch. Nothing is written
 while you work: a shipment is kept only when its documents are downloaded or you press
-the button. And without the switch, the addresses the shipments page uses do not exist
-on the server — the promise is enforced by what is mounted, not described in a setting.
+the button, and a trip only when you press the button. And without the switch, the
+addresses the shipments and trips pages use do not exist on the server — the promise is
+enforced by what is mounted, not described in a setting.
 
 ## The audit log
 

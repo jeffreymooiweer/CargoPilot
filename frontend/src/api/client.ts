@@ -272,6 +272,15 @@ export const api = {
     request<{ ok: boolean; removed: boolean }>("/un-cards/remove", { method: "POST" }),
   saveInstanceSettings: (payload: InstanceSettings) =>
     request<InstanceSettings>("/settings/instance", { method: "PUT", body: JSON.stringify(payload) }),
+  /** Kept groupage trips. These addresses exist only beside the shipment
+   *  history; the check itself (`dgTrip`) exists everywhere. */
+  trips: (query: TripQuery = {}) => request<TripPage>(`/trips${auditSuffix(query)}`),
+  trip: (id: number) => request<TripDetail>(`/trips/${id}`),
+  keepTrip: (payload: TripIn) =>
+    request<TripSummary>("/trips", { method: "POST", body: JSON.stringify(payload) }),
+  updateTrip: (id: number, payload: TripIn) =>
+    request<TripSummary>(`/trips/${id}`, { method: "PUT", body: JSON.stringify(payload) }),
+  forgetTrip: (id: number) => request<{ ok: boolean }>(`/trips/${id}`, { method: "DELETE" }),
   /** The audit log: who did what, metadata only. Administrators only, and
    *  absent from the open application along with the accounts. */
   audit: (query: AuditQuery = {}) => request<AuditPage>(`/audit${auditSuffix(query)}`),
@@ -1086,7 +1095,65 @@ export interface AuditQuery {
   per_page?: number;
 }
 
-function auditSuffix(query: AuditQuery): string {
+/** A consignment as it sits on a kept trip: its name, its dangerous goods
+ *  entries, and the kept shipment it was picked from when it was. */
+export interface TripConsignment {
+  name: string;
+  entries: Record<string, unknown>[];
+  shipment_id?: number | null;
+}
+
+/** A groupage trip as the groupage page hands it over to be kept. The
+ *  server runs the check itself; what is kept is its own answer. */
+export interface TripIn {
+  name: string;
+  consignments: TripConsignment[];
+  profiles: string[];
+  language: string;
+  unit_max_mass_tonnes: number | null;
+}
+
+export interface TripSummary {
+  id: number;
+  name: string;
+  language: string;
+  regulations: string[];
+  consignment_count: number;
+  total_points: number | null;
+  exemption_lost: boolean;
+  unit_max_mass_tonnes: number | null;
+  created_by: string;
+  department_id?: number | null;
+  department?: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface TripDetail extends TripSummary {
+  consignments: TripConsignment[];
+  /** The check's answer as it was given when the trip was kept. */
+  result: TripResult;
+  /** The editions that answer was computed against. */
+  editions: Record<string, unknown>;
+}
+
+export interface TripPage {
+  items: TripSummary[];
+  total: number;
+  page: number;
+  per_page: number;
+}
+
+export interface TripQuery {
+  q?: string;
+  date_from?: string;
+  date_to?: string;
+  page?: number;
+  per_page?: number;
+  department?: string;
+}
+
+function auditSuffix(query: AuditQuery | TripQuery): string {
   const params = new URLSearchParams();
   for (const [key, value] of Object.entries(query)) {
     if (value !== undefined && value !== "" && value !== null) params.set(key, String(value));

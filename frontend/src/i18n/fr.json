@@ -21,7 +21,8 @@
     "openModeHint": "Sans compte, rien n'est conservé",
     "shipments": "Expéditions",
     "articles": "Articles",
-    "audit": "Journal d'audit"
+    "audit": "Journal d'audit",
+    "trips": "Trajets"
   },
   "theme": {
     "dark": "Sombre",
@@ -983,7 +984,17 @@
     "addFromHistory": "Ajouter",
     "alreadyAdded": "Sur le véhicule",
     "noDgShort": "pas de marchandises dangereuses",
-    "historyEmpty": "Aucune expédition conservée ne correspond."
+    "historyEmpty": "Aucune expédition conservée ne correspond.",
+    "tripName": "Conserver le trajet",
+    "tripNamePlaceholder": "Nom du trajet : véhicule, itinéraire, date…",
+    "keepHint": "Cette installation conserve ses expéditions ; le trajet évalué peut être conservé à côté. Est conservé ce qui se trouvait sur le véhicule, la masse maximale admissible et le jugement tel qu'il est rendu maintenant, avec les éditions sur lesquelles il a été calculé.",
+    "keep": "Conserver le trajet",
+    "update": "Mettre à jour le trajet",
+    "keeping": "Enregistrement…",
+    "kept": "Trajet conservé. Vous le retrouverez sous Trajets.",
+    "updated": "Trajet mis à jour.",
+    "keepFailed": "Le trajet n'a pas pu être conservé.",
+    "openKept": "Ouvrir le trajet conservé"
   },
   "common": {
     "remove": "Retirer"
@@ -1180,7 +1191,8 @@
       "settings": "Paramètres",
       "shipment": "Expéditions",
       "documents": "Documents",
-      "report": "Rapports"
+      "report": "Rapports",
+      "trip": "Trajets"
     },
     "actions": {
       "auth.login": "Connexion",
@@ -1203,7 +1215,34 @@
       "documents.exported": "Document téléchargé",
       "documents.bundle": "Lot de documents téléchargé",
       "documents.mailed": "Lot de documents envoyé par e-mail",
-      "report.rendered": "Rapport annuel du conseiller à la sécurité téléchargé"
+      "report.rendered": "Rapport annuel du conseiller à la sécurité téléchargé",
+      "trip.kept": "Trajet conservé",
+      "trip.updated": "Trajet conservé mis à jour",
+      "trip.forgotten": "Trajet conservé supprimé"
     }
+  },
+  "trips": {
+    "title": "Trajets",
+    "intro": "Les trajets de groupage que cette installation a conservés : ce qui se trouvait sur le véhicule et le jugement tel qu'il a été rendu alors. Rouvrez-en un sur la page groupage, ou supprimez-le.",
+    "newTrip": "Nouveau trajet",
+    "search": "Rechercher par nom…",
+    "count": "{{count}} trajets sur {{total}}",
+    "empty": "Aucun trajet conservé pour l'instant. La page groupage conserve un trajet lorsque vous appuyez sur Conserver le trajet après l'évaluation.",
+    "name": "Nom",
+    "noName": "(sans nom)",
+    "consignmentsHeader": "Expéditions",
+    "consignments": "{{count}} expéditions",
+    "pointsHeader": "Points ensemble",
+    "points": "{{value}} points",
+    "exemptionLostShort": "exemption perdue",
+    "notFound": "Ce trajet n'existe pas, ou vous ne pouvez pas le voir.",
+    "back": "Retour aux trajets",
+    "loading": "Chargement…",
+    "reopen": "Ouvrir sur la page groupage",
+    "remove": "Supprimer",
+    "confirmRemove": "Supprimer ce trajet de l'historique ? Les expéditions conservées qui s'y trouvent restent.",
+    "removed": "Trajet supprimé.",
+    "keptAsJudged": "Le jugement ci-dessous est tel qu'il a été rendu lors de la conservation, selon les éditions que la ligne Éditions indique. Rouvrir et réévaluer donne le jugement d'aujourd'hui.",
+    "editions": "Éditions"
   }
 }

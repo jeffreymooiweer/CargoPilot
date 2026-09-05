@@ -57,24 +57,30 @@ def count(db: Session) -> int:
 
 
 def enforce_switch(db: Session) -> None:
-    """Refuse to run with shipments the switch no longer covers."""
+    """Refuse to run with shipments, or trips, the switch no longer covers."""
+    from app.services import trips
+
     settings = get_settings()
     if settings.history_enabled:
         return
     left = count(db)
-    if not left:
+    left_trips = trips.count(db)
+    if not left and not left_trips:
         return
     if settings.cargopilot_history_discard:
         db.query(Shipment).delete()
         db.commit()
+        trips.discard_all(db)
         logger.warning("Shipment history switched off: discarded %s kept shipment(s) "
-                       "as CARGOPILOT_HISTORY_DISCARD=true asked", left)
+                       "and %s kept trip(s) as CARGOPILOT_HISTORY_DISCARD=true asked",
+                       left, left_trips)
         return
     raise HistoryLeftBehind(
-        f"Refusing to start: the database holds {left} kept shipment(s) but "
-        "CARGOPILOT_HISTORY is off. Either set CARGOPILOT_HISTORY=true to keep "
-        "serving them, or set CARGOPILOT_HISTORY_DISCARD=true as well to delete "
-        "them on the next start. Nothing has been deleted.")
+        f"Refusing to start: the database holds {left} kept shipment(s) and "
+        f"{left_trips} kept trip(s) but CARGOPILOT_HISTORY is off. Either set "
+        "CARGOPILOT_HISTORY=true to keep serving them, or set "
+        "CARGOPILOT_HISTORY_DISCARD=true as well to delete them on the next "
+        "start. Nothing has been deleted.")
 
 
 # --- keeping -----------------------------------------------------------------

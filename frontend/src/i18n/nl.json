@@ -21,7 +21,8 @@
     "openModeHint": "Geen account, niets wordt bewaard",
     "shipments": "Zendingen",
     "articles": "Artikelen",
-    "audit": "Auditlog"
+    "audit": "Auditlog",
+    "trips": "Ritten"
   },
   "theme": {
     "dark": "Donker",
@@ -983,7 +984,17 @@
     "addFromHistory": "Toevoegen",
     "alreadyAdded": "Op het voertuig",
     "noDgShort": "geen gevaarlijke stoffen",
-    "historyEmpty": "Geen bewaarde zendingen gevonden."
+    "historyEmpty": "Geen bewaarde zendingen gevonden.",
+    "tripName": "Rit bewaren",
+    "tripNamePlaceholder": "Naam van de rit: voertuig, route, datum…",
+    "keepHint": "Deze installatie bewaart zendingen; de beoordeelde rit kan erbij. Bewaard wordt wat op het voertuig stond, de toegestane maximummassa en het oordeel zoals het nu gegeven is, met de edities waarmee het is berekend.",
+    "keep": "Rit bewaren",
+    "update": "Rit bijwerken",
+    "keeping": "Bezig…",
+    "kept": "Rit bewaard. Je vindt hem onder Ritten.",
+    "updated": "Rit bijgewerkt.",
+    "keepFailed": "De rit kon niet worden bewaard.",
+    "openKept": "Bewaarde rit openen"
   },
   "common": {
     "remove": "Verwijderen"
@@ -1180,7 +1191,8 @@
       "settings": "Instellingen",
       "shipment": "Zendingen",
       "documents": "Documenten",
-      "report": "Rapporten"
+      "report": "Rapporten",
+      "trip": "Ritten"
     },
     "actions": {
       "auth.login": "Ingelogd",
@@ -1203,7 +1215,34 @@
       "documents.exported": "Document gedownload",
       "documents.bundle": "Documentenbundel gedownload",
       "documents.mailed": "Documentenbundel gemaild",
-      "report.rendered": "Jaarrapport veiligheidsadviseur gedownload"
+      "report.rendered": "Jaarrapport veiligheidsadviseur gedownload",
+      "trip.kept": "Rit bewaard",
+      "trip.updated": "Bewaarde rit bijgewerkt",
+      "trip.forgotten": "Bewaarde rit verwijderd"
     }
+  },
+  "trips": {
+    "title": "Ritten",
+    "intro": "De groepageritten die deze installatie heeft bewaard: wat op het voertuig stond en het oordeel zoals het toen gegeven is. Open er een opnieuw op de groepagepagina, of verwijder hem.",
+    "newTrip": "Nieuwe rit",
+    "search": "Zoek op naam…",
+    "count": "{{count}} van {{total}} ritten",
+    "empty": "Nog geen ritten bewaard. De groepagepagina bewaart een rit zodra je na de beoordeling op Rit bewaren drukt.",
+    "name": "Naam",
+    "noName": "(zonder naam)",
+    "consignmentsHeader": "Zendingen",
+    "consignments": "{{count}} zendingen",
+    "pointsHeader": "Punten samen",
+    "points": "{{value}} punten",
+    "exemptionLostShort": "vrijstelling vervalt",
+    "notFound": "Deze rit bestaat niet, of je mag hem niet zien.",
+    "back": "Terug naar de ritten",
+    "loading": "Laden…",
+    "reopen": "Openen op de groepagepagina",
+    "remove": "Verwijderen",
+    "confirmRemove": "Deze rit uit de historie verwijderen? De bewaarde zendingen erop blijven staan.",
+    "removed": "Rit verwijderd.",
+    "keptAsJudged": "Het oordeel hieronder is zoals het bij het bewaren gegeven is, onder de edities die de regel Edities noemt. Opnieuw openen en beoordelen geeft het oordeel van vandaag.",
+    "editions": "Edities"
   }
 }

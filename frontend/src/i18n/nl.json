@@ -19,7 +19,8 @@
     "groupage": "Groepage",
     "openMode": "Open installatie",
     "openModeHint": "Geen account, niets wordt bewaard",
-    "shipments": "Zendingen"
+    "shipments": "Zendingen",
+    "articles": "Artikelen"
   },
   "theme": {
     "dark": "Donker",
@@ -712,6 +713,9 @@
       "un_number_not_found": "UN-nummer niet gevonden in de ADR-database",
       "quantity_not_a_number": "hoeveelheid {{value}} bevat geen getal",
       "quantity_not_positive": "hoeveelheid {{value}} moet groter dan nul zijn"
+    },
+    "articles": {
+      "row_refused": "Regel {{row}}: {{reason}}"
     }
   },
   "instructions": {
@@ -1009,6 +1013,40 @@
     "save": "Bewaren",
     "saveTitle": "{{party}} bewaren in het adresboek",
     "saved": "{{name}} bewaard in het adresboek."
+  },
+  "articles": {
+    "title": "Artikelen",
+    "intro": "Uw eigen artikelcodes, gekoppeld aan wat de bibliotheek over de stof en de verpakking weet: UN-nummer, juiste vervoersnaam, verpakkingsgroep, verpakkingssoort en inhoud per verpakking. Eén keer invoeren; op een goederenregel kiest u de code en de gevaarlijke-stoffenstap krijgt de rest mee. Een spreadsheet gaat er in dezelfde kolommen in en uit.",
+    "template": "Sjabloon downloaden",
+    "export": "Bibliotheek exporteren",
+    "import": "Importeren",
+    "add": "Artikel toevoegen",
+    "edit": "Bewerken",
+    "create": "Toevoegen",
+    "save": "Opslaan",
+    "cancel": "Annuleren",
+    "remove": "Verwijderen",
+    "confirmRemove": "Artikel {{code}} verwijderen?",
+    "saved": "Artikel bewaard.",
+    "imported": "Import klaar: {{created}} toegevoegd, {{updated}} bijgewerkt, {{skipped}} overgeslagen.",
+    "search": "Zoeken op code, naam of UN-nummer…",
+    "empty": "Nog geen artikelen. Voeg er een toe of importeer een spreadsheet.",
+    "pick": "Artikelcode of naam…",
+    "onLine": "Artikel uit de bibliotheek",
+    "clearFromLine": "Loskoppelen",
+    "fields": {
+      "code": "Artikelcode",
+      "name": "Naam",
+      "un_number": "UN-nummer",
+      "proper_shipping_name": "Juiste vervoersnaam",
+      "technical_name": "Technische naam",
+      "class": "Klasse",
+      "packing_group": "Verpakkingsgroep",
+      "type_of_package": "Verpakkingssoort",
+      "net_per_package": "Inhoud per verpakking",
+      "notes": "Opmerkingen",
+      "active": "Actief"
+    }
   },
   "dgsa": {
     "title": "DGSA-jaarrapport",

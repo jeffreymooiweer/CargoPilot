@@ -19,7 +19,9 @@ import { useTranslation } from "react-i18next";
 
 import { LineItem, UnitCatalogue } from "../api/client";
 import type { DraftLine } from "./ReviewLinesPanel";
+import ArticleCombobox from "./ArticleCombobox";
 import EquipmentCombobox from "./EquipmentCombobox";
+import { usePreferences } from "../settings/preferences";
 import NumberInput from "./NumberInput";
 import UnitSelect from "./UnitSelect";
 
@@ -70,6 +72,9 @@ export default function LineEditDialog({
 }: Props) {
   const { t } = useTranslation();
   const panel = useRef<HTMLDivElement>(null);
+  // The articles library lives beside the history; without one there is
+  // nothing to pick from and the field stays away.
+  const hasArticles = !!usePreferences().publicSettings?.history_enabled;
 
   useEffect(() => {
     const onKey = (event: KeyboardEvent) => {
@@ -138,6 +143,32 @@ export default function LineEditDialog({
         </header>
 
         <div className="flex-1 space-y-4 overflow-y-auto px-4 py-4 sm:px-5">
+          {hasArticles && (
+            <div>
+              <span className={labelClass}>{t("articles.onLine")}</span>
+              <div className="mt-1">
+                <ArticleCombobox
+                  value={line.article?.code}
+                  onPick={(article) =>
+                    onChange({
+                      article: {
+                        code: article.code, name: article.name, un_number: article.un_number,
+                        proper_shipping_name: article.proper_shipping_name, technical_name: article.technical_name,
+                        class: article.class, packing_group: article.packing_group,
+                        type_of_package: article.type_of_package, net_per_package: article.net_per_package,
+                      },
+                      description: line.description.trim() ? line.description : article.name || article.code,
+                      // A UN number on the article flags the line and travels
+                      // to the DG step the way a confirmed suggestion does.
+                      ...(article.un_number ? { dangerous_goods: true, confirmed_un: article.un_number } : {}),
+                      ...(article.net_per_package ? { package_content: article.net_per_package } : {}),
+                    })
+                  }
+                  onClear={() => onChange({ article: undefined })}
+                />
+              </div>
+            </div>
+          )}
           <div>
             <label className={labelClass} htmlFor="line-description">
               {t("review.description")}

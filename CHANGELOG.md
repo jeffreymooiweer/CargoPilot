@@ -2,6 +2,27 @@
 
 All notable changes are documented here, following [Semantic Versioning](https://semver.org/).
 
+## [1.180.0] — 2026-09-05
+
+### Your own articles library
+
+The company's article codes, entered once. On an installation that keeps its
+shipments, the **Articles** page holds one article per code with what the
+library knows about it: the UN number, the proper shipping name, a technical
+name, the class, the packing group, the type of package and the content per
+package. A spreadsheet template, an export and an import in the same columns,
+so the list can be maintained wherever the office maintains lists; the same
+code brings the one article up to date rather than adding a second.
+
+On a goods line the dialog offers **Article from the library**: pick a code
+and the line takes the article's name, is flagged as dangerous goods when
+the article carries a UN number, and hands the dangerous goods step what the
+library holds — only what it holds; the tables fill the rest as they always
+did. The code shows on the line as a badge, and can be detached again.
+
+Schema step 5 makes the table on an older database. The routes exist only
+beside the history, like the address book's.
+
 ## [1.179.0] — 2026-09-05
 
 ### The annual report in the shape the competent authority gives it

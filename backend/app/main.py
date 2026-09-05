@@ -8,6 +8,7 @@ from slowapi import _rate_limit_exceeded_handler
 from slowapi.errors import RateLimitExceeded
 
 from app.api.routes.addresses import router as addresses_router
+from app.api.routes.articles import router as articles_router
 from app.api.routes.assistant import admin_router as assistant_admin_router
 from app.api.routes.assistant import router as assistant_router
 from app.api.routes.auth import router as auth_router
@@ -79,7 +80,7 @@ ACCOUNT_ROUTERS = (
 #: The history: what only an organisation application that keeps its
 #: shipments serves. Not mounted without CARGOPILOT_HISTORY=true, so on every
 #: other installation "nothing is kept" is a matter of which addresses exist.
-HISTORY_ROUTERS = (history_router, departments_router, addresses_router)
+HISTORY_ROUTERS = (history_router, departments_router, addresses_router, articles_router)
 
 
 def create_app() -> FastAPI:

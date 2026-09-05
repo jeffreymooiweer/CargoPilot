@@ -1,0 +1,98 @@
+/**
+ * The articles library page: lists, adds, edits, imports; and says where the
+ * history is off that there is nothing to keep articles beside.
+ */
+import { render, screen, waitFor } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
+import { beforeEach, describe, expect, it, vi } from "vitest";
+
+import type { Article } from "../api/client";
+import ArticlesPage from "./ArticlesPage";
+import { ToastProvider } from "../toast/ToastProvider";
+
+vi.mock("react-i18next", () => ({
+  useTranslation: () => ({
+    t: (key: string, options?: Record<string, unknown>) =>
+      options?.code ? `${key}:${options.code}` : options?.created !== undefined ? `${key}:${options.created}/${options.updated}/${options.skipped}` : key,
+    i18n: { language: "nl" },
+  }),
+}));
+
+const settings = { history_enabled: true };
+vi.mock("../settings/preferences", () => ({
+  usePreferences: () => ({ publicSettings: settings, preferences: {}, loaded: true, mode: "organisation" }),
+}));
+
+const paint: Article = {
+  id: 1, code: "PAINT-25", name: "Alkyd paint", un_number: "1263", proper_shipping_name: "PAINT", technical_name: "",
+  class: "3", packing_group: "II", type_of_package: "jerrican", net_per_package: "25 L", notes: "", active: true,
+};
+
+const api = vi.hoisted(() => ({
+  articles: vi.fn(),
+  saveArticle: vi.fn(),
+  updateArticle: vi.fn(),
+  deleteArticle: vi.fn(),
+  downloadArticleTemplate: vi.fn(),
+  exportArticles: vi.fn(),
+  importArticlesFile: vi.fn(),
+}));
+vi.mock("../api/client", () => ({ api }));
+
+beforeEach(() => {
+  vi.clearAllMocks();
+  settings.history_enabled = true;
+  api.articles.mockResolvedValue([paint]);
+  api.saveArticle.mockImplementation(async (payload: Article) => ({ ...payload, id: 2 }));
+  api.updateArticle.mockImplementation(async (id: number, payload: Article) => ({ ...payload, id }));
+  api.importArticlesFile.mockResolvedValue({ created: 2, updated: 1, skipped: 0, errors: [] });
+});
+
+function renderPage() {
+  return render(
+    <ToastProvider>
+      <ArticlesPage />
+    </ToastProvider>,
+  );
+}
+
+describe("de artikelenbibliotheek", () => {
+  it("zegt waar de historie uitstaat dat er niets is om artikelen naast te bewaren", () => {
+    settings.history_enabled = false;
+    renderPage();
+    expect(screen.getByText("history.off")).toBeInTheDocument();
+    expect(api.articles).not.toHaveBeenCalled();
+  });
+
+  it("toont de artikelen en voegt er een toe", async () => {
+    renderPage();
+    expect(await screen.findByText("PAINT-25")).toBeInTheDocument();
+    expect(screen.getByText("UN 1263")).toBeInTheDocument();
+    const inputs = screen.getAllByRole("textbox");
+    // The first field of the form is the code; a form without one cannot be saved.
+    expect(screen.getByRole("button", { name: "articles.create" })).toBeDisabled();
+    await userEvent.type(inputs[0], "BOLT-M12");
+    await userEvent.type(inputs[1], "Bolts M12");
+    await userEvent.click(screen.getByRole("button", { name: "articles.create" }));
+    await waitFor(() => expect(api.saveArticle).toHaveBeenCalledWith(expect.objectContaining({ code: "BOLT-M12", name: "Bolts M12", active: true })));
+    expect(api.articles).toHaveBeenCalledTimes(2);
+  });
+
+  it("bewerkt een bestaand artikel op zijn id", async () => {
+    renderPage();
+    await screen.findByText("PAINT-25");
+    await userEvent.click(screen.getByRole("button", { name: "articles.edit" }));
+    expect(screen.getByDisplayValue("Alkyd paint")).toBeInTheDocument();
+    await userEvent.click(screen.getByRole("button", { name: "articles.save" }));
+    await waitFor(() => expect(api.updateArticle).toHaveBeenCalledWith(1, expect.objectContaining({ code: "PAINT-25" })));
+  });
+
+  it("importeert een spreadsheet en zegt wat ermee gebeurde", async () => {
+    renderPage();
+    await screen.findByText("PAINT-25");
+    const file = new File(["code,name\nX,Y"], "articles.csv", { type: "text/csv" });
+    await userEvent.upload(screen.getByLabelText("articles.import"), file);
+    await waitFor(() => expect(api.importArticlesFile).toHaveBeenCalledTimes(1));
+    expect(await screen.findByText("articles.imported:2/1/0")).toBeInTheDocument();
+  });
+});

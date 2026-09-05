@@ -17,6 +17,7 @@ from app.models.two_factor import (
 )
 from app.models.settings import InstanceSetting, UserPreference
 from app.models.address import Address
+from app.models.article import Article
 from app.models.dgsa_report import DgsaReport
 from app.models.shipment import Shipment
 from app.models.user import Equipment, Job, Material, Profile, ReferenceItem, User
@@ -40,7 +41,7 @@ SETTINGS_TABLES = (InstanceSetting, UserPreference, PasswordResetToken,
                    TwoFactorEnrolment, TwoFactorRecoveryCode, TwoFactorCode)
 #: Same reason: the history's table is created by ``create_all`` on a fresh
 #: database only because its model was imported here.
-HISTORY_TABLES = (Shipment, Address, DgsaReport)
+HISTORY_TABLES = (Shipment, Address, DgsaReport, Article)
 
 
 def ensure_directories() -> None:

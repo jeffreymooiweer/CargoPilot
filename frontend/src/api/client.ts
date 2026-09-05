@@ -303,6 +303,17 @@ export const api = {
     downloadBlob(
       `/shipments/report.pdf?year=${year}&department=${encodeURIComponent(department)}&language=${encodeURIComponent(language)}`,
       `cargopilot-dgsa-report-${year}.pdf`),
+  /** The articles library: the organisation's own codes for what it ships,
+   *  kept beside the history like the address book. */
+  articles: (q = "") => request<Article[]>(`/articles${q ? `?q=${encodeURIComponent(q)}` : ""}`),
+  saveArticle: (payload: ArticleIn) =>
+    request<Article>("/articles", { method: "POST", body: JSON.stringify(payload) }),
+  updateArticle: (id: number, payload: ArticleIn) =>
+    request<Article>(`/articles/${id}`, { method: "PUT", body: JSON.stringify(payload) }),
+  deleteArticle: (id: number) => request<{ ok: boolean }>(`/articles/${id}`, { method: "DELETE" }),
+  downloadArticleTemplate: () => downloadBlob("/articles/import-template", "articles_import_template.xlsx"),
+  exportArticles: () => downloadBlob("/articles/export", "articles_export.xlsx"),
+  importArticlesFile: (file: File) => uploadFile<ArticleImportResult>("/articles/import", file),
   /** The address book: parties for the details step, shared by everybody,
    *  kept only beside the history. Saving a name that exists brings that
    *  one entry up to date rather than adding a second. */
@@ -1113,6 +1124,38 @@ export interface LineItem {
   /** Net content of one package as the description said it ("25 L"), when
    *  the line counts packages and the sentence named what each one holds. */
   package_content?: string | null;
+  /** The article this line was picked from, carried along so the DG step
+   *  can seed the product with what the library knows. */
+  article?: ArticleRef | null;
+}
+
+/** An article of the organisation's own library: its code, and what the
+ *  library knows about the substance and its packaging. */
+export interface Article {
+  id: number;
+  code: string;
+  name: string;
+  un_number: string;
+  proper_shipping_name: string;
+  technical_name: string;
+  class: string;
+  packing_group: string;
+  type_of_package: string;
+  net_per_package: string;
+  notes: string;
+  active: boolean;
+}
+
+export type ArticleIn = Omit<Article, "id">;
+
+/** What a goods line keeps of the article it was picked from. */
+export type ArticleRef = Pick<Article, "code" | "name" | "un_number" | "proper_shipping_name" | "technical_name" | "class" | "packing_group" | "type_of_package" | "net_per_package">;
+
+export interface ArticleImportResult {
+  created: number;
+  updated: number;
+  skipped: number;
+  errors: unknown[];
 }
 
 /** A substance recognised by name in the line's description. A suggestion for

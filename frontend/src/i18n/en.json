@@ -19,7 +19,8 @@
     "groupage": "Groupage",
     "openMode": "Open installation",
     "openModeHint": "No account, nothing is kept",
-    "shipments": "Shipments"
+    "shipments": "Shipments",
+    "articles": "Articles"
   },
   "theme": {
     "dark": "Dark",
@@ -712,6 +713,9 @@
       "un_number_not_found": "UN number not found in the ADR database",
       "quantity_not_a_number": "quantity {{value}} holds no number",
       "quantity_not_positive": "quantity {{value}} must be greater than zero"
+    },
+    "articles": {
+      "row_refused": "Row {{row}}: {{reason}}"
     }
   },
   "instructions": {
@@ -1009,6 +1013,40 @@
     "save": "Save",
     "saveTitle": "Save {{party}} to the address book",
     "saved": "{{name}} saved to the address book."
+  },
+  "articles": {
+    "title": "Articles",
+    "intro": "Your own article codes, linked to what the library knows about the substance and its packaging: UN number, proper shipping name, packing group, type of package and content per package. Entered once; on a goods line you pick the code and the dangerous goods step gets the rest. A spreadsheet goes in and out in the same columns.",
+    "template": "Download template",
+    "export": "Export library",
+    "import": "Import",
+    "add": "Add article",
+    "edit": "Edit",
+    "create": "Add",
+    "save": "Save",
+    "cancel": "Cancel",
+    "remove": "Remove",
+    "confirmRemove": "Remove article {{code}}?",
+    "saved": "Article saved.",
+    "imported": "Import done: {{created}} added, {{updated}} updated, {{skipped}} skipped.",
+    "search": "Search by code, name or UN number…",
+    "empty": "No articles yet. Add one or import a spreadsheet.",
+    "pick": "Article code or name…",
+    "onLine": "Article from the library",
+    "clearFromLine": "Detach",
+    "fields": {
+      "code": "Article code",
+      "name": "Name",
+      "un_number": "UN number",
+      "proper_shipping_name": "Proper shipping name",
+      "technical_name": "Technical name",
+      "class": "Class",
+      "packing_group": "Packing group",
+      "type_of_package": "Type of package",
+      "net_per_package": "Content per package",
+      "notes": "Notes",
+      "active": "Active"
+    }
   },
   "dgsa": {
     "title": "DGSA annual report",

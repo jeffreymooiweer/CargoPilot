@@ -488,6 +488,7 @@ export default function WizardPage() {
         lines: res.lines.map((line, i) => ({
           ...line,
           dangerous_goods: Boolean(line.dangerous_goods || flagged[i]?.dangerous_goods),
+          article: flagged[i]?.article ?? null,
           detected_un_numbers: flagged[i]?.confirmed_un
             ? [
                 flagged[i].confirmed_un as string,

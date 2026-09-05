@@ -996,7 +996,19 @@
     "loadFailed": "Diese Sendung konnte nicht geöffnet werden.",
     "previous": "Zurück",
     "next": "Weiter",
-    "page": "Seite {{page}} von {{pages}}"
+    "page": "Seite {{page}} von {{pages}}",
+    "useTemplate": "Als Vorlage verwenden",
+    "useTemplateHint": "Eine neue Sendung mit denselben Gütern, Parteien und derselben Route; Referenz und Daten bleiben leer.",
+    "templateOpened": "Neue Sendung nach {{reference}}: Referenz und Daten sind leer, der Rest wurde übernommen."
+  },
+  "addressBook": {
+    "title": "Adressbuch",
+    "hint": "Eine Partei wählen, oder das Eingetragene unter ihrem Namen speichern.",
+    "empty": "Noch leer — eine Partei eintragen und auf Speichern drücken.",
+    "pick": "{{party}} aus dem Adressbuch…",
+    "save": "Speichern",
+    "saveTitle": "{{party}} im Adressbuch speichern",
+    "saved": "{{name}} im Adressbuch gespeichert."
   },
   "departments": {
     "title": "Abteilungen",

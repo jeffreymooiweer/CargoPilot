@@ -280,6 +280,17 @@ export const api = {
     request<{ id: number; name: string }>(`/departments/${id}`, { method: "PUT", body: JSON.stringify({ name }) }),
   deleteDepartment: (id: number) =>
     request<{ ok: boolean; users: number; shipments: number }>(`/departments/${id}`, { method: "DELETE" }),
+  /** The address book: parties for the details step, shared by everybody,
+   *  kept only beside the history. Saving a name that exists brings that
+   *  one entry up to date rather than adding a second. */
+  addresses: (q = "") =>
+    request<Address[]>(`/addresses${q ? `?q=${encodeURIComponent(q)}` : ""}`),
+  saveAddress: (payload: AddressIn) =>
+    request<Address>("/addresses", { method: "POST", body: JSON.stringify(payload) }),
+  updateAddress: (id: number, payload: AddressIn) =>
+    request<Address>(`/addresses/${id}`, { method: "PUT", body: JSON.stringify(payload) }),
+  deleteAddress: (id: number) =>
+    request<{ ok: boolean }>(`/addresses/${id}`, { method: "DELETE" }),
   keepShipment: (payload: ShipmentIn) =>
     request<ShipmentSummary>("/shipments", { method: "POST", body: JSON.stringify(payload) }),
   updateShipment: (id: number, payload: ShipmentIn) =>
@@ -647,6 +658,21 @@ export interface Department {
   name: string;
   users: number;
   shipments: number;
+}
+
+/** One party in the address book: what the details step's consignor,
+ *  consignee and carrier fields hold, kept under a name. */
+export interface Address {
+  id: number;
+  name: string;
+  address: string;
+  contact: string;
+}
+
+export interface AddressIn {
+  name: string;
+  address?: string;
+  contact?: string;
 }
 
 /** Which application this installation runs as. See docs/privacy.md. */

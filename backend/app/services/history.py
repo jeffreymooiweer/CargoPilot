@@ -82,7 +82,11 @@ def enforce_switch(db: Session) -> None:
 
 def _index(record: Shipment, export: dict[str, Any], payload: ShipmentIn) -> None:
     consignment = export.get("consignment") or {}
-    record.reference = str(consignment.get("reference") or "")[:120]
+    # The wizard's field is shipment_reference; "reference" is read as well for
+    # exports written by hand or by an older reader. Until v1.176.0 only the
+    # latter was read, so every kept shipment listed as "(no reference)".
+    record.reference = str(consignment.get("shipment_reference")
+                           or consignment.get("reference") or "")[:120]
     record.consignor_name = str(consignment.get("consignor_name") or "")[:255]
     record.consignee_name = str(consignment.get("consignee_name") or "")[:255]
     record.modality = (payload.modality or "")[:16]

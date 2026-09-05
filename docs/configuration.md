@@ -83,6 +83,8 @@ back in the wizard, and removes one. Who sees which is decided by **departments*
 (v1.174.0), managed on the users page: a user sees their own department's shipments, a
 user without a department sees the unassigned ones, an administrator sees all. An
 organisation that never makes a department keeps the plain rule: everybody sees everything.
+The switch also brings an **address book** on the details step (v1.176.0), shared by
+everyone, and **Use as template** on a kept shipment.
 
 It is a deploy-time variable rather than a screen setting for one reason: **switching it
 off destroys data**, and a deploy-time variable is the one place the application can

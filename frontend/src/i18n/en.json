@@ -996,7 +996,19 @@
     "loadFailed": "This shipment could not be opened.",
     "previous": "Previous",
     "next": "Next",
-    "page": "Page {{page}} of {{pages}}"
+    "page": "Page {{page}} of {{pages}}",
+    "useTemplate": "Use as template",
+    "useTemplateHint": "A new shipment with the same goods, parties and route; reference and dates left empty.",
+    "templateOpened": "New shipment from {{reference}}: reference and dates are empty, the rest was taken over."
+  },
+  "addressBook": {
+    "title": "Address book",
+    "hint": "Pick a party, or save what is here under its name.",
+    "empty": "Still empty — fill in a party and press Save.",
+    "pick": "{{party}} from the address book…",
+    "save": "Save",
+    "saveTitle": "Save {{party}} to the address book",
+    "saved": "{{name}} saved to the address book."
   },
   "departments": {
     "title": "Departments",

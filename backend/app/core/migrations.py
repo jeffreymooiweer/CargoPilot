@@ -91,10 +91,18 @@ def _002_departments(conn: Connection) -> None:
         "CREATE INDEX IF NOT EXISTS ix_shipments_department_id ON shipments (department_id)"))
 
 
+def _003_addresses(conn: Connection) -> None:
+    """The address book (v1.176.0)."""
+    from app.models.address import Address
+
+    Address.__table__.create(conn, checkfirst=True)
+
+
 #: In order. Append; never renumber, never remove.
 MIGRATIONS: list[tuple[int, str, Callable[[Connection], None]]] = [
     (1, "shipments", _001_shipments),
     (2, "departments", _002_departments),
+    (3, "addresses", _003_addresses),
 ]
 
 

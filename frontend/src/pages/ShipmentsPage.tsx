@@ -44,6 +44,13 @@ export function wizardLinkFor(shipment: ShipmentSummary): string {
   return `/wizard/${shipment.modality || "road"}?shipment=${shipment.id}`;
 }
 
+/** The wizard address that starts a new shipment from a kept one: the same
+ *  goods, parties and route, without the reference, the dates or the
+ *  record's identity. */
+export function templateLinkFor(shipment: ShipmentSummary): string {
+  return `/wizard/${shipment.modality || "road"}?template=${shipment.id}`;
+}
+
 export default function ShipmentsPage({ user }: { user?: User | null }) {
   const { t, i18n } = useTranslation();
   const { publicSettings } = usePreferences();
@@ -381,6 +388,9 @@ function ShipmentView({ id, language }: { id: number; language: string }) {
         <div className="flex flex-wrap gap-2 pt-2">
           <Link to={wizardLinkFor(shipment)} className={buttonPrimary}>
             {t("history.open")}
+          </Link>
+          <Link to={templateLinkFor(shipment)} className={buttonSecondary} title={t("history.useTemplateHint")}>
+            {t("history.useTemplate")}
           </Link>
           {shipment.has_documents ? (
             <button type="button" className={buttonSecondary} disabled={busy} onClick={downloadAgain}>

@@ -996,7 +996,19 @@
     "loadFailed": "Cette expédition n'a pas pu être ouverte.",
     "previous": "Précédent",
     "next": "Suivant",
-    "page": "Page {{page}} sur {{pages}}"
+    "page": "Page {{page}} sur {{pages}}",
+    "useTemplate": "Utiliser comme modèle",
+    "useTemplateHint": "Une nouvelle expédition avec les mêmes marchandises, parties et itinéraire ; référence et dates vides.",
+    "templateOpened": "Nouvelle expédition d’après {{reference}} : référence et dates vides, le reste a été repris."
+  },
+  "addressBook": {
+    "title": "Carnet d’adresses",
+    "hint": "Choisissez une partie, ou enregistrez ce qui est saisi sous son nom.",
+    "empty": "Encore vide — saisissez une partie et appuyez sur Enregistrer.",
+    "pick": "{{party}} depuis le carnet d’adresses…",
+    "save": "Enregistrer",
+    "saveTitle": "Enregistrer {{party}} dans le carnet d’adresses",
+    "saved": "{{name}} enregistré dans le carnet d’adresses."
   },
   "departments": {
     "title": "Services",

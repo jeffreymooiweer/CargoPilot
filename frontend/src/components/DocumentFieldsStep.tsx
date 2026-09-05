@@ -9,6 +9,7 @@ import {
   LocalizedText,
 } from "../api/client";
 import { documentLanguage, localised } from "../i18n/language";
+import AddressBookBar, { PARTIES } from "./AddressBookBar";
 import CarrierConfirmationBox from "./CarrierConfirmationBox";
 import {
   AddressTextarea,
@@ -66,6 +67,9 @@ interface Props {
   onDone?: () => void;
   signature?: string | null;
   onSignatureChange?: (dataUrl: string | null) => void;
+  /** Draw the address book on the parties section. Only an installation
+   *  that keeps its shipments has one. */
+  addressBook?: boolean;
 }
 
 type SubStep = { kind: "shared" } | { kind: "doc"; doc: DocumentDefinition; sections: DocumentSection[] };
@@ -81,6 +85,7 @@ export default function DocumentFieldsStep({
   onDone,
   signature,
   onSignatureChange,
+  addressBook,
 }: Props) {
   const { t, i18n } = useTranslation();
   const lang = documentLanguage(i18n.language);
@@ -124,6 +129,17 @@ export default function DocumentFieldsStep({
       }
     }
     return count;
+  };
+
+  // The party labels the address book names, as the form shows them: the
+  // part of "Consignor — name" before the dash.
+  const partyLabels = (section: DocumentSection): Record<string, string> => {
+    const labels: Record<string, string> = {};
+    for (const party of PARTIES) {
+      const field = (section.fields ?? []).find((f) => f.key === party.fields.name);
+      if (field) labels[party.key] = L(field.label).split(" — ")[0];
+    }
+    return labels;
   };
 
   const subStepLabel = (step: SubStep) => (step.kind === "shared" ? t("docfields.sharedShort") : L(step.doc.label));
@@ -276,6 +292,9 @@ export default function DocumentFieldsStep({
           {sharedSections.map((section) => (
             <section key={section.key} className={`${panelClass} p-4 sm:p-6`}>
               <h4 className="font-semibold text-slate-900 dark:text-slate-100">{L(section.label)}</h4>
+              {addressBook && section.key === "parties" && (
+                <AddressBookBar values={values} onChange={onChange} labels={partyLabels(section)} />
+              )}
               <div className="mt-3 grid gap-3 md:grid-cols-2">{(section.fields ?? []).map(renderField)}</div>
             </section>
           ))}

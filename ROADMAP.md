@@ -154,9 +154,10 @@ What the storage still has to unlock:
 - ~~**Departments.**~~ Shipped in v1.174.0: a user sees their own department's kept
   shipments, a user without one sees the unassigned, an administrator sees all with a
   filter; managed on the users page.
-- **An address book and templates.** The same five customers, entered once. A product
-  decision, not a technical one: it earns its place when the same consignment is drawn
-  up repeatedly.
+- ~~**An address book and templates.**~~ Shipped in v1.176.0: a shared address book on
+  the parties section of the details step, and **Use as template** on a kept shipment,
+  which starts a new one with the same goods, parties and route and none of the
+  references or dates.
 - ~~**Groupage from the history.**~~ Shipped in v1.175.0: the groupage page picks the
   kept shipments the viewer may see straight from the history, beside the file route.
   Whether the trip itself — the judgement over the whole load — is kept as well is still

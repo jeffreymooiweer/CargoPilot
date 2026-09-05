@@ -239,6 +239,13 @@ export const api = {
       method: "POST",
       body: JSON.stringify({ text }),
     }),
+  // Whether the ENS reference and the AES ITN apply on the route in the
+  // values: read off the route fields, answered per field with the ground.
+  customsRoute: (values: Record<string, string>) =>
+    request<{ verdicts: Record<string, CustomsVerdict> }>("/documents/customs-route", {
+      method: "POST",
+      body: JSON.stringify({ values }),
+    }),
   settingsOptions: () => request<SettingsOptions>("/settings/options"),
   assistantStatus: () => request<AssistantStatus>("/assistant/status"),
   assistantModel: (action: "download" | "remove" | "stop") =>
@@ -1628,6 +1635,18 @@ export interface DocumentBundlePayload extends Record<string, unknown> {
   include_un_cards?: boolean;
   include_instructions?: boolean;
   signature_image?: string;
+}
+
+/** One customs reference field's condition, decided by the route. `unknown`
+ *  is the route the reader could not place — the interface then says
+ *  nothing and the question stays with the person, as before. */
+export interface CustomsVerdict {
+  field: "ens_mrn" | "aes_itn";
+  applies: "yes" | "no" | "exempt" | "unknown";
+  /** The ground, translated by the interface under `customsRoute.<reason>`. */
+  reason: string;
+  origin: string | null;
+  destination: string | null;
 }
 
 export interface DocumentValidationResult {

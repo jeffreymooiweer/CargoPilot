@@ -435,6 +435,22 @@
     "locationPlaceholder": "Search airport, port or station — or type freely…",
     "addressPlaceholder": "Search an address to autofill…"
   },
+  "customsRoute": {
+    "applies": "Applies on this route",
+    "notOnThisRoute": "Not on this route",
+    "exempt": "Exempt on this route",
+    "ens_entering": "Goods from {{from}} enter the ICS2 area (EU customs territory, Northern Ireland, Norway, Switzerland) in {{to}}: the carrier lodges an entry summary declaration in ICS2. Fill in its MRN once known.",
+    "ens_within_area": "{{from}} and {{to}} are both inside the ICS2 area: no entry summary declaration for this movement.",
+    "ens_leaving": "The goods leave the ICS2 area ({{from}} to {{to}}): the entry summary declaration is for goods coming in; the export side has its own declaration (export MRN).",
+    "ens_outside": "Neither {{from}} nor {{to}} is in the ICS2 area. Only if the goods pass through it on the way would the carrier lodge an entry summary declaration.",
+    "aes_export": "Export from {{from}} to {{to}}: Electronic Export Information is filed in AES (15 CFR 30.2). The ITN belongs on the transport document — unless every commodity line is USD 2,500 or less (§ 30.37(a)) or another exemption applies.",
+    "aes_puerto_rico": "Between the United States and Puerto Rico ({{from}} to {{to}}) Electronic Export Information is filed too (15 CFR 30.2(a)(1)).",
+    "aes_virgin_islands": "To the U.S. Virgin Islands from {{from}} Electronic Export Information is filed (15 CFR 30.2(a)(1)).",
+    "aes_canada": "Shipments from the United States with Canada as country of ultimate destination are exempt from filing (15 CFR 30.36) — not when the goods are stored in Canada for a third country, move through Canada, or need a licence.",
+    "aes_not_named": "From the U.S. Virgin Islands to {{to}} is not among the movements 15 CFR 30.2(a)(1) names.",
+    "aes_not_us": "The goods do not leave from the United States ({{from}}): no AES filing.",
+    "aes_domestic": "{{from}} to {{to}} is a domestic movement: no AES filing."
+  },
   "signature": {
     "title": "Consignor signature (optional)",
     "intro": "Draw your signature or upload an image of it; it is placed in the consignor box of the selected documents (e.g. CMR box 22). You can also skip this and sign the printed documents with a pen.",

@@ -2,6 +2,39 @@
 
 All notable changes are documented here, following [Semantic Versioning](https://semver.org/).
 
+## [1.182.0] — 2026-09-05
+
+### The route decides the customs conditions
+
+Two reference fields on the details step carry a condition rather than a
+rule: the **ENS reference** for goods entering the EU customs territory,
+the **AES ITN** for exports from the United States. Until now the help text
+named the condition and the person filling in the form decided whether it
+applied. The route is on the same screen, so the application now reads it.
+
+- From the country of the loading point and of the destination — a location
+  picked from the database, an address from the lookup, or a country typed in
+  any of the four interface languages — each field says whether it **applies
+  on this route**, does not, or is exempt, and on what ground. Goods from
+  outside entering the ICS2 area (the EU customs territory of Article 4 UCC,
+  with Northern Ireland, Norway and Switzerland) ask for the carrier's entry
+  summary declaration; a movement within the area does not, and neither does
+  one that leaves it. An export from the United States, Puerto Rico or the
+  U.S. Virgin Islands asks for the AES filing of 15 CFR 30.2(a)(1); Canada as
+  country of ultimate destination is exempt under § 30.36, with its exceptions
+  named; the value exemption of § 30.37(a) is named for the person to judge,
+  because the application does not know the value.
+- The places Article 4 takes out of a Member State — Heligoland, Büsingen,
+  Ceuta, Melilla, Livigno, and the Faroe Islands and Greenland by their own
+  codes — read as outside; Northern Ireland reads as inside, by name, by its
+  ports' district codes and by its three airports.
+- A route the application cannot place gets no verdict rather than a guess,
+  and the condition stays in the help text as before.
+- An applicable reference left empty is a **warning** on the export, in the
+  document's language, on the documents that carry the field — never a
+  refusal, because the ENS is the carrier's to lodge and its MRN often
+  arrives after the papers are drawn up.
+
 ## [1.181.0] — 2026-09-05
 
 ### Installing without Docker

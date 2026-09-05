@@ -305,9 +305,15 @@ none is committed until it is planned against that brief.
   measures a candidate. Until then box 24 is a free-text field with a format check.
 - Customs reference fields (ENS/ICS2, AES/ITN) shipped in v1.128.0 with their conditions
   in the help text and their formats enforced on export; carrier data intake (AWB number,
-  booking reference) from a pasted booking confirmation shipped alongside. What remains
-  open here is deriving the conditions from the route automatically — today the help
-  text names the rule and the user decides whether it applies.
+  booking reference) from a pasted booking confirmation shipped alongside. ~~What remains
+  open here is deriving the conditions from the route automatically.~~ Shipped in
+  v1.182.0: the route decides. From the country of the loading point and of the
+  destination each field says whether it applies, does not, or is exempt, and names the
+  ground — Article 4 of the Union Customs Code for what the EU customs territory is, the
+  ICS2 area of the EU with Northern Ireland, Norway and Switzerland for the entry summary
+  declaration, 15 CFR 30.2(a)(1), 30.36 and 30.37(a) for the AES filing and its
+  exemptions. A route the application cannot place gets no verdict rather than a guess,
+  and an applicable reference left empty is a warning on the export, never a refusal.
 
 ### Ideas, not committed
 

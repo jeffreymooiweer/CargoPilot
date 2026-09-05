@@ -435,6 +435,22 @@
     "locationPlaceholder": "Rechercher un aéroport, un port ou une gare — ou saisir librement…",
     "addressPlaceholder": "Rechercher une adresse pour la compléter automatiquement…"
   },
+  "customsRoute": {
+    "applies": "S'applique sur cet itinéraire",
+    "notOnThisRoute": "Pas sur cet itinéraire",
+    "exempt": "Exempté sur cet itinéraire",
+    "ens_entering": "Les marchandises de {{from}} entrent dans la zone ICS2 (territoire douanier de l'UE, Irlande du Nord, Norvège, Suisse) en {{to}} : le transporteur dépose une déclaration sommaire d'entrée dans ICS2. Indiquez son MRN dès qu'il est connu.",
+    "ens_within_area": "{{from}} et {{to}} sont tous deux dans la zone ICS2 : pas de déclaration sommaire d'entrée pour ce transport.",
+    "ens_leaving": "Les marchandises quittent la zone ICS2 ({{from}} vers {{to}}) : la déclaration sommaire d'entrée concerne les marchandises entrantes ; l'exportation a sa propre déclaration (MRN d'exportation).",
+    "ens_outside": "Ni {{from}} ni {{to}} n'est dans la zone ICS2. Ce n'est que si les marchandises la traversent en route que le transporteur dépose une déclaration sommaire d'entrée.",
+    "aes_export": "Exportation de {{from}} vers {{to}} : l'Electronic Export Information est déposée dans AES (15 CFR 30.2). L'ITN doit figurer sur le document de transport — sauf si chaque ligne de marchandises est de 2 500 USD ou moins (§ 30.37(a)) ou si une autre exemption s'applique.",
+    "aes_puerto_rico": "Entre les États-Unis et Porto Rico ({{from}} vers {{to}}), l'Electronic Export Information est également déposée (15 CFR 30.2(a)(1)).",
+    "aes_virgin_islands": "Vers les Îles Vierges américaines depuis {{from}}, l'Electronic Export Information est déposée (15 CFR 30.2(a)(1)).",
+    "aes_canada": "Les envois des États-Unis dont le Canada est le pays de destination finale sont dispensés de déclaration (15 CFR 30.36) — sauf si les marchandises sont entreposées au Canada pour un pays tiers, transitent par le Canada ou nécessitent une licence.",
+    "aes_not_named": "Des Îles Vierges américaines vers {{to}} ne figure pas parmi les mouvements que nomme 15 CFR 30.2(a)(1).",
+    "aes_not_us": "Les marchandises ne partent pas des États-Unis ({{from}}) : pas de déclaration AES.",
+    "aes_domestic": "{{from}} vers {{to}} est un transport intérieur : pas de déclaration AES."
+  },
   "signature": {
     "title": "Signature de l'expéditeur (facultative)",
     "intro": "Tracez votre signature ou téléversez-en une image ; elle est apposée dans la case de l'expéditeur des documents sélectionnés (p. ex. case 22 de la CMR). Vous pouvez aussi passer cette étape et signer les documents imprimés au stylo.",

@@ -943,7 +943,14 @@
     "notAnExport": "{{file}} is geen CargoPilot-zendingexport en is overgeslagen.",
     "noDangerousGoods": "{{file}} bevat geen gevaarlijke goederen en is overgeslagen.",
     "unreadable": "{{file}} kon niet worden gelezen.",
-    "failed": "De beoordeling is niet gelukt."
+    "failed": "De beoordeling is niet gelukt.",
+    "fromHistory": "Uit de historie",
+    "fromHistoryHint": "De bewaarde zendingen die je mag zien, met gevaarlijke stoffen. Kies welke op dit voertuig staan; onderliggend wordt dezelfde export gebruikt als bij een bestand.",
+    "searchHistory": "Zoek op referentie, afzender of ontvanger…",
+    "addFromHistory": "Toevoegen",
+    "alreadyAdded": "Op het voertuig",
+    "noDgShort": "geen gevaarlijke stoffen",
+    "historyEmpty": "Geen bewaarde zendingen gevonden."
   },
   "common": {
     "remove": "Verwijderen"

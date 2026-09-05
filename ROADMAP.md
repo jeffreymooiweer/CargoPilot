@@ -157,10 +157,10 @@ What the storage still has to unlock:
 - **An address book and templates.** The same five customers, entered once. A product
   decision, not a technical one: it earns its place when the same consignment is drawn
   up repeatedly.
-- **Groupage from the history.** Today the consignments of a trip come in as export
-  files, because there is nothing to pick from. With a history, a trip is assembled from
-  kept shipments instead. Whether the trip itself — the judgement over the whole load —
-  is kept as well is an open question for this phase, not a decision already taken.
+- ~~**Groupage from the history.**~~ Shipped in v1.175.0: the groupage page picks the
+  kept shipments the viewer may see straight from the history, beside the file route.
+  Whether the trip itself — the judgement over the whole load — is kept as well is still
+  an open question, not a decision already taken.
 - **The DGSA annual report**, which is a statistic over the history and needs it to
   exist.
 

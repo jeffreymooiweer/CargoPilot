@@ -943,7 +943,14 @@
     "notAnExport": "{{file}} n'est pas un export d'envoi CargoPilot et a été ignoré.",
     "noDangerousGoods": "{{file}} ne contient pas de marchandises dangereuses et a été ignoré.",
     "unreadable": "{{file}} n'a pas pu être lu.",
-    "failed": "L'appréciation n'a pas abouti."
+    "failed": "L'appréciation n'a pas abouti.",
+    "fromHistory": "Depuis l'historique",
+    "fromHistoryHint": "Les expéditions conservées que vous pouvez voir, avec marchandises dangereuses. Choisissez celles qui sont sur ce véhicule ; le même export que pour un fichier est utilisé en dessous.",
+    "searchHistory": "Rechercher par référence, expéditeur ou destinataire…",
+    "addFromHistory": "Ajouter",
+    "alreadyAdded": "Sur le véhicule",
+    "noDgShort": "pas de marchandises dangereuses",
+    "historyEmpty": "Aucune expédition conservée ne correspond."
   },
   "common": {
     "remove": "Retirer"

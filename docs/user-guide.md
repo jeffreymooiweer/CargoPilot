@@ -270,8 +270,11 @@ in:
   unit rather than the consignment.
 
 Open **Groupage** in the menu and add the consignments. They come in as the **JSON
-exports** the export step writes for each shipment — CargoPilot keeps no shipment
-history, so there is no list to pick from, and the file you already have is the input.
+exports** the export step writes for each shipment — on an installation that keeps no
+shipment history there is no list to pick from, and the file you already have is the
+input. On an installation that keeps its shipments, a second box, **From the history**,
+lists the kept shipments you may see that carry dangerous goods; search by reference or
+party and add them to the vehicle with one click. Underneath it is the same export.
 Rename them to whatever you call them on the floor: those names appear in the warnings,
 so "these two may not travel together" tells you which pallet to take off.
 

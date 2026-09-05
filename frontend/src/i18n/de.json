@@ -943,7 +943,14 @@
     "notAnExport": "{{file}} ist kein CargoPilot-Sendungsexport und wurde übersprungen.",
     "noDangerousGoods": "{{file}} enthält keine gefährlichen Güter und wurde übersprungen.",
     "unreadable": "{{file}} konnte nicht gelesen werden.",
-    "failed": "Die Beurteilung ist nicht gelungen."
+    "failed": "Die Beurteilung ist nicht gelungen.",
+    "fromHistory": "Aus dem Verlauf",
+    "fromHistoryHint": "Die aufbewahrten Sendungen, die Sie sehen dürfen, mit Gefahrgut. Wählen Sie, welche auf diesem Fahrzeug stehen; darunter wird derselbe Export verwendet wie bei einer Datei.",
+    "searchHistory": "Suche nach Referenz, Absender oder Empfänger…",
+    "addFromHistory": "Hinzufügen",
+    "alreadyAdded": "Auf dem Fahrzeug",
+    "noDgShort": "kein Gefahrgut",
+    "historyEmpty": "Keine aufbewahrten Sendungen gefunden."
   },
   "common": {
     "remove": "Entfernen"

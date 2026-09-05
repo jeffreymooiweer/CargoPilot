@@ -943,7 +943,14 @@
     "notAnExport": "{{file}} is not a CargoPilot shipment export and was skipped.",
     "noDangerousGoods": "{{file}} holds no dangerous goods and was skipped.",
     "unreadable": "{{file}} could not be read.",
-    "failed": "The assessment did not succeed."
+    "failed": "The assessment did not succeed.",
+    "fromHistory": "From the history",
+    "fromHistoryHint": "The kept shipments you may see, with dangerous goods. Pick the ones on this vehicle; the same export the file route reads is used underneath.",
+    "searchHistory": "Search by reference, consignor or consignee…",
+    "addFromHistory": "Add",
+    "alreadyAdded": "On the vehicle",
+    "noDgShort": "no dangerous goods",
+    "historyEmpty": "No kept shipments match."
   },
   "common": {
     "remove": "Remove"

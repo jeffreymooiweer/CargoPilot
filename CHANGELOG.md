@@ -2,6 +2,24 @@
 
 All notable changes are documented here, following [Semantic Versioning](https://semver.org/).
 
+## [1.175.0] — 2026-09-05
+
+### Groupage picked from the history
+
+The groupage page took its consignments as JSON exports, because there was
+nothing to pick from. On an installation that keeps its shipments there is,
+so the page gains a second way in beside the file: **From the history** — the
+kept shipments the viewer may see, searched by reference or party, added to
+the vehicle with one click. The same structured export the file route reads
+is used underneath, so a consignment picked and a consignment uploaded are
+the same thing to the check; a shipment without dangerous goods says so
+instead of offering a button, and one already on the vehicle cannot be added
+twice.
+
+Nothing about the trip is kept, still. Whether an installation with a history
+should keep the judgement over a load is the open question the roadmap
+records, and this release does not answer it.
+
 ## [1.174.0] — 2026-09-05
 
 ### Departments: who sees whose kept shipments

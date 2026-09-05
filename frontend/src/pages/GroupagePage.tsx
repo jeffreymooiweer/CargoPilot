@@ -6,20 +6,25 @@
  *  completed: the 1.1.3.6 points, the mixed loading of 7.5.2, and the
  *  limited-quantities marking of 3.4.13.
  *
- *  The consignments come in as the shipment exports the export step already
- *  writes (`cargopilot.shipment`). That is deliberate: this application stores
- *  no shipment history, so there is no list to pick from, and inventing one
- *  would break the privacy stance the rest of it keeps. A file the planner
- *  already has is the honest input.
+ *  The consignments come in two ways. As the shipment exports the export step
+ *  writes (`cargopilot.shipment`) — on an installation that keeps nothing,
+ *  the file the planner already has is the honest input. And, on an
+ *  installation that keeps its shipments, straight from the history: the
+ *  kept shipments the viewer may see, picked by reference, with the same
+ *  export underneath, so a consignment picked and a consignment uploaded are
+ *  the same thing to the check.
  *
  *  Nothing here is saved. The trip lives in this page and in the request, and
- *  reloading loses it — which is the correct behaviour, not a shortcoming.
+ *  reloading loses it. Whether an installation with a history should keep the
+ *  judgement over a load as well is an open question the roadmap records;
+ *  until it is answered, a trip is a calculation and not a record.
  */
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 import { api } from "../api/client";
-import type { TripResult } from "../api/client";
+import type { ShipmentSummary, TripResult } from "../api/client";
+import { usePreferences } from "../settings/preferences";
 import { useToast } from "../toast/ToastProvider";
 
 type Loaded = {
@@ -27,12 +32,20 @@ type Loaded = {
   entries: Record<string, unknown>[];
   profiles: string[];
   fileName: string;
+  /** Set when the consignment came from the history, so it is not added twice. */
+  shipmentId?: number;
 };
 
-/** The export's own name for the consignment, or the file's, or nothing. */
+/** The export's own name for the consignment, or the file's, or nothing.
+ *
+ *  The wizard's field is `reference`; `shipment_reference` is kept for
+ *  exports written by hand or by an older reader. Until v1.175.0 only the
+ *  latter was read, so every consignment picked from the history was named
+ *  after its consignor — three consignments from one shipper looked alike. */
 function nameOf(payload: Record<string, any>, fileName: string): string {
   const values = (payload?.consignment ?? {}) as Record<string, string>;
   return (
+    values.reference ||
     values.shipment_reference ||
     values.consignor_name ||
     values.consignee_name ||
@@ -43,10 +56,54 @@ function nameOf(payload: Record<string, any>, fileName: string): string {
 export default function GroupagePage() {
   const { t, i18n } = useTranslation();
   const toast = useToast();
+  const { publicSettings } = usePreferences();
+  const historyOn = !!publicSettings?.history_enabled;
   const [loaded, setLoaded] = useState<Loaded[]>([]);
   const [unitMass, setUnitMass] = useState("");
   const [result, setResult] = useState<TripResult | null>(null);
   const [busy, setBusy] = useState(false);
+
+  // The history's side: the kept shipments the viewer may see, by reference
+  // or party. Only ones with dangerous goods are worth a place on the vehicle
+  // here — the three rules are all about dangerous goods.
+  const [query, setQuery] = useState("");
+  const [kept, setKept] = useState<ShipmentSummary[]>([]);
+  useEffect(() => {
+    if (!historyOn) return;
+    const handle = setTimeout(() => {
+      api
+        .shipments({ q: query, per_page: 50 })
+        .then((page) => setKept(page.items))
+        .catch(() => setKept([]));
+    }, query ? 250 : 0);
+    return () => clearTimeout(handle);
+  }, [historyOn, query]);
+
+  async function addFromHistory(summary: ShipmentSummary) {
+    if (loaded.some((c) => c.shipmentId === summary.id)) return;
+    try {
+      const detail = await api.shipment(summary.id);
+      const payload = detail.export as Record<string, any>;
+      const entries = Array.isArray(payload.dangerous_goods) ? payload.dangerous_goods : [];
+      if (!entries.length) {
+        toast.error(t("groupage.noDangerousGoods", { file: summary.reference || `#${summary.id}` }));
+        return;
+      }
+      setLoaded((current) => [
+        ...current,
+        {
+          name: nameOf(payload, summary.reference || `#${summary.id}`),
+          entries,
+          profiles: Array.isArray(payload.regulations) ? payload.regulations : [],
+          fileName: `shipment-${summary.id}`,
+          shipmentId: summary.id,
+        },
+      ]);
+      setResult(null);
+    } catch {
+      toast.error(t("groupage.unreadable", { file: summary.reference || `#${summary.id}` }));
+    }
+  }
 
   async function addFiles(files: FileList | null) {
     if (!files?.length) return;
@@ -144,6 +201,55 @@ export default function GroupagePage() {
           }}
         />
       </section>
+
+      {historyOn && (
+        <section className={`${card} space-y-2`}>
+          <label className="text-sm font-medium text-slate-800 dark:text-slate-200" htmlFor="groupage-history">
+            {t("groupage.fromHistory")}
+          </label>
+          <p className="mt-0.5 text-xs text-slate-500 dark:text-slate-400">{t("groupage.fromHistoryHint")}</p>
+          <input
+            id="groupage-history"
+            className={`${input} w-full`}
+            placeholder={t("groupage.searchHistory")}
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+          />
+          {kept.length === 0 ? (
+            <p className="text-xs text-slate-500 dark:text-slate-400">{t("groupage.historyEmpty")}</p>
+          ) : (
+            <ul className="divide-y divide-slate-100 dark:divide-slate-800" data-testid="groupage-history">
+              {kept.map((s) => {
+                const added = loaded.some((c) => c.shipmentId === s.id);
+                return (
+                  <li key={s.id} className="flex items-center gap-3 py-2 text-sm">
+                    <span className="min-w-0 flex-1 truncate">
+                      <span className="font-medium text-slate-900 dark:text-slate-100">
+                        {s.reference || t("history.noReference")}
+                      </span>
+                      <span className="ml-2 text-slate-500 dark:text-slate-400">
+                        {[s.consignor_name, s.consignee_name].filter(Boolean).join(" → ")}
+                      </span>
+                    </span>
+                    {!s.has_dangerous_goods ? (
+                      <span className="text-xs text-slate-500 dark:text-slate-400">{t("groupage.noDgShort")}</span>
+                    ) : (
+                      <button
+                        type="button"
+                        className="rounded-lg border border-slate-300 px-3 py-1 text-sm disabled:opacity-50 dark:border-slate-600"
+                        disabled={added}
+                        onClick={() => void addFromHistory(s)}
+                      >
+                        {added ? t("groupage.alreadyAdded") : t("groupage.addFromHistory")}
+                      </button>
+                    )}
+                  </li>
+                );
+              })}
+            </ul>
+          )}
+        </section>
+      )}
 
       {loaded.length > 0 && (
         <section className={`${card} space-y-3`}>

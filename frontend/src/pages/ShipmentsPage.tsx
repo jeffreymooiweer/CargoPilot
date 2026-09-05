@@ -129,9 +129,14 @@ function ShipmentList({ language, admin }: { language: string; admin: boolean })
 
   return (
     <div className="space-y-4 sm:space-y-6">
-      <div className={`${panelClass} p-5 sm:p-8`}>
-        <h2 className="text-xl sm:text-2xl font-semibold text-slate-900 dark:text-slate-100">{t("history.title")}</h2>
-        <p className="mt-2 text-sm text-slate-600 dark:text-slate-300 max-w-2xl">{t("history.intro")}</p>
+      <div className={`${panelClass} p-5 sm:p-8 flex flex-wrap items-start justify-between gap-3`}>
+        <div>
+          <h2 className="text-xl sm:text-2xl font-semibold text-slate-900 dark:text-slate-100">{t("history.title")}</h2>
+          <p className="mt-2 text-sm text-slate-600 dark:text-slate-300 max-w-2xl">{t("history.intro")}</p>
+        </div>
+        <Link to="/shipments/report" className={buttonSecondary} title={t("dgsa.intro")}>
+          {t("dgsa.title")}
+        </Link>
       </div>
 
       <div className={`${panelClass} p-4 sm:p-5 grid gap-3 md:grid-cols-[2fr_1fr_1fr_1fr]`}>

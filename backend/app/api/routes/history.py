@@ -11,18 +11,18 @@ this; until then the organisation is the unit.
 from datetime import datetime
 
 from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException, Query, Request
-from fastapi.responses import FileResponse, JSONResponse
+from fastapi.responses import FileResponse, JSONResponse, Response
 from sqlalchemy.orm import Session
 
 from app.api.routes.documents import build_bundle, delete_file
 from app.core.database import get_db
 from app.core.deps import get_current_user
-from app.core.ratelimit import DOCUMENT_BUNDLE, limiter
+from app.core.ratelimit import DGSA_REPORT, DOCUMENT_BUNDLE, limiter
 from app.models.shipment import Shipment
 from app.models.user import User
 from app.schemas import DocumentBundleRequest
 from app.schemas.history import ShipmentDetail, ShipmentIn, ShipmentPage, ShipmentSummary
-from app.services import departments, history
+from app.services import departments, dgsa_report, history
 
 router = APIRouter(prefix="/shipments", tags=["shipments"])
 
@@ -56,6 +56,48 @@ def list_shipments(
                                  department=department)
     return ShipmentPage(items=[history.summary(r) for r in rows],
                         total=total, page=page, per_page=per_page)
+
+
+# The report routes come before ``/{shipment_id}``: a path is matched in
+# order, and "report" would otherwise be tried as a shipment id and refused.
+
+
+@router.get("/report/years")
+def report_years(user: User = Depends(get_current_user), db: Session = Depends(get_db)):
+    """The calendar years the viewer could draw a report over."""
+    return {"years": dgsa_report.years_kept(db, user)}
+
+
+@router.get("/report")
+@limiter.limit(DGSA_REPORT)
+def shipment_report(request: Request,
+                    year: int = Query(ge=2000, le=2100),
+                    department: str = Query(default="", max_length=16),
+                    language: str = Query(default="nl", max_length=8),
+                    user: User = Depends(get_current_user),
+                    db: Session = Depends(get_db)):
+    """The safety adviser's annual report (ADR 1.8.3.3) over one year, as
+    figures — see ``services/dgsa_report.py`` for what is counted and what is
+    deliberately left to the adviser."""
+    return dgsa_report.build_report(db, user, year, department, language)
+
+
+@router.get("/report.xlsx")
+@limiter.limit(DGSA_REPORT)
+def shipment_report_workbook(request: Request,
+                             year: int = Query(ge=2000, le=2100),
+                             department: str = Query(default="", max_length=16),
+                             language: str = Query(default="nl", max_length=8),
+                             user: User = Depends(get_current_user),
+                             db: Session = Depends(get_db)):
+    """The same report as a workbook, one sheet per table and the adviser's
+    duties last with an empty column for the finding."""
+    report = dgsa_report.build_report(db, user, year, department, language)
+    content = dgsa_report.build_workbook(report)
+    return Response(
+        content=content,
+        media_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        headers={"Content-Disposition": f'attachment; filename="cargopilot-dgsa-report-{year}.xlsx"'})
 
 
 @router.post("", response_model=ShipmentSummary)

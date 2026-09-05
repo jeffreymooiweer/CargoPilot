@@ -110,6 +110,12 @@ DOCUMENT_BUNDLE_MAIL = "5/minute"
 #: UN card generation, per set.
 UN_CARDS = "10/minute"
 
+#: The safety adviser's annual report: every kept shipment of a year is
+#: read and its export parsed, which is a few hundred JSON documents on a
+#: busy installation. Drawn up a few times a year, never a few times a
+#: minute — except by a script.
+DGSA_REPORT = "20/minute"
+
 #: Reading an uploaded carrier confirmation. File parsing, so the size of the
 #: work is the caller's choice.
 CARRIER_CONFIRMATION = "20/minute"

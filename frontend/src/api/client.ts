@@ -280,6 +280,16 @@ export const api = {
     request<{ id: number; name: string }>(`/departments/${id}`, { method: "PUT", body: JSON.stringify({ name }) }),
   deleteDepartment: (id: number) =>
     request<{ ok: boolean; users: number; shipments: number }>(`/departments/${id}`, { method: "DELETE" }),
+  /** The safety adviser's annual report (ADR 1.8.3.3) over the kept
+   *  shipments of one year — figures for the page, a workbook to keep. */
+  reportYears: () => request<{ years: number[] }>("/shipments/report/years"),
+  dgsaReport: (year: number, department = "", language = "nl") =>
+    request<DgsaReport>(
+      `/shipments/report?year=${year}&department=${encodeURIComponent(department)}&language=${encodeURIComponent(language)}`),
+  downloadDgsaReport: (year: number, department = "", language = "nl") =>
+    downloadBlob(
+      `/shipments/report.xlsx?year=${year}&department=${encodeURIComponent(department)}&language=${encodeURIComponent(language)}`,
+      `cargopilot-dgsa-report-${year}.xlsx`),
   /** The address book: parties for the details step, shared by everybody,
    *  kept only beside the history. Saving a name that exists brings that
    *  one entry up to date rather than adding a second. */
@@ -673,6 +683,40 @@ export interface AddressIn {
   name: string;
   address?: string;
   contact?: string;
+}
+
+/** A row of the annual report that carries quantities: kilograms and litres
+ *  apart, and a count of substances whose quantity had no usable unit. */
+export interface DgsaQuantityRow {
+  shipments: number;
+  products: number;
+  quantity_kg: number;
+  quantity_l: number;
+  quantity_unknown: number;
+}
+
+/** The safety adviser's annual report as the server counts it. The texts
+ *  (basis, notes, duties) come localised, in the language asked for. */
+export interface DgsaReport {
+  year: number;
+  language: string;
+  generated_at: string;
+  generated_by: string;
+  scope: string;
+  basis: string;
+  source: string;
+  counted_note: string;
+  totals: DgsaQuantityRow & { with_dangerous_goods: number; without_dangerous_goods: number };
+  by_month: { month: number; shipments: number; with_dangerous_goods: number }[];
+  by_modality: { modality: string; label: string; shipments: number; with_dangerous_goods: number }[];
+  by_regulation: { regulation: string; shipments: number }[];
+  by_department: { department: string; shipments: number; with_dangerous_goods: number }[];
+  by_class: ({ class: string } & DgsaQuantityRow)[];
+  by_un_number: ({ un_number: string; name: string; class: string; packing_group: string } & DgsaQuantityRow)[];
+  adr_points: { status: string; label: string; shipments: number }[];
+  documents: { document: string; label: string; shipments: number }[];
+  duties_heading: string;
+  duties: { key: string; text: string }[];
 }
 
 /** Which application this installation runs as. See docs/privacy.md. */

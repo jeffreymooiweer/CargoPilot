@@ -442,14 +442,18 @@
     "ens_entering": "Goederen uit {{from}} komen in {{to}} het ICS2-gebied binnen (douanegebied van de EU, Noord-Ierland, Noorwegen, Zwitserland): de vervoerder dient een summiere aangifte bij binnenbrengen in ICS2 in. Vul het MRN in zodra het bekend is.",
     "ens_within_area": "{{from}} en {{to}} liggen beide in het ICS2-gebied: geen summiere aangifte bij binnenbrengen voor dit vervoer.",
     "ens_leaving": "De goederen verlaten het ICS2-gebied ({{from}} naar {{to}}): de summiere aangifte bij binnenbrengen is voor inkomende goederen; de uitvoer heeft haar eigen aangifte (export-MRN).",
-    "ens_outside": "Noch {{from}} noch {{to}} ligt in het ICS2-gebied. Alleen als de goederen er onderweg doorheen gaan, dient de vervoerder een summiere aangifte bij binnenbrengen in.",
+    "ens_outside": "Noch {{from}} noch {{to}} ligt in het ICS2-gebied. Alleen als de goederen er onderweg worden binnengebracht — een stop, niet enkel een doorvaart of overvlucht (art. 127, lid 2, onder a, DWU) — dient de vervoerder een summiere aangifte bij binnenbrengen in.",
     "aes_export": "Uitvoer uit {{from}} naar {{to}}: de Electronic Export Information wordt in AES aangegeven (15 CFR 30.2). Het ITN hoort op het vervoersdocument — tenzij elke goederenregel USD 2.500 of minder is (§ 30.37(a)) of een andere vrijstelling geldt.",
     "aes_puerto_rico": "Tussen de Verenigde Staten en Puerto Rico ({{from}} naar {{to}}) wordt de Electronic Export Information ook aangegeven (15 CFR 30.2(a)(1)).",
     "aes_virgin_islands": "Naar de Amerikaanse Maagdeneilanden vanuit {{from}} wordt de Electronic Export Information aangegeven (15 CFR 30.2(a)(1)).",
-    "aes_canada": "Zendingen uit de Verenigde Staten met Canada als land van eindbestemming zijn vrijgesteld van aangifte (15 CFR 30.36) — niet als de goederen in Canada worden opgeslagen voor een derde land, door Canada heen gaan of een vergunning nodig hebben.",
+    "aes_canada": "Zendingen van oorsprong uit de Verenigde Staten (de 50 staten en het District of Columbia) met Canada als land van eindbestemming zijn vrijgesteld van aangifte (15 CFR 30.36) — niet als de goederen in Canada worden opgeslagen voor een derde land, door Canada naar een derde bestemming gaan of een vergunning nodig hebben (§ 30.2(a)(1)(iv)).",
     "aes_not_named": "Van de Amerikaanse Maagdeneilanden naar {{to}} staat niet bij de bewegingen die 15 CFR 30.2(a)(1) noemt.",
     "aes_not_us": "De goederen vertrekken niet uit de Verenigde Staten ({{from}}): geen AES-aangifte.",
-    "aes_domestic": "{{from}} naar {{to}} is binnenlands vervoer: geen AES-aangifte."
+    "aes_domestic": "{{from}} naar {{to}} is binnenlands vervoer: geen AES-aangifte.",
+    "ens_uk_entering": "Goederen uit {{from}} komen Groot-Brittannië binnen: HMRC vraagt de vervoerder om een summiere aangifte bij binnenbrengen in de dienst Safety and Security GB, ook vanuit de EU. Vul de referentie in zodra die bekend is.",
+    "ens_uk_qualifying_ni": "Van Noord-Ierland naar Groot-Brittannië: voor kwalificerende Noord-Ierse goederen geldt een vrijstelling van de summiere aangifte bij binnenbrengen (HMRC); andere goederen hebben er een nodig in de dienst Safety and Security GB.",
+    "ens_domestic": "{{from}} naar {{to}} is binnenlands vervoer: geen summiere aangifte bij binnenbrengen.",
+    "aes_territory": "Goederen verzonden vanuit de Amerikaanse territoria, of tussen de Verenigde Staten en die territoria ({{from}} naar {{to}}), zijn uitgesloten van aangifte (15 CFR 30.2(d)(2)); alleen goederen die er doorheen gaan naar een buitenlandse bestemming worden aangegeven."
   },
   "signature": {
     "title": "Handtekening afzender (optioneel)",

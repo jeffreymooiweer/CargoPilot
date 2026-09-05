@@ -193,6 +193,11 @@ jobs:
           ARTIFACT_PATH: ${{ inputs.artifact_path }}
         run: |
           set -euo pipefail
+          # The container's token can read a draft but not delete one, so the
+          # previous hand-backs are cleared here, before the next is made.
+          gh release list --json name,isDraft,tagName --limit 50 \
+            | python3 -c "import json,sys; [print(r['tagName']) for r in json.load(sys.stdin) if r['isDraft'] and r['tagName'].startswith('store-part-')]" \
+            | xargs -r -n1 gh release delete --yes
           (cd /tmp/cargopilot-regulations && zip -q -r /tmp/store-part.zip "$ARTIFACT_PATH")
           ls -l /tmp/store-part.zip
           gh release create "store-part-${{ github.run_id }}" /tmp/store-part.zip \

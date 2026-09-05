@@ -9,46 +9,82 @@ country of the loading point and the country of the destination it derives
 whether each reference applies, does not, is exempt, or cannot be told — and
 names the ground each time.
 
-What the derivation rests on:
+What the derivation rests on, read in the texts themselves (the operator's
+reference folder: the consolidated Union Customs Code of 12 December 2022,
+the eCFR print of 15 CFR Part 30 as of 3 September 2026, the DG TAXUD ICS2
+page and HMRC's guidance "Making an entry summary declaration" as updated
+on 9 July 2026):
 
-* Regulation (EU) No 952/2013 (the Union Customs Code), Article 4: the
-  customs territory of the Union is the territory of the Member States with
-  the named exceptions — the Faroe Islands and Greenland (Denmark), the
-  island of Heligoland and the territory of Büsingen (Germany), Ceuta and
-  Melilla (Spain), Livigno (Italy), the French overseas countries and
-  territories — and, situated outside the Member States, Monaco. The Canary
-  Islands, the Åland Islands, Mount Athos and the French outermost regions
-  are inside it; they are outside the VAT territory, which is not this
-  question.
-* Article 127 of the same regulation: goods brought into that territory are
-  covered by an entry summary declaration. It is lodged in ICS2 (DG TAXUD,
-  Import Control System 2), since 1 September 2025 for every mode of
-  transport, for goods brought into or via the EU, Northern Ireland, Norway
-  or Switzerland. Northern Ireland: the Windsor Framework keeps the Union
-  Customs Code applicable to goods entering Northern Ireland, and HMRC's
-  guidance "Make an entry summary declaration using the Import Control
-  System 2" asks for an ENS on movements into Northern Ireland, from Great
-  Britain included. Norway and Switzerland: their security agreements with
+* Regulation (EU) No 952/2013 (the Union Customs Code), Article 4(1): the
+  customs territory of the Union is the territory of the Member States,
+  "except the Faroe Islands and Greenland" (Denmark), "except the Island of
+  Heligoland and the territory of Büsingen" (Germany), "except Ceuta and
+  Melilla" (Spain), "except the French overseas countries and territories to
+  which the provisions of Part Four of the TFEU apply", "except the
+  municipality of Livigno" (Italy), "the Kingdom of the Netherlands in
+  Europe"; Article 4(2) adds Monaco and the Sovereign Base Areas of Akrotiri
+  and Dhekelia. The Canary Islands, the Åland Islands, Mount Athos and the
+  French outermost regions are inside it; they are outside the VAT
+  territory, which is not this question. The consolidated text still lists
+  the United Kingdom with the Channel Islands and the Isle of Man, from
+  before its withdrawal; what remains of that entry is Northern Ireland,
+  under the Windsor Framework, and HMRC's guidance is what says so in
+  practice (below).
+* Article 127(1): "Goods brought into the customs territory of the Union
+  shall be covered by an entry summary declaration"; 127(2)(a) waives it
+  "for means of transport and the goods carried thereon only passing through
+  the territorial waters or the airspace of the customs territory of the
+  Union without a stop within that territory"; 127(4): "The entry summary
+  declaration shall be lodged by the carrier." It is lodged in ICS2 (Import
+  Control System 2): "If you are transporting goods (including postal
+  consignments) into or via the EU, Northern Ireland, Norway, or Switzerland
+  by road, you will have to submit new safety and security data prior to the
+  goods' arrival" — DG TAXUD, the road notice of December 2024, the last
+  mode to come in. Norway and Switzerland: their security agreements with
   the Union take the ENS off what moves between them and the Union and put
   it on what enters from elsewhere — hence one area of four members here.
+* HMRC, "Making an entry summary declaration": "You need to make an entry
+  summary declaration if you're transporting goods into: Great Britain
+  (England, Scotland and Wales); Northern Ireland, from Great Britain or
+  countries outside the EU." Into Great Britain it goes into the Safety and
+  Security GB service, into Northern Ireland into ICS2; "As the carrier who
+  is moving the goods, you are responsible for making sure the entry summary
+  declaration is submitted." "Some goods have a waiver from the requirement
+  ... This includes qualifying Northern Ireland goods being imported into
+  Great Britain." So Great Britain is a fifth area of its own: everything
+  brought into it asks for an ENS, from the Union included.
 * 15 CFR Part 30 (the Foreign Trade Regulations), § 30.2(a)(1): Electronic
-  Export Information is filed in AES for exports from the United States,
-  Puerto Rico, the U.S. Virgin Islands and the foreign-trade zones to foreign
-  countries, between Puerto Rico and the United States, and to the U.S.
-  Virgin Islands from the United States or Puerto Rico. § 30.36 exempts
-  shipments originating in the United States whose country of ultimate
-  destination is Canada, with exceptions — goods for storage in Canada that
-  are destined elsewhere, goods moving through Canada to a third country,
-  goods needing a licence among them. § 30.37(a) exempts a commodity line
-  valued at USD 2,500 or less per Schedule B number, unless a licence or
-  another named condition applies.
+  Export Information is filed in AES for shipments "(i) To foreign countries
+  or areas ... from any of the following: (A) The United States, including
+  the 50 states and the District of Columbia. (B) Puerto Rico. (C) FTZs
+  located in the United States or Puerto Rico. (D) The U.S. Virgin Islands.
+  (ii) Between any of the following nonforeign areas ...: (A) To Puerto Rico
+  from the United States. (B) To the United States from Puerto Rico. (C) To
+  the U.S. Virgin Islands from the United States or Puerto Rico." § 30.2(d)
+  excludes "(1) Goods moving in-transit through the United States, Puerto
+  Rico, or the U.S. Virgin Islands from one foreign country or area to
+  another" and "(2) Except Puerto Rico and the U.S. Virgin Islands, goods
+  shipped from the U.S. territories and goods shipped between the United
+  States and these territories". § 30.36(a): "shipments originating in the
+  United States where the country of ultimate destination is Canada are
+  exempt", not when "(1) Sent for storage in Canada, but ultimately destined
+  for third countries" or "(2) Exports moving from the United States through
+  Canada to a third destination"; and § 30.2(a)(1)(iv) files "regardless of
+  value" whatever needs a licence. Because (a)(1)(i)(A) reads "the United
+  States" as the 50 states and the District of Columbia and names Puerto
+  Rico and the Virgin Islands beside it, a shipment from those two to Canada
+  is not "originating in the United States" and is filed. § 30.37(a) exempts
+  commodities "classified under an individual Schedule B number or HTSUSA
+  commodity classification code" whose value "is $2,500 or less", per
+  number, "regardless of the total shipment value".
 
 What it does not do. It does not know the value of the goods, so it cannot
 apply § 30.37(a); it does not know whether a Canadian delivery is storage for
-a third country; it does not know a transit. Each verdict therefore names
-its ground and stops there. And a route the application cannot read — free
-text with no country in it — gets no verdict rather than a guess: the
-question then stays with the person, as it did before.
+a third country, nor whether goods from Northern Ireland qualify for the
+waiver; it does not know a transit or a stop on the way. Each verdict
+therefore names its ground and stops there. And a route the application
+cannot read — free text with no country in it — gets no verdict rather than
+a guess: the question then stays with the person, as it did before.
 
 How a route is read. The route fields are text. Picked from the location
 database they read ``Rotterdam (NLRTM), ZH, NL``; picked from the address
@@ -95,6 +131,11 @@ ENS_PARTNERS = frozenset({"NO", "CH"})
 
 #: § 30.2(a)(1): the places an export is filed from.
 US_SIDE = frozenset({"US", "PR", "VI"})
+
+#: § 30.2(d)(2): the other U.S. territories, from which and to which from
+#: the United States nothing is filed. Guam, American Samoa, the Northern
+#: Mariana Islands and the minor outlying islands, by their ISO codes.
+US_TERRITORIES = frozenset({"GU", "AS", "MP", "UM"})
 
 #: Places Article 4(1) takes out of a Member State's customs territory,
 #: by UN/LOCODE where one exists and by name in any case.
@@ -182,6 +223,9 @@ COUNTRY_NAMES: dict[str, tuple[str, ...]] = {
            "Verenigde Staten", "Vereinigte Staaten", "États-Unis", "Etats-Unis"),
     "CA": ("Canada", "Kanada"),
     "PR": ("Puerto Rico",),
+    "GU": ("Guam",),
+    "AS": ("American Samoa", "Amerikaans-Samoa", "Amerikanisch-Samoa", "Samoa américaines"),
+    "MP": ("Northern Mariana Islands", "Noordelijke Marianen", "Nördliche Marianen", "Îles Mariannes du Nord"),
     "VI": ("U.S. Virgin Islands", "US Virgin Islands", "United States Virgin Islands",
            "Virgin Islands (U.S.)", "Amerikaanse Maagdeneilanden",
            "Amerikanische Jungferninseln", "Îles Vierges américaines",
@@ -225,6 +269,11 @@ class Place:
         if self.country in EU_CUSTOMS_TERRITORY or self.country in ENS_PARTNERS:
             return True
         return self.country == "GB" and self.northern_ireland
+
+    @property
+    def great_britain(self) -> bool:
+        """England, Scotland and Wales: the area HMRC's S&S GB service covers."""
+        return self.country == "GB" and not self.northern_ireland
 
 
 def _from_code(code: str, northern_ireland: bool) -> Place | None:
@@ -314,8 +363,16 @@ def _ens(origin: Place | None, destination: Place | None) -> tuple[str, str]:
         return "yes", "ens_entering"
     if origin.in_ens_area and destination.in_ens_area:
         return "no", "ens_within_area"
+    # Great Britain asks for its own, in S&S GB, from anywhere — the Union
+    # included. Goods from Northern Ireland may qualify for HMRC's waiver.
+    if destination.great_britain and not origin.great_britain:
+        if origin.country == "GB":
+            return "exempt", "ens_uk_qualifying_ni"
+        return "yes", "ens_uk_entering"
     if origin.in_ens_area:
         return "no", "ens_leaving"
+    if origin.country == destination.country and origin.northern_ireland == destination.northern_ireland:
+        return "no", "ens_domestic"
     return "no", "ens_outside"
 
 
@@ -323,15 +380,18 @@ def _aes(origin: Place | None, destination: Place | None) -> tuple[str, str]:
     if origin is None or destination is None:
         return "unknown", "aes_unknown"
     start, end = origin.country, destination.country
+    if start in US_TERRITORIES or (start == "US" and end in US_TERRITORIES):
+        return "no", "aes_territory"
     if start not in US_SIDE:
         return "no", "aes_not_us"
     if start == end:
         return "no", "aes_domestic"
-    if end == "CA":
-        # § 30.36 speaks of shipments originating in the United States; whether
-        # that reaches a shipment from Puerto Rico or the Virgin Islands is
-        # not something this module has read, so it does not say.
-        return ("exempt", "aes_canada") if start == "US" else ("unknown", "aes_unresolved")
+    if end == "CA" and start == "US":
+        # § 30.36 reads "originating in the United States", and § 30.2(a)(1)
+        # reads the United States as the 50 states and the District of
+        # Columbia with Puerto Rico and the Virgin Islands named beside it —
+        # so from those two, Canada is an export like any other.
+        return "exempt", "aes_canada"
     if start == "VI" and end in ("US", "PR"):
         # Not among the movements § 30.2(a)(1) names.
         return "no", "aes_not_named"

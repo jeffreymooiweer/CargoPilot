@@ -172,8 +172,11 @@ This is where you enter the shipment **once**:
   Information filing, which belongs on the transport document). Once the route is filled
   in, each field says whether it **applies on this route**, does not, or is exempt — and
   on what ground: goods from China discharged in Rotterdam enter the ICS2 area (the EU
-  customs territory with Northern Ireland, Norway and Switzerland); a load from Detroit to
-  Toronto is exempt under 15 CFR 30.36; a movement within the area needs neither. A route
+  customs territory with Northern Ireland, Norway and Switzerland); goods into Great
+  Britain from anywhere, the EU included, need HMRC's own entry summary declaration in the
+  Safety and Security GB service; a load from Detroit to Toronto is exempt under 15 CFR
+  30.36, while the same load from San Juan is not; a movement within the area needs
+  neither. A route
   the application cannot place — free text without a country in it — gets no verdict, and
   the condition stays in the help text as before. An applicable reference left empty is
   a warning on the export, never a refusal. Both fields check their format on export, so

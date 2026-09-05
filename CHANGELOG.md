@@ -2,6 +2,39 @@
 
 All notable changes are documented here, following [Semantic Versioning](https://semver.org/).
 
+## [1.177.0] — 2026-09-05
+
+### The safety adviser's annual report
+
+ADR 1.8.3.3 obliges the safety adviser to draw up a yearly report to
+management on the undertaking's activities in the carriage of dangerous
+goods, kept five years and shown to the authorities on request. The
+provision prescribes the report and not its contents, so this release does
+two things and keeps them apart.
+
+It **counts what the history can prove**: over the kept shipments of one
+calendar year, within what the reader may see, the shipments with and
+without dangerous goods, per month, mode of transport, regulation and
+department; per class and per UN number with kilograms and litres kept apart
+and a quantity without a usable unit counted as unknown rather than guessed;
+what the 1.1.3.6 points count said about each shipment when it was kept; and
+which documents were issued. The **DGSA annual report** page on the shipments
+page shows the count, and **Download workbook** hands it over as an `.xlsx`,
+one sheet per table.
+
+It **leaves the adviser's judgement to the adviser**: the practices 1.8.3.3
+says the adviser must check — identification, equipment, training,
+emergency procedures, incident analysis, subcontractors, procedures,
+awareness, documents on board, packing and loading, the security plan of
+1.10.3.2 — are listed as headings, in the workbook with an empty column
+beside them. A generated opinion on any of them would be worse than a blank.
+
+The duties are read in the official Dutch edition (ADR 2025 NL, 1.8.3.3);
+the English, German and French wordings in the report are translations of
+that reading, which the file says. The report exists only beside the
+history, and a shipment that was never kept is not in it — the report says
+that too.
+
 ## [1.176.0] — 2026-09-05
 
 ### The address book, and a kept shipment as a template

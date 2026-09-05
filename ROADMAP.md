@@ -162,8 +162,11 @@ What the storage still has to unlock:
   kept shipments the viewer may see straight from the history, beside the file route.
   Whether the trip itself — the judgement over the whole load — is kept as well is still
   an open question, not a decision already taken.
-- **The DGSA annual report**, which is a statistic over the history and needs it to
-  exist.
+- ~~**The DGSA annual report.**~~ Shipped in v1.177.0: the statistical half of ADR
+  1.8.3.3 counted over the kept shipments of a year — per month, mode, regulation,
+  department, class and UN number, with the 1.1.3.6 outcome per shipment — as a page
+  and as a workbook; the adviser's duties from the same paragraph as headings with
+  nothing filled in.
 
 #### Turning history off destroys data, and says so first
 
@@ -256,9 +259,8 @@ none is committed until it is planned against that brief.
   2027), which needs the published model read first, and the per-party signature flow.
   CargoPilot does not become a certified platform; it becomes trivially connectable
   to one.
-- **DGSA annual report.** The statistical half of the ADR 1.8.3 adviser's report,
-  generated from stored shipments — so it exists only with the history switched on,
-  because without stored shipments there is nothing to report.
+- ~~**DGSA annual report.**~~ Shipped in v1.177.0, see above; it exists only with the
+  history switched on, because without stored shipments there is nothing to report.
 - **Own articles library.** The company's article codes linked to UN number,
   technical name and default packaging — entered once, reused every shipment; designed
   together with the address book.

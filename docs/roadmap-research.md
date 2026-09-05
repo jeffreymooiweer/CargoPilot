@@ -78,12 +78,15 @@ report**, kept five years ([overview](https://app.croneri.co.uk/feature-articles
 half — what was shipped, which classes, which quantities, which incidents — is exactly
 what a shipments store can aggregate.
 
-**Dependency, hard:** this requires the shipments page and therefore the privacy
-levels. Without stored shipments there is nothing to report, and that is today's
-deliberate state. **When planned:** take the EASA template as the outline, generate
-the counts CargoPilot can prove, and leave the adviser's judgement sections
-(assessments, recommendations) as prompts — a generated opinion would be worse than a
-blank.
+**Dependency, hard:** this requires the shipments page and therefore the history.
+Without stored shipments there is nothing to report. **Shipped in v1.177.0** on that
+basis: the counts CargoPilot can prove (shipments per month, mode, regulation,
+department, class and UN number, kilograms and litres apart, the 1.1.3.6 outcome per
+shipment, the documents issued) as a page and a workbook, and the adviser's duties of
+1.8.3.3 — read in the official Dutch edition — as headings with nothing filled in. The
+BADGP and UNECE sites were not reachable from the build environment when it was made,
+so the outline follows the paragraph itself rather than the EASA template; a generated
+opinion would be worse than a blank, and the blank is the deliberate part.
 
 ## Own articles library (new)
 

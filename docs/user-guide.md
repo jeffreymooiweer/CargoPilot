@@ -314,6 +314,17 @@ current version; **Remove** takes it out of the history after a confirmation. Th
 **Structured export (JSON)** is the same file the export step offers, and it is what the
 groupage page accepts.
 
+The **DGSA annual report** button on the shipments page draws the safety adviser's
+yearly report of ADR 1.8.3.3 over the kept shipments of one calendar year, within what
+you may see: how many shipments, with and without dangerous goods, per month, mode,
+regulation and department, per class and per UN number with kilograms and litres kept
+apart, what the 1.1.3.6 points count said about each shipment, and which documents were
+issued. The duties the ADR gives the adviser are listed as headings with nothing filled
+in: that judgement is the adviser's, not the application's. **Download workbook** hands
+over the same report as an `.xlsx` with an empty column beside the duties, which is the
+thing to keep — for five years, the ADR says. A shipment that was never kept is not in
+the count, and the report says so.
+
 Who sees which is a matter of **departments**. An administrator sees every kept shipment
 and gets a department filter on the page; everyone else sees their own department's
 shipments, and someone without a department sees the ones that belong to none. An

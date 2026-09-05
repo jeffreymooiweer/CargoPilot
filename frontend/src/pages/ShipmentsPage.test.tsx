@@ -44,17 +44,18 @@ const api = vi.hoisted(() => ({
   shipment: vi.fn(),
   forgetShipment: vi.fn(),
   shipmentDocuments: vi.fn(),
+  departments: vi.fn(),
   shipmentExportUrl: (id: number) => `/api/shipments/${id}/export.json`,
 }));
 vi.mock("../api/client", () => ({ api }));
 
-function renderAt(path: string) {
+function renderAt(path: string, user?: { id: number; username: string; email: string; role: string; active: boolean }) {
   return render(
     <ToastProvider>
       <MemoryRouter initialEntries={[path]}>
         <Routes>
-          <Route path="/shipments" element={<ShipmentsPage />} />
-          <Route path="/shipments/:id" element={<ShipmentsPage />} />
+          <Route path="/shipments" element={<ShipmentsPage user={user} />} />
+          <Route path="/shipments/:id" element={<ShipmentsPage user={user} />} />
           <Route path="/wizard/:modality" element={<p>wizard</p>} />
         </Routes>
       </MemoryRouter>
@@ -72,6 +73,7 @@ beforeEach(() => {
     export: { format: "cargopilot.shipment", documents: ["cmr"] },
   }));
   api.forgetShipment.mockResolvedValue({ ok: true });
+  api.departments.mockResolvedValue([{ id: 1, name: "Sales", users: 2, shipments: 5 }]);
 });
 
 describe("de zendingenpagina", () => {
@@ -124,6 +126,26 @@ describe("de zendingenpagina", () => {
     expect(await screen.findByRole("heading", { name: "history.noReference" })).toBeInTheDocument();
     expect(screen.queryByRole("button", { name: "history.documents" })).toBeNull();
     expect(screen.getByText("history.documentsNone")).toBeInTheDocument();
+  });
+
+  it("geeft alleen een beheerder het afdelingsfilter, en stuurt de keuze mee", async () => {
+    // Anybody else sees their own department whatever they ask for, so a
+    // filter would only promise a choice the server does not offer them.
+    renderAt("/shipments");
+    await screen.findAllByText("CP-2026-100");
+    expect(screen.queryByLabelText("departments.userDepartment")).toBeNull();
+    expect(api.departments).not.toHaveBeenCalled();
+
+    renderAt("/shipments", { id: 1, username: "root", email: "r@example.com", role: "admin", active: true });
+    const filter = await screen.findByLabelText("departments.userDepartment");
+    await userEvent.selectOptions(filter, "none");
+    await waitFor(() =>
+      expect(api.shipments).toHaveBeenLastCalledWith(expect.objectContaining({ department: "none" })),
+    );
+    await userEvent.selectOptions(filter, "1");
+    await waitFor(() =>
+      expect(api.shipments).toHaveBeenLastCalledWith(expect.objectContaining({ department: "1" })),
+    );
   });
 
   it("opent een zending in de wizard van haar eigen modaliteit", () => {

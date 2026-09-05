@@ -151,8 +151,9 @@ than the paper that was signed.
 What the storage still has to unlock:
 
 - ~~**A shipments page.**~~ Shipped, above.
-- **Departments.** Group users so the page shows the department's work rather than the
-  whole organisation's.
+- ~~**Departments.**~~ Shipped in v1.174.0: a user sees their own department's kept
+  shipments, a user without one sees the unassigned, an administrator sees all with a
+  filter; managed on the users page.
 - **An address book and templates.** The same five customers, entered once. A product
   decision, not a technical one: it earns its place when the same consignment is drawn
   up repeatedly.

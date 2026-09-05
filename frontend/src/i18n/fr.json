@@ -990,5 +990,24 @@
     "previous": "Précédent",
     "next": "Suivant",
     "page": "Page {{page}} sur {{pages}}"
+  },
+  "departments": {
+    "title": "Services",
+    "intro": "Un service détermine qui voit quelles expéditions conservées : un utilisateur voit celles de son service, un utilisateur sans service voit celles non attribuées, un administrateur voit tout. Sans services, tout le monde voit tout.",
+    "name": "Nom du service",
+    "add": "Ajouter un service",
+    "rename": "Renommer",
+    "save": "Enregistrer",
+    "cancel": "Annuler",
+    "remove": "Supprimer",
+    "counts": "{{users}} utilisateurs · {{shipments}} expéditions",
+    "empty": "Aucun service pour l'instant.",
+    "confirmRemove": "Supprimer {{name}} ? Ses utilisateurs et expéditions continuent d'exister ; ils n'appartiennent simplement plus à aucun service.",
+    "removed": "Service supprimé.",
+    "saved": "Service enregistré.",
+    "userDepartment": "Service",
+    "none": "Aucun service",
+    "all": "Tous les services",
+    "unassigned": "Sans service"
   }
 }

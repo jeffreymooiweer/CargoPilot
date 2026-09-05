@@ -19,6 +19,7 @@ from app.api.routes.units import router as units_router
 from app.api.routes.equipment import equipment_router
 from app.api.routes.import_files import router as import_files_router
 from app.api.routes.dangerous_goods import router as dangerous_goods_router
+from app.api.routes.departments import router as departments_router
 from app.api.routes.documents import mail_router as documents_mail_router
 from app.api.routes.documents import router as documents_router
 from app.api.routes.geo import router as geo_router
@@ -77,7 +78,7 @@ ACCOUNT_ROUTERS = (
 #: The history: what only an organisation application that keeps its
 #: shipments serves. Not mounted without CARGOPILOT_HISTORY=true, so on every
 #: other installation "nothing is kept" is a matter of which addresses exist.
-HISTORY_ROUTERS = (history_router,)
+HISTORY_ROUTERS = (history_router, departments_router)
 
 
 def create_app() -> FastAPI:

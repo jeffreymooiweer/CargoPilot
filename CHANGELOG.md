@@ -2,6 +2,41 @@
 
 All notable changes are documented here, following [Semantic Versioning](https://semver.org/).
 
+## [1.174.0] — 2026-09-05
+
+### Departments: who sees whose kept shipments
+
+The shipment history of v1.173.0 showed every kept shipment to every signed-in
+user. That is right for a small office and wrong for an organisation where
+sales, the yard and the dangerous goods desk each draw up their own. So:
+**departments**, managed on the users page beside the accounts.
+
+**The rule, in one place.** An administrator sees every kept shipment and
+gets a department filter on the shipments page — a department, or the
+unassigned. Anybody else sees the shipments of their own department, and a
+user without a department sees the ones nobody's department claims. An
+organisation that never makes a department therefore keeps the plain rule,
+everybody seeing everything, without anyone setting anything. The rule lives
+in `services/departments.py` and both the list and the detail routes go
+through it; a test asserts they agree, so the list can never show a row the
+detail refuses.
+
+**Not there, rather than forbidden.** A shipment another department kept
+answers 404 for a user who may not see it — not 403, which would tell them
+it exists.
+
+**A shipment keeps its keeper's department.** Copied onto the row at the
+moment of keeping and never moved: somebody moving departments does not take
+last year's shipments along, and keeping a shipment again leaves it where it
+was. Removing a department leaves its people and its shipments without one
+rather than deleting either; the dialog says so, because "remove" beside a
+count of shipments reads as if the shipments go too.
+
+**Schema step 2.** The departments table and the column on users and on
+shipments, added by the runner of v1.173.0 to an existing database and
+stamped on a fresh one. `PATCH /api/users/{id}` accepts `department_id`, with
+null taking somebody out of theirs and an absent key leaving it alone.
+
 ## [1.173.1] — 2026-09-05
 
 ### A long toast puts its action underneath

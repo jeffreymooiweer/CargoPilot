@@ -990,5 +990,24 @@
     "previous": "Zurück",
     "next": "Weiter",
     "page": "Seite {{page}} von {{pages}}"
+  },
+  "departments": {
+    "title": "Abteilungen",
+    "intro": "Eine Abteilung bestimmt, wer wessen aufbewahrte Sendungen sieht: ein Benutzer sieht die der eigenen Abteilung, ein Benutzer ohne Abteilung die nicht zugeordneten, ein Administrator alle. Ohne Abteilungen sieht jeder alles.",
+    "name": "Name der Abteilung",
+    "add": "Abteilung hinzufügen",
+    "rename": "Umbenennen",
+    "save": "Speichern",
+    "cancel": "Abbrechen",
+    "remove": "Entfernen",
+    "counts": "{{users}} Benutzer · {{shipments}} Sendungen",
+    "empty": "Noch keine Abteilungen.",
+    "confirmRemove": "{{name}} entfernen? Benutzer und Sendungen bleiben bestehen; sie gehören nur keiner Abteilung mehr an.",
+    "removed": "Abteilung entfernt.",
+    "saved": "Abteilung gespeichert.",
+    "userDepartment": "Abteilung",
+    "none": "Keine Abteilung",
+    "all": "Alle Abteilungen",
+    "unassigned": "Ohne Abteilung"
   }
 }

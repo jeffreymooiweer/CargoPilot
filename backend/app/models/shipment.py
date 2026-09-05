@@ -29,7 +29,7 @@ from sqlalchemy import Boolean, DateTime, ForeignKey, Integer, String, Text, fun
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.core.database import Base
-from app.models.user import User
+from app.models.user import Department, User
 
 
 class Shipment(Base):
@@ -47,6 +47,11 @@ class Shipment(Base):
     has_dangerous_goods: Mapped[bool] = mapped_column(Boolean, default=False)
     created_by_id: Mapped[int | None] = mapped_column(
         ForeignKey("users.id", ondelete="SET NULL"), nullable=True)
+    #: The keeper's department at the moment of keeping: whose work this is.
+    #: Copied rather than joined through the user, because somebody moving
+    #: departments must not take last year's shipments along.
+    department_id: Mapped[int | None] = mapped_column(
+        ForeignKey("departments.id", ondelete="SET NULL"), nullable=True, index=True)
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), server_default=func.now(), index=True)
     updated_at: Mapped[datetime] = mapped_column(
@@ -56,3 +61,4 @@ class Shipment(Base):
     export_json: Mapped[str] = mapped_column(Text, default="{}")
 
     creator: Mapped[User | None] = relationship()
+    department: Mapped[Department | None] = relationship()

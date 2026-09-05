@@ -22,14 +22,20 @@ from app.models.shipment import Shipment
 from app.models.user import User
 from app.schemas import DocumentBundleRequest
 from app.schemas.history import ShipmentDetail, ShipmentIn, ShipmentPage, ShipmentSummary
-from app.services import history
+from app.services import departments, history
 
 router = APIRouter(prefix="/shipments", tags=["shipments"])
 
 
-def _record(shipment_id: int, db: Session) -> Shipment:
+def _record(shipment_id: int, db: Session, viewer: User) -> Shipment:
+    """The shipment, if it exists and ``viewer`` may see it.
+
+    One answer for both: a shipment another department kept is, for this
+    viewer, not there — not "there but forbidden", which would tell them
+    it exists.
+    """
     record = db.get(Shipment, shipment_id)
-    if record is None:
+    if record is None or not departments.may_see(record, viewer):
         raise HTTPException(status_code=404, detail="No such shipment")
     return record
 
@@ -42,10 +48,12 @@ def list_shipments(
     date_to: datetime | None = None,
     page: int = Query(default=1, ge=1),
     per_page: int = Query(default=25, ge=1, le=history.PER_PAGE_MAX),
+    department: str = Query(default="", max_length=16),
     user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
 ):
-    rows, total = history.search(db, q, modality, date_from, date_to, page, per_page)
+    rows, total = history.search(db, user, q, modality, date_from, date_to, page, per_page,
+                                 department=department)
     return ShipmentPage(items=[history.summary(r) for r in rows],
                         total=total, page=page, per_page=per_page)
 
@@ -63,7 +71,7 @@ def keep_shipment(payload: ShipmentIn, user: User = Depends(get_current_user),
 def update_shipment(shipment_id: int, payload: ShipmentIn,
                     user: User = Depends(get_current_user),
                     db: Session = Depends(get_db)):
-    record = _record(shipment_id, db)
+    record = _record(shipment_id, db, user)
     try:
         return history.summary(history.keep(db, user, payload, existing=record))
     except history.RecordTooLarge as exc:
@@ -73,14 +81,14 @@ def update_shipment(shipment_id: int, payload: ShipmentIn,
 @router.get("/{shipment_id}", response_model=ShipmentDetail)
 def get_shipment(shipment_id: int, user: User = Depends(get_current_user),
                  db: Session = Depends(get_db)):
-    return history.detail(_record(shipment_id, db))
+    return history.detail(_record(shipment_id, db, user))
 
 
 @router.get("/{shipment_id}/export.json")
 def shipment_export(shipment_id: int, user: User = Depends(get_current_user),
                     db: Session = Depends(get_db)):
     """The structured export as it was kept — the record, not a re-render."""
-    record = _record(shipment_id, db)
+    record = _record(shipment_id, db, user)
     name = f"cargopilot-shipment-{record.reference or record.id}.json"
     return JSONResponse(content=history.detail(record).export,
                         headers={"Content-Disposition": f'attachment; filename="{name}"'})
@@ -99,7 +107,7 @@ def shipment_documents(request: Request, shipment_id: int,
     A shipment kept without a ready document has nothing to re-render, and
     says so rather than handing over an empty archive.
     """
-    record = _record(shipment_id, db)
+    record = _record(shipment_id, db, user)
     bundle = history.bundle_of(record)
     if not bundle or not bundle.get("documents"):
         raise HTTPException(status_code=404,
@@ -114,5 +122,5 @@ def shipment_documents(request: Request, shipment_id: int,
 @router.delete("/{shipment_id}")
 def forget_shipment(shipment_id: int, user: User = Depends(get_current_user),
                     db: Session = Depends(get_db)):
-    history.forget(db, _record(shipment_id, db))
+    history.forget(db, _record(shipment_id, db, user))
     return {"ok": True}

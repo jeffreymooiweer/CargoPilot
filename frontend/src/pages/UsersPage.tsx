@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { api, User } from "../api/client";
+import { api, Department, User } from "../api/client";
 import { usePreferences } from "../settings/preferences";
 import { useToast } from "../toast/ToastProvider";
 import ConfirmDialog from "../toast/ConfirmDialog";
@@ -33,6 +33,15 @@ export default function UsersPage({ user: self }: { user: User | null }) {
   const [users, setUsers] = useState<User[]>([]);
   const { publicSettings } = usePreferences();
   const canInvite = !!publicSettings?.mail_enabled;
+  // Departments exist only beside the shipment history: they decide who
+  // sees whose kept shipments, and mean nothing without them.
+  const historyOn = !!publicSettings?.history_enabled;
+  const [departments, setDepartments] = useState<Department[]>([]);
+  const loadDepartments = () =>
+    api.departments().then(setDepartments).catch(() => setDepartments([]));
+  useEffect(() => {
+    if (historyOn) void loadDepartments();
+  }, [historyOn]);
   const [form, setForm] = useState({ username: "", email: "", password: "", role: "user" });
   // With a mail server the invitation is the better default: the new
   // colleague picks their own password, so it never travels by chat or note.
@@ -206,6 +215,10 @@ export default function UsersPage({ user: self }: { user: User | null }) {
         </button>
       </form>
 
+      {historyOn && (
+        <DepartmentsPanel departments={departments} reload={loadDepartments} busy={busy} />
+      )}
+
       <div className="space-y-3">
         {users.map((u) => {
           const guard = guarded(u, self, users);
@@ -241,6 +254,30 @@ export default function UsersPage({ user: self }: { user: User | null }) {
                     <option value="admin">{t("users.roleAdmin")}</option>
                   </select>
                 </label>
+                {historyOn && (
+                  <label className="text-xs text-slate-500 dark:text-slate-400">
+                    {t("departments.userDepartment")}
+                    <select
+                      className={`${inputClass} mt-1 !w-auto py-1.5 text-sm`}
+                      value={u.department_id ?? ""}
+                      disabled={busy}
+                      onChange={(e) =>
+                        void patch(
+                          u.id,
+                          { department_id: e.target.value ? Number(e.target.value) : null },
+                          t("users.saved"),
+                        ).then(loadDepartments)
+                      }
+                    >
+                      <option value="">{t("departments.none")}</option>
+                      {departments.map((d) => (
+                        <option key={d.id} value={d.id}>
+                          {d.name}
+                        </option>
+                      ))}
+                    </select>
+                  </label>
+                )}
 
                 <div className="ml-auto flex flex-wrap gap-2">
                   <button
@@ -329,6 +366,155 @@ export default function UsersPage({ user: self }: { user: User | null }) {
           if (target) void run(() => api.clearTwoFactorFor(target.id), t("users.twoFactorCleared"));
         }}
         onCancel={() => setClearTwoFactorTarget(null)}
+      />
+    </div>
+  );
+}
+
+/**
+ * The departments themselves: add, rename, remove.
+ *
+ * Removing one leaves its people and shipments without a department rather
+ * than deleting either — the dialog says so, because "remove" beside a count
+ * of shipments reads as if the shipments go too.
+ */
+function DepartmentsPanel({
+  departments,
+  reload,
+  busy,
+}: {
+  departments: Department[];
+  reload: () => Promise<void>;
+  busy: boolean;
+}) {
+  const { t } = useTranslation();
+  const toast = useToast();
+  const [name, setName] = useState("");
+  const [renaming, setRenaming] = useState<Department | null>(null);
+  const [newName, setNewName] = useState("");
+  const [removing, setRemoving] = useState<Department | null>(null);
+  const [working, setWorking] = useState(false);
+
+  const act = async (work: () => Promise<unknown>, done: string) => {
+    setWorking(true);
+    try {
+      await work();
+      await reload();
+      toast.success(done);
+    } catch (e) {
+      toast.error(String(e));
+    } finally {
+      setWorking(false);
+    }
+  };
+
+  const add = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!name.trim()) return;
+    void act(() => api.createDepartment(name.trim()), t("departments.saved")).then(() => setName(""));
+  };
+
+  return (
+    <div className={`${panelClass} p-5 space-y-4`}>
+      <div>
+        <h3 className="text-sm font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">
+          {t("departments.title")}
+        </h3>
+        <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">{t("departments.intro")}</p>
+      </div>
+
+      {departments.length === 0 && (
+        <p className="text-sm text-slate-500 dark:text-slate-400">{t("departments.empty")}</p>
+      )}
+      <ul className="divide-y divide-slate-100 dark:divide-slate-800">
+        {departments.map((d) => (
+          <li key={d.id} className="flex flex-wrap items-center gap-2 py-2">
+            {renaming?.id === d.id ? (
+              <form
+                className="flex flex-1 flex-wrap items-center gap-2"
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  void act(() => api.renameDepartment(d.id, newName.trim()), t("departments.saved")).then(() =>
+                    setRenaming(null),
+                  );
+                }}
+              >
+                <input
+                  className={`${inputClass} !w-auto flex-1 py-1.5 text-sm`}
+                  value={newName}
+                  onChange={(e) => setNewName(e.target.value)}
+                  aria-label={t("departments.name")}
+                  autoFocus
+                />
+                <button className={buttonPrimary} disabled={working || !newName.trim()}>
+                  {t("departments.save")}
+                </button>
+                <button type="button" className={buttonSecondary} onClick={() => setRenaming(null)}>
+                  {t("departments.cancel")}
+                </button>
+              </form>
+            ) : (
+              <>
+                <span className="font-medium text-slate-900 dark:text-slate-100">{d.name}</span>
+                <span className="text-xs text-slate-500 dark:text-slate-400">
+                  {t("departments.counts", { users: d.users, shipments: d.shipments })}
+                </span>
+                <div className="ml-auto flex gap-2">
+                  <button
+                    type="button"
+                    className={buttonSecondary}
+                    disabled={busy || working}
+                    onClick={() => {
+                      setRenaming(d);
+                      setNewName(d.name);
+                    }}
+                  >
+                    {t("departments.rename")}
+                  </button>
+                  <button
+                    type="button"
+                    className={buttonSecondary}
+                    disabled={busy || working}
+                    onClick={() => setRemoving(d)}
+                  >
+                    {t("departments.remove")}
+                  </button>
+                </div>
+              </>
+            )}
+          </li>
+        ))}
+      </ul>
+
+      <form onSubmit={add} className="flex flex-wrap items-end gap-2">
+        <div className="min-w-[200px] flex-1">
+          <label className="text-xs text-slate-500 dark:text-slate-400" htmlFor="new-department">
+            {t("departments.name")}
+          </label>
+          <input
+            id="new-department"
+            className={`${inputClass} mt-1`}
+            value={name}
+            maxLength={80}
+            onChange={(e) => setName(e.target.value)}
+          />
+        </div>
+        <button className={buttonPrimary} disabled={working || !name.trim()}>
+          {t("departments.add")}
+        </button>
+      </form>
+
+      <ConfirmDialog
+        open={removing !== null}
+        title={t("departments.remove")}
+        body={removing ? t("departments.confirmRemove", { name: removing.name }) : ""}
+        confirmLabel={t("departments.remove")}
+        onConfirm={() => {
+          const target = removing;
+          setRemoving(null);
+          if (target) void act(() => api.deleteDepartment(target.id), t("departments.removed"));
+        }}
+        onCancel={() => setRemoving(null)}
       />
     </div>
   );

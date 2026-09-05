@@ -990,5 +990,24 @@
     "previous": "Previous",
     "next": "Next",
     "page": "Page {{page}} of {{pages}}"
+  },
+  "departments": {
+    "title": "Departments",
+    "intro": "A department decides who sees whose kept shipments: a user sees their own department's, a user without one sees the unassigned, an administrator sees all. Without departments everybody sees everything.",
+    "name": "Department name",
+    "add": "Add department",
+    "rename": "Rename",
+    "save": "Save",
+    "cancel": "Cancel",
+    "remove": "Remove",
+    "counts": "{{users}} users · {{shipments}} shipments",
+    "empty": "No departments yet.",
+    "confirmRemove": "Remove {{name}}? Its users and shipments keep existing; they just belong to no department any more.",
+    "removed": "Department removed.",
+    "saved": "Department saved.",
+    "userDepartment": "Department",
+    "none": "No department",
+    "all": "All departments",
+    "unassigned": "Without department"
   }
 }

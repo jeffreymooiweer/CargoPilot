@@ -8,7 +8,7 @@ from app.api.routes.auth import _public_base_url
 from app.core.database import get_db
 from app.core.deps import require_admin
 from app.core.security import hash_password
-from app.models.user import User
+from app.models.user import Department, User
 from app.schemas.users import (
     UserCreate,
     UserCreateResult,
@@ -149,6 +149,11 @@ def update_user(
         user.active = payload.active
     if payload.password is not None:
         user.password_hash = hash_password(payload.password)
+    if "department_id" in payload.model_fields_set:
+        # Null takes them out of their department; an id must be a real one.
+        if payload.department_id is not None and db.get(Department, payload.department_id) is None:
+            raise HTTPException(status_code=404, detail="No such department")
+        user.department_id = payload.department_id
     db.commit()
     db.refresh(user)
     return user

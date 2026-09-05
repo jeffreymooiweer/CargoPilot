@@ -271,6 +271,15 @@ export const api = {
     return request<ShipmentPage>(`/shipments${suffix ? `?${suffix}` : ""}`);
   },
   shipment: (id: number) => request<ShipmentDetail>(`/shipments/${id}`),
+  /** Departments exist only beside the history; everybody may read the
+   *  list, only an administrator changes it. */
+  departments: () => request<Department[]>("/departments"),
+  createDepartment: (name: string) =>
+    request<Department>("/departments", { method: "POST", body: JSON.stringify({ name }) }),
+  renameDepartment: (id: number, name: string) =>
+    request<{ id: number; name: string }>(`/departments/${id}`, { method: "PUT", body: JSON.stringify({ name }) }),
+  deleteDepartment: (id: number) =>
+    request<{ ok: boolean; users: number; shipments: number }>(`/departments/${id}`, { method: "DELETE" }),
   keepShipment: (payload: ShipmentIn) =>
     request<ShipmentSummary>("/shipments", { method: "POST", body: JSON.stringify(payload) }),
   updateShipment: (id: number, payload: ShipmentIn) =>
@@ -627,6 +636,17 @@ export interface User {
   email: string;
   role: string;
   active: boolean;
+  /** Whose kept shipments they see; null is the unassigned pool. Only
+   *  meaningful on an installation that keeps its shipments. */
+  department_id?: number | null;
+}
+
+/** A group of users whose kept shipments are theirs to see. */
+export interface Department {
+  id: number;
+  name: string;
+  users: number;
+  shipments: number;
 }
 
 /** Which application this installation runs as. See docs/privacy.md. */
@@ -647,6 +667,9 @@ export interface ShipmentSummary {
   /** Whether a bundle was kept, so the documents can be handed out again. */
   has_documents: boolean;
   created_by: string;
+  /** The keeper's department when it was kept; empty when none. */
+  department_id?: number | null;
+  department?: string;
   created_at: string;
   updated_at: string;
 }
@@ -687,6 +710,9 @@ export interface ShipmentQuery {
   date_to?: string;
   page?: number;
   per_page?: number;
+  /** An administrator's filter: a department id, or "none" for the
+   *  unassigned. Anybody else sees their own department whatever this says. */
+  department?: string;
 }
 
 /** What is on the door: the installation's name and the addresses of its

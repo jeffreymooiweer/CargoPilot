@@ -36,10 +36,16 @@ type Loaded = {
   shipmentId?: number;
 };
 
-/** The export's own name for the consignment, or the file's, or nothing. */
+/** The export's own name for the consignment, or the file's, or nothing.
+ *
+ *  The wizard's field is `reference`; `shipment_reference` is kept for
+ *  exports written by hand or by an older reader. Until v1.175.0 only the
+ *  latter was read, so every consignment picked from the history was named
+ *  after its consignor — three consignments from one shipper looked alike. */
 function nameOf(payload: Record<string, any>, fileName: string): string {
   const values = (payload?.consignment ?? {}) as Record<string, string>;
   return (
+    values.reference ||
     values.shipment_reference ||
     values.consignor_name ||
     values.consignee_name ||

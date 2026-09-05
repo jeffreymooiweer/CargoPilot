@@ -55,7 +55,9 @@ beforeEach(() => {
     export: {
       format: "cargopilot.shipment",
       regulations: ["ADR"],
-      consignment: { shipment_reference: "CP-2026-100" },
+      // The wizard's own field name; a consignment is named by its reference,
+      // not by its consignor, or three from one shipper look alike.
+      consignment: { reference: "CP-2026-100", consignor_name: "Afzender BV" },
       dangerous_goods: [{ line_id: "1", products: [{ un_number: "1203" }, { un_number: "1263" }] }],
     },
   });

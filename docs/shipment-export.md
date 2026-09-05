@@ -87,23 +87,30 @@ answered.
   its first key.
 - **Not an eCMR.** An eCMR is a consignment note under the e-CMR Protocol, with
   a signature regime this file has nothing to say about.
-- **Not a mapping onto UN/CEFACT.** Naming a field as though it were the
+- **Not an eFTI view of itself, yet.** Naming a field as though it were the
   standard's while it carries something subtly different is the failure that
-  makes an integration silently wrong. The mapping is a separate exercise
-  against the published model.
+  makes an integration silently wrong. The mapping onto the eFTI common data
+  set is a separate page, [The eFTI mapping](efti-mapping.md), written against
+  the Annex of Delegated Regulation (EU) 2024/2024 element by element; the
+  file itself keeps its own keys until the gaps that page names are closed.
 
 ## What has to happen before it can be mapped
 
-Recorded here so the next person does not start from nothing:
+Done in v1.185.0 as far as reading goes — see [The eFTI mapping](efti-mapping.md)
+for what was read and what came out. What stays open, recorded here so the next
+person does not start from nothing:
 
-1. **Read the MMT-RDM.** The correspondence has to come from the published
-   model, not from field names that look alike.
+1. ~~**Read the MMT-RDM.**~~ Read as the eFTI common data set, the profile of it
+   the regulation adopted, from the Official Journal.
 2. **Decide what a "consignment" is.** CargoPilot's wizard produces one
-   consignment per run; MMT-RDM distinguishes consignment, consignment item and
-   transport movement, and the split has to be made deliberately.
+   consignment per run; the data set distinguishes the consignment, its items,
+   the used transport equipment and the transport movement, and the mapping
+   places one goods line as one consignment item and one container as one piece
+   of used equipment.
 3. **Settle the party model.** The application holds consignor, consignee,
-   carrier and notify party as free text; the standard identifies parties by
-   scheme and code.
+   carrier and notify party as free text; the data set holds an address in nine
+   named parts and identifies parties by scheme and code. This is the one
+   structural gap the mapping measures.
 4. **The signature question.** The per-party signature flow (consignor,
    carrier, consignee) is the second half of an eCMR, and qualified electronic
    signatures are a legal-weight question, not a technical one.

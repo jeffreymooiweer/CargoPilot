@@ -69,6 +69,15 @@ electronic signatures are a legal-weight question for the plan.
 (values + lines + dangerous goods + derived findings), documented as an API response.
 Everything else — MMT-RDM mapping, eCMR pilots, platform connectors — builds on that.
 
+**Shipped:** the export in v1.161.0; the mapping in v1.185.0, read from the Annex of
+Commission Delegated Regulation (EU) 2024/2024 (the eFTI common data set and the subsets
+per provision, supplied as the Official Journal PDF in the reference folder) rather than
+from the MMT-RDM itself — the regulation adopted a profile of that model, and the profile
+is what a platform speaks. See [The eFTI mapping](efti-mapping.md) for the numbers: the
+dangerous goods subsets are answered for the substance data and the derived findings,
+the road subset is not answered for the address elements, because the application holds
+an address as one block of text.
+
 ## DGSA annual report (new)
 
 ADR 1.8.3 obliges every undertaking that consigns or carries dangerous goods to

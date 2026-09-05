@@ -39,6 +39,7 @@ from app.services.documents import (
     validate_document,
 )
 from app.services import regulations
+from app.services.documents import brand
 from app.services.documents.un_card_store import card_path as un_card_path
 from app.services.documents.avc_form import fill_avc_waybill, has_avc_template
 from app.services.documents.carrier_confirmation import parse_carrier_confirmation
@@ -316,6 +317,7 @@ def export(
     if errors:
         raise HTTPException(status_code=422, detail={"errors": errors})
 
+    brand.use(db)
     signature_png = _decoded_signature(payload.signature_image)
     ref = datetime.now().strftime("%Y%m%d%H%M%S")
     out_path = _render_export(document, payload, signature_png,
@@ -340,6 +342,7 @@ def build_bundle(payload: DocumentBundleRequest, db: Session) -> tuple[Path, str
     if not payload.documents:
         raise HTTPException(status_code=422, detail="Nothing to bundle")
 
+    brand.use(db)
     signature_png = _decoded_signature(payload.signature_image)
     ref = datetime.now().strftime("%Y%m%d%H%M%S")
     notes: list[str] = []

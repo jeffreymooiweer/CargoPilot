@@ -2,6 +2,27 @@
 
 All notable changes are documented here, following [Semantic Versioning](https://semver.org/).
 
+## [1.178.0] — 2026-09-05
+
+### The installation's name and logo on every document
+
+Every document CargoPilot draws itself — the packing list, the delivery
+note, the placarding sheet, the label sheet, the equipment list, the stowage
+plan, the on-board pack, the packing certificate and the rest — is now
+printed on the installation's paper: the brand name and the uploaded logo in
+the header of every page, the name and the page number in the foot, and the
+"generated with" line naming the installation rather than the software.
+Where no brand is set, the documents carry CargoPilot's own name and logo,
+as before. The disclaimer keeps naming CargoPilot: the licence is the
+software's, not the installation's.
+
+The official forms — CMR, CIM, AVC — are somebody else's paper, filled in
+and left alone.
+
+One page frame serves every renderer, and the brand is resolved once per
+request rather than handed from function to function, so a renderer added
+later cannot forget it.
+
 ## [1.177.0] — 2026-09-05
 
 ### The safety adviser's annual report

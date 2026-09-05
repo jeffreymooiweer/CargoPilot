@@ -115,7 +115,10 @@ and `modality-road.png` and so on for `road`, `rail`, `sea`, `inland`, `air` and
 because an SVG can carry script and an image route that serves one is a page that runs
 it. A logo may be 1 MB, a tile 3 MB. The open application has no screen to upload from:
 its operator places the same files in that folder and sets `BRAND_NAME`, and the door
-reads the same. The uploaded logo also travels in outgoing mail in place of CargoPilot's. `/api/health` reports `"mode"` on every
+reads the same. The uploaded logo also travels in outgoing mail in place of CargoPilot's,
+and since v1.178.0 the name and the logo are printed in the header and the foot of every
+document CargoPilot draws itself; the official forms are filled in, not rebranded.
+`/api/health` reports `"mode"` on every
 installation, so what an operator got is a line away, and [Privacy](privacy.md) says in
 one section what the open application means for its visitors.
 

@@ -15,20 +15,20 @@ from typing import Any
 from PIL import Image as PILImage
 from reportlab.lib import colors
 from reportlab.lib.enums import TA_LEFT
-from reportlab.lib.pagesizes import A4
 from reportlab.lib.styles import ParagraphStyle, getSampleStyleSheet
 from reportlab.lib.units import mm
 from reportlab.platypus import (
     Image,
     KeepTogether,
     Paragraph,
-    SimpleDocTemplate,
     Spacer,
     Table,
     TableStyle,
 )
 
 from app.core.languages import pick
+from app.services.documents import brand
+from app.services.documents.frame import branded_document
 from app.services.dg.autofill import adr_category_totals
 from app.services.documents.exporter import (
     _dg_headers,
@@ -178,13 +178,14 @@ def _signature_block(signature_png: bytes, styles: dict, lang: str) -> list:
     caption = pick(
         {
             "nl": "Handtekening afzender / verantwoordelijke persoon — digitaal geplaatst "
-                  "via CargoPilot op ",
+                  "via {brand} op ",
             "en": "Signature of consignor / responsible person — digitally placed via "
-                  "CargoPilot on ",
+                  "{brand} on ",
             "de": "Unterschrift des Absenders / der verantwortlichen Person — digital "
-                  "eingefügt über CargoPilot am ", "fr": "Signature de l'expéditeur ou de la personne responsable — apposée numériquement via CargoPilot le "},
+                  "eingefügt über {brand} am ", "fr": "Signature de l'expéditeur ou de la personne responsable — apposée numériquement via {brand} le "},
         lang,
-    ) + datetime.now().strftime("%Y-%m-%d")
+    )
+    caption = brand.fill(caption) + datetime.now().strftime("%Y-%m-%d")
     caption_table = Table(
         [[_p(caption, styles["note"])]],
         colWidths=[90 * mm],
@@ -210,11 +211,7 @@ def render_document_pdf(
     lang = _lang(language)
     styles = _styles()
     out_path = _output_path()
-    doc = SimpleDocTemplate(
-        str(out_path), pagesize=A4,
-        leftMargin=15 * mm, rightMargin=15 * mm, topMargin=14 * mm, bottomMargin=14 * mm,
-        title=_label(document, lang),
-    )
+    doc = branded_document(out_path, _label(document, lang), lang)
     width = doc.width
     story: list = []
 

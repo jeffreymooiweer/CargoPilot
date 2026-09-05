@@ -45,6 +45,7 @@ ACTIONS: dict[str, str] = {
     "user.deleted": "an account deleted (the name)",
     "user.two_factor_cleared": "an account's second factor cleared by an administrator",
     "settings.changed": "the installation's settings changed (which keys, never the values)",
+    "settings.history_discarded": "every kept shipment and trip deleted before switching the history off (the counts)",
     "shipment.kept": "a shipment kept (its reference)",
     "shipment.updated": "a kept shipment kept again (its reference)",
     "shipment.forgotten": "a kept shipment deleted (its reference)",

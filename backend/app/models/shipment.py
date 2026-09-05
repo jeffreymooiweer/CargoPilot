@@ -1,9 +1,10 @@
 """A shipment the organisation chose to keep.
 
-Only the organisation application with ``CARGOPILOT_HISTORY=true`` ever writes
-a row here; every other installation has this table empty, and the start-up
-check in ``services/history.py`` refuses to run an installation that has rows
-but no longer has the switch, so a kept shipment is never silently orphaned.
+Only the organisation application with *Keep shipments* switched on by an
+administrator ever writes a row here; every other installation has this
+table empty. Switching it off is refused while rows are here, and the
+start-up check in ``services/history.py`` switches it back on for a database
+that holds rows anyway, so a kept shipment is never silently orphaned.
 
 Three documents per row, each for a different reader:
 

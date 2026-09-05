@@ -3,11 +3,11 @@
 The judgement over a whole load — several consignments on one vehicle,
 assessed together under ADR 1.1.3.6, 7.5.2 and 3.4.13/3.4.14 — used to live
 only on the screen that asked for it. An installation that keeps its
-shipments (``CARGOPILOT_HISTORY=true``) may keep the trip as well: what was
-on the vehicle, the vehicle's permitted maximum mass, and what the check said
-at the time, with the editions it said it under. Every other installation has
-this table empty, and the start-up check in ``services/history.py`` refuses
-to run with rows the switch no longer covers, exactly as for shipments.
+shipments (*Keep shipments* under Administration) may keep the trip as well:
+what was on the vehicle, the vehicle's permitted maximum mass, and what the
+check said at the time, with the editions it said it under. Every other
+installation has this table empty, and switching the history off is refused
+while rows are here, exactly as for shipments.
 
 Two documents per row. ``consignments_json`` is the load as the planner
 assembled it — each consignment's name, its dangerous goods entries and,

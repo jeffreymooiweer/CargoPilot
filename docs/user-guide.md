@@ -331,8 +331,10 @@ Who sees which trips follows the same department rule as the shipments.
 ## Shipments: the history, where the installation keeps one
 
 By default CargoPilot keeps no shipments: once the papers are downloaded, the shipment is
-gone. An organisation can switch a history on at deploy time (`CARGOPILOT_HISTORY=true`,
-see [Configuration](configuration.md#shipment-history)), and then two things appear.
+gone. An administrator can switch a history on under **Settings → Administration → Keep
+shipments** (see [Configuration](configuration.md#shipment-history)), and then two things
+appear. Switching it off again is refused while kept shipments or trips exist: the screen
+names the counts and deletes them on confirmation, and only then goes off.
 
 On the export step, a **History** card. Downloading the documents keeps the shipment; the
 card's button keeps it before that, and says when it was last kept. A shipment that was

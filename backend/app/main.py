@@ -1,11 +1,12 @@
 import logging
 
-from fastapi import FastAPI, Request
+from fastapi import Depends, FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 from slowapi import _rate_limit_exceeded_handler
 from slowapi.errors import RateLimitExceeded
+from sqlalchemy.orm import Session
 
 from app.api.routes.addresses import router as addresses_router
 from app.api.routes.articles import router as articles_router
@@ -36,10 +37,13 @@ from app.api.routes.trips import router as trips_router
 from app.api.routes.un_cards_admin import router as un_cards_admin_router
 from app.api.routes.users import router as users_router
 from app.core.config import get_settings
+from app.core.database import get_db
+from app.core.deps import require_history
 from app.core.ratelimit import limiter
 from app.core.security_checks import apply_security_configuration
 from app.core.startup import init_app
 from app.services.regulatory_manifest import build_manifest, summary
+from app.services.settings_store import history_enabled
 from app.version import get_version
 
 logger = logging.getLogger(__name__)
@@ -84,8 +88,10 @@ ACCOUNT_ROUTERS = (
 )
 
 #: The history: what only an organisation application that keeps its
-#: shipments serves. Not mounted without CARGOPILOT_HISTORY=true, so on every
-#: other installation "nothing is kept" is a matter of which addresses exist.
+#: shipments serves. Mounted behind ``require_history``, which answers 404
+#: while the administrator's *Keep shipments* setting is off — so on every
+#: other installation "nothing is kept" is a matter of which addresses answer.
+#: Never mounted in the open application, which has no administrator.
 HISTORY_ROUTERS = (history_router, departments_router, addresses_router, articles_router,
                    trips_router)
 
@@ -122,7 +128,7 @@ def create_app() -> FastAPI:
         app.state.has_admin = has_admin
 
     @app.get("/api/health")
-    def health():
+    def health(db: Session = Depends(get_db)):
         return {
             "status": "ok",
             "app": settings.app_name,
@@ -134,7 +140,7 @@ def create_app() -> FastAPI:
             "mode": settings.mode,
             # And whether it keeps its shipments — the other half of what a
             # visitor may want to know before typing a customer's name.
-            "history": settings.history_enabled,
+            "history": history_enabled(db),
             # Which editions this installation uses, compactly. Whoever reports a
             # bug passes on straight away what their app computes with.
             "regulatory": summary(),
@@ -155,9 +161,8 @@ def create_app() -> FastAPI:
     if not settings.is_open:
         for router in ACCOUNT_ROUTERS:
             app.include_router(router, prefix="/api")
-    if settings.history_enabled:
         for router in HISTORY_ROUTERS:
-            app.include_router(router, prefix="/api")
+            app.include_router(router, prefix="/api", dependencies=[Depends(require_history)])
     # Public by design in both applications — see app/api/routes/cards.py.
     # It is off unless an administrator, or the environment, turns it on.
     app.include_router(cards_router, prefix="/api")

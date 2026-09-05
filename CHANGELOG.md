@@ -2,6 +2,35 @@
 
 All notable changes are documented here, following [Semantic Versioning](https://semver.org/).
 
+## [1.188.0] — 2026-09-05
+
+### The history switch is the administrator's
+
+`CARGOPILOT_HISTORY` dated from the three privacy levels; with two
+applications and one history it was the last feature switch that could only
+be flipped at deploy time. It is now a setting on the screen.
+
+- **Keep shipments (history)** under Settings, Administration, for
+  administrators of the organisation application. Off by default; on, the
+  shipments, trips and articles pages, the address book and the adviser's
+  report appear at once, without a restart — the history routes are mounted
+  and answer 404 while the setting is off, so "nothing is kept" is still a
+  matter of what answers.
+- **Off destroys data, and the screen says so first.** The server refuses to
+  save the switch off while kept shipments or trips exist; the screen fetches
+  the counts, asks, and on confirmation deletes them (the address book, the
+  articles and the reports stay) and then saves the switch. The audit log
+  gets `settings.history_discarded` with the counts.
+- **Never a hidden table.** A database that holds kept shipments while the
+  setting says off — an installation that dropped the variable from its
+  environment after upgrading — gets the setting switched back on at
+  start-up, with a line in the log. `CARGOPILOT_HISTORY_DISCARD` is gone;
+  nothing is deleted at start-up any more, ever.
+- **The variable is the starting value only**, like every other setting with
+  a screen counterpart: read until an administrator saves the Administration
+  screen, ignored from then on, and never in the open application. New
+  installations need not set it.
+
 ## [1.187.0] — 2026-09-05
 
 ### Groupage trips kept in the history

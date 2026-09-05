@@ -2,12 +2,15 @@
 
 What is pinned here, in the order it matters:
 
-1. **Without the switch the addresses do not exist.** Not 401, not 403 — 404,
+1. **With the switch off the addresses do not exist.** Not 401, not 403 — 404,
    like every other route the installation does not have. The open
    application ignores the switch altogether.
-2. **Switching the history off with shipments in the table refuses to
-   start**, names the count and the discard variable, and deletes nothing.
-   With the discard variable set it deletes them and says so.
+2. **The switch is the administrator's** — a setting on the screen, read on
+   every request — and off never hides data: switching it off with kept
+   shipments in the table is refused until they are deleted, on the screen,
+   after a confirmation that names the counts; and a database that holds
+   shipments while the setting says off gets the setting switched back on
+   at start-up.
 3. **The kept record is the structured export, built by the server** from
    the same parts the download uses, so the two cannot disagree — and the
    index columns a list filters on come out of it.
@@ -33,7 +36,6 @@ from app.core.config import get_settings
 from app.core.database import Base, get_db
 from app.core.deps import get_current_user
 from app.main import create_app
-from app.models.shipment import Shipment
 from app.models.user import User
 from app.services import history, settings_store
 from tests.test_export_bundle import CONSIGNMENT, DG, doc
@@ -53,7 +55,6 @@ def db(tmp_path, monkeypatch):
     monkeypatch.setenv("APP_ENV", "test")
     monkeypatch.setenv("CATALOG_AUTO_SYNC", "false")
     monkeypatch.delenv("CARGOPILOT_HISTORY", raising=False)
-    monkeypatch.delenv("CARGOPILOT_HISTORY_DISCARD", raising=False)
     get_settings.cache_clear()
     engine = create_engine(f"sqlite:///{data_dir / 'test.db'}",
                            connect_args={"check_same_thread": False})
@@ -78,6 +79,23 @@ def application(db, monkeypatch, **env):
 
 
 ADA = SimpleNamespace(id=1, username="ada", role="user", active=True)
+
+
+def switch_history(db, on: bool) -> None:
+    """What the administrator's toggle does: save the setting."""
+    current = settings_store.instance_settings(db)
+    settings_store.save_instance_settings(db, current.model_copy(update={"history_enabled": on}))
+
+
+def administrator(db, monkeypatch, **env):
+    """A client signed in as an administrator, for the settings routes."""
+    from app.core.deps import require_admin
+
+    db.get(User, 1).role = "admin"
+    db.commit()
+    client = application(db, monkeypatch, **env)
+    client.app.dependency_overrides[require_admin] = lambda: db.get(User, 1)
+    return client
 
 
 def shipment(**overrides) -> dict:
@@ -116,56 +134,91 @@ def test_with_the_switch_they_do(db, monkeypatch):
 
 
 def test_the_open_application_ignores_the_switch(db, monkeypatch):
+    # Both the legacy variable and a saved setting: the open application has
+    # no administrator and keeps nothing, whatever either says.
+    switch_history(db, True)
     with application(db, monkeypatch, CARGOPILOT_HISTORY="true",
                      CARGOPILOT_MODE="open") as client:
         assert client.get("/api/shipments").status_code == 404
         assert client.get("/api/health").json()["history"] is False
-    assert get_settings().history_enabled is False
+    assert settings_store.history_enabled(db) is False
 
 
-# --- 2. switching off refuses to start --------------------------------------------
+# --- 2. the switch is the administrator's, and off never hides data ---------------
 
 
-def test_shipments_left_behind_refuse_to_start_and_are_not_deleted(db, monkeypatch, caplog):
+def test_the_setting_switches_the_routes_on_and_off_without_a_restart(db, monkeypatch):
+    with application(db, monkeypatch) as client:
+        assert client.get("/api/shipments").status_code == 404
+        switch_history(db, True)
+        assert client.get("/api/shipments").status_code == 200
+        assert client.get("/api/settings/public").json()["history_enabled"] is True
+        switch_history(db, False)
+        assert client.get("/api/shipments").status_code == 404
+        assert client.get("/api/settings/public").json()["history_enabled"] is False
+
+
+def test_a_saved_setting_overrules_the_legacy_variable(db, monkeypatch):
+    switch_history(db, False)
+    with application(db, monkeypatch, CARGOPILOT_HISTORY="true") as client:
+        assert client.get("/api/shipments").status_code == 404
+        assert client.get("/api/health").json()["history"] is False
+
+
+def test_switching_off_with_kept_shipments_is_refused_until_they_are_deleted(db, monkeypatch):
+    switch_history(db, True)
+    with administrator(db, monkeypatch) as client:
+        assert client.post("/api/shipments", json=shipment()).status_code == 200
+        current = client.get("/api/settings/instance").json()
+        refused = client.put("/api/settings/instance", json={**current, "history_enabled": False})
+        assert refused.status_code == 409
+        assert "1 kept shipment(s)" in refused.json()["detail"]
+        assert settings_store.history_enabled(db) is True
+        assert history.count(db) == 1
+
+        assert client.get("/api/settings/instance/history").json() == {"shipments": 1, "trips": 0}
+        gone = client.post("/api/settings/instance/history/discard").json()
+        assert gone == {"ok": True, "shipments": 1, "trips": 0}
+        assert history.count(db) == 0
+        assert client.put("/api/settings/instance",
+                          json={**current, "history_enabled": False}).status_code == 200
+        assert client.get("/api/shipments").status_code == 404
+    from app.models.audit import AuditEvent
+    actions = [e.action for e in db.query(AuditEvent).order_by(AuditEvent.id)]
+    assert "settings.history_discarded" in actions
+    assert "settings.changed" in actions
+
+
+def test_switching_off_an_empty_history_needs_no_deletion(db, monkeypatch):
+    switch_history(db, True)
+    with administrator(db, monkeypatch) as client:
+        current = client.get("/api/settings/instance").json()
+        assert client.put("/api/settings/instance",
+                          json={**current, "history_enabled": False}).status_code == 200
+        assert client.get("/api/shipments").status_code == 404
+
+
+def test_start_up_switches_the_history_on_for_a_database_that_holds_shipments(db, monkeypatch, caplog):
+    """The upgrade from the deploy-time variable: an installation that dropped
+    it from its environment must not wake up with a hidden table."""
     monkeypatch.setenv("CARGOPILOT_HISTORY", "true")
     get_settings.cache_clear()
     history.keep(db, ADA, history.ShipmentIn(**shipment()))
-    history.keep(db, ADA, history.ShipmentIn(**shipment()))
-
-    monkeypatch.setenv("CARGOPILOT_HISTORY", "false")
+    monkeypatch.delenv("CARGOPILOT_HISTORY")
     get_settings.cache_clear()
-    with pytest.raises(SystemExit) as refused:
-        history.enforce_switch(db)
-    message = str(refused.value)
-    assert "2 kept shipment(s)" in message
-    assert "CARGOPILOT_HISTORY_DISCARD" in message
-    assert history.count(db) == 2
-
-
-def test_the_discard_variable_deletes_them_and_says_so(db, monkeypatch, caplog):
-    monkeypatch.setenv("CARGOPILOT_HISTORY", "true")
-    get_settings.cache_clear()
-    history.keep(db, ADA, history.ShipmentIn(**shipment()))
-
-    monkeypatch.setenv("CARGOPILOT_HISTORY", "false")
-    monkeypatch.setenv("CARGOPILOT_HISTORY_DISCARD", "true")
-    get_settings.cache_clear()
+    assert settings_store.history_enabled(db) is False
     with caplog.at_level(logging.WARNING):
-        history.enforce_switch(db)
-    assert history.count(db) == 0
-    assert "discarded 1 kept shipment(s)" in caplog.text
-
-
-def test_with_the_switch_on_nothing_is_touched(db, monkeypatch):
-    monkeypatch.setenv("CARGOPILOT_HISTORY", "true")
-    get_settings.cache_clear()
-    history.keep(db, ADA, history.ShipmentIn(**shipment()))
-    history.enforce_switch(db)
+        assert history.adopt_kept_data(db) is True
+    assert settings_store.history_enabled(db) is True
+    assert "1 kept shipment(s)" in caplog.text
     assert history.count(db) == 1
+    # And it does not keep saying so.
+    assert history.adopt_kept_data(db) is False
 
 
-def test_an_empty_table_never_refuses(db):
-    history.enforce_switch(db)
+def test_an_empty_table_is_left_alone(db):
+    assert history.adopt_kept_data(db) is False
+    assert settings_store.history_enabled(db) is False
 
 
 # --- 3. the kept record ---------------------------------------------------------
@@ -339,6 +392,12 @@ def test_a_failed_step_leaves_the_version_where_it_was(tmp_path, monkeypatch):
 
 def test_public_settings_say_whether_shipments_are_kept(db, monkeypatch):
     assert settings_store.public_settings(db).history_enabled is False
+    # The legacy variable is the starting value ...
     monkeypatch.setenv("CARGOPILOT_HISTORY", "true")
     get_settings.cache_clear()
+    assert settings_store.public_settings(db).history_enabled is True
+    # ... and the administrator's setting decides from then on.
+    switch_history(db, False)
+    assert settings_store.public_settings(db).history_enabled is False
+    switch_history(db, True)
     assert settings_store.public_settings(db).history_enabled is True

@@ -34,6 +34,8 @@ because those are read while the application is starting and there is no screen 
 | — | Organisation name and address | immediately |
 | `BRAND_NAME` | The name on the door (header, sign-in page, browser tab) | immediately |
 | `SMTP_HOST` and friends | Mail server | immediately |
+| `CARGOPILOT_HISTORY` (starting value only, see below) | Keep shipments (history) | immediately |
+| — | Audit log retention | at the next start |
 
 The screen also carries per-user preferences — language, theme, the consignor details that
 are retyped on every shipment, a saved signature. Those belong to the account rather than
@@ -70,10 +72,16 @@ a typo may safely land — and says so in the log.
 
 ## Shipment history
 
+The history is a setting on the screen: **Settings → Administration → Keep shipments**,
+for administrators of the organisation application. Off by default.
+
 | Variable | What it does | Default |
 |---|---|---|
-| `CARGOPILOT_HISTORY` | Keep the shipments the organisation makes, and show the shipments page | `false` |
-| `CARGOPILOT_HISTORY_DISCARD` | With the history switched off: delete the kept shipments on the next start instead of refusing to start | `false` |
+| `CARGOPILOT_HISTORY` | The *starting value* of that setting, for installations that set it before v1.188.0. Read until an administrator saves the Administration screen, ignored from then on. New installations need not set it. | `false` |
+
+`CARGOPILOT_HISTORY_DISCARD` is gone: the application no longer refuses to start over a
+switched-off history. Switching off happens on the screen, and the screen deletes first
+(below).
 
 Off, a shipment drawn up is a shipment forgotten — the promise every installation made
 until v1.173.0 and still makes by default. On, the export step keeps each shipment when
@@ -92,12 +100,15 @@ drawn as a PDF on the installation's paper. The **articles library** (v1.180.0) 
 article codes linked to UN number, names and packaging, picked onto a goods line — lives
 beside the history as well.
 
-It is a deploy-time variable rather than a screen setting for one reason: **switching it
-off destroys data**, and a deploy-time variable is the one place the application can
-refuse to start instead of asking on a screen. An installation whose database still holds
-kept shipments while `CARGOPILOT_HISTORY` is off does not start; the log names the count
-and this second variable. Set `CARGOPILOT_HISTORY_DISCARD=true` as well and the next start
-deletes them and says so. Nothing is deleted by default, ever.
+**Switching it off destroys data, and the screen says so first.** The server refuses to
+save the switch off while kept shipments or trips are in the database; the screen asks,
+names the counts, and on confirmation deletes the kept shipments and trips before saving
+the switch. The address book, the articles library and the adviser's reports stay. A
+switch alone never deletes anything, and nothing is deleted at start-up, ever: a database
+that holds kept shipments while the setting says off — an installation that dropped the
+variable from its environment after upgrading, say — gets the setting switched back on at
+start-up and a line in the log, never a hidden table. The open application has no
+administrator and ignores both the setting and the variable.
 
 The open application ignores both variables: nothing is kept about anyone there. What is
 kept per shipment, and what is not, is in [Privacy](privacy.md#the-shipment-history).

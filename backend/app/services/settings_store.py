@@ -67,6 +67,9 @@ def environment_defaults() -> InstanceSettings:
         un_cards_enabled=settings.un_cards_enabled,
         card_links_enabled=settings.card_links_enabled,
         session_timeout_minutes=settings.access_token_expire_minutes,
+        # The legacy CARGOPILOT_HISTORY variable is the starting value only;
+        # the screen decides from the first save on. Never in the open app.
+        history_enabled=bool(settings.cargopilot_history) and not settings.is_open,
         public_url=_public_url(settings.public_url),
         brand_name=settings.brand_name.strip()[:80],
         # A host in the environment is a deliberate act, so it switches
@@ -195,8 +198,16 @@ def public_settings(db: Session) -> PublicSettings:
         organisation_address=current.organisation_address,
         mail_enabled=bool(current.mail_enabled and current.mail_host
                           and current.mail_from),
-        history_enabled=get_settings().history_enabled,
+        history_enabled=history_enabled(db),
     )
+
+
+def history_enabled(db: Session) -> bool:
+    """Whether shipments are kept: the administrator's setting, and never in
+    the open application."""
+    if get_settings().is_open:
+        return False
+    return bool(instance_settings(db).history_enabled)
 
 
 def user_preferences(db: Session, user_id: int) -> UserPreferences:

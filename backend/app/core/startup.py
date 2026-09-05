@@ -240,8 +240,8 @@ def init_app() -> bool:
         # Before anything reads the equipment table: an existing one predates
         # the model it is queried with.
         migrate_equipment_columns(db)
-        # Shipments the switch no longer covers: refuse, or discard on request.
-        history.enforce_switch(db)
+        # Shipments the setting does not cover: switch it on, never hide them.
+        history.adopt_kept_data(db)
         seed_catalogs(db)
         purge_legacy_equipment(db)
         # The audit log keeps as long as an administrator said, and no longer.

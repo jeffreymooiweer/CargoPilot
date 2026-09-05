@@ -1,8 +1,9 @@
 """Kept groupage trips: the list, the record, keeping and forgetting.
 
-Mounted with the history routers, so an installation without
-``CARGOPILOT_HISTORY=true`` does not have these addresses at all — the same
-promise the shipments page keeps, enforced the same way.
+Mounted with the history routers behind ``require_history``, so an
+installation whose administrator has not switched *Keep shipments* on
+answers 404 here — the same promise the shipments page keeps, enforced the
+same way.
 """
 from __future__ import annotations
 

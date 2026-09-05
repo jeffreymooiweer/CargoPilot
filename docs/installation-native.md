@@ -112,5 +112,5 @@ directory (`DATA_DIR`, `/data` in the image and the pod, `/var/lib/cargopilot` n
 holds everything persistent — see [Privacy](privacy.md#what-is-stored) — and a backup is a
 copy of that directory. The first administrator comes from the `ADMIN_*` variables on the
 first start; the UN cards are imported once under **Settings → UN cards** and survive
-updates in the data directory; the shipment history is switched on with
-`CARGOPILOT_HISTORY=true` in the environment, whichever file that environment lives in.
+updates in the data directory; the shipment history is switched on by an administrator
+under **Settings → Administration → Keep shipments**, on every route alike.

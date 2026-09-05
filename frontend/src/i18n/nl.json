@@ -380,7 +380,12 @@
     "updateNative": "Deze installatie draait als eigen service op de server, zonder Docker. Bijwerken gaat met het updatescript van de installatie; het haalt de nieuwe release op, zet hem naast de oude en herstart de service. De gegevens blijven staan.",
     "updateKubernetes": "Deze installatie draait in Kubernetes. Bijwerken is een rollout naar het nieuwere image; de pod wordt opnieuw gemaakt en het volume blijft staan.",
     "auditRetention": "Bewaartermijn auditlog (dagen)",
-    "auditRetentionHint": "Hoe lang een regel in het auditlog blijft staan. Bij het opstarten wordt wat ouder is verwijderd. 365 is één jaar."
+    "auditRetentionHint": "Hoe lang een regel in het auditlog blijft staan. Bij het opstarten wordt wat ouder is verwijderd. 365 is één jaar.",
+    "historyEnabled": "Zendingen bewaren (historie)",
+    "historyEnabledHint": "Aan: de exportstap bewaart elke zending zodra de documenten worden gedownload, en de pagina's Zendingen, Ritten en Artikelen, het adresboek en het jaarrapport van de veiligheidsadviseur komen erbij. Uit: niets wordt bewaard, en uitzetten kan pas als de bewaarde zendingen en ritten verwijderd zijn — dat vraagt dit scherm eerst.",
+    "historyDiscardTitle": "Historie uitzetten en de bewaarde gegevens verwijderen?",
+    "historyDiscardBody": "De historie bevat nog {{shipments}} bewaarde zending(en) en {{trips}} bewaarde rit(ten). Uitzetten verwijdert ze definitief; het adresboek, de artikelen en de jaarrapporten blijven staan. Dit kan niet ongedaan worden gemaakt.",
+    "historyDiscardConfirm": "Verwijderen en uitzetten"
   },
   "modality": {
     "title": "Kies uw transportmodaliteit",
@@ -1002,7 +1007,7 @@
   "history": {
     "title": "Zendingen",
     "intro": "De zendingen die deze installatie heeft bewaard. Open er een in de wizard, download de documenten opnieuw, of verwijder hem.",
-    "off": "Deze installatie bewaart geen zendingen. De beheerder van de server zet de historie aan met CARGOPILOT_HISTORY=true; zie de configuratiehandleiding.",
+    "off": "Deze installatie bewaart geen zendingen. Een beheerder zet de historie aan onder Instellingen, Beheer, Zendingen bewaren.",
     "search": "Zoek op referentie, afzender of ontvanger…",
     "allModalities": "Alle modaliteiten",
     "from": "Van",
@@ -1218,7 +1223,8 @@
       "report.rendered": "Jaarrapport veiligheidsadviseur gedownload",
       "trip.kept": "Rit bewaard",
       "trip.updated": "Bewaarde rit bijgewerkt",
-      "trip.forgotten": "Bewaarde rit verwijderd"
+      "trip.forgotten": "Bewaarde rit verwijderd",
+      "settings.history_discarded": "Historie geleegd voor het uitzetten"
     }
   },
   "trips": {

@@ -67,3 +67,14 @@ def require_admin(user: User = Depends(get_current_user)) -> User:
     if user.role != "admin":
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Admin required")
     return user
+
+
+def require_history(db: Session = Depends(get_db)) -> None:
+    """The shipment history's routes exist only while an administrator has
+    the history switched on. Off, they answer 404 like any address the
+    installation does not have — the promise "nothing is kept" is enforced
+    by what answers, not described in a setting somebody has to find."""
+    from app.services.settings_store import history_enabled
+
+    if not history_enabled(db):
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Not Found")

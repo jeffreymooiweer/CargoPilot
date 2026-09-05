@@ -160,8 +160,10 @@ What the storage still has to unlock:
   references or dates.
 - ~~**Groupage from the history.**~~ Shipped in v1.175.0: the groupage page picks the
   kept shipments the viewer may see straight from the history, beside the file route.
-  Whether the trip itself — the judgement over the whole load — is kept as well is still
-  an open question, not a decision already taken.
+  The trip itself — the judgement over the whole load — will be kept as well: decided
+  in September 2026, planned as a phase of its own (the kept consignments, the vehicle,
+  the 1.1.3.6, mixed-loading and LQ findings with their editions; a trips list beside
+  the shipments page; reopen).
 - ~~**The DGSA annual report.**~~ Shipped in v1.177.0: the statistical half of ADR
   1.8.3.3 counted over the kept shipments of a year — per month, mode, regulation,
   department, class and UN number, with the 1.1.3.6 outcome per shipment — as a page
@@ -202,9 +204,9 @@ sign-in errors and regulatory findings stay inline by design.)
 ### Plugins and an open ecosystem
 
 - **A plugin page** in the application to manage what is installed.
-- **A licence change** to MIT or similar, so plugins can be written, shared and
-  installed freely. (CargoPilot is Apache 2.0 today, which already permits all three;
-  the change is about how open the project *reads* to a first-time contributor.)
+- ~~**A licence change** to MIT or similar.~~ Decided in September 2026: no change.
+  CargoPilot stays Apache 2.0, which already permits plugins to be written, shared,
+  sold and installed freely, and which carries the patent grant MIT does not.
 - **A community hub** — a website where people share plugins, loadable inside the
   application so a plugin installs directly from it. The companion modules above will
   be published there, the military one excepted. Visible to every user; only admins
@@ -255,9 +257,14 @@ none is committed until it is planned against that brief.
 - **Structured shipment export, on the road to eCMR/eFTI.** The versioned JSON export
   ships in v1.161.0 — the whole shipment with its derived findings and the editions
   they were computed against, on every transport mode (see
-  [Shipment export](docs/shipment-export.md)). What remains is the mapping onto the
-  UN/CEFACT multimodal model the EU eFTI regulation builds on (in full force 9 July
-  2027), which needs the published model read first, and the per-party signature flow.
+  [Shipment export](docs/shipment-export.md)). The mapping onto the eFTI common data
+  set follows in v1.185.0: the Annex of Commission Delegated Regulation (EU) 2024/2024
+  — 681 data objects, the subsets per legal provision, the code lists and the business
+  rules — read from the Official Journal into a seed, and every export field placed
+  against it, with what the road and dangerous goods subsets ask for that the
+  application does not hold named element by element (see
+  [The eFTI mapping](docs/efti-mapping.md)). What remains is the split address model
+  the party elements need, the code lists by value, and the per-party signature flow.
   CargoPilot does not become a certified platform; it becomes trivially connectable
   to one.
 - ~~**DGSA annual report.**~~ Shipped in v1.177.0, see above; it exists only with the
@@ -322,7 +329,10 @@ none is committed until it is planned against that brief.
 
 ### Ideas, not committed
 
-- An audit log that records metadata only, never the contents of material lists.
+- ~~An audit log that records metadata only, never the contents of material lists.~~
+  Decided in September 2026: to be built, for the administrator — who signed in and
+  when, what was kept, reopened, downloaded, mailed or changed, by whom — and never
+  what a material list said. Organisation mode only.
 
 ## Not planned
 

@@ -2,6 +2,38 @@
 
 All notable changes are documented here, following [Semantic Versioning](https://semver.org/).
 
+## [1.185.0] — 2026-09-05
+
+### The export placed against the eFTI common data set
+
+Regulation (EU) 2020/1056 has the authorities accept freight transport
+information electronically from 9 July 2027, through certified eFTI
+platforms, and Commission Delegated Regulation (EU) 2024/2024 establishes
+what those platforms exchange. Its Annex has now been read from the
+Official Journal and the structured shipment export placed against it.
+
+- **The Annex as a seed.** `scripts/build_efti_seed.py` reads the 789-page
+  regulation and writes Table 1 (the common data set: 681 data objects with
+  identifier, name, definition, type, format and code list), Table 2 (the
+  subsets per EU provision: the road transport document, and the ADR, RID
+  and ADN transport documents among them, with the status of every element),
+  Table 30 (53 code lists) and Table 31 (122 business rules) to
+  `backend/seed/efti/`, with the ELI and the checksum of the file.
+- **The mapping.** `backend/app/config/efti_mapping.json` places every field
+  of the export — the parties, the route, the references, the goods lines,
+  the dangerous goods with their derived findings — against the element it
+  answers, in three kinds: carried as such, derived by the application, or
+  carried in the application's vocabulary and still to be translated into
+  the element's code list. `app/services/efti.py` measures it against the
+  subsets, and *The eFTI mapping* in the documentation gives the numbers
+  and names what is missing: the address in nine parts the party elements
+  want, which the application holds as one block of text, and the fields
+  the wizard does not ask (class 7, fuel gas systems, fumigation, the
+  competent authority).
+- A test keeps the seed at the Annex's counts, every mapping entry on an
+  element and a field that exist, and the numbers on the page equal to the
+  numbers the code counts.
+
 ## [1.184.0] — 2026-09-05
 
 ### Box 24 of the CIM picks its NHM code from the nomenclature

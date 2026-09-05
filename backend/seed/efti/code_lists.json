@@ -1,0 +1,224 @@
+{
+ "source": {
+  "title": "Commission Delegated Regulation (EU) 2024/2024 of 26 July 2024 supplementing Regulation (EU) 2020/1056 by establishing the eFTI common data set and eFTI data subsets (OJ L, 20.12.2024)",
+  "eli": "http://data.europa.eu/eli/reg_del/2024/2024/oj",
+  "file": "OJ_L_202402024_EN_TXT.pdf",
+  "sha256": "991b1a28bff53ae6e5fd8d5b20588f37a4ec5c8047549446f50368c94709906c",
+  "pages": 789
+ },
+ "table": 30,
+ "lists": {
+  "CL-001": {
+   "name": "ADN (1)/ADR (2)/RID (3) Class 7 Transport Index (ADN/ADR/RID 5.1.5.3)",
+   "allowed": "All codes of this code list are allowed."
+  },
+  "CL-002": {
+   "name": "ADN/RID Hazard Types (ADN 5.4.1.1.2 (c), RID 5.4.1.1.1)",
+   "allowed": "All codes of this code list are allowed."
+  },
+  "CL-003": {
+   "name": "ADN/ADR/RID Packaging Types (ADN/ADR/RID 6.1.2)",
+   "allowed": "All codes of this code list are allowed."
+  },
+  "CL-004": {
+   "name": "eFTI CSD Risk Analysis Result Level code (Commission Implementing Regulation (EU) 2015/1998 Annex 6.3.2.6 (g))",
+   "allowed": "All codes of this code list are allowed: RA = Regulated agent."
+  },
+  "CL-005": {
+   "name": "CSD Screening exemption grounds (Commission Implementing Regulation (EU) 2015/1998, Annex 6.3.2.6 (e)(v)) and Implementing Decision C(2015) 8005, Annex 6.3.3)",
+   "allowed": "Note: Refer to codes listed in point 6.3.3 of the Annex to Commission Implementing Decision C(2015) 8005 of 16.11.2015. This information shall be considered as EU classified information and treated in accordance with Commission Decision (EU, Euratom) 2015/444 (4), as provided for by point (a) of Article 18 of Regulation (EC) No 300/2008 of the European Parliament and the Council (5)."
+  },
+  "CL-006": {
+   "name": "eFTI CSD screening method (Commission Implementing Regulation (EU) 2015/1998, Annex 6.3.2.6 (e)(iv))",
+   "allowed": "All codes of this code list are allowed: AOM = Any other method; CMD = Metal detection equipment; EDD = Explosive detection dogs; EDS = EDS equipment; ETD = ETD equipment; PHS = Hand search; VCK = Visual check; XRY = X-ray equipment."
+  },
+  "CL-007": {
+   "name": "eFTI CSD consignment security status (Commission Implementing Regulation (EU) 2015/1998, Annex 6.3.2.6 (d))",
+   "allowed": "All codes of this code list are allowed: SPX = Secure for passenger, all-cargo and all-mail aircraft; SHR = Secure for passenger, all-cargo and all-mail aircraft in accordance with high-risk requirements."
+  },
+  "CL-008": {
+   "name": "DG UN Number (ADR/RID/ADN Chapter 3.2.1 Table A)",
+   "allowed": "All codes of this code list are allowed."
+  },
+  "CL-009": {
+   "name": "eFTI authentication statement",
+   "allowed": "All codes of this code list are allowed: 1 = Authentication statement."
+  },
+  "CL-010": {
+   "name": "eFTI Container pick-up/ drop-off",
+   "allowed": "All codes of this code list are allowed: 1 = Empty container pick-up; 2 = Empty container drop-off."
+  },
+  "CL-011": {
+   "name": "eFTI DG statement (ADR/RID/ADN 3.3.1, 3.5.6, 5.4.1, 5.5.2, 5.5.3)",
+   "allowed": "All codes of this code list are allowed: 1 = The label conforming to model No 1 is not required; 2 = Not a self-reactive substance of Class 4.1; 3 = Not a substance of Class 5.2; 4 = ENVIRONMENTALLY HAZARDOUS; 5 = MARINE POLLUTANT/ENVIRONMENTALLY HAZARDOUS; 6 = SALVAGE PACKAGING; 7 = SALVAGE PRESSURE RECEPTACLE; 8 = WASTE IN ACCORDANCE WITH 2.1.3.5.5; 9 = AS COOLANT; 10 = AS CONDITIONER; 11 = Carriage in accordance with 2.2.52.1.8; 12 = HOT; 13 = Classified in accordance with 2.1.2.8; 14 = MOLTEN; 15 = Carriage in accordance with 2.2.52.1.9; 16 = UN number and proper shipping name are in accordance with the ones in the certificate of the country of origin of design; 17 = Ammonium nitrate fertiliser is stabilised; 18 = UN 3359, FUMIGATED CARGO TRANSPORT UNIT, Class 9; 19 = Only the container/vehicle packing certificate applies; 20 = Carriage in accordance with 4.3.2.4.3; 21 = Carriage in accordance with 7.5.8.1; 22 = Carriage in accordance with 4.3.2.4.4; 23 = CARRIAGE IN ACCORDANCE WITH 4.1.2.2 (b); 24 = CARRIAGE IN ACCORDANCE WITH 4.3.2.3.7 (b); 25 = CARRIAGE IN ACCORDANCE WITH 6.7.2.19.6.1 (b); 26 = CARRIAGE IN ACCORDANCE WITH 6.7.3.15.6.1 (b); 27 = CARRIAGE IN ACCORDANCE WITH 6.7.4.14.6.1 (b); 28 = EMPTY PACKAGING; 29 = EMPTY RECEPTACLE; 30 = EMPTY IBC; 31 = EMPTY LARGE PACKAGING; 32 = Carriage in accordance with 7.5.8.1 of ADR (or RID); 33 = Delivery Sale; 34 = Exclusive use shipment; 35 = Driver is appropriately trained and certified in relation with the specificities of the carriage; 36 = Dangerous Goods in Excepted Quantities; 37 = Suspected Category A infectious substance; 38 = EMPTY, UNCLEANED; 39 = RESIDUE, LAST CONTAINED; 40 = Carriage in accordance with 4.1.6.10; 41 = CARRIAGE IN ACCORDANCE WITH 1.1.4.7.1; 42 = CARRIAGE IN ACCORDANCE WITH 1.1.4.7.2; 43 = Carriage in accordance with 1.1.4.2.1; 44 = QUANTITY ESTIMATED IN ACCORDANCE WITH 5.4.1.1.3.2; 45 = Carriage in accordance with 4.3.2.4.3 of ADR (or RID); 46 = CARRIAGE IN ACCORDANCE WITH 1.1.4.4."
+  },
+  "CL-012": {
+   "name": "eFTI gas fuel type",
+   "allowed": "All codes of this code list are allowed: 1 = Liquefied; 2 = Compressed."
+  },
+  "CL-013": {
+   "name": "eFTI measurement type (ADR/ADN 5.4.1.1.15)",
+   "allowed": "All codes of this code list are allowed: T1 = Control and emergency temperature as of ADR/ADN 5.4.1.1.15."
+  },
+  "CL-014": {
+   "name": "eFTI regulatory procedure",
+   "allowed": "All codes of this code list are allowed: 1 = Article 6 of EEC Council Regulation No 11 applies; 2 = Article 6 of EEC Council Regulation No 11 does not apply, in accordance with Article 9 of that regulation."
+  },
+  "CL-015": {
+   "name": "eFTI statement subject (ADR/RID/ADN 5.4.1, 5.5.2)",
+   "allowed": "All codes of this code list are allowed: S1 = ‘Classification of fireworks by the competent authority of XX with the firework reference XX/YYZZZZ’, in accordance with ADR/RID/ADN 5.4.1.2.1(g); S2 = ‘WITH RESIDUES OF […]’ followed by the class(es) and subsidiary hazard(s) corresponding to the residues, in the class numbering order, in accordance with ADR/RID/ADN 5.4.1.1.19; S3 = Transport document shall include the name of the gas; S4 = Transport document shall include the stabilisation method; S5 = Transport document shall include the statement that the oil seeds, crushed seeds or seedcake containing vegetable oil are treated with solvents not subject to spontaneous combustion, not giving off dangerous gases in dangerous quantities and not posing the risk of explosion during the carriage; S6 = Transport document shall include: (a) name and amount of inhibitor added; (b) date on which inhibitor was added and expected duration of effectiveness under normal conditions; (c) any temperature limits having an effect on the inhibitor; S7 = The proper shipping name supplemented with the name applicable to the radioactive excepted package according to Column (2) of Table A of Chapter 3.2; S8 = Non-dangerous goods; S9 = Quantity of fumigant; S10 = ‘Bulk container BK(x) approved by the competent authority of…’ (+) the Bulk container type (BK1 or BK2); S11 = ‘Bulk container BK(x) approved by the competent authority of…’ (+) the competent authority who approved the bulk container; S12 = Type of fumigant; S13 = ‘Special provision 640X’ where ‘X’ is the applicable capital letter appearing after the reference to special provision 640 in column (6) of Table A of ADR/RID/ADN 3.2.; S14 = Consignor statement regarding the restrictions on the mode of carriage or vehicle or wagon and any necessary routing instructions; S15 = Consignor statement regarding the emergency arrangements appropriate to the consignment; S16 = A declaration as required by the terms of any special agreement; S17 = The statement that the stowage and separation are compliant with IMDG Code, to be included in the transport document; S18 = Consignor statement regarding Supplementary requirements; S19 = MASS OF NEW LOAD … KG;"
+  },
+  "CL-016": {
+   "name": "Hazard identification number (ADR/RID/ADN 5.3.2.3.2)",
+   "allowed": "All codes of this code list are allowed."
+  },
+  "CL-017": {
+   "name": "ISO (6) 3166-1 alpha-2 code (UNECE (7) (UN/EDIFACT (8)) codes 3207)",
+   "allowed": "All codes of this code list are allowed."
+  },
+  "CL-018": {
+   "name": "ISO 4217 (UNECE (UN/EDIFACT) codes 4217)",
+   "allowed": "All codes of this code list are allowed."
+  },
+  "CL-019": {
+   "name": "IATA Airport Codes",
+   "allowed": "All codes of this code list are allowed."
+  },
+  "CL-020": {
+   "name": "ISO 8601 (UNECE (UN/EDIFACT) codes 2379)",
+   "allowed": "Allowed codes: 102 = CCYYMMDD; 203 = CCYYMMDDHHMM; 205 = CCYYMMDDHHMMZHHMM."
+  },
+  "CL-021": {
+   "name": "eFTI Limited quantities rail (RID 1.4.3.6)",
+   "allowed": "All codes of this code list are allowed: 1 = Dangerous goods in limited quantities as of RID 1.4.3.6 (b)"
+  },
+  "CL-022": {
+   "name": "eFTI Special Provisions (ADN/ADR/RID 3.3)",
+   "allowed": "All codes of this code list are allowed: SP310 = Carriage in accordance with special provision 310; SP356 = Approval of metal hydride storage system indicated in transport document; SP623 = Transport under minimum temperature of the product of 32,5 °C; SP662 = Transport in accordance with special provision 662; SP363 = Transport in accordance with special provision 363; SP373 = Carriage in accordance with special provision 373; SP376 = Transport in accordance with special provision 376; SP378 = Transport in accordance with special provision 378; SP390a = UN 3091 LITHIUM METAL BATTERIES PACKED WITH EQUIPMENT; SP390b = UN 3481 LITHIUM ION BATTERIES PACKED WITH EQUIPMENT; SP392 = Special provision (h)(i) for the carriage of fuel gas containment systems."
+  },
+  "CL-023": {
+   "name": "eFTI Transport Hazard Category (ADR/RID 1.1.3.6)",
+   "allowed": "All codes of this code list are allowed: 0 = 0; 1 = 1; 1a = 1 footnote a; 2 = 2; 3 = 3; 4 = 4."
+  },
+  "CL-024": {
+   "name": "UN/LOCODE (9)",
+   "allowed": "All codes of this code list are allowed."
+  },
+  "CL-025": {
+   "name": "eFTI Yes/No Indicator",
+   "allowed": "All codes of this code list are allowed: 1 = Yes; 2 = No."
+  },
+  "CL-026": {
+   "name": "UNECE (UN/EDIFACT) codes 1001",
+   "allowed": "Allowed codes: 4 = Test report; 85 = Customs manifest; 87 = General cargo summary manifest report; 333 = Customs declaration for cargo examination; 380 = Commercial invoice; 398 = Cross docking dispatch advice; 610 = Forwarding instructions; 700 = Waybill; 703 = House waybill; 704 = Master bill of lading; 730 = Road consignment note; 740 = Air waybill; 741 = Master air waybill 970 = Wagon report; eFTI extensions to this code list: T1 = Approval of the package of the metal hydride storage system done by the competent authority of the country of the manufacture; T2 = Competent authority approval with the conditions of the carriage and a statement with a reference to the legal requirement for approval; T3 = Type and ADR Approval validity of the vehicle/vessel; T4 = Authority approval of the protective compartment or containment system in accordance with 7.5.2.2, note (a) under the table; T5 = Certification that the vehicle/container complies with all applicable provisions, as listed in 5.4.2 of IMDG Code; T6 = Tank type approval certificate; T9 = Authority approval [Competent authority approval with the conditions of carriage]; T10 = Competent authority approval; T11 = Person identification document; xx2 = ÖKOMBI delivery bill; xx3 = SAT waybill; E01 = Intercontainer transfer document; E02 = CEMT operations book; E03 = Document list."
+  },
+  "CL-027": {
+   "name": "UNECE (UN/EDIFACT) codes 2005",
+   "allowed": "Allowed codes: 530 = Fumigation date time. eFTI extension to this code list: A1 = End of holding time."
+  },
+  "CL-028": {
+   "name": "UNECE (UN/EDIFACT) codes 3035",
+   "allowed": "Allowed codes: AB = Buyer’s agent/representative; AE = Declarant’s agent/representative; AF = Transit principal; AH = Transit principal’s agent/representative; AQ = Approved consignor; AR = Authorized exporter; AT = Authorized importer; AU = Authorized trader (transit); CA = Carrier; CG = Carrier’s agent; CN = Consignee; CPD = Charges payer at destination; CX = Consignee’s agent; CZ = Consignor; DGB = Invoice processing party; EX = Exporter; EV = Subcontractor; FW = Freight forwarder; GS = Consignor’s representative; IM = Importer; IV = Invoicee; PE = Payee; POA = Port authority. eFTI extension to this code list: T1 = Rail authority."
+  },
+  "CL-029": {
+   "name": "UNECE (UN/EDIFACT) codes 3055",
+   "allowed": "Allowed codes: 1 = CCC (Customs Co-operation Council); 2 = CEC (Commission of the European Communities) (10); 3 = IATA (International Air Transport Association); 5 = ISO (International Organization for Standardization); 6 = UNECE (United Nations – Economic Commission for Europe); 12 = UIC (International union of railways); 20 = BIC (Bureau International des Containeurs); 54 = IMO (International Maritime Organisation); 87 = Assigned by carrier; 97 = CH, Administration federale des contributions; 107 = FR, INSEE (11); 140 = CEC (Commission of the European Communities), DG/XXI-01 (12); 268 = FR, DGI (Direction Generale des Impots); ZZZ = Mutually defined. eFTI extensions to this code list: T1 = OTIF (Intergovernmental Organisation for International Carriage by Rail); T4 = SE, tax ID maintaining authority; T5 = BE, tax ID maintaining authority; T6 = AT, tax ID maintaining authority; T7 = DE, tax ID maintaining authority; T8 = BG, tax ID maintaining authority; T9 = SE, Waste authority; 501 = ERA (European Union Agency for Railways); 502 = UIRR (International Union for Road-Rail Combined Transport); 503 = RNE (RailNetEurope)."
+  },
+  "CL-030": {
+   "name": "UNECE (UN/EDIFACT) codes 4237",
+   "allowed": "All codes of this code list are allowed."
+  },
+  "CL-031": {
+   "name": "UNECE Recommendation 20 (UNECE (UN/EDIFACT) codes 6411)",
+   "allowed": "All codes of this code list are allowed."
+  },
+  "CL-032": {
+   "name": "UNECE (UN/EDIFACT) codes 7085",
+   "allowed": "All codes of this code list are allowed."
+  },
+  "CL-033": {
+   "name": "UNECE (UN/EDIFACT) codes 8053 (ADN Part 9)",
+   "allowed": "Allowed codes: AE = Body trailer (The part of the motor vehicle where the cargo is loaded.); AM = Refrigerated container; BR = Barge; BX = Boxcar; BPO = Truck being transported on another transport means; BPP = Truck and trailer being transported on another transport means; BPQ = Tractor and semi-trailer being transported on another transport means; BPR = Bag (receptacle); BPX = Container non-compliant with the Customs Convention on Containers; CN = Container; DPL = On-board equipment (on a Truck); RF = Flat car; RR = Rail car; SM = Semi-trailer; SW = Swap body; TE = Trailer; TN = Tank. eFTI extensions to this code list: T1 = TANK-VEHICLE; T2 = DEMOUNTABLE TANK; T3 = TANK CONTAINER; T4 = PORTABLE TANK; T5 = BATTERY-VEHICLE; T6 = MEGC; T7 = MEMU; T9 = TANK-WAGON (RID); T10 = BATTERY-WAGON (RID); T11 = IBC; T12 = PACKAGING; T13 = LARGE PACKAGING; T14 = VEHICLE; DV = DRY CARGO VESSEL; GT = TYPE G TANK VESSEL; CT = TYPE C TANK VESSEL; NT = TYPE N TANK VESSEL."
+  },
+  "CL-034": {
+   "name": "UNECE (UN/EDIFACT) codes 8155 or – for seagoing containers – ISO 6346 or rail specific codes",
+   "allowed": "All codes of these code lists are allowed."
+  },
+  "CL-035": {
+   "name": "UNECE (UN/EDIFACT) codes 8169",
+   "allowed": "Allowed codes: 4 = Empty; eFTI extensions to this code list: T14 = Empty, uncleaned; T15 = Empty, residue."
+  },
+  "CL-036": {
+   "name": "eFTI Packaging Danger Level Code",
+   "allowed": "Allowed codes: I-WHITE; II-YELLOW; III-YELLOW; I; II; III; None."
+  },
+  "CL-037": {
+   "name": "UNECE Recommendation 19 (UNECE (UN/EDIFACT) codes 8067)",
+   "allowed": "Allowed codes: 1 = Maritime transport; 2 = Rail transport; 3 = Road transport; 8 = Inland water transport."
+  },
+  "CL-038": {
+   "name": "UNECE Recommendation 21 (UNECE (UN/EDIFACT) codes 7065)",
+   "allowed": "All codes of this code list are allowed."
+  },
+  "CL-039": {
+   "name": "UNECE Recommendation 21-Annex I",
+   "allowed": "All codes of this code list are allowed."
+  },
+  "CL-040": {
+   "name": "UNECE Recommendation 23 (UNECE (UN/EDIFACT) codes 8023)",
+   "allowed": "All codes of this code list are allowed."
+  },
+  "CL-041": {
+   "name": "UNECE Recommendation 28 (UNECE (UN/EDIFACT) codes 8179)",
+   "allowed": "All codes of this code list are allowed."
+  },
+  "CL-042": {
+   "name": "UNECE Tunnel Restriction Categories (ADR 8.6.4)",
+   "allowed": "All codes of this code list are allowed."
+  },
+  "CL-044": {
+   "name": "eFTI Special Technical Name usage",
+   "allowed": "All codes of this code list are allowed: 1 = The technical name ‘Mixture A’ or ‘Butane’, ‘Mixture A01’ or ‘Butane’, ‘Mixture A02’ or ‘Butane’, ‘Mixture A0’ or ‘Butane’, ‘Mixture A1’, ‘Mixture B1’, ‘Mixture B2’, ‘Mixture B’, ‘Mixture C’ or ‘Propane’ that can be used for the purpose of ADR/RID/ADN 5.4.1.1.1 (b); 2 = The technical name ‘Mixture P1’ or ‘Mixture P2’ that can be used for the purpose of ADR/RID/ADN 5.4.1.1.1 (b); 3 = The technical name ‘Mixture F1’, ‘Mixture F2’ or ‘Mixture F3’ that can be used for the purpose of ADR/RID/ADN 5.4.1.1.1 (b); 4 = Further characterize generic or N.O.S (not otherwise specified) PSNs (Proper Shipping Names)."
+  },
+  "CL-045": {
+   "name": "eFTI Border crossing type",
+   "allowed": "All codes of this code list are allowed: EN = Entry; EX = Exit."
+  },
+  "CL-046": {
+   "name": "eFTI Loading security measure subject",
+   "allowed": "Will be provided when requests are submitted."
+  },
+  "CL-047": {
+   "name": "UNECE (UN/EDIFACT) codes 4517",
+   "allowed": "All codes of this code list are allowed."
+  },
+  "CL-048": {
+   "name": "UNECE (UN/EDIFACT) codes 9303",
+   "allowed": "All codes of this code list are allowed."
+  },
+  "CL-049": {
+   "name": "UNECE (UN/EDIFACT) codes 1153",
+   "allowed": "All codes of this code list are allowed."
+  },
+  "CL-050": {
+   "name": "eFTI Licence Type Code",
+   "allowed": "Will be provided when requests are submitted."
+  },
+  "CL-051": {
+   "name": "UNECE (UN/EDIFACT) codes 4451",
+   "allowed": "All codes of this code list are allowed."
+  },
+  "CL-052": {
+   "name": "eFTI Weight Verification Method Code",
+   "allowed": "All codes of this code list are allowed: 1 – VGM (Verified Gross Mass) Method 1; 2 – VGM (Verified Gross Mass) Method 2."
+  },
+  "CL-053": {
+   "name": "UNECE (UN/EDIFACT) codes 4065",
+   "allowed": "All codes of this code list are allowed."
+  },
+  "CL-054": {
+   "name": "UNECE (UN/EDIFACT) codes 5375",
+   "allowed": "All codes of this code list are allowed."
+  }
+ }
+}

@@ -1,0 +1,6784 @@
+{
+ "source": {
+  "title": "Commission Delegated Regulation (EU) 2024/2024 of 26 July 2024 supplementing Regulation (EU) 2020/1056 by establishing the eFTI common data set and eFTI data subsets (OJ L, 20.12.2024)",
+  "eli": "http://data.europa.eu/eli/reg_del/2024/2024/oj",
+  "file": "OJ_L_202402024_EN_TXT.pdf",
+  "sha256": "991b1a28bff53ae6e5fd8d5b20588f37a4ec5c8047549446f50368c94709906c",
+  "pages": 789
+ },
+ "table": 2,
+ "order": [
+  "ASBIE1026",
+  "ASBIE1027",
+  "eFTI39",
+  "eFTI40",
+  "eFTI41",
+  "eFTI42",
+  "eFTI45",
+  "eFTI46",
+  "ASBIE1028",
+  "eFTI49",
+  "eFTI50",
+  "eFTI51",
+  "ASBIE1029",
+  "ASBIE1030",
+  "eFTI52",
+  "ASBIE1031",
+  "eFTI53",
+  "ASBIE1032",
+  "eFTI54",
+  "eFTI55",
+  "eFTI56",
+  "eFTI57",
+  "eFTI58",
+  "eFTI59",
+  "eFTI60",
+  "eFTI61",
+  "eFTI62",
+  "ASBIE1033",
+  "eFTI65",
+  "ASBIE1034",
+  "eFTI66",
+  "eFTI67",
+  "eFTI68",
+  "ASBIE1035",
+  "eFTI69",
+  "ASBIE1036",
+  "eFTI71",
+  "ASBIE1037",
+  "eFTI72",
+  "eFTI73",
+  "eFTI74",
+  "eFTI75",
+  "eFTI76",
+  "eFTI77",
+  "eFTI78",
+  "eFTI81",
+  "ASBIE1038",
+  "eFTI84",
+  "ASBIE1039",
+  "eFTI85",
+  "eFTI86",
+  "eFTI87",
+  "eFTI88",
+  "ASBIE1040",
+  "eFTI89",
+  "ASBIE1041",
+  "eFTI91",
+  "ASBIE1044",
+  "eFTI98",
+  "eFTI99",
+  "eFTI100",
+  "eFTI101",
+  "eFTI102",
+  "eFTI103",
+  "eFTI104",
+  "eFTI106",
+  "ASBIE1045",
+  "eFTI115",
+  "ASBIE1048",
+  "eFTI136",
+  "eFTI137",
+  "eFTI138",
+  "ASBIE1049",
+  "eFTI139",
+  "eFTI140",
+  "ASBIE1050",
+  "eFTI141",
+  "eFTI144",
+  "eFTI145",
+  "eFTI146",
+  "eFTI147",
+  "eFTI148",
+  "eFTI151",
+  "ASBIE1051",
+  "eFTI152",
+  "eFTI153",
+  "eFTI154",
+  "ASBIE1052",
+  "eFTI155",
+  "eFTI156",
+  "ASBIE1053",
+  "eFTI157",
+  "eFTI160",
+  "eFTI161",
+  "eFTI162",
+  "eFTI163",
+  "eFTI164",
+  "eFTI167",
+  "ASBIE1055",
+  "eFTI168",
+  "eFTI169",
+  "ASBIE1058",
+  "eFTI188",
+  "eFTI189",
+  "ASBIE1065",
+  "eFTI971",
+  "eFTI972",
+  "ASBIE1066",
+  "eFTI232",
+  "eFTI235",
+  "eFTI236",
+  "eFTI238",
+  "eFTI239",
+  "eFTI240",
+  "eFTI241",
+  "eFTI242",
+  "eFTI243",
+  "eFTI244",
+  "eFTI247",
+  "eFTI248",
+  "eFTI249",
+  "eFTI250",
+  "eFTI251",
+  "eFTI255",
+  "eFTI256",
+  "eFTI258",
+  "eFTI261",
+  "ASBIE1067",
+  "eFTI279",
+  "eFTI280",
+  "eFTI281",
+  "ASBIE1068",
+  "eFTI283",
+  "eFTI284",
+  "eFTI285",
+  "ASBIE1069",
+  "eFTI287",
+  "eFTI288",
+  "eFTI289",
+  "ASBIE1070",
+  "eFTI290",
+  "eFTI292",
+  "eFTI293",
+  "ASBIE1073",
+  "eFTI296",
+  "eFTI297",
+  "eFTI298",
+  "ASBIE1074",
+  "eFTI301",
+  "ASBIE1075",
+  "eFTI302",
+  "eFTI304",
+  "ASBIE1076",
+  "eFTI307",
+  "eFTI970",
+  "ASBIE1077",
+  "eFTI309",
+  "eFTI317",
+  "eFTI319",
+  "ASBIE1078",
+  "eFTI320",
+  "eFTI321",
+  "ASBIE1079",
+  "eFTI326",
+  "eFTI329",
+  "ASBIE1080",
+  "eFTI335",
+  "eFTI336",
+  "eFTI337",
+  "eFTI338",
+  "eFTI339",
+  "eFTI340",
+  "eFTI341",
+  "ASBIE1140",
+  "eFTI1133",
+  "eFTI1134",
+  "ASBIE1082",
+  "eFTI346",
+  "eFTI347",
+  "ASBIE1086",
+  "eFTI374",
+  "eFTI375",
+  "eFTI378",
+  "eFTI379",
+  "eFTI380",
+  "eFTI382",
+  "eFTI987",
+  "eFTI385",
+  "eFTI1014",
+  "ASBIE1087",
+  "eFTI387",
+  "eFTI388",
+  "eFTI397",
+  "eFTI399",
+  "ASBIE1088",
+  "eFTI402",
+  "ASBIE1089",
+  "eFTI416",
+  "eFTI418",
+  "eFTI419",
+  "eFTI420",
+  "eFTI422",
+  "eFTI423",
+  "eFTI424",
+  "eFTI426",
+  "ASBIE1090",
+  "eFTI427",
+  "eFTI428",
+  "ASBIE1091",
+  "eFTI433",
+  "eFTI435",
+  "ASBIE1092",
+  "eFTI448",
+  "eFTI449",
+  "eFTI450",
+  "eFTI454",
+  "eFTI1017",
+  "eFTI998",
+  "ASBIE1093",
+  "eFTI455",
+  "eFTI456",
+  "eFTI483",
+  "eFTI498",
+  "eFTI501",
+  "ASBIE1094",
+  "eFTI530",
+  "ASBIE1095",
+  "eFTI542",
+  "eFTI544",
+  "eFTI545",
+  "eFTI546",
+  "eFTI548",
+  "eFTI549",
+  "eFTI550",
+  "eFTI552",
+  "ASBIE1096",
+  "eFTI555",
+  "eFTI558",
+  "ASBIE1097",
+  "eFTI578",
+  "ASBIE1098",
+  "eFTI581",
+  "eFTI582",
+  "eFTI1022",
+  "ASBIE1099",
+  "eFTI583",
+  "eFTI584",
+  "eFTI585",
+  "eFTI586",
+  "ASBIE1100",
+  "eFTI587",
+  "eFTI588",
+  "eFTI589",
+  "ASBIE1141",
+  "eFTI904",
+  "eFTI905",
+  "eFTI906",
+  "eFTI907",
+  "eFTI908",
+  "eFTI909",
+  "eFTI910",
+  "eFTI911",
+  "eFTI912",
+  "ASBIE1101",
+  "eFTI590",
+  "eFTI591",
+  "eFTI592",
+  "eFTI593",
+  "ASBIE1102",
+  "eFTI594",
+  "ASBIE1103",
+  "eFTI596",
+  "eFTI597",
+  "eFTI598",
+  "eFTI599",
+  "ASBIE1104",
+  "eFTI600",
+  "eFTI601",
+  "eFTI602",
+  "ASBIE1142",
+  "eFTI913",
+  "eFTI914",
+  "eFTI915",
+  "eFTI916",
+  "eFTI917",
+  "eFTI918",
+  "eFTI919",
+  "eFTI920",
+  "eFTI921",
+  "ASBIE1105",
+  "eFTI603",
+  "eFTI604",
+  "eFTI605",
+  "eFTI606",
+  "ASBIE1106",
+  "eFTI608",
+  "ASBIE1107",
+  "eFTI617",
+  "eFTI618",
+  "eFTI619",
+  "ASBIE1108",
+  "eFTI620",
+  "ASBIE1143",
+  "ASBIE1144",
+  "eFTI1135",
+  "eFTI1136",
+  "ASBIE1145",
+  "eFTI1137",
+  "eFTI1138",
+  "eFTI1139",
+  "ASBIE1122",
+  "eFTI685",
+  "eFTI688",
+  "eFTI690",
+  "ASBIE1123",
+  "eFTI691",
+  "ASBIE1125",
+  "eFTI698",
+  "eFTI699",
+  "eFTI700",
+  "eFTI701",
+  "eFTI702",
+  "ASBIE1126",
+  "eFTI703",
+  "ASBIE1127",
+  "eFTI712",
+  "eFTI746",
+  "eFTI747",
+  "ASBIE1128",
+  "ASBIE1129",
+  "eFTI790",
+  "eFTI791",
+  "ASBIE1130",
+  "eFTI818",
+  "eFTI825",
+  "eFTI827",
+  "ASBIE1131",
+  "eFTI833",
+  "eFTI837",
+  "ASBIE1750",
+  "ASBIE1753",
+  "eFTI1751",
+  "eFTI1752",
+  "eFTI170",
+  "ASBIE1061",
+  "ASBIE1062",
+  "eFTI195",
+  "eFTI196",
+  "ASBIE1063",
+  "eFTI200",
+  "eFTI198",
+  "ASBIE1064",
+  "eFTI218",
+  "eFTI219",
+  "eFTI263",
+  "eFTI264",
+  "eFTI265",
+  "eFTI266",
+  "eFTI392",
+  "eFTI401",
+  "eFTI461",
+  "eFTI529",
+  "ASBIE1112",
+  "ASBIE1113",
+  "eFTI622",
+  "eFTI623",
+  "ASBIE1124",
+  "eFTI692",
+  "eFTI693",
+  "eFTI820",
+  "eFTI821",
+  "ASBIE1132",
+  "eFTI844",
+  "eFTI845",
+  "eFTI846",
+  "eFTI848",
+  "eFTI850",
+  "eFTI851"
+ ],
+ "rows": {
+  "ASBIE1026": {
+   "h": 0,
+   "type": "ABIE",
+   "EU01": {
+    "status": "SI",
+    "rule": "",
+    "codes": ""
+   },
+   "EU02": {
+    "status": "SI",
+    "rule": "",
+    "codes": ""
+   },
+   "EU03": {
+    "status": "SI",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05a": {
+    "status": "SI",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05b": {
+    "status": "SI",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05c": {
+    "status": "SI",
+    "rule": "",
+    "codes": ""
+   },
+   "EU06": {
+    "status": "SI",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "ASBIE1027": {
+   "h": 1,
+   "type": "ASBIE",
+   "EU01": {
+    "status": "SI",
+    "rule": "",
+    "codes": ""
+   },
+   "EU02": {
+    "status": "SI",
+    "rule": "",
+    "codes": ""
+   },
+   "EU03": {
+    "status": "SI",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05a": {
+    "status": "SI",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05b": {
+    "status": "SI",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05c": {
+    "status": "SI",
+    "rule": "",
+    "codes": ""
+   },
+   "EU06": {
+    "status": "SI",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "eFTI39": {
+   "h": 2,
+   "type": "BBIE",
+   "EU01": {
+    "status": "M",
+    "rule": "",
+    "codes": ""
+   },
+   "EU02": {
+    "status": "M",
+    "rule": "",
+    "codes": ""
+   },
+   "EU03": {
+    "status": "M",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "eFTI40": {
+   "h": 3,
+   "type": "SC",
+   "EU01": {
+    "status": "D*",
+    "rule": "",
+    "codes": ""
+   },
+   "EU02": {
+    "status": "D*",
+    "rule": "",
+    "codes": ""
+   },
+   "EU03": {
+    "status": "D*",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "eFTI41": {
+   "h": 2,
+   "type": "BBIE",
+   "EU01": {
+    "status": "C",
+    "rule": "",
+    "codes": ""
+   },
+   "EU02": {
+    "status": "C",
+    "rule": "",
+    "codes": ""
+   },
+   "EU03": {
+    "status": "C",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "eFTI42": {
+   "h": 3,
+   "type": "SC",
+   "EU01": {
+    "status": "D*",
+    "rule": "",
+    "codes": ""
+   },
+   "EU02": {
+    "status": "D*",
+    "rule": "",
+    "codes": ""
+   },
+   "EU03": {
+    "status": "D*",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "eFTI45": {
+   "h": 2,
+   "type": "BBIE",
+   "EU01": {
+    "status": "C",
+    "rule": "",
+    "codes": ""
+   },
+   "EU02": {
+    "status": "C",
+    "rule": "",
+    "codes": ""
+   },
+   "EU03": {
+    "status": "C",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "eFTI46": {
+   "h": 3,
+   "type": "SC",
+   "EU01": {
+    "status": "D*",
+    "rule": "",
+    "codes": ""
+   },
+   "EU02": {
+    "status": "D*",
+    "rule": "",
+    "codes": ""
+   },
+   "EU03": {
+    "status": "D*",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "ASBIE1028": {
+   "h": 2,
+   "type": "ASBIE",
+   "EU01": {
+    "status": "SI",
+    "rule": "",
+    "codes": ""
+   },
+   "EU02": {
+    "status": "SI",
+    "rule": "",
+    "codes": ""
+   },
+   "EU03": {
+    "status": "SI",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05a": {
+    "status": "SI",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05b": {
+    "status": "SI",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05c": {
+    "status": "SI",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "eFTI49": {
+   "h": 3,
+   "type": "BBIE",
+   "EU01": {
+    "status": "O",
+    "rule": "",
+    "codes": ""
+   },
+   "EU02": {
+    "status": "O",
+    "rule": "",
+    "codes": ""
+   },
+   "EU03": {
+    "status": "O",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05a": {
+    "status": "O",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05b": {
+    "status": "O",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05c": {
+    "status": "O",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "eFTI50": {
+   "h": 4,
+   "type": "SC",
+   "EU01": {
+    "status": "D*",
+    "rule": "",
+    "codes": ""
+   },
+   "EU02": {
+    "status": "D*",
+    "rule": "",
+    "codes": ""
+   },
+   "EU03": {
+    "status": "D*",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05a": {
+    "status": "D*",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05b": {
+    "status": "D*",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05c": {
+    "status": "D*",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "eFTI51": {
+   "h": 3,
+   "type": "BBIE",
+   "EU01": {
+    "status": "O",
+    "rule": "",
+    "codes": ""
+   },
+   "EU02": {
+    "status": "O",
+    "rule": "",
+    "codes": ""
+   },
+   "EU03": {
+    "status": "O",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05a": {
+    "status": "O",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05b": {
+    "status": "O",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05c": {
+    "status": "O",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "ASBIE1029": {
+   "h": 3,
+   "type": "ASBIE",
+   "EU01": {
+    "status": "SI",
+    "rule": "",
+    "codes": ""
+   },
+   "EU02": {
+    "status": "SI",
+    "rule": "",
+    "codes": ""
+   },
+   "EU03": {
+    "status": "SI",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "ASBIE1030": {
+   "h": 4,
+   "type": "ASBIE",
+   "EU01": {
+    "status": "SI",
+    "rule": "",
+    "codes": ""
+   },
+   "EU02": {
+    "status": "SI",
+    "rule": "",
+    "codes": ""
+   },
+   "EU03": {
+    "status": "SI",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "eFTI52": {
+   "h": 5,
+   "type": "BBIE",
+   "EU01": {
+    "status": "O",
+    "rule": "",
+    "codes": ""
+   },
+   "EU02": {
+    "status": "O",
+    "rule": "",
+    "codes": ""
+   },
+   "EU03": {
+    "status": "O",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "ASBIE1031": {
+   "h": 4,
+   "type": "ASBIE",
+   "EU01": {
+    "status": "SI",
+    "rule": "",
+    "codes": ""
+   },
+   "EU02": {
+    "status": "SI",
+    "rule": "",
+    "codes": ""
+   },
+   "EU03": {
+    "status": "SI",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "eFTI53": {
+   "h": 5,
+   "type": "BBIE",
+   "EU01": {
+    "status": "O",
+    "rule": "",
+    "codes": ""
+   },
+   "EU02": {
+    "status": "O",
+    "rule": "",
+    "codes": ""
+   },
+   "EU03": {
+    "status": "O",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "ASBIE1032": {
+   "h": 3,
+   "type": "ASBIE",
+   "EU01": {
+    "status": "SI",
+    "rule": "",
+    "codes": ""
+   },
+   "EU02": {
+    "status": "SI",
+    "rule": "",
+    "codes": ""
+   },
+   "EU03": {
+    "status": "SI",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05a": {
+    "status": "SI",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05b": {
+    "status": "SI",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05c": {
+    "status": "SI",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "eFTI54": {
+   "h": 4,
+   "type": "BBIE",
+   "EU01": {
+    "status": "M",
+    "rule": "",
+    "codes": ""
+   },
+   "EU02": {
+    "status": "M",
+    "rule": "",
+    "codes": ""
+   },
+   "EU03": {
+    "status": "M",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05a": {
+    "status": "M",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05b": {
+    "status": "M",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05c": {
+    "status": "M",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "eFTI55": {
+   "h": 4,
+   "type": "BBIE",
+   "EU01": {
+    "status": "M",
+    "rule": "",
+    "codes": ""
+   },
+   "EU02": {
+    "status": "M",
+    "rule": "",
+    "codes": ""
+   },
+   "EU03": {
+    "status": "M",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05a": {
+    "status": "M",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05b": {
+    "status": "M",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05c": {
+    "status": "M",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "eFTI56": {
+   "h": 4,
+   "type": "BBIE",
+   "EU01": {
+    "status": "M",
+    "rule": "",
+    "codes": ""
+   },
+   "EU02": {
+    "status": "M",
+    "rule": "",
+    "codes": ""
+   },
+   "EU03": {
+    "status": "M",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05a": {
+    "status": "M",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05b": {
+    "status": "M",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05c": {
+    "status": "M",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "eFTI57": {
+   "h": 4,
+   "type": "BBIE",
+   "EU01": {
+    "status": "M",
+    "rule": "",
+    "codes": ""
+   },
+   "EU02": {
+    "status": "M",
+    "rule": "",
+    "codes": ""
+   },
+   "EU03": {
+    "status": "M",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05a": {
+    "status": "M",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05b": {
+    "status": "M",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05c": {
+    "status": "M",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "eFTI58": {
+   "h": 4,
+   "type": "BBIE",
+   "EU01": {
+    "status": "M",
+    "rule": "",
+    "codes": ""
+   },
+   "EU02": {
+    "status": "M",
+    "rule": "",
+    "codes": ""
+   },
+   "EU03": {
+    "status": "M",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05a": {
+    "status": "M",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05b": {
+    "status": "M",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05c": {
+    "status": "M",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "eFTI59": {
+   "h": 4,
+   "type": "BBIE",
+   "EU01": {
+    "status": "M",
+    "rule": "",
+    "codes": ""
+   },
+   "EU02": {
+    "status": "M",
+    "rule": "",
+    "codes": ""
+   },
+   "EU03": {
+    "status": "M",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05a": {
+    "status": "M",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05b": {
+    "status": "M",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05c": {
+    "status": "M",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "eFTI60": {
+   "h": 4,
+   "type": "BBIE",
+   "EU01": {
+    "status": "M",
+    "rule": "",
+    "codes": ""
+   },
+   "EU02": {
+    "status": "M",
+    "rule": "",
+    "codes": ""
+   },
+   "EU03": {
+    "status": "M",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05a": {
+    "status": "M",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05b": {
+    "status": "M",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05c": {
+    "status": "M",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "eFTI61": {
+   "h": 4,
+   "type": "BBIE",
+   "EU01": {
+    "status": "M",
+    "rule": "",
+    "codes": ""
+   },
+   "EU02": {
+    "status": "M",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05a": {
+    "status": "M",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05b": {
+    "status": "M",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05c": {
+    "status": "M",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "eFTI62": {
+   "h": 4,
+   "type": "BBIE",
+   "EU01": {
+    "status": "M",
+    "rule": "",
+    "codes": ""
+   },
+   "EU02": {
+    "status": "M",
+    "rule": "",
+    "codes": ""
+   },
+   "EU03": {
+    "status": "M",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05a": {
+    "status": "M",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05b": {
+    "status": "M",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05c": {
+    "status": "M",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "ASBIE1033": {
+   "h": 3,
+   "type": "ASBIE",
+   "EU03": {
+    "status": "SI",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "eFTI65": {
+   "h": 4,
+   "type": "BBIE",
+   "EU03": {
+    "status": "M",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "ASBIE1034": {
+   "h": 2,
+   "type": "ASBIE",
+   "EU03": {
+    "status": "SI",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05a": {
+    "status": "SI",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05b": {
+    "status": "SI",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05c": {
+    "status": "SI",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "eFTI66": {
+   "h": 3,
+   "type": "BBIE",
+   "EU05a": {
+    "status": "O",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05b": {
+    "status": "O",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05c": {
+    "status": "O",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "eFTI67": {
+   "h": 4,
+   "type": "SC",
+   "EU05a": {
+    "status": "D*",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05b": {
+    "status": "D*",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05c": {
+    "status": "D*",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "eFTI68": {
+   "h": 3,
+   "type": "BBIE",
+   "EU03": {
+    "status": "M",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05a": {
+    "status": "C",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05b": {
+    "status": "C",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05c": {
+    "status": "C",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "ASBIE1035": {
+   "h": 3,
+   "type": "ASBIE",
+   "EU05a": {
+    "status": "SI",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05b": {
+    "status": "SI",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05c": {
+    "status": "SI",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "eFTI69": {
+   "h": 4,
+   "type": "BBIE",
+   "EU05a": {
+    "status": "C",
+    "rule": "BR-037",
+    "codes": ""
+   },
+   "EU05b": {
+    "status": "C",
+    "rule": "BR-037",
+    "codes": ""
+   },
+   "EU05c": {
+    "status": "C",
+    "rule": "BR-037",
+    "codes": ""
+   }
+  },
+  "ASBIE1036": {
+   "h": 4,
+   "type": "ASBIE",
+   "EU05a": {
+    "status": "SI",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05b": {
+    "status": "SI",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05c": {
+    "status": "SI",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "eFTI71": {
+   "h": 5,
+   "type": "BBIE",
+   "EU05a": {
+    "status": "C",
+    "rule": "BR-037",
+    "codes": ""
+   },
+   "EU05b": {
+    "status": "C",
+    "rule": "BR-037",
+    "codes": ""
+   },
+   "EU05c": {
+    "status": "C",
+    "rule": "BR-037",
+    "codes": ""
+   }
+  },
+  "ASBIE1037": {
+   "h": 3,
+   "type": "ASBIE",
+   "EU03": {
+    "status": "SI",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05a": {
+    "status": "SI",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05b": {
+    "status": "SI",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05c": {
+    "status": "SI",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "eFTI72": {
+   "h": 4,
+   "type": "BBIE",
+   "EU03": {
+    "status": "M",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05a": {
+    "status": "C",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05b": {
+    "status": "C",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05c": {
+    "status": "C",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "eFTI73": {
+   "h": 4,
+   "type": "BBIE",
+   "EU03": {
+    "status": "M",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05a": {
+    "status": "C",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05b": {
+    "status": "C",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05c": {
+    "status": "C",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "eFTI74": {
+   "h": 4,
+   "type": "BBIE",
+   "EU03": {
+    "status": "M",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05a": {
+    "status": "C",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05b": {
+    "status": "C",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05c": {
+    "status": "C",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "eFTI75": {
+   "h": 4,
+   "type": "BBIE",
+   "EU03": {
+    "status": "M",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05a": {
+    "status": "C",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05b": {
+    "status": "C",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05c": {
+    "status": "C",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "eFTI76": {
+   "h": 4,
+   "type": "BBIE",
+   "EU03": {
+    "status": "M",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05a": {
+    "status": "C",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05b": {
+    "status": "C",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05c": {
+    "status": "C",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "eFTI77": {
+   "h": 4,
+   "type": "BBIE",
+   "EU03": {
+    "status": "M",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05a": {
+    "status": "C",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05b": {
+    "status": "C",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05c": {
+    "status": "C",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "eFTI78": {
+   "h": 4,
+   "type": "BBIE",
+   "EU03": {
+    "status": "M",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05a": {
+    "status": "C",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05b": {
+    "status": "C",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05c": {
+    "status": "C",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "eFTI81": {
+   "h": 4,
+   "type": "BBIE",
+   "EU03": {
+    "status": "M",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05a": {
+    "status": "C",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05b": {
+    "status": "C",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05c": {
+    "status": "C",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "ASBIE1038": {
+   "h": 3,
+   "type": "ASBIE",
+   "EU03": {
+    "status": "SI",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "eFTI84": {
+   "h": 4,
+   "type": "BBIE",
+   "EU03": {
+    "status": "M",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "ASBIE1039": {
+   "h": 2,
+   "type": "ASBIE",
+   "EU03": {
+    "status": "SI",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05a": {
+    "status": "SI",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05b": {
+    "status": "SI",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05c": {
+    "status": "SI",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "eFTI85": {
+   "h": 3,
+   "type": "BBIE",
+   "EU03": {
+    "status": "C",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05a": {
+    "status": "C",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05b": {
+    "status": "C",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05c": {
+    "status": "C",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "eFTI86": {
+   "h": 4,
+   "type": "SC",
+   "EU03": {
+    "status": "D*",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05a": {
+    "status": "D*",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05b": {
+    "status": "D*",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05c": {
+    "status": "D*",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "eFTI87": {
+   "h": 3,
+   "type": "BBIE",
+   "EU03": {
+    "status": "M",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05a": {
+    "status": "O",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05b": {
+    "status": "O",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05c": {
+    "status": "O",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "eFTI88": {
+   "h": 3,
+   "type": "BBIE",
+   "EU03": {
+    "status": "O",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "ASBIE1040": {
+   "h": 3,
+   "type": "ASBIE",
+   "EU05a": {
+    "status": "SI",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05b": {
+    "status": "SI",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05c": {
+    "status": "SI",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "eFTI89": {
+   "h": 4,
+   "type": "BBIE",
+   "EU05a": {
+    "status": "O",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05b": {
+    "status": "O",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05c": {
+    "status": "O",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "ASBIE1041": {
+   "h": 4,
+   "type": "ASBIE",
+   "EU05a": {
+    "status": "SI",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05b": {
+    "status": "SI",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05c": {
+    "status": "SI",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "eFTI91": {
+   "h": 5,
+   "type": "BBIE",
+   "EU05a": {
+    "status": "O",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05b": {
+    "status": "O",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05c": {
+    "status": "O",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "ASBIE1044": {
+   "h": 3,
+   "type": "ASBIE",
+   "EU03": {
+    "status": "SI",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05a": {
+    "status": "SI",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05b": {
+    "status": "SI",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05c": {
+    "status": "SI",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "eFTI98": {
+   "h": 4,
+   "type": "BBIE",
+   "EU03": {
+    "status": "M",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05a": {
+    "status": "O",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05b": {
+    "status": "O",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05c": {
+    "status": "O",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "eFTI99": {
+   "h": 4,
+   "type": "BBIE",
+   "EU03": {
+    "status": "M",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05a": {
+    "status": "O",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05b": {
+    "status": "O",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05c": {
+    "status": "O",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "eFTI100": {
+   "h": 4,
+   "type": "BBIE",
+   "EU03": {
+    "status": "M",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05a": {
+    "status": "O",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05b": {
+    "status": "O",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05c": {
+    "status": "O",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "eFTI101": {
+   "h": 4,
+   "type": "BBIE",
+   "EU03": {
+    "status": "M",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05a": {
+    "status": "O",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05b": {
+    "status": "O",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05c": {
+    "status": "O",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "eFTI102": {
+   "h": 4,
+   "type": "BBIE",
+   "EU03": {
+    "status": "M",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05a": {
+    "status": "O",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05b": {
+    "status": "O",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05c": {
+    "status": "O",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "eFTI103": {
+   "h": 4,
+   "type": "BBIE",
+   "EU03": {
+    "status": "M",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05a": {
+    "status": "O",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05b": {
+    "status": "O",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05c": {
+    "status": "O",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "eFTI104": {
+   "h": 4,
+   "type": "BBIE",
+   "EU03": {
+    "status": "M",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05a": {
+    "status": "O",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05b": {
+    "status": "O",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05c": {
+    "status": "O",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "eFTI106": {
+   "h": 4,
+   "type": "BBIE",
+   "EU03": {
+    "status": "M",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05a": {
+    "status": "O",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05b": {
+    "status": "O",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05c": {
+    "status": "O",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "ASBIE1045": {
+   "h": 3,
+   "type": "ASBIE",
+   "EU03": {
+    "status": "SI",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "eFTI115": {
+   "h": 4,
+   "type": "BBIE",
+   "EU03": {
+    "status": "M",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "ASBIE1048": {
+   "h": 2,
+   "type": "ASBIE",
+   "EU01": {
+    "status": "SI",
+    "rule": "",
+    "codes": ""
+   },
+   "EU02": {
+    "status": "SI",
+    "rule": "",
+    "codes": ""
+   },
+   "EU03": {
+    "status": "SI",
+    "rule": "",
+    "codes": ""
+   },
+   "EU06": {
+    "status": "SI",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "eFTI136": {
+   "h": 3,
+   "type": "BBIE",
+   "EU01": {
+    "status": "C",
+    "rule": "",
+    "codes": ""
+   },
+   "EU02": {
+    "status": "C",
+    "rule": "",
+    "codes": ""
+   },
+   "EU03": {
+    "status": "C",
+    "rule": "",
+    "codes": ""
+   },
+   "EU06": {
+    "status": "O",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "eFTI137": {
+   "h": 4,
+   "type": "SC",
+   "EU01": {
+    "status": "D*",
+    "rule": "",
+    "codes": ""
+   },
+   "EU02": {
+    "status": "D*",
+    "rule": "",
+    "codes": ""
+   },
+   "EU03": {
+    "status": "D*",
+    "rule": "",
+    "codes": ""
+   },
+   "EU06": {
+    "status": "D*",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "eFTI138": {
+   "h": 3,
+   "type": "BBIE",
+   "EU01": {
+    "status": "C",
+    "rule": "",
+    "codes": ""
+   },
+   "EU02": {
+    "status": "C",
+    "rule": "",
+    "codes": ""
+   },
+   "EU03": {
+    "status": "C",
+    "rule": "",
+    "codes": ""
+   },
+   "EU06": {
+    "status": "O",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "ASBIE1049": {
+   "h": 3,
+   "type": "ASBIE",
+   "EU01": {
+    "status": "SI",
+    "rule": "",
+    "codes": ""
+   },
+   "EU02": {
+    "status": "SI",
+    "rule": "",
+    "codes": ""
+   },
+   "EU03": {
+    "status": "SI",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "eFTI139": {
+   "h": 4,
+   "type": "BBIE",
+   "EU01": {
+    "status": "C",
+    "rule": "",
+    "codes": ""
+   },
+   "EU02": {
+    "status": "C",
+    "rule": "",
+    "codes": ""
+   },
+   "EU03": {
+    "status": "C",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "eFTI140": {
+   "h": 4,
+   "type": "BBIE",
+   "EU01": {
+    "status": "C",
+    "rule": "",
+    "codes": ""
+   },
+   "EU02": {
+    "status": "C",
+    "rule": "",
+    "codes": ""
+   },
+   "EU03": {
+    "status": "C",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "ASBIE1050": {
+   "h": 3,
+   "type": "ASBIE",
+   "EU01": {
+    "status": "SI",
+    "rule": "",
+    "codes": ""
+   },
+   "EU02": {
+    "status": "SI",
+    "rule": "",
+    "codes": ""
+   },
+   "EU03": {
+    "status": "SI",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "eFTI141": {
+   "h": 4,
+   "type": "BBIE",
+   "EU01": {
+    "status": "M",
+    "rule": "",
+    "codes": ""
+   },
+   "EU02": {
+    "status": "M",
+    "rule": "",
+    "codes": ""
+   },
+   "EU03": {
+    "status": "M",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "eFTI144": {
+   "h": 4,
+   "type": "BBIE",
+   "EU01": {
+    "status": "M",
+    "rule": "",
+    "codes": ""
+   },
+   "EU02": {
+    "status": "M",
+    "rule": "",
+    "codes": ""
+   },
+   "EU03": {
+    "status": "M",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "eFTI145": {
+   "h": 4,
+   "type": "BBIE",
+   "EU01": {
+    "status": "M",
+    "rule": "",
+    "codes": ""
+   },
+   "EU02": {
+    "status": "M",
+    "rule": "",
+    "codes": ""
+   },
+   "EU03": {
+    "status": "M",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "eFTI146": {
+   "h": 4,
+   "type": "BBIE",
+   "EU01": {
+    "status": "M",
+    "rule": "",
+    "codes": ""
+   },
+   "EU02": {
+    "status": "M",
+    "rule": "",
+    "codes": ""
+   },
+   "EU03": {
+    "status": "M",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "eFTI147": {
+   "h": 4,
+   "type": "BBIE",
+   "EU01": {
+    "status": "M",
+    "rule": "",
+    "codes": ""
+   },
+   "EU02": {
+    "status": "M",
+    "rule": "",
+    "codes": ""
+   },
+   "EU03": {
+    "status": "M",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "eFTI148": {
+   "h": 4,
+   "type": "BBIE",
+   "EU01": {
+    "status": "M",
+    "rule": "",
+    "codes": ""
+   },
+   "EU02": {
+    "status": "M",
+    "rule": "",
+    "codes": ""
+   },
+   "EU03": {
+    "status": "M",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "eFTI151": {
+   "h": 4,
+   "type": "BBIE",
+   "EU01": {
+    "status": "M",
+    "rule": "",
+    "codes": ""
+   },
+   "EU02": {
+    "status": "M",
+    "rule": "",
+    "codes": ""
+   },
+   "EU03": {
+    "status": "M",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "ASBIE1051": {
+   "h": 2,
+   "type": "ASBIE",
+   "EU01": {
+    "status": "SI",
+    "rule": "",
+    "codes": ""
+   },
+   "EU02": {
+    "status": "SI",
+    "rule": "",
+    "codes": ""
+   },
+   "EU03": {
+    "status": "SI",
+    "rule": "",
+    "codes": ""
+   },
+   "EU06": {
+    "status": "SI",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "eFTI152": {
+   "h": 3,
+   "type": "BBIE",
+   "EU01": {
+    "status": "O",
+    "rule": "",
+    "codes": ""
+   },
+   "EU02": {
+    "status": "C",
+    "rule": "",
+    "codes": ""
+   },
+   "EU03": {
+    "status": "O",
+    "rule": "",
+    "codes": ""
+   },
+   "EU06": {
+    "status": "O",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "eFTI153": {
+   "h": 4,
+   "type": "SC",
+   "EU01": {
+    "status": "D*",
+    "rule": "",
+    "codes": ""
+   },
+   "EU02": {
+    "status": "D*",
+    "rule": "",
+    "codes": ""
+   },
+   "EU03": {
+    "status": "D*",
+    "rule": "",
+    "codes": ""
+   },
+   "EU06": {
+    "status": "D*",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "eFTI154": {
+   "h": 3,
+   "type": "BBIE",
+   "EU01": {
+    "status": "C",
+    "rule": "",
+    "codes": ""
+   },
+   "EU02": {
+    "status": "C",
+    "rule": "",
+    "codes": ""
+   },
+   "EU03": {
+    "status": "C",
+    "rule": "",
+    "codes": ""
+   },
+   "EU06": {
+    "status": "O",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "ASBIE1052": {
+   "h": 3,
+   "type": "ASBIE",
+   "EU01": {
+    "status": "SI",
+    "rule": "",
+    "codes": ""
+   },
+   "EU02": {
+    "status": "SI",
+    "rule": "",
+    "codes": ""
+   },
+   "EU03": {
+    "status": "SI",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "eFTI155": {
+   "h": 4,
+   "type": "BBIE",
+   "EU01": {
+    "status": "C",
+    "rule": "",
+    "codes": ""
+   },
+   "EU02": {
+    "status": "C",
+    "rule": "",
+    "codes": ""
+   },
+   "EU03": {
+    "status": "C",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "eFTI156": {
+   "h": 4,
+   "type": "BBIE",
+   "EU01": {
+    "status": "C",
+    "rule": "",
+    "codes": ""
+   },
+   "EU02": {
+    "status": "C",
+    "rule": "",
+    "codes": ""
+   },
+   "EU03": {
+    "status": "C",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "ASBIE1053": {
+   "h": 3,
+   "type": "ASBIE",
+   "EU01": {
+    "status": "SI",
+    "rule": "",
+    "codes": ""
+   },
+   "EU02": {
+    "status": "SI",
+    "rule": "",
+    "codes": ""
+   },
+   "EU03": {
+    "status": "SI",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "eFTI157": {
+   "h": 4,
+   "type": "BBIE",
+   "EU01": {
+    "status": "M",
+    "rule": "",
+    "codes": ""
+   },
+   "EU02": {
+    "status": "M",
+    "rule": "",
+    "codes": ""
+   },
+   "EU03": {
+    "status": "M",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "eFTI160": {
+   "h": 4,
+   "type": "BBIE",
+   "EU01": {
+    "status": "M",
+    "rule": "",
+    "codes": ""
+   },
+   "EU02": {
+    "status": "M",
+    "rule": "",
+    "codes": ""
+   },
+   "EU03": {
+    "status": "M",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "eFTI161": {
+   "h": 4,
+   "type": "BBIE",
+   "EU01": {
+    "status": "M",
+    "rule": "",
+    "codes": ""
+   },
+   "EU02": {
+    "status": "M",
+    "rule": "",
+    "codes": ""
+   },
+   "EU03": {
+    "status": "M",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "eFTI162": {
+   "h": 4,
+   "type": "BBIE",
+   "EU01": {
+    "status": "M",
+    "rule": "",
+    "codes": ""
+   },
+   "EU02": {
+    "status": "M",
+    "rule": "",
+    "codes": ""
+   },
+   "EU03": {
+    "status": "M",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "eFTI163": {
+   "h": 4,
+   "type": "BBIE",
+   "EU01": {
+    "status": "M",
+    "rule": "",
+    "codes": ""
+   },
+   "EU02": {
+    "status": "M",
+    "rule": "",
+    "codes": ""
+   },
+   "EU03": {
+    "status": "M",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "eFTI164": {
+   "h": 4,
+   "type": "BBIE",
+   "EU01": {
+    "status": "M",
+    "rule": "",
+    "codes": ""
+   },
+   "EU02": {
+    "status": "M",
+    "rule": "",
+    "codes": ""
+   },
+   "EU03": {
+    "status": "M",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "eFTI167": {
+   "h": 4,
+   "type": "BBIE",
+   "EU01": {
+    "status": "M",
+    "rule": "",
+    "codes": ""
+   },
+   "EU02": {
+    "status": "M",
+    "rule": "",
+    "codes": ""
+   },
+   "EU03": {
+    "status": "M",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "ASBIE1055": {
+   "h": 2,
+   "type": "ASBIE",
+   "EU01": {
+    "status": "SI",
+    "rule": "",
+    "codes": ""
+   },
+   "EU02": {
+    "status": "SI",
+    "rule": "",
+    "codes": ""
+   },
+   "EU06": {
+    "status": "SI",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "eFTI168": {
+   "h": 3,
+   "type": "BBIE",
+   "EU01": {
+    "status": "O",
+    "rule": "",
+    "codes": ""
+   },
+   "EU02": {
+    "status": "O",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "eFTI169": {
+   "h": 3,
+   "type": "BBIE",
+   "EU01": {
+    "status": "O",
+    "rule": "",
+    "codes": ""
+   },
+   "EU02": {
+    "status": "M",
+    "rule": "",
+    "codes": ""
+   },
+   "EU06": {
+    "status": "M",
+    "rule": "BR-121",
+    "codes": "741, 714"
+   }
+  },
+  "ASBIE1058": {
+   "h": 2,
+   "type": "ASBIE",
+   "EU03": {
+    "status": "SI",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "eFTI188": {
+   "h": 3,
+   "type": "BBIE",
+   "EU03": {
+    "status": "C",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "eFTI189": {
+   "h": 4,
+   "type": "SC",
+   "EU03": {
+    "status": "D*",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "ASBIE1065": {
+   "h": 2,
+   "type": "ASBIE",
+   "EU03": {
+    "status": "SI",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05a": {
+    "status": "SI",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05b": {
+    "status": "SI",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05c": {
+    "status": "SI",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "eFTI971": {
+   "h": 3,
+   "type": "BBIE",
+   "EU05a": {
+    "status": "C",
+    "rule": "BR-052",
+    "codes": ""
+   },
+   "EU05b": {
+    "status": "C",
+    "rule": "BR-052",
+    "codes": ""
+   },
+   "EU05c": {
+    "status": "C",
+    "rule": "BR-052",
+    "codes": ""
+   }
+  },
+  "eFTI972": {
+   "h": 4,
+   "type": "SC",
+   "EU05a": {
+    "status": "D*",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05b": {
+    "status": "D*",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05c": {
+    "status": "D*",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "ASBIE1066": {
+   "h": 3,
+   "type": "ASBIE",
+   "EU03": {
+    "status": "SI",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05a": {
+    "status": "SI",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05b": {
+    "status": "SI",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05c": {
+    "status": "SI",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "eFTI232": {
+   "h": 4,
+   "type": "BBIE",
+   "EU03": {
+    "status": "M",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05a": {
+    "status": "C",
+    "rule": "BR-036",
+    "codes": ""
+   },
+   "EU05b": {
+    "status": "M",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05c": {
+    "status": "C",
+    "rule": "BR-036",
+    "codes": ""
+   }
+  },
+  "eFTI235": {
+   "h": 4,
+   "type": "BBIE",
+   "EU03": {
+    "status": "O",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05b": {
+    "status": "M",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05c": {
+    "status": "C",
+    "rule": "BR-036",
+    "codes": ""
+   }
+  },
+  "eFTI236": {
+   "h": 4,
+   "type": "BBIE",
+   "EU05a": {
+    "status": "C",
+    "rule": "BR-039",
+    "codes": ""
+   },
+   "EU05b": {
+    "status": "C",
+    "rule": "BR-039",
+    "codes": ""
+   },
+   "EU05c": {
+    "status": "C",
+    "rule": "BR-039",
+    "codes": ""
+   }
+  },
+  "eFTI238": {
+   "h": 4,
+   "type": "BBIE",
+   "EU05a": {
+    "status": "C",
+    "rule": "BR-101",
+    "codes": ""
+   },
+   "EU05b": {
+    "status": "C",
+    "rule": "BR-101",
+    "codes": ""
+   },
+   "EU05c": {
+    "status": "C",
+    "rule": "BR-101",
+    "codes": ""
+   }
+  },
+  "eFTI239": {
+   "h": 5,
+   "type": "SC",
+   "EU05a": {
+    "status": "D*",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05b": {
+    "status": "D*",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05c": {
+    "status": "D*",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "eFTI240": {
+   "h": 4,
+   "type": "BBIE",
+   "EU05b": {
+    "status": "C",
+    "rule": "BR-036",
+    "codes": ""
+   },
+   "EU05c": {
+    "status": "C",
+    "rule": "BR-036",
+    "codes": ""
+   }
+  },
+  "eFTI241": {
+   "h": 5,
+   "type": "SC",
+   "EU05b": {
+    "status": "D*",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05c": {
+    "status": "D*",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "eFTI242": {
+   "h": 4,
+   "type": "BBIE",
+   "EU05a": {
+    "status": "C",
+    "rule": "BR-081",
+    "codes": ""
+   },
+   "EU05b": {
+    "status": "C",
+    "rule": "BR-081",
+    "codes": ""
+   },
+   "EU05c": {
+    "status": "C",
+    "rule": "BR-081",
+    "codes": ""
+   }
+  },
+  "eFTI243": {
+   "h": 4,
+   "type": "BBIE",
+   "EU05a": {
+    "status": "C",
+    "rule": "BR-101",
+    "codes": ""
+   },
+   "EU05b": {
+    "status": "C",
+    "rule": "BR-101",
+    "codes": ""
+   },
+   "EU05c": {
+    "status": "C",
+    "rule": "BR-101",
+    "codes": ""
+   }
+  },
+  "eFTI244": {
+   "h": 5,
+   "type": "SC",
+   "EU05a": {
+    "status": "D*",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05b": {
+    "status": "D*",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05c": {
+    "status": "D*",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "eFTI247": {
+   "h": 4,
+   "type": "BBIE",
+   "EU05a": {
+    "status": "C",
+    "rule": "BR-101",
+    "codes": ""
+   },
+   "EU05b": {
+    "status": "C",
+    "rule": "BR-101",
+    "codes": ""
+   },
+   "EU05c": {
+    "status": "C",
+    "rule": "BR-101",
+    "codes": ""
+   }
+  },
+  "eFTI248": {
+   "h": 5,
+   "type": "SC",
+   "EU05a": {
+    "status": "D*",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05b": {
+    "status": "D*",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05c": {
+    "status": "D*",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "eFTI249": {
+   "h": 4,
+   "type": "BBIE",
+   "EU05a": {
+    "status": "C",
+    "rule": "BR-035",
+    "codes": ""
+   },
+   "EU05b": {
+    "status": "C",
+    "rule": "BR-035",
+    "codes": ""
+   },
+   "EU05c": {
+    "status": "C",
+    "rule": "BR-035",
+    "codes": ""
+   }
+  },
+  "eFTI250": {
+   "h": 5,
+   "type": "SC",
+   "EU05a": {
+    "status": "D*",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05b": {
+    "status": "D*",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05c": {
+    "status": "D*",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "eFTI251": {
+   "h": 4,
+   "type": "BBIE",
+   "EU03": {
+    "status": "O",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05a": {
+    "status": "C",
+    "rule": "BR-036",
+    "codes": ""
+   },
+   "EU05b": {
+    "status": "C",
+    "rule": "BR-036",
+    "codes": ""
+   },
+   "EU05c": {
+    "status": "M C",
+    "rule": "BR-036",
+    "codes": ""
+   }
+  },
+  "eFTI255": {
+   "h": 4,
+   "type": "BBIE",
+   "EU05a": {
+    "status": "C",
+    "rule": "BR-064",
+    "codes": ""
+   }
+  },
+  "eFTI256": {
+   "h": 4,
+   "type": "BBIE",
+   "EU05a": {
+    "status": "C",
+    "rule": "",
+    "codes": "SP392"
+   },
+   "EU05b": {
+    "status": "C",
+    "rule": "",
+    "codes": "SP392"
+   },
+   "EU05c": {
+    "status": "C",
+    "rule": "",
+    "codes": "SP392"
+   }
+  },
+  "eFTI258": {
+   "h": 4,
+   "type": "BBIE",
+   "EU05a": {
+    "status": "C",
+    "rule": "BR-007",
+    "codes": ""
+   },
+   "EU05b": {
+    "status": "C",
+    "rule": "BR-007",
+    "codes": ""
+   }
+  },
+  "eFTI261": {
+   "h": 4,
+   "type": "BBIE",
+   "EU05b": {
+    "status": "O",
+    "rule": "BR-060",
+    "codes": ""
+   }
+  },
+  "ASBIE1067": {
+   "h": 4,
+   "type": "ASBIE",
+   "EU05a": {
+    "status": "SI",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05c": {
+    "status": "SI",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "eFTI279": {
+   "h": 5,
+   "type": "BBIE",
+   "EU05a": {
+    "status": "C",
+    "rule": "BR-079",
+    "codes": ""
+   },
+   "EU05c": {
+    "status": "C",
+    "rule": "BR-079",
+    "codes": ""
+   }
+  },
+  "eFTI280": {
+   "h": 6,
+   "type": "SC",
+   "EU05a": {
+    "status": "D*",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05c": {
+    "status": "D*",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "eFTI281": {
+   "h": 5,
+   "type": "BBIE",
+   "EU05a": {
+    "status": "C",
+    "rule": "BR-105",
+    "codes": ""
+   },
+   "EU05c": {
+    "status": "C",
+    "rule": "BR-105",
+    "codes": ""
+   }
+  },
+  "ASBIE1068": {
+   "h": 4,
+   "type": "ASBIE",
+   "EU05a": {
+    "status": "SI",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05c": {
+    "status": "SI",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "eFTI283": {
+   "h": 5,
+   "type": "BBIE",
+   "EU05a": {
+    "status": "C",
+    "rule": "BR-079",
+    "codes": ""
+   },
+   "EU05c": {
+    "status": "C",
+    "rule": "BR-079",
+    "codes": ""
+   }
+  },
+  "eFTI284": {
+   "h": 6,
+   "type": "SC",
+   "EU05a": {
+    "status": "D*",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05c": {
+    "status": "D*",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "eFTI285": {
+   "h": 5,
+   "type": "BBIE",
+   "EU05a": {
+    "status": "C",
+    "rule": "BR-105",
+    "codes": ""
+   },
+   "EU05c": {
+    "status": "C",
+    "rule": "BR-105",
+    "codes": ""
+   }
+  },
+  "ASBIE1069": {
+   "h": 4,
+   "type": "ASBIE",
+   "EU05a": {
+    "status": "SI",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05b": {
+    "status": "SI",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05c": {
+    "status": "SI",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "eFTI287": {
+   "h": 5,
+   "type": "BBIE",
+   "EU05a": {
+    "status": "C",
+    "rule": "BR-039",
+    "codes": ""
+   },
+   "EU05b": {
+    "status": "C",
+    "rule": "BR-039",
+    "codes": ""
+   },
+   "EU05c": {
+    "status": "C",
+    "rule": "BR-039",
+    "codes": ""
+   }
+  },
+  "eFTI288": {
+   "h": 5,
+   "type": "BBIE",
+   "EU05a": {
+    "status": "C",
+    "rule": "BR-039",
+    "codes": ""
+   },
+   "EU05b": {
+    "status": "C",
+    "rule": "BR-039",
+    "codes": ""
+   },
+   "EU05c": {
+    "status": "C",
+    "rule": "BR-039",
+    "codes": ""
+   }
+  },
+  "eFTI289": {
+   "h": 5,
+   "type": "BBIE",
+   "EU05a": {
+    "status": "C",
+    "rule": "BR-041",
+    "codes": ""
+   },
+   "EU05b": {
+    "status": "C",
+    "rule": "BR-041",
+    "codes": ""
+   },
+   "EU05c": {
+    "status": "C",
+    "rule": "BR-041",
+    "codes": ""
+   }
+  },
+  "ASBIE1070": {
+   "h": 5,
+   "type": "ASBIE",
+   "EU05a": {
+    "status": "SI",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05b": {
+    "status": "SI",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05c": {
+    "status": "SI",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "eFTI290": {
+   "h": 6,
+   "type": "BBIE",
+   "EU05a": {
+    "status": "C",
+    "rule": "BR-039",
+    "codes": ""
+   },
+   "EU05b": {
+    "status": "C",
+    "rule": "BR-039",
+    "codes": ""
+   },
+   "EU05c": {
+    "status": "C",
+    "rule": "BR-039",
+    "codes": ""
+   }
+  },
+  "eFTI292": {
+   "h": 6,
+   "type": "BBIE",
+   "EU05a": {
+    "status": "C",
+    "rule": "BR-039",
+    "codes": ""
+   },
+   "EU05b": {
+    "status": "C",
+    "rule": "BR-039",
+    "codes": ""
+   },
+   "EU05c": {
+    "status": "C",
+    "rule": "BR-039",
+    "codes": ""
+   }
+  },
+  "eFTI293": {
+   "h": 7,
+   "type": "SC",
+   "EU05a": {
+    "status": "D*",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05b": {
+    "status": "D*",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05c": {
+    "status": "D*",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "ASBIE1073": {
+   "h": 4,
+   "type": "ASBIE",
+   "EU05a": {
+    "status": "SI",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05b": {
+    "status": "SI",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05c": {
+    "status": "SI",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "eFTI296": {
+   "h": 5,
+   "type": "BBIE",
+   "EU05a": {
+    "status": "C",
+    "rule": "BR-026",
+    "codes": ""
+   },
+   "EU05b": {
+    "status": "C",
+    "rule": "BR-026",
+    "codes": ""
+   },
+   "EU05c": {
+    "status": "C",
+    "rule": "BR-026",
+    "codes": ""
+   }
+  },
+  "eFTI297": {
+   "h": 5,
+   "type": "BBIE",
+   "EU05a": {
+    "status": "O",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05b": {
+    "status": "O",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05c": {
+    "status": "O",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "eFTI298": {
+   "h": 5,
+   "type": "BBIE",
+   "EU05a": {
+    "status": "C",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05b": {
+    "status": "C",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05c": {
+    "status": "C",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "ASBIE1074": {
+   "h": 5,
+   "type": "ASBIE",
+   "EU05a": {
+    "status": "SI",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05b": {
+    "status": "SI",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05c": {
+    "status": "SI",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "eFTI301": {
+   "h": 6,
+   "type": "BBIE",
+   "EU05a": {
+    "status": "M",
+    "rule": "BR-088",
+    "codes": ""
+   },
+   "EU05b": {
+    "status": "M",
+    "rule": "BR-088",
+    "codes": ""
+   },
+   "EU05c": {
+    "status": "M",
+    "rule": "BR-088",
+    "codes": ""
+   }
+  },
+  "ASBIE1075": {
+   "h": 5,
+   "type": "ASBIE",
+   "EU05a": {
+    "status": "SI",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05b": {
+    "status": "SI",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05c": {
+    "status": "SI",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "eFTI302": {
+   "h": 6,
+   "type": "BBIE",
+   "EU05a": {
+    "status": "O",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05b": {
+    "status": "O",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05c": {
+    "status": "O",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "eFTI304": {
+   "h": 6,
+   "type": "BBIE",
+   "EU05a": {
+    "status": "O",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05b": {
+    "status": "O",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05c": {
+    "status": "O",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "ASBIE1076": {
+   "h": 5,
+   "type": "ASBIE",
+   "EU05a": {
+    "status": "SI",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05b": {
+    "status": "SI",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05c": {
+    "status": "SI",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "eFTI307": {
+   "h": 6,
+   "type": "BBIE",
+   "EU05a": {
+    "status": "C",
+    "rule": "BR-029",
+    "codes": "38, 39"
+   },
+   "EU05b": {
+    "status": "C",
+    "rule": "BR-029",
+    "codes": "38, 39"
+   },
+   "EU05c": {
+    "status": "C",
+    "rule": "BR-029",
+    "codes": "38, 39"
+   }
+  },
+  "eFTI970": {
+   "h": 6,
+   "type": "BBIE",
+   "EU05a": {
+    "status": "C",
+    "rule": "BR-089",
+    "codes": ""
+   },
+   "EU05b": {
+    "status": "C",
+    "rule": "BR-089",
+    "codes": ""
+   },
+   "EU05c": {
+    "status": "C",
+    "rule": "BR-089",
+    "codes": ""
+   }
+  },
+  "ASBIE1077": {
+   "h": 4,
+   "type": "ASBIE",
+   "EU05a": {
+    "status": "SI",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05b": {
+    "status": "SI",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05c": {
+    "status": "SI",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "eFTI309": {
+   "h": 5,
+   "type": "BBIE",
+   "EU05a": {
+    "status": "C",
+    "rule": "BR-084",
+    "codes": ""
+   },
+   "EU05b": {
+    "status": "C",
+    "rule": "BR-084",
+    "codes": ""
+   },
+   "EU05c": {
+    "status": "C",
+    "rule": "BR-084",
+    "codes": ""
+   }
+  },
+  "eFTI317": {
+   "h": 5,
+   "type": "BBIE",
+   "EU05a": {
+    "status": "O",
+    "rule": "BR-017",
+    "codes": "2"
+   },
+   "EU05b": {
+    "status": "O",
+    "rule": "BR-017",
+    "codes": "2"
+   },
+   "EU05c": {
+    "status": "C",
+    "rule": "BR-078",
+    "codes": "1"
+   }
+  },
+  "eFTI319": {
+   "h": 5,
+   "type": "BBIE",
+   "EU05a": {
+    "status": "C",
+    "rule": "BR-063",
+    "codes": ""
+   },
+   "EU05b": {
+    "status": "C",
+    "rule": "BR-063",
+    "codes": ""
+   },
+   "EU05c": {
+    "status": "C",
+    "rule": "BR-061",
+    "codes": ""
+   }
+  },
+  "ASBIE1078": {
+   "h": 5,
+   "type": "ASBIE",
+   "EU05a": {
+    "status": "SI",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05b": {
+    "status": "SI",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05c": {
+    "status": "SI",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "eFTI320": {
+   "h": 6,
+   "type": "BBIE",
+   "EU05a": {
+    "status": "C",
+    "rule": "BR-055",
+    "codes": ""
+   },
+   "EU05b": {
+    "status": "C",
+    "rule": "BR-055",
+    "codes": ""
+   },
+   "EU05c": {
+    "status": "C",
+    "rule": "BR-055",
+    "codes": ""
+   }
+  },
+  "eFTI321": {
+   "h": 7,
+   "type": "SC",
+   "EU05a": {
+    "status": "D*",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05b": {
+    "status": "D*",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05c": {
+    "status": "D*",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "ASBIE1079": {
+   "h": 4,
+   "type": "ASBIE",
+   "EU05a": {
+    "status": "SI",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05b": {
+    "status": "SI",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05c": {
+    "status": "SI",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "eFTI326": {
+   "h": 5,
+   "type": "BBIE",
+   "EU05a": {
+    "status": "C",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05b": {
+    "status": "C",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05c": {
+    "status": "C",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "eFTI329": {
+   "h": 5,
+   "type": "BBIE",
+   "EU05a": {
+    "status": "C",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05b": {
+    "status": "C",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05c": {
+    "status": "C",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "ASBIE1080": {
+   "h": 4,
+   "type": "ASBIE",
+   "EU05a": {
+    "status": "SI",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05b": {
+    "status": "SI",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05c": {
+    "status": "SI",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "eFTI335": {
+   "h": 5,
+   "type": "BBIE",
+   "EU05a": {
+    "status": "C",
+    "rule": "BR-052",
+    "codes": ""
+   },
+   "EU05b": {
+    "status": "C",
+    "rule": "BR-052",
+    "codes": ""
+   },
+   "EU05c": {
+    "status": "C",
+    "rule": "BR-052",
+    "codes": ""
+   }
+  },
+  "eFTI336": {
+   "h": 5,
+   "type": "BBIE",
+   "EU05a": {
+    "status": "C",
+    "rule": "BR-052",
+    "codes": ""
+   },
+   "EU05b": {
+    "status": "C",
+    "rule": "BR-052",
+    "codes": ""
+   },
+   "EU05c": {
+    "status": "C",
+    "rule": "BR-052",
+    "codes": ""
+   }
+  },
+  "eFTI337": {
+   "h": 6,
+   "type": "SC",
+   "EU05a": {
+    "status": "D*",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05b": {
+    "status": "D*",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05c": {
+    "status": "D*",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "eFTI338": {
+   "h": 5,
+   "type": "BBIE",
+   "EU05a": {
+    "status": "C",
+    "rule": "BR-052",
+    "codes": ""
+   },
+   "EU05b": {
+    "status": "C",
+    "rule": "BR-052",
+    "codes": ""
+   },
+   "EU05c": {
+    "status": "C",
+    "rule": "BR-052",
+    "codes": ""
+   }
+  },
+  "eFTI339": {
+   "h": 6,
+   "type": "SC",
+   "EU05a": {
+    "status": "D*",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05b": {
+    "status": "D*",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05c": {
+    "status": "D*",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "eFTI340": {
+   "h": 5,
+   "type": "BBIE",
+   "EU05a": {
+    "status": "C",
+    "rule": "BR-052",
+    "codes": ""
+   },
+   "EU05b": {
+    "status": "C",
+    "rule": "BR-052",
+    "codes": ""
+   },
+   "EU05c": {
+    "status": "C",
+    "rule": "BR-052",
+    "codes": ""
+   }
+  },
+  "eFTI341": {
+   "h": 6,
+   "type": "SC",
+   "EU05a": {
+    "status": "D*",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05b": {
+    "status": "D*",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05c": {
+    "status": "D*",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "ASBIE1140": {
+   "h": 4,
+   "type": "ASBIE",
+   "EU05a": {
+    "status": "SI",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05b": {
+    "status": "SI",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05c": {
+    "status": "SI",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "eFTI1133": {
+   "h": 5,
+   "type": "BBIE",
+   "EU05a": {
+    "status": "C",
+    "rule": "BR-068",
+    "codes": ""
+   },
+   "EU05b": {
+    "status": "C",
+    "rule": "BR-068",
+    "codes": ""
+   },
+   "EU05c": {
+    "status": "C",
+    "rule": "BR-068",
+    "codes": ""
+   }
+  },
+  "eFTI1134": {
+   "h": 5,
+   "type": "BBIE",
+   "EU05a": {
+    "status": "C",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05b": {
+    "status": "C",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05c": {
+    "status": "C",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "ASBIE1082": {
+   "h": 3,
+   "type": "ASBIE",
+   "EU05a": {
+    "status": "SI",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05b": {
+    "status": "SI",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05c": {
+    "status": "SI",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "eFTI346": {
+   "h": 4,
+   "type": "BBIE",
+   "EU05a": {
+    "status": "C",
+    "rule": "BR-108",
+    "codes": ""
+   },
+   "EU05b": {
+    "status": "C",
+    "rule": "BR-005",
+    "codes": ""
+   },
+   "EU05c": {
+    "status": "C",
+    "rule": "BR-108",
+    "codes": ""
+   }
+  },
+  "eFTI347": {
+   "h": 5,
+   "type": "SC",
+   "EU05a": {
+    "status": "D*",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05b": {
+    "status": "D*",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05c": {
+    "status": "D*",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "ASBIE1086": {
+   "h": 2,
+   "type": "ASBIE",
+   "EU01": {
+    "status": "SI",
+    "rule": "",
+    "codes": ""
+   },
+   "EU02": {
+    "status": "SI",
+    "rule": "",
+    "codes": ""
+   },
+   "EU03": {
+    "status": "SI",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05a": {
+    "status": "SI",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05b": {
+    "status": "SI",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05c": {
+    "status": "SI",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "eFTI374": {
+   "h": 3,
+   "type": "BBIE",
+   "EU01": {
+    "status": "C",
+    "rule": "",
+    "codes": ""
+   },
+   "EU02": {
+    "status": "M",
+    "rule": "",
+    "codes": ""
+   },
+   "EU03": {
+    "status": "M",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05b": {
+    "status": "O",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05c": {
+    "status": "O",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "eFTI375": {
+   "h": 4,
+   "type": "SC",
+   "EU01": {
+    "status": "D*",
+    "rule": "",
+    "codes": ""
+   },
+   "EU02": {
+    "status": "D*",
+    "rule": "",
+    "codes": ""
+   },
+   "EU03": {
+    "status": "D*",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05a": {
+    "status": "D*",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05b": {
+    "status": "D*",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05c": {
+    "status": "D*",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "eFTI378": {
+   "h": 3,
+   "type": "BBIE",
+   "EU01": {
+    "status": "C",
+    "rule": "",
+    "codes": ""
+   },
+   "EU02": {
+    "status": "M",
+    "rule": "",
+    "codes": ""
+   },
+   "EU03": {
+    "status": "M",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05a": {
+    "status": "C",
+    "rule": "BR-030",
+    "codes": ""
+   },
+   "EU05b": {
+    "status": "C",
+    "rule": "BR-030",
+    "codes": ""
+   },
+   "EU05c": {
+    "status": "C",
+    "rule": "BR-030",
+    "codes": ""
+   }
+  },
+  "eFTI379": {
+   "h": 3,
+   "type": "BBIE",
+   "EU05b": {
+    "status": "O",
+    "rule": "BR-059",
+    "codes": ""
+   }
+  },
+  "eFTI380": {
+   "h": 4,
+   "type": "SC",
+   "EU05b": {
+    "status": "D*",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "eFTI382": {
+   "h": 3,
+   "type": "BBIE",
+   "EU05a": {
+    "status": "C",
+    "rule": "BR-027",
+    "codes": "T14, T15"
+   },
+   "EU05b": {
+    "status": "C",
+    "rule": "BR-027",
+    "codes": "T14, T15"
+   },
+   "EU05c": {
+    "status": "C",
+    "rule": "BR-027",
+    "codes": "T14, T15"
+   }
+  },
+  "eFTI987": {
+   "h": 3,
+   "type": "BBIE",
+   "EU05a": {
+    "status": "O",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05b": {
+    "status": "O",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05c": {
+    "status": "O",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "eFTI385": {
+   "h": 3,
+   "type": "BBIE",
+   "EU02": {
+    "status": "O",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05b": {
+    "status": "C",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "eFTI1014": {
+   "h": 3,
+   "type": "BBIE",
+   "EU05a": {
+    "status": "C",
+    "rule": "BR-005",
+    "codes": ""
+   },
+   "EU05b": {
+    "status": "C",
+    "rule": "BR-005",
+    "codes": ""
+   },
+   "EU05c": {
+    "status": "C",
+    "rule": "BR-005",
+    "codes": ""
+   }
+  },
+  "ASBIE1087": {
+   "h": 3,
+   "type": "ASBIE",
+   "EU05a": {
+    "status": "SI",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05b": {
+    "status": "SI",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05c": {
+    "status": "SI",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "eFTI387": {
+   "h": 4,
+   "type": "BBIE",
+   "EU05a": {
+    "status": "C",
+    "rule": "BR-095",
+    "codes": ""
+   },
+   "EU05b": {
+    "status": "C",
+    "rule": "BR-095",
+    "codes": ""
+   },
+   "EU05c": {
+    "status": "C",
+    "rule": "BR-095",
+    "codes": ""
+   }
+  },
+  "eFTI388": {
+   "h": 4,
+   "type": "BBIE",
+   "EU05a": {
+    "status": "C",
+    "rule": "BR-061",
+    "codes": ""
+   },
+   "EU05b": {
+    "status": "C",
+    "rule": "BR-061",
+    "codes": ""
+   },
+   "EU05c": {
+    "status": "C",
+    "rule": "BR-061",
+    "codes": ""
+   }
+  },
+  "eFTI397": {
+   "h": 4,
+   "type": "BBIE",
+   "EU05a": {
+    "status": "C",
+    "rule": "BR-020",
+    "codes": ""
+   },
+   "EU05b": {
+    "status": "C",
+    "rule": "BR-020",
+    "codes": ""
+   },
+   "EU05c": {
+    "status": "C",
+    "rule": "BR-020",
+    "codes": ""
+   }
+  },
+  "eFTI399": {
+   "h": 4,
+   "type": "BBIE",
+   "EU05a": {
+    "status": "C",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05b": {
+    "status": "C",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "ASBIE1088": {
+   "h": 4,
+   "type": "ASBIE",
+   "EU05a": {
+    "status": "SI",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05b": {
+    "status": "SI",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05c": {
+    "status": "SI",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "eFTI402": {
+   "h": 5,
+   "type": "BBIE",
+   "EU05a": {
+    "status": "C",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05b": {
+    "status": "C",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05c": {
+    "status": "C",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "ASBIE1089": {
+   "h": 4,
+   "type": "ASBIE",
+   "EU05a": {
+    "status": "SI",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05b": {
+    "status": "SI",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05c": {
+    "status": "SI",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "eFTI416": {
+   "h": 5,
+   "type": "BBIE",
+   "EU05a": {
+    "status": "C",
+    "rule": "BR-083",
+    "codes": ""
+   },
+   "EU05b": {
+    "status": "C",
+    "rule": "BR-083",
+    "codes": ""
+   },
+   "EU05c": {
+    "status": "C",
+    "rule": "BR-083",
+    "codes": ""
+   }
+  },
+  "eFTI418": {
+   "h": 5,
+   "type": "BBIE",
+   "EU05a": {
+    "status": "O",
+    "rule": "BR-018",
+    "codes": ""
+   },
+   "EU05b": {
+    "status": "C",
+    "rule": "BR-020",
+    "codes": ""
+   },
+   "EU05c": {
+    "status": "O",
+    "rule": "BR-018",
+    "codes": ""
+   }
+  },
+  "eFTI419": {
+   "h": 6,
+   "type": "SC",
+   "EU05a": {
+    "status": "D*",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05b": {
+    "status": "D*",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05c": {
+    "status": "D*",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "eFTI420": {
+   "h": 5,
+   "type": "BBIE",
+   "EU05a": {
+    "status": "C",
+    "rule": "BR-020",
+    "codes": "530"
+   },
+   "EU05b": {
+    "status": "C",
+    "rule": "BR-020",
+    "codes": "530"
+   },
+   "EU05c": {
+    "status": "C",
+    "rule": "BR-020",
+    "codes": "530"
+   }
+  },
+  "eFTI422": {
+   "h": 5,
+   "type": "BBIE",
+   "EU05a": {
+    "status": "C",
+    "rule": "BR-021",
+    "codes": ""
+   },
+   "EU05b": {
+    "status": "C",
+    "rule": "BR-021",
+    "codes": ""
+   },
+   "EU05c": {
+    "status": "C",
+    "rule": "BR-021",
+    "codes": ""
+   }
+  },
+  "eFTI423": {
+   "h": 6,
+   "type": "SC",
+   "EU05a": {
+    "status": "D*",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05b": {
+    "status": "D*",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05c": {
+    "status": "D*",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "eFTI424": {
+   "h": 5,
+   "type": "BBIE",
+   "EU05a": {
+    "status": "C",
+    "rule": "BR-020",
+    "codes": "18"
+   },
+   "EU05b": {
+    "status": "C",
+    "rule": "BR-020",
+    "codes": "18"
+   },
+   "EU05c": {
+    "status": "C",
+    "rule": "BR-020",
+    "codes": "18"
+   }
+  },
+  "eFTI426": {
+   "h": 5,
+   "type": "BBIE",
+   "EU05a": {
+    "status": "C",
+    "rule": "BR-020",
+    "codes": ""
+   },
+   "EU05b": {
+    "status": "C",
+    "rule": "BR-020",
+    "codes": ""
+   },
+   "EU05c": {
+    "status": "C",
+    "rule": "BR-020",
+    "codes": ""
+   }
+  },
+  "ASBIE1090": {
+   "h": 5,
+   "type": "ASBIE",
+   "EU05b": {
+    "status": "SI",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "eFTI427": {
+   "h": 6,
+   "type": "BBIE",
+   "EU05b": {
+    "status": "O",
+    "rule": "BR-019",
+    "codes": ""
+   }
+  },
+  "eFTI428": {
+   "h": 7,
+   "type": "SC",
+   "EU05b": {
+    "status": "D*",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "ASBIE1091": {
+   "h": 4,
+   "type": "ASBIE",
+   "EU05a": {
+    "status": "SI",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05b": {
+    "status": "SI",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05c": {
+    "status": "SI",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "eFTI433": {
+   "h": 5,
+   "type": "BBIE",
+   "EU05a": {
+    "status": "O",
+    "rule": "BR-073",
+    "codes": "T3"
+   },
+   "EU05c": {
+    "status": "O",
+    "rule": "BR-073",
+    "codes": "T3"
+   }
+  },
+  "eFTI435": {
+   "h": 5,
+   "type": "BBIE",
+   "EU05a": {
+    "status": "O",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05b": {
+    "status": "O",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05c": {
+    "status": "O",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "ASBIE1092": {
+   "h": 3,
+   "type": "ASBIE",
+   "EU02": {
+    "status": "SI",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05a": {
+    "status": "SI",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05b": {
+    "status": "SI",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05c": {
+    "status": "SI",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "eFTI448": {
+   "h": 4,
+   "type": "BBIE",
+   "EU02": {
+    "status": "M",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05a": {
+    "status": "C",
+    "rule": "BR-093",
+    "codes": ""
+   },
+   "EU05b": {
+    "status": "C",
+    "rule": "BR-093",
+    "codes": ""
+   },
+   "EU05c": {
+    "status": "C",
+    "rule": "BR-093",
+    "codes": ""
+   }
+  },
+  "eFTI449": {
+   "h": 5,
+   "type": "SC",
+   "EU02": {
+    "status": "D*",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05a": {
+    "status": "D*",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05b": {
+    "status": "D*",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05c": {
+    "status": "D*",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "eFTI450": {
+   "h": 4,
+   "type": "BBIE",
+   "EU02": {
+    "status": "M",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05a": {
+    "status": "O",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05b": {
+    "status": "O",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05c": {
+    "status": "O",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "eFTI454": {
+   "h": 4,
+   "type": "BBIE",
+   "EU05a": {
+    "status": "C",
+    "rule": "BR-031",
+    "codes": "4"
+   },
+   "EU05b": {
+    "status": "C",
+    "rule": "BR-031",
+    "codes": "4"
+   },
+   "EU05c": {
+    "status": "C",
+    "rule": "BR-031",
+    "codes": "4"
+   }
+  },
+  "eFTI1017": {
+   "h": 4,
+   "type": "BBIE",
+   "EU05a": {
+    "status": "C",
+    "rule": "BR-006",
+    "codes": ""
+   },
+   "EU05b": {
+    "status": "C",
+    "rule": "BR-006",
+    "codes": ""
+   }
+  },
+  "eFTI998": {
+   "h": 4,
+   "type": "BBIE",
+   "EU02": {
+    "status": "O",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05a": {
+    "status": "O",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05c": {
+    "status": "O",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "ASBIE1093": {
+   "h": 4,
+   "type": "ASBIE",
+   "EU05a": {
+    "status": "SI",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05b": {
+    "status": "SI",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05c": {
+    "status": "SI",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "eFTI455": {
+   "h": 5,
+   "type": "BBIE",
+   "EU05a": {
+    "status": "C",
+    "rule": "BR-095",
+    "codes": ""
+   },
+   "EU05b": {
+    "status": "C",
+    "rule": "BR-095",
+    "codes": ""
+   },
+   "EU05c": {
+    "status": "C",
+    "rule": "BR-095",
+    "codes": ""
+   }
+  },
+  "eFTI456": {
+   "h": 5,
+   "type": "BBIE",
+   "EU05a": {
+    "status": "C",
+    "rule": "BR-061",
+    "codes": ""
+   },
+   "EU05b": {
+    "status": "C",
+    "rule": "BR-061",
+    "codes": ""
+   },
+   "EU05c": {
+    "status": "C",
+    "rule": "BR-061",
+    "codes": ""
+   }
+  },
+  "eFTI483": {
+   "h": 5,
+   "type": "BBIE",
+   "EU05b": {
+    "status": "C",
+    "rule": "BR-094",
+    "codes": ""
+   }
+  },
+  "eFTI498": {
+   "h": 5,
+   "type": "BBIE",
+   "EU05a": {
+    "status": "C",
+    "rule": "BR-020",
+    "codes": ""
+   },
+   "EU05b": {
+    "status": "C",
+    "rule": "BR-020",
+    "codes": ""
+   },
+   "EU05c": {
+    "status": "C",
+    "rule": "BR-020",
+    "codes": ""
+   }
+  },
+  "eFTI501": {
+   "h": 5,
+   "type": "BBIE",
+   "EU05a": {
+    "status": "C",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05b": {
+    "status": "C",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "ASBIE1094": {
+   "h": 5,
+   "type": "ASBIE",
+   "EU05a": {
+    "status": "SI",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05b": {
+    "status": "SI",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05c": {
+    "status": "SI",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "eFTI530": {
+   "h": 6,
+   "type": "BBIE",
+   "EU05a": {
+    "status": "O",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05b": {
+    "status": "O",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05c": {
+    "status": "O",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "ASBIE1095": {
+   "h": 5,
+   "type": "ASBIE",
+   "EU05a": {
+    "status": "SI",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05b": {
+    "status": "SI",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05c": {
+    "status": "SI",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "eFTI542": {
+   "h": 6,
+   "type": "BBIE",
+   "EU05a": {
+    "status": "C",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05b": {
+    "status": "C",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05c": {
+    "status": "C",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "eFTI544": {
+   "h": 6,
+   "type": "BBIE",
+   "EU05a": {
+    "status": "C",
+    "rule": "BR-020",
+    "codes": ""
+   },
+   "EU05b": {
+    "status": "C",
+    "rule": "BR-020",
+    "codes": ""
+   },
+   "EU05c": {
+    "status": "C",
+    "rule": "BR-020",
+    "codes": ""
+   }
+  },
+  "eFTI545": {
+   "h": 7,
+   "type": "SC",
+   "EU05a": {
+    "status": "D*",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05b": {
+    "status": "D*",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05c": {
+    "status": "D*",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "eFTI546": {
+   "h": 6,
+   "type": "BBIE",
+   "EU05a": {
+    "status": "C",
+    "rule": "BR-020",
+    "codes": "530"
+   },
+   "EU05b": {
+    "status": "C",
+    "rule": "BR-020",
+    "codes": "530"
+   },
+   "EU05c": {
+    "status": "C",
+    "rule": "BR-020",
+    "codes": "530"
+   }
+  },
+  "eFTI548": {
+   "h": 6,
+   "type": "BBIE",
+   "EU05a": {
+    "status": "C",
+    "rule": "BR-020",
+    "codes": ""
+   },
+   "EU05b": {
+    "status": "C",
+    "rule": "BR-020",
+    "codes": ""
+   },
+   "EU05c": {
+    "status": "C",
+    "rule": "BR-020",
+    "codes": ""
+   }
+  },
+  "eFTI549": {
+   "h": 7,
+   "type": "SC",
+   "EU05a": {
+    "status": "D*",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05b": {
+    "status": "D*",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05c": {
+    "status": "D*",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "eFTI550": {
+   "h": 6,
+   "type": "BBIE",
+   "EU05b": {
+    "status": "C",
+    "rule": "BR-074",
+    "codes": "19"
+   },
+   "EU05c": {
+    "status": "C",
+    "rule": "BR-023",
+    "codes": "45"
+   }
+  },
+  "eFTI552": {
+   "h": 6,
+   "type": "BBIE",
+   "EU05a": {
+    "status": "C",
+    "rule": "BR-034",
+    "codes": ""
+   },
+   "EU05b": {
+    "status": "C",
+    "rule": "BR-034",
+    "codes": ""
+   },
+   "EU05c": {
+    "status": "C",
+    "rule": "BR-034",
+    "codes": ""
+   }
+  },
+  "ASBIE1096": {
+   "h": 5,
+   "type": "ASBIE",
+   "EU05a": {
+    "status": "SI",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05b": {
+    "status": "SI",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05c": {
+    "status": "SI",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "eFTI555": {
+   "h": 6,
+   "type": "BBIE",
+   "EU05a": {
+    "status": "C",
+    "rule": "BR-076",
+    "codes": ""
+   },
+   "EU05b": {
+    "status": "C",
+    "rule": "BR-076",
+    "codes": ""
+   },
+   "EU05c": {
+    "status": "C",
+    "rule": "BR-076",
+    "codes": ""
+   }
+  },
+  "eFTI558": {
+   "h": 6,
+   "type": "BBIE",
+   "EU05a": {
+    "status": "C",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05b": {
+    "status": "C",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05c": {
+    "status": "C",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "ASBIE1097": {
+   "h": 3,
+   "type": "ASBIE",
+   "EU01": {
+    "status": "SI",
+    "rule": "",
+    "codes": ""
+   },
+   "EU02": {
+    "status": "SI",
+    "rule": "",
+    "codes": ""
+   },
+   "EU03": {
+    "status": "SI",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "eFTI578": {
+   "h": 4,
+   "type": "BBIE",
+   "EU01": {
+    "status": "C",
+    "rule": "",
+    "codes": ""
+   },
+   "EU02": {
+    "status": "M",
+    "rule": "",
+    "codes": ""
+   },
+   "EU03": {
+    "status": "M",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "ASBIE1098": {
+   "h": 2,
+   "type": "ASBIE",
+   "EU01": {
+    "status": "SI",
+    "rule": "",
+    "codes": ""
+   },
+   "EU02": {
+    "status": "SI",
+    "rule": "",
+    "codes": ""
+   },
+   "EU03": {
+    "status": "SI",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05a": {
+    "status": "SI",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05b": {
+    "status": "SI",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05c": {
+    "status": "SI",
+    "rule": "",
+    "codes": ""
+   },
+   "EU06": {
+    "status": "SI",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "eFTI581": {
+   "h": 3,
+   "type": "BBIE",
+   "EU02": {
+    "status": "M",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05a": {
+    "status": "M",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05c": {
+    "status": "M",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "eFTI582": {
+   "h": 3,
+   "type": "BBIE",
+   "EU05b": {
+    "status": "O",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "eFTI1022": {
+   "h": 3,
+   "type": "BBIE",
+   "EU02": {
+    "status": "M",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "ASBIE1099": {
+   "h": 3,
+   "type": "ASBIE",
+   "EU02": {
+    "status": "SI",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "eFTI583": {
+   "h": 4,
+   "type": "BBIE",
+   "EU02": {
+    "status": "C",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "eFTI584": {
+   "h": 5,
+   "type": "SC",
+   "EU02": {
+    "status": "D*",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "eFTI585": {
+   "h": 4,
+   "type": "BBIE",
+   "EU02": {
+    "status": "C",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "eFTI586": {
+   "h": 5,
+   "type": "SC",
+   "EU02": {
+    "status": "D*",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "ASBIE1100": {
+   "h": 4,
+   "type": "ASBIE",
+   "EU02": {
+    "status": "SI",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "eFTI587": {
+   "h": 5,
+   "type": "BBIE",
+   "EU02": {
+    "status": "C",
+    "rule": "BR-112",
+    "codes": ""
+   }
+  },
+  "eFTI588": {
+   "h": 6,
+   "type": "SC",
+   "EU02": {
+    "status": "D*",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "eFTI589": {
+   "h": 5,
+   "type": "BBIE",
+   "EU02": {
+    "status": "C",
+    "rule": "BR-112",
+    "codes": ""
+   }
+  },
+  "ASBIE1141": {
+   "h": 5,
+   "type": "ASBIE",
+   "EU02": {
+    "status": "SI",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "eFTI904": {
+   "h": 6,
+   "type": "BBIE",
+   "EU02": {
+    "status": "C",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "eFTI905": {
+   "h": 6,
+   "type": "BBIE",
+   "EU02": {
+    "status": "C",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "eFTI906": {
+   "h": 6,
+   "type": "BBIE",
+   "EU02": {
+    "status": "C",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "eFTI907": {
+   "h": 6,
+   "type": "BBIE",
+   "EU02": {
+    "status": "C",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "eFTI908": {
+   "h": 6,
+   "type": "BBIE",
+   "EU02": {
+    "status": "C",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "eFTI909": {
+   "h": 6,
+   "type": "BBIE",
+   "EU02": {
+    "status": "C",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "eFTI910": {
+   "h": 6,
+   "type": "BBIE",
+   "EU02": {
+    "status": "C",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "eFTI911": {
+   "h": 6,
+   "type": "BBIE",
+   "EU02": {
+    "status": "C",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "eFTI912": {
+   "h": 6,
+   "type": "BBIE",
+   "EU02": {
+    "status": "C",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "ASBIE1101": {
+   "h": 4,
+   "type": "ASBIE",
+   "EU02": {
+    "status": "SI",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "eFTI590": {
+   "h": 5,
+   "type": "BBIE",
+   "EU02": {
+    "status": "C",
+    "rule": "BR-115",
+    "codes": ""
+   }
+  },
+  "eFTI591": {
+   "h": 6,
+   "type": "SC",
+   "EU02": {
+    "status": "D*",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "eFTI592": {
+   "h": 5,
+   "type": "BBIE",
+   "EU02": {
+    "status": "C",
+    "rule": "BR-115",
+    "codes": ""
+   }
+  },
+  "eFTI593": {
+   "h": 5,
+   "type": "BBIE",
+   "EU02": {
+    "status": "C",
+    "rule": "BR-114a",
+    "codes": ""
+   }
+  },
+  "ASBIE1102": {
+   "h": 5,
+   "type": "ASBIE",
+   "EU02": {
+    "status": "SI",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "eFTI594": {
+   "h": 6,
+   "type": "BBIE",
+   "EU02": {
+    "status": "C",
+    "rule": "BR-114b",
+    "codes": ""
+   }
+  },
+  "ASBIE1103": {
+   "h": 3,
+   "type": "ASBIE",
+   "EU02": {
+    "status": "SI",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "eFTI596": {
+   "h": 4,
+   "type": "BBIE",
+   "EU02": {
+    "status": "C",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "eFTI597": {
+   "h": 5,
+   "type": "SC",
+   "EU02": {
+    "status": "D*",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "eFTI598": {
+   "h": 4,
+   "type": "BBIE",
+   "EU02": {
+    "status": "C",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "eFTI599": {
+   "h": 5,
+   "type": "SC",
+   "EU02": {
+    "status": "D*",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "ASBIE1104": {
+   "h": 4,
+   "type": "ASBIE",
+   "EU02": {
+    "status": "SI",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "eFTI600": {
+   "h": 5,
+   "type": "BBIE",
+   "EU02": {
+    "status": "C",
+    "rule": "BR-113",
+    "codes": ""
+   }
+  },
+  "eFTI601": {
+   "h": 6,
+   "type": "SC",
+   "EU02": {
+    "status": "D*",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "eFTI602": {
+   "h": 5,
+   "type": "BBIE",
+   "EU02": {
+    "status": "C",
+    "rule": "BR-113",
+    "codes": ""
+   }
+  },
+  "ASBIE1142": {
+   "h": 5,
+   "type": "ASBIE",
+   "EU02": {
+    "status": "SI",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "eFTI913": {
+   "h": 6,
+   "type": "BBIE",
+   "EU02": {
+    "status": "C",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "eFTI914": {
+   "h": 6,
+   "type": "BBIE",
+   "EU02": {
+    "status": "C",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "eFTI915": {
+   "h": 6,
+   "type": "BBIE",
+   "EU02": {
+    "status": "C",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "eFTI916": {
+   "h": 6,
+   "type": "BBIE",
+   "EU02": {
+    "status": "C",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "eFTI917": {
+   "h": 6,
+   "type": "BBIE",
+   "EU02": {
+    "status": "C",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "eFTI918": {
+   "h": 6,
+   "type": "BBIE",
+   "EU02": {
+    "status": "C",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "eFTI919": {
+   "h": 6,
+   "type": "BBIE",
+   "EU02": {
+    "status": "C",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "eFTI920": {
+   "h": 6,
+   "type": "BBIE",
+   "EU02": {
+    "status": "C",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "eFTI921": {
+   "h": 6,
+   "type": "BBIE",
+   "EU02": {
+    "status": "C",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "ASBIE1105": {
+   "h": 4,
+   "type": "ASBIE",
+   "EU02": {
+    "status": "SI",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "eFTI603": {
+   "h": 5,
+   "type": "BBIE",
+   "EU02": {
+    "status": "C",
+    "rule": "BR-116",
+    "codes": ""
+   }
+  },
+  "eFTI604": {
+   "h": 6,
+   "type": "SC",
+   "EU02": {
+    "status": "D*",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "eFTI605": {
+   "h": 5,
+   "type": "BBIE",
+   "EU02": {
+    "status": "C",
+    "rule": "BR-116",
+    "codes": ""
+   }
+  },
+  "eFTI606": {
+   "h": 5,
+   "type": "BBIE",
+   "EU02": {
+    "status": "C",
+    "rule": "BR-003",
+    "codes": ""
+   }
+  },
+  "ASBIE1106": {
+   "h": 5,
+   "type": "ASBIE",
+   "EU02": {
+    "status": "SI",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "eFTI608": {
+   "h": 6,
+   "type": "BBIE",
+   "EU02": {
+    "status": "C",
+    "rule": "BR-114b",
+    "codes": ""
+   }
+  },
+  "ASBIE1107": {
+   "h": 3,
+   "type": "ASBIE",
+   "EU01": {
+    "status": "SI",
+    "rule": "",
+    "codes": ""
+   },
+   "EU02": {
+    "status": "SI",
+    "rule": "",
+    "codes": ""
+   },
+   "EU03": {
+    "status": "SI",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05a": {
+    "status": "SI",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05b": {
+    "status": "SI",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05c": {
+    "status": "SI",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "eFTI617": {
+   "h": 4,
+   "type": "BBIE",
+   "EU03": {
+    "status": "M",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05c": {
+    "status": "C",
+    "rule": "BR-080",
+    "codes": ""
+   }
+  },
+  "eFTI618": {
+   "h": 4,
+   "type": "BBIE",
+   "EU01": {
+    "status": "O",
+    "rule": "",
+    "codes": ""
+   },
+   "EU02": {
+    "status": "O",
+    "rule": "",
+    "codes": ""
+   },
+   "EU03": {
+    "status": "M",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05a": {
+    "status": "C",
+    "rule": "BR-093",
+    "codes": ""
+   },
+   "EU05b": {
+    "status": "C",
+    "rule": "BR-093",
+    "codes": ""
+   },
+   "EU05c": {
+    "status": "C",
+    "rule": "BR-080",
+    "codes": ""
+   }
+  },
+  "eFTI619": {
+   "h": 5,
+   "type": "SC",
+   "EU01": {
+    "status": "D*",
+    "rule": "",
+    "codes": ""
+   },
+   "EU02": {
+    "status": "D*",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05a": {
+    "status": "D*",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05b": {
+    "status": "D*",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05c": {
+    "status": "D*",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "ASBIE1108": {
+   "h": 4,
+   "type": "ASBIE",
+   "EU01": {
+    "status": "SI",
+    "rule": "",
+    "codes": ""
+   },
+   "EU02": {
+    "status": "SI",
+    "rule": "",
+    "codes": ""
+   },
+   "EU03": {
+    "status": "SI",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05a": {
+    "status": "SI",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "eFTI620": {
+   "h": 5,
+   "type": "BBIE",
+   "EU01": {
+    "status": "O",
+    "rule": "",
+    "codes": ""
+   },
+   "EU02": {
+    "status": "O",
+    "rule": "",
+    "codes": ""
+   },
+   "EU03": {
+    "status": "M",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05a": {
+    "status": "C",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "ASBIE1143": {
+   "h": 2,
+   "type": "ASBIE",
+   "EU02": {
+    "status": "SI",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "ASBIE1144": {
+   "h": 3,
+   "type": "ASBIE",
+   "EU02": {
+    "status": "SI",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "eFTI1135": {
+   "h": 4,
+   "type": "BBIE",
+   "EU02": {
+    "status": "C",
+    "rule": "BR-119",
+    "codes": ""
+   }
+  },
+  "eFTI1136": {
+   "h": 5,
+   "type": "SC",
+   "EU02": {
+    "status": "D*",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "ASBIE1145": {
+   "h": 4,
+   "type": "ASBIE",
+   "EU02": {
+    "status": "SI",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "eFTI1137": {
+   "h": 5,
+   "type": "BBIE",
+   "EU02": {
+    "status": "C",
+    "rule": "BR-117",
+    "codes": ""
+   }
+  },
+  "eFTI1138": {
+   "h": 6,
+   "type": "SC",
+   "EU02": {
+    "status": "D*",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "eFTI1139": {
+   "h": 5,
+   "type": "BBIE",
+   "EU02": {
+    "status": "C",
+    "rule": "BR-117",
+    "codes": ""
+   }
+  },
+  "ASBIE1122": {
+   "h": 2,
+   "type": "ASBIE",
+   "EU03": {
+    "status": "SI",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "eFTI685": {
+   "h": 3,
+   "type": "BBIE",
+   "EU03": {
+    "status": "M",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "eFTI688": {
+   "h": 3,
+   "type": "BBIE",
+   "EU03": {
+    "status": "M",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "eFTI690": {
+   "h": 3,
+   "type": "BBIE",
+   "EU03": {
+    "status": "O",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "ASBIE1123": {
+   "h": 3,
+   "type": "ASBIE",
+   "EU03": {
+    "status": "SI",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "eFTI691": {
+   "h": 4,
+   "type": "BBIE",
+   "EU03": {
+    "status": "M",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "ASBIE1125": {
+   "h": 2,
+   "type": "ASBIE",
+   "EU01": {
+    "status": "SI",
+    "rule": "",
+    "codes": ""
+   },
+   "EU02": {
+    "status": "SI",
+    "rule": "",
+    "codes": ""
+   },
+   "EU03": {
+    "status": "SI",
+    "rule": "",
+    "codes": ""
+   },
+   "EU06": {
+    "status": "SI",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "eFTI698": {
+   "h": 3,
+   "type": "BBIE",
+   "EU01": {
+    "status": "O",
+    "rule": "",
+    "codes": ""
+   },
+   "EU02": {
+    "status": "O",
+    "rule": "",
+    "codes": ""
+   },
+   "EU03": {
+    "status": "O",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "eFTI699": {
+   "h": 3,
+   "type": "BBIE",
+   "EU01": {
+    "status": "O",
+    "rule": "",
+    "codes": ""
+   },
+   "EU02": {
+    "status": "O",
+    "rule": "",
+    "codes": ""
+   },
+   "EU03": {
+    "status": "M",
+    "rule": "",
+    "codes": ""
+   },
+   "EU06": {
+    "status": "C",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "eFTI700": {
+   "h": 3,
+   "type": "BBIE",
+   "EU01": {
+    "status": "O",
+    "rule": "",
+    "codes": ""
+   },
+   "EU02": {
+    "status": "O",
+    "rule": "",
+    "codes": ""
+   },
+   "EU03": {
+    "status": "O",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "eFTI701": {
+   "h": 3,
+   "type": "BBIE",
+   "EU01": {
+    "status": "O",
+    "rule": "",
+    "codes": ""
+   },
+   "EU02": {
+    "status": "O",
+    "rule": "",
+    "codes": ""
+   },
+   "EU03": {
+    "status": "O",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "eFTI702": {
+   "h": 4,
+   "type": "SC",
+   "EU01": {
+    "status": "D*",
+    "rule": "",
+    "codes": ""
+   },
+   "EU02": {
+    "status": "D*",
+    "rule": "",
+    "codes": ""
+   },
+   "EU03": {
+    "status": "D*",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "ASBIE1126": {
+   "h": 2,
+   "type": "ASBIE",
+   "EU01": {
+    "status": "SI",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "eFTI703": {
+   "h": 3,
+   "type": "BBIE",
+   "EU01": {
+    "status": "O",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "ASBIE1127": {
+   "h": 2,
+   "type": "ASBIE",
+   "EU05a": {
+    "status": "SI",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05b": {
+    "status": "SI",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05c": {
+    "status": "SI",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "eFTI712": {
+   "h": 3,
+   "type": "BBIE",
+   "EU05a": {
+    "status": "O",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05b": {
+    "status": "O",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05c": {
+    "status": "O",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "eFTI746": {
+   "h": 3,
+   "type": "BBIE",
+   "EU05a": {
+    "status": "C",
+    "rule": "BR-035",
+    "codes": ""
+   },
+   "EU05b": {
+    "status": "C",
+    "rule": "BR-035",
+    "codes": ""
+   },
+   "EU05c": {
+    "status": "C",
+    "rule": "BR-035",
+    "codes": ""
+   }
+  },
+  "eFTI747": {
+   "h": 4,
+   "type": "SC",
+   "EU05a": {
+    "status": "D*",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05b": {
+    "status": "D*",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05c": {
+    "status": "D*",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "ASBIE1128": {
+   "h": 3,
+   "type": "ASBIE",
+   "EU05a": {
+    "status": "SI",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05b": {
+    "status": "SI",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05c": {
+    "status": "SI",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "ASBIE1129": {
+   "h": 4,
+   "type": "ASBIE",
+   "EU05a": {
+    "status": "SI",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05b": {
+    "status": "SI",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05c": {
+    "status": "SI",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "eFTI790": {
+   "h": 5,
+   "type": "BBIE",
+   "EU05a": {
+    "status": "C",
+    "rule": "BR-045",
+    "codes": ""
+   },
+   "EU05b": {
+    "status": "C",
+    "rule": "BR-045",
+    "codes": ""
+   },
+   "EU05c": {
+    "status": "C",
+    "rule": "BR-045",
+    "codes": ""
+   }
+  },
+  "eFTI791": {
+   "h": 6,
+   "type": "SC",
+   "EU05a": {
+    "status": "D*",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05b": {
+    "status": "D*",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05c": {
+    "status": "D*",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "ASBIE1130": {
+   "h": 3,
+   "type": "ASBIE",
+   "EU05a": {
+    "status": "SI",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05b": {
+    "status": "SI",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05c": {
+    "status": "SI",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "eFTI818": {
+   "h": 4,
+   "type": "BBIE",
+   "EU05a": {
+    "status": "C",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05b": {
+    "status": "C",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05c": {
+    "status": "C",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "eFTI825": {
+   "h": 4,
+   "type": "BBIE",
+   "EU05a": {
+    "status": "C",
+    "rule": "BR-004",
+    "codes": "33"
+   },
+   "EU05c": {
+    "status": "C",
+    "rule": "BR-004",
+    "codes": "33"
+   }
+  },
+  "eFTI827": {
+   "h": 4,
+   "type": "BBIE",
+   "EU05a": {
+    "status": "C",
+    "rule": "BR-038",
+    "codes": ""
+   },
+   "EU05b": {
+    "status": "C",
+    "rule": "BR-038",
+    "codes": ""
+   },
+   "EU05c": {
+    "status": "C",
+    "rule": "BR-038",
+    "codes": ""
+   }
+  },
+  "ASBIE1131": {
+   "h": 3,
+   "type": "ASBIE",
+   "EU05a": {
+    "status": "SI",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05b": {
+    "status": "SI",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05c": {
+    "status": "SI",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "eFTI833": {
+   "h": 4,
+   "type": "BBIE",
+   "EU05a": {
+    "status": "C",
+    "rule": "BR-013",
+    "codes": "T9"
+   },
+   "EU05b": {
+    "status": "C",
+    "rule": "BR-013",
+    "codes": "T9"
+   },
+   "EU05c": {
+    "status": "C",
+    "rule": "BR-013",
+    "codes": "T9"
+   }
+  },
+  "eFTI837": {
+   "h": 4,
+   "type": "BBIE",
+   "EU05a": {
+    "status": "C",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05b": {
+    "status": "C",
+    "rule": "",
+    "codes": ""
+   },
+   "EU05c": {
+    "status": "C",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "ASBIE1750": {
+   "h": 3,
+   "type": "ASBIE",
+   "EU05a": {
+    "status": "SI",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "ASBIE1753": {
+   "h": 4,
+   "type": "ASBIE",
+   "EU05a": {
+    "status": "SI",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "eFTI1751": {
+   "h": 5,
+   "type": "BBIE",
+   "EU05a": {
+    "status": "C",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "eFTI1752": {
+   "h": 5,
+   "type": "BBIE",
+   "EU05a": {
+    "status": "C",
+    "rule": "BR-007",
+    "codes": ""
+   }
+  },
+  "eFTI170": {
+   "h": 3,
+   "type": "BBIE",
+   "EU06": {
+    "status": "M",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "ASBIE1061": {
+   "h": 2,
+   "type": "ASBIE",
+   "EU06": {
+    "status": "SI",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "ASBIE1062": {
+   "h": 3,
+   "type": "ASBIE",
+   "EU06": {
+    "status": "SI",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "eFTI195": {
+   "h": 4,
+   "type": "BBIE",
+   "EU06": {
+    "status": "M",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "eFTI196": {
+   "h": 5,
+   "type": "SC",
+   "EU06": {
+    "status": "D*",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "ASBIE1063": {
+   "h": 4,
+   "type": "ASBIE",
+   "EU06": {
+    "status": "SI",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "eFTI200": {
+   "h": 5,
+   "type": "BBIE",
+   "EU06": {
+    "status": "C",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "eFTI198": {
+   "h": 5,
+   "type": "BBIE",
+   "EU06": {
+    "status": "C",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "ASBIE1064": {
+   "h": 4,
+   "type": "ASBIE",
+   "EU06": {
+    "status": "SI",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "eFTI218": {
+   "h": 5,
+   "type": "BBIE",
+   "EU06": {
+    "status": "M",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "eFTI219": {
+   "h": 6,
+   "type": "SC",
+   "EU06": {
+    "status": "D*",
+    "rule": "",
+    "codes": "203"
+   }
+  },
+  "eFTI263": {
+   "h": 4,
+   "type": "BBIE",
+   "EU05c": {
+    "status": "C",
+    "rule": "BR-009",
+    "codes": ""
+   }
+  },
+  "eFTI264": {
+   "h": 5,
+   "type": "SC",
+   "EU05c": {
+    "status": "D*",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "eFTI265": {
+   "h": 4,
+   "type": "BBIE",
+   "EU05c": {
+    "status": "C",
+    "rule": "BR-009",
+    "codes": ""
+   }
+  },
+  "eFTI266": {
+   "h": 5,
+   "type": "SC",
+   "EU05c": {
+    "status": "D*",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "eFTI392": {
+   "h": 4,
+   "type": "BBIE",
+   "EU05c": {
+    "status": "O",
+    "rule": "BR-003",
+    "codes": ""
+   }
+  },
+  "eFTI401": {
+   "h": 4,
+   "type": "BBIE",
+   "EU05c": {
+    "status": "C",
+    "rule": "BR-001",
+    "codes": ""
+   }
+  },
+  "eFTI461": {
+   "h": 5,
+   "type": "BBIE",
+   "EU05c": {
+    "status": "C",
+    "rule": "BR-002",
+    "codes": ""
+   }
+  },
+  "eFTI529": {
+   "h": 5,
+   "type": "BBIE",
+   "EU05c": {
+    "status": "C",
+    "rule": "BR-001",
+    "codes": ""
+   }
+  },
+  "ASBIE1112": {
+   "h": 3,
+   "type": "ASBIE",
+   "EU06": {
+    "status": "SI",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "ASBIE1113": {
+   "h": 4,
+   "type": "ASBIE",
+   "EU06": {
+    "status": "SI",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "eFTI622": {
+   "h": 5,
+   "type": "BBIE",
+   "EU06": {
+    "status": "O",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "eFTI623": {
+   "h": 6,
+   "type": "SC",
+   "EU06": {
+    "status": "D*",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "ASBIE1124": {
+   "h": 2,
+   "type": "ASBIE",
+   "EU06": {
+    "status": "SI",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "eFTI692": {
+   "h": 3,
+   "type": "BBIE",
+   "EU06": {
+    "status": "C",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "eFTI693": {
+   "h": 4,
+   "type": "SC",
+   "EU06": {
+    "status": "D*",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "eFTI820": {
+   "h": 4,
+   "type": "BBIE",
+   "EU05c": {
+    "status": "C",
+    "rule": "BR-009",
+    "codes": ""
+   }
+  },
+  "eFTI821": {
+   "h": 5,
+   "type": "SC",
+   "EU05c": {
+    "status": "D*",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "ASBIE1132": {
+   "h": 2,
+   "type": "ASBIE",
+   "EU06": {
+    "status": "SI",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "eFTI844": {
+   "h": 3,
+   "type": "BBIE",
+   "EU06": {
+    "status": "M",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "eFTI845": {
+   "h": 3,
+   "type": "BBIE",
+   "EU06": {
+    "status": "C",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "eFTI846": {
+   "h": 3,
+   "type": "BBIE",
+   "EU06": {
+    "status": "C",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "eFTI848": {
+   "h": 3,
+   "type": "BBIE",
+   "EU06": {
+    "status": "C",
+    "rule": "BR-122",
+    "codes": ""
+   }
+  },
+  "eFTI850": {
+   "h": 3,
+   "type": "BBIE",
+   "EU06": {
+    "status": "C",
+    "rule": "",
+    "codes": ""
+   }
+  },
+  "eFTI851": {
+   "h": 3,
+   "type": "BBIE",
+   "EU06": {
+    "status": "O",
+    "rule": "",
+    "codes": ""
+   }
+  }
+ }
+}

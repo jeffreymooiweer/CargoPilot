@@ -1,0 +1,803 @@
+{
+ "source": {
+  "title": "Commission Delegated Regulation (EU) 2024/2024 of 26 July 2024 supplementing Regulation (EU) 2020/1056 by establishing the eFTI common data set and eFTI data subsets (OJ L, 20.12.2024)",
+  "eli": "http://data.europa.eu/eli/reg_del/2024/2024/oj",
+  "file": "OJ_L_202402024_EN_TXT.pdf",
+  "sha256": "991b1a28bff53ae6e5fd8d5b20588f37a4ec5c8047549446f50368c94709906c",
+  "pages": 789
+ },
+ "table": 31,
+ "rules": {
+  "BR-001": {
+   "elements": [
+    "eFTI401",
+    "eFTI529"
+   ],
+   "rule": "ADN: Applies in case of empty cargo tanks or cargo tanks that have been discharged."
+  },
+  "BR-002": {
+   "elements": [
+    "eFTI461"
+   ],
+   "rule": "ADN: Applies to carriage of UN 1203 in tank vessels."
+  },
+  "BR-003": {
+   "elements": [
+    "eFTI392"
+   ],
+   "rule": "ADN: Applies to carriage of UN 1203 in tank vessels; To be used, if tank on the barge with the engine running."
+  },
+  "BR-004": {
+   "elements": [
+    "eFTI825"
+   ],
+   "rule": "Applies when dangerous goods are carried to be delivered to multiple consignees who cannot be identified at the start of the carriage."
+  },
+  "BR-005": {
+   "elements": [
+    "eFTI1014"
+   ],
+   "rule": "Applies if exemptions provided in ADN/RID/ADR 1.1.3.6 are used."
+  },
+  "BR-006": {
+   "elements": [
+    "eFTI1017"
+   ],
+   "rule": "Applies if exemptions provided in ADN/RID/ADR 1.1.3.6 are used."
+  },
+  "BR-007": {
+   "elements": [
+    "eFTI258"
+   ],
+   "rule": "Applies if exemptions provided in RID/ADR 1.1.3.6 are used."
+  },
+  "BR-008": {
+   "elements": [
+    "eFTI317"
+   ],
+   "rule": "Applies if it is not possible to measure the exact quantity of the waste at the place of loading and the quantity of waste is estimated in compliance with ADR/RID/ADN 5.4.1.1.3.2."
+  },
+  "BR-009": {
+   "elements": [
+    "eFTI263",
+    "eFTI265",
+    "eFTI820"
+   ],
+   "rule": "Applies if provided in Column (20) of Table C."
+  },
+  "BR-010": {
+   "elements": [
+    "eFTI319"
+   ],
+   "rule": "Applies if provided in Column (20) of Table C, to cargoes chemically stabilised with inhibitors."
+  },
+  "BR-011": {
+   "elements": [
+    "eFTI319"
+   ],
+   "rule": "Applies if provided in Column (20) of Table C, to cargoes stabilised by blanketing with an inert gas."
+  },
+  "BR-012": {
+   "elements": [
+    "eFTI319"
+   ],
+   "rule": "Applies if provided in Column (20) of Table C, to cargoes stabilised by other methods than with inhibitors or blanketing with inert gases."
+  },
+  "BR-013": {
+   "elements": [
+    "eFTI833"
+   ],
+   "rule": "Applies if the ‘250’ is mentioned in Column (6) of Table A of Chapter 3.2."
+  },
+  "BR-014": {
+   "elements": [
+    "eFTI546",
+    "eFTI548"
+   ],
+   "rule": "Applies in the case of tank-wagons and tank-containers carrying refrigerated liquefied gases, with reference in this case to tank-containers."
+  },
+  "BR-015": {
+   "elements": [
+    "eFTI420",
+    "eFTI422"
+   ],
+   "rule": "Applies in the case of tank-wagons and tank-containers carrying refrigerated liquefied gases, with reference in this case to tank-wagons."
+  },
+  "BR-016": {
+   "elements": [
+    "eFTI317"
+   ],
+   "rule": "Applies optionally to organic peroxides type G (see ADR/RID/ADN 2.2.52.1.6)."
+  },
+  "BR-017": {
+   "elements": [
+    "eFTI317"
+   ],
+   "rule": "Applies optionally to self-reactive substances type G (see ADR/RID/ADN 2.2.41.1.11)."
+  },
+  "BR-018": {
+   "elements": [
+    "eFTI418"
+   ],
+   "rule": "Applies optionally to the carriage of class 2, where tank-wagons have been refilled without having been previously cleaned out."
+  },
+  "BR-019": {
+   "elements": [
+    "eFTI427"
+   ],
+   "rule": "Applies optionally to the carriage of class 2, where tank-wagons have been refilled without having been previously cleaned out. If eFTI416 indicates ‘Mass of new load’."
+  },
+  "BR-020": {
+   "elements": [
+    "eFTI397",
+    "eFTI418",
+    "eFTI420",
+    "eFTI424",
+    "eFTI426",
+    "eFTI498",
+    "eFTI544",
+    "eFTI546",
+    "eFTI548",
+    "eFTI550",
+    "eFTI552"
+   ],
+   "rule": "Applies to cargo transport units that have been fumigated and not completely ventilated before inland carriage."
+  },
+  "BR-021": {
+   "elements": [
+    "eFTI422"
+   ],
+   "rule": "Applies to Cargo transport units that have been fumigated and not completely ventilated before inland carriage; requires code 530 as value of eFTI420."
+  },
+  "BR-022": {
+   "elements": [
+    "eFTI307"
+   ],
+   "rule": "Applies to carriage in a transport chain including air carriage."
+  },
+  "BR-023": {
+   "elements": [
+    "eFTI550"
+   ],
+   "rule": "Applies to carriage in a transport chain including maritime carriage."
+  },
+  "BR-024": {
+   "elements": [
+    "eFTI317"
+   ],
+   "rule": "Applies to carriage of amonium nitrate fertiliser."
+  },
+  "BR-025": {
+   "elements": [
+    "eFTI825"
+   ],
+   "rule": "Applies to carriage of class 7, where a consignment is required to be shipped under exclusive shipment."
+  },
+  "BR-026": {
+   "elements": [
+    "eFTI296"
+   ],
+   "rule": "Applies to carriage of dangerous goods in packagings, in accordance with ADR/RID 4.1."
+  },
+  "BR-027": {
+   "elements": [
+    "eFTI382",
+    "eFIT454"
+   ],
+   "rule": "Applies to carriage of empty and unclean packagings, other than for class 7 – Can be used only, if ‘EMPTY, UNCLEANED’ or ‘RESIDUE, LAST CONTAINED’ refers to the transport equipment that is described in this transport equipment data group."
+  },
+  "BR-028": {
+   "elements": [
+    "eFTI450",
+    "eFTI454"
+   ],
+   "rule": "Applies to carriage of empty and unclean packagings, other than for class 7."
+  },
+  "BR-029": {
+   "elements": [
+    "eFTI307",
+    "eFTI382"
+   ],
+   "rule": "Applies to carriage of empty and unclean packagings, other than for class 7. In case of eFTI307 can be used only if the receptacle is described as packaging by code and/or text in this logistic packaging group."
+  },
+  "BR-030": {
+   "elements": [
+    "eFTI378",
+    "eFTI450"
+   ],
+   "rule": "Applies to carriage of empty uncleaned means of containment other than packagings, which contain the residue of dangerous goods of classes other than Class 7."
+  },
+  "BR-031": {
+   "elements": [
+    "eFTI382",
+    "eFTI454"
+   ],
+   "rule": "Applies to carriage of empty means of containment other than packagings, uncleaned, which contain the residue of dangerous goods of classes other than Class 7 and for empty uncleaned receptacles for class 2 with a capacity of more than 1 000 litres."
+  },
+  "BR-032": {
+   "elements": [
+    "eFTI307"
+   ],
+   "rule": "Applies to carriage of empty means of containment other than packagings, uncleaned, which contain the residue of dangerous goods of classes other than Class 7 and for empty uncleaned receptacles for class 2 with a capacity of more than 1 000 litres. Can be used only if the receptacle is described as packaging by code and/or text in this logistic packaging group."
+  },
+  "BR-033": {
+   "elements": [
+    "eFTI319"
+   ],
+   "rule": "Applies to carriage of packagings, discarded, empty, uncleaned (UN 3509)."
+  },
+  "BR-034": {
+   "elements": [
+    "eFTI552"
+   ],
+   "rule": "Applies to carriage of solids in bulk containers BK1 or BK2."
+  },
+  "BR-035": {
+   "elements": [
+    "eFTI249",
+    "eFTI746"
+   ],
+   "rule": "Applies to class 1."
+  },
+  "BR-036": {
+   "elements": [
+    "eFTI232",
+    "eFTI235",
+    "eFTI240",
+    "eFTI251"
+   ],
+   "rule": "Applies to carriage of dangerous goods in tank vessels."
+  },
+  "BR-037": {
+   "elements": [
+    "eFTI69",
+    "eFTI71"
+   ],
+   "rule": "Applies to class 6.2."
+  },
+  "BR-038": {
+   "elements": [
+    "eFTI827"
+   ],
+   "rule": "Applies to class 7."
+  },
+  "BR-039": {
+   "elements": [
+    "eFTI1133",
+    "eFTI236",
+    "eFTI287",
+    "eFIT288",
+    "eFTI290",
+    "eFTI292"
+   ],
+   "rule": "Applies to class 7 materials."
+  },
+  "BR-040": {
+   "elements": [
+    "eFTI247"
+   ],
+   "rule": "Applies to class 7 materials if they are fissile, but exempted from being classified as such as they are shipped under ADR/RID/ADN 2.2.7.2.3.5 (c) to (e)."
+  },
+  "BR-041": {
+   "elements": [
+    "eFTI289"
+   ],
+   "rule": "Applies to class 7 materials that are fissile."
+  },
+  "BR-042": {
+   "elements": [
+    "eFTI256"
+   ],
+   "rule": "Applies to combinations of lithium batteries contained in equipment and lithium batteries packed with equipment."
+  },
+  "BR-043": {
+   "elements": [
+    "eFTI256"
+   ],
+   "rule": "Applies to cylinders not conforming to the provisions of Chapter 6.2 which are used exclusively on board a ship or aircraft."
+  },
+  "BR-044": {
+   "elements": [
+    "eFTI256"
+   ],
+   "rule": "Applies to lithium ion cells or batteries and lithium metal cells or batteries identified as being damaged or defective such that they do not conform to the type tested according to the applicable provisions of the Manual of Tests and Criteria but comply with the requirements of the Special Provision 376."
+  },
+  "BR-045": {
+   "elements": [
+    "eFTI790"
+   ],
+   "rule": "Applies to LSA-II and LSA-III substances, SCO-I and SCO-II of class 7."
+  },
+  "BR-046": {
+   "elements": [
+    "eFTI256"
+   ],
+   "rule": "Applies to production runs, consisting of not more than 100 cells or batteries, or to pre-production prototypes of cells or batteries when these prototypes are carried for testing when packaged in accordance with packing instruction P910 of 4.1.4.1 or LP905 of ADR/RID 4.1.4.3."
+  },
+  "BR-047": {
+   "elements": [
+    "eFTI256"
+   ],
+   "rule": "Applies to radiation detectors containing this gas in non-refillable pressure receptacles not meeting the requirements of Chapter 6.2 and packing instruction P200 of 4.1.4.1, but meeting the requirements of Special Provision 378."
+  },
+  "BR-048": {
+   "elements": [
+    "eFTI319"
+   ],
+   "rule": "Applies to radioactive material meeting the definitions and criteria of other classes, when the quantity exceeds the limits specified in 3.5.1.2."
+  },
+  "BR-050": {
+   "elements": [
+    "eFTI317"
+   ],
+   "rule": "Applies to the carriage of a substance belonging to one of classes 1 to 9 meets the classification criteria of ADR/RID/ADN 2.2.9.1.10. It does not apply to UN 3077, UN 3082 and to single packagings and combination packagings where such single packagings or inner packagings of such combination packagings have: — a quantity of 5 l or less for liquids, or — a net mass of 5 kg or less for solids."
+  },
+  "BR-051": {
+   "elements": [
+    "eFTI256"
+   ],
+   "rule": "Applies to the carriage of engines or machineries that contain more than 1 000 l of liquid fuels, for UN No 3528 and UN No 3530, or whose fuel tank has a water capacity of more than 1 000 l, for UN No 3529."
+  },
+  "BR-052": {
+   "elements": [
+    "eFTI335",
+    "eFTI336",
+    "eFTI338",
+    "eFTI340",
+    "eFTI971"
+   ],
+   "rule": "Applies to the carriage of fuel gas containment systems designed and approved to be fitted in motor vehicles, for disposal, recycling, repair, inspection, maintenance or from where they are manufactured to a vehicle assembly plant."
+  },
+  "BR-053": {
+   "elements": [
+    "eFTI256"
+   ],
+   "rule": "Applies to the carriage of metal hydride storage systems intended to be installed in vehicles, wagons, vessels, machinery, engines or aircraft. It does not apply when a copy of the approval done by the competent authority of the country of the manufacture accompanies the consignment."
+  },
+  "BR-054": {
+   "elements": [
+    "eFTI833"
+   ],
+   "rule": "Applies to the carriage of metal hydride storage systems intended to be installed in vehicles, wagons, vessels, machinery, engines or aircraft. It does not apply when the transport document indicates that the packaging of metal hydride storage system was approved by the competent authority of the country of manufacture."
+  },
+  "BR-055": {
+   "elements": [
+    "eFTI320"
+   ],
+   "rule": "Applies to the carriage of mixtures (see ADR/RID/ADN 2.2.2.1.1) in tank-wagons, battery-wagons, wagons with demountable tanks, portable tanks, tank-containers or MEGCs. It does not apply when the technical names authorized by special provisions 581, 582 or 583 are used to supplement the proper shipping name, or when the composition of the mixture as a percentage of the mass is given."
+  },
+  "BR-056": {
+   "elements": [
+    "eFTI256"
+   ],
+   "rule": "Applies to the carriage of neutron radiation detectors containing non-pressurized boron trifluoride gas, which comply with the Special Provision 373."
+  },
+  "BR-057": {
+   "elements": [
+    "eFTI317"
+   ],
+   "rule": "Applies to the carriage of salvage packagings including large salvage packagings and salvage pressure receptacles."
+  },
+  "BR-058": {
+   "elements": [
+    "eFTI317"
+   ],
+   "rule": "Applies to the carriage of wastes containing dangerous goods (other than radioactive wastes). If the provisions for waste as set out in ADR/RID/ADN 2.1.3.5.5 is applied, then the statement ‘WASTE IN ACCORDANCE WITH 2.1.3.5.5’ is to be used."
+  },
+  "BR-059": {
+   "elements": [
+    "eFTI379"
+   ],
+   "rule": "Applies to trains carrying dangerous goods."
+  },
+  "BR-060": {
+   "elements": [
+    "eFTI261"
+   ],
+   "rule": "Applies to trains carrying dangerous goods packed in limited quantities, according with RID 3.4."
+  },
+  "BR-061": {
+   "elements": [
+    "eFTI319",
+    "eFTI388",
+    "eFTI456"
+   ],
+   "rule": "Applies to UN 0333, UN 0334, UN 0335, UN 0336, UN 0337."
+  },
+  "BR-062": {
+   "elements": [
+    "eFTI256"
+   ],
+   "rule": "Applies to UN 1829 sulphur trioxide, 99,95 % pure or above, carried without inhibitor in tanks."
+  },
+  "BR-063": {
+   "elements": [
+    "eFTI319"
+   ],
+   "rule": "Applies to UN 3175."
+  },
+  "BR-064": {
+   "elements": [
+    "eFTI255"
+   ],
+   "rule": "Applies to UN numbers that have a tunnel restriction code assigned in the Column (15) of Table A of Chapter 3.2, other than ‘-’."
+  },
+  "BR-065": {
+   "elements": [
+    "eFTI550"
+   ],
+   "rule": "Applies when tanks or dangerous goods in bulk, for which ADR prescribes an orange-coloured plate with the hazard identification number, are piggybackly carried on rail wagons."
+  },
+  "BR-066": {
+   "elements": [
+    "eFTI317"
+   ],
+   "rule": "Applies when the cargo is dry ice (UN 1845) or the packages, vehicles and containers contain substances presenting a risk of asphyxiation when used for cooling or conditioning purposes (such as dry ice (UN 1845) or nitrogen, refrigerated liquid (UN 1977) or argon, refrigerated liquid (UN 1951) or nitrogen) and have not been completely ventilated before carriage."
+  },
+  "BR-067": {
+   "elements": [
+    "eFTI827"
+   ],
+   "rule": "Applies when the carriage is subject to a special agreement."
+  },
+  "BR-068": {
+   "elements": [
+    "eFTI1133"
+   ],
+   "rule": "Applies when the carriage is subject to the special provision SP581."
+  },
+  "BR-069": {
+   "elements": [
+    "eFTI1133"
+   ],
+   "rule": "Applies when the carriage is subject to the special provision SP582."
+  },
+  "BR-070": {
+   "elements": [
+    "eFTI1133"
+   ],
+   "rule": "Applies when the carriage is subject to the special provision SP583."
+  },
+  "BR-071": {
+   "elements": [
+    "eFTI426",
+    "eFIT552"
+   ],
+   "rule": "Applies when the carriage is subject to the special provision SP640."
+  },
+  "BR-072": {
+   "elements": [
+    "eFTI317"
+   ],
+   "rule": "Applies when the infectious substances to be carried are unknown, but suspected of meeting the criteria for inclusion in Category A and assignment to UN No 2814 or 2900."
+  },
+  "BR-073": {
+   "elements": [
+    "eFTI433"
+   ],
+   "rule": "Applies where a certificate of approval for the vehicle /vessel is required."
+  },
+  "BR-074": {
+   "elements": [
+    "eFTI424",
+    "eFTI550"
+   ],
+   "rule": "Applies where the dangerous goods are packed according with ADN/RID/ADR 3.4."
+  },
+  "BR-075": {
+   "elements": [
+    "eFTI833"
+   ],
+   "rule": "Applies where the organic peroxide or self-reactive substance are carried under conditions where an approval from the competent authority is needed."
+  },
+  "BR-076": {
+   "elements": [
+    "eFTI433",
+    "eFTI555"
+   ],
+   "rule": "Applies where the carriage of dangerous goods in a vechicle/container is preceded by a voyage by sea."
+  },
+  "BR-077": {
+   "elements": [
+    "eFTI827"
+   ],
+   "rule": "Apply to seagoing and inland navigation vessels, where the latter carry only containers, when the stowage and separation are compliant with IMDG Code."
+  },
+  "BR-078": {
+   "elements": [
+    "eFTI317"
+   ],
+   "rule": "Apply to those self-reactive substances (Class 4.1) and to organic peroxides (Class 5.2) that benefits from permission of authorities to not display the Label No 1."
+  },
+  "BR-079": {
+   "elements": [
+    "eFTI279",
+    "eFTI283"
+   ],
+   "rule": "Apply to those self-reactive substances (Class 4.1) and to organic peroxides (Class 5.2) that require temperature control during carriage."
+  },
+  "BR-080": {
+   "elements": [
+    "eFTI617",
+    "eFTI618"
+   ],
+   "rule": "Barge with engine."
+  },
+  "BR-081": {
+   "elements": [
+    "eFTI242"
+   ],
+   "rule": "Compatibility groups as defined in ADR/RID/ADN 2.2.1.1.6."
+  },
+  "BR-082": {
+   "elements": [
+    "eFTI236"
+   ],
+   "rule": "Does not apply to classes 1, 2 and 7."
+  },
+  "BR-083": {
+   "elements": [
+    "eFTI416"
+   ],
+   "rule": "Every type of a statement text and of a value measure is identified by a subject type code."
+  },
+  "BR-084": {
+   "elements": [
+    "eFTI309"
+   ],
+   "rule": "Every type of a statement text is identified by a subject type code."
+  },
+  "BR-085": {
+   "elements": [
+    "eFTI307"
+   ],
+   "rule": "For carriage in accordance with ADR/RID/ADN 1.1.4.7, a statement shall be included: chose the code as appropriate (see CL-011, codes 41 or 42)."
+  },
+  "BR-086": {
+   "elements": [
+    "eFTI317"
+   ],
+   "rule": "For carriage in accordance with ADR/RID/ADN 2.1.2.8, a statement shall be included in the transport document, as follows ‘Classified in accordance with 2.1.2.8’."
+  },
+  "BR-087": {
+   "elements": [
+    "eFTI424",
+    "eFTI550"
+   ],
+   "rule": "For carriage in accordance with ADR/RID 4.1.2.2 (b), 4.3.2.3.7 (b), 6.7.2.19.6.1 (b), 6.7.3.15.6.1 (b) or 6.7.4.14.6.1 (b), a statement to this effect shall be included in the transport document, as follows: ‘CARRIAGE IN ACCORDANCE WITH 4.1.2.2 (b)’, ‘CARRIAGE IN ACCORDANCE WITH 4.3.2.3.7 (b)’, ‘CARRIAGE IN ACCORDANCE WITH 6.7.2.19.6.1 (b)’, ‘CARRIAGE IN ACCORDANCE WITH 6.7.3.15.6.1 (b)’; or ‘CARRIAGE IN ACCORDANCE WITH 6.7.4.14.6.1 (b)’ as appropriate."
+  },
+  "BR-088": {
+   "elements": [
+    "eFTI301"
+   ],
+   "rule": "For lithium batteries of UN numbers 3090, 3091, 3480 and 3481 the danger label shall be ‘9’. For radioactive material of Class 7 the danger label shall be ‘7’."
+  },
+  "BR-089": {
+   "elements": [
+    "eFTI970"
+   ],
+   "rule": "For mixed packing of two different goods, the description of the goods in the transport document shall include the UN numbers and names printed in capitals in Columns (1) and (2) of Table A of Chapter 3.2 of both substances or articles. If more than two different goods are contained in the same package in conformity with the mixed packing provisions given in 4.1.10 special provisions MP1, MP2 and MP20 to MP24, the transport document shall indicate under the description of the goods the UN numbers of all the substances and articles contained in the package, in the form, ‘Goods of UN Nos …’."
+  },
+  "BR-090": {
+   "elements": [
+    "eFTI307"
+   ],
+   "rule": "For the carriage of cylinders, tubes, pressure drums, cryogenic receptacles and bundles of cylinders under the conditions of ADR/RID 4.1.6.10, the following entry shall be included in the transport document: ‘Carriage in accordance with 4.1.6.10’."
+  },
+  "BR-091": {
+   "elements": [
+    "eFTI424"
+   ],
+   "rule": "For the carriage of fixed tanks (tank vehicles), demountable tanks, battery-vehicles, tank-containers and MEGCs under the conditions of ADR/RID 4.3.2.4.4, the following entry shall be included in the transport document: ‘Carriage in accordance with 4.3.2.4.4’."
+  },
+  "BR-092": {
+   "elements": [
+    "eFTI550"
+   ],
+   "rule": "For the carriage of fixed tanks (tank vehicles), demountable tanks, battery-vehicles, tank-containers and MEGCs under the conditions of ADR/RID 4.3.2.4.4, the following entry shall be included in the transport document: ‘Carriage in accordance with 4.3.2.4.4’."
+  },
+  "BR-093": {
+   "elements": [
+    "eFTI374",
+    "eFTI448",
+    "eFIT618"
+   ],
+   "rule": "If a transport means, equipment, packages are used for dangerous goods transport, and identification numbers are available, then an identification shall be provided."
+  },
+  "BR-094": {
+   "elements": [
+    "eFTI483"
+   ],
+   "rule": "The hazard identification number shall be inscribed before the letters ‘UN’ preceding the UN number, in the following cases: — when marking in accordance with RID 5.3.2.1 is prescribed, — when full loads made up of packages containing one and the same substance or article are marked in accordance with RID 5.3.2.1, — when tanks or dangerous goods in bulk, for which ADR prescribes an orange- coloured plate with the hazard identification number, are piggybackly carried on rail wagons."
+  },
+  "BR-095": {
+   "elements": [
+    "eFTI387",
+    "eFTI455"
+   ],
+   "rule": "If Dangerous Goods information related to an equipment is necessary."
+  },
+  "BR-096": {
+   "elements": [
+    "eFTI424",
+    "eFTI550"
+   ],
+   "rule": "If empty tanks, battery-vehicles and MEGCs, uncleaned, are carried to the nearest place where cleaning or repair can be carried out in accordance with the provisions of ADR/RID 4.3.2.4.3, the following additional entry shall be made in the transport document: ‘Carriage in accordance with 4.3.2.4.3’."
+  },
+  "BR-097": {
+   "elements": [
+    "eFTI424",
+    "eFTI550"
+   ],
+   "rule": "If empty vehicles and containers, uncleaned, are carried to the nearest place where cleaning or repair can be carried out in accordance with the provisions of ADR/RID 7.5.8.1, the following additional entry shall be made in the transport document: ‘Carriage in accordance with 7.5.8.1’."
+  },
+  "BR-098": {
+   "elements": [
+    "eFTI317"
+   ],
+   "rule": "If the proper shipping name of a substance which is carried or offered for carriage in a liquid state at a temperature equal to or exceeding 100 °C, or in a solid state at a temperature equal to or exceeding 240 °C, does not convey the elevated temperature condition (for example, by using the term ‘MOLTEN’ or ‘ELEVATED TEMPERATURE’ as part of the proper shipping name), the word ‘HOT’ shall immediately precede the proper shipping name."
+  },
+  "BR-099": {
+   "elements": [
+    "eFTI279",
+    "eFTI283"
+   ],
+   "rule": "If the word ‘STABILIZED’ is part of the proper shipping name and stabilization is done by means of temperature control."
+  },
+  "BR-100": {
+   "elements": [
+    "eFTI317"
+   ],
+   "rule": "In all cases of international carriage of packages requiring competent authority approval of design or shipment, for which different approval types apply in the different countries concerned by the shipment, the UN number and proper shipping name required in ADR/RID/ADN 5.4.1.1.1 shall be in accordance with the certificate of the country of origin of design."
+  },
+  "BR-101": {
+   "elements": [
+    "eFTI238",
+    "eFTI243",
+    "eFTI247"
+   ],
+   "rule": "It does not apply to carriage of packagings, discarded, empty, uncleaned (UN 3509)."
+  },
+  "BR-102": {
+   "elements": [
+    "eFTI825"
+   ],
+   "rule": "Applies only in cases covered by ADN or ADR."
+  },
+  "BR-103": {
+   "elements": [
+    "eFTI240"
+   ],
+   "rule": "Mandatory for rail."
+  },
+  "BR-104": {
+   "elements": [
+    "eFTI374"
+   ],
+   "rule": "RID only, applies to trains carrying dangerous goods."
+  },
+  "BR-105": {
+   "elements": [
+    "eFTI281",
+    "eFTI285"
+   ],
+   "rule": "To be used in case of ADR/ADN 5.4.1.1.15 statement."
+  },
+  "BR-106": {
+   "elements": [
+    "eFTI317"
+   ],
+   "rule": "When a sample of an organic peroxide (see ADR/RID/ADN 2.2.52.1.9) or a self- reactive substance (see ADR/RID/ADN 2.2.41.1.15) is carried, a statement to this effect shall be included in the transport document, e.g. ‘Carriage in accordance with 2.2.52.1.9’."
+  },
+  "BR-107": {
+   "elements": [
+    "eFTI317"
+   ],
+   "rule": "When a substance, which is solid in accordance with the definition in ADR/RID/ADN 1.2.1, is offered for carriage in the molten state, the qualifying word ‘MOLTEN’ shall be added as part of the proper shipping name, unless it is already part of the proper shipping name (see 3.1.2.5)."
+  },
+  "BR-108": {
+   "elements": [
+    "eFTI346"
+   ],
+   "rule": "When by derogation from ADR/ADN 5.3.2.1.2 a multi-compartment tank-vehicle or a transport unit with more than one tank is marked in accordance with ADR/ADN 5.3.2.1.3, the substances contained in each tank or in each compartment of a tank shall be specified in the transport document."
+  },
+  "BR-109": {
+   "elements": [
+    "eFTI970"
+   ],
+   "rule": "When explosive substances or articles are carried in packagings conforming to packing instruction P101, the transport document shall bear the inscription ‘Packaging approved by the competent authority of …’ (see ADR/RID 4.1.4.1, packing instruction P101)."
+  },
+  "BR-110": {
+   "elements": [
+    "eFTI319"
+   ],
+   "rule": "When goods mentioned by name in Table A of ADR Chapter 3.2, are not subject to ADR because they are considered as non-dangerous according to Part 2, the consignor may enter in the transport document a statement to that effect, e.g.: ‘Not goods of Class …’."
+  },
+  "BR-111": {
+   "elements": [
+    "eFTI320"
+   ],
+   "rule": "Applies to the carriage of mixtures (see RID 2.2.2.1.1) in tank-wagons, battery- wagons, wagons with demountable tanks, portable tanks, tank-containers or MEGCs. It does not apply when the technical names authorized by special provisions 581, 582 or 583 are used to supplement the proper shipping name, or when the composition of the mixture as a percentage of the volume is given."
+  },
+  "BR-112": {
+   "elements": [
+    "eFTI587",
+    "eFTI589"
+   ],
+   "rule": "When place of loading (ASBIE1100) is different from the place of acceptance (ASBIE1048), one of the following should be provided: data element eFTI587, data element eFTI589 or an appropriate combination of data elements belonging to ASBIE1100 (Place of loading)."
+  },
+  "BR-113": {
+   "elements": [
+    "eFTI600",
+    "eFTI602"
+   ],
+   "rule": "When place of unloading (ASBIE1104) is different from the place of delivery (ASBIE1051), one of the following should be provided: data element eFTI600, data element eFTI602 or an appropriate combination of data elements belonging to ASBIE1104 (Place of unloading)."
+  },
+  "BR-114a": {
+   "elements": [
+    "eFTI593",
+    "eFTI594"
+   ],
+   "rule": "When business rule BR-112 is applied, then this information must be provided."
+  },
+  "BR-114b": {
+   "elements": [
+    "eFTI606",
+    "eFTI608"
+   ],
+   "rule": "When business rule BR-113 is applied, then this information must be provided."
+  },
+  "BR-115": {
+   "elements": [
+    "eFTI590",
+    "eFTI592"
+   ],
+   "rule": "When a place of loading is provided (ASBIE1100), then at least name or identification number of the certifying (= stamping) station or port authority must be provided. This applies also to situations where the place of loading is identical with the place of acceptance."
+  },
+  "BR-116": {
+   "elements": [
+    "eFTI603",
+    "eFTI605"
+   ],
+   "rule": "When a place of unloading is provided (ASBIE1104), then at least name or identification number of the certifying (= stamping) station or port authority must be provided. This includes applies also to the situations where the place of unloading is identical with the place of delivery."
+  },
+  "BR-117": {
+   "elements": [
+    "eFTI1137",
+    "eFTI1139"
+   ],
+   "rule": "If empty container drop-off is to be specified, then at least either identification number or place name must be specified."
+  },
+  "BR-118": {
+   "elements": [
+    "eFTI1137",
+    "eFTI1139"
+   ],
+   "rule": "If empty container pick-up is to be specified, then at least either identification number or place name must be specified."
+  },
+  "BR-119": {
+   "elements": [
+    "eFTI1135"
+   ],
+   "rule": "Must be used if empty container drop-off is to be specified."
+  },
+  "BR-120": {
+   "elements": [
+    "eFTI1135"
+   ],
+   "rule": "Must be used if empty container pick-up is to be described."
+  },
+  "BR-121": {
+   "elements": [
+    "eFTI169"
+   ],
+   "rule": "If the consignment information concerns only one House Air Waybill (AWB), then only one AWB number can be provided. If the consignment information concerns a Master AWB, then nil to many House AWB numbers can be provided."
+  },
+  "BR-122": {
+   "elements": [
+    "eFTI848"
+   ],
+   "rule": "If AOM is used, then the method used shall be specified."
+  }
+ }
+}

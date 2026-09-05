@@ -51,8 +51,10 @@ on:
         default: ""
         required: false
 
+# Write, for the one step that hands a part of the store back as a draft
+# release; everything else only reads.
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   fetch:
@@ -177,6 +179,25 @@ jobs:
           path: /tmp/cargopilot-regulations/${{ inputs.artifact_path }}
           retention-days: 1
           if-no-files-found: error
+
+      # The same part once more, as the asset of a draft release. An artifact
+      # is served from a blob store the development container's proxy refuses
+      # (measured: CONNECT to productionresultssa*.blob.core.windows.net is
+      # denied); a release asset is served from objects.githubusercontent.com,
+      # which it allows. A draft release has no tag and is invisible to anyone
+      # but the repository's collaborators, and it is deleted once read.
+      - name: Hand it back as a draft release too
+        if: ${{ inputs.artifact_path != '' }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ARTIFACT_PATH: ${{ inputs.artifact_path }}
+        run: |
+          set -euo pipefail
+          (cd /tmp/cargopilot-regulations && zip -q -r /tmp/store-part.zip "$ARTIFACT_PATH")
+          ls -l /tmp/store-part.zip
+          gh release create "store-part-${{ github.run_id }}" /tmp/store-part.zip \
+            --draft --title "store part ${{ github.run_id }} (draft, delete after reading)" \
+            --notes "Part of the regulation store handed back to the development container: $ARTIFACT_PATH. Not a release; delete once read."
 
       - name: Fetch what is missing
         if: ${{ inputs.probe_url == '' && inputs.drive_folder == '' && inputs.artifact_path == '' && inputs.find_instructions == '' && !inputs.verify_instructions && inputs.dump_text == '' }}

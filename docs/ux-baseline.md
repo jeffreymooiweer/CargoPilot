@@ -211,6 +211,38 @@ looked at.
 
 Task 10 was unchanged by 108 to 118.
 
+## Where the plan ended
+
+The whole set, run once against the finished application in one pass — the same harness,
+the same ten tasks, the same installation as the baseline at the top of this page.
+
+| Task | Actions | Windows | Forms | Completed |
+|---|---|---|---|---|
+| 1 A simple shipment to a downloaded package | 26 → **19** | 3 → **0** | 2 → **1** | yes |
+| 2 Five quantities changed on five lines | 15 → **5** | 5 → **0** | 0 | yes |
+| 3 Fifty rows imported, one unclear | 3 → **4** | 1 → **0** | 0 | yes |
+| 4 A substance suggestion closed, judged and revisited | 8 → **5** | 2 → **0** | 0 | **no → yes** |
+| 5 An extra document needing one new answer | 7 → **5** | 0 | 3 → **1** | yes |
+| 6 An error corrected from the final overview | 11 → **3** | 0 | 2 → **0** | yes |
+| 7 An earlier shipment as a new basis | 2 → **1** | 0 | 0 | yes |
+| 8 A reload during entry (organisation) | 5 → **4** | 1 → **0** | 0 | **no → yes** |
+| 8b A reload during entry (nothing stored) | not measured → **2** | 0 | 0 | yes |
+| 9 Five shipments into one trip | 5 → **6** | 0 | 0 | yes |
+| 10 A refused save recovered | 1 → **1** | 0 | 2 → **1** | yes |
+
+**83 actions became 53, eleven windows became none, and the two tasks the baseline could
+not finish now finish.** The two rows that went up are the ones whose route changed: task
+3's fourth action is the narrowing that made the one unclear line findable at all, and task
+9's sixth is the action that turns the shipments on the screen into a trip. Task 10 costs
+what it always did — the entry survived a refused save before this plan too — but the
+message now says what the server said and offers the way to try again.
+
+Two things this run found, both fixed in v1.201.0. The export step said **Update in
+history** over a shipment nobody had kept, because the draft's own row had given it an id:
+kept and written are not the same word. And the harness itself had to be taught to start
+from a standing start, because the wizard now resumes the draft the previous task left —
+which is release 115 working, and wrong for a measurement.
+
 ## What was not run
 
 The reload of task 8 was measured in the organisation application only. The same reload

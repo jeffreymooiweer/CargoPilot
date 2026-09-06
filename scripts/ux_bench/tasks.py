@@ -28,6 +28,18 @@ BY_LABEL = [
 
 
 def new_shipment(page) -> None:
+    """A shipment nobody has started yet.
+
+    Since v1.199.0 the wizard resumes the draft the last visit left behind,
+    which is the point of that release and wrong for a harness: each task is
+    measured from the same standing start, not from the task before it. A
+    person starts over with *Discard the draft*; this does the same through
+    the address, in the signed-in browser's own name.
+    """
+    try:
+        page.request.delete(f"{BASE}/api/shipments/draft")
+    except Exception:
+        pass  # An installation that keeps nothing has no draft to discard.
     page.goto(f"{BASE}/wizard/road")
     page.wait_for_timeout(2500)
     dismiss_toasts(page)

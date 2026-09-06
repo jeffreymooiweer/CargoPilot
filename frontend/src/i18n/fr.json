@@ -91,11 +91,15 @@
     "returnShipment": "Préparer le retour",
     "returnPreparing": "En cours…",
     "returnPrepared": "Retour préparé : parties inversées, chaque ligne mise en vide non nettoyé. Toutes les quantités ont été effacées — indiquez ce qui revient réellement.",
-    "returnShipmentHint": "Les mêmes emballages vides et non nettoyés vers l'expéditeur, avec la mention du 5.4.1.1.6.1. Les quantités de l'aller ne sont pas reprises."
+    "returnShipmentHint": "Les mêmes emballages vides et non nettoyés vers l'expéditeur, avec la mention du 5.4.1.1.6.1. Les quantités de l'aller ne sont pas reprises.",
+    "importAppended": "{{count}} ligne(s) ajoutée(s).",
+    "importReplaced": "{{count}} ligne(s) mise(s) à leur place.",
+    "importUndo": "Annuler",
+    "importUndone": "Les lignes précédentes sont de retour."
   },
   "review": {
     "linesTitle": "Marchandises",
-    "intro": "Renseignez par ligne la description, la quantité et l'unité. Les dimensions et les exceptions sont sous Détails ; une liste Excel passe par Importer.",
+    "intro": "Renseignez par ligne la description, la quantité et l'unité. Les dimensions et les exceptions sont sous Détails ; une liste Excel passe par Coller depuis Excel ou Choisir un fichier.",
     "description": "Désignation",
     "descriptionPlaceholder": "Choisissez du matériel ou saisissez p. ex. cornière acier 80x80x8x6000",
     "customDescription": "Utiliser comme description libre (correspondance automatique)",
@@ -123,8 +127,8 @@
     "importHint": "Collez des colonnes copiées depuis Excel (désignation | quantité | unité), ou téléchargez le modèle et téléversez un fichier.",
     "importExampleTitle": "Exemple",
     "importExample": "cornière acier 80x80x8x6000 | 8 | pcs",
-    "importReplace": "Remplacer les lignes actuelles",
-    "importAppend": "Ajouter aux lignes actuelles",
+    "importReplace": "Remplacer",
+    "importAppend": "Ajouter",
     "importConfirm": "Importer",
     "cancel": "Annuler",
     "dangerousGoods": "Marchandises dangereuses",
@@ -156,7 +160,15 @@
     "toBeRechecked": "À vérifier",
     "each": "pce",
     "keyboardHint": "Entrée crée la ligne suivante. Les dimensions, l'emballage et les poids propres sont sous Détails.",
-    "recheckingHint": "Les poids sont recalculés ; ce qui est en gris n'a pas encore été vérifié."
+    "recheckingHint": "Les poids sont recalculés ; ce qui est en gris n'a pas encore été vérifié.",
+    "importPaste": "Coller depuis Excel",
+    "importFile": "Choisir un fichier",
+    "importDrop": "Déposez le fichier ici pour le lire.",
+    "importRead": "{{count}} ligne(s) lue(s)",
+    "importSkipped": "{{count}} ligne(s) ignorée(s) : pas de description",
+    "attentionSummary": "{{ok}} réglées · {{attention}} demandent attention",
+    "onlyAttention": "N'afficher que celles-ci",
+    "showAllLines": "Afficher toutes les lignes"
   },
   "import": {
     "downloadTemplate": "Télécharger le modèle",
@@ -175,7 +187,13 @@
   },
   "messages": {
     "dg_un_detected": "Numéro ONU détecté — ligne marquée comme marchandises dangereuses",
-    "wall_thickness_missing": "Épaisseur de paroi manquante — sans elle, le poids d'un profilé ne peut pas être déterminé"
+    "wall_thickness_missing": "Épaisseur de paroi manquante — sans elle, le poids d'un profilé ne peut pas être déterminé",
+    "dimensions_missing": "Aucune dimension dans la description et aucun poids saisi — indiquez le poids sous Détails.",
+    "length_missing": "Aucune longueur dans la description — sans elle, le poids de ce profilé ne peut être établi.",
+    "kg_per_meter_missing": "Aucun kilo par mètre connu pour ce profilé — indiquez le poids sous Détails.",
+    "material_not_recognized": "Matériau non reconnu — le poids ne vient pas du catalogue ; vérifiez-le ou saisissez-le vous-même.",
+    "quantity_missing": "Aucune quantité saisie.",
+    "wall_thickness_invalid": "L'épaisseur de paroi ne correspond pas aux cotes extérieures — il ne reste alors aucune matière."
   },
   "status": {
     "ok": "OK",

@@ -114,9 +114,17 @@ same harness against the same tasks, so a row is comparable with the baseline ab
 | 108 (v1.193.0) | 4 A substance suggestion | 8 → **5** | 2 → **1** | Reaching the line to look again costs less; the finding itself stands |
 | 108 (v1.193.0) | 8 A reload during entry | 5 → **3** | 1 → **0** | Only the cost of getting there; the entry is still lost |
 
-Task 3 stayed at three actions and one window, and its fifty lines still come back as 49
-**OK** and one **Controle nodig**: the import itself did not change in 108, and the row
-that needs attention is still found by scrolling. Tasks 5, 6, 7, 9 and 10 were unchanged.
+| 109 (v1.194.0) | 3 Fifty rows imported | 3 → **4** | 1 → **0** | No dialog, and the fourth action is the one that was impossible: narrowing to the row that wants attention |
+
+Task 3 is the one row in this table where the action count went *up*, and it is the
+release's point rather than a regression. Pasting fifty rows costs the same three actions
+it always did and no longer opens a window; the fourth is the button that narrows the
+fifty lines to the one that needs looking at — which in the baseline could only be found
+by scrolling 5,746 pixels. The lines themselves still come back as 49 **OK** and one
+**Controle nodig**, and that one now says why: *no dimensions in the description and no
+weight filled in*.
+
+Tasks 5, 6, 7, 9 and 10 were unchanged by 108 and 109.
 
 ## What was not run
 

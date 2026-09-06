@@ -219,6 +219,35 @@ describe("figures while the calculation runs", () => {
   });
 });
 
+describe("what the import left behind", () => {
+  const settled = (id: number, description: string) =>
+    ({ id, description, quantity: 1, unit: "stuks" }) as DraftLine;
+
+  it("says how many lines want attention, and narrows to them", async () => {
+    const lines = [settled(1, "Stalen plaat"), settled(2, "Diverse onderdelen"), settled(3, "Stalen buis")];
+    const results = [
+      resultLine([], { line_id: 1, weight_total_kg: 100 }),
+      resultLine([], { line_id: 2, status: "needs_review", messages: ["no_dimensions"] }),
+      resultLine([], { line_id: 3, weight_total_kg: 50 }),
+    ];
+    renderPanel(lines, results);
+    expect(screen.getByText("review.attentionSummary")).toBeInTheDocument();
+
+    await userEvent.click(screen.getByRole("button", { name: "review.onlyAttention" }));
+    expect(screen.getAllByRole("listitem")).toHaveLength(1);
+    expect(screen.getByLabelText("review.descriptionOfLine:2")).toHaveValue("Diverse onderdelen");
+
+    await userEvent.click(screen.getByRole("button", { name: "review.showAllLines" }));
+    expect(screen.getAllByRole("listitem")).toHaveLength(3);
+  });
+
+  it("says nothing when every line came out settled", () => {
+    renderPanel([draft], [resultLine([], { weight_total_kg: 100 })]);
+    expect(screen.queryByText("review.attentionSummary")).toBeNull();
+    expect(screen.queryByRole("button", { name: "review.onlyAttention" })).toBeNull();
+  });
+});
+
 describe("the DG name recognition, asked in a snackbar", () => {
   it("accepting sets the tick and carries the UN number", async () => {
     const onDraftChange = renderPanel([draft], [resultLine(petrol)]);

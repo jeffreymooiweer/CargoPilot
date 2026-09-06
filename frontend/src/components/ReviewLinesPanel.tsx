@@ -21,6 +21,13 @@
  * and the keyboard are the same everywhere — a second layout is a second set of
  * bugs.
  *
+ * **Getting a list in.** Pasting from Excel and choosing a file are actions on
+ * this panel rather than a dialog to find, and the panel takes a dropped file —
+ * see ``GoodsImport``. What came out is said above the list: how many lines are
+ * settled, how many want looking at, and a filter that narrows to those. Fifty
+ * imported lines with one that needs attention used to be fifty cards of
+ * scrolling with nothing pointing at it.
+ *
  * **Derived figures while the calculation runs.** Typing clears the result, and
  * the wizard recalculates six-tenths of a second after the typing stops. A line
  * whose own text has not changed keeps showing what was worked out for it,
@@ -34,10 +41,10 @@ import { useTranslation } from "react-i18next";
 import { LineItem, UnitCatalogue, api, ArticleRef } from "../api/client";
 import { useToast } from "../toast/ToastProvider";
 import EquipmentCombobox from "./EquipmentCombobox";
+import GoodsImport from "./GoodsImport";
 import LineEditDialog, { ROUND_TYPES, WALL_PROFILE_TYPES } from "./LineEditDialog";
 import NumberInput from "./NumberInput";
 import UnitSelect from "./UnitSelect";
-import { ImportIcon } from "./icons";
 
 export interface DraftLine {
   id: number;
@@ -86,7 +93,7 @@ interface Props {
   onRemoveLine: (id: number) => void;
   onDuplicateLine: (id: number) => void;
   onAddLine: () => void;
-  onImportClick?: () => void;
+  onImport?: (text: string, mode: "append" | "replace") => void;
   onLineWeightChange?: (lineId: number, field: "weight_each_kg" | "weight_total_kg", value: number | null) => void;
   translateMessage: (msg: string) => string;
 }
@@ -96,6 +103,12 @@ function statusColor(status: string) {
   if (status === "error") return "bg-red-100 text-red-800 dark:bg-red-900/40 dark:text-red-300";
   if (status === "needs_review") return "bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-300";
   return "bg-yellow-100 text-yellow-800 dark:bg-yellow-900/40 dark:text-yellow-300";
+}
+
+/** A line the calculation could not settle: no weight came out, or it wants
+ *  looking at. These are what the filter above the list narrows to. */
+function needsAttention(item: LineItem | null): boolean {
+  return !!item && item.status !== "ok";
 }
 
 /** What a line's derived figures were computed from. Two lines with the same
@@ -171,7 +184,7 @@ export default function ReviewLinesPanel({
   onRemoveLine,
   onDuplicateLine,
   onAddLine,
-  onImportClick,
+  onImport,
   onLineWeightChange,
   translateMessage,
 }: Props) {
@@ -182,6 +195,14 @@ export default function ReviewLinesPanel({
   // Held by id rather than by index: a line can be removed or duplicated while
   // the dialog is open, and an index would then quietly point at another line.
   const [editingId, setEditingId] = useState<number | null>(null);
+  // A file dropped on the panel, handed to the import; and whether something is
+  // being dragged over it, so the panel can say it will take it.
+  const [dropped, setDropped] = useState<File | null>(null);
+  const [dragging, setDragging] = useState(false);
+  // Fifty imported lines with one that needs looking at is fifty cards of
+  // scrolling to find it. This narrows the list to those, and says how many.
+  const [onlyAttention, setOnlyAttention] = useState(false);
+  const hasLines = draftLines.some((line) => line.description.trim());
 
   const updateDraft = (id: number, patch: Partial<DraftLine>) => {
     onDraftChange(draftLines.map((line) => (line.id === id ? { ...line, ...patch } : line)));
@@ -340,6 +361,28 @@ export default function ReviewLinesPanel({
   const editing = editingIndex >= 0 ? draftLines[editingIndex] : null;
   const editingOutcome = editing ? outcomeFor(editing, editingIndex) : null;
 
+  // How the calculation judged the lines, for the summary above the list. A
+  // line still being rechecked is neither settled nor a problem yet.
+  const { settled, attention } = useMemo(() => {
+    let settledCount = 0;
+    let attentionCount = 0;
+    draftLines.forEach((line, index) => {
+      const { item, stale } = outcomeFor(line, index);
+      if (!item || stale) return;
+      settledCount += 1;
+      if (needsAttention(item)) attentionCount += 1;
+    });
+    return { settled: settledCount, attention: attentionCount };
+    // outcomeFor reads the refs, which change with the results.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [draftLines, resultLines]);
+
+  // Nothing to narrow to any more: leaving the filter on would show an empty
+  // list and look like the lines had gone.
+  useEffect(() => {
+    if (attention === 0 && onlyAttention) setOnlyAttention(false);
+  }, [attention, onlyAttention]);
+
   const anyStale = useMemo(
     () => draftLines.some((line, index) => outcomeFor(line, index).stale && line.description.trim()),
     // outcomeFor reads the refs, which change with the results.
@@ -348,22 +391,47 @@ export default function ReviewLinesPanel({
   );
 
   return (
-    <div className={`${panelClass} overflow-hidden`}>
+    <div
+      className={`${panelClass} overflow-hidden ${dragging ? "ring-2 ring-brand-400" : ""}`}
+      onDragOver={onImport ? (event) => {
+        if (!event.dataTransfer.types.includes("Files")) return;
+        event.preventDefault();
+        setDragging(true);
+      } : undefined}
+      onDragLeave={onImport ? (event) => {
+        if (event.currentTarget.contains(event.relatedTarget as Node)) return;
+        setDragging(false);
+      } : undefined}
+      onDrop={onImport ? (event) => {
+        const file = event.dataTransfer.files?.[0];
+        if (!file) return;
+        event.preventDefault();
+        setDragging(false);
+        setDropped(file);
+      } : undefined}
+    >
       <div className="border-b border-slate-100 px-4 py-4 dark:border-slate-800 sm:px-5">
-        <div className="flex items-center justify-between gap-3">
-          <h3 className="text-sm font-semibold text-slate-900 dark:text-slate-100">{t("review.linesTitle")}</h3>
-          {onImportClick && (
-            <button
-              type="button"
-              onClick={onImportClick}
-              className="inline-flex h-9 shrink-0 items-center gap-1.5 rounded-lg px-2.5 text-xs font-medium text-slate-700 transition-colors hover:bg-slate-50 dark:text-slate-200 dark:hover:bg-slate-800"
-            >
-              <ImportIcon />
-              {t("review.importExcel")}
-            </button>
+        <div className="flex flex-wrap items-start justify-between gap-3">
+          <div className="min-w-0">
+            <h3 className="text-sm font-semibold text-slate-900 dark:text-slate-100">{t("review.linesTitle")}</h3>
+            <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">{t("review.intro")}</p>
+          </div>
+          {onImport && (
+            <div className="shrink-0">
+              <GoodsImport
+                hasLines={hasLines}
+                onImport={onImport}
+                dropped={dropped}
+                onDroppedHandled={() => setDropped(null)}
+              />
+            </div>
           )}
         </div>
-        <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">{t("review.intro")}</p>
+        {dragging && (
+          <p className="mt-2 rounded-lg border border-dashed border-brand-300 bg-brand-50 px-3 py-2 text-xs text-brand-800 dark:border-brand-700 dark:bg-brand-950/40 dark:text-brand-200">
+            {t("review.importDrop")}
+          </p>
+        )}
       </div>
 
       <div className="p-3 sm:p-4">
@@ -380,9 +448,25 @@ export default function ReviewLinesPanel({
           <span className="w-[7.5rem]" />
         </div>
 
+        {attention > 0 && (
+          <div className="mb-2 flex flex-wrap items-center justify-between gap-2 rounded-xl border border-amber-200 bg-amber-50 px-3 py-2 dark:border-amber-900/50 dark:bg-amber-950/30">
+            <span className="text-xs text-amber-900 dark:text-amber-200">
+              {t("review.attentionSummary", { ok: settled - attention, attention })}
+            </span>
+            <button
+              type="button"
+              onClick={() => setOnlyAttention((on) => !on)}
+              className="rounded-lg border border-amber-300 px-2.5 py-1 text-xs font-medium text-amber-900 dark:border-amber-800 dark:text-amber-200"
+            >
+              {onlyAttention ? t("review.showAllLines") : t("review.onlyAttention")}
+            </button>
+          </div>
+        )}
+
         <ul className="space-y-2">
           {draftLines.map((line, index) => {
             const { item, stale } = outcomeFor(line, index);
+            if (onlyAttention && !needsAttention(item)) return null;
             return (
               <li
                 key={line.id}

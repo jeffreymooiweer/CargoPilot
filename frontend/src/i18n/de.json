@@ -91,11 +91,15 @@
     "returnShipment": "Rücksendung vorbereiten",
     "returnPreparing": "Läuft…",
     "returnPrepared": "Rücksendung vorbereitet: Parteien getauscht, jede Position auf leer ungereinigt gesetzt. Alle Mengen wurden geleert — tragen Sie ein, was tatsächlich zurückkommt.",
-    "returnShipmentHint": "Dieselben Verpackungen leer und ungereinigt zurück zum Absender, mit der Angabe nach 5.4.1.1.6.1. Die Mengen der Hinfahrt werden nicht übernommen."
+    "returnShipmentHint": "Dieselben Verpackungen leer und ungereinigt zurück zum Absender, mit der Angabe nach 5.4.1.1.6.1. Die Mengen der Hinfahrt werden nicht übernommen.",
+    "importAppended": "{{count}} Zeile(n) hinzugefügt.",
+    "importReplaced": "{{count}} Zeile(n) an ihre Stelle gesetzt.",
+    "importUndo": "Rückgängig",
+    "importUndone": "Die vorherigen Zeilen sind wieder da."
   },
   "review": {
     "linesTitle": "Güter",
-    "intro": "Füllen Sie je Zeile die Beschreibung, die Anzahl und die Einheit aus. Maße und Ausnahmen stehen unter Details; eine Excel-Liste geht über Importieren.",
+    "intro": "Füllen Sie je Zeile die Beschreibung, die Anzahl und die Einheit aus. Maße und Ausnahmen stehen unter Details; eine Liste aus Excel geht über Aus Excel einfügen oder Datei wählen.",
     "description": "Bezeichnung",
     "descriptionPlaceholder": "Material wählen oder z. B. Stahl Winkelprofil 80x80x8x6000 eingeben",
     "customDescription": "Als freie Bezeichnung verwenden (automatisch zuordnen)",
@@ -123,8 +127,8 @@
     "importHint": "Fügen Sie kopierte Spalten aus Excel ein (Bezeichnung | Menge | Einheit) oder laden Sie die Vorlage herunter und eine Datei hoch.",
     "importExampleTitle": "Beispiel",
     "importExample": "Stahl Winkelprofil 80x80x8x6000 | 8 | Stk.",
-    "importReplace": "Aktuelle Zeilen ersetzen",
-    "importAppend": "An aktuelle Zeilen anhängen",
+    "importReplace": "Ersetzen",
+    "importAppend": "Hinzufügen",
     "importConfirm": "Importieren",
     "cancel": "Abbrechen",
     "dangerousGoods": "Gefahrgut",
@@ -156,7 +160,15 @@
     "toBeRechecked": "Zu prüfen",
     "each": "St",
     "keyboardHint": "Enter erzeugt die nächste Zeile. Maße, Verpackung und eigene Gewichte stehen unter Details.",
-    "recheckingHint": "Die Gewichte werden neu berechnet; was grau steht, ist noch nicht geprüft."
+    "recheckingHint": "Die Gewichte werden neu berechnet; was grau steht, ist noch nicht geprüft.",
+    "importPaste": "Aus Excel einfügen",
+    "importFile": "Datei wählen",
+    "importDrop": "Datei hier loslassen, um sie zu lesen.",
+    "importRead": "{{count}} Zeile(n) gelesen",
+    "importSkipped": "{{count}} Zeile(n) übersprungen: keine Beschreibung",
+    "attentionSummary": "{{ok}} erledigt · {{attention}} brauchen Aufmerksamkeit",
+    "onlyAttention": "Nur diese zeigen",
+    "showAllLines": "Alle Zeilen zeigen"
   },
   "import": {
     "downloadTemplate": "Vorlage herunterladen",
@@ -175,7 +187,13 @@
   },
   "messages": {
     "dg_un_detected": "UN-Nummer erkannt — Zeile als Gefahrgut markiert",
-    "wall_thickness_missing": "Wandstärke fehlt — ohne dieses Maß lässt sich das Gewicht eines Profils nicht bestimmen"
+    "wall_thickness_missing": "Wandstärke fehlt — ohne dieses Maß lässt sich das Gewicht eines Profils nicht bestimmen",
+    "dimensions_missing": "Keine Maße in der Beschreibung und kein Gewicht eingetragen — tragen Sie das Gewicht unter Details ein.",
+    "length_missing": "Keine Länge in der Beschreibung — ohne sie lässt sich das Gewicht dieses Profils nicht bestimmen.",
+    "kg_per_meter_missing": "Keine Kilogramm je Meter für dieses Profil bekannt — tragen Sie das Gewicht unter Details ein.",
+    "material_not_recognized": "Material nicht erkannt — das Gewicht stammt nicht aus dem Katalog; prüfen Sie es oder tragen Sie es selbst ein.",
+    "quantity_missing": "Keine Anzahl eingetragen.",
+    "wall_thickness_invalid": "Die Wanddicke passt nicht zu den Außenmaßen — damit bleibt kein Material übrig."
   },
   "status": {
     "ok": "OK",

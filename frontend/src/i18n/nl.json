@@ -91,11 +91,15 @@
     "returnShipment": "Retourzending voorbereiden",
     "returnPreparing": "Bezig…",
     "returnPrepared": "Retour klaargezet: partijen omgewisseld, elke regel op leeg ongereinigd. Alle hoeveelheden zijn leeggemaakt — vul in wat er werkelijk terugkomt.",
-    "returnShipmentHint": "Dezelfde verpakkingen leeg en ongereinigd terug naar de afzender, met de omschrijving van 5.4.1.1.6.1. De hoeveelheden van de heenrit worden niet overgenomen."
+    "returnShipmentHint": "Dezelfde verpakkingen leeg en ongereinigd terug naar de afzender, met de omschrijving van 5.4.1.1.6.1. De hoeveelheden van de heenrit worden niet overgenomen.",
+    "importAppended": "{{count}} regel(s) toegevoegd.",
+    "importReplaced": "{{count}} regel(s) in de plaats gezet.",
+    "importUndo": "Ongedaan maken",
+    "importUndone": "De vorige regels staan er weer."
   },
   "review": {
     "linesTitle": "Goederen",
-    "intro": "Vul per regel de omschrijving, het aantal en de eenheid in. Maten en uitzonderingen staan onder Details; een Excel-lijst gaat via Importeren.",
+    "intro": "Vul per regel de omschrijving, het aantal en de eenheid in. Maten en uitzonderingen staan onder Details; een lijst uit Excel gaat via Plakken uit Excel of Bestand kiezen.",
     "description": "Omschrijving",
     "descriptionPlaceholder": "Kies materieel of typ bijv. staal hoekprofiel 80x80x8x6000",
     "customDescription": "Gebruik als vrije omschrijving (automatisch matchen)",
@@ -123,8 +127,8 @@
     "importHint": "Plak gekopieerde kolommen uit Excel (omschrijving | aantal | eenheid), of download de template en upload een bestand.",
     "importExampleTitle": "Voorbeeld",
     "importExample": "staal hoekprofiel 80x80x8x6000 | 8 | stuks",
-    "importReplace": "Vervang huidige regels",
-    "importAppend": "Toevoegen aan huidige regels",
+    "importReplace": "Vervangen",
+    "importAppend": "Toevoegen",
     "importConfirm": "Importeren",
     "cancel": "Annuleren",
     "dangerousGoods": "Gevaarlijke stoffen",
@@ -156,7 +160,15 @@
     "toBeRechecked": "Te controleren",
     "each": "st",
     "keyboardHint": "Enter maakt de volgende regel. Maten, verpakking en eigen gewichten staan onder Details.",
-    "recheckingHint": "De gewichten worden opnieuw berekend; wat grijs staat is nog niet gecontroleerd."
+    "recheckingHint": "De gewichten worden opnieuw berekend; wat grijs staat is nog niet gecontroleerd.",
+    "importPaste": "Plakken uit Excel",
+    "importFile": "Bestand kiezen",
+    "importDrop": "Laat het bestand hier los om het te lezen.",
+    "importRead": "{{count}} regel(s) gelezen",
+    "importSkipped": "{{count}} rij(en) overgeslagen: geen omschrijving",
+    "attentionSummary": "{{ok}} gereed · {{attention}} wil aandacht",
+    "onlyAttention": "Alleen deze tonen",
+    "showAllLines": "Alle regels tonen"
   },
   "import": {
     "downloadTemplate": "Template downloaden",
@@ -175,7 +187,13 @@
   },
   "messages": {
     "dg_un_detected": "UN-nummer gedetecteerd — regel gemarkeerd als gevaarlijke stoffen",
-    "wall_thickness_missing": "Wanddikte ontbreekt — zonder die maat is het gewicht van een profiel niet te bepalen"
+    "wall_thickness_missing": "Wanddikte ontbreekt — zonder die maat is het gewicht van een profiel niet te bepalen",
+    "dimensions_missing": "Geen maten in de omschrijving en geen gewicht ingevuld — vul het gewicht in bij Details.",
+    "length_missing": "Geen lengte in de omschrijving — zonder lengte is het gewicht van dit profiel niet te bepalen.",
+    "kg_per_meter_missing": "Geen kilo's per meter bekend voor dit profiel — vul het gewicht in bij Details.",
+    "material_not_recognized": "Materiaal niet herkend — het gewicht komt niet uit de catalogus; controleer of vul het zelf in.",
+    "quantity_missing": "Geen aantal ingevuld.",
+    "wall_thickness_invalid": "De wanddikte past niet bij de buitenmaten — daarmee blijft er geen materiaal over."
   },
   "status": {
     "ok": "OK",

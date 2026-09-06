@@ -39,6 +39,17 @@ Expect additions rather than upheaval — the wizard and the document registry a
 
 ## Planned
 
+### Making the daily work simpler
+
+An external usability review of v1.189.0 read the wizard, the goods step, the import,
+the document fields and the shipments and trips pages, and named where the daily work
+costs more than it should. Its claims were checked against the code one by one; what
+held up is planned as twelve releases in [The usability plan](docs/ux-plan.md), starting
+with a measured baseline of the ten tasks it names so that every later claim of "faster"
+is a measurement rather than an estimate. The confirmed correctness fixes of v1.190.0
+stay release conditions throughout, and no step of it adds storage the open application
+or the history switch promised not to keep.
+
 ### Releasing the locked transport modes
 
 Air and multimodal each leave the lock when their known gaps are closed and their

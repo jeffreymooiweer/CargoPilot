@@ -2,6 +2,34 @@
 
 All notable changes are documented here, following [Semantic Versioning](https://semver.org/).
 
+## [1.192.0] — 2026-09-06
+
+### The usability plan, and the baseline it will be judged against
+
+An external usability review of v1.189.0 read the wizard, the goods step, the import,
+the document fields and the shipments and trips pages. Its claims were checked against
+the code one by one; what held up is now written down as twelve releases in
+[The usability plan](docs/ux-plan.md), from inline goods editing to drafts and a trip
+built from a selection.
+
+Before any of it is built, the ten tasks the review names were driven through the real
+interface in a real browser and counted:
+[The usability baseline](docs/ux-baseline.md). The harness that did it,
+[`scripts/ux_bench`](scripts/ux_bench/README.md), stays in the repository so every later
+release can rerun the tasks it touches and report a measurement rather than an estimate.
+
+What the run found, in short: a simple three-line shipment costs 26 actions and three
+dialogs, nine of them the line dialog opening and closing; five quantity changes cost 15
+actions and five windows; one unclear row among fifty imported sits nearly six thousand
+pixels down the page with nothing pointing at it; closing a substance suggestion stores
+it as a rejection that cannot be found again; the export step names eight missing fields
+in text that cannot be clicked, and none of the three step pills goes back; a reload
+during entry loses everything without a warning; and the shipments list offers neither a
+reuse action nor a multiple selection. Two of the ten tasks cannot be completed at all
+as they are written.
+
+No product code changed in this release.
+
 ## [1.191.0] — 2026-09-06
 
 ### The dependencies the audit flagged, upgraded

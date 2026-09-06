@@ -20,9 +20,10 @@ A public route earns a test per promise, so each of these pins one:
 And the printing half: a code is only put on paper when it will still work when
 the paper is read, which needs both the switch and an address.
 """
-import re
 
 import pytest
+
+from tests import route_table
 from fastapi.testclient import TestClient
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
@@ -367,13 +368,14 @@ def test_the_route_is_the_only_public_one(client):
     guards = {get_current_user, require_admin}
 
     open_routes = []
-    for route in app.routes:
-        path = getattr(route, "path", "")
-        dependant = getattr(route, "dependant", None)
-        if dependant is None or path in known_open:
+    for address in route_table.addresses(app):
+        if not address.operation or address.path in known_open:
             continue
-        if not guards & {d.call for d in dependant.dependencies}:
-            open_routes.append(path)
+        if not guards & address.guards:
+            open_routes.append(address.path)
+    # The walk must have seen the table: an empty one passes for the wrong
+    # reason, which is what FastAPI 0.141's included routers first produced.
+    assert any(a.path == "/api/auth/login" for a in route_table.addresses(app))
 
     # Since v1.172.0 the door itself is public too: the installation's name
     # and its pictures are what the sign-in page shows, so they cannot sit

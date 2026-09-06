@@ -1,4 +1,5 @@
 import logging
+from contextlib import asynccontextmanager
 
 from fastapi import Depends, FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
@@ -103,7 +104,16 @@ def create_app() -> FastAPI:
     # without logging in. One is made and stored for it here — refusing to start
     # left the user with nothing but a dead container.
     apply_security_configuration(settings)
-    app = FastAPI(title=settings.app_name)
+
+    @asynccontextmanager
+    async def lifespan(application: FastAPI):
+        # Before the first request: the schema, the seeds, the first
+        # administrator. Starlette's ``on_event`` did this until v1.191.0 and
+        # is gone from Starlette 1.x; a lifespan is the same moment.
+        application.state.has_admin = init_app()
+        yield
+
+    app = FastAPI(title=settings.app_name, lifespan=lifespan)
     app.state.limiter = limiter
     app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
     # A wildcard origin never travels with credentials. Starlette answers
@@ -126,11 +136,6 @@ def create_app() -> FastAPI:
         response.headers["X-Frame-Options"] = "DENY"
         response.headers["Referrer-Policy"] = "same-origin"
         return response
-
-    @app.on_event("startup")
-    def on_startup():
-        has_admin = init_app()
-        app.state.has_admin = has_admin
 
     @app.get("/api/health")
     def health(db: Session = Depends(get_db)):

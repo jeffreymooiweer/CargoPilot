@@ -15,6 +15,8 @@ import struct
 import zlib
 
 import pytest
+
+from tests import route_table
 from fastapi.testclient import TestClient
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
@@ -265,7 +267,8 @@ def test_the_open_application_shows_what_its_operator_placed_by_hand(db, monkeyp
         assert client.delete("/api/branding/logo").status_code == 405
         assert upload(client, "/api/branding/modality/rail", png()).status_code == 405
         # Structurally as well: nothing in the route table writes branding.
-        writers = [r for r in open_app.routes
-                   if getattr(r, "path", "").startswith("/api/branding")
-                   and getattr(r, "methods", set()) & {"POST", "DELETE", "PUT"}]
+        writers = [a for a in route_table.addresses(open_app)
+                   if a.path.startswith("/api/branding")
+                   and a.methods & {"POST", "DELETE", "PUT"}]
         assert writers == []
+        assert any(a.path == "/api/branding" for a in route_table.addresses(open_app))

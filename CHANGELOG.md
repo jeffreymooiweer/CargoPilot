@@ -2,6 +2,32 @@
 
 All notable changes are documented here, following [Semantic Versioning](https://semver.org/).
 
+## [1.191.0] — 2026-09-06
+
+### The dependencies the audit flagged, upgraded
+
+The other half of the external review of v1.189.0: the runtime pins with published
+vulnerabilities. Its own release because one of them is a major version of the web
+framework, and a framework upgrade that rides along with bug fixes is a framework
+upgrade nobody can back out on its own.
+
+- **FastAPI 0.115.6 → 0.141.1, Starlette 0.41.3 → 1.6.0.** Starlette 1.x drops the
+  `on_event` hooks; start-up is a lifespan now, the same moment under another name.
+  FastAPI 0.141 keeps an included router as one entry in the route table instead of
+  flattening it, which silently emptied the tests that walk that table for unguarded
+  addresses — they passed for the wrong reason. They read the effective table through
+  FastAPI's own iterator now (`tests/route_table.py`) and assert that they saw it.
+- **python-jose 3.3.0 → PyJWT 2.13.0.** The tokens are HMAC-signed with the
+  application's key and read nowhere else; python-jose's asymmetric algorithms were
+  never used, and its ECDSA dependency has an advisory with no fix. PyJWT does the one
+  thing needed with no such baggage. Existing sessions stay valid: same algorithm,
+  same key, same claims.
+- **python-multipart 0.0.19 → 0.0.32, pypdf 6.14.2 → 6.17.0**, the fix versions of
+  every advisory `pip-audit` reported against them.
+- **pytest 8.3.4 → 9.1.1, pytest-asyncio 0.24.0 → 1.4.0** in the development set.
+
+`pip-audit` against the runtime set reports nothing after this.
+
 ## [1.190.0] — 2026-09-06
 
 ### What an external audit found, fixed

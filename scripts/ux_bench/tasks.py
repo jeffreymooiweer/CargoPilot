@@ -224,12 +224,9 @@ def task_3(page) -> object:
     new_shipment(page)
     rows = [f"Stalen hoekprofiel 80x80x8x{3000 + i * 10} | {i + 1} | stuks" for i in range(49)]
     rows.insert(24, "Diverse onderdelen | 3 | stuks")  # the one without dimensions
-    b.note("the import is reached only through a dialog; the goods step itself offers "
-           "no paste and no file action")
-    b.click(page.get_by_role("button", name="Importeren"))
-    dialog = page.locator("[role=dialog]").last
-    b.fill(dialog.locator("textarea").first, "\n".join(rows))
-    b.click(dialog.get_by_role("button", name=re.compile("Importeren|Toevoegen|Vervangen")).last)
+    b.click(page.get_by_role("button", name="Plakken uit Excel"))
+    b.fill(page.get_by_label("Plakken uit Excel"), "\n".join(rows))
+    b.click(page.get_by_role("button", name=re.compile("^(Importeren|Toevoegen)$")).last)
     page.wait_for_timeout(3000)
     b.observe()
     b.m.output["lines"] = page.get_by_role("button", name="Details").count()
@@ -240,14 +237,28 @@ def task_3(page) -> object:
         "els => els.map(e => e.innerText.trim()).filter(t => t && t.length < 20)")
     tally = {name: statuses.count(name) for name in set(statuses)}
     b.m.output["statuses"] = tally
-    b.note(f"of {b.m.output['lines']} imported lines the statuses are {tally}; "
-           "nothing filters the ones that need attention — they are found by scrolling")
-    unclear = page.get_by_text("Diverse onderdelen", exact=False)
-    if unclear.count():
-        position = unclear.first.evaluate(
-            "el => Math.round(el.getBoundingClientRect().top + window.scrollY)")
-        b.note(f"the one row without dimensions sits {position} px down the page, "
-               "with nothing on screen pointing at it")
+    b.note(f"of {b.m.output['lines']} imported lines the statuses are {tally}")
+    summary = page.get_by_text(re.compile("wil aandacht"))
+    b.note(f"the list says: {summary.first.inner_text()}" if summary.count()
+           else "nothing above the list says how the import came out")
+    narrow = page.get_by_role("button", name="Alleen deze tonen")
+    if narrow.count():
+        b.click(narrow)
+        shown = page.get_by_role("button", name="Details").count()
+        b.m.output["narrowed_to"] = shown
+        left = page.get_by_label(re.compile("Omschrijving van regel"))
+        reason = left.first.input_value() if left.count() else ""
+        why = page.get_by_text(re.compile("Geen maten|Geen lengte|niet herkend"))
+        if why.count():
+            reason += f" — {why.first.inner_text()}"
+        b.note(f"narrowing to what wants attention leaves {shown} line(s): {reason[:120]}")
+    else:
+        unclear = page.get_by_text("Diverse onderdelen", exact=False)
+        if unclear.count():
+            position = unclear.first.evaluate(
+                "el => Math.round(el.getBoundingClientRect().top + window.scrollY)")
+            b.note(f"the one row without dimensions sits {position} px down the page, "
+                   "with nothing on screen pointing at it")
     return b.done(b.m.output.get("lines", 0) >= 50)
 
 

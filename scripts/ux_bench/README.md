@@ -47,6 +47,11 @@ directory.
 | `CARGOPILOT_BENCH_USER` / `CARGOPILOT_BENCH_PASSWORD` | `root` / `Root-pass-123` |
 | `CARGOPILOT_BENCH_CHROME` | Playwright's own browser |
 
+**Not at the same time as the backend suite.** The run copies the built frontend into
+`backend/static` so the application it drives serves the interface. While that directory
+exists, FastAPI has a catch-all route for the single-page app, and a handful of tests
+that expect a 404 from an unmounted address get a 405 instead. Run one, then the other.
+
 The tasks drive the Dutch interface, because that is the language the labels are
 matched on. They need an installation with the shipment history switched on; the run
 switches it on itself and seeds a handful of earlier shipments for the tasks that reuse

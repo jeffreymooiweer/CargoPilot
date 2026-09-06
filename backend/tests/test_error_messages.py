@@ -22,6 +22,12 @@ Three things have to hold for that to work, and each is a test here:
    nothing in the German is a German sentence with a number missing from it.
 3. **No message is written in Dutch at the raise site any more.** Otherwise the
    next one added slips straight back past all of this.
+
+The goods pipeline's own line messages work the same way and are checked here
+too. They are not raised as errors — they are what a line on the goods step says
+about itself, "no dimensions in the description" — and until v1.194.0 five of the
+seven had no translation at all, so the screen showed the bare code
+``dimensions_missing`` to whoever needed the sentence most.
 """
 from __future__ import annotations
 
@@ -167,3 +173,32 @@ def test_no_message_to_the_user_is_written_in_dutch():
         "Messages to the user must go through app.core.messages so the interface "
         "can translate them.\n" + "\n".join(offenders)
     )
+
+
+# --- what a goods line says about itself ------------------------------------
+
+
+def pipeline_messages() -> set[str]:
+    """Every message the goods pipeline can put on a line, read from the source.
+
+    From the source rather than from a list to keep against, because a list is
+    the thing that goes stale: a message added next month is caught by this the
+    moment it is written.
+    """
+    source = (ROOT / "backend" / "app" / "services" / "pipeline.py").read_text(encoding="utf-8")
+    return set(re.findall(r'messages\.append\("([a-z_]+)"\)', source))
+
+
+def test_the_pipeline_emits_the_messages_this_test_thinks_it_does():
+    """A guard on the guard: a regex that silently matches nothing would make
+    every check below pass over an empty set."""
+    found = pipeline_messages()
+    assert len(found) >= 5, found
+    assert "dimensions_missing" in found
+
+
+@pytest.mark.parametrize("language", LANGUAGES)
+def test_every_line_message_is_translated(language: str):
+    node = bundle(language).get("messages", {})
+    missing = sorted(code for code in pipeline_messages() if not isinstance(node.get(code), str))
+    assert missing == [], f"{language}.json is missing line messages for: {missing}"

@@ -21,7 +21,6 @@ import AiIcon from "../components/AiIcon";
 import AssistantModal from "../components/AssistantModal";
 import DocumentFieldsStep, { resolveSections } from "../components/DocumentFieldsStep";
 import DocumentAdvicePanel, { buildAdvice } from "../components/DocumentAdvicePanel";
-import ImportDialog from "../components/ImportDialog";
 import ReviewLinesPanel, { DraftLine, draftToText, textToDraftLines } from "../components/ReviewLinesPanel";
 import WizardProgress from "../components/WizardProgress";
 import { isModalityAvailable } from "./ModalitySelectPage";
@@ -185,7 +184,6 @@ export default function WizardPage() {
   const [instructions, setInstructions] = useState<WrittenInstruction[]>([]);
   const [checklist, setChecklist] = useState<WrittenInstruction[]>([]);
   const [unCardsBusy, setUnCardsBusy] = useState(false);
-  const [importOpen, setImportOpen] = useState(false);
   const [assistantOpen, setAssistantOpen] = useState(false);
   const toast = useToast();
 
@@ -569,17 +567,43 @@ export default function WizardPage() {
     setResult(null);
   };
 
+  /** An import, and the way back out of it.
+   *
+   *  Replacing what is already there is the one action on this step that
+   *  destroys work, so it hands back the lines it replaced: the snackbar's
+   *  **Ongedaan maken** puts them back, with the numbering they had. That is
+   *  what makes offering "replace" at all reasonable. */
   const handleImport = (text: string, importMode: "append" | "replace") => {
+    const before = draftLines;
+    const beforeId = nextId;
+    const beforeResult = result;
+    let added = 0;
     if (importMode === "replace") {
       const lines = textToDraftLines(text);
+      added = lines.length;
       setDraftLines(lines);
       setNextId(Math.max(...lines.map((l) => l.id), 0) + 1);
     } else {
       const imported = textToDraftLines(text, nextId);
+      added = imported.length;
       setNextId((n) => n + imported.length);
       setDraftLines((prev) => [...prev.filter((l) => l.description.trim()), ...imported]);
     }
     setResult(null);
+    toast.info(
+      t(importMode === "replace" ? "wizard.importReplaced" : "wizard.importAppended", { count: added }),
+      {
+        actions: [{
+          label: t("wizard.importUndo"),
+          run: () => {
+            setDraftLines(before);
+            setNextId(beforeId);
+            setResult(beforeResult);
+            toast.success(t("wizard.importUndone"));
+          },
+        }],
+      },
+    );
   };
 
   const handleLineWeightChange = (
@@ -1091,7 +1115,7 @@ export default function WizardPage() {
             onRemoveLine={removeLine}
             onDuplicateLine={duplicateLine}
             onAddLine={addLine}
-            onImportClick={() => setImportOpen(true)}
+            onImport={handleImport}
             onLineWeightChange={result ? handleLineWeightChange : undefined}
             translateMessage={translateMessage}
           />
@@ -1546,7 +1570,6 @@ export default function WizardPage() {
         </div>
       )}
 
-      <ImportDialog open={importOpen} onClose={() => setImportOpen(false)} onImport={handleImport} />
     </div>
   );
 }

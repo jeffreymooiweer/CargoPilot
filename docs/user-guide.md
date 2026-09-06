@@ -44,7 +44,7 @@ out — the weight, the measurements, the volume — appears under the line as y
 Dimensions you want to set yourself, the packaging, the wall thickness and your own
 weights are under **Details** on the line.
 
-**Paste it.** Click **Import**, paste from Excel or a text file. One line per row:
+**Paste it.** Click **Paste from Excel** on the goods step and paste. One line per row:
 
 ```
 Steel angle 80x80x8x6000 | 8 | pieces
@@ -54,19 +54,26 @@ Euro pallet with bricks   | 12 | pallets
 Columns are separated by a pipe (`|`) or a tab, in the order
 `description | quantity | unit`.
 
-**Upload a file.** `.xlsx`, `.csv` or `.txt`. Download the template from the same dialog
-if you want the exact layout.
+**Upload a file.** **Choose a file** takes `.xlsx`, `.csv` or `.txt`, and the goods panel
+takes a file dropped on it. **Download template** next to it gives you the exact layout if
+you want it.
 
 Your file rarely has the template's layout, and it does not have to. CargoPilot reads the
-header row and works out which column is which. When it recognises the names it says so;
-when it does not, it guesses by position and **tells you it guessed**, in an amber panel
-above the text. Each dropdown shows what is actually in that column — `2. Benaming ·
+header row and works out which column is which. When it recognises the names there is
+nothing to ask and the lines simply go in; when it does not, it guesses by position,
+**tells you it guessed** in an amber panel, and waits for you to look before importing
+anything. Each dropdown shows what is actually in that column — `2. Benaming ·
 Stalen hoekprofiel 80x80x8x6000` rather than "column 2" — so you can see at a glance
 whether it picked the right one.
 
 Two things worth knowing there. A column you do not need can be left unmapped. And if
 your file starts with a header row that CargoPilot did not recognise, tick **first row is
 a header**, or that row is imported as a piece of cargo.
+
+**Adding or replacing.** With nothing in the shipment yet there is nothing to replace, so
+you are not asked: the lines go in. Once there are lines, both **Add** and **Replace** are
+offered by name, and whichever you pick can be taken back from the snackbar that follows —
+which is what makes replacing safe to offer at all.
 
 ### What happens next
 
@@ -75,8 +82,12 @@ in Dutch, English, German or French. `Steel angle 80x80x8x6000` becomes steel, 8
 6000 mm long, and so does `Stahl Winkelprofil 80x80x8x6000`. From there it calculates the weight, the material volume and the transport volume.
 
 A green line means it worked. An orange or red line means it could not work out the
-weight — usually because the description has no dimensions. Type the weight in yourself
-and carry on; nothing blocks you.
+weight — usually because the description has no dimensions — and says which of those it
+was. Type the weight in yourself under **Details** and carry on; nothing blocks you.
+
+Above the list you get the count: *49 settled · 1 wants attention*, with a button that
+narrows the list to those. On fifty imported lines that is the difference between finding
+the one that needs you and scrolling for it.
 
 While a line is being recalculated it keeps its previous figures, greyed out and marked
 *to be rechecked* — except the line you are actually changing, which shows no figures at

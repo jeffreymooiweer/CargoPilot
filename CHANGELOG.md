@@ -2,6 +2,43 @@
 
 All notable changes are documented here, following [Semantic Versioning](https://semver.org/).
 
+## [1.194.0] — 2026-09-06
+
+### The import is on the goods step, and says what it left behind
+
+Release 109 of [the usability plan](docs/ux-plan.md). Pasting a list from Excel and
+choosing a file were one **Importeren** button that opened a dialog, and inside that
+dialog the file chooser was an icon. Both are now actions with names on the goods step
+itself, and the panel takes a file dropped on it.
+
+**It only asks where there is doubt.** A file whose heading row the server recognised has
+nothing left to ask about, so an empty shipment simply gets the lines. A file whose
+columns were guessed from their order still shows the mapping first — that is the one
+case where a wrong guess is invisible afterwards. Asking every time is how a column
+question becomes something people click past.
+
+**Adding or replacing.** A shipment with nothing in it is not asked which of the two it
+wants; there is nothing to replace. Once there are lines, both are offered by name, and
+either can be taken back from the snackbar that follows — the lines that were replaced
+come back with the numbering they had. That undo is what makes offering "replace" at all
+reasonable.
+
+**What came out is said above the list.** *49 gereed · 1 wil aandacht*, with a button
+that narrows the list to those. The baseline had that one row sitting 5,746 pixels down
+the page with nothing pointing at it; it is now one action away. Measured on the same
+task: fifty rows imported went from 3 actions and **1 window** to 4 actions and **0
+windows**, and the fourth action is the one that was impossible before — narrowing to the
+row that needs looking at.
+
+**And the reason is readable.** The goods pipeline can put seven messages on a line and
+five of them had no translation at all, so the screen showed the bare code
+`dimensions_missing` to whoever needed the sentence most. All seven now say what is
+wrong and what to do about it, in four languages, and a test reads the pipeline's source
+so the next one added cannot slip past.
+
+`ImportDialog` is gone with this; the column mapping it wrapped is unchanged and now sits
+inline.
+
 ## [1.193.0] — 2026-09-06
 
 ### The goods line, edited where it stands

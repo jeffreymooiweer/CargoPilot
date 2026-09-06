@@ -23,6 +23,8 @@ import logging
 from pathlib import Path
 
 import pytest
+
+from tests import route_table
 from fastapi.testclient import TestClient
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
@@ -128,7 +130,7 @@ def test_the_route_table_itself_carries_nothing_account_bound(fresh, monkeypatch
     monkeypatch.setenv("CARGOPILOT_MODE", "open")
     get_settings.cache_clear()
     app = create_app()
-    paths = {route.path for route in app.routes}
+    paths = route_table.paths(app)
     forbidden = ("/api/auth", "/api/users", "/api/equipment", "/api/settings/me",
                  "/api/settings/instance", "/api/un-cards", "/api/changelog",
                  "/api/update", "/api/assistant/model",

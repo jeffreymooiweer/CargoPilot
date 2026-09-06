@@ -3,12 +3,17 @@ import hashlib
 import hmac
 from typing import Any, Mapping
 
-from jose import JWTError, jwt
+import jwt
+from jwt import PyJWTError
 from passlib.context import CryptContext
 
 from app.core.config import get_settings
 
 pwd_context = CryptContext(schemes=["argon2"], deprecated="auto")
+#: HMAC with the application's key. Tokens are signed and read here only, so
+#: a symmetric algorithm is the right one, and PyJWT (since v1.191.0; before
+#: it python-jose, which carried an unmaintained ECDSA library for the
+#: asymmetric algorithms this application never used) is the library.
 ALGORITHM = "HS256"
 SESSION_PASSWORD_CLAIM = "pwd"
 
@@ -45,7 +50,7 @@ def decode_access_token_claims(token: str) -> dict[str, Any] | None:
     settings = get_settings()
     try:
         payload = jwt.decode(token, settings.app_secret_key, algorithms=[ALGORITHM])
-    except JWTError:
+    except PyJWTError:
         return None
     subject = payload.get("sub")
     if not isinstance(subject, str) or not subject:

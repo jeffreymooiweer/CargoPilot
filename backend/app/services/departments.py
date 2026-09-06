@@ -65,7 +65,8 @@ def listing(db: Session) -> list[dict]:
     users = dict(db.query(User.department_id, func.count(User.id))
                  .filter(User.department_id.isnot(None)).group_by(User.department_id).all())
     shipments = dict(db.query(Shipment.department_id, func.count(Shipment.id))
-                     .filter(Shipment.department_id.isnot(None))
+                     .filter(Shipment.department_id.isnot(None),
+                             Shipment.is_draft.is_(False))
                      .group_by(Shipment.department_id).all())
     return [
         {"id": d.id, "name": d.name,

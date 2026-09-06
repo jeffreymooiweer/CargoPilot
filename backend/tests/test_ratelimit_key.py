@@ -203,6 +203,8 @@ def test_every_rate_limit_in_the_application_in_one_table():
         # The kept bundle rendered again from the history: the same work as
         # the bundle, so the same allowance.
         "shipment_documents": "10 per 1 minute",
+        # The running entry, saved a few seconds after the typing stops.
+        "save_draft": "60 per 1 minute",
         # The adviser's annual report reads every kept shipment of a year.
         "shipment_report": "20 per 1 minute",
         "shipment_report_workbook": "20 per 1 minute",

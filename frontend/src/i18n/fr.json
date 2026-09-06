@@ -545,7 +545,7 @@
     "exportNotice": "Attention : les documents générés sont des projets. À vérifier, à compléter et à faire signer par une personne habilitée avant utilisation. Voir la clause de non-responsabilité.",
     "documentLanguage": "Langue des documents",
     "documentLanguageRule": "5.4.1.4.1 : une langue officielle du pays d'expédition et, si ce n'est pas l'allemand, l'anglais ou le français, en outre dans l'une de ces trois. Pour le néerlandais, l'application inscrit les deux noms dans le champ.",
-    "downloadAll": "Tout télécharger en ZIP ({{count}})",
+    "downloadAll": "Télécharger le jeu de documents ({{count}})",
     "downloadAllHint": "Le ZIP contient aussi les cartes UN et les consignes écrites pour ce transport, dans la mesure où ce serveur les détient.",
     "mail": "Envoyer par e-mail ({{count}})",
     "mailHint": "Envoie le même fichier zip que le bouton de téléchargement, en pièce jointe.",
@@ -558,7 +558,10 @@
     "mailSending": "Envoi en cours…",
     "mailSent": "Envoyé à {{to}}.",
     "missingFieldsLead": "Manquant :",
-    "changeSet": "Modifier le jeu de documents"
+    "changeSet": "Modifier le jeu de documents",
+    "downloadPartial": "Télécharger ce qui est prêt ({{ready}} sur {{total}})",
+    "partialNotice": "Ce jeu n'est pas complet : {{list}} n'en fait pas partie. Ci-dessus, chaque document indique ce qui lui manque encore.",
+    "downloadedNotSent": "Les documents sont dans vos téléchargements. Vérifiez-les, signez-les là où il le faut et faites-les parvenir au conducteur — téléchargé n'est pas envoyé."
   },
   "unCards": {
     "title": "Fiches ONU pour votre dossier",
@@ -1316,5 +1319,37 @@
     "hide": "Replier",
     "nothingFilled": "Rien de rempli pour l'instant.",
     "alsoAsked": "Également demandé par : {{list}}"
+  },
+  "draft": {
+    "kept": "Cette saisie est conservée comme brouillon.",
+    "saving": "Enregistrement du brouillon…",
+    "saved": "Brouillon enregistré.",
+    "savedAt": "Brouillon enregistré à {{time}}.",
+    "failed": "Le brouillon n'a pas pu être enregistré — votre saisie est toujours à l'écran.",
+    "discard": "Supprimer le brouillon",
+    "resumed": "Votre saisie précédente est de retour ; vous reprenez où vous en étiez.",
+    "notKeptHere": "Cette installation ne conserve rien : un rechargement perd votre saisie.",
+    "download": "Télécharger le brouillon",
+    "open": "Ouvrir un brouillon",
+    "opened": "Brouillon ouvert.",
+    "notADraft": "Ce fichier n'est pas un brouillon CargoPilot."
+  },
+  "check": {
+    "title": "Vérifiez vos réponses",
+    "change": "Modifier",
+    "nothingGiven": "Rien de rempli pour l'instant",
+    "modality": "Mode de transport",
+    "consignor": "Expéditeur",
+    "consignee": "Destinataire",
+    "route": "Itinéraire",
+    "goods": "Marchandises",
+    "goodsValue": "{{count}} ligne(s) · {{weight}} kg · {{volume}} m³",
+    "packages": "Ce qui est transporté",
+    "andMore": "{{count}} de plus",
+    "assessment": "Évaluation",
+    "dgOnBoard": "{{count}} matière(s) dangereuse(s) à bord",
+    "noDg": "Pas de marchandises dangereuses",
+    "openQuestions": "{{count}} question(s) de matière ouverte(s)",
+    "language": "Langue des documents"
   }
 }

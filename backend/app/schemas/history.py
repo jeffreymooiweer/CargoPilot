@@ -33,6 +33,10 @@ class ShipmentIn(BaseModel):
     bundle: DocumentBundleRequest | None = None
     #: The wizard's own state, opaque to the server.
     snapshot: dict[str, Any] = Field(default_factory=dict)
+    #: Entry still in progress. A draft is kept so a reload does not lose it,
+    #: and is not a kept shipment: saving the same row with this false is what
+    #: makes it one.
+    draft: bool = False
 
 
 class ShipmentSummary(BaseModel):
@@ -46,6 +50,8 @@ class ShipmentSummary(BaseModel):
     goods_count: int
     has_dangerous_goods: bool
     has_documents: bool
+    #: Entry still in progress rather than a kept shipment.
+    is_draft: bool = False
     created_by: str
     #: Whose work this is: the keeper's department when it was kept.
     department_id: int | None = None

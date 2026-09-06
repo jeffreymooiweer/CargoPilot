@@ -545,7 +545,7 @@
     "exportNotice": "Let op: gegenereerde documenten zijn concepten. Controleer, vul aan en onderteken door een bevoegde persoon vóór gebruik. Zie de disclaimer.",
     "documentLanguage": "Taal van de documenten",
     "documentLanguageRule": "5.4.1.4.1: een officiële taal van het land van verzending, en is dat geen Duits, Engels of Frans, dan bovendien in een van die drie. Bij Nederlands zet de app beide namen in het veld.",
-    "downloadAll": "Alles downloaden als ZIP ({{count}})",
+    "downloadAll": "Documentenpakket downloaden ({{count}})",
     "downloadAllHint": "Het ZIP-bestand bevat ook de UN-kaarten en de schriftelijke instructies voor dit vervoer, voor zover die op deze server aanwezig zijn.",
     "mail": "Mailen ({{count}})",
     "mailHint": "Verstuurt hetzelfde zipbestand als de downloadknop, als bijlage.",
@@ -558,7 +558,10 @@
     "mailSending": "Bezig met versturen…",
     "mailSent": "Verstuurd naar {{to}}.",
     "missingFieldsLead": "Ontbrekend:",
-    "changeSet": "Documentenpakket wijzigen"
+    "changeSet": "Documentenpakket wijzigen",
+    "downloadPartial": "Downloaden wat gereed is ({{ready}} van {{total}})",
+    "partialNotice": "Dit pakket is niet compleet: {{list}} zit er niet bij. Hierboven staat per document wat er nog ontbreekt.",
+    "downloadedNotSent": "De documenten staan in uw downloads. Controleer ze, onderteken ze waar dat moet en zorg dat ze bij de chauffeur komen — gedownload is niet verzonden."
   },
   "unCards": {
     "title": "UN-kaarten voor uw administratie",
@@ -1316,5 +1319,37 @@
     "hide": "Inklappen",
     "nothingFilled": "Nog niets ingevuld.",
     "alsoAsked": "Ook gevraagd door: {{list}}"
+  },
+  "draft": {
+    "kept": "Deze invoer wordt als concept bewaard.",
+    "saving": "Concept bewaren…",
+    "saved": "Concept bewaard.",
+    "savedAt": "Concept bewaard om {{time}}.",
+    "failed": "Concept kon niet worden bewaard — uw invoer staat nog op het scherm.",
+    "discard": "Concept weggooien",
+    "resumed": "Uw vorige invoer is teruggezet; u staat weer waar u gebleven was.",
+    "notKeptHere": "Deze installatie bewaart niets: bij herladen is uw invoer weg.",
+    "download": "Concept downloaden",
+    "open": "Concept openen",
+    "opened": "Concept geopend.",
+    "notADraft": "Dit bestand is geen CargoPilot-concept."
+  },
+  "check": {
+    "title": "Controleer uw antwoorden",
+    "change": "Wijzigen",
+    "nothingGiven": "Nog niets ingevuld",
+    "modality": "Vervoerswijze",
+    "consignor": "Afzender",
+    "consignee": "Geadresseerde",
+    "route": "Route",
+    "goods": "Goederen",
+    "goodsValue": "{{count}} regel(s) · {{weight}} kg · {{volume}} m³",
+    "packages": "Wat er vervoerd wordt",
+    "andMore": "nog {{count}}",
+    "assessment": "Beoordeling",
+    "dgOnBoard": "{{count}} gevaarlijke stof(fen) aan boord",
+    "noDg": "Geen gevaarlijke stoffen",
+    "openQuestions": "{{count}} stofvraag/vragen open",
+    "language": "Taal van de documenten"
   }
 }

@@ -374,6 +374,12 @@ export const api = {
   updateShipment: (id: number, payload: ShipmentIn) =>
     request<ShipmentSummary>(`/shipments/${id}`, { method: "PUT", body: JSON.stringify(payload) }),
   forgetShipment: (id: number) => request<{ ok: boolean }>(`/shipments/${id}`, { method: "DELETE" }),
+  /** The running entry. A draft is kept so a reload does not lose it; it is
+   *  not on the shipments page and only its own author can read it. */
+  runningDraft: () => request<ShipmentDetail | null>("/shipments/draft"),
+  saveDraft: (payload: ShipmentIn) =>
+    request<ShipmentSummary>("/shipments/draft", { method: "PUT", body: JSON.stringify(payload) }),
+  discardDraft: () => request<{ ok: boolean }>("/shipments/draft", { method: "DELETE" }),
   shipmentExportUrl: (id: number) => `${API_BASE}/shipments/${id}/export.json`,
   /** The documents again: the kept bundle re-rendered by the same code as
    *  the export step's download, handed to the browser as a file. */
@@ -882,6 +888,8 @@ export interface ShipmentSummary {
   has_dangerous_goods: boolean;
   /** Whether a bundle was kept, so the documents can be handed out again. */
   has_documents: boolean;
+  /** Entry still in progress rather than a kept shipment. */
+  is_draft?: boolean;
   created_by: string;
   /** The keeper's department when it was kept; empty when none. */
   department_id?: number | null;
@@ -917,6 +925,9 @@ export interface ShipmentIn {
   documents: string[];
   bundle: DocumentBundlePayload | null;
   snapshot: Record<string, unknown>;
+  /** Entry still in progress: kept so a reload does not lose it, and not a
+   *  kept shipment until it is saved without this. */
+  draft?: boolean;
 }
 
 export interface ShipmentQuery {

@@ -126,6 +126,17 @@ def _007_trips(conn: Connection) -> None:
     Trip.__table__.create(conn, checkfirst=True)
 
 
+def _008_shipment_drafts(conn: Connection) -> None:
+    """Entry in progress kept as a draft (v1.199.0).
+
+    Existing rows are kept shipments, which is what the default says: a
+    database that predates this step has no drafts in it.
+    """
+    add_column(conn, "shipments", "is_draft BOOLEAN NOT NULL DEFAULT 0")
+    conn.execute(text(
+        "CREATE INDEX IF NOT EXISTS ix_shipments_is_draft ON shipments (is_draft)"))
+
+
 #: In order. Append; never renumber, never remove.
 MIGRATIONS: list[tuple[int, str, Callable[[Connection], None]]] = [
     (1, "shipments", _001_shipments),
@@ -135,6 +146,7 @@ MIGRATIONS: list[tuple[int, str, Callable[[Connection], None]]] = [
     (5, "articles", _005_articles),
     (6, "audit_events", _006_audit_events),
     (7, "trips", _007_trips),
+    (8, "shipment_drafts", _008_shipment_drafts),
 ]
 
 

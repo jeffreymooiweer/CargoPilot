@@ -8,7 +8,7 @@
  */
 import { describe, expect, it } from "vitest";
 
-import { groupFields } from "./documentGroups";
+import { addedQuestions, groupFields } from "./documentGroups";
 import { DocumentDefinition, DocumentRegistry } from "../api/client";
 
 const text = (value: string) => ({ nl: value, en: value });
@@ -117,6 +117,16 @@ describe("grouping the questions", () => {
     const { groups, covered } = groupFields(REGISTRY, [CMR, twice]);
     expect(groups[2].sections.map((s) => s.key)).toEqual(["references", "doc:cmr"]);
     expect(covered.map((d) => d.key)).toEqual(["second_cmr"]);
+  });
+
+  it("says what choosing a document adds, and that it is often nothing", () => {
+    // The IMO form wants the container number too, but the CMR is already
+    // asking it; the ship is the one question it really adds.
+    expect(addedQuestions(REGISTRY, [CMR], [CMR, IMO]).map((f) => f.key)).toEqual(["vessel_flight"]);
+    const same = doc("second_cmr", ["parties"], [
+      { key: "established_place", label: text("Opgemaakt te"), status: "USER_REQUIRED", type: "text" },
+    ]);
+    expect(addedQuestions(REGISTRY, [CMR], [CMR, same])).toEqual([]);
   });
 
   it("leaves out a shared section no selected document refers to", () => {

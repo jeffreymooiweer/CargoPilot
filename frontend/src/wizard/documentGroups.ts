@@ -56,6 +56,30 @@ export interface GroupedQuestions {
   covered: DocumentDefinition[];
 }
 
+/** Every question a document set asks, in the order the form asks them. */
+export function questions(registry: DocumentRegistry, documents: DocumentDefinition[]): GroupedField[] {
+  return groupFields(registry, documents).groups.flatMap((group) =>
+    group.sections.flatMap((section) => section.fields),
+  );
+}
+
+/**
+ * What choosing a document adds to the form: the questions it brings that
+ * nothing already selected was asking.
+ *
+ * An extra document usually adds nothing at all — its questions were asked by
+ * the ones already chosen — and saying so is worth as much as naming the one
+ * question it does add.
+ */
+export function addedQuestions(
+  registry: DocumentRegistry,
+  before: DocumentDefinition[],
+  after: DocumentDefinition[],
+): GroupedField[] {
+  const had = new Set(questions(registry, before).map((field) => field.key));
+  return questions(registry, after).filter((field) => !had.has(field.key));
+}
+
 /** A field that some selected document requires is required, whatever the
  *  document that happened to define it first calls it. A required definition
  *  also drops the condition of a conditional one: the document needing it does

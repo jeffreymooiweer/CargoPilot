@@ -26,6 +26,7 @@ import WizardProgress from "../components/WizardProgress";
 import { isModalityAvailable } from "./ModalitySelectPage";
 import { usePreferences } from "../settings/preferences";
 import { SNAPSHOT_VERSION, WizardSnapshot, readSnapshot, templateValues } from "../wizard/snapshot";
+import { addedQuestions } from "../wizard/documentGroups";
 import {
   applyLineWeightChange,
   recalcTotals,
@@ -363,6 +364,13 @@ export default function WizardPage() {
     setStepKey("details");
   };
 
+  /** What the last change to the document set added to the form. Choosing a
+   *  document is a choice about paperwork, and the honest answer to "and now
+   *  what do I have to fill in?" is usually *nothing* — its questions were
+   *  already being asked. Where it is not nothing, the questions are named and
+   *  reachable, and nothing else happens. */
+  const [addedByDoc, setAddedByDoc] = useState<{ label: string; count: number; first: string | null } | null>(null);
+
   const returnFromField = () => {
     const back = returnTo ?? "export";
     setReturnTo(null);
@@ -388,8 +396,9 @@ export default function WizardPage() {
   );
 
   // The advice assembles the document set from the shipment; the user adjusts
-  // it on the export step. Until they do, the selection follows the shipment —
-  // a DG line appearing pulls the transport document and the DG papers in.
+  // it where the questions are, before answering them. Until they do, the
+  // selection follows the shipment — a DG line appearing pulls the transport
+  // document and the DG papers in.
   const advice = useMemo(
     () => (registry && modalityDef ? buildAdvice(registry, modalityDef.key, needsDg) : null),
     [registry, modalityDef, needsDg],
@@ -405,6 +414,31 @@ export default function WizardPage() {
   );
 
   const genericDocs = selectedDefinitions;
+
+  /** Change the document set and say what that added to the form. */
+  const chooseDocuments = (keys: string[]) => {
+    const after = keys
+      .map((key) => registry?.documents.find((d) => d.key === key))
+      .filter((d): d is DocumentDefinition => !!d);
+    const fresh = keys.filter((key) => !selected.includes(key));
+    if (registry && fresh.length === 1) {
+      const doc = after.find((d) => d.key === fresh[0]);
+      const added = addedQuestions(registry, selectedDefinitions, after);
+      // The way in goes to the first question that is actually needed; the
+      // count says how many came with it.
+      const first = added.find((field) => field.status === "USER_REQUIRED") ?? added[0];
+      if (doc) {
+        setAddedByDoc({
+          label: L(doc.label),
+          count: added.length,
+          first: first?.key ?? null,
+        });
+      }
+    } else {
+      setAddedByDoc(null);
+    }
+    setSelectedDocs(keys);
+  };
 
   // "Drawn up on" dates start as today — that is what they mean — and each
   // field is defaulted at most once, so a date the user deliberately cleared
@@ -1205,6 +1239,36 @@ export default function WizardPage() {
 
       {stepKey === "details" && (
         <div className="space-y-4">
+          {/* The advice arrives before the work, not after it: what is being
+              prepared and why, while there is still a point in changing it. */}
+          <DocumentAdvicePanel
+            registry={registry}
+            modality={modality ?? ""}
+            needsDg={needsDg}
+            selected={selected}
+            onChange={chooseDocuments}
+          />
+          {addedByDoc && (
+            <div className="rounded-2xl border border-sky-200 bg-sky-50 p-4 dark:border-sky-900/50 dark:bg-sky-950/30">
+              <p className="text-sm text-sky-900 dark:text-sky-200">
+                {addedByDoc.count === 0
+                  ? t("advice.addedNothing", { document: addedByDoc.label })
+                  : t("advice.added", { document: addedByDoc.label, count: addedByDoc.count })}
+              </p>
+              {addedByDoc.first && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    setFocusField(addedByDoc.first);
+                    setAddedByDoc(null);
+                  }}
+                  className="mt-2 rounded-lg border border-sky-300 bg-white px-3 py-1 text-xs font-medium text-sky-900 hover:bg-sky-100 dark:border-sky-800 dark:bg-slate-900 dark:text-sky-200"
+                >
+                  {t("advice.toTheQuestions")}
+                </button>
+              )}
+            </div>
+          )}
           {lastShipment && (
             <div className={`${panelClass} flex flex-col gap-2 p-4 sm:flex-row sm:items-center sm:justify-between`}>
               <p className="text-sm text-slate-600 dark:text-slate-400">{t("docfields.reuseLastHint")}</p>
@@ -1320,14 +1384,6 @@ export default function WizardPage() {
 
           {needsDg && dgEntries.length > 0 && <DgCompliancePanel entries={dgEntries} profiles={dgProfiles} />}
 
-          <DocumentAdvicePanel
-            registry={registry}
-            modality={modality ?? ""}
-            needsDg={needsDg}
-            selected={selected}
-            onChange={setSelectedDocs}
-          />
-
           {historyOn && (
             <div className={`${panelClass} p-4 sm:p-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between`}>
               <div className="min-w-0">
@@ -1430,6 +1486,21 @@ export default function WizardPage() {
               </div>
             )}
             <p className="text-sm text-slate-600 dark:text-slate-400">{t("wizardDocs.intro")}</p>
+            {/* The set itself is chosen where its questions are asked. From
+                here it is one press back to that choice, not a second place
+                to make it. */}
+            <p className="text-sm text-slate-600 dark:text-slate-400">
+              <button
+                type="button"
+                onClick={() => {
+                  setReturnTo("export");
+                  setStepKey("details");
+                }}
+                className="font-medium text-brand-700 underline hover:text-brand-800 dark:text-brand-300"
+              >
+                {t("wizardDocs.changeSet")}
+              </button>
+            </p>
             {readyDocs.length > 1 && dgEntries.length > 0 && (
               <p className="text-xs text-slate-500 dark:text-slate-400">
                 {t("wizardDocs.downloadAllHint")}

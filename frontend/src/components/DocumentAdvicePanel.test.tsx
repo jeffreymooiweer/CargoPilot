@@ -15,7 +15,7 @@ import { DocumentRegistry } from "../api/client";
 
 const registry = {
   modalities: [
-    { key: "road", documents: ["cmr", "avc_waybill", "placarding_sheet", "packing_list"] },
+    { key: "road", documents: ["cmr", "avc_waybill", "placarding_sheet", "packing_list", "iftdgn"] },
     { key: "inland", documents: ["adn_transport_doc", "stowage_plan", "packing_list"] },
     { key: "sea", documents: ["bl_si", "imo_dgd", "packing_list"] },
   ],
@@ -28,6 +28,7 @@ const registry = {
     { key: "stowage_plan", dg_only: true, sections: [] },
     { key: "bl_si", sections: [] },
     { key: "imo_dgd", dg_only: true, sections: [] },
+    { key: "iftdgn", data_exchange: true, sections: [] },
   ],
   shared_sections: [],
   modality_defaults: { road: "cmr", inland: "packing_list", sea: "bl_si" },
@@ -65,8 +66,36 @@ describe("buildAdvice", () => {
   it("every offered document lands in exactly one group", () => {
     for (const needsDg of [false, true]) {
       const advice = buildAdvice(registry, "road", needsDg);
-      const all = [...advice.required, ...advice.recommended, ...advice.possible].sort();
-      expect(all).toEqual(["avc_waybill", "cmr", "packing_list", "placarding_sheet"]);
+      const all = [
+        ...advice.required,
+        ...advice.recommended,
+        ...advice.possible,
+        ...advice.integration,
+      ].sort();
+      expect(all).toEqual(["avc_waybill", "cmr", "iftdgn", "packing_list", "placarding_sheet"]);
     }
+  });
+
+  it("what is not a document is not offered as one", () => {
+    const advice = buildAdvice(registry, "road", true);
+    expect(advice.integration).toEqual(["iftdgn"]);
+    expect(advice.possible).not.toContain("iftdgn");
+    // Data is never preselected: sending it is a decision about a system.
+    expect(advice.preselected).not.toContain("iftdgn");
+  });
+
+  it("says why each document is on the list, from the registry and nothing else", () => {
+    const advice = buildAdvice(registry, "road", true);
+    expect(advice.reasons).toEqual({
+      cmr: "dgTransport",
+      placarding_sheet: "dgSupport",
+      avc_waybill: "commercial",
+      packing_list: "commercial",
+      iftdgn: "dataExchange",
+    });
+  });
+
+  it("without dangerous goods the transport document is there for the modality, not for 5.4.1", () => {
+    expect(buildAdvice(registry, "road", false).reasons.cmr).toBe("modalityDefault");
   });
 });

@@ -3407,6 +3407,7 @@
         "de": "Kein Dokument, sondern Daten: die gesamte Sendung als JSON, einschließlich dessen, was CargoPilot abgeleitet hat und gegen welche Ausgaben. Eigenes Format mit eigener Versionsnummer — keine eFTI-Nachricht und kein eCMR.",
         "fr": "Non pas un document mais des données : tout l'envoi en JSON, y compris ce que CargoPilot a déduit et sur quelles éditions. Format propre à CargoPilot avec son propre numéro de version — ni message eFTI ni eCMR."
       },
+      "data_exchange": true,
       "exporter": "shipment_json",
       "sections": []
     },
@@ -3431,6 +3432,7 @@
         "de": "Kein Dokument, sondern eine EDI-Nachricht: die UN/EDIFACT-Gefahrgutmeldung (IFTDGN, Verzeichnis D.16A), wie Hafenbehörden und Port-Community-Systeme sie lesen. Nur bei einer Sendung mit gefährlichen Gütern. Der Umschlag (UNB) trägt den Absender als Sender und den Beförderer oder Spediteur als Empfänger; das sendende EDI-Gateway trägt seine eigenen Kennungen ein.",
         "fr": "Non pas un document mais un message EDI : la notification UN/EDIFACT de marchandises dangereuses (IFTDGN, répertoire D.16A) telle que la lisent les autorités portuaires et les port community systems. Uniquement pour une expédition contenant des marchandises dangereuses. L'enveloppe (UNB) porte l'expéditeur comme émetteur et le transporteur ou le commissionnaire comme destinataire ; la passerelle EDI qui envoie y met ses propres identifiants."
       },
+      "data_exchange": true,
       "exporter": "iftdgn",
       "sections": []
     }

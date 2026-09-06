@@ -2,6 +2,41 @@
 
 All notable changes are documented here, following [Semantic Versioning](https://semver.org/).
 
+## [1.195.0] — 2026-09-06
+
+### The substance question is asked on its line, and answered in words
+
+Release 110 of [the usability plan](docs/ux-plan.md), and the one the
+[baseline](docs/ux-baseline.md) recorded as a task that could not be completed at all.
+
+The name recognition asked its question in a snackbar at the bottom right of the screen,
+away from the line it was about, and its close button was an answer: the × set
+`dg_dismissed`, so "not now" was stored as "not this substance". The line then showed no
+trace of the question, so the decision could not be found again, let alone revised.
+
+The question now sits under the line it belongs to, with three answers spelled out.
+**Take UN 1203** ticks the line and carries the number to the dangerous goods step. **A
+different substance** ticks it and leaves the number to that step, where a substance is
+actually established. **This suggestion is wrong** rejects the candidate and nothing
+else — it says so on screen, *rejecting says only that this substance is not it, not that
+the goods are harmless*, and it touches neither the dangerous-goods tick nor anything the
+compliance check reads.
+
+An answered line says which of the three it was, with **Change the answer** beside it. A
+decision you cannot find again is a decision you cannot check.
+
+**And an unanswered question stays visible.** The goods step counts it above the list, next
+to the lines that want attention, and the filter narrows to it; the export step says how
+many lines still carry one, with a way back. "We thought this might be UN 1203 and never
+found out" is precisely what a document check is for.
+
+Measured on the same task: closing a suggestion, judging it and revising it later went
+from 8 actions, 2 windows and **not completable** to 5 actions, **0 windows** and done.
+
+A shipment saved before this release opens with its answers intact: a `confirmed_un` reads
+as confirmed and a `dg_dismissed` as rejected, and the assistant keeps speaking the field
+it always did.
+
 ## [1.194.0] — 2026-09-06
 
 ### The import is on the goods step, and says what it left behind
@@ -23,7 +58,7 @@ either can be taken back from the snackbar that follows — the lines that were 
 come back with the numbering they had. That undo is what makes offering "replace" at all
 reasonable.
 
-**What came out is said above the list.** *49 gereed · 1 wil aandacht*, with a button
+**What came out is said above the list** — *49 settled, 1 wants attention* — with a button
 that narrows the list to those. The baseline had that one row sitting 5,746 pixels down
 the page with nothing pointing at it; it is now one action away. Measured on the same
 task: fifty rows imported went from 3 actions and **1 window** to 4 actions and **0

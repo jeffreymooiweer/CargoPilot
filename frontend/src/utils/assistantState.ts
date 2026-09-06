@@ -71,6 +71,10 @@ export function draftLinesFromAssistant(
     dangerous_goods: Boolean(line.dangerous_goods),
     confirmed_un: (line.confirmed_un as string) || undefined,
     dg_dismissed: Boolean(line.dg_dismissed) || undefined,
+    // The assistant speaks the old flag only; what the screen holds is the
+    // fuller answer, so a rejection it sends is read back as one.
+    dg_decision: byId.get(Number(line.id))?.dg_decision
+      ?? (line.confirmed_un ? "confirmed" : line.dg_dismissed ? "rejected" : undefined),
     package_content: (line.package_content as string) || undefined,
     // Measurements the assistant asked for land in the same columns the
     // lines table writes, so the classic wizard computes with them too.

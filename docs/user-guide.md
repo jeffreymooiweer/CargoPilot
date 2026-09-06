@@ -99,12 +99,26 @@ from the summary if you know the real weighbridge figure.
 
 ### Dangerous goods on a line
 
-Tick **Dangerous goods** on any package that contains them. CargoPilot also spots UN
-numbers written in a description (`UN 1203`) and ticks the box for you. And it
-recognises substances by name: type `petrol` or `benzine` and a small chip offers the
-matching UN number — confirm it and the number travels to the dangerous goods step, or
-dismiss it and it stays away for that line. Either way, a dangerous goods step appears
-after this one.
+Tick **Dangerous goods** under **Details** on any package that contains them. CargoPilot
+also spots UN numbers written in a description (`UN 1203`) and ticks the box for you.
+
+And it recognises substances by name. Type `petrol` or `benzine` and the line asks you,
+underneath itself: *this looks like UN 1203, PETROL (class 3) — is that right?* Three
+answers, and you have to give one of them:
+
+- **Take UN 1203** — the line is dangerous goods and the number travels to the dangerous
+  goods step.
+- **A different substance** — the line is dangerous goods, but not that one; you fill in
+  which at the dangerous goods step.
+- **This suggestion is wrong** — this substance is not it. That is *all* it says: it is
+  not a finding that the goods are harmless, and it leaves your own tick alone.
+
+The line then says which of the three you answered, with **Change the answer** beside it,
+so a decision can be found again and revised. Until you answer, the goods step counts the
+question above the list and the export step says so too — an unanswered question is not
+an answer, and it is exactly what a document check is for.
+
+Either way, a dangerous goods step appears after this one.
 
 The contents of one package are read from the sentence too: `1000 jerricans of 25 l of
 petrol` fills the net quantity per package and computes the totals, for jerricans,

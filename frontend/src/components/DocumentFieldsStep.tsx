@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
   DocumentDefinition,
@@ -9,6 +9,7 @@ import {
   LocalizedText,
 } from "../api/client";
 import { documentLanguage, localised } from "../i18n/language";
+import { FieldGroup, GroupKey, GroupedField, GroupedSection, groupFields } from "../wizard/documentGroups";
 import AddressBookBar, { PARTIES } from "./AddressBookBar";
 import CarrierConfirmationBox from "./CarrierConfirmationBox";
 import CustomsRouteHint, { CUSTOMS_FIELD_KEYS, useCustomsRoute } from "./CustomsRouteHint";
@@ -88,8 +89,6 @@ export function fieldId(key: string): string {
   return `field-${key}`;
 }
 
-type SubStep = { kind: "shared" } | { kind: "doc"; doc: DocumentDefinition; sections: DocumentSection[] };
-
 export default function DocumentFieldsStep({
   registry,
   documents,
@@ -110,7 +109,6 @@ export default function DocumentFieldsStep({
   const { t, i18n } = useTranslation();
   const lang = documentLanguage(i18n.language);
   const L = (text?: LocalizedText) => localised(text, lang);
-  const [subIndex, setSubIndex] = useState(0);
   // Which required fields were empty when the user last pressed Next. Nothing
   // is marked while somebody is still typing — that is the difference between
   // telling and nagging — and nothing is blocked either: the second press goes
@@ -122,70 +120,83 @@ export default function DocumentFieldsStep({
 
   const setValue = (key: string, value: string) => onChange({ ...values, [key]: value });
 
-  const { sharedSections, docSections, docsWithoutOwnFields } = useMemo(() => {
-    const sharedKeys: string[] = [];
-    for (const doc of documents) {
-      for (const section of doc.sections) {
-        if (section.ref && !sharedKeys.includes(section.ref)) sharedKeys.push(section.ref);
-      }
-    }
-    const shared = registry.shared_sections.filter((s) => s.key && sharedKeys.includes(s.key));
-    const perDoc = documents
-      .map((doc) => ({
-        doc,
-        sections: doc.sections.filter((s): s is DocumentSection => !s.ref && !!s.fields?.length),
-      }))
-      .filter((entry) => entry.sections.length > 0);
-    const covered = documents.filter((doc) => !perDoc.some((entry) => entry.doc.key === doc.key));
-    return { sharedSections: shared, docSections: perDoc, docsWithoutOwnFields: covered };
-  }, [documents, registry]);
+  const { groups, covered } = useMemo(() => groupFields(registry, documents), [registry, documents]);
 
-  const subSteps: SubStep[] = useMemo(
-    () => [{ kind: "shared" as const }, ...docSections.map((entry) => ({ kind: "doc" as const, ...entry }))],
-    [docSections],
-  );
-  const current = subSteps[Math.min(subIndex, subSteps.length - 1)];
+  const valueOf = (field: DocumentField): string => {
+    const autoValue = field.auto_from ? autoValues?.[field.auto_from] : undefined;
+    return (values[field.key] ?? autoValue ?? "").trim();
+  };
 
-  const missingKeys = (sections: DocumentSection[]): string[] => {
+  const missingKeys = (sections: GroupedSection[]): string[] => {
     const keys: string[] = [];
     for (const section of sections) {
-      for (const field of section.fields ?? []) {
+      for (const field of section.fields) {
         if (field.status !== "USER_REQUIRED") continue;
         if (field.condition && !conditionMet(field.condition, values)) continue;
-        const autoValue = field.auto_from ? autoValues?.[field.auto_from] : undefined;
-        if (!(values[field.key] ?? autoValue ?? "").trim()) keys.push(field.key);
+        if (!valueOf(field)) keys.push(field.key);
       }
     }
     return keys;
   };
 
-  const missingRequired = (sections: DocumentSection[]): number => missingKeys(sections).length;
+  // A group nobody still owes anything starts collapsed, showing what it says
+  // rather than asking it again — a shipment reopened from the history or from
+  // a template is three summaries and a way on. This is decided when the step
+  // opens: a group must not fold itself away under the hands of somebody who
+  // has just finished filling it in.
+  const [openGroups, setOpenGroups] = useState<GroupKey[]>(() =>
+    groups.filter((group) => missingKeys(group.sections).length > 0).map((group) => group.key),
+  );
+  // A group that appears later — a document chosen after the step was opened —
+  // is opened if it wants something, and left alone otherwise.
+  const known = useRef<GroupKey[]>(groups.map((group) => group.key));
+  useEffect(() => {
+    const fresh = groups.filter((group) => !known.current.includes(group.key));
+    known.current = groups.map((group) => group.key);
+    const wanting = fresh.filter((group) => missingKeys(group.sections).length > 0).map((group) => group.key);
+    if (wanting.length > 0) setOpenGroups((current) => [...current, ...wanting]);
+    // The values change on every keystroke; what matters here is the set of groups.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [groups]);
 
-  const sectionsOf = (step: SubStep) => (step.kind === "shared" ? sharedSections : step.sections);
+  const isOpen = (key: GroupKey) => openGroups.includes(key);
+  const toggle = (key: GroupKey) =>
+    setOpenGroups((current) => (current.includes(key) ? current.filter((one) => one !== key) : [...current, key]));
+  const open = (key: GroupKey) => setOpenGroups((current) => (current.includes(key) ? current : [...current, key]));
+
+  const allSections = groups.flatMap((group) => group.sections);
+  const empty = missingKeys(allSections);
+  const warned = flagged.length > 0 && empty.some((key) => flagged.includes(key));
 
   const labelOf = (key: string): string => {
-    for (const step of subSteps) {
-      for (const section of sectionsOf(step)) {
-        const field = (section.fields ?? []).find((one) => one.key === key);
-        if (field) return L(field.label);
-      }
+    for (const section of allSections) {
+      const field = section.fields.find((one) => one.key === key);
+      if (field) return L(field.label);
     }
     return key;
   };
 
-  /** Which sub-step holds a field, so a chip elsewhere can open it. */
-  const subStepOf = (key: string): number => {
-    const at = subSteps.findIndex((step) =>
-      sectionsOf(step).some((section) => (section.fields ?? []).some((field) => field.key === key)));
-    return at < 0 ? 0 : at;
+  /** Which group holds a field, so a notice elsewhere can open it. */
+  const groupOf = (key: string): GroupKey | undefined =>
+    groups.find((group) => group.sections.some((section) => section.fields.some((field) => field.key === key)))?.key;
+
+  const goToField = (key: string) => {
+    const group = groupOf(key);
+    if (group) open(group);
+    window.setTimeout(() => {
+      const element = document.getElementById(fieldId(key));
+      element?.focus();
+      element?.scrollIntoView?.({ block: "center", behavior: "smooth" });
+    }, 60);
   };
 
-  // Coming in to answer one named field: open the form it is on and put the
-  // cursor in it. The element is not there until the sub-step has rendered,
-  // which is why the focus waits a frame rather than happening in the click.
+  // Coming in to answer one named field: open the group it is in and put the
+  // cursor in it. The element is not there until the group has rendered, which
+  // is why the focus waits a frame rather than happening in the click.
   useEffect(() => {
     if (!focusField) return;
-    setSubIndex(subStepOf(focusField));
+    const group = groupOf(focusField);
+    if (group) open(group);
     const timer = window.setTimeout(() => {
       const element = document.getElementById(fieldId(focusField));
       element?.focus();
@@ -193,49 +204,56 @@ export default function DocumentFieldsStep({
       onFocusHandled?.();
     }, 60);
     return () => window.clearTimeout(timer);
-    // subStepOf reads the memoised sub-steps; the field is what decides.
+    // The field is what decides; groupOf reads the memoised groups.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [focusField, subSteps]);
+  }, [focusField, groups]);
 
   // The party labels the address book names, as the form shows them: the
   // part of "Consignor — name" before the dash.
-  const partyLabels = (section: DocumentSection): Record<string, string> => {
+  const partyLabels = (section: GroupedSection): Record<string, string> => {
     const labels: Record<string, string> = {};
     for (const party of PARTIES) {
-      const field = (section.fields ?? []).find((f) => f.key === party.fields.name);
+      const field = section.fields.find((f) => f.key === party.fields.name);
       if (field) labels[party.key] = L(field.label).split(" — ")[0];
     }
     return labels;
   };
 
-  const subStepLabel = (step: SubStep) => (step.kind === "shared" ? t("docfields.sharedShort") : L(step.doc.label));
-  const subStepMissing = (step: SubStep) =>
-    step.kind === "shared" ? missingRequired(sharedSections) : missingRequired(step.sections);
-
-  const empty = missingKeys(sectionsOf(current));
-  const warned = flagged.length > 0 && empty.some((key) => flagged.includes(key));
+  /** What a folded group says it holds: the answers themselves, shortened, so
+   *  the summary is a check and not a promise that something was filled in. */
+  const summaryOf = (group: FieldGroup): string => {
+    const parts: string[] = [];
+    for (const section of group.sections) {
+      for (const field of section.fields) {
+        const value = valueOf(field);
+        if (!value) continue;
+        const flat = value.replace(/\s+/g, " ").trim();
+        parts.push(`${L(field.label)}: ${flat.length > 40 ? `${flat.slice(0, 40)}…` : flat}`);
+        if (parts.length === 4) return parts.join(" · ");
+      }
+    }
+    return parts.length > 0 ? parts.join(" · ") : t("docgroups.nothingFilled");
+  };
 
   const goNext = () => {
-    // First press on a form with required fields still empty: say which, on the
-    // fields themselves and in a summary above them. Second press goes on — the
-    // export step will keep saying what is missing, and the server has the last
-    // word on what may be exported.
+    // First press with required fields still empty: say which, on the fields
+    // themselves and in a summary above them, and open the groups they are in.
+    // Second press goes on — the export step will keep saying what is missing,
+    // and the server has the last word on what may be exported.
     if (empty.length > 0 && !warned) {
       setFlagged(empty);
+      const wanting = groups
+        .filter((group) => missingKeys(group.sections).length > 0)
+        .map((group) => group.key);
+      setOpenGroups((current) => [...current, ...wanting.filter((key) => !current.includes(key))]);
       window.scrollTo({ top: 0, behavior: "smooth" });
       return;
     }
     setFlagged([]);
-    if (subIndex < subSteps.length - 1) setSubIndex(subIndex + 1);
-    else onDone?.();
-  };
-  const goBack = () => {
-    setFlagged([]);
-    if (subIndex > 0) setSubIndex(subIndex - 1);
-    else onBack?.();
+    onDone?.();
   };
 
-  const renderField = (field: DocumentField) => {
+  const renderField = (field: GroupedField) => {
     if (field.status === "CONDITIONAL" && field.condition && !conditionMet(field.condition, values)) {
       return null;
     }
@@ -327,6 +345,15 @@ export default function DocumentFieldsStep({
             onChange={(e) => setValue(field.key, e.target.value)}
           />
         )}
+        {/* Asked once, and said plainly whose question it also is: the same
+            answer serves every document that wants it, under its own name. */}
+        {field.alsoAsked.length > 0 && (
+          <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
+            {t("docgroups.alsoAsked", {
+              list: field.alsoAsked.map((one) => `${L(one.document)} (${L(one.label)})`).join(", "),
+            })}
+          </p>
+        )}
         {missed && (
           <p className="mt-1 text-xs text-red-600 dark:text-red-400">{t("docfields.fieldMissing")}</p>
         )}
@@ -335,50 +362,26 @@ export default function DocumentFieldsStep({
     );
   };
 
+  const renderSection = (group: FieldGroup, section: GroupedSection) => (
+    <div key={section.key} className="mt-4 first:mt-0">
+      {/* One group, one meaning: the heading inside it says which document
+          wanted these, and the group name says what they are about. */}
+      {group.sections.length > 1 && section.label && (
+        <h4 className="text-sm font-semibold text-slate-700 dark:text-slate-300">{L(section.label)}</h4>
+      )}
+      {addressBook && section.key === "parties" && (
+        <AddressBookBar values={values} onChange={onChange} labels={partyLabels(section)} />
+      )}
+      {section.key === "references" && <CarrierConfirmationBox values={values} onChange={onChange} />}
+      <div className="mt-3 grid gap-3 md:grid-cols-2">{section.fields.map(renderField)}</div>
+    </div>
+  );
+
   return (
     <div className="space-y-4">
       <div className={`${panelClass} p-4 sm:p-6`}>
-        <div className="flex flex-wrap items-center justify-between gap-2">
-          <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-100">
-            {current.kind === "shared"
-              ? t("docfields.sharedTitle")
-              : t("docfields.formStep", {
-                  index: subIndex,
-                  total: subSteps.length - 1,
-                  name: L(current.doc.label),
-                })}
-          </h3>
-        </div>
-        <p className="mt-1 text-sm text-slate-600 dark:text-slate-400">
-          {current.kind === "shared" ? t("docfields.sharedIntro") : t("docfields.formIntro")}
-        </p>
-        {subSteps.length > 1 && (
-          <div className="mt-3 flex flex-wrap gap-1.5">
-            {subSteps.map((step, index) => {
-              const active = index === subIndex;
-              const missing = subStepMissing(step);
-              return (
-                <button
-                  key={step.kind === "shared" ? "shared" : step.doc.key}
-                  type="button"
-                  onClick={() => setSubIndex(index)}
-                  className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-medium transition ${
-                    active
-                      ? "border-brand-600 bg-brand-600 text-white"
-                      : "border-slate-200 bg-white text-slate-600 hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-300 dark:hover:bg-slate-800"
-                  }`}
-                >
-                  <span
-                    className={`h-1.5 w-1.5 rounded-full ${
-                      missing === 0 ? "bg-emerald-500" : active ? "bg-white/70" : "bg-amber-400"
-                    }`}
-                  />
-                  {subStepLabel(step)}
-                </button>
-              );
-            })}
-          </div>
-        )}
+        <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-100">{t("docfields.sharedTitle")}</h3>
+        <p className="mt-1 text-sm text-slate-600 dark:text-slate-400">{t("docgroups.intro")}</p>
       </div>
 
       {warned && (
@@ -394,11 +397,7 @@ export default function DocumentFieldsStep({
               <button
                 key={key}
                 type="button"
-                onClick={() => {
-                  const element = document.getElementById(fieldId(key));
-                  element?.focus();
-                  element?.scrollIntoView?.({ block: "center", behavior: "smooth" });
-                }}
+                onClick={() => goToField(key)}
                 className="rounded-lg border border-red-300 bg-white px-2.5 py-1 text-xs font-medium text-red-800 hover:bg-red-100 dark:border-red-800 dark:bg-slate-900 dark:text-red-200"
               >
                 {labelOf(key)}
@@ -409,54 +408,50 @@ export default function DocumentFieldsStep({
         </div>
       )}
 
-      {current.kind === "shared" && (
-        <>
-          {/* Offered where the references live: pasting the carrier's booking
-              confirmation fills the still-empty reference fields. */}
-          {sharedSections.some((section) => section.key === "references") && (
-            <CarrierConfirmationBox values={values} onChange={onChange} />
-          )}
-          {sharedSections.map((section) => (
-            <section key={section.key} className={`${panelClass} p-4 sm:p-6`}>
-              <h4 className="font-semibold text-slate-900 dark:text-slate-100">{L(section.label)}</h4>
-              {addressBook && section.key === "parties" && (
-                <AddressBookBar values={values} onChange={onChange} labels={partyLabels(section)} />
+      {groups.map((group) => {
+        const missing = missingKeys(group.sections).length;
+        const opened = isOpen(group.key);
+        return (
+          <section key={group.key} className={`${panelClass} p-4 sm:p-6`}>
+            <div className="flex flex-wrap items-center gap-2">
+              <h4 className="font-semibold text-slate-900 dark:text-slate-100">{t(`docgroups.${group.key}`)}</h4>
+              {missing > 0 ? (
+                <span className="rounded-full bg-amber-100 px-2 py-0.5 text-[11px] font-medium text-amber-800 dark:bg-amber-900/40 dark:text-amber-300">
+                  {t("docgroups.stillNeeded", { count: missing })}
+                </span>
+              ) : (
+                <span className="rounded-full bg-emerald-100 px-2 py-0.5 text-[11px] font-medium text-emerald-800 dark:bg-emerald-900/40 dark:text-emerald-300">
+                  {t("docgroups.complete")}
+                </span>
               )}
-              <div className="mt-3 grid gap-3 md:grid-cols-2">{(section.fields ?? []).map(renderField)}</div>
-            </section>
-          ))}
-          {onSignatureChange && <SignaturePad value={signature ?? null} onChange={onSignatureChange} />}
-          {docsWithoutOwnFields.length > 0 && (
-            <p className="text-sm text-slate-500 dark:text-slate-400">
-              {t("docfields.coveredByShared", {
-                forms: docsWithoutOwnFields.map((doc) => L(doc.label)).join(", "),
-              })}
-            </p>
-          )}
-        </>
-      )}
-
-      {current.kind === "doc" && (
-        <section className={`${panelClass} p-4 sm:p-6`}>
-          <div className="flex flex-wrap items-center gap-2">
-            <h4 className="font-semibold text-slate-900 dark:text-slate-100">{L(current.doc.label)}</h4>
-            <span className="rounded-full bg-slate-100 px-2 py-0.5 text-[11px] text-slate-600 dark:bg-slate-800 dark:text-slate-300">
-              {L(current.doc.issue_status)}
-            </span>
-          </div>
-          {current.sections.map((section) => (
-            <div key={section.key} className="mt-3">
-              <div className="mt-2 grid gap-3 md:grid-cols-2">{(section.fields ?? []).map(renderField)}</div>
+              <button
+                type="button"
+                onClick={() => toggle(group.key)}
+                aria-expanded={opened}
+                className="ml-auto rounded-lg border border-slate-200 px-3 py-1 text-xs font-medium text-slate-700 hover:bg-slate-50 dark:border-slate-700 dark:text-slate-200 dark:hover:bg-slate-800"
+              >
+                {opened ? t("docgroups.hide") : t("docgroups.change")}
+              </button>
             </div>
-          ))}
-          {current.doc.signature_note && (
-            <p className="mt-4 text-xs italic text-slate-500 dark:text-slate-400">{L(current.doc.signature_note)}</p>
-          )}
-        </section>
+            {opened ? (
+              <div className="mt-3">{group.sections.map((section) => renderSection(group, section))}</div>
+            ) : (
+              <p className="mt-2 text-sm text-slate-600 dark:text-slate-400">{summaryOf(group)}</p>
+            )}
+          </section>
+        );
+      })}
+
+      {onSignatureChange && <SignaturePad value={signature ?? null} onChange={onSignatureChange} />}
+
+      {covered.length > 0 && (
+        <p className="text-sm text-slate-500 dark:text-slate-400">
+          {t("docfields.coveredByShared", { forms: covered.map((doc) => L(doc.label)).join(", ") })}
+        </p>
       )}
 
       <div className="flex flex-col gap-2 sm:flex-row">
-        <button type="button" onClick={goBack} className={buttonSecondary}>
+        <button type="button" onClick={onBack} className={buttonSecondary}>
           {t("wizard.back")}
         </button>
         {onReturn && returnLabel && (
@@ -469,11 +464,7 @@ export default function DocumentFieldsStep({
           onClick={goNext}
           className={`${onReturn && returnLabel ? buttonSecondary : `${buttonPrimary} sm:ml-auto`}`}
         >
-          {warned
-            ? t("docfields.continueAnyway")
-            : subIndex < subSteps.length - 1
-              ? t("wizard.next")
-              : t("wizard.toExport")}
+          {warned ? t("docfields.continueAnyway") : t("wizard.toExport")}
         </button>
       </div>
     </div>

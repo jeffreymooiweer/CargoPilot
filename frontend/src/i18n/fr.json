@@ -460,8 +460,6 @@
     "loose": "Vrac"
   },
   "docfields": {
-    "title": "Détails de l'envoi et des documents",
-    "intro": "Les données communes sont reprises dans tous les documents sélectionnés. Les champs marqués * sont obligatoires pour l'export. Les données du transporteur et les champs opérationnels restent vides tant qu'ils ne sont pas connus.",
     "choose": "— Choisir —",
     "yes": "Oui",
     "confirmExplicit": "Je confirme délibérément ces déclarations au nom de la personne responsable",
@@ -469,15 +467,11 @@
     "operational": "Lors de l'exécution",
     "signatureRequired": "Signature",
     "sharedTitle": "Détails de l'envoi",
-    "sharedShort": "Envoi",
-    "sharedIntro": "Saisissez ces détails une seule fois ; ils sont repris dans tous les formulaires sélectionnés. Les champs marqués * sont obligatoires pour l'export.",
-    "formStep": "Formulaire {{index}} sur {{total}} : {{name}}",
-    "formIntro": "Uniquement les champs propres à ce formulaire. Les données du transporteur et les signatures restent vides.",
     "coveredByShared": "Aucun champ supplémentaire n'est nécessaire pour {{forms}} ; les détails de l'envoi suffisent.",
     "reuseLast": "Réutiliser l'envoi précédent",
     "reuseLastHint": "Remplit les champs vides avec les données de votre envoi précédent (dates exclues).",
     "fieldMissing": "Ce champ est nécessaire pour l'export.",
-    "stillEmpty": "{{count}} champ(s) obligatoire(s) de ce formulaire encore vide(s).",
+    "stillEmpty": "{{count}} champ(s) obligatoire(s) encore vide(s).",
     "stillEmptyHint": "Cliquez sur un champ pour y aller directement. Vous pouvez aussi continuer — l'étape d'export continue de dire ce qui manque.",
     "continueAnyway": "Continuer quand même"
   },
@@ -1297,5 +1291,17 @@
     "removed": "Trajet supprimé.",
     "keptAsJudged": "Le jugement ci-dessous est tel qu'il a été rendu lors de la conservation, selon les éditions que la ligne Éditions indique. Rouvrir et réévaluer donne le jugement d'aujourd'hui.",
     "editions": "Éditions"
+  },
+  "docgroups": {
+    "intro": "Les questions sont regroupées par sujet et non par document. Une réponse vaut pour chaque document qui la demande. Les champs marqués * sont obligatoires pour l'export.",
+    "parties": "Parties",
+    "route": "Itinéraire",
+    "additions": "Compléments",
+    "stillNeeded": "Encore {{count}} à remplir",
+    "complete": "Complet",
+    "change": "Modifier",
+    "hide": "Replier",
+    "nothingFilled": "Rien de rempli pour l'instant.",
+    "alsoAsked": "Également demandé par : {{list}}"
   }
 }

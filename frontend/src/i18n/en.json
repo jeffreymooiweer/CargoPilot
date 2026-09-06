@@ -460,8 +460,6 @@
     "loose": "Loose bulk"
   },
   "docfields": {
-    "title": "Shipment and document details",
-    "intro": "Shared data is reused across all selected documents. Fields marked * are required for export. Carrier data and operational fields stay empty until known.",
     "choose": "— Choose —",
     "yes": "Yes",
     "confirmExplicit": "I deliberately confirm these declarations on behalf of the responsible person",
@@ -469,15 +467,11 @@
     "operational": "During execution",
     "signatureRequired": "Signature",
     "sharedTitle": "Shipment details",
-    "sharedShort": "Shipment",
-    "sharedIntro": "Enter these details once; they are reused in all selected forms. Fields marked * are required for export.",
-    "formStep": "Form {{index}} of {{total}}: {{name}}",
-    "formIntro": "Only the fields specific to this form. Carrier data and signatures stay empty.",
     "coveredByShared": "No extra fields are needed for {{forms}}; the shipment details are sufficient.",
     "reuseLast": "Reuse previous shipment",
     "reuseLastHint": "Fills empty fields with your previous shipment's details (dates excluded).",
     "fieldMissing": "This field is needed for the export.",
-    "stillEmpty": "{{count}} required field(s) on this form still empty.",
+    "stillEmpty": "{{count}} required field(s) still empty.",
     "stillEmptyHint": "Click a field to go straight to it. You can also carry on — the export step keeps saying what is missing.",
     "continueAnyway": "Continue anyway"
   },
@@ -1297,5 +1291,17 @@
     "removed": "Trip removed.",
     "keptAsJudged": "The judgement below is as it was given when the trip was kept, under the editions the Editions line names. Reopening and assessing again gives today's judgement.",
     "editions": "Editions"
+  },
+  "docgroups": {
+    "intro": "The questions are grouped by subject rather than by document. One answer counts for every document that asks for it. Fields marked * are required for export.",
+    "parties": "Parties",
+    "route": "Route",
+    "additions": "Additions",
+    "stillNeeded": "{{count}} still needed",
+    "complete": "Complete",
+    "change": "Change",
+    "hide": "Collapse",
+    "nothingFilled": "Nothing filled in yet.",
+    "alsoAsked": "Also asked by: {{list}}"
   }
 }

@@ -117,6 +117,8 @@ same harness against the same tasks, so a row is comparable with the baseline ab
 | 110 (v1.195.0) | 4 A substance suggestion | 8 → **5** | 2 → **0** | And **completable**: the answer can be found again and changed |
 | 111 (v1.196.0) | 5 An extra document | 7 → **4** | 0 → **0** | The missing field is named as a button; three forms crossed became two |
 | 111 (v1.196.0) | 6 An error from the overview | 11 → **3** | 0 → **0** | Press the field's name, type the answer, come back |
+| 112 (v1.197.0) | 1 A simple shipment | 20 → **19** | 0 → **0** | The details step is one page of groups: two forms crossed became one |
+| 112 (v1.197.0) | 5 An extra document | 4 → **4** | 0 → **0** | Same four actions, but the extra document adds no form of its own |
 
 Task 3 is the one row in this table where the action count went *up*, and it is the
 release's point rather than a regression. Pasting fifty rows costs the same three actions
@@ -145,7 +147,19 @@ carries on under its own label, and the export step keeps saying what is missing
 measured unchanged at 20 actions, so the telling costs nothing when the fields are
 filled.
 
-Tasks 7, 9 and 10 were unchanged by 108 to 111.
+Release 112 turned the details step from a form per document into one page of three
+groups — the parties, the route, the additions — so the *forms* column is the one that
+moved: task 1 crossed two and now crosses one, and task 5's extra document, which used to
+bring a form with it, brings none. What the column does not show is the duplication that
+went with it. The answers are one map keyed by field key, so a document asking for
+`container_number` was re-asking what an earlier form had already asked, under its own box
+number. Counted straight from the registry, a sea shipment of an IMO declaration, a bill of
+lading instruction, a VGM and a packing list put **68** questions across its forms; the same
+shipment now asks **62**, each once. Road with a packing list and a delivery note goes from
+39 to 37, air from 43 to 40. Where two documents want the same answer the form says so
+underneath it — *also asked by: Delivery note (Date)* — rather than asking again.
+
+Tasks 7, 9 and 10 were unchanged by 108 to 112.
 
 ## What was not run
 

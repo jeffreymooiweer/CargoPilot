@@ -120,6 +120,8 @@ same harness against the same tasks, so a row is comparable with the baseline ab
 | 112 (v1.197.0) | 1 A simple shipment | 20 → **19** | 0 → **0** | The details step is one page of groups: two forms crossed became one |
 | 112 (v1.197.0) | 5 An extra document | 4 → **4** | 0 → **0** | Same four actions, but the extra document adds no form of its own |
 | 113 (v1.198.0) | 5 An extra document | 4 → **5** | 0 → **0** | The choice moved to before the fields; coming back to it from a finished shipment is the fifth action |
+| 114–115 (v1.199.0) | 8 A reload during entry | 3 → **4** | 0 → **0** | And **completable**: the entry is there and the wizard is on the step it was on |
+| 114–115 (v1.199.0) | 1 A simple shipment | 19 → **19** | 0 → **0** | Unchanged; the export step now opens with what it is about to put on paper |
 
 Task 3 is the one row in this table where the action count went *up*, and it is the
 release's point rather than a regression. Pasting fifty rows costs the same three actions
@@ -174,12 +176,26 @@ in?* Ticking the delivery note said it added five questions and put the cursor i
 of them; ticking the packing list after it said, correctly, that it adds none — everything
 it needs was already being asked.
 
-Tasks 7, 9 and 10 were unchanged by 108 to 113.
+Task 8 is the second the baseline could not complete: the wizard came back from a reload
+on the goods step with nothing left of the typed description, and nothing had warned
+beforehand. Where the installation keeps shipments, the running entry is now kept as a
+draft, and the reload comes back to the same step with the entry intact — 4 actions, of
+which the fourth is the one press to the goods step to read the description back. It went
+up by one from release 108's 3 because that measurement stopped at *the entry is still
+lost*; there was nothing to come back to.
+
+The same reload where nothing may be stored was measured too, which the baseline said it
+would leave to this release. There the entry is not kept and must not be: what is measured
+instead is whether the user is told and given their own copy. Both, in two actions: *this
+installation stores nothing: a reload loses your entry*, with **Download the draft** and
+**Open a draft** beside it.
+
+Tasks 7, 9 and 10 were unchanged by 108 to 115.
 
 ## What was not run
 
 The reload of task 8 was measured in the organisation application only. The same reload
-in the open application and with the history switched off belongs to release 115, which
-is where the promise not to store anything has to be kept, and it will be measured
-there. Nothing in this baseline was run on a phone-sized viewport; the mobile
-measurements start with release 108, which is the first to change what a phone shows.
+with the history switched off was measured in release 115, where the promise not to store
+anything has to be kept, and its row is in the table above. Nothing in this baseline was
+run on a phone-sized viewport; the mobile measurements start with release 108, which is
+the first to change what a phone shows.

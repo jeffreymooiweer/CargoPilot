@@ -545,7 +545,7 @@
     "exportNotice": "Note: generated documents are drafts. Verify, complete and sign by an authorised person before use. See the disclaimer.",
     "documentLanguage": "Language of the documents",
     "documentLanguageRule": "5.4.1.4.1: an official language of the forwarding country, and where that is not German, English or French, additionally in one of those three. For Dutch the application puts both names in the field.",
-    "downloadAll": "Download all as ZIP ({{count}})",
+    "downloadAll": "Download the document package ({{count}})",
     "downloadAllHint": "The ZIP also carries the UN cards and the instructions in writing for this journey, as far as this server holds them.",
     "mail": "Send by mail ({{count}})",
     "mailHint": "Sends the same zip file the download button produces, as an attachment.",
@@ -558,7 +558,10 @@
     "mailSending": "Sending…",
     "mailSent": "Sent to {{to}}.",
     "missingFieldsLead": "Missing:",
-    "changeSet": "Change the document set"
+    "changeSet": "Change the document set",
+    "downloadPartial": "Download what is ready ({{ready}} of {{total}})",
+    "partialNotice": "This package is not complete: {{list}} is not in it. Each document above says what it is still missing.",
+    "downloadedNotSent": "The documents are in your downloads. Check them, sign them where that is needed, and get them to the driver — downloaded is not sent."
   },
   "unCards": {
     "title": "UN cards for your records",
@@ -1316,5 +1319,37 @@
     "hide": "Collapse",
     "nothingFilled": "Nothing filled in yet.",
     "alsoAsked": "Also asked by: {{list}}"
+  },
+  "draft": {
+    "kept": "This entry is kept as a draft.",
+    "saving": "Saving draft…",
+    "saved": "Draft saved.",
+    "savedAt": "Draft saved at {{time}}.",
+    "failed": "The draft could not be saved — your entry is still on the screen.",
+    "discard": "Discard the draft",
+    "resumed": "Your earlier entry is back; you are where you left off.",
+    "notKeptHere": "This installation stores nothing: a reload loses your entry.",
+    "download": "Download the draft",
+    "open": "Open a draft",
+    "opened": "Draft opened.",
+    "notADraft": "This file is not a CargoPilot draft."
+  },
+  "check": {
+    "title": "Check your answers",
+    "change": "Change",
+    "nothingGiven": "Nothing filled in yet",
+    "modality": "Mode of transport",
+    "consignor": "Consignor",
+    "consignee": "Consignee",
+    "route": "Route",
+    "goods": "Goods",
+    "goodsValue": "{{count}} line(s) · {{weight}} kg · {{volume}} m³",
+    "packages": "What is being carried",
+    "andMore": "{{count}} more",
+    "assessment": "Assessment",
+    "dgOnBoard": "{{count}} dangerous substance(s) on board",
+    "noDg": "No dangerous goods",
+    "openQuestions": "{{count}} substance question(s) open",
+    "language": "Language of the documents"
   }
 }

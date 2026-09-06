@@ -497,23 +497,66 @@ def task_7(page, session: requests.Session) -> object:
 # --- 8. a reload during entry ----------------------------------------------------------
 
 
-def task_8(page, mode: str) -> object:
-    b = Bench(page, f"8{mode[0]}", f"A reload during entry ({mode})")
+def task_8(page, mode: str = "organisation") -> object:
+    b = Bench(page, "8", f"A reload during entry ({mode})")
     new_shipment(page)
     fill_line(b, 0, "Stalen hoekprofiel 80x80x8x6000", 8)
     b.click(page.get_by_role("button", name="Doorgaan"))
     page.wait_for_timeout(4000)
     b.observe()
     before = b.current_step()
-    page.reload()
+    # The draft is written a few seconds after the typing stops; a reload one
+    # second later is a different measurement than the one this task is about.
     page.wait_for_timeout(4000)
+    page.reload()
+    page.wait_for_timeout(4500)
     dismiss_toasts(page)
     after = b.current_step()
-    kept = page.get_by_text("Stalen hoekprofiel", exact=False).count()
     b.note(f"before the reload the wizard was on {before or 'unknown'}; after it is on {after or 'unknown'}")
-    b.note(f"{kept} trace(s) of the typed description survived, and nothing warned beforehand")
+    said = page.get_by_text(re.compile("Concept|concept"))
+    b.note(f"what the screen says about the entry: "
+           f"{said.first.inner_text() if said.count() else 'nothing'}")
+    # The goods themselves: one press on the step the user has already been on.
+    goods = page.get_by_role("button", name="Goederen")
+    if goods.count():
+        b.click(goods.first)
+        page.wait_for_timeout(2000)
+        b.observe()
+    typed = page.get_by_label(re.compile("Omschrijving van regel 1"))
+    kept = typed.input_value() if typed.count() else ""
+    b.note(f"the typed description after the reload: {kept or 'gone'}")
     b.shot("reloaded")
-    return b.done(kept > 0)
+    return b.done("hoekprofiel" in kept.lower() and after == before)
+
+
+def task_8_open(page, session: requests.Session) -> object:
+    """The same reload where nothing may be stored.
+
+    Release 115 is where the promise "nothing is kept" has to hold *and* the
+    user has to be able to keep their own work. The measurement is therefore
+    not "did it survive" — it must not — but "was the user warned, and were
+    they given the draft".
+    """
+    b = Bench(page, "8b", "A reload during entry (nothing stored)")
+    # The switch is refused while kept shipments are in the table — off means
+    # off — so the measurement starts from an installation that holds none.
+    session.post(f"{BASE}/api/settings/instance/history/discard")
+    history(session, False)
+    try:
+        new_shipment(page)
+        fill_line(b, 0, "Stalen hoekprofiel 80x80x8x6000", 8)
+        page.wait_for_timeout(2500)
+        dismiss_toasts(page)
+        said = page.get_by_text(re.compile("bewaart niets"))
+        b.note("the screen says nothing is stored: "
+               + (said.first.inner_text() if said.count() else "it does not"))
+        offers = page.get_by_role("button", name=re.compile("Concept downloaden|Concept openen"))
+        b.note(f"{offers.count()} way(s) to keep the draft yourself")
+        b.shot("nothing-stored")
+        return b.done(said.count() > 0 and offers.count() == 2)
+    finally:
+        history(session, True)
+        seed(session)
 
 
 # --- 9. five shipments into one trip ----------------------------------------------------
@@ -614,6 +657,7 @@ def main() -> None:
             ("task_6", lambda: task_6(page)),
             ("task_7", lambda: task_7(page, session)),
             ("task_8", lambda: task_8(page, "organisation")),
+            ("task_8_open", lambda: task_8_open(page, session)),
             ("task_9", lambda: task_9(page, session)),
             ("task_10", lambda: task_10(page, session)),
         ]

@@ -9,6 +9,7 @@ import {
   DocumentExportPayload,
   DocumentRegistry,
   LocalizedText,
+  ShipmentIn,
   UnCardsAvailability,
   WrittenInstruction,
   UserPreferences,
@@ -23,6 +24,8 @@ import DocumentFieldsStep, { resolveSections } from "../components/DocumentField
 import DocumentAdvicePanel, { buildAdvice } from "../components/DocumentAdvicePanel";
 import ReviewLinesPanel, { DraftLine, draftToText, openQuestions, textToDraftLines } from "../components/ReviewLinesPanel";
 import WizardProgress from "../components/WizardProgress";
+import DraftBar, { DraftStatus } from "../components/DraftBar";
+import CheckYourAnswers, { AnswerRow } from "../components/CheckYourAnswers";
 import { isModalityAvailable } from "./ModalitySelectPage";
 import { usePreferences } from "../settings/preferences";
 import { SNAPSHOT_VERSION, WizardSnapshot, readSnapshot, templateValues } from "../wizard/snapshot";
@@ -838,6 +841,9 @@ export default function WizardPage() {
   // server writes anything it must leave out into the archive's README.
   const readyDocs = selectedDefinitions.filter((doc) => docStatus(doc).status === "ready");
   const [downloadingAll, setDownloadingAll] = useState(false);
+  //: Whether the package has been handed over on this screen. A document in
+  //: the Downloads folder is not a document that reached the driver.
+  const [handedOver, setHandedOver] = useState(false);
   const downloadAll = async () => {
     setDownloadingAll(true);
     try {
@@ -856,10 +862,202 @@ export default function WizardPage() {
       // A download is what makes a shipment "made": it goes into the history
       // without a second press, where the installation keeps one.
       if (historyOn) void keepInHistory(true);
+      // Having a document is not having sent it, and the moment somebody has
+      // just pressed the finishing button is the moment to say so.
+      setHandedOver(true);
     } catch (e) {
       toast.error(String(e));
     } finally {
       setDownloadingAll(false);
+    }
+  };
+
+  /** The wizard's own state as one document: what a kept shipment reopens
+   *  with, and what a draft is made of. */
+  const wizardSnapshot = (): WizardSnapshot => ({
+    version: SNAPSHOT_VERSION,
+    modality: modality ?? "",
+    stepKey,
+    docLang: chosenDocLang,
+    selectedDocs,
+    docValues,
+    skippedQuestions,
+    draftLines,
+    nextId,
+    result,
+    dgEntries,
+    signature,
+  });
+
+  /** The shipment as the server takes it. A draft carries no bundle: nothing
+   *  has been produced yet, and the row stays small enough to write often. */
+  const shipmentPayload = (draft: boolean): ShipmentIn => ({
+    modality: modality ?? "",
+    language: docLang,
+    profiles: dgProfiles,
+    values: docValues,
+    lines: result?.lines ?? [],
+    dangerous_goods: dgEntries.length > 0 ? dgEntries : undefined,
+    documents: selected,
+    bundle:
+      !draft && readyDocs.length > 0
+        ? {
+            documents: readyDocs.map(payloadFor),
+            dangerous_goods: dgEntries.length > 0 ? dgEntries : undefined,
+            profiles: dgProfiles,
+            output_language: docLang,
+            signature_image: signature ?? undefined,
+          }
+        : null,
+    snapshot: wizardSnapshot() as unknown as Record<string, unknown>,
+    draft,
+  });
+
+  // --- the draft: what happens to the entry while it is being made ----------
+  //
+  // The baseline reloaded halfway through a shipment and found the wizard back
+  // at the goods step with nothing left of what had been typed. Where the
+  // installation keeps shipments, the running entry is kept as a draft — its
+  // own row, not on the shipments page, not in the adviser's report, and its
+  // author's alone — and a reload comes back to it on the step it was on.
+  // Where nothing may be stored, nothing is: there the draft is a file the
+  // user keeps, and leaving warns first.
+
+  /** Whether there is anything to lose yet. */
+  const hasEntry =
+    draftLines.some((line) => (line.description ?? "").trim()) ||
+    Object.values(docValues).some((value) => (value ?? "").trim());
+
+  const [draftStatus, setDraftStatus] = useState<DraftStatus>("idle");
+  const [draftSavedAt, setDraftSavedAt] = useState<Date | null>(null);
+  //: The body last written, so nothing is saved twice and a render is not a change.
+  const draftBody = useRef<string>("");
+  const draftTimer = useRef<number | undefined>(undefined);
+  const draftRestored = useRef(false);
+
+  useEffect(() => {
+    if (!historyOn || !hasEntry || reopenId) return;
+    const payload = shipmentPayload(true);
+    const body = JSON.stringify(payload);
+    if (body === draftBody.current) return;
+    window.clearTimeout(draftTimer.current);
+    draftTimer.current = window.setTimeout(() => {
+      setDraftStatus("saving");
+      api
+        .saveDraft(payload)
+        .then((saved) => {
+          draftBody.current = body;
+          setHistoryId((current) => current ?? saved.id);
+          setDraftSavedAt(new Date(saved.updated_at));
+          setDraftStatus("saved");
+        })
+        // Said, not swallowed: "could not save" is the one thing a draft must
+        // never keep to itself.
+        .catch(() => setDraftStatus("failed"));
+    }, 2500);
+    return () => window.clearTimeout(draftTimer.current);
+    // The payload is rebuilt from these; the body comparison does the rest.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [historyOn, hasEntry, reopenId, stepKey, draftLines, docValues, result, dgEntries,
+      selectedDocs, signature, chosenDocLang, skippedQuestions]);
+
+  // Coming back to it. Only this modality's draft, and only when the wizard was
+  // not opened on a shipment of its own.
+  useEffect(() => {
+    if (!historyOn || reopenId || draftRestored.current || !modality) return;
+    draftRestored.current = true;
+    let cancelled = false;
+    api
+      .runningDraft()
+      .then((detail) => {
+        if (cancelled || !detail) return;
+        const snap = readSnapshot(detail.snapshot);
+        if (!snap || (snap.modality && snap.modality !== modality)) return;
+        setDraftLines(snap.draftLines);
+        setNextId(snap.nextId);
+        setResult(snap.result);
+        setDgEntries(snap.dgEntries);
+        setDocValues(snap.docValues);
+        setSelectedDocs(snap.selectedDocs);
+        setSkippedQuestions(snap.skippedQuestions);
+        setSignature(snap.signature);
+        setChosenDocLang(snap.docLang as Language | null);
+        setStepKey(snap.stepKey);
+        setHistoryId(detail.id);
+        setDraftSavedAt(new Date(detail.updated_at));
+        setDraftStatus("saved");
+        draftBody.current = "";
+        toast.info(t("draft.resumed"));
+      })
+      .catch(() => undefined);
+    return () => {
+      cancelled = true;
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [historyOn, reopenId, modality]);
+
+  const discardDraft = () => {
+    window.clearTimeout(draftTimer.current);
+    void api.discardDraft().catch(() => undefined);
+    draftBody.current = "";
+    setDraftStatus("idle");
+    setDraftSavedAt(null);
+    setHistoryId(null);
+    setDraftLines([{ id: 1, description: "", quantity: 1, unit: "pcs" }]);
+    setNextId(2);
+    setResult(null);
+    setDgEntries([]);
+    setDocValues({});
+    setSelectedDocs(null);
+    setSkippedQuestions([]);
+    setSignature(null);
+    setStepKey("lines");
+  };
+
+  // Where nothing is stored: the browser's own question before the entry is
+  // lost, and the draft as a file so the answer can be "yes, I have it".
+  useEffect(() => {
+    if (historyOn || !hasEntry) return;
+    const ask = (event: BeforeUnloadEvent) => {
+      event.preventDefault();
+      event.returnValue = "";
+    };
+    window.addEventListener("beforeunload", ask);
+    return () => window.removeEventListener("beforeunload", ask);
+  }, [historyOn, hasEntry]);
+
+  const downloadDraft = () => {
+    const blob = new Blob([JSON.stringify(wizardSnapshot(), null, 2)], {
+      type: "application/json",
+    });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = `cargopilot-concept-${new Date().toISOString().slice(0, 10)}.json`;
+    link.click();
+    URL.revokeObjectURL(url);
+  };
+
+  const openDraftFile = async (file: File) => {
+    try {
+      const snap = readSnapshot(JSON.parse(await file.text()));
+      if (!snap) {
+        toast.error(t("draft.notADraft"));
+        return;
+      }
+      setDraftLines(snap.draftLines);
+      setNextId(snap.nextId);
+      setResult(snap.result);
+      setDgEntries(snap.dgEntries);
+      setDocValues(snap.docValues);
+      setSelectedDocs(snap.selectedDocs);
+      setSkippedQuestions(snap.skippedQuestions);
+      setSignature(snap.signature);
+      setChosenDocLang(snap.docLang as Language | null);
+      setStepKey(snap.stepKey);
+      toast.success(t("draft.opened"));
+    } catch {
+      toast.error(t("draft.notADraft"));
     }
   };
 
@@ -871,40 +1069,7 @@ export default function WizardPage() {
     if (!historyOn || !result) return;
     setKeeping(true);
     try {
-      const snapshot: WizardSnapshot = {
-        version: SNAPSHOT_VERSION,
-        modality: modality ?? "",
-        stepKey,
-        docLang: chosenDocLang,
-        selectedDocs,
-        docValues,
-        skippedQuestions,
-        draftLines,
-        nextId,
-        result,
-        dgEntries,
-        signature,
-      };
-      const payload = {
-        modality: modality ?? "",
-        language: docLang,
-        profiles: dgProfiles,
-        values: docValues,
-        lines: result.lines,
-        dangerous_goods: dgEntries.length > 0 ? dgEntries : undefined,
-        documents: selected,
-        bundle:
-          readyDocs.length > 0
-            ? {
-                documents: readyDocs.map(payloadFor),
-                dangerous_goods: dgEntries.length > 0 ? dgEntries : undefined,
-                profiles: dgProfiles,
-                output_language: docLang,
-                signature_image: signature ?? undefined,
-              }
-            : null,
-        snapshot: snapshot as unknown as Record<string, unknown>,
-      };
+      const payload = shipmentPayload(false);
       const kept = historyId
         ? await api.updateShipment(historyId, payload)
         : await api.keepShipment(payload);
@@ -1128,6 +1293,46 @@ export default function WizardPage() {
 
   const includedLines = result?.lines.filter((line) => line.include) ?? [];
 
+  /** The check-your-answers rows: the shipment as it stands, each with the way
+   *  back to the answer itself. What is derived — the totals, the assessment —
+   *  carries no way back, because it is not something to type. */
+  const answerRows: AnswerRow[] = (() => {
+    if (!result) return [];
+    const value = (key: string) => (docValues[key] ?? "").trim();
+    const route = [value("loading_point"), value("discharge_point")].filter(Boolean).join(" → ");
+    const contents = includedLines
+      .slice(0, 3)
+      .map((line) => line.output_description || line.description)
+      .filter(Boolean);
+    const rest = includedLines.length - contents.length;
+    const packages = contents.join("; ") + (rest > 0 ? `; ${t("check.andMore", { count: rest })}` : "");
+    const assessment = [
+      needsDg ? t("check.dgOnBoard", { count: dgEntries.length }) : t("check.noDg"),
+      unanswered > 0 ? t("check.openQuestions", { count: unanswered }) : "",
+    ].filter(Boolean).join(" · ");
+    return [
+      { key: "modality", label: t("check.modality"), value: t(`modality.${modality}`) },
+      { key: "consignor", label: t("check.consignor"), value: value("consignor_name"),
+        onChange: () => goToField("consignor_name"), wanted: true },
+      { key: "consignee", label: t("check.consignee"), value: value("consignee_name"),
+        onChange: () => goToField("consignee_name"), wanted: true },
+      { key: "route", label: t("check.route"), value: route,
+        onChange: () => goToField("loading_point"), wanted: true },
+      { key: "goods", label: t("check.goods"),
+        value: t("check.goodsValue", {
+          count: result.totals.included_count,
+          weight: result.totals.total_weight_kg,
+          volume: result.totals.total_transport_volume_m3,
+        }),
+        onChange: () => setStepKey("lines") },
+      { key: "packages", label: t("check.packages"), value: packages,
+        onChange: () => setStepKey("lines") },
+      { key: "assessment", label: t("check.assessment"), value: assessment },
+      { key: "language", label: t("check.language"), value: LANGUAGE_NAMES[docLang] ?? docLang,
+        onChange: () => document.getElementById("document-language")?.focus() },
+    ];
+  })();
+
   if (registryError) {
     return <p className="text-sm text-red-600 dark:text-red-400">{registryError}</p>;
   }
@@ -1168,6 +1373,16 @@ export default function WizardPage() {
           setReturnTo(null);
           setStepKey(key as StepKey);
         }}
+      />
+
+      <DraftBar
+        mode={historyOn ? "kept" : "file"}
+        status={draftStatus}
+        savedAt={draftSavedAt}
+        active={hasEntry && !reopenId}
+        onDiscard={historyOn ? discardDraft : undefined}
+        onDownload={historyOn ? undefined : downloadDraft}
+        onOpenFile={historyOn ? undefined : openDraftFile}
       />
 
       <AssistantModal
@@ -1299,6 +1514,10 @@ export default function WizardPage() {
 
       {stepKey === "export" && result && (
         <div className="space-y-4">
+          {/* The last look before anything is produced: what is about to go on
+              paper, and one way back to each answer that is not right. */}
+          <CheckYourAnswers title={t("check.title")} rows={answerRows} />
+
           <div className={`${panelClass} space-y-4 p-4 sm:p-6`}>
             <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-100">{t("wizard.summary")}</h3>
             {needsDg && (
@@ -1420,7 +1639,10 @@ export default function WizardPage() {
                     {t("wizardDocs.mail", { count: readyDocs.length })}
                   </button>
                 )}
-                {readyDocs.length > 1 && (
+                {/* One action finishes the job, with one document as with
+                    five. What is not ready is named below rather than turning
+                    this into a choice. */}
+                {readyDocs.length > 0 && (
                   <button
                     type="button"
                     onClick={downloadAll}
@@ -1429,11 +1651,36 @@ export default function WizardPage() {
                   >
                     {downloadingAll
                       ? t("wizardDocs.exporting")
-                      : t("wizardDocs.downloadAll", { count: readyDocs.length })}
+                      : readyDocs.length < selectedDefinitions.length
+                        ? t("wizardDocs.downloadPartial", {
+                            ready: readyDocs.length,
+                            total: selectedDefinitions.length,
+                          })
+                        : t("wizardDocs.downloadAll", { count: readyDocs.length })}
                   </button>
                 )}
               </div>
             </div>
+
+            {/* A partial package is called partial, and says which documents
+                are not in it. */}
+            {readyDocs.length > 0 && readyDocs.length < selectedDefinitions.length && (
+              <p className="rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-800 dark:border-amber-900/50 dark:bg-amber-900/20 dark:text-amber-300">
+                {t("wizardDocs.partialNotice", {
+                  list: selectedDefinitions
+                    .filter((doc) => docStatus(doc).status !== "ready")
+                    .map((doc) => L(doc.label))
+                    .join(", "),
+                })}
+              </p>
+            )}
+
+            {/* Having a document is not having sent it. */}
+            {handedOver && (
+              <p className="rounded-lg border border-emerald-200 bg-emerald-50 px-3 py-2 text-xs text-emerald-800 dark:border-emerald-900/50 dark:bg-emerald-900/20 dark:text-emerald-300">
+                {t("wizardDocs.downloadedNotSent")}
+              </p>
+            )}
 
             {mailOpen && (
               <div className="space-y-3 rounded-lg border border-slate-200 p-3 dark:border-slate-700">

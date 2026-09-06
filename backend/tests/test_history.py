@@ -333,6 +333,84 @@ def test_a_record_too_large_is_refused_before_it_is_kept(db, monkeypatch):
     assert history.count(db) == 0
 
 
+# --- 3b. drafts: entry in progress, kept but not counted as a shipment ----------
+
+
+def test_a_draft_is_kept_but_is_not_a_kept_shipment(db, monkeypatch):
+    """The point of the whole feature: a reload must not lose the entry, and a
+    half-typed consignment must not turn up in the history as if it went."""
+    with application(db, monkeypatch, CARGOPILOT_HISTORY="true") as client:
+        saved = client.put("/api/shipments/draft", json=shipment()).json()
+        assert saved["is_draft"] is True
+        # Not on the shipments page, and not counted as kept.
+        assert client.get("/api/shipments").json()["total"] == 0
+        assert history.count(db) == 0
+        # But the entry itself comes back, snapshot and all.
+        draft = client.get("/api/shipments/draft").json()
+        assert draft["id"] == saved["id"]
+        assert draft["snapshot"]["stepKey"] == "export"
+
+
+def test_saving_the_draft_again_writes_the_same_row(db, monkeypatch):
+    with application(db, monkeypatch, CARGOPILOT_HISTORY="true") as client:
+        first = client.put("/api/shipments/draft", json=shipment()).json()
+        second = client.put("/api/shipments/draft", json=shipment(
+            snapshot={"version": 1, "stepKey": "details"})).json()
+        assert second["id"] == first["id"]
+        assert client.get("/api/shipments/draft").json()["snapshot"]["stepKey"] == "details"
+
+
+def test_keeping_the_draft_as_a_shipment_makes_it_one(db, monkeypatch):
+    """No second row and no copying: the same row, with the flag off."""
+    with application(db, monkeypatch, CARGOPILOT_HISTORY="true") as client:
+        draft = client.put("/api/shipments/draft", json=shipment()).json()
+        kept = client.put(f"/api/shipments/{draft['id']}", json=shipment()).json()
+        assert kept["id"] == draft["id"]
+        assert kept["is_draft"] is False
+        assert client.get("/api/shipments").json()["total"] == 1
+        assert client.get("/api/shipments/draft").json() is None
+
+
+def test_a_discarded_draft_leaves_nothing(db, monkeypatch):
+    with application(db, monkeypatch, CARGOPILOT_HISTORY="true") as client:
+        client.put("/api/shipments/draft", json=shipment())
+        assert client.delete("/api/shipments/draft").json()["ok"] is True
+        assert client.get("/api/shipments/draft").json() is None
+
+
+def test_nobody_elses_draft(db, monkeypatch):
+    """A draft is unfinished entry, not a record a colleague may read: the
+    department rules that open a kept shipment to others stop here."""
+    with application(db, monkeypatch, CARGOPILOT_HISTORY="true") as client:
+        client.put("/api/shipments/draft", json=shipment())
+        other = User(id=2, username="bob", role="user", active=True)
+        assert history.running_draft(db, other) is None
+
+
+def test_the_annual_report_counts_shipments_and_not_drafts(db, monkeypatch):
+    from datetime import datetime
+
+    with application(db, monkeypatch, CARGOPILOT_HISTORY="true") as client:
+        client.post("/api/shipments", json=shipment())
+        client.put("/api/shipments/draft", json=shipment())
+        year = datetime.now().year
+        report = client.get(f"/api/shipments/report?year={year}").json()
+        assert report["totals"]["shipments"] == 1
+
+
+def test_switching_the_history_off_discards_the_drafts(db, monkeypatch):
+    """Off means nothing is kept. A draft does not stand in the way of the
+    switch — it is not a kept shipment — but it must not survive it either."""
+    with application(db, monkeypatch, CARGOPILOT_HISTORY="true") as client:
+        client.put("/api/shipments/draft", json=shipment())
+    admin = administrator(db, monkeypatch, CARGOPILOT_HISTORY="true")
+    with admin as client:
+        settings = client.get("/api/settings/instance").json()
+        settings["history_enabled"] = False
+        assert client.put("/api/settings/instance", json=settings).status_code == 200
+    assert history.running_draft(db, db.get(User, 1)) is None
+
+
 # --- 4. the documents again -----------------------------------------------------
 
 

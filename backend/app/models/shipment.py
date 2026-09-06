@@ -46,6 +46,12 @@ class Shipment(Base):
     consignee_name: Mapped[str] = mapped_column(String(255), default="")
     goods_count: Mapped[int] = mapped_column(Integer, default=0)
     has_dangerous_goods: Mapped[bool] = mapped_column(Boolean, default=False)
+    #: Entry still in progress, kept so a reload does not lose it. A draft is
+    #: not a kept shipment: it is left out of the shipments page, the annual
+    #: report and everything else that reads the history, and it becomes a
+    #: kept shipment the moment it is saved as one. Only its own author sees
+    #: it, and only until they finish or discard it.
+    is_draft: Mapped[bool] = mapped_column(Boolean, default=False, index=True)
     created_by_id: Mapped[int | None] = mapped_column(
         ForeignKey("users.id", ondelete="SET NULL"), nullable=True)
     #: The keeper's department at the moment of keeping: whose work this is.

@@ -92,6 +92,10 @@ def save_instance_settings(
                 detail=f"The history still holds {counts['shipments']} kept shipment(s) "
                        f"and {counts['trips']} kept trip(s). Delete them first under "
                        "Settings, Administration, Keep shipments.")
+        # Drafts are not kept shipments and do not stand in the way, but an
+        # installation that keeps nothing must not hold somebody's half-typed
+        # consignment either.
+        history.discard_drafts(db)
     stored = settings_store.save_instance_settings(db, payload)
     # The keys that changed and nothing of what they changed to: the mail
     # password is in here, and so is everything an outsider would like.

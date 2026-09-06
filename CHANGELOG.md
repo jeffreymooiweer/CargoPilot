@@ -2,6 +2,51 @@
 
 All notable changes are documented here, following [Semantic Versioning](https://semver.org/).
 
+## [1.199.0] — 2026-09-06
+
+### A last look before the documents, and an entry that survives a reload
+
+Releases 114 and 115 of [the usability plan](docs/ux-plan.md), in one version.
+
+**The export step opens with what is about to go on paper.** Who is sending and receiving,
+the route, the goods with their totals, what is actually being carried, the assessment, and
+the language the documents are drawn up in — each with **Change** beside it, going to the
+answer itself rather than to the step it lives on. An answer nobody gave says *nothing
+filled in yet* instead of showing an empty space.
+
+**One action finishes the job**, with one document as with five: the package is downloaded
+by the same button either way, and the separate downloads, the mail and the integration
+formats stay beside it as the secondary things they are. **A partial package is called
+partial** — *download what is ready (3 of 5)* — and names the documents that are not in it.
+And when the download is done the step says so plainly: the documents are in your downloads,
+check them, sign them where that is needed, and get them to the driver. Having a document is
+not having sent it.
+
+**The entry survives a reload.** The [baseline](docs/ux-baseline.md) reloaded halfway through
+a shipment and found the wizard back at the goods step with nothing left of what had been
+typed, and nothing had warned beforehand — the second of the ten tasks it could not complete.
+
+Where the installation keeps shipments, the running entry is now kept as a **draft**: its own
+row, marked as such in the database, left out of the shipments page and out of the safety
+adviser's annual report, readable by its author and nobody else. The screen says which of
+*Saved at 14:49*, *Saving…* or *Could not save* is true, never claiming a save that failed,
+and a reload comes back to the shipment on the step it was on. **Discard the draft** throws
+it away. Saving the same row without the draft flag is what makes it a kept shipment — there
+is no copying and no second row.
+
+Where nothing may be stored — the open application, or the history switched off — nothing is:
+the screen says *this installation stores nothing: a reload loses your entry*, the browser
+asks before the page is left, and the draft can be downloaded as a file and opened again
+later. A promise not to store anything is not a licence to lose somebody's work silently. An
+administrator switching the history off discards any drafts along with it.
+
+This release carries a schema step: `is_draft` on the shipments table, stamped on a fresh
+database and added to an existing one.
+
+Measured on the same tasks: the reload is **completable** for the first time — the entry is
+there and the wizard is on the step it was on — and the reload where nothing is stored says
+so and offers the file, in two actions. A simple shipment measured unchanged at 19 actions.
+
 ## [1.198.0] — 2026-09-06
 
 ### The document advice arrives before the work, and says why

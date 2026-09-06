@@ -152,6 +152,12 @@ CARD_LINKS = "30/minute"
 #: assembling a vehicle does this a handful of times; nobody does it hundreds.
 TRIP_CHECK = "30/minute"
 
+#: Keeping the running entry as a draft. The interface saves a few seconds
+#: after the typing stops, so a person filling in a shipment produces a handful
+#: a minute; this bounds a script or a stuck retry loop, which would otherwise
+#: rewrite one row as fast as the database allows.
+DRAFT_SAVE = "60/minute"
+
 #: Address autocomplete, which proxies to a Photon instance. The generous one,
 #: and deliberately: the field debounces at 250 ms, so a person typing four
 #: addresses into a consignment legitimately produces dozens of these. It is

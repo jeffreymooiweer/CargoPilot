@@ -21,7 +21,7 @@ from app.api.routes.documents import build_bundle, delete_file
 from app.core.database import get_db
 from app.core.deps import get_current_user
 from app.core.http import attachment
-from app.core.ratelimit import DGSA_REPORT, DOCUMENT_BUNDLE, limiter
+from app.core.ratelimit import DGSA_REPORT, DOCUMENT_BUNDLE, DRAFT_SAVE, limiter
 from app.models.shipment import Shipment
 from app.models.user import User
 from app.schemas import DocumentBundleRequest
@@ -68,6 +68,48 @@ def list_shipments(
 
 # The report routes come before ``/{shipment_id}``: a path is matched in
 # order, and "report" would otherwise be tried as a shipment id and refused.
+
+
+@router.get("/draft", response_model=ShipmentDetail | None)
+def running_draft(user: User = Depends(get_current_user), db: Session = Depends(get_db)):
+    """The entry this user was in the middle of, or nothing.
+
+    Answering with ``null`` rather than a 404: "you have no draft" is an
+    ordinary answer to this question, not a failure to find something.
+    """
+    record = history.running_draft(db, user)
+    return history.detail(record) if record else None
+
+
+@router.put("/draft", response_model=ShipmentSummary)
+@limiter.limit(DRAFT_SAVE)
+def save_draft(request: Request, payload: ShipmentIn,
+               user: User = Depends(get_current_user),
+               db: Session = Depends(get_db)):
+    """Keep the running entry, so a reload does not lose it.
+
+    One draft per person: saving again writes the same row. It is not a kept
+    shipment and never becomes one here — the export step's *keep* does that,
+    with the same row and the draft flag off.
+    """
+    existing = history.running_draft(db, user)
+    try:
+        record = history.keep(db, user, payload.model_copy(update={"draft": True}),
+                              existing=existing)
+    except history.RecordTooLarge as exc:
+        raise HTTPException(status_code=413, detail=str(exc)) from exc
+    # Deliberately not audited: an audit line per keystroke-batch would drown
+    # the log that exists to show who read and kept what.
+    return history.summary(record)
+
+
+@router.delete("/draft")
+def discard_draft(user: User = Depends(get_current_user), db: Session = Depends(get_db)):
+    """Throw the running entry away. Nothing is kept of it."""
+    record = history.running_draft(db, user)
+    if record:
+        history.forget(db, record)
+    return {"ok": True}
 
 
 @router.get("/report/years")

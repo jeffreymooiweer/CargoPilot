@@ -49,7 +49,11 @@ class RecordTooLarge(ValueError):
 
 
 def count(db: Session) -> int:
-    return int(db.query(func.count(Shipment.id)).scalar() or 0)
+    """How many shipments are kept. Drafts are entry in progress, not a
+    record of a consignment, so they are not counted as one — but they are
+    rows all the same, and :func:`discard_kept` removes them too."""
+    return int(db.query(func.count(Shipment.id))
+               .filter(Shipment.is_draft.is_(False)).scalar() or 0)
 
 
 def kept_counts(db: Session) -> dict[str, int]:
@@ -145,6 +149,9 @@ def keep(db: Session, user: User, payload: ShipmentIn,
     record = existing or Shipment(created_by_id=user.id if user.id else None,
                                   department_id=getattr(user, "department_id", None))
     _index(record, export, payload)
+    # Saving the same row without the draft flag is what turns entry in
+    # progress into a kept shipment; there is no separate act.
+    record.is_draft = bool(payload.draft)
     record.snapshot_json = snapshot_json
     record.bundle_json = bundle_json
     record.export_json = export_json
@@ -158,6 +165,35 @@ def keep(db: Session, user: User, payload: ShipmentIn,
 def forget(db: Session, record: Shipment) -> None:
     db.delete(record)
     db.commit()
+
+
+def discard_drafts(db: Session) -> int:
+    """Delete every draft. Entry in progress is not a kept shipment, so it
+    does not stand in the way of switching the history off — but it is a row
+    all the same, and an installation that says it keeps nothing must not be
+    holding somebody's half-typed consignment."""
+    gone = int(db.query(func.count(Shipment.id))
+               .filter(Shipment.is_draft.is_(True)).scalar() or 0)
+    if gone:
+        db.query(Shipment).filter(Shipment.is_draft.is_(True)).delete()
+        db.commit()
+        logger.info("Shipment history switched off: %s draft(s) discarded", gone)
+    return gone
+
+
+def running_draft(db: Session, user: User) -> Shipment | None:
+    """The draft this user was last working on, if there is one.
+
+    Only their own: a draft is unfinished entry, not a record anybody else
+    has business reading, so the department rules that open a kept shipment
+    to colleagues deliberately do not apply here.
+    """
+    if not getattr(user, "id", None):
+        return None
+    return (db.query(Shipment)
+            .filter(Shipment.is_draft.is_(True), Shipment.created_by_id == user.id)
+            .order_by(Shipment.updated_at.desc(), Shipment.id.desc())
+            .first())
 
 
 # --- reading -----------------------------------------------------------------
@@ -183,6 +219,7 @@ def summary(record: Shipment) -> ShipmentSummary:
         goods_count=record.goods_count,
         has_dangerous_goods=record.has_dangerous_goods,
         has_documents=bool(record.bundle_json),
+        is_draft=bool(record.is_draft),
         created_by=record.creator.username if record.creator else "",
         department_id=record.department_id,
         department=record.department.name if record.department else "",
@@ -209,7 +246,10 @@ def search(db: Session, viewer: User, q: str = "", modality: str = "",
            department: str = "") -> tuple[list[Shipment], int]:
     """The page of shipments ``viewer`` may see that match the filters,
     newest first, and the total across all pages."""
-    query = departments.visible_to(db.query(Shipment), viewer, department)
+    # A draft is entry somebody is still doing; the shipments page lists what
+    # was finished, and the draft's own author reaches it from the wizard.
+    query = departments.visible_to(
+        db.query(Shipment).filter(Shipment.is_draft.is_(False)), viewer, department)
     needle = (q or "").strip()
     if needle:
         like = f"%{needle}%"

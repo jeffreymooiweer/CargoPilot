@@ -96,7 +96,10 @@ def build_report(db: Session, viewer: User, year: int, department: str = "",
     labels = texts()["labels"]
     L = lambda key: pick(labels.get(key), lang, key)  # noqa: E731
 
-    query = departments.visible_to(db.query(Shipment), viewer, department)
+    # A draft is entry in progress, not a consignment that took place: the
+    # adviser's report counts what was carried, so drafts are left out.
+    query = departments.visible_to(
+        db.query(Shipment).filter(Shipment.is_draft.is_(False)), viewer, department)
     rows = (query.filter(extract("year", Shipment.created_at) == year)
             .order_by(Shipment.created_at.asc(), Shipment.id.asc()).all())
 

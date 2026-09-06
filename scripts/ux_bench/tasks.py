@@ -355,9 +355,15 @@ def task_5(page, session: requests.Session) -> object:
     b.m.actions = 0  # getting there is task 1; this task is the extra document
     b.m.windows = 0
     b.m.notes.clear()
+    # Since v1.198.0 the choice is made where its questions are asked, before
+    # the fields are filled in, rather than on the export step after they all
+    # are. From a finished shipment that is one press back to it.
+    b.click(page.get_by_role("button", name="Documentenpakket wijzigen").first)
+    page.wait_for_timeout(2500)
+    b.observe()
     boxes = page.locator("input[type=checkbox]:visible")
-    b.note(f"the document choice sits on the export step behind {boxes.count()} checkbox(es), "
-           "after every document field has already been filled in")
+    b.note(f"the document choice is on the {b.current_step()} step, among {boxes.count()} "
+           "checkbox(es), where its questions are asked")
     picked = -1
     for index in range(boxes.count()):
         box = boxes.nth(index)
@@ -365,21 +371,38 @@ def task_5(page, session: requests.Session) -> object:
             b.click(box)
             picked = index
             break
-    page.wait_for_timeout(3000)
+    page.wait_for_timeout(2500)
     b.observe()
     if picked < 0:
         b.note("no unchecked document was on offer")
         b.shot("extra-document")
         return b.done(False)
-    chips = missing_chips(page)
-    b.note(f"{chips.count()} missing field(s) named on the card, each of them a button")
-    if not chips.count():
-        b.note("the extra document asked for nothing that was not already answered")
+    said = page.get_by_text(re.compile("voegt"))
+    b.note(f"what it added is said straight away: {said.first.inner_text() if said.count() else 'nothing'}")
+    to = page.get_by_role("button", name="Naar die vragen")
+    if not to.count():
+        b.note("the extra document asked nothing that was not already asked")
         b.shot("extra-document")
-        return b.done()
-    answered = answer_from_chip(b, chips.first)
+        advance(b)
+        return b.done(b.current_step() == "Export")
+    b.click(to.first)
+    page.wait_for_timeout(1500)
+    focused = page.locator("*:focus")
+    if focused.count():
+        b.note("one action put the cursor in the first question it added")
+        if focused.evaluate("el => el.type || ''") == "date":
+            b.fill(focused, "2026-09-06")
+        else:
+            b.fill(focused, "Rotterdam")
     b.shot("extra-document")
-    return b.done(answered)
+    back = page.get_by_role("button", name="Terug naar het overzicht")
+    if back.count():
+        b.click(back.first)
+        page.wait_for_timeout(2500)
+        b.observe()
+    else:
+        advance(b)
+    return b.done(b.current_step() == "Export")
 
 
 # --- 6. an error corrected from the final overview ----------------------------------

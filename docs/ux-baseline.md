@@ -119,6 +119,7 @@ same harness against the same tasks, so a row is comparable with the baseline ab
 | 111 (v1.196.0) | 6 An error from the overview | 11 → **3** | 0 → **0** | Press the field's name, type the answer, come back |
 | 112 (v1.197.0) | 1 A simple shipment | 20 → **19** | 0 → **0** | The details step is one page of groups: two forms crossed became one |
 | 112 (v1.197.0) | 5 An extra document | 4 → **4** | 0 → **0** | Same four actions, but the extra document adds no form of its own |
+| 113 (v1.198.0) | 5 An extra document | 4 → **5** | 0 → **0** | The choice moved to before the fields; coming back to it from a finished shipment is the fifth action |
 
 Task 3 is the one row in this table where the action count went *up*, and it is the
 release's point rather than a regression. Pasting fifty rows costs the same three actions
@@ -159,7 +160,21 @@ shipment now asks **62**, each once. Road with a packing list and a delivery not
 39 to 37, air from 43 to 40. Where two documents want the same answer the form says so
 underneath it — *also asked by: Delivery note (Date)* — rather than asking again.
 
-Tasks 7, 9 and 10 were unchanged by 108 to 112.
+Release 113 moved the document choice from the export step, where the baseline found it
+*behind eleven checkboxes, after every document field has been filled in*, to the step
+that asks its questions. Task 5 is the second row in this table where the number went up,
+and for a plain reason: the task starts from a finished shipment and now has to walk back
+to a choice that, in the ordinary order, is made before the fields. Measured on the same
+harness, choosing a document **in place** — standing on the step it belongs to, ticking
+it, following *to those questions* and answering the first — costs **3 actions and no step
+change at all**. The fifth action of task 5 is the way back, not the choosing.
+
+What the run also showed is the answer the app can now give to *and what do I have to fill
+in?* Ticking the delivery note said it added five questions and put the cursor in the first
+of them; ticking the packing list after it said, correctly, that it adds none — everything
+it needs was already being asked.
+
+Tasks 7, 9 and 10 were unchanged by 108 to 113.
 
 ## What was not run
 

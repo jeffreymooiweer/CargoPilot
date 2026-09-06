@@ -2,6 +2,42 @@
 
 All notable changes are documented here, following [Semantic Versioning](https://semver.org/).
 
+## [1.198.0] — 2026-09-06
+
+### The document advice arrives before the work, and says why
+
+Release 113 of [the usability plan](docs/ux-plan.md). The document set was chosen on the
+export step — the [baseline](docs/ux-baseline.md) found it *behind eleven checkboxes, after
+every document field has been filled in*. Deciding what to prepare after preparing it is
+the wrong order, and it made every late change cost a walk back.
+
+**The advice now sits on the step that asks the questions**, above them: this is what we
+are preparing, and this is why. The export step no longer chooses anything; it offers one
+way back to the choice.
+
+**Each document says why it is on the list** — the transport document carrying the 5.4.1
+particulars for this modality, a supporting paper for dangerous goods, the customary
+document for this modality, a commercial document that is the consignor's choice. Every one
+of those is read off the registry: which document a modality names for 5.4.1, which papers
+are dangerous-goods only, which document a modality customarily uses. No rule is invented
+for a label. Where a whole group is on the list for the same reason it is said once above
+it; where the reasons differ, each card says its own.
+
+**The JSON export and the EDI notification are no longer offered as documents.** They are
+data read by another system, so they sit in their own **Integration** group, marked as such
+in the registry rather than guessed from the name of their exporter.
+
+**And choosing a document says what that added.** Ticking one names how many questions came
+with it and leads to the first one that is needed — or says, when that is the truth, that it
+adds none because everything it needs is already being asked. Measured: the delivery note
+added five questions and the cursor landed in the first; the packing list chosen after it
+added none.
+
+Measured on the same task: choosing an extra document in place — on the step it belongs to
+— costs 3 actions and no step change. Task 5, which starts from a finished shipment and
+must walk back to the choice, went from 4 actions to 5; that fifth is the way back, not the
+choosing.
+
 ## [1.197.0] — 2026-09-06
 
 ### The questions are grouped by what they mean, not by which document asks

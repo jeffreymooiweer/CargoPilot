@@ -557,7 +557,8 @@
     "mailSend": "Senden",
     "mailSending": "Wird gesendet…",
     "mailSent": "An {{to}} gesendet.",
-    "missingFieldsLead": "Fehlend:"
+    "missingFieldsLead": "Fehlend:",
+    "changeSet": "Dokumentenpaket ändern"
   },
   "unCards": {
     "title": "UN-Karten für Ihre Unterlagen",
@@ -837,11 +838,23 @@
   },
   "advice": {
     "title": "Dokumentenpaket",
-    "intro": "Aus der Sendung zusammengestellt. Entfernen Sie, was Sie nicht brauchen, oder wählen Sie Zusätzliches an.",
+    "intro": "Aus der Sendung zusammengestellt. Das schlagen wir vor; haken Sie ab, was Sie nicht brauchen, oder zusätzlich an, was Sie möchten. Die Fragen unten folgen Ihrer Wahl.",
     "required": "Erforderlich",
     "requiredNote": "Bei Gefahrgut verlangt 5.4.1 ein Beförderungsdokument mit den vorgeschriebenen Angaben.",
     "recommended": "Empfohlen",
-    "possible": "Möglich"
+    "possible": "Möglich",
+    "integration": "Anbindung",
+    "integrationNote": "Kein Dokument, sondern Daten: wird von einem anderen System gelesen und nicht im Fahrerhaus mitgeführt.",
+    "reason": {
+      "dgTransport": "Beförderungspapier mit den Angaben nach 5.4.1 für diesen Verkehrsträger.",
+      "dgSupport": "Hilfsdokument bei gefährlichen Gütern.",
+      "modalityDefault": "Das übliche Beförderungspapier für diesen Verkehrsträger.",
+      "commercial": "Handelsdokument — Ihre Wahl.",
+      "dataExchange": "Daten für ein anderes System."
+    },
+    "added": "{{document}} fügt {{count}} Frage(n) hinzu.",
+    "addedNothing": "{{document}} fügt keine Frage hinzu; alles Nötige wird bereits gefragt.",
+    "toTheQuestions": "Zu diesen Fragen"
   },
   "assistant": {
     "title": "KI-Assistent",

@@ -557,7 +557,8 @@
     "mailSend": "Versturen",
     "mailSending": "Bezig met versturen…",
     "mailSent": "Verstuurd naar {{to}}.",
-    "missingFieldsLead": "Ontbrekend:"
+    "missingFieldsLead": "Ontbrekend:",
+    "changeSet": "Documentenpakket wijzigen"
   },
   "unCards": {
     "title": "UN-kaarten voor uw administratie",
@@ -837,11 +838,23 @@
   },
   "advice": {
     "title": "Documentenpakket",
-    "intro": "Samengesteld op basis van de zending. Vink uit wat u niet nodig hebt of aan wat u extra wilt.",
+    "intro": "Samengesteld op basis van de zending. Dit stellen we voor; vink uit wat u niet nodig hebt of aan wat u extra wilt. De vragen hieronder volgen uw keuze.",
     "required": "Vereist",
     "requiredNote": "Bij gevaarlijke stoffen vraagt 5.4.1 een vervoersdocument met de voorgeschreven vermeldingen.",
     "recommended": "Aanbevolen",
-    "possible": "Mogelijk"
+    "possible": "Mogelijk",
+    "integration": "Koppeling",
+    "integrationNote": "Geen document maar data: wordt door een ander systeem gelezen, niet meegenomen in de cabine.",
+    "reason": {
+      "dgTransport": "Vervoersdocument met de 5.4.1-vermeldingen voor deze modaliteit.",
+      "dgSupport": "Hulpdocument bij gevaarlijke stoffen.",
+      "modalityDefault": "Het gebruikelijke vervoersdocument voor deze modaliteit.",
+      "commercial": "Handelsdocument — uw keuze.",
+      "dataExchange": "Data voor een ander systeem."
+    },
+    "added": "{{document}} voegt {{count}} vraag/vragen toe.",
+    "addedNothing": "{{document}} voegt geen vraag toe; alles wat het nodig heeft, wordt al gevraagd.",
+    "toTheQuestions": "Naar die vragen"
   },
   "assistant": {
     "title": "AI-assistent",

@@ -557,7 +557,8 @@
     "mailSend": "Envoyer",
     "mailSending": "Envoi en cours…",
     "mailSent": "Envoyé à {{to}}.",
-    "missingFieldsLead": "Manquant :"
+    "missingFieldsLead": "Manquant :",
+    "changeSet": "Modifier le jeu de documents"
   },
   "unCards": {
     "title": "Fiches ONU pour votre dossier",
@@ -837,11 +838,23 @@
   },
   "advice": {
     "title": "Dossier de documents",
-    "intro": "Composé à partir de l'envoi. Décochez ce dont vous n'avez pas besoin, ou cochez ce que vous voulez en plus.",
+    "intro": "Composé à partir de l'envoi. Voici ce que nous proposons ; décochez ce dont vous n'avez pas besoin ou cochez ce que vous voulez en plus. Les questions ci-dessous suivent votre choix.",
     "required": "Requis",
     "requiredNote": "Avec des marchandises dangereuses, le 5.4.1 exige un document de transport portant les mentions prescrites.",
     "recommended": "Recommandé",
-    "possible": "Possible"
+    "possible": "Possible",
+    "integration": "Intégration",
+    "integrationNote": "Non pas un document mais des données : lues par un autre système, pas emportées en cabine.",
+    "reason": {
+      "dgTransport": "Document de transport portant les mentions du 5.4.1 pour ce mode.",
+      "dgSupport": "Document d'appui pour les marchandises dangereuses.",
+      "modalityDefault": "Le document de transport habituel pour ce mode.",
+      "commercial": "Document commercial — votre choix.",
+      "dataExchange": "Données destinées à un autre système."
+    },
+    "added": "{{document}} ajoute {{count}} question(s).",
+    "addedNothing": "{{document}} n'ajoute aucune question ; tout ce qu'il lui faut est déjà demandé.",
+    "toTheQuestions": "Vers ces questions"
   },
   "assistant": {
     "title": "Assistant IA",

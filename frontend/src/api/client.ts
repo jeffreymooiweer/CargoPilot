@@ -1697,6 +1697,9 @@ export interface DocumentDefinition {
   output_format?: "xlsx" | "pdf";
   dg_profile: string | null;
   dg_only?: boolean;
+  /** Carries data for another system — the JSON export, the EDI notification —
+   *  rather than a document that travels with the goods. */
+  data_exchange?: boolean;
   default_selected?: boolean;
   sections: DocumentSection[];
   signature_note?: LocalizedText;

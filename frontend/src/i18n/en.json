@@ -557,7 +557,8 @@
     "mailSend": "Send",
     "mailSending": "Sending…",
     "mailSent": "Sent to {{to}}.",
-    "missingFieldsLead": "Missing:"
+    "missingFieldsLead": "Missing:",
+    "changeSet": "Change the document set"
   },
   "unCards": {
     "title": "UN cards for your records",
@@ -837,11 +838,23 @@
   },
   "advice": {
     "title": "Document pack",
-    "intro": "Assembled from the shipment. Untick what you do not need, or tick what you want in addition.",
+    "intro": "Assembled from the shipment. This is what we propose; untick what you do not need or tick what you want as well. The questions below follow your choice.",
     "required": "Required",
     "requiredNote": "With dangerous goods, 5.4.1 requires a transport document with the prescribed particulars.",
     "recommended": "Recommended",
-    "possible": "Possible"
+    "possible": "Possible",
+    "integration": "Integration",
+    "integrationNote": "Not a document but data: read by another system, not carried in the cab.",
+    "reason": {
+      "dgTransport": "Transport document with the 5.4.1 particulars for this modality.",
+      "dgSupport": "Supporting paper for dangerous goods.",
+      "modalityDefault": "The customary transport document for this modality.",
+      "commercial": "Commercial document — your choice.",
+      "dataExchange": "Data for another system."
+    },
+    "added": "{{document}} adds {{count}} question(s).",
+    "addedNothing": "{{document}} adds no question; everything it needs is already being asked.",
+    "toTheQuestions": "To those questions"
   },
   "assistant": {
     "title": "AI assistant",

@@ -191,7 +191,7 @@ Two settings are worth a line in the log without being worth a dead application:
 
 | Reported | Why | What to do |
 |---|---|---|
-| `CORS_ALLOWED_ORIGINS=*` | The API works with cookies, and browsers refuse to combine those with a wildcard origin — so a cross-site call fails anyway | Name the address you reach CargoPilot on |
+| `CORS_ALLOWED_ORIGINS=*` | The wildcard is answered without credentials since v1.190.0, so a call from another website cannot carry the login cookie — but the setting still says more than it should | Name the address you reach CargoPilot on |
 | `ADMIN_PASSWORD` set to one that appears in this project's documentation | It is not a password if it is printed in a README | Pick your own, and change it after first login |
 
 ### While developing
@@ -361,7 +361,9 @@ fail is not a feature.
 **Settings → Administration → Two-factor verification** decides who needs a second step:
 voluntary (the default), required for administrators, or required for everyone. Nobody is
 locked out when it is switched on — someone without a second factor signs in as before and
-is asked to set one up.
+is taken to the panel that sets one up. Since v1.190.0 that is the only thing the account
+can do until the factor is confirmed: every other call is refused by the server with
+`auth.two_factor_required`, not only discouraged by the screen.
 
 Each person picks their own method under **Settings → My details**:
 
@@ -436,7 +438,7 @@ scanned in a year answers what it answered on the day it was printed.
 | `APP_ENV` | `production` or `development` | `production` |
 | `ACCESS_TOKEN_EXPIRE_MINUTES` | How long a login stays valid | `480` (8 hours) |
 | `COOKIE_SECURE` | Override the login-cookie `Secure` flag. Empty means automatic: enabled for HTTPS or trusted `X-Forwarded-Proto=https`. | automatic |
-| `CORS_ALLOWED_ORIGINS` | Comma-separated list, or `*` | `*` |
+| `CORS_ALLOWED_ORIGINS` | Comma-separated list, or `*`. Named origins are answered with credentials; the wildcard without them, so a browser on another site cannot use the login cookie against the API | `*` |
 | `TRUSTED_PROXY_HEADERS` | Honour `X-Forwarded-*` headers behind a reverse proxy | `true` |
 | `TRUSTED_PROXY_COUNT` | How many reverse proxies stand in front. Decides which `X-Forwarded-For` entry a rate limit counts against | `1` |
 | `LOG_LEVEL` | `DEBUG`, `INFO`, `WARNING`, `ERROR` | `INFO` |

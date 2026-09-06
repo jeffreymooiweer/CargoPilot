@@ -65,6 +65,12 @@ MESSAGES: dict[str, str] = {
     ),
     "import.cell_too_long": "Cell {row}:{column} holds more than {limit} characters",
     "import.unpacked_too_large": "The unpacked spreadsheet is larger than {limit_mb} MB",
+    "import.unreadable_file": "The file cannot be read as a spreadsheet",
+    # Signing in
+    "auth.two_factor_required": (
+        "This installation requires two-factor verification for your account. "
+        "Set it up under Settings, My details, before doing anything else"
+    ),
     # Equipment import, reported per row rather than as an HTTP error
     "equipment.row_weight_missing": "Row {row}: the weight is missing or unusable",
     # Articles import, reported per row

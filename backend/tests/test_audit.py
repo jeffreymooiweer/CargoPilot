@@ -191,6 +191,18 @@ def test_shipments_and_documents_leave_lines_without_the_goods(db):
 # --- who may read it -----------------------------------------------------------
 
 
+def test_the_export_hands_a_spreadsheet_text_not_formulas(db):
+    audit.record(db, "shipment.kept", actor=db.get(User, 1), target=("shipment", 1),
+                 summary="=1+1")
+    audit.record(db, "user.created", actor=db.get(User, 1), target=("user", 9),
+                 summary="@cmd|'/C calc'!A0")
+    body = audit.export_csv(db)
+    assert "'=1+1" in body and ",=1+1" not in body
+    assert "'@cmd" in body
+    assert audit.csv_cell("2026-09-06T08:30:00") == "2026-09-06T08:30:00"
+    assert audit.csv_cell("-5") == "'-5" and audit.csv_cell("+1") == "'+1"
+
+
 def test_only_an_administrator_reads_it(db):
     audit.record(db, "auth.login", actor=db.get(User, 1), summary="password")
     with application(db) as client:

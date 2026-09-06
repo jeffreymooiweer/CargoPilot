@@ -150,6 +150,23 @@ def actors(db: Session) -> list[str]:
     return [r for r in rows if r]
 
 
+#: What a spreadsheet reads as the start of a formula rather than as text.
+FORMULA_LEADS = ("=", "+", "-", "@", "\t", "\r")
+
+
+def csv_cell(value: Any) -> str:
+    """A cell a spreadsheet will show, not run.
+
+    A shipment reference "=1+1" or a user name "@cmd" arrives in the log as
+    typed; opened in a spreadsheet, a cell that starts that way is a
+    formula, and a formula can reach out of the file. A leading apostrophe
+    makes it text again — the convention every spreadsheet understands and
+    strips on display.
+    """
+    text = "" if value is None else str(value)
+    return f"'{text}" if text.startswith(FORMULA_LEADS) else text
+
+
 def export_csv(db: Session, *, actor: str = "", action: str = "", since: datetime | None = None,
                until: datetime | None = None) -> str:
     """The filtered log as CSV, oldest first, for whoever keeps records elsewhere."""
@@ -158,6 +175,7 @@ def export_csv(db: Session, *, actor: str = "", action: str = "", since: datetim
     writer = csv.writer(out)
     writer.writerow(["at", "actor", "action", "target_type", "target_id", "summary", "client"])
     for e in db.execute(stmt.order_by(AuditEvent.at.asc(), AuditEvent.id.asc())).scalars():
-        writer.writerow([e.at.isoformat() if e.at else "", e.actor_username, e.action,
-                         e.target_type, e.target_id, e.summary, e.client])
+        writer.writerow([csv_cell(cell) for cell in (
+            e.at.isoformat() if e.at else "", e.actor_username, e.action,
+            e.target_type, e.target_id, e.summary, e.client)])
     return out.getvalue()

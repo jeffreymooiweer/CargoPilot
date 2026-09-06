@@ -141,15 +141,25 @@ def is_active(db: Session, user_id: int) -> bool:
     return bool(row and row.confirmed)
 
 
+class AlreadyEnrolled(ValueError):
+    """A confirmed second factor is in place; it is switched off with a
+    code first, never quietly replaced."""
+
+
 def start_enrolment(db: Session, user: User, method: str) -> TwoFactorEnrolment:
     """Begin (or restart) setting up a second factor.
 
     Unconfirmed by design: nothing about the sign-in changes until the owner
-    has proved they can produce a code.
+    has proved they can produce a code. An enrolment that *is* confirmed is
+    not restarted from here: until v1.190.0 it was, which let a borrowed
+    session replace a working factor with its own without ever producing a
+    code — the one thing switching it off is careful to demand.
     """
     if method not in METHODS:
         raise ValueError(f"unknown method: {method}")
     row = enrolment_for(db, user.id)
+    if row is not None and row.confirmed:
+        raise AlreadyEnrolled("A second factor is already switched on.")
     if row is None:
         row = TwoFactorEnrolment(user_id=user.id)
         db.add(row)

@@ -40,11 +40,13 @@ from __future__ import annotations
 import json
 import re
 import threading
+import unicodedata
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
 from app.services.edifact.syntax import Segment, parse, validate, write
+from app.services.quantities import positive_number
 
 _CONFIG = Path(__file__).resolve().parents[2] / "config" / "iftdgn_d16a.json"
 _lock = threading.Lock()
@@ -84,8 +86,16 @@ class NothingToNotify(ValueError):
 
 
 def _s(value: Any, limit: int | None = None) -> str:
+    """A value as the message can carry it: one line, ISO 8859-1.
+
+    UNOC is ISO 8859-1. A character outside it is replaced *here*, before
+    the syntax layer releases the service characters — replacing it after,
+    as the first release did, turned an emoji into a bare ``?``, which is
+    the release character itself, and the segment read back wrong.
+    """
     text = "" if value is None else str(value).strip()
-    text = re.sub(r"\s+", " ", text)
+    text = unicodedata.normalize("NFKC", re.sub(r"\s+", " ", text))
+    text = text.encode("latin-1", "replace").decode("latin-1")
     return text[:limit] if limit else text
 
 
@@ -101,12 +111,21 @@ def _lines(block: str, width: int, count: int) -> list[str]:
 
 
 def _number(value: Any) -> float | None:
-    """The first number in a quantity string ("800 kg", "1.250,5 L")."""
-    text = _s(value)
-    m = re.search(r"\d+(?:[.,]\d+)?", text)
-    if not m:
-        return None
-    return float(m.group(0).replace(",", "."))
+    """The quantity in a string ("800 kg", "1.250,5 L") when it is one and
+    greater than zero. What is not — "abc", "-5 L", "1.2.3" — is left out of
+    the message and named by :func:`problems`, never written as a guess."""
+    return positive_number(value)
+
+
+def _un(value: Any) -> str:
+    """The UN number as four digits, or nothing when it is not one.
+
+    "UN 1203", "1203" and "un1203" are 1203; "abc" and "12" are nothing.
+    The first release padded whatever digits it found to four, which made
+    "abc" into UN 0000 — a number that does not exist, sent as fact.
+    """
+    text = re.sub(r"^\s*UN\s*", "", _s(value), flags=re.IGNORECASE)
+    return text if re.fullmatch(r"\d{4}", text) else ""
 
 
 def _unit(value: Any) -> str:
@@ -222,7 +241,7 @@ def _goods_item(index: int, entry: dict[str, Any], product: dict[str, Any],
     segments.append(_dgs(product, regime))
 
     technical = _s(product.get("technical_name") or product.get("chosen_name")
-                   or product.get("proper_shipping_name") or f"UN {_s(product.get('un_number'))}", 512)
+                   or product.get("proper_shipping_name") or f"UN {_un(product.get('un_number'))}", 512)
     segments.append(Segment("FTX", ["AAD", "", "", [technical]]))
     additional = _additional(product, regime)
     if additional:
@@ -238,7 +257,7 @@ def _goods_item(index: int, entry: dict[str, Any], product: dict[str, Any],
 
 def _dgs(product: dict[str, Any], regime: str) -> Segment:
     subsidiary = _codes(product.get("subsidiary_risks"))
-    un = re.sub(r"\D", "", _s(product.get("un_number")))[:4].zfill(4) if _s(product.get("un_number")) else ""
+    un = _un(product.get("un_number"))
     flash = _flashpoint(product.get("flashpoint"))
     labels = _codes(product.get("labels"))[:4]
     tunnel = _s(product.get("tunnel_code")).strip("()")[:6]
@@ -268,8 +287,11 @@ def _additional(product: dict[str, Any], regime: str) -> list[str]:
         notes.append("ADN")
     if _s(product.get("marine_pollutant")).lower() in ("yes", "ja", "true", "1", "oui"):
         notes.append("MARINE POLLUTANT")
-    if _s(product.get("limited_quantity")) and _s(product.get("limited_quantity")).lower() not in ("0", "no", "nee", "none"):
-        notes.append("LIMITED QUANTITY")
+    # No LIMITED QUANTITY statement: the ``limited_quantity`` field holds
+    # column 7a of Table A — the quantity per package *up to which* 3.4
+    # applies — not whether this consignment travels under it. The first
+    # release wrote the statement whenever the column was filled, which
+    # declared nearly every consignment a limited quantity one.
     if _s(product.get("empty_uncleaned")).lower() in ("yes", "ja", "true", "1", "oui"):
         notes.append("EMPTY UNCLEANED")
     if _s(product.get("is_waste")).lower() in ("yes", "ja", "true", "1", "oui"):
@@ -283,15 +305,30 @@ def _additional(product: dict[str, Any], regime: str) -> list[str]:
     return notes
 
 
+#: The fields a quantity is read from, with the name the problem list uses.
+QUANTITY_FIELDS = ("quantity_packages", "gross_mass_per_package",
+                   "adr_total_quantity", "net_mass_liters_per_package")
+
+
 def _masses(product: dict[str, Any]) -> list[Segment]:
-    """Gross and net, as far as they are known; the message wants at least one."""
+    """Gross and net, as far as they are known; the message wants at least one.
+
+    The gross is per package times the packages. The net is the ADR total
+    quantity as given; failing that, the net per package times the packages
+    — a per-package figure written as the item's total, as the first
+    release did, understated the consignment by the number of packages.
+    """
     segments: list[Segment] = []
     packages = _number(product.get("quantity_packages"))
     gross_each = _number(product.get("gross_mass_per_package"))
     if gross_each is not None and packages is not None:
         segments.append(Segment("MEA", ["AAE", ["AAB"], ["KGM", _measure(gross_each * packages)]]))
-    net = _number(product.get("adr_total_quantity") or product.get("net_mass_liters_per_package"))
-    unit = _unit(product.get("adr_total_quantity") or product.get("net_mass_liters_per_package"))
+    total = product.get("adr_total_quantity")
+    net, unit = _number(total), _unit(total)
+    if net is None or not unit:
+        each = product.get("net_mass_liters_per_package")
+        net_each, unit = _number(each), _unit(each)
+        net = net_each * packages if net_each is not None and packages is not None else None
     if net is not None and unit:
         segments.append(Segment("MEA", ["AAE", ["AAF"], [unit, _measure(net)]]))
     return segments
@@ -343,11 +380,18 @@ def problems(values: dict[str, Any], dangerous_goods: list[dict[str, Any]] | Non
         return [_TEXTS["no_dangerous_goods"][lang]]
     found: list[str] = []
     for index, (_entry, product) in enumerate(products, start=1):
-        label = f"UN {_s(product.get('un_number'))}" if _s(product.get("un_number")) else f"#{index}"
-        if not _s(product.get("un_number")):
+        given, un = _s(product.get("un_number")), _un(product.get("un_number"))
+        label = f"UN {un}" if un else f"#{index}"
+        if not given:
             found.append(_TEXTS["no_un_number"][lang].format(item=label))
+        elif not un:
+            found.append(_TEXTS["bad_un_number"][lang].format(item=label, value=given))
         if not _s(product.get("class")):
             found.append(_TEXTS["no_class"][lang].format(item=label))
+        for field in QUANTITY_FIELDS:
+            value = _s(product.get(field))
+            if value and _number(value) is None:
+                found.append(_TEXTS["bad_quantity"][lang].format(item=label, value=value))
         if not _masses(product):
             found.append(_TEXTS["no_mass"][lang].format(item=label))
     return found
@@ -365,6 +409,18 @@ _TEXTS = {
         "en": "IFTDGN: item {item} has no UN number.",
         "de": "IFTDGN: Position {item} hat keine UN-Nummer.",
         "fr": "IFTDGN : la position {item} n'a pas de numéro ONU.",
+    },
+    "bad_un_number": {
+        "nl": "IFTDGN: positie {item} heeft een UN-nummer dat geen vier cijfers is ({value}).",
+        "en": "IFTDGN: item {item} has a UN number that is not four digits ({value}).",
+        "de": "IFTDGN: Position {item} hat eine UN-Nummer, die nicht aus vier Ziffern besteht ({value}).",
+        "fr": "IFTDGN : la position {item} a un numéro ONU qui n'est pas à quatre chiffres ({value}).",
+    },
+    "bad_quantity": {
+        "nl": "IFTDGN: {item} heeft een hoeveelheid die geen getal groter dan nul is ({value}).",
+        "en": "IFTDGN: {item} has a quantity that is not a number greater than zero ({value}).",
+        "de": "IFTDGN: {item} hat eine Menge, die keine Zahl größer als null ist ({value}).",
+        "fr": "IFTDGN : {item} a une quantité qui n'est pas un nombre supérieur à zéro ({value}).",
     },
     "no_class": {
         "nl": "IFTDGN: {item} heeft geen klasse.",

@@ -396,6 +396,18 @@ def test_it_cannot_be_switched_off_where_the_installation_requires_it(
     assert two_factor.is_active(db, 1) is True
 
 
+def test_a_working_factor_is_not_restarted_without_a_code(signed_in, db):
+    """Starting an enrolment over a confirmed one replaced the factor with
+    the caller's own, from a borrowed session, without a code — the very
+    thing switching it off is careful to demand. Refused since v1.190.0."""
+    secret = enable_totp(db)
+    for method in ("totp", "email"):
+        refused = signed_in.post("/api/auth/two-factor/start", json={"method": method})
+        assert refused.status_code == 400
+    assert two_factor.is_active(db, 1) is True
+    assert two_factor.enrolment_for(db, 1).secret == secret
+
+
 def test_an_administrator_can_clear_a_lost_factor(client, db):
     enable_totp(db, 2)
     app.dependency_overrides[require_admin] = lambda: db.get(User, 1)
@@ -434,6 +446,31 @@ def test_someone_who_owes_a_factor_is_told_so_rather_than_locked_out(
     body = signed_in.get("/api/auth/me").json()
     assert body["two_factor_required"] is True
     assert body["two_factor_active"] is False
+
+
+def test_a_required_factor_is_required_on_every_call_not_only_mentioned(client, db, monkeypatch):
+    """The screen sends the account to set one up; the server makes sure it
+    can reach nothing else until it has. Until v1.190.0 the policy was a
+    notice with a stern face and every route let the session through."""
+    from app.services import settings_store
+
+    everyone = lambda db: InstanceSettings(two_factor_policy="everyone")  # noqa: E731
+    monkeypatch.setattr(settings_store, "instance_settings", everyone)
+    monkeypatch.setattr(auth_route, "instance_settings", everyone)
+    signed = client.post("/api/auth/login", json={"username": "ada", "password": "old-password"})
+    assert signed.status_code == 200
+    # What the panel needs stays open: who am I, the factor, my preferences.
+    assert client.get("/api/auth/me").json()["two_factor_required"] is True
+    assert client.get("/api/auth/two-factor").status_code == 200
+    assert client.get("/api/settings/me").status_code == 200
+    # The work does not.
+    refused = client.get("/api/settings/instance")
+    assert refused.status_code == 403
+    assert refused.json()["detail"]["code"] == "auth.two_factor_required"
+    assert client.get("/api/equipment").status_code == 403
+    # Confirmed, everything opens again.
+    enable_totp(db)
+    assert client.get("/api/settings/instance").status_code == 200
 
 
 def test_the_policy_is_off_until_an_administrator_says_otherwise():

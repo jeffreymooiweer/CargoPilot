@@ -21,7 +21,10 @@ def render_iftdgn(values: dict[str, Any], lines: list[dict[str, Any]],
         out_path.chmod(0o600)
     except OSError:
         pass
-    # UNOC is ISO 8859-1; a character outside it becomes a question mark
-    # rather than failing the whole notification.
-    out_path.write_bytes(text.encode("latin-1", "replace"))
+    # UNOC is ISO 8859-1. The builder has already replaced what falls
+    # outside it, before the service characters were released, so this
+    # encoding is strict: a character that still does not fit is a
+    # programming error, not something to paper over with a "?" that the
+    # syntax would read as the release character.
+    out_path.write_bytes(text.encode("latin-1"))
     return out_path

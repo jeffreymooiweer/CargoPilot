@@ -8,11 +8,12 @@ need a real account — the settings screen, the equipment library, mail — are
 not mounted in that application at all (see ``main.py``), so the visitor only
 ever reaches the work: parsing, judging, rendering.
 """
-from fastapi import Cookie, Depends, HTTPException, status
+from fastapi import Cookie, Depends, HTTPException, Request, status
 from sqlalchemy.orm import Session
 
 from app.core.config import get_settings
 from app.core.database import get_db
+from app.core.messages import ApiError
 from app.core.security import (
     CHALLENGE_CLAIM,
     decode_access_token_claims,
@@ -24,6 +25,19 @@ from app.models.user import User
 #: empty rather than "anonymous", so nothing downstream can mistake it for a
 #: user name and print it on a document or in a mail.
 VISITOR_USERNAME = ""
+
+#: What an account that owes this installation a second factor may still
+#: reach: who it is, the second factor itself, its own preferences and the
+#: public settings the screen is drawn from — enough to set the factor up
+#: and to sign out, nothing to work with. Prefixes, matched against the path.
+ENROLMENT_PATHS = (
+    "/api/auth/me",
+    "/api/auth/logout",
+    "/api/auth/two-factor",
+    "/api/settings/me",
+    "/api/settings/public",
+    "/api/settings/options",
+)
 
 
 def visitor() -> User:
@@ -38,7 +52,18 @@ def visitor() -> User:
                 role="user", active=True)
 
 
+def owes_second_factor(db: Session, user: User) -> bool:
+    """Whether the installation's policy demands a second factor this
+    account does not have."""
+    from app.services import two_factor
+    from app.services.settings_store import instance_settings
+
+    policy = instance_settings(db).two_factor_policy
+    return two_factor.required_for(user, policy) and not two_factor.is_active(db, user.id)
+
+
 def get_current_user(
+    request: Request,
     db: Session = Depends(get_db),
     access_token: str | None = Cookie(default=None, alias="access_token"),
 ) -> User:
@@ -60,6 +85,16 @@ def get_current_user(
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="User inactive")
     if not token_matches_password(claims, user.password_hash):
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Session expired")
+    # A required second factor is required here, on every call, not only
+    # mentioned at sign-in. Until v1.190.0 the screen asked and the server
+    # let everything through regardless, so the policy was advice with a
+    # stern face. The account is not locked out: it signs in, is sent to the
+    # panel, and can reach nothing else until the factor is confirmed.
+    if not request.url.path.startswith(ENROLMENT_PATHS) and owes_second_factor(db, user):
+        raise ApiError(
+            status.HTTP_403_FORBIDDEN, "auth.two_factor_required",
+            "This installation requires two-factor verification for your account. "
+            "Set it up under Settings, My details, before doing anything else")
     return user
 
 

@@ -157,9 +157,10 @@ def configuration_warnings(settings) -> list[str]:
 
     if settings.cors_allowed_origins.strip() == "*":
         warnings.append(
-            "CORS_ALLOWED_ORIGINS is set to '*'. Browsers refuse to combine "
-            "that with cookies, so a call from another website does not work "
-            "anyway — better to name the addresses you reach CargoPilot on:"
+            "CORS_ALLOWED_ORIGINS is set to '*'. A wildcard is answered without "
+            "credentials, so a call from another website cannot carry the login "
+            "cookie — the interface served by this application is unaffected. "
+            "Better to name the addresses you reach CargoPilot on:"
             "\n    CORS_ALLOWED_ORIGINS=https://cargopilot.example.com"
         )
 

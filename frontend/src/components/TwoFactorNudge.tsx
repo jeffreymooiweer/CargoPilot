@@ -24,13 +24,24 @@
  *
  * Nothing is shown when the status cannot be fetched: a backend that will not
  * answer is not evidence that the account is unprotected.
+ *
+ * Since v1.190.0 the server enforces a required factor on every call rather
+ * than mentioning it at sign-in, and answers everything but the panel's own
+ * routes with `auth.two_factor_required`. The API client raises that as a
+ * window event; this component is where it lands, because it is mounted for
+ * every signed-in user and already knows the way to the panel. The person
+ * is taken there and told why, once — the refused call's own error toast
+ * says the rest.
  */
 import { useEffect, useRef } from "react";
 import { useTranslation } from "react-i18next";
-import { useNavigate } from "react-router";
+import { useLocation, useNavigate } from "react-router";
 
-import { api, User } from "../api/client";
+import { api, TWO_FACTOR_REQUIRED_EVENT, User } from "../api/client";
 import { useToast } from "../toast/ToastProvider";
+
+/** Where the second factor is set up. */
+export const TWO_FACTOR_PANEL = "/settings?tab=details";
 
 export const NUDGED_KEY = "cargopilot-2fa-nudged";
 
@@ -48,8 +59,30 @@ export default function TwoFactorNudge({ user }: { user: User }) {
   const { t } = useTranslation();
   const toast = useToast();
   const navigate = useNavigate();
-  // One notice per mount, even if effects run twice (StrictMode).
+  const location = useLocation();
+  // One notice per mount, even if effects run twice (StrictMode) — and one
+  // between the sign-in reminder and the server's refusals, however many
+  // calls a page fires before it has left: the same sentence twice, in two
+  // amber boxes, is what the first cut of this showed.
   const pushed = useRef(false);
+  const here = useRef(location.pathname + location.search);
+  here.current = location.pathname + location.search;
+
+  useEffect(() => {
+    const onRefused = () => {
+      if (!pushed.current) {
+        pushed.current = true;
+        toast.warn(t("twoFactor.nudgeRequired"), {
+          actions: [{ label: t("twoFactor.nudgeAction"), run: () => navigate(TWO_FACTOR_PANEL) }],
+        });
+      }
+      if (here.current !== TWO_FACTOR_PANEL) navigate(TWO_FACTOR_PANEL);
+    };
+    window.addEventListener(TWO_FACTOR_REQUIRED_EVENT, onRefused);
+    return () => window.removeEventListener(TWO_FACTOR_REQUIRED_EVENT, onRefused);
+    // t, toast and navigate are stable enough for a listener registered once.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
     let cancelled = false;
@@ -74,7 +107,7 @@ export default function TwoFactorNudge({ user }: { user: User }) {
         // together are a policy the account does not meet, which is a firmer
         // thing to be told than a recommendation not taken.
         const open = [
-          { label: t("twoFactor.nudgeAction"), run: () => navigate("/settings?tab=details") },
+          { label: t("twoFactor.nudgeAction"), run: () => navigate(TWO_FACTOR_PANEL) },
         ];
         if (status.required) {
           // Amber, because this is not advice the account has not taken: the

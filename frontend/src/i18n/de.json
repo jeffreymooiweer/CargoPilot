@@ -739,7 +739,8 @@
       "too_many_rows": "Der Import enthält {{rows}} Zeilen; höchstens {{limit}} sind zulässig",
       "too_many_columns": "Zeile {{row}} enthält {{columns}} Spalten; höchstens {{limit}} sind zulässig",
       "cell_too_long": "Zelle {{row}}:{{column}} enthält mehr als {{limit}} Zeichen",
-      "unpacked_too_large": "Die entpackte Tabelle ist größer als {{limit_mb}} MB"
+      "unpacked_too_large": "Die entpackte Tabelle ist größer als {{limit_mb}} MB",
+      "unreadable_file": "Die Datei kann nicht als Tabelle gelesen werden"
     },
     "equipment": {
       "row_weight_missing": "Zeile {{row}}: das Gewicht fehlt oder ist unbrauchbar"
@@ -751,6 +752,9 @@
     },
     "articles": {
       "row_refused": "Zeile {{row}}: {{reason}}"
+    },
+    "auth": {
+      "two_factor_required": "Diese Installation verlangt eine Zwei-Faktor-Bestätigung für Ihr Konto. Richten Sie sie zuerst unter Einstellungen, Meine Daten ein."
     }
   },
   "instructions": {
@@ -938,7 +942,8 @@
     "turnOffHintMail": "Fordern Sie zuerst einen Code an und geben Sie ihn unten ein. Ein Wiederherstellungscode geht auch.",
     "nudge": "Ihr Konto hat noch keine Zwei-Faktor-Authentifizierung. Ein Passwort allein ist nur eine geleakte Wiederverwendung davon entfernt, dass jemand anderes in Ihrem Namen handelt.",
     "nudgeAction": "Jetzt einrichten",
-    "nudgeRequired": "Diese Installation verlangt eine Zwei-Faktor-Authentifizierung, und Ihr Konto hat noch keine. Richten Sie sie ein, solange Sie sich noch anmelden können."
+    "nudgeRequired": "Diese Installation verlangt eine Zwei-Faktor-Authentifizierung, und Ihr Konto hat noch keine. Richten Sie sie ein, solange Sie sich noch anmelden können.",
+    "enforced": "Solange Ihr Konto keine Zwei-Faktor-Bestätigung hat, ist dies der einzige Bildschirm, der funktioniert. Richten Sie sie unten ein."
   },
   "toast": {
     "undo": "Rückgängig",
@@ -1161,7 +1166,7 @@
     "remove": "Entfernen",
     "counts": "{{users}} Benutzer · {{shipments}} Sendungen",
     "empty": "Noch keine Abteilungen.",
-    "confirmRemove": "{{name}} entfernen? Benutzer und Sendungen bleiben bestehen; sie gehören nur keiner Abteilung mehr an.",
+    "confirmRemove": "{{name}} entfernen? Benutzer, Sendungen und Fahrten bleiben bestehen; sie gehören nur keiner Abteilung mehr an.",
     "removed": "Abteilung entfernt.",
     "saved": "Abteilung gespeichert.",
     "userDepartment": "Abteilung",

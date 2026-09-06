@@ -7,7 +7,6 @@ qualified person remains responsible (see DISCLAIMER.md).
 """
 
 import json
-import math
 import re
 from decimal import ROUND_CEILING, Decimal
 from functools import lru_cache
@@ -19,6 +18,7 @@ from app.services.dg import amendment_42_24, dangerous_goods_list, database
 from app.services.dg.autofill import rid_marking_prescribed
 from app.services.dg.package_marking import check_package_marking
 from app.services.dg.database import adn_loading_measures
+from app.services.quantities import parse_number
 from app.services.regulatory_manifest import stale_rule_sets, summary
 from app.services.dg.enrichment import (
     EXCEPTED_QUANTITY_LIMITS,
@@ -42,19 +42,15 @@ def _lang(language: str) -> str:
 
 
 def _num(value: Any) -> float | None:
-    """Parse the first number out of a value ('333', '5 kg', '12,5 L').
+    """Parse the first number out of a value ('333', '5 kg', '12,5 L', '1.250,5 L').
 
     The sign counts: '-5 L' is -5, not 5. A negative quantity has to surface as
-    an error rather than being silently made positive.
+    an error rather than being silently made positive. Thousands separators
+    are read as such (see ``services.quantities``): '1.250,5' is 1250.5, not
+    1.25 — the reading that, until v1.190.0, put a consignment a thousandfold
+    under its exemption limit.
     """
-    if value is None:
-        return None
-    if isinstance(value, (int, float)):
-        return float(value) if math.isfinite(float(value)) else None
-    match = re.search(r"-?\d+(?:[.,]\d+)?", str(value))
-    if not match:
-        return None
-    return float(match.group(0).replace(",", "."))
+    return parse_number(value)
 
 
 def _primary_class(product: dict[str, Any]) -> str:
@@ -5163,7 +5159,7 @@ _MEASURE_UNITS: dict[str, tuple[float, str]] = {
 }
 
 _MEASURE_RE = re.compile(
-    r"(-?\d+(?:[.,]\d+)?)\s*(kg|mg|gram|gr|g|ml|ltr|litre|liter|l)\b", re.IGNORECASE
+    r"(-?\d[\d.,]*)\s*(kg|mg|gram|gr|g|ml|ltr|litre|liter|l)\b", re.IGNORECASE
 )
 
 
@@ -5176,7 +5172,9 @@ def _parse_measures(value: Any) -> list[tuple[float, str]]:
     """
     found: list[tuple[float, str]] = []
     for match in _MEASURE_RE.finditer(str(value or "")):
-        amount = float(match.group(1).replace(",", "."))
+        amount = parse_number(match.group(1))
+        if amount is None:
+            continue
         factor, kind = _MEASURE_UNITS[match.group(2).lower()]
         found.append((amount * factor, kind))
     return found

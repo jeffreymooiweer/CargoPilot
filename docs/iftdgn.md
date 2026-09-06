@@ -40,8 +40,8 @@ field the user left empty is absent from the message.
 | `FTX AAA` | segment group 12 | The goods description: the chosen or proper shipping name |
 | `DGS` | segment group 14 | The regulation (`ADR`, `RID`, `IMD`, `ICA`; `ZZZ` for ADN, which the D.16A list has no code for), the class and one subsidiary risk, the UN number, the flashpoint in `CEL`, the packing group as danger level `1`/`2`/`3`, the EmS, the hazard identification number with the UN number as the orange placard, up to four labels, and the tunnel restriction code |
 | `FTX AAD` | segment group 14 | The technical name — the technical name if given, else the chosen or proper shipping name, else `UN nnnn` |
-| `FTX AAC` | segment group 14 | What the codes cannot say: `ADN`, `MARINE POLLUTANT`, `LIMITED QUANTITY`, `EMPTY UNCLEANED`, `WASTE`, the control temperature, the additional information |
-| `MEA` | segment group 14 | `AAB` the goods item gross weight in `KGM` (gross per package × packages) and `AAF` the net quantity in `KGM` or `LTR` (the ADR total quantity), as far as known |
+| `FTX AAC` | segment group 14 | What the codes cannot say: `ADN`, `MARINE POLLUTANT`, `EMPTY UNCLEANED`, `WASTE`, the control temperature, the additional information. No `LIMITED QUANTITY`: the wizard's field holds column 7a of Table A, the limit up to which 3.4 applies, not whether this consignment travels under it |
+| `MEA` | segment group 14 | `AAB` the goods item gross weight in `KGM` (gross per package × packages) and `AAF` the net quantity in `KGM` or `LTR` (the ADR total quantity; failing that, the net per package × packages), as far as known |
 | `SGP` | segment group 15 | The container the product travels in and its number of packages |
 
 A shipment with two dangerous products becomes two goods items, each with its own
@@ -78,8 +78,21 @@ UNZ+1+20260906083000'
 
 The export refuses, with a sentence in the user's language, a shipment without
 dangerous goods (there is nothing to notify), a product without a UN number or a class,
+a UN number that is not four digits, a quantity that is not a number greater than zero,
 and a product without any mass or quantity — the `MEA` in segment group 14 is mandatory
 and CargoPilot invents no number to satisfy it.
+
+**How a quantity is read.** The quantity fields are free text, and since v1.190.0 every
+reader in CargoPilot — the compliance check, the trip check and this message — reads
+them through the same rules: `1.250,5 L` and `1,250.5` are both 1250.5, `1.250` is
+1250, `12,5` is 12.5, and `1.2.3` is not a number. A negative quantity is not made
+positive; it is named as the problem it is. The rules are written out in
+`backend/app/services/quantities.py`.
+
+**The character set.** UNOC is ISO 8859-1. A character outside it — an emoji, a letter
+from another script — is replaced by `?` *before* the service characters are released,
+so it travels as `??` and reads back as a plain question mark. The v1.189.0 release
+replaced it afterwards, which put a bare release character in the segment.
 
 Every message is then parsed back and checked against the segment table — every
 mandatory segment and group present, no repeat count exceeded, nothing out of order —

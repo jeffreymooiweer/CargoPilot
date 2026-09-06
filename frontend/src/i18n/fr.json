@@ -105,7 +105,11 @@
     "unansweredSubstances": "{{count}} ligne(s) de marchandises ont une question de matière restée sans réponse.",
     "unansweredGo": "Vers les marchandises",
     "backToOverview": "Retour à l'aperçu",
-    "startFrom": "Partir d'un envoi précédent :"
+    "startFrom": "Partir d'un envoi précédent :",
+    "newShipment": "Nouvelle expédition",
+    "mode": "Mode de transport",
+    "modeCarried": "Votre saisie a suivi vers {{mode}}. Le calcul est refait.",
+    "attention": "{{count}} point(s) à vérifier"
   },
   "review": {
     "linesTitle": "Marchandises",
@@ -612,7 +616,7 @@
       }
     ],
     "creditsHeading": "Icônes",
-    "creditsBody": "Les icônes des notifications, de l'import et de l'assistant proviennent d'un jeu libre d'utilisation à condition d'en créditer l'auteur :"
+    "creditsBody": "Les icônes de cette interface — pour les notifications, le menu, les modes de transport, l'import et l'assistant — proviennent de jeux libres d'utilisation, à condition que leur auteur soit crédité :"
   },
   "compliance": {
     "title": "Contrôle de conformité des marchandises dangereuses",

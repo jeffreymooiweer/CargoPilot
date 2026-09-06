@@ -105,7 +105,11 @@
     "unansweredSubstances": "{{count}} goederenregel(s) hebben een stofvraag die nog niet is beantwoord.",
     "unansweredGo": "Naar de goederen",
     "backToOverview": "Terug naar het overzicht",
-    "startFrom": "Beginnen vanaf een eerdere zending:"
+    "startFrom": "Beginnen vanaf een eerdere zending:",
+    "newShipment": "Nieuwe zending",
+    "mode": "Vervoerswijze",
+    "modeCarried": "Je invoer is meegegaan naar {{mode}}. De berekening wordt opnieuw gedaan.",
+    "attention": "{{count}} aandachtspunt(en)"
   },
   "review": {
     "linesTitle": "Goederen",
@@ -612,7 +616,7 @@
       }
     ],
     "creditsHeading": "Iconen",
-    "creditsBody": "De iconen voor meldingen, importeren en de assistent komen uit een vrij te gebruiken set, op voorwaarde dat de maker wordt vermeld:"
+    "creditsBody": "De iconen in dit scherm — voor meldingen, het menu, de vervoerswijzen, importeren en de assistent — komen uit vrij te gebruiken sets, op voorwaarde dat de maker wordt vermeld:"
   },
   "compliance": {
     "title": "Nalevingscontrole gevaarlijke stoffen",

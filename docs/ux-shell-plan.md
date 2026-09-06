@@ -81,11 +81,32 @@ already sends somebody with a preferred mode straight into the wizard without a 
 
 | # | Release | What it changes |
 |---|---|---|
-| 119 | The shell | One header (title, draft state, steps, mode), an icon rail, a fixed action bar; the same on a phone |
+| 119 | The shell — **built, v1.202.0** | One header (title, draft state, steps, mode switcher), an icon rail that folds to 56px instead of to nothing, one action bar at the foot; the same on a phone |
 | 120 | A line that opens | Row expands into details and, for a dangerous line, the substance itself; the DG step appears only where there is something to assess |
 | 121 | The panel that counts | Lines, weight, attention, and the documents being prepared, live beside the work |
 | 122 | Somewhere to come back to | The overview at `/overzicht`: continue where you left off, today's counts, quick start, recent shipments. Nothing else moves |
 | 123 | Measured and trimmed | The ten tasks again, and the mobile measurement the first plan left open |
+
+### What 119 turned out to be, once measured
+
+Two things the plan said were not quite true, and both were found by looking at
+the screen rather than at the code.
+
+**"A fixed action bar that never covers a field or an error" cannot be had for
+free.** The bar is `sticky bottom-0`, which is the right choice and does the
+thing that matters: it stays in the layout, takes its own height at the end of
+the page, and therefore leaves nothing permanently underneath it — which is
+exactly what a `fixed` bar does to the last row of a long form and to the error
+standing beside it. What it does not do is never overlap at all. Measured at
+390×844 on the goods step, the bar floats over the panel while you are scrolled
+above its resting place, the way every bar of this kind does. That overlap is
+one scroll away; the other one has no scroll position that reveals it. The
+code, the test and this line all say that now, instead of the stronger claim.
+
+**One header meant two rows, not one.** A single wrapping row put the title in
+a flex line with the draft state and the mode switcher, and on a phone that
+left the title twenty pixels: a shipment called *N…*. The title now has a row
+of its own at every width.
 
 ## How it is judged
 

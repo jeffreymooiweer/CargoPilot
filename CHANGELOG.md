@@ -2,6 +2,49 @@
 
 All notable changes are documented here, following [Semantic Versioning](https://semver.org/).
 
+## [1.202.0] — 2026-09-06
+
+### The shell: one header instead of four strips of furniture
+
+The [usability plan](docs/ux-plan.md) made the work cheaper — 83 actions became 53 and the
+two impossible tasks became possible. [The second plan](docs/ux-shell-plan.md) is about
+where the work *sits*, and this is its first release.
+
+**One header.** What a shipment is called, what has happened to it, where you are in it and
+which transport mode it is being entered for, in one box. It was four strips stacked on top
+of each other: a modality chip with a link beside it, a row of step segments, a draft line,
+and then, wherever the open step happened to end, that step's own pair of buttons.
+
+**The mode is now a switcher.** It changes the mode of the shipment in front of you, and the
+entry comes with it: the goods, the answers, the substances, the signature. The calculation
+does not travel — it was made against the rules of the mode you have just left, and carrying
+it over would put totals on the screen that claim to come from a book they were never read
+out of — so the wizard lands back on the goods step and works it out again. Choosing where
+to *begin* is still the tiles at `/`, which have not moved and are still one link away from
+the header.
+
+**One action bar, at the foot.** Every step's buttons land in it, so the way forward is in
+the same place on every step instead of wherever the step ended. It is `sticky`, not
+`fixed`, and the difference was measured rather than assumed: a sticky bar stays in the
+layout and takes its own height at the end of the page, so the last row of a long form —
+and the error standing next to it — is never left underneath it. What sticky does not claim
+is that it never overlaps at all; while you are scrolled above its resting place it floats
+over what is behind it, one scroll away. The code and the plan both say so now.
+
+**The rail folds to icons instead of to nothing.** Opening the wizard used to take the whole
+menu off the screen, and getting back to it meant unfolding first. It now folds to 56px of
+glyphs, each carrying its label as its accessible name, and the shell's width cap moved by
+exactly those 56px so the lines table keeps the width it was measured to need.
+
+Twenty-one icons came in for this, supplied by the owner. Their provenance is recorded
+honestly in [the source list](docs/data-sources.md): four are drawn the way a Uicons export
+is and seventeen are not, so the Legal page names them on their own line rather than
+stretching the Uicons credit over them, and what is still needed to credit their authors is
+written down.
+
+Found by looking at a phone rather than at the code: a single wrapping header row left the
+title twenty pixels wide — a shipment called *N…*. The title has a row of its own now.
+
 ## [1.201.0] — 2026-09-06
 
 ### The plan measured to its end, and two things it turned up

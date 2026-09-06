@@ -37,10 +37,27 @@ export default function LegalPage() {
         <p className="mt-2 max-w-3xl text-sm leading-relaxed text-slate-600 dark:text-slate-300">
           {t("legal.creditsBody")}
         </p>
+        {/* Two lines, not one, because they are two sets. The first eight came
+            from the Uicons set and were confirmed against it. The twenty-one
+            added in v1.202.0 for the shell did not: their exported markup does
+            not match a Uicons export, so naming them as Uicons would be a
+            statement nobody checked. What is certain about them is where they
+            were downloaded from, and that is what this says. */}
         <p className="mt-2 text-sm text-slate-600 dark:text-slate-300">
           Uicons by{" "}
           <a
             href="https://www.flaticon.com/uicons"
+            target="_blank"
+            rel="noreferrer"
+            className="text-sky-700 underline dark:text-sky-400"
+          >
+            Flaticon
+          </a>
+        </p>
+        <p className="mt-1 text-sm text-slate-600 dark:text-slate-300">
+          Icons by{" "}
+          <a
+            href="https://www.flaticon.com/"
             target="_blank"
             rel="noreferrer"
             className="text-sky-700 underline dark:text-sky-400"

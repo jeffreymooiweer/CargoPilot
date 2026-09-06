@@ -129,7 +129,8 @@ frontend/
   src/settings/         the user's own settings, loaded once and shared
   src/i18n/             nl.json, en.json, de.json, fr.json
 templates/forms/        official PDF forms that get filled in
-scripts/                one-off maintenance scripts (incl. un_cards/, the card generator)
+scripts/                one-off maintenance scripts (incl. un_cards/, the card generator,
+                        and ux_bench/, the usability measurements)
 docs/                   this documentation
 unraid/                 Unraid Community Applications template
 ```

@@ -1,0 +1,560 @@
+"""The ten tasks of the usability plan, driven against the running application."""
+from __future__ import annotations
+
+import re
+
+import requests
+from bench import OUT, BASE, Bench, browser, dismiss_toasts, history, sign_in, write
+from playwright.sync_api import sync_playwright
+
+GOODS = [
+    ("Stalen hoekprofiel 80x80x8x6000", 8),
+    ("Stalen plaat 2000x1000x10", 4),
+    ("Stalen buis 60x60x4x4000", 12),
+]
+FORWARD = re.compile(r"^(Naar export|Naar zendinggegevens|Naar gevaarlijke stoffen|Volgende|Doorgaan)$")
+
+#: What a required field gets, by what its label says. The content only has to
+#: be plausible; what is measured is how many of them there are.
+BY_LABEL = [
+    ("laad", "Rotterdam"), ("los", "Antwerpen"), ("plaats", "Rotterdam"),
+    ("afzender", "Mooiweer BV"), ("geadresseerde", "Klant NV"), ("vervoerder", "Transport BV"),
+    ("adres", "Havenweg 1, Rotterdam"), ("referentie", "CP-2026-900"),
+    ("gewicht", "100"), ("aantal", "1"), ("nummer", "1"),
+]
+
+
+def new_shipment(page) -> None:
+    page.goto(f"{BASE}/wizard/road")
+    page.wait_for_timeout(2500)
+    dismiss_toasts(page)
+
+
+def fill_line(b: Bench, index: int, description: str, quantity: int) -> None:
+    """One goods line, through its card and its dialog — today's only way."""
+    b.click(b.page.get_by_role("button", name="Bewerken").nth(index))
+    dialog = b.page.locator("[role=dialog]").last
+    b.fill(dialog.locator("input[placeholder]").first, description)
+    # The catalogue dropdown covers what is under it; the header is the nearest
+    # neutral place to put the focus so the next field can be reached.
+    dialog.locator("header").first.click()
+    b.page.wait_for_timeout(300)
+    b.fill(dialog.locator("#line-quantity"), str(quantity))
+    b.click(dialog.get_by_role("button", name="Klaar"))
+
+
+def add_line(b: Bench) -> None:
+    b.click(b.page.get_by_role("button", name="Regel toevoegen"))
+
+
+def value_for(label: str) -> str:
+    low = label.lower()
+    for needle, value in BY_LABEL:
+        if needle in low:
+            return value
+    return "Mooiweer BV"
+
+
+def fill_required(b: Bench) -> int:
+    """Fill what the form now showing marks with a star. Returns how many."""
+    boxes = b.page.locator("div:has(> div > label > span.text-red-500)")
+    filled = 0
+    for index in range(boxes.count()):
+        box = boxes.nth(index)
+        try:
+            if not box.is_visible():
+                continue
+            label = box.locator("label").first.inner_text()
+            # The textarea first: an address field leads with a lookup box, and
+            # filling that one leaves the field the export needs still empty.
+            control = box.locator("textarea:visible").first
+            if not control.count():
+                control = box.locator("select:visible").first
+            if not control.count():
+                control = box.locator("input:visible").first
+            if not control.count():
+                continue
+            tag = control.evaluate("el => el.tagName")
+            kind = control.evaluate("el => el.type || ''")
+            if tag == "SELECT":
+                if control.input_value():
+                    continue
+                control.select_option(index=1)
+                b.m.actions += 1
+            elif kind == "checkbox":
+                if control.is_checked():
+                    continue
+                control.check()
+                b.m.actions += 1
+            elif kind == "date":
+                if control.input_value():
+                    continue
+                b.fill(control, "2026-09-06")
+            else:
+                if control.input_value():
+                    continue
+                b.fill(control, value_for(label))
+            filled += 1
+        except Exception:
+            continue
+    return filled
+
+
+def confirm_declarations(b: Bench) -> bool:
+    """Tick the declaration a document needs before it may be exported.
+
+    It is not marked with a star — its status is SIGNATURE_REQUIRED, not
+    USER_REQUIRED — so the form does not present it as something missing, but
+    without it the export button stays disabled.
+    """
+    box = b.page.get_by_label(re.compile("bevestig deze verklaringen", re.I))
+    if not box.count() or not box.first.is_visible() or box.first.is_checked():
+        return False
+    box.first.check()
+    b.m.actions += 1
+    b.note("the declaration that unlocks the export carries no star: it is not "
+           "presented as a required field, but nothing exports without it")
+    return True
+
+
+def advance(b: Bench, limit: int = 10) -> None:
+    """Walk forward to the export step, counting the forms crossed on the way."""
+    forms = 0
+    for _ in range(limit):
+        if b.current_step() == "Export":
+            break
+        fill_required(b)
+        confirm_declarations(b)
+        nxt = b.page.get_by_role("button", name=FORWARD)
+        if not nxt.count():
+            break
+        was = b.current_step()
+        b.click(nxt.last)
+        b.page.wait_for_timeout(2200)
+        b.observe()
+        if was == "Zendinggegevens":
+            forms += 1
+    b.m.sub_steps = forms
+
+
+# --- 1. a simple shipment, and the right package ---------------------------------
+
+
+def task_1(page) -> object:
+    b = Bench(page, "1", "A simple shipment to a downloaded package")
+    new_shipment(page)
+    b.observe()
+    for index, (description, quantity) in enumerate(GOODS):
+        if index:
+            add_line(b)
+            focused = page.evaluate("document.activeElement && document.activeElement.tagName")
+            b.note(f"after Regel toevoegen the focus is on {focused}, not the new description")
+        fill_line(b, index, description, quantity)
+    b.shot("goods")
+    advance(b)
+    b.shot("export")
+    b.note(f"{b.m.sub_steps} form(s) crossed inside the shipment-details step before the export step")
+    names = page.locator("button:visible").evaluate_all(
+        "els => els.map(e => (e.innerText || e.getAttribute('aria-label') || '').trim()).filter(Boolean)")
+    b.note(f"{len(names)} button(s) are on offer on the export step: {'; '.join(names[:20])}")
+    downloads = page.get_by_role("button", name=re.compile("downloaden", re.I))
+    b.note(f"{downloads.count()} of them download something")
+    statuses = page.locator("span.rounded-full:visible").evaluate_all(
+        "els => els.map(e => e.innerText.trim()).filter(Boolean)")
+    b.note(f"the document cards report: {'; '.join(statuses[:6]) or 'nothing'}")
+    missing = page.get_by_text(re.compile("Ontbrekend"))
+    if missing.count():
+        b.note(f"still missing after every starred field was filled: "
+               f"{missing.first.inner_text()[:140]}")
+    for index in range(downloads.count()):
+        if downloads.nth(index).is_disabled():
+            b.note("the export step's only download button is disabled, with the reason "
+                   "on the document card rather than at the button, and no way from the "
+                   "button to the field that would enable it")
+            continue
+        try:
+            downloads.nth(index).scroll_into_view_if_needed()
+            with page.expect_download(timeout=45000) as caught:
+                b.click(downloads.nth(index))
+            got = caught.value
+            target = OUT / f"task1-{got.suggested_filename}"
+            got.save_as(str(target))
+            b.m.output["file"] = got.suggested_filename
+            b.m.output["bytes"] = target.stat().st_size
+            break
+        except Exception as exc:
+            b.note(f"the download button {index + 1} produced no file: {str(exc)[:70]}")
+    return b.done(bool(b.m.output))
+
+
+# --- 2. five quantities on five lines --------------------------------------------
+
+
+def task_2(page) -> object:
+    b = Bench(page, "2", "Five quantities changed on five lines")
+    new_shipment(page)
+    for _ in range(4):
+        add_line(b)
+    b.m.actions = 0  # the setup is not the task
+    b.m.windows = 0
+    b.m.notes.clear()
+    b.observe()
+    for index in range(5):
+        b.click(page.get_by_role("button", name="Bewerken").nth(index))
+        dialog = page.locator("[role=dialog]").last
+        b.fill(dialog.locator("#line-quantity"), str(10 + index))
+        b.click(dialog.get_by_role("button", name="Klaar"))
+    b.note("each quantity costs open, type, close: three actions and one window per line")
+    b.shot("quantities")
+    return b.done()
+
+
+# --- 3. fifty imported rows, one of them unclear ----------------------------------
+
+
+def task_3(page) -> object:
+    b = Bench(page, "3", "Fifty rows imported, one unclear")
+    new_shipment(page)
+    rows = [f"Stalen hoekprofiel 80x80x8x{3000 + i * 10} | {i + 1} | stuks" for i in range(49)]
+    rows.insert(24, "Diverse onderdelen | 3 | stuks")  # the one without dimensions
+    b.note("the import is reached only through a dialog; the goods step itself offers "
+           "no paste and no file action")
+    b.click(page.get_by_role("button", name="Importeren"))
+    dialog = page.locator("[role=dialog]").last
+    b.fill(dialog.locator("textarea").first, "\n".join(rows))
+    b.click(dialog.get_by_role("button", name=re.compile("Importeren|Toevoegen|Vervangen")).last)
+    page.wait_for_timeout(3000)
+    b.observe()
+    b.m.output["lines"] = page.get_by_role("button", name="Bewerken").count()
+    page.wait_for_timeout(9000)  # the recalculation over fifty lines
+    b.observe()
+    b.shot("imported")
+    statuses = page.locator("span.rounded-full").evaluate_all(
+        "els => els.map(e => e.innerText.trim()).filter(t => t && t.length < 20)")
+    tally = {name: statuses.count(name) for name in set(statuses)}
+    b.m.output["statuses"] = tally
+    b.note(f"of {b.m.output['lines']} imported lines the statuses are {tally}; "
+           "nothing filters the ones that need attention — they are found by scrolling")
+    unclear = page.get_by_text("Diverse onderdelen", exact=False)
+    if unclear.count():
+        position = unclear.first.evaluate(
+            "el => Math.round(el.getBoundingClientRect().top + window.scrollY)")
+        b.note(f"the one row without dimensions sits {position} px down the page, "
+               "with nothing on screen pointing at it")
+    return b.done(b.m.output.get("lines", 0) >= 50)
+
+
+# --- 4. a substance suggestion: close it, judge it, revisit it ---------------------
+
+
+def task_4(page) -> object:
+    b = Bench(page, "4", "A substance suggestion closed, judged and revisited")
+    new_shipment(page)
+    fill_line(b, 0, "Benzine 25 L jerrycan", 4)
+    b.click(page.get_by_role("button", name="Doorgaan"))
+    page.wait_for_timeout(6000)
+    b.observe()
+    b.shot("suggestion")
+    toast = page.locator(".fixed.inset-x-0.bottom-0")
+    asked = toast.get_by_text(re.compile(r"UN ?\d{4}")).count()
+    b.note(f"{asked} recognition question(s) offered as a floating snackbar, "
+           "not at the line they belong to")
+    closer = toast.locator("button[aria-label]").first
+    if closer.count():
+        b.click(closer)
+        b.note("closing it is the finding: the × sets dg_dismissed, so 'not now' is stored "
+               "as 'not this substance'")
+    page.wait_for_timeout(800)
+    if b.current_step() != "Goederen":
+        back = page.get_by_role("button", name="Terug")
+        if back.count():
+            b.click(back.last)
+            page.wait_for_timeout(2000)
+            b.observe()
+    cards = page.get_by_role("button", name="Bewerken")
+    if cards.count():
+        b.click(cards.first)
+        dialog = page.locator("[role=dialog]").last
+        page.wait_for_timeout(500)
+        revisit = dialog.get_by_text(re.compile(r"UN ?\d{4}")).count()
+        b.note(f"the line's own dialog shows {revisit} reference(s) to the suggestion: "
+               "the rejected candidate cannot be found or revised there")
+        b.click(dialog.get_by_role("button", name="Klaar"))
+    b.shot("after-dismiss")
+    return b.done(False)
+
+
+# --- 5. an extra document that needs one new answer --------------------------------
+
+
+def task_5(page, session: requests.Session) -> object:
+    b = Bench(page, "5", "An extra document needing one new answer")
+    new_shipment(page)
+    fill_line(b, 0, "Stalen plaat 2000x1000x10", 4)
+    advance(b)
+    b.shot("export-before")
+    b.m.actions = 0  # getting there is task 1; this task is the extra document
+    b.m.windows = 0
+    b.m.notes.clear()
+    boxes = page.locator("input[type=checkbox]:visible")
+    b.note(f"the document choice sits on the export step behind {boxes.count()} checkbox(es), "
+           "after every document field has already been filled in")
+    picked = -1
+    for index in range(boxes.count()):
+        box = boxes.nth(index)
+        if not box.is_checked():
+            b.click(box)
+            picked = index
+            break
+    page.wait_for_timeout(3000)
+    b.observe()
+    if picked < 0:
+        b.note("no unchecked document was on offer")
+        b.shot("extra-document")
+        return b.done(False)
+    missing = page.get_by_text(re.compile("Ontbrekend"))
+    b.note(f"{missing.count()} card(s) now name a missing field as text")
+    if missing.count():
+        b.note("is that notice itself something to click? "
+               + str(missing.first.evaluate("el => !!el.closest('button, a')")))
+    back = page.get_by_role("button", name="Terug")
+    if back.count():
+        b.click(back.last)
+        page.wait_for_timeout(2500)
+        b.observe()
+        b.note("reaching the new question means walking back through the forms by hand")
+        advance(b)
+    b.shot("extra-document")
+    return b.done()
+
+
+# --- 6. an error corrected from the final overview ----------------------------------
+
+
+def task_6(page) -> object:
+    b = Bench(page, "6", "An error corrected from the final overview")
+    new_shipment(page)
+    fill_line(b, 0, "Stalen plaat 2000x1000x10", 4)
+    b.click(page.get_by_role("button", name="Doorgaan"))
+    page.wait_for_timeout(3000)
+    b.observe()
+    # The required fields stay empty on purpose: this task is about what the
+    # export step then says, and how far it is from the field that says it.
+    for _ in range(6):
+        if b.current_step() == "Export":
+            break
+        nxt = page.get_by_role("button", name=FORWARD)
+        if not nxt.count():
+            break
+        b.click(nxt.last)
+        page.wait_for_timeout(2200)
+        b.observe()
+    b.m.actions = 0
+    b.m.windows = 0
+    b.m.notes.clear()
+    b.shot("overview")
+    missing = page.get_by_text(re.compile("Ontbrekend"))
+    b.note(f"{missing.count()} missing-field notice(s) on the export step")
+    if missing.count():
+        b.note(f"the notice names them as text: {missing.first.inner_text()[:110]}")
+        b.note("is the notice an action? "
+               + str(missing.first.evaluate("el => !!el.closest('button, a')")))
+    pills = page.locator("nav[aria-label='Wizard voortgang'] li")
+    clickable = pills.evaluate_all(
+        "els => els.filter(e => e.querySelector('button, a') || e.tagName === 'BUTTON').length")
+    b.note(f"{clickable} of {pills.count()} main step pills can be clicked to go back")
+    steps_back = 0
+    while b.current_step() != "Zendinggegevens" and steps_back < 4:
+        back = page.get_by_role("button", name="Terug")
+        if not back.count():
+            break
+        b.click(back.last)
+        page.wait_for_timeout(2200)
+        b.observe()
+        steps_back += 1
+    b.note(f"{steps_back} Terug press(es) to reach the form the fields live on")
+    fill_required(b)
+    advance(b)
+    b.shot("corrected")
+    return b.done(b.current_step() == "Export")
+
+
+# --- 7. an earlier shipment as a new basis -------------------------------------------
+
+
+def task_7(page, session: requests.Session) -> object:
+    b = Bench(page, "7", "An earlier shipment as a new basis")
+    page.goto(f"{BASE}/shipments")
+    page.wait_for_timeout(3000)
+    dismiss_toasts(page)
+    b.observe()
+    direct = page.locator("button:visible, a:visible").filter(
+        has_text=re.compile("sjabloon|basis|opnieuw", re.I))
+    b.note(f"{direct.count()} reuse action(s) — as template, download again — on the list itself")
+    b.shot("list")
+    row = page.get_by_role("link", name=re.compile("CP-2026")).first
+    if not row.count():
+        row = page.get_by_role("button", name=re.compile("CP-2026")).first
+    if not row.count():
+        b.note("no shipment could be opened from the list")
+        return b.done(False)
+    b.click(row)
+    try:
+        page.wait_for_url(re.compile(r"/shipments/\d+"), timeout=15000)
+    except Exception:
+        b.note(f"the reference did not open a shipment; the page stayed on {page.url[-40:]}")
+    page.wait_for_timeout(3500)
+    b.observe()
+    b.shot("detail")
+    b.note("the list opens a detail page first; every reuse action lives there")
+    names = page.locator("main button:visible, main a:visible, button:visible, a:visible").evaluate_all(
+        "els => [...new Set(els.map(e => e.innerText.trim()).filter(Boolean))]")
+    b.note(f"the detail page offers: {'; '.join(names)}")
+    basis = page.locator("button:visible, a:visible").filter(
+        has_text=re.compile("sjabloon|basis", re.I))
+    if not basis.count():
+        b.note("no reuse action found on the detail page either")
+        return b.done(False)
+    b.click(basis.first)
+    page.wait_for_timeout(4500)
+    b.observe()
+    b.shot("as-basis")
+    b.note(f"the copy lands on {page.url.split('127.0.0.1:8765')[-1]}")
+    return b.done("wizard" in page.url)
+
+
+# --- 8. a reload during entry ----------------------------------------------------------
+
+
+def task_8(page, mode: str) -> object:
+    b = Bench(page, f"8{mode[0]}", f"A reload during entry ({mode})")
+    new_shipment(page)
+    fill_line(b, 0, "Stalen hoekprofiel 80x80x8x6000", 8)
+    b.click(page.get_by_role("button", name="Doorgaan"))
+    page.wait_for_timeout(4000)
+    b.observe()
+    before = b.current_step()
+    page.reload()
+    page.wait_for_timeout(4000)
+    dismiss_toasts(page)
+    after = b.current_step()
+    kept = page.get_by_text("Stalen hoekprofiel", exact=False).count()
+    b.note(f"before the reload the wizard was on {before or 'unknown'}; after it is on {after or 'unknown'}")
+    b.note(f"{kept} trace(s) of the typed description survived, and nothing warned beforehand")
+    b.shot("reloaded")
+    return b.done(kept > 0)
+
+
+# --- 9. five shipments into one trip ----------------------------------------------------
+
+
+def task_9(page, session: requests.Session) -> object:
+    b = Bench(page, "9", "Five shipments into one trip")
+    page.goto(f"{BASE}/shipments")
+    page.wait_for_timeout(3000)
+    dismiss_toasts(page)
+    b.observe()
+    boxes = page.locator("input[type=checkbox]:visible")
+    b.note(f"{boxes.count()} checkbox(es) on the shipments list: there is no multiple selection, "
+           "so a trip cannot start from the shipments the user is looking at")
+    page.goto(f"{BASE}/groupage")
+    page.wait_for_timeout(3500)
+    b.observe()
+    b.shot("groupage")
+    picked = 0
+    for _ in range(5):
+        add = page.get_by_role("button", name=re.compile("^Toevoegen"))
+        if not add.count():
+            break
+        b.click(add.first)
+        page.wait_for_timeout(1200)
+        picked += 1
+    b.m.output["added"] = picked
+    b.note(f"{picked} shipment(s) added, one action each, on a page reached separately")
+    b.shot("trip")
+    return b.done(picked >= 5)
+
+
+# --- 10. recovering from a refused save --------------------------------------------------
+
+
+def task_10(page, session: requests.Session) -> object:
+    b = Bench(page, "10", "A refused save recovered without losing entry")
+    new_shipment(page)
+    fill_line(b, 0, "Stalen plaat 2000x1000x10", 4)
+    advance(b)
+    b.m.actions = 0
+    b.m.windows = 0
+    b.m.notes.clear()
+    keep = page.get_by_role("button", name=re.compile("bewaren|opslaan", re.I))
+    if not keep.count():
+        b.note("no save action was visible on the export step")
+        b.shot("no-save")
+        return b.done(False)
+    page.route("**/api/shipments", lambda route: route.fulfill(
+        status=500, content_type="application/json", body='{"detail":"opslag geweigerd"}'))
+    b.click(keep.first)
+    page.wait_for_timeout(3500)
+    b.observe()
+    still_there = page.get_by_text(re.compile("Plaat|Stalen plaat")).count()
+    snack = page.locator(".fixed.inset-x-0.bottom-0")
+    told = snack.inner_text().strip() if snack.count() else ""
+    b.note(f"the entry is still on screen after the refusal: {still_there > 0}")
+    b.note(f"what the user is told: {told[:140] or 'nothing visible'}")
+    b.shot("refused-save")
+    page.unroute("**/api/shipments")
+    return b.done(still_there > 0)
+
+
+def seed(session: requests.Session, count: int = 6) -> None:
+    """Earlier shipments, so tasks 7 and 9 have something to reuse."""
+    if len(session.get(f"{BASE}/api/shipments").json().get("items", [])) >= count:
+        return
+    for n in range(count):
+        values = {"reference": f"CP-2026-{100 + n}", "consignor_name": "Mooiweer BV",
+                  "consignor_address": "Havenweg 1, Rotterdam", "consignee_name": "Klant NV",
+                  "loading_point": "Rotterdam", "discharge_point": "Antwerpen"}
+        product = {"un_number": "1203", "proper_shipping_name": "BENZINE", "class": "3",
+                   "packing_group": "II", "transport_category": "2",
+                   "adr_total_quantity": "100 L", "quantity_packages": "4",
+                   "type_of_package": "jerrycans"}
+        session.post(f"{BASE}/api/shipments", json={
+            "modality": "road", "language": "nl", "profiles": ["ADR"], "values": values,
+            "lines": [{"description": "Vaten benzine", "quantity": 4, "weight_total_kg": 100.0}],
+            "dangerous_goods": [{"line_id": "1", "products": [product]}],
+            "documents": ["cmr"],
+            "snapshot": {"version": 1, "stepKey": "export", "docValues": values}})
+
+
+def main() -> None:
+    session = sign_in()
+    history(session, True)
+    seed(session)
+    measurements = []
+    with sync_playwright() as playwright:
+        engine, context = browser(playwright, session)
+        page = context.new_page()
+        plan = [
+            ("task_1", lambda: task_1(page)),
+            ("task_2", lambda: task_2(page)),
+            ("task_3", lambda: task_3(page)),
+            ("task_4", lambda: task_4(page)),
+            ("task_5", lambda: task_5(page, session)),
+            ("task_6", lambda: task_6(page)),
+            ("task_7", lambda: task_7(page, session)),
+            ("task_8", lambda: task_8(page, "organisation")),
+            ("task_9", lambda: task_9(page, session)),
+            ("task_10", lambda: task_10(page, session)),
+        ]
+        for name, run in plan:
+            try:
+                measurements.append(run())
+                print(f"-- {name} done")
+            except Exception as exc:
+                print(f"!! {name}: {str(exc)[:200]}")
+        engine.close()
+    write(measurements)
+
+
+if __name__ == "__main__":
+    main()

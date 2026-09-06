@@ -460,8 +460,6 @@
     "loose": "Los gestort"
   },
   "docfields": {
-    "title": "Zending- en documentgegevens",
-    "intro": "Gedeelde gegevens worden hergebruikt in alle geselecteerde documenten. Velden met * zijn verplicht voor export. Carriergegevens en operationele velden blijven leeg tot ze bekend zijn.",
     "choose": "— Kies —",
     "yes": "Ja",
     "confirmExplicit": "Ik bevestig deze verklaringen bewust namens de verantwoordelijke persoon",
@@ -469,15 +467,11 @@
     "operational": "Bij uitvoering",
     "signatureRequired": "Ondertekening",
     "sharedTitle": "Zendinggegevens",
-    "sharedShort": "Zending",
-    "sharedIntro": "Vul deze gegevens één keer in; ze worden hergebruikt in alle geselecteerde formulieren. Velden met * zijn verplicht voor export.",
-    "formStep": "Formulier {{index}} van {{total}}: {{name}}",
-    "formIntro": "Alleen de velden die specifiek voor dit formulier nodig zijn. Carriergegevens en handtekeningen blijven leeg.",
     "coveredByShared": "Voor {{forms}} zijn geen extra velden nodig; de zendinggegevens volstaan.",
     "reuseLast": "Vorige zending hergebruiken",
     "reuseLastHint": "Vult lege velden met de gegevens van uw vorige zending (zonder datums).",
     "fieldMissing": "Dit veld is nodig voor de export.",
-    "stillEmpty": "{{count}} verplicht veld/velden op dit formulier nog leeg.",
+    "stillEmpty": "{{count}} verplicht veld/velden nog leeg.",
     "stillEmptyHint": "Klik een veld aan om er direct heen te gaan. U kunt ook doorgaan — de exportstap blijft zeggen wat er ontbreekt.",
     "continueAnyway": "Toch doorgaan"
   },
@@ -1297,5 +1291,17 @@
     "removed": "Rit verwijderd.",
     "keptAsJudged": "Het oordeel hieronder is zoals het bij het bewaren gegeven is, onder de edities die de regel Edities noemt. Opnieuw openen en beoordelen geeft het oordeel van vandaag.",
     "editions": "Edities"
+  },
+  "docgroups": {
+    "intro": "De vragen staan bij elkaar op onderwerp, niet per document. Een antwoord telt voor elk document dat het vraagt. Velden met * zijn verplicht voor export.",
+    "parties": "Partijen",
+    "route": "Route",
+    "additions": "Aanvullingen",
+    "stillNeeded": "Nog {{count}} nodig",
+    "complete": "Compleet",
+    "change": "Wijzigen",
+    "hide": "Inklappen",
+    "nothingFilled": "Nog niets ingevuld.",
+    "alsoAsked": "Ook gevraagd door: {{list}}"
   }
 }

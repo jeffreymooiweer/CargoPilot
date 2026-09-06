@@ -39,7 +39,9 @@ class Measurement:
     back_steps: int = 0
     repeated_entry: int = 0
     #: Forms crossed inside the document-fields step, which the main step
-    #: counter cannot see: the shared fields and then one per document.
+    #: counter cannot see. It was the shared fields and then one form per
+    #: document; since v1.197.0 the step is one page of question groups, so a
+    #: task that crosses it once counts one.
     sub_steps: int = 0
     seconds: float = 0.0
     completed: bool = True

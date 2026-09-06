@@ -2,6 +2,39 @@
 
 All notable changes are documented here, following [Semantic Versioning](https://semver.org/).
 
+## [1.197.0] — 2026-09-06
+
+### The questions are grouped by what they mean, not by which document asks
+
+Release 112 of [the usability plan](docs/ux-plan.md). The shipment-details step was built
+per document: one form with the shared fields, then one form for every selected document
+that had fields of its own. Four documents meant four forms — and because the answers are
+one map keyed by field key, a document asking for the container number was re-asking what
+an earlier form had already asked, under its own box number.
+
+**The step is now one page with three groups: parties, route, additions.** The additions
+hold the references and whatever each document needs beyond them, under that document's
+name. A field is asked once. Where more than one document wants it, the form says so
+underneath the field — *also asked by: Delivery note (Date)* — instead of asking again,
+and a field any selected document requires is marked required, whatever the document that
+defined it first called it.
+
+Counted from the registry: a sea shipment of an IMO declaration, a bill of lading
+instruction, a VGM and a packing list put 68 questions across its forms and now asks 62,
+each once; road with a packing list and a delivery note goes from 39 to 37, air from 43 to
+40.
+
+**A group that wants nothing more folds to what it says**, with **Change** beside it — so a
+shipment reopened from the history or built from a template is three summaries and a way
+on, rather than a form to scroll past. Folding is decided when the step opens: a group
+never folds itself away under the hands of somebody who has just finished filling it in.
+**Next** still tells before it walks on, and it now opens the folded groups that are hiding
+something empty.
+
+Measured on the same tasks: a simple shipment crossed two forms inside the details step and
+now crosses one (19 actions, was 20), and an extra document chosen on the export step brings
+no form of its own at all.
+
 ## [1.196.0] — 2026-09-06
 
 ### From the notice straight to the field it is about

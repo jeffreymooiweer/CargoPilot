@@ -460,8 +460,6 @@
     "loose": "Lose geschüttet"
   },
   "docfields": {
-    "title": "Sendungs- und Dokumentdaten",
-    "intro": "Gemeinsame Daten werden in allen ausgewählten Dokumenten wiederverwendet. Mit * gekennzeichnete Felder sind für den Export erforderlich. Angaben des Frachtführers und operative Felder bleiben leer, bis sie bekannt sind.",
     "choose": "— Wählen —",
     "yes": "Ja",
     "confirmExplicit": "Ich bestätige diese Erklärungen bewusst im Namen der verantwortlichen Person",
@@ -469,15 +467,11 @@
     "operational": "Bei der Durchführung",
     "signatureRequired": "Unterschrift",
     "sharedTitle": "Sendungsdaten",
-    "sharedShort": "Sendung",
-    "sharedIntro": "Erfassen Sie diese Daten einmal; sie werden in allen ausgewählten Formularen wiederverwendet. Mit * gekennzeichnete Felder sind für den Export erforderlich.",
-    "formStep": "Formular {{index}} von {{total}}: {{name}}",
-    "formIntro": "Nur die Felder, die speziell für dieses Formular nötig sind. Angaben des Frachtführers und Unterschriften bleiben leer.",
     "coveredByShared": "Für {{forms}} sind keine zusätzlichen Felder nötig; die Sendungsdaten genügen.",
     "reuseLast": "Vorherige Sendung übernehmen",
     "reuseLastHint": "Füllt leere Felder mit den Angaben Ihrer vorherigen Sendung (ohne Datumsfelder).",
     "fieldMissing": "Dieses Feld wird für den Export benötigt.",
-    "stillEmpty": "{{count}} Pflichtfeld(er) auf diesem Formular noch leer.",
+    "stillEmpty": "{{count}} Pflichtfeld(er) noch leer.",
     "stillEmptyHint": "Klicken Sie ein Feld an, um direkt dorthin zu gehen. Sie können auch weitermachen — der Exportschritt sagt weiterhin, was fehlt.",
     "continueAnyway": "Trotzdem weiter"
   },
@@ -1297,5 +1291,17 @@
     "removed": "Fahrt entfernt.",
     "keptAsJudged": "Das Urteil unten ist so, wie es beim Speichern gegeben wurde, unter den Ausgaben, die die Zeile Ausgaben nennt. Erneut öffnen und beurteilen ergibt das Urteil von heute.",
     "editions": "Ausgaben"
+  },
+  "docgroups": {
+    "intro": "Die Fragen stehen nach Thema beisammen, nicht nach Dokument. Eine Antwort gilt für jedes Dokument, das sie verlangt. Mit * markierte Felder sind für den Export erforderlich.",
+    "parties": "Beteiligte",
+    "route": "Route",
+    "additions": "Ergänzungen",
+    "stillNeeded": "Noch {{count}} nötig",
+    "complete": "Vollständig",
+    "change": "Ändern",
+    "hide": "Einklappen",
+    "nothingFilled": "Noch nichts ausgefüllt.",
+    "alsoAsked": "Ebenfalls verlangt von: {{list}}"
   }
 }

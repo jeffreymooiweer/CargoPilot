@@ -61,11 +61,21 @@ restriction, mixed loading, the equipment list, the 1.1.3.6 exemption calculatio
 appears when there is something to assess and not otherwise, so the common shipment is the
 mockup's three steps and a difficult one is honest about being four.
 
-**The overview is a landing place, not a toll gate.** [The usability plan](ux-plan.md) says
-in as many words: recent shipments as templates *without sending somebody with a default
-mode through a dashboard first*. So **Nieuwe zending** goes straight to the wizard, as it
-does now; the overview is what "/" shows to somebody coming back, and never stands between
-a user and a new shipment.
+**The overview gets its own address, and nothing is moved out of the way for it.**
+[The usability plan](ux-plan.md) says in as many words: recent shipments as templates
+*without sending somebody with a default mode through a dashboard first*. Putting the
+overview on `/` would do exactly that — today `/` is the transport-mode chooser, and it
+already sends somebody with a preferred mode straight into the wizard without a stop. So:
+
+- **`/` keeps doing what it does.** The chooser with its transport-mode tiles stays, images
+  and all, including the ones an installation replaced with its own (v1.172.0), and
+  including the redirect that skips it for somebody who always ships the same way.
+  **Andere modaliteit kiezen** (`/?choose=1`) still brings the tiles back.
+- **The overview lives at `/overzicht`**, first in the rail, for whoever wants to start the
+  day there. Nobody is sent through it.
+- The transport mode in the wizard's header is a *switcher*, not the chooser: it changes
+  the mode of the shipment you are already entering. Choosing where to begin, and changing
+  your mind halfway, are two different acts and keep two different places.
 
 ## The releases
 
@@ -74,7 +84,7 @@ a user and a new shipment.
 | 119 | The shell | One header (title, draft state, steps, mode), an icon rail, a fixed action bar; the same on a phone |
 | 120 | A line that opens | Row expands into details and, for a dangerous line, the substance itself; the DG step appears only where there is something to assess |
 | 121 | The panel that counts | Lines, weight, attention, and the documents being prepared, live beside the work |
-| 122 | Somewhere to come back to | The overview: continue where you left off, today's counts, quick start, recent shipments |
+| 122 | Somewhere to come back to | The overview at `/overzicht`: continue where you left off, today's counts, quick start, recent shipments. Nothing else moves |
 | 123 | Measured and trimmed | The ten tasks again, and the mobile measurement the first plan left open |
 
 ## How it is judged

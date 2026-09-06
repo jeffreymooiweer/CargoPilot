@@ -2,6 +2,33 @@
 
 All notable changes are documented here, following [Semantic Versioning](https://semver.org/).
 
+## [1.201.0] — 2026-09-06
+
+### The plan measured to its end, and two things it turned up
+
+The twelve releases of [the usability plan](docs/ux-plan.md) are built. This one runs the
+whole set of ten tasks once more, in one pass against the finished application, and writes
+the closing measurement at the foot of [the baseline](docs/ux-baseline.md).
+
+**83 actions became 53, eleven extra windows became none, and the two tasks the baseline
+could not finish now finish** — a substance suggestion closed, judged and revisited, and a
+reload halfway through entry. Two rows went up, and both are the release's point rather than
+a regression: the fourth action of the fifty-row import is the narrowing that made the one
+unclear line findable at all, and the sixth of the trip is the action that turns the
+shipments on the screen into one.
+
+The run itself turned up two things, both fixed here.
+
+**The export step said *Update in history* over a shipment nobody had kept.** Since drafts
+arrived the entry has a row of its own from the first keystroke, and the button read that
+row's existence as "kept". Kept and written are not the same word: it says **Keep in
+history** until the shipment has actually been kept.
+
+**And the harness had to be taught to start from a standing start.** The wizard now resumes
+the draft the previous visit left behind — which is release 115 working exactly as intended,
+and wrong for a measurement, where every task begins from the same place. It discards the
+running draft before it starts, the way a person would with **Discard the draft**.
+
 ## [1.200.0] — 2026-09-06
 
 ### The list does the work, and the menu says what it holds

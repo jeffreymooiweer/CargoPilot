@@ -146,6 +146,19 @@ distinguishable. Focus order, real labels, dialog focus and its return, and a fi
 action bar that never covers the field or the error. Accessibility is not saved up for
 here: it is part of 108 to 117 as they are built.
 
+## Where it ended
+
+All twelve releases are built and published: 107 (the baseline) through 118, in v1.192.0 to
+v1.200.0. The closing measurement is at the foot of [the baseline](ux-baseline.md): across
+the ten tasks, 83 actions became 53, eleven extra windows became none, and the two tasks
+this plan started out unable to complete — a substance suggestion revisited, and a reload
+during entry — now complete.
+
+What this plan deliberately did not do is listed where it belongs rather than here: the
+mobile measurements beyond release 108, and the accessibility work that release 118 says is
+part of every release rather than a release of its own, are carried in the baseline's
+*What was not run*.
+
 ## How each release is judged
 
 Every release repeats the baseline tasks it touches and reports what actually changed —

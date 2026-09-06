@@ -1676,7 +1676,10 @@ export default function WizardPage() {
                 disabled={keeping}
                 className={buttonSecondary}
               >
-                {keeping ? t("history.keeping") : historyId ? t("history.update") : t("history.keep")}
+                {/* Kept, not merely written: a draft has a row of its own, and
+                    a button that said "update" over a shipment nobody has kept
+                    yet would be claiming something that never happened. */}
+                {keeping ? t("history.keeping") : keptAt ? t("history.update") : t("history.keep")}
               </button>
             </div>
           )}

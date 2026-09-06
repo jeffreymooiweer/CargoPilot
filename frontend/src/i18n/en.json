@@ -105,7 +105,11 @@
     "unansweredSubstances": "{{count}} goods line(s) have a substance question nobody has answered.",
     "unansweredGo": "Go to the goods",
     "backToOverview": "Back to the overview",
-    "startFrom": "Start from an earlier shipment:"
+    "startFrom": "Start from an earlier shipment:",
+    "newShipment": "New shipment",
+    "mode": "Transport mode",
+    "modeCarried": "Your entry has come along to {{mode}}. The totals are calculated again.",
+    "attention": "{{count}} point(s) to look at"
   },
   "review": {
     "linesTitle": "Goods",
@@ -612,7 +616,7 @@
       }
     ],
     "creditsHeading": "Icons",
-    "creditsBody": "The icons for notifications, importing and the assistant come from a set that is free to use on the condition that its maker is credited:"
+    "creditsBody": "The icons in this interface — for notifications, the menu, the transport modes, importing and the assistant — come from sets that are free to use on the condition that their maker is credited:"
   },
   "compliance": {
     "title": "Dangerous goods compliance check",

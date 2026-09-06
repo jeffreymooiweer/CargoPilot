@@ -17,9 +17,12 @@
  *   broken. The route decides once, on the way in and on the way out; after that
  *   the user decides.
  *
- * And a collapsed menu is still in the DOM. Links that can be tabbed into but
- * not seen are worse than a menu that is simply gone, so they leave the tab
- * order with it.
+ * Since v1.202.0 folding it no longer empties it. The rail keeps its icons at
+ * 56px instead of going to nothing, so the destinations stay one press away
+ * while the wizard still gets the width the lines table was measured to need.
+ * Each icon carries its label as its accessible name, because an icon without
+ * one is a guess — and there is only ever one rail in the document, so nothing
+ * is on the screen twice for the tab key to find.
  */
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
@@ -78,18 +81,26 @@ describe("de zijbalk", () => {
   it("staat open op een gewone pagina", async () => {
     renderAt("/");
     await waitFor(() => expect(isOpen()).toBe(true));
-    expect(document.getElementById("main-nav")).toHaveAttribute("aria-hidden", "false");
+    // Open means the words are there, not only the glyphs.
+    expect(screen.getByText("nav.settings")).toBeInTheDocument();
   });
 
   it("klapt weg zodra de wizard opent", async () => {
     renderAt("/wizard/road");
     await waitFor(() => expect(isOpen()).toBe(false));
-    expect(grid().className).toContain("md:grid-cols-[0px_1fr]");
+    expect(grid().className).toContain("md:grid-cols-[56px_1fr]");
   });
 
-  it("neemt de gap mee, zodat er geen strook overblijft", async () => {
+  it("houdt de bestemmingen bereikbaar zodra hij smal is", async () => {
+    // The whole point of 56px instead of 0: the menu is narrower, not gone.
     renderAt("/wizard/road");
-    await waitFor(() => expect(grid().className).toContain("md:gap-x-0"));
+    await waitFor(() => expect(isOpen()).toBe(false));
+
+    const nav = document.getElementById("main-nav")!;
+    const settings = screen.getByRole("link", { name: "nav.settings" });
+    expect(nav.contains(settings)).toBe(true);
+    // The label is the accessible name; the words themselves are away.
+    expect(settings.textContent).toBe("");
   });
 
   it("kan tijdens de wizard weer terug", async () => {
@@ -117,28 +128,25 @@ describe("de zijbalk", () => {
     expect(isOpen()).toBe(true);
   });
 
-  it("haalt de links uit de tabvolgorde zolang hij dicht is", async () => {
+  it("zet elke bestemming maar één keer in het document", async () => {
+    // The folded rail and the open one are the same links drawn twice. Keeping
+    // both mounted would put every destination on the screen twice — once for
+    // the eye and once more for a screen reader and the tab key.
     renderAt("/wizard/road");
     await waitFor(() => expect(isOpen()).toBe(false));
-
-    const nav = document.getElementById("main-nav")!;
-    expect(nav).toHaveAttribute("aria-hidden", "true");
-    for (const link of nav.querySelectorAll("a")) {
-      expect(link).toHaveAttribute("tabindex", "-1");
-    }
+    expect(screen.getAllByRole("link", { name: "nav.settings" })).toHaveLength(1);
 
     await userEvent.click(screen.getByRole("button", { name: "nav.expandMenu" }));
-    for (const link of nav.querySelectorAll("a")) {
-      expect(link).not.toHaveAttribute("tabindex");
-    }
+    expect(screen.getAllByRole("link", { name: "nav.settings" })).toHaveLength(1);
   });
 
-  it("laat de schil het scherm gebruiken zodra de balk weg is", async () => {
+  it("laat de schil het scherm gebruiken zodra de balk smal is", async () => {
     // Folding the rail away is only half of it: the shell is capped at 80rem,
-    // so on a wide monitor the 200px freed up went into the margin and the
-    // table — which wants 1,620px — was no better off.
+    // so on a wide monitor the width freed up went into the margin and the
+    // table — which wants 1,620px — was no better off. The cap is the folded
+    // rail's 56px wider than the 1,800px the table was measured against.
     renderAt("/wizard/road");
-    await waitFor(() => expect(grid().className).toContain("max-w-[1800px]"));
+    await waitFor(() => expect(grid().className).toContain("max-w-[1856px]"));
 
     await userEvent.click(screen.getByRole("button", { name: "nav.expandMenu" }));
     expect(grid().className).toContain("max-w-7xl");
@@ -146,9 +154,9 @@ describe("de zijbalk", () => {
 
   it("houdt de kop even breed als de inhoud, anders staan ze niet op één lijn", async () => {
     renderAt("/wizard/road");
-    await waitFor(() => expect(grid().className).toContain("max-w-[1800px]"));
+    await waitFor(() => expect(grid().className).toContain("max-w-[1856px]"));
     const headerRow = screen.getByRole("banner").firstElementChild as HTMLElement;
-    expect(headerRow.className).toContain("max-w-[1800px]");
+    expect(headerRow.className).toContain("max-w-[1856px]");
   });
 
   it("zegt met aria-expanded wat de knop doet", async () => {

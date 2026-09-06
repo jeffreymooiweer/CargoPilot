@@ -29,25 +29,29 @@ interface Props {
   onDiscard?: () => void;
   onDownload?: () => void;
   onOpenFile?: (file: File) => void;
+  /** Inside the wizard's header this is a line in a box that already exists;
+   *  a second border around it would be a box inside a box. */
+  compact?: boolean;
 }
 
-const barClass =
-  "flex flex-wrap items-center gap-x-3 gap-y-1.5 rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs text-slate-600 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-300";
+const barBase = "flex flex-wrap items-center gap-x-3 gap-y-1.5 text-xs text-slate-600 dark:text-slate-300";
+const barClass = `${barBase} rounded-xl border border-slate-200 bg-white px-3 py-2 dark:border-slate-800 dark:bg-slate-900`;
 const linkClass =
   "font-medium text-brand-700 underline hover:text-brand-800 dark:text-brand-300";
 
 export default function DraftBar({
-  mode, status, savedAt, active, onDiscard, onDownload, onOpenFile,
+  mode, status, savedAt, active, onDiscard, onDownload, onOpenFile, compact,
 }: Props) {
   const { t, i18n } = useTranslation();
   const fileInput = useRef<HTMLInputElement | null>(null);
   if (!active) return null;
 
+  const box = compact ? barBase : barClass;
   const time = savedAt ? savedAt.toLocaleTimeString(i18n.language, { timeStyle: "short" }) : "";
 
   if (mode === "file") {
     return (
-      <div className={barClass}>
+      <div className={box}>
         <span>{t("draft.notKeptHere")}</span>
         {onDownload && (
           <button type="button" onClick={onDownload} className={linkClass}>
@@ -78,7 +82,7 @@ export default function DraftBar({
   }
 
   return (
-    <div className={barClass} role="status">
+    <div className={box} role="status">
       <span
         className={
           status === "failed"

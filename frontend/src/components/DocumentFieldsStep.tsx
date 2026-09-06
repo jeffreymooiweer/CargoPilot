@@ -22,6 +22,7 @@ import {
 import InfoTooltip from "./InfoTooltip";
 import NhmCombobox from "./NhmCombobox";
 import SignaturePad from "./SignaturePad";
+import { WizardActions } from "./WizardShell";
 
 const inputClass =
   "w-full border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-950 text-slate-900 dark:text-slate-100 rounded-lg px-3 py-2 text-sm min-h-[40px]";
@@ -450,23 +451,26 @@ export default function DocumentFieldsStep({
         </p>
       )}
 
-      <div className="flex flex-col gap-2 sm:flex-row">
+      {/* In the wizard these land in the shell's action bar at the foot of the
+          screen; on their own — as this component's own tests render it — they
+          stay where they are written. */}
+      <WizardActions>
         <button type="button" onClick={onBack} className={buttonSecondary}>
           {t("wizard.back")}
         </button>
         {onReturn && returnLabel && (
-          <button type="button" onClick={onReturn} className={`${buttonPrimary} sm:ml-auto`}>
+          <button type="button" onClick={onReturn} className={buttonPrimary}>
             {returnLabel}
           </button>
         )}
         <button
           type="button"
           onClick={goNext}
-          className={`${onReturn && returnLabel ? buttonSecondary : `${buttonPrimary} sm:ml-auto`}`}
+          className={onReturn && returnLabel ? buttonSecondary : buttonPrimary}
         >
           {warned ? t("docfields.continueAnyway") : t("wizard.toExport")}
         </button>
-      </div>
+      </WizardActions>
     </div>
   );
 }

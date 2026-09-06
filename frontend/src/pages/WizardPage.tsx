@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { Link, Navigate, useParams, useSearchParams } from "react-router";
+import { Link, Navigate, useLocation, useNavigate, useParams, useSearchParams } from "react-router";
 import { useTranslation } from "react-i18next";
 import {
   api,
@@ -24,10 +24,10 @@ import AssistantModal from "../components/AssistantModal";
 import DocumentFieldsStep, { resolveSections } from "../components/DocumentFieldsStep";
 import DocumentAdvicePanel, { buildAdvice } from "../components/DocumentAdvicePanel";
 import ReviewLinesPanel, { DraftLine, draftToText, openQuestions, textToDraftLines } from "../components/ReviewLinesPanel";
-import WizardProgress from "../components/WizardProgress";
 import DraftBar, { DraftStatus } from "../components/DraftBar";
 import CheckYourAnswers, { AnswerRow } from "../components/CheckYourAnswers";
-import { isModalityAvailable } from "./ModalitySelectPage";
+import WizardShell, { WizardActions } from "../components/WizardShell";
+import { AVAILABLE_MODALITIES, isModalityAvailable } from "./ModalitySelectPage";
 import { usePreferences } from "../settings/preferences";
 import { SNAPSHOT_VERSION, WizardSnapshot, readSnapshot, templateValues } from "../wizard/snapshot";
 import { addedQuestions } from "../wizard/documentGroups";
@@ -191,6 +191,8 @@ export default function WizardPage() {
   const [unCardsBusy, setUnCardsBusy] = useState(false);
   const [assistantOpen, setAssistantOpen] = useState(false);
   const toast = useToast();
+  const navigate = useNavigate();
+  const location = useLocation();
 
   // The history, where the installation keeps its shipments. `?shipment=`
   // in the address reopens a kept one; the id then travels with the wizard
@@ -1034,6 +1036,46 @@ export default function WizardPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [historyOn, reopenId, modality]);
 
+  // --- switching transport mode without losing the shipment -----------------
+  //
+  // The mode is part of the address, so changing it is a navigation and this
+  // page mounts again with nothing in it. What was typed travels in the
+  // navigation's own state: the goods, the answers, the substances, the
+  // signature. The calculation does not travel. It was made against the rules
+  // of the mode you have just left, and carrying it over would put totals on
+  // the screen that claim to come from a book they were never read out of. So
+  // the entry survives, the judgement is made again, and the wizard lands back
+  // on the goods step where the recalculation starts.
+  const carryRestored = useRef(false);
+  useEffect(() => {
+    if (carryRestored.current) return;
+    carryRestored.current = true;
+    const carried = (location.state as { carry?: unknown } | null)?.carry;
+    const snap = carried ? readSnapshot(carried) : null;
+    if (!snap) return;
+    // The draft on the server is the old mode's; this entry replaces it rather
+    // than being overwritten by it when the fetch comes back.
+    draftRestored.current = true;
+    setDraftLines(snap.draftLines);
+    setNextId(snap.nextId);
+    setDgEntries(snap.dgEntries);
+    setDocValues(snap.docValues);
+    setSkippedQuestions(snap.skippedQuestions);
+    setSignature(snap.signature);
+    setChosenDocLang(snap.docLang as Language | null);
+    // Without this the entry would come back a second time on a reload, on top
+    // of whatever had been typed since.
+    navigate(location.pathname, { replace: true });
+    // Mount only: this is the handover, not something that repeats.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const switchModality = (next: string) => {
+    if (!next || next === modality) return;
+    navigate(`/wizard/${next}`, { state: hasEntry ? { carry: wizardSnapshot() } : undefined });
+    if (hasEntry) toast.info(t("wizard.modeCarried", { mode: t(`modality.${next}`) }));
+  };
+
   const discardDraft = () => {
     window.clearTimeout(draftTimer.current);
     void api.discardDraft().catch(() => undefined);
@@ -1331,6 +1373,16 @@ export default function WizardPage() {
 
   const includedLines = result?.lines.filter((line) => line.include) ?? [];
 
+  /** What this shipment is called, in the header. The reference is what a
+   *  forwarder calls it by; failing that the consignee, who is the other thing
+   *  people say out loud ("the one going to Müller"). Neither yet, and it is
+   *  honestly a new one. */
+  const shipmentTitle =
+    (docValues.shipment_reference ?? "").trim() ||
+    (docValues.reference ?? "").trim() ||
+    (docValues.consignee_name ?? "").trim() ||
+    t("wizard.newShipment");
+
   /** The check-your-answers rows: the shipment as it stands, each with the way
    *  back to the answer itself. What is derived — the totals, the assessment —
    *  carries no way back, because it is not something to type. */
@@ -1380,20 +1432,38 @@ export default function WizardPage() {
   }
 
   return (
-    <div className="space-y-4 sm:space-y-6">
-      <div className="flex flex-wrap items-center gap-2">
-        <span className="inline-flex items-center gap-2 rounded-full bg-brand-100 px-3 py-1 text-xs font-medium text-brand-700 dark:bg-brand-900/50 dark:text-brand-200">
-          {t(`modality.${modality}`)}
-        </span>
-        <Link to="/?choose=1" className="text-xs text-slate-500 hover:underline dark:text-slate-400">
-          {t("wizard.changeModality")}
-        </Link>
+    <WizardShell
+      title={shipmentTitle}
+      modality={modality}
+      modalities={AVAILABLE_MODALITIES}
+      onModality={switchModality}
+      steps={stepPills}
+      currentStep={currentIndex + 1}
+      visited={visited}
+      onGoTo={(key) => {
+        setReturnTo(null);
+        setStepKey(key as StepKey);
+      }}
+      attention={result?.totals.warning_count ?? 0}
+      draft={
+        <DraftBar
+          compact
+          mode={historyOn ? "kept" : "file"}
+          status={draftStatus}
+          savedAt={draftSavedAt}
+          active={hasEntry && !reopenId}
+          onDiscard={historyOn ? discardDraft : undefined}
+          onDownload={historyOn ? undefined : downloadDraft}
+          onOpenFile={historyOn ? undefined : openDraftFile}
+        />
+      }
+      aside={
         <button
           type="button"
           onClick={() => setAssistantOpen((open) => !open)}
           aria-label={assistantOpen ? t("assistant.close") : t("assistant.open")}
           title={assistantOpen ? t("assistant.close") : t("assistant.open")}
-          className={`ml-auto inline-flex h-9 w-9 items-center justify-center rounded-lg transition ${
+          className={`inline-flex h-9 w-9 items-center justify-center rounded-lg transition ${
             assistantOpen
               ? "bg-brand-50 text-brand-700 dark:bg-brand-950/50 dark:text-brand-200"
               : "text-slate-600 hover:bg-slate-50 dark:text-slate-300 dark:hover:bg-slate-800"
@@ -1401,28 +1471,9 @@ export default function WizardPage() {
         >
           <AiIcon className="h-5 w-5" />
         </button>
-      </div>
-
-      <WizardProgress
-        steps={stepPills}
-        currentStep={currentIndex + 1}
-        visited={visited}
-        onGoTo={(key) => {
-          setReturnTo(null);
-          setStepKey(key as StepKey);
-        }}
-      />
-
-      <DraftBar
-        mode={historyOn ? "kept" : "file"}
-        status={draftStatus}
-        savedAt={draftSavedAt}
-        active={hasEntry && !reopenId}
-        onDiscard={historyOn ? discardDraft : undefined}
-        onDownload={historyOn ? undefined : downloadDraft}
-        onOpenFile={historyOn ? undefined : openDraftFile}
-      />
-
+      }
+    >
+      <div className="space-y-4 sm:space-y-6">
       <AssistantModal
         open={assistantOpen}
         onClose={() => setAssistantOpen(false)}
@@ -1478,11 +1529,11 @@ export default function WizardPage() {
             translateMessage={translateMessage}
           />
 
-          <div className="flex flex-col gap-2 sm:flex-row sm:gap-3">
-            <button type="button" onClick={goFromLines} disabled={loading} className={`${buttonPrimary} sm:ml-auto`}>
+          <WizardActions>
+            <button type="button" onClick={goFromLines} disabled={loading} className={buttonPrimary}>
               {t("wizard.continue")}
             </button>
-          </div>
+          </WizardActions>
         </div>
       )}
 
@@ -1497,14 +1548,14 @@ export default function WizardPage() {
             profiles={dgProfiles}
           />
           <DgCompliancePanel entries={dgEntries} profiles={dgProfiles} />
-          <div className="flex flex-col gap-2 sm:flex-row">
+          <WizardActions>
             <button type="button" onClick={() => goBackFrom("dg")} className={buttonSecondary}>
               {t("wizard.back")}
             </button>
-            <button type="button" onClick={() => goNextFrom("dg")} className={`${buttonPrimary} sm:ml-auto`}>
+            <button type="button" onClick={() => goNextFrom("dg")} className={buttonPrimary}>
               {genericDocs.length > 0 ? t("wizard.toDetails") : t("wizard.toExport")}
             </button>
-          </div>
+          </WizardActions>
         </div>
       )}
 
@@ -2006,7 +2057,7 @@ export default function WizardPage() {
             </div>
           )}
 
-          <div className="flex flex-col gap-2 sm:flex-row">
+          <WizardActions>
             <button type="button" onClick={() => goBackFrom("export")} className={buttonSecondary}>
               {t("wizard.back")}
             </button>
@@ -2021,11 +2072,12 @@ export default function WizardPage() {
                 {turningRound ? t("wizard.returnPreparing") : t("wizard.returnShipment")}
               </button>
             )}
-          </div>
+          </WizardActions>
         </div>
       )}
 
-    </div>
+      </div>
+    </WizardShell>
   );
 }
 

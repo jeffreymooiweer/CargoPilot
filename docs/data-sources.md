@@ -302,3 +302,41 @@ came from, so the one line on the Legal page covers them. Their exported markup
 falls into several groups — some carry an Adobe Illustrator header and a
 `Capa_1` layer, others an `id="Layer_1"` or an `id="Outline"` — which is the
 set's different styles showing through, not different origins.
+
+### The twenty-one added for the shell (v1.202.0)
+
+The shell — one header, an icon rail, a mode switcher — needs glyphs the eight
+do not cover, and the owner supplied twenty-one more from Flaticon. They live
+in the same `frontend/src/components/icons.tsx`, stripped of the exporter's
+furniture (XML declarations, Illustrator comments, layer ids, hard-coded
+fills), each keeping the `viewBox` it was drawn in.
+
+| Component | Used for |
+|---|---|
+| `HomeIcon` | a house — waiting for the overview of release 122 |
+| `ShipmentsIcon` | the shipments list |
+| `GroupageIcon` | groupage |
+| `TripsIcon` | trips |
+| `LibraryIcon` | the article library |
+| `SettingsIcon` | settings |
+| `UserIcon` | the user list |
+| `LogoutIcon` | signing out — waiting for the folded rail's foot |
+| `SearchIcon`, `PasteIcon`, `PlusIcon`, `ChevronDownIcon`, `MoreIcon`, `WeightIcon` | searching, pasting, adding, unfolding, the rest, mass |
+| `CollapseIcon`, `MenuIcon` | folding the rail, the menu on a phone |
+| `RoadIcon`, `RailIcon`, `SeaIcon`, `AirIcon` | the transport modes, in the switcher |
+
+**Their provenance is not the eight's, and this says so rather than assuming
+it.** Four of the twenty-one are drawn on a 24×24 `viewBox` the way a Uicons
+export is; the other seventeen are not — they arrive on 32, 64, 128, 306.773,
+426.667, 465.2, 512, 612 and one at `-42 0 512 512.002`, which is what
+Flaticon's general library looks like and not what the Uicons picker produces.
+So the Legal page names them on their own line, as *Icons by Flaticon*, and
+does not extend the Uicons credit over them.
+
+What is still open, and what it needs: Flaticon's free licence credits the
+**author** of each icon, and the authors are not recorded here — the SVG files
+carry no metadata and the download pages were not kept. The attribution lines
+from those pages (Flaticon prints one per icon) are the missing piece; with
+them, this table gains an author column and the Legal page gains the names.
+Until then the credit says what is certain — where they came from — and this
+paragraph says what is not.

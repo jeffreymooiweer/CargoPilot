@@ -105,7 +105,11 @@
     "unansweredSubstances": "{{count}} Warenzeile(n) haben eine Stofffrage, die niemand beantwortet hat.",
     "unansweredGo": "Zu den Waren",
     "backToOverview": "Zurück zur Übersicht",
-    "startFrom": "Von einer früheren Sendung ausgehen:"
+    "startFrom": "Von einer früheren Sendung ausgehen:",
+    "newShipment": "Neue Sendung",
+    "mode": "Verkehrsträger",
+    "modeCarried": "Deine Eingabe ist zu {{mode}} mitgekommen. Die Berechnung wird erneut durchgeführt.",
+    "attention": "{{count}} Punkt(e) zur Prüfung"
   },
   "review": {
     "linesTitle": "Güter",
@@ -612,7 +616,7 @@
       }
     ],
     "creditsHeading": "Symbole",
-    "creditsBody": "Die Symbole für Benachrichtigungen, den Import und den Assistenten stammen aus einem frei verwendbaren Satz unter der Bedingung, dass der Urheber genannt wird:"
+    "creditsBody": "Die Symbole in dieser Oberfläche — für Meldungen, das Menü, die Verkehrsträger, den Import und den Assistenten — stammen aus frei verwendbaren Sets, unter der Bedingung, dass der Urheber genannt wird:"
   },
   "compliance": {
     "title": "Gefahrgut-Konformitätsprüfung",

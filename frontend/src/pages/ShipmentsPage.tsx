@@ -26,6 +26,8 @@ const buttonPrimary =
   "bg-brand-600 text-white px-4 py-2.5 rounded-lg font-medium hover:bg-brand-700 disabled:opacity-50 min-h-[44px] text-sm";
 const buttonSecondary =
   "px-4 py-2.5 rounded-lg border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800 disabled:opacity-50 min-h-[44px] text-sm inline-flex items-center";
+const actionClass =
+  "font-medium text-brand-700 underline hover:text-brand-800 disabled:opacity-50 dark:text-brand-300";
 const buttonDanger =
   "px-4 py-2.5 rounded-lg border border-red-200 dark:border-red-900 text-red-700 dark:text-red-300 hover:bg-red-50 dark:hover:bg-red-950/40 disabled:opacity-50 min-h-[44px] text-sm";
 
@@ -87,11 +89,21 @@ function ShipmentList({ language, admin }: { language: string; admin: boolean })
   const [loading, setLoading] = useState(true);
   const [department, setDepartment] = useState("");
   const [departments, setDepartments] = useState<Department[]>([]);
+  // The entry this viewer is in the middle of. It is not a kept shipment and
+  // the list does not hold it — but it is the thing they are most likely to
+  // have come here for, so it stands above the list with the way back into it.
+  const [draft, setDraft] = useState<ShipmentDetail | null>(null);
+  // The shipments picked for a trip. Kept by id, so paging does not lose them.
+  const [picked, setPicked] = useState<number[]>([]);
 
   useEffect(() => {
     if (!admin) return;
     api.departments().then(setDepartments).catch(() => setDepartments([]));
   }, [admin]);
+
+  useEffect(() => {
+    api.runningDraft().then(setDraft).catch(() => setDraft(null));
+  }, []);
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -124,6 +136,19 @@ function ShipmentList({ language, admin }: { language: string; admin: boolean })
 
   const pages = Math.max(1, Math.ceil(total / PER_PAGE));
   const open = (shipment: ShipmentSummary) => navigate(`/shipments/${shipment.id}`);
+  const toggle = (id: number) =>
+    setPicked((current) => (current.includes(id) ? current.filter((one) => one !== id) : [...current, id]));
+  const [busy, setBusy] = useState(false);
+  const documentsAgain = async (shipment: ShipmentSummary) => {
+    setBusy(true);
+    try {
+      await api.shipmentDocuments(shipment.id);
+    } catch (e) {
+      toast.error(String(e));
+    } finally {
+      setBusy(false);
+    }
+  };
   const reference = (s: ShipmentSummary) => s.reference || t("history.noReference");
   const parties = (s: ShipmentSummary) => [s.consignor_name, s.consignee_name].filter(Boolean).join(" → ") || "—";
 
@@ -198,6 +223,35 @@ function ShipmentList({ language, admin }: { language: string; admin: boolean })
         </p>
       </div>
 
+      {draft && (
+        <div className={`${panelClass} flex flex-wrap items-center gap-x-3 gap-y-2 p-4`}>
+          <Status shipment={draft} />
+          <span className="min-w-0 truncate text-sm font-medium text-slate-900 dark:text-slate-100">
+            {draft.reference || t("history.noReference")}
+          </span>
+          <span className="text-xs text-slate-500 dark:text-slate-400">
+            {t(`modality.${draft.modality}`)} · {when(draft.updated_at, language)}
+          </span>
+          <Link to={wizardLinkFor(draft)} className={`${actionClass} ml-auto`}>
+            {t("history.resumeDraft")}
+          </Link>
+        </div>
+      )}
+
+      {picked.length > 0 && (
+        <div className={`${panelClass} flex flex-wrap items-center gap-3 p-4`}>
+          <span className="text-sm text-slate-700 dark:text-slate-200">
+            {t("history.picked", { count: picked.length })}
+          </span>
+          <Link to={`/groupage?shipments=${picked.join(",")}`} className={`${buttonPrimary} ml-auto`}>
+            {t("history.toTrip", { count: picked.length })}
+          </Link>
+          <button type="button" className={buttonSecondary} onClick={() => setPicked([])}>
+            {t("history.clearPicked")}
+          </button>
+        </div>
+      )}
+
       {!loading && items.length === 0 && (
         <p className={`${panelClass} p-5 text-sm text-slate-600 dark:text-slate-300`}>{t("history.empty")}</p>
       )}
@@ -205,23 +259,33 @@ function ShipmentList({ language, admin }: { language: string; admin: boolean })
       {/* Phone: cards */}
       <div className="space-y-3 md:hidden">
         {items.map((s) => (
-          <button
-            key={s.id}
-            type="button"
-            onClick={() => open(s)}
-            className={`${panelClass} w-full text-left shadow-sm p-4 space-y-1`}
-          >
-            <div className="flex items-center gap-2">
-              <span className="min-w-0 truncate font-semibold text-slate-900 dark:text-slate-100">{reference(s)}</span>
-              <Badges shipment={s} />
+          <div key={s.id} className={`${panelClass} shadow-sm p-4 space-y-2`}>
+            <button type="button" onClick={() => open(s)} className="w-full space-y-1 text-left">
+              <div className="flex flex-wrap items-center gap-2">
+                <span className="min-w-0 truncate font-semibold text-slate-900 dark:text-slate-100">{reference(s)}</span>
+                <Status shipment={s} />
+                <Badges shipment={s} />
+              </div>
+              <p className="text-sm text-slate-700 dark:text-slate-200 truncate">{parties(s)}</p>
+              <p className="text-xs text-slate-500 dark:text-slate-400">
+                {t(`modality.${s.modality}`)} · {when(s.created_at, language)}
+                {s.created_by ? ` · ${s.created_by}` : ""}
+                {s.department ? ` · ${s.department}` : ""}
+              </p>
+            </button>
+            <div className="flex flex-wrap items-center gap-3">
+              <label className="flex items-center gap-2 text-xs text-slate-600 dark:text-slate-300">
+                <input
+                  type="checkbox"
+                  checked={picked.includes(s.id)}
+                  onChange={() => toggle(s.id)}
+                  className="h-4 w-4 rounded border-slate-300 text-brand-600 focus:ring-brand-500"
+                />
+                {t("history.pick")}
+              </label>
+              <RowActions shipment={s} onAgain={documentsAgain} busy={busy} />
             </div>
-            <p className="text-sm text-slate-700 dark:text-slate-200 truncate">{parties(s)}</p>
-            <p className="text-xs text-slate-500 dark:text-slate-400">
-              {t(`modality.${s.modality}`)} · {when(s.created_at, language)}
-              {s.created_by ? ` · ${s.created_by}` : ""}
-              {s.department ? ` · ${s.department}` : ""}
-            </p>
-          </button>
+          </div>
         ))}
       </div>
 
@@ -231,6 +295,9 @@ function ShipmentList({ language, admin }: { language: string; admin: boolean })
           <table className="w-full text-sm text-slate-800 dark:text-slate-200">
             <thead className="bg-slate-50 dark:bg-slate-800/80">
               <tr>
+                <th className="px-3 py-2 text-left">
+                  <span className="sr-only">{t("history.pick")}</span>
+                </th>
                 <th className="px-3 py-2 text-left">{t("history.reference")}</th>
                 <th className="px-3 py-2 text-left">{t("history.parties")}</th>
                 <th className="px-3 py-2 text-left">{t("history.modality")}</th>
@@ -240,6 +307,7 @@ function ShipmentList({ language, admin }: { language: string; admin: boolean })
                   <th className="px-3 py-2 text-left">{t("departments.userDepartment")}</th>
                 )}
                 <th className="px-3 py-2 text-right">{t("history.goods")}</th>
+                <th className="px-3 py-2 text-left">{t("history.actions")}</th>
               </tr>
             </thead>
             <tbody>
@@ -250,10 +318,21 @@ function ShipmentList({ language, admin }: { language: string; admin: boolean })
                   className="border-t border-slate-100 dark:border-slate-800 cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-800/60"
                 >
                   <td className="px-3 py-2">
-                    <span className="flex items-center gap-2">
+                    <input
+                      type="checkbox"
+                      checked={picked.includes(s.id)}
+                      onChange={() => toggle(s.id)}
+                      onClick={(e) => e.stopPropagation()}
+                      aria-label={`${t("history.pick")} — ${reference(s)}`}
+                      className="h-4 w-4 rounded border-slate-300 text-brand-600 focus:ring-brand-500"
+                    />
+                  </td>
+                  <td className="px-3 py-2">
+                    <span className="flex flex-wrap items-center gap-2">
                       <Link to={`/shipments/${s.id}`} className="font-medium text-brand-700 dark:text-brand-300 hover:underline" onClick={(e) => e.stopPropagation()}>
                         {reference(s)}
                       </Link>
+                      <Status shipment={s} />
                       <Badges shipment={s} />
                     </span>
                   </td>
@@ -263,6 +342,9 @@ function ShipmentList({ language, admin }: { language: string; admin: boolean })
                   <td className="px-3 py-2">{s.created_by || "—"}</td>
                   {admin && departments.length > 0 && <td className="px-3 py-2">{s.department || "—"}</td>}
                   <td className="px-3 py-2 text-right">{s.goods_count}</td>
+                  <td className="px-3 py-2">
+                    <RowActions shipment={s} onAgain={documentsAgain} busy={busy} />
+                  </td>
                 </tr>
               ))}
             </tbody>
@@ -282,6 +364,61 @@ function ShipmentList({ language, admin }: { language: string; admin: boolean })
         </div>
       )}
     </div>
+  );
+}
+
+/** What one does with a kept shipment, on the row it is about.
+ *
+ *  The baseline found no reuse action on the list at all: opening the detail
+ *  page was compulsory before anything could be done. These are the same three
+ *  things that page offers, where the shipment is. */
+function RowActions({ shipment, onAgain, busy }: {
+  shipment: ShipmentSummary;
+  onAgain: (shipment: ShipmentSummary) => void;
+  busy: boolean;
+}) {
+  const { t } = useTranslation();
+  const stop = (event: { stopPropagation: () => void }) => event.stopPropagation();
+  return (
+    <span className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs">
+      <Link to={wizardLinkFor(shipment)} onClick={stop} className={actionClass}>
+        {t("history.edit")}
+      </Link>
+      <Link to={templateLinkFor(shipment)} onClick={stop} className={actionClass}>
+        {t("history.useTemplate")}
+      </Link>
+      {shipment.has_documents && (
+        <button
+          type="button"
+          disabled={busy}
+          onClick={(event) => {
+            stop(event);
+            onAgain(shipment);
+          }}
+          className={actionClass}
+        >
+          {t("history.documents")}
+        </button>
+      )}
+    </span>
+  );
+}
+
+/** Draft, still to be filled in, or ready. What a row is, in one word.
+ *
+ *  "Ready" is what produced documents: the bundle was kept, so the papers can
+ *  be handed out again. A shipment kept without them is not broken — it is
+ *  entry that stopped before the documents — and says so rather than looking
+ *  finished. */
+function Status({ shipment }: { shipment: ShipmentSummary }) {
+  const { t } = useTranslation();
+  const [key, className] = shipment.is_draft
+    ? ["history.stateDraft", "bg-sky-100 text-sky-800 dark:bg-sky-900/40 dark:text-sky-200"]
+    : shipment.has_documents
+      ? ["history.stateReady", "bg-emerald-100 text-emerald-800 dark:bg-emerald-900/40 dark:text-emerald-200"]
+      : ["history.stateOpen", "bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300"];
+  return (
+    <span className={`rounded-full px-2 py-0.5 text-[11px] font-medium ${className}`}>{t(key)}</span>
   );
 }
 

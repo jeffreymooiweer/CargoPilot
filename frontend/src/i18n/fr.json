@@ -22,7 +22,13 @@
     "shipments": "Expéditions",
     "articles": "Articles",
     "audit": "Journal d'audit",
-    "trips": "Trajets"
+    "trips": "Trajets",
+    "group": {
+      "work": "Travail",
+      "libraries": "Bibliothèques",
+      "administration": "Administration",
+      "account": "Compte"
+    }
   },
   "theme": {
     "dark": "Sombre",
@@ -98,7 +104,8 @@
     "importUndone": "Les lignes précédentes sont de retour.",
     "unansweredSubstances": "{{count}} ligne(s) de marchandises ont une question de matière restée sans réponse.",
     "unansweredGo": "Vers les marchandises",
-    "backToOverview": "Retour à l'aperçu"
+    "backToOverview": "Retour à l'aperçu",
+    "startFrom": "Partir d'un envoi précédent :"
   },
   "review": {
     "linesTitle": "Marchandises",
@@ -1056,7 +1063,8 @@
     "kept": "Trajet conservé. Vous le retrouverez sous Trajets.",
     "updated": "Trajet mis à jour.",
     "keepFailed": "Le trajet n'a pas pu être conservé.",
-    "openKept": "Ouvrir le trajet conservé"
+    "openKept": "Ouvrir le trajet conservé",
+    "addedFromList": "{{count}} envoi(s) ajouté(s) depuis la sélection."
   },
   "common": {
     "remove": "Retirer"
@@ -1105,7 +1113,17 @@
     "page": "Page {{page}} sur {{pages}}",
     "useTemplate": "Utiliser comme modèle",
     "useTemplateHint": "Une nouvelle expédition avec les mêmes marchandises, parties et itinéraire ; référence et dates vides.",
-    "templateOpened": "Nouvelle expédition d’après {{reference}} : référence et dates vides, le reste a été repris."
+    "templateOpened": "Nouvelle expédition d’après {{reference}} : référence et dates vides, le reste a été repris.",
+    "edit": "Ouvrir",
+    "actions": "Actions",
+    "pick": "Sélectionner",
+    "picked": "{{count}} envoi(s) sélectionné(s)",
+    "toTrip": "Ajouter à un voyage ({{count}})",
+    "clearPicked": "Effacer la sélection",
+    "resumeDraft": "Continuer",
+    "stateDraft": "Brouillon",
+    "stateOpen": "À compléter",
+    "stateReady": "Prêt"
   },
   "addressBook": {
     "title": "Carnet d’adresses",

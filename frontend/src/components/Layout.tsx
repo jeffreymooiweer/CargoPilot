@@ -101,18 +101,67 @@ export default function Layout({ user, onLogout }: Props) {
   // worse than one that is simply gone.
   const navLinks = (reachable = true) => {
     const tabIndex = reachable ? undefined : -1;
+    const admin = !open && user.role === "admin";
+    // Four groups rather than ten links in a row: the work, the libraries it
+    // draws on, what an administrator keeps, and this account. Every address
+    // is the one it always was — this is a heading above a list, not a move.
+    const groups: { key: string; links: [string, string, boolean][] }[] = [
+      {
+        key: "work",
+        links: [
+          ["/", t("nav.new"), true],
+          ["/shipments", t("nav.shipments"), history],
+          ["/groupage", t("nav.groupage"), true],
+          ["/trips", t("nav.trips"), history],
+        ],
+      },
+      {
+        key: "libraries",
+        links: [
+          ["/articles", t("nav.articles"), history],
+          ["/materieel", t("nav.materieel"), admin],
+        ],
+      },
+      {
+        key: "administration",
+        links: [
+          ["/users", t("nav.users"), admin],
+          ["/audit", t("nav.audit"), admin],
+        ],
+      },
+      {
+        key: "account",
+        links: [
+          ["/settings", t("nav.settings"), true],
+          ["/legal", t("nav.legal"), true],
+        ],
+      },
+    ];
     return (
       <>
-        <NavLink to="/" className={linkClass} end onClick={closeMenu} tabIndex={tabIndex}>{t("nav.new")}</NavLink>
-        {history && <NavLink to="/shipments" className={linkClass} onClick={closeMenu} tabIndex={tabIndex}>{t("nav.shipments")}</NavLink>}
-        {history && <NavLink to="/articles" className={linkClass} onClick={closeMenu} tabIndex={tabIndex}>{t("nav.articles")}</NavLink>}
-        <NavLink to="/groupage" className={linkClass} onClick={closeMenu} tabIndex={tabIndex}>{t("nav.groupage")}</NavLink>
-        {history && <NavLink to="/trips" className={linkClass} onClick={closeMenu} tabIndex={tabIndex}>{t("nav.trips")}</NavLink>}
-        {!open && user.role === "admin" && <NavLink to="/materieel" className={linkClass} onClick={closeMenu} tabIndex={tabIndex}>{t("nav.materieel")}</NavLink>}
-        {!open && user.role === "admin" && <NavLink to="/users" className={linkClass} onClick={closeMenu} tabIndex={tabIndex}>{t("nav.users")}</NavLink>}
-        {!open && user.role === "admin" && <NavLink to="/audit" className={linkClass} onClick={closeMenu} tabIndex={tabIndex}>{t("nav.audit")}</NavLink>}
-        <NavLink to="/settings" className={linkClass} onClick={closeMenu} tabIndex={tabIndex}>{t("nav.settings")}</NavLink>
-        <NavLink to="/legal" className={linkClass} onClick={closeMenu} tabIndex={tabIndex}>{t("nav.legal")}</NavLink>
+        {groups.map((group) => {
+          const shown = group.links.filter(([, , when]) => when);
+          if (shown.length === 0) return null;
+          return (
+            <div key={group.key} className="space-y-0.5">
+              <p className="px-3 pt-3 text-[11px] font-semibold uppercase tracking-wide text-slate-400 dark:text-slate-500">
+                {t(`nav.group.${group.key}`)}
+              </p>
+              {shown.map(([to, label]) => (
+                <NavLink
+                  key={to}
+                  to={to}
+                  end={to === "/"}
+                  className={linkClass}
+                  onClick={closeMenu}
+                  tabIndex={tabIndex}
+                >
+                  {label}
+                </NavLink>
+              ))}
+            </div>
+          );
+        })}
       </>
     );
   };

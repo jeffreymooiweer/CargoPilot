@@ -10,6 +10,7 @@ import {
   DocumentRegistry,
   LocalizedText,
   ShipmentIn,
+  ShipmentSummary,
   UnCardsAvailability,
   WrittenInstruction,
   UserPreferences,
@@ -205,6 +206,24 @@ export default function WizardPage() {
   const reopenId = searchParams.get("shipment") ?? templateId;
   const asTemplate = !searchParams.get("shipment") && !!templateId;
   const historyOn = !!publicSettings?.history_enabled;
+  /** The fields the registry marks as a declaration somebody signs for.
+   *  A shipment copied as a template arrives without them ticked. */
+  const declarationKeys = useMemo(() => {
+    const keys = new Set<string>();
+    if (!registry) return keys;
+    const collect = (fields: { key: string; status: string }[] | undefined) => {
+      for (const field of fields ?? []) if (field.status === "SIGNATURE_REQUIRED") keys.add(field.key);
+    };
+    for (const section of registry.shared_sections) collect(section.fields);
+    for (const doc of registry.documents) for (const section of doc.sections) collect(section.fields);
+    return keys;
+  }, [registry]);
+
+  /** The last few kept shipments, offered as a starting point on the goods
+   *  step. Only where there is a history to read, and only while nothing has
+   *  been entered — an offer, not an interruption. */
+  const [recent, setRecent] = useState<ShipmentSummary[]>([]);
+
   const [historyId, setHistoryId] = useState<number | null>(null);
   const [keeping, setKeeping] = useState(false);
   const [keptAt, setKeptAt] = useState<Date | null>(null);
@@ -217,11 +236,22 @@ export default function WizardPage() {
       .catch((e) => setRegistryError(String(e)));
   }, []);
 
+  useEffect(() => {
+    if (!historyOn || reopenId) return;
+    api
+      .shipments({ per_page: 3 })
+      .then((page) => setRecent(page.items))
+      .catch(() => setRecent([]));
+  }, [historyOn, reopenId]);
+
   // Reopening a kept shipment: the snapshot is the wizard's own state, so it
   // goes straight back into the same pieces of state it came from. Once per
   // id — the effect must not restore over what the user has since typed.
   useEffect(() => {
     if (!reopenId || reopened.current === reopenId) return;
+    // A copy has to know which fields are declarations before it drops them,
+    // and only the registry says so — so this waits for it.
+    if (asTemplate && !registry) return;
     reopened.current = reopenId;
     let cancelled = false;
     api
@@ -237,10 +267,12 @@ export default function WizardPage() {
         setNextId(snap.nextId);
         setResult(snap.result);
         setDgEntries(snap.dgEntries);
-        setDocValues(asTemplate ? templateValues(snap.docValues) : snap.docValues);
+        setDocValues(asTemplate ? templateValues(snap.docValues, declarationKeys) : snap.docValues);
         setSelectedDocs(snap.selectedDocs);
         setSkippedQuestions(snap.skippedQuestions);
-        setSignature(snap.signature);
+        // A signature belongs to the shipment it was drawn for, not to the
+        // next one made from it.
+        setSignature(asTemplate ? null : snap.signature);
         setChosenDocLang(snap.docLang as Language | null);
         if (asTemplate) {
           // A new shipment: the goods and parties are its own, the record
@@ -263,7 +295,7 @@ export default function WizardPage() {
     };
     // toast and t are stable for the page's lifetime.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [reopenId]);
+  }, [reopenId, registry]);
 
   // The saved details land in the form as soon as they arrive, and only in
   // fields that are still empty — the preferences come back over the network,
@@ -923,10 +955,16 @@ export default function WizardPage() {
   // Where nothing may be stored, nothing is: there the draft is a file the
   // user keeps, and leaving warns first.
 
-  /** Whether there is anything to lose yet. */
+  /** Whether there is anything to lose yet.
+   *
+   *  The dates the wizard fills in by itself do not count: a shipment nobody
+   *  has typed a word into is not entry in progress, and a draft written for
+   *  every visit to an empty wizard is a row per glance. */
   const hasEntry =
     draftLines.some((line) => (line.description ?? "").trim()) ||
-    Object.values(docValues).some((value) => (value ?? "").trim());
+    Object.entries(docValues).some(
+      ([key, value]) => (value ?? "").trim() && !datesDefaulted.current.has(key),
+    );
 
   const [draftStatus, setDraftStatus] = useState<DraftStatus>("idle");
   const [draftSavedAt, setDraftSavedAt] = useState<Date | null>(null);
@@ -1395,6 +1433,24 @@ export default function WizardPage() {
 
       {stepKey === "lines" && (
         <div className="space-y-4">
+          {/* An earlier shipment as the start of this one, on the step where a
+              shipment starts. Reaching it used to mean the shipments page and
+              its detail page first. */}
+          {recent.length > 0 && !hasEntry && !reopenId && (
+            <div className={`${panelClass} flex flex-wrap items-center gap-x-3 gap-y-2 p-4`}>
+              <span className="text-sm text-slate-600 dark:text-slate-400">{t("wizard.startFrom")}</span>
+              {recent.map((shipment) => (
+                <Link
+                  key={shipment.id}
+                  to={`/wizard/${shipment.modality || "road"}?template=${shipment.id}`}
+                  className="rounded-lg border border-slate-200 px-2.5 py-1 text-xs font-medium text-slate-700 hover:bg-slate-50 dark:border-slate-700 dark:text-slate-200 dark:hover:bg-slate-800"
+                >
+                  {shipment.reference || shipment.consignee_name || `#${shipment.id}`}
+                </Link>
+              ))}
+            </div>
+          )}
+
           {result && (
             <div className="grid grid-cols-2 gap-2 sm:gap-3 lg:grid-cols-4">
               <Stat label={t("wizard.lines")} value={String(result.totals.line_count ?? 0)} />

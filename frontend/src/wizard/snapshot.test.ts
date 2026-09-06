@@ -80,4 +80,18 @@ describe("een bewaarde zending als sjabloon", () => {
       contract_number: "C-2024-7",
     });
   });
+
+  it("neemt geen ondertekende verklaring mee naar de kopie", () => {
+    // A copy that arrives with last week's confirmation already ticked is a
+    // form declaring something about goods nobody has looked at.
+    const fresh = templateValues(
+      {
+        consignor_name: "Afzender BV",
+        packing_certificate_confirmed: "true",
+        receipt_confirmation: "true",
+      },
+      ["packing_certificate_confirmed", "receipt_confirmation"],
+    );
+    expect(fresh).toEqual({ consignor_name: "Afzender BV" });
+  });
 });

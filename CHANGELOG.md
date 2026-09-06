@@ -2,6 +2,47 @@
 
 All notable changes are documented here, following [Semantic Versioning](https://semver.org/).
 
+## [1.200.0] — 2026-09-06
+
+### The list does the work, and the menu says what it holds
+
+Releases 116, 117 and 118 of [the usability plan](docs/ux-plan.md) — the last three — in
+one version.
+
+**Reuse is on the row.** The [baseline](docs/ux-baseline.md) found *no reuse action on the
+shipments list at all*: opening the detail page was compulsory before anything could be
+done with a kept shipment. **Open**, **Use as basis** and **Documents again** now stand
+beside every shipment, on the phone as on a wide screen, and each row says in a word what
+it is — *draft*, *still to complete* or *ready*. The entry somebody is in the middle of
+stands above the list with the way back into it.
+
+**A copy is a new shipment.** As well as the reference and the dates it already dropped, a
+template now drops the signature and every declaration somebody had signed for. A form
+arriving with last week's confirmation already ticked is a form declaring something about
+goods nobody has looked at.
+
+**And a shipment can start from an earlier one where a shipment starts:** the last few kept
+shipments are offered on the goods step, while nothing has been entered.
+
+**A trip starts from the shipments you are looking at.** Tick them on the list and **Add to
+a trip** opens the groupage check with the selection in it. The authorisation did not move
+— each one is fetched in the viewer's own name, and a shipment they may not see is simply
+not there — the same shipment cannot be added twice, and the file import stays exactly as
+it was.
+
+**The menu is four groups**: the work, the libraries it draws on, what an administrator
+keeps, and this account. Every address is the one it always was. On the mode chooser the
+modes that can actually be used come first; the ones that are not ready stay on the page,
+because what they say about themselves is worth reading.
+
+**A defect found while measuring:** an empty wizard was writing a draft on every visit,
+because the dates it fills in by itself counted as entry. They do not: a shipment nobody has
+typed a word into is not entry in progress.
+
+Measured: an earlier shipment as a basis went from 2 actions to 1. Five shipments into one
+trip counts 6 where the baseline counted 5 — five ticks on the list and the one action that
+makes a trip of them, instead of five presses on a page the user had to reach separately.
+
 ## [1.199.0] — 2026-09-06
 
 ### A last look before the documents, and an entry that survives a reload

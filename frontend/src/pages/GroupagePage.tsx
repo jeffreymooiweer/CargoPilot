@@ -20,7 +20,7 @@
  *  well — named, with what was on the vehicle and the judgement as it was
  *  given — and reopened from the trips page through `?trip=<id>`.
  */
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Link, useSearchParams } from "react-router";
 
@@ -119,29 +119,58 @@ export default function GroupagePage() {
     return () => clearTimeout(handle);
   }, [historyOn, query]);
 
-  async function addFromHistory(summary: ShipmentSummary) {
-    if (loaded.some((c) => c.shipmentId === summary.id)) return;
+  // A selection made on the shipments page arrives as ids in the address. The
+  // authorisation is not carried with them: each one is fetched in the
+  // viewer's own name, and a shipment they may not see simply is not there.
+  const fromList = searchParams.get("shipments") ?? "";
+  const claimed = useRef("");
+  useEffect(() => {
+    if (!historyOn || !fromList || claimed.current === fromList) return;
+    claimed.current = fromList;
+    const ids = fromList.split(",").map((one) => Number(one)).filter((one) => one > 0);
+    void (async () => {
+      let added = 0;
+      for (const id of ids) {
+        if (await addFromHistory({ id } as ShipmentSummary)) added += 1;
+      }
+      if (added) toast.success(t("groupage.addedFromList", { count: added }));
+    })();
+    // addFromHistory reads state through the setter form; the ids decide.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [historyOn, fromList]);
+
+  async function addFromHistory(summary: ShipmentSummary): Promise<boolean> {
+    if (loaded.some((c) => c.shipmentId === summary.id)) return false;
     try {
       const detail = await api.shipment(summary.id);
       const payload = detail.export as Record<string, any>;
       const entries = Array.isArray(payload.dangerous_goods) ? payload.dangerous_goods : [];
+      const named = summary.reference || detail.reference || `#${summary.id}`;
       if (!entries.length) {
-        toast.error(t("groupage.noDangerousGoods", { file: summary.reference || `#${summary.id}` }));
-        return;
+        // Said either way: a consignment left out of the trip because it
+        // carries nothing dangerous is a thing the planner has to know.
+        toast.error(t("groupage.noDangerousGoods", { file: named }));
+        return false;
       }
-      setLoaded((current) => [
-        ...current,
-        {
-          name: nameOf(payload, summary.reference || `#${summary.id}`),
-          entries,
-          profiles: Array.isArray(payload.regulations) ? payload.regulations : [],
-          fileName: `shipment-${summary.id}`,
-          shipmentId: summary.id,
-        },
-      ]);
+      setLoaded((current) =>
+        current.some((c) => c.shipmentId === summary.id)
+          ? current
+          : [
+              ...current,
+              {
+                name: nameOf(payload, named),
+                entries,
+                profiles: Array.isArray(payload.regulations) ? payload.regulations : [],
+                fileName: `shipment-${summary.id}`,
+                shipmentId: summary.id,
+              },
+            ],
+      );
       setResult(null);
+      return true;
     } catch {
       toast.error(t("groupage.unreadable", { file: summary.reference || `#${summary.id}` }));
+      return false;
     }
   }
 

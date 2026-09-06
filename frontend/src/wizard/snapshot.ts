@@ -113,11 +113,21 @@ export const TEMPLATE_CLEARED_KEYS = new Set([
 /** The details of a kept shipment as a new shipment starts with them: the
  *  identifying references and every date cleared, the rest kept. Dates are
  *  recognised by their key — they all end in `_date` — because the values
- *  are the only thing here, not the registry. */
-export function templateValues(values: Record<string, string>): Record<string, string> {
+ *  are the only thing here, not the registry.
+ *
+ *  `confirmations` are the keys the registry marks as a declaration somebody
+ *  signs for. They are cleared too, and that is not tidiness: a copy that
+ *  arrives with last week's confirmation already ticked is a form declaring
+ *  something about goods nobody has looked at. The caller passes them because
+ *  only it has the registry. */
+export function templateValues(
+  values: Record<string, string>,
+  confirmations: Iterable<string> = [],
+): Record<string, string> {
+  const signed = new Set(confirmations);
   const fresh: Record<string, string> = {};
   for (const [key, value] of Object.entries(values)) {
-    if (TEMPLATE_CLEARED_KEYS.has(key) || key.endsWith("_date")) continue;
+    if (TEMPLATE_CLEARED_KEYS.has(key) || key.endsWith("_date") || signed.has(key)) continue;
     fresh[key] = value;
   }
   return fresh;

@@ -459,39 +459,26 @@ def task_7(page, session: requests.Session) -> object:
     page.wait_for_timeout(3000)
     dismiss_toasts(page)
     b.observe()
+    # Since v1.200.0 the three things one does with a kept shipment are on the
+    # row itself; the baseline found none of them anywhere but the detail page.
     direct = page.locator("button:visible, a:visible").filter(
-        has_text=re.compile("sjabloon|basis|opnieuw", re.I))
-    b.note(f"{direct.count()} reuse action(s) — as template, download again — on the list itself")
+        has_text=re.compile("sjabloon|basis|opnieuw|Openen|Documenten", re.I))
+    b.note(f"{direct.count()} reuse action(s) on the list itself")
     b.shot("list")
-    row = page.get_by_role("link", name=re.compile("CP-2026")).first
-    if not row.count():
-        row = page.get_by_role("button", name=re.compile("CP-2026")).first
-    if not row.count():
-        b.note("no shipment could be opened from the list")
-        return b.done(False)
-    b.click(row)
-    try:
-        page.wait_for_url(re.compile(r"/shipments/\d+"), timeout=15000)
-    except Exception:
-        b.note(f"the reference did not open a shipment; the page stayed on {page.url[-40:]}")
-    page.wait_for_timeout(3500)
-    b.observe()
-    b.shot("detail")
-    b.note("the list opens a detail page first; every reuse action lives there")
-    names = page.locator("main button:visible, main a:visible, button:visible, a:visible").evaluate_all(
-        "els => [...new Set(els.map(e => e.innerText.trim()).filter(Boolean))]")
-    b.note(f"the detail page offers: {'; '.join(names)}")
-    basis = page.locator("button:visible, a:visible").filter(
-        has_text=re.compile("sjabloon|basis", re.I))
+    basis = page.get_by_role("link", name="Als sjabloon gebruiken")
     if not basis.count():
-        b.note("no reuse action found on the detail page either")
+        b.note("no way to start a new shipment from this one on the list")
         return b.done(False)
     b.click(basis.first)
     page.wait_for_timeout(4500)
     b.observe()
     b.shot("as-basis")
     b.note(f"the copy lands on {page.url.split('127.0.0.1:8765')[-1]}")
-    return b.done("wizard" in page.url)
+    # What a copy must not carry over: the old shipment's identity.
+    reference = page.locator("#field-shipment_reference")
+    b.note("the copy's own reference field: "
+           + (f"'{reference.input_value()}'" if reference.count() else "not on this step"))
+    return b.done("wizard" in page.url and "template=" in page.url)
 
 
 # --- 8. a reload during entry ----------------------------------------------------------
@@ -568,25 +555,27 @@ def task_9(page, session: requests.Session) -> object:
     page.wait_for_timeout(3000)
     dismiss_toasts(page)
     b.observe()
-    boxes = page.locator("input[type=checkbox]:visible")
-    b.note(f"{boxes.count()} checkbox(es) on the shipments list: there is no multiple selection, "
-           "so a trip cannot start from the shipments the user is looking at")
-    page.goto(f"{BASE}/groupage")
-    page.wait_for_timeout(3500)
-    b.observe()
-    b.shot("groupage")
+    boxes = page.locator("table input[type=checkbox]:visible")
+    b.note(f"{boxes.count()} shipment(s) on the list can be selected")
     picked = 0
-    for _ in range(5):
-        add = page.get_by_role("button", name=re.compile("^Toevoegen"))
-        if not add.count():
-            break
-        b.click(add.first)
-        page.wait_for_timeout(1200)
+    for index in range(min(5, boxes.count())):
+        b.click(boxes.nth(index))
         picked += 1
-    b.m.output["added"] = picked
-    b.note(f"{picked} shipment(s) added, one action each, on a page reached separately")
+    b.shot("selected")
+    to_trip = page.get_by_role("link", name=re.compile("^Aan een rit toevoegen"))
+    if not to_trip.count():
+        b.note("the selection led nowhere: no way to make a trip of it")
+        return b.done(False)
+    b.click(to_trip.first)
+    page.wait_for_timeout(6000)
+    b.observe()
+    dismiss_toasts(page)
+    on_board = page.get_by_label("Naam van de zending")
+    b.m.output["added"] = on_board.count()
+    b.note(f"{picked} selected on the list, {on_board.count()} on the trip, "
+           "in one action from the list")
     b.shot("trip")
-    return b.done(picked >= 5)
+    return b.done(on_board.count() >= 5)
 
 
 # --- 10. recovering from a refused save --------------------------------------------------

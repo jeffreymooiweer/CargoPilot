@@ -45,6 +45,7 @@ const api = vi.hoisted(() => ({
   forgetShipment: vi.fn(),
   shipmentDocuments: vi.fn(),
   departments: vi.fn(),
+  runningDraft: vi.fn(),
   shipmentExportUrl: (id: number) => `/api/shipments/${id}/export.json`,
 }));
 vi.mock("../api/client", () => ({ api }));
@@ -74,6 +75,7 @@ beforeEach(() => {
   }));
   api.forgetShipment.mockResolvedValue({ ok: true });
   api.departments.mockResolvedValue([{ id: 1, name: "Sales", users: 2, shipments: 5 }]);
+  api.runningDraft.mockResolvedValue(null);
 });
 
 describe("de zendingenpagina", () => {
@@ -96,6 +98,50 @@ describe("de zendingenpagina", () => {
     expect(screen.getAllByTitle("history.dg")).toHaveLength(2);
     expect(screen.getAllByText("ADR")).toHaveLength(2);
     expect(screen.getByText("history.count:2/2")).toBeInTheDocument();
+  });
+
+  it("biedt de drie dingen die je met een bewaarde zending doet, op de regel zelf", async () => {
+    // The baseline found no reuse action on the list at all: the detail page
+    // was compulsory before anything could be done.
+    renderAt("/shipments");
+    await screen.findAllByText("CP-2026-100");
+    const edit = screen.getAllByRole("link", { name: "history.edit" });
+    expect(edit[0]).toHaveAttribute("href", "/wizard/road?shipment=7");
+    const template = screen.getAllByRole("link", { name: "history.useTemplate" });
+    expect(template[0]).toHaveAttribute("href", "/wizard/road?template=7");
+    // Only the one that has a kept package is offered its documents again.
+    expect(screen.getAllByRole("button", { name: "history.documents" })).toHaveLength(2);
+  });
+
+  it("zegt van elke regel wat hij is", async () => {
+    renderAt("/shipments");
+    await screen.findAllByText("CP-2026-100");
+    // One has a kept package and is ready; the other stopped before that.
+    expect(screen.getAllByText("history.stateReady")).toHaveLength(2);
+    expect(screen.getAllByText("history.stateOpen")).toHaveLength(2);
+  });
+
+  it("maakt van een selectie een rit", async () => {
+    renderAt("/shipments");
+    await screen.findAllByText("CP-2026-100");
+    await userEvent.click(screen.getByLabelText("history.pick — CP-2026-100"));
+    await userEvent.click(screen.getByLabelText("history.pick — history.noReference"));
+    expect(screen.getByText(/history\.picked:2/)).toBeInTheDocument();
+    // The trip is opened with the selection in the address; the server
+    // decides per shipment whether this viewer may read it.
+    expect(screen.getByRole("link", { name: /history\.toTrip:2/ })).toHaveAttribute(
+      "href", "/groupage?shipments=7,8");
+  });
+
+  it("zet het concept waar de gebruiker mee bezig was bovenaan", async () => {
+    api.runningDraft.mockResolvedValue({
+      ...kept[0], id: 12, reference: "Concept", is_draft: true,
+      snapshot: {}, export: {},
+    });
+    renderAt("/shipments");
+    expect(await screen.findByText("history.stateDraft")).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "history.resumeDraft" })).toHaveAttribute(
+      "href", "/wizard/road?shipment=12");
   });
 
   it("stuurt de zoekopdracht en de modaliteit als filters mee", async () => {

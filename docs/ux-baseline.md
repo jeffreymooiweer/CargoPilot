@@ -122,6 +122,8 @@ same harness against the same tasks, so a row is comparable with the baseline ab
 | 113 (v1.198.0) | 5 An extra document | 4 → **5** | 0 → **0** | The choice moved to before the fields; coming back to it from a finished shipment is the fifth action |
 | 114–115 (v1.199.0) | 8 A reload during entry | 3 → **4** | 0 → **0** | And **completable**: the entry is there and the wizard is on the step it was on |
 | 114–115 (v1.199.0) | 1 A simple shipment | 19 → **19** | 0 → **0** | Unchanged; the export step now opens with what it is about to put on paper |
+| 116–118 (v1.200.0) | 7 An earlier shipment as a basis | 2 → **1** | 0 → **0** | One press on the list; the detail page is no longer on the way |
+| 116–118 (v1.200.0) | 9 Five shipments into one trip | 5 → **6** | 0 → **0** | Five ticks and one action, from the shipments the user is looking at |
 
 Task 3 is the one row in this table where the action count went *up*, and it is the
 release's point rather than a regression. Pasting fifty rows costs the same three actions
@@ -190,7 +192,24 @@ instead is whether the user is told and given their own copy. Both, in two actio
 installation stores nothing: a reload loses your entry*, with **Download the draft** and
 **Open a draft** beside it.
 
-Tasks 7, 9 and 10 were unchanged by 108 to 115.
+Releases 116 to 118 went to the list. The baseline found **no reuse action on it at all** —
+opening the detail page was compulsory before anything could be done — and no checkbox, so a
+trip could not start from the shipments the user was looking at. Both are on the row now:
+**Open**, **Use as basis** and **Documents again** beside every shipment, with *draft*,
+*still to complete* and *ready* said in a word, and a checkbox that turns a selection into a
+trip in one action. Task 7 went from 2 actions to 1. Task 9 counts 6 where the baseline
+counted 5, and the composition is the point: the baseline's five were one press per shipment
+on a page reached separately, after the user had given up on the list; the six are five ticks
+on the list itself and the one action that makes a trip of them. The authorisation did not
+move — each shipment is still fetched in the viewer's own name, and one they may not see is
+simply not there.
+
+The copy a template makes now drops what belonged to the old shipment: its reference, its
+dates, its signature and every declaration somebody had signed for. A form arriving with last
+week's confirmation already ticked is a form declaring something about goods nobody has
+looked at.
+
+Task 10 was unchanged by 108 to 118.
 
 ## What was not run
 

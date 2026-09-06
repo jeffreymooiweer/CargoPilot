@@ -22,6 +22,7 @@ from sqlalchemy import func
 from sqlalchemy.orm import Query, Session
 
 from app.models.shipment import Shipment
+from app.models.trip import Trip
 from app.models.user import Department, User
 
 
@@ -101,16 +102,19 @@ def rename(db: Session, department: Department, name: str) -> Department:
 
 
 def remove(db: Session, department: Department) -> dict:
-    """Delete the department; its people and shipments become unassigned.
+    """Delete the department; its people, shipments and trips become unassigned.
 
     Done explicitly rather than left to ``ON DELETE SET NULL``: SQLite only
     honours that with a pragma this application does not set, and a rule that
     silently depends on the engine is a rule that breaks on the other one.
+    Every table that names a department is cleared here — a row left with
+    the old id would be handed to whichever department is created next
+    under that id, which is how v1.187.0 to v1.189.0 treated kept trips.
     """
-    users = (db.query(User).filter(User.department_id == department.id)
-             .update({User.department_id: None}, synchronize_session=False))
-    shipments = (db.query(Shipment).filter(Shipment.department_id == department.id)
-                 .update({Shipment.department_id: None}, synchronize_session=False))
+    counts = {}
+    for name, model in (("users", User), ("shipments", Shipment), ("trips", Trip)):
+        counts[name] = int(db.query(model).filter(model.department_id == department.id)
+                           .update({model.department_id: None}, synchronize_session=False))
     db.delete(department)
     db.commit()
-    return {"ok": True, "users": int(users), "shipments": int(shipments)}
+    return {"ok": True, **counts}

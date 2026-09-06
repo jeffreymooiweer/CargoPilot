@@ -739,7 +739,8 @@
       "too_many_rows": "L'import contient {{rows}} lignes ; {{limit}} au maximum sont autorisées",
       "too_many_columns": "La ligne {{row}} contient {{columns}} colonnes ; {{limit}} au maximum sont autorisées",
       "cell_too_long": "La cellule {{row}}:{{column}} contient plus de {{limit}} caractères",
-      "unpacked_too_large": "La feuille de calcul décompressée dépasse {{limit_mb}} Mo"
+      "unpacked_too_large": "La feuille de calcul décompressée dépasse {{limit_mb}} Mo",
+      "unreadable_file": "Le fichier ne peut pas être lu comme un tableur"
     },
     "equipment": {
       "row_weight_missing": "Ligne {{row}} : le poids est absent ou inutilisable"
@@ -751,6 +752,9 @@
     },
     "articles": {
       "row_refused": "Ligne {{row}} : {{reason}}"
+    },
+    "auth": {
+      "two_factor_required": "Cette installation exige la vérification en deux étapes pour votre compte. Configurez-la d'abord sous Paramètres, Mes informations."
     }
   },
   "instructions": {
@@ -938,7 +942,8 @@
     "turnOffHintMail": "Demandez d'abord un code et saisissez-le ci-dessous. Un code de secours fonctionne aussi.",
     "nudge": "Votre compte n'a pas encore de vérification en deux étapes. Un mot de passe seul n'est qu'à une réutilisation divulguée d'une usurpation de votre identité.",
     "nudgeAction": "Configurer",
-    "nudgeRequired": "Cette installation exige une vérification en deux étapes et votre compte n'en a pas encore. Configurez-la tant que vous pouvez encore vous connecter."
+    "nudgeRequired": "Cette installation exige une vérification en deux étapes et votre compte n'en a pas encore. Configurez-la tant que vous pouvez encore vous connecter.",
+    "enforced": "Tant que votre compte n'a pas de vérification en deux étapes, cet écran est le seul qui fonctionne. Configurez-la ci-dessous."
   },
   "toast": {
     "undo": "Annuler l'action",
@@ -1161,7 +1166,7 @@
     "remove": "Supprimer",
     "counts": "{{users}} utilisateurs · {{shipments}} expéditions",
     "empty": "Aucun service pour l'instant.",
-    "confirmRemove": "Supprimer {{name}} ? Ses utilisateurs et expéditions continuent d'exister ; ils n'appartiennent simplement plus à aucun service.",
+    "confirmRemove": "Supprimer {{name}} ? Ses utilisateurs, expéditions et tournées continuent d'exister ; ils n'appartiennent simplement plus à aucun service.",
     "removed": "Service supprimé.",
     "saved": "Service enregistré.",
     "userDepartment": "Service",

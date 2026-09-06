@@ -167,6 +167,43 @@ def test_what_counts_as_a_usable_key(value, usable):
 # --- What is still reported -----------------------------------------------
 
 
+def test_a_wildcard_origin_is_answered_without_credentials(tmp_path, monkeypatch):
+    """"*" with credentials made Starlette reflect whatever origin asked,
+    cookie and all — the one combination CORS exists to forbid. Since
+    v1.190.0 the wildcard is anonymous and a named origin keeps the cookie."""
+    from fastapi.testclient import TestClient
+
+    from app.core.config import get_settings
+    from app.main import create_app
+
+    data_dir = tmp_path / "data"
+    data_dir.mkdir()
+    monkeypatch.setenv("DATABASE_URL", f"sqlite:///{data_dir / 'test.db'}")
+    monkeypatch.setenv("DATA_DIR", str(data_dir))
+    monkeypatch.setenv("APP_ENV", "test")
+    monkeypatch.setenv("CATALOG_AUTO_SYNC", "false")
+    preflight = {"Origin": "https://evil.example", "Access-Control-Request-Method": "GET"}
+    try:
+        monkeypatch.setenv("CORS_ALLOWED_ORIGINS", "*")
+        get_settings.cache_clear()
+        with TestClient(create_app()) as client:
+            answer = client.options("/api/auth/me", headers=preflight)
+        assert answer.headers.get("access-control-allow-origin") == "*"
+        assert "access-control-allow-credentials" not in answer.headers
+
+        monkeypatch.setenv("CORS_ALLOWED_ORIGINS", "https://cargopilot.example.com")
+        get_settings.cache_clear()
+        with TestClient(create_app()) as client:
+            stranger = client.options("/api/auth/me", headers=preflight)
+            friend = client.options("/api/auth/me", headers={
+                **preflight, "Origin": "https://cargopilot.example.com"})
+        assert "access-control-allow-origin" not in stranger.headers
+        assert friend.headers.get("access-control-allow-origin") == "https://cargopilot.example.com"
+        assert friend.headers.get("access-control-allow-credentials") == "true"
+    finally:
+        get_settings.cache_clear()
+
+
 def test_wide_open_cors_is_reported_but_does_not_stop_anything(settings):
     settings.cors_allowed_origins = "*"
     warnings = apply_security_configuration(settings)

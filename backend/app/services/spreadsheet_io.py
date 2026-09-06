@@ -175,8 +175,16 @@ def _read_xlsx(
     max_columns: int | None,
     max_cell_chars: int | None,
 ) -> list[list[str]]:
-    _validate_xlsx_archive(content)
-    wb = openpyxl.load_workbook(io.BytesIO(content), read_only=True, data_only=True)
+    try:
+        _validate_xlsx_archive(content)
+        wb = openpyxl.load_workbook(io.BytesIO(content), read_only=True, data_only=True)
+    except ImportLimitError:
+        raise
+    except Exception as exc:
+        # A file that is not the spreadsheet its name says — truncated,
+        # another format renamed, a damaged archive. The person who uploaded
+        # it can act on "unreadable"; a stack trace in the log helps nobody.
+        raise ImportLimitError("import.unreadable_file") from exc
     try:
         ws = wb.active
         rows: list[list[str]] = []

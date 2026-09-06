@@ -739,7 +739,8 @@
       "too_many_rows": "The import holds {{rows}} rows; at most {{limit}} are allowed",
       "too_many_columns": "Row {{row}} holds {{columns}} columns; at most {{limit}} are allowed",
       "cell_too_long": "Cell {{row}}:{{column}} holds more than {{limit}} characters",
-      "unpacked_too_large": "The unpacked spreadsheet is larger than {{limit_mb}} MB"
+      "unpacked_too_large": "The unpacked spreadsheet is larger than {{limit_mb}} MB",
+      "unreadable_file": "The file cannot be read as a spreadsheet"
     },
     "equipment": {
       "row_weight_missing": "Row {{row}}: the weight is missing or unusable"
@@ -751,6 +752,9 @@
     },
     "articles": {
       "row_refused": "Row {{row}}: {{reason}}"
+    },
+    "auth": {
+      "two_factor_required": "This installation requires two-factor verification for your account. Set it up first under Settings, My details."
     }
   },
   "instructions": {
@@ -938,7 +942,8 @@
     "turnOffHintMail": "Ask for a code first and type it below. A recovery code works too.",
     "nudge": "Your account has no two-factor authentication yet. A password alone is one leaked reuse away from somebody else acting in your name.",
     "nudgeAction": "Set it up",
-    "nudgeRequired": "This installation requires two-factor authentication and your account does not have it yet. Set it up while you can still sign in."
+    "nudgeRequired": "This installation requires two-factor authentication and your account does not have it yet. Set it up while you can still sign in.",
+    "enforced": "Until your account has two-factor verification, this is the only screen that works. Set it up below."
   },
   "toast": {
     "undo": "Undo",
@@ -1161,7 +1166,7 @@
     "remove": "Remove",
     "counts": "{{users}} users · {{shipments}} shipments",
     "empty": "No departments yet.",
-    "confirmRemove": "Remove {{name}}? Its users and shipments keep existing; they just belong to no department any more.",
+    "confirmRemove": "Remove {{name}}? Its users, shipments and trips keep existing; they just belong to no department any more.",
     "removed": "Department removed.",
     "saved": "Department saved.",
     "userDepartment": "Department",

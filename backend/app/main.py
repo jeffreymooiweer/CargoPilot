@@ -106,10 +106,15 @@ def create_app() -> FastAPI:
     app = FastAPI(title=settings.app_name)
     app.state.limiter = limiter
     app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
+    # A wildcard origin never travels with credentials. Starlette answers
+    # "*" plus credentials by reflecting whatever origin asked, which is the
+    # one combination the CORS specification exists to forbid: any website
+    # could then call the API with the visitor's cookie. Named origins keep
+    # the cookie; the wildcard gets the anonymous access it stands for.
     app.add_middleware(
         CORSMiddleware,
         allow_origins=settings.cors_origins,
-        allow_credentials=True,
+        allow_credentials=settings.cors_origins != ["*"],
         allow_methods=["*"],
         allow_headers=["*"],
     )

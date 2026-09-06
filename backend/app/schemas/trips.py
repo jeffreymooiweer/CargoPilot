@@ -4,7 +4,30 @@ from __future__ import annotations
 from datetime import datetime
 from typing import Any
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, field_validator
+
+from app.schemas.dg_compliance import RegulatoryProfile
+
+
+def known_profiles(value: Any) -> list[str]:
+    """The profiles as canonical names, refusing what is not one.
+
+    "adr" is ADR and the old name IATA is IATA_DGR, as the compliance
+    request reads them. A name that is no regime at all ("IDMG") is refused
+    rather than kept: until v1.190.0 a trip was kept under it and judged as
+    if under ADR, with the wrong regime written in its index.
+    """
+    if not isinstance(value, (list, tuple)):
+        raise ValueError("profiles must be a list")
+    names: list[str] = []
+    for profile in value:
+        name = profile.value if isinstance(profile, RegulatoryProfile) else str(profile).strip().upper()
+        name = "IATA_DGR" if name == "IATA" else name
+        if name not in RegulatoryProfile.__members__:
+            raise ValueError(f"unknown regulatory profile: {profile}")
+        if name not in names:
+            names.append(name)
+    return names
 
 
 class TripConsignmentIn(BaseModel):
@@ -29,6 +52,11 @@ class TripIn(BaseModel):
     profiles: list[str] = Field(default_factory=list)
     language: str = Field(default="nl", max_length=8)
     unit_max_mass_tonnes: float | None = Field(default=None, ge=0, le=200)
+
+    @field_validator("profiles", mode="before")
+    @classmethod
+    def _known_profiles(cls, value: Any) -> list[str]:
+        return known_profiles(value)
 
 
 class TripSummary(BaseModel):

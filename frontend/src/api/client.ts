@@ -2,11 +2,26 @@ import i18n from "i18next";
 
 const API_BASE = "/api";
 
+/** Fired on `window` when the server refuses a call because the account
+ *  owes the installation a second factor (`auth.two_factor_required`).
+ *  The nudge listens and takes the person to the panel that sets one up:
+ *  the API client has no router of its own, and every page would
+ *  otherwise have to recognise the refusal separately. */
+export const TWO_FACTOR_REQUIRED_EVENT = "cargopilot:two-factor-required";
+
+/** The error for a refused response, after noticing what kind it is. */
+async function refusal(res: Response): Promise<Error> {
+  const err = await res.json().catch(() => ({ detail: res.statusText }));
+  if (res.status === 403 && isApiMessage(err.detail) && err.detail.code === "auth.two_factor_required") {
+    window.dispatchEvent(new CustomEvent(TWO_FACTOR_REQUIRED_EVENT));
+  }
+  return new Error(describeDetail(err.detail));
+}
+
 async function downloadBlob(path: string, filename: string): Promise<void> {
   const res = await fetch(`${API_BASE}${path}`, { credentials: "include" });
   if (!res.ok) {
-    const err = await res.json().catch(() => ({ detail: res.statusText }));
-    throw new Error(describeDetail(err.detail));
+    throw await refusal(res);
   }
   const blob = await res.blob();
   const url = URL.createObjectURL(blob);
@@ -26,11 +41,10 @@ async function uploadFile<T>(path: string, file: File): Promise<T> {
     body: form,
   });
   if (!res.ok) {
-    const err = await res.json().catch(() => ({ detail: res.statusText }));
     // The import routes answer with a translatable message, so this cannot
     // assume a string any more — that assumption is what produced "Upload
     // failed" where the server had said exactly what was wrong.
-    throw new Error(describeDetail(err.detail));
+    throw await refusal(res);
   }
   return res.json();
 }
@@ -120,8 +134,7 @@ async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
     ...options,
   });
   if (!res.ok) {
-    const err = await res.json().catch(() => ({ detail: res.statusText }));
-    throw new Error(describeDetail(err.detail));
+    throw await refusal(res);
   }
   if (res.headers.get("content-type")?.includes("application/json")) {
     return res.json();

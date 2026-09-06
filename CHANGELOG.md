@@ -2,6 +2,71 @@
 
 All notable changes are documented here, following [Semantic Versioning](https://semver.org/).
 
+## [1.190.0] — 2026-09-06
+
+### What an external audit found, fixed
+
+An independent review of v1.189.0 with synthetic data and its own test scripts named
+eighteen findings. The ones that held up against the code are fixed here; the rest are
+either design choices that stay (the proxy headers are trusted by default for an
+installation behind a reverse proxy) or cosmetic (a 405 where a 404 would read better).
+The dependency upgrades it asked for are the next release, on their own, because they
+carry a FastAPI major version.
+
+**A removed department left its trips behind.** Removing a department cleared the users
+and the shipments and forgot the kept trips, which kept the old department id — and
+SQLite hands that id to the next department created, so a new department inherited
+another's trips. The removal now clears every table that names a department and says
+how many trips it touched.
+
+**Quantities read a thousandfold wrong.** Every reader took the first run of digits with
+one optional separator, so `1.250,5 L` was 1.25 litres in the IFTDGN, in the 1.1.3.6
+points and in the LQ measures alike. One parser now reads for all of them, with the
+thousands rules written out in `services/quantities.py` and pinned by tests; a
+negative quantity is refused rather than made positive; a net per package is multiplied
+by the packages instead of being written as the item's total.
+
+**The IFTDGN said what it did not know.** A UN number that was not four digits was
+padded into `0000` and sent as fact; a filled column 7a was written as `LIMITED
+QUANTITY` whether or not the consignment travelled under 3.4; an emoji became a bare
+`?` — the release character — because the character set was applied after the
+escaping. The notification now names a bad UN number and a bad quantity as problems
+before it leaves, writes no limited-quantity statement, and replaces what ISO 8859-1
+cannot hold before the service characters are released.
+
+**A kept trip under a regime that does not exist.** `POST /api/trips` accepted any
+string as a profile and judged the trip under ADR anyway. Unknown profiles are refused
+with a 422; `adr` and `IATA` are read as `ADR` and `IATA_DGR`, as the compliance request
+reads them.
+
+**The audit export could hand a spreadsheet a formula.** A shipment reference `=1+1`
+went into the CSV as typed. Cells that start like a formula are prefixed with an
+apostrophe, the convention every spreadsheet reads as text.
+
+**A working second factor could be replaced without a code.** Starting an enrolment over
+a confirmed one overwrote the secret from a borrowed session. It is refused now: a
+factor is switched off with a code first, never quietly replaced.
+
+**A required second factor was a notice, not a rule.** The policy was checked at
+sign-in and the screen sent people to the panel, but every route let the session
+through. The server now refuses every call except the panel's own — who am I, the
+factor, my preferences, the public settings — with `auth.two_factor_required`, and the
+interface takes the person to the panel and says why. Nobody is locked out; nobody can
+work around it either.
+
+**A reference outside ISO 8859-1 broke the export download.** An emoji in the shipment
+reference turned the structured export into a 500, because the file name was written
+into the `Content-Disposition` header as it was. The header now carries an ASCII
+fallback and the real name percent-encoded, per RFC 6266.
+
+**A wildcard origin travelled with credentials.** `CORS_ALLOWED_ORIGINS=*` with
+credentials makes Starlette reflect whatever origin asks, cookie included. The wildcard
+is now answered without credentials; named origins keep them. The interface served by
+the application itself is same-origin and unaffected.
+
+**A damaged spreadsheet was a 500.** A file that is not the `.xlsx` its name says is
+refused with `import.unreadable_file`, in the user's language.
+
 ## [1.189.0] — 2026-09-05
 
 ### The IFTDGN notification, written from the D.16A directory

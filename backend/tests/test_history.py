@@ -258,6 +258,26 @@ def test_keeping_builds_the_export_and_the_index_from_the_same_parts(db, monkeyp
             as_file.headers["content-disposition"]
 
 
+def test_a_reference_outside_latin_1_still_downloads(db, monkeypatch):
+    """An emoji in the reference turned the export into a 500: the name was
+    written into the header as it was, and a header is ISO 8859-1."""
+    from app.core.http import attachment
+
+    with application(db, monkeypatch) as client:
+        switch_history(db, True)
+        kept = client.post("/api/shipments", json=shipment(
+            values={**CONSIGNMENT, "reference": "CP-\U0001f69a-1"}))
+        assert kept.status_code == 200, kept.text
+        response = client.get(f"/api/shipments/{kept.json()['id']}/export.json")
+    assert response.status_code == 200
+    assert response.headers["content-disposition"] == (
+        "attachment; filename=\"cargopilot-shipment-CP--1.json\"; "
+        "filename*=UTF-8''cargopilot-shipment-CP-%F0%9F%9A%9A-1.json")
+    assert attachment("plain.json") == 'attachment; filename="plain.json"'
+    assert attachment('a"b\r\nc.json') == 'attachment; filename="a_b__c.json"'
+    assert attachment("Zoë.json").startswith('attachment; filename="Zoe.json"; filename*=')
+
+
 def test_keeping_again_brings_the_same_row_up_to_date(db, monkeypatch):
     with application(db, monkeypatch, CARGOPILOT_HISTORY="true") as client:
         first = client.post("/api/shipments", json=shipment()).json()

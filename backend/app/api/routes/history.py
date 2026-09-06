@@ -20,6 +20,7 @@ from sqlalchemy.orm import Session
 from app.api.routes.documents import build_bundle, delete_file
 from app.core.database import get_db
 from app.core.deps import get_current_user
+from app.core.http import attachment
 from app.core.ratelimit import DGSA_REPORT, DOCUMENT_BUNDLE, limiter
 from app.models.shipment import Shipment
 from app.models.user import User
@@ -230,7 +231,7 @@ def shipment_export(request: Request, shipment_id: int,
     record = _kept(request, db, user, _record(shipment_id, db, user), "shipment.export")
     name = f"cargopilot-shipment-{record.reference or record.id}.json"
     return JSONResponse(content=history.detail(record).export,
-                        headers={"Content-Disposition": f'attachment; filename="{name}"'})
+                        headers={"Content-Disposition": attachment(name)})
 
 
 @router.post("/{shipment_id}/documents")

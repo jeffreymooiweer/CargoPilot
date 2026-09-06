@@ -182,7 +182,68 @@ def test_the_additional_information_names_what_the_codes_cannot():
     product = {**PETROL, "marine_pollutant": "yes", "limited_quantity": "5 L", "empty_uncleaned": "ja"}
     segments = message(entries=[{"line_id": "1", "products": [product]}])
     aac = [f for f in by_tag(segments, "FTX") if f.elements[0] == "AAC"][0]
-    assert aac.elements[3] == ["MARINE POLLUTANT", "LIMITED QUANTITY", "EMPTY UNCLEANED"]
+    # No LIMITED QUANTITY: the field holds column 7a of Table A, the limit
+    # up to which 3.4 applies, not whether this consignment travels under it.
+    assert aac.elements[3] == ["MARINE POLLUTANT", "EMPTY UNCLEANED"]
+
+
+def test_the_quantities_are_read_with_their_thousands_separators():
+    """"1.250,5 L" is 1250.5 litres, not 1.25 — which is what v1.189.0 wrote."""
+    product = {**PETROL, "adr_total_quantity": "1.250,5 L",
+               "gross_mass_per_package": "1,250.5", "quantity_packages": "2"}
+    mea = by_tag(message(entries=[{"line_id": "1", "products": [product]}]), "MEA")
+    assert [m.elements[2] for m in mea] == [["KGM", "2501"], ["LTR", "1250.5"]]
+
+
+def test_a_net_per_package_is_multiplied_by_the_packages():
+    product = {**PETROL, "adr_total_quantity": "", "net_mass_liters_per_package": "25 L",
+               "quantity_packages": "4"}
+    mea = by_tag(message(entries=[{"line_id": "1", "products": [product]}]), "MEA")
+    assert [m.elements[2] for m in mea] == [["KGM", "880"], ["LTR", "100"]]
+    # Without the number of packages a per-package figure is no total, and
+    # the gross cannot be summed either: nothing is written, and the
+    # validation says why.
+    alone = {**product, "quantity_packages": ""}
+    assert by_tag(message(entries=[{"line_id": "1", "products": [alone]}]), "MEA") == []
+    assert any("has no mass or quantity" in p
+               for p in iftdgn.problems(VALUES, [{"products": [alone]}], "en"))
+
+
+def test_what_is_not_a_positive_number_is_named_not_guessed():
+    product = {**PETROL, "adr_total_quantity": "-5 L", "gross_mass_per_package": "abc"}
+    segments = message(entries=[{"line_id": "1", "products": [product]}])
+    assert by_tag(segments, "MEA") == []
+    found = iftdgn.problems(VALUES, [{"products": [product]}], "en")
+    assert "IFTDGN: UN 1203 has a quantity that is not a number greater than zero (-5 L)." in found
+    assert "IFTDGN: UN 1203 has a quantity that is not a number greater than zero (abc)." in found
+
+
+def test_a_un_number_that_is_not_four_digits_is_not_padded_into_one():
+    product = {**PETROL, "un_number": "abc"}
+    dgs = by_tag(message(entries=[{"line_id": "1", "products": [product]}]), "DGS")[0]
+    assert dgs.elements[2] == [""]
+    found = iftdgn.problems(VALUES, [{"products": [product]}], "en")
+    assert "IFTDGN: item #1 has a UN number that is not four digits (abc)." in found
+    # A prefix is fine; a short number is not.
+    assert iftdgn._un("UN 1203") == "1203" and iftdgn._un("un1203") == "1203"
+    assert iftdgn._un("12") == "" and iftdgn._un("") == ""
+
+
+def test_a_character_outside_the_character_set_is_replaced_before_it_is_released():
+    """An emoji in a name became a bare "?" — the release character — in
+    v1.189.0, because the replacement happened after the escaping."""
+    from app.services.documents.iftdgn import render_iftdgn
+
+    values = {**VALUES, "consignor_name": "Audit \U0001f69a BV", "carrier_name": "Zoë & Łukasz"}
+    text = iftdgn.build_interchange(values, [], ENTRIES, profiles=["ADR"], modality="road", now=NOW)
+    assert "UNB+UNOC:3+Audit ?? BV+Zoë & ??ukasz+" in text
+    assert [s for s in parse(text) if s.tag == "UNB"][0].elements[1] == "Audit ? BV"
+    text.encode("latin-1")  # strict: nothing outside the set is left
+    path = render_iftdgn(values, [], ENTRIES, profiles=["ADR"], modality="road")
+    try:
+        assert "Audit ?? BV" in path.read_bytes().decode("latin-1")
+    finally:
+        path.unlink()
 
 
 def test_several_products_are_several_goods_items():

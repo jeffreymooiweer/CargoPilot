@@ -27,6 +27,21 @@ class FakeUpload:
         return self.content[:size]
 
 
+def test_a_file_that_is_not_the_spreadsheet_its_name_says_is_refused_readably():
+    """Truncated, renamed, damaged: a 500 told the person nothing; the
+    message code does."""
+    for content in (b"PK\x03\x04 not really an archive", b"just text"):
+        with pytest.raises(ImportLimitError) as raised:
+            read_tabular_file(content, "broken.xlsx", max_rows=10, max_columns=10, max_cell_chars=100)
+        assert raised.value.code == "import.unreadable_file"
+    archive = io.BytesIO()
+    with zipfile.ZipFile(archive, "w") as inner:
+        inner.writestr("hello.txt", "not a workbook")
+    with pytest.raises(ImportLimitError) as raised:
+        read_tabular_file(archive.getvalue(), "broken.xlsx", max_rows=10, max_columns=10, max_cell_chars=100)
+    assert raised.value.code == "import.unreadable_file"
+
+
 def test_upload_reader_stops_at_limit_plus_one_byte():
     upload = FakeUpload(b"0123456789")
 

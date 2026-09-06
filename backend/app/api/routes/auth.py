@@ -381,7 +381,13 @@ def two_factor_start(
             detail="Codes by e-mail need a mail server. An administrator sets "
                    "one under Settings, Administration, Mail server.")
 
-    row = two_factor.start_enrolment(db, user, payload.method)
+    try:
+        row = two_factor.start_enrolment(db, user, payload.method)
+    except two_factor.AlreadyEnrolled as exc:
+        raise HTTPException(
+            status_code=400,
+            detail="A second factor is already switched on. Switch it off first, "
+                   "which needs a working code.") from exc
     if payload.method == "totp":
         uri = two_factor.provisioning_uri(user, row.secret)
         return TwoFactorSetup(method="totp", secret=row.secret,

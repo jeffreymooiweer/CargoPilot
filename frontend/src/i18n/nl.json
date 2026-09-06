@@ -739,7 +739,8 @@
       "too_many_rows": "De import bevat {{rows}} rijen; maximaal {{limit}} zijn toegestaan",
       "too_many_columns": "Rij {{row}} bevat {{columns}} kolommen; maximaal {{limit}} zijn toegestaan",
       "cell_too_long": "Cel {{row}}:{{column}} bevat meer dan {{limit}} tekens",
-      "unpacked_too_large": "De uitgepakte spreadsheet is groter dan {{limit_mb}} MB"
+      "unpacked_too_large": "De uitgepakte spreadsheet is groter dan {{limit_mb}} MB",
+      "unreadable_file": "Het bestand kan niet als spreadsheet worden gelezen"
     },
     "equipment": {
       "row_weight_missing": "Regel {{row}}: het gewicht ontbreekt of is onbruikbaar"
@@ -751,6 +752,9 @@
     },
     "articles": {
       "row_refused": "Regel {{row}}: {{reason}}"
+    },
+    "auth": {
+      "two_factor_required": "Deze installatie vereist tweestapsverificatie voor uw account. Stel die eerst in onder Instellingen, Mijn gegevens."
     }
   },
   "instructions": {
@@ -938,7 +942,8 @@
     "turnOffHintMail": "Vraag eerst een code aan en vul die hieronder in. Een herstelcode werkt ook.",
     "nudge": "Je account heeft nog geen tweestapsverificatie. Alleen een wachtwoord is één gelekt hergebruik verwijderd van iemand anders in jouw naam.",
     "nudgeAction": "Nu instellen",
-    "nudgeRequired": "Deze installatie vereist tweestapsverificatie en jouw account heeft die nog niet. Stel hem in zolang je nog kunt inloggen."
+    "nudgeRequired": "Deze installatie vereist tweestapsverificatie en jouw account heeft die nog niet. Stel hem in zolang je nog kunt inloggen.",
+    "enforced": "Zolang uw account geen tweestapsverificatie heeft, is dit het enige scherm dat werkt. Stel die hieronder in."
   },
   "toast": {
     "undo": "Ongedaan maken",
@@ -1161,7 +1166,7 @@
     "remove": "Verwijderen",
     "counts": "{{users}} gebruikers · {{shipments}} zendingen",
     "empty": "Nog geen afdelingen.",
-    "confirmRemove": "{{name}} verwijderen? De gebruikers en zendingen blijven bestaan; ze horen alleen bij geen afdeling meer.",
+    "confirmRemove": "{{name}} verwijderen? De gebruikers, zendingen en ritten blijven bestaan; ze horen alleen bij geen afdeling meer.",
     "removed": "Afdeling verwijderd.",
     "saved": "Afdeling opgeslagen.",
     "userDepartment": "Afdeling",

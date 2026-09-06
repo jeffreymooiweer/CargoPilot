@@ -30,8 +30,9 @@ from app.core.database import Base, get_db
 from app.core.deps import get_current_user
 from app.main import create_app
 from app.models.audit import AuditEvent
+from app.models.trip import Trip
 from app.models.user import Department, User
-from app.services import history, trips
+from app.services import departments, history, trips
 from app.schemas.trips import TripIn
 
 
@@ -161,6 +162,17 @@ def test_keeping_again_brings_the_same_row_up_to_date(db, monkeypatch):
         assert client.get("/api/trips").json()["total"] == 1
 
 
+def test_an_unknown_regime_is_refused_not_judged_as_adr(db, monkeypatch):
+    """"IDMG" was kept and judged under ADR's points until v1.190.0."""
+    with application(db, monkeypatch, CARGOPILOT_HISTORY="true") as client:
+        refused = client.post("/api/trips", json=trip(profiles=["IDMG"]))
+        assert refused.status_code == 422
+        assert "IDMG" in refused.text
+        kept = client.post("/api/trips", json=trip(profiles=["adr", "IATA"]))
+        assert kept.status_code == 200, kept.text
+        assert kept.json()["regulations"] == ["ADR", "IATA_DGR"]
+
+
 # --- 3/4. the list and who sees it ----------------------------------------------------
 
 
@@ -191,6 +203,22 @@ def test_forgetting_removes_the_row(db, monkeypatch):
         assert client.get(f"/api/trips/{kept['id']}").status_code == 404
         assert client.delete(f"/api/trips/{kept['id']}").status_code == 404
     assert trips.count(db) == 0
+
+
+def test_a_removed_department_leaves_no_trip_behind_under_its_id(db, monkeypatch):
+    """SQLite hands a new department the old id; a trip still carrying it
+    would be that department's. Until v1.190.0 the removal cleared users
+    and shipments and forgot the trips."""
+    with application(db, monkeypatch, CARGOPILOT_HISTORY="true") as client:
+        kept = client.post("/api/trips", json=trip()).json()
+        assert kept["department_id"] == 1
+    gone = departments.remove(db, db.get(Department, 1))
+    assert gone["trips"] == 1
+    db.expire_all()
+    assert db.get(Trip, kept["id"]).department_id is None
+    docks = departments.create(db, "Docks")
+    assert docks.id == 1  # the id came back; the trip did not come with it
+    assert trips.search(db, SimpleNamespace(id=9, role="user", department_id=1))[1] == 0
 
 
 # --- 5. the switch ----------------------------------------------------------------------

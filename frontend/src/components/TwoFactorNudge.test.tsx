@@ -14,7 +14,7 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 
 import TwoFactorNudge, { NUDGED_KEY, clearTwoFactorNudge } from "./TwoFactorNudge";
 import { ToastProvider } from "../toast/ToastProvider";
-import { api, User } from "../api/client";
+import { TWO_FACTOR_REQUIRED_EVENT, api, User } from "../api/client";
 
 vi.mock("react-i18next", () => ({
   useTranslation: () => ({
@@ -125,6 +125,22 @@ describe("TwoFactorNudge", () => {
     renderNudge();
     await new Promise((resolve) => setTimeout(resolve, 10));
     expect(screen.queryByText("twoFactor.nudge")).not.toBeInTheDocument();
+  });
+
+  it("takes a refused account to the panel, and explains once", async () => {
+    vi.spyOn(api, "twoFactorStatus").mockResolvedValue(ON);
+    renderNudge();
+    await waitFor(() => expect(api.twoFactorStatus).toHaveBeenCalled());
+    // What the API client raises when the server answers a call with
+    // auth.two_factor_required: the account owes a factor and may reach
+    // nothing else, so every page it lands on ends up here.
+    window.dispatchEvent(new CustomEvent(TWO_FACTOR_REQUIRED_EVENT));
+    expect(await screen.findByText("settings page")).toBeInTheDocument();
+    expect(screen.getByTestId("where")).toHaveTextContent("/settings?tab=details");
+    expect(screen.getByText("twoFactor.nudgeRequired")).toBeInTheDocument();
+    window.dispatchEvent(new CustomEvent(TWO_FACTOR_REQUIRED_EVENT));
+    window.dispatchEvent(new CustomEvent(TWO_FACTOR_REQUIRED_EVENT));
+    expect(screen.getAllByText("twoFactor.nudgeRequired")).toHaveLength(1);
   });
 
   it("asks again after a logout", async () => {

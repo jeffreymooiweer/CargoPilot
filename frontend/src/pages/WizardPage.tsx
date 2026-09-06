@@ -21,7 +21,7 @@ import AiIcon from "../components/AiIcon";
 import AssistantModal from "../components/AssistantModal";
 import DocumentFieldsStep, { resolveSections } from "../components/DocumentFieldsStep";
 import DocumentAdvicePanel, { buildAdvice } from "../components/DocumentAdvicePanel";
-import ReviewLinesPanel, { DraftLine, draftToText, textToDraftLines } from "../components/ReviewLinesPanel";
+import ReviewLinesPanel, { DraftLine, draftToText, openQuestions, textToDraftLines } from "../components/ReviewLinesPanel";
 import WizardProgress from "../components/WizardProgress";
 import { isModalityAvailable } from "./ModalitySelectPage";
 import { usePreferences } from "../settings/preferences";
@@ -337,6 +337,14 @@ export default function WizardPage() {
   }, [preferencesLoaded, preferences.default_unit]);
 
   const modalityDef = registry?.modalities.find((m) => m.key === modality);
+
+  // A substance suggestion nobody answered is not an answer. It stays visible
+  // to the end, because "we thought this might be UN 1203 and never found out"
+  // is exactly what a document check is for.
+  const unanswered = useMemo(
+    () => openQuestions(draftLines, result?.lines),
+    [draftLines, result],
+  );
 
   const needsDg = useMemo(
     () =>
@@ -1183,6 +1191,18 @@ export default function WizardPage() {
             {needsDg && (
               <p className="text-sm text-amber-700 dark:text-amber-300">
                 {t("wizard.dgIncluded", { count: dgEntries.length })}
+              </p>
+            )}
+            {unanswered > 0 && (
+              <p className="text-sm text-amber-700 dark:text-amber-300">
+                {t("wizard.unansweredSubstances", { count: unanswered })}{" "}
+                <button
+                  type="button"
+                  onClick={() => setStepKey("lines")}
+                  className="font-medium underline underline-offset-2"
+                >
+                  {t("wizard.unansweredGo")}
+                </button>
               </p>
             )}
             <div className="space-y-3">

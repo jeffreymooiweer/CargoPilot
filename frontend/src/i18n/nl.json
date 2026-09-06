@@ -95,7 +95,9 @@
     "importAppended": "{{count}} regel(s) toegevoegd.",
     "importReplaced": "{{count}} regel(s) in de plaats gezet.",
     "importUndo": "Ongedaan maken",
-    "importUndone": "De vorige regels staan er weer."
+    "importUndone": "De vorige regels staan er weer.",
+    "unansweredSubstances": "{{count}} goederenregel(s) hebben een stofvraag die nog niet is beantwoord.",
+    "unansweredGo": "Naar de goederen"
   },
   "review": {
     "linesTitle": "Goederen",
@@ -133,7 +135,6 @@
     "cancel": "Annuleren",
     "dangerousGoods": "Gevaarlijke stoffen",
     "dgDetected": "UN-nummer herkend",
-    "dgApply": "Overnemen",
     "dgDismiss": "Geen gevaarlijke stof",
     "quantityAndUnit": "Aantal",
     "volume": "Volume",
@@ -151,8 +152,6 @@
     "dimensions": "Afmetingen",
     "dgYes": "Ja",
     "dgNo": "Nee",
-    "dgToastOne": "Regel {{number}}: UN {{un}} ({{name}}, klasse {{class}}) herkend. Overnemen?",
-    "dgToastMany": "Regel {{number}}: meerdere stoffen mogelijk. Welke is het?",
     "lineDetails": "Details",
     "descriptionOfLine": "Omschrijving van regel {{number}}",
     "quantityOfLine": "Aantal van regel {{number}}",
@@ -168,7 +167,18 @@
     "importSkipped": "{{count}} rij(en) overgeslagen: geen omschrijving",
     "attentionSummary": "{{ok}} gereed · {{attention}} wil aandacht",
     "onlyAttention": "Alleen deze tonen",
-    "showAllLines": "Alle regels tonen"
+    "showAllLines": "Alle regels tonen",
+    "dgAskOne": "Dit lijkt op UN {{un}}, {{name}} (klasse {{class}}). Klopt dat?",
+    "dgAskMany": "Deze omschrijving past bij meer dan één stof. Welke is het?",
+    "dgTake": "Neem UN {{un}}",
+    "dgOther": "Een andere stof",
+    "dgWrong": "Deze suggestie klopt niet",
+    "dgWrongHint": "Afwijzen zegt alleen dat déze stof het niet is — niet dat de goederen ongevaarlijk zijn.",
+    "dgAnsweredConfirmed": "Beantwoord: UN {{un}}.",
+    "dgAnsweredOther": "Beantwoord: een andere stof — vul die in bij de gevaarlijke stoffen.",
+    "dgAnsweredRejected": "Beantwoord: de suggestie klopte niet.",
+    "dgChangeAnswer": "Antwoord wijzigen",
+    "unansweredSummary": "{{count}} stofvraag/vragen open"
   },
   "import": {
     "downloadTemplate": "Template downloaden",

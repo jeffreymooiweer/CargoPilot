@@ -95,7 +95,9 @@
     "importAppended": "{{count}} ligne(s) ajoutée(s).",
     "importReplaced": "{{count}} ligne(s) mise(s) à leur place.",
     "importUndo": "Annuler",
-    "importUndone": "Les lignes précédentes sont de retour."
+    "importUndone": "Les lignes précédentes sont de retour.",
+    "unansweredSubstances": "{{count}} ligne(s) de marchandises ont une question de matière restée sans réponse.",
+    "unansweredGo": "Vers les marchandises"
   },
   "review": {
     "linesTitle": "Marchandises",
@@ -133,7 +135,6 @@
     "cancel": "Annuler",
     "dangerousGoods": "Marchandises dangereuses",
     "dgDetected": "Numéro ONU détecté",
-    "dgApply": "Appliquer",
     "dgDismiss": "Pas de marchandises dangereuses",
     "quantityAndUnit": "Quantité",
     "volume": "Volume",
@@ -151,8 +152,6 @@
     "dimensions": "Dimensions",
     "dgYes": "Oui",
     "dgNo": "Non",
-    "dgToastOne": "Ligne {{number}} : UN {{un}} ({{name}}, classe {{class}}) reconnu. L'appliquer ?",
-    "dgToastMany": "Ligne {{number}} : plusieurs matières possibles. Laquelle est-ce ?",
     "lineDetails": "Détails",
     "descriptionOfLine": "Description de la ligne {{number}}",
     "quantityOfLine": "Quantité de la ligne {{number}}",
@@ -168,7 +167,18 @@
     "importSkipped": "{{count}} ligne(s) ignorée(s) : pas de description",
     "attentionSummary": "{{ok}} réglées · {{attention}} demandent attention",
     "onlyAttention": "N'afficher que celles-ci",
-    "showAllLines": "Afficher toutes les lignes"
+    "showAllLines": "Afficher toutes les lignes",
+    "dgAskOne": "Cela ressemble à UN {{un}}, {{name}} (classe {{class}}). Est-ce exact ?",
+    "dgAskMany": "Cette description correspond à plus d'une matière. Laquelle est-ce ?",
+    "dgTake": "Prendre UN {{un}}",
+    "dgOther": "Une autre matière",
+    "dgWrong": "Cette suggestion est fausse",
+    "dgWrongHint": "Refuser dit seulement que ce n'est pas cette matière — pas que les marchandises sont inoffensives.",
+    "dgAnsweredConfirmed": "Répondu : UN {{un}}.",
+    "dgAnsweredOther": "Répondu : une autre matière — indiquez-la à l'étape des marchandises dangereuses.",
+    "dgAnsweredRejected": "Répondu : la suggestion était fausse.",
+    "dgChangeAnswer": "Modifier la réponse",
+    "unansweredSummary": "{{count}} question(s) de matière ouverte(s)"
   },
   "import": {
     "downloadTemplate": "Télécharger le modèle",

@@ -13,17 +13,18 @@
  * its figures, marked as not yet rechecked, rather than blinking away on every
  * keystroke.
  *
- * And the name recognition, which is the one thing on a line that asks the user
- * a *question*, and therefore asks it where the application asks things: a
- * snackbar that stays until answered. Accepting sets the tick *and* the UN
- * number, closing it is a final no, and nothing happens without a click.
+ * And the substance recognition, which is the one thing on a line that asks the
+ * user a *question* — asked under the line it is about, with its three answers
+ * spelled out. Rejecting a candidate says only that this substance is not it;
+ * an answer can be found again and changed; and nothing is decided by closing
+ * anything, because there is nothing to close.
  */
 import { render, screen, within } from "@testing-library/react";
 import { useState } from "react";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it, vi } from "vitest";
 
-import ReviewLinesPanel, { DraftLine } from "./ReviewLinesPanel";
+import ReviewLinesPanel, { DraftLine, openQuestions } from "./ReviewLinesPanel";
 import { ToastProvider } from "../toast/ToastProvider";
 import { LineItem } from "../api/client";
 
@@ -248,37 +249,56 @@ describe("what the import left behind", () => {
   });
 });
 
-describe("the DG name recognition, asked in a snackbar", () => {
-  it("accepting sets the tick and carries the UN number", async () => {
+describe("the substance question, answered on its line", () => {
+  it("asks under the line it is about, not in a floating snackbar", async () => {
+    renderPanel([draft], [resultLine(petrol)]);
+    const row = screen.getAllByRole("listitem")[0];
+    expect(within(row).getByText("review.dgAskOne")).toBeInTheDocument();
+    // Nothing is asked at the bottom-right of the screen any more.
+    expect(screen.queryByRole("button", { name: "toast.dismiss" })).toBeNull();
+  });
+
+  it("taking the number ticks the line and carries it", async () => {
     const onDraftChange = renderPanel([draft], [resultLine(petrol)]);
-    await userEvent.click(await screen.findByRole("button", { name: "review.dgApply" }));
+    await userEvent.click(screen.getByRole("button", { name: "review.dgTake" }));
     const updated = onDraftChange.mock.calls[onDraftChange.mock.calls.length - 1][0] as DraftLine[];
     expect(updated[0].dangerous_goods).toBe(true);
     expect(updated[0].confirmed_un).toBe("1203");
+    expect(updated[0].dg_decision).toBe("confirmed");
   });
 
-  it("accepting closes the snackbar", async () => {
-    render(<StatefulPanel lines={[draft]} result={[resultLine(petrol)]} onChange={vi.fn()} />);
-    await userEvent.click(await screen.findByRole("button", { name: "review.dgApply" }));
-    expect(screen.queryByText("review.dgToastOne")).toBeNull();
-  });
-
-  it("closing the snackbar is a no, and a final one", async () => {
+  it("a different substance ticks the line and leaves the number to the DG step", async () => {
     const onDraftChange = renderPanel([draft], [resultLine(petrol)]);
-    await screen.findByText("review.dgToastOne:1");
-    await userEvent.click(screen.getByRole("button", { name: "toast.dismiss" }));
+    await userEvent.click(screen.getByRole("button", { name: "review.dgOther" }));
     const updated = onDraftChange.mock.calls[onDraftChange.mock.calls.length - 1][0] as DraftLine[];
-    expect(updated[0].dg_dismissed).toBe(true);
+    expect(updated[0].dangerous_goods).toBe(true);
+    expect(updated[0].confirmed_un).toBeUndefined();
+    expect(updated[0].dg_decision).toBe("other");
   });
 
-  it("a rejected recognition is not asked again", () => {
-    renderPanel([{ ...draft, dg_dismissed: true }], [resultLine(petrol)]);
-    expect(screen.queryByText("review.dgToastOne:1")).toBeNull();
+  it("rejecting the suggestion says nothing about the goods being safe", async () => {
+    const onDraftChange = renderPanel([{ ...draft, dangerous_goods: true }], [resultLine(petrol)]);
+    await userEvent.click(screen.getByRole("button", { name: "review.dgWrong" }));
+    const updated = onDraftChange.mock.calls[onDraftChange.mock.calls.length - 1][0] as DraftLine[];
+    expect(updated[0].dg_decision).toBe("rejected");
+    // The tick the user set is theirs; a rejected candidate does not clear it.
+    expect(updated[0].dangerous_goods).toBe(true);
+    expect(updated[0].confirmed_un).toBeUndefined();
   });
 
-  it("an already confirmed line is not asked again either", () => {
-    renderPanel([{ ...draft, confirmed_un: "1203" }], [resultLine(petrol)]);
-    expect(screen.queryByText("review.dgToastOne:1")).toBeNull();
+  it("an answered line says what was answered, and lets it be changed", async () => {
+    const onChange = vi.fn();
+    render(
+      <StatefulPanel
+        lines={[{ ...draft, dg_decision: "rejected", dg_dismissed: true }]}
+        result={[resultLine(petrol)]}
+        onChange={onChange}
+      />,
+    );
+    expect(screen.getByText("review.dgAnsweredRejected")).toBeInTheDocument();
+    await userEvent.click(screen.getByRole("button", { name: "review.dgChangeAnswer" }));
+    // The question is back, and nothing was decided on the user's behalf.
+    expect(screen.getByText("review.dgAskOne")).toBeInTheDocument();
   });
 
   it("several candidates become a button per UN number, none pre-chosen", async () => {
@@ -287,53 +307,41 @@ describe("the DG name recognition, asked in a snackbar", () => {
       { un: "2796", name: "ZWAVELZUUR met ten hoogste 51% zuur", class: "8" },
     ];
     const onDraftChange = renderPanel([draft], [resultLine(acids)]);
-    expect(await screen.findByText("review.dgToastMany:1")).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: "UN 1830" })).toBeInTheDocument();
-    await userEvent.click(screen.getByRole("button", { name: "UN 2796" }));
+    expect(screen.getByText("review.dgAskMany")).toBeInTheDocument();
+    const takes = screen.getAllByRole("button", { name: "review.dgTake" });
+    expect(takes).toHaveLength(2);
+    await userEvent.click(takes[1]);
     const updated = onDraftChange.mock.calls[onDraftChange.mock.calls.length - 1][0] as DraftLine[];
     expect(updated[0].confirmed_un).toBe("2796");
-    expect(updated[0].dangerous_goods).toBe(true);
+  });
+
+  it("an answer from before v1.195.0 is read as one", () => {
+    // Only the old fields, as a shipment saved by an earlier release has them.
+    renderPanel([{ ...draft, confirmed_un: "1203" }], [resultLine(petrol)]);
+    expect(screen.getByText("review.dgAnsweredConfirmed")).toBeInTheDocument();
+    expect(screen.queryByText("review.dgAskOne")).toBeNull();
   });
 
   it("without candidates nothing is asked", () => {
     renderPanel([draft], [resultLine([])]);
-    expect(screen.queryByText("review.dgToastOne:1")).toBeNull();
-    expect(screen.queryByText("review.dgToastMany:1")).toBeNull();
+    expect(screen.queryByText("review.dgAskOne")).toBeNull();
+    expect(screen.queryByText("review.dgAskMany")).toBeNull();
   });
 
-  it("asks again about a line number that a replacing import reused", async () => {
-    // An import with "replace" numbers from 1 again. The guard against a
-    // second toast used to remember the line-and-substance key forever, so a
-    // new consignment whose first line held the same substance as the one
-    // already answered was never asked about at all.
-    render(
-      <StatefulPanel
-        lines={[draft]}
-        result={[resultLine(petrol)]}
-        onChange={vi.fn()}
-        replaceWith={[{ id: 1, description: "10 vaten benzine", quantity: 10, unit: "vaten" }]}
-      />,
-    );
-    await screen.findByText("review.dgToastOne:1");
-    await userEvent.click(screen.getByRole("button", { name: "review.dgApply" }));
-    expect(screen.queryByText("review.dgToastOne:1")).toBeNull();
-
-    // The panel stays mounted, as it does in the wizard: the same line number
-    // and the same substance, but a fresh line nobody has answered for.
-    await userEvent.click(screen.getByRole("button", { name: "simulate import" }));
-    expect(await screen.findByText("review.dgToastOne:1")).toBeInTheDocument();
-  });
-
-  it("the recognition is off the row entirely", async () => {
+  it("an unanswered question counts as something that wants the user", () => {
     renderPanel([draft], [resultLine(petrol)]);
-    await screen.findByText("review.dgToastOne:1");
-    // One place asks it, and it is not the row: the row stays what is carried.
-    expect(screen.getAllByText("review.dgToastOne:1")).toHaveLength(1);
+    expect(screen.getByText(/review.unansweredSummary/)).toBeInTheDocument();
+  });
+});
+
+describe("what openQuestions reports to the rest of the wizard", () => {
+  it("counts the lines that were asked and not answered", () => {
+    const lines = [draft, { ...draft, id: 2, confirmed_un: "1203" }, { ...draft, id: 3 }];
+    const results = [resultLine(petrol), resultLine(petrol), resultLine([])];
+    expect(openQuestions(lines, results)).toBe(1);
   });
 
-  it("an answered line shows its UN number on the row", () => {
-    renderPanel([{ ...draft, confirmed_un: "1203", dangerous_goods: true }], [resultLine([])]);
-    const rows = screen.getAllByRole("listitem");
-    expect(within(rows[0]).getByText("UN 1203")).toBeInTheDocument();
+  it("counts nothing without a calculation to ask about", () => {
+    expect(openQuestions([draft], undefined)).toBe(0);
   });
 });

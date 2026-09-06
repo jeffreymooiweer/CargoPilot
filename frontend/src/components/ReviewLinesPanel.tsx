@@ -67,8 +67,15 @@ export interface DraftLine {
   /** UN number the user confirmed from a name suggestion. Carries through to
    *  the DG step so nothing recognised has to be typed again. */
   confirmed_un?: string;
-  /** The suggestion was rejected for this line; it must not come back. */
+  /** The suggestion was rejected for this line; it must not come back. Kept
+   *  because the assistant and older saved shipments speak it; what the screen
+   *  reads is ``dg_decision``, which this maps onto. */
   dg_dismissed?: boolean;
+  /** What the user answered to the substance recognition: they took the
+   *  suggested UN number, they said it is a different substance, or they said
+   *  the suggestion is wrong. Undefined means nobody has answered yet — which
+   *  is not the same as "no", and is why closing something cannot set it. */
+  dg_decision?: "confirmed" | "other" | "rejected";
   /** Net content of one package as the description said it ("25 L"); the DG
    *  derivation fills the per-package quantity from it. */
   package_content?: string;
@@ -103,6 +110,28 @@ function statusColor(status: string) {
   if (status === "error") return "bg-red-100 text-red-800 dark:bg-red-900/40 dark:text-red-300";
   if (status === "needs_review") return "bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-300";
   return "bg-yellow-100 text-yellow-800 dark:bg-yellow-900/40 dark:text-yellow-300";
+}
+
+/** What was answered to a line's substance question, if anything.
+ *
+ *  ``dg_decision`` is what the screen writes. The two older fields are read as
+ *  well, so a shipment saved before v1.195.0 — or one the assistant filled in —
+ *  opens with its answers intact rather than asking everything again. */
+function decisionOf(line: DraftLine): DraftLine["dg_decision"] | undefined {
+  if (line.dg_decision) return line.dg_decision;
+  if (line.confirmed_un) return "confirmed";
+  if (line.dg_dismissed) return "rejected";
+  return undefined;
+}
+
+/** Whether this line is still waiting for an answer about its substance. */
+export function hasOpenQuestion(line: DraftLine, item: LineItem | null | undefined): boolean {
+  return !!item && (item.dg_name_candidates?.length ?? 0) > 0 && !decisionOf(line);
+}
+
+/** How many lines are still waiting, for whoever has to say so elsewhere. */
+export function openQuestions(lines: DraftLine[], items?: LineItem[]): number {
+  return lines.filter((line, index) => hasOpenQuestion(line, items?.[index])).length;
 }
 
 /** A line the calculation could not settle: no weight came out, or it wants
@@ -220,76 +249,24 @@ export default function ReviewLinesPanel({
   };
 
   /**
-   * The name recognition, asked as a snackbar rather than shown on the line.
+   * The name recognition, answered on the line it is about.
    *
-   * It is the one thing on a line that asks the user a *question* — "this
-   * looks like UN 1203, shall I take it?" — and a question belongs in the one
-   * place the application asks things. It is a `question` toast, so it never
-   * dismisses itself: four seconds is not an answer. Closing it with the × is
-   * an answer, and a final one — the same "no, not this line" the reject chip
-   * used to mean.
+   * It used to be a snackbar: a question that floated at the bottom right of
+   * the screen, away from the line it was about, and whose close button was an
+   * answer. That last part is what made it wrong. Closing something is not a
+   * decision — but the × set ``dg_dismissed``, so "not now" was stored as "not
+   * this substance", and the line then showed no trace of the question at all.
+   * The decision could not be found again, let alone revised, which the
+   * baseline recorded as a task that cannot be completed.
    *
-   * Offered once per recognition, keyed by line *and* candidates: re-running
-   * the calculation must not ask again, but changing the description into a
-   * different substance is a new question and gets asked.
-   *
-   * The set only remembers questions that are still open, and is pruned to
-   * those on every run. Remembering them forever looked equivalent and was
-   * not: an import that replaces the lines starts numbering at 1 again, so
-   * line 1 with the same substance produced the same key as the line the user
-   * had already answered — and the new consignment's first line was never
-   * asked about at all. What marks a line as answered is the answer on the
-   * line itself; this set exists only to stop a second toast while one is
-   * still standing.
+   * Here the question sits under its own line, with three answers spelled out:
+   * take the UN number, say it is a different substance, or say the suggestion
+   * is wrong. Rejecting one candidate says nothing about whether the goods are
+   * dangerous — it says this suggestion is not them — so it touches neither the
+   * dangerous-goods tick nor anything the compliance check reads. An answer can
+   * be changed afterwards, because the line keeps saying what was answered.
    */
-  const offered = useRef(new Set<string>());
-  useEffect(() => {
-    if (!resultLines) return;
-    const open = new Set<string>();
-    draftLines.forEach((draft, index) => {
-      const candidates = resultLines[index]?.dg_name_candidates ?? [];
-      if (candidates.length === 0 || draft.confirmed_un || draft.dg_dismissed) return;
-      const key = `${draft.id}:${candidates.map((one) => one.un).join(",")}`;
-      open.add(key);
-      if (offered.current.has(key)) return;
-      offered.current.add(key);
-
-      // Accepting and rejecting are the same slot: whichever comes first is
-      // the answer, and closing the toast afterwards must not overrule it.
-      let answered = false;
-      const once = (fn: () => void) => () => {
-        if (answered) return;
-        answered = true;
-        fn();
-      };
-      const single = candidates.length === 1;
-      const id: number = toast.ask(
-        single
-          ? t("review.dgToastOne", {
-              number: index + 1,
-              un: candidates[0].un,
-              class: candidates[0].class,
-              name: candidates[0].name,
-            })
-          : t("review.dgToastMany", { number: index + 1 }),
-        {
-          actions: (single ? candidates : candidates.slice(0, 3)).map((candidate) => ({
-            label: single ? t("review.dgApply") : `UN ${candidate.un}`,
-            run: once(() => {
-              patchLine(draft.id, { dangerous_goods: true, confirmed_un: candidate.un });
-              toast.dismiss(id);
-            }),
-          })),
-          onDismiss: once(() => patchLine(draft.id, { dg_dismissed: true })),
-        },
-      );
-    });
-    offered.current = open;
-    // patchLine and toast are stable enough to leave out: what decides whether
-    // to ask is the lines and their recognition, and the guard above makes a
-    // repeat run harmless.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [draftLines, resultLines, t]);
+  const answer = (line: DraftLine, patch: Partial<DraftLine>) => updateDraft(line.id, patch);
 
   // The unit catalogue comes from the backend, so the list is maintained in one
   // place. If that fails, UnitSelect falls back to a text field and the step
@@ -363,16 +340,18 @@ export default function ReviewLinesPanel({
 
   // How the calculation judged the lines, for the summary above the list. A
   // line still being rechecked is neither settled nor a problem yet.
-  const { settled, attention } = useMemo(() => {
+  const { settled, attention, unanswered } = useMemo(() => {
     let settledCount = 0;
     let attentionCount = 0;
+    let unansweredCount = 0;
     draftLines.forEach((line, index) => {
       const { item, stale } = outcomeFor(line, index);
       if (!item || stale) return;
       settledCount += 1;
       if (needsAttention(item)) attentionCount += 1;
+      if (hasOpenQuestion(line, item)) unansweredCount += 1;
     });
-    return { settled: settledCount, attention: attentionCount };
+    return { settled: settledCount, attention: attentionCount, unanswered: unansweredCount };
     // outcomeFor reads the refs, which change with the results.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [draftLines, resultLines]);
@@ -380,8 +359,8 @@ export default function ReviewLinesPanel({
   // Nothing to narrow to any more: leaving the filter on would show an empty
   // list and look like the lines had gone.
   useEffect(() => {
-    if (attention === 0 && onlyAttention) setOnlyAttention(false);
-  }, [attention, onlyAttention]);
+    if (attention + unanswered === 0 && onlyAttention) setOnlyAttention(false);
+  }, [attention, unanswered, onlyAttention]);
 
   const anyStale = useMemo(
     () => draftLines.some((line, index) => outcomeFor(line, index).stale && line.description.trim()),
@@ -448,10 +427,11 @@ export default function ReviewLinesPanel({
           <span className="w-[7.5rem]" />
         </div>
 
-        {attention > 0 && (
+        {attention + unanswered > 0 && (
           <div className="mb-2 flex flex-wrap items-center justify-between gap-2 rounded-xl border border-amber-200 bg-amber-50 px-3 py-2 dark:border-amber-900/50 dark:bg-amber-950/30">
             <span className="text-xs text-amber-900 dark:text-amber-200">
               {t("review.attentionSummary", { ok: settled - attention, attention })}
+              {unanswered > 0 && ` · ${t("review.unansweredSummary", { count: unanswered })}`}
             </span>
             <button
               type="button"
@@ -466,7 +446,7 @@ export default function ReviewLinesPanel({
         <ul className="space-y-2">
           {draftLines.map((line, index) => {
             const { item, stale } = outcomeFor(line, index);
-            if (onlyAttention && !needsAttention(item)) return null;
+            if (onlyAttention && !needsAttention(item) && !hasOpenQuestion(line, item)) return null;
             return (
               <li
                 key={line.id}
@@ -555,6 +535,7 @@ export default function ReviewLinesPanel({
                   stale={stale}
                   translateMessage={translateMessage}
                 />
+                <SubstanceQuestion line={line} item={item} onAnswer={(patch) => answer(line, patch)} />
               </li>
             );
           })}
@@ -588,6 +569,95 @@ export default function ReviewLinesPanel({
           onClose={() => setEditingId(null)}
         />
       )}
+    </div>
+  );
+}
+
+/**
+ * The substance question, on the line it is about.
+ *
+ * Three answers, each said in words. **Take UN 1203** ticks the line as
+ * dangerous goods and carries the number to the dangerous goods step. **A
+ * different substance** ticks it too but leaves the number to that step, where
+ * a substance is actually established. **The suggestion is wrong** rejects the
+ * candidate and nothing else: it does not say the goods are safe, and it leaves
+ * the dangerous-goods tick exactly as the user left it.
+ *
+ * An answered line says what was answered, with a way back to the question. A
+ * decision you cannot find again is a decision you cannot check.
+ */
+function SubstanceQuestion({ line, item, onAnswer }: {
+  line: DraftLine;
+  item: LineItem | null;
+  onAnswer: (patch: Partial<DraftLine>) => void;
+}) {
+  const { t } = useTranslation();
+  const candidates = item?.dg_name_candidates ?? [];
+  if (candidates.length === 0) return null;
+  const decision = decisionOf(line);
+
+  const chip = "rounded-lg border px-2.5 py-1 text-xs font-medium transition-colors";
+
+  if (decision) {
+    const said = decision === "confirmed"
+      ? t("review.dgAnsweredConfirmed", { un: line.confirmed_un ?? candidates[0].un })
+      : decision === "other"
+        ? t("review.dgAnsweredOther")
+        : t("review.dgAnsweredRejected");
+    return (
+      <div className="mt-1 flex flex-wrap items-center gap-2 pl-8 pr-2">
+        <span className="text-xs text-slate-500 dark:text-slate-400">{said}</span>
+        <button
+          type="button"
+          onClick={() => onAnswer({ dg_decision: undefined, dg_dismissed: undefined, confirmed_un: undefined })}
+          className="text-xs font-medium text-brand-700 underline-offset-2 hover:underline dark:text-brand-300"
+        >
+          {t("review.dgChangeAnswer")}
+        </button>
+      </div>
+    );
+  }
+
+  return (
+    <div className="mt-2 rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 dark:border-amber-900/50 dark:bg-amber-950/30">
+      <p className="text-xs text-amber-900 dark:text-amber-200">
+        {candidates.length === 1
+          ? t("review.dgAskOne", {
+              un: candidates[0].un, class: candidates[0].class, name: candidates[0].name,
+            })
+          : t("review.dgAskMany")}
+      </p>
+      <div className="mt-2 flex flex-wrap gap-1.5">
+        {candidates.slice(0, 3).map((candidate) => (
+          <button
+            key={candidate.un}
+            type="button"
+            onClick={() => onAnswer({
+              dangerous_goods: true, confirmed_un: candidate.un, dg_decision: "confirmed",
+              dg_dismissed: undefined,
+            })}
+            className={`${chip} border-amber-300 bg-white text-amber-900 hover:bg-amber-100 dark:border-amber-800 dark:bg-slate-900 dark:text-amber-200`}
+            title={candidates.length > 1 ? candidate.name : undefined}
+          >
+            {t("review.dgTake", { un: candidate.un })}
+          </button>
+        ))}
+        <button
+          type="button"
+          onClick={() => onAnswer({ dangerous_goods: true, dg_decision: "other", dg_dismissed: undefined })}
+          className={`${chip} border-amber-300 text-amber-900 hover:bg-amber-100 dark:border-amber-800 dark:text-amber-200`}
+        >
+          {t("review.dgOther")}
+        </button>
+        <button
+          type="button"
+          onClick={() => onAnswer({ dg_decision: "rejected", dg_dismissed: true })}
+          className={`${chip} border-amber-300 text-amber-900 hover:bg-amber-100 dark:border-amber-800 dark:text-amber-200`}
+        >
+          {t("review.dgWrong")}
+        </button>
+      </div>
+      <p className="mt-1.5 text-[11px] text-amber-800 dark:text-amber-300">{t("review.dgWrongHint")}</p>
     </div>
   );
 }
@@ -633,7 +703,7 @@ function Derived({ line, item, stale, translateMessage }: {
   const messages = item?.messages ?? [];
   const chips = (
     <>
-      {item?.dangerous_goods && !line.dangerous_goods && (
+      {item?.dangerous_goods && !line.dangerous_goods && (item.dg_name_candidates?.length ?? 0) === 0 && (
         <span className="rounded-full bg-amber-100 px-2 py-0.5 text-[11px] font-medium text-amber-800 dark:bg-amber-900/40 dark:text-amber-300">
           {t("review.dgDetected")}
         </span>

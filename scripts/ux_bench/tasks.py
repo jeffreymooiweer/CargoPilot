@@ -273,33 +273,32 @@ def task_4(page) -> object:
     page.wait_for_timeout(1500)
     b.observe()
     b.shot("suggestion")
-    toast = page.locator(".fixed.inset-x-0.bottom-0")
-    asked = toast.get_by_text(re.compile(r"UN ?\d{4}")).count()
-    b.note(f"{asked} recognition question(s) offered as a floating snackbar, "
-           "not at the line they belong to")
-    closer = toast.locator("button[aria-label]").first
-    if closer.count():
-        b.click(closer)
-        b.note("closing it is the finding: the × sets dg_dismissed, so 'not now' is stored "
-               "as 'not this substance'")
+    asked = page.get_by_text(re.compile(r"lijkt op UN ?\d{4}"))
+    b.note(f"{asked.count()} recognition question(s), on the line they are about")
+    if not asked.count():
+        b.note("no question was offered to answer")
+        return b.done(False)
+
+    # 1. Say the suggestion is wrong — the answer the old close button pretended
+    #    to be, now said in words.
+    b.click(page.get_by_role("button", name=re.compile("klopt niet")))
+    said = page.get_by_text(re.compile("Beantwoord"))
+    b.note(f"the line now says: {said.first.inner_text() if said.count() else 'nothing'}")
+
+    # 2. Find the decision again and change it.
+    change = page.get_by_role("button", name=re.compile("Antwoord wijzigen"))
+    b.note(f"{change.count()} way(s) to revise the answer from the line itself")
+    if change.count():
+        b.click(change.first)
+        take = page.get_by_role("button", name=re.compile("^Neem UN"))
+        if take.count():
+            b.click(take.first)
+    wait_for_calculation(b)
     page.wait_for_timeout(800)
-    if b.current_step() != "Goederen":
-        back = page.get_by_role("button", name="Terug")
-        if back.count():
-            b.click(back.last)
-            page.wait_for_timeout(2000)
-            b.observe()
-    cards = page.get_by_role("button", name="Details")
-    if cards.count():
-        b.click(cards.first)
-        dialog = page.locator("[role=dialog]").last
-        page.wait_for_timeout(500)
-        revisit = dialog.get_by_text(re.compile(r"UN ?\d{4}")).count()
-        b.note(f"the line's own dialog shows {revisit} reference(s) to the suggestion: "
-               "the rejected candidate cannot be found or revised there")
-        b.click(dialog.get_by_role("button", name="Klaar"))
-    b.shot("after-dismiss")
-    return b.done(False)
+    confirmed = page.get_by_text(re.compile("Beantwoord: UN"))
+    b.note(f"after revising, the line says: {confirmed.first.inner_text() if confirmed.count() else 'nothing'}")
+    b.shot("answered")
+    return b.done(confirmed.count() > 0)
 
 
 # --- 5. an extra document that needs one new answer --------------------------------

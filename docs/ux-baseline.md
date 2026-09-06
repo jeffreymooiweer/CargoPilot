@@ -124,7 +124,13 @@ by scrolling 5,746 pixels. The lines themselves still come back as 49 **OK** and
 **Controle nodig**, and that one now says why: *no dimensions in the description and no
 weight filled in*.
 
-Tasks 5, 6, 7, 9 and 10 were unchanged by 108 and 109.
+| 110 (v1.195.0) | 4 A substance suggestion | 8 → **5** | 2 → **0** | And **completable**: the answer can be found again and changed |
+
+Task 4 is the one the baseline could not complete. The question is now on its line with
+three named answers, the line says which was given, and **Change the answer** takes it
+back — so "close it, judge it, revise it later" is a thing that can actually be done.
+
+Tasks 5, 6, 7, 9 and 10 were unchanged by 108, 109 and 110.
 
 ## What was not run
 

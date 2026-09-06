@@ -95,7 +95,9 @@
     "importAppended": "{{count}} Zeile(n) hinzugefügt.",
     "importReplaced": "{{count}} Zeile(n) an ihre Stelle gesetzt.",
     "importUndo": "Rückgängig",
-    "importUndone": "Die vorherigen Zeilen sind wieder da."
+    "importUndone": "Die vorherigen Zeilen sind wieder da.",
+    "unansweredSubstances": "{{count}} Warenzeile(n) haben eine Stofffrage, die niemand beantwortet hat.",
+    "unansweredGo": "Zu den Waren"
   },
   "review": {
     "linesTitle": "Güter",
@@ -133,7 +135,6 @@
     "cancel": "Abbrechen",
     "dangerousGoods": "Gefahrgut",
     "dgDetected": "UN-Nummer erkannt",
-    "dgApply": "Übernehmen",
     "dgDismiss": "Kein Gefahrgut",
     "quantityAndUnit": "Menge",
     "volume": "Volumen",
@@ -151,8 +152,6 @@
     "dimensions": "Abmessungen",
     "dgYes": "Ja",
     "dgNo": "Nein",
-    "dgToastOne": "Position {{number}}: UN {{un}} ({{name}}, Klasse {{class}}) erkannt. Übernehmen?",
-    "dgToastMany": "Position {{number}}: mehrere Stoffe möglich. Welcher ist es?",
     "lineDetails": "Details",
     "descriptionOfLine": "Beschreibung von Zeile {{number}}",
     "quantityOfLine": "Anzahl von Zeile {{number}}",
@@ -168,7 +167,18 @@
     "importSkipped": "{{count}} Zeile(n) übersprungen: keine Beschreibung",
     "attentionSummary": "{{ok}} erledigt · {{attention}} brauchen Aufmerksamkeit",
     "onlyAttention": "Nur diese zeigen",
-    "showAllLines": "Alle Zeilen zeigen"
+    "showAllLines": "Alle Zeilen zeigen",
+    "dgAskOne": "Das sieht nach UN {{un}}, {{name}} (Klasse {{class}}) aus. Stimmt das?",
+    "dgAskMany": "Diese Beschreibung passt zu mehr als einem Stoff. Welcher ist es?",
+    "dgTake": "UN {{un}} übernehmen",
+    "dgOther": "Ein anderer Stoff",
+    "dgWrong": "Dieser Vorschlag stimmt nicht",
+    "dgWrongHint": "Ablehnen sagt nur, dass es dieser Stoff nicht ist — nicht, dass die Güter ungefährlich sind.",
+    "dgAnsweredConfirmed": "Beantwortet: UN {{un}}.",
+    "dgAnsweredOther": "Beantwortet: ein anderer Stoff — tragen Sie ihn bei den gefährlichen Gütern ein.",
+    "dgAnsweredRejected": "Beantwortet: der Vorschlag stimmte nicht.",
+    "dgChangeAnswer": "Antwort ändern",
+    "unansweredSummary": "{{count}} Stofffrage(n) offen"
   },
   "import": {
     "downloadTemplate": "Vorlage herunterladen",

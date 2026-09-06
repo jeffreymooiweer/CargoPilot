@@ -95,7 +95,9 @@
     "importAppended": "{{count}} line(s) added.",
     "importReplaced": "{{count}} line(s) put in their place.",
     "importUndo": "Undo",
-    "importUndone": "The previous lines are back."
+    "importUndone": "The previous lines are back.",
+    "unansweredSubstances": "{{count}} goods line(s) have a substance question nobody has answered.",
+    "unansweredGo": "Go to the goods"
   },
   "review": {
     "linesTitle": "Goods",
@@ -133,7 +135,6 @@
     "cancel": "Cancel",
     "dangerousGoods": "Dangerous goods",
     "dgDetected": "UN number detected",
-    "dgApply": "Apply",
     "dgDismiss": "Not dangerous goods",
     "quantityAndUnit": "Quantity",
     "volume": "Volume",
@@ -151,8 +152,6 @@
     "dimensions": "Dimensions",
     "dgYes": "Yes",
     "dgNo": "No",
-    "dgToastOne": "Line {{number}}: recognised UN {{un}} ({{name}}, class {{class}}). Take it?",
-    "dgToastMany": "Line {{number}}: several substances possible. Which one is it?",
     "lineDetails": "Details",
     "descriptionOfLine": "Description of line {{number}}",
     "quantityOfLine": "Quantity of line {{number}}",
@@ -168,7 +167,18 @@
     "importSkipped": "{{count}} row(s) skipped: no description",
     "attentionSummary": "{{ok}} settled · {{attention}} want attention",
     "onlyAttention": "Show only these",
-    "showAllLines": "Show all lines"
+    "showAllLines": "Show all lines",
+    "dgAskOne": "This looks like UN {{un}}, {{name}} (class {{class}}). Is that right?",
+    "dgAskMany": "This description fits more than one substance. Which is it?",
+    "dgTake": "Take UN {{un}}",
+    "dgOther": "A different substance",
+    "dgWrong": "This suggestion is wrong",
+    "dgWrongHint": "Rejecting says only that this substance is not it — not that the goods are harmless.",
+    "dgAnsweredConfirmed": "Answered: UN {{un}}.",
+    "dgAnsweredOther": "Answered: a different substance — fill it in at the dangerous goods step.",
+    "dgAnsweredRejected": "Answered: the suggestion was wrong.",
+    "dgChangeAnswer": "Change the answer",
+    "unansweredSummary": "{{count}} substance question(s) open"
   },
   "import": {
     "downloadTemplate": "Download template",

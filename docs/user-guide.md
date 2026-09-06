@@ -37,8 +37,12 @@ can still adjust it.
 
 Three ways to get your load in:
 
-**Type it.** Add a line, search the catalogue for the material, or write a free
-description. Fill in quantity and unit.
+**Type it.** Each line carries its description, its quantity and its unit as fields you
+type in directly; the catalogue searches while you type the description. **Enter** makes
+the next line, so a list can be typed without touching the mouse. What CargoPilot works
+out — the weight, the measurements, the volume — appears under the line as you go.
+Dimensions you want to set yourself, the packaging, the wall thickness and your own
+weights are under **Details** on the line.
 
 **Paste it.** Click **Import**, paste from Excel or a text file. One line per row:
 
@@ -74,8 +78,13 @@ A green line means it worked. An orange or red line means it could not work out 
 weight — usually because the description has no dimensions. Type the weight in yourself
 and carry on; nothing blocks you.
 
-You can adjust any weight by hand, and scale the total proportionally from the summary
-if you know the real weighbridge figure.
+While a line is being recalculated it keeps its previous figures, greyed out and marked
+*to be rechecked* — except the line you are actually changing, which shows no figures at
+all until they have been worked out for what it says now. Nothing on that screen shows a
+number for something it was not computed from.
+
+You can adjust any weight by hand under **Details**, and scale the total proportionally
+from the summary if you know the real weighbridge figure.
 
 ### Dangerous goods on a line
 

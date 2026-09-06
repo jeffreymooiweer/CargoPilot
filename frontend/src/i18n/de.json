@@ -95,7 +95,7 @@
   },
   "review": {
     "linesTitle": "Güter",
-    "intro": "Geben Sie je Güterzeile eine Bezeichnung ein: wählen Sie Material aus dem Katalog oder tippen Sie eine eigene Bezeichnung mit Abmessungen. Aus Excel einfügen geht über Importieren.",
+    "intro": "Füllen Sie je Zeile die Beschreibung, die Anzahl und die Einheit aus. Maße und Ausnahmen stehen unter Details; eine Excel-Liste geht über Importieren.",
     "description": "Bezeichnung",
     "descriptionPlaceholder": "Material wählen oder z. B. Stahl Winkelprofil 80x80x8x6000 eingeben",
     "customDescription": "Als freie Bezeichnung verwenden (automatisch zuordnen)",
@@ -148,7 +148,15 @@
     "dgYes": "Ja",
     "dgNo": "Nein",
     "dgToastOne": "Position {{number}}: UN {{un}} ({{name}}, Klasse {{class}}) erkannt. Übernehmen?",
-    "dgToastMany": "Position {{number}}: mehrere Stoffe möglich. Welcher ist es?"
+    "dgToastMany": "Position {{number}}: mehrere Stoffe möglich. Welcher ist es?",
+    "lineDetails": "Details",
+    "descriptionOfLine": "Beschreibung von Zeile {{number}}",
+    "quantityOfLine": "Anzahl von Zeile {{number}}",
+    "unitOfLine": "Einheit von Zeile {{number}}",
+    "toBeRechecked": "Zu prüfen",
+    "each": "St",
+    "keyboardHint": "Enter erzeugt die nächste Zeile. Maße, Verpackung und eigene Gewichte stehen unter Details.",
+    "recheckingHint": "Die Gewichte werden neu berechnet; was grau steht, ist noch nicht geprüft."
   },
   "import": {
     "downloadTemplate": "Vorlage herunterladen",

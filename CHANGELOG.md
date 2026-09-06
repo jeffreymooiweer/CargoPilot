@@ -2,6 +2,46 @@
 
 All notable changes are documented here, following [Semantic Versioning](https://semver.org/).
 
+## [1.193.0] — 2026-09-06
+
+### The goods line, edited where it stands
+
+The first release of [the usability plan](docs/ux-plan.md). A goods line carried its
+description, its quantity and its unit behind an edit icon, in a dialog, and the
+[baseline](docs/ux-baseline.md) measured what that cost: five quantity corrections took
+fifteen actions and five windows, none of which was the number itself, and nine of the
+twenty-six actions a three-line shipment needed were the dialog opening and closing.
+
+Those four things — description, quantity, unit, and what CargoPilot worked out from
+them — are on the line now. The thirteen fields the old table died of are not back:
+dimensions, wall thickness, packaging, own weights and the article stay in the detail
+dialog, one click away under **Details**. The row wraps rather than switching layouts, so
+a phone stacks the same fields with the same validation and the same focus order instead
+of getting a second implementation.
+
+Measured after, on the same tasks with the same harness: a simple shipment 26 → **20**
+actions and 3 → **0** windows; five quantity changes 15 → **5** actions and 5 → **0**
+windows. The produced CMR carries the same three goods lines, the same consignor and the
+same places as before.
+
+Three smaller things that came with it:
+
+- **A new line gets the cursor**, in its own description; **Enter** makes the next one,
+  so a list can be typed without the mouse. Adding a line used to leave the focus on the
+  button that added it.
+- **The figures no longer blink away on every keystroke.** A line whose own text has not
+  changed keeps what was worked out for it, greyed and marked *to be rechecked*, while
+  the recalculation runs. The line being edited shows no figures at all: a weight that
+  belongs to the previous description is not a weight.
+- **The catalogue searches only while its list is open**, and the equipment library is
+  fetched once for every box on the screen. A fifty-line import used to mount fifty
+  boxes, each asking for the library and each firing a catalogue search for the text it
+  was mounted with. The suggestions also close on Escape and on Tab, instead of staying
+  open over whatever comes next and swallowing its clicks.
+
+`RecordCards` is gone with this: it existed to make a read-only record work at every
+width, the goods line was its only user, and the goods line is not read-only any more.
+
 ## [1.192.0] — 2026-09-06
 
 ### The usability plan, and the baseline it will be judged against

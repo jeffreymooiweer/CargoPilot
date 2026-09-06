@@ -95,7 +95,7 @@
   },
   "review": {
     "linesTitle": "Marchandises",
-    "intro": "Saisissez une désignation par ligne de marchandises : choisissez du matériel dans le catalogue ou saisissez votre propre description avec les dimensions. Collez depuis Excel via Importer.",
+    "intro": "Renseignez par ligne la description, la quantité et l'unité. Les dimensions et les exceptions sont sous Détails ; une liste Excel passe par Importer.",
     "description": "Désignation",
     "descriptionPlaceholder": "Choisissez du matériel ou saisissez p. ex. cornière acier 80x80x8x6000",
     "customDescription": "Utiliser comme description libre (correspondance automatique)",
@@ -148,7 +148,15 @@
     "dgYes": "Oui",
     "dgNo": "Non",
     "dgToastOne": "Ligne {{number}} : UN {{un}} ({{name}}, classe {{class}}) reconnu. L'appliquer ?",
-    "dgToastMany": "Ligne {{number}} : plusieurs matières possibles. Laquelle est-ce ?"
+    "dgToastMany": "Ligne {{number}} : plusieurs matières possibles. Laquelle est-ce ?",
+    "lineDetails": "Détails",
+    "descriptionOfLine": "Description de la ligne {{number}}",
+    "quantityOfLine": "Quantité de la ligne {{number}}",
+    "unitOfLine": "Unité de la ligne {{number}}",
+    "toBeRechecked": "À vérifier",
+    "each": "pce",
+    "keyboardHint": "Entrée crée la ligne suivante. Les dimensions, l'emballage et les poids propres sont sous Détails.",
+    "recheckingHint": "Les poids sont recalculés ; ce qui est en gris n'a pas encore été vérifié."
   },
   "import": {
     "downloadTemplate": "Télécharger le modèle",

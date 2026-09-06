@@ -102,6 +102,22 @@ Task 1's CMR is kept as the content baseline: four pages, carrying all three goo
 same fields rather than the file's bytes — a timestamp differs on every run, and that is
 not a difference in the shipment.
 
+## What the releases have changed since
+
+Each release of the plan reruns the tasks it touches. The numbers below are from the
+same harness against the same tasks, so a row is comparable with the baseline above.
+
+| Release | Task | Actions | Windows | Note |
+|---|---|---|---|---|
+| 108 (v1.193.0) | 1 A simple shipment | 26 → **20** | 3 → **0** | The line dialog is no longer on the way to a shipment |
+| 108 (v1.193.0) | 2 Five quantities | 15 → **5** | 5 → **0** | One keystroke per quantity, and nothing opens |
+| 108 (v1.193.0) | 4 A substance suggestion | 8 → **5** | 2 → **1** | Reaching the line to look again costs less; the finding itself stands |
+| 108 (v1.193.0) | 8 A reload during entry | 5 → **3** | 1 → **0** | Only the cost of getting there; the entry is still lost |
+
+Task 3 stayed at three actions and one window, and its fifty lines still come back as 49
+**OK** and one **Controle nodig**: the import itself did not change in 108, and the row
+that needs attention is still found by scrolling. Tasks 5, 6, 7, 9 and 10 were unchanged.
+
 ## What was not run
 
 The reload of task 8 was measured in the organisation application only. The same reload

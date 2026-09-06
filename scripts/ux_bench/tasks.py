@@ -31,16 +31,23 @@ def new_shipment(page) -> None:
 
 
 def fill_line(b: Bench, index: int, description: str, quantity: int) -> None:
-    """One goods line, through its card and its dialog — today's only way."""
-    b.click(b.page.get_by_role("button", name="Bewerken").nth(index))
-    dialog = b.page.locator("[role=dialog]").last
-    b.fill(dialog.locator("input[placeholder]").first, description)
-    # The catalogue dropdown covers what is under it; the header is the nearest
-    # neutral place to put the focus so the next field can be reached.
-    dialog.locator("header").first.click()
-    b.page.wait_for_timeout(300)
-    b.fill(dialog.locator("#line-quantity"), str(quantity))
-    b.click(dialog.get_by_role("button", name="Klaar"))
+    """One goods line, on the line itself."""
+    b.fill(b.page.get_by_label(re.compile(f"Omschrijving van regel {index + 1}")), description)
+    b.page.keyboard.press("Escape")  # close the catalogue suggestions
+    b.page.wait_for_timeout(200)
+    b.fill(b.page.get_by_label(re.compile(f"Aantal van regel {index + 1}")), str(quantity))
+
+
+def set_quantity(b: Bench, index: int, quantity: int) -> None:
+    b.fill(b.page.get_by_label(re.compile(f"Aantal van regel {index + 1}")), str(quantity))
+
+
+def wait_for_calculation(b: Bench, seconds: int = 30) -> None:
+    """Wait until no line is left saying it still has to be rechecked."""
+    for _ in range(seconds * 2):
+        if b.page.get_by_text("Te controleren").count() == 0:
+            return
+        b.page.wait_for_timeout(500)
 
 
 def add_line(b: Bench) -> None:
@@ -147,9 +154,12 @@ def task_1(page) -> object:
     for index, (description, quantity) in enumerate(GOODS):
         if index:
             add_line(b)
-            focused = page.evaluate("document.activeElement && document.activeElement.tagName")
-            b.note(f"after Regel toevoegen the focus is on {focused}, not the new description")
+            focused = page.evaluate(
+                "document.activeElement && (document.activeElement.getAttribute('aria-label') "
+                "|| document.activeElement.tagName)")
+            b.note(f"after Regel toevoegen the focus is on {focused}")
         fill_line(b, index, description, quantity)
+    wait_for_calculation(b)
     b.shot("goods")
     advance(b)
     b.shot("export")
@@ -200,11 +210,8 @@ def task_2(page) -> object:
     b.m.notes.clear()
     b.observe()
     for index in range(5):
-        b.click(page.get_by_role("button", name="Bewerken").nth(index))
-        dialog = page.locator("[role=dialog]").last
-        b.fill(dialog.locator("#line-quantity"), str(10 + index))
-        b.click(dialog.get_by_role("button", name="Klaar"))
-    b.note("each quantity costs open, type, close: three actions and one window per line")
+        set_quantity(b, index, 10 + index)
+    b.note("each quantity is typed on its own line: one action, no window")
     b.shot("quantities")
     return b.done()
 
@@ -225,8 +232,8 @@ def task_3(page) -> object:
     b.click(dialog.get_by_role("button", name=re.compile("Importeren|Toevoegen|Vervangen")).last)
     page.wait_for_timeout(3000)
     b.observe()
-    b.m.output["lines"] = page.get_by_role("button", name="Bewerken").count()
-    page.wait_for_timeout(9000)  # the recalculation over fifty lines
+    b.m.output["lines"] = page.get_by_role("button", name="Details").count()
+    wait_for_calculation(b, 60)  # the recalculation over fifty lines
     b.observe()
     b.shot("imported")
     statuses = page.locator("span.rounded-full").evaluate_all(
@@ -251,8 +258,8 @@ def task_4(page) -> object:
     b = Bench(page, "4", "A substance suggestion closed, judged and revisited")
     new_shipment(page)
     fill_line(b, 0, "Benzine 25 L jerrycan", 4)
-    b.click(page.get_by_role("button", name="Doorgaan"))
-    page.wait_for_timeout(6000)
+    wait_for_calculation(b)
+    page.wait_for_timeout(1500)
     b.observe()
     b.shot("suggestion")
     toast = page.locator(".fixed.inset-x-0.bottom-0")
@@ -271,7 +278,7 @@ def task_4(page) -> object:
             b.click(back.last)
             page.wait_for_timeout(2000)
             b.observe()
-    cards = page.get_by_role("button", name="Bewerken")
+    cards = page.get_by_role("button", name="Details")
     if cards.count():
         b.click(cards.first)
         dialog = page.locator("[role=dialog]").last

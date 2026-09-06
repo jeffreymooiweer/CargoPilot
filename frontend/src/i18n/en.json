@@ -95,7 +95,7 @@
   },
   "review": {
     "linesTitle": "Goods",
-    "intro": "Enter a description per goods line: pick equipment from the catalogue or type your own description with dimensions. Paste from Excel via Import.",
+    "intro": "Fill in the description, the quantity and the unit per line. Dimensions and exceptions are under Details; an Excel list goes through Import.",
     "description": "Description",
     "descriptionPlaceholder": "Pick equipment or type e.g. steel angle 80x80x8x6000",
     "customDescription": "Use as free description (auto-match)",
@@ -148,7 +148,15 @@
     "dgYes": "Yes",
     "dgNo": "No",
     "dgToastOne": "Line {{number}}: recognised UN {{un}} ({{name}}, class {{class}}). Take it?",
-    "dgToastMany": "Line {{number}}: several substances possible. Which one is it?"
+    "dgToastMany": "Line {{number}}: several substances possible. Which one is it?",
+    "lineDetails": "Details",
+    "descriptionOfLine": "Description of line {{number}}",
+    "quantityOfLine": "Quantity of line {{number}}",
+    "unitOfLine": "Unit of line {{number}}",
+    "toBeRechecked": "To be rechecked",
+    "each": "each",
+    "keyboardHint": "Enter makes the next line. Dimensions, packaging and own weights are under Details.",
+    "recheckingHint": "The weights are being recalculated; anything greyed out has not been rechecked yet."
   },
   "import": {
     "downloadTemplate": "Download template",

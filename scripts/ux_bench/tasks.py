@@ -13,6 +13,9 @@ GOODS = [
     ("Stalen buis 60x60x4x4000", 12),
 ]
 FORWARD = re.compile(r"^(Naar export|Naar zendinggegevens|Naar gevaarlijke stoffen|Volgende|Doorgaan)$")
+#: Since v1.196.0 a form with required fields still empty says which on the
+#: first press and walks on on the second, under a different label.
+ANYWAY = re.compile(r"^Toch doorgaan$")
 
 #: What a required field gets, by what its label says. The content only has to
 #: be plausible; what is measured is how many of them there are.
@@ -105,6 +108,45 @@ def fill_required(b: Bench) -> int:
         except Exception:
             continue
     return filled
+
+
+def missing_chips(page):
+    """The fields a document card names as still missing.
+
+    Each of them is a button since v1.196.0: the notice used to be one line of
+    plain text, and reaching the field it named meant walking back by hand.
+    """
+    return page.locator("p:has-text('Ontbrekend:') button")
+
+
+def answer_from_chip(b: Bench, chip) -> bool:
+    """Answer one named missing field from where it is named, and come back."""
+    label = chip.inner_text().strip()
+    b.click(chip)
+    b.page.wait_for_timeout(2500)
+    b.observe()
+    focused = b.page.locator("*:focus")
+    if not focused.count():
+        b.note(f"{label}: the form opened but the cursor was not put in the field")
+        return False
+    b.note(f"one action opened the form the field is on and put the cursor in {label}")
+    tag = focused.evaluate("el => el.tagName")
+    kind = focused.evaluate("el => el.type || ''")
+    if tag == "SELECT":
+        focused.select_option(index=1)
+        b.m.actions += 1
+    elif kind == "date":
+        b.fill(focused, "2026-09-06")
+    else:
+        b.fill(focused, value_for(label))
+    back = b.page.get_by_role("button", name="Terug naar het overzicht")
+    if not back.count():
+        b.note("nothing led straight back to where the question was asked")
+        return False
+    b.click(back.first)
+    b.page.wait_for_timeout(2500)
+    b.observe()
+    return b.current_step() == "Export"
 
 
 def confirm_declarations(b: Bench) -> bool:
@@ -329,20 +371,15 @@ def task_5(page, session: requests.Session) -> object:
         b.note("no unchecked document was on offer")
         b.shot("extra-document")
         return b.done(False)
-    missing = page.get_by_text(re.compile("Ontbrekend"))
-    b.note(f"{missing.count()} card(s) now name a missing field as text")
-    if missing.count():
-        b.note("is that notice itself something to click? "
-               + str(missing.first.evaluate("el => !!el.closest('button, a')")))
-    back = page.get_by_role("button", name="Terug")
-    if back.count():
-        b.click(back.last)
-        page.wait_for_timeout(2500)
-        b.observe()
-        b.note("reaching the new question means walking back through the forms by hand")
-        advance(b)
+    chips = missing_chips(page)
+    b.note(f"{chips.count()} missing field(s) named on the card, each of them a button")
+    if not chips.count():
+        b.note("the extra document asked for nothing that was not already answered")
+        b.shot("extra-document")
+        return b.done()
+    answered = answer_from_chip(b, chips.first)
     b.shot("extra-document")
-    return b.done()
+    return b.done(answered)
 
 
 # --- 6. an error corrected from the final overview ----------------------------------
@@ -357,10 +394,14 @@ def task_6(page) -> object:
     b.observe()
     # The required fields stay empty on purpose: this task is about what the
     # export step then says, and how far it is from the field that says it.
-    for _ in range(6):
+    # Walking on with them empty now takes two presses — the form says what is
+    # still empty before it walks on — and the second press has its own label.
+    for _ in range(12):
         if b.current_step() == "Export":
             break
-        nxt = page.get_by_role("button", name=FORWARD)
+        nxt = page.get_by_role("button", name=ANYWAY)
+        if not nxt.count():
+            nxt = page.get_by_role("button", name=FORWARD)
         if not nxt.count():
             break
         b.click(nxt.last)
@@ -370,30 +411,20 @@ def task_6(page) -> object:
     b.m.windows = 0
     b.m.notes.clear()
     b.shot("overview")
-    missing = page.get_by_text(re.compile("Ontbrekend"))
-    b.note(f"{missing.count()} missing-field notice(s) on the export step")
-    if missing.count():
-        b.note(f"the notice names them as text: {missing.first.inner_text()[:110]}")
-        b.note("is the notice an action? "
-               + str(missing.first.evaluate("el => !!el.closest('button, a')")))
+    chips = missing_chips(page)
+    b.note(f"{chips.count()} missing field(s) named on the export step, each of them a button")
     pills = page.locator("nav[aria-label='Wizard voortgang'] li")
     clickable = pills.evaluate_all(
         "els => els.filter(e => e.querySelector('button, a') || e.tagName === 'BUTTON').length")
     b.note(f"{clickable} of {pills.count()} main step pills can be clicked to go back")
-    steps_back = 0
-    while b.current_step() != "Zendinggegevens" and steps_back < 4:
-        back = page.get_by_role("button", name="Terug")
-        if not back.count():
-            break
-        b.click(back.last)
-        page.wait_for_timeout(2200)
-        b.observe()
-        steps_back += 1
-    b.note(f"{steps_back} Terug press(es) to reach the form the fields live on")
-    fill_required(b)
-    advance(b)
+    if not chips.count():
+        b.note("nothing was named as missing, so there was nothing to correct")
+        return b.done(False)
+    # One error, corrected: the baseline could not do that — it had to walk back
+    # and cross the whole form again, which is what its eleven actions bought.
+    corrected = answer_from_chip(b, chips.first)
     b.shot("corrected")
-    return b.done(b.current_step() == "Export")
+    return b.done(corrected)
 
 
 # --- 7. an earlier shipment as a new basis -------------------------------------------

@@ -97,7 +97,8 @@
     "importUndo": "Rückgängig",
     "importUndone": "Die vorherigen Zeilen sind wieder da.",
     "unansweredSubstances": "{{count}} Warenzeile(n) haben eine Stofffrage, die niemand beantwortet hat.",
-    "unansweredGo": "Zu den Waren"
+    "unansweredGo": "Zu den Waren",
+    "backToOverview": "Zurück zur Übersicht"
   },
   "review": {
     "linesTitle": "Güter",
@@ -474,7 +475,11 @@
     "formIntro": "Nur die Felder, die speziell für dieses Formular nötig sind. Angaben des Frachtführers und Unterschriften bleiben leer.",
     "coveredByShared": "Für {{forms}} sind keine zusätzlichen Felder nötig; die Sendungsdaten genügen.",
     "reuseLast": "Vorherige Sendung übernehmen",
-    "reuseLastHint": "Füllt leere Felder mit den Angaben Ihrer vorherigen Sendung (ohne Datumsfelder)."
+    "reuseLastHint": "Füllt leere Felder mit den Angaben Ihrer vorherigen Sendung (ohne Datumsfelder).",
+    "fieldMissing": "Dieses Feld wird für den Export benötigt.",
+    "stillEmpty": "{{count}} Pflichtfeld(er) auf diesem Formular noch leer.",
+    "stillEmptyHint": "Klicken Sie ein Feld an, um direkt dorthin zu gehen. Sie können auch weitermachen — der Exportschritt sagt weiterhin, was fehlt.",
+    "continueAnyway": "Trotzdem weiter"
   },
   "geo": {
     "locationPlaceholder": "Flughafen, Hafen oder Bahnhof suchen — oder frei eingeben…",
@@ -557,7 +562,8 @@
     "mailMessage": "Nachricht",
     "mailSend": "Senden",
     "mailSending": "Wird gesendet…",
-    "mailSent": "An {{to}} gesendet."
+    "mailSent": "An {{to}} gesendet.",
+    "missingFieldsLead": "Fehlend:"
   },
   "unCards": {
     "title": "UN-Karten für Ihre Unterlagen",

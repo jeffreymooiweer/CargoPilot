@@ -338,6 +338,37 @@ export default function WizardPage() {
 
   const modalityDef = registry?.modalities.find((m) => m.key === modality);
 
+  /** Going to one field and coming back.
+   *
+   *  A missing detail used to be named as text on the export step, and getting
+   *  to it meant pressing Back, finding the right form among the sub-steps,
+   *  finding the field on it, filling it, and walking forward again — the
+   *  baseline counted eleven actions and four step changes for one field. The
+   *  chip now carries the field's key; the details step opens the form it is
+   *  on and puts the cursor in it, and its primary action goes straight back
+   *  to where the question was asked. */
+  const [focusField, setFocusField] = useState<string | null>(null);
+  const [returnTo, setReturnTo] = useState<StepKey | null>(null);
+  // Steps the user has been on, so the progress bar knows what is worth
+  // offering as a way back.
+  const [visited, setVisited] = useState<StepKey[]>(["lines"]);
+
+  useEffect(() => {
+    setVisited((seen) => (seen.includes(stepKey) ? seen : [...seen, stepKey]));
+  }, [stepKey]);
+
+  const goToField = (key: string) => {
+    setReturnTo(stepKey);
+    setFocusField(key);
+    setStepKey("details");
+  };
+
+  const returnFromField = () => {
+    const back = returnTo ?? "export";
+    setReturnTo(null);
+    setStepKey(back);
+  };
+
   // A substance suggestion nobody answered is not an answer. It stays visible
   // to the end, because "we thought this might be UN 1203 and never found out"
   // is exactly what a document check is for.
@@ -679,16 +710,22 @@ export default function WizardPage() {
     return merged;
   };
 
-  const docStatus = (doc: DocumentDefinition): { status: DocStatus; missing: string[]; waitingCarrier: boolean } => {
+  const docStatus = (doc: DocumentDefinition): {
+    status: DocStatus;
+    /** The fields that are missing, by key *and* label: the label is what the
+     *  card says, the key is what takes the user to the field itself. */
+    missing: { key: string; label: string }[];
+    waitingCarrier: boolean;
+  } => {
     if (!registry) return { status: "draft", missing: [], waitingCarrier: false };
     if (doc.dg_only && !needsDg) return { status: "not_applicable", missing: [], waitingCarrier: false };
     const values = exportValuesFor(doc);
-    const missing: string[] = [];
+    const missing: { key: string; label: string }[] = [];
     let waitingCarrier = false;
     for (const section of resolveSections(doc, registry)) {
       for (const field of section.fields ?? []) {
         const value = (values[field.key] ?? "").trim();
-        if (field.status === "USER_REQUIRED" && !value) missing.push(L(field.label));
+        if (field.status === "USER_REQUIRED" && !value) missing.push({ key: field.key, label: L(field.label) });
         if (field.status === "CARRIER_PROVIDED" && !value) waitingCarrier = true;
       }
     }
@@ -1089,7 +1126,15 @@ export default function WizardPage() {
         </button>
       </div>
 
-      <WizardProgress steps={stepPills} currentStep={currentIndex + 1} />
+      <WizardProgress
+        steps={stepPills}
+        currentStep={currentIndex + 1}
+        visited={visited}
+        onGoTo={(key) => {
+          setReturnTo(null);
+          setStepKey(key as StepKey);
+        }}
+      />
 
       <AssistantModal
         open={assistantOpen}
@@ -1177,6 +1222,10 @@ export default function WizardPage() {
             modality={modality}
             onBack={() => goBackFrom("details")}
             onDone={completeDetails}
+            focusField={focusField}
+            onFocusHandled={() => setFocusField(null)}
+            returnLabel={returnTo ? t("wizard.backToOverview") : undefined}
+            onReturn={returnTo ? returnFromField : undefined}
             signature={signature}
             onSignatureChange={setSignature}
             addressBook={historyOn}
@@ -1412,8 +1461,17 @@ export default function WizardPage() {
                         <p className="mt-0.5 text-xs text-slate-500 dark:text-slate-400">{L(doc.issue_status)}</p>
                         {info.status === "draft" && info.missing.length > 0 && (
                           <p className="mt-1 text-xs text-amber-600 dark:text-amber-300">
-                            {t("wizardDocs.missingFields", { fields: info.missing.slice(0, 4).join(", ") })}
-                            {info.missing.length > 4 ? ` (+${info.missing.length - 4})` : ""}
+                            <span className="mr-1">{t("wizardDocs.missingFieldsLead")}</span>
+                            {info.missing.map((field) => (
+                              <button
+                                key={field.key}
+                                type="button"
+                                onClick={() => goToField(field.key)}
+                                className="mb-1 mr-1 inline-flex rounded-lg border border-amber-300 bg-white px-2 py-0.5 text-xs font-medium text-amber-900 hover:bg-amber-100 dark:border-amber-800 dark:bg-slate-900 dark:text-amber-200"
+                              >
+                                {field.label}
+                              </button>
+                            ))}
                           </p>
                         )}
                         {info.status === "blocked" && (

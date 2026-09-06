@@ -97,7 +97,8 @@
     "importUndo": "Annuler",
     "importUndone": "Les lignes précédentes sont de retour.",
     "unansweredSubstances": "{{count}} ligne(s) de marchandises ont une question de matière restée sans réponse.",
-    "unansweredGo": "Vers les marchandises"
+    "unansweredGo": "Vers les marchandises",
+    "backToOverview": "Retour à l'aperçu"
   },
   "review": {
     "linesTitle": "Marchandises",
@@ -474,7 +475,11 @@
     "formIntro": "Uniquement les champs propres à ce formulaire. Les données du transporteur et les signatures restent vides.",
     "coveredByShared": "Aucun champ supplémentaire n'est nécessaire pour {{forms}} ; les détails de l'envoi suffisent.",
     "reuseLast": "Réutiliser l'envoi précédent",
-    "reuseLastHint": "Remplit les champs vides avec les données de votre envoi précédent (dates exclues)."
+    "reuseLastHint": "Remplit les champs vides avec les données de votre envoi précédent (dates exclues).",
+    "fieldMissing": "Ce champ est nécessaire pour l'export.",
+    "stillEmpty": "{{count}} champ(s) obligatoire(s) de ce formulaire encore vide(s).",
+    "stillEmptyHint": "Cliquez sur un champ pour y aller directement. Vous pouvez aussi continuer — l'étape d'export continue de dire ce qui manque.",
+    "continueAnyway": "Continuer quand même"
   },
   "geo": {
     "locationPlaceholder": "Rechercher un aéroport, un port ou une gare — ou saisir librement…",
@@ -557,7 +562,8 @@
     "mailMessage": "Message",
     "mailSend": "Envoyer",
     "mailSending": "Envoi en cours…",
-    "mailSent": "Envoyé à {{to}}."
+    "mailSent": "Envoyé à {{to}}.",
+    "missingFieldsLead": "Manquant :"
   },
   "unCards": {
     "title": "Fiches ONU pour votre dossier",

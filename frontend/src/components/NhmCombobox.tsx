@@ -19,9 +19,11 @@ const inputClass =
 interface Props {
   value: string;
   onChange: (value: string) => void;
+  /** So a label can point at the field and a caller can focus it. */
+  id?: string;
 }
 
-export default function NhmCombobox({ value, onChange }: Props) {
+export default function NhmCombobox({ value, onChange, id }: Props) {
   const { t } = useTranslation();
   const [query, setQuery] = useState(value);
   const [hits, setHits] = useState<NhmEntry[]>([]);
@@ -81,6 +83,7 @@ export default function NhmCombobox({ value, onChange }: Props) {
   return (
     <div className="space-y-1">
       <input
+        id={id}
         className={inputClass}
         value={query}
         inputMode="text"

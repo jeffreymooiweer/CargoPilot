@@ -9,6 +9,11 @@ interface Step {
 interface Props {
   steps: Step[];
   currentStep: number;
+  /** Steps the user has already been on. Those are the ones worth going back
+   *  to: a step nobody has reached has nothing on it to go back *to*, and
+   *  offering it would be a way to skip the ones in between. */
+  visited?: WizardStepKey[];
+  onGoTo?: (key: WizardStepKey) => void;
 }
 
 function segmentState(index: number, currentIndex: number): "done" | "active" | "upcoming" {
@@ -85,7 +90,7 @@ function StepIcon({ stepKey }: { stepKey: WizardStepKey }) {
   }
 }
 
-export default function WizardProgress({ steps, currentStep }: Props) {
+export default function WizardProgress({ steps, currentStep, visited, onGoTo }: Props) {
   const currentIndex = Math.max(
     0,
     steps.findIndex((s) => s.n === currentStep),
@@ -96,14 +101,24 @@ export default function WizardProgress({ steps, currentStep }: Props) {
       <ol className="flex w-full list-none">
         {steps.map((step, index) => {
           const state = segmentState(index, currentIndex);
+          // A step that has been visited can be gone back to from here. It was
+          // informative-only until v1.196.0, which meant the only way back was
+          // pressing Back once per step and forward again afterwards.
+          const reachable = state !== "active" && !!onGoTo && (visited ?? []).includes(step.key);
+          const body = (
+            <>
+              <span className="sm:hidden">
+                <StepIcon stepKey={step.key} />
+              </span>
+              <span className="hidden truncate px-1 sm:inline sm:px-2">{step.label}</span>
+            </>
+          );
 
           return (
             <li
               key={step.n}
               aria-current={state === "active" ? "step" : undefined}
-              aria-label={step.label}
-              title={step.label}
-              className={`relative flex min-h-[40px] flex-1 items-center justify-center px-1 py-2 text-center text-xs font-semibold sm:min-h-[44px] sm:px-5 sm:py-2.5 sm:text-sm ${segmentColors(state)} ${
+              className={`relative flex min-h-[40px] flex-1 items-stretch justify-center text-center text-xs font-semibold sm:min-h-[44px] sm:text-sm ${segmentColors(state)} ${
                 index > 0 ? "-ml-2.5 sm:-ml-3.5" : ""
               }`}
               style={{
@@ -111,10 +126,25 @@ export default function WizardProgress({ steps, currentStep }: Props) {
                 zIndex: steps.length - index,
               }}
             >
-              <span className="sm:hidden">
-                <StepIcon stepKey={step.key} />
-              </span>
-              <span className="hidden truncate px-1 sm:inline sm:px-2">{step.label}</span>
+              {reachable ? (
+                <button
+                  type="button"
+                  onClick={() => onGoTo(step.key)}
+                  aria-label={step.label}
+                  title={step.label}
+                  className="flex w-full items-center justify-center px-1 py-2 transition-opacity hover:opacity-80 sm:px-5 sm:py-2.5"
+                >
+                  {body}
+                </button>
+              ) : (
+                <span
+                  aria-label={step.label}
+                  title={step.label}
+                  className="flex w-full items-center justify-center px-1 py-2 sm:px-5 sm:py-2.5"
+                >
+                  {body}
+                </span>
+              )}
             </li>
           );
         })}

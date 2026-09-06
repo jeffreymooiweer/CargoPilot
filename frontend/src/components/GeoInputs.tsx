@@ -117,12 +117,15 @@ export function LocationInput({
   types,
   includeAddresses,
   className,
+  id,
 }: {
   value: string;
   onChange: (value: string) => void;
   types: GeoLocationType[];
   includeAddresses?: boolean;
   className?: string;
+  /** So a label can point at the field and a caller can focus it. */
+  id?: string;
 }) {
   const { t } = useTranslation();
   const [open, setOpen] = useState(false);
@@ -146,6 +149,7 @@ export function LocationInput({
   return (
     <div className="relative">
       <input
+        id={id}
         className={className ?? inputClass}
         value={value}
         placeholder={t("geo.locationPlaceholder")}
@@ -178,10 +182,14 @@ export function AddressTextarea({
   value,
   onChange,
   textareaClassName,
+  textareaId,
 }: {
   value: string;
   onChange: (value: string) => void;
   textareaClassName: string;
+  /** The address itself, not the lookup box above it: that is the field the
+   *  export needs, so that is what a label points at and a caller focuses. */
+  textareaId?: string;
 }) {
   const { t } = useTranslation();
   const [query, setQuery] = useState("");
@@ -221,7 +229,7 @@ export function AddressTextarea({
           />
         )}
       </div>
-      <textarea className={textareaClassName} value={value} onChange={(e) => onChange(e.target.value)} />
+      <textarea id={textareaId} className={textareaClassName} value={value} onChange={(e) => onChange(e.target.value)} />
     </div>
   );
 }

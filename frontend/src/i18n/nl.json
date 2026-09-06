@@ -97,7 +97,8 @@
     "importUndo": "Ongedaan maken",
     "importUndone": "De vorige regels staan er weer.",
     "unansweredSubstances": "{{count}} goederenregel(s) hebben een stofvraag die nog niet is beantwoord.",
-    "unansweredGo": "Naar de goederen"
+    "unansweredGo": "Naar de goederen",
+    "backToOverview": "Terug naar het overzicht"
   },
   "review": {
     "linesTitle": "Goederen",
@@ -474,7 +475,11 @@
     "formIntro": "Alleen de velden die specifiek voor dit formulier nodig zijn. Carriergegevens en handtekeningen blijven leeg.",
     "coveredByShared": "Voor {{forms}} zijn geen extra velden nodig; de zendinggegevens volstaan.",
     "reuseLast": "Vorige zending hergebruiken",
-    "reuseLastHint": "Vult lege velden met de gegevens van uw vorige zending (zonder datums)."
+    "reuseLastHint": "Vult lege velden met de gegevens van uw vorige zending (zonder datums).",
+    "fieldMissing": "Dit veld is nodig voor de export.",
+    "stillEmpty": "{{count}} verplicht veld/velden op dit formulier nog leeg.",
+    "stillEmptyHint": "Klik een veld aan om er direct heen te gaan. U kunt ook doorgaan — de exportstap blijft zeggen wat er ontbreekt.",
+    "continueAnyway": "Toch doorgaan"
   },
   "geo": {
     "locationPlaceholder": "Zoek luchthaven, haven of station — of typ vrij…",
@@ -557,7 +562,8 @@
     "mailMessage": "Bericht",
     "mailSend": "Versturen",
     "mailSending": "Bezig met versturen…",
-    "mailSent": "Verstuurd naar {{to}}."
+    "mailSent": "Verstuurd naar {{to}}.",
+    "missingFieldsLead": "Ontbrekend:"
   },
   "unCards": {
     "title": "UN-kaarten voor uw administratie",

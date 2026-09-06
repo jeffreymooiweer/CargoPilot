@@ -97,7 +97,8 @@
     "importUndo": "Undo",
     "importUndone": "The previous lines are back.",
     "unansweredSubstances": "{{count}} goods line(s) have a substance question nobody has answered.",
-    "unansweredGo": "Go to the goods"
+    "unansweredGo": "Go to the goods",
+    "backToOverview": "Back to the overview"
   },
   "review": {
     "linesTitle": "Goods",
@@ -474,7 +475,11 @@
     "formIntro": "Only the fields specific to this form. Carrier data and signatures stay empty.",
     "coveredByShared": "No extra fields are needed for {{forms}}; the shipment details are sufficient.",
     "reuseLast": "Reuse previous shipment",
-    "reuseLastHint": "Fills empty fields with your previous shipment's details (dates excluded)."
+    "reuseLastHint": "Fills empty fields with your previous shipment's details (dates excluded).",
+    "fieldMissing": "This field is needed for the export.",
+    "stillEmpty": "{{count}} required field(s) on this form still empty.",
+    "stillEmptyHint": "Click a field to go straight to it. You can also carry on — the export step keeps saying what is missing.",
+    "continueAnyway": "Continue anyway"
   },
   "geo": {
     "locationPlaceholder": "Search airport, port or station — or type freely…",
@@ -557,7 +562,8 @@
     "mailMessage": "Message",
     "mailSend": "Send",
     "mailSending": "Sending…",
-    "mailSent": "Sent to {{to}}."
+    "mailSent": "Sent to {{to}}.",
+    "missingFieldsLead": "Missing:"
   },
   "unCards": {
     "title": "UN cards for your records",

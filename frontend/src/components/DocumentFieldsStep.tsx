@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
   DocumentDefinition,
@@ -72,6 +72,20 @@ interface Props {
   /** Draw the address book on the parties section. Only an installation
    *  that keeps its shipments has one. */
   addressBook?: boolean;
+  /** A field to open at and put the cursor in: the export step's missing-field
+   *  chips name one, and this step is where it lives. */
+  focusField?: string | null;
+  onFocusHandled?: () => void;
+  /** Where the user came from, if they came to answer one thing. Shown as the
+   *  primary action so they go back to it rather than walking the forms out. */
+  returnLabel?: string;
+  onReturn?: () => void;
+}
+
+/** The DOM id of a field's control, so a label can point at it and a caller
+ *  can find it. One rule, so both ends agree without passing anything. */
+export function fieldId(key: string): string {
+  return `field-${key}`;
 }
 
 type SubStep = { kind: "shared" } | { kind: "doc"; doc: DocumentDefinition; sections: DocumentSection[] };
@@ -88,11 +102,21 @@ export default function DocumentFieldsStep({
   signature,
   onSignatureChange,
   addressBook,
+  focusField,
+  onFocusHandled,
+  returnLabel,
+  onReturn,
 }: Props) {
   const { t, i18n } = useTranslation();
   const lang = documentLanguage(i18n.language);
   const L = (text?: LocalizedText) => localised(text, lang);
   const [subIndex, setSubIndex] = useState(0);
+  // Which required fields were empty when the user last pressed Next. Nothing
+  // is marked while somebody is still typing — that is the difference between
+  // telling and nagging — and nothing is blocked either: the second press goes
+  // on regardless, because a document CargoPilot cannot finish is still the
+  // user's to take further.
+  const [flagged, setFlagged] = useState<string[]>([]);
   // Whether the customs references apply, read off the route as it is typed.
   const customsVerdicts = useCustomsRoute(values);
 
@@ -122,18 +146,56 @@ export default function DocumentFieldsStep({
   );
   const current = subSteps[Math.min(subIndex, subSteps.length - 1)];
 
-  const missingRequired = (sections: DocumentSection[]): number => {
-    let count = 0;
+  const missingKeys = (sections: DocumentSection[]): string[] => {
+    const keys: string[] = [];
     for (const section of sections) {
       for (const field of section.fields ?? []) {
         if (field.status !== "USER_REQUIRED") continue;
         if (field.condition && !conditionMet(field.condition, values)) continue;
         const autoValue = field.auto_from ? autoValues?.[field.auto_from] : undefined;
-        if (!(values[field.key] ?? autoValue ?? "").trim()) count += 1;
+        if (!(values[field.key] ?? autoValue ?? "").trim()) keys.push(field.key);
       }
     }
-    return count;
+    return keys;
   };
+
+  const missingRequired = (sections: DocumentSection[]): number => missingKeys(sections).length;
+
+  const sectionsOf = (step: SubStep) => (step.kind === "shared" ? sharedSections : step.sections);
+
+  const labelOf = (key: string): string => {
+    for (const step of subSteps) {
+      for (const section of sectionsOf(step)) {
+        const field = (section.fields ?? []).find((one) => one.key === key);
+        if (field) return L(field.label);
+      }
+    }
+    return key;
+  };
+
+  /** Which sub-step holds a field, so a chip elsewhere can open it. */
+  const subStepOf = (key: string): number => {
+    const at = subSteps.findIndex((step) =>
+      sectionsOf(step).some((section) => (section.fields ?? []).some((field) => field.key === key)));
+    return at < 0 ? 0 : at;
+  };
+
+  // Coming in to answer one named field: open the form it is on and put the
+  // cursor in it. The element is not there until the sub-step has rendered,
+  // which is why the focus waits a frame rather than happening in the click.
+  useEffect(() => {
+    if (!focusField) return;
+    setSubIndex(subStepOf(focusField));
+    const timer = window.setTimeout(() => {
+      const element = document.getElementById(fieldId(focusField));
+      element?.focus();
+      element?.scrollIntoView?.({ block: "center", behavior: "smooth" });
+      onFocusHandled?.();
+    }, 60);
+    return () => window.clearTimeout(timer);
+    // subStepOf reads the memoised sub-steps; the field is what decides.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [focusField, subSteps]);
 
   // The party labels the address book names, as the form shows them: the
   // part of "Consignor — name" before the dash.
@@ -150,11 +212,25 @@ export default function DocumentFieldsStep({
   const subStepMissing = (step: SubStep) =>
     step.kind === "shared" ? missingRequired(sharedSections) : missingRequired(step.sections);
 
+  const empty = missingKeys(sectionsOf(current));
+  const warned = flagged.length > 0 && empty.some((key) => flagged.includes(key));
+
   const goNext = () => {
+    // First press on a form with required fields still empty: say which, on the
+    // fields themselves and in a summary above them. Second press goes on — the
+    // export step will keep saying what is missing, and the server has the last
+    // word on what may be exported.
+    if (empty.length > 0 && !warned) {
+      setFlagged(empty);
+      window.scrollTo({ top: 0, behavior: "smooth" });
+      return;
+    }
+    setFlagged([]);
     if (subIndex < subSteps.length - 1) setSubIndex(subIndex + 1);
     else onDone?.();
   };
   const goBack = () => {
+    setFlagged([]);
     if (subIndex > 0) setSubIndex(subIndex - 1);
     else onBack?.();
   };
@@ -171,10 +247,16 @@ export default function DocumentFieldsStep({
     const isLocation = field.type === "text" && LOCATION_FIELD_KEYS.has(field.key);
     const locationTypes = MODALITY_LOCATION_TYPES[modality ?? ""] ?? ["airport", "port", "station"];
 
+    const id = fieldId(field.key);
+    // Marked only after a Next that found it empty, and unmarked the moment
+    // something is typed into it.
+    const missed = flagged.includes(field.key) && !(values[field.key] ?? "").trim();
+    const ring = missed ? "ring-2 ring-red-400 border-red-400 dark:border-red-500" : "";
+
     return (
       <div key={field.key} className={field.type === "textarea" ? "md:col-span-2" : ""}>
         <div className="flex flex-wrap items-center gap-1.5">
-          <label className="text-sm font-medium text-slate-800 dark:text-slate-200">
+          <label htmlFor={id} className="text-sm font-medium text-slate-800 dark:text-slate-200">
             {L(field.label)}
             {required && <span className="text-red-500"> *</span>}
           </label>
@@ -190,18 +272,21 @@ export default function DocumentFieldsStep({
             <AddressTextarea
               value={value}
               onChange={(v) => setValue(field.key, v)}
-              textareaClassName={`${inputClass} min-h-[64px]`}
+              textareaId={id}
+              textareaClassName={`${inputClass} min-h-[64px] ${ring}`}
             />
           </div>
         ) : field.type === "textarea" ? (
           <textarea
-            className={`${inputClass} mt-1 min-h-[64px]`}
+            id={id}
+            className={`${inputClass} mt-1 min-h-[64px] ${ring}`}
             value={value}
             onChange={(e) => setValue(field.key, e.target.value)}
           />
         ) : isLocation ? (
           <div className="mt-1">
             <LocationInput
+              id={id}
               value={value}
               onChange={(v) => setValue(field.key, v)}
               types={locationTypes}
@@ -210,10 +295,10 @@ export default function DocumentFieldsStep({
           </div>
         ) : field.key === "nhm_code" ? (
           <div className="mt-1">
-            <NhmCombobox value={value} onChange={(v) => setValue(field.key, v)} />
+            <NhmCombobox id={id} value={value} onChange={(v) => setValue(field.key, v)} />
           </div>
         ) : field.type === "select" ? (
-          <select className={`${inputClass} mt-1`} value={value} onChange={(e) => setValue(field.key, e.target.value)}>
+          <select id={id} className={`${inputClass} mt-1 ${ring}`} value={value} onChange={(e) => setValue(field.key, e.target.value)}>
             <option value="">{t("docfields.choose")}</option>
             {(field.options ?? []).map((option) => (
               <option key={option.value} value={option.value}>
@@ -224,6 +309,7 @@ export default function DocumentFieldsStep({
         ) : field.type === "checkbox" ? (
           <label className="mt-1.5 flex min-h-[40px] items-center gap-2 text-sm text-slate-700 dark:text-slate-300">
             <input
+              id={id}
               type="checkbox"
               checked={value === "true"}
               onChange={(e) => setValue(field.key, e.target.checked ? "true" : "")}
@@ -233,12 +319,16 @@ export default function DocumentFieldsStep({
           </label>
         ) : (
           <input
+            id={id}
             type={field.type === "number" ? "number" : field.type === "date" ? "date" : "text"}
             step={field.type === "number" ? "0.01" : undefined}
-            className={`${inputClass} mt-1`}
+            className={`${inputClass} mt-1 ${ring}`}
             value={value}
             onChange={(e) => setValue(field.key, e.target.value)}
           />
+        )}
+        {missed && (
+          <p className="mt-1 text-xs text-red-600 dark:text-red-400">{t("docfields.fieldMissing")}</p>
         )}
         {CUSTOMS_FIELD_KEYS.has(field.key) && <CustomsRouteHint verdict={customsVerdicts[field.key]} />}
       </div>
@@ -291,6 +381,34 @@ export default function DocumentFieldsStep({
         )}
       </div>
 
+      {warned && (
+        <div
+          role="alert"
+          className="rounded-2xl border border-red-200 bg-red-50 p-4 dark:border-red-900/50 dark:bg-red-950/30"
+        >
+          <p className="text-sm font-medium text-red-800 dark:text-red-200">
+            {t("docfields.stillEmpty", { count: empty.length })}
+          </p>
+          <div className="mt-2 flex flex-wrap gap-1.5">
+            {empty.map((key) => (
+              <button
+                key={key}
+                type="button"
+                onClick={() => {
+                  const element = document.getElementById(fieldId(key));
+                  element?.focus();
+                  element?.scrollIntoView?.({ block: "center", behavior: "smooth" });
+                }}
+                className="rounded-lg border border-red-300 bg-white px-2.5 py-1 text-xs font-medium text-red-800 hover:bg-red-100 dark:border-red-800 dark:bg-slate-900 dark:text-red-200"
+              >
+                {labelOf(key)}
+              </button>
+            ))}
+          </div>
+          <p className="mt-2 text-xs text-red-700 dark:text-red-300">{t("docfields.stillEmptyHint")}</p>
+        </div>
+      )}
+
       {current.kind === "shared" && (
         <>
           {/* Offered where the references live: pasting the carrier's booking
@@ -341,8 +459,21 @@ export default function DocumentFieldsStep({
         <button type="button" onClick={goBack} className={buttonSecondary}>
           {t("wizard.back")}
         </button>
-        <button type="button" onClick={goNext} className={`${buttonPrimary} sm:ml-auto`}>
-          {subIndex < subSteps.length - 1 ? t("wizard.next") : t("wizard.toExport")}
+        {onReturn && returnLabel && (
+          <button type="button" onClick={onReturn} className={`${buttonPrimary} sm:ml-auto`}>
+            {returnLabel}
+          </button>
+        )}
+        <button
+          type="button"
+          onClick={goNext}
+          className={`${onReturn && returnLabel ? buttonSecondary : `${buttonPrimary} sm:ml-auto`}`}
+        >
+          {warned
+            ? t("docfields.continueAnyway")
+            : subIndex < subSteps.length - 1
+              ? t("wizard.next")
+              : t("wizard.toExport")}
         </button>
       </div>
     </div>

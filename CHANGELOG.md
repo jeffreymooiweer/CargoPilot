@@ -2,6 +2,42 @@
 
 All notable changes are documented here, following [Semantic Versioning](https://semver.org/).
 
+## [1.196.0] — 2026-09-06
+
+### From the notice straight to the field it is about
+
+Release 111 of [the usability plan](docs/ux-plan.md). The export step named what a
+document was still missing — *Missing: Consignor — name, Consignor — address and
+country, Consignee — name…* — in one line of plain text. Reaching any of it meant
+pressing **Back**, finding the form the field lives on among the ones the step is built
+from, finding the field on it, and walking forward again. The [baseline](docs/ux-baseline.md)
+measured that as 11 actions and four step changes to correct a single field.
+
+**Each missing field is now a button.** Pressing it opens the step it belongs to, the
+form within that step, and the field itself, with the cursor already in it. **Back to
+the overview** returns to the card that asked. Every field on the shipment-details step
+carries an identity from the document registry, so its label is really a label — its
+`for` names the control it belongs to — and a field can be arrived at by name from
+anywhere. That includes the address fields, whose textarea, not their lookup box, is
+what a document reads.
+
+**The progress bar became a way back.** A step somebody has already been on is a button
+that returns to it. The step you are on is not a link to itself, and a step nobody has
+reached is not offered — that would be a way to skip what is in between, and there is
+nothing there to go back to.
+
+**And Next tells before it walks on.** A form with required fields still empty says
+which, above the form and on the fields themselves, instead of walking on quietly. It
+says it on **Next** and never while somebody is halfway through typing: the marks appear
+on the press and clear the moment something is typed. A second press carries on anyway —
+CargoPilot does not block a document it cannot finish, the export step keeps saying what
+is missing, and the server has the last word on what a document needs.
+
+Measured on the same tasks: correcting an error named on the final overview went from 11
+actions to 3, and an extra document's one new answer from 7 actions and three forms
+crossed to 4 and two. A shipment whose fields are filled measured unchanged, so the
+telling costs nothing when there is nothing to tell.
+
 ## [1.195.0] — 2026-09-06
 
 ### The substance question is asked on its line, and answered in words

@@ -113,8 +113,10 @@ same harness against the same tasks, so a row is comparable with the baseline ab
 | 108 (v1.193.0) | 2 Five quantities | 15 → **5** | 5 → **0** | One keystroke per quantity, and nothing opens |
 | 108 (v1.193.0) | 4 A substance suggestion | 8 → **5** | 2 → **1** | Reaching the line to look again costs less; the finding itself stands |
 | 108 (v1.193.0) | 8 A reload during entry | 5 → **3** | 1 → **0** | Only the cost of getting there; the entry is still lost |
-
 | 109 (v1.194.0) | 3 Fifty rows imported | 3 → **4** | 1 → **0** | No dialog, and the fourth action is the one that was impossible: narrowing to the row that wants attention |
+| 110 (v1.195.0) | 4 A substance suggestion | 8 → **5** | 2 → **0** | And **completable**: the answer can be found again and changed |
+| 111 (v1.196.0) | 5 An extra document | 7 → **4** | 0 → **0** | The missing field is named as a button; three forms crossed became two |
+| 111 (v1.196.0) | 6 An error from the overview | 11 → **3** | 0 → **0** | Press the field's name, type the answer, come back |
 
 Task 3 is the one row in this table where the action count went *up*, and it is the
 release's point rather than a regression. Pasting fifty rows costs the same three actions
@@ -124,13 +126,26 @@ by scrolling 5,746 pixels. The lines themselves still come back as 49 **OK** and
 **Controle nodig**, and that one now says why: *no dimensions in the description and no
 weight filled in*.
 
-| 110 (v1.195.0) | 4 A substance suggestion | 8 → **5** | 2 → **0** | And **completable**: the answer can be found again and changed |
-
 Task 4 is the one the baseline could not complete. The question is now on its line with
 three named answers, the line says which was given, and **Change the answer** takes it
 back — so "close it, judge it, revise it later" is a thing that can actually be done.
 
-Tasks 5, 6, 7, 9 and 10 were unchanged by 108, 109 and 110.
+Tasks 5 and 6 are the two the baseline measured as walking: the export step named what
+was missing in one line of plain text, and reaching any of it meant **Terug**, finding
+the form, finding the field, and walking forward again. Each name is now a button that
+opens the step, the form and the field it belongs to, puts the cursor in it, and offers
+the way straight back. Task 6's eleven actions bought a whole form crossed a second
+time; its three buy the one correction the task is about. The step changes and the one
+back-step stay what they were — going to a field on an earlier step *is* going back —
+but the forms crossed on the way fell from two to none.
+
+The same release made **Next** say what is still empty before it walks on, which costs a
+second press on a form left deliberately empty. Nothing is blocked: the second press
+carries on under its own label, and the export step keeps saying what is missing. Task 1
+measured unchanged at 20 actions, so the telling costs nothing when the fields are
+filled.
+
+Tasks 7, 9 and 10 were unchanged by 108 to 111.
 
 ## What was not run
 

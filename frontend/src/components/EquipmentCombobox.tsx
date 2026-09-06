@@ -15,9 +15,39 @@ interface Props {
   value: string;
   onChange: (value: string, equipment?: EquipmentItem | null) => void;
   placeholder?: string;
+  /** The input itself, so a caller can put the cursor in it — the goods step
+   *  focuses the description of a line it has just added. */
+  inputRef?: (element: HTMLInputElement | null) => void;
+  onKeyDown?: (event: React.KeyboardEvent<HTMLInputElement>) => void;
+  "aria-label"?: string;
 }
 
-export default function EquipmentCombobox({ value, onChange, placeholder }: Props) {
+/** The library, fetched once for every box on the screen.
+ *
+ *  One box per line means fifty identical requests on a fifty-line import,
+ *  which is fifty times the same answer and a visible stall. The promise is
+ *  shared; a failure is not cached, so a box mounted after the network came
+ *  back asks again. */
+let libraryPromise: Promise<EquipmentItem[]> | null = null;
+
+function library(): Promise<EquipmentItem[]> {
+  if (!libraryPromise) {
+    libraryPromise = api.listEquipment().catch((error) => {
+      libraryPromise = null;
+      throw error;
+    });
+  }
+  return libraryPromise;
+}
+
+export default function EquipmentCombobox({
+  value,
+  onChange,
+  placeholder,
+  inputRef: exposeInput,
+  onKeyDown,
+  ...rest
+}: Props) {
   const { t, i18n } = useTranslation();
   const [equipment, setEquipment] = useState<EquipmentItem[]>([]);
   const [results, setResults] = useState<CatalogSearchHit[]>([]);
@@ -35,7 +65,7 @@ export default function EquipmentCombobox({ value, onChange, placeholder }: Prop
 
   useEffect(() => {
     if (!hasLibrary) return;
-    api.listEquipment().then(setEquipment).catch(() => setEquipment([]));
+    library().then(setEquipment).catch(() => setEquipment([]));
   }, [hasLibrary]);
 
   useEffect(() => {
@@ -88,7 +118,11 @@ export default function EquipmentCombobox({ value, onChange, placeholder }: Prop
   useEffect(() => {
     if (debounceRef.current) clearTimeout(debounceRef.current);
 
-    const q = query.trim();
+    // Only while the list is open, which means only while somebody is actually
+    // looking at it. A box that searched for whatever it was mounted with sent
+    // one request per line: a fifty-line import fired fifty catalogue searches
+    // at once and made the weights take seconds longer to appear.
+    const q = open ? query.trim() : "";
     if (q.length < MIN_SEARCH_LEN) {
       setResults([]);
       setLoading(false);
@@ -109,7 +143,7 @@ export default function EquipmentCombobox({ value, onChange, placeholder }: Prop
     };
     // On the language too: whoever switches language while typing should get
     // the suggestions back in the new language.
-  }, [query, i18n.language]);
+  }, [query, open, i18n.language]);
 
   const browseEquipment = useMemo(() => {
     if (query.trim().length >= MIN_SEARCH_LEN) return [];
@@ -139,9 +173,29 @@ export default function EquipmentCombobox({ value, onChange, placeholder }: Prop
   return (
     <div ref={wrapRef} className="relative">
       <input
-        ref={inputRef}
+        ref={(element) => {
+          inputRef.current = element;
+          exposeInput?.(element);
+        }}
         className={inputClass}
         value={query}
+        aria-label={rest["aria-label"]}
+        onKeyDown={(event) => {
+          // Escape closes the list rather than the dialog or the page behind
+          // it, and Tab leaves the field with the list closed. Without this the
+          // suggestions stayed open over whatever came next, taking the clicks
+          // meant for it — which is what the goods step's own Add line button
+          // ran into.
+          if (event.key === "Escape" && open) {
+            event.preventDefault();
+            event.stopPropagation();
+            setOpen(false);
+            return;
+          }
+          if (event.key === "Tab") setOpen(false);
+          if (event.key === "Enter") setOpen(false);
+          onKeyDown?.(event);
+        }}
         placeholder={placeholder || t("review.descriptionPlaceholder")}
         onChange={(e) => {
           setQuery(e.target.value);

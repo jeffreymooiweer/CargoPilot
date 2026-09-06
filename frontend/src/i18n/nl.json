@@ -95,7 +95,7 @@
   },
   "review": {
     "linesTitle": "Goederen",
-    "intro": "Voer per goederenregel een omschrijving in: kies materieel uit de catalogus of typ een eigen omschrijving met afmetingen. Excel-plakken kan via Importeren.",
+    "intro": "Vul per regel de omschrijving, het aantal en de eenheid in. Maten en uitzonderingen staan onder Details; een Excel-lijst gaat via Importeren.",
     "description": "Omschrijving",
     "descriptionPlaceholder": "Kies materieel of typ bijv. staal hoekprofiel 80x80x8x6000",
     "customDescription": "Gebruik als vrije omschrijving (automatisch matchen)",
@@ -148,7 +148,15 @@
     "dgYes": "Ja",
     "dgNo": "Nee",
     "dgToastOne": "Regel {{number}}: UN {{un}} ({{name}}, klasse {{class}}) herkend. Overnemen?",
-    "dgToastMany": "Regel {{number}}: meerdere stoffen mogelijk. Welke is het?"
+    "dgToastMany": "Regel {{number}}: meerdere stoffen mogelijk. Welke is het?",
+    "lineDetails": "Details",
+    "descriptionOfLine": "Omschrijving van regel {{number}}",
+    "quantityOfLine": "Aantal van regel {{number}}",
+    "unitOfLine": "Eenheid van regel {{number}}",
+    "toBeRechecked": "Te controleren",
+    "each": "st",
+    "keyboardHint": "Enter maakt de volgende regel. Maten, verpakking en eigen gewichten staan onder Details.",
+    "recheckingHint": "De gewichten worden opnieuw berekend; wat grijs staat is nog niet gecontroleerd."
   },
   "import": {
     "downloadTemplate": "Template downloaden",

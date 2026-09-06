@@ -1,9 +1,42 @@
-import { useEffect, useRef, useState } from "react";
+/**
+ * The goods step: one compact line per goods line, edited where it stands.
+ *
+ * Until v1.192.0 every line was a read-only card and everything changeable
+ * lived behind an edit icon, in a dialog. That shape was the right answer to
+ * the wrong question. It replaced a table of thirteen input fields — which
+ * genuinely did not fit any screen — but it charged three actions and a window
+ * for changing a number: the baseline measured five quantity corrections at
+ * fifteen actions and five dialogs, none of which was the number itself.
+ *
+ * What is here now is the middle the two shapes missed. Four things live on the
+ * line, because they are what a consignment is made of and what people come
+ * back to change: the description, the quantity, the unit, and — read-only —
+ * what CargoPilot worked out from them. The thirteen fields are not back:
+ * dimensions, wall thickness, cargo form, own weights and the article stay in
+ * the detail dialog, one click away, exactly as they were.
+ *
+ * The row wraps rather than switching layouts. On a phone the description takes
+ * the width and the quantity, the unit and the outcome fall underneath it; on a
+ * laptop it is one line. One implementation, so the validation, the focus order
+ * and the keyboard are the same everywhere — a second layout is a second set of
+ * bugs.
+ *
+ * **Derived figures while the calculation runs.** Typing clears the result, and
+ * the wizard recalculates six-tenths of a second after the typing stops. A line
+ * whose own text has not changed keeps showing what was worked out for it,
+ * dimmed and marked *to be rechecked*; the line being edited shows no figures at
+ * all, because a weight that belongs to the previous description is not a
+ * weight. Nothing on this screen shows a number for input it was not computed
+ * from.
+ */
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { LineItem, UnitCatalogue, api, ArticleRef } from "../api/client";
 import { useToast } from "../toast/ToastProvider";
+import EquipmentCombobox from "./EquipmentCombobox";
 import LineEditDialog, { ROUND_TYPES, WALL_PROFILE_TYPES } from "./LineEditDialog";
-import RecordCards, { NoValue, QuantityWithUnit, RecordField } from "./RecordCards";
+import NumberInput from "./NumberInput";
+import UnitSelect from "./UnitSelect";
 import { ImportIcon } from "./icons";
 
 export interface DraftLine {
@@ -41,6 +74,10 @@ export interface DraftLine {
 }
 
 const panelClass = "bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800";
+const fieldClass =
+  "border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-950 text-slate-900 " +
+  "dark:text-slate-100 rounded-lg px-3 py-2.5 text-sm min-h-[44px]";
+const labelClass = "text-[11px] uppercase tracking-wide text-slate-500 dark:text-slate-400";
 
 interface Props {
   draftLines: DraftLine[];
@@ -61,6 +98,15 @@ function statusColor(status: string) {
   return "bg-yellow-100 text-yellow-800 dark:bg-yellow-900/40 dark:text-yellow-300";
 }
 
+/** What a line's derived figures were computed from. Two lines with the same
+ *  signature have the same answer; a line whose signature moved has none yet. */
+function signatureOf(line: DraftLine): string {
+  return JSON.stringify([
+    line.description.trim(), line.quantity, line.unit, line.cargo_form ?? "",
+    line.length_cm ?? "", line.width_cm ?? "", line.height_cm ?? "", line.wall_thickness_mm ?? "",
+  ]);
+}
+
 function PlusIcon() {
   return (
     <svg className="h-4 w-4" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth={1.8} aria-hidden>
@@ -69,7 +115,7 @@ function PlusIcon() {
   );
 }
 
-function PencilIcon() {
+function DetailsIcon() {
   return (
     <svg className="h-4 w-4" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth={1.6} aria-hidden>
       <path d="M13.5 3.5a1.77 1.77 0 0 1 2.5 2.5L7 15l-3.5 1L4.5 12.5Z" strokeLinecap="round" strokeLinejoin="round" />
@@ -94,13 +140,7 @@ function TrashIcon() {
   );
 }
 
-function CardAction({
-  label,
-  onClick,
-  icon,
-  danger,
-  disabled,
-}: {
+function RowAction({ label, onClick, icon, danger, disabled }: {
   label: string;
   onClick: () => void;
   icon: React.ReactNode;
@@ -137,7 +177,6 @@ export default function ReviewLinesPanel({
 }: Props) {
   const { t } = useTranslation();
   const toast = useToast();
-  const computed = resultLines && resultLines.length > 0;
   const canRemove = draftLines.length > 1;
 
   // Held by id rather than by index: a line can be removed or duplicated while
@@ -160,7 +199,7 @@ export default function ReviewLinesPanel({
   };
 
   /**
-   * The name recognition, asked as a snackbar rather than shown on the card.
+   * The name recognition, asked as a snackbar rather than shown on the line.
    *
    * It is the one thing on a line that asks the user a *question* — "this
    * looks like UN 1203, shall I take it?" — and a question belongs in the one
@@ -245,167 +284,71 @@ export default function ReviewLinesPanel({
     };
   }, []);
 
-  function resultFor(index: number): LineItem | null {
-    return computed ? resultLines![index] : null;
+  // What was last worked out per line, and for which text. Kept so that the
+  // figures do not blink away on every keystroke; only shown for a line whose
+  // own signature has not moved since.
+  const computed = useRef(new Map<number, { signature: string; item: LineItem }>());
+  if (resultLines && resultLines.length > 0) {
+    const next = new Map<number, { signature: string; item: LineItem }>();
+    draftLines.forEach((line, index) => {
+      const item = resultLines[index];
+      if (item) next.set(line.id, { signature: signatureOf(line), item });
+    });
+    computed.current = next;
   }
 
-  /** What the user filled in beats what was read out of the description. */
-  function measure(draft: DraftLine, result: LineItem | null, field: "length_cm" | "width_cm" | "height_cm") {
-    const own = draft[field];
-    if (own !== undefined && own !== "") return own;
-    return result?.[field] ?? null;
+  function outcomeFor(line: DraftLine, index: number): { item: LineItem | null; stale: boolean } {
+    const fresh = resultLines?.[index];
+    if (fresh) return { item: fresh, stale: false };
+    const remembered = computed.current.get(line.id);
+    if (remembered && remembered.signature === signatureOf(line)) {
+      return { item: remembered.item, stale: true };
+    }
+    return { item: null, stale: true };
   }
 
-  // Read-only, all of them: the card says what the line holds and the dialog is
-  // where it changes. That is what lets one shape work at every width — text
-  // reflows, a row of input fields does not.
-  const fields: RecordField<DraftLine>[] = [
-    {
-      key: "quantity",
-      label: t("review.quantityAndUnit"),
-      primary: true,
-      render: (draft) =>
-        draft.quantity === "" ? <NoValue /> : <QuantityWithUnit value={draft.quantity} unit={draft.unit} />,
-    },
-    {
-      key: "weightTotal",
-      label: t("review.weightTotal"),
-      primary: true,
-      render: (_draft, index) => {
-        const weight = resultFor(index)?.weight_total_kg;
-        return weight != null ? <QuantityWithUnit value={weight} unit="kg" /> : <NoValue />;
-      },
-    },
-    {
-      key: "status",
-      label: t("review.status"),
-      primary: true,
-      render: (_draft, index) => {
-        const result = resultFor(index);
-        if (!result) return <NoValue />;
-        return (
-          <div className="space-y-1">
-            <span className={`inline-block rounded-full px-2 py-0.5 text-xs ${statusColor(result.status)}`}>
-              {t(`status.${result.status}` as "status.ok")}
-            </span>
-            {result.messages.length > 0 && (
-              <p className="text-xs text-amber-700 dark:text-amber-300">
-                {result.messages.map(translateMessage).join(", ")}
-              </p>
-            )}
-          </div>
-        );
-      },
-    },
-    {
-      key: "dangerousGoods",
-      label: t("review.dangerousGoods"),
-      render: (draft, index) => {
-        const result = resultFor(index);
-        return (
-          <div className="flex flex-wrap items-center justify-end gap-1.5">
-            <span>{draft.dangerous_goods ? t("review.dgYes") : t("review.dgNo")}</span>
-            {result?.dangerous_goods && !draft.dangerous_goods && (
-              <span className="rounded-full bg-amber-100 px-2 py-0.5 text-[11px] font-medium text-amber-800 dark:bg-amber-900/40 dark:text-amber-300">
-                {t("review.dgDetected")}
-              </span>
-            )}
-            {draft.confirmed_un && (
-              <span className="rounded-full bg-emerald-100 px-2 py-0.5 text-[11px] font-medium text-emerald-800 dark:bg-emerald-900/40 dark:text-emerald-300">
-                UN {draft.confirmed_un}
-              </span>
-            )}
-            {draft.article?.code && (
-              <span
-                className="rounded-full bg-sky-100 px-2 py-0.5 text-[11px] font-medium text-sky-800 dark:bg-sky-900/40 dark:text-sky-300"
-                title={t("articles.onLine")}
-              >
-                {draft.article.code}
-              </span>
-            )}
-          </div>
-        );
-      },
-    },
-    {
-      key: "dimensions",
-      // One measurement, one line: three cells for length, width and height was
-      // a table's way of putting it, not a reader's.
-      label: t("review.dimensions"),
-      render: (draft, index) => {
-        const result = resultFor(index);
-        const round = ROUND_TYPES.has(result?.product_type ?? "");
-        const length = measure(draft, result, "length_cm");
-        const width = measure(draft, result, "width_cm");
-        const height = round ? null : measure(draft, result, "height_cm");
-        if (length == null && width == null && height == null) return <NoValue />;
-        const show = (value: number | null) => (value == null ? "?" : String(value));
-        const text = round
-          ? `${show(length)} × ⌀ ${show(width)}`
-          : [length, width, height].map(show).join(" × ");
-        return <QuantityWithUnit value={text} unit="cm" />;
-      },
-    },
-    {
-      key: "weightEach",
-      label: t("review.weightEach"),
-      render: (_draft, index) => {
-        const weight = resultFor(index)?.weight_each_kg;
-        return weight != null ? <QuantityWithUnit value={weight} unit="kg" /> : <NoValue />;
-      },
-    },
-    {
-      key: "volume",
-      label: t("review.volume"),
-      render: (_draft, index) => {
-        const volume = resultFor(index)?.transport_volume_m3;
-        return volume != null ? <QuantityWithUnit value={volume.toFixed(3)} unit="m³" /> : <NoValue />;
-      },
-    },
-    {
-      key: "cargoForm",
-      label: t("review.cargoForm"),
-      render: (draft, index) => {
-        const result = resultFor(index);
-        const form = draft.cargo_form ?? result?.cargo_form;
-        // No form for gravel, grain or liquids: there the stored density
-        // already describes the substance as it is carried.
-        if (!form) return <NoValue />;
-        return <>{t(`forms.${form}`, form)}</>;
-      },
-    },
-    {
-      key: "wallThickness",
-      label: t("review.wallThickness"),
-      render: (draft, index) => {
-        const result = resultFor(index);
-        const type = result?.product_type;
-        // Only where it means something: a plate or a beam has no wall.
-        if (!type || !WALL_PROFILE_TYPES.has(type)) return <NoValue />;
-        const value = draft.wall_thickness_mm;
-        if (value === undefined || value === "") {
-          return result.messages.includes("wall_thickness_missing") ? (
-            <span className="text-amber-700 dark:text-amber-300">{translateMessage("wall_thickness_missing")}</span>
-          ) : (
-            <NoValue />
-          );
-        }
-        return <QuantityWithUnit value={value} unit="mm" />;
-      },
-    },
-  ];
+  // A new line gets the cursor. Detected here rather than passed in, because
+  // adding is the wizard's action and focusing is this panel's business: the
+  // one id that was not there a render ago is the one to type in.
+  const seen = useRef<number[]>(draftLines.map((line) => line.id));
+  const inputs = useRef(new Map<number, HTMLInputElement>());
+  useEffect(() => {
+    const ids = draftLines.map((line) => line.id);
+    const added = ids.filter((id) => !seen.current.includes(id));
+    seen.current = ids;
+    // Exactly one new line is somebody adding or duplicating one. A handful at
+    // once is an import, and an import should not drag the page to its last row.
+    if (added.length === 1) {
+      const input = inputs.current.get(added[0]);
+      input?.focus();
+      // jsdom has no layout, so it has no scrollIntoView either.
+      input?.scrollIntoView?.({ block: "nearest" });
+    }
+  }, [draftLines]);
+
+  function onFieldKeyDown(event: React.KeyboardEvent, index: number) {
+    if (event.key !== "Enter") return;
+    event.preventDefault();
+    if (index === draftLines.length - 1) {
+      onAddLine();
+      return;
+    }
+    inputs.current.get(draftLines[index + 1].id)?.focus();
+  }
 
   const editingIndex = draftLines.findIndex((line) => line.id === editingId);
   const editing = editingIndex >= 0 ? draftLines[editingIndex] : null;
+  const editingOutcome = editing ? outcomeFor(editing, editingIndex) : null;
+
+  const anyStale = useMemo(
+    () => draftLines.some((line, index) => outcomeFor(line, index).stale && line.description.trim()),
+    // outcomeFor reads the refs, which change with the results.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [draftLines, resultLines],
+  );
 
   return (
     <div className={`${panelClass} overflow-hidden`}>
-      {/* The action sits on the heading's own line, at every width. It used to
-          drop below the text on a phone — a column layout with the button
-          pushed to the right — which cost a whole empty band of screen above
-          the first line, on the screen where space is scarcest. And it carries
-          its name rather than only an icon: the sentence underneath points at
-          it by that name, and a phone has no hover to reveal a title. */}
       <div className="border-b border-slate-100 px-4 py-4 dark:border-slate-800 sm:px-5">
         <div className="flex items-center justify-between gap-3">
           <h3 className="text-sm font-semibold text-slate-900 dark:text-slate-100">{t("review.linesTitle")}</h3>
@@ -423,61 +366,232 @@ export default function ReviewLinesPanel({
         <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">{t("review.intro")}</p>
       </div>
 
-      <div className="p-4">
-        <RecordCards
-          rows={draftLines}
-          fields={fields}
-          rowKey={(draft) => draft.id}
-          cardTitle={(draft, index) => (
-            <div className="flex items-center gap-2">
-              <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-white text-xs font-semibold text-slate-600 dark:bg-slate-900 dark:text-slate-300">
-                {index + 1}
-              </span>
-              <span className="min-w-0 flex-1 truncate">
-                {draft.description.trim() || t("review.untitledLine")}
-              </span>
-            </div>
-          )}
-          actions={(draft) => (
-            <>
-              <CardAction label={t("review.editLine")} onClick={() => setEditingId(draft.id)} icon={<PencilIcon />} />
-              <CardAction label={t("review.duplicateLine")} onClick={() => onDuplicateLine(draft.id)} icon={<CopyIcon />} />
-              <CardAction
-                label={t("review.removeLine")}
-                onClick={() => onRemoveLine(draft.id)}
-                icon={<TrashIcon />}
-                danger
-                disabled={!canRemove}
-              />
-            </>
-          )}
-          footer={
-            <button
-              type="button"
-              onClick={onAddLine}
-              className="mt-3 flex min-h-[44px] w-full items-center justify-center gap-2 rounded-xl border border-dashed border-slate-300 text-sm font-medium text-slate-600 dark:border-slate-700 dark:text-slate-300"
-            >
-              <PlusIcon />
-              {t("review.addLine")}
-            </button>
-          }
-        />
+      <div className="p-3 sm:p-4">
+        {/* Column names for the row below, on the widths where the row is one
+            line. Every control carries its own name for a screen reader, so
+            this is the sighted reader's half of the same labelling. */}
+        <div className="hidden gap-2 px-2 pb-1 lg:flex">
+          <span className="w-6" />
+          <span className={`${labelClass} min-w-[14rem] flex-1`}>{t("review.description")}</span>
+          <span className={`${labelClass} w-20`}>{t("review.quantity")}</span>
+          <span className={`${labelClass} w-32`}>{t("review.unit")}</span>
+          <span className={`${labelClass} w-28 text-right`}>{t("review.weightTotal")}</span>
+          <span className={`${labelClass} w-28`}>{t("review.status")}</span>
+          <span className="w-[7.5rem]" />
+        </div>
+
+        <ul className="space-y-2">
+          {draftLines.map((line, index) => {
+            const { item, stale } = outcomeFor(line, index);
+            return (
+              <li
+                key={line.id}
+                className="rounded-xl border border-slate-200 px-2 py-2 dark:border-slate-700"
+              >
+                <div className="flex flex-wrap items-center gap-2">
+                  <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-slate-100 text-xs font-semibold text-slate-600 dark:bg-slate-800 dark:text-slate-300">
+                    {index + 1}
+                  </span>
+                  <div className="min-w-[14rem] flex-1">
+                    <EquipmentCombobox
+                      value={line.description}
+                      onChange={(value) => updateDraft(line.id, { description: value })}
+                      inputRef={(element) => {
+                        if (element) inputs.current.set(line.id, element);
+                        else inputs.current.delete(line.id);
+                      }}
+                      onKeyDown={(event) => onFieldKeyDown(event, index)}
+                      aria-label={t("review.descriptionOfLine", { number: index + 1 })}
+                    />
+                  </div>
+                  <NumberInput
+                    className={`${fieldClass} w-20`}
+                    inputMode="decimal"
+                    value={line.quantity}
+                    aria-label={t("review.quantityOfLine", { number: index + 1 })}
+                    onKeyDown={(event) => onFieldKeyDown(event, index)}
+                    onChange={(event) =>
+                      updateDraft(line.id, {
+                        quantity: event.target.value === "" ? "" : Number(event.target.value),
+                      })
+                    }
+                  />
+                  <div className="w-32">
+                    <UnitSelect
+                      value={line.unit}
+                      onChange={(unit) => updateDraft(line.id, { unit })}
+                      category={item?.material_category}
+                      catalogue={catalogue}
+                      className={`${fieldClass} w-full`}
+                      aria-label={t("review.unitOfLine", { number: index + 1 })}
+                    />
+                  </div>
+                  <div
+                    className={`w-28 text-right text-sm tabular-nums ${
+                      stale ? "text-slate-400 dark:text-slate-500" : "text-slate-800 dark:text-slate-100"
+                    }`}
+                  >
+                    {item?.weight_total_kg != null ? (
+                      <>
+                        {item.weight_total_kg}
+                        <span className="ml-1 text-xs text-slate-500 dark:text-slate-400">kg</span>
+                      </>
+                    ) : (
+                      <span className="text-slate-400">—</span>
+                    )}
+                  </div>
+                  <div className="w-28">
+                    {stale ? (
+                      <span className="inline-block rounded-full bg-slate-100 px-2 py-0.5 text-xs text-slate-600 dark:bg-slate-800 dark:text-slate-300">
+                        {t("review.toBeRechecked")}
+                      </span>
+                    ) : item ? (
+                      <span className={`inline-block rounded-full px-2 py-0.5 text-xs ${statusColor(item.status)}`}>
+                        {t(`status.${item.status}` as "status.ok")}
+                      </span>
+                    ) : (
+                      <span className="text-slate-400">—</span>
+                    )}
+                  </div>
+                  <div className="flex shrink-0 items-center gap-1">
+                    <RowAction label={t("review.lineDetails")} onClick={() => setEditingId(line.id)} icon={<DetailsIcon />} />
+                    <RowAction label={t("review.duplicateLine")} onClick={() => onDuplicateLine(line.id)} icon={<CopyIcon />} />
+                    <RowAction
+                      label={t("review.removeLine")}
+                      onClick={() => onRemoveLine(line.id)}
+                      icon={<TrashIcon />}
+                      danger
+                      disabled={!canRemove}
+                    />
+                  </div>
+                </div>
+                <Derived
+                  line={line}
+                  item={item}
+                  stale={stale}
+                  translateMessage={translateMessage}
+                />
+              </li>
+            );
+          })}
+        </ul>
+
+        <button
+          type="button"
+          onClick={onAddLine}
+          className="mt-3 flex min-h-[44px] w-full items-center justify-center gap-2 rounded-xl border border-dashed border-slate-300 text-sm font-medium text-slate-600 dark:border-slate-700 dark:text-slate-300"
+        >
+          <PlusIcon />
+          {t("review.addLine")}
+        </button>
+        <p className="mt-2 text-xs text-slate-500 dark:text-slate-400">
+          {anyStale ? t("review.recheckingHint") : t("review.keyboardHint")}
+        </p>
       </div>
 
       {editing && (
         <LineEditDialog
           line={editing}
-          result={resultFor(editingIndex)}
+          result={editingOutcome?.item ?? null}
           position={editingIndex + 1}
           catalogue={catalogue}
           onChange={(patch) => updateDraft(editing.id, patch)}
           onWeightChange={
-            onLineWeightChange && resultFor(editingIndex)
-              ? (field, value) => onLineWeightChange(resultFor(editingIndex)!.line_id, field, value)
+            onLineWeightChange && editingOutcome?.item
+              ? (field, value) => onLineWeightChange(editingOutcome.item!.line_id, field, value)
               : undefined
           }
           onClose={() => setEditingId(null)}
         />
+      )}
+    </div>
+  );
+}
+
+/**
+ * Under the row: what was worked out and what is worth knowing about the line,
+ * as text rather than as fields. This is where the card's "show more" went —
+ * the same facts, without a second tap to reach them.
+ */
+function Derived({ line, item, stale, translateMessage }: {
+  line: DraftLine;
+  item: LineItem | null;
+  stale: boolean;
+  translateMessage: (msg: string) => string;
+}) {
+  const { t } = useTranslation();
+  const parts: string[] = [];
+
+  const measure = (field: "length_cm" | "width_cm" | "height_cm") => {
+    const own = line[field];
+    if (own !== undefined && own !== "") return own;
+    return item?.[field] ?? null;
+  };
+  const round = ROUND_TYPES.has(item?.product_type ?? "");
+  const length = measure("length_cm");
+  const width = measure("width_cm");
+  const height = round ? null : measure("height_cm");
+  if (length != null || width != null || height != null) {
+    const show = (value: number | null) => (value == null ? "?" : String(value));
+    parts.push(round
+      ? `${show(length)} × ⌀ ${show(width)} cm`
+      : `${[length, width, height].map(show).join(" × ")} cm`);
+  }
+  if (item?.weight_each_kg != null) parts.push(`${item.weight_each_kg} kg/${t("review.each")}`);
+  if (item?.transport_volume_m3 != null) parts.push(`${item.transport_volume_m3.toFixed(3)} m³`);
+  const form = line.cargo_form ?? item?.cargo_form;
+  if (form) parts.push(t(`forms.${form}`, form));
+  const type = item?.product_type;
+  if (type && WALL_PROFILE_TYPES.has(type) && line.wall_thickness_mm !== undefined && line.wall_thickness_mm !== "") {
+    parts.push(`${line.wall_thickness_mm} mm`);
+  }
+
+  const messages = item?.messages ?? [];
+  const chips = (
+    <>
+      {item?.dangerous_goods && !line.dangerous_goods && (
+        <span className="rounded-full bg-amber-100 px-2 py-0.5 text-[11px] font-medium text-amber-800 dark:bg-amber-900/40 dark:text-amber-300">
+          {t("review.dgDetected")}
+        </span>
+      )}
+      {line.dangerous_goods && !line.confirmed_un && (
+        <span className="rounded-full bg-emerald-100 px-2 py-0.5 text-[11px] font-medium text-emerald-800 dark:bg-emerald-900/40 dark:text-emerald-300">
+          {t("review.dgYes")}
+        </span>
+      )}
+      {line.confirmed_un && (
+        <span className="rounded-full bg-emerald-100 px-2 py-0.5 text-[11px] font-medium text-emerald-800 dark:bg-emerald-900/40 dark:text-emerald-300">
+          UN {line.confirmed_un}
+        </span>
+      )}
+      {line.article?.code && (
+        <span
+          className="rounded-full bg-sky-100 px-2 py-0.5 text-[11px] font-medium text-sky-800 dark:bg-sky-900/40 dark:text-sky-300"
+          title={t("articles.onLine")}
+        >
+          {line.article.code}
+        </span>
+      )}
+    </>
+  );
+
+  if (parts.length === 0 && messages.length === 0 && !line.confirmed_un && !line.dangerous_goods
+      && !line.article?.code && !item?.dangerous_goods) {
+    return null;
+  }
+
+  return (
+    <div className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1 pl-8 pr-2">
+      {parts.length > 0 && (
+        <span className={`text-xs ${stale ? "text-slate-400 dark:text-slate-500" : "text-slate-500 dark:text-slate-400"}`}>
+          {parts.join(" · ")}
+        </span>
+      )}
+      {chips}
+      {messages.length > 0 && (
+        <span className="text-xs text-amber-700 dark:text-amber-300">
+          {messages.map(translateMessage).join(", ")}
+        </span>
       )}
     </div>
   );

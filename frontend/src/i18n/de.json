@@ -22,7 +22,13 @@
     "shipments": "Sendungen",
     "articles": "Artikel",
     "audit": "Audit-Protokoll",
-    "trips": "Fahrten"
+    "trips": "Fahrten",
+    "group": {
+      "work": "Arbeit",
+      "libraries": "Bibliotheken",
+      "administration": "Verwaltung",
+      "account": "Konto"
+    }
   },
   "theme": {
     "dark": "Dunkel",
@@ -98,7 +104,8 @@
     "importUndone": "Die vorherigen Zeilen sind wieder da.",
     "unansweredSubstances": "{{count}} Warenzeile(n) haben eine Stofffrage, die niemand beantwortet hat.",
     "unansweredGo": "Zu den Waren",
-    "backToOverview": "Zurück zur Übersicht"
+    "backToOverview": "Zurück zur Übersicht",
+    "startFrom": "Von einer früheren Sendung ausgehen:"
   },
   "review": {
     "linesTitle": "Güter",
@@ -1056,7 +1063,8 @@
     "kept": "Fahrt gespeichert. Sie finden sie unter Fahrten.",
     "updated": "Fahrt aktualisiert.",
     "keepFailed": "Die Fahrt konnte nicht gespeichert werden.",
-    "openKept": "Gespeicherte Fahrt öffnen"
+    "openKept": "Gespeicherte Fahrt öffnen",
+    "addedFromList": "{{count}} Sendung(en) aus der Auswahl hinzugefügt."
   },
   "common": {
     "remove": "Entfernen"
@@ -1105,7 +1113,17 @@
     "page": "Seite {{page}} von {{pages}}",
     "useTemplate": "Als Vorlage verwenden",
     "useTemplateHint": "Eine neue Sendung mit denselben Gütern, Parteien und derselben Route; Referenz und Daten bleiben leer.",
-    "templateOpened": "Neue Sendung nach {{reference}}: Referenz und Daten sind leer, der Rest wurde übernommen."
+    "templateOpened": "Neue Sendung nach {{reference}}: Referenz und Daten sind leer, der Rest wurde übernommen.",
+    "edit": "Öffnen",
+    "actions": "Aktionen",
+    "pick": "Auswählen",
+    "picked": "{{count}} Sendung(en) ausgewählt",
+    "toTrip": "Zu einer Fahrt hinzufügen ({{count}})",
+    "clearPicked": "Auswahl aufheben",
+    "resumeDraft": "Weiter ausfüllen",
+    "stateDraft": "Entwurf",
+    "stateOpen": "Noch zu ergänzen",
+    "stateReady": "Fertig"
   },
   "addressBook": {
     "title": "Adressbuch",

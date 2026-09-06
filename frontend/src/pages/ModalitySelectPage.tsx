@@ -110,7 +110,10 @@ export default function ModalitySelectPage() {
       </div>
 
       <div className="grid gap-3 sm:gap-4 sm:grid-cols-2 xl:grid-cols-3">
-        {MODALITIES.map((key) => {
+        {/* What can be used comes first. The unavailable ones stay on the
+            page — they say why, and that is worth reading — but they no longer
+            sit between two modes somebody could have picked. */}
+        {[...MODALITIES].sort((a, b) => Number(isModalityAvailable(b)) - Number(isModalityAvailable(a))).map((key) => {
           const available = isModalityAvailable(key);
           return (
           <button

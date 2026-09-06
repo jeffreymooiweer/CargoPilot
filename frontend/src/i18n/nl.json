@@ -22,7 +22,13 @@
     "shipments": "Zendingen",
     "articles": "Artikelen",
     "audit": "Auditlog",
-    "trips": "Ritten"
+    "trips": "Ritten",
+    "group": {
+      "work": "Werk",
+      "libraries": "Bibliotheken",
+      "administration": "Beheer",
+      "account": "Account"
+    }
   },
   "theme": {
     "dark": "Donker",
@@ -98,7 +104,8 @@
     "importUndone": "De vorige regels staan er weer.",
     "unansweredSubstances": "{{count}} goederenregel(s) hebben een stofvraag die nog niet is beantwoord.",
     "unansweredGo": "Naar de goederen",
-    "backToOverview": "Terug naar het overzicht"
+    "backToOverview": "Terug naar het overzicht",
+    "startFrom": "Beginnen vanaf een eerdere zending:"
   },
   "review": {
     "linesTitle": "Goederen",
@@ -1056,7 +1063,8 @@
     "kept": "Rit bewaard. Je vindt hem onder Ritten.",
     "updated": "Rit bijgewerkt.",
     "keepFailed": "De rit kon niet worden bewaard.",
-    "openKept": "Bewaarde rit openen"
+    "openKept": "Bewaarde rit openen",
+    "addedFromList": "{{count}} zending(en) uit de selectie toegevoegd."
   },
   "common": {
     "remove": "Verwijderen"
@@ -1105,7 +1113,17 @@
     "page": "Pagina {{page}} van {{pages}}",
     "useTemplate": "Als sjabloon gebruiken",
     "useTemplateHint": "Een nieuwe zending met dezelfde goederen, partijen en route; referentie en datums leeg.",
-    "templateOpened": "Nieuwe zending op basis van {{reference}}: referentie en datums zijn leeg, de rest is overgenomen."
+    "templateOpened": "Nieuwe zending op basis van {{reference}}: referentie en datums zijn leeg, de rest is overgenomen.",
+    "edit": "Openen",
+    "actions": "Acties",
+    "pick": "Selecteren",
+    "picked": "{{count}} zending(en) geselecteerd",
+    "toTrip": "Aan een rit toevoegen ({{count}})",
+    "clearPicked": "Selectie wissen",
+    "resumeDraft": "Verder invullen",
+    "stateDraft": "Concept",
+    "stateOpen": "Nog aanvullen",
+    "stateReady": "Gereed"
   },
   "addressBook": {
     "title": "Adresboek",

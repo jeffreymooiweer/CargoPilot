@@ -22,7 +22,13 @@
     "shipments": "Shipments",
     "articles": "Articles",
     "audit": "Audit log",
-    "trips": "Trips"
+    "trips": "Trips",
+    "group": {
+      "work": "Work",
+      "libraries": "Libraries",
+      "administration": "Administration",
+      "account": "Account"
+    }
   },
   "theme": {
     "dark": "Dark",
@@ -98,7 +104,8 @@
     "importUndone": "The previous lines are back.",
     "unansweredSubstances": "{{count}} goods line(s) have a substance question nobody has answered.",
     "unansweredGo": "Go to the goods",
-    "backToOverview": "Back to the overview"
+    "backToOverview": "Back to the overview",
+    "startFrom": "Start from an earlier shipment:"
   },
   "review": {
     "linesTitle": "Goods",
@@ -1056,7 +1063,8 @@
     "kept": "Trip kept. You will find it under Trips.",
     "updated": "Trip updated.",
     "keepFailed": "The trip could not be kept.",
-    "openKept": "Open the kept trip"
+    "openKept": "Open the kept trip",
+    "addedFromList": "{{count}} shipment(s) added from the selection."
   },
   "common": {
     "remove": "Remove"
@@ -1105,7 +1113,17 @@
     "page": "Page {{page}} of {{pages}}",
     "useTemplate": "Use as template",
     "useTemplateHint": "A new shipment with the same goods, parties and route; reference and dates left empty.",
-    "templateOpened": "New shipment from {{reference}}: reference and dates are empty, the rest was taken over."
+    "templateOpened": "New shipment from {{reference}}: reference and dates are empty, the rest was taken over.",
+    "edit": "Open",
+    "actions": "Actions",
+    "pick": "Select",
+    "picked": "{{count}} shipment(s) selected",
+    "toTrip": "Add to a trip ({{count}})",
+    "clearPicked": "Clear the selection",
+    "resumeDraft": "Carry on",
+    "stateDraft": "Draft",
+    "stateOpen": "Still to complete",
+    "stateReady": "Ready"
   },
   "addressBook": {
     "title": "Address book",

@@ -42,7 +42,7 @@ import { LineItem, UnitCatalogue, api, ArticleRef } from "../api/client";
 import { useToast } from "../toast/ToastProvider";
 import EquipmentCombobox from "./EquipmentCombobox";
 import GoodsImport from "./GoodsImport";
-import LineEditDialog, { ROUND_TYPES, WALL_PROFILE_TYPES } from "./LineEditDialog";
+import LineDetails, { ROUND_TYPES, WALL_PROFILE_TYPES, isDangerous } from "./LineDetails";
 import NumberInput from "./NumberInput";
 import UnitSelect from "./UnitSelect";
 
@@ -79,6 +79,22 @@ export interface DraftLine {
   /** Net content of one package as the description said it ("25 L"); the DG
    *  derivation fills the per-package quantity from it. */
   package_content?: string;
+  /**
+   * The substance's identity, stated on the line it is about.
+   *
+   * Until v1.203.0 these lived only on the dangerous-goods step, which meant
+   * the goods step recognised UN 1203 on a line and then the next step asked
+   * what the substance was — the same question, one step further on. They are
+   * answered here now and seeded into the step's product, so the step is left
+   * with what it is actually for: the assessment.
+   *
+   * The class is deliberately not among them. It follows from the UN number
+   * through Table A, and a field for it is an invitation to state something
+   * the tables will contradict.
+   */
+  proper_shipping_name?: string;
+  packing_group?: string;
+  type_of_package?: string;
   /** The library article this line was picked from, if any. Its UN number
    *  travels as `confirmed_un`; the rest seeds the DG product. */
   article?: ArticleRef;
@@ -157,10 +173,19 @@ function PlusIcon() {
   );
 }
 
-function DetailsIcon() {
+/** The disclosure arrow. It points down when the line is closed and up when it
+ *  is open, so the glyph says what pressing it will do. */
+function DetailsIcon({ open }: { open: boolean }) {
   return (
-    <svg className="h-4 w-4" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth={1.6} aria-hidden>
-      <path d="M13.5 3.5a1.77 1.77 0 0 1 2.5 2.5L7 15l-3.5 1L4.5 12.5Z" strokeLinecap="round" strokeLinejoin="round" />
+    <svg
+      className={`h-4 w-4 transition-transform duration-200 motion-reduce:transition-none ${open ? "rotate-180" : ""}`}
+      viewBox="0 0 20 20"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={1.8}
+      aria-hidden
+    >
+      <path d="m5 8 5 5 5-5" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
   );
 }
@@ -182,12 +207,15 @@ function TrashIcon() {
   );
 }
 
-function RowAction({ label, onClick, icon, danger, disabled }: {
+function RowAction({ label, onClick, icon, danger, disabled, expanded, controls }: {
   label: string;
   onClick: () => void;
   icon: React.ReactNode;
   danger?: boolean;
   disabled?: boolean;
+  /** Set on a disclosure, so the button says whether the line is open. */
+  expanded?: boolean;
+  controls?: string;
 }) {
   const tone = danger
     ? "text-slate-500 hover:bg-red-50 hover:text-red-600 dark:text-slate-400 dark:hover:bg-red-950/40 dark:hover:text-red-400"
@@ -198,6 +226,8 @@ function RowAction({ label, onClick, icon, danger, disabled }: {
       onClick={onClick}
       disabled={disabled}
       aria-label={label}
+      aria-expanded={expanded}
+      aria-controls={controls}
       title={label}
       className={`inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-lg transition-colors disabled:opacity-40 disabled:pointer-events-none ${tone}`}
     >
@@ -221,9 +251,14 @@ export default function ReviewLinesPanel({
   const toast = useToast();
   const canRemove = draftLines.length > 1;
 
-  // Held by id rather than by index: a line can be removed or duplicated while
-  // the dialog is open, and an index would then quietly point at another line.
-  const [editingId, setEditingId] = useState<number | null>(null);
+  // Which line is open, by id rather than by index: a line can be removed or
+  // duplicated while it stands open, and an index would then quietly point at
+  // another line.
+  //
+  // One at a time. The panel is a screenful of fields, and two of them open
+  // means the row you are comparing against has scrolled off — which is the
+  // problem the dialog had, in a different shape.
+  const [openId, setOpenId] = useState<number | null>(null);
   // A file dropped on the panel, handed to the import; and whether something is
   // being dragged over it, so the panel can say it will take it.
   const [dropped, setDropped] = useState<File | null>(null);
@@ -334,10 +369,6 @@ export default function ReviewLinesPanel({
     inputs.current.get(draftLines[index + 1].id)?.focus();
   }
 
-  const editingIndex = draftLines.findIndex((line) => line.id === editingId);
-  const editing = editingIndex >= 0 ? draftLines[editingIndex] : null;
-  const editingOutcome = editing ? outcomeFor(editing, editingIndex) : null;
-
   // How the calculation judged the lines, for the summary above the list. A
   // line still being rechecked is neither settled nor a problem yet.
   const { settled, attention, unanswered } = useMemo(() => {
@@ -447,10 +478,16 @@ export default function ReviewLinesPanel({
           {draftLines.map((line, index) => {
             const { item, stale } = outcomeFor(line, index);
             if (onlyAttention && !needsAttention(item) && !hasOpenQuestion(line, item)) return null;
+            const open = openId === line.id;
+            const panelId = `line-panel-${line.id}`;
             return (
               <li
                 key={line.id}
-                className="rounded-xl border border-slate-200 px-2 py-2 dark:border-slate-700"
+                className={`rounded-xl border px-2 py-2 ${
+                  open
+                    ? "border-brand-300 dark:border-brand-800"
+                    : "border-slate-200 dark:border-slate-700"
+                }`}
               >
                 <div className="flex flex-wrap items-center gap-2">
                   <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-slate-100 text-xs font-semibold text-slate-600 dark:bg-slate-800 dark:text-slate-300">
@@ -518,7 +555,22 @@ export default function ReviewLinesPanel({
                     )}
                   </div>
                   <div className="flex shrink-0 items-center gap-1">
-                    <RowAction label={t("review.lineDetails")} onClick={() => setEditingId(line.id)} icon={<DetailsIcon />} />
+                    <RowAction
+                      // A dangerous line has more behind the arrow than a
+                      // plain one — its substance — and the button says so
+                      // rather than leaving somebody to find out.
+                      label={
+                        open
+                          ? t("review.closeDetails")
+                          : isDangerous(line, item)
+                            ? t("review.lineDetailsDg")
+                            : t("review.lineDetails")
+                      }
+                      onClick={() => setOpenId(open ? null : line.id)}
+                      icon={<DetailsIcon open={open} />}
+                      expanded={open}
+                      controls={panelId}
+                    />
                     <RowAction label={t("review.duplicateLine")} onClick={() => onDuplicateLine(line.id)} icon={<CopyIcon />} />
                     <RowAction
                       label={t("review.removeLine")}
@@ -536,6 +588,21 @@ export default function ReviewLinesPanel({
                   translateMessage={translateMessage}
                 />
                 <SubstanceQuestion line={line} item={item} onAnswer={(patch) => answer(line, patch)} />
+                {open && (
+                  <LineDetails
+                    line={line}
+                    result={item}
+                    position={index + 1}
+                    catalogue={catalogue}
+                    id={panelId}
+                    onChange={(patch) => updateDraft(line.id, patch)}
+                    onWeightChange={
+                      onLineWeightChange && item
+                        ? (weightField, value) => onLineWeightChange(item.line_id, weightField, value)
+                        : undefined
+                    }
+                  />
+                )}
               </li>
             );
           })}
@@ -553,22 +620,6 @@ export default function ReviewLinesPanel({
           {anyStale ? t("review.recheckingHint") : t("review.keyboardHint")}
         </p>
       </div>
-
-      {editing && (
-        <LineEditDialog
-          line={editing}
-          result={editingOutcome?.item ?? null}
-          position={editingIndex + 1}
-          catalogue={catalogue}
-          onChange={(patch) => updateDraft(editing.id, patch)}
-          onWeightChange={
-            onLineWeightChange && editingOutcome?.item
-              ? (field, value) => onLineWeightChange(editingOutcome.item!.line_id, field, value)
-              : undefined
-          }
-          onClose={() => setEditingId(null)}
-        />
-      )}
     </div>
   );
 }

@@ -751,7 +751,10 @@ export default function WizardPage() {
       (line) => line.include && (line.dangerous_goods || (line.detected_un_numbers?.length ?? 0) > 0),
     );
     if (hasDg) {
-      setDgEntries(withEmergencyContact(buildDgEntries(res.lines)));
+      // The lines as typed travel with the computed ones, so what the user
+      // answered about a substance on its own line is what the step starts
+      // from rather than something it asks for again.
+      setDgEntries(withEmergencyContact(buildDgEntries(res.lines, draftLines)));
       setStepKey("dg");
     } else if (genericDocs.length > 0) {
       setStepKey("details");

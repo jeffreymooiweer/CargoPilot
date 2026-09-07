@@ -135,6 +135,17 @@ const CORE_FIELDS = [
   "additional_information",
 ] as const;
 
+/** What `buildDgEntries` reads off a goods line. Narrower than `DraftLine` on
+ *  purpose: this says exactly which of the line's answers the step starts
+ *  from, and nothing here has to change when the goods step gains a field. */
+export interface LineDraft {
+  confirmed_un?: string;
+  proper_shipping_name?: string;
+  packing_group?: string;
+  type_of_package?: string;
+  package_content?: string;
+}
+
 function emptyProduct(): DgProduct {
   return {
     un_number: "",
@@ -156,10 +167,28 @@ function emptyProduct(): DgProduct {
   };
 }
 
-export function buildDgEntries(lines: LineItem[]): DgEntry[] {
+/**
+ * The step's starting point, built from the goods.
+ *
+ * Three things feed it, in the order of who is most likely to be right:
+ *
+ * 1. **What the user stated on the line** (v1.203.0). The goods step now asks
+ *    for the substance's identity where the substance is — UN number, proper
+ *    shipping name, packing group, packaging — and an answer typed by the
+ *    person shipping the goods beats anything derived from them.
+ * 2. **The library article** the line was picked from, for what the user did
+ *    not state.
+ * 3. **What the recogniser found** in the description, for the UN number.
+ *
+ * Everything left empty stays empty and is filled by `dg/prepare` out of the
+ * tables, exactly as before. `drafts` is index-aligned with `lines`; a caller
+ * without them (an older snapshot, a test) gets the behaviour of 1 and 2 only.
+ */
+export function buildDgEntries(lines: LineItem[], drafts: LineDraft[] = []): DgEntry[] {
   return lines
-    .filter((line) => line.include && line.dangerous_goods)
-    .map((line) => ({
+    .map((line, index) => ({ line, draft: drafts[index] }))
+    .filter(({ line }) => line.include && line.dangerous_goods)
+    .map(({ line, draft }) => ({
       line_id: line.line_id,
       vehicle: line.output_description || line.description,
       registration: "",
@@ -177,9 +206,17 @@ export function buildDgEntries(lines: LineItem[]): DgEntry[] {
                 ...(line.article.packing_group ? { packing_group: line.article.packing_group } : {}),
                 ...(line.article.type_of_package ? { type_of_package: line.article.type_of_package } : {}),
                 ...(line.article.net_per_package ? { net_mass_liters_per_package: line.article.net_per_package } : {}),
-                ...(line.quantity ? { quantity_packages: String(line.quantity) } : {}),
               }
             : {}),
+          // The number of packages is the line's own quantity whichever route
+          // brought the substance here; it was tied to the article by
+          // accident of where the code sat.
+          ...(line.quantity ? { quantity_packages: String(line.quantity) } : {}),
+          ...(draft?.confirmed_un ? { un_number: draft.confirmed_un } : {}),
+          ...(draft?.proper_shipping_name ? { proper_shipping_name: draft.proper_shipping_name } : {}),
+          ...(draft?.packing_group ? { packing_group: draft.packing_group } : {}),
+          ...(draft?.type_of_package ? { type_of_package: draft.type_of_package } : {}),
+          ...(draft?.package_content ? { net_mass_liters_per_package: draft.package_content } : {}),
         },
       ],
     }));

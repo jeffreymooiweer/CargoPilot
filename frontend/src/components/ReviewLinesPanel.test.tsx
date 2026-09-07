@@ -156,12 +156,67 @@ describe("editing a line where it stands", () => {
     expect(screen.queryByLabelText("review.wallThickness")).toBeNull();
   });
 
-  it("the details icon opens the dialog with the rest of the fields", async () => {
+  it("the arrow opens the rest of the fields under the row, not over it", async () => {
     renderPanel([draft], [resultLine([])]);
+    const toggle = screen.getByRole("button", { name: "review.lineDetails" });
+    expect(toggle).toHaveAttribute("aria-expanded", "false");
+    expect(screen.queryByLabelText("review.length_cm")).toBeNull();
+
+    await userEvent.click(toggle);
+    expect(screen.getByLabelText("review.length_cm")).toBeInTheDocument();
+    // No window: the list is still there, and so is the row above it.
     expect(screen.queryByRole("dialog")).toBeNull();
+    expect(screen.getByLabelText("review.descriptionOfLine:1")).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "review.closeDetails" })).toHaveAttribute(
+      "aria-expanded",
+      "true",
+    );
+  });
+
+  it("closes one line when another opens, so the list stays a list", async () => {
+    const second: DraftLine = { id: 2, description: "10 pallets", quantity: 10, unit: "pallets" };
+    renderPanel([draft, second], [resultLine([]), resultLine([])]);
+    const toggles = () => screen.getAllByRole("button", { name: /review\.(lineDetails|closeDetails)/ });
+    await userEvent.click(toggles()[0]);
+    expect(screen.getAllByLabelText("review.length_cm")).toHaveLength(1);
+
+    await userEvent.click(toggles()[1]);
+    expect(screen.getAllByLabelText("review.length_cm")).toHaveLength(1);
+    expect(toggles()[0]).toHaveAttribute("aria-expanded", "false");
+    expect(toggles()[1]).toHaveAttribute("aria-expanded", "true");
+  });
+
+  it("asks for the substance on the line that carries it", async () => {
+    // The identity used to be asked one step later, after the goods step had
+    // already recognised the substance and put its UN number on the line.
+    const dg: DraftLine = { ...draft, dangerous_goods: true, confirmed_un: "1203" };
+    renderPanel([dg], [resultLine([])]);
+    await userEvent.click(screen.getByRole("button", { name: "review.lineDetailsDg" }));
+    expect(screen.getByLabelText("review.unNumber")).toHaveValue("1203");
+    expect(screen.getByLabelText("review.properShippingName")).toBeInTheDocument();
+    expect(screen.getByLabelText("review.packingGroup")).toBeInTheDocument();
+  });
+
+  it("keeps the substance away from a line that does not carry one", async () => {
+    renderPanel([draft], [resultLine([])]);
     await userEvent.click(screen.getByRole("button", { name: "review.lineDetails" }));
-    expect(screen.getByRole("dialog")).toBeInTheDocument();
-    expect(screen.getByLabelText("review.quantity")).toBeInTheDocument();
+    expect(screen.queryByLabelText("review.unNumber")).toBeNull();
+  });
+
+  it("declares the line dangerous when a UN number is typed on it", async () => {
+    const onChange = vi.fn();
+    render(
+      <StatefulPanel
+        lines={[{ ...draft, dangerous_goods: true }]}
+        result={[resultLine([])]}
+        onChange={onChange}
+      />,
+    );
+    await userEvent.click(screen.getByRole("button", { name: "review.lineDetailsDg" }));
+    await userEvent.type(screen.getByLabelText("review.unNumber"), "1203");
+    const updated = onChange.mock.calls[onChange.mock.calls.length - 1][0] as DraftLine[];
+    expect(updated[0].confirmed_un).toBe("1203");
+    expect(updated[0].dangerous_goods).toBe(true);
   });
 
   it("a new line gets the cursor in its description", async () => {

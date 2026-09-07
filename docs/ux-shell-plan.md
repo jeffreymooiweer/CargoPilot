@@ -61,6 +61,16 @@ restriction, mixed loading, the equipment list, the 1.1.3.6 exemption calculatio
 appears when there is something to assess and not otherwise, so the common shipment is the
 mockup's three steps and a difficult one is honest about being four.
 
+> **Corrected while building it (v1.203.0).** The second half of that promise was already
+> kept and the first half cannot be. The step has appeared only for a shipment with
+> dangerous goods since long before this plan, so a shipment without them is three steps
+> today. And for a shipment *with* them there is always something to assess — the
+> compliance check, the tunnel code, the transport category, mixed loading — so a rule
+> that hid the step would hide work that has to be done. What 120 actually changes is that
+> the step no longer asks the identity a second time: the UN number, the proper shipping
+> name, the packing group and the packaging are answered on the line and seeded into the
+> step's product.
+
 **The overview gets its own address, and nothing is moved out of the way for it.**
 [The usability plan](ux-plan.md) says in as many words: recent shipments as templates
 *without sending somebody with a default mode through a dashboard first*. Putting the
@@ -82,7 +92,7 @@ already sends somebody with a preferred mode straight into the wizard without a 
 | # | Release | What it changes |
 |---|---|---|
 | 119 | The shell — **built, v1.202.0** | One header (title, draft state, steps, mode switcher), an icon rail that folds to 56px instead of to nothing, one action bar at the foot; the same on a phone |
-| 120 | A line that opens | Row expands into details and, for a dangerous line, the substance itself; the DG step appears only where there is something to assess |
+| 120 | A line that opens — **built, v1.203.0** | Row expands into details and, for a dangerous line, the substance itself; the dangerous-goods step keeps the assessment and stops asking the identity twice |
 | 121 | The panel that counts | Lines, weight, attention, and the documents being prepared, live beside the work |
 | 122 | Somewhere to come back to | The overview at `/overzicht`: continue where you left off, today's counts, quick start, recent shipments. Nothing else moves |
 | 123 | Measured and trimmed | The ten tasks again, and the mobile measurement the first plan left open |
@@ -107,6 +117,17 @@ code, the test and this line all say that now, instead of the stronger claim.
 a flex line with the draft state and the mode switcher, and on a phone that
 left the title twenty pixels: a shipment called *N…*. The title now has a row
 of its own at every width.
+
+### What 120 turned up
+
+**Two things on the open panel disagreed with the row above it.** The
+calculation marks a line dangerous when it reads a UN number in the
+description, and the row says so — but the panel's dangerous-goods tick read
+only what the user had set, so it stood empty next to a row saying the
+opposite. It follows the calculation now until somebody sets it themselves.
+And the UN number the recogniser had already found was not in the UN field:
+it stands there as the placeholder, because it is what the next step will
+start from and it is not something anybody has stated yet.
 
 ## How it is judged
 

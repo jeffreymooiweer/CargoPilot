@@ -2,6 +2,28 @@
 
 All notable changes are documented here, following [Semantic Versioning](https://semver.org/).
 
+## [1.206.1] — 2026-09-07
+
+### Two things wrong with the update notice
+
+**The two sentences ran together.** *CargoPilot 1.206.0 is available This installation does
+not update itself…* — the notice is the version line plus the hint, joined with a space, and
+the version line never ended in a full stop. It does now, in all four languages; the stop
+belongs to the sentence, not to the join.
+
+**A long action still squeezed a short message.** v1.173.1 put a long toast's action under
+its message and forgot the other half: the action itself. An inline action does not wrap —
+it takes the width its words need and the message gets whatever is left — so beside *View
+the release notes* on a phone the message got about 135px and broke mid-word, four
+characters to a line. Both have to be short now. The threshold is measured rather than
+picked: across the four languages the labels that are commands come out at 4 to 16
+characters (*Undo*, *Set it up*, *Jetzt einrichten*) and the ones that are sentences at 22
+to 29.
+
+Only the first of these was still on a current installation; the squeezed layout comes from
+a build older than v1.173.1, which is what an installation showing this notice is by
+definition running.
+
 ## [1.206.0] — 2026-09-07
 
 ### The shell plan, measured

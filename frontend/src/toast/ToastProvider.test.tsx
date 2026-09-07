@@ -9,7 +9,7 @@ import { act, render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
-import { INLINE_ACTION_MAX_CHARS, ToastProvider, useToast, type ToastApi } from "./ToastProvider";
+import { INLINE_ACTION_MAX_CHARS, INLINE_ACTION_MAX_LABEL, ToastProvider, useToast, type ToastApi } from "./ToastProvider";
 
 vi.mock("react-i18next", () => ({
   useTranslation: () => ({
@@ -222,6 +222,23 @@ describe("ToastProvider", () => {
     expect(row).toContainElement(screen.getByRole("button", { name: "Set it up" }));
     // And underneath means inside the message column, not beside it.
     expect(row.previousElementSibling).toHaveTextContent(long);
+  });
+
+  it("a long action goes under a short message too", () => {
+    // The rule looked at the message and forgot the action. An inline action
+    // does not wrap — it takes the width its words need and the message gets
+    // the rest — so beside "Bekijk de release-opmerkingen" on a phone the
+    // rest was about 135px, and the notice broke mid-word four characters to
+    // a line. Both have to be short for the action to sit alongside.
+    const api = setup();
+    const short = "CargoPilot 1.206.0 is beschikbaar.";
+    const wordy = "Bekijk de release-opmerkingen";
+    expect(short.length).toBeLessThanOrEqual(INLINE_ACTION_MAX_CHARS);
+    expect(wordy.length).toBeGreaterThan(INLINE_ACTION_MAX_LABEL);
+    act(() => void api().info(short, { sticky: true, actions: [{ label: wordy, run: vi.fn() }] }));
+    const row = screen.getByTestId("toast-actions");
+    expect(row).toContainElement(screen.getByRole("button", { name: wordy }));
+    expect(row.previousElementSibling).toHaveTextContent(short);
   });
 
   it("closing a question is itself an answer", async () => {

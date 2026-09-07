@@ -124,8 +124,12 @@ describe("de zendingenpagina", () => {
   it("maakt van een selectie een rit", async () => {
     renderAt("/shipments");
     await screen.findAllByText("CP-2026-100");
-    await userEvent.click(screen.getByLabelText("history.pick — CP-2026-100"));
-    await userEvent.click(screen.getByLabelText("history.pick — history.noReference"));
+    // Each shipment is on the page twice — as a card and as a table row, one
+    // of which the width hides — and since v1.206.0 both boxes carry the same
+    // name. They used to differ: the card's said only "Select", five times
+    // over, with nothing saying which shipment each one selected.
+    await userEvent.click(screen.getAllByLabelText("history.pick — CP-2026-100")[0]);
+    await userEvent.click(screen.getAllByLabelText("history.pick — history.noReference")[0]);
     expect(screen.getByText(/history\.picked:2/)).toBeInTheDocument();
     // The trip is opened with the selection in the address; the server
     // decides per shipment whether this viewer may read it.

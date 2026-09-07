@@ -279,6 +279,11 @@ function ShipmentList({ language, admin }: { language: string; admin: boolean })
                   type="checkbox"
                   checked={picked.includes(s.id)}
                   onChange={() => toggle(s.id)}
+                  // The same name the table's box carries. Without it every
+                  // card on a phone offers "Select", five times over, with
+                  // nothing saying which shipment each one selects — which is
+                  // exactly what somebody using a screen reader would hear.
+                  aria-label={`${t("history.pick")} — ${reference(s)}`}
                   className="h-4 w-4 rounded border-slate-300 text-brand-600 focus:ring-brand-500"
                 />
                 {t("history.pick")}

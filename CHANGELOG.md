@@ -2,6 +2,50 @@
 
 All notable changes are documented here, following [Semantic Versioning](https://semver.org/).
 
+## [1.206.0] — 2026-09-07
+
+### The shell plan, measured
+
+The last release of [the shell plan](docs/ux-shell-plan.md), and the one that has to say
+whether the other four were worth anything. The full report is in
+[the baseline](docs/ux-baseline.md).
+
+**The ten tasks cost exactly what they cost before the plan: 53 actions, no windows, all
+finished.** Not one got cheaper. For four releases that moved nearly every piece of
+furniture on the screen, that is the outcome worth having — the thing that could have gone
+wrong is a rebuilt frame quietly costing two presses somewhere, and it did not.
+
+**Two tasks were added, because none of the ten could see what the shell changed.** None of
+them opens a goods line's details, and none comes back to an interrupted entry from outside
+the wizard. Both new ones were run against the v1.202.0 build as well as this one, so the
+comparison is a measurement rather than a memory:
+
+- *One measurement filled in on a goods line*: **6 actions and 1 window became 5 and none.**
+  The window was worth an action on its own — with the dialog open the list underneath could
+  not be reached until it was dismissed.
+- *Back into an interrupted entry*: **the same four presses, and the count is not the
+  point.** The chooser offers four modes and marks none of them as yours; the overview names
+  the one your entry is in.
+
+**And the phone was run**, which the first plan recorded as not run. Every task finishes at
+390×844, at the same cost as on a laptop, except getting back into an entry — one press
+more, because the rail is behind the hamburger. That is the mobile layout working as
+designed, counted rather than stepped around.
+
+### What the run found
+
+**The shipments list offered five identical *Select* boxes on a phone.** The table's
+checkbox has carried its shipment's reference as its accessible name since the selection was
+built; the card's — which is what a phone shows — said only *Select*, with nothing telling a
+screen-reader user which shipment each one selected. Both carry it now.
+
+And two things about the harness, which was measuring less than it claimed. It could not
+read the step on a phone, where the pills are icons carrying an accessible label and no
+text, so every phone run reported the step as *unknown* and marked two finished tasks
+unfinished. And it looked for the shipments' selection inside a `<table>`, which a phone
+does not have — measuring half the application and reporting the other half as having no
+selection at all.
+
 ## [1.205.0] — 2026-09-07
 
 ### Somewhere to come back to

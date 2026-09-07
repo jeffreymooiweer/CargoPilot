@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import re
+import sys
 
 import requests
 from bench import OUT, BASE, Bench, browser, dismiss_toasts, history, sign_in, write
@@ -567,7 +568,11 @@ def task_9(page, session: requests.Session) -> object:
     page.wait_for_timeout(3000)
     dismiss_toasts(page)
     b.observe()
-    boxes = page.locator("table input[type=checkbox]:visible")
+    # By what the box is *called*, not by the shape it sits in. The list is a
+    # table on a laptop and a stack of cards on a phone; asking for the table
+    # measured only half the application, and reported the other half as
+    # having no selection at all.
+    boxes = page.get_by_role("checkbox", name=re.compile("^Selecteren — "))
     b.note(f"{boxes.count()} shipment(s) on the list can be selected")
     picked = 0
     for index in range(min(5, boxes.count())):
@@ -621,6 +626,133 @@ def task_10(page, session: requests.Session) -> object:
     return b.done(still_there > 0)
 
 
+MODES = ("Wegtransport", "Spoortransport", "Zeevracht", "Binnenvaart")
+
+
+def named_mode(page) -> str:
+    """Whether the screen says which transport mode the *running entry* is in.
+
+    Both routes back into an interrupted entry cost the same presses. What
+    differs is that one of them needs a fact the screen never gives you — and
+    the harness only gets it right because the task hard-codes it. This is
+    what makes that difference countable.
+
+    The question is asked of the block about the entry, not of the page. A
+    chooser naming all four modes on four tiles is not telling you which one
+    is yours; it is offering you four."""
+    block = page.get_by_test_id("resume-entry")
+    if not block.count():
+        shown = sum(page.get_by_text(re.compile(f"^{mode}$")).count() for mode in MODES)
+        return (f"no — nothing on the screen is about the running entry; "
+                f"{shown} mode(s) are on offer and none of them is marked as yours")
+    named = [mode for mode in MODES if block.get_by_text(re.compile(f"^{mode}$")).count()]
+    if len(named) == 1:
+        return f"yes — {named[0]}, beside the entry itself"
+    return f"no — the block about the entry names {len(named)} mode(s)"
+
+
+def task_11(page) -> object:
+    """A measurement on one line, filled in where the line is.
+
+    The first plan's ten tasks never open a line's details, so nothing in them
+    could see what release 120 changed. This is the task that does: give one
+    goods line a length, which is not on the row and never was.
+
+    Both routes are driven by the same code, because the button is the same
+    button — *Details* opened a dialog before v1.203.0 and expands the row
+    after it. What differs is what the harness counts: a window, and the press
+    that closes it again.
+    """
+    b = Bench(page, "11", "One measurement filled in on a goods line")
+    new_shipment(page)
+    fill_line(b, 0, "Stalen plaat 2000x1000x10", 4)
+    wait_for_calculation(b, 30)
+    b.click(page.get_by_role("button", name=re.compile("^Details")).first)
+    length = page.get_by_label(re.compile("Lengte", re.I))
+    if not length.count():
+        b.note("no length field appeared after pressing Details")
+        return b.done(False)
+    b.fill(length.first, "200")
+
+    # The measurement this task exists for. A dialog *has* to be dismissed
+    # before the list underneath is usable again; an expanded row does not.
+    # So: go straight back to the list without closing anything, and see
+    # whether that works. What it costs to recover when it does not is the
+    # difference between the two shapes.
+    quantity = page.get_by_label(re.compile("Aantal van regel 1"))
+    try:
+        quantity.first.click(timeout=2500)
+        b.m.actions += 1
+        b.note("the list was usable again without dismissing anything first")
+    except Exception:
+        b.note("the list was behind a window and could not be reached until it was closed")
+        close = page.get_by_role("button", name=re.compile("^(Klaar|Bewerken sluiten|Details sluiten)$"))
+        if close.count():
+            b.click(close.first)
+        b.click(quantity.first)
+    b.observe()
+    reached = page.locator("*:focus").count() > 0
+    b.note(f"the cursor is back in the goods list: {reached}")
+    b.shot("line-measured")
+    return b.done(reached)
+
+
+def task_12(page) -> object:
+    """Back into an entry that was interrupted, without remembering its mode.
+
+    A draft belongs to a shipment and the wizard belongs to a transport mode,
+    so coming back to one means knowing which mode it was in. Before v1.205.0
+    the only route was the chooser and a guess; after it the overview says so
+    and offers the way in.
+
+    The task takes whichever route the application has, and counts it.
+    """
+    b = Bench(page, "12", "Back into an interrupted entry")
+    new_shipment(page)
+    fill_line(b, 0, "Stalen buis 60x60x4x4000", 12)
+    page.wait_for_timeout(5000)  # the draft is written a few seconds after typing stops
+    # Interrupted: the browser is somewhere else entirely.
+    page.goto(f"{BASE}/legal")
+    page.wait_for_timeout(1500)
+
+    # On a phone the rail is behind the hamburger, so every destination costs
+    # one press more than it does on a laptop. That is a real cost and it is
+    # counted rather than stepped around.
+    if not page.get_by_role("link", name=re.compile("^(Overzicht|Nieuwe zending)$")).first.is_visible():
+        b.click(page.get_by_role("button", name=re.compile("Menu openen")))
+        page.wait_for_timeout(600)
+        b.note("the way there is behind the hamburger: one press before anything else")
+
+    overview = page.get_by_role("link", name=re.compile("^Overzicht$"))
+    if overview.count():
+        b.click(overview.first)
+        page.wait_for_timeout(1500)
+        resume = page.get_by_role("link", name=re.compile("^Verder$"))
+        if not resume.count():
+            b.note("the overview is there but says nothing about a running entry")
+            return b.done(False)
+        b.note(f"before pressing, the screen names the mode of the running entry: "
+               f"{named_mode(page)}")
+        b.click(resume.first)
+    else:
+        # The older route: the chooser. The presses cost the same; what
+        # differs is that one of them needs something the screen never says.
+        b.click(page.get_by_role("link", name=re.compile("^Nieuwe zending$")).first)
+        page.wait_for_timeout(1200)
+        b.note(f"before pressing, the screen names the mode of the running entry: "
+               f"{named_mode(page)}")
+        tile = page.get_by_role("button", name=re.compile("Wegtransport"))
+        if tile.count():
+            b.click(tile.first)
+    page.wait_for_timeout(4000)
+    dismiss_toasts(page)
+    typed = page.get_by_label(re.compile("Omschrijving van regel 1"))
+    kept = typed.input_value() if typed.count() else ""
+    b.note(f"the typed description after coming back: {kept or 'gone'}")
+    b.shot("resumed")
+    return b.done("buis" in kept.lower())
+
+
 def seed(session: requests.Session, count: int = 6) -> None:
     """Earlier shipments, so tasks 7 and 9 have something to reuse."""
     if len(session.get(f"{BASE}/api/shipments").json().get("items", [])) >= count:
@@ -642,12 +774,21 @@ def seed(session: requests.Session, count: int = 6) -> None:
 
 
 def main() -> None:
+    """The whole set, on a laptop or — with `phone` as the argument — on a
+    phone-sized viewport.
+
+    The first plan recorded the phone as not run. It is run here: same tasks,
+    same counting, 390×844. A task that cannot be finished at that width is
+    reported as not finished, which is the measurement rather than a failure
+    of it."""
+    phone = len(sys.argv) > 1 and sys.argv[1] == "phone"
     session = sign_in()
     history(session, True)
     seed(session)
     measurements = []
     with sync_playwright() as playwright:
-        engine, context = browser(playwright, session)
+        engine, context = (browser(playwright, session, 390, 844) if phone
+                           else browser(playwright, session))
         page = context.new_page()
         plan = [
             ("task_1", lambda: task_1(page)),
@@ -661,6 +802,10 @@ def main() -> None:
             ("task_8_open", lambda: task_8_open(page, session)),
             ("task_9", lambda: task_9(page, session)),
             ("task_10", lambda: task_10(page, session)),
+            # The two the shell plan added, because the first ten never touch
+            # what releases 119 to 122 changed.
+            ("task_11", lambda: task_11(page)),
+            ("task_12", lambda: task_12(page)),
         ]
         for name, run in plan:
             try:
@@ -669,7 +814,7 @@ def main() -> None:
             except Exception as exc:
                 print(f"!! {name}: {str(exc)[:200]}")
         engine.close()
-    write(measurements)
+    write(measurements, name="phone" if phone else "baseline")
 
 
 if __name__ == "__main__":

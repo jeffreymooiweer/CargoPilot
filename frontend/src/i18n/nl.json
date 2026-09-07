@@ -1379,5 +1379,12 @@
     "noDg": "Geen gevaarlijke stoffen",
     "openQuestions": "{{count}} stofvraag/vragen open",
     "language": "Taal van de documenten"
+  },
+  "panel": {
+    "preparing": "Wordt voorbereid",
+    "ready": "Gereed",
+    "missing": "{{count}} nog nodig",
+    "missingUnknown": "Nog niet compleet",
+    "blocked": "Stofgegevens ontbreken"
   }
 }

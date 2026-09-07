@@ -93,7 +93,7 @@ already sends somebody with a preferred mode straight into the wizard without a 
 |---|---|---|
 | 119 | The shell — **built, v1.202.0** | One header (title, draft state, steps, mode switcher), an icon rail that folds to 56px instead of to nothing, one action bar at the foot; the same on a phone |
 | 120 | A line that opens — **built, v1.203.0** | Row expands into details and, for a dangerous line, the substance itself; the dangerous-goods step keeps the assessment and stops asking the identity twice |
-| 121 | The panel that counts | Lines, weight, attention, and the documents being prepared, live beside the work |
+| 121 | The panel that counts — **built, v1.204.0** | Lines, weight, volume, attention and the documents being prepared, beside the work on every step |
 | 122 | Somewhere to come back to | The overview at `/overzicht`: continue where you left off, today's counts, quick start, recent shipments. Nothing else moves |
 | 123 | Measured and trimmed | The ten tasks again, and the mobile measurement the first plan left open |
 
@@ -128,6 +128,24 @@ opposite. It follows the calculation now until somebody sets it themselves.
 And the UN number the recogniser had already found was not in the UN field:
 it stands there as the placeholder, because it is what the next step will
 start from and it is not something anybody has stated yet.
+
+### What 121 had to decide
+
+**Where a panel can stand without taking width off the goods list.** The rail's
+own comment records that the lines table wants 1,620px, which is why the rail
+folds when the wizard opens — so an 18rem column beside it looks like a
+contradiction. It is not, because since v1.193.0 the list is a row of fields
+that *wraps* rather than a table with fixed columns: 1,620px is what it uses
+happily, not what it needs. Measured at 1440 with the panel beside it, the row
+is still one line. So the panel is a sticky right-hand column from `xl` up, and
+below that it goes back to being what the four counts always were — a card
+above the list.
+
+**One count in one place at a time.** The action bar's attention count and the
+panel's are the same number. From `xl` the panel is on the screen and carries
+it and the bar's is hidden; below that there is no panel beside the work and
+the bar says it. Two live counts of the same thing on one screen is two things
+to reconcile.
 
 ## How it is judged
 

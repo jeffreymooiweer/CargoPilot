@@ -27,6 +27,7 @@ import ReviewLinesPanel, { DraftLine, draftToText, openQuestions, textToDraftLin
 import DraftBar, { DraftStatus } from "../components/DraftBar";
 import CheckYourAnswers, { AnswerRow } from "../components/CheckYourAnswers";
 import WizardShell, { WizardActions } from "../components/WizardShell";
+import ShipmentPanel, { PanelDocument } from "../components/ShipmentPanel";
 import { AVAILABLE_MODALITIES, isModalityAvailable } from "./ModalitySelectPage";
 import { usePreferences } from "../settings/preferences";
 import { SNAPSHOT_VERSION, WizardSnapshot, readSnapshot, templateValues } from "../wizard/snapshot";
@@ -421,6 +422,11 @@ export default function WizardPage() {
     () => openQuestions(draftLines, result?.lines),
     [draftLines, result],
   );
+
+  /** What is waiting to be looked at, in one number: what the calculation
+   *  flagged on the goods plus the substance questions nobody has answered.
+   *  Two counts for two kinds of "not right yet" is two counts to reconcile. */
+  const attention = (result?.totals.warning_count ?? 0) + unanswered;
 
   const needsDg = useMemo(
     () =>
@@ -1376,6 +1382,20 @@ export default function WizardPage() {
 
   const includedLines = result?.lines.filter((line) => line.include) ?? [];
 
+  /** The documents being prepared, for the panel that stands beside the work.
+   *  A document that does not apply to this shipment is not being prepared and
+   *  is left out; the rest carry what they are still short of. */
+  const panelDocuments: PanelDocument[] = selectedDefinitions
+    .map((doc) => ({ doc, info: docStatus(doc) }))
+    .filter(({ info }) => info.status !== "not_applicable")
+    .map(({ doc, info }) => ({
+      key: doc.key,
+      label: L(doc.label),
+      state: info.status as PanelDocument["state"],
+      missing: info.missing.length,
+      firstMissing: info.missing[0]?.key ?? null,
+    }));
+
   /** What this shipment is called, in the header. The reference is what a
    *  forwarder calls it by; failing that the consignee, who is the other thing
    *  people say out loud ("the one going to Müller"). Neither yet, and it is
@@ -1447,7 +1467,17 @@ export default function WizardPage() {
         setReturnTo(null);
         setStepKey(key as StepKey);
       }}
-      attention={result?.totals.warning_count ?? 0}
+      attention={attention}
+      panel={
+        <ShipmentPanel
+          lines={result?.totals.line_count ?? draftLines.filter((line) => line.description.trim()).length}
+          weightKg={result?.totals.total_weight_kg ?? null}
+          volumeM3={result?.totals.total_transport_volume_m3 ?? null}
+          attention={attention}
+          documents={panelDocuments}
+          onMissing={goToField}
+        />
+      }
       draft={
         <DraftBar
           compact
@@ -1505,15 +1535,9 @@ export default function WizardPage() {
             </div>
           )}
 
-          {result && (
-            <div className="grid grid-cols-2 gap-2 sm:gap-3 lg:grid-cols-4">
-              <Stat label={t("wizard.lines")} value={String(result.totals.line_count ?? 0)} />
-              <Stat label={t("wizard.totalWeight")} value={`${result.totals.total_weight_kg ?? 0} kg`} />
-              <Stat label={t("wizard.totalVolume")} value={`${result.totals.total_transport_volume_m3 ?? 0} m³`} />
-              <Stat label={t("wizard.warnings")} value={String(result.totals.warning_count ?? 0)} />
-            </div>
-          )}
-
+          {/* The four counts were here, on this step and nowhere else. They
+              are in the panel now, on every step — because the totals you are
+              entering against do not stop mattering when you move on. */}
           <ReviewLinesPanel
             draftLines={draftLines}
             resultLines={result?.lines}
@@ -2100,14 +2124,5 @@ function StatusBadge({ status }: { status: DocStatus }) {
   };
   return (
     <span className={`rounded-full px-2 py-0.5 text-[11px] font-medium ${styles[status]}`}>{labels[status]}</span>
-  );
-}
-
-function Stat({ label, value }: { label: string; value: string }) {
-  return (
-    <div className={`${panelClass} p-3 sm:p-4`}>
-      <p className="text-xs text-slate-500 dark:text-slate-400">{label}</p>
-      <p className="mt-1 text-base font-semibold text-slate-900 dark:text-slate-100 sm:text-lg">{value}</p>
-    </div>
   );
 }

@@ -2,6 +2,40 @@
 
 All notable changes are documented here, following [Semantic Versioning](https://semver.org/).
 
+## [1.204.0] — 2026-09-07
+
+### What the shipment adds up to, beside the work
+
+The third release of [the shell plan](docs/ux-shell-plan.md).
+
+Two things were true before this and neither was good. The counts — lines, weight, volume,
+warnings — were four cards on the goods step and nowhere else, so the moment you moved to
+the questions the totals you were entering against went off the screen. And the documents
+being prepared were only visible on the step that asks their questions, so on the goods step
+nobody could see what all the typing was *for*.
+
+**One panel, on every step**, holding both: the four numbers, and the document set with what
+each one is still waiting for. A document short of an answer says how many and **the count
+is the way in** — pressing it goes to the first of them, the same jump release 111 built for
+the export step's chips, now offered from a place you pass much earlier. A blocked document
+says it is blocked instead: blocked means the substance itself is not established, there is
+no one field to go to, and offering a jump would send somebody nowhere.
+
+**Attention is one number now.** What the calculation flagged on the goods and the substance
+questions nobody has answered were counted separately; they are added, because two counts of
+"not right yet" are two counts to reconcile.
+
+**Where it stands, and why that is not a contradiction.** The rail folds away when the
+wizard opens because the lines table wants 1,620px — so a column beside it looks like it
+must cost the list its width. It does not: since v1.193.0 the list is a row of fields that
+wraps rather than a table with fixed columns, and 1,620px is what it uses happily rather
+than what it needs. Measured at 1440 with the panel beside it, the row is still one line. So
+the panel is a sticky right-hand column from `xl` up, and below that it is a card above the
+list — which is where the four counts always were.
+
+The action bar's attention count and the panel's are the same number, so only one of them is
+ever on the screen: the panel's from `xl`, the bar's below it.
+
 ## [1.203.0] — 2026-09-07
 
 ### A goods line that opens, with its substance in it

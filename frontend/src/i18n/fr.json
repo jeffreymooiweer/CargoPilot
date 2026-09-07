@@ -1379,5 +1379,12 @@
     "noDg": "Pas de marchandises dangereuses",
     "openQuestions": "{{count}} question(s) de matière ouverte(s)",
     "language": "Langue des documents"
+  },
+  "panel": {
+    "preparing": "En préparation",
+    "ready": "Prêt",
+    "missing": "{{count}} encore requis",
+    "missingUnknown": "Pas encore complet",
+    "blocked": "Données de la matière manquantes"
   }
 }

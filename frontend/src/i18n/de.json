@@ -1379,5 +1379,12 @@
     "noDg": "Keine gefährlichen Güter",
     "openQuestions": "{{count}} Stofffrage(n) offen",
     "language": "Sprache der Dokumente"
+  },
+  "panel": {
+    "preparing": "Wird vorbereitet",
+    "ready": "Fertig",
+    "missing": "{{count}} noch nötig",
+    "missingUnknown": "Noch nicht vollständig",
+    "blocked": "Stoffangaben fehlen"
   }
 }

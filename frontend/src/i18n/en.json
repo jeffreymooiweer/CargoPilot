@@ -1379,5 +1379,12 @@
     "noDg": "No dangerous goods",
     "openQuestions": "{{count}} substance question(s) open",
     "language": "Language of the documents"
+  },
+  "panel": {
+    "preparing": "Being prepared",
+    "ready": "Ready",
+    "missing": "{{count}} still needed",
+    "missingUnknown": "Not complete yet",
+    "blocked": "Substance details missing"
   }
 }

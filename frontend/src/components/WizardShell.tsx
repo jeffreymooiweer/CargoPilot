@@ -112,12 +112,14 @@ interface Props {
   aside?: ReactNode;
   /** How many things are waiting to be looked at, counted by the caller. */
   attention?: number;
+  /** What the shipment adds up to, beside the work rather than after it. */
+  panel?: ReactNode;
   children: ReactNode;
 }
 
 export default function WizardShell({
   title, modality, modalities, onModality, steps, currentStep, visited, onGoTo,
-  draft, aside, attention = 0, children,
+  draft, aside, attention = 0, panel, children,
 }: Props) {
   const { t } = useTranslation();
   const [el, setEl] = useState<HTMLElement | null>(null);
@@ -190,7 +192,16 @@ export default function WizardShell({
           </div>
         </header>
 
-        <div>{children}</div>
+        {/* `flex-row-reverse` puts the panel on the right on a wide screen
+            while it stays first in the document, which is where it belongs on
+            a narrow one: above the work rather than under it, where nobody
+            scrolls past a form to find the totals. */}
+        <div className="flex flex-col gap-4 xl:flex-row-reverse xl:items-start xl:gap-6">
+          {panel && (
+            <aside className="xl:sticky xl:top-24 xl:w-72 xl:shrink-0">{panel}</aside>
+          )}
+          <div className="min-w-0 flex-1">{children}</div>
+        </div>
 
         <div
           className={
@@ -200,8 +211,11 @@ export default function WizardShell({
           }
         >
           <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between sm:gap-3">
+            {/* One count, in one place at a time. From `xl` the panel is on
+                the screen and carries it; below that there is no panel beside
+                the work, so the bar says it. */}
             {attention > 0 ? (
-              <p className="text-xs font-medium text-amber-700 dark:text-amber-300">
+              <p className={`text-xs font-medium text-amber-700 dark:text-amber-300 ${panel ? "xl:hidden" : ""}`}>
                 {t("wizard.attention", { count: attention })}
               </p>
             ) : (

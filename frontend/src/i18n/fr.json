@@ -28,7 +28,8 @@
       "libraries": "Bibliothèques",
       "administration": "Administration",
       "account": "Compte"
-    }
+    },
+    "overview": "Aperçu"
   },
   "theme": {
     "dark": "Sombre",
@@ -1386,5 +1387,22 @@
     "missing": "{{count}} encore requis",
     "missingUnknown": "Pas encore complet",
     "blocked": "Données de la matière manquantes"
+  },
+  "overview": {
+    "title": "Aperçu",
+    "intro": "Où vous en étiez, ce qui a été fait aujourd'hui, et les expéditions récentes. Une nouvelle expédition commence ici ou depuis les tuiles.",
+    "introNoHistory": "Cette installation ne conserve aucune expédition, il n'y a donc rien à reprendre. Commencer reste possible ici.",
+    "resumeTitle": "Reprendre où vous en étiez",
+    "resume": "Reprendre",
+    "todayTitle": "Aujourd'hui",
+    "todayShipments": "Expéditions conservées",
+    "todayTrips": "Trajets composés",
+    "startTitle": "Commencer tout de suite",
+    "recentTitle": "Expéditions récentes",
+    "recentEmpty": "Aucune expédition conservée pour l'instant.",
+    "allShipments": "Toutes les expéditions",
+    "open": "Ouvrir",
+    "asTemplate": "Comme modèle",
+    "dg": "Marchandises dangereuses"
   }
 }

@@ -28,7 +28,8 @@
       "libraries": "Bibliotheken",
       "administration": "Beheer",
       "account": "Account"
-    }
+    },
+    "overview": "Overzicht"
   },
   "theme": {
     "dark": "Donker",
@@ -1386,5 +1387,22 @@
     "missing": "{{count}} nog nodig",
     "missingUnknown": "Nog niet compleet",
     "blocked": "Stofgegevens ontbreken"
+  },
+  "overview": {
+    "title": "Overzicht",
+    "intro": "Waar je gebleven was, wat er vandaag is gemaakt, en de zendingen van de laatste tijd. Een nieuwe zending begin je hier of via de tegels.",
+    "introNoHistory": "Deze installatie bewaart geen zendingen, dus er is niets om op terug te komen. Beginnen kan hier wel.",
+    "resumeTitle": "Verder waar je gebleven was",
+    "resume": "Verder",
+    "todayTitle": "Vandaag",
+    "todayShipments": "Zendingen bewaard",
+    "todayTrips": "Ritten samengesteld",
+    "startTitle": "Snel beginnen",
+    "recentTitle": "Recente zendingen",
+    "recentEmpty": "Nog geen zendingen bewaard.",
+    "allShipments": "Alle zendingen",
+    "open": "Openen",
+    "asTemplate": "Als sjabloon",
+    "dg": "Gevaarlijke stoffen"
   }
 }

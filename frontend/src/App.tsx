@@ -7,6 +7,7 @@ import GroupagePage from "./pages/GroupagePage";
 import LoginPage from "./pages/LoginPage";
 import ResetPasswordPage from "./pages/ResetPasswordPage";
 import ModalitySelectPage from "./pages/ModalitySelectPage";
+import OverviewPage from "./pages/OverviewPage";
 import WizardPage from "./pages/WizardPage";
 import UsersPage from "./pages/UsersPage";
 import MaterieelPage from "./pages/MaterieelPage";
@@ -89,7 +90,11 @@ export default function App() {
       <ToastProvider>
       <Routes>
         <Route element={<Layout user={user} onLogout={() => setUser(null)} />}>
+          {/* `/` is the transport-mode chooser and stays the front door. The
+              overview has its own address so that nobody with a preferred
+              mode is sent through a dashboard on their way into the wizard. */}
           <Route path="/" element={<ModalitySelectPage />} />
+          <Route path="/overzicht" element={<OverviewPage />} />
           <Route path="/wizard" element={<Navigate to="/" replace />} />
           <Route path="/wizard/:modality" element={<WizardPage />} />
           <Route path="/groupage" element={<GroupagePage />} />

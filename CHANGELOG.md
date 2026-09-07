@@ -2,6 +2,39 @@
 
 All notable changes are documented here, following [Semantic Versioning](https://semver.org/).
 
+## [1.205.0] — 2026-09-07
+
+### Somewhere to come back to
+
+The fourth release of [the shell plan](docs/ux-shell-plan.md): an overview, at **`/overzicht`**.
+
+Four things, in the order somebody arriving in the morning wants them:
+
+1. **Where you left off.** The running draft, with the way back into it — in the mode the
+   draft is in, which the wizard needs and nobody remembers. It was already restored when
+   you opened the right mode's wizard; here it says which one that is.
+2. **What today has been.** How many shipments were kept and how many trips were put
+   together since midnight. Counted by the server with a date filter and read for their
+   totals, not assembled out of a page of results: a number built from the first fifty rows
+   quietly stops being a total at the fifty-first.
+3. **Somewhere to begin.** The available modes, one press each.
+4. **What was made before.** The last few shipments, to open or to start from. The running
+   entry is not among them — it is entry in progress, it has its own box at the top, and a
+   thing listed twice is a thing to reconcile.
+
+**`/` is untouched.** The chooser still has its six tiles with their pictures, the two
+locked ones with their reasons, and the redirect that takes somebody with a preferred mode
+straight into the wizard without a stop. [The usability plan](docs/ux-plan.md) asked for
+recent shipments as templates *without sending somebody with a default mode through a
+dashboard first*, and putting this on `/` would have done exactly that. So it has an address
+of its own, it is first in the rail for whoever wants to start their day there, and nobody
+is sent through it.
+
+**And it is honest about an installation that stores nothing.** Where the history is off
+there is no draft, no count and no recent shipment: the page says so in one sentence, shows
+the quick start alone rather than four empty boxes, and asks the server for nothing. The
+rail leaves the link out there entirely, the way it already does for the shipments page.
+
 ## [1.204.0] — 2026-09-07
 
 ### What the shipment adds up to, beside the work

@@ -28,7 +28,8 @@
       "libraries": "Libraries",
       "administration": "Administration",
       "account": "Account"
-    }
+    },
+    "overview": "Overview"
   },
   "theme": {
     "dark": "Dark",
@@ -1386,5 +1387,22 @@
     "missing": "{{count}} still needed",
     "missingUnknown": "Not complete yet",
     "blocked": "Substance details missing"
+  },
+  "overview": {
+    "title": "Overview",
+    "intro": "Where you left off, what has been made today, and the shipments of the last while. A new shipment starts here or from the tiles.",
+    "introNoHistory": "This installation keeps no shipments, so there is nothing to come back to. Starting one works here all the same.",
+    "resumeTitle": "Carry on where you left off",
+    "resume": "Carry on",
+    "todayTitle": "Today",
+    "todayShipments": "Shipments kept",
+    "todayTrips": "Trips put together",
+    "startTitle": "Start straight away",
+    "recentTitle": "Recent shipments",
+    "recentEmpty": "No shipments kept yet.",
+    "allShipments": "All shipments",
+    "open": "Open",
+    "asTemplate": "As a template",
+    "dg": "Dangerous goods"
   }
 }

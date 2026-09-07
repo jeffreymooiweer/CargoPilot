@@ -28,7 +28,8 @@
       "libraries": "Bibliotheken",
       "administration": "Verwaltung",
       "account": "Konto"
-    }
+    },
+    "overview": "Übersicht"
   },
   "theme": {
     "dark": "Dunkel",
@@ -1386,5 +1387,22 @@
     "missing": "{{count}} noch nötig",
     "missingUnknown": "Noch nicht vollständig",
     "blocked": "Stoffangaben fehlen"
+  },
+  "overview": {
+    "title": "Übersicht",
+    "intro": "Wo du aufgehört hast, was heute entstanden ist, und die Sendungen der letzten Zeit. Eine neue Sendung beginnt hier oder über die Kacheln.",
+    "introNoHistory": "Diese Installation speichert keine Sendungen, es gibt also nichts, worauf man zurückkommen könnte. Beginnen geht hier trotzdem.",
+    "resumeTitle": "Weiter, wo du aufgehört hast",
+    "resume": "Weiter",
+    "todayTitle": "Heute",
+    "todayShipments": "Sendungen gespeichert",
+    "todayTrips": "Fahrten zusammengestellt",
+    "startTitle": "Sofort beginnen",
+    "recentTitle": "Letzte Sendungen",
+    "recentEmpty": "Noch keine Sendungen gespeichert.",
+    "allShipments": "Alle Sendungen",
+    "open": "Öffnen",
+    "asTemplate": "Als Vorlage",
+    "dg": "Gefahrgut"
   }
 }

@@ -11,6 +11,7 @@ import {
   CollapseIcon,
   GroupageIcon,
   HistoryIcon,
+  HomeIcon,
   LibraryIcon,
   MenuIcon,
   MoreIcon,
@@ -140,6 +141,9 @@ export default function Layout({ user, onLogout }: Props) {
       {
         key: "work",
         links: [
+          // The overview first, for whoever starts their day there; nobody is
+          // sent through it, and the chooser is still the link below it.
+          { to: "/overzicht", label: t("nav.overview"), when: history, icon: HomeIcon },
           { to: "/", label: t("nav.new"), when: true, icon: PlusIcon },
           { to: "/shipments", label: t("nav.shipments"), when: history, icon: ShipmentsIcon },
           { to: "/groupage", label: t("nav.groupage"), when: true, icon: GroupageIcon },

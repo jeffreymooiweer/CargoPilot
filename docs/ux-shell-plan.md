@@ -94,7 +94,7 @@ already sends somebody with a preferred mode straight into the wizard without a 
 | 119 | The shell — **built, v1.202.0** | One header (title, draft state, steps, mode switcher), an icon rail that folds to 56px instead of to nothing, one action bar at the foot; the same on a phone |
 | 120 | A line that opens — **built, v1.203.0** | Row expands into details and, for a dangerous line, the substance itself; the dangerous-goods step keeps the assessment and stops asking the identity twice |
 | 121 | The panel that counts — **built, v1.204.0** | Lines, weight, volume, attention and the documents being prepared, beside the work on every step |
-| 122 | Somewhere to come back to | The overview at `/overzicht`: continue where you left off, today's counts, quick start, recent shipments. Nothing else moves |
+| 122 | Somewhere to come back to — **built, v1.205.0** | The overview at `/overzicht`: continue where you left off, today's counts, quick start, recent shipments. Nothing else moved |
 | 123 | Measured and trimmed | The ten tasks again, and the mobile measurement the first plan left open |
 
 ### What 119 turned out to be, once measured
@@ -146,6 +146,25 @@ panel's are the same number. From `xl` the panel is on the screen and carries
 it and the bar's is hidden; below that there is no panel beside the work and
 the bar says it. Two live counts of the same thing on one screen is two things
 to reconcile.
+
+### What 122 kept as it was
+
+**`/` is untouched, and that was checked rather than assumed.** The chooser
+still has its six tiles with their pictures, the two locked ones with their
+reasons, and the redirect that takes somebody with a preferred mode straight
+into the wizard. The overview is at `/overzicht`, first in the rail for
+whoever wants to start their day there, and nobody is sent through it.
+
+**It is honest about an installation that stores nothing.** Where the history
+is off there is no draft, no count and no recent shipment, so the page says so
+in one sentence and shows the quick start alone — rather than four empty boxes
+— and asks the server for nothing. The rail leaves the link out entirely
+there, the way it already does for the shipments page.
+
+**Today is counted by the server.** Two queries with a date filter, read for
+their totals, rather than a page of results counted in the browser: a total is
+a total, and a number assembled out of the first fifty rows would quietly stop
+being one at the fifty-first.
 
 ## How it is judged
 

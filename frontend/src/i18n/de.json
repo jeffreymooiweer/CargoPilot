@@ -109,7 +109,7 @@
     "startFrom": "Von einer früheren Sendung ausgehen:",
     "newShipment": "Neue Sendung",
     "mode": "Verkehrsträger",
-    "modeCarried": "Deine Eingabe ist zu {{mode}} mitgekommen. Die Berechnung wird erneut durchgeführt.",
+    "modeCarried": "Ihre Eingabe ist zu {{mode}} mitgekommen. Die Berechnung wird erneut durchgeführt.",
     "attention": "{{count}} Punkt(e) zur Prüfung"
   },
   "review": {
@@ -191,7 +191,7 @@
     "closeDetails": "Details schließen",
     "lineDetailsDg": "Details und Stoff",
     "substanceTitle": "Der Stoff",
-    "substanceHint": "Was du hier einträgst, wird in den Schritt Gefahrgut übernommen. Lass leer, was aus den Tabellen kommen darf.",
+    "substanceHint": "Was Sie hier eintragen, wird in den Schritt Gefahrgut übernommen. Lassen Sie leer, was aus den Tabellen kommen darf.",
     "unNumber": "UN-Nummer",
     "properShippingName": "Offizielle Benennung",
     "packingGroup": "Verpackungsgruppe",
@@ -1390,9 +1390,9 @@
   },
   "overview": {
     "title": "Übersicht",
-    "intro": "Wo du aufgehört hast, was heute entstanden ist, und die Sendungen der letzten Zeit. Eine neue Sendung beginnt hier oder über die Kacheln.",
+    "intro": "Wo Sie aufgehört haben, was heute entstanden ist, und die Sendungen der letzten Zeit. Eine neue Sendung beginnen Sie hier oder über die Kacheln.",
     "introNoHistory": "Diese Installation speichert keine Sendungen, es gibt also nichts, worauf man zurückkommen könnte. Beginnen geht hier trotzdem.",
-    "resumeTitle": "Weiter, wo du aufgehört hast",
+    "resumeTitle": "Weiter, wo Sie aufgehört haben",
     "resume": "Weiter",
     "todayTitle": "Heute",
     "todayShipments": "Sendungen gespeichert",

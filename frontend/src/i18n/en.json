@@ -912,7 +912,7 @@
     "close": "Close"
   },
   "update": {
-    "available": "CargoPilot {{version}} is available",
+    "available": "CargoPilot {{version}} is available.",
     "hint": "This installation does not update itself; pull the newer image the way you usually do.",
     "releaseNotes": "View the release notes",
     "dismiss": "Dismiss notification"

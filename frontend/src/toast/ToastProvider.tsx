@@ -352,6 +352,18 @@ const KIND_ICON: Record<ToastKind, (props: { className?: string }) => ReactEleme
  *  first paint and in a test. */
 export const INLINE_ACTION_MAX_CHARS = 60;
 
+/** And the action's own label has to be short, which the rule above forgot.
+ *  An inline action does not wrap: it takes whatever width its words need and
+ *  the message gets the rest. Beside "Bekijk de release-opmerkingen" on a
+ *  390px phone, the rest is about 135px — a message broken mid-word, four
+ *  characters to a line.
+ *
+ *  Sixteen is measured rather than picked. The labels that are commands come
+ *  out at 4 to 16 characters in the four languages — *Undo*, *Ongedaan
+ *  maken*, *Jetzt einrichten* — and the ones that are sentences at 22 to 29.
+ *  The gap between them is where this sits. */
+export const INLINE_ACTION_MAX_LABEL = 16;
+
 function ToastHost({ toasts, onDismiss }: { toasts: Toast[]; onDismiss: (id: number) => void }) {
   const { t } = useTranslation();
   if (toasts.length === 0) return null;
@@ -363,7 +375,10 @@ function ToastHost({ toasts, onDismiss }: { toasts: Toast[]; onDismiss: (id: num
       {toasts.map((toast) => {
         const Icon = KIND_ICON[toast.kind];
         const actions = toast.actions ?? [];
-        const inline = actions.length === 1 && toast.message.length <= INLINE_ACTION_MAX_CHARS;
+        const inline =
+          actions.length === 1 &&
+          toast.message.length <= INLINE_ACTION_MAX_CHARS &&
+          actions[0].label.length <= INLINE_ACTION_MAX_LABEL;
         const below = actions.length > 0 && !inline;
         // The row is top-aligned, and the kind icon is the one thing that is
         // not: it marks what sort of notice this is, so it belongs against the

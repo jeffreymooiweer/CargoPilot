@@ -2,6 +2,25 @@
 
 All notable changes are documented here, following [Semantic Versioning](https://semver.org/).
 
+## [1.206.2] — 2026-09-07
+
+### One form of address
+
+The interface used both at once. The Dutch introduction on the transport-mode chooser
+addressed the reader formally; the two-factor notice a couple of centimetres below it
+addressed them informally. One screen, two registers — which is what happens when strings
+are written one at a time and nobody is looking at the whole.
+
+The owner picked the formal one. **Twenty Dutch strings and four German ones** were
+rewritten by hand rather than by substitution, because neither language only swaps the
+pronoun: both also change the verb that follows it, and in German the participle clause
+around it. French was already formal throughout, and English has no such distinction.
+
+**And a guard, so it cannot drift back.** `test_interface_register.py` reads the four
+translation files and fails on an informal pronoun in any of them, with the offending key
+and sentence named. It also fails if a fifth language turns up without a rule of its own —
+a language nobody wrote a rule for is a language nobody checked.
+
 ## [1.206.1] — 2026-09-07
 
 ### Two things wrong with the update notice

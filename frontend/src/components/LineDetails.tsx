@@ -1,20 +1,32 @@
 /**
- * Editing one goods line, with the whole width of a dialog to do it in.
+ * Everything about one goods line that does not fit on its row — opened where
+ * the row is, not in a window over it.
  *
- * The lines step used to be a table of input fields — thirteen columns of
- * them — and every screen narrower than a large monitor turned into a fight
- * over width: fields squeezed to thirty pixels, columns dropped to make room,
- * a detail panel to reach the ones that had been dropped. The cards behind
- * this dialog now only *show* what a line says; everything you change, you
- * change here, one field per row, at a width that is the same on a phone and
- * on a monitor.
+ * The history of this file is two overcorrections. It began as a table of
+ * thirteen input columns, which no screen narrower than a large monitor could
+ * hold. v1.192.0 replaced that with a dialog, which fixed the width and
+ * charged a window: three actions to change a number, none of them the number.
+ * v1.193.0 put the four things people actually come back to change on the row
+ * itself, and the dialog kept the rest.
  *
- * Changes apply as you make them, as they did in the table — the wizard
- * recalculates from the lines and there is nothing to submit. So the dialog
- * closes rather than saves, and there is no cancel to promise something this
- * step cannot deliver.
+ * This is the last of it. The rest is not behind a window either: the row
+ * expands and the fields stand underneath it, with the list still on screen
+ * above and below. Nothing is modal, nothing is submitted — the wizard
+ * recalculates from the lines as they are typed, exactly as it did.
+ *
+ * **The substance is here too.** For a line that carries dangerous goods, this
+ * is where its identity is stated: the UN number, the proper shipping name,
+ * the packing group, and how it is packed. Those questions used to be asked on
+ * the dangerous-goods step — one step after the step that recognised the
+ * substance and put a UN number on the line. Asking the same thing twice, a
+ * screen apart, is what this ends.
+ *
+ * What is not here is the class. It follows from the UN number through Table
+ * A, and a field for it would invite somebody to state something the tables
+ * then contradict. The same goes for everything the assessment needs — the
+ * tunnel code, the transport category, mixed loading, the 1.1.3.6 calculation:
+ * that is the dangerous-goods step's work and it stays there.
  */
-import { useEffect, useRef } from "react";
 import { useTranslation } from "react-i18next";
 
 import { LineItem, UnitCatalogue } from "../api/client";
@@ -53,49 +65,35 @@ interface Props {
   /** The computed line, when the wizard has calculated. Decides which fields
    *  apply at all: no cross-section, no wall thickness. */
   result: LineItem | null;
-  /** 1-based position, for the heading. */
+  /** 1-based position, for the field ids and the substance heading. */
   position: number;
   catalogue: UnitCatalogue | null;
+  /** The id the row's toggle points at with `aria-controls`. */
+  id: string;
   onChange: (patch: Partial<DraftLine>) => void;
   onWeightChange?: (field: "weight_each_kg" | "weight_total_kg", value: number | null) => void;
-  onClose: () => void;
 }
 
-export default function LineEditDialog({
+/** Whether this line carries dangerous goods, by any of the three routes: the
+ *  user ticked it, they took a suggested UN number, or the calculation found
+ *  one in the description. */
+export function isDangerous(line: DraftLine, result: LineItem | null): boolean {
+  return !!(line.dangerous_goods || line.confirmed_un || result?.dangerous_goods);
+}
+
+export default function LineDetails({
   line,
   result,
   position,
   catalogue,
+  id,
   onChange,
   onWeightChange,
-  onClose,
 }: Props) {
   const { t } = useTranslation();
-  const panel = useRef<HTMLDivElement>(null);
   // The articles library lives beside the history; without one there is
   // nothing to pick from and the field stays away.
   const hasArticles = !!usePreferences().publicSettings?.history_enabled;
-
-  useEffect(() => {
-    const onKey = (event: KeyboardEvent) => {
-      if (event.key === "Escape") onClose();
-    };
-    document.addEventListener("keydown", onKey);
-    return () => document.removeEventListener("keydown", onKey);
-  }, [onClose]);
-
-  // Focus moves into the dialog, so a keyboard user is not left behind it.
-  useEffect(() => {
-    panel.current?.focus();
-  }, []);
-
-  useEffect(() => {
-    const previous = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
-    return () => {
-      document.body.style.overflow = previous;
-    };
-  }, []);
 
   const round = ROUND_TYPES.has(result?.product_type ?? "");
   const productType = result?.product_type;
@@ -107,42 +105,14 @@ export default function LineEditDialog({
     (event: React.ChangeEvent<HTMLInputElement>) =>
       onChange({ [field]: event.target.value === "" ? "" : Number(event.target.value) });
 
-  return (
-    <div className="fixed inset-0 z-50 flex items-end justify-center sm:items-center sm:p-4">
-      <button
-        type="button"
-        aria-label={t("review.closeEdit")}
-        onClick={onClose}
-        className="absolute inset-0 bg-slate-900/40"
-      />
-      <div
-        ref={panel}
-        role="dialog"
-        aria-modal="true"
-        aria-label={t("review.editTitle", { number: position })}
-        tabIndex={-1}
-        className="relative flex max-h-[92vh] w-full max-w-2xl flex-col rounded-t-2xl border border-slate-200 bg-white shadow-2xl dark:border-slate-800 dark:bg-slate-900 sm:rounded-2xl"
-      >
-        <header className="flex items-start justify-between gap-3 border-b border-slate-200 px-4 py-3 dark:border-slate-800 sm:px-5">
-          <div className="min-w-0">
-            <p className="text-[11px] uppercase tracking-wide text-slate-500 dark:text-slate-400">
-              {t("review.editTitle", { number: position })}
-            </p>
-            <p className="mt-0.5 truncate text-sm font-medium text-slate-900 dark:text-slate-100">
-              {line.description.trim() || t("review.untitledLine")}
-            </p>
-          </div>
-          <button
-            type="button"
-            onClick={onClose}
-            aria-label={t("review.closeEdit")}
-            className="-mr-1 inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-slate-500 hover:bg-slate-100 hover:text-slate-800 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-slate-100"
-          >
-            <span className="text-xl leading-none">×</span>
-          </button>
-        </header>
+  const field = (name: string) => `line-${position}-${name}`;
 
-        <div className="flex-1 space-y-4 overflow-y-auto px-4 py-4 sm:px-5">
+  return (
+    <div
+      id={id}
+      className="mt-2 rounded-xl border border-slate-200 bg-slate-50/60 dark:border-slate-700 dark:bg-slate-950/40"
+    >
+        <div className="space-y-4 px-3 py-3 sm:px-4">
           {hasArticles && (
             <div>
               <span className={labelClass}>{t("articles.onLine")}</span>
@@ -169,60 +139,21 @@ export default function LineEditDialog({
               </div>
             </div>
           )}
-          <div>
-            <label className={labelClass} htmlFor="line-description">
-              {t("review.description")}
-            </label>
-            <div className="mt-1">
-              <EquipmentCombobox
-                value={line.description}
-                onChange={(value) => onChange({ description: value })}
-              />
-            </div>
-          </div>
-
-          <div className="grid gap-3 sm:grid-cols-2">
-            <div>
-              <label className={labelClass} htmlFor="line-quantity">
-                {t("review.quantity")}
-              </label>
-              <NumberInput
-                id="line-quantity"
-                inputMode="decimal"
-                className={`${numberClass} mt-1`}
-                value={line.quantity}
-                onChange={(event) =>
-                  onChange({ quantity: event.target.value === "" ? "" : Number(event.target.value) })
-                }
-              />
-            </div>
-            <div>
-              <label className={labelClass} htmlFor="line-unit">
-                {t("review.unit")}
-              </label>
-              <div className="mt-1">
-                <UnitSelect
-                  value={line.unit}
-                  onChange={(unit) => onChange({ unit })}
-                  category={result?.material_category}
-                  catalogue={catalogue}
-                  aria-label={t("review.unit")}
-                  className={inputClass}
-                />
-              </div>
-            </div>
-          </div>
+          {/* The description, the quantity and the unit are not repeated here.
+              In a dialog over the list they had to be — the list was behind
+              it. Open under the row, they are one line above, and a second
+              copy of a field is a second place for the answer to be wrong. */}
 
           {/* Only for goods whose stored density describes the material itself;
               for gravel, grain or a liquid the density already describes it as
               it is carried. */}
           {forms.length > 0 && (
             <div>
-              <label className={labelClass} htmlFor="line-cargo-form">
+              <label className={labelClass} htmlFor={field("cargo-form")}>
                 {t("review.cargoForm")}
               </label>
               <select
-                id="line-cargo-form"
+                id={field("cargo-form")}
                 className={`${inputClass} mt-1`}
                 value={line.cargo_form ?? result?.cargo_form ?? ""}
                 onChange={(event) => onChange({ cargo_form: event.target.value })}
@@ -241,7 +172,7 @@ export default function LineEditDialog({
             <div className={`mt-1 grid gap-3 ${round ? "sm:grid-cols-2" : "sm:grid-cols-3"}`}>
               <Measure
                 label={t("review.length_cm")}
-                id="line-length"
+                id={field("length")}
                 value={line.length_cm ?? ""}
                 placeholder={result?.length_cm}
                 onChange={number("length_cm")}
@@ -250,7 +181,7 @@ export default function LineEditDialog({
                 // With a round cross-section the width *is* the diameter, and
                 // the field says so rather than the heading having to.
                 label={round ? t("review.diameter") : t("review.width_cm")}
-                id="line-width"
+                id={field("width")}
                 value={line.width_cm ?? ""}
                 placeholder={result?.width_cm}
                 onChange={number("width_cm")}
@@ -258,7 +189,7 @@ export default function LineEditDialog({
               {!round && (
                 <Measure
                   label={t("review.height_cm")}
-                  id="line-height"
+                  id={field("height")}
                   value={line.height_cm ?? ""}
                   placeholder={result?.height_cm}
                   onChange={number("height_cm")}
@@ -269,11 +200,11 @@ export default function LineEditDialog({
 
           {showWall && (
             <div>
-              <label className={labelClass} htmlFor="line-wall">
+              <label className={labelClass} htmlFor={field("wall")}>
                 {t("review.wallThickness")}
               </label>
               <NumberInput
-                id="line-wall"
+                id={field("wall")}
                 step="0.1"
                 inputMode="decimal"
                 className={`${numberClass} mt-1 ${wallMissing ? "border-amber-400 dark:border-amber-600" : ""}`}
@@ -286,11 +217,11 @@ export default function LineEditDialog({
           {result && onWeightChange && (
             <div className="grid gap-3 sm:grid-cols-2">
               <div>
-                <label className={labelClass} htmlFor="line-weight-each">
+                <label className={labelClass} htmlFor={field("weight-each")}>
                   {t("review.weightEach")}
                 </label>
                 <NumberInput
-                  id="line-weight-each"
+                  id={field("weight-each")}
                   step="0.01"
                   inputMode="decimal"
                   className={`${numberClass} mt-1`}
@@ -304,11 +235,11 @@ export default function LineEditDialog({
                 />
               </div>
               <div>
-                <label className={labelClass} htmlFor="line-weight-total">
+                <label className={labelClass} htmlFor={field("weight-total")}>
                   {t("review.weightTotal")}
                 </label>
                 <NumberInput
-                  id="line-weight-total"
+                  id={field("weight-total")}
                   step="0.01"
                   inputMode="decimal"
                   className={`${numberClass} mt-1`}
@@ -324,10 +255,15 @@ export default function LineEditDialog({
             </div>
           )}
 
+          {/* The calculation marks a line dangerous when it reads a UN number
+              in the description, and says so on the row. A tick that stayed
+              empty next to that told the user the opposite of what the row
+              said, so it follows the calculation until somebody sets it
+              themselves — and unticking then means what it says. */}
           <label className="flex items-center gap-2.5 rounded-lg border border-slate-200 px-3 py-2.5 dark:border-slate-700">
             <input
               type="checkbox"
-              checked={line.dangerous_goods ?? false}
+              checked={line.dangerous_goods ?? result?.dangerous_goods ?? false}
               onChange={(event) => onChange({ dangerous_goods: event.target.checked })}
               className="h-4 w-4 rounded border-slate-300 text-amber-600 focus:ring-amber-500"
             />
@@ -338,18 +274,94 @@ export default function LineEditDialog({
               </span>
             )}
           </label>
-        </div>
 
-        <footer className="border-t border-slate-200 px-4 py-3 dark:border-slate-800 sm:px-5">
-          <button
-            type="button"
-            onClick={onClose}
-            className="min-h-[44px] w-full rounded-lg bg-brand-600 px-5 text-sm font-medium text-white hover:bg-brand-700 sm:w-auto"
-          >
-            {t("review.doneEditing")}
-          </button>
-        </footer>
-      </div>
+          {isDangerous(line, result) && (
+            <fieldset className="rounded-lg border border-amber-200 bg-amber-50/60 px-3 py-3 dark:border-amber-900/50 dark:bg-amber-950/20">
+              <legend className="px-1 text-sm font-medium text-amber-900 dark:text-amber-200">
+                {t("review.substanceTitle")}
+              </legend>
+              <p className="text-xs text-amber-900 dark:text-amber-300">{t("review.substanceHint")}</p>
+              <div className="mt-2 grid gap-3 sm:grid-cols-2">
+                <div>
+                  <label className={labelClass} htmlFor={field("un")}>
+                    {t("review.unNumber")}
+                  </label>
+                  <input
+                    id={field("un")}
+                    className={`${inputClass} mt-1`}
+                    value={line.confirmed_un ?? ""}
+                    inputMode="numeric"
+                    // What the recogniser read out of the description stands
+                    // here as the placeholder, not as the value. It is what
+                    // the dangerous goods step will start from if nobody says
+                    // otherwise — but nobody has said it yet, and a field
+                    // that fills itself in has answered on the user's behalf.
+                    placeholder={result?.detected_un_numbers?.[0] ?? ""}
+                    // Typing a UN number is declaring the line dangerous.
+                    // Clearing it says nothing about that either way, so the
+                    // tick is left exactly as the user set it.
+                    onChange={(event) => {
+                      const un = event.target.value.trim();
+                      onChange(un ? { confirmed_un: un, dangerous_goods: true } : { confirmed_un: undefined });
+                    }}
+                  />
+                </div>
+                <div>
+                  <label className={labelClass} htmlFor={field("packing-group")}>
+                    {t("review.packingGroup")}
+                  </label>
+                  <select
+                    id={field("packing-group")}
+                    className={`${inputClass} mt-1`}
+                    value={line.packing_group ?? ""}
+                    onChange={(event) => onChange({ packing_group: event.target.value || undefined })}
+                  >
+                    <option value="">{t("review.derivedLater")}</option>
+                    <option value="I">I</option>
+                    <option value="II">II</option>
+                    <option value="III">III</option>
+                  </select>
+                </div>
+              </div>
+              <div className="mt-3">
+                <label className={labelClass} htmlFor={field("psn")}>
+                  {t("review.properShippingName")}
+                </label>
+                <input
+                  id={field("psn")}
+                  className={`${inputClass} mt-1`}
+                  placeholder={t("review.derivedLater")}
+                  value={line.proper_shipping_name ?? ""}
+                  onChange={(event) => onChange({ proper_shipping_name: event.target.value || undefined })}
+                />
+              </div>
+              <div className="mt-3 grid gap-3 sm:grid-cols-2">
+                <div>
+                  <label className={labelClass} htmlFor={field("package-type")}>
+                    {t("review.typeOfPackage")}
+                  </label>
+                  <input
+                    id={field("package-type")}
+                    className={`${inputClass} mt-1`}
+                    value={line.type_of_package ?? ""}
+                    onChange={(event) => onChange({ type_of_package: event.target.value || undefined })}
+                  />
+                </div>
+                <div>
+                  <label className={labelClass} htmlFor={field("package-content")}>
+                    {t("review.netPerPackage")}
+                  </label>
+                  <input
+                    id={field("package-content")}
+                    className={`${inputClass} mt-1`}
+                    value={line.package_content ?? ""}
+                    onChange={(event) => onChange({ package_content: event.target.value || undefined })}
+                  />
+                </div>
+              </div>
+            </fieldset>
+          )}
+        </div>
     </div>
   );
 }

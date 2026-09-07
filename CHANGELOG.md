@@ -2,6 +2,42 @@
 
 All notable changes are documented here, following [Semantic Versioning](https://semver.org/).
 
+## [1.203.0] — 2026-09-07
+
+### A goods line that opens, with its substance in it
+
+The second release of [the shell plan](docs/ux-shell-plan.md).
+
+**The line expands where it stands.** Everything that was behind the details icon — the
+article, the cargo form, the dimensions, the wall thickness, the own weights, the
+dangerous-goods tick — now opens underneath the row instead of in a window over the list.
+The arrow says which way it will go, one line is open at a time, and the row above it stays
+on the screen. The description, the quantity and the unit are not repeated in there: they
+are one line up, and a second copy of a field is a second place for the answer to be wrong.
+
+**The substance is stated on the line that carries it.** For a dangerous line the panel also
+holds its identity: the UN number, the proper shipping name, the packing group, the type of
+package and the net per package. Those were asked on the dangerous-goods step — one step
+after the step that had already recognised the substance and put a UN number on the row.
+What is answered here is seeded into that step's product, and what is left empty still comes
+out of the tables. The class is deliberately not asked: it follows from the UN number
+through Table A, and a field for it invites somebody to state something the tables then
+contradict.
+
+The dangerous-goods step keeps everything it is actually for — the compliance check, the
+tunnel code, the transport category, mixed loading, the 1.1.3.6 calculation, the special
+cases of 5.4.1.1. The plan said that step would disappear for a common shipment; it already
+does, and for a shipment that does carry dangerous goods there is always something to
+assess. The plan now says so, with the reason.
+
+Two disagreements between the row and the panel, found by opening one and looking:
+
+- The calculation marks a line dangerous when it reads a UN number in the description, and
+  the row says so — while the panel's tick stood empty, saying the opposite. It follows the
+  calculation now until somebody sets it themselves.
+- The recognised UN number was nowhere in the UN field. It stands there as the placeholder:
+  it is what the next step starts from, and it is not something anybody has stated yet.
+
 ## [1.202.0] — 2026-09-06
 
 ### The shell: one header instead of four strips of furniture

@@ -103,7 +103,14 @@ export default function OverviewPage() {
       </div>
 
       {draft && (
-        <div className={`${panelClass} flex flex-col gap-3 p-5 sm:flex-row sm:items-center sm:justify-between sm:p-6`}>
+        <div
+          // Named so the harness can ask what this block alone says. The
+          // measurement release 123 wanted is not how many presses it takes
+          // to get back into an entry — that is the same either way — but
+          // whether the screen tells you which mode the entry is in.
+          data-testid="resume-entry"
+          className={`${panelClass} flex flex-col gap-3 p-5 sm:flex-row sm:items-center sm:justify-between sm:p-6`}
+        >
           <div className="min-w-0">
             <h3 className="text-sm font-semibold text-slate-900 dark:text-slate-100">
               {t("overview.resumeTitle")}

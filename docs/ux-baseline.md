@@ -250,3 +250,101 @@ with the history switched off was measured in release 115, where the promise not
 anything has to be kept, and its row is in the table above. Nothing in this baseline was
 run on a phone-sized viewport; the mobile measurements start with release 108, which is
 the first to change what a phone shows.
+
+*That last sentence stopped being true in release 123. The phone pass is below.*
+
+# The shell plan, measured (release 123)
+
+[The second plan](ux-shell-plan.md) rebuilt the frame around the work: one header, one
+action bar, a rail that folds to icons, a line that opens where it stands, a panel that
+counts beside the work, and an overview to come back to. This is what that cost and what
+it bought, run the same way as everything above.
+
+## The ten tasks: nothing cheaper, nothing dearer
+
+| Task | End of plan 1 | End of plan 2 |
+|---|---|---|
+| 1 A simple shipment to a downloaded package | 19 | 19 |
+| 2 Five quantities changed on five lines | 5 | 5 |
+| 3 Fifty rows imported, one unclear | 4 | 4 |
+| 4 A substance suggestion closed, judged and revisited | 5 | 5 |
+| 5 An extra document needing one new answer | 5 | 5 |
+| 6 An error corrected from the final overview | 3 | 3 |
+| 7 An earlier shipment as a new basis | 1 | 1 |
+| 8 A reload during entry (organisation) | 4 | 4 |
+| 8b A reload during entry (nothing stored) | 2 | 2 |
+| 9 Five shipments into one trip | 6 | 6 |
+| 10 A refused save recovered | 1 | 1 |
+
+**53 actions, no windows, all finished — the same numbers, to the action.** For four
+releases that moved nearly every piece of furniture on the screen, that is the outcome
+worth having: none of them made a task cheaper, and none of them made one dearer. A
+rebuilt frame that quietly cost two presses somewhere would have been the failure.
+
+## The two tasks that measure what the shell changed
+
+None of the ten opens a goods line's details, and none of them comes back to an
+interrupted entry from outside the wizard — so none of them could see releases 120 and
+122 at all. Two tasks were added, and both were run against the v1.202.0 build as well as
+the current one, so the comparison is a measurement rather than a memory.
+
+| Task | Before (v1.202.0) | After (v1.206.0) |
+|---|---|---|
+| 11 One measurement filled in on a goods line | 6 actions, **1 window** | 5 actions, **0 windows** |
+| 12 Back into an interrupted entry | 4 actions | 4 actions |
+
+**Task 11.** The window is the whole difference, and it is worth one action: with the
+dialog open the list underneath could not be reached until it was dismissed — the harness
+recorded *"the list was behind a window and could not be reached until it was closed"* —
+and the press that dismissed it is the sixth action. With the row expanded there is
+nothing to dismiss: *"the list was usable again without dismissing anything first."*
+
+**Task 12.** The same four presses either way, and the count is not the point. Before, the
+route back was the chooser, which offers four modes and marks none of them as yours: the
+harness only got it right because the task hard-codes *road*. A person has to remember. The
+overview names it — *"yes — Wegtransport, beside the entry itself"* — which is the whole
+change, and it does not show up in an action count at all.
+
+## The phone, which the first plan recorded as not run
+
+The same twelve tasks at 390×844.
+
+| Task | Laptop | Phone |
+|---|---|---|
+| 1 A simple shipment to a downloaded package | 19 | 19 |
+| 2 Five quantities changed on five lines | 5 | 5 |
+| 3 Fifty rows imported, one unclear | 4 | 4 |
+| 4 A substance suggestion closed, judged and revisited | 5 | 5 |
+| 5 An extra document needing one new answer | 5 | 5 |
+| 6 An error corrected from the final overview | 3 | 3 |
+| 7 An earlier shipment as a new basis | 1 | 1 |
+| 8 A reload during entry (organisation) | 4 | 4 |
+| 8b A reload during entry (nothing stored) | 2 | 2 |
+| 9 Five shipments into one trip | 6 | 6 |
+| 10 A refused save recovered | 1 | 1 |
+| 11 One measurement filled in on a goods line | 5 | 5 |
+| 12 Back into an interrupted entry | 4 | **5** |
+
+Every task finishes on a phone, at the same cost as on a laptop, with one exception: task
+12 pays one press more, because on a phone the rail is behind the hamburger and every
+destination costs that press. That is the mobile layout working as designed rather than a
+defect, and it is counted rather than stepped around.
+
+## What this run found
+
+**The list of shipments offered five identical "Select" boxes on a phone.** The table's
+checkbox has carried its shipment's reference as its name since the selection was built;
+the card's, which is what a phone shows, said only *Select* — five times over, with nothing
+telling a screen-reader user which shipment each one selected. Both carry the same name
+now.
+
+And two things about the harness, which was measuring less than it claimed:
+
+- **It could not read the step on a phone.** The step pills are icons at that width, so
+  there is no visible text — the name is on the element as its accessible label, which is
+  what a screen reader is given. Reading only the text made every phone run report the step
+  as *unknown* and marked tasks 5 and 6 unfinished when they had in fact finished.
+- **It looked for the selection inside a `<table>`.** The shipments list is a table on a
+  laptop and a stack of cards on a phone; asking for the table measured half the
+  application and reported the other half as having no selection at all. It asks for the
+  box by its name now, which is the same in both shapes.

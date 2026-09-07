@@ -95,7 +95,7 @@ already sends somebody with a preferred mode straight into the wizard without a 
 | 120 | A line that opens — **built, v1.203.0** | Row expands into details and, for a dangerous line, the substance itself; the dangerous-goods step keeps the assessment and stops asking the identity twice |
 | 121 | The panel that counts — **built, v1.204.0** | Lines, weight, volume, attention and the documents being prepared, beside the work on every step |
 | 122 | Somewhere to come back to — **built, v1.205.0** | The overview at `/overzicht`: continue where you left off, today's counts, quick start, recent shipments. Nothing else moved |
-| 123 | Measured and trimmed | The ten tasks again, and the mobile measurement the first plan left open |
+| 123 | Measured and trimmed — **done, v1.206.0** | The ten tasks again, two more that reach what the shell changed, and the phone measurement the first plan left open |
 
 ### What 119 turned out to be, once measured
 
@@ -172,3 +172,35 @@ The same way as the first plan, with the same harness: [`scripts/ux_bench`](../s
 against the same ten tasks, reported in [the baseline](ux-baseline.md), plus — this time —
 a phone-sized viewport, which the first plan recorded as not run. A release that makes a
 screen prettier and a task no cheaper is a release that has to say so.
+
+## Where the second plan ended
+
+Run the same way as the first, and reported in [the baseline](ux-baseline.md).
+
+**The ten tasks cost exactly what they cost before it: 53 actions, no windows, all
+finished.** For four releases that moved nearly every piece of furniture on the screen,
+that is the outcome worth having — nothing got cheaper and, more to the point, nothing got
+dearer.
+
+What the shell *did* change needed two tasks the first plan never had, because none of its
+ten opens a goods line's details or comes back to an interrupted entry from outside the
+wizard. Both were run against the v1.202.0 build as well as this one:
+
+- **Filling in one measurement on a goods line: 6 actions and a window became 5 and none.**
+  The window was worth an action all by itself — with the dialog open, the list underneath
+  could not be reached until it was dismissed.
+- **Getting back into an interrupted entry: the same four presses, and the count is not the
+  point.** The chooser offers four modes and marks none of them as yours; the overview
+  names the one your entry is in. That is the whole change and it does not appear in an
+  action count at all.
+
+**And the phone was run**, which the first plan recorded as not run: every task finishes at
+390×844, at the same cost as on a laptop, except getting back into an entry — one press
+more, because the rail is behind the hamburger.
+
+The run found one defect in the application: on a phone the shipments list offered five
+identical *Select* boxes, because only the table's checkbox carried its shipment's
+reference as its name and a phone shows the cards. Both carry it now. It also found the
+harness measuring less than it claimed — it could not read the step pills on a phone, where
+they are icons with an accessible label and no text, and it looked for the selection inside
+a `<table>` that a phone does not have.

@@ -118,15 +118,26 @@ class Bench:
             self._step = step
 
     def current_step(self) -> str:
-        """Which main step the wizard shows as active, by its own pill."""
+        """Which main step the wizard shows as active, by its own pill.
+
+        On a narrow screen the pills are icons, so there is no visible text to
+        read — the name is on the element as its accessible label instead, and
+        that is what a screen reader is given. Reading only the text made every
+        phone measurement report "unknown" and mark two tasks unfinished that
+        had in fact finished."""
         try:
             active = self.page.locator("li[aria-current=step]")
-            if active.count():
-                text = active.first.inner_text().strip()
-                for label in STEP_ORDER:
-                    if label in text:
-                        return label
-                return text.split("\n")[-1]
+            if not active.count():
+                return ""
+            text = active.first.inner_text().strip()
+            if not text:
+                labelled = active.first.locator("[aria-label]")
+                if labelled.count():
+                    text = (labelled.first.get_attribute("aria-label") or "").strip()
+            for label in STEP_ORDER:
+                if label in text:
+                    return label
+            return text.split("\n")[-1]
         except Exception:
             pass
         return ""
